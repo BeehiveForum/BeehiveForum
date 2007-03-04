@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.55 2007-01-15 00:10:37 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.56 2007-03-04 14:18:37 decoyduck Exp $ */
 
 /**
 * Functions relating to users interacting with profiles
@@ -86,10 +86,12 @@ function user_get_profile($uid)
 
     if (!$table_data = get_table_prefix()) return false;
 
+    $forum_fid = $table_data['FID'];
+
     $user_prefs = user_get_prefs($uid);
 
     $sql = "SELECT USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
-    $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
+    $sql.= "UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT) AS LAST_VISIT, ";
     $sql.= "UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, ";
     $sql.= "USER_PREFS_FORUM.ANON_LOGON AS FORUM_ANON_LOGON, ";
     $sql.= "USER_PREFS_GLOBAL.ANON_LOGON AS GLOBAL_ANON_LOGON, ";
@@ -102,7 +104,8 @@ function user_get_profile($uid)
     $sql.= "ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = $peer_uid) ";
-    $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (VISITOR_LOG.UID = USER.UID) ";
+    $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.UID = USER.UID ";
+    $sql.= "AND USER_FORUM.FID = '$forum_fid') ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_TRACK USER_TRACK ";
     $sql.= "ON (USER_TRACK.UID = USER.UID) ";
     $sql.= "WHERE USER.UID = $uid ";
@@ -114,16 +117,16 @@ function user_get_profile($uid)
 
         $user_profile = db_fetch_array($result);
 
-        if (isset($user_profile['FORUM_LAST_LOGON']) && !is_null($user_profile['FORUM_LAST_LOGON'])) {
-            $anon_logon = $user_profile['FORUM_LAST_LOGON'];
+        if (isset($user_profile['FORUM_ANON_LOGON']) && !is_null($user_profile['FORUM_ANON_LOGON'])) {
+            $anon_logon = $user_profile['FORUM_ANON_LOGON'];
         }elseif (isset($user_profile['GLOBAL_ANON_LOGON']) && !is_null($user_profile['GLOBAL_ANON_LOGON'])) {
             $anon_logon = $user_profile['GLOBAL_ANON_LOGON'];
         }else {
             $anon_logon = 0;
         }
 
-        if ($anon_logon == 0 && isset($user_profile['LAST_LOGON']) && $user_profile['LAST_LOGON'] > 0) {
-            $user_profile['LAST_LOGON'] = format_time($user_profile['LAST_LOGON']);
+        if ($anon_logon == 0 && isset($user_profile['LAST_VISIT']) && $user_profile['LAST_VISIT'] > 0) {
+            $user_profile['LAST_LOGON'] = format_time($user_profile['LAST_VISIT']);
         }else {
             $user_profile['LAST_LOGON'] = $lang['unknown'];
         }

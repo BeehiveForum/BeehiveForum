@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.174 2007-03-01 14:34:28 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.175 2007-03-04 14:18:37 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -101,10 +101,20 @@ function search_execute($argarray, &$error)
 
         // Base query slightly different if you're not searching by keywords
 
-        $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, ";
-        $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, LENGTH) SELECT $uid, ";
-        $select_sql.= "$forum_fid, THREAD.FID, POST.TID, POST.PID, THREAD.BY_UID, ";
-        $select_sql.= "POST.FROM_UID, POST.TO_UID, POST.CREATED, THREAD.LENGTH ";
+        if (isset($argarray['group_by_thread']) && $argarray['group_by_thread'] == 1) {
+
+            $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, ";
+            $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, LENGTH) SELECT $uid, ";
+            $select_sql.= "$forum_fid, THREAD.FID, POST.TID, POST.PID, THREAD.BY_UID, ";
+            $select_sql.= "POST.FROM_UID, POST.TO_UID, THREAD.MODIFIED, THREAD.LENGTH ";
+
+        }else {
+
+            $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, ";
+            $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, LENGTH) SELECT $uid, ";
+            $select_sql.= "$forum_fid, THREAD.FID, POST.TID, POST.PID, THREAD.BY_UID, ";
+            $select_sql.= "POST.FROM_UID, POST.TO_UID, POST.CREATED, THREAD.LENGTH ";
+        }
 
         // FROM query uses POST table if we're not using keyword searches.
 
@@ -176,12 +186,24 @@ function search_execute($argarray, &$error)
 
             search_save_keywords($search_keywords_array['keywords']);
 
-            $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, ";
-            $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, LENGTH, RELEVANCE) ";
-            $select_sql.= "SELECT $uid, $forum_fid, THREAD.FID, POST_CONTENT.TID, ";
-            $select_sql.= "POST_CONTENT.PID, THREAD.BY_UID, POST.FROM_UID, POST.TO_UID, ";
-            $select_sql.= "POST.CREATED, THREAD.LENGTH, MATCH(POST_CONTENT.CONTENT) ";
-            $select_sql.= "AGAINST('$search_string'$bool_mode) AS RELEVANCE";
+            if (isset($argarray['group_by_thread']) && $argarray['group_by_thread'] == 1) {
+
+                $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, ";
+                $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, LENGTH, RELEVANCE) ";
+                $select_sql.= "SELECT $uid, $forum_fid, THREAD.FID, POST_CONTENT.TID, ";
+                $select_sql.= "POST_CONTENT.PID, THREAD.BY_UID, POST.FROM_UID, POST.TO_UID, ";
+                $select_sql.= "THREAD.MODIFIED, THREAD.LENGTH, MATCH(POST_CONTENT.CONTENT) ";
+                $select_sql.= "AGAINST('$search_string'$bool_mode) AS RELEVANCE";
+
+            }else {
+
+                $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, ";
+                $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, LENGTH, RELEVANCE) ";
+                $select_sql.= "SELECT $uid, $forum_fid, THREAD.FID, POST_CONTENT.TID, ";
+                $select_sql.= "POST_CONTENT.PID, THREAD.BY_UID, POST.FROM_UID, POST.TO_UID, ";
+                $select_sql.= "POST.CREATED, THREAD.LENGTH, MATCH(POST_CONTENT.CONTENT) ";
+                $select_sql.= "AGAINST('$search_string'$bool_mode) AS RELEVANCE";
+            }
 
             $where_sql.= "AND MATCH(POST_CONTENT.CONTENT) AGAINST('$search_string'$bool_mode) ";
 
@@ -200,8 +222,7 @@ function search_execute($argarray, &$error)
         }
     }
 
-    // If the user wants results grouped by thread (TID) then do so. We still group
-    // by TID, PID otherwise AND based searches won't work.
+    // If the user wants results grouped by thread (TID) then do so.
 
     if (isset($argarray['group_by_thread']) && $argarray['group_by_thread'] == 1) {
         $group_sql = "GROUP BY THREAD.TID ";
@@ -209,11 +230,14 @@ function search_execute($argarray, &$error)
         $group_sql = "";
     }
 
+    // Set a limit of 1000 results.
+
+    $limit_sql = "LIMIT 0, 1000";
+
     // Build the final query.
 
     $sql = "$select_sql $from_sql $join_sql $peer_join_sql ";
-    $sql.= "$where_sql $peer_where_sql $group_sql $having_sql ";
-    $sql.= "LIMIT 1000";
+    $sql.= "$where_sql $peer_where_sql $group_sql $having_sql $limit_sql ";
 
     // If the user has performed a search within the last x minutes bail out
 

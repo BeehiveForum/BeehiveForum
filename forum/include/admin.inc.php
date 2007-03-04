@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.106 2007-03-02 00:49:20 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.107 2007-03-04 14:18:37 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -183,10 +183,10 @@ function admin_get_word_filter_list($offset)
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT COUNT(ID) FROM {$table_data['PREFIX']}FILTER_LIST ";
-    $sql.= "WHERE UID = 0 ORDER BY ID";
+    $sql.= "WHERE UID = 0";
 
     $result = db_query($sql, $db_admin_get_word_filter);
-    list($word_filter_count) = db_num_rows($result, DB_RESULT_NUM);
+    list($word_filter_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT ID, MATCH_TEXT, REPLACE_TEXT, FILTER_OPTION ";
     $sql.= "FROM {$table_data['PREFIX']}FILTER_LIST ";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.208 2007-02-18 22:38:02 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.209 2007-03-05 23:53:34 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -38,6 +38,7 @@ if (@file_exists(BH_INCLUDE_PATH. "config.inc.php")) {
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "form.inc.php");
+include_once(BH_INCLUDE_PATH. "format.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "htmltools.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -801,16 +802,21 @@ function href_remove_query_keys($uri, $remove_keys, $seperator = "&amp;")
 
         parse_str($uri_array['query'], $uri_query_array);
 
+        $uri_query_keys = array();
+        $uri_query_values = array();
+
+        flatten_array($uri_query_array, $uri_query_keys, $uri_query_values);
+        
         $new_uri_query_array = array();
 
-        foreach($uri_query_array as $key => $value) {
+        foreach ($uri_query_keys as $key => $key_name) {
+        
+            if (strlen($key_name) > 0 && isset($uri_query_values[$key]) && strlen($uri_query_values[$key]) > 0) {
 
-            if (strlen($key) > 0 && strlen($value) > 0) {
+                if ((is_array($remove_keys) && !in_array($key_name, $remove_keys)) || ($key_name != $remove_keys)) {
 
-                if ((is_array($remove_keys) && !in_array($key, $remove_keys)) || ($key != $remove_keys)) {
-
-                    $value = rawurlencode($value);
-                    $new_uri_query_array[] = "{$key}={$value}";
+                    $uri_query_values[$key] = urlencode($uri_query_values[$key]);
+                    $new_uri_query_array[] = "$key_name={$uri_query_values[$key]}";
                 }
             }
         }

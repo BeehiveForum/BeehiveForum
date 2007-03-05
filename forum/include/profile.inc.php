@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.46 2007-01-05 21:12:40 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.47 2007-03-05 20:58:41 decoyduck Exp $ */
 
 /**
 * Functions relating to profiles
@@ -725,7 +725,7 @@ function profile_get_item($piid)
 
     if (!is_numeric($piid)) return false;
 
-    if (!$table_data = get_table_prefix()) return;
+    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT NAME, TYPE FROM {$table_data['PREFIX']}PROFILE_ITEM ";
     $sql.= "WHERE PIID = '$piid'";
@@ -739,6 +739,200 @@ function profile_get_item($piid)
     }
 
     return false;
+}
+
+function profile_items_get_list(&$profile_header_array, &$profile_dropdown_array)
+{
+    $db_profile_items_get_list = db_connect();
+
+    $lang = load_language_file();
+    
+    if (!$table_data = get_table_prefix()) return false;
+
+    $sql = "SELECT PROFILE_SECTION.PSID, PROFILE_SECTION.NAME AS SECTION_NAME, ";
+    $sql.= "PROFILE_ITEM.PIID, PROFILE_ITEM.NAME AS ITEM_NAME ";
+    $sql.= "FROM {$table_data['PREFIX']}PROFILE_ITEM PROFILE_ITEM ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}PROFILE_SECTION PROFILE_SECTION ";
+    $sql.= "ON (PROFILE_SECTION.PSID = PROFILE_ITEM.PSID)";
+
+    $result = db_query($sql, $db_profile_items_get_list);
+
+    $profile_header_array = array('POST_COUNT'      => $lang['postcount'],
+                                  'LAST_VISIT'      => $lang['lastvisit'],
+                                  'REGISTERED'      => $lang['registered'],
+                                  'USER_TIME_BEST'  => $lang['longesttimeinforum'],
+                                  'USER_TIME_TOTAL' => $lang['totaltimeinforum'],
+                                  'DOB'             => $lang['birthday'],
+                                  'AGE'             => $lang['age']);
+    $psid = 0;
+    $profile_section_array_id = 0;
+    
+    $profile_dropdown_array = $profile_header_array;
+    $profile_dropdown_array[$psid] = '';
+
+    while ($profile_item = db_fetch_array($result)) {
+
+        if ($profile_item['PSID'] != $psid) {
+
+            $psid = $profile_item['PSID'];
+            $profile_section_array_id--;
+
+            $profile_dropdown_array[$profile_section_array_id] = $profile_item['SECTION_NAME'];
+        }
+
+        // Drop down name is formatted to appear indented below section names
+
+        $item_name = "&nbsp;&raquo;&nbsp;{$profile_item['ITEM_NAME']}";
+        $profile_dropdown_array[$profile_item['PIID']] = $item_name;
+
+        // Header names are plain text, unformatted.
+        
+        $profile_header_array[$profile_item['PIID']] = $profile_item['ITEM_NAME'];
+    }
+
+    return sizeof($profile_header_array) > 0 ? true : false;
+}
+
+function profile_browse_items($user_search = false, $profile_items_array = array(), $offset = 0)
+{
+    $db_profile_browse_items = db_connect();
+
+    if (!is_numeric($offset)) return false;
+
+    if (!is_array($profile_items_array)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $forum_fid = $table_data['FID'];
+
+    if (($uid = bh_session_get_value('UID')) === false) return false;
+    
+    $sql = "SELECT COUNT(UID) AS USER_COUNT FROM USER";
+
+    $result = db_query($sql, $db_profile_browse_items);
+    list($user_count) = db_fetch_array($result, DB_RESULT_NUM);
+
+    if (($user_search !== false) && strlen(trim($user_search)) > 0) {
+
+        $user_search = addslashes(str_replace('%', '', $user_search));
+        
+        $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_TRACK.POST_COUNT, ";
+        $sql.= "UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT) AS LAST_VISIT, ";
+        $sql.= "UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, ";
+        $sql.= "UNIX_TIMESTAMP(USER_TIME_BEST) AS USER_TIME_BEST, ";
+        $sql.= "UNIX_TIMESTAMP(USER_TIME_TOTAL) AS USER_TIME_TOTAL, ";
+        $sql.= "USER_PREFS_GLOBAL.DOB, USER_PREFS_GLOBAL.DOB_DISPLAY, ";
+        $sql.= "USER_PREFS_FORUM.DOB_DISPLAY FROM USER USER ";
+        $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ";
+        $sql.= "ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS_FORUM ";
+        $sql.= "ON (USER_PREFS_FORUM.UID = USER.UID) ";
+        $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.UID = USER.UID ";
+        $sql.= "AND USER_FORUM.FID = '$forum_fid') ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_TRACK USER_TRACK ";
+        $sql.= "ON (USER_TRACK.UID = USER.UID) ";
+        $sql.= "WHERE (USER.LOGON LIKE '$user_search%' ";
+        $sql.= "OR USER.NICKNAME LIKE '$user_search%') ";
+        $sql.= "LIMIT $offset, 10";
+
+    }else {
+
+        $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_TRACK.POST_COUNT, ";
+        $sql.= "UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT) AS LAST_VISIT, ";
+        $sql.= "UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, ";
+        $sql.= "UNIX_TIMESTAMP(USER_TIME_BEST) AS USER_TIME_BEST, ";
+        $sql.= "UNIX_TIMESTAMP(USER_TIME_TOTAL) AS USER_TIME_TOTAL, ";
+        $sql.= "USER_PREFS_GLOBAL.DOB, USER_PREFS_GLOBAL.DOB_DISPLAY, ";
+        $sql.= "USER_PREFS_FORUM.DOB_DISPLAY FROM USER USER ";
+        $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ";
+        $sql.= "ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS_FORUM ";
+        $sql.= "ON (USER_PREFS_FORUM.UID = USER.UID) ";
+        $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.UID = USER.UID ";
+        $sql.= "AND USER_FORUM.FID = '$forum_fid') ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_TRACK USER_TRACK ";
+        $sql.= "ON (USER_TRACK.UID = USER.UID) ";
+        $sql.= "LIMIT $offset, 10";
+    }
+
+    $result_user_data = db_query($sql, $db_profile_browse_items);
+
+    $user_array = array();
+
+    if (db_num_rows($result_user_data) > 0) {
+
+        while ($user_data = db_fetch_array($result_user_data, DB_RESULT_ASSOC)) {
+
+            if (isset($user_data['REGISTERED']) && $user_data['REGISTERED'] > 0) {
+                $user_data['REGISTERED'] = format_date($user_data['REGISTERED']);
+            }else {
+                $user_data['REGISTERED'] = $lang['unknown'];
+            }
+
+            if (isset($user_data['USER_TIME_BEST']) && $user_data['USER_TIME_BEST'] > 0) {
+                $user_data['USER_TIME_BEST'] = format_time_display($user_data['USER_TIME_BEST']);
+            }else {
+                $user_data['USER_TIME_BEST'] = $lang['unknown'];
+            }
+
+            if (isset($user_data['USER_TIME_TOTAL']) && $user_data['USER_TIME_TOTAL'] > 0) {
+                $user_data['USER_TIME_TOTAL'] = format_time_display($user_data['USER_TIME_TOTAL']);
+            }else {
+                $user_data['USER_TIME_TOTAL'] = $lang['unknown'];
+            }
+
+            if (isset($user_data['DOB_DISPLAY']) && $user_data['DOB_DISPLAY'] > 0 && $user_data['DOB_DISPLAY'] < 3 && !empty($user_data['DOB']) && $user_data['DOB'] != "0000-00-00") {
+                $user_data['AGE'] = format_age($user_data['DOB']);
+            }
+
+            if (isset($user_data['DOB_DISPLAY']) && $user_data['DOB_DISPLAY'] == 2 && !empty($user_data['DOB']) && $user_data['DOB'] != "0000-00-00") {
+                $user_data['DOB'] = format_birthday($user_data['DOB']);
+            }
+
+            if (isset($user_data['DOB_DISPLAY']) && $user_data['DOB_DISPLAY'] == 3 && !empty($user_data['DOB']) && $user_data['DOB'] != "0000-00-00") {
+                $user_data['DOB'] = format_birthday($user_data['DOB']);
+            }
+            
+            $user_array[$user_data['UID']] = $user_data;
+            
+            $sql = "SELECT USER_PROFILE.UID, PROFILE_ITEM.PIID, PROFILE_SECTION.PSID, ";
+            $sql.= "PROFILE_SECTION.NAME AS SECTION_NAME, PROFILE_ITEM.NAME AS ITEM_NAME, ";
+            $sql.= "USER_PROFILE.ENTRY, USER_PROFILE.PRIVACY, USER_PEER.RELATIONSHIP ";
+            $sql.= "FROM {$table_data['PREFIX']}PROFILE_ITEM PROFILE_ITEM ";
+            $sql.= "LEFT JOIN {$table_data['PREFIX']}PROFILE_SECTION PROFILE_SECTION ";
+            $sql.= "ON (PROFILE_SECTION.PSID = PROFILE_ITEM.PSID) ";
+            $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PROFILE USER_PROFILE ";
+            $sql.= "ON (USER_PROFILE.PIID = PROFILE_ITEM.PIID) ";
+            $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+            $sql.= "ON (USER_PEER.UID = USER_PROFILE.UID AND USER_PEER.PEER_UID = '$uid') ";
+
+            $profile_items_array = preg_grep("/^[0-9]+$/", array_values($profile_items_array));
+
+            if (sizeof($profile_items_array) > 0) {
+
+                $profile_items_list = implode(",", $profile_items_array);
+                $sql.= "WHERE PROFILE_ITEM.PIID IN ($profile_items_list)";
+            }
+
+            $result_profile_data = db_query($sql, $db_profile_browse_items);
+
+            while ($profile_data = db_fetch_array($result_profile_data)) {
+
+                if ((($profile_data['RELATIONSHIP'] & USER_FRIEND) && $profile_data['PRIVACY'] == 1) || $profile_data['PRIVACY'] == 0 || $uid == $user_data['UID']) {
+                    
+                    $user_array[$profile_data['UID']]['PROFILE'][$profile_data['PIID']] = $profile_data;
+                }                                                                         
+            }
+        }
+    
+    }elseif ($user_count > 0) {
+
+        $offset = ($offset - 20) > 0 ? $offset - 20 : 0;
+        return profile_browse_items($filter, $filter_type, $offset);
+    }
+
+    return array('user_count' => $user_count,
+                 'user_array' => $user_array);
 }
 
 ?>

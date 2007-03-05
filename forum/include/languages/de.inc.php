@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.18 2007-01-06 23:26:32 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.19 2007-03-05 20:58:41 decoyduck Exp $ */
 
 // International English language file
 
@@ -511,7 +511,7 @@ $lang['youcanusethepercentwildcard'] = "Du kannst das Prozent-Zeichen (%) benutz
 $lang['cannotusewildcardonown'] = "Du kannst kein % als alleinigen Wert eintragen!";
 $lang['requirepostapproval'] = "Erfordert Post-Zustimmung";
 $lang['adminforumtoolsusercounterror'] = "Es muss mindestens 1 Benutzer mit Admin-Tools und Forum-Tools Berechtigung in allen Foren vorhanden sein!";
-$lang['postcount'] = "Postzaehler:";
+$lang['postcount'] = "Postzaehler";
 $lang['resetpostcount'] = "Postzaehler zuruecksetzen";
 $lang['postapprovalqueue'] = "Post Zustimmungswarteschlange";
 $lang['nopostsawaitingapproval'] = "Keine Posts warten auf Zustimmung";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.190 2007-02-17 00:30:43 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.191 2007-03-05 20:58:41 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -661,7 +661,7 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
         if ($table_data = get_table_prefix()) {
 
             echo "                      <tr>\n";
-            echo "                        <td align=\"left\" width=\"150\">{$lang['postcount']}</td>\n";
+            echo "                        <td align=\"left\" width=\"150\">{$lang['postcount']}:</td>\n";
             echo "                        <td align=\"left\">", form_input_text("t_post_count", (isset($_POST['t_post_count'])) ? $_POST['t_post_count'] : $user['POST_COUNT'], 10), "&nbsp;", form_checkbox("t_reset_post_count", "Y", $lang['resetpostcount'], false), "</td>\n";
             echo "                      </tr>\n";
 

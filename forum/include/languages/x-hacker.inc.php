@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.223 2007-01-21 16:25:38 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.224 2007-03-05 20:58:41 decoyduck Exp $ */
 
 // International English language file
 
@@ -511,7 +511,7 @@ $lang['youcanusethepercentwildcard'] = "j00 C@n U\$3 ThE p3rc3Nt (%) W1ldC4RD Sy
 $lang['cannotusewildcardonown'] = "j00 C4nN0+ 4dd % @5 4 wIldc@RD m4TCH On 1T'\$ 0wn!";
 $lang['requirepostapproval'] = "REQU1r3 P05+ @PPRov4l";
 $lang['adminforumtoolsusercounterror'] = "+h3R3 mus+ Be AT l345T 1 Us3R WiTH aDM1n +00lS AND Forum +00Ls 4ccE\$\$ ON AlL foRum\$!";
-$lang['postcount'] = "p0\$+ c0un+:";
+$lang['postcount'] = "p0\$+ c0un+";
 $lang['resetpostcount'] = "R3\$eT p0s+ COUN+";
 $lang['postapprovalqueue'] = "p05t @PPRoV4l QueuE";
 $lang['nopostsawaitingapproval'] = "N0 Po\$+5 @r3 4W4i+iNg 4PPrOv4L";

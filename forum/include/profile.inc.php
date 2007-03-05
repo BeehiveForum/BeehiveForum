@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.47 2007-03-05 20:58:41 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.48 2007-03-05 23:53:34 decoyduck Exp $ */
 
 /**
 * Functions relating to profiles
@@ -768,7 +768,7 @@ function profile_items_get_list(&$profile_header_array, &$profile_dropdown_array
     $profile_section_array_id = 0;
     
     $profile_dropdown_array = $profile_header_array;
-    $profile_dropdown_array[$psid] = '';
+    $profile_dropdown_array[$psid] = '&nbsp;';
 
     while ($profile_item = db_fetch_array($result)) {
 
@@ -822,8 +822,10 @@ function profile_browse_items($user_search = false, $profile_items_array = array
         $sql.= "UNIX_TIMESTAMP(USER_TIME_BEST) AS USER_TIME_BEST, ";
         $sql.= "UNIX_TIMESTAMP(USER_TIME_TOTAL) AS USER_TIME_TOTAL, ";
         $sql.= "USER_PREFS_GLOBAL.DOB, USER_PREFS_GLOBAL.DOB_DISPLAY, ";
-        $sql.= "USER_PREFS_FORUM.DOB_DISPLAY FROM USER USER ";
-        $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ";
+        $sql.= "USER_PREFS_FORUM.DOB_DISPLAY,  ";
+        $sql.= "USER_PREFS_FORUM.ANON_LOGON AS FORUM_ANON_LOGON, ";
+        $sql.= "USER_PREFS_GLOBAL.ANON_LOGON AS GLOBAL_ANON_LOGON ";
+        $sql.= "FROM USER USER LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ";
         $sql.= "ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
         $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS_FORUM ";
         $sql.= "ON (USER_PREFS_FORUM.UID = USER.UID) ";
@@ -843,8 +845,10 @@ function profile_browse_items($user_search = false, $profile_items_array = array
         $sql.= "UNIX_TIMESTAMP(USER_TIME_BEST) AS USER_TIME_BEST, ";
         $sql.= "UNIX_TIMESTAMP(USER_TIME_TOTAL) AS USER_TIME_TOTAL, ";
         $sql.= "USER_PREFS_GLOBAL.DOB, USER_PREFS_GLOBAL.DOB_DISPLAY, ";
-        $sql.= "USER_PREFS_FORUM.DOB_DISPLAY FROM USER USER ";
-        $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ";
+        $sql.= "USER_PREFS_FORUM.DOB_DISPLAY,  ";
+        $sql.= "USER_PREFS_FORUM.ANON_LOGON AS FORUM_ANON_LOGON, ";
+        $sql.= "USER_PREFS_GLOBAL.ANON_LOGON AS GLOBAL_ANON_LOGON ";
+        $sql.= "FROM USER USER LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ";
         $sql.= "ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
         $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS_FORUM ";
         $sql.= "ON (USER_PREFS_FORUM.UID = USER.UID) ";
@@ -863,6 +867,20 @@ function profile_browse_items($user_search = false, $profile_items_array = array
 
         while ($user_data = db_fetch_array($result_user_data, DB_RESULT_ASSOC)) {
 
+            if (isset($user_data['FORUM_ANON_LOGON']) && !is_null($user_data['FORUM_ANON_LOGON'])) {
+                $anon_logon = $user_data['FORUM_ANON_LOGON'];
+            }elseif (isset($user_data['GLOBAL_ANON_LOGON']) && !is_null($user_data['GLOBAL_ANON_LOGON'])) {
+                $anon_logon = $user_data['GLOBAL_ANON_LOGON'];
+            }else {
+                $anon_logon = 0;
+            }
+
+            if ($anon_logon == 0 && isset($user_data['LAST_VISIT']) && $user_data['LAST_VISIT'] > 0) {
+                $user_data['LAST_VISIT'] = format_time($user_data['LAST_VISIT']);
+            }else {
+                $user_data['LAST_VISIT'] = $lang['unknown'];
+            }            
+            
             if (isset($user_data['REGISTERED']) && $user_data['REGISTERED'] > 0) {
                 $user_data['REGISTERED'] = format_date($user_data['REGISTERED']);
             }else {

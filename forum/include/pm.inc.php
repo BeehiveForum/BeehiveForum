@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.165 2007-01-25 18:01:03 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.166 2007-03-05 20:58:41 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -268,7 +268,8 @@ function pm_get_inbox($offset = false)
 
     }else if ($offset > 0) {
 
-        return pm_get_inbox($offset - 10);
+        $offset = ($offset - 10) > 0 ? $offset - 10 : 0;
+        return pm_get_inbox($offset);
     }
 
     pms_have_attachments($pm_get_inbox_array, $mid_array);
@@ -347,7 +348,8 @@ function pm_get_outbox($offset = false)
 
     }else if ($offset > 0) {
 
-        return pm_get_outbox($offset - 10);
+        $offset = ($offset - 10) > 0 ? $offset - 10 : 0;
+        return pm_get_outbox($offset);
     }
 
     pms_have_attachments($pm_get_outbox_array, $mid_array);
@@ -426,7 +428,8 @@ function pm_get_sent($offset = false)
 
     }else if ($offset > 0) {
 
-        return pm_get_sent($offset - 10);
+        $offset = ($offset - 10) > 0 ? $offset - 10 : 0;
+        return pm_get_sent($offset);
     }
 
     pms_have_attachments($pm_get_sent_array, $mid_array);
@@ -507,7 +510,8 @@ function pm_get_saveditems($offset = false)
 
     }else if ($offset > 0) {
 
-        return pm_get_saveditems($offset - 10);
+        $offset = ($offset - 10) > 0 ? $offset - 10 : 0;
+        return pm_get_saveditems($offset);
     }
 
     pms_have_attachments($pm_get_saveditems_array, $mid_array);

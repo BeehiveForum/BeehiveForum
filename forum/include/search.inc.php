@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.175 2007-03-04 14:18:37 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.176 2007-03-05 20:58:41 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -41,7 +41,7 @@ include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
-function search_execute($argarray, &$error)
+function search_execute($search_arguments, &$error)
 {
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
@@ -51,14 +51,26 @@ function search_execute($argarray, &$error)
 
     // Ensure the bare minimum of variables are set
 
-    if (!isset($argarray['date_from']) || !is_numeric($argarray['date_from'])) $argarray['date_from'] = 7;
-    if (!isset($argarray['date_to']) || !is_numeric($argarray['date_to'])) $argarray['date_to'] = 2;
-    if (!isset($argarray['group_by_thread']) || !is_numeric($argarray['group_by_thread'])) $argarray['group_by_thread'] = 0;
-    if (!isset($argarray['sstart']) || !is_numeric($argarray['sstart'])) $argarray['sstart'] = 0;
-    if (!isset($argarray['fid']) || !is_numeric($argarray['fid'])) $argarray['fid'] = 0;
-    if (!isset($argarray['include']) || !is_numeric($argarray['include'])) $argarray['include'] = 2;
-    if (!isset($argarray['username']) || strlen(trim($argarray['username'])) < 1) $argarray['username'] = "";
-    if (!isset($argarray['user_include']) || !is_numeric($argarray['user_include'])) $argarray['user_include'] = 1;
+    if (!isset($search_arguments['date_from']) || !is_numeric($search_arguments['date_from'])) $search_arguments['date_from'] = 7;
+    if (!isset($search_arguments['date_to']) || !is_numeric($search_arguments['date_to'])) $search_arguments['date_to'] = 2;
+    if (!isset($search_arguments['group_by_thread']) || !is_numeric($search_arguments['group_by_thread'])) $search_arguments['group_by_thread'] = 0;
+    if (!isset($search_arguments['sstart']) || !is_numeric($search_arguments['sstart'])) $search_arguments['sstart'] = 0;
+    if (!isset($search_arguments['fid']) || !is_numeric($search_arguments['fid'])) $search_arguments['fid'] = 0;
+    if (!isset($search_arguments['include']) || !is_numeric($search_arguments['include'])) $search_arguments['include'] = 2;
+    if (!isset($search_arguments['username']) || strlen(trim($search_arguments['username'])) < 1) $search_arguments['username'] = "";
+    if (!isset($search_arguments['user_include']) || !is_numeric($search_arguments['user_include'])) $search_arguments['user_include'] = 1;
+    if (!isset($search_arguments['sort_by']) || !is_numeric($search_arguments['sort_by'])) $search_arguments['sort_by'] = 1;
+    if (!isset($search_arguments['sort_dir']) || !is_numeric($search_arguments['sort_dir'])) $search_arguments['sort_dir'] = 1;
+
+    // Sort dir from form is numeric, which needs to be translated to ASC or DESC.
+
+    $sort_dir_array = array(1 => 'DESC', 2 => 'ASC');
+
+    if (in_array($search_arguments['sort_dir'], array_keys($sort_dir_array))) {
+        $search_arguments['sort_dir'] = $sort_dir_array[$search_arguments['sort_dir']];
+    }else {
+        $search_arguments['sort_dir'] = 'DESC';
+    }
 
     $db_search_execute = db_connect();
 
@@ -85,23 +97,23 @@ function search_execute($argarray, &$error)
     // If the user has specified a folder within their viewable scope limit them
     // to that folder, otherwise limit them to their available folders.
 
-    if (isset($argarray['fid']) && in_array($argarray['fid'], explode(",", $folders))) {
-        $where_sql = "WHERE THREAD.FID = {$argarray['fid']} ";
+    if (isset($search_arguments['fid']) && in_array($search_arguments['fid'], explode(",", $folders))) {
+        $where_sql = "WHERE THREAD.FID = {$search_arguments['fid']} ";
     }else{
         $where_sql = "WHERE THREAD.FID IN ($folders) ";
     }
 
     // Where query needs to limit the search results to the user specified date range.
 
-    $where_sql.= search_date_range($argarray['date_from'], $argarray['date_to']);
+    $where_sql.= search_date_range($search_arguments['date_from'], $search_arguments['date_to']);
 
     // Username based search.
 
-    if (isset($argarray['username']) && strlen(trim($argarray['username'])) > 0) {
+    if (isset($search_arguments['username']) && strlen(trim($search_arguments['username'])) > 0) {
 
         // Base query slightly different if you're not searching by keywords
 
-        if (isset($argarray['group_by_thread']) && $argarray['group_by_thread'] == 1) {
+        if (isset($search_arguments['group_by_thread']) && $search_arguments['group_by_thread'] == 1) {
 
             $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, ";
             $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, LENGTH) SELECT $uid, ";
@@ -130,17 +142,17 @@ function search_execute($argarray, &$error)
 
         // Username argument can be an semi-colon separated list.
 
-        $argarray['username_array'] = explode(";", $argarray['username']);
+        $search_arguments['username_array'] = explode(";", $search_arguments['username']);
 
-        foreach($argarray['username_array'] as $username) {
+        foreach($search_arguments['username_array'] as $username) {
         
             if ($user_uid = user_get_uid(trim($username))) {
 
-                if ($argarray['user_include'] == 1) {
+                if ($search_arguments['user_include'] == 1) {
 
                     $where_sql.= "AND POST.FROM_UID = '{$user_uid['UID']}' ";
 
-                }elseif ($argarray['user_include'] == 2) {
+                }elseif ($search_arguments['user_include'] == 2) {
 
                     $where_sql.= "AND POST.TO_UID = '{$user_uid['UID']}' ";
 
@@ -160,9 +172,9 @@ function search_execute($argarray, &$error)
 
     /// Keyword based search.
 
-    if (isset($argarray['search_string']) && strlen(trim(_stripslashes($argarray['search_string']))) > 0) {
+    if (isset($search_arguments['search_string']) && strlen(trim(_stripslashes($search_arguments['search_string']))) > 0) {
 
-        $search_string = trim(_stripslashes($argarray['search_string']));
+        $search_string = trim(_stripslashes($search_arguments['search_string']));
 
         $search_keywords_array = search_strip_keywords($search_string);
 
@@ -186,14 +198,15 @@ function search_execute($argarray, &$error)
 
             search_save_keywords($search_keywords_array['keywords']);
 
-            if (isset($argarray['group_by_thread']) && $argarray['group_by_thread'] == 1) {
+            if (isset($search_arguments['group_by_thread']) && $search_arguments['group_by_thread'] == 1) {
 
                 $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, ";
                 $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, LENGTH, RELEVANCE) ";
                 $select_sql.= "SELECT $uid, $forum_fid, THREAD.FID, POST_CONTENT.TID, ";
                 $select_sql.= "POST_CONTENT.PID, THREAD.BY_UID, POST.FROM_UID, POST.TO_UID, ";
-                $select_sql.= "THREAD.MODIFIED, THREAD.LENGTH, MATCH(POST_CONTENT.CONTENT) ";
-                $select_sql.= "AGAINST('$search_string'$bool_mode) AS RELEVANCE";
+                $select_sql.= "THREAD.MODIFIED AS CREATED, THREAD.LENGTH, ";
+                $select_sql.= "MATCH(POST_CONTENT.CONTENT) AGAINST('$search_string'$bool_mode) ";
+                $select_sql.= "AS RELEVANCE";
 
             }else {
 
@@ -215,7 +228,7 @@ function search_execute($argarray, &$error)
 
     }else {
 
-        if (!isset($argarray['username']) || strlen(trim($argarray['username'])) < 1) {
+        if (!isset($search_arguments['username']) || strlen(trim($search_arguments['username'])) < 1) {
 
             $error = SEARCH_NO_KEYWORDS;
             return false;
@@ -224,10 +237,35 @@ function search_execute($argarray, &$error)
 
     // If the user wants results grouped by thread (TID) then do so.
 
-    if (isset($argarray['group_by_thread']) && $argarray['group_by_thread'] == 1) {
+    if (isset($search_arguments['group_by_thread']) && $search_arguments['group_by_thread'] == 1) {
         $group_sql = "GROUP BY THREAD.TID ";
     }else {
         $group_sql = "";
+    }
+
+    // Order the results.
+
+    switch($search_arguments['sort_by']) {
+
+        case SEARCH_SORT_NUM_REPLIES:
+
+            $order_sql = "ORDER BY THREAD.LENGTH {$search_arguments['sort_dir']}";
+            break;
+
+        case SEARCH_SORT_FOLDER_NAME:
+
+            $order_sql = "ORDER BY THREAD.FID {$search_arguments['sort_dir']}";
+            break;
+
+        case SEARCH_SORT_AUTHOR_NAME:
+
+            $order_sql = "ORDER BY FROM_UID {$search_arguments['sort_dir']}";
+            break;
+
+        default:
+
+            $order_sql = "ORDER BY CREATED {$search_arguments['sort_dir']}";
+            break;
     }
 
     // Set a limit of 1000 results.
@@ -237,7 +275,8 @@ function search_execute($argarray, &$error)
     // Build the final query.
 
     $sql = "$select_sql $from_sql $join_sql $peer_join_sql ";
-    $sql.= "$where_sql $peer_where_sql $group_sql $having_sql $limit_sql ";
+    $sql.= "$where_sql $peer_where_sql $group_sql $having_sql ";
+    $sql.= "$order_sql $limit_sql";
 
     // If the user has performed a search within the last x minutes bail out
 
@@ -428,17 +467,21 @@ function search_get_keywords()
     return false;
 }
 
-function search_fetch_results($offset, $sortby, $sortdir)
+function search_fetch_results($offset, $sort_by, $sort_dir)
 {
     $db_search_fetch_results = db_connect();
 
     if (!$table_data = get_table_prefix()) return false;
 
-    if (!in_array($sortdir, array('DESC', 'ASC'))) {
-        $sortdir = 'DESC';
-    }
-
     if (($uid = bh_session_get_value('UID')) === false) return false;
+
+    $sort_dir_array = array(1 => 'DESC', 2 => 'ASC');
+
+    if (in_array($sort_dir, array_keys($sort_dir_array))) {
+        $sort_dir = $sort_dir_array[$sort_dir];
+    }else {
+        $sort_dir = 'DESC';
+    }
 
     $sql = "SELECT COUNT(*) AS RESULT_COUNT FROM SEARCH_RESULTS WHERE UID = $uid";
     $result = db_query($sql, $db_search_fetch_results);
@@ -456,26 +499,26 @@ function search_fetch_results($offset, $sortby, $sortdir)
         $sql.= "ON (USER_TRACK.UID = SEARCH_RESULTS.UID) ";
         $sql.= "WHERE SEARCH_RESULTS.UID = '$uid' ";
 
-        switch($sortby) {
+        switch($sort_by) {
         
             case SEARCH_SORT_NUM_REPLIES:
 
-                $sql.= "ORDER BY SEARCH_RESULTS.LENGTH $sortdir LIMIT $offset, 20";
+                $sql.= "ORDER BY SEARCH_RESULTS.LENGTH $sort_dir LIMIT $offset, 20";
                 break;
 
             case SEARCH_SORT_FOLDER_NAME:
 
-                $sql.= "ORDER BY SEARCH_RESULTS.FID $sortdir LIMIT $offset, 20";
+                $sql.= "ORDER BY SEARCH_RESULTS.FID $sort_dir LIMIT $offset, 20";
                 break;
 
             case SEARCH_SORT_AUTHOR_NAME:
 
-                $sql.= "ORDER BY FROM_USER $sortdir LIMIT $offset, 20";
+                $sql.= "ORDER BY FROM_UID $sort_dir LIMIT $offset, 20";
                 break;
 
             default:
 
-                $sql.= "ORDER BY SEARCH_RESULTS.CREATED $sortdir LIMIT $offset, 20";
+                $sql.= "ORDER BY SEARCH_RESULTS.CREATED $sort_dir LIMIT $offset, 20";
                 break;
         }
 

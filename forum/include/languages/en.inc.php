@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.400 2007-02-09 15:21:07 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.401 2007-03-05 20:58:41 decoyduck Exp $ */
 
 // International English language file
 
@@ -518,7 +518,7 @@ $lang['youcanusethepercentwildcard'] = "You can use the percent (%) wildcard sym
 $lang['cannotusewildcardonown'] = "You cannot add % as a wildcard match on it's own!";
 $lang['requirepostapproval'] = "Require Post Approval";
 $lang['adminforumtoolsusercounterror'] = "There must be at least 1 user with admin tools and forum tools access on all forums!";
-$lang['postcount'] = "Post Count:";
+$lang['postcount'] = "Post Count";
 $lang['resetpostcount'] = "Reset Post Count";
 $lang['postapprovalqueue'] = "Post Approval Queue";
 $lang['nopostsawaitingapproval'] = "No posts are awaiting approval";

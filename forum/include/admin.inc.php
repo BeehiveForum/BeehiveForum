@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.107 2007-03-04 14:18:37 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.108 2007-03-05 20:58:41 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -465,7 +465,7 @@ function admin_user_search($user_search, $sort_by = 'VISITOR_LOG.LAST_LOGON', $s
     }else if ($user_search_count > 0) {
 
         $offset = ($offset - 20) > 0 ? $offset - 20 : 0;        
-        admin_user_search($usersearch, $sort_by, $sort_dir, $filter, $offset);
+        return admin_user_search($usersearch, $sort_by, $sort_dir, $filter, $offset);
     }
 
     return array('user_count' => $user_search_count,
@@ -574,7 +574,7 @@ function admin_user_get_all($sort_by = 'VISITOR_LOG.LAST_LOGON', $sort_dir = 'AS
     }else if ($user_get_all_count > 0) {
 
         $offset = ($offset - 20) > 0 ? $offset - 20 : 0;        
-        admin_user_get_all($sort_by, $sort_dir, $filter, $offset);
+        return admin_user_get_all($sort_by, $sort_dir, $filter, $offset);
     }
 
     return array('user_count' => $user_get_all_count,
@@ -819,7 +819,7 @@ function admin_get_ban_data($sort_by = "ID", $sort_dir = "ASC", $offset = 0)
     }else if ($ban_data_count > 0) {
 
         $offset = ($offset - 20) > 0 ? $offset - 20 : 0;        
-        admin_get_ban_data($sort_by, $sort_dir, $offset);
+        return admin_get_ban_data($sort_by, $sort_dir, $offset);
     }
 
     return array('ban_count' => $ban_data_count,
@@ -913,7 +913,7 @@ function admin_get_post_approval_queue($offset = 0)
     }else if ($post_count > 0) {
 
         $offset = ($offset - 20) > 0 ? $offset - 20 : 0;        
-        admin_get_post_approval_queue($offset);
+        return admin_get_post_approval_queue($offset);
     }
 
     return array('post_count' => $post_count,
@@ -981,7 +981,7 @@ function admin_get_user_approval_queue($offset = 0)
     }else if ($user_count > 0) {
 
         $offset = ($offset - 20) > 0 ? $offset - 20 : 0;        
-        admin_get_user_approval_queue($offset);
+        return admin_get_user_approval_queue($offset);
     }
 
     return array('user_count' => $user_count,

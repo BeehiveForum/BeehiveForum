@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.41 2007-01-21 16:25:38 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.42 2007-03-05 20:58:41 decoyduck Exp $ */
 
 // French (Canada) language file / fichier de langage français (Canada)
 
@@ -492,7 +492,7 @@ $lang['youcanusethepercentwildcard'] = "Vous pouvez utiliser le caractère de re
 $lang['cannotusewildcardonown'] = "Vous ne pouvez pas ajouter % comme concordance de caractère de remplacement seul!";
 $lang['requirepostapproval'] = "Exiger approbation du message";
 $lang['adminforumtoolsusercounterror'] = "Il doit y avoir au moins un utilisateur avec accès aux outils admin et aux outils de forum sur tous les forums!";
-$lang['postcount'] = "Compte de postes:";
+$lang['postcount'] = "Compte de postes";
 $lang['resetpostcount'] = "Réinitialisation du compte de postes";
 $lang['postapprovalqueue'] = "File d'attente d'approbation de messages";
 $lang['nopostsawaitingapproval'] = "Aucun message en attente d'approbation";

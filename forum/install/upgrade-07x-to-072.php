@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-07x-to-072.php,v 1.27 2007-02-25 17:23:31 decoyduck Exp $ */
+/* $Id: upgrade-07x-to-072.php,v 1.28 2007-03-07 21:38:43 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-07x-to-072.php") {
 
@@ -210,6 +210,35 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     $sql = "ALTER TABLE {$forum_webtag}_USER_PREFS ADD ";
     $sql.= "USE_OVERFLOW_RESIZE CHAR(1) NOT NULL DEFAULT 'Y'";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // Fixed a bug where the anon logon wasn't working.
+    
+    $sql = "ALTER TABLE {$forum_webtag}_USER_PREFS CHANGE ";
+    $sql.= "ANON_LOGON ANON_LOGON CHAR(1) NOT NULL DEFAULT '0'";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "UPDATE {$forum_webtag}_USER_PREFS SET ANON_LOGON = 0 ";
+    $sql.= "WHERE ANON_LOGON = 'N'";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "UPDATE {$forum_webtag}_USER_PREFS SET ANON_LOGON = 1 ";
+    $sql.= "WHERE ANON_LOGON = 'Y'";
 
     if (!$result = @db_query($sql, $db_install)) {
 
@@ -451,6 +480,35 @@ if (!$result = @db_query($sql, $db_install)) {
 
 $sql = "ALTER TABLE USER_PREFS ADD USE_OVERFLOW_RESIZE ";
 $sql.= "CHAR(1) NOT NULL DEFAULT 'Y'";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// Fixed a bug where the anon logon wasn't working.
+
+$sql = "ALTER TABLE USER_PREFS CHANGE  ANON_LOGON ";
+$sql.= "ANON_LOGON CHAR(1) NOT NULL DEFAULT '0'";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "UPDATE USER_PREFS SET ANON_LOGON = 0 ";
+$sql.= "WHERE ANON_LOGON = 'N'";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "UPDATE USER_PREFS SET ANON_LOGON = 1 ";
+$sql.= "WHERE ANON_LOGON = 'Y'";
 
 if (!$result = @db_query($sql, $db_install)) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.49 2007-03-07 00:03:50 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.50 2007-03-07 21:38:43 decoyduck Exp $ */
 
 /**
 * Functions relating to profiles
@@ -790,6 +790,10 @@ function profile_items_get_list(&$profile_header_array, &$profile_dropdown_array
         $profile_header_array[$profile_item['PIID']] = $profile_item['ITEM_NAME'];
     }
 
+    // Pop and empty value onto the start of the drop down profile
+
+    $profile_dropdown_array = array_merge(array($profile_section_array_id - 2 => '&nbsp;'), $profile_dropdown_array);
+
     return sizeof($profile_header_array) > 0 ? true : false;
 }
 
@@ -855,7 +859,7 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
     // Main query.
 
     $select_sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP, ";
-    $select_sql.= "USER_TRACK.POST_COUNT, DATE_FORMAT(USER_PREFS_DOB.DOB, '%e %b') AS DOB, ";
+    $select_sql.= "USER_TRACK.POST_COUNT, DATE_FORMAT(USER_PREFS_DOB.DOB, '00-%m-%d') AS DOB, ";
     $select_sql.= "DATE_FORMAT(NOW(), '%Y') - DATE_FORMAT(USER_PREFS_AGE.DOB, '%Y') - ";
     $select_sql.= "(DATE_FORMAT(NOW(), '00-%m-%d') < DATE_FORMAT(USER_PREFS_AGE.DOB, '00-%m-%d')) AS AGE, ";
     $select_sql.= "UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT) AS LAST_VISIT, ";
@@ -876,21 +880,37 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
         }
     }
 
+    // Join to check the DOB display.
+    
     $from_sql = "FROM USER USER LEFT JOIN USER_PREFS USER_PREFS_DOB ";
     $from_sql.= "ON (USER_PREFS_DOB.UID = USER.UID AND USER_PREFS_DOB.DOB_DISPLAY > 1) ";
+
+    // Join to check the AGE display.
+
     $from_sql.= "LEFT JOIN USER_PREFS USER_PREFS_AGE ";
     $from_sql.= "ON (USER_PREFS_AGE.UID = USER.UID AND (USER_PREFS_DOB.DOB_DISPLAY = 1 ";
     $from_sql.= "OR USER_PREFS_DOB.DOB_DISPLAY = 2)) ";
+
+    // Joins to check the ANON_LOGON setting.
+
     $from_sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS_FORUM ";
     $from_sql.= "ON (USER_PREFS_FORUM.UID = USER.UID) ";
-    $from_sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS_GLOBAL ";
+
+    $from_sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ";
     $from_sql.= "ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
+
     $from_sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.UID = USER.UID ";
-    $from_sql.= "AND USER_FORUM.FID = '$forum_fid' AND (USER_PREFS_FORUM.ANON_LOGON IS NULL ";
+    $from_sql.= "AND USER_FORUM.FID = '$forum_fid' AND ((USER_PREFS_FORUM.ANON_LOGON IS NULL ";
     $from_sql.= "OR USER_PREFS_FORUM.ANON_LOGON = 0) AND (USER_PREFS_GLOBAL.ANON_LOGON IS NULL ";
-    $from_sql.= "OR USER_PREFS_GLOBAL.ANON_LOGON = 0)) ";
+    $from_sql.= "OR USER_PREFS_GLOBAL.ANON_LOGON = 0))) ";
+
+    // Join for the POST_COUNT.
+
     $from_sql.= "LEFT JOIN {$table_data['PREFIX']}USER_TRACK USER_TRACK ";
     $from_sql.= "ON (USER_TRACK.UID = USER.UID) ";
+
+    // Join for user relationship
+
     $from_sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
     $from_sql.= "ON (USER_PEER.UID = USER.UID AND USER_PEER.PEER_UID = '$uid') ";
 
@@ -945,7 +965,7 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
     if (db_num_rows($result_user_data) > 0) {
 
         while ($user_data = db_fetch_array($result_user_data, DB_RESULT_ASSOC)) {
-
+            
             if (isset($user_data['LAST_VISIT']) && $user_data['LAST_VISIT'] > 0) {
                 $user_data['LAST_VISIT'] = format_time($user_data['LAST_VISIT']);
             }else {
@@ -968,6 +988,10 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
                 $user_data['USER_TIME_TOTAL'] = format_time_display($user_data['USER_TIME_TOTAL']);
             }else {
                 $user_data['USER_TIME_TOTAL'] = $lang['unknown'];
+            }
+
+            if (isset($user_data['DOB'])) {
+                $user_data['DOB'] = format_dob($user_data['DOB']);
             }
 
             if (!isset($user_data['POST_COUNT']) || is_null($user_data['POST_COUNT'])) {

@@ -21,16 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.php,v 1.79 2007-03-07 00:03:50 decoyduck Exp $ */
+/* $Id: visitor_log.php,v 1.80 2007-03-07 21:38:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
 
 // Compress the output
-//include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
+include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
 
 // Enable the error handler
-//include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
+include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
 include_once(BH_INCLUDE_PATH. "install.inc.php");
@@ -193,10 +193,19 @@ $sort_dir_array = array('ASC', 'DESC');
 // Sort column
 
 if (isset($_GET['sort_by']) && in_array($_GET['sort_by'], $sort_by_array)) {
+
     $sort_by = $_GET['sort_by'];
+
 }elseif (isset($_POST['sort_by']) && in_array($_POST['sort_by'], $sort_by_array)) {
+
     $sort_by = $_POST['sort_by'];
+
+}elseif (sizeof($profile_items_selected_array) > 0) {
+    
+    list($sort_by) = array_keys($profile_items_selected_array);
+
 }else {
+
     $sort_by = 'LAST_VISIT';
 }
 

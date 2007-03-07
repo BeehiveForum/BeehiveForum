@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.126 2007-02-19 16:06:49 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.127 2007-03-07 21:38:43 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -527,6 +527,17 @@ function format_age($dob) // $dob is a MySQL-type DATE field (YYYY-MM-DD)
     if (($todays_month < $birthday[1]) || (($todays_month == $birthday[1]) && ($todays_date < $birthday[2])) ) $age -= 1;
 
     return $age;
+}
+
+function format_dob($dob) // $dob is a MySQL-type DATE field (YYYY-MM-DD)
+{
+    $lang = load_language_file();
+
+    list($year, $month, $day) = explode("-", $dob);
+
+    $month = floor($month); $day = floor($day);
+
+    return "$day {$lang['month_short'][$month]}";
 }
 
 function format_birthday($date) // $date is a MySQL-type DATE field (YYYY-MM-DD)

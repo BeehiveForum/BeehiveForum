@@ -1113,3 +1113,7 @@ a {
     padding: 5px;
     vertical-align: middle;
 }
+
+.profile_browse_close {
+    vertical-align: middle;
+}

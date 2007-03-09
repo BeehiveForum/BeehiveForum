@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.50 2007-03-07 21:38:43 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.51 2007-03-09 00:16:42 decoyduck Exp $ */
 
 /**
 * Functions relating to profiles
@@ -741,7 +741,7 @@ function profile_get_item($piid)
     return false;
 }
 
-function profile_items_get_list(&$profile_header_array, &$profile_dropdown_array)
+function profile_items_get_list(&$profile_header_array, &$profile_dropdown_html)
 {
     $db_profile_items_get_list = db_connect();
 
@@ -764,40 +764,47 @@ function profile_items_get_list(&$profile_header_array, &$profile_dropdown_array
                                   'USER_TIME_TOTAL' => $lang['totaltimeinforum'],
                                   'DOB'             => $lang['birthday'],
                                   'AGE'             => $lang['age']);
-    $psid = 0;
-    $profile_section_array_id = 0;
-    
-    $profile_dropdown_array = $profile_header_array;
 
-    while ($profile_item = db_fetch_array($result)) {
+    $psid = false;
 
-        if ($profile_item['PSID'] != $psid) {
+    $dropdown_id = form_unique_id();
 
-            $psid = $profile_item['PSID'];
-            $profile_section_array_id -= 2;
+    $profile_dropdown_html = "<select name=\"add_column\" id=\"$dropdown_id\" class=\"bhselect\">\n";
+    $profile_dropdown_html.= "<optgroup label=\"{$lang['userdetails']}\">\n";
 
-            $profile_dropdown_array[$profile_section_array_id] = '&nbsp;';
-            $profile_dropdown_array[$profile_section_array_id - 1] = $profile_item['SECTION_NAME'];
-        }
-
-        // Drop down name is formatted to appear indented below section names
-
-        $item_name = "&nbsp;&raquo;&nbsp;{$profile_item['ITEM_NAME']}";
-        $profile_dropdown_array[$profile_item['PIID']] = $item_name;
-
-        // Header names are plain text, unformatted.
-        
-        $profile_header_array[$profile_item['PIID']] = $profile_item['ITEM_NAME'];
+    foreach($profile_header_array as $key => $value) {
+        $profile_dropdown_html.= "<option value=\"$key\">$value</option>\n";
     }
 
-    // Pop and empty value onto the start of the drop down profile
+    $profile_dropdown_html.= "</optgroup>\n";
 
-    $profile_dropdown_array = array_merge(array($profile_section_array_id - 2 => '&nbsp;'), $profile_dropdown_array);
+    while ($profile_item = db_fetch_array($result)) {
+        
+        $profile_header_array[$profile_item['PIID']] = $profile_item['ITEM_NAME'];
+        
+        if ($psid === false) {
+        
+            $psid = $profile_item['PSID'];
+            $profile_dropdown_html.= "<optgroup label=\"{$profile_item['SECTION_NAME']}\">\n";
+        
+        }elseif (($profile_item['PSID'] <> $psid)) {
+            
+            $psid = $profile_item['PSID'];
+
+            $profile_dropdown_html.= "</optgroup>\n";
+            $profile_dropdown_html.= "<optgroup label=\"{$profile_item['SECTION_NAME']}\">\n";
+        }
+
+        $profile_dropdown_html.= "<option value=\"{$profile_item['PIID']}\">{$profile_item['ITEM_NAME']}</option>\n";
+    }
+
+    $profile_dropdown_html.= "</optgroup>\n";
+    $profile_dropdown_html.= "</select>\n";
 
     return sizeof($profile_header_array) > 0 ? true : false;
 }
 
-function profile_browse_items($user_search, $profile_items_array, $offset, $sort_by, $sort_dir)
+function profile_browse_items($user_search, $profile_items_array, $offset, $sort_by, $sort_dir, $hide_empty)
 {
     $db_profile_browse_items = db_connect();
 
@@ -837,21 +844,6 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    // Get the number of users in our database.
-    
-    $sql = "SELECT COUNT(UID) AS USER_COUNT FROM USER ";
-
-    if (($user_search !== false) && strlen(trim($user_search)) > 0) {
-
-        $user_search = addslashes(str_replace('%', '', $user_search));
-
-        $sql.= "WHERE (USER.LOGON LIKE '$user_search%' ";
-        $sql.= "OR USER.NICKNAME LIKE '$user_search%') ";
-    }
-
-    $result = db_query($sql, $db_profile_browse_items);
-    list($user_count) = db_fetch_array($result, DB_RESULT_NUM);
-
     // Constant for the relationship
 
     $user_friend = USER_FRIEND;
@@ -859,13 +851,14 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
     // Main query.
 
     $select_sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP, ";
-    $select_sql.= "USER_TRACK.POST_COUNT, DATE_FORMAT(USER_PREFS_DOB.DOB, '00-%m-%d') AS DOB, ";
+    $select_sql.= "USER_TRACK.POST_COUNT AS POST_COUNT, DATE_FORMAT(USER_PREFS_DOB.DOB, '00-%m-%d') AS DOB, ";
     $select_sql.= "DATE_FORMAT(NOW(), '%Y') - DATE_FORMAT(USER_PREFS_AGE.DOB, '%Y') - ";
     $select_sql.= "(DATE_FORMAT(NOW(), '00-%m-%d') < DATE_FORMAT(USER_PREFS_AGE.DOB, '00-%m-%d')) AS AGE, ";
     $select_sql.= "UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT) AS LAST_VISIT, ";
     $select_sql.= "UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, ";
-    $select_sql.= "UNIX_TIMESTAMP(USER_TIME_BEST) AS USER_TIME_BEST, ";
-    $select_sql.= "UNIX_TIMESTAMP(USER_TIME_TOTAL) AS USER_TIME_TOTAL ";
+    $select_sql.= "UNIX_TIMESTAMP(USER_TRACK.USER_TIME_BEST) AS USER_TIME_BEST, ";
+    $select_sql.= "UNIX_TIMESTAMP(USER_TRACK.USER_TIME_TOTAL) AS USER_TIME_TOTAL, ";
+    $select_sql.= "UNIX_TIMESTAMP(USER_TRACK.USER_TIME_TOTAL) AS USER_TIME_TOTAL ";
 
     // Include the selected numeric (PIID) profile items
 
@@ -933,17 +926,40 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
 
     // Are we filtering the results by a LOGON / NICKNAME
 
+    $where_sql_array = array();
+
     if (($user_search !== false) && strlen(trim($user_search)) > 0) {
 
         $user_search = addslashes(str_replace('%', '', $user_search));
+        $where_sql_array[] = "(USER.LOGON LIKE '$user_search%' OR USER.NICKNAME LIKE '$user_search%') ";
+    }
 
-        $where_sql = "WHERE (USER.LOGON LIKE '$user_search%' ";
-        $where_sql.= "OR USER.NICKNAME LIKE '$user_search%') ";
-        
+    if (sizeof($where_sql_array) > 0) {
+        $where_sql = "WHERE ". implode(" AND ", $where_sql_array);
     }else {
-
         $where_sql = "";
     }
+
+    // Null column filtering
+
+    $having_sql_array = array();
+
+    if ($hide_empty === true) {
+
+        foreach($profile_items_array as $column => $value) {
+            if (is_numeric($column)) {
+                $having_sql_array[] = "ENTRY_{$column} IS NOT NULL AND LENGTH(ENTRY_{$column}) > 0 ";
+            }else {
+                $having_sql_array[] = "$column IS NOT NULL AND LENGTH($column) > 0 ";
+            }
+        }
+    }
+
+    if (sizeof($having_sql_array) > 0) {
+        $having_sql = "HAVING ". implode(" OR ", $having_sql_array);
+    }else {
+        $having_sql = "";
+    }        
 
     // Sort direction specified?
 
@@ -953,10 +969,18 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
 
     $limit_sql = "LIMIT $offset, 10";
 
-    // Construct the query
+    // Get the number of users in our database.
 
     $sql = implode(",", array_merge(array($select_sql), $profile_sql_array));
-    $sql.= "$from_sql $where_sql $order_sql $limit_sql";
+    $sql.= "$from_sql $where_sql $having_sql $order_sql";
+
+    $result_user_count = db_query($sql, $db_profile_browse_items);
+    $user_count = db_num_rows($result_user_count);
+
+    // Query again to get the matching rows for the selected page.
+
+    $sql = implode(",", array_merge(array($select_sql), $profile_sql_array));
+    $sql.= "$from_sql $where_sql $having_sql $order_sql $limit_sql";
 
     $result_user_data = db_query($sql, $db_profile_browse_items);
 
@@ -1004,7 +1028,7 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
     }elseif ($user_count > 0) {
 
         $offset = ($offset - 20) > 0 ? $offset - 20 : 0;
-        return profile_browse_items($filter, $filter_type, $offset);
+        return profile_browse_items($user_search, $profile_items_array, $offset, $sort_by, $sort_dir, $hide_empty);
     }
 
     return array('user_count' => $user_count,

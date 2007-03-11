@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.89 2007-02-16 17:34:40 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.90 2007-03-11 20:58:11 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -367,32 +367,25 @@ function form_button($name, $value, $custom_html, $class="button")
 }
 
 // create a form just to be a link button
-// $var and $value can optionally be single-dimensional arrays
-// containing names and values to be used for hidden form
-// fields. Multi-dimensional arrays will be ignored.
+// $var_array is an array (key, value pairs) containing names
+// and values to be used for hidden form fields. Multi-dimensional
+// arrays will be ignored.
 
-function form_quick_button($href, $label, $var_name = false, $value = false, $target = "_self")
+function form_quick_button($href, $label, $var_array = false, $target = "_self")
 {
     $webtag = get_webtag($webtag_search);
 
     $html = "<form method=\"get\" action=\"$href\" target=\"$target\">";
     $html.= form_input_hidden("webtag", $webtag);
 
-    if ($var_name !== false) {
+    if (is_array($var_array)) {
 
-        if (is_array($var_name)) {
+        foreach($var_array as $var_name => $var_value) {
 
-            foreach($var_name as $key => $name) {
-
-                if (is_array($value) && isset($value[$key])) {
-
-                    $html.= form_input_hidden($var_name[$key], $value[$key]);
-                }
+            if (!is_array($var_value)) {
+            
+                $html.= form_input_hidden($var_name, $var_value);
             }
-
-        }else {
-
-            $html.= form_input_hidden($var_name, $value);
         }
     }
 

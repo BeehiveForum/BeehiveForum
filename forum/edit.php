@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.211 2007-02-11 16:37:46 decoyduck Exp $ */
+/* $Id: edit.php,v 1.212 2007-03-11 20:58:10 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -671,7 +671,7 @@ if (isset($_POST['preview'])) {
                 echo "</td></tr>\n";
 
                 echo "<tr><td align=\"center\">\n";
-                echo form_quick_button("discussion.php", $lang['back'], "msg", $edit_msg);
+                echo form_quick_button("discussion.php", $lang['back'], array('msg' => $edit_msg));
                 echo "</td></tr>\n";
                 echo "</table>\n";
 
@@ -717,7 +717,7 @@ if (isset($_POST['preview'])) {
                 $msg = messages_get_most_recent(bh_session_get_value('UID'));
             }
 
-            echo form_quick_button("./discussion.php", $lang['back'], "msg", $edit_msg, "_self");
+            echo form_quick_button("./discussion.php", $lang['back'], array('msg' => $edit_msg), "_self");
             echo "    </td>\n";
             echo "  </tr>\n";
 
@@ -743,7 +743,7 @@ if (isset($_POST['preview'])) {
            $msg = messages_get_most_recent(bh_session_get_value('UID'));
        }
 
-       echo form_quick_button("./discussion.php", $lang['back'], "msg", $edit_msg, "_self");
+       echo form_quick_button("./discussion.php", $lang['back'], array('msg' => $edit_msg), "_self");
        echo "    </td>\n";
        echo "  </tr>\n";
 

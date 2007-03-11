@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_post_approve.php,v 1.40 2007-02-11 16:37:46 decoyduck Exp $ */
+/* $Id: admin_post_approve.php,v 1.41 2007-03-11 20:58:10 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -412,7 +412,7 @@ if (isset($msg) && validate_msg($msg)) {
             echo "                 <tr>\n";
             echo "                   <td align=\"left\">", thread_format_prefix($post_approval_entry['PREFIX'], $post_approval_entry['TITLE']), "</td>\n";
             echo "                   <td align=\"left\">{$post_approval_entry['MSG']}</td>\n";
-            echo "                   <td align=\"left\">", form_quick_button("admin_post_approve.php", $lang['approve'], array("msg", "ret"), array("{$post_approval_entry['MSG']}", "admin_post_approve.php")), "</td>\n";
+            echo "                   <td align=\"left\">", form_quick_button("admin_post_approve.php", $lang['approve'], array('msg' => $post_approval_entry['MSG'], 'ret' => "admin_post_approve.php?webtag=$webtag")), "</td>\n";
             echo "                 </tr>\n";
         }
 

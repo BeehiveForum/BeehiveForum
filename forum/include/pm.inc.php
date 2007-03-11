@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.166 2007-03-05 20:58:41 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.167 2007-03-11 20:58:11 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -106,7 +106,7 @@ function pm_edit_refuse()
     echo "<div align=\"center\">";
     echo "<h1>{$lang['error']}</h1>";
     echo "<p>{$lang['cannoteditpm']}</p>";
-    echo form_quick_button("./pm.php", $lang['back'], "folder", "2");
+    echo form_quick_button("./pm.php", $lang['back'], array('folder' => '2'));
     echo "</div>";
 
 }
@@ -128,7 +128,7 @@ function pm_error_refuse()
     echo "<div align=\"center\">";
     echo "<h1>{$lang['error']}</h1>";
     echo "<p>{$lang['cannotviewpm']}</p>";
-    echo form_quick_button("./pm.php", $lang['back'], "folder", "1");
+    echo form_quick_button("./pm.php", $lang['back'], array('folder' => '1'));
     echo "</div>";
 }
 

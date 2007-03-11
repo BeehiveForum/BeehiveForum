@@ -1159,7 +1159,6 @@ a {
     margin: 0px 0px 0px 0px;
     padding: 0px 5px 0px 5px;
     background-color: #$elements[subhead];
-    border-bottom: 1px solid #$elements[threads];
 }
 
 .profile_items {

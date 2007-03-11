@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.210 2007-03-07 00:03:50 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.211 2007-03-11 20:58:11 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -319,6 +319,12 @@ function html_get_emoticon_style_sheet()
 
             $modified_time = date('YmdHis', filemtime("emoticons/$user_emots/style.css"));
             return "emoticons/$user_emots/style.css?$modified_time";
+        }
+
+        if (@is_dir("forums/$webtag/emoticons/$user_emots") && file_exists("forums/$webtag/emoticons/$user_emots/style.css")) {
+
+            $modified_time = date('YmdHis', filemtime("forums/$webtag/emoticons/$user_emots/style.css"));
+            return "forums/$webtag/emoticons/$user_emots/style.css?$modified_time";
         }
     }
 

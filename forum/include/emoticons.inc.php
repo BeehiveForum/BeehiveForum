@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: emoticons.inc.php,v 1.59 2007-01-15 00:10:35 decoyduck Exp $ */
+/* $Id: emoticons.inc.php,v 1.60 2007-03-11 20:58:11 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -51,7 +51,7 @@ class Emoticons
             // Get the user's emoticon set from their sesion.
             // Fall back to using the forum default or Beehive default.
             
-            if (($user_emots = bh_session_get_value('EMOTICONS')) === false) {
+            if (!$user_emots = bh_session_get_value('EMOTICONS')) {
                 $user_emots = forum_get_setting('default_emoticons', false, 'default');
             }
 
@@ -68,20 +68,43 @@ class Emoticons
 
             if ($user_emots == 'none') {
 
-                if (@$dir = opendir('emoticons')) {
+                if ($dir = @opendir('emoticons')) {
+
+                    while (($file = @readdir($dir)) !== false) {
+
+                        if ($file != '.' && $file != '..' && is_dir("emoticons/$file")) {
+
+                            if (file_exists("emoticons/$file/definitions.php")) {
+                            
+                                include("emoticons/$file/definitions.php");
+                            }
+                        }
+                    }
+                }
+
+                if ($dir = @opendir("forums/$webtag/emoticons")) {
 
                     while (($file = @readdir($dir)) !== false) {
 
                         if ($file != '.' && $file != '..' && @is_dir("emoticons/$file")) {
 
-                            @include ("./emoticons/$file/definitions.php");
+                            if (file_exists("forums/$webtag/emoticons/$file/definitions.php")) {
+
+                                include("forums/$webtag/emoticons/$file/definitions.php");
+                            }
                         }
                     }
                 }
 
             }else {
 
-                @include ("./emoticons/{$user_emots}/definitions.php");
+                if (@is_dir("emoticons/$user_emots") && file_exists("emoticons/$user_emots/definitions.php")) {
+                    include ("emoticons/$user_emots/definitions.php");
+                }
+
+                if (@is_dir("forums/$webtag/emoticons/$user_emots") && file_exists("forums/$webtag/emoticons/$user_emots/definitions.php")) {
+                    include ("forums/$webtag/emoticons/$user_emots/definitions.php");
+                }
             }
 
             // Check that we have successfully loaded the emoticons.

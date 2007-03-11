@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.102 2007-02-11 16:37:47 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.103 2007-03-11 18:13:33 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1028,6 +1028,8 @@ function thread_split($tid, $spid, $split_type, &$error_str)
 
 function thread_split_error($tid, $error_code, &$error_str)
 {
+    $lang = load_language_file();
+    
     switch ($error_code) {
 
         case THREAD_SPLIT_INVALID_ARGS:

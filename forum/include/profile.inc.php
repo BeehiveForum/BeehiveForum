@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.51 2007-03-09 00:16:42 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.52 2007-03-11 18:31:00 decoyduck Exp $ */
 
 /**
 * Functions relating to profiles
@@ -948,9 +948,9 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
 
         foreach($profile_items_array as $column => $value) {
             if (is_numeric($column)) {
-                $having_sql_array[] = "ENTRY_{$column} IS NOT NULL AND LENGTH(ENTRY_{$column}) > 0 ";
+                $having_sql_array[] = "(ENTRY_{$column} IS NOT NULL AND LENGTH(ENTRY_{$column}) > 0) ";
             }else {
-                $having_sql_array[] = "$column IS NOT NULL AND LENGTH($column) > 0 ";
+                $having_sql_array[] = "($column IS NOT NULL AND LENGTH($column) > 0) ";
             }
         }
     }

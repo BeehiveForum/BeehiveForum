@@ -19,18 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.js,v 1.13 2007-03-01 14:37:24 decoyduck Exp $ */
-
-function closeAttachWin () {
-    if (typeof attachwin == 'object' && !attachwin.closed) {
-        attachwin.close();
-    }
-}
-
-function launchAttachEditWin (uid, aid, webtag) {
-    attachwin = window.open('edit_attachments.php?uid=' + uid + '&aid=' + aid + '&webtag=' + webtag + '&popup=1', 'edit_attachments', 'width=660, height=300, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');
-    return false;
-}
+/* $Id: edit.js,v 1.14 2007-03-15 00:39:13 decoyduck Exp $ */
 
 function checkToRadio(num) {
     document.f_edit.to_radio[num].checked=true;

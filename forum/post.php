@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.294 2007-02-11 16:37:47 decoyduck Exp $ */
+/* $Id: post.php,v 1.295 2007-03-15 00:39:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -750,7 +750,7 @@ if ($newthread && !$folder_dropdown = folder_draw_dropdown($t_fid, "t_fid", "", 
     exit;
 }
 
-html_draw_top("onUnload=clearFocus()", "resize_width=720", "basetarget=_blank", "post.js", "poll.js", "openprofile.js", "htmltools.js", "emoticons.js", "dictionary.js");
+html_draw_top("onUnload=clearFocus()", "resize_width=720", "basetarget=_blank", "post.js", "attachments.js", "poll.js", "openprofile.js", "htmltools.js", "emoticons.js", "dictionary.js");
 
 echo "<h1>{$lang['postmessage']}</h1>\n";
 echo "<br /><form name=\"f_post\" action=\"post.php\" method=\"post\" target=\"_self\">\n";

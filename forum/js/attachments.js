@@ -19,12 +19,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.js,v 1.6 2007-03-15 00:39:12 decoyduck Exp $ */
+/* $Id: attachments.js,v 1.7 2007-03-15 14:51:08 decoyduck Exp $ */
 
 var attachments_window = false;
 
-function attachment_toggle_all() {
-
+function attachment_toggle_all()
+{
     for (var i = 0; i < document.admin_user_form.elements.length; i++) {
 
         if (document.admin_user_form.elements[i].type == 'checkbox') {
@@ -44,8 +44,8 @@ function attachment_toggle_all() {
     }
 }
 
-function attachment_toggle_main() {
-
+function attachment_toggle_main()
+{
     for (var i = 0; i < document.attachments.elements.length; i++) {
 
         if (document.attachments.elements[i].type == 'checkbox') {
@@ -65,8 +65,8 @@ function attachment_toggle_main() {
     }
 }
 
-function attachment_toggle_other() {
-
+function attachment_toggle_other()
+{
     for (var i = 0; i < document.attachments.elements.length; i++) {
 
         if (document.attachments.elements[i].type == 'checkbox') {
@@ -86,15 +86,20 @@ function attachment_toggle_other() {
     }
 }
 
-function closeAttachWin() {
-
+function closeAttachWin()
+{
     if (typeof attachments_window == 'object' && !attachments_window.closed) {
         attachments_window.close();
     }
 }
 
-function launchAttachWin(aid, webtag) {
+function launchAttachWin(aid, webtag)
+{
+    if (typeof attachments_window == 'object' && !attachments_window.closed) {
+        attachments_window.focus();
+    }else {
+        attachments_window = window.open('attachments.php?webtag=' + webtag + '&aid='+ aid, 'attachments_window', 'width=660, height=500, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');
+    }
 
-    attachments_window = window.open('attachments.php?webtag=' + webtag + '&aid='+ aid, 'attachments', 'width=660, height=480, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');
     return false;
 }

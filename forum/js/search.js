@@ -19,10 +19,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.js,v 1.9 2007-03-01 14:37:24 decoyduck Exp $ */
+/* $Id: search.js,v 1.10 2007-03-15 14:51:08 decoyduck Exp $ */
 
-function enable_search_button() {
+var search_stop_words = false;
+var search_logon = false;
 
+function enable_search_button()
+{
     var search_page = top.frames['main'].frames['right'].document;
 
     if (search_page.getElementById('search_form')) {
@@ -31,16 +34,29 @@ function enable_search_button() {
     }
 }
 
-function display_mysql_stopwords(webtag, keywords) {
+function display_mysql_stopwords(webtag, keywords)
+{
+    if (typeof search_thread == 'object' && !search_thread.closed) {
+        search_stop_words.focus();
+    }else {
+        search_stop_words = window.open('search.php?webtag=' + webtag + '&show_stop_words=true&keywords=' + keywords, 'show_stop_words', 'width=580, height=450, scrollbars=yes, scrolling=yes');
+    }
 
-    window.open('search.php?webtag=' + webtag + '&show_stop_words=true&keywords=' + keywords, 'show_stop_words', 'width=580, height=450, scrollbars=yes, scrolling=yes');
     return false;
 }
 
 function openLogonSearch(webtag, obj_name)
 {
-    var form_obj = document.getElementsByName(obj_name)[0];
-    search_logon = window.open('search_popup.php?webtag=' + webtag + '&type=1&search_query=' + form_obj.value + '&obj_id='+ form_obj.id, 'search_logon', 'width=500, height=300, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');
+    if (typeof search_thread == 'object' && !search_thread.closed) {
+
+        search_logon.focus();
+
+    }else {
+
+        var form_obj = document.getElementsByName(obj_name)[0];
+        search_logon = window.open('search_popup.php?webtag=' + webtag + '&type=1&search_query=' + form_obj.value + '&obj_id='+ form_obj.id, 'search_logon', 'width=500, height=300, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');
+    }
+
     return false;
 }
 

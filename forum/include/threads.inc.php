@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.251 2007-02-14 22:54:40 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.252 2007-03-15 14:51:08 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1898,10 +1898,11 @@ function thread_auto_prune_unread_data($force_start = false)
 
             $tid_array = array();
 
-            $sql = "SELECT UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, ";
-            $sql.= "THREAD.TID, THREAD.LENGTH FROM {$table_data['PREFIX']}THREAD THREAD ";
+            $sql = "SELECT UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, THREAD.TID, ";
+            $sql.= "THREAD.LENGTH FROM {$table_data['PREFIX']}THREAD THREAD ";
             $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
-            $sql.= "ON (USER_THREAD.TID = THREAD.TID) WHERE USER_THREAD.LAST_READ IS NOT NULL ";
+            $sql.= "ON (USER_THREAD.TID = THREAD.TID) ";
+            $sql.= "WHERE USER_THREAD.LAST_READ IS NOT NULL AND USER_THREAD.INTEREST = 0 ";
             $sql.= "AND THREAD.MODIFIED < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp) ";
             $sql.= "GROUP BY THREAD.TID ";
 

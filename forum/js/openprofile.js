@@ -19,25 +19,36 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: openprofile.js,v 1.13 2007-01-20 19:01:26 decoyduck Exp $ */
+/* $Id: openprofile.js,v 1.14 2007-03-15 14:51:08 decoyduck Exp $ */
 
-function openProfile(uid, webtag) {
+var edit_attachments = false;
+var email_window = false;
+
+function openProfile(uid, webtag)
+{
     var profile_window = window.open('user_profile.php?webtag=' + webtag + '&uid=' + uid, 'profile_window','width=600, height=500, toolbars=no, resizable=yes, scrollbars=yes');
     return false;
 }
 
-function openProfileByLogon(logon, webtag) {
+function openProfileByLogon(logon, webtag)
+{
     var profile_window = window.open('user_profile.php?webtag=' + webtag + '&logon=' + logon, 'profile_window','width=580, height=450, toolbars=no, resizable=yes, scrollbars=yes');
     return false;
 }
 
-function launchAttachProfileWin(webtag) {
-    var attachwin = window.open('edit_attachments.php?webtag=' + webtag + '&popup=1', 'edit_attachments', 'width=660, height=300, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');
+function launchAttachProfileWin(webtag)
+{
+    if (typeof edit_attachments == 'object' && !edit_attachments.closed) {
+        edit_attachments.focus();
+    }else {
+        edit_attachments = window.open('edit_attachments.php?webtag=' + webtag + '&popup=1', 'edit_attachments', 'width=660, height=300, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');
+    }
+
     return false;
 }
 
-function findUserPosts(logon, webtag) {
-
+function findUserPosts(logon, webtag)
+{
     if (window.opener) {
 
         window.opener.top.document.location.href = 'search.php?webtag=' + webtag + '&logon=' + logon;
@@ -46,7 +57,13 @@ function findUserPosts(logon, webtag) {
     }
 }
 
-function openEmailWindow(uid, webtag) {
-    var email_window = window.open('email.php?webtag=' + webtag + '&uid=' + uid, 'email_window', 'width=500, height=400, toolbars=no, resizable=yes, scrollbars=yes');
+function openEmailWindow(uid, webtag)
+{
+    if (typeof email_window == 'object' && !email_window.closed) {
+        email_window.focus();
+    }else {
+        email_window = window.open('email.php?webtag=' + webtag + '&uid=' + uid, 'email_window', 'width=500, height=400, toolbars=no, resizable=yes, scrollbars=yes');
+    }
+
     return false;
 }

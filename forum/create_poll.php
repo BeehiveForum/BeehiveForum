@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.188 2007-01-25 22:12:06 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.189 2007-03-15 00:39:12 decoyduck Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -631,7 +631,7 @@ if (!$folder_dropdown = folder_draw_dropdown($t_fid, "t_fid", "" ,FOLDER_ALLOW_P
     exit;
 }
 
-html_draw_top("basetarget=_blank", "onUnload=clearFocus()", "resize_width=785", "post.js", "openprofile.js", "dictionary.js", "htmltools.js", "emoticons.js", "poll.js");
+html_draw_top("basetarget=_blank", "onUnload=clearFocus()", "resize_width=785", "post.js", "attachments.js", "openprofile.js", "dictionary.js", "htmltools.js", "emoticons.js", "poll.js");
 
 echo "<h1>{$lang['postmessage']}</h1>\n";
 echo "<br />\n";

@@ -19,20 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.js,v 1.27 2007-03-01 14:37:24 decoyduck Exp $ */
-
-function closeAttachWin ()
-{
-        if (typeof attachwin == 'object' && !attachwin.closed) {
-                attachwin.close();
-        }
-}
-
-function launchAttachWin (aid, webtag)
-{
-        attachwin = window.open('attachments.php?webtag=' + webtag + '&aid='+ aid, 'attachments', 'width=660, height=480, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');
-        return false;
-}
+/* $Id: post.js,v 1.28 2007-03-15 00:39:13 decoyduck Exp $ */
 
 function checkToRadio(num)
 {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.149 2007-02-11 16:37:47 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.150 2007-03-15 00:39:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -535,7 +535,7 @@ if ($valid && isset($_POST['submit'])) {
     }
 }
 
-html_draw_top("onUnload=clearFocus()", "openprofile.js", "pm.js", "dictionary.js", "htmltools.js", "basetarget=_blank");
+html_draw_top("onUnload=clearFocus()", "openprofile.js", "pm.js", "attachments.js", "dictionary.js", "htmltools.js", "basetarget=_blank");
 draw_header_pm();
 
 echo "<table border=\"0\" cellpadding=\"20\" cellspacing=\"0\" width=\"100%\">\n";

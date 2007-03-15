@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.295 2007-03-15 00:39:12 decoyduck Exp $ */
+/* $Id: post.php,v 1.296 2007-03-15 14:51:08 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -898,7 +898,7 @@ if ($newthread) {
     echo "    <td align=\"left\"><h2>{$lang['threadtitle']}</h2></td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "    <td align=\"left\">", add_wordfilter_tags(thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE'])), form_input_hidden("t_tid", $reply_to_tid), form_input_hidden("t_rpid", $reply_to_pid), "</h2></td>\n";
+    echo "    <td align=\"left\">", add_wordfilter_tags(thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE'])), form_input_hidden("t_tid", $reply_to_tid), form_input_hidden("t_rpid", $reply_to_pid), "</td>\n";
     echo "  </tr>\n";
 }
 
@@ -1064,7 +1064,8 @@ if ($tools->getTinyMCE()) {
 }else {
     echo "<br /><br />\n";
 }
-echo form_submit("submit", $lang['post'], "tabindex=\"2\" target=\"_blank\" onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\"");
+
+echo form_submit("submit", $lang['post'], "tabindex=\"2\" onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\"");
 echo "&nbsp;".form_submit("preview", $lang['preview'], "tabindex=\"3\" onclick=\"clearFocus()\"");
 echo "&nbsp;".form_submit("cancel", $lang['cancel'], "tabindex=\"4\" onclick=\"closeAttachWin(); clearFocus()\"");
 

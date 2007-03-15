@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: general.js,v 1.19 2007-03-01 14:37:24 decoyduck Exp $ */
+/* $Id: general.js,v 1.20 2007-03-15 14:51:08 decoyduck Exp $ */
 
 var IE = (document.all ? true : false);
 
@@ -249,6 +249,7 @@ function resizeImages(maxWidth, resizeText)
             img_tags[i].id = 'image_resize_image_' + i;
             img_tags[i].original_width = img_tags[i].width;
             img_tags[i].table_id = 'image_resize_container_' + i;
+            img_tags[i].popup_id = 'image_popup_' + i;
             
             // Required table elements: table, tbody, tr and td
 
@@ -346,7 +347,12 @@ function resizeImages(maxWidth, resizeText)
 function popupImage(img_id)
 {   
     var img_obj = document.getElementById(img_id);
-    img_obj.popup = window.open(img_obj.src);
+
+    if (typeof img_obj.popup_id == 'object' && !img_obj.popup_id.closed) {
+        img_obj.popup_id.focus();
+    }else {
+        img_obj.popup_id = window.open(img_obj.src, img_obj.popup_id);
+    }
 
     return false;
 }

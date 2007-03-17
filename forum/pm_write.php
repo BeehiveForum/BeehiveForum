@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.150 2007-03-15 00:39:12 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.151 2007-03-17 15:26:18 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -150,7 +150,9 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
         if ($threaddata = thread_get($tid)) {
 
-           $thread_title = thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE']);
+           $thread_title = _htmlentities_decode($threaddata['TITLE']);
+           $thread_title = thread_format_prefix($threaddata['PREFIX'], $thread_title);
+
            $t_subject = "Re:$thread_title [$tid.$pid]";
         }
     }
@@ -181,7 +183,7 @@ if (isset($t_rmid) && $t_rmid > 0) {
 
         if (!isset($_POST['t_subject']) || trim($_POST['t_subject']) == "") {
 
-            $t_subject = $pm_data['SUBJECT'];
+            $t_subject = _htmlentities_decode($pm_data['SUBJECT']);
 
             if (strtoupper(substr($t_subject, 0, 4)) == "FWD:") {
                 $t_subject = substr($t_subject, 4);
@@ -244,11 +246,11 @@ $allow_html = true;
 
 if (isset($_POST['emots_toggle_x']) || isset($_POST['emots_toggle_y'])) {
 
-    if (isset($_POST['t_subject']) && trim($_POST['t_subject']) != "") {
-        $t_subject = _htmlentities(trim(_stripslashes($_POST['t_subject'])));
+    if (isset($_POST['t_subject']) && strlen(trim(_stripslashes($_POST['t_subject']))) > 0) {
+        $t_subject = trim(_stripslashes($_POST['t_subject']));
     }
 
-    if (isset($_POST['t_content']) && trim($_POST['t_content']) != "") {
+    if (isset($_POST['t_content']) && strlen(trim(_stripslashes($_POST['t_content']))) > 0) {
         $t_content = trim(_stripslashes($_POST['t_content']));
     }
 
@@ -264,8 +266,8 @@ if (isset($_POST['emots_toggle_x']) || isset($_POST['emots_toggle_y'])) {
         $t_to_uid = 0;
     }
 
-    if (isset($_POST['t_recipient_list']) && trim($_POST['t_recipient_list']) != "") {
-        $t_recipient_list = $_POST['t_recipient_list'];
+    if (isset($_POST['t_recipient_list']) && strlen(trim(_stripslashes($_POST['t_recipient_list']))) > 0) {
+        $t_recipient_list = trim(_stripslashes($_POST['t_recipient_list']));
     }
 
     $page_prefs = (double) $page_prefs ^ POST_EMOTICONS_DISPLAY;
@@ -284,16 +286,22 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
 
     $error_html = "";
 
-    if (isset($_POST['t_subject']) && trim($_POST['t_subject']) != "") {
-        $t_subject = _htmlentities(trim(_stripslashes($_POST['t_subject'])));
+    if (isset($_POST['t_subject']) && strlen(trim(_stripslashes($_POST['t_subject']))) > 0) {
+
+        $t_subject = trim(_stripslashes($_POST['t_subject']));
+
     }else {
+
         $error_html.= "<h2>{$lang['entersubjectformessage']}</h2>\n";
         $valid = false;
     }
 
-    if (isset($_POST['t_content']) && trim($_POST['t_content']) != "") {
+    if (isset($_POST['t_content']) && strlen(trim(_stripslashes($_POST['t_content']))) > 0) {
+
         $t_content = trim(_stripslashes($_POST['t_content']));
+
     }elseif ($valid) {
+
         $error_html.= "<h2>{$lang['entercontentformessage']}</h2>\n";
         $valid = false;
     }
@@ -316,7 +324,7 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
         $valid = false;
     }
 
-    if (isset($_POST['t_recipient_list']) && trim($_POST['t_recipient_list']) != "") {
+    if (isset($_POST['t_recipient_list']) && strlen(trim(_stripslashes($_POST['t_recipient_list']))) > 0) {
 
         if ($valid) {
 
@@ -547,7 +555,7 @@ echo "</table>\n";
 echo "<br />\n";
 
 echo "<form name=\"f_post\" action=\"pm_write.php\" method=\"post\" target=\"_self\">\n";
-echo form_input_hidden('webtag', $webtag), "\n";
+echo form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -627,7 +635,7 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\"><h2>{$lang['subject']}</h2></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", form_input_text("t_subject", isset($t_subject) ? $t_subject : "", 42, false, false, "thread_title"), "</td>\n";
+echo "                        <td align=\"left\">", form_input_text("t_subject", isset($t_subject) ? _htmlentities($t_subject) : "", 42, false, false, "thread_title"), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\"><h2>{$lang['to']}</h2></td>\n";
@@ -640,9 +648,12 @@ if ($friends_array = pm_user_get_friends()) {
         $to_user = user_get($_GET['uid']);
 
         if (in_array($to_user['UID'], $friends_array['uid_array'])) {
+
             $t_to_uid = $to_user['UID'];
             $to_radio = 0;
+
         }else {
+
             $t_recipient_list = $to_user['LOGON'];
         }
     }
@@ -808,7 +819,7 @@ echo "              &nbsp;".form_submit('cancel', $lang['cancel'], 'tabindex="4"
 if (forum_get_setting('attachments_enabled', 'Y') && forum_get_setting('pm_allow_attachments', 'Y')) {
 
     echo "              &nbsp;".form_button("attachments", $lang['attachments'], "onclick=\"launchAttachWin('{$aid}', '$webtag')\"");
-    echo form_input_hidden("aid", $aid);
+    echo form_input_hidden("aid", _htmlentities($aid));
 }
 
 echo "                        </td>\n";
@@ -826,12 +837,12 @@ echo $tools->js();
 
 
 if (isset($_POST['t_dedupe'])) {
-    echo form_input_hidden("t_dedupe", $_POST['t_dedupe']);
+    echo form_input_hidden("t_dedupe", _htmlentities($_POST['t_dedupe']));
 }else{
-    echo form_input_hidden("t_dedupe", mktime());
+    echo form_input_hidden("t_dedupe", _htmlentities(mktime()));
 }
 
-if (isset($t_rmid)) echo form_input_hidden("replyto", $t_rmid), "\n";
+if (isset($t_rmid)) echo form_input_hidden("replyto", _htmlentities($t_rmid)), "\n";
 
 if (isset($pm_data) && is_array($pm_data)) {
 

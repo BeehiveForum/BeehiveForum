@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit_users.php,v 1.39 2007-02-17 00:30:43 decoyduck Exp $ */
+/* $Id: admin_user_groups_edit_users.php,v 1.40 2007-03-17 15:26:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -193,10 +193,10 @@ echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A 
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form name=\"f_folders\" action=\"admin_user_groups_edit_users.php\" method=\"post\">\n";
-echo "  ", form_input_hidden('webtag', $webtag), "\n";
-echo "  ", form_input_hidden('gid', $gid), "\n";
-echo "  ", form_input_hidden("main_page", $main_page), "\n";
-echo "  ", form_input_hidden("search_page", $search_page), "\n";
+echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+echo "  ", form_input_hidden('gid', _htmlentities($gid)), "\n";
+echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
+echo "  ", form_input_hidden("search_page", _htmlentities($search_page)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"650\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -261,11 +261,11 @@ echo "<br />\n";
 if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
 
     echo "<form method=\"post\" action=\"admin_user_groups_edit_users.php\" target=\"_self\">\n";
-    echo "  ", form_input_hidden('webtag', $webtag), "\n";
-    echo "  ", form_input_hidden('gid', $gid), "\n";
-    echo "  ", form_input_hidden("usersearch", $usersearch), "\n";
-    echo "  ", form_input_hidden("main_page", $main_page), "\n";
-    echo "  ", form_input_hidden("search_page", $search_page), "\n";
+    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+    echo "  ", form_input_hidden('gid', _htmlentities($gid)), "\n";
+    echo "  ", form_input_hidden("usersearch", _htmlentities($usersearch)), "\n";
+    echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
+    echo "  ", form_input_hidden("search_page", _htmlentities($search_page)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"650\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\" class=\"posthead\">\n";
@@ -329,10 +329,10 @@ if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
 }
 
 echo "<form method=\"post\" action=\"admin_user_groups_edit_users.php\" target=\"_self\">\n";
-echo "  ", form_input_hidden('webtag', $webtag), "\n";
-echo "  ", form_input_hidden('gid', $gid), "\n";
-echo "  ", form_input_hidden("main_page", $main_page), "\n";
-echo "  ", form_input_hidden("search_page", $search_page), "\n";
+echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+echo "  ", form_input_hidden('gid', _htmlentities($gid)), "\n";
+echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
+echo "  ", form_input_hidden("search_page", _htmlentities($search_page)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"650\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\" class=\"posthead\">\n";
@@ -348,7 +348,7 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td class=\"posthead\" align=\"left\">\n";
-echo "                          {$lang['username']}: ", form_input_text("usersearch", isset($usersearch) ? $usersearch : "", 30, 64), " ", form_submit('submit', $lang['search']), "\n";
+echo "                          {$lang['username']}: ", form_input_text("usersearch", isset($usersearch) ? _htmlentities($usersearch) : "", 30, 64), " ", form_submit('submit', $lang['search']), "\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";

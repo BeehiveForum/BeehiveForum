@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.php,v 1.33 2007-01-14 21:04:49 decoyduck Exp $ */
+/* $Id: dictionary.php,v 1.34 2007-03-17 15:26:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -143,8 +143,8 @@ if (isset($_POST['content']) && strlen(trim(_stripslashes($_POST['content']))) >
     echo "<h2>{$lang['initialisingdotdotdot']}</h2>\n";
 
     echo "<form id=\"dictionary\" action=\"dictionary.php\" method=\"post\" target=\"_self\">\n";
-    echo "  ", form_input_hidden('webtag', $webtag), "\n";
-    echo "  ", form_input_hidden('obj_id', $obj_id), "\n";
+    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+    echo "  ", form_input_hidden('obj_id', _htmlentities($obj_id)), "\n";
     echo "  ", form_input_hidden('content', ""), "\n";
     echo "</form>\n";
 
@@ -309,7 +309,7 @@ if ($dictionary->is_check_complete()) {
 }
 
 echo "<form name=\"dictionary\" action=\"dictionary.php\" method=\"post\" target=\"_self\">\n";
-echo "  ", form_input_hidden('webtag', $webtag), "\n";
+echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden('obj_id', _htmlentities($dictionary->get_obj_id())), "\n";
 echo "  ", form_input_hidden('ignored_words', _htmlentities($dictionary->get_ignored_words())), "\n";
 echo "  ", form_input_hidden('content', _htmlentities($dictionary->get_content())), "\n";
@@ -359,14 +359,14 @@ echo "                <tr>\n";
 echo "                  <td align=\"left\" colspan=\"2\">{$lang['notindictionary']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" colspan=\"2\">", form_input_text("word_display", $dictionary->get_current_word(), 32, false, "disabled=\"disabled\"", "dictionary_word_display"), form_input_hidden("word", $dictionary->get_current_word()), "</td>\n";
+echo "                  <td align=\"left\" colspan=\"2\">", form_input_text("word_display", _htmlentities($dictionary->get_current_word()), 32, false, "disabled=\"disabled\"", "dictionary_word_display"), form_input_hidden("word", _htmlentities($dictionary->get_current_word())), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\">{$lang['changeto']}:</td>\n";
 echo "                  <td align=\"left\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" width=\"270\">", form_input_text("change_to", $dictionary->get_best_suggestion(), 32, false, false, "dictionary_change_to"), "</td>\n";
+echo "                  <td align=\"left\" width=\"270\">", form_input_text("change_to", _htmlentities($dictionary->get_best_suggestion()), 32, false, false, "dictionary_change_to"), "</td>\n";
 echo "                  <td align=\"left\" rowspan=\"2\" width=\"130\" valign=\"top\">\n";
 echo "                    <table border=\"0\" cellpadding=\"3\" cellspacing=\"0\" width=\"120\">\n";
 echo "                      <tr>\n";
@@ -410,7 +410,7 @@ if ($suggestions_array = $dictionary->get_suggestions_array()) {
 
 }elseif ($dictionary->is_check_complete()) {
 
-    echo "                    ", form_input_text("change_to", $dictionary->get_best_suggestion(), 32, false, "disabled=\"disabled\"", "dictionary_best_selection"), "\n";
+    echo "                    ", form_input_text("change_to", _htmlentities($dictionary->get_best_suggestion()), 32, false, "disabled=\"disabled\"", "dictionary_best_selection"), "\n";
 
 }else {
 

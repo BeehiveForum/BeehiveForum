@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.60 2007-02-04 22:20:39 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.61 2007-03-17 15:26:16 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -350,7 +350,7 @@ if (!empty($error_html)) {
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form name=\"prefs\" action=\"admin_default_forum_settings.php\" method=\"post\" target=\"_self\">\n";
-echo "  ", form_input_hidden('webtag', $webtag), "\n";
+echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">{$lang['settingsaffectallforumswarning']}</td>\n";
@@ -378,7 +378,7 @@ echo "                        <td align=\"left\">", form_dropdown_array("message
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"270\">&nbsp;</td>\n";
-echo "                        <td align=\"left\">", form_input_text("messages_unread_cutoff_custom", (isset($default_forum_settings['messages_unread_cutoff_custom'])) ? $default_forum_settings['messages_unread_cutoff_custom'] : "", 15, 10), "&nbsp;{$lang['unreadcutoffseconds']}&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_input_text("messages_unread_cutoff_custom", (isset($default_forum_settings['messages_unread_cutoff_custom'])) ? _htmlentities($default_forum_settings['messages_unread_cutoff_custom']) : "", 15, 10), "&nbsp;{$lang['unreadcutoffseconds']}&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">\n";
@@ -412,7 +412,7 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"270\">{$lang['searchfrequency']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("search_min_frequency", (isset($default_forum_settings['search_min_frequency'])) ? $default_forum_settings['search_min_frequency'] : "30", 10, 3), "&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_input_text("search_min_frequency", (isset($default_forum_settings['search_min_frequency'])) ? _htmlentities($default_forum_settings['search_min_frequency']) : "30", 10, 3), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">\n";
@@ -445,11 +445,11 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"270\">{$lang['sessioncutoffseconds']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("session_cutoff", (isset($default_forum_settings['session_cutoff'])) ? $default_forum_settings['session_cutoff'] : "86400", 20, 6), "&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_input_text("session_cutoff", (isset($default_forum_settings['session_cutoff'])) ? _htmlentities($default_forum_settings['session_cutoff']) : "86400", 20, 6), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"270\">{$lang['activesessioncutoffseconds']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("active_sess_cutoff", (isset($default_forum_settings['active_sess_cutoff'])) ? $default_forum_settings['active_sess_cutoff'] : "900", 20, 6), "&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_input_text("active_sess_cutoff", (isset($default_forum_settings['active_sess_cutoff'])) ? _htmlentities($default_forum_settings['active_sess_cutoff']) : "900", 20, 6), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">\n";
@@ -499,11 +499,11 @@ echo "                        <td align=\"left\">", form_radio("text_captcha_ena
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"270\">{$lang['textcaptchadir']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("text_captcha_dir", (isset($default_forum_settings['text_captcha_dir'])) ? $default_forum_settings['text_captcha_dir'] : "text_captcha", 35, 255), "</td>\n";
+echo "                        <td align=\"left\">", form_input_text("text_captcha_dir", (isset($default_forum_settings['text_captcha_dir'])) ? _htmlentities($default_forum_settings['text_captcha_dir']) : "text_captcha", 35, 255), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"270\">{$lang['textcaptchakey']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("text_captcha_key", (isset($default_forum_settings['text_captcha_key'])) ? $default_forum_settings['text_captcha_key'] : md5(uniqid(rand())), 35, 255), "</td>\n";
+echo "                        <td align=\"left\">", form_input_text("text_captcha_key", (isset($default_forum_settings['text_captcha_key'])) ? _htmlentities($default_forum_settings['text_captcha_key']) : md5(uniqid(rand())), 35, 255), "</td>\n";
 echo "                      </tr>\n";
 
 if (isset($default_forum_settings['text_captcha_enabled']) && $default_forum_settings['text_captcha_enabled'] == "Y") {
@@ -648,7 +648,7 @@ echo "                        <td align=\"left\">", form_radio("pm_allow_attachm
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"270\">{$lang['pmusermessages']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("pm_max_user_messages", (isset($default_forum_settings['pm_max_user_messages'])) ? $default_forum_settings['pm_max_user_messages'] : "100", 10, 32), "&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_input_text("pm_max_user_messages", (isset($default_forum_settings['pm_max_user_messages'])) ? _htmlentities($default_forum_settings['pm_max_user_messages']) : "100", 10, 32), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"3\">\n";
@@ -780,11 +780,11 @@ echo "                        <td align=\"left\">", form_radio("attachment_allow
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"270\">{$lang['attachmentdir']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("attachment_dir", (isset($default_forum_settings['attachment_dir'])) ? $default_forum_settings['attachment_dir'] : "attachments", 35, 255), "</td>\n";
+echo "                        <td align=\"left\">", form_input_text("attachment_dir", (isset($default_forum_settings['attachment_dir'])) ? _htmlentities($default_forum_settings['attachment_dir']) : "attachments", 35, 255), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"270\">{$lang['userattachmentspace']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("attachments_max_user_space", (isset($default_forum_settings['attachments_max_user_space'])) ? ($default_forum_settings['attachments_max_user_space'] / 1024) / 1024 : "1", 10, 32), "&nbsp;(MB)</td>\n";
+echo "                        <td align=\"left\">", form_input_text("attachments_max_user_space", (isset($default_forum_settings['attachments_max_user_space'])) ? _htmlentities(($default_forum_settings['attachments_max_user_space'] / 1024) / 1024) : "1", 10, 32), "&nbsp;(MB)</td>\n";
 echo "                      </tr>\n";
 
 if (isset($default_forum_settings['attachments_enabled']) && $default_forum_settings['attachments_enabled'] == "Y") {

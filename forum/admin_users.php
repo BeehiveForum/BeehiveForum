@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.135 2007-02-18 16:13:00 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.136 2007-03-17 15:26:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -202,8 +202,8 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 echo "<p>{$lang['manageusersexp_1']} '{$sort_by_array[$sort_by]}'. {$lang['manageusersexp_2']}</p>\n";
 echo "<div align=\"center\">\n";
 echo "<form action=\"admin_users.php\" method=\"post\">\n";
-echo "  ", form_input_hidden('webtag', $webtag), "\n";
-echo "  ", form_input_hidden('usersearch', $usersearch), "\n";
+echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+echo "  ", form_input_hidden('usersearch', _htmlentities($usersearch)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"86%\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\" colspan=\"3\">\n";
@@ -365,10 +365,10 @@ echo "  </table>\n";
 echo "</form>\n";
 
 echo "<form action=\"admin_users.php\" method=\"get\">\n";
-echo "  ", form_input_hidden("webtag", $webtag), "\n";
-echo "  ", form_input_hidden("sort_by", $sort_by), "\n";
-echo "  ", form_input_hidden("sort_dir", $sort_dir), "\n";
-echo "  ", form_input_hidden("filter", $filter), "\n";
+echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
+echo "  ", form_input_hidden("sort_by", _htmlentities($sort_by)), "\n";
+echo "  ", form_input_hidden("sort_dir", _htmlentities($sort_dir)), "\n";
+echo "  ", form_input_hidden("filter", _htmlentities($filter)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"86%\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -383,7 +383,7 @@ echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td class=\"posthead\" align=\"left\">{$lang['username']}: ", form_input_text('usersearch', $usersearch, 30, 64), " ", form_submit('submit', $lang['search']), " ", form_submit('reset', $lang['clear']), "</td>\n";
+echo "                        <td class=\"posthead\" align=\"left\">{$lang['username']}: ", form_input_text('usersearch', _htmlentities($usersearch), 30, 64), " ", form_submit('submit', $lang['search']), " ", form_submit('reset', $lang['clear']), "</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";

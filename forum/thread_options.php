@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.74 2007-02-11 16:37:47 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.75 2007-03-17 15:26:19 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -454,7 +454,7 @@ if ($threaddata['LENGTH'] > 0) {
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"250\" class=\"posthead\">{$lang['markedasread']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("markasread", $threaddata['LAST_READ'], 5), " {$lang['postsoutof']} {$threaddata['LENGTH']}</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("markasread", _htmlentities($threaddata['LAST_READ']), 5), " {$lang['postsoutof']} {$threaddata['LENGTH']}</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" valign=\"top\" class=\"posthead\">{$lang['interest']}:</td>\n";
@@ -863,7 +863,7 @@ if ($threaddata['LENGTH'] > 0) {
 
     echo "<div align=\"center\">\n";
     echo "  <form name=\"thread_options\" action=\"", get_request_uri(), "\" method=\"post\" target=\"_self\">\n";
-    echo "  ", form_input_hidden("thread_length", $thread_length), "\n";
+    echo "  ", form_input_hidden("thread_length", _htmlentities($thread_length)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";

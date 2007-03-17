@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.187 2007-02-15 17:59:46 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.188 2007-03-17 15:26:19 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -412,8 +412,8 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
     $polldata['CONTENT'].= "  <tr>\n";
     $polldata['CONTENT'].= "    <td align=\"left\">\n";
     $polldata['CONTENT'].= "      <form method=\"post\" action=\"". $_SERVER['PHP_SELF']. "\" target=\"_self\">\n";
-    $polldata['CONTENT'].= "        ". form_input_hidden("webtag", $webtag). "\n";
-    $polldata['CONTENT'].= "        ". form_input_hidden('tid', $tid). "\n";
+    $polldata['CONTENT'].= "        ". form_input_hidden("webtag", _htmlentities($webtag)). "\n";
+    $polldata['CONTENT'].= "        ". form_input_hidden('tid', _htmlentities($tid)). "\n";
     $polldata['CONTENT'].= "        <table width=\"450\">\n";
     $polldata['CONTENT'].= "          <tr>\n";
     $polldata['CONTENT'].= "            <td align=\"left\"><h2>". add_wordfilter_tags($question). "</h2></td>\n";
@@ -1870,8 +1870,8 @@ function poll_confirm_close($tid)
     poll_display($tid, $threaddata['LENGTH'], 1, $threaddata['FID'], false, false, false, true, $show_sigs, true);
 
     echo "<form name=\"f_delete\" action=\"", get_request_uri(), "\" method=\"post\" target=\"_self\">";
-    echo form_input_hidden("webtag", $webtag);
-    echo form_input_hidden("tid", $tid);
+    echo form_input_hidden("webtag", _htmlentities($webtag));
+    echo form_input_hidden("tid", _htmlentities($tid));
     echo form_input_hidden("confirm_pollclose", "Y");
     echo "<p align=\"center\">", form_submit("pollclose", $lang['endpoll']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</p>\n";
     echo "</form>\n";

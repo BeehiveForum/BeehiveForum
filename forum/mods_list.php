@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: mods_list.php,v 1.19 2007-02-18 22:38:02 decoyduck Exp $ */
+/* $Id: mods_list.php,v 1.20 2007-03-17 15:26:18 decoyduck Exp $ */
 
 /**
 * Displays list of moderators for a folder
@@ -204,8 +204,8 @@ echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <br />\n";
 echo "  <form method=\"post\" action=\"mods_list.php\" target=\"_self\">\n";
-echo "    ", form_input_hidden('webtag', $webtag), "\n";
-echo "    ", form_input_hidden('fid', $fid), "\n";
+echo "    ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+echo "    ", form_input_hidden('fid', _htmlentities($fid)), "\n";
 echo "    ". form_submit('close', $lang['close']). "\n";
 echo "  </form>\n";
 echo "</div>\n";

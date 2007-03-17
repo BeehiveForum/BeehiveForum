@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_startpage.php,v 1.82 2007-01-14 21:04:49 decoyduck Exp $ */
+/* $Id: admin_startpage.php,v 1.83 2007-03-17 15:26:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -125,7 +125,7 @@ if (isset($_POST['submit'])) {
 
         echo "<div align=\"center\">\n";
         echo "<form enctype=\"multipart/form-data\" method=\"post\" action=\"admin_startpage.php\">\n";
-        echo "  ", form_input_hidden('webtag', $webtag), "\n";
+        echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
         echo "  ", form_input_hidden('content', _htmlentities($content)), "\n";
         echo "  ", form_input_hidden('uploaded', "yes"), "\n";
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
@@ -173,7 +173,7 @@ if (isset($_POST['submit'])) {
 
         echo "<div align=\"center\">\n";
         echo "<form enctype=\"multipart/form-data\" method=\"post\" action=\"admin_startpage.php\">\n";
-        echo "  ", form_input_hidden('webtag', $webtag), "\n";
+        echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
         echo "  ", form_input_hidden('content', _htmlentities($content)), "\n";
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
         echo "    <tr>\n";
@@ -238,7 +238,7 @@ if (isset($_POST['submit'])) {
 
                 echo "<div align=\"center\">\n";
                 echo "<form enctype=\"multipart/form-data\" method=\"post\" action=\"admin_startpage.php\">\n";
-                echo "  ", form_input_hidden('webtag', $webtag), "\n";
+                echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
                 echo "  ", form_input_hidden('content', _htmlentities($content)), "\n";
                 echo "  ", form_input_hidden('uploaded', "yes"), "\n";
                 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
@@ -324,7 +324,7 @@ $tools = new TextAreaHTML("startpage");
 
 echo "<div align=\"center\">\n";
 echo "<form enctype=\"multipart/form-data\" method=\"post\" action=\"admin_startpage.php\">\n";
-echo "  ", form_input_hidden('webtag', $webtag), "\n";
+echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";

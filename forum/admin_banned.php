@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_banned.php,v 1.51 2007-01-19 18:06:24 decoyduck Exp $ */
+/* $Id: admin_banned.php,v 1.52 2007-03-17 15:26:16 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -401,11 +401,11 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "<form name=\"admin_banned_form\" action=\"admin_banned.php\" method=\"post\">\n";
-    echo "  ", form_input_hidden('webtag', $webtag), "\n";
+    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "  ", form_input_hidden('addban', ''), "\n";
 
     if (isset($ret)) {
-        echo "  ", form_input_hidden("ret", $ret), "\n";
+        echo "  ", form_input_hidden("ret", _htmlentities($ret)), "\n";
     }
 
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"420\">\n";
@@ -585,12 +585,12 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "<form name=\"admin_banned_form\" action=\"admin_banned.php\" method=\"post\">\n";
-    echo "  ", form_input_hidden('webtag', $webtag), "\n";
-    echo "  ", form_input_hidden('ban_id', $ban_id), "\n";
+    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+    echo "  ", form_input_hidden('ban_id', _htmlentities($ban_id)), "\n";
     echo "  ", form_input_hidden("delete_ban[$ban_id]", "Y"), "\n";
 
     if (isset($ret)) {
-        echo "  ", form_input_hidden("ret", $ret), "\n";
+        echo "  ", form_input_hidden("ret", _htmlentities($ret)), "\n";
     }
 
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"420\">\n";
@@ -608,15 +608,15 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"100\" class=\"posthead\">{$lang['bantype']}:</td>\n";
-    echo "                        <td align=\"left\">", form_dropdown_array('bantype', range(1, 5), array('IP Address', 'Logon', 'Nickname', 'Email', 'HTTP Referer'), $ban_data_array['BANTYPE']), form_input_hidden('old_bantype', $ban_data_array['BANTYPE']), "</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array('bantype', range(1, 5), array('IP Address', 'Logon', 'Nickname', 'Email', 'HTTP Referer'), $ban_data_array['BANTYPE']), form_input_hidden('old_bantype', _htmlentities($ban_data_array['BANTYPE'])), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"100\" class=\"posthead\">{$lang['bandata']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_text('bandata', $ban_data_array['BANDATA'], 40, 255), form_input_hidden('old_bandata', $ban_data_array['BANDATA']), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text('bandata', _htmlentities($ban_data_array['BANDATA']), 40, 255), form_input_hidden('old_bandata', _htmlentities($ban_data_array['BANDATA'])), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"100\" class=\"posthead\" valign=\"top\">{$lang['bancomment']}:</td>\n";
-    echo "                        <td align=\"left\">", form_textarea('bancomment', $ban_data_array['COMMENT'], 5, 37), form_input_hidden('old_bancomment', $ban_data_array['COMMENT']), "</td>\n";
+    echo "                        <td align=\"left\">", form_textarea('bancomment', _htmlentities($ban_data_array['COMMENT']), 5, 37), form_input_hidden('old_bancomment', _htmlentities($ban_data_array['COMMENT'])), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -723,10 +723,10 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "<form name=\"admin_banned_form\" action=\"admin_banned.php\" method=\"post\">\n";
-    echo "  ", form_input_hidden('webtag', $webtag), "\n";
+    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 
     if (isset($ret)) {
-        echo "  ", form_input_hidden("ret", $ret), "\n";
+        echo "  ", form_input_hidden("ret", _htmlentities($ret)), "\n";
     }
 
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";

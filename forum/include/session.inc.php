@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.288 2007-02-22 13:11:45 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.289 2007-03-17 15:26:19 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -262,11 +262,11 @@ function bh_session_expired()
                     echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
                 }
 
-                echo form_input_hidden('webtag', $webtag);
+                echo form_input_hidden('webtag', _htmlentities($webtag));
 
                 $ignore_keys = array('user_logon', 'user_password', 'user_passhash', 'remember_user', 'webtag');
-
-                echo form_input_hidden_array($_POST, $ignore_keys);
+                
+                echo form_input_hidden_array(_stripslashes($_POST), $ignore_keys);
 
                 echo form_submit('continue', $lang['continue']), "&nbsp;";
                 echo form_button('cancel', $lang['cancel'], "onclick=\"self.location.href='$request_uri'\""), "\n";

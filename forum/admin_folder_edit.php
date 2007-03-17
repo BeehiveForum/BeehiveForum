@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_edit.php,v 1.51 2007-02-10 13:16:23 decoyduck Exp $ */
+/* $Id: admin_folder_edit.php,v 1.52 2007-03-17 15:26:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -278,10 +278,10 @@ if (isset($status_html) && strlen($status_html) > 0) {
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "  <form name=\"thread_options\" action=\"admin_folder_edit.php\" method=\"post\" target=\"_self\">\n";
-echo "  ", form_input_hidden('fid', $fid), "\n";
-echo "  ", form_input_hidden('position', $folder_data['POSITION']), "\n";
-echo "  ", form_input_hidden('webtag', $webtag), "\n";
-echo "  ", form_input_hidden('page', $page), "\n";
+echo "  ", form_input_hidden('fid', _htmlentities($fid)), "\n";
+echo "  ", form_input_hidden('position', _htmlentities($folder_data['POSITION'])), "\n";
+echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+echo "  ", form_input_hidden('page', _htmlentities($page)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -297,15 +297,15 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['name']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("name", $folder_data['TITLE'], 30, 32), form_input_hidden("old_name", $folder_data['TITLE']), "</td>\n";
+echo "                        <td align=\"left\">", form_input_text("name", _htmlentities($folder_data['TITLE']), 30, 32), form_input_hidden("old_name", _htmlentities($folder_data['TITLE'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['description']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("description", $folder_data['DESCRIPTION'], 30, 255), form_input_hidden("old_description", $folder_data['DESCRIPTION']), "</td>\n";
+echo "                        <td align=\"left\">", form_input_text("description", _htmlentities($folder_data['DESCRIPTION']), 30, 255), form_input_hidden("old_description", _htmlentities($folder_data['DESCRIPTION'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['threadtitleprefix']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("prefix", $folder_data['PREFIX'], 30, 16), form_input_hidden("old_prefix", $folder_data['PREFIX']), "</td>\n";
+echo "                        <td align=\"left\">", form_input_text("prefix", _htmlentities($folder_data['PREFIX']), 30, 16), form_input_hidden("old_prefix", _htmlentities($folder_data['PREFIX'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
@@ -352,7 +352,7 @@ if ($folder_dropdown = folder_draw_dropdown_all($folder_data['FID'], "move", "",
     echo "        <br />\n";
 }
 
-echo "        ", form_input_hidden("old_perms", $folder_data['PERM']), "\n";
+echo "        ", form_input_hidden("old_perms", _htmlentities($folder_data['PERM'])), "\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
@@ -439,7 +439,7 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['allowfoldertocontain']}:</td>\n";
-echo "                        <td align=\"left\">", form_dropdown_array("allowed_types", $allow_values, $allow_labels, isset($folder_data['ALLOWED_TYPES']) ? $folder_data['ALLOWED_TYPES'] : FOLDER_ALLOW_NORMAL_THREAD | FOLDER_ALLOW_POLL_THREAD), form_input_hidden("old_allowed_types", isset($folder_data['ALLOWED_TYPES']) ? $folder_data['ALLOWED_TYPES'] : 0), "</td>\n";
+echo "                        <td align=\"left\">", form_dropdown_array("allowed_types", $allow_values, $allow_labels, isset($folder_data['ALLOWED_TYPES']) ? $folder_data['ALLOWED_TYPES'] : FOLDER_ALLOW_NORMAL_THREAD | FOLDER_ALLOW_POLL_THREAD), form_input_hidden("old_allowed_types", isset($folder_data['ALLOWED_TYPES']) ? _htmlentities($folder_data['ALLOWED_TYPES']) : 0), "</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";

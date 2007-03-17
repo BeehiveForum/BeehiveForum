@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ldelete.php,v 1.2 2007-01-15 00:10:34 decoyduck Exp $ */
+/* $Id: ldelete.php,v 1.3 2007-03-17 15:26:18 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -277,8 +277,8 @@ if (isset($error_html)) echo $error_html;
 
 echo "<h2>{$lang['deletemessage']}</h2>\n";
 echo "<form name=\"f_delete\" action=\"ldelete.php\" method=\"post\" target=\"_self\">\n";
-echo "  ", form_input_hidden('webtag', $webtag), "\n";
-echo "  ", form_input_hidden('msg', $msg), "\n";
+echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+echo "  ", form_input_hidden('msg', _htmlentities($msg)), "\n";
 
 if (thread_is_poll($tid) && $pid == 1) {
 

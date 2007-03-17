@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_signature.php,v 1.81 2007-01-25 22:12:06 decoyduck Exp $ */
+/* $Id: edit_signature.php,v 1.82 2007-03-17 15:26:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -275,9 +275,9 @@ echo "<br />\n";
 if ($admin_edit === true) echo "<div align=\"center\">\n";
 
 echo "<form name=\"prefs\" action=\"edit_signature.php\" method=\"post\" target=\"_self\">\n";
-echo "  ", form_input_hidden('webtag', $webtag), "\n";
+echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 
-if ($admin_edit === true) echo "  ", form_input_hidden('siguid', $uid), "\n";
+if ($admin_edit === true) echo "  ", form_input_hidden('siguid', _htmlentities($uid)), "\n";
 
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
 echo "    <tr>\n";

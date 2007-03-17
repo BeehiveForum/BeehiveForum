@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display.php,v 1.77 2007-02-11 16:37:46 decoyduck Exp $ */
+/* $Id: display.php,v 1.78 2007-03-17 15:26:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -218,8 +218,8 @@ echo "<table width=\"96%\" border=\"0\">\n";
 echo "  <tr>\n";
 echo "    <td align=\"center\">\n";
 echo "      <form name=\"display\" method=\"get\" action=\"messages.php\" target=\"_self\">\n";
-echo "        ", form_input_hidden("webtag", $webtag), "\n";
-echo "        ", form_input_hidden("msg", "$tid.$pid"), "\n";
+echo "        ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
+echo "        ", form_input_hidden("msg", _htmlentities("$tid.$pid")), "\n";
 echo "        ", form_submit("submit", $lang['back']), "&nbsp;", form_button("print", $lang['print'], "onclick=\"window.print()\""), "\n";
 echo "      </form>\n";
 echo "    </td>\n";

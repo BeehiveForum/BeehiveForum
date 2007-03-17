@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.126 2007-02-11 16:37:47 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.127 2007-03-17 15:26:19 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -124,10 +124,10 @@ function light_draw_logon_form()
     echo "<form name=\"logonform\" action=\"llogon.php\" method=\"post\">\n";
 
     echo "<p>{$lang['username']}: ";
-    echo light_form_input_text("user_logon", (isset($_COOKIE['bh_light_remember_username']) ? $_COOKIE['bh_light_remember_username'] : "")). "</p>\n";
+    echo light_form_input_text("user_logon", (isset($_COOKIE['bh_light_remember_username']) ? _htmlentities($_COOKIE['bh_light_remember_username']) : "")). "</p>\n";
 
     echo "<p>{$lang['passwd']}: ";
-    echo light_form_input_password("user_password", (isset($_COOKIE['bh_light_remember_password']) ? $_COOKIE['bh_light_remember_password'] : "")). "</p>\n";
+    echo light_form_input_password("user_password", (isset($_COOKIE['bh_light_remember_password']) ? _htmlentities($_COOKIE['bh_light_remember_password']) : "")). "</p>\n";
 
     echo "<p>", form_checkbox("remember_user", "Y", $lang['rememberpassword'], (isset($_COOKIE['bh_light_remember_username']) && isset($_COOKIE['bh_light_remember_password']) ? true : false)), "</p>\n";
 
@@ -145,7 +145,7 @@ function light_draw_thread_list($mode = 0, $folder = false, $start_from = 0)
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     echo "<form name=\"f_mode\" method=\"get\" action=\"lthread_list.php\">\n";
-    echo "  ", form_input_hidden("webtag", $webtag), "\n";
+    echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
     echo "  ", light_threads_draw_discussions_dropdown($mode), "\n";
     echo "  ", light_form_submit("go", $lang['goexcmark']), "\n";
     echo "</form>\n";
@@ -458,7 +458,7 @@ function light_draw_thread_list($mode = 0, $folder = false, $start_from = 0)
 
         echo "  <h5>{$lang['markasread']}</h5>\n";
         echo "    <form name=\"f_mark\" method=\"get\" action=\"lthread_list.php\">\n";
-        echo "      ", form_input_hidden("webtag", $webtag), "\n";
+        echo "      ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
 
         $labels = array($lang['alldiscussions'], $lang['next50discussions']);
         $selected_option = 0;
@@ -469,13 +469,13 @@ function light_draw_thread_list($mode = 0, $folder = false, $start_from = 0)
             $selected_option = 2;
 
             foreach ($visible_threads_array as $tid => $length) {
-                echo form_input_hidden("tid_array[$tid]", $length), "\n";
+                echo form_input_hidden("tid_array[$tid]", _htmlentities($length)), "\n";
             }
         }
 
         if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
 
-            echo "        ", form_input_hidden('folder', $folder), "\n";
+            echo "        ", form_input_hidden('folder', _htmlentities($folder)), "\n";
 
             $labels[] = $lang['selectedfolder'];
             $selected_option = 3;
@@ -655,8 +655,8 @@ function light_poll_confirm_close($tid)
     light_poll_display($tid, $preview_message, 0, $threaddata['FID'], 0, false);
 
     echo "<p><form name=\"f_delete\" action=\"{$_SERVER['PHP_SELF']}\" method=\"post\" target=\"_self\">";
-    echo form_input_hidden('webtag', $webtag), "\n";
-    echo form_input_hidden("tid", $tid);
+    echo form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+    echo form_input_hidden("tid", _htmlentities($tid));
     echo form_input_hidden("confirm_pollclose", "Y");
     echo light_form_submit("pollclose", $lang['endpoll']);
     echo "&nbsp;".light_form_submit("cancel", $lang['cancel']);
@@ -704,8 +704,8 @@ function light_poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list 
     $poll_group_count = 1;
 
     $polldata['CONTENT'] = "<form method=\"post\" action=\"{$_SERVER['PHP_SELF']}\" target=\"_self\">\n";
-    $polldata['CONTENT'].= form_input_hidden('webtag', $webtag). "\n";
-    $polldata['CONTENT'].= form_input_hidden('tid', $tid). "\n";
+    $polldata['CONTENT'].= form_input_hidden('webtag', _htmlentities($webtag)). "\n";
+    $polldata['CONTENT'].= form_input_hidden('tid', _htmlentities($tid)). "\n";
     $polldata['CONTENT'].= "<h2>". thread_get_title($tid). "</h2>\n";
 
     if ($in_list) {
@@ -1266,12 +1266,12 @@ function light_form_field($name, $value = "", $width = 0, $maxchars = 0, $type =
 
 function light_form_input_text($name, $value = "", $width = 0, $maxchars = 0)
 {
-    return light_form_field($name,$value,$width,$maxchars,"text");
+    return light_form_field($name, $value, $width, $maxchars, "text");
 }
 
 function light_form_input_password($name, $value = "", $width = 0, $maxchars = 0)
 {
-    return light_form_field($name,$value,$width,$maxchars,"password");
+    return light_form_field($name, $value, $width, $maxchars, "password");
 }
 
 function light_html_message_type_error()

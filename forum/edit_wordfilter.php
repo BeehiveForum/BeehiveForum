@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_wordfilter.php,v 1.60 2007-02-01 22:30:43 decoyduck Exp $ */
+/* $Id: edit_wordfilter.php,v 1.61 2007-03-17 15:26:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -254,7 +254,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "<form name=\"startpage\" method=\"post\" action=\"edit_wordfilter.php\">\n";
-    echo "  ", form_input_hidden('webtag', $webtag), "\n";
+    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "  ", form_input_hidden('addfilter', 'true'), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"450\">\n";
     echo "    <tr>\n";
@@ -351,8 +351,8 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "<form name=\"startpage\" method=\"post\" action=\"edit_wordfilter.php\">\n";
-    echo "  ", form_input_hidden('webtag', $webtag), "\n";
-    echo "  ", form_input_hidden('filter_id', $filter_id), "\n";
+    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+    echo "  ", form_input_hidden('filter_id', _htmlentities($filter_id)), "\n";
     echo "  ", form_input_hidden("delete_filters[$filter_id]", 'Y'), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"450\">\n";
     echo "    <tr>\n";
@@ -439,7 +439,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 
     echo "<br />\n";
     echo "<form method=\"post\" action=\"edit_wordfilter.php\">\n";
-    echo "  ", form_input_hidden('webtag', $webtag), "\n";
+    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";

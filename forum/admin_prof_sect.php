@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_sect.php,v 1.94 2007-02-18 16:12:59 decoyduck Exp $ */
+/* $Id: admin_prof_sect.php,v 1.95 2007-03-17 15:26:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -229,9 +229,9 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "  <form name=\"thread_options\" action=\"admin_prof_sect.php\" method=\"post\" target=\"_self\">\n";
-    echo "  ", form_input_hidden('webtag', $webtag), "\n";
+    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "  ", form_input_hidden('addsection', 'true'), "\n";
-    echo "  ", form_input_hidden('page', $page), "\n";
+    echo "  ", form_input_hidden('page', _htmlentities($page)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
@@ -310,9 +310,9 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "  <form name=\"thread_options\" action=\"admin_prof_sect.php\" method=\"post\" target=\"_self\">\n";
-    echo "  ", form_input_hidden('webtag', $webtag), "\n";
-    echo "  ", form_input_hidden('psid', $psid), "\n";
-    echo "  ", form_input_hidden('page', $page), "\n";
+    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+    echo "  ", form_input_hidden('psid', _htmlentities($psid)), "\n";
+    echo "  ", form_input_hidden('page', _htmlentities($page)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
@@ -367,8 +367,8 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "<form name=\"f_sections\" action=\"admin_prof_sect.php\" method=\"post\">\n";
-    echo "  ", form_input_hidden('webtag', $webtag), "\n";
-    echo "  ", form_input_hidden('page', $page), "\n";
+    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+    echo "  ", form_input_hidden('page', _htmlentities($page)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";

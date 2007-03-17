@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_set_passwd.php,v 1.16 2006-12-17 10:31:41 decoyduck Exp $ */
+/* $Id: admin_forum_set_passwd.php,v 1.17 2007-03-17 15:26:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -194,8 +194,8 @@ if (isset($success_html) && strlen(trim($success_html)) > 0) {
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form name=\"passwd\" action=\"admin_forum_set_passwd.php\" method=\"post\" target=\"_self\">\n";
-echo "  ", form_input_hidden('webtag', $webtag), "\n";
-echo "  ", form_input_hidden('ret', $ret), "\n";
+echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+echo "  ", form_input_hidden('ret', _htmlentities($ret)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"450\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";

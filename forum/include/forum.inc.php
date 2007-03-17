@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.216 2007-02-19 16:05:07 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.217 2007-03-17 15:26:19 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -287,8 +287,8 @@ function forum_check_password($forum_fid)
             echo "<form method=\"post\" action=\"./forum_password.php\" target=\"_top\">\n";
         }
 
-        echo "  ", form_input_hidden('webtag', $webtag), "\n";
-        echo "  ", form_input_hidden('ret', get_request_uri()), "\n";
+        echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+        echo "  ", form_input_hidden('ret', _htmlentities(get_request_uri())), "\n";
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"350\">\n";
         echo "    <tr>\n";
         echo "      <td align=\"center\">\n";
@@ -449,7 +449,7 @@ function forum_get_settings_by_fid($fid)
     $sql.= "WHERE FORUM_SETTINGS.SNAME = 'forum_timezone' ";
     $sql.= "AND FID = '$fid'";
 
-    $result = db_query($sql, $db_forum_get_settings);
+    $result = db_query($sql, $db_forum_get_settings_by_fid);
 
     list($timezone, $gmt_offset, $dst_offset) = db_fetch_array($result, DB_RESULT_NUM);
 

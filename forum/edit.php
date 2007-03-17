@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.212 2007-03-11 20:58:10 decoyduck Exp $ */
+/* $Id: edit.php,v 1.213 2007-03-17 15:26:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -155,7 +155,7 @@ if (!isset($tid) || !isset($pid) || !is_numeric($tid) || !is_numeric($pid)) {
     echo "<h1>{$lang['editmessage']}</h1>\n";
     echo "<br />\n";
     echo "<form action=\"discussion.php\" method=\"post\" target=\"_self\">\n";
-    echo "  ", form_input_hidden('webtag', $webtag), "\n";
+    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
@@ -503,7 +503,7 @@ if (isset($_POST['preview'])) {
         echo "<h1>{$lang['editmessage']}</h1>\n";
         echo "<br />\n";
         echo "<form action=\"discussion.php\" method=\"post\" target=\"_self\">\n";
-        echo "  ", form_input_hidden('webtag', $webtag), "\n";
+        echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\">\n";
@@ -573,8 +573,8 @@ if (isset($_POST['preview'])) {
             echo "<h1>{$lang['editmessage']} $edit_msg</h1>\n";
             echo "<br />\n";
             echo "<form action=\"discussion.php\" method=\"get\" target=\"_self\">\n";
-            echo "  ", form_input_hidden('webtag', $webtag), "\n";
-            echo "  ", form_input_hidden('msg', $edit_msg), "\n";
+            echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+            echo "  ", form_input_hidden('msg', _htmlentities($edit_msg)), "\n";
             echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
             echo "    <tr>\n";
             echo "      <td align=\"left\">\n";
@@ -756,7 +756,7 @@ if (isset($_POST['preview'])) {
 
 echo "<h1>{$lang['editmessage']} $edit_msg</h1>\n";
 echo "<br /><form name=\"f_edit\" action=\"edit.php\" method=\"post\" target=\"_self\">\n";
-echo "  ", form_input_hidden('webtag', $webtag), "\n";
+echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -807,9 +807,9 @@ echo _stripslashes($threaddata['FOLDER_TITLE'])."\n";
 echo "<h2>{$lang['threadtitle']}</h2>\n";
 echo add_wordfilter_tags(thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE'])), "\n";
 
-echo form_input_hidden("t_msg", $edit_msg);
-echo form_input_hidden("t_to_uid", $to_uid);
-echo form_input_hidden("t_from_uid", $from_uid);
+echo form_input_hidden("t_msg", _htmlentities($edit_msg));
+echo form_input_hidden("t_to_uid", _htmlentities($to_uid));
+echo form_input_hidden("t_from_uid", _htmlentities($from_uid));
 
 echo "<h2>{$lang['to']}</h2>\n";
 
@@ -931,7 +931,7 @@ echo "&nbsp;".form_submit("cancel", $lang['cancel'], "tabindex=\"4\" onclick=\"c
 if (forum_get_setting('attachments_enabled', 'Y') && bh_session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
 
     echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('$from_uid', '$aid', '$webtag');\"");
-    echo form_input_hidden('aid', $aid);
+    echo form_input_hidden('aid', _htmlentities($aid));
 }
 
 if ($allow_sig == true) {

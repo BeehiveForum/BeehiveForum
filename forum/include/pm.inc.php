@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.167 2007-03-11 20:58:11 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.168 2007-03-17 15:26:19 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1079,7 +1079,7 @@ function pm_send_message($tuid, $fuid, $subject, $content)
     if (!is_numeric($tuid)) return false;
     if (!is_numeric($fuid)) return false;
 
-    $subject = addslashes($subject);
+    $subject = addslashes(_htmlentities($subject));
     $content = addslashes($content);
 
     // Insert the main PM Data into the database

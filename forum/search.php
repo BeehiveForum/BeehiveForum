@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.165 2007-03-11 20:58:11 decoyduck Exp $ */
+/* $Id: search.php,v 1.166 2007-03-17 15:26:18 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -438,7 +438,7 @@ if (isset($search_success) && $search_success === true && isset($offset)) {
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "<form id=\"search_form\" method=\"post\" action=\"search.php\" target=\"left\">\n";
-    echo "  ", form_input_hidden('webtag', $webtag), "\n";
+    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
@@ -590,8 +590,8 @@ echo "<br />\n";
 if (isset($search_success) && $search_success === true) {
 
     echo "<form name=\"f_nav\" method=\"get\" action=\"search.php\" target=\"_self\">\n";
-    echo "  ", form_input_hidden("webtag", $webtag), "\n";
-    echo "  ", form_input_hidden("offset", isset($offset) ? $offset : 0), "\n";
+    echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
+    echo "  ", form_input_hidden("offset", isset($offset) ? _htmlentities($offset) : 0), "\n";
     echo "  <table cellpadding=\"2\" cellspacing=\"0\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\" class=\"smalltext\" colspan=\"2\">{$lang['sortresults']}:</td>\n";
@@ -620,7 +620,7 @@ if (!isset($_GET['search_string'])) {
     echo "    <td align=\"left\">&nbsp;</td>\n";
     echo "    <td align=\"left\" class=\"smalltext\">\n";
     echo "      <form name=\"f_nav\" method=\"get\" action=\"messages.php\" target=\"right\">\n";
-    echo "        ", form_input_hidden("webtag", $webtag), "\n";
+    echo "        ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
     echo "        ", form_input_text('msg', '1.1', 10). "\n";
     echo "        ", form_submit("go",$lang['goexcmark']). "\n";
     echo "      </form>\n";
@@ -636,7 +636,7 @@ if (!isset($_GET['search_string'])) {
     echo "    <td align=\"left\">&nbsp;</td>\n";
     echo "    <td align=\"left\" class=\"smalltext\">\n";
     echo "      <form method=\"post\" action=\"search.php\" target=\"_self\">\n";
-    echo "        ", form_input_hidden('webtag', $webtag), "\n";
+    echo "        ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "        ", form_input_text("search_string", "", 20). "\n";
     echo "        ", form_submit("submit", $lang['find']). "\n";
     echo "      </form>\n";

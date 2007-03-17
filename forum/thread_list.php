@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.286 2007-02-11 16:37:47 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.287 2007-03-17 15:26:19 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -785,7 +785,7 @@ if (bh_session_get_value('UID') != 0) {
     echo "    <td align=\"left\">&nbsp;</td>\n";
     echo "    <td align=\"left\" class=\"smalltext\">\n";
     echo "      <form name=\"f_mark\" method=\"get\" action=\"thread_list.php\">\n";
-    echo "        ", form_input_hidden('webtag', $webtag), "\n";
+    echo "        ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 
     $labels = array($lang['alldiscussions'], $lang['next50discussions']);
     $selected_option = 0;
@@ -796,13 +796,13 @@ if (bh_session_get_value('UID') != 0) {
         $selected_option = 2;
 
         foreach ($visible_threads_array as $tid) {
-            echo "        ", form_input_hidden("tid_array[]", $tid), "\n";
+            echo "        ", form_input_hidden("tid_array[]", _htmlentities($tid)), "\n";
         }
     }
 
     if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
 
-        echo "        ", form_input_hidden('folder', $folder), "\n";
+        echo "        ", form_input_hidden('folder', _htmlentities($folder)), "\n";
 
         $labels[] = $lang['selectedfolder'];
         $selected_option = 3;
@@ -824,14 +824,14 @@ echo "  <tr>\n";
 echo "    <td align=\"left\">&nbsp;</td>\n";
 echo "    <td align=\"left\" class=\"smalltext\">\n";
 echo "      <form name=\"f_nav\" method=\"get\" action=\"messages.php\" target=\"right\">\n";
-echo "        ", form_input_hidden('webtag', $webtag), "\n";
+echo "        ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 
 if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
-    echo "        ", form_input_hidden('folder', $folder), "\n";
+    echo "        ", form_input_hidden('folder', _htmlentities($folder)), "\n";
 }
 
 echo "        ", form_input_text('msg', '1.1', 10), "\n";
-echo "        ", form_submit("go",$lang['goexcmark']), "\n";
+echo "        ", form_submit("go", $lang['goexcmark']), "\n";
 echo "      </form>\n";
 echo "    </td>\n";
 echo "  </tr>\n";
@@ -844,10 +844,10 @@ echo "  <tr>\n";
 echo "    <td align=\"left\">&nbsp;</td>\n";
 echo "    <td align=\"left\" class=\"smalltext\">\n";
 echo "      <form method=\"post\" action=\"search.php\" target=\"_self\">\n";
-echo "        ", form_input_hidden('webtag', $webtag), "\n";
+echo "        ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 
 if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
-    echo "        ", form_input_hidden('folder', $folder), "\n";
+    echo "        ", form_input_hidden('folder', _htmlentities($folder)), "\n";
 }
 
 echo "        ", form_input_text("search_string", "", 20). "\n";

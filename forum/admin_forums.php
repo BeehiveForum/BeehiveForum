@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forums.php,v 1.56 2007-01-27 21:32:50 decoyduck Exp $ */
+/* $Id: admin_forums.php,v 1.57 2007-03-17 15:26:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -132,8 +132,8 @@ if (isset($_POST['delete'])) {
         echo "<br />\n";
         echo "<div align=\"center\">\n";
         echo "<form name=\"f_folders\" action=\"admin_forums.php\" method=\"post\">\n";
-        echo "  ", form_input_hidden('webtag', $webtag), "\n";
-        echo "  ", form_input_hidden('page', $page), "\n";
+        echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+        echo "  ", form_input_hidden('page', _htmlentities($page)), "\n";
 
         foreach ($forum_delete_array as $forum_fid => $forum_name) {
 
@@ -376,8 +376,8 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "  <form name=\"thread_options\" action=\"admin_forums.php\" method=\"post\" target=\"_self\">\n";
-    echo "  ", form_input_hidden('webtag', $webtag), "\n";
-    echo "  ", form_input_hidden('page', $page), "\n";
+    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+    echo "  ", form_input_hidden('page', _htmlentities($page)), "\n";
     echo "  ", form_input_hidden('addforum', 'true'), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
@@ -407,7 +407,7 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
         
         echo "                      <tr>\n";
         echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">{$lang['usedatabase']}:</td>\n";
-        echo "                        <td align=\"left\">", form_dropdown_array("t_database", $available_databases, $available_databases, (isset($_POST['t_database']) ? _stripslashes($_POST['t_database']) : (isset($forum_data['DATABASE_NAME']) ? $forum_data['DATABASE_NAME'] : ""))), form_input_hidden("t_database_old", (isset($forum_data['DATABASE_NAME']) ? $forum_data['DATABASE_NAME'] : "")), "</td>\n";
+        echo "                        <td align=\"left\">", form_dropdown_array("t_database", $available_databases, $available_databases, (isset($_POST['t_database']) ? _stripslashes($_POST['t_database']) : (isset($forum_data['DATABASE_NAME']) ? $forum_data['DATABASE_NAME'] : ""))), form_input_hidden("t_database_old", (isset($forum_data['DATABASE_NAME']) ? _htmlentities($forum_data['DATABASE_NAME']) : "")), "</td>\n";
         echo "                      </tr>\n";
     }
 
@@ -493,10 +493,10 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "  <form name=\"thread_options\" action=\"admin_forums.php\" method=\"post\" target=\"_self\">\n";
-    echo "  ", form_input_hidden('webtag', $webtag), "\n";
-    echo "  ", form_input_hidden('fid', $fid), "\n";
+    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+    echo "  ", form_input_hidden('fid', _htmlentities($fid)), "\n";
     echo "  ", form_input_hidden("t_delete[$fid]", "Y"), "\n";
-    echo "  ", form_input_hidden('page', $page), "\n";
+    echo "  ", form_input_hidden('page', _htmlentities($page)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
@@ -512,7 +512,7 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">{$lang['forumname']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("t_name", (isset($_POST['t_name']) ? _htmlentities(_stripslashes($_POST['t_name'])) : (isset($forum_data['FORUM_SETTINGS']['forum_name']) ? _htmlentities($forum_data['FORUM_SETTINGS']['forum_name']) : "")), 40, 32), form_input_hidden("t_name_old", (isset($forum_data['FORUM_SETTINGS']['forum_name']) ? $forum_data['FORUM_SETTINGS']['forum_name'] : "")), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("t_name", (isset($_POST['t_name']) ? _htmlentities(_stripslashes($_POST['t_name'])) : (isset($forum_data['FORUM_SETTINGS']['forum_name']) ? _htmlentities($forum_data['FORUM_SETTINGS']['forum_name']) : "")), 40, 32), form_input_hidden("t_name_old", (isset($forum_data['FORUM_SETTINGS']['forum_name']) ? _htmlentities($forum_data['FORUM_SETTINGS']['forum_name']) : "")), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">{$lang['accesslevel']}:</td>\n";
@@ -563,8 +563,8 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "<form name=\"forums\" action=\"admin_forums.php\" method=\"post\">\n";
-    echo "  ", form_input_hidden('webtag', $webtag), "\n";
-    echo "  ", form_input_hidden('page', $page), "\n";
+    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+    echo "  ", form_input_hidden('page', _htmlentities($page)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: search_popup.php,v 1.6 2007-02-11 16:37:47 decoyduck Exp $ */
+/* $Id: search_popup.php,v 1.7 2007-03-17 15:26:19 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -246,9 +246,9 @@ echo "<h1>{$lang['search']}</h1>\n";
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form action=\"search_popup.php\" method=\"post\">\n";
-echo "  ", form_input_hidden("webtag", $webtag), "\n";
-echo "  ", form_input_hidden("type", $type), "\n";
-echo "  ", form_input_hidden("obj_id", $obj_id), "\n";
+echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
+echo "  ", form_input_hidden("type", _htmlentities($type)), "\n";
+echo "  ", form_input_hidden("obj_id", _htmlentities($obj_id)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"475\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";

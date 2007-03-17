@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.129 2007-02-23 21:40:56 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.130 2007-03-17 15:26:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -269,8 +269,8 @@ if (isset($_POST['upload'])) {
             echo "<h1>{$lang['deleteattachments']}</h1>\n";
             echo "<br />\n";
             echo "<form name=\"attachments\" enctype=\"multipart/form-data\" method=\"post\" action=\"attachments.php\">\n";
-            echo "  ", form_input_hidden('webtag', $webtag), "\n";
-            echo "  ". form_input_hidden('aid', $aid), "\n";
+            echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+            echo "  ". form_input_hidden('aid', _htmlentities($aid)), "\n";
             echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
             echo "    <tr>\n";
             echo "      <td align=\"left\">\n";
@@ -394,8 +394,8 @@ echo "</script>\n";
 echo "<h1>{$lang['attachments']}</h1>\n";
 echo "<br />\n";
 echo "<form name=\"attachments\" enctype=\"multipart/form-data\" method=\"post\" action=\"attachments.php\">\n";
-echo "  ", form_input_hidden('webtag', $webtag), "\n";
-echo "  ". form_input_hidden('aid', $aid), "\n";
+echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+echo "  ". form_input_hidden('aid', _htmlentities($aid)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";

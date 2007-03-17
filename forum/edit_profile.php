@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_profile.php,v 1.64 2007-01-14 21:04:49 decoyduck Exp $ */
+/* $Id: edit_profile.php,v 1.65 2007-03-17 15:26:17 decoyduck Exp $ */
 
 /**
 * Displays the edit profile page, and processes sumbissions
@@ -224,9 +224,9 @@ if ($profile_items_array = profile_get_user_values($uid)) {
     if ($admin_edit === true) echo "<div align=\"center\">\n";
 
     echo "<form name=\"f_profile\" action=\"edit_profile.php\" method=\"post\" target=\"_self\">\n";
-    echo "  ", form_input_hidden('webtag', $webtag), "\n";
+    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 
-    if ($admin_edit === true) echo "  ", form_input_hidden('profileuid', $uid), "\n";
+    if ($admin_edit === true) echo "  ", form_input_hidden('profileuid', _htmlentities($uid)), "\n";
 
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";
@@ -314,7 +314,7 @@ if ($profile_items_array = profile_get_user_values($uid)) {
             echo "                      <tr>\n";
             echo "                        <td align=\"left\">&nbsp;</td>\n";
             echo "                        <td align=\"left\" valign=\"top\" width=\"175\">{$profile_item['ITEM_NAME']}</td>\n";
-            echo "                        <td align=\"left\" valign=\"top\">", form_textarea("t_entry[{$profile_item['PIID']}]", $profile_item['ENTRY'], 4, 42), "</td>\n";
+            echo "                        <td align=\"left\" valign=\"top\">", form_textarea("t_entry[{$profile_item['PIID']}]", _htmlentities($profile_item['ENTRY']), 4, 42), "</td>\n";
 
             if ($admin_edit === false) {
                 echo "                        <td align=\"right\" valign=\"top\">", form_checkbox("t_entry_private[{$profile_item['PIID']}]", "Y", $lang['friendsonly'], (isset($profile_item['PRIVACY']) && $profile_item['PRIVACY'] == 1)), "&nbsp;&nbsp;</td>\n";

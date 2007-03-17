@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_relations.php,v 1.61 2007-01-16 22:16:22 decoyduck Exp $ */
+/* $Id: edit_relations.php,v 1.62 2007-03-17 15:26:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -244,10 +244,10 @@ if (isset($update_array) && is_array($update_array) && sizeof($update_array) > 0
 echo "<br />\n";
 
 echo "<form name=\"prefs\" action=\"edit_relations.php\" method=\"post\" target=\"_self\">\n";
-echo "  ", form_input_hidden('webtag', $webtag), "\n";
-echo "  ", form_input_hidden("main_page", $main_page), "\n";
-echo "  ", form_input_hidden("search_page", $search_page), "\n";
-echo "  ", form_input_hidden("usersearch", $usersearch), "\n";
+echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
+echo "  ", form_input_hidden("search_page", _htmlentities($search_page)), "\n";
+echo "  ", form_input_hidden("usersearch", _htmlentities($usersearch)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"80%\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -290,7 +290,7 @@ if (sizeof($user_peers['user_array']) > 0) {
 
         echo "                <tr>\n";
         echo "                  <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$user_peer['UID']};\" target=\"_blank\" onclick=\"return openProfile({$user_peer['UID']}, '$webtag')\">{$user_peer['LOGON']}</a></td>\n";
-        echo "                  <td align=\"left\">", form_input_text("nickname[{$user_peer['UID']}]", $nickname, 32), "&nbsp;", form_submit_image('reload.png', "reset_nickname[{$user_peer['UID']}]", "Y", "title=\"{$lang['restorenickname']}\"", "relationship_reset"), "</td>\n";
+        echo "                  <td align=\"left\">", form_input_text("nickname[{$user_peer['UID']}]", _htmlentities($nickname), 32), "&nbsp;", form_submit_image('reload.png', "reset_nickname[{$user_peer['UID']}]", "Y", "title=\"{$lang['restorenickname']}\"", "relationship_reset"), "</td>\n";
         echo "                  <td align=\"left\" nowrap=\"nowrap\">\n";
         echo "                    &nbsp;", form_radio("relationship[{$user_peer['UID']}]", USER_FRIEND, "", $peer_relationship & USER_FRIEND), "<img src=\"", style_image("friend.png"), "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" />\n";
         echo "                    &nbsp;", form_radio("relationship[{$user_peer['UID']}]", 0, "", !($peer_relationship & USER_FRIEND) && !($peer_relationship & USER_IGNORED)), "{$lang['normal']}\n";
@@ -344,10 +344,10 @@ echo "<br />\n";
 if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
 
     echo "<form method=\"post\" action=\"edit_relations.php\" target=\"_self\">\n";
-    echo "  ", form_input_hidden('webtag', $webtag), "\n";
-    echo "  ", form_input_hidden("usersearch", $usersearch), "\n";
-    echo "  ", form_input_hidden("main_page", $main_page), "\n";
-    echo "  ", form_input_hidden("search_page", $search_page), "\n";
+    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+    echo "  ", form_input_hidden("usersearch", _htmlentities($usersearch)), "\n";
+    echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
+    echo "  ", form_input_hidden("search_page", _htmlentities($search_page)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"80%\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\" class=\"posthead\">\n";
@@ -370,7 +370,7 @@ if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
 
             echo "                <tr>\n";
             echo "                  <td align=\"left\" width=\"200\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$user['UID']}\" target=\"_blank\" onclick=\"return openProfile({$user['UID']}, '$webtag')\">{$user['LOGON']}</a></td>\n";
-            echo "                  <td align=\"left\">", form_input_text("add_nickname[{$user['UID']}]", $user['NICKNAME'], 30), "</td>\n";
+            echo "                  <td align=\"left\">", form_input_text("add_nickname[{$user['UID']}]", _htmlentities($user['NICKNAME']), 30), "</td>\n";
             echo "                  <td align=\"left\">\n";
             echo "                    &nbsp;", form_radio("add_relationship[{$user['UID']}]", USER_FRIEND, "", $user['RELATIONSHIP'] & USER_FRIEND), "<img src=\"", style_image("friend.png"), "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" />\n";
             echo "                    &nbsp;", form_radio("add_relationship[{$user['UID']}]", 0, "", !($user['RELATIONSHIP'] & USER_FRIEND) && !($user['RELATIONSHIP'] & USER_IGNORED)), "{$lang['normal']}\n";
@@ -423,10 +423,10 @@ if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
 }
 
 echo "<form method=\"post\" action=\"edit_relations.php\" target=\"_self\">\n";
-echo "  ", form_input_hidden('webtag', $webtag), "\n";
-echo "  ", form_input_hidden("main_page", $main_page), "\n";
-echo "  ", form_input_hidden("search_page", $search_page), "\n";
-echo "  ", form_input_hidden("main_page", $main_page), "\n";
+echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
+echo "  ", form_input_hidden("search_page", _htmlentities($search_page)), "\n";
+echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"80%\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\" class=\"posthead\">\n";
@@ -444,7 +444,7 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td class=\"posthead\" align=\"left\">\n";
-echo "                          {$lang['username']}: ", form_input_text("usersearch", isset($usersearch) ? $usersearch : "", 30, 64), " ", form_submit('submit', $lang['search']), "\n";
+echo "                          {$lang['username']}: ", form_input_text("usersearch", isset($usersearch) ? _htmlentities($usersearch) : "", 30, 64), " ", form_submit('submit', $lang['search']), "\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";

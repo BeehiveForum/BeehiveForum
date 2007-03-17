@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.127 2007-02-11 16:37:47 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.128 2007-03-17 15:26:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -645,8 +645,8 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
 echo "<h1>{$lang['editmessage']}</h1>\n";
 echo "<br />\n";
 echo "<form name=\"f_edit_poll\" action=\"edit_poll.php\" method=\"post\" target=\"_self\">\n";
-echo "  ", form_input_hidden('webtag', $webtag), "\n";
-echo "  ", form_input_hidden("t_msg", $edit_msg), "\n";
+echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+echo "  ", form_input_hidden("t_msg", _htmlentities($edit_msg)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -676,7 +676,7 @@ echo "        <table class=\"posthead\" width=\"210\">\n";
 echo "          <tr>\n";
 echo "            <td align=\"left\">\n";
 echo "              <h2>{$lang['threadtitle']}</h2>\n";
-echo "              ", form_input_text('t_threadtitle', isset($t_threadtitle) ? _htmlentities($t_threadtitle) : $threaddata['TITLE'], 30, 64), "\n";
+echo "              ", form_input_text('t_threadtitle', isset($t_threadtitle) ? _htmlentities($t_threadtitle) : _htmlentities($threaddata['TITLE']), 30, 64), "\n";
 echo "              <h2>{$lang['pollquestion']}</h2>\n";
 echo "              ", form_input_text('question', isset($t_question) ? _htmlentities($t_question) : _htmlentities($polldata['QUESTION']), 30, 64), "\n";
 echo "            </td>\n";
@@ -797,7 +797,7 @@ for ($i = 0; $i < $answer_count; $i++) {
 
             }else {
 
-                echo "                              <td align=\"left\">", form_input_text("answers[$i]", $pollresults['OPTION_NAME'][$i], 40, 255), "</td>\n";
+                echo "                              <td align=\"left\">", form_input_text("answers[$i]", _htmlentities($pollresults['OPTION_NAME'][$i]), 40, 255), "</td>\n";
             }
 
         }else {
@@ -1001,7 +1001,7 @@ echo form_submit("submit", $lang['apply']), "&nbsp;", form_submit("preview_poll"
 if (forum_get_setting('attachments_enabled', 'Y') && bh_session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
 
     echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('{$polldata['FROM_UID']}', '$aid', '$webtag');\"");
-    echo form_input_hidden('aid', $aid);
+    echo form_input_hidden('aid', _htmlentities($aid));
 }
 
 echo "      </td>\n";

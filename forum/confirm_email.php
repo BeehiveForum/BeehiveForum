@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: confirm_email.php,v 1.9 2007-01-14 21:04:49 decoyduck Exp $ */
+/* $Id: confirm_email.php,v 1.10 2007-03-17 15:26:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -120,7 +120,7 @@ if ($user = user_get_password($uid, $key)) {
             echo "  <form name=\"confirm_email\" action=\"index.php\" method=\"post\" target=\"_top\">\n";
         }
 
-        echo "  ", form_input_hidden('webtag', $webtag), "\n";
+        echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\">\n";
@@ -165,7 +165,7 @@ if ($user = user_get_password($uid, $key)) {
             echo "  <form name=\"confirm_email\" action=\"index.php\" method=\"post\" target=\"_top\">\n";
         }
 
-        echo "  ", form_input_hidden('webtag', $webtag), "\n";
+        echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\">\n";

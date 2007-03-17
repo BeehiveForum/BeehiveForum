@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.96 2007-01-06 23:02:25 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.97 2007-03-17 15:26:18 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -608,8 +608,8 @@ if ($newthread) {
     }else {
 
         echo "<h2>" . thread_get_title($reply_to_tid) . "</h2>\n";
-        echo form_input_hidden("t_tid", $reply_to_tid);
-        echo form_input_hidden("t_rpid", $reply_to_pid)."\n";
+        echo form_input_hidden("t_tid", _htmlentities($reply_to_tid));
+        echo form_input_hidden("t_rpid", _htmlentities($reply_to_pid))."\n";
     }
 }
 
@@ -619,7 +619,7 @@ echo "<p>{$lang['to']}: ", post_draw_to_dropdown($t_to_uid), "</p>\n";
 echo "<p>", light_form_textarea("t_content", $post->getTidyContent(), 15, 60), "</p>\n";
 
 if ($allow_sig == true) {
-    echo "<p>{$lang['signature']}:<br />", light_form_textarea("t_sig", $sig->getTidyContent(), 5, 60), form_input_hidden("t_sig_html", $t_sig_html)."</p>\n";
+    echo "<p>{$lang['signature']}:<br />", light_form_textarea("t_sig", $sig->getTidyContent(), 5, 60), form_input_hidden("t_sig_html", _htmlentities($t_sig_html))."</p>\n";
 }
 
 if ($allow_html == true) {
@@ -641,9 +641,9 @@ echo "<p>", light_form_submit("submit",$lang['post']), "&nbsp;", light_form_subm
 echo "</p>";
 
 if (isset($_POST['t_dedupe'])) {
-    echo form_input_hidden("t_dedupe", $_POST['t_dedupe']);
+    echo form_input_hidden("t_dedupe", _htmlentities($_POST['t_dedupe']));
 }else {
-    echo form_input_hidden("t_dedupe", mktime());
+    echo form_input_hidden("t_dedupe", _htmlentities(mktime()));
 }
 
 echo "</form>\n";

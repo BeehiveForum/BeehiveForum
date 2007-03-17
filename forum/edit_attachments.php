@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.106 2007-02-23 21:40:56 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.107 2007-03-17 15:26:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -251,10 +251,10 @@ if (isset($_POST['delete_confirm'])) {
 
             echo "<br />\n";
             echo "<form id=\"attachments\" enctype=\"multipart/form-data\" method=\"post\" action=\"edit_attachments.php\">\n";
-            echo "  ", form_input_hidden('webtag', $webtag), "\n";
-            echo "  ", form_input_hidden('popup', $popup), "\n";
-            echo "  ". form_input_hidden('aid', $aid), "\n";
-            echo "  ". form_input_hidden('uid', $uid), "\n";
+            echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+            echo "  ", form_input_hidden('popup', _htmlentities($popup)), "\n";
+            echo "  ". form_input_hidden('aid', _htmlentities($aid)), "\n";
+            echo "  ". form_input_hidden('uid', _htmlentities($uid)), "\n";
             echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
             echo "    <tr>\n";
             echo "      <td align=\"left\">\n";
@@ -371,10 +371,10 @@ html_draw_top('attachments.js', 'post.js');
 echo "<h1>{$lang['attachments']}</h1>\n";
 echo "<br />\n";
 echo "<form name=\"attachments\" method=\"post\" action=\"edit_attachments.php\">\n";
-echo "  ", form_input_hidden('webtag', $webtag), "\n";
-echo "  ", form_input_hidden('popup', $popup), "\n";
-echo "  ". form_input_hidden('aid', $aid), "\n";
-echo "  ". form_input_hidden('uid', $uid), "\n";
+echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+echo "  ", form_input_hidden('popup', _htmlentities($popup)), "\n";
+echo "  ". form_input_hidden('aid', _htmlentities($aid)), "\n";
+echo "  ". form_input_hidden('uid', _htmlentities($uid)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";

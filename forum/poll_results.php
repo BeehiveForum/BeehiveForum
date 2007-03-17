@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll_results.php,v 1.16 2007-02-18 22:38:02 decoyduck Exp $ */
+/* $Id: poll_results.php,v 1.17 2007-03-17 15:26:18 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -153,8 +153,8 @@ if ($polldata['VOTETYPE'] == 1 && $polldata['POLLTYPE'] != 2) {
     echo "  <tr>\n";
     echo "    <td align=\"center\" class=\"postbody\">\n";
     echo "      <form name=\"f_mode\" method=\"get\" action=\"poll_results.php\">\n";
-    echo "        ", form_input_hidden("webtag", $webtag), "\n";
-    echo "        ", form_input_hidden("tid", $tid), "\n";
+    echo "        ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
+    echo "        ", form_input_hidden("tid", _htmlentities($tid)), "\n";
     echo "        View Style: ", form_dropdown_array("viewstyle", range(0, 1), array('By option', 'By user'), $viewstyle, "onchange=\"submit()\""), "&nbsp;", form_submit('go', $lang['goexcmark']), "\n";
     echo "      </form>\n";
     echo "    </td>\n";
@@ -231,7 +231,7 @@ echo "  </tr>\n";
 echo "</table>\n";
 echo "<br />\n";
 echo "<form method=\"post\" action=\"poll_results.php\" target=\"_self\">\n";
-echo "  ", form_input_hidden('webtag', $webtag), "\n";
+echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ". form_submit('close', $lang['close']). "\n";
 echo "</form>\n";
 echo "</div>\n";

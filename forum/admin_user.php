@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.191 2007-03-05 20:58:41 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.192 2007-03-17 15:26:17 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -177,7 +177,7 @@ if ($table_data = get_table_prefix()) {
                 echo "<br />\n";
                 echo "<div align=\"center\">\n";
                 echo "<form id=\"attachments\" enctype=\"multipart/form-data\" method=\"post\" action=\"admin_user.php?uid=$uid\">\n";
-                echo "  ", form_input_hidden('webtag', $webtag), "\n";
+                echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
                 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
                 echo "    <tr>\n";
                 echo "      <td align=\"left\">\n";
@@ -547,8 +547,8 @@ if (isset($_POST['submit']) && (!isset($_POST['t_delete_posts']) || $_POST['t_de
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form name=\"admin_user_form\" action=\"admin_user.php\" method=\"post\">\n";
-echo "  ", form_input_hidden('webtag', $webtag), "\n";
-echo "  ", form_input_hidden("uid", $uid), "\n";
+echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+echo "  ", form_input_hidden("uid", _htmlentities($uid)), "\n";
 
 if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
 
@@ -587,7 +587,7 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
     echo "      <td align=\"center\">", form_submit("t_confirm_delete_posts", $lang['confirm']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
-    echo "  ", form_input_hidden("ret", "admin_user.php?webtag=$webtag&amp;uid=$uid"), "\n";
+    echo "  ", form_input_hidden("ret", _htmlentities("admin_user.php?webtag=$webtag&amp;uid=$uid")), "\n";
 
 }else if (isset($_POST['t_confirm_delete_posts'])) {
 
@@ -626,7 +626,7 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
     echo "      <td align=\"center\">", form_submit("back", $lang['back']), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
-    echo "  ", form_input_hidden("ret", "admin_user.php?webtag=$webtag&amp;uid=$uid"), "\n";
+    echo "  ", form_input_hidden("ret", _htmlentities("admin_user.php?webtag=$webtag&amp;uid=$uid")), "\n";
 
 }else {
 
@@ -647,22 +647,22 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
         echo "                    <table width=\"90%\" class=\"posthead\">\n";
         echo "                      <tr>\n";
         echo "                        <td align=\"left\" width=\"150\">{$lang['username']}:</td>\n";
-        echo "                        <td align=\"left\">", form_input_text("t_logon", (isset($_POST['t_logon'])) ? $_POST['t_nickname'] : $user['LOGON'], 45, 15), "</td>\n";
+        echo "                        <td align=\"left\">", form_input_text("t_logon", (isset($_POST['t_logon'])) ? _htmlentities($_POST['t_logon']) : _htmlentities($user['LOGON']), 45, 15), "</td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
         echo "                        <td align=\"left\" width=\"150\">{$lang['nickname']}:</td>\n";
-        echo "                        <td align=\"left\">", form_input_text("t_nickname", (isset($_POST['t_nickname'])) ? $_POST['t_nickname'] : $user['NICKNAME'], 45, 32), "</td>\n";
+        echo "                        <td align=\"left\">", form_input_text("t_nickname", (isset($_POST['t_nickname'])) ? _htmlentities($_POST['t_nickname']) : _htmlentities($user['NICKNAME']), 45, 32), "</td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
         echo "                        <td align=\"left\" width=\"150\">{$lang['emailaddress']}:</td>\n";
-        echo "                        <td align=\"left\">", form_input_text("t_email", (isset($_POST['t_email'])) ? $_POST['t_email'] : $user['EMAIL'], 45, 80), "</td>\n";
+        echo "                        <td align=\"left\">", form_input_text("t_email", (isset($_POST['t_email'])) ? _htmlentities($_POST['t_email']) : _htmlentities($user['EMAIL']), 45, 80), "</td>\n";
         echo "                      </tr>\n";
 
         if ($table_data = get_table_prefix()) {
 
             echo "                      <tr>\n";
             echo "                        <td align=\"left\" width=\"150\">{$lang['postcount']}:</td>\n";
-            echo "                        <td align=\"left\">", form_input_text("t_post_count", (isset($_POST['t_post_count'])) ? $_POST['t_post_count'] : $user['POST_COUNT'], 10), "&nbsp;", form_checkbox("t_reset_post_count", "Y", $lang['resetpostcount'], false), "</td>\n";
+            echo "                        <td align=\"left\">", form_input_text("t_post_count", (isset($_POST['t_post_count'])) ? _htmlentities($_POST['t_post_count']) : _htmlentities($user['POST_COUNT']), 10), "&nbsp;", form_checkbox("t_reset_post_count", "Y", $lang['resetpostcount'], false), "</td>\n";
             echo "                      </tr>\n";
 
             if (isset($user['REFERER']) && strlen(trim($user['REFERER'])) > 0) {
@@ -933,7 +933,7 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
 
         foreach($folder_array as $fid => $folder) {
 
-            echo "                                  ", form_input_hidden("t_update_perms_array[]", $folder['FID']), "\n";
+            echo "                                  ", form_input_hidden("t_update_perms_array[]", _htmlentities($folder['FID'])), "\n";
             echo "                                  <table class=\"posthead\" width=\"100%\">\n";
             echo "                                    <tr>\n";
             echo "                                      <td align=\"left\" rowspan=\"5\" width=\"100\" valign=\"top\"><a href=\"admin_folder_edit.php?fid={$folder['FID']}\" target=\"_self\">{$folder['TITLE']}</a></td>\n";
@@ -1114,7 +1114,7 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
                 echo "                            <tr>\n";
                 echo "                              <td align=\"left\" class=\"subhead\" width=\"150\">{$lang['logon']}</td>\n";
                 echo "                              <td align=\"left\" class=\"subhead\" width=\"150\">{$lang['nickname']}</td>\n";
-                echo "                              <td align=\"left\" class=\"subhead\" width=\"150\">{$lang['ip']}</td>\n";
+                echo "                              <td align=\"left\" class=\"subhead\">{$lang['ip']}</td>\n";
                 echo "                            </tr>\n";
                 echo "                            <tr>\n";
                 echo "                              <td align=\"left\" colspan=\"3\">\n";
@@ -1124,8 +1124,8 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
 
                     echo "                                  <table class=\"posthead\" width=\"100%\">\n";
                     echo "                                    <tr>\n";
-                    echo "                                      <td align=\"left\"><a href=\"admin_user.php?webtag=$webtag&amp;uid={$user_alias['UID']}\">{$user_alias['LOGON']}</a></td>\n";
-                    echo "                                      <td align=\"left\">{$user_alias['NICKNAME']}</td>\n";
+                    echo "                                      <td align=\"left\" width=\"150\"><a href=\"admin_user.php?webtag=$webtag&amp;uid={$user_alias['UID']}\">{$user_alias['LOGON']}</a></td>\n";
+                    echo "                                      <td align=\"left\" width=\"150\">{$user_alias['NICKNAME']}</td>\n";
 
                     if (ip_is_banned($user_alias['IPADDRESS'])) {
                         echo "                                      <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_ipaddress={$user_alias['IPADDRESS']}\" target=\"_self\">{$lang['banned']}</a>&nbsp;</td>";
@@ -1350,7 +1350,7 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
         echo "                      </tr>\n";
         echo "                      <tr>\n";
         echo "                        <td align=\"left\" width=\"150\">{$lang['resetpasswordto']}:</td>\n";
-        echo "                        <td align=\"left\">", form_input_password("t_new_password", "", 32), "</td>\n";
+        echo "                        <td align=\"left\">", form_input_password("t_new_password", "", 32, false, "autocomplete=\"off\""), "</td>\n";
         echo "                      </tr>\n";
         echo "                    </table>\n";
         echo "                  </td>\n";
@@ -1466,7 +1466,7 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
     echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
-    echo "  ", form_input_hidden("ret", $ret), "\n";
+    echo "  ", form_input_hidden("ret", _htmlentities($ret)), "\n";
 }
 
 echo "</form>\n";

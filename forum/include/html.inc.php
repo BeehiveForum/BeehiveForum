@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.211 2007-03-11 20:58:11 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.212 2007-03-17 15:26:19 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -108,8 +108,8 @@ function html_user_require_approval()
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "<form action=\"confirm_email.php\" method=\"get\" target=\"_self\">\n";
-    echo "  ", form_input_hidden('webtag', $webtag), "\n";
-    echo "  ", form_input_hidden('uid', $user_array['UID']), "\n";
+    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+    echo "  ", form_input_hidden('uid', _htmlentities($user_array['UID'])), "\n";
     echo "  ", form_input_hidden('resend', 'Y'), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
     echo "    <tr>\n";
@@ -159,8 +159,8 @@ function html_email_confirmation_error()
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "<form action=\"confirm_email.php\" method=\"get\" target=\"_self\">\n";
-    echo "  ", form_input_hidden('webtag', $webtag), "\n";
-    echo "  ", form_input_hidden('uid', $user_array['UID']), "\n";
+    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+    echo "  ", form_input_hidden('uid', _htmlentities($user_array['UID'])), "\n";
     echo "  ", form_input_hidden('resend', 'Y'), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
     echo "    <tr>\n";

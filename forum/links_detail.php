@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_detail.php,v 1.80 2007-01-17 20:43:17 decoyduck Exp $ */
+/* $Id: links_detail.php,v 1.81 2007-03-17 15:26:18 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -283,11 +283,11 @@ echo "                      <td align=\"left\">", (isset($link['LOGON']) ? add_w
 echo "                    </tr>\n";
 echo "                    <tr>\n";
 echo "                      <td align=\"left\" nowrap=\"nowrap\" valign=\"top\">{$lang['description']}:</td>\n";
-echo "                      <td align=\"left\">" . _stripslashes($link['DESCRIPTION']) . "</td>\n";
+echo "                      <td align=\"left\">{$link['DESCRIPTION']}</td>\n";
 echo "                    </tr>\n";
 echo "                    <tr>\n";
 echo "                      <td align=\"left\" nowrap=\"nowrap\" valign=\"top\">{$lang['date']}:</td>\n";
-echo "                      <td align=\"left\">" . format_time($link['CREATED']) . "</td>\n";
+echo "                      <td align=\"left\">", format_time($link['CREATED']), "</td>\n";
 echo "                    </tr>\n";
 echo "                    <tr>\n";
 echo "                      <td align=\"left\" nowrap=\"nowrap\" valign=\"top\">{$lang['clicks']}:</td>\n";
@@ -340,10 +340,10 @@ if (!user_is_guest()) {
     $vote = $vote ? $vote : -1;
 
     echo "<form name=\"link_vote\" action=\"links_detail.php\" method=\"post\">\n";
-    echo "  ", form_input_hidden('webtag', $webtag), "\n";
+    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "  ", form_input_hidden("type", "vote"), "\n";
-    echo "  ", form_input_hidden("lid", $lid), "\n";
-    echo "  ", form_input_hidden("parent_fid", $parent_fid), "\n";
+    echo "  ", form_input_hidden("lid", _htmlentities($lid)), "\n";
+    echo "  ", form_input_hidden("parent_fid", _htmlentities($parent_fid)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
@@ -444,10 +444,10 @@ if ($comments_array = links_get_comments($lid)) {
 if (!user_is_guest()) {
 
     echo "<form name=\"link_comment\" action=\"links_detail.php\" method=\"post\">\n";
-    echo "  ", form_input_hidden('webtag', $webtag), "\n";
+    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "  ", form_input_hidden("type", "comment"), "\n";
-    echo "  ", form_input_hidden("lid", $lid), "\n";
-    echo "  ", form_input_hidden("parent_fid", $parent_fid), "\n";
+    echo "  ", form_input_hidden("lid", _htmlentities($lid)), "\n";
+    echo "  ", form_input_hidden("parent_fid", _htmlentities($parent_fid)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
@@ -490,10 +490,10 @@ if (!user_is_guest()) {
 if (bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0) || $link['UID'] == $uid) {
 
     echo "<form name=\"link_moderation\" action=\"links_detail.php\" method=\"post\">\n";
-    echo "  ", form_input_hidden('webtag', $webtag), "\n";
+    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "  ", form_input_hidden("type", "moderation") . "\n";
-    echo "  ", form_input_hidden("lid", $lid) . "\n";
-    echo "  ", form_input_hidden("parent_fid", $parent_fid), "\n";
+    echo "  ", form_input_hidden("lid", _htmlentities($lid)) . "\n";
+    echo "  ", form_input_hidden("parent_fid", _htmlentities($parent_fid)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
@@ -513,15 +513,15 @@ if (bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0) || $link['UID'] == $uid) 
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['editname']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("title", $link['TITLE'], 45, 64), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("title", _htmlentities($link['TITLE']), 45, 64), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['editaddress']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("uri", $link['URI'], 45, 255), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("uri", _htmlentities($link['URI']), 45, 255), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['editdescription']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("description", _stripslashes($link['DESCRIPTION']), 45), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("description", _htmlentities($link['DESCRIPTION']), 45), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";

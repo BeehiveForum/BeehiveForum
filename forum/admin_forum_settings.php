@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.104 2007-02-23 21:24:30 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.105 2007-03-17 15:26:17 decoyduck Exp $ */
 
 /**
 * Displays and handles the Forum Settings page
@@ -436,7 +436,7 @@ if (!empty($error_html)) {
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form name=\"prefsform\" action=\"admin_forum_settings.php\" method=\"post\" target=\"_self\">\n";
-echo "  ", form_input_hidden('webtag', $webtag), "\n";
+echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -452,19 +452,19 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['forumname']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("forum_name", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), 42, 32), "&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_input_text("forum_name", (isset($forum_settings['forum_name']) ? _htmlentities($forum_settings['forum_name']) : 'A Beehive Forum'), 42, 32), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['forumemail']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("forum_email", (isset($forum_settings['forum_email']) ? $forum_settings['forum_email'] : 'admin@abeehiveforum.net'), 42, 80), "&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_input_text("forum_email", (isset($forum_settings['forum_email']) ? _htmlentities($forum_settings['forum_email']) : 'admin@abeehiveforum.net'), 42, 80), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['forumdesc']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("forum_desc", (isset($forum_settings['forum_desc']) ? $forum_settings['forum_desc'] : ''), 42, 80), "&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_input_text("forum_desc", (isset($forum_settings['forum_desc']) ? _htmlentities($forum_settings['forum_desc']) : ''), 42, 80), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['forumkeywords']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("forum_keywords", (isset($forum_settings['forum_keywords']) ? $forum_settings['forum_keywords'] : ''), 42, 80), "&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_input_text("forum_keywords", (isset($forum_settings['forum_keywords']) ? _htmlentities($forum_settings['forum_keywords']) : ''), 42, 80), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
@@ -652,19 +652,19 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\">{$lang['forumclosedmessage']}:</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", form_textarea("closed_message", (isset($forum_settings['closed_message']) ? $forum_settings['closed_message'] : ''), 4, 76), "</td>\n";
+echo "                        <td align=\"left\">", form_textarea("closed_message", (isset($forum_settings['closed_message']) ? _htmlentities($forum_settings['closed_message']) : ''), 4, 76), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['forumrestrictedmessage']}:</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", form_textarea("restricted_message", (isset($forum_settings['restricted_message']) ? $forum_settings['restricted_message'] : ''), 4, 76), "</td>\n";
+echo "                        <td align=\"left\">", form_textarea("restricted_message", (isset($forum_settings['restricted_message']) ? _htmlentities($forum_settings['restricted_message']) : ''), 4, 76), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['forumpasswordprotectedmessage']}:</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", form_textarea("password_protected_message", (isset($forum_settings['password_protected_message']) ? $forum_settings['password_protected_message'] : ''), 4, 76), "</td>\n";
+echo "                        <td align=\"left\">", form_textarea("password_protected_message", (isset($forum_settings['password_protected_message']) ? _htmlentities($forum_settings['password_protected_message']) : ''), 4, 76), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">\n";
@@ -706,19 +706,19 @@ echo "                        <td align=\"left\">", form_radio("allow_post_editi
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['postedittimeout']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("post_edit_time", (isset($forum_settings['post_edit_time']) && is_numeric($forum_settings['post_edit_time']) ? $forum_settings['post_edit_time'] : '0'), 20, 32), "</td>\n";
+echo "                        <td align=\"left\">", form_input_text("post_edit_time", (isset($forum_settings['post_edit_time']) && is_numeric($forum_settings['post_edit_time']) ? _htmlentities($forum_settings['post_edit_time']) : '0'), 20, 32), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['posteditgraceperiod']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("post_edit_grace_period", (isset($forum_settings['post_edit_grace_period']) && is_numeric($forum_settings['post_edit_grace_period']) ? $forum_settings['post_edit_grace_period'] : '0'), 20, 32), "</td>\n";
+echo "                        <td align=\"left\">", form_input_text("post_edit_grace_period", (isset($forum_settings['post_edit_grace_period']) && is_numeric($forum_settings['post_edit_grace_period']) ? _htmlentities($forum_settings['post_edit_grace_period']) : '0'), 20, 32), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['maximumpostlength']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("maximum_post_length", (isset($forum_settings['maximum_post_length']) && is_numeric($forum_settings['maximum_post_length']) ? $forum_settings['maximum_post_length'] : '6226'), 20, 32), "&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_input_text("maximum_post_length", (isset($forum_settings['maximum_post_length']) && is_numeric($forum_settings['maximum_post_length']) ? _htmlentities($forum_settings['maximum_post_length']) : '6226'), 20, 32), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['postfrequency']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("minimum_post_frequency", (isset($forum_settings['minimum_post_frequency']) && is_numeric($forum_settings['minimum_post_frequency']) ? $forum_settings['minimum_post_frequency'] : '0'), 20, 32), "&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_input_text("minimum_post_frequency", (isset($forum_settings['minimum_post_frequency']) && is_numeric($forum_settings['minimum_post_frequency']) ? _htmlentities($forum_settings['minimum_post_frequency']) : '0'), 20, 32), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">\n";
@@ -762,7 +762,7 @@ echo "                        <td align=\"left\">", form_radio("enable_wiki_quic
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['wikiintegrationuri']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("wiki_integration_uri", (isset($forum_settings['wiki_integration_uri']) ? $forum_settings['wiki_integration_uri'] : 'http://en.wikipedia.org/wiki/[WikiWord]'), 42, 255), "</td>\n";
+echo "                        <td align=\"left\">", form_input_text("wiki_integration_uri", (isset($forum_settings['wiki_integration_uri']) ? _htmlentities($forum_settings['wiki_integration_uri']) : 'http://en.wikipedia.org/wiki/[WikiWord]'), 42, 255), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">\n";

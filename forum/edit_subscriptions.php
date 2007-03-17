@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_subscriptions.php,v 1.13 2007-02-14 22:54:40 decoyduck Exp $ */
+/* $Id: edit_subscriptions.php,v 1.14 2007-03-17 15:26:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -226,10 +226,10 @@ echo "<br />\n";
 if (isset($threadsearch) && strlen(trim($threadsearch)) > 0) {
 
     echo "<form name=\"subscriptions\" method=\"post\" action=\"edit_subscriptions.php\" target=\"_self\">\n";
-    echo "  ", form_input_hidden('webtag', $webtag), "\n";
-    echo "  ", form_input_hidden("threadsearch", $threadsearch), "\n";
-    echo "  ", form_input_hidden("main_page", $main_page), "\n";
-    echo "  ", form_input_hidden("search_page", $search_page), "\n";
+    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+    echo "  ", form_input_hidden("threadsearch", _htmlentities($threadsearch)), "\n";
+    echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
+    echo "  ", form_input_hidden("search_page", _htmlentities($search_page)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"620\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\" class=\"posthead\" colspan=\"3\">\n";
@@ -305,10 +305,10 @@ if (isset($threadsearch) && strlen(trim($threadsearch)) > 0) {
 }else {
 
     echo "<form name=\"subscriptions\" action=\"edit_subscriptions.php\" method=\"post\" target=\"_self\">\n";
-    echo "  ", form_input_hidden('webtag', $webtag), "\n";
-    echo "  ", form_input_hidden("main_page", $main_page), "\n";
-    echo "  ", form_input_hidden("search_page", $search_page), "\n";
-    echo "  ", form_input_hidden("threadsearch", $threadsearch), "\n";
+    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+    echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
+    echo "  ", form_input_hidden("search_page", _htmlentities($search_page)), "\n";
+    echo "  ", form_input_hidden("threadsearch", _htmlentities($threadsearch)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"620\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\" colspan=\"3\">\n";
@@ -383,10 +383,10 @@ if (isset($threadsearch) && strlen(trim($threadsearch)) > 0) {
 }
 
 echo "<form method=\"post\" action=\"edit_subscriptions.php\" target=\"_self\">\n";
-echo "  ", form_input_hidden('webtag', $webtag), "\n";
-echo "  ", form_input_hidden("main_page", $main_page), "\n";
-echo "  ", form_input_hidden("search_page", $search_page), "\n";
-echo "  ", form_input_hidden("main_page", $main_page), "\n";
+echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
+echo "  ", form_input_hidden("search_page", _htmlentities($search_page)), "\n";
+echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"620\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\" class=\"posthead\">\n";
@@ -404,7 +404,7 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td class=\"posthead\" align=\"left\">\n";
-echo "                          {$lang['threadtitle']}: ", form_input_text("threadsearch", isset($threadsearch) ? $threadsearch : "", 30, 64), " ", form_submit('search', $lang['search']), "&nbsp;", form_submit('clear', $lang['clear']), "\n";
+echo "                          {$lang['threadtitle']}: ", form_input_text("threadsearch", isset($threadsearch) ? _htmlentities($threadsearch) : "", 30, 64), " ", form_submit('search', $lang['search']), "&nbsp;", form_submit('clear', $lang['clear']), "\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";

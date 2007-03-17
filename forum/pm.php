@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.108 2007-02-01 22:30:44 decoyduck Exp $ */
+/* $Id: pm.php,v 1.109 2007-03-17 15:26:18 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -252,8 +252,8 @@ if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
 }
 
 echo "<form name=\"pm\" action=\"pm.php?page=$page\" method=\"post\" target=\"_self\">\n";
-echo "  ", form_input_hidden('webtag', $webtag), "\n";
-echo "  ", form_input_hidden('folder', $folder), "\n";
+echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+echo "  ", form_input_hidden('folder', _htmlentities($folder)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"80%\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";

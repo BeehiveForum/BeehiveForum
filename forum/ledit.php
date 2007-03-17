@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ledit.php,v 1.4 2007-01-15 00:10:34 decoyduck Exp $ */
+/* $Id: ledit.php,v 1.5 2007-03-17 15:26:18 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -594,10 +594,10 @@ if (isset($_POST['preview'])) {
 
 echo "<h2>{$lang['editmessage']} $edit_msg</h2>\n";
 echo "<form name=\"f_edit\" action=\"ledit.php\" method=\"post\" target=\"_self\">\n";
-echo "  ", form_input_hidden('webtag', $webtag), "\n";
-echo form_input_hidden("t_msg", $edit_msg);
-echo form_input_hidden("t_to_uid", $to_uid);
-echo form_input_hidden("t_from_uid", $from_uid);
+echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+echo form_input_hidden("t_msg", _htmlentities($edit_msg));
+echo form_input_hidden("t_to_uid", _htmlentities($to_uid));
+echo form_input_hidden("t_from_uid", _htmlentities($from_uid));
 
 if ($valid && isset($_POST['preview'])) {
 
@@ -607,7 +607,7 @@ if ($valid && isset($_POST['preview'])) {
 echo "<p>", light_form_textarea("t_content", $post->getTidyContent(), 15, 60), "</p>\n";
 
 if ($allow_sig == true) {
-    echo "<p>{$lang['signature']}:<br />", light_form_textarea("t_sig", $sig->getTidyContent(), 5, 60), form_input_hidden("t_sig_html", $sig->getHTML())."</p>\n";
+    echo "<p>{$lang['signature']}:<br />", light_form_textarea("t_sig", $sig->getTidyContent(), 5, 60), form_input_hidden("t_sig_html", _htmlentities($sig->getHTML()))."</p>\n";
 }
 
 if ($allow_html == true) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit.php,v 1.48 2007-01-17 20:43:17 decoyduck Exp $ */
+/* $Id: admin_user_groups_edit.php,v 1.49 2007-03-17 15:26:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -212,8 +212,8 @@ if (isset($_POST['submit'])) {
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form name=\"admin_user_form\" action=\"admin_user_groups_edit.php\" method=\"post\">\n";
-echo "  ", form_input_hidden('webtag', $webtag), "\n";
-echo "  ", form_input_hidden("gid", $gid), "\n";
+echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+echo "  ", form_input_hidden("gid", _htmlentities($gid)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -229,11 +229,11 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['name']}:</td>\n";
-echo "                        <td align=\"left\">".form_input_text("t_name", (isset($t_name) ? $t_name : $group['GROUP_NAME']), 30, 64)."</td>\n";
+echo "                        <td align=\"left\">".form_input_text("t_name", (isset($t_name) ? _htmlentities($t_name) : _htmlentities($group['GROUP_NAME'])), 30, 64)."</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['description']}:</td>\n";
-echo "                        <td align=\"left\">".form_input_text("t_description", (isset($t_description) ? $t_description : $group['GROUP_DESC']), 30, 64)."</td>\n";
+echo "                        <td align=\"left\">".form_input_text("t_description", (isset($t_description) ? _htmlentities($t_description) : _htmlentities($group['GROUP_DESC'])), 30, 64)."</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -319,7 +319,7 @@ if ($folder_array = perm_group_get_folders($gid)) {
 
         if ($folder['STATUS'] > 0) {
 
-            echo "                                  ", form_input_hidden("t_update_perms_array[]", $folder['FID']), "\n";
+            echo "                                  ", form_input_hidden("t_update_perms_array[]", _htmlentities($folder['FID'])), "\n";
             echo "                                  <table class=\"posthead\" width=\"100%\">\n";
             echo "                                    <tr>\n";
             echo "                                      <td align=\"left\" rowspan=\"5\" width=\"100\" valign=\"top\"><a href=\"admin_folder_edit.php?fid=$fid\" target=\"_self\">{$folder['TITLE']}</a></td>\n";
@@ -349,7 +349,7 @@ if ($folder_array = perm_group_get_folders($gid)) {
 
         }else {
 
-            echo "                                  ", form_input_hidden("t_update_perms_array[]", $folder['FID']), "\n";
+            echo "                                  ", form_input_hidden("t_update_perms_array[]", _htmlentities($folder['FID'])), "\n";
             echo "                                  <table class=\"posthead\" width=\"100%\">\n";
             echo "                                    <tr>\n";
             echo "                                      <td align=\"left\" rowspan=\"5\" width=\"100\" valign=\"top\"><a href=\"admin_folder_edit.php?fid={$folder['FID']}\" target=\"_self\">{$folder['TITLE']}</a></td>\n";

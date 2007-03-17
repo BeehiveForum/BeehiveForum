@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.142 2007-03-11 20:58:11 decoyduck Exp $ */
+/* $Id: register.php,v 1.143 2007-03-17 15:26:18 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -661,7 +661,7 @@ if (isset($error_html) && strlen($error_html) > 0) {
 
 echo "<div align=\"center\">\n";
 echo "<form name=\"register\" action=\"register.php\" method=\"post\">\n";
-echo "  ", form_input_hidden('webtag', $webtag), "\n";
+echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -908,7 +908,7 @@ if (forum_get_setting('text_captcha_enabled', 'Y')) {
         echo "                      </tr>\n";
         echo "                      <tr>\n";
         echo "                        <td align=\"left\">&nbsp;</td>\n";
-        echo "                        <td align=\"left\">", form_input_text("private_key", "", $text_captcha->get_num_chars(), $text_captcha->get_num_chars(), "", "text_captcha_input"), form_input_hidden("public_key", $text_captcha->get_public_key()), "</td>\n";
+        echo "                        <td align=\"left\">", form_input_text("private_key", "", $text_captcha->get_num_chars(), $text_captcha->get_num_chars(), "", "text_captcha_input"), form_input_hidden("public_key", _htmlentities($text_captcha->get_public_key())), "</td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
         echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";

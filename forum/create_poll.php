@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.189 2007-03-15 00:39:12 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.190 2007-03-17 15:26:17 decoyduck Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -441,6 +441,7 @@ if (isset($_POST['cancel'])) {
         $t_message_text = trim(_stripslashes($_POST['t_message_text']));
 
         if (attachment_embed_check($t_message_text) && $t_message_html == "Y") {
+
             $error_html = "<h2>{$lang['notallowedembedattachmentpost']}</h2>\n";
             $valid = false;
         }
@@ -636,7 +637,7 @@ html_draw_top("basetarget=_blank", "onUnload=clearFocus()", "resize_width=785", 
 echo "<h1>{$lang['postmessage']}</h1>\n";
 echo "<br />\n";
 echo "<form name=\"f_poll\" action=\"create_poll.php\" method=\"post\" target=\"_self\">\n";
-echo "  ", form_input_hidden('webtag', $webtag), "\n";
+echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -1178,7 +1179,7 @@ echo form_submit("submit", $lang['post'], "onclick=\"return autoCheckSpell('$web
 if (forum_get_setting('attachments_enabled', 'Y')) {
 
     echo "            &nbsp;".form_button("attachments", $lang['attachments'], "onclick=\"launchAttachWin('{$aid}', '$webtag')\"");
-    echo form_input_hidden("aid", $aid);
+    echo form_input_hidden("aid", _htmlentities($aid));
 }
 
 
@@ -1194,9 +1195,9 @@ echo "  </table>\n";
 echo "  ", $tools->js(false);
 
 if (isset($_POST['t_dedupe'])) {
-    echo "  ", form_input_hidden("t_dedupe", $_POST['t_dedupe']), "\n";
+    echo "  ", form_input_hidden("t_dedupe", _htmlentities($_POST['t_dedupe'])), "\n";
 }else{
-    echo "  ", form_input_hidden("t_dedupe", mktime()), "\n";
+    echo "  ", form_input_hidden("t_dedupe", _htmlentities(mktime())), "\n";
 }
 
 echo "            </td>\n";

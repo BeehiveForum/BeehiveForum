@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folders.php,v 1.124 2007-02-18 16:12:59 decoyduck Exp $ */
+/* $Id: admin_folders.php,v 1.125 2007-03-17 15:26:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -184,8 +184,8 @@ if (isset($error_html) && strlen($error_html) > 0) {
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form name=\"f_folders\" action=\"admin_folders.php\" method=\"post\">\n";
-echo "  ", form_input_hidden('webtag', $webtag), "\n";
-echo "  ", form_input_hidden('page', $page), "\n";
+echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+echo "  ", form_input_hidden('page', _htmlentities($page)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";

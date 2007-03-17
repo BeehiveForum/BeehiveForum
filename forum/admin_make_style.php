@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.98 2007-01-14 21:04:49 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.99 2007-03-17 15:26:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -167,15 +167,11 @@ if (isset($_POST['submit'])) {
 
                     echo "<div align=\"center\">\n";
                     echo "<form method=\"post\" action=\"admin_make_style.php\">\n";
-                    echo "  ", form_input_hidden('webtag', $webtag), "\n";
+                    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
                     echo "  ", form_input_hidden('stylesheet', _htmlentities($stylesheet)), "\n";
-                    echo "  ", form_input_hidden('stylename', $stylename), "\n";
-                    echo "  ", form_input_hidden('styledesc', $styledesc), "\n";
-
-                    foreach ($_POST['elements'] as $key => $value) {
-                        echo "  ", form_input_hidden("elements[$key]", $value), "\n";
-                    }
-
+                    echo "  ", form_input_hidden('stylename', _htmlentities($stylename)), "\n";
+                    echo "  ", form_input_hidden('styledesc', _htmlentities($styledesc)), "\n";
+                    echo "  ", form_input_hidden_array(array('elements' => _stripslashes($_POST['elements']))), "\n";
                     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
                     echo "    <tr>\n";
                     echo "      <td align=\"left\">\n";
@@ -237,16 +233,12 @@ if (isset($_POST['submit'])) {
                     echo "<br />\n";
                     echo "<div align=\"center\">\n";
                     echo "<form method=\"post\" action=\"admin_make_style.php\">\n";
-                    echo "  ", form_input_hidden('webtag', $webtag), "\n";
+                    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
                     echo "  ", form_input_hidden('stylesheet', _htmlentities($stylesheet)), "\n";
-                    echo "  ", form_input_hidden('stylename', $stylename), "\n";
-                    echo "  ", form_input_hidden('styledesc', $styledesc), "\n";
+                    echo "  ", form_input_hidden('stylename', _htmlentities($stylename)), "\n";
+                    echo "  ", form_input_hidden('styledesc', _htmlentities($styledesc)), "\n";
                     echo "  ", form_input_hidden('savefailed', "yes"), "\n";
-
-                    foreach ($_POST['elements'] as $key => $value) {
-                        echo "  ", form_input_hidden("elements[$key]", $value), "\n";
-                    }
-
+                    echo "  ", form_input_hidden_array(array('elements' => _stripslashes($_POST['elements']))), "\n";
                     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
                     echo "    <tr>\n";
                     echo "      <td align=\"left\">\n";
@@ -452,8 +444,8 @@ echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td class=\"posthead\" align=\"left\">\n";
 echo "                    <form action=\"admin_make_style.php\" method=\"get\">\n";
-echo "                      ", form_input_hidden("webtag", $webtag), "\n";
-echo "                      ", form_input_text("seed", strtoupper($seed), 15, 6), "&nbsp;", form_submit('submit', $lang['go']), "\n";
+echo "                      ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
+echo "                      ", form_input_text("seed", _htmlentities(strtoupper($seed)), 15, 6), "&nbsp;", form_submit('submit', $lang['go']), "\n";
 echo "                    </form>\n";
 echo "                  </td>\n";
 echo "                </tr>\n";
@@ -467,22 +459,16 @@ echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" class=\"posthead\">\n";
 echo "                    <form action=\"admin_make_style.php\" method=\"post\">\n";
-echo "                      ", form_input_hidden('webtag', $webtag), "\n";
-
-foreach ($elements as $key => $value) {
-    echo "                      ", form_input_hidden("elements[$key]", $value), "\n";
-}
-
-reset($elements);
-
+echo "                      ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+echo "                      ", form_input_hidden_array(array('elements' => $elements)), "\n";
 echo "                      <table width=\"100%\" cellspacing=\"5\">\n";
 echo "                        <tr>\n";
 echo "                          <td align=\"left\" class=\"posthead\">{$lang['filename']}:</td>\n";
-echo "                          <td align=\"left\">", form_input_text("stylename", isset($_POST['stylename']) ? $_POST['stylename'] : '', 35, 10), "</td>\n";
+echo "                          <td align=\"left\">", form_input_text("stylename", isset($_POST['stylename']) ? _htmlentities(_stripslashes($_POST['stylename'])) : '', 35, 10), "</td>\n";
 echo "                        </tr>\n";
 echo "                        <tr>\n";
 echo "                          <td align=\"left\" class=\"posthead\">{$lang['styledesc']}:</td>\n";
-echo "                          <td align=\"left\">", form_input_text("styledesc", isset($_POST['styledesc']) ? $_POST['styledesc'] : '', 35, 20), "&nbsp;", form_submit('submit', $lang['save']), "</td>\n";
+echo "                          <td align=\"left\">", form_input_text("styledesc", isset($_POST['styledesc']) ? _htmlentities(_stripslashes($_POST['styledesc'])) : '', 35, 20), "&nbsp;", form_submit('submit', $lang['save']), "</td>\n";
 echo "                        </tr>\n";
 echo "                      </table>\n";
 echo "                    </form>\n";
@@ -635,7 +621,7 @@ echo "              </tr>\n";
 echo "              <tr>\n";
 echo "                <td align=\"left\">&nbsp;</td>\n";
 echo "                <td class=\"smalltext\" style=\"color: #", contrastFont($elements['body']), "\" align=\"left\">\n";
-echo "                  <form name=\"f_nav\" method=\"get\" action=\"\" onsubmit=\"return false\">\n";
+echo "                  <form name=\"f_search\" method=\"get\" action=\"\" onsubmit=\"return false\">\n";
 echo "                    <input type=\"text\" name=\"msg\" class=\"bhinputtext\" value=\"\" size=\"20\" />\n";
 echo "                    <input type=\"submit\" name=\"go\" value=\"{$lang['find']}\" class=\"button\" style=\"background-color: #{$elements['button']}; color: #", contrastFont($elements['button']), "\" onclick=\"return false\" />\n";
 echo "                  </form>\n";

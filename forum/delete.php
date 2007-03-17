@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: delete.php,v 1.118 2007-01-25 22:12:06 decoyduck Exp $ */
+/* $Id: delete.php,v 1.119 2007-03-17 15:26:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -235,8 +235,8 @@ if (isset($_POST['submit']) && is_numeric($tid) && is_numeric($pid)) {
         echo "<h1>{$lang['deletemessage']} {$tid}.{$pid}</h1>\n";
         echo "<br />\n";
         echo "<form name=\"prefs\" action=\"discussion.php\" method=\"post\" target=\"_self\">\n";
-        echo "  ", form_input_hidden('webtag', $webtag), "\n";
-        echo "  ", form_input_hidden('msg', $msg), "\n";
+        echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+        echo "  ", form_input_hidden('msg', _htmlentities($msg)), "\n";
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\">\n";
@@ -301,8 +301,8 @@ $preview_message['FNICK'] = $preview_tuser['NICKNAME'];
 if (isset($error_html)) echo $error_html;
 
 echo "<form name=\"f_delete\" action=\"delete.php\" method=\"post\" target=\"_self\">\n";
-echo "  ", form_input_hidden('webtag', $webtag), "\n";
-echo "  ", form_input_hidden('msg', $msg), "\n";
+echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+echo "  ", form_input_hidden('msg', _htmlentities($msg)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";

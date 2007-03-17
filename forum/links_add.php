@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_add.php,v 1.78 2007-01-19 18:06:24 decoyduck Exp $ */
+/* $Id: links_add.php,v 1.79 2007-03-17 15:26:18 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -246,8 +246,8 @@ if ($mode == "link") {
     if (isset($error)) echo "<h2>$error</h2>\n";
 
     echo "<form name=\"linkadd\" action=\"links_add.php\" method=\"post\" target=\"_self\">\n";
-    echo "  ", form_input_hidden('webtag', $webtag), "\n";
-    echo "  ", form_input_hidden("fid", $fid) . "\n";
+    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+    echo "  ", form_input_hidden("fid", _htmlentities($fid)) . "\n";
     echo "  ", form_input_hidden("mode", "link") . "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\">\n";
     echo "    <tr>\n";
@@ -261,15 +261,15 @@ if ($mode == "link") {
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"right\">{$lang['addressurluri']}:</td>\n";
-    echo "                  <td align=\"left\">" . form_input_text("uri", $uri, 60, 255) . "</td>\n";
+    echo "                  <td align=\"left\">" . form_input_text("uri", _htmlentities($uri), 60, 255) . "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"right\">{$lang['name']}:</td>\n";
-    echo "                  <td align=\"left\">" . form_input_text("name", $name, 60, 64) . "</td>\n";
+    echo "                  <td align=\"left\">" . form_input_text("name", _htmlentities($name), 60, 64) . "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"right\">{$lang['description']}:</td>\n";
-    echo "                  <td align=\"left\">" . form_input_text("description", $description, 60) . "</td>\n";
+    echo "                  <td align=\"left\">" . form_input_text("description", _htmlentities($description), 60) . "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\">&nbsp;</td>\n";
@@ -304,8 +304,8 @@ if ($mode == "link") {
     }
 
     echo "<form name=\"folderadd\" action=\"links_add.php\" method=\"post\" target=\"_self\">\n";
-    echo "  ", form_input_hidden('webtag', $webtag), "\n";
-    echo "  ", form_input_hidden("fid", $fid) . "\n";
+    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+    echo "  ", form_input_hidden("fid", _htmlentities($fid)) . "\n";
     echo "  ", form_input_hidden("mode", "folder") . "\n";
     echo "  <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
     echo "    <tr>\n";
@@ -319,7 +319,7 @@ if ($mode == "link") {
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"right\">{$lang['name']}:</td>\n";
-    echo "                  <td align=\"left\">", form_input_text("name", isset($name) ? $name : '', 60, 64), "</td>\n";
+    echo "                  <td align=\"left\">", form_input_text("name", isset($name) ? _htmlentities($name) : '', 60, 64), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\">&nbsp;</td>\n";

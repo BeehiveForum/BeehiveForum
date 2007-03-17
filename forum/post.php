@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.296 2007-03-15 14:51:08 decoyduck Exp $ */
+/* $Id: post.php,v 1.297 2007-03-17 15:26:18 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -636,8 +636,8 @@ if ($valid && isset($_POST['submit'])) {
                     echo "</td></tr>\n";
 
                     echo "<tr><td align=\"center\">\n";
-                    echo form_input_hidden('t_tid', $t_tid);
-                    echo form_input_hidden('t_rpid', $t_rpid);
+                    echo form_input_hidden('t_tid', _htmlentities($t_tid));
+                    echo form_input_hidden('t_rpid', _htmlentities($t_rpid));
                     echo form_submit('cancel', $lang['cancel']);
                     echo "</td></tr>\n";
                     echo "</table></form>\n";
@@ -754,7 +754,7 @@ html_draw_top("onUnload=clearFocus()", "resize_width=720", "basetarget=_blank", 
 
 echo "<h1>{$lang['postmessage']}</h1>\n";
 echo "<br /><form name=\"f_post\" action=\"post.php\" method=\"post\" target=\"_self\">\n";
-echo "  ", form_input_hidden('webtag', $webtag), "\n";
+echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -898,7 +898,7 @@ if ($newthread) {
     echo "    <td align=\"left\"><h2>{$lang['threadtitle']}</h2></td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "    <td align=\"left\">", add_wordfilter_tags(thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE'])), form_input_hidden("t_tid", $reply_to_tid), form_input_hidden("t_rpid", $reply_to_pid), "</td>\n";
+    echo "    <td align=\"left\">", add_wordfilter_tags(thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE'])), form_input_hidden("t_tid", _htmlentities($reply_to_tid)), form_input_hidden("t_rpid", _htmlentities($reply_to_pid)), "</td>\n";
     echo "  </tr>\n";
 }
 
@@ -1072,7 +1072,7 @@ echo "&nbsp;".form_submit("cancel", $lang['cancel'], "tabindex=\"4\" onclick=\"c
 if (forum_get_setting('attachments_enabled', 'Y') && (bh_session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid) || $newthread)) {
 
     echo "&nbsp;".form_button("attachments", $lang['attachments'], "tabindex=\"5\" onclick=\"launchAttachWin('{$aid}', '$webtag')\"");
-    echo form_input_hidden("aid", $aid);
+    echo form_input_hidden("aid", _htmlentities($aid));
 }
 
 if ($allow_sig == true) {
@@ -1117,9 +1117,9 @@ echo $tools->js();
 
 
 if (isset($_POST['t_dedupe'])) {
-    echo form_input_hidden("t_dedupe", $_POST['t_dedupe']);
+    echo form_input_hidden("t_dedupe", _htmlentities($_POST['t_dedupe']));
 }else{
-    echo form_input_hidden("t_dedupe", mktime());
+    echo form_input_hidden("t_dedupe", _htmlentities(mktime()));
 }
 
 if (!$newthread && $reply_to_pid > 0) {

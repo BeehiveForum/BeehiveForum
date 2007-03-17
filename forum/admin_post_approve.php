@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_post_approve.php,v 1.41 2007-03-11 20:58:10 decoyduck Exp $ */
+/* $Id: admin_post_approve.php,v 1.42 2007-03-17 15:26:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -244,8 +244,8 @@ if (isset($msg) && validate_msg($msg)) {
                 }else {
 
                     echo "<form name=\"prefs\" action=\"discussion.php\" method=\"post\" target=\"_self\">\n";
-                    echo "  ", form_input_hidden('webtag', $webtag), "\n";
-                    echo "  ", form_input_hidden('msg', $msg), "\n";
+                    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+                    echo "  ", form_input_hidden('msg', _htmlentities($msg)), "\n";
                 }
 
                 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
@@ -315,9 +315,9 @@ if (isset($msg) && validate_msg($msg)) {
         if (isset($error_html)) echo $error_html;
 
         echo "<form name=\"f_delete\" action=\"admin_post_approve.php\" method=\"post\" target=\"_self\">\n";
-        echo "  ", form_input_hidden('webtag', $webtag), "\n";
-        echo "  ", form_input_hidden('msg', $msg), "\n";
-        echo "  ", form_input_hidden("ret", $ret), "\n";
+        echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+        echo "  ", form_input_hidden('msg', _htmlentities($msg)), "\n";
+        echo "  ", form_input_hidden("ret", _htmlentities($ret)), "\n";
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\">\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.88 2007-01-15 00:10:34 decoyduck Exp $ */
+/* $Id: pm_edit.php,v 1.89 2007-03-17 15:26:18 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -388,8 +388,8 @@ echo "</table>\n";
 echo "<br />\n";
 
 echo "<form name=\"f_post\" action=\"pm_edit.php\" method=\"post\" target=\"_self\">\n";
-echo form_input_hidden('webtag', $webtag), "\n";
-echo form_input_hidden('mid', $mid), "\n";
+echo form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+echo form_input_hidden('mid', _htmlentities($mid)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -567,7 +567,7 @@ echo "              &nbsp;".form_submit('cancel', $lang['cancel'], 'tabindex="4"
 if (forum_get_setting('attachments_enabled', 'Y')) {
 
     echo "              &nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('$uid', '$aid', '$webtag');\"");
-    echo form_input_hidden('aid', $aid);
+    echo form_input_hidden('aid', _htmlentities($aid));
 }
 
 echo "                        </td>\n";
@@ -587,12 +587,6 @@ echo "    </tr>\n";
 echo "  </table>\n";
 
 echo $tools->js();
-
-if (isset($_POST['t_dedupe'])) {
-    echo form_input_hidden("t_dedupe", $_POST['t_dedupe']);
-}else{
-    echo form_input_hidden("t_dedupe", date("YmdHis"));
-}
 
 echo "</form>\n";
 

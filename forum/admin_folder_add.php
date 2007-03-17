@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_add.php,v 1.40 2007-02-10 13:05:43 decoyduck Exp $ */
+/* $Id: admin_folder_add.php,v 1.41 2007-03-17 15:26:16 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -179,8 +179,8 @@ if (isset($error_html) && strlen($error_html) > 0) {
 
 echo "<div align=\"center\">\n";
 echo "  <form name=\"thread_options\" action=\"admin_folder_add.php\" method=\"post\" target=\"_self\">\n";
-echo "  ", form_input_hidden('webtag', $webtag), "\n";
-echo "  ", form_input_hidden('page', $page), "\n";
+echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+echo "  ", form_input_hidden('page', _htmlentities($page)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -196,15 +196,15 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['name']}:</td>\n";
-echo "                        <td align=\"left\">".form_input_text("t_name", (isset($t_name) ? $t_name : ""), 30, 32)."</td>\n";
+echo "                        <td align=\"left\">".form_input_text("t_name", (isset($t_name) ? _htmlentities($t_name) : ""), 30, 32)."</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['description']}:</td>\n";
-echo "                        <td align=\"left\">".form_input_text("t_description", (isset($t_description) ? $t_description : ""), 30, 255)."</td>\n";
+echo "                        <td align=\"left\">".form_input_text("t_description", (isset($t_description) ? _htmlentities($t_description) : ""), 30, 255)."</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['threadtitleprefix']}:</td>\n";
-echo "                        <td align=\"left\">".form_input_text("t_prefix", (isset($t_prefix) ? $t_prefix : ""), 30, 16)."</td>\n";
+echo "                        <td align=\"left\">".form_input_text("t_prefix", (isset($t_prefix) ? _htmlentities($t_prefix) : ""), 30, 16)."</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";

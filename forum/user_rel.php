@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.84 2007-01-19 18:06:24 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.85 2007-03-17 15:26:19 decoyduck Exp $ */
 
 /**
 * Displays and handles the User Relationship page
@@ -254,10 +254,10 @@ $user_peer_perms = perm_get_user_permissions($peer_uid);
 echo "<h1>{$lang['userrelationship']} &raquo; <a href=\"user_profile.php?webtag=$webtag&amp;uid=$peer_uid\" target=\"_blank\" onclick=\"return openProfile($peer_uid, '$webtag')\">", add_wordfilter_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</a></h1>\n";
 echo "<br />\n";
 echo "<form name=\"relationship\" action=\"user_rel.php\" method=\"post\" target=\"_self\">\n";
-echo "  ", form_input_hidden('webtag', $webtag), "\n";
-echo "  ", form_input_hidden("uid", $peer_uid), "\n";
-echo "  ", form_input_hidden("msg", $msg), "\n";
-echo "  ", form_input_hidden("edit_rel", $edit_rel), "\n";
+echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+echo "  ", form_input_hidden("uid", _htmlentities($peer_uid)), "\n";
+echo "  ", form_input_hidden("msg", _htmlentities($msg)), "\n";
+echo "  ", form_input_hidden("edit_rel", _htmlentities($edit_rel)), "\n";
 
 if (isset($peer_uid)) {
 
@@ -380,7 +380,7 @@ if (isset($peer_uid)) {
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\" width=\"200\" valign=\"top\">{$lang['nickname']}</td>\n";
-    echo "                  <td align=\"left\" width=\"400\">", form_input_text("nickname", $nickname, 32), "&nbsp;", form_submit_image('reload.png', "reset_nickname", "Y", "title=\"{$lang['restorenickname']}\""), "</td>\n";
+    echo "                  <td align=\"left\" width=\"400\">", form_input_text("nickname", _htmlentities($nickname), 32), "&nbsp;", form_submit_image('reload.png', "reset_nickname", "Y", "title=\"{$lang['restorenickname']}\""), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";

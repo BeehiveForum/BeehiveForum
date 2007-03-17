@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.php,v 1.73 2007-01-20 19:01:25 decoyduck Exp $ */
+/* $Id: email.php,v 1.74 2007-03-17 15:26:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -173,8 +173,8 @@ if (isset($_POST['submit'])) {
 
         echo "<div align=\"center\">\n";
         echo "<form name=\"f_email\" action=\"user_profile.php\" method=\"get\">\n";
-        echo "  ", form_input_hidden('webtag', $webtag), "\n";
-        echo "  ", form_input_hidden("uid", $to_uid), "\n";
+        echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+        echo "  ", form_input_hidden("uid", _htmlentities($to_uid)), "\n";
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"480\">\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\">\n";
@@ -245,8 +245,8 @@ if (!isset($message)) $message = "";
 
 echo "<div align=\"center\">\n";
 echo "<form name=\"f_email\" action=\"email.php\" method=\"post\">\n";
-echo "  ", form_input_hidden('webtag', $webtag), "\n";
-echo "  ", form_input_hidden("to_uid", $to_uid), "\n";
+echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+echo "  ", form_input_hidden("to_uid", _htmlentities($to_uid)), "\n";
 
 if (isset($error) && strlen(trim($error)) > 0) {
 
@@ -276,11 +276,11 @@ echo "                        <td align=\"left\">{$from_user['NICKNAME']} ({$fro
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">{$lang['subject']}:</td>\n";
-echo "                        <td align=\"left\">", form_field("t_subject", $subject, 54, 128), "</td>\n";
+echo "                        <td align=\"left\">", form_input_text("t_subject", _htmlentities($subject), 54, 128), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" valign=\"top\">{$lang['message']}:</td>\n";
-echo "                        <td align=\"left\">", form_textarea("t_message", $message, 12, 51), "</td>\n";
+echo "                        <td align=\"left\">", form_textarea("t_message", _htmlentities($message), 12, 51), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";

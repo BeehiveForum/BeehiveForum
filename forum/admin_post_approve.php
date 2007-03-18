@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_post_approve.php,v 1.42 2007-03-17 15:26:17 decoyduck Exp $ */
+/* $Id: admin_post_approve.php,v 1.43 2007-03-18 23:10:07 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -134,21 +134,23 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
     $page = 1;
 }
 
-if (isset($_POST['ret']) && strlen(trim(_stripslashes($_POST['ret']))) > 0) {
-    $ret = basename(trim(_stripslashes($_POST['ret'])));
-}elseif (isset($_GET['ret']) && strlen(trim(_stripslashes($_GET['ret']))) > 0) {
-    $ret = basename(trim(_stripslashes($_GET['ret'])));
+// Returning to the approval queue?
+
+if (isset($_POST['return_queue']) && $_POST['return_queue'] == 'Y') {
+    $return_queue = "Y";
+}elseif (isset($_GET['return_queue']) && $_GET['return_queue'] == 'Y') {
+    $return_queue = "Y";
 }else {
-    $ret = "";
+    $return_queue = "N";
 }
 
 // User clicked cancel
 
 if (isset($_POST['cancel'])) {
 
-    if (isset($ret) && strlen(trim($ret)) > 0) {
+    if ($return_queue == "Y") {
 
-        header_redirect($ret);
+        header_redirect("admin_post_approve.php?webtag=$webtag");
 
     }else {
     
@@ -237,9 +239,10 @@ if (isset($msg) && validate_msg($msg)) {
                 echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['approvepost']} &raquo; ", add_wordfilter_tags(thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE'])), "</h1>";
                 echo "<br />\n";
 
-                if (isset($ret) && strlen(trim($ret)) > 0) {
+                if ($return_queue == "Y") {
 
-                    echo "<form name=\"prefs\" action=\"$ret\" method=\"post\" target=\"_self\">\n";
+                    echo "<form name=\"prefs\" action=\"admin_post_approve.php\" method=\"post\" target=\"_self\">\n";
+                    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 
                 }else {
 
@@ -317,7 +320,7 @@ if (isset($msg) && validate_msg($msg)) {
         echo "<form name=\"f_delete\" action=\"admin_post_approve.php\" method=\"post\" target=\"_self\">\n";
         echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
         echo "  ", form_input_hidden('msg', _htmlentities($msg)), "\n";
-        echo "  ", form_input_hidden("ret", _htmlentities($ret)), "\n";
+        echo "  ", form_input_hidden("return_queue", _htmlentities($return_queue)), "\n";
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\">\n";
@@ -412,7 +415,7 @@ if (isset($msg) && validate_msg($msg)) {
             echo "                 <tr>\n";
             echo "                   <td align=\"left\">", thread_format_prefix($post_approval_entry['PREFIX'], $post_approval_entry['TITLE']), "</td>\n";
             echo "                   <td align=\"left\">{$post_approval_entry['MSG']}</td>\n";
-            echo "                   <td align=\"left\">", form_quick_button("admin_post_approve.php", $lang['approve'], array('msg' => $post_approval_entry['MSG'], 'ret' => "admin_post_approve.php?webtag=$webtag")), "</td>\n";
+            echo "                   <td align=\"left\">", form_quick_button("admin_post_approve.php", $lang['approve'], array('msg' => $post_approval_entry['MSG'], 'return_queue' => "Y")), "</td>\n";
             echo "                 </tr>\n";
         }
 

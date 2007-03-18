@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_password.php,v 1.11 2007-01-14 21:04:49 decoyduck Exp $ */
+/* $Id: forum_password.php,v 1.12 2007-03-18 23:10:08 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -104,9 +104,21 @@ if (isset($_POST['forum_password']) && strlen(trim(_stripslashes($_POST['forum_p
 }
 
 if (isset($_POST['ret']) && strlen(trim(_stripslashes($_POST['ret']))) > 0) {
-    $ret = "./index.php?webtag=$webtag&final_uri=". rawurlencode($_POST['ret']);
+    $ret = "index.php?webtag=$webtag&final_uri=". rawurlencode($_POST['ret']);
 }else {
-    $ret = "./index.php?webtag=$webtag";
+    $ret = "index.php?webtag=$webtag";
+}
+
+// validate the return to page
+
+if (isset($ret) && strlen(trim($ret)) > 0) {
+
+    $available_files = get_available_files();
+    $available_files_preg = implode("|^", array_map('preg_quote_callback', $available_files));
+
+    if (preg_match("/^$available_files_preg/", basename($ret)) < 1) {
+        $ret = "index.php?webtag=$webtag";
+    }
 }
 
 // Now we just set a cookie and bounce the user back.

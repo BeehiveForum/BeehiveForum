@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.133 2007-01-23 00:22:20 decoyduck Exp $ */
+/* $Id: index.php,v 1.134 2007-03-18 23:10:08 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -93,6 +93,18 @@ $logon_failed = isset($_COOKIE['bh_logon_failed']);
 
 bh_setcookie("bh_logon", "1", time() - YEAR_IN_SECONDS);
 
+// Are we being redirected somewhere?
+
+if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri']))) > 0) {
+    
+    $final_uri = rawurldecode(trim(_stripslashes($_GET['final_uri'])));
+
+    $available_files = get_available_files();
+    $available_files_preg = implode("|^", array_map('preg_quote_callback', $available_files));
+
+    if (preg_match("/^$available_files_preg/", basename($final_uri)) < 1) unset($final_uri);
+}
+
 if ($session_active && !$logon_failed) {
 
     // Fetch the forum settings
@@ -112,15 +124,9 @@ if ($session_active && !$logon_failed) {
 
     if ($webtag) {
 
-        if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri']))) > 0) {
+        if (isset($final_uri) && strlen($final_uri) > 0) {
 
-            $final_uri = basename(trim(_stripslashes($_GET['final_uri'])));
-
-            if (stristr($final_uri, "?")) {
-                echo "<frame src=\"", rawurldecode($final_uri), "&amp;webtag=$webtag\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
-            }else {
-                echo "<frame src=\"", rawurldecode($final_uri), "?webtag=$webtag\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
-            }
+            echo "<frame src=\"$final_uri\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 
         }else if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
@@ -158,9 +164,7 @@ if ($session_active && !$logon_failed) {
 
     }else {
 
-        if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri']))) > 0) {
-
-            $final_uri = basename(trim(_stripslashes($_GET['final_uri'])));
+        if (isset($final_uri) && strlen($final_uri) > 0) {
 
             echo "<frame src=\"./forums.php?webtag_search=$webtag_search&amp;final_uri=", rawurlencode($final_uri), "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 
@@ -199,9 +203,7 @@ if ($session_active && !$logon_failed) {
         $other_logon = "";
     }
 
-    if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri']))) > 0) {
-
-        $final_uri = basename(trim(_stripslashes($_GET['final_uri'])));
+    if (isset($final_uri) && strlen($final_uri) > 0) {
 
         echo "<frame src=\"./logon.php?webtag=$webtag$other_logon&amp;final_uri=", rawurlencode($final_uri), "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 

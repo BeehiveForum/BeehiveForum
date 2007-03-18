@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_access.php,v 1.46 2007-03-17 15:26:17 decoyduck Exp $ */
+/* $Id: admin_forum_access.php,v 1.47 2007-03-18 23:10:07 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -120,6 +120,18 @@ if (isset($_POST['ret']) && strlen(trim(_stripslashes($_POST['ret']))) > 0) {
     $ret = trim(_stripslashes($_GET['ret']));
 }else {
     $ret = "admin_forums.php?webtag=$webtag";
+}
+
+// validate the return to page
+
+if (isset($ret) && strlen(trim($ret)) > 0) {
+
+    $available_files = get_available_files();
+    $available_files_preg = implode("|^", array_map('preg_quote_callback', $available_files));
+
+    if (preg_match("/^$available_files_preg/", basename($ret)) < 1) {
+        $ret = "./admin_users.php?webtag=$webtag";
+    }
 }
 
 if (isset($_POST['back'])) {

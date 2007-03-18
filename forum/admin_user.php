@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.192 2007-03-17 15:26:17 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.193 2007-03-18 23:10:07 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -108,6 +108,18 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     $ret = $_POST['ret'];
 }else {
     $ret = "./admin_users.php?webtag=$webtag";
+}
+
+// validate the return to page
+
+if (isset($ret) && strlen(trim($ret)) > 0) {
+
+    $available_files = get_available_files();
+    $available_files_preg = implode("|^", array_map('preg_quote_callback', $available_files));
+
+    if (preg_match("/^$available_files_preg/", basename($ret)) < 1) {
+        $ret = "./admin_users.php?webtag=$webtag";
+    }
 }
 
 if (isset($_POST['cancel'])) {
@@ -680,14 +692,14 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
 
                     echo "                      <tr>\n";
                     echo "                        <td align=\"left\" width=\"150\">{$lang['signupreferer']}</td>\n";
-                    echo "                        <td align=\"left\"><a href=\"admin_banned.php?unban_referer=", rawurlencode($user['REFERER_FULL']), "&amp;ret=admin_user.php%3Fuid%3D$uid\" title=\"{$user['REFERER_FULL']}\">{$user['REFERER']}</a> ({$lang['banned']})</td>\n";
+                    echo "                        <td align=\"left\"><a href=\"admin_banned.php?unban_referer=", rawurlencode($user['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(false)), "\" title=\"{$user['REFERER_FULL']}\">{$user['REFERER']}</a> ({$lang['banned']})</td>\n";
                     echo "                      </tr>\n";
 
                 }else {
 
                     echo "                      <tr>\n";
                     echo "                        <td align=\"left\" width=\"150\">{$lang['signupreferer']}</td>\n";
-                    echo "                        <td align=\"left\"><a href=\"admin_banned.php?ban_referer=", rawurlencode($user['REFERER_FULL']), "&amp;ret=admin_user.php%3Fuid%3D$uid\" title=\"{$user['REFERER_FULL']}\">{$user['REFERER']}</a></td>\n";
+                    echo "                        <td align=\"left\"><a href=\"admin_banned.php?ban_referer=", rawurlencode($user['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(false)), "\" title=\"{$user['REFERER_FULL']}\">{$user['REFERER']}</a></td>\n";
                     echo "                      </tr>\n";
                 }
 
@@ -704,11 +716,11 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
 
             if (ip_is_banned($user['IPADDRESS'])) {
 
-                echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_ipaddress={$user['IPADDRESS']}&amp;ret=admin_user.php%3Fuid%3D$uid\" target=\"_self\">{$user['IPADDRESS']} ({$lang['banned']})</a></td>\n";
+                echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_ipaddress={$user['IPADDRESS']}&amp;ret=", rawurlencode(get_request_uri(false)), "\" target=\"_self\">{$user['IPADDRESS']} ({$lang['banned']})</a></td>\n";
 
             }else {
 
-                echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$user['IPADDRESS']}&amp;ret=admin_user.php%3Fuid%3D$uid\" target=\"_self\">{$user['IPADDRESS']}</a></td>\n";
+                echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$user['IPADDRESS']}&amp;ret=", rawurlencode(get_request_uri(false)), "\" target=\"_self\">{$user['IPADDRESS']}</a></td>\n";
             }
 
             echo "                      </tr>\n";

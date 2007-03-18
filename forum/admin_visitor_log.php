@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_visitor_log.php,v 1.8 2007-01-14 21:04:49 decoyduck Exp $ */
+/* $Id: admin_visitor_log.php,v 1.9 2007-03-18 23:10:08 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -176,9 +176,9 @@ if ($admin_visitor_log_array = admin_get_visitor_log($start, 10)) {
                 }
 
                 if (referer_is_banned($visitor['REFERER'])) {
-                    echo "                   <td class=\"posthead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?unban_referer=", rawurlencode($visitor['REFERER_FULL']), "&amp;ret=admin_users.php\" title=\"{$visitor['REFERER_FULL']}\">{$visitor['REFERER']}</a> ({$lang['banned']})</td>\n";
+                    echo "                   <td class=\"posthead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?unban_referer=", rawurlencode($visitor['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(false)), "\" title=\"{$visitor['REFERER_FULL']}\">{$visitor['REFERER']}</a> ({$lang['banned']})</td>\n";
                 }else {
-                    echo "                   <td class=\"posthead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?ban_referer=", rawurlencode($visitor['REFERER_FULL']), "&amp;ret=admin_users.php\" title=\"{$visitor['REFERER_FULL']}\">{$visitor['REFERER']}</a></td>\n";
+                    echo "                   <td class=\"posthead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?ban_referer=", rawurlencode($visitor['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(false)), "\" title=\"{$visitor['REFERER_FULL']}\">{$visitor['REFERER']}</a></td>\n";
                 }
 
             }else {

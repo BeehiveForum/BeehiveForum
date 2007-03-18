@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.php,v 1.90 2007-01-28 01:15:14 decoyduck Exp $ */
+/* $Id: admin.php,v 1.91 2007-03-18 23:10:07 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -95,16 +95,32 @@ html_draw_top('body_tag=false', 'frames=true');
 echo "<frameset cols=\"200,*\" border=\"4\">\n";
 echo "  <frame src=\"./admin_menu.php?webtag=$webtag\" name=\"left\" frameborder=\"0\" framespacing=\"0\" />\n";
 
+$available_pages = array('admin_banned.php', 'admin_default_forum_settings.php', 
+                         'admin_folders.php', 'admin_folder_add.php', 'admin_folder_edit.php', 
+                         'admin_forums.php', 'admin_forum_access.php', 'admin_forum_links.php', 
+                         'admin_forum_settings.php', 'admin_forum_set_passwd.php',
+                         'admin_make_style.php', 'admin_post_approve.php', 'admin_post_stats.php', 
+                         'admin_prof_items.php', 'admin_prof_sect.php', 'admin_rss_feeds.php', 
+                         'admin_startpage.php', 'admin_user.php', 'admin_users.php', 
+                         'admin_user_groups.php', 'admin_user_groups_add.php', 
+                         'admin_user_groups_edit.php', 'admin_user_groups_edit_users.php', 
+                         'admin_viewlog.php', 'admin_visitor_log.php', 'admin_wordfilter.php');
+
 if (isset($_GET['page']) && strlen(trim(_stripslashes($_GET['page']))) > 0) {
 
-    $page = basename(trim(_stripslashes($_GET['page'])));
-    echo "  <frame src=\"$page\" name=\"right\" frameborder=\"0\" framespacing=\"0\" />\n";
+    $page_name = trim(_stripslashes($_GET['page']));    
+    $available_pages_preg = implode("|^", array_map('preg_quote_callback', $available_pages));
+        
+    if (preg_match("/^$available_pages_preg/", $page_name) > 0) {
 
-}else {
-
-    echo "  <frame src=\"./admin_main.php?webtag=$webtag\" name=\"right\" frameborder=\"0\" framespacing=\"0\" />\n";
+        echo "  <frame src=\"$page_name\" name=\"right\" frameborder=\"0\" framespacing=\"0\" />\n";
+        echo "</frameset>\n";
+        html_draw_bottom();
+        exit;
+    }
 }
-
+    
+echo "  <frame src=\"./admin_main.php?webtag=$webtag\" name=\"right\" frameborder=\"0\" framespacing=\"0\" />\n";
 echo "</frameset>\n";
 
 html_draw_bottom(false);

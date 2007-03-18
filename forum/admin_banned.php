@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_banned.php,v 1.52 2007-03-17 15:26:16 decoyduck Exp $ */
+/* $Id: admin_banned.php,v 1.53 2007-03-18 23:10:07 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -160,9 +160,19 @@ $admin_log_rem_types = array(BAN_TYPE_IP    => REMOVE_BANNED_IP,
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     $ret = "messages.php?webtag=$webtag&msg={$_GET['msg']}";
 }elseif (isset($_POST['ret']) && strlen(trim(_stripslashes($_POST['ret']))) > 0) {
-    $ret = basename(trim(_stripslashes($_POST['ret'])));
+    $ret = rawurldecode(trim(_stripslashes($_POST['ret'])));
 }elseif (isset($_GET['ret']) && strlen(trim(_stripslashes($_GET['ret']))) > 0) {
-    $ret = basename(trim(_stripslashes($_GET['ret'])));
+    $ret = rawurldecode(trim(_stripslashes($_GET['ret'])));
+}
+
+// validate the return to page
+
+if (isset($ret) && strlen(trim($ret)) > 0) {
+
+    $available_pages = array('admin_user.php', 'admin_users.php', 'admin_visitor_log.php', 'messages.php');
+    $available_pages_preg = implode("|^", array_map('preg_quote_callback', $available_pages));
+
+    if (preg_match("/^$available_pages_preg/", basename($ret)) < 1) unset($ret);
 }
 
 // Return to the page we came from.
@@ -403,11 +413,7 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
     echo "<form name=\"admin_banned_form\" action=\"admin_banned.php\" method=\"post\">\n";
     echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "  ", form_input_hidden('addban', ''), "\n";
-
-    if (isset($ret)) {
-        echo "  ", form_input_hidden("ret", _htmlentities($ret)), "\n";
-    }
-
+    echo "  ", form_input_hidden("ret", (isset($ret) ? _htmlentities($ret) : '')), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"420\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
@@ -588,11 +594,7 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
     echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "  ", form_input_hidden('ban_id', _htmlentities($ban_id)), "\n";
     echo "  ", form_input_hidden("delete_ban[$ban_id]", "Y"), "\n";
-
-    if (isset($ret)) {
-        echo "  ", form_input_hidden("ret", _htmlentities($ret)), "\n";
-    }
-
+    echo "  ", form_input_hidden("ret", (isset($ret) ? _htmlentities($ret) : '')), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"420\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
@@ -724,11 +726,7 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
     echo "<div align=\"center\">\n";
     echo "<form name=\"admin_banned_form\" action=\"admin_banned.php\" method=\"post\">\n";
     echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-
-    if (isset($ret)) {
-        echo "  ", form_input_hidden("ret", _htmlentities($ret)), "\n";
-    }
-
+    echo "  ", form_input_hidden("ret", (isset($ret) ? _htmlentities($ret) : '')), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";

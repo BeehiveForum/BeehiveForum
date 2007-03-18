@@ -1,0 +1,39 @@
+div.page_header {
+    width: 630px; height: 25px; margin: auto auto 10px;
+    text-align: left; line-height: 25px;
+}
+
+div.page_footer {
+    width: 630px; height: 25px; margin: 10px auto;
+    text-align: center; line-height: 25px;
+}
+
+div.gallery {
+    width: 630px; height: 630px; margin: auto;
+}
+
+div.thumbouter {
+    margin: 3px; border: 1px solid #A0ACC0; float: left;
+    text-align: center; height: 200px; width: 200px;
+}
+
+div.thumbinner {
+    float: left; height: 85px; width: 200px; border: 0px solid;
+}
+
+div.thumbtitle {
+    position: relative; top: 85px; float: left; height: 30px;
+    width: 200px; text-align: center; font-weight: normal;
+    font-family: Verdana, Arial, Helvetica, sans-serif; 
+    border-top: 1px solid #A0ACC0; font-size: 12px;
+    line-height: 25px; overflow: hidden;
+} 
+
+div.singleimage {
+    width: 300px; height: 300px; margin: auto;
+    margin-top: 100px;
+}
+
+div.imagetitle {
+    text-align: center;
+}

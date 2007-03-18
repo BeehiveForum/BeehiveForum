@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forums.php,v 1.57 2007-03-17 15:26:17 decoyduck Exp $ */
+/* $Id: admin_forums.php,v 1.58 2007-03-18 23:10:07 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -327,14 +327,11 @@ if (isset($_POST['delete'])) {
                     forum_update_default($fid);
                 }
 
-                $edit_success = sprintf("<h2>{$lang['successfullyupdatedforum']}</h2>", $forum_data['WEBTAG']);
-                
-                unset($_POST['fid'], $_GET['fid']);
+                $error_html = sprintf("<h2>{$lang['successfullyupdatedforum']}</h2>", $forum_data['WEBTAG']);
 
             }else {
 
-                $edit_success = sprintf("<h2>{$lang['failedtoupdateforum']}</h2>", $forum_data['WEBTAG']);
-                unset($_POST['fid'], $_GET['fid']);
+                $error_html = sprintf("<h2>{$lang['failedtoupdateforum']}</h2>", $forum_data['WEBTAG']);
             }
         }
 
@@ -351,15 +348,33 @@ if (isset($_POST['delete'])) {
     exit;
 
 }elseif (isset($_POST['changepermissions']) && is_array($_POST['changepermissions'])) {
-
+    
     list($forum_webtag) = array_keys($_POST['changepermissions']);
-    header_redirect("admin_forum_access.php?webtag=$forum_webtag");
+
+    $redirect_uri = "admin_forum_access.php?webtag=$forum_webtag&";
+
+    if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
+        $redirect_uri.= "ret=". rawurlencode("admin_forums.php?webtag=$webtag&fid={$_POST['fid']}");
+    }elseif (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
+        $redirect_uri.= "ret=". rawurlencode("admin_forums.php?webtag=$webtag&fid={$_GET['fid']}");
+    }
+
+    header_redirect($redirect_uri);
     exit;
 
 }elseif (isset($_POST['changepassword']) && is_array($_POST['changepassword'])) {
 
     list($forum_webtag) = array_keys($_POST['changepassword']);
-    header_redirect("admin_forum_set_passwd.php?webtag=$forum_webtag");
+
+    $redirect_uri = "admin_forum_set_passwd.php?webtag=$forum_webtag&";
+
+    if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
+        $redirect_uri.= "ret=". rawurlencode("admin_forums.php?webtag=$webtag&fid={$_POST['fid']}");
+    }elseif (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
+        $redirect_uri.= "ret=". rawurlencode("admin_forums.php?webtag=$webtag&fid={$_GET['fid']}");
+    }
+
+    header_redirect($redirect_uri);
     exit;
 }
 
@@ -448,7 +463,20 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
     echo "  <table width=\"500\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"center\">\n";
-    echo "        <table class=\"text_captcha_error\" width=\"95%\">\n";
+    echo "        <table class=\"text_captcha_error\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td align=\"left\" width=\"20\"><img src=\"", style_image('warning.png'), "\" width=\"16\" height=\"16\" alt=\"warning\" /></td>\n";
+    echo "            <td align=\"left\">{$lang['forum_settings_help_38']}</td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "  <br />\n";
+    echo "  <table width=\"500\">\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"center\">\n";
+    echo "        <table class=\"text_captcha_error\" width=\"100%\">\n";
     echo "          <tr>\n";
     echo "            <td align=\"left\" width=\"20\"><img src=\"", style_image('warning.png'), "\" width=\"16\" height=\"16\" alt=\"warning\" /></td>\n";
     echo "            <td align=\"left\">{$lang['forumdatabasewarning']}</td>\n";
@@ -514,10 +542,29 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
     echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">{$lang['forumname']}:</td>\n";
     echo "                        <td align=\"left\">", form_input_text("t_name", (isset($_POST['t_name']) ? _htmlentities(_stripslashes($_POST['t_name'])) : (isset($forum_data['FORUM_SETTINGS']['forum_name']) ? _htmlentities($forum_data['FORUM_SETTINGS']['forum_name']) : "")), 40, 32), form_input_hidden("t_name_old", (isset($forum_data['FORUM_SETTINGS']['forum_name']) ? _htmlentities($forum_data['FORUM_SETTINGS']['forum_name']) : "")), "</td>\n";
     echo "                      </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">{$lang['accesslevel']}:</td>\n";
-    echo "                        <td align=\"left\">", form_dropdown_array("t_access", array(-1, 0, 1, 2), array($lang['closed'], $lang['open'], $lang['restricted'], $lang['passwordprotected']), (isset($_POST['t_access']) && is_numeric($_POST['t_access'])) ? $forum_data['ACCESS_LEVEL'] : (isset($forum_data['ACCESS_LEVEL']) && is_numeric($forum_data['ACCESS_LEVEL'])) ? $forum_data['ACCESS_LEVEL'] : 0), "</td>\n";
-    echo "                      </tr>\n";
+
+    if ($forum_data['ACCESS_LEVEL'] == 1) {
+
+        echo "                      <tr>\n";
+        echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">{$lang['accesslevel']}:</td>\n";
+        echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_dropdown_array("t_access", array(-1, 0, 1, 2), array($lang['closed'], $lang['open'], $lang['restricted'], $lang['passwordprotected']), (isset($_POST['t_access']) && is_numeric($_POST['t_access'])) ? $forum_data['ACCESS_LEVEL'] : (isset($forum_data['ACCESS_LEVEL']) && is_numeric($forum_data['ACCESS_LEVEL'])) ? $forum_data['ACCESS_LEVEL'] : 0), "&nbsp;", form_submit("changepermissions[{$forum_data['WEBTAG']}]", $lang['change']), "</td>\n";
+        echo "                      </tr>\n";
+
+    }elseif ($forum_data['ACCESS_LEVEL'] == 2) {
+
+        echo "                      <tr>\n";
+        echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">{$lang['accesslevel']}:</td>\n";
+        echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_dropdown_array("t_access", array(-1, 0, 1, 2), array($lang['closed'], $lang['open'], $lang['restricted'], $lang['passwordprotected']), (isset($_POST['t_access']) && is_numeric($_POST['t_access'])) ? $forum_data['ACCESS_LEVEL'] : (isset($forum_data['ACCESS_LEVEL']) && is_numeric($forum_data['ACCESS_LEVEL'])) ? $forum_data['ACCESS_LEVEL'] : 0), "&nbsp;", form_submit("changepassword[{$forum_data['WEBTAG']}]", $lang['change']), "</td>\n";
+        echo "                      </tr>\n";
+
+    }else {
+
+        echo "                      <tr>\n";
+        echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">{$lang['accesslevel']}:</td>\n";
+        echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_dropdown_array("t_access", array(-1, 0, 1, 2), array($lang['closed'], $lang['open'], $lang['restricted'], $lang['passwordprotected']), (isset($_POST['t_access']) && is_numeric($_POST['t_access'])) ? $forum_data['ACCESS_LEVEL'] : (isset($forum_data['ACCESS_LEVEL']) && is_numeric($forum_data['ACCESS_LEVEL'])) ? $forum_data['ACCESS_LEVEL'] : 0), "</td>\n";
+        echo "                      </tr>\n";
+    }
+
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">{$lang['defaultforum']}:</td>\n";
     echo "                        <td align=\"left\">", form_radio("t_default", 'Y', $lang['yes'], (isset($_POST['t_default']) && is_numeric($_POST['t_default']) && $_POST['t_default'] == 1) ? true : (isset($forum_data['DEFAULT_FORUM']) && is_numeric($forum_data['DEFAULT_FORUM']) && $forum_data['DEFAULT_FORUM'] == 1) ? true : false), "&nbsp;", "</td>\n";
@@ -543,7 +590,20 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("updateforumsubmit", $lang['save']), " &nbsp;", form_submit("delete", $lang['delete']), " &nbsp;",form_submit("cancel", $lang['cancel']), "</td>\n";
+    echo "      <td align=\"center\">", form_submit("updateforumsubmit", $lang['save']), " &nbsp;", form_submit("delete", $lang['delete']), " &nbsp;",form_submit("cancel", $lang['back']), "</td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "  <br />\n";
+    echo "  <table width=\"500\">\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"center\">\n";
+    echo "        <table class=\"text_captcha_error\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td align=\"left\" width=\"20\"><img src=\"", style_image('warning.png'), "\" width=\"16\" height=\"16\" alt=\"warning\" /></td>\n";
+    echo "            <td align=\"left\">{$lang['forum_settings_help_38']}</td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "  </form>\n";

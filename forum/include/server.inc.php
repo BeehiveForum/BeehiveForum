@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: server.inc.php,v 1.5 2005-12-21 17:33:12 decoyduck Exp $ */
+/* $Id: server.inc.php,v 1.6 2007-03-18 23:10:09 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -116,6 +116,34 @@ function microtime_float()
    return ((float)$usec + (float)$sec);
 }
 
+/**
+* Fetch a list of available forum files
+*
+* Returns an array of Beehive Forum PHP files (forum path only)
+*
+* @return float
+* @param void
+*/
+
+function get_available_files()
+{
+    $available_files_array = array();
+    
+    if ($dir = @opendir('emoticons')) {
+
+        while (($file = @readdir($dir)) !== false) {
+
+            $file_parts = pathinfo($file);
+            
+            if (isset($file_parts['extension']) && $file_parts['extension'] == 'php') {
+
+                $available_files_array[] = $file;
+            }            
+        }
+    }
+
+    return $available_files_array;
+}
 
 // Executed by every script that includes server.inc.php.
 // This crudely disables PHP's register_globals functionality.

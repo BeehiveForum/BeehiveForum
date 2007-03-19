@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.169 2007-03-19 15:19:33 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.170 2007-03-19 15:27:57 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1122,7 +1122,7 @@ function pm_edit_message($mid, $subject, $content)
 
     if (!is_numeric($mid)) return false;
 
-    $subject = addslashes($subject);
+    $subject = addslashes(_htmlentities($subject));
     $content = addslashes($content);
 
     // Update the subject text

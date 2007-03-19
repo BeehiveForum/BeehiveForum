@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.90 2007-03-19 15:19:32 decoyduck Exp $ */
+/* $Id: pm_edit.php,v 1.91 2007-03-19 15:27:57 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -288,18 +288,21 @@ if ($valid && isset($_POST['preview'])) {
 
     if ($pm_elements_array = pm_single_get($mid, PM_FOLDER_OUTBOX)) {
 
-        $t_subject = _htmlentities($t_subject);
-
         pm_save_attachment_id($mid, $aid);
 
         if (pm_edit_message($mid, $t_subject, $t_content)) {
+
             header_redirect("pm.php?webtag=$webtag&folder=3");
+            exit;
+
         }else {
+
             $error_html = "<h2>{$lang['errorcreatingpm']}</h2>";
             $valid = false;
         }
 
     }else {
+
         html_draw_top();
         pm_edit_refuse();
         html_draw_bottom();
@@ -309,12 +312,15 @@ if ($valid && isset($_POST['preview'])) {
 } else if (isset($_POST['emots_toggle_x']) || isset($_POST['emots_toggle_y'])) {
 
     if (isset($_POST['t_subject']) && strlen(trim(_stripslashes($_POST['t_subject']))) > 0) {
-        $t_subject = _htmlentities(trim(_stripslashes($_POST['t_subject'])));
+        $t_subject = trim(_stripslashes($_POST['t_subject']));
     }
 
     if (isset($_POST['t_content']) && strlen(trim(_stripslashes($_POST['t_content']))) > 0) {
+
         $t_content = trim(_stripslashes($_POST['t_content']));
+
         $post->setContent($t_content);
+
         $t_content = $post->getContent();
     }
 
@@ -360,7 +366,8 @@ if ($valid && isset($_POST['preview'])) {
                 $post->diff = false;
 
         $t_content = $post->getContent();
-        $t_subject = $pm_elements_array['SUBJECT'];
+
+        $t_subject = _htmlentities_decode($pm_elements_array['SUBJECT']);
 
     }else {
 

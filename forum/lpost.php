@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.97 2007-03-17 15:26:18 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.98 2007-03-19 15:19:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -437,7 +437,7 @@ if ($valid && isset($_POST['submit'])) {
 
             if ($t_tid > 0) {
 
-                if ($allow_sig == true && trim($t_sig) != "") {
+                if ($allow_sig == true && strlen(trim($t_sig)) > 0) {
                     $t_content.= "\n<div class=\"sig\">".$t_sig."</div>";
 
                 }
@@ -538,7 +538,7 @@ if ($valid && isset($_POST['preview'])) {
 
     $preview_message['CONTENT'] = $t_content;
 
-    if ($allow_sig == true && trim($t_sig) != "") {
+    if ($allow_sig == true && strlen(trim($t_sig)) > 0) {
         $preview_message['CONTENT'] = $preview_message['CONTENT']. "<div class=\"sig\">". $t_sig. "</div>";
     }
 

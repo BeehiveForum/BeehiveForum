@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.89 2007-03-17 15:26:18 decoyduck Exp $ */
+/* $Id: pm_edit.php,v 1.90 2007-03-19 15:19:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -238,14 +238,14 @@ $post = new MessageText($post_html, "", $emots_enabled, $links_enabled);
 
 if (isset($_POST['submit']) || isset($_POST['preview'])) {
 
-    if (isset($_POST['t_subject']) && trim($_POST['t_subject']) != "") {
+    if (isset($_POST['t_subject']) && strlen(trim(_stripslashes($_POST['t_subject']))) > 0) {
         $t_subject = trim(_stripslashes($_POST['t_subject']));
     }else {
         $error_html = "<h2>{$lang['entersubjectformessage']}</h2>";
         $valid = false;
     }
 
-    if (isset($_POST['t_content']) && trim($_POST['t_content']) != "") {
+    if (isset($_POST['t_content']) && strlen(trim(_stripslashes($_POST['t_content']))) > 0) {
 
         $t_content = trim(_stripslashes($_POST['t_content']));
 
@@ -308,11 +308,11 @@ if ($valid && isset($_POST['preview'])) {
 
 } else if (isset($_POST['emots_toggle_x']) || isset($_POST['emots_toggle_y'])) {
 
-    if (isset($_POST['t_subject']) && trim($_POST['t_subject']) != "") {
+    if (isset($_POST['t_subject']) && strlen(trim(_stripslashes($_POST['t_subject']))) > 0) {
         $t_subject = _htmlentities(trim(_stripslashes($_POST['t_subject'])));
     }
 
-    if (isset($_POST['t_content']) && trim($_POST['t_content']) != "") {
+    if (isset($_POST['t_content']) && strlen(trim(_stripslashes($_POST['t_content']))) > 0) {
         $t_content = trim(_stripslashes($_POST['t_content']));
         $post->setContent($t_content);
         $t_content = $post->getContent();
@@ -328,11 +328,6 @@ if ($valid && isset($_POST['preview'])) {
         $t_to_uid = $_POST['t_to_uid'];
     }else {
         $t_to_uid = 0;
-    }
-
-    if (isset($_POST['t_recipient_list']) && trim($_POST['t_recipient_list']) != "") {
-
-        $t_recipient_list = $_POST['t_recipient_list'];
     }
 
     $page_prefs = (double) $page_prefs ^ POST_EMOTICONS_DISPLAY;
@@ -459,7 +454,7 @@ echo "                      </tr>\n";
 $emot_user = bh_session_get_value('EMOTICONS');
 $emot_prev = emoticons_preview($emot_user);
 
-if ($emot_prev != "") {
+if (strlen($emot_prev) > 0) {
 
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -496,7 +491,7 @@ echo "                         <h2>{$lang['message']}</h2>\n";
 
 $tools = new TextAreaHTML("f_post");
 
-$t_content = ($fix_html ? $post->getTidyContent() : $post->getOriginalContent());
+$t_content = ($fix_html ? $post->getTidyContent() : $post->getOriginalContent(true));
 
 $tool_type = 0;
 if ($page_prefs & POST_TOOLBAR_DISPLAY) {

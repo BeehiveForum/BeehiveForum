@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.213 2007-03-17 15:26:17 decoyduck Exp $ */
+/* $Id: edit.php,v 1.214 2007-03-19 15:19:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -833,7 +833,7 @@ echo form_checkbox("t_post_emots", "disabled", $lang['disableemoticonsinmessage'
 $emot_user = bh_session_get_value('EMOTICONS');
 $emot_prev = emoticons_preview($emot_user);
 
-if ($emot_prev != "") {
+if (strlen($emot_prev) > 0) {
 
     echo "<table width=\"190\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
     echo "  <tr>\n";
@@ -864,7 +864,7 @@ echo "<tr><td align=\"left\">\n";
 
 echo "<h2>{$lang['message']}</h2>\n";
 
-$t_content = ($fix_html ? $post->getTidyContent() : $post->getOriginalContent());
+$t_content = ($fix_html ? $post->getTidyContent() : $post->getOriginalContent(true));
 
 $tool_type = 0;
 if ($page_prefs & POST_TOOLBAR_DISPLAY) {
@@ -940,7 +940,7 @@ if ($allow_sig == true) {
     echo "  <tr>\n";
     echo "    <td align=\"left\" class=\"subhead\">{$lang['signature']}:</td>\n";
 
-    $t_sig = ($fix_html ? $sig->getTidyContent() : $sig->getOriginalContent());
+    $t_sig = ($fix_html ? $sig->getTidyContent() : $sig->getOriginalContent(true));
 
     if (($page_prefs & POST_SIGNATURE_DISPLAY) > 0) {
 

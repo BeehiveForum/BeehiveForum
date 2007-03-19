@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.190 2007-03-17 15:26:17 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.191 2007-03-19 15:19:32 decoyduck Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -589,7 +589,7 @@ if ($valid && isset($_POST['submit'])) {
 
             if (strlen($t_message_text) > 0) {
 
-                if ($allow_sig == true && trim($t_sig) != "") {
+                if ($allow_sig == true && strlen(trim($t_sig)) > 0) {
                     $t_message_text.= "\n<div class=\"sig\">$t_sig</div>";
                 }
 
@@ -780,7 +780,7 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
 
         $polldata['CONTENT'] = $t_message_text;
 
-        if ($allow_sig == true && trim($t_sig) != "") {
+        if ($allow_sig == true && strlen(trim($t_sig)) > 0) {
 
             $polldata['CONTENT'].= "<div class=\"sig\">". $t_sig. "</div>";
         }
@@ -828,7 +828,7 @@ if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 $emot_user = bh_session_get_value('EMOTICONS');
 $emot_prev = emoticons_preview($emot_user);
 
-if ($emot_prev != "") {
+if (strlen($emot_prev) > 0) {
 
     echo "<br />\n";
     echo "<table width=\"190\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
@@ -1130,7 +1130,7 @@ if ($allow_sig == true) {
         echo "              <tr>\n";
         echo "                <td align=\"left\" class=\"subhead\">{$lang['signature']}:</td>\n";
 
-        $t_sig = ($fix_html ? $sig->getTidyContent() : $sig->getOriginalContent());
+        $t_sig = ($fix_html ? $sig->getTidyContent() : $sig->getOriginalContent(true));
 
         if (($page_prefs & POST_SIGNATURE_DISPLAY) > 0) {
 

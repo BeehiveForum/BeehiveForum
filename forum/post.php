@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.297 2007-03-17 15:26:18 decoyduck Exp $ */
+/* $Id: post.php,v 1.298 2007-03-19 15:19:33 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -197,7 +197,7 @@ if (isset($_POST['t_newthread']) && (isset($_POST['submit']) || isset($_POST['pr
 
     $newthread = true;
 
-    if (isset($_POST['t_threadtitle']) && trim(_stripslashes($_POST['t_threadtitle']) != "")) {
+    if (isset($_POST['t_threadtitle']) && strlen(trim(_stripslashes($_POST['t_threadtitle']))) > 0) {
         $t_threadtitle = trim(_stripslashes($_POST['t_threadtitle']));
     }else{
         $error_html = "<h2>{$lang['mustenterthreadtitle']}</h2>";
@@ -375,7 +375,7 @@ if (isset($_POST['emots_toggle_x']) || isset($_POST['sig_toggle_x'])) {
 
     if (isset($_POST['t_newthread'])) {
 
-        if (isset($_POST['t_threadtitle']) && trim(_stripslashes($_POST['t_threadtitle']) != "")) {
+        if (isset($_POST['t_threadtitle']) && strlen(trim(_stripslashes($_POST['t_threadtitle']))) > 0) {
 
             $t_threadtitle = trim(_stripslashes($_POST['t_threadtitle']));
         }
@@ -669,7 +669,7 @@ if ($valid && isset($_POST['submit'])) {
 
             if ($t_tid > 0) {
 
-                if ($allow_sig == true && trim($t_sig) != "") {
+                if ($allow_sig == true && strlen(trim($t_sig)) > 0) {
                     $t_content.= "\n<div class=\"sig\">$t_sig</div>";
                 }
 
@@ -820,7 +820,7 @@ if ($valid && isset($_POST['preview'])) {
 
     $preview_message['CONTENT'] = $post->getContent();
 
-    if ($allow_sig == true && trim($t_sig) != "") {
+    if ($allow_sig == true && strlen(trim($t_sig)) > 0) {
         $preview_message['CONTENT'] = $preview_message['CONTENT']. "<div class=\"sig\">". $t_sig. "</div>";
     }
 
@@ -963,7 +963,7 @@ if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 $emot_user = bh_session_get_value('EMOTICONS');
 $emot_prev = emoticons_preview($emot_user);
 
-if ($emot_prev != "") {
+if (strlen($emot_prev) > 0) {
 
     echo "  <tr>\n";
     echo "    <td align=\"left\">&nbsp;</td>\n";
@@ -1002,7 +1002,7 @@ if (!isset($t_to_uid)) $t_to_uid = -1;
 
 echo "<h2>{$lang['message']}</h2>\n";
 
-$t_content = ($fix_html ? $post->getTidyContent() : $post->getOriginalContent());
+$t_content = ($fix_html ? $post->getTidyContent() : $post->getOriginalContent(true));
 
 $tool_type = 0;
 
@@ -1081,7 +1081,7 @@ if ($allow_sig == true) {
     echo "  <tr>\n";
     echo "    <td align=\"left\" class=\"subhead\">{$lang['signature']}:</td>\n";
 
-    $t_sig = ($fix_html ? $sig->getTidyContent() : $sig->getOriginalContent());
+    $t_sig = ($fix_html ? $sig->getTidyContent() : $sig->getOriginalContent(true));
 
     if (($page_prefs & POST_SIGNATURE_DISPLAY) > 0) {
 

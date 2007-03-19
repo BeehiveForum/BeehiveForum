@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.151 2007-03-17 15:26:18 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.152 2007-03-19 15:19:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -328,7 +328,7 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
 
         if ($valid) {
 
-            $t_recipient_array = preg_split("/[;|,]/", trim($_POST['t_recipient_list']));
+            $t_recipient_array = preg_split("/[;|,]/", trim(_stripslashes($_POST['t_recipient_list'])));
 
             $t_new_recipient_array['TO_UID'] = array();
             $t_new_recipient_array['LOGON']  = array();
@@ -341,6 +341,7 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
                 if ($to_user = user_get_uid($to_logon)) {
 
                     if (!in_array($to_user['UID'], $t_new_recipient_array['TO_UID'])) {
+
                         $t_new_recipient_array['TO_UID'][] = $to_user['UID'];
                         $t_new_recipient_array['LOGON'][]  = $to_user['LOGON'];
                         $t_new_recipient_array['NICK'][]   = $to_user['NICKNAME'];
@@ -387,7 +388,7 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
 
         }else {
 
-            $t_recipient_list = $_POST['t_recipient_list'];
+            $t_recipient_list = trim(_stripslashes($_POST['t_recipient_list']));
         }
 
         if ($to_radio == 1) {
@@ -662,13 +663,13 @@ if ($friends_array = pm_user_get_friends()) {
     echo "                        <td align=\"left\">", form_radio("to_radio", 0, $lang['friends'], (isset($to_radio) && $to_radio == 0)), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", form_dropdown_array("t_to_uid", $friends_array['uid_array'], $friends_array['logon_array'], (isset($t_to_uid) ? $t_to_uid : 0), "onclick=\"checkToRadio(0)\"", "to_uid_dropdown"), "</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("t_to_uid", array_keys($friends_array), array_values($friends_array), (isset($t_to_uid) ? $t_to_uid : 0), "onclick=\"checkToRadio(0)\"", "to_uid_dropdown"), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">", form_radio("to_radio", 1, $lang['others'], (isset($to_radio) && $to_radio == 1) ? true : (!isset($to_radio))), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" nowrap=\"nowrap\"><div class=\"bhinputsearch\">", form_input_text("t_recipient_list", isset($t_recipient_list) ? _htmlentities(_stripslashes($t_recipient_list), 0, 0, "", "recipient_list") : "", 0, 0, "title=\"{$lang['recipienttiptext']}\" onclick=\"checkToRadio(1)\"", "recipient_list"), form_submit_image("search_button.png", "search", $lang['search'], "onclick=\"return openRecipientSearch('$webtag', 't_recipient_list');\" title=\"{$lang['search']}\"", "search_button"), "</div></td>\n";
+    echo "                        <td align=\"left\" nowrap=\"nowrap\"><div class=\"bhinputsearch\">", form_input_text("t_recipient_list", isset($t_recipient_list) ? _htmlentities($t_recipient_list) : "", 0, 0, "title=\"{$lang['recipienttiptext']}\" onclick=\"checkToRadio(1)\"", "recipient_list"), form_submit_image("search_button.png", "search", $lang['search'], "onclick=\"return openRecipientSearch('$webtag', 't_recipient_list');\" title=\"{$lang['search']}\"", "search_button"), "</div></td>\n";
     echo "                      </tr>\n";
 
 }else {
@@ -680,7 +681,7 @@ if ($friends_array = pm_user_get_friends()) {
     }
 
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" nowrap=\"nowrap\"><div class=\"bhinputsearch\">", form_input_text("t_recipient_list", isset($t_recipient_list) ? _htmlentities(_stripslashes($t_recipient_list)) : "", 0, 0, "title=\"{$lang['recipienttiptext']}\"", "recipient_list"), form_submit_image("search_button.png", "search", $lang['search'], "onclick=\"return openRecipientSearch('$webtag', 't_recipient_list');\" title=\"{$lang['search']}\"", "search_button"), "</div></td>\n";
+    echo "                        <td align=\"left\" nowrap=\"nowrap\"><div class=\"bhinputsearch\">", form_input_text("t_recipient_list", isset($t_recipient_list) ? _htmlentities($t_recipient_list) : "", 0, 0, "title=\"{$lang['recipienttiptext']}\"", "recipient_list"), form_submit_image("search_button.png", "search", $lang['search'], "onclick=\"return openRecipientSearch('$webtag', 't_recipient_list');\" title=\"{$lang['search']}\"", "search_button"), "</div></td>\n";
     echo "                      </tr>\n";
 }
 
@@ -710,7 +711,7 @@ echo "                      </tr>\n";
 $emot_user = bh_session_get_value('EMOTICONS');
 $emot_prev = emoticons_preview($emot_user);
 
-if ($emot_prev != "") {
+if (strlen($emot_prev) > 0) {
 
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -749,7 +750,7 @@ echo "                         <h2>{$lang['message']}</h2>\n";
 
 $tools = new TextAreaHTML("f_post");
 
-$t_content = ($fix_html ? $post->getTidyContent() : $post->getOriginalContent());
+$t_content = ($fix_html ? $post->getTidyContent() : $post->getOriginalContent(true));
 
 $tool_type = 0;
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: htmltools.inc.php,v 1.55 2007-01-15 00:10:35 decoyduck Exp $ */
+/* $Id: htmltools.inc.php,v 1.56 2007-03-19 15:19:33 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -527,7 +527,7 @@ class TextAreaHTML {
         $str.= "  <!--\n";
         $str.= "    function tools_feedback () {\n";
 
-        if ($b != "") {
+        if (strlen($b) > 0) {
             $str.= "      if(document.{$this->form}.{$b}.checked == true) {\n";
         }else {
             $str.= "      if(document.{$this->form}.{$a}.checked != true) {\n";

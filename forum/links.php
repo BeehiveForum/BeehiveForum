@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.php,v 1.90 2007-02-11 16:37:47 decoyduck Exp $ */
+/* $Id: links.php,v 1.91 2007-03-19 15:19:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -381,7 +381,7 @@ if (sizeof($links['links_array']) > 0 ) {
 
         echo "                  <td align=\"left\" class=\"postbody\" valign=\"top\">", format_time($link['CREATED']), "</td>\n";
 
-        if (isset($link['RATING']) && $link['RATING'] != "") {
+        if (isset($link['RATING']) && strlen($link['RATING']) > 0) {
             echo "                  <td align=\"center\" class=\"postbody\" valign=\"top\">", number_format($link['RATING'], 1, ".", ","), "</td>\n";
         }else {
             echo "                  <td align=\"center\" class=\"postbody\" valign=\"top\">&nbsp;</td>\n";

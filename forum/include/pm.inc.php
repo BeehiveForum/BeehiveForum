@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.168 2007-03-17 15:26:19 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.169 2007-03-19 15:19:33 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -633,8 +633,7 @@ function pm_user_get_friends()
                 }
             }
 
-            $user_get_peers_array['uid_array'][] = $row['UID'];
-            $user_get_peers_array['logon_array'][] = add_wordfilter_tags(format_user_name($row['LOGON'], $row['NICKNAME']));
+            $user_get_peers_array[$row['UID']] = add_wordfilter_tags(format_user_name($row['LOGON'], $row['NICKNAME']));
         }
 
         return $user_get_peers_array;

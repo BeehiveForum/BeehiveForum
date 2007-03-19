@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.124 2007-01-25 09:46:32 decoyduck Exp $ */
+/* $Id: fixhtml.inc.php,v 1.125 2007-03-19 15:19:33 decoyduck Exp $ */
 
 /** A range of functions for filtering/cleaning posted HTML
 *
@@ -293,7 +293,7 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
                             $url_name = "";
                         }
 
-                        if ($url_name != "") {
+                        if (strlen($url_name) > 0) {
 
                             if ($source_name == "") {
 
@@ -636,7 +636,7 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
 
                 $tag = $html_parts[$i];
 
-                if ($tag != "" && $tag != "/") {
+                if (strlen($tag) > 0 && $tag != "/") {
 
                     if (($tag == 'noemots' && $noemots > 0) || ($tag == '/noemots' && $noemots > 1)) {
                         // disallows <noemots> nesting
@@ -1334,7 +1334,7 @@ function add_paragraphs ($html, $base = true, $br_only = true)
     $html_a = array($html);
     $html_p = 0;
 
-    while (trim($html_a[count($html_a)-1]) != "") {
+    while (strlen(trim($html_a[count($html_a)-1])) > 0) {
 
         $cur_pos = strlen($html_a[$html_p]);
 
@@ -1568,7 +1568,7 @@ function add_paragraphs ($html, $base = true, $br_only = true)
                 }
             }
 
-            if ($p_open == true && !preg_match("/<\/p>$/i", $tmp[$j]) && trim($tmp[$j]) != "") {
+            if ($p_open == true && !preg_match("/<\/p>$/i", $tmp[$j]) && strlen(trim($tmp[$j])) > 0) {
 
                 $tmp[$j] .= "</p>";
             }
@@ -1582,7 +1582,7 @@ function add_paragraphs ($html, $base = true, $br_only = true)
 
                 preg_match("/^<(\w+)(\b[^<>]*)>/i", $html_a[$i+1], $tag);
 
-                if ($tags_nest[$tag[1]][1] != true && trim($html_a[$i]) != "") {
+                if ($tags_nest[$tag[1]][1] != true && strlen(trim($html_a[$i])) > 0) {
 
                     $html_a[$i] .= "\n\n";
                 }

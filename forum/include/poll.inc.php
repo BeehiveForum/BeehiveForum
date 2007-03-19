@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.188 2007-03-17 15:26:19 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.189 2007-03-19 15:19:33 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -87,7 +87,7 @@ function poll_create($tid, $poll_options, $answer_groups, $closes, $change_vote,
 
         for ($i = 0; $i <= sizeof($poll_options); $i++) {
 
-            if (isset($poll_options[$i]) && trim($poll_options[$i]) != "") {
+            if (isset($poll_options[$i]) && strlen(trim($poll_options[$i])) > 0) {
 
                 $option_name  = addslashes($poll_options[$i]);
                 $option_group = (isset($answer_groups[$i])) ? $answer_groups[$i] : 1;
@@ -162,7 +162,7 @@ function poll_edit($fid, $tid, $thread_title, $poll_question, $poll_options, $an
 
     for ($i = 0; $i <= sizeof($poll_options); $i++) {
 
-        if (isset($poll_options[$i]) && trim($poll_options[$i]) != "") {
+        if (isset($poll_options[$i]) && strlen(trim($poll_options[$i])) > 0) {
 
             $option_name    = addslashes($poll_options[$i]);
             $option_group = (isset($answer_groups[$i])) ? $answer_groups[$i] : 1;
@@ -397,7 +397,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
     $pollresults  = poll_get_votes($tid);
     $user_poll_data = poll_get_user_vote($tid);
 
-    if (isset($polldata['QUESTION']) && trim(_stripslashes($polldata['QUESTION']) != "")) {
+    if (isset($polldata['QUESTION']) && strlen(trim(_stripslashes($polldata['QUESTION']))) > 0) {
         $question = $polldata['QUESTION'];
     } else {
         $question = thread_get_title($tid);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.99 2007-03-17 15:26:17 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.100 2007-03-19 15:19:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -333,7 +333,7 @@ $max_var = 15;
 
 $elements = array ('navpage' => '', 'threads' => '', 'button' => '', 'subhead' => '', 'h1' => '', 'body' => '', 'box' => '');
 
-if ($mode != "") {
+if (strlen($mode) > 0) {
     uasort($elements, "rand_sort");
 }
 

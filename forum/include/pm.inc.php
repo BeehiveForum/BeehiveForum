@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.170 2007-03-19 15:27:57 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.171 2007-03-19 15:34:08 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1590,14 +1590,6 @@ function pm_export($folder)
 
     $zip_file = new zip_file();
 
-    if ($pm_export_attachments == "Y") {
-
-        if ($attach_img = style_image('attach.png', true)) {
-            $attach_img_contents = implode("", file($attach_img));
-            $zip_file->add_file($attach_img_contents, $attach_img);
-        }
-    }
-
     if ($pm_export_style == "Y") {
 
         if (@file_exists("./styles/style.css")) {
@@ -1835,6 +1827,8 @@ function pm_export_attachments($aid, $from_uid, &$zip_file)
     if (!is_numeric($from_uid)) return false;
     if (!is_object($zip_file)) return false;
 
+    $attachments_added_success = false;
+
     if ($attachment_dir = attachments_check_dir()) {
         
         if (get_attachments($from_uid, $aid, $attachments_array, $image_attachments_array)) {
@@ -1845,6 +1839,7 @@ function pm_export_attachments($aid, $from_uid, &$zip_file)
 
                     if (@file_exists("$attachment_dir/{$attachment['hash']}")) {
 
+                        $attachments_added_success = true;
                         $attachment_content = implode("", file("$attachment_dir/{$attachment['hash']}"));
                         $zip_file->add_file($attachment_content, "attachments/{$attachment['filename']}");
                     }
@@ -1857,16 +1852,23 @@ function pm_export_attachments($aid, $from_uid, &$zip_file)
 
                     if (@file_exists("$attachment_dir/{$attachment['hash']}")) {
 
+                        $attachments_added_success = true;
                         $attachment_content = implode("", file("$attachment_dir/{$attachment['hash']}"));
                         $zip_file->add_file($attachment_content, "attachments/{$attachment['filename']}");
-                    }
 
-                    if (@file_exists("$attachment_dir/{$attachment['hash']}.thumb")) {
+                        if (@file_exists("$attachment_dir/{$attachment['hash']}.thumb")) {
 
-                        $attachment_content = implode("", file("$attachment_dir/{$attachment['hash']}.thumb"));
-                        $zip_file->add_file($attachment_content, "attachments/{$attachment['filename']}.thumb");
+                            $attachment_content = implode("", file("$attachment_dir/{$attachment['hash']}.thumb"));
+                            $zip_file->add_file($attachment_content, "attachments/{$attachment['filename']}.thumb");
+                        }
                     }
                 }
+            }
+
+            if ($attachments_added_success == true && $attach_img = style_image('attach.png', true)) {
+
+                $attach_img_contents = implode("", file($attach_img));
+                $zip_file->add_file($attach_img_contents, $attach_img);
             }
         }
     }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_menu.php,v 1.87 2007-01-28 01:15:14 decoyduck Exp $ */
+/* $Id: admin_menu.php,v 1.88 2007-03-19 16:06:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -183,10 +183,10 @@ if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
     }
 
     echo "  <tr>\n";
-    echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" />&nbsp;<a href=\"admin_forums.php?webtag=$webtag\" target=\"right\">{$lang['manageforums']}</a></td>\n";
+    echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_forums.php?webtag=$webtag\" target=\"right\">{$lang['manageforums']}</a></td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" />&nbsp;<a href=\"admin_default_forum_settings.php?webtag=$webtag\" target=\"right\">{$lang['globalforumsettings']}</a></td>\n";
+    echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_default_forum_settings.php?webtag=$webtag\" target=\"right\">{$lang['globalforumsettings']}</a></td>\n";
     echo "  </tr>\n";
     echo "</table>\n";
 }

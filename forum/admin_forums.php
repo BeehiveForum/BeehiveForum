@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forums.php,v 1.58 2007-03-18 23:10:07 decoyduck Exp $ */
+/* $Id: admin_forums.php,v 1.59 2007-03-19 16:06:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -485,6 +485,8 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
     echo "      </td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
+    echo "  </form>\n";
+    echo "</div>\n";
 
 }elseif (isset($_POST['fid']) || isset($_GET['fid'])) {
 
@@ -607,6 +609,7 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "  </form>\n";
+    echo "</div>\n";
 
 }else {
 
@@ -658,9 +661,9 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
             }
 
             if (isset($forum_data['DEFAULT_FORUM']) && $forum_data['DEFAULT_FORUM'] == 1) {
-                echo "                        <td align=\"left\" nowrap=\"nowrap\"><a href=\"admin_forum_settings.php?webtag={$forum_data['WEBTAG']}\" target=\"_self\"><img src=\"", style_image('edit.png'), "\" border=\"0\" alt=\"{$lang['forumsettings']}\" title=\"{$lang['forumsettings']}\" /></a>&nbsp;<a href=\"admin_forums.php?webtag=$webtag&amp;default=0\"><img src=\"", style_image('default_forum.png'), "\" border=\"0\" alt=\"{$lang['unsetdefault']}\" title=\"{$lang['unsetdefault']}\" /></td>\n";
+                echo "                        <td align=\"left\" nowrap=\"nowrap\"><a href=\"admin_forum_settings.php?webtag={$forum_data['WEBTAG']}\" target=\"_self\"><img src=\"", style_image('edit.png'), "\" border=\"0\" alt=\"{$lang['forumsettings']}\" title=\"{$lang['forumsettings']}\" /></a>&nbsp;<a href=\"admin_forums.php?webtag=$webtag&amp;page=$page&amp;default=0\"><img src=\"", style_image('default_forum.png'), "\" border=\"0\" alt=\"{$lang['unsetdefault']}\" title=\"{$lang['unsetdefault']}\" /></a></td>\n";
             }else {
-                echo "                        <td align=\"left\" nowrap=\"nowrap\"><a href=\"admin_forum_settings.php?webtag={$forum_data['WEBTAG']}\" target=\"_self\"><img src=\"", style_image('edit.png'), "\" border=\"0\" alt=\"{$lang['forumsettings']}\" title=\"{$lang['forumsettings']}\" /></a>&nbsp;<a href=\"admin_forums.php?webtag=$webtag&amp;default={$forum_data['FID']}\"><img src=\"", style_image('set_default_forum.png'), "\" border=\"0\" alt=\"{$lang['makedefault']}\" title=\"{$lang['makedefault']}\" /></td>\n";
+                echo "                        <td align=\"left\" nowrap=\"nowrap\"><a href=\"admin_forum_settings.php?webtag={$forum_data['WEBTAG']}\" target=\"_self\"><img src=\"", style_image('edit.png'), "\" border=\"0\" alt=\"{$lang['forumsettings']}\" title=\"{$lang['forumsettings']}\" /></a>&nbsp;<a href=\"admin_forums.php?webtag=$webtag&amp;page=$page&amp;default={$forum_data['FID']}\"><img src=\"", style_image('set_default_forum.png'), "\" border=\"0\" alt=\"{$lang['makedefault']}\" title=\"{$lang['makedefault']}\" /></a></td>\n";
             }
 
             echo "                </tr>\n";

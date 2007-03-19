@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_links.php,v 1.38 2007-03-17 15:26:17 decoyduck Exp $ */
+/* $Id: admin_forum_links.php,v 1.39 2007-03-19 16:06:23 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -353,6 +353,7 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "  </form>\n";
+    echo "</div>\n";
 
 }elseif (isset($_POST['lid']) || isset($_GET['lid'])) {
 
@@ -435,6 +436,7 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "  </form>\n";
+    echo "</div>\n";
 
 }else {
 

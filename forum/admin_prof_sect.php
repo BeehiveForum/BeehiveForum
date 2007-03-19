@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_sect.php,v 1.95 2007-03-17 15:26:17 decoyduck Exp $ */
+/* $Id: admin_prof_sect.php,v 1.96 2007-03-19 16:06:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -270,6 +270,7 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "  </form>\n";
+    echo "</div>\n";
 
 }elseif (isset($_POST['psid']) || isset($_GET['psid'])) {
 
@@ -351,6 +352,7 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "  </form>\n";
+    echo "</div>\n";
 
 }else {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_set_passwd.php,v 1.18 2007-03-18 23:10:07 decoyduck Exp $ */
+/* $Id: admin_forum_set_passwd.php,v 1.19 2007-03-19 16:06:23 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -249,7 +249,7 @@ echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "&nbsp
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";
-echo "<div>\n";
+echo "</div>\n";
 
 html_draw_bottom();
 

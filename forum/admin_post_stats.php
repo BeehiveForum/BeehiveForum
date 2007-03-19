@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: admin_post_stats.php,v 1.29 2007-03-17 15:26:17 decoyduck Exp $ */
+/* $Id: admin_post_stats.php,v 1.30 2007-03-19 16:06:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -262,10 +262,11 @@ echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"100\">Date from:</td>\n";
+echo "                        <td align=\"left\" width=\"100\">{$lang['postedfrom']}:</td>\n";
 echo "                        <td align=\"left\">", form_date_dropdowns($from_year, $from_month, $from_day, "from_", 2002), "</td>\n";
 echo "                      </tr>\n";
-echo "                        <td align=\"left\" width=\"100\">Date to:</td>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"100\">{$lang['postedto']}:</td>\n";
 echo "                        <td align=\"left\">", form_date_dropdowns($to_year, $to_month, $to_day, "to_", 2002), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";

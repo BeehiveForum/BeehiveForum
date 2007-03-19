@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.193 2007-03-18 23:10:07 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.194 2007-03-19 16:06:24 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -801,7 +801,7 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
         echo "                              <td align=\"center\">\n";
         echo "                                <table class=\"text_captcha_error\" width=\"95%\">\n";
         echo "                                  <tr>\n";
-        echo "                                    <td align=\"left\" width=\"20\"><img src=\"", style_image('warning.png'), "\" /></td>\n";
+        echo "                                    <td align=\"left\" width=\"20\"><img src=\"", style_image('warning.png'), "\" alt=\"\" /></td>\n";
         echo "                                    <td align=\"left\">{$lang['usergroupwarning']}</td>\n";
         echo "                                  </tr>\n";
         echo "                                </table>\n";
@@ -993,7 +993,7 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
         echo "                        <td align=\"center\">\n";
         echo "                          <table class=\"text_captcha_error\" width=\"95%\">\n";
         echo "                            <tr>\n";
-        echo "                              <td align=\"left\" width=\"20\"><img src=\"", style_image('warning.png'), "\" /></td>\n";
+        echo "                              <td align=\"left\" width=\"20\"><img src=\"", style_image('warning.png'), "\" alt=\"\" /></td>\n";
         echo "                              <td align=\"left\">{$lang['usergroupwarning']}</td>\n";
         echo "                            </tr>\n";
         echo "                          </table>\n";

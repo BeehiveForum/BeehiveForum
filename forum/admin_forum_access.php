@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_access.php,v 1.47 2007-03-18 23:10:07 decoyduck Exp $ */
+/* $Id: admin_forum_access.php,v 1.48 2007-03-19 16:06:23 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -227,14 +227,14 @@ if ($user_array = forum_get_permissions($fid)) {
     echo "            </td>\n";
     echo "          </tr>\n";
     echo "        </table>\n";
-    echo "      </tr>\n";
-    echo "      <tr>\n";
-    echo "        <td align=\"left\">&nbsp;</td>\n";
-    echo "      </tr>\n";
-    echo "      <tr>\n";
-    echo "        <td align=\"center\">", form_submit('remove_user', $lang['removeselectedusers']), "</td>\n";
-    echo "      </tr>\n";
-    echo "    </td>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">&nbsp;</td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"center\">", form_submit('remove_user', $lang['removeselectedusers']), "</td>\n";
+    echo "    </tr>\n";
     echo "  </table>\n";
     echo "  <br />\n";
 
@@ -253,8 +253,8 @@ if ($user_array = forum_get_permissions($fid)) {
     echo "            </td>\n";
     echo "          </tr>\n";
     echo "        </table>\n";
-    echo "      </tr>\n";
-    echo "    </td>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
     echo "  </table>\n";
     echo "  <br />\n";
 }
@@ -296,14 +296,14 @@ if (strlen($usersearch) > 0) {
         echo "            </td>\n";
         echo "          </tr>\n";
         echo "        </table>\n";
-        echo "      </tr>\n";
-        echo "      <tr>\n";
-        echo "        <td align=\"left\">&nbsp;</td>\n";
-        echo "      </tr>\n";
-        echo "      <tr>\n";
-        echo "        <td align=\"center\">", form_submit('add_searched_user', $lang['addselectedusers']), "</td>\n";
-        echo "      </tr>\n";
-        echo "    </td>\n";
+        echo "      </td>\n";
+        echo "    </tr>\n";
+        echo "    <tr>\n";
+        echo "      <td align=\"left\">&nbsp;</td>\n";
+        echo "    </tr>\n";
+        echo "    <tr>\n";
+        echo "      <td align=\"center\">", form_submit('add_searched_user', $lang['addselectedusers']), "</td>\n";
+        echo "    </tr>\n";
         echo "  </table>\n";
         echo "  <br />\n";
 
@@ -352,14 +352,14 @@ echo "              </table>\n";
 echo "            </td>\n";
 echo "          </tr>\n";
 echo "        </table>\n";
-echo "      </tr>\n";
-echo "      <tr>\n";
-echo "        <td align=\"left\">&nbsp;</td>\n";
-echo "      </tr>\n";
-echo "      <tr>\n";
-echo "        <td align=\"center\">", form_submit("back", $lang['back']), "</td>\n";
-echo "      </tr>\n";
-echo "    </td>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">&nbsp;</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td align=\"center\">", form_submit("back", $lang['back']), "</td>\n";
+echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";
 echo "</div>\n";

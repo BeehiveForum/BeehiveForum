@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.php,v 1.34 2007-03-17 15:26:17 decoyduck Exp $ */
+/* $Id: dictionary.php,v 1.35 2007-03-24 17:32:23 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -118,10 +118,7 @@ if (isset($_POST['obj_id']) && strlen(trim(_stripslashes($_POST['obj_id']))) > 0
 }else {
 
     html_draw_top();
-
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<h2>{$lang['noformobj']}</h2>\n";
-
+    html_error_msg($lang['noformobj']);
     html_draw_bottom();
     exit;
 }
@@ -134,7 +131,7 @@ if (isset($_POST['content']) && strlen(trim(_stripslashes($_POST['content']))) >
 
 }else {
 
-    // Apache has a limit on the length an URL query can be so we need to
+    // Apache has a limit on the length an URL query, so we need to
     // send the content to be checked via POST or Javascript.
 
     html_draw_top('dictionary.js', "onload=initialise_dictionary('$obj_id')");
@@ -181,10 +178,7 @@ $dictionary = new dictionary($t_content, $t_ignored_words, $current_word, $obj_i
 if (!$dictionary->is_installed()) {
 
     html_draw_top();
-
-    echo "<h1>{$lang['dictionary']}</h1>\n";
-    echo "<h2>{$lang['dictionarynotinstalled']}</h2>\n";
-
+    html_error_msg($lang['dictionarynotinstalled']);
     html_draw_bottom();
     exit;
 }

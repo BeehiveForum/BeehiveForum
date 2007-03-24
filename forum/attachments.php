@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.130 2007-03-17 15:26:17 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.131 2007-03-24 17:32:23 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -103,8 +103,9 @@ if (!forum_check_access_level()) {
 // If attachments are disabled then no need to go any further.
 
 if (forum_get_setting('attachments_enabled', 'N')) {
+
     html_draw_top();
-    echo "<h1>{$lang['attachmentshavebeendisabled']}</h1>\n";
+    html_error_msg($lang['attachmentshavebeendisabled']);
     html_draw_bottom();
     exit;
 }
@@ -112,8 +113,9 @@ if (forum_get_setting('attachments_enabled', 'N')) {
 // If the attachments directory is undefined we can't go any further
 
 if (!$attachment_dir = attachments_check_dir()) {
+
     html_draw_top();
-    echo "<h1>{$lang['attachmentshavebeendisabled']}</h1>\n";
+    html_error_msg($lang['attachmentshavebeendisabled']);
     html_draw_bottom();
     exit;
 }
@@ -131,8 +133,7 @@ if (isset($_GET['aid']) && is_md5($_GET['aid'])) {
 }else {
 
     html_draw_top();
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<h2>{$lang['aidnotspecified']}</h2>\n";
+    html_error_msg($lang['aidnotspecified']);
     html_draw_bottom();
     exit;
 }
@@ -473,7 +474,7 @@ if (get_attachments($uid, $aid, $attachments_array, $image_attachments_array)) {
 
         foreach ($attachments_array as $key => $attachment) {
 
-            if ($attachment_link = attachment_make_link($attachment, false, true)) {
+            if ($attachment_link = attachment_make_link($attachment, false)) {
 
                 echo "                <tr>\n";
                 echo "                  <td align=\"center\" width=\"25\">", form_checkbox("delete_attachment[{$attachment['hash']}]", "Y", ""), "</td>\n";
@@ -492,7 +493,7 @@ if (get_attachments($uid, $aid, $attachments_array, $image_attachments_array)) {
 
         foreach ($image_attachments_array as $key => $attachment) {
 
-            if ($attachment_link = attachment_make_link($attachment, false, true)) {
+            if ($attachment_link = attachment_make_link($attachment, false)) {
 
                 echo "                <tr>\n";
                 echo "                  <td align=\"center\" width=\"25\">", form_checkbox("delete_attachment[{$attachment['hash']}]", "Y", ""), "</td>\n";

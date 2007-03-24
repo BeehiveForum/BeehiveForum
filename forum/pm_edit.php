@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.91 2007-03-19 15:27:57 decoyduck Exp $ */
+/* $Id: pm_edit.php,v 1.92 2007-03-24 17:32:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -111,7 +111,8 @@ $uid = bh_session_get_value('UID');
 
 // Guests can't access PMs
 
-if ($uid == 0) {
+if (user_is_guest()) {
+
     html_guest_error();
     exit;
 }
@@ -131,13 +132,17 @@ pm_user_prune_folders();
 // Get the Message ID (MID)
 
 if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
+
     $mid = $_GET['mid'];
+
 }elseif (isset($_POST['mid']) && is_numeric($_POST['mid'])) {
+
     $mid = $_POST['mid'];
+
 }else {
+
     html_draw_top();
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<h2>{$lang['nomessagespecifiedforedit']}</h2>";
+    html_error_msg($lang['nomessagespecifiedforedit']);
     html_draw_bottom();
     exit;
 }
@@ -270,14 +275,15 @@ if ($valid && isset($_POST['preview'])) {
 
     $edit_html = ($_POST['t_post_html'] == "Y");
 
-    if ($pm_elements_array = pm_single_get($mid, PM_FOLDER_OUTBOX)) {
+    if ($pm_message_array = pm_message_get($mid, PM_FOLDER_OUTBOX)) {
 
-        $pm_elements_array['CONTENT'] = $t_content;
+        $pm_message_array['CONTENT'] = $t_content;
 
-        $pm_elements_array['SUBJECT'] = _htmlentities($t_subject);
-        $pm_elements_array['FOLDER'] = PM_FOLDER_OUTBOX;
+        $pm_message_array['SUBJECT'] = _htmlentities($t_subject);
+        $pm_message_array['FOLDER'] = PM_FOLDER_OUTBOX;
 
     }else {
+
         html_draw_top();
         pm_edit_refuse();
         html_draw_bottom();
@@ -286,7 +292,7 @@ if ($valid && isset($_POST['preview'])) {
 
 }else if ($valid && isset($_POST['submit'])) {
 
-    if ($pm_elements_array = pm_single_get($mid, PM_FOLDER_OUTBOX)) {
+    if ($pm_message_array = pm_message_get($mid, PM_FOLDER_OUTBOX)) {
 
         pm_save_attachment_id($mid, $aid);
 
@@ -345,9 +351,10 @@ if ($valid && isset($_POST['preview'])) {
 
 } else {
 
-    if ($pm_elements_array = pm_single_get($mid, PM_FOLDER_OUTBOX)) {
+    if ($pm_message_array = pm_message_get($mid, PM_FOLDER_OUTBOX)) {
 
-        if ($pm_elements_array['TYPE'] != PM_UNREAD) {
+        if ($pm_message_array['TYPE'] != PM_UNREAD) {
+
             html_draw_top();
             pm_edit_refuse();
             html_draw_bottom();
@@ -367,7 +374,7 @@ if ($valid && isset($_POST['preview'])) {
 
         $t_content = $post->getContent();
 
-        $t_subject = _htmlentities_decode($pm_elements_array['SUBJECT']);
+        $t_subject = _htmlentities_decode($pm_message_array['SUBJECT']);
 
     }else {
 
@@ -413,14 +420,14 @@ if (!$valid && isset($error_html) && strlen(trim($error_html)) > 0) {
 
 if ($valid && isset($_POST['preview'])) {
 
-    $pm_elements_array['FOLDER'] = PM_FOLDER_OUTBOX;
+    $pm_message_array['FOLDER'] = PM_FOLDER_OUTBOX;
 
     echo "              <table class=\"posthead\" width=\"720\">\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\" class=\"subhead\">{$lang['messagepreview']}</td>\n";
     echo "                </tr>";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\"><br />", pm_display($pm_elements_array), "</td>\n";
+    echo "                  <td align=\"left\"><br />", pm_display($pm_message_array), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
@@ -445,7 +452,7 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\"><h2>{$lang['to']}</h2></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$pm_elements_array['TO_UID']}\" target=\"_blank\" onclick=\"return openProfile({$pm_elements_array['TO_UID']}, '$webtag')\" target=\"_self\">", _stripslashes(add_wordfilter_tags(format_user_name($pm_elements_array['TLOGON'], $pm_elements_array['TNICK']))), "</a></td>\n";
+echo "                        <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$pm_message_array['TO_UID']}\" target=\"_blank\" onclick=\"return openProfile({$pm_message_array['TO_UID']}, '$webtag')\" target=\"_self\">", _stripslashes(add_wordfilter_tags(format_user_name($pm_message_array['TLOGON'], $pm_message_array['TNICK']))), "</a></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";

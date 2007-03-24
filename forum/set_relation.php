@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: set_relation.php,v 1.62 2006-11-19 00:13:22 decoyduck Exp $ */
+/* $Id: set_relation.php,v 1.63 2007-03-24 17:32:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -123,8 +123,7 @@ if (isset($_GET['uid']) && isset($_GET['rel']) && is_numeric($_GET['uid']) && is
 }else {
 
     html_draw_top();
-    echo "<h1>Invalid Operation</h1>\n";
-    echo "<h2>required information not found</h2>";
+    html_error_msg($lang['requiredinformationnotfound']);
     html_draw_bottom();
     exit;
 }

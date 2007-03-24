@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.107 2007-03-17 15:26:17 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.108 2007-03-24 17:32:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -102,8 +102,9 @@ if (!forum_check_access_level()) {
 // If attachments are disabled then no need to go any further.
 
 if (forum_get_setting('attachments_enabled', 'N')) {
+
     html_draw_top();
-    echo "<h1>{$lang['attachmentshavebeendisabled']}</h1>\n";
+    html_error_msg($lang['attachmentshavebeendisabled']);
     html_draw_bottom();
     exit;
 }
@@ -111,8 +112,9 @@ if (forum_get_setting('attachments_enabled', 'N')) {
 // If the attachments directory is undefined we can't go any further
 
 if (!$attachment_dir = attachments_check_dir()) {
+
     html_draw_top();
-    echo "<h1>{$lang['attachmentshavebeendisabled']}</h1>\n";
+    html_error_msg($lang['attachmentshavebeendisabled']);
     html_draw_bottom();
     exit;
 }
@@ -182,8 +184,7 @@ if (isset($_GET['aid']) && is_md5($_GET['aid'])) {
 if (($uid != bh_session_get_value('UID')) && !(bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid))) {
    
     html_draw_top();
-    echo "<h1>{$lang['accessdenied']}</h1>\n";
-    echo "<p>{$lang['accessdeniedexp']}</p>";
+    html_error_msg($lang['accessdeniedexp']);
     html_draw_bottom();
     exit;
 }

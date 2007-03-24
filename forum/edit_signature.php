@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_signature.php,v 1.82 2007-03-17 15:26:17 decoyduck Exp $ */
+/* $Id: edit_signature.php,v 1.83 2007-03-24 17:32:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -115,26 +115,25 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
             $uid = $_GET['siguid'];
             $admin_edit = true;
 
-        } else {
+        }else {
 
             html_draw_top();
-            echo "<h1>{$lang['error']}</h1>\n";
-            echo "<h2>{$lang['nouserspecified']}</h2>\n";
+            html_error_msg($lang['nouserspecified']);
             html_draw_bottom();
             exit;
         }
 
-    } elseif (isset($_POST['siguid'])) {
+    }elseif (isset($_POST['siguid'])) {
 
         if (is_numeric($_POST['siguid'])) {
 
             $uid = $_POST['siguid'];
             $admin_edit = true;
 
-        } else {
+        }else {
+
             html_draw_top();
-            echo "<h1>{$lang['error']}</h1>\n";
-            echo "<h2>{$lang['nouserspecified']}</h2>\n";
+            html_error_msg($lang['nouserspecified']);
             html_draw_bottom();
             exit;
         }
@@ -164,8 +163,7 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) && ($uid != bh_session_get_value('UID'))) {
 
     html_draw_top();
-    echo "<h1>{$lang['accessdenied']}</h1>\n";
-    echo "<p>{$lang['accessdeniedexp']}</p>";
+    html_error_msg($lang['accessdeniedexp']);
     html_draw_bottom();
     exit;
 }

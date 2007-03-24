@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.153 2007-03-19 15:27:57 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.154 2007-03-24 17:32:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -113,7 +113,8 @@ $uid = bh_session_get_value('UID');
 
 // Guests can't access PMs
 
-if ($uid == 0) {
+if (user_is_guest()) {
+
     html_guest_error();
     exit;
 }
@@ -177,7 +178,7 @@ if (isset($t_rmid) && $t_rmid > 0) {
 
     $t_recipient_list = pm_get_user($t_rmid);
 
-    if ($pm_data = pm_single_get($t_rmid, PM_FOLDER_INBOX)) {
+    if ($pm_data = pm_message_get($t_rmid, PM_FOLDER_INBOX)) {
 
         $pm_data['CONTENT'] = pm_get_content($t_rmid);
 
@@ -545,6 +546,7 @@ if ($valid && isset($_POST['submit'])) {
 }
 
 html_draw_top("onUnload=clearFocus()", "openprofile.js", "pm.js", "attachments.js", "dictionary.js", "htmltools.js", "basetarget=_blank");
+
 draw_header_pm();
 
 echo "<table border=\"0\" cellpadding=\"20\" cellspacing=\"0\" width=\"100%\">\n";

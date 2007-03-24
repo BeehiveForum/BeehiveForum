@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.191 2007-03-19 15:19:32 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.192 2007-03-24 17:32:23 decoyduck Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -123,8 +123,9 @@ if (bh_session_get_value('UID') == 0) {
 // Check to see if the forum owner has allowed the creation of polls
 
 if (forum_get_setting('allow_polls', 'N')) {
+
     html_draw_top();
-    echo "<h1>{$lang['pollshavebeendisabled']}</h1>\n";
+    html_error_msg($lang['pollshavebeendisabled']);
     html_draw_bottom();
     exit;
 }
@@ -132,6 +133,7 @@ if (forum_get_setting('allow_polls', 'N')) {
 // Check that there are some available folders for this thread type
 
 if (!folder_get_by_type_allowed(FOLDER_ALLOW_POLL_THREAD)) {
+
     html_message_type_error();
     exit;
 }
@@ -626,8 +628,7 @@ if (!isset($t_fid)) {
 if (!$folder_dropdown = folder_draw_dropdown($t_fid, "t_fid", "" ,FOLDER_ALLOW_POLL_THREAD, "", "post_folder_dropdown")) {
 
     html_draw_top();
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<h2>{$lang['cannotcreatenewthreads']}</h2>";
+    html_error_msg($lang['cannotcreatenewthreads']);
     html_draw_bottom();
     exit;
 }
@@ -1137,9 +1138,7 @@ if ($allow_sig == true) {
             echo "                <td class=\"subhead\" align=\"right\">", form_submit_image('sig_hide.png', 'sig_toggle', 'hide'), "&nbsp;</td>\n";
             echo "              </tr>\n";
             echo "              <tr>\n";
-            echo "                <td align=\"left\" colspan=\"2\">\n";
-
-            echo $tools->textarea("t_sig", $t_sig, 5, 75, "virtual", "tabindex=\"7\"", "signature_content")."\n";
+            echo "                <td align=\"left\" colspan=\"2\">", $tools->textarea("t_sig", $t_sig, 5, 75, "virtual", "tabindex=\"7\"", "signature_content"), "</td>\n";
 
             if ($sig->isDiff() && $fix_html && !$fetched_sig) {
 

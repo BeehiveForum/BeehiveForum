@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_add.php,v 1.79 2007-03-17 15:26:18 decoyduck Exp $ */
+/* $Id: links_add.php,v 1.80 2007-03-24 17:32:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -101,8 +101,7 @@ if (!forum_check_access_level()) {
 if (!forum_get_setting('show_links', 'Y')) {
 
     html_draw_top();
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<h2>{$lang['maynotaccessthissection']}</h2>\n";
+    html_error_msg($lang['maynotaccessthissection']);
     html_draw_bottom();
     exit;
 }
@@ -110,8 +109,9 @@ if (!forum_get_setting('show_links', 'Y')) {
 $folders = links_folders_get(bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0));
 
 if (bh_session_get_value('UID') == 0) {
+
     html_guest_error();
-        exit;
+    exit;
 }
 
 $uid = bh_session_get_value('UID');
@@ -219,7 +219,7 @@ if (isset($_POST['submit']) && $mode == "link") {
     if ($_GET['mode'] == 'link' && !in_array($fid, array_keys($folders))) {
 
         html_draw_top();
-        echo "<h2>{$lang['mustspecifyvalidfolder']}</h2>";
+        html_error_msg($lang['mustspecifyvalidfolder']);
         html_draw_bottom();
         exit;
     }
@@ -227,7 +227,7 @@ if (isset($_POST['submit']) && $mode == "link") {
 }else {
 
     html_draw_top();
-    echo "<h2>{$lang['mustspecifyfolder']}</h2>";
+    html_error_msg($lang['mustspecifyfolder']);
     html_draw_bottom();
     exit;
 }

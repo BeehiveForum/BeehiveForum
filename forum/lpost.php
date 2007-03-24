@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.98 2007-03-19 15:19:32 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.99 2007-03-24 17:32:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -279,10 +279,10 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     if (!$t_fid = thread_get_folder($reply_to_tid, $reply_to_pid)) {
 
-        html_draw_top();
+        light_html_draw_top();
         echo "<h2>{$lang['error']}</h2>\n";
         echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
-        html_draw_bottom();
+        light_html_draw_bottom();
         exit;
     }
 
@@ -294,10 +294,10 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     if (!bh_session_check_perm(USER_PERM_POST_CREATE | USER_PERM_POST_READ, $t_fid)) {
 
-        html_draw_top();
+        light_html_draw_top();
         echo "<h2>{$lang['error']}</h2>\n";
         echo "<h2>{$lang['cannotcreatepostinfolder']}</h2>";
-        html_draw_bottom();
+        light_html_draw_bottom();
         exit;
     }
 
@@ -309,10 +309,10 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     if (!$t_fid = thread_get_folder($reply_to_tid, $reply_to_pid)) {
 
-        html_draw_top();
+        light_html_draw_top();
         echo "<h2>{$lang['error']}</h2>\n";
         echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
-        html_draw_bottom();
+        light_html_draw_bottom();
         exit;
     }
 
@@ -324,10 +324,10 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     if (!bh_session_check_perm(USER_PERM_POST_CREATE | USER_PERM_POST_READ, $t_fid)) {
 
-        html_draw_top();
+        light_html_draw_top();
         echo "<h2>{$lang['error']}</h2>\n";
         echo "<h2>{$lang['cannotcreatepostinfolder']}</h2>";
-        html_draw_bottom();
+        light_html_draw_bottom();
         exit;
     }
 
@@ -362,10 +362,10 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     if (isset($t_fid) && !bh_session_check_perm(USER_PERM_THREAD_CREATE | USER_PERM_POST_READ, $t_fid)) {
 
-        html_draw_top();
+        light_html_draw_top();
         echo "<h2>{$lang['error']}</h2>\n";
         echo "<h2>{$lang['cannotcreatethreadinfolder']}</h2>";
-        html_draw_bottom();
+        light_html_draw_bottom();
         exit;
     }
 }

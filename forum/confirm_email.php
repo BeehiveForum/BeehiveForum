@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: confirm_email.php,v 1.10 2007-03-17 15:26:17 decoyduck Exp $ */
+/* $Id: confirm_email.php,v 1.11 2007-03-24 17:32:23 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -78,28 +78,24 @@ if (isset($_GET['h']) && is_md5($_GET['h'])) {
 
 if (isset($_GET['resend']) && isset($uid)) {
 
-    html_draw_top();
-
     if (email_send_user_confirmation($uid)) {
 
-        echo "<h1>{$lang['emailconfirmation']}</h1>\n";
-        echo "<h2>{$lang['emailconfirmationsent']}</h2>\n";
-
-    }else {
-
-        echo "<h1>{$lang['error']}</h1>\n";
-        echo "<h2>{$lang['emailconfirmationfailedtosend']}</h2>\n";
+        html_draw_top();
+        html_display_msg($lang['emailconfirmation'], $lang['emailconfirmationsend']);
+        html_draw_bottom();
+        exit;
     }
 
     html_draw_top();
+    html_error_msg($lang['emailconfirmationfailedtosend']);
+    html_draw_bottom();
     exit;
 }
 
 if (!isset($uid) || !isset($key)) {
 
     html_draw_top();
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<h2>{$lang['requiredinformationnotfound']}</h2>\n";
+    html_error_msg($lang['requiredinformationnotfound']);
     html_draw_bottom();
     exit;
 }
@@ -204,8 +200,7 @@ if ($user = user_get_password($uid, $key)) {
 }else {
 
     html_draw_top();
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<h2>{$lang['requiredinformationnotfound']}</h2></div>\n";
+    html_error_msg($lang['requiredinformationnotfound']);
     html_draw_bottom();
     exit;
 }

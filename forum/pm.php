@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.110 2007-03-19 15:27:57 decoyduck Exp $ */
+/* $Id: pm.php,v 1.111 2007-03-24 17:32:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -98,7 +98,8 @@ $uid = bh_session_get_value('UID');
 
 // Guests can't access PMs
 
-if ($uid == 0) {
+if (user_is_guest()) {
+
     html_guest_error();
     exit;
 }
@@ -106,6 +107,13 @@ if ($uid == 0) {
 // Check that PM system is enabled
 
 pm_enabled();
+
+// Various Headers for the PM folders
+
+$pm_header_array = array(PM_FOLDER_INBOX  => $lang['pminbox'],
+                         PM_FOLDER_SENT   => $lang['pmsentitems'],
+                         PM_FOLDER_OUTBOX => $lang['pmoutbox'],
+                         PM_FOLDER_SAVED  => $lang['pmsaveditems']);
 
 // Check to see which page we should be on
 
@@ -168,6 +176,21 @@ if (isset($_POST['exportfolder'])) {
     exit;
 }
 
+// View a message
+
+if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
+
+    $mid = $_GET['mid'];
+
+    if (!$pm_message_array = pm_message_get($mid, $folder)) {
+
+        html_draw_top();
+        html_error_msg($lang['messagehasbeendeleted'], 'pm.php', 'get', array('back' => $lang['back']), array('folder' => $folder));
+        html_draw_bottom();
+        exit;
+    }
+}
+
 // Prune old messages for the current user
 
 pm_user_prune_folders();
@@ -194,61 +217,42 @@ echo "<table border=\"0\" cellpadding=\"20\" cellspacing=\"0\" width=\"100%\" cl
 echo "  <tr>\n";
 
 $start = floor($page - 1) * 10;
-
 if ($start < 0) $start = 0;
 
 if ($folder == PM_FOLDER_INBOX) {
 
     $pm_messages_array = pm_get_inbox($start);
-    echo "    <td align=\"left\" class=\"pmheadl\"><b>{$lang['privatemessages']}: {$lang['pminbox']}</b></td>\n";
 
 }elseif ($folder == PM_FOLDER_SENT) {
 
     $pm_messages_array = pm_get_sent($start);
-    echo "    <td align=\"left\" class=\"pmheadl\"><b>{$lang['privatemessages']}: {$lang['pmsentitems']}</b></td>\n";
 
 }elseif ($folder == PM_FOLDER_OUTBOX) {
 
     $pm_messages_array = pm_get_outbox($start);
-    echo "    <td align=\"left\" class=\"pmheadl\"><b>{$lang['privatemessages']}: {$lang['pmoutbox']}</b></td>\n";
 
 }elseif ($folder == PM_FOLDER_SAVED) {
 
     $pm_messages_array = pm_get_saveditems($start);
-    echo "    <td align=\"left\" class=\"pmheadl\"><b>{$lang['privatemessages']}: {$lang['pmsaveditems']}</b></td>\n";
 }
 
+echo "    <td align=\"left\" class=\"pmheadl\"><b>{$lang['privatemessages']}: {$pm_header_array[$folder]}</b></td>\n";
 echo "    <td class=\"pmheadr\" align=\"right\"><a href=\"pm_write.php?webtag=$webtag\" target=\"_self\">{$lang['sendnewpm']}</a> | <a href=\"pm.php?webtag=$webtag&amp;folder=1\" target=\"_self\">{$lang['pminbox']}</a> | <a href=\"pm.php?webtag=$webtag&amp;folder=2\" target=\"_self\">{$lang['pmsentitems']}</a> | <a href=\"pm.php?webtag=$webtag&amp;folder=3\" target=\"_self\">{$lang['pmoutbox']}</a> | <a href=\"pm.php?webtag=$webtag&amp;folder=4\" target=\"_self\">{$lang['pmsaveditems']}</a>&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 
-if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
+if (isset($pm_message_array) && is_array($pm_message_array) && sizeof($pm_message_array) > 0) {
 
-    $mid = $_GET['mid'];
-
-    if ($pm_elements_array = pm_single_get($mid, $folder)) {
-
-        $pm_elements_array['FOLDER'] = $folder;
-        $pm_elements_array['CONTENT'] = pm_get_content($mid);
-
-        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"80%\">\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"left\">\n";
-       
-        pm_display($pm_elements_array);
-
-        echo "    </td>\n";
-        echo "  </tr>\n";
-        echo "</table>\n";
-
-        echo "<br />\n";
-
-    }else {
-
-        echo "<h2>{$lang['messagehasbeendeleted']}</h2>\n";
-    }
+    $pm_message_array['CONTENT'] = pm_get_content($mid);
+    
+    echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"80%\">\n";
+    echo "  <tr>\n";
+    echo "    <td align=\"left\">", pm_display($pm_message_array), "</td>\n";
+    echo "  </tr>\n";
+    echo "</table>\n";
+    echo "<br />\n";
 }
 
 echo "<form name=\"pm\" action=\"pm.php?page=$page\" method=\"post\" target=\"_self\">\n";

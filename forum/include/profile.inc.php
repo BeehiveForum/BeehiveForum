@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.52 2007-03-11 18:31:00 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.53 2007-03-24 22:12:07 decoyduck Exp $ */
 
 /**
 * Functions relating to profiles
@@ -753,7 +753,8 @@ function profile_items_get_list(&$profile_header_array, &$profile_dropdown_html)
     $sql.= "PROFILE_ITEM.PIID, PROFILE_ITEM.NAME AS ITEM_NAME ";
     $sql.= "FROM {$table_data['PREFIX']}PROFILE_ITEM PROFILE_ITEM ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}PROFILE_SECTION PROFILE_SECTION ";
-    $sql.= "ON (PROFILE_SECTION.PSID = PROFILE_ITEM.PSID)";
+    $sql.= "ON (PROFILE_SECTION.PSID = PROFILE_ITEM.PSID) ";
+    $sql.= "WHERE PROFILE_SECTION.PSID IS NOT NULL";
 
     $result = db_query($sql, $db_profile_items_get_list);
 
@@ -876,13 +877,14 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
     // Join to check the DOB display.
     
     $from_sql = "FROM USER USER LEFT JOIN USER_PREFS USER_PREFS_DOB ";
-    $from_sql.= "ON (USER_PREFS_DOB.UID = USER.UID AND USER_PREFS_DOB.DOB_DISPLAY > 1) ";
+    $from_sql.= "ON (USER_PREFS_DOB.UID = USER.UID AND USER_PREFS_DOB.DOB_DISPLAY > 1 ";
+    $from_sql.= "AND USER_PREFS_DOB.DOB > 0) ";
 
     // Join to check the AGE display.
 
     $from_sql.= "LEFT JOIN USER_PREFS USER_PREFS_AGE ";
     $from_sql.= "ON (USER_PREFS_AGE.UID = USER.UID AND (USER_PREFS_DOB.DOB_DISPLAY = 1 ";
-    $from_sql.= "OR USER_PREFS_DOB.DOB_DISPLAY = 2)) ";
+    $from_sql.= "OR USER_PREFS_DOB.DOB_DISPLAY = 2) AND USER_PREFS_DOB.DOB > 0) ";
 
     // Joins to check the ANON_LOGON setting.
 
@@ -1014,8 +1016,10 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
                 $user_data['USER_TIME_TOTAL'] = $lang['unknown'];
             }
 
-            if (isset($user_data['DOB'])) {
+            if (isset($user_data['DOB']) && $user_data['DOB'] > 0) {
                 $user_data['DOB'] = format_dob($user_data['DOB']);
+            }else {
+                $user_data['DOB'] = $lang['unknown'];
             }
 
             if (!isset($user_data['POST_COUNT']) || is_null($user_data['POST_COUNT'])) {

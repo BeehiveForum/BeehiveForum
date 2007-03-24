@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.166 2007-03-17 15:26:18 decoyduck Exp $ */
+/* $Id: search.php,v 1.167 2007-03-24 17:32:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -145,8 +145,7 @@ if (isset($_GET['sort_dir']) && is_numeric($_GET['sort_dir'])) {
 if (!$folder_dropdown = folder_search_dropdown()) {
 
     html_draw_top();
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<h2>{$lang['couldnotretrievefolderinformation']}</h2>\n";
+    html_error_msg($lang['couldnotretrievefolderinformation']);
     html_draw_bottom();
     exit;
 }

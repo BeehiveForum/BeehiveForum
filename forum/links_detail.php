@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_detail.php,v 1.81 2007-03-17 15:26:18 decoyduck Exp $ */
+/* $Id: links_detail.php,v 1.82 2007-03-24 17:32:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -103,8 +103,7 @@ if (!forum_check_access_level()) {
 if (!forum_get_setting('show_links', 'Y')) {
 
     html_draw_top();
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<h2>{$lang['maynotaccessthissection']}</h2>\n";
+    html_error_msg($lang['maynotaccessthissection']);
     html_draw_bottom();
     exit;
 }
@@ -120,7 +119,7 @@ if (isset($_POST['lid'])) {
 }else {
 
     html_draw_top();
-    echo "<h2>{$lang['mustprovidelinkID']}</h2>\n";
+    html_error_msg($lang['mustprovidelinkID']);
     html_draw_bottom();
     exit;
 }
@@ -242,7 +241,7 @@ if (isset($_GET['action'])) {
 if (!$link = links_get_single($lid)) {
 
     html_draw_top();
-    echo "<h2>{$lang['invalidlinkID']}</h2>\n";
+    html_error_msg($lang['invalidlinkID']);
     html_draw_bottom();
     exit;
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.75 2007-03-17 15:26:19 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.76 2007-03-24 17:32:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -118,17 +118,23 @@ if (bh_session_get_value('UID') == 0) {
 // Check that required variables are set
 
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+
     list($tid, $pid) = explode(".", $_GET['msg']);
+
 }elseif (isset($_GET['tid']) && is_numeric($_GET['tid'])) {
+
     $tid = $_GET['tid'];
     $pid = 1;
+
 }elseif (isset($_POST['tid']) && is_numeric($_POST['tid'])) {
+
     $tid = $_POST['tid'];
     $pid = 1;
+
 }else {
+
     html_draw_top();
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<h2>{$lang['error']}</h2>\n";
+    html_error_msg($lang['threadcouldnotbefound']);
     html_draw_bottom();
     exit;
 }
@@ -138,7 +144,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 if (!$fid = thread_get_folder($tid)) {
 
     html_draw_top();
-    echo "<h1>{$lang['error']}</h1>\n";
+    html_error_msg($lang['threadcouldnotbefound']);
     html_draw_bottom();
     exit;
 }
@@ -150,8 +156,7 @@ $uid = bh_session_get_value('UID');
 if (!$threaddata = thread_get($tid, true)) {
 
     html_draw_top();
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<h2>{$lang['threadcouldnotbefound']}</h2>\n";
+    html_error_msg($lang['threadcouldnotbefound']);
     html_draw_bottom();
     exit;
 }
@@ -329,13 +334,7 @@ if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
                 }else {
 
                     html_draw_top();
-                    echo "<h1>{$lang['error']}</h1>\n";
-                    echo "<h2>{$lang['threadmergefailed']}</h2>\n";
-
-                    if (isset($error_str) && strlen(trim($error_str)) > 0) {
-                        echo $error_str;
-                    }
-
+                    html_error_msg($error_str);
                     html_draw_bottom();
                     exit;
                 }
@@ -361,13 +360,7 @@ if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
                 }else {
 
                     html_draw_top();
-                    echo "<h1>{$lang['error']}</h1>\n";
-                    echo "<h2>{$lang['threadsplitfailed']}</h2>\n";
-                    
-                    if (isset($error_str) && strlen(trim($error_str)) > 0) {
-                        echo $error_str;
-                    }
-
+                    html_error_msg($error_str);
                     html_draw_bottom();
                     exit;
                 }
@@ -418,8 +411,7 @@ if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
     if (!$threaddata = thread_get($tid, true)) {
 
         html_draw_top();
-        echo "<h1>{$lang['error']}</h1>\n";
-        echo "<h2>{$lang['threadcouldnotbefound']}</h2>\n";
+        html_error_msg($lang['threadcouldnotbefound']);
         html_draw_bottom();
         exit;
     }
@@ -913,8 +905,7 @@ if ($threaddata['LENGTH'] > 0) {
 }else {
 
     html_draw_top();
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<h2>{$lang['threaddeletedpermenantly']}</h2>\n";
+    html_error_msg($lang['threaddeletedpermenantly']);
     html_draw_bottom();
 }
 

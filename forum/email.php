@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.php,v 1.74 2007-03-17 15:26:17 decoyduck Exp $ */
+/* $Id: email.php,v 1.75 2007-03-24 17:32:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -117,8 +117,7 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 }else {
 
     html_draw_top();
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<h2>{$lang['nouserspecifiedforemail']}</h2>";
+    html_error_msg($lang['nouserspecifiedforemail']);
     html_draw_bottom();
     exit;
 }

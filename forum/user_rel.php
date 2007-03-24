@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.85 2007-03-17 15:26:19 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.86 2007-03-24 17:32:24 decoyduck Exp $ */
 
 /**
 * Displays and handles the User Relationship page
@@ -115,7 +115,8 @@ if (!forum_check_access_level()) {
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
-if ($uid == 0) {
+if (user_is_guest()) {
+
     html_guest_error();
     exit;
 }
@@ -225,8 +226,7 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 }elseif (!isset($peer_uid)) {
 
     html_draw_top();
-    echo "<h1>{$lang['error']}</h1>";
-    echo "<h2>{$lang['nouserspecified']}</h2>";
+    html_error_msg($lang['nouserspecified']);
     html_draw_bottom();
     exit;
 }
@@ -234,8 +234,7 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 if (!$user = user_get($peer_uid)) {
 
     html_draw_top();
-    echo "<h1>{$lang['error']}</h1>";
-    echo "<h2>{$lang['invalidusername']}</h2>";
+    html_error_msg($lang['invalidusername']);
     html_draw_bottom();
     exit;
 }

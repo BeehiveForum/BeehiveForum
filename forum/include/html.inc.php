@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.212 2007-03-17 15:26:19 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.213 2007-03-24 17:32:24 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -46,83 +46,76 @@ include_once(BH_INCLUDE_PATH. "pm.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
-function html_guest_error ()
+function html_guest_error()
 {
      global $frame_top_target;
      
      $lang = load_language_file();
 
-     html_draw_top("robots=noindex,nofollow");
-
-     $webtag = get_webtag($webtag_search);
-
      $final_uri = rawurlencode(get_request_uri());
+     $target_frame = (isset($frame_top_target) && strlen($frame_top_target) > 0) ? $frame_top_target : '_top';
 
-     if (isset($frame_top_target) && strlen($frame_top_target) > 0) {
-         echo "<h1>{$lang['guesterror_1']} <a href=\"logout.php?webtag=$webtag";
-         echo "&amp;final_uri=$final_uri\" target=\"$frame_top_target\">{$lang['guesterror_2']}</a></h1>";
-     }else {
-         echo "<h1>{$lang['guesterror_1']} <a href=\"logout.php?webtag=$webtag";
-         echo "&amp;final_uri=$final_uri\" target=\"_top\">{$lang['guesterror_2']}</a></h1>";
-     }
-
+     html_draw_top("robots=noindex,nofollow");
+     html_error_msg($lang['guesterror_1'], 'logout.php', 'get', array('submit' => $lang['login']), array('final_uri' => $final_uri), $target_frame);
      html_draw_bottom();
 }
 
-function html_guest_attachment_error ()
+function html_guest_attachment_error()
 {
      $lang = load_language_file();
 
      html_draw_top("robots=noindex,nofollow");
-
-     echo "<h1>{$lang['guesterror_1']}</h1>\n";
-
+     html_display_msg($header_text, $lang['guesterror_1']);
      html_draw_bottom();
 }
 
-function html_user_banned()
+function html_error_msg($error_msg, $href = false, $method = 'get', $button_array = false, $var_array = false, $target = "_self")
 {
-    if (!strstr(php_sapi_name(), 'cgi')) {
+     $lang = load_language_file();     
+     html_display_msg($lang['error'], $error_msg, $href, $method, $button_array, $var_array, $target);
+}
 
-        header("HTTP/1.0 500 Internal Server Error");
-        exit;
-    }
-
-    echo "<h2>HTTP/1.0 500 Internal Server Error</h2>\n";
-    exit;
-}   
-
-function html_user_require_approval()
+function html_display_msg($header_text, $error_msg, $href = false, $method = 'get', $button_array = false, $var_array = false, $target = "_self")
 {
+    $webtag = get_webtag($webtag_search);
+    
     $lang = load_language_file();
 
-    $webtag = get_webtag($webtag_search);
-
-    if (($uid = bh_session_get_value('UID')) === false) return false;
-
-    html_draw_top("robots=noindex,nofollow");
-
-    $user_array = user_get($uid);
-
-    echo "<h1>{$lang['error']}</h1>\n";
+    $available_methods = array('get', 'post');
+    if (!in_array($method, $available_methods)) $method = 'get';
+    
+    echo "<h1>$header_text</h1>\n";
     echo "<br />\n";
-    echo "<div align=\"center\">\n";
-    echo "<form action=\"confirm_email.php\" method=\"get\" target=\"_self\">\n";
-    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-    echo "  ", form_input_hidden('uid', _htmlentities($user_array['UID'])), "\n";
-    echo "  ", form_input_hidden('resend', 'Y'), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
+
+    if (($href !== false) && strlen(trim($href)) > 0) {
+
+        echo "<form action=\"$href\" method=\"$method\" target=\"$target\">\n";
+        echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+
+        if (is_array($var_array)) {
+
+            foreach($var_array as $var_name => $var_value) {
+
+                if (!is_array($var_value)) {
+
+                    echo "  ", form_input_hidden($var_name, _htmlentities($var_value)), "\n";
+                }
+            }
+        }
+    }
+
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
-    echo "        <table class=\"box\">\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
     echo "          <tr>\n";
     echo "            <td align=\"left\" class=\"posthead\">\n";
-    echo "              <table class=\"posthead\" width=\"550\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\">{$lang['userapprovalrequired']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">$header_text</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\">{$lang['userapprovalrequiredbeforeaccess']}</td>\n";
+    echo "                  <td align=\"left\"><h2>$error_msg</h2></td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\">&nbsp;</td>\n";
@@ -136,10 +129,50 @@ function html_user_require_approval()
     echo "    <tr>\n";
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
+
+    if (($href !== false) && strlen(trim($href)) > 0) {
+
+        $button_html_array = array();
+        
+        if (is_array($button_array) && sizeof($button_array) > 0) {
+
+            foreach($button_array as $button_name => $button_label) {
+                $button_html_array[] = form_submit($button_name, $button_label);
+            }
+        }
+
+        if (sizeof($button_html_array) > 0) {
+
+            echo "    <tr>\n";
+            echo "      <td align=\"center\">", implode("&nbsp;", $button_html_array), "</td>\n";
+            echo "    </tr>\n";
+        }
+    }
+
     echo "  </table>\n";
     echo "</form>\n";
-    echo "</div>\n";
+}
 
+function html_user_banned()
+{
+    if (!strstr(php_sapi_name(), 'cgi')) {
+
+        header("HTTP/1.0 500 Internal Server Error");
+        exit;
+    }
+
+    html_draw_top("robots=noindex,nofollow");
+    html_error_msg($lang['error'], 'HTTP/1.0 500 Internal Server Error');
+    html_draw_bottom();
+    exit;
+}   
+
+function html_user_require_approval()
+{
+    $lang = load_language_file();
+
+    html_draw_top("robots=noindex,nofollow");
+    html_error_msg($lang['userapprovalrequiredbeforeaccess']);
     html_draw_bottom();
 }
 
@@ -151,58 +184,10 @@ function html_email_confirmation_error()
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    html_draw_top("robots=noindex,nofollow");
-
     $user_array = user_get($uid);
 
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<br />\n";
-    echo "<div align=\"center\">\n";
-    echo "<form action=\"confirm_email.php\" method=\"get\" target=\"_self\">\n";
-    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-    echo "  ", form_input_hidden('uid', _htmlentities($user_array['UID'])), "\n";
-    echo "  ", form_input_hidden('resend', 'Y'), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\">\n";
-    echo "        <table class=\"box\">\n";
-    echo "          <tr>\n";
-    echo "            <td align=\"left\" class=\"posthead\">\n";
-    echo "              <table class=\"posthead\" width=\"550\">\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\">{$lang['emailconfirmationrequired']}</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\">{$lang['emailconfirmationrequiredbeforepost']}</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\">&nbsp;</td>\n";
-    echo "                </tr>\n";
-    echo "              </table>\n";
-    echo "            </td>\n";
-    echo "          </tr>\n";
-    echo "        </table>\n";
-    echo "      </td>\n";
-    echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\">&nbsp;</td>\n";
-    echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("resend", $lang['resendconfirmation']), "</td>\n";
-    echo "    </tr>\n";
-    echo "  </table>\n";
-    echo "</form>\n";
-    echo "</div>\n";
-
-    html_draw_bottom();
-}
-
-function html_poll_edit_error ()
-{
-    $lang = load_language_file();
-
-    html_draw_top();
-    echo "<h1>{$lang['pollediterror']}</h1>";
+    html_draw_top("robots=noindex,nofollow");
+    html_error_msg($lang['emailconfirmationrequiredbeforepost'], 'confirm_email.php', 'get', array('resend' => $lang['resendconfirmation']), array('uid' => $user_array['UID'], 'resend' => 'Y'));
     html_draw_bottom();
 }
 
@@ -211,7 +196,7 @@ function html_message_type_error()
     $lang = load_language_file();
 
     html_draw_top();
-    echo "<h1>{$lang['cannotpostthisthreadtype']}</h1>";
+    html_error_msg($lang['cannotpostthisthreadtype']);
     html_draw_bottom();
 }
 

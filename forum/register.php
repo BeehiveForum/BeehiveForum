@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.144 2007-03-18 23:10:08 decoyduck Exp $ */
+/* $Id: register.php,v 1.145 2007-03-24 17:32:24 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -107,8 +107,7 @@ $webtag = get_webtag($webtag_search);
 if (forum_get_setting('allow_new_registrations', 'N')) {
 
     html_draw_top();
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<h2>{$lang['newuserregistrationsarenotpermitted']}</h2>\n";
+    html_error_msg($lang['newuserregistrationsarenotpermitted']);
     html_draw_bottom();
     exit;
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: delete.php,v 1.119 2007-03-17 15:26:17 decoyduck Exp $ */
+/* $Id: delete.php,v 1.120 2007-03-24 17:32:23 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -108,6 +108,7 @@ if (!forum_check_access_level()) {
 }
 
 if (bh_session_get_value('UID') == 0) {
+
     html_guest_error();
     exit;
 }
@@ -125,8 +126,7 @@ if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
     if (!$t_fid = thread_get_folder($tid, $pid)) {
 
         html_draw_top();
-        echo "<h1>{$lang['error']}</h1>\n";
-        echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
+        html_error_msg($lang['threadcouldnotbefound']);
         html_draw_bottom();
         exit;
     }
@@ -139,8 +139,7 @@ if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
     if (!$t_fid = thread_get_folder($tid, $pid)) {
 
         html_draw_top();
-        echo "<h1>{$lang['error']}</h1>\n";
-        echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
+        html_error_msg($lang['threadcouldnotbefound']);
         html_draw_bottom();
         exit;
     }
@@ -148,8 +147,7 @@ if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
 }else {
 
     html_draw_top();
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<h2>{$lang['nomessagespecifiedfordel']}</h2>";
+    html_error_msg($lang['nomessagespecifiedfordel']);
     html_draw_bottom();
     exit;
 }
@@ -168,8 +166,7 @@ if (bh_session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 if (!bh_session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
 
     html_draw_top();
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<h2>{$lang['cannotdeletepostsinthisfolder']}</h2>\n";
+    html_error_msg($lang['cannotdeletepostsinthisfolder']);
     html_draw_bottom();
     exit;
 }
@@ -177,8 +174,7 @@ if (!bh_session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
 if (!$threaddata = thread_get($tid)) {
 
     html_draw_top();
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<h2>{$lang['threadcouldnotbefound']}</h2>\n";
+    html_error_msg($lang['threadcouldnotbefound']);
     html_draw_bottom();
     exit;
 }
@@ -208,8 +204,7 @@ if (isset($tid) && isset($pid) && is_numeric($tid) && is_numeric($pid)) {
     }else {
 
         html_draw_top();
-        echo "<h1>{$lang['error']}</h1>\n";
-        echo "<h2>{$lang['message']} $tid.$pid {$lang['wasnotfound']}</h2>\n";
+        html_error_msg($lang['postdoesnotexist']);
         html_draw_bottom();
         exit;
     }
@@ -232,42 +227,7 @@ if (isset($_POST['submit']) && is_numeric($tid) && is_numeric($pid)) {
             $msg = "$tid.$pid";
         }
 
-        echo "<h1>{$lang['deletemessage']} {$tid}.{$pid}</h1>\n";
-        echo "<br />\n";
-        echo "<form name=\"prefs\" action=\"discussion.php\" method=\"post\" target=\"_self\">\n";
-        echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-        echo "  ", form_input_hidden('msg', _htmlentities($msg)), "\n";
-        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"left\">\n";
-        echo "        <table class=\"box\" width=\"100%\">\n";
-        echo "          <tr>\n";
-        echo "            <td align=\"left\" class=\"posthead\">\n";
-        echo "              <table class=\"posthead\" width=\"100%\">\n";
-        echo "                <tr>\n";
-        echo "                  <td align=\"left\" class=\"subhead\">{$lang['deletemessage']}</td>\n";
-        echo "                </tr>\n";
-        echo "                <tr>\n";
-        echo "                  <td align=\"left\"><h2>{$lang['postdelsuccessfully']}</h2></td>\n";
-        echo "                </tr>\n";
-        echo "                <tr>\n";
-        echo "                  <td align=\"left\">&nbsp;</td>\n";
-        echo "                </tr>\n";
-        echo "              </table>\n";
-        echo "            </td>\n";
-        echo "          </tr>\n";
-        echo "        </table>\n";
-        echo "      </td>\n";
-        echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"left\">&nbsp;</td>\n";
-        echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"center\">", form_submit("back", $lang['back']), "</td>\n";
-        echo "    </tr>\n";
-        echo "  </table>\n";
-        echo "</form>\n";
-
+        html_display_msg($lang['deletemessage'], $lang['postdelsuccessfully'], 'discussion.php', 'get', array('back' => $lang['back']), array('msg' => "$msg"));
         html_draw_bottom();
         exit;
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.61 2007-03-17 15:26:16 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.62 2007-03-24 17:32:23 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -528,7 +528,7 @@ if (isset($default_forum_settings['text_captcha_enabled']) && $default_forum_set
                     $text_captcha_dir.= "/fonts/";
                     
                     echo "                            <tr>\n";
-                    echo "                              <td align=\"left\" width=\"20\"><img src=\"", style_image('warning.png'), "\" /></td>\n";
+                    echo "                              <td align=\"left\" width=\"20\"><img src=\"", style_image('warning.png'), "\" alt=\"\" /></td>\n";
                     echo "                              <td align=\"left\">", sprintf($lang['textcaptchafonterror'], $text_captcha_dir), "</td>\n";
                     echo "                            </tr>\n";
                     break;
@@ -536,14 +536,14 @@ if (isset($default_forum_settings['text_captcha_enabled']) && $default_forum_set
                 case TEXT_CAPTCHA_DIR_ERROR:
 
                     echo "                            <tr>\n";
-                    echo "                              <td align=\"left\" width=\"20\"><img src=\"", style_image('warning.png'), "\" /></td>\n";
+                    echo "                              <td align=\"left\" width=\"20\"><img src=\"", style_image('warning.png'), "\" alt=\"\" /></td>\n";
                     echo "                              <td align=\"left\">{$lang['textcaptchadirerror']}</td>\n";
                     break;
 
                 case TEXT_CAPTCHA_GD_ERROR:
 
                     echo "                            <tr>\n";
-                    echo "                              <td align=\"left\" width=\"20\"><img src=\"", style_image('warning.png'), "\" /></td>\n";
+                    echo "                              <td align=\"left\" width=\"20\"><img src=\"", style_image('warning.png'), "\" alt=\"\" /></td>\n";
                     echo "                              <td align=\"left\">{$lang['textcaptchagderror']}</td>\n";
                     break;
             }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.218 2007-03-11 20:58:11 decoyduck Exp $ */
+/* $Id: messages.php,v 1.219 2007-03-24 17:32:24 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -147,8 +147,7 @@ if (isset($_POST['pollsubmit'])) {
         }else {
 
             html_draw_top();
-            echo "<h1>{$lang['error']}</h1>\n";
-            echo "<h2>{$lang['mustvoteforallgroups']}</h2>";
+            html_error_msg($lang['mustvoteforallgroups'], 'messages.php', 'get', array('back' => $lang['back']), array('msg' => $msg));
             html_draw_bottom();
             exit;
         }
@@ -156,8 +155,7 @@ if (isset($_POST['pollsubmit'])) {
     }else {
 
         html_draw_top();
-        echo "<h1>{$lang['error']}</h1>\n";
-        echo "<h2>{$lang['mustselectpolloption']}</h2>";
+        html_error_msg($lang['mustselectpolloption'], 'messages.php', 'get', array('back' => $lang['back']), array('msg' => $msg));
         html_draw_bottom();
         exit;
     }
@@ -181,7 +179,6 @@ if (isset($_POST['pollsubmit'])) {
 
     poll_delete_vote($_POST['tid']);
     header_redirect("./messages.php?webtag=$webtag&msg=". $_POST['tid']. ".1");
-
 }
 
 if ($posts_per_page = bh_session_get_value('POSTS_PER_PAGE')) {
@@ -197,8 +194,7 @@ if ($posts_per_page = bh_session_get_value('POSTS_PER_PAGE')) {
 if (!$messages = messages_get($tid, $pid, $posts_per_page)) {
 
     html_draw_top();
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<h2>{$lang['postdoesnotexist']}</h2>\n";
+    html_error_msg($lang['postdoesnotexist']);
     html_draw_bottom();
     exit;
 }
@@ -206,8 +202,7 @@ if (!$messages = messages_get($tid, $pid, $posts_per_page)) {
 if (!$threaddata = thread_get($tid, bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
     html_draw_top();
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<h2>{$lang['threadcouldnotbefound']}</h2>\n";
+    html_error_msg($lang['threadcouldnotbefound']);
     html_draw_bottom();
     exit;
 }

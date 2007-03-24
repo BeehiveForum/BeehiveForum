@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.298 2007-03-19 15:19:33 decoyduck Exp $ */
+/* $Id: post.php,v 1.299 2007-03-24 17:32:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -450,8 +450,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
     if (!$t_fid = thread_get_folder($reply_to_tid, $reply_to_pid)) {
 
         html_draw_top();
-        echo "<h1>{$lang['error']}</h1>\n";
-        echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
+        html_error_msg($lang['threadcouldnotbefound']);
         html_draw_bottom();
         exit;
     }
@@ -465,8 +464,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
     if (!bh_session_check_perm(USER_PERM_POST_CREATE, $t_fid)) {
 
         html_draw_top();
-        echo "<h1>{$lang['error']}</h1>\n";
-        echo "<h2>{$lang['cannotcreatepostinfolder']}</h2>";
+        html_error_msg($lang['cannotcreatepostinfolder']);
         html_draw_bottom();
         exit;
     }
@@ -481,8 +479,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
     if (!$t_fid = thread_get_folder($reply_to_tid, $reply_to_pid)) {
 
         html_draw_top();
-        echo "<h1>{$lang['error']}</h1>\n";
-        echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
+        html_error_msg($lang['threadcouldnotbefound']);
         html_draw_bottom();
         exit;
     }
@@ -496,8 +493,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
     if (!bh_session_check_perm(USER_PERM_POST_CREATE, $t_fid)) {
 
         html_draw_top();
-        echo "<h1>{$lang['error']}</h1>\n";
-        echo "<h2>{$lang['cannotcreatepostinfolder']}</h2>";
+        html_error_msg($lang['cannotcreatepostinfolder']);
         html_draw_bottom();
         exit;
     }
@@ -579,16 +575,17 @@ if (!$newthread) {
     if (!$threaddata = thread_get($reply_to_tid)) {
 
         html_draw_top();
-        echo "<h1>{$lang['error']}</h1>\n";
-        echo "<h2>{$lang['threadcouldnotbefound']}</h2>\n";
+        html_error_msg($lang['threadcouldnotbefound'], 'discussion.php', 'get', array('back' => $lang['back']), array('msg' => "$reply_to_tid.$reply_to_pid"));
         html_draw_bottom();
         exit;
     }
 
     if (((perm_get_user_permissions($reply_message['FROM_UID']) & USER_PERM_WORMED) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) || ((!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") && $threaddata['POLL_FLAG'] != 'Y' && $reply_to_pid != 0)) {
 
-        $error_html = "<h2>{$lang['messagehasbeendeleted']}</h2>\n";
-        $valid = false;
+        html_draw_top();
+        html_error_msg($lang['messagehasbeendeleted'], 'discussion.php', 'get', array('back' => $lang['back']), array('msg' => "$reply_to_tid.$reply_to_pid"));
+        html_draw_bottom();
+        exit;
     }
 }
 
@@ -627,21 +624,7 @@ if ($valid && isset($_POST['submit'])) {
                 if (isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 && (!bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid))) {
 
                     html_draw_top();
-
-                    echo "<form name=\"f_post\" action=\"" . get_request_uri() . "\" method=\"post\" target=\"_self\">\n";
-                    echo "<table class=\"posthead\" width=\"720\">\n";
-                    echo "<tr><td align=\"left\" class=\"subhead\">{$lang['threadclosed']}</td></tr>\n";
-                    echo "<tr><td align=\"left\">\n";
-                    echo "<h2>{$lang['threadisclosedforposting']}</h2>\n";
-                    echo "</td></tr>\n";
-
-                    echo "<tr><td align=\"center\">\n";
-                    echo form_input_hidden('t_tid', _htmlentities($t_tid));
-                    echo form_input_hidden('t_rpid', _htmlentities($t_rpid));
-                    echo form_submit('cancel', $lang['cancel']);
-                    echo "</td></tr>\n";
-                    echo "</table></form>\n";
-
+                    html_error_msg($lang['threadisclosedforposting'], 'discussion.php', 'post', array('back' => $lang['back']), array('msg' => "$t_tid.$t_rpid"));
                     html_draw_bottom();
                     exit;
                 }
@@ -744,8 +727,7 @@ if (!isset($t_fid)) {
 if ($newthread && !$folder_dropdown = folder_draw_dropdown($t_fid, "t_fid", "", FOLDER_ALLOW_NORMAL_THREAD, "", "post_folder_dropdown")) {
 
     html_draw_top();
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<h2>{$lang['cannotcreatenewthreads']}</h2>";
+    html_error_msg($lang['cannotcreatenewthreads']);
     html_draw_bottom();
     exit;
 }

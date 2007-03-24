@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.php,v 1.82 2007-03-17 15:26:19 decoyduck Exp $ */
+/* $Id: visitor_log.php,v 1.83 2007-03-24 17:32:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -102,9 +102,9 @@ if (!forum_check_access_level()) {
 // Get a list of available user_prefs and profile items for the user to browse.
 
 if (!profile_items_get_list($profile_header_array, $profile_dropdown_html)) {
+
     html_draw_top();
-    echo "<h1>{$lang['error']}</h1>";
-    echo "<h2>{$lang['profilesnotsetup']}</h2>";
+    html_error_msg($lang['profilesnotsetup']);
     html_draw_bottom();
     exit;
 }

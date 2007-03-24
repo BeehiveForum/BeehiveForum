@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_profile.php,v 1.65 2007-03-17 15:26:17 decoyduck Exp $ */
+/* $Id: edit_profile.php,v 1.66 2007-03-24 17:32:24 decoyduck Exp $ */
 
 /**
 * Displays the edit profile page, and processes sumbissions
@@ -125,8 +125,7 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
         }else {
 
             html_draw_top();
-            echo "<h1>{$lang['error']}</h1>\n";
-            echo "<h2>{$lang['nouserspecified']}</h2>\n";
+            html_error_msg($lang['nouserspecified']);
             html_draw_bottom();
             exit;
         }
@@ -141,8 +140,7 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
         } else {
 
             html_draw_top();
-            echo "<h1>{$lang['error']}</h1>\n";
-            echo "<h2>{$lang['nouserspecified']}</h2>\n";
+            html_error_msg($lang['nouserspecified']);
             html_draw_bottom();
             exit;
         }
@@ -172,8 +170,7 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) && ($uid != bh_session_get_value('UID'))) {
 
     html_draw_top();
-    echo "<h1>{$lang['accessdenied']}</h1>\n";
-    echo "<p>{$lang['accessdeniedexp']}</p>";
+    html_error_msg($lang['accessdeniedexp']);
     html_draw_bottom();
     exit;
 }

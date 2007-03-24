@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display.php,v 1.78 2007-03-17 15:26:17 decoyduck Exp $ */
+/* $Id: display.php,v 1.79 2007-03-24 17:32:23 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -116,8 +116,7 @@ if (!isset($pid) || !is_numeric($pid)) $pid = 1;
 if (!$message = messages_get($tid, $pid, 1)) {
 
     html_draw_top();
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<h2>{$lang['postdoesnotexist']}</h2>\n";
+    html_error_msg($lang['postdoesnotexist']);
     html_draw_bottom();
     exit;
 }
@@ -125,8 +124,7 @@ if (!$message = messages_get($tid, $pid, 1)) {
 if (!$threaddata = thread_get($tid)) {
 
     html_draw_top();
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<h2>{$lang['threadcouldnotbefound']}</h2>\n";
+    html_error_msg($lang['threadcouldnotbefound']);
     html_draw_bottom();
     exit;
 }

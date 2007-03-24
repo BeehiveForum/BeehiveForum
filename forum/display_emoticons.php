@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display_emoticons.php,v 1.46 2006-11-19 00:13:21 decoyduck Exp $ */
+/* $Id: display_emoticons.php,v 1.47 2007-03-24 17:32:23 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -129,6 +129,12 @@ echo "        <tr>\n";
 echo "          <td align=\"left\" valign=\"top\">\n";
 echo "            <table class=\"posthead\" width=\"100%\">\n";
 echo "              <tr>\n";
+echo "                <td align=\"left\" class=\"subhead\">{$lang['emoticons']}</td>\n";
+echo "              </tr>\n";
+echo "              <tr>\n";
+echo "                <td align=\"center\">\n";
+echo "                  <table class=\"posthead\" width=\"95%\">\n";
+echo "                    <tr>\n";
 
 $emot_forum = forum_get_setting('default_emoticons', false, 'default');
 
@@ -141,21 +147,21 @@ if ($pack != "user" && !in_array($pack, $emot_sets_keys)) {
 
 if ($pack != "user") {
 
-    echo "                <td align=\"left\" valign=\"top\" width=\"200\">\n";
+    echo "                      <td align=\"left\" valign=\"top\" width=\"200\">\n";
 
     foreach ($emot_sets as $pack_name => $display_name) {
 
         if ($pack == $pack_name) {
 
-            echo "                  <h2>{$display_name}</h2>\n";
+            echo "                        <h2>{$display_name}</h2>\n";
 
         }else {
 
-            echo "                  <p><a href=\"display_emoticons.php?webtag=$webtag&amp;pack=$pack_name\" target=\"_self\">{$display_name}</a></p>\n";
+            echo "                        <p><a href=\"display_emoticons.php?webtag=$webtag&amp;pack=$pack_name\" target=\"_self\">{$display_name}</a></p>\n";
         }
     }
 
-    echo "                </td>\n";
+    echo "                      </td>\n";
 }
 
 if ($pack == "user") {
@@ -186,8 +192,8 @@ if (isset($emoticon) && count($emoticon) > 0) {
     }
 }
 
-echo "                <td align=\"left\">\n";
-echo "                  <table class=\"posthead\" width=\"300\">\n";
+echo "                      <td align=\"left\">\n";
+echo "                        <table class=\"posthead\" width=\"300\">\n";
 
 if (@$fp = fopen("$path/style.css", "r")) {
 
@@ -214,20 +220,26 @@ if (@$fp = fopen("$path/style.css", "r")) {
 
     foreach($emots_array as $emot) {
 
-            echo "                    <tr onclick=\"insertEmoticon(' ", rawurlencode(str_replace("'", "\\'", $emot['matches'][0])), " ');\">\n";
-            echo "                      <td align=\"left\" width=\"100\"><img src=\"$path/{$emot['img']}\" alt=\"{$emot['text']}\" title=\"{$emot['text']}\" /></td>\n";
-            echo "                      <td align=\"left\">";
+            echo "                          <tr onclick=\"insertEmoticon(' ", rawurlencode(str_replace("'", "\\'", $emot['matches'][0])), " ');\">\n";
+            echo "                            <td align=\"left\" width=\"100\"><img src=\"$path/{$emot['img']}\" alt=\"{$emot['text']}\" title=\"{$emot['text']}\" /></td>\n";
+            echo "                            <td align=\"left\">";
 
             foreach ($emot['matches'] as $emot_match) {
 
                 echo _htmlentities($emot_match), " &nbsp; ";
             }
 
-            echo "</td>\n";
-            echo "                    </tr>\n";
+            echo "      </td>\n";
+            echo "                          </tr>\n";
     }
 }
 
+echo "                          <tr>\n";
+echo "                            <td align=\"left\">&nbsp;</td>\n";
+echo "                          </tr>\n";
+echo "                        </table>\n";
+echo "                      </td>\n";
+echo "                    </tr>\n";
 echo "                  </table>\n";
 echo "                </td>\n";
 echo "              </tr>\n";

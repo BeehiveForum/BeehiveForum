@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-07x-to-072.php,v 1.28 2007-03-07 21:38:43 decoyduck Exp $ */
+/* $Id: upgrade-07x-to-072.php,v 1.29 2007-03-24 17:32:25 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-07x-to-072.php") {
 
@@ -416,6 +416,19 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         $valid = false;
         return;
     }    
+}
+
+// Having the SESSIONS table as type HEAP is known to cause problems
+// where the MySQL server is set up to automatically restart after
+// a number of queries or it has problems staying up so we'll
+// convert it back to MYISAM.
+
+$sql = "ALTER TABLE SESSIONS TYPE = MYISAM";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
 }
 
 // If we got this far we managed to complete the per-forum table

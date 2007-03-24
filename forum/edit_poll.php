@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.128 2007-03-17 15:26:17 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.129 2007-03-24 17:32:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -108,7 +108,7 @@ if (!forum_check_access_level()) {
 if (forum_get_setting('allow_polls', 'N')) {
 
     html_draw_top();
-    echo "<h1>{$lang['pollshavebeendisabled']}</h1>\n";
+    html_error_msg($lang['pollshavebeendisabled']);
     html_draw_bottom();
     exit;
 }
@@ -121,8 +121,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     if (!$t_fid = thread_get_folder($tid, $pid)) {
 
         html_draw_top();
-        echo "<h1>{$lang['error']}</h1>\n";
-        echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
+        html_error_msg($lang['threadcouldnotbefound']);
         html_draw_bottom();
         exit;
     }
@@ -135,8 +134,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     if (!$t_fid = thread_get_folder($tid, $pid)) {
 
         html_draw_top();
-        echo "<h1>{$lang['error']}</h1>\n";
-        echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
+        html_error_msg($lang['threadcouldnotbefound']);
         html_draw_bottom();
         exit;
     }
@@ -144,8 +142,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 }else {
 
     html_draw_top();
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<h2>{$lang['nomessagespecifiedforedit']}</h2>";
+    html_error_msg($lang['nomessagespecifiedforedit']);
     html_draw_bottom();
     exit;
 }
@@ -166,7 +163,7 @@ if (!thread_is_poll($tid) && $pid == 1) {
 if (!$fid = thread_get_folder($tid)) {
 
     html_draw_top();
-    echo "<h1>{$lang['error']}</h1>\n";
+    html_error_msg($lang['threadcouldnotbefound']);
     html_draw_bottom();
     exit;
 }
@@ -199,10 +196,7 @@ if (bh_session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 if (!bh_session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
 
     html_draw_top();
-
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<h2>{$lang['cannoteditpostsinthisfolder']}</h2>\n";
-
+    html_error_msg($lang['cannoteditpostsinthisfolder']);
     html_draw_bottom();
     exit;
 }
@@ -210,8 +204,7 @@ if (!bh_session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
 if (!$threaddata = thread_get($tid)) {
 
     html_draw_top();
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<h2>{$lang['threadcouldnotbefound']}</h2>\n";
+    html_error_msg($lang['threadcouldnotbefound']);
     html_draw_bottom();
     exit;
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: change_pw.php,v 1.57 2007-03-17 15:26:17 decoyduck Exp $ */
+/* $Id: change_pw.php,v 1.58 2007-03-24 17:32:23 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -125,16 +125,7 @@ if (isset($_POST['submit'])) {
         if (user_change_password($uid, $pw, $key)) {
 
             html_draw_top();
-
-            echo "<h1>{$lang['passwdchanged']}</h1>";
-            echo "<br />\n";
-            echo "<div align=\"center\">\n";
-            echo "<p>{$lang['passedchangedexp']}</p>\n";
-
-            echo form_quick_button("./index.php", $lang['continue'], false, false, "_top");
-
-            echo "</div>\n";
-
+            html_display_msg($lang['passwdchanged'], $lang['passedchangedexp'], 'index.php', $lang['continue'], false, '_top');
             html_draw_bottom();
             exit;
 
@@ -147,25 +138,31 @@ if (isset($_POST['submit'])) {
 }
 
 if (isset($_GET['u']) && is_numeric($_GET['u']) && isset($_GET['h']) && is_md5($_GET['h'])) {
+
     $uid = $_GET['u'];
     $key = $_GET['h'];
+
 }elseif (isset($_POST['uid']) && is_numeric($_POST['uid']) && isset($_POST['key']) && is_md5($_POST['key'])) {
+
     $uid = $_POST['uid'];
     $key = $_POST['key'];
+
 }else {
+
     html_draw_top();
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<h2>{$lang['requiredinformationnotfound']}</h2>\n";
+    html_error_msg($lang['requiredinformationnotfound']);
     html_draw_bottom();
     exit;
 }
 
 if ($user = user_get_password($uid, $key)) {
+
     $logon = strtoupper($user['LOGON']);
+
 }else {
+
     html_draw_top();
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<h2>{$lang['requiredinformationnotfound']}</h2></div>\n";
+    html_error_msg($lang['requiredinformationnotfound']);
     html_draw_bottom();
     exit;
 }

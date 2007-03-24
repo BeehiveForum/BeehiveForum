@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: search_popup.php,v 1.7 2007-03-17 15:26:19 decoyduck Exp $ */
+/* $Id: search_popup.php,v 1.8 2007-03-24 17:32:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -131,8 +131,9 @@ if (isset($_GET['type']) && is_numeric($_GET['type'])) {
     }else {
 
         html_draw_top();
-        echo "<h1>{$lang['error']}</h2>\n";
-        echo "<h2>{$lang['unkownsearchtypespecified']}</h2>\n";
+        html_error_msg($lang['unkownsearchtypespecified'], 'search_popup.php', $lang['close']);
+        html_draw_bottom();
+        exit;
     }
 
 }elseif (isset($_POST['type']) && is_numeric($_POST['type'])) {
@@ -148,15 +149,17 @@ if (isset($_GET['type']) && is_numeric($_GET['type'])) {
     }else {
 
         html_draw_top();
-        echo "<h1>{$lang['error']}</h2>\n";
-        echo "<h2>{$lang['unkownsearchtypespecified']}</h2>\n";
+        html_error_msg($lang['unkownsearchtypespecified'], 'search_popup.php', $lang['close']);
+        html_draw_bottom();
+        exit;
     }
 
 }else {
 
     html_draw_top();
-    echo "<h1>{$lang['error']}</h2>\n";
-    echo "<h2>{$lang['mustspecifytypeofsearch']}</h2>\n";
+    html_error_msg($lang['mustspecifytypeofsearch'], 'search_popup.php', $lang['close']);
+    html_draw_bottom();
+    exit;
 }
 
 // Form Object ID
@@ -172,10 +175,7 @@ if (isset($_POST['obj_id']) && strlen(trim(_stripslashes($_POST['obj_id']))) > 0
 }else {
 
     html_draw_top();
-
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<h2>{$lang['noformobj']}</h2>\n";
-
+    html_error_msg($lang['noformobj'], 'search_popup.php', $lang['close']);
     html_draw_bottom();
     exit;
 }

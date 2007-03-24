@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.108 2007-03-05 20:58:41 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.109 2007-03-24 22:12:06 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -1058,8 +1058,11 @@ function admin_get_visitor_log($offset)
 
             if (isset($visitor_array['REFERER']) && strlen(trim($visitor_array['REFERER'])) > 0) {
 
-                if (stristr($visitor_array['REFERER'], get_request_uri())) $visitor_array['REFERER'] = "";
-                if (stristr($visitor_array['REFERER'], html_get_forum_uri())) $visitor_array['REFERER'] = "";
+                $forum_uri_preg = preg_quote(html_get_forum_uri(), '/');
+
+                if (preg_match("/^$forum_uri_preg/i", trim($visitor_array['REFERER'])) > 0) {
+                    $visitor_array['REFERER'] = "";
+                }
 
             }else {
 

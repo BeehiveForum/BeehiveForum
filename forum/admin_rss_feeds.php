@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_rss_feeds.php,v 1.35 2007-03-19 16:06:24 decoyduck Exp $ */
+/* $Id: admin_rss_feeds.php,v 1.36 2007-03-25 14:44:52 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -83,7 +83,7 @@ if (bh_session_user_banned()) {
 
 if (!$webtag = get_webtag($webtag_search)) {
     $request_uri = rawurlencode(get_request_uri());
-    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=admin.php%3Fpage%3D$request_uri");
+    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
 // Load language file
@@ -91,9 +91,9 @@ if (!$webtag = get_webtag($webtag_search)) {
 $lang = load_language_file();
 
 if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
+
     html_draw_top();
-    echo "<h1>{$lang['accessdenied']}</h1>\n";
-    echo "<p>{$lang['accessdeniedexp']}</p>";
+    html_error_msg($lang['accessdeniedexp']);
     html_draw_bottom();
     exit;
 }
@@ -351,8 +351,6 @@ if (isset($_POST['delete'])) {
     exit;
 }
 
-html_draw_top();
-
 if (isset($_POST['testfeedurl'])) {
 
     $valid = true;
@@ -395,6 +393,8 @@ if (isset($_POST['testfeedurl'])) {
 
 if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
 
+    html_draw_top();
+    
     echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['rssfeeds']} &raquo; {$lang['addnewfeed']}</h1>\n";
 
     if (isset($error_html) && strlen(trim($error_html)) > 0) {
@@ -489,6 +489,8 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
     echo "  </form>\n";
     echo "</div>\n";
 
+    html_draw_bottom();
+
 }elseif (isset($_POST['feed_id']) || isset($_GET['feed_id'])) {
 
     if (isset($_POST['feed_id']) && is_numeric($_POST['feed_id'])) {
@@ -501,19 +503,21 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
 
     }else {
 
-        echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['rssfeeds']} &raquo; {$lang['editfeed']}</h1>\n";
-        echo "<h2>{$lang['invalidfeedidorfeednotfound']}</h2>\n";
+        html_draw_top();
+        html_error_msg($lang['invalidfeedidorfeednotfound'], 'admin_rss_feeds.php', 'get', array('back' => $lang['back']));
         html_draw_bottom();
         exit;
     }
 
     if (!$rss_feed = rss_get_feed($feed_id)) {
 
-        echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['rssfeeds']} &raquo; {$lang['editfeed']}</h1>\n";
-        echo "<h2>{$lang['invalidfeedidorfeednotfound']}</h2>\n";
+        html_draw_top();
+        html_error_msg($lang['invalidfeedidorfeednotfound'], 'admin_rss_feeds.php', 'get', array('back' => $lang['back']));
         html_draw_bottom();
         exit;
     }
+
+    html_draw_top();
     
     echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['rssfeeds']} &raquo; {$lang['editfeed']} &raquo; {$rss_feed['NAME']}</h1>\n";
 
@@ -610,8 +614,12 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
     echo "  </form>\n";
     echo "</div>\n";
 
+    html_draw_bottom();
+
 }else {
 
+    html_draw_top();
+    
     echo "<script language=\"javascript\" type=\"text/javascript\">\n";
     echo "<!--\n";
     echo "function rss_toggle_all() {\n";
@@ -712,8 +720,8 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
     echo "  </table>\n";
     echo "</form>\n";
     echo "</div>\n";
-}
 
-html_draw_bottom();
+    html_draw_bottom();
+}
 
 ?>

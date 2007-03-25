@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_items.php,v 1.102 2007-03-17 15:26:17 decoyduck Exp $ */
+/* $Id: admin_prof_items.php,v 1.103 2007-03-25 14:44:52 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -80,7 +80,7 @@ if (bh_session_user_banned()) {
 
 if (!$webtag = get_webtag($webtag_search)) {
     $request_uri = rawurlencode(get_request_uri());
-    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=admin.php%3Fpage%3D$request_uri");
+    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
 // Load language file
@@ -88,9 +88,9 @@ if (!$webtag = get_webtag($webtag_search)) {
 $lang = load_language_file();
 
 if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
+
     html_draw_top();
-    echo "<h1>{$lang['accessdenied']}</h1>\n";
-    echo "<p>{$lang['accessdeniedexp']}</p>";
+    html_error_msg($lang['accessdeniedexp']);
     html_draw_bottom();
     exit;
 }
@@ -125,8 +125,7 @@ if (isset($_GET['psid']) && is_numeric($_GET['psid'])) {
 }else {
 
     html_draw_top();
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<p>{$lang['noprofilesectionspecified']}</p>\n";
+    html_error_msg($lang['noprofilesectionspecified'], 'admin_prof_sect.php', 'get', array('back' => $lang['back']));
     html_draw_bottom();
     exit;
 }
@@ -269,9 +268,9 @@ if (isset($_POST['move_down']) && is_array($_POST['move_down'])) {
     profile_item_move_down($psid, $piid);
 }
 
-html_draw_top();
-
 if (isset($_GET['additem']) || isset($_POST['additem'])) {
+
+    html_draw_top();
 
     echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageprofilesections']} &raquo; ", profile_section_get_name($psid), " &raquo; {$lang['addnewitem']}</h1>\n";
 
@@ -340,6 +339,8 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
     echo "</form>\n";
     echo "</div>\n";
 
+    html_draw_bottom();
+
 }elseif (isset($_GET['piid']) || isset($_POST['piid'])) {
 
     if (isset($_POST['piid']) && is_numeric($_POST['piid'])) {
@@ -352,19 +353,21 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
 
     }else {
 
-        echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageprofilesections']} &raquo; ", profile_section_get_name($psid), " &raquo; {$lang['edititem']}</h1>\n";
-        echo "<h2>{$lang['invaliditemidoritemnotfound']}</h2>\n";
+        html_draw_top();
+        html_error_msg($lang['invaliditemidoritemnotfound'], 'admin_prof_sect.php', 'get', array('back' => $lang['back']));
         html_draw_bottom();
         exit;
     }
 
     if (!$profile_item = profile_get_item($piid)) {
 
-        echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageprofilesections']} &raquo; ", profile_section_get_name($psid), " &raquo; {$lang['edititem']} &raquo; {$profile_item['NAME']}</h1>\n";
-        echo "<h2>{$lang['invaliditemidoritemnotfound']}</h2>\n";
+        html_draw_top();
+        html_error_msg($lang['invaliditemidoritemnotfound'], 'admin_prof_sect.php', 'get', array('back' => $lang['back']));
         html_draw_bottom();
         exit;
     }
+
+    html_draw_top();
     
     echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageprofilesections']} &raquo; ", profile_section_get_name($psid), " &raquo; {$lang['edititem']} &raquo; {$profile_item['NAME']}</h1>\n";
 
@@ -438,6 +441,8 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
     echo "  </table>\n";
     echo "</form>\n";
     echo "</div>\n";
+
+    html_draw_bottom();
 
 }else {
 
@@ -546,8 +551,8 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
     echo "  </table>\n";
     echo "</form>\n";
     echo "</div>\n";
-}
 
-html_draw_bottom();
+    html_draw_bottom();
+}
 
 ?>

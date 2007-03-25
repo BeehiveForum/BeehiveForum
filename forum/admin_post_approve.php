@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_post_approve.php,v 1.43 2007-03-18 23:10:07 decoyduck Exp $ */
+/* $Id: admin_post_approve.php,v 1.44 2007-03-25 14:44:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -86,14 +86,23 @@ if (bh_session_user_banned()) {
 // Check we have a webtag
 
 if (!$webtag = get_webtag($webtag_search)) {
-
     $request_uri = rawurlencode(get_request_uri());
-    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=admin.php");
+    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
 // Load language file
 
 $lang = load_language_file();
+
+// Returning to the approval queue?
+
+if (isset($_POST['return_queue']) && $_POST['return_queue'] == 'Y') {
+    $return_queue = "Y";
+}elseif (isset($_GET['return_queue']) && $_GET['return_queue'] == 'Y') {
+    $return_queue = "Y";
+}else {
+    $return_queue = "N";
+}
 
 // Check POST and GET for message ID and check it is valid.
 
@@ -106,8 +115,7 @@ if (isset($_POST['msg'])) {
     }else {
 
         html_draw_top();
-        echo "<h1>{$lang['error']}</h1>\n";
-        echo "<h2>{$lang['nomessagespecifiedforedit']}</h2>";
+        html_error_msg($lang['nomessagespecifiedforedit'], 'admin_post_approve.php', 'post', array('cancel' => $lang['cancel']), array('return_queue' => $return_queue));
         html_draw_bottom();
         exit;
     }
@@ -121,8 +129,7 @@ if (isset($_POST['msg'])) {
     }else {
 
         html_draw_top();
-        echo "<h1>{$lang['error']}</h1>\n";
-        echo "<h2>{$lang['nomessagespecifiedforedit']}</h2>";
+        html_error_msg($lang['nomessagespecifiedforedit'], 'admin_post_approve.php', 'post', array('cancel' => $lang['cancel']), array('return_queue' => $return_queue));
         html_draw_bottom();
         exit;
     }
@@ -132,16 +139,6 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
     $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
 }else {
     $page = 1;
-}
-
-// Returning to the approval queue?
-
-if (isset($_POST['return_queue']) && $_POST['return_queue'] == 'Y') {
-    $return_queue = "Y";
-}elseif (isset($_GET['return_queue']) && $_GET['return_queue'] == 'Y') {
-    $return_queue = "Y";
-}else {
-    $return_queue = "N";
 }
 
 // User clicked cancel
@@ -168,8 +165,7 @@ if (isset($msg) && validate_msg($msg)) {
     if (!$t_fid = thread_get_folder($tid, $pid)) {
 
         html_draw_top();
-        echo "<h1>{$lang['error']}</h1>\n";
-        echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
+        html_error_msg($lang['threadcouldnotbefound'], 'admin_post_approve.php', 'post', array('cancel' => $lang['cancel']), array('return_queue' => $return_queue));
         html_draw_bottom();
         exit;
     }
@@ -177,8 +173,7 @@ if (isset($msg) && validate_msg($msg)) {
     if (!bh_session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
 
         html_draw_top();
-        echo "<h1>{$lang['error']}</h1>\n";
-        echo "<h2>{$lang['cannoteditpostsinthisfolder']}</h2>\n";
+        html_error_msg($lang['cannoteditpostsinthisfolder'], 'admin_post_approve.php', 'post', array('cancel' => $lang['cancel']), array('return_queue' => $return_queue));
         html_draw_bottom();
         exit;
     }
@@ -186,8 +181,7 @@ if (isset($msg) && validate_msg($msg)) {
     if (!bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
         html_draw_top();
-        echo "<h1>{$lang['error']}</h1>\n";
-        echo "<h2>{$lang['cannoteditpostsinthisfolder']}</h2>\n";
+        html_error_msg($lang['cannoteditpostsinthisfolder'], 'admin_post_approve.php', 'post', array('cancel' => $lang['cancel']), array('return_queue' => $return_queue));
         html_draw_bottom();
         exit;
     }
@@ -195,8 +189,7 @@ if (isset($msg) && validate_msg($msg)) {
     if (!$threaddata = thread_get($tid)) {
 
         html_draw_top();
-        echo "<h1>{$lang['error']}</h1>\n";
-        echo "<h2>{$lang['threadcouldnotbefound']}</h2>\n";
+        html_error_msg($lang['threadcouldnotbefound'], 'admin_post_approve.php', 'post', array('cancel' => $lang['cancel']), array('return_queue' => $return_queue));
         html_draw_bottom();
         exit;
     }
@@ -206,8 +199,7 @@ if (isset($msg) && validate_msg($msg)) {
         if (!isset($preview_message['APPROVED']) || $preview_message['APPROVED'] > 0) {
 
             html_draw_top();
-            echo "<h1>{$lang['error']}</h1>\n";
-            echo "<h2>{$lang['postdoesnotrequireapproval']}</h2>\n";
+            html_error_msg($lang['postdoesnotrequireapproval'], 'admin_post_approve.php', 'post', array('cancel' => $lang['cancel']), array('return_queue' => $return_queue));
             html_draw_bottom();
             exit;
         }
@@ -368,8 +360,7 @@ if (isset($msg) && validate_msg($msg)) {
     }else {
 
         html_draw_top();
-        echo "<h1>{$lang['error']}</h1>\n";
-        echo "<h2>{$lang['postdoesnotexist']}</h2>\n";
+        html_error_msg($lang['postdoesnotexist'], 'admin_post_approve.php', 'post', array('cancel' => $lang['cancel']), array('return_queue' => $return_queue));
         html_draw_bottom();
         exit;
     }
@@ -379,8 +370,7 @@ if (isset($msg) && validate_msg($msg)) {
     if (!bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) && !bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0) && !bh_session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE)) {
 
         html_draw_top();
-        echo "<h1>{$lang['accessdenied']}</h1>\n";
-        echo "<p>{$lang['accessdeniedexp']}</p>";
+        html_error_msg($lang['accessdeniedexp']);
         html_draw_bottom();
         exit;
     }

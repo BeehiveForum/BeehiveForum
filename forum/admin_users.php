@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.137 2007-03-18 23:10:07 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.138 2007-03-25 14:44:53 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -84,11 +84,10 @@ $webtag = get_webtag($webtag_search);
 
 $lang = load_language_file();
 
-html_draw_top("openprofile.js");
-
 if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
-    echo "<h1>{$lang['accessdenied']}</h1>\n";
-    echo "<p>{$lang['accessdeniedexp']}</p>";
+
+    html_draw_top();
+    html_error_msg($lang['accessdeniedexp']);
     html_draw_bottom();
     exit;
 }
@@ -151,6 +150,8 @@ if (isset($_GET['filter']) && is_numeric($_GET['filter'])) {
 }else {
     $filter = 0;
 }
+
+html_draw_top("openprofile.js");
 
 if ($table_data = get_table_prefix()) { 
     echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageusers']}</h1>\n";

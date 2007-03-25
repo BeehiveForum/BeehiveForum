@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.106 2007-03-18 23:10:07 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.107 2007-03-25 14:44:48 decoyduck Exp $ */
 
 /**
 * Displays and handles the Forum Settings page
@@ -91,17 +91,17 @@ if (bh_session_user_banned()) {
 
 if (!$webtag = get_webtag($webtag_search)) {
     $request_uri = rawurlencode(get_request_uri());
-    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=admin.php%3Fpage%3D$request_uri");
+    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
 // Load language file
 
 $lang = load_language_file();
 
-if (!bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
+if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
+
     html_draw_top();
-    echo "<h1>{$lang['accessdenied']}</h1>\n";
-    echo "<p>{$lang['accessdeniedexp']}</p>";
+    html_error_msg($lang['accessdeniedexp']);
     html_draw_bottom();
     exit;
 }
@@ -422,14 +422,7 @@ if (isset($_POST['changepermissions'])) {
 
 html_draw_top("emoticons.js");
 
-if ($webtag) {
-    echo "<h1>{$lang['admin']} &raquo; {$lang['forumsettings']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), "</h1>\n";
-}else {
-    html_draw_top();
-    echo "<h1>{$lang['error']}</h1>\n";
-    html_draw_bottom();
-    exit;
-}
+echo "<h1>{$lang['admin']} &raquo; {$lang['forumsettings']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), "</h1>\n";
 
 // Any error messages to display?
 

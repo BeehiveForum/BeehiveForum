@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_sect.php,v 1.96 2007-03-19 16:06:24 decoyduck Exp $ */
+/* $Id: admin_prof_sect.php,v 1.97 2007-03-25 14:44:52 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -80,18 +80,17 @@ if (bh_session_user_banned()) {
 
 if (!$webtag = get_webtag($webtag_search)) {
     $request_uri = rawurlencode(get_request_uri());
-    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=admin.php%3Fpage%3D$request_uri");
+    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
 // Load language file
 
 $lang = load_language_file();
 
-html_draw_top();
-
 if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
-    echo "<h1>{$lang['accessdenied']}</h1>\n";
-    echo "<p>{$lang['accessdeniedexp']}</p>";
+
+    html_draw_top();
+    html_error_msg($lang['accessdeniedexp']);
     html_draw_bottom();
     exit;
 }
@@ -220,6 +219,8 @@ if (isset($_POST['move_down']) && is_array($_POST['move_down'])) {
 
 if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
 
+    html_draw_top();
+    
     echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageprofilesections']} &raquo; {$lang['addnewprofilesection']}</h1>\n";
 
     if (isset($error_html) && strlen(trim($error_html)) > 0) {
@@ -272,6 +273,8 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
     echo "  </form>\n";
     echo "</div>\n";
 
+    html_draw_bottom();
+
 }elseif (isset($_POST['psid']) || isset($_GET['psid'])) {
 
     if (isset($_POST['psid']) && is_numeric($_POST['psid'])) {
@@ -284,20 +287,22 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
 
     }else {
 
-        echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageprofilesections']} &raquo; {$lang['editsection']}</h1>\n";
-        echo "<h2>{$lang['invalidfeedidorfeednotfound']}</h2>\n";
+        html_draw_top();
+        html_error_msg($lang['invalidfeedidorfeednotfound'], 'admin_prof_sect.php', 'get', array('back' => $lang['back']));
         html_draw_bottom();
         exit;
     }
 
     if (!$profile_section = profile_get_section($psid)) {
 
-        echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageprofilesections']} &raquo; {$lang['editsection']}</h1>\n";
-        echo "<h2>{$lang['invalidfeedidorfeednotfound']}</h2>\n";
+        html_draw_top();
+        html_error_msg($lang['invalidfeedidorfeednotfound'], 'admin_prof_sect.php', 'get', array('back' => $lang['back']));
         html_draw_bottom();
         exit;
     }
 
+    html_draw_top();
+    
     echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageprofilesections']} &raquo; {$profile_section['NAME']}</h1>\n";
     
     if (isset($error_html) && strlen(trim($error_html)) > 0) {
@@ -354,8 +359,12 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
     echo "  </form>\n";
     echo "</div>\n";
 
+    html_draw_bottom();
+
 }else {
 
+    html_draw_top();
+    
     echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageprofilesections']}</h1>\n";
 
     if (isset($error_html) && strlen(trim($error_html)) > 0) {
@@ -453,8 +462,8 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
     echo "  </table>\n";
     echo "</form>\n";
     echo "</div>\n";
-}
 
-html_draw_bottom();
+    html_draw_bottom();
+}
 
 ?>

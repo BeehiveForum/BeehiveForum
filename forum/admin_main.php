@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_main.php,v 1.62 2007-01-28 01:15:14 decoyduck Exp $ */
+/* $Id: admin_main.php,v 1.63 2007-03-25 14:44:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -79,14 +79,15 @@ $webtag = get_webtag($webtag_search);
 
 $lang = load_language_file();
 
-html_draw_top();
+if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
-if (!bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) && !bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0, 0) && !bh_session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE)) {
-    echo "<h1>{$lang['accessdenied']}</h1>\n";
-    echo "<p>{$lang['accessdeniedexp']}</p>";
+    html_draw_top();
+    html_error_msg($lang['accessdeniedexp']);
     html_draw_bottom();
     exit;
 }
+
+html_draw_top();
 
 echo "<h1>{$lang['forumadmin']}</h1>\n";
 

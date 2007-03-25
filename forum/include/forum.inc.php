@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.217 2007-03-17 15:26:19 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.218 2007-03-25 14:44:54 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -2174,9 +2174,13 @@ function forums_get_available_count()
 
     $result = db_query($sql, $db_forums_get_available_count);
 
-    list($forum_available_count) = db_fetch_array($result, DB_RESULT_NUM);
+    if (db_num_rows($result) > 0) {
 
-    return $forum_available_count;
+        list($forum_available_count) = db_fetch_array($result, DB_RESULT_NUM);
+        return $forum_available_count;
+    }
+
+    return false;
 }
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups.php,v 1.39 2007-03-17 15:26:17 decoyduck Exp $ */
+/* $Id: admin_user_groups.php,v 1.40 2007-03-25 14:44:53 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -87,7 +87,7 @@ if (bh_session_user_banned()) {
 
 if (!$webtag = get_webtag($webtag_search)) {
     $request_uri = rawurlencode(get_request_uri());
-    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=admin.php%3Fpage%3D$request_uri");
+    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
 // Load language file
@@ -104,11 +104,10 @@ if (isset($_POST['edit_users']) && is_array($_POST['edit_users'])) {
     header_redirect("./admin_user_groups_edit_users.php?webtag=$webtag&gid=$gid");
 }
 
-html_draw_top('admin.js');
-
 if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
-    echo "<h1>{$lang['accessdenied']}</h1>\n";
-    echo "<p>{$lang['accessdeniedexp']}</p>";
+
+    html_draw_top();
+    html_error_msg($lang['accessdeniedexp']);
     html_draw_bottom();
     exit;
 }
@@ -151,14 +150,16 @@ if (isset($_POST['delete'])) {
 
         foreach($_POST['delete_group'] as $gid) {
 
-            $group_name = perm_get_group_name($gid);
+            if ($group_name = perm_get_group_name($gid)) {
 
-            perm_remove_group($gid);
-
-            admin_add_log_entry(DELETE_USER_GROUP, $group_name);
+                perm_remove_group($gid);
+                admin_add_log_entry(DELETE_USER_GROUP, $group_name);
+            }
         }
     }
 }
+
+html_draw_top('admin.js');
 
 echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['usergroups']}</h1>\n";
 

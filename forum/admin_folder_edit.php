@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_edit.php,v 1.52 2007-03-17 15:26:17 decoyduck Exp $ */
+/* $Id: admin_folder_edit.php,v 1.53 2007-03-25 14:44:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -80,7 +80,7 @@ if (bh_session_user_banned()) {
 
 if (!$webtag = get_webtag($webtag_search)) {
     $request_uri = rawurlencode(get_request_uri());
-    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=admin.php%3Fpage%3D$request_uri");
+    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
 // Load language file
@@ -95,11 +95,10 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
     $page = 1;
 }
 
-html_draw_top();
+if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
-if (!bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
-    echo "<h1>{$lang['accessdenied']}</h1>\n";
-    echo "<p>{$lang['accessdeniedexp']}</p>";
+    html_draw_top();
+    html_error_msg($lang['accessdeniedexp']);
     html_draw_bottom();
     exit;
 }
@@ -109,19 +108,25 @@ if (isset($_POST['back'])) {
 }
 
 if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
+
     $fid = $_POST['fid'];
+
 }elseif (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
+
     $fid = $_GET['fid'];
+
 }else {
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<h2>{$lang['nofolderidspecified']}</h2>\n";
+
+    html_draw_top();
+    html_error_msg($lang['nofolderidspecified'], 'admin_folders.php', 'get', array('back' => $lang['back']), array('page' => $page));
     html_draw_bottom();
     exit;
 }
 
 if (!folder_is_valid($fid)) {
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<h2>{$lang['invalidfolderid']}</h2>\n";
+
+    html_draw_top();
+    html_error_msg($lang['invalidfolderid'], 'admin_folders.php', 'get', array('back' => $lang['back']), array('page' => $page));
     html_draw_bottom();
     exit;
 }
@@ -268,6 +273,8 @@ if (isset($_POST['delete'])) {
 
 $allow_labels = array($lang['normalthreadsonly'], $lang['pollthreadsonly'], $lang['both']);
 $allow_values = array(FOLDER_ALLOW_NORMAL_THREAD, FOLDER_ALLOW_POLL_THREAD, FOLDER_ALLOW_ALL_THREAD);
+
+html_draw_top();
 
 echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['managefolders']} &raquo; {$folder_data['TITLE']}</h1>\n";
 

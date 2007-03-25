@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_set_passwd.php,v 1.19 2007-03-19 16:06:23 decoyduck Exp $ */
+/* $Id: admin_forum_set_passwd.php,v 1.20 2007-03-25 14:44:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -85,29 +85,10 @@ $webtag = get_webtag($webtag_search);
 
 $lang = load_language_file();
 
-if (!bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
+if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
     html_draw_top();
-    echo "<h1>{$lang['accessdenied']}</h1>\n";
-    echo "<p>{$lang['accessdeniedexp']}</p>";
-    html_draw_bottom();
-    exit;
-}
-
-if (!forum_get_setting('access_level', 2, false)) {
-
-    html_draw_top();
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<h2>{$lang['forumisnotrestricted']}</h2>\n";
-    html_draw_bottom();
-    exit;
-}
-
-if (!$fid = forum_get_setting('fid')) {
-
-    html_draw_top();
-    echo "<h1>{$lang['accessdenied']}</h1>\n";
-    echo "<p>{$lang['accessdeniedexp']}</p>";
+    html_error_msg($lang['accessdeniedexp']);
     html_draw_bottom();
     exit;
 }
@@ -134,6 +115,22 @@ if (isset($ret) && strlen(trim($ret)) > 0) {
 
 if (isset($_POST['back'])) {
     header_redirect($ret);
+}
+
+if (!forum_get_setting('access_level', 2, false)) {
+
+    html_draw_top();
+    html_error_msg($lang['forumisnotrestricted'], 'admin_forum_set_passwd.php', 'post', array('back' => $lang['back']), array('ret' => $ret));
+    html_draw_bottom();
+    exit;
+}
+
+if (!$fid = forum_get_setting('fid')) {
+
+    html_draw_top();
+    html_error_msg($lang['accessdeniedexp']);
+    html_draw_bottom();
+    exit;
 }
 
 if (isset($_POST['submit'])) {

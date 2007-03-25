@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit_users.php,v 1.40 2007-03-17 15:26:17 decoyduck Exp $ */
+/* $Id: admin_user_groups_edit_users.php,v 1.41 2007-03-25 14:44:53 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -88,7 +88,7 @@ if (bh_session_user_banned()) {
 
 if (!$webtag = get_webtag($webtag_search)) {
     $request_uri = rawurlencode(get_request_uri());
-    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=admin.php%3Fpage%3D$request_uri");
+    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
 // Load language file
@@ -99,22 +99,26 @@ if (isset($_POST['back'])) {
     header_redirect("./admin_user_groups.php?webtag=$webtag");
 }
 
-html_draw_top("openprofile.js");
-
 if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
-    echo "<h1>{$lang['accessdenied']}</h1>\n";
-    echo "<p>{$lang['accessdeniedexp']}</p>";
+
+    html_draw_top();
+    html_error_msg($lang['accessdeniedexp']);
     html_draw_bottom();
     exit;
 }
 
 if (isset($_GET['gid']) && is_numeric($_GET['gid'])) {
+
     $gid = $_GET['gid'];
+
 }elseif (isset($_POST['gid']) && is_numeric($_POST['gid'])) {
+
     $gid = $_POST['gid'];
+
 }else {
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<h2>{$lang['suppliedgidisnotausergroup']}</h2>\n";
+
+    html_draw_top();
+    html_error_msg($lang['suppliedgidisnotausergroup'], 'admin_user_groups.php', 'get', array('back' => $lang['back']));
     html_draw_bottom();
     exit;
 }
@@ -186,6 +190,8 @@ if (isset($_POST['remove'])) {
         }
     }
 }
+
+html_draw_top('openprofile.js');
 
 $group = perm_get_group($gid);
 

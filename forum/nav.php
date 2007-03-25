@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: nav.php,v 1.94 2007-02-18 22:38:02 decoyduck Exp $ */
+/* $Id: nav.php,v 1.95 2007-03-25 14:44:54 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -73,6 +73,8 @@ if (bh_session_user_banned()) {
 
 $lang = load_language_file();
 
+// Number of forums available
+
 header_no_cache();
 
 html_draw_top("class=navpage", "forumlinks.js");
@@ -96,7 +98,7 @@ if ($webtag = get_webtag($webtag_search)) {
     echo "<a href=\"user.php?webtag=$webtag\" target=\"main\">{$lang['mycontrols']}</a>&nbsp;|&nbsp;\n";
 }
 
-if (forums_get_available_count() > 1) {
+if (forums_get_available_count() > 1 || $webtag === false) {
     echo "<a href=\"forums.php?webtag=$webtag\" target=\"main\">{$lang['myforums']}</a>&nbsp;|&nbsp;\n";
 }
 

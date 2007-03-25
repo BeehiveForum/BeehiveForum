@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.194 2007-03-19 16:06:24 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.195 2007-03-25 14:44:52 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -132,22 +132,26 @@ if (isset($_POST['edit_users']) && is_array($_POST['edit_users'])) {
     header_redirect("./admin_user_groups_edit_users.php?webtag=$webtag&gid=$gid");
 }
 
-html_draw_top('admin.js', 'attachments.js');
-
 if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
-    echo "<h1>{$lang['accessdenied']}</h1>\n";
-    echo "<p>{$lang['accessdeniedexp']}</p>";
+
+    html_draw_top();
+    html_error_msg($lang['accessdeniedexp']);
     html_draw_bottom();
     exit;
 }
 
 if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
+
     $uid = $_GET['uid'];
+
 }else if (isset($_POST['uid']) && is_numeric($_POST['uid'])) {
+
     $uid = $_POST['uid'];
+
 }else {
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<h2>{$lang['nouserspecified']}</h2>\n";
+
+    html_draw_top();
+    html_error_msg($lang['nouserspecified'], 'admin_users.php', 'get', array('back' => $lang['back']));
     html_draw_bottom();
     exit;
 }
@@ -168,7 +172,7 @@ if ($table_data = get_table_prefix()) {
 
             foreach($_POST['delete_attachment_confirm'] as $hash => $del_attachment) {
 
-                if ($del_attachment == "Y") {
+                if ($del_attachment == "Y" && get_attachment_by_hash($hash)) {
 
                     delete_attachment($hash);
                 }
@@ -263,6 +267,8 @@ if ($table_data = get_table_prefix()) {
         }
     }
 }
+
+html_draw_top('admin.js', 'attachments.js');
 
 if ($table_data = get_table_prefix()) { 
     echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageusers']} &raquo; ", add_wordfilter_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</h1>\n";

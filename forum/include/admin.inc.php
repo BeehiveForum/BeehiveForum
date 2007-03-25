@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.109 2007-03-24 22:12:06 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.110 2007-03-25 14:44:54 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -626,8 +626,6 @@ function admin_get_users_attachments($uid, &$user_attachments, &$user_image_atta
 
     if (!is_array($hash_array)) $hash_array = false;
 
-    if (!$table_data = get_table_prefix()) return false;
-
     $forum_settings = forum_get_settings();
 
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
@@ -705,8 +703,6 @@ function admin_get_forum_list($start)
     $db_admin_get_forum_list = db_connect();
 
     if (!is_numeric($start)) return false;
-
-    if (!$table_data = get_table_prefix()) return false;
 
     $forums_array = array();
 
@@ -1201,8 +1197,6 @@ function admin_get_user_history($uid)
     $lang = load_language_file();
 
     if (!is_numeric($uid)) return false;
-
-    if (!$table_data = get_table_prefix()) return false;
 
     $user_history_array = array();
 

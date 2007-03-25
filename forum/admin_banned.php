@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_banned.php,v 1.53 2007-03-18 23:10:07 decoyduck Exp $ */
+/* $Id: admin_banned.php,v 1.54 2007-03-25 14:44:46 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -89,7 +89,7 @@ if (bh_session_user_banned()) {
 
 if (!$webtag = get_webtag($webtag_search)) {
     $request_uri = rawurlencode(get_request_uri());
-    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=admin.php%3Fpage%3D$request_uri");
+    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
 // Load language file
@@ -97,9 +97,9 @@ if (!$webtag = get_webtag($webtag_search)) {
 $lang = load_language_file();
 
 if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
+
     html_draw_top();
-    echo "<h1>{$lang['accessdenied']}</h1>\n";
-    echo "<p>{$lang['accessdeniedexp']}</p>";
+    html_error_msg($lang['accessdeniedexp']);
     html_draw_bottom();
     exit;
 }
@@ -399,10 +399,9 @@ if (isset($_POST['add']) || isset($_POST['check'])) {
     exit;
 }
 
-
-html_draw_top('openprofile.js');
-
 if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_type) && isset($add_new_ban_data))) {
+
+    html_draw_top('openprofile.js');
 
     echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['bancontrols']}</h1>\n";
 
@@ -540,6 +539,8 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
     echo "</form>\n";
     echo "</div>\n";
 
+    html_draw_bottom();
+
 }elseif (isset($_POST['ban_id']) || isset($_GET['ban_id']) || isset($remove_ban_id)) {
 
     if (isset($_POST['ban_id']) && is_numeric($_POST['ban_id'])) {
@@ -556,14 +557,16 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
     
     }else {
 
-        echo "<h2>{$lang['invalidbanid']}</h2>\n";
+        html_draw_top();
+        html_error_msg($lang['invalidbanid'], 'admin_banned.php', 'get', array('back' => $lang['back']));
         html_draw_bottom();
         exit;
     }
 
     if (!$ban_data_array = admin_get_ban($ban_id)) {
 
-        echo "<h2>{$lang['invalidbanid']}</h2>\n";
+        html_draw_top();
+        html_error_msg($lang['invalidbanid'], 'admin_banned.php', 'get', array('back' => $lang['back']));
         html_draw_bottom();
         exit;
     }
@@ -582,6 +585,8 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
             $ban_data_array['COMMENT'] = trim(_stripslashes($_POST['bancomment']));
         }
     }
+
+    html_draw_top('openprofile.js');
 
     echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['bancontrols']}</h1>\n";
 
@@ -710,7 +715,11 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
     echo "</form>\n";
     echo "</div>\n";
 
+    html_draw_bottom();
+
 }else {
+
+    html_draw_top('openprofile.js');
 
     echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['bancontrols']}</h1>\n";
 
@@ -840,8 +849,8 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
     echo "  <br />\n";
     echo "</form>\n";
     echo "</div>\n";
-}
 
-html_draw_bottom();
+    html_draw_bottom();
+}
 
 ?>

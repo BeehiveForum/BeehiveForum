@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: server.inc.php,v 1.6 2007-03-18 23:10:09 decoyduck Exp $ */
+/* $Id: server.inc.php,v 1.7 2007-03-25 15:39:24 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -127,22 +127,56 @@ function microtime_float()
 
 function get_available_files()
 {
-    $available_files_array = array();
-    
-    if ($dir = @opendir('emoticons')) {
-
-        while (($file = @readdir($dir)) !== false) {
-
-            $file_parts = pathinfo($file);
-            
-            if (isset($file_parts['extension']) && $file_parts['extension'] == 'php') {
-
-                $available_files_array[] = $file;
-            }            
-        }
-    }
-
-    return $available_files_array;
+    return array('admin.php', 'admin_banned.php',
+                 'admin_default_forum_settings.php', 'admin_folders.php',
+                 'admin_folder_add.php', 'admin_folder_edit.php',
+                 'admin_forums.php', 'admin_forum_access.php',
+                 'admin_forum_links.php', 'admin_forum_settings.php',
+                 'admin_forum_set_passwd.php', 'admin_main.php',
+                 'admin_make_style.php', 'admin_menu.php',
+                 'admin_post_approve.php', 'admin_post_stats.php',
+                 'admin_prof_items.php', 'admin_prof_sect.php',
+                 'admin_rss_feeds.php', 'admin_startpage.php',
+                 'admin_user.php', 'admin_users.php',
+                 'admin_user_groups.php', 'admin_user_groups_add.php',
+                 'admin_user_groups_edit.php', 'admin_user_groups_edit_users.php',
+                 'admin_viewlog.php', 'admin_visitor_log.php',
+                 'admin_wordfilter.php', 'attachments.php',
+                 'change_pw.php', 'confirm_email.php',
+                 'create_poll.php', 'delete.php',
+                 'dictionary.php', 'discussion.php',
+                 'display.php', 'display_emoticons.php',
+                 'edit.php', 'edit_attachments.php',
+                 'edit_email.php', 'edit_password.php',
+                 'edit_poll.php', 'edit_prefs.php',
+                 'edit_profile.php', 'edit_relations.php',
+                 'edit_signature.php', 'edit_subscriptions.php',
+                 'edit_wordfilter.php', 'email.php',
+                 'font_size.php', 'forgot_pw.php',
+                 'forums.php', 'forum_options.php',
+                 'forum_password.php', 'get_attachment.php',
+                 'index.php', 'ldelete.php',
+                 'ldisplay.php', 'ledit.php',
+                 'lforums.php', 'links.php',
+                 'links_add.php', 'links_detail.php',
+                 'llogon.php', 'llogout.php',
+                 'lmessages.php', 'logon.php',
+                 'logout.php', 'lpost.php',
+                 'lthread_list.php', 'messages.php',
+                 'mods_list.php', 'nav.php',
+                 'pm.php', 'pm_edit.php',
+                 'pm_write.php', 'poll_results.php',
+                 'post.php', 'register.php',
+                 'search.php', 'search_index.php',
+                 'search_popup.php', 'set_relation.php',
+                 'start.php', 'start_left.php',
+                 'start_main.php', 'start_main_sf.php',
+                 'threads_rss.php', 'thread_list.php',
+                 'thread_options.php', 'user.php',
+                 'user_folder.php', 'user_font.php',
+                 'user_main.php', 'user_menu.php',
+                 'user_profile.php', 'user_rel.php',
+                 'user_stats.php', 'visitor_log.php');
 }
 
 // Executed by every script that includes server.inc.php.

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.php,v 1.35 2007-03-24 17:32:23 decoyduck Exp $ */
+/* $Id: dictionary.php,v 1.36 2007-03-26 21:57:21 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -134,12 +134,12 @@ if (isset($_POST['content']) && strlen(trim(_stripslashes($_POST['content']))) >
     // Apache has a limit on the length an URL query, so we need to
     // send the content to be checked via POST or Javascript.
 
-    html_draw_top('dictionary.js', "onload=initialise_dictionary('$obj_id')");
+    html_draw_top('dictionary.js', "onload=initialiseDictionary('$obj_id')");
 
     echo "<h1>{$lang['dictionary']}</h1>\n";
     echo "<h2>{$lang['initialisingdotdotdot']}</h2>\n";
 
-    echo "<form id=\"dictionary\" action=\"dictionary.php\" method=\"post\" target=\"_self\">\n";
+    echo "<form name=\"dictionary\" action=\"dictionary.php\" method=\"post\" target=\"_self\">\n";
     echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "  ", form_input_hidden('obj_id', _htmlentities($obj_id)), "\n";
     echo "  ", form_input_hidden('content', ""), "\n";
@@ -299,7 +299,7 @@ if ($dictionary->is_check_complete()) {
 
 }else {
 
-    html_draw_top('dictionary.js', 'onload=show_current_word()');
+    html_draw_top('dictionary.js', 'onload=showCurrentWord()');
 }
 
 echo "<form name=\"dictionary\" action=\"dictionary.php\" method=\"post\" target=\"_self\">\n";
@@ -400,7 +400,7 @@ echo "                  <td align=\"left\" width=\"270\">\n";
 
 if ($suggestions_array = $dictionary->get_suggestions_array()) {
 
-    echo "                    ", form_dropdown_array("suggestion", $suggestions_array, false, $dictionary->get_best_suggestion(), "size=\"10\" onchange=\"changeword(this)\"", "dictionary_best_selection"), "\n";
+    echo "                    ", form_dropdown_array("suggestion", $suggestions_array, false, $dictionary->get_best_suggestion(), "size=\"10\" onchange=\"changeWord(this)\"", "dictionary_best_selection"), "\n";
 
 }elseif ($dictionary->is_check_complete()) {
 

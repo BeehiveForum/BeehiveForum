@@ -19,21 +19,21 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.js,v 1.18 2007-03-26 19:47:19 decoyduck Exp $ */
+/* $Id: dictionary.js,v 1.19 2007-03-26 21:57:21 decoyduck Exp $ */
 
-function initialise_dictionary(obj_id) {
+function initialiseDictionary(obj_id) {
 
-    var dictObj = getFormObj('dictionary');
-    var contObj = getFormObj('content');
+    var dictObj = getFormObjByName('dictionary');
+    var contObj = getFormObjByName('content');
   
-    if (window.opener.getFormObj) {
+    if (window.opener.readContent) {
         
         contObj.value = window.opener.readContent(obj_id);
         dictObj.submit();
     }
 }
 
-function changeword(obj) {
+function changeWord(obj) {
 
     var change_to = getFormObj('change_to'); 
     var i = obj.options[obj.selectedIndex].value;
@@ -67,7 +67,7 @@ function updateContent(obj_id, content) {
     form_obj.value = content;
 }
 
-function show_current_word() {
+function showCurrentWord() {
 
     var highlighted_word = getFormObj('highlighted_word');
     highlighted_word.scrollIntoView(false);

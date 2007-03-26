@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.js,v 1.17 2007-03-01 14:37:24 decoyduck Exp $ */
+/* $Id: dictionary.js,v 1.18 2007-03-26 19:47:19 decoyduck Exp $ */
 
 function initialise_dictionary(obj_id) {
 
@@ -38,7 +38,7 @@ function changeword(obj) {
     var change_to = getFormObj('change_to'); 
     var i = obj.options[obj.selectedIndex].value;
     
-    // IE doesn't like .value when <object>value</value> is used instead
+    // IE doesn't like .value when <object>value</object> is used instead
     // of <object value="value">value</object> so we use innerText
 
     if (i.length == 0) i = obj.options[obj.selectedIndex].innerText;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.42 2007-03-05 20:58:41 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.43 2007-03-27 23:16:18 decoyduck Exp $ */
 
 // French (Canada) language file / fichier de langage français (Canada)
 
@@ -357,7 +357,7 @@ $lang['wholeword'] = "Mot complet";
 $lang['word_filter_help_1'] = "<b>Tous</b> recherche correspondances contre le texte complet alors le filtrage de c à c'est changera incidence à inc'estidenc'este.";
 $lang['word_filter_help_2'] = "<b>Mot complet</b> recherche correspondance avec le mot complet seulement alors le filtrage de c à c'est ne changera PAS incidence à inc'estidenc'este.";
 $lang['word_filter_help_3'] = "<b>PREG</b> permet l'utilisation des Regular Expressions du langage Perl pour trouver des correspondances de texte";
-$lang['forumdeletewarning'] = "Étes-vous certain de vouloir supprimer le forum sélectionné? Une fois le forum supprimé,le contenu est perdu pour toujours et ne peut pas être récupéré.";
+$lang['forumdeletewarning'] = "Étes-vous certain de vouloir supprimer le forum sélectionné? Une fois le forum supprimé, le contenu est perdu pour toujours et ne peut pas être récupéré.";
 $lang['successfullycreatedforum'] = "Création de forum réussie";
 $lang['nameanddesc'] = "Nom et Description";
 $lang['movethreads'] = "Déplacer fils de discussion";

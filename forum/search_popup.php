@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: search_popup.php,v 1.8 2007-03-24 17:32:24 decoyduck Exp $ */
+/* $Id: search_popup.php,v 1.9 2007-03-27 23:16:18 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -164,13 +164,13 @@ if (isset($_GET['type']) && is_numeric($_GET['type'])) {
 
 // Form Object ID
 
-if (isset($_POST['obj_id']) && strlen(trim(_stripslashes($_POST['obj_id']))) > 0) {
+if (isset($_POST['obj_name']) && strlen(trim(_stripslashes($_POST['obj_name']))) > 0) {
 
-    $obj_id = trim(_stripslashes($_POST['obj_id']));
+    $obj_name = trim(_stripslashes($_POST['obj_name']));
 
-}elseif (isset($_GET['obj_id']) && strlen(trim(_stripslashes($_GET['obj_id']))) > 0) {
+}elseif (isset($_GET['obj_name']) && strlen(trim(_stripslashes($_GET['obj_name']))) > 0) {
 
-    $obj_id = trim(_stripslashes($_GET['obj_id']));
+    $obj_name = trim(_stripslashes($_GET['obj_name']));
 
 }else {
 
@@ -214,13 +214,13 @@ if (isset($_POST['select_result'])) {
             foreach($search_result as $search_result_part) {
 
                 $search_result_part = trim(_stripslashes($search_result_part));
-                echo "    window.opener.returnSearchResult('$obj_id', '$search_result_part');\n";
+                echo "    window.opener.returnSearchResult('$obj_name', '$search_result_part');\n";
             }
 
         }else {
 
             $search_result = trim(_stripslashes($search_result));
-            echo "    window.opener.returnSearchResult('$obj_id', '$search_result');\n";
+            echo "    window.opener.returnSearchResult('$obj_name', '$search_result');\n";
         }
 
         echo "  }\n";
@@ -248,7 +248,7 @@ echo "<div align=\"center\">\n";
 echo "<form action=\"search_popup.php\" method=\"post\">\n";
 echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden("type", _htmlentities($type)), "\n";
-echo "  ", form_input_hidden("obj_id", _htmlentities($obj_id)), "\n";
+echo "  ", form_input_hidden("obj_name", _htmlentities($obj_name)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"475\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";

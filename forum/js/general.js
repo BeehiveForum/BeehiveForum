@@ -19,46 +19,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: general.js,v 1.21 2007-03-26 21:57:21 decoyduck Exp $ */
+/* $Id: general.js,v 1.22 2007-03-27 23:16:18 decoyduck Exp $ */
 
 var IE = (document.all ? true : false);
-
-document.onkeypress = function(e)
-{
-    e = e || window.event;
-
-    if (typeof e != 'undefined') {
-
-        var target_obj = e.target || e.srcElement;
-        
-        if (typeof target_obj != 'undefined' && target_obj.type == 'text') {
-            
-            var parent_node = target_obj.parentNode;
-            
-            while (parent_node.tagName.toLowerCase() != 'form') {
-                parent_node = parent_node.parentNode;
-            }
-
-            var input_tags = parent_node.getElementsByTagName('input');
-            var input_count = input_tags.length;
-
-            for (var i = 0; i < input_count; i++)  {
-                
-                if (input_tags[i].type == 'text' || input_tags[i].type == 'hidden') {
-
-                    input_count--;
-                }
-            }
-
-            if (input_count > 1) {
-            
-                return (typeof e.keyCode != 'undefined') ? e.keyCode != 13 : true;
-            }
-        }
-    }
-
-    return true;
-}
 
 function disable_button(button)
 {

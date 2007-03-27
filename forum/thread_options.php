@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.76 2007-03-24 17:32:24 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.77 2007-03-27 23:16:18 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -577,7 +577,7 @@ if ($threaddata['LENGTH'] > 0) {
                 echo "                    <table class=\"posthead\" width=\"95%\">\n";
                 echo "                      <tr>\n";
                 echo "                        <td align=\"left\" width=\"250\">", form_input_hidden("thread_merge_split", 0), $lang['mergewiththreadid'], "</td>\n";
-                echo "                        <td align=\"left\" nowrap=\"nowrap\"><div class=\"bhinputsearch\">", form_input_text('merge_thread', '', 26, 0, "", "merge_thread_id"), form_submit_image("search_button.png", "search", $lang['search'], "onclick=\"return openThreadSearch('$webtag', 'merge_thread');\" title=\"{$lang['search']}\"", "search_button"), "</div></td>\n";
+                echo "                        <td align=\"left\" nowrap=\"nowrap\"><div class=\"bhinputsearch\">", form_input_text("merge_thread", "", 28, 15, "", "merge_thread_id"), "<a href=\"search_popup.php?webtag=$webtag&amp;type=2&amp;obj_name=merge_thread\" onclick=\"return openThreadSearch('$webtag', 'merge_thread');\"><img src=\"", style_image('search_button.png'), "\" alt=\"{$lang['search']}\" title=\"{$lang['search']}\" border=\"0\" class=\"search_button\" /></a></div></td>\n";
                 echo "                      </tr>\n";
                 echo "                      <tr>\n";
                 echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -805,16 +805,16 @@ if ($threaddata['LENGTH'] > 0) {
             echo "                      </tr>\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\">&nbsp;</td>\n";
-            echo "                        <td align=\"left\" class=\"posthead\">", form_radio("delthread", 0, "Permenant Delete", false), " \n";
+            echo "                        <td align=\"left\" class=\"posthead\">", form_radio("delthread", 0, $lang['permenantlydelete'], false), "</td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\">&nbsp;</td>\n";
-            echo "                        <td align=\"left\" class=\"posthead\">", form_radio("delthread", 1, "Move to Deleted Threads", false), " \n";
+            echo "                        <td align=\"left\" class=\"posthead\">", form_radio("delthread", 1, $lang['movetodeleteditems'], false), "</td>\n";
             echo "                        </td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\">&nbsp;</td>\n";
-            echo "                        <td align=\"left\" class=\"posthead\">", form_checkbox("delthread_con", "Y", $lang['confirm'], false), " \n";
+            echo "                        <td align=\"left\" class=\"posthead\">", form_checkbox("delthread_con", "Y", $lang['confirm'], false), "</td>\n";
             echo "                        </td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";

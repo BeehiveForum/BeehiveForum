@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.299 2007-03-24 17:32:24 decoyduck Exp $ */
+/* $Id: post.php,v 1.300 2007-03-27 23:16:18 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -908,7 +908,7 @@ echo "  <tr>\n";
 echo "    <td align=\"left\">", form_radio("to_radio", "others", $lang['others']), "</td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td align=\"left\" nowrap=\"nowrap\"><div class=\"bhinputsearch\">", form_input_text("t_to_uid_others", "", 0, 0, "onclick=\"checkToRadio(". ($newthread ? 1 : 2). ")\"", "post_to_others"), form_submit_image("search_button.png", "search", $lang['search'], "onclick=\"return openLogonSearch('$webtag', 't_to_uid_others');\" title=\"{$lang['search']}\"", "search_button"), "</div></td>\n";
+echo "    <td align=\"left\" nowrap=\"nowrap\"><div class=\"bhinputsearch\">", form_input_text("t_to_uid_others", "", 0, 0, "onclick=\"checkToRadio(". ($newthread ? 1 : 2). ")\"", "post_to_others"), "<a href=\"search_popup.php?webtag=$webtag&amp;type=1&amp;obj_name=t_to_uid_others\" onclick=\"return openLogonSearch('$webtag', 't_to_uid_others');\"><img src=\"", style_image('search_button.png'), "\" alt=\"{$lang['search']}\" title=\"{$lang['search']}\" border=\"0\" class=\"search_button\" /></a></div></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
 echo "    <td align=\"left\"><h2>{$lang['messageoptions']}</h2></td>\n";

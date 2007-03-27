@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.401 2007-03-05 20:58:41 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.402 2007-03-27 23:16:18 decoyduck Exp $ */
 
 // International English language file
 
@@ -1647,8 +1647,9 @@ $lang['interest'] = "Interest";
 $lang['closedforposting'] = "Closed for posting";
 $lang['locktitleandfolder'] = "Lock title and folder";
 $lang['deletepostsinthreadbyuser'] = "Delete posts in thread by user";
-$lang['deletethread'] = "Delete Posts";
 $lang['deletethread'] = "Delete Thread";
+$lang['permenantlydelete'] = "Permenantly Delete";
+$lang['movetodeleteditems'] = "Move to Deleted Threads";
 $lang['undeletethread'] = "Undelete Thread";
 $lang['threaddeletedpermenantly'] = "Thread deleted permanently. Cannot undelete.";
 $lang['markasunread'] = "Mark as unread";

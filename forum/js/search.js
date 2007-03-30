@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.js,v 1.11 2007-03-27 23:16:18 decoyduck Exp $ */
+/* $Id: search.js,v 1.12 2007-03-30 00:54:49 decoyduck Exp $ */
 
 var search_stop_words = false;
 var search_logon = false;
@@ -39,7 +39,7 @@ function display_mysql_stopwords(webtag, keywords)
     if (typeof search_thread == 'object' && !search_thread.closed) {
         search_stop_words.focus();
     }else {
-        search_stop_words = window.open('search.php?webtag=' + webtag + '&show_stop_words=true&keywords=' + keywords, 'show_stop_words', 'width=580, height=450, scrollbars=yes, scrolling=yes');
+        search_stop_words = window.open('search.php?webtag=' + webtag + '&show_stop_words=true&keywords=' + keywords, 'show_stop_words', 'width=580, height=450, scrollbars=yes, resizable=yes, scrolling=yes');
     }
 
     return false;
@@ -54,7 +54,7 @@ function openLogonSearch(webtag, obj_name)
     }else {
 
         var form_obj = getFormObjByName(obj_name);
-        search_logon = window.open('search_popup.php?webtag=' + webtag + '&type=1&search_query=' + form_obj.value + '&obj_name='+ obj_name, 'search_logon', 'width=500, height=300, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');
+        search_logon = window.open('search_popup.php?webtag=' + webtag + '&type=1&search_query=' + form_obj.value + '&obj_name='+ obj_name, 'search_logon', 'width=500, height=300, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=yes, scrollbars=yes');
     }
 
     return false;

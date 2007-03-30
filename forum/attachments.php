@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.131 2007-03-24 17:32:23 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.132 2007-03-30 00:28:50 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -158,14 +158,6 @@ $total_attachment_size = 0;
 
 if (substr($attachment_dir, -1) == '/') {
     $attachment_dir = substr($attachment_dir, 0, -1);
-}
-
-// Make sure the attachments directory exists
-
-if (!(@is_dir($attachment_dir))) {
-
-    @mkdir($attachment_dir, 0755);
-    @chmod($attachment_dir, 0777);
 }
 
 // Arrays to hold the success and error messages
@@ -480,8 +472,7 @@ if (get_attachments($uid, $aid, $attachments_array, $image_attachments_array)) {
                 echo "                  <td align=\"center\" width=\"25\">", form_checkbox("delete_attachment[{$attachment['hash']}]", "Y", ""), "</td>\n";
                 echo "                  <td align=\"left\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">$attachment_link</td>\n";
                 echo "                  <td align=\"right\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">", format_file_size($attachment['filesize']), "</td>\n";
-                echo "                  <td align=\"left\">&nbsp;</td>\n";
-                echo "                  <td align=\"left\">&nbsp;</td>\n";
+                echo "                  <td align=\"left\" width=\"25\">&nbsp;</td>\n";
                 echo "                </tr>\n";
 
                 $total_attachment_size += $attachment['filesize'];
@@ -499,8 +490,7 @@ if (get_attachments($uid, $aid, $attachments_array, $image_attachments_array)) {
                 echo "                  <td align=\"center\" width=\"25\">", form_checkbox("delete_attachment[{$attachment['hash']}]", "Y", ""), "</td>\n";
                 echo "                  <td align=\"left\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">$attachment_link</td>\n";
                 echo "                  <td align=\"right\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">", format_file_size($attachment['filesize']), "</td>\n";
-                echo "                  <td align=\"left\">&nbsp;</td>\n";
-                echo "                  <td align=\"left\">&nbsp;</td>\n";
+                echo "                  <td align=\"left\" width=\"25\">&nbsp;</td>\n";
                 echo "                </tr>\n";
 
                 $total_attachment_size += $attachment['filesize'];
@@ -566,7 +556,7 @@ if (get_all_attachments($uid, $aid, $attachments_array, $image_attachments_array
                 }
 
                 echo "                  <td align=\"right\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">", format_file_size($attachment['filesize']), "</td>\n";
-                echo "                  <td align=\"left\">&nbsp;</td>\n";
+                echo "                  <td align=\"left\" width=\"25\">&nbsp;</td>\n";
                 echo "                </tr>\n";
 
                 $total_attachment_size += $attachment['filesize'];
@@ -594,7 +584,7 @@ if (get_all_attachments($uid, $aid, $attachments_array, $image_attachments_array
                 }
 
                 echo "                  <td align=\"right\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">", format_file_size($attachment['filesize']), "</td>\n";
-                echo "                  <td align=\"left\">&nbsp;</td>\n";
+                echo "                  <td align=\"left\" width=\"25\">&nbsp;</td>\n";
                 echo "                </tr>\n";
 
                 $total_attachment_size += $attachment['filesize'];
@@ -638,25 +628,21 @@ echo "                </tr>\n";
 echo "              </table>\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"center\">\n";
-echo "                    <table class=\"posthead\" width=\"95%\">\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" valign=\"top\" class=\"postbody\">{$lang['totalsize']}:</td>\n";
-echo "                        <td align=\"left\" valign=\"top\" class=\"postbody\">&nbsp;</td>\n";
-echo "                        <td align=\"right\" valign=\"top\" class=\"postbody\">", format_file_size($total_attachment_size), "</td>\n";
-echo "                        <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" valign=\"top\" class=\"postbody\">{$lang['freespace']}:</td>\n";
-echo "                        <td align=\"left\" valign=\"top\" class=\"postbody\">&nbsp;</td>\n";
-echo "                        <td align=\"right\" valign=\"top\" class=\"postbody\">", format_file_size(get_free_attachment_space($uid)), "</td>\n";
-echo "                        <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" colspan=\"5\">&nbsp;</td>\n";
-echo "                      </tr>\n";
-echo "                    </table>\n";
-echo "                  </td>\n";
+echo "                  <td align=\"left\" width=\"25\">&nbsp;</td>\n";
+echo "                  <td align=\"left\" valign=\"top\" class=\"postbody\">{$lang['totalsize']}:</td>\n";
+echo "                  <td align=\"left\" valign=\"top\" class=\"postbody\">&nbsp;</td>\n";
+echo "                  <td align=\"right\" valign=\"top\" class=\"postbody\">", format_file_size($total_attachment_size), "</td>\n";
+echo "                  <td align=\"left\" width=\"25\">&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\" width=\"25\">&nbsp;</td>\n";
+echo "                  <td align=\"left\" valign=\"top\" class=\"postbody\">{$lang['freespace']}:</td>\n";
+echo "                  <td align=\"left\" valign=\"top\" class=\"postbody\">&nbsp;</td>\n";
+echo "                  <td align=\"right\" valign=\"top\" class=\"postbody\">", format_file_size(get_free_attachment_space($uid)), "</td>\n";
+echo "                  <td align=\"left\" width=\"25\">&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\" colspan=\"5\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";

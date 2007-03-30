@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: make_style.inc.php,v 1.11 2007-01-15 00:10:35 decoyduck Exp $ */
+/* $Id: make_style.inc.php,v 1.12 2007-03-30 00:28:50 decoyduck Exp $ */
 
 /**
 * make_style.inc.php - attachment upload handling
@@ -72,29 +72,10 @@ function forum_save_style($stylename, $styledesc, $stylesheet, &$error)
 
         // Check that the directory structure exists
 
-        if (@!is_dir("forums")) {
-
-            @mkdir("forums", 0755);
-            @chmod("forums", 0777);
-        }
-
-        if (@!is_dir("forums/$webtag")) {
-
-            @mkdir("forums/$webtag", 0755);
-            @chmod("forums/$webtag", 0777);
-        }
-
-        if (@!is_dir("forums/$webtag/styles")) {
-
-            @mkdir("forums/$webtag/styles", 0755);
-            @chmod("forums/$webtag/styles", 0777);
-        }
-
-        if (@!is_dir("forums/$webtag/styles/$stylename")) {
-
-            @mkdir("forums/$webtag/styles/$stylename", 0755);
-            @chmod("forums/$webtag/styles/$stylename", 0777);
-        }
+        if (@!is_dir("forums")) @mkdir("forums", 0755);
+        if (@!is_dir("forums/$webtag")) @mkdir("forums/$webtag", 0755);
+        if (@!is_dir("forums/$webtag/styles")) @mkdir("forums/$webtag/styles", 0755);
+        if (@!is_dir("forums/$webtag/styles/$stylename")) @mkdir("forums/$webtag/styles/$stylename", 0755);
 
         // Save the style desc.txt file
 

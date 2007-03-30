@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.440 2007-03-24 17:32:24 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.441 2007-03-30 00:28:50 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -929,7 +929,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
         if (($tid <> 0 && isset($message['PID'])) || isset($message['AID'])) {
 
             $aid = isset($message['AID']) ? $message['AID'] : get_attachment_id($tid, $message['PID']);
-
+            
             if (get_attachments($message['FROM_UID'], $aid, $attachments_array, $image_attachments_array)) {
 
                 echo "              <tr>\n";
@@ -952,7 +952,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
                     echo "                  <p><b>{$lang['imageattachments']}:</b><br />\n";
 
                     foreach($image_attachments_array as $key => $attachment) {
-
+                       
                         echo "                  ", attachment_make_link($attachment), "\n";
                     }
 

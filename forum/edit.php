@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.215 2007-03-24 17:32:23 decoyduck Exp $ */
+/* $Id: edit.php,v 1.216 2007-03-30 00:28:50 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -149,42 +149,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 if (!isset($tid) || !isset($pid) || !is_numeric($tid) || !is_numeric($pid)) {
 
     html_draw_top();
-
-    echo "<h1>{$lang['editmessage']}</h1>\n";
-    echo "<br />\n";
-    echo "<form action=\"discussion.php\" method=\"post\" target=\"_self\">\n";
-    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\">\n";
-    echo "        <table class=\"box\" width=\"100%\">\n";
-    echo "          <tr>\n";
-    echo "            <td align=\"left\" class=\"posthead\">\n";
-    echo "              <table class=\"posthead\" width=\"100%\">\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\">{$lang['error']}</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\"><h2>{$lang['nomessagespecifiedforedit']}</h2></td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\">&nbsp;</td>\n";
-    echo "                </tr>\n";
-    echo "              </table>\n";
-    echo "            </td>\n";
-    echo "          </tr>\n";
-    echo "        </table>\n";
-    echo "      </td>\n";
-    echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\">&nbsp;</td>\n";
-    echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("back", $lang['back']), "</td>\n";
-    echo "    </tr>\n";
-    echo "  </table>\n";
-    echo "</form>\n";
-
+    html_error_msg($lang['threadcouldnotbefound'], 'discussion.php', 'post', array('back' => $lang['back']));
     html_draw_bottom();
     exit;
 }
@@ -250,7 +215,7 @@ $valid = true;
 
 $fix_html = true;
 
-html_draw_top("onUnload=clearFocus()", "resize_width=720", "basetarget=_blank", "edit.js", "openprofile.js", "dictionary.js", "htmltools.js", "emoticons.js", "post.js", "poll.js");
+html_draw_top("onUnload=clearFocus()", "resize_width=720", "basetarget=_blank", "attachments.js", "edit.js", "openprofile.js", "dictionary.js", "htmltools.js", "emoticons.js", "post.js", "poll.js");
 
 $t_content = "";
 $t_sig = "";

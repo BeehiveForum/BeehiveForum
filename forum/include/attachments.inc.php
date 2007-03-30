@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.120 2007-02-09 15:21:06 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.121 2007-03-30 00:28:50 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -67,12 +67,7 @@ function attachments_check_dir()
 {
     if ($attachment_dir = forum_get_setting('attachment_dir')) {
 
-        if (!@is_dir($attachment_dir)) {
-
-            @mkdir($attachment_dir, 0755);
-            @chmod($attachment_dir, 0777);
-        }
-
+        if (!@is_dir($attachment_dir)) @mkdir($attachment_dir, 0755);
         if (@is_writable($attachment_dir)) return $attachment_dir;
     }
 
@@ -145,27 +140,23 @@ function get_attachments($uid, $aid, &$user_attachments, &$user_image_attachment
                 $filesize = filesize("$attachment_dir/{$attachment['HASH']}");
                 $filesize+= filesize("$attachment_dir/{$attachment['HASH']}.thumb");
 
-                $user_image_attachments[] = array("filename"     => rawurldecode($attachment['FILENAME']),
-                                                  "filedate"     => filemtime("$attachment_dir/{$attachment['HASH']}"),
-                                                  "filesize"     => $filesize,
-                                                  "aid"          => $attachment['AID'],
-                                                  "hash"         => $attachment['HASH'],
-                                                  "mimetype"     => $attachment['MIMETYPE'],
-                                                  "downloads"    => $attachment['DOWNLOADS'],
-                                                  "forum_fid"    => is_numeric($attachment['FID']) ? $attachment['FID'] : 0,
-                                                  "forum_webtag" => $attachment['WEBTAG']);
+                $user_image_attachments[$attachment['HASH']] = array("filename"     => rawurldecode($attachment['FILENAME']),
+                                                                     "filedate"     => filemtime("$attachment_dir/{$attachment['HASH']}"),
+                                                                     "filesize"     => $filesize,
+                                                                     "aid"          => $attachment['AID'],
+                                                                     "hash"         => $attachment['HASH'],
+                                                                     "mimetype"     => $attachment['MIMETYPE'],
+                                                                     "downloads"    => $attachment['DOWNLOADS']);
 
             }else {
 
-                $user_attachments[] = array("filename"     => rawurldecode($attachment['FILENAME']),
-                                            "filedate"     => filemtime("$attachment_dir/{$attachment['HASH']}"),
-                                            "filesize"     => filesize("$attachment_dir/{$attachment['HASH']}"),
-                                            "aid"          => $attachment['AID'],
-                                            "hash"         => $attachment['HASH'],
-                                            "mimetype"     => $attachment['MIMETYPE'],
-                                            "downloads"    => $attachment['DOWNLOADS'],
-                                            "forum_fid"    => is_numeric($attachment['FID']) ? $attachment['FID'] : 0,
-                                            "forum_webtag" => $attachment['WEBTAG']);
+                $user_attachments[$attachment['HASH']] = array("filename"     => rawurldecode($attachment['FILENAME']),
+                                                               "filedate"     => filemtime("$attachment_dir/{$attachment['HASH']}"),
+                                                               "filesize"     => filesize("$attachment_dir/{$attachment['HASH']}"),
+                                                               "aid"          => $attachment['AID'],
+                                                               "hash"         => $attachment['HASH'],
+                                                               "mimetype"     => $attachment['MIMETYPE'],
+                                                               "downloads"    => $attachment['DOWNLOADS']);
             }
         }
     }
@@ -219,27 +210,23 @@ function get_all_attachments($uid, $aid, &$user_attachments, &$user_image_attach
                 $filesize = filesize("$attachment_dir/{$attachment['HASH']}");
                 $filesize+= filesize("$attachment_dir/{$attachment['HASH']}.thumb");
 
-                $user_image_attachments[] = array("filename"     => rawurldecode($attachment['FILENAME']),
-                                                  "filedate"     => filemtime("$attachment_dir/{$attachment['HASH']}"),
-                                                  "filesize"     => $filesize,
-                                                  "aid"          => $attachment['AID'],
-                                                  "hash"         => $attachment['HASH'],
-                                                  "mimetype"     => $attachment['MIMETYPE'],
-                                                  "downloads"    => $attachment['DOWNLOADS'],
-                                                  "forum_fid"    => is_numeric($attachment['FID']) ? $attachment['FID'] : 0,
-                                                  "forum_webtag" => $attachment['WEBTAG']);
+                $user_image_attachments[$attachment['HASH']] = array("filename"     => rawurldecode($attachment['FILENAME']),
+                                                                     "filedate"     => filemtime("$attachment_dir/{$attachment['HASH']}"),
+                                                                     "filesize"     => $filesize,
+                                                                     "aid"          => $attachment['AID'],
+                                                                     "hash"         => $attachment['HASH'],
+                                                                     "mimetype"     => $attachment['MIMETYPE'],
+                                                                     "downloads"    => $attachment['DOWNLOADS']);
 
             }else {
 
-                $user_attachments[] = array("filename"     => rawurldecode($attachment['FILENAME']),
-                                            "filedate"     => filemtime("$attachment_dir/{$attachment['HASH']}"),
-                                            "filesize"     => filesize("$attachment_dir/{$attachment['HASH']}"),
-                                            "aid"          => $attachment['AID'],
-                                            "hash"         => $attachment['HASH'],
-                                            "mimetype"     => $attachment['MIMETYPE'],
-                                            "downloads"    => $attachment['DOWNLOADS'],
-                                            "forum_fid"    => is_numeric($attachment['FID']) ? $attachment['FID'] : 0,
-                                            "forum_webtag" => $attachment['WEBTAG']);
+                $user_attachments[$attachment['HASH']] = array("filename"     => rawurldecode($attachment['FILENAME']),
+                                                               "filedate"     => filemtime("$attachment_dir/{$attachment['HASH']}"),
+                                                               "filesize"     => filesize("$attachment_dir/{$attachment['HASH']}"),
+                                                               "aid"          => $attachment['AID'],
+                                                               "hash"         => $attachment['HASH'],
+                                                               "mimetype"     => $attachment['MIMETYPE'],
+                                                               "downloads"    => $attachment['DOWNLOADS']);
             }
         }
     }
@@ -308,29 +295,23 @@ function get_users_attachments($uid, &$user_attachments, &$user_image_attachment
                 $filesize = filesize("$attachment_dir/{$attachment['HASH']}");
                 $filesize+= filesize("$attachment_dir/{$attachment['HASH']}.thumb");
 
-                $user_image_attachments[] = array("filename"     => rawurldecode($attachment['FILENAME']),
-                                                  "filedate"     => filemtime("$attachment_dir/{$attachment['HASH']}"),
-                                                  "filesize"     => $filesize,
-                                                  "aid"          => $attachment['AID'],
-                                                  "hash"         => $attachment['HASH'],
-                                                  "mimetype"     => $attachment['MIMETYPE'],
-                                                  "downloads"    => $attachment['DOWNLOADS'],
-                                                  "forum_fid"    => is_numeric($attachment['FID']) ? $attachment['FID'] : 0,
-                                                  "forum_webtag" => $attachment['WEBTAG'],
-                                                  "thumbnail"    => true);
+                $user_image_attachments[$attachment['HASH']] = array("filename"     => rawurldecode($attachment['FILENAME']),
+                                                                     "filedate"     => filemtime("$attachment_dir/{$attachment['HASH']}"),
+                                                                     "filesize"     => $filesize,
+                                                                     "aid"          => $attachment['AID'],
+                                                                     "hash"         => $attachment['HASH'],
+                                                                     "mimetype"     => $attachment['MIMETYPE'],
+                                                                     "downloads"    => $attachment['DOWNLOADS']);
 
             }else {
 
-                $user_attachments[] = array("filename"     => rawurldecode($attachment['FILENAME']),
-                                            "filedate"     => filemtime("$attachment_dir/{$attachment['HASH']}"),
-                                            "filesize"     => filesize("$attachment_dir/{$attachment['HASH']}"),
-                                            "aid"          => $attachment['AID'],
-                                            "hash"         => $attachment['HASH'],
-                                            "mimetype"     => $attachment['MIMETYPE'],
-                                            "downloads"    => $attachment['DOWNLOADS'],
-                                            "forum_fid"    => is_numeric($attachment['FID']) ? $attachment['FID'] : 0,
-                                            "forum_webtag" => $attachment['WEBTAG'],
-                                            "thumbnail"    => true);
+                $user_attachments[$attachment['HASH']] = array("filename"     => rawurldecode($attachment['FILENAME']),
+                                                               "filedate"     => filemtime("$attachment_dir/{$attachment['HASH']}"),
+                                                               "filesize"     => filesize("$attachment_dir/{$attachment['HASH']}"),
+                                                               "aid"          => $attachment['AID'],
+                                                               "hash"         => $attachment['HASH'],
+                                                               "mimetype"     => $attachment['MIMETYPE'],
+                                                               "downloads"    => $attachment['DOWNLOADS']);
             }
         }
     }
@@ -433,8 +414,8 @@ function delete_attachment($hash)
     // Fetch the attachment to make sure the user
     // is able to delete it, i.e. it belongs to them.
 
-    $sql = "SELECT PAF.AID, PAF.UID, PAF.FILENAME, PAI.TID, PAI.PID, THREAD.FID ";
-    $sql.= "FROM POST_ATTACHMENT_FILES PAF ";
+    $sql = "SELECT PAF.AID, PAF.UID, PAF.FILENAME, PAI.TID, ";
+    $sql.= "PAI.PID, THREAD.FID FROM POST_ATTACHMENT_FILES PAF ";
     $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ON (THREAD.TID = PAI.TID) ";
     $sql.= "WHERE PAF.HASH = '$hash'";
@@ -507,8 +488,8 @@ function delete_attachment_thumbnail($hash)
     // Fetch the attachment to make sure the user
     // is able to delete it, i.e. it belongs to them.
 
-    $sql = "SELECT PAF.AID, PAF.UID, PAF.FILENAME, PAI.TID, PAI.PID, THREAD.FID ";
-    $sql.= "FROM POST_ATTACHMENT_FILES PAF ";
+    $sql = "SELECT PAF.AID, PAF.UID, PAF.FILENAME, PAI.TID, ";
+    $sql.= "PAI.PID, THREAD.FID FROM POST_ATTACHMENT_FILES PAF ";
     $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ON (THREAD.TID = PAI.TID) ";
     $sql.= "WHERE PAF.HASH = '$hash'";
@@ -747,10 +728,17 @@ function get_num_attachments($aid)
 
     if (!$table_data = get_table_prefix()) return 0;
 
-    $sql = "SELECT AID FROM POST_ATTACHMENT_FILES WHERE AID = '$aid' LIMIT 0, 1";
-    $result = db_query($sql, $db_get_num_attachments);
+    $aid = addslashes($aid);
 
-    return (db_num_rows($result) > 0);
+    $num_attachments = 0;
+
+    $sql = "SELECT COUNT(AID) FROM POST_ATTACHMENT_FILES ";
+    $sql.= "WHERE AID = '$aid' LIMIT 0, 1";
+
+    $result = db_query($sql, $db_get_num_attachments);
+    list($num_attachments) = db_fetch_array($result, DB_RESULT_NUM);
+
+    return $num_attachments;
 }
 
 /**

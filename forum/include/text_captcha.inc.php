@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: text_captcha.inc.php,v 1.14 2007-02-18 23:48:56 decoyduck Exp $ */
+/* $Id: text_captcha.inc.php,v 1.15 2007-03-30 00:28:50 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -286,23 +286,9 @@ class captcha {
     {
         if ($text_captcha_dir = forum_get_setting('text_captcha_dir')) {
 
-            if (!@is_dir("$text_captcha_dir")) {
-
-                @mkdir("$text_captcha_dir", 0755);
-                @chmod("$text_captcha_dir", 0777);
-            }
-
-            if (!@is_dir("$text_captcha_dir/fonts")) {
-
-                @mkdir("$text_captcha_dir/fonts", 0755);
-                @chmod("$text_captcha_dir/fonts", 0777);
-            }
-
-            if (!@is_dir("$text_captcha_dir/images")) {
-
-                @mkdir("$text_captcha_dir/images", 0755);
-                @chmod("$text_captcha_dir/images", 0777);
-            }
+            if (!@is_dir("$text_captcha_dir")) @mkdir("$text_captcha_dir", 0755);
+            if (!@is_dir("$text_captcha_dir/fonts")) @mkdir("$text_captcha_dir/fonts", 0755);
+            if (!@is_dir("$text_captcha_dir/images")) @mkdir("$text_captcha_dir/images", 0755);
 
             if (@is_dir("$text_captcha_dir/fonts") && @is_dir("$text_captcha_dir/images")) {
 

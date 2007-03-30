@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.172 2007-03-24 17:32:25 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.173 2007-03-30 00:28:50 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -248,7 +248,7 @@ function pm_add_sentitem($mid)
 
     // Check and process any attachments.
 
-    if (isset($db_pm_add_sentitem_row['AID']) && get_num_attachments($db_pm_add_sentitem_row['AID'])) {
+    if (isset($db_pm_add_sentitem_row['AID']) && (get_num_attachments($db_pm_add_sentitem_row['AID']) > 0)) {
 
         $sql = "INSERT INTO PM_ATTACHMENT_IDS (MID, AID) ";
         $sql.= "VALUES ($new_mid, '{$db_pm_add_sentitem_row['AID']}')";
@@ -990,6 +990,8 @@ function pm_display($pm_message_array, $pm_export_html = false)
 
                 foreach($attachments_array as $attachment) {
 
+                    print_r($attachment);
+                    
                     $html.= "                              ". attachment_make_link($attachment, true, false, $pm_export_html). "\n";
                 }
 
@@ -1242,7 +1244,7 @@ function pm_delete_message($mid)
     // If it is the author deleting his Sent Item then
     // delete the attachment as well.
 
-    if ($db_delete_pm_row['TYPE'] == PM_SENT && isset($db_delete_pm_row['AID']) && get_num_attachments($db_delete_pm_row['AID']) > 0) {
+    if ($db_delete_pm_row['TYPE'] == PM_SENT && isset($db_delete_pm_row['AID']) && (get_num_attachments($db_delete_pm_row['AID']) > 0)) {
         delete_attachment_by_aid($db_delete_pm_row['AID']);
     }
 

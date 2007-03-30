@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.103 2007-03-11 18:13:33 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.104 2007-03-30 00:28:50 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -565,6 +565,8 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
     if (!$threadb = thread_get($tidb)) {
         return thread_merge_error($tida, $tidb, 4, $error_str);
     }
+
+    $forum_fid = $table_data['FID'];
         
     if (isset($threada['TITLE']) && isset($threadb['TITLE'])) {
 
@@ -622,7 +624,7 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
                 }
             }
 
-            if ($new_thread = thread_get($post_data_array[0]['TID'])) {
+            if ($new_thread = thread_get($post_data_array[1]['TID'])) {
 
                 $required_thread_keys_array = array('FID', 'BY_UID', 'TITLE');
 
@@ -683,6 +685,16 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
                             $sql.= "WHERE TID = '{$post_data['TID']}' AND PID = '{$post_data['PID']}'";
 
                             $result_update = db_query($sql, $db_thread_merge);
+
+                            $aid = md5(uniqid(rand()));
+
+                            $sql = "INSERT INTO POST_ATTACHMENT_IDS (FID, TID, PID, AID) ";
+                            $sql.= "VALUES ('$forum_fid', '$new_tid', '$new_pid', '$aid')";
+
+                            $result_attachment_id = db_query($sql, $db_thread_merge);
+
+                            $sql = "UPDATE POST_ATTACHMENT_FILES SET AID = '$aid' WHERE AID = '{$post_data['AID']}'";
+                            $result_attachment_files = db_query($sql, $db_thread_merge);
                         }
                     }
 
@@ -777,16 +789,22 @@ function thread_merge_get_by_created($dest_tid, $source_tid)
     if (!is_numeric($source_tid)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
+
+    $forum_fid = $table_data['FID'];
     
     $db_thread_merge_get_by_created = db_connect();
 
     $post_data_array = array();
 
-    $sql = "SELECT TID, PID, REPLY_TO_PID, FROM_UID, TO_UID, CREATED, ";
-    $sql.= "APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS ";
-    $sql.= "FROM {$table_data['PREFIX']}POST WHERE TID IN ($dest_tid, $source_tid) ";
-    $sql.= "AND MOVED_TID IS NULL AND MOVED_PID IS NULL ";
-    $sql.= "ORDER BY CREATED";
+    $sql = "SELECT POST.TID, POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, ";
+    $sql.= "POST.TO_UID, POST.CREATED, POST.APPROVED, POST.APPROVED_BY, ";
+    $sql.= "POST.EDITED, POST.EDITED_BY, POST.IPADDRESS, PAI.AID ";
+    $sql.= "FROM {$table_data['PREFIX']}POST POST ";
+    $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.TID = POST.TID ";
+    $sql.= "AND PAI.PID = POST.PID AND PAI.FID = '$forum_fid') ";
+    $sql.= "WHERE POST.TID IN ($dest_tid, $source_tid) ";
+    $sql.= "AND POST.MOVED_TID IS NULL AND POST.MOVED_PID IS NULL ";
+    $sql.= "ORDER BY POST.CREATED";
 
     $result = db_query($sql, $db_thread_merge_get_by_created);
 
@@ -833,6 +851,8 @@ function thread_merge_get($tida, $tidb)
     if (!is_numeric($tidb)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
+
+    $forum_fid = $table_data['FID'];
     
     $db_thread_merge_get_by_created = db_connect();
 
@@ -840,11 +860,14 @@ function thread_merge_get($tida, $tidb)
 
     if ($threaddata = thread_get($tida)) {
 
-        $sql = "SELECT TID, PID, REPLY_TO_PID, FROM_UID, TO_UID, CREATED, ";
-        $sql.= "APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS ";
-        $sql.= "FROM {$table_data['PREFIX']}POST WHERE TID IN ($tida, $tidb) ";
-        $sql.= "AND MOVED_TID IS NULL AND MOVED_PID IS NULL ";
-        $sql.= "ORDER BY CREATED";
+        $sql = "SELECT POST.TID, POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, ";
+        $sql.= "POST.TO_UID, POST.CREATED, POST.APPROVED, POST.APPROVED_BY, ";
+        $sql.= "POST.EDITED, POST.EDITED_BY, POST.IPADDRESS, PAI.AID ";
+        $sql.= "FROM {$table_data['PREFIX']}POST POST ";
+        $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.TID = POST.TID ";
+        $sql.= "AND PAI.PID = POST.PID AND PAI.FID = '$forum_fid') ";
+        $sql.= "WHERE POST.TID IN ($tida, $tidb) AND POST.MOVED_TID IS NULL ";
+        $sql.= "AND POST.MOVED_PID IS NULL ORDER BY POST.CREATED";
 
         $result = db_query($sql, $db_thread_merge_get_by_created);
 
@@ -904,6 +927,8 @@ function thread_split($tid, $spid, $split_type, &$error_str)
     if (!$table_data = get_table_prefix()) {
         return thread_split_error($tid, 2, $error_str);
     }
+
+    $forum_fid = $table_data['FID'];
 
     if ($thread_data = thread_get($tid)) {
 
@@ -995,6 +1020,16 @@ function thread_split($tid, $spid, $split_type, &$error_str)
                         $sql.= "WHERE TID = '{$post_data['TID']}' AND PID = '{$post_data['PID']}'";
 
                         $result_update = db_query($sql, $db_thread_split);
+
+                        $aid = md5(uniqid(rand()));
+
+                        $sql = "INSERT INTO POST_ATTACHMENT_IDS (FID, TID, PID, AID) ";
+                        $sql.= "VALUES ('$forum_fid', '$new_tid', '$new_pid', '$aid')";
+
+                        $result_attachment_id = db_query($sql, $db_thread_split);
+
+                        $sql = "UPDATE POST_ATTACHMENT_FILES SET AID = '$aid' WHERE AID = '{$post_data['AID']}'";
+                        $result_attachment_files = db_query($sql, $db_thread_split);
                     }
                 }
 
@@ -1073,15 +1108,21 @@ function thread_split_get_replies($tid, $pid)
 
     if (!$table_data = get_table_prefix()) return false;
 
+    $forum_fid = $table_data['FID'];
+
     $db_thread_split_get = db_connect();
 
     $post_data_array = array();
     $dest_pid_array  = array();
 
-    $sql = "SELECT TID, PID, REPLY_TO_PID, FROM_UID, TO_UID, CREATED, ";
-    $sql.= "APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS ";
-    $sql.= "FROM {$table_data['PREFIX']}POST WHERE TID = '$tid' AND PID = '$pid' ";
-    $sql.= "AND MOVED_TID IS NULL AND MOVED_PID IS NULL ";
+    $sql = "SELECT POST.TID, POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, ";
+    $sql.= "POST.TO_UID, POST.CREATED, POST.APPROVED, POST.APPROVED_BY, ";
+    $sql.= "POST.EDITED, POST.EDITED_BY, POST.IPADDRESS, PAI.AID ";
+    $sql.= "FROM {$table_data['PREFIX']}POST POST ";
+    $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.TID = POST.TID ";
+    $sql.= "AND PAI.PID = POST.PID AND PAI.FID = '$forum_fid') ";
+    $sql.= "WHERE POST.TID = '$tid' AND POST.PID = '$pid' ";
+    $sql.= "AND POST.MOVED_TID IS NULL AND POST.MOVED_PID IS NULL ";
 
     $result = db_query($sql, $db_thread_split_get);
 
@@ -1107,13 +1148,19 @@ function thread_split_get_following($tid, $spid)
 
     if (!$table_data = get_table_prefix()) return false;
 
+    $forum_fid = $table_data['FID'];
+
     $db_thread_split_get_following = db_connect();
 
-    $sql = "SELECT TID, PID, REPLY_TO_PID, FROM_UID, TO_UID, CREATED, ";
-    $sql.= "APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS ";
-    $sql.= "FROM {$table_data['PREFIX']}POST WHERE TID = $tid AND PID >= '$spid' ";
-    $sql.= "AND MOVED_TID IS NULL AND MOVED_PID IS NULL ";
-    $sql.= "ORDER BY PID";
+    $sql = "SELECT POST.TID, POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, ";
+    $sql.= "POST.TO_UID, POST.CREATED, POST.APPROVED, POST.APPROVED_BY, ";
+    $sql.= "POST.EDITED, POST.EDITED_BY, POST.IPADDRESS, PAI.AID ";
+    $sql.= "FROM {$table_data['PREFIX']}POST POST ";
+    $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.TID = POST.TID ";
+    $sql.= "AND PAI.PID = POST.PID AND PAI.FID = '$forum_fid') ";
+    $sql.= "WHERE POST.TID = '$tid' AND POST.PID >= '$spid' ";
+    $sql.= "AND POST.MOVED_TID IS NULL AND POST.MOVED_PID IS NULL ";
+    $sql.= "ORDER BY POST.PID";
 
     $result = db_query($sql, $db_thread_split_get_following);
 
@@ -1160,12 +1207,18 @@ function thread_split_recursive($tid, $spid, &$post_data_array, &$dest_pid_array
 
     if (!$table_data = get_table_prefix()) return false;
 
+    $forum_fid = $table_data['FID'];
+
     $db_thread_split_recursive = db_connect();
 
-    $sql = "SELECT TID, PID, REPLY_TO_PID, FROM_UID, TO_UID, CREATED, ";
-    $sql.= "APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS ";
-    $sql.= "FROM {$table_data['PREFIX']}POST WHERE TID = $tid AND REPLY_TO_PID = $spid ";
-    $sql.= "AND MOVED_TID IS NULL AND MOVED_PID IS NULL ";
+    $sql = "SELECT POST.TID, POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, ";
+    $sql.= "POST.TO_UID, POST.CREATED, POST.APPROVED, POST.APPROVED_BY, ";
+    $sql.= "POST.EDITED, POST.EDITED_BY, POST.IPADDRESS, PAI.AID ";
+    $sql.= "FROM {$table_data['PREFIX']}POST POST ";
+    $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.TID = POST.TID ";
+    $sql.= "AND PAI.PID = POST.PID AND PAI.FID = '$forum_fid') ";
+    $sql.= "WHERE POST.TID = '$tid' AND POST.REPLY_TO_PID = '$spid' ";
+    $sql.= "AND POST.MOVED_TID IS NULL AND POST.MOVED_PID IS NULL ";
 
     $result = db_query($sql, $db_thread_split_recursive);
 

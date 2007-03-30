@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.108 2007-03-24 17:32:24 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.109 2007-03-30 00:28:50 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -191,14 +191,6 @@ if (($uid != bh_session_get_value('UID')) && !(bh_session_check_perm(USER_PERM_F
 
 $users_free_space = get_free_attachment_space($uid);
 $total_attachment_size = 0;
-
-// Make sure the attachments directory exists
-
-if (@!is_dir('attachments')) {
-
-    mkdir('attachments', 0755);
-    chmod('attachments', 0777);
-}
 
 if (isset($_POST['delete_confirm'])) {
     
@@ -430,7 +422,7 @@ if ($attachment_result) {
                 }
 
                 echo "                  <td align=\"right\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">", format_file_size($attachment['filesize']), "</td>\n";
-                echo "                  <td align=\"left\">&nbsp;</td>\n";
+                echo "                  <td align=\"left\" width=\"25\">&nbsp;</td>\n";
                 echo "                </tr>\n";
 
                 $total_attachment_size += $attachment['filesize'];
@@ -458,7 +450,7 @@ if ($attachment_result) {
                 }
 
                 echo "                  <td align=\"right\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">", format_file_size($attachment['filesize']), "</td>\n";
-                echo "                  <td align=\"left\">&nbsp;</td>\n";
+                echo "                  <td align=\"left\" width=\"25\">&nbsp;</td>\n";
                 echo "                </tr>\n";
 
                 $total_attachment_size += $attachment['filesize'];
@@ -510,12 +502,13 @@ if ($uid == bh_session_get_value('UID') && is_md5($aid)) {
     echo "          <tr>\n";
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
-    echo "                <tr>\n";
-    echo "                  <td class=\"subhead_checkbox\" width=\"20\">", form_checkbox("toggle_other", "toggle_other", "", false, "onclick=\"attachment_toggle_other();\""), "</td>\n";
-    echo "                  <td align=\"left\" colspan=\"4\" class=\"subhead\">{$lang['otherattachmentsincludingpm']}</td>\n";
-    echo "                </tr>\n";
 
     if (get_all_attachments(bh_session_get_value('UID'), $aid, $attachments_array, $image_attachments_array)) {
+
+        echo "                <tr>\n";
+        echo "                  <td class=\"subhead_checkbox\" width=\"20\">", form_checkbox("toggle_other", "toggle_other", "", false, "onclick=\"attachment_toggle_other();\""), "</td>\n";
+        echo "                  <td align=\"left\" colspan=\"4\" class=\"subhead\">{$lang['otherattachmentsincludingpm']}</td>\n";
+        echo "                </tr>\n";
 
         if (is_array($attachments_array) && sizeof($attachments_array) > 0) {
 
@@ -537,6 +530,7 @@ if ($uid == bh_session_get_value('UID') && is_md5($aid)) {
                     }
 
                     echo "                  <td align=\"right\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">", format_file_size($attachment['filesize']), "</td>\n";
+                    echo "                  <td align=\"left\" width=\"25\">&nbsp;</td>\n";
                     echo "                </tr>\n";
 
                     $total_attachment_size += $attachment['filesize'];
@@ -564,7 +558,7 @@ if ($uid == bh_session_get_value('UID') && is_md5($aid)) {
                     }
 
                     echo "                  <td align=\"right\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">", format_file_size($attachment['filesize']), "</td>\n";
-
+                    echo "                  <td align=\"left\" width=\"25\">&nbsp;</td>\n";
                     echo "                </tr>\n";
 
                     $total_attachment_size += $attachment['filesize'];
@@ -575,6 +569,11 @@ if ($uid == bh_session_get_value('UID') && is_md5($aid)) {
     }else {
 
         echo "                <tr>\n";
+        echo "                  <td class=\"subhead_checkbox\" width=\"20\">&nbsp;</td>\n";
+        echo "                  <td align=\"left\" colspan=\"4\" class=\"subhead\">{$lang['otherattachmentsincludingpm']}</td>\n";
+        echo "                </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"center\" width=\"25\">&nbsp;</td>\n";
         echo "                  <td align=\"left\" valign=\"top\" colspan=\"4\" class=\"postbody\">({$lang['none']})</td>\n";
         echo "                </tr>\n";
     }
@@ -605,25 +604,21 @@ echo "                </tr>\n";
 echo "              </table>\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"center\">\n";
-echo "                    <table class=\"posthead\" width=\"95%\">\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" valign=\"top\" class=\"postbody\">{$lang['totalsize']}:</td>\n";
-echo "                        <td align=\"left\" valign=\"top\" class=\"postbody\">&nbsp;</td>\n";
-echo "                        <td align=\"right\" valign=\"top\" class=\"postbody\">", format_file_size($total_attachment_size), "</td>\n";
-echo "                        <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" valign=\"top\" class=\"postbody\">{$lang['freespace']}:</td>\n";
-echo "                        <td align=\"left\" valign=\"top\" class=\"postbody\">&nbsp;</td>\n";
-echo "                        <td align=\"right\" valign=\"top\" class=\"postbody\">", format_file_size(get_free_attachment_space($uid)), "</td>\n";
-echo "                        <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" colspan=\"5\">&nbsp;</td>\n";
-echo "                      </tr>\n";
-echo "                    </table>\n";
-echo "                  </td>\n";
+echo "                  <td align=\"left\" width=\"25\">&nbsp;</td>\n";
+echo "                  <td align=\"left\" valign=\"top\" class=\"postbody\">{$lang['totalsize']}:</td>\n";
+echo "                  <td align=\"left\" valign=\"top\" class=\"postbody\">&nbsp;</td>\n";
+echo "                  <td align=\"right\" valign=\"top\" class=\"postbody\">", format_file_size($total_attachment_size), "</td>\n";
+echo "                  <td align=\"left\" width=\"25\">&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\" width=\"25\">&nbsp;</td>\n";
+echo "                  <td align=\"left\" valign=\"top\" class=\"postbody\">{$lang['freespace']}:</td>\n";
+echo "                  <td align=\"left\" valign=\"top\" class=\"postbody\">&nbsp;</td>\n";
+echo "                  <td align=\"right\" valign=\"top\" class=\"postbody\">", format_file_size(get_free_attachment_space($uid)), "</td>\n";
+echo "                  <td align=\"left\" width=\"25\">&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\" colspan=\"5\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";
@@ -635,17 +630,26 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 
-if (forum_get_setting('attachments_enabled', 'Y') && ($uid == bh_session_get_value('UID'))) {
+if ($uid == bh_session_get_value('UID')) {
 
     if (!is_md5($aid)) $aid = md5(uniqid(rand()));
 
-    echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_button("attachments", $lang['uploadnewattachment'], "tabindex=\"5\" onclick=\"launchAttachWin('{$aid}', '$webtag')\""), "&nbsp;", form_submit('delete', $lang['delete']), "</td>\n";
-    echo "    </tr>\n";
+    if ($popup == 1) {
 
-}elseif ($popup) {
+        echo "    <tr>\n";
+        echo "      <td align=\"center\">", form_button("attachments", $lang['uploadnewattachment'], "tabindex=\"5\" onclick=\"launchAttachWin('{$aid}', '$webtag')\""), "&nbsp;", form_submit('delete', $lang['delete']), "&nbsp;", form_submit('close', $lang['close']), "</td>\n";
+        echo "    </tr>\n";
 
-    if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+    }else {
+
+        echo "    <tr>\n";
+        echo "      <td align=\"center\">", form_button("attachments", $lang['uploadnewattachment'], "tabindex=\"5\" onclick=\"launchAttachWin('{$aid}', '$webtag')\""), "&nbsp;", form_submit('delete', $lang['delete']), "</td>\n";
+        echo "    </tr>\n";
+    }
+
+}elseif (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+
+    if ($popup == 1) {
     
         echo "    <tr>\n";
         echo "      <td align=\"center\">", form_submit('delete', $lang['delete']), "&nbsp;", form_submit('delete_thumbs', $lang['deletethumbnails']), "&nbsp;", form_submit('close', $lang['close']), "</td>\n";

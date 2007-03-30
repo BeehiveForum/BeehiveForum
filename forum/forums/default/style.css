@@ -736,8 +736,7 @@ a {
 }
 
 .admin_folder_perms {
-    height: expression(this.scrollHeight < 140 ? "auto" : '140px');
-    max-height: 140px;
+    height: 140px;
     overflow: auto;
     padding: 2px;
 }

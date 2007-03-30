@@ -19,9 +19,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: modslist.js,v 1.3 2006-12-11 21:58:18 decoyduck Exp $ */
+/* $Id: modslist.js,v 1.4 2007-03-30 00:54:49 decoyduck Exp $ */
 
 function openModsList(fid, webtag) {
-        window.open('mods_list.php?webtag=' + webtag + '&fid=' + fid, fid,'width=580, height=450, toolbars=no');
+        window.open('mods_list.php?webtag=' + webtag + '&fid=' + fid, fid,'width=580, height=450, toolbars=no, resizable=yes');
         return false;
 }

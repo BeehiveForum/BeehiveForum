@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.js,v 1.8 2007-03-30 00:28:50 decoyduck Exp $ */
+/* $Id: attachments.js,v 1.9 2007-03-30 00:54:49 decoyduck Exp $ */
 
 var attachments_window = false;
 var attachments_window_edit = false;
@@ -99,7 +99,7 @@ function launchAttachWin(aid, webtag)
     if (typeof attachments_window == 'object' && !attachments_window.closed) {
         attachments_window.focus();
     }else {
-        attachments_window = window.open('attachments.php?webtag=' + webtag + '&aid='+ aid, 'attachments_window', 'width=660, height=500, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');
+        attachments_window = window.open('attachments.php?webtag=' + webtag + '&aid='+ aid, 'attachments_window', 'width=660, height=500, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=yes, scrollbars=yes');
     }
 
     return false;
@@ -110,7 +110,7 @@ function launchAttachEditWin(uid, aid, webtag)
     if (typeof attachments_window_edit == 'object' && !attachments_window_edit.closed) {
         attachments_window_edit.focus();
     }else {
-        attachments_window_edit = window.open('edit_attachments.php?uid=' + uid + '&aid=' + aid + '&webtag=' + webtag + '&popup=1', 'edit_attachments', 'width=660, height=300, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');
+        attachments_window_edit = window.open('edit_attachments.php?uid=' + uid + '&aid=' + aid + '&webtag=' + webtag + '&popup=1', 'edit_attachments', 'width=660, height=300, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=yes, scrollbars=yes');
     }
 
     return false;

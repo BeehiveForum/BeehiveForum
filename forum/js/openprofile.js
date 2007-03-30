@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: openprofile.js,v 1.14 2007-03-15 14:51:08 decoyduck Exp $ */
+/* $Id: openprofile.js,v 1.15 2007-03-30 00:54:49 decoyduck Exp $ */
 
 var edit_attachments = false;
 var email_window = false;
@@ -41,7 +41,7 @@ function launchAttachProfileWin(webtag)
     if (typeof edit_attachments == 'object' && !edit_attachments.closed) {
         edit_attachments.focus();
     }else {
-        edit_attachments = window.open('edit_attachments.php?webtag=' + webtag + '&popup=1', 'edit_attachments', 'width=660, height=300, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');
+        edit_attachments = window.open('edit_attachments.php?webtag=' + webtag + '&popup=1', 'edit_attachments', 'width=660, height=300, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=yes, scrollbars=yes');
     }
 
     return false;

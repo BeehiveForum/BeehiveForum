@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.101 2007-02-11 16:37:47 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.102 2007-03-31 10:33:41 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -44,7 +44,7 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 function email_sendnotification($tuid, $fuid, $tid, $pid)
 {
-    if (!check_mail_variables()) return false;
+    if (!check_mail_variables()) file_put_contents('email.txt', __LINE__);
 
     if (!is_numeric($tuid)) return false;
     if (!is_numeric($fuid)) return false;
@@ -72,31 +72,21 @@ function email_sendnotification($tuid, $fuid, $tid, $pid)
 
             if (!$thread = thread_get($tid)) return false;
 
-             // get the right language for the email
+            // get the right language for the email
+
             $lang = email_get_language($tuid);
 
             $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
             $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
 
-            $subject = "{$lang['msgnotification_subject']} $forum_name";
+            $subject = sprintf($lang['msgnotification_subject'], $forum_name);
 
-            $message = apply_wordfilter(format_user_name($from_user['LOGON'], $from_user['NICKNAME']));
-            $message.= " {$lang['msgnotificationemail_1']} ". forum_get_setting('forum_name', false, 'A Beehive Forum'). "\n\n";
-            $message.= "{$lang['msgnotificationemail_2']} ". _htmlentities_decode(thread_format_prefix($thread['PREFIX'], $thread['TITLE'])). "\n\n";
-            $message.= "{$lang['msgnotificationemail_3']}\n";
-            $message.= "http://{$_SERVER['HTTP_HOST']}";
+            $message_author =  apply_wordfilter(format_user_name($from_user['LOGON'], $from_user['NICKNAME']));
+            $thread_title   = _htmlentities_decode(thread_format_prefix($thread['PREFIX'], $thread['TITLE']));
+            $forum_link     = html_get_forum_uri();
+            $message_link   = "$forum_link/index.php?webtag=$webtag&msg=$tid.$pid";
 
-            if (isset($_SERVER['PHP_SELF']) && dirname($_SERVER['PHP_SELF']) != '/') {
-                $message.= dirname($_SERVER['PHP_SELF']);
-            }
-
-            $message.= "/?webtag=$webtag&msg=$tid.$pid\n\n";
-            $message.= "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n";
-            $message.= "{$lang['msgnotificationemail_4']}\n";
-            $message.= "{$lang['msgnotificationemail_5']} ";
-            $message.= "http://{$_SERVER['HTTP_HOST']}". dirname($_SERVER['PHP_SELF']). "/\n";
-            $message.= "{$lang['msgnotificationemail_6']}\n";
-            $message.= "{$lang['msgnotificationemail_7']}";
+            $message = wordwrap(sprintf($lang['msgnotificationemail'], $message_author, $forum_name, $thread_title, $message_link, $forum_link));
 
             $header = "Return-path: $forum_email\n";
             $header.= "From: \"$forum_name\" <$forum_email>\n";
@@ -162,24 +152,14 @@ function email_sendsubscription($tuid, $fuid, $tid, $pid)
             $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
             $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
 
-            $subject = "{$lang['subnotification_subject']} $forum_name";
+            $subject = sprintf($lang['subnotification_subject'], $forum_name);
 
-            $message = apply_wordfilter(format_user_name($from_user['LOGON'], $from_user['NICKNAME']));
-            $message.= " {$lang['subnotification_1']} ". forum_get_setting('forum_name', false, 'A Beehive Forum'). "\n\n";
-            $message.= "{$lang['subnotification_2']} ". _htmlentities_decode(thread_format_prefix($thread['PREFIX'], $thread['TITLE'])). "\n\n";
-            $message.= "{$lang['subnotification_3']}\n";
-            $message.= "http://{$_SERVER['HTTP_HOST']}";
+            $message_author = apply_wordfilter(format_user_name($from_user['LOGON'], $from_user['NICKNAME']));
+            $thread_title   = _htmlentities_decode(thread_format_prefix($thread['PREFIX'], $thread['TITLE']));
+            $forum_link     = html_get_forum_uri();
+            $message_link   = "$forum_link/index.php?webtag=$webtag&msg=$tid.$pid";
 
-            if (isset($_SERVER['PHP_SELF']) && dirname($_SERVER['PHP_SELF']) != '/') {
-                $message.= dirname($_SERVER['PHP_SELF']);
-            }
-
-            $message.= "/?webtag=$webtag&msg=$tid.$pid\n\n";
-            $message.= "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n";
-            $message.= "{$lang['subnotification_4']}\n";
-            $message.= "{$lang['subnotification_5']} ";
-            $message.= "http://{$_SERVER['HTTP_HOST']}". dirname($_SERVER['PHP_SELF']). "/?msg=$tid.$pid,\n";
-            $message.= "{$lang['subnotification_6']}";
+            $message = wordwrap(sprintf($lang['subnotification'], $message_author, $forum_name, $thread_title, $message_link, $message_link));
 
             $header = "Return-path: $forum_email\n";
             $header.= "From: \"$forum_name\" <$forum_email>\n";
@@ -235,25 +215,14 @@ function email_send_pm_notification($tuid, $mid, $fuid)
             $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
             $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
 
-            $subject = "{$lang['pmnotification_subject']} $forum_name";
+            $subject = sprintf($lang['pmnotification_subject'], $forum_name);
 
-            $message = apply_wordfilter(format_user_name($from_user['LOGON'], $from_user['NICKNAME']));
-            $message.= " {$lang['pmnotification_1']} ". forum_get_setting('forum_name', false, 'A Beehive Forum'). "\n\n";
-            $message.= "{$lang['pmnotification_2']} ". _htmlentities_decode($pm_subject). "\n\n";
-            $message.= "{$lang['pmnotification_3']}\n";
-            $message.= "http://{$_SERVER['HTTP_HOST']}";
+            $message_author  = apply_wordfilter(format_user_name($from_user['LOGON'], $from_user['NICKNAME']));
+            $message_subject = _htmlentities_decode($pm_subject);
+            $forum_link      = html_get_forum_uri();
+            $message_link    = "$forum_link/index.php?webtag=$webtag&pmid=$mid";
 
-            if (isset($_SERVER['PHP_SELF']) && dirname($_SERVER['PHP_SELF']) != '/') {
-                $message.= dirname($_SERVER['PHP_SELF']);
-            }
-
-            $message.= "/?webtag=$webtag&pmid=$mid\n\n";
-            $message.= "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n";
-            $message.= "{$lang['pmnotification_4']}\n";
-            $message.= "{$lang['pmnotification_5']} ";
-            $message.= "http://{$_SERVER['HTTP_HOST']}". dirname($_SERVER['PHP_SELF']). "/\n";
-            $message.= "{$lang['pmnotification_6']}\n";
-            $message.= "{$lang['pmnotification_7']}";
+            $message = wordwrap(sprintf($lang['pmnotification'], $message_author, $forum_name, $message_subject, $message_link, $forum_link));
 
             $header = "Return-path: $forum_email\n";
             $header.= "From: \"$forum_name\" <$forum_email>\n";
@@ -299,17 +268,12 @@ function email_send_pw_reminder($logon)
             $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
             $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
 
-            $subject = "{$lang['passwdresetrequest']} - $forum_name";
+            $subject = sprintf($lang['passwdresetrequest'], $forum_name);
 
-            $message = "{$lang['forgotpwemail_1']} $forum_name {$lang['forgotpwemail_2']}\n\n";
-            $message.= "{$lang['forgotpwemail_3']}:\n\n";
-            $message.= "http://{$_SERVER['HTTP_HOST']}";
+            $forum_link     = html_get_forum_uri();
+            $change_pw_link = "$forum_link/change_pw.php?webtag=$webtag&u={$to_user['UID']}&h={$to_user['PASSWD']}";
 
-            if (isset($_SERVER['PHP_SELF']) && dirname($_SERVER['PHP_SELF']) != '/') {
-                $message.= dirname($_SERVER['PHP_SELF']);
-            }
-
-            $message.= "/change_pw.php?webtag=$webtag&u={$to_user['UID']}&h={$to_user['PASSWD']}";
+            $message = wordwrap(sprintf($lang['forgotpwemail'], $forum_name, $change_pw_link));
 
             $header = "Return-path: $forum_email\n";
             $header.= "From: \"$forum_name\" <$forum_email>\n";
@@ -356,13 +320,11 @@ function email_send_new_pw_notification($tuid, $fuid, $new_password)
         $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
         $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
 
-        $subject = "{$lang['passwdchangenotification']} $forum_name";
+        $subject = sprintf($lang['passwdchangenotification'], $forum_name);
 
-        $message = "{$lang['pwchangeemail_1']} $forum_name {$lang['pwchangeemail_2']}\n\n";
-        $message.= "{$lang['pwchangeemail_3']} $new_password {$lang['pwchangeemail_4']} {$from_user['LOGON']}\n\n";
-        $message.= "{$lang['pwchangeemail_5']}\n";
-        $message.= "{$lang['pwchangeemail_6']} $forum_name\n";
-        $message.= "{$lang['pwchangeemail_7']}";
+        $password_changed_by = $forum_user['LOGON'];
+
+        $message = wordwrap(sprintf($lang['pmchangeemail'], $forum_name, $new_password, $password_changed_by, $forum_name));
 
         $header = "Return-path: $forum_email\n";
         $header.= "From: \"$forum_name\" <$forum_email>\n";
@@ -405,25 +367,13 @@ function email_send_user_confirmation($tuid)
         $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
         $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
 
-        $subject = "{$lang['emailconfirmationrequired']} $forum_name";
+        $subject = sprintf($lang['emailconfirmationrequired'], $forum_name);
 
-        $message = "{$lang['confirmemail_1']} {$to_user['NICKNAME']},\n\n";
-        $message.= "{$lang['confirmemail_2']} $forum_name.\n";
-        $message.= "{$lang['confirmemail_3']}\n";
-        $message.= "{$lang['confirmemail_4']}\n";
-        $message.= "{$lang['confirmemail_5']}\n\n";
+        $nickname     = $to_user['NICKNAME'];
+        $forum_link   = html_get_forum_uri();
+        $confirm_link = "$forum_link/confirm_email.php?webtag=$webtag&u={$to_user['UID']}&h={$to_user['PASSWD']}";
 
-        $message.= "http://{$_SERVER['HTTP_HOST']}";
-
-        if (isset($_SERVER['PHP_SELF']) && dirname($_SERVER['PHP_SELF']) != '/') {
-            $message.= dirname($_SERVER['PHP_SELF']);
-        }
-
-        $message.= "/confirm_email.php?webtag=$webtag&u={$to_user['UID']}&h={$to_user['PASSWD']}\n\n";
-        $message.= "{$lang['confirmemail_6']}\n\n";
-        $message.= "{$lang['confirmemail_7']} $forum_name\n";
-        $message.= "{$lang['confirmemail_8']} $forum_email\n";
-        $message.= "{$lang['confirmemail_9']}";
+        $message = wordwrap(sprintf($lang['confirmemail'], $nickname, $forum_name, $confirm_link, $forum_name, $forum_email));
 
         $header = "Return-path: $forum_email\n";
         $header.= "From: \"$forum_name\" <$forum_email>\n";

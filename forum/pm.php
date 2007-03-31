@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.111 2007-03-24 17:32:24 decoyduck Exp $ */
+/* $Id: pm.php,v 1.112 2007-03-31 10:33:41 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -404,7 +404,7 @@ echo "                    </table>\n";
 echo "                  </td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"pmbar_text\" nowrap=\"nowrap\">{$lang['yourpmfoldersare_1']} {$pm_used_percent}% {$lang['yourpmfoldersare_2']}</td>\n";
+echo "                  <td align=\"left\" class=\"pmbar_text\" nowrap=\"nowrap\">", sprintf($lang['yourpmfoldersare'], "$pm_used_percent%"), "</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>";

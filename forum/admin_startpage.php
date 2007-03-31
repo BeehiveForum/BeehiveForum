@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_startpage.php,v 1.84 2007-03-25 14:44:52 decoyduck Exp $ */
+/* $Id: admin_startpage.php,v 1.85 2007-03-31 10:33:41 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -185,7 +185,7 @@ if (isset($_POST['submit'])) {
         echo "                  <td align=\"left\" class=\"subhead\">{$lang['startpage']}</td>\n";
         echo "                </tr>\n";
         echo "                <tr>\n";
-        echo "                  <td align=\"left\">{$lang['startpageerror_1']} $forum_path {$lang['startpageerror_2']}</td>\n";
+        echo "                  <td align=\"left\">", sprintf($lang['startpageerror'], $forum_path), "</td>\n";
         echo "                </tr>\n";
         echo "                <tr>\n";
         echo "                  <td align=\"left\">&nbsp;</td>\n";

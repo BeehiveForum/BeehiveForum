@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: word_filter.inc.php,v 1.32 2006-11-15 22:34:54 decoyduck Exp $ */
+/* $Id: word_filter.inc.php,v 1.33 2007-03-31 10:33:41 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -39,15 +39,20 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 // Saves having to query the database every time
 // the add_wordfilter_tags() function is called.
 
-function load_wordfilter()
+function load_wordfilter($uid = false)
 {
     $db_load_wordfilter = db_connect();
 
     static $user_wordfilter = false;
+    static $user_uid = false;
 
-    if (!$user_wordfilter) {
+    if (!$user_wordfilter || $user_uid !== $uid) {
 
-        if (($uid = bh_session_get_value('UID')) === false) return false;
+        $user_uid = $uid;
+        
+        if (($uid === false) || !is_numeric($uid)) {
+            if (($uid = bh_session_get_value('UID')) === false) return false;
+        }
 
         if (!$table_data = get_table_prefix()) return false;
 
@@ -138,13 +143,13 @@ function add_wordfilter_tags($content)
 
 // Applys the loaded word filter to the given content
 
-function apply_wordfilter($content)
+function apply_wordfilter($content, $uid = false)
 {
     if (!$rand_hash = bh_session_get_value('RAND_HASH')) return $content;
 
     $rand_hash = preg_replace("/[^a-z]/i", "", $rand_hash);
 
-    if ($user_wordfilter = load_wordfilter()) {
+    if ($user_wordfilter = load_wordfilter($uid)) {
 
         if (is_array($user_wordfilter)) {
             

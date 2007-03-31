@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.192 2007-03-24 17:32:23 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.193 2007-03-31 10:33:41 decoyduck Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -611,9 +611,7 @@ if ($valid && isset($_POST['submit'])) {
 
     }else {
 
-        $error_html = "<h2>{$lang['postfrequencytoogreat_1']} ";
-        $error_html.= forum_get_setting('minimum_post_frequency', false, 0);
-        $error_html.= " {$lang['postfrequencytoogreat_2']}</h2>\n";
+        $error_html = sprintf("<h2>{$lang['postfrequencytoogreat']}</h2>", forum_get_setting('minimum_post_frequency', false, 0));
     }
 }
 

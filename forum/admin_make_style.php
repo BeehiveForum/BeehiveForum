@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.101 2007-03-25 14:44:48 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.102 2007-03-31 10:33:41 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -183,7 +183,7 @@ if (isset($_POST['submit'])) {
                     echo "                  <td align=\"left\" class=\"subhead\">{$lang['createforumstyle']}</td>\n";
                     echo "                </tr>\n";
                     echo "                <tr>\n";
-                    echo "                  <td align=\"left\">{$lang['makestyleerror_1']} $style_path {$lang['makestyleerror_2']}</td>\n";
+                    echo "                  <td align=\"left\">", sprintf($lang['makestyleerror'], $style_path), "</td>\n";
                     echo "                </tr>\n";
                     echo "                <tr>\n";
                     echo "                  <td align=\"left\">&nbsp;</td>\n";

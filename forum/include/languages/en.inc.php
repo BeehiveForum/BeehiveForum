@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.402 2007-03-27 23:16:18 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.403 2007-03-31 10:33:41 decoyduck Exp $ */
 
 // International English language file
 
@@ -162,8 +162,8 @@ $lang['newcaps'] = "NEW";
 $lang['poll'] = "Poll";
 $lang['friend'] = "Friend";
 $lang['error'] = "Error";
-$lang['guesterror_1'] = "Sorry, you need to be logged in to use this feature.";
-$lang['guesterror_2'] = "Login now";
+$lang['guesterror'] = "Sorry, you need to be logged in to use this feature. %s";
+$lang['loginnow'] = "Login now";
 $lang['on'] = "on";
 $lang['unread'] = "unread";
 $lang['all'] = "All";
@@ -258,11 +258,9 @@ $lang['forumsettings'] = "Forum Settings";
 $lang['globalforumsettings'] = "Global Forum Settings";
 $lang['settingsaffectallforumswarning'] = "<b>Note:</b> These settings affect all forums. Where the setting is duplicated on the individual Forum's settings page that will take precedence over the settings you change here.";
 $lang['startpage'] = "Start Page";
-$lang['startpageerror_1'] = "Your start page could not be saved locally to the server because permission was denied. To change your start page please click the download button below which will prompt you to save the file to your hard drive. You can then upload this file to your server into";
-$lang['startpageerror_2'] = "folder, if necessary creating the folder structure in the process. Please note that some browsers may change the name of the file upon download.  When uploading the file please make sure that it is named start_main.php otherwise your start page will appear unchanged.";
+$lang['startpageerror'] = "Your start page could not be saved locally to the server because permission was denied. To change your start page please click the download button below which will prompt you to save the file to your hard drive. You can then upload this file to your server into %s folder, if necessary creating the folder structure in the process. Please note that some browsers may change the name of the file upon download.  When uploading the file please make sure that it is named start_main.php otherwise your start page will appear unchanged.";
 $lang['failedtoopenmasterstylesheet'] = "Your forum style could not be saved because the master style sheet could not be loaded. To save your style the master style sheet (make_style.css) must be located in the styles directory of your Beehive Forum installation.";
-$lang['makestyleerror_1'] = "Your forum style could not be saved locally to the server because permission was denied. To save your forum style please click the download button below which will prompt you to save the file to your hard drive. You can then upload this file to your server into";
-$lang['makestyleerror_2'] = "folder, if necessary creating the folder structure in the process. You should note that some browsers may change the name of the file upon download. When uploading the file please make sure that it is named style.css otherwise the forum style will be unusable.";
+$lang['makestyleerror'] = "Your forum style could not be saved locally to the server because permission was denied. To save your forum style please click the download button below which will prompt you to save the file to your hard drive. You can then upload this file to your server into %s folder, if necessary creating the folder structure in the process. You should note that some browsers may change the name of the file upon download. When uploading the file please make sure that it is named style.css otherwise the forum style will be unusable.";
 $lang['uploadfailed'] = "Your new start page could not be uploaded to the server because permission was denied. Please check that the web server / PHP process is able to write to the %s folder on your server.";
 $lang['makestylefailed'] = "Your new forum style could not be saved to the server because permission was denied. Please check that the web server / PHP process is able to write to the %s folder on your server.";
 $lang['forumstyle'] = "Forum Style";
@@ -317,8 +315,7 @@ $lang['deleteposts'] = "Delete Posts";
 $lang['deleteallusersposts'] = "Delete all of this user's posts";
 $lang['noattachmentsforuser'] = "No attachments for this user";
 $lang['forgottenpassworddesc'] = "If this user has forgotten their password you can reset it for them here.";
-$lang['manageusersexp_1'] = "This list shows a selection of users who have logged on to your forum, sorted by";
-$lang['manageusersexp_2'] = "To alter a user's permissions click their name.";
+$lang['manageusersexp'] = "This list shows a selection of users who have logged on to your forum, sorted by %s. To alter a user's permissions click their name.";
 $lang['userfilter'] = "User filter";
 $lang['onlineusers'] = "Online users";
 $lang['offlineusers'] = "Offline users";
@@ -597,7 +594,7 @@ $lang['editedforumlinks'] = "Edited Forum Links";
 $lang['editedforumlink'] = "Edited Forum Link: '%s'";
 
 $lang['addedforumlink'] = "Added Forum Link: '%s'";
-$lang['deletedforumlink'] = "Added Forum Link: '%s'";
+$lang['deletedforumlink'] = "Deleted Forum Link: '%s'";
 $lang['changedtoplinkcaption'] = "Changed top link caption from '%s' to '%s'";
 
 $lang['deletedpost'] = "Deleted Post '%s'";
@@ -855,71 +852,41 @@ $lang['entercontentformessage'] = "Enter some content for the message";
 $lang['msgsentfromby'] = "This message was sent from %s by %s";
 $lang['subject'] = "Subject";
 $lang['send'] = "Send";
-
-$lang['msgnotification_subject'] = "Message Notification from";
-
-$lang['msgnotificationemail_1'] = "posted a message to you on";
-$lang['msgnotificationemail_2'] = "The subject is:";
-$lang['msgnotificationemail_3'] = "To read that message and others in the same discussion, go to:";
-$lang['msgnotificationemail_4'] = "Note: If you do not wish to receive email notifications of forum";
-$lang['msgnotificationemail_5'] = "messages posted to you, go to:";
-$lang['msgnotificationemail_6'] = "click on My Controls then Email and Privacy, unselect the Email";
-$lang['msgnotificationemail_7'] = "Notification checkbox and press Submit.";
-
-$lang['subnotification_subject'] = "Subscription Notification from";
-
-$lang['subnotification_1'] = "posted a message in a thread you have subscribed to on";
-$lang['subnotification_2'] = "The subject is:";
-$lang['subnotification_3'] = "To read that message and others in the same discussion, go to:";
-$lang['subnotification_4'] = "Note: If you do not wish to receive email notifications of new";
-$lang['subnotification_5'] = "messages in this thread, go to:";
-$lang['subnotification_6'] = "and adjust your Interest level at the bottom of the page.";
-
-$lang['pmnotification_subject'] = "PM Notification from";
-
-$lang['pmnotification_1'] = "posted a PM to you on";
-$lang['pmnotification_2'] = "The subject is:";
-$lang['pmnotification_3'] = "To read the message go to:";
-$lang['pmnotification_4'] = "Note: If you do not wish to receive email notifications of new PM";
-$lang['pmnotification_5'] = "messages posted to you, go to:";
-$lang['pmnotification_6'] = "click My Controls then Email and Privacy, unselect the PM";
-$lang['pmnotification_7'] = "Notification checkbox and press Submit.";
-
-$lang['passwdchangenotification'] = "Password change notification from";
-
-$lang['pwchangeemail_1'] = "This a notification email to inform you that your password on";
-$lang['pwchangeemail_2'] = "has been changed.";
-$lang['pwchangeemail_3'] = "It has been changed to:";
-$lang['pwchangeemail_4'] = "And was changed by:";
-$lang['pwchangeemail_5'] = "If you have received this email in error or were not expecting";
-$lang['pwchangeemail_6'] = "a change to your password please contact the forum owner or a moderator on";
-$lang['pwchangeemail_7'] = "immediately to correct it.";
-
 $lang['hasoptedoutofemail'] = "has opted out of email contact";
 $lang['hasinvalidemailaddress'] = "has an invalid email address";
 
-$lang['emailconfirmationrequired'] = "Email confirmation required";
+// Message nofificaiton ------------------------------------------------
 
-$lang['confirmemail_1'] = "Hello";
-$lang['confirmemail_2'] = "You recently created a new user account on";
-$lang['confirmemail_3'] = "Before you can start posting we need to confirm your email address.";
-$lang['confirmemail_4'] = "Don't worry this is quite easy. All you need to do is click the link";
-$lang['confirmemail_5'] = "below (or copy and paste it into your browser):";
-$lang['confirmemail_6'] = "Once confirmation is complete you may login and start posting immediately.";
-$lang['confirmemail_7'] = "If you did not create a user account on";
-$lang['confirmemail_8'] = "please accept our apologies and forward this email to";
-$lang['confirmemail_9'] = "so that the source of it may be investigated.";
+$lang['msgnotification_subject'] = "Message Notification from %s";
+$lang['msgnotificationemail'] = "%s posted a message to you on %s\n\nThe subject is: %s\n\nTo read that message and others in the same discussion, go to:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: If you do not wish to receive email notifications of forum messages posted to you, go to: %s click on My Controls then Email and Privacy, unselect the Email Notification checkbox and press Submit.";
 
-// Error handler (errorhandler.inc.php) --------------------------------
+// Thread Subscription notification ------------------------------------
 
-$lang['retry'] = "Retry";
+$lang['subnotification_subject'] = "Subscription Notification from %s";
+$lang['subnotification'] = "%s posted a message in a thread you have subscribed to on %s\n\nThe subject is: %s\n\nTo read that message and others in the same discussion, go to:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: If you do not wish to receive email notifications of new messages in this thread, go to: %s and adjust your Interest level at the bottom of the page.";
 
-// Forgotten passwords (forgot_pw.php) ---------------------------------
+// PM notification -----------------------------------------------------
 
-$lang['forgotpwemail_1'] = "You requested this e-mail from";
-$lang['forgotpwemail_2'] = "because you have forgotten your password.";
-$lang['forgotpwemail_3'] = "Click the link below (or copy and paste it into your browser) to reset your password";
-$lang['passwdresetrequest'] = "Your password reset request";
+$lang['pmnotification_subject'] = "PM Notification from %s";
+$lang['pmnotification'] = "%s posted a PM to you on %s\n\nThe subject is: %s\n\nTo read the message go to:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: If you do not wish to receive email notifications of new PM messages posted to you, go to: %s click My Controls then Email and Privacy, unselect the PM Notification checkbox and press Submit.";
+
+// Password change notification ----------------------------------------
+
+$lang['passwdchangenotification'] = "Password change notification from %s";
+$lang['pwchangeemail'] = "This a notification email to inform you that your password on %s has been changed.\n\nIt has been changed to: %s and was changed by: %s\n\nIf you have received this email in error or were not expecting a change to your password please contact the forum owner or a moderator on %s immediately to correct it.";
+
+// Email confirmation notification -------------------------------------
+
+$lang['emailconfirmationrequired'] = "Email confirmation required for %s";
+$lang['confirmemail'] = "Hello %s,\n\nYou recently created a new user account on %s\nBefore you can start posting we need to confirm your email address. Don't worry this is quite easy. All you need to do is click the link below (or copy and paste it into your browser):\n\n%s\n\nOnce confirmation is complete you may login and start posting immediately.\n\nIf you did not create a user account on %s please accept our apologies and forward this email to %s so that the source of it may be investigated.";
+
+// Forgotten password notification -------------------------------------
+
+$lang['forgotpwemail'] = "You requested this e-mail from %s because you have forgotten your password.\n\nClick the link below (or copy and paste it into your browser) to reset your password:\n\n%s";
+
+// Forgotten password form.
+
+$lang['passwdresetrequest'] = "Your password reset request from %s";
 $lang['passwdresetemailsent'] = "Password reset e-mail sent";
 $lang['passwdresetexp'] = "You should receive an e-mail containing instructions for resetting your password shortly.";
 $lang['validusernamerequired'] = "A valid username is required";
@@ -1070,8 +1037,7 @@ $lang['reducesiglength'] = "Signature length must be under 65,535 characters (cu
 $lang['cannotcreatethreadinfolder'] = "You cannot create new threads in this folder";
 $lang['cannotcreatepostinfolder'] = "You cannot reply to posts in this folder";
 $lang['cannotattachfilesinfolder'] = "You cannot post attachments in this folder. Remove attachments to continue.";
-$lang['postfrequencytoogreat_1'] = "You can only post once every";
-$lang['postfrequencytoogreat_2'] = "seconds. Please try again later.";
+$lang['postfrequencytoogreat'] = "You can only post once every %s seconds. Please try again later.";
 $lang['emailconfirmationrequiredbeforepost'] = "Email confirmation is required before you can post. If you have not received a confirmation email please click the button below and a new one will be sent to you. If your email address needs changing please do so before requesting a new confirmation email. You may change your email address by click My Controls above and then User Details";
 $lang['emailconfirmationfailedtosend'] = "Confirmation email failed to send. Please contact the forum owner to rectify this.";
 $lang['emailconfirmationsent'] = "Confirmation email has been resent.";
@@ -1177,8 +1143,7 @@ $lang['notenoughfreespace'] = "does not have enough free space to receive this m
 $lang['hasoptoutpm'] = "Has opted out of receiving personal messages";
 $lang['pmfolderpruningisenabled'] = "PM Folder pruning is enabled!";
 $lang['pmpruneexplanation'] = "This forum uses PM folder pruning. The messages you have stored in your Inbox and Sent Items\\nfolders are subject to automatic deletion. Any messages you wish to keep should be moved to\\nyour \\'Saved Items\\' folder so that they are not deleted.";
-$lang['yourpmfoldersare_1'] = "Your PM folders are";
-$lang['yourpmfoldersare_2'] = "full";
+$lang['yourpmfoldersare'] = "Your PM folders are %s full";
 $lang['currentmessage'] = "Current Message";
 $lang['unreadmessage'] = "Unread Message";
 $lang['readmessage'] = "Read Message";
@@ -1492,8 +1457,7 @@ $lang['groupbythread'] = "Group by thread";
 $lang['postsfromuser'] = "Posts from user";
 $lang['poststouser'] = "Posts to user";
 $lang['poststoandfromuser'] = "Posts to and from user";
-$lang['searchfrequencyerror_1'] = "You can only search once every";
-$lang['searchfrequencyerror_2'] = "seconds. Please try again later.";
+$lang['searchfrequencyerror'] = "You can only search once every %s seconds. Please try again later.";
 
 // Search Popup (search_popup.php) -------------------------------------
 

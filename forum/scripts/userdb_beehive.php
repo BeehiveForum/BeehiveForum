@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: userdb_beehive.php,v 1.3 2005-05-05 20:32:04 decoyduck Exp $ */
+/* $Id: userdb_beehive.php,v 1.1 2007-03-31 21:37:42 decoyduck Exp $ */
 
 // Put Ewiki in protected mode and default to view / browse only
 

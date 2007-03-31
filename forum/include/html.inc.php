@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.214 2007-03-24 22:12:07 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.215 2007-03-31 10:33:41 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -56,7 +56,7 @@ function html_guest_error()
      $target_frame = (isset($frame_top_target) && strlen($frame_top_target) > 0) ? $frame_top_target : '_top';
 
      html_draw_top("robots=noindex,nofollow");
-     html_error_msg($lang['guesterror_1'], 'logout.php', 'get', array('submit' => $lang['login']), array('final_uri' => $final_uri), $target_frame);
+     html_error_msg($lang['guesterror'], 'logout.php', 'get', array('submit' => $lang['loginnow']), array('final_uri' => $final_uri), $target_frame);
      html_draw_bottom();
 }
 

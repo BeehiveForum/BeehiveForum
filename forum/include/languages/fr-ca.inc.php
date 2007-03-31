@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.43 2007-03-27 23:16:18 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.44 2007-03-31 10:33:41 decoyduck Exp $ */
 
 // French (Canada) language file / fichier de langage français (Canada)
 
@@ -161,8 +161,8 @@ $lang['newcaps'] = "NOUVEAU";
 $lang['poll'] = "Scrutin";
 $lang['friend'] = "Ami(e)";
 $lang['error'] = "Erreur";
-$lang['guesterror_1'] = "Désolé, vous devez ouvrir une session pour utiliser cette fonction.";
-$lang['guesterror_2'] = "Ouvrir une session maintenant";
+$lang['guesterror'] = "Désolé, vous devez ouvrir une session pour utiliser cette fonction. %s";
+$lang['loginnow'] = "Ouvrir une session maintenant";
 $lang['on'] = "sur";
 $lang['unread'] = "non-lu";
 $lang['all'] = "Tous";
@@ -257,11 +257,9 @@ $lang['forumsettings'] = "Options de forum";
 $lang['globalforumsettings'] = "Options de forum globales";
 $lang['settingsaffectallforumswarning'] = "<b>Note:</b> Ces options affectent tous les forums. En cas de duplication d'un ou plusieurs option sur la page d'options d'un forum individuel, ces options prendront précédence sur les options que vous changez ici.";
 $lang['startpage'] = "Page de démarrage";
-$lang['startpageerror_1'] = "Votre page de démarrage n'a pas pu être entregistrer locallement sur le serveur à cause de déni de permission. Pour modifier votre page de démarrage, SVP cliquer le bouton de téléchargement ci-dessous qui vous invitera à enregister le fichier sur votre disque dur. Vous pourriez par la suite téléverser ce fichier vers le dossier";
-$lang['startpageerror_2'] = "sur votre serveur. SVP noter que certains navigateurs web pourraient changer le nom du fichier sur téléchargement. Lorsque vous téléversez le fichier, SVP vous assurer de le nommer start_main.php sinon les modifications n'apparaîtront pas.";
+$lang['startpageerror'] = "Votre page de démarrage n'a pas pu être entregistrer locallement sur le serveur à cause de déni de permission. Pour modifier votre page de démarrage, SVP cliquer le bouton de téléchargement ci-dessous qui vous invitera à enregister le fichier sur votre disque dur. Vous pourriez par la suite téléverser ce fichier vers le dossier %s sur votre serveur. SVP noter que certains navigateurs web pourraient changer le nom du fichier sur téléchargement. Lorsque vous téléversez le fichier, SVP vous assurer de le nommer start_main.php sinon les modifications n'apparaîtront pas.";
 $lang['failedtoopenmasterstylesheet'] = "Votre style de forum n'a pas pu être enregistré parce que la feuille de style maîtresse n'a pas pu être chargée. Pour enregistrer votre style, la feuille de style maîtresse (make_style.css) doit être située dans le répertoire styles de votre installation Beehive Forum.";
-$lang['makestyleerror_1'] = "Votre style de forum n'a pas pu être sauvegarder localement sur le serveur parce que la permission a été refusée. Pour sauvegarder votre style de forum, cliquer le bouton de téléchargement ci-dessous ce qui vous invitera à sauvegarder le fichier sur votre lecteur de disque dur. Vous pouvez ensuite téléverser ce fichier à votre serveur dans le dossier";
-$lang['makestyleerror_2'] = "et si nécéssaire, créant la structure de dossier en même temps. SVP noter que certains navigateurs web changeront peut-être le nom du fichier sur téléchargement. Lors du téléversement de ce fichier, SVP vous assurer qu'il est nommé style.css sinon ce style de forum sera inutilisable.";
+$lang['makestyleerror'] = "Votre style de forum n'a pas pu être sauvegarder localement sur le serveur parce que la permission a été refusée. Pour sauvegarder votre style de forum, cliquer le bouton de téléchargement ci-dessous ce qui vous invitera à sauvegarder le fichier sur votre lecteur de disque dur. Vous pouvez ensuite téléverser ce fichier à votre serveur dans le dossier %s et si nécéssaire, créant la structure de dossier en même temps. SVP noter que certains navigateurs web changeront peut-être le nom du fichier sur téléchargement. Lors du téléversement de ce fichier, SVP vous assurer qu'il est nommé style.css sinon ce style de forum sera inutilisable.";
 $lang['uploadfailed'] = "Votre nouvelle page de démarrage n'a pas pu être téléversée au serveur à cause de déni de permission. SVP vérifier que le serveur web / processus PHP est capable d'écrire au dossier %s sur votre serveur.";
 $lang['makestylefailed'] = "Votre nouveau style de forum n'a pas pu être sauvegarder sur le serveur parce que la permission a été refusée. SVP vérifier que le dossier %s sur votre serveur est inscriptible par le serveur web / processus PHP.";
 $lang['forumstyle'] = "Style du forum";
@@ -295,8 +293,7 @@ $lang['deleteallusersposts'] = "Supprimer tous les messages de cet utilisateur";
 $lang['noattachmentsforuser'] = "Aucun fichier joint pour cet utilisateur";
 $lang['aliasdesc'] = "Une liste d'autres membres correspondants aux 20 dernières adresses IP connues de cet utilisateur.";
 $lang['forgottenpassworddesc'] = "Si cet utilisateur a oublié leur mot de passe, vous pouvez le réinitialiser ici.";
-$lang['manageusersexp_1'] = "Cette liste démontre une sélection d'utilisateurs qui ont ouvert une session sur votre forum, triée par";
-$lang['manageusersexp_2'] = "Pour modifier les droits d'accès d'un utilisateur, cliquer sur leur nom.";
+$lang['manageusersexp'] = "Cette liste démontre une sélection d'utilisateurs qui ont ouvert une session sur votre forum, triée par %s. Pour modifier les droits d'accès d'un utilisateur, cliquer sur leur nom.";
 $lang['userfilter'] = "Filtre des usagers";
 $lang['onlineusers'] = "Usagers en ligne";
 $lang['offlineusers'] = "Usagers hors ligne";
@@ -793,70 +790,40 @@ $lang['entercontentformessage'] = "Indiquer du contenu pour le message";
 $lang['msgsentfromby'] = "Ce message a été envoyé de %s par %s";
 $lang['subject'] = "Sujet";
 $lang['send'] = "Envoyer";
-
-$lang['msgnotification_subject'] = "Confirmation de message de";
-
-$lang['msgnotificationemail_1'] = "a posté un message à votre attention sur";
-$lang['msgnotificationemail_2'] = "Le sujet est:";
-$lang['msgnotificationemail_3'] = "Pour lire ce message et les autres dans le même fil de discussion, allez à:";
-$lang['msgnotificationemail_4'] = "Note: Si vous désirez ne plus recevoir de confirmations de message par courriel du forum";
-$lang['msgnotificationemail_5'] = "messages postés à votre attention, allez à:";
-$lang['msgnotificationemail_6'] = "cliquer sur Mes Contrôles, ensuite Courriel et Confidentialité, déselectionner le courriel";
-$lang['msgnotificationemail_7'] = "Case à cocher Confirmation et appuyer Soumettre.";
-
-$lang['subnotification_subject'] = "Confirmation d'abonnement de";
-
-$lang['subnotification_1'] = "a posté un message dans un fil de discussion auquel vous vous êtes abonné sur";
-$lang['subnotification_2'] = "Le sujet est:";
-$lang['subnotification_3'] = "Pour lire ce message et les autres dans le même fil de discussion, allez à:";
-$lang['subnotification_4'] = "Note: Si vous désirez ne plus recevoir de confirmations de message par courriel de nouveau";
-$lang['subnotification_5'] = "messages dans ce fil de discussion, allez à:";
-$lang['subnotification_6'] = "et ajuster votre Niveau d'intérêt au bas de la page.";
-
-$lang['pmnotification_subject'] = "Confirmation de MP de";
-
-$lang['pmnotification_1']  = "vous a posté un MP sur";
-$lang['pmnotification_2']  = "Le sujet est:";
-$lang['pmnotification_3']  = "Pour lire ce message, allez à:";
-$lang['pmnotification_4']  = "Note: Si vous désirez ne plus recevoir de confirmations par courriel de nouveau MP";
-$lang['pmnotification_5']  = "messages postés à votre attention, allez à:";
-$lang['pmnotification_6']  = "cliquer sur Mes Contrôles, ensuite Courriel et Confidentialité, déselectionner le MP";
-$lang['pmnotification_7']  = "Case à cocher Confirmation et appuyer Soumettre.";
-
-$lang['passwdchangenotification'] = "Confirmation de changement de mot de passe de";
-
-$lang['pwchangeemail_1'] = "Ceci est un courriel de confirmation pour vous informer que votre mot de passe sur";
-$lang['pwchangeemail_2'] = "a été changé.";
-$lang['pwchangeemail_3'] = "Votre nouveau mot de passe est:";
-$lang['pwchangeemail_4'] = "Il a été changé par:";
-$lang['pwchangeemail_5'] = "Si vous avez reçu ce courriel par erreur ou n'étiez pas en attente de";
-$lang['pwchangeemail_6'] = "un changement à votre mot de passe, veuillez contacter le propriétaire du forum ou un modérateur sur";
-$lang['pwchangeemail_7'] = "dans les plus brefs délais pour corriger la situation.";
-
 $lang['hasoptedoutofemail'] = "refuse d'être contacté par courriel";
 $lang['hasinvalidemailaddress'] = "a une adresse courriel invalide";
 
-$lang['emailconfirmationrequired'] = "Confirmation d'adresse courriel requise";
+// Message nofificaiton ------------------------------------------------
 
-$lang['confirmemail_1'] = "Salut";
-$lang['confirmemail_2'] = "Vous avez récemment créé un nouveau compte d'utilisateur sur ";
-$lang['confirmemail_3'] = "Avant que vous puissiez commencer à poster, nous devons confirmer votre adresse courriel.";
-$lang['confirmemail_4'] = "Ne vous inquiètez pas, ceci est très facile. Vous n'avez qu'à cliquer le lien";
-$lang['confirmemail_5'] = "ci-dessous (ou le copier et coller dans votre navigateur web):";
-$lang['confirmemail_6'] = "Une fois la confirmation faite, vous pourriez immédiatement ouvrir une session et commencer à poster.";
-$lang['confirmemail_7'] = "Si vous n'avez pas créer un compte d'utilisateur sur ";
-$lang['confirmemail_8'] = "veuillez accepter nos excuses et tranférer ce courriel à";
-$lang['confirmemail_9'] = "pour nous permettre d'enquêter sur la source.";
+$lang['msgnotification_subject'] = "Confirmation de message de %s";
+$lang['msgnotificationemail'] = "%s a posté un message à votre attention sur %s\n\nLe sujet est: %s\n\nPour lire ce message et les autres dans le même fil de discussion, allez à:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: Si vous désirez ne plus recevoir de confirmations de message par courriel du forum messages postés à votre attention, allez à: %s cliquer sur Mes Contrôles, ensuite Courriel et Confidentialité, déselectionner le courriel Case à cocher Confirmation et appuyer Soumettre.";
 
-// Error handler (errorhandler.inc.php) --------------------------------
+// Thread Subscription notification ------------------------------------
 
-$lang['retry'] = "Relancer";
+$lang['subnotification_subject'] = "Confirmation d'abonnement de %s";
+$lang['subnotification'] = "%s a posté un message dans un fil de discussion auquel vous vous êtes abonné sur %s\n\nLe sujet est: %s\n\nPour lire ce message et les autres dans le même fil de discussion, allez à:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: Si vous désirez ne plus recevoir de confirmations de message par courriel de nouveau messages dans ce fil de discussion, allez à: %s et ajuster votre Niveau d'intérêt au bas de la page.";
 
-// Forgotten passwords (forgot_pw.php) ---------------------------------
+// PM notification -----------------------------------------------------
 
-$lang['forgotpwemail_1'] = "Vous avez demandé ce courriel de";
-$lang['forgotpwemail_2'] = "parce que vous avez oublié votre mot de passe.";
-$lang['forgotpwemail_3'] = "Cliquer le lien ci-dessous (ou le copier et coller dans votre navigateur web) pour réinitialiser votre mot de passe";
+$lang['pmnotification_subject'] = "Confirmation de MP de %s";
+$lang['pmnotification']  = "%s vous a posté un MP sur %s\n\nLe sujet est: %s\n\nPour lire ce message, allez à:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: Si vous désirez ne plus recevoir de confirmations par courriel de nouveau MP messages postés à votre attention, allez à: %s cliquer sur Mes Contrôles, ensuite Courriel et Confidentialité, déselectionner le MP Case à cocher Confirmation et appuyer Soumettre.";
+
+// Password change notification ----------------------------------------
+
+$lang['passwdchangenotification'] = "Confirmation de changement de mot de passe de %s";
+$lang['pwchangeemail'] = "Ceci est un courriel de confirmation pour vous informer que votre mot de passe sur %s a été changé.\n\nVotre nouveau mot de passe est: %s Il a été changé par: %sSi vous avez reçu ce courriel par erreur ou n'étiez pas en attente de un changement à votre mot de passe, veuillez contacter le propriétaire du forum ou un modérateur sur %s dans les plus brefs délais pour corriger la situation.";
+
+// Email confirmation notification -------------------------------------
+
+$lang['emailconfirmationrequired'] = "Confirmation d'adresse courriel requise de %s";
+$lang['confirmemail'] = "Salut %s.\n\nVous avez récemment créé un nouveau compte d'utilisateur sur %s\nAvant que vous puissiez commencer à poster, nous devons confirmer votre adresse courriel. Ne vous inquiètez pas, ceci est très facile. Vous n'avez qu'à cliquer le lien ci-dessous (ou le copier et coller dans votre navigateur web):\n\n%s\n\nUne fois la confirmation faite, vous pourriez immédiatement ouvrir une session et commencer à poster.\n\nSi vous n'avez pas créer un compte d'utilisateur sur %s veuillez accepter nos excuses et tranférer ce courriel à %s pour nous permettre d'enquêter sur la source.";
+
+// Forgotten password notification -------------------------------------
+
+$lang['forgotpwemail'] = "Vous avez demandé ce courriel de %s parce que vous avez oublié votre mot de passe.\n\nCliquer le lien ci-dessous (ou le copier et coller dans votre navigateur web) pour réinitialiser votre mot de passe:\n\n%s";
+
+// Forgotten password form.
+
 $lang['passwdresetrequest'] = "Votre demande de réinitialisation de mot de passe";
 $lang['passwdresetemailsent'] = "Courriel de réinitialisation de mot de passe envoyé";
 $lang['passwdresetexp'] = "Un courriel avec les instructions pour réinitialiser votre mot de passe vous parviendra sous peu.";
@@ -1008,8 +975,7 @@ $lang['reducesiglength'] = "La longueure de la signature doit être moins de 65,
 $lang['cannotcreatethreadinfolder'] = "Vous ne pouvez pas créer de nouveaux fils de discussion dans ce dossier";
 $lang['cannotcreatepostinfolder'] = "Vous ne pouvez pas répondre aux messages dans ce dossier";
 $lang['cannotattachfilesinfolder'] = "Vous ne pouvez pas poster des fichiers joints dans ce dossier. Enlever les fichiers joints pour continuer.";
-$lang['postfrequencytoogreat_1'] = "Vous pouvez poster seulement une fois tous les";
-$lang['postfrequencytoogreat_2'] = "secondes. SVP ré-essayer plus tard.";
+$lang['postfrequencytoogreat'] = "Vous pouvez poster seulement une fois tous les %s secondes. SVP ré-essayer plus tard.";
 $lang['emailconfirmationrequiredbeforepost'] = "Confirmation d'adresse courriel requise avant que vous pouvez poster!";
 $lang['emailconfirmationfailedtosend'] = "L'envoi du courriel de confirmation a échoué. SVP contacter le propriétaire du forum pour corriger cette situation.";
 $lang['emailconfirmationsent'] = "Le courriel de confirmation a été renvoyé.";
@@ -1114,8 +1080,7 @@ $lang['notenoughfreespace'] = "n'a pas assez d'espace libre pour recevoir ce mes
 $lang['hasoptoutpm'] = "A choisi de ne pas recevoir les messages personnels";
 $lang['pmfolderpruningisenabled'] = "L'élagation du dossier MP est activée!";
 $lang['pmpruneexplanation'] = "Ce forum utilise l'élagation du dossier PM. Les messages que vous avez de conservé dans vos \\ndossiers de boîte de réception et de boîte d'envoi sont assujettis à la suppression automatique. Veuillez transférer à \\nvotre dossier \\'Items sauvegardés\\' tout message que vous désirez conserver afin qu'ils ne soient pas supprimés.";
-$lang['yourpmfoldersare_1'] = "Vos dossiers MP sont";
-$lang['yourpmfoldersare_2'] = "pleins";
+$lang['yourpmfoldersare'] = "Vos dossiers MP sont %s pleins";
 $lang['currentmessage'] = "Message actuel";
 $lang['unreadmessage'] = "Message non-lu";
 $lang['readmessage'] = "Lire message";
@@ -1418,8 +1383,7 @@ $lang['groupbythread'] = "Grouper par fil de discussion";
 $lang['postsfromuser'] = "Messages de cet utilisateur";
 $lang['poststouser'] = "Messages à cet utilisateur";
 $lang['poststoandfromuser'] = "Messages à et de cet utilisateur";
-$lang['searchfrequencyerror_1'] = "Vous pouvez chercher seulement une fois tous les";
-$lang['searchfrequencyerror_2'] = "secondes. Veuillez essayer de nouveau plus tard.";
+$lang['searchfrequencyerror'] = "Vous pouvez chercher seulement une fois tous les %s secondes. Veuillez essayer de nouveau plus tard.";
 
 // Start page (start_left.php) -----------------------------------------
 

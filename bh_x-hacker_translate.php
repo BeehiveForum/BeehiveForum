@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_x-hacker_translate.php,v 1.12 2006-04-29 16:10:45 decoyduck Exp $ */
+/* $Id: bh_x-hacker_translate.php,v 1.13 2007-03-31 10:33:41 decoyduck Exp $ */
 
 // Creates an X-Hacker (L33t SpEak) language file from the en.inc.php
 // Derived from the L33t-5p34K G3n3r@t0r v3r510N 0.6 found at :
@@ -104,7 +104,7 @@ function translate($matches)
 
                 $char = substr($string_parts[$i], $j, 1);
 
-                if (!(in_array($char, $sprintf_chars) && isset($string_parts[$i][$j - 1]) && $string_parts[$i][$j - 1] == "%")) {
+                if (!(in_array($char, $sprintf_chars) && isset($string_parts[$i][$j - 1]) && $string_parts[$i][$j - 1] == "%") && (isset($string_parts[$i][$j - 1]) && $string_parts[$i][$j - 1] != "\\")) {
 
                     if ($char == "a" && rn(10) > 7) $char = "@";
                     if ($char == "a" && rn(10) > 2) $char = "4";
@@ -158,7 +158,7 @@ function translate($matches)
 
                 $char = substr($string_parts[$i], $j, 1);
 
-                if (!(in_array($char, $sprintf_chars) && isset($string_parts[$i][$j - 1]) && $string_parts[$i][$j - 1] == "%")) {
+                if (!(in_array($char, $sprintf_chars) && isset($string_parts[$i][$j - 1]) && $string_parts[$i][$j - 1] == "%") && (isset($string_parts[$i][$j - 1]) && $string_parts[$i][$j - 1] != "\\")) {
 
                     if (rn(10) > 5) $char = strtoupper($char);
                     $str_out = $str_out. htmlentities($char);

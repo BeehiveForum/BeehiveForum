@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.168 2007-03-27 23:16:18 decoyduck Exp $ */
+/* $Id: search.php,v 1.169 2007-03-31 10:33:41 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -310,7 +310,7 @@ if ((isset($_POST) && sizeof($_POST) > 0) || isset($_GET['search_string']) || is
 
             case SEARCH_FREQUENCY_TOO_GREAT:
 
-                echo "<p>{$lang['searchfrequencyerror_1']} $search_frequency {$lang['searchfrequencyerror_2']}</p>\n";
+                echo sprintf("<p>{$lang['searchfrequencyerror']}</p>\n", $search_frequency);
                 break;
         }
 

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.300 2007-03-27 23:16:18 decoyduck Exp $ */
+/* $Id: post.php,v 1.301 2007-03-31 10:33:41 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -714,9 +714,7 @@ if ($valid && isset($_POST['submit'])) {
 
     }else {
 
-        $error_html = "<h2>{$lang['postfrequencytoogreat_1']} ";
-        $error_html.= forum_get_setting('minimum_post_frequency', false, 0);
-        $error_html.= " {$lang['postfrequencytoogreat_2']}</h2>\n";
+        $error_html = sprintf("<h2>{$lang['postfrequencytoogreat']}</h2>", forum_get_setting('minimum_post_frequency', false, 0));
     }
 }
 

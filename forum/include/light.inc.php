@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.127 2007-03-17 15:26:19 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.128 2007-03-31 10:33:41 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1160,23 +1160,22 @@ function light_messages_nav_strip($tid,$pid,$length,$ppp)
 
 function light_html_guest_error ()
 {
-     global $frame_top_target;
+    global $frame_top_target;
      
-     $lang = load_language_file();
+    $lang = load_language_file();
 
-     $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag($webtag_search);
 
-     light_html_draw_top();
+    light_html_draw_top();
 
-     if (isset($frame_top_target) && strlen($frame_top_target) > 0) {
-         echo "<h1>{$lang['guesterror_1']} <a href=\"llogout.php?webtag=$webtag\" ";
-         echo "target=\"$frame_top_target\">{$lang['guesterror_2']}</a></h1>";
-     }else {
-         echo "<h1>{$lang['guesterror_1']} <a href=\"llogout.php?webtag=$webtag\" ";
-         echo "target=\"_top\">{$lang['guesterror_2']}</a></h1>";
-     }
-
-     light_html_draw_bottom();
+    if (isset($frame_top_target) && strlen($frame_top_target) > 0) {
+        $login_link = "<a href=\"llogout.php?webtag=$webtag\" target=\"$frame_top_target\">{$lang['loginnow']}</a>";
+    }else {
+        $login_link = "<a href=\"llogout.php?webtag=$webtag\" target=\"$frame_top_target\">{$lang['loginnow']}</a>";
+    }
+         
+    echo sprintf("<h1>{$lang['guesterror']}</h1>", $login_link);
+    light_html_draw_bottom();
 }
 
 function light_folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="")

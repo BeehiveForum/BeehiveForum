@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.19 2007-03-05 20:58:41 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.20 2007-03-31 10:33:41 decoyduck Exp $ */
 
 // International English language file
 
@@ -165,8 +165,8 @@ $lang['newcaps'] = "NEU";
 $lang['poll'] = "Abstimmung";
 $lang['friend'] = "Freund";
 $lang['error'] = "Fehler";
-$lang['guesterror_1'] = "Entschuldige, aber dazu musst du angemeldet sein.";
-$lang['guesterror_2'] = "Jetzt anmelden";
+$lang['guesterror'] = "Entschuldige, aber dazu musst du angemeldet sein. %s";
+$lang['loginnow'] = "Jetzt anmelden";
 $lang['on'] = "an";
 $lang['unread'] = "ungelesene";
 $lang['all'] = "Alle";
@@ -266,11 +266,9 @@ $lang['forumsettings'] = "Foreneinstellungen";
 $lang['globalforumsettings'] = "Allgemeine Foreneinstellungen";
 $lang['settingsaffectallforumswarning'] = "<b>Note:</b> Diese Einstellungen beziehen sich auf ALLE Foren. Einstellungen in den individuellen Einstellungen der Foren haben Vorrang gegenueber den Einstellungen hier.";
 $lang['startpage'] = "Startseite";
-$lang['startpageerror_1'] = "Ihre Startseite konnte nicht auf dem Server gespeichert werden. Zugriff wurde verweigert. Um die Startseite zu aendern auf Download klicken um die Datei zu speichern. Diese Datei kann dann auf den Server hochgeladen werden in";
-$lang['startpageerror_2'] = "Ordner, falls noch nicht vorhanden, muss der Ordner noch erstellt werden. Bitte beachten dass manche Browser den Dateinamen waehrend des Downloads aendern!.  Wenn die Datei hochgeladne wird bitte beachten dass die Datei start_main.php heisst, ansonsten wird Ihre Startseite unveraendert bleiben.";
+$lang['startpageerror'] = "Ihre Startseite konnte nicht auf dem Server gespeichert werden. Zugriff wurde verweigert. Um die Startseite zu aendern auf Download klicken um die Datei zu speichern. Diese Datei kann dann auf den Server hochgeladen werden in %s ordner, falls noch nicht vorhanden, muss der Ordner noch erstellt werden. Bitte beachten dass manche Browser den Dateinamen waehrend des Downloads aendern!.  Wenn die Datei hochgeladne wird bitte beachten dass die Datei start_main.php heisst, ansonsten wird Ihre Startseite unveraendert bleiben.";
 $lang['failedtoopenmasterstylesheet'] = "Dein Forenstil konnte nicht gespeichert werden da der Masterstil nicht geladen werden konnte. Um den Stil als Master-Stil zu speichern muss (make_style.css) im Styles-Verzeichnis Ihrer BeehiveForeninstallation gefunden werden.";
-$lang['makestyleerror_1'] = "Dein Forenstil konnte nicht gespeichert werden. Zugriff wurde verweigert. Um den Forenstil zu speichern auf Download klicken und auf Deiner Festplatte speichern. Dann die Datei auf den Server hochladen in";
-$lang['makestyleerror_2'] = "Ordner, Falls nicht vorhanden Ordner noch erstellen. Beim Hochladen muss die Datei style.css heissen, ansonsten wird der Stil nicht geaendert.";
+$lang['makestyleerror'] = "Dein Forenstil konnte nicht gespeichert werden. Zugriff wurde verweigert. Um den Forenstil zu speichern auf Download klicken und auf Deiner Festplatte speichern. Dann die Datei auf den Server hochladen in %s ordner, Falls nicht vorhanden Ordner noch erstellen. Beim Hochladen muss die Datei style.css heissen, ansonsten wird der Stil nicht geaendert.";
 $lang['uploadfailed'] = "Deine neue Startseite konnte nicht gespeichert werden. Zugriff wurde verweigert. Bitte pruefe den Webserver / PHP-Prozess dass dieser Schreibrechte im %s Ordner deines Servers hat.";
 $lang['makestylefailed'] = "Dein Forenstil konnte nicht gespeichert werden. Zugriff wurde verweigert. Bitte pruefe den Webserver / PHP-Prozess dass dieser Schreibrechte im %s Ordner deines Servers hat.";
 $lang['forumstyle'] = "Forenstil";
@@ -312,8 +310,7 @@ $lang['deleteallusersposts'] = "Loesche alle Eintraege dieses Benutzers";
 $lang['noattachmentsforuser'] = "Keine Anhaenge fuer diesen Benutzer";
 $lang['aliasdesc'] = "Dies ist eine Liste von anderen Eintragungen die auf die letzten 20 IP-Adressen dieses Benutzers zutreffen.";
 $lang['forgottenpassworddesc'] = "Falls der Benutzer sein Passwort vergessen hat kann es hier zurueckgesetzt werden.";
-$lang['manageusersexp_1'] = "Diese Liste zeigt eine Benutzerauswahl, die in diesem Forum angemeldet sind, sortiert nach";
-$lang['manageusersexp_2'] = "Um Benutzerrechte zu aendern auf den Namen klicken.";
+$lang['manageusersexp'] = "Diese Liste zeigt eine Benutzerauswahl, die in diesem Forum angemeldet sind, sortiert nach %s. Um Benutzerrechte zu aendern auf den Namen klicken.";
 $lang['userfilter'] = "Benutzerfilter";
 $lang['onlineusers'] = "Benutzer Online";
 $lang['offlineusers'] = "Benutzer Offline";
@@ -817,70 +814,40 @@ $lang['entercontentformessage'] = "Bitte Inhalt der Nachricht eingeben";
 $lang['msgsentfromby'] = "Diese Nachricht wurde gesendet von %s durch %s";
 $lang['subject'] = "Betreff";
 $lang['send'] = "Senden";
-
-$lang['msgnotification_subject'] = "Nachricht Mitteilung von";
-
-$lang['msgnotificationemail_1'] = "schickte ein Nachricht an dich auf";
-$lang['msgnotificationemail_2'] = "Betreff:";
-$lang['msgnotificationemail_3'] = "Um die Nachricht zu lesen und andere in der gleichen Diskussion, gehe zu:";
-$lang['msgnotificationemail_4'] = "Merke: Wenn Du keine Nachrichten-Mitteilungen vom Forum bekommen moechtest";
-$lang['msgnotificationemail_5'] = "Nachrichten wurden an dich gesendet, gehe zu:";
-$lang['msgnotificationemail_6'] = "Klick auf Meine Einstellungen, dann eMail und Privat, entferne Haken bei Mailmitteilung";
-$lang['msgnotificationemail_7'] = "Mitteilung checkbox und klicke Senden.";
-
-$lang['subnotification_subject'] = "Subskription Mitteilung von";
-
-$lang['subnotification_1'] = "schickte eine Nachricht in einem Eintrag den Du aktiviert hast";
-$lang['subnotification_2'] = "Betreff:";
-$lang['subnotification_3'] = "Um diese und andere betreffende Nachrichten zu lesen, gehe zu:";
-$lang['subnotification_4'] = "Merke: Wenn Du keine weiteren eMail-Mitteilungen bei neuen";
-$lang['subnotification_5'] = "Eintraegen in diesem Bereich wuenschst, gehe zu:";
-$lang['subnotification_6'] = "und aendere den Interesse-Level am Fuss der Seite.";
-
-$lang['pmnotification_subject'] = "PM Mitteilung von";
-
-$lang['pmnotification_1'] = "schickte eine PM an Dich auf";
-$lang['pmnotification_2'] = "Betreff:";
-$lang['pmnotification_3'] = "Um die Nachricht zu lesen, gehe zu:";
-$lang['pmnotification_4'] = "Merke: Wenn Du keine weiteren eMail-Mitteilungen bei neuen PMs moechtest";
-$lang['pmnotification_5'] = "gehe zu:";
-$lang['pmnotification_6'] = "Klick auf Meine Einstellungen, dann eMail und Privat, deaktiviere PM";
-$lang['pmnotification_7'] = "Mitteilungscheckbox und klick auf Absenden.";
-
-$lang['passwdchangenotification'] = "Passwort Aenderungsmitteilung von";
-
-$lang['pwchangeemail_1'] = "Diese Mitteilungsmail moechte Dich darueber informieren dass dein Passwort auf";
-$lang['pwchangeemail_2'] = "geaendert wurde.";
-$lang['pwchangeemail_3'] = "Es wurde geaendert auf:";
-$lang['pwchangeemail_4'] = "von:";
-$lang['pwchangeemail_5'] = "Falls eine Aenderung nicht von Dir gewuenscht/erwartet war";
-$lang['pwchangeemail_6'] = "sprich einen Moderator oder Admin im Forum darauf an";
-$lang['pwchangeemail_7'] = "um den Fehler umgehend zu korrigieren.";
-
 $lang['hasoptedoutofemail'] = "hat durch eMail-Kontakt entschieden";
 $lang['hasinvalidemailaddress'] = "hat ungueltige eMail-Adresse";
 
-$lang['emailconfirmationrequired'] = "eMail-Bestaetigung notwendig";
+// Message nofificaiton ------------------------------------------------
 
-$lang['confirmemail_1'] = "Hallo";
-$lang['confirmemail_2'] = "Du hast kuerzlich ein neues Benutzerkonto angelegt auf";
-$lang['confirmemail_3'] = "Bevor Du anfangen kannst eigene Posts zu erstellen benoetigen wir die Bestaetigung Deiner eMail-Adresse.";
-$lang['confirmemail_4'] = "Keine Angst, das ist ganz einfach. Du musst nur auf den Link";
-$lang['confirmemail_5'] = "unten klicken (oder kopier ihn und fueg ihn in deinem Browser ein):";
-$lang['confirmemail_6'] = "Wenn die Bestaetigung durchgegangen ist kannst Du Dich sofort anmelden und posten.";
-$lang['confirmemail_7'] = "Wenn Du kein Konto angelegt hast auf";
-$lang['confirmemail_8'] = "dann entschuldige diesen Fehler und leite diese Mail weiter an";
-$lang['confirmemail_9'] = "so dass der Ursprung dieser Mail ermittelt werden kann.";
+$lang['msgnotification_subject'] = "Nachricht Mitteilung von %s";
+$lang['msgnotificationemail'] = "%s schickte ein nachricht an dich auf %s\n\nBetreff: %s\n\nUm die Nachricht zu lesen und andere in der gleichen Diskussion, gehe zu:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nMerke: Wenn Du keine Nachrichten-Mitteilungen vom Forum bekommen moechtest Nachrichten wurden an dich gesendet, gehe zu: %s klick auf Meine Einstellungen, dann eMail und Privat, entferne Haken bei Mailmitteilung Mitteilung checkbox und klicke Senden.";
 
-// Error handler (errorhandler.inc.php) --------------------------------
+// Thread Subscription notification ------------------------------------
 
-$lang['retry'] = "Wiederholen";
+$lang['subnotification_subject'] = "Subskription Mitteilung von %s";
+$lang['subnotification'] = "%s schickte eine Nachricht in einem Eintrag den Du aktiviert hast %s\n\nBetreff: %s\n\nUm diese und andere betreffende Nachrichten zu lesen, gehe zu:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nMerke: Wenn Du keine weiteren eMail-Mitteilungen bei neuen eintraegen in diesem Bereich wuenschst, gehe zu: %s und aendere den Interesse-Level am Fuss der Seite.";
+
+// PM notification -----------------------------------------------------
+
+$lang['pmnotification_subject'] = "PM Mitteilung von %s";
+$lang['pmnotification'] = "%s schickte eine PM an Dich auf\n\nBetreff: %s\n\nUm die Nachricht zu lesen, gehe zu:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nMerke: Wenn Du keine weiteren eMail-Mitteilungen bei neuen PMs moechtest gehe zu: %s klick auf Meine Einstellungen, dann eMail und Privat, deaktiviere PM Mitteilungscheckbox und klick auf Absenden.";
+
+// Password change notification ----------------------------------------
+
+$lang['passwdchangenotification'] = "Passwort Aenderungsmitteilung von %s";
+$lang['pwchangeemail'] = "Diese Mitteilungsmail moechte Dich darueber informieren dass dein Passwort auf %s geaendert wurde.\n\nEs wurde geaendert auf: %s von: %s\n\nFalls eine Aenderung nicht von Dir gewuenscht/erwartet war sprich einen Moderator oder Admin im Forum darauf an %s um den Fehler umgehend zu korrigieren.";
+
+// Email confirmation notification -------------------------------------
+
+$lang['emailconfirmationrequired'] = "eMail-Bestaetigung notwendig von %s";
+$lang['confirmemail'] = "Hallo %s,\n\n Du hast kuerzlich ein neues Benutzerkonto angelegt auf %s\nBevor Du anfangen kannst eigene Posts zu erstellen benoetigen wir die Bestaetigung Deiner eMail-Adresse. Keine Angst, das ist ganz einfach. Du musst nur auf den Link unten klicken (oder kopier ihn und fueg ihn in deinem Browser ein):\n\n%s\n\nWenn die Bestaetigung durchgegangen ist kannst Du Dich sofort anmelden und posten. Wenn Du kein Konto angelegt hast auf dann entschuldige diesen Fehler und leite diese Mail weiter an %s so dass der Ursprung dieser Mail ermittelt werden kann.";
+
+// Forgotten password notification -------------------------------------
+
+$lang['forgotpwemail'] = "Du erwartest diese eMail von %s da Du wohl Dein Passwort vergessen hast.\n\nKlick auf den unten folgenden Link (oder kopier ihn und fueg ihn in Deinen Brwoser ein) um Dein Passwort zurueckzusetzen:\n\n%s";
 
 // Forgotten passwords (forgot_pw.php) ---------------------------------
 
-$lang['forgotpwemail_1'] = "Du erwartest diese eMail von";
-$lang['forgotpwemail_2'] = "da Du wohl Dein Passwort vergessen hast.";
-$lang['forgotpwemail_3'] = "Klick auf den unten folgenden Link (oder kopier ihn und fueg ihn in Deinen Brwoser ein) um Dein Passwort zurueckzusetzen";
 $lang['passwdresetrequest'] = "Dein Passwort-Rueckstellungsantrag";
 $lang['passwdresetemailsent'] = "Passwort-Rueckstellung wurde gesendet";
 $lang['passwdresetexp'] = "Du solltest gleich eine eMail erhalten die Instruktionen fuer die Zurueckstellung deines Passworts enthaelt.";
@@ -1032,8 +999,7 @@ $lang['reducesiglength'] = "Signaturlaenge muss weniger als 65,535 Zeichen haben
 $lang['cannotcreatethreadinfolder'] = "Du kannst keine neuen Eintraege in diesem Ordner erstellen";
 $lang['cannotcreatepostinfolder'] = "Du kannst nicht auf Eintraege antworten in diesem Ordner";
 $lang['cannotattachfilesinfolder'] = "Du kannst keine Anhaenge in diesem Ordner posten. Entferne die Anhaenge um Fortzufahren.";
-$lang['postfrequencytoogreat_1'] = "Du kannst nur einmal alle";
-$lang['postfrequencytoogreat_2'] = "sek. posten. Bitte probier es spaeter noch einmal.";
+$lang['postfrequencytoogreat'] = "Du kannst nur einmal alle %s sek. posten. Bitte probier es spaeter noch einmal.";
 $lang['emailconfirmationrequiredbeforepost'] = "eMail-Bestaetigung ist notwendig bevor Du posten kannst. Wenn du noch keine Bestaetigungs-eMail erhalten hast klick bitte auf den Schalter unten damit eine weitere eMail-Bestaetigungsnachricht gesendet wird. Wenn Du noch keine eMail-Adresse hast lege Dir erst eine an bevor Du diesen Schalter betaetigst. Du kannst Deine eMail-Adresse auch aendern ueber Meine Einstellungen in der oberen Menueleiste udn dann Benutzerdetails";
 $lang['emailconfirmationfailedtosend'] = "Bestaetigungsmail konnte nicht gesendet werden. Bitte kontaktiere den Admin um das zu pruefen.";
 $lang['emailconfirmationsent'] = "Bestaetigungs-eMail wurde noch einmal gesendet.";
@@ -1139,8 +1105,7 @@ $lang['notenoughfreespace'] = "Du hast nicht genug freien Speicher um die Nachri
 $lang['hasoptoutpm'] = "wurde aus dem PM-Empfang entfernt";
 $lang['pmfolderpruningisenabled'] = "PM-Ordnerkuerzung eingeschaltet!";
 $lang['pmpruneexplanation'] = "Dieses Forum nutzt PM-Ordnerkuerzung. Die Nachrichten wurden in Deinem Posteingang gespeichert und gesendete Eintraege \\nfolders werden automatisch geloescht. Jede Nachricht die Du gespeichert halten moechtest sollte verschoben werden nach \\nyour \\'Saved Items\\' Ordner damitsie nicht geloescht werden.";
-$lang['yourpmfoldersare_1'] = "Deine PM-Ordner sind";
-$lang['yourpmfoldersare_2'] = "voll";
+$lang['yourpmfoldersare_1'] = "Deine PM-Ordner sind %s voll";
 $lang['currentmessage'] = "Aktuelle Nachricht";
 $lang['unreadmessage'] = "Ungelesene Nachricht";
 $lang['readmessage'] = "Gelesene Nachricht";
@@ -1452,8 +1417,7 @@ $lang['groupbythread'] = "Gruppieren nach Eintrag";
 $lang['postsfromuser'] = "Posts von Benutzer";
 $lang['poststouser'] = "Posts an Benutzer";
 $lang['poststoandfromuser'] = "Posts an und von Benutzer";
-$lang['searchfrequencyerror_1'] = "Du kannst nur einmal jede";
-$lang['searchfrequencyerror_2'] = "Sekunden suchen. Bitte versuch es spaeter nochmal.";
+$lang['searchfrequencyerror'] = "Du kannst nur einmal jede %s Sekunden suchen. Bitte versuch es spaeter nochmal.";
 
 // Start page (start_left.php) -----------------------------------------
 

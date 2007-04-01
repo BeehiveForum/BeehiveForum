@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.127 2007-03-17 15:26:19 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.128 2007-04-01 20:41:39 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -244,7 +244,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\" colspan=\"2\">", form_quick_button("./discussion.php", "{$lang['startreading']}  &raquo;", false, false, "main"), "</td>\n";
+echo "      <td align=\"center\" colspan=\"2\">", form_quick_button("./discussion.php", "{$lang['startreading']}  &raquo;", false, "main"), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <br />\n";

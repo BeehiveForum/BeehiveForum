@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.145 2007-03-24 17:32:24 decoyduck Exp $ */
+/* $Id: register.php,v 1.146 2007-04-01 20:41:38 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -635,7 +635,7 @@ if (isset($_POST['submit'])) {
             }else {
 
                 echo "    <tr>\n";
-                echo "      <td align=\"center\">", form_quick_button("./index.php", $lang['continue'], false, false, "_top"), "</td>\n";
+                echo "      <td align=\"center\">", form_quick_button("./index.php", $lang['continue'], false, "_top"), "</td>\n";
                 echo "    </tr>\n";
             }
 

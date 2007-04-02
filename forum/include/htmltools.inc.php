@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: htmltools.inc.php,v 1.56 2007-03-19 15:19:33 decoyduck Exp $ */
+/* $Id: htmltools.inc.php,v 1.57 2007-04-02 13:57:55 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -116,74 +116,6 @@ function TinyMCE() {
     $str.= "        tinyMCE.execCommand('mceFocus', false, 'mce_editor_0');\n";
     $str.= "        tinyMCE.execCommand('mceInsertContent', false, unescape(text));\n";
     $str.= "    }\n";
-
-    /* This is commented out because for it to work I need to
-       work some things out and maybe need TinyMCE modified for
-       it to work.
-
-       1. TinyMCE needs to allow plugins to insert tags like:
-          <span><span></span></span> which is what BH uses for
-          it's CSS emoticons.
-
-       2. TinyMCE needs to allow the use of mutiple stylesheets so
-          we can include the user's emoticon style sheet as well as
-          the Beehive plugin styles.
-
-       I'm thinking #1 must be possible because the table plugin works
-       fine being able to have <tr> and <td align=\"left\"> within <table> So maybe
-       it just doesn't like duplicate tags?
-
-       Possible work around for #2 is to have a PHP script to read the
-       CSS files into one big one, but that would mean modifying the
-       paths in the background-image: url() parts as the .css files
-       work seperatly from the HTML and have their own relative path
-       to where it finds images.
-
-       Possible work around number #2 for #2 is to have a PHP script
-       as above but also a seperate .css file (say tinymce.css) for
-       each emoticon pack that has the paths differently than in
-       the main style.css.
-
-       Work around #3. Use document.styleSheets DOM to load
-       the user's emoticon stylesheet in a plugin for TinyMCE maybe?
-
-    $str.= "    function trim(str) {\n";
-    $str.= "        return str.replace(/^\s*|\s*$/g,\"\");\n";
-    $str.= "    }\n";
-
-    $emoticons = new Emoticons();
-    $emoticon_text_array = $emoticons->get_text_array();
-
-    $emot_keys = "";
-    $emot_values = "";
-
-    $key_count = 0;
-
-    foreach ($emoticon_text_array as $key => $value) {
-        $emot_keys.= "emot_keys[$key_count] = \"$key\";\n        ";
-        $emot_values.= "emot_values[$key_count] = \"{$value[0]}\";\n        ";
-        $key_count++;
-    }
-
-    $str.= "    function emoticon_construct(text) {\n\n";
-    $str.= "        text = unescape(text);\n\n";
-    $str.= "        var emot_keys = new Array();\n";
-    $str.= "        var emot_values = new Array();\n";
-    $str.= "        $emot_keys\n";
-    $str.= "        $emot_values\n";
-    $str.= "        for (var i = 0; i < emot_values.length - 1; i++) {\n";
-    $str.= "            if (emot_values[i] == trim(text)) {\n";
-    $str.= "                return '<span class=\"e_' + emot_keys[i] + '\" title=\"' + trim(text) + '\"><span class=\"e__\">' + trim(text) + '</span></span>';\n";
-    $str.= "            }\n";
-    $str.= "        }\n";
-    $str.= "    }\n";
-
-    $str.= "    function add_text(text) {\n";
-    $str.= "        text = emoticon_construct(text);\n";
-    $str.= "        alert(text);\n";
-    $str.= "        tinyMCE.execCommand('mceFocus', false, 'mce_editor_0');\n";
-    $str.= "        tinyMCE.execCommand('mceInsertContent', false, text);\n";
-    $str.= "    }\n"; */
 
     $str.= "</script>\n";
     $str.= "<!-- /tinyMCE -->\n";

@@ -21,7 +21,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_check_dependencies.php,v 1.18 2007-04-01 20:41:38 decoyduck Exp $ */
+/* $Id: bh_check_dependencies.php,v 1.19 2007-04-02 13:57:55 decoyduck Exp $ */
+
+// Callback function to escape array of strings.
+
+function preg_quote_callback($str)
+{
+    return preg_quote($str, "/");
+}
 
 // Path to include files.
 
@@ -29,7 +36,13 @@ $include_files_dir   = "forum/include";
 
 // Array of functions and constants
 
-$include_files_array = array("\$lang" => "lang.inc.php");
+$include_files_functions_array = array("\$lang" => "lang.inc.php");
+$include_files_constants_array = array();
+
+// List of exceptions that we should ignore
+
+$ignore_functions_array = array();
+$ignore_constants_array = array('BH_INCLUDE_PATH');
 
 // Path to source files.
 
@@ -50,18 +63,21 @@ foreach($source_files_dir_array as $include_file_dir) {
                 $source_files_array[] = "$include_file_dir/$file";
                 $source_file_contents = file_get_contents("$include_file_dir/$file");
 
+                $ignore_functions = implode("|", array_map('preg_quote_callback', $ignore_functions_array));
+                $ignore_constants = implode("|", array_map('preg_quote_callback', $ignore_constants_array));
+
                 if (preg_match_all("/function\s([a-z1-9-_]+)[\s]?\(/i", $source_file_contents, $function_matches)) {
 
-                    $function_matches = array_flip($function_matches[1]);
+                    $function_matches = array_flip(preg_grep("/$ignore_constants/", $function_matches[1], PREG_GREP_INVERT));
                     array_walk($function_matches, create_function('&$elem', "\$elem = \"$file\";"));
-                    $include_files_array = array_merge($include_files_array, $function_matches);
+                    $include_files_functions_array = array_merge($include_files_functions_array, $function_matches);
                 }
 
-                if (preg_match_all("/define[ ]?\([\"|']?([a-z1-9-_]+)/i", $source_file_contents, $constant_matches)) {
+                if (preg_match_all("/define[\s]?\([\"|']?([a-z1-9-_]+)/i", $source_file_contents, $constant_matches)) {
 
-                    $constant_matches = array_flip($constant_matches[1]);
+                    $constant_matches = array_flip(preg_grep("/$ignore_constants/", $constant_matches[1], PREG_GREP_INVERT));
                     array_walk($constant_matches, create_function('&$elem', "\$elem = \"$file\";"));
-                    $include_files_array = array_merge($include_files_array, $constant_matches);
+                    $include_files_constants_array = array_merge($include_files_constants_array, $constant_matches);
                 }
             }
         }
@@ -78,7 +94,7 @@ foreach($source_files_array as $source_file) {
 
     $header_display = false;
 
-    foreach($include_files_array as $function_name => $include_file) {
+    foreach($include_files_functions_array as $function_name => $include_file) {
 
         if ($include_file !== basename($source_file)) {
         
@@ -89,11 +105,41 @@ foreach($source_files_array as $source_file) {
 
                 $function_name_preg = preg_quote($function_name, "/");
 
-                if (preg_match("/[ |\.|,]{$function_name_preg}[ ]?\(?/", $source_file_contents) > 0) {
+                if (preg_match("/[\s|\.|,]{$function_name_preg}\s?\(/", $source_file_contents) > 0) {
 
-                    if (!in_array($include_file, $include_files_required_array)) {
+                    if (!isset($include_files_required_array[$include_file])) {
+
+                        $include_files_required_array[$include_file][] = $function_name;
+
+                    }elseif (!in_array($include_file, $include_files_required_array)) {
                     
-                        $include_files_required_array[] = $include_file;
+                        $include_files_required_array[$include_file][] = $function_name;
+                    }
+                }
+            }
+        }
+    }
+
+    foreach($include_files_constants_array as $constant_name => $include_file) {
+
+        if ($include_file !== basename($source_file)) {
+        
+            $include_file_line = "include_once(BH_INCLUDE_PATH. \"$include_file\")";
+            $include_file_line_preg = preg_quote($include_file_line, "/");
+
+            if (preg_match("/$include_file_line_preg/", $source_file_contents) < 1) {
+
+                $constant_name_preg = preg_quote($constant_name, "/");
+
+                if (preg_match("/{$constant_name_preg}/", $source_file_contents) > 0) {
+
+                    if (!isset($include_files_required_array[$include_file])) {
+                    
+                        $include_files_required_array[$include_file][] = $constant_name;
+                    
+                    }elseif (!in_array($function_name, $include_files_required_array[$include_file])) {
+
+                        $include_files_required_array[$include_file][] = $constant_name;
                     }
                 }
             }
@@ -105,9 +151,12 @@ foreach($source_files_array as $source_file) {
         asort($include_files_required_array);
         
         echo "\n\n$source_file\n", str_repeat("-", strlen($source_file)), "\n";
-        echo "include_once(BH_INCLUDE_PATH. \"";
-        echo implode("\");\ninclude_once(BH_INCLUDE_PATH. \"", $include_files_required_array);
-        echo "\");\n";
+
+        foreach($include_files_required_array as $include_file => $function_name_array) {
+
+            echo "include_once(BH_INCLUDE_PATH. \"$include_file\"); // Uses: ";
+            echo implode(", ", $function_name_array), "\n";
+        }
     }
 }
         

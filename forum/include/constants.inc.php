@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: constants.inc.php,v 1.103 2007-03-05 20:58:41 decoyduck Exp $ */
+/* $Id: constants.inc.php,v 1.104 2007-04-03 19:57:37 decoyduck Exp $ */
 
 /**
 * Constants used throughout Beehive.
@@ -172,7 +172,6 @@ define("PM_READ", 4);       // Read PM
 define("PM_SENT", 8);       // Sent PM
 define("PM_SAVED_IN", 16);  // Saved Received PM
 define("PM_SAVED_OUT", 32); // Saved Sent PM
-define("PM_PREVIEW", 64);   // Previewed Message (pm_write.php)
 
 // PM Folders - defines each folder type
 
@@ -303,6 +302,9 @@ define('THREAD_SPLIT_REPLIES', 0);
 define('THREAD_SPLIT_FOLLOWING', 1);
 
 // Thread Merge and Split error constants
+
+define('THREAD_TYPE_SPLIT', 1);
+define('THREAD_TYPE_MERGE', 0);
 
 define('THREAD_MERGE_INVALID_ARGS', 1);
 define('THREAD_MERGE_FORUM_ERROR', 2);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.403 2007-03-31 10:33:41 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.404 2007-04-03 19:57:48 decoyduck Exp $ */
 
 // International English language file
 
@@ -94,6 +94,7 @@ $lang['to'] = "To";
 $lang['all_caps'] = "ALL";
 $lang['of'] = "of";
 $lang['reply'] = "Reply";
+$lang['forward'] = "Forward";
 $lang['replyall'] = "Reply to All";
 $lang['pm_reply'] = "Reply as PM";
 $lang['delete'] = "Delete";
@@ -1712,6 +1713,8 @@ $lang['pmexportwordfilter'] = "Apply word filter to messages";
 
 // Thread merge / split options
 
+$lang['threadsplit'] = "Thread has been split";
+$lang['threadmerge'] = "Thread has been merged";
 $lang['mergesplitthread'] = "Merge / Split Thread";
 $lang['mergewiththreadid'] = "Merge with thread ID:";
 $lang['postsinthisthreadatstart'] = "Posts in this thread at start";

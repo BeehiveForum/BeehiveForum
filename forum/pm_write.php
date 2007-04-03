@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.155 2007-03-27 23:16:18 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.156 2007-04-03 19:57:37 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -131,13 +131,32 @@ $page_prefs = bh_session_get_post_page_prefs();
 
 pm_user_prune_folders();
 
+// By default we won't be forwarding a message.
+
+$forward_msg = false;
+
 // Get the Message ID (MID) if any.
 
 if (isset($_GET['replyto']) && is_numeric($_GET['replyto'])) {
+
     $t_rmid = $_GET['replyto'];
+
 }elseif (isset($_POST['replyto']) && is_numeric($_POST['replyto'])) {
+
     $t_rmid = $_POST['replyto'];
+
+}elseif (isset($_GET['fwdmsg']) && is_numeric($_GET['fwdmsg'])) {
+
+    $t_rmid = $_GET['fwdmsg'];
+    $forward_msg = true;
+
+}elseif (isset($_POST['fwdmsg']) && is_numeric($_POST['fwdmsg'])) {
+
+    $t_rmid = $_POST['fwdmsg'];
+    $forward_msg = true;
+
 }else {
+
     $t_rmid = 0;
 }
 
@@ -165,6 +184,8 @@ if (isset($_POST['cancel'])) {
 
     if (isset($t_rmid) && $t_rmid > 0) {
         $uri = "./pm.php?webtag=$webtag&mid=$t_rmid";
+    }elseif (isset($t_fwd) && $t_fwd > 0) {
+        $uri = "./pm.php?webtag=$webtag&mid=$t_fwd";
     }else {
         $uri = "./pm.php?webtag=$webtag";
     }
@@ -176,9 +197,9 @@ if (isset($_POST['cancel'])) {
 
 if (isset($t_rmid) && $t_rmid > 0) {
 
-    $t_recipient_list = pm_get_user($t_rmid);
+    if (!$forward_msg) $t_recipient_list = pm_get_user($t_rmid);
 
-    if ($pm_data = pm_message_get($t_rmid, PM_FOLDER_INBOX)) {
+    if ($pm_data = pm_message_get($t_rmid)) {
 
         $pm_data['CONTENT'] = pm_get_content($t_rmid);
 
@@ -186,12 +207,17 @@ if (isset($t_rmid) && $t_rmid > 0) {
 
             $t_subject = _htmlentities_decode($pm_data['SUBJECT']);
 
-            if (strtoupper(substr($t_subject, 0, 4)) == "FWD:") {
-                $t_subject = substr($t_subject, 4);
-            }
+            if ($forward_msg) {
 
-            if (strtoupper(substr($t_subject, 0, 3)) != "RE:") {
-                $t_subject = "Re:$t_subject";
+                if (strtoupper(substr($t_subject, 0, 4)) != "FWD:") {
+                    $t_subject = "Fwd:$t_subject";
+                }
+
+            }else {
+
+                if (strtoupper(substr($t_subject, 0, 3)) != "RE:") {
+                    $t_subject = "Re:$t_subject";
+                }
             }
         }
 
@@ -203,18 +229,43 @@ if (isset($t_rmid) && $t_rmid > 0) {
 
             if ($page_prefs & POST_TINYMCE_DISPLAY) {
 
-                $t_content = "<div class=\"quotetext\" id=\"quote\">";
-                $t_content.= "<b>quote: </b><a href=\"pm.php?mid={$pm_data['MID']}\">";
-                $t_content.= "{$pm_data['FLOGON']}</a></div><div class=\"quote\">";
-                $t_content.= trim($pm_data['CONTENT']);
-                $t_content.= "</div><p>&nbsp;</p>";
+                if ($forward_msg) {
+
+                    $t_content = "<div class=\"quotetext\" id=\"quote\">";
+                    $t_content.= "<b>quote: </b>";
+                    $t_content.= format_user_name($pm_data['FLOGON'], $pm_data['FNICK']);
+                    $t_content.= "</div><div class=\"quote\">";
+                    $t_content.= trim($pm_data['CONTENT']);
+                    $t_content.= "</div><p>&nbsp;</p>";
+
+                }else {
+                
+                    $t_content = "<div class=\"quotetext\" id=\"quote\">";
+                    $t_content.= "<b>quote: </b><a href=\"pm.php?mid={$pm_data['MID']}\">";
+                    $t_content.= format_user_name($pm_data['FLOGON'], $pm_data['FNICK']);
+                    $t_content.= "</a></div><div class=\"quote\">";
+                    $t_content.= trim($pm_data['CONTENT']);
+                    $t_content.= "</div><p>&nbsp;</p>";
+                }
 
             }else {
 
-                $t_content = "<quote source=\"{$pm_data['FLOGON']}\" ";
-                $t_content.= "url=\"pm.php?mid={$pm_data['MID']}\">";
-                $t_content.= trim($pm_data['CONTENT']);
-                $t_content.= "</quote>\n\n";
+                if ($forward_msg) {
+
+                    $t_content = "<quote source=\"";
+                    $t_content.= format_user_name($pm_data['FLOGON'], $pm_data['FNICK']);
+                    $t_content.= "\">";
+                    $t_content.= trim($pm_data['CONTENT']);
+                    $t_content.= "</quote>\n\n";
+
+                }else {
+
+                    $t_content = "<quote source=\"";
+                    $t_content.= format_user_name($pm_data['FLOGON'], $pm_data['FNICK']);
+                    $t_content.= "\" url=\"pm.php?mid={$pm_data['MID']}\">";
+                    $t_content.= trim($pm_data['CONTENT']);
+                    $t_content.= "</quote>\n\n";
+                }
 
                 // Set the HTML mode to 'with automatic line breaks' so
                 // the quote is handled correctly when the user previews
@@ -600,13 +651,11 @@ if ($valid && isset($_POST['preview'])) {
     $pm_preview_array['CREATED'] = mktime();
     $pm_preview_array['AID'] = $aid;
 
-    $pm_preview_array['FOLDER'] = PM_FOLDER_OUTBOX;
-
     $pm_preview_array['CONTENT'] = $t_content;
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\">&nbsp;</td>\n";
-    echo "                  <td align=\"left\" width=\"690\"><br />", pm_display($pm_preview_array), "</td>\n";
+    echo "                  <td align=\"left\" width=\"690\"><br />", pm_display($pm_preview_array, PM_FOLDER_OUTBOX), "</td>\n";
     echo "                  <td align=\"left\">&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
@@ -845,7 +894,8 @@ if (isset($_POST['t_dedupe'])) {
     echo form_input_hidden("t_dedupe", _htmlentities(mktime()));
 }
 
-if (isset($t_rmid)) echo form_input_hidden("replyto", _htmlentities($t_rmid)), "\n";
+if (isset($t_rmid) && $forward_msg === false) echo form_input_hidden("replyto", _htmlentities($t_rmid)), "\n";
+if (isset($t_rmid) && $forward_msg === true) echo form_input_hidden("fwdmsg", _htmlentities($t_rmid)), "\n";
 
 if (isset($pm_data) && is_array($pm_data)) {
 
@@ -855,7 +905,7 @@ if (isset($pm_data) && is_array($pm_data)) {
     echo "                </tr>";
     echo "                <tr>\n";
     echo "                  <td align=\"left\">&nbsp;</td>\n";
-    echo "                  <td align=\"left\" width=\"690\"><br />", pm_display($pm_data), "</td>\n";
+    echo "                  <td align=\"left\" width=\"690\"><br />", pm_display($pm_data, PM_FOLDER_INBOX), "</td>\n";
     echo "                  <td align=\"left\">&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";

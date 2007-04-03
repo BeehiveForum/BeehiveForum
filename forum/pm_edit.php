@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.92 2007-03-24 17:32:24 decoyduck Exp $ */
+/* $Id: pm_edit.php,v 1.93 2007-04-03 19:57:37 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -275,7 +275,7 @@ if ($valid && isset($_POST['preview'])) {
 
     $edit_html = ($_POST['t_post_html'] == "Y");
 
-    if ($pm_message_array = pm_message_get($mid, PM_FOLDER_OUTBOX)) {
+    if ($pm_message_array = pm_message_get($mid)) {
 
         $pm_message_array['CONTENT'] = $t_content;
 
@@ -292,7 +292,7 @@ if ($valid && isset($_POST['preview'])) {
 
 }else if ($valid && isset($_POST['submit'])) {
 
-    if ($pm_message_array = pm_message_get($mid, PM_FOLDER_OUTBOX)) {
+    if ($pm_message_array = pm_message_get($mid)) {
 
         pm_save_attachment_id($mid, $aid);
 
@@ -351,7 +351,7 @@ if ($valid && isset($_POST['preview'])) {
 
 } else {
 
-    if ($pm_message_array = pm_message_get($mid, PM_FOLDER_OUTBOX)) {
+    if ($pm_message_array = pm_message_get($mid)) {
 
         if ($pm_message_array['TYPE'] != PM_UNREAD) {
 
@@ -420,14 +420,12 @@ if (!$valid && isset($error_html) && strlen(trim($error_html)) > 0) {
 
 if ($valid && isset($_POST['preview'])) {
 
-    $pm_message_array['FOLDER'] = PM_FOLDER_OUTBOX;
-
     echo "              <table class=\"posthead\" width=\"720\">\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\" class=\"subhead\">{$lang['messagepreview']}</td>\n";
     echo "                </tr>";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\"><br />", pm_display($pm_message_array), "</td>\n";
+    echo "                  <td align=\"left\"><br />", pm_display($pm_message_array, PM_FOLDER_OUTBOX), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";

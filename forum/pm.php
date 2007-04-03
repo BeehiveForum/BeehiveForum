@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.112 2007-03-31 10:33:41 decoyduck Exp $ */
+/* $Id: pm.php,v 1.113 2007-04-03 19:57:37 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -182,7 +182,7 @@ if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
 
     $mid = $_GET['mid'];
 
-    if (!$pm_message_array = pm_message_get($mid, $folder)) {
+    if (!$pm_message_array = pm_message_get($mid)) {
 
         html_draw_top();
         html_error_msg($lang['messagehasbeendeleted'], 'pm.php', 'get', array('back' => $lang['back']), array('folder' => $folder));
@@ -249,7 +249,7 @@ if (isset($pm_message_array) && is_array($pm_message_array) && sizeof($pm_messag
     
     echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"80%\">\n";
     echo "  <tr>\n";
-    echo "    <td align=\"left\">", pm_display($pm_message_array), "</td>\n";
+    echo "    <td align=\"left\">", pm_display($pm_message_array, $folder), "</td>\n";
     echo "  </tr>\n";
     echo "</table>\n";
     echo "<br />\n";

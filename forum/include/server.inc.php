@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: server.inc.php,v 1.7 2007-03-25 15:39:24 decoyduck Exp $ */
+/* $Id: server.inc.php,v 1.8 2007-04-04 19:04:59 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -97,6 +97,32 @@ function server_get_cpu_load()
             return $cpu_load;
         }
     }
+
+    return false;
+}
+
+/**
+* Fetch the system temp dir
+*
+* Fetches the current server CPU load. Returns a percentage on Win32 and the
+* result of /proc/loadavg on *nix.
+*
+* @return mixed
+* @param void
+*/
+
+function system_get_tmp_dir()
+{
+    if (isset($_ENV['TEMP']) && strlen(trim($_ENV['TEMP'])) > 0) {
+        
+        $system_tmp_dir = trim($_ENV['TEMP']);
+        return $system_tmp_dir;
+
+    }elseif (isset($_ENV['TMP']) && strlen(trim($_ENV['TMP'])) > 0) {
+        
+        $system_tmp_dir = trim($_ENV['TMP']);
+        return $system_tmp_dir;
+    }        
 
     return false;
 }

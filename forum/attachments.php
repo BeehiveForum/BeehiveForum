@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.132 2007-03-30 00:28:50 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.133 2007-04-04 19:04:59 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -175,53 +175,60 @@ if (isset($_POST['upload'])) {
 
             if (isset($_FILES['userfile']['name'][$i]) && strlen(trim($_FILES['userfile']['name'][$i])) > 0) {
 
-                $filesize = $_FILES['userfile']['size'][$i];
-                $tempfile = $_FILES['userfile']['tmp_name'][$i];
-                $filetype = $_FILES['userfile']['type'][$i];
-
                 $filename = trim(_stripslashes($_FILES['userfile']['name'][$i]));
 
-                if ($users_free_space < $filesize) {
+                if (isset($_FILES['userfile']['error'][$i]) && $_FILES['userfile']['error'][$i] > 0) {
 
                     $upload_failure[] = $filename;
 
-                    if (@file_exists($tempfile)) {
-
-                        unlink($tempfile);
-                    }
-
                 }else {
 
-                    $uniqfileid = md5(uniqid(rand()));
+                    $filesize = $_FILES['userfile']['size'][$i];
+                    $tempfile = $_FILES['userfile']['tmp_name'][$i];
+                    $filetype = $_FILES['userfile']['type'][$i];
 
-                    $filehash = md5("{$aid}{$uniqfileid}{$filename}");
-                    $filepath = $attachment_dir. "/$filehash";
+                    if ($users_free_space < $filesize) {
 
-                    if (@move_uploaded_file($tempfile, $filepath)) {
-
-                        add_attachment($uid, $aid, $uniqfileid, $filename, $filetype);
-
-                        attachment_create_thumb($filepath);
-
-                        $users_free_space -= $filesize;
-
-                        if (strlen($filename) > 32) {
-
-                            $upload_success[] = substr($filename, 0, 32). "&hellip;";
-
-                        }else {
-
-                            $upload_success[] = $filename;
-                        }
-
-                    }else {
+                        $upload_failure[] = $filename;
 
                         if (@file_exists($tempfile)) {
 
                             unlink($tempfile);
                         }
 
-                        $upload_failure[] = $filename;
+                    }else {
+
+                        $uniqfileid = md5(uniqid(rand()));
+
+                        $filehash = md5("{$aid}{$uniqfileid}{$filename}");
+                        $filepath = "$attachment_dir/$filehash";
+
+                        if (@move_uploaded_file($tempfile, $filepath)) {
+
+                            add_attachment($uid, $aid, $uniqfileid, $filename, $filetype);
+
+                            attachment_create_thumb($filepath);
+
+                            $users_free_space -= $filesize;
+
+                            if (strlen($filename) > 32) {
+
+                                $upload_success[] = substr($filename, 0, 32). "&hellip;";
+
+                            }else {
+
+                                $upload_success[] = $filename;
+                            }
+
+                        }else {
+
+                            if (@file_exists($tempfile)) {
+
+                                unlink($tempfile);
+                            }
+
+                            $upload_failure[] = $filename;
+                        }
                     }
                 }
             }

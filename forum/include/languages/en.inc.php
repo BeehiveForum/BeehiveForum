@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.404 2007-04-03 19:57:48 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.405 2007-04-04 19:04:59 decoyduck Exp $ */
 
 // International English language file
 
@@ -664,7 +664,7 @@ $lang['mustsupplyforumdatabasename'] = "You must supply a forum database name";
 $lang['unknownemoticonsname'] = "Unknown emoticons name";
 $lang['mustchoosedefaultlang'] = "You must choose a default forum language";
 $lang['activesessiongreaterthansession'] = "Active session timeout cannot be greater than session timeout";
-$lang['attachmentdirnotwritable'] = "Attachment directory must be writable by the web server / PHP process!";
+$lang['attachmentdirnotwritable'] = "Attachment directory and system temporary directory / php.ini 'upload_tmp_dir' must be writable by the web server / PHP process!";
 $lang['attachmentdirblank'] = "You must supply a directory to save attachments in";
 $lang['mainsettings'] = "Main Settings";
 $lang['forumname'] = "Forum Name";

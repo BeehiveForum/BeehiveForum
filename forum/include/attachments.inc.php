@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.121 2007-03-30 00:28:50 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.122 2007-04-04 19:04:59 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -51,6 +51,31 @@ include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "perm.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
+include_once(BH_INCLUDE_PATH. "server.inc.php");
+
+/**
+* Fetch upload temporary directory
+*
+* Fetches the upload temporary directory as defined in php.ini
+* or as defined by the system environment variable 'TEMP' / 'TMP'
+*
+* @return mixed
+* @param void
+*/
+
+function attachments_get_upload_tmp_dir()
+{
+    if (($upload_tmp_dir = ini_get('upload_tmp_dir')) !== false) {
+
+        return $upload_tmp_dir;
+    
+    }else {
+
+        return system_get_tmp_dir();
+    }
+
+    return false;
+}
 
 /**
 * Checks attachments directory
@@ -67,7 +92,13 @@ function attachments_check_dir()
 {
     if ($attachment_dir = forum_get_setting('attachment_dir')) {
 
-        if (!@is_dir($attachment_dir)) @mkdir($attachment_dir, 0755);
+        // Check that the temporary upload directory is writable
+        
+        if (!@is_writable(attachments_get_upload_tmp_dir())) return false;
+
+        // Check to make sure the $attachment_dir exists and is writable.
+        
+        if (!@is_dir($attachment_dir)) @mkdir($attachment_dir, 0755);      
         if (@is_writable($attachment_dir)) return $attachment_dir;
     }
 

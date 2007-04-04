@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.125 2007-03-19 15:19:33 decoyduck Exp $ */
+/* $Id: fixhtml.inc.php,v 1.126 2007-04-04 21:28:03 decoyduck Exp $ */
 
 /** A range of functions for filtering/cleaning posted HTML
 *
@@ -1198,33 +1198,86 @@ function tidy_tinymce_code_callback ($matches)
 * @return string
 * @param string $style The inline CSS style text (e.g. <span style="font:italic"> would need $style="font:italic")
 */
+
 function clean_styles ($style)
 {
-    // no inline comments
+    // Prevent inline comments
+
     $style = preg_replace("/\*+\/+|\/+\*+/x", "", $style);
 
-    // no absolute positioning
-    $style = preg_replace("/position/i", "", $style);
+    // Prevent XSS javascript hacks
 
-    // Prevent silly margins, widths, paddings and heights.
-
-    $attributes_array = array('top', 'left', 'height', 'width', 'margin',
-                              'margin-top', 'margin-bottom', 'margin-left', 
-                              'margin-right', 'padding', 'padding-top', 
-                              'padding-bottom', 'padding-left', 
-                              'padding-right');
-
-    $units_array = array('px', 'pt', 'em', '%');
-
-    $attributes = implode("|", $attributes_array);
-    $units = implode("|", $units_array);
-
-    $style = preg_replace_callback("/($attributes)\s?:\s?([0-9-]+)\s?($units)?/i", "clean_styles_restrict", $style);
-
-    // no XSS javascript hacks
     $style = preg_replace("/url\(|expression\(/ix", "", $style);
 
-    return $style;
+    // Array of premitted CSS attributes
+
+    $valid_attributes_array = array('font-family', 'font-style', 'font-variant', 'font-weight',
+                                    'font-size', 'font', 'color', 'background-color', 'word-spacing',
+                                    'letter-spacing', 'text-decoration', 'vertical-align', 
+                                    'text-transform', 'text-align', 'text-indent', 'line-height', 
+                                    'margin-top', 'margin-bottom', 'margin-left', 'margin-right', 
+                                    'margin', 'padding-top', 'padding-bottom', 'padding-left', 
+                                    'padding-right', 'padding', 'border-top-width', 'border-top-width', 
+                                    'border-right-width', 'border-bottom-width', 'border-left-width', 
+                                    'border-width', 'border-color', 'border-style', 'border-top', 
+                                    'border-right', 'border-bottom', 'border-left', 'border', 
+                                    'width', 'height', 'float', 'clear', 'white-space', 
+                                    'list-style-type', 'list-style-image', 'list-style-position',
+                                    'list-style');
+
+    // Array of attributes to restrict (dimensions);
+
+    $restrict_attributes_array = array('height', 'width', 'margin', 'margin-top', 'margin-bottom',
+                                       'margin-left', 'margin-right', 'padding', 'padding-top', 
+                                       'padding-bottom', 'padding-left', 'padding-right');
+
+    // Array of valid units for restricted attributes
+    
+    $restrict_units_array = array('px', 'pt', 'em', '%');
+
+    // Convert arrays to strings for regular express matching
+
+    $valid_attributes_preg = implode("$|^", array_map('preg_quote_callback', $valid_attributes_array));
+    
+    $restrict_attributes = implode("|", $restrict_attributes_array);
+    
+    $restrict_units = implode("|", $restrict_units_array);
+
+    // Split the in-line style string into an array of attributes and values.
+
+    if (preg_match_all('/(([^:]+):([^;]+));?/m', trim($style), $matches_array) > 0) {
+
+        // Clean up the attribute names and values (trim)
+        
+        $attribute_names_array  = array_map('trim', $matches_array[2]);
+        $attribute_values_array = array_map('trim', $matches_array[3]);
+
+        // Filter the attribute names by the valid list above.
+
+        $attribute_names_array = preg_grep("/$valid_attributes_preg/", $attribute_names_array);
+
+        // Initialise our new array to store the permitted attributes and values.
+
+        $clean_style_array = array();
+
+        // Loop through the remaining and filter the restricted values.
+
+        foreach($attribute_names_array as $key => $attribute) {
+
+            if (isset($attribute_values_array[$key]) && strlen($attribute_values_array[$key]) > 0) {
+
+                $value = clean_styles_restrict($attribute_values_array[$key]);
+                $clean_style_array[] = "$attribute: $value";
+            }
+        }
+
+        if (sizeof($clean_style_array) > 0) {
+
+            return implode('; ', $clean_style_array);
+        }
+    }
+
+    return "";
 }
 
 /**
@@ -1237,49 +1290,48 @@ function clean_styles ($style)
 * @return string
 * @param array $matches is the matches from a regular expression used in preg_replace_callback.
 */
-function clean_styles_restrict($matches)
+
+function clean_styles_restrict($value)
 {
-    $attribute = $matches[1];
-    
-    if (is_numeric($matches[2])) {
+    if (preg_match("/^([0-9]+)(.+)$/", trim($value), $matches) > 0) {
 
-        if (isset($matches[3])) {
+        if (isset($matches[2])) {
 
-            switch($matches[3]) {
+            switch($matches[2]) {
 
                 case 'px':
 
-                    if ($matches[2] < 0) return "$attribute: 0px";
-                    if ($matches[2] > 350) return "$attribute: 350px";
+                    if ($matches[1] < 0) return "0px";
+                    if ($matches[1] > 350) return "350px";
                     break;
 
                 case 'pt':
 
-                    if ($matches[2] < 0) return "$attribute: 0pt";
-                    if ($matches[2] > 250) return "$attribute: 250pt";
+                    if ($matches[1] < 0) return "0pt";
+                    if ($matches[1] > 250) return "250pt";
                     break;
 
                 case 'em':
 
-                    if ($matches[2] < 0) return "$attribute: 0em";
-                    if ($matches[2] > 25) return "$attribute: 25em";
+                    if ($matches[1] < 0) return "0em";
+                    if ($matches[1] > 25) return "25em";
                     break;
 
                 case '%':
 
-                    if ($matches[2] < 0) return "$attribute: 0%";
-                    if ($matches[2] > 100) return "$attribute: 100%";
+                    if ($matches[1] < 0) return "0%";
+                    if ($matches[1] > 100) return "100%";
                     break;
             }
 
         }else {
 
-            if ($matches[2] < 0) return "$attribute: 0";
-            if ($matches[2] > 350) return "$attribute: 350";
+            if ($matches[2] < 0) return 0;
+            if ($matches[2] > 350) return 350;
         }
     }
 
-    return $matches[0];
+    return $value;
 }
 
 /**

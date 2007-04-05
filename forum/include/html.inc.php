@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.215 2007-03-31 10:33:41 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.216 2007-04-05 21:25:20 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -589,17 +589,56 @@ function html_draw_top()
                                    'ldisplay.php', 'lmessages.php', 
                                    'lpost.php', 'messages.php', 'post.php');
 
+
+    $resize_images_page = array('admin_post_approve.php', 'create_poll.php',
+                                'delete.php', 'display.php', 'edit.php',
+                                'edit_poll.php', 'edit_signature.php',
+                                'messages.php', 'post.php');
+
     if ($include_body_tag === true) {
     
-        if (!stristr($_SERVER['PHP_SELF'], 'pm') && !stristr($_SERVER['PHP_SELF'], 'nav.php')) {
+        // Check for any new PMs.
+        
+        pm_new_check($pm_new_count, $pm_outbox_count);
 
-            if ((bh_session_get_value('PM_NOTIFY') == 'Y') && ($pm_new_count = pm_new_check())) {
+        if (!stristr($_SERVER['PHP_SELF'], 'pm') && !stristr($_SERVER['PHP_SELF'], 'nav.php') && bh_session_get_value('PM_NOTIFY') == 'Y') {                
             
-                if ($pm_new_count > 1) {
-                    $pm_notification = sprintf($lang['youhavexnewpm'], $pm_new_count);
-                }else {
-                    $pm_notification = $lang['youhave1newpm'];
-                }
+            $pm_notification = false;
+            
+            if ($pm_new_count == 1 && $pm_outbox_count == 0) {
+
+                $pm_notification = $lang['youhave1newpm'];
+            
+            }elseif ($pm_new_count == 1 && $pm_outbox_count == 1) {
+
+                $pm_notification = $lang['youhave1newpmand1waiting'];
+
+            }elseif ($pm_new_count == 0 && $pm_outbox_count == 1) {
+
+                $pm_notification = $lang['youhave1pmwaiting'];
+
+            }elseif ($pm_new_count > 1 && $pm_outbox_count == 0) {
+
+                $pm_notification = sprintf($lang['youhavexnewpm'], $pm_new_count);
+
+            }elseif ($pm_new_count > 1 && $pm_outbox_count == 1) {
+
+                $pm_notification = sprintf($lang['youhavexnewpmand1waiting'], $pm_new_count);
+
+            }elseif ($pm_new_count > 1 && $pm_outbox_count > 1) {
+
+                $pm_notification = sprintf($lang['youhavexnewpmandxwaiting'], $pm_new_count, $pm_outbox_count);
+            
+            }elseif ($pm_new_count == 1 && $pm_outbox_count > 1) {
+
+                $pm_notification = sprintf($lang['youhave1newpmandxwaiting'], $pm_outbox_count);
+            
+            }elseif ($pm_new_count == 0 && $pm_outbox_count > 1) {
+
+                $pm_notification = sprintf($lang['youhavexpmwaiting'], $pm_outbox_count);
+            }
+
+            if ($pm_notification !== false) {                
                 
                 echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
                 echo "<!--\n\n";
@@ -610,32 +649,32 @@ function html_draw_top()
                 echo "}\n\n";
                 echo "function pm_notification_popup() {\n";
                 echo "    clearTimeout(pm_timeout);\n";
-                echo "    if (window.confirm('$pm_notification')) {\n";
+                echo "    if (window.confirm('", wordwrap($pm_notification, 75, '\n'), "')) {\n";
                 echo "        top.frames['main'].location.replace('pm.php?webtag=$webtag');\n";
                 echo "    }\n";
                 echo "    return true;\n";
                 echo "}\n\n";
                 echo "//-->\n";
                 echo "</script>\n";
+
                 if (!in_array("pm_notification", $onload_array)) $onload_array[] = "pm_notification()";
             }
+        }
+        
+        // Overflow auto-resize functionality.
 
-            $resize_images_page = array('admin_post_approve.php', 'create_poll.php',
-                                        'delete.php', 'display.php', 'edit.php',
-                                        'edit_poll.php', 'edit_signature.php',
-                                        'messages.php', 'post.php');
-            
-            if (in_array(basename($_SERVER['PHP_SELF']), $resize_images_page)) {
+        if (in_array(basename($_SERVER['PHP_SELF']), $resize_images_page)) {
 
-                if (bh_session_get_value('USE_OVERFLOW_RESIZE') == 'Y') {
+            if (bh_session_get_value('USE_OVERFLOW_RESIZE') == 'Y') {
 
-                    $imageresized_text = rawurlencode($lang['imageresized']);
+                $imageresized_text = rawurlencode($lang['imageresized']);
 
-                    $onload_array[] = "resizeImages($resize_width, '$imageresized_text')";
-                    $onload_array[] = "addOverflow($resize_width)";
-                }
+                $onload_array[] = "resizeImages($resize_width, '$imageresized_text')";
+                $onload_array[] = "addOverflow($resize_width)";
             }
         }
+
+        // Mouseover spoiler pages            
         
         if (in_array(basename($_SERVER['PHP_SELF']), $message_display_pages)) {
 

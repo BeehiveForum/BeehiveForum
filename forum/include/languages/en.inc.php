@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.405 2007-04-04 19:04:59 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.406 2007-04-05 21:25:20 decoyduck Exp $ */
 
 // International English language file
 
@@ -1137,8 +1137,16 @@ $lang['editpm'] = "Edit Message";
 $lang['cannoteditpm'] = "Cannot edit this PM. It has already been viewed by the recipient or the message does not exist or it is inaccessible by you";
 $lang['cannotviewpm'] = "Cannot view PM. Message does not exist or it is inaccessible by you";
 $lang['nouserspecified'] = "No user specified.";
-$lang['youhavexnewpm'] = "You have %d new PMs. Would you like to go to your Inbox now?";
-$lang['youhave1newpm'] = "You have 1 new PM. Would you like to go to your Inbox now?";
+
+$lang['youhavexnewpm'] = "You have %d new messages. Would you like to go to your Inbox now?";
+$lang['youhave1newpm'] = "You have 1 new message. Would you like to go to your Inbox now?";
+$lang['youhave1newpmand1waiting'] = "You have 1 new message.\\n\\nYou also have 1 message awaiting delivery. To receive this message please clear some space in your Inbox.\\n\\nWould you like to go to your Inbox now?";
+$lang['youhave1pmwaiting'] = "You have 1 message awaiting delivery. To receive this message please clear some space in your Inbox.\\n\\nWould you like to go to your Inbox now?";
+$lang['youhavexnewpmand1waiting'] = "You have %d new messages.\\n\\nYou also have 1 message awaiting delivery. To receive this message please clear some space in your Inbox.\\n\\nWould you like to go to your Inbox now?";
+$lang['youhavexnewpmandxwaiting'] = "You have %d new messages.\\n\\nYou also have %d messages awaiting delivery. To receive these message please clear some space in your Inbox.\\n\\nWould you like to go to your Inbox now?";
+$lang['youhave1newpmandxwaiting'] = "You have 1 new message.\\n\\nYou also have %d messages awaiting delivery. To receive these messages please clear some space in your Inbox.\\n\\nWould you like to go to your Inbox now?";
+$lang['youhavexpmwaiting'] = "You have %d messages awaiting delivery. To receive these messages please clear some space in your Inbox.\\n\\nWould you like to go to your Inbox now?";
+
 $lang['youdonothaveenoughfreespace'] = "You do not have enough free space to send this message.";
 $lang['notenoughfreespace'] = "does not have enough free space to receive this message";
 $lang['hasoptoutpm'] = "Has opted out of receiving personal messages";

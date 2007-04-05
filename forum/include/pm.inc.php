@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.174 2007-04-03 19:57:37 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.175 2007-04-05 21:25:20 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -102,6 +102,8 @@ function pm_markasread($mid)
 function pm_edit_refuse()
 {
     $lang = load_language_file();
+
+    $webtag = get_webtag($webtag_search);
 
     echo "<h1>{$lang['editpm']}</h1>\n";
     echo "<br />\n";
@@ -1139,7 +1141,7 @@ function pm_send_message($tuid, $fuid, $subject, $content)
     // Insert the main PM Data into the database
 
     $sql = "INSERT INTO PM (TYPE, TO_UID, FROM_UID, SUBJECT, CREATED, NOTIFIED) ";
-    $sql.= "VALUES (". PM_UNREAD. ", '$tuid', '$fuid', '$subject', NOW(), 0)";
+    $sql.= "VALUES (". PM_OUTBOX. ", '$tuid', '$fuid', '$subject', NOW(), 0)";
 
     $result = db_query($sql, $db_pm_send_message);
 
@@ -1308,25 +1310,44 @@ function pm_archive_message($mid)
 * Check's to see if the current user (uses BH Session data) has any new messages.
 *
 * @return integer - number of new messages.
-* @param void.
+* @param integer &$pm_new_count - Number of messages we managed to deliver.
+* @param integer &$outbox_count - Number of undeliverable messages waiting for the user.
 */
 
-function pm_new_check()
+function pm_new_check(&$pm_new_count, &$pm_outbox_count)
 {
     $db_pm_new_check = db_connect();
     
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
+    // We want to mark the messages as unread.
+
+    $pm_unread = PM_UNREAD;
+    $pm_outbox = PM_OUTBOX;
+
+    // Get the user's free space.
+
+    $pm_free_space = pm_get_free_space($uid);
+
     // We only want to notify the user once even if they've
     // received more than 1 message so we do an UPDATE and
     // check the affected rows.
 
-    $sql = "UPDATE PM SET NOTIFIED = 1 WHERE NOTIFIED = 0 AND TO_UID = '$uid'";
+    $sql = "UPDATE PM SET TYPE = $pm_unread ";
+    $sql.= "WHERE TYPE = $pm_outbox AND TO_UID = '$uid' ";
+    $sql.= "ORDER BY CREATED ASC LIMIT $pm_free_space";
+
     $result = db_query($sql, $db_pm_new_check);
 
     $pm_new_count = db_affected_rows($db_pm_new_check);
 
-    return ($pm_new_count > 0) ? $pm_new_count : false;
+    // Check for any undelivered messages waiting for the user.
+
+    $sql = "SELECT COUNT(MID) AS OUTBOX_COUNT FROM PM ";
+    $sql.= "WHERE TYPE = $pm_outbox AND TO_UID = '$uid'";
+
+    $result = db_query($sql, $db_pm_new_check);
+    list($pm_outbox_count) = db_fetch_array($result, DB_RESULT_NUM);
 }
 
 /**

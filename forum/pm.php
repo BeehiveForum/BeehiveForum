@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.113 2007-04-03 19:57:37 decoyduck Exp $ */
+/* $Id: pm.php,v 1.114 2007-04-05 21:25:20 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -268,9 +268,9 @@ echo "              <table width=\"100%\" border=\"0\">\n";
 echo "                <tr>\n";
 
 if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['message_array']) > 0) {
-    echo "                  <td class=\"subhead_checkbox\" align=\"center\" width=\"20\">", form_checkbox("toggle_all", "toggle_all", "", false, "onclick=\"pm_toggle_all();\""), "</td>\n";
+    echo "                  <td class=\"subhead_checkbox\" align=\"center\" width=\"10\">", form_checkbox("toggle_all", "toggle_all", "", false, "onclick=\"pm_toggle_all();\""), "</td>\n";
 }else {
-    echo "                  <td align=\"left\" class=\"subhead\" width=\"20\">&nbsp;</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" width=\"10\">&nbsp;</td>\n";
 }
 
 echo "                  <td align=\"left\" class=\"subhead\" width=\"50%\">{$lang['subject']}</td>\n";
@@ -292,7 +292,7 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
     foreach($pm_messages_array['message_array'] as $message) {
 
         echo "                <tr>\n";
-        echo "                  <td class=\"postbody\" align=\"center\">", form_checkbox('process[]', $message['MID'], ''), "</td>\n";
+        echo "                  <td class=\"postbody\" align=\"center\" width=\"10\">", form_checkbox('process[]', $message['MID'], ''), "</td>\n";
         echo "                  <td align=\"left\" class=\"postbody\">";
 
         if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
@@ -317,7 +317,7 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
             echo "            &nbsp;&nbsp;<img src=\"".style_image('attach.png')."\" border=\"0\" alt=\"{$lang['attachment']} - {$message['AID']}\" title=\"{$lang['attachment']}\" />";
         }
 
-        if (($folder == PM_FOLDER_OUTBOX) && ($message['TYPE'] == PM_UNREAD)) {
+        if (($folder == PM_FOLDER_OUTBOX) && ($message['TYPE'] == PM_OUTBOX)) {
             echo "            &nbsp;&nbsp;<span class=\"threadxnewofy\">[<a target=\"_self\" href=\"pm_edit.php?webtag=$webtag&amp;mid={$message['MID']}\">Edit</a>]</span>";
         }
 

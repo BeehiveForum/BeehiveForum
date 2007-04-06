@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.94 2007-04-05 21:25:21 decoyduck Exp $ */
+/* $Id: pm_edit.php,v 1.95 2007-04-06 13:01:01 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -161,7 +161,7 @@ pm_save_attachment_id($mid, $aid);
 // User clicked cancel
 
 if (isset($_POST['cancel'])) {
-    header_redirect("./pm.php?webtag=$webtag&folder=3");
+    header_redirect("./pm.php?webtag=$webtag&mid=$mid");
 }
 
 $valid = true;
@@ -298,7 +298,7 @@ if ($valid && isset($_POST['preview'])) {
 
         if (pm_edit_message($mid, $t_subject, $t_content)) {
 
-            header_redirect("pm.php?webtag=$webtag&folder=3");
+            header_redirect("pm.php?webtag=$webtag&mid=$mid");
             exit;
 
         }else {
@@ -388,17 +388,11 @@ if ($valid && isset($_POST['preview'])) {
 html_draw_top("onUnload=clearFocus()", "openprofile.js", "edit.js", "dictionary.js", "htmltools.js", "basetarget=_blank");
 draw_header_pm();
 
-echo "<table border=\"0\" cellpadding=\"20\" cellspacing=\"0\" width=\"100%\">\n";
-echo "  <tr>\n";
-echo "    <td align=\"left\" class=\"pmheadl\"><b>{$lang['privatemessages']}: {$lang['editpm']}</b></td>\n";
-echo "    <td class=\"pmheadr\" align=\"right\"><a href=\"pm_write.php?webtag=$webtag\" target=\"_self\">{$lang['sendnewpm']}</a> | <a href=\"pm.php?webtag=$webtag\" target=\"_self\">{$lang['pminbox']}</a> | <a href=\"pm.php?webtag=$webtag&amp;folder=2\" target=\"_self\">{$lang['pmsentitems']}</a> | <a href=\"pm.php?webtag=$webtag&amp;folder=3\" target=\"_self\">{$lang['pmoutbox']}</a> | <a href=\"pm.php?webtag=$webtag&amp;folder=4\" target=\"_self\">{$lang['pmsaveditems']}</a>&nbsp;</td>\n";
-echo "  </tr>\n";
-echo "</table>\n";
+echo "<h1>{$lang['privatemessages']} &raquo; {$lang['editpm']}</h1>\n";
 echo "<br />\n";
-
 echo "<form name=\"f_post\" action=\"pm_edit.php\" method=\"post\" target=\"_self\">\n";
-echo form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-echo form_input_hidden('mid', _htmlentities($mid)), "\n";
+echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+echo "  ", form_input_hidden('mid', _htmlentities($mid)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -425,7 +419,7 @@ if ($valid && isset($_POST['preview'])) {
     echo "                  <td align=\"left\" class=\"subhead\">{$lang['messagepreview']}</td>\n";
     echo "                </tr>";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\"><br />", pm_display($pm_message_array, PM_FOLDER_OUTBOX), "</td>\n";
+    echo "                  <td align=\"left\"><br />", pm_display($pm_message_array, PM_FOLDER_OUTBOX, false, true), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";

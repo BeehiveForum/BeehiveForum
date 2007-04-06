@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.157 2007-04-05 21:25:21 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.158 2007-04-06 13:01:01 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -178,6 +178,31 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     }
 }
 
+// Default Folder
+
+$folder = PM_FOLDER_INBOX;
+
+if (isset($_GET['folder'])) {
+
+    if ($_GET['folder'] == PM_FOLDER_SENT) {
+        $folder = PM_FOLDER_SENT;
+    }else if ($_GET['folder'] == PM_FOLDER_OUTBOX) {
+        $folder = PM_FOLDER_OUTBOX;
+    }else if ($_GET['folder'] == PM_FOLDER_SAVED) {
+        $folder = PM_FOLDER_SAVED;
+    }
+
+}elseif (isset($_POST['folder'])) {
+
+    if ($_POST['folder'] == PM_FOLDER_SENT) {
+        $folder = PM_FOLDER_SENT;
+    }else if ($_POST['folder'] == PM_FOLDER_OUTBOX) {
+        $folder = PM_FOLDER_OUTBOX;
+    }else if ($_POST['folder'] == PM_FOLDER_SAVED) {
+        $folder = PM_FOLDER_SAVED;
+    }
+}
+
 // User clicked cancel
 
 if (isset($_POST['cancel'])) {
@@ -221,58 +246,59 @@ if (isset($t_rmid) && $t_rmid > 0) {
             }
         }
 
-        if (bh_session_get_value('PM_INCLUDE_REPLY') == 'Y') {
+        $page_prefs = bh_session_get_post_page_prefs();
 
-            // Quote the original PM using our psuedo HTML tag
-
-            $page_prefs = bh_session_get_post_page_prefs();
+        if ($forward_msg) {
 
             if ($page_prefs & POST_TINYMCE_DISPLAY) {
 
-                if ($forward_msg) {
-
-                    $t_content = "<div class=\"quotetext\" id=\"quote\">";
-                    $t_content.= "<b>quote: </b>";
-                    $t_content.= format_user_name($pm_data['FLOGON'], $pm_data['FNICK']);
-                    $t_content.= "</div><div class=\"quote\">";
-                    $t_content.= trim($pm_data['CONTENT']);
-                    $t_content.= "</div><p>&nbsp;</p>";
-
-                }else {
-                
-                    $t_content = "<div class=\"quotetext\" id=\"quote\">";
-                    $t_content.= "<b>quote: </b><a href=\"pm.php?mid={$pm_data['MID']}\">";
-                    $t_content.= format_user_name($pm_data['FLOGON'], $pm_data['FNICK']);
-                    $t_content.= "</a></div><div class=\"quote\">";
-                    $t_content.= trim($pm_data['CONTENT']);
-                    $t_content.= "</div><p>&nbsp;</p>";
-                }
+                $t_content = "<div class=\"quotetext\" id=\"quote\">";
+                $t_content.= "<b>quote: </b>";
+                $t_content.= format_user_name($pm_data['FLOGON'], $pm_data['FNICK']);
+                $t_content.= "</div><div class=\"quote\">";
+                $t_content.= trim($pm_data['CONTENT']);
+                $t_content.= "</div><p>&nbsp;</p>";
 
             }else {
 
-                if ($forward_msg) {
-
-                    $t_content = "<quote source=\"";
-                    $t_content.= format_user_name($pm_data['FLOGON'], $pm_data['FNICK']);
-                    $t_content.= "\">";
-                    $t_content.= trim($pm_data['CONTENT']);
-                    $t_content.= "</quote>\n\n";
-
-                }else {
-
-                    $t_content = "<quote source=\"";
-                    $t_content.= format_user_name($pm_data['FLOGON'], $pm_data['FNICK']);
-                    $t_content.= "\" url=\"pm.php?mid={$pm_data['MID']}\">";
-                    $t_content.= trim($pm_data['CONTENT']);
-                    $t_content.= "</quote>\n\n";
-                }
-
-                // Set the HTML mode to 'with automatic line breaks' so
-                // the quote is handled correctly when the user previews
-                // the message.
-
-                $post_html = 1;
+                $t_content = "<quote source=\"";
+                $t_content.= format_user_name($pm_data['FLOGON'], $pm_data['FNICK']);
+                $t_content.= "\" url=\"\">";
+                $t_content.= trim($pm_data['CONTENT']);
+                $t_content.= "</quote>\n\n";
             }
+
+            // Set the HTML mode to 'with automatic line breaks' so
+            // the quote is handled correctly when the user previews
+            // the message.
+
+            $post_html = 1;
+
+        }elseif (bh_session_get_value('PM_INCLUDE_REPLY') == 'Y') {
+
+            if ($page_prefs & POST_TINYMCE_DISPLAY) {
+
+                $t_content = "<div class=\"quotetext\" id=\"quote\">";
+                $t_content.= "<b>quote: </b>";
+                $t_content.= format_user_name($pm_data['FLOGON'], $pm_data['FNICK']);
+                $t_content.= "</div><div class=\"quote\">";
+                $t_content.= trim($pm_data['CONTENT']);
+                $t_content.= "</div><p>&nbsp;</p>";
+
+            }else {
+
+                $t_content = "<quote source=\"";
+                $t_content.= format_user_name($pm_data['FLOGON'], $pm_data['FNICK']);
+                $t_content.= "\" url=\"\">";
+                $t_content.= trim($pm_data['CONTENT']);
+                $t_content.= "</quote>\n\n";
+            }
+
+            // Set the HTML mode to 'with automatic line breaks' so
+            // the quote is handled correctly when the user previews
+            // the message.
+
+            $post_html = 1;
         }
 
     }else {
@@ -490,8 +516,6 @@ if (isset($_POST['t_check_spelling'])) {
     $spelling_enabled = ($page_prefs & POST_CHECK_SPELLING);
 }
 
-if (!isset($post_html)) $post_html = 0;
-
 if (isset($_POST['t_post_html'])) {
 
     $t_post_html = $_POST['t_post_html'];
@@ -502,7 +526,7 @@ if (isset($_POST['t_post_html'])) {
         $post_html = 2;
     }
 
-} else {
+}else if (!isset($post_html)) {
 
     if (($page_prefs & POST_AUTOHTML_DEFAULT) > 0) {
         $post_html = 1;
@@ -589,16 +613,11 @@ html_draw_top("onUnload=clearFocus()", "openprofile.js", "pm.js", "attachments.j
 
 draw_header_pm();
 
-echo "<table border=\"0\" cellpadding=\"20\" cellspacing=\"0\" width=\"100%\">\n";
-echo "  <tr>\n";
-echo "    <td align=\"left\" class=\"pmheadl\"><b>{$lang['privatemessages']}: {$lang['writepm']}</b></td>\n";
-echo "    <td class=\"pmheadr\" align=\"right\"><a href=\"pm_write.php?webtag=$webtag\" target=\"_self\">{$lang['sendnewpm']}</a> | <a href=\"pm.php?webtag=$webtag\" target=\"_self\">{$lang['pminbox']}</a> | <a href=\"pm.php?webtag=$webtag&amp;folder=2\" target=\"_self\">{$lang['pmsentitems']}</a> | <a href=\"pm.php?webtag=$webtag&amp;folder=3\" target=\"_self\">{$lang['pmoutbox']}</a> | <a href=\"pm.php?webtag=$webtag&amp;folder=4\" target=\"_self\">{$lang['pmsaveditems']}</a>&nbsp;</td>\n";
-echo "  </tr>\n";
-echo "</table>\n";
+echo "<h1>{$lang['privatemessages']} &raquo; {$lang['sendnewpm']}</h1>\n";
 echo "<br />\n";
-
 echo "<form name=\"f_post\" action=\"pm_write.php\" method=\"post\" target=\"_self\">\n";
-echo form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+echo "  ", form_input_hidden('folder', _htmlentities($folder)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -644,7 +663,7 @@ if ($valid && isset($_POST['preview'])) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\">&nbsp;</td>\n";
-    echo "                  <td align=\"left\" width=\"690\"><br />", pm_display($pm_preview_array, PM_FOLDER_OUTBOX), "</td>\n";
+    echo "                  <td align=\"left\" width=\"690\"><br />", pm_display($pm_preview_array, PM_FOLDER_OUTBOX, false, true), "</td>\n";
     echo "                  <td align=\"left\">&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
@@ -894,7 +913,7 @@ if (isset($pm_data) && is_array($pm_data)) {
     echo "                </tr>";
     echo "                <tr>\n";
     echo "                  <td align=\"left\">&nbsp;</td>\n";
-    echo "                  <td align=\"left\" width=\"690\"><br />", pm_display($pm_data, PM_FOLDER_INBOX), "</td>\n";
+    echo "                  <td align=\"left\" width=\"690\"><br />", pm_display($pm_data, PM_FOLDER_INBOX, false, true), "</td>\n";
     echo "                  <td align=\"left\">&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";

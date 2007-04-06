@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.175 2007-04-05 21:25:20 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.176 2007-04-06 13:01:00 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -856,7 +856,7 @@ function pm_get_content($mid)
 * @param bool $pm_export_html - Optional settings allows return of HTML as string instead of sending to STDOUT.
 */
 
-function pm_display($pm_message_array, $folder, $pm_export_html = false)
+function pm_display($pm_message_array, $folder, $pm_export_html = false, $preview = false)
 {
     $lang = load_language_file();
 
@@ -1015,15 +1015,19 @@ function pm_display($pm_message_array, $folder, $pm_export_html = false)
     $html.= "                    <table width=\"100%\" class=\"postresponse\" cellspacing=\"1\" cellpadding=\"0\">\n";
     $html.= "                      <tr>\n";
 
-    if ($pm_export_html === false) {
+    if ($pm_export_html === false && $preview === false) {
 
         if ($folder == PM_FOLDER_INBOX) {
 
-            $html.= "                        <td align=\"center\"><img src=\"". style_image('post.png'). "\" border=\"0\" alt=\"{$lang['reply']}\" title=\"{$lang['reply']}\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;replyto={$pm_message_array['MID']}\" target=\"_self\">{$lang['reply']}</a>&nbsp;&nbsp;<img src=\"". style_image('forward.png'). "\" border=\"0\" alt=\"{$lang['forward']}\" title=\"{$lang['forward']}\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\" target=\"_self\">{$lang['forward']}</a></td>\n";
+            $html.= "                        <td align=\"center\"><img src=\"". style_image('post.png'). "\" border=\"0\" alt=\"{$lang['reply']}\" title=\"{$lang['reply']}\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;replyto={$pm_message_array['MID']}\" target=\"main\">{$lang['reply']}</a>&nbsp;&nbsp;<img src=\"". style_image('forward.png'). "\" border=\"0\" alt=\"{$lang['forward']}\" title=\"{$lang['forward']}\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\" target=\"main\">{$lang['forward']}</a></td>\n";
+
+        }elseif ($folder == PM_FOLDER_OUTBOX) {
+
+            $html.= "                        <td align=\"center\"><img src=\"". style_image('post.png'). "\" border=\"0\" alt=\"{$lang['edit']}\" title=\"{$lang['edit']}\" />&nbsp;<a href=\"pm_edit.php?webtag=$webtag&amp;mid={$pm_message_array['MID']}\" target=\"main\">{$lang['edit']}</a>&nbsp;&nbsp;<img src=\"". style_image('forward.png'). "\" border=\"0\" alt=\"{$lang['forward']}\" title=\"{$lang['forward']}\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\" target=\"main\">{$lang['forward']}</a></td>\n";
 
         }else {
 
-            $html.= "                        <td align=\"center\"><img src=\"". style_image('forward.png'). "\" border=\"0\" alt=\"{$lang['forward']}\" title=\"{$lang['forward']}\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\" target=\"_self\">{$lang['forward']}</a></td>\n";
+            $html.= "                        <td align=\"center\"><img src=\"". style_image('forward.png'). "\" border=\"0\" alt=\"{$lang['forward']}\" title=\"{$lang['forward']}\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\" target=\"main\">{$lang['forward']}</a></td>\n";
         }
 
     }else {
@@ -1047,6 +1051,41 @@ function pm_display($pm_message_array, $folder, $pm_export_html = false)
     if ($pm_export_html) return $html;
 
     echo $html;
+}
+
+function pm_message_get_folder($mid)
+{
+    $db_pm_message_get_folder = db_connect();
+
+    if (!is_numeric($mid)) return false;
+
+    if (($uid = bh_session_get_value('UID')) === false) return false;
+
+    $pm_message_type_array = array(1  => PM_FOLDER_OUTBOX,
+                                   2  => PM_FOLDER_INBOX,
+                                   4  => PM_FOLDER_INBOX,
+                                   8  => PM_FOLDER_SENT,
+                                   16 => PM_FOLDER_SAVED,
+                                   32 => PM_FOLDER_SAVED);
+
+    // Fetch the message type as specified by the MID
+
+    $sql = "SELECT TYPE FROM PM WHERE MID = '$mid' ";
+    $sql.= "AND ((TYPE = TYPE & ". PM_INBOX_ITEMS. " AND TO_UID = '$uid') ";
+    $sql.= "OR (TYPE = TYPE & ". PM_SENT_ITEMS. " AND FROM_UID = '$uid') ";
+    $sql.= "OR (TYPE = TYPE & ". PM_OUTBOX_ITEMS. " AND FROM_UID = '$uid') ";
+    $sql.= "OR ((TYPE = ". PM_SAVED_OUT. " AND FROM_UID = '$uid') OR ";
+    $sql.= "(TYPE = ". PM_SAVED_IN. " AND TO_UID = '$uid'))) ";
+    
+    $result = db_query($sql, $db_pm_message_get_folder);
+
+    list($pm_message_type) = db_fetch_array($result, DB_RESULT_NUM);
+
+    if (in_array($pm_message_type, $pm_message_type_array)) {
+        return $pm_message_type_array[$pm_message_type];
+    }
+
+    return false;
 }
 
 /**

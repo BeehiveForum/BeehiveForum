@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.158 2007-04-06 13:01:01 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.159 2007-04-07 15:42:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -131,9 +131,10 @@ $page_prefs = bh_session_get_post_page_prefs();
 
 pm_user_prune_folders();
 
-// By default we won't be forwarding a message.
+// By default we won't be forwarding or editing a message.
 
 $forward_msg = false;
+$edit_msg = false;
 
 // Get the Message ID (MID) if any.
 
@@ -154,6 +155,16 @@ if (isset($_GET['replyto']) && is_numeric($_GET['replyto'])) {
 
     $t_rmid = $_POST['fwdmsg'];
     $forward_msg = true;
+
+}elseif (isset($_GET['editmsg']) && is_numeric($_GET['editmsg'])) {
+
+    $t_rmid = $_GET['editmsg'];
+    $edit_msg = true;
+
+}elseif (isset($_POST['editmsg']) && is_numeric($_POST['editmsg'])) {
+
+    $t_rmid = $_POST['editmsg'];
+    $edit_msg = true;
 
 }else {
 
@@ -222,7 +233,7 @@ if (isset($_POST['cancel'])) {
 
 if (isset($t_rmid) && $t_rmid > 0) {
 
-    if (!$forward_msg) $t_recipient_list = pm_get_user($t_rmid);
+    if (!$forward_msg && !$edit_msg) $t_recipient_list = pm_get_user($t_rmid);
 
     if ($pm_data = pm_message_get($t_rmid)) {
 
@@ -238,7 +249,7 @@ if (isset($t_rmid) && $t_rmid > 0) {
                     $t_subject = "Fwd:$t_subject";
                 }
 
-            }else {
+            }elseif (!$edit_msg) {
 
                 if (strtoupper(substr($t_subject, 0, 3)) != "RE:") {
                     $t_subject = "Re:$t_subject";
@@ -246,59 +257,69 @@ if (isset($t_rmid) && $t_rmid > 0) {
             }
         }
 
-        $page_prefs = bh_session_get_post_page_prefs();
+        if ($edit_msg) {
+            
+            $t_content = $pm_data['CONTENT'];
+            $t_to_uid = $pm_data['TO_UID'];
+            $t_recipient_list = $pm_data['RECIPIENTS'];
+            $aid = $pm_data['AID'];
 
-        if ($forward_msg) {
+        }else {
 
-            if ($page_prefs & POST_TINYMCE_DISPLAY) {
+            $page_prefs = bh_session_get_post_page_prefs();
 
-                $t_content = "<div class=\"quotetext\" id=\"quote\">";
-                $t_content.= "<b>quote: </b>";
-                $t_content.= format_user_name($pm_data['FLOGON'], $pm_data['FNICK']);
-                $t_content.= "</div><div class=\"quote\">";
-                $t_content.= trim($pm_data['CONTENT']);
-                $t_content.= "</div><p>&nbsp;</p>";
+            if ($forward_msg) {
 
-            }else {
+                if ($page_prefs & POST_TINYMCE_DISPLAY) {
 
-                $t_content = "<quote source=\"";
-                $t_content.= format_user_name($pm_data['FLOGON'], $pm_data['FNICK']);
-                $t_content.= "\" url=\"\">";
-                $t_content.= trim($pm_data['CONTENT']);
-                $t_content.= "</quote>\n\n";
+                    $t_content = "<div class=\"quotetext\" id=\"quote\">";
+                    $t_content.= "<b>quote: </b>";
+                    $t_content.= format_user_name($pm_data['FLOGON'], $pm_data['FNICK']);
+                    $t_content.= "</div><div class=\"quote\">";
+                    $t_content.= trim($pm_data['CONTENT']);
+                    $t_content.= "</div><p>&nbsp;</p>";
+
+                }else {
+
+                    $t_content = "<quote source=\"";
+                    $t_content.= format_user_name($pm_data['FLOGON'], $pm_data['FNICK']);
+                    $t_content.= "\" url=\"\">";
+                    $t_content.= trim($pm_data['CONTENT']);
+                    $t_content.= "</quote>\n\n";
+                }
+
+                // Set the HTML mode to 'with automatic line breaks' so
+                // the quote is handled correctly when the user previews
+                // the message.
+
+                $post_html = 1;
+
+            }elseif (bh_session_get_value('PM_INCLUDE_REPLY') == 'Y') {
+
+                if ($page_prefs & POST_TINYMCE_DISPLAY) {
+
+                    $t_content = "<div class=\"quotetext\" id=\"quote\">";
+                    $t_content.= "<b>quote: </b>";
+                    $t_content.= format_user_name($pm_data['FLOGON'], $pm_data['FNICK']);
+                    $t_content.= "</div><div class=\"quote\">";
+                    $t_content.= trim($pm_data['CONTENT']);
+                    $t_content.= "</div><p>&nbsp;</p>";
+
+                }else {
+
+                    $t_content = "<quote source=\"";
+                    $t_content.= format_user_name($pm_data['FLOGON'], $pm_data['FNICK']);
+                    $t_content.= "\" url=\"\">";
+                    $t_content.= trim($pm_data['CONTENT']);
+                    $t_content.= "</quote>\n\n";
+                }
+
+                // Set the HTML mode to 'with automatic line breaks' so
+                // the quote is handled correctly when the user previews
+                // the message.
+
+                $post_html = 1;
             }
-
-            // Set the HTML mode to 'with automatic line breaks' so
-            // the quote is handled correctly when the user previews
-            // the message.
-
-            $post_html = 1;
-
-        }elseif (bh_session_get_value('PM_INCLUDE_REPLY') == 'Y') {
-
-            if ($page_prefs & POST_TINYMCE_DISPLAY) {
-
-                $t_content = "<div class=\"quotetext\" id=\"quote\">";
-                $t_content.= "<b>quote: </b>";
-                $t_content.= format_user_name($pm_data['FLOGON'], $pm_data['FNICK']);
-                $t_content.= "</div><div class=\"quote\">";
-                $t_content.= trim($pm_data['CONTENT']);
-                $t_content.= "</div><p>&nbsp;</p>";
-
-            }else {
-
-                $t_content = "<quote source=\"";
-                $t_content.= format_user_name($pm_data['FLOGON'], $pm_data['FNICK']);
-                $t_content.= "\" url=\"\">";
-                $t_content.= trim($pm_data['CONTENT']);
-                $t_content.= "</quote>\n\n";
-            }
-
-            // Set the HTML mode to 'with automatic line breaks' so
-            // the quote is handled correctly when the user previews
-            // the message.
-
-            $post_html = 1;
         }
 
     }else {
@@ -461,19 +482,120 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
         if ($to_radio == 1) {
 
             if ($valid && sizeof($t_new_recipient_array['TO_UID']) > 10) {
+
                 $error_html.= "<h2>{$lang['maximumtenrecipientspermessage']}</h2>\n";
                 $valid = false;
             }
 
             if ($valid && sizeof($t_new_recipient_array['TO_UID']) < 1) {
+
                 $error_html.= "<h2>{$lang['mustspecifyrecipient']}</h2>\n";
                 $valid = false;
             }
         }
 
     }elseif ($valid && $to_radio == 1) {
+
         $error_html.= "<h2>{$lang['mustspecifyrecipient']}</h2>\n";
         $valid = false;
+    }
+}
+
+if (isset($_POST['save'])) {
+
+    $error_html = "";
+
+    if (isset($_POST['t_subject']) && strlen(trim(_stripslashes($_POST['t_subject']))) > 0) {
+
+        $t_subject = trim(_stripslashes($_POST['t_subject']));
+
+    }else {
+
+        $error_html.= "<h2>{$lang['entersubjectformessage']}</h2>\n";
+        $valid = false;
+    }
+
+    if (isset($_POST['t_content']) && strlen(trim(_stripslashes($_POST['t_content']))) > 0) {
+
+        $t_content = trim(_stripslashes($_POST['t_content']));
+
+    }elseif ($valid) {
+
+        $error_html.= "<h2>{$lang['entercontentformessage']}</h2>\n";
+        $valid = false;
+    }
+
+    if (isset($_POST['to_radio']) && is_numeric($_POST['to_radio'])) {
+        $to_radio = $_POST['to_radio'];
+    }else {
+        $to_radio = 1;
+    }
+
+    if (isset($_POST['t_to_uid']) && is_numeric($_POST['t_to_uid'])) {
+        $t_to_uid = $_POST['t_to_uid'];
+    }else {
+        $t_to_uid = 0;
+    }
+
+    if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
+        $aid = $_POST['aid'];
+    }else{
+        $aid = md5(uniqid(rand()));
+    }
+
+    if (isset($_POST['t_recipient_list']) && strlen(trim(_stripslashes($_POST['t_recipient_list']))) > 0) {
+
+        $t_recipient_array = preg_split("/[;|,]/", trim(_stripslashes($_POST['t_recipient_list'])));
+
+        if ($valid && sizeof($t_recipient_array) > 10) {
+
+            $error_html.= "<h2>{$lang['maximumtenrecipientspermessage']}</h2>\n";
+            $valid = false;
+        }
+
+        $t_recipient_list = implode(';', $t_recipient_array);
+
+    }else {
+
+        $t_recipient_list = "";
+    }
+
+    if ($valid) {
+
+        if (isset($_POST['editmsg']) && is_numeric($_POST['editmsg'])) {
+
+            $t_mid = $_POST['editmsg'];
+
+            if (pm_edit_message($t_mid, $t_subject, $t_content, $t_to_uid, $t_recipient_list)) {
+
+                html_draw_top();
+                html_display_msg($lang['messagesaved'], $lang['messagewassuccessfullysavedtodraftsfolder'], 'pm.php', 'get', array('continue' => $lang['continue']), array('mid' => $t_mid));
+                html_draw_bottom();
+                exit;
+
+            }else {
+
+                $error_html.= "<h2>{$lang['couldnotsavemessage']}</h2>\n";
+                $valid = false;
+            }
+
+        }else {
+
+            if ($saved_mid = pm_save_message($t_subject, $t_content, $t_to_uid, $t_recipient_list)) {
+
+                pm_save_attachment_id($saved_mid, $aid);
+                
+                html_draw_top();
+                html_display_msg($lang['messagesaved'], $lang['messagewassuccessfullysavedtodraftsfolder'], 'pm.php', 'get', array('continue' => $lang['continue']), array('mid' => $saved_mid));
+                html_draw_bottom();
+                exit;
+
+            }else {
+
+                $error_html.= "<h2>{$lang['couldnotsavemessage']}</h2>\n";
+                $valid = false;
+            }
+        }
     }
 }
 
@@ -524,6 +646,8 @@ if (isset($_POST['t_post_html'])) {
         $post_html = 1;
     }else if ($t_post_html == "enabled") {
         $post_html = 2;
+    }else {
+        $post_html = 1;
     }
 
 }else if (!isset($post_html)) {
@@ -556,7 +680,7 @@ if (strlen($t_content) >= 65535) {
 
 if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
     $aid = $_POST['aid'];
-}else{
+}else if (!isset($aid)) {
     $aid = md5(uniqid(rand()));
 }
 
@@ -579,12 +703,18 @@ if ($valid && isset($_POST['submit'])) {
                 $valid = false;
             }
 
+            if (isset($_POST['editmsg']) && is_numeric($_POST['editmsg'])) {
+
+                $saved_mid = $_POST['editmsg'];
+                pm_delete_message($saved_mid);
+            }
+
         }else {
 
             foreach ($t_new_recipient_array['TO_UID'] as $t_to_uid) {
 
                 if ($new_mid = pm_send_message($t_to_uid, $uid, $t_subject, $t_content)) {
-
+                    
                     pm_save_attachment_id($new_mid, $aid);
                     email_send_pm_notification($t_to_uid, $new_mid, $uid);
 
@@ -593,6 +723,12 @@ if ($valid && isset($_POST['submit'])) {
                     $error_html.= "<h2>{$lang['errorcreatingpm']}</h2>\n";
                     $valid = false;
                 }
+            }
+
+            if (isset($_POST['editmsg']) && is_numeric($_POST['editmsg'])) {
+
+                $saved_mid = $_POST['editmsg'];
+                pm_delete_message($saved_mid);
             }
         }
     }
@@ -663,7 +799,7 @@ if ($valid && isset($_POST['preview'])) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\">&nbsp;</td>\n";
-    echo "                  <td align=\"left\" width=\"690\"><br />", pm_display($pm_preview_array, PM_FOLDER_OUTBOX, false, true), "</td>\n";
+    echo "                  <td align=\"left\" width=\"690\"><br />", pm_display($pm_preview_array, PM_FOLDER_OUTBOX, true), "</td>\n";
     echo "                  <td align=\"left\">&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
@@ -820,7 +956,7 @@ if ($page_prefs & POST_TOOLBAR_DISPLAY) {
 }
 
 if ($allow_html == true && $tool_type != 0) {
-    echo $tools->toolbar(false, form_submit('submit', $lang['post'], "onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\""));
+    echo $tools->toolbar(false, form_submit('submit', $lang['send'], "onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\""));
 } else {
     $tools->setTinyMCE(false);
 }
@@ -872,9 +1008,10 @@ if ($allow_html == true) {
 
 echo "              <br />\n";
 
-echo form_submit('submit', $lang['post'], "tabindex=\"2\" target=\"_blank\" onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\"");
-echo "              &nbsp;".form_submit('preview', $lang['preview'], 'tabindex="3" onclick="clearFocus()"');
-echo "              &nbsp;".form_submit('cancel', $lang['cancel'], 'tabindex="4" onclick="closeAttachWin(); clearFocus()"');
+echo "              &nbsp;", form_submit('submit', $lang['send'], "tabindex=\"2\" target=\"_blank\" onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\"");
+echo "              &nbsp;", form_submit('save', $lang['save'], 'tabindex="3" onclick="clearFocus()"');
+echo "              &nbsp;", form_submit('preview', $lang['preview'], 'tabindex="4" onclick="clearFocus()"');
+echo "              &nbsp;", form_submit('cancel', $lang['cancel'], 'tabindex="5" onclick="closeAttachWin(); clearFocus()"');
 
 if (forum_get_setting('attachments_enabled', 'Y') && forum_get_setting('pm_allow_attachments', 'Y')) {
 
@@ -892,9 +1029,7 @@ echo "                  <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 
-
 echo $tools->js();
-
 
 if (isset($_POST['t_dedupe'])) {
     echo form_input_hidden("t_dedupe", _htmlentities($_POST['t_dedupe']));
@@ -902,10 +1037,15 @@ if (isset($_POST['t_dedupe'])) {
     echo form_input_hidden("t_dedupe", _htmlentities(mktime()));
 }
 
-if (isset($t_rmid) && $forward_msg === false) echo form_input_hidden("replyto", _htmlentities($t_rmid)), "\n";
-if (isset($t_rmid) && $forward_msg === true) echo form_input_hidden("fwdmsg", _htmlentities($t_rmid)), "\n";
+if (isset($t_rmid) && $forward_msg === false && $edit_msg == false) {
+    echo form_input_hidden("replyto", _htmlentities($t_rmid)), "\n";
+}elseif (isset($t_rmid) && $forward_msg === false && $edit_msg == true) {
+    echo form_input_hidden("editmsg", _htmlentities($t_rmid)), "\n";
+}elseif (isset($t_rmid) && $forward_msg === true && $edit_msg == false) {
+    echo form_input_hidden("fwdmsg", _htmlentities($t_rmid)), "\n";
+}
 
-if (isset($pm_data) && is_array($pm_data)) {
+if (isset($pm_data) && is_array($pm_data) && $forward_msg == false && $edit_msg == false) {
 
     echo "              <table class=\"posthead\" width=\"720\">\n";
     echo "                <tr>\n";
@@ -913,7 +1053,7 @@ if (isset($pm_data) && is_array($pm_data)) {
     echo "                </tr>";
     echo "                <tr>\n";
     echo "                  <td align=\"left\">&nbsp;</td>\n";
-    echo "                  <td align=\"left\" width=\"690\"><br />", pm_display($pm_data, PM_FOLDER_INBOX, false, true), "</td>\n";
+    echo "                  <td align=\"left\" width=\"690\"><br />", pm_display($pm_data, PM_FOLDER_INBOX, true), "</td>\n";
     echo "                  <td align=\"left\">&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.406 2007-04-05 21:25:20 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.407 2007-04-07 15:42:17 decoyduck Exp $ */
 
 // International English language file
 
@@ -1109,11 +1109,12 @@ $lang['foldermods'] = "Folder moderators:";
 
 $lang['start'] = "Start";
 $lang['messages'] = "Messages";
-$lang['pminbox'] = "PM Inbox";
+$lang['pminbox'] = "Inbox";
 $lang['startwiththreadlist'] = "Start page with thread list";
 $lang['pmsentitems'] = "Sent Items";
 $lang['pmoutbox'] = "Outbox";
 $lang['pmsaveditems'] = "Saved Items";
+$lang['pmdrafts'] = "Drafts";
 $lang['links'] = "Links";
 $lang['admin'] = "Admin";
 $lang['login'] = "Login";
@@ -1158,6 +1159,9 @@ $lang['unreadmessage'] = "Unread Message";
 $lang['readmessage'] = "Read Message";
 $lang['pmshavebeendisabled'] = "Personal Messages have been disabled by the forum owner.";
 $lang['adduserstofriendslist'] = "Add users to your friends list to have them appear in a drop down on the PM Write Message Page.";
+
+$lang['messagesaved'] = "Message Saved";
+$lang['messagewassuccessfullysavedtodraftsfolder'] = "Message was successfully saved to 'Drafts' folder";
 
 // Preferences / Profile (user_*.php) ---------------------------------------------
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.216 2007-04-05 21:25:20 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.217 2007-04-07 15:42:17 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -753,7 +753,7 @@ function html_draw_bottom($include_body_tag = true)
     echo "</html>\n";
 }
 
-function style_image($img, $local_path = false)
+function style_image($img)
 {
     $webtag = get_webtag($webtag_search);
 
@@ -762,8 +762,6 @@ function style_image($img, $local_path = false)
     if (!$user_style = bh_session_get_value('STYLE')) {
         $user_style = forum_get_setting('default_style');
     }
-
-    if ($local_path) return "images/$img";
 
     if (@is_dir("styles/$user_style/images") && @file_exists("styles/$user_style/images/$img")) {
         return "styles/$user_style/images/$img";

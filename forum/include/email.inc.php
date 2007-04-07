@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.102 2007-03-31 10:33:41 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.103 2007-04-07 15:42:17 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -81,12 +81,13 @@ function email_sendnotification($tuid, $fuid, $tid, $pid)
 
             $subject = sprintf($lang['msgnotification_subject'], $forum_name);
 
-            $message_author =  apply_wordfilter(format_user_name($from_user['LOGON'], $from_user['NICKNAME']));
-            $thread_title   = _htmlentities_decode(thread_format_prefix($thread['PREFIX'], $thread['TITLE']));
+            $message_author = add_wordfilter_tags(format_user_name($from_user['LOGON'], $from_user['NICKNAME']));
+            $thread_title   = add_wordfilter_tags(_htmlentities_decode(thread_format_prefix($thread['PREFIX'], $thread['TITLE'])));
+
             $forum_link     = html_get_forum_uri();
             $message_link   = "$forum_link/index.php?webtag=$webtag&msg=$tid.$pid";
 
-            $message = wordwrap(sprintf($lang['msgnotificationemail'], $message_author, $forum_name, $thread_title, $message_link, $forum_link));
+            $message = wordwrap(apply_wordfilter(sprintf($lang['msgnotificationemail'], $message_author, $forum_name, $thread_title, $message_link, $forum_link), $tuid));
 
             $header = "Return-path: $forum_email\n";
             $header.= "From: \"$forum_name\" <$forum_email>\n";
@@ -154,12 +155,12 @@ function email_sendsubscription($tuid, $fuid, $tid, $pid)
 
             $subject = sprintf($lang['subnotification_subject'], $forum_name);
 
-            $message_author = apply_wordfilter(format_user_name($from_user['LOGON'], $from_user['NICKNAME']));
-            $thread_title   = _htmlentities_decode(thread_format_prefix($thread['PREFIX'], $thread['TITLE']));
+            $message_author = add_wordfilter_tags(format_user_name($from_user['LOGON'], $from_user['NICKNAME']));
+            $thread_title   = add_wordfilter_tags(_htmlentities_decode(thread_format_prefix($thread['PREFIX'], $thread['TITLE'])));
             $forum_link     = html_get_forum_uri();
             $message_link   = "$forum_link/index.php?webtag=$webtag&msg=$tid.$pid";
 
-            $message = wordwrap(sprintf($lang['subnotification'], $message_author, $forum_name, $thread_title, $message_link, $message_link));
+            $message = wordwrap(apply_wordfilter(sprintf($lang['subnotification'], $message_author, $forum_name, $thread_title, $message_link, $message_link), $tuid));
 
             $header = "Return-path: $forum_email\n";
             $header.= "From: \"$forum_name\" <$forum_email>\n";
@@ -217,12 +218,12 @@ function email_send_pm_notification($tuid, $mid, $fuid)
 
             $subject = sprintf($lang['pmnotification_subject'], $forum_name);
 
-            $message_author  = apply_wordfilter(format_user_name($from_user['LOGON'], $from_user['NICKNAME']));
-            $message_subject = _htmlentities_decode($pm_subject);
+            $message_author  = add_wordfilter_tags(format_user_name($from_user['LOGON'], $from_user['NICKNAME']));
+            $message_subject = add_wordfilter_tags(_htmlentities_decode($pm_subject));
             $forum_link      = html_get_forum_uri();
             $message_link    = "$forum_link/index.php?webtag=$webtag&pmid=$mid";
 
-            $message = wordwrap(sprintf($lang['pmnotification'], $message_author, $forum_name, $message_subject, $message_link, $forum_link));
+            $message = wordwrap(apply_wordfilter(sprintf($lang['pmnotification'], $message_author, $forum_name, $message_subject, $message_link, $forum_link), $tuid));
 
             $header = "Return-path: $forum_email\n";
             $header.= "From: \"$forum_name\" <$forum_email>\n";
@@ -419,8 +420,9 @@ function email_send_message_to_user($tuid, $fuid, $subject, $message)
         $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
         $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
 
-        $sent_from = apply_wordfilter(format_user_name($from_user['LOGON'], $from_user['NICKNAME']));
-        $message.= sprintf("\n\n{$lang['msgsentfromby']}", $forum_name, $sent_from);
+        $sent_from = add_wordfilter_tags(format_user_name($from_user['LOGON'], $from_user['NICKNAME']));
+
+        $message = wordwrap(apply_wordfilter(sprintf("\n\n{$lang['msgsentfromby']}", $forum_name, $sent_from), $tuid));
 
         $header = "Return-path: $forum_email\n";
         $header.= "From: \"$forum_name\" <$forum_email>\n";

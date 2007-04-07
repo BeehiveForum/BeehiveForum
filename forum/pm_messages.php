@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_messages.php,v 1.1 2007-04-06 13:01:01 decoyduck Exp $ */
+/* $Id: pm_messages.php,v 1.2 2007-04-07 15:42:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -113,7 +113,8 @@ pm_enabled();
 $pm_header_array = array(PM_FOLDER_INBOX  => $lang['pminbox'],
                          PM_FOLDER_SENT   => $lang['pmsentitems'],
                          PM_FOLDER_OUTBOX => $lang['pmoutbox'],
-                         PM_FOLDER_SAVED  => $lang['pmsaveditems']);
+                         PM_FOLDER_SAVED  => $lang['pmsaveditems'],
+                         PM_FOLDER_DRAFTS => $lang['pmdrafts']);
 
 // Check to see which page we should be on
 
@@ -153,6 +154,8 @@ if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
         $folder = PM_FOLDER_OUTBOX;
     }else if ($_GET['folder'] == PM_FOLDER_SAVED) {
         $folder = PM_FOLDER_SAVED;
+    }else if ($_GET['folder'] == PM_FOLDER_DRAFTS) {
+        $folder = PM_FOLDER_DRAFTS;
     }
 
 }elseif (isset($_POST['folder'])) {
@@ -163,6 +166,8 @@ if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
         $folder = PM_FOLDER_OUTBOX;
     }else if ($_POST['folder'] == PM_FOLDER_SAVED) {
         $folder = PM_FOLDER_SAVED;
+    }else if ($_POST['folder'] == PM_FOLDER_DRAFTS) {
+        $folder = PM_FOLDER_DRAFTS;
     }
 }
 
@@ -170,8 +175,8 @@ if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
 
 if (isset($_POST['deletemessages'])) {
     if (isset($_POST['process']) && is_array($_POST['process']) && sizeof($_POST['process']) > 0) {
-        foreach($_POST['process'] as $mid) {
-            pm_delete_message($mid);
+        foreach($_POST['process'] as $delete_mid) {
+            pm_delete_message($delete_mid);
         }
     }
 }
@@ -180,8 +185,8 @@ if (isset($_POST['deletemessages'])) {
 
 if (isset($_POST['savemessages'])) {
     if (isset($_POST['process']) && is_array($_POST['process']) && sizeof($_POST['process']) > 0) {
-        foreach($_POST['process'] as $mid) {
-            pm_archive_message($mid);
+        foreach($_POST['process'] as $archive_mid) {
+            pm_archive_message($archive_mid);
         }
     }
 }
@@ -234,6 +239,10 @@ if ($folder == PM_FOLDER_INBOX) {
 }elseif ($folder == PM_FOLDER_SAVED) {
 
     $pm_messages_array = pm_get_saveditems($start);
+
+}elseif ($folder == PM_FOLDER_DRAFTS) {
+
+    $pm_messages_array = pm_get_drafts($start);
 }
 
 echo "<h1>{$pm_header_array[$folder]}</h1>\n";
@@ -261,7 +270,7 @@ echo "                  <td align=\"left\" class=\"subhead\" width=\"50%\">{$lan
 
 if ($folder == PM_FOLDER_INBOX) {
     echo "                  <td align=\"left\" class=\"subhead\" width=\"30%\">{$lang['from']}</td>\n";
-}elseif ($folder == PM_FOLDER_SENT || $folder == PM_FOLDER_OUTBOX) {
+}elseif ($folder == PM_FOLDER_SENT || $folder == PM_FOLDER_OUTBOX || $folder = PM_FOLDER_DRAFTS) {
     echo "                  <td align=\"left\" class=\"subhead\" width=\"30%\">{$lang['to']}</td>\n";
 }elseif  ($folder == PM_FOLDER_SAVED) {
     echo "                  <td align=\"left\" class=\"subhead\" width=\"15%\">{$lang['to']}</td>\n";
@@ -272,7 +281,7 @@ echo "                  <td align=\"left\" class=\"subhead\">{$lang['timesent']}
 echo "                </tr>\n";
 
 if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['message_array']) > 0) {
-
+    
     foreach($pm_messages_array['message_array'] as $message) {
 
         echo "                <tr>\n";
@@ -297,7 +306,7 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
 
         echo "            <a href=\"pm_messages.php?webtag=$webtag&amp;mid={$message['MID']}&amp;page=$page\" target=\"_self\">{$message['SUBJECT']}</a>";
         
-        if (pm_has_attachments($message['MID'])) {
+        if (isset($message['AID']) && pm_has_attachments($message['MID'])) {
             echo "            &nbsp;&nbsp;<img src=\"".style_image('attach.png')."\" border=\"0\" alt=\"{$lang['attachment']} - {$message['AID']}\" title=\"{$lang['attachment']}\" />";
         }
 
@@ -321,6 +330,24 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
             echo "            <a href=\"user_profile.php?webtag=$webtag&amp;uid={$message['FROM_UID']}\" target=\"_blank\" onclick=\"return openProfile({$message['FROM_UID']}, '$webtag')\">";
             echo add_wordfilter_tags(format_user_name($message['FLOGON'], $message['FNICK'])) . "</a>";
             echo "            </td>\n";
+
+        }elseif ($folder == PM_FOLDER_DRAFTS) {
+
+            if (isset($message['RECIPIENTS']) && strlen(trim($message['RECIPIENTS'])) > 0) {
+                
+                $recipient_array = preg_split("/[;|,]/", trim($message['RECIPIENTS']));
+                $recipient_array = array_unique(array_merge($recipient_array, array($message['TNICK'])));
+                $recipient_array = array_map('user_profile_popup_callback', $recipient_array);
+                
+                echo "                  <td align=\"left\" class=\"postbody\">", add_wordfilter_tags(implode('; ', $recipient_array)), "</td>\n";
+
+            }else {
+
+                echo "                  <td align=\"left\" class=\"postbody\">";
+                echo "            <a href=\"user_profile.php?webtag=$webtag&amp;uid={$message['TO_UID']}\" target=\"_blank\" onclick=\"return openProfile({$message['TO_UID']}, '$webtag')\">";
+                echo add_wordfilter_tags(format_user_name($message['TLOGON'], $message['TNICK'])) . "</a>";
+                echo "            </td>\n";
+            }
 
         }else {
 

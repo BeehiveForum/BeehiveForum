@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_folders.php,v 1.1 2007-04-06 13:01:01 decoyduck Exp $ */
+/* $Id: pm_folders.php,v 1.2 2007-04-07 15:42:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -113,7 +113,8 @@ pm_enabled();
 $pm_header_array = array(PM_FOLDER_INBOX  => $lang['pminbox'],
                          PM_FOLDER_SENT   => $lang['pmsentitems'],
                          PM_FOLDER_OUTBOX => $lang['pmoutbox'],
-                         PM_FOLDER_SAVED  => $lang['pmsaveditems']);
+                         PM_FOLDER_SAVED  => $lang['pmsaveditems'],
+                         PM_FOLDER_DRAFTS => $lang['pmdrafts']);
 
 // Default Folder
 
@@ -209,6 +210,18 @@ if (pm_auto_prune_enabled()) {
     echo "          </tr>\n";
 }
 
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "  <br />\n";
+echo "  <table width=\"90%\" border=\"0\" cellpadding=\"2\" cellspacing=\"0\">\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">\n";
+echo "        <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
+echo "          <tr>\n";
+echo "            <td align=\"left\" class=\"foldername\"><img src=\"", style_image('post.png'), "\" alt=\"{$lang['sendnewpm']}\" title=\"{$lang['sendnewpm']}\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag\" title=\"{$lang['sendnewpm']}\" target=\"main\">{$lang['sendnewpm']}</a></td>\n";
+echo "          </tr>\n";
 echo "        </table>\n";
 echo "      </td>\n";
 echo "    </tr>\n";

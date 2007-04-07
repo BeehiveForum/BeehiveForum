@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.122 2007-04-04 19:04:59 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.123 2007-04-07 15:42:17 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -853,13 +853,12 @@ function attachment_embed_check($content)
 * @param bool $limit_filename - Optionally truncate the filename to 16 characters if it is too long
 */
 
-function attachment_make_link($attachment, $show_thumbs = true, $limit_filename = false, $local_path = false)
+function attachment_make_link($attachment, $show_thumbs = true, $limit_filename = false)
 {
     if (!is_array($attachment)) return false;
 
     if (!is_bool($show_thumbs)) $show_thumbs = true;
     if (!is_bool($limit_filename)) $limit_filename = false;
-    if (!is_bool($local_path)) $local_path = false;
 
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
 
@@ -888,24 +887,11 @@ function attachment_make_link($attachment, $show_thumbs = true, $limit_filename 
         $show_thumbs = false;
     }
 
-    if ($local_path) {
+    $attachment_path = "$attachment_dir/";
+    $attachment_path.= md5($attachment['aid']);
+    $attachment_path.= rawurldecode($attachment['filename']);
 
-        $attachment_path = "attachments/";
-        $attachment_path.= rawurldecode($attachment['filename']);
-
-    }else {
-
-        $attachment_path = "$attachment_dir/";
-        $attachment_path.= md5($attachment['aid']);
-        $attachment_path.= rawurldecode($attachment['filename']);
-    }
-
-    if ($local_path) {
-
-        $href = "attachments/";
-        $href.= rawurldecode($attachment['filename']);
-
-    }else if (forum_get_setting('attachment_use_old_method', 'Y')) {
+    if (forum_get_setting('attachment_use_old_method', 'Y')) {
 
         $href = "get_attachment.php?webtag=$webtag&amp;hash={$attachment['hash']}";
         $href.= "&amp;filename={$attachment['filename']}";
@@ -955,20 +941,10 @@ function attachment_make_link($attachment, $show_thumbs = true, $limit_filename 
 
             $title = implode(", ", $title_array);
 
-            if ($local_path) {
-
-                $attachment_link = "<div class=\"attachment_thumb\"><a href=\"$href\" title=\"$title\" ";
-                $attachment_link.= "target=\"_blank\"><img src=\"$href.thumb\"";
-                $attachment_link.= "border=\"0\" width=\"$thumbnail_width\" height=\"$thumbnail_height\"";
-                $attachment_link.= "alt=\"$title\" title=\"$title\" /></a></div>";
-
-            }else {
-
-                $attachment_link = "<div class=\"attachment_thumb\"><a href=\"$href\" title=\"$title\" ";
-                $attachment_link.= "target=\"_blank\"><img src=\"$href&amp;thumb=1\"";
-                $attachment_link.= "border=\"0\" width=\"$thumbnail_width\" height=\"$thumbnail_height\"";
-                $attachment_link.= "alt=\"$title\" title=\"$title\" /></a></div>";
-            }
+            $attachment_link = "<div class=\"attachment_thumb\"><a href=\"$href\" title=\"$title\" ";
+            $attachment_link.= "target=\"_blank\"><img src=\"$href&amp;thumb=1\"";
+            $attachment_link.= "border=\"0\" width=\"$thumbnail_width\" height=\"$thumbnail_height\"";
+            $attachment_link.= "alt=\"$title\" title=\"$title\" /></a></div>";
 
             return $attachment_link;
         }
@@ -977,7 +953,7 @@ function attachment_make_link($attachment, $show_thumbs = true, $limit_filename 
     $title = implode(", ", $title_array);
 
     $attachment_link = "<img src=\"";
-    $attachment_link.= style_image('attach.png', $local_path);
+    $attachment_link.= style_image('attach.png');
     $attachment_link.= "\" width=\"14\" height=\"14\" border=\"0\"";
     $attachment_link.= "alt=\"{$lang['attachment']}\" ";
     $attachment_link.= "title=\"{$lang['attachment']}\" />";

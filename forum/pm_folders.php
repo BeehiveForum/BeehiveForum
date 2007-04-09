@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_folders.php,v 1.2 2007-04-07 15:42:17 decoyduck Exp $ */
+/* $Id: pm_folders.php,v 1.3 2007-04-09 21:06:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -150,9 +150,9 @@ html_draw_top("basetarget=pm_messages");
 echo "<h1>{$lang['privatemessages']}</h1>\n";
 echo "<br />\n";
 echo "<div align=\"center\">\n";
-echo "<form name=\"pm\" action=\"pm_folders.php\" method=\"post\" target=\"_self\">\n";
+echo "<form name=\"pm\" action=\"pm_messages.php\" method=\"post\" target=\"pm_messages\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-echo "  ", form_input_hidden('folder', _htmlentities($folder)), "\n";
+echo "  ", form_input_hidden('folder', PM_SEARCH_RESULTS), "\n";
 
 foreach ($pm_header_array as $folder_type => $folder_name) {
 
@@ -168,6 +168,28 @@ foreach ($pm_header_array as $folder_type => $folder_name) {
     echo "    </tr>\n";
     echo "  </table>\n";
 }
+
+echo "  <br />\n";
+echo "  <table width=\"90%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\">\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\" class=\"foldername\">{$lang['search']}:</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\" class=\"smalltext\">", form_input_text("search_string", "", 18), "&nbsp;", form_submit("search", $lang['find']), "</td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "  <br />\n";
+echo "  <table width=\"90%\" border=\"0\" cellpadding=\"2\" cellspacing=\"0\">\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">\n";
+echo "        <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
+echo "          <tr>\n";
+echo "            <td align=\"left\" class=\"foldername\"><img src=\"", style_image('post.png'), "\" alt=\"{$lang['sendnewpm']}\" title=\"{$lang['sendnewpm']}\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag\" title=\"{$lang['sendnewpm']}\" target=\"main\">{$lang['sendnewpm']}</a></td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
 
 // Fetch the free PM space and calculate it as a percentage.
 
@@ -210,18 +232,6 @@ if (pm_auto_prune_enabled()) {
     echo "          </tr>\n";
 }
 
-echo "        </table>\n";
-echo "      </td>\n";
-echo "    </tr>\n";
-echo "  </table>\n";
-echo "  <br />\n";
-echo "  <table width=\"90%\" border=\"0\" cellpadding=\"2\" cellspacing=\"0\">\n";
-echo "    <tr>\n";
-echo "      <td align=\"left\">\n";
-echo "        <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
-echo "          <tr>\n";
-echo "            <td align=\"left\" class=\"foldername\"><img src=\"", style_image('post.png'), "\" alt=\"{$lang['sendnewpm']}\" title=\"{$lang['sendnewpm']}\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag\" title=\"{$lang['sendnewpm']}\" target=\"main\">{$lang['sendnewpm']}</a></td>\n";
-echo "          </tr>\n";
 echo "        </table>\n";
 echo "      </td>\n";
 echo "    </tr>\n";

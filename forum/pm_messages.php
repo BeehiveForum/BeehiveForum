@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_messages.php,v 1.2 2007-04-07 15:42:17 decoyduck Exp $ */
+/* $Id: pm_messages.php,v 1.3 2007-04-09 21:06:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -110,11 +110,20 @@ pm_enabled();
 
 // Various Headers for the PM folders
 
-$pm_header_array = array(PM_FOLDER_INBOX  => $lang['pminbox'],
-                         PM_FOLDER_SENT   => $lang['pmsentitems'],
-                         PM_FOLDER_OUTBOX => $lang['pmoutbox'],
-                         PM_FOLDER_SAVED  => $lang['pmsaveditems'],
-                         PM_FOLDER_DRAFTS => $lang['pmdrafts']);
+$pm_header_array = array(PM_FOLDER_INBOX   => $lang['pminbox'],
+                         PM_FOLDER_SENT    => $lang['pmsentitems'],
+                         PM_FOLDER_OUTBOX  => $lang['pmoutbox'],
+                         PM_FOLDER_SAVED   => $lang['pmsaveditems'],
+                         PM_FOLDER_DRAFTS  => $lang['pmdrafts'],
+                         PM_SEARCH_RESULTS => $lang['searchresults']);
+
+$pm_folder_name_array = array(1  => $lang['pmoutbox'],
+                              2  => $lang['pminbox'],
+                              4  => $lang['pminbox'],
+                              8  => $lang['pmsentitems'],
+                              16 => $lang['pmsaveditems'],
+                              32 => $lang['pmsaveditems'],
+                              64 => $lang['pmdrafts']);
 
 // Check to see which page we should be on
 
@@ -156,6 +165,8 @@ if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
         $folder = PM_FOLDER_SAVED;
     }else if ($_GET['folder'] == PM_FOLDER_DRAFTS) {
         $folder = PM_FOLDER_DRAFTS;
+    }else if ($_GET['folder'] == PM_SEARCH_RESULTS) {
+        $folder = PM_SEARCH_RESULTS;
     }
 
 }elseif (isset($_POST['folder'])) {
@@ -168,6 +179,8 @@ if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
         $folder = PM_FOLDER_SAVED;
     }else if ($_POST['folder'] == PM_FOLDER_DRAFTS) {
         $folder = PM_FOLDER_DRAFTS;
+    }else if ($_POST['folder'] == PM_SEARCH_RESULTS) {
+        $folder = PM_SEARCH_RESULTS;
     }
 }
 
@@ -199,11 +212,21 @@ if (isset($_POST['exportfolder'])) {
     exit;
 }
 
+// Search string.
+
+if (isset($_GET['search_string']) && strlen(trim(_stripslashes($_GET['search_string']))) > 0) {
+    $search_string = trim(_stripslashes($_GET['search_string']));
+}elseif (isset($_POST['search_string']) && strlen(trim(_stripslashes($_POST['search_string']))) > 0) {
+    $search_string = trim(_stripslashes($_POST['search_string']));
+}else {
+    $search_string = "";
+}
+
 // Prune old messages for the current user
 
 pm_user_prune_folders();
 
-html_draw_top("basetarget=_blank", "openprofile.js");
+html_draw_top("basetarget=_blank", "openprofile.js", "search.js");
 
 echo "<script language=\"javascript\" type=\"text/javascript\">\n";
 echo "<!--\n";
@@ -243,6 +266,57 @@ if ($folder == PM_FOLDER_INBOX) {
 }elseif ($folder == PM_FOLDER_DRAFTS) {
 
     $pm_messages_array = pm_get_drafts($start);
+
+}elseif ($folder == PM_SEARCH_RESULTS) {
+
+    if (!$pm_messages_array = pm_search_folders($search_string, $start, $error)) {
+
+        search_get_word_lengths($min_length, $max_length);
+
+        $search_frequency = forum_get_setting('search_min_frequency', false, 0);
+
+        switch($error) {
+
+            case SEARCH_NO_KEYWORDS:
+
+                $keywords_error_array = search_strip_keywords($search_string, true);
+                $keywords_error_array['keywords'] = search_strip_special_chars($keywords_error_array['keywords'], false);
+
+                $stopped_keywords = urlencode(implode(' ', $keywords_error_array['keywords']));
+
+                $mysql_stop_word_link = "<a href=\"search.php?webtag=$webtag&amp;show_stop_words=true&amp;keywords=$stopped_keywords\" target=\"_blank\" onclick=\"return display_mysql_stopwords('$webtag', '$stopped_keywords')\">{$lang['mysqlstopwordlist']}</a>";
+
+                echo "<h1>{$lang['error']}</h1>\n";
+                echo "<table cellpadding=\"5\" cellspacing=\"0\" width=\"500\">\n";                
+                echo "  <tr>\n";
+                echo "    <td>", sprintf("<p>{$lang['notexttosearchfor']}</p>", $min_length, $max_length, $mysql_stop_word_link), "</td>\n";
+                echo "  </tr>\n";
+                echo "  <tr>\n";
+                echo "    <td>\n";
+                echo "      <h2>Keywords containing errors</h2>\n";
+                echo "      <ul>\n";
+                echo "        <li>", implode("</li>\n        <li>", $keywords_error_array['keywords']), "</li>\n";
+                echo "      </ul>\n";
+                echo "    </td>\n";
+                echo "  </tr>\n";
+                echo "</table>\n";
+
+                html_draw_bottom();
+                exit;
+
+            case SEARCH_FREQUENCY_TOO_GREAT:
+
+                echo "<h1>{$lang['error']}</h1>\n";
+                echo "<table cellpadding=\"5\" cellspacing=\"0\" width=\"500\">\n";                
+                echo "  <tr>\n";
+                echo "    <td>{$lang['searchfrequencyerror']}</td>\n";
+                echo "  </tr>\n";
+                echo "</table>\n";
+
+                html_draw_bottom();
+                exit;
+        }
+    }
 }
 
 echo "<h1>{$pm_header_array[$folder]}</h1>\n";
@@ -266,16 +340,20 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
     echo "                  <td align=\"left\" class=\"subhead\" width=\"10\">&nbsp;</td>\n";
 }
 
-echo "                  <td align=\"left\" class=\"subhead\" width=\"50%\">{$lang['subject']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\" width=\"40%\">{$lang['subject']}</td>\n";
 
 if ($folder == PM_FOLDER_INBOX) {
     echo "                  <td align=\"left\" class=\"subhead\" width=\"30%\">{$lang['from']}</td>\n";
-}elseif ($folder == PM_FOLDER_SENT || $folder == PM_FOLDER_OUTBOX || $folder = PM_FOLDER_DRAFTS) {
+}elseif ($folder == PM_FOLDER_SENT || $folder == PM_FOLDER_OUTBOX || $folder == PM_FOLDER_DRAFTS) {
     echo "                  <td align=\"left\" class=\"subhead\" width=\"30%\">{$lang['to']}</td>\n";
-}elseif  ($folder == PM_FOLDER_SAVED) {
+}elseif ($folder == PM_FOLDER_SAVED) {
     echo "                  <td align=\"left\" class=\"subhead\" width=\"15%\">{$lang['to']}</td>\n";
     echo "                  <td align=\"left\" class=\"subhead\" width=\"15%\">{$lang['from']}</td>\n";
-}
+}elseif ($folder == PM_SEARCH_RESULTS) {
+    echo "                  <td align=\"left\" class=\"subhead\" width=\"15%\">{$lang['folder']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" width=\"15%\">{$lang['to']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" width=\"15%\">{$lang['from']}</td>\n";    
+} 
 
 echo "                  <td align=\"left\" class=\"subhead\">{$lang['timesent']}</td>\n";
 echo "                </tr>\n";
@@ -349,6 +427,20 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
                 echo "            </td>\n";
             }
 
+        }elseif ($folder == PM_SEARCH_RESULTS) {
+
+            echo "                  <td align=\"left\" class=\"postbody\">{$pm_folder_name_array[$message['TYPE']]}</td>\n";
+            
+            echo "                  <td align=\"left\" class=\"postbody\">";
+            echo "            <a href=\"user_profile.php?webtag=$webtag&amp;uid={$message['TO_UID']}\" target=\"_blank\" onclick=\"return openProfile({$message['TO_UID']}, '$webtag')\">";
+            echo add_wordfilter_tags(format_user_name($message['TLOGON'], $message['TNICK'])) . "</a>";
+            echo "            </td>\n";
+
+            echo "                  <td align=\"left\" class=\"postbody\">";
+            echo "            <a href=\"user_profile.php?webtag=$webtag&amp;uid={$message['FROM_UID']}\" target=\"_blank\" onclick=\"return openProfile({$message['FROM_UID']}, '$webtag')\">";
+            echo add_wordfilter_tags(format_user_name($message['FLOGON'], $message['FNICK'])) . "</a>";
+            echo "            </td>\n";
+
         }else {
 
             echo "                  <td align=\"left\" class=\"postbody\">";
@@ -383,7 +475,7 @@ echo "      <td align=\"left\" valign=\"top\" width=\"100%\">\n";
 echo "        <table width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td width=\"25%\">&nbsp;</td>\n";
-echo "            <td class=\"postbody\" align=\"center\">", page_links(get_request_uri(false), $start, $pm_messages_array['message_count'], 10), "</td>\n";
+echo "            <td class=\"postbody\" align=\"center\">", page_links("pm_messages.php?webtag=$webtag&folder=$folder&search_string=$search_string", $start, $pm_messages_array['message_count'], 10), "</td>\n";
 
 if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['message_array']) > 0) {
     echo "            <td align=\"right\" width=\"25%\" nowrap=\"nowrap\">", form_submit("exportfolder", "Export Folder"), "&nbsp;", (($folder <> PM_FOLDER_SAVED) && ($folder <> PM_FOLDER_OUTBOX)) ? form_submit("savemessages", $lang['savemessage']) : "", "&nbsp;", form_submit("deletemessages", $lang['delete']), "</td>\n";

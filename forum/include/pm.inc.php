@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.177 2007-04-07 15:42:17 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.178 2007-04-09 21:06:06 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -661,6 +661,125 @@ function pm_get_drafts($offset = false)
 
     return array('message_count' => $message_count,
                  'message_array' => $pm_get_drafts_array);
+}
+
+/**
+* Search Folders for messages.
+*
+* Search the user's PMs for messages. Searches subject and content.
+*
+* @return mixed - false on failure, array on success
+* @param integer $offset - Optional offset for viewing pages of messages.
+*/
+
+function pm_search_folders($search_string, $offset, &$error)
+{
+    $db_pm_search_folders = db_connect();
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    if (($uid = bh_session_get_value('UID')) === false) return false;
+
+    if (!is_numeric($offset)) return false;
+
+    if (!check_search_frequency() && !defined('BEEHIVE_INSTALL_NOWARN')) {
+
+        $error = SEARCH_FREQUENCY_TOO_GREAT;
+        return false;
+    }
+
+    $pm_search_folders_array = array();
+    $mid_array = array();
+
+    $message_count = 0;
+
+    $search_keywords_array = search_strip_keywords($search_string);
+
+    $filtered_keyword_count   = $search_keywords_array['filtered_word_count'];
+    $unfiltered_keyword_count = $search_keywords_array['unfiltered_word_count'];
+
+    if ($filtered_keyword_count > 0 && $filtered_keyword_count == $unfiltered_keyword_count) {
+
+        $bool_mode = (db_fetch_mysql_version() > 40010) ? " IN BOOLEAN MODE" : "";
+
+        $search_string_checked = addslashes(implode(' ', $search_keywords_array['keywords']));
+
+        $sql = "SELECT COUNT(PM.MID) AS MESSAGE_COUNT FROM PM ";
+        $sql.= "LEFT JOIN PM_CONTENT ON (PM_CONTENT.MID = PM.MID) ";
+        $sql.= "WHERE ((PM.TYPE = PM.TYPE & ". PM_INBOX_ITEMS. " AND PM.TO_UID = '$uid') ";
+        $sql.= "OR (PM.TYPE = PM.TYPE & ". PM_SENT_ITEMS. " AND PM.FROM_UID = '$uid') ";
+        $sql.= "OR (PM.TYPE = PM.TYPE & ". PM_OUTBOX_ITEMS. " AND PM.FROM_UID = '$uid') ";
+        $sql.= "OR ((PM.TYPE = ". PM_SAVED_OUT. " AND PM.FROM_UID = '$uid') OR ";
+        $sql.= "(PM.TYPE = ". PM_SAVED_IN. " AND PM.TO_UID = '$uid') OR ";
+        $sql.= "(TYPE = ". PM_SAVED_DRAFT. " AND FROM_UID = '$uid'))) ";
+        $sql.= "AND (MATCH(PM_CONTENT.CONTENT) AGAINST('$search_string_checked'$bool_mode) ";
+        $sql.= "OR (MATCH(PM.SUBJECT) AGAINST('$search_string_checked'$bool_mode))) ";
+
+        $result = db_query($sql, $db_pm_search_folders);
+
+        $result_array  = db_fetch_array($result);
+        $message_count = $result_array['MESSAGE_COUNT'];
+
+        $sql = "SELECT PM.MID, PM.TYPE, PM.FROM_UID, PM.TO_UID, PM.SUBJECT, ";
+        $sql.= "PM.RECIPIENTS, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, ";
+        $sql.= "FUSER.LOGON AS FLOGON, TUSER.LOGON AS TLOGON, FUSER.NICKNAME AS FNICK, ";
+        $sql.= "TUSER.NICKNAME AS TNICK, USER_PEER_FROM.PEER_NICKNAME AS PFNICK, ";
+        $sql.= "USER_PEER_TO.PEER_NICKNAME AS PTNICK FROM PM ";
+        $sql.= "LEFT JOIN USER FUSER ON (PM.FROM_UID = FUSER.UID) ";
+        $sql.= "LEFT JOIN USER TUSER ON (PM.TO_UID = TUSER.UID) ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER_FROM ";
+        $sql.= "ON (USER_PEER_FROM.PEER_UID = FUSER.UID AND USER_PEER_FROM.UID = '$uid') ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER_TO ";
+        $sql.= "ON (USER_PEER_TO.PEER_UID = TUSER.UID AND USER_PEER_TO.UID = '$uid') ";
+        $sql.= "LEFT JOIN PM_CONTENT ON (PM_CONTENT.MID = PM.MID) ";
+        $sql.= "WHERE ((PM.TYPE = PM.TYPE & ". PM_INBOX_ITEMS. " AND PM.TO_UID = '$uid') ";
+        $sql.= "OR (PM.TYPE = PM.TYPE & ". PM_SENT_ITEMS. " AND PM.FROM_UID = '$uid') ";
+        $sql.= "OR (PM.TYPE = PM.TYPE & ". PM_OUTBOX_ITEMS. " AND PM.FROM_UID = '$uid') ";
+        $sql.= "OR ((PM.TYPE = ". PM_SAVED_OUT. " AND PM.FROM_UID = '$uid') OR ";
+        $sql.= "(PM.TYPE = ". PM_SAVED_IN. " AND PM.TO_UID = '$uid') OR ";
+        $sql.= "(TYPE = ". PM_SAVED_DRAFT. " AND FROM_UID = '$uid'))) ";
+        $sql.= "AND (MATCH(PM_CONTENT.CONTENT) AGAINST('$search_string_checked'$bool_mode) ";
+        $sql.= "OR (MATCH(PM.SUBJECT) AGAINST('$search_string_checked'$bool_mode))) ";
+        $sql.= "LIMIT $offset, 10";
+
+        $result = db_query($sql, $db_pm_search_folders);
+
+        if (db_num_rows($result) > 0) {
+
+            while ($result_array = db_fetch_array($result, DB_RESULT_ASSOC)) {
+
+                if (isset($result_array['PFNICK'])) {
+                    if (!is_null($result_array['PFNICK']) && strlen($result_array['PFNICK']) > 0) {
+                        $result_array['FNICK'] = $result_array['PFNICK'];
+                    }
+                }
+
+                if (isset($result_array['PTNICK'])) {
+                    if (!is_null($result_array['PTNICK']) && strlen($result_array['PTNICK']) > 0) {
+                        $result_array['TNICK'] = $result_array['PTNICK'];
+                    }
+                }
+
+                $pm_search_folders_array[$result_array['MID']] = $result_array;
+                $mid_array[] = $result_array['MID'];
+            }
+
+        }else if ($offset > 0) {
+
+            $offset = ($offset - 10) > 0 ? $offset - 10 : 0;
+            return pm_search_folders($search_string, $offset);
+        }
+
+        pms_have_attachments($pm_search_folders_array, $mid_array);
+    
+    }else {
+
+        $error = SEARCH_NO_KEYWORDS;
+        return false;
+    }
+
+    return array('message_count' => $message_count,
+                 'message_array' => $pm_search_folders_array);
 }
 
 /**

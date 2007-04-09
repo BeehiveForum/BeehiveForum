@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: constants.inc.php,v 1.106 2007-04-07 15:42:17 decoyduck Exp $ */
+/* $Id: constants.inc.php,v 1.107 2007-04-09 21:06:06 decoyduck Exp $ */
 
 /**
 * Constants used throughout Beehive.
@@ -175,13 +175,14 @@ define("PM_SAVED_IN", 16);    // Saved Received PM
 define("PM_SAVED_OUT", 32);   // Saved Sent PM
 define("PM_SAVED_DRAFT", 64); // Saved Draft
 
-// PM Folders - defines each folder type
+// PM Folders - defines each folder / view type
 
-define("PM_FOLDER_INBOX",  1);
-define("PM_FOLDER_SENT",   2);
-define("PM_FOLDER_OUTBOX", 3);
-define("PM_FOLDER_SAVED",  4);
-define("PM_FOLDER_DRAFTS", 5);
+define("PM_FOLDER_INBOX",   1);
+define("PM_FOLDER_SENT",    2);
+define("PM_FOLDER_OUTBOX",  3);
+define("PM_FOLDER_SAVED",   4);
+define("PM_FOLDER_DRAFTS",  5);
+define("PM_SEARCH_RESULTS", 6);
 
 // PM Item types - defines different types of messages
 

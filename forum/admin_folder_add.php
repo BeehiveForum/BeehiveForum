@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_add.php,v 1.42 2007-03-25 14:44:47 decoyduck Exp $ */
+/* $Id: admin_folder_add.php,v 1.43 2007-04-10 16:02:01 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -165,8 +165,9 @@ if (isset($_POST['submit'])) {
 
 // Make the arrays for the allow post types dropdown
 
-$allow_labels = array($lang['normalthreadsonly'], $lang['pollthreadsonly'], $lang['both']);
-$allow_values = array(FOLDER_ALLOW_NORMAL_THREAD, FOLDER_ALLOW_POLL_THREAD, FOLDER_ALLOW_ALL_THREAD);
+$allowed_post_types = array(FOLDER_ALLOW_NORMAL_THREAD => $lang['normalthreadsonly'],
+                            FOLDER_ALLOW_POLL_THREAD   => $lang['pollthreadsonly'],
+                            FOLDER_ALLOW_ALL_THREAD    => $lang['both']);
 
 html_draw_top();
 
@@ -272,7 +273,7 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['allowfoldertocontain']}:</td>\n";
-echo "                        <td align=\"left\">", form_dropdown_array("t_allowed_types", $allow_values, $allow_labels, (isset($t_allowed_types) ? $t_allowed_types : FOLDER_ALLOW_ALL_THREAD)), "</td>\n";
+echo "                        <td align=\"left\">", form_dropdown_array("t_allowed_types", $allowed_post_types, (isset($t_allowed_types) ? $t_allowed_types : FOLDER_ALLOW_ALL_THREAD)), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";

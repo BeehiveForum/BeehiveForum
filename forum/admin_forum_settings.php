@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.107 2007-03-25 14:44:48 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.108 2007-04-10 16:02:01 decoyduck Exp $ */
 
 /**
 * Displays and handles the Forum Settings page
@@ -114,86 +114,86 @@ $available_langs = lang_get_available();
 
 // Get the available forum styles and emoticons
 
-$available_styles = styles_get_available();
+$available_styles = styles_get_available(true);
 $available_emoticons = emoticons_get_available();
 
 // Timezones
 
-$timezones = array(1  => "(GMT-12:00) International Date Line West",
-                   2  => "(GMT-11:00) Midway Island Samoa",
-                   3  => "(GMT-10:00) Hawaii",
-                   4  => "(GMT-09:00) Alaska",
-                   5  => "(GMT-08:00) Pacific Time (US &amp; Canada); Tijuana",
-                   6  => "(GMT-07:00) Arizona",
-                   7  => "(GMT-07:00) Chihuahua, La Paz, Mazatlan",
-                   8  => "(GMT-07:00) Mountain Time (US &amp; Canada)",
-                   9  => "(GMT-06:00) Central America",
-                   10 => "(GMT-06:00) Central Time (US &amp; Canada)",
-                   11 => "(GMT-06:00) Guadalajara, Mexico City, Monterrey",
-                   12 => "(GMT-06:00) Saskatchewan",
-                   13 => "(GMT-05:00) Bogota, Lime, Quito",
-                   14 => "(GMT-05:00) Eastern Time (US &amp; Canada)",
-                   15 => "(GMT-05:00) Indiana (East)",
-                   16 => "(GMT-04:00) Atlantic Time (Canada)",
-                   17 => "(GMT-04:00) Caracas, La Paz",
-                   18 => "(GMT-04:00) Santiago",
-                   19 => "(GMT-03:30) Newfoundland",
-                   20 => "(GMT-03:00) Brasilia",
-                   21 => "(GMT-03:00) Buenos Aires, Georgetown",
-                   22 => "(GMT-03:00) Greenland",
-                   23 => "(GMT-02:00) Mid-Atlantic",
-                   24 => "(GMT-01:00) Azores",
-                   25 => "(GMT-01:00) Cape Verde Is.",
-                   26 => "(GMT) Casablanca, Monrovia",
-                   27 => "(GMT) Dublin, Edinburgh, Lisbon, London",
-                   28 => "(GMT+01:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna",
-                   29 => "(GMT+01:00) Belgrade, Bratislava, Budapest, Ljubljana, Prague",
-                   30 => "(GMT+01:00) Brussels, Copenhagen, Madrid, Paris",
-                   31 => "(GMT+01:00) Sarajevo, Skopje, Warsaw, Zagreb",
-                   32 => "(GMT+01:00) West Central Africa",
-                   33 => "(GMT+02:00) Athens, Istanbul, Minsk",
-                   34 => "(GMT+02:00) Bucharest",
-                   35 => "(GMT+02:00) Cairo",
-                   36 => "(GMT+02:00) Harare, Pretoria",
-                   37 => "(GMT+02:00) Helsinki, Kyiv, Riga, Sofia, Tallinn, Vilnius",
-                   38 => "(GMT+02:00) Jerusalem",
-                   39 => "(GMT+03:00) Baghdad",
-                   40 => "(GMT+03:00) Kuwait, Riyadh",
-                   41 => "(GMT+03:00) Moscow, St. Petersburg, Volgograd",
-                   42 => "(GMT+03:00) Nairobi",
-                   43 => "(GMT+03:30) Tehran",
-                   44 => "(GMT+04:00) Abu Dhabi, Muscat",
-                   45 => "(GMT+04:00) Baku, Tbilisi, Yerevan",
-                   46 => "(GMT+04:30) Kabul",
-                   47 => "(GMT+05:00) Ekaterinburg",
-                   48 => "(GMT+05:00) Islamabad, Karachi, Tashkent",
-                   49 => "(GMT+05:30) Chennai, Kolkata, Mumbai, New Delhi",
-                   50 => "(GMT+05.75) Kathmandu",
-                   51 => "(GMT+06:00) Almaty, Novosibirsk",
-                   52 => "(GMT+06:00) Astana, Dhaka",
-                   53 => "(GMT+06:00) Sri Jayawardenepura",
-                   54 => "(GMT+06:30) Rangoon",
-                   55 => "(GMT+07:00) Bangkok, Hanoi, Jakarta",
-                   56 => "(GMT+07:00) Krasnoyarsk",
-                   57 => "(GMT+08:00) Beijing, Chongging, Hong Kong, Urumgi",
-                   58 => "(GMT+08:00) Irkutsk, Ulaan Bataar",
-                   59 => "(GMT+08:00) Kuala Lumpur, Singapore",
-                   60 => "(GMT+08:00) Perth",
-                   61 => "(GMT+08:00) Taipei",
-                   62 => "(GMT+09:00) Osaka, Sapporo, Tokyo",
-                   63 => "(GMT+09:00) Seoul",
-                   64 => "(GMT+09:00) Yakutsk",
-                   65 => "(GMT+09:30) Adelaide",
-                   66 => "(GMT+09:30) Darwin",
-                   67 => "(GMT+10:00) Brisbane",
-                   68 => "(GMT+10:00) Canberra, Melbourne, Sydney",
-                   69 => "(GMT+10:00) Guam, Port Moresby",
-                   70 => "(GMT+10:00) Hobart",
-                   71 => "(GMT+10:00) Vladivostok",
-                   72 => "(GMT+11:00) Magadan, Solomon Is., New Caledonia",
-                   73 => "(GMT+12:00) Auckland, Wellington",
-                   74 => "(GMT+12:00) Figi, Kamchatka, Marshall Is.",
-                   75 => "(GMT+13:00) Nuku'alofa");
+$available_timezones = array(1  => "(GMT-12:00) International Date Line West",
+                             2  => "(GMT-11:00) Midway Island Samoa",
+                             3  => "(GMT-10:00) Hawaii",
+                             4  => "(GMT-09:00) Alaska",
+                             5  => "(GMT-08:00) Pacific Time (US &amp; Canada); Tijuana",
+                             6  => "(GMT-07:00) Arizona",
+                             7  => "(GMT-07:00) Chihuahua, La Paz, Mazatlan",
+                             8  => "(GMT-07:00) Mountain Time (US &amp; Canada)",
+                             9  => "(GMT-06:00) Central America",
+                             10 => "(GMT-06:00) Central Time (US &amp; Canada)",
+                             11 => "(GMT-06:00) Guadalajara, Mexico City, Monterrey",
+                             12 => "(GMT-06:00) Saskatchewan",
+                             13 => "(GMT-05:00) Bogota, Lime, Quito",
+                             14 => "(GMT-05:00) Eastern Time (US &amp; Canada)",
+                             15 => "(GMT-05:00) Indiana (East)",
+                             16 => "(GMT-04:00) Atlantic Time (Canada)",
+                             17 => "(GMT-04:00) Caracas, La Paz",
+                             18 => "(GMT-04:00) Santiago",
+                             19 => "(GMT-03:30) Newfoundland",
+                             20 => "(GMT-03:00) Brasilia",
+                             21 => "(GMT-03:00) Buenos Aires, Georgetown",
+                             22 => "(GMT-03:00) Greenland",
+                             23 => "(GMT-02:00) Mid-Atlantic",
+                             24 => "(GMT-01:00) Azores",
+                             25 => "(GMT-01:00) Cape Verde Is.",
+                             26 => "(GMT) Casablanca, Monrovia",
+                             27 => "(GMT) Dublin, Edinburgh, Lisbon, London",
+                             28 => "(GMT+01:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna",
+                             29 => "(GMT+01:00) Belgrade, Bratislava, Budapest, Ljubljana, Prague",
+                             30 => "(GMT+01:00) Brussels, Copenhagen, Madrid, Paris",
+                             31 => "(GMT+01:00) Sarajevo, Skopje, Warsaw, Zagreb",
+                             32 => "(GMT+01:00) West Central Africa",
+                             33 => "(GMT+02:00) Athens, Istanbul, Minsk",
+                             34 => "(GMT+02:00) Bucharest",
+                             35 => "(GMT+02:00) Cairo",
+                             36 => "(GMT+02:00) Harare, Pretoria",
+                             37 => "(GMT+02:00) Helsinki, Kyiv, Riga, Sofia, Tallinn, Vilnius",
+                             38 => "(GMT+02:00) Jerusalem",
+                             39 => "(GMT+03:00) Baghdad",
+                             40 => "(GMT+03:00) Kuwait, Riyadh",
+                             41 => "(GMT+03:00) Moscow, St. Petersburg, Volgograd",
+                             42 => "(GMT+03:00) Nairobi",
+                             43 => "(GMT+03:30) Tehran",
+                             44 => "(GMT+04:00) Abu Dhabi, Muscat",
+                             45 => "(GMT+04:00) Baku, Tbilisi, Yerevan",
+                             46 => "(GMT+04:30) Kabul",
+                             47 => "(GMT+05:00) Ekaterinburg",
+                             48 => "(GMT+05:00) Islamabad, Karachi, Tashkent",
+                             49 => "(GMT+05:30) Chennai, Kolkata, Mumbai, New Delhi",
+                             50 => "(GMT+05.75) Kathmandu",
+                             51 => "(GMT+06:00) Almaty, Novosibirsk",
+                             52 => "(GMT+06:00) Astana, Dhaka",
+                             53 => "(GMT+06:00) Sri Jayawardenepura",
+                             54 => "(GMT+06:30) Rangoon",
+                             55 => "(GMT+07:00) Bangkok, Hanoi, Jakarta",
+                             56 => "(GMT+07:00) Krasnoyarsk",
+                             57 => "(GMT+08:00) Beijing, Chongging, Hong Kong, Urumgi",
+                             58 => "(GMT+08:00) Irkutsk, Ulaan Bataar",
+                             59 => "(GMT+08:00) Kuala Lumpur, Singapore",
+                             60 => "(GMT+08:00) Perth",
+                             61 => "(GMT+08:00) Taipei",
+                             62 => "(GMT+09:00) Osaka, Sapporo, Tokyo",
+                             63 => "(GMT+09:00) Seoul",
+                             64 => "(GMT+09:00) Yakutsk",
+                             65 => "(GMT+09:30) Adelaide",
+                             66 => "(GMT+09:30) Darwin",
+                             67 => "(GMT+10:00) Brisbane",
+                             68 => "(GMT+10:00) Canberra, Melbourne, Sydney",
+                             69 => "(GMT+10:00) Guam, Port Moresby",
+                             70 => "(GMT+10:00) Hobart",
+                             71 => "(GMT+10:00) Vladivostok",
+                             72 => "(GMT+11:00) Magadan, Solomon Is., New Caledonia",
+                             73 => "(GMT+12:00) Auckland, Wellington",
+                             74 => "(GMT+12:00) Figi, Kamchatka, Marshall Is.",
+                             75 => "(GMT+13:00) Nuku'alofa");
 
 if (isset($_POST['changepermissions'])) {
 
@@ -470,15 +470,15 @@ echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['defaultstyle']}:</td>\n";
-echo "                        <td align=\"left\">", form_dropdown_array("default_style", array_keys($available_styles), array_values($available_styles), (isset($forum_settings['default_style']) && in_array($forum_settings['default_style'], array_keys($available_styles)) ? $forum_settings['default_style'] : 'default')), "</td>\n";
+echo "                        <td align=\"left\">", form_dropdown_array("default_style", $available_styles, (isset($forum_settings['default_style']) && in_array($forum_settings['default_style'], array_keys($available_styles)) ? $forum_settings['default_style'] : 'default')), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['defaultemoticons']} [<a href=\"display_emoticons.php?webtag=$webtag\" target=\"_blank\" onclick=\"return openEmoticons('','$webtag')\">{$lang['preview']}</a>]:</td>\n";
-echo "                        <td align=\"left\">", form_dropdown_array("default_emoticons", array_keys($available_emoticons), array_values($available_emoticons), (isset($forum_settings['default_emoticons']) && in_array($forum_settings['default_emoticons'], array_keys($available_emoticons)) ? $forum_settings['default_emoticons'] : 'none')), "</td>\n";
+echo "                        <td align=\"left\">", form_dropdown_array("default_emoticons", $available_emoticons, (isset($forum_settings['default_emoticons']) && in_array($forum_settings['default_emoticons'], array_keys($available_emoticons)) ? $forum_settings['default_emoticons'] : 'none')), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['defaultlanguage']}:</td>\n";
-echo "                        <td align=\"left\">", form_dropdown_array("default_language", $available_langs, $available_langs, (isset($forum_settings['default_language']) && in_array($forum_settings['default_language'], $available_langs) ? $forum_settings['default_language'] : 'en')), "</td>\n";
+echo "                        <td align=\"left\">", form_dropdown_array("default_language", $available_langs, (isset($forum_settings['default_language']) && in_array($forum_settings['default_language'], $available_langs) ? $forum_settings['default_language'] : 'en')), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
@@ -511,7 +511,7 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['timezonefromGMT']}:</td>\n";
-echo "                        <td align=\"left\">", form_dropdown_array("forum_timezone", array_keys($timezones), array_values($timezones), (isset($forum_settings['forum_timezone']) && is_numeric($forum_settings['forum_timezone']) ? $forum_settings['forum_timezone'] : 27)), "</td>\n";
+echo "                        <td align=\"left\">", form_dropdown_array("forum_timezone", $available_timezones, (isset($forum_settings['forum_timezone']) && is_numeric($forum_settings['forum_timezone']) ? $forum_settings['forum_timezone'] : 27)), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";

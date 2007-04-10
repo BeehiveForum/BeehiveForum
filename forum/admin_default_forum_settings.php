@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.63 2007-03-25 14:44:47 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.64 2007-04-10 16:02:01 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -347,6 +347,10 @@ if (!empty($error_html)) {
     echo "<h2>{$lang['forumsettingsupdated']}</h2>\n";
 }
 
+$unread_cutoff_periods = array(-1 => $lang['disableunreadmessages'], 0 => $lang['nocutoffdefault'], 
+                               AVG_MONTH_IN_SECONDS => $lang['1month'], AVG_SIX_MONTHS_IN_SECONDS => $lang['6months'], 
+                               YEAR_IN_SECONDS => $lang['1year'], -2 => $lang['customsetbelow']);
+
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form name=\"prefs\" action=\"admin_default_forum_settings.php\" method=\"post\" target=\"_self\">\n";
@@ -374,7 +378,7 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"270\">{$lang['unreadmessagescutoff']}:</td>\n";
-echo "                        <td align=\"left\">", form_dropdown_array("messages_unread_cutoff", array(-1, 0, AVG_MONTH_IN_SECONDS, AVG_SIX_MONTHS_IN_SECONDS, YEAR_IN_SECONDS, -2), array($lang['disableunreadmessages'], $lang['nocutoffdefault'], $lang['1month'], $lang['6months'], $lang['1year'], $lang['customsetbelow']), (isset($default_forum_settings['messages_unread_cutoff'])) ? $default_forum_settings['messages_unread_cutoff'] : 0), "&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_dropdown_array("messages_unread_cutoff", $unread_cutoff_periods, (isset($default_forum_settings['messages_unread_cutoff'])) ? $default_forum_settings['messages_unread_cutoff'] : 0), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"270\">&nbsp;</td>\n";
@@ -639,7 +643,7 @@ echo "                        <td align=\"left\" width=\"270\">{$lang['enableper
 echo "                        <td align=\"left\">", form_radio("show_pms", "Y", $lang['yes'] , ((isset($default_forum_settings['show_pms']) && $default_forum_settings['show_pms'] == 'Y'))), "&nbsp;", form_radio("show_pms", "N", $lang['no'] , (isset($default_forum_settings['show_pms']) && $default_forum_settings['show_pms'] == 'N') || !isset($default_forum_settings['show_pms'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"350\">{$lang['autopruneuserspmfoldersevery']} ", form_dropdown_array('pm_auto_prune', array(1 => 10, 2 => 15, 3 => 30, 4 => 60), array(1 => 10, 2 => 15, 3 => 30, 4 => 60), (isset($default_forum_settings['pm_auto_prune']) ? ($default_forum_settings['pm_auto_prune'] > 0 ? $default_forum_settings['pm_auto_prune'] : $default_forum_settings['pm_auto_prune'] * -1) : 4)), " {$lang['days']}:</td>\n";
+echo "                        <td align=\"left\" width=\"350\">{$lang['autopruneuserspmfoldersevery']} ", form_dropdown_array('pm_auto_prune', array(1 => 10, 2 => 15, 3 => 30, 4 => 60), (isset($default_forum_settings['pm_auto_prune']) ? ($default_forum_settings['pm_auto_prune'] > 0 ? $default_forum_settings['pm_auto_prune'] : $default_forum_settings['pm_auto_prune'] * -1) : 4)), " {$lang['days']}:</td>\n";
 echo "                        <td align=\"left\">", form_radio("pm_auto_prune_enabled", "Y", $lang['yes'], (isset($default_forum_settings['pm_auto_prune']) && $default_forum_settings['pm_auto_prune'] > 0)), "&nbsp;", form_radio("pm_auto_prune_enabled", "N", $lang['no'] , ((isset($default_forum_settings['pm_auto_prune']) && $default_forum_settings['pm_auto_prune'] < 0)) || !isset($default_forum_settings['pm_auto_prune'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";

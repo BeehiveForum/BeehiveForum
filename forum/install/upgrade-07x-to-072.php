@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-07x-to-072.php,v 1.29 2007-03-24 17:32:25 decoyduck Exp $ */
+/* $Id: upgrade-07x-to-072.php,v 1.30 2007-04-10 16:02:05 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-07x-to-072.php") {
 
@@ -566,6 +566,41 @@ if (!$result = @db_query($sql, $db_install)) {
 install_remove_table_keys("PM_ATTACHMENT_IDS");
 
 $sql = "ALTER TABLE PM_ATTACHMENT_IDS ADD INDEX AID (AID)";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// Added ability to save draft messages requires that we add
+// another column where we store the recipient field.
+
+install_remove_table_keys("PM");
+
+$sql = "ALTER TABLE PM ADD RECIPIENT_LIST VARCHAR(255) NOT NULL AFTER SUBJECT";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// You can now search PMs for messages using fulltext searching.
+
+$sql = "ALTER TABLE PM ADD FULLTEXT (SUBJECT)";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// Fulltext index for PM message body
+
+install_remove_table_keys("PM_CONTENT");
+
+$sql = "ALTER TABLE PM_CONTENT ADD FULLTEXT (CONTENT)";
 
 if (!$result = @db_query($sql, $db_install)) {
 

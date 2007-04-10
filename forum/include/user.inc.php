@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.303 2007-03-04 14:18:37 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.304 2007-04-10 16:02:05 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -509,16 +509,15 @@ function user_get_prefs($uid)
     $sql.= "USER_PREFS.HOMEPAGE_URL, USER_PREFS.PIC_URL, USER_PREFS.EMAIL_NOTIFY, ";
     $sql.= "USER_PREFS.TIMEZONE, TIMEZONES.GMT_OFFSET, TIMEZONES.DST_OFFSET, ";
     $sql.= "USER_PREFS.DL_SAVING, USER_PREFS.MARK_AS_OF_INT, USER_PREFS.POSTS_PER_PAGE, ";
-    $sql.= "USER_PREFS.FONT_SIZE, USER_PREFS.STYLE, USER_PREFS.VIEW_SIGS, ";
-    $sql.= "USER_PREFS.START_PAGE, USER_PREFS.LANGUAGE, USER_PREFS.PM_NOTIFY, ";
-    $sql.= "USER_PREFS.PM_NOTIFY_EMAIL, USER_PREFS.PM_SAVE_SENT_ITEM, ";
-    $sql.= "USER_PREFS.PM_INCLUDE_REPLY, USER_PREFS.PM_AUTO_PRUNE, ";
-    $sql.= "USER_PREFS.PM_EXPORT_TYPE, USER_PREFS.PM_EXPORT_FILE, ";
-    $sql.= "USER_PREFS.PM_EXPORT_ATTACHMENTS, USER_PREFS.PM_EXPORT_STYLE, ";
-    $sql.= "USER_PREFS.PM_EXPORT_WORDFILTER, USER_PREFS.DOB_DISPLAY, ";
-    $sql.= "USER_PREFS.ANON_LOGON, USER_PREFS.SHOW_STATS, ";
-    $sql.= "USER_PREFS.IMAGES_TO_LINKS, USER_PREFS.USE_WORD_FILTER, ";
-    $sql.= "USER_PREFS.USE_ADMIN_FILTER, USER_PREFS.EMOTICONS, ";
+    $sql.= "USER_PREFS.FONT_SIZE, USER_PREFS.VIEW_SIGS, USER_PREFS.START_PAGE, ";
+    $sql.= "USER_PREFS.LANGUAGE, USER_PREFS.PM_NOTIFY, USER_PREFS.PM_NOTIFY_EMAIL, ";
+    $sql.= "USER_PREFS.PM_SAVE_SENT_ITEM, USER_PREFS.PM_INCLUDE_REPLY, ";
+    $sql.= "USER_PREFS.PM_AUTO_PRUNE, USER_PREFS.PM_EXPORT_TYPE, ";
+    $sql.= "USER_PREFS.PM_EXPORT_FILE, USER_PREFS.PM_EXPORT_ATTACHMENTS, ";
+    $sql.= "USER_PREFS.PM_EXPORT_STYLE, USER_PREFS.PM_EXPORT_WORDFILTER, ";
+    $sql.= "USER_PREFS.DOB_DISPLAY, USER_PREFS.ANON_LOGON, ";
+    $sql.= "USER_PREFS.SHOW_STATS, USER_PREFS.IMAGES_TO_LINKS, ";
+    $sql.= "USER_PREFS.USE_WORD_FILTER, USER_PREFS.USE_ADMIN_FILTER, ";
     $sql.= "USER_PREFS.ALLOW_EMAIL, USER_PREFS.ALLOW_PM, USER_PREFS.POST_PAGE, ";
     $sql.= "USER_PREFS.SHOW_THUMBS, USER_PREFS.USE_MOVER_SPOILER, ";
     $sql.= "USER_PREFS.ENABLE_WIKI_WORDS, USER_PREFS.USE_OVERFLOW_RESIZE ";
@@ -595,16 +594,15 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
     $global_pref_names = array('FIRSTNAME', 'LASTNAME', 'DOB', 'HOMEPAGE_URL',
                                'PIC_URL', 'EMAIL_NOTIFY', 'TIMEZONE', 'DL_SAVING',
                                'MARK_AS_OF_INT', 'POSTS_PER_PAGE', 'FONT_SIZE',
-                               'STYLE', 'VIEW_SIGS', 'START_PAGE', 'LANGUAGE',
-                               'PM_NOTIFY', 'PM_NOTIFY_EMAIL', 'PM_SAVE_SENT_ITEM',
-                               'PM_INCLUDE_REPLY', 'PM_AUTO_PRUNE', 'PM_EXPORT_FILE',
-                               'PM_EXPORT_TYPE', 'PM_EXPORT_ATTACHMENTS', 'PM_EXPORT_STYLE',
-                               'PM_EXPORT_WORDFILTER', 'DOB_DISPLAY',
-                               'ANON_LOGON', 'SHOW_STATS', 'IMAGES_TO_LINKS',
-                               'USE_WORD_FILTER', 'USE_ADMIN_FILTER', 'EMOTICONS',
-                               'ALLOW_EMAIL', 'ALLOW_PM', 'POST_PAGE', 'SHOW_THUMBS',
-                               'ENABLE_WIKI_WORDS', 'USE_MOVER_SPOILER',
-                               'USE_OVERFLOW_RESIZE');
+                               'VIEW_SIGS', 'START_PAGE', 'LANGUAGE', 'PM_NOTIFY', 
+                               'PM_NOTIFY_EMAIL', 'PM_SAVE_SENT_ITEM', 'PM_INCLUDE_REPLY', 
+                               'PM_AUTO_PRUNE', 'PM_EXPORT_FILE', 'PM_EXPORT_TYPE', 
+                               'PM_EXPORT_ATTACHMENTS', 'PM_EXPORT_STYLE', 
+                               'PM_EXPORT_WORDFILTER', 'DOB_DISPLAY', 'ANON_LOGON',
+                               'SHOW_STATS', 'IMAGES_TO_LINKS', 'USE_WORD_FILTER', 
+                               'USE_ADMIN_FILTER',  'ALLOW_EMAIL', 'ALLOW_PM', 
+                               'POST_PAGE', 'SHOW_THUMBS', 'ENABLE_WIKI_WORDS',
+                               'USE_MOVER_SPOILER', 'USE_OVERFLOW_RESIZE');
 
     // names of preferences that can be set on a per-forum basis
 
@@ -625,7 +623,6 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
 
                 // preference is to be set globally.
                 // check this pref name is allowed to be set globally
-
 
                 if (in_array($pref_name, $global_pref_names)) {
 

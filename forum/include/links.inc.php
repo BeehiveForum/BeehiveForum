@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.inc.php,v 1.57 2007-01-15 00:10:35 decoyduck Exp $ */
+/* $Id: links.inc.php,v 1.58 2007-04-10 16:02:03 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -481,13 +481,11 @@ function links_folder_dropdown($default_fid, $folders)
 {
     while (list($key, $val) = each($folders)) {
 
-        $values[] = $key;
-        $labels[] = links_display_folder_path($key, $folders, false);
-
+        $labels[$key] = links_display_folder_path($key, $folders, false);
         if ($key == $default_fid) $default_value = $key;
     }
 
-    return form_dropdown_array("fid", $values, $labels, $default_value, false, "links_dropdown");
+    return form_dropdown_array("fid", $labels, $default_value, false, "links_dropdown");
 }
 
 function links_delete_comment($cid)

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.104 2007-03-30 00:28:50 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.105 2007-04-10 16:02:04 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1268,7 +1268,7 @@ function thread_get_unmoved_posts($tid)
         $thread_data = array();
         
         while ($row = db_fetch_array($result)) {
-            $thread_data[] = $row['PID'];
+            $thread_data[$row['PID']] = $row['PID'];
         }
 
         return $thread_data;

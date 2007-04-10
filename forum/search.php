@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.169 2007-03-31 10:33:41 decoyduck Exp $ */
+/* $Id: search.php,v 1.170 2007-04-10 16:02:02 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -141,6 +141,51 @@ if (isset($_GET['sort_dir']) && is_numeric($_GET['sort_dir'])) {
 }else {
     $sort_dir = 1;
 }
+
+
+// Drop down date from options
+
+$search_date_from_array = array(1  => $lang['today'],
+                                2  => $lang['yesterday'], 
+                                3  => $lang['daybeforeyesterday'], 
+                                4  => sprintf($lang['weekago'], 1), 
+                                5  => sprintf($lang['weeksago'], 2), 
+                                6  => sprintf($lang['weeksago'], 3), 
+                                7  => sprintf($lang['monthago'], 1), 
+                                8  => sprintf($lang['monthsago'], 2), 
+                                9  => sprintf($lang['monthsago'], 3), 
+                                10 => sprintf($lang['monthsago'], 6), 
+                                11 => sprintf($lang['yearago'], 1), 
+                                12 => $lang['beginningoftime']);
+
+// Drop down date to options
+
+$search_date_to_array = array(1  => $lang['now'], 
+                              2  => $lang['today'], 
+                              3  => $lang['yesterday'], 
+                              4  => $lang['daybeforeyesterday'], 
+                              5  => sprintf($lang['weekago'], 1), 
+                              6  => sprintf($lang['weeksago'], 2), 
+                              7  => sprintf($lang['weeksago'], 3), 
+                              8  => sprintf($lang['monthago'], 1), 
+                              9  => sprintf($lang['monthsago'], 2), 
+                              10 => sprintf($lang['monthsago'], 3), 
+                              11 => sprintf($lang['monthsago'], 6), 
+                              12 => sprintf($lang['yearago'], 1));
+
+// Drop down sort by options
+
+$search_sort_by_array = array(1 => $lang['lastpostdate'],
+                              2 => $lang['numberofreplies'], 
+                              3 => $lang['foldername'], 
+                              4 => $lang['authorname']);
+
+// Drop down sort dir options
+
+$search_sort_dir_array = array(1 => $lang['decendingorder'], 
+                               2 => $lang['ascendingorder']);
+
+// Get a list of available folders.
 
 if (!$folder_dropdown = folder_search_dropdown()) {
 
@@ -539,19 +584,19 @@ if (isset($search_success) && $search_success === true && isset($offset)) {
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">{$lang['postedfrom']}:</td>\n";
-    echo "                        <td align=\"left\">", form_dropdown_array("date_from", range(1, 12), array($lang['today'], $lang['yesterday'], $lang['daybeforeyesterday'], sprintf($lang['weekago'], 1), sprintf($lang['weeksago'], 2), sprintf($lang['weeksago'], 3), sprintf($lang['monthago'], 1), sprintf($lang['monthsago'], 2), sprintf($lang['monthsago'], 3), sprintf($lang['monthsago'], 6), sprintf($lang['yearago'], 1), $lang['beginningoftime']), 7, false, "search_dropdown"), "&nbsp;</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("date_from", $search_date_from_array, 7, false, "search_dropdown"), "&nbsp;</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">{$lang['postedto']}:</td>\n";
-    echo "                        <td align=\"left\">", form_dropdown_array("date_to", range(1, 12), array($lang['now'], $lang['today'], $lang['yesterday'], $lang['daybeforeyesterday'], sprintf($lang['weekago'], 1), sprintf($lang['weeksago'], 2), sprintf($lang['weeksago'], 3), sprintf($lang['monthago'], 1), sprintf($lang['monthsago'], 2), sprintf($lang['monthsago'], 3), sprintf($lang['monthsago'], 6), sprintf($lang['yearago'], 1)), 2, false, "search_dropdown"), "&nbsp;</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("date_to", $search_date_to_array, 2, false, "search_dropdown"), "&nbsp;</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">{$lang['sortby']}:</td>\n";
-    echo "                        <td align=\"left\">", form_dropdown_array("sort_by", range(1, 4), array($lang['lastpostdate'], $lang['numberofreplies'], $lang['foldername'], $lang['authorname']), 1, false, "search_dropdown"), "&nbsp;</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("sort_by", $search_sort_by_array, 1, false, "search_dropdown"), "&nbsp;</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">{$lang['sortdir']}:</td>\n";
-    echo "                        <td align=\"left\">", form_dropdown_array("sort_dir", range(1, 2), array($lang['decendingorder'], $lang['ascendingorder']), 1, false, "search_dropdown"), "&nbsp;</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("sort_dir", $search_sort_dir_array, 1, false, "search_dropdown"), "&nbsp;</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['groupbythread']}:</td>\n";
@@ -597,11 +642,11 @@ if (isset($search_success) && $search_success === true) {
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">&nbsp;</td>\n";
-    echo "      <td align=\"left\" colspan=\"2\">", form_dropdown_array("sort_by", range(1, 4), array($lang['lastpostdate'], $lang['numberofreplies'], $lang['foldername'], $lang['authorname']), $sort_by), "</td>\n";
+    echo "      <td align=\"left\" colspan=\"2\">", form_dropdown_array("sort_by", $search_sort_by_array, $sort_by), "</td>\n";
     echo "    </tr>\n";
     echo"     <tr>\n";
     echo "      <td align=\"left\">&nbsp;</td>\n";
-    echo "      <td align=\"left\">", form_dropdown_array("sort_dir", range(1, 2), array($lang['decendingorder'], $lang['ascendingorder']), $sort_dir), "</td>\n";
+    echo "      <td align=\"left\">", form_dropdown_array("sort_dir", $search_sort_dir_array, $sort_dir), "</td>\n";
     echo "      <td align=\"left\">", form_submit("go",$lang['goexcmark']). "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";

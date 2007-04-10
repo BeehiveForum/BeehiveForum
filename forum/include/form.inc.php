@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.94 2007-03-26 21:57:21 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.95 2007-04-10 16:02:03 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -149,7 +149,7 @@ function form_textarea($name, $value, $rows, $cols, $wrap = "virtual", $custom_h
 
 // Creates a dropdown with values from array(s)
 
-function form_dropdown_array($name, $value, $label, $default = false, $custom_html = false, $class = "bhselect")
+function form_dropdown_array($name, $options_array, $default = false, $custom_html = false, $class = "bhselect", $group_class = "bhselectoptgroup")
 {
     $lang = load_language_file();
 
@@ -165,19 +165,18 @@ function form_dropdown_array($name, $value, $label, $default = false, $custom_ht
 
     $html.= ">";
 
-    if (is_array($value)) {
+    if (is_array($options_array)) {
+        
+        foreach ($options_array as $option_key => $option_text) {
 
-        foreach ($value as $key => $value_text) {
+            if (is_array($option_text)) {
 
-            $sel = (strtolower($value_text) == strtolower($default)) ? " selected=\"selected\"" : "";
-
-            if (isset($label[$key])) {
-
-                $html.= "<option value=\"{$value_text}\"$sel>{$label[$key]}</option>";
-
+                $html.= form_dropdown_objgroup_array($option_key, $option_text, $default, $custom_html, $group_class);
+            
             }else {
 
-                $html.= "<option$sel>{$value_text}</option>";
+                $selected = (strtolower($option_key) == strtolower($default)) ? " selected=\"selected\"" : "";
+                $html.= "<option value=\"{$option_key}\"$selected>$option_text</option>";
             }
         }
     }
@@ -185,6 +184,32 @@ function form_dropdown_array($name, $value, $label, $default = false, $custom_ht
     $html.= "</select>";
     return $html;
 }
+
+// Creates a optgroup to be used in a dropdown.
+
+function form_dropdown_objgroup_array($name, $options_array, $default = false, $custom_html = false, $class = "bhselectoptgroup")
+{
+    if (is_array($options_array)) {
+
+        $html = "<optgroup label=\"$name\" class=\"$class\">";
+
+        foreach ($options_array as $option_key => $option_text) {
+
+            if (is_array($option_text)) {
+
+                $html.= form_dropdown_objgroup_array($option_key, $option_text, $default, $custom_html, $class);
+
+            }else {
+
+                $selected = (strtolower($option_key) == strtolower($default)) ? " selected=\"selected\"" : "";
+                $html.= "<option value=\"$option_key\"$selected>$option_text</option>";
+            }
+        }
+
+        $html.= "</optgroup>";
+        return $html;
+    }
+}    
 
 // Creates a checkbox field
 
@@ -415,11 +440,11 @@ function form_dob_dropdowns($dob_year, $dob_month, $dob_day, $show_blank = true)
         array_unshift($birthday_years, '&nbsp;');
     }
 
-    $output = form_dropdown_array("dob_day", array_values($birthday_days), array_values($birthday_days), $dob_day);
+    $output = form_dropdown_array("dob_day", $birthday_days, $dob_day);
     $output.= "&nbsp;";
-    $output.= form_dropdown_array("dob_month", array_keys($birthday_months), array_values($birthday_months), $dob_month);
+    $output.= form_dropdown_array("dob_month", $birthday_months, $dob_month);
     $output.= "&nbsp;";
-    $output.= form_dropdown_array("dob_year", array_values($birthday_years), array_values($birthday_years), $dob_year);
+    $output.= form_dropdown_array("dob_year", $birthday_years, $dob_year);
 
     return $output;
 }
@@ -434,34 +459,28 @@ function form_date_dropdowns($year = 0, $month = 0, $day = 0, $prefix = false, $
     $days = range(1, 31);
     $months = $lang['month_short'];
 
-    array_unshift($days, "&nbsp;");
-    array_unshift($months, "&nbsp;");
-
     // the end of 2037 is more or less the maximum time that
     // can be represented as a UNIX timestamp currently
 
     if (is_numeric($start_year) && $start_year > 0 && $start_year < 2037) {
 
-        $years = range($start_year, 2037);
-        array_unshift($years, "&nbsp;");
-
-        $years_values = range($start_year, 2037);
-        array_unshift($years_values, "&nbsp;");
+        $years = array_flip(array_merge(array('&nbsp;' => ''), range($start_year, 2037)));
+        array_walk($years, create_function('&$item, $key', 'if (is_numeric($key)) $item = $key;'));
 
     }else {
 
-        $years = range(date('Y'), 2037);
-        array_unshift($years, "&nbsp;");
-
-        $years_values = range(date('Y'), 2037);
-        array_unshift($years_values, "&nbsp;");
+        $years = array_flip(array_merge(array('&nbsp;' => ''), range(date('Y'), 2037)));
+        array_walk($years, create_function('&$item, $key', 'if (is_numeric($key)) $item = $key;'));
     }
 
-    $output = form_dropdown_array("{$prefix}day", range(0, 31), $days, $day);
+    array_unshift($days, "&nbsp;");
+    array_unshift($months, "&nbsp;");        
+
+    $output = form_dropdown_array("{$prefix}day", $days, $day);
     $output.= "&nbsp;";
-    $output.= form_dropdown_array("{$prefix}month", range(0, 12), $months, $month);
+    $output.= form_dropdown_array("{$prefix}month", $months, $month);
     $output.= "&nbsp;";
-    $output.= form_dropdown_array("{$prefix}year", $years_values, $years, $year);
+    $output.= form_dropdown_array("{$prefix}year", $years, $year);
 
     return $output;
 }

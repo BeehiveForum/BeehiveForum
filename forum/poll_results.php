@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll_results.php,v 1.18 2007-03-24 17:32:24 decoyduck Exp $ */
+/* $Id: poll_results.php,v 1.19 2007-04-10 16:02:02 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -154,7 +154,7 @@ if ($polldata['VOTETYPE'] == 1 && $polldata['POLLTYPE'] != 2) {
     echo "      <form name=\"f_mode\" method=\"get\" action=\"poll_results.php\">\n";
     echo "        ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
     echo "        ", form_input_hidden("tid", _htmlentities($tid)), "\n";
-    echo "        View Style: ", form_dropdown_array("viewstyle", range(0, 1), array('By option', 'By user'), $viewstyle, "onchange=\"submit()\""), "&nbsp;", form_submit('go', $lang['goexcmark']), "\n";
+    echo "        View Style: ", form_dropdown_array("viewstyle", array($lang['viewbypolloption'], $lang['viewbyuser']), $viewstyle, "onchange=\"submit()\""), "&nbsp;", form_submit('go', $lang['goexcmark']), "\n";
     echo "      </form>\n";
     echo "    </td>\n";
     echo "  </tr>\n";

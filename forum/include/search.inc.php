@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.176 2007-03-05 20:58:41 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.177 2007-04-10 16:02:04 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -729,7 +729,7 @@ function forum_search_dropdown()
             $forums_array[$row['FID']] = $row['SVALUE'];
         }
 
-        return form_dropdown_array("forums", array_keys($forums_array), array_values($forums_array), $forum_fid, false, "search_dropdown");
+        return form_dropdown_array("forums", $forums_array, $forum_fid, false, "search_dropdown");
     }
 
     return false;
@@ -747,8 +747,7 @@ function folder_search_dropdown()
 
     $forum_fid = $table_data['FID'];
 
-    $folders['FIDS'] = array();
-    $folders['TITLES'] = array();
+    $available_folders = array();
 
     $access_allowed = USER_PERM_POST_READ;
 
@@ -765,26 +764,22 @@ function folder_search_dropdown()
 
                 if (bh_session_check_perm(USER_PERM_GUEST_ACCESS, $folder_data['FID'])) {
 
-                    $folders['FIDS'][]   = $folder_data['FID'];
-                    $folders['TITLES'][] = $folder_data['TITLE'];
+                    $available_folders[$folder_data['FID']] = $folder_data['TITLE'];
                 }
 
             }else {
             
                 if (bh_session_check_perm($access_allowed, $folder_data['FID'])) {
 
-                    $folders['FIDS'][]   = $folder_data['FID'];
-                    $folders['TITLES'][] = $folder_data['TITLE'];
+                    $available_folders[$folder_data['FID']] = $folder_data['TITLE'];
                 }
             }
         }
 
-        if (sizeof($folders['FIDS']) > 0 && sizeof($folders['TITLES']) > 0) {
+        if (sizeof($available_folders) > 0) {
 
-            array_unshift($folders['FIDS'], 0);
-            array_unshift($folders['TITLES'], $lang['all_caps']);
-
-            return form_dropdown_array("fid", $folders['FIDS'], $folders['TITLES'], 0, false, "search_dropdown");
+            $available_folders = array_merge(array(0 => $lang['all_caps']), $available_folders);
+            return form_dropdown_array("fid", $available_folders, 0, false, "search_dropdown");
         }
     }
 }

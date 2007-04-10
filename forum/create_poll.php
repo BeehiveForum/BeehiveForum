@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.193 2007-03-31 10:33:41 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.194 2007-04-10 16:02:02 decoyduck Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -878,7 +878,7 @@ echo "                        <td align=\"left\">\n";
 echo "                          <table border=\"0\" class=\"posthead\" cellpadding=\"0\" cellspacing=\"5\">\n";
 echo "                            <tr>\n";
 echo "                              <td align=\"left\">&nbsp;</td>\n";
-echo "                              <td align=\"left\">{$lang['numberanswers']}: ", form_dropdown_array('answer_count', range(0, 3), array('5', '10', '15', '20'), $t_answer_count), "&nbsp;", form_submit('change_count', $lang['change']), "</td>\n";
+echo "                              <td align=\"left\">{$lang['numberanswers']}: ", form_dropdown_array('answer_count', array('5', '10', '15', '20'), $t_answer_count), "&nbsp;", form_submit('change_count', $lang['change']), "</td>\n";
 echo "                              <td align=\"left\">&nbsp;</td>\n";
 echo "                              <td align=\"left\">&nbsp;</td>\n";
 echo "                            </tr>\n";
@@ -908,7 +908,7 @@ for ($i = 0; $i < $answer_count; $i++) {
     echo "            <tr>\n";
     echo "              <td align=\"left\">", $i + 1, ". </td>\n";
     echo "              <td align=\"left\">", form_input_text("answers[]", isset($t_answers[$i]) ? _htmlentities($t_answers[$i]) : '', 40, 255), "</td>\n";
-    echo "              <td align=\"center\">", form_dropdown_array("answer_groups[]", range(1, $answer_count), range(1, $answer_count), (isset($t_answer_groups[$i])) ? $t_answer_groups[$i] : 1), "</td>\n";
+    echo "              <td align=\"center\">", form_dropdown_array("answer_groups[]", range(1, $answer_count), (isset($t_answer_groups[$i])) ? $t_answer_groups[$i] : 1), "</td>\n";
     echo "              <td align=\"left\">&nbsp;</td>\n";
     echo "            </tr>\n";
 }
@@ -1056,7 +1056,7 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\">{$lang['whenlikepollclose']}</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", form_dropdown_array('close_poll', range(0, 4), array($lang['oneday'], $lang['threedays'], $lang['sevendays'], $lang['thirtydays'], $lang['never']), isset($t_close_poll) ? $t_close_poll : 4), "</td>\n";
+echo "                        <td align=\"left\">", form_dropdown_array('close_poll', array($lang['oneday'], $lang['threedays'], $lang['sevendays'], $lang['thirtydays'], $lang['never']), isset($t_close_poll) ? $t_close_poll : 4), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";

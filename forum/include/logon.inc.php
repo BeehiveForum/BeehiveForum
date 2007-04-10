@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.55 2007-03-17 15:26:19 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.56 2007-04-10 16:02:03 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -200,9 +200,9 @@ function draw_logon_form($logon_main, $other_logon = false)
     // Username array
 
     if (isset($_COOKIE['bh_remember_username']) && is_array($_COOKIE['bh_remember_username'])) {
-        $username_array = $_COOKIE['bh_remember_username'];
-    }elseif (isset($_COOKIE['bh_remember_username']) && strlen($_COOKIE['bh_remember_username']) > 0) {
-        $username_array = explode(",", $_COOKIE['bh_remember_username']);
+        $username_array = array_map('_stripslashes', $_COOKIE['bh_remember_username']);
+    }elseif (isset($_COOKIE['bh_remember_username']) && strlen(trim(_stripslashes($_COOKIE['bh_remember_username']))) > 0) {
+        $username_array = explode(",", _stripslashes($_COOKIE['bh_remember_username']));
     }else {
         $username_array = array();
     }
@@ -210,9 +210,9 @@ function draw_logon_form($logon_main, $other_logon = false)
     // Password array
 
     if (isset($_COOKIE['bh_remember_password']) && is_array($_COOKIE['bh_remember_password'])) {
-        $password_array = $_COOKIE['bh_remember_password'];
-    }elseif (isset($_COOKIE['bh_remember_password']) && strlen($_COOKIE['bh_remember_password']) > 0) {
-        $password_array = explode(",", $_COOKIE['bh_remember_password']);
+        $password_array = array_map('_stripslashes', $_COOKIE['bh_remember_password']);
+    }elseif (isset($_COOKIE['bh_remember_password']) && strlen(trim(_stripslashes($_COOKIE['bh_remember_password']))) > 0) {
+        $password_array = explode(",", _stripslashes($_COOKIE['bh_remember_password']));
     }else {
         $password_array = array();
     }
@@ -220,9 +220,9 @@ function draw_logon_form($logon_main, $other_logon = false)
     // Passhash array
 
     if (isset($_COOKIE['bh_remember_passhash']) && is_array($_COOKIE['bh_remember_passhash'])) {
-        $passhash_array = $_COOKIE['bh_remember_passhash'];
-    }elseif (isset($_COOKIE['bh_remember_passhash']) && strlen($_COOKIE['bh_remember_passhash']) > 0) {
-        $passhash_array = explode(",", $_COOKIE['bh_remember_passhash']);
+        $passhash_array = array_map('_stripslashes', $_COOKIE['bh_remember_passhash']);
+    }elseif (isset($_COOKIE['bh_remember_passhash']) && strlen(trim(_stripslashes($_COOKIE['bh_remember_passhash']))) > 0) {
+        $passhash_array = explode(",", _stripslashes($_COOKIE['bh_remember_passhash']));
     }else {
         $passhash_array = array();
     }
@@ -290,9 +290,8 @@ function draw_logon_form($logon_main, $other_logon = false)
         echo "                          <td align=\"right\">{$lang['username']}:</td>\n";
         echo "                          <td align=\"left\" nowrap=\"nowrap\">";
 
-        foreach ($username_array as $key => $value) {
-            $usernames[$key] = _stripslashes($value);
-        }
+        $username_dropdown_array = array_flip($username_array);
+        array_walk($username_dropdown_array, create_function('&$item, $key', '$item = $key;'));
 
         reset($username_array);
         reset($password_array);
@@ -300,7 +299,7 @@ function draw_logon_form($logon_main, $other_logon = false)
 
         $current_logon = key($username_array);
 
-        echo form_dropdown_array("logonarray", $usernames, $usernames, "", "onchange=\"changepassword()\" autocomplete=\"off\"", "logon_dropdown");
+        echo form_dropdown_array("logonarray", $username_dropdown_array, "", "onchange=\"changepassword()\" autocomplete=\"off\"", "logon_dropdown");
         echo form_input_hidden("user_logon", _htmlentities($username_array[$current_logon]));
 
         foreach($username_array as $key => $logon) {

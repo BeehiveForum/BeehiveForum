@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.159 2007-04-07 15:42:17 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.160 2007-04-10 16:02:02 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -858,7 +858,7 @@ if ($friends_array = pm_user_get_friends()) {
     echo "                        <td align=\"left\">", form_radio("to_radio", 0, $lang['friends'], (isset($to_radio) && $to_radio == 0)), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", form_dropdown_array("t_to_uid", array_keys($friends_array), array_values($friends_array), (isset($t_to_uid) ? $t_to_uid : 0), "onclick=\"checkToRadio(0)\"", "to_uid_dropdown"), "</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("t_to_uid", $friends_array, (isset($t_to_uid) ? $t_to_uid : 0), "onclick=\"checkToRadio(0)\"", "to_uid_dropdown"), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">", form_radio("to_radio", 1, $lang['others'], (isset($to_radio) && $to_radio == 1) ? true : (!isset($to_radio))), "</td>\n";

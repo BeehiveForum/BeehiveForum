@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: styles.inc.php,v 1.12 2007-01-15 00:10:37 decoyduck Exp $ */
+/* $Id: styles.inc.php,v 1.13 2007-04-10 16:02:04 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -35,11 +35,14 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 include_once(BH_INCLUDE_PATH. "format.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
-function styles_get_available()
+function styles_get_available($inc_global_only = false)
 {
     $webtag = get_webtag($webtag_search);
+    
+    $lang = load_language_file();
 
-    $styles = array();
+    $available_global_styles = array();
+    $available_forum_styles  = array();
 
     if (@$dir = opendir("./styles")) {
 
@@ -51,12 +54,12 @@ function styles_get_available()
 
                     if (@file_exists("./styles/$file/desc.txt")) {
 
-                        $style_name = implode("", file("./styles/$file/desc.txt"));
-                        $styles[$file] = _htmlentities($style_name);
+                        $global_style_name = implode("", file("./styles/$file/desc.txt"));
+                        $available_global_styles[$file] = _htmlentities($global_style_name);
 
                     }else {
 
-                        $styles[$file] = _htmlentities($file);
+                        $available_global_styles[$file] = _htmlentities($file);
                     }
                 }
             }
@@ -65,34 +68,52 @@ function styles_get_available()
         closedir($dir);
     }
 
-    if (@$dir = opendir("./forums/$webtag/styles")) {
+    if ($inc_global_only === true) {
 
-        while (($file = readdir($dir)) !== false) {
+        if (@$dir = opendir("./forums/$webtag/styles")) {
 
-            if (@is_dir("./forums/$webtag/styles/$file") && $file != '.' && $file != '..') {
+            while (($file = readdir($dir)) !== false) {
 
-                if (@file_exists("./forums/$webtag/styles/$file/style.css")) {
+                if (@is_dir("./forums/$webtag/styles/$file") && $file != '.' && $file != '..') {
 
-                    if (@file_exists("./forums/$webtag/styles/$file/desc.txt")) {
+                    if (@file_exists("./forums/$webtag/styles/$file/style.css")) {
 
-                        $style_name = implode("", file("./forums/$webtag/styles/$file/desc.txt"));
-                        $styles[$file] = _htmlentities($style_name);
+                        if (@file_exists("./forums/$webtag/styles/$file/desc.txt")) {
 
-                    }else {
+                            $local_style_name = implode("", file("./forums/$webtag/styles/$file/desc.txt"));
+                            $available_forum_styles[$file] = _htmlentities($local_style_name);
 
-                        $styles[$file] = _htmlentities($file);
+                        }else {
+
+                            $available_forum_styles[$file] = _htmlentities($file);
+                        }
                     }
                 }
             }
-        }
 
-        closedir($dir);
+            closedir($dir);
+        }
     }
 
-    asort($styles);
-    reset($styles);
+    asort($available_global_styles);
+    reset($available_global_styles);
 
-    return $styles;
+    asort($available_forum_styles);
+    reset($available_forum_styles);
+
+    if (sizeof($available_global_styles) > 0 && sizeof($available_forum_styles) > 0) {
+
+        return array($lang['globalstyles'] => $available_global_styles, 
+                     $lang['forumstyles']  => $available_forum_styles);
+    
+    }elseif (sizeof($available_global_styles) > 0) {
+
+        return $available_global_styles;
+
+    }else {
+
+        return $available_forum_styles;
+    }
 }
 
 function style_exists ($style)

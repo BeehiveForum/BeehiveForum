@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.53 2007-03-24 22:12:07 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.54 2007-04-10 16:02:04 decoyduck Exp $ */
 
 /**
 * Functions relating to profiles
@@ -741,13 +741,29 @@ function profile_get_item($piid)
     return false;
 }
 
-function profile_items_get_list(&$profile_header_array, &$profile_dropdown_html)
+function profile_items_get_list(&$profile_header_array, &$profile_dropdown_array)
 {
     $db_profile_items_get_list = db_connect();
 
     $lang = load_language_file();
     
     if (!$table_data = get_table_prefix()) return false;
+
+    // Pre-defined profile options    
+    
+    $profile_header_array = array('POST_COUNT'      => $lang['postcount'],
+                                  'LAST_VISIT'      => $lang['lastvisit'],
+                                  'REGISTERED'      => $lang['registered'],
+                                  'USER_TIME_BEST'  => $lang['longesttimeinforum'],
+                                  'USER_TIME_TOTAL' => $lang['totaltimeinforum'],
+                                  'DOB'             => $lang['birthday'],
+                                  'AGE'             => $lang['age']);
+
+    // Add the pre-defined profile options to the top of the list
+
+    $profile_dropdown_array[$lang['userdetails']] = $profile_header_array;
+
+    // Query the database to get the
 
     $sql = "SELECT PROFILE_SECTION.PSID, PROFILE_SECTION.NAME AS SECTION_NAME, ";
     $sql.= "PROFILE_ITEM.PIID, PROFILE_ITEM.NAME AS ITEM_NAME ";
@@ -758,51 +774,16 @@ function profile_items_get_list(&$profile_header_array, &$profile_dropdown_html)
 
     $result = db_query($sql, $db_profile_items_get_list);
 
-    $profile_header_array = array('POST_COUNT'      => $lang['postcount'],
-                                  'LAST_VISIT'      => $lang['lastvisit'],
-                                  'REGISTERED'      => $lang['registered'],
-                                  'USER_TIME_BEST'  => $lang['longesttimeinforum'],
-                                  'USER_TIME_TOTAL' => $lang['totaltimeinforum'],
-                                  'DOB'             => $lang['birthday'],
-                                  'AGE'             => $lang['age']);
+    if (db_num_rows($result) > 0) {
 
-    $psid = false;
+        while ($profile_item = db_fetch_array($result)) {
 
-    $dropdown_id = form_unique_id();
-
-    $profile_dropdown_html = "<select name=\"add_column\" id=\"$dropdown_id\" class=\"bhselect\">\n";
-    $profile_dropdown_html.= "<optgroup label=\"{$lang['userdetails']}\">\n";
-
-    foreach($profile_header_array as $key => $value) {
-        $profile_dropdown_html.= "<option value=\"$key\">$value</option>\n";
-    }
-
-    $profile_dropdown_html.= "</optgroup>\n";
-
-    while ($profile_item = db_fetch_array($result)) {
-        
-        $profile_header_array[$profile_item['PIID']] = $profile_item['ITEM_NAME'];
-        
-        if ($psid === false) {
-        
-            $psid = $profile_item['PSID'];
-            $profile_dropdown_html.= "<optgroup label=\"{$profile_item['SECTION_NAME']}\">\n";
-        
-        }elseif (($profile_item['PSID'] <> $psid)) {
-            
-            $psid = $profile_item['PSID'];
-
-            $profile_dropdown_html.= "</optgroup>\n";
-            $profile_dropdown_html.= "<optgroup label=\"{$profile_item['SECTION_NAME']}\">\n";
+            $profile_header_array[$profile_item['PIID']] = $profile_item['ITEM_NAME'];
+            $profile_dropdown_array[$profile_item['SECTION_NAME']][$profile_item['PIID']] = $profile_item['ITEM_NAME'];
         }
-
-        $profile_dropdown_html.= "<option value=\"{$profile_item['PIID']}\">{$profile_item['ITEM_NAME']}</option>\n";
     }
 
-    $profile_dropdown_html.= "</optgroup>\n";
-    $profile_dropdown_html.= "</select>\n";
-
-    return sizeof($profile_header_array) > 0 ? true : false;
+    return true;
 }
 
 function profile_browse_items($user_search, $profile_items_array, $offset, $sort_by, $sort_dir, $hide_empty)

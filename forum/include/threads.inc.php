@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.254 2007-04-03 19:57:37 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.255 2007-04-10 16:02:05 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1791,64 +1791,42 @@ function thread_list_draw_top($mode)
 
     if (bh_session_get_value('UID') == 0) {
 
-        $labels = array($lang['alldiscussions'], $lang['todaysdiscussions'], $lang['2daysback'], $lang['7daysback']);
-        echo form_dropdown_array("mode", array(0, 3, 4, 5), $labels, $mode, "onchange=\"submit()\"");
+        $labels = array(0 => $lang['alldiscussions'], 3 => $lang['todaysdiscussions'], 4 => $lang['2daysback'], 5 => $lang['7daysback']);
+        echo form_dropdown_array("mode", $labels, $mode, "onchange=\"submit()\"");
 
     }else {
 
+        $labels = array($lang['alldiscussions'], $lang['unreaddiscussions'], $lang['unreadtome'],
+                        $lang['todaysdiscussions'], $lang['unreadtoday'], $lang['2daysback'],
+                        $lang['7daysback'], $lang['highinterest'], $lang['unreadhighinterest'],
+                        $lang['iverecentlyseen'], $lang['iveignored'], $lang['byignoredusers'],
+                        $lang['ivesubscribedto'], $lang['startedbyfriend'], $lang['unreadstartedbyfriend'],
+                        $lang['startedbyme'], $lang['polls'], $lang['stickythreads'],
+                        $lang['mostunreadposts'], $lang['searchresults'], $lang['deletedthreads']);
+
         if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
-            if ($unread_cutoff_stamp !== false) {
-            
-                $labels = array($lang['alldiscussions'], $lang['unreaddiscussions'], $lang['unreadtome'],
-                                $lang['todaysdiscussions'], $lang['unreadtoday'], $lang['2daysback'],
-                                $lang['7daysback'], $lang['highinterest'], $lang['unreadhighinterest'],
-                                $lang['iverecentlyseen'], $lang['iveignored'], $lang['byignoredusers'],
-                                $lang['ivesubscribedto'], $lang['startedbyfriend'], $lang['unreadstartedbyfriend'],
-                                $lang['startedbyme'], $lang['polls'], $lang['stickythreads'],
-                                $lang['mostunreadposts'], $lang['searchresults'], $lang['deletedthreads']);
+            if ($unread_cutoff_stamp === false) {
 
-                                $keys = range(0, 20);
-
-            }else {
-
-                $labels = array($lang['alldiscussions'], $lang['unreadtome'], $lang['todaysdiscussions'],
-                                $lang['2daysback'], $lang['7daysback'], $lang['highinterest'], 
-                                $lang['iverecentlyseen'],  $lang['iveignored'], $lang['byignoredusers'],
-                                $lang['ivesubscribedto'],  $lang['startedbyfriend'], $lang['startedbyme'], 
-                                $lang['polls'],  $lang['stickythreads'], $lang['searchresults'], 
-                                $lang['deletedthreads']);
-
-                                $keys = array(0, 2, 3, 5, 6, 7, 9, 10, 11, 12, 13, 15, 16, 17, 19, 20);
+                // Remove unread thread options (Unread Discussions, Unread Today,
+                // Unread High Interest, Unread Started By Friend, Most Unread Posts).
+                
+                unset($labels[1], $labels[4], $labels[8], $labels[14], $labels[18]);
             }
 
         }else {
 
-            if ($unread_cutoff_stamp !== false) {
-        
-                $labels = array($lang['alldiscussions'], $lang['unreaddiscussions'], $lang['unreadtome'],
-                                $lang['todaysdiscussions'], $lang['unreadtoday'], $lang['2daysback'],
-                                $lang['7daysback'], $lang['highinterest'], $lang['unreadhighinterest'],
-                                $lang['iverecentlyseen'], $lang['iveignored'], $lang['byignoredusers'],
-                                $lang['ivesubscribedto'], $lang['startedbyfriend'], $lang['unreadstartedbyfriend'],
-                                $lang['startedbyme'], $lang['polls'], $lang['stickythreads'],
-                                $lang['mostunreadposts'], $lang['searchresults']);
+            if ($unread_cutoff_stamp === false) {
 
-                                $keys = range(0, 19);
-            }else {
+                // Remove unread thread options (same as above) plus the 
+                // Admin Deleted Threads option.
 
-                $labels = array($lang['alldiscussions'], $lang['unreadtome'], $lang['todaysdiscussions'], 
-                                $lang['2daysback'], $lang['7daysback'], $lang['highinterest'], 
-                                $lang['iverecentlyseen'], $lang['iveignored'], $lang['byignoredusers'],
-                                $lang['ivesubscribedto'], $lang['startedbyfriend'], $lang['startedbyme'], 
-                                $lang['polls'], $lang['stickythreads'], $lang['searchresults']);
-
-                                $keys = array(0, 2, 3, 5, 6, 7, 9, 10, 11, 12, 13, 15, 16, 17, 19);
+                unset($labels[1], $labels[4], $labels[8], $labels[14], $labels[18], $label[20]);        
             }
 
         }
 
-        echo form_dropdown_array("mode", $keys, $labels, $mode, "onchange=\"submit()\"");
+        echo form_dropdown_array("mode", $labels, $mode, "onchange=\"submit()\"");
     }
 
     echo "        ", form_submit("go",$lang['goexcmark']), "\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.php,v 1.83 2007-03-24 17:32:24 decoyduck Exp $ */
+/* $Id: visitor_log.php,v 1.84 2007-04-10 16:02:03 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -101,13 +101,7 @@ if (!forum_check_access_level()) {
 
 // Get a list of available user_prefs and profile items for the user to browse.
 
-if (!profile_items_get_list($profile_header_array, $profile_dropdown_html)) {
-
-    html_draw_top();
-    html_error_msg($lang['profilesnotsetup']);
-    html_draw_bottom();
-    exit;
-}
+profile_items_get_list($profile_header_array, $profile_dropdown_array);
 
 $profile_items_selected_array = array();
 
@@ -375,7 +369,7 @@ echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td align=\"left\" width=\"40%\">&nbsp;</td>\n";
 echo "            <td align=\"center\" nowrap=\"nowrap\" width=\"20%\">", page_links("visitor_log.php?webtag=$webtag&page=$page&profile_selection=$profile_items_selected_encoded_string&usersearch=$usersearch&sort_by=$sort_by&sort_dir=$sort_dir&hide_empty=$hide_empty", $start, $user_profile_array['user_count'], 10), "</td>\n";
-echo "            <td align=\"right\" nowrap=\"nowrap\" width=\"40%\">{$profile_dropdown_html}&nbsp;", form_submit('add', $lang['add']), "</td>\n";
+echo "            <td align=\"right\" nowrap=\"nowrap\" width=\"40%\">", form_dropdown_array('add_column', $profile_dropdown_array), "&nbsp;", form_submit('add', $lang['add']), "</td>\n";
 echo "          </tr>\n";
 echo "        </table>\n";
 echo "      </td>\n";

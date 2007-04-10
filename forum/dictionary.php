@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.php,v 1.36 2007-03-26 21:57:21 decoyduck Exp $ */
+/* $Id: dictionary.php,v 1.37 2007-04-10 16:02:02 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -400,7 +400,7 @@ echo "                  <td align=\"left\" width=\"270\">\n";
 
 if ($suggestions_array = $dictionary->get_suggestions_array()) {
 
-    echo "                    ", form_dropdown_array("suggestion", $suggestions_array, false, $dictionary->get_best_suggestion(), "size=\"10\" onchange=\"changeWord(this)\"", "dictionary_best_selection"), "\n";
+    echo "                    ", form_dropdown_array("suggestion", $suggestions_array, $dictionary->get_best_suggestion(), "size=\"10\" onchange=\"changeWord(this)\"", "dictionary_best_selection"), "\n";
 
 }elseif ($dictionary->is_check_complete()) {
 
@@ -408,7 +408,7 @@ if ($suggestions_array = $dictionary->get_suggestions_array()) {
 
 }else {
 
-    echo "                    ", form_dropdown_array("suggestion", array($lang['nosuggestions']), false, $dictionary->get_best_suggestion(), "size=\"10\"", "dictionary_best_selection"), "\n";
+    echo "                    ", form_dropdown_array("suggestion", array($lang['nosuggestions']), $dictionary->get_best_suggestion(), "size=\"10\"", "dictionary_best_selection"), "\n";
 }
 
 echo "                  </td>\n";

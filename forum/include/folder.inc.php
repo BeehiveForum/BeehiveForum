@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.118 2007-02-10 13:05:43 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.119 2007-04-10 16:02:03 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -50,8 +50,7 @@ function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $al
 
     if (!is_numeric($allowed_types)) return "";
 
-    $folders['FIDS'] = array();
-    $folders['TITLES'] = array();
+    $available_folders = array();
 
     $access_allowed = USER_PERM_THREAD_CREATE;
 
@@ -71,23 +70,21 @@ function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $al
 
                 if (bh_session_check_perm(USER_PERM_GUEST_ACCESS, $folder_order['FID'])) {
 
-                    $folders['FIDS'][]   = $folder_order['FID'];
-                    $folders['TITLES'][] = $folder_order['TITLE'];
+                    $available_folders[$folder_order['FID']] = $folder_order['TITLE'];
                 }
 
             }else {
             
                 if (bh_session_check_perm($access_allowed, $folder_order['FID'])) {
 
-                    $folders['FIDS'][]   = $folder_order['FID'];
-                    $folders['TITLES'][] = $folder_order['TITLE'];
+                    $available_folders[$folder_order['FID']] = $folder_order['TITLE'];
                 }
             }
         }
 
-        if (sizeof($folders['FIDS']) > 0 && sizeof($folders['TITLES']) > 0) {
+        if (sizeof($available_folders) > 0) {
 
-            return form_dropdown_array($field_name.$suffix, $folders['FIDS'], $folders['TITLES'], $default_fid, $custom_html, $class);
+            return form_dropdown_array($field_name.$suffix, $available_folders, $default_fid, $custom_html, $class);
         }
     }
 
@@ -104,8 +101,7 @@ function folder_draw_dropdown_all($default_fid, $field_name="t_fid", $suffix="",
 
     $forum_fid = $table_data['FID'];
 
-    $folders['FIDS'] = array();
-    $folders['TITLES'] = array();
+    $available_folders = array();
 
     $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION ";
     $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
@@ -116,16 +112,12 @@ function folder_draw_dropdown_all($default_fid, $field_name="t_fid", $suffix="",
 
         while($row = db_fetch_array($result)) {
 
-            if (!in_array($row['FID'], $folders['FIDS'])) {
-
-                $folders['FIDS'][] = $row['FID'];
-                $folders['TITLES'][] = $row['TITLE'];
-            }
+            $available_folders[$row['FID']] = $row['TITLE'];
         }
 
-        if (sizeof($folders['FIDS']) > 0 && sizeof($folders['TITLES']) > 0) {
+        if (sizeof($available_folders) > 0) {
 
-            return form_dropdown_array($field_name.$suffix, $folders['FIDS'], $folders['TITLES'], $default_fid, $custom_html, $class);
+            return form_dropdown_array($field_name.$suffix, $available_folders, $default_fid, $custom_html, $class);
         }
     }
 

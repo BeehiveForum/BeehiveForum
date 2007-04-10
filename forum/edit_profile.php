@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_profile.php,v 1.66 2007-03-24 17:32:24 decoyduck Exp $ */
+/* $Id: edit_profile.php,v 1.67 2007-04-10 16:02:02 decoyduck Exp $ */
 
 /**
 * Displays the edit profile page, and processes sumbissions
@@ -292,9 +292,9 @@ if ($profile_items_array = profile_get_user_values($uid)) {
                 echo "                        <td align=\"left\" valign=\"top\" width=\"175\">$field_name</td>\n";
 
                 if ($profile_item['TYPE'] == PROFILE_ITEM_RADIO) {
-                    echo "                        <td align=\"left\" valign=\"top\">", form_radio_array("t_entry[{$profile_item['PIID']}]", array_keys($field_values), $field_values, $profile_item['ENTRY']), "</td>\n";
+                    echo "                        <td align=\"left\" valign=\"top\">", form_radio_array("t_entry[{$profile_item['PIID']}]", $field_values, $profile_item['ENTRY']), "</td>\n";
                 }else {
-                    echo "                        <td align=\"left\" valign=\"top\">", form_dropdown_array("t_entry[{$profile_item['PIID']}]", array_keys($field_values), $field_values, $profile_item['ENTRY']), "</td>\n";
+                    echo "                        <td align=\"left\" valign=\"top\">", form_dropdown_array("t_entry[{$profile_item['PIID']}]", $field_values, $profile_item['ENTRY']), "</td>\n";
                 }
 
                 if ($admin_edit === false) {

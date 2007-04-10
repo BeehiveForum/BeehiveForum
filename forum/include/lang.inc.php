@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lang.inc.php,v 1.30 2007-02-07 21:30:09 decoyduck Exp $ */
+/* $Id: lang.inc.php,v 1.31 2007-04-10 16:02:03 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -129,20 +129,24 @@ function load_language_file()
 
 function lang_get_available()
 {
-    $available_langs = array();
+    $lang = load_language_file();
+
+    $available_langs = array($lang['browsernegotiation']);
 
     if (@$dir = opendir("./include/languages")) {
 
         while ($file = readdir($dir)) {
 
-            if (strpos($file, '.inc.php') !== false) {
+            if (($pos = strpos($file, '.inc.php')) !== false) {
 
-                array_push($available_langs, substr($file, 0, strpos($file, '.inc.php')));
+                array_push($available_langs, substr($file, 0, $pos));
             }
         }
 
         closedir($dir);
     }
+
+    asort($available_langs);
 
     return $available_langs;
 }

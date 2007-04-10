@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.129 2007-03-24 17:32:24 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.130 2007-04-10 16:02:02 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -743,7 +743,7 @@ if (isset($t_answer_count)) {
 
 echo "                            <tr>\n";
 echo "                              <td align=\"left\">&nbsp;</td>\n";
-echo "                              <td align=\"left\">{$lang['numberanswers']}: ", form_dropdown_array('answer_count', range(0, 3), array('5', '10', '15', '20'), $answer_selection), "&nbsp;", form_submit('change_count', $lang['change']) , "</td>\n";
+echo "                              <td align=\"left\">{$lang['numberanswers']}: ", form_dropdown_array('answer_count', array('5', '10', '15', '20'), $answer_selection), "&nbsp;", form_submit('change_count', $lang['change']) , "</td>\n";
 echo "                              <td align=\"left\">&nbsp;</td>\n";
 echo "                              <td align=\"left\">&nbsp;</td>\n";
 echo "                            </tr>\n";
@@ -801,17 +801,17 @@ for ($i = 0; $i < $answer_count; $i++) {
 
     if (isset($t_answer_groups[$i])) {
 
-        echo "                              <td align=\"center\">", form_dropdown_array("answer_groups[]", range(1, $answer_count), range(1, $answer_count), $t_answer_groups[$i]), "</td>\n";
+        echo "                              <td align=\"center\">", form_dropdown_array("answer_groups[]", range(1, $answer_count), $t_answer_groups[$i]), "</td>\n";
 
     }else {
 
         if (isset($pollresults['GROUP_ID'][$i])) {
 
-            echo "                              <td align=\"center\">", form_dropdown_array("answer_groups[]", range(1, $answer_count), range(1, $answer_count), $pollresults['GROUP_ID'][$i]), "</td>\n";
+            echo "                              <td align=\"center\">", form_dropdown_array("answer_groups[]", range(1, $answer_count), $pollresults['GROUP_ID'][$i]), "</td>\n";
 
         }else {
 
-            echo "                              <td align=\"center\">", form_dropdown_array("answer_groups[]", range(1, $answer_count), range(1, $answer_count), 1), "</td>\n";
+            echo "                              <td align=\"center\">", form_dropdown_array("answer_groups[]", range(1, $answer_count), 1), "</td>\n";
         }
     }
 
@@ -972,7 +972,7 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\">{$lang['changewhenpollcloses']}</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", form_dropdown_array('close_poll', range(0, 5), array($lang['oneday'], $lang['threedays'], $lang['sevendays'], $lang['thirtydays'], $lang['never'], $lang['nochange']), isset($t_close_poll) ? $t_close_poll : 5), "</td>\n";
+echo "                        <td align=\"left\">", form_dropdown_array('close_poll', array($lang['oneday'], $lang['threedays'], $lang['sevendays'], $lang['thirtydays'], $lang['never'], $lang['nochange']), isset($t_close_poll) ? $t_close_poll : 5), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";

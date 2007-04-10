@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.139 2007-03-31 10:33:41 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.140 2007-04-10 16:02:02 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -346,16 +346,7 @@ if (sizeof($admin_user_array['user_array']) > 0) {
 }
 
 echo "      <td class=\"postbody\" align=\"center\">", page_links("admin_users.php?webtag=$webtag&sort_by=UID&sort_dir=DESC&usersearch=$usersearch&filter=$filter", $start, $admin_user_array['user_count'], 10), "</td>\n";
-
-if (forum_get_setting('require_user_approval', 'Y')) {
-
-    echo "      <td align=\"right\" width=\"40%\" class=\"postbody\">{$lang['userfilter']}: ", form_dropdown_array("filter", range(0, 4), array($lang['all'], $lang['onlineusers'], $lang['offlineusers'], $lang['usersawaitingapproval'], $lang['bannedusers']), $filter), "&nbsp;", form_submit("submit_filter", $lang['go']), "</td>\n";
-
-}else {
-
-    echo "      <td align=\"right\" width=\"40%\" class=\"postbody\">{$lang['userfilter']}: ", form_dropdown_array("filter", array(0, 1, 2, 4), array($lang['all'], $lang['onlineusers'], $lang['offlineusers'], $lang['bannedusers']), $filter), "&nbsp;", form_submit("submit_filter", $lang['go']), "</td>\n";
-}
-
+echo "      <td align=\"right\" width=\"40%\" class=\"postbody\">{$lang['userfilter']}: ", form_dropdown_array("filter", array($lang['all'], $lang['onlineusers'], $lang['offlineusers'], $lang['usersawaitingapproval'], $lang['bannedusers']), $filter), "&nbsp;", form_submit("submit_filter", $lang['go']), "</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_subscriptions.php,v 1.14 2007-03-17 15:26:17 decoyduck Exp $ */
+/* $Id: edit_subscriptions.php,v 1.15 2007-04-10 16:02:02 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -285,7 +285,7 @@ if (isset($threadsearch) && strlen(trim($threadsearch)) > 0) {
     echo "    <tr>\n";
     echo "      <td align=\"left\" width=\"33%\">&nbsp;</td>\n";
     echo "      <td class=\"postbody\" align=\"center\" width=\"33%\">", page_links("edit_subscriptions.php?webtag=$webtag&threadsearch=$threadsearch&main_page=$main_page&view_filter=$view_filter", $start_search, $thread_search_array['thread_count'], 20, "search_page"), "</td>\n";
-    echo "      <td align=\"right\" width=\"33%\">{$lang['view']}:&nbsp;", form_dropdown_array('view_filter', array(0, -1, 1, 2), array($lang['all'], $lang['ignored'], $lang['interested'], $lang['subscribed']), $view_filter), "&nbsp;", form_submit("view_submit", $lang['goexcmark']), "</td>\n";
+    echo "      <td align=\"right\" width=\"33%\">{$lang['view']}:&nbsp;", form_dropdown_array('view_filter', array(0 => $lang['all'], -1 => $lang['ignored'], 1 => $lang['interested'], 2 => $lang['subscribed']), $view_filter), "&nbsp;", form_submit("view_submit", $lang['goexcmark']), "</td>\n";
     echo "    </tr>\n";
 
     if (sizeof($thread_search_array['thread_array']) > 0) {
@@ -364,7 +364,7 @@ if (isset($threadsearch) && strlen(trim($threadsearch)) > 0) {
     echo "    <tr>\n";
     echo "      <td align=\"left\" width=\"33%\">&nbsp;</td>\n";
     echo "      <td class=\"postbody\" align=\"center\">", page_links("edit_subscriptions.php?webtag=$webtag&threadsearch=$threadsearch&search_page=$search_page&view_filter=$view_filter", $start_main, $thread_subscriptions['thread_count'], 20, "main_page"), "</td>\n";
-    echo "      <td align=\"right\" width=\"33%\">{$lang['view']}:&nbsp;", form_dropdown_array('view_filter', array(0, -1, 1, 2), array($lang['all'], $lang['ignored'], $lang['interested'], $lang['subscribed']), $view_filter), "&nbsp;", form_submit("view_submit", $lang['goexcmark']), "</td>\n";
+    echo "      <td align=\"right\" width=\"33%\">{$lang['view']}:&nbsp;", form_dropdown_array('view_filter', array(0 => $lang['all'], -1 => $lang['ignored'], 1 => $lang['interested'], 2 => $lang['subscribed']), $view_filter), "&nbsp;", form_submit("view_submit", $lang['goexcmark']), "</td>\n";
     echo "    </tr>\n";
 
     if (sizeof($thread_subscriptions['thread_array']) > 0) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.288 2007-04-03 19:57:38 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.289 2007-04-10 16:02:02 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -810,7 +810,7 @@ if (bh_session_get_value('UID') != 0) {
         $selected_option = 3;
     }
 
-    echo "        ", form_dropdown_array("markread", range(0, sizeof($labels) - 1), $labels, $selected_option). "\n";
+    echo "        ", form_dropdown_array("markread", $labels, $selected_option). "\n";
     echo "        ", form_submit("go",$lang['goexcmark']). "\n";
     echo "      </form>\n";
     echo "    </td>\n";

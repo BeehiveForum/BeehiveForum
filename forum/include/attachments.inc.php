@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.123 2007-04-07 15:42:17 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.124 2007-04-11 20:11:13 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -65,7 +65,7 @@ include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 function attachments_get_upload_tmp_dir()
 {
-    if (($upload_tmp_dir = ini_get('upload_tmp_dir')) !== false) {
+    if (($upload_tmp_dir = @ini_get('upload_tmp_dir')) !== false) {
 
         return $upload_tmp_dir;
     

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: server.inc.php,v 1.8 2007-04-04 19:04:59 decoyduck Exp $ */
+/* $Id: server.inc.php,v 1.9 2007-04-11 20:11:13 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -208,7 +208,7 @@ function get_available_files()
 // Executed by every script that includes server.inc.php.
 // This crudely disables PHP's register_globals functionality.
 
-if (ini_get('register_globals')) {
+if (!(bool)@ini_get('register_globals')) {
 
     foreach ($_GET as $get_key => $get_value) {
 

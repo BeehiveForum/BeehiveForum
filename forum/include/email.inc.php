@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.103 2007-04-07 15:42:17 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.104 2007-04-11 20:11:13 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -482,11 +482,11 @@ function check_mail_variables()
 {
     if (server_os_mswin()) {
 
-        if (!(bool)ini_get('sendmail_from') || !(bool)ini_get('SMTP')) return false;
+        if (!(bool)@ini_get('sendmail_from') || !(bool)ini_get('SMTP')) return false;
 
     }else {
 
-        if (!(bool)ini_get('sendmail_path')) return false;
+        if (!(bool)@ini_get('sendmail_path')) return false;
     }
 
     return true;

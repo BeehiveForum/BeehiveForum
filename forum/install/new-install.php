@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.138 2007-02-19 16:05:08 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.139 2007-04-11 19:14:07 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
 
@@ -682,9 +682,11 @@ $sql.= "  TYPE TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  TO_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  FROM_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  SUBJECT VARCHAR(64) NOT NULL DEFAULT '',";
+$sql.= "  RECIPIENTS VARCHAR(255) NOT NULL DEFAULT '',";
 $sql.= "  CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
 $sql.= "  NOTIFIED TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  PRIMARY KEY  (MID)";
+$sql.= "  PRIMARY KEY  (MID),";
+$sql.= "  FULLTEXT KEY (SUBJECT)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = @db_query($sql, $db_install)) {

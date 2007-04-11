@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.304 2007-04-10 16:02:05 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.305 2007-04-11 19:14:07 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -98,10 +98,11 @@ function user_create($logon, $password, $nickname, $email)
     $sql.= "'$http_referer', '$ipaddress')";
 
     if ($result = db_query($sql, $db_user_create)) {
+
         return db_insert_id($db_user_create);
     }
 
-    return -1;
+    return false;
 }
 
 function user_update($uid, $logon, $nickname, $email)

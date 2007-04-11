@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.171 2007-01-11 20:47:55 decoyduck Exp $ */
+/* $Id: logon.php,v 1.172 2007-04-11 19:14:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -106,29 +106,7 @@ $webtag = get_webtag($webtag_search);
 
 // Retrieve existing cookie data if any
 
-// Username array
-
-if (isset($_COOKIE['bh_remember_username']) && is_array($_COOKIE['bh_remember_username'])) {
-    $username_array = $_COOKIE['bh_remember_username'];
-}else {
-    $username_array = array();
-}
-
-// Password array
-
-if (isset($_COOKIE['bh_remember_password']) && is_array($_COOKIE['bh_remember_password'])) {
-    $password_array = $_COOKIE['bh_remember_password'];
-}else {
-    $password_array = array();
-}
-
-// Passhash array
-
-if (isset($_COOKIE['bh_remember_passhash']) && is_array($_COOKIE['bh_remember_passhash'])) {
-    $passhash_array = $_COOKIE['bh_remember_passhash'];
-}else {
-    $passhash_array = array();
-}
+logon_get_cookies($username_array, $password_array, $passhash_array);
 
 // Delete the user's cookie as requested and send them back to the login form.
 
@@ -161,7 +139,7 @@ if (isset($_GET['deletecookie']) && $_GET['deletecookie'] == 'yes') {
 
 }elseif (isset($_POST['logon']) || isset($_POST['guest_logon'])) {
 
-    if (perform_logon(true)) {
+    if (logon_perform(true)) {
 
         if (isset($final_uri)) {
 
@@ -211,7 +189,7 @@ html_draw_top('logon.js');
 
 echo "<div align=\"center\">\n";
 
-draw_logon_form(true, $other_logon);
+logon_draw_form(true, $other_logon);
 
 if (user_guest_enabled()) {
 

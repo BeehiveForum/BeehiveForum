@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_prefs.php,v 1.64 2007-03-17 15:26:17 decoyduck Exp $ */
+/* $Id: edit_prefs.php,v 1.65 2007-04-11 19:14:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -286,65 +286,16 @@ if (isset($_POST['submit'])) {
 
         bh_session_init($uid, false);
 
-        // Username array
-
-        if (isset($_COOKIE['bh_remember_username']) && is_array($_COOKIE['bh_remember_username'])) {
-            $username_array = $_COOKIE['bh_remember_username'];
-        }elseif (isset($_COOKIE['bh_remember_username']) && strlen($_COOKIE['bh_remember_username']) > 0) {
-            $username_array = explode(",", $_COOKIE['bh_remember_username']);
-        }else {
-            $username_array = array();
-        }
-
-        // Password array
-
-        if (isset($_COOKIE['bh_remember_password']) && is_array($_COOKIE['bh_remember_password'])) {
-            $password_array = $_COOKIE['bh_remember_password'];
-        }elseif (isset($_COOKIE['bh_remember_password']) && strlen($_COOKIE['bh_remember_password']) > 0) {
-            $password_array = explode(",", $_COOKIE['bh_remember_password']);
-        }else {
-            $password_array = array();
-        }
-
-        // Passhash array
-
-        if (isset($_COOKIE['bh_remember_passhash']) && is_array($_COOKIE['bh_remember_passhash'])) {
-            $passhash_array = $_COOKIE['bh_remember_passhash'];
-        }elseif (isset($_COOKIE['bh_remember_passhash']) && strlen($_COOKIE['bh_remember_passhash']) > 0) {
-            $passhash_array = explode(",", $_COOKIE['bh_remember_passhash']);
-        }else {
-            $passhash_array = array();
-        }
-
-        // Update the logon that matches the current user
+        // Fetch current logon.
 
         $logon = bh_session_get_value('LOGON');
 
-        if (($key = _array_search($logon, $username_array)) !== false) {
+        // Update the logon that matches the current logged on user
 
-            $username_array[$key] = $user_info['LOGON'];
+        logon_update_logon_cookie($logon, $user_info['LOGON']);
 
-            // Remove old 0.7.1 and older cookies
-
-            for ($i = 0; $i < sizeof($username_array); $i++) {
-
-                bh_setcookie("bh_remember_username[$i]", '', time() - YEAR_IN_SECONDS);
-                bh_setcookie("bh_remember_password[$i]", '', time() - YEAR_IN_SECONDS);
-                bh_setcookie("bh_remember_passhash[$i]", '', time() - YEAR_IN_SECONDS);
-            }
-
-            // New format cookies for 0.7.2 for better compatibility with more browsers.
-
-            $username_cookie = implode(",", $username_array);
-            $password_cookie = implode(",", $password_array);
-            $passhash_cookie = implode(",", $passhash_array);
-
-            // Set the cookies.
-
-            bh_setcookie("bh_remember_username", $username_cookie, time() + YEAR_IN_SECONDS);
-            bh_setcookie("bh_remember_password", $password_cookie, time() + YEAR_IN_SECONDS);
-            bh_setcookie("bh_remember_passhash", $passhash_cookie, time() + YEAR_IN_SECONDS);
-        }
+        // Force redirect to prevent refreshing the page 
+        // prompting to user to resubmit form data.
 
         header_redirect("./edit_prefs.php?webtag=$webtag&updated=true", $lang['preferencesupdated']);
     }

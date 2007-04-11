@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.147 2007-04-10 16:02:02 decoyduck Exp $ */
+/* $Id: register.php,v 1.148 2007-04-11 19:14:06 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -479,100 +479,26 @@ if (isset($_POST['submit'])) {
 
     if ($valid) {
 
-        $new_uid = user_create($new_user['LOGON'], $new_user['PW'], $new_user['NICKNAME'], $new_user['EMAIL']);
+        if ($new_uid = user_create($new_user['LOGON'], $new_user['PW'], $new_user['NICKNAME'], $new_user['EMAIL'])) {
 
-        if ($new_uid > -1) {
-
-            $email_confirm_result = true;
+            // Save the new user preferences and signature
 
             user_update_prefs($new_uid, $new_user, $new_user_global);
             user_update_sig($new_uid, $new_user['SIG_CONTENT'], $new_user['SIG_HTML']);
 
-            if (forum_get_setting('require_email_confirmation', 'Y')) {
-
-                $email_confirm_result = email_send_user_confirmation($new_uid);
-                perm_user_apply_email_confirmation($new_uid);
-            }
+            // Initialise the new user session.
 
             bh_session_init($new_uid);
 
-            // Retrieve existing cookie data if any
+            // Check if the user wants to save their password.
 
-            // Username array
+            $save_password = isset($_POST['remember_user']) && ($_POST['remember_user'] == 'Y');
 
-            if (isset($_COOKIE['bh_remember_username']) && is_array($_COOKIE['bh_remember_username'])) {
-                $username_array = $_COOKIE['bh_remember_username'];
-            }elseif (isset($_COOKIE['bh_remember_username']) && strlen($_COOKIE['bh_remember_username']) > 0) {
-                $username_array = explode(",", $_COOKIE['bh_remember_username']);
-            }else {
-                $username_array = array();
-            }
+            // Update the cookies.
 
-            // Password array
+            logon_update_cookies($new_user['LOGON'], $new_user['PW'], $save_password);
 
-            if (isset($_COOKIE['bh_remember_password']) && is_array($_COOKIE['bh_remember_password'])) {
-                $password_array = $_COOKIE['bh_remember_password'];
-            }elseif (isset($_COOKIE['bh_remember_password']) && strlen($_COOKIE['bh_remember_password']) > 0) {
-                $password_array = explode(",", $_COOKIE['bh_remember_password']);
-            }else {
-                $password_array = array();
-            }
-
-            // Passhash array
-
-            if (isset($_COOKIE['bh_remember_passhash']) && is_array($_COOKIE['bh_remember_passhash'])) {
-                $passhash_array = $_COOKIE['bh_remember_passhash'];
-            }elseif (isset($_COOKIE['bh_remember_passhash']) && strlen($_COOKIE['bh_remember_passhash']) > 0) {
-                $passhash_array = explode(",", $_COOKIE['bh_remember_passhash']);
-            }else {
-                $passhash_array = array();
-            }
-
-            // Prepare Form Data
-
-            $passw = str_repeat(chr(32), strlen($new_user['PW']));
-            $passh = md5($new_user['PW']);
-
-            if (($key = _array_search($new_user['LOGON'], $username_array)) !== false) {
-
-                unset($username_array[$key]);
-                unset($password_array[$key]);
-                unset($passhash_array[$key]);
-            }
-
-            array_unshift($username_array, $new_user['LOGON']);
-
-            if (isset($_POST['remember_user']) && ($_POST['remember_user'] == 'Y')) {
-
-                array_unshift($password_array, $passw);
-                array_unshift($passhash_array, $passh);
-
-            }else {
-
-                array_unshift($password_array, "");
-                array_unshift($passhash_array, "");
-            }
-
-            // Remove old 0.7.1 and older cookies
-
-            for ($i = 0; $i < sizeof($username_array); $i++) {
-
-                bh_setcookie("bh_remember_username[$i]", '', time() - YEAR_IN_SECONDS);
-                bh_setcookie("bh_remember_password[$i]", '', time() - YEAR_IN_SECONDS);
-                bh_setcookie("bh_remember_passhash[$i]", '', time() - YEAR_IN_SECONDS);
-            }
-
-            // New format cookies for 0.7.2 for better compatibility with more browsers.
-
-            $username_cookie = implode(",", $username_array);
-            $password_cookie = implode(",", $password_array);
-            $passhash_cookie = implode(",", $passhash_array);
-
-            // Set the cookies.
-
-            bh_setcookie("bh_remember_username", $username_cookie, time() + YEAR_IN_SECONDS);
-            bh_setcookie("bh_remember_password", $password_cookie, time() + YEAR_IN_SECONDS);
-            bh_setcookie("bh_remember_passhash", $passhash_cookie, time() + YEAR_IN_SECONDS);
+            // Display final success / confirmation page.
 
             html_draw_top();
 
@@ -590,7 +516,9 @@ if (isset($_POST['submit'])) {
 
             if (forum_get_setting('require_email_confirmation', 'Y')) {
 
-                if ($email_confirm_result) {
+                if (email_send_user_confirmation($new_uid)) {
+
+                    perm_user_apply_email_confirmation($new_uid);
 
                     echo "                <tr>\n";
                     echo "                  <td align=\"left\">{$lang['useraccountcreatedconfirmsuccess']}</td>\n";

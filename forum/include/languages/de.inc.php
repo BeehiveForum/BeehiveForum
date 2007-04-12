@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.22 2007-04-12 21:13:36 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.23 2007-04-12 23:53:37 decoyduck Exp $ */
 
 // International English language file
 
@@ -770,7 +770,7 @@ $lang['passwdsdonotmatch'] = "Passwoerter stimmen nicht ueberein.";
 $lang['allfieldsrequired'] = "Es werden alle Felder benoetigt.";
 $lang['requiredinformationnotfound'] = "Notwendige Information nicht gefunden";
 $lang['forgotpasswd'] = "Passwort vergessen";
-$lang['enternewpasswdforuser'] = "Neues Passwort fuer Benutzer";
+$lang['enternewpasswdforuser'] = "Neues Passwort fuer Benutzer %s";
 $lang['resetpassword'] = "Passwort zuruecksetzen";
 $lang['resetpasswordto'] = "Passwort zuruecksetzen zu";
 
@@ -789,7 +789,7 @@ $lang['nomessagespecifiedforedit'] = "Keine Nachricht fuer Editierung definiert"
 $lang['edited_caps'] = "EDITIERT";
 $lang['editappliedtomessage'] = "Editierung fuer diese Nachricht angewendet";
 $lang['errorupdatingpost'] = "Fehler bei Aenderung des Posts";
-$lang['editmessage'] = "Editiere Nachricht";
+$lang['editmessage'] = "Editiere Nachricht %s";
 $lang['editpollwarning'] = "<b>Merke</b>: Editierung einiger Punkte einer Abstimmung fuehrt dazu dass alle Benutzer erneut abstimmen koennen.";
 $lang['hardedit'] = "Harte Editierungsoptionen (Stimmen werden zurueckgesetzt):";
 $lang['softedit'] = "Sanfte Editierungsoptionen (Stimmen bleiben erhalten):";

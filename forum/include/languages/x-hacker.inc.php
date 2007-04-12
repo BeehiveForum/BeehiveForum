@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.227 2007-04-12 21:13:36 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.228 2007-04-12 23:53:37 decoyduck Exp $ */
 
 // International English language file
 
@@ -810,7 +810,7 @@ $lang['passwdsdonotmatch'] = "p45SwoRDS d0 N0+ MA+Ch.";
 $lang['allfieldsrequired'] = "aLL F1ElDS 4r3 r3QuIr3d.";
 $lang['requiredinformationnotfound'] = "rEQU1reD INpH0Rm@tioN N0+ fOUNd";
 $lang['forgotpasswd'] = "f0R9O+ p4\$SwORd";
-$lang['enternewpasswdforuser'] = "eN+eR A N3W P@s5wORD Ph0R u5ER";
+$lang['enternewpasswdforuser'] = "eN+eR A N3W P@s5wORD Ph0R u5ER %s";
 $lang['resetpassword'] = "re\$et P45\$w0rd";
 $lang['resetpasswordto'] = "r35e+ p@SSwORd To";
 
@@ -829,7 +829,7 @@ $lang['cannoteditpollsinlightmode'] = "c@NNO+ 3di+ P0LL\$ in l1GHT m0De";
 $lang['edited_caps'] = "eDi+eD";
 $lang['editappliedtomessage'] = "eD1+ 4ppl13D +o ME\$S@93";
 $lang['errorupdatingpost'] = "err0r upd4TINg poST";
-$lang['editmessage'] = "ed1T M3S\$49E";
+$lang['editmessage'] = "ed1T M3S\$49E %s";
 $lang['editpollwarning'] = "<b>n0t3</b>: EdIT1NG c3Rt41N @sp3c+5 0f 4 pOLl wIll V01d 4lL ThE cUrR3n+ voT3\$ 4nD @LlOw Pe0PL3 +o vOt3 4941N.";
 $lang['hardedit'] = "haRD ed1+ 0PTi0Ns (v0+es W1ll 83 reS3T):";
 $lang['softedit'] = "sOpHT EdiT 0p+10Ns (vO+35 WIlL BE r3T41nED):";

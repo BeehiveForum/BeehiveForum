@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.php,v 1.85 2007-04-12 13:23:12 decoyduck Exp $ */
+/* $Id: visitor_log.php,v 1.86 2007-04-12 23:53:36 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -298,7 +298,19 @@ if (sizeof($user_profile_array['user_array']) > 0) {
     foreach ($user_profile_array['user_array'] as $user_array) {
         
         echo "                 <tr>\n";
-        echo "                   <td class=\"postbody\" align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$user_array['UID']}\" target=\"_blank\" onclick=\"return openProfile({$user_array['UID']}, '$webtag')\">", add_wordfilter_tags(add_wordfilter_tags(format_user_name($user_array['LOGON'], $user_array['NICKNAME']))), "</a></td>\n";
+
+        if (isset($user_array['SID']) && !is_null($user_array['SID'])) {
+
+            echo "                   <td class=\"postbody\" align=\"left\"><a href=\"{$user_array['URL']}\" target=\"_blank\">{$user_array['NAME']}</a></td>\n";
+
+        }elseif ($user_array['UID'] > 0) {
+
+            echo "                   <td class=\"postbody\" align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$user_array['UID']}\" target=\"_blank\" onclick=\"return openProfile({$user_array['UID']}, '$webtag')\">", add_wordfilter_tags(format_user_name($user_array['LOGON'], $user_array['NICKNAME'])), "</a></td>\n";
+
+        }else {
+
+            echo "                   <td class=\"postbody\" align=\"left\">", add_wordfilter_tags(format_user_name($user_array['LOGON'], $user_array['NICKNAME'])), "</td>\n";
+        }
 
         foreach ($profile_items_selected_array as $key => $profile_item_selected) {
             

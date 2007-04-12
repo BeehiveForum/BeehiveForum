@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: change_pw.php,v 1.59 2007-04-12 13:23:10 decoyduck Exp $ */
+/* $Id: change_pw.php,v 1.60 2007-04-12 23:53:36 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -178,7 +178,7 @@ if (isset($error_html)) {
 }
 
 echo "<div align=\"center\">\n";
-echo "  <p class=\"smalltext\">{$lang['enternewpasswdforuser']} $logon</p>\n";
+echo "  <p class=\"smalltext\">", sprintf($lang['enternewpasswdforuser'], $logon), "</p>\n";
 echo "  <form name=\"forgot_pw\" action=\"change_pw.php\" method=\"post\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden("uid", _htmlentities($uid)), "\n";

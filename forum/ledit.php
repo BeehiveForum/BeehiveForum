@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ledit.php,v 1.7 2007-04-12 21:13:36 decoyduck Exp $ */
+/* $Id: ledit.php,v 1.8 2007-04-12 23:53:36 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -464,7 +464,7 @@ if (isset($_POST['preview'])) {
         || (perm_get_user_permissions(bh_session_get_value('UID')) & USER_PERM_PILLORIED)
         || (((time() - $editmessage['CREATED']) >= (intval(forum_get_setting('post_edit_time', false, 0)) * MINUTE_IN_SECONDS)) && intval(forum_get_setting('post_edit_time', false, 0)) != 0)) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
-        echo "<h1>{$lang['editmessage']}</h1>\n";
+        echo sprintf("<h1>{$lang['editmessage']}</h1>\n", $edit_msg);
         echo "<h2>{$lang['nopermissiontoedit']}</h2>\n";
 
         light_html_draw_bottom();
@@ -548,7 +548,7 @@ if (isset($_POST['preview'])) {
                 || (perm_get_user_permissions(bh_session_get_value('UID')) & USER_PERM_PILLORIED)
                 || (((time() - $editmessage['CREATED']) >= (intval(forum_get_setting('post_edit_time', false, 0)) * MINUTE_IN_SECONDS)) && intval(forum_get_setting('post_edit_time', false, 0)) != 0)) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
-                echo "<h1>{$lang['editmessage']} $edit_msg</h1>\n";
+                echo sprintf("<h1>{$lang['editmessage']}</h1>\n", $edit_msg);
                 echo "<h2>{$lang['nopermissiontoedit']}</h2>\n";
 
                 light_html_draw_bottom();
@@ -579,20 +579,20 @@ if (isset($_POST['preview'])) {
 
         }else {
 
-            echo "<h1>{$lang['editmessage']} $edit_msg</h1>\n";
+            echo sprintf("<h1>{$lang['editmessage']}</h1>\n", $edit_msg);
             echo sprintf("<h2>{$lang['messagewasnotfound']}</h2>\n", $edit_msg);
             exit;
         }
 
     }else{
 
-        echo "<h1>{$lang['editmessage']} $edit_msg</h1>\n";
+        echo sprintf("<h1>{$lang['editmessage']}</h1>\n", $edit_msg);
         echo sprintf("<h2>{$lang['messagewasnotfound']}</h2>\n", $edit_msg);
         exit;
     }
 }
 
-echo "<h1>{$lang['editmessage']} $edit_msg</h1>\n";
+echo sprintf("<h1>{$lang['editmessage']}</h1>\n", $edit_msg);
 echo "<form name=\"f_edit\" action=\"ledit.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo form_input_hidden("t_msg", _htmlentities($edit_msg));

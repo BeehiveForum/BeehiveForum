@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.409 2007-04-12 13:23:12 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.410 2007-04-12 21:13:36 decoyduck Exp $ */
 
 // International English language file
 
@@ -141,7 +141,6 @@ $lang['no'] = "No";
 $lang['signature'] = "Signature";
 $lang['signaturepreview'] = "Signature Preview";
 $lang['signatureupdated'] = "Signature Updated";
-$lang['wasnotfound'] = "was not found";
 $lang['back'] = "Back";
 $lang['subject'] = "Subject";
 $lang['close'] = "Close";
@@ -219,21 +218,21 @@ $lang['adminexp_2'] = "<b>Users</b> allows you to set individual user permission
 $lang['adminexp_3'] = "<b>User Groups</b> allows you to create User Groups to assign permissions to as many or as few users quickly and easily.";
 $lang['adminexp_4'] = "<b>Ban Controls</b> allows the banning and un-banning of IP Addresses, Usernames, Email addresses and Nicknames.";
 $lang['adminexp_5'] = "<b>Folders</b> allows the creation, modification and deletion of folders.";
-$lang['adminexp_6'] = "<b>Profiles</b> lets you customise the items that appear in the user profiles.";
-$lang['adminexp_7'] = "<b>Forum Settings</b> allows you to customise your forum's name, appearance and many other things.";
-$lang['adminexp_8'] = "<b>Start Page</b> lets you customise your forum's start page.";
-$lang['adminexp_9'] = "<b>Forum style</b> allows you to create styles for your forum members to use.";
-$lang['adminexp_10'] = "<b>Word filter</b> allows you to filter words you don't want to be used on your forum.";
-$lang['adminexp_11'] = "<b>Posting stats</b> generates a report listing the top 10 posters in a defined period.";
-$lang['adminexp_12'] = "<b>Forum links</b> lets you manage the links dropdown in the navigation bar.";
-$lang['adminexp_13'] = "<b>View log</b> lists recent actions by the forum moderators.";
-$lang['adminexp_14'] = "<b>Manage Forums</b> lets you create and delete and close or reopen forums.";
-$lang['adminexp_15'] = "<b>Global Forum Settings</b> allows you to modify settings which affect all forums.";
-$lang['adminexp_16'] = "<b>Post Approval Queue</b> allows you to view any posts awaiting approval by a moderator.";
-$lang['adminexp_17'] = "<b>Visitor Log</b> allows you to view an extended list of visitors including their HTTP referers.";
+$lang['adminexp_6'] = "<b>RSS Feeds</b> allows you to create and remove RSS feeds for propogation into your forum.";
+$lang['adminexp_7'] = "<b>Profiles</b> lets you customise the items that appear in the user profiles.";
+$lang['adminexp_8'] = "<b>Forum Settings</b> allows you to customise your forum's name, appearance and many other things.";
+$lang['adminexp_9'] = "<b>Start Page</b> lets you customise your forum's start page.";
+$lang['adminexp_10'] = "<b>Forum style</b> allows you to create styles for your forum members to use.";
+$lang['adminexp_11'] = "<b>Word filter</b> allows you to filter words you don't want to be used on your forum.";
+$lang['adminexp_12'] = "<b>Posting stats</b> generates a report listing the top 10 posters in a defined period.";
+$lang['adminexp_13'] = "<b>Forum links</b> lets you manage the links dropdown in the navigation bar.";
+$lang['adminexp_14'] = "<b>View log</b> lists recent actions by the forum moderators.";
+$lang['adminexp_15'] = "<b>Manage Forums</b> lets you create and delete and close or reopen forums.";
+$lang['adminexp_16'] = "<b>Global Forum Settings</b> allows you to modify settings which affect all forums.";
+$lang['adminexp_17'] = "<b>Post Approval Queue</b> allows you to view any posts awaiting approval by a moderator.";
+$lang['adminexp_18'] = "<b>Visitor Log</b> allows you to view an extended list of visitors including their HTTP referers.";
 $lang['createforumstyle'] = "Create a Forum Style";
-$lang['newstyle'] = "New style";
-$lang['successfullycreated'] = "successfully created.";
+$lang['newstylesuccessfullycreated'] = "New style %s successfully created.";
 $lang['stylealreadyexists'] = "A style with that filename already exists.";
 $lang['stylenofilename'] = "You did not enter a filename to save the style with.";
 $lang['stylenodatasubmitted'] = "Could not read forum style data.";
@@ -828,7 +827,7 @@ $lang['cannotdeletepostsinthisfolder'] = "You cannot delete posts in this folder
 
 $lang['nomessagespecifiedforedit'] = "No message specified for editing";
 $lang['cannoteditpollsinlightmode'] = "Cannot edit polls in Light mode";
-$lang['edited_caps'] = "EDITED";
+$lang['editedbyuser'] = "EDITED: %s by %s";
 $lang['editappliedtomessage'] = "Edit Applied to Message";
 $lang['errorupdatingpost'] = "Error updating post";
 $lang['editmessage'] = "Edit message";
@@ -845,6 +844,7 @@ $lang['mailsystemfailure'] = "Mail system failure. Message not sent.";
 $lang['nopermissiontoedit'] = "You are not permitted to edit this message.";
 $lang['pollediterror'] = "You cannot edit polls";
 $lang['cannoteditpostsinthisfolder'] = "You cannot edit posts in this folder";
+$lang['messagewasnotfound'] = "Message %s was not found";
 
 // Email (email.php) ---------------------------------------------------
 
@@ -950,7 +950,7 @@ $lang['rate'] = "Rate";
 $lang['bad'] = "Bad";
 $lang['good'] = "Good";
 $lang['voteexcmark'] = "Vote!";
-$lang['commentby'] = "Comment by";
+$lang['commentby'] = "Comment by %s";
 $lang['addacommentabout'] = "Add a comment about";
 $lang['modtools'] = "Moderation Tools";
 $lang['editname'] = "Edit name";
@@ -980,7 +980,7 @@ $lang['forgottenpasswd'] = "Forgotten your password?";
 $lang['usingaPDA'] = "Using a PDA?";
 $lang['lightHTMLversion'] = "Light HTML version";
 $lang['youhaveloggedout'] = "You have logged out.";
-$lang['currentlyloggedinas'] = "You are currently logged in as";
+$lang['currentlyloggedinas'] = "You are currently logged in as %s";
 $lang['logonbutton'] = "Logon";
 $lang['otherbutton'] = "Other";
 
@@ -991,7 +991,10 @@ $lang['recentlyvisitedforums'] = "Recently Visited Forums";
 $lang['availableforums'] = "Available Forums";
 $lang['favouriteforums'] = "Favourite Forums";
 $lang['lastvisited'] = "Last Visited";
-$lang['unreadmessages'] = "Unread Messages";
+$lang['forumunreadmessages'] = "%s Unread Messages";
+$lang['forummessages'] = "%s Messages";
+$lang['forumunreadtome'] = "%s Unread &quot;To: Me&quot;";
+$lang['forumnounreadmessages'] = "No Unread Messages";
 $lang['removefromfavourites'] = "Remove From Favourites";
 $lang['addtofavourites'] = "Add To Favourites";
 $lang['availableforums'] = "Available Forums";
@@ -1090,12 +1093,14 @@ $lang['postapprovedsuccessfully'] = "Post approved successfully";
 $lang['postapprovalfailed'] = "Post approval failed.";
 $lang['postdoesnotrequireapproval'] = "Post does not require approval";
 $lang['approvepost'] = "Approve post for display";
-$lang['approvedcaps'] = "APPROVED";
+$lang['approvedbyuser'] = "APPROVED: %s by %s";
 $lang['makesticky'] = "Make sticky";
 $lang['linktothread'] = "Permanent link to this thread";
 $lang['linktopost'] = "Link to post";
 $lang['linktothispost'] = "Link to this post";
 $lang['imageresized'] = "This image has been resized (original size %1\$sx%2\$s). To view the full-size image click here.";
+$lang['messagedeletedbyuser'] = "Message %s.%s deleted %s by %s";
+$lang['messagedeleted'] = "Message %s.%s was deleted";
 
 // Moderators list (mods_list.php) -------------------------------------
 
@@ -1127,8 +1132,7 @@ $lang['privatemessages'] = "Private Messages";
 $lang['recipienttiptext'] = "Separate recipients by semi-colon or comma";
 $lang['maximumtenrecipientspermessage'] = "There is a limit of 10 recipients per message. Please amend your recipient list.";
 $lang['mustspecifyrecipient'] = "You must specify at least one recipient.";
-$lang['usernotfound1'] = "User";
-$lang['usernotfound2'] = "Not found.";
+$lang['usernotfound'] = "User %s not found";
 $lang['sendnewpm'] = "Send New PM";
 $lang['savemessage'] = "Save Message";
 $lang['timesent'] = "Time Sent";
@@ -1176,7 +1180,10 @@ $lang['userexp_4'] = "<b>Change Password</b> allows you to change your password"
 $lang['userexp_5'] = "<b>Email &amp; Privacy</b> lets you change how you can be contacted on and off the forum.";
 $lang['userexp_6'] = "<b>Forum Options</b> lets you change how the forum looks and works.";
 $lang['userexp_7'] = "<b>Attachments</b> allows you to edit/delete your attachments.";
-$lang['userexp_8'] = "<b>Edit Signature</b> lets you edit your signature.";
+$lang['userexp_8'] = "<b>Signature</b> lets you edit your signature.";
+$lang['userexp_9'] = "<b>Relationships</b> lets you manage your relationship with other users on the forum.";
+$lang['userexp_9'] = "<b>Word Filter</b> lets you edit your personal word filter.";
+$lang['userexp_10'] = "<b>Thread Subscriptions</b> allows you to manage your thread subscriptions.";
 $lang['userdetails'] = "User Details";
 $lang['userprofile'] = "User Profile";
 $lang['emailandprivacy'] = "Email &amp; Privacy";
@@ -1230,6 +1237,7 @@ $lang['preferredlang'] = "Preferred language";
 $lang['donotshowmyageordobtoothers'] = "Do not show my age or date of birth to others";
 $lang['showonlymyagetoothers'] = "Show only my age to others";
 $lang['showmyageanddobtoothers'] = "Show both my age and date of birth to others";
+$lang['showonlymydayandmonthofbirthytoothers'] = "Show only my day and month of birth to others";
 $lang['listmeontheactiveusersdisplay'] = "List me on the active users display";
 $lang['browseanonymously'] = "Browse forum anonymously";
 $lang['allowfriendstoseemeasonline'] = "Browse anonymously, but allow friends to see me as online";
@@ -1536,7 +1544,9 @@ $lang['clickhere'] = "click here";
 $lang['forallthreads'] = "for all threads";
 $lang['prev50threads'] = "Previous 50 threads";
 $lang['next50threads'] = "Next 50 threads";
-$lang['startedby'] = "Started by";
+$lang['threadstartedbytooltip'] = "Thread #%s Started by %s. Viewed %s";
+$lang['threadviewedonetime'] = "1 time";
+$lang['threadviewedtimes'] = "%d times";
 $lang['unreadthread'] = "Unread Thread";
 $lang['readthread'] = "Read Thread";
 $lang['unreadmessages'] = "Unread Messages";
@@ -1551,8 +1561,6 @@ $lang['onenewoflength'] = "%d new of %d";
 $lang['manynewoflength'] = "%d new of %d";
 $lang['ignorefolderconfirm'] = "Are you sure you want to ignore this folder?";
 $lang['unignorefolderconfirm'] = "Are you sure you want to stop ignoring this folder?";
-$lang['threadviewedonetime'] = "Viewed: 1 time";
-$lang['threadviewedtimes'] = "Viewed: %d times";
 $lang['gotofirstpostinthread'] = "Go to first post in thread";
 $lang['gotolastpostinthread'] = "Go to last post in thread";
 $lang['viewmessagesinthisfolderonly'] = "View messages in this folder only";

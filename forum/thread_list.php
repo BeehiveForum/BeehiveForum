@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.290 2007-04-12 13:23:12 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.291 2007-04-12 21:13:36 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -612,8 +612,7 @@ foreach ($folder_order as $folder_number) {
                             echo "&nbsp;</td>\n";
                             echo "                      <td align=\"left\" valign=\"top\">";
                             echo "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.{$latest_post}\" target=\"right\" class=\"threadname\" onclick=\"change_current_thread('{$thread['TID']}');\"";
-                            echo "title=\"#{$thread['TID']} {$lang['startedby']} ", add_wordfilter_tags(format_user_name($thread['LOGON'], $thread['NICKNAME'])), ". ";
-                            echo ($thread['VIEWCOUNT'] == 1) ? $lang['threadviewedonetime'] : sprintf($lang['threadviewedtimes'], $thread['VIEWCOUNT']), "\">";
+                            echo "title=\"", sprintf($lang['threadstartedbytooltip'], $thread['TID'], add_wordfilter_tags(format_user_name($thread['LOGON'], $thread['NICKNAME'])), ($thread['VIEWCOUNT'] == 1) ? $lang['threadviewedonetime'] : sprintf($lang['threadviewedtimes'], $thread['VIEWCOUNT'])), "\">";
                             echo add_wordfilter_tags(thread_format_prefix($thread['PREFIX'], $thread['TITLE'])), "</a> ";
 
                             if (isset($thread['INTEREST']) && $thread['INTEREST'] == 1) echo "<img src=\"".style_image('high_interest.png')."\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" /> ";

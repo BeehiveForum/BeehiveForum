@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.226 2007-04-12 13:23:12 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.227 2007-04-12 21:13:36 decoyduck Exp $ */
 
 // International English language file
 
@@ -948,7 +948,7 @@ $lang['rate'] = "r4T3";
 $lang['bad'] = "b@D";
 $lang['good'] = "g00D";
 $lang['voteexcmark'] = "vo+E!";
-$lang['commentby'] = "cOMMeNT By";
+$lang['commentby'] = "cOMMeNT By %s";
 $lang['addacommentabout'] = "aDD @ C0mmEnt @80uT";
 $lang['modtools'] = "m0d3r4T1oN Tool5";
 $lang['editname'] = "eDIt n@me";

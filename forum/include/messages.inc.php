@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.441 2007-03-30 00:28:50 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.442 2007-04-12 21:13:38 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -909,7 +909,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
                 $edit_user = user_get_logon($message['EDITED_BY']);
                 
                 echo "              <tr>\n";
-                echo "                <td class=\"postbody\" align=\"left\"><p class=\"edit_text\">{$lang['edited_caps']}: ", format_time($message['EDITED'], 1), " {$lang['by']} {$edit_user}</p></td>\n";
+                echo "                <td class=\"postbody\" align=\"left\"><p class=\"edit_text\">", sprintf($lang['editedbyuser'], format_time($message['EDITED'], 1), $edit_user), "</p></td>\n";
                 echo "              </tr>\n";
             }
         }
@@ -921,7 +921,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
                 $approved_user = user_get_logon($message['APPROVED_BY']);
                 
                 echo "              <tr>\n";
-                echo "                <td class=\"postbody\" align=\"left\"><p class=\"approved_text\">{$lang['approvedcaps']}: ", format_time($message['APPROVED'], 1), " {$lang['by']} {$approved_user}</p></td>\n";
+                echo "                <td class=\"postbody\" align=\"left\"><p class=\"approved_text\">", sprintf($lang['approvedbyuser'], format_time($message['APPROVED'], 1), $approved_user), "</p></td>\n";
                 echo "              </tr>\n";
             }
         }
@@ -1100,13 +1100,9 @@ function message_display_deleted($tid, $pid, $message)
     echo "              <tr>\n";
 
     if (isset($message['EDITED']) && $message['EDITED'] > 0) {
-    
-        $edit_logon = user_get_logon($message['EDITED_BY']);
-        echo "                <td align=\"left\">{$lang['message']} ${tid}.${pid} {$lang['deleted']}: ", format_time($message['EDITED'], 1), " {$lang['by']} {$edit_logon}</td>\n";
-
+        echo "                <td align=\"left\">", sprintf($lang['messagedeletedbyuser'], $tid, $pid, format_time($message['EDITED'], 1), user_get_logon($message['EDITED_BY'])), "</td>\n";
     }else {
-
-        echo "{$lang['message']} ${tid}.${pid} {$lang['wasdeleted']}\n";
+        echo "                <td align=\"left\">", sprintf($lang['messagedeleted'], $tid, $pid), "</td>\n";
     }
 
     echo "              </tr>\n";

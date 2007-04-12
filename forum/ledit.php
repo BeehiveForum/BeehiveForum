@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ledit.php,v 1.6 2007-04-12 13:23:10 decoyduck Exp $ */
+/* $Id: ledit.php,v 1.7 2007-04-12 21:13:36 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -580,14 +580,14 @@ if (isset($_POST['preview'])) {
         }else {
 
             echo "<h1>{$lang['editmessage']} $edit_msg</h1>\n";
-            echo "<h2>{$lang['message']} $edit_msg {$lang['wasnotfound']}</h2>\n";
+            echo sprintf("<h2>{$lang['messagewasnotfound']}</h2>\n", $edit_msg);
             exit;
         }
 
     }else{
 
         echo "<h1>{$lang['editmessage']} $edit_msg</h1>\n";
-        echo "<h2>{$lang['message']} $edit_msg {$lang['wasnotfound']}</h2>\n";
+        echo sprintf("<h2>{$lang['messagewasnotfound']}</h2>\n", $edit_msg);
         exit;
     }
 }

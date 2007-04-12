@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ldelete.php,v 1.4 2007-04-12 13:23:10 decoyduck Exp $ */
+/* $Id: ldelete.php,v 1.5 2007-04-12 21:13:36 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -221,7 +221,7 @@ if (isset($tid) && isset($pid) && is_numeric($tid) && is_numeric($pid)) {
 
         light_html_draw_top();
         echo "<h1>{$lang['error']}</h1>\n";
-        echo "<h2>{$lang['message']} $tid.$pid {$lang['wasnotfound']}</h2>\n";
+        echo "<h2>", sprintf($lang['messagewasnotfound'], $msg), "</h2>\n";
         light_html_draw_bottom();
         exit;
     }

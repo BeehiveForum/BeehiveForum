@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_main.php,v 1.36 2007-04-12 13:23:12 decoyduck Exp $ */
+/* $Id: user_main.php,v 1.37 2007-04-12 21:13:36 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -108,6 +108,8 @@ echo "<p>{$lang['userexp_5']}</p>\n";
 echo "<p>{$lang['userexp_6']}</p>\n";
 echo "<p>{$lang['userexp_7']}</p>\n";
 echo "<p>{$lang['userexp_8']}</p>\n";
+echo "<p>{$lang['userexp_9']}</p>\n";
+echo "<p>{$lang['userexp_10']}</p>\n";
 
 html_draw_bottom();
 

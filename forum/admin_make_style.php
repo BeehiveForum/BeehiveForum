@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.103 2007-04-12 13:23:08 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.104 2007-04-12 21:13:36 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -146,9 +146,7 @@ if (isset($_POST['submit'])) {
 
         if (isset($_POST['savefailed']) && $_POST['savefailed'] == "yes") {
 
-            $success = forum_save_style($stylename, $styledesc, $stylesheet, $error_code);
-
-            if (!$success) {
+            if (!forum_save_style($stylename, $styledesc, $stylesheet, $error_code)) {
 
                 if ($error_code == STYLE_ALREADY_EXISTS) {
 
@@ -208,14 +206,12 @@ if (isset($_POST['submit'])) {
 
             }else {
 
-                $result_html = "<h2>{$lang['newstyle']} $stylename {$lang['successfullycreated']}</h2>\n";
+                $result_html = sprintf("<h2>{$lang['newstylesuccessfullycreated']}</h2>\n", $stylename);
             }
 
         }else {
 
-            $success = forum_save_style($stylename, $styledesc, $stylesheet, $error_code);
-
-            if (!$success) {
+            if (!forum_save_style($stylename, $styledesc, $stylesheet, $error_code)) {
 
                 if ($error_code == STYLE_ALREADY_EXISTS) {
 
@@ -275,7 +271,7 @@ if (isset($_POST['submit'])) {
 
             }else {
 
-                $result_html = "<h2>{$lang['newstyle']} $stylename {$lang['successfullycreated']}</h2>\n";
+                $result_html = sprintf("<h2>{$lang['newstylesuccessfullycreated']}</h2>\n", $stylename);
             }
         }
     }

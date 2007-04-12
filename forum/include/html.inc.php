@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.217 2007-04-07 15:42:17 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.218 2007-04-12 23:53:36 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -66,7 +66,7 @@ function html_error_msg($error_msg, $href = false, $method = 'get', $button_arra
      html_display_msg($lang['error'], $error_msg, $href, $method, $button_array, $var_array, $target);
 }
 
-function html_display_msg($header_text, $error_msg, $href = false, $method = 'get', $button_array = false, $var_array = false, $target = "_self")
+function html_display_msg($header_text, $string_msg, $href = false, $method = 'get', $button_array = false, $var_array = false, $target = "_self")
 {
     $webtag = get_webtag($webtag_search);
     
@@ -106,7 +106,7 @@ function html_display_msg($header_text, $error_msg, $href = false, $method = 'ge
     echo "                  <td align=\"left\" class=\"subhead\">$header_text</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\"><h2>$error_msg</h2></td>\n";
+    echo "                  <td align=\"left\"><h2>$string_msg</h2></td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\">&nbsp;</td>\n";

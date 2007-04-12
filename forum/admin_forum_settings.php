@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.109 2007-04-12 13:23:08 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.110 2007-04-12 23:53:36 decoyduck Exp $ */
 
 /**
 * Displays and handles the Forum Settings page
@@ -266,7 +266,7 @@ if (isset($_POST['changepermissions'])) {
         $valid = false;
     }
 
-    if (isset($_POST['default_language']) && in_array($_POST['default_language'], array_keys($available_langs))) {
+    if (isset($_POST['default_language']) && in_array($_POST['default_language'], $available_langs)) {
 
         $new_forum_settings['default_language'] = $_POST['default_language'];
 

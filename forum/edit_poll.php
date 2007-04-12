@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.131 2007-04-12 13:23:10 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.132 2007-04-12 23:53:36 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -635,7 +635,7 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
     }
 }
 
-echo "<h1>{$lang['editmessage']}</h1>\n";
+echo sprintf("<h1>{$lang['editmessage']}</h1>\n", $edit_msg);
 echo "<br />\n";
 echo "<form name=\"f_edit_poll\" action=\"edit_poll.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";

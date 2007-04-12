@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.218 2007-04-12 21:13:36 decoyduck Exp $ */
+/* $Id: edit.php,v 1.219 2007-04-12 23:53:36 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -214,8 +214,6 @@ $page_prefs = bh_session_get_post_page_prefs();
 $valid = true;
 
 $fix_html = true;
-
-html_draw_top("onUnload=clearFocus()", "resize_width=720", "basetarget=_blank", "attachments.js", "edit.js", "openprofile.js", "dictionary.js", "htmltools.js", "emoticons.js", "post.js", "poll.js");
 
 $t_content = "";
 $t_sig = "";
@@ -461,41 +459,8 @@ if (isset($_POST['preview'])) {
         || (perm_get_user_permissions(bh_session_get_value('UID')) & USER_PERM_PILLORIED)
         || (((time() - $editmessage['CREATED']) >= (intval(forum_get_setting('post_edit_time', false, 0)) * MINUTE_IN_SECONDS)) && intval(forum_get_setting('post_edit_time', false, 0)) != 0)) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
-        echo "<h1>{$lang['editmessage']}</h1>\n";
-        echo "<br />\n";
-        echo "<form action=\"discussion.php\" method=\"post\" target=\"_self\">\n";
-        echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"left\">\n";
-        echo "        <table class=\"box\" width=\"100%\">\n";
-        echo "          <tr>\n";
-        echo "            <td align=\"left\" class=\"posthead\">\n";
-        echo "              <table class=\"posthead\" width=\"100%\">\n";
-        echo "                <tr>\n";
-        echo "                  <td align=\"left\" class=\"subhead\">{$lang['error']}</td>\n";
-        echo "                </tr>\n";
-        echo "                <tr>\n";
-        echo "                  <td align=\"left\"><h2>{$lang['nopermissiontoedit']}</h2></td>\n";
-        echo "                </tr>\n";
-        echo "                <tr>\n";
-        echo "                  <td align=\"left\">&nbsp;</td>\n";
-        echo "                </tr>\n";
-        echo "              </table>\n";
-        echo "            </td>\n";
-        echo "          </tr>\n";
-        echo "        </table>\n";
-        echo "      </td>\n";
-        echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"left\">&nbsp;</td>\n";
-        echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"center\">", form_submit("back", $lang['back']), "</td>\n";
-        echo "    </tr>\n";
-        echo "  </table>\n";
-        echo "</form>\n";
-
+        html_draw_top();
+        html_error_msg($lang['nopermissiontoedit'], 'discussion.php', 'post', array('back' => $lang['back']), array('msg' => $edit_msg));
         html_draw_bottom();
         exit;
     }
@@ -523,50 +488,8 @@ if (isset($_POST['preview'])) {
                 admin_add_log_entry(EDIT_POST, array($t_fid, $tid, $pid));
             }
 
-            echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
-            echo "  <!--\n";
-            echo "    function clearFocus() {\n";
-            echo "      return;\n";
-            echo "    }\n";
-            echo "  //-->\n";
-            echo "</script>\n";
-
-            echo "<h1>{$lang['editmessage']} $edit_msg</h1>\n";
-            echo "<br />\n";
-            echo "<form action=\"discussion.php\" method=\"get\" target=\"_self\">\n";
-            echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-            echo "  ", form_input_hidden('msg', _htmlentities($edit_msg)), "\n";
-            echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
-            echo "    <tr>\n";
-            echo "      <td align=\"left\">\n";
-            echo "        <table class=\"box\" width=\"100%\">\n";
-            echo "          <tr>\n";
-            echo "            <td align=\"left\" class=\"posthead\">\n";
-            echo "              <table class=\"posthead\" width=\"100%\">\n";
-            echo "                <tr>\n";
-            echo "                  <td align=\"left\" class=\"subhead\">{$lang['editmessage']}</td>\n";
-            echo "                </tr>\n";
-            echo "                <tr>\n";
-            echo "                  <td align=\"left\"><h2>{$lang['editappliedtomessage']}</h2></td>\n";
-            echo "                </tr>\n";
-            echo "                <tr>\n";
-            echo "                  <td align=\"left\">&nbsp;</td>\n";
-            echo "                </tr>\n";
-            echo "              </table>\n";
-            echo "            </td>\n";
-            echo "          </tr>\n";
-            echo "        </table>\n";
-            echo "      </td>\n";
-            echo "    </tr>\n";
-            echo "    <tr>\n";
-            echo "      <td align=\"left\">&nbsp;</td>\n";
-            echo "    </tr>\n";
-            echo "    <tr>\n";
-            echo "      <td align=\"center\">", form_submit("back", $lang['continue']), "</td>\n";
-            echo "    </tr>\n";
-            echo "  </table>\n";
-            echo "</form>\n";
-
+            html_draw_top();
+            html_display_msg(sprintf($lang['editmessage'], $edit_msg), $lang['editappliedtomessage'], 'discussion.php', 'post', array('back' => $lang['continue']), array('msg' => $edit_msg));
             html_draw_bottom();
             exit;
 
@@ -621,21 +544,8 @@ if (isset($_POST['preview'])) {
                 || (perm_get_user_permissions(bh_session_get_value('UID')) & USER_PERM_PILLORIED)
                 || (((time() - $editmessage['CREATED']) >= (intval(forum_get_setting('post_edit_time', false, 0)) * MINUTE_IN_SECONDS)) && intval(forum_get_setting('post_edit_time', false, 0)) != 0)) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
-                echo "<h1>{$lang['editmessage']} $edit_msg</h1>\n";
-                echo "<br />\n";
-
-                echo "<table class=\"posthead\" width=\"720\">\n";
-                echo "<tr><td align=\"left\" class=\"subhead\">{$lang['error']}</td></tr>\n";
-                echo "<tr><td align=\"left\">\n";
-
-                echo "<h2>{$lang['nopermissiontoedit']}</h2>\n";
-                echo "</td></tr>\n";
-
-                echo "<tr><td align=\"center\">\n";
-                echo form_quick_button("discussion.php", $lang['back'], array('msg' => $edit_msg));
-                echo "</td></tr>\n";
-                echo "</table>\n";
-
+                html_draw_top();
+                html_error_msg(sprintf($lang['editmessage'], $edit_msg), 'discussion.php', 'post', array('back' => $lang['back']), array('msg' => $edit_msg));
                 html_draw_bottom();
                 exit;
             }
@@ -664,22 +574,30 @@ if (isset($_POST['preview'])) {
 
         }else {
 
-            echo html_error_msg(sprintf($lang['messagewasnotfound'], $edit_msg), 'discussion.php', 'post', array('back' => $lang['back']), array('msg' => $edit_msg));
+            html_draw_top();
+            html_error_msg(sprintf($lang['messagewasnotfound'], $edit_msg), 'discussion.php', 'post', array('back' => $lang['back']), array('msg' => $edit_msg));
             html_draw_bottom();
             exit;
         }
 
     }else{
 
-       echo html_error_msg(sprintf($lang['messagewasnotfound'], $edit_msg), 'discussion.php', 'post', array('back' => $lang['back']), array('msg' => $edit_msg));
+       html_draw_top();
+       html_error_msg(sprintf($lang['messagewasnotfound'], $edit_msg), 'discussion.php', 'post', array('back' => $lang['back']), array('msg' => $edit_msg));
        html_draw_bottom();
        exit;
     }
 }
 
-echo "<h1>{$lang['editmessage']} $edit_msg</h1>\n";
-echo "<br /><form name=\"f_edit\" action=\"edit.php\" method=\"post\" target=\"_self\">\n";
+html_draw_top("onUnload=clearFocus()", "resize_width=720", "basetarget=_blank", "attachments.js", "edit.js", "openprofile.js", "dictionary.js", "htmltools.js", "emoticons.js", "post.js", "poll.js");
+
+echo "<h1>", sprintf($lang['editmessage'], $edit_msg), "</h1>\n";
+echo "<br />\n";
+echo "<form name=\"f_edit\" action=\"edit.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+echo "  ", form_input_hidden("t_msg", _htmlentities($edit_msg));
+echo "  ", form_input_hidden("t_to_uid", _htmlentities($to_uid));
+echo "  ", form_input_hidden("t_from_uid", _htmlentities($from_uid));
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -688,104 +606,99 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 
 $tools = new TextAreaHTML("f_edit");
+
 echo $tools->preload();
 
 if (isset($error_html)) {
-    echo "<table class=\"posthead\" width=\"720\">\n";
-    echo "<tr><td align=\"left\" class=\"subhead\">{$lang['error']}</td></tr>";
-    echo "<tr><td align=\"left\">\n";
-    echo $error_html . "\n";
-    echo "</td></tr>\n";
-    echo "</table>\n";
+
+    echo "            <table class=\"posthead\" width=\"720\">\n";
+    echo "              <tr>\n";
+    echo "                <td align=\"left\" class=\"subhead\">{$lang['error']}</td>\n";
+    echo "              </tr>";
+    echo "              <tr>\n";
+    echo "                <td align=\"left\">$error_html</td>\n";
+    echo "              </tr>\n";
+    echo "            </table>\n";
 }
 
 if ($valid && isset($_POST['preview'])) {
 
-    echo "<table class=\"posthead\" width=\"720\">\n";
-    echo "<tr><td align=\"left\" class=\"subhead\">{$lang['messagepreview']}</td></tr>";
-
-    echo "<tr><td align=\"left\">\n";
-    message_display($tid, $preview_message, $threaddata['LENGTH'], $pid, $threaddata['FID'], true, false, false, false, $show_sigs, true);
-    echo "</td></tr>\n";
-
-    echo "<tr><td align=\"left\">&nbsp;</td></tr>\n";
-    echo "</table>\n";
+    echo "            <table class=\"posthead\" width=\"720\">\n";
+    echo "              <tr>\n";
+    echo "                <td align=\"left\" class=\"subhead\">{$lang['messagepreview']}</td>\n";
+    echo "              </tr>\n";
+    echo "              <tr>\n";
+    echo "                <td align=\"left\">", message_display($tid, $preview_message, $threaddata['LENGTH'], $pid, $threaddata['FID'], true, false, false, false, $show_sigs, true), "</td>\n";
+    echo "              </tr>\n";
+    echo "              <tr>\n";
+    echo "                <td align=\"left\">&nbsp;</td>\n";
+    echo "              </tr>\n";
+    echo "            </table>\n";
 }
 
-echo "<table class=\"posthead\" width=\"720\">\n";
-echo "<tr><td align=\"left\" class=\"subhead\" colspan=\"2\">";
-echo $lang['editmessage'];
-echo "</td></tr>\n";
-echo "<tr>\n";
-
-
-// ======================================
-// =========== OPTIONS COLUMN ===========
-echo "<td align=\"left\" valign=\"top\" width=\"210\">\n";
-echo "<table class=\"posthead\" width=\"210\">\n";
-echo "<tr><td align=\"left\">\n";
-
-echo "<h2>{$lang['folder']}</h2>\n";
-echo _stripslashes($threaddata['FOLDER_TITLE'])."\n";
-echo "<h2>{$lang['threadtitle']}</h2>\n";
-echo add_wordfilter_tags(thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE'])), "\n";
-
-echo form_input_hidden("t_msg", _htmlentities($edit_msg));
-echo form_input_hidden("t_to_uid", _htmlentities($to_uid));
-echo form_input_hidden("t_from_uid", _htmlentities($from_uid));
-
-echo "<h2>{$lang['to']}</h2>\n";
+echo "            <table class=\"posthead\" width=\"720\">\n";
+echo "              <tr>\n";
+echo "                <td align=\"left\" class=\"subhead\" colspan=\"2\">", sprintf($lang['editmessage'], $edit_msg), "</td>\n";
+echo "              </tr>\n";
+echo "              <tr>\n";
+echo "                <td align=\"left\" valign=\"top\" width=\"210\">\n";
+echo "                  <table class=\"posthead\" width=\"210\">\n";
+echo "                    <tr>\n";
+echo "                      <td align=\"left\">\n";
+echo "                        <h2>{$lang['folder']}</h2>\n";
+echo "                        ", add_wordfilter_tags($threaddata['FOLDER_TITLE']), "\n";
+echo "                        <h2>{$lang['threadtitle']}</h2>\n";
+echo "                        ", add_wordfilter_tags(thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE'])), "\n";
+echo "                        <h2>{$lang['to']}</h2>\n";
 
 if ($preview_message['TLOGON'] != $lang['allcaps']) {
 
-    echo "<a href=\"user_profile.php?webtag=$webtag&amp;uid=$to_uid\" target=\"_blank\" onclick=\"return openProfile($to_uid, '$webtag')\">";
-    echo _stripslashes(add_wordfilter_tags(format_user_name($preview_message['TLOGON'], $preview_message['TNICK'])));
-    echo "</a><br /><br />\n";
+    echo "                        <a href=\"user_profile.php?webtag=$webtag&amp;uid=$to_uid\" target=\"_blank\" onclick=\"return openProfile($to_uid, '$webtag')\">", add_wordfilter_tags(format_user_name($preview_message['TLOGON'], $preview_message['TNICK'])), "</a><br /><br />\n";
 
 }else {
 
-    echo _stripslashes(add_wordfilter_tags(format_user_name($preview_message['TLOGON'], $preview_message['TNICK'])));
+    echo "                        ", add_wordfilter_tags(format_user_name($preview_message['TLOGON'], $preview_message['TNICK'])), "<br /><br />\n";
 }
 
-echo "<h2>{$lang['messageoptions']}</h2>\n";
-
-echo form_checkbox("t_post_links", "enabled", $lang['automaticallyparseurls'], $links_enabled)."<br />\n";
-echo form_checkbox("t_check_spelling", "enabled", $lang['automaticallycheckspelling'], $spelling_enabled)."<br />\n";
-echo form_checkbox("t_post_emots", "disabled", $lang['disableemoticonsinmessage'], !$emots_enabled)."<br /><br />\n";
+echo "                        <h2>{$lang['messageoptions']}</h2>\n";
+echo "                        ", form_checkbox("t_post_links", "enabled", $lang['automaticallyparseurls'], $links_enabled), "<br />\n";
+echo "                        ", form_checkbox("t_check_spelling", "enabled", $lang['automaticallycheckspelling'], $spelling_enabled), "<br />\n";
+echo "                        ", form_checkbox("t_post_emots", "disabled", $lang['disableemoticonsinmessage'], !$emots_enabled), "<br /><br />\n";
 
 $emot_user = bh_session_get_value('EMOTICONS');
 $emot_prev = emoticons_preview($emot_user);
 
 if (strlen($emot_prev) > 0) {
 
-    echo "<table width=\"190\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
-    echo "  <tr>\n";
-    echo "    <td align=\"left\" class=\"subhead\">{$lang['emoticons']}:</td>\n";
+    echo "                        <table width=\"190\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
+    echo "                          <tr>\n";
+    echo "                            <td align=\"left\" class=\"subhead\">{$lang['emoticons']}:</td>\n";
 
     if (($page_prefs & POST_EMOTICONS_DISPLAY) > 0) {
 
-        echo "    <td class=\"subhead\" align=\"right\">", form_submit_image('emots_hide.png', 'emots_toggle', 'hide'), "</td>\n";
-        echo "  </tr>\n";
-        echo "  <tr>\n";
-        echo "    <td align=\"left\" colspan=\"2\">{$emot_prev}</td>\n";
+        echo "                            <td class=\"subhead\" align=\"right\">", form_submit_image('emots_hide.png', 'emots_toggle', 'hide'), "</td>\n";
+        echo "                          </tr>\n";
+        echo "                          <tr>\n";
+        echo "                            <td align=\"left\" colspan=\"2\">{$emot_prev}</td>\n";
 
     }else {
 
-        echo "    <td class=\"subhead\" align=\"right\">", form_submit_image('emots_show.png', 'emots_toggle', 'show'), "</td>\n";
+        echo "                            <td class=\"subhead\" align=\"right\">", form_submit_image('emots_show.png', 'emots_toggle', 'show'), "</td>\n";
     }
 
-    echo "  </tr>\n";
-    echo "</table>\n";
+    echo "                          </tr>\n";
+    echo "                        </table>\n";
 }
 
-echo "</td></tr>\n";
-echo "</table>\n";
-echo "</td>\n";
-echo "<td align=\"left\" valign=\"top\" width=\"500\">\n";
-echo "<table class=\"posthead\" width=\"500\">\n";
-echo "<tr><td align=\"left\">\n";
-
-echo "<h2>{$lang['message']}</h2>\n";
+echo "                      </td>\n";
+echo "                    </tr>\n";
+echo "                  </table>\n";
+echo "                </td>\n";
+echo "                <td align=\"left\" valign=\"top\" width=\"500\">\n";
+echo "                  <table class=\"posthead\" width=\"500\">\n";
+echo "                    <tr>\n";
+echo "                      <td align=\"left\">\n";
+echo "                        <h2>{$lang['message']}</h2>\n";
 
 $t_content = ($fix_html ? $post->getTidyContent() : $post->getOriginalContent(true));
 
@@ -847,7 +760,7 @@ if ($tools->getTinyMCE()) {
 } else {
     echo "<br /><br />\n";
 }
-echo form_submit('submit',$lang['apply'], "tabindex=\"2\" target=\"_blank\" onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\"");
+echo form_submit('submit',$lang['apply'], "tabindex=\"2\" onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\"");
 echo "&nbsp;".form_submit("preview", $lang['preview'], "tabindex=\"3\" onclick=\"clearFocus()\"");
 echo "&nbsp;".form_submit("cancel", $lang['cancel'], "tabindex=\"4\" onclick=\"closeAttachWin(); clearFocus()\"");
 
@@ -870,9 +783,7 @@ if ($allow_sig == true) {
         echo "    <td class=\"subhead\" align=\"right\">", form_submit_image('sig_hide.png', 'sig_toggle', 'hide'), "</td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "    <td align=\"left\" colspan=\"2\">", $tools->textarea("t_sig", $t_sig, 5, 75, "virtual", "tabindex=\"7\"", "signature_content"), "</td>\n";
-
-        echo form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N")."\n";
+        echo "    <td align=\"left\" colspan=\"2\">", $tools->textarea("t_sig", $t_sig, 5, 75, "virtual", "tabindex=\"7\"", "signature_content"), form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N"), "</td>\n";
 
         if ($sig->isDiff() && $fix_html) {
 
@@ -881,8 +792,7 @@ if ($allow_sig == true) {
 
     }else {
 
-        echo "    <td class=\"subhead\" align=\"right\">", form_submit_image('sig_show.png', 'sig_toggle', 'hide'), "</td>\n";
-        echo "    ", form_input_hidden("t_sig", $t_sig), "\n";
+        echo "    <td class=\"subhead\" align=\"right\">", form_submit_image('sig_show.png', 'sig_toggle', 'hide'), form_input_hidden("t_sig", $t_sig), "</td>\n";
     }
 
     echo "  </tr>\n";

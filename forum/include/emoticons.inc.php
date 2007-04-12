@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: emoticons.inc.php,v 1.60 2007-03-11 20:58:11 decoyduck Exp $ */
+/* $Id: emoticons.inc.php,v 1.61 2007-04-12 23:53:36 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -336,7 +336,7 @@ function emoticons_preview($set, $width=190, $height=100, $num = 35)
 
         array_multisort($emots_array, SORT_DESC);
 
-        $str.= "<div style=\"width: {$width}px; height: {$height}px\" class=\"emoticon_preview\">\n";
+        $str.= "<div style=\"width: {$width}px; height: {$height}px\" class=\"emoticon_preview\">";
 
         for ($i = 0; $i < min(count($emots_array), $num); $i++) {
 

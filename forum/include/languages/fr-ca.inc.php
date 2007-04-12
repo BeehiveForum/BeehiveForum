@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.47 2007-04-12 21:13:36 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.48 2007-04-12 23:53:37 decoyduck Exp $ */
 
 // International English language file
 
@@ -839,7 +839,7 @@ $lang['allfieldsrequired'] = "Tous les champs sont requis.";
 $lang['requiredinformationnotfound'] = "Information requise non trouvée";
 $lang['forgotpasswd'] = "Oublier mot de passe";
 $lang['forgotpasswd'] = "Oublier mot de passe";
-$lang['enternewpasswdforuser'] = "Entrer un nouveau mot de passe pour l'utilisateur";
+$lang['enternewpasswdforuser'] = "Entrer un nouveau mot de passe pour l'utilisateur %s";
 $lang['resetpassword'] = "Réinitialiser le mot de passe";
 $lang['resetpasswordto'] = "Reinitialiser le mot de passe à";
 
@@ -858,7 +858,7 @@ $lang['cannoteditpollsinlightmode'] = "Impossible de modifier les scrutins en mo
 $lang['edited_caps'] = "RÉVISÉ";
 $lang['editappliedtomessage'] = "Révision appliquée au message";
 $lang['errorupdatingpost'] = "Erreur rencontrée durant la mise à jour du message";
-$lang['editmessage'] = "Réviser le message";
+$lang['editmessage'] = "Réviser le message %s";
 $lang['editpollwarning'] = "<b>Note</b>: La révision de certains aspects d'un scrutin annulera tous les votes déjà enregistrés et permettra aux utilisateurs de voter de nouveau.";
 $lang['hardedit'] = "Options de révision forte (votes seront réinitialisés):";
 $lang['softedit'] = "Options de révision faible (votes seronts retenus):";

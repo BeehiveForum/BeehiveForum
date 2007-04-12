@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.55 2007-04-12 13:23:14 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.56 2007-04-12 23:53:37 decoyduck Exp $ */
 
 /**
 * Functions relating to profiles
@@ -833,10 +833,11 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
     // Main query.
 
     $select_sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP, ";
+    $select_sql.= "SEARCH_ENGINE_BOTS.SID, SEARCH_ENGINE_BOTS.NAME, SEARCH_ENGINE_BOTS.URL, ";
     $select_sql.= "USER_TRACK.POST_COUNT AS POST_COUNT, DATE_FORMAT(USER_PREFS_DOB.DOB, '00-%m-%d') AS DOB, ";
     $select_sql.= "DATE_FORMAT(NOW(), '%Y') - DATE_FORMAT(USER_PREFS_AGE.DOB, '%Y') - ";
     $select_sql.= "(DATE_FORMAT(NOW(), '00-%m-%d') < DATE_FORMAT(USER_PREFS_AGE.DOB, '00-%m-%d')) AS AGE, ";
-    $select_sql.= "UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT) AS LAST_VISIT, ";
+    $select_sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_VISIT, ";
     $select_sql.= "UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, ";
     $select_sql.= "UNIX_TIMESTAMP(USER_TRACK.USER_TIME_BEST) AS USER_TIME_BEST, ";
     $select_sql.= "UNIX_TIMESTAMP(USER_TRACK.USER_TIME_TOTAL) AS USER_TIME_TOTAL, ";
@@ -890,6 +891,10 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
 
     $from_sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
     $from_sql.= "ON (USER_PEER.UID = USER.UID AND USER_PEER.PEER_UID = '$uid') ";
+
+    // Join for the search bot data
+
+    $from_sql.= "LEFT JOIN SEARCH_ENGINE_BOTS ON (SEARCH_ENGINE_BOTS.SID = VISITOR_LOG.SID) ";
 
     // Joins on the selected numeric (PIID) profile items.
 
@@ -973,6 +978,13 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
     if (db_num_rows($result_user_data) > 0) {
 
         while ($user_data = db_fetch_array($result_user_data, DB_RESULT_ASSOC)) {
+
+            if (!isset($user_data['UID']) || $user_data['UID'] == 0) {
+
+                $user_data['UID']      = 0;
+                $user_data['LOGON']    = $lang['guest'];
+                $user_data['NICKNAME'] = $lang['guest'];
+            }
             
             if (isset($user_data['LAST_VISIT']) && $user_data['LAST_VISIT'] > 0) {
                 $user_data['LAST_VISIT'] = format_time($user_data['LAST_VISIT']);
@@ -1008,7 +1020,7 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
                 $user_data['POST_COUNT'] = 0;
             }
             
-            $user_array[$user_data['UID']] = $user_data;
+            $user_array[] = $user_data;
         }
     
     }elseif ($user_count > 0) {

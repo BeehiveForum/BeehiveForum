@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.410 2007-04-12 21:13:36 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.411 2007-04-12 23:53:37 decoyduck Exp $ */
 
 // International English language file
 
@@ -811,7 +811,7 @@ $lang['passwdsdonotmatch'] = "Passwords do not match.";
 $lang['allfieldsrequired'] = "All fields are required.";
 $lang['requiredinformationnotfound'] = "Required information not found";
 $lang['forgotpasswd'] = "Forgot password";
-$lang['enternewpasswdforuser'] = "Enter a new password for user";
+$lang['enternewpasswdforuser'] = "Enter a new password for user %s";
 $lang['resetpassword'] = "Reset Password";
 $lang['resetpasswordto'] = "Reset password to";
 
@@ -830,7 +830,7 @@ $lang['cannoteditpollsinlightmode'] = "Cannot edit polls in Light mode";
 $lang['editedbyuser'] = "EDITED: %s by %s";
 $lang['editappliedtomessage'] = "Edit Applied to Message";
 $lang['errorupdatingpost'] = "Error updating post";
-$lang['editmessage'] = "Edit message";
+$lang['editmessage'] = "Edit message %s";
 $lang['editpollwarning'] = "<b>Note</b>: Editing certain aspects of a poll will void all the current votes and allow people to vote again.";
 $lang['hardedit'] = "Hard edit options (votes will be reset):";
 $lang['softedit'] = "Soft edit options (votes will be retained):";

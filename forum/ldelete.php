@@ -21,13 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ldelete.php,v 1.3 2007-03-17 15:26:18 decoyduck Exp $ */
+/* $Id: ldelete.php,v 1.4 2007-04-12 13:23:10 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
+
+// Server checking functions
+include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -37,9 +40,6 @@ include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
 include_once(BH_INCLUDE_PATH. "install.inc.php");
-
-// Server checking functions
-include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Check that Beehive is installed correctly
 check_install();
@@ -129,7 +129,7 @@ if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
     if (!$t_fid = thread_get_folder($tid, $pid)) {
 
         light_html_draw_top();
-        echo "<h2>{$lang['error']}</h2>\n";
+        echo "<h1>{$lang['error']}</h1>\n";
         echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
         light_html_draw_bottom();
         exit;
@@ -143,7 +143,7 @@ if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
     if (!$t_fid = thread_get_folder($tid, $pid)) {
 
         light_html_draw_top();
-        echo "<h2>{$lang['error']}</h2>\n";
+        echo "<h1>{$lang['error']}</h1>\n";
         echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
         light_html_draw_bottom();
         exit;
@@ -152,7 +152,7 @@ if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
 }else {
 
     light_html_draw_top();
-    echo "<h2>{$lang['error']}</h2>\n";
+    echo "<h1>{$lang['error']}</h1>\n";
     echo "<h2>{$lang['nomessagespecifiedfordel']}</h2>";
     light_html_draw_bottom();
     exit;
@@ -180,7 +180,7 @@ if (bh_session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 if (!bh_session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
 
     light_html_draw_top();
-    echo "<h2>{$lang['error']}</h2>\n";
+    echo "<h1>{$lang['error']}</h1>\n";
     echo "<h2>{$lang['cannotdeletepostsinthisfolder']}</h2>\n";
     light_html_draw_bottom();
     exit;
@@ -189,7 +189,7 @@ if (!bh_session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
 if (!$threaddata = thread_get($tid)) {
 
     light_html_draw_top();
-    echo "<h2>{$lang['error']}</h2>\n";
+    echo "<h1>{$lang['error']}</h1>\n";
     echo "<h2>{$lang['threadcouldnotbefound']}</h2>\n";
     light_html_draw_bottom();
     exit;
@@ -220,7 +220,7 @@ if (isset($tid) && isset($pid) && is_numeric($tid) && is_numeric($pid)) {
     }else {
 
         light_html_draw_top();
-        echo "<h2>{$lang['error']}</h2>\n";
+        echo "<h1>{$lang['error']}</h1>\n";
         echo "<h2>{$lang['message']} $tid.$pid {$lang['wasnotfound']}</h2>\n";
         light_html_draw_bottom();
         exit;
@@ -252,7 +252,7 @@ if (isset($_POST['submit']) && is_numeric($tid) && is_numeric($pid)) {
 
 light_html_draw_top();
 
-echo "<h2>{$lang['deletemessage']} {$tid}.{$pid}</h2>\n";
+echo "<h1>{$lang['deletemessage']} {$tid}.{$pid}</h1>\n";
 echo "<br />\n";
 
 if ($preview_message['TO_UID'] == 0) {

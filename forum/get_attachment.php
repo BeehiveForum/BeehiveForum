@@ -21,16 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: get_attachment.php,v 1.22 2007-03-24 17:32:24 decoyduck Exp $ */
+/* $Id: get_attachment.php,v 1.23 2007-04-12 13:23:10 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
 
-//Multiple forum support
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
+// Server checking functions
+include_once(BH_INCLUDE_PATH. "server.inc.php");
 
-// Fetch the forum settings
-$forum_settings = forum_get_settings();
+// Compress the output
+include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
 
 // Enable the error handler
 include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
@@ -38,11 +38,14 @@ include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 // Installation checking functions
 include_once(BH_INCLUDE_PATH. "install.inc.php");
 
-// Server checking functions
-include_once(BH_INCLUDE_PATH. "server.inc.php");
-
 // Check that Beehive is installed correctly
 check_install();
+
+//Multiple forum support
+include_once(BH_INCLUDE_PATH. "forum.inc.php");
+
+// Fetch the forum settings
+$forum_settings = forum_get_settings();
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
 include_once(BH_INCLUDE_PATH. "format.inc.php");

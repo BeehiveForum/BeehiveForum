@@ -21,10 +21,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_messages.php,v 1.3 2007-04-09 21:06:06 decoyduck Exp $ */
+/* $Id: pm_messages.php,v 1.4 2007-04-12 13:23:11 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
+
+// Server checking functions
+include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -34,9 +37,6 @@ include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
 include_once(BH_INCLUDE_PATH. "install.inc.php");
-
-// Server checking functions
-include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Check that Beehive is installed correctly
 check_install();
@@ -279,37 +279,54 @@ if ($folder == PM_FOLDER_INBOX) {
 
             case SEARCH_NO_KEYWORDS:
 
-                $keywords_error_array = search_strip_keywords($search_string, true);
-                $keywords_error_array['keywords'] = search_strip_special_chars($keywords_error_array['keywords'], false);
+                if (isset($search_string) && strlen(trim($search_string)) > 0) {
+                
+                    $keywords_error_array = search_strip_keywords($search_string, true);
+                    $keywords_error_array['keywords'] = search_strip_special_chars($keywords_error_array['keywords'], false);
 
-                $stopped_keywords = urlencode(implode(' ', $keywords_error_array['keywords']));
+                    $stopped_keywords = urlencode(implode(' ', $keywords_error_array['keywords']));
 
-                $mysql_stop_word_link = "<a href=\"search.php?webtag=$webtag&amp;show_stop_words=true&amp;keywords=$stopped_keywords\" target=\"_blank\" onclick=\"return display_mysql_stopwords('$webtag', '$stopped_keywords')\">{$lang['mysqlstopwordlist']}</a>";
+                    $mysql_stop_word_link = "<a href=\"search.php?webtag=$webtag&amp;show_stop_words=true&amp;keywords=$stopped_keywords\" target=\"_blank\" onclick=\"return display_mysql_stopwords('$webtag', '$stopped_keywords')\">{$lang['mysqlstopwordlist']}</a>";
 
-                echo "<h1>{$lang['error']}</h1>\n";
-                echo "<table cellpadding=\"5\" cellspacing=\"0\" width=\"500\">\n";                
-                echo "  <tr>\n";
-                echo "    <td>", sprintf("<p>{$lang['notexttosearchfor']}</p>", $min_length, $max_length, $mysql_stop_word_link), "</td>\n";
-                echo "  </tr>\n";
-                echo "  <tr>\n";
-                echo "    <td>\n";
-                echo "      <h2>Keywords containing errors</h2>\n";
-                echo "      <ul>\n";
-                echo "        <li>", implode("</li>\n        <li>", $keywords_error_array['keywords']), "</li>\n";
-                echo "      </ul>\n";
-                echo "    </td>\n";
-                echo "  </tr>\n";
-                echo "</table>\n";
+                    echo "<h1>{$lang['error']}</h1>\n";
+                    echo "<table cellpadding=\"5\" cellspacing=\"0\" width=\"500\">\n";                
+                    echo "  <tr>\n";
+                    echo "    <td>", sprintf("<p>{$lang['notexttosearchfor']}</p>", $min_length, $max_length, $mysql_stop_word_link), "</td>\n";
+                    echo "  </tr>\n";
+                    echo "  <tr>\n";
+                    echo "    <td>\n";
+                    echo "      <h2>Keywords containing errors</h2>\n";
+                    echo "      <ul>\n";
+                    echo "        <li>", implode("</li>\n        <li>", $keywords_error_array['keywords']), "</li>\n";
+                    echo "      </ul>\n";
+                    echo "    </td>\n";
+                    echo "  </tr>\n";
+                    echo "</table>\n";
 
-                html_draw_bottom();
-                exit;
+                    html_draw_bottom();
+                    exit;
+
+                }else {
+
+                    $mysql_stop_word_link = "<a href=\"search.php?webtag=$webtag&amp;show_stop_words=true\" target=\"_blank\" onclick=\"return display_mysql_stopwords('$webtag', '')\">{$lang['mysqlstopwordlist']}</a>";
+                    
+                    echo "<h1>{$lang['error']}</h1>\n";
+                    echo "<table cellpadding=\"5\" cellspacing=\"0\" width=\"500\">\n";                
+                    echo "  <tr>\n";
+                    echo "    <td>", sprintf("<p>{$lang['notexttosearchfor']}</p>", $min_length, $max_length, $mysql_stop_word_link), "</td>\n";
+                    echo "  </tr>\n";
+                    echo "</table>\n";
+
+                    html_draw_bottom();
+                    exit;
+                }
 
             case SEARCH_FREQUENCY_TOO_GREAT:
 
                 echo "<h1>{$lang['error']}</h1>\n";
                 echo "<table cellpadding=\"5\" cellspacing=\"0\" width=\"500\">\n";                
                 echo "  <tr>\n";
-                echo "    <td>{$lang['searchfrequencyerror']}</td>\n";
+                echo "    <td>", sprintf($lang['searchfrequencyerror'], $search_frequency), "</td>\n";
                 echo "  </tr>\n";
                 echo "</table>\n";
 
@@ -456,9 +473,18 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
 
 }else {
 
-    echo "                <tr>\n";
-    echo "                  <td class=\"postbody\">&nbsp;</td><td align=\"left\" class=\"postbody\">{$lang['nomessages']}</td>\n";
-    echo "                </tr>\n";
+    if ($folder == PM_SEARCH_RESULTS) {
+    
+        echo "                <tr>\n";
+        echo "                  <td class=\"postbody\"><img src=\"", style_image('search.png'), "\" alt=\"{$lang['matches']}\" title=\"{$lang['matches']}\" /></td><td align=\"left\" class=\"postbody\">{$lang['found']}: 0 {$lang['matches']}</td>\n";
+        echo "                </tr>\n";
+
+    }else {
+
+        echo "                <tr>\n";
+        echo "                  <td class=\"postbody\">&nbsp;</td><td align=\"left\" class=\"postbody\">{$lang['nomessages']}</td>\n";
+        echo "                </tr>\n";
+    }
 }
 
 echo "                <tr>\n";

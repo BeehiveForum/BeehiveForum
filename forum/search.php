@@ -21,10 +21,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.170 2007-04-10 16:02:02 decoyduck Exp $ */
+/* $Id: search.php,v 1.171 2007-04-12 13:23:11 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
+
+// Server checking functions
+include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -34,9 +37,6 @@ include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
 include_once(BH_INCLUDE_PATH. "install.inc.php");
-
-// Server checking functions
-include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Check that Beehive is installed correctly
 check_install();
@@ -218,8 +218,23 @@ if (isset($_GET['show_stop_words'])) {
     include(BH_INCLUDE_PATH. "search_stopwords.inc.php");
 
     echo "<h1>{$lang['mysqlstopwordlist']}</h1>\n";
-    echo "<table class=\"posthead\" width=\"540\">\n";
-    echo "  <tr>\n";
+    echo "<br />\n";
+    echo "<div align=\"center\">\n";
+    echo "<form id=\"search_stop_words\" method=\"get\" action=\"search.php\" target=\"_self\">\n";
+    echo "  ", form_input_hidden('show_stop_words', 'yes'), "\n";
+    echo "  <table cellpadding=\"5\" cellspacing=\"0\" width=\"540\">\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\" valign=\"top\" width=\"100%\">\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td align=\"left\" class=\"posthead\">\n";
+    echo "              <table width=\"100%\" border=\"0\">\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">{$lang['mysqlstopwordlist']}</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"center\">\n";
+    echo "                    <table width=\"95%\" border=\"0\">\n";
 
     $mysql_fulltext_stopwords = array_values($mysql_fulltext_stopwords);
 
@@ -227,21 +242,35 @@ if (isset($_GET['show_stop_words'])) {
 
         if ($i > 0 && (!($i % 4))) {
 
-            echo "  </tr>\n";
-            echo "  <tr>\n";
+            echo "                      </tr>\n";
+            echo "                      <tr>\n";
         }
 
         if (in_array($mysql_fulltext_stopwords[$i], $highlight_keywords_array)) {
-            echo "    <td align=\"left\" class=\"postbody\"><span class=\"highlight\">{$mysql_fulltext_stopwords[$i]}</span></td>\n";
+            echo "                        <td align=\"left\" class=\"postbody\"><span class=\"highlight\">{$mysql_fulltext_stopwords[$i]}</span></td>\n";
         }else {
-            echo "    <td align=\"left\" class=\"postbody\">{$mysql_fulltext_stopwords[$i]}</td>\n";
+            echo "                        <td align=\"left\" class=\"postbody\">{$mysql_fulltext_stopwords[$i]}</td>\n";
         }
     }
 
-    echo "  </tr>\n";
-    echo "</table>\n";
-    echo "<div align=\"center\">\n";
-    echo form_quick_button("./search.php", $lang['close'], array('close' => 'close', "show_stop_words" => 'yes'), "_self");
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"center\">&nbsp;</td>\n";
+    echo "                      </tr>\n";
+    echo "                    </table>\n";
+    echo "                  </td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"center\">", form_submit('close', $lang['close']), "</td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "</form>\n";
     echo "</div>\n";
 
     html_draw_bottom();

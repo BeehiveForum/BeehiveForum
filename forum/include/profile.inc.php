@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.54 2007-04-10 16:02:04 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.55 2007-04-12 13:23:14 decoyduck Exp $ */
 
 /**
 * Functions relating to profiles
@@ -857,7 +857,8 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
 
     // Join to check the DOB display.
     
-    $from_sql = "FROM USER USER LEFT JOIN USER_PREFS USER_PREFS_DOB ";
+    $from_sql = "FROM VISITOR_LOG VISITOR_LOG LEFT JOIN USER USER ";
+    $from_sql.= "ON (USER.UID = VISITOR_LOG.UID) LEFT JOIN USER_PREFS USER_PREFS_DOB ";
     $from_sql.= "ON (USER_PREFS_DOB.UID = USER.UID AND USER_PREFS_DOB.DOB_DISPLAY > 1 ";
     $from_sql.= "AND USER_PREFS_DOB.DOB > 0) ";
 

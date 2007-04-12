@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: server.inc.php,v 1.9 2007-04-11 20:11:13 decoyduck Exp $ */
+/* $Id: server.inc.php,v 1.10 2007-04-12 13:23:14 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -208,27 +208,24 @@ function get_available_files()
 // Executed by every script that includes server.inc.php.
 // This crudely disables PHP's register_globals functionality.
 
-if (!(bool)@ini_get('register_globals')) {
+foreach ($_GET as $get_key => $get_value) {
 
-    foreach ($_GET as $get_key => $get_value) {
-
-        if (ereg('^([a-zA-Z]|_){1}([a-zA-Z0-9]|_)*$', $get_key)) {
-            eval("unset(\${$get_key});");
-        }
+    if (ereg('^([a-zA-Z]|_){1}([a-zA-Z0-9]|_)*$', $get_key)) {
+        eval("unset(\${$get_key});");
     }
+}
 
-    foreach ($_POST as $post_key => $post_value) {
+foreach ($_POST as $post_key => $post_value) {
 
-        if (ereg('^([a-zA-Z]|_){1}([a-zA-Z0-9]|_)*$', $post_key)) {
-            eval("unset(\${$post_key});");
-        }
+    if (ereg('^([a-zA-Z]|_){1}([a-zA-Z0-9]|_)*$', $post_key)) {
+        eval("unset(\${$post_key});");
     }
+}
 
-    foreach ($_REQUEST as $request_key => $request_value) {
+foreach ($_REQUEST as $request_key => $request_value) {
 
-        if (ereg('^([a-zA-Z]|_){1}([a-zA-Z0-9]|_)*$', $request_key)) {
-            eval("unset(\${$request_key});");
-        }
+    if (ereg('^([a-zA-Z]|_){1}([a-zA-Z0-9]|_)*$', $request_key)) {
+        eval("unset(\${$request_key});");
     }
 }
 

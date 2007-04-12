@@ -21,13 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ledit.php,v 1.5 2007-03-17 15:26:18 decoyduck Exp $ */
+/* $Id: ledit.php,v 1.6 2007-04-12 13:23:10 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
+
+// Server checking functions
+include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -37,9 +40,6 @@ include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
 include_once(BH_INCLUDE_PATH. "install.inc.php");
-
-// Server checking functions
-include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Check that Beehive is installed correctly
 check_install();
@@ -129,7 +129,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     if (!$t_fid = thread_get_folder($tid, $pid)) {
 
         light_html_draw_top();
-        echo "<h2>{$lang['error']}</h2>\n";
+        echo "<h1>{$lang['error']}</h1>\n";
         echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
         light_html_draw_bottom();
         exit;
@@ -143,7 +143,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     if (!$t_fid = thread_get_folder($tid, $pid)) {
 
         light_html_draw_top();
-        echo "<h2>{$lang['error']}</h2>\n";
+        echo "<h1>{$lang['error']}</h1>\n";
         echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
         light_html_draw_bottom();
         exit;
@@ -153,7 +153,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 if (!isset($tid) || !isset($pid) || !is_numeric($tid) || !is_numeric($pid)) {
 
     light_html_draw_top();
-    echo "<h2>{$lang['error']}</h2>\n";
+    echo "<h1>{$lang['error']}</h1>\n";
     echo "<h2>{$lang['nomessagespecifiedforedit']}</h2>\n";
     light_html_draw_bottom();
     exit;
@@ -162,7 +162,7 @@ if (!isset($tid) || !isset($pid) || !is_numeric($tid) || !is_numeric($pid)) {
 if (thread_is_poll($tid) && $pid == 1) {
 
     light_html_draw_top();
-    echo "<h2>{$lang['error']}</h2>\n";
+    echo "<h1>{$lang['error']}</h1>\n";
     echo "<h2>{$lang['cannoteditpollsinlightmode']}</h2>\n";
     light_html_draw_bottom();
     exit;
@@ -190,7 +190,7 @@ if (bh_session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 if (!bh_session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
 
     light_html_draw_top();
-    echo "<h2>{$lang['error']}</h2>\n";
+    echo "<h1>{$lang['error']}</h1>\n";
     echo "<h2>{$lang['cannoteditpostsinthisfolder']}</h2>\n";
     light_html_draw_bottom();
     exit;
@@ -199,7 +199,7 @@ if (!bh_session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
 if (!$threaddata = thread_get($tid)) {
 
     light_html_draw_top();
-    echo "<h2>{$lang['error']}</h2>\n";
+    echo "<h1>{$lang['error']}</h1>\n";
     echo "<h2>{$lang['threadcouldnotbefound']}</h2>\n";
     light_html_draw_bottom();
     exit;
@@ -464,7 +464,7 @@ if (isset($_POST['preview'])) {
         || (perm_get_user_permissions(bh_session_get_value('UID')) & USER_PERM_PILLORIED)
         || (((time() - $editmessage['CREATED']) >= (intval(forum_get_setting('post_edit_time', false, 0)) * MINUTE_IN_SECONDS)) && intval(forum_get_setting('post_edit_time', false, 0)) != 0)) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
-        echo "<h2>{$lang['editmessage']}</h2>\n";
+        echo "<h1>{$lang['editmessage']}</h1>\n";
         echo "<h2>{$lang['nopermissiontoedit']}</h2>\n";
 
         light_html_draw_bottom();
@@ -548,7 +548,7 @@ if (isset($_POST['preview'])) {
                 || (perm_get_user_permissions(bh_session_get_value('UID')) & USER_PERM_PILLORIED)
                 || (((time() - $editmessage['CREATED']) >= (intval(forum_get_setting('post_edit_time', false, 0)) * MINUTE_IN_SECONDS)) && intval(forum_get_setting('post_edit_time', false, 0)) != 0)) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
-                echo "<h2>{$lang['editmessage']} $edit_msg</h2>\n";
+                echo "<h1>{$lang['editmessage']} $edit_msg</h1>\n";
                 echo "<h2>{$lang['nopermissiontoedit']}</h2>\n";
 
                 light_html_draw_bottom();
@@ -579,20 +579,20 @@ if (isset($_POST['preview'])) {
 
         }else {
 
-            echo "<h2>{$lang['editmessage']} $edit_msg</h2>\n";
+            echo "<h1>{$lang['editmessage']} $edit_msg</h1>\n";
             echo "<h2>{$lang['message']} $edit_msg {$lang['wasnotfound']}</h2>\n";
             exit;
         }
 
     }else{
 
-        echo "<h2>{$lang['editmessage']} $edit_msg</h2>\n";
+        echo "<h1>{$lang['editmessage']} $edit_msg</h1>\n";
         echo "<h2>{$lang['message']} $edit_msg {$lang['wasnotfound']}</h2>\n";
         exit;
     }
 }
 
-echo "<h2>{$lang['editmessage']} $edit_msg</h2>\n";
+echo "<h1>{$lang['editmessage']} $edit_msg</h1>\n";
 echo "<form name=\"f_edit\" action=\"ledit.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo form_input_hidden("t_msg", _htmlentities($edit_msg));

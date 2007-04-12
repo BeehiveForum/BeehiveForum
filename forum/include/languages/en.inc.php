@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.408 2007-04-10 16:02:05 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.409 2007-04-12 13:23:12 decoyduck Exp $ */
 
 // International English language file
 
@@ -87,6 +87,7 @@ $lang['ignoredfolder'] = "Ignored Folder";
 $lang['folders'] = "Folders";
 $lang['thread'] = "thread";
 $lang['threads'] = "threads";
+$lang['threadlist'] = "Thread List";
 $lang['message'] = "Message";
 $lang['messagenumber'] = "Message Number";
 $lang['from'] = "From";
@@ -163,7 +164,7 @@ $lang['newcaps'] = "NEW";
 $lang['poll'] = "Poll";
 $lang['friend'] = "Friend";
 $lang['error'] = "Error";
-$lang['guesterror'] = "Sorry, you need to be logged in to use this feature. %s";
+$lang['guesterror'] = "Sorry, you need to be logged in to use this feature.";
 $lang['loginnow'] = "Login now";
 $lang['on'] = "on";
 $lang['unread'] = "unread";

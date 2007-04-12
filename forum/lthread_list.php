@@ -21,13 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lthread_list.php,v 1.78 2007-02-24 16:51:15 decoyduck Exp $ */
+/* $Id: lthread_list.php,v 1.79 2007-04-12 13:23:11 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
+
+// Server checking functions
+include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -37,9 +40,6 @@ include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
 include_once(BH_INCLUDE_PATH. "install.inc.php");
-
-// Server checking functions
-include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Check that Beehive is installed correctly
 check_install();
@@ -169,6 +169,9 @@ if (isset($_GET['start_from']) && is_numeric($_GET['start_from'])) {
 
 // Output XHTML header
 light_html_draw_top();
+
+echo "<h1>{$lang['threadlist']}</h1>\n";
+echo "<br />\n";
 
 light_draw_thread_list($mode, $folder, $start_from);
 

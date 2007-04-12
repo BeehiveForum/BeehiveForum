@@ -21,10 +21,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ldisplay.php,v 1.19 2007-02-11 16:37:47 decoyduck Exp $ */
+/* $Id: ldisplay.php,v 1.20 2007-04-12 13:23:10 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
+
+// Server checking functions
+include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -34,9 +37,6 @@ include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
 include_once(BH_INCLUDE_PATH. "install.inc.php");
-
-// Server checking functions
-include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Check that Beehive is installed correctly
 check_install();

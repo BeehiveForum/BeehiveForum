@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.128 2007-03-31 10:33:41 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.129 2007-04-12 13:23:13 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -498,15 +498,16 @@ function light_draw_my_forums()
 
         if ($forums_array = get_my_forums()) {
 
-            echo "<h2>{$lang['myforums']}</h2>\n";
+            echo "<h1>{$lang['myforums']}</h1>\n";
 
             if (sizeof($forums_array['FAV_FORUMS']) > 0) {
 
-                echo "<h3>{$lang['favouriteforums']}</h3>\n";
+                echo "<h2>{$lang['favouriteforums']}</h2>\n";
+                echo "<br />\n";
 
                 foreach ($forums_array['FAV_FORUMS'] as $forum) {
 
-                    echo "<h3><a href=\"./lthread_list.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></h3>\n";
+                    echo "<h2><a href=\"./lthread_list.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></h2>\n";
 
                     if ($forum['UNREAD_TO_ME'] > 0) {
                         echo "<p>{$forum['UNREAD_MESSAGES']} {$lang['unreadmessages']} ({$forum['UNREAD_TO_ME']} {$lang['unreadtome']})</p>\n";
@@ -524,11 +525,12 @@ function light_draw_my_forums()
 
             if (sizeof($forums_array['RECENT_FORUMS']) > 0) {
 
-                echo "<h3>{$lang['recentlyvisitedforums']}</h3>\n";
+                echo "<h2>{$lang['recentlyvisitedforums']}</h2>\n";
+                echo "<br />\n";
 
                 foreach ($forums_array['RECENT_FORUMS'] as $forum) {
 
-                    echo "<h3><a href=\"./lthread_list.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></h3>\n";
+                    echo "<h2><a href=\"./lthread_list.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></h2>\n";
 
                     if ($forum['UNREAD_TO_ME'] > 0) {
                         echo "<p>{$forum['UNREAD_MESSAGES']} {$lang['unreadmessages']} ({$forum['UNREAD_TO_ME']} {$lang['unreadtome']})</p>\n";
@@ -546,11 +548,12 @@ function light_draw_my_forums()
 
             if (sizeof($forums_array['OTHER_FORUMS']) > 0) {
 
-                echo "<h3>{$lang['availableforums']}</h3>\n";
+                echo "<h2>{$lang['availableforums']}</h2>\n";
+                echo "<br />\n";
 
                 foreach ($forums_array['OTHER_FORUMS'] as $forum) {
 
-                    echo "<h3><a href=\"./lthread_list.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></h3>\n";
+                    echo "<h2><a href=\"./lthread_list.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></h2>\n";
 
                     if ($forum['UNREAD_TO_ME'] > 0) {
                         echo "<p>{$forum['UNREAD_MESSAGES']} {$lang['unreadmessages']} ({$forum['UNREAD_TO_ME']} {$lang['unreadtome']})</p>\n";
@@ -568,26 +571,28 @@ function light_draw_my_forums()
 
         }else {
 
-            echo "<h2>{$lang['myforums']}</h2>\n";
-            echo "<p>{$lang['noforumsavailablelogin']}</p>\n";
+            echo "<h1>{$lang['myforums']}</h1>\n";
+            echo "<h2>{$lang['noforumsavailablelogin']}</h2>\n";
         }
 
     }else {
 
         if ($forums_array = get_forum_list()) {
 
+            echo "<h1>{$lang['myforums']}</h1>\n";
             echo "<h2>{$lang['availableforums']}</h2>\n";
+            echo "<br />\n";
 
             foreach ($forums_array as $forum) {
 
-                echo "<h3><a href=\"./lthread_list.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></h3>\n";
+                echo "<h2><a href=\"./lthread_list.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></h2>\n";
                 echo "<p>{$forum['MESSAGES']} {$lang['messages']}</p>\n";
             }
 
         }else {
 
-            echo "<h2>{$lang['availableforums']}</h2>\n";
-            echo "<p>{$lang['noforumsavailablelogin']}</p>\n";
+            echo "<h1>{$lang['myforums']}</h1>\n";
+            echo "<h2>{$lang['noforumsavailablelogin']}</h2>\n";
         }
     }
 }
@@ -621,6 +626,7 @@ function light_poll_confirm_close($tid)
     if (!is_numeric($tid)) return;
 
     if (!$t_fid = thread_get_folder($tid, 1)) {
+
         echo "<h1>{$lang['error']}</h1>\n";
         echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
         return;
@@ -650,7 +656,7 @@ function light_poll_confirm_close($tid)
     $preview_message['FLOGON'] = $preview_fuser['LOGON'];
     $preview_message['FNICK'] = $preview_fuser['NICKNAME'];
 
-    echo "<h2>{$lang['pollconfirmclose']}</h2>\n";
+    echo "<h1>{$lang['pollconfirmclose']}</h1>\n";
 
     light_poll_display($tid, $preview_message, 0, $threaddata['FID'], 0, false);
 
@@ -670,7 +676,7 @@ function light_messages_top($msg, $thread_prefix, $thread_title, $interest_level
 
     $webtag = get_webtag($webtag_search);
 
-    echo "<h2>Full Version: <a href=\"index.php?webtag=$webtag&amp;msg=$msg\">", add_wordfilter_tags(thread_format_prefix($thread_prefix, $thread_title)), "</a>";
+    echo "<h1>Full Version: <a href=\"index.php?webtag=$webtag&amp;msg=$msg\">", add_wordfilter_tags(thread_format_prefix($thread_prefix, $thread_title)), "</a>";
 
     if ($closed) echo "&nbsp;<font color=\"#FF0000\">({$lang['closed']})</font>\n";
     if ($interest_level == 1) echo "&nbsp;<font color=\"#FF0000\">({$lang['highinterest']})</font>";
@@ -678,7 +684,7 @@ function light_messages_top($msg, $thread_prefix, $thread_title, $interest_level
     if ($sticky == "Y") echo "&nbsp;({$lang['sticky']})";
     if ($locked) echo "&nbsp;<font color=\"#FF0000\">({$lang['locked']})</font>";
 
-    echo "</h2>";
+    echo "</h1>";
 }
 
 function light_form_radio($name, $value, $text, $checked = false)
@@ -1168,13 +1174,16 @@ function light_html_guest_error ()
 
     light_html_draw_top();
 
+    echo "<h1>{$lang['error']}</h1>\n";
+    echo "<h2>{$lang['guesterror']}</h2>";
+    echo "<br />\n";
+
     if (isset($frame_top_target) && strlen($frame_top_target) > 0) {
-        $login_link = "<a href=\"llogout.php?webtag=$webtag\" target=\"$frame_top_target\">{$lang['loginnow']}</a>";
+        echo form_quick_button("./llogout.php", $lang['loginnow'], false, $frame_top_target);
     }else {
-        $login_link = "<a href=\"llogout.php?webtag=$webtag\" target=\"$frame_top_target\">{$lang['loginnow']}</a>";
+        echo form_quick_button("./llogout.php", $lang['loginnow']);
     }
-         
-    echo sprintf("<h1>{$lang['guesterror']}</h1>", $login_link);
+
     light_html_draw_bottom();
 }
 
@@ -1356,7 +1365,7 @@ function light_edit_refuse()
 {
     $lang = load_language_file();
 
-    echo "<h2>{$lang['error']}</h2>";
+    echo "<h1>{$lang['error']}</h1>";
     echo "<h2>{$lang['nopermissiontoedit']}</h2>";
 }
 

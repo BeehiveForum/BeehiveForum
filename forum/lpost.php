@@ -23,13 +23,16 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.100 2007-03-31 10:33:41 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.101 2007-04-12 13:23:11 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
+
+// Server checking functions
+include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -39,9 +42,6 @@ include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
 include_once(BH_INCLUDE_PATH. "install.inc.php");
-
-// Server checking functions
-include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Check that Beehive is installed correctly
 check_install();
@@ -280,7 +280,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
     if (!$t_fid = thread_get_folder($reply_to_tid, $reply_to_pid)) {
 
         light_html_draw_top();
-        echo "<h2>{$lang['error']}</h2>\n";
+        echo "<h1>{$lang['error']}</h1>\n";
         echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
         light_html_draw_bottom();
         exit;
@@ -295,7 +295,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
     if (!bh_session_check_perm(USER_PERM_POST_CREATE | USER_PERM_POST_READ, $t_fid)) {
 
         light_html_draw_top();
-        echo "<h2>{$lang['error']}</h2>\n";
+        echo "<h1>{$lang['error']}</h1>\n";
         echo "<h2>{$lang['cannotcreatepostinfolder']}</h2>";
         light_html_draw_bottom();
         exit;
@@ -310,7 +310,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
     if (!$t_fid = thread_get_folder($reply_to_tid, $reply_to_pid)) {
 
         light_html_draw_top();
-        echo "<h2>{$lang['error']}</h2>\n";
+        echo "<h1>{$lang['error']}</h1>\n";
         echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
         light_html_draw_bottom();
         exit;
@@ -325,7 +325,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
     if (!bh_session_check_perm(USER_PERM_POST_CREATE | USER_PERM_POST_READ, $t_fid)) {
 
         light_html_draw_top();
-        echo "<h2>{$lang['error']}</h2>\n";
+        echo "<h1>{$lang['error']}</h1>\n";
         echo "<h2>{$lang['cannotcreatepostinfolder']}</h2>";
         light_html_draw_bottom();
         exit;
@@ -363,7 +363,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
     if (isset($t_fid) && !bh_session_check_perm(USER_PERM_THREAD_CREATE | USER_PERM_POST_READ, $t_fid)) {
 
         light_html_draw_top();
-        echo "<h2>{$lang['error']}</h2>\n";
+        echo "<h1>{$lang['error']}</h1>\n";
         echo "<h2>{$lang['cannotcreatethreadinfolder']}</h2>";
         light_html_draw_bottom();
         exit;
@@ -404,7 +404,7 @@ if (!$newthread) {
     if (!$threaddata = thread_get($reply_to_tid)) {
 
         light_html_draw_top();
-        echo "<h2>{$lang['error']}</h2>\n";
+        echo "<h1>{$lang['error']}</h1>\n";
         echo "<h2>{$lang['threadcouldnotbefound']}</h2>\n";
         light_html_draw_bottom();
         exit;
@@ -514,7 +514,7 @@ if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
 
 if ($valid && isset($_POST['preview'])) {
 
-    echo "<h2>{$lang['messagepreview']}</h2>";
+    echo "<h1>{$lang['messagepreview']}</h1>";
 
     if ($_POST['t_to_uid'] == 0) {
 
@@ -567,16 +567,6 @@ if (!$newthread) {
     }
 }
 
-if ($newthread) {
-    echo "<h2>{$lang['createnewthread']}</h2>\n";
-}else {
-    echo "<h2>{$lang['postreply']}</h2>\n";
-}
-
-if (isset($error_html)) {
-    echo $error_html . "\n";
-}
-
 echo "<form name=\"f_post\" action=\"" . get_request_uri() . "\" method=\"post\">\n";
 
 if (!isset($t_threadtitle)) {
@@ -585,6 +575,7 @@ if (!isset($t_threadtitle)) {
 
 if ($newthread) {
 
+    echo "<h1>{$lang['createnewthread']}</h1>\n";
     echo "<p>{$lang['selectfolder']}: ";
     echo light_folder_draw_dropdown($t_fid, "t_fid"), "</p>\n";
     echo "<p>{$lang['threadtitle']}: ";
@@ -599,16 +590,21 @@ if ($newthread) {
 
     if ((!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") && $threaddata['POLL_FLAG'] != 'Y' && $reply_to_pid != 0) {
 
+        echo "<h1>{$lang['error']}</h1>\n";
         echo "<h2>{$lang['messagehasbeendeleted']}</h2>\n";
         html_draw_bottom();
         exit;
 
     }else {
 
-        echo "<h2>" . thread_get_title($reply_to_tid) . "</h2>\n";
+        echo "<h1>{$lang['postreply']}: ", thread_get_title($reply_to_tid), "</h1>\n";
         echo form_input_hidden("t_tid", _htmlentities($reply_to_tid));
         echo form_input_hidden("t_rpid", _htmlentities($reply_to_pid))."\n";
     }
+}
+
+if (isset($error_html)) {
+    echo $error_html;
 }
 
 if (!isset($t_to_uid)) $t_to_uid = -1;

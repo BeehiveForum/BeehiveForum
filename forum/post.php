@@ -23,10 +23,13 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.301 2007-03-31 10:33:41 decoyduck Exp $ */
+/* $Id: post.php,v 1.302 2007-04-12 13:23:11 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
+
+// Server checking functions
+include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -36,9 +39,6 @@ include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
 include_once(BH_INCLUDE_PATH. "install.inc.php");
-
-// Server checking functions
-include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Check that Beehive is installed correctly
 check_install();

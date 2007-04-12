@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.45 2007-03-31 21:37:34 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.46 2007-04-12 13:23:12 decoyduck Exp $ */
 
 // International English language file
 
@@ -168,7 +168,7 @@ $lang['newcaps'] = "NOUVEAU";
 $lang['poll'] = "Scrutin";
 $lang['friend'] = "Ami(e)";
 $lang['error'] = "Erreur";
-$lang['guesterror'] = "Désolé, vous devez ouvrir une session pour utiliser cette fonction. %s";
+$lang['guesterror'] = "Désolé, vous devez ouvrir une session pour utiliser cette fonction.";
 $lang['loginnow'] = "Ouvrir une session maintenant";
 $lang['on'] = "sur";
 $lang['unread'] = "non-lu";

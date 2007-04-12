@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.161 2007-04-12 13:23:11 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.162 2007-04-12 21:13:36 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -467,7 +467,7 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
 
                 }elseif ($valid) {
 
-                    $error_html.= "<h2>{$lang['usernotfound1']} $to_logon {$lang['usernotfound2']}</h2>\n";
+                    $error_html.= sprintf("<h2>{$lang['usernotfound']}</h2>\n", $to_logon);
                     $valid = false;
                 }
             }

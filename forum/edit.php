@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.217 2007-04-12 13:23:10 decoyduck Exp $ */
+/* $Id: edit.php,v 1.218 2007-04-12 21:13:36 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -664,52 +664,14 @@ if (isset($_POST['preview'])) {
 
         }else {
 
-            echo "<table class=\"posthead\" width=\"720\">\n";
-            echo "  <tr>\n";
-            echo "    <td align=\"left\" class=\"subhead\">{$lang['error']}</td>\n";
-            echo "  </tr>";
-            echo "  <tr>\n";
-            echo "    <td align=\"left\"><h2>{$lang['message']} {$_GET['msg']} {$lang['wasnotfound']}</h2></td>\n";
-            echo "  </tr>\n";
-            echo "  <tr>\n";
-            echo "    <td align=\"center\">\n";
-
-            if ($threaddata['LENGTH'] < 1) {
-                $msg = messages_get_most_recent(bh_session_get_value('UID'));
-            }
-
-            echo form_quick_button("./discussion.php", $lang['back'], array('msg' => $edit_msg), "_self");
-            echo "    </td>\n";
-            echo "  </tr>\n";
-
-            echo "</table>\n";
-
+            echo html_error_msg(sprintf($lang['messagewasnotfound'], $edit_msg), 'discussion.php', 'post', array('back' => $lang['back']), array('msg' => $edit_msg));
             html_draw_bottom();
             exit;
         }
 
     }else{
 
-       echo "<table class=\"posthead\" width=\"720\">\n";
-       echo "  <tr>\n";
-       echo "    <td align=\"left\" class=\"subhead\">{$lang['error']}</td>\n";
-       echo "  </tr>";
-       echo "  <tr>\n";
-       echo "    <td align=\"left\"><h2>{$lang['message']} {$_GET['msg']} {$lang['wasnotfound']}</h2></td>\n";
-       echo "  </tr>\n";
-       echo "  <tr>\n";
-       echo "    <td align=\"center\">\n";
-
-       if ($threaddata['LENGTH'] < 1) {
-           $msg = messages_get_most_recent(bh_session_get_value('UID'));
-       }
-
-       echo form_quick_button("./discussion.php", $lang['back'], array('msg' => $edit_msg), "_self");
-       echo "    </td>\n";
-       echo "  </tr>\n";
-
-       echo "</table>\n";
-
+       echo html_error_msg(sprintf($lang['messagewasnotfound'], $edit_msg), 'discussion.php', 'post', array('back' => $lang['back']), array('msg' => $edit_msg));
        html_draw_bottom();
        exit;
     }

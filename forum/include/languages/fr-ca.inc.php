@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.46 2007-04-12 13:23:12 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.47 2007-04-12 21:13:36 decoyduck Exp $ */
 
 // International English language file
 
@@ -144,7 +144,6 @@ $lang['no'] = "Non";
 $lang['signature'] = "Signature";
 $lang['signaturepreview'] = "Aperçu de Signature";
 $lang['signatureupdated'] = "Signature mise à jour";
-$lang['wasnotfound'] = "n'a pas été retrouvé";
 $lang['back'] = "Retour";
 $lang['subject'] = "Sujet";
 $lang['subject'] = "Sujet";
@@ -224,21 +223,20 @@ $lang['adminexp_2'] = "<b>Utilisateurs</b> vous permet de fixer les droits d'acc
 $lang['adminexp_3'] = "<b>Groupes d'utilisateurs</b> vous permet de créer des groupes d'utilisateurs pour assigner des droits d'accès à quelques ou plusieurs utilisateurs rapidement et facilement.";
 $lang['adminexp_4'] = "<b>Commandes de bannissement</b> permet le bannissement et la levée de bannissement d'adresses IP, noms d'utilisateurs, adresses courriel et pseudonymes.";
 $lang['adminexp_5'] = "<b>Dossiers</b> permet de créer, modifier et de supprimer les dossiers.";
-$lang['adminexp_6'] = "<b>Profiles</b> vous permet de personnaliser les détails qui apparaîssent dans les profiles d'utilisateurs.";
-$lang['adminexp_7'] = "<b>Options du forum</b> vous permet de personnaliser le nom du forum, l'apparence et plusieurs autres choses.";
-$lang['adminexp_8'] = "<b>Page de démarrage</b> permet la personnalisation de la page de démarrage de votre forum.";
-$lang['adminexp_9'] = "<b>Style du forum</b> vous permet de créer des styles que vos membres pourront utiliser.";
-$lang['adminexp_10'] = "<b>Filtrage de mots</b> vous permet de filtrer les mots dont vous voulez interdire l'usage sur votre forum.";
-$lang['adminexp_11'] = "<b>Statistiques de postage</b> produit un rapport des 10 posteurs les plus prolifiques durant une période de temps définie.";
-$lang['adminexp_12'] = "<b>Liens de Forums</b> permet la gestion de la liste déroulante verticale de liens dans la barre de navigation.";
-$lang['adminexp_13'] = "<b>Visualiser le fichier journal</b> permet de voir chacune des actions récentes prises par les modérateurs du forum.";
-$lang['adminexp_14'] = "<b>Gestion du forum</b> permet la création, suppression, fermeture et réouverture des forums.";
-$lang['adminexp_15'] = "<b>Options de forum globales</b> vous permet de modifier les options qui touchent tous les forums.";
-$lang['adminexp_16'] = "<b>File d'attente de postes à approuver</b> vous permet de voir tous messages en attente d'approbation par un modérateur.";
-$lang['adminexp_17'] = "<b>Fichier journal des visiteurs</b> vous permet de voir une liste détaillée des visiteurs, y inclut leur référent HTTP.";
+$lang['adminexp_7'] = "<b>Profiles</b> vous permet de personnaliser les détails qui apparaîssent dans les profiles d'utilisateurs.";
+$lang['adminexp_8'] = "<b>Options du forum</b> vous permet de personnaliser le nom du forum, l'apparence et plusieurs autres choses.";
+$lang['adminexp_9'] = "<b>Page de démarrage</b> permet la personnalisation de la page de démarrage de votre forum.";
+$lang['adminexp_10'] = "<b>Style du forum</b> vous permet de créer des styles que vos membres pourront utiliser.";
+$lang['adminexp_11'] = "<b>Filtrage de mots</b> vous permet de filtrer les mots dont vous voulez interdire l'usage sur votre forum.";
+$lang['adminexp_12'] = "<b>Statistiques de postage</b> produit un rapport des 10 posteurs les plus prolifiques durant une période de temps définie.";
+$lang['adminexp_13'] = "<b>Liens de Forums</b> permet la gestion de la liste déroulante verticale de liens dans la barre de navigation.";
+$lang['adminexp_14'] = "<b>Visualiser le fichier journal</b> permet de voir chacune des actions récentes prises par les modérateurs du forum.";
+$lang['adminexp_15'] = "<b>Gestion du forum</b> permet la création, suppression, fermeture et réouverture des forums.";
+$lang['adminexp_16'] = "<b>Options de forum globales</b> vous permet de modifier les options qui touchent tous les forums.";
+$lang['adminexp_17'] = "<b>File d'attente de postes à approuver</b> vous permet de voir tous messages en attente d'approbation par un modérateur.";
+$lang['adminexp_18'] = "<b>Fichier journal des visiteurs</b> vous permet de voir une liste détaillée des visiteurs, y inclut leur référent HTTP.";
 $lang['createforumstyle'] = "Créer un style pour le forum";
-$lang['newstyle'] = "Nouveau style";
-$lang['successfullycreated'] = "créé avec succès.";
+$lang['newstylesuccessfullycreated'] = "Nouveau style %s créé avec succès.";
 $lang['stylealreadyexists'] = "Un style avec ce nom de fichier existe déjà.";
 $lang['stylenofilename'] = "Vous n'avez pas entrer un nom de fichier pour enregistrer ce style.";
 $lang['stylenodatasubmitted'] = "Impossible de lire les données du style de forum.";
@@ -874,6 +872,7 @@ $lang['mailsystemfailure'] = "Défaillance du système courriel. Le message n'a pa
 $lang['nopermissiontoedit'] = "Vous n'avez pas la permission de réviser ce message.";
 $lang['pollediterror'] = "Vous ne pouvez pas réviser les scrutins";
 $lang['cannoteditpostsinthisfolder'] = "Vous ne pouvez pas réviser les messages dans ce dossier";
+$lang['messagewasnotfound'] = "Message %s n'a pas été retrouvé";
 
 // Email (email.php) ---------------------------------------------------
 
@@ -988,7 +987,7 @@ $lang['rate'] = "Coter";
 $lang['bad'] = "Mauvais";
 $lang['good'] = "Bon";
 $lang['voteexcmark'] = "Votez!";
-$lang['commentby'] = "Commentaire par";
+$lang['commentby'] = "Commentaire par %s";
 $lang['addacommentabout'] = "Ajouter un commentaire concernant";
 $lang['modtools'] = "Outils de modération";
 $lang['editname'] = "Modifier le nom";
@@ -1019,7 +1018,7 @@ $lang['forgottenpasswd'] = "Vous avez oublié votre mot de passe?";
 $lang['usingaPDA'] = "Vous utilisez un assistant personnel numérique (PDA)?";
 $lang['lightHTMLversion'] = "Version HTML légèr";
 $lang['youhaveloggedout'] = "Vous avez fermé votre session.";
-$lang['currentlyloggedinas'] = "Vous êtes en session actuelle sous le nom d'utilisateur";
+$lang['currentlyloggedinas'] = "Vous êtes en session actuelle sous le nom d'utilisateur %s";
 $lang['logonbutton'] = "Ouvrir session";
 $lang['otherbutton'] = "Autre";
 
@@ -1172,8 +1171,7 @@ $lang['privatemessages'] = "Messages privés";
 $lang['recipienttiptext'] = "Séparer les destinataires par un point-virgule ou une virgule";
 $lang['maximumtenrecipientspermessage'] = "Il y a une limite de 10 destinataires par message. SVP modifier votre liste de destinataires.";
 $lang['mustspecifyrecipient'] = "Vous devez spécifier aumoins un destinataire.";
-$lang['usernotfound1'] = "Utilisateur";
-$lang['usernotfound2'] = "Non-trouvé.";
+$lang['usernotfound1'] = "Utilisateur %s non-trouvé.";
 $lang['sendnewpm'] = "Envoyer nouveau MP";
 $lang['savemessage'] = "Enregistrer message";
 $lang['timesent'] = "Heure d'envoi";

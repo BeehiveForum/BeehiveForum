@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forums.php,v 1.68 2007-04-12 13:23:10 decoyduck Exp $ */
+/* $Id: forums.php,v 1.69 2007-04-12 21:13:36 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -166,22 +166,22 @@ if (bh_session_get_value('UID') != 0) {
 
                 if (isset($forum['UNREAD_TO_ME']) && $forum['UNREAD_TO_ME'] > 0) {
 
-                    if (isset($forum['UNREAD_MESSAGES']) && is_numeric($forum['UNREAD_MESSAGES'])) {
+                    if (isset($forum['UNREAD_MESSAGES']) && is_numeric($forum['UNREAD_MESSAGES']) && $forum['UNREAD_MESSAGES'] > 0) {
 
-                        echo "                  <td align=\"left\" width=\"20%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">", number_format($forum['UNREAD_MESSAGES'], 0, ".", ","), " {$lang['unreadmessages']} (", number_format($forum['UNREAD_TO_ME'], 0, ",", ","), " {$lang['unreadtome']})</a></td>\n";
+                        echo "                  <td align=\"left\" width=\"20%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">", sprintf($lang['forumunreadmessages'], number_format($forum['UNREAD_MESSAGES'], 0, ".", ",")), " (", sprintf($lang['forumunreadtome'], number_format($forum['UNREAD_TO_ME'], 0, ",", ",")), ")</a></td>\n";
 
                     }else {
 
-                        echo "                  <td align=\"left\" width=\"20%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">", number_format($forum['UNREAD_TO_ME'], 0, ".", ","), " {$lang['unreadtome']}</a></td>\n";
+                        echo "                  <td align=\"left\" width=\"20%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">", sprintf($lang['forumunreadtome'], number_format($forum['UNREAD_TO_ME'], 0, ".", ",")), "</a></td>\n";
                     }
 
-                }else if (isset($forum['UNREAD_MESSAGES']) && is_numeric($forum['UNREAD_MESSAGES'])) {
+                }else if (isset($forum['UNREAD_MESSAGES']) && is_numeric($forum['UNREAD_MESSAGES']) && $forum['UNREAD_MESSAGES'] > 0) {
 
-                    echo "                  <td align=\"left\" width=\"20%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">", number_format($forum['UNREAD_MESSAGES'], 0, ".", ","), " {$lang['unreadmessages']}</a></td>\n";
+                    echo "                  <td align=\"left\" width=\"20%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">", sprintf($lang['forumunreadmessages'], number_format($forum['UNREAD_MESSAGES'], 0, ".", ",")), "</a></td>\n";
 
                 }else {
 
-                    echo "                  <td align=\"left\" width=\"20%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">", number_format($forum['NUM_MESSAGES'], 0, ".", ","), " {$lang['messages']}</a></td>\n";
+                    echo "                  <td align=\"left\" width=\"20%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">{$lang['forumnounreadmessages']}</a></td>\n";
                 }
 
                 if (isset($forum['LAST_VISIT']) && $forum['LAST_VISIT'] > 0) {
@@ -244,22 +244,22 @@ if (bh_session_get_value('UID') != 0) {
 
                 if (isset($forum['UNREAD_TO_ME']) && $forum['UNREAD_TO_ME'] > 0) {
 
-                    if (isset($forum['UNREAD_MESSAGES']) && is_numeric($forum['UNREAD_MESSAGES'])) {
+                    if (isset($forum['UNREAD_MESSAGES']) && is_numeric($forum['UNREAD_MESSAGES']) && $forum['UNREAD_MESSAGES'] > 0) {
 
-                        echo "                  <td align=\"left\" width=\"20%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">", number_format($forum['UNREAD_MESSAGES'], 0, ".", ","), " {$lang['unreadmessages']} (", number_format($forum['UNREAD_TO_ME'], 0, ",", ","), " {$lang['unreadtome']})</a></td>\n";
+                        echo "                  <td align=\"left\" width=\"20%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">", sprintf($lang['forumunreadmessages'], number_format($forum['UNREAD_MESSAGES'], 0, ".", ",")), " (", sprintf($lang['forumunreadtome'], number_format($forum['UNREAD_TO_ME'], 0, ",", ",")), ")</a></td>\n";
 
                     }else {
 
-                        echo "                  <td align=\"left\" width=\"20%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">", number_format($forum['UNREAD_TO_ME'], 0, ".", ","), " {$lang['unreadtome']}</a></td>\n";
+                        echo "                  <td align=\"left\" width=\"20%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">", sprintf($lang['forumunreadtome'], number_format($forum['UNREAD_TO_ME'], 0, ".", ",")), "</a></td>\n";
                     }
 
-                }else if (isset($forum['UNREAD_MESSAGES']) && is_numeric($forum['UNREAD_MESSAGES'])) {
+                }else if (isset($forum['UNREAD_MESSAGES']) && is_numeric($forum['UNREAD_MESSAGES']) && $forum['UNREAD_MESSAGES'] > 0) {
 
-                    echo "                  <td align=\"left\" width=\"20%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">", number_format($forum['UNREAD_MESSAGES'], 0, ".", ","), " {$lang['unreadmessages']}</a></td>\n";
+                    echo "                  <td align=\"left\" width=\"20%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">", sprintf($lang['forumunreadmessages'], number_format($forum['UNREAD_MESSAGES'], 0, ".", ",")), "</a></td>\n";
 
                 }else {
 
-                    echo "                  <td align=\"left\" width=\"20%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">", number_format($forum['NUM_MESSAGES'], 0, ".", ","), " {$lang['messages']}</a></td>\n";
+                    echo "                  <td align=\"left\" width=\"20%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">{$lang['forumnounreadmessages']}</a></td>\n";
                 }
 
                 if (isset($forum['LAST_VISIT']) && $forum['LAST_VISIT'] > 0) {
@@ -322,22 +322,22 @@ if (bh_session_get_value('UID') != 0) {
 
                 if (isset($forum['UNREAD_TO_ME']) && $forum['UNREAD_TO_ME'] > 0) {
 
-                    if (isset($forum['UNREAD_MESSAGES']) && is_numeric($forum['UNREAD_MESSAGES'])) {
+                    if (isset($forum['UNREAD_MESSAGES']) && is_numeric($forum['UNREAD_MESSAGES']) && $forum['UNREAD_MESSAGES'] > 0) {
 
-                        echo "                  <td align=\"left\" width=\"20%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">", number_format($forum['UNREAD_MESSAGES'], 0, ".", ","), " {$lang['unreadmessages']} (", number_format($forum['UNREAD_TO_ME'], 0, ",", ","), " {$lang['unreadtome']})</a></td>\n";
+                        echo "                  <td align=\"left\" width=\"20%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">", sprintf($lang['forumunreadmessages'], number_format($forum['UNREAD_MESSAGES'], 0, ".", ",")), " (", sprintf($lang['forumunreadtome'], number_format($forum['UNREAD_TO_ME'], 0, ",", ",")), ")</a></td>\n";
 
                     }else {
 
-                        echo "                  <td align=\"left\" width=\"20%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">", number_format($forum['UNREAD_TO_ME'], 0, ".", ","), " {$lang['unreadtome']}</a></td>\n";
+                        echo "                  <td align=\"left\" width=\"20%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">", sprintf($lang['forumunreadtome'], number_format($forum['UNREAD_TO_ME'], 0, ".", ",")), "</a></td>\n";
                     }
 
-                }else if (isset($forum['UNREAD_MESSAGES']) && is_numeric($forum['UNREAD_MESSAGES'])) {
+                }else if (isset($forum['UNREAD_MESSAGES']) && is_numeric($forum['UNREAD_MESSAGES']) && $forum['UNREAD_MESSAGES'] > 0) {
 
-                    echo "                  <td align=\"left\" width=\"20%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">", number_format($forum['UNREAD_MESSAGES'], 0, ".", ","), " {$lang['unreadmessages']}</a></td>\n";
+                    echo "                  <td align=\"left\" width=\"20%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">", sprintf($lang['forumunreadmessages'], number_format($forum['UNREAD_MESSAGES'], 0, ".", ",")), "</a></td>\n";
 
                 }else {
 
-                    echo "                  <td align=\"left\" width=\"20%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">", number_format($forum['NUM_MESSAGES'], 0, ".", ","), " {$lang['messages']}</a></td>\n";
+                    echo "                  <td align=\"left\" width=\"20%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">{$lang['forumnounreadmessages']}</a></td>\n";
                 }
 
                 if (isset($forum['LAST_VISIT']) && $forum['LAST_VISIT'] > 0) {
@@ -416,7 +416,7 @@ if (bh_session_get_value('UID') != 0) {
 
             echo "                  </td>\n";
             echo "                  <td align=\"left\" width=\"30%\" valign=\"top\">{$forum['FORUM_DESC']}</td>\n";
-            echo "                  <td align=\"left\" width=\"20%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">", number_format($forum['MESSAGES'], 0, ".", ","), " {$lang['messages']}</a></td>\n";
+            echo "                  <td align=\"left\" width=\"20%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">", sprintf($lang['forummessages'], number_format($forum['MESSAGES'], 0, ".", ",")), "</a></td>\n";
             echo "                  <td align=\"left\" width=\"20%\" valign=\"top\">&nbsp;</td>\n";
             echo "                </tr>\n";
         }
@@ -481,12 +481,24 @@ if (isset($webtag_search) && strlen($webtag_search) > 0) {
 
             echo "                  <td align=\"left\" width=\"30%\" valign=\"top\">{$forum['FORUM_DESC']}</td>\n";
 
-            if ($forum['UNREAD_TO_ME'] > 0) {
-                echo "                  <td align=\"left\" width=\"20%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">", number_format($forum['UNREAD_MESSAGES'], 0, ".", ","), " {$lang['unreadmessages']} (", number_format($forum['UNREAD_TO_ME'], 0, ",", ","), " {$lang['unreadtome']})</a></td>\n";
-            }elseif($forum['UNREAD_MESSAGES'] > 0) {
-                echo "                  <td align=\"left\" width=\"20%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">", number_format($forum['UNREAD_MESSAGES'], 0, ".", ","), " {$lang['unreadmessages']}</a></td>\n";
+            if (isset($forum['UNREAD_TO_ME']) && $forum['UNREAD_TO_ME'] > 0) {
+
+                if (isset($forum['UNREAD_MESSAGES']) && is_numeric($forum['UNREAD_MESSAGES']) && $forum['UNREAD_MESSAGES'] > 0) {
+
+                    echo "                  <td align=\"left\" width=\"20%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">", sprintf($lang['forumunreadmessages'], number_format($forum['UNREAD_MESSAGES'], 0, ".", ",")), " (", sprintf($lang['forumunreadtome'], number_format($forum['UNREAD_TO_ME'], 0, ",", ",")), ")</a></td>\n";
+
+                }else {
+
+                    echo "                  <td align=\"left\" width=\"20%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">", sprintf($lang['forumunreadtome'], number_format($forum['UNREAD_TO_ME'], 0, ".", ",")), "</a></td>\n";
+                }
+
+            }else if (isset($forum['UNREAD_MESSAGES']) && is_numeric($forum['UNREAD_MESSAGES']) && $forum['UNREAD_MESSAGES'] > 0) {
+
+                echo "                  <td align=\"left\" width=\"20%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">", sprintf($lang['forumunreadmessages'], number_format($forum['UNREAD_MESSAGES'], 0, ".", ",")), "</a></td>\n";
+
             }else {
-                echo "                  <td align=\"left\" width=\"20%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">", number_format($forum['NUM_MESSAGES'], 0, ".", ","), " {$lang['messages']}</a></td>\n";
+
+                echo "                  <td align=\"left\" width=\"20%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">{$lang['forumnounreadmessages']}</a></td>\n";
             }
 
             if (isset($forum['LAST_VISIT']) && $forum['LAST_VISIT'] > 0) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.21 2007-04-12 13:23:12 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.22 2007-04-12 21:13:36 decoyduck Exp $ */
 
 // International English language file
 
@@ -142,7 +142,6 @@ $lang['no'] = "Nein";
 $lang['signature'] = "Signatur";
 $lang['signaturepreview'] = "Signatur Voransicht";
 $lang['signatureupdated'] = "Signature aktualisiert";
-$lang['wasnotfound'] = "nicht gefunden";
 $lang['back'] = "Zurück";
 $lang['subject'] = "Thema";
 $lang['close'] = "Schliessen";
@@ -225,21 +224,20 @@ $lang['adminexp_2'] = "<b>Benutzer</b> ist zum Setzen von Benutzerberechtigungen
 $lang['adminexp_3'] = "<b>Benutzergruppen</b> ist zum Setzen von Gruppenberechtigungen und Einstellungen.";
 $lang['adminexp_4'] = "<b>Bann-Steuerung</b> ist zum Bannen/Aussperren von IP Addressen, Benutzernamen, Emailaddressen und Nicknamen.";
 $lang['adminexp_5'] = "<b>Ordner</b> Erstellen, Aendern und Loeschen von Ordnern.";
-$lang['adminexp_6'] = "<b>Profile</b> Eintraege anpassen die im Benutzer-Profil erscheinen.";
-$lang['adminexp_7'] = "<b>Forum Einstellungen</b> Anpassen des Forennamens, Erscheinung und vieles anderes.";
-$lang['adminexp_8'] = "<b>Start Page</b> Anpassen der Forum-Startseite.";
-$lang['adminexp_9'] = "<b>Forum style</b> Stil erstellen fuer die Benutzung durch die Forenmitglieder.";
-$lang['adminexp_10'] = "<b>Wortfilter</b> Woerter ausfiltern die im Forum nicht benutzt werden sollen.";
-$lang['adminexp_11'] = "<b>Poststatistiken</b> Generiert einen Bericht ueber die 10 haeufigsten Poster eines bestimmten Zeitraums.";
-$lang['adminexp_12'] = "<b>Forum links</b> Links definieren fuer das rechte Drop-Down-Feld.";
-$lang['adminexp_13'] = "<b>Log anzeigen</b> zeigt die letzten Aktionen der Forenmoderatoren.";
-$lang['adminexp_14'] = "<b>Manage Foren</b> Erstellen, Oeffnen, Schliessen oder Wiederoeffnen von Foren.";
-$lang['adminexp_15'] = "<b>Global Foreneinstellungen</b> Aenderung der Einstellungen fuer alle Foren.";
-$lang['adminexp_16'] = "<b>Post Zustimmungswarteschlange</b> zeigt alle Posts die auf Zustimmung/Akzeptierung des Moderators warten.";
-$lang['adminexp_17'] = "<b>Besucher Log</b> zeigt eine erweiterte Liste aller Besucher inkl. deren HTTP-Verweise.";
+$lang['adminexp_8'] = "<b>Profile</b> Eintraege anpassen die im Benutzer-Profil erscheinen.";
+$lang['adminexp_9'] = "<b>Forum Einstellungen</b> Anpassen des Forennamens, Erscheinung und vieles anderes.";
+$lang['adminexp_9'] = "<b>Start Page</b> Anpassen der Forum-Startseite.";
+$lang['adminexp_10'] = "<b>Forum style</b> Stil erstellen fuer die Benutzung durch die Forenmitglieder.";
+$lang['adminexp_11'] = "<b>Wortfilter</b> Woerter ausfiltern die im Forum nicht benutzt werden sollen.";
+$lang['adminexp_12'] = "<b>Poststatistiken</b> Generiert einen Bericht ueber die 10 haeufigsten Poster eines bestimmten Zeitraums.";
+$lang['adminexp_13'] = "<b>Forum links</b> Links definieren fuer das rechte Drop-Down-Feld.";
+$lang['adminexp_14'] = "<b>Log anzeigen</b> zeigt die letzten Aktionen der Forenmoderatoren.";
+$lang['adminexp_15'] = "<b>Manage Foren</b> Erstellen, Oeffnen, Schliessen oder Wiederoeffnen von Foren.";
+$lang['adminexp_16'] = "<b>Global Foreneinstellungen</b> Aenderung der Einstellungen fuer alle Foren.";
+$lang['adminexp_17'] = "<b>Post Zustimmungswarteschlange</b> zeigt alle Posts die auf Zustimmung/Akzeptierung des Moderators warten.";
+$lang['adminexp_18'] = "<b>Besucher Log</b> zeigt eine erweiterte Liste aller Besucher inkl. deren HTTP-Verweise.";
 $lang['createforumstyle'] = "Forenstil erstellen";
-$lang['newstyle'] = "Neuer Stil";
-$lang['successfullycreated'] = "erfolgreich erstellt.";
+$lang['newstylesuccessfullycreated'] = "Neuer Stil %s erfolgreich erstellt.";
 $lang['stylealreadyexists'] = "Ein Stil mit diesem Dateinamen existiert bereits.";
 $lang['stylenofilename'] = "Sie haben keinen Dateinamen eingeben für diesen Stil.";
 $lang['stylenodatasubmitted'] = "Kann Forenstil-Daten nicht lesen.";
@@ -805,6 +803,7 @@ $lang['mailsystemfailure'] = "Mail-System fehlerhaft. Nachricht nicht gesendet."
 $lang['nopermissiontoedit'] = "Du hast keine Rechte diese Nachricht zu editieren.";
 $lang['pollediterror'] = "Du kannst keine Abstimmungen editieren";
 $lang['cannoteditpostsinthisfolder'] = "Du kannst keine Abstimmungen in diesem Ordner editieren";
+$lang['messagewasnotfound'] = "Nachricht %s nicht gefunden";
 
 // Email (email.php) ---------------------------------------------------
 
@@ -910,7 +909,7 @@ $lang['rate'] = "Bewerten";
 $lang['bad'] = "Schlecht";
 $lang['good'] = "Gut";
 $lang['voteexcmark'] = "Stimmen!";
-$lang['commentby'] = "Kommentiert von";
+$lang['commentby'] = "Kommentiert von %s";
 $lang['addacommentabout'] = "einen Kommentar einfuegen ueber";
 $lang['modtools'] = "Moderations-Tools";
 $lang['editname'] = "Namen editieren";
@@ -940,7 +939,7 @@ $lang['forgottenpasswd'] = "Passwort vergessen?";
 $lang['usingaPDA'] = "Benutzt Du einen PDA?";
 $lang['lightHTMLversion'] = "Light HTML Version";
 $lang['youhaveloggedout'] = "Du bist abgemeldet.";
-$lang['currentlyloggedinas'] = "Du bist im Moment angemeldet als";
+$lang['currentlyloggedinas'] = "Du bist im Moment angemeldet als %s";
 $lang['logonbutton'] = "Anmelden";
 $lang['otherbutton'] = "Andere";
 
@@ -1086,8 +1085,7 @@ $lang['addrecipient'] = "Empfaenger hinzufuegen";
 $lang['recipienttiptext'] = "Trenne Empfaenger mit Semikolon oder Kommata";
 $lang['maximumtenrecipientspermessage'] = "Max. 10 Empfaenger je Nachricht. Bitte Empfaengerliste anpassen.";
 $lang['mustspecifyrecipient'] = "Mindestens ein Empfaenger muss eingetragen sein.";
-$lang['usernotfound1'] = "Benutzer";
-$lang['usernotfound2'] = "Nicht gefunden.";
+$lang['usernotfound'] = "Benutzer %s nicht gefunden.";
 $lang['sendnewpm'] = "Neue Nachricht senden";
 $lang['savemessage'] = "Nachricht speichern";
 $lang['timesent'] = "Uhrzeit gesendet";

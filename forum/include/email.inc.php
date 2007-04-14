@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.104 2007-04-11 20:11:13 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.105 2007-04-14 18:44:03 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -325,7 +325,7 @@ function email_send_new_pw_notification($tuid, $fuid, $new_password)
 
         $password_changed_by = $forum_user['LOGON'];
 
-        $message = wordwrap(sprintf($lang['pmchangeemail'], $forum_name, $new_password, $password_changed_by, $forum_name));
+        $message = wordwrap(sprintf($lang['pwchangeemail'], $forum_name, $new_password, $password_changed_by, $forum_name));
 
         $header = "Return-path: $forum_email\n";
         $header.= "From: \"$forum_name\" <$forum_email>\n";

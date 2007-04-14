@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.292 2007-04-11 19:14:06 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.293 2007-04-14 01:35:58 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -496,10 +496,10 @@ function bh_session_get_value($session_key)
 
 function bh_remove_stale_sessions()
 {
-    $sess_rem_prob = intval(forum_get_setting('forum_self_clean_prob', false, 500));
+    $sess_rem_prob = intval(forum_get_setting('forum_self_clean_prob', false, 10000));
 
     if ($sess_rem_prob < 1) $sess_rem_prob = 1;
-    if ($sess_rem_prob > 1000) $sess_rem_prob = 1000;
+    if ($sess_rem_prob > 10000) $sess_rem_prob = 10000;
 
     if (($mt_result = mt_rand(1, $sess_rem_prob)) == 1) {
 

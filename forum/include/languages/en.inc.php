@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.412 2007-04-14 00:50:34 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.413 2007-04-14 14:52:50 decoyduck Exp $ */
 
 // International English language file
 
@@ -69,6 +69,38 @@ $lang['daymonthyearhourminute'] = "%s %s %s %s:%s";  // 1 Jan 2005 12:00
 $lang['daymonthhourminute'] = "%s %s %s:%s";         // 1 Jan 12:00
 $lang['daymonth'] = "%s %s";                         // 1 Jan
 $lang['hourminute'] = "%s:%s";                       // 12:00
+
+// Periods -------------------------------------------------------------
+
+// Various time periods as used by BeehiveForum.
+
+$lang['date_periods']['year']   = "%s year";
+$lang['date_periods']['month']  = "%s month";
+$lang['date_periods']['week']   = "%s week";
+$lang['date_periods']['day']    = "%s day";
+$lang['date_periods']['hour']   = "%s hour";
+$lang['date_periods']['minute'] = "%s minute";
+$lang['date_periods']['second'] = "%s second";
+
+// As above but plurals (2 years vs. 1 year, etc.)
+
+$lang['date_periods_plural']['year']   = "%s years";
+$lang['date_periods_plural']['month']  = "%s months";
+$lang['date_periods_plural']['week']   = "%s weeks";
+$lang['date_periods_plural']['day']    = "%s days";
+$lang['date_periods_plural']['hour']   = "%s hours";
+$lang['date_periods_plural']['minute'] = "%s minutes";
+$lang['date_periods_plural']['second'] = "%s seconds";
+
+// Short hand periods (example: 1y, 2m, 3w, 4d, 5hr, 6min, 7sec)
+
+$lang['date_periods_short']['year']   = "%sy";    // 1y
+$lang['date_periods_short']['month']  = "%sm";    // 2m
+$lang['date_periods_short']['week']   = "%sw";    // 3w
+$lang['date_periods_short']['day']    = "%sd";    // 4d
+$lang['date_periods_short']['hour']   = "%shr";   // 5hr
+$lang['date_periods_short']['minute'] = "%smin";  // 6min
+$lang['date_periods_short']['second'] = "%ssec";  // 7sec
 
 // Common words --------------------------------------------------------
 
@@ -1610,23 +1642,32 @@ $lang['lightblue'] = "Light blue";
 // Forum Stats (messages.inc.php - messages_forum_stats()) -------------
 
 $lang['forumstats'] = "Forum Stats";
-$lang['guests'] = "guests";
-$lang['members'] = "members";
-$lang['anonymousmembers'] = "anonymous members";
+$lang['usersactiveinthepasttimeperiod'] = "%s active in the past %s.";
+
+$lang['numactiveguests'] = "<b>%s</b> guests";
+$lang['oneactiveguest'] = "<b>1</b> guest";
+$lang['numactivemembers'] = "<b>%s</b> members";
+$lang['oneactivemember'] = "<b>1</b> member";
+$lang['numactiveanonymousmembers'] = "<b>%s</b> anonymous members";
+$lang['oneactiveanonymousmember'] = "<b>1</b> anonymous member";
+
+$lang['numthreadscreated'] = "<b>%s</b> threads";
+$lang['onethreadcreated'] = "<b>1</b> thread";
+$lang['numpostscreated'] = "<b>%s</b> posts";
+$lang['onepostcreated'] = "<b>1</b> post";
+
 $lang['younormal'] = "You";
 $lang['youinvisible'] = "You (Invisible)";
 $lang['viewcompletelist'] = "View Complete List";
-$lang['ourmembershavemadeatotalof'] = "Our members have made a total of";
-$lang['threadsand'] = "threads and";
-$lang['postslowercase'] = "posts";
-$lang['longestthreadis'] = "Longest thread is";
-$lang['therehavebeen'] = "There have been";
-$lang['postsmadeinthelastsixtyminutes'] = "posts made in the last 60 minutes";
-$lang['mostpostsevermadeinasinglesixtyminuteperiodwas'] = "Most posts ever made in a single 60 minute period was";
-$lang['wehave'] = "We have";
-$lang['registeredmembers'] = "registered members";
-$lang['thenewestmemberis'] = "The newest member is";
-$lang['mostuserseveronlinewas'] = "Most users ever online was";
+$lang['ourmembershavemadeatotalofnumthreadsandnumposts'] = "Our members have made a total of %s and %s.";
+$lang['longestthreadisthreadnamewithnumposts'] = "Longest thread is <b>%s</b> with %s.";
+$lang['therehavebeenxpostsmadeinthelastsixtyminutes'] = "There have been <b>%s</b> posts made in the last 60 minutes.";
+$lang['therehasbeenonepostmadeinthelastsxityminutes'] = "There has been <b>1</b> post made in the last 60 minutes.";
+$lang['mostpostsevermadeinasinglesixtyminuteperiodwasnumposts'] = "Most posts ever made in a single 60 minute period is <b>%s</b> on %s.";
+$lang['wehavenumregisteredmembersandthenewestmemberismembername'] = "We have <b>%s</b> registered members and the newest member is <b>%s</b>.";
+$lang['wehavenumregisteredmember'] = "We have %s registered members.";
+$lang['wehaveoneregisteredmember'] = "We have one registered member.";
+$lang['mostuserseveronlinewasnumondate'] = "Most users ever online was <b>%s</b> on %s.";
 $lang['statsdisplayenabled'] = "Stats Display Enabled";
 
 // Thread Options (thread_options.php) ---------------------------------

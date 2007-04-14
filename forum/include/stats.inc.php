@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.71 2007-04-14 01:35:58 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.72 2007-04-14 14:52:50 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -205,6 +205,9 @@ function get_active_users()
                                                  'ANON_LOGON'   => $anon_logon);
         }
     }
+
+    $stats['USER_COUNT'] = sizeof($stats['USERS']) + $stats['AUSERS'];
+    $stats['USER_COUNT']+= $stats['NUSERS'] + $stats['GUESTS'];
 
     return $stats;
 }

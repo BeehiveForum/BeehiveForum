@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.130 2007-03-19 15:19:33 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.131 2007-04-14 14:52:50 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -226,12 +226,14 @@ function format_date($time)
     return $fmt;
 }
 
-function format_time_display($seconds)
+function format_time_display($seconds, $abbrv_units = true)
 {        
-    $periods_array = array ('y' => 31556926, 'm' => 2629743,
-                            'w' => 604800,   'd' => 86400,
-                            'hr' => 3600,    'min' => 60,
-                            'sec' => 1);
+    $lang = load_language_file();
+    
+    $periods_array = array ('year'   => 31556926, 'month'  => 2629743,
+                            'week'   => 604800,   'day'    => 86400,
+                            'hour'   => 3600,     'minute' => 60,
+                            'second' => 1);
   
     $seconds = (float) $seconds;
 
@@ -239,7 +241,18 @@ function format_time_display($seconds)
 
         if (($count = floor($seconds / $value)) > 0) {
 
-            $values_array[] = "{$count}{$period}";
+            if ($abbrv_units === true) {
+
+                $values_array[] = sprintf($lang['date_periods_short'][$period], $count);
+
+            }elseif ($count <> 1) {
+
+                $values_array[] = sprintf($lang['date_periods_plural'][$period], $count);
+
+            }else {
+               
+                $values_array[] = sprintf($lang['date_periods'][$period], $count);
+            }
         }
 
         $seconds = $seconds % $value;

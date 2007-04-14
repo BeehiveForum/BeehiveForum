@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.177 2007-04-10 16:02:04 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.178 2007-04-14 00:50:38 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -118,14 +118,16 @@ function search_execute($search_arguments, &$error)
             $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, ";
             $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, LENGTH) SELECT $uid, ";
             $select_sql.= "$forum_fid, THREAD.FID, POST.TID, POST.PID, THREAD.BY_UID, ";
-            $select_sql.= "POST.FROM_UID, POST.TO_UID, THREAD.MODIFIED, THREAD.LENGTH ";
+            $select_sql.= "POST.FROM_UID, POST.TO_UID, THREAD.MODIFIED AS DATE_CREATED, ";
+            $select_sql.= "THREAD.LENGTH ";
 
         }else {
 
             $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, ";
             $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, LENGTH) SELECT $uid, ";
             $select_sql.= "$forum_fid, THREAD.FID, POST.TID, POST.PID, THREAD.BY_UID, ";
-            $select_sql.= "POST.FROM_UID, POST.TO_UID, POST.CREATED, THREAD.LENGTH ";
+            $select_sql.= "POST.FROM_UID, POST.TO_UID, POST.CREATED AS DATE_CREATED, ";
+            $select_sql.= "THREAD.LENGTH ";
         }
 
         // FROM query uses POST table if we're not using keyword searches.
@@ -204,7 +206,7 @@ function search_execute($search_arguments, &$error)
                 $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, LENGTH, RELEVANCE) ";
                 $select_sql.= "SELECT $uid, $forum_fid, THREAD.FID, POST_CONTENT.TID, ";
                 $select_sql.= "POST_CONTENT.PID, THREAD.BY_UID, POST.FROM_UID, POST.TO_UID, ";
-                $select_sql.= "THREAD.MODIFIED AS CREATED, THREAD.LENGTH, ";
+                $select_sql.= "THREAD.MODIFIED AS DATE_CREATED, THREAD.LENGTH, ";
                 $select_sql.= "MATCH(POST_CONTENT.CONTENT) AGAINST('$search_string'$bool_mode) ";
                 $select_sql.= "AS RELEVANCE";
 
@@ -214,8 +216,9 @@ function search_execute($search_arguments, &$error)
                 $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, LENGTH, RELEVANCE) ";
                 $select_sql.= "SELECT $uid, $forum_fid, THREAD.FID, POST_CONTENT.TID, ";
                 $select_sql.= "POST_CONTENT.PID, THREAD.BY_UID, POST.FROM_UID, POST.TO_UID, ";
-                $select_sql.= "POST.CREATED, THREAD.LENGTH, MATCH(POST_CONTENT.CONTENT) ";
-                $select_sql.= "AGAINST('$search_string'$bool_mode) AS RELEVANCE";
+                $select_sql.= "POST.CREATED AS DATE_CREATED, THREAD.LENGTH, ";
+                $select_sql.= "MATCH(POST_CONTENT.CONTENT) AGAINST('$search_string'$bool_mode) ";
+                $select_sql.= "AS RELEVANCE";
             }
 
             $where_sql.= "AND MATCH(POST_CONTENT.CONTENT) AGAINST('$search_string'$bool_mode) ";
@@ -264,7 +267,7 @@ function search_execute($search_arguments, &$error)
 
         default:
 
-            $order_sql = "ORDER BY CREATED {$search_arguments['sort_dir']}";
+            $order_sql = "ORDER BY DATE_CREATED {$search_arguments['sort_dir']}";
             break;
     }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.178 2007-04-09 21:06:06 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.179 2007-04-14 00:50:38 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1860,7 +1860,7 @@ function pm_export_html_top($mid)
     if (is_bool($mid)) {    
         $html.= "<title>{$lang['messages']}</title>\n";
     }else {
-        $html.= "<title>{$lang['message']} $mid</title>\n";
+        $html.= sprintf("<title>{$lang['pmmessagenumber']}</title>\n", $mid);
     }
 
     if (@file_exists("./styles/style.css")) {

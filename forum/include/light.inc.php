@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.130 2007-04-12 21:13:37 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.131 2007-04-14 00:50:37 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -389,12 +389,15 @@ function light_draw_thread_list($mode = 0, $folder = false, $start_from = 0)
                             // work out how long ago the thread was posted and format the time to display
                             $thread_time = format_time($thread['MODIFIED']);
 
-                            echo "<a href=\"lmessages.php?webtag=$webtag&amp;msg={$thread['TID']}.$latest_post\" title=\"#{$thread['TID']} {$lang['startedby']} ", add_wordfilter_tags(format_user_name($thread['LOGON'], $thread['NICKNAME'])), "\">", add_wordfilter_tags(thread_format_prefix($thread['PREFIX'], $thread['TITLE'])), "</a> ";
+                            echo "<a href=\"lmessages.php?webtag=$webtag&amp;msg={$thread['TID']}.$latest_post\" ";
+                            echo "title=\"", sprintf($lang['threadstartedbytooltip'], $thread['TID'], add_wordfilter_tags(format_user_name($thread['LOGON'], $thread['NICKNAME'])), ($thread['VIEWCOUNT'] == 1) ? $lang['threadviewedonetime'] : sprintf($lang['threadviewedtimes'], $thread['VIEWCOUNT'])), "\">";
+
                             if ($thread['INTEREST'] == 1) echo "<font color=\"#FF0000\">(HI)</font> ";
                             if ($thread['INTEREST'] == 2) echo "<font color=\"#FF0000\">(Sub)</font> ";
                             if ($thread['POLL_FLAG'] == 'Y') echo "(P) ";
                             if ($thread['STICKY'] == 'Y') echo "(St) ";
                             if ($thread['RELATIONSHIP']&USER_FRIEND) echo "(Fr) ";
+
                             echo $number." ";
                             echo $thread_time." ";
                             echo "</li>\n";
@@ -411,7 +414,7 @@ function light_draw_thread_list($mode = 0, $folder = false, $start_from = 0)
 
                         $more_threads = $folder_msgs[$folder] - $start_from - 50;
 
-                        if ($more_threads > 0 && $more_threads <= 50) echo "<p><i><a href=\"lthread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$folder&amp;start_from=".($start_from + 50)."\">{$lang['next']} $more_threads {$lang['threads']}</a></i></p>\n";
+                        if ($more_threads > 0 && $more_threads <= 50) echo "<p><i><a href=\"lthread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$folder&amp;start_from=".($start_from + 50)."\">", sprintf($lang['nextxthreads'], $more_threads), "</a></i></p>\n";
                         if ($more_threads > 50) echo "<p><i><a href=\"lthread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$folder&amp;start_from=".($start_from + 50)."\">{$lang['next50threads']}</a></i></p>\n";
 
                     }
@@ -448,7 +451,7 @@ function light_draw_thread_list($mode = 0, $folder = false, $start_from = 0)
           }
 
           $more_threads = $total_threads - $start_from - 50;
-          if ($more_threads > 0 && $more_threads <= 50) echo "<p><a href=\"lthread_list.php?webtag=$webtag&amp;mode=0&amp;start_from=".($start_from + 50)."\">{$lang['next']} $more_threads {$lang['threads']}</p>\n";
+          if ($more_threads > 0 && $more_threads <= 50) echo "<p><a href=\"lthread_list.php?webtag=$webtag&amp;mode=0&amp;start_from=".($start_from + 50)."\">", sprintf($lang['nextxthreads'], $more_threads), "</p>\n";
           if ($more_threads > 50) echo "<p><a href=\"lthread_list.php?webtag=$webtag&amp;mode=0&amp;start_from=".($start_from + 50)."\">{$lang['next50threads']}</a></p>\n";
 
         }
@@ -1046,7 +1049,9 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
     echo "</p>\n";
 
-    if (!$in_list && isset($message['PID'])) echo "<p><i>{$lang['message']} {$message['PID']} {$lang['of']} $msg_count</i></p>\n";
+    if (!$in_list && isset($message['PID'])) {
+        echo sprintf("<p><i>{$lang['messagecountdisplay']}</i></p>\n", $message['PID'], $msg_count);
+    }
 
     // Light mode never displays user signatures.
 
@@ -1129,7 +1134,7 @@ function light_message_display_deleted($tid,$pid)
 {
     $lang = load_language_file();
 
-    echo "<p>{$lang['message']} ${tid}.${pid} {$lang['wasdeleted']}</p>\n";
+    echo sprintf("<p>{$lang['messagewasdeleted']}</p>\n", $tid, $pid);
     echo "<hr />";
 }
 

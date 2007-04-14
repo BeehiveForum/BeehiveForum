@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.23 2007-04-12 23:53:37 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.24 2007-04-14 00:50:34 decoyduck Exp $ */
 
 // International English language file
 
@@ -290,7 +290,7 @@ $lang['items'] = "Eintraege";
 $lang['startpageupdated'] = "Startseite geaendert";
 $lang['viewupdatedstartpage'] = "geaenderte Startseite anzeigen";
 $lang['editstartpage'] = "Startseite editieren";
-$lang['nouserspecified'] = "Kein Benutzer zur Editierung ausgewaehlt.";
+$lang['nouserspecified'] = "Kein Benutzer definiert.";
 $lang['manageuser'] = "Manage Benutzer";
 $lang['manageusers'] = "Manage Benutzer";
 $lang['userstatus'] = "Benutzerstatus";
@@ -1035,7 +1035,7 @@ $lang['viewfullmsg'] = "Zeige volle Nachricht";
 $lang['ignoredmsg'] = "Nachricht ignorieren";
 $lang['wormeduser'] = "gewurmter Benutzer";
 $lang['ignoredsig'] = "Signatur ignoriert";
-$lang['wasdeleted'] = "wurde geloescht";
+$lang['messagewasdeleted'] = "Nachricht %s.%s wurde geloescht";
 $lang['stopignoringthisuser'] = "Aufhoeren Benutzer zu ignorieren";
 $lang['renamethread'] = "Eintrag umbenennen";
 $lang['movethread'] = "Eintrag verschieben";
@@ -1044,13 +1044,14 @@ $lang['torenamethisthread'] = "um diesen Eintrag umzubenennen";
 $lang['closeforposting'] = "Geschlossen. Kein Posten mehr moeglich";
 $lang['until'] = "Bis 00:00 UTC";
 $lang['approvalrequired'] = "Aktivierung notwendig";
-$lang['awaitingapprovalbymoderator'] = "wartet auf Aktivierung eines Moderators";
+$lang['messageawaitingapprovalbymoderator'] = "Nachricht %s.%s wartet auf Aktivierung eines Moderators";
 $lang['postapprovedsuccessfully'] = "Post erfolgreich aktiviert";
 $lang['postapprovalfailed'] = "Post-Genehmigung fehlgeschlagen.";
 $lang['postdoesnotrequireapproval'] = "Post benoetigt keine Genehmigung";
 $lang['approvepost'] = "Stimme Post zur Anzeige zu";
 $lang['approvedcaps'] = "ZUSTIMMUNG";
 $lang['makesticky'] = "Erstelle Sticker";
+$lang['messagecountdisplay'] = "%s von %s";
 $lang['linktothread'] = "Permanenter Link zu diesem Eintrag";
 $lang['linktopost'] = "Link zu Post";
 $lang['linktothispost'] = "Link zu diesem Post";
@@ -1095,12 +1096,12 @@ $lang['writepm'] = "Nachricht schreiben";
 $lang['editpm'] = "Nachricht anzeigen";
 $lang['cannoteditpm'] = "Kann diese Nachricht nicht anzeigen. Sie wurde bereits vom Empfaenger gelesen oder die Nachricht existiert nicht oder es darf nicht von Dir darauf zugegriffen werden";
 $lang['cannotviewpm'] = "Kann PM nicht anzeigen. Nachricht existiert nicht oder darf von Dir nicht angezeigt werden";
-$lang['nouserspecified'] = "Kein Benutzer definiert.";
+$lang['pmmessagenumber'] = "Nachricht %s";
 $lang['youhavexnewpm'] = "Du hast %d neue PMs. Willst Du jetzt in den Posteingang wechseln?";
 $lang['youhave1newpm'] = "'Du hast 1 neue PM. Willst du jetzt in den Posteingang wechseln?";
 $lang['youdonothaveenoughfreespace'] = "Du hast nicht genug freien Speicher um die Nachricht zu senden.";
 $lang['notenoughfreespace'] = "Du hast nicht genug freien Speicher um die Nachricht zu erhalten";
-$lang['hasoptoutpm'] = "wurde aus dem PM-Empfang entfernt";
+$lang['userhasoptedoutofpm'] = "%s wurde aus dem PM-Empfang entfernt";
 $lang['pmfolderpruningisenabled'] = "PM-Ordnerkuerzung eingeschaltet!";
 $lang['pmpruneexplanation'] = "Dieses Forum nutzt PM-Ordnerkuerzung. Die Nachrichten wurden in Deinem Posteingang gespeichert und gesendete Eintraege \\nfolders werden automatisch geloescht. Jede Nachricht die Du gespeichert halten moechtest sollte verschoben werden nach \\nyour \\'Saved Items\\' Ordner damitsie nicht geloescht werden.";
 $lang['yourpmfoldersare_1'] = "Deine PM-Ordner sind %s voll";
@@ -1292,7 +1293,6 @@ $lang['previewvotingform'] = "Abstimmungsformular-Voransicht";
 $lang['editprofile'] = "Profil editieren";
 $lang['profileupdated'] = "Profil geaendert.";
 $lang['profilesnotsetup'] = "Der Forenadmin hat Profile nicht aktiviert";
-$lang['nouserspecified'] = "Kein Benutzer definiert";
 $lang['ignoreduser'] = "Ignorierter Benutzer";
 $lang['lastvisit'] = "zuletzt besucht";
 $lang['totaltimeinforum'] = "Gesamtzeit";
@@ -1469,8 +1469,10 @@ $lang['couldnotretrievefolderinformation'] = "Keine Ordner vorhanden.";
 $lang['nomessagesinthiscategory'] = "Keine Nachrichten in dieser Kategorie. Bitte waehle eine andere, oder";
 $lang['clickhere'] = "klick hier";
 $lang['forallthreads'] = "fuer alle Eintraege";
-$lang['prev50threads'] = "Vorherige 50 Eintraege";
 $lang['next50threads'] = "Naechste 50 Eintraege";
+$lang['prev50threads'] = "Vorherige 50 Eintraege";
+$lang['nextxthreads'] = "Naechste %s Eintraege";
+$lang['prevxthreads'] = "Vorherige %s Eintraege";
 $lang['startedby'] = "gestartet von";
 $lang['unreadthread'] = "Ungelesener Eintrag";
 $lang['readthread'] = "Gelesener Eintrag";

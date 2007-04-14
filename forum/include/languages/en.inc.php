@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.411 2007-04-12 23:53:37 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.412 2007-04-14 00:50:34 decoyduck Exp $ */
 
 // International English language file
 
@@ -292,7 +292,7 @@ $lang['addnewitem'] = "Add new item";
 $lang['startpageupdated'] = "Start Page updated";
 $lang['viewupdatedstartpage'] = "View updated Start Page";
 $lang['editstartpage'] = "Edit Start Page";
-$lang['nouserspecified'] = "No user specified for editing.";
+$lang['nouserspecified'] = "No user specified.";
 $lang['manageuser'] = "Manage User";
 $lang['manageusers'] = "Manage Users";
 $lang['userstatus'] = "User Status (current forum)";
@@ -1079,7 +1079,7 @@ $lang['viewfullmsg'] = "View full message";
 $lang['ignoredmsg'] = "Ignored message";
 $lang['wormeduser'] = "Wormed user";
 $lang['ignoredsig'] = "Ignored signature";
-$lang['wasdeleted'] = "was deleted";
+$lang['messagewasdeleted'] = "Message %s.%s was deleted";
 $lang['stopignoringthisuser'] = "Stop ignoring this user";
 $lang['renamethread'] = "Rename thread";
 $lang['movethread'] = "Move thread";
@@ -1088,13 +1088,14 @@ $lang['torenamethisthread'] = "to rename this thread";
 $lang['closeforposting'] = "Close for posting";
 $lang['until'] = "Until 00:00 UTC";
 $lang['approvalrequired'] = "Approval Required";
-$lang['awaitingapprovalbymoderator'] = "is awaiting approval by a moderator";
+$lang['messageawaitingapprovalbymoderator'] = "Message %s.%s is awaiting approval by a moderator";
 $lang['postapprovedsuccessfully'] = "Post approved successfully";
 $lang['postapprovalfailed'] = "Post approval failed.";
 $lang['postdoesnotrequireapproval'] = "Post does not require approval";
 $lang['approvepost'] = "Approve post for display";
 $lang['approvedbyuser'] = "APPROVED: %s by %s";
 $lang['makesticky'] = "Make sticky";
+$lang['messagecountdisplay'] = "%s of %s";
 $lang['linktothread'] = "Permanent link to this thread";
 $lang['linktopost'] = "Link to post";
 $lang['linktothispost'] = "Link to this post";
@@ -1142,7 +1143,7 @@ $lang['writepm'] = "Write Message";
 $lang['editpm'] = "Edit Message";
 $lang['cannoteditpm'] = "Cannot edit this PM. It has already been viewed by the recipient or the message does not exist or it is inaccessible by you";
 $lang['cannotviewpm'] = "Cannot view PM. Message does not exist or it is inaccessible by you";
-$lang['nouserspecified'] = "No user specified.";
+$lang['pmmessagenumber'] = "Message %s";
 
 $lang['youhavexnewpm'] = "You have %d new messages. Would you like to go to your Inbox now?";
 $lang['youhave1newpm'] = "You have 1 new message. Would you like to go to your Inbox now?";
@@ -1155,7 +1156,7 @@ $lang['youhavexpmwaiting'] = "You have %d messages awaiting delivery. To receive
 
 $lang['youdonothaveenoughfreespace'] = "You do not have enough free space to send this message.";
 $lang['notenoughfreespace'] = "does not have enough free space to receive this message";
-$lang['hasoptoutpm'] = "Has opted out of receiving personal messages";
+$lang['userhasoptedoutofpm'] = "%s has opted out of receiving personal messages";
 $lang['pmfolderpruningisenabled'] = "PM Folder pruning is enabled!";
 $lang['pmpruneexplanation'] = "This forum uses PM folder pruning. The messages you have stored in your Inbox and Sent Items\\nfolders are subject to automatic deletion. Any messages you wish to keep should be moved to\\nyour \\'Saved Items\\' folder so that they are not deleted.";
 $lang['yourpmfoldersare'] = "Your PM folders are %s full";
@@ -1357,7 +1358,6 @@ $lang['viewbyuser'] = "View by user";
 $lang['editprofile'] = "Edit Profile";
 $lang['profileupdated'] = "Profile updated.";
 $lang['profilesnotsetup'] = "The forum owner has not set up Profiles.";
-$lang['nouserspecified'] = "No user specified";
 $lang['ignoreduser'] = "Ignored user";
 $lang['lastvisit'] = "Last Visit";
 $lang['totaltimeinforum'] = "Total time";
@@ -1544,6 +1544,8 @@ $lang['clickhere'] = "click here";
 $lang['forallthreads'] = "for all threads";
 $lang['prev50threads'] = "Previous 50 threads";
 $lang['next50threads'] = "Next 50 threads";
+$lang['nextxthreads'] = "Next %s threads";
+$lang['prevxthreads'] = "Prev %s threads";
 $lang['threadstartedbytooltip'] = "Thread #%s Started by %s. Viewed %s";
 $lang['threadviewedonetime'] = "1 time";
 $lang['threadviewedtimes'] = "%d times";

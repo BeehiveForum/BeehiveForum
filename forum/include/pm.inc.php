@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.179 2007-04-14 00:50:38 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.180 2007-04-14 01:35:58 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1687,10 +1687,10 @@ function pm_system_prune_folders()
 {
     $db_pm_prune_folders = db_connect();
 
-    $pm_prune_prob = intval(forum_get_setting('forum_self_clean_prob', false, 500));
+    $pm_prune_prob = intval(forum_get_setting('forum_self_clean_prob', false, 10000));
 
     if ($pm_prune_prob < 1) $pm_prune_prob = 1;
-    if ($pm_prune_prob > 1000) $pm_prune_prob = 1000;
+    if ($pm_prune_prob > 10000) $pm_prune_prob = 10000;
 
     if (($mt_result = mt_rand(1, $pm_prune_prob)) == 1) {
 

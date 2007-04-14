@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.442 2007-04-12 21:13:38 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.443 2007-04-14 00:50:37 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -832,7 +832,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
             echo "<a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" target=\"_blank\" onclick=\"return openPollResults('$tid', '$webtag');\"><img src=\"", style_image('poll.png'), "\" border=\"0\" alt=\"{$lang['thisisapoll']}\" title=\"{$lang['thisisapoll']}\" /></a> {$lang['poll']} ";
         }
 
-        echo "{$message['PID']} {$lang['of']} $msg_count";
+        echo sprintf($lang['messagecountdisplay'], $message['PID'], $msg_count);
     }
 
     echo "&nbsp;</span></td>\n";
@@ -852,6 +852,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
         if ($in_list && $msg_count > 0) {
 
             $title = ($message['PID'] ==1) ? "{$lang['linktothread']} ($tid.1)" : "{$lang['linktothispost']}";
+
             if ($is_preview) {
 
                 echo "<a href=\"messages.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_blank\" title=\"$title\">$tid.{$message['PID']}</a>";
@@ -1121,11 +1122,24 @@ function message_display_approval_req($tid, $pid)
     $lang = load_language_file();
 
     echo "<br /><div align=\"center\">";
-    echo "<table width=\"96%\" border=\"1\" bordercolor=\"black\"><tr><td align=\"left\">\n";
-    echo "<table class=\"posthead\" width=\"100%\"><tr><td align=\"left\">\n";
-    echo "{$lang['message']} ${tid}.${pid} {$lang['awaitingapprovalbymoderator']}\n";
-    echo "</td></tr></table>\n";
-    echo "</td></tr></table></div>\n";
+    echo "<table width=\"96%\" cellspacing=\"0\"cellpadding=\"0\">\n";
+    echo "  <tr>\n";
+    echo "    <td align=\"left\">\n";
+    echo "      <table width=\"100%\" class=\"box\" cellpadding=\"0\">\n";
+    echo "        <tr>\n";
+    echo "          <td align=\"left\">\n";
+    echo "            <table class=\"posthead\" width=\"100%\">\n";
+    echo "              <tr>\n";
+    echo "                <td align=\"left\">", sprintf($lang['messageawaitingapprovalbymoderator'], $tid, $pid), "</td>\n";
+    echo "              </tr>\n";
+    echo "            </table>\n";
+    echo "          </td>\n";
+    echo "        </tr>\n";
+    echo "      </table>\n";
+    echo "    </td>\n";
+    echo "  </tr>\n";
+    echo "</table>\n";
+    echo "</div>\n";
 }
 
 function messages_start_panel()

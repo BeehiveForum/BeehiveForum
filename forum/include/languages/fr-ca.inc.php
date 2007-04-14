@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.48 2007-04-12 23:53:37 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.49 2007-04-14 00:50:34 decoyduck Exp $ */
 
 // International English language file
 
@@ -301,8 +301,6 @@ $lang['addnewitem'] = "Ajouter un nouveau item";
 $lang['startpageupdated'] = "Page de démarrage mise à jour";
 $lang['viewupdatedstartpage'] = "Visualiser la page de démarrage mise à jour";
 $lang['editstartpage'] = "Modifier la page de démarrage";
-$lang['nouserspecified'] = "Aucun utilisateur de spécifié pour modifications.";
-$lang['nouserspecified'] = "Aucun utilisateur de spécifié.";
 $lang['nouserspecified'] = "Aucun utilisateur de spécifié";
 $lang['manageuser'] = "Gérer l'utilisateur";
 $lang['manageusers'] = "Gérer les utilisateurs";
@@ -1120,7 +1118,7 @@ $lang['viewfullmsg'] = "Voir message complet";
 $lang['ignoredmsg'] = "Message ignoré";
 $lang['wormeduser'] = "Utilisateur parasité";
 $lang['ignoredsig'] = "Signature ignorée";
-$lang['wasdeleted'] = "a été supprimé";
+$lang['messagewasdeleted'] = "Message %s.%s a été supprimé";
 $lang['stopignoringthisuser'] = "Cesser d'ignorer cet utilisateur";
 $lang['renamethread'] = "Renommer le fil de discussion";
 $lang['movethread'] = "Déplacer le fil de discussion";
@@ -1129,13 +1127,14 @@ $lang['torenamethisthread'] = "pour renommer ce fil de discussion";
 $lang['closeforposting'] = "Fermer aux contributions";
 $lang['until'] = "Jusqu'à 00:00 UTC";
 $lang['approvalrequired'] = "Approbation requise";
-$lang['awaitingapprovalbymoderator'] = "en attente d'approbation par un modérateur";
+$lang['messageawaitingapprovalbymoderator'] = "Message %s.%s en attente d'approbation par un modérateur";
 $lang['postapprovedsuccessfully'] = "Approbation de message réussie";
 $lang['postapprovalfailed'] = "L'approbation du message a échoué.";
 $lang['postdoesnotrequireapproval'] = "Approbation du message non requis";
 $lang['approvepost'] = "Approuver message pour affichage";
 $lang['approvedcaps'] = "APPROUVÉ";
 $lang['makesticky'] = "Rendre collant";
+$lang['messagecountdisplay'] = "%s de %s";
 $lang['linktothread'] = "Lien permanent à ce fil de discussion";
 $lang['linktopost'] = "Hyperlier au message";
 $lang['linktothispost'] = "Hyperlier à ce message";
@@ -1180,15 +1179,12 @@ $lang['errorcreatingpm'] = "Erreur en créant MP! SVP essayer de nouveau dans que
 $lang['writepm'] = "Rédiger message";
 $lang['editpm'] = "Réviser message";
 $lang['cannoteditpm'] = "Impossible de réviser ce MP. Soit qu'il a déjà été lu par le destinataire ou que le message n'existe pas ou qu'il ne vous est pas accessible.";
-$lang['cannotviewpm'] = "Impossible de voir le MP. Le message n'existe pas ou il ne vous est pas accessible";
-$lang['nouserspecified'] = "Aucun utilisateur de spécifié pour modifications.";
-$lang['nouserspecified'] = "Aucun utilisateur de spécifié.";
-$lang['nouserspecified'] = "Aucun utilisateur de spécifié";
+$lang['pmmessagenumber'] = "Message %s";
 $lang['youhavexnewpm'] = "Vous avez %d un nouveau MP. Désirez-vous ouvrir votre boite de réception maintenant?";
 $lang['youhave1newpm'] = "Vous avez 1 un nouveau MP. Désirez-vous ouvrir votre boite de réception maintenant?";
 $lang['youdonothaveenoughfreespace'] = "Vous n'avez pas assez d'espace libre pour envoyer ce message.";
 $lang['notenoughfreespace'] = "n'a pas assez d'espace libre pour recevoir ce message";
-$lang['hasoptoutpm'] = "A choisi de ne pas recevoir les messages personnels";
+$lang['userhasoptedoutofpm'] = "%s a choisi de ne pas recevoir les messages personnels";
 $lang['pmfolderpruningisenabled'] = "L'élagation du dossier MP est activée!";
 $lang['pmpruneexplanation'] = "Ce forum utilise l'élagation du dossier PM. Les messages que vous avez de conservé dans vos \\ndossiers de boîte de réception et de boîte d'envoi sont assujettis à la suppression automatique. Veuillez transférer à \\nvotre dossier \\'Items sauvegardés\\' tout message que vous désirez conserver afin qu'ils ne soient pas supprimés.";
 $lang['yourpmfoldersare'] = "Vos dossiers MP sont %s pleins";
@@ -1393,9 +1389,6 @@ $lang['previewvotingform'] = "Prévisualisation du formulaire de scrutin";
 $lang['editprofile'] = "Modifier profile";
 $lang['profileupdated'] = "Profile mise à jour.";
 $lang['profilesnotsetup'] = "Le propriétaire du forum n'a pas établit les profiles.";
-$lang['nouserspecified'] = "Aucun utilisateur de spécifié pour modifications.";
-$lang['nouserspecified'] = "Aucun utilisateur de spécifié.";
-$lang['nouserspecified'] = "Aucun utilisateur de spécifié";
 $lang['ignoreduser'] = "Utilisateur ignoré";
 $lang['lastvisit'] = "Dernière visite";
 $lang['totaltimeinforum'] = "Durée totale";
@@ -1586,8 +1579,10 @@ $lang['couldnotretrievefolderinformation'] = "Aucun dossier de disponible.";
 $lang['nomessagesinthiscategory'] = "Aucun message dans cette catégorie. Veuillez sélectionner un autre, ou";
 $lang['clickhere'] = "cliquer ici";
 $lang['forallthreads'] = "pour tous les fils de discussion";
-$lang['prev50threads'] = "Premiers 50 fil de discussion";
 $lang['next50threads'] = "Prochains 50 fils de discussion";
+$lang['prev50threads'] = "Premiers 50 fil de discussion";
+$lang['nextxthreads'] = "Prochains %s fils de discussion";
+$lang['prevxthreads'] = "Premiers %s fil de discussion";
 $lang['startedby'] = "Commencée par";
 $lang['unreadthread'] = "Fil de discussion non-lu";
 $lang['readthread'] = "Lire fil de discussion";

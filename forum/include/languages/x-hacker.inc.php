@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.228 2007-04-12 23:53:37 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.229 2007-04-14 00:50:34 decoyduck Exp $ */
 
 // International English language file
 
@@ -291,7 +291,7 @@ $lang['addnewitem'] = "aDd N3W IT3m";
 $lang['startpageupdated'] = "sT@R+ p4Ge upd4+ed";
 $lang['viewupdatedstartpage'] = "vIeW UPd4+ED 5t4r+ p493";
 $lang['editstartpage'] = "ed1+ \$t@r+ pA93";
-$lang['nouserspecified'] = "n0 u\$3R spEc1fIed PhOr 3DI+1ng.";
+$lang['nouserspecified'] = "n0 u\$3R spEc1fIed";
 $lang['manageuser'] = "mAn493 US3r";
 $lang['manageusers'] = "m4N493 US3R\$";
 $lang['userstatus'] = "u\$Er \$T4+Us (cUrREnT PH0ruM)";
@@ -1135,7 +1135,6 @@ $lang['writepm'] = "wRI+e m3S\$49e";
 $lang['editpm'] = "edi+ m3SS493";
 $lang['cannoteditpm'] = "c4NN0+ ed1+ tHi\$ Pm. 1+ H4\$ 4lr34Dy 8EEn vieWed by tH3 r3c1PI3N+ 0r +H3 m3ss4GE dOE5 no+ Ex1\$+ OR i+ 1S 1N4CC3\$S18le 8y j00";
 $lang['cannotviewpm'] = "c4nNO+ v1Ew pm. m3SS4G3 dOE5 NOt EXI\$+ OR it 15 in@cCeSS18L3 by J00";
-$lang['nouserspecified'] = "n0 U\$eR sp3cIf13D.";
 $lang['youhavexnewpm'] = "j00 H@vE %d new pm5. W0Uld j00 LiKe to 9O +o y0UR INbOx NOw?";
 $lang['youhave1newpm'] = "j00 H@Ve 1 neW PM. w0uLD J00 LikE t0 9o tO YOuR 1Nb0x now?";
 $lang['youdonothaveenoughfreespace'] = "j00 DO N0+ H4ve 3nOUgh PhR33 \$P@ce +0 S3nd tH1\$ MeSS4gE.";
@@ -1331,7 +1330,6 @@ $lang['previewvotingform'] = "pr3Vi3w V0+iN9 foRm";
 $lang['editprofile'] = "eD1+ Pr0FiLe";
 $lang['profileupdated'] = "pR0F1l3 UpD4+ED.";
 $lang['profilesnotsetup'] = "th3 F0rUM 0wnEr h45 n0+ 5eT uP PROPHIles.";
-$lang['nouserspecified'] = "no u\$er 5PeC1F1Ed";
 $lang['ignoreduser'] = "i9noR3D Us3R";
 $lang['lastvisit'] = "l4ST viS1+";
 $lang['totaltimeinforum'] = "t0+4L +1Me";

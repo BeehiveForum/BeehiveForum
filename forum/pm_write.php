@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.162 2007-04-12 21:13:36 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.163 2007-04-14 00:50:33 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -460,7 +460,7 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
 
                         }else {
 
-                            $error_html.= "<h2>{$lang['user']} $to_logon {$lang['hasoptoutpm']}.</h2>\n";
+                            $error_html.= sprintf("<h2>{$lang['userhasoptedoutofpm']}</h2>\n", $to_logon);
                             $valid = false;
                         }
                     }

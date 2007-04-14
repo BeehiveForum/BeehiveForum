@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.149 2007-04-12 13:23:11 decoyduck Exp $ */
+/* $Id: register.php,v 1.150 2007-04-14 00:50:33 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -201,26 +201,26 @@ if (isset($_POST['submit'])) {
     $valid = true;
     $error_html = "";
 
-    if (isset($_POST['LOGON']) && strlen(trim(_stripslashes($_POST['LOGON']))) > 0) {
+    if (isset($_POST['logon']) && strlen(trim(_stripslashes($_POST['logon']))) > 0) {
 
-        $new_user['LOGON'] = strtoupper(trim(_stripslashes($_POST['LOGON'])));
+        $logon = strtoupper(trim(_stripslashes($_POST['logon'])));
 
-        if (!preg_match("/^[a-z0-9_-]+$/i", $new_user['LOGON'])) {
+        if (!preg_match("/^[a-z0-9_-]+$/i", $logon)) {
             $error_html.= "<h2>{$lang['usernameinvalidchars']}</h2>\n";
             $valid = false;
         }
 
-        if (strlen($new_user['LOGON']) < 2) {
+        if (strlen($logon) < 2) {
             $error_html.= "<h2>{$lang['usernametooshort']}</h2>\n";
             $valid = false;
         }
 
-        if (strlen($new_user['LOGON']) > 15) {
+        if (strlen($logon) > 15) {
             $error_html.= "<h2>{$lang['usernametoolong']}</h2>\n";
             $valid = false;
         }
 
-        if (logon_is_banned($new_user['LOGON'])) {
+        if (logon_is_banned($logon)) {
 
             $error_html.= "<h2>{$lang['logonnotpermitted']}</h2>\n";
             $valid = false;
@@ -232,16 +232,16 @@ if (isset($_POST['submit'])) {
         $valid = false;
     }
 
-    if (isset($_POST['PW']) && strlen(trim(_stripslashes($_POST['PW']))) > 0) {
+    if (isset($_POST['pw']) && strlen(trim(_stripslashes($_POST['pw']))) > 0) {
 
-        $new_user['PW'] = trim(_stripslashes($_POST['PW']));
+        $password = trim(_stripslashes($_POST['pw']));
 
-        if (!preg_match("/^[a-z0-9_-]+$/i", $new_user['PW'])) {
+        if (!preg_match("/^[a-z0-9_-]+$/i", $password)) {
             $error_html.= "<h2>{$lang['passwordinvalidchars']}</h2>\n";
             $valid = false;
         }
 
-        if (strlen($new_user['PW']) < 6) {
+        if (strlen($password) < 6) {
             $error_html.= "<h2>{$lang['passwdtooshort']}</h2>\n";
             $valid = false;
         }
@@ -252,11 +252,11 @@ if (isset($_POST['submit'])) {
         $valid.= false;
     }
 
-    if (isset($_POST['CPW']) && strlen(trim(_stripslashes($_POST['CPW']))) > 0) {
+    if (isset($_POST['cpw']) && strlen(trim(_stripslashes($_POST['cpw']))) > 0) {
 
-        $new_user['CPW'] = trim(_stripslashes($_POST['CPW']));
+        $check_password = trim(_stripslashes($_POST['cpw']));
 
-        if (_htmlentities($new_user['CPW']) != $new_user['CPW']) {
+        if (_htmlentities($check_password) != $check_password) {
             $error_html.= "<h2>{$lang['passwdmustnotcontainHTML']}</h2>\n";
             $valid = false;
         }
@@ -267,11 +267,11 @@ if (isset($_POST['submit'])) {
         $valid = false;
     }
 
-    if (isset($_POST['NICKNAME']) && strlen(trim(_stripslashes($_POST['NICKNAME']))) > 0) {
+    if (isset($_POST['nickname']) && strlen(trim(_stripslashes($_POST['nickname']))) > 0) {
 
-        $new_user['NICKNAME'] = trim(_stripslashes($_POST['NICKNAME']));
+        $nickname = trim(_stripslashes($_POST['nickname']));
 
-        if (nickname_is_banned($new_user['NICKNAME'])) {
+        if (nickname_is_banned($nickname)) {
 
             $error_html.= "<h2>{$lang['nicknamenotpermitted']}</h2>\n";
             $valid = false;
@@ -283,24 +283,24 @@ if (isset($_POST['submit'])) {
         $valid = false;
     }
 
-    if (isset($_POST['EMAIL']) && strlen(trim(_stripslashes($_POST['EMAIL']))) > 0) {
+    if (isset($_POST['email']) && strlen(trim(_stripslashes($_POST['email']))) > 0) {
 
-        $new_user['EMAIL'] = trim(_stripslashes($_POST['EMAIL']));
+        $email = trim(_stripslashes($_POST['email']));
 
-        if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $new_user['EMAIL'])) {
+        if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $email)) {
 
             $error_html.= "<h2>{$lang['invalidemailaddressformat']}</h2>\n";
             $valid = false;
 
         }else {
 
-            if (email_is_banned($new_user['EMAIL'])) {
+            if (email_is_banned($email)) {
 
                 $error_html.= "<h2>{$lang['emailaddressnotpermitted']}</h2>\n";
                 $valid = false;
             }
 
-            if (forum_get_setting('require_unique_email', 'Y') && !email_is_unique($new_user['EMAIL'])) {
+            if (forum_get_setting('require_unique_email', 'Y') && !email_is_unique($email)) {
 
                 $error_html.= "<h2>{$lang['emailaddressalreadyinuse']}</h2>\n";
                 $valid = false;
@@ -315,12 +315,12 @@ if (isset($_POST['submit'])) {
 
     if (isset($_POST['dob_year']) && isset($_POST['dob_month']) && isset($_POST['dob_day']) && @checkdate($_POST['dob_month'], $_POST['dob_day'], $_POST['dob_year'])) {
 
-        $new_user['DOB_DAY']   = trim(_stripslashes($_POST['dob_day']));
-        $new_user['DOB_MONTH'] = trim(_stripslashes($_POST['dob_month']));
-        $new_user['DOB_YEAR']  = trim(_stripslashes($_POST['dob_year']));
+        $new_user_prefs['DOB_DAY']   = trim(_stripslashes($_POST['dob_day']));
+        $new_user_prefs['DOB_MONTH'] = trim(_stripslashes($_POST['dob_month']));
+        $new_user_prefs['DOB_YEAR']  = trim(_stripslashes($_POST['dob_year']));
 
-        $new_user['DOB'] = "{$new_user['DOB_YEAR']}-{$new_user['DOB_MONTH']}-{$new_user['DOB_DAY']}";
-        $new_user['DOB_BLANK_FIELDS'] = ($new_user['DOB_YEAR'] == 0 || $new_user['DOB_MONTH'] == 0 || $new_user['DOB_DAY'] == 0) ? true : false;
+        $new_user_prefs['DOB'] = "{$new_user_prefs['DOB_YEAR']}-{$new_user_prefs['DOB_MONTH']}-{$new_user_prefs['DOB_DAY']}";
+        $new_user_prefs['DOB_BLANK_FIELDS'] = ($new_user_prefs['DOB_YEAR'] == 0 || $new_user_prefs['DOB_MONTH'] == 0 || $new_user_prefs['DOB_DAY'] == 0) ? true : false;
 
     }else {
 
@@ -328,84 +328,84 @@ if (isset($_POST['submit'])) {
         $valid = false;
     }
 
-    if (isset($_POST['FIRSTNAME']) && strlen(trim(_stripslashes($_POST['FIRSTNAME']))) > 0) {
-        $new_user['FIRSTNAME'] = trim(_stripslashes($_POST['FIRSTNAME']));
+    if (isset($_POST['firstname']) && strlen(trim(_stripslashes($_POST['firstname']))) > 0) {
+        $new_user_prefs['FIRSTNAME'] = trim(_stripslashes($_POST['firstname']));
     }else {
-        $new_user['FIRSTNAME'] = "";
+        $new_user_prefs['FIRSTNAME'] = "";
     }
 
-    if (isset($_POST['LASTNAME']) && strlen(trim(_stripslashes($_POST['LASTNAME']))) > 0) {
-        $new_user['LASTNAME'] = trim(_stripslashes($_POST['LASTNAME']));
+    if (isset($_POST['lastname']) && strlen(trim(_stripslashes($_POST['lastname']))) > 0) {
+        $new_user_prefs['LASTNAME'] = trim(_stripslashes($_POST['lastname']));
     }else {
-        $new_user['LASTNAME'] = "";
+        $new_user_prefs['LASTNAME'] = "";
     }
 
-    if (isset($_POST['SIG_CONTENT']) && strlen(trim(_stripslashes($_POST['SIG_CONTENT']))) > 0) {
-        $new_user['SIG_CONTENT'] = trim(_stripslashes($_POST['SIG_CONTENT']));
+    if (isset($_POST['sig_content']) && strlen(trim(_stripslashes($_POST['sig_content']))) > 0) {
+        $sig_content = trim(_stripslashes($_POST['sig_content']));
     }else {
-        $new_user['SIG_CONTENT'] = "";
+        $sig_content = "";
     }
 
-    if (isset($_POST['SIG_HTML']) && $_POST['SIG_HTML'] == "Y") {
-        $new_user['SIG_CONTENT'] = fix_html($new_user['SIG_CONTENT']);
-        $new_user['SIG_HTML'] = "Y";
+    if (isset($_POST['sig_html']) && $_POST['sig_html'] == "Y") {
+        $sig_content = fix_html($sig_content);
+        $sig_html = "Y";
     }else {
-        $new_user['SIG_CONTENT'] = _stripslashes($new_user['SIG_CONTENT']);
-        $new_user['SIG_HTML'] = "N";
+        $sig_content = _stripslashes($sig_content);
+        $sig_html = "N";
     }
 
-    if (isset($_POST['EMAIL_NOTIFY']) && $_POST['EMAIL_NOTIFY'] == "Y") {
-        $new_user['EMAIL_NOTIFY'] = "Y";
+    if (isset($_POST['email_notify']) && $_POST['email_notify'] == "Y") {
+        $new_user_prefs['EMAIL_NOTIFY'] = "Y";
     }else {
-        $new_user['EMAIL_NOTIFY'] = "N";
+        $new_user_prefs['EMAIL_NOTIFY'] = "N";
     }
 
-    if (isset($_POST['PM_NOTIFY_EMAIL']) && $_POST['PM_NOTIFY_EMAIL'] == "Y") {
-        $new_user['PM_NOTIFY_EMAIL'] = "Y";
+    if (isset($_POST['pm_notify_email']) && $_POST['pm_notify_email'] == "Y") {
+        $new_user_prefs['PM_NOTIFY_EMAIL'] = "Y";
     }else {
-        $new_user['PM_NOTIFY_EMAIL'] = "N";
+        $new_user_prefs['PM_NOTIFY_EMAIL'] = "N";
     }
 
-    if (isset($_POST['PM_NOTIFY']) && $_POST['PM_NOTIFY'] == "Y") {
-        $new_user['PM_NOTIFY'] = "Y";
+    if (isset($_POST['pm_notify']) && $_POST['pm_notify'] == "Y") {
+        $new_user_prefs['PM_NOTIFY'] = "Y";
     }else {
-        $new_user['PM_NOTIFY'] = "N";
+        $new_user_prefs['PM_NOTIFY'] = "N";
     }
 
-    if (isset($_POST['MARK_AS_OF_INT']) && $_POST['MARK_AS_OF_INT'] == "Y") {
-        $new_user['MARK_AS_OF_INT'] = "Y";
+    if (isset($_POST['mark_as_of_int']) && $_POST['mark_as_of_int'] == "Y") {
+        $new_user_prefs['MARK_AS_OF_INT'] = "Y";
     }else {
-        $new_user['MARK_AS_OF_INT'] = "N";
+        $new_user_prefs['MARK_AS_OF_INT'] = "N";
     }
 
-    if (isset($_POST['DL_SAVING']) && $_POST['DL_SAVING'] == "Y") {
-        $new_user['DL_SAVING'] = "Y";
+    if (isset($_POST['dl_saving']) && $_POST['dl_saving'] == "Y") {
+        $new_user_prefs['DL_SAVING'] = "Y";
     }else {
-        $new_user['DL_SAVING'] = "N";
+        $new_user_prefs['DL_SAVING'] = "N";
     }
 
-    if (isset($_POST['TIMEZONE']) && in_array($_POST['TIMEZONE'], $timezones_data)) {
-        $new_user['TIMEZONE'] = $_POST['TIMEZONE'];
+    if (isset($_POST['timezone']) && in_array($_POST['timezone'], array_keys($available_timezones))) {
+        $new_user_prefs['TIMEZONE'] = $_POST['timezone'];
     }else {
-        $new_user['TIMEZONE'] = 0;
+        $new_user_prefs['TIMEZONE'] = forum_get_setting('forum_timezone', false, 27);
     }
 
-    if (isset($_POST['LANGUAGE']) && in_array($_POST['LANGUAGE'], $available_langs)) {
-        $new_user['LANGUAGE'] = $_POST['LANGUAGE'];
+    if (isset($_POST['language']) && in_array($_POST['language'], $available_langs)) {
+        $new_user_prefs['LANGUAGE'] = $_POST['language'];
     }else {
-        $new_user['LANGUAGE'] = forum_get_setting('default_language', false, 'en');
+        $new_user_prefs['LANGUAGE'] = forum_get_setting('default_language', false, 'en');
     }
 
-    if (isset($_POST['STYLE']) && in_array($_POST['STYLE'], array_keys($available_styles))) {
-        $new_user['STYLE'] = $_POST['STYLE'];
+    if (isset($_POST['style']) && in_array($_POST['style'], array_keys($available_styles))) {
+        $new_user_prefs['STYLE'] = $_POST['style'];
     }else {
-        $new_user['STYLE'] = forum_get_setting('default_style', false, 'default');
+        $new_user_prefs['STYLE'] = forum_get_setting('default_style', false, 'default');
     }
 
-    if (isset($_POST['EMOTICONS']) && in_array($_POST['EMOTICONS'], $available_emoticons)) {
-        $new_user['EMOTICONS'] = $_POST['EMOTICONS'];
+    if (isset($_POST['emoticons']) && in_array($_POST['emoticons'], $available_emoticons)) {
+        $new_user_prefs['EMOTICONS'] = $_POST['emoticons'];
     }else {
-        $new_user['EMOTICONS'] = forum_get_setting('default_emoticons', false, 'default');
+        $new_user_prefs['EMOTICONS'] = forum_get_setting('default_emoticons', false, 'default');
     }
 
     if (forum_get_setting('text_captcha_enabled', 'Y')) {
@@ -437,33 +437,33 @@ if (isset($_POST['submit'])) {
 
     // Defaults that we don't otherwise set.
 
-    $new_user['HOMEPAGE_URL'] = "";
-    $new_user['PIC_URL'] = "";
-    $new_user['POSTS_PER_PAGE'] = 20;
-    $new_user['FONT_SIZE'] = 10;
-    $new_user['VIEW_SIGS'] = "Y";
-    $new_user['START_PAGE'] = 0;
-    $new_user['DOB_DISPLAY'] = 0;
-    $new_user['ANON_LOGON'] = "N";
-    $new_user['SHOW_STATS'] = "Y";
-    $new_user['IMAGES_TO_LINKS'] = "N";
-    $new_user['USE_WORD_FILTER'] = "N";
-    $new_user['USE_ADMIN_FILTER'] = "N";
-    $new_user['ALLOW_EMAIL'] = "Y";
-    $new_user['ALLOW_PM'] = "Y";
+    $new_user_prefs['HOMEPAGE_URL'] = "";
+    $new_user_prefs['PIC_URL'] = "";
+    $new_user_prefs['POSTS_PER_PAGE'] = 20;
+    $new_user_prefs['FONT_SIZE'] = 10;
+    $new_user_prefs['VIEW_SIGS'] = "Y";
+    $new_user_prefs['START_PAGE'] = 0;
+    $new_user_prefs['DOB_DISPLAY'] = 0;
+    $new_user_prefs['ANON_logon'] = "N";
+    $new_user_prefs['SHOW_STATS'] = "Y";
+    $new_user_prefs['IMAGES_TO_LINKS'] = "N";
+    $new_user_prefs['USE_WORD_FILTER'] = "N";
+    $new_user_prefs['USE_ADMIN_FILTER'] = "N";
+    $new_user_prefs['ALLOW_email'] = "Y";
+    $new_user_prefs['ALLOW_PM'] = "Y";
 
-    foreach ($new_user as $key => $value) {
-        $new_user_global[$key] = true;
+    foreach ($new_user_prefs as $key => $value) {
+        $new_user_prefs_global[$key] = true;
     }
 
     if ($valid) {
 
-        if ($new_user['PW'] != $new_user['CPW']) {
+        if ($password != $check_password) {
             $error_html.= "<h2>{$lang['passwdsdonotmatch']}</h2>\n";
             $valid = false;
         }
 
-        if (strtolower($new_user['LOGON']) == strtolower($new_user['PW'])) {
+        if (strtolower($logon) == strtolower($password)) {
             $error_html.= "<h2>{$lang['usernamesameaspasswd']}</h2>\n";
             $valid = false;
         }
@@ -471,7 +471,7 @@ if (isset($_POST['submit'])) {
 
     if ($valid) {
 
-        if (user_exists($new_user['LOGON'])) {
+        if (user_exists($logon)) {
             $error_html.= "<h2>{$lang['usernameexists']}</h2>\n";
             $valid = false;
         }
@@ -479,12 +479,12 @@ if (isset($_POST['submit'])) {
 
     if ($valid) {
 
-        if ($new_uid = user_create($new_user['LOGON'], $new_user['PW'], $new_user['NICKNAME'], $new_user['EMAIL'])) {
+        if ($new_uid = user_create($logon, $password, $nickname, $email)) {
 
             // Save the new user preferences and signature
 
-            user_update_prefs($new_uid, $new_user, $new_user_global);
-            user_update_sig($new_uid, $new_user['SIG_CONTENT'], $new_user['SIG_HTML']);
+            user_update_prefs($new_uid, $new_user_prefs, $new_user_prefs_global);
+            user_update_sig($new_uid, $sig_content, $sig_html);
 
             // Initialise the new user session.
 
@@ -494,9 +494,13 @@ if (isset($_POST['submit'])) {
 
             $save_password = isset($_POST['remember_user']) && ($_POST['remember_user'] == 'Y');
 
+            // Generate the MD5 checksum of the user's password for saving in their cookie.
+
+            $passhash = md5($password);
+
             // Update the cookies.
 
-            logon_update_cookies($new_user['LOGON'], $new_user['PW'], $save_password);
+            logon_update_cookies($logon, $password, $passhash, $save_password);
 
             // Display final success / confirmation page.
 
@@ -609,27 +613,27 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" class=\"posthead\" width=\"295\">{$lang['username']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("LOGON", (isset($new_user['LOGON']) ? _htmlentities($new_user['LOGON']) : ""), 45, 15), "</td>\n";
+echo "                        <td align=\"left\">", form_input_text("logon", (isset($logon) ? _htmlentities($logon) : ""), 45, 15), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" class=\"posthead\">{$lang['passwd']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_password("PW", "", 45, 32), "</td>\n";
+echo "                        <td align=\"left\">", form_input_password("pw", "", 45, 32), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" class=\"posthead\">{$lang['confirmpassword']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_password("CPW", "", 45, 32), "</td>\n";
+echo "                        <td align=\"left\">", form_input_password("cpw", "", 45, 32), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" class=\"posthead\">{$lang['nickname']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("NICKNAME", (isset($new_user['NICKNAME']) ? _htmlentities($new_user['NICKNAME']) : ""), 45, 32), "</td>\n";
+echo "                        <td align=\"left\">", form_input_text("nickname", (isset($nickname) ? _htmlentities($nickname) : ""), 45, 32), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" class=\"posthead\">{$lang['email']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("EMAIL", (isset($new_user['EMAIL']) ? _htmlentities($new_user['EMAIL']) : ""), 45, 80), "</td>\n";
+echo "                        <td align=\"left\">", form_input_text("email", (isset($email) ? _htmlentities($email) : ""), 45, 80), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" class=\"posthead\">{$lang['dateofbirth']}:</td>\n";
-echo "                        <td align=\"left\">", form_dob_dropdowns((isset($new_user['DOB_YEAR']) ? _htmlentities($new_user['DOB_YEAR']) : 0), (isset($new_user['DOB_MONTH']) ? _htmlentities($new_user['DOB_MONTH']) : 0), (isset($new_user['DOB_DAY']) ? _htmlentities($new_user['DOB_DAY']) : 0), true), "</td>\n";
+echo "                        <td align=\"left\">", form_dob_dropdowns((isset($new_user_prefs['DOB_YEAR']) ? _htmlentities($new_user_prefs['DOB_YEAR']) : 0), (isset($new_user_prefs['DOB_MONTH']) ? _htmlentities($new_user_prefs['DOB_MONTH']) : 0), (isset($new_user_prefs['DOB_DAY']) ? _htmlentities($new_user_prefs['DOB_DAY']) : 0), true), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -666,19 +670,19 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" class=\"posthead\" width=\"295\">{$lang['firstname']}:</td>\n";
-echo "                        <td align=\"left\">", form_field("FIRSTNAME", (isset($new_user['FIRSTNAME']) ? _htmlentities($new_user['FIRSTNAME']) : ""), 45, 32), "</td>\n";
+echo "                        <td align=\"left\">", form_field("firstname", (isset($new_user_prefs['FIRSTNAME']) ? _htmlentities($new_user_prefs['FIRSTNAME']) : ""), 45, 32), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" class=\"posthead\">{$lang['lastname']}:</td>\n";
-echo "                        <td align=\"left\">", form_field("LASTNAME", (isset($new_user['LASTNAME']) ? _htmlentities($new_user['LASTNAME']) : ""), 45, 32), "</td>\n";
+echo "                        <td align=\"left\">", form_field("lastname", (isset($new_user_prefs['LASTNAME']) ? _htmlentities($new_user_prefs['LASTNAME']) : ""), 45, 32), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" class=\"posthead\" valign=\"top\">{$lang['signature']}:</td>\n";
-echo "                        <td align=\"left\">", form_textarea("SIG_CONTENT", (isset($new_user['SIG_CONTENT']) ? _htmlentities($new_user['SIG_CONTENT']) : ""), 6, 42), "</td>\n";
+echo "                        <td align=\"left\">", form_textarea("sig_content", (isset($sig_content) ? _htmlentities($sig_content) : ""), 6, 42), "</td>\n";
 echo "                      </tr>\n";
 echo "                     <tr>\n";
 echo "                       <td align=\"left\">&nbsp;</td>\n";
-echo "                       <td align=\"left\">", form_checkbox("SIG_HTML", "Y", $lang['containsHTML'], (isset($new_user['SIG_HTML']) && $new_user['SIG_HTML'] == "Y")), "</td>\n";
+echo "                       <td align=\"left\">", form_checkbox("sig_html", "Y", $lang['containsHTML'], (isset($sig_html) && $sig_html == "Y")), "</td>\n";
 echo "                     </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
@@ -711,19 +715,19 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" class=\"posthead\" width=\"245\">{$lang['alwaysnotifymeofrepliestome']}:</td>\n";
-echo "                        <td align=\"left\">", form_radio("EMAIL_NOTIFY", "Y", $lang['yes'], (isset($new_user['EMAIL_NOTIFY'])) ? ($new_user['EMAIL_NOTIFY'] == "Y") : forum_get_setting('new_user_email_notify', 'Y', true)), "&nbsp;", form_radio("EMAIL_NOTIFY", "N", $lang['no'], (isset($new_user['EMAIL_NOTIFY'])) ? ($new_user['EMAIL_NOTIFY'] == "N") : forum_get_setting('new_user_email_notify', 'N', false)), "</td>\n";
+echo "                        <td align=\"left\">", form_radio("email_notify", "Y", $lang['yes'], (isset($new_user_prefs['EMAIL_NOTIFY'])) ? ($new_user_prefs['EMAIL_NOTIFY'] == "Y") : forum_get_setting('new_user_email_notify', 'Y', true)), "&nbsp;", form_radio("email_notify", "N", $lang['no'], (isset($new_user_prefs['EMAIL_NOTIFY'])) ? ($new_user_prefs['EMAIL_NOTIFY'] == "N") : forum_get_setting('new_user_email_notify', 'N', false)), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" class=\"posthead\">{$lang['notifyonnewprivatemessage']}:</td>\n";
-echo "                        <td align=\"left\">", form_radio("PM_NOTIFY_EMAIL", "Y", $lang['yes'], (isset($new_user['PM_NOTIFY_EMAIL'])) ? ($new_user['PM_NOTIFY_EMAIL'] == "Y") : forum_get_setting('new_user_pm_notify_email', 'Y', true)), "&nbsp;", form_radio("PM_NOTIFY_EMAIL", "N", $lang['no'], (isset($new_user['PM_NOTIFY_EMAIL'])) ? ($new_user['PM_NOTIFY_EMAIL'] == "N") : forum_get_setting('new_user_pm_notify_email', 'N', false)), "</td>\n";
+echo "                        <td align=\"left\">", form_radio("pm_notify_email", "Y", $lang['yes'], (isset($new_user_prefs['PM_NOTIFY_EMAIL'])) ? ($new_user_prefs['PM_NOTIFY_EMAIL'] == "Y") : forum_get_setting('new_user_pm_notify_email', 'Y', true)), "&nbsp;", form_radio("pm_notify_email", "N", $lang['no'], (isset($new_user_prefs['PM_NOTIFY_EMAIL'])) ? ($new_user_prefs['PM_NOTIFY_EMAIL'] == "N") : forum_get_setting('new_user_pm_notify_email', 'N', false)), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" class=\"posthead\">{$lang['popuponnewprivatemessage']}:</td>\n";
-echo "                        <td align=\"left\">", form_radio("PM_NOTIFY", "Y", $lang['yes'], (isset($new_user['PM_NOTIFY'])) ? ($new_user['PM_NOTIFY'] == "Y") : forum_get_setting('new_user_pm_notify', 'Y', true)), "&nbsp;", form_radio("PM_NOTIFY", "N", $lang['no'], (isset($new_user['PM_NOTIFY'])) ? ($new_user['PM_NOTIFY'] == "N") : forum_get_setting('new_user_pm_notify', 'N', false)), "</td>\n";
+echo "                        <td align=\"left\">", form_radio("pm_notify", "Y", $lang['yes'], (isset($new_user_prefs['PM_NOTIFY'])) ? ($new_user_prefs['PM_NOTIFY'] == "Y") : forum_get_setting('new_user_pm_notify', 'Y', true)), "&nbsp;", form_radio("pm_notify", "N", $lang['no'], (isset($new_user_prefs['PM_NOTIFY'])) ? ($new_user_prefs['PM_NOTIFY'] == "N") : forum_get_setting('new_user_pm_notify', 'N', false)), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" class=\"posthead\">{$lang['automatichighinterestonpost']}:</td>\n";
-echo "                        <td align=\"left\">", form_radio("MARK_AS_OF_INT", "Y", $lang['yes'], (isset($new_user['MARK_AS_OF_INT'])) ? ($new_user['MARK_AS_OF_INT'] == "Y") : forum_get_setting('new_user_mark_as_of_int', 'Y', true)), "&nbsp;", form_radio("MARK_AS_OF_INT", "N", $lang['no'], (isset($new_user['MARK_AS_OF_INT'])) ? ($new_user['MARK_AS_OF_INT'] == "N") : forum_get_setting('new_user_mark_as_of_int', 'N', false)), "</td>\n";
+echo "                        <td align=\"left\">", form_radio("mark_as_of_int", "Y", $lang['yes'], (isset($new_user_prefs['MARK_AS_OF_INT'])) ? ($new_user_prefs['MARK_AS_OF_INT'] == "Y") : forum_get_setting('new_user_mark_as_of_int', 'Y', true)), "&nbsp;", form_radio("mark_as_of_int", "N", $lang['no'], (isset($new_user_prefs['MARK_AS_OF_INT'])) ? ($new_user_prefs['MARK_AS_OF_INT'] == "N") : forum_get_setting('new_user_mark_as_of_int', 'N', false)), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
@@ -756,11 +760,11 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" class=\"posthead\">{$lang['timezonefromGMT']}:</td>\n";
-echo "                        <td align=\"left\">", form_dropdown_array("timezone", $available_timezones, (isset($new_user['TIMEZONE']) ? $new_user['TIMEZONE'] : forum_get_setting('forum_timezone', false, 27)), false, 'timezone_dropdown'), "</td>\n";
+echo "                        <td align=\"left\">", form_dropdown_array("timezone", $available_timezones, (isset($new_user_prefs['TIMEZONE']) ? $new_user_prefs['TIMEZONE'] : forum_get_setting('forum_timezone', false, 27)), false, 'timezone_dropdown'), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";
-echo "                        <td align=\"left\">", form_checkbox("DL_SAVING", "Y", $lang['daylightsaving'], (isset($new_user['DL_SAVING']) && $new_user['DL_SAVING'] == 'Y') ? true : forum_get_setting('forum_dl_saving', false, true)), "</td>\n";
+echo "                        <td align=\"left\">", form_checkbox("dl_saving", "Y", $lang['daylightsaving'], (isset($new_user_prefs['DL_SAVING']) && $new_user_prefs['DL_SAVING'] == 'Y') ? true : forum_get_setting('forum_dl_saving', false, true)), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
@@ -793,15 +797,15 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" class=\"posthead\">{$lang['style']}:</td>\n";
-echo "                        <td align=\"left\">", form_dropdown_array("STYLE", $available_styles, (isset($new_user['STYLE']) && in_array($new_user['STYLE'], array_keys($available_styles))) ? $new_user['STYLE'] : forum_get_setting('default_style', false, 'default'), "", "register_dropdown"), "</td>\n";
+echo "                        <td align=\"left\">", form_dropdown_array("style", $available_styles, (isset($new_user_prefs['STYLE']) && in_array($new_user_prefs['STYLE'], array_keys($available_styles))) ? $new_user_prefs['STYLE'] : forum_get_setting('default_style', false, 'default'), "", "register_dropdown"), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" class=\"posthead\">{$lang['forumemoticons']}:</td>\n";
-echo "                        <td align=\"left\">", form_dropdown_array("EMOTICONS", $available_emoticons, (isset($new_user['EMOTICONS']) && in_array($new_user['EMOTICONS'], array_keys($available_emoticons))) ? $new_user['EMOTICONS'] : forum_get_setting('default_emoticons', false, 'default'), "", "register_dropdown"), "</td>\n";
+echo "                        <td align=\"left\">", form_dropdown_array("emoticons", $available_emoticons, (isset($new_user_prefs['EMOTICONS']) && in_array($new_user_prefs['EMOTICONS'], array_keys($available_emoticons))) ? $new_user_prefs['EMOTICONS'] : forum_get_setting('default_emoticons', false, 'default'), "", "register_dropdown"), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" class=\"posthead\" width=\"255\">{$lang['preferredlang']}:</td>\n";
-echo "                        <td align=\"left\">", form_dropdown_array("LANGUAGE", $available_langs, (isset($new_user['LANGUAGE']) ? $new_user['LANGUAGE'] : forum_get_setting('default_language', false, 'en')), "", "register_dropdown"), "</td>\n";
+echo "                        <td align=\"left\">", form_dropdown_array("language", $available_langs, (isset($new_user_prefs['LANGUAGE']) ? $new_user_prefs['LANGUAGE'] : forum_get_setting('default_language', false, 'en')), "", "register_dropdown"), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";

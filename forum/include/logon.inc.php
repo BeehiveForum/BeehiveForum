@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.57 2007-04-11 19:14:06 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.58 2007-04-14 00:50:37 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -138,17 +138,11 @@ function logon_update_password_cookie($logon, $password)
     }
 }
 
-function logon_update_cookies($logon, $password, $save_password)
+function logon_update_cookies($logon, $password, $passhash, $save_password)
 {
     // Retrieve the existing cookies
     
     logon_get_cookies($username_array, $password_array, $passhash_array);
-
-    // Generate an MD5 hash of the user's password and
-    // replace the password characters with spaces.
-
-    $passhash = md5($password);
-    $password = str_repeat(' ', strlen($password));    
 
     // Light mode uses different cookies to the main site.
     // It also doesn't support multiple saved logons for
@@ -242,8 +236,8 @@ function logon_perform($logon_main)
 
         // Prepare the form data.
 
-        $logon = _stripslashes($_POST['user_logon']);
-        $passw = _stripslashes($_POST['user_password']);
+        $logon    = _stripslashes($_POST['user_logon']);
+        $password = _stripslashes($_POST['user_password']);
 
         // Check if the user wants to save their password.
 
@@ -253,11 +247,14 @@ function logon_perform($logon_main)
         // which isn't all spaces (trim will make it's length 0) then
         // use that, otherwise check the user_passhash cookie.
 
-        if (strlen(trim($passw)) > 0) {
-            $passh = md5($passw);
+        if (strlen(trim($password)) > 0) {
+
+            $passhash = md5($password);
+
         }else {
+
             if (isset($_POST['user_passhash']) && is_md5(_stripslashes($_POST['user_passhash']))) {
-                $passh = _stripslashes($_POST['user_passhash']);
+                $passhash = _stripslashes($_POST['user_passhash']);
             }else {
                 return false;
             }
@@ -266,7 +263,7 @@ function logon_perform($logon_main)
         // Try and login the user. If we're successful we need to
         // update their cookies.
 
-        if ($luid = user_logon($logon, $passh)) {
+        if ($luid = user_logon($logon, $passhash)) {
 
             // Remove any previously set cookies
             
@@ -279,7 +276,7 @@ function logon_perform($logon_main)
 
             // Update the cookies.
 
-            logon_update_cookies($logon, $passw, $save_password);
+            logon_update_cookies($logon, $password, $passhash, $save_password);
 
             return true;
         }

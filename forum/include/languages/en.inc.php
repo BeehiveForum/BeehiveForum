@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.413 2007-04-14 14:52:50 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.414 2007-04-15 17:07:57 decoyduck Exp $ */
 
 // International English language file
 
@@ -1372,7 +1372,7 @@ $lang['noguestsvoted'] = "no guests";
 $lang['oneguestvoted'] = "1 guest";
 $lang['xguestsvoted'] = "%s guests";
 $lang['pollhasended'] = "Poll has ended";
-$lang['youvotedfor'] = "You voted for";
+$lang['youvotedforpolloptionsondate'] = "You voted for %s on %s";
 $lang['thisisapoll'] = "This is a poll. Click to view results.";
 $lang['editpoll'] = "Edit Poll";
 $lang['results'] = "Results";

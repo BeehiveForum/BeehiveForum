@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.131 2007-04-14 14:52:50 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.132 2007-04-15 17:07:57 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -157,7 +157,11 @@ function format_time($time, $verbose = false)
 
     }else {
 
-        $fmt = sprintf($lang['hourminute'], $hour, $min); // H:i
+        if ($verbose) {
+            $fmt = sprintf($lang['daymonth'], $day, $month_str); // H:i
+        }else {
+            $fmt = sprintf($lang['hourminute'], $hour, $min); // H:i
+        }
     }
 
     return $fmt;

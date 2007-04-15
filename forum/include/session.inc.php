@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.293 2007-04-14 01:35:58 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.294 2007-04-15 22:19:25 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -608,8 +608,24 @@ function bh_update_visitor_log($uid, $forum_fid = false, $force_update = false)
 
             if (($search_id = bh_session_is_search_engine()) !== false) {
 
-                $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, LAST_LOGON, IPADDRESS, REFERER, SID) ";
-                $sql.= "VALUES ('$forum_fid', 0, NOW(), '$ipaddress', '$http_referer', '$search_id')";
+                $sql = "SELECT LAST_LOGON FROM VISITOR_LOG WHERE SID = '$search_id'";
+                $sql.= "AND FORUM = '$forum_fid'";
+
+                $result = db_query($sql, $db_bh_update_visitor_log);
+
+                if (db_num_rows($result) > 0) {
+
+                    $sql = "UPDATE VISITOR_LOG SET LAST_LOGON = NOW(), ";
+                    $sql.= "IPADDRESS = '$ipaddress' WHERE SID = '$search_id' ";
+                    $sql.= "AND FORUM = '$forum_fid'";
+
+                }else {
+
+                    $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, LAST_LOGON, IPADDRESS, REFERER, SID) ";
+                    $sql.= "VALUES ('$forum_fid', 0, NOW(), '$ipaddress', '$http_referer', '$search_id')";
+                }
+
+                if ($result = db_query($sql, $db_bh_update_visitor_log)) return true;
 
             }else {
 

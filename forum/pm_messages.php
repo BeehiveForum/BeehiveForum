@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_messages.php,v 1.5 2007-04-15 21:32:24 decoyduck Exp $ */
+/* $Id: pm_messages.php,v 1.6 2007-04-15 22:19:26 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -588,7 +588,7 @@ echo "            <td width=\"25%\">&nbsp;</td>\n";
 echo "            <td class=\"postbody\" align=\"center\">", page_links("pm_messages.php?webtag=$webtag&folder=$folder", $start, $pm_messages_array['message_count'], 10), "</td>\n";
 
 if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['message_array']) > 0) {
-    echo "            <td align=\"right\" width=\"25%\" nowrap=\"nowrap\">", form_submit("exportfolder", "Export Folder"), "&nbsp;", (($folder <> PM_FOLDER_SAVED) && ($folder <> PM_FOLDER_OUTBOX)) ? form_submit("savemessages", $lang['savemessage']) : "", "&nbsp;", form_submit("deletemessages", $lang['delete']), "</td>\n";
+    echo "            <td align=\"right\" width=\"25%\" nowrap=\"nowrap\">", ($folder <> PM_SEARCH_RESULTS) ? form_submit("exportfolder", "Export Folder") : "", "&nbsp;", (($folder <> PM_FOLDER_SAVED) && ($folder <> PM_FOLDER_OUTBOX)) ? form_submit("savemessages", $lang['savemessage']) : "", "&nbsp;", form_submit("deletemessages", $lang['delete']), "</td>\n";
 }else {
     echo "            <td width=\"25%\">&nbsp;</td>\n";
 }

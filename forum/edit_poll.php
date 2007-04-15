@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.132 2007-04-12 23:53:36 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.133 2007-04-15 22:48:47 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -766,6 +766,9 @@ if (isset($t_post_html) && $t_post_html == 'Y') {
     $t_post_html = false;
 }
 
+$answer_groups = range(0, $answer_count);
+unset($answer_groups[0]);
+
 for ($i = 0; $i < $answer_count; $i++) {
 
     echo "                            <tr>\n";
@@ -801,17 +804,17 @@ for ($i = 0; $i < $answer_count; $i++) {
 
     if (isset($t_answer_groups[$i])) {
 
-        echo "                              <td align=\"center\">", form_dropdown_array("answer_groups[]", range(1, $answer_count), $t_answer_groups[$i]), "</td>\n";
+        echo "                              <td align=\"center\">", form_dropdown_array("answer_groups[]", $answer_groups, $t_answer_groups[$i]), "</td>\n";
 
     }else {
 
         if (isset($pollresults['GROUP_ID'][$i])) {
 
-            echo "                              <td align=\"center\">", form_dropdown_array("answer_groups[]", range(1, $answer_count), $pollresults['GROUP_ID'][$i]), "</td>\n";
+            echo "                              <td align=\"center\">", form_dropdown_array("answer_groups[]", $answer_groups, $pollresults['GROUP_ID'][$i]), "</td>\n";
 
         }else {
 
-            echo "                              <td align=\"center\">", form_dropdown_array("answer_groups[]", range(1, $answer_count), 1), "</td>\n";
+            echo "                              <td align=\"center\">", form_dropdown_array("answer_groups[]", $answer_groups, 1), "</td>\n";
         }
     }
 

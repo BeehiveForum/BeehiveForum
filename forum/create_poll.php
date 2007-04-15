@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.195 2007-04-12 13:23:10 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.196 2007-04-15 22:48:46 decoyduck Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -903,12 +903,15 @@ if (isset($t_answer_count)) {
     $answer_count = 5;
 }
 
+$answer_groups = range(0, $answer_count);
+unset($answer_groups[0]);
+
 for ($i = 0; $i < $answer_count; $i++) {
 
     echo "            <tr>\n";
     echo "              <td align=\"left\">", $i + 1, ". </td>\n";
     echo "              <td align=\"left\">", form_input_text("answers[]", isset($t_answers[$i]) ? _htmlentities($t_answers[$i]) : '', 40, 255), "</td>\n";
-    echo "              <td align=\"center\">", form_dropdown_array("answer_groups[]", range(1, $answer_count), (isset($t_answer_groups[$i])) ? $t_answer_groups[$i] : 1), "</td>\n";
+    echo "              <td align=\"center\">", form_dropdown_array("answer_groups[]", $answer_groups, (isset($t_answer_groups[$i])) ? $t_answer_groups[$i] : 0), "</td>\n";
     echo "              <td align=\"left\">&nbsp;</td>\n";
     echo "            </tr>\n";
 }

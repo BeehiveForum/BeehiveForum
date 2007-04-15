@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.95 2007-04-10 16:02:03 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.96 2007-04-15 22:48:47 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -424,21 +424,15 @@ function form_quick_button($href, $label, $var_array = false, $target = "_self")
 // a blank option in each box for backwards compatibility with 0.3 and below,
 // where the DOB was not required information
 
-function form_dob_dropdowns($dob_year, $dob_month, $dob_day, $show_blank = true)
+function form_dob_dropdowns($dob_year, $dob_month, $dob_day)
 {
     $lang = load_language_file();
 
-    $birthday_days = range(1, 31);
-    $birthday_months = $lang['month'];
+    $birthday_days = range(0, 31); $birthday_days[0] = '&nbsp;';
+    $birthday_months = array_merge(array(0 => '&nbsp;'), $lang['month']);
 
-    $birthday_years = range(1900, date('Y', mktime()));
-
-    if ($show_blank) {
-
-        array_unshift($birthday_days, '&nbsp;');
-        array_unshift($birthday_months, '&nbsp;');
-        array_unshift($birthday_years, '&nbsp;');
-    }
+    $birthday_years = array_flip(array_merge(array('&nbsp;' => ''), range(1900, date('Y', mktime()))));
+    array_walk($birthday_years, create_function('&$item, $key', 'if (is_numeric($key)) $item = $key;'));
 
     $output = form_dropdown_array("dob_day", $birthday_days, $dob_day);
     $output.= "&nbsp;";
@@ -456,9 +450,6 @@ function form_date_dropdowns($year = 0, $month = 0, $day = 0, $prefix = false, $
 {
     $lang = load_language_file();
 
-    $days = range(1, 31);
-    $months = $lang['month_short'];
-
     // the end of 2037 is more or less the maximum time that
     // can be represented as a UNIX timestamp currently
 
@@ -473,8 +464,8 @@ function form_date_dropdowns($year = 0, $month = 0, $day = 0, $prefix = false, $
         array_walk($years, create_function('&$item, $key', 'if (is_numeric($key)) $item = $key;'));
     }
 
-    array_unshift($days, "&nbsp;");
-    array_unshift($months, "&nbsp;");        
+    $days = range(0, 31); $days[0] = '&nbsp;';
+    $months = array_merge(array(0 => '&nbsp;'), $lang['month_short']);
 
     $output = form_dropdown_array("{$prefix}day", $days, $day);
     $output.= "&nbsp;";

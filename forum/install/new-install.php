@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.139 2007-04-11 19:14:07 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.140 2007-04-15 21:32:24 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
 
@@ -714,6 +714,24 @@ $sql.= "  CONTENT TEXT,";
 $sql.= "  PRIMARY KEY  (MID),";
 $sql.= "  FULLTEXT KEY (CONTENT)";
 $sql.= ") TYPE=MYISAM";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "CREATE TABLE PM_SEARCH_RESULTS (";
+$sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
+$sql.= "  MID MEDIUMINT(8) UNSIGNED NOT NULL,";
+$sql.= "  TYPE TINYINT(3) UNSIGNED NOT NULL,";
+$sql.= "  FROM_UID MEDIUMINT(8) UNSIGNED NOT NULL,";
+$sql.= "  TO_UID MEDIUMINT(8) UNSIGNED NOT NULL,";
+$sql.= "  SUBJECT VARCHAR(64) NOT NULL,";
+$sql.= "  RECIPIENTS VARCHAR(255) NOT NULL,";
+$sql.= "  CREATED DATETIME NOT NULL,";
+$sql.= "  PRIMARY KEY (UID, MID)";
+$sql.= ") TYPE = MYISAM";
 
 if (!$result = @db_query($sql, $db_install)) {
 

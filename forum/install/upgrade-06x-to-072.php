@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06x-to-072.php,v 1.5 2007-04-10 16:02:05 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-072.php,v 1.6 2007-04-15 21:32:24 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-06x-to-07.php") {
 
@@ -886,6 +886,26 @@ $sql.= "  LENGTH MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  RELEVANCE FLOAT UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PRIMARY KEY  (UID,FORUM,TID,PID)";
 $sql.= ") TYPE=MYISAM";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// Table to cache the PM search results in.
+
+$sql = "CREATE TABLE PM_SEARCH_RESULTS (";
+$sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
+$sql.= "  MID MEDIUMINT(8) UNSIGNED NOT NULL,";
+$sql.= "  TYPE TINYINT(3) UNSIGNED NOT NULL,";
+$sql.= "  FROM_UID MEDIUMINT(8) UNSIGNED NOT NULL,";
+$sql.= "  TO_UID MEDIUMINT(8) UNSIGNED NOT NULL,";
+$sql.= "  SUBJECT VARCHAR(64) NOT NULL,";
+$sql.= "  RECIPIENTS VARCHAR(255) NOT NULL,";
+$sql.= "  CREATED DATETIME NOT NULL,";
+$sql.= "  PRIMARY KEY (UID, MID)";
+$sql.= ") TYPE = MYISAM";
 
 if (!$result = @db_query($sql, $db_install)) {
 

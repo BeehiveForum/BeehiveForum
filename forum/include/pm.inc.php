@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.180 2007-04-14 01:35:58 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.181 2007-04-15 21:32:24 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -270,15 +270,21 @@ function pm_add_sentitem($mid)
 * @param integer $offset - Optional offset for viewing pages of messages.
 */
 
-function pm_get_inbox($offset = false)
+function pm_get_inbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
 {
     $db_pm_get_inbox = db_connect();
+
+    $sort_by_array  = array('PM.SUBJECT', 'PM.FROM_UID', 'CREATED');
+    $sort_dir_array = array('ASC', 'DESC');
 
     if (!$table_data = get_table_prefix()) return false;
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (!is_numeric($offset)) $offset = false;
+
+    if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
+    if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
 
     $pm_get_inbox_array = array();
     $mid_array = array();
@@ -303,7 +309,7 @@ function pm_get_inbox($offset = false)
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER_TO ";
     $sql.= "ON (USER_PEER_TO.PEER_UID = TUSER.UID AND USER_PEER_TO.UID = '$uid') ";
     $sql.= "WHERE PM.TYPE = PM.TYPE & ". PM_INBOX_ITEMS. " AND PM.TO_UID = '$uid' ";
-    $sql.= "ORDER BY CREATED DESC ";
+    $sql.= "ORDER BY $sort_by $sort_dir ";
     
     if (is_numeric($offset)) $sql.= "LIMIT $offset, 10";
 
@@ -350,15 +356,21 @@ function pm_get_inbox($offset = false)
 * @param integer $offset - Optional offset for viewing pages of messages.
 */
 
-function pm_get_outbox($offset = false)
+function pm_get_outbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
 {
     $db_pm_get_outbox = db_connect();
+
+    $sort_by_array  = array('PM.SUBJECT', 'PM.TO_UID', 'CREATED');
+    $sort_dir_array = array('ASC', 'DESC');
 
     if (!$table_data = get_table_prefix()) return false;
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (!is_numeric($offset)) $offset = false;
+
+    if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
+    if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
 
     $pm_get_outbox_array = array();
     $mid_array = array();
@@ -383,7 +395,7 @@ function pm_get_outbox($offset = false)
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER_TO ";
     $sql.= "ON (USER_PEER_TO.PEER_UID = TUSER.UID AND USER_PEER_TO.UID = '$uid') ";
     $sql.= "WHERE PM.TYPE = PM.TYPE & ". PM_OUTBOX_ITEMS. " AND PM.FROM_UID = '$uid' ";
-    $sql.= "ORDER BY CREATED DESC ";
+    $sql.= "ORDER BY $sort_by $sort_dir ";
 
     if (is_numeric($offset)) $sql.= "LIMIT $offset, 10";
 
@@ -430,15 +442,21 @@ function pm_get_outbox($offset = false)
 * @param integer $offset - Optional offset for viewing pages of messages.
 */
 
-function pm_get_sent($offset = false)
+function pm_get_sent($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
 {
     $db_pm_get_outbox = db_connect();
+
+    $sort_by_array  = array('PM.SUBJECT', 'PM.TO_UID', 'CREATED');
+    $sort_dir_array = array('ASC', 'DESC');
 
     if (!$table_data = get_table_prefix()) return false;
     
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (!is_numeric($offset)) $offset = false;
+
+    if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
+    if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
 
     $pm_get_sent_array = array();
     $mid_array = array();
@@ -463,7 +481,7 @@ function pm_get_sent($offset = false)
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER_TO ";
     $sql.= "ON (USER_PEER_TO.PEER_UID = TUSER.UID AND USER_PEER_TO.UID = '$uid') ";
     $sql.= "WHERE PM.TYPE = PM.TYPE & ". PM_SENT_ITEMS. " AND PM.FROM_UID = '$uid' ";
-    $sql.= "ORDER BY CREATED DESC ";
+    $sql.= "ORDER BY $sort_by $sort_dir ";
 
     if (is_numeric($offset)) $sql.= "LIMIT $offset, 10";
 
@@ -510,15 +528,21 @@ function pm_get_sent($offset = false)
 * @param integer $offset - Optional offset for viewing pages of messages.
 */
 
-function pm_get_saveditems($offset = false)
+function pm_get_saveditems($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
 {
     $db_pm_get_saveditems = db_connect();
+
+    $sort_by_array  = array('PM.SUBJECT', 'PM.FROM_UID', 'PM.TO_UID', 'CREATED');
+    $sort_dir_array = array('ASC', 'DESC');
 
     if (!$table_data = get_table_prefix()) return false;
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (!is_numeric($offset)) $offset = false;
+
+    if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
+    if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
 
     $pm_get_saveditems_array = array();
     $mid_array = array();
@@ -545,7 +569,7 @@ function pm_get_saveditems($offset = false)
     $sql.= "ON (USER_PEER_TO.PEER_UID = TUSER.UID AND USER_PEER_TO.UID = '$uid') ";
     $sql.= "WHERE (PM.TYPE = ". PM_SAVED_OUT. " AND PM.FROM_UID = '$uid') OR ";
     $sql.= "(PM.TYPE = ". PM_SAVED_IN. " AND PM.TO_UID = '$uid') ";
-    $sql.= "ORDER BY CREATED DESC ";
+    $sql.= "ORDER BY $sort_by $sort_dir ";
 
     if (is_numeric($offset)) $sql.= "LIMIT $offset, 10";
 
@@ -592,15 +616,21 @@ function pm_get_saveditems($offset = false)
 * @param integer $offset - Optional offset for viewing pages of messages.
 */
 
-function pm_get_drafts($offset = false)
+function pm_get_drafts($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
 {
     $db_pm_get_drafts = db_connect();
+
+    $sort_by_array  = array('PM.SUBJECT', 'PM.TO_UID', 'CREATED');
+    $sort_dir_array = array('ASC', 'DESC');
 
     if (!$table_data = get_table_prefix()) return false;
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (!is_numeric($offset)) $offset = false;
+
+    if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
+    if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
 
     $pm_get_drafts_array = array();
     $mid_array = array();
@@ -625,7 +655,7 @@ function pm_get_drafts($offset = false)
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER_TO ";
     $sql.= "ON (USER_PEER_TO.PEER_UID = TUSER.UID AND USER_PEER_TO.UID = '$uid') ";
     $sql.= "WHERE TYPE = ". PM_SAVED_DRAFT. " AND FROM_UID = '$uid' ";
-    $sql.= "ORDER BY CREATED DESC ";
+    $sql.= "ORDER BY $sort_by $sort_dir ";
 
     if (is_numeric($offset)) $sql.= "LIMIT $offset, 10";
 
@@ -672,26 +702,20 @@ function pm_get_drafts($offset = false)
 * @param integer $offset - Optional offset for viewing pages of messages.
 */
 
-function pm_search_folders($search_string, $offset, &$error)
+function pm_search_execute($search_string, &$error)
 {
-    $db_pm_search_folders = db_connect();
-
-    if (!$table_data = get_table_prefix()) return false;
+    $db_pm_search_execute = db_connect();
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    if (!is_numeric($offset)) return false;
+    $sql = "DELETE FROM PM_SEARCH_RESULTS WHERE UID = '$uid'";
+    $result = db_query($sql, $db_pm_search_execute);
 
     if (!check_search_frequency() && !defined('BEEHIVE_INSTALL_NOWARN')) {
 
         $error = SEARCH_FREQUENCY_TOO_GREAT;
         return false;
     }
-
-    $pm_search_folders_array = array();
-    $mid_array = array();
-
-    $message_count = 0;
 
     $search_keywords_array = search_strip_keywords($search_string);
 
@@ -704,8 +728,13 @@ function pm_search_folders($search_string, $offset, &$error)
 
         $search_string_checked = addslashes(implode(' ', $search_keywords_array['keywords']));
 
-        $sql = "SELECT COUNT(PM.MID) AS MESSAGE_COUNT FROM PM ";
-        $sql.= "LEFT JOIN PM_CONTENT ON (PM_CONTENT.MID = PM.MID) ";
+        $pm_max_user_messages = forum_get_setting('pm_max_user_messages', false, 100);
+        $limit = ($pm_max_user_messages > 1000) ? 1000 : $pm_max_user_messages;
+
+        $sql = "INSERT INTO PM_SEARCH_RESULTS (UID, MID, TYPE, FROM_UID, TO_UID, ";
+        $sql.= "SUBJECT, RECIPIENTS, CREATED) SELECT $uid, PM.MID, PM.TYPE, ";
+        $sql.= "PM.FROM_UID, PM.TO_UID, PM.SUBJECT, PM.RECIPIENTS, PM.CREATED ";
+        $sql.= "FROM PM LEFT JOIN PM_CONTENT ON (PM_CONTENT.MID = PM.MID) ";
         $sql.= "WHERE ((PM.TYPE = PM.TYPE & ". PM_INBOX_ITEMS. " AND PM.TO_UID = '$uid') ";
         $sql.= "OR (PM.TYPE = PM.TYPE & ". PM_SENT_ITEMS. " AND PM.FROM_UID = '$uid') ";
         $sql.= "OR (PM.TYPE = PM.TYPE & ". PM_OUTBOX_ITEMS. " AND PM.FROM_UID = '$uid') ";
@@ -714,35 +743,64 @@ function pm_search_folders($search_string, $offset, &$error)
         $sql.= "(TYPE = ". PM_SAVED_DRAFT. " AND FROM_UID = '$uid'))) ";
         $sql.= "AND (MATCH(PM_CONTENT.CONTENT) AGAINST('$search_string_checked'$bool_mode) ";
         $sql.= "OR (MATCH(PM.SUBJECT) AGAINST('$search_string_checked'$bool_mode))) ";
+        $sql.= "ORDER BY CREATED LIMIT $limit";
 
-        $result = db_query($sql, $db_pm_search_folders);
+        if ($result = db_query($sql, $db_pm_search_execute)) {
+            return true;
+        }
+    
+    }else {
 
-        $result_array  = db_fetch_array($result);
-        $message_count = $result_array['MESSAGE_COUNT'];
+        $error = SEARCH_NO_KEYWORDS;
+        return false;
+    }
 
-        $sql = "SELECT PM.MID, PM.TYPE, PM.FROM_UID, PM.TO_UID, PM.SUBJECT, ";
-        $sql.= "PM.RECIPIENTS, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, ";
+    $error = SEARCH_NO_MATCHES;
+    return false;
+}
+
+function pm_fetch_search_results ($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = 0)
+{
+    $db_pm_fetch_search_results = db_connect();
+
+    if (($uid = bh_session_get_value('UID')) === false) return false;
+    
+    $sort_by_array  = array('PM.SUBJECT', 'TYPE', 'PM.FROM_UID', 'PM.TO_UID', 'CREATED');
+    $sort_dir_array = array('ASC', 'DESC');
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    if (!is_numeric($offset)) return false;
+
+    if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
+    if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
+
+    $pm_search_results_array = array();
+    $mid_array = array();
+
+    $sql = "SELECT COUNT(*) AS RESULT_COUNT FROM PM_SEARCH_RESULTS WHERE UID = $uid";
+    $result = db_query($sql, $db_pm_fetch_search_results);
+
+    list($message_count) = db_fetch_array($result, DB_RESULT_NUM);
+
+    if ($message_count > 0) {
+
+        $sql = "SELECT PM.MID, PM.TYPE, PM.FROM_UID, PM.TO_UID, ";
+        $sql.= "PM.SUBJECT, PM.RECIPIENTS, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, ";
         $sql.= "FUSER.LOGON AS FLOGON, TUSER.LOGON AS TLOGON, FUSER.NICKNAME AS FNICK, ";
         $sql.= "TUSER.NICKNAME AS TNICK, USER_PEER_FROM.PEER_NICKNAME AS PFNICK, ";
-        $sql.= "USER_PEER_TO.PEER_NICKNAME AS PTNICK FROM PM ";
+        $sql.= "USER_PEER_TO.PEER_NICKNAME AS PTNICK FROM PM_SEARCH_RESULTS PM ";
         $sql.= "LEFT JOIN USER FUSER ON (PM.FROM_UID = FUSER.UID) ";
         $sql.= "LEFT JOIN USER TUSER ON (PM.TO_UID = TUSER.UID) ";
         $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER_FROM ";
         $sql.= "ON (USER_PEER_FROM.PEER_UID = FUSER.UID AND USER_PEER_FROM.UID = '$uid') ";
         $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER_TO ";
         $sql.= "ON (USER_PEER_TO.PEER_UID = TUSER.UID AND USER_PEER_TO.UID = '$uid') ";
-        $sql.= "LEFT JOIN PM_CONTENT ON (PM_CONTENT.MID = PM.MID) ";
-        $sql.= "WHERE ((PM.TYPE = PM.TYPE & ". PM_INBOX_ITEMS. " AND PM.TO_UID = '$uid') ";
-        $sql.= "OR (PM.TYPE = PM.TYPE & ". PM_SENT_ITEMS. " AND PM.FROM_UID = '$uid') ";
-        $sql.= "OR (PM.TYPE = PM.TYPE & ". PM_OUTBOX_ITEMS. " AND PM.FROM_UID = '$uid') ";
-        $sql.= "OR ((PM.TYPE = ". PM_SAVED_OUT. " AND PM.FROM_UID = '$uid') OR ";
-        $sql.= "(PM.TYPE = ". PM_SAVED_IN. " AND PM.TO_UID = '$uid') OR ";
-        $sql.= "(TYPE = ". PM_SAVED_DRAFT. " AND FROM_UID = '$uid'))) ";
-        $sql.= "AND (MATCH(PM_CONTENT.CONTENT) AGAINST('$search_string_checked'$bool_mode) ";
-        $sql.= "OR (MATCH(PM.SUBJECT) AGAINST('$search_string_checked'$bool_mode))) ";
+        $sql.= "WHERE PM.UID = '$uid' ";
+        $sql.= "ORDER BY $sort_by $sort_dir ";
         $sql.= "LIMIT $offset, 10";
 
-        $result = db_query($sql, $db_pm_search_folders);
+        $result = db_query($sql, $db_pm_fetch_search_results);
 
         if (db_num_rows($result) > 0) {
 
@@ -760,27 +818,23 @@ function pm_search_folders($search_string, $offset, &$error)
                     }
                 }
 
-                $pm_search_folders_array[$result_array['MID']] = $result_array;
+                $pm_search_results_array[$result_array['MID']] = $result_array;
                 $mid_array[] = $result_array['MID'];
             }
+
+            pms_have_attachments($pm_search_results_array, $mid_array);
 
         }else if ($offset > 0) {
 
             $offset = ($offset - 10) > 0 ? $offset - 10 : 0;
-            return pm_search_folders($search_string, $offset);
+            return pm_fetch_search_results($sort_by, $sort_dir, $offset);
         }
-
-        pms_have_attachments($pm_search_folders_array, $mid_array);
-    
-    }else {
-
-        $error = SEARCH_NO_KEYWORDS;
-        return false;
     }
 
     return array('message_count' => $message_count,
-                 'message_array' => $pm_search_folders_array);
+                 'message_array' => $pm_search_results_array);
 }
+
 
 /**
 * Get Messages Free Space

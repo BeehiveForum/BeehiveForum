@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_messages.php,v 1.4 2007-04-12 13:23:11 decoyduck Exp $ */
+/* $Id: pm_messages.php,v 1.5 2007-04-15 21:32:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -125,6 +125,34 @@ $pm_folder_name_array = array(1  => $lang['pmoutbox'],
                               32 => $lang['pmsaveditems'],
                               64 => $lang['pmdrafts']);
 
+// Column sorting stuff
+
+if (isset($_GET['sort_by'])) {
+    if ($_GET['sort_by'] == "SUBJECT") {
+        $sort_by = "PM.SUBJECT";
+    } elseif ($_GET['sort_by'] == "TYPE") {
+        $sort_by = "TYPE";
+    } elseif ($_GET['sort_by'] == "FROM_UID") {
+        $sort_by = "PM.FROM_UID";
+    } elseif ($_GET['sort_by'] == "TO_UID") {
+        $sort_by = "PM.TO_UID";
+    } else {
+        $sort_by = "CREATED";
+    }
+} else {
+    $sort_by = "CREATED";
+}
+
+if (isset($_GET['sort_dir'])) {
+    if ($_GET['sort_dir'] == "DESC") {
+        $sort_dir = "DESC";
+    } else {
+        $sort_dir = "ASC";
+    }
+} else {
+    $sort_dir = "DESC";
+}
+
 // Check to see which page we should be on
 
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
@@ -214,12 +242,85 @@ if (isset($_POST['exportfolder'])) {
 
 // Search string.
 
-if (isset($_GET['search_string']) && strlen(trim(_stripslashes($_GET['search_string']))) > 0) {
-    $search_string = trim(_stripslashes($_GET['search_string']));
-}elseif (isset($_POST['search_string']) && strlen(trim(_stripslashes($_POST['search_string']))) > 0) {
-    $search_string = trim(_stripslashes($_POST['search_string']));
-}else {
-    $search_string = "";
+if (isset($_POST['search'])) {
+
+    if (isset($_POST['search_string']) && strlen(trim(_stripslashes($_POST['search_string']))) > 0) {
+        $search_string = trim(_stripslashes($_POST['search_string']));
+    }else {
+        $search_string = '';
+    }
+
+    if (!pm_search_execute($search_string, $error)) {
+
+        search_get_word_lengths($min_length, $max_length);
+
+        $search_frequency = forum_get_setting('search_min_frequency', false, 0);
+
+        switch($error) {
+
+            case SEARCH_NO_KEYWORDS:
+
+                if (isset($search_string) && strlen(trim($search_string)) > 0) {
+                
+                    $keywords_error_array = search_strip_keywords($search_string, true);
+                    $keywords_error_array['keywords'] = search_strip_special_chars($keywords_error_array['keywords'], false);
+
+                    $stopped_keywords = urlencode(implode(' ', $keywords_error_array['keywords']));
+
+                    $mysql_stop_word_link = "<a href=\"search.php?webtag=$webtag&amp;show_stop_words=true&amp;keywords=$stopped_keywords\" target=\"_blank\" onclick=\"return display_mysql_stopwords('$webtag', '$stopped_keywords')\">{$lang['mysqlstopwordlist']}</a>";
+
+                    html_draw_top();
+
+                    echo "<h1>{$lang['error']}</h1>\n";
+                    echo "<table cellpadding=\"5\" cellspacing=\"0\" width=\"500\">\n";                
+                    echo "  <tr>\n";
+                    echo "    <td>", sprintf("<p>{$lang['notexttosearchfor']}</p>", $min_length, $max_length, $mysql_stop_word_link), "</td>\n";
+                    echo "  </tr>\n";
+                    echo "  <tr>\n";
+                    echo "    <td>\n";
+                    echo "      <h2>Keywords containing errors</h2>\n";
+                    echo "      <ul>\n";
+                    echo "        <li>", implode("</li>\n        <li>", $keywords_error_array['keywords']), "</li>\n";
+                    echo "      </ul>\n";
+                    echo "    </td>\n";
+                    echo "  </tr>\n";
+                    echo "</table>\n";
+
+                    html_draw_bottom();
+                    exit;
+
+                }else {
+
+                    $mysql_stop_word_link = "<a href=\"search.php?webtag=$webtag&amp;show_stop_words=true\" target=\"_blank\" onclick=\"return display_mysql_stopwords('$webtag', '')\">{$lang['mysqlstopwordlist']}</a>";
+                    
+                    html_draw_top();
+                    
+                    echo "<h1>{$lang['error']}</h1>\n";
+                    echo "<table cellpadding=\"5\" cellspacing=\"0\" width=\"500\">\n";                
+                    echo "  <tr>\n";
+                    echo "    <td>", sprintf("<p>{$lang['notexttosearchfor']}</p>", $min_length, $max_length, $mysql_stop_word_link), "</td>\n";
+                    echo "  </tr>\n";
+                    echo "</table>\n";
+
+                    html_draw_bottom();
+                    exit;
+                }
+
+            case SEARCH_FREQUENCY_TOO_GREAT:
+
+                html_draw_top();
+                
+                echo "<h1>{$lang['error']}</h1>\n";
+                echo "<table cellpadding=\"5\" cellspacing=\"0\" width=\"500\">\n";                
+                echo "  <tr>\n";
+                echo "    <td>", sprintf($lang['searchfrequencyerror'], $search_frequency), "</td>\n";
+                echo "  </tr>\n";
+                echo "</table>\n";
+
+                html_draw_bottom();
+                exit;
+        }
+    }
 }
 
 // Prune old messages for the current user
@@ -249,91 +350,27 @@ if ($start < 0) $start = 0;
 
 if ($folder == PM_FOLDER_INBOX) {
 
-    $pm_messages_array = pm_get_inbox($start);
+    $pm_messages_array = pm_get_inbox($sort_by, $sort_dir, $start);
 
 }elseif ($folder == PM_FOLDER_SENT) {
 
-    $pm_messages_array = pm_get_sent($start);
+    $pm_messages_array = pm_get_sent($sort_by, $sort_dir, $start);
 
 }elseif ($folder == PM_FOLDER_OUTBOX) {
 
-    $pm_messages_array = pm_get_outbox($start);
+    $pm_messages_array = pm_get_outbox($sort_by, $sort_dir, $start);
 
 }elseif ($folder == PM_FOLDER_SAVED) {
 
-    $pm_messages_array = pm_get_saveditems($start);
+    $pm_messages_array = pm_get_saveditems($sort_by, $sort_dir, $start);
 
 }elseif ($folder == PM_FOLDER_DRAFTS) {
 
-    $pm_messages_array = pm_get_drafts($start);
+    $pm_messages_array = pm_get_drafts($sort_by, $sort_dir, $start);
 
 }elseif ($folder == PM_SEARCH_RESULTS) {
 
-    if (!$pm_messages_array = pm_search_folders($search_string, $start, $error)) {
-
-        search_get_word_lengths($min_length, $max_length);
-
-        $search_frequency = forum_get_setting('search_min_frequency', false, 0);
-
-        switch($error) {
-
-            case SEARCH_NO_KEYWORDS:
-
-                if (isset($search_string) && strlen(trim($search_string)) > 0) {
-                
-                    $keywords_error_array = search_strip_keywords($search_string, true);
-                    $keywords_error_array['keywords'] = search_strip_special_chars($keywords_error_array['keywords'], false);
-
-                    $stopped_keywords = urlencode(implode(' ', $keywords_error_array['keywords']));
-
-                    $mysql_stop_word_link = "<a href=\"search.php?webtag=$webtag&amp;show_stop_words=true&amp;keywords=$stopped_keywords\" target=\"_blank\" onclick=\"return display_mysql_stopwords('$webtag', '$stopped_keywords')\">{$lang['mysqlstopwordlist']}</a>";
-
-                    echo "<h1>{$lang['error']}</h1>\n";
-                    echo "<table cellpadding=\"5\" cellspacing=\"0\" width=\"500\">\n";                
-                    echo "  <tr>\n";
-                    echo "    <td>", sprintf("<p>{$lang['notexttosearchfor']}</p>", $min_length, $max_length, $mysql_stop_word_link), "</td>\n";
-                    echo "  </tr>\n";
-                    echo "  <tr>\n";
-                    echo "    <td>\n";
-                    echo "      <h2>Keywords containing errors</h2>\n";
-                    echo "      <ul>\n";
-                    echo "        <li>", implode("</li>\n        <li>", $keywords_error_array['keywords']), "</li>\n";
-                    echo "      </ul>\n";
-                    echo "    </td>\n";
-                    echo "  </tr>\n";
-                    echo "</table>\n";
-
-                    html_draw_bottom();
-                    exit;
-
-                }else {
-
-                    $mysql_stop_word_link = "<a href=\"search.php?webtag=$webtag&amp;show_stop_words=true\" target=\"_blank\" onclick=\"return display_mysql_stopwords('$webtag', '')\">{$lang['mysqlstopwordlist']}</a>";
-                    
-                    echo "<h1>{$lang['error']}</h1>\n";
-                    echo "<table cellpadding=\"5\" cellspacing=\"0\" width=\"500\">\n";                
-                    echo "  <tr>\n";
-                    echo "    <td>", sprintf("<p>{$lang['notexttosearchfor']}</p>", $min_length, $max_length, $mysql_stop_word_link), "</td>\n";
-                    echo "  </tr>\n";
-                    echo "</table>\n";
-
-                    html_draw_bottom();
-                    exit;
-                }
-
-            case SEARCH_FREQUENCY_TOO_GREAT:
-
-                echo "<h1>{$lang['error']}</h1>\n";
-                echo "<table cellpadding=\"5\" cellspacing=\"0\" width=\"500\">\n";                
-                echo "  <tr>\n";
-                echo "    <td>", sprintf($lang['searchfrequencyerror'], $search_frequency), "</td>\n";
-                echo "  </tr>\n";
-                echo "</table>\n";
-
-                html_draw_bottom();
-                exit;
-        }
-    }
+    $pm_messages_array = pm_fetch_search_results($sort_by, $sort_dir, $start);
 }
 
 echo "<h1>{$pm_header_array[$folder]}</h1>\n";
@@ -357,22 +394,69 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
     echo "                  <td align=\"left\" class=\"subhead\" width=\"10\">&nbsp;</td>\n";
 }
 
-echo "                  <td align=\"left\" class=\"subhead\" width=\"40%\">{$lang['subject']}</td>\n";
+if ($sort_by == 'PM.SUBJECT' && $sort_dir == 'ASC') {
+    echo "                   <td class=\"subhead_sort_asc\" align=\"left\" width=\"40%\"><a href=\"pm_messages.php?webtag=$webtag&amp;sort_by=SUBJECT&amp;sort_dir=DESC&amp;page=$page&amp;folder=$folder\" target=\"_self\">{$lang['subject']}</a></td>\n";
+}elseif ($sort_by == 'PM.SUBJECT' && $sort_dir == 'DESC') {
+    echo "                   <td class=\"subhead_sort_desc\" align=\"left\" width=\"40%\"><a href=\"pm_messages.php?webtag=$webtag&amp;sort_by=SUBJECT&amp;sort_dir=ASC&amp;page=$page&amp;folder=$folder\" target=\"_self\">{$lang['subject']}</a></td>\n";
+}elseif ($sort_dir == 'ASC') {
+    echo "                   <td class=\"subhead\" align=\"left\" width=\"40%\"><a href=\"pm_messages.php?webtag=$webtag&amp;sort_by=SUBJECT&amp;sort_dir=ASC&amp;page=$page&amp;folder=$folder\" target=\"_self\">{$lang['subject']}</a></td>\n";
+}else {
+    echo "                   <td class=\"subhead\" align=\"left\" width=\"40%\"><a href=\"pm_messages.php?webtag=$webtag&amp;sort_by=SUBJECT&amp;sort_dir=DESC&amp;page=$page&amp;folder=$folder\" target=\"_self\">{$lang['subject']}</a></td>\n";
+}
 
-if ($folder == PM_FOLDER_INBOX) {
-    echo "                  <td align=\"left\" class=\"subhead\" width=\"30%\">{$lang['from']}</td>\n";
-}elseif ($folder == PM_FOLDER_SENT || $folder == PM_FOLDER_OUTBOX || $folder == PM_FOLDER_DRAFTS) {
-    echo "                  <td align=\"left\" class=\"subhead\" width=\"30%\">{$lang['to']}</td>\n";
-}elseif ($folder == PM_FOLDER_SAVED) {
-    echo "                  <td align=\"left\" class=\"subhead\" width=\"15%\">{$lang['to']}</td>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" width=\"15%\">{$lang['from']}</td>\n";
-}elseif ($folder == PM_SEARCH_RESULTS) {
-    echo "                  <td align=\"left\" class=\"subhead\" width=\"15%\">{$lang['folder']}</td>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" width=\"15%\">{$lang['to']}</td>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" width=\"15%\">{$lang['from']}</td>\n";    
+if ($folder == PM_SEARCH_RESULTS) {
+
+    if ($sort_by == 'TYPE' && $sort_dir == 'ASC') {
+        echo "                   <td class=\"subhead_sort_asc\" align=\"left\" width=\"15%\"><a href=\"pm_messages.php?webtag=$webtag&amp;sort_by=TYPE&amp;sort_dir=DESC&amp;page=$page&amp;folder=$folder\" target=\"_self\">{$lang['folder']}</a></td>\n";
+    }elseif ($sort_by == 'TYPE' && $sort_dir == 'DESC') {
+        echo "                   <td class=\"subhead_sort_desc\" align=\"left\" width=\"15%\"><a href=\"pm_messages.php?webtag=$webtag&amp;sort_by=TYPE&amp;sort_dir=ASC&amp;page=$page&amp;folder=$folder\" target=\"_self\">{$lang['folder']}</a></td>\n";
+    }elseif ($sort_dir == 'ASC') {
+        echo "                   <td class=\"subhead\" align=\"left\" width=\"15%\"><a href=\"pm_messages.php?webtag=$webtag&amp;sort_by=TYPE&amp;sort_dir=ASC&amp;page=$page&amp;folder=$folder\" target=\"_self\">{$lang['folder']}</a></td>\n";
+    }else {
+        echo "                   <td class=\"subhead\" align=\"left\" width=\"15%\"><a href=\"pm_messages.php?webtag=$webtag&amp;sort_by=TYPE&amp;sort_dir=DESC&amp;page=$page&amp;folder=$folder\" target=\"_self\">{$lang['folder']}</a></td>\n";
+    }
 } 
 
-echo "                  <td align=\"left\" class=\"subhead\">{$lang['timesent']}</td>\n";
+if ($folder == PM_FOLDER_INBOX || $folder == PM_FOLDER_SAVED || $folder == PM_SEARCH_RESULTS) {
+
+    $col_width = ($folder == PM_FOLDER_SAVED || $folder == PM_SEARCH_RESULTS) ? '15%' : '30%';
+    
+    if ($sort_by == 'PM.FROM_UID' && $sort_dir == 'ASC') {
+        echo "                   <td class=\"subhead_sort_asc\" align=\"left\" width=\"$col_width\"><a href=\"pm_messages.php?webtag=$webtag&amp;sort_by=FROM_UID&amp;sort_dir=DESC&amp;page=$page&amp;folder=$folder\" target=\"_self\">{$lang['from']}</a></td>\n";
+    }elseif ($sort_by == 'PM.FROM_UID' && $sort_dir == 'DESC') {
+        echo "                   <td class=\"subhead_sort_desc\" align=\"left\" width=\"$col_width\"><a href=\"pm_messages.php?webtag=$webtag&amp;sort_by=FROM_UID&amp;sort_dir=ASC&amp;page=$page&amp;folder=$folder\" target=\"_self\">{$lang['from']}</a></td>\n";
+    }elseif ($sort_dir == 'ASC') {
+        echo "                   <td class=\"subhead\" align=\"left\" width=\"$col_width\"><a href=\"pm_messages.php?webtag=$webtag&amp;sort_by=FROM_UID&amp;sort_dir=ASC&amp;page=$page&amp;folder=$folder\" target=\"_self\">{$lang['from']}</a></td>\n";
+    }else {
+        echo "                   <td class=\"subhead\" align=\"left\" width=\"$col_width\"><a href=\"pm_messages.php?webtag=$webtag&amp;sort_by=FROM_UID&amp;sort_dir=DESC&amp;page=$page&amp;folder=$folder\" target=\"_self\">{$lang['from']}</a></td>\n";
+    }
+}
+
+if ($folder == PM_FOLDER_SENT || $folder == PM_FOLDER_OUTBOX || $folder == PM_FOLDER_DRAFTS || $folder == PM_FOLDER_SAVED || $folder == PM_SEARCH_RESULTS) {
+
+    $col_width = ($folder == PM_FOLDER_SAVED || $folder == PM_SEARCH_RESULTS) ? '15%' : '30%';
+
+    if ($sort_by == 'PM.TO_UID' && $sort_dir == 'ASC') {
+        echo "                   <td class=\"subhead_sort_asc\" align=\"left\" width=\"$col_width\"><a href=\"pm_messages.php?webtag=$webtag&amp;sort_by=TO_UID&amp;sort_dir=DESC&amp;page=$page&amp;folder=$folder\" target=\"_self\">{$lang['to']}</a></td>\n";
+    }elseif ($sort_by == 'PM.TO_UID' && $sort_dir == 'DESC') {
+        echo "                   <td class=\"subhead_sort_desc\" align=\"left\" width=\"$col_width\"><a href=\"pm_messages.php?webtag=$webtag&amp;sort_by=TO_UID&amp;sort_dir=ASC&amp;page=$page&amp;folder=$folder\" target=\"_self\">{$lang['to']}</a></td>\n";
+    }elseif ($sort_dir == 'ASC') {
+        echo "                   <td class=\"subhead\" align=\"left\" width=\"$col_width\"><a href=\"pm_messages.php?webtag=$webtag&amp;sort_by=TO_UID&amp;sort_dir=ASC&amp;page=$page&amp;folder=$folder\" target=\"_self\">{$lang['to']}</a></td>\n";
+    }else {
+        echo "                   <td class=\"subhead\" align=\"left\" width=\"$col_width\"><a href=\"pm_messages.php?webtag=$webtag&amp;sort_by=TO_UID&amp;sort_dir=DESC&amp;page=$page&amp;folder=$folder\" target=\"_self\">{$lang['to']}</a></td>\n";
+    }
+}
+
+if ($sort_by == 'CREATED' && $sort_dir == 'ASC') {
+    echo "                   <td class=\"subhead_sort_asc\" align=\"left\"><a href=\"pm_messages.php?webtag=$webtag&amp;sort_by=CREATED&amp;sort_dir=DESC&amp;page=$page&amp;folder=$folder\" target=\"_self\">{$lang['timesent']}</a></td>\n";
+}elseif ($sort_by == 'CREATED' && $sort_dir == 'DESC') {
+    echo "                   <td class=\"subhead_sort_desc\" align=\"left\"><a href=\"pm_messages.php?webtag=$webtag&amp;sort_by=CREATED&amp;sort_dir=ASC&amp;page=$page&amp;folder=$folder\" target=\"_self\">{$lang['timesent']}</a></td>\n";
+}elseif ($sort_dir == 'ASC') {
+    echo "                   <td class=\"subhead\" align=\"left\"><a href=\"pm_messages.php?webtag=$webtag&amp;sort_by=CREATED&amp;sort_dir=ASC&amp;page=$page&amp;folder=$folder\" target=\"_self\">{$lang['timesent']}</a></td>\n";
+}else {
+    echo "                   <td class=\"subhead\" align=\"left\"><a href=\"pm_messages.php?webtag=$webtag&amp;sort_by=CREATED&amp;sort_dir=DESC&amp;page=$page&amp;folder=$folder\" target=\"_self\">{$lang['timesent']}</a></td>\n";
+}
+
 echo "                </tr>\n";
 
 if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['message_array']) > 0) {
@@ -501,7 +585,7 @@ echo "      <td align=\"left\" valign=\"top\" width=\"100%\">\n";
 echo "        <table width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td width=\"25%\">&nbsp;</td>\n";
-echo "            <td class=\"postbody\" align=\"center\">", page_links("pm_messages.php?webtag=$webtag&folder=$folder&search_string=$search_string", $start, $pm_messages_array['message_count'], 10), "</td>\n";
+echo "            <td class=\"postbody\" align=\"center\">", page_links("pm_messages.php?webtag=$webtag&folder=$folder", $start, $pm_messages_array['message_count'], 10), "</td>\n";
 
 if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['message_array']) > 0) {
     echo "            <td align=\"right\" width=\"25%\" nowrap=\"nowrap\">", form_submit("exportfolder", "Export Folder"), "&nbsp;", (($folder <> PM_FOLDER_SAVED) && ($folder <> PM_FOLDER_OUTBOX)) ? form_submit("savemessages", $lang['savemessage']) : "", "&nbsp;", form_submit("deletemessages", $lang['delete']), "</td>\n";

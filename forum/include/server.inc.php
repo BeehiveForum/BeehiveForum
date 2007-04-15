@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: server.inc.php,v 1.10 2007-04-12 13:23:14 decoyduck Exp $ */
+/* $Id: server.inc.php,v 1.11 2007-04-15 17:07:57 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -30,6 +30,10 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
     header("Content-Location: ../index.php");
     header("Location: ../index.php");
     exit;
+}
+
+if (@file_exists(BH_INCLUDE_PATH. "config.inc.php")) {
+    include_once(BH_INCLUDE_PATH. "config.inc.php");
 }
 
 /**
@@ -104,24 +108,40 @@ function server_get_cpu_load()
 /**
 * Fetch the system temp dir
 *
-* Fetches the current server CPU load. Returns a percentage on Win32 and the
-* result of /proc/loadavg on *nix.
+* Fetches the system temp dir
 *
-* @return mixed
+* @return string
 * @param void
 */
 
-function system_get_tmp_dir()
+function system_get_temp_dir()
 {
-    if (isset($_ENV['TEMP']) && strlen(trim($_ENV['TEMP'])) > 0) {
-        
-        $system_tmp_dir = trim($_ENV['TEMP']);
-        return $system_tmp_dir;
+    $env_array = array_merge($_ENV, $_SYSTEM);
+    
+    if (function_exists('sys_get_temp_dir')) {
 
-    }elseif (isset($_ENV['TMP']) && strlen(trim($_ENV['TMP'])) > 0) {
+        return sys_get_temp_dir();
+    
+    }elseif (isset($env_array['TEMP']) && is_dir($env_array['TEMP'])) {
+    
+        return $env_array['TEMP'];
+    
+    }elseif (isset($env_array['TMP']) && is_dir($env_array['TMP'])) {    
+     
+        return $env_array['TMP'];       
+    
+    }elseif (isset($env_array['TMPDIR']) && is_dir($env_array['TMPDIR'])) {    
         
-        $system_tmp_dir = trim($_ENV['TMP']);
-        return $system_tmp_dir;
+        return $env_array['TMPDIR'];    
+    
+    }elseif (file_exists('/tmp/') && is_dir('/tmp/')) {    
+                
+        return '/tmp/';   
+    
+    }elseif ($temp_file = tempnam(md5(uniqid(rand())), '')) {
+                
+        unlink($temp_file);
+        return realpath(dirname($temp_file));
     }        
 
     return false;

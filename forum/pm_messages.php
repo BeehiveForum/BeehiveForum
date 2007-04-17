@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_messages.php,v 1.8 2007-04-17 23:43:40 decoyduck Exp $ */
+/* $Id: pm_messages.php,v 1.9 2007-04-17 23:48:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -186,6 +186,7 @@ if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
 }else {
 
     $mid = 0;
+    $message_folder = PM_FOLDER_INBOX;
 }
 
 if (isset($_GET['folder'])) {
@@ -254,7 +255,7 @@ if (isset($_POST['savemessages'])) {
 
 if (isset($_POST['exportfolder'])) {
 
-    pm_export($message_folder);
+    pm_export($current_folder);
     exit;
 }
 

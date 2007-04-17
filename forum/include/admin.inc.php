@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.110 2007-03-25 14:44:54 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.111 2007-04-17 23:36:51 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -154,7 +154,7 @@ function admin_get_log_entries($offset, $sort_by = 'CREATED', $sort_dir = 'DESC'
 
     }else if ($admin_log_count > 0) {
 
-        $offset = ($offset - 20) > 0 ? $offset - 20 : 0;        
+        $offset = floor($admin_log_count / 10) * 10;
         return admin_get_log_entries($offset, $sort_by, $sort_dir);
     }
 
@@ -204,7 +204,7 @@ function admin_get_word_filter_list($offset)
 
     }else if ($word_filter_count > 0) {
 
-        $offset = ($offset - 20) > 0 ? $offset - 20 : 0;        
+        $offset = floor($word_filter_count / 10) * 10;
         return admin_get_word_filter_list($offset);
     }
 
@@ -698,11 +698,11 @@ function admin_get_users_attachments($uid, &$user_attachments, &$user_image_atta
 * @param integer $start - Offset for results.
 */
 
-function admin_get_forum_list($start)
+function admin_get_forum_list($offset)
 {
     $db_admin_get_forum_list = db_connect();
 
-    if (!is_numeric($start)) return false;
+    if (!is_numeric($offset)) return false;
 
     $forums_array = array();
 
@@ -715,7 +715,7 @@ function admin_get_forum_list($start)
     $sql.= "FORUM_SETTINGS.SVALUE AS FORUM_NAME FROM FORUMS ";
     $sql.= "LEFT JOIN FORUM_SETTINGS ON (FORUM_SETTINGS.FID = FORUMS.FID ";
     $sql.= "AND FORUM_SETTINGS.SNAME = 'forum_name') ";
-    $sql.= "LIMIT $start, 10 ";
+    $sql.= "LIMIT $offset, 10 ";
 
     $result = db_query($sql, $db_admin_get_forum_list);
 
@@ -732,8 +732,8 @@ function admin_get_forum_list($start)
     
     }else if ($forums_count > 0) {
 
-        $start = ($start - 10) > 0 ? $start - 10 : 0;
-        return admin_get_forum_list($start);
+        $offset = floor($forums_count / 10) * 10;
+        return admin_get_forum_list($offset);
     }
 
     return array('forums_array' => $forums_array,
@@ -814,7 +814,7 @@ function admin_get_ban_data($sort_by = "ID", $sort_dir = "ASC", $offset = 0)
 
     }else if ($ban_data_count > 0) {
 
-        $offset = ($offset - 20) > 0 ? $offset - 20 : 0;        
+        $offset = floor($ban_data_count / 10) * 10;
         return admin_get_ban_data($sort_by, $sort_dir, $offset);
     }
 
@@ -908,7 +908,7 @@ function admin_get_post_approval_queue($offset = 0)
 
     }else if ($post_count > 0) {
 
-        $offset = ($offset - 20) > 0 ? $offset - 20 : 0;        
+        $offset = floor($post_count / 10) * 10;
         return admin_get_post_approval_queue($offset);
     }
 
@@ -1071,7 +1071,7 @@ function admin_get_visitor_log($offset)
 
     }else if ($users_get_recent_count > 0) {
 
-        $offset = ($offset - 10) > 0 ? $offset - 10 : 0;        
+        $offset = floor($users_get_recent_count / 10) * 10;
         admin_get_visitor_log($offset);
     }
 

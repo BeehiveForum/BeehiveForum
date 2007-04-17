@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_links.inc.php,v 1.22 2007-01-15 00:31:01 decoyduck Exp $ */
+/* $Id: forum_links.inc.php,v 1.23 2007-04-17 23:36:51 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -73,11 +73,11 @@ function forum_links_get_links()
     return false;
 }
 
-function forum_links_get_links_by_page($start)
+function forum_links_get_links_by_page($offset)
 {
     $db_forum_links_get_links_by_page = db_connect();
 
-    if (!is_numeric($start)) return false;
+    if (!is_numeric($offset)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -90,7 +90,7 @@ function forum_links_get_links_by_page($start)
 
     $sql = "SELECT LID, POS, URI, TITLE FROM {$table_data['PREFIX']}FORUM_LINKS ";
     $sql.= "ORDER BY POS ASC, LID ASC ";
-    $sql.= "LIMIT $start, 10";
+    $sql.= "LIMIT $offset, 10";
 
     $result = db_query($sql, $db_forum_links_get_links_by_page);
 
@@ -103,6 +103,11 @@ function forum_links_get_links_by_page($start)
 
             $forum_links_array[] = $row;
         }
+    
+    }else {
+
+        $offset = ($forum_links_count / 10);
+        return forum_links_get_links_by_page($offset);
     }
 
     return array('forum_links_array' => $forum_links_array,

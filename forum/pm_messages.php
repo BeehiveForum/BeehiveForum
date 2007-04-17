@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_messages.php,v 1.6 2007-04-15 22:19:26 decoyduck Exp $ */
+/* $Id: pm_messages.php,v 1.7 2007-04-17 23:36:51 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -163,7 +163,7 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
 
 // Default folder
 
-$folder = PM_FOLDER_INBOX;
+$current_folder = PM_FOLDER_INBOX;
 
 // Check to see if we're viewing a message and get the folder it is in.
 
@@ -171,44 +171,58 @@ if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
 
     $mid = $_GET['mid'];
 
-    if (!$folder = pm_message_get_folder($mid)) {
-        $folder = PM_FOLDER_INBOX;
+    if (!$message_folder = pm_message_get_folder($mid)) {
+        $message_folder = PM_FOLDER_INBOX;
     }
 
 }elseif (isset($_POST['mid']) && is_numeric($_POST['mid'])) {
 
     $mid = $_POST['mid'];
 
-    if (!$folder = pm_message_get_folder($mid)) {
-        $folder = PM_FOLDER_INBOX;
+    if (!$message_folder = pm_message_get_folder($mid)) {
+        $message_folder = PM_FOLDER_INBOX;
     }
+}
 
-}elseif (isset($_GET['folder'])) {
+if (isset($_GET['folder'])) {
 
     if ($_GET['folder'] == PM_FOLDER_SENT) {
-        $folder = PM_FOLDER_SENT;
+        $current_folder = PM_FOLDER_SENT;
     }else if ($_GET['folder'] == PM_FOLDER_OUTBOX) {
-        $folder = PM_FOLDER_OUTBOX;
+        $current_folder = PM_FOLDER_OUTBOX;
     }else if ($_GET['folder'] == PM_FOLDER_SAVED) {
-        $folder = PM_FOLDER_SAVED;
+        $current_folder = PM_FOLDER_SAVED;
     }else if ($_GET['folder'] == PM_FOLDER_DRAFTS) {
-        $folder = PM_FOLDER_DRAFTS;
+        $current_folder = PM_FOLDER_DRAFTS;
     }else if ($_GET['folder'] == PM_SEARCH_RESULTS) {
-        $folder = PM_SEARCH_RESULTS;
+        $current_folder = PM_SEARCH_RESULTS;
     }
 
 }elseif (isset($_POST['folder'])) {
 
     if ($_POST['folder'] == PM_FOLDER_SENT) {
-        $folder = PM_FOLDER_SENT;
+        $current_folder = PM_FOLDER_SENT;
     }else if ($_POST['folder'] == PM_FOLDER_OUTBOX) {
-        $folder = PM_FOLDER_OUTBOX;
+        $current_folder = PM_FOLDER_OUTBOX;
     }else if ($_POST['folder'] == PM_FOLDER_SAVED) {
-        $folder = PM_FOLDER_SAVED;
+        $current_folder = PM_FOLDER_SAVED;
     }else if ($_POST['folder'] == PM_FOLDER_DRAFTS) {
-        $folder = PM_FOLDER_DRAFTS;
+        $current_folder = PM_FOLDER_DRAFTS;
     }else if ($_POST['folder'] == PM_SEARCH_RESULTS) {
-        $folder = PM_SEARCH_RESULTS;
+        $current_folder = PM_SEARCH_RESULTS;
+    }
+}
+
+// Check to see if we're displaying a message.
+
+if (isset($mid) && is_numeric($mid)) {
+
+    if (!$pm_message_array = pm_message_get($mid)) {
+
+        html_draw_top();
+        html_error_msg($lang['messagehasbeendeleted']);
+        html_draw_bottom();
+        exit;
     }
 }
 
@@ -236,7 +250,7 @@ if (isset($_POST['savemessages'])) {
 
 if (isset($_POST['exportfolder'])) {
 
-    pm_export($folder);
+    pm_export($message_folder);
     exit;
 }
 
@@ -348,37 +362,38 @@ echo "</script>\n";
 $start = floor($page - 1) * 10;
 if ($start < 0) $start = 0;
 
-if ($folder == PM_FOLDER_INBOX) {
+if ($current_folder == PM_FOLDER_INBOX) {
 
     $pm_messages_array = pm_get_inbox($sort_by, $sort_dir, $start);
 
-}elseif ($folder == PM_FOLDER_SENT) {
+}elseif ($current_folder == PM_FOLDER_SENT) {
 
     $pm_messages_array = pm_get_sent($sort_by, $sort_dir, $start);
 
-}elseif ($folder == PM_FOLDER_OUTBOX) {
+}elseif ($current_folder == PM_FOLDER_OUTBOX) {
 
     $pm_messages_array = pm_get_outbox($sort_by, $sort_dir, $start);
 
-}elseif ($folder == PM_FOLDER_SAVED) {
+}elseif ($current_folder == PM_FOLDER_SAVED) {
 
     $pm_messages_array = pm_get_saveditems($sort_by, $sort_dir, $start);
 
-}elseif ($folder == PM_FOLDER_DRAFTS) {
+}elseif ($current_folder == PM_FOLDER_DRAFTS) {
 
     $pm_messages_array = pm_get_drafts($sort_by, $sort_dir, $start);
 
-}elseif ($folder == PM_SEARCH_RESULTS) {
+}elseif ($current_folder == PM_SEARCH_RESULTS) {
 
     $pm_messages_array = pm_fetch_search_results($sort_by, $sort_dir, $start);
 }
 
-echo "<h1>{$pm_header_array[$folder]}</h1>\n";
+echo "<h1>{$pm_header_array[$current_folder]}</h1>\n";
 echo "<br />\n";
 echo "<div align=\"center\">\n";
-echo "<form name=\"pm\" action=\"pm_messages.php?page=$page\" method=\"post\" target=\"_self\">\n";
+echo "<form name=\"pm\" action=\"pm_messages.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-echo "  ", form_input_hidden('folder', _htmlentities($folder)), "\n";
+echo "  ", form_input_hidden('folder', _htmlentities($current_folder)), "\n";
+echo "  ", form_input_hidden('page', _htmlentities($page)), "\n";
 echo "  <table cellpadding=\"5\" cellspacing=\"0\" width=\"96%\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\" valign=\"top\" width=\"100%\">\n";
@@ -395,66 +410,66 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
 }
 
 if ($sort_by == 'PM.SUBJECT' && $sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead_sort_asc\" align=\"left\" width=\"40%\"><a href=\"pm_messages.php?webtag=$webtag&amp;sort_by=SUBJECT&amp;sort_dir=DESC&amp;page=$page&amp;folder=$folder\" target=\"_self\">{$lang['subject']}</a></td>\n";
+    echo "                   <td class=\"subhead_sort_asc\" align=\"left\" width=\"40%\"><a href=\"pm_messages.php?webtag=$webtag&amp;folder=$current_folder&amp;sort_by=SUBJECT&amp;sort_dir=DESC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">{$lang['subject']}</a></td>\n";
 }elseif ($sort_by == 'PM.SUBJECT' && $sort_dir == 'DESC') {
-    echo "                   <td class=\"subhead_sort_desc\" align=\"left\" width=\"40%\"><a href=\"pm_messages.php?webtag=$webtag&amp;sort_by=SUBJECT&amp;sort_dir=ASC&amp;page=$page&amp;folder=$folder\" target=\"_self\">{$lang['subject']}</a></td>\n";
+    echo "                   <td class=\"subhead_sort_desc\" align=\"left\" width=\"40%\"><a href=\"pm_messages.php?webtag=$webtag&amp;folder=$current_folder&amp;sort_by=SUBJECT&amp;sort_dir=ASC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">{$lang['subject']}</a></td>\n";
 }elseif ($sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead\" align=\"left\" width=\"40%\"><a href=\"pm_messages.php?webtag=$webtag&amp;sort_by=SUBJECT&amp;sort_dir=ASC&amp;page=$page&amp;folder=$folder\" target=\"_self\">{$lang['subject']}</a></td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\" width=\"40%\"><a href=\"pm_messages.php?webtag=$webtag&amp;folder=$current_folder&amp;sort_by=SUBJECT&amp;sort_dir=ASC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">{$lang['subject']}</a></td>\n";
 }else {
-    echo "                   <td class=\"subhead\" align=\"left\" width=\"40%\"><a href=\"pm_messages.php?webtag=$webtag&amp;sort_by=SUBJECT&amp;sort_dir=DESC&amp;page=$page&amp;folder=$folder\" target=\"_self\">{$lang['subject']}</a></td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\" width=\"40%\"><a href=\"pm_messages.php?webtag=$webtag&amp;folder=$current_folder&amp;sort_by=SUBJECT&amp;sort_dir=DESC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">{$lang['subject']}</a></td>\n";
 }
 
-if ($folder == PM_SEARCH_RESULTS) {
+if ($current_folder == PM_SEARCH_RESULTS) {
 
     if ($sort_by == 'TYPE' && $sort_dir == 'ASC') {
-        echo "                   <td class=\"subhead_sort_asc\" align=\"left\" width=\"15%\"><a href=\"pm_messages.php?webtag=$webtag&amp;sort_by=TYPE&amp;sort_dir=DESC&amp;page=$page&amp;folder=$folder\" target=\"_self\">{$lang['folder']}</a></td>\n";
+        echo "                   <td class=\"subhead_sort_asc\" align=\"left\" width=\"15%\"><a href=\"pm_messages.php?webtag=$webtag&amp;folder=$current_folder&amp;sort_by=TYPE&amp;sort_dir=DESC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">{$lang['folder']}</a></td>\n";
     }elseif ($sort_by == 'TYPE' && $sort_dir == 'DESC') {
-        echo "                   <td class=\"subhead_sort_desc\" align=\"left\" width=\"15%\"><a href=\"pm_messages.php?webtag=$webtag&amp;sort_by=TYPE&amp;sort_dir=ASC&amp;page=$page&amp;folder=$folder\" target=\"_self\">{$lang['folder']}</a></td>\n";
+        echo "                   <td class=\"subhead_sort_desc\" align=\"left\" width=\"15%\"><a href=\"pm_messages.php?webtag=$webtag&amp;folder=$current_folder&amp;sort_by=TYPE&amp;sort_dir=ASC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">{$lang['folder']}</a></td>\n";
     }elseif ($sort_dir == 'ASC') {
-        echo "                   <td class=\"subhead\" align=\"left\" width=\"15%\"><a href=\"pm_messages.php?webtag=$webtag&amp;sort_by=TYPE&amp;sort_dir=ASC&amp;page=$page&amp;folder=$folder\" target=\"_self\">{$lang['folder']}</a></td>\n";
+        echo "                   <td class=\"subhead\" align=\"left\" width=\"15%\"><a href=\"pm_messages.php?webtag=$webtag&amp;folder=$current_folder&amp;sort_by=TYPE&amp;sort_dir=ASC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">{$lang['folder']}</a></td>\n";
     }else {
-        echo "                   <td class=\"subhead\" align=\"left\" width=\"15%\"><a href=\"pm_messages.php?webtag=$webtag&amp;sort_by=TYPE&amp;sort_dir=DESC&amp;page=$page&amp;folder=$folder\" target=\"_self\">{$lang['folder']}</a></td>\n";
+        echo "                   <td class=\"subhead\" align=\"left\" width=\"15%\"><a href=\"pm_messages.php?webtag=$webtag&amp;folder=$current_folder&amp;sort_by=TYPE&amp;sort_dir=DESC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">{$lang['folder']}</a></td>\n";
     }
 } 
 
-if ($folder == PM_FOLDER_INBOX || $folder == PM_FOLDER_SAVED || $folder == PM_SEARCH_RESULTS) {
+if ($current_folder == PM_FOLDER_INBOX || $current_folder == PM_FOLDER_SAVED || $current_folder == PM_SEARCH_RESULTS) {
 
-    $col_width = ($folder == PM_FOLDER_SAVED || $folder == PM_SEARCH_RESULTS) ? '15%' : '30%';
+    $col_width = ($current_folder == PM_FOLDER_SAVED || $current_folder == PM_SEARCH_RESULTS) ? '15%' : '30%';
     
     if ($sort_by == 'PM.FROM_UID' && $sort_dir == 'ASC') {
-        echo "                   <td class=\"subhead_sort_asc\" align=\"left\" width=\"$col_width\"><a href=\"pm_messages.php?webtag=$webtag&amp;sort_by=FROM_UID&amp;sort_dir=DESC&amp;page=$page&amp;folder=$folder\" target=\"_self\">{$lang['from']}</a></td>\n";
+        echo "                   <td class=\"subhead_sort_asc\" align=\"left\" width=\"$col_width\"><a href=\"pm_messages.php?webtag=$webtag&amp;folder=$current_folder&amp;sort_by=FROM_UID&amp;sort_dir=DESC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">{$lang['from']}</a></td>\n";
     }elseif ($sort_by == 'PM.FROM_UID' && $sort_dir == 'DESC') {
-        echo "                   <td class=\"subhead_sort_desc\" align=\"left\" width=\"$col_width\"><a href=\"pm_messages.php?webtag=$webtag&amp;sort_by=FROM_UID&amp;sort_dir=ASC&amp;page=$page&amp;folder=$folder\" target=\"_self\">{$lang['from']}</a></td>\n";
+        echo "                   <td class=\"subhead_sort_desc\" align=\"left\" width=\"$col_width\"><a href=\"pm_messages.php?webtag=$webtag&amp;folder=$current_folder&amp;sort_by=FROM_UID&amp;sort_dir=ASC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">{$lang['from']}</a></td>\n";
     }elseif ($sort_dir == 'ASC') {
-        echo "                   <td class=\"subhead\" align=\"left\" width=\"$col_width\"><a href=\"pm_messages.php?webtag=$webtag&amp;sort_by=FROM_UID&amp;sort_dir=ASC&amp;page=$page&amp;folder=$folder\" target=\"_self\">{$lang['from']}</a></td>\n";
+        echo "                   <td class=\"subhead\" align=\"left\" width=\"$col_width\"><a href=\"pm_messages.php?webtag=$webtag&amp;folder=$current_folder&amp;sort_by=FROM_UID&amp;sort_dir=ASC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">{$lang['from']}</a></td>\n";
     }else {
-        echo "                   <td class=\"subhead\" align=\"left\" width=\"$col_width\"><a href=\"pm_messages.php?webtag=$webtag&amp;sort_by=FROM_UID&amp;sort_dir=DESC&amp;page=$page&amp;folder=$folder\" target=\"_self\">{$lang['from']}</a></td>\n";
+        echo "                   <td class=\"subhead\" align=\"left\" width=\"$col_width\"><a href=\"pm_messages.php?webtag=$webtag&amp;folder=$current_folder&amp;sort_by=FROM_UID&amp;sort_dir=DESC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">{$lang['from']}</a></td>\n";
     }
 }
 
-if ($folder == PM_FOLDER_SENT || $folder == PM_FOLDER_OUTBOX || $folder == PM_FOLDER_DRAFTS || $folder == PM_FOLDER_SAVED || $folder == PM_SEARCH_RESULTS) {
+if ($current_folder == PM_FOLDER_SENT || $current_folder == PM_FOLDER_OUTBOX || $current_folder == PM_FOLDER_DRAFTS || $current_folder == PM_FOLDER_SAVED || $current_folder == PM_SEARCH_RESULTS) {
 
-    $col_width = ($folder == PM_FOLDER_SAVED || $folder == PM_SEARCH_RESULTS) ? '15%' : '30%';
+    $col_width = ($current_folder == PM_FOLDER_SAVED || $current_folder == PM_SEARCH_RESULTS) ? '15%' : '30%';
 
     if ($sort_by == 'PM.TO_UID' && $sort_dir == 'ASC') {
-        echo "                   <td class=\"subhead_sort_asc\" align=\"left\" width=\"$col_width\"><a href=\"pm_messages.php?webtag=$webtag&amp;sort_by=TO_UID&amp;sort_dir=DESC&amp;page=$page&amp;folder=$folder\" target=\"_self\">{$lang['to']}</a></td>\n";
+        echo "                   <td class=\"subhead_sort_asc\" align=\"left\" width=\"$col_width\"><a href=\"pm_messages.php?webtag=$webtag&amp;folder=$current_folder&amp;sort_by=TO_UID&amp;sort_dir=DESC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">{$lang['to']}</a></td>\n";
     }elseif ($sort_by == 'PM.TO_UID' && $sort_dir == 'DESC') {
-        echo "                   <td class=\"subhead_sort_desc\" align=\"left\" width=\"$col_width\"><a href=\"pm_messages.php?webtag=$webtag&amp;sort_by=TO_UID&amp;sort_dir=ASC&amp;page=$page&amp;folder=$folder\" target=\"_self\">{$lang['to']}</a></td>\n";
+        echo "                   <td class=\"subhead_sort_desc\" align=\"left\" width=\"$col_width\"><a href=\"pm_messages.php?webtag=$webtag&amp;folder=$current_folder&amp;sort_by=TO_UID&amp;sort_dir=ASC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">{$lang['to']}</a></td>\n";
     }elseif ($sort_dir == 'ASC') {
-        echo "                   <td class=\"subhead\" align=\"left\" width=\"$col_width\"><a href=\"pm_messages.php?webtag=$webtag&amp;sort_by=TO_UID&amp;sort_dir=ASC&amp;page=$page&amp;folder=$folder\" target=\"_self\">{$lang['to']}</a></td>\n";
+        echo "                   <td class=\"subhead\" align=\"left\" width=\"$col_width\"><a href=\"pm_messages.php?webtag=$webtag&amp;folder=$current_folder&amp;sort_by=TO_UID&amp;sort_dir=ASC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">{$lang['to']}</a></td>\n";
     }else {
-        echo "                   <td class=\"subhead\" align=\"left\" width=\"$col_width\"><a href=\"pm_messages.php?webtag=$webtag&amp;sort_by=TO_UID&amp;sort_dir=DESC&amp;page=$page&amp;folder=$folder\" target=\"_self\">{$lang['to']}</a></td>\n";
+        echo "                   <td class=\"subhead\" align=\"left\" width=\"$col_width\"><a href=\"pm_messages.php?webtag=$webtag&amp;folder=$current_folder&amp;sort_by=TO_UID&amp;sort_dir=DESC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">{$lang['to']}</a></td>\n";
     }
 }
 
 if ($sort_by == 'CREATED' && $sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead_sort_asc\" align=\"left\"><a href=\"pm_messages.php?webtag=$webtag&amp;sort_by=CREATED&amp;sort_dir=DESC&amp;page=$page&amp;folder=$folder\" target=\"_self\">{$lang['timesent']}</a></td>\n";
+    echo "                   <td class=\"subhead_sort_asc\" align=\"left\"><a href=\"pm_messages.php?webtag=$webtag&amp;folder=$current_folder&amp;sort_by=CREATED&amp;sort_dir=DESC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">{$lang['timesent']}</a></td>\n";
 }elseif ($sort_by == 'CREATED' && $sort_dir == 'DESC') {
-    echo "                   <td class=\"subhead_sort_desc\" align=\"left\"><a href=\"pm_messages.php?webtag=$webtag&amp;sort_by=CREATED&amp;sort_dir=ASC&amp;page=$page&amp;folder=$folder\" target=\"_self\">{$lang['timesent']}</a></td>\n";
+    echo "                   <td class=\"subhead_sort_desc\" align=\"left\"><a href=\"pm_messages.php?webtag=$webtag&amp;folder=$current_folder&amp;sort_by=CREATED&amp;sort_dir=ASC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">{$lang['timesent']}</a></td>\n";
 }elseif ($sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead\" align=\"left\"><a href=\"pm_messages.php?webtag=$webtag&amp;sort_by=CREATED&amp;sort_dir=ASC&amp;page=$page&amp;folder=$folder\" target=\"_self\">{$lang['timesent']}</a></td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\"><a href=\"pm_messages.php?webtag=$webtag&amp;folder=$current_folder&amp;sort_by=CREATED&amp;sort_dir=ASC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">{$lang['timesent']}</a></td>\n";
 }else {
-    echo "                   <td class=\"subhead\" align=\"left\"><a href=\"pm_messages.php?webtag=$webtag&amp;sort_by=CREATED&amp;sort_dir=DESC&amp;page=$page&amp;folder=$folder\" target=\"_self\">{$lang['timesent']}</a></td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\"><a href=\"pm_messages.php?webtag=$webtag&amp;folder=$current_folder&amp;sort_by=CREATED&amp;sort_dir=DESC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">{$lang['timesent']}</a></td>\n";
 }
 
 echo "                </tr>\n";
@@ -483,7 +498,7 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
             }
         }
 
-        echo "            <a href=\"pm_messages.php?webtag=$webtag&amp;mid={$message['MID']}&amp;page=$page\" target=\"_self\">{$message['SUBJECT']}</a>";
+        echo "            <a href=\"pm_messages.php?webtag=$webtag&amp;folder=$current_folder&amp;mid={$message['MID']}&amp;page=$page\" target=\"_self\">{$message['SUBJECT']}</a>";
         
         if (isset($message['AID']) && pm_has_attachments($message['MID'])) {
             echo "            &nbsp;&nbsp;<img src=\"".style_image('attach.png')."\" border=\"0\" alt=\"{$lang['attachment']} - {$message['AID']}\" title=\"{$lang['attachment']}\" />";
@@ -491,14 +506,14 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
 
         echo "            </td>\n";
 
-        if ($folder == PM_FOLDER_SENT || $folder == PM_FOLDER_OUTBOX) {
+        if ($current_folder == PM_FOLDER_SENT || $current_folder == PM_FOLDER_OUTBOX) {
 
             echo "                  <td align=\"left\" class=\"postbody\">";
             echo "            <a href=\"user_profile.php?webtag=$webtag&amp;uid={$message['TO_UID']}\" target=\"_blank\" onclick=\"return openProfile({$message['TO_UID']}, '$webtag')\">";
             echo add_wordfilter_tags(format_user_name($message['TLOGON'], $message['TNICK'])) . "</a>";
             echo "            </td>\n";
 
-        }elseif ($folder == PM_FOLDER_SAVED) {
+        }elseif ($current_folder == PM_FOLDER_SAVED) {
 
             echo "                  <td align=\"left\" class=\"postbody\">";
             echo "            <a href=\"user_profile.php?webtag=$webtag&amp;uid={$message['TO_UID']}\" target=\"_blank\" onclick=\"return openProfile({$message['TO_UID']}, '$webtag')\">";
@@ -510,7 +525,7 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
             echo add_wordfilter_tags(format_user_name($message['FLOGON'], $message['FNICK'])) . "</a>";
             echo "            </td>\n";
 
-        }elseif ($folder == PM_FOLDER_DRAFTS) {
+        }elseif ($current_folder == PM_FOLDER_DRAFTS) {
 
             if (isset($message['RECIPIENTS']) && strlen(trim($message['RECIPIENTS'])) > 0) {
                 
@@ -528,7 +543,7 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
                 echo "            </td>\n";
             }
 
-        }elseif ($folder == PM_SEARCH_RESULTS) {
+        }elseif ($current_folder == PM_SEARCH_RESULTS) {
 
             echo "                  <td align=\"left\" class=\"postbody\">{$pm_folder_name_array[$message['TYPE']]}</td>\n";
             
@@ -557,7 +572,7 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
 
 }else {
 
-    if ($folder == PM_SEARCH_RESULTS) {
+    if ($current_folder == PM_SEARCH_RESULTS) {
     
         echo "                <tr>\n";
         echo "                  <td class=\"postbody\"><img src=\"", style_image('search.png'), "\" alt=\"{$lang['matches']}\" title=\"{$lang['matches']}\" /></td><td align=\"left\" class=\"postbody\">{$lang['found']}: 0 {$lang['matches']}</td>\n";
@@ -585,10 +600,10 @@ echo "      <td align=\"left\" valign=\"top\" width=\"100%\">\n";
 echo "        <table width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td width=\"25%\">&nbsp;</td>\n";
-echo "            <td class=\"postbody\" align=\"center\">", page_links("pm_messages.php?webtag=$webtag&folder=$folder", $start, $pm_messages_array['message_count'], 10), "</td>\n";
+echo "            <td class=\"postbody\" align=\"center\">", page_links("pm_messages.php?webtag=$webtag&folder=$current_folder", $start, $pm_messages_array['message_count'], 10), "</td>\n";
 
 if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['message_array']) > 0) {
-    echo "            <td align=\"right\" width=\"25%\" nowrap=\"nowrap\">", ($folder <> PM_SEARCH_RESULTS) ? form_submit("exportfolder", "Export Folder") : "", "&nbsp;", (($folder <> PM_FOLDER_SAVED) && ($folder <> PM_FOLDER_OUTBOX)) ? form_submit("savemessages", $lang['savemessage']) : "", "&nbsp;", form_submit("deletemessages", $lang['delete']), "</td>\n";
+    echo "            <td align=\"right\" width=\"25%\" nowrap=\"nowrap\">", ($current_folder <> PM_SEARCH_RESULTS) ? form_submit("exportfolder", "Export Folder") : "", "&nbsp;", (($current_folder <> PM_FOLDER_SAVED) && ($current_folder <> PM_FOLDER_OUTBOX)) ? form_submit("savemessages", $lang['savemessage']) : "", "&nbsp;", form_submit("deletemessages", $lang['delete']), "</td>\n";
 }else {
     echo "            <td width=\"25%\">&nbsp;</td>\n";
 }
@@ -601,34 +616,24 @@ echo "  </table>\n";
 
 // View a message
 
-if (isset($mid) && is_numeric($mid)) {
+if (isset($pm_message_array) && is_array($pm_message_array)) {
 
-    if ($pm_message_array = pm_message_get($mid)) {
+    $pm_message_array['CONTENT'] = pm_get_content($mid);
 
-        $pm_message_array['CONTENT'] = pm_get_content($mid);
-
-        echo "  <br />\n";
-        echo "  <table cellpadding=\"5\" cellspacing=\"0\" width=\"96%\">\n";
-        echo "    <tr>\n";
-        echo "      <td>\n";
-        echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
-        echo "          <tr>\n";
-        echo "            <td align=\"left\">", pm_display($pm_message_array, $folder), "</td>\n";
-        echo "          </tr>\n";
-        echo "        </table>\n";
-        echo "      </td>\n";
-        echo "    </tr>\n";
-        echo "  </table>\n";
-    
-    }else {
-    
-        html_draw_top();
-        html_error_msg($lang['messagehasbeendeleted']);
-        html_draw_bottom();
-        exit;
-    }
+    echo "  <br />\n";
+    echo "  <table cellpadding=\"5\" cellspacing=\"0\" width=\"96%\">\n";
+    echo "    <tr>\n";
+    echo "      <td>\n";
+    echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td align=\"left\">", pm_display($pm_message_array, $message_folder), "</td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
 }
-
+    
 echo "</form>\n";
 echo "</div>\n";
 

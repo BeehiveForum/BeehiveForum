@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.414 2007-04-15 17:07:57 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.415 2007-04-17 23:36:51 decoyduck Exp $ */
 
 // International English language file
 
@@ -1200,6 +1200,8 @@ $lang['adduserstofriendslist'] = "Add users to your friends list to have them ap
 
 $lang['messagesaved'] = "Message Saved";
 $lang['messagewassuccessfullysavedtodraftsfolder'] = "Message was successfully saved to 'Drafts' folder";
+$lang['pmtooltipxmessages'] = "%s messages";
+$lang['pmtooltip1message'] = "1 message";
 
 // Preferences / Profile (user_*.php) ---------------------------------------------
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.119 2007-04-10 16:02:03 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.120 2007-04-17 23:36:51 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -383,11 +383,11 @@ function folder_get_all()
     return false;
 }
 
-function folder_get_all_by_page($start)
+function folder_get_all_by_page($offset)
 {
     $db_folder_get_all_by_page = db_connect();
 
-    if (!is_numeric($start)) return false;
+    if (!is_numeric($offset)) return false;
 
     if (!$table_data = get_table_prefix()) return array();
 
@@ -409,7 +409,7 @@ function folder_get_all_by_page($start)
     $sql.= "AND FOLDER_PERMS.GID = 0 AND FOLDER_PERMS.FORUM IN (0, $forum_fid)) ";
     $sql.= "GROUP BY FOLDER.FID ";
     $sql.= "ORDER BY FOLDER.POSITION ";
-    $sql.= "LIMIT $start, 10";
+    $sql.= "LIMIT $offset, 10";
 
     $result = db_query($sql, $db_folder_get_all_by_page);
 
@@ -422,8 +422,8 @@ function folder_get_all_by_page($start)
     
     }else if ($folder_count > 0) {
 
-        $start = ($start - 10) > 0 ? $start - 10 : 0;
-        return folder_get_all_by_page($start);
+        $offset = ceil($folder_count / 10);
+        return folder_get_all_by_page($offset);
     }
 
     return array('folder_array' => $folder_array,

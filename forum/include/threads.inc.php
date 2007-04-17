@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.256 2007-04-14 01:35:58 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.257 2007-04-17 23:36:51 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1901,16 +1901,11 @@ function thread_auto_prune_unread_data($force_start = false)
         if (db_fetch_mysql_version() >= 40116) {
 
             $sql = "INSERT INTO {$table_data['PREFIX']}THREAD_STATS (TID, UNREAD_PID, UNREAD_CREATED) ";
-            $sql.= "SELECT {$table_data['PREFIX']}THREAD.TID, MAX({$table_data['PREFIX']}POST.PID), ";
-            $sql.= "MAX({$table_data['PREFIX']}POST.CREATED) FROM {$table_data['PREFIX']}THREAD ";
-            $sql.= "LEFT JOIN {$table_data['PREFIX']}POST ";
-            $sql.= "ON ({$table_data['PREFIX']}POST.TID = {$table_data['PREFIX']}THREAD.TID ";
-            $sql.= "AND {$table_data['PREFIX']}POST.CREATED < ";
-            $sql.= "FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp)) ";
-            $sql.= "WHERE {$table_data['PREFIX']}THREAD.MODIFIED < ";
-            $sql.= "FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp) ";
-            $sql.= "GROUP BY {$table_data['PREFIX']}THREAD.TID ON DUPLICATE KEY ";
-            $sql.= "UPDATE UNREAD_PID = VALUES(UNREAD_PID), ";
+            $sql.= "SELECT POST.TID, MAX(POST.PID), MAX(POST.CREATED) FROM {$table_data['PREFIX']}POST POST ";
+            $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD_STATS THREAD_STATS ON (THREAD_STATS.TID = POST.TID) ";
+            $sql.= "WHERE POST.CREATED < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp) ";
+            $sql.= "AND (THREAD_STATS.UNREAD_PID < POST.PID OR THREAD_STATS.UNREAD_PID IS NULL) ";
+            $sql.= "GROUP BY POST.TID ON DUPLICATE KEY UPDATE UNREAD_PID = VALUES(UNREAD_PID), ";
             $sql.= "UNREAD_CREATED = VALUES(UNREAD_CREATED)";
             
             if (!$result = db_query($sql, $db_thread_prune_unread_data)) return false;

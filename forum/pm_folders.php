@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_folders.php,v 1.5 2007-04-15 21:32:24 decoyduck Exp $ */
+/* $Id: pm_folders.php,v 1.6 2007-04-17 23:36:51 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -110,11 +110,12 @@ pm_enabled();
 
 // Various Headers for the PM folders
 
-$pm_header_array = array(PM_FOLDER_INBOX  => $lang['pminbox'],
-                         PM_FOLDER_SENT   => $lang['pmsentitems'],
-                         PM_FOLDER_OUTBOX => $lang['pmoutbox'],
-                         PM_FOLDER_SAVED  => $lang['pmsaveditems'],
-                         PM_FOLDER_DRAFTS => $lang['pmdrafts']);
+$pm_header_array = array(PM_FOLDER_INBOX   => $lang['pminbox'],
+                         PM_FOLDER_SENT    => $lang['pmsentitems'],
+                         PM_FOLDER_OUTBOX  => $lang['pmoutbox'],
+                         PM_FOLDER_SAVED   => $lang['pmsaveditems'],
+                         PM_FOLDER_DRAFTS  => $lang['pmdrafts'],
+                         PM_SEARCH_RESULTS => $lang['searchresults']);
 
 // Default Folder
 
@@ -154,6 +155,8 @@ echo "<form name=\"pm\" action=\"pm_messages.php\" method=\"post\" target=\"pm_m
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden('folder', PM_SEARCH_RESULTS), "\n";
 
+$pm_message_count_array = pm_get_folder_message_counts();
+
 foreach ($pm_header_array as $folder_type => $folder_name) {
 
     echo "  <table width=\"90%\" border=\"0\" cellpadding=\"2\" cellspacing=\"0\">\n";
@@ -161,7 +164,7 @@ foreach ($pm_header_array as $folder_type => $folder_name) {
     echo "      <td align=\"left\">\n";
     echo "        <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
     echo "          <tr>\n";
-    echo "            <td align=\"left\" class=\"foldername\"><img src=\"", style_image('folder.png'), "\" alt=\"{$lang['folder']}\" title=\"{$lang['folder']}\" />&nbsp;<a href=\"pm_messages.php?webtag=$webtag&amp;folder=$folder_type\" title=\"$folder_name\">$folder_name</a></td>\n";
+    echo "            <td align=\"left\" class=\"foldername\"><img src=\"", style_image('folder.png'), "\" alt=\"{$lang['folder']}\" title=\"{$lang['folder']}\" />&nbsp;<a href=\"pm_messages.php?webtag=$webtag&amp;folder=$folder_type\" title=\"", ($pm_message_count_array[$folder_type] <> 1) ? sprintf($lang['pmtooltipxmessages'], $pm_message_count_array[$folder_type]) : $lang['pmtooltip1message'], "\">$folder_name</a></td>\n";
     echo "          </tr>\n";
     echo "        </table>\n";
     echo "      </td>\n";

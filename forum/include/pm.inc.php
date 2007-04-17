@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.181 2007-04-15 21:32:24 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.182 2007-04-17 23:36:51 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -337,8 +337,8 @@ function pm_get_inbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
 
     }else if ($offset > 0) {
 
-        $offset = ($offset - 10) > 0 ? $offset - 10 : 0;
-        return pm_get_inbox($offset);
+        $offset = floor($message_count / 10) * 10;
+        return pm_get_inbox($sort_by, $sort_dir, $offset);
     }
 
     pms_have_attachments($pm_get_inbox_array, $mid_array);
@@ -423,8 +423,8 @@ function pm_get_outbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
 
     }else if ($offset > 0) {
 
-        $offset = ($offset - 10) > 0 ? $offset - 10 : 0;
-        return pm_get_outbox($offset);
+        $offset = floor($message_count / 10) * 10;
+        return pm_get_outbox($sort_by, $sort_dir, $offset);
     }
 
     pms_have_attachments($pm_get_outbox_array, $mid_array);
@@ -509,8 +509,8 @@ function pm_get_sent($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
 
     }else if ($offset > 0) {
 
-        $offset = ($offset - 10) > 0 ? $offset - 10 : 0;
-        return pm_get_sent($offset);
+        $offset = floor($message_count / 10) * 10;
+        return pm_get_sent($sort_by, $sort_dir, $offset);
     }
 
     pms_have_attachments($pm_get_sent_array, $mid_array);
@@ -597,8 +597,8 @@ function pm_get_saveditems($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = f
 
     }else if ($offset > 0) {
 
-        $offset = ($offset - 10) > 0 ? $offset - 10 : 0;
-        return pm_get_saveditems($offset);
+        $offset = floor($message_count / 10) * 10;
+        return pm_get_saveditems($sort_by, $sort_dir, $offset);
     }
 
     pms_have_attachments($pm_get_saveditems_array, $mid_array);
@@ -683,8 +683,8 @@ function pm_get_drafts($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
 
     }else if ($offset > 0) {
 
-        $offset = ($offset - 10) > 0 ? $offset - 10 : 0;
-        return pm_get_drafts($offset);
+        $offset = floor($message_count / 10) * 10;
+        return pm_get_drafts($sort_by, $sort_dir, $offset);
     }
 
     pms_have_attachments($pm_get_drafts_array, $mid_array);
@@ -785,18 +785,21 @@ function pm_fetch_search_results ($sort_by = 'CREATED', $sort_dir = 'DESC', $off
 
     if ($message_count > 0) {
 
-        $sql = "SELECT PM.MID, PM.TYPE, PM.FROM_UID, PM.TO_UID, ";
-        $sql.= "PM.SUBJECT, PM.RECIPIENTS, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, ";
+        $sql = "SELECT PM_SEARCH_RESULTS.MID, PM_SEARCH_RESULTS.TYPE, ";
+        $sql.= "PM_SEARCH_RESULTS.FROM_UID, PM_SEARCH_RESULTS.TO_UID, ";
+        $sql.= "PM_SEARCH_RESULTS.RECIPIENTS, PM_SEARCH_RESULTS.SUBJECT, ";
+        $sql.= "UNIX_TIMESTAMP(PM_SEARCH_RESULTS.CREATED) AS CREATED, ";
         $sql.= "FUSER.LOGON AS FLOGON, TUSER.LOGON AS TLOGON, FUSER.NICKNAME AS FNICK, ";
         $sql.= "TUSER.NICKNAME AS TNICK, USER_PEER_FROM.PEER_NICKNAME AS PFNICK, ";
-        $sql.= "USER_PEER_TO.PEER_NICKNAME AS PTNICK FROM PM_SEARCH_RESULTS PM ";
-        $sql.= "LEFT JOIN USER FUSER ON (PM.FROM_UID = FUSER.UID) ";
-        $sql.= "LEFT JOIN USER TUSER ON (PM.TO_UID = TUSER.UID) ";
+        $sql.= "USER_PEER_TO.PEER_NICKNAME AS PTNICK FROM PM_SEARCH_RESULTS ";
+        $sql.= "LEFT JOIN PM ON (PM.MID = PM_SEARCH_RESULTS.MID) ";
+        $sql.= "LEFT JOIN USER FUSER ON (PM_SEARCH_RESULTS.FROM_UID = FUSER.UID) ";
+        $sql.= "LEFT JOIN USER TUSER ON (PM_SEARCH_RESULTS.TO_UID = TUSER.UID) ";
         $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER_FROM ";
         $sql.= "ON (USER_PEER_FROM.PEER_UID = FUSER.UID AND USER_PEER_FROM.UID = '$uid') ";
         $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER_TO ";
         $sql.= "ON (USER_PEER_TO.PEER_UID = TUSER.UID AND USER_PEER_TO.UID = '$uid') ";
-        $sql.= "WHERE PM.UID = '$uid' ";
+        $sql.= "WHERE PM_SEARCH_RESULTS.UID = '$uid' AND PM.MID IS NOT NULL ";
         $sql.= "ORDER BY $sort_by $sort_dir ";
         $sql.= "LIMIT $offset, 10";
 
@@ -826,13 +829,77 @@ function pm_fetch_search_results ($sort_by = 'CREATED', $sort_dir = 'DESC', $off
 
         }else if ($offset > 0) {
 
-            $offset = ($offset - 10) > 0 ? $offset - 10 : 0;
+            $offset = floor($message_count / 10) * 10;
             return pm_fetch_search_results($sort_by, $sort_dir, $offset);
         }
     }
 
     return array('message_count' => $message_count,
                  'message_array' => $pm_search_results_array);
+}
+
+/**
+* Get Messages Free Space
+*
+* Calculates and returns the free space available to the user to
+* store messages.
+*
+* @return mixed - false on failure, integer on success
+* @param integer $uid - Optional user ID for finding space of another user.
+*/
+
+function pm_get_folder_message_counts()
+{
+    $db_pm_get_folder_message_counts = db_connect();
+
+    if (($uid = bh_session_get_value('UID')) === false) return false;
+
+    $message_count_array = array(PM_FOLDER_INBOX  => 0, PM_FOLDER_SENT   => 0,
+                                 PM_FOLDER_OUTBOX => 0, PM_FOLDER_SAVED  => 0,
+                                 PM_FOLDER_DRAFTS => 0);
+
+    $sql = "SELECT COUNT(MID) AS MESSAGE_COUNT, TYPE ";
+    $sql.= "FROM PM WHERE ((TYPE & ". PM_INBOX_ITEMS. " > 0) AND TO_UID = '$uid') ";
+    $sql.= "OR ((TYPE & ". PM_OUTBOX_ITEMS. " > 0) AND FROM_UID = '$uid') ";
+    $sql.= "OR ((TYPE & ". PM_SENT_ITEMS. " > 0) AND FROM_UID = '$uid') ";
+    $sql.= "OR (TYPE = ". PM_SAVED_OUT. " AND FROM_UID = '$uid') ";
+    $sql.= "OR (TYPE = ". PM_SAVED_IN. " AND TO_UID = '$uid') ";
+    $sql.= "OR (TYPE = ". PM_SAVED_DRAFT. " AND FROM_UID = '$uid') ";
+    $sql.= "GROUP BY TYPE";
+
+    $result = db_query($sql, $db_pm_get_folder_message_counts);
+
+    while ($pm_data_array = db_fetch_array($result)) {
+
+        if ($pm_data_array['TYPE'] & PM_INBOX_ITEMS) {
+
+            $message_count_array[PM_FOLDER_INBOX] = $pm_data_array['MESSAGE_COUNT'];
+            
+        }elseif ($pm_data_array['TYPE'] & PM_SENT_ITEMS) {
+
+            $message_count_array[PM_FOLDER_SENT] = $pm_data_array['MESSAGE_COUNT'];
+
+        }elseif ($pm_data_array['TYPE'] & PM_OUTBOX_ITEMS) {
+
+            $message_count_array[PM_FOLDER_OUTBOX] = $pm_data_array['MESSAGE_COUNT'];
+
+        }elseif ($pm_data_array['TYPE'] & PM_SAVED_ITEMS) {
+
+            $message_count_array[PM_FOLDER_SAVED] = $pm_data_array['MESSAGE_COUNT'];
+
+        }elseif ($pm_data_array['TYPE'] & PM_DRAFT_ITEMS) {
+
+            $message_count_array[PM_FOLDER_DRAFTS] = $pm_data_array['MESSAGE_COUNT'];
+        }
+    }
+
+    $sql = "SELECT COUNT(MID) FROM PM_SEARCH_RESULTS WHERE UID = '$uid'";
+    $result = db_query($sql, $db_pm_get_folder_message_counts);
+
+    list($search_results_count) = db_fetch_array($result, DB_RESULT_NUM);
+    $message_count_array[PM_SEARCH_RESULTS] = $search_results_count;
+
+    return $message_count_array;
 }
 
 

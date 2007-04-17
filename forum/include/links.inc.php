@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.inc.php,v 1.58 2007-04-10 16:02:03 decoyduck Exp $ */
+/* $Id: links.inc.php,v 1.59 2007-04-17 23:36:51 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -75,8 +75,17 @@ function links_get_in_folder($fid, $invisible = false, $sort_by = "TITLE", $sort
 
     $result = db_query($sql, $db_links_get_in_folder);
 
-    while ($row = db_fetch_array($result)) {
-        $links_array[$row['LID']] = $row;
+    if (db_num_rows($result) > 0) {
+
+        while ($row = db_fetch_array($result)) {
+
+            $links_array[$row['LID']] = $row;
+        }
+
+    }else {
+
+        $offset = ceil($links_count / 10);
+        return links_get_in_folder($fid, $invisible, $sort_by, $sort_dir, $offset);
     }
 
     return array('links_count' => $links_count,
@@ -333,9 +342,17 @@ function links_get_all($invisible = false, $sort_by = "TITLE", $sort_dir = "ASC"
 
     $result = db_query($sql, $db_links_get_in_folder);
 
-    while ($row = db_fetch_array($result)) {
+    if (db_num_rows($result) > 0) {
 
-        $links_array[$row['LID']] = $row;
+        while ($row = db_fetch_array($result)) {
+
+            $links_array[$row['LID']] = $row;
+        }
+
+    }else {
+
+        $offset = ceil($links_count / 20);
+        return links_get_all($invisible, $sort_by, $sort_dir, $offset);
     }
 
     return array('links_count' => $links_count,

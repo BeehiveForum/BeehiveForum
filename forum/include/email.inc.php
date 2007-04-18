@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.105 2007-04-14 18:44:03 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.106 2007-04-18 23:20:27 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -44,7 +44,7 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 function email_sendnotification($tuid, $fuid, $tid, $pid)
 {
-    if (!check_mail_variables()) file_put_contents('email.txt', __LINE__);
+    if (!check_mail_variables()) return false;
 
     if (!is_numeric($tuid)) return false;
     if (!is_numeric($fuid)) return false;
@@ -76,18 +76,19 @@ function email_sendnotification($tuid, $fuid, $tid, $pid)
 
             $lang = email_get_language($tuid);
 
-            $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
+            $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid);
+
             $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
 
             $subject = sprintf($lang['msgnotification_subject'], $forum_name);
 
-            $message_author = add_wordfilter_tags(format_user_name($from_user['LOGON'], $from_user['NICKNAME']));
-            $thread_title   = add_wordfilter_tags(_htmlentities_decode(thread_format_prefix($thread['PREFIX'], $thread['TITLE'])));
+            $message_author = word_filter_apply(format_user_name($from_user['LOGON'], $from_user['NICKNAME']), $tuid);
+            $thread_title   = word_filter_apply(_htmlentities_decode(thread_format_prefix($thread['PREFIX'], $thread['TITLE'])), $tuid);
 
             $forum_link     = html_get_forum_uri();
             $message_link   = "$forum_link/index.php?webtag=$webtag&msg=$tid.$pid";
 
-            $message = wordwrap(apply_wordfilter(sprintf($lang['msgnotificationemail'], $message_author, $forum_name, $thread_title, $message_link, $forum_link), $tuid));
+            $message = wordwrap(sprintf($lang['msgnotificationemail'], $message_author, $forum_name, $thread_title, $message_link, $forum_link));
 
             $header = "Return-path: $forum_email\n";
             $header.= "From: \"$forum_name\" <$forum_email>\n";
@@ -150,17 +151,19 @@ function email_sendsubscription($tuid, $fuid, $tid, $pid)
             // get the right language for the email
             $lang = email_get_language($tuid);
 
-            $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
+            $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid);
+
             $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
 
             $subject = sprintf($lang['subnotification_subject'], $forum_name);
 
-            $message_author = add_wordfilter_tags(format_user_name($from_user['LOGON'], $from_user['NICKNAME']));
-            $thread_title   = add_wordfilter_tags(_htmlentities_decode(thread_format_prefix($thread['PREFIX'], $thread['TITLE'])));
+            $message_author = word_filter_apply(format_user_name($from_user['LOGON'], $from_user['NICKNAME']), $tuid);
+            $thread_title   = word_filter_apply(_htmlentities_decode(thread_format_prefix($thread['PREFIX'], $thread['TITLE'])), $tuid);
+
             $forum_link     = html_get_forum_uri();
             $message_link   = "$forum_link/index.php?webtag=$webtag&msg=$tid.$pid";
 
-            $message = wordwrap(apply_wordfilter(sprintf($lang['subnotification'], $message_author, $forum_name, $thread_title, $message_link, $message_link), $tuid));
+            $message = wordwrap(sprintf($lang['subnotification'], $message_author, $forum_name, $thread_title, $message_link, $message_link));
 
             $header = "Return-path: $forum_email\n";
             $header.= "From: \"$forum_name\" <$forum_email>\n";
@@ -213,17 +216,19 @@ function email_send_pm_notification($tuid, $mid, $fuid)
              // get the right language for the email
             $lang = email_get_language($tuid);
 
-            $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
+            $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid);
+
             $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
 
             $subject = sprintf($lang['pmnotification_subject'], $forum_name);
 
-            $message_author  = add_wordfilter_tags(format_user_name($from_user['LOGON'], $from_user['NICKNAME']));
-            $message_subject = add_wordfilter_tags(_htmlentities_decode($pm_subject));
+            $message_author  = word_filter_apply(format_user_name($from_user['LOGON'], $from_user['NICKNAME']), $tuid);
+            $message_subject = word_filter_apply(_htmlentities_decode($pm_subject), $tuid);
+
             $forum_link      = html_get_forum_uri();
             $message_link    = "$forum_link/index.php?webtag=$webtag&pmid=$mid";
 
-            $message = wordwrap(apply_wordfilter(sprintf($lang['pmnotification'], $message_author, $forum_name, $message_subject, $message_link, $forum_link), $tuid));
+            $message = wordwrap(sprintf($lang['pmnotification'], $message_author, $forum_name, $message_subject, $message_link, $forum_link));
 
             $header = "Return-path: $forum_email\n";
             $header.= "From: \"$forum_name\" <$forum_email>\n";
@@ -266,7 +271,8 @@ function email_send_pw_reminder($logon)
             // get the right language for the email
             $lang = email_get_language($to_user['UID']);
 
-            $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
+            $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid);
+
             $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
 
             $subject = sprintf($lang['passwdresetrequest'], $forum_name);
@@ -365,12 +371,12 @@ function email_send_user_confirmation($tuid)
         // get the right language for the email
         $lang = email_get_language($to_user['UID']);
 
-        $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
+        $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid);
         $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
 
         $subject = sprintf($lang['emailconfirmationrequired'], $forum_name);
 
-        $nickname     = $to_user['NICKNAME'];
+        $nickname     = word_filter_apply($to_user['NICKNAME'], $tuid);
         $forum_link   = html_get_forum_uri();
         $confirm_link = "$forum_link/confirm_email.php?webtag=$webtag&u={$to_user['UID']}&h={$to_user['PASSWD']}";
 
@@ -417,12 +423,14 @@ function email_send_message_to_user($tuid, $fuid, $subject, $message)
         // get the right language for the email
         $lang = email_get_language($to_user['UID']);
 
-        $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
+        $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid);
+
         $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
 
-        $sent_from = add_wordfilter_tags(format_user_name($from_user['LOGON'], $from_user['NICKNAME']));
+        $sent_from = word_filter_apply(format_user_name($from_user['LOGON'], $from_user['NICKNAME']), $tuid);
 
-        $message = wordwrap(apply_wordfilter(sprintf("\n\n{$lang['msgsentfromby']}", $forum_name, $sent_from), $tuid));
+        $message = word_filter_apply($message, $tuid);
+        $message.= wordwrap(sprintf("\n\n{$lang['msgsentfromby']}", $forum_name, $sent_from));
 
         $header = "Return-path: $forum_email\n";
         $header.= "From: \"$forum_name\" <$forum_email>\n";
@@ -446,7 +454,20 @@ function email_send_message_to_user($tuid, $fuid, $subject, $message)
 
 function email_get_language($to_uid)
 {
-    $forum_settings = forum_get_settings();
+    // Start out by including the English language file. This will allow
+    // us to still use Beehive even if our language file isn't up to date
+    // correctly.
+
+    // The English language file must exist even if we're not going to be
+    // using it in our forum. If we can't find it we'll bail out here.
+
+    if (!file_exists(BH_INCLUDE_PATH. "languages/en.inc.php")) {
+        trigger_error("<p>Could not load English language file (en.inc.php)</p>", E_USER_ERROR);
+    }
+
+    include(BH_INCLUDE_PATH. "languages/en.inc.php");
+
+    $default_language = forum_get_setting('default_language', false, 'en');
 
      // if the user has expressed a preference for language, use it
      // if available otherwise use the default language.
@@ -459,8 +480,6 @@ function email_get_language($to_uid)
              return $lang;
         }
     }
-
-    $default_language = forum_get_setting('default_language', false, 'en');
 
     require("./include/languages/{$default_language}.inc.php");
     return $lang;

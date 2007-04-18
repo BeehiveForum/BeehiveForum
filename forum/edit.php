@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.219 2007-04-12 23:53:36 decoyduck Exp $ */
+/* $Id: edit.php,v 1.220 2007-04-18 23:20:26 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -646,18 +646,18 @@ echo "                  <table class=\"posthead\" width=\"210\">\n";
 echo "                    <tr>\n";
 echo "                      <td align=\"left\">\n";
 echo "                        <h2>{$lang['folder']}</h2>\n";
-echo "                        ", add_wordfilter_tags($threaddata['FOLDER_TITLE']), "\n";
+echo "                        ", word_filter_add_ob_tags($threaddata['FOLDER_TITLE']), "\n";
 echo "                        <h2>{$lang['threadtitle']}</h2>\n";
-echo "                        ", add_wordfilter_tags(thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE'])), "\n";
+echo "                        ", word_filter_add_ob_tags(thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE'])), "\n";
 echo "                        <h2>{$lang['to']}</h2>\n";
 
 if ($preview_message['TLOGON'] != $lang['allcaps']) {
 
-    echo "                        <a href=\"user_profile.php?webtag=$webtag&amp;uid=$to_uid\" target=\"_blank\" onclick=\"return openProfile($to_uid, '$webtag')\">", add_wordfilter_tags(format_user_name($preview_message['TLOGON'], $preview_message['TNICK'])), "</a><br /><br />\n";
+    echo "                        <a href=\"user_profile.php?webtag=$webtag&amp;uid=$to_uid\" target=\"_blank\" onclick=\"return openProfile($to_uid, '$webtag')\">", word_filter_add_ob_tags(format_user_name($preview_message['TLOGON'], $preview_message['TNICK'])), "</a><br /><br />\n";
 
 }else {
 
-    echo "                        ", add_wordfilter_tags(format_user_name($preview_message['TLOGON'], $preview_message['TNICK'])), "<br /><br />\n";
+    echo "                        ", word_filter_add_ob_tags(format_user_name($preview_message['TLOGON'], $preview_message['TNICK'])), "<br /><br />\n";
 }
 
 echo "                        <h2>{$lang['messageoptions']}</h2>\n";

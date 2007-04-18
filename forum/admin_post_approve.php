@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_post_approve.php,v 1.45 2007-04-12 13:23:08 decoyduck Exp $ */
+/* $Id: admin_post_approve.php,v 1.46 2007-04-18 23:20:26 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -228,7 +228,7 @@ if (isset($msg) && validate_msg($msg)) {
                     $msg = "$tid.$pid";
                 }
 
-                echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['approvepost']} &raquo; ", add_wordfilter_tags(thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE'])), "</h1>";
+                echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['approvepost']} &raquo; ", word_filter_add_ob_tags(thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE'])), "</h1>";
                 echo "<br />\n";
 
                 if ($return_queue == "Y") {

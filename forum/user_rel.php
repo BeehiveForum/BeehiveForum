@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.87 2007-04-12 13:23:12 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.88 2007-04-18 23:20:27 decoyduck Exp $ */
 
 /**
 * Displays and handles the User Relationship page
@@ -250,7 +250,7 @@ $user_prefs = user_get_prefs($uid);
 $user_perms = perm_get_user_permissions($uid);
 $user_peer_perms = perm_get_user_permissions($peer_uid);
 
-echo "<h1>{$lang['userrelationship']} &raquo; <a href=\"user_profile.php?webtag=$webtag&amp;uid=$peer_uid\" target=\"_blank\" onclick=\"return openProfile($peer_uid, '$webtag')\">", add_wordfilter_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</a></h1>\n";
+echo "<h1>{$lang['userrelationship']} &raquo; <a href=\"user_profile.php?webtag=$webtag&amp;uid=$peer_uid\" target=\"_blank\" onclick=\"return openProfile($peer_uid, '$webtag')\">", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</a></h1>\n";
 echo "<br />\n";
 echo "<form name=\"relationship\" action=\"user_rel.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";

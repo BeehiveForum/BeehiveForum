@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.171 2007-04-12 13:23:11 decoyduck Exp $ */
+/* $Id: search.php,v 1.172 2007-04-18 23:20:27 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -451,7 +451,7 @@ if (isset($search_success) && $search_success === true && isset($offset)) {
 
                 // Apply word filter to truncated thread title                
                 
-                $message['TITLE'] = add_wordfilter_tags($message['TITLE']);
+                $message['TITLE'] = word_filter_add_ob_tags($message['TITLE']);
 
                 // Limit displayed post content to 35 characters
 
@@ -471,17 +471,17 @@ if (isset($search_success) && $search_success === true && isset($offset)) {
 
                 // Apply word filter to content.
                 
-                $message['CONTENT'] = add_wordfilter_tags($message['CONTENT']);
+                $message['CONTENT'] = word_filter_add_ob_tags($message['CONTENT']);
 
                 if ((thread_is_poll($search_result['TID']) && $search_result['PID'] == 1) || strlen($message['CONTENT']) < 1) {
 
                     echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;hightlight=yes\" target=\"right\"><b>{$message['TITLE']}</b></a><br />";
-                    echo "<span class=\"smalltext\"><b>{$lang['from']}:</b> ", add_wordfilter_tags(format_user_name($search_result['FROM_LOGON'], $search_result['FROM_NICKNAME'])), ", ", format_time($search_result['CREATED'], 1), "</span></p></li>\n";
+                    echo "<span class=\"smalltext\"><b>{$lang['from']}:</b> ", word_filter_add_ob_tags(format_user_name($search_result['FROM_LOGON'], $search_result['FROM_NICKNAME'])), ", ", format_time($search_result['CREATED'], 1), "</span></p></li>\n";
                     
                 }else {
 
                     echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;highlight=yes\" target=\"right\"><b>{$message['TITLE']}</b></a><br />";
-                    echo "{$message['CONTENT']}<br /><span class=\"smalltext\"><b>{$lang['from']}:</b> ", add_wordfilter_tags(format_user_name($search_result['FROM_LOGON'], $search_result['FROM_NICKNAME'])), ", ", format_time($search_result['CREATED'], 1), "</span></p></li>\n";
+                    echo "{$message['CONTENT']}<br /><span class=\"smalltext\"><b>{$lang['from']}:</b> ", word_filter_add_ob_tags(format_user_name($search_result['FROM_LOGON'], $search_result['FROM_NICKNAME'])), ", ", format_time($search_result['CREATED'], 1), "</span></p></li>\n";
                 }
             }
         }

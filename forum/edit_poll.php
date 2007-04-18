@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.133 2007-04-15 22:48:47 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.134 2007-04-18 23:20:26 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -381,7 +381,7 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
     $polldata['CONTENT'].= "    <td align=\"center\">\n";
     $polldata['CONTENT'].= "      <table width=\"95%\">\n";
     $polldata['CONTENT'].= "        <tr>\n";
-    $polldata['CONTENT'].= "          <td align=\"left\"><h2>". (isset($t_question) ? _htmlentities($t_question) : add_wordfilter_tags(thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE']))). "</h2></td>\n";
+    $polldata['CONTENT'].= "          <td align=\"left\"><h2>". (isset($t_question) ? _htmlentities($t_question) : word_filter_add_ob_tags(thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE']))). "</h2></td>\n";
     $polldata['CONTENT'].= "        </tr>\n";
     $polldata['CONTENT'].= "        <tr>\n";
     $polldata['CONTENT'].= "          <td align=\"left\" class=\"postbody\">\n";
@@ -571,7 +571,7 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
     $polldata['CONTENT'].= "    <td align=\"center\">\n";
     $polldata['CONTENT'].= "      <table width=\"95%\">\n";
     $polldata['CONTENT'].= "        <tr>\n";
-    $polldata['CONTENT'].= "          <td align=\"left\"><h2>". add_wordfilter_tags($polldata['QUESTION']). "</h2></td>\n";
+    $polldata['CONTENT'].= "          <td align=\"left\"><h2>". word_filter_add_ob_tags($polldata['QUESTION']). "</h2></td>\n";
     $polldata['CONTENT'].= "        </tr>\n";
     $polldata['CONTENT'].= "        <tr>\n";
     $polldata['CONTENT'].= "          <td align=\"left\" class=\"postbody\">\n";

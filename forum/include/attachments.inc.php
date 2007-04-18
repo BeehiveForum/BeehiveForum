@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.125 2007-04-15 17:07:57 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.126 2007-04-18 23:20:27 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -851,14 +851,16 @@ function attachment_embed_check($content)
 * @param array $attachment - attachment array retrieved from get_attachments / get_all_attachments function
 * @param bool $show_thumbs - Optionally enable or disable the display of thumbnails for supported image attachments
 * @param bool $limit_filename - Optionally truncate the filename to 16 characters if it is too long
+* @param bool $local_path - Optionally not include the path to the attachment.
 */
 
-function attachment_make_link($attachment, $show_thumbs = true, $limit_filename = false)
+function attachment_make_link($attachment, $show_thumbs = true, $limit_filename = false, $local_path = false)
 {
     if (!is_array($attachment)) return false;
 
     if (!is_bool($show_thumbs)) $show_thumbs = true;
     if (!is_bool($limit_filename)) $limit_filename = false;
+    if (!is_bool($local_path)) $local_path = false;
 
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
 
@@ -891,7 +893,11 @@ function attachment_make_link($attachment, $show_thumbs = true, $limit_filename 
     $attachment_path.= md5($attachment['aid']);
     $attachment_path.= rawurldecode($attachment['filename']);
 
-    if (forum_get_setting('attachment_use_old_method', 'Y')) {
+    if ($local_path) {
+
+        $href = "attachments/{$attachment['filename']}";
+    
+    }else if (forum_get_setting('attachment_use_old_method', 'Y')) {
 
         $href = "get_attachment.php?webtag=$webtag&amp;hash={$attachment['hash']}";
         $href.= "&amp;filename={$attachment['filename']}";

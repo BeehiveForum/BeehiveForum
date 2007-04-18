@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: search_popup.php,v 1.10 2007-04-12 13:23:11 decoyduck Exp $ */
+/* $Id: search_popup.php,v 1.11 2007-04-18 23:20:27 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -332,13 +332,13 @@ if (strlen(trim($search_query)) > 0) {
                 if (($search_results_array['results_count'] > 1) && $allow_multi === false) {
 
                     echo "                      <tr>\n";
-                    echo "                        <td align=\"left\">", form_radio("search_result[]", $search_result['LOGON'], ''), "&nbsp;<a href=\"user_profile.php?webtag=$webtag&amp;uid={$search_result['UID']}\" target=\"_blank\" onclick=\"return openProfile({$search_result['UID']}, '$webtag')\">", add_wordfilter_tags(format_user_name($search_result['LOGON'], $search_result['NICKNAME'])), "</a></td>\n";
+                    echo "                        <td align=\"left\">", form_radio("search_result[]", $search_result['LOGON'], ''), "&nbsp;<a href=\"user_profile.php?webtag=$webtag&amp;uid={$search_result['UID']}\" target=\"_blank\" onclick=\"return openProfile({$search_result['UID']}, '$webtag')\">", word_filter_add_ob_tags(format_user_name($search_result['LOGON'], $search_result['NICKNAME'])), "</a></td>\n";
                     echo "                      </tr>\n";
 
                 }else {
 
                     echo "                      <tr>\n";
-                    echo "                        <td align=\"left\">", form_checkbox("search_result[]", $search_result['LOGON'], ''), "&nbsp;<a href=\"user_profile.php?webtag=$webtag&amp;uid={$search_result['UID']}\" target=\"_blank\" onclick=\"return openProfile({$search_result['UID']}, '$webtag')\">", add_wordfilter_tags(format_user_name($search_result['LOGON'], $search_result['NICKNAME'])), "</a></td>\n";
+                    echo "                        <td align=\"left\">", form_checkbox("search_result[]", $search_result['LOGON'], ''), "&nbsp;<a href=\"user_profile.php?webtag=$webtag&amp;uid={$search_result['UID']}\" target=\"_blank\" onclick=\"return openProfile({$search_result['UID']}, '$webtag')\">", word_filter_add_ob_tags(format_user_name($search_result['LOGON'], $search_result['NICKNAME'])), "</a></td>\n";
                     echo "                      </tr>\n";
                 }
             
@@ -347,13 +347,13 @@ if (strlen(trim($search_query)) > 0) {
                 if (($search_results_array['results_count'] > 1) && $allow_multi === false) {
 
                     echo "                      <tr>\n";
-                    echo "                        <td align=\"left\">", form_radio("search_result[]", $search_result['TID'], ''), "&nbsp;<a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.1\" target=\"_blank\">", add_wordfilter_tags(thread_format_prefix($search_result['PREFIX'], $search_result['TITLE'])), "</a></td>\n";
+                    echo "                        <td align=\"left\">", form_radio("search_result[]", $search_result['TID'], ''), "&nbsp;<a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.1\" target=\"_blank\">", word_filter_add_ob_tags(thread_format_prefix($search_result['PREFIX'], $search_result['TITLE'])), "</a></td>\n";
                     echo "                      </tr>\n";
 
                 }else {
 
                     echo "                      <tr>\n";
-                    echo "                        <td align=\"left\">", form_checkbox("search_result[]", $search_result['TID'], ''), "&nbsp;<a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.1\" target=\"_blank\">", add_wordfilter_tags(thread_format_prefix($search_result['PREFIX'], $search_result['TITLE'])), "</a></td>\n";
+                    echo "                        <td align=\"left\">", form_checkbox("search_result[]", $search_result['TID'], ''), "&nbsp;<a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.1\" target=\"_blank\">", word_filter_add_ob_tags(thread_format_prefix($search_result['PREFIX'], $search_result['TITLE'])), "</a></td>\n";
                     echo "                      </tr>\n";
                 }
             }

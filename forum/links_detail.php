@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_detail.php,v 1.84 2007-04-12 21:13:36 decoyduck Exp $ */
+/* $Id: links_detail.php,v 1.85 2007-04-18 23:20:27 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -278,7 +278,7 @@ echo "                      <td align=\"left\"><a href=\"links.php?webtag=$webta
 echo "                    </tr>\n";
 echo "                    <tr>\n";
 echo "                      <td align=\"left\" nowrap=\"nowrap\" valign=\"top\">{$lang['submittedby']}:</td>\n";
-echo "                      <td align=\"left\">", (isset($link['LOGON']) ? add_wordfilter_tags(format_user_name($link['LOGON'], $link['NICKNAME'])) : "Unknown User"), "</td>\n";
+echo "                      <td align=\"left\">", (isset($link['LOGON']) ? word_filter_add_ob_tags(format_user_name($link['LOGON'], $link['NICKNAME'])) : "Unknown User"), "</td>\n";
 echo "                    </tr>\n";
 echo "                    <tr>\n";
 echo "                      <td align=\"left\" nowrap=\"nowrap\" valign=\"top\">{$lang['description']}:</td>\n";
@@ -401,9 +401,9 @@ if ($comments_array = links_get_comments($lid)) {
         if (isset($comment['LOGON']) && isset($comment['NICKNAME'])) {
 
             if (bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0) || $comment['UID'] == $uid) {
-                echo "                  <td align=\"left\" class=\"subhead\">", sprintf($lang['commentby'], add_wordfilter_tags(format_user_name($comment['LOGON'], $comment['NICKNAME']))), " <a href=\"links_detail.php?webtag=$webtag&amp;action=delete_comment&amp;cid={$comment['CID']}&amp;lid=$lid\" class=\"threadtime\">[{$lang['delete']}]</a></td>\n";
+                echo "                  <td align=\"left\" class=\"subhead\">", sprintf($lang['commentby'], word_filter_add_ob_tags(format_user_name($comment['LOGON'], $comment['NICKNAME']))), " <a href=\"links_detail.php?webtag=$webtag&amp;action=delete_comment&amp;cid={$comment['CID']}&amp;lid=$lid\" class=\"threadtime\">[{$lang['delete']}]</a></td>\n";
             }else {
-                echo "                  <td align=\"left\" class=\"subhead\">", sprintf($lang['commentby'], add_wordfilter_tags(format_user_name($comment['LOGON'], $comment['NICKNAME']))), "</td>\n";
+                echo "                  <td align=\"left\" class=\"subhead\">", sprintf($lang['commentby'], word_filter_add_ob_tags(format_user_name($comment['LOGON'], $comment['NICKNAME']))), "</td>\n";
             }
 
         }else {

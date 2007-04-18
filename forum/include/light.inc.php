@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.132 2007-04-14 15:01:48 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.133 2007-04-18 23:20:27 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -325,7 +325,7 @@ function light_draw_thread_list($mode = 0, $folder = false, $start_from = 0)
 
         if (isset($folder_info[$folder_number]) && is_array($folder_info[$folder_number])) {
 
-            echo "<h3><a href=\"lthread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$folder_number\">". add_wordfilter_tags($folder_info[$folder_number]['TITLE']) . "</a></h3>";
+            echo "<h3><a href=\"lthread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$folder_number\">". word_filter_add_ob_tags($folder_info[$folder_number]['TITLE']) . "</a></h3>";
 
             if ((!$folder_info[$folder_number]['INTEREST']) || ($mode == 2) || (isset($selected_folder) && $selected_folder == $folder_number)) {
 
@@ -390,8 +390,8 @@ function light_draw_thread_list($mode = 0, $folder = false, $start_from = 0)
                             $thread_time = format_time($thread['MODIFIED']);
 
                             echo "<a href=\"lmessages.php?webtag=$webtag&amp;msg={$thread['TID']}.$latest_post\" ";
-                            echo "title=\"", sprintf($lang['threadstartedbytooltip'], $thread['TID'], add_wordfilter_tags(format_user_name($thread['LOGON'], $thread['NICKNAME'])), ($thread['VIEWCOUNT'] == 1) ? $lang['threadviewedonetime'] : sprintf($lang['threadviewedtimes'], $thread['VIEWCOUNT'])), "\">";
-                            echo add_wordfilter_tags(thread_format_prefix($thread['PREFIX'], $thread['TITLE'])), "</a> ";
+                            echo "title=\"", sprintf($lang['threadstartedbytooltip'], $thread['TID'], word_filter_add_ob_tags(format_user_name($thread['LOGON'], $thread['NICKNAME'])), ($thread['VIEWCOUNT'] == 1) ? $lang['threadviewedonetime'] : sprintf($lang['threadviewedtimes'], $thread['VIEWCOUNT'])), "\">";
+                            echo word_filter_add_ob_tags(thread_format_prefix($thread['PREFIX'], $thread['TITLE'])), "</a> ";
 
                             if ($thread['INTEREST'] == 1) echo "<font color=\"#FF0000\">(HI)</font> ";
                             if ($thread['INTEREST'] == 2) echo "<font color=\"#FF0000\">(Sub)</font> ";
@@ -722,7 +722,7 @@ function light_messages_top($msg, $thread_prefix, $thread_title, $interest_level
 
     $webtag = get_webtag($webtag_search);
 
-    echo "<h1>Full Version: <a href=\"index.php?webtag=$webtag&amp;msg=$msg\">", add_wordfilter_tags(thread_format_prefix($thread_prefix, $thread_title)), "</a>";
+    echo "<h1>Full Version: <a href=\"index.php?webtag=$webtag&amp;msg=$msg\">", word_filter_add_ob_tags(thread_format_prefix($thread_prefix, $thread_title)), "</a>";
 
     if ($closed) echo "&nbsp;<font color=\"#FF0000\">({$lang['closed']})</font>\n";
     if ($interest_level == 1) echo "&nbsp;<font color=\"#FF0000\">({$lang['highinterest']})</font>";
@@ -991,11 +991,11 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
     if (isset($message['PID'])) {
 
-        echo "<p><b>{$lang['from']}: ", add_wordfilter_tags(format_user_name($message['FLOGON'], $message['FNICK'])), "</b> [#{$message['PID']}]<br />";
+        echo "<p><b>{$lang['from']}: ", word_filter_add_ob_tags(format_user_name($message['FLOGON'], $message['FNICK'])), "</b> [#{$message['PID']}]<br />";
 
     }else {
 
-        echo "<p><b>{$lang['from']}: ", add_wordfilter_tags(format_user_name($message['FLOGON'], $message['FNICK'])), "</b><br />";;
+        echo "<p><b>{$lang['from']}: ", word_filter_add_ob_tags(format_user_name($message['FLOGON'], $message['FNICK'])), "</b><br />";;
     }
 
     // If the user posting a poll is ignored, remove ignored status for this message only so the poll can be seen
@@ -1025,7 +1025,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
     if (($message['TLOGON'] != $lang['allcaps']) && $message['TO_UID'] != 0) {
 
-        echo "<b>{$lang['to']}: " . add_wordfilter_tags(format_user_name($message['TLOGON'], $message['TNICK']))."</b>";
+        echo "<b>{$lang['to']}: " . word_filter_add_ob_tags(format_user_name($message['TLOGON'], $message['TNICK']))."</b>";
 
         if (isset($message['REPLY_TO_PID']) && $message['REPLY_TO_PID'] > 0) echo " [#{$message['REPLY_TO_PID']}]";
 
@@ -1060,7 +1060,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
     // Check for words that should be filtered ---------------------------------
 
-    if ($is_poll !== true) $message['CONTENT'] = add_wordfilter_tags($message['CONTENT']);
+    if ($is_poll !== true) $message['CONTENT'] = word_filter_add_ob_tags($message['CONTENT']);
 
     echo "<p>{$message['CONTENT']}</p>\n";
 

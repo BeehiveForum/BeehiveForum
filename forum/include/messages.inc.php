@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.444 2007-04-14 14:52:50 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.445 2007-04-18 23:20:27 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -521,7 +521,7 @@ function messages_top($folder_title, $thread_prefix, $thread_title, $interest_le
     $lang = load_language_file();
 
     echo "<p><img src=\"", style_image('folder.png'). "\" alt=\"{$lang['folder']}\" title=\"{$lang['folder']}\" />&nbsp;";
-    echo add_wordfilter_tags($folder_title), ": ", add_wordfilter_tags(thread_format_prefix($thread_prefix, $thread_title));
+    echo word_filter_add_ob_tags($folder_title), ": ", word_filter_add_ob_tags(thread_format_prefix($thread_prefix, $thread_title));
 
     if ($closed) echo "&nbsp;<img src=\"", style_image('thread_closed.png'), "\" alt=\"{$lang['closed']}\" title=\"{$lang['closed']}\" />\n";
     if ($interest_level == 1) echo "&nbsp;<img src=\"", style_image('high_interest.png'), "\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" />";
@@ -612,7 +612,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
     // Check for words that should be filtered ---------------------------------
 
-    if ($is_poll !== true) $message['CONTENT'] = add_wordfilter_tags($message['CONTENT']);
+    if ($is_poll !== true) $message['CONTENT'] = word_filter_add_ob_tags($message['CONTENT']);
 
     if ($in_list && isset($message['PID'])){
 
@@ -735,11 +735,11 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     if ($message['FROM_UID'] > -1) {
 
         echo "<a href=\"user_profile.php?webtag=$webtag&amp;uid={$message['FROM_UID']}\" target=\"_blank\" onclick=\"return openProfile({$message['FROM_UID']}, '$webtag')\">";
-        echo add_wordfilter_tags(format_user_name($message['FLOGON'], $message['FNICK'])), "</a></span>";
+        echo word_filter_add_ob_tags(format_user_name($message['FLOGON'], $message['FNICK'])), "</a></span>";
 
     }else {
 
-        echo add_wordfilter_tags(format_user_name($message['FLOGON'], $message['FNICK'])), "</span>";
+        echo word_filter_add_ob_tags(format_user_name($message['FLOGON'], $message['FNICK'])), "</span>";
     }
 
     $temp_ignore = false;
@@ -789,7 +789,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     if (($message['TLOGON'] != $lang['allcaps']) && $message['TO_UID'] != 0) {
 
         echo "<a href=\"user_profile.php?webtag=$webtag&amp;uid={$message['TO_UID']}\" target=\"_blank\" onclick=\"return openProfile({$message['TO_UID']}, '$webtag')\">";
-        echo add_wordfilter_tags(format_user_name($message['TLOGON'], $message['TNICK'])), "</a></span>";
+        echo word_filter_add_ob_tags(format_user_name($message['TLOGON'], $message['TNICK'])), "</a></span>";
 
         if ($message['TO_RELATIONSHIP'] & USER_FRIEND) {
 
@@ -1674,7 +1674,7 @@ function messages_forum_stats($tid, $pid)
                             $active_user.= "<span class=\"user_stats_normal\">";
                         }
 
-                        $active_user.= str_replace(" ", "&nbsp;", add_wordfilter_tags(format_user_name($user['LOGON'], $user['NICKNAME'])));
+                        $active_user.= str_replace(" ", "&nbsp;", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME'])));
                         $active_user.= "</span></a>";
 
                         $active_users_array[] = $active_user;
@@ -1771,7 +1771,7 @@ function messages_forum_stats($tid, $pid)
 
                 if ($newest_member = get_newest_user()) {
 
-                    $newest_member_profile_link = sprintf("<a href=\"user_profile.php?webtag=$webtag&amp;uid=%1\$s\" target=\"_blank\" onclick=\"return openProfile(%1\$s, '$webtag')\">%2\$s</a>", $newest_member['UID'], add_wordfilter_tags(format_user_name($newest_member['LOGON'], $newest_member['NICKNAME'])));
+                    $newest_member_profile_link = sprintf("<a href=\"user_profile.php?webtag=$webtag&amp;uid=%1\$s\" target=\"_blank\" onclick=\"return openProfile(%1\$s, '$webtag')\">%2\$s</a>", $newest_member['UID'], word_filter_add_ob_tags(format_user_name($newest_member['LOGON'], $newest_member['NICKNAME'])));
                     echo "                        <td align=\"left\">", sprintf($lang['wehavenumregisteredmembersandthenewestmemberismembername'], $user_count, $newest_member_profile_link);
 
                 }else {

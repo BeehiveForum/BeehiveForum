@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.191 2007-04-15 17:07:57 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.192 2007-04-18 23:20:28 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -416,7 +416,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
     $polldata['CONTENT'].= "                        ". form_input_hidden('tid', _htmlentities($tid)). "\n";
     $polldata['CONTENT'].= "                        <table width=\"450\">\n";
     $polldata['CONTENT'].= "                          <tr>\n";
-    $polldata['CONTENT'].= "                            <td align=\"left\"><h2>". add_wordfilter_tags($question). "</h2></td>\n";
+    $polldata['CONTENT'].= "                            <td align=\"left\"><h2>". word_filter_add_ob_tags($question). "</h2></td>\n";
     $polldata['CONTENT'].= "                          </tr>\n";
 
     $poll_group_count = 1;
@@ -463,19 +463,19 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
 
                         if ($polldata['OPTIONTYPE'] == 1) {
 
-                            $drop_down_data[$pollresults['OPTION_ID'][$i]] = add_wordfilter_tags($pollresults['OPTION_NAME'][$i]);
+                            $drop_down_data[$pollresults['OPTION_ID'][$i]] = word_filter_add_ob_tags($pollresults['OPTION_NAME'][$i]);
 
                         }else {
 
                             $polldata['CONTENT'].= "                                <tr>\n";
-                            $polldata['CONTENT'].= "                                  <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"20\">". form_radio("pollvote[{$pollresults['GROUP_ID'][$i]}]", $pollresults['OPTION_ID'][$i], '', false). " ". add_wordfilter_tags($pollresults['OPTION_NAME'][$i]). "</td>\n";
+                            $polldata['CONTENT'].= "                                  <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"20\">". form_radio("pollvote[{$pollresults['GROUP_ID'][$i]}]", $pollresults['OPTION_ID'][$i], '', false). " ". word_filter_add_ob_tags($pollresults['OPTION_NAME'][$i]). "</td>\n";
                             $polldata['CONTENT'].= "                                </tr>\n";
                         }
 
                     }else {
 
                         $polldata['CONTENT'].= "                                <tr>\n";
-                        $polldata['CONTENT'].= "                                  <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"20\">". form_checkbox("pollvote[{$pollresults['GROUP_ID'][$i]}]", $pollresults['OPTION_ID'][$i], '', false). " ". add_wordfilter_tags($pollresults['OPTION_NAME'][$i]). "</td>\n";
+                        $polldata['CONTENT'].= "                                  <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"20\">". form_checkbox("pollvote[{$pollresults['GROUP_ID'][$i]}]", $pollresults['OPTION_ID'][$i], '', false). " ". word_filter_add_ob_tags($pollresults['OPTION_NAME'][$i]). "</td>\n";
                         $polldata['CONTENT'].= "                                </tr>\n";
                     }
 
@@ -553,7 +553,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                         }
 
                         $polldata['CONTENT'].= "                          <tr>\n";
-                        $polldata['CONTENT'].= "                            <td align=\"left\" colspan=\"2\" class=\"postbody\">". add_wordfilter_tags($pollresults['OPTION_NAME'][$i]). "</td>\n";
+                        $polldata['CONTENT'].= "                            <td align=\"left\" colspan=\"2\" class=\"postbody\">". word_filter_add_ob_tags($pollresults['OPTION_NAME'][$i]). "</td>\n";
                         $polldata['CONTENT'].= "                          </tr>\n";
 
                         $poll_previous_group = $pollresults['GROUP_ID'][$i];
@@ -572,7 +572,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
 
             if (strlen($pollresults['OPTION_NAME'][$i]) > 0) {
 
-                $polldata['CONTENT'].= "                                <li>". add_wordfilter_tags($pollresults['OPTION_NAME'][$i]). "</li>\n";
+                $polldata['CONTENT'].= "                                <li>". word_filter_add_ob_tags($pollresults['OPTION_NAME'][$i]). "</li>\n";
             }
         }
 
@@ -637,7 +637,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
 
                             if ($pollresults['OPTION_NAME'][$j] == strip_tags($pollresults['OPTION_NAME'][$j])) {
 
-                                $user_poll_votes_array[] = "'". add_wordfilter_tags($pollresults['OPTION_NAME'][$j]). "'";
+                                $user_poll_votes_array[] = "'". word_filter_add_ob_tags($pollresults['OPTION_NAME'][$j]). "'";
 
                             }else {
 
@@ -666,7 +666,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
 
                             if ($pollresults['OPTION_NAME'][$j] == strip_tags($pollresults['OPTION_NAME'][$j])) {
 
-                                $user_poll_votes_array[] = "'". add_wordfilter_tags($pollresults['OPTION_NAME'][$j]). "'";
+                                $user_poll_votes_array[] = "'". word_filter_add_ob_tags($pollresults['OPTION_NAME'][$j]). "'";
 
                             }else {
 
@@ -878,19 +878,19 @@ function poll_preview_form($pollresults, $polldata)
 
                 if ($polldata['OPTIONTYPE'] == 1) {
 
-                    $drop_down_data[$pollresults['OPTION_ID'][$i]] = add_wordfilter_tags($pollresults['OPTION_NAME'][$i]);
+                    $drop_down_data[$pollresults['OPTION_ID'][$i]] = word_filter_add_ob_tags($pollresults['OPTION_NAME'][$i]);
 
                 }else {
 
                     $polldisplay.= "                      <tr>\n";
-                    $polldisplay.= "                        <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"20\">". form_radio("pollvote[{$pollresults['GROUP_ID'][$i]}]", $pollresults['OPTION_ID'][$i], '', false). " ". add_wordfilter_tags($pollresults['OPTION_NAME'][$i]). "</td>\n";
+                    $polldisplay.= "                        <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"20\">". form_radio("pollvote[{$pollresults['GROUP_ID'][$i]}]", $pollresults['OPTION_ID'][$i], '', false). " ". word_filter_add_ob_tags($pollresults['OPTION_NAME'][$i]). "</td>\n";
                     $polldisplay.= "                      </tr>\n";
                 }
 
             }else {
 
                 $polldisplay.= "                      <tr>\n";
-                $polldisplay.= "                        <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"20\">". form_checkbox("pollvote[{$pollresults['GROUP_ID'][$i]}]", $pollresults['OPTION_ID'][$i], '', false). " ". add_wordfilter_tags($pollresults['OPTION_NAME'][$i]). "</td>\n";
+                $polldisplay.= "                        <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"20\">". form_checkbox("pollvote[{$pollresults['GROUP_ID'][$i]}]", $pollresults['OPTION_ID'][$i], '', false). " ". word_filter_add_ob_tags($pollresults['OPTION_NAME'][$i]). "</td>\n";
                 $polldisplay.= "                      </tr>\n";
             }
 
@@ -952,7 +952,7 @@ function poll_preview_graph_horz($pollresults)
         if (isset($pollresults['OPTION_NAME'][$i]) && strlen($pollresults['OPTION_NAME'][$i]) > 0) {
 
             $polldisplay.= "                                <tr>\n";
-            $polldisplay.= "                                  <td align=\"left\" width=\"150\" class=\"postbody\">". add_wordfilter_tags($pollresults['OPTION_NAME'][$i]). "</td>\n";
+            $polldisplay.= "                                  <td align=\"left\" width=\"150\" class=\"postbody\">". word_filter_add_ob_tags($pollresults['OPTION_NAME'][$i]). "</td>\n";
 
             if ($pollresults['VOTES'][$i] > 0) {
 
@@ -1081,7 +1081,7 @@ function poll_preview_graph_vert($pollresults)
                 $polldisplay.= "                                  <td align=\"left\" style=\"width: 2px; border - left: 1px solid #000000\">&nbsp;</td>\n";
             }
 
-            $polldisplay.= "                                  <td class=\"postbody\" align=\"center\" valign=\"top\">". add_wordfilter_tags($pollresults['OPTION_NAME'][$i]). "<br />". $pollresults['VOTES'][$i]. " {$lang['votes']}<br />(". $vote_percent. "%)</td>\n";
+            $polldisplay.= "                                  <td class=\"postbody\" align=\"center\" valign=\"top\">". word_filter_add_ob_tags($pollresults['OPTION_NAME'][$i]). "<br />". $pollresults['VOTES'][$i]. " {$lang['votes']}<br />(". $vote_percent. "%)</td>\n";
             $poll_previous_group = $pollresults['GROUP_ID'][$i];
         }
     }
@@ -1143,7 +1143,7 @@ function poll_horizontal_graph($tid)
                 }
 
                 $polldisplay.= "                              <tr>\n";
-                $polldisplay.= "                                <td align=\"left\" width=\"150\" class=\"postbody\">". add_wordfilter_tags($pollresults['OPTION_NAME'][$i]). "</td>\n";
+                $polldisplay.= "                                <td align=\"left\" width=\"150\" class=\"postbody\">". word_filter_add_ob_tags($pollresults['OPTION_NAME'][$i]). "</td>\n";
 
                 if ($pollresults['VOTES'][$i] > 0) {
 
@@ -1287,7 +1287,7 @@ function poll_preview_graph_table($pollresults)
 
                 }else {
 
-                    $polldisplay.= "                                  <th class=\"posthead\" align=\"right\">". add_wordfilter_tags($pollresults['OPTION_NAME'][$group1_keys[$rows - 1]]). "</th>\n";
+                    $polldisplay.= "                                  <th class=\"posthead\" align=\"right\">". word_filter_add_ob_tags($pollresults['OPTION_NAME'][$group1_keys[$rows - 1]]). "</th>\n";
                 }
 
             }else if ($cols == sizeof($group2) + 1) {
@@ -1312,7 +1312,7 @@ function poll_preview_graph_table($pollresults)
 
                 if ($rows == 0) {
 
-                    $polldisplay.= "                                  <th class=\"posthead\" align=\"center\">". add_wordfilter_tags($pollresults['OPTION_NAME'][$group2_keys[$cols - 1]]). "</th>\n";
+                    $polldisplay.= "                                  <th class=\"posthead\" align=\"center\">". word_filter_add_ob_tags($pollresults['OPTION_NAME'][$group2_keys[$cols - 1]]). "</th>\n";
 
                 }else if ($rows == sizeof($group1) + 1) {
 
@@ -1641,7 +1641,7 @@ function poll_table_graph($tid)
 
                 if ($rows == 0) {
 
-                    $polldisplay.= "                                  <th class=\"posthead\"    align=\"center\">". add_wordfilter_tags($pollresults['OPTION_NAME'][$group2_keys[$cols - 1]]). "</th>\n";
+                    $polldisplay.= "                                  <th class=\"posthead\"    align=\"center\">". word_filter_add_ob_tags($pollresults['OPTION_NAME'][$group2_keys[$cols - 1]]). "</th>\n";
 
                 }else if ($rows == sizeof($group1) + 1) {
 
@@ -1748,7 +1748,7 @@ function poll_public_ballot($tid, $viewstyle)
 
                                 $polldisplay.= "                                <tr>\n";
                                 $polldisplay.= "                                  <td align=\"left\" width=\"150\" class=\"$row_class\">&nbsp;</td>\n";
-                                $polldisplay.= "                                  <td align=\"left\" width=\"150\" class=\"$row_class\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$user['UID']}\" target=\"_blank\" onclick=\"return openProfile({$user['UID']}, '$webtag')\">". add_wordfilter_tags(format_user_name($user['LOGON'], $user['NICKNAME'])). "</a></td>\n";
+                                $polldisplay.= "                                  <td align=\"left\" width=\"150\" class=\"$row_class\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$user['UID']}\" target=\"_blank\" onclick=\"return openProfile({$user['UID']}, '$webtag')\">". word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME'])). "</a></td>\n";
                                 $polldisplay.= "                                </tr>\n";
                             }
                         }
@@ -1787,7 +1787,7 @@ function poll_public_ballot($tid, $viewstyle)
                 $polldisplay.= "                              <div align=\"center\">\n";
                 $polldisplay.= "                              <table width=\"460\" cellpadding=\"5\" cellspacing=\"0\" class=\"$table_class\">\n";
                 $polldisplay.= "                                <tr>\n";
-                $polldisplay.= "                                  <td align=\"left\" width=\"150\" class=\"$row_class\" style=\"border - bottom: 1px solid\" colspan=\"2\"><h2><a href=\"user_profile.php?webtag=$webtag&amp;uid={$user['UID']}\" target=\"_blank\" onclick=\"return openProfile({$user['UID']}, '$webtag')\">". add_wordfilter_tags(format_user_name($user['LOGON'], $user['NICKNAME'])). "</a><h2></td>\n";
+                $polldisplay.= "                                  <td align=\"left\" width=\"150\" class=\"$row_class\" style=\"border - bottom: 1px solid\" colspan=\"2\"><h2><a href=\"user_profile.php?webtag=$webtag&amp;uid={$user['UID']}\" target=\"_blank\" onclick=\"return openProfile({$user['UID']}, '$webtag')\">". word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME'])). "</a><h2></td>\n";
                 $polldisplay.= "                                </tr>\n";
 
                 for ($i = 0; $i < sizeof($optionid_array); $i++) {

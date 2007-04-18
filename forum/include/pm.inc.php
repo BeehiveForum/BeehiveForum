@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.182 2007-04-17 23:36:51 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.183 2007-04-18 23:20:28 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1016,7 +1016,7 @@ function pm_user_get_friends()
                 }
             }
 
-            $user_get_peers_array[$row['UID']] = add_wordfilter_tags(format_user_name($row['LOGON'], $row['NICKNAME']));
+            $user_get_peers_array[$row['UID']] = word_filter_add_ob_tags(format_user_name($row['LOGON'], $row['NICKNAME']));
         }
 
         return $user_get_peers_array;
@@ -1180,7 +1180,7 @@ function pm_get_content($mid)
 * @param bool $pm_export_html - Optional settings allows return of HTML as string instead of sending to STDOUT.
 */
 
-function pm_display($pm_message_array, $folder, $preview = false)
+function pm_display($pm_message_array, $folder, $preview = false, $export_html = false)
 {
     $lang = load_language_file();
 
@@ -1203,8 +1203,16 @@ function pm_display($pm_message_array, $folder, $preview = false)
 
     if ($folder == PM_FOLDER_INBOX) {
 
-        echo "                        <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['from']}:&nbsp;</span></td>\n";
-        echo "                        <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$pm_message_array['FROM_UID']}\" target=\"_blank\" onclick=\"return openProfile({$pm_message_array['FROM_UID']}, '$webtag')\">", add_wordfilter_tags(format_user_name($pm_message_array['FLOGON'], $pm_message_array['FNICK'])), "</a></span></td>\n";
+        if ($export_html === true) {
+        
+            echo "                        <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['from']}:&nbsp;</span></td>\n";
+            echo "                        <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">", format_user_name($pm_message_array['FLOGON'], $pm_message_array['FNICK']), "</span></td>\n";
+        
+        }else {
+
+            echo "                        <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['from']}:&nbsp;</span></td>\n";
+            echo "                        <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$pm_message_array['FROM_UID']}\" target=\"_blank\" onclick=\"return openProfile({$pm_message_array['FROM_UID']}, '$webtag')\">", word_filter_add_ob_tags(format_user_name($pm_message_array['FLOGON'], $pm_message_array['FNICK'])), "</a></span></td>\n";
+        }
 
     }else {
 
@@ -1212,10 +1220,11 @@ function pm_display($pm_message_array, $folder, $preview = false)
 
             $recipient_array = preg_split("/[;|,]/", trim($pm_message_array['RECIPIENTS']));
             $recipient_array = array_unique(array_merge($recipient_array, array($pm_message_array['TNICK'])));
-            $recipient_array = array_map('user_profile_popup_callback', $recipient_array);
+            
+            if ($export_html === false) $recipient_array = array_map('user_profile_popup_callback', $recipient_array);
 
             echo "                        <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['to']}:&nbsp;</span></td>\n";
-            echo "                        <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">", add_wordfilter_tags(implode('; ', $recipient_array)), "</span></td>\n";
+            echo "                        <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">", word_filter_add_ob_tags(implode('; ', $recipient_array)), "</span></td>\n";
 
         }elseif (is_array($pm_message_array['TO_UID'])) {
 
@@ -1223,20 +1232,36 @@ function pm_display($pm_message_array, $folder, $preview = false)
             echo "                        <td nowrap=\"nowrap\" width=\"98%\" align=\"left\">\n";
 
             foreach ($pm_message_array['TO_UID'] as $key => $to_uid) {
-                echo "                          <span class=\"posttofrom\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$pm_message_array['TO_UID']}\" target=\"_blank\" onclick=\"return openProfile({$pm_message_array['TO_UID'][$key]}, '$webtag')\">", add_wordfilter_tags(format_user_name($pm_message_array['TLOGON'][$key], $pm_message_array['TNICK'][$key])), "</a></span>&nbsp;";
+                
+                if ($export_html === true) {
+                
+                    echo "                          <span class=\"posttofrom\">", format_user_name($pm_message_array['TLOGON'][$key], $pm_message_array['TNICK'][$key]), "</span>&nbsp;";
+                
+                }else {
+
+                    echo "                          <span class=\"posttofrom\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$pm_message_array['TO_UID']}\" target=\"_blank\" onclick=\"return openProfile({$pm_message_array['TO_UID'][$key]}, '$webtag')\">", word_filter_add_ob_tags(format_user_name($pm_message_array['TLOGON'][$key], $pm_message_array['TNICK'][$key])), "</a></span>&nbsp;";
+                }
             }
 
             echo "                        </td>\n";
 
         }else {
 
-            echo "                        <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['to']}:&nbsp;</span></td>\n";
-            echo "                        <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$pm_message_array['TO_UID']}\" target=\"_blank\" onclick=\"return openProfile({$pm_message_array['TO_UID']}, '$webtag')\">", add_wordfilter_tags(format_user_name($pm_message_array['TLOGON'], $pm_message_array['TNICK'])), "</a></span></td>\n";
+            if ($export_html === true) {
+
+                echo "                        <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['to']}:&nbsp;</span></td>\n";
+                echo "                        <td nowrap=\"nowrap\" width=\"98%\" align=\"left\">", format_user_name($pm_message_array['TLOGON'], $pm_message_array['TNICK']), "</span></td>\n";
+
+            }else {
+
+                echo "                        <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['to']}:&nbsp;</span></td>\n";
+                echo "                        <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$pm_message_array['TO_UID']}\" target=\"_blank\" onclick=\"return openProfile({$pm_message_array['TO_UID']}, '$webtag')\">", word_filter_add_ob_tags(format_user_name($pm_message_array['TLOGON'], $pm_message_array['TNICK'])), "</a></span></td>\n";
+            }
         }        
     }
 
-    $pm_message_array['CONTENT'] = add_wordfilter_tags($pm_message_array['CONTENT']);
-    $pm_message_array['SUBJECT'] = add_wordfilter_tags($pm_message_array['SUBJECT']);
+    $pm_message_array['CONTENT'] = word_filter_add_ob_tags($pm_message_array['CONTENT']);
+    $pm_message_array['SUBJECT'] = word_filter_add_ob_tags($pm_message_array['SUBJECT']);
 
     // Add emoticons/wikilinks
 
@@ -1278,7 +1303,7 @@ function pm_display($pm_message_array, $folder, $preview = false)
 
                 foreach($attachments_array as $attachment) {
 
-                    echo "                              ", attachment_make_link($attachment, true, false), "\n";
+                    echo "                              ", attachment_make_link($attachment, true, false, $export_html), "\n";
                 }
 
                 echo "                              </p>\n";
@@ -1290,7 +1315,7 @@ function pm_display($pm_message_array, $folder, $preview = false)
 
                 foreach($image_attachments_array as $key => $attachment) {
 
-                    echo "                              ", attachment_make_link($attachment, true, false), "\n";
+                    echo "                              ", attachment_make_link($attachment, true, false, $export_html), "\n";
                 }
 
                 echo "                              </p>\n";
@@ -1343,10 +1368,17 @@ function pm_display($pm_message_array, $folder, $preview = false)
     echo "</div>\n";
 }
 
-function pm_display_html_export($pm_message_array, $folder, $preview = false)
+function pm_display_html_export($pm_message_array, $folder)
 {
-    ob_start(); pm_display($pm_message_array, $folder, $preview);
-    return ob_get_contents(); ob_end_clean();
+    ob_start(); 
+
+    pm_display($pm_message_array, $folder, true, true);
+
+    $pm_message_html = ob_get_contents();
+
+    ob_end_clean();
+
+    return word_filter_rem_ob_tags($pm_message_html);
 }
 
 function pm_message_get_folder($mid)
@@ -2125,6 +2157,8 @@ function pm_export_html($folder, &$zip_file)
             $pm_message['FOLDER'] = $folder;
             $pm_message['CONTENT'] = pm_get_content($pm_message['MID']);
 
+            $pm_message = array_map('pm_export_word_filter_apply', $pm_message);
+
             $pm_display.= pm_display_html_export($pm_message, $folder);
 
             if ($pm_export_file == PM_EXPORT_SINGLE) {
@@ -2134,12 +2168,6 @@ function pm_export_html($folder, &$zip_file)
             if ($pm_export_file == PM_EXPORT_MANY) {
 
                 $pm_display.= pm_export_html_bottom();
-
-                if ($pm_export_wordfilter == 'Y') {
-                    $pm_display = apply_wordfilter($pm_display);
-                }else {
-                    $pm_display = remove_wordfilter_tags($pm_display);
-                }
 
                 $filename = "message_{$pm_message['MID']}.html";
                 $zip_file->add_file($pm_display, $filename);
@@ -2154,12 +2182,6 @@ function pm_export_html($folder, &$zip_file)
         if ($pm_export_file == PM_EXPORT_SINGLE) {
 
             $pm_display.= pm_export_html_bottom();
-
-            if ($pm_export_wordfilter == 'Y') {
-                $pm_display = apply_wordfilter($pm_display);
-            }else {
-                $pm_display = remove_wordfilter_tags($pm_display);
-            }
 
             $filename = "messages.html";
             $zip_file->add_file($pm_display, $filename);
@@ -2200,31 +2222,25 @@ function pm_export_xml($folder, &$zip_file)
         foreach($pm_messages_array['message_array'] as $pm_message) {
 
             $pm_message['FOLDER'] = $folder;
+            $pm_message['CONTENT'] = pm_get_content($pm_message['MID']);
+
+            $pm_message = array_map('pm_export_word_filter_apply', $pm_message);
 
             $pm_display.= "      <message>\n";
 
             foreach($pm_message as $key => $value) {
 
                 $key = strtolower($key);                
-                $value = add_wordfilter_tags($value);
                 $pm_display.= "        <$key>$value</$key>\n";
             }
 
-            $pm_content = add_wordfilter_tags(pm_get_content($pm_message['MID']));
-
-            $pm_display.= "        <content><![CDATA[{$pm_content}]]></content>\n";
+            $pm_display.= "        <content><![CDATA[{$pm_message['CONTENT']}]]></content>\n";
             $pm_display.= "      </message>\n";
 
             if ($pm_export_file == PM_EXPORT_MANY) {
 
                 $pm_display.= "    </messages>\n";
                 $pm_display.= "  </beehiveforum>\n";
-
-                if ($pm_export_wordfilter == 'Y') {
-                    $pm_display = apply_wordfilter($pm_display);
-                }else {
-                    $pm_display = remove_wordfilter_tags($pm_display);
-                }
 
                 $filename = "message_{$pm_message['MID']}.xml";
 
@@ -2244,12 +2260,6 @@ function pm_export_xml($folder, &$zip_file)
 
             $pm_display.= "    </messages>\n";
             $pm_display.= "  </beehiveforum>\n";
-
-            if ($pm_export_wordfilter == 'Y') {
-                $pm_display = apply_wordfilter($pm_display);
-            }else {
-                $pm_display = remove_wordfilter_tags($pm_display);
-            }
 
             $filename = "messages.xml";
             $zip_file->add_file($pm_display, $filename);
@@ -2286,23 +2296,20 @@ function pm_export_plaintext($folder, &$zip_file)
 
         foreach($pm_messages_array['message_array'] as $pm_message) {
 
+            $pm_message['FOLDER'] = $folder;
+            $pm_message['CONTENT'] = pm_get_content($pm_message['MID']);
+            
+            $pm_message = array_map('pm_export_word_filter_apply', $pm_message);
+
             foreach($pm_message as $key => $value) {
 
                 $key = strtolower($key);
-                $value = add_wordfilter_tags($value);
                 $pm_display.= "$key: $value\r\n";
             }
 
-            $pm_content = add_wordfilter_tags(pm_get_content($pm_message['MID']));
-            $pm_display.= "content:\r\n\r\n$pm_content\r\n\r\n\r\n\r\n";
+            $pm_display.= "content:\r\n\r\n{$pm_message['CONTENT']}\r\n\r\n\r\n\r\n";
 
             if ($pm_export_file == PM_EXPORT_MANY) {
-
-                if ($pm_export_wordfilter == 'Y') {
-                    $pm_display = apply_wordfilter($pm_display);
-                }else {
-                    $pm_display = remove_wordfilter_tags($pm_display);
-                }
 
                 $filename = "message_{$pm_message['MID']}.txt";
                 $zip_file->add_file($pm_display, $filename);
@@ -2316,12 +2323,6 @@ function pm_export_plaintext($folder, &$zip_file)
 
         if ($pm_export_file == PM_EXPORT_SINGLE) {
 
-            if ($pm_export_wordfilter == 'Y') {
-                $pm_display = apply_wordfilter($pm_display);
-            }else {
-                $pm_display = remove_wordfilter_tags($pm_display);
-            }
-
             $filename = "messages.txt";
             $zip_file->add_file($pm_display, $filename);
         }
@@ -2333,12 +2334,28 @@ function pm_export_plaintext($folder, &$zip_file)
 }
 
 /**
+* Call back function for PM export
+*
+* Call back function for PM export using word filter. Used to apply word filter
+* to an array of elements retrieved from pm_message_get() function.
+*
+* @return string
+* @param string $content - Content to be passed through word filter
+*/
+
+function pm_export_word_filter_apply($content)
+{
+    if (($uid = bh_session_get_value('UID')) === false) return $content;
+    return word_filter_apply($content, $uid);
+}
+
+/**
 * Export attachments
 *
 * Exports attachments and add them to zip file.
 *
 * @return bool
-* @param integer $aid - Attachment ID
+* @param md5 $aid - Attachment ID
 * @param integer $from_uid - Sender UID to check owner of attachmennt.
 * @param object $zip_file - By Reference zip file object from zip.inc.php class.
 */

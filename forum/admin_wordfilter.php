@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_wordfilter.php,v 1.89 2007-04-12 13:23:10 decoyduck Exp $ */
+/* $Id: admin_wordfilter.php,v 1.90 2007-04-18 23:20:26 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -182,7 +182,7 @@ if (isset($_POST['delete'])) {
     if ($valid) {
 
         if ($add_new_filter_option == 2 && preg_match("/e[^\/]*$/i", $add_new_match_text)) {
-            $add_new_match_text = preg_replace_callback("/\/[^\/]*$/i", "filter_limit_preg", $add_new_match_text);
+            $add_new_match_text = preg_replace_callback("/\/[^\/]*$/i", "word_filter_apply_limit_preg", $add_new_match_text);
         }
 
         if (admin_add_word_filter($add_new_match_text, $add_new_replace_text, $add_new_filter_option)) {
@@ -228,7 +228,7 @@ if (isset($_POST['delete'])) {
     if ($valid) {
 
         if ($filter_option == 2 && preg_match("/e[^\/]*$/i", $match_text)) {
-            $match_text = preg_replace_callback("/\/[^\/]*$/i", "filter_limit_preg", $match_text);
+            $match_text = preg_replace_callback("/\/[^\/]*$/i", "word_filter_apply_limit_preg", $match_text);
         }
 
         if (admin_update_word_filter($filter_id, $match_text, $replace_text, $filter_option)) {

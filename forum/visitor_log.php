@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.php,v 1.86 2007-04-12 23:53:36 decoyduck Exp $ */
+/* $Id: visitor_log.php,v 1.87 2007-04-18 23:20:27 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -305,11 +305,11 @@ if (sizeof($user_profile_array['user_array']) > 0) {
 
         }elseif ($user_array['UID'] > 0) {
 
-            echo "                   <td class=\"postbody\" align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$user_array['UID']}\" target=\"_blank\" onclick=\"return openProfile({$user_array['UID']}, '$webtag')\">", add_wordfilter_tags(format_user_name($user_array['LOGON'], $user_array['NICKNAME'])), "</a></td>\n";
+            echo "                   <td class=\"postbody\" align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$user_array['UID']}\" target=\"_blank\" onclick=\"return openProfile({$user_array['UID']}, '$webtag')\">", word_filter_add_ob_tags(format_user_name($user_array['LOGON'], $user_array['NICKNAME'])), "</a></td>\n";
 
         }else {
 
-            echo "                   <td class=\"postbody\" align=\"left\">", add_wordfilter_tags(format_user_name($user_array['LOGON'], $user_array['NICKNAME'])), "</td>\n";
+            echo "                   <td class=\"postbody\" align=\"left\">", word_filter_add_ob_tags(format_user_name($user_array['LOGON'], $user_array['NICKNAME'])), "</td>\n";
         }
 
         foreach ($profile_items_selected_array as $key => $profile_item_selected) {

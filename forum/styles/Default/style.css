@@ -554,6 +554,11 @@ a {
     font-size: 9pt;
 }
 
+.bhselectoptgroup {
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-size: 9pt;
+}
+
 .bhinputcheckbox, .bhinputradio {
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 8pt

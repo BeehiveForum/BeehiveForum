@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.305 2007-04-11 19:14:07 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.306 2007-04-19 14:51:03 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -976,6 +976,11 @@ function user_search($user_search, $offset = 0, $exclude_uid = 0)
                 $results_array[$row['UID']] = $row;
             }
         }
+    
+    }else if ($results_count > 0) {
+
+        $offset = floor($results_count / 10) * 10;
+        return user_search($user_search, $offset, $exclude_uid);
     }
 
     return array('results_count' => $results_count,
@@ -1013,60 +1018,65 @@ function user_get_ip_addresses($uid)
     return $user_ip_addresses_array;
 }
 
-function users_get_recent($offset, $limit)
+function users_get_recent()
 {
     $db_users_get_recent = db_connect();
 
-    if (!is_numeric($offset)) $offset = 0;
-    if (!is_numeric($limit)) $limit = 20;
-
     if (!$table_data = get_table_prefix()) return false;
-
-    $users_get_recent_array = array();
-    $users_get_recent_count = 0;
+    
+    $forum_fid = $table_data['FID'];
 
     $lang = load_language_file();
 
     $uid = bh_session_get_value('UID');
 
-    $forum_fid = $table_data['FID'];
+    if (forum_get_setting('guest_show_recent', 'Y')) {
 
-    $include_guests = "";
+        $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
+        $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
+        $sql.= "SEARCH_ENGINE_BOTS.SID, SEARCH_ENGINE_BOTS.NAME, SEARCH_ENGINE_BOTS.URL ";
+        $sql.= "FROM VISITOR_LOG VISITOR_LOG ";
+        $sql.= "LEFT JOIN USER USER ON (USER.UID = VISITOR_LOG.UID) ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+        $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS_FORUM ";
+        $sql.= "ON (USER_PREFS_FORUM.UID = USER.UID) ";
+        $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ";
+        $sql.= "ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
+        $sql.= "LEFT JOIN SEARCH_ENGINE_BOTS ON (SEARCH_ENGINE_BOTS.SID = VISITOR_LOG.SID) ";
+        $sql.= "WHERE VISITOR_LOG.LAST_LOGON IS NOT NULL AND VISITOR_LOG.LAST_LOGON > 0 ";
+        $sql.= "AND VISITOR_LOG.FORUM = '$forum_fid' ";
+        $sql.= "AND (USER_PREFS_FORUM.ANON_LOGON IS NULL OR USER_PREFS_FORUM.ANON_LOGON = 0) ";
+        $sql.= "AND (USER_PREFS_GLOBAL.ANON_LOGON IS NULL OR USER_PREFS_GLOBAL.ANON_LOGON = 0) ";
+        $sql.= "ORDER BY VISITOR_LOG.LAST_LOGON DESC LIMIT 10";
 
-    if (forum_get_setting('guest_show_recent', 'N')) {
-        $include_guests = "AND VISITOR_LOG.UID > 0";
+    }else {
+
+        $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
+        $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
+        $sql.= "SEARCH_ENGINE_BOTS.SID, SEARCH_ENGINE_BOTS.NAME, SEARCH_ENGINE_BOTS.URL ";
+        $sql.= "FROM VISITOR_LOG VISITOR_LOG ";
+        $sql.= "LEFT JOIN USER USER ON (USER.UID = VISITOR_LOG.UID) ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+        $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS_FORUM ";
+        $sql.= "ON (USER_PREFS_FORUM.UID = USER.UID) ";
+        $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ";
+        $sql.= "ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
+        $sql.= "LEFT JOIN SEARCH_ENGINE_BOTS ON (SEARCH_ENGINE_BOTS.SID = VISITOR_LOG.SID) ";
+        $sql.= "WHERE VISITOR_LOG.LAST_LOGON IS NOT NULL AND VISITOR_LOG.LAST_LOGON > 0 ";
+        $sql.= "AND VISITOR_LOG.FORUM = '$forum_fid' AND VISITOR_LOG.UID > 0 ";
+        $sql.= "AND (USER_PREFS_FORUM.ANON_LOGON IS NULL OR USER_PREFS_FORUM.ANON_LOGON = 0) ";
+        $sql.= "AND (USER_PREFS_GLOBAL.ANON_LOGON IS NULL OR USER_PREFS_GLOBAL.ANON_LOGON = 0) ";
+        $sql.= "ORDER BY VISITOR_LOG.LAST_LOGON DESC LIMIT 10";
     }
-
-    $sql = "SELECT COUNT(USER.UID) AS USER_COUNT FROM VISITOR_LOG VISITOR_LOG ";
-    $sql.= "LEFT JOIN USER USER ON (USER.UID = VISITOR_LOG.UID) ";
-    $sql.= "WHERE VISITOR_LOG.LAST_LOGON IS NOT NULL AND VISITOR_LOG.LAST_LOGON > 0 ";
-    $sql.= "AND VISITOR_LOG.FORUM = $forum_fid $include_guests";
-
-    $result = db_query($sql, $db_users_get_recent);
-    list($users_get_recent_count) = db_fetch_array($result, DB_RESULT_NUM);
-
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
-    $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
-    $sql.= "SEARCH_ENGINE_BOTS.SID, SEARCH_ENGINE_BOTS.NAME, SEARCH_ENGINE_BOTS.URL ";
-    $sql.= "FROM VISITOR_LOG VISITOR_LOG ";
-    $sql.= "LEFT JOIN USER USER ON (USER.UID = VISITOR_LOG.UID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
-    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS_FORUM ";
-    $sql.= "ON (USER_PREFS_FORUM.UID = USER.UID) ";
-    $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ";
-    $sql.= "ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
-    $sql.= "LEFT JOIN SEARCH_ENGINE_BOTS ON (SEARCH_ENGINE_BOTS.SID = VISITOR_LOG.SID) ";
-    $sql.= "WHERE VISITOR_LOG.LAST_LOGON IS NOT NULL AND VISITOR_LOG.LAST_LOGON > 0 ";
-    $sql.= "AND VISITOR_LOG.FORUM = $forum_fid $include_guests ";
-    $sql.= "AND (USER_PREFS_FORUM.ANON_LOGON IS NULL OR USER_PREFS_FORUM.ANON_LOGON = 0) ";
-    $sql.= "AND (USER_PREFS_GLOBAL.ANON_LOGON IS NULL OR USER_PREFS_GLOBAL.ANON_LOGON = 0) ";
-    $sql.= "ORDER BY VISITOR_LOG.LAST_LOGON DESC LIMIT $offset, $limit";
 
     $result = db_query($sql, $db_users_get_recent);
 
     if (db_num_rows($result) > 0) {
 
+        $users_get_recent_array = array();
+        
         while ($visitor_array = db_fetch_array($result)) {
             
             if (!isset($visitor_array['UID']) || $visitor_array['UID'] == 0) {
@@ -1083,82 +1093,12 @@ function users_get_recent($offset, $limit)
             }
 
             $users_get_recent_array[] = $visitor_array;
-            $users_get_recent_count++;
         }
+
+        return $users_get_recent_array;
     }
 
-    return array('user_count' => $users_get_recent_count,
-                 'user_array' => $users_get_recent_array);
-}
-
-function users_search_recent($user_search, $offset)
-{
-    $db_users_search_recent = db_connect();
-
-    if (!is_numeric($offset)) return false;
-
-    if (!$table_data = get_table_prefix()) return false;
-
-    $user_search_array = array();
-    $user_search_count = 0;
-
-    $uid = bh_session_get_value('UID');
-
-    $forum_fid = $table_data['FID'];
-
-    $user_search = addslashes(str_replace("%", "", $user_search));
-
-    $sql = "SELECT COUNT(USER.UID) AS USER_COUNT FROM VISITOR_LOG ";
-    $sql.= "LEFT JOIN USER ON (USER.UID = VISITOR_LOG.UID) ";
-    $sql.= "LEFT JOIN SEARCH_ENGINE_BOTS ON (SEARCH_ENGINE_BOTS.SID = VISITOR_LOG.SID) ";
-    $sql.= "WHERE (LOGON LIKE '$user_search%' OR NICKNAME LIKE '$user_search%' ";
-    $sql.= "OR SEARCH_ENGINE_BOTS.NAME LIKE '$user_search%') ";
-    $sql.= "AND VISITOR_LOG.FORUM = '$forum_fid'";
-
-    $result = db_query($sql, $db_users_search_recent);
-    list($user_search_count) = db_fetch_array($result, DB_RESULT_NUM);
-
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
-    $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, SEARCH_ENGINE_BOTS.SID, ";
-    $sql.= "SEARCH_ENGINE_BOTS.NAME, SEARCH_ENGINE_BOTS.URL FROM VISITOR_LOG ";
-    $sql.= "LEFT JOIN USER ON (USER.UID = VISITOR_LOG.UID) ";
-    $sql.= "LEFT JOIN SEARCH_ENGINE_BOTS ON (SEARCH_ENGINE_BOTS.SID = VISITOR_LOG.SID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
-    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS_FORUM ";
-    $sql.= "ON (USER_PREFS_FORUM.UID = USER.UID) ";
-    $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ";
-    $sql.= "ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
-    $sql.= "WHERE (LOGON LIKE '$user_search%' OR NICKNAME LIKE '$user_search%' ";
-    $sql.= "OR SEARCH_ENGINE_BOTS.NAME LIKE '$user_search%') ";
-    $sql.= "AND VISITOR_LOG.FORUM = '$forum_fid' AND VISITOR_LOG.LAST_LOGON IS NOT NULL ";
-    $sql.= "AND VISITOR_LOG.LAST_LOGON > 0 AND (USER_PREFS_FORUM.ANON_LOGON IS NULL ";
-    $sql.= "OR USER_PREFS_FORUM.ANON_LOGON = 0) AND (USER_PREFS_GLOBAL.ANON_LOGON IS NULL ";
-    $sql.= "OR USER_PREFS_GLOBAL.ANON_LOGON = 0) ";
-    $sql.= "ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
-    $sql.= "LIMIT $offset, 20";
-
-    $result = db_query($sql, $db_users_search_recent);
-
-    if (db_num_rows($result) > 0) {
-
-        while ($row = db_fetch_array($result)) {
-
-            if (!isset($user_search_array[$row['UID']])) {
-
-                if (isset($row['PEER_NICKNAME'])) {
-                    if (!is_null($row['PEER_NICKNAME']) && strlen($row['PEER_NICKNAME']) > 0) {
-                        $row['NICKNAME'] = $row['PEER_NICKNAME'];
-                    }
-                }
-
-                $user_search_array[$row['UID']] = $row;
-            }
-        }
-    }
-
-    return array('user_count' => $user_search_count,
-                 'user_array' => $user_search_array);
+    return false;
 }
 
 function user_get_friends($uid)
@@ -1324,6 +1264,11 @@ function user_get_relationships($uid, $offset = 0)
                 $user_get_peers_array[$row['UID']] = $row;
             }
         }
+    
+    }else if ($user_get_peers_count > 0) {
+
+        $offset = floor($user_get_peers_count / 10) * 10;
+        return user_get_relationships($uid, $offset);
     }
 
     return array('user_count' => $user_get_peers_count,
@@ -1388,7 +1333,7 @@ function user_get_word_filter_list($offset)
 
     }else if ($word_filter_count > 0) {
 
-        $offset = ($offset - 20) > 0 ? $offset - 20 : 0;        
+        $offset = floor($word_filter_count / 10) * 10;
         return user_get_word_filter_list($offset);
     }
 

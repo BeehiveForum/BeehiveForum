@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.105 2007-04-10 16:02:04 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.106 2007-04-19 14:51:02 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1308,7 +1308,7 @@ function thread_search($thread_search, $offset = 0)
 
     $fidlist = folder_get_available();
 
-    $user_search = addslashes(str_replace("%", "", $thread_search));
+    $thread_search = addslashes(str_replace("%", "", $thread_search));
 
     $sql = "SELECT COUNT(THREAD.TID) AS THREAD_COUNT ";
     $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
@@ -1317,7 +1317,6 @@ function thread_search($thread_search, $offset = 0)
 
     $result = db_query($sql, $db_thread_search);
     list($results_count) = db_fetch_array($result, DB_RESULT_NUM);
-
 
     $sql = "SELECT THREAD.TID, THREAD.TITLE, FOLDER.PREFIX ";
     $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
@@ -1338,6 +1337,11 @@ function thread_search($thread_search, $offset = 0)
                 $results_array[$row['TID']] = $row;
             }
         }
+    
+    }else if ($results_count > 0) {
+
+        $offset = floor($results_count / 10) * 10;
+        return thread_search($thread_search, $offset);
     }
 
     return array('results_count' => $results_count,

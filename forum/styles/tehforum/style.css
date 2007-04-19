@@ -533,12 +533,12 @@ a {
 
 .bhinputtext, .bhtextarea, .bhselect, .install_dropdown,
 .logon_dropdown, .register_dropdown, .search_dropdown,
-.banned_dropdown, .links_dropdown, .admin_startpage_textarea,
-.dictionary_word_display, .dictionary_best_selection,
-.dictionary_change_to, .post_folder_dropdown,
-.thread_title, .post_content, .signature_content, 
-.to_uid_dropdown, .recipient_dropdown, .recent_user_dropdown,
-.user_in_thread_dropdown {
+.banned_dropdown, .links_dropdown, .timezone_dropdown,
+.admin_startpage_textarea, .dictionary_word_display,
+.dictionary_best_selection, .dictionary_change_to,
+.post_folder_dropdown, .thread_title, .post_content,
+.signature_content, .to_uid_dropdown, .recipient_dropdown,
+.recent_user_dropdown, .user_in_thread_dropdown {
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 9pt;
     color: #000000;
@@ -549,6 +549,11 @@ a {
     border-left-width: 1px;
     padding-left: 2px;
     border-style: inset;
+}
+
+.bhselectoptgroup {
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-size: 9pt;
 }
 
 .bhinputcheckbox, .bhinputradio {
@@ -773,6 +778,10 @@ a {
 
 .links_dropdown {
     width: 290px;
+}
+
+.timezone_dropdown {
+    width: 375px;
 }
 
 .links_folder_list {

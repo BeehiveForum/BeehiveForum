@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.57 2007-04-15 22:19:25 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.58 2007-04-19 14:51:02 decoyduck Exp $ */
 
 /**
 * Functions relating to profiles
@@ -137,11 +137,11 @@ function profile_sections_get()
     }
 }
 
-function profile_sections_get_by_page($start)
+function profile_sections_get_by_page($offset)
 {
     $db_profile_sections_get_by_page = db_connect();
 
-    if (!is_numeric($start)) return false;
+    if (!is_numeric($offset)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -159,7 +159,7 @@ function profile_sections_get_by_page($start)
     $sql.= "ON (PROFILE_ITEM.PSID = PROFILE_SECTION.PSID) ";
     $sql.= "GROUP BY PROFILE_SECTION.PSID ";
     $sql.= "ORDER BY PROFILE_SECTION.POSITION, PROFILE_SECTION.PSID ";
-    $sql.= "LIMIT $start, 10";
+    $sql.= "LIMIT $offset, 10";
 
     $result = db_query($sql, $db_profile_sections_get_by_page);
 
@@ -172,8 +172,8 @@ function profile_sections_get_by_page($start)
 
     }else if ($profile_sections_count > 0) {
 
-        $start = ($start - 10) > 0 ? $start - 10 : 0;
-        return profile_sections_get_by_page($start);
+        $offset = floor($profile_sections_count / 10) * 10;
+        return profile_sections_get_by_page($offset);
     }
 
     return array('profile_sections_array' => $profile_sections_array,
@@ -211,12 +211,12 @@ function profile_items_get($psid)
     }
 }
 
-function profile_items_get_by_page($psid, $start)
+function profile_items_get_by_page($psid, $offset)
 {
     $db_profile_items_get_by_page = db_connect();
 
     if (!is_numeric($psid)) return false;
-    if (!is_numeric($start)) return false;
+    if (!is_numeric($offset)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -232,7 +232,7 @@ function profile_items_get_by_page($psid, $start)
     $sql = "SELECT PIID, NAME, TYPE, POSITION ";
     $sql.= "FROM {$table_data['PREFIX']}PROFILE_ITEM ";
     $sql.= "WHERE PSID = '$psid' ORDER BY POSITION, PIID ";
-    $sql.= "LIMIT $start, 10";
+    $sql.= "LIMIT $offset, 10";
 
     $result = db_query($sql, $db_profile_items_get_by_page);
 
@@ -245,8 +245,8 @@ function profile_items_get_by_page($psid, $start)
 
     }else if ($profile_items_count > 0) {
 
-        $start = ($start - 10) > 0 ? $start - 10 : 0;
-        return profile_items_get_by_page($psid, $start);
+        $offset = floor($profile_items_count / 10) * 10;
+        return profile_items_get_by_page($psid, $offset);
     }
 
     return array('profile_items_array' => $profile_items_array,
@@ -837,7 +837,7 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
     $select_sql.= "USER_TRACK.POST_COUNT AS POST_COUNT, DATE_FORMAT(USER_PREFS_DOB.DOB, '00-%m-%d') AS DOB, ";
     $select_sql.= "DATE_FORMAT(NOW(), '%Y') - DATE_FORMAT(USER_PREFS_AGE.DOB, '%Y') - ";
     $select_sql.= "(DATE_FORMAT(NOW(), '00-%m-%d') < DATE_FORMAT(USER_PREFS_AGE.DOB, '00-%m-%d')) AS AGE, ";
-    $select_sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_VISIT, ";
+    $select_sql.= "UNIX_TIMESTAMP(VISITOR_LOG_TIME.LAST_LOGON) AS LAST_VISIT, ";
     $select_sql.= "UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, ";
     $select_sql.= "UNIX_TIMESTAMP(USER_TRACK.USER_TIME_BEST) AS USER_TIME_BEST, ";
     $select_sql.= "UNIX_TIMESTAMP(USER_TRACK.USER_TIME_TOTAL) AS USER_TIME_TOTAL, ";
@@ -872,15 +872,16 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
     // Joins to check the ANON_LOGON setting.
 
     $from_sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS_FORUM ";
-    $from_sql.= "ON (USER_PREFS_FORUM.UID = USER.UID) ";
+    $from_sql.= "ON (USER_PREFS_FORUM.UID = VISITOR_LOG.UID) ";
 
     $from_sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ";
-    $from_sql.= "ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
+    $from_sql.= "ON (USER_PREFS_GLOBAL.UID = VISITOR_LOG.UID) ";
 
-    $from_sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.UID = USER.UID ";
-    $from_sql.= "AND USER_FORUM.FID = '$forum_fid' AND ((USER_PREFS_FORUM.ANON_LOGON IS NULL ";
-    $from_sql.= "OR USER_PREFS_FORUM.ANON_LOGON = 0) AND (USER_PREFS_GLOBAL.ANON_LOGON IS NULL ";
-    $from_sql.= "OR USER_PREFS_GLOBAL.ANON_LOGON = 0))) ";
+    // Join to fetch the LAST_LOGON using the ANON_LOGON data
+
+    $from_sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG_TIME ON (VISITOR_LOG_TIME.VID = VISITOR_LOG.VID ";
+    $from_sql.= "AND ((USER_PREFS_FORUM.ANON_LOGON IS NULL OR USER_PREFS_FORUM.ANON_LOGON = 0) ";
+    $from_sql.= "AND (USER_PREFS_GLOBAL.ANON_LOGON IS NULL OR USER_PREFS_GLOBAL.ANON_LOGON = 0))) ";
 
     // Join for the POST_COUNT.
 

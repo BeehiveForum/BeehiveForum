@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_folders.php,v 1.6 2007-04-17 23:36:51 decoyduck Exp $ */
+/* $Id: pm_folders.php,v 1.7 2007-04-19 20:32:45 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -146,7 +146,7 @@ if (isset($_GET['folder'])) {
 
 pm_user_prune_folders();
 
-html_draw_top("basetarget=pm_messages");
+html_draw_top("basetarget=pm_messages", "pm.js");
 
 echo "<h1>{$lang['privatemessages']}</h1>\n";
 echo "<br />\n";

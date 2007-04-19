@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.98 2007-04-18 23:20:27 decoyduck Exp $ */
+/* $Id: pm_edit.php,v 1.99 2007-04-19 20:32:45 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -385,8 +385,7 @@ if ($valid && isset($_POST['preview'])) {
     }
 }
 
-html_draw_top("onUnload=clearFocus()", "openprofile.js", "edit.js", "dictionary.js", "htmltools.js", "basetarget=_blank");
-draw_header_pm();
+html_draw_top("onUnload=clearFocus()", "openprofile.js", "edit.js", "pm.js", "dictionary.js", "htmltools.js", "basetarget=_blank");
 
 echo "<h1>{$lang['privatemessages']} &raquo; {$lang['editpm']}</h1>\n";
 echo "<br />\n";

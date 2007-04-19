@@ -454,7 +454,7 @@ a {
     font-style: normal;
     font-weight: bold;
     text-decoration: none;
-    color: #FFFFFF;
+    color: #$text_colour[threads];
     padding-top: 2px;
     padding-right: 2px;
     padding-bottom: 2px;

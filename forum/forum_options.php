@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.107 2007-04-14 00:50:33 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.108 2007-04-19 19:01:42 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -432,7 +432,6 @@ if (isset($_POST['submit'])) {
         $user_prefs_global['POSTS_PER_PAGE'] = false;
     }
 
-
     if (isset($_POST['font_size'])) {
         $user_prefs['FONT_SIZE'] = trim(_stripslashes($_POST['font_size']));
     }else {
@@ -447,14 +446,18 @@ if (isset($_POST['submit'])) {
 
     if (isset($_POST['style'])) {
         $user_prefs['STYLE'] = trim(_stripslashes($_POST['style']));
+        $user_prefs_global['STYLE'] = false;
     }else {
         $user_prefs['STYLE'] = forum_get_setting('default_style', false, 'default');
+        $user_prefs_global['STYLE'] = false;
     }
 
     if (isset($_POST['emoticons'])) {
         $user_prefs['EMOTICONS'] = trim(_stripslashes($_POST['emoticons']));
+        $user_prefs_global['EMOTICONS'] = false;
     }else {
         $user_prefs['EMOTICONS'] = forum_get_setting('default_emoticons', false, 'default');
+        $user_prefs_global['EMOTICONS'] = false;
     }
 
     if (isset($_POST['start_page'])) {

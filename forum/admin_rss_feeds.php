@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_rss_feeds.php,v 1.40 2007-04-12 13:23:08 decoyduck Exp $ */
+/* $Id: admin_rss_feeds.php,v 1.41 2007-04-19 20:32:45 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -621,23 +621,7 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
 
 }else {
 
-    html_draw_top();
-    
-    echo "<script language=\"javascript\" type=\"text/javascript\">\n";
-    echo "<!--\n";
-    echo "function rss_toggle_all() {\n";
-    echo "    for (var i = 0; i < document.rss.elements.length; i++) {\n";
-    echo "        if (document.rss.elements[i].type == 'checkbox') {\n";
-    echo "            if (document.rss.toggle_all.checked == true) {\n";
-    echo "                document.rss.elements[i].checked = true;\n";
-    echo "            }else {\n";
-    echo "                document.rss.elements[i].checked = false;\n";
-    echo "            }\n";
-    echo "        }\n";
-    echo "    }\n";
-    echo "}\n";
-    echo "//-->\n";
-    echo "</script>\n";
+    html_draw_top('admin.js');
 
     // Draw the form
     echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['rssfeeds']}</h1>\n";

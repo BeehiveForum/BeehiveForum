@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_messages.php,v 1.10 2007-04-18 23:20:27 decoyduck Exp $ */
+/* $Id: pm_messages.php,v 1.11 2007-04-19 20:32:45 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -346,23 +346,7 @@ if (isset($_POST['search'])) {
 
 pm_user_prune_folders();
 
-html_draw_top("basetarget=_blank", "openprofile.js", "search.js");
-
-echo "<script language=\"javascript\" type=\"text/javascript\">\n";
-echo "<!--\n";
-echo "function pm_toggle_all() {\n";
-echo "    for (var i = 0; i < document.pm.elements.length; i++) {\n";
-echo "        if (document.pm.elements[i].type == 'checkbox') {\n";
-echo "            if (document.pm.toggle_all.checked == true) {\n";
-echo "                document.pm.elements[i].checked = true;\n";
-echo "            }else {\n";
-echo "                document.pm.elements[i].checked = false;\n";
-echo "            }\n";
-echo "        }\n";
-echo "    }\n";
-echo "}\n";
-echo "//-->\n";
-echo "</script>\n";
+html_draw_top("basetarget=_blank", "openprofile.js", "search.js", "pm.js");
 
 $start = floor($page - 1) * 10;
 if ($start < 0) $start = 0;

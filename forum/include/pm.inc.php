@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.183 2007-04-18 23:20:28 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.184 2007-04-19 20:32:45 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1416,35 +1416,6 @@ function pm_message_get_folder($mid)
     }
 
     return false;
-}
-
-/**
-* Draw header
-*
-* Draw Javascript header at top of PM send page
-*
-* @return void
-* @param void
-*/
-
-function draw_header_pm()
-{
-    $lang = load_language_file();
-
-    echo "<script language=\"javascript\" type=\"text/javascript\">\n";
-    echo "<!--\n";
-    echo "function addRecipient() {\n\n";
-    echo "    newUser = prompt(\"{$lang['pleaseentermembername']}\", \"\");\n";
-    echo "    if (newUser != null && newUser.length > 0) {\n";
-    echo "        if (document.f_post.t_recipient_list.value.length == 0) {\n";
-    echo "            document.f_post.t_recipient_list.value = newUser;\n";
-    echo "        }else {\n";
-    echo "            document.f_post.t_recipient_list.value+= '; ' + newUser;\n";
-    echo "        }\n";
-    echo "    }\n";
-    echo "}\n";
-    echo "//-->\n";
-    echo "</script>\n";
 }
 
 /**

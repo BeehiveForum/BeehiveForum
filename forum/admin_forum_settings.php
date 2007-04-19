@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.110 2007-04-12 23:53:36 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.111 2007-04-19 14:51:01 decoyduck Exp $ */
 
 /**
 * Displays and handles the Forum Settings page
@@ -618,11 +618,20 @@ if (!isset($forum_settings['access_level']) || $forum_settings['access_level'] >
     echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_35']}</p>\n";
     echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_36']}</p>\n";
     echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_37']}</p>\n";
-    echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_38']}</p>\n";
+    echo "                          <br />\n";
+    echo "                          <table class=\"text_captcha_error\" width=\"100%\">\n";
+    echo "                            <tr>\n";
+    echo "                              <td align=\"left\" width=\"20\" valign=\"top\"><img src=\"", style_image('warning.png'), "\" alt=\"\" /></td>\n";
+    echo "                              <td align=\"left\">{$lang['forum_settings_help_38']}</td>\n";
+    echo "                            </tr>\n";
+    echo "                          </table>\n";
     echo "                        </td>\n";
     echo "                      </tr>\n";
     echo "                    </table>\n";
     echo "                  </td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"center\">&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "              </table>\n";
     echo "            </td>\n";

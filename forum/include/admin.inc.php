@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.111 2007-04-17 23:36:51 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.112 2007-04-19 14:51:02 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -1072,7 +1072,7 @@ function admin_get_visitor_log($offset)
     }else if ($users_get_recent_count > 0) {
 
         $offset = floor($users_get_recent_count / 10) * 10;
-        admin_get_visitor_log($offset);
+        return admin_get_visitor_log($offset);
     }
 
     return array('user_count' => $users_get_recent_count,

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: rss_feed.inc.php,v 1.33 2007-01-15 00:10:37 decoyduck Exp $ */
+/* $Id: rss_feed.inc.php,v 1.34 2007-04-19 14:51:02 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -303,11 +303,11 @@ function rss_check_feeds()
     }
 }
 
-function rss_get_feeds($start)
+function rss_get_feeds($offset)
 {
     $db_rss_get_feeds = db_connect();
 
-    if (!is_numeric($start)) return false;
+    if (!is_numeric($offset)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -322,7 +322,7 @@ function rss_get_feeds($start)
     $sql.= "RSS_FEEDS.FID, RSS_FEEDS.URL, RSS_FEEDS.PREFIX, RSS_FEEDS.FREQUENCY ";
     $sql.= "FROM {$table_data['PREFIX']}RSS_FEEDS RSS_FEEDS ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = RSS_FEEDS.UID) ";
-    $sql.= "LIMIT $start, 10";
+    $sql.= "LIMIT $offset, 10";
 
     $result = db_query($sql, $db_rss_get_feeds);
 
@@ -334,8 +334,8 @@ function rss_get_feeds($start)
     
     }else if ($rss_feed_count > 0) {
 
-        $start = ($start - 10) > 0 ? $start - 10 : 0;
-        return rss_get_feeds($start);
+        $offset = floor($rss_feed_count / 10) * 10;
+        return rss_get_feeds($offset);
     }
 
     return array('rss_feed_array' => $rss_feed_array,

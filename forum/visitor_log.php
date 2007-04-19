@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.php,v 1.87 2007-04-18 23:20:27 decoyduck Exp $ */
+/* $Id: visitor_log.php,v 1.88 2007-04-19 14:51:02 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -232,23 +232,23 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
 $start = floor($page - 1) * 10;
 if ($start < 0) $start = 0;
 
-if (isset($_POST['usersearch']) && strlen(trim(_stripslashes($_POST['usersearch']))) > 0) {
-    $usersearch = $_POST['usersearch'];
-}elseif (isset($_GET['usersearch']) && strlen(trim(_stripslashes($_GET['usersearch']))) > 0) {
-    $usersearch = $_GET['usersearch'];
+if (isset($_POST['user_search']) && strlen(trim(_stripslashes($_POST['user_search']))) > 0) {
+    $user_search = $_POST['user_search'];
+}elseif (isset($_GET['user_search']) && strlen(trim(_stripslashes($_GET['user_search']))) > 0) {
+    $user_search = $_GET['user_search'];
 }else {
-    $usersearch = "";
+    $user_search = "";
 }
 
-if (isset($_GET['reset'])) {
-    $usersearch = "";
+if (isset($_POST['clear_search'])) {
+    $user_search = "";
 }
 
 html_draw_top("robots=noindex,nofollow", "openprofile.js");
 
 echo "<h1>{$lang['userprofile']}</h1><br />\n";
 
-$user_profile_array = profile_browse_items($usersearch, $profile_items_selected_array, $start, $sort_by, $sort_dir, $hide_empty == 'Y');
+$user_profile_array = profile_browse_items($user_search, $profile_items_selected_array, $start, $sort_by, $sort_dir, $hide_empty == 'Y');
 
 echo "<div align=\"center\">\n";
 echo "<form name=\"f_profile\" action=\"visitor_log.php\" method=\"post\">\n";
@@ -256,7 +256,7 @@ echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden('page', _htmlentities($page)), "\n";
 echo "  ", form_input_hidden('sort_by', _htmlentities($sort_by)), "\n";
 echo "  ", form_input_hidden('sort_dir', _htmlentities($sort_dir)), "\n";
-echo "  ", form_input_hidden('usersearch', _htmlentities($usersearch)), "\n";
+echo "  ", form_input_hidden('user_search', _htmlentities($user_search)), "\n";
 echo "  ", form_input_hidden('profile_selection', _htmlentities($profile_items_selected_string)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"85%\">\n";
 echo "    <tr>\n";
@@ -271,25 +271,25 @@ if (sizeof($user_profile_array['user_array']) > 0) {
     echo "                 <tr>\n";
 
     if ($sort_by == 'LOGON' && $sort_dir == 'ASC') {
-        echo "                   <td class=\"subhead_sort_asc\" align=\"left\"><a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=DESC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;usersearch=$usersearch&amp;hide_empty=$hide_empty\">{$lang['member']}</a></td>\n";
+        echo "                   <td class=\"subhead_sort_asc\" align=\"left\"><a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=DESC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=$user_search&amp;hide_empty=$hide_empty\">{$lang['member']}</a></td>\n";
     }elseif ($sort_by == 'LOGON' && $sort_dir == 'DESC') {
-        echo "                   <td class=\"subhead_sort_desc\" align=\"left\"><a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=ASC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;usersearch=$usersearch&amp;hide_empty=$hide_empty\">{$lang['member']}</a></td>\n";
+        echo "                   <td class=\"subhead_sort_desc\" align=\"left\"><a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=ASC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=$user_search&amp;hide_empty=$hide_empty\">{$lang['member']}</a></td>\n";
     }elseif ($sort_dir == 'ASC') {
-        echo "                   <td class=\"subhead\" align=\"left\"><a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=ASC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;usersearch=$usersearch&amp;hide_empty=$hide_empty\">{$lang['member']}</a></td>\n";
+        echo "                   <td class=\"subhead\" align=\"left\"><a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=ASC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=$user_search&amp;hide_empty=$hide_empty\">{$lang['member']}</a></td>\n";
     }else {
-        echo "                   <td class=\"subhead\" align=\"left\"><a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=DESC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;usersearch=$usersearch&amp;hide_empty=$hide_empty\">{$lang['member']}</a></td>\n";
+        echo "                   <td class=\"subhead\" align=\"left\"><a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=DESC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=$user_search&amp;hide_empty=$hide_empty\">{$lang['member']}</a></td>\n";
     }
 
     foreach ($profile_items_selected_array as $key => $profile_item_selected) {
 
         if ($sort_by == $key && $sort_dir == 'ASC') {
-            echo "                   <td class=\"subhead_sort_asc\" align=\"left\">", form_submit_image('close.png', "remove_column[$key]", $lang['close'], "title=\"{$lang['close']}\"", "profile_browse_close"), "&nbsp;<a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=$key&amp;sort_dir=DESC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;usersearch=$usersearch&amp;hide_empty=$hide_empty\">{$profile_item_selected}</a></td>\n";
+            echo "                   <td class=\"subhead_sort_asc\" align=\"left\">", form_submit_image('close.png', "remove_column[$key]", $lang['close'], "title=\"{$lang['close']}\"", "profile_browse_close"), "&nbsp;<a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=$key&amp;sort_dir=DESC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=$user_search&amp;hide_empty=$hide_empty\">{$profile_item_selected}</a></td>\n";
         }elseif ($sort_by == $key && $sort_dir == 'DESC') {
-            echo "                   <td class=\"subhead_sort_desc\" align=\"left\">", form_submit_image('close.png', "remove_column[$key]", $lang['close'], "title=\"{$lang['close']}\"", "profile_browse_close"), "&nbsp;<a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=$key&amp;sort_dir=ASC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;usersearch=$usersearch&amp;hide_empty=$hide_empty\">{$profile_item_selected}</a></td>\n";
+            echo "                   <td class=\"subhead_sort_desc\" align=\"left\">", form_submit_image('close.png', "remove_column[$key]", $lang['close'], "title=\"{$lang['close']}\"", "profile_browse_close"), "&nbsp;<a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=$key&amp;sort_dir=ASC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=$user_search&amp;hide_empty=$hide_empty\">{$profile_item_selected}</a></td>\n";
         }elseif ($sort_dir == 'ASC') {
-            echo "                   <td class=\"subhead\" align=\"left\">", form_submit_image('close.png', "remove_column[$key]", $lang['close'], "title=\"{$lang['close']}\"", "profile_browse_close"), "&nbsp;<a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=$key&amp;sort_dir=ASC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;usersearch=$usersearch&amp;hide_empty=$hide_empty\">{$profile_item_selected}</a></td>\n";
+            echo "                   <td class=\"subhead\" align=\"left\">", form_submit_image('close.png', "remove_column[$key]", $lang['close'], "title=\"{$lang['close']}\"", "profile_browse_close"), "&nbsp;<a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=$key&amp;sort_dir=ASC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=$user_search&amp;hide_empty=$hide_empty\">{$profile_item_selected}</a></td>\n";
         }else {
-            echo "                   <td class=\"subhead\" align=\"left\">", form_submit_image('close.png', "remove_column[$key]", $lang['close'], "title=\"{$lang['close']}\"", "profile_browse_close"), "&nbsp;<a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=$key&amp;sort_dir=DESC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;usersearch=$usersearch&amp;hide_empty=$hide_empty\">{$profile_item_selected}</a></td>\n";
+            echo "                   <td class=\"subhead\" align=\"left\">", form_submit_image('close.png', "remove_column[$key]", $lang['close'], "title=\"{$lang['close']}\"", "profile_browse_close"), "&nbsp;<a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=$key&amp;sort_dir=DESC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=$user_search&amp;hide_empty=$hide_empty\">{$profile_item_selected}</a></td>\n";
         }
     }
 
@@ -348,7 +348,7 @@ if (sizeof($user_profile_array['user_array']) > 0) {
     echo "                   <td class=\"subhead\" align=\"left\">{$lang['search']}</td>\n";
     echo "                 </tr>\n";
 
-    if (isset($usersearch) && strlen($usersearch) > 0) {
+    if (isset($user_search) && strlen($user_search) > 0) {
 
         echo "                 <tr>\n";
         echo "                   <td class=\"postbody\" align=\"left\">{$lang['yoursearchdidnotreturnanymatches']}</td>\n";
@@ -380,7 +380,7 @@ echo "      <td align=\"left\">\n";
 echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td align=\"left\" width=\"40%\">&nbsp;</td>\n";
-echo "            <td align=\"center\" nowrap=\"nowrap\" width=\"20%\">", page_links("visitor_log.php?webtag=$webtag&page=$page&profile_selection=$profile_items_selected_encoded_string&usersearch=$usersearch&sort_by=$sort_by&sort_dir=$sort_dir&hide_empty=$hide_empty", $start, $user_profile_array['user_count'], 10), "</td>\n";
+echo "            <td align=\"center\" nowrap=\"nowrap\" width=\"20%\">", page_links("visitor_log.php?webtag=$webtag&page=$page&profile_selection=$profile_items_selected_encoded_string&user_search=$user_search&sort_by=$sort_by&sort_dir=$sort_dir&hide_empty=$hide_empty", $start, $user_profile_array['user_count'], 10), "</td>\n";
 echo "            <td align=\"right\" nowrap=\"nowrap\" width=\"40%\">", form_dropdown_array('add_column', $profile_dropdown_array), "&nbsp;", form_submit('add', $lang['add']), "</td>\n";
 echo "          </tr>\n";
 echo "        </table>\n";
@@ -442,7 +442,7 @@ echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td class=\"posthead\" align=\"left\">{$lang['username']}: ", form_input_text('usersearch', _htmlentities($usersearch), 30, 64), " ", form_submit('submit', $lang['search']), " ", form_submit('reset', $lang['clear']), "</td>\n";
+echo "                        <td class=\"posthead\" align=\"left\">{$lang['username']}: ", form_input_text('user_search', _htmlentities($user_search), 30, 64), " ", form_submit('search', $lang['search']), " ", form_submit('clear_search', $lang['clear']), "</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";

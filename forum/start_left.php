@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.131 2007-04-18 23:20:27 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.132 2007-04-19 14:51:01 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -306,15 +306,13 @@ echo "                    <table class=\"posthead\" width=\"95%\">\n";
 
 // Get recent visitors
 
-$users_array = users_get_recent(0, 10);
-
-if ($users_array['user_count'] > 0) {
+if ($users_array = users_get_recent()) {
 
     echo "                      <tr>\n";
     echo "                        <td align=\"center\">\n";
     echo "                          <table class=\"posthead\" border=\"0\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\n";
 
-    foreach ($users_array['user_array'] as $recent_user) {
+    foreach ($users_array as $recent_user) {
 
         echo "                            <tr>\n";
         echo "                              <td valign=\"top\" align=\"center\" nowrap=\"nowrap\"><img src=\"", style_image('bullet.png'), "\" alt=\"{$lang['user']}\" title=\"{$lang['user']}\" /></td>\n";

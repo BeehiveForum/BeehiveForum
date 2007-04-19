@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.306 2007-04-19 14:51:03 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.307 2007-04-19 19:01:42 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -577,7 +577,6 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
     The default behaviour is to set a preference globally if it is not specified otherwise.
 
     e.g.  $prefs_array           $prefs_global_setting_array    Result
-          'STYLE' => 'default'   'STYLE' => true                Sets STYLE to 'default' globally
           'VIEW_SIGS' => 'N'     'VIEW_SIGS' => false           Sets VIEW_SIGS to 'N' for current forum only
           'FONT_SIZE' => 11      'FONT_SIZE' not set            Sets FONT_SIZE to 11 globally
 

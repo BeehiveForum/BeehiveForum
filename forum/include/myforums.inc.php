@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.61 2007-01-27 15:43:46 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.62 2007-04-21 18:14:55 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -51,7 +51,7 @@ function get_forum_list()
     $sql = "SELECT FORUMS.FID, FORUMS.ACCESS_LEVEL, USER_FORUM.INTEREST, ";
     $sql.= "CONCAT(FORUMS.DATABASE_NAME, '.', FORUMS.WEBTAG, '_') AS PREFIX FROM FORUMS ";
     $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
-    $sql.= "AND USER_FORUM.UID = $uid) WHERE FORUMS.ACCESS_LEVEL > -1 ";
+    $sql.= "AND USER_FORUM.UID = '$uid') WHERE FORUMS.ACCESS_LEVEL > -1 ";
     $sql.= "ORDER BY FORUMS.FID";
 
     $result_forums = db_query($sql, $db_get_forum_list);
@@ -111,7 +111,7 @@ function get_my_forums()
     $sql = "SELECT FORUMS.FID, FORUMS.ACCESS_LEVEL, USER_FORUM.INTEREST, ";
     $sql.= "CONCAT(FORUMS.DATABASE_NAME, '.', FORUMS.WEBTAG, '_') AS PREFIX FROM FORUMS ";
     $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
-    $sql.= "AND USER_FORUM.UID = $uid) WHERE FORUMS.ACCESS_LEVEL > -1 ";
+    $sql.= "AND USER_FORUM.UID = '$uid') WHERE FORUMS.ACCESS_LEVEL > -1 ";
     $sql.= "ORDER BY FORUMS.FID";
 
     $result_forums = db_query($sql, $db_get_my_forums);

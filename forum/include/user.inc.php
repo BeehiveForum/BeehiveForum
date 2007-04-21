@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.307 2007-04-19 19:01:42 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.308 2007-04-21 18:14:56 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -402,7 +402,7 @@ function user_get_logon($uid)
 
     $table_data = get_table_prefix();
 
-    $sql = "SELECT LOGON FROM USER WHERE UID = $uid";
+    $sql = "SELECT LOGON FROM USER WHERE UID = '$uid'";
     $result = db_query($sql, $db_user_get_logon);
 
     if (db_num_rows($result) > 0) {
@@ -422,7 +422,7 @@ function user_get_nickname($uid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT NICKNAME FROM USER WHERE UID = $uid";
+    $sql = "SELECT NICKNAME FROM USER WHERE UID = '$uid'";
     $result = db_query($sql, $db_user_get_logon);
 
     if (db_num_rows($result) > 0) {
@@ -462,7 +462,7 @@ function user_get_sig($uid, &$content, &$html)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT CONTENT, HTML FROM {$table_data['PREFIX']}USER_SIG WHERE UID = $uid";
+    $sql = "SELECT CONTENT, HTML FROM {$table_data['PREFIX']}USER_SIG WHERE UID = '$uid'";
     $result = db_query($sql, $db_user_get_sig);
 
     if (db_num_rows($result) > 0) {
@@ -523,7 +523,7 @@ function user_get_prefs($uid)
     $sql.= "USER_PREFS.SHOW_THUMBS, USER_PREFS.USE_MOVER_SPOILER, ";
     $sql.= "USER_PREFS.ENABLE_WIKI_WORDS, USER_PREFS.USE_OVERFLOW_RESIZE ";
     $sql.= "FROM USER_PREFS LEFT JOIN TIMEZONES ON (TIMEZONES.TZID = USER_PREFS.TIMEZONE) ";
-    $sql.= "WHERE UID = $uid";
+    $sql.= "WHERE UID = '$uid'";
 
     $result = db_query($sql, $db_user_get_prefs);
 
@@ -537,7 +537,7 @@ function user_get_prefs($uid)
         $sql.= "MARK_AS_OF_INT, POSTS_PER_PAGE, FONT_SIZE, STYLE, VIEW_SIGS, START_PAGE, LANGUAGE, ";
         $sql.= "DOB_DISPLAY, ANON_LOGON, SHOW_STATS, IMAGES_TO_LINKS, USE_WORD_FILTER, USE_ADMIN_FILTER, ";
         $sql.= "EMOTICONS, ALLOW_EMAIL, ALLOW_PM, SHOW_THUMBS, USE_MOVER_SPOILER, ENABLE_WIKI_WORDS, ";
-        $sql.= "USE_OVERFLOW_RESIZE FROM {$table_data['PREFIX']}USER_PREFS WHERE UID = $uid";
+        $sql.= "USE_OVERFLOW_RESIZE FROM {$table_data['PREFIX']}USER_PREFS WHERE UID = '$uid'";
 
         $result = db_query($sql, $db_user_get_prefs);
         $forum_prefs = (db_num_rows($result) > 0) ? db_fetch_array($result, DB_RESULT_ASSOC) : array();
@@ -666,6 +666,8 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
             $values_array = array();
 
             foreach($global_prefs as $pref_name => $pref_setting) {
+                 
+                 $pref_setting = addslashes($pref_setting);
                  $values_array[] = "$pref_name = '$pref_setting'";
             }
 
@@ -673,7 +675,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
 
                 $values = implode(", ", $values_array);
 
-                $sql = "UPDATE USER_PREFS SET $values  WHERE UID = $uid";
+                $sql = "UPDATE USER_PREFS SET $values  WHERE UID = '$uid'";
                 $result_global = db_query($sql, $db_user_update_prefs);
             }
 
@@ -687,6 +689,8 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
             $values_array = array();
 
             foreach($global_prefs as $pref_name => $pref_setting) {
+                 
+                 $pref_setting = addslashes($pref_setting);
                  $values_array[$pref_name] = "'$pref_setting'";
             }
 
@@ -721,7 +725,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
 
             foreach($forum_prefix_array as $forum_prefix) {
 
-                $sql = "UPDATE {$forum_prefix}USER_PREFS SET $values WHERE UID = $uid";
+                $sql = "UPDATE {$forum_prefix}USER_PREFS SET $values WHERE UID = '$uid'";
                 $result = db_query($sql, $db_user_update_prefs);
             }
         }
@@ -729,7 +733,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
 
     if (isset($forum_prefs) && is_array($forum_prefs) && $table_data = get_table_prefix()) {
 
-        $sql = "SELECT * FROM {$table_data['PREFIX']}USER_PREFS WHERE UID = $uid";
+        $sql = "SELECT * FROM {$table_data['PREFIX']}USER_PREFS WHERE UID = '$uid'";
         $result_forum = db_query($sql, $db_user_update_prefs);
 
         if (db_num_rows($result_forum) > 0) {
@@ -742,6 +746,8 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
             $values_array = array();
 
             foreach($forum_prefs as $pref_name => $pref_setting) {
+                
+                $pref_setting = addslashes($pref_setting);
                 $values_array[] = "$pref_name = '$pref_setting'";
             }
 
@@ -749,7 +755,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
 
                 $values = implode(", ", $values_array);
 
-                $sql = "UPDATE {$table_data['PREFIX']}USER_PREFS SET $values WHERE UID = $uid";
+                $sql = "UPDATE {$table_data['PREFIX']}USER_PREFS SET $values WHERE UID = '$uid'";
                 $result_forum = db_query($sql, $db_user_update_prefs);
             }
 
@@ -763,6 +769,8 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
             $values_array = array();
 
             foreach($forum_prefs as $pref_name => $pref_setting) {
+                 
+                 $pref_setting = addslashes($pref_setting);
                  $values_array[$pref_name] = "'$pref_setting'";
             }
 
@@ -1117,7 +1125,7 @@ function user_get_friends($uid)
     $sql.= "LEFT JOIN USER USER ON (USER.UID = USER_PEER.PEER_UID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$sess_uid') ";
-    $sql.= "WHERE USER_PEER.UID = $uid AND (USER_PEER.RELATIONSHIP & $user_rel > 0) ";
+    $sql.= "WHERE USER_PEER.UID = '$uid' AND (USER_PEER.RELATIONSHIP & $user_rel > 0) ";
     $sql.= "LIMIT 0, 20";
 
     $result = db_query($sql, $db_user_get_peers);
@@ -1158,7 +1166,7 @@ function user_get_ignored($uid)
     $sql.= "LEFT JOIN USER USER ON (USER.UID = USER_PEER.PEER_UID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$sess_uid') ";
-    $sql.= "WHERE USER_PEER.UID = $uid AND (USER_PEER.RELATIONSHIP & $user_rel > 0) ";
+    $sql.= "WHERE USER_PEER.UID = '$uid' AND (USER_PEER.RELATIONSHIP & $user_rel > 0) ";
     $sql.= "LIMIT 0, 20";
 
     $result = db_query($sql, $db_user_get_peers);
@@ -1199,7 +1207,7 @@ function user_get_ignored_signatures($uid)
     $sql.= "LEFT JOIN USER USER ON (USER.UID = USER_PEER.PEER_UID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$sess_uid') ";
-    $sql.= "WHERE USER_PEER.UID = $uid AND (USER_PEER.RELATIONSHIP & $user_rel > 0) ";
+    $sql.= "WHERE USER_PEER.UID = '$uid' AND (USER_PEER.RELATIONSHIP & $user_rel > 0) ";
     $sql.= "LIMIT 0, 20";
 
     $result = db_query($sql, $db_user_get_peers);
@@ -1249,7 +1257,7 @@ function user_get_relationships($uid, $offset = 0)
     $sql.= "USER_PEER.RELATIONSHIP, USER_PEER.PEER_NICKNAME ";
     $sql.= "FROM {$table_data['PREFIX']}USER_PEER USER_PEER ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = USER_PEER.PEER_UID) ";
-    $sql.= "WHERE USER_PEER.UID = $uid ";
+    $sql.= "WHERE USER_PEER.UID = '$uid' ";
     $sql.= "LIMIT $offset, 10";
 
     $result = db_query($sql, $db_user_get_relationships);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.294 2007-04-15 22:19:25 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.295 2007-04-21 18:14:55 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -840,7 +840,7 @@ function bh_session_init($uid, $update_visitor_log = true, $skip_cookie = false)
 
     // Check for an existing user session.
 
-    $sql = "SELECT HASH FROM SESSIONS WHERE UID = $uid ";
+    $sql = "SELECT HASH FROM SESSIONS WHERE UID = '$uid' ";
     $sql.= "AND IPADDRESS = '$ipaddress'";
 
     $result = db_query($sql, $db_bh_session_init);

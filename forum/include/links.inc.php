@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.inc.php,v 1.60 2007-04-19 14:51:02 decoyduck Exp $ */
+/* $Id: links.inc.php,v 1.61 2007-04-21 18:14:55 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -52,7 +52,7 @@ function links_get_in_folder($fid, $invisible = false, $sort_by = "TITLE", $sort
 
     $sql = "SELECT COUNT(LID) AS LINK_COUNT ";
     $sql.= "FROM {$table_data['PREFIX']}LINKS ";
-    $sql.= "WHERE FID = $fid";
+    $sql.= "WHERE FID = '$fid'";
 
     $result = db_query($sql, $db_links_get_in_folder);
     list($links_count) = db_fetch_array($result, DB_RESULT_NUM);
@@ -65,7 +65,7 @@ function links_get_in_folder($fid, $invisible = false, $sort_by = "TITLE", $sort
     $sql.= "ON (LINKS.LID = LINKS_VOTE.LID) ";
     $sql.= "LEFT JOIN USER USER ";
     $sql.= "ON (LINKS.UID = USER.UID) ";
-    $sql.= "WHERE LINKS.FID = $fid ";
+    $sql.= "WHERE LINKS.FID = '$fid' ";
 
     if (!$invisible) $sql.= "AND LINKS.VISIBLE = 'Y' ";
 
@@ -369,7 +369,7 @@ function links_folder_change_visibility($fid, $visible = true)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "UPDATE {$table_data['PREFIX']}LINKS_FOLDERS SET VISIBLE = '$visible' WHERE FID = $fid";
+    $sql = "UPDATE {$table_data['PREFIX']}LINKS_FOLDERS SET VISIBLE = '$visible' WHERE FID = '$fid'";
     return db_query($sql, $db_links_folder_change_visibility);
 }
 
@@ -392,7 +392,7 @@ function links_folder_delete($fid)
     $sql = "UPDATE {$table_data['PREFIX']}LINKS SET FID = '{$folders[$fid]['PARENT_FID']}' WHERE FID = '$fid'";
     $result = db_query($sql, $db_links_folder_delete);
 
-    $sql = "DELETE FROM {$table_data['PREFIX']}LINKS_FOLDERS WHERE FID = $fid";
+    $sql = "DELETE FROM {$table_data['PREFIX']}LINKS_FOLDERS WHERE FID = '$fid'";
     $result = db_query($sql, $db_links_folder_delete);
 
     return $result;
@@ -407,7 +407,7 @@ function links_get_vote($lid, $uid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT RATING FROM {$table_data['PREFIX']}LINKS_VOTE WHERE LID = $lid AND UID = $uid";
+    $sql = "SELECT RATING FROM {$table_data['PREFIX']}LINKS_VOTE WHERE LID = '$lid' AND UID = '$uid'";
     $result = db_query($sql, $db_links_get_vote);
 
     if ($result) {
@@ -513,7 +513,7 @@ function links_delete_comment($cid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "DELETE FROM {$table_data['PREFIX']}LINKS_COMMENT WHERE CID = $cid";
+    $sql = "DELETE FROM {$table_data['PREFIX']}LINKS_COMMENT WHERE CID = '$cid'";
     $result = db_query($sql, $db_links_delete_comment);
     return $result;
 }

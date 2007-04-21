@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: constants.inc.php,v 1.108 2007-04-17 23:36:51 decoyduck Exp $ */
+/* $Id: constants.inc.php,v 1.109 2007-04-21 20:58:25 decoyduck Exp $ */
 
 /**
 * Constants used throughout Beehive.
@@ -120,6 +120,7 @@ define("ER_WRONG_COLUMN_NAME", 1166);
 
 // Constants for relationship system
 
+define("USER_NORMAL", 0);
 define("USER_FRIEND", 1);
 define("USER_IGNORED", 2);
 define("USER_IGNORED_SIG", 4);

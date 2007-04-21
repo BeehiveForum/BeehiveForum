@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-04-to-05.php,v 1.47 2006-10-27 23:28:43 decoyduck Exp $ */
+/* $Id: upgrade-04-to-05.php,v 1.48 2007-04-21 18:26:25 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-04-to-05.php") {
 
@@ -1394,8 +1394,8 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
                         list($word, $metaphone) = explode("\t", $word);
 
-                        $metaphone = addslashes(trim($metaphone));
-                        $word = addslashes(trim($word));
+                        $metaphone = db_escape_string(trim($metaphone));
+                        $word = db_escape_string(trim($word));
 
                         $sql = "INSERT INTO DICTIONARY (WORD, SOUND, UID) ";
                         $sql.= "VALUES ('$word', '$metaphone', 0)";

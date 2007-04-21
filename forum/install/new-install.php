@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.140 2007-04-15 21:32:24 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.141 2007-04-21 18:26:25 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
 
@@ -95,7 +95,7 @@ if (isset($remove_conflicts) && $remove_conflicts === true) {
 
 }else if ($conflicting_tables = install_get_table_conflicts($forum_webtag)) {
 
-    $conflicting_tables = addslashes(implode(", ", $conflicting_tables));
+    $conflicting_tables = db_escape_string(implode(", ", $conflicting_tables));
     
     $error_str = "<h2>Selected database contains tables which conflict with BeehiveForum. ";
     $error_str.= "If this database contains an existing BeehiveForum installation please ";
@@ -1168,8 +1168,8 @@ $forum_settings = array('wiki_integration_uri'    => 'http://en.wikipedia.org/wi
 
 foreach ($forum_settings as $sname => $svalue) {
 
-    $sname = addslashes($sname);
-    $svalue = addslashes($svalue);
+    $sname = db_escape_string($sname);
+    $svalue = db_escape_string($svalue);
 
     $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
     $sql.= "VALUES (1, '$sname', '$svalue')";
@@ -1209,8 +1209,8 @@ $global_settings = array('allow_search_spidering'     => 'Y',
 
 foreach ($global_settings as $sname => $svalue) {
 
-    $sname = addslashes($sname);
-    $svalue = addslashes($svalue);
+    $sname = db_escape_string($sname);
+    $svalue = db_escape_string($svalue);
 
     $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
     $sql.= "VALUES (0, '$sname', '$svalue')";
@@ -1246,9 +1246,9 @@ $bots_array = array('ia_archiver'      => array('NAME' => 'Alexa', 'URL' => 'htt
 
 foreach ($bots_array as $agent => $details) {
 
-    $agent = addslashes($agent);
-    $name  = addslashes($details['NAME']);
-    $url   = addslashes($details['URL']);
+    $agent = db_escape_string($agent);
+    $name  = db_escape_string($details['NAME']);
+    $url   = db_escape_string($details['URL']);
 
     $sql = "INSERT INTO SEARCH_ENGINE_BOTS (NAME, URL, AGENT_MATCH) ";
     $sql.= "VALUES ('$name', '$url', '%$agent%')";
@@ -1336,8 +1336,8 @@ if (!isset($skip_dictionary) || $skip_dictionary === false) {
 
                 list($word, $metaphone) = explode("\t", $word);
 
-                $metaphone = addslashes(trim($metaphone));
-                $word = addslashes(trim($word));
+                $metaphone = db_escape_string(trim($metaphone));
+                $word = db_escape_string(trim($word));
 
                 $sql = "INSERT INTO DICTIONARY (WORD, SOUND, UID) ";
                 $sql.= "VALUES ('$word', '$metaphone', 0)";

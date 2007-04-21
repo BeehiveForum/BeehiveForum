@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.107 2007-04-21 18:14:56 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.108 2007-04-21 18:26:24 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -449,7 +449,7 @@ function thread_change_title($fid, $tid, $new_title)
 
     if (!is_numeric($tid)) return false;
 
-    $new_title = addslashes(_htmlentities($new_title));
+    $new_title = db_escape_string(_htmlentities($new_title));
 
     $sql = "UPDATE {$table_data['PREFIX']}THREAD SET TITLE = '$new_title' WHERE TID = '$tid'";
     return db_query($sql, $db_thread_change_title);
@@ -1308,7 +1308,7 @@ function thread_search($thread_search, $offset = 0)
 
     $fidlist = folder_get_available();
 
-    $thread_search = addslashes(str_replace("%", "", $thread_search));
+    $thread_search = db_escape_string(str_replace("%", "", $thread_search));
 
     $sql = "SELECT COUNT(THREAD.TID) AS THREAD_COUNT ";
     $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.107 2007-04-21 18:14:55 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.108 2007-04-21 18:26:24 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -489,7 +489,7 @@ function email_is_unique($email_address)
 {
     $db_email_is_unique = db_connect();
 
-    $email_address = addslashes($email_address);
+    $email_address = db_escape_string($email_address);
 
     $sql = "SELECT UID FROM USER WHERE EMAIL = '$email_address' LIMIT 0, 1";
     $result = db_query($sql, $db_email_is_unique);

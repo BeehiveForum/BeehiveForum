@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.180 2007-04-21 18:14:55 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.181 2007-04-21 18:26:24 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -196,7 +196,7 @@ function search_execute($search_arguments, &$error)
 
             $bool_mode = (db_fetch_mysql_version() > 40010) ? " IN BOOLEAN MODE" : "";
 
-            $search_string = addslashes(implode(' ', $search_keywords_array['keywords']));
+            $search_string = db_escape_string(implode(' ', $search_keywords_array['keywords']));
 
             search_save_keywords($search_keywords_array['keywords']);
 
@@ -431,7 +431,7 @@ function search_save_keywords($keywords_array)
 
     $keywords_array = search_strip_special_chars($keywords_array);
 
-    $keywords = addslashes(implode("\x00", $keywords_array));
+    $keywords = db_escape_string(implode("\x00", $keywords_array));
 
     $sql = "UPDATE {$table_data['PREFIX']}USER_TRACK ";
     $sql.= "SET LAST_SEARCH_KEYWORDS = '$keywords' ";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.50 2007-01-15 00:10:35 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.51 2007-04-21 18:26:24 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -237,7 +237,7 @@ function install_table_exists($table_name)
 {
     $db_install_table_exists = db_connect();
 
-    $table_name = addslashes($table_name);
+    $table_name = db_escape_string($table_name);
 
     $sql = "SHOW TABLES LIKE '$table_name' ";
     $result = db_query($sql, $db_install_table_exists);
@@ -282,7 +282,7 @@ function install_get_table_conflicts($webtag = false, $forum_tables = false, $gl
         
             foreach ($forum_tables as $forum_table) {
 
-                $forum_table = addslashes($forum_table);
+                $forum_table = db_escape_string($forum_table);
                 
                 $sql = "SHOW TABLES LIKE '{$webtag}_{$forum_table}' ";
                 $result = db_query($sql, $db_install_get_table_conflicts);
@@ -298,7 +298,7 @@ function install_get_table_conflicts($webtag = false, $forum_tables = false, $gl
 
         foreach ($global_tables as $global_table) {
 
-            $global_table = addslashes($global_table);
+            $global_table = db_escape_string($global_table);
 
             $sql = "SHOW TABLES LIKE '$global_table' ";
             $result = db_query($sql, $db_install_get_table_conflicts);
@@ -320,7 +320,7 @@ function install_remove_table_keys($table_name)
 {
     $db_install_remove_table_keys = db_connect();
 
-    if ($table_name !== addslashes($table_name)) return false;
+    if ($table_name !== db_escape_string($table_name)) return false;
 
     $table_index = array();
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_links.inc.php,v 1.24 2007-04-19 14:51:02 decoyduck Exp $ */
+/* $Id: forum_links.inc.php,v 1.25 2007-04-21 18:26:24 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -206,8 +206,8 @@ function forum_links_update_link($lid, $title, $uri = "")
 
     if (!is_numeric($lid)) return false;
 
-    $title = addslashes($title);
-    $uri = addslashes($uri);
+    $title = db_escape_string($title);
+    $uri = db_escape_string($uri);
 
     $sql = "UPDATE {$table_data['PREFIX']}FORUM_LINKS SET TITLE = '$title', ";
     $sql.= "URI = '$uri' WHERE LID = '$lid'";
@@ -223,8 +223,8 @@ function forum_links_add_link($title, $uri = "")
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $title = addslashes($title);
-    $uri = addslashes($uri);
+    $title = db_escape_string($title);
+    $uri = db_escape_string($uri);
 
     $sql = "SELECT MAX(POS) + 1 FROM {$table_data['PREFIX']}FORUM_LINKS ";
     $sql.= "LIMIT 0, 1";

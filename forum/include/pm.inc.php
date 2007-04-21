@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.185 2007-04-21 18:14:55 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.186 2007-04-21 18:26:24 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -226,7 +226,7 @@ function pm_add_sentitem($mid)
 
     $sql = "INSERT INTO PM (TYPE, FROM_UID, TO_UID, SUBJECT, CREATED, NOTIFIED) ";
     $sql.= "VALUES (". PM_SENT. ", {$db_pm_add_sentitem_row['FROM_UID']}, ";
-    $sql.= "{$db_pm_add_sentitem_row['TO_UID']}, '". addslashes($db_pm_add_sentitem_row['SUBJECT']). "', ";
+    $sql.= "{$db_pm_add_sentitem_row['TO_UID']}, '". db_escape_string($db_pm_add_sentitem_row['SUBJECT']). "', ";
     $sql.= "'{$db_pm_add_sentitem_row['CREATED']}', 1)";
 
     $result  = db_query($sql, $db_pm_add_sentitem);
@@ -246,7 +246,7 @@ function pm_add_sentitem($mid)
     // Insert the content with the new message ID
 
     $sql = "INSERT INTO PM_CONTENT (MID, CONTENT) ";
-    $sql.= "VALUES ($new_mid, '". addslashes($db_pm_add_sentitem_content_row['CONTENT']). "')";
+    $sql.= "VALUES ($new_mid, '". db_escape_string($db_pm_add_sentitem_content_row['CONTENT']). "')";
 
     $result = db_query($sql, $db_pm_add_sentitem);
 
@@ -726,7 +726,7 @@ function pm_search_execute($search_string, &$error)
 
         $bool_mode = (db_fetch_mysql_version() > 40010) ? " IN BOOLEAN MODE" : "";
 
-        $search_string_checked = addslashes(implode(' ', $search_keywords_array['keywords']));
+        $search_string_checked = db_escape_string(implode(' ', $search_keywords_array['keywords']));
 
         $pm_max_user_messages = forum_get_setting('pm_max_user_messages', false, 100);
         $limit = ($pm_max_user_messages > 1000) ? 1000 : $pm_max_user_messages;
@@ -1475,8 +1475,8 @@ function pm_send_message($tuid, $fuid, $subject, $content)
     if (!is_numeric($tuid)) return false;
     if (!is_numeric($fuid)) return false;
 
-    $subject = addslashes(_htmlentities($subject));
-    $content = addslashes($content);
+    $subject = db_escape_string(_htmlentities($subject));
+    $content = db_escape_string($content);
 
     // Insert the main PM Data into the database
 
@@ -1510,9 +1510,9 @@ function pm_save_message($subject, $content, $tuid, $recipient_list)
 
     if (!is_numeric($tuid)) return false;
 
-    $subject = addslashes(_htmlentities($subject));
-    $recipient_list = addslashes($recipient_list);
-    $content = addslashes($content);
+    $subject = db_escape_string(_htmlentities($subject));
+    $recipient_list = db_escape_string($recipient_list);
+    $content = db_escape_string($content);
 
     if (pm_get_free_space($uid) > 0) {
 
@@ -1558,9 +1558,9 @@ function pm_edit_message($mid, $subject, $content, $tuid = 0, $recipient_list = 
     if (!is_numeric($mid)) return false;
     if (!is_numeric($tuid)) return false;
 
-    $subject = addslashes(_htmlentities($subject));
-    $recipient_list = addslashes($recipient_list);
-    $content = addslashes($content);
+    $subject = db_escape_string(_htmlentities($subject));
+    $recipient_list = db_escape_string($recipient_list);
+    $content = db_escape_string($content);
 
     // Update the subject text
 

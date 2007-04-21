@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.59 2007-04-21 18:14:56 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.60 2007-04-21 18:26:25 decoyduck Exp $ */
 
 /**
 * Functions relating to users interacting with profiles
@@ -56,7 +56,7 @@ function user_profile_update($uid, $piid, $entry, $privacy)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $entry = addslashes(_htmlentities($entry));
+    $entry = db_escape_string(_htmlentities($entry));
 
     $sql = "DELETE FROM {$table_data['PREFIX']}USER_PROFILE ";
     $sql.= "WHERE UID = '$uid' AND PIID = '$piid'";

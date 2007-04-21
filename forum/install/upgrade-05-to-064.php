@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-064.php,v 1.25 2007-04-21 18:14:56 decoyduck Exp $ */
+/* $Id: upgrade-05-to-064.php,v 1.26 2007-04-21 18:26:25 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-05-to-064.php") {
 
@@ -197,9 +197,9 @@ $bots_array = array('ia_archiver'      => array('NAME' => 'Alexa', 'URL' => 'htt
 
 foreach ($bots_array as $agent => $details) {
 
-    $agent = addslashes($agent);
-    $name  = addslashes($details['NAME']);
-    $url   = addslashes($details['URL']);
+    $agent = db_escape_string($agent);
+    $name  = db_escape_string($details['NAME']);
+    $url   = db_escape_string($details['URL']);
 
     $sql = "INSERT INTO SEARCH_ENGINE_BOTS (NAME, URL, AGENT_MATCH) ";
     $sql.= "VALUES ('$name', '$url', '%$agent%')";
@@ -479,8 +479,8 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
         while (list($gid, $name, $desc, $auto_group) = db_fetch_array($result, DB_RESULT_NUM)) {
 
-            $name = addslashes($name);
-            $desc = addslashes($desc);
+            $name = db_escape_string($name);
+            $desc = db_escape_string($desc);
 
             $sql = "INSERT INTO GROUPS (FORUM, GROUP_NAME, GROUP_DESC, AUTO_GROUP) ";
             $sql.= "VALUES ($forum_fid, '$name', '$desc', $auto_group)";

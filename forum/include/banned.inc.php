@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: banned.inc.php,v 1.17 2007-01-15 00:10:35 decoyduck Exp $ */
+/* $Id: banned.inc.php,v 1.18 2007-04-21 18:26:24 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -52,13 +52,13 @@ function ban_check($user_sess, $user_is_guest = false)
 
     if ($ipaddress = get_ip_address()) {
 
-        $ipaddress = addslashes($ipaddress);
+        $ipaddress = db_escape_string($ipaddress);
         $ban_check_array[] = "('$ipaddress' LIKE BANDATA AND BANTYPE = 1)";
     }
 
     if (isset($user_sess['REFERER']) && strlen(trim($user_sess['REFERER'])) > 0) {
 
-        $referer = addslashes($user_sess['REFERER']);
+        $referer = db_escape_string($user_sess['REFERER']);
         $ban_check_array[] = "('$referer' LIKE BANDATA AND BANTYPE = 5)";
     }
 
@@ -66,19 +66,19 @@ function ban_check($user_sess, $user_is_guest = false)
 
         if (isset($user_sess['LOGON']) && strlen(trim($user_sess['LOGON'])) > 0) {
             
-            $logon = addslashes($user_sess['LOGON']);
+            $logon = db_escape_string($user_sess['LOGON']);
             $ban_check_array[] = "('$logon' LIKE BANDATA AND BANTYPE = 2)";
         }
 
         if (isset($user_sess['NICKNAME']) && strlen(trim($user_sess['NICKNAME'])) > 0) {
             
-            $nickname = addslashes($user_sess['NICKNAME']);
+            $nickname = db_escape_string($user_sess['NICKNAME']);
             $ban_check_array[] = "('$nickname' LIKE BANDATA AND BANTYPE = 3)";
         }
 
         if (isset($user_sess['EMAIL']) && strlen(trim($user_sess['EMAIL'])) > 0) {
             
-            $email = addslashes($user_sess['EMAIL']);
+            $email = db_escape_string($user_sess['EMAIL']);
             $ban_check_array[] = "('$email' LIKE BANDATA AND BANTYPE = 4)";
         }
     }
@@ -112,7 +112,7 @@ function ip_is_banned($ipaddress)
 {
    $db_ip_is_banned = db_connect();
 
-   $ipaddress = addslashes($ipaddress);
+   $ipaddress = db_escape_string($ipaddress);
 
    if (!$table_data = get_table_prefix()) return false;
 
@@ -129,7 +129,7 @@ function logon_is_banned($logon)
 {
    $db_logon_is_banned = db_connect();
 
-   $logon = addslashes($logon);
+   $logon = db_escape_string($logon);
 
    if (!$table_data = get_table_prefix()) return false;
 
@@ -146,7 +146,7 @@ function nickname_is_banned($nickname)
 {
    $db_nickname_is_banned = db_connect();
 
-   $nickname = addslashes($nickname);
+   $nickname = db_escape_string($nickname);
 
    if (!$table_data = get_table_prefix()) return false;
 
@@ -163,7 +163,7 @@ function email_is_banned($email)
 {
    $db_email_is_banned = db_connect();
 
-   $email = addslashes($email);
+   $email = db_escape_string($email);
 
    if (!$table_data = get_table_prefix()) return false;
 
@@ -180,7 +180,7 @@ function referer_is_banned($referer)
 {
    $db_referer_is_banned = db_connect();
 
-   $referer = addslashes($referer);
+   $referer = db_escape_string($referer);
 
    if (!$table_data = get_table_prefix()) return false;
 
@@ -201,8 +201,8 @@ function add_ban_data($type, $data, $comment)
 
     if (!in_array($type, $data_types_array)) return false;
 
-    $data = addslashes($data);
-    $comment = addslashes($comment);
+    $data = db_escape_string($data);
+    $comment = db_escape_string($comment);
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -238,8 +238,8 @@ function update_ban_data($ban_id, $type, $data, $comment)
 
     if (!in_array($type, $data_types_array)) return false;
 
-    $data = addslashes($data);
-    $comment = addslashes($comment);
+    $data = db_escape_string($data);
+    $comment = db_escape_string($comment);
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -259,7 +259,7 @@ function check_ban_data($ban_type, $ban_data, $check_ban_id = false)
     if (!is_numeric($ban_type)) return false;
     if (!is_numeric($check_ban_id)) $ban_id = false;
    
-    $ban_data = addslashes($ban_data);
+    $ban_data = db_escape_string($ban_data);
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -293,7 +293,7 @@ function check_affected_sessions($ban_type, $ban_data)
 
     if (!is_numeric($ban_type)) return false;
 
-    $ban_data = addslashes($ban_data);
+    $ban_data = db_escape_string($ban_data);
 
     $affected_sessions = array();
 

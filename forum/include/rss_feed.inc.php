@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: rss_feed.inc.php,v 1.35 2007-04-21 18:14:55 decoyduck Exp $ */
+/* $Id: rss_feed.inc.php,v 1.36 2007-04-21 18:26:24 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -221,7 +221,7 @@ function rss_thread_exist($rss_id, $link)
 
     if (!is_numeric($rss_id)) return false;
 
-    $link = addslashes($link);
+    $link = db_escape_string($link);
 
     $sql = "SELECT * FROM {$table_data['PREFIX']}RSS_HISTORY ";
     $sql.= "WHERE RSSID = '$rss_id' AND LINK = '$link'";
@@ -239,7 +239,7 @@ function rss_create_history($rss_id, $link)
 
     if (!is_numeric($rss_id)) return false;
 
-    $link = addslashes($link);
+    $link = db_escape_string($link);
 
     $sql = "INSERT IGNORE INTO {$table_data['PREFIX']}RSS_HISTORY (RSSID, LINK) ";
     $sql.= "VALUES ($rss_id, '$link')";
@@ -350,9 +350,9 @@ function rss_add_feed($name, $uid, $fid, $url, $prefix, $frequency)
     if (!is_numeric($fid)) return false;
     if (!is_numeric($frequency)) return false;
 
-    $name = addslashes($name);
-    $url = addslashes($url);
-    $prefix = addslashes($prefix);
+    $name = db_escape_string($name);
+    $url = db_escape_string($url);
+    $prefix = db_escape_string($prefix);
 
     $last_run = mktime(0, 0, 0, 6, 27, 2002);
 
@@ -375,9 +375,9 @@ function rss_feed_update($rssid, $name, $uid, $fid, $url, $prefix, $frequency)
     if (!is_numeric($fid)) return false;
     if (!is_numeric($frequency)) return false;
 
-    $name = addslashes($name);
-    $url = addslashes($url);
-    $prefix = addslashes($prefix);
+    $name = db_escape_string($name);
+    $url = db_escape_string($url);
+    $prefix = db_escape_string($prefix);
 
     if (!$table_data = get_table_prefix()) return false;
 

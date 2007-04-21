@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.221 2007-04-21 18:14:55 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.222 2007-04-21 18:26:24 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -67,7 +67,7 @@ function get_forum_data()
             // Check #2: See if the webtag specified in GET/POST
             // actually exists.
 
-            $webtag = addslashes($webtag);
+            $webtag = db_escape_string($webtag);
 
             $sql = "SELECT FORUMS.FID, FORUMS.WEBTAG, FORUMS.ACCESS_LEVEL, USER_FORUM.ALLOWED, ";
             $sql.= "CONCAT(FORUMS.DATABASE_NAME, '.', FORUMS.WEBTAG, '_') AS PREFIX FROM FORUMS ";
@@ -476,8 +476,8 @@ function forum_save_settings($forum_settings_array)
 
     foreach ($forum_settings_array as $sname => $svalue) {
 
-        $sname = addslashes($sname);
-        $svalue = addslashes($svalue);
+        $sname = db_escape_string($sname);
+        $svalue = db_escape_string($svalue);
 
         $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
         $sql.= "VALUES ($forum_fid, '$sname', '$svalue')";
@@ -499,8 +499,8 @@ function forum_save_default_settings($forum_settings_array)
 
     foreach ($forum_settings_array as $sname => $svalue) {
 
-        $sname = addslashes($sname);
-        $svalue = addslashes($svalue);
+        $sname = db_escape_string($sname);
+        $svalue = db_escape_string($svalue);
 
         $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
         $sql.= "VALUES ('0', '$sname', '$svalue')";
@@ -1579,8 +1579,8 @@ function forum_create($webtag, $forum_name, $database_name, $access)
 
         foreach ($forum_settings as $sname => $svalue) {
 
-            $sname = addslashes($sname);
-            $svalue = addslashes($svalue);
+            $sname = db_escape_string($sname);
+            $svalue = db_escape_string($svalue);
 
             $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
             $sql.= "VALUES ($forum_fid, '$sname', '$svalue')";
@@ -1618,7 +1618,7 @@ function forum_update($fid, $forum_name, $access_level)
 
         $db_forum_update = db_connect();
 
-        $forum_name = addslashes($forum_name);
+        $forum_name = db_escape_string($forum_name);
 
         $sql = "UPDATE FORUMS SET ACCESS_LEVEL = '$access_level' ";
         $sql.= "WHERE FID = '$fid'";
@@ -1791,7 +1791,7 @@ function forum_update_password($fid, $password)
 
     if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
 
-        $password = addslashes(md5($password));
+        $password = db_escape_string(md5($password));
 
         $sql = "UPDATE FORUMS SET FORUM_PASSWD = '$password' ";
         $sql.= "WHERE FID = '$fid'";
@@ -1919,7 +1919,7 @@ function forum_search($search_string)
         $keywords_array = explode(" ", $search_string);
 
         foreach($keywords_array as $key => $value) {
-            $keywords_array[$key] = addslashes($value);
+            $keywords_array[$key] = db_escape_string($value);
         }
 
         $search_webtag = implode("%' OR FORUMS.WEBTAG LIKE '", $keywords_array);

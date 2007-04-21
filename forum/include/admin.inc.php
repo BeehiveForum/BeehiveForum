@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.113 2007-04-21 18:14:55 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.114 2007-04-21 18:26:24 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -69,7 +69,7 @@ function admin_add_log_entry($action, $data = "")
 
     if (is_array($data)) $data = implode("\x00", preg_replace('/[\x00]+/', '', $data));
 
-    $data = addslashes($data);
+    $data = db_escape_string($data);
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -301,8 +301,8 @@ function admin_clear_word_filter()
 
 function admin_add_word_filter($match, $replace, $filter_option)
 {
-    $match = addslashes($match);
-    $replace = addslashes($replace);
+    $match = db_escape_string($match);
+    $replace = db_escape_string($replace);
 
     if (!is_numeric($filter_option)) $filter_option = 0;
 
@@ -336,8 +336,8 @@ function admin_update_word_filter($filter_id, $match, $replace, $filter_option)
     if (!is_numeric($filter_id)) return false;
     if (!is_numeric($filter_option)) $filter_option = 0;
 
-    $match = addslashes($match);
-    $replace = addslashes($replace);
+    $match = db_escape_string($match);
+    $replace = db_escape_string($replace);
 
     $db_admin_add_word_filter = db_connect();
     
@@ -421,7 +421,7 @@ function admin_user_search($user_search, $sort_by = 'VISITOR_LOG.LAST_LOGON', $s
             $having_sql = "";
     }
 
-    $user_search = addslashes(str_replace("%", "", $user_search));
+    $user_search = db_escape_string(str_replace("%", "", $user_search));
 
     $sql = "SELECT USER.UID, SESSIONS.HASH, ";
     $sql.= "BIT_OR(GROUP_PERMS.PERM) AS USER_PERM FROM USER USER ";

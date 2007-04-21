@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-064.php,v 1.24 2006-10-27 23:28:43 decoyduck Exp $ */
+/* $Id: upgrade-05-to-064.php,v 1.25 2007-04-21 18:14:56 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-05-to-064.php") {
 
@@ -491,7 +491,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
                 $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) ";
                 $sql.= "SELECT $new_group_gid, $forum_fid, FID, PERM FROM ";
-                $sql.= "{$forum_webtag}_GROUP_PERMS WHERE GID = $gid";
+                $sql.= "{$forum_webtag}_GROUP_PERMS WHERE GID = '$gid'";
 
                 if (!$result = @db_query($sql, $db_install)) {
 
@@ -501,7 +501,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
                 $sql = "INSERT INTO GROUP_USERS (GID, UID) ";
                 $sql.= "SELECT $new_group_gid, UID FROM {$forum_webtag}_GROUP_USERS ";
-                $sql.= "WHERE GID = $gid";
+                $sql.= "WHERE GID = '$gid'";
 
                 if (!$result = @db_query($sql, $db_install)) {
 
@@ -969,7 +969,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     }
 
     $sql = "SELECT SVALUE FROM FORUM_SETTINGS WHERE ";
-    $sql.= "SNAME = 'pm_auto_prune_length' AND FID = $forum_fid";
+    $sql.= "SNAME = 'pm_auto_prune_length' AND FID = '$forum_fid'";
 
     if ($result = @db_query($sql, $db_install)) {
 
@@ -977,38 +977,44 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
             list($pm_auto_prune_length) = db_fetch_array($result, DB_RESULT_NUM);
 
-            $sql = "UPDATE FORUM_SETTINGS SET SVALUE = $pm_auto_prune_length ";
-            $sql.= "WHERE SVALUE = 'Y' AND SNAME = 'pm_auto_prune' ";
-            $sql.= "AND FID = $forum_fid";
+            if (is_numeric($pm_auto_prune_length)) {
+            
+                $pm_prune_enabled = $pm_auto_prune_length;
+                $pm_prune_disabled = $pm_auto_prune_length * -1;
+                
+                $sql = "UPDATE FORUM_SETTINGS SET SVALUE = '$pm_prune_enabled' ";
+                $sql.= "WHERE SVALUE = 'Y' AND SNAME = 'pm_auto_prune' ";
+                $sql.= "AND FID = '$forum_fid'";
 
-            if (!$result = @db_query($sql, $db_install)) {
+                if (!$result = @db_query($sql, $db_install)) {
 
-                $valid = false;
-                return;
-            }
+                    $valid = false;
+                    return;
+                }
 
-            $sql = "UPDATE FORUM_SETTINGS SET SVALUE = $pm_auto_prune_length * -1 ";
-            $sql.= "WHERE SVALUE = 'N' AND SNAME = 'pm_auto_prune' ";
-            $sql.= "AND FID = $forum_fid";
+                $sql = "UPDATE FORUM_SETTINGS SET SVALUE = '$pm_prune_disabled' ";
+                $sql.= "WHERE SVALUE = 'N' AND SNAME = 'pm_auto_prune' ";
+                $sql.= "AND FID = '$forum_fid'";
 
-            if (!$result = @db_query($sql, $db_install)) {
+                if (!$result = @db_query($sql, $db_install)) {
 
-                $valid = false;
-                return;
-            }
+                    $valid = false;
+                    return;
+                }
 
-            $sql = "DELETE FROM FORUM_SETTINGS WHERE SNAME = 'pm_auto_prune_length' ";
-            $sql.= "AND FID = $forum_fid";
+                $sql = "DELETE FROM FORUM_SETTINGS WHERE SNAME = 'pm_auto_prune_length' ";
+                $sql.= "AND FID = '$forum_fid'";
 
-            if (!$result = @db_query($sql, $db_install)) {
+                if (!$result = @db_query($sql, $db_install)) {
 
-                $valid = false;
-                return;
+                    $valid = false;
+                    return;
+                }
             }
 
         }else {
 
-            $sql = "DELETE FROM FORUM_SETTINGS WHERE FID = $forum_fid ";
+            $sql = "DELETE FROM FORUM_SETTINGS WHERE FID = '$forum_fid' ";
             $sql.= "AND SVALUE LIKE 'pm_auto_prune%'";
 
             if (!$result = @db_query($sql, $db_install)) {

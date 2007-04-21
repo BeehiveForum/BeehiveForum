@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.152 2007-04-18 23:20:28 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.153 2007-04-21 18:14:55 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -103,15 +103,15 @@ function post_create($fid, $tid, $reply_pid, $by_uid, $fuid, $tuid, $content, $h
 
             // Update the thread length so it matches the number of posts
 
-            $sql = "UPDATE {$table_data['PREFIX']}THREAD SET LENGTH = $new_pid, MODIFIED = NOW() ";
-            $sql.= "WHERE TID = $tid";
+            $sql = "UPDATE {$table_data['PREFIX']}THREAD SET LENGTH = '$new_pid', MODIFIED = NOW() ";
+            $sql.= "WHERE TID = '$tid'";
 
             $result = db_query($sql, $db_post_create);
 
             // Update the user's post count.
 
             $sql = "UPDATE {$table_data['PREFIX']}USER_TRACK SET LAST_POST = NOW(), ";
-            $sql.= "POST_COUNT = POST_COUNT + 1 WHERE UID = $fuid";
+            $sql.= "POST_COUNT = POST_COUNT + 1 WHERE UID = '$fuid'";
 
             $result = db_query($sql, $db_post_create);
 
@@ -158,14 +158,14 @@ function post_save_attachment_id($tid, $pid, $aid)
     $forum_fid = $table_data['FID'];
 
     $sql = "SELECT TID FROM POST_ATTACHMENT_IDS WHERE ";
-    $sql.= "FID = $forum_fid AND TID = $tid AND PID = $pid";
+    $sql.= "FID = '$forum_fid' AND TID = '$tid' AND PID = '$pid'";
 
     $result = db_query($sql, $db_post_save_attachment_id);
 
     if (db_num_rows($result) > 0) {
 
         $sql = "UPDATE POST_ATTACHMENT_IDS SET AID = '$aid' ";
-        $sql.= "WHERE FID = $forum_fid AND TID = $tid AND PID = $pid";
+        $sql.= "WHERE FID = '$forum_fid' AND TID = '$tid' AND PID = '$pid'";
 
     }else {
 

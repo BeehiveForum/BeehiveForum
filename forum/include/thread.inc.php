@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.106 2007-04-19 14:51:02 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.107 2007-04-21 18:14:56 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -84,9 +84,9 @@ function thread_get($tid, $inc_deleted = false)
     $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD_STATS THREAD_STATS ";
     $sql.= "ON (THREAD_STATS.TID = THREAD.TID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
-    $sql.= "ON (THREAD.TID = USER_THREAD.TID AND USER_THREAD.UID = $uid) ";
+    $sql.= "ON (THREAD.TID = USER_THREAD.TID AND USER_THREAD.UID = '$uid') ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
-    $sql.= "ON (USER_PEER.PEER_UID = THREAD.BY_UID AND USER_PEER.UID = $uid) ";
+    $sql.= "ON (USER_PEER.PEER_UID = THREAD.BY_UID AND USER_PEER.UID = '$uid') ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = THREAD.BY_UID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}FOLDER FOLDER ";
     $sql.= "ON (FOLDER.FID = THREAD.FID) ";
@@ -149,7 +149,7 @@ function thread_get_by_uid($tid)
     if (!is_numeric($tid)) return false;
 
     $sql = "SELECT BY_UID FROM {$table_data['PREFIX']}THREAD ";
-    $sql.= "WHERE TID = $tid";
+    $sql.= "WHERE TID = '$tid'";
 
     $result = db_query($sql, $db_thread_get_author);
 
@@ -378,11 +378,11 @@ function thread_set_sticky($tid, $sticky = true, $sticky_until = false)
             $sql .= ", STICKY_UNTIL = NULL ";
         }
 
-        $sql .= "WHERE TID = $tid";
+        $sql .= "WHERE TID = '$tid'";
 
     }else {
 
-        $sql = "UPDATE {$table_data['PREFIX']}THREAD SET STICKY = 'N' WHERE TID = $tid";
+        $sql = "UPDATE {$table_data['PREFIX']}THREAD SET STICKY = 'N' WHERE TID = '$tid'";
     }
 
     if (!$result = db_query($sql, $db_thread_set_sticky)) return false;
@@ -399,9 +399,9 @@ function thread_set_closed($tid, $closed = true)
     if (!is_numeric($tid)) return false;
 
     if ($closed) {
-        $sql = "UPDATE {$table_data['PREFIX']}THREAD SET CLOSED = NOW() WHERE TID = $tid";
+        $sql = "UPDATE {$table_data['PREFIX']}THREAD SET CLOSED = NOW() WHERE TID = '$tid'";
     }else {
-        $sql = "UPDATE {$table_data['PREFIX']}THREAD SET CLOSED = NULL WHERE TID = $tid";
+        $sql = "UPDATE {$table_data['PREFIX']}THREAD SET CLOSED = NULL WHERE TID = '$tid'";
     }
 
     if (!$result = db_query($sql, $db_thread_set_closed)) return false;
@@ -418,9 +418,9 @@ function thread_admin_lock($tid, $locked = true)
     if (!is_numeric($tid)) return false;
 
     if ($locked) {
-        $sql = "UPDATE {$table_data['PREFIX']}THREAD SET ADMIN_LOCK = NOW() WHERE TID = $tid";
+        $sql = "UPDATE {$table_data['PREFIX']}THREAD SET ADMIN_LOCK = NOW() WHERE TID = '$tid'";
     }else {
-        $sql = "UPDATE {$table_data['PREFIX']}THREAD SET ADMIN_LOCK = NULL WHERE TID = $tid";
+        $sql = "UPDATE {$table_data['PREFIX']}THREAD SET ADMIN_LOCK = NULL WHERE TID = '$tid'";
     }
 
     if (!$result = db_query($sql, $db_thread_admin_lock)) return false;
@@ -437,7 +437,7 @@ function thread_change_folder($tid, $new_fid)
     if (!is_numeric($tid)) return false;
     if (!is_numeric($new_fid)) return false;
 
-    $sql = "UPDATE {$table_data['PREFIX']}THREAD SET FID = $new_fid WHERE TID = $tid";
+    $sql = "UPDATE {$table_data['PREFIX']}THREAD SET FID = '$new_fid' WHERE TID = '$tid'";
     return db_query($sql, $db_thread_set_closed);
 }
 
@@ -451,7 +451,7 @@ function thread_change_title($fid, $tid, $new_title)
 
     $new_title = addslashes(_htmlentities($new_title));
 
-    $sql = "UPDATE {$table_data['PREFIX']}THREAD SET TITLE = '$new_title' WHERE TID = $tid";
+    $sql = "UPDATE {$table_data['PREFIX']}THREAD SET TITLE = '$new_title' WHERE TID = '$tid'";
     return db_query($sql, $db_thread_change_title);
 }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.179 2007-04-19 14:51:02 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.180 2007-04-21 18:14:55 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -77,13 +77,13 @@ function search_execute($search_arguments, &$error)
     // Each user can only store one search result so we should
     // clean up their previous search if applicable.
 
-    $sql = "DELETE FROM SEARCH_RESULTS WHERE UID = $uid";
+    $sql = "DELETE FROM SEARCH_RESULTS WHERE UID = '$uid'";
     $result = db_query($sql, $db_search_execute);
 
     // Peer portion of the query for removing rows from ignored users - the same for all searches
 
     $peer_join_sql = "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
-    $peer_join_sql.= "ON (USER_PEER.PEER_UID = THREAD.BY_UID AND USER_PEER.UID = $uid) ";
+    $peer_join_sql.= "ON (USER_PEER.PEER_UID = THREAD.BY_UID AND USER_PEER.UID = '$uid') ";
 
     $peer_where_sql = "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED_COMPLETELY. ") = 0 ";
     $peer_where_sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
@@ -486,7 +486,7 @@ function search_fetch_results($offset, $sort_by, $sort_dir)
         $sort_dir = 'DESC';
     }
 
-    $sql = "SELECT COUNT(*) AS RESULT_COUNT FROM SEARCH_RESULTS WHERE UID = $uid";
+    $sql = "SELECT COUNT(*) AS RESULT_COUNT FROM SEARCH_RESULTS WHERE UID = '$uid'";
     $result = db_query($sql, $db_search_fetch_results);
 
     list($result_count) = db_fetch_array($result, DB_RESULT_NUM);

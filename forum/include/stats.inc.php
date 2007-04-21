@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.72 2007-04-14 14:52:50 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.73 2007-04-21 18:14:55 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -63,7 +63,7 @@ function update_stats()
             if ($num_sessions > $stats_array['MOST_USERS_COUNT']) {
 
                 $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}STATS SET ";
-                $sql.= "MOST_USERS_DATE = NOW(), MOST_USERS_COUNT = $num_sessions";
+                $sql.= "MOST_USERS_DATE = NOW(), MOST_USERS_COUNT = '$num_sessions'";
 
                 if (!$result = db_query($sql, $db_update_stats)) return false;
             }
@@ -71,7 +71,7 @@ function update_stats()
             if ($num_recent_posts > $stats_array['MOST_POSTS_COUNT']) {
 
                 $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}STATS SET ";
-                $sql.= "MOST_POSTS_DATE = NOW(), MOST_POSTS_COUNT = $num_recent_posts";
+                $sql.= "MOST_POSTS_DATE = NOW(), MOST_POSTS_COUNT = '$num_recent_posts'";
 
                 if (!$result = db_query($sql, $db_update_stats)) return false;
             }
@@ -107,7 +107,7 @@ function get_num_sessions()
 
     $sql = "SELECT COUNT(UID) AS USER_COUNT FROM SESSIONS ";
     $sql.= "WHERE TIME >= FROM_UNIXTIME($session_stamp) ";
-    $sql.= "AND FID = $forum_fid";
+    $sql.= "AND FID = '$forum_fid'";
 
     $result = db_query($sql, $get_num_sessions);
 
@@ -139,7 +139,7 @@ function get_active_users()
 
     $sql = "SELECT COUNT(UID) FROM SESSIONS WHERE UID = 0 ";
     $sql.= "AND SESSIONS.TIME >= FROM_UNIXTIME($session_stamp) ";
-    $sql.= "AND SESSIONS.FID = $forum_fid";
+    $sql.= "AND SESSIONS.FID = '$forum_fid'";
 
     $result = db_query($sql, $db_get_active_users);
     list($stats['GUESTS']) = db_fetch_array($result, DB_RESULT_NUM);
@@ -152,12 +152,12 @@ function get_active_users()
     $sql.= "USER_PEER2.RELATIONSHIP AS USER_RELATIONSHIP, USER_PEER2.PEER_NICKNAME ";
     $sql.= "FROM SESSIONS SESSIONS LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
-    $sql.= "ON (USER_PEER.UID = SESSIONS.UID AND USER_PEER.PEER_UID = $uid) ";
+    $sql.= "ON (USER_PEER.UID = SESSIONS.UID AND USER_PEER.PEER_UID = '$uid') ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER2 ";
-    $sql.= "ON (USER_PEER2.PEER_UID = SESSIONS.UID AND USER_PEER2.UID = $uid) ";
+    $sql.= "ON (USER_PEER2.PEER_UID = SESSIONS.UID AND USER_PEER2.UID = '$uid') ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = SESSIONS.UID) ";
     $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ON (USER_PREFS_GLOBAL.UID = SESSIONS.UID) ";
-    $sql.= "WHERE SESSIONS.TIME >= FROM_UNIXTIME($session_stamp) AND SESSIONS.FID = $forum_fid ";
+    $sql.= "WHERE SESSIONS.TIME >= FROM_UNIXTIME($session_stamp) AND SESSIONS.FID = '$forum_fid' ";
     $sql.= "AND SESSIONS.UID > 0 GROUP BY SESSIONS.UID ORDER BY USER.NICKNAME";
 
     $result = db_query($sql, $db_get_active_users);

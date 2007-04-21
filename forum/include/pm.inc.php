@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.184 2007-04-19 20:32:45 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.185 2007-04-21 18:14:55 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -778,7 +778,7 @@ function pm_fetch_search_results ($sort_by = 'CREATED', $sort_dir = 'DESC', $off
     $pm_search_results_array = array();
     $mid_array = array();
 
-    $sql = "SELECT COUNT(*) AS RESULT_COUNT FROM PM_SEARCH_RESULTS WHERE UID = $uid";
+    $sql = "SELECT COUNT(*) AS RESULT_COUNT FROM PM_SEARCH_RESULTS WHERE UID = '$uid'";
     $result = db_query($sql, $db_pm_fetch_search_results);
 
     list($message_count) = db_fetch_array($result, DB_RESULT_NUM);
@@ -962,7 +962,7 @@ function pm_get_user($mid)
 
     $sql = "SELECT USER.LOGON FROM PM PM ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = PM.FROM_UID) ";
-    $sql.= "WHERE PM.MID = $mid";
+    $sql.= "WHERE PM.MID = '$mid'";
 
     $result = db_query($sql, $db_pm_get_user);
 
@@ -997,7 +997,7 @@ function pm_user_get_friends()
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
     $sql.= "USER_PEER.RELATIONSHIP FROM {$table_data['PREFIX']}USER_PEER USER_PEER ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = USER_PEER.PEER_UID) ";
-    $sql.= "WHERE USER_PEER.UID = $uid AND (USER_PEER.RELATIONSHIP & $user_rel > 0) ";
+    $sql.= "WHERE USER_PEER.UID = '$uid' AND (USER_PEER.RELATIONSHIP & $user_rel > 0) ";
     $sql.= "LIMIT 0, 20";
 
     $result = db_query($sql, $db_pm_user_get_friends);
@@ -1715,8 +1715,8 @@ function pm_new_check(&$pm_new_count, &$pm_outbox_count)
     // received more than 1 message so we do an UPDATE and
     // check the affected rows.
 
-    $sql = "UPDATE PM SET TYPE = $pm_unread ";
-    $sql.= "WHERE TYPE = $pm_outbox AND TO_UID = '$uid' ";
+    $sql = "UPDATE PM SET TYPE = '$pm_unread' ";
+    $sql.= "WHERE TYPE = '$pm_outbox' AND TO_UID = '$uid' ";
     $sql.= "ORDER BY CREATED ASC LIMIT $pm_free_space";
 
     $result = db_query($sql, $db_pm_new_check);
@@ -1726,7 +1726,7 @@ function pm_new_check(&$pm_new_count, &$pm_outbox_count)
     // Check for any undelivered messages waiting for the user.
 
     $sql = "SELECT COUNT(MID) AS OUTBOX_COUNT FROM PM ";
-    $sql.= "WHERE TYPE = $pm_outbox AND TO_UID = '$uid'";
+    $sql.= "WHERE TYPE = '$pm_outbox' AND TO_UID = '$uid'";
 
     $result = db_query($sql, $db_pm_new_check);
     list($pm_outbox_count) = db_fetch_array($result, DB_RESULT_NUM);

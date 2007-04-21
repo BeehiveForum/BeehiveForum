@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.220 2007-04-10 16:02:03 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.221 2007-04-21 18:14:55 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -72,7 +72,7 @@ function get_forum_data()
             $sql = "SELECT FORUMS.FID, FORUMS.WEBTAG, FORUMS.ACCESS_LEVEL, USER_FORUM.ALLOWED, ";
             $sql.= "CONCAT(FORUMS.DATABASE_NAME, '.', FORUMS.WEBTAG, '_') AS PREFIX FROM FORUMS ";
             $sql.= "LEFT JOIN USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
-            $sql.= "AND USER_FORUM.UID = $uid) WHERE WEBTAG = '$webtag'";
+            $sql.= "AND USER_FORUM.UID = '$uid') WHERE WEBTAG = '$webtag'";
 
             if ($result = db_query($sql, $db_get_forum_data)) {
 
@@ -97,7 +97,7 @@ function get_forum_data()
             $sql = "SELECT FORUMS.FID, FORUMS.WEBTAG, FORUMS.ACCESS_LEVEL, USER_FORUM.ALLOWED, ";
             $sql.= "CONCAT(FORUMS.DATABASE_NAME, '.', FORUMS.WEBTAG, '_') AS PREFIX FROM FORUMS ";
             $sql.= "LEFT JOIN USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
-            $sql.= "AND USER_FORUM.UID = $uid) WHERE DEFAULT_FORUM = 1";
+            $sql.= "AND USER_FORUM.UID = '$uid') WHERE DEFAULT_FORUM = 1";
 
             if ($result = db_query($sql, $db_get_forum_data)) {
 
@@ -351,7 +351,7 @@ function forum_get_settings()
         $default_forum_settings = array();
         $forum_settings = array('fid' => $forum_fid);
 
-        $sql = "SELECT WEBTAG, ACCESS_LEVEL FROM FORUMS WHERE FID = $forum_fid";
+        $sql = "SELECT WEBTAG, ACCESS_LEVEL FROM FORUMS WHERE FID = '$forum_fid'";
         $result = db_query($sql, $db_forum_get_settings);
 
         list($webtag, $access_level) = db_fetch_array($result, DB_RESULT_NUM);
@@ -427,7 +427,7 @@ function forum_get_settings_by_fid($fid)
 
     $forum_settings_by_fid = array('fid' => $fid);
 
-    $sql = "SELECT WEBTAG, ACCESS_LEVEL FROM FORUMS WHERE FID = $fid";
+    $sql = "SELECT WEBTAG, ACCESS_LEVEL FROM FORUMS WHERE FID = '$fid'";
     $result = db_query($sql, $db_forum_get_settings_by_fid);
 
     list($webtag, $access_level) = db_fetch_array($result, DB_RESULT_NUM);
@@ -435,7 +435,7 @@ function forum_get_settings_by_fid($fid)
     $forum_settings_by_fid['webtag'] = $webtag;
     $forum_settings_by_fid['access_level'] = $access_level;
 
-    $sql = "SELECT SNAME, SVALUE FROM FORUM_SETTINGS WHERE FID = $fid";
+    $sql = "SELECT SNAME, SVALUE FROM FORUM_SETTINGS WHERE FID = '$fid'";
     $result = db_query($sql, $db_forum_get_settings_by_fid);
 
     while ($row = db_fetch_array($result)) {
@@ -471,7 +471,7 @@ function forum_save_settings($forum_settings_array)
 
     $forum_fid = $table_data['FID'];
 
-    $sql = "DELETE FROM FORUM_SETTINGS WHERE FID = $forum_fid";
+    $sql = "DELETE FROM FORUM_SETTINGS WHERE FID = '$forum_fid'";
     if (!$result = db_query($sql, $db_forum_save_settings)) return false;
 
     foreach ($forum_settings_array as $sname => $svalue) {
@@ -535,7 +535,7 @@ function forum_get_webtag($fid)
 
     if (!is_numeric($fid)) return false;
 
-    $sql = "SELECT WEBTAG FROM FORUMS WHERE FID = $fid";
+    $sql = "SELECT WEBTAG FROM FORUMS WHERE FID = '$fid'";
     $result = db_query($sql, $db_forum_get_webtag);
 
     if (db_num_rows($result) > 0) {
@@ -554,7 +554,7 @@ function forum_get_table_prefix($fid)
     if (!is_numeric($fid)) return false;
 
     $sql = "SELECT FID, WEBTAG, CONCAT(WEBTAG, '', '_') AS PREFIX ";
-    $sql.= "FROM FORUMS WHERE FID = $fid";
+    $sql.= "FROM FORUMS WHERE FID = '$fid'";
 
     $result = db_query($sql, $db_forum_get_webtag);
 
@@ -1973,11 +1973,11 @@ function forum_search($search_string)
                 $sql.= "AS UNREAD_MESSAGES, SUM(THREAD.LENGTH) AS NUM_MESSAGES ";
                 $sql.= "FROM {$forum_data['PREFIX']}THREAD THREAD ";
                 $sql.= "LEFT JOIN {$forum_data['PREFIX']}USER_THREAD USER_THREAD ";
-                $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
+                $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
                 $sql.= "LEFT JOIN {$forum_data['PREFIX']}USER_FOLDER USER_FOLDER ON ";
-                $sql.= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
+                $sql.= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
                 $sql.= "LEFT JOIN {$forum_data['PREFIX']}USER_PEER USER_PEER ON ";
-                $sql.= "(USER_PEER.UID = $uid AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
+                $sql.= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
                 $sql.= "WHERE THREAD.FID IN ($folders) ";
                 $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0 ";
                 $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
@@ -2007,8 +2007,8 @@ function forum_search($search_string)
                 $sql = "SELECT COUNT(POST.PID) AS UNREAD_TO_ME FROM ";
                 $sql.= "{$forum_data['PREFIX']}POST POST ";
                 $sql.= "LEFT JOIN {$forum_data['PREFIX']}USER_PEER USER_PEER ON ";
-                $sql.= "(USER_PEER.UID = $uid AND USER_PEER.PEER_UID = POST.FROM_UID) ";
-                $sql.= "WHERE POST.TO_UID = $uid AND POST.VIEWED IS NULL ";
+                $sql.= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = POST.FROM_UID) ";
+                $sql.= "WHERE POST.TO_UID = '$uid' AND POST.VIEWED IS NULL ";
                 $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0 ";
                 $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
                 $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 ";

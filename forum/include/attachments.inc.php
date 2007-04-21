@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.126 2007-04-18 23:20:27 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.127 2007-04-21 18:14:55 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -615,7 +615,7 @@ function get_attachment_id($tid, $pid)
     $forum_fid = $table_data['FID'];
 
     $sql = "SELECT AID FROM POST_ATTACHMENT_IDS WHERE ";
-    $sql.= "FID = $forum_fid AND TID = $tid AND PID = $pid";
+    $sql.= "FID = '$forum_fid' AND TID = '$tid' AND PID = '$pid'";
 
     $result = db_query($sql, $db_get_attachment_id);
 
@@ -652,7 +652,7 @@ function get_folder_fid($aid)
     $sql = "SELECT FOLDER.FID FROM POST_ATTACHMENT_IDS PAI ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ON (THREAD.TID = PAI.TID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}FOLDER FOLDER ON (FOLDER.FID = THREAD.FID) ";
-    $sql.= "WHERE PAI.FID = $forum_fid AND PAI.AID = '$aid'";
+    $sql.= "WHERE PAI.FID = '$forum_fid' AND PAI.AID = '$aid'";
 
     $result = db_query($sql, $db_get_folder_fid);
 

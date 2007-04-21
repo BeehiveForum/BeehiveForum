@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.58 2007-04-07 15:42:17 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.59 2007-04-21 18:14:56 decoyduck Exp $ */
 
 /**
 * Functions relating to users interacting with profiles
@@ -59,7 +59,7 @@ function user_profile_update($uid, $piid, $entry, $privacy)
     $entry = addslashes(_htmlentities($entry));
 
     $sql = "DELETE FROM {$table_data['PREFIX']}USER_PROFILE ";
-    $sql.= "WHERE UID = $uid AND PIID = $piid";
+    $sql.= "WHERE UID = '$uid' AND PIID = '$piid'";
 
     if (db_query($sql, $db_user_profile_update)) {
 
@@ -103,12 +103,12 @@ function user_get_profile($uid)
     $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ";
     $sql.= "ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
-    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = $peer_uid) ";
+    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$peer_uid') ";
     $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.UID = USER.UID ";
     $sql.= "AND USER_FORUM.FID = '$forum_fid') ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_TRACK USER_TRACK ";
     $sql.= "ON (USER_TRACK.UID = USER.UID) ";
-    $sql.= "WHERE USER.UID = $uid ";
+    $sql.= "WHERE USER.UID = '$uid' ";
     $sql.= "GROUP BY USER.UID";
 
     $result = db_query($sql, $db_user_get_profile);
@@ -197,8 +197,8 @@ function user_get_profile_entries($uid, $psid)
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT PI.NAME, PI.TYPE, UP.ENTRY, UP.PRIVACY FROM {$table_data['PREFIX']}PROFILE_ITEM PI ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PROFILE UP ON (UP.PIID = PI.PIID AND UP.UID = $uid) ";
-    $sql.= "WHERE PI.PSID = $psid ORDER BY PI.POSITION, PI.PIID";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PROFILE UP ON (UP.PIID = PI.PIID AND UP.UID = '$uid') ";
+    $sql.= "WHERE PI.PSID = '$psid' ORDER BY PI.POSITION, PI.PIID";
 
     $result = db_query($sql, $db_user_get_profile_entries);
     $user_profile_array = array();
@@ -218,7 +218,7 @@ function user_get_profile_image($uid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT PIC_URL from {$table_data['PREFIX']}USER_PREFS WHERE UID = $uid";
+    $sql = "SELECT PIC_URL from {$table_data['PREFIX']}USER_PREFS WHERE UID = '$uid'";
     $result = db_query($sql, $db_user_get_profile_image);
 
     $row = db_fetch_array($result);
@@ -239,7 +239,7 @@ function user_get_post_count($uid)
     $db_user_get_post_count = db_connect();
 
     $sql = "SELECT POST_COUNT FROM {$table_data['PREFIX']}USER_TRACK ";
-    $sql.= "WHERE UID = $uid";
+    $sql.= "WHERE UID = '$uid'";
 
     $result = db_query($sql, $db_user_get_post_count);
 
@@ -254,13 +254,13 @@ function user_get_post_count($uid)
     }
 
     $sql = "SELECT COUNT(PID) AS COUNT FROM {$table_data['PREFIX']}POST ";
-    $sql.= "WHERE FROM_UID = $uid";
+    $sql.= "WHERE FROM_UID = '$uid'";
 
     $result = db_query($sql, $db_user_get_post_count);
     list($post_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "UPDATE {$table_data['PREFIX']}USER_TRACK ";
-    $sql.= "SET POST_COUNT = $post_count WHERE UID = $uid";
+    $sql.= "SET POST_COUNT = '$post_count' WHERE UID = '$uid'";
 
     $result = db_query($sql, $db_user_get_post_count);
 

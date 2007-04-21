@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.192 2007-04-18 23:20:28 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.193 2007-04-21 18:14:55 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -129,7 +129,7 @@ function poll_edit($fid, $tid, $thread_title, $poll_question, $poll_options, $an
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "UPDATE {$table_data['PREFIX']}THREAD SET TITLE = '$thread_title' WHERE TID = $tid";
+    $sql = "UPDATE {$table_data['PREFIX']}THREAD SET TITLE = '$thread_title' WHERE TID = '$tid'";
     $result = db_query($sql, $db_poll_edit);
 
     if ($hardedit) {
@@ -200,7 +200,7 @@ function poll_get($tid)
     $sql.= "LEFT JOIN USER TUSER ON (POST.TO_UID = TUSER.UID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}POLL POLL ON (POST.TID = POLL.TID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
-    $sql.= "ON (USER_PEER.UID = $uid AND USER_PEER.PEER_UID = POST.FROM_UID) ";
+    $sql.= "ON (USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = POST.FROM_UID) ";
     $sql.= "WHERE POST.TID = '$tid' AND POST.PID = 1";
 
     $result = db_query($sql, $db_poll_get);
@@ -258,7 +258,7 @@ function poll_get_votes($tid)
     $sql.= "{$table_data['PREFIX']}USER_POLL_VOTES USER_POLL_VOTES ";
     $sql.= "ON (USER_POLL_VOTES.TID = POLL_VOTES.TID ";
     $sql.= "AND USER_POLL_VOTES.OPTION_ID = POLL_VOTES.OPTION_ID) ";
-    $sql.= "WHERE POLL_VOTES.TID = $tid GROUP BY POLL_VOTES.OPTION_ID";
+    $sql.= "WHERE POLL_VOTES.TID = '$tid' GROUP BY POLL_VOTES.OPTION_ID";
 
     $result = db_query($sql, $db_poll_get_votes);
 
@@ -301,13 +301,13 @@ function poll_get_total_votes($tid, &$totalvotes, &$guestvotes)
     if (!$table_data = get_table_prefix()) return 0;
 
     $sql = "SELECT COUNT(DISTINCT UID) FROM {$table_data['PREFIX']}USER_POLL_VOTES ";
-    $sql.= "WHERE TID = $tid AND UID > 0";
+    $sql.= "WHERE TID = '$tid' AND UID > 0";
 
     $result = db_query($sql, $db_poll_get_total_votes);
     list($totalvotes) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT COUNT(UID) FROM {$table_data['PREFIX']}USER_POLL_VOTES ";
-    $sql.= "WHERE TID = $tid AND UID = 0";
+    $sql.= "WHERE TID = '$tid' AND UID = 0";
 
     $result = db_query($sql, $db_poll_get_total_votes);
     list($guestvotes) = db_fetch_array($result, DB_RESULT_NUM);
@@ -360,7 +360,7 @@ function poll_get_user_vote($tid)
 
     $sql = "SELECT OPTION_ID, UNIX_TIMESTAMP(TSTAMP) AS TSTAMP ";
     $sql.= "FROM {$table_data['PREFIX']}USER_POLL_VOTES ";
-    $sql.= "WHERE UID = $uid AND TID = $tid";
+    $sql.= "WHERE UID = '$uid' AND TID = '$tid'";
 
     $result = db_query($sql, $db_poll_get_user_vote);
 
@@ -1871,7 +1871,7 @@ function poll_close($tid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT FROM_UID FROM {$table_data['PREFIX']}POST WHERE TID = $tid AND PID = 1";
+    $sql = "SELECT FROM_UID FROM {$table_data['PREFIX']}POST WHERE TID = '$tid' AND PID = 1";
     $result = db_query($sql, $db_poll_close);
 
     if ($t_fid = thread_get_folder($tid, 1) && (db_num_rows($result) > 0)) {
@@ -1883,7 +1883,7 @@ function poll_close($tid)
             $timestamp = mktime();
 
             $sql = "UPDATE {$table_data['PREFIX']}POLL SET ";
-            $sql.= "CLOSES = FROM_UNIXTIME($timestamp) WHERE TID = $tid";
+            $sql.= "CLOSES = FROM_UNIXTIME($timestamp) WHERE TID = '$tid'";
 
             $result = db_query($sql, $db_poll_close);
         }
@@ -1898,7 +1898,7 @@ function poll_is_closed($tid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT CLOSES FROM {$table_data['PREFIX']}POLL WHERE TID = $tid";
+    $sql = "SELECT CLOSES FROM {$table_data['PREFIX']}POLL WHERE TID = '$tid'";
     $result = db_query($sql, $db_poll_is_closed);
 
     if (db_num_rows($result) > 0) {
@@ -1962,7 +1962,7 @@ function thread_is_poll($tid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT CLOSES FROM {$table_data['PREFIX']}POLL WHERE TID = $tid";
+    $sql = "SELECT CLOSES FROM {$table_data['PREFIX']}POLL WHERE TID = '$tid'";
     $result = db_query($sql, $db_thread_is_poll);
 
     if (db_num_rows($result) > 0) {

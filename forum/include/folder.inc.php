@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.121 2007-04-19 14:51:02 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.122 2007-04-21 18:14:55 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -245,7 +245,7 @@ function folder_update($fid, $folder_order)
 
     $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}FOLDER SET TITLE = '{$folder_order['TITLE']}', ";
     $sql.= "DESCRIPTION = '{$folder_order['DESCRIPTION']}', ALLOWED_TYPES = '{$folder_order['ALLOWED_TYPES']}', ";
-    $sql.= "POSITION = '{$folder_order['POSITION']}', PREFIX = '{$folder_order['PREFIX']}' WHERE FID = $fid";
+    $sql.= "POSITION = '{$folder_order['POSITION']}', PREFIX = '{$folder_order['PREFIX']}' WHERE FID = '$fid'";
 
     $result = db_query($sql, $db_folder_update);
 
@@ -282,13 +282,13 @@ function folder_get_available()
     if (user_is_guest()) {
 
         if ($folder_list = bh_session_get_folders_by_perm(USER_PERM_GUEST_ACCESS)) {
-            return implode(',', $folder_list);
+            return implode(',', preg_grep('/[0-9]+/', $folder_list));
         }
 
     }else {
 
         if ($folder_list = bh_session_get_folders_by_perm(USER_PERM_POST_READ)) {
-            return implode(',', $folder_list);
+            return implode(',', preg_grep('/[0-9]+/', $folder_list));
         }
     }
 
@@ -300,13 +300,13 @@ function folder_get_available_by_forum($forum_fid)
     if (user_is_guest()) {
 
         if ($folder_list = bh_session_get_folders_by_perm(USER_PERM_GUEST_ACCESS, $forum_fid)) {
-            return implode(',', $folder_list);
+            return implode(',', preg_grep('/[0-9]+/', $folder_list));
         }
 
     }else {
 
         if ($folder_list = bh_session_get_folders_by_perm(USER_PERM_POST_READ, $forum_fid)) {
-            return implode(',', $folder_list);
+            return implode(',', preg_grep('/[0-9]+/', $folder_list));
         }
     }
 
@@ -318,13 +318,13 @@ function folder_get_available_array()
     if (user_is_guest()) {
 
         if ($folder_list = bh_session_get_folders_by_perm(USER_PERM_GUEST_ACCESS)) {
-            return $folder_list;
+            return preg_grep('/[0-9]+/', $folder_list);
         }
 
     }else {
 
         if ($folder_list = bh_session_get_folders_by_perm(USER_PERM_POST_READ)) {
-            return $folder_list;
+            return preg_grep('/[0-9]+/', $folder_list);
         }
     }
 
@@ -336,13 +336,13 @@ function folder_get_available_array_by_forum($forum_fid)
     if (user_is_guest()) {
 
         if ($folder_list = bh_session_get_folders_by_perm(USER_PERM_GUEST_ACCESS, $forum_fid)) {
-            return $folder_list;
+            return preg_grep('/[0-9]+/', $folder_list);
         }
 
     }else {
 
         if ($folder_list = bh_session_get_folders_by_perm(USER_PERM_POST_READ, $forum_fid)) {
-            return $folder_list;
+            return preg_grep('/[0-9]+/', $folder_list);
         }
     }
 
@@ -440,7 +440,7 @@ function folder_get_thread_count($fid)
 
     $sql = "SELECT COUNT(TID) AS THREAD_COUNT ";
     $sql.= "FROM {$table_data['PREFIX']}THREAD ";
-    $sql.= "WHERE FID = $fid";
+    $sql.= "WHERE FID = '$fid'";
 
     $result = db_query($sql, $db_folder_get_thread_count);
     list($thread_count) = db_fetch_array($result, DB_RESULT_NUM);

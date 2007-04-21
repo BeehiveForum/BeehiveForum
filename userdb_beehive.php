@@ -21,7 +21,15 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: userdb_beehive.php,v 1.5 2007-03-31 21:54:59 decoyduck Exp $ */
+/* $Id: userdb_beehive.php,v 1.6 2007-04-21 21:33:40 decoyduck Exp $ */
+
+// Constant to define where the Beehive Forum include files are
+
+define("BH_INCLUDE_PATH", "../forum/include/");
+
+// Beehive Forum configuration.
+
+include_once(BH_INCLUDE_PATH. "config.inc.php");
 
 // Put Ewiki in protected mode and default to view / browse only
 
@@ -102,56 +110,37 @@ function ewiki_auth_query_beehive(&$data, $force_query = false)
 
 function ewiki_auth_userdb_beehive($username, $password)
 {
-    include_once("../forum/include/config.inc.php");
-    include_once("../forum/include/constants.inc.php");
+    // Beehive include files that we need.
+    
+    include_once(BH_INCLUDE_PATH. "db.inc.php");
+    include_once(BH_INCLUDE_PATH. "logon.inc.php");
+    include_once(BH_INCLUDE_PATH. "session.inc.php");
 
-    // $forum_fid is the FID from the FORUMS table. If you want
-    // to associate the wiki with another forum's user permissions
-    // change the $forum_fid value here.
+    // Reset the PHP error reporting level and disable
+    // Beehive's error handler - Ewiki isn't as well
+    // written as Beehive ;)
 
-    $forum_fid = 1;
+    restore_error_handler();
+    error_reporting(E_ALL ^ E_NOTICE);
 
-    if (@!$db_ewiki_auth = mysql_connect($db_server, $db_username, $db_password)) return false;
-    if (@!mysql_select_db($db_database, $db_ewiki_auth)) return false;
+    // MD5 hash the password.
 
-    $username = addslashes($username);
-    $password = md5($password);
+    $passhash = md5($password);
 
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER.EMAIL, ";
-    $sql.= "USER.PASSWD, BIT_OR(GROUP_PERMS.PERM) AS USER_PERM, ";
-    $sql.= "COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT FROM USER USER ";
-    $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ON (GROUP_USERS.UID = USER.UID) ";
-    $sql.= "LEFT JOIN GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID ";
-    $sql.= "AND GROUP_PERMS.FID = 0 AND GROUP_PERMS.FORUM IN (0, $forum_fid)) ";
-    $sql.= "WHERE USER.LOGON = '$username' AND USER.PASSWD = '$password' ";
-    $sql.= "GROUP BY USER.UID";
+    // Attempt user logon
+   
+    if ($uid = user_logon($username, $passhash)) {
 
-    $result = mysql_query($sql, $db_ewiki_auth) or die(mysql_error());
+        if (bh_session_init($uid)) {
 
-    if (mysql_num_rows($result) > 0) {
+            if (bh_session_user_banned()) return false;
+            if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS | USER_PERM_FORUM_TOOLS, 0)) return array($password, 0);
 
-        $user_sess = mysql_fetch_array($result);
-
-        if (isset($user_sess['USER_PERM_COUNT']) && $user_sess['USER_PERM_COUNT'] > 0) {
-
-            if (isset($user_sess['USER_PERM'])) {
-
-                if ($user_sess['USER_PERM'] & USER_PERM_BANNED) {
-
-                    return false;
-                }
-
-                if (($user_sess['USER_PERM'] & USER_PERM_ADMIN_TOOLS) || ($user_sess['USER_PERM'] & USER_PERM_FORUM_TOOLS)) {
-
-                    return array($user_sess['PASSWD'], 0);
-                }
-            }
+            return array($password, 2);
         }
-
-        return array($user_sess['PASSWD'], 2);
     }
 
-    return array($user_sess['PASSWD'], 3);
+    return array($password, 3);
 }
 
 ?>

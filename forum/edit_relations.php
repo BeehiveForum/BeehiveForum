@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_relations.php,v 1.63 2007-04-12 13:23:10 decoyduck Exp $ */
+/* $Id: edit_relations.php,v 1.64 2007-04-21 14:15:40 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -289,8 +289,8 @@ if (sizeof($user_peers['user_array']) > 0) {
         }
 
         echo "                <tr>\n";
-        echo "                  <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$user_peer['UID']};\" target=\"_blank\" onclick=\"return openProfile({$user_peer['UID']}, '$webtag')\">{$user_peer['LOGON']}</a></td>\n";
-        echo "                  <td align=\"left\">", form_input_text("nickname[{$user_peer['UID']}]", _htmlentities($nickname), 32), "&nbsp;", form_submit_image('reload.png', "reset_nickname[{$user_peer['UID']}]", "Y", "title=\"{$lang['restorenickname']}\"", "relationship_reset"), "</td>\n";
+        echo "                  <td align=\"left\" width=\"100\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$user_peer['UID']};\" target=\"_blank\" onclick=\"return openProfile({$user_peer['UID']}, '$webtag')\">{$user_peer['LOGON']}</a></td>\n";
+        echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_input_text("nickname[{$user_peer['UID']}]", _htmlentities($nickname), 25), "&nbsp;", form_submit_image('reload.png', "reset_nickname[{$user_peer['UID']}]", "Y", "title=\"{$lang['restorenickname']}\"", "relationship_reset"), "</td>\n";
         echo "                  <td align=\"left\" nowrap=\"nowrap\">\n";
         echo "                    &nbsp;", form_radio("relationship[{$user_peer['UID']}]", USER_FRIEND, "", $peer_relationship & USER_FRIEND), "<img src=\"", style_image("friend.png"), "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" />\n";
         echo "                    &nbsp;", form_radio("relationship[{$user_peer['UID']}]", 0, "", !($peer_relationship & USER_FRIEND) && !($peer_relationship & USER_IGNORED)), "{$lang['normal']}\n";

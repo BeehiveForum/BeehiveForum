@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db_mysql.inc.php,v 1.22 2007-02-12 01:05:25 decoyduck Exp $ */
+/* $Id: db_mysql.inc.php,v 1.23 2007-04-21 14:15:40 decoyduck Exp $ */
 
 function db_connect($trigger_error = true)
 {
@@ -210,6 +210,40 @@ function db_fetch_mysql_version()
     }
 
     return $mysql_version;
+}
+
+function db_escape_smart($var, $connection_id)
+{
+    if (is_int($var)) {
+        return $var;
+    } elseif (is_float($var)) {
+        return db_escape_float($var);
+    } elseif (is_bool($in)) {
+        return db_escape_boolean($var, $connection_id);
+    } elseif (is_null($var)) {
+        return 'NULL';
+    } else {
+        return db_escape_string($var, $connection_id);
+    }
+}
+
+function db_escape_string($str, $connection_id)
+{
+    if (function_exists('mysql_real_escape_string')) {
+        return @mysql_real_escape_string($str, $connection_id);
+    } else {
+        return @mysql_escape_string($str);
+    }
+}
+
+function db_quote_boolean($boolean)
+{
+    return $boolean ? '1' : '0';
+}
+
+function db_quote_float($float)
+{
+    return db_escape_string(str_replace(',', '.', strval(floatval($float))), $connection_id);
 }
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_subscriptions.php,v 1.16 2007-04-12 13:23:10 decoyduck Exp $ */
+/* $Id: edit_subscriptions.php,v 1.17 2007-04-21 14:15:40 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -230,7 +230,7 @@ if (isset($threadsearch) && strlen(trim($threadsearch)) > 0) {
     echo "  ", form_input_hidden("threadsearch", _htmlentities($threadsearch)), "\n";
     echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
     echo "  ", form_input_hidden("search_page", _htmlentities($search_page)), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"620\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\" class=\"posthead\" colspan=\"3\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -309,7 +309,7 @@ if (isset($threadsearch) && strlen(trim($threadsearch)) > 0) {
     echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
     echo "  ", form_input_hidden("search_page", _htmlentities($search_page)), "\n";
     echo "  ", form_input_hidden("threadsearch", _htmlentities($threadsearch)), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"620\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\" colspan=\"3\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -387,7 +387,7 @@ echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
 echo "  ", form_input_hidden("search_page", _htmlentities($search_page)), "\n";
 echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"620\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\" class=\"posthead\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.193 2007-04-21 18:14:55 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.194 2007-04-21 18:26:24 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -74,7 +74,7 @@ function poll_create($tid, $poll_options, $answer_groups, $closes, $change_vote,
         $allow_guests = 0;
     }
 
-    $question  = addslashes(_htmlentities($question));
+    $question  = db_escape_string(_htmlentities($question));
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -89,7 +89,7 @@ function poll_create($tid, $poll_options, $answer_groups, $closes, $change_vote,
 
             if (isset($poll_options[$i]) && strlen(trim($poll_options[$i])) > 0) {
 
-                $option_name  = addslashes($poll_options[$i]);
+                $option_name  = db_escape_string($poll_options[$i]);
                 $option_group = (isset($answer_groups[$i])) ? $answer_groups[$i] : 1;
 
                 $sql = "INSERT INTO {$table_data['PREFIX']}POLL_VOTES (TID, OPTION_NAME, GROUP_ID) ";
@@ -125,7 +125,7 @@ function poll_edit($fid, $tid, $thread_title, $poll_question, $poll_options, $an
 
     $edit_uid = bh_session_get_value('UID');
 
-    $thread_title = addslashes(_htmlentities($thread_title));
+    $thread_title = db_escape_string(_htmlentities($thread_title));
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -138,7 +138,7 @@ function poll_edit($fid, $tid, $thread_title, $poll_question, $poll_options, $an
         $result = db_query($sql, $db_poll_edit);
     }
 
-    $poll_question = addslashes($poll_question);
+    $poll_question = db_escape_string($poll_question);
 
     $sql = "UPDATE {$table_data['PREFIX']}POLL SET CHANGEVOTE = '$change_vote', ";
     $sql.= "POLLTYPE = '$poll_type', SHOWRESULTS = '$show_results', ";
@@ -164,7 +164,7 @@ function poll_edit($fid, $tid, $thread_title, $poll_question, $poll_options, $an
 
         if (isset($poll_options[$i]) && strlen(trim($poll_options[$i])) > 0) {
 
-            $option_name    = addslashes($poll_options[$i]);
+            $option_name    = db_escape_string($poll_options[$i]);
             $option_group = (isset($answer_groups[$i])) ? $answer_groups[$i] : 1;
 
             $sql = "INSERT INTO {$table_data['PREFIX']}POLL_VOTES (TID, OPTION_NAME, GROUP_ID) ";

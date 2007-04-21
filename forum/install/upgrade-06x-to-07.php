@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06x-to-07.php,v 1.4 2006-10-29 23:07:23 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-07.php,v 1.5 2007-04-21 18:26:25 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-06x-to-07.php") {
 
@@ -521,9 +521,9 @@ $bots_array = array('ia_archiver'      => array('NAME' => 'Alexa', 'URL' => 'htt
 
 foreach ($bots_array as $agent => $details) {
 
-    $agent = addslashes($agent);
-    $name  = addslashes($details['NAME']);
-    $url   = addslashes($details['URL']);
+    $agent = db_escape_string($agent);
+    $name  = db_escape_string($details['NAME']);
+    $url   = db_escape_string($details['URL']);
 
     $sql = "INSERT INTO SEARCH_ENGINE_BOTS (NAME, URL, AGENT_MATCH) ";
     $sql.= "VALUES ('$name', '$url', '%$agent%')";

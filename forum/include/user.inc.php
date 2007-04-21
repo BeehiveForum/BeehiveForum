@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.308 2007-04-21 18:14:56 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.309 2007-04-21 18:26:25 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -56,7 +56,7 @@ function user_exists($logon, $check_uid = false)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $logon = addslashes($logon);
+    $logon = db_escape_string($logon);
 
     if (is_numeric($check_uid) && $check_uid !== false) {
 
@@ -79,13 +79,13 @@ function user_create($logon, $password, $nickname, $email)
 {
     $db_user_create = db_connect();
 
-    $logon     = addslashes($logon);
-    $nickname  = addslashes($nickname);
-    $email     = addslashes($email);
+    $logon     = db_escape_string($logon);
+    $nickname  = db_escape_string($nickname);
+    $email     = db_escape_string($email);
     $md5pass   = md5($password);
 
     if ($http_referer = bh_session_get_value('REFERER')) {
-        $http_referer = addslashes($http_referer);
+        $http_referer = db_escape_string($http_referer);
     }else {
         $http_referer = "";
     }
@@ -113,11 +113,11 @@ function user_update($uid, $logon, $nickname, $email)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    // Encode HTML tags and addslashes for protection.
+    // Encode HTML tags and db_escape_string for protection.
 
-    $logon = addslashes(_htmlentities($logon));
-    $nickname = addslashes(_htmlentities($nickname));
-    $email = addslashes(_htmlentities($email));
+    $logon = db_escape_string(_htmlentities($logon));
+    $nickname = db_escape_string(_htmlentities($nickname));
+    $email = db_escape_string(_htmlentities($email));
 
     // Check to see if we need to save the current
     // details to the USER_HISTORY table.
@@ -135,7 +135,7 @@ function user_update($uid, $logon, $nickname, $email)
     
         // Get the old data from the database and escape it so the strcmp works.
         
-        $user_history_array = array_map('addslashes', db_fetch_array($result_check));
+        $user_history_array = array_map('db_escape_string', db_fetch_array($result_check));
 
         // Check the data against that passed to the function.
 
@@ -178,7 +178,7 @@ function user_update_nickname($uid, $nickname)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $nickname = addslashes(_htmlentities($nickname));
+    $nickname = db_escape_string(_htmlentities($nickname));
 
     $sql = "UPDATE USER SET NICKNAME = '$nickname' ";
     $sql.= "WHERE UID = '$uid'";
@@ -194,7 +194,7 @@ function user_change_logon($uid, $logon)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $logon = addslashes(_htmlentities($logon));
+    $logon = db_escape_string(_htmlentities($logon));
 
     $sql = "UPDATE USER SET LOGON = '$logon' ";
     $sql.= "WHERE UID = '$uid'";
@@ -303,8 +303,8 @@ function user_logon($logon, $passhash)
 
     if (!is_md5($passhash)) return false;
 
-    $logon = addslashes(strtoupper($logon));
-    $passhash = addslashes($passhash);
+    $logon = db_escape_string(strtoupper($logon));
+    $passhash = db_escape_string($passhash);
 
     if (!$ipaddress = get_ip_address()) $ipaddress = "";
 
@@ -439,7 +439,7 @@ function user_get_uid($logon)
 {
     $db_user_get_uid = db_connect();
 
-    $logon = addslashes($logon);
+    $logon = db_escape_string($logon);
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -667,7 +667,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
 
             foreach($global_prefs as $pref_name => $pref_setting) {
                  
-                 $pref_setting = addslashes($pref_setting);
+                 $pref_setting = db_escape_string($pref_setting);
                  $values_array[] = "$pref_name = '$pref_setting'";
             }
 
@@ -690,7 +690,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
 
             foreach($global_prefs as $pref_name => $pref_setting) {
                  
-                 $pref_setting = addslashes($pref_setting);
+                 $pref_setting = db_escape_string($pref_setting);
                  $values_array[$pref_name] = "'$pref_setting'";
             }
 
@@ -747,7 +747,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
 
             foreach($forum_prefs as $pref_name => $pref_setting) {
                 
-                $pref_setting = addslashes($pref_setting);
+                $pref_setting = db_escape_string($pref_setting);
                 $values_array[] = "$pref_name = '$pref_setting'";
             }
 
@@ -770,7 +770,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
 
             foreach($forum_prefs as $pref_name => $pref_setting) {
                  
-                 $pref_setting = addslashes($pref_setting);
+                 $pref_setting = db_escape_string($pref_setting);
                  $values_array[$pref_name] = "'$pref_setting'";
             }
 
@@ -817,8 +817,8 @@ function user_update_sig($uid, $content, $html)
 
     if (!is_numeric($uid)) return false;
 
-    $content = addslashes($content);
-    $html = addslashes($html);
+    $content = db_escape_string($content);
+    $html = db_escape_string($html);
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -925,7 +925,7 @@ function user_get_forthcoming_birthdays()
 
 function user_search_array_clean($user_search)
 {
-    return addslashes(trim(str_replace("%", "", $user_search)));
+    return db_escape_string(trim(str_replace("%", "", $user_search)));
 }
 
 function user_search($user_search, $offset = 0, $exclude_uid = 0)
@@ -1397,8 +1397,8 @@ function user_add_word_filter($match, $replace, $filter_option)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $match = addslashes($match);
-    $replace = addslashes($replace);
+    $match = db_escape_string($match);
+    $replace = db_escape_string($replace);
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
@@ -1419,8 +1419,8 @@ function user_update_word_filter($filter_id, $match, $replace, $filter_option)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $match = addslashes($match);
-    $replace = addslashes($replace);
+    $match = db_escape_string($match);
+    $replace = db_escape_string($replace);
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 

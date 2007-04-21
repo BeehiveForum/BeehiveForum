@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.153 2007-04-21 18:14:55 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.154 2007-04-21 18:26:24 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -47,7 +47,7 @@ function post_create($fid, $tid, $reply_pid, $by_uid, $fuid, $tuid, $content, $h
 {
     $db_post_create = db_connect();
 
-    $post_content = addslashes($content);
+    $post_content = db_escape_string($content);
 
     // IP Address can be hidden by calling this function with $hide_ipaddress
     // set to true. Useful for automated functionality like the RSS Feeder.
@@ -181,7 +181,7 @@ function post_create_thread($fid, $uid, $title, $poll = 'N', $sticky = 'N', $clo
     if (!is_numeric($fid)) return -1;
     if (!is_numeric($uid)) return -1;
 
-    $title = addslashes(_htmlentities($title));
+    $title = db_escape_string(_htmlentities($title));
 
     $poll = ($poll == 'Y') ? 'Y' : 'N';
     $sticky = ($sticky == 'Y') ? 'Y' : 'N';

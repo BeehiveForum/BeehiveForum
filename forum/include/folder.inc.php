@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.122 2007-04-21 18:14:55 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.123 2007-04-21 18:26:24 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -168,9 +168,9 @@ function folder_create($title, $description = "", $prefix = "", $allowed_types =
 {
     $db_folder_create = db_connect();
 
-    $title = addslashes(_htmlentities($title));
-    $description = addslashes(_htmlentities($description));
-    $prefix = addslashes(_htmlentities($prefix));
+    $title = db_escape_string(_htmlentities($title));
+    $description = db_escape_string(_htmlentities($description));
+    $prefix = db_escape_string(_htmlentities($prefix));
 
     $new_pos = 0;
 
@@ -232,7 +232,7 @@ function folder_update($fid, $folder_order)
 
         if (!is_numeric($value)) {
 
-            $folder_order[$key] = addslashes(_htmlentities($value));
+            $folder_order[$key] = db_escape_string(_htmlentities($value));
         }
     }
 

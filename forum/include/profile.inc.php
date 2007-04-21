@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.59 2007-04-21 18:14:55 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.60 2007-04-21 18:26:24 decoyduck Exp $ */
 
 /**
 * Functions relating to profiles
@@ -67,7 +67,7 @@ function profile_section_create($name)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $name = addslashes($name);
+    $name = db_escape_string($name);
 
     $sql = "SELECT MAX(POSITION) + 1 FROM {$table_data['PREFIX']}PROFILE_SECTION ";
     $sql.= "LIMIT 0, 1";
@@ -92,7 +92,7 @@ function profile_section_update($psid, $name)
 
     if (!is_numeric($psid)) return false;
 
-    $name = addslashes($name);
+    $name = db_escape_string($name);
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -282,7 +282,7 @@ function profile_item_create($psid, $name, $type)
     if (!is_numeric($psid)) return false;
     if (!is_numeric($type)) return false;
 
-    $name = addslashes($name);
+    $name = db_escape_string($name);
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -311,7 +311,7 @@ function profile_item_update($piid, $psid, $type, $name)
     if (!is_numeric($psid)) return false;
     if (!is_numeric($type)) return false;
 
-    $name = addslashes($name);
+    $name = db_escape_string($name);
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -920,7 +920,7 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
 
     if (($user_search !== false) && strlen(trim($user_search)) > 0) {
 
-        $user_search = addslashes(str_replace('%', '', $user_search));
+        $user_search = db_escape_string(str_replace('%', '', $user_search));
         
         $user_search_sql = "(USER.LOGON LIKE '$user_search%' OR ";
         $user_search_sql.= "USER.NICKNAME LIKE '$user_search%' OR ";

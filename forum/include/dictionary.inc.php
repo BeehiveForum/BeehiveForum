@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.inc.php,v 1.37 2007-03-26 21:57:21 decoyduck Exp $ */
+/* $Id: dictionary.inc.php,v 1.38 2007-04-21 18:26:24 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -168,8 +168,8 @@ class dictionary {
     {
         $db_dictionary_add_custom_word = db_connect();
 
-        $metaphone = addslashes(metaphone(trim($word)));
-        $word = addslashes(trim($word));
+        $metaphone = db_escape_string(metaphone(trim($word)));
+        $word = db_escape_string(trim($word));
 
         if (($uid = bh_session_get_value('UID')) === false) return false;
 
@@ -262,7 +262,7 @@ class dictionary {
 
         // Fetch the current word
 
-        $word = addslashes(strtolower($this->get_current_word()));
+        $word = db_escape_string(strtolower($this->get_current_word()));
 
         if (!$this->word_is_valid($word)) return;
 
@@ -294,7 +294,7 @@ class dictionary {
 
         if ($metaphone = $this->word_get_metaphone()) {
 
-            $metaphone = addslashes($metaphone);
+            $metaphone = db_escape_string($metaphone);
 
             $sql = "SELECT WORD FROM DICTIONARY WHERE SOUND = '$metaphone' ";
             $sql.= "AND (UID = 0 OR UID = '$uid') ";

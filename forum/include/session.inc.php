@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.295 2007-04-21 18:14:55 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.296 2007-04-21 18:26:24 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -358,7 +358,7 @@ function bh_guest_session_init($use_sess_hash = false, $update_visitor_log = tru
 
             if ($user_sess['FID'] != $forum_fid) {
                 
-                $ipaddress = addslashes($ipaddress);
+                $ipaddress = db_escape_string($ipaddress);
                 
                 $sql = "UPDATE SESSIONS SET FID = '$forum_fid', TIME = NOW(), ";
                 $sql.= "IPADDRESS = '$ipaddress' WHERE HASH = '$user_hash'";
@@ -369,7 +369,7 @@ function bh_guest_session_init($use_sess_hash = false, $update_visitor_log = tru
 
             }else {
 
-                $ipaddress = addslashes($ipaddress);
+                $ipaddress = db_escape_string($ipaddress);
 
                 $sql = "UPDATE SESSIONS SET TIME = NOW(), IPADDRESS = '$ipaddress' ";
                 $sql.= "WHERE HASH = '$user_hash'";
@@ -395,7 +395,7 @@ function bh_guest_session_init($use_sess_hash = false, $update_visitor_log = tru
                                'PERMS'     => bh_session_get_perm_array(0),
                                'RAND_HASH' => md5(uniqid(rand())));
 
-            $http_referer = addslashes($http_referer);
+            $http_referer = db_escape_string($http_referer);
 
             // Start a session for the new guest user
 
@@ -569,8 +569,8 @@ function bh_update_visitor_log($uid, $forum_fid = false, $force_update = false)
 
     if ($uid > 0) {
 
-        $http_referer = addslashes(bh_session_get_referer());
-        $ipaddress = addslashes($ipaddress);
+        $http_referer = db_escape_string(bh_session_get_referer());
+        $ipaddress = db_escape_string($ipaddress);
 
         $sql = "SELECT LAST_LOGON FROM VISITOR_LOG WHERE UID = '$uid'";
         $sql.= "AND FORUM = '$forum_fid'";
@@ -593,8 +593,8 @@ function bh_update_visitor_log($uid, $forum_fid = false, $force_update = false)
 
     }else {
 
-        $http_referer = addslashes(bh_session_get_referer());
-        $ipaddress = addslashes($ipaddress);
+        $http_referer = db_escape_string(bh_session_get_referer());
+        $ipaddress = db_escape_string($ipaddress);
 
         $session_cutoff = forum_get_setting('session_cutoff', false, 86400);
 
@@ -853,8 +853,8 @@ function bh_session_init($uid, $update_visitor_log = true, $skip_cookie = false)
 
         $user_hash = md5(uniqid(rand()));
         
-        $ipaddress = addslashes($ipaddress);
-        $http_referer = addslashes($http_referer);
+        $ipaddress = db_escape_string($ipaddress);
+        $http_referer = db_escape_string($http_referer);
 
         $sql = "INSERT INTO SESSIONS (HASH, UID, FID, IPADDRESS, TIME, REFERER) ";
         $sql.= "VALUES ('$user_hash', '$uid', '$forum_fid', ";
@@ -1314,7 +1314,7 @@ function bh_session_is_search_engine()
 
     if (isset($_SERVER['HTTP_USER_AGENT']) && strlen(trim($_SERVER['HTTP_USER_AGENT'])) > 0) {
 
-        $http_user_agent = addslashes($_SERVER['HTTP_USER_AGENT']);
+        $http_user_agent = db_escape_string($_SERVER['HTTP_USER_AGENT']);
     
         $sql = "SELECT SID FROM SEARCH_ENGINE_BOTS ";
         $sql.= "WHERE  '$http_user_agent' LIKE AGENT_MATCH ";

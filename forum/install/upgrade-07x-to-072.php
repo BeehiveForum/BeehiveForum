@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-07x-to-072.php,v 1.31 2007-04-15 21:32:24 decoyduck Exp $ */
+/* $Id: upgrade-07x-to-072.php,v 1.32 2007-04-21 18:26:25 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-07x-to-072.php") {
 
@@ -337,7 +337,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
             // Save the existing forum link caption to the FORUM_SETTINGS table
 
-            $forum_links_top_link = addslashes($forum_links_top_link);
+            $forum_links_top_link = db_escape_string($forum_links_top_link);
 
             $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
             $sql.= "VALUES ('$forum_fid', 'forum_links_top_link', ";
@@ -351,7 +351,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
             // Delete the old record from the FORUM_LINKS table.
 
-            $lid = addslashes($lid);
+            $lid = db_escape_string($lid);
 
             $sql = "DELETE FROM {$forum_webtag}_FORUM_LINKS ";
             $sql.= "WHERE LID = '$lid'";
@@ -398,8 +398,8 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
             if (!isset($folder_data['TITLE'])) $folder_data['TITLE'] = "";
             if (!isset($folder_data['DESCRIPTION'])) $folder_data['DESCRIPTION'] = "";
 
-            $new_title = addslashes(_htmlentities($folder_data['TITLE']));
-            $new_description = addslashes(_htmlentities($folder_data['DESCRIPTION']));
+            $new_title = db_escape_string(_htmlentities($folder_data['TITLE']));
+            $new_description = db_escape_string(_htmlentities($folder_data['DESCRIPTION']));
 
             $sql = "UPDATE {$forum_webtag}_FOLDER SET TITLE = '$new_title', ";
             $sql.= "DESCRIPTION = '$new_description' WHERE FID = '$fid'";

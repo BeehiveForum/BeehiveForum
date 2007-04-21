@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_signature.php,v 1.85 2007-04-18 23:20:27 decoyduck Exp $ */
+/* $Id: edit_signature.php,v 1.86 2007-04-21 14:15:40 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -216,7 +216,7 @@ user_get_sig($uid, $user_sig['SIG_CONTENT'], $user_sig['SIG_HTML']);
 
 // Start Output Here
 
-html_draw_top("basetarget=_blank", "onUnload=clearFocus()", "resize_width=550", "dictionary.js", "htmltools.js", "post.js", "poll.js");
+html_draw_top("basetarget=_blank", "onUnload=clearFocus()", "resize_width=600", "dictionary.js", "htmltools.js", "post.js", "poll.js");
 
 if ($admin_edit === true) {
 
@@ -277,7 +277,7 @@ echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 
 if ($admin_edit === true) echo "  ", form_input_hidden('siguid', _htmlentities($uid)), "\n";
 
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
@@ -315,10 +315,10 @@ if (isset($_POST['preview'])) {
         echo "              <table class=\"posthead\" width=\"100%\">\n";
         echo "                <tr>\n";
         echo "                  <td align=\"center\">\n";
-        echo "                    <table class=\"posthead\" width=\"90%\">\n";
+        echo "                    <table class=\"posthead\" width=\"100%\">\n";
         echo "                      <tr>\n";
         echo "                        <td align=\"left\">\n";
-        echo "                          <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+        echo "                          <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
         echo "                            <tr>\n";
         echo "                              <td align=\"left\">\n";
 
@@ -345,7 +345,7 @@ echo "              </table>\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
-echo "                    <table class=\"posthead\" width=\"90%\">\n";
+echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">\n";
 
@@ -365,7 +365,7 @@ if ($tool_type != 0) {
     $tools->setTinyMCE(false);
 }
 
-echo $tools->textarea("sig_content", $sig_code, 10, 60, "virtual", "tabindex=\"7\"", "signature_content");
+echo $tools->textarea("sig_content", $sig_code, 12, 85, "virtual", "tabindex=\"7\"", "signature_content");
 echo $tools->js();
 
 echo "                        </td>\n";

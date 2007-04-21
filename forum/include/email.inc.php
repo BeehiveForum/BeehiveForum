@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.108 2007-04-21 18:26:24 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.109 2007-04-21 20:58:25 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -61,7 +61,8 @@ function email_sendnotification($tuid, $fuid, $tid, $pid)
         $to_user   = user_get($tuid);
         $from_user = user_get($fuid);
 
-        $user_rel  = user_rel_get($to_user, $from_user);
+        $user_rel  = user_get_relationship($to_user, $from_user);
+
         if ($user_rel & USER_IGNORED_COMPLETELY) return true;
 
         // Validate the email address before we continue.
@@ -139,7 +140,8 @@ function email_sendsubscription($tuid, $fuid, $tid, $pid)
 
             $from_user = user_get($fuid);
 
-            $user_rel  = user_rel_get($to_user, $from_user);
+            $user_rel  = user_get_relationship($to_user, $from_user);
+
             if ($user_rel & USER_IGNORED_COMPLETELY) return true;
 
             // Validate the email address before we continue.
@@ -202,7 +204,8 @@ function email_send_pm_notification($tuid, $mid, $fuid)
         $to_user   = user_get($tuid);
         $from_user = user_get($fuid);
 
-        $user_rel  = user_rel_get($to_user, $from_user);
+        $user_rel  = user_get_relationship($to_user, $from_user);
+
         if ($user_rel & USER_IGNORED_COMPLETELY) return true;
 
         // Validate the email address before we continue.

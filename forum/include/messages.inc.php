@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.445 2007-04-18 23:20:27 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.446 2007-04-21 20:58:25 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -822,7 +822,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
     if (($message['FROM_RELATIONSHIP'] & USER_IGNORED) && $limit_text && $in_list && $uid != 0) {
 
-        echo "<a href=\"set_relation.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;rel=0&amp;exists=1&amp;msg=$tid.{$message['PID']}\" target=\"_self\">{$lang['stopignoringthisuser']}</a>&nbsp;&nbsp;&nbsp;";
+        echo "<a href=\"user_rel.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.{$message['PID']}\" target=\"_self\">{$lang['stopignoringthisuser']}</a>&nbsp;&nbsp;&nbsp;";
         echo "<a href=\"display.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_self\">{$lang['viewmessage']}</a>";
 
     }else if($in_list && $msg_count > 0) {

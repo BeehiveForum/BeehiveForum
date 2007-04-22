@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_items.php,v 1.105 2007-04-12 13:23:08 decoyduck Exp $ */
+/* $Id: admin_prof_items.php,v 1.106 2007-04-22 20:34:30 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -449,6 +449,8 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
     $item_types_array = array($lang['largetextfield'], $lang['mediumtextfield'], 
                               $lang['smalltextfield'], $lang['multilinetextfield'], 
                               $lang['radiobuttons'], $lang['dropdown']);
+
+    html_draw_top();
     
     echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageprofilesections']} &raquo; ", profile_section_get_name($psid), " &raquo; {$lang['viewitems']}</h1>\n";
 

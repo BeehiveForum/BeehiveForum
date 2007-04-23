@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.inc.php,v 1.35 2007-04-21 20:58:25 decoyduck Exp $ */
+/* $Id: user_rel.inc.php,v 1.36 2007-04-23 20:51:23 decoyduck Exp $ */
 
 /**
 * User relation functions
@@ -58,6 +58,8 @@ function user_rel_update($uid, $peer_uid, $relationship, $nickname = "")
         $sql = "DELETE FROM {$table_data['PREFIX']}USER_PEER ";
         $sql.= "WHERE UID = '$uid' AND PEER_UID = '$peer_uid'";
 
+        if (!$result = db_query($sql, $db_user_rel_update)) return false;
+
     }else {
 
         $nickname = db_escape_string($nickname);
@@ -65,7 +67,7 @@ function user_rel_update($uid, $peer_uid, $relationship, $nickname = "")
         $sql = "SELECT UID FROM {$table_data['PREFIX']}USER_PEER ";
         $sql.= "WHERE UID = '$uid' AND PEER_UID = '$peer_uid'";
 
-        $result = db_query($sql, $db_user_rel_update);
+        if (!$result = db_query($sql, $db_user_rel_update)) return false;
 
         if (db_num_rows($result) > 0) {
 
@@ -73,15 +75,19 @@ function user_rel_update($uid, $peer_uid, $relationship, $nickname = "")
             $sql.= "SET RELATIONSHIP = '$relationship', PEER_NICKNAME = '$nickname' ";
             $sql.= "WHERE UID = '$uid' AND PEER_UID = '$peer_uid'";
 
+            if (!$result = db_query($sql, $db_user_rel_update)) return false;
+
         }else {
 
             $sql = "INSERT INTO {$table_data['PREFIX']}USER_PEER ";
             $sql.= "(UID, PEER_UID, RELATIONSHIP, PEER_NICKNAME) ";
             $sql.= "VALUES ('$uid', '$peer_uid', '$relationship', '$nickname')";
+
+            if (!$result = db_query($sql, $db_user_rel_update)) return false;
         }
     }
 
-    return db_query($sql, $db_user_rel_update);
+    return true;
 }
 
 

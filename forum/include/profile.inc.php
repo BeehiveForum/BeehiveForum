@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.60 2007-04-21 18:26:24 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.61 2007-04-23 20:51:23 decoyduck Exp $ */
 
 /**
 * Functions relating to profiles
@@ -347,9 +347,8 @@ function profile_item_delete($piid)
     return db_query($sql, $db_profile_item_delete);
 }
 
-function profile_section_dropdown($default_psid, $field_name="t_psid", $suffix="")
+function profile_section_dropdown($default_psid, $field_name = 't_psid')
 {
-    $html = "<select name=\"${field_name}${suffix}\">";
     $db_profile_section_dropdown = db_connect();
 
     if (!$table_data = get_table_prefix()) return "";
@@ -357,19 +356,16 @@ function profile_section_dropdown($default_psid, $field_name="t_psid", $suffix="
     $sql = "SELECT PSID, NAME FROM {$table_data['PREFIX']}PROFILE_SECTION";
     $result = db_query($sql, $db_profile_section_dropdown);
 
-    while ($row = db_fetch_array($result)) {
+    if (db_num_rows($result) > 0) {
 
-        $html .= "<option value=\"" . $row['PSID'] . "\"";
-
-        if ($row['PSID'] == $default_psid) {
-            $html .= " selected=\"selected\"";
+        while ($profile_section_data = db_fetch_array($result)) {
+            $profile_sections_array[$profile_section_data['PSID']] = $profile_section_data['NAME'];
         }
 
-        $html .= ">" . $row['NAME'] . "</option>";
+        return form_dropdown_array($field_name, $profile_sections_array, $default_psid);
     }
 
-    $html .= "</select>";
-    return $html;
+    return "";
 }
 
 /**
@@ -856,46 +852,53 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
         }
     }
 
-    // Join to check the DOB display.
+    // From portion which selects users and guests from the VISITOR_LOG table.
     
-    $from_sql = "FROM VISITOR_LOG VISITOR_LOG LEFT JOIN USER USER ";
-    $from_sql.= "ON (USER.UID = VISITOR_LOG.UID) LEFT JOIN USER_PREFS USER_PREFS_DOB ";
-    $from_sql.= "ON (USER_PREFS_DOB.UID = USER.UID AND USER_PREFS_DOB.DOB_DISPLAY > 1 ";
-    $from_sql.= "AND USER_PREFS_DOB.DOB > 0) ";
+    $from_sql = "FROM VISITOR_LOG LEFT JOIN USER ON (USER.UID = VISITOR_LOG.UID) ";
+
+    // Union from portion which flips the from and join so that we get the users
+    // who haven't recently logged on to the forum.
+
+    $union_sql = "FROM USER LEFT JOIN VISITOR_LOG ON (VISITOR_LOG.UID = USER.UID) ";
+
+    // Join to get the user's DOB.    
+    
+    $join_sql = "LEFT JOIN USER_PREFS USER_PREFS_DOB ON (USER_PREFS_DOB.UID = USER.UID ";
+    $join_sql.= "AND USER_PREFS_DOB.DOB_DISPLAY > 1 AND USER_PREFS_DOB.DOB > 0) ";
 
     // Join to check the AGE display.
 
-    $from_sql.= "LEFT JOIN USER_PREFS USER_PREFS_AGE ";
-    $from_sql.= "ON (USER_PREFS_AGE.UID = USER.UID AND (USER_PREFS_DOB.DOB_DISPLAY = 1 ";
-    $from_sql.= "OR USER_PREFS_DOB.DOB_DISPLAY = 2) AND USER_PREFS_DOB.DOB > 0) ";
+    $join_sql.= "LEFT JOIN USER_PREFS USER_PREFS_AGE ";
+    $join_sql.= "ON (USER_PREFS_AGE.UID = USER.UID AND (USER_PREFS_DOB.DOB_DISPLAY = 1 ";
+    $join_sql.= "OR USER_PREFS_DOB.DOB_DISPLAY = 2) AND USER_PREFS_DOB.DOB > 0) ";
 
     // Joins to check the ANON_LOGON setting.
 
-    $from_sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS_FORUM ";
-    $from_sql.= "ON (USER_PREFS_FORUM.UID = VISITOR_LOG.UID) ";
+    $join_sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS_FORUM ";
+    $join_sql.= "ON (USER_PREFS_FORUM.UID = VISITOR_LOG.UID) ";
 
-    $from_sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ";
-    $from_sql.= "ON (USER_PREFS_GLOBAL.UID = VISITOR_LOG.UID) ";
+    $join_sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ";
+    $join_sql.= "ON (USER_PREFS_GLOBAL.UID = VISITOR_LOG.UID) ";
 
     // Join to fetch the LAST_LOGON using the ANON_LOGON data
 
-    $from_sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG_TIME ON (VISITOR_LOG_TIME.VID = VISITOR_LOG.VID ";
-    $from_sql.= "AND ((USER_PREFS_FORUM.ANON_LOGON IS NULL OR USER_PREFS_FORUM.ANON_LOGON = 0) ";
-    $from_sql.= "AND (USER_PREFS_GLOBAL.ANON_LOGON IS NULL OR USER_PREFS_GLOBAL.ANON_LOGON = 0))) ";
+    $join_sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG_TIME ON (VISITOR_LOG_TIME.VID = VISITOR_LOG.VID ";
+    $join_sql.= "AND ((USER_PREFS_FORUM.ANON_LOGON IS NULL OR USER_PREFS_FORUM.ANON_LOGON = 0) ";
+    $join_sql.= "AND (USER_PREFS_GLOBAL.ANON_LOGON IS NULL OR USER_PREFS_GLOBAL.ANON_LOGON = 0))) ";
 
     // Join for the POST_COUNT.
 
-    $from_sql.= "LEFT JOIN {$table_data['PREFIX']}USER_TRACK USER_TRACK ";
-    $from_sql.= "ON (USER_TRACK.UID = USER.UID) ";
+    $join_sql.= "LEFT JOIN {$table_data['PREFIX']}USER_TRACK USER_TRACK ";
+    $join_sql.= "ON (USER_TRACK.UID = USER.UID) ";
 
     // Join for user relationship
 
-    $from_sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
-    $from_sql.= "ON (USER_PEER.UID = USER.UID AND USER_PEER.PEER_UID = '$uid') ";
+    $join_sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+    $join_sql.= "ON (USER_PEER.UID = USER.UID AND USER_PEER.PEER_UID = '$uid') ";
 
     // Join for the search bot data
 
-    $from_sql.= "LEFT JOIN SEARCH_ENGINE_BOTS ON (SEARCH_ENGINE_BOTS.SID = VISITOR_LOG.SID) ";
+    $join_sql.= "LEFT JOIN SEARCH_ENGINE_BOTS ON (SEARCH_ENGINE_BOTS.SID = VISITOR_LOG.SID) ";
 
     // Joins on the selected numeric (PIID) profile items.
 
@@ -903,14 +906,14 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
 
         if (is_numeric($column)) {
 
-            $from_sql.= "LEFT JOIN {$table_data['PREFIX']}PROFILE_ITEM PROFILE_ITEM_{$column} ";
-            $from_sql.= "ON (PROFILE_ITEM_{$column}.PIID = '$column') ";
-            $from_sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PROFILE USER_PROFILE_{$column} ";
-            $from_sql.= "ON (USER_PROFILE_{$column}.PIID = PROFILE_ITEM_{$column}.PIID ";
-            $from_sql.= "AND USER_PROFILE_{$column}.UID = USER.UID ";
-            $from_sql.= "AND (USER_PROFILE_{$column}.PRIVACY = 0 ";
-            $from_sql.= "OR (USER_PROFILE_{$column}.PRIVACY = 1 ";
-            $from_sql.= "AND (USER_PEER.RELATIONSHIP & $user_friend > 0)))) ";
+            $join_sql.= "LEFT JOIN {$table_data['PREFIX']}PROFILE_ITEM PROFILE_ITEM_{$column} ";
+            $join_sql.= "ON (PROFILE_ITEM_{$column}.PIID = '$column') ";
+            $join_sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PROFILE USER_PROFILE_{$column} ";
+            $join_sql.= "ON (USER_PROFILE_{$column}.PIID = PROFILE_ITEM_{$column}.PIID ";
+            $join_sql.= "AND USER_PROFILE_{$column}.UID = USER.UID ";
+            $join_sql.= "AND (USER_PROFILE_{$column}.PRIVACY = 0 ";
+            $join_sql.= "OR (USER_PROFILE_{$column}.PRIVACY = 1 ";
+            $join_sql.= "AND (USER_PEER.RELATIONSHIP & $user_friend > 0)))) ";
         }
     }
 
@@ -966,16 +969,39 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
 
     // Get the number of users in our database.
 
-    $sql = implode(",", array_merge(array($select_sql), $profile_sql_array));
-    $sql.= "$from_sql $where_sql $having_sql $order_sql";
+    // If we're running on MySQL 4.0.16 or better we can perform
+    // a UNION and duplicate the main query with the JOIN on VISITOR_LOG
+    // and FROM USER parts of the query switched so we include users who are not
+    // listed in the visitor log.
+
+    // Officially Beehive's first ever UNION - 23rd April 2007
+
+    if (db_fetch_mysql_version() >= 40116) {
+
+        $sql = implode(",", array_merge(array($select_sql), $profile_sql_array));
+        $sql.= "$union_sql $join_sql $where_sql $having_sql $order_sql";
+
+    }else {
+
+        $sql = implode(",", array_merge(array($select_sql), $profile_sql_array));
+        $sql.= "$from_sql $join_sql $where_sql $having_sql $order_sql";
+    }
 
     $result_user_count = db_query($sql, $db_profile_browse_items);
     $user_count = db_num_rows($result_user_count);
 
     // Query again to get the matching rows for the selected page.
 
-    $sql = implode(",", array_merge(array($select_sql), $profile_sql_array));
-    $sql.= "$from_sql $where_sql $having_sql $order_sql $limit_sql";
+    if (db_fetch_mysql_version() >= 40116) {
+
+        $sql = implode(",", array_merge(array($select_sql), $profile_sql_array));
+        $sql.= "$union_sql $join_sql $where_sql $having_sql $order_sql $limit_sql";
+
+    }else {
+
+        $sql = implode(",", array_merge(array($select_sql), $profile_sql_array));
+        $sql.= "$from_sql $join_sql $where_sql $having_sql $order_sql $limit_sql";
+    }
 
     $result_user_data = db_query($sql, $db_profile_browse_items);
 
@@ -984,39 +1010,38 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
     if (db_num_rows($result_user_data) > 0) {
 
         while ($user_data = db_fetch_array($result_user_data, DB_RESULT_ASSOC)) {
+            
+            if ($user_data['UID'] == 0) {
 
-            if (!isset($user_data['UID']) || $user_data['UID'] == 0) {
-
-                $user_data['UID']      = 0;
                 $user_data['LOGON']    = $lang['guest'];
                 $user_data['NICKNAME'] = $lang['guest'];
             }
             
-            if (isset($user_data['LAST_VISIT']) && $user_data['LAST_VISIT'] > 0) {
+            if (isset($user_data['LAST_VISIT']) && !is_null($user_data['LAST_VISIT'])) {
                 $user_data['LAST_VISIT'] = format_time($user_data['LAST_VISIT']);
             }else {
                 $user_data['LAST_VISIT'] = $lang['unknown'];
             }            
             
-            if (isset($user_data['REGISTERED']) && $user_data['REGISTERED'] > 0) {
+            if (isset($user_data['REGISTERED']) && !is_null($user_data['REGISTERED'])) {
                 $user_data['REGISTERED'] = format_date($user_data['REGISTERED']);
             }else {
                 $user_data['REGISTERED'] = $lang['unknown'];
             }
 
-            if (isset($user_data['USER_TIME_BEST']) && $user_data['USER_TIME_BEST'] > 0) {
+            if (isset($user_data['USER_TIME_BEST']) && !is_null($user_data['USER_TIME_BEST'])) {
                 $user_data['USER_TIME_BEST'] = format_time_display($user_data['USER_TIME_BEST']);
             }else {
                 $user_data['USER_TIME_BEST'] = $lang['unknown'];
             }
 
-            if (isset($user_data['USER_TIME_TOTAL']) && $user_data['USER_TIME_TOTAL'] > 0) {
+            if (isset($user_data['USER_TIME_TOTAL']) && !is_null($user_data['USER_TIME_TOTAL'])) {
                 $user_data['USER_TIME_TOTAL'] = format_time_display($user_data['USER_TIME_TOTAL']);
             }else {
                 $user_data['USER_TIME_TOTAL'] = $lang['unknown'];
             }
 
-            if (isset($user_data['DOB']) && $user_data['DOB'] > 0) {
+            if (isset($user_data['DOB']) && !is_null($user_data['DOB'])) {
                 $user_data['DOB'] = format_dob($user_data['DOB']);
             }else {
                 $user_data['DOB'] = $lang['unknown'];

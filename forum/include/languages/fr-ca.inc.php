@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.49 2007-04-14 00:50:34 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.50 2007-04-23 20:51:23 decoyduck Exp $ */
 
 // International English language file
 
@@ -1233,7 +1233,7 @@ $lang['logonnotpermitted'] = "Nom d'utilisateur non-autorisé. Choisissez un autr
 $lang['nicknamenotpermitted'] = "Pseudonyme non-autorisé. Choisissez un autre!";
 $lang['emailaddressnotpermitted'] = "Adresse courriel non-autorisée. Choisissez une autre!";
 $lang['emailaddressalreadyinuse'] = "Adresse courriel déjà en usage. Choisissez une autre!";
-$lang['relationshipsupdated'] = "Relations mises à jour";
+$lang['relationshipsupdated'] = "Relations mises à jour!";
 $lang['relationshipupdatefailed'] = "Échec de la mise à jour des relations!";
 $lang['preferencesupdated'] = "Mise à jour des préférences réussie.";
 $lang['userdetails'] = "Détails d'utilisateur";

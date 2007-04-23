@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.89 2007-04-21 20:58:25 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.90 2007-04-23 20:51:23 decoyduck Exp $ */
 
 /**
 * Displays and handles the User Relationship page
@@ -215,8 +215,16 @@ if (isset($_POST['submit'])) {
 
     if ($valid) {
 
-        user_rel_update($uid, $peer_uid, $peer_relationship, $peer_nickname);
-        header_redirect($ret);
+        if (user_rel_update($uid, $peer_uid, $peer_relationship, $peer_nickname)) {
+
+            header_redirect("$ret&relupdated=true");
+            exit;
+
+        }else {
+
+            $error_html = "<h2>{$lang['relationshipupdatefailed']}</h2>\n";
+            $valid = false;
+        }
     }
 }
 
@@ -231,7 +239,11 @@ if (isset($_POST['reset_nickname'])) {
 html_draw_top("openprofile.js");
 
 $peer_relationship = user_get_relationship($uid, $peer_uid);
-$peer_nickname = user_get_nickname($peer_uid);
+$peer_nickname = user_get_peer_nickname($uid, $peer_uid);
+
+if (isset($error_html) && strlen($error_html) > 0) {
+    echo $error_html;
+}
 
 echo "<h1>{$lang['userrelationship']} &raquo; <a href=\"user_profile.php?webtag=$webtag&amp;uid=$peer_uid\" target=\"_blank\" onclick=\"return openProfile($peer_uid, '$webtag')\">", word_filter_add_ob_tags(format_user_name($user_peer['LOGON'], $user_peer['NICKNAME'])), "</a></h1>\n";
 echo "<br />\n";

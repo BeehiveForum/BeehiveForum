@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.309 2007-04-21 18:26:25 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.310 2007-04-23 20:51:23 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1298,11 +1298,34 @@ function user_get_peer_relationship($uid, $peer_uid)
 
     if (db_num_rows($result) > 0) {
 
-        list($relationship) = db_fetch_array($result, DB_RESULT_NUM);
-        return $relationship;
+        list($peer_relationship) = db_fetch_array($result, DB_RESULT_NUM);
+        return $peer_relationship;
     }
 
     return 0;
+}
+
+function user_get_peer_nickname($uid, $peer_uid)
+{
+    $db_user_get_peer_nickname = db_connect();
+
+    if (!is_numeric($uid)) return false;
+    if (!is_numeric($peer_uid)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $sql = "SELECT PEER_NICKNAME FROM {$table_data['PREFIX']}USER_PEER ";
+    $sql.= "WHERE UID = '$uid' AND PEER_UID = '$peer_uid'";
+
+    $result = db_query($sql, $db_user_get_peer_nickname);
+
+    if (db_num_rows($result) > 0) {
+
+        list($peer_nickname) = db_fetch_array($result, DB_RESULT_NUM);
+        return $peer_nickname;
+    }
+
+    return user_get_nickname($peer_uid);
 }
 
 function user_get_word_filter_list($offset)

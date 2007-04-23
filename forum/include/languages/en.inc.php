@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.415 2007-04-17 23:36:51 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.416 2007-04-23 20:51:23 decoyduck Exp $ */
 
 // International English language file
 
@@ -1237,7 +1237,7 @@ $lang['logonnotpermitted'] = "Logon not permitted. Choose another!";
 $lang['nicknamenotpermitted'] = "Nickname not permitted. Choose another!";
 $lang['emailaddressnotpermitted'] = "Email Address not permitted. Choose another!";
 $lang['emailaddressalreadyinuse'] = "Email Address already in use. Choose another!";
-$lang['relationshipsupdated'] = "Relationships Updated";
+$lang['relationshipsupdated'] = "Relationships Updated!";
 $lang['relationshipupdatefailed'] = "Relationship updated failed!";
 $lang['preferencesupdated'] = "Preferences were successfully updated.";
 $lang['userdetails'] = "User Details";

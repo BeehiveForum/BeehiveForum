@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_relations.php,v 1.65 2007-04-21 20:58:25 decoyduck Exp $ */
+/* $Id: edit_relations.php,v 1.66 2007-04-23 20:51:23 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -141,6 +141,11 @@ if (isset($_GET['usersearch']) && strlen(trim(_stripslashes($_GET['usersearch'])
     $usersearch = trim(_stripslashes($_POST['usersearch']));
 }else {
     $usersearch = "";
+}
+
+if (isset($_GET['relupdated'])) {
+    echo "<br />\n";
+    echo "<h2>{$lang['relationshipsupdated']}</h2>\n";
 }
 
 echo "<br />\n";

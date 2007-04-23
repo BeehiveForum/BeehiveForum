@@ -19,30 +19,54 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: spoiler.js,v 1.3 2007-03-01 14:37:24 decoyduck Exp $ */
+/* $Id: spoiler.js,v 1.4 2007-04-23 20:51:23 decoyduck Exp $ */
 
-function spoilerInitialise() {
-
+function spoilerInitialise()
+{
     var IE = (document.all ? true : false);
 
     var div_tags = document.getElementsByTagName('div');
     var div_count = div_tags.length;
 
+    var div_child_array = new Array();
+    var div_child_count = new Array();
+
     for (var i = 0; i < div_count; i++)  {
 
         if (div_tags[i].className == 'spoiler') {
-            
-            if (IE) {
 
-                div_tags[i].attachEvent("onmouseover", spoilerReveal);
-                div_tags[i].attachEvent("onmouseout", spoilerHide);
-
-            }else {
-
-                div_tags[i].addEventListener("mouseover", spoilerReveal, true);
-                div_tags[i].addEventListener("mouseout", spoilerHide, true);
-            }
+            spoilerAttachEvent(div_tags[i]);
+            spoilerProcessChildren(div_tags[i]);
         }
+    }
+}
+
+function spoilerAttachEvent(element)
+{
+    if (is_defined(element.tagName)) {
+        
+        if (IE) {
+
+            element.attachEvent("onmouseover", spoilerReveal);
+            element.attachEvent("onmouseout", spoilerHide);
+
+        }else {
+
+            element.addEventListener("mouseover", spoilerReveal, true);
+            element.addEventListener("mouseout", spoilerHide, true);
+        }
+    }
+}
+
+function spoilerProcessChildren(element)
+{
+    var element_child_array = element.childNodes;
+    var element_child_count = element_child_array.length;
+
+    for (var i = 0; i < element_child_count; i++) {
+
+        spoilerAttachEvent(element_child_array[i]);
+        spoilerProcessChildren(element_child_array[i]);
     }
 }
 

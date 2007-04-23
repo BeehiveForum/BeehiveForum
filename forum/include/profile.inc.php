@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.61 2007-04-23 20:51:23 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.62 2007-04-23 21:23:21 decoyduck Exp $ */
 
 /**
 * Functions relating to profiles
@@ -979,6 +979,8 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
     if (db_fetch_mysql_version() >= 40116) {
 
         $sql = implode(",", array_merge(array($select_sql), $profile_sql_array));
+        $sql.= "$from_sql $join_sql $where_sql UNION ";
+        $sql.= implode(",", array_merge(array($select_sql), $profile_sql_array));
         $sql.= "$union_sql $join_sql $where_sql $having_sql $order_sql";
 
     }else {
@@ -987,81 +989,75 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
         $sql.= "$from_sql $join_sql $where_sql $having_sql $order_sql";
     }
 
-    $result_user_count = db_query($sql, $db_profile_browse_items);
-    $user_count = db_num_rows($result_user_count);
+    // Execute the query.
 
-    // Query again to get the matching rows for the selected page.
+    $result = db_query($sql, $db_profile_browse_items);
 
-    if (db_fetch_mysql_version() >= 40116) {
-
-        $sql = implode(",", array_merge(array($select_sql), $profile_sql_array));
-        $sql.= "$union_sql $join_sql $where_sql $having_sql $order_sql $limit_sql";
-
-    }else {
-
-        $sql = implode(",", array_merge(array($select_sql), $profile_sql_array));
-        $sql.= "$from_sql $join_sql $where_sql $having_sql $order_sql $limit_sql";
-    }
-
-    $result_user_data = db_query($sql, $db_profile_browse_items);
-
+    // Array to store our results in.
+    
     $user_array = array();
 
-    if (db_num_rows($result_user_data) > 0) {
+    // Get the number of rows.
 
-        while ($user_data = db_fetch_array($result_user_data, DB_RESULT_ASSOC)) {
+    if (($user_count = db_num_rows($result)) > 0) {
+
+        $offset = ($offset > $user_count) ? floor($user_count / 10) * 10 : $offset;
+
+        if (mysql_data_seek($result, $offset)) {
             
-            if ($user_data['UID'] == 0) {
+            while ($user_data = db_fetch_array($result, DB_RESULT_ASSOC)) {
+                
+                if ($user_data['UID'] == 0) {
 
-                $user_data['LOGON']    = $lang['guest'];
-                $user_data['NICKNAME'] = $lang['guest'];
-            }
-            
-            if (isset($user_data['LAST_VISIT']) && !is_null($user_data['LAST_VISIT'])) {
-                $user_data['LAST_VISIT'] = format_time($user_data['LAST_VISIT']);
-            }else {
-                $user_data['LAST_VISIT'] = $lang['unknown'];
-            }            
-            
-            if (isset($user_data['REGISTERED']) && !is_null($user_data['REGISTERED'])) {
-                $user_data['REGISTERED'] = format_date($user_data['REGISTERED']);
-            }else {
-                $user_data['REGISTERED'] = $lang['unknown'];
-            }
+                    $user_data['LOGON']    = $lang['guest'];
+                    $user_data['NICKNAME'] = $lang['guest'];
+                }
 
-            if (isset($user_data['USER_TIME_BEST']) && !is_null($user_data['USER_TIME_BEST'])) {
-                $user_data['USER_TIME_BEST'] = format_time_display($user_data['USER_TIME_BEST']);
-            }else {
-                $user_data['USER_TIME_BEST'] = $lang['unknown'];
-            }
+                if (isset($user_data['LAST_VISIT']) && !is_null($user_data['LAST_VISIT'])) {
+                    $user_data['LAST_VISIT'] = format_time($user_data['LAST_VISIT']);
+                }else {
+                    $user_data['LAST_VISIT'] = $lang['unknown'];
+                }            
 
-            if (isset($user_data['USER_TIME_TOTAL']) && !is_null($user_data['USER_TIME_TOTAL'])) {
-                $user_data['USER_TIME_TOTAL'] = format_time_display($user_data['USER_TIME_TOTAL']);
-            }else {
-                $user_data['USER_TIME_TOTAL'] = $lang['unknown'];
-            }
+                if (isset($user_data['REGISTERED']) && !is_null($user_data['REGISTERED'])) {
+                    $user_data['REGISTERED'] = format_date($user_data['REGISTERED']);
+                }else {
+                    $user_data['REGISTERED'] = $lang['unknown'];
+                }
 
-            if (isset($user_data['DOB']) && !is_null($user_data['DOB'])) {
-                $user_data['DOB'] = format_dob($user_data['DOB']);
-            }else {
-                $user_data['DOB'] = $lang['unknown'];
-            }
+                if (isset($user_data['USER_TIME_BEST']) && !is_null($user_data['USER_TIME_BEST'])) {
+                    $user_data['USER_TIME_BEST'] = format_time_display($user_data['USER_TIME_BEST']);
+                }else {
+                    $user_data['USER_TIME_BEST'] = $lang['unknown'];
+                }
 
-            if (!isset($user_data['POST_COUNT']) || is_null($user_data['POST_COUNT'])) {
-                $user_data['POST_COUNT'] = 0;
+                if (isset($user_data['USER_TIME_TOTAL']) && !is_null($user_data['USER_TIME_TOTAL'])) {
+                    $user_data['USER_TIME_TOTAL'] = format_time_display($user_data['USER_TIME_TOTAL']);
+                }else {
+                    $user_data['USER_TIME_TOTAL'] = $lang['unknown'];
+                }
+
+                if (isset($user_data['DOB']) && !is_null($user_data['DOB'])) {
+                    $user_data['DOB'] = format_dob($user_data['DOB']);
+                }else {
+                    $user_data['DOB'] = $lang['unknown'];
+                }
+
+                if (!isset($user_data['POST_COUNT']) || is_null($user_data['POST_COUNT'])) {
+                    $user_data['POST_COUNT'] = 0;
+                }
+
+                $user_array[] = $user_data;
+                
+                if (sizeof($user_array) > 9) break;
             }
-            
-            $user_array[] = $user_data;
         }
     
-    }elseif ($user_count > 0) {
-
-        $offset = ($offset - 20) > 0 ? $offset - 20 : 0;
-        return profile_browse_items($user_search, $profile_items_array, $offset, $sort_by, $sort_dir, $hide_empty);
     }
 
     return array('user_count' => $user_count,
                  'user_array' => $user_array);
+
 }
 
 ?>

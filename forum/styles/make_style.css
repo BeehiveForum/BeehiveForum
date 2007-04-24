@@ -990,8 +990,12 @@ a {
     width: 190px
 }
 
+.edit_signature_content {
+    width: 550px;
+}
+
 .signature_content {
-    width: 550px
+    width: 480px;
 }
 
 .link_hidden {

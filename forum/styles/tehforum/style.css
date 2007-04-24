@@ -883,8 +883,12 @@ a {
     width: 228px;
 }
 
-.signature_content {
+.edit_signature_content {
     width: 550px;
+}
+
+.signature_content {
+    width: 480px;
 }
 
 .link_hidden {

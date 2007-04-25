@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.416 2007-04-23 20:51:23 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.417 2007-04-25 00:43:37 decoyduck Exp $ */
 
 // International English language file
 
@@ -1453,6 +1453,8 @@ $lang['textcaptchaverificationfailed'] = "Text-captcha verification code was inc
 $lang['member'] = "Member";
 $lang['searchforusernotinlist'] = "Search for a user not in list";
 $lang['yoursearchdidnotreturnanymatches'] = "Your search did not return any matches. Try simplifying your search parameters and try again.";
+$lang['hiderowswithemptyornullvalues'] = "Hide rows with empty or null values in selected columns";
+$lang['showregisteredusersonly'] = "Show Registered Users only (hide Guests)";
 
 // Relationships (user_rel.php) ----------------------------------------
 

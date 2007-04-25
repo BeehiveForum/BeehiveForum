@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: timezone.inc.php,v 1.2 2007-02-22 21:38:02 decoyduck Exp $ */
+/* $Id: timezone.inc.php,v 1.3 2007-04-25 22:05:34 decoyduck Exp $ */
 
 /**
 * timezone.inc.php - International Timezones with DST support
@@ -65,8 +65,8 @@ function timestamp_is_dst($timezoneid, $gmt_offset)
         case 14:    /*    Eastern Time (US & Canada) */
         case 16:    /*    Atlantic Time (Canada) */
         case 19:    /*    Newfoundland */
-            if (afterFirstDayInMonth($cur_year, $cur_year, 4, "Sun", $gmt_offset) &&
-            beforeLastDayInMonth($cur_year, $cur_year, 10, "Sun", $gmt_offset))
+            if (afterSecondDayInMonth($cur_year, $cur_year, 3, "Sun", $gmt_offset) &&
+            beforeFirstDayInMonth($cur_year, $cur_year, 11, "Sun", $gmt_offset))
                 return true;
             else
                 return false;
@@ -352,6 +352,32 @@ function beforeSecondDayInMonth($curYear, $year, $month, $day, $gmt_offset)
     $cur_stamp = mktime($curHour, 0, 0, $curMonth, $curDay, $curYear);
 
     $second_day_stamp = mktime(0, 0, 0, $month, $second_day, $year);
+
+    if ($cur_stamp < $second_day_stamp) return true;
+
+    return false;
+}
+
+function beforeFirstDayInMonth($curYear, $year, $month, $day, $gmt_offset)
+{
+    $count = 0;
+
+    for ($i = 1; $i < 7; $i++) {
+
+        if (date("D", mktime(0, 0, 0, $month, $i)) == $day) {
+
+            $first_day = $i;
+            break;
+        }
+    }
+
+    $curDay = gmdate("d");
+    $curMonth = gmdate("m");
+    $curHour = gmdate("H") + $gmt_offset;
+
+    $cur_stamp = mktime($curHour, 0, 0, $curMonth, $curDay, $curYear);
+
+    $second_day_stamp = mktime(0, 0, 0, $month, $first_day, $year);
 
     if ($cur_stamp < $second_day_stamp) return true;
 

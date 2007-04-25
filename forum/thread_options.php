@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.79 2007-04-12 13:23:12 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.80 2007-04-25 21:34:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -119,17 +119,13 @@ if (bh_session_get_value('UID') == 0) {
 
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
+    $msg = $_GET['msg'];
     list($tid, $pid) = explode(".", $_GET['msg']);
 
-}elseif (isset($_GET['tid']) && is_numeric($_GET['tid'])) {
+}elseif (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
 
-    $tid = $_GET['tid'];
-    $pid = 1;
-
-}elseif (isset($_POST['tid']) && is_numeric($_POST['tid'])) {
-
-    $tid = $_POST['tid'];
-    $pid = 1;
+    $msg = $_POST['msg'];
+    list($tid, $pid) = explode(".", $_POST['msg']);
 
 }else {
 
@@ -165,7 +161,7 @@ $update = false;
 
 if (isset($_POST['back'])) {
 
-    $uri = "./messages.php?webtag=$webtag&msg=$tid.$pid";
+    $uri = "./messages.php?webtag=$webtag&msg=$msg";
     header_redirect($uri);
     exit;
 }
@@ -183,7 +179,7 @@ if (isset($_POST['markasread']) && is_numeric($_POST['markasread']) && $_POST['m
     $markasread = $_GET['markasread'];
     messages_set_read($tid, $markasread, $uid, $threaddata['MODIFIED']);
 
-    $uri = "./messages.php?webtag=$webtag&msg=$tid.$pid&markasread=1";
+    $uri = "./messages.php?webtag=$webtag&msg=$msg&markasread=1";
     header_redirect($uri);
     exit;
 }
@@ -194,7 +190,7 @@ if (isset($_POST['setinterest']) && is_numeric($_POST['setinterest']) && $_POST[
     thread_set_interest($tid, $threaddata['INTEREST']);
     $update = true;
 
-    $uri = "./messages.php?webtag=$webtag&msg=$tid.$pid&setinterest=1";
+    $uri = "./messages.php?webtag=$webtag&msg=$msg&setinterest=1";
     header_redirect($uri);
     exit;
 }
@@ -421,16 +417,19 @@ if ($threaddata['LENGTH'] > 0) {
 
     html_draw_top("basetarget=_blank", "robots=noindex,nofollow", 'thread_options.js');
 
-    echo "<h1>{$lang['threadoptions']} &raquo; <a href=\"messages.php?webtag=$webtag&amp;msg={$tid}.1\" target=\"_self\">#{$tid} ", thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE']), "</a></h1>\n";
+    echo "<h1>{$lang['threadoptions']} &raquo; <a href=\"messages.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\">#{$tid} ", thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE']), "</a></h1>\n";
     echo "<br />\n";
 
     if ($update) {
+
         echo "<h2>{$lang['updatesmade']}</h2>\n";
         echo "<br />\n";
     }
 
     echo "<div align=\"center\">\n";
-    echo "  <form name=\"thread_options\" action=\"", get_request_uri(), "\" method=\"post\" target=\"_self\">\n";
+    echo "  <form name=\"thread_options\" action=\"thread_options.php\" method=\"post\" target=\"_self\">\n";
+    echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
+    echo "  ", form_input_hidden("msg", _htmlentities($msg)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
@@ -493,7 +492,7 @@ if ($threaddata['LENGTH'] > 0) {
         echo "                        <td align=\"left\" width=\"250\" class=\"posthead\">{$lang['renamethread']}:</td>\n";
 
         if (thread_is_poll($tid)) {
-            echo "                        <td align=\"left\"><a href=\"edit_poll.php?webtag=$webtag&amp;msg=$tid.1\" target=\"_parent\">{$lang['editthepoll']}</a> {$lang['torenamethisthread']}.</td>\n";
+            echo "                        <td align=\"left\"><a href=\"edit_poll.php?webtag=$webtag&amp;msg=$msg\" target=\"_parent\">{$lang['editthepoll']}</a> {$lang['torenamethisthread']}.</td>\n";
         }else {
             echo "                        <td align=\"left\">", form_input_text("rename", $threaddata['TITLE'], 30, 64), "</td>\n";
         }
@@ -848,12 +847,13 @@ if ($threaddata['LENGTH'] > 0) {
     
     html_draw_top("basetarget=_blank", "robots=noindex,nofollow", 'thread_options.js');
 
-    echo "<h1>{$lang['threadoptions']}: <a href=\"messages.php?webtag=$webtag&amp;msg={$tid}.1\" target=\"_self\">#{$tid} ", thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE']), "</a></h1>\n";
+    echo "<h1>{$lang['threadoptions']}: <a href=\"messages.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\">#{$tid} ", thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE']), "</a></h1>\n";
     echo "<br />\n";
 
     echo "<div align=\"center\">\n";
-    echo "  <form name=\"thread_options\" action=\"", get_request_uri(), "\" method=\"post\" target=\"_self\">\n";
-    echo "  ", form_input_hidden("thread_length", _htmlentities($thread_length)), "\n";
+    echo "  <form name=\"thread_options\" action=\"thread_options.php\" method=\"post\" target=\"_self\">\n";
+    echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
+    echo "  ", form_input_hidden("msg", _htmlentities($msg)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";

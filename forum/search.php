@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.172 2007-04-18 23:20:27 decoyduck Exp $ */
+/* $Id: search.php,v 1.173 2007-04-25 21:34:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -221,7 +221,8 @@ if (isset($_GET['show_stop_words'])) {
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "<form id=\"search_stop_words\" method=\"get\" action=\"search.php\" target=\"_self\">\n";
-    echo "  ", form_input_hidden('show_stop_words', 'yes'), "\n";
+    echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
+    echo "  ", form_input_hidden("show_stop_words", "yes"), "\n";
     echo "  <table cellpadding=\"5\" cellspacing=\"0\" width=\"540\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\" valign=\"top\" width=\"100%\">\n";

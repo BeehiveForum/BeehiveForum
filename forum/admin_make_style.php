@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.104 2007-04-12 21:13:36 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.105 2007-04-25 21:34:31 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -517,6 +517,7 @@ echo "              </tr>\n";
 echo "              <tr>\n";
 echo "                <td colspan=\"2\" align=\"left\">\n";
 echo "                  <form name=\"f_mode\" method=\"get\" action=\"\" onsubmit=\"return false\">\n";
+echo "                    ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
 echo "                    <select name=\"mode\" class=\"bhselect\">\n";
 echo "                      <option value=\"0\" selected=\"selected\">{$lang['alldiscussions']}</option>\n";
 echo "                      <option value=\"1\">{$lang['unreaddiscussions']}</option>\n";
@@ -585,7 +586,7 @@ echo "              <tr>\n";
 echo "                <td align=\"left\">&nbsp;</td>\n";
 echo "                <td class=\"smalltext\" style=\"color: #", contrastFont($elements['body']), "\" align=\"left\">\n";
 echo "                  <form name=\"f_mark\" method=\"get\" action=\"\" onsubmit=\"return false\">\n";
-echo "                    <input type=\"hidden\" name=\"tids\" class=\"bhinputtext\" value=\"1\" />\n";
+echo "                    ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
 echo "                    <select name=\"markread\" class=\"bhselect\">\n";
 echo "                      <option value=\"0\" selected=\"selected\">{$lang['alldiscussions']}</option>\n";
 echo "                      <option value=\"1\">{$lang['next50discussions']}s</option>\n";
@@ -604,7 +605,7 @@ echo "              <tr>\n";
 echo "                <td align=\"left\">&nbsp;</td>\n";
 echo "                <td class=\"smalltext\" style=\"color: #", contrastFont($elements['body']), "\" align=\"left\">\n";
 echo "                  <form name=\"f_nav\" method=\"get\" action=\"\" onsubmit=\"return false\">\n";
-echo "                    <input type=\"text\" name=\"msg\" class=\"bhinputtext\" value=\"1.1\" size=\"10\" />\n";
+echo "                    ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
 echo "                    <input type=\"submit\" name=\"go\" value=\"{$lang['goexcmark']}\" class=\"button\" style=\"background-color: #{$elements['button']}; color: #", contrastFont($elements['button']), "\" onclick=\"return false\" />\n";
 echo "                  </form>\n";
 echo "                </td>\n";
@@ -618,6 +619,7 @@ echo "              <tr>\n";
 echo "                <td align=\"left\">&nbsp;</td>\n";
 echo "                <td class=\"smalltext\" style=\"color: #", contrastFont($elements['body']), "\" align=\"left\">\n";
 echo "                  <form name=\"f_search\" method=\"get\" action=\"\" onsubmit=\"return false\">\n";
+echo "                    ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
 echo "                    <input type=\"text\" name=\"msg\" class=\"bhinputtext\" value=\"\" size=\"20\" />\n";
 echo "                    <input type=\"submit\" name=\"go\" value=\"{$lang['find']}\" class=\"button\" style=\"background-color: #{$elements['button']}; color: #", contrastFont($elements['button']), "\" onclick=\"return false\" />\n";
 echo "                  </form>\n";
@@ -694,6 +696,7 @@ echo "                  <td align=\"center\">\n";
 echo "                    <p align=\"center\" class=\"smalltext\" style=\"color: #", contrastFont($elements['threads']), "\">{$lang['showmessages']}: &nbsp;1 &nbsp;<a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['threads']), "\">2</a></p>\n";
 echo "                    <p align=\"center\"></p>\n";
 echo "                    <form name=\"rate_interest\" target=\"_self\" action=\"\" method=\"post\">\n";
+echo "                      ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
 echo "                      {$lang['ratemyinterest']}\n";
 echo "                      <span class=\"bhinputradio\"><input type=\"radio\" name=\"interest\" value=\"-1\" />{$lang['ignore']} </span>\n";
 echo "                      <span class=\"bhinputradio\"><input type=\"radio\" name=\"interest\" value=\"0\" checked=\"checked\" />{$lang['normal']} </span>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_edit.php,v 1.55 2007-04-12 13:23:08 decoyduck Exp $ */
+/* $Id: admin_folder_edit.php,v 1.56 2007-04-25 21:34:31 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -286,6 +286,7 @@ if (isset($status_html) && strlen($status_html) > 0) {
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "  <form name=\"thread_options\" action=\"admin_folder_edit.php\" method=\"post\" target=\"_self\">\n";
+echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden('fid', _htmlentities($fid)), "\n";
 echo "  ", form_input_hidden('position', _htmlentities($folder_data['POSITION'])), "\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";

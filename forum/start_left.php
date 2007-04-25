@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.132 2007-04-19 14:51:01 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.133 2007-04-25 21:34:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -396,8 +396,8 @@ if ($birthdays = user_get_forthcoming_birthdays()) {
 
         echo "                            <tr>\n";
         echo "                              <td valign=\"top\" align=\"center\" nowrap=\"nowrap\"><img src=\"", style_image('bullet.png'), "\" alt=\"{$lang['user']}\" title=\"{$lang['user']}\" /></td>\n";
-        echo "                              <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$row['UID']}\" target=\"_blank\" onclick=\"return openProfile({$row['UID']}, '$webtag')\">", word_filter_add_ob_tags($row['NICKNAME']), "</a></td>\n";
-        echo "                              <td align=\"right\" nowrap=\"nowrap\">", format_birthday($row['DOB']), "&nbsp;</td>\n";
+        echo "                              <td align=\"left\" valign=\"top\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$row['UID']}\" target=\"_blank\" onclick=\"return openProfile({$row['UID']}, '$webtag')\">", word_filter_add_ob_tags(format_user_name($row['LOGON'], $row['NICKNAME'])), "</a></td>\n";
+        echo "                              <td align=\"right\" nowrap=\"nowrap\" valign=\"top\">", format_birthday($row['DOB']), "&nbsp;</td>\n";
         echo "                            </tr>\n";
     }
 

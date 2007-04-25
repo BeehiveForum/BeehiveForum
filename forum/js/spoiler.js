@@ -19,7 +19,44 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: spoiler.js,v 1.4 2007-04-23 20:51:23 decoyduck Exp $ */
+/* $Id: spoiler.js,v 1.5 2007-04-25 21:34:32 decoyduck Exp $ */
+
+function containsDOM(container, containee)
+{
+    var isParent = false;
+
+    while (containee != null) {
+        
+        if ((isParent = container == containee)) break;
+        containee = containee.parentNode;
+    }
+  
+    return isParent;
+}
+
+function checkMouseEnter(element, evt)
+{
+    if (element.contains && evt.fromElement) {
+    
+        return !element.contains(evt.fromElement);
+    
+    }else if (evt.relatedTarget) {
+    
+        return !containsDOM(element, evt.relatedTarget);
+    }
+}
+
+function checkMouseLeave(element, evt)
+{
+    if (element.contains && evt.toElement) {
+    
+        return !element.contains(evt.toElement);
+    
+    }else if (evt.relatedTarget) {
+
+        return !containsDOM(element, evt.relatedTarget);
+    }
+}
 
 function spoilerInitialise()
 {
@@ -36,7 +73,6 @@ function spoilerInitialise()
         if (div_tags[i].className == 'spoiler') {
 
             spoilerAttachEvent(div_tags[i]);
-            spoilerProcessChildren(div_tags[i]);
         }
     }
 }
@@ -44,7 +80,7 @@ function spoilerInitialise()
 function spoilerAttachEvent(element)
 {
     if (is_defined(element.tagName)) {
-        
+               
         if (IE) {
 
             element.attachEvent("onmouseover", spoilerReveal);
@@ -52,45 +88,43 @@ function spoilerAttachEvent(element)
 
         }else {
 
-            element.addEventListener("mouseover", spoilerReveal, true);
-            element.addEventListener("mouseout", spoilerHide, true);
+            element.addEventListener("mouseover", spoilerReveal, false);
+            element.addEventListener("mouseout", spoilerHide, false);
         }
     }
 }
 
-function spoilerProcessChildren(element)
-{
-    var element_child_array = element.childNodes;
-    var element_child_count = element_child_array.length;
-
-    for (var i = 0; i < element_child_count; i++) {
-
-        spoilerAttachEvent(element_child_array[i]);
-        spoilerProcessChildren(element_child_array[i]);
-    }
-}
-
-function spoilerReveal(evt) {
-    
+function spoilerReveal(evt)
+{    
     if (window.event) {
+
         if (window.event.srcElement.className == 'spoiler') {
+
             window.event.srcElement.className = 'spoiler_reveal';
         }
-    }else if (evt.target) {                  
+
+    }else if (evt.target && checkMouseEnter(evt.target, evt)) {                  
+        
         if (evt.target.className == 'spoiler') {
+
             evt.target.className = 'spoiler_reveal';
         }
     }
 }
 
-function spoilerHide(evt) {
-    
+function spoilerHide(evt)
+{    
     if (window.event) {
+
         if (window.event.srcElement.className == 'spoiler_reveal') {
+
             window.event.srcElement.className = 'spoiler';
         }
-    }else if (evt.target) {
+
+    }else if (evt.target && checkMouseLeave(evt.target, evt)) {
+
         if (evt.target.className == 'spoiler_reveal') {
+
             evt.target.className = 'spoiler';
         }
     }

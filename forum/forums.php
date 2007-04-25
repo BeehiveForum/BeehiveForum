@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forums.php,v 1.69 2007-04-12 21:13:36 decoyduck Exp $ */
+/* $Id: forums.php,v 1.70 2007-04-25 21:34:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -136,6 +136,7 @@ if (bh_session_get_value('UID') != 0) {
         echo "<br />\n";
         echo "<div align=\"center\">\n";
         echo "<form name=\"prefs\" action=\"forums.php\" method=\"post\" target=\"_self\">\n";
+        echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
 
         if (sizeof($forums_array['FAV_FORUMS']) > 0) {
 
@@ -390,6 +391,7 @@ if (bh_session_get_value('UID') != 0) {
         echo "<br />\n";
         echo "<div align=\"center\">\n";
         echo "<form name=\"prefs\" action=\"forums.php\" method=\"post\" target=\"_self\">\n";
+        echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"90%\">\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\">\n";
@@ -454,6 +456,7 @@ if (isset($webtag_search) && strlen($webtag_search) > 0) {
 
     echo "<div align=\"center\">\n";
     echo "<form name=\"prefs\" action=\"forums.php\" method=\"post\" target=\"_self\">\n";
+    echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"90%\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
@@ -545,6 +548,7 @@ if (isset($webtag_search) && strlen($webtag_search) > 0) {
 
 echo "<div align=\"center\">\n";
 echo "<form action=\"forums.php\" method=\"get\" target=\"_self\">\n";
+echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"90%\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";

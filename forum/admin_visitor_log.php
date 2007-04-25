@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_visitor_log.php,v 1.12 2007-04-18 23:20:26 decoyduck Exp $ */
+/* $Id: admin_visitor_log.php,v 1.13 2007-04-25 21:34:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -231,6 +231,7 @@ echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td align=\"center\">\n";
 echo "        <form name=\"f_post\" action=\"admin_visitor_log.php?webtag=$webtag\" method=\"post\" target=\"_self\">\n";
+echo "          ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
 echo "          ", form_submit('clear', $lang['clearlog']), "\n";
 echo "        </form>\n";
 echo "      </td>";

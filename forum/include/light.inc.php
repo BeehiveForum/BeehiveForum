@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.134 2007-04-21 20:58:25 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.135 2007-04-25 21:34:32 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -122,6 +122,7 @@ function light_draw_logon_form()
     $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
 
     echo "<form name=\"logonform\" action=\"llogon.php\" method=\"post\">\n";
+    echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
 
     echo "<p>{$lang['username']}: ";
     echo light_form_input_text("user_logon", (isset($_COOKIE['bh_light_remember_username']) ? _htmlentities($_COOKIE['bh_light_remember_username']) : "")). "</p>\n";

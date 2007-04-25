@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.63 2007-04-23 23:49:20 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.64 2007-04-25 00:43:37 decoyduck Exp $ */
 
 /**
 * Functions relating to profiles
@@ -782,7 +782,7 @@ function profile_items_get_list(&$profile_header_array, &$profile_dropdown_array
     return true;
 }
 
-function profile_browse_items($user_search, $profile_items_array, $offset, $sort_by, $sort_dir, $hide_empty)
+function profile_browse_items($user_search, $profile_items_array, $offset, $sort_by, $sort_dir, $hide_empty, $hide_guests)
 {
     $db_profile_browse_items = db_connect();
 
@@ -932,6 +932,11 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
         $where_sql_array[] = $user_search_sql;
     }
 
+    if ($hide_guests === true) {
+
+        $where_sql_array[] = "(USER.UID IS NOT NULL AND USER.UID > 0) ";
+    }
+
     if (sizeof($where_sql_array) > 0) {
         $where_sql = "WHERE ". implode(" AND ", $where_sql_array);
     }else {
@@ -979,7 +984,7 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
     if (db_fetch_mysql_version() >= 40116) {
 
         $sql = implode(",", array_merge(array($select_sql), $profile_sql_array));
-        $sql.= "$from_sql $join_sql $where_sql UNION ";
+        $sql.= "$from_sql $join_sql $where_sql $having_sql UNION ";
         $sql.= implode(",", array_merge(array($select_sql), $profile_sql_array));
         $sql.= "$union_sql $join_sql $where_sql $having_sql $order_sql";
 

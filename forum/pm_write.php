@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.164 2007-04-19 20:32:45 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.165 2007-04-26 22:54:47 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -836,12 +836,12 @@ echo "                        <td align=\"left\"><h2>{$lang['to']}</h2></td>\n";
 echo "                      </tr>\n";
 
 if ($friends_array = pm_user_get_friends()) {
-
+    
     if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 
         $to_user = user_get($_GET['uid']);
 
-        if (in_array($to_user['UID'], $friends_array['uid_array'])) {
+        if (in_array($to_user['UID'], array_keys($friends_array))) {
 
             $t_to_uid = $to_user['UID'];
             $to_radio = 0;

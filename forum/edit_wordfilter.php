@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_wordfilter.php,v 1.63 2007-04-18 23:20:27 decoyduck Exp $ */
+/* $Id: edit_wordfilter.php,v 1.64 2007-04-27 23:03:56 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -75,6 +75,14 @@ if (bh_session_user_banned()) {
     exit;
 }
 
+// Check to see if the user has been approved.
+
+if (!bh_session_user_approved()) {
+
+    html_user_require_approval();
+    exit;
+}
+
 // Check we have a webtag
 
 if (!$webtag = get_webtag($webtag_search)) {
@@ -85,6 +93,20 @@ if (!$webtag = get_webtag($webtag_search)) {
 // Load language file
 
 $lang = load_language_file();
+
+// Check that we have access to this forum
+
+if (!forum_check_access_level()) {
+    $request_uri = rawurlencode(get_request_uri());
+    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
+}
+
+if (bh_session_get_value('UID') == 0) {
+    html_guest_error();
+    exit;
+}
+
+// Start output here
 
 html_draw_top();
 

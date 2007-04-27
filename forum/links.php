@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.php,v 1.93 2007-04-12 13:23:11 decoyduck Exp $ */
+/* $Id: links.php,v 1.94 2007-04-27 23:03:56 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -269,9 +269,21 @@ if ($viewmode == 0) {
         echo "                </table>\n";
         echo "              </td>\n";
         echo "            </tr>\n";
-        echo "          </table>\n";
 
-        if (bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0)) echo "<p class=\"threadtime\">{$lang['linksdelexp']}</p>";
+        if (bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0)) {
+
+            echo "            <tr>\n";
+            echo "              <td>{$lang['linksdelexp']}</td>\n";
+            echo "            </tr>\n";
+
+        }else {
+
+            echo "            <tr>\n";
+            echo "              <td>&nbsp;</td>\n";
+            echo "            </tr>\n";
+        }
+
+        echo "          </table>\n";
     }
 
     echo "      </td>\n";

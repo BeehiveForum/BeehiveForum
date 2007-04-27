@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll_results.php,v 1.20 2007-04-12 13:23:11 decoyduck Exp $ */
+/* $Id: poll_results.php,v 1.21 2007-04-27 23:03:56 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -98,9 +98,9 @@ if (!forum_check_access_level()) {
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
-html_draw_top("openprofile.js");
-
 if (isset($_POST['close'])) {
+
+    html_draw_top();
 
     echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
     echo "  window.close();\n";
@@ -124,12 +124,8 @@ if (isset($_GET['tid']) && is_numeric($_GET['tid'])) {
 
 }else {
 
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<div align=\"center\">";
-    echo "<p>{$lang['mustspecifypolltoview']}</p>";
-    echo form_quick_button("./poll_results.php", $lang['close']);
-    echo "</div>";
-
+    html_draw_top();
+    html_error_msg($lang['mustspecifypolltoview'], 'poll_results.php', 'post', array('close' => $lang['close']));
     html_draw_bottom();
     exit;
 }
@@ -143,6 +139,9 @@ if (isset($_GET['viewstyle']) && is_numeric($_GET['viewstyle'])) {
     $viewstyle = 0;
 }
 
+html_draw_top("openprofile.js");
+
+echo "<h1>{$lang['pollresults']}</h1>\n";
 echo "<br />\n";
 
 if ($polldata['VOTETYPE'] == 1 && $polldata['POLLTYPE'] != 2) {

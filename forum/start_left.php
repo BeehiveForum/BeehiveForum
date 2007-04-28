@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.133 2007-04-25 21:34:32 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.134 2007-04-28 22:36:18 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -261,10 +261,10 @@ echo "              </table>\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
-echo "                    <table class=\"posthead\" width=\"95%\">\n";
+echo "                    <table class=\"posthead\" width=\"80%\">\n";
 echo "                      <tr>\n";
 echo "                        <td class=\"postbody\" colspan=\"2\" align=\"center\">\n";
-echo "                          <table class=\"posthead\" border=\"0\" width=\"80%\" cellpadding=\"0\" cellspacing=\"0\">\n";
+echo "                          <table class=\"posthead\" border=\"0\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "                            <tr>\n";
 echo "                              <td align=\"left\" valign=\"top\" nowrap=\"nowrap\"><img src=\"", style_image('post.png'), "\" alt=\"{$lang['newdiscussion']}\" title=\"{$lang['newdiscussion']}\" />&nbsp;<a href=\"post.php?webtag=$webtag\" target=\"main\">{$lang['newdiscussion']}</a></td>\n";
 echo "                            </tr>\n";
@@ -315,7 +315,7 @@ if ($users_array = users_get_recent()) {
     foreach ($users_array as $recent_user) {
 
         echo "                            <tr>\n";
-        echo "                              <td valign=\"top\" align=\"center\" nowrap=\"nowrap\"><img src=\"", style_image('bullet.png'), "\" alt=\"{$lang['user']}\" title=\"{$lang['user']}\" /></td>\n";
+        echo "                              <td valign=\"top\" align=\"center\" nowrap=\"nowrap\" width=\"20\"><img src=\"", style_image('bullet.png'), "\" alt=\"{$lang['user']}\" title=\"{$lang['user']}\" /></td>\n";
 
         if (isset($recent_user['SID']) && !is_null($recent_user['SID'])) {
 
@@ -395,7 +395,7 @@ if ($birthdays = user_get_forthcoming_birthdays()) {
     foreach ($birthdays as $row) {
 
         echo "                            <tr>\n";
-        echo "                              <td valign=\"top\" align=\"center\" nowrap=\"nowrap\"><img src=\"", style_image('bullet.png'), "\" alt=\"{$lang['user']}\" title=\"{$lang['user']}\" /></td>\n";
+        echo "                              <td valign=\"top\" align=\"center\" nowrap=\"nowrap\" width=\"20\"><img src=\"", style_image('bullet.png'), "\" alt=\"{$lang['user']}\" title=\"{$lang['user']}\" /></td>\n";
         echo "                              <td align=\"left\" valign=\"top\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$row['UID']}\" target=\"_blank\" onclick=\"return openProfile({$row['UID']}, '$webtag')\">", word_filter_add_ob_tags(format_user_name($row['LOGON'], $row['NICKNAME'])), "</a></td>\n";
         echo "                              <td align=\"right\" nowrap=\"nowrap\" valign=\"top\">", format_birthday($row['DOB']), "&nbsp;</td>\n";
         echo "                            </tr>\n";
@@ -440,10 +440,10 @@ echo "              </table>\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
-echo "                    <table class=\"posthead\" width=\"95%\">\n";
+echo "                    <table class=\"posthead\" width=\"80%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"center\">\n";
-echo "                          <table class=\"posthead\" border=\"0\" width=\"80%\" cellpadding=\"0\" cellspacing=\"0\">\n";
+echo "                          <table class=\"posthead\" border=\"0\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "                            <tr>\n";
 echo "                              <td align=\"left\">\n";
 echo "                                <form name=\"f_nav\" method=\"get\" action=\"discussion.php\" target=\"main\">\n";

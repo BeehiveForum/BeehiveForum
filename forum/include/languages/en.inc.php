@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.417 2007-04-25 00:43:37 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.418 2007-04-28 22:36:18 decoyduck Exp $ */
 
 // International English language file
 
@@ -402,7 +402,8 @@ $lang['fieldtypeexample1'] = "For Radio Buttons and Drop Down Fields you need to
 $lang['fieldtypeexample2'] = "Example: To create a basic Gender radio buttons, with two selections for Male and Female, you would enter: <b>Gender:Male;Female</b> in the Item Name field.";
 $lang['editedwordfilter'] = "Edited Word Filter";
 $lang['editedforumsettings'] = "Edited Forum Settings";
-$lang['sessionsuccessfullyended'] = "Session successfully ended for user";
+$lang['sessionsuccessfullyended'] = "Successfully ended sessions for selected users";
+$lang['kickselectedwarning'] = "Are you sure you want to kick the selected users?";
 $lang['matchedtext'] = "Matched Text";
 $lang['replacementtext'] = "Replacement Text";
 $lang['preg'] = "PREG";
@@ -553,7 +554,8 @@ $lang['resetpostcount'] = "Reset Post Count";
 $lang['postapprovalqueue'] = "Post Approval Queue";
 $lang['nopostsawaitingapproval'] = "No posts are awaiting approval";
 $lang['approveselected'] = "Approve selected";
-$lang['successfullyapproveduser'] = "Successfully approved user";                                                
+$lang['successfullyapproveduser'] = "Successfully approved selected users";                                                
+$lang['approveselectedwarning'] = "Are you sure you want to approve the selected users?";
 $lang['kickselected'] = "Kick selected";
 $lang['visitorlog'] = "Visitor Log";
 $lang['novisitorslogged'] = "No Visitors Logged";
@@ -1525,6 +1527,8 @@ $lang['searchfrequencyerror'] = "You can only search once every %s seconds. Plea
 
 $lang['select'] = "Select";
 $lang['searchforthread'] = "Search For Thread";
+$lang['mustspecifytypeofsearch'] = "You must specify type of search to perform";
+$lang['unkownsearchtypespecified'] = "Unknown search type specified";
 
 // Start page (start_left.php) -----------------------------------------
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.419 2007-04-29 14:28:34 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.420 2007-04-29 15:09:52 decoyduck Exp $ */
 
 // International English language file
 
@@ -190,7 +190,6 @@ $lang['nickname'] = "Nickname";
 $lang['emailaddress'] = "Email address";
 $lang['confirm'] = "Confirm";
 $lang['email'] = "Email";
-$lang['newcaps'] = "NEW";
 $lang['poll'] = "Poll";
 $lang['friend'] = "Friend";
 $lang['error'] = "Error";
@@ -227,7 +226,6 @@ $lang['referer'] = "Referer";
 
 $lang['admintools'] = "Admin Tools";
 $lang['forummanagement'] = "Forum Management";
-$lang['accessdenied'] = "Access Denied";
 $lang['accessdeniedexp'] = "You do not have permission to use this section.";
 $lang['managefolders'] = "Manage Folders";
 $lang['manageforums'] = "Manage Forums";
@@ -301,7 +299,6 @@ $lang['viewlog'] = "View Log";
 $lang['noprofilesectionspecified'] = "No Profile section specified.";
 $lang['itemname'] = "Item Name";
 $lang['moveto'] = "Move To";
-$lang['editsection'] = "Edit Section";
 $lang['manageprofilesections'] = "Manage Profile Sections";
 $lang['sectionname'] = "Section Name";
 $lang['items'] = "Items";
@@ -327,7 +324,6 @@ $lang['manageuser'] = "Manage User";
 $lang['manageusers'] = "Manage Users";
 $lang['userstatus'] = "User Status (current forum)";
 $lang['userdetails'] = "User Details";
-$lang['nicknameheader'] = "Nickname:";
 $lang['warning_caps'] = "WARNING";
 $lang['userdeleteallpostswarning'] = "Are you sure you want to delete all of the selected user's posts? Once the posts are deleted they cannot be retrieved and will be lost forever.";
 $lang['postssuccessfullydeleted'] = "Posts were successfully deleted.";
@@ -372,9 +368,6 @@ $lang['addnewwordfilter'] = "Add New Word Filter";
 $lang['wordfilterupdated'] = "Word Filter updated";
 $lang['filtertype'] = "Filter Type";
 $lang['editwordfilter'] = "Edit Word Filter";
-$lang['wordfilterexp_2'] = "Perl-compatible regular expressions can also be used to match words if you know how.";
-$lang['wordfilterexp_3'] = "Use this page to edit your personal Word Filter. Place each word to be filtered on a new line.";
-$lang['wordfilterisfull'] = "You cannot add any more word filters. Remove some unused ones or edit the existing ones first.";
 $lang['nowordfilterentriesfound'] = "No existing word filter entries found. To add a word filter click the button below.";
 $lang['mustspecifymatchedtext'] = "You must specify matched text";
 $lang['mustspecifyfilteroption'] = "You must specify a filter option";
@@ -401,7 +394,6 @@ $lang['fieldtypeexample2'] = "Example: To create a basic Gender radio buttons, w
 $lang['editedwordfilter'] = "Edited Word Filter";
 $lang['editedforumsettings'] = "Edited Forum Settings";
 $lang['sessionsuccessfullyended'] = "Successfully ended sessions for selected users";
-$lang['kickselectedwarning'] = "Are you sure you want to kick the selected users?";
 $lang['matchedtext'] = "Matched Text";
 $lang['replacementtext'] = "Replacement Text";
 $lang['preg'] = "PREG";
@@ -553,7 +545,6 @@ $lang['postapprovalqueue'] = "Post Approval Queue";
 $lang['nopostsawaitingapproval'] = "No posts are awaiting approval";
 $lang['approveselected'] = "Approve selected";
 $lang['successfullyapproveduser'] = "Successfully approved selected users";                                                
-$lang['approveselectedwarning'] = "Are you sure you want to approve the selected users?";
 $lang['kickselected'] = "Kick selected";
 $lang['visitorlog'] = "Visitor Log";
 $lang['novisitorslogged'] = "No Visitors Logged";
@@ -874,7 +865,6 @@ $lang['msgsentsuccessfully'] = "Message sent successfully.";
 $lang['msgfail'] = "Message failed";
 $lang['mailsystemfailure'] = "Mail system failure. Message not sent.";
 $lang['nopermissiontoedit'] = "You are not permitted to edit this message.";
-$lang['pollediterror'] = "You cannot edit polls";
 $lang['cannoteditpostsinthisfolder'] = "You cannot edit posts in this folder";
 $lang['messagewasnotfound'] = "Message %s was not found";
 
@@ -954,7 +944,6 @@ $lang['linksdelexp'] = "Entries in a deleted folder will be moved to the parent 
 $lang['listview'] = "List View";
 $lang['listviewcannotaddfolders'] = "Cannot add folders in this view. Showing 20 entries at a time.";
 $lang['rating'] = "Rating";
-$lang['commentsslashvote'] = "Comments / Vote";
 $lang['nolinksinfolder'] = "No links in this folder.";
 $lang['addlinkhere'] = "Add link here";
 $lang['notvalidURI'] = "That is not a valid URI!";
@@ -995,7 +984,6 @@ $lang['voterecorded'] = "Your vote has been recorded";
 
 // Login / logout (llogon.php, logon.php, logout.php) -----------------------------------------
 
-$lang['userID'] = "User ID";
 $lang['loggedinsuccessfully'] = "You logged in successfully.";
 $lang['presscontinuetoresend'] = "Press Continue to resend form data or cancel to reload page.";
 $lang['usernameorpasswdnotvalid'] = "The username or password you supplied is not valid.";
@@ -1049,7 +1037,6 @@ $lang['createnewthread'] = "Create new thread";
 $lang['postreply'] = "Post Reply";
 $lang['threadtitle'] = "Thread title";
 $lang['messagehasbeendeleted'] = "Message has been deleted.";
-$lang['pleaseentermembername'] = "Please enter a member name:";
 $lang['cannotpostthisthreadtypeinfolder'] = "You cannot post this thread type in that folder!";
 $lang['cannotpostthisthreadtype'] = "You cannot post this thread type as there are no available folders that allow it.";
 $lang['cannotcreatenewthreads'] = "You cannot create new threads.";
@@ -1077,9 +1064,7 @@ $lang['cannotattachfilesinfolder'] = "You cannot post attachments in this folder
 $lang['postfrequencytoogreat'] = "You can only post once every %s seconds. Please try again later.";
 $lang['emailconfirmationrequiredbeforepost'] = "Email confirmation is required before you can post. If you have not received a confirmation email please click the button below and a new one will be sent to you. If your email address needs changing please do so before requesting a new confirmation email. You may change your email address by click My Controls above and then User Details";
 $lang['emailconfirmationfailedtosend'] = "Confirmation email failed to send. Please contact the forum owner to rectify this.";
-$lang['emailconfirmationsent'] = "Confirmation email has been resent.";
 $lang['resendconfirmation'] = "Resend Confirmation";
-$lang['userapprovalrequired'] = "User approval required";
 $lang['userapprovalrequiredbeforeaccess'] = "Your user account needs to be approved by a forum admin before you can access the requested forum.";
 
 // Message display (messages.php & messages.inc.php) --------------------------------------
@@ -1187,7 +1172,6 @@ $lang['youhave1newpmandxwaiting'] = "You have 1 new message.\\n\\nYou also have 
 $lang['youhavexpmwaiting'] = "You have %d messages awaiting delivery. To receive these messages please clear some space in your Inbox.\\n\\nWould you like to go to your Inbox now?";
 
 $lang['youdonothaveenoughfreespace'] = "You do not have enough free space to send this message.";
-$lang['notenoughfreespace'] = "does not have enough free space to receive this message";
 $lang['userhasoptedoutofpm'] = "%s has opted out of receiving personal messages";
 $lang['pmfolderpruningisenabled'] = "PM Folder pruning is enabled!";
 $lang['pmpruneexplanation'] = "This forum uses PM folder pruning. The messages you have stored in your Inbox and Sent Items\\nfolders are subject to automatic deletion. Any messages you wish to keep should be moved to\\nyour \\'Saved Items\\' folder so that they are not deleted.";
@@ -1472,8 +1456,6 @@ $lang['ignore_completely_exp'] = "Threads and posts to or from user will appear 
 $lang['display'] = "Display";
 $lang['displaysig_exp'] = "User's signature is displayed on their posts.";
 $lang['hidesig_exp'] = "User's signature is hidden on their posts.";
-$lang['globallyignored'] = "Globally ignored";
-$lang['globallyignoredsig_exp'] = "No signatures are displayed.";
 $lang['cannotignoremod'] = "You cannot ignore this user, as they are a moderator.";
 
 // Search (search.php) -------------------------------------------------
@@ -1583,7 +1565,6 @@ $lang['forallthreads'] = "for all threads";
 $lang['prev50threads'] = "Previous 50 threads";
 $lang['next50threads'] = "Next 50 threads";
 $lang['nextxthreads'] = "Next %s threads";
-$lang['prevxthreads'] = "Prev %s threads";
 $lang['threadstartedbytooltip'] = "Thread #%s Started by %s. Viewed %s";
 $lang['threadviewedonetime'] = "1 time";
 $lang['threadviewedtimes'] = "%d times";
@@ -1803,9 +1784,6 @@ $lang['thisthreadhasmoved'] = "<b>Threads Merged:</b> This thread has moved %s";
 $lang['thisthreadwasmergedfrom'] = "<b>Threads Merged:</b> This thread was merged from %s";
 $lang['somepostsinthisthreadhavebeenmoved'] = "<b>Thread Split:</b> Some posts in this thread have been moved %s";
 $lang['somepostsinthisthreadweremovedfrom'] = "<b>Thread Split:</b> Some posts in this thread were moved from %s";
-
-$lang['threadmergefailed'] = "Thread merge failed";
-$lang['threadsplitfailed'] = "Thread split failed";
 
 $lang['invalidfunctionarguments'] = "Invalid function arguments";
 $lang['couldnotretrieveforumdata'] = "Could not retrieve forum data";

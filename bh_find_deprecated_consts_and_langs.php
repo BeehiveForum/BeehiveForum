@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_find_deprecated_consts_and_langs.php,v 1.3 2007-03-31 21:54:58 decoyduck Exp $ */
+/* $Id: bh_find_deprecated_consts_and_langs.php,v 1.4 2007-04-29 14:28:34 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./forum/include/");
@@ -56,7 +56,7 @@ function get_files($path, &$files_array)
     }
 }
 
-set_time_limit(0);
+@set_time_limit(0);
 
 $files_array = array();
 $deprecated_array = array();

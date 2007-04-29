@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_main.php,v 1.64 2007-04-12 13:23:08 decoyduck Exp $ */
+/* $Id: admin_main.php,v 1.65 2007-04-29 15:09:52 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -106,24 +106,24 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
     echo "<p>{$lang['adminexp_11']}</p>\n";
     echo "<p>{$lang['adminexp_12']}</p>\n";
     echo "<p>{$lang['adminexp_13']}</p>\n";
+    echo "<p>{$lang['adminexp_14']}</p>\n";
 
     if (bh_session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE)) {
 
-        echo "<p>{$lang['adminexp_16']}</p>\n";
+        echo "<p>{$lang['adminexp_17']}</p>\n";
     }
 
-    echo "<p>{$lang['adminexp_17']}</p>\n";
+    echo "<p>{$lang['adminexp_18']}</p>\n";
 
 }elseif (bh_session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE)) {
 
-    echo "<p>{$lang['adminexp_16']}</p>\n";
+    echo "<p>{$lang['adminexp_17']}</p>\n";
 }
 
 if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0, 0)) {
 
-    echo "<p>&nbsp;</p>\n";
-    echo "<p>{$lang['adminexp_14']}</p>\n";
     echo "<p>{$lang['adminexp_15']}</p>\n";
+    echo "<p>{$lang['adminexp_16']}</p>\n";
 }
 
 html_draw_bottom();

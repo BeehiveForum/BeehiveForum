@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.181 2007-04-21 18:26:24 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.182 2007-04-29 13:31:00 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -541,7 +541,7 @@ function search_fetch_results($offset, $sort_by, $sort_dir)
 
         }else if ($result_count > 0) {
 
-            $offset = floor($result_count / 20) * 20;
+            $offset = floor(($result_count / 20) - 1) * 20;
             return search_fetch_results($offset, $sort_by, $sort_dir);
         }
     }

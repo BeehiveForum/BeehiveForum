@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_access.php,v 1.51 2007-04-18 23:20:26 decoyduck Exp $ */
+/* $Id: admin_forum_access.php,v 1.52 2007-04-29 11:58:13 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -175,10 +175,10 @@ if (isset($_POST['add_recent_user'])) {
 
             user_update_forums($_POST['user_remove'][$i], $uf);
 
-            $folder_title = folder_get_title($fid);
+            $forum_name = forum_get_name($fid);
             $user_logon = user_get_logon($_POST['user_remove'][$i]);
 
-            admin_add_log_entry(CHANGE_FORUM_ACCESS, array($folder_title, $user_logon));
+            admin_add_log_entry(CHANGE_FORUM_ACCESS, array($forum_name, $user_logon));
         }
     }
 }

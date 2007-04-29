@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.260 2007-04-21 18:26:24 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.261 2007-04-29 13:31:00 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -2034,7 +2034,7 @@ function threads_get_user_subscriptions($include_threads = array(), $interest_ty
     
     }else if ($thread_count > 0) {
 
-        $offset = floor($thread_count / 20) * 20;
+        $offset = floor(($thread_count / 20) - 1) * 20;
         return threads_get_user_subscriptions($include_threads, $interest_type, $offset);
     }
     
@@ -2113,7 +2113,7 @@ function threads_search_user_subscriptions($threadsearch, $include_threads = arr
     
     }else if ($thread_count > 0) {
 
-        $offset = floor($thread_count / 20) * 20;
+        $offset = floor(($thread_count / 20) - 1) * 20;
         return threads_search_user_subscriptions($threadsearch, $include_threads, $interest_type, $offset);
     }
     

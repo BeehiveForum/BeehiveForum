@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.64 2007-04-25 00:43:37 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.65 2007-04-29 13:31:00 decoyduck Exp $ */
 
 /**
 * Functions relating to profiles
@@ -172,7 +172,7 @@ function profile_sections_get_by_page($offset)
 
     }else if ($profile_sections_count > 0) {
 
-        $offset = floor($profile_sections_count / 10) * 10;
+        $offset = floor(($profile_sections_count / 10) - 1) * 10;
         return profile_sections_get_by_page($offset);
     }
 
@@ -245,7 +245,7 @@ function profile_items_get_by_page($psid, $offset)
 
     }else if ($profile_items_count > 0) {
 
-        $offset = floor($profile_items_count / 10) * 10;
+        $offset = floor(($profile_items_count / 10) - 1) * 10;
         return profile_items_get_by_page($psid, $offset);
     }
 
@@ -1006,7 +1006,7 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
 
     if (($user_count = db_num_rows($result)) > 0) {
 
-        $offset = ($offset > $user_count) ? floor($user_count / 10) * 10 : $offset;
+        $offset = ($offset > $user_count) ? floor(($user_count / 10) - 1) * 10 : $offset;
 
         if (db_data_seek($result, $offset)) {
             

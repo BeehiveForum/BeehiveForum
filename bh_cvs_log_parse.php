@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_cvs_log_parse.php,v 1.7 2007-03-31 21:54:58 decoyduck Exp $ */
+/* $Id: bh_cvs_log_parse.php,v 1.8 2007-04-29 14:28:34 decoyduck Exp $ */
 
 /**
 * bh_cvs_log_parse.php
@@ -123,7 +123,7 @@ function get_cvs_dirs($path, &$cvs_dir_array)
 
 // Stop us timing out...
 
-set_time_limit(0);
+@set_time_limit(0);
 
 // Fetch our exclude list. This allows us to ignore some
 // BH addons which are included in CVS (Geshi and TinyMCE)

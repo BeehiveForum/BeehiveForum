@@ -19,9 +19,17 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: general.js,v 1.22 2007-03-27 23:16:18 decoyduck Exp $ */
+/* $Id: general.js,v 1.23 2007-04-30 21:11:17 decoyduck Exp $ */
 
 var IE = (document.all ? true : false);
+
+function forum_get_url()
+{
+    var domain = document.domain;
+    var pathname = location.pathname.substring(0, location.pathname.lastIndexOf('\/') + 1);
+    
+    return domain + pathname;
+}
 
 function disable_button(button)
 {
@@ -176,14 +184,19 @@ function attachListener(obj, img_id, maxWidth)
 
 function resizeImages(maxWidth, resizeText)
 {
+    var forum_url = forum_get_url();
+    
     var body_tag = document.getElementsByTagName('body');
     var body_tag = body_tag[0];
 
     var img_tags = document.getElementsByTagName('img');
     var img_count = img_tags.length;
 
+    var assignImgMaxWidth = true;
+
     if (!is_numeric(maxWidth) || maxWidth == 0) {
         maxWidth = body_tag.clientWidth;
+        assignImgMaxWidth = false;
     }
 
     if (!is_defined(resizeText)) {
@@ -193,116 +206,132 @@ function resizeImages(maxWidth, resizeText)
     }
 
     for (var i = 0; i < img_count; i++)  {
+        
+        if ((img_tags[i].src.indexOf(forum_url)) < 0) {
+                  
+            if (is_defined(img_tags[i].original_width)) {
+    
+                if (is_defined(img_tags[i].maxWidth)) {
 
-        if (is_defined(img_tags[i].original_width)) {
+                    img_tags[i].style.width = Math.round(img_tags[i].max_width * 0.8) + 'px';
+                    img_tags[i].resized_width = Math.round(img_tags[i].max_width * 0.8);
 
-            img_tags[i].style.width = Math.round(maxWidth * 0.8) + 'px';
-            img_tags[i].resized_width = Math.round(maxWidth * 0.8);
+                    img_resize_table = document.getElementById(img_tags[i].table_id);
+                    img_resize_table.style.width = Math.round(img_tags[i].max_width * 0.8) + 'px';
 
-            img_resize_table = document.getElementById(img_tags[i].table_id);
-            img_resize_table.style.width = Math.round(maxWidth * 0.8) + 'px';
+                }else {
 
-            return;
-        }
+                    img_tags[i].style.width = Math.round(maxWidth * 0.8) + 'px';
+                    img_tags[i].resized_width = Math.round(maxWidth * 0.8);
 
-        if (img_tags[i].width >= maxWidth) {               
-            
-            // Give the image and ID and save the original width
-
-            img_tags[i].id = 'image_resize_image_' + i;
-            img_tags[i].original_width = img_tags[i].width;
-            img_tags[i].table_id = 'image_resize_container_' + i;
-            img_tags[i].popup_id = 'image_popup_' + i;
-            
-            // Required table elements: table, tbody, tr and td
-
-            var img_resize_table = document.createElement('table');
-            var img_resize_table_body = document.createElement('tbody');
-
-            var img_resize_table_row_txt = document.createElement('tr');
-            var img_resize_table_row_img = document.createElement('tr');
-
-            var img_resize_table_cell_txt = document.createElement('td');
-            var img_resize_table_cell_img = document.createElement('td');
-
-            // Assign the table an id and a class
-
-            img_resize_table.id = 'image_resize_container_' + i;
-            img_resize_table.className = 'image_resize_container';
-
-            // Assign the columns the right classes.
-
-            img_resize_table_cell_txt.className = 'image_resize_text';
-            img_resize_table_cell_img.className = 'image_resize_image';
-
-            // Set up an onclick handler for the ico and txt columns
-
-            attachListener(img_resize_table_cell_txt, img_tags[i].id, maxWidth);
-
-            // Stick the original dimensions of the image in the text and
-            // create the link to the full-sized image.
-
-            var img_resize_icon = document.createElement('img');
-            var img_resize_text = document.createTextNode(resizeText.replace('%1$s', img_tags[i].width).replace('%2$s', img_tags[i].height));
-
-            // Set up the link and the image.
-
-            img_resize_icon.setAttribute('src', 'images/warning.png');
-            img_resize_icon.setAttribute('alt', '');
-            img_resize_icon.className = 'image_resize_icon';
-
-            // Insert the icon into the icon column of the text row.
-
-            img_resize_table_cell_txt.appendChild(img_resize_icon);
-
-            // Insert text into the text column of the text row
-
-            img_resize_table_cell_txt.appendChild(img_resize_text);
-
-            // Resize the original image.
-
-            img_tags[i].style.width = Math.round(maxWidth * 0.8) + 'px';
-            img_tags[i].resized_width = Math.round(maxWidth * 0.8);
-
-            // Get the original image's parent element.
-
-            var parent_node = img_tags[i].parentNode;
-
-            // If the parent is an anchor tag we need to grab that to stick
-            // inside our table cell so as to prevent the links from breaking.
-            // Either way we need to add the table to the page and move
-            // the original image into the other table cell we created.
-
-            if (parent_node.tagName.toLowerCase() == 'a') {
-                
-                var child_node = parent_node;
-                parent_node = parent_node.parentNode;
-                
-                parent_node.insertBefore(img_resize_table, child_node.nextSibling);
-                img_resize_table_cell_img.appendChild(child_node);
-            
-            }else {
-
-                parent_node.insertBefore(img_resize_table, img_tags[i].nextSibling);
-                img_resize_table_cell_img.appendChild(img_tags[i]);
+                    img_resize_table = document.getElementById(img_tags[i].table_id);
+                    img_resize_table.style.width = Math.round(maxWidth * 0.8) + 'px';
+                }
+    
+                return;
             }
+    
+            if (img_tags[i].width >= maxWidth) {               
+                
+                // Give the image and ID and save the original width
+    
+                img_tags[i].id = 'image_resize_image_' + i;
+                img_tags[i].original_width = img_tags[i].width;
+                img_tags[i].table_id = 'image_resize_container_' + i;
+                img_tags[i].popup_id = 'image_popup_' + i;
 
-            // Insert the icon and text columns into the text row.
-            
-            img_resize_table_row_txt.appendChild(img_resize_table_cell_txt);
-
-            // Insert the image column into the image row
-
-            img_resize_table_row_img.appendChild(img_resize_table_cell_img);
-
-            // Insert the rows into the table body.
-
-            img_resize_table_body.appendChild(img_resize_table_row_img);
-            img_resize_table_body.appendChild(img_resize_table_row_txt);
-
-            // Finally (!) insert the table body into the table.
-
-            img_resize_table.appendChild(img_resize_table_body);
+                if (assignImgMaxWidth == true) img_tags[i].maxWidth = maxWidth;
+                
+                // Required table elements: table, tbody, tr and td
+    
+                var img_resize_table = document.createElement('table');
+                var img_resize_table_body = document.createElement('tbody');
+    
+                var img_resize_table_row_txt = document.createElement('tr');
+                var img_resize_table_row_img = document.createElement('tr');
+    
+                var img_resize_table_cell_txt = document.createElement('td');
+                var img_resize_table_cell_img = document.createElement('td');
+    
+                // Assign the table an id and a class
+    
+                img_resize_table.id = 'image_resize_container_' + i;
+                img_resize_table.className = 'image_resize_container';
+    
+                // Assign the columns the right classes.
+    
+                img_resize_table_cell_txt.className = 'image_resize_text';
+                img_resize_table_cell_img.className = 'image_resize_image';
+    
+                // Set up an onclick handler for the ico and txt columns
+    
+                attachListener(img_resize_table_cell_txt, img_tags[i].id, maxWidth);
+    
+                // Stick the original dimensions of the image in the text and
+                // create the link to the full-sized image.
+    
+                var img_resize_icon = document.createElement('img');
+                var img_resize_text = document.createTextNode(resizeText.replace('%1$s', img_tags[i].width).replace('%2$s', img_tags[i].height));
+    
+                // Set up the link and the image.
+    
+                img_resize_icon.setAttribute('src', 'images/warning.png');
+                img_resize_icon.setAttribute('alt', '');
+                img_resize_icon.className = 'image_resize_icon';
+    
+                // Insert the icon into the icon column of the text row.
+    
+                img_resize_table_cell_txt.appendChild(img_resize_icon);
+    
+                // Insert text into the text column of the text row
+    
+                img_resize_table_cell_txt.appendChild(img_resize_text);
+    
+                // Resize the original image.
+    
+                img_tags[i].style.width = Math.round(maxWidth * 0.8) + 'px';
+                img_tags[i].resized_width = Math.round(maxWidth * 0.8);
+    
+                // Get the original image's parent element.
+    
+                var parent_node = img_tags[i].parentNode;
+    
+                // If the parent is an anchor tag we need to grab that to stick
+                // inside our table cell so as to prevent the links from breaking.
+                // Either way we need to add the table to the page and move
+                // the original image into the other table cell we created.
+    
+                if (parent_node.tagName.toLowerCase() == 'a') {
+                    
+                    var child_node = parent_node;
+                    parent_node = parent_node.parentNode;
+                    
+                    parent_node.insertBefore(img_resize_table, child_node.nextSibling);
+                    img_resize_table_cell_img.appendChild(child_node);
+                
+                }else {
+    
+                    parent_node.insertBefore(img_resize_table, img_tags[i].nextSibling);
+                    img_resize_table_cell_img.appendChild(img_tags[i]);
+                }
+    
+                // Insert the icon and text columns into the text row.
+                
+                img_resize_table_row_txt.appendChild(img_resize_table_cell_txt);
+    
+                // Insert the image column into the image row
+    
+                img_resize_table_row_img.appendChild(img_resize_table_cell_img);
+    
+                // Insert the rows into the table body.
+    
+                img_resize_table_body.appendChild(img_resize_table_row_img);
+                img_resize_table_body.appendChild(img_resize_table_row_txt);
+    
+                // Finally (!) insert the table body into the table.
+    
+                img_resize_table.appendChild(img_resize_table_body);
+            }
         }
     }
 }

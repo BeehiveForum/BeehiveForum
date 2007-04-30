@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.219 2007-04-22 20:34:30 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.220 2007-04-30 21:11:16 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -593,7 +593,8 @@ function html_draw_top()
     $resize_images_page = array('admin_post_approve.php', 'create_poll.php',
                                 'delete.php', 'display.php', 'edit.php',
                                 'edit_poll.php', 'edit_signature.php',
-                                'messages.php', 'post.php');
+                                'messages.php', 'post.php', 'pm_write.php',
+                                'pm_edit.php', 'pm_messages.php');
 
     if ($include_body_tag === true) {
     

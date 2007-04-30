@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.261 2007-04-29 13:31:00 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.262 2007-04-30 22:42:24 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1525,7 +1525,11 @@ function threads_mark_50_read()
         $sql.= "AND {$table_data['PREFIX']}USER_THREAD.UID = '$uid') ";
         $sql.= "WHERE {$table_data['PREFIX']}THREAD.MODIFIED > ";
         $sql.= "FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp) ";
-        $sql.= "LIMIT 0, 50 ON DUPLICATE KEY UPDATE LAST_READ = VALUES(LAST_READ) ";
+        $sql.= "AND ({$table_data['PREFIX']}USER_THREAD.TID IS NULL ";
+        $sql.= "OR {$table_data['PREFIX']}USER_THREAD.LAST_READ < ";
+        $sql.= "{$table_data['PREFIX']}USER_THREAD.LENGTH) ";
+        $sql.= "ORDER BY {$table_data['PREFIX']}THREAD.MODIFIED DESC LIMIT 0, 50 ";
+        $sql.= "ON DUPLICATE KEY UPDATE LAST_READ = VALUES(LAST_READ) ";
 
         $result_threads = db_query($sql, $db_threads_mark_50_read);
 

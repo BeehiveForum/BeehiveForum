@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.99 2007-04-19 20:32:45 decoyduck Exp $ */
+/* $Id: pm_edit.php,v 1.100 2007-04-30 21:11:56 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -385,14 +385,14 @@ if ($valid && isset($_POST['preview'])) {
     }
 }
 
-html_draw_top("onUnload=clearFocus()", "openprofile.js", "edit.js", "pm.js", "dictionary.js", "htmltools.js", "basetarget=_blank");
+html_draw_top("onUnload=clearFocus()", "resize_width=720", "openprofile.js", "edit.js", "pm.js", "dictionary.js", "htmltools.js", "basetarget=_blank");
 
 echo "<h1>{$lang['privatemessages']} &raquo; {$lang['editpm']}</h1>\n";
 echo "<br />\n";
 echo "<form name=\"f_post\" action=\"pm_edit.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden('mid', _htmlentities($mid)), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";

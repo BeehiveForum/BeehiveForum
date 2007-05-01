@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.133 2007-04-18 23:33:35 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.134 2007-05-01 13:51:44 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -237,6 +237,8 @@ function format_time_display($seconds, $abbrv_units = true)
   
     $seconds = (float) $seconds;
 
+    $values_array = array();
+
     foreach ($periods_array as $period => $value) {
 
         if (($count = floor($seconds / $value)) > 0) {
@@ -257,8 +259,17 @@ function format_time_display($seconds, $abbrv_units = true)
 
         $seconds = $seconds % $value;
     }
+
+    if (sizeof($values_array) > 0) {
   
-    return implode(" ", $values_array);
+        return implode(" ", $values_array);
+    
+    }elseif ($abbrv_units === true) {
+
+        sprintf($lang['date_periods_short']['second'], 0);
+    }
+
+    return sprintf($lang['date_periods_plural']['second'], 0);
 }
 
 function timestamp_to_date($timestamp)

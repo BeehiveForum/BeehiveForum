@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.422 2007-05-02 23:15:43 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.423 2007-05-02 23:48:59 decoyduck Exp $ */
 
 // International English language file
 
@@ -1065,6 +1065,7 @@ $lang['cannotattachfilesinfolder'] = "You cannot post attachments in this folder
 $lang['postfrequencytoogreat'] = "You can only post once every %s seconds. Please try again later.";
 $lang['emailconfirmationrequiredbeforepost'] = "Email confirmation is required before you can post. If you have not received a confirmation email please click the button below and a new one will be sent to you. If your email address needs changing please do so before requesting a new confirmation email. You may change your email address by click My Controls above and then User Details";
 $lang['emailconfirmationfailedtosend'] = "Confirmation email failed to send. Please contact the forum owner to rectify this.";
+$lang['emailconfirmationsent'] = "Confirmation email has been resent.";
 $lang['resendconfirmation'] = "Resend Confirmation";
 $lang['userapprovalrequiredbeforeaccess'] = "Your user account needs to be approved by a forum admin before you can access the requested forum.";
 
@@ -1185,6 +1186,7 @@ $lang['adduserstofriendslist'] = "Add users to your friends list to have them ap
 
 $lang['messagesaved'] = "Message Saved";
 $lang['messagewassuccessfullysavedtodraftsfolder'] = "Message was successfully saved to 'Drafts' folder";
+$lang['couldnotsavemessage'] = "Could not save message. Make sure you have enough available free space.";
 $lang['pmtooltipxmessages'] = "%s messages";
 $lang['pmtooltip1message'] = "1 message";
 

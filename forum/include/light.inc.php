@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.137 2007-05-02 23:15:41 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.138 2007-05-02 23:49:03 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -683,6 +683,7 @@ function light_poll_confirm_close($tid)
     }
 
     if(bh_session_get_value('UID') != $preview_message['FROM_UID'] && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+
         light_edit_refuse();
         return;
     }
@@ -699,7 +700,6 @@ function light_poll_confirm_close($tid)
         $preview_tuser = user_get($preview_message['TO_UID']);
         $preview_message['TLOGON'] = $preview_tuser['LOGON'];
         $preview_message['TNICK'] = $preview_tuser['NICKNAME'];
-
     }
 
     $preview_fuser = user_get($preview_message['FROM_UID']);
@@ -717,7 +717,6 @@ function light_poll_confirm_close($tid)
     echo light_form_submit("pollclose", $lang['endpoll']);
     echo "&nbsp;".light_form_submit("cancel", $lang['cancel']);
     echo "</form>\n";
-
 }
 
 function light_messages_top($msg, $thread_prefix, $thread_title, $interest_level = 0, $sticky = "N", $closed = false, $locked = false)
@@ -752,184 +751,188 @@ function light_poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list 
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    $polldata     = poll_get($tid);
-    $pollresults  = poll_get_votes($tid);
-    $userpolldata = poll_get_user_vote($tid);
+    $poll_data      = poll_get($tid);
+    $poll_results   = poll_get_votes($tid);
+    $user_poll_data = poll_get_user_vote($tid);
 
     $totalvotes       = 0;
     $poll_group_count = 1;
 
-    $polldata['CONTENT'] = "<form method=\"post\" action=\"{$_SERVER['PHP_SELF']}\" target=\"_self\">\n";
-    $polldata['CONTENT'].= form_input_hidden('webtag', _htmlentities($webtag)). "\n";
-    $polldata['CONTENT'].= form_input_hidden('tid', _htmlentities($tid)). "\n";
-    $polldata['CONTENT'].= "<h2>". thread_get_title($tid). "</h2>\n";
+    $poll_data['CONTENT'] = "<form method=\"post\" action=\"{$_SERVER['PHP_SELF']}\" target=\"_self\">\n";
+    $poll_data['CONTENT'].= form_input_hidden('webtag', _htmlentities($webtag)). "\n";
+    $poll_data['CONTENT'].= form_input_hidden('tid', _htmlentities($tid)). "\n";
+    $poll_data['CONTENT'].= "<h2>". thread_get_title($tid). "</h2>\n";
 
     if ($in_list) {
 
-      if ((!is_array($userpolldata) && bh_session_get_value('UID') > 0) && ($polldata['CLOSES'] == 0 || $polldata['CLOSES'] > mktime())) {
+        if ((!is_array($user_poll_data) && bh_session_get_value('UID') > 0) && ($poll_data['CLOSES'] == 0 || $poll_data['CLOSES'] > mktime())) {
 
-        for ($i = 0; $i < sizeof($pollresults['OPTION_ID']); $i++) {
+            for ($i = 0; $i < sizeof($poll_results['OPTION_ID']); $i++) {
 
-          if (!isset($poll_previous_group)) $poll_previous_group = $pollresults['GROUP_ID'][$i];
+                if (!isset($poll_previous_group)) $poll_previous_group = $poll_results['GROUP_ID'][$i];
 
-          if (strlen(trim($pollresults['OPTION_NAME'][$i])) > 0) {
+                if (strlen(trim($poll_results['OPTION_NAME'][$i])) > 0) {
 
-            if ($pollresults['GROUP_ID'][$i] <> $poll_previous_group) {
-                $polldata['CONTENT'].= "<hr />\n";
-                $poll_group_count++;
+                    if ($poll_results['GROUP_ID'][$i] <> $poll_previous_group) {
+                
+                        $poll_data['CONTENT'].= "<hr />\n";
+                        $poll_group_count++;
+                    }
+
+                    $poll_data['CONTENT'].= light_form_radio("pollvote[{$poll_results['GROUP_ID'][$i]}]", $poll_results['OPTION_ID'][$i], '', false). "&nbsp;{$poll_results['OPTION_NAME'][$i]}<br />\n";
+                    $poll_previous_group = $poll_results['GROUP_ID'][$i];
+                }
             }
-
-            $polldata['CONTENT'].= light_form_radio("pollvote[{$pollresults['GROUP_ID'][$i]}]", $pollresults['OPTION_ID'][$i], '', false). "&nbsp;{$pollresults['OPTION_NAME'][$i]}<br />\n";
-            $poll_previous_group = $pollresults['GROUP_ID'][$i];
-
-          }
-
-        }
-
-      }else {
-
-        if ($polldata['SHOWRESULTS'] == 1) {
-
-          for ($i = 0; $i < sizeof($pollresults['OPTION_ID']); $i++) {
-
-            if (!isset($poll_previous_group)) $poll_previous_group = $pollresults['GROUP_ID'][$i];
-
-            if (strlen(trim($pollresults['OPTION_NAME'][$i])) > 0) {
-
-              if ($pollresults['GROUP_ID'][$i] <> $poll_previous_group) {
-                  $polldata['CONTENT'].= "<hr />\n";
-                  $poll_group_count++;
-              }
-
-              $polldata['CONTENT'] .= $pollresults['OPTION_NAME'][$i] . ": " . $pollresults['VOTES'][$i] . " votes <br />\n";
-              $poll_previous_group = $pollresults['GROUP_ID'][$i];
-            }
-
-          }
 
         }else {
 
-          for ($i = 0; $i < sizeof($pollresults['OPTION_ID']); $i++) {
+            if ($poll_data['SHOWRESULTS'] == 1) {
 
-            if (!isset($poll_previous_group)) $poll_previous_group = $pollresults['GROUP_ID'][$i];
+                for ($i = 0; $i < sizeof($poll_results['OPTION_ID']); $i++) {
 
-            if (strlen(trim($pollresults['OPTION_NAME'][$i])) > 0) {
+                    if (!isset($poll_previous_group)) $poll_previous_group = $poll_results['GROUP_ID'][$i];
 
-              if ($pollresults['GROUP_ID'][$i] <> $poll_previous_group) {
-                  $polldata['CONTENT'].= "<hr />\n";
-                  $poll_group_count++;
-              }
+                    if (strlen(trim($poll_results['OPTION_NAME'][$i])) > 0) {
 
-              $polldata['CONTENT'].= $pollresults['OPTION_NAME'][$i]. "<br />\n";
-              $poll_previous_group = $pollresults['GROUP_ID'][$i];
+                        if ($poll_results['GROUP_ID'][$i] <> $poll_previous_group) {
+                    
+                            $poll_data['CONTENT'].= "<hr />\n";
+                            $poll_group_count++;
+                        }
+
+                        $poll_data['CONTENT'] .= $poll_results['OPTION_NAME'][$i] . ": " . $poll_results['VOTES'][$i] . " votes <br />\n";
+                        $poll_previous_group = $poll_results['GROUP_ID'][$i];
+                    }
+                }
+
+            }else {
+
+                for ($i = 0; $i < sizeof($poll_results['OPTION_ID']); $i++) {
+
+                    if (!isset($poll_previous_group)) $poll_previous_group = $poll_results['GROUP_ID'][$i];
+
+                    if (strlen(trim($poll_results['OPTION_NAME'][$i])) > 0) {
+
+                        if ($poll_results['GROUP_ID'][$i] <> $poll_previous_group) {
+                        
+                            $poll_data['CONTENT'].= "<hr />\n";
+                            $poll_group_count++;
+                        }
+
+                        $poll_data['CONTENT'].= $poll_results['OPTION_NAME'][$i]. "<br />\n";
+                        $poll_previous_group = $poll_results['GROUP_ID'][$i];
+                    }
+                }
             }
-
-          }
-
         }
-
-      }
 
     }else {
 
-      for ($i = 0; $i < sizeof($pollresults['OPTION_ID']); $i++) {
+        for ($i = 0; $i < sizeof($poll_results['OPTION_ID']); $i++) {
 
-        if (!isset($poll_previous_group)) $poll_previous_group = $pollresults['GROUP_ID'][$i];
+            if (!isset($poll_previous_group)) $poll_previous_group = $poll_results['GROUP_ID'][$i];
 
-        if (!empty($pollresults['OPTION_NAME'][$i])) {
+            if (!empty($poll_results['OPTION_NAME'][$i])) {
 
-          if ($pollresults['GROUP_ID'][$i] <> $poll_previous_group) {
-              $polldata['CONTENT'].= "<hr />\n";
-              $poll_group_count++;
-          }
+                if ($poll_results['GROUP_ID'][$i] <> $poll_previous_group) {
+                    
+                    $poll_data['CONTENT'].= "<hr />\n";
+                    $poll_group_count++;
+                }
 
-          $polldata['CONTENT'].= $pollresults['OPTION_NAME'][$i]. "<br />\n";
-          $poll_previous_group = $pollresults['GROUP_ID'][$i];
+                $poll_data['CONTENT'].= $poll_results['OPTION_NAME'][$i]. "<br />\n";
+                $poll_previous_group = $poll_results['GROUP_ID'][$i];
+            }
         }
-
-      }
-
     }
 
     if ($in_list) {
 
-      $group_array = array();
+        $group_array = array();
 
-      for ($i = 0; $i < sizeof($pollresults['OPTION_ID']); $i++) {
+        for ($i = 0; $i < sizeof($poll_results['OPTION_ID']); $i++) {
 
-        if (!in_array($pollresults['GROUP_ID'][$i], $group_array)) {
-            $group_array[] = $pollresults['GROUP_ID'][$i];
-        }
-      }
-
-      $poll_group_count = sizeof($group_array);
-
-      poll_get_total_votes($tid, $totalvotes, $guestvotes);
-
-      $polldata['CONTENT'].= "<p>". poll_format_vote_counts($polldata, $totalvotes, $guestvotes). "</p>\n";
-
-      if (($polldata['CLOSES'] <= mktime()) && $polldata['CLOSES'] != 0) {
-
-        $polldata['CONTENT'].= "<p>{$lang['pollhasended']}</p>\n";
-
-        if (is_array($userpolldata)) {
-
-          $userpollvotes_array = array();
-
-          for ($i = 0; $i < sizeof($userpolldata); $i++) {
-            for ($j = 0; $j < sizeof($pollresults['OPTION_ID']); $j++) {
-              if ($userpolldata[$i]['OPTION_ID'] == $pollresults['OPTION_ID'][$j]) {
-                if ($pollresults['OPTION_NAME'][$j] == strip_tags($pollresults['OPTION_NAME'][$j])) {
-                  $userpollvotes_array[] = "'{$pollresults['OPTION_NAME'][$j]}'";
-                }else {
-                  $userpollvotes_array[] = "Option {$userpolldata[$i]['OPTION_ID']}";
-                }
-              }
+            if (!in_array($poll_results['GROUP_ID'][$i], $group_array)) {
+            
+                $group_array[] = $poll_results['GROUP_ID'][$i];
             }
-          }
-
-          $polldata['CONTENT'].= "<p>{$lang['youvotedfor']}: ". implode(" & ", $userpollvotes_array);
-          $polldata['CONTENT'].= " {$lang['on']} ". gmdate("jS M Y", $userpolldata[0]['TSTAMP']). "</p>\n";
-
         }
 
-      }else {
+        $poll_group_count = sizeof($group_array);
 
-        if (is_array($userpolldata)) {
+        poll_get_total_votes($tid, $totalvotes, $guestvotes);
 
-          $userpollvotes_array = array();
+        $poll_data['CONTENT'].= "<p>". poll_format_vote_counts($poll_data, $totalvotes, $guestvotes). "</p>\n";
 
-          for ($i = 0; $i < sizeof($userpolldata); $i++) {
-            for ($j = 0; $j < sizeof($pollresults['OPTION_ID']); $j++) {
-              if ($userpolldata[$i]['OPTION_ID'] == $pollresults['OPTION_ID'][$j]) {
-                if ($pollresults['OPTION_NAME'][$j] == strip_tags($pollresults['OPTION_NAME'][$j])) {
-                  $userpollvotes_array[] = "'{$pollresults['OPTION_NAME'][$j]}'";
-                }else {
-                  $userpollvotes_array[] = "Option {$userpolldata[$i]['OPTION_ID']}";
+        if (($poll_data['CLOSES'] <= mktime()) && $poll_data['CLOSES'] != 0) {
+
+            $poll_data['CONTENT'].= "<p>{$lang['pollhasended']}</p>\n";
+
+            if (is_array($user_poll_data)) {
+
+                $user_poll_votes_array= array();
+
+                for ($i = 0; $i < sizeof($user_poll_data); $i++) {
+
+                    for ($j = 0; $j < sizeof($poll_results['OPTION_ID']); $j++) {
+                    
+                        if ($user_poll_data[$i]['OPTION_ID'] == $poll_results['OPTION_ID'][$j]) {
+
+                            if ($poll_results['OPTION_NAME'][$j] == strip_tags($poll_results['OPTION_NAME'][$j])) {
+
+                                $user_poll_votes_array[] = "'{$poll_results['OPTION_NAME'][$j]}'";
+                            
+                            }else {
+                                
+                                $user_poll_votes_array[] = "Option {$user_poll_data[$i]['OPTION_ID']}";
+                            }
+                        }
+                    }
                 }
-              }
+
+                $polldate['CONTENT'].= sprintf("<p>{$lang['youvotedforpolloptionsondate']}</p>", implode(' &amp; ', $user_poll_votes_array), format_time($user_poll_data[0]['TSTAMP'], true));
             }
-          }
 
-          $polldata['CONTENT'].= "<p>{$lang['youvotedfor']}: ". implode(" & ", $userpollvotes_array);
-          $polldata['CONTENT'].= " {$lang['on']} ". gmdate("jS M Y", $userpolldata[0]['TSTAMP']). "</p>\n";
+        }else {
 
-        }elseif (bh_session_get_value('UID') > 0) {
+            if (is_array($user_poll_data)) {
 
-          $polldata['CONTENT'].= "<p>". light_form_submit('pollsubmit', $lang['vote']). "</p>\n";
+                $user_poll_votes_array = array();
 
+                for ($i = 0; $i < sizeof($user_poll_data); $i++) {
+          
+                    for ($j = 0; $j < sizeof($poll_results['OPTION_ID']); $j++) {
+              
+                        if ($user_poll_data[$i]['OPTION_ID'] == $poll_results['OPTION_ID'][$j]) {
+                          
+                            if ($poll_results['OPTION_NAME'][$j] == strip_tags($poll_results['OPTION_NAME'][$j])) {
+                  
+                                $user_poll_votes_array[] = "'{$poll_results['OPTION_NAME'][$j]}'";
+          
+                            }else {
+                  
+                                $user_poll_votes_array[] = "Option {$user_poll_data[$i]['OPTION_ID']}";
+                            }
+                        }
+                    }
+                }
+
+                $polldate['CONTENT'].= sprintf("<p>{$lang['youvotedforpolloptionsondate']}</p>", implode(' &amp; ', $user_poll_votes_array), format_time($user_poll_data[0]['TSTAMP'], true));
+
+            }elseif (bh_session_get_value('UID') > 0) {
+
+                $poll_data['CONTENT'].= "<p>". light_form_submit('pollsubmit', $lang['vote']). "</p>\n";
+            }
         }
-
-      }
-
     }
 
-    $polldata['CONTENT'].= "</form>\n";
+    $poll_data['CONTENT'].= "</form>\n";
 
     // Work out what relationship the user has to the user who posted the poll
-    $polldata['FROM_RELATIONSHIP'] = user_get_relationship(bh_session_get_value('UID'), $polldata['FROM_UID']);
 
-    light_message_display($tid, $polldata, $msg_count, $first_msg, $folder_fid, true, $closed, $limit_text, true, $show_sigs, $is_preview, $highlight);
+    $poll_data['FROM_RELATIONSHIP'] = user_get_relationship(bh_session_get_value('UID'), $poll_data['FROM_UID']);
+
+    light_message_display($tid, $poll_data, $msg_count, $first_msg, $folder_fid, true, $closed, $limit_text, true, $show_sigs, $is_preview, $highlight);
 }
 
 function light_message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $in_list = true, $closed = false, $limit_text = true, $is_poll = false, $show_sigs = true, $is_preview = false)
@@ -944,6 +947,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (!isset($message['CONTENT']) || $message['CONTENT'] == "") {
+
         light_message_display_deleted($tid, $message['PID']);
         return;
     }
@@ -951,22 +955,26 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
     $from_user_permissions = perm_get_user_permissions($message['FROM_UID']);
 
     if ($uid != $message['FROM_UID']) {
+
         if (($from_user_permissions & USER_PERM_WORMED) && !$perm_is_moderator) {
+
             light_message_display_deleted($tid, $message['PID']);
             return;
         }
     }
 
     if(!isset($message['FROM_RELATIONSHIP'])) {
+
         $message['FROM_RELATIONSHIP'] = 0;
     }
 
     if(!isset($message['TO_RELATIONSHIP'])) {
+
         $message['TO_RELATIONSHIP'] = 0;
     }
 
-    if (($message['TO_RELATIONSHIP'] & USER_IGNORED_COMPLETELY) || ($message['FROM_RELATIONSHIP'] & USER_IGNORED_COMPLETELY))
-    {
+    if (($message['TO_RELATIONSHIP'] & USER_IGNORED_COMPLETELY) || ($message['FROM_RELATIONSHIP'] & USER_IGNORED_COMPLETELY)) {
+
         light_message_display_deleted($tid, $message['PID']);
         return;
     }
@@ -987,7 +995,8 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
         $message['CONTENT'].= "&hellip;[{$lang['msgtruncated']}]\n<p align=\"center\"><a href=\"ldisplay.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_self\">{$lang['viewfullmsg']}.</a>";
     }
 
-    if($in_list){
+    if ($in_list) {
+
         echo "<a name=\"a{$tid}_{$message['PID']}\"></a>";
     }
 
@@ -1003,14 +1012,16 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
     }
 
     // If the user posting a poll is ignored, remove ignored status for this message only so the poll can be seen
+
     if ($is_poll && $message['PID'] == 1 && ($message['FROM_RELATIONSHIP'] & USER_IGNORED)) {
+
         $message['FROM_RELATIONSHIP'] -= USER_IGNORED;
         $temp_ignore = true;
     }
 
     if($message['FROM_RELATIONSHIP'] & USER_FRIEND) {
         echo "&nbsp;({$lang['friend']}) ";
-    } else if(($message['FROM_RELATIONSHIP'] & USER_IGNORED) || isset($temp_ignore)) {
+    }else if(($message['FROM_RELATIONSHIP'] & USER_IGNORED) || isset($temp_ignore)) {
         echo "&nbsp;({$lang['ignoreduser']}) ";
     }
 
@@ -1018,7 +1029,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
         echo "<b>{$lang['ignoredmsg']}</b>";
 
-    } else {
+    }else {
 
         if($in_list) {
 
@@ -1049,6 +1060,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
         }
 
     }else {
+
         echo "<b>{$lang['to']}: {$lang['all_caps']}</b>";
     }
 

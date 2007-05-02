@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.220 2007-04-30 21:11:16 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.221 2007-05-02 23:15:41 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -85,17 +85,11 @@ function html_display_msg($header_text, $string_msg, $href = false, $method = 'g
 
         if (is_array($var_array)) {
 
-            foreach($var_array as $var_name => $var_value) {
-
-                if (!is_array($var_value)) {
-
-                    echo "  ", form_input_hidden($var_name, _htmlentities($var_value)), "\n";
-                }
-            }
+            echo "  ", form_input_hidden_array($var_array), "\n";
         }
     }
 
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -106,7 +100,13 @@ function html_display_msg($header_text, $string_msg, $href = false, $method = 'g
     echo "                  <td align=\"left\" class=\"subhead\">$header_text</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\"><h2>$string_msg</h2></td>\n";
+    echo "                  <td align=\"center\">\n";
+    echo "                    <table class=\"posthead\" width=\"95%\">\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">$string_msg</td>\n";
+    echo "                      </tr>\n";
+    echo "                    </table>\n";
+    echo "                  </td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\">&nbsp;</td>\n";

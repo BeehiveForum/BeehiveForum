@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.105 2007-04-25 21:34:31 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.106 2007-05-02 23:15:40 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -124,11 +124,10 @@ if (isset($_POST['submit'])) {
             $stylesheet = implode('', file("./styles/make_style.css"));
 
             foreach ($_POST['elements'] as $key => $value) {
+
                 $stylesheet = str_replace("\$elements[$key]", strtoupper($value), $stylesheet);
                 $stylesheet = str_replace("\$text_colour[$key]", strtoupper(contrastFont($value)), $stylesheet);
             }
-
-            reset($_POST);
 
         }else {
 
@@ -144,135 +143,67 @@ if (isset($_POST['submit'])) {
 
     if ($valid) {
 
-        if (isset($_POST['savefailed']) && $_POST['savefailed'] == "yes") {
+        if (!forum_save_style($stylename, $styledesc, $stylesheet, $error_code)) {
 
-            if (!forum_save_style($stylename, $styledesc, $stylesheet, $error_code)) {
+            if ($error_code == STYLE_ALREADY_EXISTS) {
 
-                if ($error_code == STYLE_ALREADY_EXISTS) {
-
-                    $valid = false;
-                    $result_html = "<h2>{$lang['stylealreadyexists']}</h2>\n";
-
-                }else {
-
-                    html_draw_top();
-
-                    $style_path = dirname($_SERVER['PHP_SELF']);
-                    $style_path.= "/forums/$webtag/styles/$stylename/";
-
-                    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['createforumstyle']}</h1>\n";
-                    echo "<br />\n";
-
-                    echo "<div align=\"center\">\n";
-                    echo "<form method=\"post\" action=\"admin_make_style.php\">\n";
-                    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-                    echo "  ", form_input_hidden('stylesheet', _htmlentities($stylesheet)), "\n";
-                    echo "  ", form_input_hidden('stylename', _htmlentities($stylename)), "\n";
-                    echo "  ", form_input_hidden('styledesc', _htmlentities($styledesc)), "\n";
-                    echo "  ", form_input_hidden_array(array('elements' => _stripslashes($_POST['elements']))), "\n";
-                    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
-                    echo "    <tr>\n";
-                    echo "      <td align=\"left\">\n";
-                    echo "        <table class=\"box\" width=\"100%\">\n";
-                    echo "          <tr>\n";
-                    echo "            <td align=\"left\" class=\"posthead\">\n";
-                    echo "              <table class=\"posthead\" width=\"100%\">\n";
-                    echo "                <tr>\n";
-                    echo "                  <td align=\"left\" class=\"subhead\">{$lang['createforumstyle']}</td>\n";
-                    echo "                </tr>\n";
-                    echo "                <tr>\n";
-                    echo "                  <td align=\"left\">", sprintf($lang['makestyleerror'], $style_path), "</td>\n";
-                    echo "                </tr>\n";
-                    echo "                <tr>\n";
-                    echo "                  <td align=\"left\">&nbsp;</td>\n";
-                    echo "                </tr>\n";
-                    echo "              </table>\n";
-                    echo "            </td>\n";
-                    echo "          </tr>\n";
-                    echo "        </table>\n";
-                    echo "      </td>\n";
-                    echo "    </tr>\n";
-                    echo "    <tr>\n";
-                    echo "      <td align=\"left\">&nbsp;</td>\n";
-                    echo "    </tr>\n";
-                    echo "    <tr>\n";
-                    echo "      <td align=\"center\">", form_submit("download", $lang['download']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
-                    echo "    </tr>\n";
-                    echo "  </table>\n";
-
-                    html_draw_bottom();
-                    exit;
-                }
+                $valid = false;
+                $result_html = "<h2>{$lang['stylealreadyexists']}</h2>\n";
 
             }else {
 
-                $result_html = sprintf("<h2>{$lang['newstylesuccessfullycreated']}</h2>\n", $stylename);
+                html_draw_top();
+
+                $forum_path = dirname($_SERVER['PHP_SELF']);
+                $forum_path.= "/forums/$webtag/styles/";
+
+                echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['createforumstyle']}</h1>\n";
+                echo "<br />\n";
+                echo "<div align=\"center\">\n";
+                echo "<form method=\"post\" action=\"admin_make_style.php\">\n";
+                echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+                echo "  ", form_input_hidden('stylesheet', _htmlentities($stylesheet)), "\n";
+                echo "  ", form_input_hidden('stylename', _htmlentities($stylename)), "\n";
+                echo "  ", form_input_hidden('styledesc', _htmlentities($styledesc)), "\n";
+                echo "  ", form_input_hidden('savefailed', "yes"), "\n";
+                echo "  ", form_input_hidden_array(array('elements' => _stripslashes($_POST['elements']))), "\n";
+                echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+                echo "    <tr>\n";
+                echo "      <td align=\"left\">\n";
+                echo "        <table class=\"box\" width=\"100%\">\n";
+                echo "          <tr>\n";
+                echo "            <td align=\"left\" class=\"posthead\">\n";
+                echo "              <table class=\"posthead\" width=\"100%\">\n";
+                echo "                <tr>\n";
+                echo "                  <td align=\"left\" class=\"subhead\">{$lang['createforumstyle']}</td>\n";
+                echo "                </tr>\n";
+                echo "                <tr>\n";
+                echo "                  <td align=\"left\">", sprintf($lang['makestyleerror'], $style_path), "</td>\n";
+                echo "                </tr>\n";
+                echo "                <tr>\n";
+                echo "                  <td align=\"left\">&nbsp;</td>\n";
+                echo "                </tr>\n";
+                echo "              </table>\n";
+                echo "            </td>\n";
+                echo "          </tr>\n";
+                echo "        </table>\n";
+                echo "      </td>\n";
+                echo "    </tr>\n";
+                echo "    <tr>\n";
+                echo "      <td align=\"left\">&nbsp;</td>\n";
+                echo "    </tr>\n";
+                echo "    <tr>\n";
+                echo "      <td align=\"center\">", form_submit('download', $lang['download']), "&nbsp;", form_submit('cancel_upload', $lang['cancel']), "</td>\n";
+                echo "    </tr>\n";
+                echo "  </table>\n";
+
+                html_draw_bottom();
+                exit;
             }
 
         }else {
 
-            if (!forum_save_style($stylename, $styledesc, $stylesheet, $error_code)) {
-
-                if ($error_code == STYLE_ALREADY_EXISTS) {
-
-                    $valid = false;
-                    $result_html = "<h2>{$lang['stylealreadyexists']}</h2>\n";
-
-                }else {
-
-                    html_draw_top();
-
-                    $forum_path = dirname($_SERVER['PHP_SELF']);
-                    $forum_path.= "/forums/$webtag/styles/";
-
-                    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['createforumstyle']}</h1>\n";
-                    echo "<br />\n";
-                    echo "<div align=\"center\">\n";
-                    echo "<form method=\"post\" action=\"admin_make_style.php\">\n";
-                    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-                    echo "  ", form_input_hidden('stylesheet', _htmlentities($stylesheet)), "\n";
-                    echo "  ", form_input_hidden('stylename', _htmlentities($stylename)), "\n";
-                    echo "  ", form_input_hidden('styledesc', _htmlentities($styledesc)), "\n";
-                    echo "  ", form_input_hidden('savefailed', "yes"), "\n";
-                    echo "  ", form_input_hidden_array(array('elements' => _stripslashes($_POST['elements']))), "\n";
-                    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
-                    echo "    <tr>\n";
-                    echo "      <td align=\"left\">\n";
-                    echo "        <table class=\"box\" width=\"100%\">\n";
-                    echo "          <tr>\n";
-                    echo "            <td align=\"left\" class=\"posthead\">\n";
-                    echo "              <table class=\"posthead\" width=\"100%\">\n";
-                    echo "                <tr>\n";
-                    echo "                  <td align=\"left\" class=\"subhead\">{$lang['createforumstyle']}</td>\n";
-                    echo "                </tr>\n";
-                    echo "                <tr>\n";
-                    echo "                  <td align=\"left\">", sprintf($lang['makestylefailed'], $forum_path), "</td>\n";
-                    echo "                </tr>\n";
-                    echo "                <tr>\n";
-                    echo "                  <td align=\"left\">&nbsp;</td>\n";
-                    echo "                </tr>\n";
-                    echo "              </table>\n";
-                    echo "            </td>\n";
-                    echo "          </tr>\n";
-                    echo "        </table>\n";
-                    echo "      </td>\n";
-                    echo "    </tr>\n";
-                    echo "    <tr>\n";
-                    echo "      <td align=\"left\">&nbsp;</td>\n";
-                    echo "    </tr>\n";
-                    echo "    <tr>\n";
-                    echo "      <td align=\"center\">", form_submit("submit", $lang['retry']), "&nbsp;", form_submit("cancel_upload", $lang['cancel']), "</td>\n";
-                    echo "    </tr>\n";
-                    echo "  </table>\n";
-
-                    html_draw_bottom();
-                    exit;
-                }
-
-            }else {
-
-                $result_html = sprintf("<h2>{$lang['newstylesuccessfullycreated']}</h2>\n", $stylename);
-            }
+            $result_html = sprintf("<h2>{$lang['newstylesuccessfullycreated']}</h2>\n", $stylename);
         }
     }
 

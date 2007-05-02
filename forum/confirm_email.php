@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: confirm_email.php,v 1.12 2007-04-12 13:23:10 decoyduck Exp $ */
+/* $Id: confirm_email.php,v 1.13 2007-05-02 23:48:59 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -81,7 +81,7 @@ if (isset($_GET['resend']) && isset($uid)) {
     if (email_send_user_confirmation($uid)) {
 
         html_draw_top();
-        html_display_msg($lang['emailconfirmation'], $lang['emailconfirmationsend']);
+        html_display_msg($lang['emailconfirmation'], $lang['emailconfirmationsent']);
         html_draw_bottom();
         exit;
     }

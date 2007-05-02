@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_update_language.php,v 1.7 2007-04-29 14:28:34 decoyduck Exp $ */
+/* $Id: bh_update_language.php,v 1.8 2007-05-02 23:48:59 decoyduck Exp $ */
 
 // Constant to define where the include files are
 
@@ -37,7 +37,7 @@ if (isset($_SERVER['argv'][1]) && strlen(trim(_stripslashes($_SERVER['argv'][1])
     
     if (!$lang_fix = file(BH_INCLUDE_PATH. "/languages/$target_language_file")) {
         
-        echo "Failed to load language file. Check working directory and filename\n";
+        echo "Failed to load language file ($target_language_file). Check working directory and filename\n";
         exit;
     }
 
@@ -112,7 +112,7 @@ if (file_exists(BH_INCLUDE_PATH. "languages/en.inc.php")) {
     
 }else {
 
-    echo "Failed to load English language file. Check working directory and filename";
+    echo "Failed to load English language file (en.inc.php). Check working directory and filename";
     exit;
 }
 

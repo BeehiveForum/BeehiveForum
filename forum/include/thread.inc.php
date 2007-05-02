@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.110 2007-05-02 23:15:42 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.111 2007-05-02 23:49:04 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -777,7 +777,7 @@ function thread_merge_error($tida, $tidb, $error_code, &$error_str)
 
         default:
 
-            $error_str = "<h2>{$lang['unknownerror']}</h2>\n";
+            $error_str = "";
             break;
     }
 
@@ -1095,7 +1095,7 @@ function thread_split_error($tid, $error_code, &$error_str)
 
         default:
 
-            $error_str = "<h2>{$lang['unknownerror']}</h2>\n";
+            $error_str = "";
             break;
     }
 

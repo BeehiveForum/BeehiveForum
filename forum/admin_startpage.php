@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_startpage.php,v 1.86 2007-04-12 13:23:08 decoyduck Exp $ */
+/* $Id: admin_startpage.php,v 1.87 2007-05-02 23:15:40 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -96,8 +96,17 @@ if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
     exit;
 }
 
+// List of allowed extensions.
+
 $allowed_file_exts_array = array('html', 'htm', 'php', 'txt');
 $allowed_file_exts = "*.". implode(", *.", $allowed_file_exts_array);
+
+// Path to the Forum folder for saving start page.
+
+$forum_path = dirname($_SERVER['PHP_SELF']);
+$forum_path.= "/forums/$webtag/";
+
+// Submit code...
 
 if (isset($_POST['submit'])) {
 
@@ -118,92 +127,14 @@ if (isset($_POST['submit'])) {
     }elseif (isset($_POST['uploaded']) && $_POST['uploaded'] == "yes") {
 
         html_draw_top();
-
-        $forum_path = dirname($_SERVER['PHP_SELF']);
-        $forum_path.= "/forums/$webtag/";
-
-        echo "<div align=\"center\">\n";
-        echo "<form enctype=\"multipart/form-data\" method=\"post\" action=\"admin_startpage.php\">\n";
-        echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-        echo "  ", form_input_hidden('content', _htmlentities($content)), "\n";
-        echo "  ", form_input_hidden('uploaded', "yes"), "\n";
-        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"left\">\n";
-        echo "        <table class=\"box\" width=\"100%\">\n";
-        echo "          <tr>\n";
-        echo "            <td align=\"left\" class=\"posthead\">\n";
-        echo "              <table class=\"posthead\" width=\"100%\">\n";
-        echo "                <tr>\n";
-        echo "                  <td align=\"left\" class=\"subhead\">{$lang['startpage']}</td>\n";
-        echo "                </tr>\n";
-        echo "                <tr>\n";
-        echo "                  <td align=\"left\">", sprintf($lang['uploadfailed'], $forum_path), "</td>\n";
-        echo "                </tr>\n";
-        echo "                <tr>\n";
-        echo "                  <td align=\"left\">&nbsp;</td>\n";
-        echo "                </tr>\n";
-        echo "              </table>\n";
-        echo "            </td>\n";
-        echo "          </tr>\n";
-        echo "        </table>\n";
-        echo "      </td>\n";
-        echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"left\">&nbsp;</td>\n";
-        echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"center\">", form_submit("submit", $lang['retry']), "&nbsp;", form_submit("cancel_upload", $lang['cancel']), "</td>\n";
-        echo "    </tr>\n";
-        echo "  </table>\n";
-
+        html_error_msg(sprintf($lang['uploadfailed'], $forum_path), 'admin_startpage.php', 'post', array('submit' => $lang['retry'], 'cancel_upload' => $lang['cancel']), array('content' => $content, 'uploaded' => 'yes'));
         html_draw_bottom();
         exit;
 
     }else {
 
         html_draw_top();
-
-        $forum_path = dirname($_SERVER['PHP_SELF']);
-        $forum_path.= "/forums/$webtag/";
-
-        echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['editstartpage']}</h1>\n";
-        echo "<br />\n";
-
-        echo "<div align=\"center\">\n";
-        echo "<form enctype=\"multipart/form-data\" method=\"post\" action=\"admin_startpage.php\">\n";
-        echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-        echo "  ", form_input_hidden('content', _htmlentities($content)), "\n";
-        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"left\">\n";
-        echo "        <table class=\"box\" width=\"100%\">\n";
-        echo "          <tr>\n";
-        echo "            <td align=\"left\" class=\"posthead\">\n";
-        echo "              <table class=\"posthead\" width=\"100%\">\n";
-        echo "                <tr>\n";
-        echo "                  <td align=\"left\" class=\"subhead\">{$lang['startpage']}</td>\n";
-        echo "                </tr>\n";
-        echo "                <tr>\n";
-        echo "                  <td align=\"left\">", sprintf($lang['startpageerror'], $forum_path), "</td>\n";
-        echo "                </tr>\n";
-        echo "                <tr>\n";
-        echo "                  <td align=\"left\">&nbsp;</td>\n";
-        echo "                </tr>\n";
-        echo "              </table>\n";
-        echo "            </td>\n";
-        echo "          </tr>\n";
-        echo "        </table>\n";
-        echo "      </td>\n";
-        echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"left\">&nbsp;</td>\n";
-        echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"center\">", form_submit("download", $lang['download']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
-        echo "    </tr>\n";
-        echo "  </table>\n";
-
+        html_error_msg(sprintf($lang['startpageerror'], $forum_path), 'admin_startpage.php', 'post', array('download' => $lang['download'], 'cancel' => $lang['cancel']), array('content' => $content));
         html_draw_bottom();
         exit;
     }
@@ -228,48 +159,10 @@ if (isset($_POST['submit'])) {
 
             }else {
 
-                html_draw_top();
-
-                $forum_path = dirname($_SERVER['PHP_SELF']);
-                $forum_path.= "/forums/$webtag/";
-
                 $content = implode('', file($_FILES['userfile']['tmp_name']));
 
-                echo "<div align=\"center\">\n";
-                echo "<form enctype=\"multipart/form-data\" method=\"post\" action=\"admin_startpage.php\">\n";
-                echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-                echo "  ", form_input_hidden('content', _htmlentities($content)), "\n";
-                echo "  ", form_input_hidden('uploaded', "yes"), "\n";
-                echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
-                echo "    <tr>\n";
-                echo "      <td align=\"left\">\n";
-                echo "        <table class=\"box\" width=\"100%\">\n";
-                echo "          <tr>\n";
-                echo "            <td align=\"left\" class=\"posthead\">\n";
-                echo "              <table class=\"posthead\" width=\"100%\">\n";
-                echo "                <tr>\n";
-                echo "                  <td align=\"left\" class=\"subhead\">{$lang['startpage']}</td>\n";
-                echo "                </tr>\n";
-                echo "                <tr>\n";
-                echo "                  <td align=\"left\">", sprintf($lang['uploadfailed'], $forum_path), "</td>\n";
-                echo "                </tr>\n";
-                echo "                <tr>\n";
-                echo "                  <td align=\"left\">&nbsp;</td>\n";
-                echo "                </tr>\n";
-                echo "              </table>\n";
-                echo "            </td>\n";
-                echo "          </tr>\n";
-                echo "        </table>\n";
-                echo "      </td>\n";
-                echo "    </tr>\n";
-                echo "    <tr>\n";
-                echo "      <td align=\"left\">&nbsp;</td>\n";
-                echo "    </tr>\n";
-                echo "    <tr>\n";
-                echo "      <td align=\"center\">", form_submit("submit", $lang['retry']), "&nbsp;", form_submit("cancel_upload", $lang['cancel']), "</td>\n";
-                echo "    </tr>\n";
-                echo "  </table>\n";
-
+                html_draw_top();
+                html_error_msg(sprintf($lang['uploadfailed'], $forum_path), 'admin_startpage.php', 'post', array('submit' => $lang['retry'], 'cancel_upload' => $lang['cancel']), array('content' => $content, 'uploaded' => 'yes'));
                 html_draw_bottom();
                 exit;
             }
@@ -313,14 +206,13 @@ html_draw_top("dictionary.js", "htmltools.js");
 
 echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['editstartpage']}</h1>\n";
 
-if (isset($status_text)) {
+if (isset($status_text) && strlen($status_text) > 0) {
     echo $status_text;
 }
 
-echo "<br />\n";
-
 $tools = new TextAreaHTML("startpage");
 
+echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form enctype=\"multipart/form-data\" method=\"post\" action=\"admin_startpage.php\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";

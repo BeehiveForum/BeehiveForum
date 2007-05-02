@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.166 2007-04-30 21:11:17 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.167 2007-05-02 23:15:41 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -48,6 +48,7 @@ include_once(BH_INCLUDE_PATH. "forum.inc.php");
 $forum_settings = forum_get_settings();
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
+include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "email.inc.php");
 include_once(BH_INCLUDE_PATH. "emoticons.inc.php");
 include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
@@ -260,8 +261,17 @@ if (isset($t_rmid) && $t_rmid > 0) {
         if ($edit_msg) {
             
             $t_content = $pm_data['CONTENT'];
+            
             $t_to_uid = $pm_data['TO_UID'];
+
             $t_recipient_list = $pm_data['RECIPIENTS'];
+
+            if (strlen($t_recipient_list) > 0) {
+                $to_radio = 1;
+            }elseif ($t_to_uid > 0) {
+                $to_radio = 0;
+            }
+
             $aid = $pm_data['AID'];
 
         }else {
@@ -569,7 +579,7 @@ if (isset($_POST['save'])) {
             if (pm_edit_message($t_mid, $t_subject, $t_content, $t_to_uid, $t_recipient_list)) {
 
                 html_draw_top();
-                html_display_msg($lang['messagesaved'], $lang['messagewassuccessfullysavedtodraftsfolder'], 'pm.php', 'get', array('continue' => $lang['continue']), array('mid' => $t_mid));
+                html_display_msg($lang['messagesaved'], $lang['messagewassuccessfullysavedtodraftsfolder'], 'pm.php', 'get', array('continue' => $lang['continue']), array('mid' => $t_mid, 'folder' => PM_FOLDER_DRAFTS));
                 html_draw_bottom();
                 exit;
 

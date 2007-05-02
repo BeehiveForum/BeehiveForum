@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.421 2007-05-01 13:51:44 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.422 2007-05-02 23:15:43 decoyduck Exp $ */
 
 // International English language file
 
@@ -144,6 +144,7 @@ $lang['download'] = "Download";
 $lang['save'] = "Save";
 $lang['update'] = "Update";
 $lang['cancel'] = "Cancel";
+$lang['retry'] = "Retry";
 $lang['continue'] = "Continue";
 $lang['attachment'] = "Attachment";
 $lang['attachments'] = "Attachments";
@@ -287,7 +288,7 @@ $lang['forumsettings'] = "Forum Settings";
 $lang['globalforumsettings'] = "Global Forum Settings";
 $lang['settingsaffectallforumswarning'] = "<b>Note:</b> These settings affect all forums. Where the setting is duplicated on the individual Forum's settings page that will take precedence over the settings you change here.";
 $lang['startpage'] = "Start Page";
-$lang['startpageerror'] = "Your start page could not be saved locally to the server because permission was denied. To change your start page please click the download button below which will prompt you to save the file to your hard drive. You can then upload this file to your server into %s folder, if necessary creating the folder structure in the process. Please note that some browsers may change the name of the file upon download.  When uploading the file please make sure that it is named start_main.php otherwise your start page will appear unchanged.";
+$lang['startpageerror'] = "Your start page could not be saved locally to the server because permission was denied.<br /><br />To change your start page please click the download button below which will prompt you to save the file to your hard drive. You can then upload this file to your server into the following folder, if necessary creating the folder structure in the process.<br /><br /><b>%s</b><br /><br />Please note that some browsers may change the name of the file upon download.  When uploading the file please make sure that it is named start_main.php otherwise your start page will appear unchanged.";
 $lang['failedtoopenmasterstylesheet'] = "Your forum style could not be saved because the master style sheet could not be loaded. To save your style the master style sheet (make_style.css) must be located in the styles directory of your Beehive Forum installation.";
 $lang['makestyleerror'] = "Your forum style could not be saved locally to the server because permission was denied. To save your forum style please click the download button below which will prompt you to save the file to your hard drive. You can then upload this file to your server into %s folder, if necessary creating the folder structure in the process. You should note that some browsers may change the name of the file upon download. When uploading the file please make sure that it is named style.css otherwise the forum style will be unusable.";
 $lang['uploadfailed'] = "Your new start page could not be uploaded to the server because permission was denied. Please check that the web server / PHP process is able to write to the %s folder on your server.";
@@ -351,7 +352,6 @@ $lang['bannedusers'] = "Banned users";
 $lang['lastlogon'] = "Last Logon";
 $lang['sessionreferer'] = "Session Referer";
 $lang['signupreferer'] = "Sign-up Referer:";
-$lang['nouseraccounts'] = "No user accounts in database.";
 $lang['nouseraccountsmatchingfilter'] = "No user accounts matching filter";
 $lang['searchforusernotinlist'] = "Search for a user not in list";
 $lang['adminaccesslog'] = "Admin Access Log";
@@ -1036,7 +1036,8 @@ $lang['errorcreatingpost'] = "Error creating post! Please try again in a few min
 $lang['createnewthread'] = "Create new thread";
 $lang['postreply'] = "Post Reply";
 $lang['threadtitle'] = "Thread title";
-$lang['messagehasbeendeleted'] = "Message has been deleted.";
+$lang['messagehasbeendeleted'] = "Message not found. Check that it hasn't been deleted.";
+$lang['messagenotfoundinselectedfolder'] = "Message not found in selected folder. Check that it hasn't been moved or deleted.";
 $lang['cannotpostthisthreadtypeinfolder'] = "You cannot post this thread type in that folder!";
 $lang['cannotpostthisthreadtype'] = "You cannot post this thread type as there are no available folders that allow it.";
 $lang['cannotcreatenewthreads'] = "You cannot create new threads.";

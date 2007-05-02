@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.112 2007-04-28 22:36:18 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.113 2007-05-02 23:15:40 decoyduck Exp $ */
 
 /**
 * Displays and handles the Forum Settings page
@@ -59,6 +59,7 @@ include_once(BH_INCLUDE_PATH. "forum.inc.php");
 $forum_settings = forum_get_settings();
 
 include_once(BH_INCLUDE_PATH. "admin.inc.php");
+include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "emoticons.inc.php");
 include_once(BH_INCLUDE_PATH. "form.inc.php");
 include_once(BH_INCLUDE_PATH. "format.inc.php");
@@ -69,6 +70,7 @@ include_once(BH_INCLUDE_PATH. "logon.inc.php");
 include_once(BH_INCLUDE_PATH. "post.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "styles.inc.php");
+include_once(BH_INCLUDE_PATH. "timezone.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 // Check we're logged in correctly
@@ -386,7 +388,7 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['forumname']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("forum_name", (isset($forum_settings['forum_name']) ? _htmlentities($forum_settings['forum_name']) : 'A Beehive Forum'), 42, 32), "&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_input_text("forum_name", (isset($forum_settings['forum_name']) ? _htmlentities($forum_settings['forum_name']) : 'A Beehive Forum'), 42, 255), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['forumemail']}:</td>\n";

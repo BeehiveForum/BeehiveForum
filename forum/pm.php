@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.116 2007-04-12 13:23:11 decoyduck Exp $ */
+/* $Id: pm.php,v 1.117 2007-05-02 23:15:41 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -53,6 +53,7 @@ include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "logon.inc.php");
 include_once(BH_INCLUDE_PATH. "perm.inc.php");
+include_once(BH_INCLUDE_PATH. "pm.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 
 // Don't cache this page - fixes problems with Opera.
@@ -113,17 +114,18 @@ if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
     $mid = $_GET['mid'];
     
     if ($folder = pm_message_get_folder($mid)) {
-
-        html_draw_top('body_tag=false', 'frames=true');
-
-        echo "<frameset cols=\"220,*\" framespacing=\"0\" border=\"4\">\n";
-        echo "  <frame src=\"./pm_folders.php?webtag=$webtag&amp;mid=$mid\" name=\"pm_folders\" frameborder=\"0\" />\n";
-        echo "  <frame src=\"./pm_messages.php?webtag=$webtag&amp;mid=$mid\" name=\"pm_messages\" frameborder=\"0\" />\n";
-        echo "</frameset>\n";
-
-        html_draw_bottom();
-        exit;
+        $folder = PM_FOLDER_INBOX;
     }
+
+    html_draw_top('body_tag=false', 'frames=true');
+
+    echo "<frameset cols=\"220,*\" framespacing=\"0\" border=\"4\">\n";
+    echo "  <frame src=\"./pm_folders.php?webtag=$webtag&amp;mid=$mid&amp;folder=$folder\" name=\"pm_folders\" frameborder=\"0\" />\n";
+    echo "  <frame src=\"./pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;folder=$folder\" name=\"pm_messages\" frameborder=\"0\" />\n";
+    echo "</frameset>\n";
+
+    html_draw_bottom();
+    exit;
 }
 
 html_draw_top('body_tag=false', 'frames=true');

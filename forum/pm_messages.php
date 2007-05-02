@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_messages.php,v 1.11 2007-04-19 20:32:45 decoyduck Exp $ */
+/* $Id: pm_messages.php,v 1.12 2007-05-02 23:15:41 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -57,6 +57,7 @@ include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "logon.inc.php");
 include_once(BH_INCLUDE_PATH. "pm.inc.php");
 include_once(BH_INCLUDE_PATH. "post.inc.php");
+include_once(BH_INCLUDE_PATH. "search.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
@@ -221,7 +222,15 @@ if (isset($_GET['folder'])) {
 // Check to see if we're displaying a message.
 
 if (isset($mid) && is_numeric($mid) && $mid > 0) {
-
+    
+    if (($current_folder != PM_SEARCH_RESULTS) && ($current_folder != $message_folder)) {
+    
+        html_draw_top();
+        html_error_msg($lang['messagenotfoundinselectedfolder']);
+        html_draw_bottom();
+        exit;
+    }    
+    
     if (!$pm_message_array = pm_message_get($mid)) {
 
         html_draw_top();

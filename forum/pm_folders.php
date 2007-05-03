@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_folders.php,v 1.7 2007-04-19 20:32:45 decoyduck Exp $ */
+/* $Id: pm_folders.php,v 1.8 2007-05-03 20:25:57 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -178,7 +178,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\" class=\"foldername\">{$lang['search']}:</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"left\" class=\"smalltext\">", form_input_text("search_string", "", 18), "&nbsp;", form_submit('search', $lang['find']), "</td>\n";
+echo "      <td align=\"left\" class=\"smalltext\">", form_input_text("search_string", "", 20), "&nbsp;", form_submit('search', $lang['find']), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <br />\n";

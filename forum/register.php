@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.152 2007-05-02 23:15:41 decoyduck Exp $ */
+/* $Id: register.php,v 1.153 2007-05-03 20:25:57 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -698,11 +698,11 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" class=\"posthead\">{$lang['timezonefromGMT']}:</td>\n";
-echo "                        <td align=\"left\">", form_dropdown_array("timezone", $available_timezones, (isset($new_user_prefs['TIMEZONE']) ? $new_user_prefs['TIMEZONE'] : forum_get_setting('forum_timezone', false, 27)), false, 'timezone_dropdown'), "</td>\n";
+echo "                        <td align=\"left\">", form_dropdown_array("timezone", $available_timezones, (isset($new_user_prefs['TIMEZONE']) && in_array($new_user_prefs['TIMEZONE'], array_keys($available_timezones))) ? $new_user_prefs['TIMEZONE'] : forum_get_setting('forum_timezone', false, 27), false, 'timezone_dropdown'), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";
-echo "                        <td align=\"left\">", form_checkbox("dl_saving", "Y", $lang['daylightsaving'], (isset($new_user_prefs['DL_SAVING']) && $new_user_prefs['DL_SAVING'] == 'Y') ? true : forum_get_setting('forum_dl_saving', false, true)), "</td>\n";
+echo "                        <td align=\"left\">", form_checkbox("dl_saving", "Y", $lang['daylightsaving'], (isset($new_user_prefs['DL_SAVING'])) ? ($new_user_prefs['DL_SAVING'] == 'Y') : forum_get_setting('forum_dl_saving', 'Y')), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";

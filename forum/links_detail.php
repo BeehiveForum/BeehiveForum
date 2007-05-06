@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_detail.php,v 1.86 2007-05-02 23:15:40 decoyduck Exp $ */
+/* $Id: links_detail.php,v 1.87 2007-05-06 22:38:46 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -173,9 +173,9 @@ if (isset($_POST['cancel'])) {
 
     }else if (isset($_POST['type']) && $_POST['type'] == "moderation") {
 
-        $creator = links_get_creator_uid($lid);
+        $creator_uid = links_get_creator_uid($lid);
 
-        if (bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0) || $creator['UID'] == $uid) {
+        if (bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0) || $creator_uid == $uid) {
 
             if (isset($_POST['delete']) && $_POST['delete'] == "confirm") {
 
@@ -234,8 +234,8 @@ if (isset($_GET['action'])) {
 
     if ($_GET['action'] == "delete_comment") {
 
-        $creator = links_get_comment_uid($_GET['cid']);
-        if (bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0) || $creator['UID'] == $uid) links_delete_comment($_GET['cid']);
+        $comment_uid = links_get_comment_uid($_GET['cid']);
+        if (bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0) || $comment_uid == $uid) links_delete_comment($_GET['cid']);
     }
 }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.447 2007-05-02 23:15:42 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.448 2007-05-06 18:07:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -548,6 +548,9 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     $perm_is_moderator = bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid);
     $perm_has_admin_access = bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0);
 
+    $post_edit_time = forum_get_setting('post_edit_time', false, 0);
+    $post_edit_grace_period = forum_get_setting('post_edit_grace_period', false, 0);
+
     $webtag = get_webtag($webtag_search);
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
@@ -988,7 +991,9 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
                     echo "&nbsp;<a href=\"delete.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_parent\">{$lang['delete']}</a>";
                 }
 
-                if (((!perm_get_user_permissions($uid) & USER_PERM_PILLORIED) || ($uid != $message['FROM_UID'] && $from_user_permissions & USER_PERM_PILLORIED) || ($uid == $message['FROM_UID'])) && bh_session_check_perm(USER_PERM_POST_EDIT, $folder_fid) && ((time() - $message['CREATED']) < (forum_get_setting('post_edit_time', false, 0) * HOUR_IN_SECONDS) || forum_get_setting('post_edit_time', false, 0) == 0) && (forum_get_setting('allow_post_editing', 'Y')) || $perm_is_moderator) {
+                $post_edit_time = forum_get_setting('post_edit_time', false, 0);
+
+                if ((((!perm_get_user_permissions($uid) & USER_PERM_PILLORIED) || ($uid != $message['FROM_UID'] && $from_user_permissions & USER_PERM_PILLORIED) || ($uid == $message['FROM_UID'])) && bh_session_check_perm(USER_PERM_POST_EDIT, $folder_fid) && ($post_edit_time == 0 || (time() - $message['CREATED']) < ($post_edit_time * HOUR_IN_SECONDS)) && forum_get_setting('allow_post_editing', 'Y')) || $perm_is_moderator) {
 
                     if ($is_poll && $message['PID'] == 1) {
 

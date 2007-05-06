@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.112 2007-05-06 20:33:43 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.113 2007-05-06 22:38:45 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -377,26 +377,18 @@ function thread_set_sticky($tid, $sticky = true, $sticky_until = false)
 
     if (!is_numeric($tid)) return false;
 
-    if ($sticky) {
+    $sticky_sql = ($sticky === true) ? 'Y' : 'N';
+    $sticky_until_sql = ($sticky_until !== false) ? "FROM_UNIXTIME($sticky_until)" : 'NULL';
 
-        $sql  = "UPDATE {$table_data['PREFIX']}THREAD SET STICKY = 'Y' ";
-
-        if ($sticky_until) {
-            $sql .= ", STICKY_UNTIL = FROM_UNIXTIME($sticky_until) ";
-        }else {
-            $sql .= ", STICKY_UNTIL = NULL ";
-        }
-
-        $sql .= "WHERE TID = '$tid'";
-
-    }else {
-
-        $sql = "UPDATE {$table_data['PREFIX']}THREAD SET STICKY = 'N' WHERE TID = '$tid'";
-    }
+    $sql = "UPDATE {$table_data['PREFIX']}THREAD SET STICKY = '$sticky_sql', ";
+    $sql.= "STICKY_UNTIL = $sticky_until_sql ";
+    $sql.= "WHERE TID = '$tid'";
 
     if (!$result = db_query($sql, $db_thread_set_sticky)) return false;
 
-    return db_affected_rows($db_thread_set_sticky) > 0;
+    $affected_rows = db_affected_rows($db_thread_set_sticky);
+
+    return $affected_rows > 0;
 }
 
 function thread_set_closed($tid, $closed = true)
@@ -407,15 +399,16 @@ function thread_set_closed($tid, $closed = true)
 
     if (!is_numeric($tid)) return false;
 
-    if ($closed) {
-        $sql = "UPDATE {$table_data['PREFIX']}THREAD SET CLOSED = NOW() WHERE TID = '$tid'";
-    }else {
-        $sql = "UPDATE {$table_data['PREFIX']}THREAD SET CLOSED = NULL WHERE TID = '$tid'";
-    }
+    $closed_sql = ($closed === true) ? 'NOW()' : 'NULL';
+
+    $sql = "UPDATE {$table_data['PREFIX']}THREAD ";
+    $sql.= "SET CLOSED = $closed_sql WHERE TID = '$tid'";
 
     if (!$result = db_query($sql, $db_thread_set_closed)) return false;
 
-    return db_affected_rows($db_thread_set_closed) > 0;
+    $affected_rows = db_affected_rows($db_thread_set_closed);
+
+    return $affected_rows > 0;
 }
 
 function thread_admin_lock($tid, $locked = true)
@@ -426,15 +419,16 @@ function thread_admin_lock($tid, $locked = true)
 
     if (!is_numeric($tid)) return false;
 
-    if ($locked) {
-        $sql = "UPDATE {$table_data['PREFIX']}THREAD SET ADMIN_LOCK = NOW() WHERE TID = '$tid'";
-    }else {
-        $sql = "UPDATE {$table_data['PREFIX']}THREAD SET ADMIN_LOCK = NULL WHERE TID = '$tid'";
-    }
+    $locked_sql = ($locked === true) ? 'NOW()' : 'NULL';
+
+    $sql = "UPDATE {$table_data['PREFIX']}THREAD ";
+    $sql.= "SET ADMIN_LOCK = $locked_sql WHERE TID = '$tid'";
 
     if (!$result = db_query($sql, $db_thread_admin_lock)) return false;
 
-    return db_affected_rows($db_thread_admin_lock) > 0;
+    $affected_rows = db_affected_rows($db_thread_admin_lock);
+
+    return $affected_rows > 0;
 }
 
 function thread_change_folder($tid, $new_fid)

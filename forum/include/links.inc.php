@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.inc.php,v 1.65 2007-05-06 20:33:42 decoyduck Exp $ */
+/* $Id: links.inc.php,v 1.66 2007-05-06 22:38:45 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -599,7 +599,13 @@ function links_get_creator_uid($lid)
 
     if (!$result = db_query($sql, $db_links_get_creator_uid)) return false;
 
-    return db_fetch_array($result);
+    if (db_num_rows($result) > 0) {
+    
+        list($creator_uid) = db_fetch_array($result);
+        return $creator_uid;
+    }
+
+    return false;
 }
 
 function links_get_comment_uid($cid)
@@ -614,7 +620,13 @@ function links_get_comment_uid($cid)
 
     if (!$result = db_query($sql, $db_links_get_comment_uid)) return false;
 
-    return db_fetch_array($result);
+    if (db_num_rows($result) > 0) {
+    
+        list($comment_uid) = db_fetch_array($result);
+        return $comment_uid;
+    }
+
+    return false;
 }
 
 ?>

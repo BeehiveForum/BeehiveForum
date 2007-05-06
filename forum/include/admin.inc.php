@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.116 2007-05-02 23:15:41 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.117 2007-05-06 17:24:56 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -183,15 +183,15 @@ function admin_get_word_filter_list($offset)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT COUNT(ID) FROM {$table_data['PREFIX']}FILTER_LIST ";
+    $sql = "SELECT COUNT(FID) FROM {$table_data['PREFIX']}FILTER_LIST ";
     $sql.= "WHERE UID = 0";
 
     $result = db_query($sql, $db_admin_get_word_filter);
     list($word_filter_count) = db_fetch_array($result, DB_RESULT_NUM);
 
-    $sql = "SELECT ID, MATCH_TEXT, REPLACE_TEXT, FILTER_OPTION ";
-    $sql.= "FROM {$table_data['PREFIX']}FILTER_LIST ";
-    $sql.= "WHERE UID = 0 ORDER BY ID ";
+    $sql = "SELECT FID, FILTER_NAME, MATCH_TEXT, REPLACE_TEXT, FILTER_TYPE, ";
+    $sql.= "FILTER_ENABLED FROM {$table_data['PREFIX']}FILTER_LIST ";
+    $sql.= "WHERE UID = 0 ORDER BY FID ";
     $sql.= "LIMIT $offset, 10";
 
     $result = db_query($sql, $db_admin_get_word_filter);
@@ -200,7 +200,7 @@ function admin_get_word_filter_list($offset)
 
         while ($row = db_fetch_array($result)) {
 
-            $word_filter_array[$row['ID']] = $row;
+            $word_filter_array[$row['FID']] = $row;
         }
 
     }else if ($word_filter_count > 0) {
@@ -230,9 +230,9 @@ function admin_get_word_filter($filter_id)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT ID, MATCH_TEXT, REPLACE_TEXT, FILTER_OPTION ";
-    $sql.= "FROM {$table_data['PREFIX']}FILTER_LIST ";
-    $sql.= "WHERE ID = '$filter_id' ORDER BY ID";
+    $sql = "SELECT FID, FILTER_NAME, MATCH_TEXT, REPLACE_TEXT, FILTER_TYPE, ";
+    $sql.= "FILTER_ENABLED FROM {$table_data['PREFIX']}FILTER_LIST ";
+    $sql.= "WHERE UID = 0 AND FID = '$filter_id' ORDER BY FID";
 
     $result = db_query($sql, $db_admin_get_word_filter);
 
@@ -254,16 +254,16 @@ function admin_get_word_filter($filter_id)
 * @param integer $id - Filter entry ID
 */
 
-function admin_delete_word_filter($id)
+function admin_delete_word_filter($filter_id)
 {
-    if (!is_numeric($id)) return false;
+    if (!is_numeric($filter_id)) return false;
 
     $db_user_delete_word_filter = db_connect();
 
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "DELETE FROM {$table_data['PREFIX']}FILTER_LIST ";
-    $sql.= "WHERE ID = '$id' AND UID = 0";
+    $sql.= "WHERE UID = 0 AND FID = '$filter_id'";
 
     if (!$result = db_query($sql, $db_user_delete_word_filter)) return false;
 
@@ -286,7 +286,10 @@ function admin_clear_word_filter()
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "DELETE FROM {$table_data['PREFIX']}FILTER_LIST WHERE UID = 0";
-    return db_query($sql, $db_admin_clear_word_filter);
+
+    if (!$result = db_query($sql, $db_admin_clear_word_filter)) return false;
+
+    return true;
 }
 
 /**
@@ -300,21 +303,22 @@ function admin_clear_word_filter()
 * @param integer $filter_option - Type of filtering to perform (0: all, 1: word, 2: PCRE)
 */
 
-function admin_add_word_filter($match, $replace, $filter_option)
+function admin_add_word_filter($filter_name, $match_text, $replace_text, $filter_option, $filter_enabled)
 {
-    $match = db_escape_string($match);
-    $replace = db_escape_string($replace);
+    $db_admin_add_word_filter = db_connect();
+
+    $filter_name  = db_escape_string($filter_name);
+    $match_text   = db_escape_string($match_text);
+    $replace_text = db_escape_string($replace_text);
 
     if (!is_numeric($filter_option)) $filter_option = 0;
-
-    $db_admin_add_word_filter = db_connect();
-    
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (!is_numeric($filter_enabled)) $filter_enabled = 0;
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "INSERT INTO {$table_data['PREFIX']}FILTER_LIST (MATCH_TEXT, REPLACE_TEXT, FILTER_OPTION) ";
-    $sql.= "VALUES ('$match', '$replace', '$filter_option')";
+    $sql = "INSERT INTO {$table_data['PREFIX']}FILTER_LIST ";
+    $sql.= "(UID, FILTER_NAME, MATCH_TEXT, REPLACE_TEXT, FILTER_TYPE, FILTER_ENABLED) ";
+    $sql.= "VALUES (0, '$filter_name', '$match_text', '$replace_text', '$filter_option', '$filter_enabled')";
 
     if (!$result = db_query($sql, $db_admin_add_word_filter)) return false;
 
@@ -332,23 +336,25 @@ function admin_add_word_filter($match, $replace, $filter_option)
 * @param integer $filter_option - Type of filtering to perform (0: all, 1: word, 2: PCRE)
 */
 
-function admin_update_word_filter($filter_id, $match, $replace, $filter_option)
+function admin_update_word_filter($filter_id, $filter_name, $match_text, $replace_text, $filter_option, $filter_enabled)
 {
-    if (!is_numeric($filter_id)) return false;
-    if (!is_numeric($filter_option)) $filter_option = 0;
-
-    $match = db_escape_string($match);
-    $replace = db_escape_string($replace);
-
     $db_admin_add_word_filter = db_connect();
-    
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+
+    if (!is_numeric($filter_id)) return false;
+
+    if (!is_numeric($filter_option)) $filter_option = 0;
+    if (!is_numeric($filter_enabled)) $filter_enabled = 0;
+
+    $filter_name  = db_escape_string($filter_name);
+    $match_text   = db_escape_string($match_text);
+    $replace_text = db_escape_string($replace_text);
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "UPDATE {$table_data['PREFIX']}FILTER_LIST SET MATCH_TEXT = '$match', ";
-    $sql.= "REPLACE_TEXT = '$replace', FILTER_OPTION = '$filter_option' ";
-    $sql.= "WHERE ID = '$filter_id'";
+    $sql = "UPDATE {$table_data['PREFIX']}FILTER_LIST SET FILTER_NAME = '$filter_name', ";
+    $sql.= "MATCH_TEXT = '$match_text', REPLACE_TEXT = '$replace_text', ";
+    $sql.= "FILTER_TYPE = '$filter_option', FILTER_ENABLED = '$filter_enabled' ";
+    $sql.= "WHERE UID = 0 AND FID = '$filter_id'";
 
     if (!$result = db_query($sql, $db_admin_add_word_filter)) return false;
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.222 2007-05-06 17:24:56 decoyduck Exp $ */
+/* $Id: edit.php,v 1.223 2007-05-06 18:48:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -114,7 +114,7 @@ if (!forum_check_access_level()) {
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
-if (bh_session_get_value('UID') == 0) {
+if (user_is_guest()) {
 
     html_guest_error();
     exit;
@@ -150,7 +150,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 if (!isset($tid) || !isset($pid) || !is_numeric($tid) || !is_numeric($pid)) {
 
     html_draw_top();
-    html_error_msg($lang['threadcouldnotbefound'], 'discussion.php', 'post', array('back' => $lang['back']));
+    html_error_msg($lang['threadcouldnotbefound'], 'discussion.php', 'get', array('back' => $lang['back']));
     html_draw_bottom();
     exit;
 }
@@ -204,9 +204,11 @@ if (!$threaddata = thread_get($tid)) {
 }
 
 // Check if the user is viewing signatures.
+
 $show_sigs = (bh_session_get_value('VIEW_SIGS') == 'N') ? false : true;
 
 // User UID
+
 $uid = bh_session_get_value('UID');
 
 // Get the user's post page preferences.
@@ -429,7 +431,9 @@ if (isset($_POST['preview'])) {
 
 }else if (isset($_POST['submit'])) {
 
-    $editmessage = messages_get($tid, $pid, 1);
+    $edit_message = messages_get($tid, $pid, 1);
+
+    $post_edit_time = forum_get_setting('post_edit_time', false, 0);
 
     if (isset($_POST['t_to_uid'])) {
         $to_uid = $_POST['t_to_uid'];
@@ -455,18 +459,15 @@ if (isset($_POST['preview'])) {
         $valid = false;
     }
 
-    if (((forum_get_setting('allow_post_editing', 'N'))
-        || ((bh_session_get_value('UID') != $editmessage['FROM_UID']) && !(perm_get_user_permissions($editmessage['FROM_UID']) & USER_PERM_PILLORIED))
-        || (perm_get_user_permissions(bh_session_get_value('UID')) & USER_PERM_PILLORIED)
-        || (((time() - $editmessage['CREATED']) >= (intval(forum_get_setting('post_edit_time', false, 0)) * MINUTE_IN_SECONDS)) && intval(forum_get_setting('post_edit_time', false, 0)) != 0)) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
-
+    if ((perm_get_user_permissions($uid) & USER_PERM_PILLORIED) || ($uid != $edit_message['FROM_UID'] && !(perm_get_user_permissions($edit_message['FROM_UID']) & USER_PERM_PILLORIED)) || !bh_session_check_perm(USER_PERM_POST_EDIT, $t_fid) || ($post_edit_time > 0 && (time() - $edit_message['CREATED']) >= ($post_edit_time * HOUR_IN_SECONDS)) || forum_get_setting('allow_post_editing', 'N') || (($uid != $edit_message['FROM_UID']) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid))) {
+    
         html_draw_top();
-        html_error_msg($lang['nopermissiontoedit'], 'discussion.php', 'post', array('back' => $lang['back']), array('msg' => $edit_msg));
+        html_error_msg($lang['nopermissiontoedit'], 'discussion.php', 'get', array('back' => $lang['back']), array('msg' => $edit_msg));
         html_draw_bottom();
         exit;
     }
 
-    $preview_message = $editmessage;
+    $preview_message = $edit_message;
 
     if ($valid) {
 
@@ -485,7 +486,7 @@ if (isset($_POST['preview'])) {
 
             post_save_attachment_id($tid, $pid, $aid);
 
-            if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid) && $preview_message['FROM_UID'] != bh_session_get_value('UID')) {
+            if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid) && $preview_message['FROM_UID'] != $uid) {
                 admin_add_log_entry(EDIT_POST, array($t_fid, $tid, $pid));
             }
 
@@ -534,29 +535,28 @@ if (isset($_POST['preview'])) {
 
 }else {
 
-    $editmessage = messages_get($tid, $pid, 1);
+    $edit_message = messages_get($tid, $pid, 1);
 
-    if (count($editmessage) > 0) {
+    $post_edit_time = forum_get_setting('post_edit_time', false, 0);
 
-        if ($editmessage['CONTENT'] = message_get_content($tid, $pid)) {
+    if (count($edit_message) > 0) {
 
-            if (((forum_get_setting('allow_post_editing', 'N'))
-                || ((bh_session_get_value('UID') != $editmessage['FROM_UID']) && !(perm_get_user_permissions($editmessage['FROM_UID']) & USER_PERM_PILLORIED))
-                || (perm_get_user_permissions(bh_session_get_value('UID')) & USER_PERM_PILLORIED)
-                || (((time() - $editmessage['CREATED']) >= (intval(forum_get_setting('post_edit_time', false, 0)) * MINUTE_IN_SECONDS)) && intval(forum_get_setting('post_edit_time', false, 0)) != 0)) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+        if ($edit_message['CONTENT'] = message_get_content($tid, $pid)) {
+
+            if ((perm_get_user_permissions($uid) & USER_PERM_PILLORIED) || ($uid != $edit_message['FROM_UID'] && !(perm_get_user_permissions($edit_message['FROM_UID']) & USER_PERM_PILLORIED)) || !bh_session_check_perm(USER_PERM_POST_EDIT, $t_fid) || ($post_edit_time > 0 && (time() - $edit_message['CREATED']) >= ($post_edit_time * HOUR_IN_SECONDS)) || forum_get_setting('allow_post_editing', 'N') || (($uid != $edit_message['FROM_UID']) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid))) {
 
                 html_draw_top();
-                html_error_msg(sprintf($lang['editmessage'], $edit_msg), 'discussion.php', 'post', array('back' => $lang['back']), array('msg' => $edit_msg));
+                html_error_msg($lang['nopermissiontoedit'], 'discussion.php', 'get', array('back' => $lang['back']), array('msg' => $edit_msg));
                 html_draw_bottom();
                 exit;
             }
 
-            $preview_message = $editmessage;
+            $preview_message = $edit_message;
 
-            $to_uid = $editmessage['TO_UID'];
-            $from_uid = $editmessage['FROM_UID'];
+            $to_uid = $edit_message['TO_UID'];
+            $from_uid = $edit_message['FROM_UID'];
 
-            $parsed_message = new MessageTextParse($editmessage['CONTENT'], $emots_enabled);
+            $parsed_message = new MessageTextParse($edit_message['CONTENT'], $emots_enabled);
 
             $emots_enabled = $parsed_message->getEmoticons();
             $links_enabled = $parsed_message->getLinks();
@@ -576,7 +576,7 @@ if (isset($_POST['preview'])) {
         }else {
 
             html_draw_top();
-            html_error_msg(sprintf($lang['messagewasnotfound'], $edit_msg), 'discussion.php', 'post', array('back' => $lang['back']), array('msg' => $edit_msg));
+            html_error_msg(sprintf($lang['messagewasnotfound'], $edit_msg), 'discussion.php', 'get', array('back' => $lang['back']), array('msg' => $edit_msg));
             html_draw_bottom();
             exit;
         }
@@ -584,7 +584,7 @@ if (isset($_POST['preview'])) {
     }else{
 
        html_draw_top();
-       html_error_msg(sprintf($lang['messagewasnotfound'], $edit_msg), 'discussion.php', 'post', array('back' => $lang['back']), array('msg' => $edit_msg));
+       html_error_msg(sprintf($lang['messagewasnotfound'], $edit_msg), 'discussion.php', 'get', array('back' => $lang['back']), array('msg' => $edit_msg));
        html_draw_bottom();
        exit;
     }

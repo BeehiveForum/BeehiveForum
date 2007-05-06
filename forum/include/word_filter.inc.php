@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: word_filter.inc.php,v 1.36 2007-05-02 23:15:42 decoyduck Exp $ */
+/* $Id: word_filter.inc.php,v 1.37 2007-05-06 17:24:56 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -57,8 +57,10 @@ function word_filter_get($uid, &$word_filter_array)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT * FROM {$table_data['PREFIX']}FILTER_LIST ";
-    $sql.= "WHERE UID = '$uid' ORDER BY ID LIMIT 0, 20";
+    $sql = "SELECT FID, MATCH_TEXT, REPLACE_TEXT, FILTER_TYPE ";
+    $sql.= "FROM {$table_data['PREFIX']}FILTER_LIST ";
+    $sql.= "WHERE UID = '$uid' AND FILTER_ENABLED = 1 ";
+    $sql.= "ORDER BY FID LIMIT 0, 20";
 
     $result = db_query($sql, $db_word_filter_get);
 
@@ -169,11 +171,11 @@ function word_filter_prepare($word_filter_array)
 
     foreach ($word_filter_array as $filter) {
 
-        if ($filter['FILTER_OPTION'] == 1) {
+        if ($filter['FILTER_TYPE'] == 1) {
 
             $pattern_array[] = "/\b". preg_quote($filter['MATCH_TEXT'], "/"). "\b/i";
 
-        }elseif ($filter['FILTER_OPTION'] == 2) {
+        }elseif ($filter['FILTER_TYPE'] == 2) {
 
             if (!preg_match("/^\/(.*)[^\\]\/[imsxeADSUXu]*$/i", $filter['MATCH_TEXT'])) {
                 $filter['MATCH_TEXT'] = "/{$filter['MATCH_TEXT']}/i";
@@ -192,7 +194,7 @@ function word_filter_prepare($word_filter_array)
 
         }else {
 
-            if ($filter['FILTER_OPTION'] == 2) {
+            if ($filter['FILTER_TYPE'] == 2) {
 
                 $replace_array[] = "****";
 

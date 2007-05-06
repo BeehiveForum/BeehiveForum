@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.php,v 1.38 2007-04-12 13:23:10 decoyduck Exp $ */
+/* $Id: dictionary.php,v 1.39 2007-05-06 17:24:56 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -171,6 +171,15 @@ if (isset($_POST['offset_match']) && is_numeric($_POST['offset_match'])) {
     $offset_match = 0;
 }
 
+// Restart the spell check
+
+if (isset($_POST['restart'])) {
+
+    $current_word = -1;
+    $offset_match = 0;
+    $t_ignored_words = "";
+}
+
 // Intialise the dictionary
 
 $dictionary = new dictionary($t_content, $t_ignored_words, $current_word, $obj_id, $offset_match);
@@ -202,7 +211,7 @@ if (isset($_POST['cancel'])) {
 
 // Send the results back to the form
 
-if (isset($_POST['ok'])) {
+if (isset($_POST['close'])) {
 
     html_draw_top();
 
@@ -280,28 +289,15 @@ if (isset($_POST['ignoreall'])) {
     $dictionary->find_next_word();
 }
 
+html_draw_top('dictionary.js', 'onload=showCurrentWord()');
+
+echo "<h1>{$lang['dictionary']}</h1>\n";
+
 if ($dictionary->is_check_complete()) {
-
-    html_draw_top('dictionary.js', 'onload=check_complete()');
-
-    echo "<script language=\"javascript\" type=\"text/javascript\">\n";
-    echo "<!--\n\n";
-    echo "function check_complete() {\n\n";
-    echo "    if (window.confirm('{$lang['spellcheckcomplete']}')) {\n";
-    echo "        document.dictionary.current_word.value = -1;\n";
-    echo "        document.dictionary.offset_match.value = 0;\n";
-    echo "        document.dictionary.ignored_words.value = '';\n";
-    echo "        document.dictionary.submit();\n";
-    echo "    }\n";
-    echo "}\n\n";
-    echo "//-->\n";
-    echo "</script>\n";
-
-}else {
-
-    html_draw_top('dictionary.js', 'onload=showCurrentWord()');
+    echo "<h2>{$lang['spellcheckcomplete']}</h2>\n";
 }
 
+echo "<br />\n";
 echo "<form name=\"dictionary\" action=\"dictionary.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden('obj_id', _htmlentities($dictionary->get_obj_id())), "\n";
@@ -425,9 +421,20 @@ echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
-echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("ok", $lang['ok']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
-echo "    </tr>\n";
+
+if ($dictionary->is_check_complete()) {
+
+    echo "    <tr>\n";
+    echo "      <td align=\"center\">", form_submit('restart', $lang['restartspellcheck']), "&nbsp;", form_submit("close", $lang['close']), "&nbsp;", form_submit("cancel", $lang['cancelchanges']), "</td>\n";
+    echo "    </tr>\n";
+
+}else {
+
+    echo "    <tr>\n";
+    echo "      <td align=\"center\">", form_submit("close", $lang['close']), "&nbsp;", form_submit("cancel", $lang['cancelchanges']), "</td>\n";
+    echo "    </tr>\n";
+}
+
 echo "  </table>\n";
 echo "</form>\n";
 

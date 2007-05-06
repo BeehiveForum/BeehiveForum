@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_links.inc.php,v 1.27 2007-05-02 23:15:41 decoyduck Exp $ */
+/* $Id: forum_links.inc.php,v 1.28 2007-05-06 17:24:56 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -43,30 +43,34 @@ function forum_links_get_links()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $forum_settings = forum_get_settings();
-    
     $lang = load_language_file();
 
-    $sql = "SELECT LID, POS, URI, TITLE FROM {$table_data['PREFIX']}FORUM_LINKS ";
+    $forum_links_top_link = forum_get_setting('forum_links_top_link', false, $lang['forumlinks']);
+    
+    $sql = "SELECT TITLE, URI FROM {$table_data['PREFIX']}FORUM_LINKS ";
     $sql.= "ORDER BY POS ASC, LID ASC";
 
     $result = db_query($sql, $db_forum_links_get_links);
 
     if (db_num_rows($result) > 0) {
 
-        $links_array = array();
+        $links_array = array($forum_links_top_link);
 
         while ($row = db_fetch_array($result)) {
 
-            if (!isset($row['URI'])) $row['URI'] = "";
-            if (!isset($row['TITLE'])) $row['TITLE'] = "-";
+            if (!isset($row['TITLE']) || strlen(trim($row['TITLE'])) < 1) {
+                $row['TITLE'] = '-';
+            }
+            
+            if (!isset($row['URI']) || strlen(trim($row['URI'])) < 1) {
 
-            $links_array[] = $row;
+                $links_array[] = $row['TITLE'];
+            
+            }else {
+
+                $links_array[$row['URI']] = $row['TITLE'];
+            }
         }
-
-        $forum_links_top_link = forum_get_setting('forum_links_top_link', false, $lang['forumlinks']);
-        
-        array_unshift($links_array, array('TITLE' => $forum_links_top_link, 'URI' => ''));
 
         return $links_array;
     }
@@ -152,18 +156,7 @@ function forum_links_draw_dropdown()
 {
     if ($forum_links_array = forum_links_get_links(false)) {
 
-        $html = "<select name=\"forum_links\" onchange=\"openForumLink(this)\" class=\"forumlinks\">\n";
-
-        foreach($forum_links_array as $key => $forum_link) {
-
-            if (isset($forum_link['URI']) && isset($forum_link['TITLE'])) {
-
-                $forum_link_url = forum_links_fix_url($forum_link['URI']);                
-                $html.= "  <option value=\"{$forum_link_url}\">{$forum_link['TITLE']}</option>\n";
-            }
-        }
-
-        $html.= "</select>\n";
+        $html = form_dropdown_array('forum_links', $forum_links_array, false, "onchange=\"openForumLink(this)\"", "forumlinks");
         return $html;
     }
 

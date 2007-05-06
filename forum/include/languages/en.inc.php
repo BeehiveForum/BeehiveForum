@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.423 2007-05-02 23:48:59 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.424 2007-05-06 17:24:57 decoyduck Exp $ */
 
 // International English language file
 
@@ -196,7 +196,6 @@ $lang['friend'] = "Friend";
 $lang['error'] = "Error";
 $lang['guesterror'] = "Sorry, you need to be logged in to use this feature.";
 $lang['loginnow'] = "Login now";
-$lang['on'] = "on";
 $lang['unread'] = "unread";
 $lang['all'] = "All";
 $lang['allcaps'] = "ALL";
@@ -292,7 +291,6 @@ $lang['startpageerror'] = "Your start page could not be saved locally to the ser
 $lang['failedtoopenmasterstylesheet'] = "Your forum style could not be saved because the master style sheet could not be loaded. To save your style the master style sheet (make_style.css) must be located in the styles directory of your Beehive Forum installation.";
 $lang['makestyleerror'] = "Your forum style could not be saved locally to the server because permission was denied. To save your forum style please click the download button below which will prompt you to save the file to your hard drive. You can then upload this file to your server into %s folder, if necessary creating the folder structure in the process. You should note that some browsers may change the name of the file upon download. When uploading the file please make sure that it is named style.css otherwise the forum style will be unusable.";
 $lang['uploadfailed'] = "Your new start page could not be uploaded to the server because permission was denied. Please check that the web server / PHP process is able to write to the %s folder on your server.";
-$lang['makestylefailed'] = "Your new forum style could not be saved to the server because permission was denied. Please check that the web server / PHP process is able to write to the %s folder on your server.";
 $lang['forumstyle'] = "Forum Style";
 $lang['wordfilter'] = "Word Filter";
 $lang['forumlinks'] = "Forum Links";
@@ -366,7 +364,9 @@ $lang['notlogged'] = "Not Logged";
 $lang['addwordfilter'] = "Add word filter";
 $lang['addnewwordfilter'] = "Add New Word Filter";
 $lang['wordfilterupdated'] = "Word Filter updated";
+$lang['filtername'] = "Filter Name";
 $lang['filtertype'] = "Filter Type";
+$lang['filterenabled'] = "Filter Enabled";
 $lang['editwordfilter'] = "Edit Word Filter";
 $lang['nowordfilterentriesfound'] = "No existing word filter entries found. To add a word filter click the button below.";
 $lang['mustspecifymatchedtext'] = "You must specify matched text";
@@ -1686,8 +1686,10 @@ $lang['dictionary'] = "Dictionary";
 $lang['spellcheck'] = "Spell Check";
 $lang['notindictionary'] = "Not in dictionary";
 $lang['changeto'] = "Change to";
+$lang['restartspellcheck'] = "Restart";
+$lang['cancelchanges'] = "Cancel Changes";
 $lang['initialisingdotdotdot'] = "Initialising...";
-$lang['spellcheckcomplete'] = "Spell check is complete. Do you wish to start again from the beginning?";
+$lang['spellcheckcomplete'] = "Spell check is complete. To restart spell check click restart button below.";
 $lang['spellcheck'] = "Spell check";
 $lang['noformobj'] = "No form object specified for return text";
 $lang['bodytext'] = "Body Text";

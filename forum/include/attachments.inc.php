@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.129 2007-05-02 23:15:41 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.130 2007-05-06 20:33:42 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -161,7 +161,7 @@ function get_attachments($uid, $aid, &$user_attachments, &$user_image_attachment
         $sql.= "ORDER BY FORUMS.FID DESC, PAF.FILENAME";
     }
 
-    $result = db_query($sql, $db_get_attachments);
+    if (!$result = db_query($sql, $db_get_attachments)) return false;
 
     while($attachment = db_fetch_array($result)) {
 
@@ -231,7 +231,7 @@ function get_all_attachments($uid, $aid, &$user_attachments, &$user_image_attach
     $sql.= "WHERE PAF.UID = '$uid' AND PAF.AID <> '$aid'";
     $sql.= "ORDER BY FORUMS.FID DESC, PAF.FILENAME";
 
-    $result = db_query($sql, $db_get_all_attachments);
+    if (!$result = db_query($sql, $db_get_all_attachments)) return false;
 
     while($attachment = db_fetch_array($result)) {
 
@@ -316,7 +316,7 @@ function get_users_attachments($uid, &$user_attachments, &$user_image_attachment
         $sql.= "WHERE PAF.UID = '$uid' ORDER BY FORUMS.FID DESC, PAF.FILENAME";
     }
 
-    $result = db_query($sql, $db_get_users_attachments);
+    if (!$result = db_query($sql, $db_get_users_attachments)) return false;
 
     while($attachment = db_fetch_array($result)) {
 
@@ -382,7 +382,9 @@ function add_attachment($uid, $aid, $fileid, $filename, $mimetype)
     $sql = "INSERT INTO POST_ATTACHMENT_FILES (AID, UID, FILENAME, MIMETYPE, HASH) ";
     $sql.= "VALUES ('$aid', '$uid', '$filename', '$mimetype', '$hash')";
 
-    return ($result = db_query($sql, $db_add_attachment));
+    if (!$result = db_query($sql, $db_add_attachment)) return false;
+
+    return true;
 }
 
 /**
@@ -413,7 +415,7 @@ function delete_attachment_by_aid($aid)
     $sql = "SELECT PAF.HASH FROM POST_ATTACHMENT_FILES PAF ";
     $sql.= "WHERE PAF.AID = '$aid' AND PAF.UID = '$uid'";
 
-    $result = db_query($sql, $db_delete_attachment_by_aid);
+    if (!$result = db_query($sql, $db_delete_attachment_by_aid)) return false;
 
     while ($row = db_fetch_array($result)) {
 
@@ -452,7 +454,7 @@ function delete_attachment($hash)
     $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ON (THREAD.TID = PAI.TID) ";
     $sql.= "WHERE PAF.HASH = '$hash'";
 
-    $result = db_query($sql, $db_delete_attachment);
+    if (!$result = db_query($sql, $db_delete_attachment)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -478,14 +480,14 @@ function delete_attachment($hash)
             $sql = "DELETE FROM POST_ATTACHMENT_FILES ";
             $sql.= "WHERE HASH = '$hash'";
 
-            $result = db_query($sql, $db_delete_attachment);
+            if (!$result = db_query($sql, $db_delete_attachment)) return false;
 
             // Check to see if there are anymore attachments with the same AID
 
             $sql = "SELECT AID FROM POST_ATTACHMENT_FILES ";
             $sql.= "WHERE AID = '{$row['AID']}'";
 
-            $result = db_query($sql, $db_delete_attachment);
+            if (!$result = db_query($sql, $db_delete_attachment)) return false;
 
             // Finally delete the file (and it's thumbnail)
 
@@ -526,7 +528,7 @@ function delete_attachment_thumbnail($hash)
     $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ON (THREAD.TID = PAI.TID) ";
     $sql.= "WHERE PAF.HASH = '$hash'";
 
-    $result = db_query($sql, $db_delete_attachment_thumbnail);
+    if (!$result = db_query($sql, $db_delete_attachment_thumbnail)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -580,7 +582,8 @@ function get_free_attachment_space($uid)
     $max_attachment_space = forum_get_setting('attachments_max_user_space', false, 1048576);
 
     $sql = "SELECT * FROM POST_ATTACHMENT_FILES WHERE UID = '$uid'";
-    $result = db_query($sql, $db_get_free_attachment_space);
+
+    if (!$result = db_query($sql, $db_get_free_attachment_space)) return false;
 
     while($row = db_fetch_array($result)) {
 
@@ -618,7 +621,7 @@ function get_attachment_id($tid, $pid)
     $sql = "SELECT AID FROM POST_ATTACHMENT_IDS WHERE ";
     $sql.= "FID = '$forum_fid' AND TID = '$tid' AND PID = '$pid'";
 
-    $result = db_query($sql, $db_get_attachment_id);
+    if (!$result = db_query($sql, $db_get_attachment_id)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -655,7 +658,7 @@ function get_folder_fid($aid)
     $sql.= "LEFT JOIN {$table_data['PREFIX']}FOLDER FOLDER ON (FOLDER.FID = THREAD.FID) ";
     $sql.= "WHERE PAI.FID = '$forum_fid' AND PAI.AID = '$aid'";
 
-    $result = db_query($sql, $db_get_folder_fid);
+    if (!$result = db_query($sql, $db_get_folder_fid)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -684,7 +687,8 @@ function get_pm_attachment_id($mid)
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT AID FROM PM_ATTACHMENT_IDS WHERE MID = '$mid'";
-    $result = db_query($sql, $db_get_pm_attachment_id);
+
+    if (!$result = db_query($sql, $db_get_pm_attachment_id)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -721,7 +725,7 @@ function get_message_link($aid, $get_pm_link = true)
     $sql.= "LEFT JOIN FORUMS FORUMS ON (PAI.FID = FORUMS.FID) ";
     $sql.= "WHERE PAI.AID = '$aid'";
 
-    $result = db_query($sql, $db_get_message_link);
+    if (!$result = db_query($sql, $db_get_message_link)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -731,7 +735,8 @@ function get_message_link($aid, $get_pm_link = true)
     }else if ($get_pm_link) {
 
         $sql = "SELECT MID FROM PM_ATTACHMENT_IDS WHERE AID = '$aid'";
-        $result = db_query($sql, $db_get_message_link);
+
+        if (!$result = db_query($sql, $db_get_message_link)) return false;
 
         if (db_num_rows($result) > 0) {
 
@@ -767,7 +772,8 @@ function get_num_attachments($aid)
     $sql = "SELECT COUNT(AID) FROM POST_ATTACHMENT_FILES ";
     $sql.= "WHERE AID = '$aid' LIMIT 0, 1";
 
-    $result = db_query($sql, $db_get_num_attachments);
+    if (!$result = db_query($sql, $db_get_num_attachments)) return false;
+    
     list($num_attachments) = db_fetch_array($result, DB_RESULT_NUM);
 
     return $num_attachments;
@@ -793,7 +799,7 @@ function get_attachment_by_hash($hash)
     $sql = "SELECT AID, UID, FILENAME, MIMETYPE, HASH, DOWNLOADS ";
     $sql.= "FROM POST_ATTACHMENT_FILES WHERE HASH = '$hash' LIMIT 0, 1";
 
-    $result = db_query($sql, $db_get_attachment_by_hash);
+    if (!$result = db_query($sql, $db_get_attachment_by_hash)) return false;
 
     if (db_num_rows($result) > 0) {
         return db_fetch_array($result);
@@ -822,7 +828,9 @@ function attachment_inc_dload_count($hash)
     $sql = "UPDATE LOW_PRIORITY POST_ATTACHMENT_FILES ";
     $sql.= "SET DOWNLOADS = DOWNLOADS + 1 WHERE HASH = '$hash'";
 
-    return db_query($sql, $db_attachment_inc_dload_count);
+    if (!$result = db_query($sql, $db_attachment_inc_dload_count)) return false;
+
+    return true;
 }
 
 /**

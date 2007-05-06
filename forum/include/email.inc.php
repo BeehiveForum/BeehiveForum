@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.110 2007-05-02 23:15:41 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.111 2007-05-06 20:33:42 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -134,7 +134,7 @@ function email_sendsubscription($tuid, $fuid, $tid, $pid)
     $sql.= "WHERE USER_THREAD.TID = '$tid' AND USER_THREAD.INTEREST = 2 ";
     $sql.= "AND USER_THREAD.UID NOT IN ($fuid, $tuid)";
 
-    $result = db_query($sql, $db_email_sendsubscription);
+    if (!$result = db_query($sql, $db_email_sendsubscription)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -497,7 +497,8 @@ function email_is_unique($email_address)
     $email_address = db_escape_string($email_address);
 
     $sql = "SELECT UID FROM USER WHERE EMAIL = '$email_address' LIMIT 0, 1";
-    $result = db_query($sql, $db_email_is_unique);
+
+    if (!$result = db_query($sql, $db_email_is_unique)) return false;
 
     return (db_num_rows($result) < 1);
 }

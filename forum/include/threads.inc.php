@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.263 2007-05-02 23:15:42 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.264 2007-05-06 20:33:43 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -64,7 +64,7 @@ function threads_get_folders()
     $sql.= "ON (USER_FOLDER.FID = FOLDER.FID AND USER_FOLDER.UID = '$uid') ";
     $sql.= "ORDER BY FOLDER.FID, USER_FOLDER.INTEREST DESC";
 
-    $result = db_query($sql, $db_threads_get_folders);
+    if (!$result = db_query($sql, $db_threads_get_folders)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -187,7 +187,8 @@ function threads_get_all($uid, $start = 0) // get "all" threads (i.e. most recen
         $sql.= "LIMIT $start, 50";
     }
 
-    $result = db_query($sql, $db_threads_get_all);
+    if (!$result = db_query($sql, $db_threads_get_all)) return false;
+
     return threads_process_list($result);
 }
 
@@ -241,7 +242,8 @@ function threads_get_started_by_me($uid, $start = 0) // get threads started by u
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql.= "LIMIT $start, 50";
 
-    $result = db_query($sql, $db_threads_get_started_by_me);
+    if (!$result = db_query($sql, $db_threads_get_started_by_me)) return false;
+
     return threads_process_list($result);
 }
 
@@ -309,7 +311,8 @@ function threads_get_unread($uid) // get unread messages for $uid
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql.= "LIMIT 0, 50";
 
-    $result = db_query($sql, $db_threads_get_unread);
+    if (!$result = db_query($sql, $db_threads_get_unread)) return false;
+
     return threads_process_list($result);
 }
 
@@ -369,7 +372,8 @@ function threads_get_unread_to_me($uid) // get unread messages to $uid (ignores 
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql.= "LIMIT 0, 50";
 
-    $result = db_query($sql, $db_threads_get_unread_to_me);
+    if (!$result = db_query($sql, $db_threads_get_unread_to_me)) return false;
+
     return threads_process_list($result);
 }
 
@@ -451,7 +455,8 @@ function threads_get_by_days($uid, $days = 1) // get threads from the last $days
         $sql.= "LIMIT 0, 50";
     }
 
-    $result = db_query($sql, $db_threads_get_by_days);
+    if (!$result = db_query($sql, $db_threads_get_by_days)) return false;
+
     return threads_process_list($result);
 }
 
@@ -514,7 +519,8 @@ function threads_get_by_interest($uid, $interest = 1) // get messages for $uid b
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql.= "LIMIT 0, 50";
 
-    $result = db_query($sql, $db_threads_get_by_interest);
+    if (!$result = db_query($sql, $db_threads_get_by_interest)) return false;
+    
     return threads_process_list($result);
 }
 
@@ -584,7 +590,8 @@ function threads_get_unread_by_interest($uid, $interest = 1) // get unread messa
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql.= "LIMIT 0, 50";
 
-    $result = db_query($sql, $db_threads_get_unread_by_interest);
+    if (!$result = db_query($sql, $db_threads_get_unread_by_interest)) return false;
+    
     return threads_process_list($result);
 }
 
@@ -647,7 +654,8 @@ function threads_get_recently_viewed($uid) // get messages recently seem by $uid
     $sql.= "ORDER BY THREAD.MODIFIED DESC ";
     $sql.= "LIMIT 0, 50";
 
-    $result = db_query($sql, $db_threads_get_recently_viewed);
+    if (!$result = db_query($sql, $db_threads_get_recently_viewed)) return false;
+    
     return threads_process_list($result);
 }
 
@@ -707,7 +715,8 @@ function threads_get_by_relationship($uid, $relationship = USER_FRIEND, $start =
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql.= "LIMIT $start, 50";
 
-    $result = db_query($sql, $db_threads_get_by_relationship);
+    if (!$result = db_query($sql, $db_threads_get_by_relationship)) return false;
+    
     return threads_process_list($result);
 }
 
@@ -774,7 +783,8 @@ function threads_get_unread_by_relationship($uid, $relationship = USER_FRIEND) /
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql.= "LIMIT 0, 50";
 
-    $result = db_query($sql, $db_threads_get_unread);
+    if (!$result = db_query($sql, $db_threads_get_unread)) return false;
+    
     return threads_process_list($result);
 }
 
@@ -838,7 +848,8 @@ function threads_get_polls($uid, $start = 0)
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql.= "LIMIT $start, 50";
 
-    $result = db_query($sql, $db_threads_get_polls);
+    if (!$result = db_query($sql, $db_threads_get_polls)) return false;
+    
     return threads_process_list($result);
 }
 
@@ -902,7 +913,8 @@ function threads_get_sticky($uid, $start = 0)
     $sql.= "ORDER BY THREAD.MODIFIED DESC ";
     $sql.= "LIMIT $start, 50";
 
-    $result = db_query($sql, $db_threads_get_all);
+    if (!$result = db_query($sql, $db_threads_get_all)) return false;
+    
     return threads_process_list($result);
 }
 
@@ -972,7 +984,8 @@ function threads_get_longest_unread($uid) // get unread messages for $uid
     $sql.= "ORDER BY T_LENGTH DESC, THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql.= "LIMIT 0, 50";
 
-    $result = db_query($sql, $db_threads_get_unread);
+    if (!$result = db_query($sql, $db_threads_get_unread)) return false;
+    
     return threads_process_list($result);
 }
 
@@ -1034,7 +1047,8 @@ function threads_get_folder($uid, $fid, $start = 0)
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql.= "LIMIT $start, 50";
 
-    $result = db_query($sql, $db_threads_get_folder);
+    if (!$result = db_query($sql, $db_threads_get_folder)) return false;
+    
     return threads_process_list($result);
 }
 
@@ -1097,7 +1111,8 @@ function threads_get_deleted($uid, $start = 0)
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql.= "LIMIT $start, 50";
 
-    $result = db_query($sql, $db_threads_get_all);
+    if (!$result = db_query($sql, $db_threads_get_all)) return false;
+    
     return threads_process_list($result);
 }
 
@@ -1167,7 +1182,8 @@ function threads_get_unread_by_days($uid, $days = 0) // get unread messages for 
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql.= "LIMIT 0, 50";
 
-    $result = db_query($sql, $db_threads_get_unread);
+    if (!$result = db_query($sql, $db_threads_get_unread)) return false;
+    
     return threads_process_list($result);
 }
 
@@ -1274,7 +1290,7 @@ function threads_get_most_recent($limit = 10, $fid_list = false, $creation_order
         $sql.= "LIMIT 0, $limit";
     }
 
-    $result = db_query($sql, $db_threads_get_recent);
+    if (!$result = db_query($sql, $db_threads_get_recent)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -1415,9 +1431,11 @@ function threads_get_folder_msgs()
     if (!$table_data = get_table_prefix()) return 0;
 
     $sql = "SELECT FID, COUNT(*) AS TOTAL FROM {$table_data['PREFIX']}THREAD GROUP BY FID";
-    $result = db_query($sql, $db_threads_get_folder_msgs);
+    
+    if (!$result = db_query($sql, $db_threads_get_folder_msgs)) return false;
 
     while($folder = db_fetch_array($result)){
+
         $folder_msgs[$folder['FID']] = $folder['TOTAL'];
     }
 
@@ -1450,7 +1468,7 @@ function threads_any_unread()
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
     $sql.= "LIMIT 0, 1";
 
-    $result = db_query($sql, $db_threads_any_unread);
+    if (!$result = db_query($sql, $db_threads_any_unread)) return false;
 
     return (db_num_rows($result) > 0);
 }
@@ -1479,7 +1497,7 @@ function threads_mark_all_read()
         $sql.= "FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp) ";
         $sql.= "ON DUPLICATE KEY UPDATE LAST_READ = VALUES(LAST_READ)";
 
-        $result_threads = db_query($sql, $db_threads_mark_all_read);
+        if (!$result_threads = db_query($sql, $db_threads_mark_all_read)) return false;
 
         return $result_threads;
 
@@ -1493,7 +1511,7 @@ function threads_mark_all_read()
         $sql.= "AND THREAD.MODIFIED > FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp) ";
         $sql.= "ORDER BY THREAD.MODIFIED";
 
-        $result_threads = db_query($sql, $db_threads_mark_all_read);
+        if (!$result_threads = db_query($sql, $db_threads_mark_all_read)) return false;
 
         $threads_array = array();
 
@@ -1533,7 +1551,7 @@ function threads_mark_50_read()
         $sql.= "ORDER BY {$table_data['PREFIX']}THREAD.MODIFIED DESC LIMIT 0, 50 ";
         $sql.= "ON DUPLICATE KEY UPDATE LAST_READ = VALUES(LAST_READ) ";
 
-        $result_threads = db_query($sql, $db_threads_mark_50_read);
+        if (!$result_threads = db_query($sql, $db_threads_mark_50_read)) return false;
 
         return $result_threads;
 
@@ -1547,7 +1565,7 @@ function threads_mark_50_read()
         $sql.= "AND THREAD.MODIFIED > FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp) ";
         $sql.= "ORDER BY THREAD.MODIFIED DESC LIMIT 0, 50";
 
-        $result_threads = db_query($sql, $db_threads_mark_50_read);
+        if (!$result_threads = db_query($sql, $db_threads_mark_50_read)) return false;
 
         $threads_array = array();
 
@@ -1586,7 +1604,7 @@ function threads_mark_folder_read($fid)
         $sql.= "FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp) ";
         $sql.= "ON DUPLICATE KEY UPDATE LAST_READ = VALUES(LAST_READ)";
  
-        $result_threads = db_query($sql, $db_threads_mark_folder_read);
+        if (!$result_threads = db_query($sql, $db_threads_mark_folder_read)) return false;
 
         return $result_threads;
 
@@ -1600,7 +1618,7 @@ function threads_mark_folder_read($fid)
         $sql.= "AND THREAD.MODIFIED > FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp) ";
         $sql.= "AND THREAD.FID = '$fid'";
 
-        $result_threads = db_query($sql, $db_threads_mark_folder_read);
+        if (!$result_threads = db_query($sql, $db_threads_mark_folder_read)) return false;
 
         $threads_array = array();
 
@@ -1641,7 +1659,7 @@ function threads_mark_read($tid_array)
         $sql.= "FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp) ";
         $sql.= "ON DUPLICATE KEY UPDATE LAST_READ = VALUES(LAST_READ)";
 
-        $result_threads = db_query($sql, $db_threads_mark_read);
+        if (!$result_threads = db_query($sql, $db_threads_mark_read)) return false;
 
         return $result_threads;
 
@@ -1701,7 +1719,7 @@ function threads_get_unread_data(&$threads_array, $tid_array)
     $sql = "SELECT TID, LENGTH, UNIX_TIMESTAMP(MODIFIED) AS MODIFIED ";
     $sql.= "FROM {$table_data['PREFIX']}THREAD WHERE TID IN ($tid_list)";
 
-    $result = db_query($sql, $db_threads_get_modified);
+    if (!$result = db_query($sql, $db_threads_get_modified)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -1859,7 +1877,7 @@ function threads_have_attachments(&$threads_array, $tid_array)
     $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
     $sql.= "WHERE PAI.FID = '$forum_fid' AND PAI.TID IN ($tid_list) ";
 
-    $result = db_query($sql, $db_thread_has_attachments);
+    if (!$result = db_query($sql, $db_thread_has_attachments)) return false;
 
     while ($row = db_fetch_array($result)) {
 
@@ -1882,7 +1900,7 @@ function thread_has_attachments($tid)
     $sql.= "WHERE PAI.FID = '$forum_fid' AND PAI.TID = '$tid' ";
     $sql.= "LIMIT 0, 1";
 
-    $result = db_query($sql, $db_thread_has_attachments);
+    if (!$result = db_query($sql, $db_thread_has_attachments)) return false;
 
     return (db_num_rows($result) > 0);
 }
@@ -2004,7 +2022,8 @@ function threads_get_user_subscriptions($include_threads = array(), $interest_ty
         $sql.= "OR THREAD.TID IN ('$threads_list') ";
     }
 
-    $result = db_query($sql, $db_threads_get_user_subscriptions);
+    if (!$result = db_query($sql, $db_threads_get_user_subscriptions)) return false;
+    
     list($thread_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT THREAD.TID, THREAD.TITLE, FOLDER.PREFIX, USER_THREAD.INTEREST ";
@@ -2029,7 +2048,7 @@ function threads_get_user_subscriptions($include_threads = array(), $interest_ty
     $sql.= "ORDER BY THREAD.MODIFIED DESC ";
     $sql.= "LIMIT $offset, 20";
 
-    $result = db_query($sql, $db_threads_get_user_subscriptions);
+    if (!$result = db_query($sql, $db_threads_get_user_subscriptions)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -2083,7 +2102,8 @@ function threads_search_user_subscriptions($threadsearch, $include_threads = arr
         $sql.= "OR THREAD.TID IN ('$threads_list') ";
     }
     
-    $result = db_query($sql, $db_threads_search_user_subscriptions);
+    if (!$result = db_query($sql, $db_threads_search_user_subscriptions)) return false;
+    
     list($thread_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT THREAD.TID, THREAD.TITLE, USER_THREAD.INTEREST ";
@@ -2108,7 +2128,7 @@ function threads_search_user_subscriptions($threadsearch, $include_threads = arr
     $sql.= "ORDER BY THREAD.MODIFIED DESC ";
     $sql.= "LIMIT $offset, 20";
 
-    $result = db_query($sql, $db_threads_search_user_subscriptions);
+    if (!$result = db_query($sql, $db_threads_search_user_subscriptions)) return false;
 
     if (db_num_rows($result) > 0) {
 

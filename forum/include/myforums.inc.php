@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.63 2007-05-02 23:15:42 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.64 2007-05-06 20:33:43 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -55,7 +55,7 @@ function get_forum_list()
     $sql.= "AND USER_FORUM.UID = '$uid') WHERE FORUMS.ACCESS_LEVEL > -1 ";
     $sql.= "ORDER BY FORUMS.FID";
 
-    $result_forums = db_query($sql, $db_get_forum_list);
+    if (!$result_forums = db_query($sql, $db_get_forum_list)) return false;
 
     if (db_num_rows($result_forums) > 0) {
 
@@ -78,7 +78,8 @@ function get_forum_list()
             // Get number of messages on forum
 
             $sql = "SELECT COUNT(PID) AS POST_COUNT FROM {$forum_data['PREFIX']}POST POST ";
-            $result_post_count = db_query($sql, $db_get_forum_list);
+
+            if (!$result_post_count = db_query($sql, $db_get_forum_list)) return false;
 
             $row = db_fetch_array($result_post_count);
 
@@ -115,7 +116,7 @@ function get_my_forums()
     $sql.= "AND USER_FORUM.UID = '$uid') WHERE FORUMS.ACCESS_LEVEL > -1 ";
     $sql.= "ORDER BY FORUMS.FID";
 
-    $result_forums = db_query($sql, $db_get_my_forums);
+    if (!$result_forums = db_query($sql, $db_get_my_forums)) return false;
 
     if (db_num_rows($result_forums) > 0) {
 
@@ -159,7 +160,7 @@ function get_my_forums()
                 $sql.= "WHERE THREAD.FID IN ($folders) ";
                 $sql.= "AND THREAD.MODIFIED > FROM_UNIXTIME('$unread_cutoff_stamp')";
 
-                $result_unread_count = db_query($sql, $db_get_my_forums);
+                if (!$result_unread_count = db_query($sql, $db_get_my_forums)) return false;
 
                 $unread_data = db_fetch_array($result_unread_count);
 
@@ -180,7 +181,7 @@ function get_my_forums()
             $sql.= "FROM {$forum_data['PREFIX']}THREAD THREAD ";
             $sql.= "WHERE THREAD.FID IN ($folders) ";
 
-            $result_messages_count = db_query($sql, $db_get_my_forums);
+            if (!$result_messages_count = db_query($sql, $db_get_my_forums)) return false;
             
             $num_messages_data = db_fetch_array($result_messages_count);
 
@@ -198,7 +199,7 @@ function get_my_forums()
             $sql.= "ON (POST.TID = THREAD.TID) WHERE THREAD.FID IN ($folders) ";
             $sql.= "AND POST.TO_UID = '$uid' AND POST.VIEWED IS NULL ";
 
-            $result_unread_to_me = db_query($sql, $db_get_my_forums);
+            if (!$result_unread_to_me = db_query($sql, $db_get_my_forums)) return false;
 
             $row = db_fetch_array($result_unread_to_me);
 
@@ -222,7 +223,7 @@ function get_my_forums()
             $sql.= "WHERE UID = '$uid' AND FID = '$forum_fid' ";
             $sql.= "AND LAST_VISIT IS NOT NULL AND LAST_VISIT > 0";
 
-            $result_last_visit = db_query($sql, $db_get_my_forums);
+            if (!$result_last_visit = db_query($sql, $db_get_my_forums)) return false;
 
             $row = db_fetch_array($result_last_visit);
 
@@ -264,6 +265,7 @@ function user_set_forum_interest($fid, $interest)
     if ($uid > 0) {
 
         $sql = "SELECT UID FROM USER_FORUM WHERE UID = '$uid' AND FID = '$fid'";
+
         if (!$result = db_query($sql, $db_user_set_forum_interest)) return false;
 
         if (db_num_rows($result) > 0) {

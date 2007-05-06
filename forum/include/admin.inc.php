@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.117 2007-05-06 17:24:56 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.118 2007-05-06 20:33:42 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -183,18 +183,19 @@ function admin_get_word_filter_list($offset)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT COUNT(FID) FROM {$table_data['PREFIX']}FILTER_LIST ";
+    $sql = "SELECT COUNT(FID) FROM {$table_data['PREFIX']}WORD_FILTER ";
     $sql.= "WHERE UID = 0";
 
-    $result = db_query($sql, $db_admin_get_word_filter);
+    if (!$result = db_query($sql, $db_admin_get_word_filter)) return false;
+    
     list($word_filter_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT FID, FILTER_NAME, MATCH_TEXT, REPLACE_TEXT, FILTER_TYPE, ";
-    $sql.= "FILTER_ENABLED FROM {$table_data['PREFIX']}FILTER_LIST ";
+    $sql.= "FILTER_ENABLED FROM {$table_data['PREFIX']}WORD_FILTER ";
     $sql.= "WHERE UID = 0 ORDER BY FID ";
     $sql.= "LIMIT $offset, 10";
 
-    $result = db_query($sql, $db_admin_get_word_filter);
+    if (!$result = db_query($sql, $db_admin_get_word_filter)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -231,10 +232,10 @@ function admin_get_word_filter($filter_id)
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT FID, FILTER_NAME, MATCH_TEXT, REPLACE_TEXT, FILTER_TYPE, ";
-    $sql.= "FILTER_ENABLED FROM {$table_data['PREFIX']}FILTER_LIST ";
+    $sql.= "FILTER_ENABLED FROM {$table_data['PREFIX']}WORD_FILTER ";
     $sql.= "WHERE UID = 0 AND FID = '$filter_id' ORDER BY FID";
 
-    $result = db_query($sql, $db_admin_get_word_filter);
+    if (!$result = db_query($sql, $db_admin_get_word_filter)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -256,13 +257,13 @@ function admin_get_word_filter($filter_id)
 
 function admin_delete_word_filter($filter_id)
 {
-    if (!is_numeric($filter_id)) return false;
-
     $db_user_delete_word_filter = db_connect();
+
+    if (!is_numeric($filter_id)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "DELETE FROM {$table_data['PREFIX']}FILTER_LIST ";
+    $sql = "DELETE FROM {$table_data['PREFIX']}WORD_FILTER ";
     $sql.= "WHERE UID = 0 AND FID = '$filter_id'";
 
     if (!$result = db_query($sql, $db_user_delete_word_filter)) return false;
@@ -285,7 +286,7 @@ function admin_clear_word_filter()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "DELETE FROM {$table_data['PREFIX']}FILTER_LIST WHERE UID = 0";
+    $sql = "DELETE FROM {$table_data['PREFIX']}WORD_FILTER WHERE UID = 0";
 
     if (!$result = db_query($sql, $db_admin_clear_word_filter)) return false;
 
@@ -316,7 +317,7 @@ function admin_add_word_filter($filter_name, $match_text, $replace_text, $filter
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "INSERT INTO {$table_data['PREFIX']}FILTER_LIST ";
+    $sql = "INSERT INTO {$table_data['PREFIX']}WORD_FILTER ";
     $sql.= "(UID, FILTER_NAME, MATCH_TEXT, REPLACE_TEXT, FILTER_TYPE, FILTER_ENABLED) ";
     $sql.= "VALUES (0, '$filter_name', '$match_text', '$replace_text', '$filter_option', '$filter_enabled')";
 
@@ -351,7 +352,7 @@ function admin_update_word_filter($filter_id, $filter_name, $match_text, $replac
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "UPDATE {$table_data['PREFIX']}FILTER_LIST SET FILTER_NAME = '$filter_name', ";
+    $sql = "UPDATE {$table_data['PREFIX']}WORD_FILTER SET FILTER_NAME = '$filter_name', ";
     $sql.= "MATCH_TEXT = '$match_text', REPLACE_TEXT = '$replace_text', ";
     $sql.= "FILTER_TYPE = '$filter_option', FILTER_ENABLED = '$filter_enabled' ";
     $sql.= "WHERE UID = 0 AND FID = '$filter_id'";
@@ -440,7 +441,8 @@ function admin_user_search($user_search, $sort_by = 'VISITOR_LOG.LAST_LOGON', $s
     $sql.= "OR USER.NICKNAME LIKE '$user_search%') ";
     $sql.= "GROUP BY USER.UID $having_sql ";
 
-    $result = db_query($sql, $db_user_search);
+    if (!$result = db_query($sql, $db_user_search)) return false;
+    
     $user_search_count = db_num_rows($result);
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, SESSIONS.HASH, SESSIONS.REFERER, ";
@@ -457,7 +459,7 @@ function admin_user_search($user_search, $sort_by = 'VISITOR_LOG.LAST_LOGON', $s
     $sql.= "GROUP BY USER.UID $having_sql ";
     $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, 10 ";
 
-    $result = db_query($sql, $db_user_search);
+    if (!$result = db_query($sql, $db_user_search)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -554,7 +556,8 @@ function admin_user_get_all($sort_by = 'VISITOR_LOG.LAST_LOGON', $sort_dir = 'AS
     $sql.= "AND GROUP_PERMS.FORUM = '$forum_fid' AND GROUP_PERMS.FID = '0') ";
     $sql.= "GROUP BY USER.UID $having_sql ";
 
-    $result = db_query($sql, $db_user_get_all);
+    if (!$result = db_query($sql, $db_user_get_all)) return false;
+    
     $user_get_all_count = db_num_rows($result);
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, SESSIONS.HASH, SESSIONS.REFERER, ";
@@ -569,7 +572,7 @@ function admin_user_get_all($sort_by = 'VISITOR_LOG.LAST_LOGON', $sort_dir = 'AS
     $sql.= "GROUP BY USER.UID $having_sql ";
     $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, 10 ";
 
-    $result = db_query($sql, $db_user_get_all);
+    if (!$result = db_query($sql, $db_user_get_all)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -610,7 +613,9 @@ function admin_session_end($uid)
     $sql = "DELETE FROM SESSIONS WHERE UID = '$uid' ";
     $sql.= "AND FID = '$forum_fid'";
 
-    return db_query($sql, $db_admin_session_end);
+    if (!$result = db_query($sql, $db_admin_session_end)) return false;
+
+    return true;
 }
 
 /**
@@ -657,7 +662,7 @@ function admin_get_users_attachments($uid, &$user_attachments, &$user_image_atta
         $sql.= "WHERE PAF.UID = '$uid' ORDER BY FORUMS.FID DESC, PAF.FILENAME";
     }
 
-    $result = db_query($sql, $db_get_users_attachments);
+    if (!$result = db_query($sql, $db_get_users_attachments)) return false;
 
     while($attachment = db_fetch_array($result)) {
 
@@ -714,7 +719,8 @@ function admin_get_forum_list($offset)
     $forums_array = array();
 
     $sql = "SELECT COUNT(FID) FROM FORUMS";
-    $result = db_query($sql, $db_admin_get_forum_list);
+
+    if (!$result = db_query($sql, $db_admin_get_forum_list)) return false;
 
     list($forums_count) = db_fetch_array($result, DB_RESULT_NUM);
 
@@ -724,7 +730,7 @@ function admin_get_forum_list($offset)
     $sql.= "AND FORUM_SETTINGS.SNAME = 'forum_name') ";
     $sql.= "LIMIT $offset, 10 ";
 
-    $result = db_query($sql, $db_admin_get_forum_list);
+    if (!$result = db_query($sql, $db_admin_get_forum_list)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -765,7 +771,8 @@ function admin_forum_get_post_count($fid)
     if ($table_data = forum_get_table_prefix($fid)) {
 
         $sql = "SELECT COUNT(PID) FROM {$table_data['PREFIX']}POST";
-        $result = db_query($sql, $db_admin_forum_get_post_count);
+
+        if (!$result = db_query($sql, $db_admin_forum_get_post_count)) return false;
 
         list($post_count) = db_fetch_array($result, DB_RESULT_NUM);
 
@@ -804,13 +811,14 @@ function admin_get_ban_data($sort_by = "ID", $sort_dir = "ASC", $offset = 0)
 
     $sql = "SELECT COUNT(ID) AS BAN_COUNT FROM {$table_data['PREFIX']}BANNED";
 
-    $result = db_query($sql, $db_admin_get_bandata);
+    if (!$result = db_query($sql, $db_admin_get_bandata)) return false;
+    
     list($ban_data_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT ID, BANTYPE, BANDATA, COMMENT FROM {$table_data['PREFIX']}BANNED ";
     $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, 10";
 
-    $result = db_query($sql, $db_admin_get_bandata);
+    if (!$result = db_query($sql, $db_admin_get_bandata)) return false;
 
     if (db_num_rows($result) > 0) {
     
@@ -849,7 +857,7 @@ function admin_get_ban($ban_id)
     $sql = "SELECT ID, BANTYPE, BANDATA, COMMENT FROM ";
     $sql.= "{$table_data['PREFIX']}BANNED WHERE ID = '$ban_id'";
 
-    $result = db_query($sql, $db_admin_get_bandata);
+    if (!$result = db_query($sql, $db_admin_get_bandata)) return false;
 
     if (db_num_rows($result) > 0) {
     
@@ -888,7 +896,8 @@ function admin_get_post_approval_queue($offset = 0)
     $sql.= "ON (THREAD.TID = POST.TID) WHERE POST.APPROVED = '0' ";
     $sql.= "AND THREAD.FID IN ($fidlist)";
 
-    $result = db_query($sql, $db_admin_get_post_approval_queue);
+    if (!$result = db_query($sql, $db_admin_get_post_approval_queue)) return false;
+    
     list($post_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT THREAD.TITLE, POST.TID, POST.PID, FOLDER.PREFIX ";
@@ -898,7 +907,7 @@ function admin_get_post_approval_queue($offset = 0)
     $sql.= "WHERE POST.APPROVED = '0' AND THREAD.FID IN ($fidlist) ";
     $sql.= "LIMIT $offset, 10";
 
-    $result = db_query($sql, $db_admin_get_post_approval_queue);
+    if (!$result = db_query($sql, $db_admin_get_post_approval_queue)) return false;
 
     if (db_num_rows($result) > 0) {
     
@@ -960,7 +969,8 @@ function admin_get_user_approval_queue($offset = 0)
     $sql.= "GROUP BY USER.UID HAVING (PERM & $up_approved) = 0 ";
     $sql.= "AND (PERM & $up_admin) = 0 ";
 
-    $result = db_query($sql, $db_admin_get_user_approval_queue);
+    if (!$result = db_query($sql, $db_admin_get_user_approval_queue)) return false;
+    
     $user_count = db_num_rows($result);
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
@@ -972,7 +982,7 @@ function admin_get_user_approval_queue($offset = 0)
     $sql.= "AND (PERM & $up_admin) = 0 ";
     $sql.= "LIMIT $offset, 10 ";
 
-    $result = db_query($sql, $db_admin_get_user_approval_queue);
+    if (!$result = db_query($sql, $db_admin_get_user_approval_queue)) return false;
 
     if (db_num_rows($result) > 0) {
     
@@ -1024,7 +1034,8 @@ function admin_get_visitor_log($offset)
     $sql.= "WHERE VISITOR_LOG.LAST_LOGON IS NOT NULL AND VISITOR_LOG.LAST_LOGON > 0 ";
     $sql.= "AND VISITOR_LOG.FORUM = '$forum_fid'";
 
-    $result = db_query($sql, $db_admin_get_visitor_log);
+    if (!$result = db_query($sql, $db_admin_get_visitor_log)) return false;
+    
     list($users_get_recent_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
@@ -1040,7 +1051,7 @@ function admin_get_visitor_log($offset)
     $sql.= "AND VISITOR_LOG.FORUM = '$forum_fid' ";
     $sql.= "ORDER BY VISITOR_LOG.LAST_LOGON DESC LIMIT $offset, 10";
 
-    $result = db_query($sql, $db_admin_get_visitor_log);
+    if (!$result = db_query($sql, $db_admin_get_visitor_log)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -1104,6 +1115,7 @@ function admin_clear_visitor_log()
     $forum_fid = $table_data['FID'];
 
     $sql = "DELETE FROM VISITOR_LOG WHERE FORUM = '$forum_fid'";
+
     if (!$result = db_query($sql, $db_admin_clear_visitor_log)) return false;
 
     return true;
@@ -1143,7 +1155,7 @@ function admin_get_user_aliases($uid)
     $sql.= "AND LENGTH(IPADDRESS) > 0 GROUP BY IPADDRESS ";
     $sql.= "LIMIT 0, 10";
 
-    $result = db_query($sql, $db_user_get_aliases);
+    if (!$result = db_query($sql, $db_user_get_aliases)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -1175,7 +1187,7 @@ function admin_get_user_aliases($uid)
         $sql.= "AND POST.FROM_UID <> $uid GROUP BY USER.UID ";
         $sql.= "LIMIT 0, 10";
 
-        $result = db_query($sql, $db_user_get_aliases);
+        if (!$result = db_query($sql, $db_user_get_aliases)) return false;
 
         if (db_num_rows($result) > 0) {
 
@@ -1208,7 +1220,8 @@ function admin_get_user_history($uid)
     $user_history_array = array();
 
     $sql = "SELECT LOGON, NICKNAME, EMAIL FROM USER WHERE UID = '$uid'";
-    $result = db_query($sql, $db_admin_get_user_history);
+
+    if (!$result = db_query($sql, $db_admin_get_user_history)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -1219,7 +1232,7 @@ function admin_get_user_history($uid)
         $sql.= "ORDER BY MODIFIED DESC ";
         $sql.= "LIMIT 0, 10";
 
-        $result = db_query($sql, $db_admin_get_user_history);
+        if (!$result = db_query($sql, $db_admin_get_user_history)) return false;
 
         if (db_num_rows($result) > 0) {
 
@@ -1271,6 +1284,7 @@ function admin_clear_user_history($uid)
     if (!is_numeric($uid)) return false;
 
     $sql = "DELETE FROM USER_HISTORY WHERE UID = '$uid'";
+
     if (!$result = db_query($sql, $db_admin_clear_user_history)) return false;
 
     return (db_affected_rows($db_admin_clear_user_history) > 0);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.106 2007-04-29 13:30:59 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.107 2007-05-06 20:33:43 decoyduck Exp $ */
 
 /**
 * Functions relating to permissions
@@ -70,7 +70,7 @@ function perm_is_moderator($fid, $uid)
     $sql.= "AND GROUP_PERMS.FORUM IN (0, $forum_fid) ";
     $sql.= "ORDER BY GROUP_PERMS.PERM DESC";
 
-    $result = db_query($sql, $db_perm_is_moderator);
+    if (!$result = db_query($sql, $db_perm_is_moderator)) return false;
 
     list($user_status) = db_fetch_array($result, DB_RESULT_NUM);
 
@@ -99,7 +99,7 @@ function perm_has_admin_access($uid)
     $sql.= "AND GROUP_PERMS.FORUM IN (0, $forum_fid) ";
     $sql.= "ORDER BY GROUP_PERMS.GID DESC";
 
-    $result = db_query($sql, $db_perm_has_admin_access);
+    if (!$result = db_query($sql, $db_perm_has_admin_access)) return false;
 
     list($user_status) = db_fetch_array($result, DB_RESULT_NUM);
 
@@ -122,7 +122,7 @@ function perm_has_global_admin_access($uid)
     $sql.= "AND GROUP_PERMS.FORUM IN (0) ";
     $sql.= "ORDER BY GROUP_PERMS.GID DESC";
 
-    $result = db_query($sql, $db_perm_has_global_admin_access);
+    if (!$result = db_query($sql, $db_perm_has_global_admin_access)) return false;
 
     list($user_status) = db_fetch_array($result, DB_RESULT_NUM);
 
@@ -145,7 +145,7 @@ function perm_has_forumtools_access($uid)
     $sql.= "AND GROUP_PERMS.FORUM IN (0) ";
     $sql.= "ORDER BY GROUP_PERMS.GID DESC";
 
-    $result = db_query($sql, $db_perm_has_forumtools_access);
+    if (!$result = db_query($sql, $db_perm_has_forumtools_access)) return false;
 
     list($user_status) = db_fetch_array($result, DB_RESULT_NUM);
 
@@ -174,7 +174,7 @@ function perm_is_links_moderator($uid)
     $sql.= "AND GROUP_PERMS.FORUM IN (0, $forum_fid) ";
     $sql.= "ORDER BY GROUP_PERMS.GID DESC";
 
-    $result = db_query($sql, $db_perm_has_forumtools_access);
+    if (!$result = db_query($sql, $db_perm_has_forumtools_access)) return false;
 
     list($user_status) = db_fetch_array($result, DB_RESULT_NUM);
 
@@ -209,7 +209,7 @@ function perm_check_folder_permissions($fid, $access_level, $uid)
     $sql.= "AND FOLDER_PERMS.GID = 0 AND FOLDER_PERMS.FORUM IN (0, $forum_fid)) ";
     $sql.= "WHERE FOLDER.FID = '$fid' GROUP BY FOLDER.FID ";
 
-    $result = db_query($sql, $db_perm_check_folder_permissions);
+    if (!$result = db_query($sql, $db_perm_check_folder_permissions)) return false;
 
     $row = db_fetch_array($result);
 
@@ -244,7 +244,8 @@ function perm_check_global_permissions($access_level, $uid)
     $sql.= "WHERE GROUPS.AUTO_GROUP = 1 AND GROUP_PERMS.FID = 0 ";
     $sql.= "AND GROUP_PERMS.FORUM = 0 AND GROUP_USERS.UID = '$uid' ";
 
-    $result = db_query($sql, $db_perm_get_global_permissions);
+    if (!$result = db_query($sql, $db_perm_get_global_permissions)) return false;
+    
     list($user_status) = db_fetch_array($result, DB_RESULT_NUM);
 
     return ($user_status & $access_level) == $access_level;
@@ -272,7 +273,8 @@ function perm_get_user_groups($offset, $sort_by = 'GROUP_NAME', $sort_dir = 'ASC
     $sql.= "WHERE GROUPS.AUTO_GROUP = 0 ";
     $sql.= "AND GROUPS.FORUM = '$forum_fid' ";
 
-    $result = db_query($sql, $db_perm_get_user_groups);
+    if (!$result = db_query($sql, $db_perm_get_user_groups)) return false;
+    
     list($user_groups_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT GROUPS.*, COUNT(GROUP_USERS.UID) AS USER_COUNT ";
@@ -282,7 +284,7 @@ function perm_get_user_groups($offset, $sort_by = 'GROUP_NAME', $sort_dir = 'ASC
     $sql.= "GROUP BY GROUPS.GID ORDER BY $sort_by $sort_dir ";
     $sql.= "LIMIT $offset, 10";
 
-    $result = db_query($sql, $db_perm_get_user_groups);
+    if (!$result = db_query($sql, $db_perm_get_user_groups)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -317,7 +319,7 @@ function perm_user_get_groups($uid)
     $sql.= "WHERE GROUPS.AUTO_GROUP = 0 AND GROUPS.FORUM = '$forum_fid' AND GROUP_USERS.UID = '$uid'";
     $sql.= "GROUP BY GROUPS.GID";
 
-    $result = db_query($sql, $db_perm_user_get_groups);
+    if (!$result = db_query($sql, $db_perm_user_get_groups)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -359,7 +361,7 @@ function perm_add_group($group_name, $group_desc, $perm)
             $sql = "INSERT INTO GROUP_PERMS (FORUM, GID, FID, PERM) ";
             $sql.= "VALUES ('$forum_fid', '$new_gid', '0', '$perm')";
 
-            $result = db_query($sql, $db_perm_add_group);
+            if (!$result = db_query($sql, $db_perm_add_group)) return false;
         }
 
         return $new_gid;
@@ -387,30 +389,30 @@ function perm_update_group($gid, $group_name, $group_desc, $perm)
         $sql = "UPDATE GROUPS SET GROUP_NAME = '$group_name', ";
         $sql.= "GROUP_DESC = '$group_desc' WHERE GID = '$gid'";
 
-        $result = db_query($sql, $db_perm_update_group);
+        if (!$result = db_query($sql, $db_perm_update_group)) return false;
 
         $sql = "SELECT PERM FROM GROUP_PERMS WHERE GID = '$gid' ";
         $sql.= "AND FORUM = '$forum_fid' AND FID = 0 LIMIT 0, 1";
 
-        $result = db_query($sql, $db_perm_update_group);
+        if (!$result = db_query($sql, $db_perm_update_group)) return false;
 
         if (db_num_rows($result) > 0) {
 
             $sql = "UPDATE GROUP_PERMS SET PERM = '$perm' WHERE ";
             $sql.= "GID = '$gid' AND FORUM = '$forum_fid' AND FID = 0";
 
-            return db_query($sql, $db_perm_update_group);
+            if (!$result = db_query($sql, $db_perm_update_group)) return false;
 
         }else {
 
             $sql = "INSERT INTO GROUP_PERMS (FORUM, FID, PERM, GID) ";
             $sql.= "VALUES ($forum_fid, 0, $perm, $gid)";
 
-            return db_query($sql, $db_perm_update_group);
+            if (!$result = db_query($sql, $db_perm_update_group)) return false;
         }
     }
 
-    return false;
+    return true;
 }
 
 function perm_remove_group($gid)
@@ -420,12 +422,15 @@ function perm_remove_group($gid)
     if (!is_numeric($gid)) return false;
 
     $sql = "DELETE FROM GROUP_PERMS WHERE GID = '$gid'";
+
     if (!$result = db_query($sql, $db_perm_remove_group)) return false;
 
     $sql = "DELETE FROM GROUP_USERS WHERE GID = '$gid'";
+
     if (!$result = db_query($sql, $db_perm_remove_group)) return false;
 
     $sql = "DELETE FROM GROUPS WHERE GID = '$gid'";
+
     if (!$result = db_query($sql, $db_perm_remove_group)) return false;
 
     return true;
@@ -440,7 +445,7 @@ function perm_get_group($gid)
     $sql = "SELECT GID, FORUM, GROUP_NAME, GROUP_DESC, AUTO_GROUP ";
     $sql.= "FROM GROUPS WHERE GID = '$gid' AND AUTO_GROUP = 0";
 
-    $result = db_query($sql, $db_perm_get_group);
+    if (!$result = db_query($sql, $db_perm_get_group)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -458,7 +463,8 @@ function perm_get_group_name($gid)
     if (!is_numeric($gid)) return false;
 
     $sql = "SELECT GROUP_NAME FROM GROUPS WHERE GID = '$gid' AND AUTO_GROUP = 0";
-    $result = db_query($sql, $db_perm_get_group_name);
+
+    if (!$result = db_query($sql, $db_perm_get_group_name)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -478,7 +484,7 @@ function perm_is_group($gid)
     $sql = "SELECT GID FROM GROUPS WHERE GID = '$gid' ";
     $sql.= "AND AUTO_GROUP = 0 LIMIT 0, 1";
 
-    $result = db_query($sql, $db_perm_is_group);
+    if (!$result = db_query($sql, $db_perm_is_group)) return false;
 
     return (db_num_rows($result) > 0);
 }
@@ -493,7 +499,7 @@ function perm_user_in_group($uid, $gid)
     $sql = "SELECT GID FROM GROUP_USERS WHERE UID = '$uid' ";
     $sql.= "AND GID = '$gid' LIMIT 0, 1";
 
-    $result = db_query($sql, $db_perm_user_in_group);
+    if (!$result = db_query($sql, $db_perm_user_in_group)) return false;
 
     return (db_num_rows($result) > 0);
 }
@@ -510,7 +516,8 @@ function perm_get_global_user_permissions($uid)
     $sql.= "WHERE GROUPS.AUTO_GROUP = 1 AND GROUP_PERMS.FID = 0 ";
     $sql.= "AND GROUP_PERMS.FORUM = 0 AND GROUP_USERS.UID = '$uid' ";
 
-    $result = db_query($sql, $db_perm_get_global_permissions);
+    if (!$result = db_query($sql, $db_perm_get_global_permissions)) return false;
+    
     list($global_user_perm) = db_fetch_array($result, DB_RESULT_NUM);
 
     return $global_user_perm;
@@ -538,7 +545,8 @@ function perm_get_global_permissions_count()
     $sql.= "AND GROUP_PERMS.FORUM = 0 AND (GROUP_PERMS.PERM & $upft > 0 ";
     $sql.= "OR GROUP_PERMS.PERM & $upat > 0) ";
 
-    $result = db_query($sql, $db_perm_get_global_permissions);
+    if (!$result = db_query($sql, $db_perm_get_global_permissions)) return false;
+    
     list($global_perm_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     return $global_perm_count;
@@ -564,7 +572,8 @@ function perm_get_admin_tools_perm_count()
     $sql.= "WHERE GROUPS.AUTO_GROUP = 1 AND GROUP_PERMS.FID = 0 ";
     $sql.= "AND GROUP_PERMS.FORUM = 0 AND (GROUP_PERMS.PERM & $upat > 0)";
 
-    $result = db_query($sql, $db_perm_get_global_permissions);
+    if (!$result = db_query($sql, $db_perm_get_global_permissions)) return false;
+    
     list($global_perm_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     return $global_perm_count;
@@ -590,7 +599,8 @@ function perm_get_forum_tools_perm_count()
     $sql.= "WHERE GROUPS.AUTO_GROUP = 1 AND GROUP_PERMS.FID = 0 ";
     $sql.= "AND GROUP_PERMS.FORUM = 0 AND (GROUP_PERMS.PERM & $upft > 0)";
 
-    $result = db_query($sql, $db_perm_get_global_permissions);
+    if (!$result = db_query($sql, $db_perm_get_global_permissions)) return false;
+    
     list($global_perm_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     return $global_perm_count;
@@ -608,21 +618,21 @@ function perm_update_global_perms($uid, $perm)
         $sql = "SELECT GID FROM GROUP_PERMS WHERE GID = '$gid' ";
         $sql.= "AND FORUM = 0 AND FID = 0 LIMIT 0, 1";
 
-        $result = db_query($sql, $db_perm_add_global_perms);
+        if (!$result = db_query($sql, $db_perm_add_global_perms)) return false;
         
         if (db_num_rows($result) > 0) {
 
             $sql = "UPDATE GROUP_PERMS SET PERM = '$perm' WHERE GID = '$gid' ";
             $sql.= "AND FORUM = '0' AND FID = '0'";
 
-            $result = db_query($sql, $db_perm_add_global_perms);
+            if (!$result = db_query($sql, $db_perm_add_global_perms)) return false;
 
         }else {
 
             $sql = "INSERT INTO GROUP_PERMS (FID, PERM, GID, FORUM) ";
             $sql.= "VALUES ('0', '$perm', '$gid', '0')";
 
-            $result = db_query($sql, $db_perm_add_global_perms);
+            if (!$result = db_query($sql, $db_perm_add_global_perms)) return false;
         }
 
     }else {
@@ -636,12 +646,12 @@ function perm_update_global_perms($uid, $perm)
             $sql = "INSERT INTO GROUP_PERMS (FID, PERM, GID, FORUM) ";
             $sql.= "VALUES ('0', '$perm', '$new_gid', '0')";
 
-            $result = db_query($sql, $db_perm_add_global_perms);
+            if (!$result = db_query($sql, $db_perm_add_global_perms)) return false;
 
             $sql = "INSERT INTO GROUP_USERS (GID, UID) ";
             $sql.= "VALUES ('$new_gid', '$uid')";
 
-            $result = db_query($sql, $db_perm_add_global_perms);
+            if (!$result = db_query($sql, $db_perm_add_global_perms)) return false;
 
             return $new_gid;
         }
@@ -663,7 +673,7 @@ function perm_get_group_permissions($gid)
         $sql = "SELECT PERM FROM GROUP_PERMS WHERE GID = '$gid' AND FID = 0 ";
         $sql.= "AND FORUM = '$forum_fid'";
 
-        $result = db_query($sql, $db_perm_get_group_permissions);
+        if (!$result = db_query($sql, $db_perm_get_group_permissions)) return false;
 
         if (db_num_rows($result) > 0) {
 
@@ -703,7 +713,7 @@ function perm_group_get_folders($gid)
         $sql.= "GROUP BY FOLDER.FID ";
         $sql.= "ORDER BY FOLDER.FID";
 
-        $result = db_query($sql, $db_perm_get_group_folder_perms);
+        if (!$result = db_query($sql, $db_perm_get_group_folder_perms)) return false;
 
         if (db_num_rows($result) > 0) {
 
@@ -750,10 +760,10 @@ function perm_add_user_to_group($uid, $gid)
         $sql = "INSERT INTO GROUP_USERS (GID, UID) ";
         $sql.= "VALUES ('$gid', '$uid')";
 
-        return db_query($sql, $db_perm_add_user_to_group);
+        if (!$result = db_query($sql, $db_perm_add_user_to_group)) return false;
     }
 
-    return false;
+    return true;
 }
 
 function perm_remove_user_from_group($uid, $gid)
@@ -768,10 +778,10 @@ function perm_remove_user_from_group($uid, $gid)
         $sql = "DELETE FROM GROUP_USERS ";
         $sql.= "WHERE GID = '$gid' AND UID = '$uid'";
 
-        return db_query($sql, $db_perm_remove_user_from_group);
+        if (!$result = db_query($sql, $db_perm_remove_user_from_group)) return false;
     }
 
-    return false;
+    return true;
 }
 
 /**
@@ -803,7 +813,7 @@ function perm_get_user_permissions($uid)
     $sql.= "WHERE GROUP_USERS.UID = '$uid' AND GROUP_PERMS.FID = 0 ";
     $sql.= "AND GROUP_PERMS.FORUM IN (0, $forum_fid)";
 
-    $result = db_query($sql, $db_perm_get_user_permissions);
+    if (!$result = db_query($sql, $db_perm_get_user_permissions)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -830,7 +840,7 @@ function perm_get_forum_user_permissions($uid)
     $sql.= "WHERE GROUP_USERS.UID = '$uid' AND GROUP_PERMS.FID = 0 ";
     $sql.= "AND GROUP_PERMS.FORUM = '$forum_fid'";
 
-    $result = db_query($sql, $db_perm_get_user_permissions);
+    if (!$result = db_query($sql, $db_perm_get_user_permissions)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -856,7 +866,7 @@ function perm_get_user_gid($uid)
     $sql.= "WHERE GROUPS.AUTO_GROUP = 1 AND GROUPS.FORUM = '$forum_fid' ";
     $sql.= "AND GROUP_USERS.UID = '$uid'";
 
-    $result = db_query($sql, $db_perm_get_user_gid);
+    if (!$result = db_query($sql, $db_perm_get_user_gid)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -878,7 +888,7 @@ function perm_get_global_user_gid($uid)
     $sql.= "WHERE GROUPS.AUTO_GROUP = 1 AND GROUPS.FORUM = 0 ";
     $sql.= "AND GROUP_USERS.UID = '$uid'";
 
-    $result = db_query($sql, $db_perm_get_user_gid);
+    if (!$result = db_query($sql, $db_perm_get_user_gid)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -914,7 +924,7 @@ function perm_user_get_folders($uid)
     $sql.= "GROUP BY FOLDER.FID ";
     $sql.= "ORDER BY FOLDER.FID";
 
-    $result = db_query($sql, $db_perm_user_get_user_folders);
+    if (!$result = db_query($sql, $db_perm_user_get_user_folders)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -965,25 +975,25 @@ function perm_update_user_folder_perms($uid, $fid, $perm)
         $sql = "SELECT GID FROM GROUP_PERMS WHERE GID = '$gid' ";
         $sql.= "AND FORUM = '$forum_fid' AND FID = '$fid' LIMIT 0, 1";
 
-        $result = db_query($sql, $db_perm_update_user_folder_perms);
+        if (!$result = db_query($sql, $db_perm_update_user_folder_perms)) return false;
 
         if (db_num_rows($result) > 0) {
 
             $sql = "UPDATE GROUP_PERMS SET PERM = '$perm' WHERE ";
             $sql.= "GID = '$gid' AND FORUM = '$forum_fid' AND FID = '$fid'";
 
-            return db_query($sql, $db_perm_update_user_folder_perms);
+            if (!$result = db_query($sql, $db_perm_update_user_folder_perms)) return false;
 
         }else {
 
             $sql = "INSERT INTO GROUP_PERMS (PERM, GID, FORUM, FID) ";
             $sql.= "VALUES ('$perm', '$gid', '$forum_fid', '$fid')";
 
-            return db_query($sql, $db_perm_update_user_folder_perms);
+            if (!$result = db_query($sql, $db_perm_update_user_folder_perms)) return false;
         }
     }
 
-    return false;
+    return true;
 }
 
 function perm_update_group_folder_perms($gid, $fid, $perm)
@@ -1003,7 +1013,7 @@ function perm_update_group_folder_perms($gid, $fid, $perm)
         $sql = "SELECT GID FROM GROUP_PERMS WHERE GID = '$gid' ";
         $sql.= "AND FORUM = '$forum_fid' AND FID = '$fid' LIMIT 0, 1";
 
-        $result = db_query($sql, $db_perm_update_group_folder_perms);
+        if (!$result = db_query($sql, $db_perm_update_group_folder_perms)) return false;
 
         if (db_num_rows($result) > 0) {
 
@@ -1011,18 +1021,18 @@ function perm_update_group_folder_perms($gid, $fid, $perm)
             $sql.= "WHERE GID = '$gid' AND FID = '$fid' ";
             $sql.= "AND FORUM = '$forum_fid'";
 
-            return db_query($sql, $db_perm_update_group_folder_perms);
+            if (!$result = db_query($sql, $db_perm_update_group_folder_perms)) return false;
 
         }else {
 
             $sql = "INSERT INTO GROUP_PERMS (GID, FID, FORUM, PERM) ";
             $sql.= "VALUES ('$gid', '$fid', '$forum_fid', '$perm')";
 
-            return db_query($sql, $db_perm_update_group_folder_perms);
+            if (!$result = db_query($sql, $db_perm_update_group_folder_perms)) return false;
         }
     }
 
-    return false;
+    return true;
 }
 
 function perm_update_user_permissions($uid, $perm)
@@ -1041,21 +1051,21 @@ function perm_update_user_permissions($uid, $perm)
         $sql = "SELECT GID FROM GROUP_PERMS WHERE GID = '$gid' ";
         $sql.= "AND FORUM = '$forum_fid' AND FID = 0 LIMIT 0, 1";
 
-        $result = db_query($sql, $db_perm_update_user_permissions);
+        if (!$result = db_query($sql, $db_perm_update_user_permissions)) return false;
 
         if (db_num_rows($result) > 0) {
 
             $sql = "UPDATE GROUP_PERMS SET PERM = '$perm' WHERE ";
             $sql.= "GID = '$gid' AND FORUM = '$forum_fid' AND FID = 0";
 
-            $result = db_query($sql, $db_perm_update_user_permissions);
+            if (!$result = db_query($sql, $db_perm_update_user_permissions)) return false;
 
         }else {
 
             $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, PERM, FID) ";
             $sql.= "VALUES ('$gid', '$forum_fid', '$perm', '0')";
 
-            $result = db_query($sql, $db_perm_update_user_permissions);
+            if (!$result = db_query($sql, $db_perm_update_user_permissions)) return false;
         }
 
         return $gid;
@@ -1071,12 +1081,12 @@ function perm_update_user_permissions($uid, $perm)
             $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, PERM, FID) ";
             $sql.= "VALUES ('$new_gid', '$forum_fid', '$perm', '0')";
 
-            $result = db_query($sql, $db_perm_update_user_permissions);
+            if (!$result = db_query($sql, $db_perm_update_user_permissions)) return false;
 
             $sql = "INSERT INTO GROUP_USERS (GID, UID) ";
             $sql.= "VALUES ('$new_gid', '$uid')";
 
-            $result = db_query($sql, $db_perm_update_user_permissions);
+            if (!$result = db_query($sql, $db_perm_update_user_permissions)) return false;
 
             return $new_gid;
         }
@@ -1098,7 +1108,7 @@ function perm_folder_get_permissions($fid)
     $sql = "SELECT PERM AS STATUS FROM GROUP_PERMS ";
     $sql.= "WHERE FID = '$fid' AND GID = 0 AND FORUM = '$forum_fid'";
     
-    $result = db_query($sql, $db_perm_folder_get_permissions);
+    if (!$result = db_query($sql, $db_perm_folder_get_permissions)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -1141,7 +1151,9 @@ function perm_folder_reset_user_permissions($fid)
     $sql = "UPDATE GROUP_PERMS SET PERM = '$folder_perms' | (PERM & $upfm) ";
     $sql.= "WHERE FID = '$fid' AND GID <> '0' AND FORUM = '$forum_fid'";
 
-    return db_query($sql, $db_perm_folder_reset_user_permissions);
+    if (!$result = db_query($sql, $db_perm_folder_reset_user_permissions)) return false;
+
+    return true;
 }
 
 function perm_group_get_users($gid, $offset = 0)
@@ -1159,7 +1171,8 @@ function perm_group_get_users($gid, $offset = 0)
         $sql = "SELECT COUNT(UID) AS USER_COUNT ";
         $sql.= "FROM GROUP_USERS WHERE GID = '$gid'";
 
-        $result = db_query($sql, $db_perm_group_get_users);
+        if (!$result = db_query($sql, $db_perm_group_get_users)) return false;
+        
         list($group_user_count) = db_fetch_array($result, DB_RESULT_NUM);
 
         $sql = "SELECT GROUP_USERS.UID, USER.LOGON, USER.NICKNAME FROM GROUP_USERS ";
@@ -1167,7 +1180,7 @@ function perm_group_get_users($gid, $offset = 0)
         $sql.= "WHERE GROUP_USERS.GID = '$gid' ";
         $sql.= "LIMIT $offset, 20";
 
-        $result = db_query($sql, $db_perm_group_get_users);
+        if (!$result = db_query($sql, $db_perm_group_get_users)) return false;
 
         if (db_num_rows($result) > 0) {
 
@@ -1202,7 +1215,7 @@ function perm_user_apply_email_confirmation($uid)
         $sql = "UPDATE GROUP_PERMS SET PERM = PERM & $perm ";
         $sql.= "WHERE GID = '$gid'";
 
-        return db_query($sql, $db_perm_user_apply_email_confirmation);
+        if (!$result = db_query($sql, $db_perm_user_apply_email_confirmation)) return false;
 
     }else {
 
@@ -1215,12 +1228,12 @@ function perm_user_apply_email_confirmation($uid)
             $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, PERM, FID) ";
             $sql.= "VALUES ('$new_gid', 0, '$perm', '0')";
 
-            $result = db_query($sql, $db_perm_user_apply_email_confirmation);
+            if (!$result = db_query($sql, $db_perm_user_apply_email_confirmation)) return false;
 
             $sql = "INSERT INTO GROUP_USERS (GID, UID) ";
             $sql.= "VALUES ('$new_gid', '$uid')";
 
-            $result = db_query($sql, $db_perm_user_apply_email_confirmation);
+            if (!$result = db_query($sql, $db_perm_user_apply_email_confirmation)) return false;
 
             return true;
         }
@@ -1238,7 +1251,8 @@ function perm_user_cancel_email_confirmation($uid)
     if ($gid = perm_get_global_user_gid($uid)) {
 
         $sql = "SELECT PERM FROM GROUP_PERMS WHERE GID = '$gid'";
-        $result = db_query($sql, $db_perm_user_cancel_email_confirmation);
+
+        if (!$result = db_query($sql, $db_perm_user_cancel_email_confirmation)) return false;
 
         list($perm) = db_fetch_array($result, DB_RESULT_NUM);
 
@@ -1247,12 +1261,11 @@ function perm_user_cancel_email_confirmation($uid)
         }
 
         $sql = "UPDATE GROUP_PERMS SET PERM = '$perm' WHERE GID = '$gid'";
-        return db_query($sql, $db_perm_user_cancel_email_confirmation);
+
+        if (!$result = db_query($sql, $db_perm_user_cancel_email_confirmation)) return false;
     }
 
-    echo $uid; exit;
-
-    return false;
+    return true;
 }
 
 function perm_user_approve($uid)
@@ -1268,7 +1281,7 @@ function perm_user_approve($uid)
         $sql = "UPDATE GROUP_PERMS SET PERM = PERM & $perm ";
         $sql.= "WHERE GID = '$gid'";
 
-        return db_query($sql, $db_perm_user_approve);
+        if (!$result = db_query($sql, $db_perm_user_approve)) return false;
 
     }else {
 
@@ -1281,18 +1294,16 @@ function perm_user_approve($uid)
             $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, PERM, FID) ";
             $sql.= "VALUES ('$new_gid', 0, '$perm', '0')";
 
-            $result = db_query($sql, $db_perm_user_approve);
+            if (!$result = db_query($sql, $db_perm_user_approve)) return false;
 
             $sql = "INSERT INTO GROUP_USERS (GID, UID) ";
             $sql.= "VALUES ('$new_gid', '$uid')";
 
-            $result = db_query($sql, $db_perm_user_approve);
-
-            return true;
+            if (!$result = db_query($sql, $db_perm_user_approve)) return false;
         }
     }
 
-    return false;
+    return true;
 }
 
 function perm_display_list($perms)

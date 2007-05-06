@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.141 2007-04-21 18:26:25 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.142 2007-05-06 20:33:43 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
 
@@ -53,16 +53,16 @@ if (!isset($forum_webtag) || strlen(trim($forum_webtag)) < 1) {
 
 if (isset($remove_conflicts) && $remove_conflicts === true) {
 
-    $forum_tables = array('ADMIN_LOG',     'BANNED',        'FILTER_LIST',
-                          'FOLDER',        'FORUM_LINKS',   'LINKS',
-                          'LINKS_COMMENT', 'LINKS_FOLDERS', 'LINKS_VOTE',
-                          'POLL',          'POLL_VOTES',    'POST',
-                          'POST_CONTENT',  'PROFILE_ITEM',  'PROFILE_SECTION',
-                          'RSS_FEEDS',     'RSS_HISTORY',   'STATS',
-                          'THREAD',        'THREAD_TRACK',  'THREAD_STATS',
-                          'USER_FOLDER',   'USER_PEER',     'USER_POLL_VOTES',
-                          'USER_PREFS',    'USER_PROFILE',  'USER_SIG',
-                          'USER_THREAD',   'USER_TRACK');
+    $forum_tables = array('ADMIN_LOG',     'BANNED',          'FOLDER',
+                          'FORUM_LINKS',   'LINKS',           'LINKS_COMMENT',
+                          'LINKS_FOLDERS', 'LINKS_VOTE',      'POLL',          
+                          'POLL_VOTES',    'POST',            'POST_CONTENT',  
+                          'PROFILE_ITEM',  'PROFILE_SECTION', 'RSS_FEEDS',
+                          'RSS_HISTORY',   'STATS',           'THREAD',
+                          'THREAD_TRACK',  'THREAD_STATS',    'USER_FOLDER',
+                          'USER_PEER',     'USER_POLL_VOTES', 'USER_PREFS',
+                          'USER_PROFILE',  'USER_SIG',        'USER_THREAD',
+                          'USER_TRACK',    'WORD_FILTER');
 
     $global_tables = array('DICTIONARY',            'FORUM_SETTINGS',      'FORUMS',
                            'GROUP_PERMS',           'GROUP_USERS',         'GROUPS',
@@ -142,14 +142,16 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "CREATE TABLE {$forum_webtag}_FILTER_LIST (";
-$sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-$sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  MATCH_TEXT VARCHAR(255) NOT NULL DEFAULT '',";
-$sql.= "  REPLACE_TEXT VARCHAR(255) NOT NULL DEFAULT '',";
-$sql.= "  FILTER_OPTION TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  PRIMARY KEY  (ID,UID)";
-$sql.= ") TYPE=MYISAM";
+$sql = "CREATE TABLE {$forum_webtag}_WORD_FILTER (";
+$sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
+$sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+$sql.= "  FILTER_NAME VARCHAR(255) NOT NULL,";
+$sql.= "  MATCH_TEXT TEXT NOT NULL DEFAULT '',";
+$sql.= "  REPLACE_TEXT TEXT NOT NULL DEFAULT '',";
+$sql.= "  FILTER_TYPE TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  FILTER_ENABLED TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  PRIMARY KEY  (UID, FID)";
+$sql.= ") TYPE = MYISAM";
 
 if (!$result = @db_query($sql, $db_install)) {
 

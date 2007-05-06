@@ -21,9 +21,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.54 2007-05-06 17:24:57 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.55 2007-05-06 20:33:43 decoyduck Exp $ */
 
-// International English language file
+// French Canadian language file
 
 // Language character set and text direction options -------------------
 

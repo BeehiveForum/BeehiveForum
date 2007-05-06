@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.51 2007-04-21 18:26:24 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.52 2007-05-06 20:33:42 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -256,14 +256,16 @@ function install_get_table_conflicts($webtag = false, $forum_tables = false, $gl
 
     if ($forum_tables === false) {
 
-        $forum_tables = array('ADMIN_LOG',     'BANNED',          'FILTER_LIST',
-                              'FOLDER',        'FORUM_LINKS',     'LINKS',
-                              'LINKS_COMMENT', 'LINKS_FOLDERS',   'LINKS_VOTE',
-                              'POLL',          'POLL_VOTES',      'POST',
-                              'POST_CONTENT',  'PROFILE_ITEM',    'PROFILE_SECTION',
-                              'STATS',         'THREAD',          'USER_FOLDER',
+        $forum_tables = array('ADMIN_LOG',     'BANNED',          'FOLDER',
+                              'FORUM_LINKS',   'LINKS',           'LINKS_COMMENT',
+                              'LINKS_FOLDERS', 'LINKS_VOTE',      'POLL',          
+                              'POLL_VOTES',    'POST',            'POST_CONTENT',  
+                              'PROFILE_ITEM',  'PROFILE_SECTION', 'RSS_FEEDS',
+                              'RSS_HISTORY',   'STATS',           'THREAD',
+                              'THREAD_TRACK',  'THREAD_STATS',    'USER_FOLDER',
                               'USER_PEER',     'USER_POLL_VOTES', 'USER_PREFS',
-                              'USER_PROFILE',  'USER_SIG',        'USER_THREAD');
+                              'USER_PROFILE',  'USER_SIG',        'USER_THREAD',
+                              'USER_TRACK',    'WORD_FILTER');
     }
 
     if ($global_tables === false) {

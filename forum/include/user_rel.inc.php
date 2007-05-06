@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.inc.php,v 1.36 2007-04-23 20:51:23 decoyduck Exp $ */
+/* $Id: user_rel.inc.php,v 1.37 2007-05-06 20:33:43 decoyduck Exp $ */
 
 /**
 * User relation functions
@@ -116,7 +116,7 @@ function user_get_relationship($uid, $peer_uid)
     $sql = "SELECT RELATIONSHIP FROM {$table_data['PREFIX']}USER_PEER ";
     $sql.= "WHERE UID = '$uid' AND PEER_UID = '$peer_uid'";
 
-    $result = db_query($sql, $db_user_get_relationship);
+    if (!$result = db_query($sql, $db_user_get_relationship)) return false;
 
     if (db_num_rows($result) > 0) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.61 2007-05-02 23:15:42 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.62 2007-05-06 20:33:43 decoyduck Exp $ */
 
 /**
 * Functions relating to users interacting with profiles
@@ -62,15 +62,15 @@ function user_profile_update($uid, $piid, $entry, $privacy)
     $sql = "DELETE FROM {$table_data['PREFIX']}USER_PROFILE ";
     $sql.= "WHERE UID = '$uid' AND PIID = '$piid'";
 
-    if (db_query($sql, $db_user_profile_update)) {
+    if ($result = db_query($sql, $db_user_profile_update)) {
 
         $sql = "INSERT INTO {$table_data['PREFIX']}USER_PROFILE (UID, PIID, ENTRY, PRIVACY) ";
         $sql.= "VALUES ($uid, $piid, '$entry', $privacy)";
 
-        return db_query($sql, $db_user_profile_update);
+        if (!$result = db_query($sql, $db_user_profile_update)) return false;
     }
 
-    return false;
+    return true;
 }
 
 function user_get_profile($uid)
@@ -112,7 +112,7 @@ function user_get_profile($uid)
     $sql.= "WHERE USER.UID = '$uid' ";
     $sql.= "GROUP BY USER.UID";
 
-    $result = db_query($sql, $db_user_get_profile);
+    if (!$result = db_query($sql, $db_user_get_profile)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -197,15 +197,20 @@ function user_get_profile_entries($uid, $psid)
 
     if (!$table_data = get_table_prefix()) return false;
 
+    $user_profile_array = array();
+
     $sql = "SELECT PI.NAME, PI.TYPE, UP.ENTRY, UP.PRIVACY FROM {$table_data['PREFIX']}PROFILE_ITEM PI ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PROFILE UP ON (UP.PIID = PI.PIID AND UP.UID = '$uid') ";
     $sql.= "WHERE PI.PSID = '$psid' ORDER BY PI.POSITION, PI.PIID";
 
-    $result = db_query($sql, $db_user_get_profile_entries);
-    $user_profile_array = array();
+    if (!$result = db_query($sql, $db_user_get_profile_entries)) return false;
 
-    while ($row = db_fetch_array($result)) {
-        $user_profile_array[] = $row;
+    if (db_num_rows($result) > 0) {
+
+        while ($row = db_fetch_array($result)) {
+
+            $user_profile_array[] = $row;
+        }
     }
 
     return $user_profile_array;
@@ -220,7 +225,8 @@ function user_get_profile_image($uid)
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT PIC_URL from {$table_data['PREFIX']}USER_PREFS WHERE UID = '$uid'";
-    $result = db_query($sql, $db_user_get_profile_image);
+
+    if (!$result = db_query($sql, $db_user_get_profile_image)) return false;
 
     $row = db_fetch_array($result);
 
@@ -242,7 +248,7 @@ function user_get_post_count($uid)
     $sql = "SELECT POST_COUNT FROM {$table_data['PREFIX']}USER_TRACK ";
     $sql.= "WHERE UID = '$uid'";
 
-    $result = db_query($sql, $db_user_get_post_count);
+    if (!$result = db_query($sql, $db_user_get_post_count)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -257,20 +263,21 @@ function user_get_post_count($uid)
     $sql = "SELECT COUNT(PID) AS COUNT FROM {$table_data['PREFIX']}POST ";
     $sql.= "WHERE FROM_UID = '$uid'";
 
-    $result = db_query($sql, $db_user_get_post_count);
+    if (!$result = db_query($sql, $db_user_get_post_count)) return false;
+
     list($post_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "UPDATE {$table_data['PREFIX']}USER_TRACK ";
     $sql.= "SET POST_COUNT = '$post_count' WHERE UID = '$uid'";
 
-    $result = db_query($sql, $db_user_get_post_count);
+    if (!$result = db_query($sql, $db_user_get_post_count)) return false;
 
     if (db_affected_rows($db_user_get_post_count) < 1) {
 
         $sql = "INSERT IGNORE INTO {$table_data['PREFIX']}USER_TRACK ";
         $sql.= "(UID, POST_COUNT) VALUES ($uid, $post_count)";
 
-        $result = db_query($sql, $db_user_get_post_count);
+        if (!$result = db_query($sql, $db_user_get_post_count)) return false;
     }
 
     return $post_count;

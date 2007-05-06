@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.448 2007-05-06 18:07:35 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.449 2007-05-06 20:33:42 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -189,7 +189,7 @@ function message_get_content($tid, $pid)
     $sql = "SELECT CONTENT FROM {$table_data['PREFIX']}POST_CONTENT ";
     $sql.= "WHERE TID = '$tid' AND PID = '$pid'";
 
-    $result = db_query($sql, $db_message_get_content);
+    if (!$result = db_query($sql, $db_message_get_content)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -1309,7 +1309,7 @@ function message_get_user($tid, $pid)
     $sql = "SELECT FROM_UID FROM {$table_data['PREFIX']}POST ";
     $sql.= "WHERE TID = '$tid' AND PID = '$pid'";
 
-    $result = db_query($sql, $db_message_get_user);
+    if (!$result = db_query($sql, $db_message_get_user)) return false;
 
     if (db_num_rows($result) > 0) {
         
@@ -1334,7 +1334,7 @@ function message_get_user_array($tid, $pid)
     $sql.= "LEFT JOIN USER USER ON (USER.UID = POST.FROM_UID) ";
     $sql.= "WHERE POST.TID = '$tid' AND POST.PID = '$pid'";
 
-    $result = db_query($sql, $db_message_get_user);
+    if (!$result = db_query($sql, $db_message_get_user)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -1386,7 +1386,7 @@ function messages_update_read($tid, $pid, $uid, $modified)
             $sql.= "WHERE UID = '$uid' AND TID = '$tid' ";
             $sql.= "AND (LAST_READ < '$pid' OR LAST_READ IS NULL)";
 
-            $result = db_query($sql, $db_message_update_read);
+            if (!$result = db_query($sql, $db_message_update_read)) return false;
 
             if (db_affected_rows($db_message_update_read) < 1) {
 
@@ -1412,14 +1412,14 @@ function messages_update_read($tid, $pid, $uid, $modified)
     $sql = "UPDATE {$table_data['PREFIX']}THREAD_STATS ";
     $sql.= "SET VIEWCOUNT = VIEWCOUNT + 1 WHERE TID = '$tid'";
 
-    $result = db_query($sql, $db_message_update_read);
+    if (!$result = db_query($sql, $db_message_update_read)) return false;
 
     if (db_affected_rows($db_message_update_read) < 1) {
 
         $sql = "INSERT IGNORE INTO {$table_data['PREFIX']}THREAD_STATS ";
         $sql.= "(TID, VIEWCOUNT) VALUES ('$tid', 1)";
 
-        $result = db_query($sql, $db_message_update_read);
+        if (!$result = db_query($sql, $db_message_update_read)) return false;
     }
 
     return true;
@@ -1451,7 +1451,7 @@ function messages_set_read($tid, $pid, $uid, $modified)
             $sql.= "SET LAST_READ = '$pid', LAST_READ_AT = NULL ";
             $sql.= "WHERE UID = '$uid' AND TID = '$tid'";
 
-            $result = db_query($sql, $db_message_set_read);
+            if (!$result = db_query($sql, $db_message_set_read)) return false;
 
             if (db_affected_rows($db_message_set_read) < 1) {
 
@@ -1516,7 +1516,7 @@ function messages_get_most_recent($uid, $fid = false)
     $sql.= "ORDER BY THREAD.MODIFIED DESC ";
     $sql.= "LIMIT 0, 1";
 
-    $result = db_query($sql, $db_messages_get_most_recent);
+    if (!$result = db_query($sql, $db_messages_get_most_recent)) return false;
 
     if (db_num_rows($result) > 0) {
 

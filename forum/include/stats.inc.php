@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.74 2007-05-02 23:15:42 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.75 2007-05-06 20:33:43 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -110,7 +110,7 @@ function get_num_sessions()
     $sql.= "WHERE TIME >= FROM_UNIXTIME($session_stamp) ";
     $sql.= "AND FID = '$forum_fid'";
 
-    $result = db_query($sql, $get_num_sessions);
+    if (!$result = db_query($sql, $get_num_sessions)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -142,7 +142,8 @@ function get_active_users()
     $sql.= "AND SESSIONS.TIME >= FROM_UNIXTIME($session_stamp) ";
     $sql.= "AND SESSIONS.FID = '$forum_fid'";
 
-    $result = db_query($sql, $db_get_active_users);
+    if (!$result = db_query($sql, $db_get_active_users)) return false;
+    
     list($stats['GUESTS']) = db_fetch_array($result, DB_RESULT_NUM);
 
     // Curent active users
@@ -161,7 +162,7 @@ function get_active_users()
     $sql.= "WHERE SESSIONS.TIME >= FROM_UNIXTIME($session_stamp) AND SESSIONS.FID = '$forum_fid' ";
     $sql.= "AND SESSIONS.UID > 0 GROUP BY SESSIONS.UID ORDER BY USER.NICKNAME";
 
-    $result = db_query($sql, $db_get_active_users);
+    if (!$result = db_query($sql, $db_get_active_users)) return false;
 
     while ($row = db_fetch_array($result)) {
 
@@ -222,7 +223,7 @@ function get_thread_count()
     $sql = "SELECT COUNT(THREAD.TID) AS THREAD_COUNT ";
     $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD";
 
-    $result = db_query($sql, $db_get_thread_count);
+    if (!$result = db_query($sql, $db_get_thread_count)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -240,7 +241,8 @@ function get_post_count()
     if (!$table_data = get_table_prefix()) return 0;
 
     $sql = "SELECT COUNT(POST.PID) AS POST_COUNT FROM {$table_data['PREFIX']}POST POST";
-    $result = db_query($sql, $db_get_post_count);
+
+    if (!$result = db_query($sql, $db_get_post_count)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -262,7 +264,7 @@ function get_recent_post_count()
     $sql = "SELECT COUNT(POST.PID) AS POSTS FROM {$table_data['PREFIX']}POST POST ";
     $sql.= "WHERE CREATED >= FROM_UNIXTIME($post_stamp)";
 
-    $result = db_query($sql, $db_get_post_count);
+    if (!$result = db_query($sql, $db_get_post_count)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -285,7 +287,7 @@ function get_longest_thread()
     $sql.= "ON (FOLDER.FID = THREAD.FID) ";
     $sql.= "ORDER BY THREAD.LENGTH DESC LIMIT 0, 1";
 
-    $result = db_query($sql, $db_get_longest_thread);
+    if (!$result = db_query($sql, $db_get_longest_thread)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -305,7 +307,7 @@ function get_most_users()
     $sql = "SELECT MOST_USERS_COUNT, UNIX_TIMESTAMP(MOST_USERS_DATE) AS MOST_USERS_DATE ";
     $sql.= "FROM {$table_data['PREFIX']}STATS";
 
-    $result = db_query($sql, $db_get_most_users);
+    if (!$result = db_query($sql, $db_get_most_users)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -325,7 +327,7 @@ function get_most_posts()
     $sql = "SELECT MOST_POSTS_COUNT, UNIX_TIMESTAMP(MOST_POSTS_DATE) AS MOST_POSTS_DATE ";
     $sql.= "FROM {$table_data['PREFIX']}STATS";
 
-    $result = db_query($sql, $db_get_most_posts);
+    if (!$result = db_query($sql, $db_get_most_posts)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -349,7 +351,7 @@ function get_newest_user()
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
     $sql.= "ORDER BY UID DESC LIMIT 0, 1";
 
-    $result = db_query($sql, $db_get_newest_user);
+    if (!$result = db_query($sql, $db_get_newest_user)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -385,7 +387,8 @@ function get_post_tallys($start_stamp, $end_stamp)
     $sql.= "WHERE POST.CREATED > FROM_UNIXTIME($start_stamp) ";
     $sql.= "AND POST.CREATED < FROM_UNIXTIME($end_stamp)";
 
-    $result = db_query($sql, $db_get_month_post_tallys);
+    if (!$result = db_query($sql, $db_get_month_post_tallys)) return false;
+    
     list($post_tallys['post_count']) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
@@ -399,7 +402,7 @@ function get_post_tallys($start_stamp, $end_stamp)
     $sql.= "GROUP BY USER.UID ORDER BY POST_COUNT DESC ";
     $sql.= "LIMIT 0, 20";
 
-    $result = db_query($sql, $db_get_month_post_tallys);
+    if (!$result = db_query($sql, $db_get_month_post_tallys)) return false;
 
     if (db_num_rows($result) > 0) {
 

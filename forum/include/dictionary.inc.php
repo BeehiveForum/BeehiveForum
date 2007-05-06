@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.inc.php,v 1.40 2007-05-06 17:24:56 decoyduck Exp $ */
+/* $Id: dictionary.inc.php,v 1.41 2007-05-06 20:33:42 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -89,7 +89,8 @@ class dictionary {
         $db_dictionary_check_setup = db_connect();
 
         $sql = "SELECT WORD FROM DICTIONARY LIMIT 0, 1";
-        $result = db_query($sql, $db_dictionary_check_setup);
+
+        if (!$result = db_query($sql, $db_dictionary_check_setup)) return false;
 
         return (db_num_rows($result) > 0);
     }
@@ -175,17 +176,17 @@ class dictionary {
         $sql.= "AND (UID = 0 OR UID = '$uid') ";
         $sql.= "LIMIT 0, 1";
 
-        $result = db_query($sql, $db_dictionary_add_custom_word);
+        if (!$result = db_query($sql, $db_dictionary_add_custom_word)) return false;
 
         if (db_num_rows($result) < 1) {
 
             $sql = "INSERT INTO DICTIONARY (WORD, SOUND, UID) ";
             $sql.= "VALUES ('$word', '$metaphone', '$uid')";
 
-            return db_query($sql, $db_dictionary_add_custom_word);
+            if (!$result = db_query($sql, $db_dictionary_add_custom_word)) return false;
         }
 
-        return false;
+        return true;
     }
 
     function correct_current_word($change_to)
@@ -276,7 +277,7 @@ class dictionary {
         $sql.= "AND (UID = 0 OR UID = '$uid') ";
         $sql.= "LIMIT 0, 1";
 
-        $result = db_query($sql, $db_dictionary_word_get_suggestions);
+        if (!$result = db_query($sql, $db_dictionary_word_get_suggestions)) return false;
 
         // If we found an exact match then they spelt it right?
 
@@ -296,7 +297,7 @@ class dictionary {
             $sql.= "AND (UID = 0 OR UID = '$uid') ";
             $sql.= "ORDER BY WORD ASC LIMIT $offset, 10";
 
-            $result = db_query($sql, $db_dictionary_word_get_suggestions);
+            if (!$result = db_query($sql, $db_dictionary_word_get_suggestions)) return false;
 
             if (db_num_rows($result) > 0) {
 

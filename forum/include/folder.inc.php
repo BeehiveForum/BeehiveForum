@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.124 2007-04-29 13:30:59 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.125 2007-05-06 20:33:42 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -60,7 +60,7 @@ function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $al
     $sql.= "OR FOLDER.ALLOWED_TYPES IS NULL ";
     $sql.= "ORDER BY FOLDER.FID ";
 
-    $result = db_query($sql, $db_folder_draw_dropdown);
+    if (!$result = db_query($sql, $db_folder_draw_dropdown)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -106,7 +106,7 @@ function folder_draw_dropdown_all($default_fid, $field_name="t_fid", $suffix="",
     $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION ";
     $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
 
-    $result = db_query($sql, $db_folder_draw_dropdown);
+    if (!$result = db_query($sql, $db_folder_draw_dropdown)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -133,7 +133,8 @@ function folder_get_title($fid)
     if (!$table_data = get_table_prefix()) return "The Unknown Folder";
 
     $sql = "SELECT TITLE FROM {$table_data['PREFIX']}FOLDER WHERE FID = '$fid'";
-    $result = db_query($sql, $db_folder_get_title);
+
+    if (!$result = db_query($sql, $db_folder_get_title)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -153,7 +154,8 @@ function folder_get_prefix($fid)
     if (!$table_data = get_table_prefix()) return "";
 
     $sql = "SELECT PREFIX FROM {$table_data['PREFIX']}FOLDER WHERE FID = '$fid'";
-    $result = db_query($sql, $db_folder_get_title);
+
+    if (!$result = db_query($sql, $db_folder_get_title)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -182,7 +184,8 @@ function folder_create($title, $description = "", $prefix = "", $allowed_types =
     $forum_fid = $table_data['FID'];
 
     $sql = "SELECT MAX(POSITION) + 1 AS NEW_POS FROM {$table_data['PREFIX']}FOLDER";
-    $result = db_query($sql, $db_folder_create);
+
+    if (!$result = db_query($sql, $db_folder_create)) return false;
 
     if ($row = db_fetch_array($result)) {
         $new_pos = $row['NEW_POS'];
@@ -191,14 +194,16 @@ function folder_create($title, $description = "", $prefix = "", $allowed_types =
     $sql = "INSERT INTO {$table_data['PREFIX']}FOLDER (TITLE, DESCRIPTION, PREFIX, ALLOWED_TYPES, POSITION) ";
     $sql.= "VALUES ('$title', '$description', '$prefix', '$allowed_types', '$new_pos')";
 
-    $result = db_query($sql, $db_folder_create);
+    if (!$result = db_query($sql, $db_folder_create)) return false;
 
     $new_fid = db_insert_id($db_folder_create);
 
     $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) ";
     $sql.= "VALUES ('0', '$forum_fid', '$new_fid', '$permissions')";
 
-    return db_query($sql, $db_folder_create);
+    if (!$result = db_query($sql, $db_folder_create)) return false;
+
+    return true;
 }
 
 function folder_delete($fid)
@@ -210,7 +215,8 @@ function folder_delete($fid)
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "DELETE FROM {$table_data['PREFIX']}FOLDER WHERE FID = '$fid'";
-    $result = db_query($sql, $db_folder_delete);
+
+    if (!$result = db_query($sql, $db_folder_delete)) return false;
 
     return $result;
 }
@@ -247,17 +253,17 @@ function folder_update($fid, $folder_order)
     $sql.= "DESCRIPTION = '{$folder_order['DESCRIPTION']}', ALLOWED_TYPES = '{$folder_order['ALLOWED_TYPES']}', ";
     $sql.= "POSITION = '{$folder_order['POSITION']}', PREFIX = '{$folder_order['PREFIX']}' WHERE FID = '$fid'";
 
-    $result = db_query($sql, $db_folder_update);
+    if (!$result = db_query($sql, $db_folder_update)) return false;
 
     $sql = "DELETE FROM GROUP_PERMS WHERE FID = '$fid' ";
     $sql.= "AND FORUM = '$forum_fid' AND GID = '0'";
 
-    $result = db_query($sql, $db_folder_update);
+    if (!$result = db_query($sql, $db_folder_update)) return false;
 
     $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) ";
     $sql.= "VALUES ('0', '$forum_fid', '$fid', '{$folder_order['PERM']}')";
 
-    $result = db_query($sql, $db_folder_update);
+    if (!$result = db_query($sql, $db_folder_update)) return false;
 
     return true;
 }
@@ -272,7 +278,8 @@ function folder_move_threads($from, $to)
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "UPDATE {$table_data['PREFIX']}THREAD SET FID = '$to' WHERE FID = '$from'";
-    $result = db_query($sql, $db_folder_move_threads);
+
+    if (!$result = db_query($sql, $db_folder_move_threads)) return false;
 
     return $result;
 }
@@ -367,7 +374,7 @@ function folder_get_all()
     $sql.= "GROUP BY FOLDER.FID ";
     $sql.= "ORDER BY FOLDER.POSITION";
 
-    $result = db_query($sql, $db_folder_get_all);
+    if (!$result = db_query($sql, $db_folder_get_all)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -396,7 +403,8 @@ function folder_get_all_by_page($offset)
     $folder_array = array();
 
     $sql = "SELECT COUNT(FID) FROM {$table_data['PREFIX']}FOLDER ";
-    $result = db_query($sql, $db_folder_get_all_by_page);
+
+    if (!$result = db_query($sql, $db_folder_get_all_by_page)) return false;
 
     list($folder_count) = db_fetch_array($result, DB_RESULT_NUM);
 
@@ -411,7 +419,7 @@ function folder_get_all_by_page($offset)
     $sql.= "ORDER BY FOLDER.POSITION ";
     $sql.= "LIMIT $offset, 10";
 
-    $result = db_query($sql, $db_folder_get_all_by_page);
+    if (!$result = db_query($sql, $db_folder_get_all_by_page)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -442,7 +450,8 @@ function folder_get_thread_count($fid)
     $sql.= "FROM {$table_data['PREFIX']}THREAD ";
     $sql.= "WHERE FID = '$fid'";
 
-    $result = db_query($sql, $db_folder_get_thread_count);
+    if (!$result = db_query($sql, $db_folder_get_thread_count)) return false;
+    
     list($thread_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     return $thread_count;
@@ -468,7 +477,7 @@ function folder_get($fid)
     $sql.= "AND GROUP_PERMS.GID = 0 AND GROUP_PERMS.FORUM IN (0, $forum_fid)) ";
     $sql.= "WHERE FOLDER.FID = '$fid' GROUP BY FOLDER.FID, FOLDER.TITLE";
 
-    $result = db_query($sql, $db_folder_get);
+    if (!$result = db_query($sql, $db_folder_get)) return false;
 
     if (db_num_rows($result) > 0) {
         return db_fetch_array($result);
@@ -488,7 +497,8 @@ function folder_is_valid($fid)
     if (!is_numeric($fid)) return false;
 
     $sql = "SELECT FID FROM {$table_data['PREFIX']}FOLDER WHERE FID = '$fid' LIMIT 0, 1";
-    $result = db_query($sql, $db_folder_get_available);
+
+    if (!$result = db_query($sql, $db_folder_get_available)) return false;
 
     return (db_num_rows($result) > 0);
 }
@@ -515,7 +525,7 @@ function user_set_folder_interest($fid, $interest)
     $sql = "SELECT UID FROM {$table_data['PREFIX']}USER_FOLDER ";
     $sql.= "WHERE UID = '$uid' AND FID = '$fid'";
 
-    $result = db_query($sql, $db_user_set_folder_interest);
+    if (!$result = db_query($sql, $db_user_set_folder_interest)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -528,7 +538,9 @@ function user_set_folder_interest($fid, $interest)
         $sql.= "VALUES ('$uid', '$fid', '$interest')";
     }
 
-    return db_query($sql, $db_user_set_folder_interest);
+    if (!$result = db_query($sql, $db_user_set_folder_interest)) return false;
+
+    return true;
 }
 
 function folder_thread_type_allowed($fid, $type) // for types see constants.inc.php
@@ -541,7 +553,8 @@ function folder_thread_type_allowed($fid, $type) // for types see constants.inc.
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT ALLOWED_TYPES FROM {$table_data['PREFIX']}FOLDER WHERE FID = '$fid'";
-    $result = db_query($sql, $db_folder_thread_type_allowed);
+
+    if (!$result = db_query($sql, $db_folder_thread_type_allowed)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -572,7 +585,7 @@ function folder_get_by_type_allowed($allowed_types = FOLDER_ALLOW_ALL_THREAD)
     $sql = "SELECT DISTINCT FOLDER.FID FROM {$table_data['PREFIX']}FOLDER FOLDER ";
     $sql.= "WHERE (FOLDER.ALLOWED_TYPES & $allowed_types > 0 OR FOLDER.ALLOWED_TYPES IS NULL)";
 
-    $result = db_query($sql, $db_folder_get_by_type_allowed);
+    if (!$result = db_query($sql, $db_folder_get_by_type_allowed)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -603,7 +616,7 @@ function folder_move_up($fid)
     $sql = "SELECT FID, POSITION FROM {$table_data['PREFIX']}FOLDER ";
     $sql.= "ORDER BY POSITION";
 
-    $result = db_query($sql, $db_folder_move_up);
+    if (!$result = db_query($sql, $db_folder_move_up)) return false;
 
     while ($row = db_fetch_array($result)) {
 
@@ -655,7 +668,7 @@ function folder_move_down($fid)
     $sql = "SELECT FID, POSITION FROM {$table_data['PREFIX']}FOLDER ";
     $sql.= "ORDER BY POSITION";
 
-    $result = db_query($sql, $db_folder_move_down);
+    if (!$result = db_query($sql, $db_folder_move_down)) return false;
 
     while ($row = db_fetch_array($result)) {
 
@@ -702,7 +715,7 @@ function folder_positions_update()
     $sql = "SELECT FID FROM {$table_data['PREFIX']}FOLDER ";
     $sql.= "ORDER BY POSITION";
 
-    $result = db_query($sql, $db_folder_positions_update);
+    if (!$result = db_query($sql, $db_folder_positions_update)) return false;
 
     while (list($fid) = db_fetch_array($result, DB_RESULT_NUM)) {
 
@@ -713,7 +726,7 @@ function folder_positions_update()
             $sql = "UPDATE {$table_data['PREFIX']}FOLDER ";
             $sql.= "SET POSITION = '$new_position' WHERE FID = '$fid'";
 
-            $result_update = db_query($sql, $db_folder_positions_update);
+            if (!$result_update = db_query($sql, $db_folder_positions_update)) return false;
         }
     }
 }    

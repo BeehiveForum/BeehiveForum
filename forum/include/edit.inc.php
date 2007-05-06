@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.inc.php,v 1.68 2007-05-02 23:15:41 decoyduck Exp $ */
+/* $Id: edit.inc.php,v 1.69 2007-05-06 20:33:42 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -54,14 +54,14 @@ function post_update($fid, $tid, $pid, $content)
     $sql = "UPDATE {$table_data['PREFIX']}POST_CONTENT SET CONTENT = '$content' ";
     $sql.= "WHERE TID = '$tid' AND PID = '$pid' LIMIT 1";
 
-    $result = db_query($sql, $db_post_update);
+    if (!$result = db_query($sql, $db_post_update)) return false;
 
     if (bh_session_check_perm(USER_PERM_POST_APPROVAL, $fid) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
 
         $sql = "UPDATE {$table_data['PREFIX']}POST SET APPROVED = 0, APPROVED_BY = 0 ";
         $sql.= "WHERE TID = '$tid' AND PID = '$pid' LIMIT 1";
 
-        $result = db_query($sql, $db_post_update);
+        if (!$result = db_query($sql, $db_post_update)) return false;
     }
 
     return $result;
@@ -80,7 +80,9 @@ function post_add_edit_text($tid, $pid)
     $sql = "UPDATE {$table_data['PREFIX']}POST SET EDITED = NOW(), EDITED_BY = '$edit_uid' ";
     $sql.= "WHERE TID = '$tid' AND PID = '$pid'";
 
-    return db_query($sql, $db_post_add_edit_text);
+    if (!$result = db_query($sql, $db_post_add_edit_text)) return false;
+
+    return true;
 }
 
 function post_delete($tid, $pid)
@@ -97,18 +99,18 @@ function post_delete($tid, $pid)
         $sql = "UPDATE {$table_data['PREFIX']}THREAD ";
         $sql.= "SET POLL_FLAG = 'N' WHERE TID = '$tid'";
 
-        $result = db_query($sql, $db_post_delete);
+        if (!$result = db_query($sql, $db_post_delete)) return false;
     }
 
     $sql = "DELETE FROM {$table_data['PREFIX']}THREAD ";
     $sql.= "WHERE TID = '$tid' AND LENGTH = 1";
 
-    $result = db_query($sql, $db_post_delete);
+    if (!$result = db_query($sql, $db_post_delete)) return false;
 
     $sql = "UPDATE {$table_data['PREFIX']}POST_CONTENT SET CONTENT = NULL ";
     $sql.= "WHERE TID = '$tid' AND PID = '$pid'";
 
-    $result = db_query($sql, $db_post_delete);
+    if (!$result = db_query($sql, $db_post_delete)) return false;
 
     return post_add_edit_text($tid, $pid);
 }

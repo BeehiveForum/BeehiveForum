@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.155 2007-05-02 23:15:42 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.156 2007-05-06 20:33:43 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -86,7 +86,7 @@ function post_create($fid, $tid, $reply_pid, $by_uid, $fuid, $tuid, $content, $h
         $sql.= "VALUES ($tid, $reply_pid, $fuid, $tuid, NOW(), NOW(), $fuid, '$ipaddress')";
     }
 
-    $result = db_query($sql, $db_post_create);
+    if (!$result = db_query($sql, $db_post_create)) return false;
 
     if ($result) {
 
@@ -98,7 +98,7 @@ function post_create($fid, $tid, $reply_pid, $by_uid, $fuid, $tuid, $content, $h
         $sql = "INSERT INTO {$table_data['PREFIX']}POST_CONTENT (TID, PID, CONTENT) ";
         $sql.= "VALUES ('$tid', '$new_pid', '$post_content')";
 
-        $result = db_query($sql, $db_post_create);
+        if (!$result = db_query($sql, $db_post_create)) return false;
 
         if ($result) {
 
@@ -107,14 +107,14 @@ function post_create($fid, $tid, $reply_pid, $by_uid, $fuid, $tuid, $content, $h
             $sql = "UPDATE {$table_data['PREFIX']}THREAD SET LENGTH = '$new_pid', MODIFIED = NOW() ";
             $sql.= "WHERE TID = '$tid'";
 
-            $result = db_query($sql, $db_post_create);
+            if (!$result = db_query($sql, $db_post_create)) return false;
 
             // Update the user's post count.
 
             $sql = "UPDATE {$table_data['PREFIX']}USER_TRACK SET LAST_POST = NOW(), ";
             $sql.= "POST_COUNT = POST_COUNT + 1 WHERE UID = '$fuid'";
 
-            $result = db_query($sql, $db_post_create);
+            if (!$result = db_query($sql, $db_post_create)) return false;
 
         }else {
 
@@ -143,7 +143,9 @@ function post_approve($tid, $pid)
     $sql = "UPDATE {$table_data['PREFIX']}POST SET APPROVED = NOW(), APPROVED_BY = '$approve_uid' ";
     $sql.= "WHERE TID = '$tid' AND PID = '$pid'";
 
-    return db_query($sql, $db_post_approve);
+    if (!$result = db_query($sql, $db_post_approve)) return false;
+
+    return true;
 }
 
 function post_save_attachment_id($tid, $pid, $aid)
@@ -161,7 +163,7 @@ function post_save_attachment_id($tid, $pid, $aid)
     $sql = "SELECT TID FROM POST_ATTACHMENT_IDS WHERE ";
     $sql.= "FID = '$forum_fid' AND TID = '$tid' AND PID = '$pid'";
 
-    $result = db_query($sql, $db_post_save_attachment_id);
+    if (!$result = db_query($sql, $db_post_save_attachment_id)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -174,7 +176,9 @@ function post_save_attachment_id($tid, $pid, $aid)
         $sql.= "VALUES ($forum_fid, $tid, $pid, '$aid')";
     }
 
-    return db_query($sql, $db_post_save_attachment_id);
+    if (!$result = db_query($sql, $db_post_save_attachment_id)) return false;
+
+    return true;
 }
 
 function post_create_thread($fid, $uid, $title, $poll = 'N', $sticky = 'N', $closed = false)
@@ -196,7 +200,7 @@ function post_create_thread($fid, $uid, $title, $poll = 'N', $sticky = 'N', $clo
     $sql.= "(FID, BY_UID, TITLE, LENGTH, POLL_FLAG, STICKY, CREATED, MODIFIED, CLOSED) ";
     $sql.= "VALUES ('$fid', '$uid', '$title', 0, '$poll', '$sticky', NOW(), NOW(), $closed)";
 
-    $result = db_query($sql, $db_post_create_thread);
+    if (!$result = db_query($sql, $db_post_create_thread)) return false;
 
     if ($result) {
         $new_tid = db_insert_id($db_post_create_thread);
@@ -229,7 +233,7 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
         $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
         $sql.= "WHERE USER.UID = '$default_uid' ";
 
-        $result = db_query($sql, $db_post_draw_to_dropdown);
+        if (!$result = db_query($sql, $db_post_draw_to_dropdown)) return false;
 
         if (db_num_rows($result) > 0) {
 
@@ -260,7 +264,7 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
     $sql.= "AND VISITOR_LOG.UID > 0 ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
     $sql.= "LIMIT 0, 20";
 
-    $result = db_query($sql, $db_post_draw_to_dropdown);
+    if (!$result = db_query($sql, $db_post_draw_to_dropdown)) return false;
 
     while ($row = db_fetch_array($result)) {
 
@@ -302,7 +306,7 @@ function post_draw_to_dropdown_recent($default_uid, $show_all = true)
         $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
         $sql.= "WHERE USER.UID = '$default_uid' ";
 
-        $result = db_query($sql, $db_post_draw_to_dropdown);
+        if (!$result = db_query($sql, $db_post_draw_to_dropdown)) return false;
 
         if (db_num_rows($result) > 0) {
 
@@ -333,7 +337,7 @@ function post_draw_to_dropdown_recent($default_uid, $show_all = true)
     $sql.= "AND VISITOR_LOG.UID > 0 ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
     $sql.= "LIMIT 0, 20";
 
-    $result = db_query($sql, $db_post_draw_to_dropdown);
+    if (!$result = db_query($sql, $db_post_draw_to_dropdown)) return false;
 
     while ($row = db_fetch_array($result)) {
         
@@ -375,7 +379,7 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $
         $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
         $sql.= "WHERE USER.UID = '$default_uid' ";
 
-        $result = db_query($sql, $db_post_draw_to_dropdown);
+        if (!$result = db_query($sql, $db_post_draw_to_dropdown)) return false;
 
         if (db_num_rows($result) > 0) {
 
@@ -414,7 +418,7 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $
     $sql.= "WHERE POST.TID = '$tid' AND POST.FROM_UID <> '$default_uid' ";
     $sql.= "GROUP BY POST.FROM_UID LIMIT 0, 20";
 
-    $result = db_query($sql, $db_post_draw_to_dropdown);
+    if (!$result = db_query($sql, $db_post_draw_to_dropdown)) return false;
 
     while ($row = db_fetch_array($result)) {
 
@@ -444,7 +448,8 @@ function get_user_posts($uid)
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT TID, PID FROM {$table_data['PREFIX']}POST WHERE FROM_UID = '$uid'";
-    $result = db_query($sql, $db_get_user_posts);
+
+    if (!$result = db_query($sql, $db_get_user_posts)) return false;
 
     if (db_num_rows($result)) {
         $user_post_array = array();
@@ -468,7 +473,7 @@ function check_ddkey($ddkey)
     $sql = "SELECT UNIX_TIMESTAMP(DDKEY) FROM ";
     $sql.= "{$table_data['PREFIX']}USER_TRACK WHERE UID = '$uid'";
 
-    $result = db_query($sql, $db_check_ddkey);
+    if (!$result = db_query($sql, $db_check_ddkey)) return false;
 
     if (db_num_rows($result)) {
 
@@ -477,7 +482,7 @@ function check_ddkey($ddkey)
         $sql = "UPDATE {$table_data['PREFIX']}USER_TRACK ";
         $sql.= "SET DDKEY = FROM_UNIXTIME($ddkey) WHERE UID = '$uid'";
 
-        $result = db_query($sql, $db_check_ddkey);
+        if (!$result = db_query($sql, $db_check_ddkey)) return false;
 
     }else{
 
@@ -486,7 +491,7 @@ function check_ddkey($ddkey)
         $sql = "INSERT INTO {$table_data['PREFIX']}USER_TRACK (UID, DDKEY) ";
         $sql.= "VALUES ('$uid', FROM_UNIXTIME($ddkey))";
 
-        $result = db_query($sql, $db_check_ddkey);
+        if (!$result = db_query($sql, $db_check_ddkey)) return false;
     }
 
     return !($ddkey == $ddkey_check);
@@ -508,7 +513,7 @@ function check_post_frequency()
     $sql.= "UNIX_TIMESTAMP(NOW()) FROM {$table_data['PREFIX']}USER_TRACK ";
     $sql.= "WHERE UID = '$uid'";
 
-    $result = db_query($sql, $db_check_post_frequency);
+    if (!$result = db_query($sql, $db_check_post_frequency)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -519,7 +524,7 @@ function check_post_frequency()
             $sql = "UPDATE {$table_data['PREFIX']}USER_TRACK ";
             $sql.= "SET LAST_POST = NOW() WHERE UID = '$uid'";
 
-            $result = db_query($sql, $db_check_post_frequency);
+            if (!$result = db_query($sql, $db_check_post_frequency)) return false;
 
             return true;
         }
@@ -529,7 +534,7 @@ function check_post_frequency()
         $sql = "INSERT INTO {$table_data['PREFIX']}USER_TRACK ";
         $sql.= "(UID, LAST_POST) VALUES ('$uid', NOW())";
 
-        $result = db_query($sql, $db_check_post_frequency);
+        if (!$result = db_query($sql, $db_check_post_frequency)) return false;
 
         return true;
     }

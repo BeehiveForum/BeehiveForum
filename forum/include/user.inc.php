@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.312 2007-05-02 23:15:42 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.313 2007-05-06 20:33:43 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -45,7 +45,8 @@ function user_count()
    if (!$table_data = get_table_prefix()) return 0;
 
    $sql = "SELECT COUNT(UID) AS COUNT FROM USER";
-   $result = db_query($sql, $db_user_count);
+
+   if (!$result = db_query($sql, $db_user_count)) return false;
 
    $user_count = db_fetch_array($result);
    return $user_count['COUNT'];
@@ -184,7 +185,9 @@ function user_update_nickname($uid, $nickname)
     $sql = "UPDATE USER SET NICKNAME = '$nickname' ";
     $sql.= "WHERE UID = '$uid'";
 
-    return db_query($sql, $db_user_update);
+    if (!$result = db_query($sql, $db_user_update)) return false;
+
+    return true;
 }
 
 function user_change_logon($uid, $logon)
@@ -200,7 +203,9 @@ function user_change_logon($uid, $logon)
     $sql = "UPDATE USER SET LOGON = '$logon' ";
     $sql.= "WHERE UID = '$uid'";
 
-    return db_query($sql, $db_user_change_logon);
+    if (!$result = db_query($sql, $db_user_change_logon)) return false;
+
+    return true;
 }
 
 function user_update_post_count($uid, $post_count)
@@ -216,7 +221,9 @@ function user_update_post_count($uid, $post_count)
     $sql.= "SET POST_COUNT = '$post_count' ";
     $sql.= "WHERE UID = '$uid'";
 
-    return db_query($sql, $db_user_update_post_count);
+    if (!$result = db_query($sql, $db_user_update_post_count)) return false;
+
+    return true;
 }
 
 function user_reset_post_count($uid)
@@ -230,7 +237,9 @@ function user_reset_post_count($uid)
     $sql = "UPDATE {$table_data['PREFIX']}USER_TRACK ";
     $sql.= "SET POST_COUNT = NULL WHERE UID = '$uid'";
 
-    return db_query($sql, $db_user_reset_post_count);
+    if (!$result = db_query($sql, $db_user_reset_post_count)) return false;
+
+    return true;
 }
 
 function user_change_password($uid, $password, $hash)
@@ -248,17 +257,17 @@ function user_change_password($uid, $password, $hash)
         $sql = "UPDATE USER SET PASSWD = '$password' ";
         $sql.= "WHERE UID = '$uid' AND PASSWD = '$hash'";
 
-        return db_query($sql, $db_user_change_password);
+        if (!$result = db_query($sql, $db_user_change_password)) return false;
 
     }elseif (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, 0)) {
 
         $sql = "UPDATE USER SET PASSWD = '$password' ";
         $sql.= "WHERE UID = '$uid'";
 
-        return db_query($sql, $db_user_change_password);
+        if (!$result = db_query($sql, $db_user_change_password)) return false;
     }
 
-    return false;
+    return true;
 }
 
 function user_update_forums($uid, $forums_array)
@@ -277,25 +286,27 @@ function user_update_forums($uid, $forums_array)
                 $sql = "SELECT UID FROM USER_FORUM ";
                 $sql.= "WHERE UID = '$uid' AND FID = '{$forum['fid']}'";
 
-                $result = db_query($sql, $db_user_update_forums);
+                if (!$result = db_query($sql, $db_user_update_forums)) return false;
 
                 if (db_num_rows($result) > 0) {
 
                     $sql = "UPDATE USER_FORUM SET ALLOWED = '{$forum['allowed']}' ";
                     $sql.= "WHERE UID = '$uid' AND FID = '{$forum['fid']}'";
 
-                    $result = db_query($sql, $db_user_update_forums);
+                    if (!$result = db_query($sql, $db_user_update_forums)) return false;
 
                 }else {
 
                     $sql = "INSERT INTO USER_FORUM (UID, FID, ALLOWED) ";
                     $sql.= "VALUES ('$uid', '{$forum['fid']}', '{$forum['allowed']}')";
 
-                    $result = db_query($sql, $db_user_update_forums);
+                    if (!$result = db_query($sql, $db_user_update_forums)) return false;
                 }
             }
         }
     }
+
+    return true;
 }
 
 function user_logon($logon, $passhash)
@@ -312,7 +323,8 @@ function user_logon($logon, $passhash)
     if (!$table_data = get_table_prefix()) $table_data['FID'] = 0;
 
     $sql = "SELECT UID FROM USER WHERE LOGON = '$logon' AND PASSWD = '$passhash' ";
-    $result = db_query($sql, $db_user_logon);
+
+    if (!$result = db_query($sql, $db_user_logon)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -352,7 +364,7 @@ function user_get($uid)
         $sql.= "WHERE USER.UID = '$uid'";
     }
 
-    $result = db_query($sql, $db_user_get);
+    if (!$result = db_query($sql, $db_user_get)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -384,7 +396,7 @@ function user_get_password($uid, $passwd_hash)
     $sql = "SELECT * FROM USER WHERE UID = '$uid' ";
     $sql.= "AND PASSWD = '$passwd_hash'";
 
-    $result = db_query($sql, $db_user_get);
+    if (!$result = db_query($sql, $db_user_get)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -404,7 +416,8 @@ function user_get_logon($uid)
     $table_data = get_table_prefix();
 
     $sql = "SELECT LOGON FROM USER WHERE UID = '$uid'";
-    $result = db_query($sql, $db_user_get_logon);
+
+    if (!$result = db_query($sql, $db_user_get_logon)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -424,7 +437,8 @@ function user_get_nickname($uid)
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT NICKNAME FROM USER WHERE UID = '$uid'";
-    $result = db_query($sql, $db_user_get_logon);
+
+    if (!$result = db_query($sql, $db_user_get_logon)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -445,7 +459,8 @@ function user_get_uid($logon)
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT * FROM USER WHERE LOGON = '$logon'";
-    $result = db_query($sql, $db_user_get_uid);
+
+    if (!$result = db_query($sql, $db_user_get_uid)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -464,7 +479,8 @@ function user_get_sig($uid, &$content, &$html)
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT CONTENT, HTML FROM {$table_data['PREFIX']}USER_SIG WHERE UID = '$uid'";
-    $result = db_query($sql, $db_user_get_sig);
+
+    if (!$result = db_query($sql, $db_user_get_sig)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -484,7 +500,8 @@ function user_get_last_ip_address($uid)
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT IPADDRESS FROM USER WHERE UID = '$uid'";
-    $result = db_query($sql, $db_user_get_last_ip_address);
+
+    if (!$result = db_query($sql, $db_user_get_last_ip_address)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -526,7 +543,7 @@ function user_get_prefs($uid)
     $sql.= "FROM USER_PREFS LEFT JOIN TIMEZONES ON (TIMEZONES.TZID = USER_PREFS.TIMEZONE) ";
     $sql.= "WHERE UID = '$uid'";
 
-    $result = db_query($sql, $db_user_get_prefs);
+    if (!$result = db_query($sql, $db_user_get_prefs)) return false;
 
     $global_prefs = (db_num_rows($result) > 0) ? db_fetch_array($result, DB_RESULT_ASSOC) : array();
 
@@ -540,7 +557,8 @@ function user_get_prefs($uid)
         $sql.= "EMOTICONS, ALLOW_EMAIL, ALLOW_PM, SHOW_THUMBS, USE_MOVER_SPOILER, ENABLE_WIKI_WORDS, ";
         $sql.= "USE_OVERFLOW_RESIZE FROM {$table_data['PREFIX']}USER_PREFS WHERE UID = '$uid'";
 
-        $result = db_query($sql, $db_user_get_prefs);
+        if (!$result = db_query($sql, $db_user_get_prefs)) return false;
+
         $forum_prefs = (db_num_rows($result) > 0) ? db_fetch_array($result, DB_RESULT_ASSOC) : array();
     }
 
@@ -655,7 +673,8 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
         // Is there an entry in USER_PREFS already for this user?
 
         $sql = "SELECT UID FROM USER_PREFS WHERE UID = '$uid'";
-        $result_global = db_query($sql, $db_user_update_prefs);
+
+        if (!$result_global = db_query($sql, $db_user_update_prefs)) return false;
 
         if (db_num_rows($result_global) > 0) {
 
@@ -677,7 +696,8 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
                 $values = implode(", ", $values_array);
 
                 $sql = "UPDATE USER_PREFS SET $values  WHERE UID = '$uid'";
-                $result_global = db_query($sql, $db_user_update_prefs);
+
+                if (!$result_global = db_query($sql, $db_user_update_prefs)) return false;
             }
 
         }else {
@@ -701,7 +721,8 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
                 $values  = implode(", ", array_values($values_array));
 
                 $sql = "INSERT INTO USER_PREFS (UID, $columns) VALUES ('$uid', $values) ";
-                $result_global = db_query($sql, $db_user_update_prefs);
+
+                if (!$result_global = db_query($sql, $db_user_update_prefs)) return false;
             }
         }
 
@@ -727,7 +748,8 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
             foreach($forum_prefix_array as $forum_prefix) {
 
                 $sql = "UPDATE {$forum_prefix}USER_PREFS SET $values WHERE UID = '$uid'";
-                $result = db_query($sql, $db_user_update_prefs);
+
+                if (!$result = db_query($sql, $db_user_update_prefs)) return false;
             }
         }
     }
@@ -735,7 +757,8 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
     if (isset($forum_prefs) && is_array($forum_prefs) && $table_data = get_table_prefix()) {
 
         $sql = "SELECT * FROM {$table_data['PREFIX']}USER_PREFS WHERE UID = '$uid'";
-        $result_forum = db_query($sql, $db_user_update_prefs);
+
+        if (!$result_forum = db_query($sql, $db_user_update_prefs)) return false;
 
         if (db_num_rows($result_forum) > 0) {
 
@@ -757,7 +780,8 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
                 $values = implode(", ", $values_array);
 
                 $sql = "UPDATE {$table_data['PREFIX']}USER_PREFS SET $values WHERE UID = '$uid'";
-                $result_forum = db_query($sql, $db_user_update_prefs);
+                
+                if (!$result_forum = db_query($sql, $db_user_update_prefs)) return false;
             }
 
         }else {
@@ -781,7 +805,8 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
                 $values  = implode(", ", array_values($values_array));
 
                 $sql = "INSERT INTO {$table_data['PREFIX']}USER_PREFS (UID, $columns) VALUES ('$uid', $values) ";
-                $result_forum = db_query($sql, $db_user_update_prefs);
+
+                if (!$result_forum = db_query($sql, $db_user_update_prefs)) return false;
             }
         }
     }
@@ -826,7 +851,7 @@ function user_update_sig($uid, $content, $html)
     $sql = "SELECT UID FROM {$table_data['PREFIX']}USER_SIG ";
     $sql.= "WHERE UID = '$uid'";
 
-    $result = db_query($sql, $db_user_update_sig);
+    if (!$result = db_query($sql, $db_user_update_sig)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -839,7 +864,9 @@ function user_update_sig($uid, $content, $html)
         $sql.= "VALUES ('$uid', '$content', '$html')";
     }
 
-    return db_query($sql, $db_user_update_sig);
+    if (!$result = db_query($sql, $db_user_update_sig)) return false;
+
+    return true;
 }
 
 function user_update_global_sig($uid, $value, $global = true)
@@ -899,7 +926,7 @@ function user_get_forthcoming_birthdays()
     $sql.= "ORDER BY BMONTH ASC, BDAY ASC ";
     $sql.= "LIMIT 0, 5";
 
-    $result = db_query($sql, $db_user_get_forthcoming_birthdays);
+    if (!$result = db_query($sql, $db_user_get_forthcoming_birthdays)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -954,7 +981,8 @@ function user_search($user_search, $offset = 0, $exclude_uid = 0)
     $sql.= "OR NICKNAME LIKE '$user_search_nickname%') ";
     $sql.= "AND USER.UID <> $exclude_uid";
 
-    $result = db_query($sql, $db_user_search);
+    if (!$result = db_query($sql, $db_user_search)) return false;
+
     list($results_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
@@ -965,7 +993,7 @@ function user_search($user_search, $offset = 0, $exclude_uid = 0)
     $sql.= "OR NICKNAME LIKE '$user_search_nickname%') ";
     $sql.= "AND USER.UID <> $exclude_uid LIMIT $offset, 10";
 
-    $result = db_query($sql, $db_user_search);
+    if (!$result = db_query($sql, $db_user_search)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -1010,7 +1038,7 @@ function user_get_ip_addresses($uid)
     $sql = "SELECT DISTINCT IPADDRESS FROM {$table_data['PREFIX']}POST ";
     $sql.= "WHERE FROM_UID = '$uid' ORDER BY TID DESC LIMIT 0, 10";
 
-    $result = db_query($sql, $db_user_get_ip_addresses);
+    if (!$result = db_query($sql, $db_user_get_ip_addresses)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -1079,7 +1107,7 @@ function users_get_recent()
         $sql.= "ORDER BY VISITOR_LOG.LAST_LOGON DESC LIMIT 10";
     }
 
-    $result = db_query($sql, $db_users_get_recent);
+    if (!$result = db_query($sql, $db_users_get_recent)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -1129,7 +1157,7 @@ function user_get_friends($uid)
     $sql.= "WHERE USER_PEER.UID = '$uid' AND (USER_PEER.RELATIONSHIP & $user_rel > 0) ";
     $sql.= "LIMIT 0, 20";
 
-    $result = db_query($sql, $db_user_get_peers);
+    if (!$result = db_query($sql, $db_user_get_peers)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -1170,7 +1198,7 @@ function user_get_ignored($uid)
     $sql.= "WHERE USER_PEER.UID = '$uid' AND (USER_PEER.RELATIONSHIP & $user_rel > 0) ";
     $sql.= "LIMIT 0, 20";
 
-    $result = db_query($sql, $db_user_get_peers);
+    if (!$result = db_query($sql, $db_user_get_peers)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -1211,7 +1239,7 @@ function user_get_ignored_signatures($uid)
     $sql.= "WHERE USER_PEER.UID = '$uid' AND (USER_PEER.RELATIONSHIP & $user_rel > 0) ";
     $sql.= "LIMIT 0, 20";
 
-    $result = db_query($sql, $db_user_get_peers);
+    if (!$result = db_query($sql, $db_user_get_peers)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -1251,7 +1279,8 @@ function user_get_relationships($uid, $offset = 0)
     $sql.= "USER_PEER ON (USER_PEER.PEER_UID = USER.UID) ";
     $sql.= "WHERE USER_PEER.UID = '$uid'";
 
-    $result = db_query($sql, $db_user_get_relationships);
+    if (!$result = db_query($sql, $db_user_get_relationships)) return false;
+
     list($user_get_peers_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
@@ -1261,7 +1290,7 @@ function user_get_relationships($uid, $offset = 0)
     $sql.= "WHERE USER_PEER.UID = '$uid' ";
     $sql.= "LIMIT $offset, 10";
 
-    $result = db_query($sql, $db_user_get_relationships);
+    if (!$result = db_query($sql, $db_user_get_relationships)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -1295,7 +1324,7 @@ function user_get_peer_relationship($uid, $peer_uid)
     $sql = "SELECT RELATIONSHIP FROM {$table_data['PREFIX']}USER_PEER ";
     $sql.= "WHERE UID = '$uid' AND PEER_UID = '$peer_uid'";
 
-    $result = db_query($sql, $db_user_get_peer_relationship);
+    if (!$result = db_query($sql, $db_user_get_peer_relationship)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -1318,7 +1347,7 @@ function user_get_peer_nickname($uid, $peer_uid)
     $sql = "SELECT PEER_NICKNAME FROM {$table_data['PREFIX']}USER_PEER ";
     $sql.= "WHERE UID = '$uid' AND PEER_UID = '$peer_uid'";
 
-    $result = db_query($sql, $db_user_get_peer_nickname);
+    if (!$result = db_query($sql, $db_user_get_peer_nickname)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -1342,24 +1371,25 @@ function user_get_word_filter_list($offset)
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    $sql = "SELECT COUNT(ID) FROM {$table_data['PREFIX']}FILTER_LIST ";
+    $sql = "SELECT COUNT(FID) FROM {$table_data['PREFIX']}WORD_FILTER ";
     $sql.= "WHERE UID = '$uid'";
 
-    $result = db_query($sql, $db_user_get_word_filter_list);
+    if (!$result = db_query($sql, $db_user_get_word_filter_list)) return false;
+
     list($word_filter_count) = db_fetch_array($result, DB_RESULT_NUM);
 
-    $sql = "SELECT ID, MATCH_TEXT, REPLACE_TEXT, FILTER_OPTION ";
-    $sql.= "FROM {$table_data['PREFIX']}FILTER_LIST ";
-    $sql.= "WHERE UID = '$uid' ORDER BY ID ";
+    $sql = "SELECT FID, FILTER_NAME, MATCH_TEXT, REPLACE_TEXT, FILTER_TYPE, ";
+    $sql.= "FILTER_ENABLED FROM {$table_data['PREFIX']}WORD_FILTER ";
+    $sql.= "WHERE UID = '$uid' ORDER BY FID ";
     $sql.= "LIMIT $offset, 10";
 
-    $result = db_query($sql, $db_user_get_word_filter_list);
+    if (!$result = db_query($sql, $db_user_get_word_filter_list)) return false;
 
     if (db_num_rows($result) > 0) {
 
         while ($row = db_fetch_array($result)) {
 
-            $word_filter_array[$row['ID']] = $row;
+            $word_filter_array[$row['FID']] = $row;
         }
 
     }else if ($word_filter_count > 0) {
@@ -1382,12 +1412,12 @@ function user_get_word_filter($filter_id)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT ID, MATCH_TEXT, REPLACE_TEXT, FILTER_OPTION ";
-    $sql.= "FROM {$table_data['PREFIX']}FILTER_LIST ";
-    $sql.= "WHERE ID = '$filter_id' AND UID = '$uid' ";
-    $sql.= "ORDER BY ID";
+    $sql = "SELECT FID, FILTER_NAME, MATCH_TEXT, REPLACE_TEXT, FILTER_TYPE, ";
+    $sql.= "FILTER_ENABLED FROM {$table_data['PREFIX']}WORD_FILTER ";
+    $sql.= "WHERE FID = '$filter_id' AND UID = '$uid' ";
+    $sql.= "ORDER BY FID";
 
-    $result = db_query($sql, $db_user_get_word_filter);
+    if (!$result = db_query($sql, $db_user_get_word_filter)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -1406,69 +1436,76 @@ function user_clear_word_filter()
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    $sql = "DELETE FROM {$table_data['PREFIX']}FILTER_LIST WHERE UID = '$uid'";
+    $sql = "DELETE FROM {$table_data['PREFIX']}WORD_FILTER WHERE UID = '$uid'";
 
     if (!$result = db_query($sql, $db_user_clear_word_filter)) return false;
 
     return true;
 }
 
-function user_add_word_filter($match, $replace, $filter_option)
+function user_add_word_filter($filter_name, $match_text, $replace_text, $filter_option, $filter_enabled)
 {
     $db_user_add_word_filter = db_connect();
 
+    $filter_name  = db_escape_string($filter_name);
+    $match_text   = db_escape_string($match_text);
+    $replace_text = db_escape_string($replace_text);
+
     if (!is_numeric($filter_option)) return false;
+    if (!is_numeric($filter_enabled)) $filter_enabled = 0;
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $match = db_escape_string($match);
-    $replace = db_escape_string($replace);
-
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    $sql = "INSERT INTO {$table_data['PREFIX']}FILTER_LIST (UID, MATCH_TEXT, REPLACE_TEXT, FILTER_OPTION) ";
-    $sql.= "VALUES ('$uid', '$match', '$replace', '$filter_option')";
+    $sql = "INSERT INTO {$table_data['PREFIX']}WORD_FILTER ";
+    $sql.= "(UID, FILTER_NAME, MATCH_TEXT, REPLACE_TEXT, FILTER_TYPE, FILTER_ENABLED) ";
+    $sql.= "VALUES ('$uid', '$filter_name', '$match_text', '$replace_text', '$filter_option', '$filter_enabled')";
 
     if (!$result = db_query($sql, $db_user_add_word_filter)) return false;
 
     return true;
 }
 
-function user_update_word_filter($filter_id, $match, $replace, $filter_option)
+function user_update_word_filter($filter_id, $filter_name, $match_text, $replace_text, $filter_option, $filter_enabled)
 {
     $db_user_save_word_filter = db_connect();
 
     if (!is_numeric($filter_id)) return false;
-    if (!is_numeric($filter_option)) return false;
+
+    if (!is_numeric($filter_option)) $filter_option = 0;
+    if (!is_numeric($filter_enabled)) $filter_enabled = 0;
+
+    $filter_name  = db_escape_string($filter_name);
+    $match_text   = db_escape_string($match_text);
+    $replace_text = db_escape_string($replace_text);
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $match = db_escape_string($match);
-    $replace = db_escape_string($replace);
-
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    $sql = "UPDATE {$table_data['PREFIX']}FILTER_LIST SET MATCH_TEXT = '$match', ";
-    $sql.= "REPLACE_TEXT = '$replace', FILTER_OPTION = '$filter_option' ";
-    $sql.= "WHERE ID = '$filter_id' AND UID = '$uid'";
+    $sql = "UPDATE {$table_data['PREFIX']}WORD_FILTER SET FILTER_NAME = '$filter_name', ";
+    $sql.= "MATCH_TEXT = '$match_text', REPLACE_TEXT = '$replace_text', ";
+    $sql.= "FILTER_TYPE = '$filter_option', FILTER_ENABLED = '$filter_enabled' ";
+    $sql.= "WHERE UID = '$uid' AND FID = '$filter_id'";
 
     if (!$result = db_query($sql, $db_user_save_word_filter)) return false;
 
     return true;
 }
 
-function user_delete_word_filter($id)
+function user_delete_word_filter($filter_id)
 {
     $db_user_delete_word_filter = db_connect();
 
-    if (!is_numeric($id)) return false;
+    if (!is_numeric($filter_id)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    $sql = "DELETE FROM {$table_data['PREFIX']}FILTER_LIST ";
-    $sql.= "WHERE ID = '$id' AND UID = '$uid'";
+    $sql = "DELETE FROM {$table_data['PREFIX']}WORD_FILTER ";
+    $sql.= "WHERE UID = '$uid' AND FID = '$filter_id'";
 
     if (!$result = db_query($sql, $db_user_delete_word_filter)) return false;
 
@@ -1488,7 +1525,7 @@ function user_is_active($uid)
     $sql = "SELECT UID FROM SESSIONS WHERE UID = '$uid' ";
     $sql.= "AND FID = '$forum_fid' LIMIT 0, 1";
 
-    $result = db_query($sql, $db_user_is_active);
+    if (!$result = db_query($sql, $db_user_is_active)) return false;
 
     return (db_num_rows($result) > 0);
 }

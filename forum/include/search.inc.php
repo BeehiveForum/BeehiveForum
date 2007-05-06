@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.182 2007-04-29 13:31:00 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.183 2007-05-06 20:33:43 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -78,7 +78,8 @@ function search_execute($search_arguments, &$error)
     // clean up their previous search if applicable.
 
     $sql = "DELETE FROM SEARCH_RESULTS WHERE UID = '$uid'";
-    $result = db_query($sql, $db_search_execute);
+
+    if (!$result = db_query($sql, $db_search_execute)) return false;
 
     // Peer portion of the query for removing rows from ignored users - the same for all searches
 
@@ -399,7 +400,8 @@ function search_get_word_lengths(&$min_length, &$max_length)
     $db_search_get_word_lengths = db_connect();
 
     $sql = "SHOW VARIABLES LIKE 'ft_%'";
-    $result = db_query($sql, $db_search_get_word_lengths);
+
+    if (!$result = db_query($sql, $db_search_get_word_lengths)) return false;
 
     $min_length = 4;
     $max_length = 84;
@@ -454,7 +456,7 @@ function search_get_keywords()
     $sql.= "{$table_data['PREFIX']}USER_TRACK ";
     $sql.= "WHERE UID = '$uid'";
 
-    $result = db_query($sql, $db_search_get_keywords);
+    if (!$result = db_query($sql, $db_search_get_keywords)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -487,7 +489,8 @@ function search_fetch_results($offset, $sort_by, $sort_dir)
     }
 
     $sql = "SELECT COUNT(*) AS RESULT_COUNT FROM SEARCH_RESULTS WHERE UID = '$uid'";
-    $result = db_query($sql, $db_search_fetch_results);
+
+    if (!$result = db_query($sql, $db_search_fetch_results)) return false;
 
     list($result_count) = db_fetch_array($result, DB_RESULT_NUM);
 
@@ -525,7 +528,7 @@ function search_fetch_results($offset, $sort_by, $sort_dir)
                 break;
         }
 
-        $result = db_query($sql, $db_search_fetch_results);
+        if (!$result = db_query($sql, $db_search_fetch_results)) return false;
 
         if (db_num_rows($result) > 0) {
 
@@ -562,7 +565,7 @@ function search_get_first_result_msg()
     $sql.= "ORDER BY SEARCH_RESULTS.CREATED DESC ";
     $sql.= "LIMIT 0, 1";
 
-    $result = db_query($sql, $db_search_fetch_results);
+    if (!$result = db_query($sql, $db_search_fetch_results)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -729,7 +732,7 @@ function forum_search_dropdown()
     $sql.= "WHERE FORUMS.ACCESS_LEVEL = 0 OR FORUMS.ACCESS_LEVEL = 2 ";
     $sql.= "OR (FORUMS.ACCESS_LEVEL = 1 AND USER_FORUM.ALLOWED = 1) ";
 
-    $result = db_query($sql, $db_forum_search_dropdown);
+    if (!$result = db_query($sql, $db_forum_search_dropdown)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -765,7 +768,7 @@ function folder_search_dropdown()
     $sql = "SELECT FID, TITLE FROM {$table_data['PREFIX']}FOLDER ";
     $sql.= "ORDER BY FID ";
 
-    $result = db_query($sql, $db_folder_search_dropdown);
+    if (!$result = db_query($sql, $db_folder_search_dropdown)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -811,7 +814,7 @@ function check_search_frequency()
     $sql.= "UNIX_TIMESTAMP(NOW()) FROM {$table_data['PREFIX']}USER_TRACK ";
     $sql.= "WHERE UID = '$uid'";
 
-    $result = db_query($sql, $db_check_search_frequency);
+    if (!$result = db_query($sql, $db_check_search_frequency)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -822,7 +825,7 @@ function check_search_frequency()
             $sql = "UPDATE {$table_data['PREFIX']}USER_TRACK ";
             $sql.= "SET LAST_SEARCH = NOW() WHERE UID = '$uid'";
 
-            $result = db_query($sql, $db_check_search_frequency);
+            if (!$result = db_query($sql, $db_check_search_frequency)) return false;
 
             return true;
         }
@@ -832,7 +835,7 @@ function check_search_frequency()
         $sql = "INSERT INTO {$table_data['PREFIX']}USER_TRACK ";
         $sql.= "(UID, LAST_SEARCH) VALUES ('$uid', NOW())";
 
-        $result = db_query($sql, $db_check_search_frequency);
+        if (!$result = db_query($sql, $db_check_search_frequency)) return false;
 
         return true;
     }

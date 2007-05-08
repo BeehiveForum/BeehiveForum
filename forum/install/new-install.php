@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.142 2007-05-06 20:33:43 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.143 2007-05-08 17:54:47 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
 
@@ -146,8 +146,8 @@ $sql = "CREATE TABLE {$forum_webtag}_WORD_FILTER (";
 $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
 $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
 $sql.= "  FILTER_NAME VARCHAR(255) NOT NULL,";
-$sql.= "  MATCH_TEXT TEXT NOT NULL DEFAULT '',";
-$sql.= "  REPLACE_TEXT TEXT NOT NULL DEFAULT '',";
+$sql.= "  MATCH_TEXT TEXT NOT NULL,";
+$sql.= "  REPLACE_TEXT TEXT NOT NULL,";
 $sql.= "  FILTER_TYPE TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  FILTER_ENABLED TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PRIMARY KEY  (UID, FID)";
@@ -687,6 +687,7 @@ $sql.= "  SUBJECT VARCHAR(64) NOT NULL DEFAULT '',";
 $sql.= "  RECIPIENTS VARCHAR(255) NOT NULL DEFAULT '',";
 $sql.= "  CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
 $sql.= "  NOTIFIED TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  SMID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PRIMARY KEY  (MID),";
 $sql.= "  FULLTEXT KEY (SUBJECT)";
 $sql.= ") TYPE=MYISAM";

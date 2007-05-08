@@ -21,9 +21,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06x-to-072.php,v 1.7 2007-04-21 18:26:25 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-072.php,v 1.8 2007-05-08 17:54:47 decoyduck Exp $ */
 
-if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-06x-to-07.php") {
+if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-06x-to-072.php") {
 
     header("Request-URI: ../install.php");
     header("Content-Location: ../install.php");
@@ -1008,6 +1008,16 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
+// New more reliable functionality for PM sent items.
+
+$sql = "ALTER TABLE PM ADD SMID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0'";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
 // You can now search PMs for messages using fulltext searching.
 
 $sql = "ALTER TABLE PM ADD FULLTEXT (SUBJECT)";
@@ -1164,6 +1174,69 @@ foreach ($timezones_array as $tzid => $tz_data) {
 
 $sql = "ALTER TABLE USER_PREFS CHANGE TIMEZONE ";
 $sql.= "TIMEZONE INT(11) NOT NULL DEFAULT '27'";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// New Word Filter table format to allow switching on
+// and off individual filters.
+
+$sql = "CREATE TABLE {$forum_webtag}_WORD_FILTER (";
+$sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
+$sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+$sql.= "  FILTER_NAME VARCHAR(255) NOT NULL,";
+$sql.= "  MATCH_TEXT TEXT NOT NULL,";
+$sql.= "  REPLACE_TEXT TEXT NOT NULL,";
+$sql.= "  FILTER_TYPE TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  FILTER_ENABLED TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  PRIMARY KEY  (UID, FID)";
+$sql.= ") TYPE = MYISAM";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// Copy the existing entries into the new table.
+
+$sql = "INSERT INTO {$forum_webtag}_WORD_FILTER (UID, FILTER_NAME, MATCH_TEXT, ";
+$sql.= "REPLACE_TEXT, FILTER_TYPE, FILTER_ENABLED) SELECT UID, '', MATCH_TEXT, ";
+$sql.= "REPLACE_TEXT, FILTER_OPTION, 1 FROM {$forum_webtag}_FILTER_LIST";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// Update the new table to name all the entries with
+// the name 'Filter #num'
+
+$sql = "UPDATE {$forum_webtag}_WORD_FILTER SET FILTER_NAME = CONCAT('Filter #', FID);";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// Remove the old FILTER_LIST table
+
+$sql = "DROP TABLE {$forum_webtag}_FILTER_LIST";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// Sort the new table to order by UID.
+
+$sql = "ALTER TABLE {$forum_webtag}_WORD_FILTER ORDER BY UID";
 
 if (!$result = @db_query($sql, $db_install)) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.223 2007-05-06 20:33:42 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.224 2007-05-08 17:54:47 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -744,28 +744,6 @@ function forum_create($webtag, $forum_name, $database_name, $access)
             return;
         }
 
-        $sql = "CREATE TABLE {$forum_webtag}_WORD_FILTER (";
-        $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
-        $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-        $sql.= "  FILTER_NAME VARCHAR(255) NOT NULL,";
-        $sql.= "  MATCH_TEXT TEXT NOT NULL DEFAULT '',";
-        $sql.= "  REPLACE_TEXT TEXT NOT NULL DEFAULT '',";
-        $sql.= "  FILTER_TYPE TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',";
-        $sql.= "  FILTER_ENABLED TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',";
-        $sql.= "  PRIMARY KEY  (UID, FID)";
-        $sql.= ") TYPE = MYISAM";
-
-        if (!$result = db_query($sql, $db_forum_create)) {
-
-            forum_delete_tables($webtag, $database_name);
-
-            if (defined("BEEHIVE_INSTALL_NOWARN")) {
-                db_trigger_error($sql, $db_forum_create);
-            }
-
-            return;
-        }
-
         $sql = "CREATE TABLE {$database_name}.{$webtag}_FOLDER (";
         $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
         $sql.= "  TITLE VARCHAR(32) DEFAULT NULL,";
@@ -1417,6 +1395,28 @@ function forum_create($webtag, $forum_name, $database_name, $access)
             return;
         }
 
+        $sql = "CREATE TABLE {$database_name}.{$webtag}_WORD_FILTER (";
+        $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql.= "  FILTER_NAME VARCHAR(255) NOT NULL,";
+        $sql.= "  MATCH_TEXT TEXT NOT NULL,";
+        $sql.= "  REPLACE_TEXT TEXT NOT NULL,";
+        $sql.= "  FILTER_TYPE TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  FILTER_ENABLED TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  PRIMARY KEY  (UID, FID)";
+        $sql.= ") TYPE = MYISAM";
+
+        if (!$result = db_query($sql, $db_forum_create)) {
+
+            forum_delete_tables($webtag, $database_name);
+
+            if (defined("BEEHIVE_INSTALL_NOWARN")) {
+                db_trigger_error($sql, $db_forum_create);
+            }
+
+            return;
+        }
+
         // Save Webtag, Database name and Access Level.
 
         $sql = "INSERT INTO FORUMS (WEBTAG, DATABASE_NAME, ACCESS_LEVEL) ";
@@ -1743,17 +1743,17 @@ function forum_delete_tables($webtag, $database_name)
 
         $db_forum_delete_tables = db_connect();
 
-        $table_array = array('ADMIN_LOG',       'BANNED',        'FILTER_LIST',
-                             'FOLDER',          'FORUM_LINKS',   'GROUPS',
-                             'GROUP_PERMS',     'GROUP_USERS',   'LINKS',
-                             'LINKS_COMMENT',   'LINKS_FOLDERS', 'LINKS_VOTE',
-                             'POLL',            'POLL_VOTES',    'POST',
-                             'POST_CONTENT',    'PROFILE_ITEM',  'PROFILE_SECTION',
-                             'RSS_FEEDS',       'RSS_HISTORY',   'STATS',
-                             'THREAD',          'THREAD_STATS',  'THREAD_TRACK',
-                             'USER_TRACK',      'USER_FOLDER',   'USER_PEER',
-                             'USER_POLL_VOTES', 'USER_PREFS',    'USER_PROFILE',
-                             'USER_SIG',        'USER_THREAD',   'VISITOR_LOG');
+        $table_array = array('ADMIN_LOG',     'BANNED',          'FOLDER',
+                             'FORUM_LINKS',   'GROUPS',          'GROUP_PERMS',
+                             'GROUP_USERS',   'LINKS',           'LINKS_COMMENT',
+                             'LINKS_FOLDERS', 'LINKS_VOTE',      'POLL',
+                             'POLL_VOTES',    'POST',            'POST_CONTENT',
+                             'PROFILE_ITEM',  'PROFILE_SECTION', 'RSS_FEEDS',
+                             'RSS_HISTORY',   'STATS',           'THREAD',
+                             'THREAD_STATS',  'THREAD_TRACK',    'USER_TRACK',
+                             'USER_FOLDER',   'USER_PEER',       'USER_POLL_VOTES',
+                             'USER_PREFS',    'USER_PROFILE',    'USER_SIG',
+                             'USER_THREAD',   'VISITOR_LOG',     'WORD_FILTER');
 
         foreach ($table_array as $table_name) {
 

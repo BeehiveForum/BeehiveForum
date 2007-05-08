@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.167 2007-05-02 23:15:41 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.168 2007-05-08 17:54:47 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -596,7 +596,7 @@ if (isset($_POST['save'])) {
                 pm_save_attachment_id($saved_mid, $aid);
                 
                 html_draw_top();
-                html_display_msg($lang['messagesaved'], $lang['messagewassuccessfullysavedtodraftsfolder'], 'pm.php', 'get', array('continue' => $lang['continue']), array('mid' => $saved_mid));
+                html_display_msg($lang['messagesaved'], $lang['messagewassuccessfullysavedtodraftsfolder'], 'pm.php', 'get', array('continue' => $lang['continue']), array('mid' => $saved_mid, 'folder' => PM_FOLDER_DRAFTS));
                 html_draw_bottom();
                 exit;
 

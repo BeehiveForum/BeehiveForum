@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.168 2007-05-08 17:54:47 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.169 2007-05-09 14:50:42 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -702,9 +702,8 @@ if ($valid && isset($_POST['submit'])) {
 
         if (isset($to_radio) && $to_radio == 0) {
 
-            if ($new_mid = pm_send_message($t_to_uid, $uid, $t_subject, $t_content)) {
+            if ($new_mid = pm_send_message($t_to_uid, $uid, $t_subject, $t_content, $aid)) {
 
-                pm_save_attachment_id($new_mid, $aid);
                 email_send_pm_notification($t_to_uid, $new_mid, $uid);
 
             }else {
@@ -723,9 +722,8 @@ if ($valid && isset($_POST['submit'])) {
 
             foreach ($t_new_recipient_array['TO_UID'] as $t_to_uid) {
 
-                if ($new_mid = pm_send_message($t_to_uid, $uid, $t_subject, $t_content)) {
+                if ($new_mid = pm_send_message($t_to_uid, $uid, $t_subject, $t_content, $aid)) {
                     
-                    pm_save_attachment_id($new_mid, $aid);
                     email_send_pm_notification($t_to_uid, $new_mid, $uid);
 
                 }else {

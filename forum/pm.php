@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.119 2007-05-08 17:54:47 decoyduck Exp $ */
+/* $Id: pm.php,v 1.120 2007-05-09 14:50:42 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -107,6 +107,11 @@ if (bh_session_get_value('UID') == 0) {
     exit;
 }
 
+// Available PM Folders
+
+$available_folders = array(PM_FOLDER_INBOX, PM_FOLDER_SENT, PM_FOLDER_OUTBOX,
+                           PM_FOLDER_SAVED, PM_FOLDER_DRAFTS, PM_SEARCH_RESULTS);
+
 // If we're viewing a message we need to know the folder it is in.
 
 if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
@@ -122,6 +127,20 @@ if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
     echo "<frameset cols=\"250,*\" framespacing=\"0\" border=\"4\">\n";
     echo "  <frame src=\"./pm_folders.php?webtag=$webtag&amp;mid=$mid&amp;folder=$folder\" name=\"pm_folders\" frameborder=\"0\" />\n";
     echo "  <frame src=\"./pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;folder=$folder\" name=\"pm_messages\" frameborder=\"0\" />\n";
+    echo "</frameset>\n";
+
+    html_draw_bottom();
+    exit;
+
+}elseif (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
+
+    $folder = (in_array($_GET['folder'], $available_folders)) ? $_GET['folder'] : PM_FOLDER_INBOX;
+
+    html_draw_top('body_tag=false', 'frames=true');
+
+    echo "<frameset cols=\"250,*\" framespacing=\"0\" border=\"4\">\n";
+    echo "  <frame src=\"./pm_folders.php?webtag=$webtag&amp;folder=$folder\" name=\"pm_folders\" frameborder=\"0\" />\n";
+    echo "  <frame src=\"./pm_messages.php?webtag=$webtag&amp;folder=$folder\" name=\"pm_messages\" frameborder=\"0\" />\n";
     echo "</frameset>\n";
 
     html_draw_bottom();

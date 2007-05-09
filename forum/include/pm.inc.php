@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.190 2007-05-08 17:54:47 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.191 2007-05-09 14:50:42 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -104,44 +104,7 @@ function pm_markasread($mid)
 function pm_edit_refuse()
 {
     $lang = load_language_file();
-
-    $webtag = get_webtag($webtag_search);
-
-    echo "<h1>{$lang['editpm']}</h1>\n";
-    echo "<br />\n";
-    echo "<form action=\"discussion.php\" method=\"post\" target=\"_self\">\n";
-    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-    echo "  ", form_input_hidden('folder', '2'), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\">\n";
-    echo "        <table class=\"box\" width=\"100%\">\n";
-    echo "          <tr>\n";
-    echo "            <td align=\"left\" class=\"posthead\">\n";
-    echo "              <table class=\"posthead\" width=\"100%\">\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\">{$lang['error']}</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\"><h2>{$lang['cannoteditpm']}</h2></td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\">&nbsp;</td>\n";
-    echo "                </tr>\n";
-    echo "              </table>\n";
-    echo "            </td>\n";
-    echo "          </tr>\n";
-    echo "        </table>\n";
-    echo "      </td>\n";
-    echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\">&nbsp;</td>\n";
-    echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("back", $lang['back']), "</td>\n";
-    echo "    </tr>\n";
-    echo "  </table>\n";
-    echo "</form>\n";
+    html_error_msg($lang['cannoteditpm'], 'pm.php', 'get', array('back' => $lang['back']), array('folder' => PM_FOLDER_OUTBOX));
 }
 
 /**
@@ -157,44 +120,7 @@ function pm_edit_refuse()
 function pm_error_refuse()
 {
     $lang = load_language_file();
-
-    $webtag = get_webtag($webtag_search);
-
-    echo "<h1>{$lang['editpm']}</h1>\n";
-    echo "<br />\n";
-    echo "<form action=\"discussion.php\" method=\"post\" target=\"_self\">\n";
-    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-    echo "  ", form_input_hidden('folder', '1'), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\">\n";
-    echo "        <table class=\"box\" width=\"100%\">\n";
-    echo "          <tr>\n";
-    echo "            <td align=\"left\" class=\"posthead\">\n";
-    echo "              <table class=\"posthead\" width=\"100%\">\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\">{$lang['error']}</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\"><h2>{$lang['cannotviewpm']}</h2></td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\">&nbsp;</td>\n";
-    echo "                </tr>\n";
-    echo "              </table>\n";
-    echo "            </td>\n";
-    echo "          </tr>\n";
-    echo "        </table>\n";
-    echo "      </td>\n";
-    echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\">&nbsp;</td>\n";
-    echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("back", $lang['back']), "</td>\n";
-    echo "    </tr>\n";
-    echo "  </table>\n";
-    echo "</form>\n";
+    html_error_msg($lang['cannotviewpm'], 'pm.php', 'get', array('back' => $lang['back']), array('folder' => PM_FOLDER_INBOX));
 }
 
 /**
@@ -1396,38 +1322,35 @@ function pm_save_attachment_id($mid, $aid)
 * @param string $content - Content string
 */
 
-function pm_send_message($tuid, $fuid, $subject, $content, $type = PM_OUTBOX, $smid = 0)
+function pm_send_message($tuid, $fuid, $subject, $content, $aid)
 {
     $db_pm_send_message = db_connect();
 
     if (!is_numeric($tuid)) return false;
     if (!is_numeric($fuid)) return false;
-    if (!is_numeric($smid)) return false;
 
-    // Check to see if the type is valid
+    if (!is_md5($aid)) return false;
 
-    $pm_type_array = array(PM_OUTBOX, PM_SENT);
+    $subject_escaped = db_escape_string(_htmlentities($subject));
+    $content_escaped = db_escape_string($content);
 
-    if (!in_array($type, $pm_type_array)) return false;
+    // PM_OUTBOX constant.
 
-    $subject = db_escape_string(_htmlentities($subject));
-    $content = db_escape_string($content);
+    $pm_outbox = PM_OUTBOX;
 
     // Insert the main PM Data into the database
 
-    $sql = "INSERT INTO PM (TYPE, TO_UID, FROM_UID, SUBJECT, CREATED, NOTIFIED, SMID) ";
-    $sql.= "VALUES ('$type', '$tuid', '$fuid', '$subject', NOW(), 0, '$smid')";
+    $sql = "INSERT INTO PM (TYPE, TO_UID, FROM_UID, SUBJECT, CREATED, NOTIFIED) ";
+    $sql.= "VALUES ('$pm_outbox', '$tuid', '$fuid', '$subject_escaped', NOW(), 0)";
 
-    if (!$result = db_query($sql, $db_pm_send_message)) return false;
-
-    if ($result) {
+    if ($result = db_query($sql, $db_pm_send_message)) {
 
         $new_mid = db_insert_id($db_pm_send_message);
 
         // Insert the PM Content into the database
 
         $sql = "INSERT INTO PM_CONTENT (MID, CONTENT) ";
-        $sql.= "VALUES ('$new_mid', '$content')";
+        $sql.= "VALUES ('$new_mid', '$content_escaped')";
 
         if (!$result = db_query($sql, $db_pm_send_message)) return false;
 
@@ -1435,10 +1358,57 @@ function pm_send_message($tuid, $fuid, $subject, $content, $type = PM_OUTBOX, $s
 
         $user_prefs = user_get_prefs($fuid);
 
-        if ($type == PM_OUTBOX && isset($user_prefs['PM_SAVE_SENT_ITEM']) && $user_prefs['PM_SAVE_SENT_ITEM'] == 'Y') {
+        if (isset($user_prefs['PM_SAVE_SENT_ITEM']) && $user_prefs['PM_SAVE_SENT_ITEM'] == 'Y') {
 
-            if (!pm_send_message($tuid, $fuid, $subject, $content, PM_SENT, $new_mid)) return false;
+            if (!pm_add_sent_item($new_mid, $tuid, $fuid, $subject, $content, $aid)) return false;
         }
+
+        // Save the attachment ID.
+
+        pm_save_attachment_id($new_mid, $aid);
+
+        return  $new_mid;
+    }
+
+    return false;
+}
+
+function pm_add_sent_item($smid, $tuid, $fuid, $subject, $content, $aid)
+{
+    $db_pm_add_sent_item = db_connect();
+
+    if (!is_numeric($smid)) return false;
+    if (!is_numeric($tuid)) return false;
+    if (!is_numeric($fuid)) return false;
+
+    if (!is_md5($aid)) return false;
+
+    $subject_escaped = db_escape_string(_htmlentities($subject));
+    $content_escaped = db_escape_string($content);
+
+    // PM_SENT constant.
+
+    $pm_sent = PM_SENT;
+
+    // Insert the main PM Data into the database
+
+    $sql = "INSERT INTO PM (TYPE, TO_UID, FROM_UID, SUBJECT, CREATED, NOTIFIED, SMID) ";
+    $sql.= "VALUES ('$pm_sent', '$tuid', '$fuid', '$subject_escaped', NOW(), 1, '$smid')";
+
+    if ($result = db_query($sql, $db_pm_add_sent_item)) {
+
+        $new_mid = db_insert_id($db_pm_add_sent_item);
+
+        // Insert the PM Content into the database
+
+        $sql = "INSERT INTO PM_CONTENT (MID, CONTENT) ";
+        $sql.= "VALUES ('$new_mid', '$content_escaped')";
+
+        if (!$result = db_query($sql, $db_pm_add_sent_item)) return false;
+
+        // Save the attachment ID.
+
+        pm_save_attachment_id($new_mid, $aid);
 
         return  $new_mid;
     }

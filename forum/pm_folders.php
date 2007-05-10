@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_folders.php,v 1.8 2007-05-03 20:25:57 decoyduck Exp $ */
+/* $Id: pm_folders.php,v 1.9 2007-05-10 22:59:23 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -178,7 +178,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\" class=\"foldername\">{$lang['search']}:</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"left\" class=\"smalltext\">", form_input_text("search_string", "", 20), "&nbsp;", form_submit('search', $lang['find']), "</td>\n";
+echo "      <td align=\"left\" class=\"smalltext\">", form_input_text("search_string", "", 24), "&nbsp;", form_submit('search', $lang['find']), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <br />\n";
@@ -188,6 +188,17 @@ echo "      <td align=\"left\">\n";
 echo "        <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
 echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"foldername\"><img src=\"", style_image('post.png'), "\" alt=\"{$lang['sendnewpm']}\" title=\"{$lang['sendnewpm']}\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag\" title=\"{$lang['sendnewpm']}\" target=\"main\">{$lang['sendnewpm']}</a></td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "  <table width=\"90%\" border=\"0\" cellpadding=\"2\" cellspacing=\"0\">\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">\n";
+echo "        <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
+echo "          <tr>\n";
+echo "            <td align=\"left\" class=\"foldername\"><img src=\"", style_image('post.png'), "\" alt=\"{$lang['privatemessageoptions']}\" title=\"{$lang['privatemessageoptions']}\" />&nbsp;<a href=\"pm_options.php?webtag=$webtag\" title=\"{$lang['privatemessageoptions']}\">{$lang['privatemessageoptions']}</a></td>\n";
 echo "          </tr>\n";
 echo "        </table>\n";
 echo "      </td>\n";

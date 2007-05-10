@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_wordfilter.php,v 1.66 2007-05-06 20:33:42 decoyduck Exp $ */
+/* $Id: edit_wordfilter.php,v 1.67 2007-05-10 22:03:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -298,7 +298,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "<form name=\"startpage\" method=\"post\" action=\"edit_wordfilter.php\">\n";
     echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "  ", form_input_hidden('addfilter', 'true'), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"450\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -312,23 +312,23 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">{$lang['filtername']}:</td>\n";
+    echo "                        <td align=\"left\" width=\"200\">{$lang['filtername']}:</td>\n";
     echo "                        <td align=\"left\" colspan=\"3\">", form_input_text("add_new_filter_name", (isset($_POST['add_new_filter_name']) ? _htmlentities(_stripslashes($_POST['add_new_filter_name'])) : ""), 40, 255), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">{$lang['matchedtext']}:</td>\n";
+    echo "                        <td align=\"left\" width=\"200\">{$lang['matchedtext']}:</td>\n";
     echo "                        <td align=\"left\" colspan=\"3\">", form_input_text("add_new_match_text", (isset($_POST['add_new_match_text']) ? _htmlentities(_stripslashes($_POST['add_new_match_text'])) : ""), 40), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">{$lang['replacementtext']}:</td>\n";
+    echo "                        <td align=\"left\" width=\"200\">{$lang['replacementtext']}:</td>\n";
     echo "                        <td align=\"left\" colspan=\"3\">", form_input_text("add_new_replace_text", (isset($_POST['add_new_replace_text']) ? _htmlentities(_stripslashes($_POST['add_new_replace_text'])) : ""), 40), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" valign=\"top\">{$lang['filtertype']}:</td>\n";
+    echo "                        <td align=\"left\" valign=\"top\" width=\"200\">{$lang['filtertype']}:</td>\n";
     echo "                        <td align=\"left\">", form_dropdown_array("add_new_filter_option", array($lang['all'], $lang['wholeword'], $lang['preg']), (isset($_POST['add_new_filter_option']) ? $_POST['add_new_filter_option'] : 0)), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" valign=\"top\">{$lang['filterenabled']}:</td>\n";
+    echo "                        <td align=\"left\" valign=\"top\" width=\"200\">{$lang['filterenabled']}:</td>\n";
     echo "                        <td align=\"left\">", form_dropdown_array("add_new_filter_enabled", array(1 => $lang['yes'], 0 => $lang['no']), (isset($_POST['add_new_filter_enabled']) ? $_POST['add_new_filter_enabled'] : 1)), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
@@ -351,12 +351,18 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "  <br />\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"450\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";
-    echo "      <td align=\"left\">\n";
-    echo "        <p>{$lang['word_filter_help_1']}</p>\n";
-    echo "        <p>{$lang['word_filter_help_2']}</p>\n";
-    echo "        <p>{$lang['word_filter_help_3']}</p>\n";
+    echo "      <td align=\"center\">\n";
+    echo "        <table width=\"500\">\n";
+    echo "          <tr>\n";
+    echo "            <td>\n";
+    echo "              <p>{$lang['word_filter_help_1']}</p>\n";
+    echo "              <p>{$lang['word_filter_help_2']}</p>\n";
+    echo "              <p>{$lang['word_filter_help_3']}</p>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
     echo "      </td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
@@ -401,7 +407,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "  ", form_input_hidden('filter_id', _htmlentities($filter_id)), "\n";
     echo "  ", form_input_hidden("delete_filters[$filter_id]", 'Y'), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"450\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -415,23 +421,23 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">{$lang['filtername']}:</td>\n";
+    echo "                        <td align=\"left\" width=\"200\">{$lang['filtername']}:</td>\n";
     echo "                        <td align=\"left\">", form_input_text("filter_name", _htmlentities($word_filter_array['FILTER_NAME']), 40, 255), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">{$lang['matchedtext']}:</td>\n";
+    echo "                        <td align=\"left\" width=\"200\">{$lang['matchedtext']}:</td>\n";
     echo "                        <td align=\"left\">", form_input_text("match_text", _htmlentities($word_filter_array['MATCH_TEXT']), 40), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">{$lang['replacementtext']}:</td>\n";
+    echo "                        <td align=\"left\" width=\"200\">{$lang['replacementtext']}:</td>\n";
     echo "                        <td align=\"left\">", form_input_text("replace_text", _htmlentities($word_filter_array['REPLACE_TEXT']), 40), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" valign=\"top\">{$lang['filtertype']}:</td>\n";
+    echo "                        <td align=\"left\" valign=\"top\" width=\"200\">{$lang['filtertype']}:</td>\n";
     echo "                        <td align=\"left\">", form_dropdown_array("filter_option", array($lang['all'], $lang['wholeword'], $lang['preg']), $word_filter_array['FILTER_TYPE']), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" valign=\"top\">{$lang['filterenabled']}:</td>\n";
+    echo "                        <td align=\"left\" valign=\"top\" width=\"200\">{$lang['filterenabled']}:</td>\n";
     echo "                        <td align=\"left\">", form_dropdown_array("filter_enabled", array(1 => $lang['yes'], 0 => $lang['no']), $word_filter_array['FILTER_ENABLED']), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
@@ -454,12 +460,18 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "  <br />\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"450\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";
-    echo "      <td align=\"left\">\n";
-    echo "        <p>{$lang['word_filter_help_1']}</p>\n";
-    echo "        <p>{$lang['word_filter_help_2']}</p>\n";
-    echo "        <p>{$lang['word_filter_help_3']}</p>\n";
+    echo "      <td align=\"center\">\n";
+    echo "        <table width=\"500\">\n";
+    echo "          <tr>\n";
+    echo "            <td>\n";
+    echo "              <p>{$lang['word_filter_help_1']}</p>\n";
+    echo "              <p>{$lang['word_filter_help_2']}</p>\n";
+    echo "              <p>{$lang['word_filter_help_3']}</p>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
     echo "      </td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";

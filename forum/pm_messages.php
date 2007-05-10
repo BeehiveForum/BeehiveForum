@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_messages.php,v 1.12 2007-05-02 23:15:41 decoyduck Exp $ */
+/* $Id: pm_messages.php,v 1.13 2007-05-10 22:03:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -297,23 +297,12 @@ if (isset($_POST['search'])) {
 
                     $mysql_stop_word_link = "<a href=\"search.php?webtag=$webtag&amp;show_stop_words=true&amp;keywords=$stopped_keywords\" target=\"_blank\" onclick=\"return display_mysql_stopwords('$webtag', '$stopped_keywords')\">{$lang['mysqlstopwordlist']}</a>";
 
+                    $error_msg = sprintf("<p>{$lang['notexttosearchfor']}</p>", $min_length, $max_length, $mysql_stop_word_link);
+                    $error_msg.= "<h2>{$lang['keywordscontainingerrors']}</h2>\n";
+                    $error_msg.= "<p><ul><li>". implode("</li>\n        <li>", $keywords_error_array['keywords']). "</li></ul></p>\n";
+
                     html_draw_top();
-
-                    echo "<h1>{$lang['error']}</h1>\n";
-                    echo "<table cellpadding=\"5\" cellspacing=\"0\" width=\"500\">\n";                
-                    echo "  <tr>\n";
-                    echo "    <td>", sprintf("<p>{$lang['notexttosearchfor']}</p>", $min_length, $max_length, $mysql_stop_word_link), "</td>\n";
-                    echo "  </tr>\n";
-                    echo "  <tr>\n";
-                    echo "    <td>\n";
-                    echo "      <h2>Keywords containing errors</h2>\n";
-                    echo "      <ul>\n";
-                    echo "        <li>", implode("</li>\n        <li>", $keywords_error_array['keywords']), "</li>\n";
-                    echo "      </ul>\n";
-                    echo "    </td>\n";
-                    echo "  </tr>\n";
-                    echo "</table>\n";
-
+                    html_error_msg($error_msg);
                     html_draw_bottom();
                     exit;
 
@@ -322,14 +311,7 @@ if (isset($_POST['search'])) {
                     $mysql_stop_word_link = "<a href=\"search.php?webtag=$webtag&amp;show_stop_words=true\" target=\"_blank\" onclick=\"return display_mysql_stopwords('$webtag', '')\">{$lang['mysqlstopwordlist']}</a>";
                     
                     html_draw_top();
-                    
-                    echo "<h1>{$lang['error']}</h1>\n";
-                    echo "<table cellpadding=\"5\" cellspacing=\"0\" width=\"500\">\n";                
-                    echo "  <tr>\n";
-                    echo "    <td>", sprintf("<p>{$lang['notexttosearchfor']}</p>", $min_length, $max_length, $mysql_stop_word_link), "</td>\n";
-                    echo "  </tr>\n";
-                    echo "</table>\n";
-
+                    html_error_msg(sprintf("<p>{$lang['notexttosearchfor']}</p>", $min_length, $max_length, $mysql_stop_word_link));
                     html_draw_bottom();
                     exit;
                 }
@@ -337,14 +319,7 @@ if (isset($_POST['search'])) {
             case SEARCH_FREQUENCY_TOO_GREAT:
 
                 html_draw_top();
-                
-                echo "<h1>{$lang['error']}</h1>\n";
-                echo "<table cellpadding=\"5\" cellspacing=\"0\" width=\"500\">\n";                
-                echo "  <tr>\n";
-                echo "    <td>", sprintf($lang['searchfrequencyerror'], $search_frequency), "</td>\n";
-                echo "  </tr>\n";
-                echo "</table>\n";
-
+                html_error_msg(sprintf($lang['searchfrequencyerror'], $search_frequency));
                 html_draw_bottom();
                 exit;
         }

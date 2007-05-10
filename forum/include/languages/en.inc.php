@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.425 2007-05-06 20:33:43 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.426 2007-05-10 22:03:19 decoyduck Exp $ */
 
 // British English language file
 
@@ -912,7 +912,7 @@ $lang['forgotpwemail'] = "You requested this e-mail from %s because you have for
 
 $lang['passwdresetrequest'] = "Your password reset request from %s";
 $lang['passwdresetemailsent'] = "Password reset e-mail sent";
-$lang['passwdresetexp'] = "You should receive an e-mail containing instructions for resetting your password shortly.";
+$lang['passwdresetexp'] = "You should shortly receive an e-mail containing instructions for resetting your password.";
 $lang['validusernamerequired'] = "A valid username is required";
 $lang['forgottenpasswd'] = "Forgot password";
 $lang['forgotpasswdexp'] = "If you have forgotten your password, you can request to have it reset by entering your logon name below. Instructions on how to reset your password will be sent to your registered email address.";
@@ -1448,6 +1448,7 @@ $lang['showregisteredusersonly'] = "Show Registered Users only (hide Guests)";
 $lang['relationships'] = "Relationships";
 $lang['userrelationship'] = "User Relationship";
 $lang['userrelationships'] = "User Relationships";
+$lang['failedtoremoveselectedrelationships'] = "Failed to remove selected relationship";
 $lang['friends'] = "Friends";
 $lang['ignoredcompletely'] = "Ignored Completely";
 $lang['relationship'] = "Relationship";
@@ -1466,6 +1467,7 @@ $lang['cannotignoremod'] = "You cannot ignore this user, as they are a moderator
 $lang['searchresults'] = "Search Results";
 $lang['usernamenotfound'] = "The username you specified in the to or from field was not found.";
 $lang['notexttosearchfor'] = "One or all of your search keywords were invalid. Search keywords must be no shorter than %d characters, no longer than %d characters and must not appear in the %s";
+$lang['keywordscontainingerrors'] = "Keywords Containing Errors";
 $lang['mysqlstopwordlist'] = "MySQL stopword list";
 $lang['foundzeromatches'] = "Found: 0 matches";
 $lang['found'] = "Found";

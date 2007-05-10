@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.111 2007-05-06 20:33:42 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.112 2007-05-10 22:03:18 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -97,7 +97,8 @@ function email_sendnotification($tuid, $fuid, $tid, $pid)
             $header.= "From: \"$forum_name\" <$forum_email>\n";
             $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";
             $header.= "Content-type: text/plain; charset=UTF-8\n";
-            $header.= "X-Mailer: PHP/". phpversion();
+            $header.= "X-Mailer: PHP/". phpversion(). "\n";
+            $header.= "X-Beehive-Forum: Beehive Forum ". BEEHIVE_VERSION;
 
             // SF.net Bug #1040563:
             // -------------------
@@ -173,7 +174,8 @@ function email_sendsubscription($tuid, $fuid, $tid, $pid)
             $header.= "From: \"$forum_name\" <$forum_email>\n";
             $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";
             $header.= "Content-type: text/plain; charset=UTF-8\n";
-            $header.= "X-Mailer: PHP/". phpversion();
+            $header.= "X-Mailer: PHP/". phpversion(). "\n";
+            $header.= "X-Beehive-Forum: Beehive Forum ". BEEHIVE_VERSION;
 
             // SF.net Bug #1040563:
             // -------------------
@@ -239,7 +241,8 @@ function email_send_pm_notification($tuid, $mid, $fuid)
             $header.= "From: \"$forum_name\" <$forum_email>\n";
             $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";
             $header.= "Content-type: text/plain; charset=UTF-8\n";
-            $header.= "X-Mailer: PHP/". phpversion();
+            $header.= "X-Mailer: PHP/". phpversion(). "\n";
+            $header.= "X-Beehive-Forum: Beehive Forum ". BEEHIVE_VERSION;
 
             // SF.net Bug #1040563:
             // -------------------
@@ -276,7 +279,7 @@ function email_send_pw_reminder($logon)
             // get the right language for the email
             $lang = email_get_language($to_user['UID']);
 
-            $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid);
+            $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $to_user['UID']);
 
             $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
 
@@ -291,7 +294,8 @@ function email_send_pw_reminder($logon)
             $header.= "From: \"$forum_name\" <$forum_email>\n";
             $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";
             $header.= "Content-type: text/plain; charset=UTF-8\n";
-            $header.= "X-Mailer: PHP/". phpversion();
+            $header.= "X-Mailer: PHP/". phpversion(). "\n";
+            $header.= "X-Beehive-Forum: Beehive Forum ". BEEHIVE_VERSION;
 
             // SF.net Bug #1040563:
             // -------------------
@@ -342,7 +346,8 @@ function email_send_new_pw_notification($tuid, $fuid, $new_password)
         $header.= "From: \"$forum_name\" <$forum_email>\n";
         $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";
         $header.= "Content-type: text/plain; charset=UTF-8\n";
-        $header.= "X-Mailer: PHP/". phpversion();
+        $header.= "X-Mailer: PHP/". phpversion(). "\n";
+        $header.= "X-Beehive-Forum: Beehive Forum ". BEEHIVE_VERSION;
 
         // SF.net Bug #1040563:
         // -------------------
@@ -391,7 +396,8 @@ function email_send_user_confirmation($tuid)
         $header.= "From: \"$forum_name\" <$forum_email>\n";
         $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";
         $header.= "Content-type: text/plain; charset=UTF-8\n";
-        $header.= "X-Mailer: PHP/". phpversion();
+        $header.= "X-Mailer: PHP/". phpversion(). "\n";
+        $header.= "X-Beehive-Forum: Beehive Forum ". BEEHIVE_VERSION;
 
         // SF.net Bug #1040563:
         // -------------------
@@ -441,7 +447,9 @@ function email_send_message_to_user($tuid, $fuid, $subject, $message)
         $header.= "From: \"$forum_name\" <$forum_email>\n";
         $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";
         $header.= "Content-type: text/plain; charset=UTF-8\n";
-        $header.= "X-Mailer: PHP/". phpversion();
+        $header.= "X-Mailer: PHP/". phpversion(). "\n";
+        $header.= "X-Beehive-Forum: Beehive Forum ". BEEHIVE_VERSION;
+
 
         // SF.net Bug #1040563:
         // -------------------

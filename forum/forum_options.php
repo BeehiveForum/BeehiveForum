@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.111 2007-05-03 20:25:56 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.112 2007-05-10 22:03:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -167,78 +167,6 @@ if (isset($_POST['submit'])) {
         $user_prefs_global['VIEW_SIGS'] = ($_POST['view_sigs_global'] == "Y") ? true : false;
     } else {
         $user_prefs_global['VIEW_SIGS'] = false;
-    }
-
-
-    if (isset($_POST['pm_notify']) && $_POST['pm_notify'] == "Y") {
-        $user_prefs['PM_NOTIFY'] = "Y";
-    }else {
-        $user_prefs['PM_NOTIFY'] = "N";
-    }
-
-    if (isset($_POST['pm_save_sent_items']) && $_POST['pm_save_sent_items'] == "Y") {
-        $user_prefs['PM_SAVE_SENT_ITEM'] = "Y";
-    }else {
-        $user_prefs['PM_SAVE_SENT_ITEM'] = "N";
-    }
-
-    if (isset($_POST['pm_include_reply']) && $_POST['pm_include_reply'] == "Y") {
-        $user_prefs['PM_INCLUDE_REPLY'] = "Y";
-    } else {
-        $user_prefs['PM_INCLUDE_REPLY'] = "N";
-    }
-
-    if (isset($_POST['pm_auto_prune_enabled']) && $_POST['pm_auto_prune_enabled'] == "Y") {
-
-        if (isset($_POST['pm_auto_prune']) && is_numeric($_POST['pm_auto_prune'])) {
-
-            $user_prefs['PM_AUTO_PRUNE'] = $_POST['pm_auto_prune'];
-
-        }else {
-
-            $user_prefs['PM_AUTO_PRUNE'] = "-60";
-        }
-
-    }else {
-
-        if (isset($_POST['pm_auto_prune']) && is_numeric($_POST['pm_auto_prune'])) {
-
-            $user_prefs['PM_AUTO_PRUNE'] = $_POST['pm_auto_prune'] * -1;
-
-        }else {
-
-            $user_prefs['PM_AUTO_PRUNE'] = "-60";
-        }
-    }
-
-    if (isset($_POST['pm_export_file']) && is_numeric($_POST['pm_export_file'])) {
-        $user_prefs['PM_EXPORT_FILE'] = $_POST['pm_export_file'];
-    }else {
-        $user_prefs['PM_EXPORT_FILE'] = 0;
-    }
-
-    if (isset($_POST['pm_export_type']) && is_numeric($_POST['pm_export_type'])) {
-        $user_prefs['PM_EXPORT_TYPE'] = $_POST['pm_export_type'];
-    }else {
-        $user_prefs['PM_EXPORT_TYPE'] = 0;
-    }
-
-    if (isset($_POST['pm_export_attachments']) && $_POST['pm_export_attachments'] == "Y") {
-        $user_prefs['PM_EXPORT_ATTACHMENTS'] = "Y";
-    }else {
-        $user_prefs['PM_EXPORT_ATTACHMENTS'] = "N";
-    }
-
-    if (isset($_POST['pm_export_style']) && $_POST['pm_export_style'] == "Y") {
-        $user_prefs['PM_EXPORT_STYLE'] = "Y";
-    }else {
-        $user_prefs['PM_EXPORT_STYLE'] = "N";
-    }
-
-    if (isset($_POST['pm_export_wordfilter']) && $_POST['pm_export_wordfilter'] == "Y") {
-        $user_prefs['PM_EXPORT_WORDFILTER'] = "Y";
-    }else {
-        $user_prefs['PM_EXPORT_WORDFILTER'] = "N";
     }
 
     if (isset($_POST['mark_as_of_int']) && $_POST['mark_as_of_int'] == "Y") {
@@ -778,81 +706,6 @@ echo "                        <td align=\"left\">", form_radio("post_html", "1",
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">", form_radio("post_html", "2", $lang['postinhtmlbydefault'], ($user_prefs['POST_PAGE'] & POST_HTML_DEFAULT) > 0), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
-echo "                      </tr>\n";
-echo "                    </table>\n";
-echo "                  </td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "            </td>\n";
-echo "          </tr>\n";
-echo "        </table>\n";
-echo "        <br />\n";
-echo "        <table class=\"box\" width=\"100%\">\n";
-echo "          <tr>\n";
-echo "            <td align=\"left\" class=\"posthead\">\n";
-echo "              <table class=\"posthead\" width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\" colspan=\"2\" class=\"subhead\">{$lang['privatemessageoptions']}</td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "              <table class=\"posthead\" width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td align=\"center\">\n";
-echo "                    <table class=\"posthead\" width=\"95%\">\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\">", form_checkbox("pm_notify", "Y", $lang['notifyofnewpm'], (isset($user_prefs['PM_NOTIFY']) && $user_prefs['PM_NOTIFY'] == "Y") ? true : false), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\">", form_checkbox("pm_save_sent_items", "Y", $lang['savepminsentitems'], (isset($user_prefs['PM_SAVE_SENT_ITEM']) && $user_prefs['PM_SAVE_SENT_ITEM'] == "Y") ? true : false), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\">", form_checkbox("pm_include_reply", "Y", $lang['includepminreply'], (isset($user_prefs['PM_INCLUDE_REPLY']) && $user_prefs['PM_INCLUDE_REPLY'] == "Y") ? true : false), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\">", form_checkbox("pm_auto_prune_enabled", "Y", $lang['autoprunemypmfoldersevery'], (isset($user_prefs['PM_AUTO_PRUNE']) && $user_prefs['PM_AUTO_PRUNE'] > 0) ? true : false), "&nbsp;", form_dropdown_array('pm_auto_prune', array(1 => 10, 2 => 15, 3 => 30, 4 => 60), (isset($user_prefs['PM_AUTO_PRUNE']) ? ($user_prefs['PM_AUTO_PRUNE'] > 0 ? $user_prefs['PM_AUTO_PRUNE'] : $user_prefs['PM_AUTO_PRUNE'] * -1) : 60)), " {$lang['days']}</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
-echo "                      </tr>\n";
-echo "                    </table>\n";
-echo "                  </td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "            </td>\n";
-echo "          </tr>\n";
-echo "        </table>\n";
-echo "        <br />\n";
-echo "        <table class=\"box\" width=\"100%\">\n";
-echo "          <tr>\n";
-echo "            <td align=\"left\" class=\"posthead\">\n";
-echo "              <table class=\"posthead\" width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\" colspan=\"2\" class=\"subhead\">{$lang['privatemessageexportoptions']}</td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "              <table class=\"posthead\" width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td align=\"center\">\n";
-echo "                    <table class=\"posthead\" width=\"95%\">\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"250\">{$lang['pmexportastype']}:</td>\n";
-echo "                        <td align=\"left\">", form_dropdown_array("pm_export_type", array($lang['pmexporthtml'], $lang['pmexportxml'], $lang['pmexportplaintext']), (isset($user_prefs['PM_EXPORT_TYPE']) && is_numeric($user_prefs['PM_EXPORT_TYPE'])) ? $user_prefs['PM_EXPORT_TYPE'] : 0), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"250\">{$lang['pmexportmessagesas']}:</td>\n";
-echo "                        <td align=\"left\">", form_dropdown_array("pm_export_file", array($lang['pmexportonefileforallmessages'], $lang['pmexportonefilepermessage']), (isset($user_prefs['PM_EXPORT_FILE']) && is_numeric($user_prefs['PM_EXPORT_FILE'])) ? $user_prefs['PM_EXPORT_FILE'] : 0), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" colspan=\"2\">", form_checkbox("pm_export_attachments", "Y", $lang['pmexportattachments'], (isset($user_prefs['PM_EXPORT_ATTACHMENTS']) && $user_prefs['PM_EXPORT_ATTACHMENTS'] == "Y") ? true : false), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" colspan=\"2\">", form_checkbox("pm_export_style", "Y", $lang['pmexportincludestyle'], (isset($user_prefs['PM_EXPORT_STYLE']) && $user_prefs['PM_EXPORT_STYLE'] == "Y") ? true : false), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" colspan=\"2\">", form_checkbox("pm_export_wordfilter", "Y", $lang['pmexportwordfilter'], (isset($user_prefs['PM_EXPORT_WORDFILTER']) && $user_prefs['PM_EXPORT_WORDFILTER'] == "Y") ? true : false), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";

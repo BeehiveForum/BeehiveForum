@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_relations.php,v 1.67 2007-05-02 23:15:40 decoyduck Exp $ */
+/* $Id: edit_relations.php,v 1.68 2007-05-10 22:03:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -145,8 +145,34 @@ if (isset($_GET['usersearch']) && strlen(trim(_stripslashes($_GET['usersearch'])
     $usersearch = "";
 }
 
+if (isset($_POST['delete'])) {
+    
+    $valid = true;
+    
+    if (isset($_POST['delete_relationships']) && is_array($_POST['delete_relationships'])) {
+
+        foreach($_POST['delete_relationships'] as $peer_uid => $delete_relationship) {
+
+            if (($delete_relationship == "Y")) {
+                
+                if (!user_rel_update($uid, $peer_uid, 0)) {
+
+                    $valid = false;
+                    $error_html = "<h2>{$lang['failedtoremoveselectedrelationships']}</h2>\n";
+                }
+            }
+        }
+
+        if ($valid) {
+
+            $redirect = "./edit_relations.php?webtag=$webtag&relupdated=true";
+            header_redirect($redirect, $lang['relationshipsupdated']);
+            exit;
+        }
+    }
+}
+
 if (isset($_GET['relupdated'])) {
-    echo "<br />\n";
     echo "<h2>{$lang['relationshipsupdated']}</h2>\n";
 }
 
@@ -164,6 +190,7 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
+echo "                  <td align=\"left\" class=\"subhead\" width=\"20\">&nbsp;</td>\n";
 echo "                  <td align=\"left\" class=\"subhead\" width=\"350\">{$lang['user']}</td>\n";
 echo "                  <td align=\"center\" class=\"subhead\">{$lang['relationship']}</td>\n";
 echo "                  <td align=\"center\" class=\"subhead\">{$lang['signature']}</td>\n";
@@ -176,6 +203,7 @@ if (sizeof($user_peers['user_array']) > 0) {
     foreach ($user_peers['user_array'] as $user_peer) {
 
         echo "                <tr>\n";
+        echo "                  <td align=\"center\">", form_checkbox("delete_relationships[{$user_peer['UID']}]", "Y", false), "</td>\n";
         echo "                  <td align=\"left\">&nbsp;<a href=\"user_rel.php?webtag=$webtag&amp;uid={$user_peer['UID']}&ret=edit_relations.php%3Fwebtag=$webtag\" target=\"_self\">", format_user_name($user_peer['LOGON'], $user_peer['PEER_NICKNAME']), "</a></td>\n";
 
         if ($user_peer['RELATIONSHIP'] & USER_FRIEND) {
@@ -201,13 +229,14 @@ if (sizeof($user_peers['user_array']) > 0) {
 
         }else {
 
-            echo "                  <td align=\"center\"><img src=\"", style_image("friend.png"), "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" /></td>\n";
+            echo "                  <td align=\"center\"><img src=\"", style_image("friend.png"), "\" alt=\"{$lang['display']}\" title=\"{$lang['display']}\" /></td>\n";
         }
     }
 
 }else {
 
     echo "                <tr>\n";
+    echo "                  <td align=\"left\" width=\"20\">&nbsp;</td>\n";
     echo "                  <td align=\"left\" colspan=\"3\">{$lang['norelationships']}</td>\n";
     echo "                </tr>\n";
 }
@@ -230,6 +259,12 @@ if (sizeof($user_peers['user_array']) > 0) {
     echo "    <tr>\n";
     echo "      <td class=\"postbody\" align=\"center\">", page_links("edit_relations.php?webtag=$webtag&usersearch=$usersearch&search_page=$search_page", $start_main, $user_peers['user_count'], 10, "main_page"), "</td>\n";
     echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">&nbsp;</td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td colspan=\"2\" align=\"center\">", form_submit("delete", $lang['deleteselected']), "</td>\n";
+    echo "    </tr>\n";
 }
 
 echo "  </table>\n";
@@ -251,6 +286,7 @@ if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" width=\"20\">&nbsp;</td>\n";
     echo "                  <td align=\"left\" class=\"subhead\" width=\"350\">{$lang['user']}</td>\n";
     echo "                  <td align=\"center\" class=\"subhead\">{$lang['relationship']}</td>\n";
     echo "                  <td align=\"center\" class=\"subhead\">{$lang['signature']}</td>\n";
@@ -263,6 +299,7 @@ if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
         foreach ($user_search_array['results_array'] as $user_peer) {
 
             echo "                <tr>\n";
+            echo "                  <td align=\"left\" width=\"20\">&nbsp;</td>\n";
             echo "                  <td align=\"left\">&nbsp;<a href=\"user_rel.php?webtag=$webtag&amp;uid={$user_peer['UID']}&ret=edit_relations.php%3Fwebtag=$webtag\" target=\"_self\">", format_user_name($user_peer['LOGON'], $user_peer['NICKNAME']), "</a></td>\n";
 
             if ($user_peer['RELATIONSHIP'] & USER_FRIEND) {
@@ -288,13 +325,14 @@ if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
 
             }else {
 
-                echo "                  <td align=\"center\"><img src=\"", style_image("friend.png"), "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" /></td>\n";
+                echo "                  <td align=\"center\"><img src=\"", style_image("friend.png"), "\" alt=\"{$lang['display']}\" title=\"{$lang['display']}\" /></td>\n";
             }
         }
 
     }else {
 
         echo "                <tr>\n";
+        echo "                  <td align=\"left\" width=\"20\">&nbsp;</td>\n";
         echo "                  <td class=\"posthead\" colspan=\"7\" align=\"left\">{$lang['nomatches']}</td>\n";
         echo "                </tr>\n";
     }

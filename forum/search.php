@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.173 2007-04-25 21:34:32 decoyduck Exp $ */
+/* $Id: search.php,v 1.174 2007-05-10 22:03:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -366,7 +366,7 @@ if ((isset($_POST) && sizeof($_POST) > 0) || isset($_GET['search_string']) || is
                     $mysql_stop_word_link = "<a href=\"search.php?webtag=$webtag&amp;show_stop_words=true&amp;keywords=$stopped_keywords\" target=\"_blank\" onclick=\"return display_mysql_stopwords('$webtag', '$stopped_keywords')\">{$lang['mysqlstopwordlist']}</a>";
                     echo sprintf("<p>{$lang['notexttosearchfor']}</p>\n", $min_length, $max_length, $mysql_stop_word_link);
 
-                    echo "<h2>Keywords containing errors</h2>\n";
+                    echo "<h2>{$lang['keywordscontainingerrors']}</h2>\n";
                     echo "<ul>\n";
 
                     foreach($keywords_error_array['keywords'] as $keyword_error) {

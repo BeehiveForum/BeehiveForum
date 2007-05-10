@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.192 2007-05-10 22:03:18 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.193 2007-05-10 23:00:57 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -599,7 +599,7 @@ function pm_search_execute($search_string, &$error)
         $sql.= "PM.FROM_UID, PM.TO_UID, PM.SUBJECT, PM.RECIPIENTS, PM.CREATED ";
         $sql.= "FROM PM LEFT JOIN PM_CONTENT ON (PM_CONTENT.MID = PM.MID) ";
         $sql.= "WHERE ((PM.TYPE = PM.TYPE & ". PM_INBOX_ITEMS. " AND PM.TO_UID = '$uid') ";
-        $sql.= "OR (PM.TYPE = PM.TYPE & ". PM_SENT_ITEMS. " AND PM.FROM_UID = '$uid') ";
+        $sql.= "OR (PM.TYPE = PM.TYPE & ". PM_SENT_ITEMS. " AND PM.FROM_UID = '$uid' AND PM.SMID = 0) ";
         $sql.= "OR (PM.TYPE = PM.TYPE & ". PM_OUTBOX_ITEMS. " AND PM.FROM_UID = '$uid') ";
         $sql.= "OR ((PM.TYPE = ". PM_SAVED_OUT. " AND PM.FROM_UID = '$uid') OR ";
         $sql.= "(PM.TYPE = ". PM_SAVED_IN. " AND PM.TO_UID = '$uid') OR ";

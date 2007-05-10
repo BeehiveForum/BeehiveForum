@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.191 2007-05-09 14:50:42 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.192 2007-05-10 22:03:18 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1320,6 +1320,7 @@ function pm_save_attachment_id($mid, $aid)
 * @param integer $fuid - Recipient UID
 * @param string $subject - Subject string
 * @param string $content - Content string
+* @param string $aid - Attachment Unique ID (MD5 hash)
 */
 
 function pm_send_message($tuid, $fuid, $subject, $content, $aid)
@@ -1372,6 +1373,20 @@ function pm_send_message($tuid, $fuid, $subject, $content, $aid)
 
     return false;
 }
+
+/**
+* Add Sent Item
+*
+* Adds a PM Sent Item to the database PM tables.
+* Called by pm_send_message() function if the sender has sent items enabled. 
+*
+* @return mixed - false on failure, integer Message ID on success
+* @param integer $tuid - Sender UID
+* @param integer $fuid - Recipient UID
+* @param string $subject - Subject string
+* @param string $content - Content string
+* @param string $aid - Attachment Unique ID (MD5 hash)
+*/
 
 function pm_add_sent_item($smid, $tuid, $fuid, $subject, $content, $aid)
 {

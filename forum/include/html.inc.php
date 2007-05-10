@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.221 2007-05-02 23:15:41 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.222 2007-05-10 22:03:18 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -60,13 +60,13 @@ function html_guest_error()
      html_draw_bottom();
 }
 
-function html_error_msg($error_msg, $href = false, $method = 'get', $button_array = false, $var_array = false, $target = "_self")
+function html_error_msg($error_msg, $href = false, $method = 'get', $button_array = false, $var_array = false, $target = "_self", $align = "left")
 {
      $lang = load_language_file();     
-     html_display_msg($lang['error'], $error_msg, $href, $method, $button_array, $var_array, $target);
+     html_display_msg($lang['error'], $error_msg, $href, $method, $button_array, $var_array, $target, $align);
 }
 
-function html_display_msg($header_text, $string_msg, $href = false, $method = 'get', $button_array = false, $var_array = false, $target = "_self")
+function html_display_msg($header_text, $string_msg, $href = false, $method = 'get', $button_array = false, $var_array = false, $target = "_self", $align = "left")
 {
     $webtag = get_webtag($webtag_search);
     
@@ -74,6 +74,9 @@ function html_display_msg($header_text, $string_msg, $href = false, $method = 'g
 
     $available_methods = array('get', 'post');
     if (!in_array($method, $available_methods)) $method = 'get';
+
+    $available_alignments = array('left', 'center', 'right');
+    if (!in_array($align, $available_alignments)) $align = 'left';
     
     echo "<h1>$header_text</h1>\n";
     echo "<br />\n";
@@ -89,37 +92,38 @@ function html_display_msg($header_text, $string_msg, $href = false, $method = 'g
         }
     }
 
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\">\n";
-    echo "        <table class=\"box\" width=\"100%\">\n";
-    echo "          <tr>\n";
-    echo "            <td align=\"left\" class=\"posthead\">\n";
-    echo "              <table class=\"posthead\" width=\"100%\">\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\">$header_text</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"center\">\n";
-    echo "                    <table class=\"posthead\" width=\"95%\">\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\">$string_msg</td>\n";
-    echo "                      </tr>\n";
-    echo "                    </table>\n";
-    echo "                  </td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\">&nbsp;</td>\n";
-    echo "                </tr>\n";
-    echo "              </table>\n";
-    echo "            </td>\n";
-    echo "          </tr>\n";
-    echo "        </table>\n";
-    echo "      </td>\n";
-    echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\">&nbsp;</td>\n";
-    echo "    </tr>\n";
+    echo "  <div align=\"$align\">\n";
+    echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+    echo "      <tr>\n";
+    echo "        <td align=\"left\">\n";
+    echo "          <table class=\"box\" width=\"100%\">\n";
+    echo "            <tr>\n";
+    echo "              <td align=\"left\" class=\"posthead\">\n";
+    echo "                <table class=\"posthead\" width=\"100%\">\n";
+    echo "                  <tr>\n";
+    echo "                    <td align=\"left\" class=\"subhead\">$header_text</td>\n";
+    echo "                  </tr>\n";
+    echo "                  <tr>\n";
+    echo "                    <td align=\"center\">\n";
+    echo "                      <table class=\"posthead\" width=\"95%\">\n";
+    echo "                        <tr>\n";
+    echo "                          <td align=\"left\">$string_msg</td>\n";
+    echo "                        </tr>\n";
+    echo "                      </table>\n";
+    echo "                    </td>\n";
+    echo "                  </tr>\n";
+    echo "                  <tr>\n";
+    echo "                    <td align=\"left\">&nbsp;</td>\n";
+    echo "                  </tr>\n";
+    echo "                </table>\n";
+    echo "              </td>\n";
+    echo "            </tr>\n";
+    echo "          </table>\n";
+    echo "        </td>\n";
+    echo "      </tr>\n";
+    echo "      <tr>\n";
+    echo "        <td align=\"left\">&nbsp;</td>\n";
+    echo "      </tr>\n";
 
     if (($href !== false) && strlen(trim($href)) > 0) {
 
@@ -134,13 +138,14 @@ function html_display_msg($header_text, $string_msg, $href = false, $method = 'g
 
         if (sizeof($button_html_array) > 0) {
 
-            echo "    <tr>\n";
-            echo "      <td align=\"center\">", implode("&nbsp;", $button_html_array), "</td>\n";
-            echo "    </tr>\n";
+            echo "      <tr>\n";
+            echo "        <td align=\"center\">", implode("&nbsp;", $button_html_array), "</td>\n";
+            echo "      </tr>\n";
         }
     }
 
-    echo "  </table>\n";
+    echo "    </table>\n";
+    echo "  </div>\n";
     echo "</form>\n";
 }
 

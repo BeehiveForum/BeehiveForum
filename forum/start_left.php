@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.134 2007-04-28 22:36:18 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.135 2007-05-10 22:03:18 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -222,7 +222,6 @@ if ($thread_array = threads_get_most_recent()) {
     echo "                      <tr>\n";
     echo "                        <td align=\"center\"><h2>{$lang['nomessages']}</h2></td>\n";
     echo "                      </tr>\n";
-
 }
 
 // Display "Start Reading" button

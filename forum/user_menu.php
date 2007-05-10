@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_menu.php,v 1.45 2007-04-12 13:23:12 decoyduck Exp $ */
+/* $Id: user_menu.php,v 1.46 2007-05-10 22:03:18 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -125,6 +125,9 @@ echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.
 echo "  </tr>\n";
 echo "  <tr>\n";
 echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"forum_options.php?webtag=$webtag\" target=\"right\">{$lang['forumoptions']}</a></td>\n";
+echo "  </tr>\n";
+echo "  <tr>\n";
+echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"pm_options.php?webtag=$webtag\" target=\"right\">{$lang['privatemessageoptions']}</a></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
 echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"edit_attachments.php?webtag=$webtag\" target=\"right\">{$lang['attachments']}</a></td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.153 2007-05-03 20:25:57 decoyduck Exp $ */
+/* $Id: register.php,v 1.154 2007-05-10 22:03:17 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -440,78 +440,38 @@ if (isset($_POST['submit'])) {
 
             logon_update_cookies($logon, $password, $passhash, $save_password);
 
+            // Check to see if the user is going somewhere after they have registered.
+
+            $final_uri = (isset($final_uri)) ? rawurlencode($final_uri) : '';
+
             // Display final success / confirmation page.
-
-            html_draw_top();
-
-            echo "<div align=\"center\">\n";
-            echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
-            echo "    <tr>\n";
-            echo "      <td align=\"left\" width=\"550\">\n";
-            echo "        <table class=\"box\" width=\"100%\">\n";
-            echo "          <tr>\n";
-            echo "            <td align=\"left\" class=\"posthead\">\n";
-            echo "              <table class=\"posthead\" width=\"100%\">\n";
-            echo "                <tr>\n";
-            echo "                  <td align=\"left\" class=\"subhead\">{$lang['successfullycreateduseraccount']}</td>\n";
-            echo "                </tr>\n";
 
             if (forum_get_setting('require_email_confirmation', 'Y')) {
 
                 if (email_send_user_confirmation($new_uid)) {
 
                     perm_user_apply_email_confirmation($new_uid);
-
-                    echo "                <tr>\n";
-                    echo "                  <td align=\"left\">{$lang['useraccountcreatedconfirmsuccess']}</td>\n";
-                    echo "                </tr>\n";
+                    
+                    html_draw_top();
+                    html_display_msg($lang['successfullycreateduseraccount'], $lang['useraccountcreatedconfirmsuccess'], 'index.php', 'get', array('continue' => $lang['continue']), array('final_uri' => $final_uri), '_top', 'center');
+                    html_draw_bottom();
+                    exit;
 
                 }else {
 
-                    echo "                <tr>\n";
-                    echo "                  <td align=\"left\">{$lang['useraccountcreatedconfirmfailed']}</td>\n";
-                    echo "                </tr>\n";
+                    html_draw_top();
+                    html_display_msg($lang['successfullycreateduseraccount'], $lang['useraccountcreatedconfirmfailed'], 'index.php', 'get', array('continue' => $lang['continue']), array('final_uri' => $final_uri), '_top', 'center');
+                    html_draw_bottom();
+                    exit;
                 }
 
             }else {
 
-                echo "                <tr>\n";
-                echo "                  <td align=\"left\">{$lang['useraccountcreated']}</td>\n";
-                echo "                </tr>\n";
+                html_draw_top();
+                html_display_msg($lang['successfullycreateduseraccount'], $lang['useraccountcreated'], 'index.php', 'get', array('continue' => $lang['continue']), array('final_uri' => $final_uri), '_top', 'center');
+                html_draw_bottom();
+                exit;
             }
-
-            echo "                <tr>\n";
-            echo "                  <td align=\"left\">&nbsp;</td>\n";
-            echo "                </tr>\n";
-            echo "              </table>\n";
-            echo "            </td>\n";
-            echo "          </tr>\n";
-            echo "        </table>\n";
-            echo "      </td>\n";
-            echo "    </tr>\n";
-            echo "    <tr>\n";
-            echo "      <td align=\"left\">&nbsp;</td>\n";
-            echo "    </tr>\n";
-
-            if (isset($final_uri)) {
-
-                echo "    <tr>\n";
-                echo "      <td align=\"center\">", form_quick_button("./index.php", $lang['continue'], array('final_uri' => rawurlencode($final_uri)), "_top"), "</td>\n";
-                echo "    </tr>\n";
-
-            }else {
-
-                echo "    <tr>\n";
-                echo "      <td align=\"center\">", form_quick_button("./index.php", $lang['continue'], false, "_top"), "</td>\n";
-                echo "    </tr>\n";
-            }
-
-            echo "  </table>\n";
-            echo "</div>\n";
-
-            html_draw_bottom();
-
-            exit;
 
         }else {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forgot_pw.php,v 1.50 2007-05-02 23:15:40 decoyduck Exp $ */
+/* $Id: forgot_pw.php,v 1.51 2007-05-10 22:03:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -74,13 +74,7 @@ if (isset($_POST['submit'])) {
         if (email_send_pw_reminder($logon)) {
 
             html_draw_top();
-
-            echo "<h1>{$lang['passwdresetemailsent']}</h1>";
-            echo "<div align=\"center\">\n";
-            echo "<p class=\"smalltext\">{$lang['passwdresetexp']}</p>\n";
-
-            echo form_quick_button('./logon.php', 'Back');
-
+            html_display_msg($lang['passwdresetemailsent'], $lang['passwdresetexp'], 'logon.php', 'get', array('back' => $lang['back']), false, '_self', 'center');
             html_draw_bottom();
             exit;
 
@@ -108,7 +102,7 @@ if (isset($error_html)) {
 echo "<div align=\"center\">\n";
 echo "  <form name=\"forgot_pw\" action=\"forgot_pw.php\" method=\"post\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"65%\">\n";
+echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "      <tr>\n";
 echo "        <td align=\"left\">{$lang['forgotpasswdexp']}</td>\n";
 echo "      </tr>\n";

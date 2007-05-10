@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_post_approve.php,v 1.47 2007-05-02 23:15:40 decoyduck Exp $ */
+/* $Id: admin_post_approve.php,v 1.48 2007-05-10 22:03:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -221,62 +221,17 @@ if (isset($msg) && validate_msg($msg)) {
 
                 admin_add_log_entry(APPROVED_POST, array($t_fid, $tid, $pid));
 
-                html_draw_top();
-
                 if ($threaddata['LENGTH'] == 1) {
                     $msg = messages_get_most_recent(bh_session_get_value('UID'));
                 }else {
                     $msg = "$tid.$pid";
                 }
 
-                echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['approvepost']} &raquo; ", word_filter_add_ob_tags(thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE'])), "</h1>";
-                echo "<br />\n";
+                $ret = ($return_queue == 'Y') ? 'admin_post_approve.php' : 'discussion.php';
 
-                if ($return_queue == "Y") {
-
-                    echo "<form name=\"prefs\" action=\"admin_post_approve.php\" method=\"post\" target=\"_self\">\n";
-                    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-
-                }else {
-
-                    echo "<form name=\"prefs\" action=\"discussion.php\" method=\"post\" target=\"_self\">\n";
-                    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-                    echo "  ", form_input_hidden('msg', _htmlentities($msg)), "\n";
-                }
-
-                echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
-                echo "    <tr>\n";
-                echo "      <td align=\"left\">\n";
-                echo "        <table class=\"box\" width=\"100%\">\n";
-                echo "          <tr>\n";
-                echo "            <td align=\"left\" class=\"posthead\">\n";
-                echo "              <table class=\"posthead\" width=\"100%\">\n";
-                echo "                <tr>\n";
-                echo "                  <td align=\"left\" class=\"subhead\">{$lang['approvepost']}</td>\n";
-                echo "                </tr>\n";
-                echo "                <tr>\n";
-                echo "                  <td align=\"left\"><h2>{$lang['postapprovedsuccessfully']}</h2></td>\n";
-                echo "                </tr>\n";
-                echo "                <tr>\n";
-                echo "                  <td align=\"left\">&nbsp;</td>\n";
-                echo "                </tr>\n";
-                echo "              </table>\n";
-                echo "            </td>\n";
-                echo "          </tr>\n";
-                echo "        </table>\n";
-                echo "      </td>\n";
-                echo "    </tr>\n";
-                echo "    <tr>\n";
-                echo "      <td align=\"left\">&nbsp;</td>\n";
-                echo "    </tr>\n";
-                echo "    <tr>\n";
-                echo "      <td align=\"center\">", form_submit("back", $lang['back']), "</td>\n";
-                echo "    </tr>\n";
-                echo "  </table>\n";
-                echo "</form>\n";
-
+                html_draw_top();
+                html_display_msg($lang['approvepost'], $lang['postapprovedsuccessfully'], $ret, 'get', array('back' => $lang['back']), array('msg' => $msg));
                 html_draw_bottom();
-                exit;
 
             }else {
 

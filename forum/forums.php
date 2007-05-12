@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forums.php,v 1.70 2007-04-25 21:34:32 decoyduck Exp $ */
+/* $Id: forums.php,v 1.71 2007-05-12 13:39:05 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -155,7 +155,7 @@ if (bh_session_get_value('UID') != 0) {
             foreach ($forums_array['FAV_FORUMS'] as $forum) {
 
                 echo "                <tr>\n";
-                echo "                  <td align=\"left\" width=\"20\" valign=\"top\">", form_checkbox("rem_fav[{$forum['FID']}]", "Y", "", false), "</td>\n";
+                echo "                  <td align=\"left\" width=\"1%\" valign=\"top\">", form_checkbox("rem_fav[{$forum['FID']}]", "Y", "", false), "</td>\n";
 
                 if (isset($final_uri) && strlen($final_uri) > 0) {
                     echo "                  <td align=\"left\" width=\"25%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=", rawurlencode($final_uri), "\">{$forum['FORUM_NAME']}</a></td>\n";
@@ -226,14 +226,14 @@ if (bh_session_get_value('UID') != 0) {
             echo "            <td align=\"left\" class=\"posthead\">\n";
             echo "              <table class=\"posthead\" width=\"100%\">\n";
             echo "                <tr>\n";
-            echo "                  <td align=\"left\" colspan=\"4\" class=\"subhead\">{$lang['recentlyvisitedforums']}:</td>\n";
+            echo "                  <td align=\"left\" colspan=\"4\" class=\"subhead\">{$lang['recentlyvisitedforums']}</td>\n";
             echo "                  <td align=\"left\" class=\"subhead\">{$lang['lastvisited']}</td>\n";
             echo "                </tr>\n";
 
             foreach ($forums_array['RECENT_FORUMS'] as $forum) {
 
                 echo "                <tr>\n";
-                echo "                  <td align=\"left\" width=\"20\" valign=\"top\">", form_checkbox("add_fav[{$forum['FID']}]", "Y", "", false), "</td>\n";
+                echo "                  <td align=\"left\" width=\"1%\" valign=\"top\">", form_checkbox("add_fav[{$forum['FID']}]", "Y", "", false), "</td>\n";
 
                 if (isset($final_uri) && strlen($final_uri) > 0) {
                     echo "                  <td align=\"left\" width=\"25%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=", rawurlencode($final_uri), "\">{$forum['FORUM_NAME']}</a></td>\n";
@@ -311,7 +311,7 @@ if (bh_session_get_value('UID') != 0) {
             foreach ($forums_array['OTHER_FORUMS'] as $forum) {
 
                 echo "                <tr>\n";
-                echo "                  <td align=\"left\" width=\"20\" valign=\"top\">", form_checkbox("add_fav[{$forum['FID']}]", "Y", "", false), "</td>\n";
+                echo "                  <td align=\"left\" width=\"1%\" valign=\"top\">", form_checkbox("add_fav[{$forum['FID']}]", "Y", "", false), "</td>\n";
 
                 if (isset($final_uri) && strlen($final_uri) > 0) {
                     echo "                  <td align=\"left\" width=\"25%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=", rawurlencode($final_uri), "\">{$forum['FORUM_NAME']}</a></td>\n";
@@ -407,7 +407,7 @@ if (bh_session_get_value('UID') != 0) {
         foreach ($forums_array as $forum) {
 
             echo "                <tr>\n";
-            echo "                  <td align=\"left\" width=\"20\" valign=\"top\">", form_checkbox("add_fav[{$forum['FID']}]", "Y", "", false), "</td>\n";
+            echo "                  <td align=\"left\" width=\"1%\" valign=\"top\">", form_checkbox("add_fav[{$forum['FID']}]", "Y", "", false), "</td>\n";
             echo "                  <td align=\"left\" width=\"25%\" valign=\"top\">\n";
 
             if (isset($final_uri) && strlen($final_uri) > 0) {
@@ -474,7 +474,7 @@ if (isset($webtag_search) && strlen($webtag_search) > 0) {
         foreach ($forum_array as $forum) {
 
             echo "                <tr>\n";
-            echo "                  <td align=\"left\" width=\"20\" valign=\"top\">", form_checkbox("add_fav[{$forum['FID']}]", "Y", "", false), "</td>\n";
+            echo "                  <td align=\"left\" width=\"1%\" valign=\"top\">", form_checkbox("add_fav[{$forum['FID']}]", "Y", "", false), "</td>\n";
 
             if (isset($final_uri) && strlen($final_uri) > 0) {
                 echo "                  <td align=\"left\" width=\"25%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=", rawurlencode($final_uri), "\">{$forum['FORUM_NAME']}</a></td>\n";

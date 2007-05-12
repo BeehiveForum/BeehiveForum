@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forums.php,v 1.63 2007-05-02 23:15:40 decoyduck Exp $ */
+/* $Id: admin_forums.php,v 1.64 2007-05-12 13:39:05 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -657,7 +657,7 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
         foreach ($forums_array['forums_array'] as $forum_data) {
 
             echo "                <tr>\n";
-            echo "                  <td valign=\"top\" align=\"center\" width=\"25\">", form_checkbox("t_delete[{$forum_data['FID']}]", "Y", false), "</td>\n";
+            echo "                  <td valign=\"top\" align=\"center\" width=\"1%\">", form_checkbox("t_delete[{$forum_data['FID']}]", "Y", false), "</td>\n";
             echo "                  <td align=\"left\"><a href=\"admin_forums.php?webtag=$webtag&amp;fid={$forum_data['FID']}&amp;page=$page\" title=\"{$lang['editforum']}\">{$forum_data['WEBTAG']}</a></td>\n";
             echo "                  <td align=\"left\"><a href=\"index.php?webtag={$forum_data['WEBTAG']}\" title=\"", sprintf($lang['visitforum'], $forum_data['FORUM_NAME']), "\" target=\"_blank\">{$forum_data['FORUM_NAME']}</a></td>\n";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.293 2007-04-18 23:20:27 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.294 2007-05-12 13:39:05 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -137,8 +137,8 @@ if (bh_session_get_value('UID') == 0) {
 
     }else {
 
-        if (isset($_COOKIE['bh_thread_mode']) && is_numeric($_COOKIE['bh_thread_mode'])) {
-            $mode = $_COOKIE['bh_thread_mode'];
+        if (isset($_COOKIE["bh_{$webtag}_thread_mode"]) && is_numeric($_COOKIE["bh_{$webtag}_thread_mode"])) {
+            $mode = $_COOKIE["bh_{$webtag}_thread_mode"];
         }else{
             $mode = 0;
         }
@@ -181,7 +181,8 @@ if (bh_session_get_value('UID') == 0) {
     if (isset($_GET['mode']) && is_numeric($_GET['mode'])) {
 
         $mode = $_GET['mode'];
-        bh_setcookie('bh_thread_mode', $mode);
+
+        bh_setcookie("bh_{$webtag}_thread_mode", $mode);
 
         if ($mode == SEARCH_RESULTS) {
 
@@ -191,9 +192,9 @@ if (bh_session_get_value('UID') == 0) {
 
     }else {
 
-        if (isset($_COOKIE['bh_thread_mode']) && is_numeric($_COOKIE['bh_thread_mode'])) {
+        if (isset($_COOKIE["bh_{$webtag}_thread_mode"]) && is_numeric($_COOKIE["bh_{$webtag}_thread_mode"])) {
 
-            $mode = $_COOKIE['bh_thread_mode'];
+            $mode = $_COOKIE["bh_{$webtag}_thread_mode"];
 
             if ($mode == UNREAD_DISCUSSIONS && !$threads_any_unread) {
 

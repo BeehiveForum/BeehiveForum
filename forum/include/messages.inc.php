@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.449 2007-05-06 20:33:42 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.450 2007-05-12 13:39:08 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1379,7 +1379,7 @@ function messages_update_read($tid, $pid, $uid, $modified)
 
     if ($uid > 0) {
 
-        if ($unread_cutoff_stamp !== false && ($modified > $unread_cutoff_stamp)) {
+        if ($unread_cutoff_stamp !== false && (($modified > $unread_cutoff_stamp) || $unread_cutoff_stamp = 0)) {
 
             $sql = "UPDATE {$table_data['PREFIX']}USER_THREAD ";
             $sql.= "SET LAST_READ = '$pid', LAST_READ_AT = NOW() ";
@@ -1445,7 +1445,7 @@ function messages_set_read($tid, $pid, $uid, $modified)
 
     if ($uid > 0) {
 
-        if ($unread_cutoff_stamp !== false && ($modified > $unread_cutoff_stamp)) {
+        if ($unread_cutoff_stamp !== false && (($modified > $unread_cutoff_stamp) || $unread_cutoff_stamp = 0)) {
 
             $sql = "UPDATE {$table_data['PREFIX']}USER_THREAD ";
             $sql.= "SET LAST_READ = '$pid', LAST_READ_AT = NULL ";
@@ -1505,8 +1505,8 @@ function messages_get_most_recent($uid, $fid = false)
     if ($unread_cutoff_stamp !== false) {
 
         $sql.= "AND ((THREAD.LENGTH > USER_THREAD.LAST_READ ";
-        $sql.= "AND THREAD.MODIFIED > FROM_UNIXTIME('$unread_cutoff_stamp')) ";
-        $sql.= "OR USER_THREAD.LAST_READ IS NULL ";
+        $sql.= "AND (THREAD.MODIFIED > FROM_UNIXTIME('$unread_cutoff_stamp')) ";
+        $sql.= "OR $unread_cutoff_stamp = 0) OR USER_THREAD.LAST_READ IS NULL ";
         $sql.= "OR USER_THREAD.LAST_READ = THREAD.LENGTH) ";
     }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: discussion.php,v 1.101 2007-05-02 23:15:40 decoyduck Exp $ */
+/* $Id: discussion.php,v 1.102 2007-05-12 13:39:05 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -183,7 +183,7 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
 
     $msg = messages_get_most_recent($uid);
 
-    bh_setcookie('bh_thread_mode', 0, time() - YEAR_IN_SECONDS);
+    bh_setcookie("bh_{$webtag}_thread_mode", 0, time() - YEAR_IN_SECONDS);
 
     html_draw_top('body_tag=false', 'frames=true');
     

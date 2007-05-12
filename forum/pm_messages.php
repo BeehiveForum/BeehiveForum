@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_messages.php,v 1.15 2007-05-12 10:04:15 decoyduck Exp $ */
+/* $Id: pm_messages.php,v 1.16 2007-05-12 13:39:05 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -452,7 +452,7 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
     foreach($pm_messages_array['message_array'] as $message) {
 
         echo "                <tr>\n";
-        echo "                  <td class=\"postbody\" align=\"center\" width=\"10\">", form_checkbox('process[]', $message['MID'], ''), "</td>\n";
+        echo "                  <td class=\"postbody\" align=\"center\" width=\"1%\">", form_checkbox('process[]', $message['MID'], ''), "</td>\n";
         echo "                  <td align=\"left\" class=\"postbody\">";
 
         if ($mid == $message['MID']) {

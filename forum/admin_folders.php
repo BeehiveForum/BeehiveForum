@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folders.php,v 1.127 2007-04-12 13:23:08 decoyduck Exp $ */
+/* $Id: admin_folders.php,v 1.128 2007-05-12 13:39:04 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -211,7 +211,7 @@ if (sizeof($folder_array['folder_array']) > 0) {
         $folder_index++;
 
         echo "                <tr>\n";
-        echo "                  <td valign=\"top\" align=\"center\" width=\"25\">", form_checkbox("t_delete[{$folder['FID']}]", "Y", false), "</td>\n";
+        echo "                  <td valign=\"top\" align=\"center\" width=\"1%\">", form_checkbox("t_delete[{$folder['FID']}]", "Y", false), "</td>\n";
 
         if ($folder_array['folder_count'] == 1) {
 

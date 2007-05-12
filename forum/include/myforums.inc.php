@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.64 2007-05-06 20:33:43 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.65 2007-05-12 13:39:08 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -151,14 +151,15 @@ function get_my_forums()
 
             // Get any unread messages
 
-            if ($unread_cutoff_stamp = forum_get_unread_cutoff()) {
+            if (($unread_cutoff_stamp = forum_get_unread_cutoff()) !== false) {
 
                 $sql = "SELECT SUM(THREAD.LENGTH) - SUM(USER_THREAD.LAST_READ) ";
                 $sql.= "AS UNREAD_MESSAGES FROM {$forum_data['PREFIX']}THREAD THREAD ";
                 $sql.= "LEFT JOIN {$forum_data['PREFIX']}USER_THREAD USER_THREAD ";
                 $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
                 $sql.= "WHERE THREAD.FID IN ($folders) ";
-                $sql.= "AND THREAD.MODIFIED > FROM_UNIXTIME('$unread_cutoff_stamp')";
+                $sql.= "AND (THREAD.MODIFIED > FROM_UNIXTIME('$unread_cutoff_stamp') OR ";
+                $sql.= "$unread_cutoff_stamp = 0)";
 
                 if (!$result_unread_count = db_query($sql, $db_get_my_forums)) return false;
 

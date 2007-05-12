@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lthread_list.php,v 1.79 2007-04-12 13:23:11 decoyduck Exp $ */
+/* $Id: lthread_list.php,v 1.80 2007-05-12 13:39:05 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -129,7 +129,7 @@ if (isset($_GET['markread'])) {
 
 if (!isset($_GET['mode'])) {
 
-    if (!isset($_COOKIE['bh_thread_mode'])) {
+    if (!isset($_COOKIE["bh_{$webtag}_thread_mode"])) {
 
         // default to "Unread" messages for a logged-in user, unless there aren't any
 
@@ -141,7 +141,7 @@ if (!isset($_GET['mode'])) {
 
     }else {
 
-        $mode = (is_numeric($_COOKIE['bh_thread_mode'])) ? $_COOKIE['bh_thread_mode'] : 0;
+        $mode = (is_numeric($_COOKIE["bh_{$webtag}_thread_mode"])) ? $_COOKIE["bh_{$webtag}_thread_mode"] : 0;
     }
 
 }else {
@@ -159,7 +159,7 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
     $folder = false;
 }
 
-bh_setcookie('bh_thread_mode', $mode);
+bh_setcookie("bh_{$webtag}_thread_mode", $mode);
 
 if (isset($_GET['start_from']) && is_numeric($_GET['start_from'])) {
     $start_from = $_GET['start_from'];

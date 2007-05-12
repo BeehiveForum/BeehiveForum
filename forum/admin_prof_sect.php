@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_sect.php,v 1.98 2007-04-12 13:23:08 decoyduck Exp $ */
+/* $Id: admin_prof_sect.php,v 1.99 2007-05-12 13:39:05 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -233,7 +233,7 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
     echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "  ", form_input_hidden('addsection', 'true'), "\n";
     echo "  ", form_input_hidden('page', _htmlentities($page)), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -319,7 +319,7 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
     echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "  ", form_input_hidden('psid', _htmlentities($psid)), "\n";
     echo "  ", form_input_hidden('page', _htmlentities($page)), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -380,7 +380,7 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
     echo "<form name=\"f_sections\" action=\"admin_prof_sect.php\" method=\"post\">\n";
     echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "  ", form_input_hidden('page', _htmlentities($page)), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -404,7 +404,7 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
             $profile_index++;
 
             echo "                <tr>\n";
-            echo "                  <td valign=\"top\" align=\"center\" width=\"25\">", form_checkbox("delete_section[{$profile_section['PSID']}]", "Y", false), "</td>\n";
+            echo "                  <td valign=\"top\" align=\"center\" width=\"1%\">", form_checkbox("delete_section[{$profile_section['PSID']}]", "Y", false), "</td>\n";
 
             if ($profile_sections['profile_sections_count'] == 1) {
 

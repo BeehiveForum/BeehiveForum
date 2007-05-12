@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_wordfilter.php,v 1.91 2007-05-06 17:24:56 decoyduck Exp $ */
+/* $Id: admin_wordfilter.php,v 1.92 2007-05-12 13:39:05 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -416,23 +416,23 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">{$lang['filtername']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("filter_name", _htmlentities($word_filter_array['FILTER_NAME']), 40, 255), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("filter_name", (isset($_POST['filter_name']) ? _htmlentities(_stripslashes($_POST['filter_name'])) : _htmlentities($word_filter_array['FILTER_NAME'])), 40, 255), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">{$lang['matchedtext']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("match_text", _htmlentities($word_filter_array['MATCH_TEXT']), 40), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("match_text", (isset($_POST['match_text']) ? _htmlentities(_stripslashes($_POST['match_text'])) : _htmlentities($word_filter_array['MATCH_TEXT'])), 40), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">{$lang['replacementtext']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("replace_text", _htmlentities($word_filter_array['REPLACE_TEXT']), 40), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("replace_text", (isset($_POST['replace_text']) ? _htmlentities(_stripslashes($_POST['replace_text'])) : _htmlentities($word_filter_array['REPLACE_TEXT'])), 40), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" valign=\"top\">{$lang['filtertype']}:</td>\n";
-    echo "                        <td align=\"left\">", form_dropdown_array("add_new_filter_option", array($lang['all'], $lang['wholeword'], $lang['preg']), $word_filter_array['FILTER_TYPE']), "</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("filter_option", array($lang['all'], $lang['wholeword'], $lang['preg']), (isset($_POST['filter_option']) ? _htmlentities(_stripslashes($_POST['filter_option'])) : _htmlentities($word_filter_array['FILTER_TYPE']))), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" valign=\"top\">{$lang['filterenabled']}:</td>\n";
-    echo "                        <td align=\"left\">", form_dropdown_array("add_new_filter_enabled", array(1 => $lang['yes'], 0 => $lang['no']), $word_filter_array['FILTER_ENABLED']), "</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("filter_enabled", array(1 => $lang['yes'], 0 => $lang['no']), (isset($_POST['filter_enabled']) ? _htmlentities(_stripslashes($_POST['filter_enabled'])) : _htmlentities($word_filter_array['FILTER_ENABLED']))), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";

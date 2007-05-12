@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_items.php,v 1.106 2007-04-22 20:34:30 decoyduck Exp $ */
+/* $Id: admin_prof_items.php,v 1.107 2007-05-12 13:39:05 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -287,7 +287,7 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
     
     if (isset($viewitems)) echo "  ", form_input_hidden("viewitems", "yes"), "\n";
 
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -386,7 +386,7 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
 
     if (isset($viewitems)) echo "  ", form_input_hidden("viewitems", "yes"), "\n";
 
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -495,7 +495,7 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
             $profile_index++;
 
             echo "                <tr>\n";
-            echo "                  <td valign=\"top\" align=\"center\" width=\"25\">", form_checkbox("delete_item[{$profile_item['PIID']}]", "Y", false), "</td>\n";
+            echo "                  <td valign=\"top\" align=\"center\" width=\"1%\">", form_checkbox("delete_item[{$profile_item['PIID']}]", "Y", false), "</td>\n";
 
             if ($profile_items['profile_items_count'] == 1) {
 

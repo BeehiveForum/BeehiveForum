@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.198 2007-05-10 22:03:18 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.199 2007-05-12 13:39:08 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -477,14 +477,14 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                         }else {
 
                             $polldata['CONTENT'].= "                                <tr>\n";
-                            $polldata['CONTENT'].= "                                  <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"20\">". form_radio("pollvote[{$poll_results['GROUP_ID'][$i]}]", $poll_results['OPTION_ID'][$i], '', false). " ". word_filter_add_ob_tags($poll_results['OPTION_NAME'][$i]). "</td>\n";
+                            $polldata['CONTENT'].= "                                  <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"1%\">". form_radio("pollvote[{$poll_results['GROUP_ID'][$i]}]", $poll_results['OPTION_ID'][$i], '', false). " ". word_filter_add_ob_tags($poll_results['OPTION_NAME'][$i]). "</td>\n";
                             $polldata['CONTENT'].= "                                </tr>\n";
                         }
 
                     }else {
 
                         $polldata['CONTENT'].= "                                <tr>\n";
-                        $polldata['CONTENT'].= "                                  <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"20\">". form_checkbox("pollvote[{$poll_results['GROUP_ID'][$i]}]", $poll_results['OPTION_ID'][$i], '', false). " ". word_filter_add_ob_tags($poll_results['OPTION_NAME'][$i]). "</td>\n";
+                        $polldata['CONTENT'].= "                                  <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"1%\">". form_checkbox("pollvote[{$poll_results['GROUP_ID'][$i]}]", $poll_results['OPTION_ID'][$i], '', false). " ". word_filter_add_ob_tags($poll_results['OPTION_NAME'][$i]). "</td>\n";
                         $polldata['CONTENT'].= "                                </tr>\n";
                     }
 
@@ -892,14 +892,14 @@ function poll_preview_form($poll_results, $polldata)
                 }else {
 
                     $polldisplay.= "                      <tr>\n";
-                    $polldisplay.= "                        <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"20\">". form_radio("pollvote[{$poll_results['GROUP_ID'][$i]}]", $poll_results['OPTION_ID'][$i], '', false). " ". word_filter_add_ob_tags($poll_results['OPTION_NAME'][$i]). "</td>\n";
+                    $polldisplay.= "                        <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"1%\">". form_radio("pollvote[{$poll_results['GROUP_ID'][$i]}]", $poll_results['OPTION_ID'][$i], '', false). " ". word_filter_add_ob_tags($poll_results['OPTION_NAME'][$i]). "</td>\n";
                     $polldisplay.= "                      </tr>\n";
                 }
 
             }else {
 
                 $polldisplay.= "                      <tr>\n";
-                $polldisplay.= "                        <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"20\">". form_checkbox("pollvote[{$poll_results['GROUP_ID'][$i]}]", $poll_results['OPTION_ID'][$i], '', false). " ". word_filter_add_ob_tags($poll_results['OPTION_NAME'][$i]). "</td>\n";
+                $polldisplay.= "                        <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"1%\">". form_checkbox("pollvote[{$poll_results['GROUP_ID'][$i]}]", $poll_results['OPTION_ID'][$i], '', false). " ". word_filter_add_ob_tags($poll_results['OPTION_NAME'][$i]). "</td>\n";
                 $polldisplay.= "                      </tr>\n";
             }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_subscriptions.php,v 1.18 2007-05-02 23:15:40 decoyduck Exp $ */
+/* $Id: edit_subscriptions.php,v 1.19 2007-05-12 13:39:05 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -244,7 +244,7 @@ if (isset($threadsearch) && strlen(trim($threadsearch)) > 0) {
     if (sizeof($thread_search_array['thread_array']) > 0) {
 
         echo "                <tr>\n";
-        echo "                  <td align=\"center\" class=\"subhead_checkbox\" width=\"20\">", form_checkbox("toggle_all", "toggle_all", "", false, "onclick=\"subscriptions_toggle_all();\""), "</td>\n";
+        echo "                  <td align=\"center\" class=\"subhead_checkbox\" width=\"1%\">", form_checkbox("toggle_all", "toggle_all", "", false, "onclick=\"subscriptions_toggle_all();\""), "</td>\n";
         echo "                  <td align=\"left\" class=\"subhead\" width=\"450\">{$lang['threadtitle']}</td>\n";
         echo "                  <td align=\"center\" class=\"subhead\" width=\"150\">{$lang['currentinterest']}</td>\n";
         echo "                </tr>\n";
@@ -323,7 +323,7 @@ if (isset($threadsearch) && strlen(trim($threadsearch)) > 0) {
     if (sizeof($thread_subscriptions['thread_array']) > 0) {
 
         echo "                <tr>\n";
-        echo "                  <td align=\"center\" class=\"subhead_checkbox\" width=\"20\">", form_checkbox("toggle_all", "toggle_all", "", false, "onclick=\"subscriptions_toggle_all();\""), "</td>\n";
+        echo "                  <td align=\"center\" class=\"subhead_checkbox\" width=\"1%\">", form_checkbox("toggle_all", "toggle_all", "", false, "onclick=\"subscriptions_toggle_all();\""), "</td>\n";
         echo "                  <td align=\"left\" class=\"subhead\" width=\"450\">{$lang['threadtitle']}</td>\n";
         echo "                  <td align=\"center\" class=\"subhead\" width=\"150\">{$lang['currentinterest']}</td>\n";
         echo "                </tr>\n";

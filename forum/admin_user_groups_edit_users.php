@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit_users.php,v 1.43 2007-04-18 23:20:26 decoyduck Exp $ */
+/* $Id: admin_user_groups_edit_users.php,v 1.44 2007-05-12 13:39:05 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -221,7 +221,7 @@ if (sizeof($group_users_array['user_array']) > 0) {
     foreach($group_users_array['user_array'] as $user) {
 
         echo "                <tr>\n";
-        echo "                  <td align=\"left\" width=\"20\">", form_checkbox("remove_user[]", $user['UID'], "", false), "</td>\n";
+        echo "                  <td align=\"left\" width=\"1%\">", form_checkbox("remove_user[]", $user['UID'], "", false), "</td>\n";
         echo "                  <td align=\"left\">", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</td>\n";
         echo "                </tr>\n";
     }
@@ -290,7 +290,7 @@ if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
         foreach ($user_search_array['user_array'] as $user) {
             
             echo "                <tr>\n";
-            echo "                  <td align=\"left\" width=\"20\">", form_checkbox("add_user[]", $user['UID'], "", false), "</td>\n";
+            echo "                  <td align=\"left\" width=\"1%\">", form_checkbox("add_user[]", $user['UID'], "", false), "</td>\n";
             echo "                  <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$user['UID']}\" target=\"_blank\" onclick=\"return openProfile({$user['UID']}, '$webtag')\">", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</a></td>\n";
             echo "                </tr>\n";
         }

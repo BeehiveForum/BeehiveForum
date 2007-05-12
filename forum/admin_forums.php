@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forums.php,v 1.64 2007-05-12 13:39:05 decoyduck Exp $ */
+/* $Id: admin_forums.php,v 1.65 2007-05-12 16:46:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -271,7 +271,7 @@ if (isset($_POST['delete'])) {
 
     if ($valid) {
 
-        if ($new_fid = forum_create($t_webtag, $t_name, $t_database, $t_access)) {
+        if ($new_fid = forum_create($t_webtag, $t_name, $t_database, $t_access, $error_str)) {
 
             if ($t_default == 1) forum_update_default($new_fid);
             $add_success.= sprintf("<h2>{$lang['successfullycreatedforum']}</h2>", $t_webtag);
@@ -280,6 +280,8 @@ if (isset($_POST['delete'])) {
         }else {
 
             $error_html.= sprintf("<h2>{$lang['failedtocreateforum']}</h2>", $t_webtag);
+            $error_html.= $error_str;
+
             unset($_POST['addnew'], $_GET['addnew']);
         }
     }

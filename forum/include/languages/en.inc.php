@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.427 2007-05-10 22:59:23 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.428 2007-05-12 16:46:17 decoyduck Exp $ */
 
 // British English language file
 
@@ -656,7 +656,9 @@ $lang['invalidforumidorforumnotfound'] = "Invalid forum FID for forum not found"
 $lang['successfullyupdatedforum'] = "Successfully updated forum: '%s'";
 $lang['failedtoupdateforum'] = "Failed to update forum: '%s'";
 $lang['successfullycreatedforum'] = "Successfully created forum: '%s'";
-$lang['failedtocreateforum'] = "Failed to create forum '%s'. Please check to make sure the webtag and table names aren't already in use.";
+$lang['failedtocreateforum'] = "Failed to create forum '%s'";
+$lang['selectedwebtagisalreadyinuse'] = "The selected webtag is already in use. Please choose another.";
+$lang['selecteddatabasecontainsconflictingtables'] = "The selected database contains conflicting tables. Conflicting table names are:";
 $lang['forumdeleteconfirmation'] = "Are you sure you want to delete all of the selected forums?";
 $lang['forumdeletewarning'] = "Please note that you cannot recover deleted forums. Once deleted a forum and all of it's associated data is permenantly removed from the database. If you do not wish to delete the selected forums please click cancel.";
 $lang['successfullydeletedforum'] = "Successfully deleted forum: '%s'";

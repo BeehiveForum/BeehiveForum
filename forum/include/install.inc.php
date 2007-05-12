@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.53 2007-05-06 22:38:45 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.54 2007-05-12 16:46:17 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -255,10 +255,10 @@ function install_get_table_conflicts($webtag = false, $forum_tables = false, $gl
 
     $conflicting_tables_array = array();
 
-    if (!is_array($forum_tables) && $forum_tables !== true) $forum_tables = false;
-    if (!is_array($global_tables) && $global_tables !== true) $global_tables = false;
+    if (is_array($forum_tables) && sizeof($forum_tables) < 1) $forum_tables = false;
+    if (is_array($global_tables) && sizeof($global_tables) < 1) $global_tables = false;
 
-    if ($forum_tables === false) {
+    if ($forum_tables === true) {
 
         $forum_tables = array('ADMIN_LOG',     'BANNED',          'FOLDER',
                               'FORUM_LINKS',   'LINKS',           'LINKS_COMMENT',
@@ -272,7 +272,7 @@ function install_get_table_conflicts($webtag = false, $forum_tables = false, $gl
                               'USER_TRACK',    'WORD_FILTER');
     }
 
-    if ($global_tables === false) {
+    if ($global_tables === true) {
 
         $global_tables = array('DICTIONARY',   'FORUMS',              'FORUM_SETTINGS',
                                'GROUPS',       'GROUP_PERMS',         'GROUP_USERS',
@@ -301,7 +301,7 @@ function install_get_table_conflicts($webtag = false, $forum_tables = false, $gl
         }
     }
 
-    if (is_array($forum_tables) && sizeof($forum_tables) > 0) {
+    if (is_array($global_tables) && sizeof($global_tables) > 0) {
 
         foreach ($global_tables as $global_table) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads_rss.php,v 1.41 2007-04-12 13:23:12 decoyduck Exp $ */
+/* $Id: threads_rss.php,v 1.42 2007-05-12 10:04:15 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -92,7 +92,7 @@ if (logon_get_cookies($username_array, $password_array, $passhash_array)) {
 // we need to try and logon as a guest. If the guest account
 // is disabled we'll show a HTTP 500 error message.
 
-if (!$user_sess = bh_session_check()) {
+if (!$user_sess = bh_session_check(false, $user_hash)) {
 
     if (!$user_sess = bh_guest_session_init(false, false)) {
 

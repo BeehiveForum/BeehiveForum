@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_signature.php,v 1.88 2007-05-02 23:15:40 decoyduck Exp $ */
+/* $Id: edit_signature.php,v 1.89 2007-05-12 10:04:15 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -203,17 +203,26 @@ if (isset($_POST['submit'])) {
 
         user_update_sig($uid, $t_sig_content, $t_sig_html);
 
-        // Reinitialize the User's Session to save them having to logout and back in
+        if ($admin_edit === true) {
 
-        bh_session_init(bh_session_get_value('UID'), false);
+            $redirect_uri = "./edit_signature.php?webtag=$webtag&updated=true&siguid=$uid";
+            header_redirect($redirect_uri, $lang['signatureupdated']);
 
-        header_redirect("./edit_signature.php?webtag=$webtag&updated=true&siguid=$uid", $lang['signatureupdated']);
+        }else {
+
+            $redirect_uri = "./edit_signature.php?webtag=$webtag&updated=true";
+            header_redirect($redirect_uri, $lang['signatureupdated']);
+        }
     }
 }
 
 // Get the User's Signature
 
-user_get_sig($uid, $user_sig['SIG_CONTENT'], $user_sig['SIG_HTML']);
+if (!user_get_sig($uid, $user_sig['SIG_CONTENT'], $user_sig['SIG_HTML'])) {
+
+    $user_sig['SIG_CONTENT'] = '';
+    $user_sig['SIG_HTML'] = 'Y';
+}
 
 // Start Output Here
 
@@ -276,7 +285,9 @@ if ($admin_edit === true) echo "<div align=\"center\">\n";
 echo "<form name=\"prefs\" action=\"edit_signature.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 
-if ($admin_edit === true) echo "  ", form_input_hidden('siguid', _htmlentities($uid)), "\n";
+if ($admin_edit === true) {
+    echo "  ", form_input_hidden('siguid', _htmlentities($uid)), "\n";
+}
 
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.102 2007-05-02 23:15:41 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.103 2007-05-12 10:04:15 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -248,7 +248,11 @@ if (isset($_POST['t_sig_html'])) {
 
 }else {
 
-    user_get_sig($uid, $t_sig, $t_sig_html);
+    if (!user_get_sig($uid, $t_sig, $t_sig_html)) {
+
+        $t_sig = '';
+        $t_sig_html = 'Y';
+    }
 
     if ($t_sig_html != "N") {
         $sig_html = 2;
@@ -390,11 +394,8 @@ if ($allow_html == false) {
         $t_content = $post->getContent();
     }
 
-    if ($sig->getHTML() > 0) {
-
-        $sig->setHTML(false);
-        $t_sig = $sig->getContent();
-    }
+    $sig->setHTML(false, true);
+    $t_sig = $sig->getContent();
 }
 
 if (!$newthread) {

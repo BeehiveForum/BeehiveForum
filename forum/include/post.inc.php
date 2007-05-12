@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.156 2007-05-06 20:33:43 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.157 2007-05-12 10:04:15 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -559,8 +559,8 @@ class MessageText {
     var $links = true;
     var $tinymce = false;
 
-    function MessageText ($html = 0, $content = "", $emoticons = true, $links = true) {
-
+    function MessageText ($html = 0, $content = "", $emoticons = true, $links = true)
+    {
         $post_prefs = bh_session_get_post_page_prefs();
         if ($post_prefs & POST_TINYMCE_DISPLAY) {
             $this->tinymce = true;
@@ -573,7 +573,8 @@ class MessageText {
         $this->setContent($content);
     }
 
-    function setHTML ($html) {
+    function setHTML ($html, $strip_tags = false)
+    {        
         if ($html == false || $html == "N") {
             $this->html = 0;
         } else if ($html == 1 || $html == "A") {
@@ -582,7 +583,11 @@ class MessageText {
             $this->html = 2;
         }
 
-        $this->setContent($this->getOriginalContent());
+        if ($this->html == 0 && $strip_tags === true) {
+            $this->setContent(strip_tags($this->getOriginalContent()));
+        }else {
+            $this->setContent($this->getOriginalContent());
+        }
     }
 
     function getHTML () {

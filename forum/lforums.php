@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lforums.php,v 1.26 2007-04-12 13:23:11 decoyduck Exp $ */
+/* $Id: lforums.php,v 1.27 2007-05-13 21:58:16 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -60,21 +60,9 @@ include_once(BH_INCLUDE_PATH. "myforums.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
-// Light mode check to see if we should bounce to the logon screen.
-
-if (!bh_session_active()) {
-
-    $webtag = get_webtag($webtag_search);
-    header_redirect("./llogon.php?webtag=$webtag");
-}
-
 // Check we're logged in correctly
 
-if (!$user_sess = bh_session_check()) {
-
-    $webtag = get_webtag($webtag_search);
-    header_redirect("./llogon.php?webtag=$webtag");
-}
+$user_sess = bh_session_check();
 
 // Check to see if the user is banned.
 
@@ -104,7 +92,11 @@ light_html_draw_top();
 
 light_draw_my_forums();
 
-echo "<h4><a href=\"llogout.php?webtag=$webtag\">{$lang['logout']}</a></h4>\n";
+if (bh_session_get_value('UID') == 0) {
+    echo "<h4><a href=\"llogout.php?webtag=$webtag\">{$lang['login']}</a></h4>";
+}else {
+    echo "<h4><a href=\"llogout.php?webtag=$webtag\">{$lang['logout']}</a></h4>";
+}
 
 echo "<h6>&copy; ", date('Y'), " <a href=\"http://www.beehiveforum.net/\" target=\"_blank\">Project BeehiveForum</a></h6>\n";
 

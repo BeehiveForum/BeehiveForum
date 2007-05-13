@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.139 2007-05-06 20:33:42 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.140 2007-05-13 21:58:15 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -123,6 +123,8 @@ function light_draw_logon_form()
     $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
 
     $webtag = get_webtag($webtag_search);
+
+    bh_setcookie("bh_logon", "1", time() - YEAR_IN_SECONDS);
 
     echo "<form name=\"logonform\" action=\"llogon.php\" method=\"post\">\n";
     echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
@@ -498,125 +500,60 @@ function light_draw_thread_list($mode = 0, $folder = false, $start_from = 0)
 
 function light_draw_my_forums()
 {
+    $webtag = get_webtag($webtag_search);
+    
     $lang = load_language_file();
+
+    if (isset($_GET['page']) && is_numeric($_GET['page'])) {
+        $page = $_GET['page'];
+        $start = floor($page - 1) * 20;
+    }else {
+        $page = 1;
+        $start = 0;
+    }
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    if ($uid <> 0) {
+    if (!user_is_guest()) {
 
-        if ($forums_array = get_my_forums()) {
+        $forums_array = get_my_forums(FORUMS_SHOW_ALL, $start);
+
+        if (isset($forums_array['forums_array']) && sizeof($forums_array['forums_array']) > 0) {
 
             echo "<h1>{$lang['myforums']}</h1>\n";
+            echo "<br />\n";
 
-            if (sizeof($forums_array['FAV_FORUMS']) > 0) {
+            foreach ($forums_array['forums_array'] as $forum) {
 
-                echo "<h2>{$lang['favouriteforums']}</h2>\n";
-                echo "<br />\n";
+                echo "<h2><a href=\"./lthread_list.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></h2>\n";
 
-                foreach ($forums_array['FAV_FORUMS'] as $forum) {
+                if (isset($forum['UNREAD_TO_ME']) && $forum['UNREAD_TO_ME'] > 0) {
 
-                    echo "<h2><a href=\"./lthread_list.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></h2>\n";
+                    if (isset($forum['UNREAD_MESSAGES']) && is_numeric($forum['UNREAD_MESSAGES']) && $forum['UNREAD_MESSAGES'] > 0) {
 
-                    if (isset($forum['UNREAD_TO_ME']) && $forum['UNREAD_TO_ME'] > 0) {
-
-                        if (isset($forum['UNREAD_MESSAGES']) && is_numeric($forum['UNREAD_MESSAGES']) && $forum['UNREAD_MESSAGES'] > 0) {
-
-                            echo "<p>", sprintf($lang['forumunreadmessages'], number_format($forum['UNREAD_MESSAGES'], 0, ".", ",")), " (", sprintf($lang['forumunreadtome'], number_format($forum['UNREAD_TO_ME'], 0, ",", ",")), ")</p>\n";
-
-                        }else {
-
-                            echo "<p>", sprintf($lang['forumunreadtome'], number_format($forum['UNREAD_TO_ME'], 0, ".", ",")), "</p>\n";
-                        }
-
-                    }else if (isset($forum['UNREAD_MESSAGES']) && is_numeric($forum['UNREAD_MESSAGES']) && $forum['UNREAD_MESSAGES'] > 0) {
-
-                        echo "<p>", sprintf($lang['forumunreadmessages'], number_format($forum['UNREAD_MESSAGES'], 0, ".", ",")), "</p>\n";
+                        echo "<p>", sprintf($lang['forumunreadmessages'], number_format($forum['UNREAD_MESSAGES'], 0, ".", ",")), " (", sprintf($lang['forumunreadtome'], number_format($forum['UNREAD_TO_ME'], 0, ",", ",")), ")</p>\n";
 
                     }else {
 
-                        echo "<p>{$lang['forumnounreadmessages']}</p>\n";
+                        echo "<p>", sprintf($lang['forumunreadtome'], number_format($forum['UNREAD_TO_ME'], 0, ".", ",")), "</p>\n";
                     }
 
-                    if (isset($forum['LAST_VISIT']) && $forum['LAST_VISIT'] > 0) {
-                        echo "<p>{$lang['lastvisited']}: ", format_time($forum['LAST_VISIT']), "</p>\n";
-                    }else {
-                        echo "<p>{$lang['lastvisited']}: {$lang['never']}</p>\n";
-                    }
+                }else if (isset($forum['UNREAD_MESSAGES']) && is_numeric($forum['UNREAD_MESSAGES']) && $forum['UNREAD_MESSAGES'] > 0) {
+
+                    echo "<p>", sprintf($lang['forumunreadmessages'], number_format($forum['UNREAD_MESSAGES'], 0, ".", ",")), "</p>\n";
+
+                }else {
+
+                    echo "<p>{$lang['forumnounreadmessages']}</p>\n";
                 }
-            }
 
-            if (sizeof($forums_array['RECENT_FORUMS']) > 0) {
-
-                echo "<h2>{$lang['recentlyvisitedforums']}</h2>\n";
-                echo "<br />\n";
-
-                foreach ($forums_array['RECENT_FORUMS'] as $forum) {
-
-                    echo "<h2><a href=\"./lthread_list.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></h2>\n";
-
-                    if (isset($forum['UNREAD_TO_ME']) && $forum['UNREAD_TO_ME'] > 0) {
-
-                        if (isset($forum['UNREAD_MESSAGES']) && is_numeric($forum['UNREAD_MESSAGES']) && $forum['UNREAD_MESSAGES'] > 0) {
-
-                            echo "<p>", sprintf($lang['forumunreadmessages'], number_format($forum['UNREAD_MESSAGES'], 0, ".", ",")), " (", sprintf($lang['forumunreadtome'], number_format($forum['UNREAD_TO_ME'], 0, ",", ",")), ")</p>\n";
-
-                        }else {
-
-                            echo "<p>", sprintf($lang['forumunreadtome'], number_format($forum['UNREAD_TO_ME'], 0, ".", ",")), "</p>\n";
-                        }
-
-                    }else if (isset($forum['UNREAD_MESSAGES']) && is_numeric($forum['UNREAD_MESSAGES']) && $forum['UNREAD_MESSAGES'] > 0) {
-
-                        echo "<p>", sprintf($lang['forumunreadmessages'], number_format($forum['UNREAD_MESSAGES'], 0, ".", ",")), "</p>\n";
-
-                    }else {
-
-                        echo "<p>{$lang['forumnounreadmessages']}</p>\n";
-                    }
-
-                    if (isset($forum['LAST_LOGON']) && $forum['LAST_LOGON'] > 0) {
-                        echo "<p>{$lang['lastvisited']}: ", format_time($forum['LAST_LOGON']), "</p>\n";
-                    }else {
-                        echo "<p>{$lang['lastvisited']}: {$lang['never']}</p>\n";
-                    }
+                if (isset($forum['LAST_VISIT']) && $forum['LAST_VISIT'] > 0) {
+                    echo "<p>{$lang['lastvisited']}: ", format_time($forum['LAST_VISIT']), "</p>\n";
+                }else {
+                    echo "<p>{$lang['lastvisited']}: {$lang['never']}</p>\n";
                 }
-            }
-
-            if (sizeof($forums_array['OTHER_FORUMS']) > 0) {
-
-                echo "<h2>{$lang['availableforums']}</h2>\n";
-                echo "<br />\n";
-
-                foreach ($forums_array['OTHER_FORUMS'] as $forum) {
-
-                    echo "<h2><a href=\"./lthread_list.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></h2>\n";
-
-                    if (isset($forum['UNREAD_TO_ME']) && $forum['UNREAD_TO_ME'] > 0) {
-
-                        if (isset($forum['UNREAD_MESSAGES']) && is_numeric($forum['UNREAD_MESSAGES']) && $forum['UNREAD_MESSAGES'] > 0) {
-
-                            echo "<p>", sprintf($lang['forumunreadmessages'], number_format($forum['UNREAD_MESSAGES'], 0, ".", ",")), " (", sprintf($lang['forumunreadtome'], number_format($forum['UNREAD_TO_ME'], 0, ",", ",")), ")</p>\n";
-
-                        }else {
-
-                            echo "<p>", sprintf($lang['forumunreadtome'], number_format($forum['UNREAD_TO_ME'], 0, ".", ",")), "</p>\n";
-                        }
-
-                    }else if (isset($forum['UNREAD_MESSAGES']) && is_numeric($forum['UNREAD_MESSAGES']) && $forum['UNREAD_MESSAGES'] > 0) {
-
-                        echo "<p>", sprintf($lang['forumunreadmessages'], number_format($forum['UNREAD_MESSAGES'], 0, ".", ",")), "</p>\n";
-
-                    }else {
-
-                        echo "<p>{$lang['forumnounreadmessages']}</p>\n";
-                    }
-
-                    if (isset($forum['LAST_LOGON']) && $forum['LAST_LOGON'] > 0) {
-                        echo "<p>{$lang['lastvisited']}: ", format_time($forum['LAST_LOGON']), "</p>\n";
-                    }else {
-                        echo "<p>{$lang['lastvisited']}: {$lang['never']}</p>\n";
-                    }
-                }
+                
+                echo page_links("lforums.php?webtag=$webtag", $start, $forums_array['forums_count'], 10);
             }
 
         }else {
@@ -627,17 +564,20 @@ function light_draw_my_forums()
 
     }else {
 
-        if ($forums_array = get_forum_list()) {
+        $forums_array = get_forum_list($start);
+
+        if (isset($forums_array['forums_array']) && sizeof($forums_array['forums_array']) > 0) {
 
             echo "<h1>{$lang['myforums']}</h1>\n";
-            echo "<h2>{$lang['availableforums']}</h2>\n";
             echo "<br />\n";
 
-            foreach ($forums_array as $forum) {
+            foreach ($forums_array['forums_array'] as $forum) {
 
                 echo "<h2><a href=\"./lthread_list.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></h2>\n";
                 echo "<p>{$forum['MESSAGES']} {$lang['messages']}</p>\n";
             }
+
+            echo page_links("lforums.php?webtag=$webtag", $start, $forums_array['forums_count'], 10);
 
         }else {
 

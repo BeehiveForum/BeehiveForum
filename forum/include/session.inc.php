@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.298 2007-05-12 13:39:08 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.299 2007-05-13 21:58:15 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -208,9 +208,11 @@ function bh_session_check($show_session_fail = true, $use_sess_hash = false)
 function bh_session_expired()
 {
     global $frame_top_target;
+
+    $webtag = get_webtag($webtag_search);
     
     if (defined("BEEHIVEMODE_LIGHT")) {
-        header_redirect("./llogon.php?final_uri=". get_request_uri());
+        header_redirect("./llogon.php?webtag=$webtag&final_uri=". get_request_uri());
     }
 
     html_draw_top('logon.js');
@@ -224,7 +226,6 @@ function bh_session_expired()
             logon_unset_post_data();
                         
             $lang = load_language_file();
-            $webtag = get_webtag($webtag_search);
 
             $request_uri = get_request_uri(false);
 

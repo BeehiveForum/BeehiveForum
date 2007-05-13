@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogon.php,v 1.58 2007-04-12 13:23:11 decoyduck Exp $ */
+/* $Id: llogon.php,v 1.59 2007-05-13 21:58:16 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -106,6 +106,9 @@ if (isset($_POST['user_logon']) && isset($_POST['user_password'])) {
 }
 
 light_html_draw_top();
+
+echo "<h1>{$lang['logon']}</h1>\n";
+echo "<br />\n";
 
 if (isset($error_html) && strlen($error_html) > 0) {
     echo $error_html;

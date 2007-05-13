@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.428 2007-05-12 16:46:17 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.429 2007-05-13 21:23:17 decoyduck Exp $ */
 
 // British English language file
 
@@ -1010,8 +1010,11 @@ $lang['otherbutton'] = "Other";
 
 $lang['myforums'] = "My Forums";
 $lang['recentlyvisitedforums'] = "Recently Visited Forums";
-$lang['availableforums'] = "Available Forums";
+$lang['allavailableforums'] = "All Available Forums";
 $lang['favouriteforums'] = "Favourite Forums";
+$lang['ignoredforums'] = "Ignored Forums";
+$lang['ignoreforum'] = "Ignore forum";
+$lang['unignoreforum'] = "Unignore forum";
 $lang['lastvisited'] = "Last Visited";
 $lang['forumunreadmessages'] = "%s Unread Messages";
 $lang['forummessages'] = "%s Messages";
@@ -1020,7 +1023,7 @@ $lang['forumnounreadmessages'] = "No Unread Messages";
 $lang['removefromfavourites'] = "Remove From Favourites";
 $lang['addtofavourites'] = "Add To Favourites";
 $lang['availableforums'] = "Available Forums";
-$lang['noforumsavailable'] = "There are no forums available.";
+$lang['noforumsofselectedtype'] = "There are no forums of the selected type available. Please select a different type.";
 $lang['noforumsavailablelogin'] = "There are no forums available. Please login to view your forums.";
 $lang['passwdprotectedforum'] = "Password Protected Forum";
 $lang['passwdprotectedwarning'] = "This forum is password protected. To gain access enter the password below.";

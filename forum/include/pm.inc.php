@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.193 2007-05-10 23:00:57 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.194 2007-05-13 21:23:17 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1658,18 +1658,19 @@ function pm_new_check(&$pm_new_count, &$pm_outbox_count)
     if ($pm_messages_array = pm_get_new_messages($pm_free_space)) {
 
         // Convert the array keys into a comma separated list.
-
-        $mid_list = implode(',', preg_grep('/^[0-9]$/', array_keys($pm_messages_array)));
+        
+        $mid_list = implode(',', preg_grep('/^[0-9]+$/', array_keys($pm_messages_array)));
 
         // Mark the selected messages as unread / received and make the
         // sent items visible to the sender.
 
-        $sql = "UPDATE PM SET TYPE = '$pm_unread' WHERE MID in ($mid_list)";
+        $sql = "UPDATE PM SET TYPE = '$pm_unread' WHERE MID in ($mid_list) ";
+        $sql.= "AND TO_UID = '$uid'";
 
         if (!$result = db_query($sql, $db_pm_new_check)) return false;
 
         $sql = "UPDATE PM SET SMID = 0 WHERE SMID IN ($mid_list) ";
-        $sql.= "AND TYPE = '$pm_sent_item'";
+        $sql.= "AND TYPE = '$pm_sent_item' AND TO_UID = '$uid'";
 
         if (!$result = db_query($sql, $db_pm_new_check)) return false;
 

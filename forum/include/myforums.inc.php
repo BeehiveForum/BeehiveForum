@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.65 2007-05-12 13:39:08 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.66 2007-05-13 21:23:17 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -40,14 +40,29 @@ include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "threads.inc.php");
 
-function get_forum_list()
+function get_forum_list($offset)
 {
+    $db_get_forum_list = db_connect();
+
+    if (!is_numeric($offset)) return false;
+
     $lang = load_language_file();
 
-    $db_get_forum_list = db_connect();
-    $get_forum_list_array = array();
-
     if (($uid = bh_session_get_value('UID')) === false) return false;
+
+    // Array to hold our forums in.
+    
+    $forums_array = array();
+
+    // Get the number of forums
+
+    $sql = "SELECT COUNT(FORUMS.FID) FROM FORUMS ";
+    $sql.= "LEFT JOIN USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
+    $sql.= "AND USER_FORUM.UID = '$uid') WHERE FORUMS.ACCESS_LEVEL > -1 ";
+
+    if (!$result_forums = db_query($sql, $db_get_forum_list)) return false;
+ 
+    list($forums_count) = db_fetch_array($result_forums, DB_RESULT_NUM);
 
     $sql = "SELECT FORUMS.FID, FORUMS.ACCESS_LEVEL, USER_FORUM.INTEREST, ";
     $sql.= "CONCAT(FORUMS.DATABASE_NAME, '.', FORUMS.WEBTAG, '_') AS PREFIX FROM FORUMS ";
@@ -66,7 +81,9 @@ function get_forum_list()
             $forum_settings = forum_get_settings_by_fid($forum_fid);
 
             foreach($forum_settings as $key => $value) {
+
                 if (!isset($forum_data[strtoupper($key)])) {
+
                     $forum_data[strtoupper($key)] = $value;
                 }
             }
@@ -89,32 +106,91 @@ function get_forum_list()
                 $forum_data['MESSAGES'] = $row['POST_COUNT'];
             }
 
-            $get_forum_list_array[] = $forum_data;
+            $forums_array[] = $forum_data;
         }
+    
+    }else if ($forums_count > 0) {
 
-        return $get_forum_list_array;
+        $offset = floor(($forums_count / 10) - 1) * 10;
+        return get_forum_list($offset);
     }
 
-    return false;
+    return array('forums_array' => $forums_array,
+                 'forums_count' => $forums_count);
 }
 
-function get_my_forums()
+function get_my_forums($view_type, $offset)
 {
-    $lang = load_language_file();
-
     $db_get_my_forums = db_connect();
 
-    $get_my_forums_array = array('FAV_FORUMS'    => array(),
-                                 'RECENT_FORUMS' => array(),
-                                 'OTHER_FORUMS'  => array());
+    if (!is_numeric($view_type)) return false;
+    if (!is_numeric($offset)) return false;
+
+    $lang = load_language_file();
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    $sql = "SELECT FORUMS.FID, FORUMS.ACCESS_LEVEL, USER_FORUM.INTEREST, ";
-    $sql.= "CONCAT(FORUMS.DATABASE_NAME, '.', FORUMS.WEBTAG, '_') AS PREFIX FROM FORUMS ";
-    $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
-    $sql.= "AND USER_FORUM.UID = '$uid') WHERE FORUMS.ACCESS_LEVEL > -1 ";
-    $sql.= "ORDER BY FORUMS.FID";
+    // Array to hold our forums in.
+    
+    $forums_array = array();
+
+    // Get the number of forums
+
+    if ($view_type == FORUMS_SHOW_ALL) {
+
+        $sql = "SELECT COUNT(FORUMS.FID) FROM FORUMS ";
+        $sql.= "LEFT JOIN USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
+        $sql.= "AND USER_FORUM.UID = '$uid') WHERE FORUMS.ACCESS_LEVEL > -1 ";
+        $sql.= "AND USER_FORUM.INTEREST > -1";
+    
+    }elseif ($view_type == FORUMS_SHOW_FAVS) {
+    
+        $sql = "SELECT COUNT(FORUMS.FID) FROM FORUMS ";
+        $sql.= "LEFT JOIN USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
+        $sql.= "AND USER_FORUM.UID = '$uid') WHERE FORUMS.ACCESS_LEVEL > -1 ";
+        $sql.= "AND USER_FORUM.INTEREST = 1";
+
+    }elseif ($view_type == FORUMS_SHOW_IGNORED) {
+
+        $sql = "SELECT COUNT(FORUMS.FID) FROM FORUMS ";
+        $sql.= "LEFT JOIN USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
+        $sql.= "AND USER_FORUM.UID = '$uid') WHERE FORUMS.ACCESS_LEVEL > -1 ";
+        $sql.= "AND USER_FORUM.INTEREST = -1 ";
+    }
+
+    if (!$result_forums = db_query($sql, $db_get_my_forums)) return false;
+ 
+    list($forums_count) = db_fetch_array($result_forums, DB_RESULT_NUM);
+
+    // Fetch the forums
+
+    if ($view_type == FORUMS_SHOW_ALL) {
+
+        $sql = "SELECT FORUMS.FID, FORUMS.ACCESS_LEVEL, USER_FORUM.INTEREST, ";
+        $sql.= "CONCAT(FORUMS.DATABASE_NAME, '.', FORUMS.WEBTAG, '_') AS PREFIX FROM FORUMS ";
+        $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
+        $sql.= "AND USER_FORUM.UID = '$uid') WHERE FORUMS.ACCESS_LEVEL > -1 ";
+        $sql.= "AND USER_FORUM.INTEREST > -1 ";
+        $sql.= "ORDER BY FORUMS.FID LIMIT $offset, 10";
+    
+    }elseif ($view_type == FORUMS_SHOW_FAVS) {
+
+        $sql = "SELECT FORUMS.FID, FORUMS.ACCESS_LEVEL, USER_FORUM.INTEREST, ";
+        $sql.= "CONCAT(FORUMS.DATABASE_NAME, '.', FORUMS.WEBTAG, '_') AS PREFIX FROM FORUMS ";
+        $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
+        $sql.= "AND USER_FORUM.UID = '$uid') WHERE FORUMS.ACCESS_LEVEL > -1 ";
+        $sql.= "AND USER_FORUM.INTEREST = 1 ";
+        $sql.= "ORDER BY FORUMS.FID LIMIT $offset, 10";
+
+    }elseif ($view_type == FORUMS_SHOW_IGNORED) {
+
+        $sql = "SELECT FORUMS.FID, FORUMS.ACCESS_LEVEL, USER_FORUM.INTEREST, ";
+        $sql.= "CONCAT(FORUMS.DATABASE_NAME, '.', FORUMS.WEBTAG, '_') AS PREFIX FROM FORUMS ";
+        $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
+        $sql.= "AND USER_FORUM.UID = '$uid') WHERE FORUMS.ACCESS_LEVEL > -1 ";
+        $sql.= "AND USER_FORUM.INTEREST = -1 ";
+        $sql.= "ORDER BY FORUMS.FID LIMIT $offset, 10";
+    }
 
     if (!$result_forums = db_query($sql, $db_get_my_forums)) return false;
 
@@ -127,7 +203,9 @@ function get_my_forums()
             $forum_settings = forum_get_settings_by_fid($forum_fid);
 
             foreach($forum_settings as $key => $value) {
+
                 if (!isset($forum_data[strtoupper($key)])) {
+
                     $forum_data[strtoupper($key)] = $value;
                 }
             }
@@ -153,7 +231,7 @@ function get_my_forums()
 
             if (($unread_cutoff_stamp = forum_get_unread_cutoff()) !== false) {
 
-                $sql = "SELECT SUM(THREAD.LENGTH) - SUM(USER_THREAD.LAST_READ) ";
+                $sql = "SELECT SUM(THREAD.LENGTH) - SUM(COALESCE(USER_THREAD.LAST_READ, 0)) ";
                 $sql.= "AS UNREAD_MESSAGES FROM {$forum_data['PREFIX']}THREAD THREAD ";
                 $sql.= "LEFT JOIN {$forum_data['PREFIX']}USER_THREAD USER_THREAD ";
                 $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
@@ -234,24 +312,17 @@ function get_my_forums()
                 $forum_data['LAST_VISIT'] = $row['LAST_VISIT'];
             }
 
-            if (isset($forum_data['INTEREST']) && $forum_data['INTEREST'] == 1) {
+            $forums_array[] = $forum_data;
+        }        
+    
+    }else if ($forums_count > 0) {
 
-                $get_my_forums_array['FAV_FORUMS'][] = $forum_data;
-
-            }else {
-
-                if ($forum_data['LAST_VISIT'] > 0) {
-                    $get_my_forums_array['RECENT_FORUMS'][] = $forum_data;
-                }else {
-                    $get_my_forums_array['OTHER_FORUMS'][] = $forum_data;
-                }
-            }
-        }
-
-        return $get_my_forums_array;
+        $offset = floor(($forums_count / 10) - 1) * 10;
+        return get_my_forums($view_type, $offset);
     }
 
-    return false;
+    return array('forums_array' => $forums_array,
+                 'forums_count' => $forums_count);
 }
 
 function user_set_forum_interest($fid, $interest)
@@ -284,6 +355,21 @@ function user_set_forum_interest($fid, $interest)
     }
 
     return true;
+}
+
+function forums_any_favourites()
+{
+    $db_forums_any_favourites = db_connect();
+
+    if (($uid = bh_session_get_value('UID')) === false) return false;
+
+    $sql = "SELECT COUNT(FID) AS FAV_COUNT FROM USER_FORUM WHERE INTEREST = 1";
+
+    if (!$result = db_query($sql, $db_forums_any_favourites)) return false;
+
+    list($fav_count) = db_fetch_array($result, DB_RESULT_NUM);
+
+    return $fav_count > 0;
 }
 
 ?>

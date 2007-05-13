@@ -1104,21 +1104,13 @@ a {
     text-align: center;
 }
 
-.image_resize_container {
-    border: 0px;
-    border-collapse: collapse;
-}
-
 .image_resize_text {
     border: 1px dashed #000000;
-    height: 30px;
+    height: 25px;
     background-image: url('../../images/warningbg.png');
     font-size: 8pt;
     cursor: pointer;
-}
-
-.image_resize_image {
-    border: 0px;
+    overflow: hidden;
 }
 
 .image_resize_icon {

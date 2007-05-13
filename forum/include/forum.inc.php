@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.225 2007-05-12 16:46:17 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.226 2007-05-13 21:23:17 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1928,39 +1928,52 @@ function forum_get_post_count($webtag)
     return 0;
 }
 
-function forum_search($search_string)
+function forum_search_array_clean($forum_search)
 {
-    $fid_array = array();
+    return db_escape_string(trim(str_replace("%", "", $forum_search)));
+}
+
+function forum_search($forum_search, $offset)
+{
+    $db_forum_search = db_connect();
+
+    if (!is_numeric($offset)) return false;
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $lang = load_language_file();
 
-    if (strlen(trim($search_string)) > 0) {
+    // Array to hold our forums in.
+    
+    $forums_array = array();
+    $forums_count = 0;
 
-        $search_string = str_replace("%", "", $search_string);
+    if (strlen(trim($forum_search)) > 0) {
 
-        $keywords_array = explode(" ", $search_string);
+        $forum_search_array = explode(";", $forum_search);
+        $forum_search_array = array_map('forum_search_array_clean', $forum_search_array);
 
-        foreach($keywords_array as $key => $value) {
-            $keywords_array[$key] = db_escape_string($value);
-        }
+        $forum_search_webtag = implode("%' OR FORUMS.WEBTAG LIKE '%", $forum_search_array);
+        $forum_search_svalue = implode("%' OR FORUM_SETTINGS.SVALUE LIKE '%", $forum_search_array);
 
-        $search_webtag = implode("%' OR FORUMS.WEBTAG LIKE '", $keywords_array);
-        $search_svalue = implode("%' OR FORUM_SETTINGS.SVALUE LIKE '", $keywords_array);
+        $sql = "SELECT COUNT(DISTINCT FORUMS.FID) AS FORUMS_COUNT FROM FORUM_SETTINGS ";
+        $sql.= "LEFT JOIN USER_FORUM ON (USER_FORUM.FID = FORUM_SETTINGS.FID ";
+        $sql.= "AND USER_FORUM.UID = '$uid') LEFT JOIN FORUMS ON (FORUMS.FID = FORUM_SETTINGS.FID) ";
+        $sql.= "WHERE FORUMS.ACCESS_LEVEL > -1 AND (FORUMS.WEBTAG LIKE ";
+        $sql.= "'%$forum_search_webtag%' OR FORUM_SETTINGS.SVALUE LIKE ";
+        $sql.= "'%$forum_search_svalue%')";
 
-        $db_forum_search = db_connect();
+        if (!$result_forums = db_query($sql, $db_forum_search)) return false;
 
-        $forum_search_array = array();
+        list($forums_count) = db_fetch_array($result_forums, DB_RESULT_NUM);
 
-        $sql = "SELECT FORUMS.FID, FORUMS.ACCESS_LEVEL, ";
-        $sql.= "CONCAT(FORUMS.DATABASE_NAME, '.', FORUMS.WEBTAG, '_') AS PREFIX FROM FORUMS ";
-        $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.FID = FORUMS.FID AND USER_FORUM.UID = '$uid') ";
-        $sql.= "LEFT JOIN FORUM_SETTINGS FORUM_SETTINGS ON (FORUM_SETTINGS.FID = FORUMS.FID) ";
-        $sql.= "WHERE (FORUMS.ACCESS_LEVEL = 0 OR FORUMS.ACCESS_LEVEL = 2  OR (FORUMS.ACCESS_LEVEL = 1 ";
-        $sql.= "AND USER_FORUM.ALLOWED = 1)) AND (FORUMS.WEBTAG LIKE '$search_webtag%' ";
-        $sql.= "OR FORUM_SETTINGS.SVALUE LIKE '$search_svalue%') ";
-        $sql.= "GROUP BY FORUMS.FID";
+        $sql = "SELECT CONCAT(FORUMS.DATABASE_NAME, '.', FORUMS.WEBTAG, '_') AS PREFIX, ";
+        $sql.= "FORUMS.FID, FORUMS.ACCESS_LEVEL, USER_FORUM.INTEREST FROM FORUM_SETTINGS ";
+        $sql.= "LEFT JOIN USER_FORUM ON (USER_FORUM.FID = FORUM_SETTINGS.FID ";
+        $sql.= "AND USER_FORUM.UID = '$uid') LEFT JOIN FORUMS ON (FORUMS.FID = FORUM_SETTINGS.FID) ";
+        $sql.= "WHERE FORUMS.ACCESS_LEVEL > -1 AND (FORUMS.WEBTAG LIKE ";
+        $sql.= "'%$forum_search_webtag%' OR FORUM_SETTINGS.SVALUE LIKE ";
+        $sql.= "'%$forum_search_svalue%') GROUP BY FORUMS.FID";
 
         if (!$result_forums = db_query($sql, $db_forum_search)) return false;
 
@@ -1973,7 +1986,9 @@ function forum_search($search_string)
                 $forum_settings = forum_get_settings_by_fid($forum_fid);
 
                 foreach($forum_settings as $key => $value) {
+
                     if (!isset($forum_data[strtoupper($key)])) {
+
                         $forum_data[strtoupper($key)] = $value;
                     }
                 }
@@ -1986,57 +2001,65 @@ function forum_search($search_string)
                     $forum_data['FORUM_DESC'] = "";
                 }
 
-                // Get any unread messages
+                // Get available folders for queries below
 
                 $folders = folder_get_available_by_forum($forum_fid);
+
+                // User relationship constants
 
                 $user_ignored = USER_IGNORED;
                 $user_ignored_completely = USER_IGNORED_COMPLETELY;
 
-                $sql = "SELECT SUM(THREAD.LENGTH) - SUM(USER_THREAD.LAST_READ) ";
-                $sql.= "AS UNREAD_MESSAGES, SUM(THREAD.LENGTH) AS NUM_MESSAGES ";
-                $sql.= "FROM {$forum_data['PREFIX']}THREAD THREAD ";
-                $sql.= "LEFT JOIN {$forum_data['PREFIX']}USER_THREAD USER_THREAD ";
-                $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
-                $sql.= "LEFT JOIN {$forum_data['PREFIX']}USER_FOLDER USER_FOLDER ON ";
-                $sql.= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
-                $sql.= "LEFT JOIN {$forum_data['PREFIX']}USER_PEER USER_PEER ON ";
-                $sql.= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
-                $sql.= "WHERE THREAD.FID IN ($folders) ";
-                $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0 ";
-                $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
-                $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 ";
-                $sql.= "OR USER_PEER.RELATIONSHIP IS NULL OR THREAD.LENGTH > 1) ";
-                $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
-                $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1)";
+                // Get any unread messages
 
-                if (!$result_post_count = db_query($sql, $db_forum_search)) return false;
+                if (($unread_cutoff_stamp = forum_get_unread_cutoff()) !== false) {
 
-                $row = db_fetch_array($result_post_count);
+                    $sql = "SELECT SUM(THREAD.LENGTH) - SUM(COALESCE(USER_THREAD.LAST_READ, 0)) ";
+                    $sql.= "AS UNREAD_MESSAGES FROM {$forum_data['PREFIX']}THREAD THREAD ";
+                    $sql.= "LEFT JOIN {$forum_data['PREFIX']}USER_THREAD USER_THREAD ";
+                    $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
+                    $sql.= "WHERE THREAD.FID IN ($folders) ";
+                    $sql.= "AND (THREAD.MODIFIED > FROM_UNIXTIME('$unread_cutoff_stamp') OR ";
+                    $sql.= "$unread_cutoff_stamp = 0)";
 
-                if (!isset($row['NUM_MESSAGES']) || is_null($row['NUM_MESSAGES'])) {
-                    $forum_data['NUM_MESSAGES'] = 0;
+                    if (!$result_unread_count = db_query($sql, $db_forum_search)) return false;
+
+                    $unread_data = db_fetch_array($result_unread_count);
+
+                    if (!isset($unread_data['UNREAD_MESSAGES']) || is_null($unread_data['UNREAD_MESSAGES'])) {
+                        $forum_data['UNREAD_MESSAGES'] = 0;
+                    }else {
+                        $forum_data['UNREAD_MESSAGES'] = $unread_data['UNREAD_MESSAGES'];
+                    }
+
                 }else {
-                    $forum_data['NUM_MESSAGES'] = $row['NUM_MESSAGES'];
+
+                    $forum_data['UNREAD_MESSAGES'] = 0;
                 }
 
-                if (!isset($row['UNREAD_MESSAGES']) || is_null($row['UNREAD_MESSAGES'])) {
-                    $forum_data['UNREAD_MESSAGES'] = 0;
+                // Total number of messages
+
+                $sql = "SELECT SUM(THREAD.LENGTH) AS NUM_MESSAGES ";
+                $sql.= "FROM {$forum_data['PREFIX']}THREAD THREAD ";
+                $sql.= "WHERE THREAD.FID IN ($folders) ";
+
+                if (!$result_messages_count = db_query($sql, $db_forum_search)) return false;
+
+                $num_messages_data = db_fetch_array($result_messages_count);
+
+                if (!isset($num_messages_data['NUM_MESSAGES']) || is_null($num_messages_data['NUM_MESSAGES'])) {
+                    $forum_data['NUM_MESSAGES'] = 0;
                 }else {
-                    $forum_data['UNREAD_MESSAGES'] = $row['UNREAD_MESSAGES'];
+                    $forum_data['NUM_MESSAGES'] = $num_messages_data['NUM_MESSAGES'];
                 }
 
                 // Get unread to me message count
 
-                $sql = "SELECT COUNT(POST.PID) AS UNREAD_TO_ME FROM ";
-                $sql.= "{$forum_data['PREFIX']}POST POST ";
-                $sql.= "LEFT JOIN {$forum_data['PREFIX']}USER_PEER USER_PEER ON ";
-                $sql.= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = POST.FROM_UID) ";
-                $sql.= "WHERE POST.TO_UID = '$uid' AND POST.VIEWED IS NULL ";
-                $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0 ";
-                $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
-                $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 ";
-                $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
+                $sql = "SELECT COUNT(POST.PID) AS UNREAD_TO_ME ";
+                $sql.= "FROM {$forum_data['PREFIX']}THREAD THREAD ";
+                $sql.= "LEFT JOIN {$forum_data['PREFIX']}POST POST ";
+                $sql.= "ON (POST.TID = THREAD.TID) WHERE THREAD.FID IN ($folders) ";
+                $sql.= "AND POST.TO_UID = '$uid' AND POST.VIEWED IS NULL ";
 
                 if (!$result_unread_to_me = db_query($sql, $db_forum_search)) return false;
 
@@ -2047,6 +2070,14 @@ function forum_search($search_string)
                 }else {
                     $forum_data['UNREAD_TO_ME'] = $row['UNREAD_TO_ME'];
                 }
+
+                // Sometimes the USER_THREAD table might have a higher count that the thread
+                // length due to table corruption. I've only seen this on the SF provided
+                // webspace but none the less we do this check here anyway.
+
+                if ($forum_data['NUM_MESSAGES'] < 0) $forum_data['NUM_MESSAGES'] = 0;
+                if ($forum_data['UNREAD_MESSAGES'] < 0) $forum_data['UNREAD_MESSAGES'] = 0;
+                if ($forum_data['UNREAD_TO_ME'] < 0) $forum_data['UNREAD_TO_ME'] = 0;
 
                 // Get Last Visited
 
@@ -2064,14 +2095,18 @@ function forum_search($search_string)
                     $forum_data['LAST_VISIT'] = $row['LAST_VISIT'];
                 }
 
-                $forum_search_array[$forum_data['FID']] = $forum_data;
-            }
+                $forums_array[] = $forum_data;
+            }        
 
-            return $forum_search_array;
+        }else if ($forums_count > 0) {
+
+            $offset = floor(($forums_count / 10) - 1) * 10;
+            return forum_search($forum_search, $offset);
         }
     }
 
-    return false;
+    return array('forums_array' => $forums_array,
+                 'forums_count' => $forums_count);
 }
 
 function forum_get_all_prefixes()

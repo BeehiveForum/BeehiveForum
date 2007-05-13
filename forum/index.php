@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.137 2007-05-02 23:15:40 decoyduck Exp $ */
+/* $Id: index.php,v 1.138 2007-05-13 21:58:15 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -72,6 +72,10 @@ if (bh_session_user_banned()) {
     html_user_banned();
     exit;
 }
+
+// We embed the light mode in index.php
+
+define('BEEHIVE_LIGHT_INCLUDE', 1);
 
 // Check to see if noframes URL query specified
 
@@ -228,8 +232,6 @@ if ($session_active && !$logon_failed) {
 
 echo "<noframes>\n";
 echo "<body>\n";
-
-define('BEEHIVE_LIGHT_INCLUDE', 1);
 
 if ($session_active && !$logon_failed) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.223 2007-05-13 21:23:17 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.224 2007-05-14 23:20:37 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -597,9 +597,21 @@ function html_draw_top()
         
         if (!user_is_guest()) {
         
-            pm_new_check($pm_new_count, $pm_outbox_count);
+            // Pages we don't want the popup to appear on
 
-            if (!stristr($_SERVER['PHP_SELF'], 'pm') && !stristr($_SERVER['PHP_SELF'], 'nav.php') && bh_session_get_value('PM_NOTIFY') == 'Y') {                
+            $pm_popup_disabled_pages = array('admin.php', 'discussion.php', 'index.php',
+                                             'pm.php', 'pm_edit.php', 'pm_folders.php',
+                                             'pm_messages.php', 'start.php', 'user.php');
+
+            // Check that we're not on one of the pages.
+
+            if (!in_array(basename($_SERVER['PHP_SELF']), $pm_popup_disabled_pages)) {
+
+                // Get the new pm count and waiting pm count.
+                
+                pm_new_check($pm_new_count, $pm_outbox_count);
+
+                // Format the popup message.
 
                 $pm_notification = false;
 

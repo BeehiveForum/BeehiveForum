@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.194 2007-05-13 21:23:17 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.195 2007-05-14 21:16:39 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -77,18 +77,20 @@ function pm_enabled()
 * @param integer $mid - Message ID
 */
 
-function pm_markasread($mid)
+function pm_mark_as_read($mid)
 {
-    $db_pm_markasread = db_connect();
+    $db_pm_mark_as_read = db_connect();
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (!is_numeric($mid)) return false;
 
-    $sql = "UPDATE PM SET TYPE = ". PM_READ. ", NOTIFIED = 1 ";
+    $pm_read = PM_READ;
+
+    $sql = "UPDATE PM SET TYPE = '$pm_read', NOTIFIED = 1 ";
     $sql.= "WHERE MID = '$mid' AND TO_UID = '$uid'";
 
-    if (!$result = db_query($sql, $db_pm_markasread)) return false;
+    if (!$result = db_query($sql, $db_pm_mark_as_read)) return false;
 }
 
 /**
@@ -971,23 +973,30 @@ function pm_message_get($mid)
 
         if ($pm_message_array = db_fetch_array($result, DB_RESULT_ASSOC)) {
 
-            if (isset($pm_message_array['PFNICK'])) {
-                if (!is_null($pm_message_array['PFNICK']) && strlen($pm_message_array['PFNICK']) > 0) {
-                    $pm_message_array['FNICK'] = $pm_message_array['PFNICK'];
+            if ($folder = pm_message_get_folder($mid, $pm_message_array['TYPE'])) {
+
+                if (isset($pm_message_array['PFNICK'])) {
+                    if (!is_null($pm_message_array['PFNICK']) && strlen($pm_message_array['PFNICK']) > 0) {
+                        $pm_message_array['FNICK'] = $pm_message_array['PFNICK'];
+                    }
                 }
-            }
 
-            if (isset($pm_message_array['PTNICK'])) {
-                if (!is_null($pm_message_array['PTNICK']) && strlen($pm_message_array['PTNICK']) > 0) {
-                    $pm_message_array['TNICK'] = $pm_message_array['PTNICK'];
+                if (isset($pm_message_array['PTNICK'])) {
+                    if (!is_null($pm_message_array['PTNICK']) && strlen($pm_message_array['PTNICK']) > 0) {
+                        $pm_message_array['TNICK'] = $pm_message_array['PTNICK'];
+                    }
                 }
-            }
 
-            if ($aid = pm_has_attachments($mid)) {
-                $pm_message_array['AID'] = $aid;
-            }
+                if (($pm_message_array['TO_UID'] == $uid) && ($pm_message_array['TYPE'] == PM_UNREAD) && ($folder == PM_FOLDER_INBOX)) {
+                    pm_mark_as_read($mid);
+                }
 
-            return $pm_message_array;
+                if ($aid = pm_has_attachments($mid)) {
+                    $pm_message_array['AID'] = $aid;
+                }
+
+                return $pm_message_array;
+            }
         }
     }
 
@@ -1234,7 +1243,7 @@ function pm_display_html_export($pm_message_array, $folder)
     return word_filter_rem_ob_tags($pm_message_html);
 }
 
-function pm_message_get_folder($mid)
+function pm_message_get_folder($mid, $type = 0)
 {
     $db_pm_message_get_folder = db_connect();
 
@@ -1249,6 +1258,12 @@ function pm_message_get_folder($mid)
                                    16 => PM_FOLDER_SAVED,
                                    32 => PM_FOLDER_SAVED,
                                    64 => PM_FOLDER_DRAFTS);
+
+    // Check the passed type before doing a query.
+
+    if (in_array($type, array_keys($pm_message_type_array), true)) {
+        return $pm_message_type_array[$type];
+    }
 
     // Fetch the message type as specified by the MID
 

@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forums.php,v 1.72 2007-05-13 21:23:17 decoyduck Exp $ */
+/* $Id: forums.php,v 1.73 2007-05-15 16:21:47 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -286,11 +286,11 @@ if (!user_is_guest()) {
 
             if (isset($forum['INTEREST']) && $forum['INTEREST'] == 1) {
                 
-                echo "                  <td align=\"left\" width=\"1%\">", form_submit_image('forum_rem_fav.png', "rem_fav[{$forum['FID']}]", "{$lang['removefromfavourites']}", "title=\"{$lang['removefromfavourites']}\""), "</td>\n";
+                echo "                  <td align=\"center\" width=\"1%\">", form_submit_image('forum_rem_fav.png', "rem_fav[{$forum['FID']}]", "{$lang['removefromfavourites']}", "title=\"{$lang['removefromfavourites']}\""), "</td>\n";
 
             }else {
 
-                echo "                  <td align=\"left\" width=\"1%\">", form_submit_image('forum_add_fav.png', "add_fav[{$forum['FID']}]", "{$lang['addtofavourites']}", "title=\"{$lang['addtofavourites']}\""), "</td>\n";
+                echo "                  <td align=\"center\" width=\"1%\">", form_submit_image('forum_add_fav.png', "add_fav[{$forum['FID']}]", "{$lang['addtofavourites']}", "title=\"{$lang['addtofavourites']}\""), "</td>\n";
             }
 
             if (isset($final_uri) && strlen($final_uri) > 0) {
@@ -330,11 +330,11 @@ if (!user_is_guest()) {
 
             if (isset($forum['INTEREST']) && $forum['INTEREST'] > -1) {
                 
-                echo "                  <td align=\"left\" width=\"1%\">", form_submit_image('forum_hide.png', "ignore_forum[{$forum['FID']}]", "{$lang['ignoreforum']}", "title=\"{$lang['ignoreforum']}\""), "</td>\n";
+                echo "                  <td align=\"center\" width=\"1%\">", form_submit_image('forum_hide.png', "ignore_forum[{$forum['FID']}]", "{$lang['ignoreforum']}", "title=\"{$lang['ignoreforum']}\""), "</td>\n";
 
             }else {
 
-                echo "                  <td align=\"left\" width=\"1%\">", form_submit_image('forum_show.png', "unignore_forum[{$forum['FID']}]", "{$lang['unignoreforum']}", "title=\"{$lang['unignoreforum']}\""), "</td>\n";
+                echo "                  <td align=\"center\" width=\"1%\">", form_submit_image('forum_show.png', "unignore_forum[{$forum['FID']}]", "{$lang['unignoreforum']}", "title=\"{$lang['unignoreforum']}\""), "</td>\n";
             }
 
             echo "                </tr>\n";
@@ -462,7 +462,7 @@ if (!user_is_guest()) {
         foreach ($forums_array['forums_array'] as $forum) {
 
             echo "                <tr>\n";
-            echo "                  <td align=\"left\" width=\"1%\">", form_submit_image('forum_add_fav.png', "add_fav[{$forum['FID']}]", "{$lang['addtofavourites']}", "title=\"{$lang['addtofavourites']}\""), "</td>\n";
+            echo "                  <td align=\"center\" width=\"1%\">", form_submit_image('forum_add_fav.png', "add_fav[{$forum['FID']}]", "{$lang['addtofavourites']}", "title=\"{$lang['addtofavourites']}\""), "</td>\n";
             echo "                  <td align=\"left\" width=\"25%\" valign=\"top\">\n";
 
             if (isset($final_uri) && strlen($final_uri) > 0) {
@@ -474,7 +474,7 @@ if (!user_is_guest()) {
             echo "                  </td>\n";
             echo "                  <td align=\"left\" width=\"20%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">", sprintf($lang['forummessages'], number_format($forum['MESSAGES'], 0, ".", ",")), "</a></td>\n";
             echo "                  <td align=\"left\" width=\"20%\" valign=\"top\">&nbsp;</td>\n";
-            echo "                  <td align=\"left\" width=\"1%\">", form_submit_image('forum_hide.png', "ignore_forum[{$forum['FID']}]", "{$lang['ignoreforum']}", "title=\"{$lang['ignoreforum']}\""), "</td>\n";
+            echo "                  <td align=\"center\" width=\"1%\">", form_submit_image('forum_hide.png', "ignore_forum[{$forum['FID']}]", "{$lang['ignoreforum']}", "title=\"{$lang['ignoreforum']}\""), "</td>\n";
             echo "                </tr>\n";
         }
 
@@ -603,11 +603,11 @@ if (isset($webtag_search) && strlen($webtag_search) > 0) {
 
             if ((isset($forum['INTEREST']) && $forum['INTEREST'] == 1) || user_is_guest()) {
                 
-                echo "                  <td align=\"left\" width=\"1%\">", form_submit_image('forum_rem_fav.png', "rem_fav[{$forum['FID']}]", "{$lang['removefromfavourites']}", "title=\"{$lang['removefromfavourites']}\""), "</td>\n";
+                echo "                  <td align=\"center\" width=\"1%\">", form_submit_image('forum_rem_fav.png', "rem_fav[{$forum['FID']}]", "{$lang['removefromfavourites']}", "title=\"{$lang['removefromfavourites']}\""), "</td>\n";
 
             }else {
 
-                echo "                  <td align=\"left\" width=\"1%\">", form_submit_image('forum_add_fav.png', "add_fav[{$forum['FID']}]", "{$lang['addtofavourites']}", "title=\"{$lang['addtofavourites']}\""), "</td>\n";
+                echo "                  <td align=\"center\" width=\"1%\">", form_submit_image('forum_add_fav.png', "add_fav[{$forum['FID']}]", "{$lang['addtofavourites']}", "title=\"{$lang['addtofavourites']}\""), "</td>\n";
             }
 
             if (isset($final_uri) && strlen($final_uri) > 0) {
@@ -644,11 +644,11 @@ if (isset($webtag_search) && strlen($webtag_search) > 0) {
 
             if (isset($forum['INTEREST']) && $forum['INTEREST'] > -1) {
                 
-                echo "                  <td align=\"left\" width=\"1%\">", form_submit_image('forum_hide.png', "ignore_forum[{$forum['FID']}]", "{$lang['ignoreforum']}", "title=\"{$lang['ignoreforum']}\""), "</td>\n";
+                echo "                  <td align=\"center\" width=\"1%\">", form_submit_image('forum_hide.png', "ignore_forum[{$forum['FID']}]", "{$lang['ignoreforum']}", "title=\"{$lang['ignoreforum']}\""), "</td>\n";
 
             }else {
 
-                echo "                  <td align=\"left\" width=\"1%\">", form_submit_image('forum_show.png', "unignore_forum[{$forum['FID']}]", "{$lang['unignoreforum']}", "title=\"{$lang['unignoreforum']}\""), "</td>\n";
+                echo "                  <td align=\"center\" width=\"1%\">", form_submit_image('forum_show.png', "unignore_forum[{$forum['FID']}]", "{$lang['unignoreforum']}", "title=\"{$lang['unignoreforum']}\""), "</td>\n";
             }
 
             echo "                </tr>\n";

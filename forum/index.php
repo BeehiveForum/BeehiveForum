@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.138 2007-05-13 21:58:15 decoyduck Exp $ */
+/* $Id: index.php,v 1.139 2007-05-15 16:21:47 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -73,7 +73,12 @@ if (bh_session_user_banned()) {
     exit;
 }
 
-// We embed the light mode in index.php
+// Check to see if we have an active session
+
+$session_active = bh_session_active();
+$logon_failed = isset($_COOKIE['bh_logon_failed']);
+
+// Embedded light mode in this script.
 
 define('BEEHIVE_LIGHT_INCLUDE', 1);
 
@@ -88,11 +93,6 @@ $lang = load_language_file();
 // Top frame filename
 
 $top_html = html_get_top_page();
-
-// Check to see if we have an active session
-
-$session_active = bh_session_active();
-$logon_failed = isset($_COOKIE['bh_logon_failed']);
 
 // Clear the logon cookie
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.140 2007-05-13 21:58:15 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.141 2007-05-15 16:21:47 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -52,13 +52,11 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "user_rel.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
-function light_html_draw_top ($title = false, $override_frames = false)
+function light_html_draw_top($title = false)
 {
     $lang = load_language_file();
 
-    if (defined('BEEHIVE_LIGHT_INCLUDE') && $override_frames === false) {
-        return false;
-    }
+    if (defined('BEEHIVE_LIGHT_INCLUDE')) return false;
 
     if (!isset($title) || !$title) {
         $title = forum_get_setting('forum_name', false, 'A Beehive Forum');
@@ -106,11 +104,9 @@ function light_html_draw_top ($title = false, $override_frames = false)
     echo "<body>\n";
 }
 
-function light_html_draw_bottom ()
+function light_html_draw_bottom()
 {
-    if (defined('BEEHIVE_LIGHT_INCLUDE') && $override_frames === false) {
-        return false;
-    }
+    if (defined('BEEHIVE_LIGHT_INCLUDE')) return false;
 
     echo "</body>\n";
     echo "</html>\n";

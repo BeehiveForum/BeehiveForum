@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-04-to-05.php,v 1.48 2007-04-21 18:26:25 decoyduck Exp $ */
+/* $Id: upgrade-04-to-05.php,v 1.49 2007-05-15 22:13:17 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-04-to-05.php") {
 
@@ -1381,10 +1381,15 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
             $word_count = 0;
 
             $sql = "LOAD DATA INFILE '$dictionary_file' INTO TABLE DICTIONARY ";
-            $sql.= "FIELDS TERMINATED BY '\t' LINES TERMINATED BY '\n' ";
+            $sql.= "FIELDS TERMINATED BY '\\t' LINES TERMINATED BY '\\n' ";
             $sql.= "(WORD, SOUND)";
 
             if (!$result = @db_query($sql, $db_install)) {
+
+                // We're running in CGI mode or we failed to perform LOAD DATA
+                // INFILE. Possible reasons including MySQL not being able to
+                // find the file or permission denied. To continue we now
+                // process the dictionary script using PHP.
 
                 if ($fp = @fopen($dictionary_file, 'r')) {
 
@@ -1400,7 +1405,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
                         $sql = "INSERT INTO DICTIONARY (WORD, SOUND, UID) ";
                         $sql.= "VALUES ('$word', '$metaphone', 0)";
 
-                        if (!$result = @db_query($sql, $db_install)) {
+                        if (!$result = db_query($sql, $db_install)) {
 
                             $valid = false;
                             return;
@@ -1408,7 +1413,9 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
                         $word_count++;
 
-                        if (($word_count % 5) == 0) {
+                        if ($word_count == 500) {
+
+                            $word_count = 0;
                             install_flush_buffer();
                         }
                     }

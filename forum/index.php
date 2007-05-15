@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.139 2007-05-15 16:21:47 decoyduck Exp $ */
+/* $Id: index.php,v 1.140 2007-05-15 22:13:16 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -149,11 +149,11 @@ if ($session_active && !$logon_failed) {
 
             if ($start_page = bh_session_get_value('START_PAGE')) {
 
-                if ($start_page == 1) {
+                if ($start_page == START_PAGE_MESSAGES) {
                     $final_uri = "./discussion.php?webtag=$webtag";
-                }elseif ($start_page == 2) {
+                }elseif ($start_page == START_PAGE_INBOX) {
                     $final_uri = "./pm.php?webtag=$webtag";
-                }elseif ($start_page == 3) {
+                }elseif ($start_page == START_PAGE_THREAD_LIST) {
                     $final_uri = "./start.php?webtag=$webtag&left=threadlist";
                 }else {
                     $final_uri = "./start.php?webtag=$webtag";

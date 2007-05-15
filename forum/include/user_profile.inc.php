@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.62 2007-05-06 20:33:43 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.63 2007-05-15 22:13:17 decoyduck Exp $ */
 
 /**
 * Functions relating to users interacting with profiles
@@ -118,12 +118,12 @@ function user_get_profile($uid)
 
         $user_profile = db_fetch_array($result);
 
-        if (isset($user_profile['FORUM_ANON_LOGON']) && $user_profile['FORUM_ANON_LOGON'] > 0) {
+        if (isset($user_profile['FORUM_ANON_LOGON']) && $user_profile['FORUM_ANON_LOGON'] > USER_ANON_DISABLED) {
             $anon_logon = $user_profile['FORUM_ANON_LOGON'];
-        }elseif (isset($user_profile['GLOBAL_ANON_LOGON']) && $user_profile['GLOBAL_ANON_LOGON'] > 0) {
+        }elseif (isset($user_profile['GLOBAL_ANON_LOGON']) && $user_profile['GLOBAL_ANON_LOGON'] > USER_ANON_DISABLED) {
             $anon_logon = $user_profile['GLOBAL_ANON_LOGON'];
         }else {
-            $anon_logon = 0;
+            $anon_logon = USER_ANON_DISABLED;
         }
 
         if ($anon_logon == 0 && isset($user_profile['LAST_VISIT']) && $user_profile['LAST_VISIT'] > 0) {
@@ -150,15 +150,15 @@ function user_get_profile($uid)
             $user_profile['USER_TIME_TOTAL'] = $lang['unknown'];
         }
 
-        if (isset($user_prefs['DOB_DISPLAY']) && $user_prefs['DOB_DISPLAY'] == 2 && !empty($user_prefs['DOB']) && $user_prefs['DOB'] != "0000-00-00") {
+        if (isset($user_prefs['DOB_DISPLAY']) && $user_prefs['DOB_DISPLAY'] == USER_DOB_DISPLAY_DATE && !empty($user_prefs['DOB']) && $user_prefs['DOB'] != "0000-00-00") {
             $user_profile['DOB'] = format_birthday($user_prefs['DOB']);
         }
 
-        if (isset($user_prefs['DOB_DISPLAY']) && $user_prefs['DOB_DISPLAY'] == 3 && !empty($user_prefs['DOB']) && $user_prefs['DOB'] != "0000-00-00") {
+        if (isset($user_prefs['DOB_DISPLAY']) && $user_prefs['DOB_DISPLAY'] == USER_DOB_DISPLAY_BOTH && !empty($user_prefs['DOB']) && $user_prefs['DOB'] != "0000-00-00") {
             $user_profile['DOB'] = format_birthday($user_prefs['DOB']);
         }
 
-        if (isset($user_prefs['DOB_DISPLAY']) && $user_prefs['DOB_DISPLAY'] > 0 && $user_prefs['DOB_DISPLAY'] < 3 && !empty($user_prefs['DOB']) && $user_prefs['DOB'] != "0000-00-00") {
+        if (isset($user_prefs['DOB_DISPLAY']) && $user_prefs['DOB_DISPLAY'] > USER_DOB_DISPLAY_NONE && $user_prefs['DOB_DISPLAY'] < USER_DOB_DISPLAY_BOTH && !empty($user_prefs['DOB']) && $user_prefs['DOB'] != "0000-00-00") {
             $user_profile['AGE'] = format_age($user_prefs['DOB']);
         }
 

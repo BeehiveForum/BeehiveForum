@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.114 2007-05-09 14:50:42 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.115 2007-05-15 22:13:16 decoyduck Exp $ */
 
 /**
 * Displays and handles the Forum Settings page
@@ -486,22 +486,22 @@ if (!isset($forum_settings['access_level']) || $forum_settings['access_level'] >
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"220\">{$lang['forumaccessstatus']}:</td>\n";
-    echo "                        <td align=\"left\">", form_radio("access_level", 0, $lang['open'], (isset($forum_settings['access_level']) && $forum_settings['access_level'] == 0 ? true : false)), "</td>\n";
+    echo "                        <td align=\"left\">", form_radio("access_level", FORUM_UNRESTRICTED, $lang['open'], (isset($forum_settings['access_level']) && $forum_settings['access_level'] == FORUM_UNRESTRICTED ? true : false)), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"220\">&nbsp;</td>\n";
-    echo "                        <td align=\"left\">", form_radio("access_level", -1, $lang['closed'], (isset($forum_settings['access_level']) && $forum_settings['access_level'] == -1 ? true : false)), "</td>\n";
+    echo "                        <td align=\"left\">", form_radio("access_level", FORUM_CLOSED, $lang['closed'], (isset($forum_settings['access_level']) && $forum_settings['access_level'] == FORUM_CLOSED ? true : false)), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"220\">&nbsp;</td>\n";
-    echo "                        <td align=\"left\">", form_radio("access_level", 1, $lang['restricted'], (isset($forum_settings['access_level']) && $forum_settings['access_level'] == 1 ? true : false)), "</td>\n";
+    echo "                        <td align=\"left\">", form_radio("access_level", FORUM_RESTRICTED, $lang['restricted'], (isset($forum_settings['access_level']) && $forum_settings['access_level'] == FORUM_RESTRICTED ? true : false)), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"220\">&nbsp;</td>\n";
-    echo "                        <td align=\"left\">", form_radio("access_level", 2, $lang['passwordprotected'], (isset($forum_settings['access_level']) && $forum_settings['access_level'] == 2 ? true : false)), "</td>\n";
+    echo "                        <td align=\"left\">", form_radio("access_level", FORUM_PASSWD_PROTECTED, $lang['passwordprotected'], (isset($forum_settings['access_level']) && $forum_settings['access_level'] == FORUM_PASSWD_PROTECTED ? true : false)), "</td>\n";
     echo "                      </tr>\n";
 
-    if ($forum_settings['access_level'] == 1) {
+    if ($forum_settings['access_level'] == FORUM_RESTRICTED) {
 
         echo "                      <tr>\n";
         echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -515,7 +515,7 @@ if (!isset($forum_settings['access_level']) || $forum_settings['access_level'] >
         echo "                        <td align=\"left\">&nbsp;</td>\n";
         echo "                      </tr>\n";
 
-    }elseif ($forum_settings['access_level'] == 2) {
+    }elseif ($forum_settings['access_level'] == FORUM_PASSWD_PROTECTED) {
 
         if (!forum_get_password($forum_settings['fid'])) {
 

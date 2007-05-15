@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: constants.inc.php,v 1.110 2007-05-13 21:23:17 decoyduck Exp $ */
+/* $Id: constants.inc.php,v 1.111 2007-05-15 22:13:17 decoyduck Exp $ */
 
 /**
 * Constants used throughout Beehive.
@@ -54,6 +54,10 @@ define("DB_RESULT_ASSOC", 1);
 define("DB_RESULT_NUM",   2);
 define("DB_RESULT_BOTH",  3);
 
+// Constants for sort directions
+
+define('SORT_DIR_ASC', 1);
+
 // Thread list constants
 
 define('ALL_DISCUSSIONS', 0);
@@ -77,6 +81,13 @@ define('STICKY_THREADS', 17);
 define('MOST_UNREAD_POSTS', 18);
 define('SEARCH_RESULTS', 19);
 define('DELETED_THREADS', 20);
+
+// Thread Mark as Read Constants
+
+define('THREAD_MARK_READ_ALL', 0);
+define('THREAD_MARK_READ_FIFTY', 1);
+define('THREAD_MARK_READ_VISIBLE', 2);
+define('THREAD_MARK_READ_FOLDER', 3);
 
 // Constants for user permissions
 
@@ -126,6 +137,24 @@ define("USER_IGNORED", 2);
 define("USER_IGNORED_SIG", 4);
 define("USER_IGNORED_COMPLETELY", 8);
 
+// Profile Privacy Constants
+
+define('PROFILE_ITEM_PUBLIC', 0);
+define('PROFILE_ITEM_PRIVATE', 1);
+
+// Constants for DOB Display
+
+define('USER_DOB_DISPLAY_NONE', 0);
+define('USER_DOB_DISPLAY_AGE',  1);
+define('USER_DOB_DISPLAY_DATE', 2);
+define('USER_DOB_DISPLAY_BOTH', 3);
+
+// Constants for user anonymity
+
+define('USER_ANON_DISABLED', 0);
+define('USER_ANON_ENABLED', 1);
+define('USER_ANON_FRIENDS_ONLY', 2);
+
 // Constants for error handler
 
 define("BH_DB_CONNECT_ERROR", 32767);
@@ -155,6 +184,23 @@ define("POST_SIGNATURE_DISPLAY", 128);
 define("POST_CHECK_SPELLING", 256);
 define("POST_TINYMCE_DISPLAY", 512);
 
+// Constants for post page HTML in message
+
+define('POST_HTML_DISABLED', 0);
+define('POST_HTML_AUTO', 1);
+define('POST_HTML_ENABLED', 2);
+
+// Constants for post toolbar display
+
+define('POST_TOOLBAR_DISABLED', 0);
+define('POST_TOOLBAR_SIMPLE', 1);
+define('POST_TOOLBAR_TINYMCE', 2);
+
+// Constants for recipient type
+
+define('POST_RADIO_FRIENDS', 0);
+define('POST_RADIO_OTHERS', 1);
+
 // Thread Constants
 
 define("THREAD_IGNORED", -1);
@@ -162,9 +208,78 @@ define("THREAD_NOINTEREST", 0);
 define("THREAD_INTERESTED", 1);
 define("THREAD_SUBSCRIBED", 2);
 
-// Poll Constants
+// Thread Admin Constants
 
-define("POLL_MULTIVOTE", 2);
+define('THREAD_ADMIN_LOCK_DISABLED', 0);
+define('THREAD_ADMIN_LOCK_ENABLED', 1);
+
+// Forum Interest Constants
+
+define('FORUM_IGNORED', -1);
+define('FORUM_NOINTEREST', 0);
+define('FORUM_FAVOURITE', 1);
+
+// Folder Constants
+
+define("FOLDER_IGNORED", -1);
+define("FOLDER_NOINTEREST", 0);
+
+// Forum Access Level Constants
+
+define('FORUM_CLOSED', -1);
+define('FORUM_UNRESTRICTED', 0);
+define('FORUM_RESTRICTED', 1);
+define('FORUM_PASSWD_PROTECTED', 2);
+
+// Forum User access constants
+
+define('FORUM_USER_DENIED', 0);
+define('FORUM_USER_ALLOWED', 1);
+
+// Poll closting constants
+
+define('POLL_CLOSE_ONE_DAY', 0);
+define('POLL_CLOSE_THREE_DAYS', 1);
+define('POLL_CLOSE_SEVEN_DAYS', 2);
+define('POLL_CLOSE_THIRTY_DAYS', 3);
+define('POLL_CLOSE_NEVER', 4);
+
+// Poll voting types
+
+define("POLL_VOTE_ANON", 0);
+define("POLL_VOTE_PUBLIC", 1);
+
+// Poll constants for vote changing
+
+define('POLL_VOTE_CANNOT_CHANGE', 0);
+define('POLL_VOTE_CAN_CHANGE', 1);
+define("POLL_VOTE_MULTI", 2);
+
+// Poll View constants
+
+define("POLL_VIEW_TYPE_OPTION", 0);
+define("POLL_VIEW_TYPE_USER", 1);
+
+// Poll type constants
+
+define('POLL_HORIZONTAL_GRAPH', 0);
+define('POLL_VERTICAL_GRAPH', 1);
+define('POLL_TABLE_GRAPH', 2);
+
+// Poll option types
+
+define('POLL_OPTIONS_RADIOS', 0);
+define('POLL_OPTIONS_DROPDOWN', 1);
+
+// Poll Guest options
+
+define('POLL_GUEST_ALLOWED', 1);
+define('POLL_GUEST_DENIED', 0);
+
+// Poll results showing
+
+define('POLL_SHOW_RESULTS', 1);
+define('POLL_HIDE_RESULTS', 0);
 
 // PM Constants
 
@@ -275,6 +390,10 @@ define("DELETE_FORUM_LINKS", 63);
 define("EDIT_TOP_LINK_CAPTION", 64);
 define("EDIT_FOLDER", 65);
 
+// Link viewmode constants
+
+define('LINKS_VIEW_HIERARCHICAL', 0);
+define('LINKS_VIEW_LIST', 1);
 
 // Error codes for Text Captcha
 
@@ -325,6 +444,11 @@ define('THREAD_SPLIT_THREAD_ERROR', 3);
 define('THREAD_SPLIT_POST_ERROR', 4);
 define('THREAD_SPLIT_CREATE_ERROR', 5);
 
+// Thread Delete constants
+
+define('THREAD_DELETE_PERMENANT', 0);
+define('THREAD_DELETE_NON_PERMENANT', 1);
+
 // Ban type constants
 
 define('BAN_TYPE_IP', 1);
@@ -338,6 +462,36 @@ define('BAN_TYPE_REF', 5);
 define('SEARCH_POPUP_TYPE_USER', 1);
 define('SEARCH_POPUP_TYPE_THREAD', 2);
 
+// Search From Periods
+
+define('SEARCH_FROM_TODAY', 1);
+define('SEARCH_FROM_YESTERDAY', 2);
+define('SEARCH_FROM_DAYBEFORE', 3);
+define('SEARCH_FROM_ONE_WEEK_AGO', 4);
+define('SEARCH_FROM_TWO_WEEKS_AGO', 5);
+define('SEARCH_FROM_THREE_WEEKS_AGO', 6);
+define('SEARCH_FROM_ONE_MONTH_AGO', 7);
+define('SEARCH_FROM_TWO_MONTHS_AGO', 8);
+define('SEARCH_FROM_THREE_MONTHS_AGO', 9);
+define('SEARCH_FROM_SIX_MONTHS_AGO', 10);
+define('SEARCH_FROM_ONE_YEAR_AGO', 11);
+define('SEARCH_FROM_BEGINNING_OF_TIME', 12);
+
+// Search To Periods
+
+define('SEARCH_TO_NOW', 1);
+define('SEARCH_TO_TODAY', 2);
+define('SEARCH_TO_YESTERDAY', 3);
+define('SEARCH_TO_DAYBEFORE', 4);
+define('SEARCH_TO_ONE_WEEK_AGO', 5);
+define('SEARCH_TO_TWO_WEEKS_AGO', 6);
+define('SEARCH_TO_THREE_WEEKS_AGO', 7);
+define('SEARCH_TO_ONE_MONTH_AGO', 8);
+define('SEARCH_TO_TWO_MONTHS_AGO', 9);
+define('SEARCH_TO_THREE_MONTHS_AGO', 10);
+define('SEARCH_TO_SIX_MONTHS_AGO', 11);
+define('SEARCH_TO_ONE_YEAR_AGO', 12);
+
 // Search sort types
 
 define('SEARCH_SORT_CREATED', 1);
@@ -345,10 +499,34 @@ define('SEARCH_SORT_NUM_REPLIES', 2);
 define('SEARCH_SORT_FOLDER_NAME', 3);
 define('SEARCH_SORT_AUTHOR_NAME', 4);
 
+// Search User include types
+
+define('SEARCH_USER_FROM', 1);
+define('SEARCH_USER_TO', 2);
+define('SEARCH_USER_BOTH', 3);
+
+// Search Thread Grouping
+
+define('SEARCH_GROUP_NONE', 0);
+define('SEARCH_GROUP_THREADS', 1);
+
 // My Forums view types
 
 define('FORUMS_SHOW_IGNORED', -1);
 define('FORUMS_SHOW_ALL', 0);
 define('FORUMS_SHOW_FAVS', 1);
+
+// Word Filter
+
+define('WORD_FILTER_TYPE_ALL', 0);
+define('WORD_FILTER_TYPE_WHOLE_WORD', 1);
+define('WORD_FILTER_TYPE_PREG', 2);
+
+// Start Page
+
+define('START_PAGE_MESSAGES', 1);
+define('START_PAGE_INBOX', 2);
+define('START_PAGE_THREAD_LIST', 3);
+define('START_PAGE_NORMAL', 4);
 
 ?>

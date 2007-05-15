@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.169 2007-05-09 14:50:42 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.170 2007-05-15 22:13:16 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -267,9 +267,9 @@ if (isset($t_rmid) && $t_rmid > 0) {
             $t_recipient_list = $pm_data['RECIPIENTS'];
 
             if (strlen($t_recipient_list) > 0) {
-                $to_radio = 1;
+                $to_radio = POST_RADIO_OTHERS;
             }elseif ($t_to_uid > 0) {
-                $to_radio = 0;
+                $to_radio = POST_RADIO_FRIENDS;
             }
 
             $aid = $pm_data['AID'];
@@ -366,7 +366,7 @@ if (isset($_POST['emots_toggle_x']) || isset($_POST['emots_toggle_y'])) {
     if (isset($_POST['to_radio']) && is_numeric($_POST['to_radio'])) {
         $to_radio = $_POST['to_radio'];
     }else {
-        $to_radio = 1;
+        $to_radio = POST_RADIO_OTHERS;
     }
 
     if (isset($_POST['t_to_uid']) && is_numeric($_POST['t_to_uid'])) {
@@ -418,7 +418,7 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
     if (isset($_POST['to_radio']) && is_numeric($_POST['to_radio'])) {
         $to_radio = $_POST['to_radio'];
     }else {
-        $to_radio = 1;
+        $to_radio = POST_RADIO_OTHERS;
     }
 
     if (isset($_POST['t_to_uid']) && is_numeric($_POST['t_to_uid'])) {
@@ -427,7 +427,7 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
         $t_to_uid = 0;
     }
 
-    if ($to_radio == 0 && $t_to_uid == 0) {
+    if ($to_radio == POST_RADIO_FRIENDS && $t_to_uid == 0) {
 
         $error_html.= "<h2>{$lang['mustspecifyrecipient']}</h2>\n";
         $valid = false;
@@ -456,7 +456,7 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
                         $t_new_recipient_array['NICK'][]   = $to_user['NICKNAME'];
                     }
 
-                    if ($to_radio == 1) {
+                    if ($to_radio == POST_RADIO_OTHERS) {
 
                         if (user_allow_pm($to_user['UID']) || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, 0)) {
 
@@ -489,7 +489,7 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
             $t_recipient_list = trim(_stripslashes($_POST['t_recipient_list']));
         }
 
-        if ($to_radio == 1) {
+        if ($to_radio == POST_RADIO_OTHERS) {
 
             if ($valid && sizeof($t_new_recipient_array['TO_UID']) > 10) {
 
@@ -504,7 +504,7 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
             }
         }
 
-    }elseif ($valid && $to_radio == 1) {
+    }elseif ($valid && $to_radio == POST_RADIO_OTHERS) {
 
         $error_html.= "<h2>{$lang['mustspecifyrecipient']}</h2>\n";
         $valid = false;
@@ -538,7 +538,7 @@ if (isset($_POST['save'])) {
     if (isset($_POST['to_radio']) && is_numeric($_POST['to_radio'])) {
         $to_radio = $_POST['to_radio'];
     }else {
-        $to_radio = 1;
+        $to_radio = POST_RADIO_OTHERS;
     }
 
     if (isset($_POST['t_to_uid']) && is_numeric($_POST['t_to_uid'])) {
@@ -700,7 +700,7 @@ if ($valid && isset($_POST['submit'])) {
 
     if (check_ddkey($_POST['t_dedupe'])) {
 
-        if (isset($to_radio) && $to_radio == 0) {
+        if (isset($to_radio) && $to_radio == POST_RADIO_FRIENDS) {
 
             if ($new_mid = pm_send_message($t_to_uid, $uid, $t_subject, $t_content, $aid)) {
 
@@ -776,7 +776,7 @@ if ($valid && isset($_POST['preview'])) {
     echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">{$lang['messagepreview']}</td>\n";
     echo "                </tr>\n";
 
-    if (isset($to_radio) && $to_radio == 0) {
+    if (isset($to_radio) && $to_radio == POST_RADIO_FRIENDS) {
 
         $preview_tuser = user_get($t_to_uid);
 
@@ -861,13 +861,13 @@ if ($friends_array = pm_user_get_friends()) {
     }
 
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", form_radio("to_radio", 0, $lang['friends'], (isset($to_radio) && $to_radio == 0)), "</td>\n";
+    echo "                        <td align=\"left\">", form_radio("to_radio", POST_RADIO_FRIENDS, $lang['friends'], (isset($to_radio) && $to_radio == POST_RADIO_FRIENDS)), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">", form_dropdown_array("t_to_uid", $friends_array, (isset($t_to_uid) ? $t_to_uid : 0), "onclick=\"checkToRadio(0)\"", "to_uid_dropdown"), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", form_radio("to_radio", 1, $lang['others'], (isset($to_radio) && $to_radio == 1) ? true : (!isset($to_radio))), "</td>\n";
+    echo "                        <td align=\"left\">", form_radio("to_radio", POST_RADIO_OTHERS, $lang['others'], (isset($to_radio) && $to_radio == POST_RADIO_OTHERS) ? true : (!isset($to_radio))), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" nowrap=\"nowrap\"><div class=\"bhinputsearch\">", form_input_text("t_recipient_list", isset($t_recipient_list) ? _htmlentities($t_recipient_list) : "", 0, 0, "title=\"{$lang['recipienttiptext']}\" onclick=\"checkToRadio(1)\"", "recipient_list"), "<a href=\"search_popup.php?webtag=$webtag&amp;type=1&amp;obj_name=t_recipient_list\" onclick=\"return openRecipientSearch('$webtag', 't_recipient_list');\"><img src=\"", style_image('search_button.png'), "\" alt=\"{$lang['search']}\" title=\"{$lang['search']}\" border=\"0\" class=\"search_button\" /></a></div></td>\n";
@@ -996,9 +996,9 @@ if ($allow_html == true) {
 
         $tph_radio = $post->getHTML();
 
-        echo form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == 0, "tabindex=\"6\"")." \n";
-        echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 1)." \n";
-        echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 2)." \n";
+        echo form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == POST_HTML_DISABLED, "tabindex=\"6\"")." \n";
+        echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == POST_HTML_AUTO)." \n";
+        echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == POST_HTML_ENABLED)." \n";
 
         if (($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
                 echo $tools->assign_checkbox("t_post_html[1]", "t_post_html[0]");

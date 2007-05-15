@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.75 2007-05-06 20:33:43 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.76 2007-05-15 22:13:17 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -166,20 +166,20 @@ function get_active_users()
 
     while ($row = db_fetch_array($result)) {
 
-        if (isset($row['ANON_LOGON']) && $row['ANON_LOGON'] > 0) {
+        if (isset($row['ANON_LOGON']) && $row['ANON_LOGON'] > USER_ANON_DISABLED) {
             $anon_logon = $row['ANON_LOGON'];
-        }elseif (isset($row['ANON_LOGON_GLOBAL']) && $row['ANON_LOGON_GLOBAL'] > 0) {
+        }elseif (isset($row['ANON_LOGON_GLOBAL']) && $row['ANON_LOGON_GLOBAL'] > USER_ANON_DISABLED) {
             $anon_logon = $row['ANON_LOGON_GLOBAL'];
         }else {
-            $anon_logon = 0;
+            $anon_logon = USER_ANON_DISABLED;
         }
 
         if (!isset($row['USER_RELATIONSHIP'])) {
-            $row['USER_RELATIONSHIP'] = 0;
+            $row['USER_RELATIONSHIP'] = USER_NORMAL;
         }
 
         if (!isset($row['PEER_RELATIONSHIP'])) {
-            $row['PEER_RELATIONSHIP'] = 0;
+            $row['PEER_RELATIONSHIP'] = USER_NORMAL;
         }
 
         if (isset($row['PEER_NICKNAME'])) {
@@ -198,7 +198,7 @@ function get_active_users()
 
             unset($row);
 
-        }elseif ($anon_logon == 0 || $row['UID'] == $uid || (($row['PEER_RELATIONSHIP'] & USER_FRIEND) > 0 && $anon_logon == 2)) {
+        }elseif ($anon_logon == USER_ANON_DISABLED || $row['UID'] == $uid || (($row['PEER_RELATIONSHIP'] & USER_FRIEND) > 0 && $anon_logon == USER_ANON_FRIENDS_ONLY)) {
 
             $stats['USERS'][$row['UID']] = array('UID'          => $row['UID'],
                                                  'LOGON'        => $row['LOGON'],

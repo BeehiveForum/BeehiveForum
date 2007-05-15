@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.141 2007-05-15 16:21:47 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.142 2007-05-15 22:13:17 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -293,7 +293,7 @@ function light_draw_thread_list($mode = 0, $folder = false, $start_from = 0)
         $ignored_folders = array();
 
         while (list($fid, $folder_data) = each($folder_info)) {
-            if ($folder_data['INTEREST'] == 0 || (isset($selected_folder) && $selected_folder == $fid)) {
+            if ($folder_data['INTEREST'] == FOLDER_NOINTEREST || (isset($selected_folder) && $selected_folder == $fid)) {
                 if ((!in_array($fid, $folder_order)) && (!in_array($fid, $ignored_folders))) $folder_order[] = $fid;
             }else {
                 if ((!in_array($fid, $folder_order)) && (!in_array($fid, $ignored_folders))) $ignored_folders[] = $fid;
@@ -319,7 +319,7 @@ function light_draw_thread_list($mode = 0, $folder = false, $start_from = 0)
         echo "<p>{$lang['nomessagesinthiscategory']} <a href=\"lthread_list.php?webtag=$webtag&amp;mode=0\">{$lang['clickhere']}</a> {$lang['forallthreads']}.</p>\n";
     }
 
-    if ($start_from != 0 && $mode == 0 && !isset($folder)) echo "<p><a href=\"lthread_list.php?webtag=$webtag&amp;mode=0&amp;start_from=".($start_from - 50)."\">{$lang['prev50threads']}</a></p>\n";
+    if ($start_from != 0 && $mode == ALL_DISCUSSIONS && !isset($folder)) echo "<p><a href=\"lthread_list.php?webtag=$webtag&amp;mode=0&amp;start_from=".($start_from - 50)."\">{$lang['prev50threads']}</a></p>\n";
 
     // Iterate through the information we've just got and display it in the right order
 
@@ -329,7 +329,7 @@ function light_draw_thread_list($mode = 0, $folder = false, $start_from = 0)
 
             echo "<h3><a href=\"lthread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$folder_number\">". word_filter_add_ob_tags($folder_info[$folder_number]['TITLE']) . "</a></h3>";
 
-            if ((!$folder_info[$folder_number]['INTEREST']) || ($mode == 2) || (isset($selected_folder) && $selected_folder == $folder_number)) {
+            if ((!$folder_info[$folder_number]['INTEREST']) || ($mode == UNREAD_DISCUSSIONS_TO_ME) || (isset($selected_folder) && $selected_folder == $folder_number)) {
 
                 if (is_array($thread_info)) {
 
@@ -395,11 +395,11 @@ function light_draw_thread_list($mode = 0, $folder = false, $start_from = 0)
                             echo "title=\"", sprintf($lang['threadstartedbytooltip'], $thread['TID'], word_filter_add_ob_tags(format_user_name($thread['LOGON'], $thread['NICKNAME'])), ($thread['VIEWCOUNT'] == 1) ? $lang['threadviewedonetime'] : sprintf($lang['threadviewedtimes'], $thread['VIEWCOUNT'])), "\">";
                             echo word_filter_add_ob_tags(thread_format_prefix($thread['PREFIX'], $thread['TITLE'])), "</a> ";
 
-                            if ($thread['INTEREST'] == 1) echo "<font color=\"#FF0000\">(HI)</font> ";
-                            if ($thread['INTEREST'] == 2) echo "<font color=\"#FF0000\">(Sub)</font> ";
+                            if ($thread['INTEREST'] == THREAD_INTERESTED) echo "<font color=\"#FF0000\">(HI)</font> ";
+                            if ($thread['INTEREST'] == THREAD_SUBSCRIBED) echo "<font color=\"#FF0000\">(Sub)</font> ";
                             if ($thread['POLL_FLAG'] == 'Y') echo "(P) ";
                             if ($thread['STICKY'] == 'Y') echo "(St) ";
-                            if ($thread['RELATIONSHIP']&USER_FRIEND) echo "(Fr) ";
+                            if ($thread['RELATIONSHIP'] & USER_FRIEND) echo "(Fr) ";
 
                             echo $number." ";
                             echo $thread_time." ";
@@ -443,7 +443,7 @@ function light_draw_thread_list($mode = 0, $folder = false, $start_from = 0)
         }
     }
 
-    if ($mode == 0 && !isset($folder)) {
+    if ($mode == ALL_DISCUSSIONS && !isset($folder)) {
 
         $total_threads = 0;
 
@@ -474,8 +474,8 @@ function light_draw_thread_list($mode = 0, $folder = false, $start_from = 0)
             $labels[] = $lang['visiblediscussions'];
             $selected_option = 2;
 
-            foreach ($visible_threads_array as $tid => $length) {
-                echo form_input_hidden("tid_array[$tid]", _htmlentities($length)), "\n";
+            foreach ($visible_threads_array as $tid) {
+                echo "        ", form_input_hidden("tid_array[]", _htmlentities($tid)), "\n";
             }
         }
 
@@ -664,8 +664,8 @@ function light_messages_top($msg, $thread_prefix, $thread_title, $interest_level
     echo "<h1>Full Version: <a href=\"index.php?webtag=$webtag&amp;msg=$msg\">", word_filter_add_ob_tags(thread_format_prefix($thread_prefix, $thread_title)), "</a>";
 
     if ($closed) echo "&nbsp;<font color=\"#FF0000\">({$lang['closed']})</font>\n";
-    if ($interest_level == 1) echo "&nbsp;<font color=\"#FF0000\">({$lang['highinterest']})</font>";
-    if ($interest_level == 2) echo "&nbsp;<font color=\"#FF0000\">({$lang['subscribed']})</font>";
+    if ($interest_level == THREAD_INTERESTED) echo "&nbsp;<font color=\"#FF0000\">({$lang['highinterest']})</font>";
+    if ($interest_level == THREAD_SUBSCRIBED) echo "&nbsp;<font color=\"#FF0000\">({$lang['subscribed']})</font>";
     if ($sticky == "Y") echo "&nbsp;({$lang['sticky']})";
     if ($locked) echo "&nbsp;<font color=\"#FF0000\">({$lang['locked']})</font>";
 
@@ -722,7 +722,7 @@ function light_poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list 
 
         }else {
 
-            if ($poll_data['SHOWRESULTS'] == 1) {
+            if ($poll_data['SHOWRESULTS'] == POLL_SHOW_RESULTS) {
 
                 for ($i = 0; $i < sizeof($poll_results['OPTION_ID']); $i++) {
 
@@ -1098,9 +1098,7 @@ function light_messages_nav_strip($tid,$pid,$length,$ppp)
     $webtag = get_webtag($webtag_search);
 
     // Less than 20 messages, no nav needed
-    if($pid == 1 && $length < $ppp){
-        return;
-    }
+    if ($pid == 1 && $length < $ppp) return;
 
     // Modulus to get base for links, e.g. ppp = 20, pid = 28, base = 8
     $spid = $pid % $ppp;
@@ -1317,7 +1315,7 @@ function light_threads_draw_discussions_dropdown($mode)
 {
     $lang = load_language_file();
 
-    if (bh_session_get_value('UID') == 0) {
+    if (user_is_guest()) {
 
         $labels = array($lang['alldiscussions'], $lang['todaysdiscussions'], $lang['2daysback'], $lang['7daysback']);
         return light_form_dropdown_array("mode", array(0, 3, 4, 5), $labels, $mode, "onchange=\"submit()\"");

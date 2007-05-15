@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.119 2007-04-21 20:58:25 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.120 2007-05-15 22:13:17 decoyduck Exp $ */
 
 /**
 * Displays user profiles
@@ -334,7 +334,7 @@ foreach ($user_profile_array as $profile_entry) {
         echo "                <tr>\n";
         echo "                  <td align=\"left\" width=\"33%\" valign=\"top\">{$profile_entry['NAME']}</td>\n";
 
-        if (($uid != bh_session_get_value('UID')) && ($peer_relationship != USER_FRIEND) && ($profile_entry['PRIVACY'] == 1)) {
+        if (($uid != bh_session_get_value('UID')) && ($peer_relationship != USER_FRIEND) && ($profile_entry['PRIVACY'] == PROFILE_ITEM_PRIVATE)) {
             echo "                  <td align=\"left\" width=\"67%\" class=\"profile_item_text\" valign=\"top\">&nbsp;</td>\n";
         }else {
             echo "                  <td align=\"left\" width=\"67%\" class=\"profile_item_text\" valign=\"top\">", isset($profile_entry['ENTRY']) ? nl2br(make_links(_stripslashes($profile_entry['ENTRY']))) : "", "</td>\n";

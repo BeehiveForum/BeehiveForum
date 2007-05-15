@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.226 2007-05-13 21:23:17 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.227 2007-05-15 22:13:17 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -151,15 +151,15 @@ function forum_check_access_level()
 
         if (isset($forum_data['ACCESS_LEVEL'])) {
 
-            if ($forum_data['ACCESS_LEVEL'] < 0) {
+            if ($forum_data['ACCESS_LEVEL'] < FORUM_UNRESTRICTED) {
 
                 return forum_closed_message();
 
-            }elseif ($forum_data['ACCESS_LEVEL'] == 1 && $forum_data['ALLOWED'] != 1) {
+            }elseif ($forum_data['ACCESS_LEVEL'] == FORUM_RESTRICTED && $forum_data['ALLOWED'] <> FORUM_USER_ALLOWED) {
 
                 return forum_restricted_message();
 
-            }elseif ($forum_data['ACCESS_LEVEL'] == 2 && !bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0, 0)) {
+            }elseif ($forum_data['ACCESS_LEVEL'] == FORUM_PASSWD_PROTECTED && !bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0, 0)) {
 
                 return forum_check_password($forum_data['FID']);
             }

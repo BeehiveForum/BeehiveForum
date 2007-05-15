@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.450 2007-05-12 13:39:08 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.451 2007-05-15 22:13:17 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -525,8 +525,8 @@ function messages_top($folder_title, $thread_prefix, $thread_title, $interest_le
     echo word_filter_add_ob_tags($folder_title), ": ", word_filter_add_ob_tags(thread_format_prefix($thread_prefix, $thread_title));
 
     if ($closed) echo "&nbsp;<img src=\"", style_image('thread_closed.png'), "\" alt=\"{$lang['closed']}\" title=\"{$lang['closed']}\" />\n";
-    if ($interest_level == 1) echo "&nbsp;<img src=\"", style_image('high_interest.png'), "\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" />";
-    if ($interest_level == 2) echo "&nbsp;<img src=\"", style_image('subscribe.png'), "\" alt=\"{$lang['subscribed']}\" title=\"{$lang['subscribed']}\" />";
+    if ($interest_level == THREAD_INTERESTED) echo "&nbsp;<img src=\"", style_image('high_interest.png'), "\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" />";
+    if ($interest_level == THREAD_SUBSCRIBED) echo "&nbsp;<img src=\"", style_image('subscribe.png'), "\" alt=\"{$lang['subscribed']}\" title=\"{$lang['subscribed']}\" />";
     if ($sticky == "Y") echo "&nbsp;<img src=\"", style_image('sticky.png'), "\" alt=\"{$lang['sticky']}\" title=\"{$lang['sticky']}\" />";
     if ($locked) echo "&nbsp;<img src=\"", style_image('admin_locked.png'), "\" alt=\"{$lang['locked']}\" title=\"{$lang['locked']}\" />\n";
     if ($deleted) echo "&nbsp;<img src=\"", style_image('delete.png'), "\" alt=\"{$lang['deleted']}\" title=\"{$lang['deleted']}\" />\n";
@@ -874,6 +874,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
             }
 
             if ($message['REPLY_TO_PID'] > 0) {
+
                 $title = "{$lang['linktopost']} #{$message['REPLY_TO_PID']}";
 
                 echo " {$lang['inreplyto']} ";
@@ -1662,7 +1663,7 @@ function messages_forum_stats($tid, $pid)
 
                         if ($user['UID'] == $uid) {
 
-                            if (isset($user['ANON_LOGON']) && $user['ANON_LOGON'] > 0) {
+                            if (isset($user['ANON_LOGON']) && $user['ANON_LOGON'] > USER_ANON_DISABLED) {
 
                                 $active_user.= "<span class=\"user_stats_curuser\" title=\"{$lang['youinvisible']}\">";
 
@@ -1671,7 +1672,7 @@ function messages_forum_stats($tid, $pid)
                                 $active_user.= "<span class=\"user_stats_curuser\" title=\"{$lang['younormal']}\">";
                             }
 
-                        }elseif (($user['RELATIONSHIP'] & USER_FRIEND) > 0) {
+                        }elseif ($user['RELATIONSHIP'] & USER_FRIEND) {
 
                             $active_user.= "<span class=\"user_stats_friend\" title=\"Friend\">";
 

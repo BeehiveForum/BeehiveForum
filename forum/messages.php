@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.221 2007-04-23 20:51:23 decoyduck Exp $ */
+/* $Id: messages.php,v 1.222 2007-05-15 22:13:16 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -317,7 +317,7 @@ if ($tracking_data_array = thread_get_tracking_data($tid)) {
 
     foreach ($tracking_data_array as $tracking_data) {
         
-        if ($tracking_data['TRACK_TYPE'] == 0) { // Thread merged
+        if ($tracking_data['TRACK_TYPE'] == THREAD_TYPE_MERGE) { // Thread merged
         
             if ($tracking_data['TID'] == $tid) {
 
@@ -339,7 +339,7 @@ if ($tracking_data_array = thread_get_tracking_data($tid)) {
                 echo "  </tr>\n";
             }
 
-        }elseif ($tracking_data['TRACK_TYPE'] == 1) { // Thread Split
+        }elseif ($tracking_data['TRACK_TYPE'] == THREAD_TYPE_SPLIT) { // Thread Split
 
             if ($tracking_data['TID'] == $tid) {
 

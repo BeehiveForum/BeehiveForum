@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.199 2007-05-12 13:39:08 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.200 2007-05-15 22:13:17 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -345,7 +345,7 @@ function poll_get_user_votes($tid, $viewstyle)
 
     while($row = db_fetch_array($result)) {
 
-        if ($viewstyle == 0) {
+        if ($viewstyle == POLL_VIEW_TYPE_OPTION) {
             $poll_get_user_votes[$row['OPTION_ID']][] = $row['UID'];
         }else {
             $poll_get_user_votes[$row['UID']][] = $row['OPTION_ID'];
@@ -432,7 +432,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
 
     if ($in_list) {
 
-        if (((!is_array($user_poll_data) || $polldata['CHANGEVOTE'] == 2) && (bh_session_get_value('UID') > 0 || ($polldata['ALLOWGUESTS'] == 1 && forum_get_setting('poll_allow_guests', false)))) && ($polldata['CLOSES'] == 0 || $polldata['CLOSES'] > mktime()) && !$is_preview) {
+        if (((!is_array($user_poll_data) || $polldata['CHANGEVOTE'] == POLL_VOTE_MULTI) && (bh_session_get_value('UID') > 0 || ($polldata['ALLOWGUESTS'] == POLL_GUEST_ALLOWED && forum_get_setting('poll_allow_guests', false)))) && ($polldata['CLOSES'] == 0 || $polldata['CLOSES'] > mktime()) && !$is_preview) {
 
             $polldata['CONTENT'].= "                          <tr>\n";
             $polldata['CONTENT'].= "                            <td align=\"left\">\n";
@@ -450,7 +450,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
 
                     if ($poll_results['GROUP_ID'][$i] <> $poll_previous_group) {
 
-                        if ($polldata['OPTIONTYPE'] == 1 && $poll_results['GROUP_SIZE'][$poll_results['GROUP_ID'][$i - 1]] > 1) {
+                        if ($polldata['OPTIONTYPE'] == POLL_OPTIONS_DROPDOWN && $poll_results['GROUP_SIZE'][$poll_results['GROUP_ID'][$i - 1]] > 1) {
 
                             $polldata['CONTENT'].= "                                <tr>\n";
                             $polldata['CONTENT'].= "                                  <td align=\"left\" class=\"postbody\" valign=\"top\">". form_dropdown_array("pollvote[{$poll_results['GROUP_ID'][$i - 1]}]", $dropdown, false, false). "</td>\n";
@@ -470,7 +470,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
 
                     if ($poll_results['GROUP_SIZE'][$poll_results['GROUP_ID'][$i]] > 1) {
 
-                        if ($polldata['OPTIONTYPE'] == 1) {
+                        if ($polldata['OPTIONTYPE'] == POLL_OPTIONS_DROPDOWN) {
 
                             $drop_down_data[$poll_results['OPTION_ID'][$i]] = word_filter_add_ob_tags($poll_results['OPTION_NAME'][$i]);
 
@@ -493,7 +493,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
 
                 if ($i == sizeof($poll_results['OPTION_ID']) - 1) {
 
-                    if ($polldata['OPTIONTYPE'] == 1 && $poll_results['GROUP_SIZE'][$poll_results['GROUP_ID'][$i]] > 1) {
+                    if ($polldata['OPTIONTYPE'] == POLL_OPTIONS_DROPDOWN && $poll_results['GROUP_SIZE'][$poll_results['GROUP_ID'][$i]] > 1) {
 
                         $polldata['CONTENT'].= "                                <tr>\n";
                         $polldata['CONTENT'].= "                                  <td align=\"left\" class=\"postbody\" valign=\"top\">". form_dropdown_array("pollvote[{$poll_results['GROUP_ID'][$i]}]", $drop_down_data, false, false). "</td>\n";
@@ -509,9 +509,9 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
 
         }else {
 
-            if ($polldata['SHOWRESULTS'] == 1 || ($polldata['CLOSES'] > 0 && $polldata['CLOSES'] < mktime())) {
+            if ($polldata['SHOWRESULTS'] == POLL_SHOW_RESULTS || ($polldata['CLOSES'] > 0 && $polldata['CLOSES'] < mktime())) {
 
-                if ($polldata['POLLTYPE'] == 0) {
+                if ($polldata['POLLTYPE'] == POLL_HORIZONTAL_GRAPH) {
 
                     $polldata['CONTENT'].= "                          <tr>\n";
                     $polldata['CONTENT'].= "                            <td align=\"left\" colspan=\"2\">\n";
@@ -519,7 +519,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                     $polldata['CONTENT'].= "                            </td>\n";
                     $polldata['CONTENT'].= "                          </tr>\n";
 
-                }else if ($polldata['POLLTYPE'] == 1) {
+                }else if ($polldata['POLLTYPE'] == POLL_VERTICAL_GRAPH) {
 
                     $polldata['CONTENT'].= "                          <tr>\n";
                     $polldata['CONTENT'].= "                            <td align=\"left\" colspan=\"2\">\n";
@@ -527,7 +527,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                     $polldata['CONTENT'].= "                            </td>\n";
                     $polldata['CONTENT'].= "                          </tr>\n";
 
-                }else if ($polldata['POLLTYPE'] == 2) {
+                }else if ($polldata['POLLTYPE'] == POLL_TABLE_GRAPH) {
 
                     $polldata['CONTENT'].= "                          <tr>\n";
                     $polldata['CONTENT'].= "                            <td align=\"left\" colspan=\"2\">\n";
@@ -621,7 +621,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
             $polldata['CONTENT'].= "                            <td align=\"left\" colspan=\"2\" class=\"postbody\">{$lang['pollhasended']}.</td>\n";
             $polldata['CONTENT'].= "                          </tr>\n";
 
-            if ($polldata['VOTETYPE'] == 1 && $polldata['CHANGEVOTE'] < 2 && $polldata['POLLTYPE'] != 2) {
+            if ($polldata['VOTETYPE'] == POLL_VOTE_PUBLIC && $polldata['CHANGEVOTE'] < POLL_VOTE_MULTI && $polldata['POLLTYPE'] <> POLL_TABLE_GRAPH) {
 
                 $polldata['CONTENT'].= "                          <tr>\n";
                 $polldata['CONTENT'].= "                            <td align=\"left\" colspan=\"2\">&nbsp;</td>";
@@ -692,7 +692,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                 $polldata['CONTENT'].= "                            <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
                 $polldata['CONTENT'].= "                          </tr>\n";
 
-                if ($polldata['CHANGEVOTE'] == 2) {
+                if ($polldata['CHANGEVOTE'] == POLL_VOTE_MULTI) {
 
                     $polldata['CONTENT'].= "                          <tr>\n";
                     $polldata['CONTENT'].= "                            <td colspan=\"2\" align=\"center\">". form_submit('pollsubmit', $lang['vote']). "</td>\n";
@@ -702,9 +702,9 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                 $polldata['CONTENT'].= "                          <tr>\n";
                 $polldata['CONTENT'].= "                            <td colspan=\"2\" align=\"center\">";
 
-                if (($polldata['SHOWRESULTS'] == 1 && $total_votes > 0) || bh_session_get_value('UID') == $polldata['FROM_UID'] || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid)) {
+                if (($polldata['SHOWRESULTS'] == POLL_SHOW_RESULTS && $total_votes > 0) || bh_session_get_value('UID') == $polldata['FROM_UID'] || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid)) {
 
-                    if ($polldata['VOTETYPE'] == 1 && $polldata['CHANGEVOTE'] < 2 && $polldata['POLLTYPE'] != 2) {
+                    if ($polldata['VOTETYPE'] == POLL_VOTE_PUBLIC && $polldata['CHANGEVOTE'] < POLL_VOTE_MULTI && $polldata['POLLTYPE'] <> POLL_TABLE_GRAPH) {
 
                         $polldata['CONTENT'].= form_button("pollresults", $lang['resultdetails'], "onclick=\"openPollResults('$tid', '$webtag')\"");
 
@@ -730,7 +730,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                     $polldata['CONTENT'].= "                          </tr>\n";
                 }
 
-                if ($polldata['VOTETYPE'] == 1 && $polldata['CHANGEVOTE'] < 2 && $polldata['POLLTYPE'] != 2) {
+                if ($polldata['VOTETYPE'] == POLL_VOTE_PUBLIC && $polldata['CHANGEVOTE'] < POLL_VOTE_MULTI && $polldata['POLLTYPE'] <> POLL_TABLE_GRAPH) {
 
                     $polldata['CONTENT'].= "                          <tr>\n";
                     $polldata['CONTENT'].= "                            <td colspan=\"2\" align=\"center\">&nbsp;</td>\n";
@@ -740,7 +740,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                     $polldata['CONTENT'].= "                          </tr>\n";
                 }
 
-            }else if (bh_session_get_value('UID') > 0 || ($polldata['ALLOWGUESTS'] == 1 && forum_get_setting('poll_allow_guests', false))) {
+            }else if (bh_session_get_value('UID') > 0 || ($polldata['ALLOWGUESTS'] == POLL_GUEST_ALLOWED && forum_get_setting('poll_allow_guests', false))) {
 
                 $polldata['CONTENT'].= "                          <tr>\n";
                 $polldata['CONTENT'].= "                            <td colspan=\"2\" align=\"center\">". form_submit('pollsubmit', $lang['vote']). "</td>\n";
@@ -748,9 +748,9 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                 $polldata['CONTENT'].= "                          <tr>\n";
                 $polldata['CONTENT'].= "                            <td colspan=\"2\" align=\"center\">";
 
-                if (($polldata['SHOWRESULTS'] == 1 && $total_votes > 0) || bh_session_get_value('UID') == $polldata['FROM_UID'] || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid)) {
+                if (($polldata['SHOWRESULTS'] == POLL_SHOW_RESULTS && $total_votes > 0) || bh_session_get_value('UID') == $polldata['FROM_UID'] || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid)) {
 
-                    if ($polldata['VOTETYPE'] == 1 && $polldata['CHANGEVOTE'] < 2 && $polldata['POLLTYPE'] != 2) {
+                    if ($polldata['VOTETYPE'] == POLL_VOTE_PUBLIC && $polldata['CHANGEVOTE'] < POLL_VOTE_MULTI && $polldata['POLLTYPE'] <> POLL_TABLE_GRAPH) {
 
                         $polldata['CONTENT'].= form_button("pollresults", $lang['resultdetails'], "onclick=\"openPollResults('$tid', '$webtag')\"");
 
@@ -769,7 +769,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                 $polldata['CONTENT'].= "                            </td>\n";
                 $polldata['CONTENT'].= "                          </tr>\n";
 
-                if ($polldata['VOTETYPE'] == 1 && $polldata['CHANGEVOTE'] < 2 && $polldata['POLLTYPE'] != 2) {
+                if ($polldata['VOTETYPE'] == POLL_VOTE_PUBLIC && $polldata['CHANGEVOTE'] < POLL_VOTE_MULTI && $polldata['POLLTYPE'] <> POLL_TABLE_GRAPH) {
 
                     $polldata['CONTENT'].= "                          <tr>\n";
                     $polldata['CONTENT'].= "                            <td colspan=\"2\" align=\"center\">&nbsp;</td>\n";
@@ -864,7 +864,7 @@ function poll_preview_form($poll_results, $polldata)
 
             if ($poll_results['GROUP_ID'][$i] <> $poll_previous_group) {
 
-                if ($polldata['OPTIONTYPE'] == 1 && $poll_results['GROUP_SIZE'][$poll_results['GROUP_ID'][$i - 1]] > 1) {
+                if ($polldata['OPTIONTYPE'] == POLL_OPTIONS_DROPDOWN && $poll_results['GROUP_SIZE'][$poll_results['GROUP_ID'][$i - 1]] > 1) {
 
                     $polldisplay.= "                      <tr>\n";
                     $polldisplay.= "                        <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
@@ -885,7 +885,7 @@ function poll_preview_form($poll_results, $polldata)
 
             if ($poll_results['GROUP_SIZE'][$poll_results['GROUP_ID'][$i]] > 1) {
 
-                if ($polldata['OPTIONTYPE'] == 1) {
+                if ($polldata['OPTIONTYPE'] == POLL_OPTIONS_DROPDOWN) {
 
                     $drop_down_data[$poll_results['OPTION_ID'][$i]] = word_filter_add_ob_tags($poll_results['OPTION_NAME'][$i]);
 
@@ -908,7 +908,7 @@ function poll_preview_form($poll_results, $polldata)
 
         if ($i == sizeof($poll_results['OPTION_ID']) - 1) {
 
-            if ($polldata['OPTIONTYPE'] == 1 && $poll_results['GROUP_SIZE'][$poll_results['GROUP_ID'][$i]] > 1) {
+            if ($polldata['OPTIONTYPE'] == POLL_OPTIONS_DROPDOWN && $poll_results['GROUP_SIZE'][$poll_results['GROUP_ID'][$i]] > 1) {
 
                 $polldisplay.= "                      <tr>\n";
                 $polldisplay.= "                        <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
@@ -1716,7 +1716,7 @@ function poll_public_ballot($tid, $viewstyle)
 
     $user_poll_votes = poll_get_user_votes($tid, $viewstyle);
 
-    if ($viewstyle == 0) {
+    if ($viewstyle == POLL_VIEW_TYPE_OPTION) {
 
         array_multisort($poll_results['GROUP_ID'], SORT_NUMERIC, SORT_ASC, $poll_results['OPTION_ID'], $poll_results['OPTION_NAME'], $poll_results['VOTES']);
 
@@ -1935,7 +1935,7 @@ function poll_vote($tid, $vote_array)
 
     $polldata = poll_get($tid);
 
-    if ((!poll_get_user_vote($tid)) || ($polldata['CHANGEVOTE'] == 2) || (user_is_guest() && ($polldata['ALLOWGUESTS'] == 1 && forum_get_setting('poll_allow_guests', false)))) {
+    if ((!poll_get_user_vote($tid)) || ($polldata['CHANGEVOTE'] == POLL_VOTE_MULTI) || (user_is_guest() && ($polldata['ALLOWGUESTS'] == POLL_GUEST_ALLOWED && forum_get_setting('poll_allow_guests', false)))) {
 
         foreach ($vote_array as $user_vote) {
 
@@ -2005,7 +2005,7 @@ function poll_check_tabular_votes($tid, $votes)
 
         $row = db_fetch_array($result);
 
-        if ($row['POLLTYPE'] == 2) {
+        if ($row['POLLTYPE'] == POLL_TABLE_GRAPH) {
 
             return (sizeof($votes) == $row['GROUP_COUNT']);
 

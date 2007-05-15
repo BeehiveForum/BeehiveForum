@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads_rss.php,v 1.42 2007-05-12 10:04:15 decoyduck Exp $ */
+/* $Id: threads_rss.php,v 1.43 2007-05-15 17:14:40 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -67,6 +67,8 @@ $forum_location = html_get_forum_uri();
 $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
 
 $build_date = gmdate("D, d M Y H:i:s");
+
+$user_hash = false;
 
 // Retrieve existing cookie data if any and try
 // and log in the last used user account.

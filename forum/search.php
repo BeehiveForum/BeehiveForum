@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.175 2007-05-12 13:39:05 decoyduck Exp $ */
+/* $Id: search.php,v 1.176 2007-05-15 22:13:16 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -115,7 +115,7 @@ if (isset($_GET['opensearch'])) {
     exit;
 }
 
-if (bh_session_get_value('UID') == 0) {
+if (user_is_guest()) {
     html_guest_error();
     exit;
 }
@@ -139,51 +139,51 @@ if (isset($_GET['sort_dir']) && is_numeric($_GET['sort_dir'])) {
 }elseif (isset($_POST['sort_dir']) && is_numeric($_POST['sort_dir'])) {
     $sort_dir = $_POST['sort_dir'];
 }else {
-    $sort_dir = 1;
+    $sort_dir = SORT_DIR_DESC;
 }
 
 
 // Drop down date from options
 
-$search_date_from_array = array(1  => $lang['today'],
-                                2  => $lang['yesterday'], 
-                                3  => $lang['daybeforeyesterday'], 
-                                4  => sprintf($lang['weekago'], 1), 
-                                5  => sprintf($lang['weeksago'], 2), 
-                                6  => sprintf($lang['weeksago'], 3), 
-                                7  => sprintf($lang['monthago'], 1), 
-                                8  => sprintf($lang['monthsago'], 2), 
-                                9  => sprintf($lang['monthsago'], 3), 
-                                10 => sprintf($lang['monthsago'], 6), 
-                                11 => sprintf($lang['yearago'], 1), 
-                                12 => $lang['beginningoftime']);
+$search_date_from_array = array(SEARCH_FROM_TODAY             => $lang['today'],
+                                SEARCH_FROM_YESTERDAY         => $lang['yesterday'], 
+                                SEARCH_FROM_DAYBEFORE         => $lang['daybeforeyesterday'], 
+                                SEARCH_FROM_ONE_WEEK_AGO      => sprintf($lang['weekago'], 1), 
+                                SEARCH_FROM_TWO_WEEKS_AGO     => sprintf($lang['weeksago'], 2), 
+                                SEARCH_FROM_THREE_WEEKS_AGO   => sprintf($lang['weeksago'], 3), 
+                                SEARCH_FROM_ONE_MONTH_AGO     => sprintf($lang['monthago'], 1), 
+                                SEARCH_FROM_TWO_MONTHS_AGO    => sprintf($lang['monthsago'], 2), 
+                                SEARCH_FROM_THREE_MONTHS_AGO  => sprintf($lang['monthsago'], 3), 
+                                SEARCH_FROM_SIX_MONTHS_AGO    => sprintf($lang['monthsago'], 6), 
+                                SEARCH_FROM_ONE_YEAR_AGO      => sprintf($lang['yearago'], 1), 
+                                SEARCH_FROM_BEGINNING_OF_TIME => $lang['beginningoftime']);
 
 // Drop down date to options
 
-$search_date_to_array = array(1  => $lang['now'], 
-                              2  => $lang['today'], 
-                              3  => $lang['yesterday'], 
-                              4  => $lang['daybeforeyesterday'], 
-                              5  => sprintf($lang['weekago'], 1), 
-                              6  => sprintf($lang['weeksago'], 2), 
-                              7  => sprintf($lang['weeksago'], 3), 
-                              8  => sprintf($lang['monthago'], 1), 
-                              9  => sprintf($lang['monthsago'], 2), 
-                              10 => sprintf($lang['monthsago'], 3), 
-                              11 => sprintf($lang['monthsago'], 6), 
-                              12 => sprintf($lang['yearago'], 1));
+$search_date_to_array = array(SEARCH_TO_NOW              => $lang['now'], 
+                              SEARCH_TO_TODAY            => $lang['today'], 
+                              SEARCH_TO_YESTERDAY        => $lang['yesterday'], 
+                              SEARCH_TO_DAYBEFORE        => $lang['daybeforeyesterday'], 
+                              SEARCH_TO_ONE_WEEK_AGO     => sprintf($lang['weekago'], 1), 
+                              SEARCH_TO_TWO_WEEKS_AGO    => sprintf($lang['weeksago'], 2), 
+                              SEARCH_TO_THREE_WEEKS_AGO  => sprintf($lang['weeksago'], 3), 
+                              SEARCH_TO_ONE_MONTH_AGO    => sprintf($lang['monthago'], 1), 
+                              SEARCH_TO_TWO_MONTHS_AGO   => sprintf($lang['monthsago'], 2), 
+                              SEARCH_TO_THREE_MONTHS_AGO => sprintf($lang['monthsago'], 3), 
+                              SEARCH_TO_SIX_MONTHS_AGO   => sprintf($lang['monthsago'], 6), 
+                              SEARCH_TO_ONE_YEAR_AGO     => sprintf($lang['yearago'], 1));
 
 // Drop down sort by options
 
-$search_sort_by_array = array(1 => $lang['lastpostdate'],
-                              2 => $lang['numberofreplies'], 
-                              3 => $lang['foldername'], 
-                              4 => $lang['authorname']);
+$search_sort_by_array = array(SEARCH_SORT_CREATED     => $lang['lastpostdate'],
+                              SEARCH_SORT_NUM_REPLIES => $lang['numberofreplies'], 
+                              SEARCH_SORT_FOLDER_NAME => $lang['foldername'], 
+                              SEARCH_SORT_AUTHOR_NAME => $lang['authorname']);
 
 // Drop down sort dir options
 
-$search_sort_dir_array = array(1 => $lang['decendingorder'], 
-                               2 => $lang['ascendingorder']);
+$search_sort_dir_array = array(SORT_DIR_DESC => $lang['decendingorder'], 
+                               SORT_DIR_ASC  => $lang['ascendingorder']);
 
 // Get a list of available folders.
 
@@ -567,15 +567,15 @@ if (isset($search_success) && $search_success === true && isset($offset)) {
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";
-    echo "                        <td align=\"left\">", form_radio("user_include", 1, $lang['postsfromuser'], true), "&nbsp;", "</td>\n";
+    echo "                        <td align=\"left\">", form_radio("user_include", SEARCH_USER_FROM, $lang['postsfromuser'], true), "&nbsp;", "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";
-    echo "                        <td align=\"left\">", form_radio("user_include", 2, $lang['poststouser'], false), "&nbsp;", "</td>\n";
+    echo "                        <td align=\"left\">", form_radio("user_include", SEARCH_USER_TO, $lang['poststouser'], false), "&nbsp;", "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";
-    echo "                        <td align=\"left\">", form_radio("user_include", 3, $lang['poststoandfromuser'], false), "&nbsp;", "</td>\n";
+    echo "                        <td align=\"left\">", form_radio("user_include", SEARCH_USER_BOTH, $lang['poststoandfromuser'], false), "&nbsp;", "</td>\n";
     echo "                      </tr>\n";
     echo "                    </table>\n";
     echo "                  </td>\n";
@@ -614,23 +614,23 @@ if (isset($search_success) && $search_success === true && isset($offset)) {
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">{$lang['postedfrom']}:</td>\n";
-    echo "                        <td align=\"left\">", form_dropdown_array("date_from", $search_date_from_array, 7, false, "search_dropdown"), "&nbsp;</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("date_from", $search_date_from_array, SEARCH_FROM_ONE_MONTH_AGO, false, "search_dropdown"), "&nbsp;</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">{$lang['postedto']}:</td>\n";
-    echo "                        <td align=\"left\">", form_dropdown_array("date_to", $search_date_to_array, 2, false, "search_dropdown"), "&nbsp;</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("date_to", $search_date_to_array, SEARCH_TO_TODAY, false, "search_dropdown"), "&nbsp;</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">{$lang['sortby']}:</td>\n";
-    echo "                        <td align=\"left\">", form_dropdown_array("sort_by", $search_sort_by_array, 1, false, "search_dropdown"), "&nbsp;</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("sort_by", $search_sort_by_array, SEARCH_SORT_CREATED, false, "search_dropdown"), "&nbsp;</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">{$lang['sortdir']}:</td>\n";
-    echo "                        <td align=\"left\">", form_dropdown_array("sort_dir", $search_sort_dir_array, 1, false, "search_dropdown"), "&nbsp;</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("sort_dir", $search_sort_dir_array, SORT_DIR_DESC, false, "search_dropdown"), "&nbsp;</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['groupbythread']}:</td>\n";
-    echo "                        <td align=\"left\">", form_radio("group_by_thread", 1, $lang['yes'], false), "&nbsp;", form_radio("group_by_thread", 0, $lang['no'], true), "&nbsp;</td>\n";
+    echo "                        <td align=\"left\">", form_radio("group_by_thread", SEARCH_GROUP_THREADS, $lang['yes'], false), "&nbsp;", form_radio("group_by_thread", SEARCH_GROUP_NONE, $lang['no'], true), "&nbsp;</td>\n";
     echo "                      </tr>\n";
     echo "                    </table>\n";
     echo "                  </td>\n";

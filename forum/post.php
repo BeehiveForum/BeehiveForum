@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.305 2007-05-12 10:04:15 decoyduck Exp $ */
+/* $Id: post.php,v 1.306 2007-05-15 22:13:16 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -112,7 +112,7 @@ if (!forum_check_access_level()) {
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
-if (bh_session_get_value('UID') == 0) {
+if (user_is_guest()) {
     html_guest_error();
     exit;
 }
@@ -284,21 +284,21 @@ if (isset($_POST['t_post_html'])) {
     $t_post_html = $_POST['t_post_html'];
 
     if ($t_post_html == "enabled_auto") {
-        $post_html = 1;
+        $post_html = POST_HTML_AUTO;
     }else if ($t_post_html == "enabled") {
-        $post_html = 2;
+        $post_html = POST_HTML_ENABLED;
     }else {
-        $post_html = 0;
+        $post_html = POST_HTML_DISABLED;
     }
 
 }else {
 
     if (($page_prefs & POST_AUTOHTML_DEFAULT) > 0) {
-        $post_html = 1;
+        $post_html = POST_HTML_AUTO;
     }else if (($page_prefs & POST_HTML_DEFAULT) > 0) {
-        $post_html = 2;
+        $post_html = POST_HTML_ENABLED;
     }else {
-        $post_html = 0;
+        $post_html = POST_HTML_DISABLED;
     }
 
     $emots_enabled = !($page_prefs & POST_EMOTICONS_DISABLED);
@@ -353,7 +353,7 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
 
         $t_content = trim(_stripslashes($_POST['t_content']));
 
-        if ($post_html && attachment_embed_check($t_content)) {
+        if (($post_html > POST_HTML_DISABLED) && attachment_embed_check($t_content)) {
 
             $error_html = "<h2>{$lang['notallowedembedattachmentpost']}</h2>\n";
             $valid = false;
@@ -1029,9 +1029,9 @@ if ($allow_html == true) {
 
         $tph_radio = $post->getHTML();
 
-        echo form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == 0, "tabindex=\"6\"")." \n";
-        echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 1)." \n";
-        echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 2)." \n";
+        echo form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == POST_HTML_DISABLED, "tabindex=\"6\"")." \n";
+        echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == POST_HTML_AUTO)." \n";
+        echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == POST_HTML_ENABLED)." \n";
 
         if (($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
 

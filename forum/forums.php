@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forums.php,v 1.73 2007-05-15 16:21:47 decoyduck Exp $ */
+/* $Id: forums.php,v 1.74 2007-05-15 22:13:16 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -284,7 +284,7 @@ if (!user_is_guest()) {
 
             echo "                <tr>\n";
 
-            if (isset($forum['INTEREST']) && $forum['INTEREST'] == 1) {
+            if (isset($forum['INTEREST']) && $forum['INTEREST'] == FORUM_FAVOURITE) {
                 
                 echo "                  <td align=\"center\" width=\"1%\">", form_submit_image('forum_rem_fav.png', "rem_fav[{$forum['FID']}]", "{$lang['removefromfavourites']}", "title=\"{$lang['removefromfavourites']}\""), "</td>\n";
 
@@ -601,7 +601,7 @@ if (isset($webtag_search) && strlen($webtag_search) > 0) {
 
             echo "                <tr>\n";
 
-            if ((isset($forum['INTEREST']) && $forum['INTEREST'] == 1) || user_is_guest()) {
+            if ((isset($forum['INTEREST']) && $forum['INTEREST'] == FORUM_FAVOURITE) || user_is_guest()) {
                 
                 echo "                  <td align=\"center\" width=\"1%\">", form_submit_image('forum_rem_fav.png', "rem_fav[{$forum['FID']}]", "{$lang['removefromfavourites']}", "title=\"{$lang['removefromfavourites']}\""), "</td>\n";
 

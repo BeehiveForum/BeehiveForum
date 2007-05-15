@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.183 2007-05-06 20:33:43 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.184 2007-05-15 22:13:17 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -114,7 +114,7 @@ function search_execute($search_arguments, &$error)
 
         // Base query slightly different if you're not searching by keywords
 
-        if (isset($search_arguments['group_by_thread']) && $search_arguments['group_by_thread'] == 1) {
+        if (isset($search_arguments['group_by_thread']) && $search_arguments['group_by_thread'] == SEARCH_GROUP_THREADS) {
 
             $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, ";
             $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, LENGTH) SELECT $uid, ";
@@ -151,15 +151,15 @@ function search_execute($search_arguments, &$error)
         
             if ($user_uid = user_get_uid(trim($username))) {
 
-                if ($search_arguments['user_include'] == 1) {
+                if ($search_arguments['user_include'] == SEARCH_USER_FROM) {
 
                     $where_sql.= "AND POST.FROM_UID = '{$user_uid['UID']}' ";
 
-                }elseif ($search_arguments['user_include'] == 2) {
+                }elseif ($search_arguments['user_include'] == SEARCH_USER_TO) {
 
                     $where_sql.= "AND POST.TO_UID = '{$user_uid['UID']}' ";
 
-                }else {
+                }elseif ($search_arguments['user_include'] == SEARCH_USER_BOTH) {
 
                     $where_sql.= "AND (POST.FROM_UID = '{$user_uid['UID']}' ";
                     $where_sql.= "OR POST.TO_UID = '{$user_uid['UID']}') ";
@@ -201,7 +201,7 @@ function search_execute($search_arguments, &$error)
 
             search_save_keywords($search_keywords_array['keywords']);
 
-            if (isset($search_arguments['group_by_thread']) && $search_arguments['group_by_thread'] == 1) {
+            if (isset($search_arguments['group_by_thread']) && $search_arguments['group_by_thread'] == SEARCH_GROUP_THREADS) {
 
                 $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, ";
                 $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, LENGTH, RELEVANCE) ";
@@ -241,7 +241,7 @@ function search_execute($search_arguments, &$error)
 
     // If the user wants results grouped by thread (TID) then do so.
 
-    if (isset($search_arguments['group_by_thread']) && $search_arguments['group_by_thread'] == 1) {
+    if (isset($search_arguments['group_by_thread']) && $search_arguments['group_by_thread'] == SEARCH_GROUP_THREADS) {
         $group_sql = "GROUP BY THREAD.TID ";
     }else {
         $group_sql = "";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.80 2007-04-25 21:34:32 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.81 2007-05-15 22:13:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -203,7 +203,7 @@ if (isset($_POST['interest']) && is_numeric($_POST['interest']) && $_POST['inter
 
 // Admin Options
 
-if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid) || ((($threaddata['FROM_UID'] == $uid) && $threaddata['ADMIN_LOCK'] == 0) && ((forum_get_setting('allow_post_editing', 'Y')) && intval(forum_get_setting('post_edit_time', false, 0)) == 0) || ((time() - $threaddata['CREATED']) < (intval(forum_get_setting('post_edit_time', false, 0)) * MINUTE_IN_SECONDS)))) {
+if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid) || ((($threaddata['FROM_UID'] == $uid) && $threaddata['ADMIN_LOCK'] == THREAD_ADMIN_LOCK_DISABLED) && ((forum_get_setting('allow_post_editing', 'Y')) && intval(forum_get_setting('post_edit_time', false, 0)) == 0) || ((time() - $threaddata['CREATED']) < (intval(forum_get_setting('post_edit_time', false, 0)) * MINUTE_IN_SECONDS)))) {
 
     if (isset($_POST['rename']) && strlen(trim(_stripslashes($_POST['rename']))) > 0) {
 
@@ -307,7 +307,7 @@ if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
 
     if (isset($_POST['thread_merge_split']) && is_numeric($_POST['thread_merge_split'])) {
 
-        if ($_POST['thread_merge_split'] == 0) {
+        if ($_POST['thread_merge_split'] == THREAD_TYPE_MERGE) {
 
             if (isset($_POST['merge_thread']) && is_numeric($_POST['merge_thread'])
                 && isset($_POST['merge_type']) && is_numeric($_POST['merge_type'])
@@ -336,7 +336,7 @@ if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
                 }
             }
 
-        }elseif ($_POST['thread_merge_split'] == 1) {
+        }elseif ($_POST['thread_merge_split'] == THREAD_TYPE_SPLIT) {
             
             if (isset($_POST['split_thread']) && is_numeric($_POST['split_thread'])
                 && $_POST['split_thread'] > 1 && isset($_POST['split_type']) 
@@ -449,19 +449,19 @@ if ($threaddata['LENGTH'] > 0) {
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" valign=\"top\" class=\"posthead\">{$lang['interest']}:</td>\n";
-    echo "                        <td align=\"left\">", form_radio("interest", -1, $lang['ignore'], $threaddata['INTEREST'] == -1), "</td>\n";
+    echo "                        <td align=\"left\">", form_radio("interest", THREAD_IGNORED, $lang['ignore'], $threaddata['INTEREST'] == THREAD_IGNORED), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";
-    echo "                        <td align=\"left\">", form_radio("interest", 0, $lang['normal'], $threaddata['INTEREST'] == 0), "</td>\n";
+    echo "                        <td align=\"left\">", form_radio("interest", THREAD_NOINTEREST, $lang['normal'], $threaddata['INTEREST'] == THREAD_NOINTEREST), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";
-    echo "                        <td align=\"left\">", form_radio("interest", 1, $lang['interested'], $threaddata['INTEREST'] == 1), "</td>\n";
+    echo "                        <td align=\"left\">", form_radio("interest", THREAD_INTERESTED, $lang['interested'], $threaddata['INTEREST'] == THREAD_INTERESTED), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";
-    echo "                        <td align=\"left\">", form_radio("interest", 2, $lang['subscribe'], $threaddata['INTEREST'] == 2), "</td>\n";
+    echo "                        <td align=\"left\">", form_radio("interest", THREAD_SUBSCRIBED, $lang['subscribe'], $threaddata['INTEREST'] == THREAD_SUBSCRIBED), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -475,7 +475,7 @@ if ($threaddata['LENGTH'] > 0) {
     echo "          </tr>\n";
     echo "        </table>\n";
 
-    if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid) || ((($threaddata['FROM_UID'] == $uid) && $threaddata['ADMIN_LOCK'] == 0) && ((forum_get_setting('allow_post_editing', 'Y')) && intval(forum_get_setting('post_edit_time', false, 0)) == 0) || ((time() - $threaddata['CREATED']) < (intval(forum_get_setting('post_edit_time', false, 0)) * MINUTE_IN_SECONDS)))) {
+    if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid) || ((($threaddata['FROM_UID'] == $uid) && $threaddata['ADMIN_LOCK'] == THREAD_ADMIN_LOCK_DISABLED) && ((forum_get_setting('allow_post_editing', 'Y')) && intval(forum_get_setting('post_edit_time', false, 0)) == 0) || ((time() - $threaddata['CREATED']) < (intval(forum_get_setting('post_edit_time', false, 0)) * MINUTE_IN_SECONDS)))) {
 
         echo "        <br />\n";
         echo "        <table class=\"box\" width=\"100%\">\n";

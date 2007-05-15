@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.112 2007-05-10 22:03:17 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.113 2007-05-15 22:13:16 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -347,14 +347,13 @@ if (isset($_POST['submit'])) {
 
     if (isset($_POST['toolbar_toggle'])) {
 
-        if ($_POST['toolbar_toggle'] == 1) {
+        if ($_POST['toolbar_toggle'] == POST_TOOLBAR_SIMPLE) {
 
             $user_prefs['POST_PAGE'] |= POST_TOOLBAR_DISPLAY;
 
-        }else if ($_POST['toolbar_toggle'] == 2) {
+        }else if ($_POST['toolbar_toggle'] == POST_TOOLBAR_TINYMCE) {
 
             $user_prefs['POST_PAGE'] |= POST_TINYMCE_DISPLAY;
-
         }
     }
 
@@ -380,11 +379,11 @@ if (isset($_POST['submit'])) {
 
     if (isset($_POST['post_html'])) {
 
-        if ($_POST['post_html'] == 0) {
+        if ($_POST['post_html'] == POST_HTML_DISABLED) {
 
             $user_prefs['POST_PAGE'] |= POST_TEXT_DEFAULT;
 
-        }else if ($_POST['post_html'] == 1) {
+        }else if ($_POST['post_html'] == POST_HTML_AUTO) {
 
             $user_prefs['POST_PAGE'] |= POST_AUTOHTML_DEFAULT;
 

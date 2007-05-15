@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll_results.php,v 1.22 2007-05-02 23:15:41 decoyduck Exp $ */
+/* $Id: poll_results.php,v 1.23 2007-05-15 22:13:16 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -134,11 +134,18 @@ if (isset($_GET['tid']) && is_numeric($_GET['tid'])) {
 
 $polldata = poll_get($tid);
 
-if (isset($_GET['viewstyle']) && is_numeric($_GET['viewstyle'])) {
-    $viewstyle = $_GET['viewstyle'];
-    if ($viewstyle < 0 || $viewstyle > 1) $viewstyle = 0;
-}else {
-    $viewstyle = 0;
+$view_style = POLL_VIEW_TYPE_OPTION;
+
+if (isset($_GET['view_style']) && is_numeric($_GET['view_style'])) {
+
+    if ($_GET['view_style'] == POLL_VIEW_TYPE_OPTION) {
+
+        $view_style = POLL_VIEW_TYPE_OPTION;
+
+    }elseif ($_GET['view_style'] == POLL_VIEW_TYPE_USER) {
+
+        $view_style = POLL_VIEW_TYPE_USER;
+    }
 }
 
 html_draw_top("openprofile.js");
@@ -146,7 +153,7 @@ html_draw_top("openprofile.js");
 echo "<h1>{$lang['pollresults']}</h1>\n";
 echo "<br />\n";
 
-if ($polldata['VOTETYPE'] == 1 && $polldata['POLLTYPE'] != 2) {
+if ($polldata['VOTETYPE'] == POLL_VOTE_PUBLIC && $polldata['POLLTYPE'] <> POLL_TABLE_GRAPH) {
 
     echo "<div align=\"center\">\n";
     echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"475\">\n";
@@ -155,7 +162,7 @@ if ($polldata['VOTETYPE'] == 1 && $polldata['POLLTYPE'] != 2) {
     echo "      <form name=\"f_mode\" method=\"get\" action=\"poll_results.php\">\n";
     echo "        ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
     echo "        ", form_input_hidden("tid", _htmlentities($tid)), "\n";
-    echo "        View Style: ", form_dropdown_array("viewstyle", array($lang['viewbypolloption'], $lang['viewbyuser']), $viewstyle, "onchange=\"submit()\""), "&nbsp;", form_submit('go', $lang['goexcmark']), "\n";
+    echo "        View Style: ", form_dropdown_array("view_style", array($lang['viewbypolloption'], $lang['viewbyuser']), $view_style, "onchange=\"submit()\""), "&nbsp;", form_submit('go', $lang['goexcmark']), "\n";
     echo "      </form>\n";
     echo "    </td>\n";
     echo "  </tr>\n";
@@ -172,40 +179,32 @@ echo "        <tr>\n";
 echo "          <td align=\"left\"><h2>". thread_get_title($tid). "</h2></td>\n";
 echo "        </tr>\n";
 
-if ($polldata['SHOWRESULTS'] == 1 || bh_session_get_value('UID') == $polldata['FROM_UID'] || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid) || ($polldata['CLOSES'] > 0 && $polldata['CLOSES'] < mktime())) {
+if ($polldata['SHOWRESULTS'] == POLL_SHOW_RESULTS || bh_session_get_value('UID') == $polldata['FROM_UID'] || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid) || ($polldata['CLOSES'] > 0 && $polldata['CLOSES'] < mktime())) {
 
-    if ($polldata['VOTETYPE'] == 1 && $polldata['CHANGEVOTE'] < 2 && $polldata['POLLTYPE'] != 2) {
+    if ($polldata['VOTETYPE'] == POLL_VOTE_PUBLIC && $polldata['CHANGEVOTE'] < POLL_VOTE_MULTI && $polldata['POLLTYPE'] <> POLL_TABLE_GRAPH) {
 
         echo "        <tr>\n";
-        echo "          <td align=\"left\" colspan=\"2\">\n";
-        echo poll_public_ballot($tid, $viewstyle);
-        echo "          </td>\n";
+        echo "          <td align=\"left\" colspan=\"2\">", poll_public_ballot($tid, $view_style), "</td>\n";
         echo "        </tr>\n";
 
     }else {
 
-        if ($polldata['POLLTYPE'] == 0) {
+        if ($polldata['POLLTYPE'] == POLL_HORIZONTAL_GRAPH) {
 
             echo "        <tr>\n";
-            echo "          <td align=\"left\">\n";
-            echo poll_horizontal_graph($tid);
-            echo "          </td>\n";
+            echo "          <td align=\"left\">", poll_horizontal_graph($tid), "</td>\n";
             echo "        </tr>\n";
 
-        }elseif ($polldata['POLLTYPE'] == 2) {
+        }elseif ($polldata['POLLTYPE'] == POLL_TABLE_GRAPH) {
 
             echo "        <tr>\n";
-            echo "          <td align=\"left\">\n";
-            echo poll_table_graph($tid);
-            echo "          </td>\n";
+            echo "          <td align=\"left\">", poll_table_graph($tid), "</td>\n";
             echo "        </tr>\n";
 
         }else {
 
             echo "        <tr>\n";
-            echo "          <td align=\"left\">\n";
-            echo poll_vertical_graph($tid);
-            echo "          </td>\n";
+            echo "          <td align=\"left\">", poll_vertical_graph($tid), "</td>\n";
             echo "        </tr>\n";
         }
     }

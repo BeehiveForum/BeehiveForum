@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ledit.php,v 1.11 2007-05-12 10:04:15 decoyduck Exp $ */
+/* $Id: ledit.php,v 1.12 2007-05-15 22:13:16 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -614,9 +614,9 @@ if ($allow_html == true) {
     $tph_radio = $post->getHTML();
 
     echo "<p>{$lang['htmlinmessage']}:<br />\n";
-    echo light_form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == 0), "<br />\n";
-    echo light_form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 1), "<br />\n";
-    echo light_form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 2), "<br />\n";
+    echo light_form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == POST_HTML_DISABLED), "<br />\n";
+    echo light_form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == POST_HTML_AUTO), "<br />\n";
+    echo light_form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == POST_HTML_ENABLED), "<br />\n";
     echo "</p>";
 
 }else {

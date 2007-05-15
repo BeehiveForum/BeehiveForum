@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.php,v 1.95 2007-05-02 23:15:40 decoyduck Exp $ */
+/* $Id: links.php,v 1.96 2007-05-15 22:13:16 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -171,10 +171,18 @@ if (isset($_GET['action'])) {
     }
 }
 
-if (isset($_GET['viewmode']) && is_numeric($_GET['viewmode']) && $_GET['viewmode'] == 1) {
-    $viewmode = $_GET['viewmode'];
-}else {
-    $viewmode = 0;
+$viewmode = LINKS_VIEW_HIERARCHICAL;
+
+if (isset($_GET['viewmode']) && is_numeric($_GET['viewmode'])) {
+
+    if ($_GET['viewmode'] == LINKS_VIEW_LIST) {
+
+        $viewmode = LINKS_VIEW_LIST;
+
+    }else {
+
+        $viewmode = LINKS_VIEW_HIERARCHICAL;
+    }
 }
 
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
@@ -190,19 +198,23 @@ if ($start < 0) $start = 0;
 html_draw_top("robots=noindex,nofollow");
 
 echo "<h1>{$lang['links']}</h1>\n";
-echo "<div align=\"right\">{$lang['viewmode']}: ";
 
-echo ($viewmode == 0) ? "<b>" : "";
-echo "<a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=0\">{$lang['hierarchical']}</a>";
-echo ($viewmode == 0) ? "</b> | " : " | ";
+if ($viewmode == LINKS_VIEW_HIERARCHICAL) {
 
-echo ($viewmode == 1) ? "<b>" : "";
-echo "<a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=1\">{$lang['list']}</a></div>\n";
-echo ($viewmode == 1) ? "</b>" : "";
+    echo "<div align=\"right\">{$lang['viewmode']}: ";
+    echo "<a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=0\"><b>{$lang['hierarchical']}</b></a> | ";
+    echo "<a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=1\">{$lang['list']}</a></div>\n";
+
+}else {
+
+    echo "<div align=\"right\">{$lang['viewmode']}: ";
+    echo "<a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=0\">{$lang['hierarchical']}</a> | ";
+    echo "<a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=1\"><b>{$lang['list']}</b></a></div>\n";
+}
 
 // work out where we are in the folder hierarchy and display links to all the higher levels
 
-if ($viewmode == 0) {
+if ($viewmode == LINKS_VIEW_HIERARCHICAL) {
 
     echo "<div align=\"center\">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"65%\">\n";
@@ -316,7 +328,7 @@ if (isset($_GET['sort_by'])) {
 
 }else {
 
-    if ($viewmode == 0) {
+    if ($viewmode == LINKS_VIEW_HIERARCHICAL) {
         $sort_by = "TITLE";
     }else {
         $sort_by = "CREATED";
@@ -333,14 +345,14 @@ if (isset($_GET['sort_dir'])) {
 
 }else {
 
-    if ($viewmode == 0) {
+    if ($viewmode == LINKS_VIEW_HIERARCHICAL) {
         $sort_dir = "ASC";
     }else {
         $sort_dir = "DESC";
     }
 }
 
-if ($viewmode == 0) {
+if ($viewmode == LINKS_VIEW_HIERARCHICAL) {
     $links = links_get_in_folder($fid, bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0), $sort_by, $sort_dir, $start);
 }else {
     $links = links_get_all(bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0), $sort_by, $sort_dir, $start);

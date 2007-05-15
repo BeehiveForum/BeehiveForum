@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.294 2007-05-12 13:39:05 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.295 2007-05-15 22:13:16 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -129,10 +129,10 @@ if (bh_session_get_value('UID') == 0) {
         // or those in the past x days, since the other options
         // would be impossible
 
-        if ($_GET['mode'] == 0 || $_GET['mode'] == 3 || $_GET['mode'] == 4 || $_GET['mode'] == 5) {
+        if ($_GET['mode'] == ALL_DISCUSSIONS || $_GET['mode'] == TODAYS_DISCUSSIONS || $_GET['mode'] == TWO_DAYS_BACK || $_GET['mode'] == SEVEN_DAYS_BACK) {
             $mode = $_GET['mode'];
         }else {
-            $mode = 0;
+            $mode = ALL_DISCUSSIONS;
         }
 
     }else {
@@ -140,7 +140,7 @@ if (bh_session_get_value('UID') == 0) {
         if (isset($_COOKIE["bh_{$webtag}_thread_mode"]) && is_numeric($_COOKIE["bh_{$webtag}_thread_mode"])) {
             $mode = $_COOKIE["bh_{$webtag}_thread_mode"];
         }else{
-            $mode = 0;
+            $mode = ALL_DISCUSSIONS;
         }
     }
 
@@ -152,7 +152,7 @@ if (bh_session_get_value('UID') == 0) {
 
     if (isset($_GET['markread'])) {
         
-        if ($_GET['markread'] == 2) {
+        if ($_GET['markread'] == THREAD_MARK_READ_VISIBLE) {
         
             if (isset($_GET['tid_array']) && is_array($_GET['tid_array'])) {
 
@@ -164,15 +164,15 @@ if (bh_session_get_value('UID') == 0) {
                 threads_mark_read($thread_data);
             }
 
-        }elseif ($_GET['markread'] == 0) {
+        }elseif ($_GET['markread'] == THREAD_MARK_READ_ALL) {
 
             threads_mark_all_read();
 
-        }elseif ($_GET['markread'] == 1) {
+        }elseif ($_GET['markread'] == THREAD_MARK_READ_FIFTY) {
 
             threads_mark_50_read();
 
-        }elseif ($_GET['markread'] == 3 && isset($folder)) {
+        }elseif ($_GET['markread'] == THREAD_MARK_READ_FOLDER && isset($folder)) {
 
             threads_mark_folder_read($folder);
         }
@@ -378,7 +378,7 @@ if (bh_session_get_value('UID') > 0) {
     $ignored_folders = array();
 
     while (list($fid, $folder_data) = each($folder_info)) {
-        if ($folder_data['INTEREST'] == 0 || (isset($selected_folder) && $selected_folder == $fid)) {
+        if ($folder_data['INTEREST'] == FOLDER_NOINTEREST || (isset($selected_folder) && $selected_folder == $fid)) {
             if ((!in_array($fid, $folder_order)) && (!in_array($fid, $ignored_folders))) $folder_order[] = $fid;
         }else {
             if ((!in_array($fid, $folder_order)) && (!in_array($fid, $ignored_folders))) $ignored_folders[] = $fid;
@@ -434,7 +434,7 @@ foreach ($folder_order as $folder_number) {
         echo "        <tr>\n";
         echo "          <td align=\"left\" class=\"foldername\">\n";
 
-        if ($folder_info[$folder_number]['INTEREST'] == 0) {
+        if ($folder_info[$folder_number]['INTEREST'] == FOLDER_NOINTEREST) {
             echo "            <img src=\"".style_image('folder.png')."\" alt=\"{$lang['folder']}\" title=\"{$lang['folder']}\" />\n";
         }else {
             echo "            <img src=\"".style_image('folder_ignored.png')."\" alt=\"{$lang['ignoredfolder']}\" title=\"{$lang['ignoredfolder']}\" />\n";
@@ -447,7 +447,7 @@ foreach ($folder_order as $folder_number) {
 
             echo "          <td align=\"left\" class=\"folderpostnew\" nowrap=\"nowrap\"><a href=\"mods_list.php?webtag=$webtag&amp;fid=$folder_number\" target=\"_blank\" onclick=\"return openModsList({$folder_number}, '$webtag')\"><img src=\"". style_image('mods_list.png'). "\" border=\"0\" alt=\"View moderators\" title=\"View moderators\" /></a>";
 
-            if ($folder_info[$folder_number]['INTEREST'] == 0) {
+            if ($folder_info[$folder_number]['INTEREST'] == FOLDER_NOINTEREST) {
                 echo "<a href=\"user_folder.php?webtag=$webtag&amp;fid=$folder_number&amp;interest=-1\" target=\"_self\" onclick=\"return confirmFolderIgnore();\"><img src=\"". style_image('folder_hide.png'). "\" border=\"0\" alt=\"{$lang['ignorethisfolder']}\" title=\"{$lang['ignorethisfolder']}\" /></a></td>\n";
             }else {
                 echo "<a href=\"user_folder.php?webtag=$webtag&amp;fid=$folder_number&amp;interest=0\" target=\"_self\" onclick=\"return confirmFolderUnignore();\"><img src=\"". style_image('folder_show.png'). "\" border=\"0\" alt=\"{$lang['stopignoringthisfolder']}\" title=\"{$lang['stopignoringthisfolder']}\" /></a></td>\n";
@@ -616,8 +616,8 @@ foreach ($folder_order as $folder_number) {
                             echo "title=\"", sprintf($lang['threadstartedbytooltip'], $thread['TID'], word_filter_add_ob_tags(format_user_name($thread['LOGON'], $thread['NICKNAME'])), ($thread['VIEWCOUNT'] == 1) ? $lang['threadviewedonetime'] : sprintf($lang['threadviewedtimes'], $thread['VIEWCOUNT'])), "\">";
                             echo word_filter_add_ob_tags(thread_format_prefix($thread['PREFIX'], $thread['TITLE'])), "</a> ";
 
-                            if (isset($thread['INTEREST']) && $thread['INTEREST'] == 1) echo "<img src=\"".style_image('high_interest.png')."\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" /> ";
-                            if (isset($thread['INTEREST']) && $thread['INTEREST'] == 2) echo "<img src=\"".style_image('subscribe.png')."\" alt=\"{$lang['subscribed']}\" title=\"{$lang['subscribed']}\" /> ";
+                            if (isset($thread['INTEREST']) && $thread['INTEREST'] == THREAD_INTERESTED) echo "<img src=\"".style_image('high_interest.png')."\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" /> ";
+                            if (isset($thread['INTEREST']) && $thread['INTEREST'] == THREAD_SUBSCRIBED) echo "<img src=\"".style_image('subscribe.png')."\" alt=\"{$lang['subscribed']}\" title=\"{$lang['subscribed']}\" /> ";
                             if (isset($thread['POLL_FLAG']) && $thread['POLL_FLAG'] == 'Y') echo "<a href=\"poll_results.php?webtag=$webtag&tid={$thread['TID']}\" target=\"_blank\" onclick=\"return openPollResults('{$thread['TID']}', '$webtag')\"><img src=\"", style_image('poll.png'), "\" border=\"0\" alt=\"{$lang['thisisapoll']}\" title=\"{$lang['thisisapoll']}\" /></a> ";
                             if (isset($thread['STICKY']) && $thread['STICKY'] == 'Y') echo "<img src=\"".style_image('sticky.png')."\" alt=\"{$lang['sticky']}\" title=\"{$lang['sticky']}\" /> ";
                             if (isset($thread['RELATIONSHIP']) && $thread['RELATIONSHIP'] & USER_FRIEND) echo "<img src=\"" . style_image('friend.png') . "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" /> ";

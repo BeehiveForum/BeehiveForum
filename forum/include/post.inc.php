@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.157 2007-05-12 10:04:15 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.158 2007-05-15 22:13:17 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -576,14 +576,14 @@ class MessageText {
     function setHTML ($html, $strip_tags = false)
     {        
         if ($html == false || $html == "N") {
-            $this->html = 0;
-        } else if ($html == 1 || $html == "A") {
-            $this->html = 1;
+            $this->html = POST_HTML_DISABLED;
+        } else if ($html == POST_HTML_AUTO || $html == "A") {
+            $this->html = POST_HTML_AUTO;
         } else {
-            $this->html = 2;
+            $this->html = POST_HTML_ENABLED;
         }
 
-        if ($this->html == 0 && $strip_tags === true) {
+        if ($this->html == POST_HTML_DISABLED && $strip_tags === true) {
             $this->setContent(strip_tags($this->getOriginalContent()));
         }else {
             $this->setContent($this->getOriginalContent());
@@ -616,19 +616,19 @@ class MessageText {
 
         $this->original_text = $text;
 
-        if ($this->html == 0) {
+        if ($this->html == POST_HTML_DISABLED) {
             $text = make_html($text, false, $this->emoticons, $this->links);
-        } else if ($this->html > 0) {
+        } else if ($this->html > POST_HTML_DISABLED) {
             if ($this->tinymce) $text = tidy_tinymce($text);
             $o = $text;
             $text = fix_html($text, $this->emoticons, $this->links);
 
             // <code></code> blocks are removed as the code highlighter often trips up this comparison
-            if (trim(preg_replace("/<code[^>]*>.*<\/code>/s", '', $o)) != trim(preg_replace("/<code[^>]*>.*<\/code>/s", '', tidy_html($text, ($this->html == 1) ? true : false)))) {
+            if (trim(preg_replace("/<code[^>]*>.*<\/code>/s", '', $o)) != trim(preg_replace("/<code[^>]*>.*<\/code>/s", '', tidy_html($text, ($this->html == POST_HTML_AUTO) ? true : false)))) {
                 $this->diff = true;
             }
 
-            if ($this->html == 1) {
+            if ($this->html == POST_HTML_AUTO) {
                 $text = add_paragraphs($text);
             }
         }
@@ -641,11 +641,11 @@ class MessageText {
     }
 
     function getTidyContent () {
-        if ($this->html == 0) {
+        if ($this->html == POST_HTML_DISABLED) {
             return strip_tags($this->text);
-        } else if ($this->html > 0) {
+        } else if ($this->html > POST_HTML_DISABLED) {
             if ($this->tinymce) return _htmlentities(tidy_html($this->text, false, $this->links, true));
-            return _htmlentities(tidy_html($this->text, ($this->html == 1) ? true : false, $this->links));
+            return _htmlentities(tidy_html($this->text, ($this->html == POST_HTML_AUTO) ? true : false, $this->links));
         }
     }
 

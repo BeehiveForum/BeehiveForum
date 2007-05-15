@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lthread_list.php,v 1.80 2007-05-12 13:39:05 decoyduck Exp $ */
+/* $Id: lthread_list.php,v 1.81 2007-05-15 22:13:16 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -114,39 +114,94 @@ if (!forum_check_access_level()) {
 
 // Check that required variables are set
 
-$uid = bh_session_get_value('UID');
+if (bh_session_get_value('UID') == 0) {
 
-if (isset($_GET['markread'])) {
+    $uid = 0; // default to UID 0 if no other UID specified
 
-    if ($_GET['markread'] == 2 && isset($_GET['tid_array']) && is_array($_GET['tid_array'])) {
-        threads_mark_read($_GET['tid_array']);
-    }elseif ($_GET['markread'] == 0) {
-        threads_mark_all_read();
-    }elseif ($_GET['markread'] == 1) {
-        threads_mark_50_read();
-    }
-}
+    if (isset($_GET['mode']) && is_numeric($_GET['mode'])) {
+        
+        // non-logged in users can only display "All" threads
+        // or those in the past x days, since the other options
+        // would be impossible
 
-if (!isset($_GET['mode'])) {
-
-    if (!isset($_COOKIE["bh_{$webtag}_thread_mode"])) {
-
-        // default to "Unread" messages for a logged-in user, unless there aren't any
-
-        if (threads_any_unread()) {
-            $mode = 1;
+        if ($_GET['mode'] == ALL_DISCUSSIONS || $_GET['mode'] == TODAYS_DISCUSSIONS || $_GET['mode'] == TWO_DAYS_BACK || $_GET['mode'] == SEVEN_DAYS_BACK) {
+            $mode = $_GET['mode'];
         }else {
-            $mode = 0;
+            $mode = ALL_DISCUSSIONS;
         }
 
     }else {
 
-        $mode = (is_numeric($_COOKIE["bh_{$webtag}_thread_mode"])) ? $_COOKIE["bh_{$webtag}_thread_mode"] : 0;
+        if (isset($_COOKIE["bh_{$webtag}_thread_mode"]) && is_numeric($_COOKIE["bh_{$webtag}_thread_mode"])) {
+            $mode = $_COOKIE["bh_{$webtag}_thread_mode"];
+        }else{
+            $mode = ALL_DISCUSSIONS;
+        }
     }
 
 }else {
 
-    $mode = (is_numeric($_GET['mode'])) ? $_GET['mode'] : 0;
+    $uid = bh_session_get_value('UID');
+
+    $threads_any_unread = threads_any_unread();
+
+    if (isset($_GET['markread'])) {
+        
+        if ($_GET['markread'] == THREAD_MARK_READ_VISIBLE) {
+        
+            if (isset($_GET['tid_array']) && is_array($_GET['tid_array'])) {
+
+                $tid_array = preg_grep("/^[0-9]+$/", $_GET['tid_array']);
+
+                $thread_data = array();
+                
+                threads_get_unread_data($thread_data, $tid_array);
+                threads_mark_read($thread_data);
+            }
+
+        }elseif ($_GET['markread'] == THREAD_MARK_READ_ALL) {
+
+            threads_mark_all_read();
+
+        }elseif ($_GET['markread'] == THREAD_MARK_READ_FIFTY) {
+
+            threads_mark_50_read();
+
+        }elseif ($_GET['markread'] == THREAD_MARK_READ_FOLDER && isset($folder)) {
+
+            threads_mark_folder_read($folder);
+        }
+    }
+
+    if (isset($_GET['mode']) && is_numeric($_GET['mode'])) {
+
+        $mode = $_GET['mode'];
+
+        bh_setcookie("bh_{$webtag}_thread_mode", $mode);       
+
+    }else {
+
+        if (isset($_COOKIE["bh_{$webtag}_thread_mode"]) && is_numeric($_COOKIE["bh_{$webtag}_thread_mode"])) {
+
+            $mode = $_COOKIE["bh_{$webtag}_thread_mode"];
+
+            if ($mode == UNREAD_DISCUSSIONS && !$threads_any_unread) {
+
+                $mode = ALL_DISCUSSIONS;
+            }           
+
+        }else {
+
+            if ($threads_any_unread) {
+
+                $mode = UNREAD_DISCUSSIONS;
+
+            }else {
+
+                $mode = ALL_DISCUSSIONS;
+            }
+        }
+    }
 }
 
 if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {

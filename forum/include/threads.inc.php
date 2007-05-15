@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.265 2007-05-12 13:39:09 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.266 2007-05-15 22:13:17 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1817,7 +1817,7 @@ function thread_list_draw_top($mode)
 
     echo "        ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
 
-    if (bh_session_get_value('UID') == 0) {
+    if (user_is_guest()) {
 
         $labels = array(0 => $lang['alldiscussions'], 3 => $lang['todaysdiscussions'], 4 => $lang['2daysback'], 5 => $lang['7daysback']);
         echo form_dropdown_array("mode", $labels, $mode, "onchange=\"submit()\"");

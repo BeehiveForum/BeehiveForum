@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_wordfilter.php,v 1.67 2007-05-10 22:03:17 decoyduck Exp $ */
+/* $Id: edit_wordfilter.php,v 1.68 2007-05-15 22:13:16 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -207,7 +207,7 @@ if (isset($_POST['delete'])) {
 
     if ($valid) {
 
-        if ($add_new_filter_option == 2 && preg_match("/e[^\/]*$/i", $add_new_match_text)) {
+        if ($add_new_filter_option == WORD_FILTER_TYPE_PREG && preg_match("/e[^\/]*$/i", $add_new_match_text)) {
             $add_new_match_text = preg_replace_callback("/\/[^\/]*$/i", "word_filter_apply_limit_preg", $add_new_match_text);
         }
 
@@ -263,7 +263,7 @@ if (isset($_POST['delete'])) {
 
     if ($valid) {
 
-        if ($filter_option == 2 && preg_match("/e[^\/]*$/i", $match_text)) {
+        if ($filter_option == WORD_FILTER_TYPE_PREG && preg_match("/e[^\/]*$/i", $match_text)) {
             $match_text = preg_replace_callback("/\/[^\/]*$/i", "word_filter_apply_limit_preg", $match_text);
         }
 

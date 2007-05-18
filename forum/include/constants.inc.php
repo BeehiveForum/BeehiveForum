@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: constants.inc.php,v 1.111 2007-05-15 22:13:17 decoyduck Exp $ */
+/* $Id: constants.inc.php,v 1.112 2007-05-18 11:49:29 decoyduck Exp $ */
 
 /**
 * Constants used throughout Beehive.
@@ -48,6 +48,12 @@ define("MINUTE_IN_SECONDS", 60);
 define("AVG_SIX_MONTHS_IN_SECONDS", 15768000);
 define("AVG_MONTH_IN_SECONDS", 2628000);
 
+// Other constants for unread cut off.
+
+define('UNREAD_MESSAGES_CUSTOM', -2);
+define('UNREAD_MESSAGES_DISABLED', -1);
+define('UNREAD_MESSAGES_DEFAULT', 0);
+
 // Constants for database stuff
 
 define("DB_RESULT_ASSOC", 1);
@@ -57,6 +63,7 @@ define("DB_RESULT_BOTH",  3);
 // Constants for sort directions
 
 define('SORT_DIR_ASC', 1);
+define('SORT_DIR_DESC', 0);
 
 // Thread list constants
 
@@ -280,6 +287,12 @@ define('POLL_GUEST_DENIED', 0);
 
 define('POLL_SHOW_RESULTS', 1);
 define('POLL_HIDE_RESULTS', 0);
+
+// Attachment thumbnail sizes
+
+define('ATTACHMENT_THUMB_SMALL', 1);
+define('ATTACHMENT_THUMB_MEDIUM', 2);
+define('ATTACHMENT_THUMB_LARGE', 3);
 
 // PM Constants
 
@@ -522,11 +535,31 @@ define('WORD_FILTER_TYPE_ALL', 0);
 define('WORD_FILTER_TYPE_WHOLE_WORD', 1);
 define('WORD_FILTER_TYPE_PREG', 2);
 
+define('WORD_FILTER_DISABLED', 0);
+define('WORD_FILTER_ENABLED', 1);
+
 // Start Page
 
+define('START_PAGE_NORMAL', 0);
 define('START_PAGE_MESSAGES', 1);
 define('START_PAGE_INBOX', 2);
 define('START_PAGE_THREAD_LIST', 3);
-define('START_PAGE_NORMAL', 4);
+
+// Admin User Filter
+
+define('ADMIN_USER_FILTER_NONE', 0);
+define('ADMIN_USER_FILTER_ONLINE', 1);
+define('ADMIN_USER_FILTER_OFFLINE', 2);
+define('ADMIN_USER_FILTER_APPROVAL', 3);
+define('ADMIN_USER_FILTER_BANNED', 4);
+
+// Admin RSS Feed Settings Frequencies
+
+define('RSS_FEED_UPDATE_NEVER', 0);
+define('RSS_FEED_UPDATE_THIRTY_MINS', 30);
+define('RSS_FEED_UPDATE_ONE_HOUR', 60);
+define('RSS_FEED_UPDATE_SIX_HOURS', 360);
+define('RSS_FEED_UPDATE_TWELVE_HOURS', 720);
+define('RSS_FEED_UPDATE_ONCE_A_DAY', 1440);
 
 ?>

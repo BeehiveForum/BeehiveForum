@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.222 2007-05-15 22:13:16 decoyduck Exp $ */
+/* $Id: messages.php,v 1.223 2007-05-18 11:49:28 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -413,7 +413,7 @@ if ($msg_count > 0) {
 
 unset($messages, $message);
 
-if ($msg_count > 0 && $uid > 0 && !isset($_GET['markasread'])) {
+if ($msg_count > 0 && !user_is_guest() && !isset($_GET['markasread'])) {
     messages_update_read($tid, $last_pid, $uid, $threaddata['MODIFIED']);
 }
 
@@ -432,7 +432,7 @@ if (($threaddata['CLOSED'] == 0 && bh_session_check_perm(USER_PERM_POST_CREATE, 
 
 echo "    <td width=\"33%\" align=\"center\"><p>";
 
-if ($uid > 0) {
+if (!user_is_guest()) {
 
     if ($threaddata['LENGTH'] > 0) {
         echo "<img src=\"". style_image('thread_options.png') ."\" alt=\"{$lang['editthreadoptions']}\" title=\"{$lang['editthreadoptions']}\" border=\"0\" /> <a href=\"thread_options.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\"><b>{$lang['editthreadoptions']}</b></a>";

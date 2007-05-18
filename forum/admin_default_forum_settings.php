@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.66 2007-05-02 23:15:40 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.67 2007-05-18 11:49:28 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -348,9 +348,12 @@ if (!empty($error_html)) {
     echo "<h2>{$lang['forumsettingsupdated']}</h2>\n";
 }
 
-$unread_cutoff_periods = array(-1 => $lang['disableunreadmessages'], 0 => $lang['nocutoffdefault'], 
-                               AVG_MONTH_IN_SECONDS => $lang['1month'], AVG_SIX_MONTHS_IN_SECONDS => $lang['6months'], 
-                               YEAR_IN_SECONDS => $lang['1year'], -2 => $lang['customsetbelow']);
+$unread_cutoff_periods = array(UNREAD_MESSAGES_DISABLED  => $lang['disableunreadmessages'],
+                               UNREAD_MESSAGES_DEFAULT0  => $lang['nocutoffdefault'], 
+                               AVG_MONTH_IN_SECONDS      => $lang['1month'],
+                               AVG_SIX_MONTHS_IN_SECONDS => $lang['6months'], 
+                               YEAR_IN_SECONDS           => $lang['1year'],
+                               UNREAD_MESSAGES_CUSTOM    => $lang['customsetbelow']);
 
 echo "<br />\n";
 echo "<div align=\"center\">\n";

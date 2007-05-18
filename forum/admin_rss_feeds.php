@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_rss_feeds.php,v 1.42 2007-05-12 13:39:05 decoyduck Exp $ */
+/* $Id: admin_rss_feeds.php,v 1.43 2007-05-18 11:49:28 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -106,9 +106,19 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
     $page = 1;
 }
 
-$update_frequencies_array = array(0 => $lang['never'], 30 => $lang['every30mins'], 
-                                  60 => $lang['onceanhour'], 360 => $lang['every6hours'], 
-                                  720 => $lang['every12hours'], 1440 => $lang['onceaday']);
+define('RSS_FEED_UPDATE_NEVER', 0);
+define('RSS_FEED_UPDATE_THIRTY_MINS', 30);
+define('RSS_FEED_UPDATE_ONE_HOUR', 60);
+define('RSS_FEED_UPDATE_SIX_HOURS', 360);
+define('RSS_FEED_UPDATE_TWELVE_HOURS', 720);
+define('RSS_FEED_UPDATE_ONCE_A_DAY', 1440);
+
+$update_frequencies_array = array(RSS_FEED_UPDATE_NEVER        => $lang['never'],
+                                  RSS_FEED_UPDATE_THIRTY_MINS  => $lang['every30mins'], 
+                                  RSS_FEED_UPDATE_ONE_HOUR     => $lang['onceanhour'],
+                                  RSS_FEED_UPDATE_SIX_HOURS    => $lang['every6hours'], 
+                                  RSS_FEED_UPDATE_TWELVE_HOURS => $lang['every12hours'],
+                                  RSS_FEED_UPDATE_ONCE_A_DAY   => $lang['onceaday']);
 
 $start = floor($page - 1) * 10;
 if ($start < 0) $start = 0;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.90 2007-04-23 20:51:23 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.91 2007-05-18 11:49:28 decoyduck Exp $ */
 
 /**
 * Displays and handles the User Relationship page
@@ -194,7 +194,7 @@ if (isset($_POST['submit'])) {
 
     $valid = true;
 
-    $peer_relationship = 0;
+    $peer_relationship = USER_NORMAL;
 
     if (isset($_POST['peer_relationship']) && is_numeric($_POST['peer_relationship'])) {
         

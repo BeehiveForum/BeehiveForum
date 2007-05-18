@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.104 2007-05-15 22:13:16 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.105 2007-05-18 11:49:28 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -212,21 +212,21 @@ if (isset($_POST['t_post_html'])) {
     $t_post_html = $_POST['t_post_html'];
 
     if ($t_post_html == "enabled_auto") {
-        $post_html = 1;
+        $post_html = POST_HTML_AUTO;
     }else if ($t_post_html == "enabled") {
-        $post_html = 2;
+        $post_html = POST_HTML_ENABLED;
     }else {
-        $post_html = 0;
+        $post_html = POST_HTML_DISABLED;
     }
 
 }else {
 
     if (($page_prefs & POST_AUTOHTML_DEFAULT) > 0) {
-        $post_html = 1;
+        $post_html = POST_HTML_AUTO;
     }else if (($page_prefs & POST_HTML_DEFAULT) > 0) {
-        $post_html = 2;
+        $post_html = POST_HTML_ENABLED;
     }else {
-        $post_html = 0;
+        $post_html = POST_HTML_DISABLED;
     }
 }
 
@@ -235,7 +235,7 @@ if (isset($_POST['t_sig_html'])) {
     $t_sig_html = $_POST['t_sig_html'];
 
     if ($t_sig_html != "N") {
-        $sig_html = 2;
+        $sig_html = POST_HTML_ENABLED;
     }
 
     $fetched_sig = false;
@@ -255,7 +255,7 @@ if (isset($_POST['t_sig_html'])) {
     }
 
     if ($t_sig_html != "N") {
-        $sig_html = 2;
+        $sig_html = POST_HTML_ENABLED;
     }
 
     $t_sig = tidy_html($t_sig, false);
@@ -263,7 +263,7 @@ if (isset($_POST['t_sig_html'])) {
     $fetched_sig = true;
 }
 
-if (!isset($sig_html)) $sig_html = 0;
+if (!isset($sig_html)) $sig_html = POST_HTML_DISABLED;
 
 if (!isset($emots_enabled)) $emots_enabled = !($page_prefs & POST_EMOTICONS_DISABLED);
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.102 2007-05-15 22:13:16 decoyduck Exp $ */
+/* $Id: pm_edit.php,v 1.103 2007-05-18 11:49:28 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -171,6 +171,7 @@ $fix_html = true;
 
 // For future's sake, if we ever add an admin option for allowing/disallowing HTML PMs.
 // Then just do something like $allow_html = forum_allow_html_pms() ? true : false
+
 $allow_html = true;
 
 $t_content = "";
@@ -214,30 +215,30 @@ if (isset($_POST['t_check_spelling'])) {
     $spelling_enabled = ($page_prefs & POST_CHECK_SPELLING);
 }
 
-$post_html = 0;
+$post_html = POST_HTML_DISABLED;
 
 if (isset($_POST['t_post_html'])) {
 
     $t_post_html = $_POST['t_post_html'];
 
     if ($t_post_html == "enabled_auto") {
-        $post_html = 1;
+        $post_html = POST_HTML_AUTO;
     }else if ($t_post_html == "enabled") {
-        $post_html = 2;
+        $post_html = POST_HTML_ENABLED;
     }
 
 } else {
 
-        if (($page_prefs & POST_AUTOHTML_DEFAULT) > 0) {
-                $post_html = 1;
-        } else if (($page_prefs & POST_HTML_DEFAULT) > 0) {
-                $post_html = 2;
-        } else {
-                $post_html = 0;
-        }
+    if (($page_prefs & POST_AUTOHTML_DEFAULT) > 0) {
+        $post_html = POST_HTML_AUTO;
+    } else if (($page_prefs & POST_HTML_DEFAULT) > 0) {
+        $post_html = POST_HTML_ENABLED;
+    } else {
+        $post_html = POST_HTML_DISABLED;
+    }
 
-        $emots_enabled = !($page_prefs & POST_EMOTICONS_DISABLED);
-        $links_enabled = ($page_prefs & POST_AUTO_LINKS);
+    $emots_enabled = !($page_prefs & POST_EMOTICONS_DISABLED);
+    $links_enabled = ($page_prefs & POST_AUTO_LINKS);
 }
 
 $post = new MessageText($post_html, "", $emots_enabled, $links_enabled);
@@ -259,6 +260,7 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
         $t_content = $post->getContent();
 
         if (strlen($t_content) >= 65535) {
+
             $error_html = "<h2>{$lang['reducemessagelength']} ".number_format(strlen($t_content)).")</h2>";
             $valid = false;
         }
@@ -364,14 +366,14 @@ if ($valid && isset($_POST['preview'])) {
 
         $parsed_message = new MessageTextParse(pm_get_content($mid), $emots_enabled, $links_enabled);
 
-                $emots_enabled = $parsed_message->getEmoticons();
-                $links_enabled = $parsed_message->getLinks();
-                $t_content = $parsed_message->getMessage();
-                $post_html = $parsed_message->getMessageHTML();
+        $emots_enabled = $parsed_message->getEmoticons();
+        $links_enabled = $parsed_message->getLinks();
+        $t_content = $parsed_message->getMessage();
+        $post_html = $parsed_message->getMessageHTML();
 
         $post = new MessageText($post_html, $t_content, $emots_enabled, $links_enabled);
 
-                $post->diff = false;
+        $post->diff = false;
 
         $t_content = $post->getContent();
 
@@ -499,14 +501,15 @@ $tools = new TextAreaHTML("f_post");
 
 $t_content = ($fix_html ? $post->getTidyContent() : $post->getOriginalContent(true));
 
-$tool_type = 0;
+$tool_type = POST_TOOLBAR_DISABLED;
+
 if ($page_prefs & POST_TOOLBAR_DISPLAY) {
-    $tool_type = 1;
+    $tool_type = POST_TOOLBAR_SIMPLE;
 } else if ($page_prefs & POST_TINYMCE_DISPLAY) {
-    $tool_type = 2;
+    $tool_type = POST_TOOLBAR_TINYMCE;
 }
 
-if ($allow_html == true && $tool_type != 0) {
+if ($allow_html == true && $tool_type <> POST_TOOLBAR_DISABLED) {
     echo $tools->toolbar(false, form_submit('submit', $lang['apply'], "onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\""));
 
 } else {

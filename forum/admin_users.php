@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.142 2007-04-18 23:20:26 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.143 2007-05-18 11:49:28 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -148,7 +148,7 @@ if (isset($_GET['filter']) && is_numeric($_GET['filter'])) {
 }elseif (isset($_POST['filter']) && is_numeric($_POST['filter'])) {
     $filter = $_POST['filter'];
 }else {
-    $filter = 0;
+    $filter = ADMIN_USER_FILTER_NONE;
 }
 
 html_draw_top("openprofile.js");

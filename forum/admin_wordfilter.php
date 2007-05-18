@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_wordfilter.php,v 1.93 2007-05-15 22:13:16 decoyduck Exp $ */
+/* $Id: admin_wordfilter.php,v 1.94 2007-05-18 11:49:28 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -101,12 +101,12 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
     $page = 1;
 }
 
-$admin_word_filter_options = array(0 => $lang['all'],
-                                   1 => $lang['wholeword'],
-                                   2 => $lang['preg']);
+$admin_word_filter_options = array(WORD_FILTER_TYPE_ALL => $lang['all'],
+                                   WORD_FILTER_TYPE_WHOLE_WORD => $lang['wholeword'],
+                                   WORD_FILTER_TYPE_PREG => $lang['preg']);
 
-$admin_word_filter_enabled = array(0 => $lang['no'],
-                                   1 => $lang['yes']);
+$admin_word_filter_enabled = array(WORD_FILTER_DISABLED => $lang['no'],
+                                   WORD_FILTER_ENABLED => $lang['yes']);
 
 $valid = true;
 $error_html = "";
@@ -187,7 +187,7 @@ if (isset($_POST['delete'])) {
     if (isset($_POST['add_new_filter_enabled']) && is_numeric($_POST['add_new_filter_enabled'])) {
         $add_new_filter_enabled = $_POST['add_new_filter_enabled'];
     }else {
-        $add_new_filter_enabled = 0;
+        $add_new_filter_enabled = WORD_FILTER_DISABLED;
     }
 
     if (isset($_POST['add_new_replace_text']) && strlen(trim(_stripslashes($_POST['add_new_replace_text'])))) {
@@ -246,7 +246,7 @@ if (isset($_POST['delete'])) {
     if (isset($_POST['filter_enabled']) && is_numeric($_POST['filter_enabled'])) {
         $filter_enabled = $_POST['filter_enabled'];
     }else {
-        $filter_enabled = 0;
+        $filter_enabled = WORD_FILTER_DISABLED;
     }
 
     if (isset($_POST['replace_text']) && strlen(trim(_stripslashes($_POST['replace_text'])))) {
@@ -327,7 +327,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" valign=\"top\">{$lang['filterenabled']}:</td>\n";
-    echo "                        <td align=\"left\">", form_dropdown_array("add_new_filter_enabled", array(1 => $lang['yes'], 0 => $lang['no']), (isset($_POST['add_new_filter_enabled']) ? $_POST['add_new_filter_enabled'] : 1)), "</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("add_new_filter_enabled", array(WORD_FILTER_ENABLED => $lang['yes'], WORD_FILTER_DISABLED => $lang['no']), (isset($_POST['add_new_filter_enabled']) ? $_POST['add_new_filter_enabled'] : 1)), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -432,7 +432,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" valign=\"top\">{$lang['filterenabled']}:</td>\n";
-    echo "                        <td align=\"left\">", form_dropdown_array("filter_enabled", array(1 => $lang['yes'], 0 => $lang['no']), (isset($_POST['filter_enabled']) ? _htmlentities(_stripslashes($_POST['filter_enabled'])) : _htmlentities($word_filter_array['FILTER_ENABLED']))), "</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("filter_enabled", array(WORD_FILTER_ENABLED => $lang['yes'], WORD_FILTER_DISABLED => $lang['no']), (isset($_POST['filter_enabled']) ? _htmlentities(_stripslashes($_POST['filter_enabled'])) : _htmlentities($word_filter_array['FILTER_ENABLED']))), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";

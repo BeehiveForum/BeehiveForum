@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ledit.php,v 1.12 2007-05-15 22:13:16 decoyduck Exp $ */
+/* $Id: ledit.php,v 1.13 2007-05-18 11:49:28 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -263,27 +263,27 @@ if (isset($_POST['t_check_spelling'])) {
     $spelling_enabled = ($page_prefs & POST_CHECK_SPELLING);
 }
 
-$post_html = 0;
-$sig_html = 2;
+$post_html = POST_HTML_DISABLED;
+$sig_html = POST_HTML_ENABLED;
 
 if (isset($_POST['t_post_html'])) {
 
     $t_post_html = $_POST['t_post_html'];
 
     if ($t_post_html == "enabled_auto") {
-        $post_html = 1;
+        $post_html = POST_HTML_AUTO;
     }else if ($t_post_html == "enabled") {
-        $post_html = 2;
+        $post_html = POST_HTML_ENABLED;
     }
 
 }else {
 
     if (($page_prefs & POST_AUTOHTML_DEFAULT) > 0) {
-        $post_html = 1;
+        $post_html = POST_HTML_AUTO;
     }else if (($page_prefs & POST_HTML_DEFAULT) > 0) {
-        $post_html = 2;
+        $post_html = POST_HTML_ENABLED;
     }else {
-        $post_html = 0;
+        $post_html = POST_HTML_DISABLED;
     }
 
     $emots_enabled = !($page_prefs & POST_EMOTICONS_DISABLED);
@@ -295,7 +295,7 @@ if (isset($_POST['t_sig_html'])) {
     $t_sig_html = $_POST['t_sig_html'];
 
     if ($t_sig_html != "N") {
-        $sig_html = 2;
+        $sig_html = POST_HTML_ENABLED;
     }
 }
 

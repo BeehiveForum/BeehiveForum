@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.136 2007-05-15 22:13:16 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.137 2007-05-18 11:49:28 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -305,7 +305,7 @@ if (isset($_POST['cancel'])) {
     if (isset($_POST['allow_guests']) && is_numeric($_POST['allow_guests'])) {
         $t_allow_guests = $_POST['allow_guests'];
     }elseif (!forum_get_setting('poll_allow_guests', false)) {
-        $t_allow_guests = 0;
+        $t_allow_guests = POLL_GUEST_DENIED;
     }else {        
         $error_html = "<h2>{$lang['mustprovidepollguestvotetype']}</h2>\n";
         $valid = false;
@@ -398,10 +398,10 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
     $totalvotes  = 0;
     $optioncount = 0;
 
-    $ans_h = 0;
+    $ans_h = POST_HTML_DISABLED;
 
     if ($allow_html == true && isset($t_post_html) && $t_post_html == 'Y') {
-        $ans_h = 2;
+        $ans_h = POST_HTML_ENABLED;
     }
 
     foreach($t_answers as $key => $answer_text) {
@@ -509,10 +509,10 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
 
     $answers = array();
 
-    $ans_h = 0;
+    $ans_h = POST_HTML_DISABLED;
 
     if ($allow_html == true && isset($t_post_html) && $t_post_html == 'Y') {
-        $ans_h = 2;
+        $ans_h = POST_HTML_ENABLED;
     }
 
     foreach($t_answers as $key => $poll_answer) {
@@ -523,7 +523,7 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
 
     if ($t_poll_type == POLL_TABLE_GRAPH) {
 
-        $t_poll_vote_type = 1;
+        $t_poll_vote_type = POLL_VOTE_PUBLIC;
     }
 
     foreach ($t_answers as $key => $value) {

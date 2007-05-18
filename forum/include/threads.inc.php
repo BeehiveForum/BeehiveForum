@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.266 2007-05-15 22:13:17 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.267 2007-05-18 11:49:31 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -460,7 +460,7 @@ function threads_get_by_days($uid, $days = 1) // get threads from the last $days
     return threads_process_list($result);
 }
 
-function threads_get_by_interest($uid, $interest = 1) // get messages for $uid by interest (default High Interest)
+function threads_get_by_interest($uid, $interest = THREAD_INTERESTED) // get messages for $uid by interest (default High Interest)
 {
     $db_threads_get_by_interest = db_connect();
 
@@ -524,7 +524,7 @@ function threads_get_by_interest($uid, $interest = 1) // get messages for $uid b
     return threads_process_list($result);
 }
 
-function threads_get_unread_by_interest($uid, $interest = 1) // get unread messages for $uid by interest (default High Interest)
+function threads_get_unread_by_interest($uid, $interest = THREAD_INTERESTED) // get unread messages for $uid by interest (default High Interest)
 {
     $db_threads_get_unread_by_interest = db_connect();
 
@@ -1819,7 +1819,9 @@ function thread_list_draw_top($mode)
 
     if (user_is_guest()) {
 
-        $labels = array(0 => $lang['alldiscussions'], 3 => $lang['todaysdiscussions'], 4 => $lang['2daysback'], 5 => $lang['7daysback']);
+        $labels = array(ALL_DISCUSSIONS => $lang['alldiscussions'], TODAYS_DISCUSSIONS => $lang['todaysdiscussions'],
+                        TWO_DAYS_BACK => $lang['2daysback'], SEVEN_DAYS_BACK => $lang['7daysback']);
+
         echo form_dropdown_array("mode", $labels, $mode, "onchange=\"submit()\"");
 
     }else {
@@ -1996,7 +1998,7 @@ function thread_auto_prune_unread_data($force_start = false)
     return false;
 }
 
-function threads_get_user_subscriptions($include_threads = array(), $interest_type = 0, $offset = 0)
+function threads_get_user_subscriptions($include_threads = array(), $interest_type = THREAD_NOINTEREST, $offset = 0)
 {
     $db_threads_get_user_subscriptions = db_connect();
 
@@ -2006,7 +2008,7 @@ function threads_get_user_subscriptions($include_threads = array(), $interest_ty
     if (!$table_data = get_table_prefix()) return false;
 
     if (!is_numeric($offset)) $offset = 0;
-    if (!is_numeric($interest_type)) $interest_type = 0;
+    if (!is_numeric($interest_type)) $interest_type = THREAD_NOINTEREST;
     if (!is_array($include_threads)) $include_threads = array();
 
     $uid = bh_session_get_value('UID');
@@ -2072,12 +2074,12 @@ function threads_get_user_subscriptions($include_threads = array(), $interest_ty
                  'thread_array' => $thread_array);
 }
 
-function threads_search_user_subscriptions($threadsearch, $include_threads = array(), $interest_type = 0, $offset = 0)
+function threads_search_user_subscriptions($threadsearch, $include_threads = array(), $interest_type = THREAD_NOINTEREST, $offset = 0)
 {
     $db_threads_search_user_subscriptions = db_connect();
 
     if (!is_numeric($offset)) $offset = 0;
-    if (!is_numeric($interest_type)) $interest_type = 0;
+    if (!is_numeric($interest_type)) $interest_type = THREAD_NOINTEREST;
     if (!is_array($include_threads)) $include_threads = array();
 
     if (!$table_data = get_table_prefix()) return false;

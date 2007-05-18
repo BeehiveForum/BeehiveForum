@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_messages.php,v 1.17 2007-05-18 11:49:28 decoyduck Exp $ */
+/* $Id: pm_messages.php,v 1.18 2007-05-18 15:28:38 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -529,10 +529,35 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
             echo word_filter_add_ob_tags(format_user_name($message['FLOGON'], $message['FNICK'])) . "</a>";
             echo "            </td>\n";
 
-            echo "                  <td align=\"left\" class=\"postbody\">";
-            echo "            <a href=\"user_profile.php?webtag=$webtag&amp;uid={$message['TO_UID']}\" target=\"_blank\" onclick=\"return openProfile({$message['TO_UID']}, '$webtag')\">";
-            echo word_filter_add_ob_tags(format_user_name($message['TLOGON'], $message['TNICK'])) . "</a>";
-            echo "            </td>\n";
+            if ($message['TYPE'] & PM_SAVED_DRAFT) {
+
+                if (isset($message['RECIPIENTS']) && strlen(trim($message['RECIPIENTS'])) > 0) {
+
+                    $recipient_array = preg_split("/[;|,]/", trim($message['RECIPIENTS']));
+
+                    if ($message['TO_UID'] > 0) {
+                        $recipient_array = array_unique(array_merge($recipient_array, array($message['TLOGON'])));               
+                    }
+
+                    $recipient_array = array_map('user_profile_popup_callback', $recipient_array);
+
+                    echo "                  <td align=\"left\" class=\"postbody\">", word_filter_add_ob_tags(implode('; ', $recipient_array)), "</td>\n";
+
+                }else {
+
+                    echo "                  <td align=\"left\" class=\"postbody\">";
+                    echo "            <a href=\"user_profile.php?webtag=$webtag&amp;uid={$message['TO_UID']}\" target=\"_blank\" onclick=\"return openProfile({$message['TO_UID']}, '$webtag')\">";
+                    echo word_filter_add_ob_tags(format_user_name($message['TLOGON'], $message['TNICK'])) . "</a>";
+                    echo "            </td>\n";
+                }
+
+            }else {
+
+                echo "                  <td align=\"left\" class=\"postbody\">";
+                echo "            <a href=\"user_profile.php?webtag=$webtag&amp;uid={$message['TO_UID']}\" target=\"_blank\" onclick=\"return openProfile({$message['TO_UID']}, '$webtag')\">";
+                echo word_filter_add_ob_tags(format_user_name($message['TLOGON'], $message['TNICK'])) . "</a>";
+                echo "            </td>\n";
+            }
 
         }else {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.196 2007-05-18 11:49:30 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.197 2007-05-18 15:28:38 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -153,8 +153,10 @@ function pm_get_inbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
     $pm_get_inbox_array = array();
     $mid_array = array();
 
+    $pm_inbox_items = PM_INBOX_ITEMS;
+
     $sql = "SELECT COUNT(MID) AS MESSAGE_COUNT FROM PM PM ";
-    $sql.= "WHERE TYPE = TYPE & ". PM_INBOX_ITEMS. " AND TO_UID = '$uid'";
+    $sql.= "WHERE (TYPE & $pm_inbox_items > 0) AND TO_UID = '$uid'";
 
     if (!$result = db_query($sql, $db_pm_get_inbox)) return false;
 
@@ -172,7 +174,7 @@ function pm_get_inbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
     $sql.= "ON (USER_PEER_FROM.PEER_UID = FUSER.UID AND USER_PEER_FROM.UID = '$uid') ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER_TO ";
     $sql.= "ON (USER_PEER_TO.PEER_UID = TUSER.UID AND USER_PEER_TO.UID = '$uid') ";
-    $sql.= "WHERE PM.TYPE = PM.TYPE & ". PM_INBOX_ITEMS. " AND PM.TO_UID = '$uid' ";
+    $sql.= "WHERE (PM.TYPE & $pm_inbox_items > 0) AND PM.TO_UID = '$uid' ";
     $sql.= "ORDER BY $sort_by $sort_dir ";
     
     if (is_numeric($offset)) $sql.= "LIMIT $offset, 10";
@@ -239,8 +241,10 @@ function pm_get_outbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
     $pm_get_outbox_array = array();
     $mid_array = array();
 
+    $pm_outbox_items = PM_OUTBOX_ITEMS;
+
     $sql = "SELECT COUNT(MID) AS MESSAGE_COUNT FROM PM PM ";
-    $sql.= "WHERE TYPE = TYPE & ". PM_OUTBOX_ITEMS. " AND FROM_UID = '$uid' ";
+    $sql.= "WHERE (TYPE & $pm_outbox_items > 0) AND FROM_UID = '$uid' ";
 
     if (!$result = db_query($sql, $db_pm_get_outbox)) return false;
 
@@ -258,7 +262,7 @@ function pm_get_outbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
     $sql.= "ON (USER_PEER_FROM.PEER_UID = FUSER.UID AND USER_PEER_FROM.UID = '$uid') ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER_TO ";
     $sql.= "ON (USER_PEER_TO.PEER_UID = TUSER.UID AND USER_PEER_TO.UID = '$uid') ";
-    $sql.= "WHERE PM.TYPE = PM.TYPE & ". PM_OUTBOX_ITEMS. " AND PM.FROM_UID = '$uid' ";
+    $sql.= "WHERE (PM.TYPE & $pm_outbox_items > 0) AND PM.FROM_UID = '$uid' ";
     $sql.= "ORDER BY $sort_by $sort_dir ";
 
     if (is_numeric($offset)) $sql.= "LIMIT $offset, 10";
@@ -308,7 +312,7 @@ function pm_get_outbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
 
 function pm_get_sent($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
 {
-    $db_pm_get_outbox = db_connect();
+    $db_pm_get_sent = db_connect();
 
     $sort_by_array  = array('PM.SUBJECT', 'PM.TO_UID', 'CREATED');
     $sort_dir_array = array('ASC', 'DESC');
@@ -325,10 +329,12 @@ function pm_get_sent($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
     $pm_get_sent_array = array();
     $mid_array = array();
 
-    $sql = "SELECT COUNT(MID) AS MESSAGE_COUNT FROM PM PM ";
-    $sql.= "WHERE TYPE = TYPE & ". PM_SENT_ITEMS. " AND FROM_UID = '$uid' ";
+    $pm_sent_items = PM_SENT_ITEMS;
 
-    if (!$result = db_query($sql, $db_pm_get_outbox)) return false;
+    $sql = "SELECT COUNT(MID) AS MESSAGE_COUNT FROM PM PM ";
+    $sql.= "WHERE (TYPE & $pm_sent_items > 0) AND FROM_UID = '$uid' ";
+
+    if (!$result = db_query($sql, $db_pm_get_sent)) return false;
 
     $result_array  = db_fetch_array($result);
     $message_count = $result_array['MESSAGE_COUNT'];
@@ -344,12 +350,12 @@ function pm_get_sent($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
     $sql.= "ON (USER_PEER_FROM.PEER_UID = FUSER.UID AND USER_PEER_FROM.UID = '$uid') ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER_TO ";
     $sql.= "ON (USER_PEER_TO.PEER_UID = TUSER.UID AND USER_PEER_TO.UID = '$uid') ";
-    $sql.= "WHERE PM.TYPE = PM.TYPE & ". PM_SENT_ITEMS. " AND PM.FROM_UID = '$uid' ";
+    $sql.= "WHERE (PM.TYPE & $pm_sent_items > 0) AND PM.FROM_UID = '$uid' ";
     $sql.= "AND SMID = 0 ORDER BY $sort_by $sort_dir ";
 
     if (is_numeric($offset)) $sql.= "LIMIT $offset, 10";
 
-    if (!$result = db_query($sql, $db_pm_get_outbox)) return false;
+    if (!$result = db_query($sql, $db_pm_get_sent)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -411,9 +417,12 @@ function pm_get_saveditems($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = f
     $pm_get_saveditems_array = array();
     $mid_array = array();
 
+    $pm_saved_out = PM_SAVED_OUT;
+    $pm_saved_in  = PM_SAVED_IN;
+
     $sql = "SELECT COUNT(MID) AS MESSAGE_COUNT FROM PM PM ";
-    $sql.= "WHERE (TYPE = ". PM_SAVED_OUT. " AND FROM_UID = '$uid') OR ";
-    $sql.= "(TYPE = ". PM_SAVED_IN. " AND TO_UID = '$uid')";
+    $sql.= "WHERE ((TYPE & $pm_saved_out > 0) AND FROM_UID = '$uid') OR ";
+    $sql.= "((TYPE & $pm_saved_in > 0) AND TO_UID = '$uid')";
 
     if (!$result = db_query($sql, $db_pm_get_saveditems)) return false;
 
@@ -431,8 +440,8 @@ function pm_get_saveditems($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = f
     $sql.= "ON (USER_PEER_FROM.PEER_UID = FUSER.UID AND USER_PEER_FROM.UID = '$uid') ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER_TO ";
     $sql.= "ON (USER_PEER_TO.PEER_UID = TUSER.UID AND USER_PEER_TO.UID = '$uid') ";
-    $sql.= "WHERE (PM.TYPE = ". PM_SAVED_OUT. " AND PM.FROM_UID = '$uid') OR ";
-    $sql.= "(PM.TYPE = ". PM_SAVED_IN. " AND PM.TO_UID = '$uid') ";
+    $sql.= "WHERE ((PM.TYPE & $pm_saved_out > 0) AND PM.FROM_UID = '$uid') OR ";
+    $sql.= "((PM.TYPE & $pm_saved_in > 0) AND PM.TO_UID = '$uid') ";
     $sql.= "ORDER BY $sort_by $sort_dir ";
 
     if (is_numeric($offset)) $sql.= "LIMIT $offset, 10";
@@ -499,8 +508,10 @@ function pm_get_drafts($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
     $pm_get_drafts_array = array();
     $mid_array = array();
 
+    $pm_draft_items = PM_DRAFT_ITEMS;
+
     $sql = "SELECT COUNT(MID) AS MESSAGE_COUNT FROM PM PM ";
-    $sql.= "WHERE TYPE = ". PM_SAVED_DRAFT. " AND FROM_UID = '$uid'";
+    $sql.= "WHERE (TYPE & $pm_draft_items > 0) AND FROM_UID = '$uid'";
 
     if (!$result = db_query($sql, $db_pm_get_drafts)) return false;
 
@@ -518,7 +529,7 @@ function pm_get_drafts($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
     $sql.= "ON (USER_PEER_FROM.PEER_UID = FUSER.UID AND USER_PEER_FROM.UID = '$uid') ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER_TO ";
     $sql.= "ON (USER_PEER_TO.PEER_UID = TUSER.UID AND USER_PEER_TO.UID = '$uid') ";
-    $sql.= "WHERE TYPE = ". PM_SAVED_DRAFT. " AND FROM_UID = '$uid' ";
+    $sql.= "WHERE (PM.TYPE & $pm_draft_items > 0) AND PM.FROM_UID = '$uid' ";
     $sql.= "ORDER BY $sort_by $sort_dir ";
 
     if (is_numeric($offset)) $sql.= "LIMIT $offset, 10";
@@ -596,16 +607,23 @@ function pm_search_execute($search_string, &$error)
         $pm_max_user_messages = forum_get_setting('pm_max_user_messages', false, 100);
         $limit = ($pm_max_user_messages > 1000) ? 1000 : $pm_max_user_messages;
 
+        $pm_inbox_items  = PM_INBOX_ITEMS;
+        $pm_sent_items   = PM_SENT_ITEMS;
+        $pm_outbox_items = PM_OUTBOX_ITEMS;
+        $pm_saved_out    = PM_SAVED_OUT;
+        $pm_saved_in     = PM_SAVED_IN;
+        $pm_draft_items  = PM_DRAFT_ITEMS;
+
         $sql = "INSERT INTO PM_SEARCH_RESULTS (UID, MID, TYPE, FROM_UID, TO_UID, ";
         $sql.= "SUBJECT, RECIPIENTS, CREATED) SELECT $uid, PM.MID, PM.TYPE, ";
         $sql.= "PM.FROM_UID, PM.TO_UID, PM.SUBJECT, PM.RECIPIENTS, PM.CREATED ";
         $sql.= "FROM PM LEFT JOIN PM_CONTENT ON (PM_CONTENT.MID = PM.MID) ";
-        $sql.= "WHERE ((PM.TYPE = PM.TYPE & ". PM_INBOX_ITEMS. " AND PM.TO_UID = '$uid') ";
-        $sql.= "OR (PM.TYPE = PM.TYPE & ". PM_SENT_ITEMS. " AND PM.FROM_UID = '$uid' AND PM.SMID = 0) ";
-        $sql.= "OR (PM.TYPE = PM.TYPE & ". PM_OUTBOX_ITEMS. " AND PM.FROM_UID = '$uid') ";
-        $sql.= "OR ((PM.TYPE = ". PM_SAVED_OUT. " AND PM.FROM_UID = '$uid') OR ";
-        $sql.= "(PM.TYPE = ". PM_SAVED_IN. " AND PM.TO_UID = '$uid') OR ";
-        $sql.= "(TYPE = ". PM_SAVED_DRAFT. " AND FROM_UID = '$uid'))) ";
+        $sql.= "WHERE (((PM.TYPE & $pm_inbox_items > 0) AND PM.TO_UID = '$uid') ";
+        $sql.= "OR ((PM.TYPE & $pm_sent_items > 0) AND PM.FROM_UID = '$uid' AND PM.SMID = 0) ";
+        $sql.= "OR ((PM.TYPE & $pm_outbox_items > 0) AND PM.FROM_UID = '$uid') ";
+        $sql.= "OR ((PM.TYPE = $pm_saved_out AND PM.FROM_UID = '$uid') OR ";
+        $sql.= "((PM.TYPE & $pm_saved_in > 0) AND PM.TO_UID = '$uid') OR ";
+        $sql.= "((PM.TYPE & $pm_draft_items > 0) AND PM.FROM_UID = '$uid'))) ";
         $sql.= "AND (MATCH(PM_CONTENT.CONTENT) AGAINST('$search_string_checked'$bool_mode) ";
         $sql.= "OR (MATCH(PM.SUBJECT) AGAINST('$search_string_checked'$bool_mode))) ";
         $sql.= "ORDER BY CREATED LIMIT $limit";
@@ -724,13 +742,20 @@ function pm_get_folder_message_counts()
                                  PM_FOLDER_OUTBOX => 0, PM_FOLDER_SAVED  => 0,
                                  PM_FOLDER_DRAFTS => 0);
 
+    $pm_inbox_items  = PM_INBOX_ITEMS;
+    $pm_sent_items   = PM_SENT_ITEMS;
+    $pm_outbox_items = PM_OUTBOX_ITEMS;
+    $pm_saved_out    = PM_SAVED_OUT;
+    $pm_saved_in     = PM_SAVED_IN;
+    $pm_draft_items  = PM_DRAFT_ITEMS;
+
     $sql = "SELECT COUNT(MID) AS MESSAGE_COUNT, TYPE ";
-    $sql.= "FROM PM WHERE ((TYPE & ". PM_INBOX_ITEMS. " > 0) AND TO_UID = '$uid') ";
-    $sql.= "OR ((TYPE & ". PM_OUTBOX_ITEMS. " > 0) AND FROM_UID = '$uid') ";
-    $sql.= "OR ((TYPE & ". PM_SENT_ITEMS. " > 0) AND FROM_UID = '$uid' AND SMID = 0) ";
-    $sql.= "OR (TYPE = ". PM_SAVED_OUT. " AND FROM_UID = '$uid') ";
-    $sql.= "OR (TYPE = ". PM_SAVED_IN. " AND TO_UID = '$uid') ";
-    $sql.= "OR (TYPE = ". PM_SAVED_DRAFT. " AND FROM_UID = '$uid') ";
+    $sql.= "FROM PM WHERE ((TYPE & $pm_inbox_items > 0) AND TO_UID = '$uid') ";
+    $sql.= "OR ((TYPE & $pm_sent_items > 0) AND FROM_UID = '$uid' AND SMID = 0) ";
+    $sql.= "OR ((TYPE & $pm_outbox_items > 0) AND FROM_UID = '$uid') ";
+    $sql.= "OR ((TYPE & $pm_saved_out > 0) AND FROM_UID = '$uid') ";
+    $sql.= "OR ((TYPE & $pm_saved_in > 0) AND TO_UID = '$uid') ";
+    $sql.= "OR ((TYPE & $pm_draft_items > 0) AND FROM_UID = '$uid') ";
     $sql.= "GROUP BY TYPE";
 
     if (!$result = db_query($sql, $db_pm_get_folder_message_counts)) return false;
@@ -790,14 +815,20 @@ function pm_get_free_space($uid = false)
 
     $pm_max_user_messages = forum_get_setting('pm_max_user_messages', false, 100);
 
-    $sql = "SELECT COUNT(MID) AS PM_USER_MESSAGES_COUNT ";
-    $sql.= "FROM PM ";
-    $sql.= "WHERE ((TYPE & ". PM_INBOX_ITEMS. " > 0) AND TO_UID = '$uid') ";
-    $sql.= "OR ((TYPE & ". PM_OUTBOX_ITEMS. " > 0) AND FROM_UID = '$uid') ";
-    $sql.= "OR ((TYPE & ". PM_SENT_ITEMS. " > 0) AND FROM_UID = '$uid') ";
-    $sql.= "OR (TYPE = ". PM_SAVED_OUT. " AND FROM_UID = '$uid') ";
-    $sql.= "OR (TYPE = ". PM_SAVED_IN. " AND TO_UID = '$uid') ";
-    $sql.= "OR (TYPE = ". PM_SAVED_DRAFT. " AND FROM_UID = '$uid')";
+    $pm_inbox_items  = PM_INBOX_ITEMS;
+    $pm_sent_items   = PM_SENT_ITEMS;
+    $pm_outbox_items = PM_OUTBOX_ITEMS;
+    $pm_saved_out    = PM_SAVED_OUT;
+    $pm_saved_in     = PM_SAVED_IN;
+    $pm_draft_items  = PM_DRAFT_ITEMS;
+
+    $sql = "SELECT COUNT(MID) AS MESSAGE_COUNT ";
+    $sql.= "FROM PM WHERE ((TYPE & $pm_inbox_items > 0) AND TO_UID = '$uid') ";
+    $sql.= "OR ((TYPE & $pm_sent_items > 0) AND FROM_UID = '$uid' AND SMID = 0) ";
+    $sql.= "OR ((TYPE & $pm_outbox_items > 0) AND FROM_UID = '$uid') ";
+    $sql.= "OR ((TYPE & $pm_saved_out > 0) AND FROM_UID = '$uid') ";
+    $sql.= "OR ((TYPE & $pm_saved_in > 0) AND TO_UID = '$uid') ";
+    $sql.= "OR ((TYPE & $pm_draft_items > 0) AND FROM_UID = '$uid')";
 
     if (!$result = db_query($sql, $db_pm_get_free_space)) return false;
 
@@ -945,6 +976,13 @@ function pm_message_get($mid)
 
     if (!is_numeric($mid)) return false;
 
+    $pm_inbox_items  = PM_INBOX_ITEMS;
+    $pm_sent_items   = PM_SENT_ITEMS;
+    $pm_outbox_items = PM_OUTBOX_ITEMS;
+    $pm_saved_out    = PM_SAVED_OUT;
+    $pm_saved_in     = PM_SAVED_IN;
+    $pm_draft_items  = PM_DRAFT_ITEMS;
+
     // Fetch the single message as specified by the MID
 
     $sql = "SELECT PM.MID, PM.TYPE, PM.FROM_UID, PM.TO_UID, PM.SUBJECT, ";
@@ -958,14 +996,13 @@ function pm_message_get($mid)
     $sql.= "ON (USER_PEER_FROM.PEER_UID = FUSER.UID AND USER_PEER_FROM.UID = '$uid') ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER_TO ";
     $sql.= "ON (USER_PEER_TO.PEER_UID = TUSER.UID AND USER_PEER_TO.UID = '$uid') ";
-    $sql.= "WHERE ((PM.TYPE = PM.TYPE & ". PM_INBOX_ITEMS. " AND PM.TO_UID = '$uid') ";
-    $sql.= "OR (PM.TYPE = PM.TYPE & ". PM_SENT_ITEMS. " AND PM.FROM_UID = '$uid') ";
-    $sql.= "OR (PM.TYPE = PM.TYPE & ". PM_OUTBOX_ITEMS. " AND PM.FROM_UID = '$uid') ";
-    $sql.= "OR ((PM.TYPE = ". PM_SAVED_OUT. " AND PM.FROM_UID = '$uid') OR ";
-    $sql.= "(PM.TYPE = ". PM_SAVED_IN. " AND PM.TO_UID = '$uid') OR ";
-    $sql.= "(TYPE = ". PM_SAVED_DRAFT. " AND FROM_UID = '$uid'))) ";
-    $sql.= "AND PM.MID = '$mid' ";
-    $sql.= "LIMIT 0,1";
+    $sql.= "WHERE ((PM.TYPE & $pm_inbox_items > 0) AND PM.TO_UID = '$uid') ";
+    $sql.= "OR ((PM.TYPE & $pm_sent_items > 0) AND PM.FROM_UID = '$uid' AND PM.SMID = 0) ";
+    $sql.= "OR ((PM.TYPE & $pm_outbox_items > 0) AND PM.FROM_UID = '$uid') ";
+    $sql.= "OR ((PM.TYPE & $pm_saved_out > 0) AND PM.FROM_UID = '$uid') ";
+    $sql.= "OR ((PM.TYPE & $pm_saved_in > 0) AND PM.TO_UID = '$uid') ";
+    $sql.= "OR ((PM.TYPE & $pm_draft_items > 0) AND PM.FROM_UID = '$uid') ";
+    $sql.= "LIMIT 0, 1";
 
     if (!$result = db_query($sql, $db_pm_message_get)) return false;
 
@@ -1081,7 +1118,10 @@ function pm_display($pm_message_array, $folder, $preview = false, $export_html =
         if (isset($pm_message_array['RECIPIENTS']) && strlen(trim($pm_message_array['RECIPIENTS'])) > 0) {
 
             $recipient_array = preg_split("/[;|,]/", trim($pm_message_array['RECIPIENTS']));
-            $recipient_array = array_unique(array_merge($recipient_array, array($pm_message_array['TNICK'])));
+
+            if ($pm_message_array['TO_UID'] > 0) {
+                $recipient_array = array_unique(array_merge($recipient_array, array($pm_message_array['TLOGON'])));               
+            }
             
             if ($export_html === false) $recipient_array = array_map('user_profile_popup_callback', $recipient_array);
 
@@ -1259,6 +1299,13 @@ function pm_message_get_folder($mid, $type = 0)
                                    32 => PM_FOLDER_SAVED,
                                    64 => PM_FOLDER_DRAFTS);
 
+    $pm_inbox_items  = PM_INBOX_ITEMS;
+    $pm_sent_items   = PM_SENT_ITEMS;
+    $pm_outbox_items = PM_OUTBOX_ITEMS;
+    $pm_saved_out    = PM_SAVED_OUT;
+    $pm_saved_in     = PM_SAVED_IN;
+    $pm_draft_items  = PM_DRAFT_ITEMS;
+
     // Check the passed type before doing a query.
 
     if (in_array($type, array_keys($pm_message_type_array), true)) {
@@ -1268,12 +1315,12 @@ function pm_message_get_folder($mid, $type = 0)
     // Fetch the message type as specified by the MID
 
     $sql = "SELECT TYPE FROM PM WHERE MID = '$mid' ";
-    $sql.= "AND ((TYPE = TYPE & ". PM_INBOX_ITEMS. " AND TO_UID = '$uid') ";
-    $sql.= "OR (TYPE = TYPE & ". PM_SENT_ITEMS. " AND FROM_UID = '$uid') ";
-    $sql.= "OR (TYPE = TYPE & ". PM_OUTBOX_ITEMS. " AND FROM_UID = '$uid') ";
-    $sql.= "OR ((TYPE = ". PM_SAVED_OUT. " AND FROM_UID = '$uid') OR ";
-    $sql.= "(TYPE = ". PM_SAVED_IN. " AND TO_UID = '$uid') OR ";
-    $sql.= "(TYPE = ". PM_SAVED_DRAFT. " AND FROM_UID = '$uid')))";
+    $sql.= "AND (((TYPE & $pm_inbox_items > 0) AND TO_UID = '$uid') ";
+    $sql.= "OR ((TYPE & $pm_sent_items > 0) AND FROM_UID = '$uid' AND SMID = 0) ";
+    $sql.= "OR ((TYPE & $pm_outbox_items > 0) AND FROM_UID = '$uid') ";
+    $sql.= "OR ((TYPE & $pm_saved_out > 0) AND FROM_UID = '$uid') ";
+    $sql.= "OR ((TYPE & $pm_saved_in > 0) AND TO_UID = '$uid') ";
+    $sql.= "OR ((TYPE & $pm_draft_items > 0) AND FROM_UID = '$uid')) ";
     
     if (!$result = db_query($sql, $db_pm_message_get_folder)) return false;
 
@@ -1471,12 +1518,14 @@ function pm_save_message($subject, $content, $tuid, $recipient_list)
     $recipient_list = db_escape_string($recipient_list);
     $content = db_escape_string($content);
 
+    $pm_saved_draft = PM_SAVED_DRAFT;
+
     if (pm_get_free_space($uid) > 0) {
 
         // Insert the main PM Data into the database
 
         $sql = "INSERT INTO PM (TYPE, TO_UID, FROM_UID, SUBJECT, RECIPIENTS, ";
-        $sql.= "CREATED, NOTIFIED) VALUES (". PM_SAVED_DRAFT. ", '$tuid', '$uid', ";
+        $sql.= "CREATED, NOTIFIED) VALUES ('$pm_saved_draft', '$tuid', '$uid', ";
         $sql.= "'$subject', '$recipient_list', NOW(), 0)";
 
         if ($result = db_query($sql, $db_pm_save_message)) {
@@ -1636,18 +1685,25 @@ function pm_archive_message($mid)
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
+    $pm_saved_in  = PM_SAVED_IN;
+    $pm_saved_out = PM_SAVED_OUT;
+
+    $pm_inbox_items = PM_INBOX_ITEMS;
+    $pm_sent_items  = PM_SENT_ITEMS;
+
     // Archive any PM that are in the User's Inbox
 
-    $sql = "UPDATE PM SET TYPE = ". PM_SAVED_IN. " ";
-    $sql.= "WHERE MID = '$mid' AND (TYPE = ". PM_READ. " OR TYPE = ". PM_UNREAD. ") ";
+    $sql = "UPDATE PM SET TYPE = '$pm_saved_in' ";
+    $sql.= "WHERE MID = '$mid' AND (TYPE & $pm_inbox_items > 0) ";
     $sql.= "AND TO_UID = '$uid'";
 
     if (!$result = db_query($sql, $db_pm_archive_message)) return false;
 
     // Archive any PM that are in the User's Sent Items
 
-    $sql = "UPDATE PM SET TYPE = ". PM_SAVED_OUT. " ";
-    $sql.= "WHERE MID = '$mid' AND TYPE = ". PM_SENT. " AND FROM_UID = '$uid'";
+    $sql = "UPDATE PM SET TYPE = '$pm_saved_out' ";
+    $sql.= "WHERE MID = '$mid' AND (TYPE & $pm_sent_items > 0) ";
+    $sql.= "AND FROM_UID = '$uid'";
 
     if (!$result = db_query($sql, $db_pm_archive_message)) return false;
 }
@@ -1772,10 +1828,12 @@ function pm_get_unread_count()
 
     if (user_is_guest()) return false;
 
+    $pm_unread = PM_UNREAD;
+
     // Check to see if the user has any new PMs
 
-    $sql = "SELECT COUNT(MID) FROM PM ";
-    $sql.= "WHERE TYPE = ". PM_UNREAD. " AND TO_UID = '$uid'";
+    $sql = "SELECT COUNT(MID) FROM PM WHERE (TYPE & $pm_unread > 0) ";
+    $sql.= "AND TO_UID = '$uid'";
 
     if (!$result = db_query($sql, $db_pm_get_unread_count)) return false;
     
@@ -1806,12 +1864,14 @@ function pm_user_prune_folders($uid = false)
 
     if (isset($user_prefs['PM_AUTO_PRUNE']) && intval($user_prefs['PM_AUTO_PRUNE']) > 0) {
 
+        $pm_read = PM_READ;
+        $pm_sent_items = PM_SENT_ITEMS;
+        
         $pm_prune_length = intval($user_prefs['PM_AUTO_PRUNE']);
         $pm_prune_length = ($pm_prune_length * DAY_IN_SECONDS);
 
-        $sql = "DELETE LOW_PRIORITY FROM PM WHERE ";
-        $sql.= "((TYPE = TYPE & ". PM_READ. " AND TO_UID = '$uid') ";
-        $sql.= "OR (TYPE = TYPE & ". PM_SENT_ITEMS. " AND FROM_UID = '$uid')) ";
+        $sql = "DELETE LOW_PRIORITY FROM PM WHERE (((TYPE & $pm_read > 0) AND TO_UID = '$uid') ";
+        $sql.= "OR ((TYPE & $pm_sent_items > 0) AND FROM_UID = '$uid')) ";
         $sql.= "AND CREATED < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $pm_prune_length)";
 
         if (!$result = db_query($sql, $db_pm_prune_folders)) return false;
@@ -1844,10 +1904,12 @@ function pm_system_prune_folders()
 
         if ($pm_prune_length > 0) {
             
+            $pm_read = PM_READ;
+            $pm_sent_items = PM_SENT_ITEMS;
+            
             $pm_prune_length = ($pm_prune_length * DAY_IN_SECONDS);
 
-            $sql = "DELETE LOW_PRIORITY FROM PM WHERE ";
-            $sql.= "((TYPE = TYPE & ". PM_READ. ") OR (TYPE = TYPE & ". PM_SENT_ITEMS. ")) ";
+            $sql = "DELETE LOW_PRIORITY FROM PM WHERE ((TYPE & $pm_read > 0) OR (TYPE & $pm_sent_items > 0)) ";
             $sql.= "AND CREATED < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $pm_prune_length)";
 
             if (!$result = db_query($sql, $db_pm_prune_folders)) return false;
@@ -2208,9 +2270,11 @@ function pm_export_xml($folder, &$zip_file)
 
     if ($pm_messages_array = pm_export_get_messages($folder)) {
 
+        $beehive_version = BEEHIVE_VERSION;
+        
         $pm_display = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n";
         $pm_display.= "  <beehiveforum>\n";
-        $pm_display.= "    <version>". BEEHIVE_VERSION. "</version>\n";
+        $pm_display.= "    <version>$beehive_version</version>\n";
         $pm_display.= "    <messages>\n";
 
         foreach($pm_messages_array['message_array'] as $pm_message) {

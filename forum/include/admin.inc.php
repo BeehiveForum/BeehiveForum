@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.118 2007-05-06 20:33:42 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.119 2007-05-18 11:49:28 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -312,8 +312,8 @@ function admin_add_word_filter($filter_name, $match_text, $replace_text, $filter
     $match_text   = db_escape_string($match_text);
     $replace_text = db_escape_string($replace_text);
 
-    if (!is_numeric($filter_option)) $filter_option = 0;
-    if (!is_numeric($filter_enabled)) $filter_enabled = 0;
+    if (!is_numeric($filter_option)) $filter_option = WORD_FILTER_TYPE_ALL;
+    if (!is_numeric($filter_enabled)) $filter_enabled = WORD_FILTER_ENABLED;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -343,8 +343,8 @@ function admin_update_word_filter($filter_id, $filter_name, $match_text, $replac
 
     if (!is_numeric($filter_id)) return false;
 
-    if (!is_numeric($filter_option)) $filter_option = 0;
-    if (!is_numeric($filter_enabled)) $filter_enabled = 0;
+    if (!is_numeric($filter_option)) $filter_option = WORD_FILTER_TYPE_ALL;
+    if (!is_numeric($filter_enabled)) $filter_enabled = WORD_FILTER_ENABLED;
 
     $filter_name  = db_escape_string($filter_name);
     $match_text   = db_escape_string($match_text);
@@ -374,7 +374,7 @@ function admin_update_word_filter($filter_id, $filter_name, $match_text, $replac
 * @param integer $offset - Offset of the rows returned by the query
 */
 
-function admin_user_search($user_search, $sort_by = 'VISITOR_LOG.LAST_LOGON', $sort_dir = 'DESC', $filter = 0, $offset = 0)
+function admin_user_search($user_search, $sort_by = 'VISITOR_LOG.LAST_LOGON', $sort_dir = 'DESC', $filter = ADMIN_USER_FILTER_NONE, $offset = 0)
 {
     $db_user_search = db_connect();
 
@@ -385,7 +385,7 @@ function admin_user_search($user_search, $sort_by = 'VISITOR_LOG.LAST_LOGON', $s
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
 
     if (!is_numeric($offset)) $offset = 0;
-    if (!is_numeric($filter)) $filter = 0;
+    if (!is_numeric($filter)) $filter = ADMIN_USER_FILTER_NONE;
 
     if ($table_data = get_table_prefix()) {
         $forum_fid = $table_data['FID'];
@@ -401,17 +401,17 @@ function admin_user_search($user_search, $sort_by = 'VISITOR_LOG.LAST_LOGON', $s
 
     switch ($filter) {
 
-        case 1: // Online Users
+        case ADMIN_USER_FILTER_ONLINE: // Online Users
 
             $having_sql = "HAVING (SESSIONS.HASH IS NOT NULL)";
             break;
 
-        case 2: // Offline Users
+        case ADMIN_USER_FILTER_OFFLINE: // Offline Users
 
             $having_sql = "HAVING (SESSIONS.HASH IS NULL)";
             break;
 
-        case 3: // Users awaiting approval
+        case ADMIN_USER_FILTER_APPROVAL: // Users awaiting approval
 
             $having_sql = "HAVING (USER_PERM & $up_approved) = 0 ";
             $having_sql.= "AND (USER_PERM & $up_banned) = 0 ";
@@ -419,7 +419,7 @@ function admin_user_search($user_search, $sort_by = 'VISITOR_LOG.LAST_LOGON', $s
 
             break;
 
-        case 4: // Banned users
+        case ADMIN_USER_FILTER_BANNED: // Banned users
 
             $having_sql = "HAVING (USER_PERM & $up_banned) > 0";
             break;
@@ -492,7 +492,7 @@ function admin_user_search($user_search, $sort_by = 'VISITOR_LOG.LAST_LOGON', $s
 * @param integer $offset - Offset of the rows returned by the query
 */
 
-function admin_user_get_all($sort_by = 'VISITOR_LOG.LAST_LOGON', $sort_dir = 'ASC', $filter = 0, $offset = 0)
+function admin_user_get_all($sort_by = 'VISITOR_LOG.LAST_LOGON', $sort_dir = 'ASC', $filter = ADMIN_USER_FILTER_NONE, $offset = 0)
 {
     $db_user_get_all = db_connect();
     $user_get_all_array = array();
@@ -504,7 +504,7 @@ function admin_user_get_all($sort_by = 'VISITOR_LOG.LAST_LOGON', $sort_dir = 'AS
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'ASC';
 
     if (!is_numeric($offset)) $offset = 0;
-    if (!is_numeric($filter)) $filter = 0;
+    if (!is_numeric($filter)) $filter = ADMIN_USER_FILTER_NONE;
 
     if ($table_data = get_table_prefix()) {
         $forum_fid = $table_data['FID'];
@@ -520,17 +520,17 @@ function admin_user_get_all($sort_by = 'VISITOR_LOG.LAST_LOGON', $sort_dir = 'AS
 
     switch ($filter) {
 
-        case 1: // Online Users
+        case ADMIN_USER_FILTER_ONLINE: // Online Users
 
             $having_sql = "HAVING (SESSIONS.HASH IS NOT NULL)";
             break;
 
-        case 2: // Offline Users
+        case ADMIN_USER_FILTER_OFFLINE: // Offline Users
 
             $having_sql = "HAVING (SESSIONS.HASH IS NULL)";
             break;
 
-        case 3: // Users awaiting approval
+        case ADMIN_USER_FILTER_APPROVAL: // Users awaiting approval
 
             $having_sql = "HAVING (USER_PERM & $up_approved) = 0 ";
             $having_sql.= "AND (USER_PERM & $up_banned) = 0 ";
@@ -538,7 +538,7 @@ function admin_user_get_all($sort_by = 'VISITOR_LOG.LAST_LOGON', $sort_dir = 'AS
 
             break;
 
-        case 4: // Banned users
+        case ADMIN_USER_FILTER_BANNED: // Banned users
 
             $having_sql = "HAVING (USER_PERM & $up_banned) > 0";
             break;

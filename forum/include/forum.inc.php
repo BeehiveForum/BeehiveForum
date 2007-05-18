@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.227 2007-05-15 22:13:17 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.228 2007-05-18 11:49:29 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -2014,7 +2014,7 @@ function forum_search($forum_search, $offset)
 
                 if (($unread_cutoff_stamp = forum_get_unread_cutoff()) !== false) {
 
-                    $sql = "SELECT SUM(THREAD.LENGTH) - SUM(COALESCE(USER_THREAD.LAST_READ, 0)) ";
+                    $sql = "SELECT SUM(THREAD.LENGTH) - COALESCE(SUM(USER_THREAD.LAST_READ), 0) ";
                     $sql.= "AS UNREAD_MESSAGES FROM {$forum_data['PREFIX']}THREAD THREAD ";
                     $sql.= "LEFT JOIN {$forum_data['PREFIX']}USER_THREAD USER_THREAD ";
                     $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";

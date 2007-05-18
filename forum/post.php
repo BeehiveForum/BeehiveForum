@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.306 2007-05-15 22:13:16 decoyduck Exp $ */
+/* $Id: post.php,v 1.307 2007-05-18 11:49:28 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -990,15 +990,15 @@ echo "                        <h2>{$lang['message']}</h2>\n";
 
 $t_content = ($fix_html ? $post->getTidyContent() : $post->getOriginalContent(true));
 
-$tool_type = 0;
+$tool_type = POST_TOOLBAR_DISABLED;
 
 if ($page_prefs & POST_TOOLBAR_DISPLAY) {
-    $tool_type = 1;
+    $tool_type = POST_TOOLBAR_SIMPLE;
 }else if ($page_prefs & POST_TINYMCE_DISPLAY) {
-    $tool_type = 2;
+    $tool_type = POST_TOOLBAR_TINYMCE;
 }
 
-if ($allow_html == true && $tool_type != 0) {
+if ($allow_html == true && $tool_type <> POST_TOOLBAR_DISABLED) {
     echo $tools->toolbar(false, form_submit("submit", $lang['post'], "onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\""));
 }else {
     $tools->setTinyMCE(false);

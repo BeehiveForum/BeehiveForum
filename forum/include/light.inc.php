@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.142 2007-05-15 22:13:17 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.143 2007-05-18 11:49:29 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -138,7 +138,7 @@ function light_draw_logon_form()
     echo "</form>\n";
 }
 
-function light_draw_thread_list($mode = 0, $folder = false, $start_from = 0)
+function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start_from = 0)
 {
     $webtag = get_webtag($webtag_search);
 
@@ -467,12 +467,12 @@ function light_draw_thread_list($mode = 0, $folder = false, $start_from = 0)
         echo "      ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
 
         $labels = array($lang['alldiscussions'], $lang['next50discussions']);
-        $selected_option = 0;
+        $selected_option = THREAD_MARK_READ_ALL;
 
         if (isset($visible_threads_array) && is_array($visible_threads_array)) {
 
             $labels[] = $lang['visiblediscussions'];
-            $selected_option = 2;
+            $selected_option = THREAD_MARK_READ_VISIBLE;
 
             foreach ($visible_threads_array as $tid) {
                 echo "        ", form_input_hidden("tid_array[]", _htmlentities($tid)), "\n";
@@ -484,7 +484,7 @@ function light_draw_thread_list($mode = 0, $folder = false, $start_from = 0)
             echo "        ", form_input_hidden('folder', _htmlentities($folder)), "\n";
 
             $labels[] = $lang['selectedfolder'];
-            $selected_option = 3;
+            $selected_option = THREAD_MARK_READ_FOLDER;
         }
 
         echo light_form_dropdown_array("markread", range(0, sizeof($labels) -1), $labels, $selected_option). "\n";
@@ -655,7 +655,7 @@ function light_poll_confirm_close($tid)
     echo "</form>\n";
 }
 
-function light_messages_top($msg, $thread_prefix, $thread_title, $interest_level = 0, $sticky = "N", $closed = false, $locked = false)
+function light_messages_top($msg, $thread_prefix, $thread_title, $interest_level = THREAD_NOINTEREST, $sticky = "N", $closed = false, $locked = false)
 {
     $lang = load_language_file();
 

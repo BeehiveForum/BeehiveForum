@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.451 2007-05-15 22:13:17 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.452 2007-05-18 11:49:29 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -517,7 +517,7 @@ function message_split_fiddle($content, $emoticons = true, $ignore_sig = false)
     return $message;
 }
 
-function messages_top($folder_title, $thread_prefix, $thread_title, $interest_level = 0, $sticky = "N", $closed = false, $locked = false, $deleted = false)
+function messages_top($folder_title, $thread_prefix, $thread_title, $interest_level = THREAD_NOINTEREST, $sticky = "N", $closed = false, $locked = false, $deleted = false)
 {
     $lang = load_language_file();
 
@@ -1816,25 +1816,6 @@ function messages_forum_stats($tid, $pid)
             echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
             echo "                      </tr>\n";
             echo "                    </table>\n";
-
-            if (isset($GLOBALS['queries']) && is_array($GLOBALS['queries'])) {
-
-                echo "                    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
-                echo "                      <tr>\n";
-                echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
-                echo "                        <td align=\"left\">\n";
-
-                foreach ($GLOBALS['queries'] as $sql => $querytime) {
-
-                    echo "                          <p>$sql => $querytime</p>\n";
-                }
-
-                echo "                        </td>\n";
-                echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
-                echo "                      </tr>\n";
-                echo "                    </table>\n";
-            }
-
             echo "                    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";

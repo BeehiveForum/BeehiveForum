@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.295 2007-05-15 22:13:16 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.296 2007-05-18 11:49:28 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -790,12 +790,12 @@ if (bh_session_get_value('UID') != 0) {
     echo "        ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 
     $labels = array($lang['alldiscussions'], $lang['next50discussions']);
-    $selected_option = 0;
+    $selected_option = THREAD_MARK_READ_ALL;
 
     if (isset($visible_threads_array) && is_array($visible_threads_array)) {
 
         $labels[] = $lang['visiblediscussions'];
-        $selected_option = 2;
+        $selected_option = THREAD_MARK_READ_VISIBLE;
 
         foreach ($visible_threads_array as $tid) {
             echo "        ", form_input_hidden("tid_array[]", _htmlentities($tid)), "\n";
@@ -807,7 +807,7 @@ if (bh_session_get_value('UID') != 0) {
         echo "        ", form_input_hidden('folder', _htmlentities($folder)), "\n";
 
         $labels[] = $lang['selectedfolder'];
-        $selected_option = 3;
+        $selected_option = THREAD_MARK_READ_FOLDER;
     }
 
     echo "        ", form_dropdown_array("markread", $labels, $selected_option). "\n";

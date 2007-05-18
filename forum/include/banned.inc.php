@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: banned.inc.php,v 1.20 2007-05-06 20:33:42 decoyduck Exp $ */
+/* $Id: banned.inc.php,v 1.21 2007-05-18 11:49:29 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -300,12 +300,18 @@ function check_affected_sessions($ban_type, $ban_data)
 
     $affected_sessions = array();
 
+    $ban_type_ip    = BAN_TYPE_IP;
+    $ban_type_logon = BAN_TYPE_LOGON;
+    $ban_type_nick  = BAN_TYPE_NICK;
+    $ban_type_email = BAN_TYPE_EMAIL;
+    $ban_type_ref   = BAN_TYPE_REF;
+
     $sql = "SELECT DISTINCT SESSIONS.UID, USER.LOGON, USER.NICKNAME FROM SESSIONS ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
-    $sql.= "WHERE ((SESSIONS.IPADDRESS LIKE '$ban_data' AND $ban_type = 1) ";
-    $sql.= "OR (SESSIONS.REFERER LIKE '$ban_data' AND $ban_type = 5)";
-    $sql.= "OR (USER.IPADDRESS LIKE '$ban_data' AND $ban_type = 1) ";
-    $sql.= "OR (USER.REFERER LIKE '$ban_data' AND $ban_type = 5)) ";
+    $sql.= "WHERE ((SESSIONS.IPADDRESS LIKE '$ban_data' AND $ban_type = $ban_type_ip) ";
+    $sql.= "OR (SESSIONS.REFERER LIKE '$ban_data' AND $ban_type = $ban_type_ref)";
+    $sql.= "OR (USER.IPADDRESS LIKE '$ban_data' AND $ban_type = $ban_type_ip) ";
+    $sql.= "OR (USER.REFERER LIKE '$ban_data' AND $ban_type = $ban_type_ref)) ";
     $sql.= "AND SESSIONS.UID > 0";
 
     if (!$result = db_query($sql, $db_check_affected_sessions)) return false;
@@ -319,8 +325,8 @@ function check_affected_sessions($ban_type, $ban_data)
     }
 
     $sql = "SELECT COUNT(SESSIONS.UID) FROM SESSIONS ";
-    $sql.= "WHERE (('$ban_data' LIKE SESSIONS.IPADDRESS AND $ban_type = 1) ";
-    $sql.= "OR (SESSIONS.REFERER LIKE '$ban_data' AND $ban_type = 5)) ";
+    $sql.= "WHERE (('$ban_data' LIKE SESSIONS.IPADDRESS AND $ban_type = $ban_type_ip) ";
+    $sql.= "OR (SESSIONS.REFERER LIKE '$ban_data' AND $ban_type = $ban_type_ref)) ";
     $sql.= "AND SESSIONS.UID = 0";
 
     if (!$result = db_query($sql, $db_check_affected_sessions)) return false;

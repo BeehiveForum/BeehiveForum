@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forums.php,v 1.66 2007-05-15 22:13:16 decoyduck Exp $ */
+/* $Id: admin_forums.php,v 1.67 2007-05-18 11:49:28 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -430,7 +430,7 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
 
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">{$lang['accesslevel']}:</td>\n";
-    echo "                        <td align=\"left\">", form_dropdown_array("t_access", array('' => '&nbsp;', -1 => $lang['closed'], 0 => $lang['open'], 1 => $lang['restricted'], 2 => $lang['passwordprotected']), (isset($_POST['t_access']) && is_numeric($_POST['t_access'])) ? $_POST['t_access'] : ''), "</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("t_access", array('' => '&nbsp;', FORUM_CLOSED => $lang['closed'], FORUM_UNRESTRICTED => $lang['open'], FORUM_RESTRICTED => $lang['restricted'], FORUM_PASSWD_PROTECTED => $lang['passwordprotected']), (isset($_POST['t_access']) && is_numeric($_POST['t_access'])) ? $_POST['t_access'] : ''), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">{$lang['defaultforum']}:</td>\n";
@@ -554,21 +554,21 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
 
         echo "                      <tr>\n";
         echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">{$lang['accesslevel']}:</td>\n";
-        echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_dropdown_array("t_access", array(-1 => $lang['closed'], 0 => $lang['open'], 1 => $lang['restricted'], 2 => $lang['passwordprotected']), (isset($_POST['t_access']) && is_numeric($_POST['t_access'])) ? $forum_data['ACCESS_LEVEL'] : (isset($forum_data['ACCESS_LEVEL']) && is_numeric($forum_data['ACCESS_LEVEL'])) ? $forum_data['ACCESS_LEVEL'] : 0), "&nbsp;", form_submit("changepermissions[{$forum_data['WEBTAG']}]", $lang['change']), "</td>\n";
+        echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_dropdown_array("t_access", array(FORUM_CLOSED => $lang['closed'], FORUM_UNRESTRICTED => $lang['open'], FORUM_RESTRICTED => $lang['restricted'], FORUM_PASSWD_PROTECTED => $lang['passwordprotected']), (isset($_POST['t_access']) && is_numeric($_POST['t_access'])) ? $forum_data['ACCESS_LEVEL'] : (isset($forum_data['ACCESS_LEVEL']) && is_numeric($forum_data['ACCESS_LEVEL'])) ? $forum_data['ACCESS_LEVEL'] : 0), "&nbsp;", form_submit("changepermissions[{$forum_data['WEBTAG']}]", $lang['change']), "</td>\n";
         echo "                      </tr>\n";
 
     }elseif ($forum_data['ACCESS_LEVEL'] == FORUM_PASSWD_PROTECTED) {
 
         echo "                      <tr>\n";
         echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">{$lang['accesslevel']}:</td>\n";
-        echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_dropdown_array("t_access", array(-1 => $lang['closed'], 0 => $lang['open'], 1 => $lang['restricted'], 2 => $lang['passwordprotected']), (isset($_POST['t_access']) && is_numeric($_POST['t_access'])) ? $forum_data['ACCESS_LEVEL'] : (isset($forum_data['ACCESS_LEVEL']) && is_numeric($forum_data['ACCESS_LEVEL'])) ? $forum_data['ACCESS_LEVEL'] : 0), "&nbsp;", form_submit("changepassword[{$forum_data['WEBTAG']}]", $lang['change']), "</td>\n";
+        echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_dropdown_array("t_access", array(FORUM_CLOSED => $lang['closed'], FORUM_UNRESTRICTED => $lang['open'], FORUM_RESTRICTED => $lang['restricted'], FORUM_PASSWD_PROTECTED => $lang['passwordprotected']), (isset($_POST['t_access']) && is_numeric($_POST['t_access'])) ? $forum_data['ACCESS_LEVEL'] : (isset($forum_data['ACCESS_LEVEL']) && is_numeric($forum_data['ACCESS_LEVEL'])) ? $forum_data['ACCESS_LEVEL'] : 0), "&nbsp;", form_submit("changepassword[{$forum_data['WEBTAG']}]", $lang['change']), "</td>\n";
         echo "                      </tr>\n";
 
     }else {
 
         echo "                      <tr>\n";
         echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">{$lang['accesslevel']}:</td>\n";
-        echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_dropdown_array("t_access", array(-1 => $lang['closed'], 0 => $lang['open'], 1 => $lang['restricted'], 2 => $lang['passwordprotected']), (isset($_POST['t_access']) && is_numeric($_POST['t_access'])) ? $forum_data['ACCESS_LEVEL'] : (isset($forum_data['ACCESS_LEVEL']) && is_numeric($forum_data['ACCESS_LEVEL'])) ? $forum_data['ACCESS_LEVEL'] : 0), "</td>\n";
+        echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_dropdown_array("t_access", array(FORUM_CLOSED => $lang['closed'], FORUM_UNRESTRICTED => $lang['open'], FORUM_RESTRICTED => $lang['restricted'], FORUM_PASSWD_PROTECTED => $lang['passwordprotected']), (isset($_POST['t_access']) && is_numeric($_POST['t_access'])) ? $forum_data['ACCESS_LEVEL'] : (isset($forum_data['ACCESS_LEVEL']) && is_numeric($forum_data['ACCESS_LEVEL'])) ? $forum_data['ACCESS_LEVEL'] : 0), "</td>\n";
         echo "                      </tr>\n";
     }
 

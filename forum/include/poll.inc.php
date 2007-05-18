@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.200 2007-05-15 22:13:17 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.201 2007-05-18 11:49:30 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -63,20 +63,20 @@ function poll_create($tid, $poll_options, $answer_groups, $closes, $change_vote,
     }
 
     if (!is_numeric($tid)) return false;
-    if (!is_array($poll_options)) return false;
+
+    if (!is_array($poll_options))  return false;
     if (!is_array($answer_groups)) return false;
-    if (!is_numeric($change_vote)) $change_vote = 1;
-    if (!is_numeric($poll_type)) $poll_type = 0;
-    if (!is_numeric($show_results)) $show_results = 1;
-    if (!is_numeric($poll_vote_type)) $poll_vote_type = 0;
-    if (!is_numeric($option_type)) $option_type = 0;
-    if (!is_numeric($allow_guests)) $option_type = 0;
 
-    if (!forum_get_setting('poll_allow_guests', false)) {
-        $allow_guests = 0;
-    }
+    if (!is_numeric($change_vote))    $change_vote    = POLL_VOTE_CAN_CHANGE;
+    if (!is_numeric($poll_type))      $poll_type      = POLL_HORIZONTAL_GRAPH;
+    if (!is_numeric($show_results))   $show_results   = POLL_SHOW_RESULTS;
+    if (!is_numeric($poll_vote_type)) $poll_vote_type = POLL_VOTE_ANON;
+    if (!is_numeric($option_type))    $option_type    = POLL_OPTIONS_RADIOS;
+    if (!is_numeric($allow_guests))   $allow_guests   = POLL_GUEST_DENIED;
 
-    $question  = db_escape_string(_htmlentities($question));
+    if (!forum_get_setting('poll_allow_guests', false)) $allow_guests = POLL_GUEST_DENIED;
+
+    $question = db_escape_string(_htmlentities($question));
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -112,18 +112,18 @@ function poll_edit($fid, $tid, $thread_title, $poll_question, $poll_options, $an
     $db_poll_edit = db_connect();
 
     if (!is_numeric($tid)) return false;
-    if (!is_array($poll_options)) return false;
-    if (!is_array($answer_groups)) return false;
-    if (!is_numeric($change_vote)) $change_vote = 1;
-    if (!is_numeric($poll_type)) $poll_type = 0;
-    if (!is_numeric($show_results)) $show_results = 1;
-    if (!is_numeric($poll_vote_type)) $poll_vote_type = 0;
-    if (!is_numeric($option_type)) $option_type = 0;
-    if (!is_numeric($allow_guests)) $allow_guests = 0;
 
-    if (!forum_get_setting('poll_allow_guests', false)) {
-        $allow_guests = 0;
-    }
+    if (!is_array($poll_options))  return false;
+    if (!is_array($answer_groups)) return false;
+
+    if (!is_numeric($change_vote))    $change_vote    = POLL_VOTE_CAN_CHANGE;
+    if (!is_numeric($poll_type))      $poll_type      = POLL_HORIZONTAL_GRAPH;
+    if (!is_numeric($show_results))   $show_results   = POLL_SHOW_RESULTS;
+    if (!is_numeric($poll_vote_type)) $poll_vote_type = POLL_VOTE_ANON;
+    if (!is_numeric($option_type))    $option_type    = POLL_OPTIONS_RADIOS;
+    if (!is_numeric($allow_guests))   $allow_guests   = POLL_GUEST_DENIED;
+
+    if (!forum_get_setting('poll_allow_guests', false)) $allow_guests = POLL_GUEST_DENIED;
 
     $edit_uid = bh_session_get_value('UID');
 
@@ -329,7 +329,7 @@ function poll_get_user_votes($tid, $viewstyle)
     $db_poll_get_user_vote_hashes = db_connect();
 
     if (!is_numeric($tid)) return false;
-    if (!is_numeric($viewstyle)) $viewstyle = 0;
+    if (!is_numeric($viewstyle)) $viewstyle = POLL_VIEW_TYPE_OPTION;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -413,7 +413,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
     }
 
     $total_votes  = 0;
-    $optioncount = 0;
+    $option_count = 0;
 
     $polldata['CONTENT'] = "<br />\n";
     $polldata['CONTENT'].= "                <div align=\"center\">\n";
@@ -1011,7 +1011,7 @@ function poll_preview_graph_vert($poll_results)
     $total_votes    = array();
     $max_value     = array();
 
-    $optioncount = 0;
+    $option_count = 0;
     $bar_color     = 1;
 
     for ($i = 0; $i < sizeof($poll_results['OPTION_ID']); $i++) {
@@ -1028,7 +1028,7 @@ function poll_preview_graph_vert($poll_results)
             $total_votes[$poll_results['GROUP_ID'][$i]] += $poll_results['VOTES'][$i];
         }
 
-        $optioncount++;
+        $option_count++;
     }
 
     array_multisort($poll_results['GROUP_ID'], SORT_NUMERIC, SORT_ASC, $poll_results['OPTION_ID'], $poll_results['OPTION_NAME'], $poll_results['VOTES']);
@@ -1050,7 +1050,7 @@ function poll_preview_graph_vert($poll_results)
                 }
 
                 $polldisplay.= "                                  <td align=\"center\" valign=\"bottom\">\n";
-                $polldisplay.= "                                    <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"height: ". floor(round(200 / $max_values[$poll_results['GROUP_ID'][$i]], 2) * $poll_results['VOTES'][$i]). "px; width: ". round(400 / $optioncount, 2). "px\">\n";
+                $polldisplay.= "                                    <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"height: ". floor(round(200 / $max_values[$poll_results['GROUP_ID'][$i]], 2) * $poll_results['VOTES'][$i]). "px; width: ". round(400 / $option_count, 2). "px\">\n";
                 $polldisplay.= "                                      <tr>\n";
                 $polldisplay.= "                                        <td align=\"left\" class=\"pollbar". $bar_color. "\">&nbsp;</td>\n";
                 $polldisplay.= "                                      </tr>\n";
@@ -1059,7 +1059,7 @@ function poll_preview_graph_vert($poll_results)
 
             }else {
 
-                $polldisplay.= "                                  <td align=\"center\" valign=\"bottom\" class=\"postbody\" style=\"width: ". round(400 / $optioncount, 2). "px\">&nbsp;</td>\n";
+                $polldisplay.= "                                  <td align=\"center\" valign=\"bottom\" class=\"postbody\" style=\"width: ". round(400 / $option_count, 2). "px\">&nbsp;</td>\n";
             }
 
             $poll_previous_group = $poll_results['GROUP_ID'][$i];
@@ -1203,7 +1203,7 @@ function poll_preview_graph_table($poll_results)
     $total_votes = array();
     $max_value  = array();
 
-    $optioncount = 0;
+    $option_count = 0;
     $bar_color   = 1;
 
     for ($i = 0; $i < sizeof($poll_results['OPTION_ID']); $i++) {
@@ -1220,7 +1220,7 @@ function poll_preview_graph_table($poll_results)
             $total_votes[$poll_results['GROUP_ID'][$i]] += $poll_results['VOTES'][$i];
         }
 
-        $optioncount++;
+        $option_count++;
     }
 
     array_multisort($poll_results['GROUP_ID'], SORT_NUMERIC, SORT_ASC, $poll_results['OPTION_ID'], $poll_results['OPTION_NAME'], $poll_results['VOTES']);
@@ -1364,7 +1364,7 @@ function poll_vertical_graph($tid)
     $total_votes    = array();
     $max_values    = array();
 
-    $optioncount = 0;
+    $option_count = 0;
 
     $bar_color = 1;
     $poll_group_count = 1;
@@ -1385,7 +1385,7 @@ function poll_vertical_graph($tid)
             $total_votes[$poll_results['GROUP_ID'][$i]] += $poll_results['VOTES'][$i];
         }
 
-        $optioncount++;
+        $option_count++;
     }
 
     array_multisort($poll_results['GROUP_ID'], SORT_NUMERIC, SORT_ASC, $poll_results['OPTION_ID'], $poll_results['OPTION_NAME'], $poll_results['VOTES']);
@@ -1408,7 +1408,7 @@ function poll_vertical_graph($tid)
             if ($poll_results['VOTES'][$i] > 0) {
 
                 $polldisplay.= "                                <td align=\"center\" valign=\"bottom\">\n";
-                $polldisplay.= "                                  <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"height: ". floor(round(200 / $max_values[$poll_results['GROUP_ID'][$i]], 2) * $poll_results['VOTES'][$i]). "px; width: ". round(400 / $optioncount, 2). "px\">\n";
+                $polldisplay.= "                                  <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"height: ". floor(round(200 / $max_values[$poll_results['GROUP_ID'][$i]], 2) * $poll_results['VOTES'][$i]). "px; width: ". round(400 / $option_count, 2). "px\">\n";
                 $polldisplay.= "                                    <tr>\n";
                 $polldisplay.= "                                      <td align=\"left\" class=\"pollbar". $bar_color. "\">&nbsp;</td>\n";
                 $polldisplay.= "                                    </tr>\n";
@@ -1417,7 +1417,7 @@ function poll_vertical_graph($tid)
 
             }else {
 
-                $polldisplay.= "                                <td align=\"center\" valign=\"bottom\" class=\"postbody\" style=\"width: ". round(400 / $optioncount, 2). "px\">&nbsp;</td>\n";
+                $polldisplay.= "                                <td align=\"center\" valign=\"bottom\" class=\"postbody\" style=\"width: ". round(400 / $option_count, 2). "px\">&nbsp;</td>\n";
             }
 
             $poll_previous_group = $poll_results['GROUP_ID'][$i];
@@ -1499,7 +1499,7 @@ function poll_table_graph($tid)
     $total_votes = array();
     $max_values = array();
 
-    $optioncount = 0;
+    $option_count = 0;
 
     $bar_color = 1;
     $poll_group_count = 1;
@@ -1521,7 +1521,7 @@ function poll_table_graph($tid)
             $total_votes[$poll_results['GROUP_ID'][$i]] += $poll_results['VOTES'][$i];
         }
 
-        $optioncount++;
+        $option_count++;
     }
 
     array_multisort($poll_results['GROUP_ID'], SORT_NUMERIC, SORT_ASC, $poll_results['OPTION_ID'], $poll_results['OPTION_NAME'], $poll_results['VOTES']);

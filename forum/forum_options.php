@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.113 2007-05-15 22:13:16 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.114 2007-05-18 11:49:28 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -558,7 +558,7 @@ echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_check
 echo "                        <td align=\"right\"  nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("images_to_links_global", "Y", $lang['setforallforums'], (isset($user_prefs['IMAGES_TO_LINKS_GLOBAL']) ? $user_prefs['IMAGES_TO_LINKS_GLOBAL'] : false)) : '', "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("show_thumbs_enabled", "Y", array("{$lang['show']} ", form_dropdown_array("show_thumbs", array(1 => $lang['smallsized'], 2 => $lang['mediumsized'], 3 => $lang['largesized']), (isset($user_prefs['SHOW_THUMBS']) ? ($user_prefs['SHOW_THUMBS'] > 0 ? $user_prefs['SHOW_THUMBS'] : $user_prefs['SHOW_THUMBS'] * -1) : 2)), " {$lang['thumbnailsforimageattachments']}"), (isset($user_prefs['SHOW_THUMBS']) && $user_prefs['SHOW_THUMBS'] > 0) ? true : false, false), "</td>\n";
+echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("show_thumbs_enabled", "Y", array("{$lang['show']} ", form_dropdown_array("show_thumbs", array(ATTACHMENT_THUMB_SMALL => $lang['smallsized'], ATTACHMENT_THUMB_MEDIUM => $lang['mediumsized'], ATTACHMENT_THUMB_LARGE => $lang['largesized']), (isset($user_prefs['SHOW_THUMBS']) ? ($user_prefs['SHOW_THUMBS'] > 0 ? $user_prefs['SHOW_THUMBS'] : $user_prefs['SHOW_THUMBS'] * -1) : 2)), " {$lang['thumbnailsforimageattachments']}"), (isset($user_prefs['SHOW_THUMBS']) && $user_prefs['SHOW_THUMBS'] > 0) ? true : false, false), "</td>\n";
 echo "                        <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("show_thumbs_global", "Y", $lang['setforallforums'], (isset($user_prefs['SHOW_THUMBS_GLOBAL']) ? $user_prefs['SHOW_THUMBS_GLOBAL'] : false)) : '', "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
@@ -633,7 +633,7 @@ if (sizeof($available_emoticons) > 1) {
 
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['startpage']}:</td>\n";
-echo "                        <td align=\"left\">", form_dropdown_array("start_page", array(0 => $lang['start'], 1 => $lang['messages'], 2 => $lang['pminbox'], 3 => $lang['startwiththreadlist']), (isset($user_prefs['START_PAGE'])) ? $user_prefs['START_PAGE'] : 0), "</td>\n";
+echo "                        <td align=\"left\">", form_dropdown_array("start_page", array(START_PAGE_NORMAL => $lang['start'], START_PAGE_MESSAGES => $lang['messages'], START_PAGE_INBOX => $lang['pminbox'], START_PAGE_THREAD_LIST => $lang['startwiththreadlist']), (isset($user_prefs['START_PAGE'])) ? $user_prefs['START_PAGE'] : 0), "</td>\n";
 echo "                        <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("start_page_global", "Y", $lang['setforallforums'], (isset($user_prefs['START_PAGE_GLOBAL']) ? $user_prefs['START_PAGE_GLOBAL'] : false)) : '', "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";

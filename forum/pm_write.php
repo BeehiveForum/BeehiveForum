@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.170 2007-05-15 22:13:16 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.171 2007-05-18 11:49:28 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -302,7 +302,7 @@ if (isset($t_rmid) && $t_rmid > 0) {
                 // the quote is handled correctly when the user previews
                 // the message.
 
-                $post_html = 1;
+                $post_html = POST_HTML_AUTO;
 
             }elseif (bh_session_get_value('PM_INCLUDE_REPLY') == 'Y') {
 
@@ -328,7 +328,7 @@ if (isset($t_rmid) && $t_rmid > 0) {
                 // the quote is handled correctly when the user previews
                 // the message.
 
-                $post_html = 1;
+                $post_html = POST_HTML_AUTO;
             }
         }
 
@@ -576,7 +576,7 @@ if (isset($_POST['save'])) {
 
             $t_mid = $_POST['editmsg'];
 
-            if (pm_edit_message($t_mid, $t_subject, $t_content, $t_to_uid, $t_recipient_list)) {
+            if (pm_update_saved_message($t_mid, $t_subject, $t_content, $t_to_uid, $t_recipient_list)) {
 
                 html_draw_top();
                 html_display_msg($lang['messagesaved'], $lang['messagewassuccessfullysavedtodraftsfolder'], 'pm.php', 'get', array('continue' => $lang['continue']), array('mid' => $t_mid, 'folder' => PM_FOLDER_DRAFTS));
@@ -653,21 +653,21 @@ if (isset($_POST['t_post_html'])) {
     $t_post_html = $_POST['t_post_html'];
 
     if ($t_post_html == "enabled_auto") {
-        $post_html = 1;
+        $post_html = POST_HTML_AUTO;
     }else if ($t_post_html == "enabled") {
-        $post_html = 2;
+        $post_html = POST_HTML_ENABLED;
     }else {
-        $post_html = 1;
+        $post_html = POST_HTML_DISABLED;
     }
 
 }else if (!isset($post_html)) {
 
     if (($page_prefs & POST_AUTOHTML_DEFAULT) > 0) {
-        $post_html = 1;
+        $post_html = POST_HTML_AUTO;
     }else if (($page_prefs & POST_HTML_DEFAULT) > 0) {
-        $post_html = 2;
+        $post_html = POST_HTML_ENABLED;
     }else {
-        $post_html = 0;
+        $post_html = POST_HTML_DISABLED;
     }
 
     $emots_enabled = !($page_prefs & POST_EMOTICONS_DISABLED);
@@ -953,15 +953,15 @@ $tools = new TextAreaHTML("f_post");
 
 $t_content = ($fix_html ? $post->getTidyContent() : $post->getOriginalContent(true));
 
-$tool_type = 0;
+$tool_type = POST_TOOLBAR_DISABLED;
 
 if ($page_prefs & POST_TOOLBAR_DISPLAY) {
-    $tool_type = 1;
+    $tool_type = POST_TOOLBAR_SIMPLE;
 } else if ($page_prefs & POST_TINYMCE_DISPLAY) {
-    $tool_type = 2;
+    $tool_type = POST_TOOLBAR_TINYMCE;
 }
 
-if ($allow_html == true && $tool_type != 0) {
+if ($allow_html == true && $tool_type <> POST_TOOLBAR_DISABLED) {
     echo $tools->toolbar(false, form_submit('submit', $lang['send'], "onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\""));
 } else {
     $tools->setTinyMCE(false);

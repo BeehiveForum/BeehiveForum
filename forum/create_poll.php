@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.198 2007-05-15 22:13:16 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.199 2007-05-18 11:49:28 decoyduck Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -198,21 +198,21 @@ if (isset($_POST['t_message_html'])) {
     $t_message_html = $_POST['t_message_html'];
 
     if ($t_message_html == "enabled_auto") {
-        $post_html = 1;
+        $post_html = POST_HTML_DISABLED;
     }else if ($t_message_html == "enabled") {
-        $post_html = 2;
+        $post_html = POST_HTML_ENABLED;
     }else {
-        $post_html = 0;
+        $post_html = POST_HTML_DISABLED;
     }
 
 }else {
 
     if (($page_prefs & POST_AUTOHTML_DEFAULT) > 0) {
-        $post_html = 1;
+        $post_html = POST_HTML_DISABLED;
     }else if (($page_prefs & POST_HTML_DEFAULT) > 0) {
-        $post_html = 2;
+        $post_html = POST_HTML_ENABLED;
     }else {
-        $post_html = 0;
+        $post_html = POST_HTML_DISABLED;
     }
 
     $emots_enabled = !($page_prefs & POST_EMOTICONS_DISABLED);
@@ -229,7 +229,7 @@ if (isset($_POST['t_sig_html'])) {
     $t_sig_html = $_POST['t_sig_html'];
 
     if ($t_sig_html != "N") {
-        $sig_html = 2;
+        $sig_html = POST_HTML_ENABLED;
     }
 
     $fetched_sig = false;
@@ -251,7 +251,7 @@ if (isset($_POST['t_sig_html'])) {
     }
 
     if ($t_sig_html != "N") {
-        $sig_html = 2;
+        $sig_html = POST_HTML_ENABLED;
     }
 
     $t_sig = tidy_html($t_sig, false);
@@ -265,7 +265,7 @@ if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
     $aid = md5(uniqid(rand()));
 }
 
-if (!isset($sig_html)) $sig_html = 0;
+if (!isset($sig_html)) $sig_html = POST_HTML_DISABLED;
 
 if (bh_session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 
@@ -415,7 +415,7 @@ if (isset($_POST['cancel'])) {
     if (isset($_POST['allow_guests']) && is_numeric($_POST['allow_guests'])) {
         $t_allow_guests = $_POST['allow_guests'];
     }elseif (!forum_get_setting('poll_allow_guests', false)) {
-        $t_allow_guests = 0;
+        $t_allow_guests = POLL_GUEST_DENIED;
     }else {        
         $error_html = "<h2>{$lang['mustprovidepollguestvotetype']}</h2>\n";
         $valid = false;
@@ -567,10 +567,10 @@ if ($valid && isset($_POST['submit'])) {
             // Check HTML tick box, innit.
 
             $answers = array();
-            $ans_h = 0;
+            $ans_h = POST_HTML_DISABLED;
 
             if ($allow_html == true && isset($t_post_html) && $t_post_html == 'Y') {
-                $ans_h = 2;
+                $ans_h = POST_HTML_ENABLED;
             }
 
             foreach($t_answers as $key => $poll_answer) {
@@ -694,10 +694,10 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
     $totalvotes  = 0;
     $optioncount = 0;
 
-    $ans_h = 0;
+    $ans_h = POST_HTML_DISABLED;
 
     if ($allow_html == true && isset($t_post_html) && $t_post_html == 'Y') {
-        $ans_h = 2;
+        $ans_h = POST_HTML_ENABLED;
     }
 
     foreach($t_answers as $key => $answer_text) {
@@ -1078,18 +1078,22 @@ $tools = new TextAreaHTML("f_poll");
 
 $t_message_text = $post->getTidyContent();
 
-$tool_type = 0;
+$tool_type = POST_TOOLBAR_DISABLED;
+
 if ($page_prefs & POST_TOOLBAR_DISPLAY) {
-    $tool_type = 1;
+    $tool_type = POST_TOOLBAR_SIMPLE;
 } else if ($page_prefs & POST_TINYMCE_DISPLAY) {
-    $tool_type = 2;
+    $tool_type = POST_TOOLBAR_TINYMCE;
 }
 
 if ($allow_html == true && $tool_type != 0) {
-        echo "                      <tr>\n";
-        echo "                        <td align=\"left\">", $tools->toolbar(), "</td>\n";
-        echo "                      </tr>\n";
-} else {
+
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">", $tools->toolbar(), "</td>\n";
+    echo "                      </tr>\n";
+
+}else {
+
     $tools->setTinyMCE(false);
 }
 

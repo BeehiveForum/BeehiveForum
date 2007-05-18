@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_messages.php,v 1.16 2007-05-12 13:39:05 decoyduck Exp $ */
+/* $Id: pm_messages.php,v 1.17 2007-05-18 11:49:28 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -118,13 +118,13 @@ $pm_header_array = array(PM_FOLDER_INBOX   => $lang['pminbox'],
                          PM_FOLDER_DRAFTS  => $lang['pmdrafts'],
                          PM_SEARCH_RESULTS => $lang['searchresults']);
 
-$pm_folder_name_array = array(1  => $lang['pmoutbox'],
-                              2  => $lang['pminbox'],
-                              4  => $lang['pminbox'],
-                              8  => $lang['pmsentitems'],
-                              16 => $lang['pmsaveditems'],
-                              32 => $lang['pmsaveditems'],
-                              64 => $lang['pmdrafts']);
+$pm_folder_name_array = array(PM_OUTBOX      => $lang['pmoutbox'],
+                              PM_UNREAD      => $lang['pminbox'],
+                              PM_READ        => $lang['pminbox'],
+                              PM_SENT        => $lang['pmsentitems'],
+                              PM_SAVED_IN    => $lang['pmsaveditems'],
+                              PM_SAVED_OUT   => $lang['pmsaveditems'],
+                              PM_SAVED_DRAFT => $lang['pmdrafts']);
 
 // Column sorting stuff
 
@@ -503,9 +503,13 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
             if (isset($message['RECIPIENTS']) && strlen(trim($message['RECIPIENTS'])) > 0) {
                 
                 $recipient_array = preg_split("/[;|,]/", trim($message['RECIPIENTS']));
-                $recipient_array = array_unique(array_merge($recipient_array, array($message['TNICK'])));
-                $recipient_array = array_map('user_profile_popup_callback', $recipient_array);
                 
+                if ($message['TO_UID'] > 0) {
+                    $recipient_array = array_unique(array_merge($recipient_array, array($message['TLOGON'])));               
+                }
+
+                $recipient_array = array_map('user_profile_popup_callback', $recipient_array);
+
                 echo "                  <td align=\"left\" class=\"postbody\">", word_filter_add_ob_tags(implode('; ', $recipient_array)), "</td>\n";
 
             }else {

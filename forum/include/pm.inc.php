@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.195 2007-05-14 21:16:39 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.196 2007-05-18 11:49:30 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1446,6 +1446,19 @@ function pm_add_sent_item($smid, $tuid, $fuid, $subject, $content, $aid)
     return false;
 }
 
+/**
+* Save PM.
+*
+* Save a PM to Saved items folder.
+*
+* @return bool - true on success, false on failure.
+* @param integer $mid - Message ID to edit
+* @param string $subject - New subject for message
+* @param string $content - New content for message
+* @param integer $tuid - Recipient UID
+* @param string - $recipient_list - List of recipient logons.
+*/
+
 function pm_save_message($subject, $content, $tuid, $recipient_list)
 {
     $db_pm_save_message = db_connect();
@@ -1485,17 +1498,19 @@ function pm_save_message($subject, $content, $tuid, $recipient_list)
 }
 
 /**
-* Edit Message
+* Update Saved PM
 *
-* Edit a message content and subject
+* Update a saved messages
 *
 * @return bool - true on success, false on failure.
 * @param integer $mid - Message ID to edit
 * @param string $subject - New subject for message
 * @param string $content - New content for message
+* @param integer $tuid - Recipient UID
+* @param string - $recipient_list - List of recipient logons.
 */
 
-function pm_edit_message($mid, $subject, $content, $tuid = 0, $recipient_list = "")
+function pm_update_saved_message($mid, $subject, $content, $tuid, $recipient_list)
 {
     $db_pm_edit_messages = db_connect();
 
@@ -1503,8 +1518,9 @@ function pm_edit_message($mid, $subject, $content, $tuid = 0, $recipient_list = 
     if (!is_numeric($tuid)) return false;
 
     $subject = db_escape_string(_htmlentities($subject));
-    $recipient_list = db_escape_string($recipient_list);
     $content = db_escape_string($content);
+
+    $recipient_list = db_escape_string($recipient_list);
 
     // Update the subject text
 
@@ -1518,7 +1534,40 @@ function pm_edit_message($mid, $subject, $content, $tuid = 0, $recipient_list = 
     $sql = "UPDATE PM_CONTENT SET CONTENT = '$content' WHERE MID = '$mid'";
     if (!$result_content = db_query($sql, $db_pm_edit_messages)) return false;
 
-    return ($result_subject && $result_content);
+    return true;
+}
+
+/**
+* Edit PM
+*
+* Edit a message content and subject
+*
+* @return bool - true on success, false on failure.
+* @param integer $mid - Message ID to edit
+* @param string $subject - New subject for message
+* @param string $content - New content for message
+*/
+
+function pm_edit_message($mid, $subject, $content)
+{
+    $db_pm_edit_messages = db_connect();
+
+    if (!is_numeric($mid)) return false;
+
+    $subject = db_escape_string(_htmlentities($subject));
+    $content = db_escape_string($content);
+
+    // Update the subject text
+
+    $sql = "UPDATE PM SET SUBJECT = '$subject' WHERE MID = '$mid'";
+    if (!$result_subject = db_query($sql, $db_pm_edit_messages)) return false;
+
+    // Update the content
+
+    $sql = "UPDATE PM_CONTENT SET CONTENT = '$content' WHERE MID = '$mid'";
+    if (!$result_content = db_query($sql, $db_pm_edit_messages)) return false;
+
+    return true;
 }
 
 /**

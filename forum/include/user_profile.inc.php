@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.63 2007-05-15 22:13:17 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.64 2007-05-18 11:49:31 decoyduck Exp $ */
 
 /**
 * Functions relating to users interacting with profiles
@@ -126,7 +126,7 @@ function user_get_profile($uid)
             $anon_logon = USER_ANON_DISABLED;
         }
 
-        if ($anon_logon == 0 && isset($user_profile['LAST_VISIT']) && $user_profile['LAST_VISIT'] > 0) {
+        if ($anon_logon == USER_ANON_DISABLED && isset($user_profile['LAST_VISIT']) && $user_profile['LAST_VISIT'] > 0) {
             $user_profile['LAST_LOGON'] = format_time($user_profile['LAST_VISIT']);
         }else {
             $user_profile['LAST_LOGON'] = $lang['unknown'];

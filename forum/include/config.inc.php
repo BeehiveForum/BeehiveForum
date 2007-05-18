@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: config.inc.php,v 1.137 2007-05-06 17:24:56 decoyduck Exp $ */
+/* $Id: config.inc.php,v 1.138 2007-05-18 14:38:25 decoyduck Exp $ */
 
 // MAIN CONFIGURATION FILE
 
@@ -49,7 +49,7 @@ $mysql_big_selects = false;
 
 // Error Handler -------------------------------------------------------
 
-$show_friendly_errors = false;
+$show_friendly_errors = true;
 
 // Should Beehive replace PHP's default error handler? If you have
 // problems with blank pages, etc, you should try turning this option

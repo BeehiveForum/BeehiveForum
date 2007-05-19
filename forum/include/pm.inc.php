@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.198 2007-05-19 18:24:31 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.199 2007-05-19 23:05:46 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -333,6 +333,7 @@ function pm_get_sent($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
 
     $sql = "SELECT COUNT(MID) AS MESSAGE_COUNT FROM PM PM ";
     $sql.= "WHERE (TYPE & $pm_sent_items > 0) AND FROM_UID = '$uid' ";
+    $sql.= "AND SMID = 0";
 
     if (!$result = db_query($sql, $db_pm_get_sent)) return false;
 
@@ -661,7 +662,9 @@ function pm_fetch_search_results ($sort_by = 'CREATED', $sort_dir = 'DESC', $off
     $pm_search_results_array = array();
     $mid_array = array();
 
-    $sql = "SELECT COUNT(*) AS RESULT_COUNT FROM PM_SEARCH_RESULTS WHERE UID = '$uid'";
+    $sql = "SELECT COUNT(*) AS RESULT_COUNT FROM PM_SEARCH_RESULTS ";
+    $sql.= "LEFT JOIN PM ON (PM.MID = PM_SEARCH_RESULTS.MID) ";
+    $sql.= "WHERE UID = '$uid' AND PM.MID IS NOT NULL";
 
     if (!$result = db_query($sql, $db_pm_fetch_search_results)) return false;
 
@@ -784,7 +787,9 @@ function pm_get_folder_message_counts()
         }
     }
 
-    $sql = "SELECT COUNT(MID) FROM PM_SEARCH_RESULTS WHERE UID = '$uid'";
+    $sql = "SELECT COUNT(*) AS RESULT_COUNT FROM PM_SEARCH_RESULTS ";
+    $sql.= "LEFT JOIN PM ON (PM.MID = PM_SEARCH_RESULTS.MID) ";
+    $sql.= "WHERE UID = '$uid' AND PM.MID IS NOT NULL";
 
     if (!$result = db_query($sql, $db_pm_get_folder_message_counts)) return false;
 
@@ -996,13 +1001,13 @@ function pm_message_get($mid)
     $sql.= "ON (USER_PEER_FROM.PEER_UID = FUSER.UID AND USER_PEER_FROM.UID = '$uid') ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER_TO ";
     $sql.= "ON (USER_PEER_TO.PEER_UID = TUSER.UID AND USER_PEER_TO.UID = '$uid') ";
-    $sql.= "WHERE ((PM.TYPE & $pm_inbox_items > 0) AND PM.TO_UID = '$uid') ";
+    $sql.= "WHERE (((PM.TYPE & $pm_inbox_items > 0) AND PM.TO_UID = '$uid') ";
     $sql.= "OR ((PM.TYPE & $pm_sent_items > 0) AND PM.FROM_UID = '$uid' AND PM.SMID = 0) ";
     $sql.= "OR ((PM.TYPE & $pm_outbox_items > 0) AND PM.FROM_UID = '$uid') ";
     $sql.= "OR ((PM.TYPE & $pm_saved_out > 0) AND PM.FROM_UID = '$uid') ";
     $sql.= "OR ((PM.TYPE & $pm_saved_in > 0) AND PM.TO_UID = '$uid') ";
-    $sql.= "OR ((PM.TYPE & $pm_draft_items > 0) AND PM.FROM_UID = '$uid') ";
-    $sql.= "LIMIT 0, 1";
+    $sql.= "OR ((PM.TYPE & $pm_draft_items > 0) AND PM.FROM_UID = '$uid')) ";
+    $sql.= "AND PM.MID = '$mid' LIMIT 0, 1";
 
     if (!$result = db_query($sql, $db_pm_message_get)) return false;
 
@@ -1023,6 +1028,8 @@ function pm_message_get($mid)
                         $pm_message_array['TNICK'] = $pm_message_array['PTNICK'];
                     }
                 }
+
+                print_r($pm_message_array);
 
                 if (($pm_message_array['TO_UID'] == $uid) && ($pm_message_array['TYPE'] == PM_UNREAD) && ($folder == PM_FOLDER_INBOX)) {
                     pm_mark_as_read($mid);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.429 2007-05-13 21:23:17 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.430 2007-05-19 23:05:46 decoyduck Exp $ */
 
 // British English language file
 
@@ -173,6 +173,7 @@ $lang['no'] = "No";
 $lang['signature'] = "Signature";
 $lang['signaturepreview'] = "Signature Preview";
 $lang['signatureupdated'] = "Signature Updated";
+$lang['signatureupdatedforallforums'] = "Signature Updated For All Forums";
 $lang['back'] = "Back";
 $lang['subject'] = "Subject";
 $lang['close'] = "Close";
@@ -1259,7 +1260,8 @@ $lang['fontsize'] = "Font size";
 $lang['forumstyle'] = "Forum style";
 $lang['forumemoticons'] = "Forum emoticons";
 $lang['startpage'] = "Start page";
-$lang['containsHTML'] = "Contains HTML";
+$lang['signaturecontainshtmlcode'] = "Signature contains HTML code";
+$lang['savesignatureforuseonallforums'] = "Save signature for use on all forums";
 $lang['preferredlang'] = "Preferred language";
 $lang['donotshowmyageordobtoothers'] = "Do not show my age or date of birth to others";
 $lang['showonlymyagetoothers'] = "Show only my age to others";

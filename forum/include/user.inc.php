@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.318 2007-05-19 18:24:32 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.319 2007-05-19 23:05:46 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -839,7 +839,7 @@ function user_check_pref($name, $value)
         }
 }
 
-function user_update_sig($uid, $content, $html)
+function user_update_sig($uid, $content, $html, $global)
 {
     $db_user_update_sig = db_connect();
 
@@ -848,25 +848,53 @@ function user_update_sig($uid, $content, $html)
     $content = db_escape_string($content);
     $html = db_escape_string($html);
 
-    if (!$table_data = get_table_prefix()) return false;
+    if ($global == 'Y') {
 
-    $sql = "SELECT UID FROM {$table_data['PREFIX']}USER_SIG ";
-    $sql.= "WHERE UID = '$uid'";
+        $forum_prefix_array = forum_get_all_prefixes();
 
-    if (!$result = db_query($sql, $db_user_update_sig)) return false;
+        foreach($forum_prefix_array as $forum_prefix) {
 
-    if (db_num_rows($result) > 0) {
+            $sql = "SELECT UID FROM {$forum_prefix}USER_SIG ";
+            $sql.= "WHERE UID = '$uid'";
 
-        $sql = "UPDATE {$table_data['PREFIX']}USER_SIG SET CONTENT = '$content', ";
-        $sql.= "HTML = '$html' WHERE UID = '$uid'";
+            if (!$result = db_query($sql, $db_user_update_sig)) return false;
+
+            if (db_num_rows($result) > 0) {
+
+                $sql = "UPDATE {$forum_prefix}USER_SIG SET CONTENT = '$content', ";
+                $sql.= "HTML = '$html' WHERE UID = '$uid'";
+
+            }else {
+
+                $sql = "INSERT INTO {$forum_prefix}USER_SIG (UID, CONTENT, HTML) ";
+                $sql.= "VALUES ('$uid', '$content', '$html')";
+            }
+
+            if (!$result = db_query($sql, $db_user_update_sig)) return false;
+        }
 
     }else {
 
-        $sql = "INSERT INTO {$table_data['PREFIX']}USER_SIG (UID, CONTENT, HTML) ";
-        $sql.= "VALUES ('$uid', '$content', '$html')";
-    }
+        if (!$table_data = get_table_prefix()) return false;
 
-    if (!$result = db_query($sql, $db_user_update_sig)) return false;
+        $sql = "SELECT UID FROM {$table_data['PREFIX']}USER_SIG ";
+        $sql.= "WHERE UID = '$uid'";
+
+        if (!$result = db_query($sql, $db_user_update_sig)) return false;
+
+        if (db_num_rows($result) > 0) {
+
+            $sql = "UPDATE {$table_data['PREFIX']}USER_SIG SET CONTENT = '$content', ";
+            $sql.= "HTML = '$html' WHERE UID = '$uid'";
+
+        }else {
+
+            $sql = "INSERT INTO {$table_data['PREFIX']}USER_SIG (UID, CONTENT, HTML) ";
+            $sql.= "VALUES ('$uid', '$content', '$html')";
+        }
+
+        if (!$result = db_query($sql, $db_user_update_sig)) return false;
+    }
 
     return true;
 }

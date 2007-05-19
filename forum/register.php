@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.154 2007-05-10 22:03:17 decoyduck Exp $ */
+/* $Id: register.php,v 1.155 2007-05-19 23:05:46 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -580,7 +580,7 @@ echo "                        <td align=\"left\">", form_textarea("sig_content",
 echo "                      </tr>\n";
 echo "                     <tr>\n";
 echo "                       <td align=\"left\">&nbsp;</td>\n";
-echo "                       <td align=\"left\">", form_checkbox("sig_html", "Y", $lang['containsHTML'], (isset($sig_html) && $sig_html == "Y")), "</td>\n";
+echo "                       <td align=\"left\">", form_checkbox("sig_html", "Y", $lang['signaturecontainshtmlcode'], (isset($sig_html) && $sig_html == "Y")), "</td>\n";
 echo "                     </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";

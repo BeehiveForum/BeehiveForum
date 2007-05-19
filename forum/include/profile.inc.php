@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.70 2007-05-19 18:24:32 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.71 2007-05-19 19:51:39 decoyduck Exp $ */
 
 /**
 * Functions relating to profiles
@@ -844,6 +844,16 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
 
     $user_friend = USER_FRIEND;
 
+    // Named column NULL filtering
+
+    $named_column_null_filter_array = array('POST_COUNT'      => '(USER_TRACK.POST_COUNT IS NOT NULL AND USER_TRACK.POST_COUNT > 0)',
+                                            'LAST_VISIT'      => '(VISITOR_LOG_TIME.LAST_LOGON IS NOT NULL AND UNIX_TIMESTAMP(VISITOR_LOG_TIME.LAST_LOGON) > 0)',
+                                            'REGISTERED'      => '(USER.REGISTERED IS NOT NULL AND UNIX_TIMESTAMP(USER.REGISTERED) > 0)',
+                                            'USER_TIME_BEST'  => '(USER_TRACK.USER_TIME_BEST IS NOT NULL AND UNIX_TIMESTAMP(USER_TRACK.USER_TIME_BEST) > 0)',
+                                            'USER_TIME_TOTAL' => '(USER_TRACK.USER_TIME_TOTAL IS NOT NULL AND UNIX_TIMESTAMP(USER_TRACK.USER_TIME_TOTAL) > 0)',
+                                            'DOB'             => '(USER_PREFS.DOB_DISPLAY > 1 AND UNIX_TIMESTAMP(USER_PREFS_DOB.DOB) > 0)',
+                                            'AGE'             => '(USER_PREFS_DOB.DOB_DISPLAY = 1 OR USER_PREFS_DOB.DOB_DISPLAY = 2)');
+
     // Main query.
 
     $select_sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP, ";
@@ -854,19 +864,18 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
     $select_sql.= "UNIX_TIMESTAMP(VISITOR_LOG_TIME.LAST_LOGON) AS LAST_VISIT, ";
     $select_sql.= "UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, ";
     $select_sql.= "UNIX_TIMESTAMP(USER_TRACK.USER_TIME_BEST) AS USER_TIME_BEST, ";
-    $select_sql.= "UNIX_TIMESTAMP(USER_TRACK.USER_TIME_TOTAL) AS USER_TIME_TOTAL, ";
     $select_sql.= "UNIX_TIMESTAMP(USER_TRACK.USER_TIME_TOTAL) AS USER_TIME_TOTAL ";
 
     // Include the selected numeric (PIID) profile items
 
-    $profile_sql_array = array();
+    $profile_query_array = array();
 
     foreach($profile_items_array as $column => $value) {
 
         if (is_numeric($column)) {
 
             $profile_sql = "USER_PROFILE_{$column}.ENTRY AS ENTRY_{$column} ";
-            $profile_sql_array[] = $profile_sql;
+            $profile_query_array[] = $profile_sql;
         }
     }
 
@@ -919,27 +928,6 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
 
     $join_sql.= "LEFT JOIN SEARCH_ENGINE_BOTS ON (SEARCH_ENGINE_BOTS.SID = VISITOR_LOG.SID) ";
 
-    // Are we filtering the results by a LOGON / NICKNAME
-
-    $where_sql_array = array();
-    $hide_empty_array = array();
-
-    if (($user_search !== false) && strlen(trim($user_search)) > 0) {
-
-        $user_search = db_escape_string(str_replace('%', '', $user_search));
-        
-        $user_search_sql = "(USER.LOGON LIKE '$user_search%' OR ";
-        $user_search_sql.= "USER.NICKNAME LIKE '$user_search%' OR ";
-        $user_search_sql.= "SEARCH_ENGINE_BOTS.NAME LIKE '$user_search%')";
-        
-        $where_sql_array[] = $user_search_sql;
-    }
-
-    if ($hide_guests === true) {
-
-        $where_sql_array[] = "(USER.UID IS NOT NULL AND USER.UID > 0)";
-    }
-
     // Joins on the selected numeric (PIID) profile items.
 
     foreach($profile_items_array as $column => $value) {
@@ -954,39 +942,72 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
             $join_sql.= "AND (USER_PROFILE_{$column}.PRIVACY = 0 ";
             $join_sql.= "OR (USER_PROFILE_{$column}.PRIVACY = 1 ";
             $join_sql.= "AND (USER_PEER.RELATIONSHIP & $user_friend > 0)))) ";
+        }
+    }
 
-            if ($hide_empty === true) {
+    // Are we filtering the results by a LOGON / NICKNAME
 
-                $hide_empty_sql = "(USER_PROFILE_{$column}.ENTRY IS NOT NULL ";
-                $hide_empty_sql.= "AND LENGTH(USER_PROFILE_{$column}.ENTRY) > 0)";
+    $where_query_array = array();
 
-                $hide_empty_array[] = $hide_empty_sql;
+    if (($user_search !== false) && strlen(trim($user_search)) > 0) {
+
+        $user_search = db_escape_string(str_replace('%', '', $user_search));
+        
+        $user_search_sql = "(USER.LOGON LIKE '$user_search%' OR ";
+        $user_search_sql.= "USER.NICKNAME LIKE '$user_search%' OR ";
+        $user_search_sql.= "SEARCH_ENGINE_BOTS.NAME LIKE '$user_search%') ";
+        
+        $where_query_array[] = $user_search_sql;
+    }
+
+    if ($hide_guests === true) {
+
+        $where_query_array[] = "(USER.UID IS NOT NULL AND USER.UID > 0) ";
+        $where_count_array[] = "(USER.UID IS NOT NULL AND USER.UID > 0) ";
+    }
+
+    // Null column filtering
+
+    $having_query_array = array();
+    $where_count_array = array();
+
+    if ($hide_empty === true) {
+
+        foreach($profile_items_array as $column => $value) {
+
+            if (is_numeric($column)) {
+
+                $having_query_array[] = "(ENTRY_{$column} IS NOT NULL AND LENGTH(ENTRY_{$column}) > 0) ";
+                $where_count_array[]  = "(USER_PROFILE_{$column}.ENTRY IS NOT NULL AND LENGTH(USER_PROFILE_{$column}.ENTRY) > 0)";
+
+            }else {
+
+                $having_query_array[] = $named_column_null_filter_array[$column];
+                $where_count_array[]  = $named_column_null_filter_array[$column];
             }
         }
     }
 
-    if (sizeof($where_sql_array) > 0) {
-        
-        if (sizeof($hide_empty_array) > 0) {
-            
-            $where_sql = "WHERE ". implode(" AND ", $where_sql_array);
-            $where_sql.= "AND ". implode(" OR ", $hide_empty_array);
+    // Main query NULL column filtering
 
-        }else {
-
-            $where_sql = "WHERE ". implode(" AND ", $where_sql_array);
-        }
-
+    if (sizeof($having_query_array) > 0) {
+        $having_sql = sprintf("HAVING %s", implode(" OR ", $having_query_array));
     }else {
-    
-        if (sizeof($hide_empty_array) > 0) {
+        $having_sql = "";
+    }
 
-            $where_sql = "WHERE ". implode(" OR ", $hide_empty_array);
+    if (sizeof($where_query_array) > 0) {
+        $where_sql = sprintf("WHERE %s", implode(" AND ", $where_query_array));
+    }else {
+        $where_sql = "";
+    }
 
-        }else {
+    // Count queries NULL column filtering
 
-            $where_sql = "";
-        }
+    if (sizeof($where_count_array) > 0) {
+        $where_count_sql = sprintf("WHERE (%s)", implode(" OR ", $where_count_array));
+    }else {
+        $where_count_sql = "";
     }
 
     // Sort direction specified?
@@ -1008,7 +1029,7 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
 
     // Get the number of users in our database matching the criteria
 
-    $sql = "SELECT COUNT(USER.UID) AS USER_COUNT $union_sql $join_sql $where_sql";
+    $sql = "SELECT COUNT(USER.UID) AS USER_COUNT $union_sql $join_sql $where_count_sql";
 
     if (!$result = db_query($sql, $db_profile_browse_items)) return false;
 
@@ -1020,7 +1041,7 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
 
         $sql = "SELECT COUNT(VISITOR_LOG.UID) AS VISITOR_COUNT FROM VISITOR_LOG ";
         $sql.= "LEFT JOIN USER ON (USER.UID = VISITOR_LOG.UID) ";
-        $sql.= "$join_sql $where_sql AND VISITOR_LOG.UID = 0";
+        $sql.= "$join_sql $where_count_sql AND VISITOR_LOG.UID = 0";
 
         if (!$result = db_query($sql, $db_profile_browse_items)) return false;
 
@@ -1038,16 +1059,16 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
 
         if (db_fetch_mysql_version() >= 40116) {
 
-            $sql = implode(",", array_merge(array($select_sql), $profile_sql_array));
-            $sql.= "$from_sql $join_sql $where_sql UNION ";
-            $sql.= implode(",", array_merge(array($select_sql), $profile_sql_array));
-            $sql.= "$union_sql $join_sql $where_sql $order_sql ";
+            $sql = implode(",", array_merge(array($select_sql), $profile_query_array));
+            $sql.= "$from_sql $join_sql $where_sql $having_sql UNION ";
+            $sql.= implode(",", array_merge(array($select_sql), $profile_query_array));
+            $sql.= "$union_sql $join_sql $where_sql $having_sql $order_sql ";
             $sql.= "$limit_sql";
 
         }else {
 
-            $sql = implode(",", array_merge(array($select_sql), $profile_sql_array));
-            $sql.= "$from_sql $join_sql $where_sql $order_sql ";
+            $sql = implode(",", array_merge(array($select_sql), $profile_query_array));
+            $sql.= "$union_sql $join_sql $where_sql $having_sql $order_sql ";
             $sql.= "$limit_sql";
         }
 

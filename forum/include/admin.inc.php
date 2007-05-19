@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.119 2007-05-18 11:49:28 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.120 2007-05-19 18:24:31 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -155,7 +155,7 @@ function admin_get_log_entries($offset, $sort_by = 'CREATED', $sort_dir = 'DESC'
 
     }else if ($admin_log_count > 0) {
 
-        $offset = floor(($admin_log_count / 10) - 1) * 10;
+        $offset = floor(($admin_log_count - 1) / 10) * 10;
         return admin_get_log_entries($offset, $sort_by, $sort_dir);
     }
 
@@ -206,7 +206,7 @@ function admin_get_word_filter_list($offset)
 
     }else if ($word_filter_count > 0) {
 
-        $offset = floor(($word_filter_count / 10) - 1) * 10;
+        $offset = floor(($word_filter_count - 1) / 10) * 10;
         return admin_get_word_filter_list($offset);
     }
 
@@ -745,7 +745,7 @@ function admin_get_forum_list($offset)
     
     }else if ($forums_count > 0) {
 
-        $offset = floor(($forums_count / 10) - 1) * 10;
+        $offset = floor(($forums_count - 1) / 10) * 10;
         return admin_get_forum_list($offset);
     }
 
@@ -829,7 +829,7 @@ function admin_get_ban_data($sort_by = "ID", $sort_dir = "ASC", $offset = 0)
 
     }else if ($ban_data_count > 0) {
 
-        $offset = floor(($ban_data_count / 10) - 1) * 10;
+        $offset = floor(($ban_data_count - 1) / 10) * 10;
         return admin_get_ban_data($sort_by, $sort_dir, $offset);
     }
 
@@ -924,7 +924,7 @@ function admin_get_post_approval_queue($offset = 0)
 
     }else if ($post_count > 0) {
 
-        $offset = floor(($post_count / 10) - 1) * 10;
+        $offset = floor(($post_count - 1) / 10) * 10;
         return admin_get_post_approval_queue($offset);
     }
 
@@ -1089,7 +1089,7 @@ function admin_get_visitor_log($offset)
 
     }else if ($users_get_recent_count > 0) {
 
-        $offset = floor(($users_get_recent_count / 10) - 1) * 10;
+        $offset = floor(($users_get_recent_count - 1) / 10) * 10;
         return admin_get_visitor_log($offset);
     }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.126 2007-05-06 22:38:45 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.127 2007-05-19 18:24:31 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -430,7 +430,7 @@ function folder_get_all_by_page($offset)
     
     }else if ($folder_count > 0) {
 
-        $offset = floor(($folder_count / 10) - 1) * 10;
+        $offset = floor(($folder_count - 1) / 10) * 10;
         return folder_get_all_by_page($offset);
     }
 

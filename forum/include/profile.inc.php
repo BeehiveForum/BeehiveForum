@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.69 2007-05-19 14:07:53 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.70 2007-05-19 18:24:32 decoyduck Exp $ */
 
 /**
 * Functions relating to profiles
@@ -181,7 +181,7 @@ function profile_sections_get_by_page($offset)
 
     }else if ($profile_sections_count > 0) {
 
-        $offset = floor(($profile_sections_count / 10) - 1) * 10;
+        $offset = calculate_max_offset($profile_sections_count, 10);
         return profile_sections_get_by_page($offset);
     }
 
@@ -254,7 +254,7 @@ function profile_items_get_by_page($psid, $offset)
 
     }else if ($profile_items_count > 0) {
 
-        $offset = floor(($profile_items_count / 10) - 1) * 10;
+        $offset = calculate_max_offset($profile_items_count, 10);
         return profile_items_get_by_page($psid, $offset);
     }
 
@@ -981,7 +981,7 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
     
         if (sizeof($hide_empty_array) > 0) {
 
-            $where_sql.= "WHERE ". implode(" OR ", $hide_empty_array);
+            $where_sql = "WHERE ". implode(" OR ", $hide_empty_array);
 
         }else {
 
@@ -1001,6 +1001,10 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
 
     $user_count = 0;
     $visitor_count = 0;
+
+    // Array to store our results in.
+
+    $user_array = array();
 
     // Get the number of users in our database matching the criteria
 
@@ -1051,56 +1055,58 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
 
         if (!$result = db_query($sql, $db_profile_browse_items)) return false;
 
-        // Array to store our results in.
+        if (db_num_rows($result) > 0) {
+           
+            while ($user_data = db_fetch_array($result, DB_RESULT_ASSOC)) {
 
-        $user_array = array();
-            
-        while ($user_data = db_fetch_array($result, DB_RESULT_ASSOC)) {
+                if (is_null($user_data['UID']) || $user_data['UID'] == 0) {
 
-            if (is_null($user_data['UID']) || $user_data['UID'] == 0) {
+                    $user_data['UID']      = 0;
+                    $user_data['LOGON']    = $lang['guest'];
+                    $user_data['NICKNAME'] = $lang['guest'];
+                }
 
-                $user_data['UID']      = 0;
-                $user_data['LOGON']    = $lang['guest'];
-                $user_data['NICKNAME'] = $lang['guest'];
+                if (isset($user_data['LAST_VISIT']) && !is_null($user_data['LAST_VISIT'])) {
+                    $user_data['LAST_VISIT'] = format_time($user_data['LAST_VISIT']);
+                }else {
+                    $user_data['LAST_VISIT'] = $lang['unknown'];
+                }            
+
+                if (isset($user_data['REGISTERED']) && !is_null($user_data['REGISTERED'])) {
+                    $user_data['REGISTERED'] = format_date($user_data['REGISTERED']);
+                }else {
+                    $user_data['REGISTERED'] = $lang['unknown'];
+                }
+
+                if (isset($user_data['USER_TIME_BEST']) && !is_null($user_data['USER_TIME_BEST'])) {
+                    $user_data['USER_TIME_BEST'] = format_time_display($user_data['USER_TIME_BEST']);
+                }else {
+                    $user_data['USER_TIME_BEST'] = $lang['unknown'];
+                }
+
+                if (isset($user_data['USER_TIME_TOTAL']) && !is_null($user_data['USER_TIME_TOTAL'])) {
+                    $user_data['USER_TIME_TOTAL'] = format_time_display($user_data['USER_TIME_TOTAL']);
+                }else {
+                    $user_data['USER_TIME_TOTAL'] = $lang['unknown'];
+                }
+
+                if (isset($user_data['DOB']) && !is_null($user_data['DOB'])) {
+                    $user_data['DOB'] = format_dob($user_data['DOB']);
+                }else {
+                    $user_data['DOB'] = $lang['unknown'];
+                }
+
+                if (!isset($user_data['POST_COUNT']) || is_null($user_data['POST_COUNT'])) {
+                    $user_data['POST_COUNT'] = 0;
+                }
+
+                $user_array[] = $user_data;
             }
+        
+        }else {
 
-            if (isset($user_data['LAST_VISIT']) && !is_null($user_data['LAST_VISIT'])) {
-                $user_data['LAST_VISIT'] = format_time($user_data['LAST_VISIT']);
-            }else {
-                $user_data['LAST_VISIT'] = $lang['unknown'];
-            }            
-
-            if (isset($user_data['REGISTERED']) && !is_null($user_data['REGISTERED'])) {
-                $user_data['REGISTERED'] = format_date($user_data['REGISTERED']);
-            }else {
-                $user_data['REGISTERED'] = $lang['unknown'];
-            }
-
-            if (isset($user_data['USER_TIME_BEST']) && !is_null($user_data['USER_TIME_BEST'])) {
-                $user_data['USER_TIME_BEST'] = format_time_display($user_data['USER_TIME_BEST']);
-            }else {
-                $user_data['USER_TIME_BEST'] = $lang['unknown'];
-            }
-
-            if (isset($user_data['USER_TIME_TOTAL']) && !is_null($user_data['USER_TIME_TOTAL'])) {
-                $user_data['USER_TIME_TOTAL'] = format_time_display($user_data['USER_TIME_TOTAL']);
-            }else {
-                $user_data['USER_TIME_TOTAL'] = $lang['unknown'];
-            }
-
-            if (isset($user_data['DOB']) && !is_null($user_data['DOB'])) {
-                $user_data['DOB'] = format_dob($user_data['DOB']);
-            }else {
-                $user_data['DOB'] = $lang['unknown'];
-            }
-
-            if (!isset($user_data['POST_COUNT']) || is_null($user_data['POST_COUNT'])) {
-                $user_data['POST_COUNT'] = 0;
-            }
-
-            $user_array[] = $user_data;
-
-            if (sizeof($user_array) > 9) break;
+            $offset = floor((($user_count + $visitor_count) - 1) / 10) * 10;
+            return profile_browse_items($user_search, $profile_items_array, $offset, $sort_by, $sort_dir, $hide_empty, $hide_guests);
         }
     }
 

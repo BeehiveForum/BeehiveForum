@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.66 2007-05-13 21:23:17 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.67 2007-05-19 18:24:31 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -68,7 +68,7 @@ function get_forum_list($offset)
     $sql.= "CONCAT(FORUMS.DATABASE_NAME, '.', FORUMS.WEBTAG, '_') AS PREFIX FROM FORUMS ";
     $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
     $sql.= "AND USER_FORUM.UID = '$uid') WHERE FORUMS.ACCESS_LEVEL > -1 ";
-    $sql.= "ORDER BY FORUMS.FID";
+    $sql.= "ORDER BY FORUMS.FID LIMIT $offset, 10";
 
     if (!$result_forums = db_query($sql, $db_get_forum_list)) return false;
 
@@ -111,7 +111,7 @@ function get_forum_list($offset)
     
     }else if ($forums_count > 0) {
 
-        $offset = floor(($forums_count / 10) - 1) * 10;
+        $offset = floor(($forums_count - 1) / 10) * 10;
         return get_forum_list($offset);
     }
 
@@ -317,7 +317,7 @@ function get_my_forums($view_type, $offset)
     
     }else if ($forums_count > 0) {
 
-        $offset = floor(($forums_count / 10) - 1) * 10;
+        $offset = floor(($forums_count - 1) / 10) * 10;
         return get_my_forums($view_type, $offset);
     }
 

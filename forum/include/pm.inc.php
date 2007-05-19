@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.197 2007-05-18 15:28:38 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.198 2007-05-19 18:24:31 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -201,9 +201,9 @@ function pm_get_inbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
             $mid_array[] = $result_array['MID'];
         }
 
-    }else if ($offset > 0) {
+    }else if ($message_count > 0) {
 
-        $offset = floor(($message_count / 10) - 1) * 10;
+        $offset = floor(($message_count - 1) / 10) * 10;
         return pm_get_inbox($sort_by, $sort_dir, $offset);
     }
 
@@ -289,9 +289,9 @@ function pm_get_outbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
             $mid_array[] = $result_array['MID'];
         }
 
-    }else if ($offset > 0) {
+    }else if ($message_count > 0) {
 
-        $offset = floor(($message_count / 10) - 1) * 10;
+        $offset = floor(($message_count - 1) / 10) * 10;
         return pm_get_outbox($sort_by, $sort_dir, $offset);
     }
 
@@ -377,9 +377,9 @@ function pm_get_sent($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
             $mid_array[] = $result_array['MID'];
         }
 
-    }else if ($offset > 0) {
+    }else if ($message_count > 0) {
 
-        $offset = floor(($message_count / 10) - 1) * 10;
+        $offset = floor(($message_count - 1) / 10) * 10;
         return pm_get_sent($sort_by, $sort_dir, $offset);
     }
 
@@ -468,9 +468,9 @@ function pm_get_saveditems($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = f
             $mid_array[] = $result_array['MID'];
         }
 
-    }else if ($offset > 0) {
+    }else if ($message_count > 0) {
 
-        $offset = floor(($message_count / 10) - 1) * 10;
+        $offset = floor(($message_count - 1) / 10) * 10;
         return pm_get_saveditems($sort_by, $sort_dir, $offset);
     }
 
@@ -556,9 +556,9 @@ function pm_get_drafts($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
             $mid_array[] = $result_array['MID'];
         }
 
-    }else if ($offset > 0) {
+    }else if ($message_count > 0) {
 
-        $offset = floor(($message_count / 10) - 1) * 10;
+        $offset = floor(($message_count - 1) / 10) * 10;
         return pm_get_drafts($sort_by, $sort_dir, $offset);
     }
 
@@ -711,9 +711,9 @@ function pm_fetch_search_results ($sort_by = 'CREATED', $sort_dir = 'DESC', $off
 
             pms_have_attachments($pm_search_results_array, $mid_array);
 
-        }else if ($offset > 0) {
+        }else {
 
-            $offset = floor(($message_count / 10) - 1) * 10;
+            $offset = floor(($message_count - 1) / 10) * 10;
             return pm_fetch_search_results($sort_by, $sort_dir, $offset);
         }
     }

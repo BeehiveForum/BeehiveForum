@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.317 2007-05-18 11:49:31 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.318 2007-05-19 18:24:32 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1023,7 +1023,7 @@ function user_search($user_search, $offset = 0, $exclude_uid = 0)
     
     }else if ($results_count > 0) {
 
-        $offset = floor(($results_count / 10) - 1) * 10;
+        $offset = floor(($results_count - 1) / 10) * 10;
         return user_search($user_search, $offset, $exclude_uid);
     }
 
@@ -1312,7 +1312,7 @@ function user_get_relationships($uid, $offset = 0)
     
     }else if ($user_get_peers_count > 0) {
 
-        $offset = floor(($user_get_peers_count / 10) - 1) * 10;
+        $offset = floor(($user_get_peers_count - 1) / 10) * 10;
         return user_get_relationships($uid, $offset);
     }
 
@@ -1402,7 +1402,7 @@ function user_get_word_filter_list($offset)
 
     }else if ($word_filter_count > 0) {
 
-        $offset = floor(($word_filter_count / 10) - 1) * 10;
+        $offset = floor(($word_filter_count - 1) / 10) * 10;
         return user_get_word_filter_list($offset);
     }
 

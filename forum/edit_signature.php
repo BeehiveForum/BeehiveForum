@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_signature.php,v 1.90 2007-05-18 11:49:28 decoyduck Exp $ */
+/* $Id: edit_signature.php,v 1.91 2007-05-19 23:05:46 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -185,11 +185,16 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
         $t_sig_html = "N";
     }
 
-    if ($t_sig_html == "Y") {
-        $t_sig_content = fix_html($t_sig_content);
+    if (isset($_POST['sig_global']) && $_POST['sig_global'] == 'Y') {
+        $t_sig_global = 'Y';
+    }else {
+        $t_sig_global = 'N';
     }
 
+    if ($t_sig_html == "Y") $t_sig_content = fix_html($t_sig_content);
+
     if (attachment_embed_check($t_sig_content) && $t_sig_html == "Y") {
+
         $error_html.= "<h2>{$lang['notallowedembedattachmentsignature']}</h2>\n";
         $valid = false;
     }
@@ -201,17 +206,34 @@ if (isset($_POST['submit'])) {
 
         // Update USER_SIG
 
-        user_update_sig($uid, $t_sig_content, $t_sig_html);
+        if (user_update_sig($uid, $t_sig_content, $t_sig_html, $t_sig_global)) {
 
-        if ($admin_edit === true) {
+            if ($admin_edit === true) {
 
-            $redirect_uri = "./edit_signature.php?webtag=$webtag&updated=true&siguid=$uid";
-            header_redirect($redirect_uri, $lang['signatureupdated']);
+                if ($t_sig_global == 'Y') {
+                
+                    $redirect_uri = "./edit_signature.php?webtag=$webtag&updated_global=true&siguid=$uid";
+                    header_redirect($redirect_uri, $lang['signatureupdated']);
 
-        }else {
+                }else {
 
-            $redirect_uri = "./edit_signature.php?webtag=$webtag&updated=true";
-            header_redirect($redirect_uri, $lang['signatureupdated']);
+                    $redirect_uri = "./edit_signature.php?webtag=$webtag&updated=true&siguid=$uid";
+                    header_redirect($redirect_uri, $lang['signatureupdated']);
+                }
+
+            }else {
+
+                if ($t_sig_global == 'Y') {
+
+                    $redirect_uri = "./edit_signature.php?webtag=$webtag&updated_global=true";
+                    header_redirect($redirect_uri, $lang['signatureupdated']);
+
+                }else {
+
+                    $redirect_uri = "./edit_signature.php?webtag=$webtag&updated=true";
+                    header_redirect($redirect_uri, $lang['signatureupdated']);
+                }
+            }
         }
     }
 }
@@ -241,10 +263,17 @@ if ($admin_edit === true) {
 
 // Any error messages to display?
 
-if (!empty($error_html)) {
+if (isset($error_html) && strlen(trim($error_html)) > 0) {
+
     echo $error_html;
+
 }else if (isset($_GET['updated'])) {
+
     echo "<h2>{$lang['signatureupdated']}</h2>\n";
+
+}else if (isset($_GET['updated_global'])) {
+
+    echo "<h2>{$lang['signatureupdatedforallforums']}</h2>\n";
 }
 
 if (isset($t_sig_html)) {
@@ -281,6 +310,8 @@ $tools = new TextAreaHTML("prefs");
 echo "<br />\n";
 
 if ($admin_edit === true) echo "<div align=\"center\">\n";
+
+$show_set_all = (forums_get_available_count() > 1) ? true : false;
 
 echo "<form name=\"prefs\" action=\"edit_signature.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
@@ -383,20 +414,7 @@ echo $tools->js();
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">\n";
-
-if ($tools->getTinyMCE()) {
-
-    echo form_input_hidden("sig_html", "Y");
-
-}else {
-
-    echo form_checkbox("sig_html", "Y", $lang['containsHTML'], $sig_html);
-}
-
-echo $tools->assign_checkbox("sig_html");
-
-echo "                        </td>\n";
+echo "                        <td align=\"left\">&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
@@ -424,6 +442,59 @@ if ($admin_edit === true) {
     echo "    </tr>\n";
 }
 
+echo "  </table>\n";
+echo "  <br />\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\" class=\"subhead\">{$lang['options']}</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td align=\"center\">\n";
+echo "                    <table class=\"posthead\" width=\"95%\">\n";
+
+if ($tools->getTinyMCE()) {
+
+    echo form_input_hidden("sig_html", "Y");
+
+}else {
+
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">", form_checkbox("sig_html", "Y", $lang['signaturecontainshtmlcode'], $sig_html), "</td>\n";
+    echo "                      </tr>\n";
+}
+
+echo $tools->assign_checkbox("sig_html");
+
+if ($show_set_all) {
+
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">", form_checkbox("sig_global", "Y", $lang['savesignatureforuseonallforums'], (isset($t_sig_global) && $t_sig_global == 'Y')), "</td>\n";
+    echo "                      </tr>\n";
+}
+
+echo "                      <tr>\n";
+echo "                        <td align=\"left\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">&nbsp;</td>\n";
+echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";
 

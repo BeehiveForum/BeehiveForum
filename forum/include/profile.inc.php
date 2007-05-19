@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.68 2007-05-06 22:38:45 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.69 2007-05-19 14:07:53 decoyduck Exp $ */
 
 /**
 * Functions relating to profiles
@@ -900,9 +900,10 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
 
     // Join to fetch the LAST_LOGON using the ANON_LOGON data
 
-    $join_sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG_TIME ON (VISITOR_LOG_TIME.VID = VISITOR_LOG.VID ";
-    $join_sql.= "AND ((USER_PREFS_FORUM.ANON_LOGON IS NULL OR USER_PREFS_FORUM.ANON_LOGON = 0) ";
-    $join_sql.= "AND (USER_PREFS_GLOBAL.ANON_LOGON IS NULL OR USER_PREFS_GLOBAL.ANON_LOGON = 0))) ";
+    $join_sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG_TIME ON (VISITOR_LOG_TIME.UID = VISITOR_LOG.UID ";
+    $join_sql.= "AND VISITOR_LOG_TIME.VID = VISITOR_LOG.VID AND ((USER_PREFS_FORUM.ANON_LOGON IS NULL ";
+    $join_sql.= "OR USER_PREFS_FORUM.ANON_LOGON = 0) AND (USER_PREFS_GLOBAL.ANON_LOGON IS NULL ";
+    $join_sql.= "OR USER_PREFS_GLOBAL.ANON_LOGON = 0))) ";
 
     // Join for the POST_COUNT.
 
@@ -918,6 +919,27 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
 
     $join_sql.= "LEFT JOIN SEARCH_ENGINE_BOTS ON (SEARCH_ENGINE_BOTS.SID = VISITOR_LOG.SID) ";
 
+    // Are we filtering the results by a LOGON / NICKNAME
+
+    $where_sql_array = array();
+    $hide_empty_array = array();
+
+    if (($user_search !== false) && strlen(trim($user_search)) > 0) {
+
+        $user_search = db_escape_string(str_replace('%', '', $user_search));
+        
+        $user_search_sql = "(USER.LOGON LIKE '$user_search%' OR ";
+        $user_search_sql.= "USER.NICKNAME LIKE '$user_search%' OR ";
+        $user_search_sql.= "SEARCH_ENGINE_BOTS.NAME LIKE '$user_search%')";
+        
+        $where_sql_array[] = $user_search_sql;
+    }
+
+    if ($hide_guests === true) {
+
+        $where_sql_array[] = "(USER.UID IS NOT NULL AND USER.UID > 0)";
+    }
+
     // Joins on the selected numeric (PIID) profile items.
 
     foreach($profile_items_array as $column => $value) {
@@ -932,55 +954,40 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
             $join_sql.= "AND (USER_PROFILE_{$column}.PRIVACY = 0 ";
             $join_sql.= "OR (USER_PROFILE_{$column}.PRIVACY = 1 ";
             $join_sql.= "AND (USER_PEER.RELATIONSHIP & $user_friend > 0)))) ";
-        }
-    }
 
-    // Are we filtering the results by a LOGON / NICKNAME
+            if ($hide_empty === true) {
 
-    $where_sql_array = array();
+                $hide_empty_sql = "(USER_PROFILE_{$column}.ENTRY IS NOT NULL ";
+                $hide_empty_sql.= "AND LENGTH(USER_PROFILE_{$column}.ENTRY) > 0)";
 
-    if (($user_search !== false) && strlen(trim($user_search)) > 0) {
-
-        $user_search = db_escape_string(str_replace('%', '', $user_search));
-        
-        $user_search_sql = "(USER.LOGON LIKE '$user_search%' OR ";
-        $user_search_sql.= "USER.NICKNAME LIKE '$user_search%' OR ";
-        $user_search_sql.= "SEARCH_ENGINE_BOTS.NAME LIKE '$user_search%') ";
-        
-        $where_sql_array[] = $user_search_sql;
-    }
-
-    if ($hide_guests === true) {
-
-        $where_sql_array[] = "(USER.UID IS NOT NULL AND USER.UID > 0) ";
-    }
-
-    if (sizeof($where_sql_array) > 0) {
-        $where_sql = "WHERE ". implode(" AND ", $where_sql_array);
-    }else {
-        $where_sql = "";
-    }
-
-    // Null column filtering
-
-    $having_sql_array = array();
-
-    if ($hide_empty === true) {
-
-        foreach($profile_items_array as $column => $value) {
-            if (is_numeric($column)) {
-                $having_sql_array[] = "(ENTRY_{$column} IS NOT NULL AND LENGTH(ENTRY_{$column}) > 0) ";
-            }else {
-                $having_sql_array[] = "($column IS NOT NULL AND LENGTH($column) > 0) ";
+                $hide_empty_array[] = $hide_empty_sql;
             }
         }
     }
 
-    if (sizeof($having_sql_array) > 0) {
-        $having_sql = "HAVING ". implode(" OR ", $having_sql_array);
+    if (sizeof($where_sql_array) > 0) {
+        
+        if (sizeof($hide_empty_array) > 0) {
+            
+            $where_sql = "WHERE ". implode(" AND ", $where_sql_array);
+            $where_sql.= "AND ". implode(" OR ", $hide_empty_array);
+
+        }else {
+
+            $where_sql = "WHERE ". implode(" AND ", $where_sql_array);
+        }
+
     }else {
-        $having_sql = "";
-    }        
+    
+        if (sizeof($hide_empty_array) > 0) {
+
+            $where_sql.= "WHERE ". implode(" OR ", $hide_empty_array);
+
+        }else {
+
+            $where_sql = "";
+        }
+    }
 
     // Sort direction specified?
 
@@ -990,98 +997,115 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
 
     $limit_sql = "LIMIT $offset, 10";
 
-    // Get the number of users in our database.
+    // Default values for the user and visitor counts.
 
-    // If we're running on MySQL 4.0.16 or better we can perform
-    // a UNION and duplicate the main query with the JOIN on VISITOR_LOG
-    // and FROM USER parts of the query switched so we include users who are not
-    // listed in the visitor log.
+    $user_count = 0;
+    $visitor_count = 0;
 
-    // Officially Beehive's first ever UNION - 23rd April 2007
+    // Get the number of users in our database matching the criteria
 
-    if (db_fetch_mysql_version() >= 40116) {
-
-        $sql = implode(",", array_merge(array($select_sql), $profile_sql_array));
-        $sql.= "$from_sql $join_sql $where_sql $having_sql UNION ";
-        $sql.= implode(",", array_merge(array($select_sql), $profile_sql_array));
-        $sql.= "$union_sql $join_sql $where_sql $having_sql $order_sql";
-
-    }else {
-
-        $sql = implode(",", array_merge(array($select_sql), $profile_sql_array));
-        $sql.= "$from_sql $join_sql $where_sql $having_sql $order_sql";
-    }
-
-    // Execute the query.
+    $sql = "SELECT COUNT(USER.UID) AS USER_COUNT $union_sql $join_sql $where_sql";
 
     if (!$result = db_query($sql, $db_profile_browse_items)) return false;
 
-    // Array to store our results in.
-    
-    $user_array = array();
+    list($user_count) = db_fetch_array($result, DB_RESULT_NUM);
 
-    // Get the number of rows.
+    if ($hide_guests !== true) {
 
-    if (($user_count = db_num_rows($result)) > 0) {
+        // Get the number of guests in our visitor log matching the criteria
 
-        $offset = ($offset > $user_count) ? floor(($user_count / 10) - 1) * 10 : $offset;
+        $sql = "SELECT COUNT(VISITOR_LOG.UID) AS VISITOR_COUNT FROM VISITOR_LOG ";
+        $sql.= "LEFT JOIN USER ON (USER.UID = VISITOR_LOG.UID) ";
+        $sql.= "$join_sql $where_sql AND VISITOR_LOG.UID = 0";
 
-        if (db_data_seek($result, $offset)) {
-            
-            while ($user_data = db_fetch_array($result, DB_RESULT_ASSOC)) {
-                
-                if (is_null($user_data['UID']) || $user_data['UID'] == 0) {
+        if (!$result = db_query($sql, $db_profile_browse_items)) return false;
 
-                    $user_data['UID']      = 0;
-                    $user_data['LOGON']    = $lang['guest'];
-                    $user_data['NICKNAME'] = $lang['guest'];
-                }
-
-                if (isset($user_data['LAST_VISIT']) && !is_null($user_data['LAST_VISIT'])) {
-                    $user_data['LAST_VISIT'] = format_time($user_data['LAST_VISIT']);
-                }else {
-                    $user_data['LAST_VISIT'] = $lang['unknown'];
-                }            
-
-                if (isset($user_data['REGISTERED']) && !is_null($user_data['REGISTERED'])) {
-                    $user_data['REGISTERED'] = format_date($user_data['REGISTERED']);
-                }else {
-                    $user_data['REGISTERED'] = $lang['unknown'];
-                }
-
-                if (isset($user_data['USER_TIME_BEST']) && !is_null($user_data['USER_TIME_BEST'])) {
-                    $user_data['USER_TIME_BEST'] = format_time_display($user_data['USER_TIME_BEST']);
-                }else {
-                    $user_data['USER_TIME_BEST'] = $lang['unknown'];
-                }
-
-                if (isset($user_data['USER_TIME_TOTAL']) && !is_null($user_data['USER_TIME_TOTAL'])) {
-                    $user_data['USER_TIME_TOTAL'] = format_time_display($user_data['USER_TIME_TOTAL']);
-                }else {
-                    $user_data['USER_TIME_TOTAL'] = $lang['unknown'];
-                }
-
-                if (isset($user_data['DOB']) && !is_null($user_data['DOB'])) {
-                    $user_data['DOB'] = format_dob($user_data['DOB']);
-                }else {
-                    $user_data['DOB'] = $lang['unknown'];
-                }
-
-                if (!isset($user_data['POST_COUNT']) || is_null($user_data['POST_COUNT'])) {
-                    $user_data['POST_COUNT'] = 0;
-                }
-
-                $user_array[] = $user_data;
-                
-                if (sizeof($user_array) > 9) break;
-            }
-        }
-    
+        list ($visitor_count) = db_fetch_array($result, DB_RESULT_NUM);
     }
 
-    return array('user_count' => $user_count,
-                 'user_array' => $user_array);
+    if (($user_count + $visitor_count) > 0) {
+        
+        // If we're running on MySQL 4.0.16 or better we can perform
+        // a UNION and duplicate the main query with the JOIN on VISITOR_LOG
+        // and FROM USER parts of the query switched so we include users who are not
+        // listed in the visitor log.
 
+        // Officially Beehive's first ever UNION - 23rd April 2007
+
+        if (db_fetch_mysql_version() >= 40116) {
+
+            $sql = implode(",", array_merge(array($select_sql), $profile_sql_array));
+            $sql.= "$from_sql $join_sql $where_sql UNION ";
+            $sql.= implode(",", array_merge(array($select_sql), $profile_sql_array));
+            $sql.= "$union_sql $join_sql $where_sql $order_sql ";
+            $sql.= "$limit_sql";
+
+        }else {
+
+            $sql = implode(",", array_merge(array($select_sql), $profile_sql_array));
+            $sql.= "$from_sql $join_sql $where_sql $order_sql ";
+            $sql.= "$limit_sql";
+        }
+
+        // Execute the query.
+
+        if (!$result = db_query($sql, $db_profile_browse_items)) return false;
+
+        // Array to store our results in.
+
+        $user_array = array();
+            
+        while ($user_data = db_fetch_array($result, DB_RESULT_ASSOC)) {
+
+            if (is_null($user_data['UID']) || $user_data['UID'] == 0) {
+
+                $user_data['UID']      = 0;
+                $user_data['LOGON']    = $lang['guest'];
+                $user_data['NICKNAME'] = $lang['guest'];
+            }
+
+            if (isset($user_data['LAST_VISIT']) && !is_null($user_data['LAST_VISIT'])) {
+                $user_data['LAST_VISIT'] = format_time($user_data['LAST_VISIT']);
+            }else {
+                $user_data['LAST_VISIT'] = $lang['unknown'];
+            }            
+
+            if (isset($user_data['REGISTERED']) && !is_null($user_data['REGISTERED'])) {
+                $user_data['REGISTERED'] = format_date($user_data['REGISTERED']);
+            }else {
+                $user_data['REGISTERED'] = $lang['unknown'];
+            }
+
+            if (isset($user_data['USER_TIME_BEST']) && !is_null($user_data['USER_TIME_BEST'])) {
+                $user_data['USER_TIME_BEST'] = format_time_display($user_data['USER_TIME_BEST']);
+            }else {
+                $user_data['USER_TIME_BEST'] = $lang['unknown'];
+            }
+
+            if (isset($user_data['USER_TIME_TOTAL']) && !is_null($user_data['USER_TIME_TOTAL'])) {
+                $user_data['USER_TIME_TOTAL'] = format_time_display($user_data['USER_TIME_TOTAL']);
+            }else {
+                $user_data['USER_TIME_TOTAL'] = $lang['unknown'];
+            }
+
+            if (isset($user_data['DOB']) && !is_null($user_data['DOB'])) {
+                $user_data['DOB'] = format_dob($user_data['DOB']);
+            }else {
+                $user_data['DOB'] = $lang['unknown'];
+            }
+
+            if (!isset($user_data['POST_COUNT']) || is_null($user_data['POST_COUNT'])) {
+                $user_data['POST_COUNT'] = 0;
+            }
+
+            $user_array[] = $user_data;
+
+            if (sizeof($user_array) > 9) break;
+        }
+    }
+
+    return array('user_count' => ($user_count + $visitor_count),
+                 'user_array' => $user_array);
 }
 
 ?>

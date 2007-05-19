@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: banned.inc.php,v 1.22 2007-05-18 21:36:23 decoyduck Exp $ */
+/* $Id: banned.inc.php,v 1.23 2007-05-19 14:07:53 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -119,87 +119,102 @@ function ban_check($user_sess, $user_is_guest = false)
 
 function ip_is_banned($ipaddress)
 {
-   $db_ip_is_banned = db_connect();
+    $db_ip_is_banned = db_connect();
 
-   $ipaddress = db_escape_string($ipaddress);
+    $ipaddress = db_escape_string($ipaddress);
 
-   if (!$table_data = get_table_prefix()) return false;
+    if (!$table_data = get_table_prefix()) return false;
 
-   $sql = "SELECT ID FROM {$table_data['PREFIX']}BANNED ";
-   $sql.= "WHERE '$ipaddress' LIKE BANDATA AND BANTYPE = 1 ";
-   $sql.= "LIMIT 0, 1";
+    $ban_type_ip = BAN_TYPE_IP;
 
-   if (!$result = db_query($sql, $db_ip_is_banned)) return false;
+    $sql = "SELECT ID FROM {$table_data['PREFIX']}BANNED ";
+    $sql.= "WHERE '$ipaddress' LIKE BANDATA ";
+    $sql.= "AND BANTYPE = '$ban_type_ip' ";
+    $sql.= "LIMIT 0, 1";
 
-   return (db_num_rows($result) > 0);
+    if (!$result = db_query($sql, $db_ip_is_banned)) return false;
+
+    return (db_num_rows($result) > 0);
 }
 
 function logon_is_banned($logon)
 {
-   $db_logon_is_banned = db_connect();
+    $db_logon_is_banned = db_connect();
 
-   $logon = db_escape_string($logon);
+    $logon = db_escape_string($logon);
 
-   if (!$table_data = get_table_prefix()) return false;
+    if (!$table_data = get_table_prefix()) return false;
 
-   $sql = "SELECT ID FROM {$table_data['PREFIX']}BANNED ";
-   $sql.= "WHERE '$logon' LIKE BANDATA AND BANTYPE = 2 ";
-   $sql.= "LIMIT 0, 1";
+    $ban_type_logon = BAN_TYPE_LOGON;
 
-   if (!$result = db_query($sql, $db_logon_is_banned)) return false;
+    $sql = "SELECT ID FROM {$table_data['PREFIX']}BANNED ";
+    $sql.= "WHERE '$logon' LIKE BANDATA ";
+    $sql.= "AND BANTYPE = '$ban_type_logon' ";
+    $sql.= "LIMIT 0, 1";
 
-   return (db_num_rows($result) > 0);
+    if (!$result = db_query($sql, $db_logon_is_banned)) return false;
+
+    return (db_num_rows($result) > 0);
 }
 
 function nickname_is_banned($nickname)
 {
-   $db_nickname_is_banned = db_connect();
+    $db_nickname_is_banned = db_connect();
 
-   $nickname = db_escape_string($nickname);
+    $nickname = db_escape_string($nickname);
 
-   if (!$table_data = get_table_prefix()) return false;
+    if (!$table_data = get_table_prefix()) return false;
 
-   $sql = "SELECT ID FROM {$table_data['PREFIX']}BANNED ";
-   $sql.= "WHERE '$nickname' LIKE BANDATA AND BANTYPE = 3 ";
-   $sql.= "LIMIT 0, 1";
+    $ban_type_nick = BAN_TYPE_NICK;
 
-   if (!$result = db_query($sql, $db_nickname_is_banned)) return false;
+    $sql = "SELECT ID FROM {$table_data['PREFIX']}BANNED ";
+    $sql.= "WHERE '$nickname' LIKE BANDATA ";
+    $sql.= "AND BANTYPE = '$ban_type_nick' ";
+    $sql.= "LIMIT 0, 1";
 
-   return (db_num_rows($result) > 0);
+    if (!$result = db_query($sql, $db_nickname_is_banned)) return false;
+
+    return (db_num_rows($result) > 0);
 }
 
 function email_is_banned($email)
 {
-   $db_email_is_banned = db_connect();
+    $db_email_is_banned = db_connect();
 
-   $email = db_escape_string($email);
+    $email = db_escape_string($email);
 
-   if (!$table_data = get_table_prefix()) return false;
+    if (!$table_data = get_table_prefix()) return false;
 
-   $sql = "SELECT ID FROM {$table_data['PREFIX']}BANNED ";
-   $sql.= "WHERE '$email' LIKE BANDATA AND BANTYPE = 4 ";
-   $sql.= "LIMIT 0, 1";
+    $ban_type_email = BAN_TYPE_EMAIL;
 
-   if (!$result = db_query($sql, $db_email_is_banned)) return false;
+    $sql = "SELECT ID FROM {$table_data['PREFIX']}BANNED ";
+    $sql.= "WHERE '$email' LIKE BANDATA ";
+    $sql.= "AND BANTYPE = '$ban_type_email' ";
+    $sql.= "LIMIT 0, 1";
 
-   return (db_num_rows($result) > 0);
+    if (!$result = db_query($sql, $db_email_is_banned)) return false;
+
+    return (db_num_rows($result) > 0);
 }
 
 function referer_is_banned($referer)
 {
-   $db_referer_is_banned = db_connect();
+    $db_referer_is_banned = db_connect();
 
-   $referer = db_escape_string($referer);
+    $referer = db_escape_string($referer);
 
-   if (!$table_data = get_table_prefix()) return false;
+    if (!$table_data = get_table_prefix()) return false;
 
-   $sql = "SELECT ID FROM {$table_data['PREFIX']}BANNED ";
-   $sql.= "WHERE '$referer' LIKE BANDATA AND BANTYPE = 5 ";
-   $sql.= "LIMIT 0, 1";
+    $ban_type_ref = BAN_TYPE_REF;
 
-   if (!$result = db_query($sql, $db_referer_is_banned)) return false;
+    $sql = "SELECT ID FROM {$table_data['PREFIX']}BANNED ";
+    $sql.= "WHERE '$referer' LIKE BANDATA ";
+    $sql.= "AND BANTYPE = '$ban_type_ref' ";
+    $sql.= "LIMIT 0, 1";
 
-   return (db_num_rows($result) > 0);
+    if (!$result = db_query($sql, $db_referer_is_banned)) return false;
+
+    return (db_num_rows($result) > 0);
 }
 
 function add_ban_data($type, $data, $comment)
@@ -215,8 +230,8 @@ function add_ban_data($type, $data, $comment)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "INSERT INTO {$table_data['PREFIX']}BANNED ";
-    $sql.= "(BANTYPE, BANDATA, COMMENT) VALUES ('$type', '$data', '$comment')";
+    $sql = "INSERT INTO {$table_data['PREFIX']}BANNED (BANTYPE, BANDATA, COMMENT) ";
+    $sql.= "VALUES ('$type', '$data', '$comment')";
 
     if (!$result = db_query($sql, $db_add_ban_data)) return false;
 
@@ -269,7 +284,7 @@ function check_ban_data($ban_type, $ban_data, $check_ban_id = false)
 
     if (!is_numeric($ban_type)) return false;
     if (!is_numeric($check_ban_id)) $ban_id = false;
-   
+    
     $ban_data = db_escape_string($ban_data);
 
     if (!$table_data = get_table_prefix()) return false;
@@ -321,7 +336,7 @@ function check_affected_sessions($ban_type, $ban_data)
     $sql.= "OR USER.REFERER LIKE '$ban_data') AND '$ban_type' = '$ban_type_ref') ";
     $sql.= "OR (USER.LOGON LIKE '$ban_data' AND '$ban_type' = '$ban_type_logon') ";
     $sql.= "OR (USER.NICKNAME LIKE '$ban_data' AND '$ban_type' = '$ban_type_nick') ";
-    $sql.= "OR (USER.EMAIL LIKE '$ban_data' AND '$ban_type' = '$ban_type_email')) ";
+    $sql.= "OR (USER.EMAIL LIKE '$ban_data' AND '$ban_type' = '$ban_type_email'))";
 
     if (!$result = db_query($sql, $db_check_affected_sessions)) return false;
 
@@ -333,10 +348,9 @@ function check_affected_sessions($ban_type, $ban_data)
         }
     }
 
-    $sql = "SELECT COUNT(SESSIONS.UID) FROM SESSIONS ";
-    $sql.= "WHERE (('$ban_data' LIKE SESSIONS.IPADDRESS AND $ban_type = $ban_type_ip) ";
-    $sql.= "OR (SESSIONS.REFERER LIKE '$ban_data' AND $ban_type = $ban_type_ref)) ";
-    $sql.= "AND SESSIONS.UID = 0";
+    $sql = "SELECT COUNT(SESSIONS.UID) FROM SESSIONS WHERE SESSIONS.UID = 0 ";
+    $sql.= "AND (('$ban_data' LIKE SESSIONS.IPADDRESS AND '$ban_type' = '$ban_type_ip') ";
+    $sql.= "OR (SESSIONS.REFERER LIKE '$ban_data' AND '$ban_type' = '$ban_type_ref'))";
 
     if (!$result = db_query($sql, $db_check_affected_sessions)) return false;
 

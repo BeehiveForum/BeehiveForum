@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-07x-to-072.php,v 1.35 2007-05-12 16:46:18 decoyduck Exp $ */
+/* $Id: upgrade-07x-to-072.php,v 1.36 2007-05-19 14:07:53 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-07x-to-072.php") {
 
@@ -886,6 +886,68 @@ if (!$result = @db_query($sql, $db_install)) {
 // Sort the new table to order by UID.
 
 $sql = "ALTER TABLE {$forum_webtag}_WORD_FILTER ORDER BY UID";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// Change to Visitor log.
+
+$visitor_log_new = preg_replace("/[^a-z]/", "", md5(uniqid(rand())));
+
+while (install_get_table_conflicts(false, false, array($visitor_log_new))) {
+    $visitor_log_new = preg_replace("/[^a-z]/", "", md5(uniqid(rand())));
+}
+
+// Create the new table. Auto-increment has been changed to a compound
+// value to allow better grouping by UID.
+
+$sql = "CREATE TABLE $visitor_log_new (";
+$sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
+$sql.= "  VID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+$sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  LAST_LOGON DATETIME DEFAULT NULL,";
+$sql.= "  IPADDRESS VARCHAR(15) DEFAULT NULL,";
+$sql.= "  REFERER VARCHAR(255) DEFAULT NULL,";
+$sql.= "  SID MEDIUMINT(8) DEFAULT NULL,";
+$sql.= "  PRIMARY KEY  (UID,VID),";
+$sql.= "  KEY LAST_LOGON (LAST_LOGON),";
+$sql.= "  KEY FORUM (FORUM),";
+$sql.= "  KEY SID (SID)";
+$sql.= ") TYPE=MYISAM";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// Copy the data from the old VISITOR_LOG into our new table.
+
+$sql = "INSERT INTO $visitor_log_new (UID, FORUM, LAST_LOGON, IPADDRESS, REFERER, SID) ";
+$sql.= "SELECT UID, FROUM, LAST_LOGON, IPADDRESS, REFERER, SID FROM VISITOR_LOG ";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// Remove the old VISITOR_LOG table.
+
+$sql = "DROP TABLE VISITOR_LOG";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// Rename our new USER_POLL_VOTES table
+
+$sql = "ALTER TABLE $visitor_log_new RENAME VISITOR_LOG";
 
 if (!$result = @db_query($sql, $db_install)) {
 

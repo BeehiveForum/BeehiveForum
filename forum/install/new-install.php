@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.144 2007-05-12 16:46:17 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.145 2007-05-19 14:07:53 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
 
@@ -944,15 +944,17 @@ if (!$result = @db_query($sql, $db_install)) {
 }
 
 $sql = "CREATE TABLE VISITOR_LOG (";
+$sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
 $sql.= "  VID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
 $sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  LAST_LOGON DATETIME DEFAULT NULL,";
 $sql.= "  IPADDRESS VARCHAR(15) DEFAULT NULL,";
 $sql.= "  REFERER VARCHAR(255) DEFAULT NULL,";
 $sql.= "  SID MEDIUMINT(8) DEFAULT NULL,";
-$sql.= "  PRIMARY KEY  (VID),";
-$sql.= "  KEY UID (UID, LAST_LOGON)";
+$sql.= "  PRIMARY KEY  (UID,VID),";
+$sql.= "  KEY LAST_LOGON (LAST_LOGON),";
+$sql.= "  KEY FORUM (FORUM),";
+$sql.= "  KEY SID (SID)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = @db_query($sql, $db_install)) {

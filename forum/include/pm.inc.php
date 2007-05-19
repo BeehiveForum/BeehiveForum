@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.199 2007-05-19 23:05:46 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.200 2007-05-19 23:15:56 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -837,15 +837,11 @@ function pm_get_free_space($uid = false)
 
     if (!$result = db_query($sql, $db_pm_get_free_space)) return false;
 
-    $row = db_fetch_array($result);
+    list($pm_user_message_count) = db_fetch_array($result, DB_RESULT_NUM);
 
-    if (isset($row['PM_USER_MESSAGES_COUNT'])) {
+    if ($pm_user_message_count > $pm_max_user_messages) return 0;
 
-        if ($row['PM_USER_MESSAGES_COUNT'] > $pm_max_user_messages) return 0;
-        return ($pm_max_user_messages - $row['PM_USER_MESSAGES_COUNT']);
-    }
-
-    return $pm_max_user_messages;
+    return ($pm_max_user_messages - $pm_user_message_count);
 }
 
 /**

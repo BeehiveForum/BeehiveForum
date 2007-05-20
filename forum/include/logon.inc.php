@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.61 2007-05-15 16:21:47 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.62 2007-05-20 17:52:06 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -156,11 +156,13 @@ function logon_update_cookies($logon, $password, $passhash, $save_password)
 
             bh_setcookie("bh_light_remember_username", $logon, time() + YEAR_IN_SECONDS);
             bh_setcookie("bh_light_remember_password", $password, time() + YEAR_IN_SECONDS);
+            bh_setcookie("bh_light_remember_passhash", $passhash, time() + YEAR_IN_SECONDS);
 
         }else {
 
-            bh_setcookie("bh_light_remember_username", $logon, time() - YEAR_IN_SECONDS);
+            bh_setcookie("bh_light_remember_username", $logon, time() + YEAR_IN_SECONDS);
             bh_setcookie("bh_light_remember_password", "", time() - YEAR_IN_SECONDS);
+            bh_setcookie("bh_light_remember_passhash", "", time() - YEAR_IN_SECONDS);
         }
 
     }else {
@@ -251,12 +253,16 @@ function logon_perform($logon_main)
         if (strlen(trim($password)) > 0) {
 
             $passhash = md5($password);
+            $password = str_repeat(chr(32), strlen($password));
 
         }else {
 
             if (isset($_POST['user_passhash']) && is_md5(_stripslashes($_POST['user_passhash']))) {
+
                 $passhash = _stripslashes($_POST['user_passhash']);
+
             }else {
+
                 return false;
             }
         }

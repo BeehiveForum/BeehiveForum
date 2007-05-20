@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.143 2007-05-18 11:49:29 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.144 2007-05-20 17:52:06 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -124,17 +124,33 @@ function light_draw_logon_form()
 
     echo "<form name=\"logonform\" action=\"llogon.php\" method=\"post\">\n";
     echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
-
-    echo "<p>{$lang['username']}: ";
+    echo "  <p>{$lang['username']}: ";
     echo light_form_input_text("user_logon", (isset($_COOKIE['bh_light_remember_username']) ? _htmlentities($_COOKIE['bh_light_remember_username']) : "")). "</p>\n";
 
-    echo "<p>{$lang['passwd']}: ";
-    echo light_form_input_password("user_password", (isset($_COOKIE['bh_light_remember_password']) ? _htmlentities($_COOKIE['bh_light_remember_password']) : "")). "</p>\n";
+    if (isset($_COOKIE['bh_light_remember_password']) && strlen($_COOKIE['bh_light_remember_password']) > 0) {
+
+        if (isset($_COOKIE['bh_light_remember_passhash']) && is_md5($_COOKIE['bh_light_remember_passhash'])) {
+
+            echo "  <p>{$lang['passwd']}: ";
+            echo light_form_input_password("user_password", _htmlentities($_COOKIE['bh_light_remember_password']));
+            echo form_input_hidden("user_passhash", _htmlentities($_COOKIE['bh_light_remember_passhash'])), "</p>\n";
+
+        }else {
+
+            echo "<p>{$lang['passwd']}: ";
+            echo light_form_input_password("user_password", '');
+            echo form_input_hidden("user_passhash", ''), "</p>\n";
+        }
+
+    }else {
+
+        echo "<p>{$lang['passwd']}: ";
+        echo light_form_input_password("user_password", '');
+        echo form_input_hidden("user_passhash", ''), "</p>\n";
+    }
 
     echo "<p>", form_checkbox("remember_user", "Y", $lang['rememberpassword'], (isset($_COOKIE['bh_light_remember_username']) && isset($_COOKIE['bh_light_remember_password']) ? true : false)), "</p>\n";
-
     echo "<p>", form_submit('submit', $lang['logon']), "</p>\n";
-
     echo "</form>\n";
 }
 

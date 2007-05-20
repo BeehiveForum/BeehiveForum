@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.155 2007-05-19 23:05:46 decoyduck Exp $ */
+/* $Id: register.php,v 1.156 2007-05-20 17:52:06 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -435,6 +435,7 @@ if (isset($_POST['submit'])) {
             // Generate the MD5 checksum of the user's password for saving in their cookie.
 
             $passhash = md5($password);
+            $password = str_repeat(chr(32), strlen($password));
 
             // Update the cookies.
 

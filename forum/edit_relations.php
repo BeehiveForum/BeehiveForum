@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_relations.php,v 1.68 2007-05-10 22:03:17 decoyduck Exp $ */
+/* $Id: edit_relations.php,v 1.69 2007-05-20 17:53:34 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -204,7 +204,7 @@ if (sizeof($user_peers['user_array']) > 0) {
 
         echo "                <tr>\n";
         echo "                  <td align=\"center\">", form_checkbox("delete_relationships[{$user_peer['UID']}]", "Y", false), "</td>\n";
-        echo "                  <td align=\"left\">&nbsp;<a href=\"user_rel.php?webtag=$webtag&amp;uid={$user_peer['UID']}&ret=edit_relations.php%3Fwebtag=$webtag\" target=\"_self\">", format_user_name($user_peer['LOGON'], $user_peer['PEER_NICKNAME']), "</a></td>\n";
+        echo "                  <td align=\"left\">&nbsp;<a href=\"user_rel.php?webtag=$webtag&amp;uid={$user_peer['UID']}&ret=edit_relations.php%3Fwebtag%3D$webtag\" target=\"_self\">", format_user_name($user_peer['LOGON'], $user_peer['PEER_NICKNAME']), "</a></td>\n";
 
         if ($user_peer['RELATIONSHIP'] & USER_FRIEND) {
 
@@ -300,7 +300,7 @@ if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
 
             echo "                <tr>\n";
             echo "                  <td align=\"left\" width=\"20\">&nbsp;</td>\n";
-            echo "                  <td align=\"left\">&nbsp;<a href=\"user_rel.php?webtag=$webtag&amp;uid={$user_peer['UID']}&ret=edit_relations.php%3Fwebtag=$webtag\" target=\"_self\">", format_user_name($user_peer['LOGON'], $user_peer['NICKNAME']), "</a></td>\n";
+            echo "                  <td align=\"left\">&nbsp;<a href=\"user_rel.php?webtag=$webtag&amp;uid={$user_peer['UID']}&ret=edit_relations.php%3Fwebtag%3D$webtag\" target=\"_self\">", format_user_name($user_peer['LOGON'], $user_peer['NICKNAME']), "</a></td>\n";
 
             if ($user_peer['RELATIONSHIP'] & USER_FRIEND) {
 

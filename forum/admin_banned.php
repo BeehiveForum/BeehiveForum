@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_banned.php,v 1.58 2007-04-27 23:03:56 decoyduck Exp $ */
+/* $Id: admin_banned.php,v 1.59 2007-05-21 00:14:20 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -88,7 +88,7 @@ if (bh_session_user_banned()) {
 // Check we have a webtag
 
 if (!$webtag = get_webtag($webtag_search)) {
-    $request_uri = rawurlencode(get_request_uri());
+    $request_uri = rawurlencode(get_request_uri(false));
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
@@ -806,7 +806,7 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
         echo "      <td align=\"left\">&nbsp;</td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
-        echo "      <td class=\"postbody\" align=\"center\">", page_links(get_request_uri(false), $start, $ban_list_array['ban_count'], 10), "</td>\n";
+        echo "      <td class=\"postbody\" align=\"center\">", page_links(get_request_uri(true, false), $start, $ban_list_array['ban_count'], 10), "</td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\">&nbsp;</td>\n";

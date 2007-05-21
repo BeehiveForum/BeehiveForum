@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.php,v 1.96 2007-05-03 20:25:56 decoyduck Exp $ */
+/* $Id: admin.php,v 1.97 2007-05-21 00:14:20 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -89,6 +89,27 @@ if (!bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) && !bh_session_check_perm(U
     html_error_msg($lang['accessdeniedexp']);
     html_draw_bottom();
     exit;
+}
+
+if (isset($_GET['page']) && strlen(trim(_stripslashes($_GET['page']))) > 0) {
+
+    $requested_page = trim(_stripslashes($_GET['page']));
+    
+    $available_pages = get_available_admin_files();
+    $available_pages_preg = implode("|^", array_map('preg_quote_callback', $available_pages));
+
+    if (preg_match("/^$available_pages_preg/", basename($requested_page)) > 0) {
+
+        html_draw_top('body_tag=false', 'frames=true');
+        
+        echo "<frameset cols=\"250,*\" framespacing=\"0\" border=\"4\">\n";
+        echo "  <frame src=\"./admin_menu.php?webtag=$webtag\" name=\"left\" frameborder=\"0\" />\n";   
+        echo "  <frame src=\"$requested_page\" name=\"right\" frameborder=\"0\" />\n";
+        echo "</frameset>\n";
+
+        html_draw_bottom(false);
+        exit;
+    }
 }
 
 html_draw_top('body_tag=false', 'frames=true');

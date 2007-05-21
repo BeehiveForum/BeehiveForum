@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.140 2007-05-15 22:13:16 decoyduck Exp $ */
+/* $Id: index.php,v 1.141 2007-05-21 00:14:21 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -73,6 +73,10 @@ if (bh_session_user_banned()) {
     exit;
 }
 
+// Check we have a webtag
+
+$webtag = get_webtag($webtag_search);
+
 // Check to see if we have an active session
 
 $session_active = bh_session_active();
@@ -101,20 +105,23 @@ bh_setcookie("bh_logon", "1", time() - YEAR_IN_SECONDS);
 // Are we being redirected somewhere?
 
 if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri']))) > 0) {
-    
-    $final_uri = rawurldecode(trim(_stripslashes($_GET['final_uri'])));
 
     $available_files = get_available_files();
     $available_files_preg = implode("|^", array_map('preg_quote_callback', $available_files));
+    
+    if (preg_match("/^$available_files_preg/", basename(trim(_stripslashes($_GET['final_uri'])))) > 0) {
+    
+        $final_uri = rawurldecode(trim(_stripslashes($_GET['final_uri'])));
 
-    if (preg_match("/^$available_files_preg/", basename($final_uri)) < 1) unset($final_uri);
+        if (preg_match("/^admin_[^\.]+\.php/", basename($final_uri)) > 0) {
+
+            $final_uri = rawurlencode($final_uri);
+            $final_uri = "admin.php?webtag=$webtag&page=$final_uri";
+        }
+    }    
 }
 
 if ($session_active && !$logon_failed) {
-
-    // Fetch the forum settings
-
-    $webtag = get_webtag($webtag_search);
 
     // Calculate how tall the nav frameset should be based on the user's fontsize.
 
@@ -193,10 +200,6 @@ if ($session_active && !$logon_failed) {
 
 }else {
 
-    // Fetch the forum settings
-
-    $webtag = get_webtag($webtag_search);
-
     html_draw_top('body_tag=false', 'frames=true', 'robots=index,follow');
 
     echo "<frameset rows=\"60,*\" framespacing=\"0\" border=\"0\">\n";
@@ -235,7 +238,7 @@ echo "<body>\n";
 
 if ($session_active && !$logon_failed) {
 
-    if ($webtag = get_webtag($webtag_search)) {
+    if ($webtag !== false) {
 
         light_draw_thread_list();
 

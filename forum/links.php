@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.php,v 1.96 2007-05-15 22:13:16 decoyduck Exp $ */
+/* $Id: links.php,v 1.97 2007-05-21 00:14:21 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -85,7 +85,7 @@ if (!bh_session_user_approved()) {
 // Check we have a webtag
 
 if (!$webtag = get_webtag($webtag_search)) {
-    $request_uri = rawurlencode(get_request_uri());
+    $request_uri = rawurlencode(get_request_uri(false));
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
@@ -438,7 +438,7 @@ echo "      <td align=\"left\">\n";
 echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td align=\"left\" width=\"25%\"><img src=\"", style_image("ct.png"), "\" alt=\"\" /> <a href=\"links_add.php?webtag=$webtag&amp;mode=link&amp;fid=$fid\">{$lang['addlinkhere']}</a></td>\n";
-echo "            <td width=\"50%\" align=\"center\">", page_links(get_request_uri(false), $start, $links['links_count'], 20), "</td>\n";
+echo "            <td width=\"50%\" align=\"center\">", page_links(get_request_uri(true, false), $start, $links['links_count'], 20), "</td>\n";
 echo "            <td align=\"left\" width=\"25%\">&nbsp;</td>\n";
 echo "          </tr>\n";
 echo "        </table>\n";

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: search_popup.php,v 1.12 2007-04-28 22:36:18 decoyduck Exp $ */
+/* $Id: search_popup.php,v 1.13 2007-05-21 00:14:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -88,7 +88,7 @@ if (!bh_session_user_approved()) {
 // Check we have a webtag
 
 if (!$webtag = get_webtag($webtag_search)) {
-    $request_uri = rawurlencode(get_request_uri());
+    $request_uri = rawurlencode(get_request_uri(false));
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 

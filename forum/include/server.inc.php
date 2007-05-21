@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: server.inc.php,v 1.11 2007-04-15 17:07:57 decoyduck Exp $ */
+/* $Id: server.inc.php,v 1.12 2007-05-21 00:14:22 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -167,7 +167,7 @@ function microtime_float()
 *
 * Returns an array of Beehive Forum PHP files (forum path only)
 *
-* @return float
+* @return string
 * @param void
 */
 
@@ -223,6 +223,34 @@ function get_available_files()
                  'user_main.php', 'user_menu.php',
                  'user_profile.php', 'user_rel.php',
                  'user_stats.php', 'visitor_log.php');
+}
+
+/**
+* Fetch a list of available admin forum files
+*
+* Returns an array of Beehive Forum admin PHP files (forum path only)
+*
+* @return string
+* @param void
+*/
+
+function get_available_admin_files()
+{
+    return array('admin.php', 'admin_banned.php',
+                 'admin_default_forum_settings.php', 'admin_folders.php',
+                 'admin_folder_add.php', 'admin_folder_edit.php',
+                 'admin_forums.php', 'admin_forum_access.php',
+                 'admin_forum_links.php', 'admin_forum_settings.php',
+                 'admin_forum_set_passwd.php', 'admin_main.php',
+                 'admin_make_style.php', 'admin_menu.php',
+                 'admin_post_approve.php', 'admin_post_stats.php',
+                 'admin_prof_items.php', 'admin_prof_sect.php',
+                 'admin_rss_feeds.php', 'admin_startpage.php',
+                 'admin_user.php', 'admin_users.php',
+                 'admin_user_groups.php', 'admin_user_groups_add.php',
+                 'admin_user_groups_edit.php', 'admin_user_groups_edit_users.php',
+                 'admin_viewlog.php', 'admin_visitor_log.php',
+                 'admin_wordfilter.php');
 }
 
 // Executed by every script that includes server.inc.php.

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_post_approve.php,v 1.48 2007-05-10 22:03:17 decoyduck Exp $ */
+/* $Id: admin_post_approve.php,v 1.49 2007-05-21 00:14:21 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -87,7 +87,7 @@ if (bh_session_user_banned()) {
 // Check we have a webtag
 
 if (!$webtag = get_webtag($webtag_search)) {
-    $request_uri = rawurlencode(get_request_uri());
+    $request_uri = rawurlencode(get_request_uri(false));
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
@@ -389,7 +389,7 @@ if (isset($msg) && validate_msg($msg)) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td class=\"postbody\" align=\"center\">", page_links(get_request_uri(false), $start, $post_approval_array['post_count'], 10), "</td>\n";
+    echo "      <td class=\"postbody\" align=\"center\">", page_links(get_request_uri(true, false), $start, $post_approval_array['post_count'], 10), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</div>\n";

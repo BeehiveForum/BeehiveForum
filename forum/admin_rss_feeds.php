@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_rss_feeds.php,v 1.43 2007-05-18 11:49:28 decoyduck Exp $ */
+/* $Id: admin_rss_feeds.php,v 1.44 2007-05-21 00:14:21 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -82,7 +82,7 @@ if (bh_session_user_banned()) {
 // Check we have a webtag
 
 if (!$webtag = get_webtag($webtag_search)) {
-    $request_uri = rawurlencode(get_request_uri());
+    $request_uri = rawurlencode(get_request_uri(false));
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
@@ -105,13 +105,6 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
 }else {
     $page = 1;
 }
-
-define('RSS_FEED_UPDATE_NEVER', 0);
-define('RSS_FEED_UPDATE_THIRTY_MINS', 30);
-define('RSS_FEED_UPDATE_ONE_HOUR', 60);
-define('RSS_FEED_UPDATE_SIX_HOURS', 360);
-define('RSS_FEED_UPDATE_TWELVE_HOURS', 720);
-define('RSS_FEED_UPDATE_ONCE_A_DAY', 1440);
 
 $update_frequencies_array = array(RSS_FEED_UPDATE_NEVER        => $lang['never'],
                                   RSS_FEED_UPDATE_THIRTY_MINS  => $lang['every30mins'], 
@@ -700,7 +693,7 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td class=\"postbody\" align=\"center\">", page_links(get_request_uri(false), $start, $rss_feeds['rss_feed_count'], 10), "</td>\n";
+    echo "      <td class=\"postbody\" align=\"center\">", page_links(get_request_uri(true, false), $start, $rss_feeds['rss_feed_count'], 10), "</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">&nbsp;</td>\n";

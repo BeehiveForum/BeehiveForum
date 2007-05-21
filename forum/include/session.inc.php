@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.299 2007-05-13 21:58:15 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.300 2007-05-21 00:14:22 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -210,27 +210,25 @@ function bh_session_expired()
     global $frame_top_target;
 
     $webtag = get_webtag($webtag_search);
+
+    $lang = load_language_file();
     
     if (defined("BEEHIVEMODE_LIGHT")) {
         header_redirect("./llogon.php?webtag=$webtag&final_uri=". get_request_uri());
     }
 
-    html_draw_top('logon.js');
-
-    echo "<div align=\"center\">\n";
-
-    if (isset($_POST['user_logon']) && isset($_POST['user_password']) && isset($_POST['user_passhash'])) {
+    if (isset($_POST['logon']) || isset($_POST['guest_logon'])) {
 
         if (logon_perform(false)) {
 
             logon_unset_post_data();
                         
-            $lang = load_language_file();
-
-            $request_uri = get_request_uri(false);
+            $request_uri = get_request_uri(true, false);
 
             if (isset($_POST) && is_array($_POST) && sizeof($_POST) > 0) {
             
+                html_draw_top('logon.js');
+                
                 echo "<h1>{$lang['loggedinsuccessfully']}</h1>";
 
                 $top_html = html_get_top_page();
@@ -245,7 +243,7 @@ function bh_session_expired()
                 echo "</script>";
 
                 echo "<div align=\"center\">\n";
-                echo "<p><b>{$lang['presscontinuetoresend']}</b></p>\n";
+                echo "<h2>{$lang['presscontinuetoresend']}</h2>\n";
 
                 if (stristr($request_uri, 'logon.php')) {
 
@@ -272,6 +270,7 @@ function bh_session_expired()
                 echo form_submit('continue', $lang['continue']), "&nbsp;";
                 echo form_button('cancel', $lang['cancel'], "onclick=\"self.location.href='$request_uri'\""), "\n";
                 echo "</form>\n";
+                echo "</div>\n";
 
                 html_draw_bottom();
                 exit;
@@ -291,12 +290,16 @@ function bh_session_expired()
         }
     }
 
-    logon_draw_form();
+    html_draw_top('logon.js');
+
+    echo "<div align=\"center\">\n";
+    echo "  <h2>{$lang['yoursessionhasexpired']}</h2>\n";
+
+    logon_draw_form(false);
 
     echo "</div>\n";
 
     html_draw_bottom();
-
     exit;
 }
 
@@ -1262,7 +1265,7 @@ function parse_array($array, $sep, &$result_var)
 * @param bool $encoded_uri_query - Specify whether or not we want URL encoded seperator in the URL (& vs. &amp;)
 */
 
-function get_request_uri($encoded_uri_query = true)
+function get_request_uri($include_webtag = true, $encoded_uri_query = true)
 {
     if (!is_bool($encoded_uri_query)) $encoded_uri_query = true;
 
@@ -1270,19 +1273,39 @@ function get_request_uri($encoded_uri_query = true)
 
     if ($encoded_uri_query) {
 
-        $request_uri = "{$_SERVER['PHP_SELF']}?webtag=$webtag&amp;";
-        parse_array($_GET, "&amp;", $request_uri);
+        if ($include_webtag) {
+
+            $request_uri = "{$_SERVER['PHP_SELF']}?webtag=$webtag&amp;";
+            parse_array($_GET, "&amp;", $request_uri);
+
+        }else {
+
+            $request_uri = "{$_SERVER['PHP_SELF']}?";
+            parse_array($_GET, "&amp;", $request_uri);
+        }
 
     }else {
 
-        $request_uri = "{$_SERVER['PHP_SELF']}?webtag=$webtag&";
-        parse_array($_GET, "&", $request_uri);
+        if ($include_webtag) {
+
+            $request_uri = "{$_SERVER['PHP_SELF']}?webtag=$webtag&";
+            parse_array($_GET, "&", $request_uri);
+
+        }else {
+
+            $request_uri = "{$_SERVER['PHP_SELF']}?";
+            parse_array($_GET, "&", $request_uri);
+        }
     }
 
+    // Remove trailing question mark / & / &amp;
+
+    $request_uri = preg_replace("/\?$|&$|&amp;$/", "", $request_uri);
+    
     // Fix the slashes for forum running from sub-domain.
     // Rather dirty hack this, but it's the only idea I've got.
     // Any suggestions are welcome on how to handle this better.
-
+    
     return preg_replace("/\/\/+/", "/", $request_uri);
 }
 

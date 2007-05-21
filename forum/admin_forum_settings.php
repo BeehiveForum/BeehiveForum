@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.115 2007-05-15 22:13:16 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.116 2007-05-21 00:14:20 decoyduck Exp $ */
 
 /**
 * Displays and handles the Forum Settings page
@@ -92,7 +92,7 @@ if (bh_session_user_banned()) {
 // Check we have a webtag
 
 if (!$webtag = get_webtag($webtag_search)) {
-    $request_uri = rawurlencode(get_request_uri());
+    $request_uri = rawurlencode(get_request_uri(false));
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
@@ -135,7 +135,7 @@ $available_timezones = get_available_timezones();
 if (isset($_POST['changepermissions'])) {
 
     $redirect_uri = "admin_forum_access.php?webtag=$webtag&fid={$forum_settings['fid']}";
-    $redirect_uri.= "&ret=". rawurlencode(get_request_uri(false));
+    $redirect_uri.= "&ret=". rawurlencode(get_request_uri(true, false));
 
     header_redirect($redirect_uri);
     exit;
@@ -143,7 +143,7 @@ if (isset($_POST['changepermissions'])) {
 }elseif (isset($_POST['changepassword'])) {
 
     $redirect_uri = "admin_forum_set_passwd.php?webtag=$webtag&fid={$forum_settings['fid']}";
-    $redirect_uri.= "&ret=". rawurlencode(get_request_uri(false));
+    $redirect_uri.= "&ret=". rawurlencode(get_request_uri(true, false));
 
     header_redirect($redirect_uri);
     exit;

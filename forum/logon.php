@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.173 2007-04-12 13:23:11 decoyduck Exp $ */
+/* $Id: logon.php,v 1.174 2007-05-21 00:14:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -166,7 +166,7 @@ if (isset($_GET['deletecookie']) && $_GET['deletecookie'] == 'yes') {
         }
     }
 
-}elseif (isset($_POST['other'])) {
+}elseif (isset($_POST['other_logon'])) {
 
     if (isset($final_uri)) {
 
@@ -179,79 +179,11 @@ if (isset($_GET['deletecookie']) && $_GET['deletecookie'] == 'yes') {
     }
 }
 
-if (isset($_GET['other_logon'])) {
-    $other_logon = true;
-}else {
-    $other_logon = false;
-}
-
 html_draw_top('logon.js');
 
 echo "<div align=\"center\">\n";
 
-logon_draw_form(true, $other_logon);
-
-if (user_guest_enabled()) {
-
-    if (isset($frame_top_target) && strlen($frame_top_target) > 0) {
-    
-        echo "  <form name=\"guest\" action=\"", get_request_uri(), "\" method=\"post\" target=\"$frame_top_target\">\n";
-        echo "    <p class=\"smalltext\">", sprintf($lang['enterasa'], form_submit('guest_logon', $lang['guest'])), "</p>\n";
-        echo "  </form>\n";
-
-    }else {
-
-        echo "  <form name=\"guest\" action=\"", get_request_uri(), "\" method=\"post\" target=\"_top\">\n";
-        echo "    <p class=\"smalltext\">", sprintf($lang['enterasa'], form_submit('guest_logon', $lang['guest'])), "</p>\n";
-        echo "  </form>\n";
-    }
-}
-
-if (isset($final_uri)) {
-
-    $final_uri = rawurlencode($final_uri);
-
-    echo "  <p class=\"smalltext\">", sprintf($lang['donthaveanaccount'], "<a href=\"register.php?webtag=$webtag&amp;final_uri=$final_uri\" target=\"_self\">{$lang['registernow']}</a>"), "</p>\n";
-    echo "  <hr width=\"350\" />\n";
-    echo "  <h2>{$lang['problemsloggingon']}</h2>\n";
-
-    if (isset($frame_top_target) && strlen($frame_top_target) > 0) {
-
-        echo "  <p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes&amp;final_uri=$final_uri\" target=\"$frame_top_target\">{$lang['deletecookies']}</a></p>\n";
-        echo "  <p class=\"smalltext\"><a href=\"forgot_pw.php?webtag=$webtag&amp;final_uri=$final_uri\" target=\"_self\">{$lang['forgottenpasswd']}</a></p>\n";
-
-    }else {
-
-        echo "  <p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes&amp;final_uri=$final_uri\" target=\"_top\">{$lang['deletecookies']}</a></p>\n";
-        echo "  <p class=\"smalltext\"><a href=\"forgot_pw.php?webtag=$webtag&amp;final_uri=$final_uri\" target=\"_self\">{$lang['forgottenpasswd']}</a></p>\n";
-    }
-
-}else {
-
-    echo "  <p class=\"smalltext\">", sprintf($lang['donthaveanaccount'], "<a href=\"register.php?webtag=$webtag\" target=\"_self\">{$lang['registernow']}</a>"), "</p>\n";
-    echo "  <hr width=\"350\" />\n";
-    echo "  <h2>{$lang['problemsloggingon']}</h2>\n";
-
-    if (isset($frame_top_target) && strlen($frame_top_target) > 0) {
-
-        echo "  <p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes\" target=\"$frame_top_target\">{$lang['deletecookies']}</a></p>\n";
-        echo "  <p class=\"smalltext\"><a href=\"forgot_pw.php?webtag=$webtag\" target=\"_self\">{$lang['forgottenpasswd']}</a></p>\n";
-
-    }else {
-
-        echo "  <p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes\" target=\"_top\">{$lang['deletecookies']}</a></p>\n";
-        echo "  <p class=\"smalltext\"><a href=\"forgot_pw.php?webtag=$webtag\" target=\"_self\">{$lang['forgottenpasswd']}</a></p>\n";
-    }
-}
-
-echo "  <hr width=\"350\" />\n";
-echo "  <h2>{$lang['usingaPDA']}</h2>\n";
-
-if (isset($frame_top_target) && strlen($frame_top_target) > 0) {
-    echo "  <p class=\"smalltext\"><a href=\"index.php?webtag=$webtag&amp;noframes\" target=\"$frame_top_target\">{$lang['lightHTMLversion']}</a></p>\n";
-}else {
-    echo "  <p class=\"smalltext\"><a href=\"index.php?webtag=$webtag&amp;noframes\" target=\"_top\">{$lang['lightHTMLversion']}</a></p>\n";
-}
+logon_draw_form();
 
 echo "</div>\n";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ldelete.php,v 1.6 2007-05-02 23:15:40 decoyduck Exp $ */
+/* $Id: ldelete.php,v 1.7 2007-05-21 00:14:21 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -97,7 +97,7 @@ if (!bh_session_user_approved()) {
 // Check we have a webtag
 
 if (!$webtag = get_webtag($webtag_search)) {
-    $request_uri = rawurlencode(get_request_uri());
+    $request_uri = rawurlencode(get_request_uri(false));
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
@@ -113,7 +113,7 @@ if (!forum_check_access_level()) {
 }
 
 if (bh_session_get_value('UID') == 0) {
-    html_guest_error();
+    light_html_guest_error();
     exit;
 }
 

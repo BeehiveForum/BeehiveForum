@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forums.php,v 1.74 2007-05-15 22:13:16 decoyduck Exp $ */
+/* $Id: forums.php,v 1.75 2007-05-21 00:14:21 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -242,14 +242,15 @@ if (isset($_GET['clear_search'])) {
 
 if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri']))) > 0) {
     
-    $final_uri = rawurldecode(trim(_stripslashes($_GET['final_uri'])));
-
     $available_files = get_available_files();
     $available_files_preg = implode("|^", array_map('preg_quote_callback', $available_files));
 
-    if (preg_match("/^$available_files_preg/", basename($final_uri)) < 1) unset($final_uri);
-}
+    if (preg_match("/^$available_files_preg/", basename(trim(_stripslashes($_GET['final_uri'])))) > 0) {
 
+        $final_uri = rawurldecode(trim(_stripslashes($_GET['final_uri'])));
+        $final_uri = href_remove_query_keys($final_uri, 'webtag');
+    }
+}
 
 if (!user_is_guest()) {
 
@@ -294,8 +295,18 @@ if (!user_is_guest()) {
             }
 
             if (isset($final_uri) && strlen($final_uri) > 0) {
-                echo "                  <td align=\"left\" valign=\"top\" width=\"30%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=", rawurlencode($final_uri), "\">{$forum['FORUM_NAME']}</a></td>\n";
+
+                if (strstr($final_uri, '?')) {
+
+                    echo "                  <td align=\"left\" valign=\"top\" width=\"30%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=", rawurlencode($final_uri), "%26webtag%3D{$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></td>\n";
+
+                }else {
+
+                    echo "                  <td align=\"left\" valign=\"top\" width=\"30%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=", rawurlencode($final_uri), "%3Fwebtag%3D{$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></td>\n";
+                }
+
             }else {
+
                 echo "                  <td align=\"left\" valign=\"top\" width=\"30%\"><a href=\"index.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></td>\n";
             }
 
@@ -463,17 +474,25 @@ if (!user_is_guest()) {
 
             echo "                <tr>\n";
             echo "                  <td align=\"center\" width=\"1%\">", form_submit_image('forum_add_fav.png', "add_fav[{$forum['FID']}]", "{$lang['addtofavourites']}", "title=\"{$lang['addtofavourites']}\""), "</td>\n";
-            echo "                  <td align=\"left\" width=\"25%\" valign=\"top\">\n";
 
             if (isset($final_uri) && strlen($final_uri) > 0) {
-                echo "                    <a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=", rawurlencode($final_uri), "\">{$forum['FORUM_NAME']}</a>\n";
+
+                if (strstr($final_uri, '?')) {
+
+                    echo "                  <td align=\"left\" valign=\"top\" width=\"30%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=", rawurlencode($final_uri), "%26webtag%3D{$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></td>\n";
+
+                }else {
+
+                    echo "                  <td align=\"left\" valign=\"top\" width=\"30%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=", rawurlencode($final_uri), "%3Fwebtag%3D{$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></td>\n";
+                }
+
             }else {
-                echo "                    <a href=\"index.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a>\n";
+
+                echo "                  <td align=\"left\" valign=\"top\" width=\"30%\"><a href=\"index.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></td>\n";
             }
 
-            echo "                  </td>\n";
-            echo "                  <td align=\"left\" width=\"20%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">", sprintf($lang['forummessages'], number_format($forum['MESSAGES'], 0, ".", ",")), "</a></td>\n";
-            echo "                  <td align=\"left\" width=\"20%\" valign=\"top\">&nbsp;</td>\n";
+            echo "                  <td align=\"left\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">", sprintf($lang['forummessages'], number_format($forum['MESSAGES'], 0, ".", ",")), "</a></td>\n";
+            echo "                  <td align=\"left\" valign=\"top\">&nbsp;</td>\n";
             echo "                  <td align=\"center\" width=\"1%\">", form_submit_image('forum_hide.png', "ignore_forum[{$forum['FID']}]", "{$lang['ignoreforum']}", "title=\"{$lang['ignoreforum']}\""), "</td>\n";
             echo "                </tr>\n";
         }
@@ -611,9 +630,19 @@ if (isset($webtag_search) && strlen($webtag_search) > 0) {
             }
 
             if (isset($final_uri) && strlen($final_uri) > 0) {
-                echo "                  <td align=\"left\" width=\"30%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=", rawurlencode($final_uri), "\">{$forum['FORUM_NAME']}</a></td>\n";
+
+                if (strstr($final_uri, '?')) {
+
+                    echo "                  <td align=\"left\" valign=\"top\" width=\"30%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=", rawurlencode($final_uri), "%26webtag%3D{$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></td>\n";
+
+                }else {
+
+                    echo "                  <td align=\"left\" valign=\"top\" width=\"30%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=", rawurlencode($final_uri), "%3Fwebtag%3D{$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></td>\n";
+                }
+
             }else {
-                echo "                  <td align=\"left\" width=\"30%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></td>\n";
+
+                echo "                  <td align=\"left\" valign=\"top\" width=\"30%\"><a href=\"index.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></td>\n";
             }
 
             if (isset($forum['UNREAD_TO_ME']) && $forum['UNREAD_TO_ME'] > 0) {

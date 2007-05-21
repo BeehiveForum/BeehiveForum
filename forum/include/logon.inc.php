@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.62 2007-05-20 17:52:06 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.63 2007-05-21 00:14:22 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -299,7 +299,7 @@ function logon_perform($logon_main)
     return false;
 }
 
-function logon_draw_form($logon_main = true, $other_logon = false)
+function logon_draw_form()
 {
     global $frame_top_target;
    
@@ -313,6 +313,12 @@ function logon_draw_form($logon_main = true, $other_logon = false)
 
     logon_get_cookies($username_array, $password_array, $passhash_array);
 
+    // If the user clicked the 'Other' button we need to
+    // hide the logon dropdown and replace it with a normal
+    // text field to allow them to type their username.
+
+    $other_logon = (isset($_GET['other_logon']) || isset($_POST['other_logon'])) ? true : false;
+
     // Check for previously failed logon.
 
     if (isset($_COOKIE['bh_logon_failed'])) {
@@ -323,60 +329,60 @@ function logon_draw_form($logon_main = true, $other_logon = false)
         echo "<h2>{$lang['pleasereenterpasswd']}</h2>\n";
     }
 
-    if ($logon_main) {
+    // Get the original requested page url.
 
-        echo "  <br />\n";
+    $request_uri = get_request_uri();
+
+    // If the request is for logon.php then we are performing 
+    // a normal login, otherwise potentially a failed session.
+
+    if (stristr($request_uri, 'logon.php')) {
 
         if (isset($frame_top_target) && strlen($frame_top_target) > 0) {
-            echo "  <form name=\"logonform\" action=\"", get_request_uri(), "\" method=\"post\" target=\"$frame_top_target\">\n";
+
+            echo "  <form name=\"logonform\" method=\"post\" action=\"$request_uri\" target=\"$frame_top_target\">\n";
+
         }else {
-            echo "  <form name=\"logonform\" action=\"", get_request_uri(), "\" method=\"post\" target=\"_top\">\n";
+
+            echo "  <form name=\"logonform\" method=\"post\" action=\"$request_uri\" target=\"_top\">\n";
         }
 
     }else {
 
-        $request_uri = get_request_uri();
+        echo "  <form name=\"logonform\" method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
+    }
 
-        echo "  <h2>Your session has expired. You will need to login again to continue.</h2>\n";
-        echo "  <br />\n";
+    // Check for any post data that we need to include in the form.
 
-        if (stristr($request_uri, 'logon.php')) {
-            if (isset($frame_top_target) && strlen($frame_top_target) > 0) {
-                echo "<form name=\"logonform\" method=\"post\" action=\"$request_uri\" target=\"$frame_top_target\">\n";
-            }else {
-                echo "<form name=\"logonform\" method=\"post\" action=\"$request_uri\" target=\"_top\">\n";
-            }
-        }else {
-            echo "<form name=\"logonform\" method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
-        }
+    if (isset($_POST) && is_array($_POST) && sizeof($_POST) > 0) {
 
         $ignore_keys = array('user_logon', 'user_password', 'user_passhash', 'remember_user', 'webtag');
-
         echo form_input_hidden_array(_stripslashes($_POST), $ignore_keys);
     }
 
-    echo "    ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-    echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"265\">\n";
-    echo "      <tr>\n";
-    echo "        <td align=\"left\">\n";
-    echo "          <table class=\"box\" width=\"100%\">\n";
-    echo "            <tr>\n";
-    echo "              <td align=\"left\" class=\"posthead\">\n";
-    echo "                <table class=\"posthead\" width=\"100%\">\n";
-    echo "                  <tr>\n";
-    echo "                    <td align=\"left\" class=\"subhead\">{$lang['logon']}</td>\n";
-    echo "                  </tr>\n";
-    echo "                </table>\n";
-    echo "                <table class=\"posthead\" width=\"100%\">\n";
-    echo "                  <tr>\n";
-    echo "                    <td align=\"center\">\n";
-    echo "                      <table class=\"posthead\" width=\"95%\">\n";
+    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+    echo "  <br />\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"265\">\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td align=\"left\" class=\"posthead\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">{$lang['logon']}</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"center\">\n";
+    echo "                    <table class=\"posthead\" width=\"95%\">\n";
 
     if ((sizeof($username_array) > 1) && $other_logon === false) {
 
-        echo "                        <tr>\n";
-        echo "                          <td align=\"right\">{$lang['username']}:</td>\n";
-        echo "                          <td align=\"left\" nowrap=\"nowrap\">";
+        echo "                      <tr>\n";
+        echo "                        <td align=\"right\">{$lang['username']}:</td>\n";
+        echo "                        <td align=\"left\" nowrap=\"nowrap\">";
 
         $username_dropdown_array = array_flip($username_array);
         array_walk($username_dropdown_array, create_function('&$item, $key', '$item = $key;'));
@@ -412,73 +418,135 @@ function logon_draw_form($logon_main = true, $other_logon = false)
             }
         }
 
-        echo "              ", form_submit("other", $lang['otherbutton']), "</td>\n";
-        echo "                        </tr>\n";
-        echo "                        <tr>\n";
-        echo "                          <td align=\"right\">{$lang['passwd']}:</td>\n";
+        echo "            ", form_submit('other_logon', $lang['otherbutton']), "</td>\n";
+        echo "                      </tr>\n";
+        echo "                      <tr>\n";
+        echo "                        <td align=\"right\">{$lang['passwd']}:</td>\n";
 
         if (isset($password_array[$current_logon]) && strlen($password_array[$current_logon]) > 0) {
 
             if (isset($passhash_array[$current_logon]) && is_md5($passhash_array[$current_logon])) {
 
-                echo "                          <td align=\"left\">", form_input_password("user_password", _htmlentities($password_array[$current_logon]), 24, false, "autocomplete=\"off\""), form_input_hidden("user_passhash", _htmlentities($passhash_array[$current_logon])), "</td>\n";
+                echo "                        <td align=\"left\">", form_input_password("user_password", _htmlentities($password_array[$current_logon]), 24, false, "autocomplete=\"off\""), form_input_hidden("user_passhash", _htmlentities($passhash_array[$current_logon])), "</td>\n";
 
             }else {
 
-                echo "                          <td align=\"left\">", form_input_password("user_password", "", 24, false, "autocomplete=\"off\""), form_input_hidden("user_passhash", ""), "</td>\n";
+                echo "                        <td align=\"left\">", form_input_password("user_password", "", 24, false, "autocomplete=\"off\""), form_input_hidden("user_passhash", ""), "</td>\n";
             }
 
         }else {
 
-            echo "                          <td align=\"left\">", form_input_password("user_password", "", 24, false, "autocomplete=\"off\""), form_input_hidden("user_passhash", ""), "</td>\n";
+            echo "                        <td align=\"left\">", form_input_password("user_password", "", 24, false, "autocomplete=\"off\""), form_input_hidden("user_passhash", ""), "</td>\n";
         }
 
-        echo "                        </tr>\n";
+        echo "                      </tr>\n";
 
     }else {
 
         if ($other_logon === true) {
 
-            echo "                        <tr>\n";
-            echo "                          <td align=\"right\">{$lang['username']}:</td>\n";
-            echo "                          <td align=\"left\">", form_input_text("user_logon", "", 24, false, "autocomplete=\"off\""), "</td>\n";
-            echo "                        </tr>\n";
-            echo "                        <tr>\n";
-            echo "                          <td align=\"right\">{$lang['passwd']}:</td>\n";
-            echo "                          <td align=\"left\">", form_input_password("user_password", "", 24, false, "autocomplete=\"off\""), "</td>\n";
-            echo "                        </tr>\n";
+            echo "                      <tr>\n";
+            echo "                        <td align=\"right\">{$lang['username']}:</td>\n";
+            echo "                        <td align=\"left\">", form_input_text("user_logon", "", 24, false, "autocomplete=\"off\""), "</td>\n";
+            echo "                      </tr>\n";
+            echo "                      <tr>\n";
+            echo "                        <td align=\"right\">{$lang['passwd']}:</td>\n";
+            echo "                        <td align=\"left\">", form_input_password("user_password", "", 24, false, "autocomplete=\"off\""), "</td>\n";
+            echo "                      </tr>\n";
 
         }else {
 
-            echo "                        <tr>\n";
-            echo "                          <td align=\"right\">{$lang['username']}:</td>\n";
-            echo "                          <td align=\"left\">", form_input_text("user_logon", (isset($username_array[0]) ? _htmlentities($username_array[0]) : ""), 24, false, "autocomplete=\"off\""), "</td>\n";
-            echo "                        </tr>\n";
-            echo "                        <tr>\n";
-            echo "                          <td align=\"right\">{$lang['passwd']}:</td>\n";
-            echo "                          <td align=\"left\">", form_input_password("user_password", (isset($password_array[0]) ? _htmlentities($password_array[0]) : ""), 24, false, "autocomplete=\"off\""), form_input_hidden("user_passhash", (isset($passhash_array[0]) ? _htmlentities($passhash_array[0]) : "")), "</td>\n";
-            echo "                        </tr>\n";
+            echo "                      <tr>\n";
+            echo "                        <td align=\"right\">{$lang['username']}:</td>\n";
+            echo "                        <td align=\"left\">", form_input_text("user_logon", (isset($username_array[0]) ? _htmlentities($username_array[0]) : ""), 24, false, "autocomplete=\"off\""), "</td>\n";
+            echo "                      </tr>\n";
+            echo "                      <tr>\n";
+            echo "                        <td align=\"right\">{$lang['passwd']}:</td>\n";
+            echo "                        <td align=\"left\">", form_input_password("user_password", (isset($password_array[0]) ? _htmlentities($password_array[0]) : ""), 24, false, "autocomplete=\"off\""), form_input_hidden("user_passhash", (isset($passhash_array[0]) ? _htmlentities($passhash_array[0]) : "")), "</td>\n";
+            echo "                      </tr>\n";
         }
     }
 
-    echo "                        <tr>\n";
-    echo "                          <td align=\"left\">&nbsp;</td>\n";
-    echo "                          <td align=\"left\">", form_checkbox("remember_user", "Y", $lang['rememberpasswds'], (isset($password_array[0]) && isset($passhash_array[0]) && $other_logon === false), "autocomplete=\"off\""), "</td>\n";
-    echo "                        </tr>\n";
-    echo "                        <tr>\n";
-    echo "                          <td align=\"center\" colspan=\"2\">", form_submit('logon', $lang['logonbutton']), "</td>\n";
-    echo "                        </tr>\n";
-    echo "                      </table>\n";
-    echo "                    </td>\n";
-    echo "                  </tr>\n";
-    echo "                </table>\n";
-    echo "              </td>\n";
-    echo "            </tr>\n";
-    echo "          </table>\n";
-    echo "        </td>\n";
-    echo "      </tr>\n";
-    echo "    </table>\n";
-    echo "  </form>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">&nbsp;</td>\n";
+    echo "                        <td align=\"left\">", form_checkbox("remember_user", "Y", $lang['rememberpasswds'], (isset($password_array[0]) && isset($passhash_array[0]) && $other_logon === false), "autocomplete=\"off\""), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"center\" colspan=\"2\">", form_submit('logon', $lang['logonbutton']), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                    </table>\n";
+    echo "                  </td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "</form>\n";
+
+    if (user_guest_enabled()) {
+
+        if (isset($frame_top_target) && strlen($frame_top_target) > 0) {
+
+            echo "<form name=\"guest\" action=\"", get_request_uri(), "\" method=\"post\" target=\"$frame_top_target\">\n";
+            echo "  <p class=\"smalltext\">", sprintf($lang['enterasa'], form_submit('guest_logon', $lang['guest'])), "</p>\n";
+            echo "</form>\n";
+
+        }else {
+
+            echo "<form name=\"guest\" action=\"", get_request_uri(), "\" method=\"post\" target=\"_top\">\n";
+            echo "  <p class=\"smalltext\">", sprintf($lang['enterasa'], form_submit('guest_logon', $lang['guest'])), "</p>\n";
+            echo "</form>\n";
+        }
+    }
+
+    if (isset($final_uri)) {
+
+        $final_uri = rawurlencode($final_uri);
+
+        echo "<p class=\"smalltext\">", sprintf($lang['donthaveanaccount'], "<a href=\"register.php?webtag=$webtag&amp;final_uri=$final_uri\" target=\"_self\">{$lang['registernow']}</a>"), "</p>\n";
+        echo "<hr width=\"350\" />\n";
+        echo "<h2>{$lang['problemsloggingon']}</h2>\n";
+
+        if (isset($frame_top_target) && strlen($frame_top_target) > 0) {
+
+            echo "<p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes&amp;final_uri=$final_uri\" target=\"$frame_top_target\">{$lang['deletecookies']}</a></p>\n";
+            echo "<p class=\"smalltext\"><a href=\"forgot_pw.php?webtag=$webtag&amp;final_uri=$final_uri\" target=\"_self\">{$lang['forgottenpasswd']}</a></p>\n";
+
+        }else {
+
+            echo "<p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes&amp;final_uri=$final_uri\" target=\"_top\">{$lang['deletecookies']}</a></p>\n";
+            echo "<p class=\"smalltext\"><a href=\"forgot_pw.php?webtag=$webtag&amp;final_uri=$final_uri\" target=\"_self\">{$lang['forgottenpasswd']}</a></p>\n";
+        }
+
+    }else {
+
+        echo "<p class=\"smalltext\">", sprintf($lang['donthaveanaccount'], "<a href=\"register.php?webtag=$webtag\" target=\"_self\">{$lang['registernow']}</a>"), "</p>\n";
+        echo "<hr width=\"350\" />\n";
+        echo "<h2>{$lang['problemsloggingon']}</h2>\n";
+
+        if (isset($frame_top_target) && strlen($frame_top_target) > 0) {
+
+            echo "<p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes\" target=\"$frame_top_target\">{$lang['deletecookies']}</a></p>\n";
+            echo "<p class=\"smalltext\"><a href=\"forgot_pw.php?webtag=$webtag\" target=\"_self\">{$lang['forgottenpasswd']}</a></p>\n";
+
+        }else {
+
+            echo "<p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes\" target=\"_top\">{$lang['deletecookies']}</a></p>\n";
+            echo "<p class=\"smalltext\"><a href=\"forgot_pw.php?webtag=$webtag\" target=\"_self\">{$lang['forgottenpasswd']}</a></p>\n";
+        }
+    }
+
+    echo "<hr width=\"350\" />\n";
+    echo "<h2>{$lang['usingaPDA']}</h2>\n";
+
+    if (isset($frame_top_target) && strlen($frame_top_target) > 0) {
+        echo "<p class=\"smalltext\"><a href=\"index.php?webtag=$webtag&amp;noframes\" target=\"$frame_top_target\">{$lang['lightHTMLversion']}</a></p>\n";
+    }else {
+        echo "<p class=\"smalltext\"><a href=\"index.php?webtag=$webtag&amp;noframes\" target=\"_top\">{$lang['lightHTMLversion']}</a></p>\n";
+    }
 }
 
 function logon_unset_post_data()
@@ -495,7 +563,7 @@ function logon_unset_post_data()
         unset($_POST["user_password$i"], $_POST["user_passhash$i"]);
     }
 
-    unset($_POST['user_logon'], $_POST['user_password'], $_POST['user_passhash']);
+    unset($_POST['user_logon'], $_POST['user_password'], $_POST['user_passhash'], $_POST['other_logon']);
     unset($_POST['remember_user'], $_POST['logon'], $_POST['logonarray'], $_POST['webtag']);
 }
 

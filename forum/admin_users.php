@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.144 2007-05-21 00:14:21 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.145 2007-05-21 11:58:33 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -263,7 +263,7 @@ if (sizeof($admin_user_array['user_array']) > 0) {
 
         echo "                 <tr>\n";
         echo "                   <td align=\"center\">", form_checkbox("user_update[{$user['UID']}]", "Y", ""), "</td>\n";
-        echo "                   <td class=\"posthead\" align=\"left\">&nbsp;<a href=\"admin_user.php?webtag=$webtag&amp;uid=", $user['UID'], "\">", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</a></td>\n";
+        echo "                   <td class=\"posthead\" align=\"left\" width=\"45%\">&nbsp;<a href=\"admin_user.php?webtag=$webtag&amp;uid=", $user['UID'], "\">", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</a></td>\n";
 
         if (isset($user['LAST_LOGON']) && $user['LAST_LOGON'] > 0) {
             echo "                   <td class=\"posthead\" align=\"left\">&nbsp;", format_time($user['LAST_LOGON'], 1), "</td>\n";

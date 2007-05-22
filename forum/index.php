@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.142 2007-05-22 12:02:49 decoyduck Exp $ */
+/* $Id: index.php,v 1.143 2007-05-22 13:47:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -111,12 +111,19 @@ if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri'])))
 
     $my_controls_files = get_available_user_control_files();
     $my_controls_preg = implode("|^", array_map('preg_quote_callback', $my_controls_files));
+
+    $popup_files_preg = get_available_popup_files_preg();
     
     if (preg_match("/^$available_files_preg/", basename(trim(_stripslashes($_GET['final_uri'])))) > 0) {
     
         $final_uri = rawurldecode(trim(_stripslashes($_GET['final_uri'])));
 
-        if (preg_match("/^admin_[^\.]+\.php/", basename($final_uri)) > 0) {
+        if (preg_match("/^$popup_files_preg/", basename($final_uri)) > 0) {
+
+            header_redirect($final_uri);
+            exit;
+
+        }else if (preg_match("/^admin_[^\.]+\.php/", basename($final_uri)) > 0) {
 
             $final_uri = rawurlencode($final_uri);
             $final_uri = "admin.php?webtag=$webtag&page=$final_uri";

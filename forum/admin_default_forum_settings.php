@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.68 2007-05-21 00:14:20 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.69 2007-05-22 13:28:38 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -110,6 +110,31 @@ $text_captcha = new captcha(6, 15, 25, 9, 30);
 if (isset($_POST['submit'])) {
 
     $valid = true;
+
+    if (isset($_POST['forum_name']) && strlen(trim(_stripslashes($_POST['forum_name']))) > 0) {
+        $new_forum_settings['forum_name'] = trim(_stripslashes($_POST['forum_name']));
+    }else {
+        $error_html = "<h2>{$lang['mustsupplyforumname']}</h2>\n";
+        $valid = false;
+    }
+
+    if (isset($_POST['forum_email']) && strlen(trim(_stripslashes($_POST['forum_email']))) > 0) {
+        $new_forum_settings['forum_email'] = trim(_stripslashes($_POST['forum_email']));
+    }else {
+        $new_forum_settings['forum_email'] = "";
+    }
+
+    if (isset($_POST['forum_desc']) && strlen(trim(_stripslashes($_POST['forum_desc']))) > 0) {
+        $new_forum_settings['forum_desc'] = trim(_stripslashes($_POST['forum_desc']));
+    }else {
+        $new_forum_settings['forum_desc'] = "";
+    }
+
+    if (isset($_POST['forum_keywords']) && strlen(trim(_stripslashes($_POST['forum_keywords']))) > 0) {
+        $new_forum_settings['forum_keywords'] = trim(_stripslashes($_POST['forum_keywords']));
+    }else {
+        $new_forum_settings['forum_keywords'] = "";
+    }
 
     if (isset($_POST['messages_unread_cutoff']) && is_numeric($_POST['messages_unread_cutoff'])) {
         $new_forum_settings['messages_unread_cutoff'] = $_POST['messages_unread_cutoff'];
@@ -367,6 +392,49 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['mainsettings']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"center\">\n";
+echo "                    <table class=\"posthead\" width=\"95%\">\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"220\">{$lang['forumname']}:</td>\n";
+echo "                        <td align=\"left\">", form_input_text("forum_name", (isset($default_forum_settings['forum_name']) ? _htmlentities($default_forum_settings['forum_name']) : 'A Beehive Forum'), 42, 255), "&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"220\">{$lang['forumemail']}:</td>\n";
+echo "                        <td align=\"left\">", form_input_text("forum_email", (isset($default_forum_settings['forum_email']) ? _htmlentities($default_forum_settings['forum_email']) : 'admin@abeehiveforum.net'), 42, 80), "&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"220\">{$lang['forumdesc']}:</td>\n";
+echo "                        <td align=\"left\">", form_input_text("forum_desc", (isset($default_forum_settings['forum_desc']) ? _htmlentities($default_forum_settings['forum_desc']) : ''), 42, 80), "&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"220\">{$lang['forumkeywords']}:</td>\n";
+echo "                        <td align=\"left\">", form_input_text("forum_keywords", (isset($default_forum_settings['forum_keywords']) ? _htmlentities($default_forum_settings['forum_keywords']) : ''), 42, 80), "&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "  <br />\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";

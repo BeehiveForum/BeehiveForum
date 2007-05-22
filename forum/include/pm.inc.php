@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.200 2007-05-19 23:15:56 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.201 2007-05-22 12:02:49 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1024,8 +1024,6 @@ function pm_message_get($mid)
                         $pm_message_array['TNICK'] = $pm_message_array['PTNICK'];
                     }
                 }
-
-                print_r($pm_message_array);
 
                 if (($pm_message_array['TO_UID'] == $uid) && ($pm_message_array['TYPE'] == PM_UNREAD) && ($folder == PM_FOLDER_INBOX)) {
                     pm_mark_as_read($mid);

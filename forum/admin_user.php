@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.198 2007-05-21 00:14:21 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.199 2007-05-22 12:02:49 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -560,6 +560,15 @@ if (isset($_POST['submit']) && (!isset($_POST['t_delete_posts']) || $_POST['t_de
 
         echo "<p><b>{$lang['usersettingsupdated']}</b></p>\n";
     }
+}
+
+if (isset($_GET['profile_updated'])) {
+
+    echo "<h2>{$lang['profileupdated']}</h2>\n";
+
+}else if (isset($_GET['signature_updated'])) {
+
+    echo "<h2>{$lang['signatureupdated']}</h2>\n";
 }
 
 echo "<br />\n";

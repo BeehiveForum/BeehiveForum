@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: server.inc.php,v 1.12 2007-05-21 00:14:22 decoyduck Exp $ */
+/* $Id: server.inc.php,v 1.13 2007-05-22 12:02:49 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -226,9 +226,9 @@ function get_available_files()
 }
 
 /**
-* Fetch a list of available admin forum files
+* Fetch a list of files accessible from 'Admin' section.
 *
-* Returns an array of Beehive Forum admin PHP files (forum path only)
+* Returns an array of Beehive Forum PHP files (forum path only)
 *
 * @return string
 * @param void
@@ -251,6 +251,23 @@ function get_available_admin_files()
                  'admin_user_groups_edit.php', 'admin_user_groups_edit_users.php',
                  'admin_viewlog.php', 'admin_visitor_log.php',
                  'admin_wordfilter.php');
+}
+
+/**
+* Fetch a list of files accessible from 'My Controls' section.
+*
+* Returns an array of Beehive Forum PHP files (forum path only)
+*
+* @return string
+* @param void
+*/
+
+function get_available_user_control_files()
+{
+    return array('edit_prefs.php', 'edit_profile.php', 'edit_password.php', 
+                 'edit_email.php', 'forum_options.php', 'pm_options.php', 
+                 'edit_attachments.php', 'edit_signature.php', 'edit_relations.php', 
+                 'edit_wordfilter.php', 'edit_subscriptions.php');
 }
 
 // Executed by every script that includes server.inc.php.

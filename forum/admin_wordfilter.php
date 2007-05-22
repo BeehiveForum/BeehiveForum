@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_wordfilter.php,v 1.95 2007-05-21 00:14:21 decoyduck Exp $ */
+/* $Id: admin_wordfilter.php,v 1.96 2007-05-22 12:02:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -507,7 +507,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 
             echo "                <tr>\n";
             echo "                  <td align=\"center\">", form_checkbox("delete_filters[$filter_id]", "Y", false), "</td>\n";
-            echo "                  <td align=\"left\"><a href=\"admin_wordfilter.php?webtag$webtag&amp;filter_id=$filter_id\">{$word_filter['FILTER_NAME']}</a></td>\n";
+            echo "                  <td align=\"left\"><a href=\"admin_wordfilter.php?webtag=$webtag&amp;filter_id=$filter_id\">{$word_filter['FILTER_NAME']}</a></td>\n";
             echo "                  <td align=\"left\">{$admin_word_filter_options[$word_filter['FILTER_TYPE']]}</td>\n";
             echo "                  <td align=\"center\">{$admin_word_filter_enabled[$word_filter['FILTER_ENABLED']]}&nbsp;</td>\n";
             echo "                </tr>\n";

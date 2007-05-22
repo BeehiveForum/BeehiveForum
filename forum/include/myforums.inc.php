@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.67 2007-05-19 18:24:31 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.68 2007-05-22 12:02:49 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -218,6 +218,28 @@ function get_my_forums($view_type, $offset)
                 $forum_data['FORUM_DESC'] = "";
             }
 
+            // Unread cut-off stamp.
+
+            if (isset($forum_settings['messages_unread_cutoff'])) {
+
+                if ($forum_settings['messages_unread_cutoff'] < 0) {
+
+                    $unread_cutoff_stamp = false;
+
+                }elseif ($forum_settings['messages_unread_cutoff'] == 0) {
+
+                    $unread_cutoff_stamp = 0;
+                
+                }else {
+
+                    $unread_cutoff_stamp = $forum_settings['messages_unread_cutoff'];
+                }
+
+            }else {
+
+                $unread_cutoff_stamp = 31536000;
+            }
+
             // Get available folders for queries below
 
             $folders = folder_get_available_by_forum($forum_fid);
@@ -229,25 +251,24 @@ function get_my_forums($view_type, $offset)
 
             // Get any unread messages
 
-            if (($unread_cutoff_stamp = forum_get_unread_cutoff()) !== false) {
+            if (is_numeric($unread_cutoff_stamp) && $unread_cutoff_stamp !== false) {
 
-                $sql = "SELECT SUM(THREAD.LENGTH) - SUM(COALESCE(USER_THREAD.LAST_READ, 0)) ";
-                $sql.= "AS UNREAD_MESSAGES FROM {$forum_data['PREFIX']}THREAD THREAD ";
+                $sql = "SELECT COUNT(POST.PID) AS UNREAD_MESSAGES ";
+                $sql.= "FROM {$forum_data['PREFIX']}POST POST ";
                 $sql.= "LEFT JOIN {$forum_data['PREFIX']}USER_THREAD USER_THREAD ";
-                $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
-                $sql.= "WHERE THREAD.FID IN ($folders) ";
-                $sql.= "AND (THREAD.MODIFIED > FROM_UNIXTIME('$unread_cutoff_stamp') OR ";
-                $sql.= "$unread_cutoff_stamp = 0)";
+                $sql.= "ON (USER_THREAD.TID = POST.TID AND USER_THREAD.UID = '19') ";
+                $sql.= "LEFT JOIN {$forum_data['PREFIX']}THREAD THREAD ON (THREAD.TID = POST.TID) ";
+                $sql.= "WHERE (POST.CREATED > FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - ";
+                $sql.= "$unread_cutoff_stamp) OR $unread_cutoff_stamp = 0) ";
+                $sql.= "AND THREAD.FID IN ($folders) AND THREAD.LENGTH > 0 ";
+                $sql.= "AND (USER_THREAD.LAST_READ < POST.PID ";
+                $sql.= "OR USER_THREAD.LAST_READ IS NULL)";
 
                 if (!$result_unread_count = db_query($sql, $db_get_my_forums)) return false;
 
-                $unread_data = db_fetch_array($result_unread_count);
+                list($unread_messages) = db_fetch_array($result_unread_count, DB_RESULT_NUM);
 
-                if (!isset($unread_data['UNREAD_MESSAGES']) || is_null($unread_data['UNREAD_MESSAGES'])) {
-                    $forum_data['UNREAD_MESSAGES'] = 0;
-                }else {
-                    $forum_data['UNREAD_MESSAGES'] = $unread_data['UNREAD_MESSAGES'];
-                }
+                $forum_data['UNREAD_MESSAGES'] = $unread_messages;
 
             }else {
 

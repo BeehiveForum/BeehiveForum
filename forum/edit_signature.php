@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_signature.php,v 1.93 2007-05-21 00:14:21 decoyduck Exp $ */
+/* $Id: edit_signature.php,v 1.94 2007-05-22 12:02:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -105,6 +105,11 @@ if (!forum_check_access_level()) {
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
+if (bh_session_get_value('UID') == 0) {
+    html_guest_error();
+    exit;
+}
+
 $admin_edit = false;
 
 if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
@@ -150,13 +155,7 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
         exit;
     }
 
-} else {
-
-    if (bh_session_get_value('UID') == 0) {
-
-        html_guest_error();
-        exit;
-    }
+}else {
 
     $uid = bh_session_get_value('UID');
 }
@@ -193,6 +192,8 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
 
     if ($t_sig_html == "Y") $t_sig_content = fix_html($t_sig_content);
 
+    if ($admin_edit === false) $t_sig_global = 'N';
+
     if (attachment_embed_check($t_sig_content) && $t_sig_html == "Y") {
 
         $error_html.= "<h2>{$lang['notallowedembedattachmentsignature']}</h2>\n";
@@ -210,23 +211,15 @@ if (isset($_POST['submit'])) {
 
             if ($admin_edit === true) {
 
-                if ($t_sig_global == 'Y') {
-                
-                    $redirect_uri = "./edit_signature.php?webtag=$webtag&updated_global=true&siguid=$uid";
-                    header_redirect($redirect_uri, $lang['signatureupdated']);
-
-                }else {
-
-                    $redirect_uri = "./edit_signature.php?webtag=$webtag&updated=true&siguid=$uid";
-                    header_redirect($redirect_uri, $lang['signatureupdated']);
-                }
+                $redirect_uri = "./admin_user.php?webtag=$webtag&signature_updated=true&uid=$uid";
+                header_redirect($redirect_uri, $lang['signatureupdated']);
 
             }else {
 
                 if ($t_sig_global == 'Y') {
 
                     $redirect_uri = "./edit_signature.php?webtag=$webtag&updated_global=true";
-                    header_redirect($redirect_uri, $lang['signatureupdated']);
+                    header_redirect($redirect_uri, $lang['signatureupdatedforallforums']);
 
                 }else {
 
@@ -473,7 +466,7 @@ if ($tools->getTinyMCE()) {
 
 echo $tools->assign_checkbox("sig_html");
 
-if ($show_set_all) {
+if ($show_set_all && $admin_edit === false) {
 
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">", form_checkbox("sig_global", "Y", $lang['savesignatureforuseonallforums'], (isset($t_sig_global) && $t_sig_global == 'Y')), "</td>\n";

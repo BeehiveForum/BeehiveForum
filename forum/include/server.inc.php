@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: server.inc.php,v 1.13 2007-05-22 12:02:49 decoyduck Exp $ */
+/* $Id: server.inc.php,v 1.14 2007-05-22 13:47:58 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -268,6 +268,24 @@ function get_available_user_control_files()
                  'edit_email.php', 'forum_options.php', 'pm_options.php', 
                  'edit_attachments.php', 'edit_signature.php', 'edit_relations.php', 
                  'edit_wordfilter.php', 'edit_subscriptions.php');
+}
+
+/**
+* Fetch a list of files accessible from 'My Controls' section.
+*
+* Returns a regular expression to match Beehive's available popups URLs.
+*
+* @return string
+* @param void
+*/
+
+function get_available_popup_files_preg()
+{
+    return implode("|^", array('^attachments\.php', '^dictionary\.php',
+                               '^display_emoticons\.php', '^edit_attachments\.php.+popup=1',
+                               '^email\.php', '^mods_list\.php', 
+                               '^poll_results\.php', '^search_popup\.php', 
+                               '^search\.php.+show_stop_words=true', '^user_profile\.php'));
 }
 
 // Executed by every script that includes server.inc.php.

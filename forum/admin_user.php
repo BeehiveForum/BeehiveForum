@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.199 2007-05-22 12:02:49 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.200 2007-05-23 23:48:05 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -775,7 +775,7 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
         echo "            <td align=\"left\" class=\"posthead\">\n";
         echo "              <table class=\"posthead\" width=\"100%\">\n";
         echo "                <tr>\n";
-        echo "                  <td align=\"left\" class=\"subhead\" colspan=\"1\">{$lang['userstatus']}</td>\n";
+        echo "                  <td align=\"left\" class=\"subhead\" colspan=\"1\">", sprintf($lang['userstatusforforum'], forum_get_setting('forum_name', false, 'A Beehive Forum')), "</td>\n";
         echo "                </tr>\n";
         echo "                <tr>\n";
         echo "                  <td align=\"center\">\n";

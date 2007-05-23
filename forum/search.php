@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.177 2007-05-21 00:14:22 decoyduck Exp $ */
+/* $Id: search.php,v 1.178 2007-05-23 23:48:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -521,7 +521,7 @@ if (isset($search_success) && $search_success === true && isset($offset)) {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" colspan=\"2\" class=\"subhead\">{$lang['searchdiscussions']}:</td>\n";
+    echo "                  <td align=\"left\" colspan=\"2\" class=\"subhead\">{$lang['searchdiscussions']}</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"center\">\n";
@@ -556,7 +556,7 @@ if (isset($search_success) && $search_success === true && isset($offset)) {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" colspan=\"2\" class=\"subhead\">{$lang['searchbyuser']}:</td>\n";
+    echo "                  <td align=\"left\" colspan=\"2\" class=\"subhead\">{$lang['searchbyuser']}</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"center\">\n";
@@ -603,7 +603,7 @@ if (isset($search_success) && $search_success === true && isset($offset)) {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" colspan=\"2\" class=\"subhead\">{$lang['additionalcriteria']}:</td>\n";
+    echo "                  <td align=\"left\" colspan=\"2\" class=\"subhead\">{$lang['additionalcriteria']}</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"center\">\n";

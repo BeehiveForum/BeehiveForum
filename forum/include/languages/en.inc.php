@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.431 2007-05-21 00:14:23 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.432 2007-05-23 23:48:06 decoyduck Exp $ */
 
 // British English language file
 
@@ -322,7 +322,7 @@ $lang['editstartpage'] = "Edit Start Page";
 $lang['nouserspecified'] = "No user specified.";
 $lang['manageuser'] = "Manage User";
 $lang['manageusers'] = "Manage Users";
-$lang['userstatus'] = "User Status (current forum)";
+$lang['userstatusforforum'] = "User Status for %s";
 $lang['userdetails'] = "User Details";
 $lang['warning_caps'] = "WARNING";
 $lang['userdeleteallpostswarning'] = "Are you sure you want to delete all of the selected user's posts? Once the posts are deleted they cannot be retrieved and will be lost forever.";

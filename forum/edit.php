@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.226 2007-05-18 11:49:28 decoyduck Exp $ */
+/* $Id: edit.php,v 1.227 2007-05-23 23:48:05 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -671,7 +671,7 @@ if (strlen($emot_prev) > 0) {
 
     echo "                        <table width=\"190\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
     echo "                          <tr>\n";
-    echo "                            <td align=\"left\" class=\"subhead\">{$lang['emoticons']}:</td>\n";
+    echo "                            <td align=\"left\" class=\"subhead\">{$lang['emoticons']}</td>\n";
 
     if (($page_prefs & POST_EMOTICONS_DISPLAY) > 0) {
 
@@ -774,7 +774,7 @@ if ($allow_sig == true) {
 
     echo "<br /><br /><table width=\"480\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
     echo "  <tr>\n";
-    echo "    <td align=\"left\" class=\"subhead\">{$lang['signature']}:</td>\n";
+    echo "    <td align=\"left\" class=\"subhead\">{$lang['signature']}</td>\n";
 
     $t_sig = ($fix_html ? $sig->getTidyContent() : $sig->getOriginalContent(true));
 

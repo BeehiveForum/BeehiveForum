@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.308 2007-05-21 00:14:22 decoyduck Exp $ */
+/* $Id: post.php,v 1.309 2007-05-23 23:48:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -957,7 +957,7 @@ if (strlen($emot_prev) > 0) {
     echo "                      <td align=\"left\">\n";
     echo "                        <table width=\"190\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
     echo "                          <tr>\n";
-    echo "                            <td align=\"left\" class=\"subhead\">{$lang['emoticons']}:</td>\n";
+    echo "                            <td align=\"left\" class=\"subhead\">{$lang['emoticons']}</td>\n";
 
     if (($page_prefs & POST_EMOTICONS_DISPLAY) > 0) {
 
@@ -1067,7 +1067,7 @@ if ($allow_sig == true) {
     echo "                        <br /><br />\n";
     echo "                        <table width=\"480\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
     echo "                          <tr>\n";
-    echo "                            <td align=\"left\" class=\"subhead\">{$lang['signature']}:</td>\n";
+    echo "                            <td align=\"left\" class=\"subhead\">{$lang['signature']}</td>\n";
 
     $t_sig = ($fix_html ? $sig->getTidyContent() : $sig->getOriginalContent(true));
 
@@ -1115,7 +1115,7 @@ if (!$newthread && $reply_to_pid > 0) {
 
     echo "            <table class=\"posthead\" width=\"720\">\n";
     echo "              <tr>\n";
-    echo "                <td align=\"left\" class=\"subhead\">{$lang['inreplyto']}:</td>\n";
+    echo "                <td align=\"left\" class=\"subhead\">{$lang['inreplyto']}</td>\n";
     echo "              </tr>\n";
 
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.104 2007-05-21 00:14:22 decoyduck Exp $ */
+/* $Id: pm_edit.php,v 1.105 2007-05-23 23:48:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -470,7 +470,7 @@ if (strlen($emot_prev) > 0) {
     echo "                      <tr>\n";
     echo "                        <td align=\"left\"><table width=\"190\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
     echo "                          <tr>\n";
-    echo "                            <td align=\"left\" class=\"subhead\">{$lang['emoticons']}:</td>\n";
+    echo "                            <td align=\"left\" class=\"subhead\">{$lang['emoticons']}</td>\n";
 
     if (($page_prefs & POST_EMOTICONS_DISPLAY) > 0) {
 

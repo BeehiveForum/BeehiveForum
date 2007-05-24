@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.144 2007-05-20 17:52:06 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.145 2007-05-24 14:09:24 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -842,7 +842,7 @@ function light_poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list 
                     }
                 }
 
-                $polldate['CONTENT'].= sprintf("<p>{$lang['youvotedforpolloptionsondate']}</p>", implode(' &amp; ', $user_poll_votes_array), format_time($user_poll_data[0]['TSTAMP'], true));
+                $poll_data['CONTENT'].= sprintf("<p>{$lang['youvotedforpolloptionsondate']}</p>", implode(' &amp; ', $user_poll_votes_array), format_time($user_poll_data[0]['TSTAMP'], true));
             }
 
         }else {
@@ -869,7 +869,7 @@ function light_poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list 
                     }
                 }
 
-                $polldate['CONTENT'].= sprintf("<p>{$lang['youvotedforpolloptionsondate']}</p>", implode(' &amp; ', $user_poll_votes_array), format_time($user_poll_data[0]['TSTAMP'], true));
+                $poll_data['CONTENT'].= sprintf("<p>{$lang['youvotedforpolloptionsondate']}</p>", implode(' &amp; ', $user_poll_votes_array), format_time($user_poll_data[0]['TSTAMP'], true));
 
             }elseif (bh_session_get_value('UID') > 0) {
 

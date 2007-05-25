@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.php,v 1.93 2007-05-23 23:48:06 decoyduck Exp $ */
+/* $Id: visitor_log.php,v 1.94 2007-05-25 23:45:00 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -296,6 +296,7 @@ if (sizeof($user_profile_array['user_array']) > 0) {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "               <table width=\"100%\">\n";
     echo "                 <tr>\n";
+    echo "                   <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
 
     if ($sort_by == 'LOGON' && $sort_dir == 'ASC') {
         echo "                   <td class=\"subhead_sort_asc\" align=\"left\"><a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=DESC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=$user_search&amp;hide_empty=$hide_empty&amp;hide_guests=$hide_guests\">{$lang['member']}</a></td>\n";
@@ -325,6 +326,33 @@ if (sizeof($user_profile_array['user_array']) > 0) {
     foreach ($user_profile_array['user_array'] as $user_array) {
         
         echo "                 <tr>\n";
+
+        if (isset($user_array['AVATAR_URL']) && strlen($user_array['AVATAR_URL']) > 0) {
+
+            echo "                   <td class=\"postbody\" align=\"left\"><img src=\"{$user_array['AVATAR_URL']}\" alt=\"", format_user_name($user_array['LOGON'], $user_array['NICKNAME']), "\" title=\"", format_user_name($user_array['LOGON'], $user_array['NICKNAME']), "\" border=\"0\" /></td>\n";
+
+        }elseif (isset($user_array['AVATAR_AID']) && is_md5($user_array['AVATAR_AID'])) {
+
+            $attachment = get_attachment_by_hash($user_array['AVATAR_AID']);
+
+            if (forum_get_setting('attachment_use_old_method', 'Y')) {
+
+                $profile_picture_href = "get_attachment.php?webtag=$webtag&amp;hash={$attachment['HASH']}";
+                $profile_picture_href.= "&amp;filename={$attachment['FILENAME']}&amp;profile_picture=1";
+
+            }else {
+
+                $profile_picture_href = "get_attachment.php/{$attachment['HASH']}/";
+                $profile_picture_href.= rawurlencode($attachment['FILENAME']);
+                $profile_picture_href.= "?webtag=$webtag&amp;profile_picture=1";
+            }
+
+            echo "                   <td class=\"postbody\" align=\"left\"><img src=\"$profile_picture_href\" alt=\"", format_user_name($user_array['LOGON'], $user_array['NICKNAME']), "\" title=\"", format_user_name($user_array['LOGON'], $user_array['NICKNAME']), "\" border=\"0\" /></td>\n";
+        
+        }else {
+
+            echo "                   <td align=\"left\" class=\"postbody\"><img src=\"", style_image('bullet.png'), "\" alt=\"{$lang['user']}\" title=\"{$lang['user']}\" /></td>\n";
+        }
 
         if (isset($user_array['SID']) && !is_null($user_array['SID'])) {
 

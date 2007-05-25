@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_main.php,v 1.22 2007-04-25 21:34:32 decoyduck Exp $ */
+/* $Id: start_main.php,v 1.23 2007-05-25 23:45:00 decoyduck Exp $ */
 
 // An example of what can be done with start_main.php
 // As used on: http://www.tehforum.net/forum/
@@ -193,7 +193,7 @@ if ((isset($_GET['upload'])) && (bh_session_get_value('UID') > 0)) {
     echo "<br />\n";
     echo "<form enctype=\"multipart/form-data\" method=\"post\" action=\"start_main.php\">\n";
     echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
-    echo "  ", form_field("userimage", "", 40, 0, "file"), "\n";
+    echo "  ", form_input_file("userimage", "", 40, 0), "\n";
     echo "  ", form_submit("upload", $lang['upload']), "\n";
     echo "  ", form_submit("cancel", $lang['cancel']), "\n";
     echo "</form>\n";

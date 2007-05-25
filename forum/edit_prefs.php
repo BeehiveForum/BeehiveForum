@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_prefs.php,v 1.68 2007-05-21 00:14:21 decoyduck Exp $ */
+/* $Id: edit_prefs.php,v 1.69 2007-05-25 23:45:00 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -252,7 +252,7 @@ if (isset($_POST['submit'])) {
     if (isset($_POST['homepage_url'])) {
 
         $user_prefs['HOMEPAGE_URL'] = trim(_stripslashes($_POST['homepage_url']));
-        $user_prefs_global['HOMEPAGE_URL'] = (isset($_POST['homepage_url_global']) && $_POST['homepage_url_global'] == "Y") ? true : false;
+        $user_prefs_global['HOMEPAGE_URL'] = (isset($_POST['homepage_url_global'])) ? $_POST['homepage_url_global'] == "Y" : true;
 
         if (!user_check_pref('HOMEPAGE_URL', $user_prefs['HOMEPAGE_URL'])) {
 
@@ -264,7 +264,7 @@ if (isset($_POST['submit'])) {
     if (isset($_POST['pic_url'])) {
 
         $user_prefs['PIC_URL'] = trim(_stripslashes($_POST['pic_url']));
-        $user_prefs_global['PIC_URL'] = (isset($_POST['pic_url_global']) && $_POST['pic_url_global'] == "Y") ? true : false;
+        $user_prefs_global['PIC_URL'] = (isset($_POST['pic_url_global'])) ? $_POST['pic_url_global'] == "Y" : true;
 
         if (!user_check_pref('PIC_URL', $user_prefs['PIC_URL'])) {
 
@@ -273,27 +273,126 @@ if (isset($_POST['submit'])) {
         }
     }
 
+    if (isset($_POST['pic_aid'])) {
+
+        $user_prefs['PIC_AID'] = $_POST['pic_aid'];
+        $user_prefs_global['PIC_AID'] = (isset($_POST['pic_url_global'])) ? $_POST['pic_url_global'] == "Y" : true;
+
+        if (strlen(trim($user_prefs['PIC_AID'])) > 0) {
+
+            if (!is_md5($user_prefs['PIC_AID'])) {
+
+                $error_html.= "<h2>{$lang['invalidattachmentid']}</h2>\n";
+                $valid = false;
+
+            }elseif (isset($user_prefs['PIC_URL']) && strlen(trim($user_prefs['PIC_URL'])) > 0) {
+
+                $error_html.= "<h2>{$lang['profilepictureconflict']}</h2>\n";
+                $valid = false;
+
+            }elseif ($attachment_dir = attachments_check_dir()) {
+
+                if ($image_info = getimagesize("$attachment_dir/{$user_prefs['PIC_AID']}")) {
+
+                    if (($image_info[0] > 150) || ($image_info[1] > 150)) {
+
+                        $error_html.= "<h2>{$lang['attachmenttoolargeforprofilepicture']}</h2>\n";
+                        $valid = false;
+                    }
+
+                }else {
+
+                    $error_html.= "<h2>{$lang['unsupportedimagetype']}</h2>\n";
+                    $valid = false;
+                }
+
+            }else {
+
+                $error_html.= "<h2>{$lang['attachmentshavebeendisabled']}</h2>\n";
+                $valid = false;
+            }
+        }
+    }
+
+    if (isset($_POST['avatar_url'])) {
+
+        $user_prefs['AVATAR_URL'] = trim(_stripslashes($_POST['avatar_url']));
+        $user_prefs_global['AVATAR_URL'] = (isset($_POST['avatar_url_global'])) ? $_POST['avatar_url_global'] == "Y" : true;
+
+        if (!user_check_pref('AVATAR_URL', $user_prefs['AVATAR_URL'])) {
+
+            $error_html.= "<h2>{$lang['pictureURL']} {$lang['containsinvalidchars']}</h2>";
+            $valid = false;
+        }
+    }
+
+    if (isset($_POST['avatar_aid'])) {
+
+        $user_prefs['AVATAR_AID'] = $_POST['avatar_aid'];
+        $user_prefs_global['AVATAR_AID'] = (isset($_POST['avatar_url_global'])) ? $_POST['avatar_url_global'] == "Y" : true;
+
+        if (strlen(trim($user_prefs['AVATAR_AID'])) > 0) {
+
+            if (!is_md5($user_prefs['AVATAR_AID'])) {
+
+                $error_html.= "<h2>{$lang['invalidattachmentid']}</h2>\n";
+                $valid = false;
+
+            }elseif (isset($user_prefs['AVATAR_URL']) && strlen(trim($user_prefs['AVATAR_URL'])) > 0) {
+
+                $error_html.= "<h2>{$lang['avatarpictureconflict']}</h2>\n";
+                $valid = false;
+
+            }elseif ($attachment_dir = attachments_check_dir()) {
+
+                if ($image_info = getimagesize("$attachment_dir/{$user_prefs['AVATAR_AID']}")) {
+
+                    if (($image_info[0] > 150) || ($image_info[1] > 150)) {
+
+                        $error_html.= "<h2>{$lang['attachmenttoolargeforavatarpicture']}</h2>\n";
+                        $valid = false;
+                    }
+
+                }else {
+
+                    $error_html.= "<h2>{$lang['unsupportedimagetype']}</h2>\n";
+                    $valid = false;
+                }
+
+            }else {
+
+                $error_html.= "<h2>{$lang['attachmentshavebeendisabled']}</h2>\n";
+                $valid = false;
+            }
+        }
+    }
+
     if ($valid) {
+
+        // Update USER_PREFS
+        
+        user_update_prefs($uid, $user_prefs, $user_prefs_global);
 
         // Update basic settings in USER table
 
         user_update($uid, $user_info['LOGON'], $user_info['NICKNAME'], $user_info['EMAIL']);
 
-        // Update USER_PREFS
+        // If the user's logon was changed, update their cookie.
 
-        user_update_prefs($uid, $user_prefs, $user_prefs_global);
+        if (forum_get_setting('allow_username_changes', 'Y')) {
+
+            // Fetch current logon.
+
+            $logon = bh_session_get_value('LOGON');
+
+            // Update the logon that matches the current logged on user
+
+            logon_update_logon_cookie($logon, $user_info['LOGON']);
+        }
 
         // Reinitialize the User's Session to save them having to logout and back in
 
         bh_session_init($uid, false);
-
-        // Fetch current logon.
-
-        $logon = bh_session_get_value('LOGON');
-
-        // Update the logon that matches the current logged on user
-
-        logon_update_logon_cookie($logon, $user_info['LOGON']);
 
         // Force redirect to prevent refreshing the page 
         // prompting to user to resubmit form data.
@@ -321,19 +420,34 @@ if (isset($user_prefs['DOB']) && preg_match("/\d{4,}-\d{2,}-\d{2,}/", $user_pref
     $dob['BLANK_FIELDS'] = true;
 }
 
+if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
+    $aid = $_POST['aid'];
+}else {
+    $aid = md5(uniqid(rand()));
+}
+
 // Check to see if we should show the set for all forums checkboxes
 
 $show_set_all = (forums_get_available_count() > 1) ? true : false;
 
+// User's attachments for profile and avatar pictures
+
+$user_attachments = get_users_attachments($uid, $attachments_array, $image_attachments_array);
+
+// Prepare the attachments for use in a drop down.
+
+$image_attachments_array = user_prefs_prep_attachments($image_attachments_array);
+
 // Start Output Here
 
-html_draw_top();
+html_draw_top('attachments.js');
 
 echo "<h1>{$lang['userdetails']}</h1>\n";
 
 // Any error messages to display?
 
 echo $error_html;
+
 if (isset($_GET['updated'])) {
     echo "<h2>{$lang['preferencesupdated']}</h2>\n";
 }
@@ -341,6 +455,7 @@ if (isset($_GET['updated'])) {
 echo "<br />\n";
 echo "<form name=\"prefs\" action=\"edit_prefs.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+echo "  ", form_input_hidden('aid', _htmlentities($aid)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -364,53 +479,133 @@ echo "                      </tr>\n";
 if (forum_get_setting('allow_username_changes', 'Y')) {
 
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['username']}:&nbsp;</td>\n";
-    echo "                        <td align=\"left\" colspan=\"2\">", form_field("logon", (isset($user_info['LOGON']) ? $user_info['LOGON'] : ""), 45, 15), "&nbsp;</td>\n";
+    echo "                        <td align=\"left\" nowrap=\"nowrap\" width=\"150\">{$lang['username']}:&nbsp;</td>\n";
+    echo "                        <td align=\"left\" colspan=\"2\">", form_input_text("logon", (isset($user_info['LOGON']) ? $user_info['LOGON'] : ""), 45, 15, "", "user_pref_field"), "</td>\n";
     echo "                      </tr>\n";
 
 }else {
 
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['username']}:&nbsp;</td>\n";
+    echo "                        <td align=\"left\" nowrap=\"nowrap\" width=\"150\">{$lang['username']}:&nbsp;</td>\n";
     echo "                        <td align=\"left\" colspan=\"2\">{$user_info['LOGON']}&nbsp;</td>\n";
     echo "                      </tr>\n";
 }
 
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['nickname']}:&nbsp;</td>\n";
-echo "                        <td align=\"left\" colspan=\"2\">", form_field("nickname", (isset($user_info['NICKNAME']) ? $user_info['NICKNAME'] : ""), 45, 32), "&nbsp;</td>\n";
+echo "                        <td align=\"left\" colspan=\"2\">", form_input_text("nickname", (isset($user_info['NICKNAME']) ? $user_info['NICKNAME'] : ""), 45, 32, "", "user_pref_field"), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['emailaddress']}:&nbsp;</td>\n";
-echo "                        <td align=\"left\" colspan=\"2\">", form_field("email", (isset($user_info['EMAIL']) ? $user_info['EMAIL'] : ""), 45, 80), "&nbsp;</td>\n";
+echo "                        <td align=\"left\" colspan=\"2\">", form_input_text("email", (isset($user_info['EMAIL']) ? $user_info['EMAIL'] : ""), 45, 80, "", "user_pref_field"), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"3\">&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['firstname']}:&nbsp;</td>\n";
-echo "                        <td align=\"left\" colspan=\"2\">", form_field("firstname", (isset($user_prefs['FIRSTNAME']) ? $user_prefs['FIRSTNAME'] : ""), 45, 32), "&nbsp;</td>\n";
+echo "                        <td align=\"left\" colspan=\"2\">", form_input_text("firstname", (isset($user_prefs['FIRSTNAME']) ? $user_prefs['FIRSTNAME'] : ""), 45, 32, "", "user_pref_field"), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['lastname']}:&nbsp;</td>\n";
-echo "                        <td align=\"left\" colspan=\"2\">", form_field("lastname", (isset($user_prefs['LASTNAME']) ? $user_prefs['LASTNAME'] : ""), 45, 32), "&nbsp;</td>\n";
+echo "                        <td align=\"left\" colspan=\"2\">", form_input_text("lastname", (isset($user_prefs['LASTNAME']) ? $user_prefs['LASTNAME'] : ""), 45, 32, "", "user_pref_field"), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['dateofbirth']}:&nbsp;</td>\n";
-echo "                        <td align=\"left\" nowrap=\"nowrap\" colspan=\"2\">", form_dob_dropdowns($dob['YEAR'], $dob['MONTH'], $dob['DAY'], $dob['BLANK_FIELDS']), "&nbsp;</td>\n";
+echo "                        <td align=\"left\" nowrap=\"nowrap\" colspan=\"2\">", form_dob_dropdowns($dob['YEAR'], $dob['MONTH'], $dob['DAY'], $dob['BLANK_FIELDS']), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\">&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" valign=\"top\" nowrap=\"nowrap\">{$lang['homepageURL']}:&nbsp;</td>\n";
-echo "                        <td align=\"left\">", form_field("homepage_url", (isset($user_prefs['HOMEPAGE_URL']) ? $user_prefs['HOMEPAGE_URL'] : ""), 45, 255), "&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_input_text("homepage_url", (isset($user_prefs['HOMEPAGE_URL']) ? $user_prefs['HOMEPAGE_URL'] : ""), 45, 255, "", "user_pref_field"), "</td>\n";
 echo "                        <td align=\"left\" valign=\"top\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("homepage_url_global", "Y", $lang['setforallforums'], (isset($user_prefs['HOMEPAGE_URL_GLOBAL']) ? $user_prefs['HOMEPAGE_URL_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : '', "&nbsp;</td>\n";
 echo "                      </tr>\n";
+
+if (forum_get_setting('attachments_enabled', 'Y')) {
+
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">&nbsp;</td>\n";
+    echo "                      </tr>\n";
+    echo "                    </table>\n";
+    echo "                  </td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "        <br />\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td align=\"left\" class=\"posthead\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">{$lang['profilepicturedimensions']}</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"center\">\n";
+    echo "                    <table class=\"posthead\" width=\"95%\">\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" width=\"150\">{$lang['pictureURL']}:</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("pic_url", (isset($user_prefs['PIC_URL']) ? $user_prefs['PIC_URL'] : ""), 45, 255, "", "user_pref_field"), "</td>\n";
+    echo "                        <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("pic_url_global", "Y", $lang['setforallforums'], (isset($user_prefs['PIC_URL_GLOBAL']) ? $user_prefs['PIC_URL_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : '', "&nbsp;</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">{$lang['selectattachment']}:</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("pic_aid", $image_attachments_array, (isset($user_prefs['PIC_AID']) ? $user_prefs['PIC_AID'] : ''), "", "user_pref_dropdown"), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">&nbsp;</td>\n";
+    echo "                      </tr>\n";
+    echo "                    </table>\n";
+    echo "                  </td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "        <br />\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td align=\"left\" class=\"posthead\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">{$lang['avatarpicturedimensions']}</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"center\">\n";
+    echo "                    <table class=\"posthead\" width=\"95%\">\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" width=\"150\">{$lang['avatarURL']}:</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("avatar_url", (isset($user_prefs['AVATAR_URL']) ? $user_prefs['AVATAR_URL'] : ""), 45, 255, "", "user_pref_field"), "</td>\n";
+    echo "                        <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("avatar_url_global", "Y", $lang['setforallforums'], (isset($user_prefs['AVATAR_URL_GLOBAL']) ? $user_prefs['AVATAR_URL_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : '', "&nbsp;</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">{$lang['selectattachment']}:</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("avatar_aid", $image_attachments_array, (isset($user_prefs['AVATAR_AID']) ? $user_prefs['AVATAR_AID'] : ''), "", "user_pref_dropdown"), "</td>\n";
+    echo "                      </tr>\n";
+
+}else {
+
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" width=\"150\">{$lang['pictureURL']}:</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("pic_url", (isset($user_prefs['PIC_URL']) ? $user_prefs['PIC_URL'] : ""), 45, 255, "", "user_pref_field"), "</td>\n";
+    echo "                        <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("pic_url_global", "Y", $lang['setforallforums'], (isset($user_prefs['PIC_URL_GLOBAL']) ? $user_prefs['PIC_URL_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : '', "&nbsp;</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" width=\"150\">{$lang['avatarURL']}:</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("avatar_url", (isset($user_prefs['AVATAR_URL']) ? $user_prefs['AVATAR_URL'] : ""), 45, 255, "", "user_pref_field"), "</td>\n";
+    echo "                        <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("avatar_url_global", "Y", $lang['setforallforums'], (isset($user_prefs['AVATAR_URL_GLOBAL']) ? $user_prefs['AVATAR_URL_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : '', "&nbsp;</td>\n";
+    echo "                      </tr>\n";
+}
+
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" valign=\"top\" nowrap=\"nowrap\">{$lang['pictureURL']}:&nbsp;</td>\n";
-echo "                        <td align=\"left\">", form_field("pic_url", (isset($user_prefs['PIC_URL']) ? $user_prefs['PIC_URL'] : ""), 45, 255), "&nbsp;</td>\n";
-echo "                        <td align=\"left\" valign=\"top\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("pic_url_global", "Y", $lang['setforallforums'], (isset($user_prefs['PIC_URL_GLOBAL']) ? $user_prefs['PIC_URL_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : '', "&nbsp;</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" colspan=\"3\">&nbsp;</td>\n";
+echo "                        <td align=\"left\">&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
@@ -424,9 +619,20 @@ echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
-echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "</td>\n";
-echo "    </tr>\n";
+
+if (forum_get_setting('attachments_enabled', 'Y')) {
+
+    echo "    <tr>\n";
+    echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "&nbsp;", form_button("attachments", $lang['uploadnewattachment'], "onclick=\"launchAttachWin('{$aid}', '$webtag')\""), "</td>\n";
+    echo "    </tr>\n";
+
+}else {
+
+    echo "    <tr>\n";
+    echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "</td>\n";
+    echo "    </tr>\n";
+}
+
 echo "  </table>\n";
 echo "</form>\n";
 

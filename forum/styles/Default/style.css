@@ -535,8 +535,8 @@ a {
 .admin_startpage_textarea, .dictionary_word_display,
 .dictionary_best_selection, .dictionary_change_to,
 .post_folder_dropdown, .thread_title, .post_content,
-.signature_content, .edit_signature_content, 
-.to_uid_dropdown, .recipient_dropdown,
+.signature_content, .edit_signature_content, .user_pref_dropdown,
+.to_uid_dropdown, .recipient_dropdown, .user_pref_field,
 .recent_user_dropdown, .user_in_thread_dropdown {
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 9pt;
@@ -1120,4 +1120,12 @@ a {
 
 .profile_browse_close {
     vertical-align: middle;
+}
+
+.user_pref_field {
+    width: 288px;
+}
+
+.user_pref_dropdown {
+    width: 292px;
 }

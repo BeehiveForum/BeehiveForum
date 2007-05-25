@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.137 2007-05-21 00:14:22 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.138 2007-05-25 23:45:00 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -314,7 +314,33 @@ if ($users_array = users_get_recent()) {
     foreach ($users_array as $recent_user) {
 
         echo "                            <tr>\n";
-        echo "                              <td valign=\"top\" align=\"center\" nowrap=\"nowrap\" width=\"20\"><img src=\"", style_image('bullet.png'), "\" alt=\"{$lang['user']}\" title=\"{$lang['user']}\" /></td>\n";
+
+        if (isset($recent_user['AVATAR_URL']) && strlen($recent_user['AVATAR_URL']) > 0) {
+
+            echo "                   <td class=\"postbody\" align=\"left\"><img src=\"{$recent_user['AVATAR_URL']}\" alt=\"", format_user_name($recent_user['LOGON'], $recent_user['NICKNAME']), "\" title=\"", format_user_name($recent_user['LOGON'], $recent_user['NICKNAME']), "\" border=\"0\" /></td>\n";
+
+        }elseif (isset($recent_user['AVATAR_AID']) && is_md5($recent_user['AVATAR_AID'])) {
+
+            $attachment = get_attachment_by_hash($recent_user['AVATAR_AID']);
+
+            if (forum_get_setting('attachment_use_old_method', 'Y')) {
+
+                $profile_picture_href = "get_attachment.php?webtag=$webtag&amp;hash={$attachment['HASH']}";
+                $profile_picture_href.= "&amp;filename={$attachment['FILENAME']}&amp;profile_picture=1";
+
+            }else {
+
+                $profile_picture_href = "get_attachment.php/{$attachment['HASH']}/";
+                $profile_picture_href.= rawurlencode($attachment['FILENAME']);
+                $profile_picture_href.= "?webtag=$webtag&amp;profile_picture=1";
+            }
+
+            echo "                   <td class=\"postbody\" align=\"left\"><img src=\"$profile_picture_href\" alt=\"", format_user_name($recent_user['LOGON'], $recent_user['NICKNAME']), "\" title=\"", format_user_name($recent_user['LOGON'], $recent_user['NICKNAME']), "\" border=\"0\" /></td>\n";
+        
+        }else {
+
+            echo "                   <td align=\"left\" class=\"postbody\"><img src=\"", style_image('bullet.png'), "\" alt=\"{$lang['user']}\" title=\"{$lang['user']}\" /></td>\n";
+        }
 
         if (isset($recent_user['SID']) && !is_null($recent_user['SID'])) {
 
@@ -330,8 +356,11 @@ if ($users_array = users_get_recent()) {
         }
 
         if (isset($recent_user['LAST_LOGON']) && $recent_user['LAST_LOGON'] > 0) {
+
             echo "                              <td align=\"right\" nowrap=\"nowrap\">", format_time($recent_user['LAST_LOGON']), "&nbsp;</td>\n";
+
         }else {
+
             echo "                              <td align=\"right\" nowrap=\"nowrap\">{$lang['unknown']}&nbsp;</td>\n";
         }
 

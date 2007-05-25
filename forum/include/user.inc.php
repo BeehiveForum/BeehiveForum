@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.321 2007-05-24 14:09:24 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.322 2007-05-25 23:45:01 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -525,7 +525,8 @@ function user_get_prefs($uid)
     // 2. The user's global prefs, in USER_PREFS:
 
     $sql = "SELECT USER_PREFS.FIRSTNAME, USER_PREFS.LASTNAME, USER_PREFS.DOB, ";
-    $sql.= "USER_PREFS.HOMEPAGE_URL, USER_PREFS.PIC_URL, USER_PREFS.EMAIL_NOTIFY, ";
+    $sql.= "USER_PREFS.HOMEPAGE_URL, USER_PREFS.PIC_URL, USER_PREFS.PIC_AID, ";
+    $sql.= "USER_PREFS.AVATAR_URL, USER_PREFS.AVATAR_AID, USER_PREFS.EMAIL_NOTIFY, ";
     $sql.= "USER_PREFS.TIMEZONE, TIMEZONES.GMT_OFFSET, TIMEZONES.DST_OFFSET, ";
     $sql.= "USER_PREFS.DL_SAVING, USER_PREFS.MARK_AS_OF_INT, USER_PREFS.POSTS_PER_PAGE, ";
     $sql.= "USER_PREFS.FONT_SIZE, USER_PREFS.VIEW_SIGS, USER_PREFS.START_PAGE, ";
@@ -551,11 +552,12 @@ function user_get_prefs($uid)
 
     if ($table_data = get_table_prefix()) {
 
-        $sql = "SELECT HOMEPAGE_URL, PIC_URL, EMAIL_NOTIFY, ";
-        $sql.= "MARK_AS_OF_INT, POSTS_PER_PAGE, FONT_SIZE, STYLE, VIEW_SIGS, START_PAGE, LANGUAGE, ";
-        $sql.= "DOB_DISPLAY, ANON_LOGON, SHOW_STATS, IMAGES_TO_LINKS, USE_WORD_FILTER, USE_ADMIN_FILTER, ";
-        $sql.= "EMOTICONS, ALLOW_EMAIL, ALLOW_PM, SHOW_THUMBS, USE_MOVER_SPOILER, ENABLE_WIKI_WORDS, ";
-        $sql.= "USE_OVERFLOW_RESIZE FROM {$table_data['PREFIX']}USER_PREFS WHERE UID = '$uid'";
+        $sql = "SELECT HOMEPAGE_URL, PIC_URL, PIC_AID, AVATAR_URL, AVATAR_AID, EMAIL_NOTIFY, ";
+        $sql.= "MARK_AS_OF_INT, POSTS_PER_PAGE, FONT_SIZE, STYLE, VIEW_SIGS, START_PAGE, ";
+        $sql.= "LANGUAGE, DOB_DISPLAY, ANON_LOGON, SHOW_STATS, IMAGES_TO_LINKS, USE_WORD_FILTER, ";
+        $sql.= "USE_ADMIN_FILTER, EMOTICONS, ALLOW_EMAIL, ALLOW_PM, SHOW_THUMBS, ";
+        $sql.= "USE_MOVER_SPOILER, ENABLE_WIKI_WORDS, USE_OVERFLOW_RESIZE ";
+        $sql.= "FROM {$table_data['PREFIX']}USER_PREFS WHERE UID = '$uid'";
 
         if (!$result = db_query($sql, $db_user_get_prefs)) return false;
 
@@ -611,7 +613,8 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
     // names of preferences that can be set globally
 
     $global_pref_names = array('FIRSTNAME', 'LASTNAME', 'DOB', 'HOMEPAGE_URL',
-                               'PIC_URL', 'EMAIL_NOTIFY', 'TIMEZONE', 'DL_SAVING',
+                               'PIC_URL', 'PIC_AID', 'AVATAR_URL', 'AVATAR_AID', 
+                               'EMAIL_NOTIFY', 'TIMEZONE', 'DL_SAVING',
                                'MARK_AS_OF_INT', 'POSTS_PER_PAGE', 'FONT_SIZE',
                                'VIEW_SIGS', 'START_PAGE', 'LANGUAGE', 'PM_NOTIFY', 
                                'PM_NOTIFY_EMAIL', 'PM_SAVE_SENT_ITEM', 'PM_INCLUDE_REPLY', 
@@ -625,14 +628,14 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
 
     // names of preferences that can be set on a per-forum basis
 
-    $forum_pref_names =  array('HOMEPAGE_URL', 'PIC_URL', 'EMAIL_NOTIFY',
-                               'MARK_AS_OF_INT', 'POSTS_PER_PAGE', 'FONT_SIZE',
-                               'STYLE', 'VIEW_SIGS', 'START_PAGE', 'LANGUAGE',
-                               'DOB_DISPLAY', 'ANON_LOGON', 'SHOW_STATS',
-                               'IMAGES_TO_LINKS', 'USE_WORD_FILTER', 'USE_ADMIN_FILTER',
-                               'EMOTICONS', 'ALLOW_EMAIL', 'ALLOW_PM', 'SHOW_THUMBS',
-                               'ENABLE_WIKI_WORDS', 'USE_MOVER_SPOILER',
-                               'USE_OVERFLOW_RESIZE');
+    $forum_pref_names =  array('HOMEPAGE_URL', 'PIC_URL', 'PIC_AID', 'AVATAR_URL',
+                               'AVATAR_AID', 'EMAIL_NOTIFY', 'MARK_AS_OF_INT', 
+                               'POSTS_PER_PAGE', 'FONT_SIZE', 'STYLE', 'VIEW_SIGS',
+                               'START_PAGE', 'LANGUAGE', 'DOB_DISPLAY', 'ANON_LOGON',
+                               'SHOW_STATS', 'IMAGES_TO_LINKS', 'USE_WORD_FILTER',
+                               'USE_ADMIN_FILTER', 'EMOTICONS', 'ALLOW_EMAIL',
+                               'ALLOW_PM', 'SHOW_THUMBS', 'ENABLE_WIKI_WORDS',
+                               'USE_MOVER_SPOILER', 'USE_OVERFLOW_RESIZE');
 
     foreach ($prefs_array as $pref_name => $pref_setting) {
 
@@ -826,10 +829,12 @@ function user_check_pref($name, $value)
             return preg_match("/^[a-z0-9_-]*$/i", $value);
         } elseif ($name ==  "DOB") {
             return preg_match("/^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$/", $value);
-        } elseif ($name == "HOMEPAGE_URL" || $name == "PIC_URL") {
-            return preg_match("/^http:\/\/[_\.0-9a-z\-~]*/i", $value);
+        } elseif ($name == "HOMEPAGE_URL" || $name == "PIC_URL" || $name == "AVATAR_URL") {
+            return (preg_match("/^http:\/\/[_\.0-9a-z\-~]*/i", $value) || $value == "");
         } elseif ($name == "EMAIL_NOTIFY" || $name == "DL_SAVING" || $name == "MARK_AS_OF_INT" || $name == "VIEW_SIGS" || $name == "PM_NOTIFY" || $name == "PM_NOTIFY_EMAIL" || $name == "PM_INCLUDE_REPLY" || $name == "PM_SAVE_SENT_ITEM" || $name == "PM_EXPORT_ATTACHMENTS" || $name == "PM_EXPORT_STYLE" || $name == "PM_EXPORT_WORDFILTER" || $name == "IMAGES_TO_LINKS" || $name == "SHOW_STATS" || $name == "USE_WORD_FILTER" || $name == "USE_ADMIN_FILTER" || $name == "ALLOW_EMAIL" || $name == "ALLOW_PM" || $name == "ENABLE_WIKI_WORDS" || $name == "USE_MOVER_SPOILER" || $name == "USE_OVERFLOW_RESIZE") {
             return ($value == "Y" || $value == "N") ? true : false;
+        } elseif ($name == "PIC_AID" || $name == "AVATAR_AID") {
+            return (is_md5($value) || $value == "");
         } elseif ($name == "ANON_LOGON" || $name == "TIMEZONE" || $name == "POSTS_PER_PAGE" || $name == "FONT_SIZE" || $name == "START_PAGE" || $name == "DOB_DISPLAY" || $name == "POST_PAGE" || $name == "SHOW_THUMBS" || $name == "PM_AUTO_PRUNE" || $name == "PM_EXPORT_FILE" || $name == "PM_EXPORT_TYPE") {
             return is_numeric($value);
         } else {
@@ -1572,6 +1577,26 @@ function user_allow_pm($uid)
 function user_allow_email($uid)
 {
     return (bh_session_get_value('ALLOW_EMAIL') == "Y");
+}
+
+function user_prefs_prep_attachments($image_attachments_array)
+{
+    $attachments_array_prepared = array('' => '&nbsp;');
+
+    $lang = load_language_file();
+
+    if (!$attachment_dir = forum_get_setting('attachment_dir')) return array();
+   
+    foreach ($image_attachments_array as $hash => $attachment_details) {
+
+        if ($image_info = getimagesize("$attachment_dir/$hash")) {
+
+            $dimensions_text = "{$lang['dimensions']}: {$image_info[0]}x{$image_info[1]}px";            
+            $attachments_array_prepared[$hash] = "{$attachment_details['filename']}, $dimensions_text";
+        }
+    }
+
+    return $attachments_array_prepared;
 }
 
 ?>

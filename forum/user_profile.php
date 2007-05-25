@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.121 2007-05-21 00:14:22 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.122 2007-05-25 23:45:00 decoyduck Exp $ */
 
 /**
 * Displays user profiles
@@ -249,6 +249,30 @@ if (isset($user_profile['PIC_URL'])) {
     echo "                        <td align=\"right\" class=\"subhead\">\n";
     echo "                          <div class=\"profile_image\">\n";
     echo "                            <img src=\"{$user_profile['PIC_URL']}\" width=\"95\" height=\"95\" alt=\"\" />\n";
+    echo "                          </div>\n";
+    echo "                        </td>\n";
+    echo "                      </tr>\n";
+
+}elseif (isset($user_profile['PIC_AID'])) {
+
+    $attachment = get_attachment_by_hash($user_profile['PIC_AID']);
+
+    if (forum_get_setting('attachment_use_old_method', 'Y')) {
+
+        $profile_picture_href = "get_attachment.php?webtag=$webtag&amp;hash={$attachment['HASH']}";
+        $profile_picture_href.= "&amp;filename={$attachment['FILENAME']}&amp;profile_picture=1";
+
+    }else {
+
+        $profile_picture_href = "get_attachment.php/{$attachment['HASH']}/";
+        $profile_picture_href.= rawurlencode($attachment['FILENAME']);
+        $profile_picture_href.= "?webtag=$webtag&amp;profile_picture=1";
+    }
+
+    echo "                      <tr>\n";
+    echo "                        <td align=\"right\" class=\"subhead\">\n";
+    echo "                          <div class=\"profile_image\">\n";
+    echo "                            <img src=\"$profile_picture_href\" width=\"95\" height=\"95\" alt=\"\" />\n";
     echo "                          </div>\n";
     echo "                        </td>\n";
     echo "                      </tr>\n";

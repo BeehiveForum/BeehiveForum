@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.96 2007-04-15 22:48:47 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.97 2007-05-25 23:45:00 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -85,6 +85,13 @@ function form_input_text($name, $value = false, $width = false, $maxchars = fals
 function form_input_password($name, $value = false, $width = false, $maxchars = false, $custom_html = false, $class = "bhinputtext")
 {
     return form_field($name, $value, $width, $maxchars, "password", $custom_html, $class);
+}
+
+// Creates a file upload field
+
+function form_input_file($name, $value = false, $width = false, $maxchars = false, $custom_html = false, $class = "bhinputtext")
+{
+    return form_field($name, $value, $width, $maxchars, "file", $custom_html, $class);
 }
 
 // Creates a hidden form field

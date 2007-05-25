@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.71 2007-05-19 19:51:39 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.72 2007-05-25 23:45:00 decoyduck Exp $ */
 
 /**
 * Functions relating to profiles
@@ -864,7 +864,11 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
     $select_sql.= "UNIX_TIMESTAMP(VISITOR_LOG_TIME.LAST_LOGON) AS LAST_VISIT, ";
     $select_sql.= "UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, ";
     $select_sql.= "UNIX_TIMESTAMP(USER_TRACK.USER_TIME_BEST) AS USER_TIME_BEST, ";
-    $select_sql.= "UNIX_TIMESTAMP(USER_TRACK.USER_TIME_TOTAL) AS USER_TIME_TOTAL ";
+    $select_sql.= "UNIX_TIMESTAMP(USER_TRACK.USER_TIME_TOTAL) AS USER_TIME_TOTAL, ";
+    $select_sql.= "USER_PREFS_FORUM.AVATAR_URL AS AVATAR_URL_FORUM, ";
+    $select_sql.= "USER_PREFS_FORUM.AVATAR_AID AS AVATAR_AID_FORUM, ";
+    $select_sql.= "USER_PREFS_GLOBAL.AVATAR_URL AS AVATAR_URL_GLOBAL, ";
+    $select_sql.= "USER_PREFS_GLOBAL.AVATAR_AID AS AVATAR_AID_GLOBAL ";
 
     // Include the selected numeric (PIID) profile items
 
@@ -1085,6 +1089,18 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
                     $user_data['UID']      = 0;
                     $user_data['LOGON']    = $lang['guest'];
                     $user_data['NICKNAME'] = $lang['guest'];
+                }
+
+                if (isset($user_data['AVATAR_URL_FORUM']) && strlen($user_data['AVATAR_URL_FORUM']) > 0) {
+                    $user_data['AVATAR_URL'] = $user_data['AVATAR_URL_FORUM'];
+                }elseif (isset($user_data['AVATAR_URL_GLOBAL']) && strlen($user_data['AVATAR_URL_GLOBAL']) > 0) {
+                    $user_data['AVATAR_URL'] = $user_data['AVATAR_URL_GLOBAL'];
+                }
+                
+                if (isset($user_data['AVATAR_AID_FORUM']) && strlen($user_data['AVATAR_AID_FORUM']) > 0) {
+                    $user_data['AVATAR_AID'] = $user_data['AVATAR_AID_FORUM'];
+                }elseif (isset($user_data['AVATAR_AID_GLOBAL']) && strlen($user_data['AVATAR_AID_GLOBAL']) > 0) {
+                    $user_data['AVATAR_AID'] = $user_data['AVATAR_AID_GLOBAL'];
                 }
 
                 if (isset($user_data['LAST_VISIT']) && !is_null($user_data['LAST_VISIT'])) {

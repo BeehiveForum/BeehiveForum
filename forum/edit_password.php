@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_password.php,v 1.56 2007-05-21 00:14:21 decoyduck Exp $ */
+/* $Id: edit_password.php,v 1.57 2007-05-25 23:45:00 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -219,15 +219,15 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">{$lang['currentpasswd']}:</td>\n";
-echo "                        <td align=\"left\">", form_field("opw", "", 37, 0, "password"), "&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_input_password("opw", "", 37, 0), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">{$lang['newpasswd']}:</td>\n";
-echo "                        <td align=\"left\">", form_field("npw", "", 37, 0, "password"), "&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_input_password("npw", "", 37, 0), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">{$lang['confirmpasswd']}:</td>\n";
-echo "                        <td align=\"left\">", form_field("cpw", "", 37, 0, "password"), "&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_input_password("cpw", "", 37, 0), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";

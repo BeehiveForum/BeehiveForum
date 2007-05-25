@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.156 2007-05-20 17:52:06 decoyduck Exp $ */
+/* $Id: register.php,v 1.157 2007-05-25 23:45:00 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -569,11 +569,11 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" class=\"posthead\" width=\"295\">{$lang['firstname']}:</td>\n";
-echo "                        <td align=\"left\">", form_field("firstname", (isset($new_user_prefs['FIRSTNAME']) ? _htmlentities($new_user_prefs['FIRSTNAME']) : ""), 45, 32), "</td>\n";
+echo "                        <td align=\"left\">", form_input_text("firstname", (isset($new_user_prefs['FIRSTNAME']) ? _htmlentities($new_user_prefs['FIRSTNAME']) : ""), 45, 32), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" class=\"posthead\">{$lang['lastname']}:</td>\n";
-echo "                        <td align=\"left\">", form_field("lastname", (isset($new_user_prefs['LASTNAME']) ? _htmlentities($new_user_prefs['LASTNAME']) : ""), 45, 32), "</td>\n";
+echo "                        <td align=\"left\">", form_input_text("lastname", (isset($new_user_prefs['LASTNAME']) ? _htmlentities($new_user_prefs['LASTNAME']) : ""), 45, 32), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" class=\"posthead\" valign=\"top\">{$lang['signature']}:</td>\n";

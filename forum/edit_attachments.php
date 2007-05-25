@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.113 2007-05-21 00:14:21 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.114 2007-05-25 23:45:00 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -348,7 +348,7 @@ if (isset($_POST['delete_confirm'])) {
         }
     }
 
-}elseif (isset($_POST['close'])) {
+}elseif (isset($_POST['close']) && $popup == 1) {
 
     html_draw_top();
 

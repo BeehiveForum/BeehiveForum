@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_startpage.php,v 1.88 2007-05-21 00:14:21 decoyduck Exp $ */
+/* $Id: admin_startpage.php,v 1.89 2007-05-25 23:44:56 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -257,7 +257,7 @@ echo "                <tr>\n";
 echo "                  <td align=\"left\" class=\"subhead\">", sprintf($lang['uploadstartpage'], $allowed_file_exts), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\">{$lang['filename']}: ", form_field("userfile", "", 45, 0, "file"), "</td>\n";
+echo "                  <td align=\"left\">{$lang['filename']}: ", form_input_file("userfile", "", 45, 0), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\">&nbsp;</td>\n";

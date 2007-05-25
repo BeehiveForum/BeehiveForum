@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: get_attachment.php,v 1.24 2007-05-21 00:14:21 decoyduck Exp $ */
+/* $Id: get_attachment.php,v 1.25 2007-05-25 23:45:00 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -175,7 +175,7 @@ if (isset($hash) && is_md5($hash)) {
 
                 $filepath = "{$attachment_dir}/{$attachment_details['HASH']}.thumb";
 
-            }else {
+            }elseif (!isset($_GET['profile_picture']) && !isset($_GET['avatar_picture'])) {
 
                 attachment_inc_dload_count($hash);
                 $filepath = "{$attachment_dir}/{$attachment_details['HASH']}";

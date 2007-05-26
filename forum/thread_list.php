@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.297 2007-05-21 00:14:22 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.298 2007-05-26 22:34:08 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -310,9 +310,8 @@ if (isset($folder)) {
 // Now, the actual bit that displays the threads...
 
 // Get folder FIDs and titles
-$folder_info = threads_get_folders();
 
-if (!$folder_info) {
+if (!$folder_info = threads_get_folders()) {
 
     echo "<h1>{$lang['error']}</h1>\n";
     echo "<h2>{$lang['couldnotretrievefolderinformation']}</h2>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.434 2007-05-26 15:04:34 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.435 2007-05-26 22:34:08 decoyduck Exp $ */
 
 // British English language file
 
@@ -1480,6 +1480,7 @@ $lang['display'] = "Display";
 $lang['displaysig_exp'] = "User's signature is displayed on their posts.";
 $lang['hidesig_exp'] = "User's signature is hidden on their posts.";
 $lang['cannotignoremod'] = "You cannot ignore this user, as they are a moderator.";
+$lang['previewsignature'] = "Preview Signature";
 
 // Search (search.php) -------------------------------------------------
 

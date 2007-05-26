@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_messages.php,v 1.18 2007-05-18 15:28:38 decoyduck Exp $ */
+/* $Id: pm_messages.php,v 1.19 2007-05-26 15:04:33 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -86,6 +86,8 @@ if (!bh_session_user_approved()) {
     html_user_require_approval();
     exit;
 }
+
+// Fetch the webtag
 
 $webtag = get_webtag($webtag_search);
 
@@ -349,7 +351,7 @@ if ($current_folder == PM_FOLDER_INBOX) {
 
 }elseif ($current_folder == PM_FOLDER_SAVED) {
 
-    $pm_messages_array = pm_get_saveditems($sort_by, $sort_dir, $start);
+    $pm_messages_array = pm_get_saved_items($sort_by, $sort_dir, $start);
 
 }elseif ($current_folder == PM_FOLDER_DRAFTS) {
 

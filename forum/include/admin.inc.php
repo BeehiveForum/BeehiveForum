@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.120 2007-05-19 18:24:31 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.121 2007-05-26 15:04:33 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -553,7 +553,7 @@ function admin_user_get_all($sort_by = 'VISITOR_LOG.LAST_LOGON', $sort_dir = 'AS
     $sql.= "LEFT JOIN SESSIONS ON (SESSIONS.UID = USER.UID) ";
     $sql.= "LEFT JOIN GROUP_USERS ON (GROUP_USERS.UID = USER.UID) ";
     $sql.= "LEFT JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID ";
-    $sql.= "AND GROUP_PERMS.FORUM = '$forum_fid' AND GROUP_PERMS.FID = '0') ";
+    $sql.= "AND GROUP_PERMS.FORUM IN (0, $forum_fid) AND GROUP_PERMS.FID = '0') ";
     $sql.= "GROUP BY USER.UID $having_sql ";
 
     if (!$result = db_query($sql, $db_user_get_all)) return false;
@@ -566,9 +566,9 @@ function admin_user_get_all($sort_by = 'VISITOR_LOG.LAST_LOGON', $sort_dir = 'AS
     $sql.= "LEFT JOIN SESSIONS ON (SESSIONS.UID = USER.UID) ";
     $sql.= "LEFT JOIN GROUP_USERS ON (GROUP_USERS.UID = USER.UID) ";
     $sql.= "LEFT JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID ";
-    $sql.= "AND GROUP_PERMS.FORUM = '$forum_fid' AND GROUP_PERMS.FID = '0') ";
+    $sql.= "AND GROUP_PERMS.FORUM IN (0, $forum_fid) AND GROUP_PERMS.FID = '0') ";
     $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID ";
-    $sql.= "AND VISITOR_LOG.FORUM = '$forum_fid') ";
+    $sql.= "AND VISITOR_LOG.FORUM IN (0, $forum_fid)) ";
     $sql.= "GROUP BY USER.UID $having_sql ";
     $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, 10 ";
 
@@ -577,7 +577,7 @@ function admin_user_get_all($sort_by = 'VISITOR_LOG.LAST_LOGON', $sort_dir = 'AS
     if (db_num_rows($result) > 0) {
 
         while ($row = db_fetch_array($result)) {
-
+            
             $user_get_all_array[$row['UID']] = $row;
         }
 

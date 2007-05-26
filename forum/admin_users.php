@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.146 2007-05-23 23:48:05 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.147 2007-05-26 15:04:33 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -166,6 +166,8 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
         if (isset($_POST['user_update']) && is_array($_POST['user_update'])) {
 
             $kick_users = preg_grep("/^[0-9]+$/", array_keys($_POST['user_update']));
+
+            $kick_user_success = array();
             
             foreach($kick_users as $user_uid) {
 
@@ -173,7 +175,12 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
                     $user_logon = user_get_logon($user_uid);
                     admin_add_log_entry(END_USER_SESSION, $user_logon);
-                    echo "<p><b>{$lang['sessionsuccessfullyended']}: <a href=\"user_profile.php?webtag=$webtag&amp;uid=$user_uid\" target=\"_blank\" onclick=\"return openProfile($user_uid, '$webtag')\">$user_logon</a></b></p>\n";
+
+                    $kick_user_success[] = "<a href=\"user_profile.php?webtag=$webtag&amp;uid=$user_uid\" target=\"_blank\" onclick=\"return openProfile($user_uid, '$webtag')\">$user_logon</a>";
+                }
+
+                if (sizeof($kick_user_success) > 0) {
+                    echo "<h2>{$lang['sessionsuccessfullyended']}: ", implode(", ", $kick_user_success), "</h2>\n";
                 }
             }
         }
@@ -186,14 +193,21 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
                 $approve_users = preg_grep("/^[0-9]+$/", array_keys($_POST['user_update']));
 
+                $approved_user_success = array();
+
                 foreach($approve_users as $user_uid) {
 
                     if (perm_user_approve($user_uid)) {
 
                         $user_logon = user_get_logon($user_uid);
                         admin_add_log_entry(APPROVED_USER, $user_logon);
-                        echo "<p><b>{$lang['successfullyapproveduser']}: <a href=\"user_profile.php?webtag=$webtag&amp;uid=$user_uid\" target=\"_blank\" onclick=\"return openProfile($user_uid, '$webtag')\">$user_logon</a></b></p>\n";
+
+                        $approved_user_success[] = "<a href=\"user_profile.php?webtag=$webtag&amp;uid=$user_uid\" target=\"_blank\" onclick=\"return openProfile($user_uid, '$webtag')\">$user_logon</a>";
                     }
+                }
+
+                if (sizeof($approved_user_success) > 0) {
+                    echo "<h2>{$lang['successfullyapproveduser']}: ", implode(", ", $approved_user_success), "</h2>\n";
                 }
             }
         }
@@ -338,7 +352,7 @@ echo "    <tr>\n";
 
 if (sizeof($admin_user_array['user_array']) > 0) {
 
-    echo "      <td align=\"left\" width=\"40%\">", bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) ? form_submit("kick_submit", $lang['kickselected']). "&nbsp;" : "", forum_get_setting('require_user_approval', 'Y') && bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) ? form_submit("approve_submit", $lang['approveselected']) : "", "</td>\n";
+    echo "      <td align=\"left\" width=\"40%\">", bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) ? form_submit("kick_submit", $lang['kickselected']). "&nbsp;" : "", forum_get_setting('require_user_approval', 'Y') && bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0) ? form_submit("approve_submit", $lang['approveselected']) : "", "</td>\n";
 
 }else {
 

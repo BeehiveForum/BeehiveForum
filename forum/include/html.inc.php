@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.226 2007-05-21 00:14:22 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.227 2007-05-26 15:04:33 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -976,7 +976,7 @@ function page_links($uri, $offset, $total_rows, $rows_per_page, $page_var = "pag
     echo "</span>";
 }
 
-function html_get_forum_uri($path_only = false)
+function html_get_forum_uri($append_path = "")
 {
     $uri_array = array();
 
@@ -1038,13 +1038,24 @@ function html_get_forum_uri($path_only = false)
             }
 
             $uri_array['path'] = $path['path'];
-            unset($path);
         }
     }
 
-    $uri_array['path'] = dirname("{$uri_array['path']}beehive");
-    $uri_array['path'] = preg_replace("/\\\/", "/", $uri_array['path']);
-    $uri_array['path'] = preg_replace("/\/$/", "", $uri_array['path']);
+    if (server_os_mswin()) {
+
+        $uri_array['path'] = dirname("{$uri_array['path']}beehive");
+        $uri_array['path'] = preg_replace("/\\\/", "/", $uri_array['path']);
+        $uri_array['path'] = preg_replace("/\/$/", "", $uri_array['path']);
+
+    }else {
+
+        $uri_array['path'] = dirname("{$uri_array['path']}beehive");
+    }
+
+    if (strlen(trim($append_path)) > 0) {
+
+        $uri_array['path'].= $append_path;
+    }
 
     $server_uri = (isset($uri_array['scheme'])) ? "{$uri_array['scheme']}://" : '';
     $server_uri.= (isset($uri_array['host']))   ? "{$uri_array['host']}"      : '';

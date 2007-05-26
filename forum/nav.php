@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: nav.php,v 1.97 2007-05-20 17:52:06 decoyduck Exp $ */
+/* $Id: nav.php,v 1.98 2007-05-26 15:04:33 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -90,11 +90,13 @@ if ($webtag = get_webtag($webtag_search)) {
     if (forum_get_setting('show_links', 'Y')) {
         echo "<a href=\"links.php?webtag=$webtag\" target=\"main\">{$lang['links']}</a>&nbsp;|&nbsp;\n";
     }
+}
 
-    if (forum_get_setting('show_pms', 'Y')) {
-        echo "<a href=\"pm.php?webtag=$webtag\" target=\"main\">{$lang['pminbox']}</a>&nbsp;|&nbsp;\n";
-    }
+if (forum_get_setting('show_pms', 'Y')) {
+    echo "<a href=\"pm.php?webtag=$webtag\" target=\"main\">{$lang['pminbox']}</a>&nbsp;|&nbsp;\n";
+}
 
+if ($webtag = get_webtag($webtag_search)) {
     echo "<a href=\"user.php?webtag=$webtag\" target=\"main\">{$lang['mycontrols']}</a>&nbsp;|&nbsp;\n";
 }
 

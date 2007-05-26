@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.138 2007-05-25 23:45:00 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.139 2007-05-26 22:34:08 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -109,184 +109,191 @@ html_draw_top("openprofile.js", "poll.js", "robots=noindex,follow");
 
 echo "  <h1>{$lang['start']}</h1>\n";
 echo "  <br />\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"98%\">\n";
-echo "    <tr>\n";
-echo "      <td align=\"left\">\n";
-echo "        <table class=\"box\" width=\"100%\">\n";
-echo "          <tr>\n";
-echo "            <td align=\"left\" class=\"posthead\">\n";
-echo "              <table class=\"subhead\" width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\">{$lang['recentthreads']}</td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "              <table class=\"posthead\" width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td align=\"center\">\n";
-echo "                    <table class=\"posthead\" width=\"95%\">\n";
 
-if ($thread_array = threads_get_most_recent()) {
+$folder_info = threads_get_folders();
 
-    foreach ($thread_array as $thread) {
+if (is_array($folder_info) && sizeof($folder_info) > 0) {
 
-        $tid = $thread['TID'];
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"98%\">\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td align=\"left\" class=\"posthead\">\n";
+    echo "              <table class=\"subhead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\">{$lang['recentthreads']}</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"center\">\n";
+    echo "                    <table class=\"posthead\" width=\"95%\">\n";
+
+    if ($thread_array = threads_get_most_recent()) {
+
+        foreach ($thread_array as $thread) {
+
+            $tid = $thread['TID'];
+
+            echo "                      <tr>\n";
+
+            if (!isset($thread['LAST_READ'])) {
+                echo "                        <td valign=\"top\" align=\"center\" nowrap=\"nowrap\" width=\"20\"><img src=\"", style_image('unread_thread.png'), "\" name=\"t{$thread['TID']}\" alt=\"{$lang['unreadthread']}\" title=\"{$lang['unreadthread']}\" />&nbsp;</td>\n";
+            }else if ($thread['LAST_READ'] == 0 || $thread['LAST_READ'] < $thread['LENGTH']) {
+                echo "                        <td valign=\"top\" align=\"center\" nowrap=\"nowrap\" width=\"20\"><img src=\"", style_image('unread_thread.png'), "\" name=\"t{$thread['TID']}\" alt=\"{$lang['unreadmessages']}\" title=\"{$lang['unreadmessages']}\" />&nbsp;</td>\n";
+            }else if ($thread['LAST_READ'] == $thread['LENGTH']) {
+                echo "                        <td valign=\"top\" align=\"center\" nowrap=\"nowrap\" width=\"20\"><img src=\"", style_image('bullet.png'), "\" name=\"t{$thread['TID']}\" alt=\"{$lang['readthread']}\" title=\"{$lang['readthread']}\" />&nbsp;</td>\n";
+            }
+
+            if ($thread['LAST_READ'] == 0) {
+
+                if ($thread['LENGTH'] > 1) {
+
+                    $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"main\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
+                    $number.= sprintf($lang['manynew'], $thread['LENGTH']);
+                    $number.= "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"main\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
+
+                }else {
+
+                    $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"main\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
+                    $number.= sprintf($lang['onenew'], $thread['LENGTH']);
+                    $number.= "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"main\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
+                }
+
+                $latest_post = 1;
+
+            }elseif ($thread['LAST_READ'] < $thread['LENGTH']) {
+
+                $new_posts = $thread['LENGTH'] - $thread['LAST_READ'];
+
+                if ($new_posts > 1) {
+
+                    $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"main\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
+                    $number.= sprintf($lang['manynewoflength'], $new_posts, $thread['LENGTH']);
+                    $number.= "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"main\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
+
+                }else {
+
+                    $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"main\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
+                    $number.= sprintf($lang['onenewoflength'], $new_posts, $thread['LENGTH']);
+                    $number.= "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"main\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
+                }
+
+                $latest_post = $thread['LAST_READ'] + 1;
+
+            }else {
+
+                if ($thread['LENGTH'] > 1) {
+
+                    $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"main\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
+                    $number.= "{$thread['LENGTH']}<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"main\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
+
+                }else {
+
+                    $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"main\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
+                    $number.= "1<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"main\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
+                }
+
+                $latest_post = 1;
+            }
+
+            if (isset($thread['LAST_READ']) && $thread['LAST_READ'] && $thread['LENGTH'] > $thread['LAST_READ']) {
+                $pid = $thread['LAST_READ'] + 1;
+            } else {
+                $pid = 1;
+            }
+
+            $thread_time = format_time($thread['MODIFIED']);
+
+            echo "                        <td align=\"left\" valign=\"top\"><a href=\"discussion.php?webtag=$webtag&amp;msg=$tid.$pid\" target=\"main\" ";
+            echo "title=\"", sprintf($lang['threadstartedbytooltip'], $thread['TID'], word_filter_add_ob_tags(format_user_name($thread['LOGON'], $thread['NICKNAME'])), ($thread['VIEWCOUNT'] == 1) ? $lang['threadviewedonetime'] : sprintf($lang['threadviewedtimes'], $thread['VIEWCOUNT'])), "\">";
+            echo word_filter_add_ob_tags(thread_format_prefix($thread['PREFIX'], $thread['TITLE'])), "</a> ";
+
+            if (isset($thread['INTEREST']) && $thread['INTEREST'] == THREAD_INTERESTED) echo "<img src=\"", style_image('high_interest.png'), "\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" /> ";
+            if (isset($thread['INTEREST']) && $thread['INTEREST'] == THREAD_SUBSCRIBED) echo "<img src=\"", style_image('subscribe.png'), "\" alt=\"{$lang['subscribed']}\" title=\"{$lang['subscribed']}\" /> ";
+            if (isset($thread['POLL_FLAG']) && $thread['POLL_FLAG'] == 'Y') echo "<a href=\"poll_results.php?webtag=$webtag&tid={$thread['TID']}\" target=\"_blank\" onclick=\"return openPollResults('{$thread['TID']}', '$webtag')\"><img src=\"", style_image('poll.png'), "\" border=\"0\" alt=\"{$lang['thisisapoll']}\" title=\"{$lang['thisisapoll']}\" /></a> ";
+            if (isset($thread['STICKY']) && $thread['STICKY'] == "Y") echo "<img src=\"", style_image('sticky.png'), "\" alt=\"{$lang['sticky']}\" title=\"{$lang['sticky']}\" /> ";
+            if (isset($thread['RELATIONSHIP']) && $thread['RELATIONSHIP'] & USER_FRIEND) echo "<img src=\"", style_image('friend.png'), "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" /> ";
+            if (isset($thread['AID']) && is_md5($thread['AID'])) echo "<img src=\"", style_image('attach.png'), "\" alt=\"{$lang['attachment']}\" title=\"{$lang['attachment']}\" /> ";
+
+            echo "<span class=\"threadxnewofy\">{$number}</span></td>\n";
+            echo "                        <td valign=\"top\" nowrap=\"nowrap\" align=\"right\"><span class=\"threadtime\">{$thread_time}&nbsp;</span></td>\n";
+            echo "                      </tr>\n";
+        }
+
+    }else {
 
         echo "                      <tr>\n";
-
-        if (!isset($thread['LAST_READ'])) {
-            echo "                        <td valign=\"top\" align=\"center\" nowrap=\"nowrap\" width=\"20\"><img src=\"", style_image('unread_thread.png'), "\" name=\"t{$thread['TID']}\" alt=\"{$lang['unreadthread']}\" title=\"{$lang['unreadthread']}\" />&nbsp;</td>\n";
-        }else if ($thread['LAST_READ'] == 0 || $thread['LAST_READ'] < $thread['LENGTH']) {
-            echo "                        <td valign=\"top\" align=\"center\" nowrap=\"nowrap\" width=\"20\"><img src=\"", style_image('unread_thread.png'), "\" name=\"t{$thread['TID']}\" alt=\"{$lang['unreadmessages']}\" title=\"{$lang['unreadmessages']}\" />&nbsp;</td>\n";
-        }else if ($thread['LAST_READ'] == $thread['LENGTH']) {
-            echo "                        <td valign=\"top\" align=\"center\" nowrap=\"nowrap\" width=\"20\"><img src=\"", style_image('bullet.png'), "\" name=\"t{$thread['TID']}\" alt=\"{$lang['readthread']}\" title=\"{$lang['readthread']}\" />&nbsp;</td>\n";
-        }
-
-        if ($thread['LAST_READ'] == 0) {
-
-            if ($thread['LENGTH'] > 1) {
-
-                $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"main\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
-                $number.= sprintf($lang['manynew'], $thread['LENGTH']);
-                $number.= "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"main\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
-
-            }else {
-
-                $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"main\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
-                $number.= sprintf($lang['onenew'], $thread['LENGTH']);
-                $number.= "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"main\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
-            }
-
-            $latest_post = 1;
-
-        }elseif ($thread['LAST_READ'] < $thread['LENGTH']) {
-
-            $new_posts = $thread['LENGTH'] - $thread['LAST_READ'];
-
-            if ($new_posts > 1) {
-
-                $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"main\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
-                $number.= sprintf($lang['manynewoflength'], $new_posts, $thread['LENGTH']);
-                $number.= "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"main\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
-
-            }else {
-
-                $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"main\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
-                $number.= sprintf($lang['onenewoflength'], $new_posts, $thread['LENGTH']);
-                $number.= "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"main\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
-            }
-
-            $latest_post = $thread['LAST_READ'] + 1;
-
-        }else {
-
-            if ($thread['LENGTH'] > 1) {
-
-                $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"main\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
-                $number.= "{$thread['LENGTH']}<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"main\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
-
-            }else {
-
-                $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"main\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
-                $number.= "1<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"main\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
-            }
-
-            $latest_post = 1;
-        }
-
-        if (isset($thread['LAST_READ']) && $thread['LAST_READ'] && $thread['LENGTH'] > $thread['LAST_READ']) {
-            $pid = $thread['LAST_READ'] + 1;
-        } else {
-            $pid = 1;
-        }
-
-        $thread_time = format_time($thread['MODIFIED']);
-
-        echo "                        <td align=\"left\" valign=\"top\"><a href=\"discussion.php?webtag=$webtag&amp;msg=$tid.$pid\" target=\"main\" ";
-        echo "title=\"", sprintf($lang['threadstartedbytooltip'], $thread['TID'], word_filter_add_ob_tags(format_user_name($thread['LOGON'], $thread['NICKNAME'])), ($thread['VIEWCOUNT'] == 1) ? $lang['threadviewedonetime'] : sprintf($lang['threadviewedtimes'], $thread['VIEWCOUNT'])), "\">";
-        echo word_filter_add_ob_tags(thread_format_prefix($thread['PREFIX'], $thread['TITLE'])), "</a> ";
-
-        if (isset($thread['INTEREST']) && $thread['INTEREST'] == THREAD_INTERESTED) echo "<img src=\"", style_image('high_interest.png'), "\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" /> ";
-        if (isset($thread['INTEREST']) && $thread['INTEREST'] == THREAD_SUBSCRIBED) echo "<img src=\"", style_image('subscribe.png'), "\" alt=\"{$lang['subscribed']}\" title=\"{$lang['subscribed']}\" /> ";
-        if (isset($thread['POLL_FLAG']) && $thread['POLL_FLAG'] == 'Y') echo "<a href=\"poll_results.php?webtag=$webtag&tid={$thread['TID']}\" target=\"_blank\" onclick=\"return openPollResults('{$thread['TID']}', '$webtag')\"><img src=\"", style_image('poll.png'), "\" border=\"0\" alt=\"{$lang['thisisapoll']}\" title=\"{$lang['thisisapoll']}\" /></a> ";
-        if (isset($thread['STICKY']) && $thread['STICKY'] == "Y") echo "<img src=\"", style_image('sticky.png'), "\" alt=\"{$lang['sticky']}\" title=\"{$lang['sticky']}\" /> ";
-        if (isset($thread['RELATIONSHIP']) && $thread['RELATIONSHIP'] & USER_FRIEND) echo "<img src=\"", style_image('friend.png'), "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" /> ";
-        if (isset($thread['AID']) && is_md5($thread['AID'])) echo "<img src=\"", style_image('attach.png'), "\" alt=\"{$lang['attachment']}\" title=\"{$lang['attachment']}\" /> ";
-
-        echo "<span class=\"threadxnewofy\">{$number}</span></td>\n";
-        echo "                        <td valign=\"top\" nowrap=\"nowrap\" align=\"right\"><span class=\"threadtime\">{$thread_time}&nbsp;</span></td>\n";
+        echo "                        <td align=\"center\"><h2>{$lang['nomessages']}</h2></td>\n";
         echo "                      </tr>\n";
     }
 
-}else {
+    // Display "Start Reading" button
 
     echo "                      <tr>\n";
-    echo "                        <td align=\"center\"><h2>{$lang['nomessages']}</h2></td>\n";
+    echo "                        <td align=\"left\">&nbsp;</td>\n";
     echo "                      </tr>\n";
+    echo "                    </table>\n";
+    echo "                  </td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">&nbsp;</td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"center\" colspan=\"2\">", form_quick_button("./discussion.php", "{$lang['startreading']}  &raquo;", false, "main"), "</td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "  <br />\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"98%\">\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td align=\"left\" class=\"posthead\">\n";
+    echo "              <table class=\"subhead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\">{$lang['threadoptions']}</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"center\">\n";
+    echo "                    <table class=\"posthead\" width=\"80%\">\n";
+    echo "                      <tr>\n";
+    echo "                        <td class=\"postbody\" colspan=\"2\" align=\"center\">\n";
+    echo "                          <table class=\"posthead\" border=\"0\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\n";
+    echo "                            <tr>\n";
+    echo "                              <td align=\"left\" valign=\"top\" nowrap=\"nowrap\"><img src=\"", style_image('post.png'), "\" alt=\"{$lang['newdiscussion']}\" title=\"{$lang['newdiscussion']}\" />&nbsp;<a href=\"post.php?webtag=$webtag\" target=\"main\">{$lang['newdiscussion']}</a></td>\n";
+    echo "                            </tr>\n";
+    echo "                            <tr>\n";
+    echo "                              <td align=\"left\" valign=\"top\" nowrap=\"nowrap\"><img src=\"", style_image('poll.png'), "\" alt=\"{$lang['createpoll']}\" title=\"{$lang['createpoll']}\" />&nbsp;<a href=\"create_poll.php?webtag=$webtag\" target=\"main\">{$lang['createpoll']}</a></td>\n";
+    echo "                            </tr>\n";
+    echo "                          </table>\n";
+    echo "                        </td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">&nbsp;</td>\n";
+    echo "                      </tr>\n";
+    echo "                    </table>\n";
+    echo "                  </td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "  <br />\n";
 }
 
-// Display "Start Reading" button
-
-echo "                      <tr>\n";
-echo "                        <td align=\"left\">&nbsp;</td>\n";
-echo "                      </tr>\n";
-echo "                    </table>\n";
-echo "                  </td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "            </td>\n";
-echo "          </tr>\n";
-echo "        </table>\n";
-echo "      </td>\n";
-echo "    </tr>\n";
-echo "    <tr>\n";
-echo "      <td align=\"left\">&nbsp;</td>\n";
-echo "    </tr>\n";
-echo "    <tr>\n";
-echo "      <td align=\"center\" colspan=\"2\">", form_quick_button("./discussion.php", "{$lang['startreading']}  &raquo;", false, "main"), "</td>\n";
-echo "    </tr>\n";
-echo "  </table>\n";
-echo "  <br />\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"98%\">\n";
-echo "    <tr>\n";
-echo "      <td align=\"left\">\n";
-echo "        <table class=\"box\" width=\"100%\">\n";
-echo "          <tr>\n";
-echo "            <td align=\"left\" class=\"posthead\">\n";
-echo "              <table class=\"subhead\" width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\">{$lang['threadoptions']}</td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "              <table class=\"posthead\" width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td align=\"center\">\n";
-echo "                    <table class=\"posthead\" width=\"80%\">\n";
-echo "                      <tr>\n";
-echo "                        <td class=\"postbody\" colspan=\"2\" align=\"center\">\n";
-echo "                          <table class=\"posthead\" border=\"0\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\n";
-echo "                            <tr>\n";
-echo "                              <td align=\"left\" valign=\"top\" nowrap=\"nowrap\"><img src=\"", style_image('post.png'), "\" alt=\"{$lang['newdiscussion']}\" title=\"{$lang['newdiscussion']}\" />&nbsp;<a href=\"post.php?webtag=$webtag\" target=\"main\">{$lang['newdiscussion']}</a></td>\n";
-echo "                            </tr>\n";
-echo "                            <tr>\n";
-echo "                              <td align=\"left\" valign=\"top\" nowrap=\"nowrap\"><img src=\"", style_image('poll.png'), "\" alt=\"{$lang['createpoll']}\" title=\"{$lang['createpoll']}\" />&nbsp;<a href=\"create_poll.php?webtag=$webtag\" target=\"main\">{$lang['createpoll']}</a></td>\n";
-echo "                            </tr>\n";
-echo "                          </table>\n";
-echo "                        </td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\">&nbsp;</td>\n";
-echo "                      </tr>\n";
-echo "                    </table>\n";
-echo "                  </td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "            </td>\n";
-echo "          </tr>\n";
-echo "        </table>\n";
-echo "      </td>\n";
-echo "    </tr>\n";
-echo "  </table>\n";
-echo "  <br />\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"98%\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -454,50 +461,52 @@ if ($birthdays = user_get_forthcoming_birthdays()) {
     echo "  <br />\n";
 }
 
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"98%\">\n";
-echo "    <tr>\n";
-echo "      <td align=\"left\">\n";
-echo "        <table class=\"box\" width=\"100%\">\n";
-echo "          <tr>\n";
-echo "            <td align=\"left\" class=\"posthead\">\n";
-echo "              <table class=\"subhead\" width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\">{$lang['navigate']}</td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "              <table class=\"posthead\" width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td align=\"center\">\n";
-echo "                    <table class=\"posthead\" width=\"80%\">\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"center\">\n";
-echo "                          <table class=\"posthead\" border=\"0\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\n";
-echo "                            <tr>\n";
-echo "                              <td align=\"left\">\n";
-echo "                                <form name=\"f_nav\" method=\"get\" action=\"discussion.php\" target=\"main\">\n";
-echo "                                  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
-echo "                                  ", form_input_text('msg', '1.1', 10), "\n";
-echo "                                  ", form_submit("go",$lang['goexcmark']), "\n";
-echo "                                </form>\n";
-echo "                              </td>\n";
-echo "                            </tr>\n";
-echo "                          </table>\n";
-echo "                        </td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\">&nbsp;</td>\n";
-echo "                      </tr>\n";
-echo "                    </table>\n";
-echo "                  </td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "            </td>\n";
-echo "          </tr>\n";
-echo "        </table>\n";
-echo "      </td>\n";
-echo "    </tr>\n";
-echo "  </table>\n";
-echo "  <br />\n";
+if (is_array($folder_info) && sizeof($folder_info) > 0) {
+
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"98%\">\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td align=\"left\" class=\"posthead\">\n";
+    echo "              <table class=\"subhead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\">{$lang['navigate']}</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"center\">\n";
+    echo "                    <table class=\"posthead\" width=\"80%\">\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"center\">\n";
+    echo "                          <table class=\"posthead\" border=\"0\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\n";
+    echo "                            <tr>\n";
+    echo "                              <td align=\"left\">\n";
+    echo "                                <form name=\"f_nav\" method=\"get\" action=\"discussion.php\" target=\"main\">\n";
+    echo "                                  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
+    echo "                                  ", form_input_text('msg', '1.1', 10), "\n";
+    echo "                                  ", form_submit("go",$lang['goexcmark']), "\n";
+    echo "                                </form>\n";
+    echo "                              </td>\n";
+    echo "                            </tr>\n";
+    echo "                          </table>\n";
+    echo "                        </td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">&nbsp;</td>\n";
+    echo "                      </tr>\n";
+    echo "                    </table>\n";
+    echo "                  </td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+}
 
 html_draw_bottom();
 

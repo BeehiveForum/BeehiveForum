@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.92 2007-05-21 00:14:22 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.93 2007-05-26 22:34:08 decoyduck Exp $ */
 
 /**
 * Displays and handles the User Relationship page
@@ -247,6 +247,76 @@ if (isset($error_html) && strlen($error_html) > 0) {
 
 echo "<h1>{$lang['userrelationship']} &raquo; <a href=\"user_profile.php?webtag=$webtag&amp;uid=$peer_uid\" target=\"_blank\" onclick=\"return openProfile($peer_uid, '$webtag')\">", word_filter_add_ob_tags(format_user_name($user_peer['LOGON'], $user_peer['NICKNAME'])), "</a></h1>\n";
 echo "<br />\n";
+
+if (isset($_POST['preview_signature'])) {
+
+    if (user_get_sig($peer_uid, $t_sig_content, $t_sig_html)) {
+
+        $preview_message['TLOGON'] = $lang['allcaps'];
+        $preview_message['TNICK'] = $lang['allcaps'];
+
+        $preview_tuser = user_get($peer_uid);
+
+        $preview_message['FLOGON']   = $preview_tuser['LOGON'];
+        $preview_message['FNICK']    = $preview_tuser['NICKNAME'];
+        $preview_message['FROM_UID'] = $preview_tuser['UID'];
+
+        $preview_message['CONTENT'] = $lang['signaturepreview'];
+
+        if ($t_sig_html == "Y") {
+            $preview_message['CONTENT'].= "<div class=\"sig\">$t_sig_content</div>";
+        }else {
+            $preview_message['CONTENT'].= "<div class=\"sig\">". make_html($t_sig_content). "</div>";
+        }
+
+        $preview_message['CREATED'] = mktime();
+
+        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+        echo "    <tr>\n";
+        echo "      <td align=\"left\">\n";
+        echo "        <table class=\"box\" width=\"100%\">\n";
+        echo "          <tr>\n";
+        echo "            <td align=\"left\" class=\"posthead\">\n";
+        echo "              <table class=\"posthead\" width=\"100%\">\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\" class=\"subhead\">{$lang['preview']}</td>\n";
+        echo "                </tr>\n";
+        echo "              </table>\n";
+        echo "              <table class=\"posthead\" width=\"100%\">\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"center\">\n";
+        echo "                    <table class=\"posthead\" width=\"100%\">\n";
+        echo "                      <tr>\n";
+        echo "                        <td align=\"left\">\n";
+        echo "                          <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
+        echo "                            <tr>\n";
+        echo "                              <td align=\"left\">\n";
+
+        message_display(0, $preview_message, 0, 0, 0, true, false, false, false, true, true);
+        echo "<br />\n";
+
+        echo "                              </td>\n";
+        echo "                            </tr>\n";
+        echo "                          </table>\n";
+        echo "                        </td>\n";
+        echo "                      </tr>\n";
+        echo "                    </table>\n";
+        echo "                  </td>\n";
+        echo "                </tr>\n";
+        echo "              </table>\n";
+        echo "            </td>\n";
+        echo "          </tr>\n";
+        echo "        </table>\n";
+        echo "      </td>\n";
+        echo "    </tr>\n";
+        echo "    <tr>\n";
+        echo "      <td align=\"left\">&nbsp;</td>\n";
+        echo "    </tr>\n";
+        echo "  </table>\n";
+        echo "</form>\n";
+    }
+}
+
 echo "<form name=\"relationship\" action=\"user_rel.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden("uid", _htmlentities($peer_uid)), "\n";
@@ -374,7 +444,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\"><p>", form_submit("submit", $lang['save']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</p></td>\n";
+echo "      <td align=\"center\"><p>", form_submit("submit", $lang['save']), "&nbsp;", form_submit("preview_signature", $lang['previewsignature']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</p></td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

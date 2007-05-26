@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gzipenc.inc.php,v 1.51 2007-04-18 23:20:27 decoyduck Exp $ */
+/* $Id: gzipenc.inc.php,v 1.52 2007-05-26 17:36:56 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -40,14 +40,12 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 function bh_check_gzip()
 {
-    global $gzip_compress_output;
+    $gzip_compress_output = (isset($GLOBALS['gzip_compress_output'])) ? $GLOBALS['gzip_compress_output'] : false;
 
     // check that no headers have already been sent
     // and that gzip compression is actually enabled.
 
-    if (headers_sent()) {
-        return false;
-    }
+    if (headers_sent()) return false;
 
     if (isset($gzip_compress_output) && $gzip_compress_output === false) {
         return false;
@@ -78,7 +76,7 @@ function bh_check_gzip()
 
 function bh_gzhandler($contents)
 {
-    global $gzip_compress_level;
+    $gzip_compress_level = (isset($GLOBALS['gzip_compress_level'])) ? $GLOBALS['gzip_compress_level'] : false;
 
     // check the compression level variable is set
 

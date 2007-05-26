@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.145 2007-05-24 14:09:24 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.146 2007-05-26 17:36:56 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1180,7 +1180,7 @@ function light_messages_nav_strip($tid,$pid,$length,$ppp)
 
 function light_html_guest_error ()
 {
-    global $frame_top_target;
+    $frame_top_target = (isset($GLOBALS['frame_top_target'])) ? $GLOBALS['frame_top_target'] : '_top';
      
     $lang = load_language_file();
 
@@ -1192,11 +1192,7 @@ function light_html_guest_error ()
     echo "<h2>{$lang['guesterror']}</h2>";
     echo "<br />\n";
 
-    if (isset($frame_top_target) && strlen($frame_top_target) > 0) {
-        echo form_quick_button("./llogout.php", $lang['loginnow'], false, $frame_top_target);
-    }else {
-        echo form_quick_button("./llogout.php", $lang['loginnow']);
-    }
+    echo form_quick_button("./llogout.php", $lang['loginnow'], false, $frame_top_target);
 
     light_html_draw_bottom();
 }

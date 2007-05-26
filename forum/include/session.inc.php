@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.300 2007-05-21 00:14:22 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.301 2007-05-26 17:36:56 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -207,7 +207,7 @@ function bh_session_check($show_session_fail = true, $use_sess_hash = false)
 
 function bh_session_expired()
 {
-    global $frame_top_target;
+    $frame_top_target = (isset($GLOBALS['frame_top_target'])) ? $GLOBALS['frame_top_target'] : '_top';
 
     $webtag = get_webtag($webtag_search);
 
@@ -247,14 +247,7 @@ function bh_session_expired()
 
                 if (stristr($request_uri, 'logon.php')) {
 
-                    if (isset($frame_top_target) && strlen($frame_top_target) > 0) {
-
-                        echo "<form method=\"post\" action=\"$request_uri\" target=\"$frame_top_target\">\n";
-
-                    }else {
-
-                        echo "<form method=\"post\" action=\"$request_uri\" target=\"_top\">\n";
-                    }
+                    echo "<form method=\"post\" action=\"$request_uri\" target=\"$frame_top_target\">\n";
 
                 }else {
 
@@ -477,7 +470,7 @@ function bh_session_active()
 
 function bh_session_get_value($session_key)
 {
-    global $user_sess;
+    $user_sess = (isset($GLOBALS['user_sess'])) ? $GLOBALS['user_sess'] : false;
 
     if (is_array($user_sess) && isset($user_sess[$session_key])) {
         return $user_sess[$session_key];
@@ -1030,9 +1023,7 @@ function bh_session_get_perm_array($uid)
 
 function bh_session_check_perm($perm, $folder_fid)
 {
-    global $user_sess;
-
-    static $debug_perms = false;
+    $user_sess = (isset($GLOBALS['user_sess'])) ? $GLOBALS['user_sess'] : false;
 
     if (!is_array($user_sess)) return false;
     if (!is_numeric($folder_fid)) return false;
@@ -1083,7 +1074,7 @@ function bh_session_check_perm($perm, $folder_fid)
 
 function bh_session_get_perm($folder_fid)
 {
-    global $user_sess;
+    $user_sess = (isset($GLOBALS['user_sess'])) ? $GLOBALS['user_sess'] : false;
 
     if (!is_array($user_sess)) return false;
     if (!is_numeric($folder_fid)) return false;
@@ -1179,8 +1170,6 @@ function bh_session_user_approved()
 
 function bh_session_get_folders_by_perm($perm, $forum_fid = false)
 {
-    global $user_sess;
-
     if (!is_numeric($perm)) return false;
 
     if ($forum_fid === false) {
@@ -1189,6 +1178,8 @@ function bh_session_get_folders_by_perm($perm, $forum_fid = false)
         $forum_fid = $table_data['FID'];
     }
 
+    $user_sess = $GLOBALS['user_sess'];
+
     $folder_fid_array = array();
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
@@ -1196,21 +1187,11 @@ function bh_session_get_folders_by_perm($perm, $forum_fid = false)
     // Test each folder against the provided perm at both the folder
     // and user levels.
 
-    if (isset($user_sess['PERMS'][$forum_fid][0]) && is_array($user_sess['PERMS'][$forum_fid][0])) {
+    if (isset($user_sess['PERMS'][$forum_fid][$uid]) && is_array($user_sess['PERMS'][$forum_fid][$uid])) {
 
-        foreach($user_sess['PERMS'][$forum_fid][0] as $folder_fid => $folder_perm) {
+        foreach($user_sess['PERMS'][$forum_fid][$uid] as $folder_fid => $folder_perm) {
 
-            if (isset($user_sess['PERMS'][$forum_fid][$uid][$folder_fid])) {
-                
-                if (($user_sess['PERMS'][$forum_fid][$uid][$folder_fid] & $perm) == $perm) {
-
-                    $folder_fid_array[$folder_fid] = $folder_fid;
-                }
-
-            }else {
-
-                if (($folder_perm & $perm) == $perm) $folder_fid_array[$folder_fid] = $folder_fid;
-            }
+            if (($folder_perm & $perm) == $perm) $folder_fid_array[$folder_fid] = $folder_fid;
         }
     }
 
@@ -1322,7 +1303,7 @@ function get_request_uri($include_webtag = true, $encoded_uri_query = true)
 
 function bh_session_get_post_page_prefs()
 {
-    global $user_sess;
+    $user_sess = (isset($GLOBALS['user_sess'])) ? $GLOBALS['user_sess'] : false;
 
     if (!$page_prefs = bh_session_get_value('POST_PAGE')) {
         $page_prefs = POST_TOOLBAR_DISPLAY | POST_EMOTICONS_DISPLAY | POST_TEXT_DEFAULT | POST_AUTO_LINKS | POST_SIGNATURE_DISPLAY;

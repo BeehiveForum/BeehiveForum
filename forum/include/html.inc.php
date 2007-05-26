@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.227 2007-05-26 15:04:33 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.228 2007-05-26 17:36:56 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -48,15 +48,14 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 function html_guest_error()
 {
-     global $frame_top_target;
+     $frame_top_target = (isset($GLOBALS['frame_top_target'])) ? $GLOBALS['frame_top_target'] : '_top';
      
      $lang = load_language_file();
 
      $final_uri = rawurlencode(get_request_uri());
-     $target_frame = (isset($frame_top_target) && strlen($frame_top_target) > 0) ? $frame_top_target : '_top';
 
      html_draw_top("robots=noindex,nofollow");
-     html_error_msg($lang['guesterror'], 'logout.php', 'get', array('submit' => $lang['loginnow']), array('final_uri' => $final_uri), $target_frame);
+     html_error_msg($lang['guesterror'], 'logout.php', 'get', array('submit' => $lang['loginnow']), array('final_uri' => $final_uri), $frame_top_target);
      html_draw_bottom();
 }
 
@@ -803,9 +802,9 @@ function style_image($img)
 
 function bh_setcookie($name, $value, $expires = 0)
 {
-    global $cookie_domain;
+    $cookie_domain = (isset($GLOBALS['cookie_domain'])) ? $GLOBALS['cookie_domain'] : "";
 
-    if (isset($cookie_domain) && strlen(trim($cookie_domain)) > 0 && !defined('BEEHIVEMODE_LIGHT')) {
+    if (strlen(trim($cookie_domain)) > 0 && !defined('BEEHIVEMODE_LIGHT')) {
 
         $cookie_domain = preg_replace("/^[^:\s]+:\/\//", "", trim($cookie_domain));
 

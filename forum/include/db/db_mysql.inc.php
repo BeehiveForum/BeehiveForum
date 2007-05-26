@@ -21,13 +21,21 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db_mysql.inc.php,v 1.25 2007-04-23 23:49:20 decoyduck Exp $ */
+/* $Id: db_mysql.inc.php,v 1.26 2007-05-26 17:36:56 decoyduck Exp $ */
+
+function db_get_connection_vars(&$db_server, &$db_username, &$db_password, &$db_database)
+{
+    $db_server   = (isset($GLOBALS['db_server']))   ? $GLOBALS['db_server']   : '';
+    $db_username = (isset($GLOBALS['db_username'])) ? $GLOBALS['db_username'] : '';
+    $db_password = (isset($GLOBALS['db_password'])) ? $GLOBALS['db_password'] : '';
+    $db_database = (isset($GLOBALS['db_database'])) ? $GLOBALS['db_database'] : '';
+}
 
 function db_connect($trigger_error = true)
 {
-    global $db_server, $db_username, $db_password, $db_database;
-
     static $connection_id = false;
+
+    db_get_connection_vars($db_server, $db_username, $db_password, $db_database);
 
     if (!$connection_id) {
 
@@ -50,7 +58,7 @@ function db_connect($trigger_error = true)
 
 function db_enable_big_selects($connection_id)
 {
-    global $mysql_big_selects;
+    $mysql_big_selects = isset($GLOBALS['mysql_big_selects']) ? $GLOBALS['mysql_big_selects'] : false;
 
     if (isset($mysql_big_selects) && $mysql_big_selects === true) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logout.php,v 1.88 2007-05-02 23:15:40 decoyduck Exp $ */
+/* $Id: logout.php,v 1.89 2007-05-26 17:36:56 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -101,13 +101,7 @@ $user = user_get(bh_session_get_value('UID'));
 
 echo "<br />\n";
 echo "<div align=\"center\">\n";
-
-if (isset($frame_top_target) && strlen($frame_top_target) > 0) {
-    echo "<form name=\"logon\" action=\"./logout.php\" method=\"post\" target=\"$frame_top_target\">\n";
-}else {
-    echo "<form name=\"logon\" action=\"./logout.php\" method=\"post\" target=\"_top\">\n";
-}
-
+echo "<form name=\"logon\" action=\"./logout.php\" method=\"post\" target=\"$frame_top_target\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"300\">\n";
 echo "    <tr>\n";

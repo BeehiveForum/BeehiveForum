@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.433 2007-05-25 23:45:01 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.434 2007-05-26 15:04:34 decoyduck Exp $ */
 
 // British English language file
 
@@ -885,22 +885,22 @@ $lang['hasinvalidemailaddress'] = "has an invalid email address";
 // Message nofificaiton ------------------------------------------------
 
 $lang['msgnotification_subject'] = "Message Notification from %s";
-$lang['msgnotificationemail'] = "%s posted a message to you on %s\n\nThe subject is: %s\n\nTo read that message and others in the same discussion, go to:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: If you do not wish to receive email notifications of forum messages posted to you, go to: %s click on My Controls then Email and Privacy, unselect the Email Notification checkbox and press Submit.";
+$lang['msgnotificationemail'] = "Hello %s,\n\n%s posted a message to you on %s\n\nThe subject is: %s\n\nTo read that message and others in the same discussion, go to:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: If you do not wish to receive email notifications of forum messages posted to you, go to: %s click on My Controls then Email and Privacy, unselect the Email Notification checkbox and press Submit.";
 
 // Thread Subscription notification ------------------------------------
 
 $lang['subnotification_subject'] = "Subscription Notification from %s";
-$lang['subnotification'] = "%s posted a message in a thread you have subscribed to on %s\n\nThe subject is: %s\n\nTo read that message and others in the same discussion, go to:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: If you do not wish to receive email notifications of new messages in this thread, go to: %s and adjust your Interest level at the bottom of the page.";
+$lang['subnotification'] = "Hello %s,\n\n%s posted a message in a thread you have subscribed to on %s\n\nThe subject is: %s\n\nTo read that message and others in the same discussion, go to:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: If you do not wish to receive email notifications of new messages in this thread, go to: %s and adjust your Interest level at the bottom of the page.";
 
 // PM notification -----------------------------------------------------
 
 $lang['pmnotification_subject'] = "PM Notification from %s";
-$lang['pmnotification'] = "%s posted a PM to you on %s\n\nThe subject is: %s\n\nTo read the message go to:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: If you do not wish to receive email notifications of new PM messages posted to you, go to: %s click My Controls then Email and Privacy, unselect the PM Notification checkbox and press Submit.";
+$lang['pmnotification'] = "Hello %s,\n\n%s posted a PM to you on %s\n\nThe subject is: %s\n\nTo read the message go to:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: If you do not wish to receive email notifications of new PM messages posted to you, go to: %s click My Controls then Email and Privacy, unselect the PM Notification checkbox and press Submit.";
 
 // Password change notification ----------------------------------------
 
 $lang['passwdchangenotification'] = "Password change notification from %s";
-$lang['pwchangeemail'] = "This a notification email to inform you that your password on %s has been changed.\n\nIt has been changed to: %s and was changed by: %s\n\nIf you have received this email in error or were not expecting a change to your password please contact the forum owner or a moderator on %s immediately to correct it.";
+$lang['pwchangeemail'] = "Hello %s,\n\nThis a notification email to inform you that your password on %s has been changed.\n\nIt has been changed to: %s and was changed by: %s\n\nIf you have received this email in error or were not expecting a change to your password please contact the forum owner or a moderator on %s immediately to correct it.";
 
 // Email confirmation notification -------------------------------------
 
@@ -909,7 +909,7 @@ $lang['confirmemail'] = "Hello %s,\n\nYou recently created a new user account on
 
 // Forgotten password notification -------------------------------------
 
-$lang['forgotpwemail'] = "You requested this e-mail from %s because you have forgotten your password.\n\nClick the link below (or copy and paste it into your browser) to reset your password:\n\n%s";
+$lang['forgotpwemail'] = "Hello %s,\n\nYou requested this e-mail from %s because you have forgotten your password.\n\nClick the link below (or copy and paste it into your browser) to reset your password:\n\n%s";
 
 // Forgotten password form.
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_folders.php,v 1.9 2007-05-10 22:59:23 decoyduck Exp $ */
+/* $Id: pm_folders.php,v 1.10 2007-05-26 15:04:33 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -85,6 +85,8 @@ if (!bh_session_user_approved()) {
     html_user_require_approval();
     exit;
 }
+
+// Fetch the webtag
 
 $webtag = get_webtag($webtag_search);
 

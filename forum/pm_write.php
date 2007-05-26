@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.173 2007-05-23 23:48:06 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.174 2007-05-26 15:04:33 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -90,29 +90,19 @@ if (!bh_session_user_approved()) {
     exit;
 }
 
-// Check we have a webtag
+// Fetch the webtag
 
-if (!$webtag = get_webtag($webtag_search)) {
-    $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
-}
+$webtag = get_webtag($webtag_search);
 
 // Load language file
 
 $lang = load_language_file();
 
-// Check that we have access to this forum
-
-if (!forum_check_access_level()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
-}
-
 // Get the user's UID
 
 $uid = bh_session_get_value('UID');
 
-// Guests can't access PMs
+// Guests can't access this page.
 
 if (user_is_guest()) {
 

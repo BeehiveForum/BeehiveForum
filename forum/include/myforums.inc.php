@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.68 2007-05-22 12:02:49 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.69 2007-05-26 15:04:33 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -384,7 +384,8 @@ function forums_any_favourites()
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    $sql = "SELECT COUNT(FID) AS FAV_COUNT FROM USER_FORUM WHERE INTEREST = 1";
+    $sql = "SELECT COUNT(FID) AS FAV_COUNT FROM USER_FORUM ";
+    $sql.= "WHERE INTEREST = 1 AND UID = '$uid'";
 
     if (!$result = db_query($sql, $db_forums_any_favourites)) return false;
 

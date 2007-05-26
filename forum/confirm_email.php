@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: confirm_email.php,v 1.13 2007-05-02 23:48:59 decoyduck Exp $ */
+/* $Id: confirm_email.php,v 1.14 2007-05-26 15:04:33 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -100,99 +100,21 @@ if (!isset($uid) || !isset($key)) {
     exit;
 }
 
+$target_frame = (isset($frame_top_target) && strlen($frame_top_target) > 0) ? $frame_top_target : '_top';
+
 if ($user = user_get_password($uid, $key)) {
 
-    html_draw_top();
-
     if (perm_user_cancel_email_confirmation($uid)) {
-
-        echo "<h1>{$lang['emailconfirmation']}</h1>";
-        echo "<br />\n";
-        echo "<div align=\"center\">\n";
-
-        if (isset($frame_top_target) && strlen($frame_top_target) > 0) {
-            echo "  <form name=\"confirm_email\" action=\"index.php\" method=\"post\" target=\"$frame_top_target\">\n";
-        }else {
-            echo "  <form name=\"confirm_email\" action=\"index.php\" method=\"post\" target=\"_top\">\n";
-        }
-
-        echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"left\">\n";
-        echo "        <table class=\"box\">\n";
-        echo "          <tr>\n";
-        echo "            <td align=\"left\" class=\"posthead\">\n";
-        echo "              <table class=\"posthead\" width=\"500\">\n";
-        echo "                <tr>\n";
-        echo "                  <td align=\"left\" class=\"subhead\">{$lang['emailconfirmation']}</td>\n";
-        echo "                </tr>\n";
-        echo "                <tr>\n";
-        echo "                  <td align=\"left\">{$lang['emailconfirmationcomplete']}</td>\n";
-        echo "                </tr>\n";
-        echo "                <tr>\n";
-        echo "                  <td align=\"left\">&nbsp;</td>\n";
-        echo "                </tr>\n";
-        echo "              </table>\n";
-        echo "            </td>\n";
-        echo "          </tr>\n";
-        echo "        </table>\n";
-        echo "      </td>\n";
-        echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"left\">&nbsp;</td>\n";
-        echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"center\">", form_submit("submit", $lang['continue']), "</td>\n";
-        echo "    </tr>\n";
-        echo "  </table>\n";
-        echo "  </form>\n";
-        echo "</div>\n";
+       
+        html_draw_top();
+        html_display_msg($lang['emailconfirmation'], $lang['emailconfirmationcomplete'], 'index.php', 'post', false, array('submit' => $lang['continue']), $target_frame, 'center');
+        html_draw_bottom();
 
     }else {
 
-        echo "<h1>{$lang['emailconfirmation']}</h1>";
-        echo "<br />\n";
-        echo "<div align=\"center\">\n";
-
-        if (isset($frame_top_target) && strlen($frame_top_target) > 0) {
-            echo "  <form name=\"confirm_email\" action=\"index.php\" method=\"post\" target=\"$frame_top_target\">\n";
-        }else {
-            echo "  <form name=\"confirm_email\" action=\"index.php\" method=\"post\" target=\"_top\">\n";
-        }
-
-        echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"left\">\n";
-        echo "        <table class=\"box\">\n";
-        echo "          <tr>\n";
-        echo "            <td align=\"left\" class=\"posthead\">\n";
-        echo "              <table class=\"posthead\" width=\"500\">\n";
-        echo "                <tr>\n";
-        echo "                  <td align=\"left\" class=\"subhead\">{$lang['emailconfirmation']}</td>\n";
-        echo "                </tr>\n";
-        echo "                <tr>\n";
-        echo "                  <td align=\"left\">{$lang['emailconfirmationfailed']}</td>\n";
-        echo "                </tr>\n";
-        echo "                <tr>\n";
-        echo "                  <td align=\"left\">&nbsp;</td>\n";
-        echo "                </tr>\n";
-        echo "              </table>\n";
-        echo "            </td>\n";
-        echo "          </tr>\n";
-        echo "        </table>\n";
-        echo "      </td>\n";
-        echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"left\">&nbsp;</td>\n";
-        echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"center\">", form_submit("submit", $lang['continue']), "</td>\n";
-        echo "    </tr>\n";
-        echo "  </table>\n";
-        echo "  </form>\n";
-        echo "</div>\n";
+        html_draw_top();
+        html_display_msg($lang['emailconfirmation'], $lang['emailconfirmationfailed'], 'index.php', 'post', false, array('submit' => $lang['continue']), $target_frame, 'center');
+        html_draw_bottom();
     }
 
     html_draw_bottom();

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.322 2007-05-25 23:45:01 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.323 2007-05-26 15:04:33 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -243,7 +243,7 @@ function user_reset_post_count($uid)
     return true;
 }
 
-function user_change_password($uid, $password, $hash = false)
+function user_change_password($uid, $password, $old_passhash = false)
 {
     $db_user_change_password = db_connect();
 
@@ -258,10 +258,12 @@ function user_change_password($uid, $password, $hash = false)
 
         if (!$result = db_query($sql, $db_user_change_password)) return false;
     
-    }elseif (is_md5($hash)) {
+    }elseif (is_md5($old_passhash)) {
 
+        $old_passhash = db_escape_string(md5($password));
+        
         $sql = "UPDATE USER SET PASSWD = '$passhash' ";
-        $sql.= "WHERE UID = '$uid' AND PASSWD = '$hash'";
+        $sql.= "WHERE UID = '$uid' AND PASSWD = '$old_passhash'";
 
         if (!$result = db_query($sql, $db_user_change_password)) return false;
     }
@@ -390,8 +392,6 @@ function user_get_password($uid, $passwd_hash)
     if (!is_numeric($uid)) return false;
     if (!is_md5($passwd_hash)) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
-
     $sql = "SELECT * FROM USER WHERE UID = '$uid' ";
     $sql.= "AND PASSWD = '$passwd_hash'";
 
@@ -455,9 +455,7 @@ function user_get_uid($logon)
 
     $logon = db_escape_string($logon);
 
-    if (!$table_data = get_table_prefix()) return false;
-
-    $sql = "SELECT * FROM USER WHERE LOGON = '$logon'";
+    $sql = "SELECT * FROM USER WHERE LOGON LIKE '$logon'";
 
     if (!$result = db_query($sql, $db_user_get_uid)) return false;
 

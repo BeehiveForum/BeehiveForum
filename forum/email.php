@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.php,v 1.77 2007-05-21 00:14:21 decoyduck Exp $ */
+/* $Id: email.php,v 1.78 2007-05-26 15:11:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -122,7 +122,7 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
     exit;
 }
 
-if (isset($_POST['cancel'])) {
+if (isset($_POST['close'])) {
 
     html_draw_top();
     echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
@@ -168,72 +168,20 @@ if (isset($_POST['submit'])) {
 
     if ($valid) {
 
-        html_draw_top("title={$lang['emailresult']}");
-
-        echo "<div align=\"center\">\n";
-        echo "<form name=\"f_email\" action=\"user_profile.php\" method=\"get\">\n";
-        echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-        echo "  ", form_input_hidden("uid", _htmlentities($to_uid)), "\n";
-        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"480\">\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"left\">\n";
-        echo "        <table class=\"box\">\n";
-        echo "          <tr>\n";
-        echo "            <td align=\"left\" class=\"posthead\">\n";
-        echo "              <table class=\"posthead\" width=\"480\">\n";
-
         if (email_send_message_to_user($to_uid, $uid, $subject, $message)) {
 
-            echo "                <tr>\n";
-            echo "                  <td align=\"left\" class=\"subhead\">{$lang['msgsent']}</td>\n";
-            echo "                </tr>\n";
-            echo "                <tr>\n";
-            echo "                  <td align=\"center\">\n";
-            echo "                    <table class=\"posthead\" width=\"95%\">\n";
-            echo "                      <tr>\n";
-            echo "                        <td align=\"left\">{$lang['msgsentsuccessfully']}</td>\n";
-            echo "                      </tr>\n";
-            echo "                    </table>\n";
-            echo "                  </td>\n";
-            echo "                </tr>\n";
+            html_draw_top("title={$lang['emailresult']}");
+            html_display_msg($lang['msgsent'], $lang['msgsentsuccessfully'], 'email.php', 'post', array('close' => $lang['close']), array('to_uid' => $to_uid), false, 'center');
+            html_draw_bottom();
+            exit;
 
         }else {
 
-            echo "                <tr>\n";
-            echo "                  <td align=\"left\" class=\"subhead\">{$lang['msgfail']}</td>\n";
-            echo "                </tr>\n";
-            echo "                <tr>\n";
-            echo "                  <td align=\"center\">\n";
-            echo "                    <table class=\"posthead\" width=\"95%\">\n";
-            echo "                      <tr>\n";
-            echo "                        <td align=\"left\">{$lang['mailsystemfailure']}</td>\n";
-            echo "                      </tr>\n";
-            echo "                    </table>\n";
-            echo "                  </td>\n";
-            echo "                </tr>\n";
+            html_draw_top("title={$lang['emailresult']}");
+            html_display_msg($lang['msgfail'], $lang['mailsystemfailure'], 'email.php', 'post', array('close' => $lang['close']), array('to_uid' => $to_uid), false, 'center');
+            html_draw_bottom();
+            exit;
         }
-
-        echo "                <tr>\n";
-        echo "                  <td align=\"left\">&nbsp;</td>\n";
-        echo "                </tr>\n";
-        echo "              </table>\n";
-        echo "            </td>\n";
-        echo "          </tr>\n";
-        echo "        </table>\n";
-        echo "      </td>\n";
-        echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"left\">&nbsp;</td>\n";
-        echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"center\">", form_submit("submit", $lang['continue']), "</td>\n";
-        echo "    </tr>\n";
-        echo "  </table>\n";
-        echo "</form>\n";
-        echo "</div>\n";
-
-        html_draw_bottom();
-        exit;
     }
 }
 
@@ -297,7 +245,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("submit", $lang['send']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+echo "      <td align=\"center\">", form_submit("submit", $lang['send']), "&nbsp;", form_submit("close", $lang['cancel']), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

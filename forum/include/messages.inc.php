@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.452 2007-05-18 11:49:29 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.453 2007-05-26 17:36:56 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -541,7 +541,7 @@ function messages_bottom()
 
 function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $in_list = true, $closed = false, $limit_text = true, $is_poll = false, $show_sigs = true, $is_preview = false, $highlight_array = array())
 {
-    global $frame_top_target;
+    $frame_top_target = (isset($GLOBALS['frame_top_target'])) ? $GLOBALS['frame_top_target'] : '_top';
     
     $lang = load_language_file();
 
@@ -863,14 +863,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
             }else {
 
-                if (isset($frame_top_target) && strlen($frame_top_target) > 0) {
-
-                    echo "<a href=\"index.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"$frame_top_target\" title=\"$title\">$tid.{$message['PID']}</a>";
-
-                }else {
-
-                    echo "<a href=\"index.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_top\" title=\"$title\">$tid.{$message['PID']}</a>";
-                }
+                echo "<a href=\"index.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"$frame_top_target\" title=\"$title\">$tid.{$message['PID']}</a>";
             }
 
             if ($message['REPLY_TO_PID'] > 0) {

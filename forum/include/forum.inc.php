@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.231 2007-05-22 13:28:38 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.232 2007-05-26 17:36:56 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -241,7 +241,7 @@ function forum_get_password($forum_fid)
 
 function forum_check_password($forum_fid)
 {
-    global $frame_top_target;
+    $frame_top_target = (isset($GLOBALS['frame_top_target'])) ? $GLOBALS['frame_top_target'] : '_top';
     
     $db_forum_check_password = db_connect();
 
@@ -281,13 +281,7 @@ function forum_check_password($forum_fid)
         }
 
         echo "<div align=\"center\">\n";
-
-        if (isset($frame_top_target) && strlen($frame_top_target) > 0) {
-            echo "<form method=\"post\" action=\"./forum_password.php\" target=\"$frame_top_target\">\n";
-        }else {
-            echo "<form method=\"post\" action=\"./forum_password.php\" target=\"_top\">\n";
-        }
-
+        echo "<form method=\"post\" action=\"./forum_password.php\" target=\"$frame_top_target\">\n";
         echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
         echo "  ", form_input_hidden('ret', _htmlentities(get_request_uri())), "\n";
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"350\">\n";
@@ -580,7 +574,7 @@ function forum_get_table_prefix($fid)
 
 function forum_get_setting($setting_name, $value = false, $default = false)
 {
-    global $forum_settings;
+    $forum_settings = (isset($GLOBALS['forum_settings'])) ? $GLOBALS['forum_settings'] : false;
 
     if (is_array($forum_settings) && isset($forum_settings[$setting_name])) {
 

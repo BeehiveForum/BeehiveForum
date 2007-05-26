@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: confirm_email.php,v 1.15 2007-05-26 15:13:31 decoyduck Exp $ */
+/* $Id: confirm_email.php,v 1.16 2007-05-26 17:36:55 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -100,20 +100,18 @@ if (!isset($uid) || !isset($key)) {
     exit;
 }
 
-$target_frame = (isset($frame_top_target) && strlen($frame_top_target) > 0) ? $frame_top_target : '_top';
-
 if ($user = user_get_password($uid, $key)) {
 
     if (perm_user_cancel_email_confirmation($uid)) {
        
         html_draw_top();
-        html_display_msg($lang['emailconfirmation'], $lang['emailconfirmationcomplete'], 'index.php', 'post', array('submit' => $lang['continue']), false, $target_frame, 'center');
+        html_display_msg($lang['emailconfirmation'], $lang['emailconfirmationcomplete'], 'index.php', 'post', array('submit' => $lang['continue']), false, $frame_top_target, 'center');
         html_draw_bottom();
 
     }else {
 
         html_draw_top();
-        html_display_msg($lang['emailconfirmation'], $lang['emailconfirmationfailed'], 'index.php', 'post', array('submit' => $lang['continue']), false, $target_frame, 'center');
+        html_display_msg($lang['emailconfirmation'], $lang['emailconfirmationfailed'], 'index.php', 'post', array('submit' => $lang['continue']), false, $frame_top_target, 'center');
         html_draw_bottom();
     }
 

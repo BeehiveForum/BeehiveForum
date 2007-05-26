@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.85 2007-03-17 15:26:19 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.86 2007-05-26 17:36:56 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -57,7 +57,7 @@ error_reporting(E_ALL);
 
 function bh_error_handler($errno, $errstr, $errfile, $errline)
 {
-    global $show_friendly_errors;
+    $show_friendly_errors = (isset($GLOBALS['show_friendly_errors'])) ? $GLOBALS['show_friendly_errors'] : false; 
 
     // Bad Coding Practises Alert!!
     // We're going to ignore any E_STRICT error messages

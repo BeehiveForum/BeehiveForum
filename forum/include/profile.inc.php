@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.72 2007-05-25 23:45:00 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.73 2007-05-27 17:42:44 decoyduck Exp $ */
 
 /**
 * Functions relating to profiles
@@ -846,12 +846,20 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
 
     // Named column NULL filtering
 
-    $named_column_null_filter_array = array('POST_COUNT'      => '(USER_TRACK.POST_COUNT IS NOT NULL AND USER_TRACK.POST_COUNT > 0)',
+    $column_null_filter_having_array = array('POST_COUNT'      => '(POST_COUNT IS NOT NULL AND LENGTH(POST_COUNT) > 0)',
+                                             'LAST_VISIT'      => '(LAST_VISIT IS NOT NULL AND LENGTH(LAST_VISIT) > 0)',
+                                             'REGISTERED'      => '(REGISTERED IS NOT NULL AND LENGTH(REGISTERED) > 0)',
+                                             'USER_TIME_BEST'  => '(USER_TIME_BEST IS NOT NULL AND LENGTH(USER_TIME_BEST) > 0)',
+                                             'USER_TIME_TOTAL' => '(USER_TIME_TOTAL IS NOT NULL AND LENGTH(USER_TIME_TOTAL) > 0)',
+                                             'DOB'             => '(DOB IS NOT NULL AND LENGTH(DOB) > 0)',
+                                             'AGE'             => '(AGE IS NOT NULL AND LENGTH(AGE) > 0)');
+
+    $column_null_filter_where_array = array('POST_COUNT'      => '(USER_TRACK.POST_COUNT IS NOT NULL AND USER_TRACK.POST_COUNT > 0)',
                                             'LAST_VISIT'      => '(VISITOR_LOG_TIME.LAST_LOGON IS NOT NULL AND UNIX_TIMESTAMP(VISITOR_LOG_TIME.LAST_LOGON) > 0)',
                                             'REGISTERED'      => '(USER.REGISTERED IS NOT NULL AND UNIX_TIMESTAMP(USER.REGISTERED) > 0)',
                                             'USER_TIME_BEST'  => '(USER_TRACK.USER_TIME_BEST IS NOT NULL AND UNIX_TIMESTAMP(USER_TRACK.USER_TIME_BEST) > 0)',
                                             'USER_TIME_TOTAL' => '(USER_TRACK.USER_TIME_TOTAL IS NOT NULL AND UNIX_TIMESTAMP(USER_TRACK.USER_TIME_TOTAL) > 0)',
-                                            'DOB'             => '(USER_PREFS.DOB_DISPLAY > 1 AND UNIX_TIMESTAMP(USER_PREFS_DOB.DOB) > 0)',
+                                            'DOB'             => '(USER_PREFS_DOB.DOB_DISPLAY > 1 AND UNIX_TIMESTAMP(USER_PREFS_DOB.DOB) > 0)',
                                             'AGE'             => '(USER_PREFS_DOB.DOB_DISPLAY = 1 OR USER_PREFS_DOB.DOB_DISPLAY = 2)');
 
     // Main query.
@@ -951,7 +959,7 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
 
     // Are we filtering the results by a LOGON / NICKNAME
 
-    $where_query_array = array();
+    $where_query_array = array("VISITOR_LOG.FORUM = '$forum_fid'");
 
     if (($user_search !== false) && strlen(trim($user_search)) > 0) {
 
@@ -986,8 +994,8 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
 
             }else {
 
-                $having_query_array[] = $named_column_null_filter_array[$column];
-                $where_count_array[]  = $named_column_null_filter_array[$column];
+                $having_query_array[] = $column_null_filter_having_array[$column];
+                $where_count_array[]  = $column_null_filter_where_array[$column];
             }
         }
     }

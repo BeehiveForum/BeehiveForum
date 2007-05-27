@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.97 2007-05-25 23:45:00 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.98 2007-05-27 17:42:44 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -431,21 +431,28 @@ function form_quick_button($href, $label, $var_array = false, $target = "_self")
 // a blank option in each box for backwards compatibility with 0.3 and below,
 // where the DOB was not required information
 
-function form_dob_dropdowns($dob_year, $dob_month, $dob_day)
+function form_dob_dropdowns($dob_year, $dob_month, $dob_day, $show_blank = true, $custom_html = "", $class = "bhselect")
 {
     $lang = load_language_file();
 
-    $birthday_days = range(0, 31); $birthday_days[0] = '&nbsp;';
-    $birthday_months = array_merge(array(0 => '&nbsp;'), $lang['month']);
+    if ($show_blank) {
 
-    $birthday_years = array_flip(array_merge(array('&nbsp;' => ''), range(1900, date('Y', mktime()))));
+        $birthday_days = range(0, 31); $birthday_days[0] = '&nbsp;';
+        $birthday_months = array_merge(array(0 => '&nbsp;'), $lang['month']);
+        $birthday_years = array_flip(array_merge(array('&nbsp;' => ''), range(1900, date('Y', mktime()))));
+
+    }else {
+
+        $birthday_days = range(1, 31);
+        $birthday_months = $lang['month'];
+        $birthday_years = array_flip(range(1900, date('Y', mktime())));
+    }
+
     array_walk($birthday_years, create_function('&$item, $key', 'if (is_numeric($key)) $item = $key;'));
 
-    $output = form_dropdown_array("dob_day", $birthday_days, $dob_day);
-    $output.= "&nbsp;";
-    $output.= form_dropdown_array("dob_month", $birthday_months, $dob_month);
-    $output.= "&nbsp;";
-    $output.= form_dropdown_array("dob_year", $birthday_years, $dob_year);
+    $output = form_dropdown_array("dob_day", $birthday_days, $dob_day, $custom_html, $class). "&nbsp;";
+    $output.= form_dropdown_array("dob_month", $birthday_months, $dob_month, $custom_html, $class). "&nbsp;";
+    $output.= form_dropdown_array("dob_year", $birthday_years, $dob_year, $custom_html, $class). "&nbsp;";
 
     return $output;
 }
@@ -474,11 +481,9 @@ function form_date_dropdowns($year = 0, $month = 0, $day = 0, $prefix = false, $
     $days = range(0, 31); $days[0] = '&nbsp;';
     $months = array_merge(array(0 => '&nbsp;'), $lang['month_short']);
 
-    $output = form_dropdown_array("{$prefix}day", $days, $day);
-    $output.= "&nbsp;";
-    $output.= form_dropdown_array("{$prefix}month", $months, $month);
-    $output.= "&nbsp;";
-    $output.= form_dropdown_array("{$prefix}year", $years, $year);
+    $output = form_dropdown_array("{$prefix}day", $days, $day). "&nbsp;";
+    $output.= form_dropdown_array("{$prefix}month", $months, $month). "&nbsp;";
+    $output.= form_dropdown_array("{$prefix}year", $years, $year). "&nbsp;";
 
     return $output;
 }

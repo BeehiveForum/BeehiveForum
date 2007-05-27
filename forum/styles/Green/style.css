@@ -536,9 +536,10 @@ a {
 .admin_startpage_textarea, .dictionary_word_display,
 .dictionary_best_selection, .dictionary_change_to,
 .post_folder_dropdown, .thread_title, .post_content,
-.signature_content, .edit_signature_content, 
-.to_uid_dropdown, .recipient_dropdown,
-.recent_user_dropdown, .user_in_thread_dropdown {
+.signature_content, .edit_signature_content, .to_uid_dropdown,
+.recipient_dropdown, .recent_user_dropdown,
+.user_in_thread_dropdown, .user_pref_field, 
+.user_pref_dob_dropdown, .user_pref_dropdown {
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 9pt;
     color: #000000;
@@ -1099,21 +1100,13 @@ a {
     text-align: center;
 }
 
-.image_resize_container {
-    border: 0px;
-    border-collapse: collapse;
-}
-
 .image_resize_text {
     border: 1px dashed #000000;
-    height: 30px;
+    height: 25px;
     background-image: url('../../images/warningbg.png');
     font-size: 8pt;
     cursor: pointer;
-}
-
-.image_resize_image {
-    border: 0px;
+    overflow: hidden;
 }
 
 .image_resize_icon {
@@ -1123,4 +1116,17 @@ a {
 
 .profile_browse_close {
     vertical-align: middle;
+}
+
+.user_pref_field {
+    width: 298px;
+}
+
+.user_pref_dropdown {
+    width: 302px;
+}
+
+.user_pref_dob_dropdown {
+    width: 97px;
+    margin-right: 1px;
 }

@@ -535,9 +535,10 @@ a {
 .admin_startpage_textarea, .dictionary_word_display,
 .dictionary_best_selection, .dictionary_change_to,
 .post_folder_dropdown, .thread_title, .post_content,
-.signature_content, .edit_signature_content, .user_pref_dropdown,
-.to_uid_dropdown, .recipient_dropdown, .user_pref_field,
-.recent_user_dropdown, .user_in_thread_dropdown {
+.signature_content, .edit_signature_content, .to_uid_dropdown,
+.recipient_dropdown, .recent_user_dropdown,
+.user_in_thread_dropdown, .user_pref_field, 
+.user_pref_dob_dropdown, .user_pref_dropdown {
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 9pt;
     color: #000000;
@@ -1123,9 +1124,14 @@ a {
 }
 
 .user_pref_field {
-    width: 288px;
+    width: 298px;
 }
 
 .user_pref_dropdown {
-    width: 292px;
+    width: 302px;
+}
+
+.user_pref_dob_dropdown {
+    width: 97px;
+    margin-right: 1px;
 }

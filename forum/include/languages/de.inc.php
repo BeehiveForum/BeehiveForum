@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.30 2007-05-06 20:33:43 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.31 2007-05-27 21:09:39 decoyduck Exp $ */
 
 // German language file
 
@@ -1270,7 +1270,7 @@ $lang['usewordfilter'] = "Wortfilter aktivieren.";
 $lang['forceadminwordfilter'] = "Nutze Admin Wortfilter bei allen Benutzern (inkl. Gast)";
 $lang['timezone'] = "Zeitzone";
 $lang['language'] = "Sprache";
-$lang['emailsettings'] = "Email- und Kontakteinstellungen";
+$lang['emailsettings'] = "Email und Kontakteinstellungen";
 $lang['forumanonymity'] = "Forum-Anonymitaetseinstellungen";
 $lang['birthdayanddateofbirth'] = "Geburtstag und Geb-Datumsanzeige";
 $lang['includeadminfilter'] = "Admin-Wortfilter in meine Liste mit aufnehmen.";

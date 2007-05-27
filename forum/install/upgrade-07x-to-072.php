@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-07x-to-072.php,v 1.36 2007-05-19 14:07:53 decoyduck Exp $ */
+/* $Id: upgrade-07x-to-072.php,v 1.37 2007-05-27 15:49:34 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-07x-to-072.php") {
 
@@ -239,6 +239,33 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     $sql = "UPDATE {$forum_webtag}_USER_PREFS SET ANON_LOGON = 1 ";
     $sql.= "WHERE ANON_LOGON = 'Y'";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE {$forum_webtag}_USER_PREFS ADD ";
+    $sql.= "PIC_AID CHAR(32) NOT NULL DEFAULT ''";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE {$forum_webtag}_USER_PREFS ADD ";
+    $sql.= "AVATAR_URL VARCHAR(255) NOT NULL DEFAULT ''";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE {$forum_webtag}_USER_PREFS ADD ";
+    $sql.= "AVATAR_AID CHAR(32) NOT NULL DEFAULT ''";
 
     if (!$result = @db_query($sql, $db_install)) {
 
@@ -529,6 +556,30 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
+$sql = "ALTER TABLE USER_PREFS ADD PIC_AID CHAR(32) NOT NULL DEFAULT ''";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE USER_PREFS ADD AVATAR_URL VARCHAR(255) NOT NULL DEFAULT ''";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE USER_PREFS ADD AVATAR_AID CHAR(32) NOT NULL DEFAULT ''";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
 // Referer tracking for visitors.
 
 $sql = "ALTER TABLE VISITOR_LOG ADD REFERER VARCHAR(255) DEFAULT NULL";
@@ -750,6 +801,19 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
+// Change the USER_PREF.TIMEZONE data type to an integer
+// as we no longer actually store the offset there rather
+// the TZID of the entry in the TIMEZONES table.
+
+$sql = "ALTER TABLE USER_PREFS CHANGE TIMEZONE ";
+$sql.= "TIMEZONE INT(11) NOT NULL DEFAULT '27'";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
 // Timezones and their DST settings (TZID => array (GMT_OFFSET, DST_OFFSET));
 
 $timezones_array = array(1  => array(-12, 0),  2  => array(-11, 0),  3  => array(-10, 0),
@@ -815,19 +879,6 @@ foreach ($timezones_array as $tzid => $tz_data) {
         $valid = false;
         return;
     }
-}
-
-// Change the USER_PREF.TIMEZONE data type to an integer
-// as we no longer actually store the offset there rather
-// the TZID of the entry in the TIMEZONES table.
-
-$sql = "ALTER TABLE USER_PREFS CHANGE TIMEZONE ";
-$sql.= "TIMEZONE INT(11) NOT NULL DEFAULT '27'";
-
-if (!$result = @db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
 }
 
 // New Word Filter table format to allow switching on
@@ -927,7 +978,7 @@ if (!$result = @db_query($sql, $db_install)) {
 // Copy the data from the old VISITOR_LOG into our new table.
 
 $sql = "INSERT INTO $visitor_log_new (UID, FORUM, LAST_LOGON, IPADDRESS, REFERER, SID) ";
-$sql.= "SELECT UID, FROUM, LAST_LOGON, IPADDRESS, REFERER, SID FROM VISITOR_LOG ";
+$sql.= "SELECT UID, FORUM, LAST_LOGON, IPADDRESS, REFERER, SID FROM VISITOR_LOG ";
 
 if (!$result = @db_query($sql, $db_install)) {
 

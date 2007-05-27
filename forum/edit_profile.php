@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_profile.php,v 1.74 2007-05-25 23:45:00 decoyduck Exp $ */
+/* $Id: edit_profile.php,v 1.75 2007-05-27 21:09:39 decoyduck Exp $ */
 
 /**
 * Displays the edit profile page, and processes sumbissions
@@ -274,13 +274,15 @@ if ($profile_items_array = profile_get_user_values($uid)) {
                 echo "                  <td align=\"left\" class=\"posthead\">\n";
                 echo "                    <table class=\"posthead\" width=\"100%\">\n";
                 echo "                      <tr>\n";
-                echo "                        <td align=\"left\" class=\"subhead\" colspan=\"4\">{$profile_item['SECTION_NAME']}</td>\n";
+                echo "                        <td align=\"left\" class=\"subhead\" colspan=\"3\">{$profile_item['SECTION_NAME']}</td>\n";
+                echo "                        <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
                 echo "                      </tr>\n";
 
             }else {
                 
                 echo "                      <tr>\n";
-                echo "                        <td align=\"left\" class=\"subhead\" colspan=\"4\">{$profile_item['SECTION_NAME']}</td>\n";
+                echo "                        <td align=\"left\" class=\"subhead\" colspan=\"3\">{$profile_item['SECTION_NAME']}</td>\n";
+                echo "                        <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
                 echo "                      </tr>\n";
             }
         }
@@ -297,7 +299,7 @@ if ($profile_items_array = profile_get_user_values($uid)) {
 
                 echo "                      <tr>\n";
                 echo "                        <td align=\"left\">&nbsp;</td>\n";
-                echo "                        <td align=\"left\" valign=\"top\" width=\"175\">$field_name</td>\n";
+                echo "                        <td align=\"left\" valign=\"top\" width=\"150\" nowrap=\"nowrap\">$field_name</td>\n";
 
                 if ($profile_item['TYPE'] == PROFILE_ITEM_RADIO) {
                     echo "                        <td align=\"left\" valign=\"top\">", form_radio_array("t_entry[{$profile_item['PIID']}]", $field_values, $profile_item['ENTRY']), "</td>\n";
@@ -306,7 +308,7 @@ if ($profile_items_array = profile_get_user_values($uid)) {
                 }
 
                 if ($admin_edit === false) {
-                    echo "                        <td align=\"right\" valign=\"top\">", form_checkbox("t_entry_private[{$profile_item['PIID']}]", "Y", $lang['friendsonly'], (isset($profile_item['PRIVACY']) && $profile_item['PRIVACY'] == PROFILE_ITEM_PRIVATE)), "&nbsp;&nbsp;</td>\n";
+                    echo "                        <td align=\"right\" valign=\"top\">", form_checkbox("t_entry_private[{$profile_item['PIID']}]", "Y", '', (isset($profile_item['PRIVACY']) && $profile_item['PRIVACY'] == PROFILE_ITEM_PRIVATE), "title=\"{$lang['friendsonly']}\""), "</td>\n";
                 }else {               
                     echo "                        <td align=\"left\" valign=\"top\">&nbsp;</td>\n";
                 }
@@ -318,11 +320,11 @@ if ($profile_items_array = profile_get_user_values($uid)) {
 
             echo "                      <tr>\n";
             echo "                        <td align=\"left\">&nbsp;</td>\n";
-            echo "                        <td align=\"left\" valign=\"top\" width=\"175\">{$profile_item['ITEM_NAME']}</td>\n";
+            echo "                        <td align=\"left\" valign=\"top\" width=\"150\" nowrap=\"nowrap\">{$profile_item['ITEM_NAME']}</td>\n";
             echo "                        <td align=\"left\" valign=\"top\">", form_textarea("t_entry[{$profile_item['PIID']}]", _htmlentities($profile_item['ENTRY']), 4, 42), "</td>\n";
 
             if ($admin_edit === false) {
-                echo "                        <td align=\"right\" valign=\"top\">", form_checkbox("t_entry_private[{$profile_item['PIID']}]", "Y", $lang['friendsonly'], (isset($profile_item['PRIVACY']) && $profile_item['PRIVACY'] == PROFILE_ITEM_PRIVATE)), "&nbsp;&nbsp;</td>\n";
+                echo "                        <td align=\"right\" valign=\"top\">", form_checkbox("t_entry_private[{$profile_item['PIID']}]", "Y", '', (isset($profile_item['PRIVACY']) && $profile_item['PRIVACY'] == PROFILE_ITEM_PRIVATE), "title=\"{$lang['friendsonly']}\""), "</td>\n";
             }else {
                 echo "                        <td align=\"left\" valign=\"top\">&nbsp;</td>\n";
             }
@@ -335,11 +337,11 @@ if ($profile_items_array = profile_get_user_values($uid)) {
 
             echo "                      <tr>\n";
             echo "                        <td align=\"left\">&nbsp;</td>\n";
-            echo "                        <td align=\"left\" valign=\"top\" width=\"175\">{$profile_item['ITEM_NAME']}</td>\n";
+            echo "                        <td align=\"left\" valign=\"top\" width=\"150\" nowrap=\"nowrap\">{$profile_item['ITEM_NAME']}</td>\n";
             echo "                        <td align=\"left\" valign=\"top\">", form_input_text("t_entry[{$profile_item['PIID']}]", $profile_item['ENTRY'], $text_width[$profile_item['TYPE']], 255), "</td>\n";
 
             if ($admin_edit === false) {
-                echo "                        <td align=\"right\" valign=\"top\">", form_checkbox("t_entry_private[{$profile_item['PIID']}]", "Y", $lang['friendsonly'], (isset($profile_item['PRIVACY']) && $profile_item['PRIVACY'] == PROFILE_ITEM_PRIVATE)), "&nbsp;&nbsp;</td>\n";
+                echo "                        <td align=\"right\" valign=\"top\">", form_checkbox("t_entry_private[{$profile_item['PIID']}]", "Y", '', (isset($profile_item['PRIVACY']) && $profile_item['PRIVACY'] == PROFILE_ITEM_PRIVATE), "title=\"{$lang['friendsonly']}\""), "</td>\n";
             }else {   
                 echo "                        <td align=\"left\" valign=\"top\">&nbsp;</td>\n";
             }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.178 2007-05-23 23:48:06 decoyduck Exp $ */
+/* $Id: search.php,v 1.179 2007-05-28 18:32:38 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -470,16 +470,20 @@ if (isset($search_success) && $search_success === true && isset($offset)) {
                     }
                 }
 
-                // Apply word filter to content.
-                
-                $message['CONTENT'] = word_filter_add_ob_tags($message['CONTENT']);
-
                 if ((thread_is_poll($search_result['TID']) && $search_result['PID'] == 1) || strlen($message['CONTENT']) < 1) {
+
+                    // Apply word filter to content.
+                
+                    $message['CONTENT'] = word_filter_add_ob_tags($message['CONTENT']);
 
                     echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;hightlight=yes\" target=\"right\"><b>{$message['TITLE']}</b></a><br />";
                     echo "<span class=\"smalltext\"><b>{$lang['from']}:</b> ", word_filter_add_ob_tags(format_user_name($search_result['FROM_LOGON'], $search_result['FROM_NICKNAME'])), ", ", format_time($search_result['CREATED'], 1), "</span></p></li>\n";
                     
                 }else {
+
+                    // Apply word filter to content.
+                
+                    $message['CONTENT'] = word_filter_add_ob_tags($message['CONTENT']);
 
                     echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;highlight=yes\" target=\"right\"><b>{$message['TITLE']}</b></a><br />";
                     echo "{$message['CONTENT']}<br /><span class=\"smalltext\"><b>{$lang['from']}:</b> ", word_filter_add_ob_tags(format_user_name($search_result['FROM_LOGON'], $search_result['FROM_NICKNAME'])), ", ", format_time($search_result['CREATED'], 1), "</span></p></li>\n";

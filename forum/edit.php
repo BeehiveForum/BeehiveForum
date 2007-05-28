@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.227 2007-05-23 23:48:05 decoyduck Exp $ */
+/* $Id: edit.php,v 1.228 2007-05-28 14:01:14 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -456,8 +456,8 @@ if (isset($_POST['preview'])) {
         $error_html = "<h2>{$lang['cannotattachfilesinfolder']}</h2>";
         $valid = false;
     }
-
-    if ((perm_get_user_permissions($uid) & USER_PERM_PILLORIED) || ($uid != $edit_message['FROM_UID'] && !(perm_get_user_permissions($edit_message['FROM_UID']) & USER_PERM_PILLORIED)) || !bh_session_check_perm(USER_PERM_POST_EDIT, $t_fid) || ($post_edit_time > 0 && (time() - $edit_message['CREATED']) >= ($post_edit_time * HOUR_IN_SECONDS)) || forum_get_setting('allow_post_editing', 'N') || (($uid != $edit_message['FROM_UID']) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid))) {
+    
+    if ((forum_get_setting('allow_post_editing', 'N') || (($uid != $edit_message['FROM_UID']) && !(perm_get_user_permissions($edit_message['FROM_UID']) & USER_PERM_PILLORIED)) || (perm_get_user_permissions($uid) & USER_PERM_PILLORIED) || ($post_edit_time > 0 && (time() - $edit_message['CREATED']) >= ($post_edit_time * HOUR_IN_SECONDS))) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
     
         html_draw_top();
         html_error_msg($lang['nopermissiontoedit'], 'discussion.php', 'get', array('back' => $lang['back']), array('msg' => $edit_msg));
@@ -541,7 +541,7 @@ if (isset($_POST['preview'])) {
 
         if ($edit_message['CONTENT'] = message_get_content($tid, $pid)) {
 
-            if ((perm_get_user_permissions($uid) & USER_PERM_PILLORIED) || ($uid != $edit_message['FROM_UID'] && !(perm_get_user_permissions($edit_message['FROM_UID']) & USER_PERM_PILLORIED)) || !bh_session_check_perm(USER_PERM_POST_EDIT, $t_fid) || ($post_edit_time > 0 && (time() - $edit_message['CREATED']) >= ($post_edit_time * HOUR_IN_SECONDS)) || forum_get_setting('allow_post_editing', 'N') || (($uid != $edit_message['FROM_UID']) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid))) {
+            if ((forum_get_setting('allow_post_editing', 'N') || (($uid != $edit_message['FROM_UID']) && !(perm_get_user_permissions($edit_message['FROM_UID']) & USER_PERM_PILLORIED)) || (perm_get_user_permissions($uid) & USER_PERM_PILLORIED) || ($post_edit_time > 0 && (time() - $edit_message['CREATED']) >= ($post_edit_time * HOUR_IN_SECONDS))) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
                 html_draw_top();
                 html_error_msg($lang['nopermissiontoedit'], 'discussion.php', 'get', array('back' => $lang['back']), array('msg' => $edit_msg));

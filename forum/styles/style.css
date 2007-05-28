@@ -624,6 +624,11 @@ a {
     padding: 3px;
 }
 
+.spoiler * {
+    color: #EEEEEE;
+    text-decoration: none;
+}
+
 .spoiler_reveal {
     font-family: verdana, arial, helvetica, sans-serif;
     border: 1px solid #CCCCCC;

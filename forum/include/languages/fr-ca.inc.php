@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.55 2007-05-06 20:33:43 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.56 2007-05-29 19:41:43 decoyduck Exp $ */
 
 // French Canadian language file
 
@@ -882,22 +882,22 @@ $lang['hasinvalidemailaddress'] = "a une adresse courriel invalide";
 // Message nofificaiton ------------------------------------------------
 
 $lang['msgnotification_subject'] = "Confirmation de message de %s";
-$lang['msgnotificationemail'] = "%s a posté un message à votre attention sur %s\n\nLe sujet est: %s\n\nPour lire ce message et les autres dans le même fil de discussion, allez à:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: Si vous désirez ne plus recevoir de confirmations de message par courriel du forum messages postés à votre attention, allez à: %s cliquer sur Mes Contrôles, ensuite Courriel et Confidentialité, déselectionner le courriel Case à cocher Confirmation et appuyer Soumettre.";
+$lang['msgnotificationemail'] = "Salut %s.\n\n%s a posté un message à votre attention sur %s\n\nLe sujet est: %s\n\nPour lire ce message et les autres dans le même fil de discussion, allez à:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: Si vous désirez ne plus recevoir de confirmations de message par courriel du forum messages postés à votre attention, allez à: %s cliquer sur Mes Contrôles, ensuite Courriel et Confidentialité, déselectionner le courriel Case à cocher Confirmation et appuyer Soumettre.";
 
 // Thread Subscription notification ------------------------------------
 
 $lang['subnotification_subject'] = "Confirmation d'abonnement de %s";
-$lang['subnotification'] = "%s a posté un message dans un fil de discussion auquel vous vous êtes abonné sur %s\n\nLe sujet est: %s\n\nPour lire ce message et les autres dans le même fil de discussion, allez à:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: Si vous désirez ne plus recevoir de confirmations de message par courriel de nouveau messages dans ce fil de discussion, allez à: %s et ajuster votre Niveau d'intérêt au bas de la page.";
+$lang['subnotification'] = "Salut %s.\n\n%s a posté un message dans un fil de discussion auquel vous vous êtes abonné sur %s\n\nLe sujet est: %s\n\nPour lire ce message et les autres dans le même fil de discussion, allez à:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: Si vous désirez ne plus recevoir de confirmations de message par courriel de nouveau messages dans ce fil de discussion, allez à: %s et ajuster votre Niveau d'intérêt au bas de la page.";
 
 // PM notification -----------------------------------------------------
 
 $lang['pmnotification_subject'] = "Confirmation de MP de %s";
-$lang['pmnotification']  = "%s vous a posté un MP sur %s\n\nLe sujet est: %s\n\nPour lire ce message, allez à:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: Si vous désirez ne plus recevoir de confirmations par courriel de nouveau MP messages postés à votre attention, allez à: %s cliquer sur Mes Contrôles, ensuite Courriel et Confidentialité, déselectionner le MP Case à cocher Confirmation et appuyer Soumettre.";
+$lang['pmnotification']  = "Salut %s.\n\n%s vous a posté un MP sur %s\n\nLe sujet est: %s\n\nPour lire ce message, allez à:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: Si vous désirez ne plus recevoir de confirmations par courriel de nouveau MP messages postés à votre attention, allez à: %s cliquer sur Mes Contrôles, ensuite Courriel et Confidentialité, déselectionner le MP Case à cocher Confirmation et appuyer Soumettre.";
 
 // Password change notification ----------------------------------------
 
 $lang['passwdchangenotification'] = "Confirmation de changement de mot de passe de %s";
-$lang['pwchangeemail'] = "Ceci est un courriel de confirmation pour vous informer que votre mot de passe sur %s a été changé.\n\nVotre nouveau mot de passe est: %s Il a été changé par: %sSi vous avez reçu ce courriel par erreur ou n'étiez pas en attente de un changement à votre mot de passe, veuillez contacter le propriétaire du forum ou un modérateur sur %s dans les plus brefs délais pour corriger la situation.";
+$lang['pwchangeemail'] = "Salut %s.\n\nCeci est un courriel de confirmation pour vous informer que votre mot de passe sur %s a été changé.\n\nVotre nouveau mot de passe est: %s Il a été changé par: %sSi vous avez reçu ce courriel par erreur ou n'étiez pas en attente de un changement à votre mot de passe, veuillez contacter le propriétaire du forum ou un modérateur sur %s dans les plus brefs délais pour corriger la situation.";
 
 // Email confirmation notification -------------------------------------
 
@@ -906,7 +906,7 @@ $lang['confirmemail'] = "Salut %s.\n\nVous avez récemment créé un nouveau compte
 
 // Forgotten password notification -------------------------------------
 
-$lang['forgotpwemail'] = "Vous avez demandé ce courriel de %s parce que vous avez oublié votre mot de passe.\n\nCliquer le lien ci-dessous (ou le copier et coller dans votre navigateur web) pour réinitialiser votre mot de passe:\n\n%s";
+$lang['forgotpwemail'] = "Salut %s.\n\nVous avez demandé ce courriel de %s parce que vous avez oublié votre mot de passe.\n\nCliquer le lien ci-dessous (ou le copier et coller dans votre navigateur web) pour réinitialiser votre mot de passe:\n\n%s";
 
 // Forgotten password form.
 

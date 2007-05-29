@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.31 2007-05-27 21:09:39 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.32 2007-05-29 19:41:43 decoyduck Exp $ */
 
 // German language file
 
@@ -882,31 +882,31 @@ $lang['hasinvalidemailaddress'] = "hat ungueltige eMail-Adresse";
 // Message nofificaiton ------------------------------------------------
 
 $lang['msgnotification_subject'] = "Nachricht Mitteilung von %s";
-$lang['msgnotificationemail'] = "%s schickte ein nachricht an dich auf %s\n\nBetreff: %s\n\nUm die Nachricht zu lesen und andere in der gleichen Diskussion, gehe zu:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nMerke: Wenn Du keine Nachrichten-Mitteilungen vom Forum bekommen moechtest Nachrichten wurden an dich gesendet, gehe zu: %s klick auf Meine Einstellungen, dann eMail und Privat, entferne Haken bei Mailmitteilung Mitteilung checkbox und klicke Senden.";
+$lang['msgnotificationemail'] = "Hallo %s,\n\n%s schickte ein nachricht an dich auf %s\n\nBetreff: %s\n\nUm die Nachricht zu lesen und andere in der gleichen Diskussion, gehe zu:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nMerke: Wenn Du keine Nachrichten-Mitteilungen vom Forum bekommen moechtest Nachrichten wurden an dich gesendet, gehe zu: %s klick auf Meine Einstellungen, dann eMail und Privat, entferne Haken bei Mailmitteilung Mitteilung checkbox und klicke Senden.";
 
 // Thread Subscription notification ------------------------------------
 
 $lang['subnotification_subject'] = "Subskription Mitteilung von %s";
-$lang['subnotification'] = "%s schickte eine Nachricht in einem Eintrag den Du aktiviert hast %s\n\nBetreff: %s\n\nUm diese und andere betreffende Nachrichten zu lesen, gehe zu:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nMerke: Wenn Du keine weiteren eMail-Mitteilungen bei neuen eintraegen in diesem Bereich wuenschst, gehe zu: %s und aendere den Interesse-Level am Fuss der Seite.";
+$lang['subnotification'] = "Hallo %s,\n\n%s schickte eine Nachricht in einem Eintrag den Du aktiviert hast %s\n\nBetreff: %s\n\nUm diese und andere betreffende Nachrichten zu lesen, gehe zu:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nMerke: Wenn Du keine weiteren eMail-Mitteilungen bei neuen eintraegen in diesem Bereich wuenschst, gehe zu: %s und aendere den Interesse-Level am Fuss der Seite.";
 
 // PM notification -----------------------------------------------------
 
 $lang['pmnotification_subject'] = "PM Mitteilung von %s";
-$lang['pmnotification'] = "%s schickte eine PM an Dich auf\n\nBetreff: %s\n\nUm die Nachricht zu lesen, gehe zu:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nMerke: Wenn Du keine weiteren eMail-Mitteilungen bei neuen PMs moechtest gehe zu: %s klick auf Meine Einstellungen, dann eMail und Privat, deaktiviere PM Mitteilungscheckbox und klick auf Absenden.";
+$lang['pmnotification'] = "Hallo %s,\n\n%s schickte eine PM an Dich auf\n\nBetreff: %s\n\nUm die Nachricht zu lesen, gehe zu:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nMerke: Wenn Du keine weiteren eMail-Mitteilungen bei neuen PMs moechtest gehe zu: %s klick auf Meine Einstellungen, dann eMail und Privat, deaktiviere PM Mitteilungscheckbox und klick auf Absenden.";
 
 // Password change notification ----------------------------------------
 
 $lang['passwdchangenotification'] = "Passwort Aenderungsmitteilung von %s";
-$lang['pwchangeemail'] = "Diese Mitteilungsmail moechte Dich darueber informieren dass dein Passwort auf %s geaendert wurde.\n\nEs wurde geaendert auf: %s von: %s\n\nFalls eine Aenderung nicht von Dir gewuenscht/erwartet war sprich einen Moderator oder Admin im Forum darauf an %s um den Fehler umgehend zu korrigieren.";
+$lang['pwchangeemail'] = "Hallo %s,\n\nDiese Mitteilungsmail moechte Dich darueber informieren dass dein Passwort auf %s geaendert wurde.\n\nEs wurde geaendert auf: %s von: %s\n\nFalls eine Aenderung nicht von Dir gewuenscht/erwartet war sprich einen Moderator oder Admin im Forum darauf an %s um den Fehler umgehend zu korrigieren.";
 
 // Email confirmation notification -------------------------------------
 
 $lang['emailconfirmationrequired'] = "Email-Bestaetigung erforderlich";
-$lang['confirmemail'] = "Hallo %s,\n\n Du hast kuerzlich ein neues Benutzerkonto angelegt auf %s\nBevor Du anfangen kannst eigene Posts zu erstellen benoetigen wir die Bestaetigung Deiner eMail-Adresse. Keine Angst, das ist ganz einfach. Du musst nur auf den Link unten klicken (oder kopier ihn und fueg ihn in deinem Browser ein):\n\n%s\n\nWenn die Bestaetigung durchgegangen ist kannst Du Dich sofort anmelden und posten. Wenn Du kein Konto angelegt hast auf dann entschuldige diesen Fehler und leite diese Mail weiter an %s so dass der Ursprung dieser Mail ermittelt werden kann.";
+$lang['confirmemail'] = "Hallo %s,\n\nDu hast kuerzlich ein neues Benutzerkonto angelegt auf %s\nBevor Du anfangen kannst eigene Posts zu erstellen benoetigen wir die Bestaetigung Deiner eMail-Adresse. Keine Angst, das ist ganz einfach. Du musst nur auf den Link unten klicken (oder kopier ihn und fueg ihn in deinem Browser ein):\n\n%s\n\nWenn die Bestaetigung durchgegangen ist kannst Du Dich sofort anmelden und posten. Wenn Du kein Konto angelegt hast auf dann entschuldige diesen Fehler und leite diese Mail weiter an %s so dass der Ursprung dieser Mail ermittelt werden kann.";
 
 // Forgotten password notification -------------------------------------
 
-$lang['forgotpwemail'] = "Du erwartest diese eMail von %s da Du wohl Dein Passwort vergessen hast.\n\nKlick auf den unten folgenden Link (oder kopier ihn und fueg ihn in Deinen Brwoser ein) um Dein Passwort zurueckzusetzen:\n\n%s";
+$lang['forgotpwemail'] = "Hallo %s,\n\nDu erwartest diese eMail von %s da Du wohl Dein Passwort vergessen hast.\n\nKlick auf den unten folgenden Link (oder kopier ihn und fueg ihn in Deinen Brwoser ein) um Dein Passwort zurueckzusetzen:\n\n%s";
 
 // Forgotten password form.
 

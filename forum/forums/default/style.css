@@ -1057,9 +1057,12 @@ a {
 }
 
 .profile_items {
-    border-collapse: collapse;
-    width: 520px;
-    margin: 10px;
+    border-color: #FFFFFF;
+    border-style: solid
+    border-top-width: 1px;
+    border-right-width: 0px;
+    border-bottom-width: 1px;
+    border-left-width: 0px;
 }
 
 .profile_item_text {

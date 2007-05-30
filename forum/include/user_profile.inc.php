@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.65 2007-05-25 23:45:01 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.66 2007-05-30 21:03:11 decoyduck Exp $ */
 
 /**
 * Functions relating to users interacting with profiles
@@ -98,7 +98,7 @@ function user_get_profile($uid)
     $sql.= "USER_PREFS_GLOBAL.ANON_LOGON AS GLOBAL_ANON_LOGON, ";
     $sql.= "UNIX_TIMESTAMP(USER_TRACK.USER_TIME_BEST) AS USER_TIME_BEST, ";
     $sql.= "UNIX_TIMESTAMP(USER_TRACK.USER_TIME_TOTAL) AS USER_TIME_TOTAL, ";
-    $sql.= "USER_PEER.RELATIONSHIP FROM USER USER ";
+    $sql.= "USER_PEER.RELATIONSHIP, SESSIONS.HASH FROM USER USER ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS_FORUM ";
     $sql.= "ON (USER_PREFS_FORUM.UID = USER.UID) ";
     $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ";
@@ -109,6 +109,7 @@ function user_get_profile($uid)
     $sql.= "AND USER_FORUM.FID = '$forum_fid') ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_TRACK USER_TRACK ";
     $sql.= "ON (USER_TRACK.UID = USER.UID) ";
+    $sql.= "LEFT JOIN SESSIONS ON (SESSIONS.UID = USER.UID) ";
     $sql.= "WHERE USER.UID = '$uid' ";
     $sql.= "GROUP BY USER.UID";
 
@@ -187,12 +188,33 @@ function user_get_profile($uid)
         }
 
         if (isset($user_profile['PEER_NICKNAME'])) {
+
             if (!is_null($user_profile['PEER_NICKNAME']) && strlen($user_profile['PEER_NICKNAME']) > 0) {
+
                 $user_profile['NICKNAME'] = $user_profile['PEER_NICKNAME'];
             }
         }
 
+        if ($anon_logon == USER_ANON_DISABLED) {
+
+            if (isset($user_profile['HASH']) && is_md5($user_profile['HASH'])) {
+
+                $user_profile['STATUS'] = $lang['useronline'];
+
+            }else {
+
+                $user_profile['STATUS'] = $lang['useroffline'];
+
+            }
+
+        }else {
+
+            $user_profile['STATUS'] = $lang['unknown'];
+        }
+
         $user_profile['POST_COUNT'] = user_get_post_count($uid);
+
+        $user_profile['LOCAL_TIME'] = user_format_local_time($user_prefs['TIMEZONE'], $user_prefs['GMT_OFFSET'], $user_prefs['DST_OFFSET'], $user_prefs['DL_SAVING']);
 
         return $user_profile;
     }
@@ -200,20 +222,38 @@ function user_get_profile($uid)
     return false;
 }
 
-function user_get_profile_entries($uid, $psid)
+function user_format_local_time($timezone_id, $gmt_offset, $dst_offset, $dl_saving)
+{
+    $lang = load_language_file();
+    
+    if ($dl_saving == "Y" && timestamp_is_dst($timezone_id, $gmt_offset)) {
+        $local_time = time() + ($gmt_offset * HOUR_IN_SECONDS) + ($dst_offset * HOUR_IN_SECONDS);
+    }else {
+        $local_time = time() + ($gmt_offset * HOUR_IN_SECONDS);
+    }
+
+    $date_string = gmdate("s i G j n Y", $local_time);
+
+    list($sec, $min, $hour, $day, $month, $year) = explode(" ", $date_string);
+
+    $month_str = $lang['month_short'][$month];
+
+    return sprintf($lang['daymonthyearhourminute'], $day, $month_str, $year, $hour, $min); // j M Y H:i
+}
+
+function user_get_profile_entries($uid)
 {
     $db_user_get_profile_entries = db_connect();
 
     if (!is_numeric($uid)) return false;
-    if (!is_numeric($psid)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
     $user_profile_array = array();
 
-    $sql = "SELECT PI.NAME, PI.TYPE, UP.ENTRY, UP.PRIVACY FROM {$table_data['PREFIX']}PROFILE_ITEM PI ";
+    $sql = "SELECT PI.PSID, PI.NAME, PI.TYPE, UP.ENTRY, UP.PRIVACY FROM {$table_data['PREFIX']}PROFILE_ITEM PI ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PROFILE UP ON (UP.PIID = PI.PIID AND UP.UID = '$uid') ";
-    $sql.= "WHERE PI.PSID = '$psid' ORDER BY PI.POSITION, PI.PIID";
+    $sql.= "ORDER BY PI.POSITION, PI.PIID";
 
     if (!$result = db_query($sql, $db_user_get_profile_entries)) return false;
 
@@ -221,7 +261,7 @@ function user_get_profile_entries($uid, $psid)
 
         while ($row = db_fetch_array($result)) {
 
-            $user_profile_array[] = $row;
+            $user_profile_array[$row['PSID']][] = $row;
         }
     }
 

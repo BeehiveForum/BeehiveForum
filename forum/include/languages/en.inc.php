@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.435 2007-05-26 22:34:08 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.436 2007-05-30 21:03:34 decoyduck Exp $ */
 
 // British English language file
 
@@ -1400,6 +1400,10 @@ $lang['profileupdated'] = "Profile updated.";
 $lang['profilesnotsetup'] = "The forum owner has not set up Profiles.";
 $lang['ignoreduser'] = "Ignored user";
 $lang['lastvisit'] = "Last Visit";
+$lang['userslocaltime'] = "User's Local Time";
+$lang['userstatus'] = "Status";
+$lang['useronline'] = "Online";
+$lang['useroffline'] = "Offline";
 $lang['totaltimeinforum'] = "Total time";
 $lang['longesttimeinforum'] = "Longest session";
 $lang['sendemail'] = "Send email";
@@ -1409,8 +1413,10 @@ $lang['age'] = "Age";
 $lang['aged'] = "aged";
 $lang['birthday'] = "Birthday";
 $lang['registered'] = "Registered";
-$lang['findusersposts'] = "Find User's Posts";
-$lang['findmyposts'] = "Find My Posts";
+$lang['findpostsmadebyuser'] = "Find Posts made by %s";
+$lang['findpostsmadebyme'] = "Find Posts made by me";
+$lang['findthreadsstartedbyme'] = "Find Threads started by Me";
+$lang['findthreadsstartedbyuser'] = "Find Threads started by %s";
 
 // Registration (register.php) -----------------------------------------
 

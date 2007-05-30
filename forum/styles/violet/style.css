@@ -1049,6 +1049,7 @@ a {
 }
 
 .profile_logon {
+    font-size: 10pt;
     color: #FFFFFF;
 }
 
@@ -1066,48 +1067,35 @@ a {
     border: 1px solid #7B537B;
 }
 
-.profile_tabs {
-    margin: 0px 0px 0px 0px;
-    padding: 0px 5px 0px 5px;
-    background-color: #7B537B;
-    color: #FFFFFF;
-}
-
 .profile_items {
     border-collapse: collapse;
-    width: 520px;
-    margin: 10px;
-    color: #FFFFFF;
+    margin: 5px;
 }
 
-.profile_item_text {
+.profile_header {
+    background-color: #7B537B;
+}
+
+.profile_footer {
+    background-color: #7B537B;
+    border-top: 1px solid #FFFFFF;
+}
+
+.profile_items_section {
+    border-top: 1px solid #FFFFFF;
+    border-bottom: 0px solid #FFFFFF;
+    padding-top: 10px;
+    padding-bottom: 5px;
+}
+
+.profile_item_name {
+    font-size: 9pt;
+}
+
+.profile_item_value {
+    font-size: 9pt;
     padding: 2px 2px 2px 10px;
     border-left: 1px solid #000000;
-    color: #FFFFFF;
-}
-
-.profile_tab {
-    border-width: 1px;
-    border-color: #000000;
-    border-style: solid;
-    background-color: #7B537B;
-    color: #FFFFFF;
-    padding: 5px;
-    text-align: center;
-}
-
-.profile_tab a {
-    color: #FFFFFF;
-}
-
-.profile_tab_selected {
-    border-width: 1px;
-    border-color: #000000;
-    border-style: solid;
-    background-color: #996699;
-    color: #FFFFFF;
-    padding: 5px;
-    text-align: center;
 }
 
 .image_resize_text {

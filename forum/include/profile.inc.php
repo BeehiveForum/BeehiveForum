@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.73 2007-05-27 17:42:44 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.74 2007-05-30 21:03:11 decoyduck Exp $ */
 
 /**
 * Functions relating to profiles
@@ -75,8 +75,7 @@ function profile_section_create($name)
 
     $name = db_escape_string($name);
 
-    $sql = "SELECT MAX(POSITION) + 1 FROM {$table_data['PREFIX']}PROFILE_SECTION ";
-    $sql.= "LIMIT 0, 1";
+    $sql = "SELECT COALESCE(MAX(POSITION), 0) + 1 FROM {$table_data['PREFIX']}PROFILE_SECTION ";
 
     if (!$result = db_query($sql, $db_profile_section_create)) return false;
 
@@ -134,7 +133,7 @@ function profile_sections_get()
 
         while($row = db_fetch_array($result)) {
 
-            $profile_sections_get[] = $row;
+            $profile_sections_get[$row['PSID']] = $row;
         }
 
         return $profile_sections_get;
@@ -295,8 +294,10 @@ function profile_item_create($psid, $name, $type)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT MAX(POSITION) + 1 FROM {$table_data['PREFIX']}PROFILE_ITEM ";
-    $sql.= "WHERE PSID = '$psid' LIMIT 0, 1";
+    $new_position = 1;
+
+    $sql = "SELECT COALESCE(MAX(POSITION), 0) + 1 FROM {$table_data['PREFIX']}PROFILE_ITEM ";
+    $sql.= "WHERE PSID = '$psid'";
 
     if (!$result = db_query($sql, $db_profile_item_create)) return false;
 

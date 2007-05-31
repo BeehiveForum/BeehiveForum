@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-07x-to-072.php,v 1.39 2007-05-31 16:22:52 decoyduck Exp $ */
+/* $Id: upgrade-07x-to-072.php,v 1.40 2007-05-31 16:27:49 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-07x-to-072.php") {
 
@@ -659,7 +659,7 @@ if (!$result = @db_query($sql, $db_install)) {
 
 install_remove_table_keys("PM");
 
-$sql = "ALTER TABLE PM ADD RECIPIENTS VARCHAR(255) NOT NULL AFTER SUBJECT";
+$sql = "ALTER TABLE PM ADD RECIPIENTS VARCHAR(255) NOT NULL DEFAULT '' AFTER SUBJECT";
 
 if (!$result = @db_query($sql, $db_install)) {
 

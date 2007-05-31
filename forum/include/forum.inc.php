@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.233 2007-05-27 15:49:34 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.234 2007-05-31 21:59:20 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -334,19 +334,15 @@ function forum_get_settings()
 {
     $db_forum_get_settings = db_connect();
 
-    static $default_forum_settings = false;
-    static $forum_settings = false;
+    static $forum_settings_array = false;
 
-    if ($table_data = get_table_prefix()) {
-        $forum_fid = $table_data['FID'];
-    }else {
-        $forum_fid = 0;
-    }
+    if (!$table_data = get_table_prefix()) return false;
 
-    if (!is_array($forum_settings) || !is_array($default_forum_settings)) {
+    $forum_fid = $table_data['FID'];
 
-        $default_forum_settings = array();
-        $forum_settings = array('fid' => $forum_fid);
+    if (!is_array($forum_settings_array)) {
+
+        $forum_settings_array = array('fid' => $forum_fid);
 
         $sql = "SELECT WEBTAG, ACCESS_LEVEL FROM FORUMS WHERE FID = '$forum_fid'";
 
@@ -354,78 +350,78 @@ function forum_get_settings()
 
         list($webtag, $access_level) = db_fetch_array($result, DB_RESULT_NUM);
 
-        $forum_settings['webtag'] = $webtag;
-        $forum_settings['access_level'] = $access_level;
+        $forum_settings_array['webtag'] = $webtag;
+        $forum_settings_array['access_level'] = $access_level;
 
-        $sql = "SELECT FID, SNAME, SVALUE FROM FORUM_SETTINGS WHERE FID IN (0, $forum_fid)";
+        $sql = "SELECT SNAME, SVALUE FROM FORUM_SETTINGS WHERE FID = '$forum_fid'";
 
         if (!$result = db_query($sql, $db_forum_get_settings)) return false;
 
         while ($row = db_fetch_array($result)) {
-
-            if ($row['FID'] == 0) {
-                $default_forum_settings[$row['SNAME']] = $row['SVALUE'];
-            }else {
-                $forum_settings[$row['SNAME']] = $row['SVALUE'];
-            }
+            $forum_settings_array[$row['SNAME']] = $row['SVALUE'];
         }
 
-        $sql = "SELECT FORUM_SETTINGS.FID, FORUM_SETTINGS.SVALUE, TIMEZONES.GMT_OFFSET, ";
+        $sql = "SELECT FORUM_SETTINGS.SVALUE, TIMEZONES.GMT_OFFSET, ";
         $sql.= "TIMEZONES.DST_OFFSET FROM FORUM_SETTINGS FORUM_SETTINGS ";
         $sql.= "LEFT JOIN TIMEZONES ON (TIMEZONES.TZID = FORUM_SETTINGS.SVALUE) ";
-        $sql.= "WHERE FORUM_SETTINGS.SNAME = 'forum_timezone'";
+        $sql.= "WHERE FORUM_SETTINGS.SNAME = 'forum_timezone' ";
+        $sql.= "AND FORUM_SETTINGS.FID = '$forum_fid'";
 
         if (!$result = db_query($sql, $db_forum_get_settings)) return false;
 
         while ($row = db_fetch_array($result)) {
 
-            if ($row['FID'] == 0) {
-
-                $default_forum_settings['forum_timezone'] = $row['SVALUE'];
-                $default_forum_settings['forum_gmt_offset'] = $row['GMT_OFFSET'];
-                $default_forum_settings['forum_dst_offset'] = $row['DST_OFFSET'];
-
-            }else {
-
-                $forum_settings['forum_timezone'] = $row['SVALUE'];
-                $forum_settings['forum_gmt_offset'] = $row['GMT_OFFSET'];
-                $forum_settings['forum_dst_offset'] = $row['DST_OFFSET'];
-            }
+            $forum_settings_array['forum_timezone'] = $row['SVALUE'];
+            $forum_settings_array['forum_gmt_offset'] = $row['GMT_OFFSET'];
+            $forum_settings_array['forum_dst_offset'] = $row['DST_OFFSET'];
         }
     }
 
-    return array_merge($default_forum_settings, $forum_settings);
+    return $forum_settings_array;
 }
 
-function forum_get_default_settings()
+function forum_get_global_settings()
 {
-    $db_forum_get_default_settings = db_connect();
+    $db_forum_get_global_settings = db_connect();
 
-    static $default_forum_settings = false;
+    static $forum_global_settings_array = false;
 
-    if (!is_array($default_forum_settings)) {
+    if (!is_array($forum_global_settings_array)) {
 
-        $default_forum_settings = array();
+        $sql = "SELECT SNAME, SVALUE FROM FORUM_SETTINGS WHERE FID = '0'";
 
-        $sql = "SELECT SNAME, SVALUE FROM FORUM_SETTINGS WHERE FID = 0";
-
-        if (!$result = db_query($sql, $db_forum_get_default_settings)) return false;
+        if (!$result = db_query($sql, $db_forum_get_global_settings)) return false;
 
         while ($row = db_fetch_array($result)) {
-            $default_forum_settings[$row['SNAME']] = $row['SVALUE'];
+            $forum_global_settings_array[$row['SNAME']] = $row['SVALUE'];
+        }
+
+        $sql = "SELECT FORUM_SETTINGS.SVALUE, TIMEZONES.GMT_OFFSET, ";
+        $sql.= "TIMEZONES.DST_OFFSET FROM FORUM_SETTINGS FORUM_SETTINGS ";
+        $sql.= "LEFT JOIN TIMEZONES ON (TIMEZONES.TZID = FORUM_SETTINGS.SVALUE) ";
+        $sql.= "WHERE FORUM_SETTINGS.SNAME = 'forum_timezone' ";
+        $sql.= "AND FORUM_SETTINGS.FID = '0'";
+
+        if (!$result = db_query($sql, $db_forum_get_global_settings)) return false;
+
+        while ($row = db_fetch_array($result)) {
+
+            $forum_global_settings_array['forum_timezone'] = $row['SVALUE'];
+            $forum_global_settings_array['forum_gmt_offset'] = $row['GMT_OFFSET'];
+            $forum_global_settings_array['forum_dst_offset'] = $row['DST_OFFSET'];
         }
     }
 
-    return $default_forum_settings;
+    return $forum_global_settings_array;
 }
 
-function forum_get_settings_by_fid($fid)
+function forum_get_settings_by_fid($fid, $include_global_settings = true)
 {
     $db_forum_get_settings_by_fid = db_connect();
 
     if (!is_numeric($fid)) return false;
 
-    $forum_settings_by_fid = array('fid' => $fid);
+    $forum_settings_array = array('fid' => $fid);
 
     $sql = "SELECT WEBTAG, ACCESS_LEVEL FROM FORUMS WHERE FID = '$fid'";
 
@@ -433,8 +429,8 @@ function forum_get_settings_by_fid($fid)
 
     list($webtag, $access_level) = db_fetch_array($result, DB_RESULT_NUM);
 
-    $forum_settings_by_fid['webtag'] = $webtag;
-    $forum_settings_by_fid['access_level'] = $access_level;
+    $forum_settings_array['webtag'] = $webtag;
+    $forum_settings_array['access_level'] = $access_level;
 
     $sql = "SELECT SNAME, SVALUE FROM FORUM_SETTINGS WHERE FID = '$fid'";
 
@@ -442,7 +438,7 @@ function forum_get_settings_by_fid($fid)
 
     while ($row = db_fetch_array($result)) {
 
-        $forum_settings_by_fid[$row['SNAME']] = $row['SVALUE'];
+        $forum_settings_array[$row['SNAME']] = $row['SVALUE'];
     }
 
     $sql = "SELECT FORUM_SETTINGS.SVALUE AS TIMEZONE, TIMEZONES.GMT_OFFSET, ";
@@ -455,12 +451,17 @@ function forum_get_settings_by_fid($fid)
 
     list($timezone, $gmt_offset, $dst_offset) = db_fetch_array($result, DB_RESULT_NUM);
 
-    $forum_settings_by_fid['forum_timezone'] = $timezone;
-    $forum_settings_by_fid['forum_gmt_offset'] = $gmt_offset;
-    $forum_settings_by_fid['forum_dst_offset'] = $dst_offset;
+    $forum_settings_array['forum_timezone'] = $timezone;
+    $forum_settings_array['forum_gmt_offset'] = $gmt_offset;
+    $forum_settings_array['forum_dst_offset'] = $dst_offset;
 
-    $default_forum_settings = forum_get_default_settings();
-    return array_merge($default_forum_settings, $forum_settings_by_fid);
+    if ($include_global_settings === true) {
+
+        $forum_global_settings = forum_get_global_settings();
+        return array_merge($forum_global_settings, $forum_settings_array);
+    }
+
+    return $forum_settings_array;
 }
 
 function forum_save_settings($forum_settings_array)
@@ -575,18 +576,35 @@ function forum_get_table_prefix($fid)
 function forum_get_setting($setting_name, $value = false, $default = false)
 {
     $forum_settings = (isset($GLOBALS['forum_settings'])) ? $GLOBALS['forum_settings'] : false;
+    $forum_global_settings = (isset($GLOBALS['forum_global_settings'])) ? $GLOBALS['forum_global_settings'] : false;
 
     if (is_array($forum_settings) && isset($forum_settings[$setting_name])) {
 
         if ($value !== false) {
 
             if (strtoupper($forum_settings[$setting_name]) == strtoupper($value)) {
+
                 return true;
             }
 
         }else {
 
             return $forum_settings[$setting_name];
+        }
+    }
+
+    if (is_array($forum_global_settings) && isset($forum_global_settings[$setting_name])) {
+
+        if ($value !== false) {
+
+            if (strtoupper($forum_global_settings[$setting_name]) == strtoupper($value)) {
+
+                return true;
+            }
+
+        }else {
+
+            return $forum_global_settings[$setting_name];
         }
     }
 
@@ -2038,7 +2056,7 @@ function forum_search($forum_search, $offset)
                     $sql = "SELECT COUNT(POST.PID) AS UNREAD_MESSAGES ";
                     $sql.= "FROM {$forum_data['PREFIX']}POST POST ";
                     $sql.= "LEFT JOIN {$forum_data['PREFIX']}USER_THREAD USER_THREAD ";
-                    $sql.= "ON (USER_THREAD.TID = POST.TID AND USER_THREAD.UID = '19') ";
+                    $sql.= "ON (USER_THREAD.TID = POST.TID AND USER_THREAD.UID = '$uid') ";
                     $sql.= "LEFT JOIN {$forum_data['PREFIX']}THREAD THREAD ON (THREAD.TID = POST.TID) ";
                     $sql.= "WHERE (POST.CREATED > FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - ";
                     $sql.= "$unread_cutoff_stamp) OR $unread_cutoff_stamp = 0) ";

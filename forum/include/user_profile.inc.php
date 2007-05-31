@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.68 2007-05-31 18:48:26 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.69 2007-05-31 21:59:20 decoyduck Exp $ */
 
 /**
 * Functions relating to users interacting with profiles
@@ -202,11 +202,11 @@ function user_get_profile($uid)
 
             if (isset($user_profile['HASH']) && is_md5($user_profile['HASH'])) {
 
-                $user_profile['STATUS'] = $lang['useronline'];
+                $user_profile['STATUS'] = $lang['useractive'];
 
             }else {
 
-                $user_profile['STATUS'] = $lang['useroffline'];
+                $user_profile['STATUS'] = $lang['userinactive'];
 
             }
 

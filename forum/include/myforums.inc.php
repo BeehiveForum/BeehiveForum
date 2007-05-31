@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.69 2007-05-26 15:04:33 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.70 2007-05-31 21:59:20 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -256,7 +256,7 @@ function get_my_forums($view_type, $offset)
                 $sql = "SELECT COUNT(POST.PID) AS UNREAD_MESSAGES ";
                 $sql.= "FROM {$forum_data['PREFIX']}POST POST ";
                 $sql.= "LEFT JOIN {$forum_data['PREFIX']}USER_THREAD USER_THREAD ";
-                $sql.= "ON (USER_THREAD.TID = POST.TID AND USER_THREAD.UID = '19') ";
+                $sql.= "ON (USER_THREAD.TID = POST.TID AND USER_THREAD.UID = '$uid') ";
                 $sql.= "LEFT JOIN {$forum_data['PREFIX']}THREAD THREAD ON (THREAD.TID = POST.TID) ";
                 $sql.= "WHERE (POST.CREATED > FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - ";
                 $sql.= "$unread_cutoff_stamp) OR $unread_cutoff_stamp = 0) ";

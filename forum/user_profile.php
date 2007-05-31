@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.123 2007-05-30 21:02:59 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.124 2007-05-31 00:06:42 decoyduck Exp $ */
 
 /**
 * Displays user profiles
@@ -377,13 +377,13 @@ foreach ($user_profile_array as $psid => $user_profile_array) {
             echo "                                  <tr>\n";
             echo "                                    <td align=\"left\" width=\"40%\" valign=\"top\" class=\"profile_item_name\">{$profile_entry['NAME']}:</td>\n";
 
-            if (($profile_entry['PRIVACY'] == PROFILE_ITEM_PRIVATE && ($peer_relationship & USER_FRIEND)) || bh_session_get_value('UID') == $uid) {
+            if (($uid != bh_session_get_value('UID')) && ($peer_relationship != USER_FRIEND) && ($profile_entry['PRIVACY'] == PROFILE_ITEM_PRIVATE)) {
 
-                echo "                                    <td align=\"left\" class=\"profile_item_value\" valign=\"top\">", isset($profile_entry['ENTRY']) ? nl2br(make_links(_stripslashes($profile_entry['ENTRY']))) : "", "</td>\n";
+                echo "                                    <td align=\"left\" class=\"profile_item_value\" valign=\"top\">&nbsp;</td>\n";
 
             }else {
 
-                echo "                                    <td align=\"left\" class=\"profile_item_value\" valign=\"top\">&nbsp;</td>\n";
+                echo "                                    <td align=\"left\" class=\"profile_item_value\" valign=\"top\">", isset($profile_entry['ENTRY']) ? nl2br(make_links(_stripslashes($profile_entry['ENTRY']))) : "", "</td>\n";                
             }
 
             echo "                                  </tr>\n";

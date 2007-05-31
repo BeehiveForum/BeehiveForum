@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.436 2007-05-30 21:03:34 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.437 2007-05-31 16:22:52 decoyduck Exp $ */
 
 // British English language file
 
@@ -376,6 +376,7 @@ $lang['mustspecifyfilterid'] = "You must specify a filter ID";
 $lang['invalidfilterid'] = "Invalid Filter ID";
 $lang['failedtoupdatewordfilter'] = "Failed to update word filter. Check that the filter still exists.";
 $lang['allow'] = "Allow";
+$lang['block'] = "Block";
 $lang['normalthreadsonly'] = "Normal threads only";
 $lang['pollthreadsonly'] = "Poll threads only";
 $lang['both'] = "Both thread types";
@@ -1196,6 +1197,9 @@ $lang['messagewassuccessfullysavedtodraftsfolder'] = "Message was successfully s
 $lang['couldnotsavemessage'] = "Could not save message. Make sure you have enough available free space.";
 $lang['pmtooltipxmessages'] = "%s messages";
 $lang['pmtooltip1message'] = "1 message";
+
+$lang['allowusertosendpm'] = "Allow user to send personal messages to me";
+$lang['blockuserfromsendingpm'] = "Block user from sending personal messages to me";
 
 // Preferences / Profile (user_*.php) ---------------------------------------------
 

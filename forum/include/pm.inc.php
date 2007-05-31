@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.202 2007-05-26 15:04:33 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.203 2007-05-31 16:22:52 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1271,8 +1271,8 @@ function pm_send_message($tuid, $fuid, $subject, $content, $aid)
 
     // Insert the main PM Data into the database
 
-    $sql = "INSERT INTO PM (TYPE, TO_UID, FROM_UID, SUBJECT, CREATED, NOTIFIED) ";
-    $sql.= "VALUES ('$pm_outbox', '$tuid', '$fuid', '$subject_escaped', NOW(), 0)";
+    $sql = "INSERT INTO PM (TYPE, TO_UID, FROM_UID, SUBJECT, RECIPIENTS, CREATED, NOTIFIED) ";
+    $sql.= "VALUES ('$pm_outbox', '$tuid', '$fuid', '$subject_escaped', '', NOW(), 0)";
 
     if ($result = db_query($sql, $db_pm_send_message)) {
 
@@ -1337,8 +1337,8 @@ function pm_add_sent_item($smid, $tuid, $fuid, $subject, $content, $aid)
 
     // Insert the main PM Data into the database
 
-    $sql = "INSERT INTO PM (TYPE, TO_UID, FROM_UID, SUBJECT, CREATED, NOTIFIED, SMID) ";
-    $sql.= "VALUES ('$pm_sent', '$tuid', '$fuid', '$subject_escaped', NOW(), 1, '$smid')";
+    $sql = "INSERT INTO PM (TYPE, TO_UID, FROM_UID, SUBJECT, RECIPIENTS, CREATED, NOTIFIED, SMID) ";
+    $sql.= "VALUES ('$pm_sent', '$tuid', '$fuid', '$subject_escaped', '', NOW(), 1, '$smid')";
 
     if ($result = db_query($sql, $db_pm_add_sent_item)) {
 

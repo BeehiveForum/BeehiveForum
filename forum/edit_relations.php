@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_relations.php,v 1.71 2007-05-23 23:48:06 decoyduck Exp $ */
+/* $Id: edit_relations.php,v 1.72 2007-05-31 16:22:52 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -191,9 +191,10 @@ echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" class=\"subhead\" width=\"20\">&nbsp;</td>\n";
-echo "                  <td align=\"left\" class=\"subhead\" width=\"350\">{$lang['user']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\" width=\"200\">{$lang['user']}</td>\n";
 echo "                  <td align=\"center\" class=\"subhead\">{$lang['relationship']}</td>\n";
 echo "                  <td align=\"center\" class=\"subhead\">{$lang['signature']}</td>\n";
+echo "                  <td align=\"center\" class=\"subhead\">{$lang['personalmessages']}</td>\n";
 echo "                </tr>\n";
 
 $user_peers = user_get_relationships($uid, $start_main);
@@ -230,6 +231,15 @@ if (sizeof($user_peers['user_array']) > 0) {
         }else {
 
             echo "                  <td align=\"center\"><img src=\"", style_image("friend.png"), "\" alt=\"{$lang['display']}\" title=\"{$lang['display']}\" /></td>\n";
+        }
+
+        if ($user_peer['RELATIONSHIP'] & USER_BLOCK_PM) {
+
+            echo "                  <td align=\"center\"><img src=\"", style_image("enemy.png"), "\" alt=\"{$lang['block']}\" title=\"{$lang['block']}\" /></td>\n";
+
+        }else {
+
+            echo "                  <td align=\"center\"><img src=\"", style_image("friend.png"), "\" alt=\"{$lang['allow']}\" title=\"{$lang['allow']}\" /></td>\n";
         }
     }
 

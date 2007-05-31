@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.174 2007-05-26 15:04:33 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.175 2007-05-31 16:22:52 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -439,6 +439,8 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
 
                 if ($to_user = user_get_uid($to_logon)) {
 
+                    $peer_relationship = user_get_peer_relationship($to_user['UID'], $uid);
+
                     if (!in_array($to_user['UID'], $t_new_recipient_array['TO_UID'])) {
 
                         $t_new_recipient_array['TO_UID'][] = $to_user['UID'];
@@ -448,7 +450,7 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
 
                     if ($to_radio == POST_RADIO_OTHERS) {
 
-                        if (user_allow_pm($to_user['UID']) || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, 0)) {
+                        if ((($peer_relationship ^ USER_BLOCK_PM) && user_allow_pm($to_user['UID'])) || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, 0)) {
 
                             pm_user_prune_folders();
 

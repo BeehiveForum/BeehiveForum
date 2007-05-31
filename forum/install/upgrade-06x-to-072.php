@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06x-to-072.php,v 1.11 2007-05-27 15:49:34 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-072.php,v 1.12 2007-05-31 14:36:46 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-06x-to-072.php") {
 
@@ -1184,8 +1184,11 @@ foreach ($timezones_array as $tzid => $tz_data) {
         return;
     }
 
+    $dl_saving = ($tz_data[1] > 0) ? 'Y' : 'N';
+
     $sql = "UPDATE USER_PREFS SET TIMEZONE = '$tzid' ";
-    $sql.= "WHERE TIMEZONE = '{$tz_data[0]}'";
+    $sql.= "WHERE TIMEZONE = '{$tz_data[0]}' ";
+    $sql.= "AND DL_SAVING = '$dl_saving'";
 
     if (!$result = @db_query($sql, $db_install)) {
 
@@ -1193,13 +1196,27 @@ foreach ($timezones_array as $tzid => $tz_data) {
         return;
     }
 
-    $sql = "UPDATE FORUM_SETTINGS SET SVALUE = '$tzid' ";
-    $sql.= "WHERE SVALUE = '{$tz_data[0]}' AND SNAME = 'forum_timezone'";
+    $sql = "SELECT TIMEZONE.FID FROM FORUM_SETTINGS TIMEZONE ";
+    $sql.= "LEFT JOIN FORUM_SETTINGS DL_SAVING ";
+    $sql.= "ON (DL_SAVING.FID = TIMEZONE.FID ";
+    $sql.= "AND DL_SAVING.SNAME = 'forum_dl_saving') ";
+    $sql.= "WHERE TIMEZONE.SNAME = 'forum_timezone' ";
+    $sql.= "AND TIMEZONE.SVALUE = '{$tz_data[0]}' ";
+    $sql.= "AND DL_SAVING.SVALUE = '$dl_saving'";
 
-    if (!$result = @db_query($sql, $db_install)) {
+    if ($result = @db_query($sql, $db_install)) {
 
-        $valid = false;
-        return;
+        while (list($forum_fid) = db_fetch_array($result, DB_RESULT_NUM)) {
+
+            $sql = "UPDATE FORUM_SETTINGS SET SVALUE = '$tzid' ";
+            $sql.= "WHERE FID = '$forum_fid' AND SNAME = 'forum_timezone'";
+
+            if (!$result_update = @db_query($sql, $db_install)) {
+
+                $valid = false;
+                return;
+            }
+        }
     }
 }
 

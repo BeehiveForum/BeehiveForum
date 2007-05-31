@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.66 2007-05-30 21:03:11 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.67 2007-05-31 14:36:46 decoyduck Exp $ */
 
 /**
 * Functions relating to users interacting with profiles
@@ -214,7 +214,7 @@ function user_get_profile($uid)
 
         $user_profile['POST_COUNT'] = user_get_post_count($uid);
 
-        $user_profile['LOCAL_TIME'] = user_format_local_time($user_prefs['TIMEZONE'], $user_prefs['GMT_OFFSET'], $user_prefs['DST_OFFSET'], $user_prefs['DL_SAVING']);
+        $user_profile['LOCAL_TIME'] = user_format_local_time($user_prefs); 
 
         return $user_profile;
     }
@@ -222,9 +222,33 @@ function user_get_profile($uid)
     return false;
 }
 
-function user_format_local_time($timezone_id, $gmt_offset, $dst_offset, $dl_saving)
+function user_format_local_time(&$user_prefs_array)
 {
     $lang = load_language_file();
+
+    if (isset($user_prefs_array['TIMEZONE']) && is_numeric($user_prefs_array['TIMEZONE'])) {
+        $timezone_id = $user_prefs_array['TIMEZONE'];
+    }else {
+        $timezone_id = forum_get_setting('forum_timezone', false, 27);
+    }
+
+    if (isset($user_prefs_array['GMT_OFFSET']) && is_numeric($user_prefs_array['GMT_OFFSET'])) {
+        $gmt_offset = $user_prefs_array['GMT_OFFSET'];
+    }else {
+        $gmt_offset = forum_get_setting('forum_gmt_offset', false, 0);
+    }
+
+    if (isset($user_prefs_array['DST_OFFSET']) && is_numeric($user_prefs_array['DST_OFFSET'])) {
+        $dst_offset = $user_prefs_array['DST_OFFSET'];
+    }else {
+        $dst_offset = forum_get_setting('forum_dst_offset', false, 0);
+    }
+
+    if (isset($user_prefs_array['DL_SAVING']) && user_check_pref('DL_SAVING', $user_prefs_array['DL_SAVING'])) {
+        $dl_saving = $user_prefs_array['DL_SAVING'];
+    }else {
+        $dl_saving = forum_get_setting('forum_dl_saving', false, 'N');
+    }
     
     if ($dl_saving == "Y" && timestamp_is_dst($timezone_id, $gmt_offset)) {
         $local_time = time() + ($gmt_offset * HOUR_IN_SECONDS) + ($dst_offset * HOUR_IN_SECONDS);

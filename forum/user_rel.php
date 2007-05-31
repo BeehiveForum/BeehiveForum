@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.93 2007-05-26 22:34:08 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.94 2007-05-31 16:22:52 decoyduck Exp $ */
 
 /**
 * Displays and handles the User Relationship page
@@ -205,6 +205,12 @@ if (isset($_POST['submit'])) {
 
         $peer_sig_display  = $_POST['peer_sig_display'];
         $peer_relationship = $peer_relationship | $peer_sig_display;
+    }
+
+    if (isset($_POST['peer_block_pm']) && is_numeric($_POST['peer_block_pm'])) {
+
+        $peer_block_pm  = $_POST['peer_block_pm'];
+        $peer_relationship = $peer_relationship | $peer_block_pm;
     }
 
     if (isset($_POST['nickname']) && strlen(_stripslashes($_POST['nickname'])) > 0) {
@@ -427,6 +433,41 @@ echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"150\">", form_radio('peer_sig_display', USER_IGNORED_SIG, $lang['ignore'], $peer_relationship & USER_IGNORED_SIG ? true : false), "</td>\n";
 echo "                        <td align=\"left\" width=\"400\">: {$lang['hidesig_exp']}</td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "  <br />\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['personalmessages']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"center\">\n";
+echo "                    <table class=\"posthead\" width=\"95%\">\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"150\">", form_radio('peer_block_pm', USER_NORMAL, $lang['allow'], $peer_relationship ^ USER_BLOCK_PM ? true : false), "</td>\n";
+echo "                        <td align=\"left\" width=\"400\">: {$lang['allowusertosendpm']}</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"150\">", form_radio('peer_block_pm', USER_BLOCK_PM, $lang['block'], $peer_relationship & USER_BLOCK_PM ? true : false), "</td>\n";
+echo "                        <td align=\"left\" width=\"400\">: {$lang['blockuserfromsendingpm']}</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";

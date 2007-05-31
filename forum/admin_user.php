@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.203 2007-05-26 17:36:55 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.204 2007-05-31 21:59:14 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -50,8 +50,13 @@ check_install();
 // Multiple forum support
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
-// Fetch the forum settings
+// Fetch Forum Settings
+
 $forum_settings = forum_get_settings();
+
+// Fetch Global Forum Settings
+
+$forum_global_settings = forum_get_global_settings();
 
 include_once(BH_INCLUDE_PATH. "admin.inc.php");
 include_once(BH_INCLUDE_PATH. "banned.inc.php");

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.437 2007-05-31 16:22:52 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.438 2007-05-31 21:59:20 decoyduck Exp $ */
 
 // British English language file
 
@@ -1406,8 +1406,8 @@ $lang['ignoreduser'] = "Ignored user";
 $lang['lastvisit'] = "Last Visit";
 $lang['userslocaltime'] = "User's Local Time";
 $lang['userstatus'] = "Status";
-$lang['useronline'] = "Online";
-$lang['useroffline'] = "Offline";
+$lang['useractive'] = "Online";
+$lang['userinactive'] = "Inactive / Offline";
 $lang['totaltimeinforum'] = "Total time";
 $lang['longesttimeinforum'] = "Longest session";
 $lang['sendemail'] = "Send email";
@@ -1463,6 +1463,10 @@ $lang['textcaptchaexplain'] = "To the right is a text-captcha image. Please type
 $lang['textcaptchaimgtip'] = "This is a captcha-picture. It is used to prevent automatic registration";
 $lang['textcaptchamissingkey'] = "A confirmation code is required.";
 $lang['textcaptchaverificationfailed'] = "Text-captcha verification code was incorrect. Please re-enter it.";
+$lang['forumrules'] = "Forum Rules";
+$lang['forumrulesnotification'] = "In order to proceed, you must agree with the following rules";
+$lang['forumrulescheckbox'] = "I have read, and agree to abide by the forum rules.";
+$lang['youmustagreetotheforumrules'] = "You must agree to the forum rules before you can continue.";
 
 // Recent visitors list  (visitor_log.php) -----------------------------
 

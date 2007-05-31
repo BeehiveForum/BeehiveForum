@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.157 2007-05-25 23:45:00 decoyduck Exp $ */
+/* $Id: register.php,v 1.158 2007-05-31 21:59:19 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -51,8 +51,13 @@ check_install();
 // Multiple forum support
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
-// Fetch the forum settings
+// Fetch Forum Settings
+
 $forum_settings = forum_get_settings();
+
+// Fetch Global Forum Settings
+
+$forum_global_settings = forum_get_global_settings();
 
 include_once(BH_INCLUDE_PATH. "banned.inc.php");
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
@@ -134,10 +139,38 @@ $available_timezones = get_available_timezones();
 
 $text_captcha = new captcha(6, 15, 25, 9, 30);
 
-if (isset($_POST['submit'])) {
+if (isset($_POST['user_agree_rules'])) {
+    $user_agree_rules = 'Y';
+}elseif (isset($_GET['user_agree_rules'])) {
+    $user_agree_rules = 'Y';
+}else {
+    $user_agree_rules = 'N';
+}
 
-    $valid = true;
-    $error_html = "";
+if (isset($_POST['cancel'])) {
+
+    bh_setcookie('bh_logon', 1);
+    header_redirect("logon.php?webtag=$webtag");
+    exit;
+}
+
+$valid = true;
+$error_html = "";
+
+if (isset($_POST['forum_rules'])) {
+
+    if (isset($_POST['user_agree_rules']) && $_POST['user_agree_rules'] == 'Y') {
+
+        $user_agree_rules = 'Y';
+
+    }else {
+
+        $error_html.= "<h2>{$lang['youmustagreetotheforumrules']}</h2>\n";
+        $valid = false;        
+    }
+}    
+
+if (isset($_POST['register'])) {
 
     if (isset($_POST['logon']) && strlen(trim(_stripslashes($_POST['logon']))) > 0) {
 
@@ -487,292 +520,372 @@ html_draw_top();
 echo "<h1>{$lang['userregistration']}</h1>\n";
 
 if (isset($error_html) && strlen($error_html) > 0) {
-    echo $error_html;
+
+    echo "<br />\n";
+    echo "<div align=\"center\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">$error_html</td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "  <br />\n";
+    echo "</div>\n";
+
 }else {
+
     echo "<br />\n";
 }
 
-echo "<div align=\"center\">\n";
-echo "<form name=\"register\" action=\"register.php\" method=\"post\">\n";
-echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
-echo "    <tr>\n";
-echo "      <td align=\"left\">\n";
-echo "        <table class=\"box\" width=\"100%\">\n";
-echo "          <tr>\n";
-echo "            <td align=\"left\" class=\"posthead\">\n";
-echo "              <table class=\"posthead\" width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\">{$lang['registrationinformationrequired']}</td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "              <table class=\"posthead\" width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td align=\"center\">\n";
-echo "                    <table class=\"posthead\" width=\"95%\">\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" class=\"posthead\" width=\"295\">{$lang['username']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("logon", (isset($logon) ? _htmlentities($logon) : ""), 45, 15), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" class=\"posthead\">{$lang['passwd']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_password("pw", "", 45, 32), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" class=\"posthead\">{$lang['confirmpassword']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_password("cpw", "", 45, 32), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" class=\"posthead\">{$lang['nickname']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("nickname", (isset($nickname) ? _htmlentities($nickname) : ""), 45, 32), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" class=\"posthead\">{$lang['email']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("email", (isset($email) ? _htmlentities($email) : ""), 45, 80), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" class=\"posthead\">{$lang['dateofbirth']}:</td>\n";
-echo "                        <td align=\"left\">", form_dob_dropdowns((isset($new_user_prefs['DOB_YEAR']) ? _htmlentities($new_user_prefs['DOB_YEAR']) : 0), (isset($new_user_prefs['DOB_MONTH']) ? _htmlentities($new_user_prefs['DOB_MONTH']) : 0), (isset($new_user_prefs['DOB_DAY']) ? _htmlentities($new_user_prefs['DOB_DAY']) : 0), true), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\">&nbsp;</td>\n";
-echo "                        <td align=\"left\">", form_checkbox("remember_user", "Y", $lang['rememberpasswd'], (isset($_POST['remember_user']) && $_POST['remember_user'] == "Y")), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
-echo "                      </tr>\n";
-echo "                    </table>\n";
-echo "                  </td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "            </td>\n";
-echo "          </tr>\n";
-echo "        </table>\n";
-echo "      </td>\n";
-echo "    </tr>\n";
-echo "  </table>\n";
-echo "  <br />\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
-echo "    <tr>\n";
-echo "      <td align=\"left\">\n";
-echo "        <table class=\"box\" width=\"100%\">\n";
-echo "          <tr>\n";
-echo "            <td align=\"left\" class=\"posthead\">\n";
-echo "              <table class=\"posthead\" width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\">{$lang['profileinformationoptional']}</td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "              <table class=\"posthead\" width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td align=\"center\">\n";
-echo "                    <table class=\"posthead\" width=\"95%\">\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" class=\"posthead\" width=\"295\">{$lang['firstname']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("firstname", (isset($new_user_prefs['FIRSTNAME']) ? _htmlentities($new_user_prefs['FIRSTNAME']) : ""), 45, 32), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" class=\"posthead\">{$lang['lastname']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("lastname", (isset($new_user_prefs['LASTNAME']) ? _htmlentities($new_user_prefs['LASTNAME']) : ""), 45, 32), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" class=\"posthead\" valign=\"top\">{$lang['signature']}:</td>\n";
-echo "                        <td align=\"left\">", form_textarea("sig_content", (isset($sig_content) ? _htmlentities($sig_content) : ""), 6, 42), "</td>\n";
-echo "                      </tr>\n";
-echo "                     <tr>\n";
-echo "                       <td align=\"left\">&nbsp;</td>\n";
-echo "                       <td align=\"left\">", form_checkbox("sig_html", "Y", $lang['signaturecontainshtmlcode'], (isset($sig_html) && $sig_html == "Y")), "</td>\n";
-echo "                     </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
-echo "                      </tr>\n";
-echo "                    </table>\n";
-echo "                  </td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "            </td>\n";
-echo "          </tr>\n";
-echo "        </table>\n";
-echo "      </td>\n";
-echo "    </tr>\n";
-echo "  </table>\n";
-echo "  <br />\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
-echo "    <tr>\n";
-echo "      <td align=\"left\">\n";
-echo "        <table class=\"box\" width=\"100%\">\n";
-echo "          <tr>\n";
-echo "            <td align=\"left\" class=\"posthead\">\n";
-echo "              <table class=\"posthead\" width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\">{$lang['preferencesoptional']}</td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "              <table class=\"posthead\" width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td align=\"center\">\n";
-echo "                    <table class=\"posthead\" width=\"95%\">\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" class=\"posthead\" width=\"245\">{$lang['alwaysnotifymeofrepliestome']}:</td>\n";
-echo "                        <td align=\"left\">", form_radio("email_notify", "Y", $lang['yes'], (isset($new_user_prefs['EMAIL_NOTIFY'])) ? ($new_user_prefs['EMAIL_NOTIFY'] == "Y") : forum_get_setting('new_user_email_notify', 'Y', true)), "&nbsp;", form_radio("email_notify", "N", $lang['no'], (isset($new_user_prefs['EMAIL_NOTIFY'])) ? ($new_user_prefs['EMAIL_NOTIFY'] == "N") : forum_get_setting('new_user_email_notify', 'N', false)), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" class=\"posthead\">{$lang['notifyonnewprivatemessage']}:</td>\n";
-echo "                        <td align=\"left\">", form_radio("pm_notify_email", "Y", $lang['yes'], (isset($new_user_prefs['PM_NOTIFY_EMAIL'])) ? ($new_user_prefs['PM_NOTIFY_EMAIL'] == "Y") : forum_get_setting('new_user_pm_notify_email', 'Y', true)), "&nbsp;", form_radio("pm_notify_email", "N", $lang['no'], (isset($new_user_prefs['PM_NOTIFY_EMAIL'])) ? ($new_user_prefs['PM_NOTIFY_EMAIL'] == "N") : forum_get_setting('new_user_pm_notify_email', 'N', false)), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" class=\"posthead\">{$lang['popuponnewprivatemessage']}:</td>\n";
-echo "                        <td align=\"left\">", form_radio("pm_notify", "Y", $lang['yes'], (isset($new_user_prefs['PM_NOTIFY'])) ? ($new_user_prefs['PM_NOTIFY'] == "Y") : forum_get_setting('new_user_pm_notify', 'Y', true)), "&nbsp;", form_radio("pm_notify", "N", $lang['no'], (isset($new_user_prefs['PM_NOTIFY'])) ? ($new_user_prefs['PM_NOTIFY'] == "N") : forum_get_setting('new_user_pm_notify', 'N', false)), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" class=\"posthead\">{$lang['automatichighinterestonpost']}:</td>\n";
-echo "                        <td align=\"left\">", form_radio("mark_as_of_int", "Y", $lang['yes'], (isset($new_user_prefs['MARK_AS_OF_INT'])) ? ($new_user_prefs['MARK_AS_OF_INT'] == "Y") : forum_get_setting('new_user_mark_as_of_int', 'Y', true)), "&nbsp;", form_radio("mark_as_of_int", "N", $lang['no'], (isset($new_user_prefs['MARK_AS_OF_INT'])) ? ($new_user_prefs['MARK_AS_OF_INT'] == "N") : forum_get_setting('new_user_mark_as_of_int', 'N', false)), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
-echo "                      </tr>\n";
-echo "                    </table>\n";
-echo "                  </td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "            </td>\n";
-echo "          </tr>\n";
-echo "        </table>\n";
-echo "      </td>\n";
-echo "    </tr>\n";
-echo "  </table>\n";
-echo "  <br />\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
-echo "    <tr>\n";
-echo "      <td align=\"left\">\n";
-echo "        <table class=\"box\" width=\"100%\">\n";
-echo "          <tr>\n";
-echo "            <td align=\"left\" class=\"posthead\">\n";
-echo "              <table class=\"posthead\" width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\">{$lang['timezone']}</td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "              <table class=\"posthead\" width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td align=\"center\">\n";
-echo "                    <table class=\"posthead\" width=\"95%\">\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" class=\"posthead\">{$lang['timezonefromGMT']}:</td>\n";
-echo "                        <td align=\"left\">", form_dropdown_array("timezone", $available_timezones, (isset($new_user_prefs['TIMEZONE']) && in_array($new_user_prefs['TIMEZONE'], array_keys($available_timezones))) ? $new_user_prefs['TIMEZONE'] : forum_get_setting('forum_timezone', false, 27), false, 'timezone_dropdown'), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\">&nbsp;</td>\n";
-echo "                        <td align=\"left\">", form_checkbox("dl_saving", "Y", $lang['daylightsaving'], (isset($new_user_prefs['DL_SAVING'])) ? ($new_user_prefs['DL_SAVING'] == 'Y') : forum_get_setting('forum_dl_saving', 'Y')), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
-echo "                      </tr>\n";
-echo "                    </table>\n";
-echo "                  </td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "            </td>\n";
-echo "          </tr>\n";
-echo "        </table>\n";
-echo "      </td>\n";
-echo "    </tr>\n";
-echo "  </table>\n";
-echo "  <br />\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
-echo "    <tr>\n";
-echo "      <td align=\"left\">\n";
-echo "        <table class=\"box\" width=\"100%\">\n";
-echo "          <tr>\n";
-echo "            <td align=\"left\" class=\"posthead\">\n";
-echo "              <table class=\"posthead\" width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\">{$lang['forumoptions']}</td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "              <table class=\"posthead\" width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td align=\"center\">\n";
-echo "                    <table class=\"posthead\" width=\"95%\">\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" class=\"posthead\">{$lang['style']}:</td>\n";
-echo "                        <td align=\"left\">", form_dropdown_array("style", $available_styles, (isset($new_user_prefs['STYLE']) && in_array($new_user_prefs['STYLE'], array_keys($available_styles))) ? $new_user_prefs['STYLE'] : forum_get_setting('default_style', false, 'default'), "", "register_dropdown"), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" class=\"posthead\">{$lang['forumemoticons']}:</td>\n";
-echo "                        <td align=\"left\">", form_dropdown_array("emoticons", $available_emoticons, (isset($new_user_prefs['EMOTICONS']) && in_array($new_user_prefs['EMOTICONS'], array_keys($available_emoticons))) ? $new_user_prefs['EMOTICONS'] : forum_get_setting('default_emoticons', false, 'default'), "", "register_dropdown"), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" class=\"posthead\" width=\"255\">{$lang['preferredlang']}:</td>\n";
-echo "                        <td align=\"left\">", form_dropdown_array("language", $available_langs, (isset($new_user_prefs['LANGUAGE']) ? $new_user_prefs['LANGUAGE'] : forum_get_setting('default_language', false, 'en')), "", "register_dropdown"), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
-echo "                      </tr>\n";
-echo "                    </table>\n";
-echo "                  </td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "            </td>\n";
-echo "          </tr>\n";
-echo "        </table>\n";
-echo "      </td>\n";
-echo "    </tr>\n";
-echo "  </table>\n";
+if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
 
-if (forum_get_setting('text_captcha_enabled', 'Y')) {
+    echo "<div align=\"center\">\n";
+    echo "<form name=\"register\" action=\"register.php\" method=\"post\">\n";
+    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+    echo "  ", form_input_hidden('user_agree_rules', _htmlentities($user_agree_rules)), "\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td align=\"left\" class=\"posthead\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">{$lang['registrationinformationrequired']}</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"center\">\n";
+    echo "                    <table class=\"posthead\" width=\"95%\">\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" class=\"posthead\" width=\"295\">{$lang['username']}:</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("logon", (isset($logon) ? _htmlentities($logon) : ""), 45, 15), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" class=\"posthead\">{$lang['passwd']}:</td>\n";
+    echo "                        <td align=\"left\">", form_input_password("pw", "", 45, 32), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" class=\"posthead\">{$lang['confirmpassword']}:</td>\n";
+    echo "                        <td align=\"left\">", form_input_password("cpw", "", 45, 32), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" class=\"posthead\">{$lang['nickname']}:</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("nickname", (isset($nickname) ? _htmlentities($nickname) : ""), 45, 32), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" class=\"posthead\">{$lang['email']}:</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("email", (isset($email) ? _htmlentities($email) : ""), 45, 80), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" class=\"posthead\">{$lang['dateofbirth']}:</td>\n";
+    echo "                        <td align=\"left\">", form_dob_dropdowns((isset($new_user_prefs['DOB_YEAR']) ? _htmlentities($new_user_prefs['DOB_YEAR']) : 0), (isset($new_user_prefs['DOB_MONTH']) ? _htmlentities($new_user_prefs['DOB_MONTH']) : 0), (isset($new_user_prefs['DOB_DAY']) ? _htmlentities($new_user_prefs['DOB_DAY']) : 0), true), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">&nbsp;</td>\n";
+    echo "                        <td align=\"left\">", form_checkbox("remember_user", "Y", $lang['rememberpasswd'], (isset($_POST['remember_user']) && $_POST['remember_user'] == "Y")), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+    echo "                      </tr>\n";
+    echo "                    </table>\n";
+    echo "                  </td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "  <br />\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td align=\"left\" class=\"posthead\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">{$lang['profileinformationoptional']}</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"center\">\n";
+    echo "                    <table class=\"posthead\" width=\"95%\">\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" class=\"posthead\" width=\"295\">{$lang['firstname']}:</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("firstname", (isset($new_user_prefs['FIRSTNAME']) ? _htmlentities($new_user_prefs['FIRSTNAME']) : ""), 45, 32), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" class=\"posthead\">{$lang['lastname']}:</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("lastname", (isset($new_user_prefs['LASTNAME']) ? _htmlentities($new_user_prefs['LASTNAME']) : ""), 45, 32), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" class=\"posthead\" valign=\"top\">{$lang['signature']}:</td>\n";
+    echo "                        <td align=\"left\">", form_textarea("sig_content", (isset($sig_content) ? _htmlentities($sig_content) : ""), 6, 42), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                     <tr>\n";
+    echo "                       <td align=\"left\">&nbsp;</td>\n";
+    echo "                       <td align=\"left\">", form_checkbox("sig_html", "Y", $lang['signaturecontainshtmlcode'], (isset($sig_html) && $sig_html == "Y")), "</td>\n";
+    echo "                     </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+    echo "                      </tr>\n";
+    echo "                    </table>\n";
+    echo "                  </td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "  <br />\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td align=\"left\" class=\"posthead\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">{$lang['preferencesoptional']}</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"center\">\n";
+    echo "                    <table class=\"posthead\" width=\"95%\">\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" class=\"posthead\" width=\"245\">{$lang['alwaysnotifymeofrepliestome']}:</td>\n";
+    echo "                        <td align=\"left\">", form_radio("email_notify", "Y", $lang['yes'], (isset($new_user_prefs['EMAIL_NOTIFY'])) ? ($new_user_prefs['EMAIL_NOTIFY'] == "Y") : forum_get_setting('new_user_email_notify', 'Y', true)), "&nbsp;", form_radio("email_notify", "N", $lang['no'], (isset($new_user_prefs['EMAIL_NOTIFY'])) ? ($new_user_prefs['EMAIL_NOTIFY'] == "N") : forum_get_setting('new_user_email_notify', 'N', false)), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" class=\"posthead\">{$lang['notifyonnewprivatemessage']}:</td>\n";
+    echo "                        <td align=\"left\">", form_radio("pm_notify_email", "Y", $lang['yes'], (isset($new_user_prefs['PM_NOTIFY_EMAIL'])) ? ($new_user_prefs['PM_NOTIFY_EMAIL'] == "Y") : forum_get_setting('new_user_pm_notify_email', 'Y', true)), "&nbsp;", form_radio("pm_notify_email", "N", $lang['no'], (isset($new_user_prefs['PM_NOTIFY_EMAIL'])) ? ($new_user_prefs['PM_NOTIFY_EMAIL'] == "N") : forum_get_setting('new_user_pm_notify_email', 'N', false)), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" class=\"posthead\">{$lang['popuponnewprivatemessage']}:</td>\n";
+    echo "                        <td align=\"left\">", form_radio("pm_notify", "Y", $lang['yes'], (isset($new_user_prefs['PM_NOTIFY'])) ? ($new_user_prefs['PM_NOTIFY'] == "Y") : forum_get_setting('new_user_pm_notify', 'Y', true)), "&nbsp;", form_radio("pm_notify", "N", $lang['no'], (isset($new_user_prefs['PM_NOTIFY'])) ? ($new_user_prefs['PM_NOTIFY'] == "N") : forum_get_setting('new_user_pm_notify', 'N', false)), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" class=\"posthead\">{$lang['automatichighinterestonpost']}:</td>\n";
+    echo "                        <td align=\"left\">", form_radio("mark_as_of_int", "Y", $lang['yes'], (isset($new_user_prefs['MARK_AS_OF_INT'])) ? ($new_user_prefs['MARK_AS_OF_INT'] == "Y") : forum_get_setting('new_user_mark_as_of_int', 'Y', true)), "&nbsp;", form_radio("mark_as_of_int", "N", $lang['no'], (isset($new_user_prefs['MARK_AS_OF_INT'])) ? ($new_user_prefs['MARK_AS_OF_INT'] == "N") : forum_get_setting('new_user_mark_as_of_int', 'N', false)), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+    echo "                      </tr>\n";
+    echo "                    </table>\n";
+    echo "                  </td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "  <br />\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td align=\"left\" class=\"posthead\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">{$lang['timezone']}</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"center\">\n";
+    echo "                    <table class=\"posthead\" width=\"95%\">\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" class=\"posthead\">{$lang['timezonefromGMT']}:</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("timezone", $available_timezones, (isset($new_user_prefs['TIMEZONE']) && in_array($new_user_prefs['TIMEZONE'], array_keys($available_timezones))) ? $new_user_prefs['TIMEZONE'] : forum_get_setting('forum_timezone', false, 27), false, 'timezone_dropdown'), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">&nbsp;</td>\n";
+    echo "                        <td align=\"left\">", form_checkbox("dl_saving", "Y", $lang['daylightsaving'], (isset($new_user_prefs['DL_SAVING'])) ? ($new_user_prefs['DL_SAVING'] == 'Y') : forum_get_setting('forum_dl_saving', 'Y')), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+    echo "                      </tr>\n";
+    echo "                    </table>\n";
+    echo "                  </td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "  <br />\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td align=\"left\" class=\"posthead\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">{$lang['forumoptions']}</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"center\">\n";
+    echo "                    <table class=\"posthead\" width=\"95%\">\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" class=\"posthead\">{$lang['style']}:</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("style", $available_styles, (isset($new_user_prefs['STYLE']) && in_array($new_user_prefs['STYLE'], array_keys($available_styles))) ? $new_user_prefs['STYLE'] : forum_get_setting('default_style', false, 'default'), "", "register_dropdown"), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" class=\"posthead\">{$lang['forumemoticons']}:</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("emoticons", $available_emoticons, (isset($new_user_prefs['EMOTICONS']) && in_array($new_user_prefs['EMOTICONS'], array_keys($available_emoticons))) ? $new_user_prefs['EMOTICONS'] : forum_get_setting('default_emoticons', false, 'default'), "", "register_dropdown"), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" class=\"posthead\" width=\"255\">{$lang['preferredlang']}:</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("language", $available_langs, (isset($new_user_prefs['LANGUAGE']) ? $new_user_prefs['LANGUAGE'] : forum_get_setting('default_language', false, 'en')), "", "register_dropdown"), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+    echo "                      </tr>\n";
+    echo "                    </table>\n";
+    echo "                  </td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
 
-    if ($text_captcha->generate_keys() && $text_captcha->make_image()) {
+    if (forum_get_setting('text_captcha_enabled', 'Y')) {
 
-        echo "  <br />\n";
-        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"left\">\n";
-        echo "        <table class=\"box\" width=\"100%\">\n";
-        echo "          <tr>\n";
-        echo "            <td align=\"left\" class=\"posthead\">\n";
-        echo "              <table class=\"posthead\" width=\"100%\">\n";
-        echo "                <tr>\n";
-        echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['textcaptchaconfirmation']}</td>\n";
-        echo "                </tr>\n";
-        echo "                      <tr>\n";
-        echo "                        <td align=\"left\" valign=\"top\">{$lang['textcaptchaexplain']}</td>\n";
-        echo "                        <td align=\"left\"><img src=\"", $text_captcha->get_image_filename(), "\" alt=\"{$lang['textcaptchaimgtip']}\" title=\"{$lang['textcaptchaimgtip']}\" /></td>\n";
-        echo "                      </tr>\n";
-        echo "                      <tr>\n";
-        echo "                        <td align=\"left\">&nbsp;</td>\n";
-        echo "                        <td align=\"left\">", form_input_text("private_key", "", $text_captcha->get_num_chars(), $text_captcha->get_num_chars(), "", "text_captcha_input"), form_input_hidden("public_key", _htmlentities($text_captcha->get_public_key())), "</td>\n";
-        echo "                      </tr>\n";
-        echo "                      <tr>\n";
-        echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
-        echo "                      </tr>\n";
-        echo "                    </table>\n";
-        echo "                  </td>\n";
-        echo "                </tr>\n";
-        echo "              </table>\n";
-        echo "            </td>\n";
-        echo "          </tr>\n";
-        echo "        </table>\n";
-        echo "      </td>\n";
-        echo "    </tr>\n";
-        echo "  </table>\n";
+        if ($text_captcha->generate_keys() && $text_captcha->make_image()) {
+
+            echo "  <br />\n";
+            echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+            echo "    <tr>\n";
+            echo "      <td align=\"left\">\n";
+            echo "        <table class=\"box\" width=\"100%\">\n";
+            echo "          <tr>\n";
+            echo "            <td align=\"left\" class=\"posthead\">\n";
+            echo "              <table class=\"posthead\" width=\"100%\">\n";
+            echo "                <tr>\n";
+            echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['textcaptchaconfirmation']}</td>\n";
+            echo "                </tr>\n";
+            echo "                      <tr>\n";
+            echo "                        <td align=\"left\" valign=\"top\">{$lang['textcaptchaexplain']}</td>\n";
+            echo "                        <td align=\"left\"><img src=\"", $text_captcha->get_image_filename(), "\" alt=\"{$lang['textcaptchaimgtip']}\" title=\"{$lang['textcaptchaimgtip']}\" /></td>\n";
+            echo "                      </tr>\n";
+            echo "                      <tr>\n";
+            echo "                        <td align=\"left\">&nbsp;</td>\n";
+            echo "                        <td align=\"left\">", form_input_text("private_key", "", $text_captcha->get_num_chars(), $text_captcha->get_num_chars(), "", "text_captcha_input"), form_input_hidden("public_key", _htmlentities($text_captcha->get_public_key())), "</td>\n";
+            echo "                      </tr>\n";
+            echo "                      <tr>\n";
+            echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+            echo "                      </tr>\n";
+            echo "                    </table>\n";
+            echo "                  </td>\n";
+            echo "                </tr>\n";
+            echo "              </table>\n";
+            echo "            </td>\n";
+            echo "          </tr>\n";
+            echo "        </table>\n";
+            echo "      </td>\n";
+            echo "    </tr>\n";
+            echo "    <tr>\n";
+            echo "      <td align=\"center\">&nbsp;</td>\n";
+            echo "    </tr>\n";
+            echo "    <tr>\n";
+            echo "      <td align=\"center\">{$lang['moreoptionsavailable']}</td>\n";
+            echo "    </tr>\n";
+            echo "  </table>\n";
+        }
     }
-}
 
-echo "  <br />\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
-echo "    <tr>\n";
-echo "      <td align=\"center\">{$lang['moreoptionsavailable']}</td>\n";
-echo "    </tr>\n";
-echo "    <tr>\n";
-echo "      <td align=\"left\">&nbsp;</td>\n";
-echo "    </tr>\n";
-echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("submit", $lang['register']), "</td>\n";
-echo "    </tr>\n";
-echo "  </table>\n";
-echo "</form>\n";
-echo "</div>\n";
+    echo "  <br />\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"center\">{$lang['moreoptionsavailable']}</td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">&nbsp;</td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"center\">", form_submit('register', $lang['register']), "&nbsp;", form_submit('cancel', $lang['cancel']), "</td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "</form>\n";
+    echo "</div>\n";
+
+}else {
+
+    $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
+
+    $frame_top_target = (isset($GLOBALS['frame_top_target'])) ? $GLOBALS['frame_top_target'] : '_top';
+
+    if (!$forum_rules = forum_get_setting('forum_rules')) {
+
+        $forum_rules = "<p><b>Forum Rules</b></p>\n";
+        $forum_rules.= "<p>Registration to $forum_name is free! We do insist that you abide by the rules and policies detailed below. If you agree to the terms, please check the 'I agree' checkbox and press the 'Register' button below. If you would like to cancel the registration, click <a href=\"index.php?webtag=$webtag\" target=\"$frame_top_target\">here</a> to return to the forums index.</p>\n";
+        $forum_rules.= "<p>Although the administrators and moderators of $forum_name will attempt to keep all objectionable messages off this forum, it is impossible for us to review all messages. All messages express the views of the author, and neither the owners of $forum_name, nor Project BeehiveForum and it's affiliates will be held responsible for the content of any message.</p>\n";
+        $forum_rules.= "<p>By agreeing to these rules, you warrant that you will not post any messages that are obscene, vulgar, sexually-orientated, hateful, threatening, or otherwise violative of any laws.</p>\n";
+        $forum_rules.= "<p>The owners of $forum_name reserve the right to remove, edit, move or close any thread for any reason.</p>\n";
+    }
+
+    echo "<div align=\"center\">\n";
+    echo "<form name=\"register\" action=\"register.php\" method=\"post\">\n";
+    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td align=\"left\" class=\"posthead\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">{$lang['forumrules']}</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"center\">\n";
+    echo "                    <table class=\"posthead\" width=\"95%\">\n";
+    echo "                      <tr>\n";
+    echo "                        <td>{$lang['forumrulesnotification']}:</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td><div class=\"forum_rules_box\">$forum_rules</div></td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td>", form_checkbox('user_agree_rules', 'Y', $lang['forumrulescheckbox']), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                    </table>\n";
+    echo "                  </td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">&nbsp;</td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"center\">", form_submit('forum_rules', $lang['register']), "&nbsp;", form_submit('cancel', $lang['cancel']), "</td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "</form>\n";
+    echo "</div>\n";
+}
 
 html_draw_bottom();
 

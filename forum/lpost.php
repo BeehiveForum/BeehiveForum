@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.105 2007-05-18 11:49:28 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.106 2007-05-31 21:59:18 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -49,8 +49,13 @@ check_install();
 // Multiple forum support
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
-// Fetch the forum settings
+// Fetch Forum Settings
+
 $forum_settings = forum_get_settings();
+
+// Fetch Global Forum Settings
+
+$forum_global_settings = forum_get_global_settings();
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");

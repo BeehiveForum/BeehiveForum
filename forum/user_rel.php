@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.95 2007-05-31 21:59:20 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.96 2007-06-01 00:00:30 decoyduck Exp $ */
 
 /**
 * Displays and handles the User Relationship page
@@ -399,8 +399,10 @@ if ((($peer_perms & USER_PERM_FOLDER_MODERATE) && ($user_perms & USER_PERM_CAN_I
 }else {
 
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"150\">&nbsp;</td>\n";
-    echo "                        <td align=\"left\" width=\"400\">{$lang['cannotignoremod']}</td>\n";
+    echo "                        <td align=\"center\">&nbsp;</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"center\" colspan=\"2\"><b>{$lang['cannotignoremod']}</b></td>\n";
     echo "                      </tr>\n";
 }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.438 2007-05-31 21:59:20 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.439 2007-06-01 00:00:24 decoyduck Exp $ */
 
 // British English language file
 
@@ -1809,8 +1809,10 @@ $lang['pmexportwordfilter'] = "Apply word filter to messages";
 
 // Thread merge / split options
 
-$lang['threadsplit'] = "Thread has been split";
-$lang['threadmerge'] = "Thread has been merged";
+$lang['threadsplit'] = "Thread Split";
+$lang['threadmerged'] = "Thread Merged";
+$lang['threadhasbeensplit'] = "Thread has been split";
+$lang['threadhasbeenmerged'] = "Thread has been merged";
 $lang['mergesplitthread'] = "Merge / Split Thread";
 $lang['mergewiththreadid'] = "Merge with thread ID:";
 $lang['postsinthisthreadatstart'] = "Posts in this thread at start";
@@ -1820,11 +1822,15 @@ $lang['splitthreadatpost'] = "Split thread at post:";
 $lang['selectedpostsandrepliesonly'] = "Selected post and replies only";
 $lang['selectedandallfollowingposts'] = "Selected and all following posts";
 
-$lang['threadhere'] = "here";
+$lang['threadmovedhere'] = "here";
+$lang['postmovedhere'] = "here";
+
 $lang['thisthreadhasmoved'] = "<b>Threads Merged:</b> This thread has moved %s";
 $lang['thisthreadwasmergedfrom'] = "<b>Threads Merged:</b> This thread was merged from %s";
 $lang['somepostsinthisthreadhavebeenmoved'] = "<b>Thread Split:</b> Some posts in this thread have been moved %s";
 $lang['somepostsinthisthreadweremovedfrom'] = "<b>Thread Split:</b> Some posts in this thread were moved from %s";
+
+$lang['thisposthasbeenmoved'] = "<b>Thread Split:</b> This post has been moved %s";
 
 $lang['invalidfunctionarguments'] = "Invalid function arguments";
 $lang['couldnotretrieveforumdata'] = "Could not retrieve forum data";

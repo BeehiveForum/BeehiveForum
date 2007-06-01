@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lmessages.php,v 1.82 2007-05-31 21:59:18 decoyduck Exp $ */
+/* $Id: lmessages.php,v 1.83 2007-06-01 00:00:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -200,6 +200,49 @@ $foldertitle = folder_get_title($threaddata['FID']);
 $msg_count = count($messages);
 
 light_messages_top($msg, $threaddata['PREFIX'], $threaddata['TITLE'], $threaddata['INTEREST'], $threaddata['STICKY'], $threaddata['CLOSED'], $threaddata['ADMIN_LOCK']);
+
+if ($tracking_data_array = thread_get_tracking_data($tid)) {
+
+    foreach ($tracking_data_array as $tracking_data) {
+        
+        if ($tracking_data['TRACK_TYPE'] == THREAD_TYPE_MERGE) { // Thread merged
+        
+            if ($tracking_data['TID'] == $tid) {
+
+                $thread_link = "<a href=\"messages.php?webtag=$webtag&amp;msg=%s.1\" target=\"_self\">%s</a>";
+                $thread_link = sprintf($thread_link, $tracking_data['NEW_TID'], $lang['threadmovedhere']);
+                
+                echo "<p>", sprintf($lang['thisthreadhasmoved'], $thread_link), "</p>\n";
+            }
+
+            if ($tracking_data['NEW_TID'] == $tid) {
+
+                $thread_link = "<a href=\"messages.php?webtag=$webtag&amp;msg=%s.1\" target=\"_self\">%s</a>";
+                $thread_link = sprintf($thread_link, $tracking_data['TID'], $lang['threadmovedhere']);
+
+                echo "<p>", sprintf($lang['thisthreadwasmergedfrom'], $thread_link), "</p>\n";
+            }
+
+        }elseif ($tracking_data['TRACK_TYPE'] == THREAD_TYPE_SPLIT) { // Thread Split
+
+            if ($tracking_data['TID'] == $tid) {
+
+                $thread_link = "<a href=\"messages.php?webtag=$webtag&amp;msg=%s.1\" target=\"_self\">%s</a>";
+                $thread_link = sprintf($thread_link, $tracking_data['NEW_TID'], $lang['threadmovedhere']);
+
+                echo "<p>", sprintf($lang['somepostsinthisthreadhavebeenmoved'], $thread_link), "</p>\n";
+            }
+
+            if ($tracking_data['NEW_TID'] == $tid) {
+
+                $thread_link = "<a href=\"messages.php?webtag=$webtag&amp;msg=%s.1\" target=\"_self\">%s</a>";
+                $thread_link = sprintf($thread_link, $tracking_data['TID'], $lang['threadmovedhere']);
+
+                echo "<p>", sprintf($lang['somepostsinthisthreadweremovedfrom'], $thread_link), "</p>\n";
+            }
+        }
+    }
+}
 
 if ($msg_count > 0) {
 

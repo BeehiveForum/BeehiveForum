@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.115 2007-05-19 18:24:32 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.116 2007-06-01 00:00:24 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -554,31 +554,31 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
     $tidb_closed = true;
 
     if (!is_numeric($tida)) {
-        return thread_merge_error($tida, $tidb, 1, $error_str);
+        return thread_merge_error($tida, $tidb, THREAD_MERGE_INVALID_ARGS, $error_str);
     }
 
     if (!is_numeric($tidb)) {
-        return thread_merge_error($tida, $tidb, 1, $error_str);
+        return thread_merge_error($tida, $tidb, THREAD_MERGE_INVALID_ARGS, $error_str);
     }
 
     if (!is_numeric($merge_type)) {
-        return thread_merge_error($tida, $tidb, 1, $error_str);
+        return thread_merge_error($tida, $tidb, THREAD_MERGE_INVALID_ARGS, $error_str);
     }
 
     if (!$table_data = get_table_prefix()) {
-        return thread_merge_error($tida, $tidb, 2, $error_str);
+        return thread_merge_error($tida, $tidb, THREAD_MERGE_FORUM_ERROR, $error_str);
     }
 
     if (thread_is_poll($tida) || thread_is_poll($tidb)) {
-        return thread_merge_error($tida, $tidb, 3, $error_str);
+        return thread_merge_error($tida, $tidb, THREAD_MERGE_POLL_ERROR, $error_str);
     }
 
     if (!$threada = thread_get($tida)) {
-        return thread_merge_error($tida, $tidb, 4, $error_str);
+        return thread_merge_error($tida, $tidb, THREAD_MERGE_THREAD_ERROR, $error_str);
     }
 
     if (!$threadb = thread_get($tidb)) {
-        return thread_merge_error($tida, $tidb, 4, $error_str);
+        return thread_merge_error($tida, $tidb, THREAD_MERGE_THREAD_ERROR, $error_str);
     }
 
     $forum_fid = $table_data['FID'];
@@ -617,7 +617,7 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
 
                 if (!is_array($post_data)) {
 
-                    thread_merge_error($tida, $tidb, 5, $error_str);
+                    thread_merge_error($tida, $tidb, THREAD_MERGE_POST_ERROR, $error_str);
 
                     if ($tida_closed) thread_set_closed($tida, false);
                     if ($tidb_closed) thread_set_closed($tidb, false);
@@ -629,7 +629,7 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
 
                     if (!in_array($required_post_key, array_keys($post_data))) {
 
-                        thread_merge_error($tida, $tidb, 5, $error_str);
+                        thread_merge_error($tida, $tidb, THREAD_MERGE_POST_ERROR, $error_str);
 
                         if ($tida_closed) thread_set_closed($tida, false);
                         if ($tidb_closed) thread_set_closed($tidb, false);
@@ -645,7 +645,7 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
 
                 if (!is_array($new_thread)) {
                     
-                    thread_merge_error($tida, $tidb, 4, $error_str);
+                    thread_merge_error($tida, $tidb, THREAD_MERGE_THREAD_ERROR, $error_str);
 
                     if ($tidb_closed) thread_set_closed($tidb, false);
                     if ($tidb_closed) thread_set_closed($tidb, false);
@@ -657,7 +657,7 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
 
                     if (!in_array($required_thread_key, array_keys($new_thread))) {
 
-                        thread_merge_error($tida, $tidb, 4, $error_str);
+                        thread_merge_error($tida, $tidb, THREAD_MERGE_THREAD_ERROR, $error_str);
 
                         if ($tida_closed) thread_set_closed($tida, false);
                         if ($tidb_closed) thread_set_closed($tidb, false);
@@ -724,7 +724,7 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
                 
                 }else {
 
-                    thread_merge_error($tida, $tidb, 6, $error_str);
+                    thread_merge_error($tida, $tidb, THREAD_MERGE_CREATE_ERROR, $error_str);
 
                     if ($tida_closed) thread_set_closed($tida, false);
                     if ($tidb_closed) thread_set_closed($tidb, false);
@@ -734,7 +734,7 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
             
             }else {
 
-                thread_merge_error($tida, $tidb, 4, $error_str);
+                thread_merge_error($tida, $tidb, THREAD_MERGE_THREAD_ERROR, $error_str);
 
                 if ($tida_closed) thread_set_closed($tida, false);
                 if ($tidb_closed) thread_set_closed($tidb, false);
@@ -744,7 +744,7 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
         
         }else {
 
-            thread_merge_error($tida, $tidb, 5, $error_str);
+            thread_merge_error($tida, $tidb, THREAD_MERGE_POST_ERROR, $error_str);
 
             if ($tida_closed) thread_set_closed($tida, false);
             if ($tidb_closed) thread_set_closed($tidb, false);
@@ -753,7 +753,7 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
         }
     }
 
-    return thread_merge_error($tida, $tidb, 4, $error_str);
+    return thread_merge_error($tida, $tidb, THREAD_MERGE_THREAD_ERROR, $error_str);
 }
 
 function thread_merge_error($tida, $tidb, $error_code, &$error_str)
@@ -929,19 +929,19 @@ function thread_split($tid, $spid, $split_type, &$error_str)
     $tid_closed = true;
 
     if (!is_numeric($tid)) {
-        return thread_split_error($tid, 1, $error_str);
+        return thread_split_error($tid, THREAD_SPLIT_INVALID_ARGS, $error_str);
     }
 
     if (!is_numeric($spid) || $spid < 2) {
-        return thread_split_error($tid, 1, $error_str);
+        return thread_split_error($tid, THREAD_SPLIT_INVALID_ARGS, $error_str);
     }
 
     if (!is_numeric($split_type)) {
-        return thread_split_error($tid, 1, $error_str);
+        return thread_split_error($tid, THREAD_SPLIT_INVALID_ARGS, $error_str);
     }
 
     if (!$table_data = get_table_prefix()) {
-        return thread_split_error($tid, 2, $error_str);
+        return thread_split_error($tid, THREAD_SPLIT_FORUM_ERROR, $error_str);
     }
 
     $forum_fid = $table_data['FID'];
@@ -951,12 +951,12 @@ function thread_split($tid, $spid, $split_type, &$error_str)
         $required_thread_keys_array = array('FID', 'BY_UID', 'TITLE');
 
         if (!is_array($thread_data)) {
-            return thread_split_error($tid, 3, $error_str);
+            return thread_split_error($tid, THREAD_SPLIT_THREAD_ERROR, $error_str);
         }
 
         foreach ($required_thread_keys_array as $required_thread_key) {
             if (!in_array($required_thread_key, array_keys($thread_data))) {
-                return thread_split_error($tid, 3, $error_str);
+                return thread_split_error($tid, THREAD_SPLIT_THREAD_ERROR, $error_str);
             }
         }
 
@@ -986,7 +986,7 @@ function thread_split($tid, $spid, $split_type, &$error_str)
 
                 if (!is_array($post_data)) {
                     
-                    thread_split_error($tid, 4, $error_str);
+                    thread_split_error($tid, THREAD_SPLIT_POST_ERROR, $error_str);
                     if ($tid_closed) thread_set_closed($tid, false);
                     return false;
                 }
@@ -995,14 +995,14 @@ function thread_split($tid, $spid, $split_type, &$error_str)
 
                     if (!in_array($required_post_key, array_keys($post_data))) {
 
-                        thread_split_error($tid, 4, $error_str);
+                        thread_split_error($tid, THREAD_SPLIT_POST_ERROR, $error_str);
                         if ($tid_closed) thread_set_closed($tid, false);
                         return false;
                     }
                 }
             }
 
-            $new_tid = post_create_thread($thread_data['FID'], $thread_data['BY_UID'], _htmlentities_decode($thread_data['TITLE']), 'N', 'N', true);
+            $new_tid = post_create_thread($thread_data['FID'], $post_data_array[1]['FROM_UID'], _htmlentities_decode($thread_data['TITLE']), 'N', 'N', true);
 
             if (($new_tid > -1) && ($thread_new = thread_get($new_tid, true))) {
 
@@ -1061,14 +1061,14 @@ function thread_split($tid, $spid, $split_type, &$error_str)
             
             }else {
 
-                thread_split_error($tid, 5, $error_str);
+                thread_split_error($tid, THREAD_SPLIT_CREATE_ERROR, $error_str);
                 if ($tid_closed) thread_set_closed($tid, false);
                 return false;
             }
 
         }else {
 
-            thread_split_error($tid, 4, $error_str);
+            thread_split_error($tid, THREAD_SPLIT_POST_ERROR, $error_str);
             if ($tid_closed) thread_set_closed($tid, false);
             return false;
         }

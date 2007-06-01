@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.225 2007-05-31 21:59:18 decoyduck Exp $ */
+/* $Id: messages.php,v 1.226 2007-06-01 00:00:24 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -327,7 +327,7 @@ if ($tracking_data_array = thread_get_tracking_data($tid)) {
             if ($tracking_data['TID'] == $tid) {
 
                 $thread_link = "<a href=\"messages.php?webtag=$webtag&amp;msg=%s.1\" target=\"_self\">%s</a>";
-                $thread_link = sprintf($thread_link, $tracking_data['NEW_TID'], $lang['threadhere']);
+                $thread_link = sprintf($thread_link, $tracking_data['NEW_TID'], $lang['threadmovedhere']);
                 
                 echo "  <tr>\n";
                 echo "    <td align=\"left\">", sprintf($lang['thisthreadhasmoved'], $thread_link), "</td>\n";
@@ -337,7 +337,7 @@ if ($tracking_data_array = thread_get_tracking_data($tid)) {
             if ($tracking_data['NEW_TID'] == $tid) {
 
                 $thread_link = "<a href=\"messages.php?webtag=$webtag&amp;msg=%s.1\" target=\"_self\">%s</a>";
-                $thread_link = sprintf($thread_link, $tracking_data['TID'], $lang['threadhere']);
+                $thread_link = sprintf($thread_link, $tracking_data['TID'], $lang['threadmovedhere']);
 
                 echo "  <tr>\n";
                 echo "    <td align=\"left\">", sprintf($lang['thisthreadwasmergedfrom'], $thread_link), "</td>\n";
@@ -349,7 +349,7 @@ if ($tracking_data_array = thread_get_tracking_data($tid)) {
             if ($tracking_data['TID'] == $tid) {
 
                 $thread_link = "<a href=\"messages.php?webtag=$webtag&amp;msg=%s.1\" target=\"_self\">%s</a>";
-                $thread_link = sprintf($thread_link, $tracking_data['NEW_TID'], $lang['threadhere']);
+                $thread_link = sprintf($thread_link, $tracking_data['NEW_TID'], $lang['threadmovedhere']);
 
                 echo "  <tr>\n";
                 echo "    <td align=\"left\">", sprintf($lang['somepostsinthisthreadhavebeenmoved'], $thread_link), "</td>\n";
@@ -359,7 +359,7 @@ if ($tracking_data_array = thread_get_tracking_data($tid)) {
             if ($tracking_data['NEW_TID'] == $tid) {
 
                 $thread_link = "<a href=\"messages.php?webtag=$webtag&amp;msg=%s.1\" target=\"_self\">%s</a>";
-                $thread_link = sprintf($thread_link, $tracking_data['TID'], $lang['threadhere']);
+                $thread_link = sprintf($thread_link, $tracking_data['TID'], $lang['threadmovedhere']);
 
                 echo "  <tr>\n";
                 echo "    <td align=\"left\">", sprintf($lang['somepostsinthisthreadweremovedfrom'], $thread_link), "</td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.146 2007-05-26 17:36:56 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.147 2007-06-01 00:00:24 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -931,6 +931,26 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
         return;
     }
 
+    if (forum_get_setting('require_post_approval', 'Y') && $message['FROM_UID'] != $uid) {
+
+        if (isset($message['APPROVED']) && $message['APPROVED'] == 0 && !$perm_is_moderator) {
+
+            light_message_display_approval_req($tid, $message['PID']);
+            return;
+        }
+    }
+
+    // OUTPUT MESSAGE ----------------------------------------------------------
+
+    if (!$is_preview && ($message['MOVED_TID'] > 0) && ($message['MOVED_PID'] > 0)) {
+
+        $post_link = "<a href=\"messages.php?webtag=$webtag&amp;msg=%s.%s\" target=\"_self\">%s</a>";
+        $post_link = sprintf($post_link, $message['MOVED_TID'], $message['MOVED_PID'], $lang['threadmovedhere']);
+        
+        echo sprintf("<p>{$lang['thisposthasbeenmoved']}</p>\n", $post_link);
+        return;
+    }
+
     if (bh_session_get_value('IMAGES_TO_LINKS') == 'Y') {
 
         $message['CONTENT'] = preg_replace("/<a([^>]*)href=\"([^\"]*)\"([^\>]*)><img[^>]*src=\"([^\"]*)\"[^>]*><\/a>/i", "[img: <a\\1href=\"\\2\"\\3>\\4</a>]", $message['CONTENT']);
@@ -977,13 +997,14 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
         echo "&nbsp;({$lang['ignoreduser']}) ";
     }
 
-    if(($message['FROM_RELATIONSHIP'] & USER_IGNORED) && $limit_text) {
+    if (($message['FROM_RELATIONSHIP'] & USER_IGNORED) && $limit_text) {
 
         echo "<b>{$lang['ignoredmsg']}</b>";
+        return;
 
     }else {
 
-        if($in_list) {
+        if ($in_list) {
 
             if (($from_user_permissions & USER_PERM_WORMED)) echo "<b>{$lang['wormeduser']}</b> ";
             echo "&nbsp;".format_time($message['CREATED'], 1)."<br />";
@@ -1105,6 +1126,14 @@ function light_message_display_deleted($tid,$pid)
 
     echo sprintf("<p>{$lang['messagewasdeleted']}</p>\n", $tid, $pid);
     echo "<hr />";
+}
+
+function light_message_display_approval_req($tid, $pid)
+{
+    $lang = load_language_file();
+
+    echo sprintf("<p>{$lang['messageawaitingapprovalbymoderator']}</p>\n", $tid, $pid);
+    echo "<hr />\n";
 }
 
 function light_messages_nav_strip($tid,$pid,$length,$ppp)

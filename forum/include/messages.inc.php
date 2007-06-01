@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.453 2007-05-26 17:36:56 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.454 2007-06-01 00:00:24 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -700,13 +700,14 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
     if (!$is_preview && ($message['MOVED_TID'] > 0) && ($message['MOVED_PID'] > 0)) {
 
-        $moved_msg = "{$message['MOVED_TID']}.{$message['MOVED_PID']}";
+        $post_link = "<a href=\"messages.php?webtag=$webtag&amp;msg=%s.%s\" target=\"_self\">%s</a>";
+        $post_link = sprintf($post_link, $message['MOVED_TID'], $message['MOVED_PID'], $lang['threadmovedhere']);        
         
         echo "<br />\n";
         echo "<div align=\"center\">\n";
         echo "<table class=\"thread_track_notice\" width=\"96%\">\n";
         echo "  <tr>\n";
-        echo "    <td align=\"left\"><b>Thread Split:</b> This post has been moved <a href=\"messages.php?webtag=$webtag&amp;msg=$moved_msg\" target=\"_self\">here</a>.</td>\n";
+        echo "    <td align=\"left\">", sprintf($lang['thisposthasbeenmoved'], $post_link), "</td>\n";
         echo "  </tr>\n";
         echo "</table>\n";
         echo "</div>\n";

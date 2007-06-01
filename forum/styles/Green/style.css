@@ -1098,6 +1098,15 @@ a {
     border-left: 1px solid #000000;
 }
 
+.profile_item_value a {
+    font-size: 9pt;
+}
+
+.profile_item_overflow {
+    overflow: hidden;
+    height: 1.2em;
+}
+
 .image_resize_text {
     border: 1px dashed #000000;
     height: 25px;
@@ -1127,4 +1136,20 @@ a {
 .user_pref_dob_dropdown {
     width: 97px;
     margin-right: 1px;
+}
+
+.forum_rules_box {
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-size: 9pt;
+    color: #000000;
+    background-color: #FFFFFF;
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-style: inset;
+    height: 200px;
+    width: 500;
+    padding: 0px 10px 0px 10px;
+    overflow: auto;
 }

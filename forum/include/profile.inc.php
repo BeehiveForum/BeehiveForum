@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.74 2007-05-30 21:03:11 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.75 2007-06-01 21:02:33 decoyduck Exp $ */
 
 /**
 * Functions relating to profiles
@@ -772,7 +772,8 @@ function profile_items_get_list(&$profile_header_array, &$profile_dropdown_array
                                   'USER_TIME_BEST'  => $lang['longesttimeinforum'],
                                   'USER_TIME_TOTAL' => $lang['totaltimeinforum'],
                                   'DOB'             => $lang['birthday'],
-                                  'AGE'             => $lang['age']);
+                                  'AGE'             => $lang['age'],
+                                  'TIMEZONE'        => $lang['timezone']);
 
     // Add the pre-defined profile options to the top of the list
 
@@ -853,7 +854,8 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
                                              'USER_TIME_BEST'  => '(USER_TIME_BEST IS NOT NULL AND LENGTH(USER_TIME_BEST) > 0)',
                                              'USER_TIME_TOTAL' => '(USER_TIME_TOTAL IS NOT NULL AND LENGTH(USER_TIME_TOTAL) > 0)',
                                              'DOB'             => '(DOB IS NOT NULL AND LENGTH(DOB) > 0)',
-                                             'AGE'             => '(AGE IS NOT NULL AND LENGTH(AGE) > 0)');
+                                             'AGE'             => '(AGE IS NOT NULL AND LENGTH(AGE) > 0)',
+                                             'TIMEZONE'        => '(TIMEZONE IS NOT NULL AND LENGTH(TIMEZONE) > 0)');
 
     $column_null_filter_where_array = array('POST_COUNT'      => '(USER_TRACK.POST_COUNT IS NOT NULL AND USER_TRACK.POST_COUNT > 0)',
                                             'LAST_VISIT'      => '(VISITOR_LOG_TIME.LAST_LOGON IS NOT NULL AND UNIX_TIMESTAMP(VISITOR_LOG_TIME.LAST_LOGON) > 0)',
@@ -861,7 +863,8 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
                                             'USER_TIME_BEST'  => '(USER_TRACK.USER_TIME_BEST IS NOT NULL AND UNIX_TIMESTAMP(USER_TRACK.USER_TIME_BEST) > 0)',
                                             'USER_TIME_TOTAL' => '(USER_TRACK.USER_TIME_TOTAL IS NOT NULL AND UNIX_TIMESTAMP(USER_TRACK.USER_TIME_TOTAL) > 0)',
                                             'DOB'             => '(USER_PREFS_DOB.DOB_DISPLAY > 1 AND UNIX_TIMESTAMP(USER_PREFS_DOB.DOB) > 0)',
-                                            'AGE'             => '(USER_PREFS_DOB.DOB_DISPLAY = 1 OR USER_PREFS_DOB.DOB_DISPLAY = 2)');
+                                            'AGE'             => '((USER_PREFS_DOB.DOB_DISPLAY = 1 OR USER_PREFS_DOB.DOB_DISPLAY = 2) AND UNIX_TIMESTAMP(USER_PREFS_DOB.DOB) > 0)',
+                                            'TIMEZONE'        => '(TIMEZONES.TZID IS NOT NULL AND LENGTH(TIMEZONES.TZID) > 0)');
 
     // Main query.
 
@@ -870,6 +873,7 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
     $select_sql.= "USER_TRACK.POST_COUNT AS POST_COUNT, DATE_FORMAT(USER_PREFS_DOB.DOB, '00-%m-%d') AS DOB, ";
     $select_sql.= "DATE_FORMAT(NOW(), '%Y') - DATE_FORMAT(USER_PREFS_AGE.DOB, '%Y') - ";
     $select_sql.= "(DATE_FORMAT(NOW(), '00-%m-%d') < DATE_FORMAT(USER_PREFS_AGE.DOB, '00-%m-%d')) AS AGE, ";
+    $select_sql.= "TIMEZONES.TZID AS TIMEZONE, UNIX_TIMESTAMP(NOW()) AS LOCAL_TIME, ";
     $select_sql.= "UNIX_TIMESTAMP(VISITOR_LOG_TIME.LAST_LOGON) AS LAST_VISIT, ";
     $select_sql.= "UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, ";
     $select_sql.= "UNIX_TIMESTAMP(USER_TRACK.USER_TIME_BEST) AS USER_TIME_BEST, ";
@@ -940,6 +944,10 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
     // Join for the search bot data
 
     $join_sql.= "LEFT JOIN SEARCH_ENGINE_BOTS ON (SEARCH_ENGINE_BOTS.SID = VISITOR_LOG.SID) ";
+
+    // Join for the user timezone
+
+    $join_sql.= "LEFT JOIN TIMEZONES ON (TIMEZONES.TZID = USER_PREFS_GLOBAL.TIMEZONE) ";
 
     // Joins on the selected numeric (PIID) profile items.
 
@@ -1140,6 +1148,12 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
                     $user_data['DOB'] = format_dob($user_data['DOB']);
                 }else {
                     $user_data['DOB'] = $lang['unknown'];
+                }
+
+                if (isset($user_data['TIMEZONE']) && !is_null($user_data['TIMEZONE'])) {
+                    $user_data['TIMEZONE'] = timezone_id_to_string($user_data['TIMEZONE']);
+                }else {
+                    $user_data['TIMEZONE'] = $lang['unknown'];
                 }
 
                 if (!isset($user_data['POST_COUNT']) || is_null($user_data['POST_COUNT'])) {

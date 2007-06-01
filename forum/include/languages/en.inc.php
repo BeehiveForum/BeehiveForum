@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.439 2007-06-01 00:00:24 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.440 2007-06-01 21:02:34 decoyduck Exp $ */
 
 // British English language file
 
@@ -1291,6 +1291,7 @@ $lang['showforumstats'] = "Show forum stats at bottom of message pane";
 $lang['usewordfilter'] = "Enable word filter.";
 $lang['forceadminwordfilter'] = "Force use of admin word filter on all users (inc. guests)";
 $lang['timezone'] = "Time Zone";
+$lang['localtime'] = "Local Time";
 $lang['language'] = "Language";
 $lang['emailsettings'] = "Email and contact settings";
 $lang['forumanonymity'] = "Forum anonymity settings";
@@ -1421,6 +1422,8 @@ $lang['findpostsmadebyuser'] = "Find Posts made by %s";
 $lang['findpostsmadebyme'] = "Find Posts made by me";
 $lang['findthreadsstartedbyme'] = "Find Threads started by Me";
 $lang['findthreadsstartedbyuser'] = "Find Threads started by %s";
+$lang['profilenotavailable'] = "Profile Not Available.";
+$lang['userprofileempty'] = "This user has not filled in their profile or it is set to private.";
 
 // Registration (register.php) -----------------------------------------
 

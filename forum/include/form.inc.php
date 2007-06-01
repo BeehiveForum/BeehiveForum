@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.101 2007-06-01 21:02:33 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.102 2007-06-01 23:12:04 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -445,7 +445,7 @@ function form_dob_dropdowns($dob_year, $dob_month, $dob_day, $show_blank = true,
 
     }else {
 
-        $birthday_days = range(1, 31);
+        $birthday_days = range(0, 31); unset($birthday_days[0]);
         $birthday_months = $lang['month'];
         $birthday_years = array_flip(range(1900, date('Y', mktime())));
     }

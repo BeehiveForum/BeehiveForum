@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.69 2007-05-31 21:59:20 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.70 2007-06-01 21:02:33 decoyduck Exp $ */
 
 /**
 * Functions relating to users interacting with profiles
@@ -278,8 +278,20 @@ function user_get_profile_entries($uid)
 
     $user_profile_array = array();
 
-    $sql = "SELECT PI.PSID, PI.NAME, PI.TYPE, UP.ENTRY, UP.PRIVACY FROM {$table_data['PREFIX']}PROFILE_ITEM PI ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PROFILE UP ON (UP.PIID = PI.PIID AND UP.UID = '$uid') ";
+    $session_uid = bh_session_get_value('UID');
+
+    $peer_relationship = user_get_relationship($uid, $session_uid);
+
+    $user_friend = USER_FRIEND;
+
+    $sql = "SELECT PI.PSID, PI.PIID, PI.NAME, PI.TYPE, UP.ENTRY, ";
+    $sql.= "UP.PRIVACY FROM {$table_data['PREFIX']}PROFILE_ITEM PI ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PROFILE UP ";
+    $sql.= "ON (UP.PIID = PI.PIID AND UP.UID = '$uid' ";
+    $sql.= "AND (UP.PRIVACY = 0 OR UP.UID = '$session_uid' ";
+    $sql.= "OR (UP.PRIVACY = 1 AND ($peer_relationship ";
+    $sql.= "& $user_friend > 0)))) WHERE UP.ENTRY IS NOT NULL ";
+    $sql.= "AND LENGTH(UP.ENTRY) > 0 ";
     $sql.= "ORDER BY PI.POSITION, PI.PIID";
 
     if (!$result = db_query($sql, $db_user_get_profile_entries)) return false;
@@ -288,11 +300,26 @@ function user_get_profile_entries($uid)
 
         while ($row = db_fetch_array($result)) {
 
-            $user_profile_array[$row['PSID']][] = $row;
+            if (($row['TYPE'] == PROFILE_ITEM_RADIO) || ($row['TYPE'] == PROFILE_ITEM_DROPDOWN)) {
+
+                if (@list($field_name, $field_values) = explode(':', $row['NAME'])) {
+
+                    $field_values = explode(';', $field_values);
+
+                    if (isset($row['ENTRY']) && isset($field_values[$row['ENTRY']])) {
+
+                        $user_profile_array[$row['PSID']][$row['PIID']] = $row;
+                    }
+                }
+
+            }else {
+
+                $user_profile_array[$row['PSID']][$row['PIID']] = $row;
+            }
         }
     }
 
-    return $user_profile_array;
+    return sizeof($user_profile_array) > 0 ? $user_profile_array : false;
 }
 
 function user_get_profile_image($uid)

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: timezone.inc.php,v 1.4 2007-04-28 22:36:18 decoyduck Exp $ */
+/* $Id: timezone.inc.php,v 1.5 2007-06-01 21:02:33 decoyduck Exp $ */
 
 /**
 * timezone.inc.php - International Timezones with DST support
@@ -123,6 +123,17 @@ function get_available_timezones()
                  73 => "(GMT+12:00) Auckland, Wellington",
                  74 => "(GMT+12:00) Figi, Kamchatka, Marshall Is.",
                  75 => "(GMT+13:00) Nuku'alofa");
+}
+
+function timezone_id_to_string($timezone_id)
+{
+    $lang = load_language_file();
+    
+    $timezones_array = get_available_timezones();
+
+    if (isset($timezones_array[$timezone_id])) return $timezones_array[$timezone_id];
+
+    return $lang['unknown'];
 }
 
 function timestamp_is_dst($timezoneid, $gmt_offset)

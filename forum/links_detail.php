@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_detail.php,v 1.89 2007-05-31 21:59:18 decoyduck Exp $ */
+/* $Id: links_detail.php,v 1.90 2007-06-01 21:02:33 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -364,7 +364,7 @@ if (!user_is_guest()) {
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\"><b>{$lang['bad']} (0)</b>&nbsp;</td>\n";
-    echo "                        <td align=\"center\">" . form_radio_array("vote", range(0, 10), array(0 => "&nbsp;", 1 => "&nbsp;", 2 => "&nbsp;", 3 => "&nbsp;", 4 => "&nbsp;", 5 => "&nbsp;", 6 => "&nbsp;", 7 => "&nbsp;", 8 => "&nbsp;", 9 => "&nbsp;", 10 => "&nbsp;"), $vote) . "&nbsp;</td>\n";
+    echo "                        <td align=\"center\">", form_radio_array("vote", range(0, 10), $vote), "&nbsp;</td>\n";
     echo "                        <td align=\"left\"><b>(10) {$lang['good']}</b>&nbsp;</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";

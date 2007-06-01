@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.96 2007-06-01 00:00:30 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.97 2007-06-01 21:02:33 decoyduck Exp $ */
 
 /**
 * Displays and handles the User Relationship page
@@ -199,24 +199,11 @@ if (isset($_POST['submit'])) {
 
     $valid = true;
 
-    $peer_relationship = USER_NORMAL;
+    $peer_user_status = (double) (isset($_POST['peer_user_status'])) ? $_POST['peer_user_status'] : 0;
+    $peer_sig_display = (double) (isset($_POST['peer_sig_display'])) ? $_POST['peer_sig_display'] : 0;
+    $peer_block_pm    = (double) (isset($_POST['peer_block_pm']))    ? $_POST['peer_block_pm']    : 0;
 
-    if (isset($_POST['peer_relationship']) && is_numeric($_POST['peer_relationship'])) {
-        
-        $peer_relationship = $_POST['peer_relationship'];
-    }
-
-    if (isset($_POST['peer_sig_display']) && is_numeric($_POST['peer_sig_display'])) {
-
-        $peer_sig_display  = $_POST['peer_sig_display'];
-        $peer_relationship = $peer_relationship | $peer_sig_display;
-    }
-
-    if (isset($_POST['peer_block_pm']) && is_numeric($_POST['peer_block_pm'])) {
-
-        $peer_block_pm  = $_POST['peer_block_pm'];
-        $peer_relationship = $peer_relationship | $peer_block_pm;
-    }
+    $peer_relationship = (double) $peer_user_status | $peer_sig_display | $peer_block_pm;
 
     if (isset($_POST['nickname']) && strlen(_stripslashes($_POST['nickname'])) > 0) {
         $peer_nickname = strip_tags(_stripslashes($_POST['nickname']));
@@ -377,22 +364,22 @@ echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"150\">", form_radio('peer_relationship', USER_FRIEND, $lang['friend'], $peer_relationship & USER_FRIEND ? true : false), "</td>\n";
+echo "                        <td align=\"left\" width=\"150\">", form_radio('peer_user_status', USER_FRIEND, $lang['friend'], $peer_relationship & USER_FRIEND ? true : false), "</td>\n";
 echo "                        <td align=\"left\" width=\"400\">: {$lang['friend_exp']}</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"150\">", form_radio('peer_relationship', USER_NORMAL, $lang['normal'], !(($peer_relationship & USER_IGNORED) || ($peer_relationship & USER_FRIEND) || ($peer_relationship & USER_IGNORED_COMPLETELY)) ? true : false), "</td>\n";
+echo "                        <td align=\"left\" width=\"150\">", form_radio('peer_user_status', USER_NORMAL, $lang['normal'], !(($peer_relationship & USER_IGNORED) || ($peer_relationship & USER_FRIEND) || ($peer_relationship & USER_IGNORED_COMPLETELY)) ? true : false), "</td>\n";
 echo "                        <td align=\"left\" width=\"400\">: {$lang['normal_exp']}</td>\n";
 echo "                      </tr>\n";
 
 if ((($peer_perms & USER_PERM_FOLDER_MODERATE) && ($user_perms & USER_PERM_CAN_IGNORE_ADMIN)) || !($peer_perms & USER_PERM_FOLDER_MODERATE)) {
 
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"150\">", form_radio('peer_relationship', USER_IGNORED, $lang['ignored'], $peer_relationship & USER_IGNORED ? true : false), "</td>\n";
+    echo "                        <td align=\"left\" width=\"150\">", form_radio('peer_user_status', USER_IGNORED, $lang['ignored'], $peer_relationship & USER_IGNORED ? true : false), "</td>\n";
     echo "                        <td align=\"left\" width=\"400\">: {$lang['ignore_exp']}</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"150\">", form_radio('peer_relationship', USER_IGNORED_COMPLETELY, $lang['ignoredcompletely'], $peer_relationship & USER_IGNORED_COMPLETELY ? true : false), "</td>\n";
+    echo "                        <td align=\"left\" width=\"150\">", form_radio('peer_user_status', USER_IGNORED_COMPLETELY, $lang['ignoredcompletely'], $peer_relationship & USER_IGNORED_COMPLETELY ? true : false), "</td>\n";
     echo "                        <td align=\"left\" width=\"400\">: {$lang['ignore_completely_exp']}</td>\n";
     echo "                      </tr>\n";
 

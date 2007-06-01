@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.100 2007-06-01 00:00:24 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.101 2007-06-01 21:02:33 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -312,13 +312,15 @@ function form_radio($name, $value, $text, $checked = false, $custom_html = false
 
 // Create an array of radio fields.
 
-function form_radio_array($name, $value, $text, $checked = false, $custom_html = false)
+function form_radio_array($name, $options_array, $checked = false, $custom_html = false)
 {
-    for ($i = 0; $i < count($value); $i++) {
-        if (isset($html)) {
-            $html.= form_radio($name, $value[$i], $text[$i], ($checked == $value[$i]), $custom_html);
-        }else {
-            $html = form_radio($name, $value[$i], $text[$i], ($checked == $value[$i]), $custom_html);
+    $html = "";
+    
+    foreach ($options_array as $option_key => $option_text) {
+
+        if (!is_array($option_text)) {
+
+            $html.= form_radio($name, $option_key, $option_text, ($checked == $option_key), $custom_html);
         }
     }
 

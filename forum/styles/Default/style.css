@@ -1103,6 +1103,11 @@ a {
     border-left: 1px solid #000000;
 }
 
+.profile_item_overflow {
+    overflow: hidden;
+    height: 1.2em;
+}
+
 .image_resize_text {
     border: 1px dashed #000000;
     height: 25px;

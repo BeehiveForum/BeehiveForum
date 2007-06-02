@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.300 2007-06-01 00:00:24 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.301 2007-06-02 13:17:16 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -392,7 +392,7 @@ if (bh_session_get_value('UID') > 0) {
     // Append ignored folders onto the end of the folder list.
     // This will make them appear at the bottom of the thread list.
 
-    $folder_order = array_merge($folder_order, $ignored_folders);
+    $folder_order = array_merge_keys($folder_order, $ignored_folders);
 
 }else {
 

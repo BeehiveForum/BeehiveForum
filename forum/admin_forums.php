@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forums.php,v 1.69 2007-05-31 21:59:14 decoyduck Exp $ */
+/* $Id: admin_forums.php,v 1.70 2007-06-02 13:17:16 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -425,7 +425,7 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
 
     if ($available_databases = forums_get_available_dbs()) {
 
-        $available_databases = array_merge(array('&nbsp;'), $available_databases);
+        $available_databases = array_merge_keys(array('&nbsp;'), $available_databases);
         
         echo "                      <tr>\n";
         echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">{$lang['usedatabase']}:</td>\n";

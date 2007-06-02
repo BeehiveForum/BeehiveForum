@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.203 2007-05-31 16:22:52 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.204 2007-06-02 13:17:18 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -988,7 +988,7 @@ function pm_display($pm_message_array, $folder, $preview = false, $export_html =
             $recipient_array = preg_split("/[;|,]/", trim($pm_message_array['RECIPIENTS']));
 
             if ($pm_message_array['TO_UID'] > 0) {
-                $recipient_array = array_unique(array_merge($recipient_array, array($pm_message_array['TLOGON'])));               
+                $recipient_array = array_unique(array_merge_keys($recipient_array, array($pm_message_array['TLOGON'])));               
             }
             
             if ($export_html === false) $recipient_array = array_map('user_profile_popup_callback', $recipient_array);

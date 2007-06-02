@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.102 2007-06-01 23:12:04 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.103 2007-06-02 13:17:18 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -440,8 +440,8 @@ function form_dob_dropdowns($dob_year, $dob_month, $dob_day, $show_blank = true,
     if ($show_blank) {
 
         $birthday_days = range(0, 31); $birthday_days[0] = '&nbsp;';
-        $birthday_months = array_merge(array('&nbsp;'), $lang['month']);
-        $birthday_years = array_flip(array_merge(array('&nbsp;' => ''), range(1900, date('Y', mktime()))));
+        $birthday_months = array_merge_keys(array('&nbsp;'), $lang['month']);
+        $birthday_years = array_flip(array_merge_keys(array('&nbsp;' => ''), range(1900, date('Y', mktime()))));
 
     }else {
 
@@ -471,17 +471,17 @@ function form_date_dropdowns($year = 0, $month = 0, $day = 0, $prefix = false, $
 
     if (is_numeric($start_year) && $start_year > 0 && $start_year < 2037) {
 
-        $years = array_flip(array_merge(array('&nbsp;' => ''), range($start_year, 2037)));
+        $years = array_flip(array_merge_keys(array('&nbsp;' => ''), range($start_year, 2037)));
         array_walk($years, create_function('&$item, $key', 'if (is_numeric($key)) $item = $key;'));
 
     }else {
 
-        $years = array_flip(array_merge(array('&nbsp;' => ''), range(date('Y'), 2037)));
+        $years = array_flip(array_merge_keys(array('&nbsp;' => ''), range(date('Y'), 2037)));
         array_walk($years, create_function('&$item, $key', 'if (is_numeric($key)) $item = $key;'));
     }
 
     $days = range(0, 31); $days[0] = '&nbsp;';
-    $months = array_merge(array('&nbsp;'), $lang['month_short']);
+    $months = array_merge_keys(array('&nbsp;'), $lang['month_short']);
 
     $output = form_dropdown_array("{$prefix}day", $days, $day). "&nbsp;";
     $output.= form_dropdown_array("{$prefix}month", $months, $month). "&nbsp;";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.147 2007-06-01 00:00:24 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.148 2007-06-02 13:17:18 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -319,7 +319,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
         // Append ignored folders onto the end of the folder list.
         // This will make them appear at the bottom of the thread list.
 
-        $folder_order = array_merge($folder_order, $ignored_folders);
+        $folder_order = array_merge_keys($folder_order, $ignored_folders);
 
     }else {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: server.inc.php,v 1.14 2007-05-22 13:47:58 decoyduck Exp $ */
+/* $Id: server.inc.php,v 1.15 2007-06-02 13:17:21 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -116,7 +116,7 @@ function server_get_cpu_load()
 
 function system_get_temp_dir()
 {
-    $env_array = array_merge($_ENV, $_SYSTEM);
+    $env_array = array_merge_keys($_ENV, $_SYSTEM);
     
     if (function_exists('sys_get_temp_dir')) {
 

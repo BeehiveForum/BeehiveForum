@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.136 2007-05-31 22:29:20 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.137 2007-06-02 13:17:18 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -39,26 +39,50 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "timezone.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
-function format_user_name($u_logon, $u_nickname)
+/**
+* Format user nickname.
+*
+* Formats users nickname into one of:
+*
+* LOGON - Where no nickname is set
+* Nickname - Where logon is the same as nickname (case-insensitive)
+* Nickname (LOGON) - Where logon and nickname differ.
+*
+* @return string
+* @param string $logon - User Logon
+* @param string $nickname - User Nickname
+*/
+
+function format_user_name($logon, $nickname)
 {
-    if (strlen($u_nickname) > 0) {
+    if (strlen($nickname) > 0) {
 
-        if (strtoupper($u_logon) == strtoupper($u_nickname)) {
+        if (strtoupper($logon) == strtoupper($nickname)) {
 
-            $fmt = $u_nickname;
+            $formatted_user_name = $nickname;
 
         }else {
 
-            $fmt = $u_nickname. " (". strtoupper($u_logon). ")";
+            $logon = strtoupper($logon);
+            $formatted_user_name = "$nickname ($logon)";
         }
 
     }else {
 
-        $fmt = strtoupper($u_logon);
+        $formatted_user_name = strtoupper($logon);
     }
 
-    return $fmt;
+    return $formatted_user_name;
 }
+
+/**
+* Format file size.
+*
+* Formats file size of bytes into megabytes (MB), kilobytes (KB) or Bytes.
+*
+* @return string
+* @param integer $size - Filesize in bytes.
+*/
 
 function format_file_size($size)
 {
@@ -227,6 +251,16 @@ function format_date($time)
     return $fmt;
 }
 
+/**
+* Format time display
+*
+* Formats Unix timestamp into units of years, months, weeks, days, hours, minutes and seconds.
+*
+* @return string
+* @param integer $seconds - Unix timestamp
+* @param boolean $abbrv_units - Specify use of abbreviated units (hr vs. hour, min vs. minute, etc.)
+*/
+
 function format_time_display($seconds, $abbrv_units = true)
 {        
     $lang = load_language_file();
@@ -273,6 +307,15 @@ function format_time_display($seconds, $abbrv_units = true)
     return sprintf($lang['date_periods_plural']['second'], 0);
 }
 
+/**
+* Convert MySQL timestamp into Unix timestamp.
+*
+* Connverts MySQL timestamp (YYYYMMDDHHIISS) into a Unix timestamp
+*
+* @return integer
+* @param integer $timestamp - MySQL timestamp
+*/
+
 function timestamp_to_date($timestamp)
 {
     $year=substr($timestamp,0,4);
@@ -285,16 +328,28 @@ function timestamp_to_date($timestamp)
     return ($newdate);
 }
 
-// Lazy htmlentities function which ensures the use of
-// unicode for all character code sets.
+/**
+* UTF-8 enforced htmlentities
+*
+* Ensures use of UTF-8 and ENT_COMPAT settings for htmlentities.
+*
+* @return string
+* @param string $text - String to encode.
+*/
 
 function _htmlentities($text)
 {
     return htmlentities($text, ENT_COMPAT, 'UTF-8');
 }
 
-// Lazy / replacement for htmlentities_decode(). Should be
-// UTF-8 compliant but probably isn't.
+/**
+* HTML_ENTITIES and ENT_QUOTES enforced htmlentities_decode
+*
+* Ensures use of HTML_ENTITIES and ENT_QUOTES settings for htmlentities_decode.
+*
+* @return string
+* @param string $text - String to encode.
+*/
 
 function _htmlentities_decode($text)
 {
@@ -319,9 +374,16 @@ function _htmlentities_decode($text)
     return preg_replace('/&#x([a-f0-9]+);/mei', "chr(0x\\1)", $ret);
 }
 
-// Translate &nbsp; to &#160; etc. If translation of entity fails
-// (i.e. no change is noticed after pass through _htmlentities_decode()
-// function the unaltered entity is returned.
+/**
+* XML literal to numeric
+*
+* Converts XML literal entities into numerical entities (&nbsp; to &#160;, etc.).
+* Accepts only one entity not an entire string. To convert an entire string use
+* html_entity_to_decimal() function.
+*
+* @return string
+* @param string $literal - Literal to convert (&nbsp;, &gt;)
+*/
 
 function xml_literal_to_numeric($literal)
 {
@@ -335,7 +397,15 @@ function xml_literal_to_numeric($literal)
     return "&#$numeric;";
 }
 
-// The definitive HTML entity to XML decimal function (maybe)
+/**
+* HTML literal to XML numeric
+*
+* Converts HTML literal entities into XML numerical entities.
+* Same as above function, but converts all matches in a string.
+*
+* @return string
+* @param string $string - String to convert.
+*/
 
 function html_entity_to_decimal($string)
 {
@@ -469,8 +539,14 @@ function html_entity_to_decimal($string)
     return preg_replace("/&[A-Za-z]+;/", " ", strtr($string,$entity_to_decimal));    
 }
 
-// Checks for Magic Quotes and perform stripslashes if nessecary
-// Works on multi-dimensional arrays and strings(!)
+/**
+* Array aware magic-quotes safe stripslashes.
+*
+* Processes array or string through stripslashes while testing for magic-quotes.
+*
+* @return mixed
+* @param mixed  $var - Variable to convert (array or string)
+*/
 
 function _stripslashes($var)
 {
@@ -486,7 +562,15 @@ function _stripslashes($var)
    return $var;
 }
 
-// Case insensitive replacement for array_search.
+/**
+* Search an array
+*
+* Searches the array for a given value and returns the corresponding key if successful.
+* This version is case-insensitive.
+*
+* @return mixed
+* @param mixed  $var - Variable to convert (array or string)
+*/
 
 function _array_search($needle, $haystack)
 {
@@ -503,6 +587,16 @@ function _array_search($needle, $haystack)
 
     return false;
 }
+
+/**
+* Merge two arrays into one.
+*
+* Merges two arrays into one while maintaining numerical keys.
+*
+* @return array
+* @param array  $array_1 - Array to merge
+* @param array  $array_2 - Array to merge
+*/
 
 function array_merge_keys($array1, $array2)
 {
@@ -524,9 +618,15 @@ function array_merge_keys($array1, $array2)
     return $array1;
 }
 
-// is_md5 validates an md5 hash to make sure it is correctly
-// formed (i.e. letters A to F and numbers only and a length
-// of 32 chars).
+/**
+* Validate MD5 hash.
+*
+* Checks that MD5 hash contains valid caharacters and is required length.
+* Does not validate the md5 hash is correct.
+*
+* @return boolean
+* @param string $hash - MD5 hash to test.
+*/
 
 function is_md5($hash)
 {
@@ -536,6 +636,16 @@ function is_md5($hash)
 
     return false;
 }
+
+/**
+* Get Local Time.
+*
+* Get's user's local time as a Unix timestamp by checking their timezone,
+* GMT and DST offsets and day light savings settings.
+*
+* @return integer
+* @param void
+*/
 
 function get_local_time()
 {
@@ -564,7 +674,16 @@ function get_local_time()
     return $local_time;
 }
 
-function format_age($dob) // $dob is a MySQL-type DATE field (YYYY-MM-DD)
+/**
+* Calulate Age from DOB
+*
+* Calculates age from MySQL DATE field (YYYY-MM-DD)
+*
+* @return integer
+* @param integer $dob - MySQL DATE field.
+*/
+
+function format_age($dob)
 {
     $local_time = get_local_time();
 
@@ -580,6 +699,15 @@ function format_age($dob) // $dob is a MySQL-type DATE field (YYYY-MM-DD)
     return $age;
 }
 
+/**
+* Format DOB as a string.
+*                   
+* Formats a MySQL DATE field (YYYY-MM-DD) as human readable date (1st Jan, etc.)
+*
+* @return string
+* @param integer $dob - MySQL DATE field.
+*/
+
 function format_dob($dob) // $dob is a MySQL-type DATE field (YYYY-MM-DD)
 {
     $lang = load_language_file();
@@ -591,20 +719,37 @@ function format_dob($dob) // $dob is a MySQL-type DATE field (YYYY-MM-DD)
     return "$day {$lang['month_short'][$month]}";
 }
 
+/**
+* Format Birthday as a string.
+*                   
+* Formats a MySQL DATE field (YYYY-MM-DD) as human readable date (1st Jan, etc.)
+*
+* @return string
+* @param integer $dob - MySQL DATE field.
+*/
+
 function format_birthday($date) // $date is a MySQL-type DATE field (YYYY-MM-DD)
 {
-    $date_bits = explode("-", $date);
-    $local_time = get_local_time();
-    $todays_date = date("j", $local_time);
-    $todays_month = date("n", $local_time);
-    if (($todays_month < $date_bits[1]) && ($todays_date < $date_bits[2])) {
-        $year = date("Y", $local_time);
-    } else {
-        $year = date("Y", $local_time) + 1;
-    }
+    $lang = load_language_file();
+    
+    list ($year, $month, $day) = explode("-", $date);
 
-    return date("j M", mktime(0, 0, 0, $date_bits[1], $date_bits[2], $year));
+    $month = floor($month); $day = floor($day);
+
+    return "$day {$lang['month_short'][$month]}";
 }
+
+/**
+* Removes specified parts of a URL.
+*                   
+* Optionally removes path, query and fragment (#pagemark) from an URL
+*
+* @return string
+* @param string $url - URL to process
+* @param boolean $inc_path - Optional - Keep the path on the URL.
+* @param boolean $inc_query - Optional - Keep the URL query on the URL.
+* @param boolean $inc_fragment - Optional - Keep the fragment on the URL.
+*/
 
 function split_url($url, $inc_path = false, $inc_query = false, $inc_fragment = false)
 {
@@ -622,8 +767,20 @@ function split_url($url, $inc_path = false, $inc_query = false, $inc_fragment = 
         return $url_split;
     }
 
-    return false;
+    return $url;
 }
+
+/**
+* Flattern an array
+*                   
+* Flatterns a multi-dimensional array into two arrays of keys and values.
+*
+* @return void
+* @param array $array - Array to process.
+* @param array $result_keys - By Reference array of keys retrieved from array
+* @param array $result_keys - By Reference array of values retrieved from array
+* @param string $key_str - Optional string to specify key prefix.
+*/
 
 function flatten_array($array, &$result_keys, &$result_values, $key_str = "")
 {
@@ -655,6 +812,15 @@ function flatten_array($array, &$result_keys, &$result_values, $key_str = "")
         }
     }
 }
+
+/**
+* Preg Quote string call back
+*                   
+* Use with array_map to process all array elements through preg_quote using / as delimiter.
+*
+* @return string
+* @param string $str - 
+*/
 
 function preg_quote_callback($str)
 {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.185 2007-05-19 18:24:32 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.186 2007-06-02 13:17:21 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -344,7 +344,7 @@ function search_strip_keywords($search_string, $strip_valid = false)
         $keywords_array_length = preg_grep("/^[\+|-]?[\"]?[\w\s']{{$min_length},{$max_length}}[\"]?$/", $keywords_array, PREG_GREP_INVERT);
         $keywords_array_swords = preg_grep("/^[\+|-]?[\"]?{$mysql_fulltext_stopwords}[\"]?$/", $keywords_array);
 
-        $keywords_array = array_merge($keywords_array_length, $keywords_array_swords);
+        $keywords_array = array_merge_keys($keywords_array_length, $keywords_array_swords);
 
     }else {
         
@@ -792,7 +792,7 @@ function folder_search_dropdown()
 
         if (sizeof($available_folders) > 0) {
 
-            $available_folders = array_merge(array(0 => $lang['all_caps']), $available_folders);
+            $available_folders = array_merge_keys(array(0 => $lang['all_caps']), $available_folders);
             return form_dropdown_array("fid", $available_folders, 0, false, "search_dropdown");
         }
     }

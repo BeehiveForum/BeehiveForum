@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.php,v 1.97 2007-06-02 11:39:24 decoyduck Exp $ */
+/* $Id: visitor_log.php,v 1.98 2007-06-02 13:17:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -197,6 +197,7 @@ if (sizeof($profile_items_selected_array) > 0) {
 // Permitted columns to sort the results by
 
 $sort_by_array = array_keys($profile_header_array);
+
 array_unshift($sort_by_array, 'LOGON');
 
 // Permitted sort directions.
@@ -352,7 +353,7 @@ if (sizeof($user_profile_array['user_array']) > 0) {
                 $profile_picture_href.= "?webtag=$webtag&amp;profile_picture=1";
             }
 
-            echo "                   <td class=\"postbody\" align=\"left\" valign=\"top\"><img src=\"$profile_picture_href\" alt=\"", format_user_name($user_array['LOGON'], $user_array['NICKNAME']), "\" title=\"", format_user_name($user_array['LOGON'], $user_array['NICKNAME']), "\" border=\"0\" /></td>\n";
+            echo "                   <td class=\"postbody\" align=\"left\" valign=\"top\"><img src=\"$profile_picture_href\" alt=\"", format_user_name($user_array['LOGON'], $user_array['NICKNAME']), "\" title=\"", format_user_name($user_array['LOGON'], $user_array['NICKNAME']), "\" border=\"0\" width=\"15\" height=\"15\" /></td>\n";
         
         }else {
 

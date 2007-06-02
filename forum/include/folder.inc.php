@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.127 2007-05-19 18:24:31 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.128 2007-06-02 13:17:18 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -232,7 +232,7 @@ function folder_update($fid, $folder_order)
 
     $forum_fid = $table_data['FID'];
 
-    $folder_order = array_merge(folder_get($fid), $folder_order);
+    $folder_order = array_merge_keys(folder_get($fid), $folder_order);
 
     foreach($folder_order as $key => $value) {
 

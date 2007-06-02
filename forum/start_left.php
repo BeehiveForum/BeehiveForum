@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.140 2007-05-31 21:59:19 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.141 2007-06-02 13:17:16 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -329,7 +329,7 @@ if ($users_array = users_get_recent()) {
 
         if (isset($recent_user['AVATAR_URL']) && strlen($recent_user['AVATAR_URL']) > 0) {
 
-            echo "                   <td class=\"postbody\" align=\"left\"><img src=\"{$recent_user['AVATAR_URL']}\" alt=\"", format_user_name($recent_user['LOGON'], $recent_user['NICKNAME']), "\" title=\"", format_user_name($recent_user['LOGON'], $recent_user['NICKNAME']), "\" border=\"0\" /></td>\n";
+            echo "                   <td class=\"postbody\" align=\"left\"><img src=\"{$recent_user['AVATAR_URL']}\" alt=\"", format_user_name($recent_user['LOGON'], $recent_user['NICKNAME']), "\" title=\"", format_user_name($recent_user['LOGON'], $recent_user['NICKNAME']), "\" border=\"0\" width=\"15\" height=\"15\" /></td>\n";
 
         }elseif (isset($recent_user['AVATAR_AID']) && is_md5($recent_user['AVATAR_AID'])) {
 
@@ -347,7 +347,7 @@ if ($users_array = users_get_recent()) {
                 $profile_picture_href.= "?webtag=$webtag&amp;profile_picture=1";
             }
 
-            echo "                   <td class=\"postbody\" align=\"left\"><img src=\"$profile_picture_href\" alt=\"", format_user_name($recent_user['LOGON'], $recent_user['NICKNAME']), "\" title=\"", format_user_name($recent_user['LOGON'], $recent_user['NICKNAME']), "\" border=\"0\" /></td>\n";
+            echo "                   <td class=\"postbody\" align=\"left\"><img src=\"$profile_picture_href\" alt=\"", format_user_name($recent_user['LOGON'], $recent_user['NICKNAME']), "\" title=\"", format_user_name($recent_user['LOGON'], $recent_user['NICKNAME']), "\" border=\"0\" width=\"15\" height=\"15\" /></td>\n";
         
         }else {
 

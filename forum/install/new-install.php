@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.145 2007-05-19 14:07:53 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.146 2007-06-02 11:39:24 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
 
@@ -1087,15 +1087,6 @@ if (!$result = @db_query($sql, $db_install)) {
 
 $sql = "INSERT INTO {$forum_webtag}_PROFILE_ITEM (PSID, NAME, TYPE, POSITION) ";
 $sql.= "VALUES (1, 'Location', 0, 1)";
-
-if (!$result = @db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "INSERT INTO {$forum_webtag}_PROFILE_ITEM (PSID, NAME, TYPE, POSITION) ";
-$sql.= "VALUES (1, 'Age', 0, 2)";
 
 if (!$result = @db_query($sql, $db_install)) {
 

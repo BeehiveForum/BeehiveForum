@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.440 2007-06-01 21:02:34 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.441 2007-06-02 11:39:24 decoyduck Exp $ */
 
 // British English language file
 
@@ -1246,14 +1246,14 @@ $lang['dateofbirth'] = "Date of Birth";
 $lang['homepageURL'] = "Homepage URL";
 $lang['profileandavatar'] = "Profile and Avatar";
 $lang['profileavatarpicexplain'] = "Here you can select a profile picture to be shown in your Profile Popup and on the Recent Visitor Log. You can choose to specify the URL of an existing image that you have hosted elsewhere or to upload an image as an attachment.";
-$lang['profilepicturedimensions'] = "Profile Picture (Max 150x150px)";
+$lang['profilepicturedimensions'] = "Profile Picture (Max 95x95px)";
 $lang['avatarpicturedimensions'] = "Avatar Picture (Max 15x15px)";
 $lang['selectattachment'] = "Select Attachment";
 $lang['pictureURL'] = "Picture URL";
 $lang['avatarURL'] = "Avatar URL";
 $lang['profilepictureconflict'] = "To use an attachment for your profile picture the Picture URL field must be blank.";
 $lang['avatarpictureconflict'] = "To use an attachment for your avatar picture the Avatar URL field must be blank.";
-$lang['attachmenttoolargeforprofilepicture'] = "Selected attachment is too large for profile picture. Maximum dimensions are 150x150px";
+$lang['attachmenttoolargeforprofilepicture'] = "Selected attachment is too large for profile picture. Maximum dimensions are 95x95px";
 $lang['attachmenttoolargeforavatarpicture'] = "Selected attachment is too large for avatar picture. Maximum dimensions are 15x15px";
 $lang['forumoptions'] = "Forum Options";
 $lang['notifybyemail'] = "Notify by email of posts to me";

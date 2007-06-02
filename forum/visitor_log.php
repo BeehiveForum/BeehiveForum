@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.php,v 1.96 2007-06-01 21:02:33 decoyduck Exp $ */
+/* $Id: visitor_log.php,v 1.97 2007-06-02 11:39:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -334,7 +334,7 @@ if (sizeof($user_profile_array['user_array']) > 0) {
 
         if (isset($user_array['AVATAR_URL']) && strlen($user_array['AVATAR_URL']) > 0) {
 
-            echo "                   <td class=\"postbody\" align=\"left\" valign=\"top\"><img src=\"{$user_array['AVATAR_URL']}\" alt=\"", format_user_name($user_array['LOGON'], $user_array['NICKNAME']), "\" title=\"", format_user_name($user_array['LOGON'], $user_array['NICKNAME']), "\" border=\"0\" /></td>\n";
+            echo "                   <td class=\"postbody\" align=\"left\" valign=\"top\"><img src=\"{$user_array['AVATAR_URL']}\" alt=\"", format_user_name($user_array['LOGON'], $user_array['NICKNAME']), "\" title=\"", format_user_name($user_array['LOGON'], $user_array['NICKNAME']), "\" border=\"0\" height=\"15\" width=\"15\" /></td>\n";
 
         }elseif (isset($user_array['AVATAR_AID']) && is_md5($user_array['AVATAR_AID'])) {
 

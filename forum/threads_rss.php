@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads_rss.php,v 1.44 2007-05-31 21:59:20 decoyduck Exp $ */
+/* $Id: threads_rss.php,v 1.45 2007-06-04 21:44:45 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -150,11 +150,11 @@ if (isset($_GET['fid']) && strlen(trim(stripslashes($_GET['fid']))) > 0) {
 
     if (preg_match("/(([0-9]+),)+,?/", $fid)) {
         
-        $fid_list = preg_grep("/^[0-9]+$/", explode(",", $fid));
+        $folder_list_array = preg_grep("/^[0-9]+$/", explode(",", $fid));
 
-    }else if (is_numeric($_GET['fid'])) {
+    }elseif (is_numeric($_GET['fid'])) {
 
-        $fid_list = array($_GET['fid']);
+        $folder_list_array = array($_GET['fid']);
     }
 }
 
@@ -183,7 +183,7 @@ echo "<generator>$forum_name / www.beehiveforum.net</generator>\n";
 
 // Get the 20 most recent threads
 
-if ($threads_array = threads_get_most_recent($limit, $fid_list, $sort_created)) {
+if ($threads_array = threads_get_most_recent($limit, $folder_list_array, $sort_created)) {
 
     foreach ($threads_array as $thread) {
 

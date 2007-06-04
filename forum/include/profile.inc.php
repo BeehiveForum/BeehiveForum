@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.76 2007-06-02 13:17:20 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.77 2007-06-04 21:44:45 decoyduck Exp $ */
 
 /**
 * Functions relating to profiles
@@ -246,9 +246,13 @@ function profile_items_get_by_page($psid, $offset)
 
     if (db_num_rows($result) > 0) {
 
-        while($row = db_fetch_array($result)) {
+        while($profile_item = db_fetch_array($result)) {
 
-            $profile_items_array[] = $row;
+            if (($profile_item['TYPE'] == PROFILE_ITEM_RADIO) || ($profile_item['TYPE'] == PROFILE_ITEM_DROPDOWN)) {
+                @list($profile_item['NAME']) = explode(':', $profile_item['NAME']);
+            }
+
+            $profile_items_array[] = $profile_item;
         }
 
     }else if ($profile_items_count > 0) {
@@ -782,7 +786,7 @@ function profile_items_get_list(&$profile_header_array, &$profile_dropdown_array
     // Query the database to get the
 
     $sql = "SELECT PROFILE_SECTION.PSID, PROFILE_SECTION.NAME AS SECTION_NAME, ";
-    $sql.= "PROFILE_ITEM.PIID, PROFILE_ITEM.NAME AS ITEM_NAME ";
+    $sql.= "PROFILE_ITEM.PIID, PROFILE_ITEM.NAME AS ITEM_NAME, PROFILE_ITEM.TYPE ";
     $sql.= "FROM {$table_data['PREFIX']}PROFILE_ITEM PROFILE_ITEM ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}PROFILE_SECTION PROFILE_SECTION ";
     $sql.= "ON (PROFILE_SECTION.PSID = PROFILE_ITEM.PSID) ";
@@ -793,6 +797,10 @@ function profile_items_get_list(&$profile_header_array, &$profile_dropdown_array
     if (db_num_rows($result) > 0) {
 
         while ($profile_item = db_fetch_array($result)) {
+
+            if (($profile_item['TYPE'] == PROFILE_ITEM_RADIO) || ($profile_item['TYPE'] == PROFILE_ITEM_DROPDOWN)) {
+                @list($profile_item['ITEM_NAME']) = explode(':', $profile_item['ITEM_NAME']);
+            }
 
             $profile_header_array[$profile_item['PIID']] = $profile_item['ITEM_NAME'];
             $profile_dropdown_array[$profile_item['SECTION_NAME']][$profile_item['PIID']] = $profile_item['ITEM_NAME'];
@@ -870,7 +878,7 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
 
     $select_sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP, ";
     $select_sql.= "SEARCH_ENGINE_BOTS.SID, SEARCH_ENGINE_BOTS.NAME, SEARCH_ENGINE_BOTS.URL, ";
-    $select_sql.= "USER_TRACK.POST_COUNT AS POST_COUNT, DATE_FORMAT(USER_PREFS_DOB.DOB, '00-%m-%d') AS DOB, ";
+    $select_sql.= "USER_TRACK.POST_COUNT AS POST_COUNT, DATE_FORMAT(USER_PREFS_DOB.DOB, '0000-%m-%d') AS DOB, ";
     $select_sql.= "DATE_FORMAT(NOW(), '%Y') - DATE_FORMAT(USER_PREFS_AGE.DOB, '%Y') - ";
     $select_sql.= "(DATE_FORMAT(NOW(), '00-%m-%d') < DATE_FORMAT(USER_PREFS_AGE.DOB, '00-%m-%d')) AS AGE, ";
     $select_sql.= "TIMEZONES.TZID AS TIMEZONE, UNIX_TIMESTAMP(NOW()) AS LOCAL_TIME, ";
@@ -1100,7 +1108,7 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
         if (db_num_rows($result) > 0) {
            
             while ($user_data = db_fetch_array($result, DB_RESULT_ASSOC)) {
-
+                
                 if (is_null($user_data['UID']) || $user_data['UID'] == 0) {
 
                     $user_data['UID']      = 0;
@@ -1142,6 +1150,10 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
                     $user_data['USER_TIME_TOTAL'] = format_time_display($user_data['USER_TIME_TOTAL']);
                 }else {
                     $user_data['USER_TIME_TOTAL'] = $lang['unknown'];
+                }
+
+                if (!isset($user_data['AGE']) || is_null($user_data['AGE'])) {
+                    $user_data['AGE'] = $lang['unknown'];
                 }
 
                 if (isset($user_data['DOB']) && !is_null($user_data['DOB'])) {

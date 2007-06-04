@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.324 2007-06-02 13:17:21 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.325 2007-06-04 21:44:45 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -171,6 +171,7 @@ function user_update($uid, $logon, $nickname, $email)
 
     if (!$result_update = db_query($sql, $db_user_update)) return false;
 
+    return true;
 }
 
 function user_update_nickname($uid, $nickname)

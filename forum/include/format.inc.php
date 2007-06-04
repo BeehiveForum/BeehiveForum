@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.137 2007-06-02 13:17:18 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.138 2007-06-04 21:44:45 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -685,18 +685,20 @@ function get_local_time()
 
 function format_age($dob)
 {
-    $local_time = get_local_time();
+    if (preg_match("/[0-9]{4}-([0-9]{2})-([0-9]{2})/", $dob, $matches_array)) {
+    
+        list(, $birth_year, $birth_month, $birth_day) = $matches_array;
+    
+        list($today_day, $today_month, $today_year) = explode('-', date('j-n-Y', get_local_time()));
 
-    $todays_date = date("j", $local_time);
-    $todays_month = date("n", $local_time);
-    $todays_year = date("Y", $local_time);
+        $age = ($todays_year - $birth_year[0]);
 
-    $birthday = explode("-", $dob);
+        if (($todays_month < $birth_month[1]) || (($todays_month == $birth_month[1]) && ($todays_date < $birth_day[2])) ) $age -= 1;
 
-    $age = $todays_year - $birthday[0];
-    if (($todays_month < $birthday[1]) || (($todays_month == $birthday[1]) && ($todays_date < $birthday[2])) ) $age -= 1;
+        return $age;
+    }
 
-    return $age;
+    return false;
 }
 
 /**
@@ -704,7 +706,7 @@ function format_age($dob)
 *                   
 * Formats a MySQL DATE field (YYYY-MM-DD) as human readable date (1st Jan, etc.)
 *
-* @return string
+* @return mixed - False on failure.
 * @param integer $dob - MySQL DATE field.
 */
 
@@ -712,11 +714,16 @@ function format_dob($dob) // $dob is a MySQL-type DATE field (YYYY-MM-DD)
 {
     $lang = load_language_file();
 
-    list($year, $month, $day) = explode("-", $dob);
+    if (preg_match("/[0-9]{4}-([0-9]{2})-([0-9]{2})/", $dob, $matches_array)) {
 
-    $month = floor($month); $day = floor($day);
+        list(, $month, $day) = $matches_array;
 
-    return "$day {$lang['month_short'][$month]}";
+        $month = floor($month); $day = floor($day);
+
+        return "$day {$lang['month_short'][$month]}";
+    }
+
+    return false;
 }
 
 /**
@@ -724,19 +731,24 @@ function format_dob($dob) // $dob is a MySQL-type DATE field (YYYY-MM-DD)
 *                   
 * Formats a MySQL DATE field (YYYY-MM-DD) as human readable date (1st Jan, etc.)
 *
-* @return string
+* @return mixed - False on failure.
 * @param integer $dob - MySQL DATE field.
 */
 
 function format_birthday($date) // $date is a MySQL-type DATE field (YYYY-MM-DD)
 {
     $lang = load_language_file();
-    
-    list ($year, $month, $day) = explode("-", $date);
 
-    $month = floor($month); $day = floor($day);
+    if (preg_match("/[0-9]{4}-([0-9]{2})-([0-9]{2})/", $date, $matches_array)) {
 
-    return "$day {$lang['month_short'][$month]}";
+        list(, $month, $day) = $matches_array;
+
+        $month = floor($month); $day = floor($day);
+
+        return "$day {$lang['month_short'][$month]}";
+    }
+
+    return false;
 }
 
 /**

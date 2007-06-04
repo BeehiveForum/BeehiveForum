@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.117 2007-05-31 21:59:18 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.118 2007-06-04 21:44:45 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -509,10 +509,21 @@ echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\" colspan=\"3\" class=\"subhead\">{$lang['language']}</td>\n";
-echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
-echo "                </tr>\n";
+
+if ($show_set_all) {
+
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">{$lang['language']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
+    echo "                </tr>\n";
+
+}else {
+
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"4\">{$lang['language']}</td>\n";
+    echo "                </tr>\n";
+}
+
 echo "                <tr>\n";
 echo "                  <td align=\"left\" rowspan=\"6\" width=\"1%\">&nbsp;</td>\n";
 echo "                </tr>\n";
@@ -533,10 +544,21 @@ echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\" colspan=\"2\" class=\"subhead\">{$lang['display']}</td>\n";
-echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
-echo "                </tr>\n";
+
+if ($show_set_all) {
+
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">{$lang['display']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
+    echo "                </tr>\n";
+
+}else {
+
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"4\">{$lang['display']}</td>\n";
+    echo "                </tr>\n";
+}
+
 echo "                <tr>\n";
 echo "                  <td align=\"left\" rowspan=\"11\" width=\"1%\">&nbsp;</td>\n";
 echo "                </tr>\n";
@@ -588,10 +610,21 @@ echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\" colspan=\"3\" class=\"subhead\">{$lang['style']}</td>\n";
-echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
-echo "                </tr>\n";
+
+if ($show_set_all) {
+
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">{$lang['style']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
+    echo "                </tr>\n";
+
+}else {
+
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"4\">{$lang['style']}</td>\n";
+    echo "                </tr>\n";
+}
+
 echo "                <tr>\n";
 echo "                  <td align=\"left\" rowspan=\"6\" width=\"1%\">&nbsp;</td>\n";
 echo "                </tr>\n";

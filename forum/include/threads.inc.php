@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.269 2007-05-22 12:02:50 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.270 2007-06-04 21:44:45 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1187,7 +1187,7 @@ function threads_get_unread_by_days($uid, $days = 0) // get unread messages for 
     return threads_process_list($result);
 }
 
-function threads_get_most_recent($limit = 10, $fid_list = false, $creation_order = false)
+function threads_get_most_recent($limit = 10, $folder_list_array = array(), $creation_order = false)
 {
     $db_threads_get_recent = db_connect();
 
@@ -1201,22 +1201,23 @@ function threads_get_most_recent($limit = 10, $fid_list = false, $creation_order
 
     // Get the folders the user can see.
 
-    if (!$folders = folder_get_available()) return false;
+    if (!$available_folders_array = folder_get_available_array()) return false;
 
     // If we have an array of folders we should only
     // use the ones the user can see.
 
-    if (is_array($fid_list) && sizeof($fid_list) > 0) {
+    if (is_array($folder_list_array) && sizeof($folder_list_array) > 0) {
 
-        foreach($fid_list as $key => $fid) {
-            if (!in_array($fid, explode(", ", $folders))) {
-                unset($fid_list[$key]);
-            }
-        }
+        $available_folders_preg = implode("$|^", array_map('preg_quote_callback', $available_folders_array));
+        $folder_list_array = preg_grep("/^$available_folders_preg$/", $folder_list_array);
+    }
 
-        if (sizeof($fid_list) > 0) {
-            $folders = implode(",", $fid_list);
-        }
+    // Convert the array into a comma-separated list.
+
+    if (is_array($folder_list_array) && sizeof($folder_list_array) > 0) {
+        $folders = implode(',', $folder_list_array);
+    }else {
+        $folders = implode(',', $available_folders_array);
     }
 
     // Do we want to sort by thread created or thread modified?

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_prefs.php,v 1.72 2007-06-02 11:39:24 decoyduck Exp $ */
+/* $Id: edit_prefs.php,v 1.73 2007-06-04 21:44:45 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -53,6 +53,7 @@ $forum_settings = forum_get_settings();
 $forum_global_settings = forum_get_global_settings();
 
 include_once(BH_INCLUDE_PATH. "banned.inc.php");
+include_once(BH_INCLUDE_PATH. "email.inc.php");
 include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
 include_once(BH_INCLUDE_PATH. "form.inc.php");
 include_once(BH_INCLUDE_PATH. "format.inc.php");
@@ -131,34 +132,38 @@ if (isset($_POST['submit'])) {
 
     $valid = true;
 
+    // Duplicate the user_info array.
+    
+    $user_info_new = $user_info;
+
     // Required Fields
 
     if (isset($_POST['logon']) && strlen(trim(_stripslashes($_POST['logon']))) > 0) {
 
-        $user_info['LOGON'] = trim(_stripslashes($_POST['logon']));
+        $user_info_new['LOGON'] = trim(_stripslashes($_POST['logon']));
 
-        if (!preg_match("/^[a-z0-9_-]+$/i", $user_info['LOGON'])) {
+        if (!preg_match("/^[a-z0-9_-]+$/i", $user_info_new['LOGON'])) {
             $error_html.= "<h2>{$lang['usernameinvalidchars']}</h2>\n";
             $valid = false;
         }
 
-        if (strlen($user_info['LOGON']) < 2) {
+        if (strlen($user_info_new['LOGON']) < 2) {
             $error_html.= "<h2>{$lang['usernametooshort']}</h2>\n";
             $valid = false;
         }
 
-        if (strlen($user_info['LOGON']) > 15) {
+        if (strlen($user_info_new['LOGON']) > 15) {
             $error_html.= "<h2>{$lang['usernametoolong']}</h2>\n";
             $valid = false;
         }
 
-        if (logon_is_banned($user_info['LOGON'])) {
+        if (logon_is_banned($user_info_new['LOGON'])) {
 
             $error_html.= "<h2>{$lang['logonnotpermitted']}</h2>\n";
             $valid = false;
         }
 
-        if (user_exists($user_info['LOGON'], $uid)) {
+        if (user_exists($user_info_new['LOGON'], $uid)) {
 
             $error_html.= "<h2>{$lang['usernameexists']}</h2>\n";
             $valid = false;
@@ -172,9 +177,9 @@ if (isset($_POST['submit'])) {
 
     if (isset($_POST['nickname']) && strlen(trim(_stripslashes($_POST['nickname']))) > 0) {
 
-        $user_info['NICKNAME'] = trim(_stripslashes($_POST['nickname']));
+        $user_info_new['NICKNAME'] = trim(_stripslashes($_POST['nickname']));
 
-        if (nickname_is_banned($user_info['NICKNAME'])) {
+        if (nickname_is_banned($user_info_new['NICKNAME'])) {
 
             $error_html.= "<h2>{$lang['nicknamenotpermitted']}</h2>\n";
             $valid = false;
@@ -188,22 +193,22 @@ if (isset($_POST['submit'])) {
 
     if (isset($_POST['email']) && strlen(trim(_stripslashes($_POST['email']))) > 0) {
 
-        $user_info['EMAIL'] = trim(_stripslashes($_POST['email']));
+        $user_info_new['EMAIL'] = trim(_stripslashes($_POST['email']));
 
-        if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $user_info['EMAIL'])) {
+        if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $user_info_new['EMAIL'])) {
 
             $error_html.= "<h2>{$lang['invalidemailaddressformat']}</h2>\n";
             $valid = false;
 
         }else {
 
-            if (email_is_banned($user_info['EMAIL'])) {
+            if (email_is_banned($user_info_new['EMAIL'])) {
 
                 $error_html.= "<h2>{$lang['emailaddressnotpermitted']}</h2>\n";
                 $valid = false;
             }
 
-            if (forum_get_setting('require_unique_email', 'Y') && !email_is_unique($user_info['EMAIL'])) {
+            if (forum_get_setting('require_unique_email', 'Y') && !email_is_unique($user_info_new['EMAIL'])) {
 
                 $error_html.= "<h2>{$lang['emailaddressalreadyinuse']}</h2>\n";
                 $valid = false;
@@ -374,35 +379,67 @@ if (isset($_POST['submit'])) {
 
     if ($valid) {
 
-        // Update USER_PREFS
+        // Update User Preferences            
+
+        if (user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
+
+            // Update basic settings in USER table
         
-        user_update_prefs($uid, $user_prefs, $user_prefs_global);
+            if (user_update($uid, $user_info_new['LOGON'], $user_info_new['NICKNAME'], $user_info_new['EMAIL'])) {
 
-        // Update basic settings in USER table
+                // If email confirmation is requied and the user has changed
+                // their email address we need to get them to confirm the
+                // change by sending them another email.
+                
+                if (forum_get_setting('require_email_confirmation', 'Y') && ($user_info_new['EMAIL'] != $user_info['EMAIL'])) {
 
-        user_update($uid, $user_info['LOGON'], $user_info['NICKNAME'], $user_info['EMAIL']);
+                    if (email_send_changed_email_confirmation($uid)) {
 
-        // If the user's logon was changed, update their cookie.
+                        perm_user_apply_email_confirmation($uid);
 
-        if (forum_get_setting('allow_username_changes', 'Y')) {
+                        html_draw_top();
+                        html_display_msg($lang['emailaddresschanged'], $lang['newconfirmationemailsuccess'], 'index.php', 'get', array('continue' => $lang['continue']), false, '_top');
+                        html_draw_bottom();
+                        exit;
 
-            // Fetch current logon.
+                    }else {
 
-            $logon = bh_session_get_value('LOGON');
+                        html_draw_top();
+                        html_display_msg($lang['emailaddresschanged'], $lang['newconfirmationemailfailure'], 'index.php', 'get', array('continue' => $lang['continue']), false, '_top');
+                        html_draw_bottom();
+                        exit;
+                    }
+                }
+            
+                // If Forum permits username changes we need to change the user's cookie.
 
-            // Update the logon that matches the current logged on user
+                if (forum_get_setting('allow_username_changes', 'Y')) {
 
-            logon_update_logon_cookie($logon, $user_info['LOGON']);
-        }
+                    // Fetch current logon.
 
-        // Reinitialize the User's Session to save them having to logout and back in
+                    $logon = bh_session_get_value('LOGON');
 
-        bh_session_init($uid, false);
+                    // Update the logon that matches the current logged on user
 
-        // Force redirect to prevent refreshing the page 
-        // prompting to user to resubmit form data.
+                    logon_update_logon_cookie($logon, $user_info['LOGON']);
+                }
 
-        header_redirect("./edit_prefs.php?webtag=$webtag&updated=true", $lang['preferencesupdated']);
+                // Force redirect to prevent refreshing the page prompting to user to resubmit form data.
+
+                header_redirect("./edit_prefs.php?webtag=$webtag&updated=true", $lang['preferencesupdated']);
+                exit;
+            
+            }else {
+
+                $error_html.= "<h2>{$lang['failedtoupdateuserpreferences']}</h2>\n";
+                $valid = false;
+            }
+
+        }else {
+
+            $error_html.= "<h2>{$lang['failedtoupdateuserdetails']}</h2>\n";
+            $valid = false;
+        }                
     }
 }
 
@@ -468,10 +505,21 @@ echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">{$lang['userinformation']}</td>\n";
-echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
-echo "                </tr>\n";
+
+if ($show_set_all) {
+
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">{$lang['userinformation']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
+    echo "                </tr>\n";
+
+}else {
+
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"4\">{$lang['userinformation']}</td>\n";
+    echo "                </tr>\n";
+}
+
 echo "                <tr>\n";
 echo "                  <td align=\"left\" rowspan=\"13\" width=\"1%\">&nbsp;</td>\n";
 echo "                </tr>\n";

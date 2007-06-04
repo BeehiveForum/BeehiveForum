@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.441 2007-06-02 11:39:24 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.442 2007-06-04 21:44:45 decoyduck Exp $ */
 
 // British English language file
 
@@ -886,27 +886,29 @@ $lang['hasinvalidemailaddress'] = "has an invalid email address";
 // Message nofificaiton ------------------------------------------------
 
 $lang['msgnotification_subject'] = "Message Notification from %s";
-$lang['msgnotificationemail'] = "Hello %s,\n\n%s posted a message to you on %s\n\nThe subject is: %s\n\nTo read that message and others in the same discussion, go to:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: If you do not wish to receive email notifications of forum messages posted to you, go to: %s click on My Controls then Email and Privacy, unselect the Email Notification checkbox and press Submit.";
+$lang['msgnotificationemail'] = "Hello %s,\n\n%s posted a message to you on %s.\n\nThe subject is: %s.\n\nTo read that message and others in the same discussion, go to:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: If you do not wish to receive email notifications of forum messages posted to you, go to: %s click on My Controls then Email and Privacy, unselect the Email Notification checkbox and press Submit.";
 
 // Thread Subscription notification ------------------------------------
 
 $lang['subnotification_subject'] = "Subscription Notification from %s";
-$lang['subnotification'] = "Hello %s,\n\n%s posted a message in a thread you have subscribed to on %s\n\nThe subject is: %s\n\nTo read that message and others in the same discussion, go to:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: If you do not wish to receive email notifications of new messages in this thread, go to: %s and adjust your Interest level at the bottom of the page.";
+$lang['subnotification'] = "Hello %s,\n\n%s posted a message in a thread you have subscribed to on %s.\n\nThe subject is: %s.\n\nTo read that message and others in the same discussion, go to:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: If you do not wish to receive email notifications of new messages in this thread, go to: %s and adjust your Interest level at the bottom of the page.";
 
 // PM notification -----------------------------------------------------
 
 $lang['pmnotification_subject'] = "PM Notification from %s";
-$lang['pmnotification'] = "Hello %s,\n\n%s posted a PM to you on %s\n\nThe subject is: %s\n\nTo read the message go to:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: If you do not wish to receive email notifications of new PM messages posted to you, go to: %s click My Controls then Email and Privacy, unselect the PM Notification checkbox and press Submit.";
+$lang['pmnotification'] = "Hello %s,\n\n%s posted a PM to you on %s.\n\nThe subject is: %s.\n\nTo read the message go to:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: If you do not wish to receive email notifications of new PM messages posted to you, go to: %s click My Controls then Email and Privacy, unselect the PM Notification checkbox and press Submit.";
 
 // Password change notification ----------------------------------------
 
 $lang['passwdchangenotification'] = "Password change notification from %s";
-$lang['pwchangeemail'] = "Hello %s,\n\nThis a notification email to inform you that your password on %s has been changed.\n\nIt has been changed to: %s and was changed by: %s\n\nIf you have received this email in error or were not expecting a change to your password please contact the forum owner or a moderator on %s immediately to correct it.";
+$lang['pwchangeemail'] = "Hello %s,\n\nThis a notification email to inform you that your password on %s has been changed.\n\nIt has been changed to: %s and was changed by: %s.\n\nIf you have received this email in error or were not expecting a change to your password please contact the forum owner or a moderator on %s immediately to correct it.";
 
 // Email confirmation notification -------------------------------------
 
 $lang['emailconfirmationrequired'] = "Email confirmation required for %s";
-$lang['confirmemail'] = "Hello %s,\n\nYou recently created a new user account on %s\nBefore you can start posting we need to confirm your email address. Don't worry this is quite easy. All you need to do is click the link below (or copy and paste it into your browser):\n\n%s\n\nOnce confirmation is complete you may login and start posting immediately.\n\nIf you did not create a user account on %s please accept our apologies and forward this email to %s so that the source of it may be investigated.";
+$lang['confirmemail'] = "Hello %s,\n\nYou recently created a new user account on %s.\nBefore you can start posting we need to confirm your email address. Don't worry this is quite easy. All you need to do is click the link below (or copy and paste it into your browser):\n\n%s\n\nOnce confirmation is complete you may login and start posting immediately.\n\nIf you did not create a user account on %s please accept our apologies and forward this email to %s so that the source of it may be investigated.";
+$lang['confirmchangedemail'] = "Hello %s,\n\nYou recently changed your email on %s.\nBefore you can start posting again we need to confirm your new email address. Don't worry this is quite easy. All you need to do is click the link below (or copy and paste it into your browser):\n\n%s\n\nOnce confirmation is complete you may continue to use the forum as normal.\n\nIf you were not expecting this email from %s please accept our apologies and forward this email to %s so that the source of it may be investigated.";
+
 
 // Forgotten password notification -------------------------------------
 
@@ -1255,6 +1257,11 @@ $lang['profilepictureconflict'] = "To use an attachment for your profile picture
 $lang['avatarpictureconflict'] = "To use an attachment for your avatar picture the Avatar URL field must be blank.";
 $lang['attachmenttoolargeforprofilepicture'] = "Selected attachment is too large for profile picture. Maximum dimensions are 95x95px";
 $lang['attachmenttoolargeforavatarpicture'] = "Selected attachment is too large for avatar picture. Maximum dimensions are 15x15px";
+$lang['failedtoupdateuserdetails'] = "Some or all of your user account details could not be updated. Please try again later.";
+$lang['failedtoupdateuserpreferences'] = "Some or all of your user preferences could not be updated. Please try again later.";
+$lang['emailaddresschanged'] = "Email address has been changed";
+$lang['newconfirmationemailsuccess'] = "Your email address has been changed and a new confirmation email has been sent. Please check and read the email for further instructions.";
+$lang['newconfirmationemailfailure'] = "You have changed your email address, but we were unable to send a confirmation request. Please contact the forum owner for assistance.";
 $lang['forumoptions'] = "Forum Options";
 $lang['notifybyemail'] = "Notify by email of posts to me";
 $lang['notifyofnewpm'] = "Notify by popup of new PM messages to me";

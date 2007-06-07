@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.139 2007-06-02 13:17:16 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.140 2007-06-07 20:27:25 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -145,7 +145,8 @@ if (isset($_GET['aid']) && is_md5($_GET['aid'])) {
 
 // Guests can't do attachments.
 
-if (bh_session_get_value('UID') == 0) {
+if (user_is_guest()) {
+
     html_guest_error();
     exit;
 }

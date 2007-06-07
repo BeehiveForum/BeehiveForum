@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads_rss.php,v 1.45 2007-06-04 21:44:45 decoyduck Exp $ */
+/* $Id: threads_rss.php,v 1.46 2007-06-07 20:27:26 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -141,6 +141,10 @@ if (isset($_GET['limit']) && is_numeric($_GET['limit'])) {
     if ($limit < 1)  $limit = 1;
 }
 
+// By default we show all folders.
+
+$folder_list_array = array();
+
 // Check to see if the user wants a specified list of folders
 // or the default to show all folders.
 
@@ -214,7 +218,7 @@ if ($threads_array = threads_get_most_recent($limit, $folder_list_array, $sort_c
 
         // Strip HTML and trim the content back.
 
-        $t_content = strip_tags(trim($t_content));
+        $t_content = strip_tags(trim(xml_strip_invalid_chars($t_content)));
 
         // Convert HTML special chars (& -> &amp;, etc);
 
@@ -247,7 +251,7 @@ if ($threads_array = threads_get_most_recent($limit, $folder_list_array, $sort_c
             echo "  <dc:creator>{$t_user}</dc:creator>\n";
         }
         
-        echo "  <description>{$t_content}</description>\n";
+        echo "  <description><![CDATA[{$t_content}]]></description>\n";
         echo "  <comments>{$forum_location}/?webtag=$webtag&amp;msg={$thread['TID']}.1</comments>\n";
         echo "</item>\n";
     }

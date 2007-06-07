@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.301 2007-06-02 13:17:16 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.302 2007-06-07 20:27:26 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -124,7 +124,7 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
 
 // Check that required variables are set
 
-if (bh_session_get_value('UID') == 0) {
+if (user_is_guest()) {
 
     $uid = 0; // default to UID 0 if no other UID specified
 
@@ -464,7 +464,7 @@ foreach ($folder_order as $folder_number) {
         echo "  </tr>\n";
         echo "</table>\n";
 
-        if ((bh_session_get_value('UID') == 0) || ($folder_info[$folder_number]['INTEREST'] != -1) || ($mode == UNREAD_DISCUSSIONS_TO_ME) || (isset($selected_folder) && $selected_folder == $folder_number)) {
+        if ((user_is_guest()) || ($folder_info[$folder_number]['INTEREST'] != -1) || ($mode == UNREAD_DISCUSSIONS_TO_ME) || (isset($selected_folder) && $selected_folder == $folder_number)) {
 
             echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
             echo "  <tr>\n";

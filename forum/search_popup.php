@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: search_popup.php,v 1.14 2007-05-31 21:59:19 decoyduck Exp $ */
+/* $Id: search_popup.php,v 1.15 2007-06-07 20:27:26 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -108,7 +108,8 @@ if (!forum_check_access_level()) {
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
-if (bh_session_get_value('UID') == 0) {
+if (user_is_guest()) {
+
     html_guest_error();
     exit;
 }

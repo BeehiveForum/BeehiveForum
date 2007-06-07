@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.139 2007-06-07 15:58:23 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.140 2007-06-07 20:27:26 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -398,6 +398,21 @@ function xml_literal_to_numeric($literal)
 }
 
 /**
+* Strip invalid XML chars from string.
+*
+* Removes all invalid charaters from a string in preperation for inclusion
+* in XML output. Only supports UTF-8, not UTF-16.
+*
+* @return string
+* @param string $string - String to check.
+*/
+
+function xml_strip_invalid_chars($string)
+{
+    return preg_replace('/([^\x9\xA\xD\x20-\xD7FF\xE000-\xFFFD])+/m', '', $string);
+}
+
+/**
 * HTML literal to XML numeric
 *
 * Converts HTML literal entities into XML numerical entities.
@@ -691,9 +706,9 @@ function format_age($dob)
     
         list($today_day, $today_month, $today_year) = explode('-', date('j-n-Y', get_local_time()));
 
-        $age = ($today_year - $birth_year[0]);
+        $age = ($today_year - $birth_year);
 
-        if (($today_month < $birth_month[1]) || (($today_month == $birth_month[1]) && ($today_day < $birth_day[2])) ) $age -= 1;
+        if (($today_month < $birth_month) || (($today_month == $birth_month) && ($today_day < $birth_day)) ) $age -= 1;
 
         return $age;
     }

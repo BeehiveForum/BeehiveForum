@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lforums.php,v 1.28 2007-05-31 21:59:18 decoyduck Exp $ */
+/* $Id: lforums.php,v 1.29 2007-06-07 20:27:25 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -97,7 +97,7 @@ light_html_draw_top();
 
 light_draw_my_forums();
 
-if (bh_session_get_value('UID') == 0) {
+if (user_is_guest()) {
     echo "<h4><a href=\"llogout.php?webtag=$webtag\">{$lang['login']}</a></h4>";
 }else {
     echo "<h4><a href=\"llogout.php?webtag=$webtag\">{$lang['logout']}</a></h4>";

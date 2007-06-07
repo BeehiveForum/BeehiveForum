@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logout.php,v 1.90 2007-05-31 21:59:18 decoyduck Exp $ */
+/* $Id: logout.php,v 1.91 2007-06-07 20:27:25 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -76,7 +76,7 @@ $lang = load_language_file();
 
 // User was a guest that now wants to logon
 
-if (bh_session_get_value('UID') == 0) {
+if (user_is_guest()) {
 
     if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri']))) > 0) {
         $final_uri = "&final_uri=". rawurlencode(trim(_stripslashes($_GET['final_uri'])));

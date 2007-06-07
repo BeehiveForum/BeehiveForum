@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.270 2007-06-04 21:44:45 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.271 2007-06-07 16:11:39 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1455,6 +1455,8 @@ function threads_any_unread()
 
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
 
+    if (($unread_cutoff_stamp = forum_get_unread_cutoff()) === false) return false;
+
     $sql = "SELECT THREAD.TID FROM {$table_data['PREFIX']}THREAD THREAD ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
     $sql.= "ON (THREAD.TID = USER_THREAD.TID AND USER_THREAD.UID = '$uid') ";
@@ -1462,7 +1464,8 @@ function threads_any_unread()
     $sql.= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_FOLDER USER_FOLDER ON ";
     $sql.= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
-    $sql.= "WHERE (USER_THREAD.LAST_READ < THREAD.LENGTH) ";
+    $sql.= "WHERE (THREAD.MODIFIED > FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp) ";
+    $sql.= "OR $unread_cutoff_stamp = 0) AND (USER_THREAD.LAST_READ < THREAD.LENGTH) ";
     $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0 ";
     $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) AND THREAD.FID IN ($fidlist) ";
     $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";

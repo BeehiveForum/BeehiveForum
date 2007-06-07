@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.237 2007-06-07 16:02:59 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.238 2007-06-07 16:11:39 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -64,7 +64,7 @@ function get_forum_data()
 
         if (isset($webtag) && preg_match("/^[A-Z0-9_]+$/", $webtag) > 0) {
 
-            // Check #2: See if the webtag specified in GET/POST
+            // Check #1: See if the webtag specified in GET/POST
             // actually exists.
 
             $webtag = db_escape_string($webtag);
@@ -91,7 +91,7 @@ function get_forum_data()
 
         }else {
 
-            // Check #3: Try and select a default webtag from
+            // Check #2: Try and select a default webtag from
             // the databse
 
             $sql = "SELECT FORUMS.FID, FORUMS.WEBTAG, FORUMS.ACCESS_LEVEL, USER_FORUM.ALLOWED, ";

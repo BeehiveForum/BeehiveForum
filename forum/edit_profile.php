@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_profile.php,v 1.76 2007-05-31 21:59:18 decoyduck Exp $ */
+/* $Id: edit_profile.php,v 1.77 2007-06-07 20:27:25 decoyduck Exp $ */
 
 /**
 * Displays the edit profile page, and processes sumbissions
@@ -116,7 +116,8 @@ if (!forum_check_access_level()) {
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
-if (bh_session_get_value('UID') == 0) {
+if (user_is_guest()) {
+
     html_guest_error();
     exit;
 }

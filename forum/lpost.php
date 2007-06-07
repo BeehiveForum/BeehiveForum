@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.106 2007-05-31 21:59:18 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.107 2007-06-07 20:27:26 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -124,7 +124,8 @@ if (!forum_check_access_level()) {
     header_redirect("./lforums.php");
 }
 
-if (bh_session_get_value('UID') == 0) {
+if (user_is_guest()) {
+
     light_html_guest_error();
     exit;
 }

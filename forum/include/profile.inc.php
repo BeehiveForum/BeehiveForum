@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.78 2007-06-07 15:58:23 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.79 2007-06-07 23:56:50 decoyduck Exp $ */
 
 /**
 * Functions relating to profiles
@@ -1088,15 +1088,15 @@ function profile_browse_items($user_search, $profile_items_array, $offset, $sort
 
         if (db_fetch_mysql_version() >= 40116) {
 
-            $sql = implode(",", array_merge_keys(array($select_sql), $profile_query_array));
+            $sql = implode(",", array_merge(array($select_sql), $profile_query_array));
             $sql.= "$from_sql $join_sql $where_sql $having_sql UNION ";
-            $sql.= implode(",", array_merge_keys(array($select_sql), $profile_query_array));
+            $sql.= implode(",", array_merge(array($select_sql), $profile_query_array));
             $sql.= "$union_sql $join_sql $where_sql $having_sql $order_sql ";
             $sql.= "$limit_sql";
 
         }else {
 
-            $sql = implode(",", array_merge_keys(array($select_sql), $profile_query_array));
+            $sql = implode(",", array_merge(array($select_sql), $profile_query_array));
             $sql.= "$union_sql $join_sql $where_sql $having_sql $order_sql ";
             $sql.= "$limit_sql";
         }

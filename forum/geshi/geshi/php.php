@@ -5,9 +5,9 @@
  * Author: Nigel McNie (oracle.shinoda@gmail.com)
  * Copyright: (c) 2004 Nigel McNie (http://qbnz.com/highlighter/)
  * Release Version: 1.0.7.4
- * CVS Revision Version: $Revision: 1.3 $
+ * CVS Revision Version: $Revision: 1.4 $
  * Date Started: 2004/06/20
- * Last Modified: $Date: 2007-06-02 13:17:17 $
+ * Last Modified: $Date: 2007-06-07 23:56:50 $
  *
  * PHP language file for GeSHi.
  *
@@ -249,7 +249,7 @@ $language_data = array (
             'assert','asort','asinh','asin','arsort','array_walk',
             'array_values','array_unshift','array_unique','array_sum','array_splice','array_slice',
             'array_shift','array_search','array_reverse','array_reduce','array_rand','array_push',
-            'array_pop','array_pad','array_multisort','array_merge_keys_recursive','array_merge_keys','array_map',
+            'array_pop','array_pad','array_multisort','array_merge_recursive','array_merge','array_map',
             'array_keys','array_key_exists','array_intersect_assoc','array_intersect','array_flip','array_filter',
             'array_fill','array_diff_assoc','array_diff','array_count_values','array_chunk','array_change_key_case',
             'apache_setenv','apache_response_headers','apache_request_headers','apache_note','apache_lookup_uri','apache_get_version',

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_messages.php,v 1.21 2007-06-02 13:17:16 decoyduck Exp $ */
+/* $Id: pm_messages.php,v 1.22 2007-06-07 23:56:50 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -512,7 +512,7 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
                 $recipient_array = preg_split("/[;|,]/", trim($message['RECIPIENTS']));
                 
                 if ($message['TO_UID'] > 0) {
-                    $recipient_array = array_unique(array_merge_keys($recipient_array, array($message['TLOGON'])));               
+                    $recipient_array = array_unique(array_merge($recipient_array, array($message['TLOGON'])));               
                 }
 
                 $recipient_array = array_map('user_profile_popup_callback', $recipient_array);
@@ -543,7 +543,7 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
                     $recipient_array = preg_split("/[;|,]/", trim($message['RECIPIENTS']));
 
                     if ($message['TO_UID'] > 0) {
-                        $recipient_array = array_unique(array_merge_keys($recipient_array, array($message['TLOGON'])));               
+                        $recipient_array = array_unique(array_merge($recipient_array, array($message['TLOGON'])));               
                     }
 
                     $recipient_array = array_map('user_profile_popup_callback', $recipient_array);

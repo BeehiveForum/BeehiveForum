@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.128 2007-06-02 13:17:18 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.129 2007-06-07 23:56:50 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -221,37 +221,37 @@ function folder_delete($fid)
     return $result;
 }
 
-function folder_update($fid, $folder_order)
+function folder_update($fid, $folder_data)
 {
     $db_folder_update = db_connect();
 
     if (!is_numeric($fid)) return false;
-    if (!is_array($folder_order)) return false;
+    if (!is_array($folder_data)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
     $forum_fid = $table_data['FID'];
 
-    $folder_order = array_merge_keys(folder_get($fid), $folder_order);
+    $folder_data = array_merge_keys(folder_get($fid), $folder_data);
 
-    foreach($folder_order as $key => $value) {
+    foreach($folder_data as $key => $value) {
 
         if (!is_numeric($value)) {
 
-            $folder_order[$key] = db_escape_string(_htmlentities($value));
+            $folder_data[$key] = db_escape_string(_htmlentities($value));
         }
     }
 
-    if (!isset($folder_order['TITLE'])) return false;
-    if (!isset($folder_order['DESCRIPTION'])) $folder_order['DESCRIPTION'] = '';
-    if (!isset($folder_order['PREFIX'])) $folder_order['PREFIX'] = '';
+    if (!isset($folder_data['TITLE'])) return false;
+    if (!isset($folder_data['DESCRIPTION'])) $folder_data['DESCRIPTION'] = '';
+    if (!isset($folder_data['PREFIX'])) $folder_data['PREFIX'] = '';
 
-    if (!isset($folder_order['POSITION']) || !is_numeric($folder_order['POSITION'])) $folder_order['POSITION'] = 0;
-    if (!isset($folder_order['ALLOWED_TYPES']) || !is_numeric($folder_order['ALLOWED_TYPES'])) $folder_order['ALLOWED_TYPES'] = 3;
+    if (!isset($folder_data['POSITION']) || !is_numeric($folder_data['POSITION'])) $folder_data['POSITION'] = 0;
+    if (!isset($folder_data['ALLOWED_TYPES']) || !is_numeric($folder_data['ALLOWED_TYPES'])) $folder_data['ALLOWED_TYPES'] = 3;
 
-    $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}FOLDER SET TITLE = '{$folder_order['TITLE']}', ";
-    $sql.= "DESCRIPTION = '{$folder_order['DESCRIPTION']}', ALLOWED_TYPES = '{$folder_order['ALLOWED_TYPES']}', ";
-    $sql.= "POSITION = '{$folder_order['POSITION']}', PREFIX = '{$folder_order['PREFIX']}' WHERE FID = '$fid'";
+    $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}FOLDER SET TITLE = '{$folder_data['TITLE']}', ";
+    $sql.= "DESCRIPTION = '{$folder_data['DESCRIPTION']}', ALLOWED_TYPES = '{$folder_data['ALLOWED_TYPES']}', ";
+    $sql.= "POSITION = '{$folder_data['POSITION']}', PREFIX = '{$folder_data['PREFIX']}' WHERE FID = '$fid'";
 
     if (!$result = db_query($sql, $db_folder_update)) return false;
 
@@ -261,7 +261,7 @@ function folder_update($fid, $folder_order)
     if (!$result = db_query($sql, $db_folder_update)) return false;
 
     $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) ";
-    $sql.= "VALUES ('0', '$forum_fid', '$fid', '{$folder_order['PERM']}')";
+    $sql.= "VALUES ('0', '$forum_fid', '$fid', '{$folder_data['PERM']}')";
 
     if (!$result = db_query($sql, $db_folder_update)) return false;
 

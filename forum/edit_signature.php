@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_signature.php,v 1.96 2007-06-07 20:27:25 decoyduck Exp $ */
+/* $Id: edit_signature.php,v 1.97 2007-06-07 23:56:50 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -476,6 +476,15 @@ if ($show_set_all && $admin_edit === false) {
 
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">", form_checkbox("sig_global", "Y", $lang['savesignatureforuseonallforums'], (isset($t_sig_global) && $t_sig_global == 'Y')), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">&nbsp;</td>\n";
+    echo "                      </tr>\n";
+
+}else {
+
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">", form_input_hidden("sig_global", 'Y'), "</td>\n";
     echo "                      </tr>\n";
 }
 

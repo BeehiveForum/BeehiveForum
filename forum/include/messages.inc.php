@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.456 2007-06-02 13:17:18 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.457 2007-06-07 23:56:50 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -501,7 +501,7 @@ function message_split_fiddle($content, $emoticons = true, $ignore_sig = false)
         $message_parts = preg_split("/<\/?noemots>/", $message);
         $sig_parts = preg_split("/<\/?noemots>/", $sig);
 
-        $message_parts = array_merge_keys($message_parts, $sig_parts);
+        $message_parts = array_merge($message_parts, $sig_parts);
 
         for ($i = 0; $i < sizeof($message_parts); $i++) {
 

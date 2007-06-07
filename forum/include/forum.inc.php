@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.235 2007-06-02 13:17:18 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.236 2007-06-07 15:58:23 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -334,7 +334,7 @@ function forum_get_settings()
 {
     $db_forum_get_settings = db_connect();
 
-    static $forum_settings_array = false;
+    static $forum_settings_array = array();
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -357,8 +357,14 @@ function forum_get_settings()
 
         if (!$result = db_query($sql, $db_forum_get_settings)) return false;
 
-        while ($row = db_fetch_array($result)) {
-            $forum_settings_array[$row['SNAME']] = $row['SVALUE'];
+        if (db_num_rows($result) > 0) {
+
+            if (!is_array($forum_settings_array)) $forum_settings_array = array();
+            
+            while ($row = db_fetch_array($result)) {
+            
+                $forum_settings_array[$row['SNAME']] = $row['SVALUE'];
+            }
         }
 
         $sql = "SELECT FORUM_SETTINGS.SVALUE, TIMEZONES.GMT_OFFSET, ";
@@ -369,11 +375,16 @@ function forum_get_settings()
 
         if (!$result = db_query($sql, $db_forum_get_settings)) return false;
 
-        while ($row = db_fetch_array($result)) {
+        if (db_num_rows($result) > 0) {
 
-            $forum_settings_array['forum_timezone'] = $row['SVALUE'];
-            $forum_settings_array['forum_gmt_offset'] = $row['GMT_OFFSET'];
-            $forum_settings_array['forum_dst_offset'] = $row['DST_OFFSET'];
+            if (!is_array($forum_settings_array)) $forum_settings_array = array();
+            
+            while ($row = db_fetch_array($result)) {
+
+                $forum_settings_array['forum_timezone'] = $row['SVALUE'];
+                $forum_settings_array['forum_gmt_offset'] = $row['GMT_OFFSET'];
+                $forum_settings_array['forum_dst_offset'] = $row['DST_OFFSET'];
+            }
         }
     }
 
@@ -392,8 +403,14 @@ function forum_get_global_settings()
 
         if (!$result = db_query($sql, $db_forum_get_global_settings)) return false;
 
-        while ($row = db_fetch_array($result)) {
-            $forum_global_settings_array[$row['SNAME']] = $row['SVALUE'];
+        if (db_num_rows($result) > 0) {
+
+            if (!is_array($forum_global_settings_array)) $forum_global_settings_array = array();
+            
+            while ($row = db_fetch_array($result)) {
+            
+                $forum_global_settings_array[$row['SNAME']] = $row['SVALUE'];
+            }
         }
 
         $sql = "SELECT FORUM_SETTINGS.SVALUE, TIMEZONES.GMT_OFFSET, ";
@@ -404,11 +421,16 @@ function forum_get_global_settings()
 
         if (!$result = db_query($sql, $db_forum_get_global_settings)) return false;
 
-        while ($row = db_fetch_array($result)) {
+        if (db_num_rows($result) > 0) {
 
-            $forum_global_settings_array['forum_timezone'] = $row['SVALUE'];
-            $forum_global_settings_array['forum_gmt_offset'] = $row['GMT_OFFSET'];
-            $forum_global_settings_array['forum_dst_offset'] = $row['DST_OFFSET'];
+            if (!is_array($forum_global_settings_array)) $forum_global_settings_array = array();
+            
+            while ($row = db_fetch_array($result)) {
+
+                $forum_global_settings_array['forum_timezone'] = $row['SVALUE'];
+                $forum_global_settings_array['forum_gmt_offset'] = $row['GMT_OFFSET'];
+                $forum_global_settings_array['forum_dst_offset'] = $row['DST_OFFSET'];
+            }
         }
     }
 

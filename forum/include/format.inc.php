@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.138 2007-06-04 21:44:45 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.139 2007-06-07 15:58:23 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -685,42 +685,17 @@ function get_local_time()
 
 function format_age($dob)
 {
-    if (preg_match("/[0-9]{4}-([0-9]{2})-([0-9]{2})/", $dob, $matches_array)) {
-    
+    if (preg_match("/([0-9]{4})-([0-9]{2})-([0-9]{2})/", $dob, $matches_array)) {    
+        
         list(, $birth_year, $birth_month, $birth_day) = $matches_array;
     
         list($today_day, $today_month, $today_year) = explode('-', date('j-n-Y', get_local_time()));
 
-        $age = ($todays_year - $birth_year[0]);
+        $age = ($today_year - $birth_year[0]);
 
-        if (($todays_month < $birth_month[1]) || (($todays_month == $birth_month[1]) && ($todays_date < $birth_day[2])) ) $age -= 1;
+        if (($today_month < $birth_month[1]) || (($today_month == $birth_month[1]) && ($today_day < $birth_day[2])) ) $age -= 1;
 
         return $age;
-    }
-
-    return false;
-}
-
-/**
-* Format DOB as a string.
-*                   
-* Formats a MySQL DATE field (YYYY-MM-DD) as human readable date (1st Jan, etc.)
-*
-* @return mixed - False on failure.
-* @param integer $dob - MySQL DATE field.
-*/
-
-function format_dob($dob) // $dob is a MySQL-type DATE field (YYYY-MM-DD)
-{
-    $lang = load_language_file();
-
-    if (preg_match("/[0-9]{4}-([0-9]{2})-([0-9]{2})/", $dob, $matches_array)) {
-
-        list(, $month, $day) = $matches_array;
-
-        $month = floor($month); $day = floor($day);
-
-        return "$day {$lang['month_short'][$month]}";
     }
 
     return false;

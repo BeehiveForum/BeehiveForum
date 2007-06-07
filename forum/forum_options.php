@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.119 2007-06-07 20:27:25 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.120 2007-06-07 23:56:50 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -405,13 +405,16 @@ if (isset($_POST['submit'])) {
 
     // Update USER_PREFS
 
-    user_update_prefs($uid, $user_prefs, $user_prefs_global);
+    if (user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
 
-    // Reinitialize the User's Session to save them having to logout and back in
+        header_redirect("./forum_options.php?webtag=$webtag&updated=true", $lang['preferencesupdated']);
+        exit;
 
-    bh_session_init($uid, false);
+    }else {
 
-    header_redirect("./forum_options.php?webtag=$webtag&updated=true", $lang['preferencesupdated']);
+        $error_html.= "<h2>{$lang['failedtoupdateuserdetails']}</h2>\n";
+        $valid = false;
+    }
 }
 
 if (!isset($uid)) $uid = bh_session_get_value('UID');
@@ -444,7 +447,7 @@ html_draw_top("emoticons.js");
 
 echo "<h1>{$lang['forumoptions']}</h1>\n";
 
-if (!empty($error_html)) {
+if (isset($error_html) && strlen(trim($error_html)) > 0) {
 
     echo $error_html;
 
@@ -531,7 +534,7 @@ echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" nowrap=\"nowrap\">{$lang['preferredlang']}:</td>\n";
 echo "                  <td align=\"left\">", form_dropdown_array("language", $available_langs, (isset($user_prefs['LANGUAGE']) ? $user_prefs['LANGUAGE'] : 0)), "</td>\n";
-echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("language_global", "Y", '', (isset($user_prefs['LANGUAGE_GLOBAL']) ? $user_prefs['LANGUAGE_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : '', "&nbsp;</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("language_global", "Y", '', (isset($user_prefs['LANGUAGE_GLOBAL']) ? $user_prefs['LANGUAGE_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("language_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" colspan=\"3\">&nbsp;</td>\n";
@@ -565,39 +568,39 @@ echo "                  <td align=\"left\" rowspan=\"11\" width=\"1%\">&nbsp;</t
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("view_sigs", "N", $lang['globallyignoresigs'], (isset($user_prefs['VIEW_SIGS']) && $user_prefs['VIEW_SIGS'] == "N") ? true : false), "</td>\n";
-echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("view_sigs_global", "Y", '', (isset($user_prefs['VIEW_SIGS_GLOBAL']) ? $user_prefs['VIEW_SIGS_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : '', "&nbsp;</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("view_sigs_global", "Y", '', (isset($user_prefs['VIEW_SIGS_GLOBAL']) ? $user_prefs['VIEW_SIGS_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("view_sigs_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("mark_as_of_int", "Y", $lang['autohighinterest'], (isset($user_prefs['MARK_AS_OF_INT']) && $user_prefs['MARK_AS_OF_INT'] == "Y") ? true : false), "</td>\n";
-echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("mark_as_of_int_global", "Y", '', (isset($user_prefs['MARK_AS_OF_INT_GLOBAL']) ? $user_prefs['MARK_AS_OF_INT_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : '', "&nbsp;</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("mark_as_of_int_global", "Y", '', (isset($user_prefs['MARK_AS_OF_INT_GLOBAL']) ? $user_prefs['MARK_AS_OF_INT_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("mark_as_of_int_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("images_to_links", "Y", $lang['convertimagestolinks'], (isset($user_prefs['IMAGES_TO_LINKS']) && $user_prefs['IMAGES_TO_LINKS'] == "Y") ? true : false), "</td>\n";
-echo "                  <td align=\"right\"  nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("images_to_links_global", "Y", '', (isset($user_prefs['IMAGES_TO_LINKS_GLOBAL']) ? $user_prefs['IMAGES_TO_LINKS_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : '', "&nbsp;</td>\n";
+echo "                  <td align=\"right\"  nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("images_to_links_global", "Y", '', (isset($user_prefs['IMAGES_TO_LINKS_GLOBAL']) ? $user_prefs['IMAGES_TO_LINKS_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("images_to_links_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("show_thumbs_enabled", "Y", array("{$lang['show']} ", form_dropdown_array("show_thumbs", array(ATTACHMENT_THUMB_SMALL => $lang['smallsized'], ATTACHMENT_THUMB_MEDIUM => $lang['mediumsized'], ATTACHMENT_THUMB_LARGE => $lang['largesized']), (isset($user_prefs['SHOW_THUMBS']) ? ($user_prefs['SHOW_THUMBS'] > 0 ? $user_prefs['SHOW_THUMBS'] : $user_prefs['SHOW_THUMBS'] * -1) : 2)), " {$lang['thumbnailsforimageattachments']}"), (isset($user_prefs['SHOW_THUMBS']) && $user_prefs['SHOW_THUMBS'] > 0) ? true : false, false), "</td>\n";
-echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("show_thumbs_global", "Y", '', (isset($user_prefs['SHOW_THUMBS_GLOBAL']) ? $user_prefs['SHOW_THUMBS_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : '', "&nbsp;</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("show_thumbs_global", "Y", '', (isset($user_prefs['SHOW_THUMBS_GLOBAL']) ? $user_prefs['SHOW_THUMBS_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("show_thumbs_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("enable_wiki_words", "Y", $lang['enablewikiintegration'], (isset($user_prefs['ENABLE_WIKI_WORDS']) && $user_prefs['ENABLE_WIKI_WORDS'] == "Y") ? true : false), "</td>\n";
-echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("enable_wiki_words_global", "Y", '', (isset($user_prefs['ENABLE_WIKI_WORDS_GLOBAL']) ? $user_prefs['ENABLE_WIKI_WORDS_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : '', "&nbsp;</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("enable_wiki_words_global", "Y", '', (isset($user_prefs['ENABLE_WIKI_WORDS_GLOBAL']) ? $user_prefs['ENABLE_WIKI_WORDS_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("enable_wiki_words_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("use_mover_spoiler", "Y", $lang['revealspoileronmouseover'], (isset($user_prefs['USE_MOVER_SPOILER']) && $user_prefs['USE_MOVER_SPOILER'] == "Y")), "</td>\n";
-echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("use_mover_spoiler_global", "Y", '', (isset($user_prefs['USE_MOVER_SPOILER_GLOBAL']) ? $user_prefs['USE_MOVER_SPOILER_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : '', "&nbsp;</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("use_mover_spoiler_global", "Y", '', (isset($user_prefs['USE_MOVER_SPOILER_GLOBAL']) ? $user_prefs['USE_MOVER_SPOILER_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("use_mover_spoiler_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("show_stats", "Y", $lang['showforumstats'], (isset($user_prefs['SHOW_STATS']) && $user_prefs['SHOW_STATS'] == "Y") ? true : false), "</td>\n";
-echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("show_stats_global", "Y", '', (isset($user_prefs['SHOW_STATS_GLOBAL']) ? $user_prefs['SHOW_STATS_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : '', "&nbsp;</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("show_stats_global", "Y", '', (isset($user_prefs['SHOW_STATS_GLOBAL']) ? $user_prefs['SHOW_STATS_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("show_stats_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("use_word_filter", "Y", $lang['usewordfilter'], (isset($user_prefs['USE_WORD_FILTER']) && $user_prefs['USE_WORD_FILTER'] == "Y")), "&nbsp;<span class=\"smalltext\">[<a href=\"edit_wordfilter.php?webtag=$webtag\">{$lang['editwordfilter']}</a>]</span></td>\n";
-echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("use_word_filter_global", "Y", '', (isset($user_prefs['USE_WORD_FILTER_GLOBAL']) ? $user_prefs['USE_WORD_FILTER_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : '', "&nbsp;</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("use_word_filter_global", "Y", '', (isset($user_prefs['USE_WORD_FILTER_GLOBAL']) ? $user_prefs['USE_WORD_FILTER_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("use_word_filter_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("use_overflow_resize", "Y", $lang['resizeimagesandreflowpage'], (isset($user_prefs['USE_OVERFLOW_RESIZE']) && $user_prefs['USE_OVERFLOW_RESIZE'] == "Y")), "</td>\n";
-echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("use_overflow_resize_global", "Y", '', (isset($user_prefs['USE_OVERFLOW_RESIZE_GLOBAL']) ? $user_prefs['USE_OVERFLOW_RESIZE_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : '', "&nbsp;</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("use_overflow_resize_global", "Y", '', (isset($user_prefs['USE_OVERFLOW_RESIZE_GLOBAL']) ? $user_prefs['USE_OVERFLOW_RESIZE_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("use_overflow_resize_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
@@ -632,12 +635,12 @@ echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" nowrap=\"nowrap\">{$lang['postsperpage']}:</td>\n";
 echo "                  <td align=\"left\">", form_dropdown_array("posts_per_page", array(10 => 10, 20 => 20, 30 => 30), (isset($user_prefs['POSTS_PER_PAGE']) && is_numeric($user_prefs['POSTS_PER_PAGE'])) ? $user_prefs['POSTS_PER_PAGE'] : 10), "</td>\n";
-echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("posts_per_page_global", "Y", '', (isset($user_prefs['POSTS_PER_PAGE_GLOBAL']) ? $user_prefs['POSTS_PER_PAGE_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : '', "&nbsp;</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("posts_per_page_global", "Y", '', (isset($user_prefs['POSTS_PER_PAGE_GLOBAL']) ? $user_prefs['POSTS_PER_PAGE_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("posts_per_page_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" nowrap=\"nowrap\">{$lang['fontsize']}:</td>\n";
 echo "                  <td align=\"left\">", form_dropdown_array("font_size", array(5 => '5pt', 6 => '6pt', 7 => '7pt', 8 => '8pt', 9 => '9pt', 10 => '10pt', 11 => '11pt', 12 => '12pt', 13 => '13pt', 14 => '14pt', 15 => '15pt'), (isset($user_prefs['FONT_SIZE']) && is_numeric($user_prefs['FONT_SIZE'])) ? $user_prefs['FONT_SIZE'] : 10), "</td>\n";
-echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("font_size_global", "Y", '', (isset($user_prefs['FONT_SIZE_GLOBAL']) ? $user_prefs['FONT_SIZE_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : '', "&nbsp;</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("font_size_global", "Y", '', (isset($user_prefs['FONT_SIZE_GLOBAL']) ? $user_prefs['FONT_SIZE_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("font_size_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 
 if (sizeof($available_styles) > 1) {
@@ -659,7 +662,7 @@ if (sizeof($available_emoticons) > 1) {
 echo "                <tr>\n";
 echo "                  <td align=\"left\" nowrap=\"nowrap\">{$lang['startpage']}:</td>\n";
 echo "                  <td align=\"left\">", form_dropdown_array("start_page", array(START_PAGE_NORMAL => $lang['start'], START_PAGE_MESSAGES => $lang['messages'], START_PAGE_INBOX => $lang['pminbox'], START_PAGE_THREAD_LIST => $lang['startwiththreadlist']), (isset($user_prefs['START_PAGE'])) ? $user_prefs['START_PAGE'] : 0), "</td>\n";
-echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("start_page_global", "Y", '', (isset($user_prefs['START_PAGE_GLOBAL']) ? $user_prefs['START_PAGE_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : '', "&nbsp;</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("start_page_global", "Y", '', (isset($user_prefs['START_PAGE_GLOBAL']) ? $user_prefs['START_PAGE_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("start_page_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";

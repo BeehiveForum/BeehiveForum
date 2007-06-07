@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_prefs.php,v 1.74 2007-06-07 20:27:25 decoyduck Exp $ */
+/* $Id: edit_prefs.php,v 1.75 2007-06-07 23:56:50 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -573,7 +573,7 @@ echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" valign=\"top\" nowrap=\"nowrap\">{$lang['homepageURL']}:&nbsp;</td>\n";
 echo "                  <td align=\"left\">", form_input_text("homepage_url", (isset($user_prefs['HOMEPAGE_URL']) ? $user_prefs['HOMEPAGE_URL'] : ""), 45, 255, "", "user_pref_field"), "</td>\n";
-echo "                  <td align=\"left\" valign=\"top\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("homepage_url_global", "Y", '', (isset($user_prefs['HOMEPAGE_URL_GLOBAL']) ? $user_prefs['HOMEPAGE_URL_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : '', "&nbsp;</td>\n";
+echo "                  <td align=\"left\" valign=\"top\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("homepage_url_global", "Y", '', (isset($user_prefs['HOMEPAGE_URL_GLOBAL']) ? $user_prefs['HOMEPAGE_URL_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("homepage_url_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 
 if (forum_get_setting('attachments_enabled', 'Y')) {
@@ -600,7 +600,7 @@ if (forum_get_setting('attachments_enabled', 'Y')) {
     echo "                <tr>\n";
     echo "                  <td align=\"left\" width=\"150\" nowrap=\"nowrap\">{$lang['pictureURL']}:</td>\n";
     echo "                  <td align=\"left\">", form_input_text("pic_url", (isset($user_prefs['PIC_URL']) ? $user_prefs['PIC_URL'] : ""), 45, 255, "", "user_pref_field"), "</td>\n";
-    echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("pic_url_global", "Y", '', (isset($user_prefs['PIC_URL_GLOBAL']) ? $user_prefs['PIC_URL_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : '', "&nbsp;</td>\n";
+    echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("pic_url_global", "Y", '', (isset($user_prefs['PIC_URL_GLOBAL']) ? $user_prefs['PIC_URL_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("pic_url_global", 'Y'), "&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\" width=\"150\" nowrap=\"nowrap\">{$lang['selectattachment']}:</td>\n";
@@ -628,7 +628,7 @@ if (forum_get_setting('attachments_enabled', 'Y')) {
     echo "                <tr>\n";
     echo "                  <td align=\"left\" width=\"150\" nowrap=\"nowrap\">{$lang['avatarURL']}:</td>\n";
     echo "                  <td align=\"left\">", form_input_text("avatar_url", (isset($user_prefs['AVATAR_URL']) ? $user_prefs['AVATAR_URL'] : ""), 45, 255, "", "user_pref_field"), "</td>\n";
-    echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("avatar_url_global", "Y", '', (isset($user_prefs['AVATAR_URL_GLOBAL']) ? $user_prefs['AVATAR_URL_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : '', "&nbsp;</td>\n";
+    echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("avatar_url_global", "Y", '', (isset($user_prefs['AVATAR_URL_GLOBAL']) ? $user_prefs['AVATAR_URL_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("avatar_url_global", 'Y'), "&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\" width=\"150\" nowrap=\"nowrap\">{$lang['selectattachment']}:</td>\n";
@@ -640,12 +640,12 @@ if (forum_get_setting('attachments_enabled', 'Y')) {
     echo "                <tr>\n";
     echo "                  <td align=\"left\" width=\"150\" nowrap=\"nowrap\">{$lang['pictureURL']}:</td>\n";
     echo "                  <td align=\"left\">", form_input_text("pic_url", (isset($user_prefs['PIC_URL']) ? $user_prefs['PIC_URL'] : ""), 45, 255, "", "user_pref_field"), "</td>\n";
-    echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("pic_url_global", "Y", '', (isset($user_prefs['PIC_URL_GLOBAL']) ? $user_prefs['PIC_URL_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : '', "&nbsp;</td>\n";
+    echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("pic_url_global", "Y", '', (isset($user_prefs['PIC_URL_GLOBAL']) ? $user_prefs['PIC_URL_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("pic_url_global", 'Y'), "&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\" width=\"150\" nowrap=\"nowrap\">{$lang['avatarURL']}:</td>\n";
     echo "                  <td align=\"left\">", form_input_text("avatar_url", (isset($user_prefs['AVATAR_URL']) ? $user_prefs['AVATAR_URL'] : ""), 45, 255, "", "user_pref_field"), "</td>\n";
-    echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("avatar_url_global", "Y", '', (isset($user_prefs['AVATAR_URL_GLOBAL']) ? $user_prefs['AVATAR_URL_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : '', "&nbsp;</td>\n";
+    echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("avatar_url_global", "Y", '', (isset($user_prefs['AVATAR_URL_GLOBAL']) ? $user_prefs['AVATAR_URL_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("avatar_url_global", 'Y'), "&nbsp;</td>\n";
     echo "                </tr>\n";
 }
 

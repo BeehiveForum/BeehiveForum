@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.229 2007-06-08 13:39:46 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.230 2007-06-08 14:08:22 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -355,8 +355,11 @@ function html_get_forum_email()
 
 function html_get_frame_name($basename)
 {
-    $webtag = get_webtag($webtag_search);
-    return sprintf('bh_frame_%s_%s', strtolower($webtag), preg_replace('/[^a-z]/i', '', md5($basename)));
+    if ($webtag = get_webtag($webtag_search)) {
+        return sprintf('bh_frame_%s_%s', strtolower($webtag), $basename);
+    }
+
+    return sprintf('bh_frame_%s', $basename);
 }
 
 function html_get_top_frame_name()

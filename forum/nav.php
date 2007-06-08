@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: nav.php,v 1.101 2007-06-07 20:27:26 decoyduck Exp $ */
+/* $Id: nav.php,v 1.102 2007-06-08 13:39:45 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -88,39 +88,39 @@ echo "<div class=\"navleft\">\n";
 
 if ($webtag = get_webtag($webtag_search)) {
 
-    echo "<a href=\"start.php?webtag=$webtag\" target=\"main\">{$lang['start']}</a>&nbsp;|&nbsp;\n";
-    echo "<a href=\"discussion.php?webtag=$webtag\" target=\"main\">{$lang['messages']}</a>&nbsp;|&nbsp;\n";
-    echo "<a href=\"discussion.php?webtag=$webtag&amp;right=search\" target=\"main\">{$lang['search']}</a>&nbsp;|&nbsp;\n";
+    echo "<a href=\"start.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">{$lang['start']}</a>&nbsp;|&nbsp;\n";
+    echo "<a href=\"discussion.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">{$lang['messages']}</a>&nbsp;|&nbsp;\n";
+    echo "<a href=\"discussion.php?webtag=$webtag&amp;right=search\" target=\"", html_get_frame_name('main'), "\">{$lang['search']}</a>&nbsp;|&nbsp;\n";
 
     if (forum_get_setting('show_links', 'Y')) {
-        echo "<a href=\"links.php?webtag=$webtag\" target=\"main\">{$lang['links']}</a>&nbsp;|&nbsp;\n";
+        echo "<a href=\"links.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">{$lang['links']}</a>&nbsp;|&nbsp;\n";
     }
 }
 
 if (forum_get_setting('show_pms', 'Y')) {
-    echo "<a href=\"pm.php?webtag=$webtag\" target=\"main\">{$lang['pminbox']}</a>&nbsp;|&nbsp;\n";
+    echo "<a href=\"pm.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">{$lang['pminbox']}</a>&nbsp;|&nbsp;\n";
 }
 
 if ($webtag = get_webtag($webtag_search)) {
-    echo "<a href=\"user.php?webtag=$webtag\" target=\"main\">{$lang['mycontrols']}</a>&nbsp;|&nbsp;\n";
+    echo "<a href=\"user.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">{$lang['mycontrols']}</a>&nbsp;|&nbsp;\n";
 }
 
 if (forums_get_available_count() > 1 || $webtag === false) {
-    echo "<a href=\"forums.php?webtag=$webtag\" target=\"main\">{$lang['myforums']}</a>&nbsp;|&nbsp;\n";
+    echo "<a href=\"forums.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">{$lang['myforums']}</a>&nbsp;|&nbsp;\n";
 }
 
 if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || bh_session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE)) {
-    echo "<a href=\"admin.php?webtag=$webtag\" target=\"main\">{$lang['admin']}</a>&nbsp;|&nbsp;\n";
+    echo "<a href=\"admin.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">{$lang['admin']}</a>&nbsp;|&nbsp;\n";
 }
 
 if (user_is_guest()) {
 
-    echo "<a href=\"logout.php?webtag=$webtag\" target=\"$frame_top_target\">{$lang['login']}</a>&nbsp;|&nbsp;\n";
-    echo "<a href=\"register.php?webtag=$webtag\" target=\"main\">{$lang['register']}</a>\n";
+    echo "<a href=\"logout.php?webtag=$webtag\" target=\"", html_get_top_frame_name(), "\">{$lang['login']}</a>&nbsp;|&nbsp;\n";
+    echo "<a href=\"register.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">{$lang['register']}</a>\n";
 
 }else {
 
-    echo "<a href=\"logout.php?webtag=$webtag\" target=\"main\">{$lang['logout']}</a>\n";
+    echo "<a href=\"logout.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">{$lang['logout']}</a>\n";
 }
 
 echo "</div>\n";

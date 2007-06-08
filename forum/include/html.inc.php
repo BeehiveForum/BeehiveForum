@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.228 2007-05-26 17:36:56 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.229 2007-06-08 13:39:46 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -48,7 +48,7 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 function html_guest_error()
 {
-     $frame_top_target = (isset($GLOBALS['frame_top_target'])) ? $GLOBALS['frame_top_target'] : '_top';
+     $frame_top_target = html_get_top_frame_name();
      
      $lang = load_language_file();
 
@@ -351,6 +351,21 @@ function html_get_forum_email()
     }
 
     return "";
+}
+
+function html_get_frame_name($basename)
+{
+    $webtag = get_webtag($webtag_search);
+    return sprintf('bh_frame_%s_%s', strtolower($webtag), preg_replace('/[^a-z]/i', '', md5($basename)));
+}
+
+function html_get_top_frame_name()
+{
+    if (isset($GLOBALS['frame_top_target']) && strlen(trim($GLOBALS['frame_top_target'])) > 0) {
+        return $GLOBALS['frame_top_target'];
+    }
+
+    return '_top';
 }
 
 // Draws the top of the HTML page including DOCTYPE, head and body tags

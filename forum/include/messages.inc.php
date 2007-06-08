@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.457 2007-06-07 23:56:50 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.458 2007-06-08 13:39:46 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -541,8 +541,6 @@ function messages_bottom()
 
 function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $in_list = true, $closed = false, $limit_text = true, $is_poll = false, $show_sigs = true, $is_preview = false, $highlight_array = array())
 {
-    $frame_top_target = (isset($GLOBALS['frame_top_target'])) ? $GLOBALS['frame_top_target'] : '_top';
-    
     $lang = load_language_file();
 
     $perm_is_moderator = bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid);
@@ -864,7 +862,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
             }else {
 
-                echo "<a href=\"index.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"$frame_top_target\" title=\"$title\">$tid.{$message['PID']}</a>";
+                echo "<a href=\"index.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"", html_get_top_frame_name(), "\" title=\"$title\">$tid.{$message['PID']}</a>";
             }
 
             if ($message['REPLY_TO_PID'] > 0) {
@@ -1643,7 +1641,7 @@ function messages_forum_stats($tid, $pid)
                 echo "                      </tr>\n";
                 echo "                      <tr>\n";
                 echo "                        <td align=\"left\">&nbsp;</td>\n";
-                echo "                        <td align=\"left\">", sprintf($lang['usersactiveinthepasttimeperiod'], implode(", ", $active_users_array), $session_cutoff), " [ <a href=\"start.php?webtag=$webtag&amp;show=visitors\" target=\"main\">{$lang['viewcompletelist']}</a> ]</td>\n";
+                echo "                        <td align=\"left\">", sprintf($lang['usersactiveinthepasttimeperiod'], implode(", ", $active_users_array), $session_cutoff), " [ <a href=\"start.php?webtag=$webtag&amp;show=visitors\" target=\"", html_get_frame_name('main'), "\">{$lang['viewcompletelist']}</a> ]</td>\n";
                 echo "                        <td align=\"left\">&nbsp;</td>\n";
                 echo "                      </tr>\n";
 

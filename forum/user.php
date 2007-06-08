@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.php,v 1.60 2007-06-07 20:27:26 decoyduck Exp $ */
+/* $Id: user.php,v 1.61 2007-06-08 13:39:46 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -124,8 +124,8 @@ if (isset($_GET['page']) && strlen(trim(_stripslashes($_GET['page']))) > 0) {
         html_draw_top('body_tag=false', 'frames=true');
         
         echo "<frameset cols=\"250,*\" framespacing=\"0\" border=\"4\">\n";
-        echo "  <frame src=\"./user_menu.php?webtag=$webtag\" name=\"left\" frameborder=\"0\" />\n";
-        echo "  <frame src=\"$requested_page\" name=\"right\" frameborder=\"0\" />\n";
+        echo "  <frame src=\"./user_menu.php?webtag=$webtag\" name=\"", html_get_frame_name('left'), "\" frameborder=\"0\" />\n";
+        echo "  <frame src=\"$requested_page\" name=\"", html_get_frame_name('right'), "\" frameborder=\"0\" />\n";
         echo "</frameset>\n";
 
         html_draw_bottom(false);
@@ -136,8 +136,8 @@ if (isset($_GET['page']) && strlen(trim(_stripslashes($_GET['page']))) > 0) {
 html_draw_top('body_tag=false', 'frames=true');
 
 echo "<frameset cols=\"250,*\" framespacing=\"0\" border=\"4\">\n";
-echo "  <frame src=\"./user_menu.php?webtag=$webtag\" name=\"left\" frameborder=\"0\" />\n";
-echo "  <frame src=\"./user_main.php?webtag=$webtag\" name=\"right\" frameborder=\"0\" />\n";
+echo "  <frame src=\"./user_menu.php?webtag=$webtag\" name=\"", html_get_frame_name('left'), "\" frameborder=\"0\" />\n";
+echo "  <frame src=\"./user_main.php?webtag=$webtag\" name=\"", html_get_frame_name('right'), "\" frameborder=\"0\" />\n";
 echo "</frameset>\n";
 
 html_draw_bottom(false);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.182 2007-06-07 23:56:50 decoyduck Exp $ */
+/* $Id: search.php,v 1.183 2007-06-08 13:39:46 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -481,7 +481,7 @@ if (isset($search_success) && $search_success === true && isset($offset)) {
                 
                     $message['CONTENT'] = word_filter_add_ob_tags($message['CONTENT']);
 
-                    echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;hightlight=yes\" target=\"right\"><b>{$message['TITLE']}</b></a><br />";
+                    echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;hightlight=yes\" target=\"", html_get_frame_name('right'), "\"><b>{$message['TITLE']}</b></a><br />";
                     echo "<span class=\"smalltext\"><b>{$lang['from']}:</b> ", word_filter_add_ob_tags(format_user_name($search_result['FROM_LOGON'], $search_result['FROM_NICKNAME'])), ", ", format_time($search_result['CREATED'], 1), "</span></p></li>\n";
                     
                 }else {
@@ -490,7 +490,7 @@ if (isset($search_success) && $search_success === true && isset($offset)) {
                 
                     $message['CONTENT'] = word_filter_add_ob_tags($message['CONTENT']);
 
-                    echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;highlight=yes\" target=\"right\"><b>{$message['TITLE']}</b></a><br />";
+                    echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;highlight=yes\" target=\"", html_get_frame_name('right'), "\"><b>{$message['TITLE']}</b></a><br />";
                     echo "{$message['CONTENT']}<br /><span class=\"smalltext\"><b>{$lang['from']}:</b> ", word_filter_add_ob_tags(format_user_name($search_result['FROM_LOGON'], $search_result['FROM_NICKNAME'])), ", ", format_time($search_result['CREATED'], 1), "</span></p></li>\n";
                 }
             }
@@ -520,7 +520,7 @@ if (isset($search_success) && $search_success === true && isset($offset)) {
     echo "<h1>{$lang['searchmessages']}</h1>\n";
     echo "<br />\n";
     echo "<div align=\"center\">\n";
-    echo "<form id=\"search_form\" method=\"post\" action=\"search.php\" target=\"left\">\n";
+    echo "<form id=\"search_form\" method=\"post\" action=\"search.php\" target=\"", html_get_frame_name('left'), "\">\n";
     echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";
@@ -702,7 +702,7 @@ if (!isset($_GET['search_string'])) {
     echo "  <tr>\n";
     echo "    <td align=\"left\">&nbsp;</td>\n";
     echo "    <td align=\"left\" class=\"smalltext\">\n";
-    echo "      <form name=\"f_nav\" method=\"get\" action=\"messages.php\" target=\"right\">\n";
+    echo "      <form name=\"f_nav\" method=\"get\" action=\"messages.php\" target=\"", html_get_frame_name('right'), "\">\n";
     echo "        ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
     echo "        ", form_input_text('msg', '1.1', 10). "\n";
     echo "        ", form_submit("go",$lang['goexcmark']). "\n";
@@ -713,7 +713,7 @@ if (!isset($_GET['search_string'])) {
     echo "<br />\n";
     echo "<table cellpadding=\"2\" cellspacing=\"0\">\n";
     echo "  <tr>\n";
-    echo "    <td align=\"left\" class=\"smalltext\" colspan=\"2\">{$lang['searchagain']} (<a href=\"search.php?webtag=$webtag\" target=\"right\">{$lang['advanced']}</a>):</td>\n";
+    echo "    <td align=\"left\" class=\"smalltext\" colspan=\"2\">{$lang['searchagain']} (<a href=\"search.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">{$lang['advanced']}</a>):</td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td align=\"left\">&nbsp;</td>\n";

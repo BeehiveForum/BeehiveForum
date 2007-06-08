@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.141 2007-06-02 13:17:16 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.142 2007-06-08 13:39:46 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -155,15 +155,15 @@ if (is_array($folder_info) && sizeof($folder_info) > 0) {
 
                 if ($thread['LENGTH'] > 1) {
 
-                    $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"main\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
+                    $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('main'). "\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
                     $number.= sprintf($lang['manynew'], $thread['LENGTH']);
-                    $number.= "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"main\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
+                    $number.= "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"". html_get_frame_name('main'). "\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
 
                 }else {
 
-                    $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"main\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
+                    $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('main'). "\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
                     $number.= sprintf($lang['onenew'], $thread['LENGTH']);
-                    $number.= "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"main\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
+                    $number.= "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"". html_get_frame_name('main'). "\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
                 }
 
                 $latest_post = 1;
@@ -174,15 +174,15 @@ if (is_array($folder_info) && sizeof($folder_info) > 0) {
 
                 if ($new_posts > 1) {
 
-                    $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"main\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
+                    $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('main'). "\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
                     $number.= sprintf($lang['manynewoflength'], $new_posts, $thread['LENGTH']);
-                    $number.= "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"main\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
+                    $number.= "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"". html_get_frame_name('main'). "\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
 
                 }else {
 
-                    $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"main\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
+                    $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('main'). "\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
                     $number.= sprintf($lang['onenewoflength'], $new_posts, $thread['LENGTH']);
-                    $number.= "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"main\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
+                    $number.= "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"". html_get_frame_name('main'). "\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
                 }
 
                 $latest_post = $thread['LAST_READ'] + 1;
@@ -191,13 +191,13 @@ if (is_array($folder_info) && sizeof($folder_info) > 0) {
 
                 if ($thread['LENGTH'] > 1) {
 
-                    $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"main\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
-                    $number.= "{$thread['LENGTH']}<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"main\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
+                    $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('main'). "\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
+                    $number.= "{$thread['LENGTH']}<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"". html_get_frame_name('main'). "\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
 
                 }else {
 
-                    $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"main\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
-                    $number.= "1<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"main\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
+                    $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('main'). "\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
+                    $number.= "1<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('main'). "\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
                 }
 
                 $latest_post = 1;
@@ -211,7 +211,7 @@ if (is_array($folder_info) && sizeof($folder_info) > 0) {
 
             $thread_time = format_time($thread['MODIFIED']);
 
-            echo "                        <td align=\"left\" valign=\"top\"><a href=\"discussion.php?webtag=$webtag&amp;msg=$tid.$pid\" target=\"main\" ";
+            echo "                        <td align=\"left\" valign=\"top\"><a href=\"discussion.php?webtag=$webtag&amp;msg=$tid.$pid\" target=\"", html_get_frame_name('main'), "\" ";
             echo "title=\"", sprintf($lang['threadstartedbytooltip'], $thread['TID'], word_filter_add_ob_tags(format_user_name($thread['LOGON'], $thread['NICKNAME'])), ($thread['VIEWCOUNT'] == 1) ? $lang['threadviewedonetime'] : sprintf($lang['threadviewedtimes'], $thread['VIEWCOUNT'])), "\">";
             echo word_filter_add_ob_tags(thread_format_prefix($thread['PREFIX'], $thread['TITLE'])), "</a> ";
 
@@ -275,10 +275,10 @@ if (is_array($folder_info) && sizeof($folder_info) > 0) {
     echo "                        <td class=\"postbody\" colspan=\"2\" align=\"center\">\n";
     echo "                          <table class=\"posthead\" border=\"0\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\n";
     echo "                            <tr>\n";
-    echo "                              <td align=\"left\" valign=\"top\" nowrap=\"nowrap\"><img src=\"", style_image('post.png'), "\" alt=\"{$lang['newdiscussion']}\" title=\"{$lang['newdiscussion']}\" />&nbsp;<a href=\"post.php?webtag=$webtag\" target=\"main\">{$lang['newdiscussion']}</a></td>\n";
+    echo "                              <td align=\"left\" valign=\"top\" nowrap=\"nowrap\"><img src=\"", style_image('post.png'), "\" alt=\"{$lang['newdiscussion']}\" title=\"{$lang['newdiscussion']}\" />&nbsp;<a href=\"post.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">{$lang['newdiscussion']}</a></td>\n";
     echo "                            </tr>\n";
     echo "                            <tr>\n";
-    echo "                              <td align=\"left\" valign=\"top\" nowrap=\"nowrap\"><img src=\"", style_image('poll.png'), "\" alt=\"{$lang['createpoll']}\" title=\"{$lang['createpoll']}\" />&nbsp;<a href=\"create_poll.php?webtag=$webtag\" target=\"main\">{$lang['createpoll']}</a></td>\n";
+    echo "                              <td align=\"left\" valign=\"top\" nowrap=\"nowrap\"><img src=\"", style_image('poll.png'), "\" alt=\"{$lang['createpoll']}\" title=\"{$lang['createpoll']}\" />&nbsp;<a href=\"create_poll.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">{$lang['createpoll']}</a></td>\n";
     echo "                            </tr>\n";
     echo "                          </table>\n";
     echo "                        </td>\n";
@@ -488,7 +488,7 @@ if (is_array($folder_info) && sizeof($folder_info) > 0) {
     echo "                          <table class=\"posthead\" border=\"0\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\n";
     echo "                            <tr>\n";
     echo "                              <td align=\"left\">\n";
-    echo "                                <form name=\"f_nav\" method=\"get\" action=\"discussion.php\" target=\"main\">\n";
+    echo "                                <form name=\"f_nav\" method=\"get\" action=\"discussion.php\" target=\"", html_get_frame_name('main'), "\">\n";
     echo "                                  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
     echo "                                  ", form_input_text('msg', '1.1', 10), "\n";
     echo "                                  ", form_submit("go",$lang['goexcmark']), "\n";

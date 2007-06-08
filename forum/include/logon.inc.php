@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.64 2007-05-26 17:36:56 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.65 2007-06-08 13:39:46 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -301,7 +301,7 @@ function logon_perform($logon_main)
 
 function logon_draw_form()
 {
-    $frame_top_target = (isset($GLOBALS['frame_top_target'])) ? $GLOBALS['frame_top_target'] : '_top';
+    $frame_top_target = html_get_top_frame_name();
    
     $lang = load_language_file();
 
@@ -338,7 +338,7 @@ function logon_draw_form()
 
     if (stristr($request_uri, 'logon.php')) {
 
-        echo "  <form name=\"logonform\" method=\"post\" action=\"$request_uri\" target=\"$frame_top_target\">\n";
+        echo "  <form name=\"logonform\" method=\"post\" action=\"$request_uri\" target=\"", html_get_top_frame_name(), "\">\n";
 
     }else {
 
@@ -481,7 +481,7 @@ function logon_draw_form()
 
     if (user_guest_enabled()) {
 
-        echo "<form name=\"guest\" action=\"", get_request_uri(), "\" method=\"post\" target=\"$frame_top_target\">\n";
+        echo "<form name=\"guest\" action=\"", get_request_uri(), "\" method=\"post\" target=\"", html_get_top_frame_name(), "\">\n";
         echo "  <p class=\"smalltext\">", sprintf($lang['enterasa'], form_submit('guest_logon', $lang['guest'])), "</p>\n";
         echo "</form>\n";
     }
@@ -493,7 +493,7 @@ function logon_draw_form()
         echo "<p class=\"smalltext\">", sprintf($lang['donthaveanaccount'], "<a href=\"register.php?webtag=$webtag&amp;final_uri=$final_uri\" target=\"_self\">{$lang['registernow']}</a>"), "</p>\n";
         echo "<hr width=\"350\" />\n";
         echo "<h2>{$lang['problemsloggingon']}</h2>\n";
-        echo "<p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes&amp;final_uri=$final_uri\" target=\"$frame_top_target\">{$lang['deletecookies']}</a></p>\n";
+        echo "<p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes&amp;final_uri=$final_uri\" target=\"", html_get_top_frame_name(), "\">{$lang['deletecookies']}</a></p>\n";
         echo "<p class=\"smalltext\"><a href=\"forgot_pw.php?webtag=$webtag&amp;final_uri=$final_uri\" target=\"_self\">{$lang['forgottenpasswd']}</a></p>\n";
 
     }else {
@@ -501,13 +501,13 @@ function logon_draw_form()
         echo "<p class=\"smalltext\">", sprintf($lang['donthaveanaccount'], "<a href=\"register.php?webtag=$webtag\" target=\"_self\">{$lang['registernow']}</a>"), "</p>\n";
         echo "<hr width=\"350\" />\n";
         echo "<h2>{$lang['problemsloggingon']}</h2>\n";
-        echo "<p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes\" target=\"$frame_top_target\">{$lang['deletecookies']}</a></p>\n";
+        echo "<p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes\" target=\"", html_get_top_frame_name(), "\">{$lang['deletecookies']}</a></p>\n";
         echo "<p class=\"smalltext\"><a href=\"forgot_pw.php?webtag=$webtag\" target=\"_self\">{$lang['forgottenpasswd']}</a></p>\n";
     }
 
     echo "<hr width=\"350\" />\n";
     echo "<h2>{$lang['usingaPDA']}</h2>\n";
-    echo "<p class=\"smalltext\"><a href=\"index.php?webtag=$webtag&amp;noframes\" target=\"$frame_top_target\">{$lang['lightHTMLversion']}</a></p>\n";
+    echo "<p class=\"smalltext\"><a href=\"index.php?webtag=$webtag&amp;noframes\" target=\"", html_get_top_frame_name(), "\">{$lang['lightHTMLversion']}</a></p>\n";
 }
 
 function logon_unset_post_data()

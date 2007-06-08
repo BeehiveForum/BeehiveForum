@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start.php,v 1.75 2007-05-31 21:59:19 decoyduck Exp $ */
+/* $Id: start.php,v 1.76 2007-06-08 13:39:46 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -110,20 +110,20 @@ echo "<frameset cols=\"280,*\" framespacing=\"0\" border=\"4\">\n";
 
 if (isset($_GET['left']) && $_GET['left'] == "threadlist") {
 
-    echo "<frame src=\"./thread_list.php?webtag=$webtag\" name=\"left\" frameborder=\"0\" />\n";
+    echo "<frame src=\"./thread_list.php?webtag=$webtag\" name=\"", html_get_frame_name('left'), "\" frameborder=\"0\" />\n";
 
 }else {
 
-    echo "<frame src=\"./start_left.php?webtag=$webtag\" name=\"left\" frameborder=\"0\" />\n";
+    echo "<frame src=\"./start_left.php?webtag=$webtag\" name=\"", html_get_frame_name('left'), "\" frameborder=\"0\" />\n";
 }
 
 if (isset($_GET['show']) && $_GET['show'] == "visitors") {
 
-    echo "<frame src=\"./visitor_log.php?webtag=$webtag\" name=\"right\" frameborder=\"0\" />\n";
+    echo "<frame src=\"./visitor_log.php?webtag=$webtag\" name=\"", html_get_frame_name('right'), "\" frameborder=\"0\" />\n";
 
 }else {
 
-    echo "<frame src=\"./start_main.php?webtag=$webtag\" name=\"right\" frameborder=\"0\" />\n";
+    echo "<frame src=\"./start_main.php?webtag=$webtag\" name=\"", html_get_frame_name('right'), "\" frameborder=\"0\" />\n";
 }
 
 echo "</frameset>\n";

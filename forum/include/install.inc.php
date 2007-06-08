@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.55 2007-05-26 17:36:56 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.56 2007-06-08 13:39:46 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -152,7 +152,7 @@ function rmdir_recursive($path)
 
 function install_incomplete()
 {
-    $frame_top_target = (isset($GLOBALS['frame_top_target'])) ? $GLOBALS['frame_top_target'] : '_top';
+    $frame_top_target = html_get_top_frame_name();
     
     echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
@@ -189,7 +189,7 @@ function install_incomplete()
     echo "      </td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
-    echo "  <form method=\"get\" action=\"./install.php\" target=\"$frame_top_target\">\n";
+    echo "  <form method=\"get\" action=\"./install.php\" target=\"", html_get_top_frame_name(), "\">\n";
     echo "    <input type=\"hidden\" name=\"force_install\" value=\"yes\" />\n";
     echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "      <tr>\n";

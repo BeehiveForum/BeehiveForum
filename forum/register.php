@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.158 2007-05-31 21:59:19 decoyduck Exp $ */
+/* $Id: register.php,v 1.159 2007-06-08 13:39:45 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -831,7 +831,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
 
     $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
 
-    $frame_top_target = (isset($GLOBALS['frame_top_target'])) ? $GLOBALS['frame_top_target'] : '_top';
+    $frame_top_target = html_get_top_frame_name();
 
     if (!$forum_rules = forum_get_setting('forum_rules')) {
 

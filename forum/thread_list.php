@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.303 2007-06-07 23:56:50 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.304 2007-06-08 13:39:46 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -495,7 +495,7 @@ foreach ($folder_order as $folder_number) {
                     if (is_null($folder_info[$folder_number]['STATUS']) || $folder_info[$folder_number]['STATUS'] & USER_PERM_THREAD_CREATE) {
 
                         echo "<a href=\"", ($folder_info[$folder_number]['ALLOWED_TYPES'] & FOLDER_ALLOW_NORMAL_THREAD) ? "./post.php?webtag=$webtag" : "./create_poll.php?webtag=$webtag";
-                        echo "&amp;fid={$folder_number}\" target=\"main\" class=\"folderpostnew\" title=\"{$lang['createnewdiscussioninthisfolder']}\">{$lang['postnew']}</a>";
+                        echo "&amp;fid={$folder_number}\" target=\"", html_get_frame_name('main'), "\" class=\"folderpostnew\" title=\"{$lang['createnewdiscussioninthisfolder']}\">{$lang['postnew']}</a>";
 
                     }else {
 
@@ -526,21 +526,21 @@ foreach ($folder_order as $folder_number) {
                             echo "                  <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
                             echo "                    <tr>\n";
                             echo "                      <td valign=\"top\" align=\"center\" nowrap=\"nowrap\" width=\"20\">";
-                            echo "<a href=\"thread_options.php?webtag=$webtag&amp;tid={$thread['TID']}\" target=\"right\">";
+                            echo "<a href=\"thread_options.php?webtag=$webtag&amp;tid={$thread['TID']}\" target=\"", html_get_frame_name('right'), "\">";
 
                             if ($thread['LAST_READ'] == 0) {
 
                                 if ($thread['LENGTH'] > 1) {
 
-                                    $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"right\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
+                                    $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('right'). "\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
                                     $number.= sprintf($lang['manynew'], $thread['LENGTH']);
-                                    $number.= "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"right\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
+                                    $number.= "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"". html_get_frame_name('right'). "\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
 
                                 }else {
 
-                                    $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"right\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
+                                    $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('right'). "\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
                                     $number.= sprintf($lang['onenew'], $thread['LENGTH']);
-                                    $number.= "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"right\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
+                                    $number.= "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"". html_get_frame_name('right'). "\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
                                 }
 
                                 $latest_post = 1;
@@ -561,15 +561,15 @@ foreach ($folder_order as $folder_number) {
 
                                 if ($new_posts > 1) {
 
-                                    $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"right\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
+                                    $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('right'). "\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
                                     $number.= sprintf($lang['manynewoflength'], $new_posts, $thread['LENGTH']);
-                                    $number.= "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"right\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
+                                    $number.= "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"". html_get_frame_name('right'). "\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
 
                                 }else {
 
-                                    $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"right\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
+                                    $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('right'). "\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
                                     $number.= sprintf($lang['onenewoflength'], $new_posts, $thread['LENGTH']);
-                                    $number.= "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"right\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
+                                    $number.= "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"". html_get_frame_name('right'). "\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
                                 }
 
                                 $latest_post = $thread['LAST_READ'] + 1;
@@ -588,13 +588,13 @@ foreach ($folder_order as $folder_number) {
 
                                 if ($thread['LENGTH'] > 1) {
 
-                                    $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"right\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
-                                    $number.= "{$thread['LENGTH']}<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"right\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
+                                    $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('right'). "\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
+                                    $number.= "{$thread['LENGTH']}<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"". html_get_frame_name('right'). "\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
 
                                 }else {
 
-                                    $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"right\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
-                                    $number.= "1<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"right\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
+                                    $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('right'). "\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
+                                    $number.= "1<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('right'). "\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
                                 }
 
                                 $latest_post = 1;
@@ -616,7 +616,7 @@ foreach ($folder_order as $folder_number) {
 
                             echo "&nbsp;</td>\n";
                             echo "                      <td align=\"left\" valign=\"top\">";
-                            echo "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.{$latest_post}\" target=\"right\" class=\"threadname\" onclick=\"change_current_thread('{$thread['TID']}');\"";
+                            echo "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.{$latest_post}\" target=\"", html_get_frame_name('right'), "\" class=\"threadname\" onclick=\"change_current_thread('{$thread['TID']}');\"";
                             echo "title=\"", sprintf($lang['threadstartedbytooltip'], $thread['TID'], word_filter_add_ob_tags(format_user_name($thread['LOGON'], $thread['NICKNAME'])), ($thread['VIEWCOUNT'] == 1) ? $lang['threadviewedonetime'] : sprintf($lang['threadviewedtimes'], $thread['VIEWCOUNT'])), "\">";
                             echo word_filter_add_ob_tags(thread_format_prefix($thread['PREFIX'], $thread['TITLE'])), "</a> ";
 
@@ -683,7 +683,7 @@ foreach ($folder_order as $folder_number) {
                     if (is_null($folder_info[$folder_number]['STATUS']) || $folder_info[$folder_number]['STATUS'] & USER_PERM_THREAD_CREATE) {
 
                         echo "<a href=\"", ($folder_info[$folder_number]['ALLOWED_TYPES'] & FOLDER_ALLOW_NORMAL_THREAD) ? "./post.php?webtag=$webtag" : "./create_poll.php?webtag=$webtag";
-                        echo "&amp;fid={$folder_number}\" target=\"main\" class=\"folderpostnew\" title=\"{$lang['createnewdiscussioninthisfolder']}\">{$lang['postnew']}</a>";
+                        echo "&amp;fid={$folder_number}\" target=\"", html_get_frame_name('main'), "\" class=\"folderpostnew\" title=\"{$lang['createnewdiscussioninthisfolder']}\">{$lang['postnew']}</a>";
 
                     }else {
 
@@ -716,7 +716,7 @@ foreach ($folder_order as $folder_number) {
 
                     echo "<a href=\"";
                     echo $folder_info[$folder_number]['ALLOWED_TYPES']&FOLDER_ALLOW_NORMAL_THREAD ? "./post.php?webtag=$webtag" : "./create_poll.php?webtag=$webtag";
-                    echo "&amp;fid=$folder_number\" target=\"main\" class=\"folderpostnew\" title=\"{$lang['createnewdiscussioninthisfolder']}\">{$lang['postnew']}</a>";
+                    echo "&amp;fid=$folder_number\" target=\"", html_get_frame_name('main'), "\" class=\"folderpostnew\" title=\"{$lang['createnewdiscussioninthisfolder']}\">{$lang['postnew']}</a>";
 
                 }else {
 
@@ -829,7 +829,7 @@ echo "  </tr>\n";
 echo "  <tr>\n";
 echo "    <td align=\"left\">&nbsp;</td>\n";
 echo "    <td align=\"left\" class=\"smalltext\">\n";
-echo "      <form name=\"f_nav\" method=\"get\" action=\"messages.php\" target=\"right\">\n";
+echo "      <form name=\"f_nav\" method=\"get\" action=\"messages.php\" target=\"", html_get_frame_name('right'), "\">\n";
 echo "        ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 
 if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
@@ -844,7 +844,7 @@ echo "  </tr>\n";
 echo "</table>\n";
 echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\">\n";
 echo "  <tr>\n";
-echo "    <td align=\"left\" class=\"smalltext\" colspan=\"2\">{$lang['search']} (<a href=\"search.php?webtag=$webtag\" target=\"right\">{$lang['advanced']}</a>):</td>\n";
+echo "    <td align=\"left\" class=\"smalltext\" colspan=\"2\">{$lang['search']} (<a href=\"search.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">{$lang['advanced']}</a>):</td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
 echo "    <td align=\"left\">&nbsp;</td>\n";

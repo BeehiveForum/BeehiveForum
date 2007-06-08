@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.303 2007-06-02 13:17:21 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.304 2007-06-08 13:39:47 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -207,8 +207,6 @@ function bh_session_check($show_session_fail = true, $use_sess_hash = false)
 
 function bh_session_expired()
 {
-    $frame_top_target = (isset($GLOBALS['frame_top_target'])) ? $GLOBALS['frame_top_target'] : '_top';
-
     $webtag = get_webtag($webtag_search);
 
     $lang = load_language_file();
@@ -247,7 +245,7 @@ function bh_session_expired()
 
                 if (stristr($request_uri, 'logon.php')) {
 
-                    echo "<form method=\"post\" action=\"$request_uri\" target=\"$frame_top_target\">\n";
+                    echo "<form method=\"post\" action=\"$request_uri\" target=\"", html_get_top_frame_name(), "\">\n";
 
                 }else {
 

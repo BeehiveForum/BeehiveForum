@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.120 2007-06-07 23:56:50 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.121 2007-06-09 23:09:18 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -467,11 +467,11 @@ if (isset($error_html) && strlen(trim($error_html)) > 0) {
         echo "    top.document.body.rows='60, 22, *';\n";
     }
 
-    echo "    top.frames['ftop'].location.replace('$top_html');\n";
-    echo "    top.frames['fnav'].location.reload();\n";
-    echo "    top.frames['main'].frames['left'].location.reload();\n\n";
+    echo "    top.frames['", html_get_frame_name('ftop'), "'].location.replace('$top_html');\n";
+    echo "    top.frames['", html_get_frame_name('fnav'), "'].location.reload();\n";
+    echo "    top.frames['", html_get_frame_name('main'), "'].frames['", html_get_frame_name('left'), "'].location.reload();\n\n";
     echo "} else if (top.document.body.cols) {\n\n";
-    echo "    top.frames['left'].location.reload();\n\n";
+    echo "    top.frames['", html_get_frame_name('left'), "'].location.reload();\n\n";
     echo "}\n\n";
     echo "-->\n";
     echo "</script>";

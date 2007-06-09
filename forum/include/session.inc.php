@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.304 2007-06-08 13:39:47 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.305 2007-06-09 16:18:38 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -108,9 +108,10 @@ function bh_session_check($show_session_fail = true, $use_sess_hash = false)
 
     if (isset($user_hash) && is_md5($user_hash)) {
 
-        $sql = "SELECT SESSIONS.UID, UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, ";
-        $sql.= "USER.LOGON, USER.NICKNAME, USER.EMAIL, USER.PASSWD, SESSIONS.FID, ";
-        $sql.= "SESSIONS.IPADDRESS, SESSIONS.REFERER FROM SESSIONS SESSIONS ";
+        $sql = "SELECT SESSIONS.HASH, SESSIONS.UID, SESSIONS.IPADDRESS, ";
+        $sql.= "UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, SESSIONS.FID, ";
+        $sql.= "SESSIONS.REFERER, USER.LOGON, USER.NICKNAME, USER.EMAIL, ";
+        $sql.= "USER.PASSWD FROM SESSIONS SESSIONS ";
         $sql.= "LEFT JOIN USER ON (USER.UID = SESSIONS.UID) ";
         $sql.= "WHERE SESSIONS.HASH = '$user_hash'";
 
@@ -328,9 +329,9 @@ function bh_guest_session_init($use_sess_hash = false, $update_visitor_log = tru
             $forum_fid = 0;
         }
 
-        $sql = "SELECT UID, UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, 'GUEST' AS LOGON, ";
-        $sql.= "MD5('GUEST') AS PASSWD, FID, IPADDRESS, REFERER FROM SESSIONS ";
-        $sql.= "WHERE HASH = '$user_hash' ";
+        $sql = "SELECT HASH, UID, UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, ";
+        $sql.= "'GUEST' AS LOGON, MD5('GUEST') AS PASSWD, FID, IPADDRESS, ";
+        $sql.= "REFERER FROM SESSIONS WHERE HASH = '$user_hash' ";
 
         if (!$result = db_query($sql, $db_bh_guest_session_init)) return false;
 

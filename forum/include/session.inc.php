@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.305 2007-06-09 16:18:38 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.306 2007-06-09 23:09:18 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -235,8 +235,8 @@ function bh_session_expired()
                 echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
                 echo "<!--\n\n";
                 echo "if (top.document.body.rows) {\n\n";
-                echo "    top.frames['ftop'].location.replace('$top_html');\n";
-                echo "    top.frames['fnav'].location.reload();\n";
+                echo "    top.frames['", html_get_frame_name('ftop'), "'].location.replace('$top_html');\n";
+                echo "    top.frames['", html_get_frame_name('fnav'), "'].location.reload();\n";
                 echo "}\n\n";
                 echo "-->\n";
                 echo "</script>";

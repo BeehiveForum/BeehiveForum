@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.230 2007-06-08 14:08:22 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.231 2007-06-09 23:09:18 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -355,11 +355,22 @@ function html_get_forum_email()
 
 function html_get_frame_name($basename)
 {
+    // Forum URL
+    
+    $forum_uri = html_get_forum_uri();
+   
+    // If webtag available add that to the hash.
+    
     if ($webtag = get_webtag($webtag_search)) {
-        return sprintf('bh_frame_%s_%s', strtolower($webtag), $basename);
+        
+        $frame_md5_hash = md5(sprintf('%s-%s-%s', $forum_uri, $webtag, $basename));
+        return sprintf('bh_frame_%s', preg_replace('/[^a-z]+/i', '', $frame_md5_hash));
     }
 
-    return sprintf('bh_frame_%s', $basename);
+    // No webtag just use forum URL and frame basename.
+
+    $frame_md5_hash = md5(sprintf('%s-%s', $forum_uri, $basename));
+    return sprintf('bh_frame_%s', preg_replace('/[^a-z]+/i', '', $frame_md5_hash));
 }
 
 function html_get_top_frame_name()
@@ -601,8 +612,8 @@ function html_draw_top()
             echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
             echo "<!--\n\n";
             echo "top.document.body.rows='60,' + ". max($fontsize* 2, 22) ."+ ',*';\n";
-            echo "top.frames['main'].frames['left'].location.reload();\n";
-            echo "top.frames['fnav'].location.reload();\n\n";
+            echo "top.frames['", html_get_frame_name('main'), "'].frames['", html_get_frame_name('left'), "'].location.reload();\n";
+            echo "top.frames['", html_get_frame_name('fnav'), "'].location.reload();\n\n";
             echo "//-->\n";
             echo "</script>\n";
         }
@@ -677,7 +688,7 @@ function html_draw_top()
                     echo "function pm_notification_popup() {\n";
                     echo "    clearTimeout(pm_timeout);\n";
                     echo "    if (window.confirm('", wordwrap($pm_notification, 75, '\n'), "')) {\n";
-                    echo "        top.frames['main'].location.replace('pm.php?webtag=$webtag');\n";
+                    echo "        top.frames['", html_get_frame_name('main'), "'].location.replace('pm.php?webtag=$webtag');\n";
                     echo "    }\n";
                     echo "    return true;\n";
                     echo "}\n\n";
@@ -763,8 +774,8 @@ function html_draw_top()
         echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
         echo "<!--\n\n";
         echo "if (top.document.body.rows) {\n\n";
-        echo "    top.frames['ftop'].location.replace('$top_html');\n";
-        echo "    top.frames['fnav'].location.reload();\n";
+        echo "    top.frames['", html_get_frame_name('ftop'), "'].location.replace('$top_html');\n";
+        echo "    top.frames['", html_get_frame_name('fnav'), "'].location.reload();\n";
         echo "}\n\n";
         echo "-->\n";
         echo "</script>";

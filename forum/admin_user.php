@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.205 2007-06-02 13:17:16 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.206 2007-06-10 12:28:42 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -1419,7 +1419,7 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
 
         if (admin_get_users_attachments($uid, $attachments_array, $image_attachments_array)) {
 
-            $attachments_array = array_merge_keys($attachments_array, $image_attachments_array);
+            $attachments_array = array_merge($attachments_array, $image_attachments_array);
 
             echo "                <tr>\n";
             echo "                  <td align=\"left\">&nbsp;</td>\n";

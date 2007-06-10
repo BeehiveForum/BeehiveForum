@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.140 2007-06-07 20:27:26 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.141 2007-06-10 12:28:44 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -578,6 +578,23 @@ function _stripslashes($var)
 }
 
 /**
+* Create array with matching keys and values.
+*
+* Same as range, but keys are set equal to values.
+*
+* @return array
+* @param mixed $low - Low number
+* @param mixed $high - High number
+*/
+
+function range_keys($low, $high)
+{
+    $array_range = array_flip(range($low, $high));
+    array_walk($array_range, create_function('&$item, $key', '$item = $key;'));
+    return $array_range;
+}
+
+/**
 * Search an array
 *
 * Searches the array for a given value and returns the corresponding key if successful.
@@ -601,36 +618,6 @@ function _array_search($needle, $haystack)
     }
 
     return false;
-}
-
-/**
-* Merge two arrays into one.
-*
-* Merges two arrays into one while maintaining numerical keys.
-*
-* @return array
-* @param array  $array_1 - Array to merge
-* @param array  $array_2 - Array to merge
-*/
-
-function array_merge_keys($array1, $array2)
-{
-    foreach($array2 as $key => $value) {
-
-        if (!array_key_exists($key, $array1)) {
-            
-            $array1[$key] = $value;
-        
-        }else {
-
-            if (is_array($value)) {
-
-                $array1[$key] = array_merge_keys($array1[$key], $array2[$key]);
-            }
-        }
-    }
-
-    return $array1;
 }
 
 /**

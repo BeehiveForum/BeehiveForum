@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_wordfilter.php,v 1.73 2007-06-07 20:27:25 decoyduck Exp $ */
+/* $Id: edit_wordfilter.php,v 1.74 2007-06-10 12:28:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -170,11 +170,16 @@ if (isset($_POST['delete'])) {
 
     $uid = bh_session_get_value('UID');
     
-    user_update_prefs($uid, $user_prefs, $user_prefs_global);
+    if (user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
 
-    $redirect = "./edit_wordfilter.php?webtag=$webtag&updated=true";
-    header_redirect($redirect, $lang['wordfilterupdated']);
-    exit;
+        header_redirect("./edit_wordfilter.php?webtag=$webtag&updated=true", $lang['preferencesupdated']);
+        exit;
+
+    }else {
+
+        $error_html.= "<h2>{$lang['failedtoupdateuserdetails']}</h2>\n";
+        $valid = false;
+    }
 
 }elseif (isset($_POST['addfilter_submit'])) {
     

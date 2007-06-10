@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.239 2007-06-08 13:39:46 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.240 2007-06-10 12:28:44 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -480,7 +480,7 @@ function forum_get_settings_by_fid($fid, $include_global_settings = true)
     if ($include_global_settings === true) {
 
         $forum_global_settings = forum_get_global_settings();
-        return array_merge_keys($forum_global_settings, $forum_settings_array);
+        return array_merge($forum_global_settings, $forum_settings_array);
     }
 
     return $forum_settings_array;

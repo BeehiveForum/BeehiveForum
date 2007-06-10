@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.176 2007-05-31 21:59:19 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.177 2007-06-10 12:28:44 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -377,9 +377,12 @@ if (isset($_POST['emots_toggle_x']) || isset($_POST['emots_toggle_y'])) {
     $page_prefs = (double) $page_prefs ^ POST_EMOTICONS_DISPLAY;
 
     $user_prefs['POST_PAGE'] = $page_prefs;
-    $user_prefs_global['POST_PAGE'] = true;
 
-    user_update_prefs($uid, $user_prefs, $user_prefs_global);
+    if (!user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
+        
+        $error_html = "<h2>{$lang['failedtoupdateuserdetails']}</h2>\n";
+        $valid = false;
+    }
 
     $fix_html = false;
 }
@@ -388,15 +391,13 @@ if (isset($_POST['emots_toggle_x']) || isset($_POST['emots_toggle_y'])) {
 
 if (isset($_POST['submit']) || isset($_POST['preview'])) {
 
-    $error_html = "";
-
     if (isset($_POST['t_subject']) && strlen(trim(_stripslashes($_POST['t_subject']))) > 0) {
 
         $t_subject = trim(_stripslashes($_POST['t_subject']));
 
     }else {
 
-        $error_html.= "<h2>{$lang['entersubjectformessage']}</h2>\n";
+        $error_html = "<h2>{$lang['entersubjectformessage']}</h2>\n";
         $valid = false;
     }
 
@@ -406,7 +407,7 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
 
     }elseif ($valid) {
 
-        $error_html.= "<h2>{$lang['entercontentformessage']}</h2>\n";
+        $error_html = "<h2>{$lang['entercontentformessage']}</h2>\n";
         $valid = false;
     }
 
@@ -424,7 +425,7 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
 
     if ($to_radio == POST_RADIO_FRIENDS && $t_to_uid == 0) {
 
-        $error_html.= "<h2>{$lang['mustspecifyrecipient']}</h2>\n";
+        $error_html = "<h2>{$lang['mustspecifyrecipient']}</h2>\n";
         $valid = false;
     }
 
@@ -461,20 +462,20 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
 
                             if (pm_get_free_space($uid) < sizeof($t_new_recipient_array['TO_UID'])) {
 
-                                $error_html.= "<h2>{$lang['youdonothaveenoughfreespace']}</h2>\n";
+                                $error_html = "<h2>{$lang['youdonothaveenoughfreespace']}</h2>\n";
                                 $valid = false;
                             }
 
                         }else {
 
-                            $error_html.= sprintf("<h2>{$lang['userhasoptedoutofpm']}</h2>\n", $to_logon);
+                            $error_html = sprintf("<h2>{$lang['userhasoptedoutofpm']}</h2>\n", $to_logon);
                             $valid = false;
                         }
                     }
 
                 }elseif ($valid) {
 
-                    $error_html.= sprintf("<h2>{$lang['usernotfound']}</h2>\n", $to_logon);
+                    $error_html = sprintf("<h2>{$lang['usernotfound']}</h2>\n", $to_logon);
                     $valid = false;
                 }
             }
@@ -490,20 +491,20 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
 
             if ($valid && sizeof($t_new_recipient_array['TO_UID']) > 10) {
 
-                $error_html.= "<h2>{$lang['maximumtenrecipientspermessage']}</h2>\n";
+                $error_html = "<h2>{$lang['maximumtenrecipientspermessage']}</h2>\n";
                 $valid = false;
             }
 
             if ($valid && sizeof($t_new_recipient_array['TO_UID']) < 1) {
 
-                $error_html.= "<h2>{$lang['mustspecifyrecipient']}</h2>\n";
+                $error_html = "<h2>{$lang['mustspecifyrecipient']}</h2>\n";
                 $valid = false;
             }
         }
 
     }elseif ($valid && $to_radio == POST_RADIO_OTHERS) {
 
-        $error_html.= "<h2>{$lang['mustspecifyrecipient']}</h2>\n";
+        $error_html = "<h2>{$lang['mustspecifyrecipient']}</h2>\n";
         $valid = false;
     }
 }
@@ -518,7 +519,7 @@ if (isset($_POST['save'])) {
 
     }else {
 
-        $error_html.= "<h2>{$lang['entersubjectformessage']}</h2>\n";
+        $error_html = "<h2>{$lang['entersubjectformessage']}</h2>\n";
         $valid = false;
     }
 
@@ -528,7 +529,7 @@ if (isset($_POST['save'])) {
 
     }elseif ($valid) {
 
-        $error_html.= "<h2>{$lang['entercontentformessage']}</h2>\n";
+        $error_html = "<h2>{$lang['entercontentformessage']}</h2>\n";
         $valid = false;
     }
 
@@ -556,7 +557,7 @@ if (isset($_POST['save'])) {
 
         if ($valid && sizeof($t_recipient_array) > 10) {
 
-            $error_html.= "<h2>{$lang['maximumtenrecipientspermessage']}</h2>\n";
+            $error_html = "<h2>{$lang['maximumtenrecipientspermessage']}</h2>\n";
             $valid = false;
         }
 
@@ -582,7 +583,7 @@ if (isset($_POST['save'])) {
 
             }else {
 
-                $error_html.= "<h2>{$lang['couldnotsavemessage']}</h2>\n";
+                $error_html = "<h2>{$lang['couldnotsavemessage']}</h2>\n";
                 $valid = false;
             }
 
@@ -599,7 +600,7 @@ if (isset($_POST['save'])) {
 
             }else {
 
-                $error_html.= "<h2>{$lang['couldnotsavemessage']}</h2>\n";
+                $error_html = "<h2>{$lang['couldnotsavemessage']}</h2>\n";
                 $valid = false;
             }
         }
@@ -705,7 +706,7 @@ if ($valid && isset($_POST['submit'])) {
 
             }else {
 
-                $error_html.= "<h2>{$lang['errorcreatingpm']}</h2>\n";
+                $error_html = "<h2>{$lang['errorcreatingpm']}</h2>\n";
                 $valid = false;
             }
 
@@ -725,7 +726,7 @@ if ($valid && isset($_POST['submit'])) {
 
                 }else {
 
-                    $error_html.= "<h2>{$lang['errorcreatingpm']}</h2>\n";
+                    $error_html = "<h2>{$lang['errorcreatingpm']}</h2>\n";
                     $valid = false;
                 }
             }

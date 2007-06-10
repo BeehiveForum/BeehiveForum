@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.117 2007-06-07 20:27:25 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.118 2007-06-10 12:28:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -230,11 +230,11 @@ if (isset($_POST['delete_confirm'])) {
     $hash_array = array();
     
     if (isset($_POST['delete_attachment']) && is_array($_POST['delete_attachment'])) {
-        $hash_array = array_merge_keys($hash_array, array_keys($_POST['delete_attachment']));
+        $hash_array = array_merge($hash_array, array_keys($_POST['delete_attachment']));
     }
 
     if (isset($_POST['delete_other_attachment']) && is_array($_POST['delete_other_attachment'])) {
-        $hash_array = array_merge_keys($hash_array, array_keys($_POST['delete_other_attachment']));
+        $hash_array = array_merge($hash_array, array_keys($_POST['delete_other_attachment']));
     }
 
     if (is_array($hash_array) && sizeof($hash_array) > 0) {

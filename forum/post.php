@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.310 2007-05-31 21:59:19 decoyduck Exp $ */
+/* $Id: post.php,v 1.311 2007-06-10 12:28:44 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -424,9 +424,12 @@ if (isset($_POST['emots_toggle_x']) || isset($_POST['sig_toggle_x'])) {
     }
 
     $user_prefs['POST_PAGE'] = $page_prefs;
-    $user_prefs_global['POST_PAGE'] = true;
 
-    user_update_prefs($uid, $user_prefs, $user_prefs_global);
+    if (!user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
+        
+        $error_html = "<h2>{$lang['failedtoupdateuserdetails']}</h2>\n";
+        $valid = false;
+    }
 
     $fix_html = false;
 }

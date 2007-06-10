@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.325 2007-06-04 21:44:45 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.326 2007-06-10 12:28:48 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -581,7 +581,7 @@ function user_get_prefs($uid)
 
     // Merge them all together, with forum prefs overriding global prefs
 
-    $prefs_array = array_merge_keys($global_prefs, $forum_prefs);
+    $prefs_array = array_merge($global_prefs, $forum_prefs);
 
     return $prefs_array;
 }

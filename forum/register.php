@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.159 2007-06-08 13:39:45 decoyduck Exp $ */
+/* $Id: register.php,v 1.160 2007-06-10 12:28:44 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -385,8 +385,6 @@ if (isset($_POST['register'])) {
 
             $public_key = trim(_stripslashes($_POST['public_key']));
 
-            $text_captcha->destroy_image();
-
             if (isset($_POST['private_key']) && strlen(trim(_stripslashes($_POST['private_key']))) > 0) {
                 $private_key = trim(_stripslashes($_POST['private_key']));
             }else {
@@ -397,6 +395,7 @@ if (isset($_POST['register'])) {
             if ($valid) {
 
                 $text_captcha->set_public_key($public_key);
+                $text_captcha->destroy_image();
 
                 if (!$text_captcha->verify_keys($private_key)) {
                     $error_html.= "<h2>{$lang['textcaptchaverificationfailed']}</h2>\n";
@@ -405,23 +404,6 @@ if (isset($_POST['register'])) {
             }
         }
     }
-
-    // Defaults that we don't otherwise set.
-
-    $new_user_prefs['HOMEPAGE_URL'] = "";
-    $new_user_prefs['PIC_URL'] = "";
-    $new_user_prefs['POSTS_PER_PAGE'] = 20;
-    $new_user_prefs['FONT_SIZE'] = 10;
-    $new_user_prefs['VIEW_SIGS'] = "Y";
-    $new_user_prefs['START_PAGE'] = 0;
-    $new_user_prefs['DOB_DISPLAY'] = 0;
-    $new_user_prefs['ANON_logon'] = "N";
-    $new_user_prefs['SHOW_STATS'] = "Y";
-    $new_user_prefs['IMAGES_TO_LINKS'] = "N";
-    $new_user_prefs['USE_WORD_FILTER'] = "N";
-    $new_user_prefs['USE_ADMIN_FILTER'] = "N";
-    $new_user_prefs['ALLOW_email'] = "Y";
-    $new_user_prefs['ALLOW_PM'] = "Y";
 
     foreach ($new_user_prefs as $key => $value) {
         $new_user_prefs_global[$key] = true;

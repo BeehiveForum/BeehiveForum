@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_options.php,v 1.6 2007-06-07 20:27:26 decoyduck Exp $ */
+/* $Id: pm_options.php,v 1.7 2007-06-10 12:28:44 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -190,7 +190,11 @@ if (isset($_POST['submit'])) {
 
     // Update USER_PREFS
 
-    user_update_prefs($uid, $user_prefs, $user_prefs_global);
+    if (!user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
+        
+        $error_html = "<h2>{$lang['failedtoupdateuserdetails']}</h2>\n";
+        $valid = false;
+    }
 
     // Reinitialize the User's Session to save them having to logout and back in
 
@@ -211,7 +215,7 @@ html_draw_top("emoticons.js");
 
 echo "<h1>{$lang['privatemessageoptions']}</h1>\n";
 
-if (!empty($error_html)) {
+if (isset($error_html) && strlen($error_html) > 0) {
 
     echo $error_html;
 

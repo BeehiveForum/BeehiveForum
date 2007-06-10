@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.103 2007-06-02 13:17:18 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.104 2007-06-10 12:28:44 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -439,18 +439,16 @@ function form_dob_dropdowns($dob_year, $dob_month, $dob_day, $show_blank = true,
 
     if ($show_blank) {
 
-        $birthday_days = range(0, 31); $birthday_days[0] = '&nbsp;';
-        $birthday_months = array_merge_keys(array('&nbsp;'), $lang['month']);
-        $birthday_years = array_flip(array_merge_keys(array('&nbsp;' => ''), range(1900, date('Y', mktime()))));
+        $birthday_days   = array_merge(array('&nbsp;'), range(1, 31));
+        $birthday_months = array_merge(array('&nbsp;'), $lang['month']);
+        $birthday_years  = array('&nbsp;') + range_keys(1900, date('Y', mktime()));
 
     }else {
 
-        $birthday_days = range(0, 31); unset($birthday_days[0]);
+        $birthday_days   = range_keys(1, 31);
         $birthday_months = $lang['month'];
-        $birthday_years = array_flip(range(1900, date('Y', mktime())));
+        $birthday_years  = range_keys(1900, date('Y', mktime()));
     }
-
-    array_walk($birthday_years, create_function('&$item, $key', 'if (is_numeric($key)) $item = $key;'));
 
     $output = form_dropdown_array("dob_day", $birthday_days, $dob_day, $custom_html, $class). "&nbsp;";
     $output.= form_dropdown_array("dob_month", $birthday_months, $dob_month, $custom_html, $class). "&nbsp;";
@@ -471,17 +469,15 @@ function form_date_dropdowns($year = 0, $month = 0, $day = 0, $prefix = false, $
 
     if (is_numeric($start_year) && $start_year > 0 && $start_year < 2037) {
 
-        $years = array_flip(array_merge_keys(array('&nbsp;' => ''), range($start_year, 2037)));
-        array_walk($years, create_function('&$item, $key', 'if (is_numeric($key)) $item = $key;'));
+        $years = array('&nbsp;') + range_keys($start_year, date('Y', mktime()));
 
     }else {
 
-        $years = array_flip(array_merge_keys(array('&nbsp;' => ''), range(date('Y'), 2037)));
-        array_walk($years, create_function('&$item, $key', 'if (is_numeric($key)) $item = $key;'));
+        $years = array('&nbsp;') + range_keys(date('Y', mktime()), 2037);
     }
 
-    $days = range(0, 31); $days[0] = '&nbsp;';
-    $months = array_merge_keys(array('&nbsp;'), $lang['month_short']);
+    $days   = array_merge(array('&nbsp;'), range(1, 31));
+    $months = array_merge(array('&nbsp;'), $lang['month']);
 
     $output = form_dropdown_array("{$prefix}day", $days, $day). "&nbsp;";
     $output.= form_dropdown_array("{$prefix}month", $months, $month). "&nbsp;";

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.311 2007-06-10 12:28:44 decoyduck Exp $ */
+/* $Id: post.php,v 1.312 2007-06-11 21:58:59 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -282,6 +282,24 @@ if (isset($_POST['t_post_interest'])) {
 }else {
 
     $high_interest = "N";
+}
+
+if (isset($_POST['t_sticky'])) {
+
+    if ($_POST['t_sticky'] == 'Y') {
+        $t_sticky = 'Y';
+    }else {
+        $t_sticky = 'N';
+    }
+}
+
+if (isset($_POST['t_closed'])) {
+
+    if ($_POST['t_closed'] == 'Y') {
+        $t_closed = 'Y';
+    }else {
+        $t_closed = 'N';
+    }
 }
 
 if (isset($_POST['t_post_html'])) {
@@ -607,11 +625,6 @@ if ($valid && isset($_POST['submit'])) {
 
             if ($newthread) {
 
-                $t_closed     = (isset($_POST['t_closed']))     ? $_POST['t_closed']     : false;
-                $old_t_closed = (isset($_POST['old_t_closed'])) ? $_POST['old_t_closed'] : false;
-                $t_sticky     = (isset($_POST['t_sticky']))     ? $_POST['t_sticky']     : false;
-                $old_t_sticky = (isset($_POST['old_t_sticky'])) ? $_POST['old_t_sticky'] : false;
-
                 if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
                     $t_closed = isset($t_closed) && $t_closed == "Y" ? true : false;
@@ -640,11 +653,6 @@ if ($valid && isset($_POST['submit'])) {
                 }
 
                 if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
-
-                    $t_closed     = (isset($_POST['t_closed']))     ? $_POST['t_closed']     : false;
-                    $old_t_closed = (isset($_POST['old_t_closed'])) ? $_POST['old_t_closed'] : false;
-                    $t_sticky     = (isset($_POST['t_sticky']))     ? $_POST['t_sticky']     : false;
-                    $old_t_sticky = (isset($_POST['old_t_sticky'])) ? $_POST['old_t_sticky'] : false;
 
                     if (isset($t_closed) && isset($old_t_closed) && $t_closed != $old_t_closed && $t_closed == "Y") {
                         thread_set_closed($t_tid, true);
@@ -946,10 +954,10 @@ if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
     echo "                      <td align=\"left\"><h2>{$lang['admin']}</h2></td>\n";
     echo "                    </tr>\n";
     echo "                    <tr>\n";
-    echo "                      <td align=\"left\">", form_checkbox("t_closed", "Y", $lang['closeforposting'], isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 ? true : false), "</td>\n";
+    echo "                      <td align=\"left\">", form_checkbox("t_closed", "Y", $lang['closeforposting'], isset($t_closed) ? $t_closed == 'Y' : isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 ? true : false), "</td>\n";
     echo "                    </tr>\n";
     echo "                    <tr>\n";
-    echo "                      <td align=\"left\">", form_checkbox("t_sticky", "Y", $lang['makesticky'], isset($threaddata['STICKY']) && $threaddata['STICKY'] == "Y" ? true : false), "</td>\n";
+    echo "                      <td align=\"left\">", form_checkbox("t_sticky", "Y", $lang['makesticky'], isset($t_sticky) ? $t_sticky == 'Y' : isset($threaddata['STICKY']) && $threaddata['STICKY'] == "Y" ? true : false), "</td>\n";
     echo "                    </tr>\n";
 }
 

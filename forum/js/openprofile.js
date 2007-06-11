@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: openprofile.js,v 1.17 2007-06-01 23:12:04 decoyduck Exp $ */
+/* $Id: openprofile.js,v 1.18 2007-06-11 21:58:59 decoyduck Exp $ */
 
 var edit_attachments = false;
 var email_window = false;
@@ -32,7 +32,7 @@ function openProfile(uid, webtag)
 
 function openProfileByLogon(logon, webtag)
 {
-    window.open('user_profile.php?webtag=' + webtag + '&logon=' + logon, 'profile_window_' + uid, 'width=650, height=500, toolbars=no, resizable=yes, scrollbars=yes');
+    window.open('user_profile.php?webtag=' + webtag + '&logon=' + logon, 'profile_window_' + logon, 'width=650, height=500, toolbars=no, resizable=yes, scrollbars=yes');
     return false;
 }
 

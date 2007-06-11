@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.203 2007-06-10 12:28:42 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.204 2007-06-11 21:58:58 decoyduck Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -196,6 +196,24 @@ if (isset($_POST['t_post_interest'])) {
     }
 }else {
     $high_interest = "N";
+}
+
+if (isset($_POST['t_sticky'])) {
+
+    if ($_POST['t_sticky'] == 'Y') {
+        $t_sticky = 'Y';
+    }else {
+        $t_sticky = 'N';
+    }
+}
+
+if (isset($_POST['t_closed'])) {
+
+    if ($_POST['t_closed'] == 'Y') {
+        $t_closed = 'Y';
+    }else {
+        $t_closed = 'N';
+    }
 }
 
 if (isset($_POST['t_message_html'])) {
@@ -829,8 +847,8 @@ if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
     echo "              <br />\n";
     echo "              <h2>{$lang['admin']}</h2>\n";
-    echo "              ", form_checkbox("t_closed", "Y", $lang['closeforposting'], isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 ? true : false), "<br />";
-    echo "              ", form_checkbox("t_sticky", "Y", $lang['makesticky'], isset($threaddata['STICKY']) && $threaddata['STICKY'] == "Y" ? true : false)."<br />\n";
+    echo "              ", form_checkbox("t_closed", "Y", $lang['closeforposting'], isset($t_closed) ? $t_closed == 'Y' : isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 ? true : false), "<br />";
+    echo "              ", form_checkbox("t_sticky", "Y", $lang['makesticky'], isset($t_sticky) ? $t_sticky == 'Y' : isset($threaddata['STICKY']) && $threaddata['STICKY'] == "Y" ? true : false), "<br />\n";
     echo "              ", form_input_hidden("old_t_closed", isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 ? "Y" : "N"), "\n";
     echo "              ", form_input_hidden("old_t_sticky", isset($threaddata['STICKY']) && $threaddata['STICKY'] == "Y" ? "Y" : "N"), "\n";
 }

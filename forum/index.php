@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.146 2007-06-08 13:39:45 decoyduck Exp $ */
+/* $Id: index.php,v 1.147 2007-06-13 21:21:27 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -224,7 +224,7 @@ if ($session_active && !$logon_failed) {
     html_draw_top('body_tag=false', 'frames=true', 'robots=index,follow');
 
     echo "<frameset rows=\"60,*\" framespacing=\"0\" border=\"0\">\n";
-    echo "<frame src=\"$top_html\" name=\"", html_get_frame_name('top'), "\" frameborder=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize=\"noresize\" />\n";
+    echo "<frame src=\"$top_html\" name=\"", html_get_frame_name('ftop'), "\" frameborder=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize=\"noresize\" />\n";
 
     if (isset($_GET['other_logon'])) {
         $other_logon = "&amp;other_logon=true";

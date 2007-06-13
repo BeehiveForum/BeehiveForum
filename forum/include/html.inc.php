@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.231 2007-06-09 23:09:18 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.232 2007-06-13 21:21:27 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -598,6 +598,22 @@ function html_draw_top()
     echo "<link rel=\"search\" type=\"application/opensearchdescription+xml\" href=\"$forum_path/search.php?webtag=$webtag&amp;opensearch\" title=\"{$title}\" />\n";
 
     if ($base_target) echo "<base target=\"$base_target\" />\n";
+
+    // Dynamic Frame names.
+
+    echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
+    echo "<!--\n\n";
+    echo "var bh_frame_main = '", html_get_frame_name('main'), "'\n";
+    echo "var bh_frame_ftop = '", html_get_frame_name('ftop'), "'\n";
+    echo "var bh_frame_fnav = '", html_get_frame_name('fnav'), "'\n";
+    echo "var bh_frame_left = '", html_get_frame_name('left'), "'\n";
+    echo "var bh_frame_right = '", html_get_frame_name('right'), "'\n";
+    echo "var bh_frame_pm_folders = '", html_get_frame_name('pm_folders'), "'\n";
+    echo "var bh_frame_pm_messages = '", html_get_frame_name('pm_messages'), "'\n\n";
+    echo "//-->\n";
+    echo "</script>\n";
+
+    // Font size (not for Guests)
 
     if (!user_is_guest()) {
 

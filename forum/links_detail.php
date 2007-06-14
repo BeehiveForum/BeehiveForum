@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_detail.php,v 1.91 2007-06-14 13:21:10 decoyduck Exp $ */
+/* $Id: links_detail.php,v 1.92 2007-06-14 13:45:37 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -261,7 +261,7 @@ if (!$link = links_get_single($lid)) {
 
 $folders = links_folders_get(bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0));
 
-html_draw_top();
+html_draw_top('openprofile.js');
 
 echo "<h1>{$lang['links']} &raquo; ", links_display_folder_path($link['FID'], $folders, true, true, "./links.php?webtag=$webtag"), "&nbsp;&raquo;&nbsp;<a href=\"links.php?webtag=$webtag&amp;lid=$lid&amp;action=go\" target=\"_blank\">{$link['TITLE']}</a></h1>\n";
 
@@ -286,8 +286,8 @@ echo "              <tr>\n";
 echo "                <td align=\"center\">\n";
 echo "                  <table class=\"posthead\" width=\"95%\">\n";
 echo "                    <tr>\n";
-echo "                      <td align=\"left\" nowrap=\"nowrap\" valign=\"top\">{$lang['address']}:</td>\n";
-echo "                      <td align=\"left\"><a href=\"links.php?webtag=$webtag&amp;lid=$lid&amp;action=go\" target=\"_blank\">{$link['URI']}</a></td>\n";
+echo "                      <td align=\"left\" nowrap=\"nowrap\" valign=\"top\" width=\"120\">{$lang['address']}:</td>\n";
+echo "                      <td align=\"left\"><a href=\"links.php?webtag=$webtag&amp;lid=$lid&amp;action=go\" target=\"_blank\">", strlen($link['URI']) > 40 ? substr($link['URI'], 0, 40) . '&hellip;' : $link['URI'], "</a></td>\n";
 echo "                    </tr>\n";
 echo "                    <tr>\n";
 echo "                      <td align=\"left\" nowrap=\"nowrap\" valign=\"top\">{$lang['submittedby']}:</td>\n";
@@ -413,10 +413,13 @@ if ($comments_array = links_get_comments($lid)) {
 
         if (isset($comment['LOGON']) && isset($comment['NICKNAME'])) {
 
+            $profile_link = "<a href=\"user_profile.php?webtag=$webtag&amp;uid={$comment['UID']}\" target=\"_blank\" onclick=\"return openProfile({$comment['UID']}, '$webtag')\">";
+            $profile_link.= word_filter_add_ob_tags(format_user_name($comment['LOGON'], $comment['NICKNAME'])). "</a>";
+            
             if (bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0) || $comment['UID'] == $uid) {
-                echo "                  <td align=\"left\" class=\"subhead\">", sprintf($lang['commentby'], word_filter_add_ob_tags(format_user_name($comment['LOGON'], $comment['NICKNAME']))), " <a href=\"links_detail.php?webtag=$webtag&amp;delete_comment={$comment['CID']}&amp;lid=$lid\" class=\"threadtime\">[{$lang['delete']}]</a></td>\n";
+                echo "                  <td align=\"left\" class=\"subhead\">", sprintf($lang['commentby'], $profile_link), " <a href=\"links_detail.php?webtag=$webtag&amp;delete_comment={$comment['CID']}&amp;lid=$lid\" class=\"threadtime\">[{$lang['delete']}]</a></td>\n";
             }else {
-                echo "                  <td align=\"left\" class=\"subhead\">", sprintf($lang['commentby'], word_filter_add_ob_tags(format_user_name($comment['LOGON'], $comment['NICKNAME']))), "</td>\n";
+                echo "                  <td align=\"left\" class=\"subhead\">", sprintf($lang['commentby'], $profile_link), "</td>\n";
             }
 
         }else {

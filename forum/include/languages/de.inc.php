@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.32 2007-05-29 19:41:43 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.33 2007-06-14 13:21:05 decoyduck Exp $ */
 
 // German language file
 
@@ -952,7 +952,7 @@ $lang['mustspecifyvalidfolder'] = "Bitte gueltigen Ordner definieren";
 $lang['mustspecifyfolder'] = "Bitte Ordner definieren";
 $lang['addlink'] = "Link hinzufuegen";
 $lang['addinglinkin'] = "Link hinzufuegen in";
-$lang['addressurluri'] = "Addresse (URL)";
+$lang['addressurluri'] = "Addresse";
 $lang['addnewfolder'] = "Neuen Ordner hinzufuegen";
 $lang['addnewfolderunder'] = "Neuen Ordner hinzufuegen unter";
 $lang['mustchooserating'] = "Du musst eine Bewertung auswaehlen!";

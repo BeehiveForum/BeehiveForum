@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.inc.php,v 1.67 2007-05-19 18:24:31 decoyduck Exp $ */
+/* $Id: links.inc.php,v 1.68 2007-06-14 13:21:05 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -165,7 +165,7 @@ function links_add($uri, $title, $description, $fid, $uid, $visible = true)
 
 function links_create_top_folder($name)
 {
-    $db_links_add_folder = db_connect();
+    $db_links_create_top_folder = db_connect();
 
     $name = db_escape_string(_htmlentities($name));
 
@@ -174,7 +174,7 @@ function links_create_top_folder($name)
     $sql = "INSERT INTO {$table_data['PREFIX']}LINKS_FOLDERS (FID, PARENT_FID, NAME, VISIBLE) ";
     $sql.= "VALUES (1, NULL, '$name', 'Y')";
 
-    if (!$result = db_query($sql, $db_links_add_folder)) return false;
+    if (!$result = db_query($sql, $db_links_create_top_folder)) return false;
 
     return true;
 }
@@ -197,6 +197,23 @@ function links_add_folder($fid, $name, $visible = false)
     if (!$result = db_query($sql, $db_links_add_folder)) return false;
 
     return true;
+}
+
+function links_update_folder($fid, $name)
+{
+    $db_links_update_folder = db_connect();
+
+    if (!is_numeric($fid)) return false;
+
+    $name = db_escape_string(_htmlentities($name));
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $sql = "UPDATE {$table_data['PREFIX']}LINKS_FOLDERS SET NAME = '$name' WHERE FID = '$fid'";
+
+    if (!$result = db_query($sql, $db_links_update_folder)) return false;
+
+    return (db_affected_rows($db_links_update_folder) > 0);
 }
 
 function links_display_folder_path($fid, $folders, $links = true, $link_last_too = false, $link_base = false)
@@ -430,12 +447,13 @@ function links_get_vote($lid, $uid)
 
     if (!$result = db_query($sql, $db_links_get_vote)) return false;
 
-    if ($result) {
-        $vote = db_fetch_array($result);
-        return $vote['RATING'];
-    } else {
-        return false;
+    if (db_num_rows($result) > 0) {
+
+        list($vote) = db_fetch_array($result, DB_RESULT_NUM);
+        return $vote;
     }
+
+    return false;
 }
 
 function links_vote($lid, $vote, $uid)
@@ -467,6 +485,23 @@ function links_vote($lid, $vote, $uid)
     if (!$result = db_query($sql, $db_links_vote)) return false;
 
     return true;
+}
+
+function links_clear_vote($lid, $uid)
+{
+    $db_links_clear_vote = db_connect();
+
+    if (!is_numeric($lid)) return false;
+    if (!is_numeric($uid)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $sql = "DELETE FROM {$table_data['PREFIX']}LINKS_VOTE ";
+    $sql.= "WHERE UID = '$uid' AND LID = '$lid'";
+
+    if (!$result = db_query($sql, $db_links_clear_vote)) return false;
+
+    return (db_affected_rows($db_links_clear_vote) > 0);
 }
 
 function links_add_comment($lid, $uid, $comment)

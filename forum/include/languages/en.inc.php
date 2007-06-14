@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.442 2007-06-04 21:44:45 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.443 2007-06-14 13:21:05 decoyduck Exp $ */
 
 // British English language file
 
@@ -958,9 +958,11 @@ $lang['mustspecifyvalidfolder'] = "You must specify a valid folder!";
 $lang['mustspecifyfolder'] = "You must specify a folder!";
 $lang['addlink'] = "Add a link";
 $lang['addinglinkin'] = "Adding link in";
-$lang['addressurluri'] = "Address (URL/URI)";
+$lang['addressurluri'] = "Address";
 $lang['addnewfolder'] = "Add a new folder";
 $lang['addnewfolderunder'] = "Adding new folder under";
+$lang['editfolder'] = "Edit Folder";
+$lang['editingfolder'] = "Editing folder";
 $lang['mustchooserating'] = "You must choose a rating!";
 $lang['commentadded'] = "Your comment was added.";
 $lang['musttypecomment'] = "You must type a comment!";
@@ -977,6 +979,7 @@ $lang['rate'] = "Rate";
 $lang['bad'] = "Bad";
 $lang['good'] = "Good";
 $lang['voteexcmark'] = "Vote!";
+$lang['clearvote'] = "Clear Vote";
 $lang['commentby'] = "Comment by %s";
 $lang['addacommentabout'] = "Add a comment about";
 $lang['modtools'] = "Moderation Tools";
@@ -987,6 +990,7 @@ $lang['moveto'] = "Move to";
 $lang['linkdetails'] = "Link Details";
 $lang['addcomment'] = "Add Comment";
 $lang['voterecorded'] = "Your vote has been recorded";
+$lang['votecleared'] = "Your vote has been cleared";
 
 // Login / logout (llogon.php, logon.php, logout.php) -----------------------------------------
 

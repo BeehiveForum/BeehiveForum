@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.php,v 1.99 2007-05-31 21:59:18 decoyduck Exp $ */
+/* $Id: links.php,v 1.100 2007-06-14 13:21:10 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -225,13 +225,14 @@ if ($viewmode == LINKS_VIEW_HIERARCHICAL) {
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"65%\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
-    echo "        <h2>" . links_display_folder_path($fid, $folders) . "</h2>\n";
+    echo "        <h2>", links_display_folder_path($fid, $folders), "&nbsp;<a href=\"links_folder_edit.php?webtag=$webtag&amp;fid=$fid\" class=\"threadtime\">[{$lang['edit']}]</a></h2>\n";
 
     if ($folders[$fid]['VISIBLE'] == "N") echo "<p class=\"threadtime\">{$lang['folderhidden']}. <a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;action=foldershow\">[{$lang['unhide']}]</a></p>";
 
     $subfolders = links_get_subfolders($fid, $folders);
 
-    $new_folder_link = bh_session_get_value('UID') ? "[<a href=\"links_add.php?webtag=$webtag&amp;mode=folder&amp;fid=$fid\">{$lang['newfolder']}</a>]" : "";
+    $links_add_folder = LINKS_ADD_FOLDER;
+    $new_folder_link = bh_session_get_value('UID') ? "[<a href=\"links_add.php?webtag=$webtag&amp;mode=$links_add_folder&amp;fid=$fid\">{$lang['newfolder']}</a>]" : "";
 
     if (count($subfolders) == 0) {
 
@@ -242,7 +243,7 @@ if ($viewmode == LINKS_VIEW_HIERARCHICAL) {
         if (count($subfolders) == 1) {
             echo "        <p><span class=\"threadtime\">{$lang['1subfolder']}: $new_folder_link</span></p>\n";
         }else {
-            echo "        <p><span class=\"threadtime\">" . count($subfolders) . " {$lang['subfoldersinthiscategory']}: $new_folder_link</span></p>\n";
+            echo "        <p><span class=\"threadtime\">", count($subfolders), " {$lang['subfoldersinthiscategory']}: $new_folder_link</span></p>\n";
         }
 
         echo "          <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
@@ -274,7 +275,15 @@ if ($viewmode == LINKS_VIEW_HIERARCHICAL) {
                 echo "&nbsp;<a href=\"links.php?webtag=$webtag&amp;fid=$val&amp;action=foldershow&amp;new_fid=$fid\" class=\"threadtime\">[{$lang['unhide']}]</a>\n";
             }
 
-            if (bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0) && count(links_get_subfolders($val, $folders)) == 0) echo "<a href=\"links.php?webtag=$webtag&amp;fid=$val&amp;action=folderdel&amp;new_fid=$fid\" class=\"threadtime\">[{$lang['delete']}]</a>\n";
+            if (bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0)) {
+            
+                echo "<a href=\"links_folder_edit.php?webtag=$webtag&amp;fid=$val\" class=\"threadtime\">[{$lang['edit']}]</a>\n";
+
+                if (count(links_get_subfolders($val, $folders)) == 0) {
+                
+                    echo "<a href=\"links.php?webtag=$webtag&amp;fid=$val&amp;action=folderdel&amp;new_fid=$fid\" class=\"threadtime\">[{$lang['delete']}]</a>\n";
+                }
+            }
 
             echo "                            </td>\n";
             echo "                          </tr>\n";
@@ -386,15 +395,15 @@ if ($sort_by == "TITLE" && $sort_dir == "ASC") {
 }
 
 if ($sort_by == "CREATED" && $sort_dir == "ASC") {
-    echo "                  <td align=\"left\" class=\"subhead\"><a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$page&amp;sort_by=CREATED&amp;sort_dir=DESC\">{$lang['date']}</a>&nbsp;</td>\n";
+    echo "                  <td align=\"center\" class=\"subhead\" width=\"150\"><a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$page&amp;sort_by=CREATED&amp;sort_dir=DESC\">{$lang['date']}</a>&nbsp;</td>\n";
 }else {
-    echo "                  <td align=\"left\" class=\"subhead\"><a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$page&amp;sort_by=CREATED&amp;sort_dir=ASC\">{$lang['date']}</a>&nbsp;</td>\n";
+    echo "                  <td align=\"center\" class=\"subhead\" width=\"150\"><a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$page&amp;sort_by=CREATED&amp;sort_dir=ASC\">{$lang['date']}</a>&nbsp;</td>\n";
 }
 
 if ($sort_by == "RATING" && $sort_dir == "DESC") {
-    echo "                  <td align=\"center\" class=\"subhead\"><a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$page&amp;sort_by=RATING&amp;sort_dir=ASC\">{$lang['rating']}</a>&nbsp;</td>";
+    echo "                  <td align=\"center\" class=\"subhead\" width=\"100\"><a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$page&amp;sort_by=RATING&amp;sort_dir=ASC\">{$lang['rating']}</a>&nbsp;</td>";
 }else {
-    echo "                  <td align=\"center\" class=\"subhead\"><a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$page&amp;sort_by=RATING&amp;sort_dir=DESC\">{$lang['rating']}</a>&nbsp;</td>";
+    echo "                  <td align=\"center\" class=\"subhead\" width=\"100\"><a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$page&amp;sort_by=RATING&amp;sort_dir=DESC\">{$lang['rating']}</a>&nbsp;</td>";
 }
 
 echo "                </tr>\n";
@@ -414,7 +423,7 @@ if (sizeof($links['links_array']) > 0 ) {
             echo "                  <td align=\"left\" class=\"postbody\" valign=\"top\">&nbsp;<a href=\"links_detail.php?webtag=$webtag&amp;lid=$key&amp;fid=$fid&amp;page=$page\">{$link['TITLE']}</a></td>\n";
         }
 
-        echo "                  <td align=\"left\" class=\"postbody\" valign=\"top\">", format_time($link['CREATED']), "</td>\n";
+        echo "                  <td align=\"center\" class=\"postbody\" valign=\"top\">", format_time($link['CREATED']), "</td>\n";
 
         if (isset($link['RATING']) && strlen($link['RATING']) > 0) {
             echo "                  <td align=\"center\" class=\"postbody\" valign=\"top\">", number_format($link['RATING'], 1, ".", ","), "</td>\n";
@@ -448,7 +457,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
 echo "          <tr>\n";
-echo "            <td align=\"left\" width=\"25%\"><img src=\"", style_image("ct.png"), "\" alt=\"\" /> <a href=\"links_add.php?webtag=$webtag&amp;mode=link&amp;fid=$fid\">{$lang['addlinkhere']}</a></td>\n";
+echo "            <td align=\"left\" width=\"25%\"><img src=\"", style_image("ct.png"), "\" alt=\"\" /> <a href=\"links_add.php?webtag=$webtag&amp;mode=", LINKS_ADD_LINK, "&amp;fid=$fid\">{$lang['addlinkhere']}</a></td>\n";
 echo "            <td width=\"50%\" align=\"center\">", page_links(get_request_uri(true, false), $start, $links['links_count'], 20), "</td>\n";
 echo "            <td align=\"left\" width=\"25%\">&nbsp;</td>\n";
 echo "          </tr>\n";

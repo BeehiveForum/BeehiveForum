@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_detail.php,v 1.90 2007-06-01 21:02:33 decoyduck Exp $ */
+/* $Id: links_detail.php,v 1.91 2007-06-14 13:21:10 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -146,11 +146,11 @@ if (isset($_POST['cancel'])) {
     header_redirect($redirect);
     exit;
 
-}elseif (isset($_POST['submit']) && !user_is_guest()) {
+}
 
-    $valid = true;
+if (!user_is_guest()) {
 
-    if (isset($_POST['type']) && $_POST['type'] == "vote") {
+    if (isset($_POST['addvote'])) {
 
         if (isset($_POST['vote']) && is_numeric($_POST['vote'])) {
 
@@ -160,9 +160,17 @@ if (isset($_POST['cancel'])) {
         }else {
 
             $error_html = "<b>{$lang['mustchooserating']}</b>";
+            $valid = false;
         }
+    }
 
-    }else if (isset($_POST['type']) && $_POST['type'] == "comment") {
+    if (isset($_POST['clearvote'])) {
+
+        links_clear_vote($lid, $uid);
+        $error_html = "<b>{$lang['votecleared']}</b>\n";
+    }
+
+    if (isset($_POST['addcomment'])) {
 
         if (isset($_POST['comment']) && strlen(trim(_stripslashes($_POST['comment']))) > 0) {
 
@@ -174,73 +182,72 @@ if (isset($_POST['cancel'])) {
         }else {
 
             $error_html = "<b>{$lang['musttypecomment']}</b>";
+            $valid = false;
+        }
+    }
+
+    if (isset($_POST['update']) && (bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0) || $creator_uid == $uid)) {
+
+        if (isset($_POST['delete']) && $_POST['delete'] == "confirm") {
+
+            links_delete($lid);
+            header_redirect("./links.php?webtag=$webtag&fid=$parent_fid");
+            exit;
+
+        }else {
+
+            if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
+                $fid = $_POST['fid'];
+            }else {
+                $error_html = $lang['nofolderidspecified'];
+                $valid = false;
+            }
+
+            if (isset($_POST['uri']) && preg_match("/\b([a-z]+:\/\/([-\w]{2,}\.)*[-\w]{2,}(:\d+)?(([^\s;,.?\"'[\]() {}<>]|\S[^\s;,.?\"'[\]() {}<>])*)?)/i", $_POST['uri'])) {
+                $uri = $_POST['uri'];
+            }else {
+                $error_html = $lang['notvalidURI'];
+                $valid = false;
+            }
+
+            if (isset($_POST['title']) && strlen(trim(_stripslashes($_POST['title']))) > 0) {
+                $title = trim(_stripslashes($_POST['title']));
+            }else {
+                $error_html = $lang['mustspecifyname'];
+                $valid = false;
+            }
+
+            if (isset($_POST['description']) && strlen(trim(_stripslashes($_POST['description']))) > 0) {
+                $description = trim(_stripslashes($_POST['description']));
+            }else {
+                $description = "";
+            }
+
+            if ($valid) {
+
+                links_update($lid, $fid, $title, $uri, $description);
+            }
         }
 
-    }else if (isset($_POST['type']) && $_POST['type'] == "moderation") {
+        if (isset($_POST['hide']) && $_POST['hide'] == "confirm") {
 
-        $creator_uid = links_get_creator_uid($lid);
+            links_change_visibility($lid, false);
 
-        if (bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0) || $creator_uid == $uid) {
+        }elseif (!isset($_POST['hide']) || (isset($_POST['hide']) && $_POST['hide'] != "confirm")) {
 
-            if (isset($_POST['delete']) && $_POST['delete'] == "confirm") {
-
-                links_delete($lid);
-                header_redirect("./links.php?webtag=$webtag&fid=$parent_fid");
-                exit;
-
-            }else {
-
-                if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
-                    $fid = $_POST['fid'];
-                }else {
-                    $error_html = $lang['nofolderidspecified'];
-                    $valid = false;
-                }
-
-                if (isset($_POST['uri']) && preg_match("/\b([a-z]+:\/\/([-\w]{2,}\.)*[-\w]{2,}(:\d+)?(([^\s;,.?\"'[\]() {}<>]|\S[^\s;,.?\"'[\]() {}<>])*)?)/i", $_POST['uri'])) {
-                    $uri = $_POST['uri'];
-                }else {
-                    $error_html = $lang['notvalidURI'];
-                    $valid = false;
-                }
-
-                if (isset($_POST['title']) && strlen(trim(_stripslashes($_POST['title']))) > 0) {
-                    $title = trim(_stripslashes($_POST['title']));
-                }else {
-                    $error_html = $lang['mustspecifyname'];
-                    $valid = false;
-                }
-
-                if (isset($_POST['description']) && strlen(trim(_stripslashes($_POST['description']))) > 0) {
-                    $description = trim(_stripslashes($_POST['description']));
-                }else {
-                    $description = "";
-                }
-
-                if ($valid) {
-
-                    links_update($lid, $fid, $title, $uri, $description);
-                }
-            }
-
-            if (isset($_POST['hide']) && $_POST['hide'] == "confirm") {
-
-                links_change_visibility($lid, false);
-
-            }elseif (!isset($_POST['hide']) || (isset($_POST['hide']) && $_POST['hide'] != "confirm")) {
-
-                links_change_visibility($lid, true);
-            }
+            links_change_visibility($lid, true);
         }
     }
 }
 
-if (isset($_GET['action'])) {
+if (isset($_GET['delete_comment']) && is_numeric($_GET['delete_comment'])) {
 
-    if ($_GET['action'] == "delete_comment") {
+    $comment_id = $_GET['delete_comment'];
+    $comment_uid = links_get_comment_uid($comment_id);
 
-        $comment_uid = links_get_comment_uid($_GET['cid']);
-        if (bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0) || $comment_uid == $uid) links_delete_comment($_GET['cid']);
+    if (bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0) || $comment_uid == $uid) {
+        
+        links_delete_comment($comment_id);
     }
 }
 
@@ -320,7 +327,7 @@ if (isset($link['RATING']) && is_numeric($link['RATING'])) {
 
     echo "                    <tr>\n";
     echo "                      <td align=\"left\" nowrap=\"nowrap\" valign=\"top\">{$lang['rating']}:</td>\n";
-    echo "                      <td align=\"left\">", number_format($link['RATING'], 1, ".", ","), " {$lang['notratedyet']}</td>\n";
+    echo "                      <td align=\"left\">{$lang['notratedyet']}</td>\n";
     echo "                    </tr>\n";
 }
 
@@ -363,9 +370,9 @@ if (!user_is_guest()) {
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\"><b>{$lang['bad']} (0)</b>&nbsp;</td>\n";
-    echo "                        <td align=\"center\">", form_radio_array("vote", range(0, 10), $vote), "&nbsp;</td>\n";
-    echo "                        <td align=\"left\"><b>(10) {$lang['good']}</b>&nbsp;</td>\n";
+    echo "                        <td align=\"left\">{$lang['bad']}&nbsp;</td>\n";
+    echo "                        <td align=\"center\" nowrap=\"nowrap\">", form_radio_array("vote", range(0, 10), $vote), "&nbsp;</td>\n";
+    echo "                        <td align=\"left\">{$lang['good']}&nbsp;</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" colspan=\"3\">&nbsp;</td>\n";
@@ -383,7 +390,7 @@ if (!user_is_guest()) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("submit", $lang['voteexcmark']), "</td>\n";
+    echo "      <td align=\"center\">", form_submit('addvote', $lang['voteexcmark']), "&nbsp;", form_submit('clearvote', $lang['clearvote']), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</form>\n";
@@ -407,7 +414,7 @@ if ($comments_array = links_get_comments($lid)) {
         if (isset($comment['LOGON']) && isset($comment['NICKNAME'])) {
 
             if (bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0) || $comment['UID'] == $uid) {
-                echo "                  <td align=\"left\" class=\"subhead\">", sprintf($lang['commentby'], word_filter_add_ob_tags(format_user_name($comment['LOGON'], $comment['NICKNAME']))), " <a href=\"links_detail.php?webtag=$webtag&amp;action=delete_comment&amp;cid={$comment['CID']}&amp;lid=$lid\" class=\"threadtime\">[{$lang['delete']}]</a></td>\n";
+                echo "                  <td align=\"left\" class=\"subhead\">", sprintf($lang['commentby'], word_filter_add_ob_tags(format_user_name($comment['LOGON'], $comment['NICKNAME']))), " <a href=\"links_detail.php?webtag=$webtag&amp;delete_comment={$comment['CID']}&amp;lid=$lid\" class=\"threadtime\">[{$lang['delete']}]</a></td>\n";
             }else {
                 echo "                  <td align=\"left\" class=\"subhead\">", sprintf($lang['commentby'], word_filter_add_ob_tags(format_user_name($comment['LOGON'], $comment['NICKNAME']))), "</td>\n";
             }
@@ -426,7 +433,7 @@ if ($comments_array = links_get_comments($lid)) {
         echo "                  <td align=\"center\">\n";
         echo "                    <table class=\"posthead\" width=\"95%\">\n";
         echo "                      <tr>\n";
-        echo "                        <td align=\"left\">" . _stripslashes($comment['COMMENT']) . "</td>\n";
+        echo "                        <td align=\"left\">{$comment['COMMENT']}</td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
         echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -485,7 +492,7 @@ if (!user_is_guest()) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("submit", $lang['addcomment']), "</td>\n";
+    echo "      <td align=\"center\">", form_submit('addcomment', $lang['addcomment']), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "  <br />\n";
@@ -548,7 +555,7 @@ if (bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0) || $link['UID'] == $uid) 
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "&nbsp;", form_submit("cancel", $lang['back']), "</td>\n";
+    echo "      <td align=\"center\">", form_submit('update', $lang['save']), "&nbsp;", form_submit("cancel", $lang['back']), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "  <br />\n";

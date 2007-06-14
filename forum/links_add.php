@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_add.php,v 1.86 2007-06-07 20:27:25 decoyduck Exp $ */
+/* $Id: links_add.php,v 1.87 2007-06-14 13:21:10 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -123,44 +123,48 @@ if (user_is_guest()) {
 
 $uid = bh_session_get_value('UID');
 
-if (isset($_POST['cancel'])) header_redirect("./links.php?webtag=$webtag&fid={$_POST['fid']}");
+if (isset($_POST['cancel'])) {
+    
+    header_redirect("./links.php?webtag=$webtag&fid={$_POST['fid']}");
+    exit;
+}
 
 if (isset($_GET['mode'])) {
 
-    if ($_GET['mode'] == 'link') {
+    if ($_GET['mode'] == LINKS_ADD_LINK) {
 
-        $mode = 'link';
+        $mode = LINKS_ADD_LINK;
 
-    }elseif ($_GET['mode'] = 'folder') {
+    }elseif ($_GET['mode'] = LINKS_ADD_FOLDER) {
 
-        $mode = 'folder';
+        $mode = LINKS_ADD_FOLDER;
 
     }else {
 
-        $mode = 'link';
+        $mode = LINKS_ADD_LINK;
     }
 
 } elseif (isset($_POST['mode'])) {
 
-    if ($_POST['mode'] == 'link') {
+    if ($_POST['mode'] == LINKS_ADD_LINK) {
 
-        $mode = 'link';
+        $mode = LINKS_ADD_LINK;
 
-    }elseif ($_POST['mode'] = 'folder') {
+    }elseif ($_POST['mode'] = LINKS_ADD_FOLDER) {
 
-        $mode = 'folder';
+        $mode = LINKS_ADD_FOLDER;
 
     }else {
 
-        $mode = 'link';
+        $mode = LINKS_ADD_LINK;
     }
 
 } else {
 
-    $mode = "link";
+    $mode = LINKS_ADD_LINK;
 }
 
-if (isset($_POST['submit']) && $mode == "link") {
+if (isset($_POST['submit']) && $mode == LINKS_ADD_LINK) {
 
     $valid = true;
 
@@ -196,7 +200,7 @@ if (isset($_POST['submit']) && $mode == "link") {
         header_redirect("./links.php?webtag=$webtag&fid=$fid");
     }
 
-}else if (isset($_POST['submit']) && $mode == "folder") {
+}else if (isset($_POST['submit']) && $mode == LINKS_ADD_FOLDER) {
 
     $valid = true;
 
@@ -239,7 +243,7 @@ if (isset($_POST['submit']) && $mode == "link") {
     exit;
 }
 
-if ($mode == "link") {
+if ($mode == LINKS_ADD_LINK) {
 
     html_draw_top();
 
@@ -255,32 +259,37 @@ if ($mode == "link") {
     echo "<form name=\"linkadd\" action=\"links_add.php\" method=\"post\" target=\"_self\">\n";
     echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "  ", form_input_hidden("fid", _htmlentities($fid)) . "\n";
-    echo "  ", form_input_hidden("mode", "link") . "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\">\n";
+    echo "  ", form_input_hidden("mode", LINKS_ADD_LINK) . "\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
-    echo "        <table class=\"box\">\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
     echo "          <tr>\n";
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['addlink']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">{$lang['addlink']}</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"right\">{$lang['addressurluri']}:</td>\n";
-    echo "                  <td align=\"left\">" . form_input_text("uri", _htmlentities($uri), 60, 255) . "</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"right\">{$lang['name']}:</td>\n";
-    echo "                  <td align=\"left\">" . form_input_text("name", _htmlentities($name), 60, 64) . "</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"right\">{$lang['description']}:</td>\n";
-    echo "                  <td align=\"left\">" . form_input_text("description", _htmlentities($description), 60) . "</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\">&nbsp;</td>\n";
-    echo "                  <td align=\"left\">&nbsp;</td>\n";
+    echo "                  <td align=\"center\">\n";
+    echo "                    <table class=\"posthead\" width=\"95%\">\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">{$lang['addressurluri']}:</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("uri", _htmlentities($uri), 50, 255), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">{$lang['name']}:</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("name", _htmlentities($name), 50, 64), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">{$lang['description']}:</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("description", _htmlentities($description), 50), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+    echo "                      </tr>\n";
+    echo "                    </table>\n";
+    echo "                  </td>\n";
     echo "                </tr>\n";
     echo "              </table>\n";
     echo "            </td>\n";
@@ -299,7 +308,7 @@ if ($mode == "link") {
 
     html_draw_bottom();
 
-}elseif ($mode == "folder") {
+}elseif ($mode == LINKS_ADD_FOLDER) {
 
     html_draw_top();
 
@@ -313,24 +322,30 @@ if ($mode == "link") {
     echo "<form name=\"folderadd\" action=\"links_add.php\" method=\"post\" target=\"_self\">\n";
     echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "  ", form_input_hidden("fid", _htmlentities($fid)) . "\n";
-    echo "  ", form_input_hidden("mode", "folder") . "\n";
-    echo "  <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
+    echo "  ", form_input_hidden("mode", LINKS_ADD_FOLDER) . "\n";
+    echo "  <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
-    echo "        <table class=\"box\">\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
     echo "          <tr>\n";
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['addnewfolder']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">{$lang['addnewfolder']}</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"right\">{$lang['name']}:</td>\n";
-    echo "                  <td align=\"left\">", form_input_text("name", isset($name) ? _htmlentities($name) : '', 60, 64), "</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\">&nbsp;</td>\n";
-    echo "                  <td align=\"left\">&nbsp;</td>\n";
+    echo "                  <td align=\"center\">\n";
+    echo "                    <table class=\"posthead\" width=\"95%\">\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">{$lang['name']}:</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("name", isset($name) ? _htmlentities($name) : '', 50, 64), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">&nbsp;</td>\n";
+    echo "                        <td align=\"left\">&nbsp;</td>\n";
+    echo "                      </tr>\n";
+    echo "                    </table>\n";
+    echo "                  </td>\n";
     echo "                </tr>\n";
     echo "              </table>\n";
     echo "            </td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.234 2007-06-14 13:21:05 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.235 2007-06-18 20:10:50 decoyduck Exp $ */
 
 // British English language file
 
@@ -865,7 +865,6 @@ $lang['nochange'] = "n0 ch4ngE";
 $lang['emailresult'] = "eM@1L reSuLT";
 $lang['msgsent'] = "mESs49E SEnT";
 $lang['msgsentsuccessfully'] = "mEs54ge \$3N+ SucC3\$\$FUlLY.";
-$lang['msgfail'] = "mes54gE ph@IlEd";
 $lang['mailsystemfailure'] = "m4iL \$YS+EM fAilUr3. m3\$54gE N0+ SeNT.";
 $lang['nopermissiontoedit'] = "j00 @R3 N0T PErm1Tt3d +0 3Di+ ThIs m3SS493.";
 $lang['cannoteditpostsinthisfolder'] = "j00 C@nnOT EdiT P0StS 1n +h15 ph0Ld3r";
@@ -1011,7 +1010,6 @@ $lang['yoursessionhasexpired'] = "y0UR s3SS10n h4S exPiR3D. J00 W1ll N3ed +0 l09
 // My Forums (forums.php) ---------------------------------------------------------
 
 $lang['myforums'] = "my F0RuM\$";
-$lang['recentlyvisitedforums'] = "rEceN+Ly viSiTEd F0Rum\$";
 $lang['allavailableforums'] = "all 4V4Il48L3 ph0rUM\$";
 $lang['favouriteforums'] = "f4V0URI+3 f0Rum5";
 $lang['ignoredforums'] = "iGn0rEd Ph0rUM\$";
@@ -1240,8 +1238,6 @@ $lang['firstname'] = "f1R\$t n4me";
 $lang['lastname'] = "l4\$+ n@mE";
 $lang['dateofbirth'] = "daTE OPh b1Rth";
 $lang['homepageURL'] = "h0M3P@93 Url";
-$lang['profileandavatar'] = "prOFile 4nD 4v4+4r";
-$lang['profileavatarpicexplain'] = "hErE j00 c4N S3Lec+ 4 PrOf1L3 piC+UR3 +O 8E 5HoWN 1n youR prOF1L3 P0PUP 4nd 0n tHE R3c3Nt viS1+OR loG. j00 c@n cHOo\$E T0 \$peCIphY +he UrL 0F 4n EX1sT1N9 1m49E +H4+ J00 haV3 H0\$ted elSewH3R3 0r TO Upl0@d 4n 1M493 45 @n @tT4cHm3n+.";
 $lang['profilepicturedimensions'] = "pr0f1LE p1cTURe (m4X 150x150PX)";
 $lang['avatarpicturedimensions'] = "av@+4R pic+uR3 (M@X 15x15px)";
 $lang['selectattachment'] = "sELecT 4Tt4chMEn+";
@@ -1722,7 +1718,6 @@ $lang['changeall'] = "ch@N93 4Ll";
 $lang['add'] = "adD";
 $lang['suggest'] = "suGgeSt";
 $lang['nosuggestions'] = "(no 5UgGEsT10N\$)";
-$lang['ok'] = "ok";
 $lang['cancel'] = "canceL";
 $lang['dictionarynotinstalled'] = "n0 DIcTi0n4ry h4\$ bE3n 1N5t4Ll3d. pl3@5E COn+4Ct th3 pH0ruM OWn3r to R3MeDy TH1S.";
 
@@ -1795,7 +1790,6 @@ $lang['pmexportwordfilter'] = "aPply W0rd phiL+ER +O m35\$4Ge5";
 
 // Thread merge / split options
 
-$lang['threadsplit'] = "tHRe4d H@5 beeN Spl1+";
 $lang['threadmerge'] = "thRe4D H4\$ been mer9Ed";
 $lang['mergesplitthread'] = "mEr93 / spLi+ +hrE4d";
 $lang['mergewiththreadid'] = "m3rG3 W1th thr34D ID:";

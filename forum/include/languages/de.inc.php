@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.33 2007-06-14 13:21:05 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.34 2007-06-18 20:10:49 decoyduck Exp $ */
 
 // German language file
 
@@ -862,7 +862,6 @@ $lang['nochange'] = "Keine Aenderung";
 $lang['emailresult'] = "Ergebnis mailen";
 $lang['msgsent'] = "Nachricht gesendet";
 $lang['msgsentsuccessfully'] = "Nachricht erfolgreich gesendet.";
-$lang['msgfail'] = "Nachricht fehlerhaft";
 $lang['mailsystemfailure'] = "Mail-System fehlerhaft. Nachricht nicht gesendet.";
 $lang['nopermissiontoedit'] = "Du hast keine Rechte diese Nachricht zu editieren.";
 $lang['cannoteditpostsinthisfolder'] = "Du kannst keine Abstimmungen in diesem Ordner editieren";
@@ -1007,7 +1006,6 @@ $lang['otherbutton'] = "Andere";
 // My Forums (forums.php) ---------------------------------------------------------
 
 $lang['myforums'] = "Meine Foren";
-$lang['recentlyvisitedforums'] = "Kuerzlich besuchte Foren";
 $lang['availableforums'] = "Erreichbare Foren";
 $lang['favouriteforums'] = "Bevorzugte Foren";
 $lang['lastvisited'] = "Zuletzt besucht";
@@ -1700,7 +1698,6 @@ $lang['changeall'] = "Alles aendern";
 $lang['add'] = "Hinzufügen";
 $lang['suggest'] = "Vorschlagen";
 $lang['nosuggestions'] = "(keine Vorschlaege)";
-$lang['ok'] = "OK";
 $lang['cancel'] = "Abbrechen";
 $lang['dictionarynotinstalled'] = "Kein Woerterbuch installiert. Bitte Foren-Admin informieren.";
 
@@ -1773,7 +1770,6 @@ $lang['pmexportwordfilter'] = "Zutreffende Wortfilter in Nachrichten";
 
 // Thread merge / split options
 
-$lang['threadsplit'] = "Thread has been split";
 $lang['threadmerge'] = "Thread has been merged";
 $lang['mergesplitthread'] = "Zusammenfuegen/Trennen von Eintraegen";
 $lang['mergewiththreadid'] = "Zusammenfuegen mit Eintrag Nr:";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_prefs.php,v 1.75 2007-06-07 23:56:50 decoyduck Exp $ */
+/* $Id: edit_prefs.php,v 1.76 2007-06-18 20:10:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -52,6 +52,7 @@ $forum_settings = forum_get_settings();
 
 $forum_global_settings = forum_get_global_settings();
 
+include_once(BH_INCLUDE_PATH. "attachments.inc.php");
 include_once(BH_INCLUDE_PATH. "banned.inc.php");
 include_once(BH_INCLUDE_PATH. "email.inc.php");
 include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
@@ -61,6 +62,7 @@ include_once(BH_INCLUDE_PATH. "header.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "logon.inc.php");
+include_once(BH_INCLUDE_PATH. "perm.inc.php");
 include_once(BH_INCLUDE_PATH. "post.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
@@ -124,6 +126,11 @@ $user_info = user_get($uid);
 
 // Clear the error string
 $error_html = "";
+
+// List of allowed image types
+
+$allowed_image_types_array = array('jpg', 'jpeg', 'png', 'gif');
+$allowed_image_types = "*.". implode(", *.", $allowed_image_types_array);
 
 // Initialise the global prefs array
 
@@ -303,17 +310,35 @@ if (isset($_POST['submit'])) {
 
             }elseif ($attachment_dir = attachments_check_dir()) {
 
-                if ($image_info = getimagesize("$attachment_dir/{$user_prefs['PIC_AID']}")) {
+                if ($attachment_details = get_attachment_by_hash($user_prefs['PIC_AID'])) {
+                
+                    $path_parts = pathinfo($attachment_details['FILENAME']);
+                    
+                    if (isset($path_parts['extension']) && in_array($path_parts['extension'], $allowed_image_types_array)) {
 
-                    if (($image_info[0] > 95) || ($image_info[1] > 95)) {
+                        if ($image_info = getimagesize("$attachment_dir/{$user_prefs['PIC_AID']}")) {
 
-                        $error_html.= "<h2>{$lang['attachmenttoolargeforprofilepicture']}</h2>\n";
+                            if (($image_info[0] > 95) || ($image_info[1] > 95)) {
+
+                                $error_html.= "<h2>{$lang['attachmenttoolargeforprofilepicture']}</h2>\n";
+                                $valid = false;
+                            }
+                        
+                        }else {
+
+                            $error_html.= sprintf("<h2>{$lang['unsupportedimagetype']}</h2>\n", $allowed_image_types);
+                            $valid = false;
+                        }
+                    
+                    }else {
+
+                        $error_html.= sprintf("<h2>{$lang['unsupportedimagetype']}</h2>\n", $allowed_image_types);
                         $valid = false;
                     }
 
                 }else {
 
-                    $error_html.= "<h2>{$lang['unsupportedimagetype']}</h2>\n";
+                    $error_html.= sprintf("<h2>{$lang['unsupportedimagetype']}</h2>\n", $allowed_image_types);
                     $valid = false;
                 }
 
@@ -356,17 +381,35 @@ if (isset($_POST['submit'])) {
 
             }elseif ($attachment_dir = attachments_check_dir()) {
 
-                if ($image_info = getimagesize("$attachment_dir/{$user_prefs['AVATAR_AID']}")) {
+                if ($attachment_details = get_attachment_by_hash($user_prefs['AVATAR_AID'])) {
+                
+                    $path_parts = pathinfo($attachment_details['FILENAME']);
+                    
+                    if (isset($path_parts['extension']) && in_array($path_parts['extension'], $allowed_image_types_array)) {
 
-                    if (($image_info[0] > 15) || ($image_info[1] > 15)) {
+                        if ($image_info = getimagesize("$attachment_dir/{$user_prefs['AVATAR_AID']}")) {
 
-                        $error_html.= "<h2>{$lang['attachmenttoolargeforavatarpicture']}</h2>\n";
+                            if (($image_info[0] > 95) || ($image_info[1] > 95)) {
+
+                                $error_html.= "<h2>{$lang['attachmenttoolargeforavatarpicture']}</h2>\n";
+                                $valid = false;
+                            }
+                        
+                        }else {
+
+                            $error_html.= sprintf("<h2>{$lang['unsupportedimagetype']}</h2>\n", $allowed_image_types);
+                            $valid = false;
+                        }
+                    
+                    }else {
+
+                        $error_html.= sprintf("<h2>{$lang['unsupportedimagetype']}</h2>\n", $allowed_image_types);
                         $valid = false;
                     }
 
                 }else {
 
-                    $error_html.= "<h2>{$lang['unsupportedimagetype']}</h2>\n";
+                    $error_html.= sprintf("<h2>{$lang['unsupportedimagetype']}</h2>\n", $allowed_image_types);
                     $valid = false;
                 }
 
@@ -590,10 +633,21 @@ if (forum_get_setting('attachments_enabled', 'Y')) {
     echo "          <tr>\n";
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">{$lang['profilepicturedimensions']}</td>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
-    echo "                </tr>\n";
+
+    if ($show_set_all) {
+
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">{$lang['profilepicturedimensions']}</td>\n";
+        echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
+        echo "                </tr>\n";
+
+    }else {
+
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\" class=\"subhead\" colspan=\"4\">{$lang['profilepicturedimensions']}</td>\n";
+        echo "                </tr>\n";
+    }
+
     echo "                <tr>\n";
     echo "                  <td align=\"left\" rowspan=\"4\" width=\"1%\">&nbsp;</td>\n";
     echo "                </tr>\n";
@@ -618,10 +672,21 @@ if (forum_get_setting('attachments_enabled', 'Y')) {
     echo "          <tr>\n";
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">{$lang['avatarpicturedimensions']}</td>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
-    echo "                </tr>\n";
+
+    if ($show_set_all) {
+
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">{$lang['avatarpicturedimensions']}</td>\n";
+        echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
+        echo "                </tr>\n";
+
+    }else {
+
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\" class=\"subhead\" colspan=\"4\">{$lang['avatarpicturedimensions']}</td>\n";
+        echo "                </tr>\n";
+    }
+
     echo "                <tr>\n";
     echo "                  <td align=\"left\" rowspan=\"6\" width=\"1%\">&nbsp;</td>\n";
     echo "                </tr>\n";

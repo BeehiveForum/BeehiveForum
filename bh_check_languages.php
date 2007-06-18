@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_check_languages.php,v 1.31 2007-03-31 21:54:58 decoyduck Exp $ */
+/* $Id: bh_check_languages.php,v 1.32 2007-06-18 20:10:49 decoyduck Exp $ */
 
 // Compare two language files.
 
@@ -50,6 +50,8 @@ function parse_lang_data($key, $data, $prefix)
 
         if (!preg_match("/^_/", $key)) {
        
+            $data = str_replace("\n", "\\n", $data);
+            
             if (is_string($key)) {
                 return "{$prefix}['$key'] = \"$data\";";
             }else {

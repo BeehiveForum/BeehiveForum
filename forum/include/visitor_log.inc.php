@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.inc.php,v 1.1 2007-06-18 13:49:34 decoyduck Exp $ */
+/* $Id: visitor_log.inc.php,v 1.2 2007-06-18 14:34:06 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -336,7 +336,13 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
 
     $where_query_array = array("VISITOR_LOG.FORUM = '$forum_fid'");
 
+    // Null column filtering
+
     $where_union_array = array();
+
+    $having_query_array = array();
+
+    $where_count_array = array();
 
     if (($user_search !== false) && strlen(trim($user_search)) > 0) {
 
@@ -348,6 +354,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
         
         $where_query_array[] = $user_search_sql;
         $where_union_array[] = $user_search_sql;
+        $where_count_array[] = $user_search_sql;
     }
 
     if ($hide_guests === true) {
@@ -356,11 +363,6 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
         $where_union_array[] = "(USER.UID IS NOT NULL AND USER.UID > 0) ";
         $where_count_array[] = "(USER.UID IS NOT NULL AND USER.UID > 0) ";
     }
-
-    // Null column filtering
-
-    $having_query_array = array();
-    $where_count_array = array();
 
     if ($hide_empty === true) {
 
@@ -402,7 +404,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
     // Count queries NULL column filtering
 
     if (sizeof($where_count_array) > 0) {
-        $where_count_sql = sprintf("WHERE (%s)", implode(" OR ", $where_count_array));
+        $where_count_sql = sprintf("WHERE (%s)", implode(" AND ", $where_count_array));
     }else {
         $where_count_sql = "";
     }
@@ -546,6 +548,8 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
         }else {
 
             $offset = floor((($user_count + $visitor_count) - 1) / 10) * 10;
+
+            echo "visitor_log_browse_items($user_search, $profile_items_array, $offset, $sort_by, $sort_dir, $hide_empty, $hide_guests);<br />\n";
 
             return visitor_log_browse_items($user_search, $profile_items_array, $offset, $sort_by, $sort_dir, $hide_empty, $hide_guests);
         }

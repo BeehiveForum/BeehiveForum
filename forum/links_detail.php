@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_detail.php,v 1.92 2007-06-14 13:45:37 decoyduck Exp $ */
+/* $Id: links_detail.php,v 1.93 2007-06-18 13:37:05 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -287,7 +287,7 @@ echo "                <td align=\"center\">\n";
 echo "                  <table class=\"posthead\" width=\"95%\">\n";
 echo "                    <tr>\n";
 echo "                      <td align=\"left\" nowrap=\"nowrap\" valign=\"top\" width=\"120\">{$lang['address']}:</td>\n";
-echo "                      <td align=\"left\"><a href=\"links.php?webtag=$webtag&amp;lid=$lid&amp;action=go\" target=\"_blank\">", strlen($link['URI']) > 40 ? substr($link['URI'], 0, 40) . '&hellip;' : $link['URI'], "</a></td>\n";
+echo "                      <td align=\"left\"><a href=\"links.php?webtag=$webtag&amp;lid=$lid&amp;action=go\" target=\"_blank\">", strlen($link['URI']) > 35 ? substr($link['URI'], 0, 35) . '&hellip;' : $link['URI'], "</a></td>\n";
 echo "                    </tr>\n";
 echo "                    <tr>\n";
 echo "                      <td align=\"left\" nowrap=\"nowrap\" valign=\"top\">{$lang['submittedby']}:</td>\n";

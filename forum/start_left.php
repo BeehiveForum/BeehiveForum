@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.142 2007-06-08 13:39:46 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.143 2007-06-18 13:37:05 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -66,6 +66,7 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "thread.inc.php");
 include_once(BH_INCLUDE_PATH. "threads.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
+include_once(BH_INCLUDE_PATH. "visitor_log.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 // Check we're logged in correctly
@@ -252,7 +253,7 @@ if (is_array($folder_info) && sizeof($folder_info) > 0) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\" colspan=\"2\">", form_quick_button("./discussion.php", "{$lang['startreading']}  &raquo;", false, "main"), "</td>\n";
+    echo "      <td align=\"center\" colspan=\"2\">", form_quick_button("./discussion.php", "{$lang['startreading']}  &raquo;", false, html_get_frame_name('main')), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "  <br />\n";
@@ -317,23 +318,23 @@ echo "                    <table class=\"posthead\" width=\"95%\">\n";
 
 // Get recent visitors
 
-if ($users_array = users_get_recent()) {
+if ($recent_visitors_array = visitor_log_get_recent()) {
 
     echo "                      <tr>\n";
     echo "                        <td align=\"center\">\n";
     echo "                          <table class=\"posthead\" border=\"0\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\n";
 
-    foreach ($users_array as $recent_user) {
+    foreach ($recent_visitors_array as $recent_visitor) {
 
         echo "                            <tr>\n";
 
-        if (isset($recent_user['AVATAR_URL']) && strlen($recent_user['AVATAR_URL']) > 0) {
+        if (isset($recent_visitor['AVATAR_URL']) && strlen($recent_visitor['AVATAR_URL']) > 0) {
 
-            echo "                   <td class=\"postbody\" align=\"left\"><img src=\"{$recent_user['AVATAR_URL']}\" alt=\"", format_user_name($recent_user['LOGON'], $recent_user['NICKNAME']), "\" title=\"", format_user_name($recent_user['LOGON'], $recent_user['NICKNAME']), "\" border=\"0\" width=\"15\" height=\"15\" /></td>\n";
+            echo "                   <td class=\"postbody\" align=\"left\"><img src=\"{$recent_visitor['AVATAR_URL']}\" alt=\"", format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']), "\" title=\"", format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']), "\" border=\"0\" width=\"15\" height=\"15\" /></td>\n";
 
-        }elseif (isset($recent_user['AVATAR_AID']) && is_md5($recent_user['AVATAR_AID'])) {
+        }elseif (isset($recent_visitor['AVATAR_AID']) && is_md5($recent_visitor['AVATAR_AID'])) {
 
-            $attachment = get_attachment_by_hash($recent_user['AVATAR_AID']);
+            $attachment = get_attachment_by_hash($recent_visitor['AVATAR_AID']);
 
             if (forum_get_setting('attachment_use_old_method', 'Y')) {
 
@@ -347,29 +348,29 @@ if ($users_array = users_get_recent()) {
                 $profile_picture_href.= "?webtag=$webtag&amp;profile_picture=1";
             }
 
-            echo "                   <td class=\"postbody\" align=\"left\"><img src=\"$profile_picture_href\" alt=\"", format_user_name($recent_user['LOGON'], $recent_user['NICKNAME']), "\" title=\"", format_user_name($recent_user['LOGON'], $recent_user['NICKNAME']), "\" border=\"0\" width=\"15\" height=\"15\" /></td>\n";
+            echo "                   <td class=\"postbody\" align=\"left\"><img src=\"$profile_picture_href\" alt=\"", format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']), "\" title=\"", format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']), "\" border=\"0\" width=\"15\" height=\"15\" /></td>\n";
         
         }else {
 
             echo "                   <td align=\"left\" class=\"postbody\"><img src=\"", style_image('bullet.png'), "\" alt=\"{$lang['user']}\" title=\"{$lang['user']}\" /></td>\n";
         }
 
-        if (isset($recent_user['SID']) && !is_null($recent_user['SID'])) {
+        if (isset($recent_visitor['SID']) && !is_null($recent_visitor['SID'])) {
 
-            echo "                              <td align=\"left\"><a href=\"{$recent_user['URL']}\" target=\"_blank\">{$recent_user['NAME']}</a></td>\n";
+            echo "                              <td align=\"left\"><a href=\"{$recent_visitor['URL']}\" target=\"_blank\">{$recent_visitor['NAME']}</a></td>\n";
 
-        }elseif ($recent_user['UID'] > 0) {
+        }elseif ($recent_visitor['UID'] > 0) {
 
-            echo "                              <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$recent_user['UID']}\" target=\"_blank\" onclick=\"return openProfile({$recent_user['UID']}, '$webtag')\">", word_filter_add_ob_tags(word_filter_add_ob_tags(format_user_name($recent_user['LOGON'], $recent_user['NICKNAME']))), "</a></td>\n";
+            echo "                              <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$recent_visitor['UID']}\" target=\"_blank\" onclick=\"return openProfile({$recent_visitor['UID']}, '$webtag')\">", word_filter_add_ob_tags(word_filter_add_ob_tags(format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']))), "</a></td>\n";
 
         }else {
 
-            echo "                              <td align=\"left\">", word_filter_add_ob_tags(word_filter_add_ob_tags(format_user_name($recent_user['LOGON'], $recent_user['NICKNAME']))), "</td>\n";
+            echo "                              <td align=\"left\">", word_filter_add_ob_tags(word_filter_add_ob_tags(format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']))), "</td>\n";
         }
 
-        if (isset($recent_user['LAST_LOGON']) && $recent_user['LAST_LOGON'] > 0) {
+        if (isset($recent_visitor['LAST_LOGON']) && $recent_visitor['LAST_LOGON'] > 0) {
 
-            echo "                              <td align=\"right\" nowrap=\"nowrap\">", format_time($recent_user['LAST_LOGON']), "&nbsp;</td>\n";
+            echo "                              <td align=\"right\" nowrap=\"nowrap\">", format_time($recent_visitor['LAST_LOGON']), "&nbsp;</td>\n";
 
         }else {
 
@@ -406,7 +407,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\" colspan=\"2\">", form_quick_button("./visitor_log.php", "{$lang['morevisitors']} &raquo;", array('profile_selection' => 'LAST_VISIT'), "right"), "</td>\n";
+echo "      <td align=\"center\" colspan=\"2\">", form_quick_button("./visitor_log.php", "{$lang['morevisitors']} &raquo;", array('profile_selection' => 'LAST_VISIT'), html_get_frame_name('right')), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <br />\n";
@@ -460,7 +461,7 @@ if ($birthdays = user_get_forthcoming_birthdays()) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\" colspan=\"2\">", form_quick_button("./visitor_log.php", "{$lang['more']} &raquo;", array('profile_selection' => 'DOB,AGE', 'sort_by' => 'DOB', 'sort_dir' => 'ASC', 'hide_empty' => 'Y'), "right"), "</td>\n";
+    echo "      <td align=\"center\" colspan=\"2\">", form_quick_button("./visitor_log.php", "{$lang['more']} &raquo;", array('profile_selection' => 'DOB,AGE', 'sort_by' => 'DOB', 'sort_dir' => 'ASC', 'hide_empty' => 'Y'), html_get_frame_name('right')), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "  <br />\n";

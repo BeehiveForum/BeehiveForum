@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lmessages.php,v 1.83 2007-06-01 00:00:24 decoyduck Exp $ */
+/* $Id: lmessages.php,v 1.84 2007-06-18 13:37:05 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -289,6 +289,7 @@ if ($msg_count > 0) {
 unset($messages, $message);
 
 if ($last_pid < $threaddata['LENGTH']) {
+
     $npid = $last_pid + 1;
     echo form_quick_button("./lmessages.php", $lang['keepreading'], array('msg' => "$tid.$npid"));
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.php,v 1.100 2007-06-18 14:08:50 decoyduck Exp $ */
+/* $Id: visitor_log.php,v 1.101 2007-06-18 14:34:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -288,6 +288,8 @@ echo "  ", form_input_hidden('page', _htmlentities($page)), "\n";
 echo "  ", form_input_hidden('sort_by', _htmlentities($sort_by)), "\n";
 echo "  ", form_input_hidden('sort_dir', _htmlentities($sort_dir)), "\n";
 echo "  ", form_input_hidden('user_search', _htmlentities($user_search)), "\n";
+echo "  ", form_input_hidden('hide_empty', _htmlentities($hide_empty)), "\n";
+echo "  ", form_input_hidden('hide_guests', _htmlentities($hide_guests)), "\n";
 echo "  ", form_input_hidden('profile_selection', _htmlentities($profile_items_selected_string)), "\n";
 
 if (sizeof($user_profile_array['user_array']) > 0) {
@@ -528,6 +530,8 @@ echo "  ", form_input_hidden('page', _htmlentities($page)), "\n";
 echo "  ", form_input_hidden('sort_by', _htmlentities($sort_by)), "\n";
 echo "  ", form_input_hidden('sort_dir', _htmlentities($sort_dir)), "\n";
 echo "  ", form_input_hidden('user_search', _htmlentities($user_search)), "\n";
+echo "  ", form_input_hidden('hide_empty', _htmlentities($hide_empty)), "\n";
+echo "  ", form_input_hidden('hide_guests', _htmlentities($hide_guests)), "\n";
 echo "  ", form_input_hidden('profile_selection', _htmlentities($profile_items_selected_string)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"85%\">\n";
 echo "    <tr>\n";

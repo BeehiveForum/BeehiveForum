@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_startpage.php,v 1.90 2007-05-31 21:59:14 decoyduck Exp $ */
+/* $Id: admin_startpage.php,v 1.91 2007-06-18 20:10:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -174,7 +174,7 @@ if (isset($_POST['submit'])) {
 
         }else {
 
-            $status_text = "<h2>{$lang['invalidfiletypeerror']}</h2>\n";
+            $status_text = sprintf("<h2>{$lang['invalidfiletypeerror']}</h2>", $allowed_file_exts);
         }
     }
 

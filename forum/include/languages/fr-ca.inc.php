@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.57 2007-06-14 13:21:05 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.58 2007-06-18 20:10:49 decoyduck Exp $ */
 
 // French Canadian language file
 
@@ -862,7 +862,6 @@ $lang['nochange'] = "Aucun changement";
 $lang['emailresult'] = "Envoyer le résultat par courriel";
 $lang['msgsent'] = "Message envoyé";
 $lang['msgsentsuccessfully'] = "Envoi du message réussi.";
-$lang['msgfail'] = "Défaillance du système courrier. Le message n'a pas été envoyé.";
 $lang['mailsystemfailure'] = "Défaillance du système courriel. Le message n'a pas été envoyé.";
 $lang['nopermissiontoedit'] = "Vous n'avez pas la permission de réviser ce message.";
 $lang['cannoteditpostsinthisfolder'] = "Vous ne pouvez pas réviser les messages dans ce dossier";
@@ -1007,7 +1006,6 @@ $lang['otherbutton'] = "Autre";
 // My Forums (forums.php) ---------------------------------------------------------
 
 $lang['myforums'] = "Mes Forums";
-$lang['recentlyvisitedforums'] = "Forums visités récemment";
 $lang['availableforums'] = "Forums disponibles";
 $lang['favouriteforums'] = "Forums favoris";
 $lang['lastvisited'] = "Dernière visite";
@@ -1700,7 +1698,6 @@ $lang['changeall'] = "Changer tout";
 $lang['add'] = "Ajouter";
 $lang['suggest'] = "Suggérer";
 $lang['nosuggestions'] = "(aucune suggestion)";
-$lang['ok'] = "OK";
 $lang['cancel'] = "Annuler";
 $lang['dictionarynotinstalled'] = "Aucun dictionnaire d'installer. Veuillez contacter le propriétaire du forum pour remédier cette situation.";
 
@@ -1773,7 +1770,6 @@ $lang['pmexportwordfilter'] = "Appliquer le filtre des mots aux messages";
 
 // Thread merge / split options
 
-$lang['threadsplit'] = "Thread has been split";
 $lang['threadmerge'] = "Thread has been merged";
 $lang['mergesplitthread'] = "Fusionner / Diviser fils de discussion";
 $lang['mergewiththreadid'] = "Fusionner avec identification de fils de discussion:";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.443 2007-06-14 13:21:05 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.444 2007-06-18 20:10:49 decoyduck Exp $ */
 
 // British English language file
 
@@ -370,6 +370,7 @@ $lang['filtertype'] = "Filter Type";
 $lang['filterenabled'] = "Filter Enabled";
 $lang['editwordfilter'] = "Edit Word Filter";
 $lang['nowordfilterentriesfound'] = "No existing word filter entries found. To add a word filter click the button below.";
+$lang['mustspecifyfiltername'] = "You must specify a filter name";
 $lang['mustspecifymatchedtext'] = "You must specify matched text";
 $lang['mustspecifyfilteroption'] = "You must specify a filter option";
 $lang['mustspecifyfilterid'] = "You must specify a filter ID";
@@ -866,7 +867,6 @@ $lang['nochange'] = "No change";
 $lang['emailresult'] = "Email result";
 $lang['msgsent'] = "Message sent";
 $lang['msgsentsuccessfully'] = "Message sent successfully.";
-$lang['msgfail'] = "Message failed";
 $lang['mailsystemfailure'] = "Mail system failure. Message not sent.";
 $lang['nopermissiontoedit'] = "You are not permitted to edit this message.";
 $lang['cannoteditpostsinthisfolder'] = "You cannot edit posts in this folder";
@@ -1018,7 +1018,6 @@ $lang['yoursessionhasexpired'] = "Your session has expired. You will need to log
 // My Forums (forums.php) ---------------------------------------------------------
 
 $lang['myforums'] = "My Forums";
-$lang['recentlyvisitedforums'] = "Recently Visited Forums";
 $lang['allavailableforums'] = "All Available Forums";
 $lang['favouriteforums'] = "Favourite Forums";
 $lang['ignoredforums'] = "Ignored Forums";
@@ -1250,10 +1249,10 @@ $lang['firstname'] = "First name";
 $lang['lastname'] = "Last name";
 $lang['dateofbirth'] = "Date of Birth";
 $lang['homepageURL'] = "Homepage URL";
-$lang['profileandavatar'] = "Profile and Avatar";
-$lang['profileavatarpicexplain'] = "Here you can select a profile picture to be shown in your Profile Popup and on the Recent Visitor Log. You can choose to specify the URL of an existing image that you have hosted elsewhere or to upload an image as an attachment.";
 $lang['profilepicturedimensions'] = "Profile Picture (Max 95x95px)";
 $lang['avatarpicturedimensions'] = "Avatar Picture (Max 15x15px)";
+$lang['invalidattachmentid'] = "Invalid Attachment. Check that is hasn't been deleted.";
+$lang['unsupportedimagetype'] = "Unsupported image attachment. You can only use jpg, gif and png image attachments for your avatar and profile picture.";
 $lang['selectattachment'] = "Select Attachment";
 $lang['pictureURL'] = "Picture URL";
 $lang['avatarURL'] = "Avatar URL";
@@ -1302,7 +1301,6 @@ $lang['showforumstats'] = "Show forum stats at bottom of message pane";
 $lang['usewordfilter'] = "Enable word filter.";
 $lang['forceadminwordfilter'] = "Force use of admin word filter on all users (inc. guests)";
 $lang['timezone'] = "Time Zone";
-$lang['localtime'] = "Local Time";
 $lang['language'] = "Language";
 $lang['emailsettings'] = "Email and contact settings";
 $lang['forumanonymity'] = "Forum anonymity settings";
@@ -1322,7 +1320,6 @@ $lang['postinplaintextbydefault'] = "Post in plain text by default";
 $lang['postinhtmlwithautolinebreaksbydefault'] = "Post in HTML with auto-line-breaks by default";
 $lang['postinhtmlbydefault'] = "Post in HTML by default";
 $lang['privatemessageoptions'] = "Private Message Options";
-$lang['pmoptions'] = "PM Options";
 $lang['privatemessageexportoptions'] = "Private Message Export Options";
 $lang['savepminsentitems'] = "Save a copy of each PM I send in my Sent Items folder";
 $lang['includepminreply'] = "Include message body when replying to PM";
@@ -1431,8 +1428,6 @@ $lang['birthday'] = "Birthday";
 $lang['registered'] = "Registered";
 $lang['findpostsmadebyuser'] = "Find Posts made by %s";
 $lang['findpostsmadebyme'] = "Find Posts made by me";
-$lang['findthreadsstartedbyme'] = "Find Threads started by Me";
-$lang['findthreadsstartedbyuser'] = "Find Threads started by %s";
 $lang['profilenotavailable'] = "Profile Not Available.";
 $lang['userprofileempty'] = "This user has not filled in their profile or it is set to private.";
 
@@ -1576,7 +1571,7 @@ $lang['forthcomingbirthdays'] = "Forthcoming Birthdays";
 
 $lang['editstartpage_help'] = "You can edit this page from the admin interface";
 $lang['uploadstartpage'] = "Upload Start Page (%s)";
-$lang['invalidfiletypeerror'] = "File type not supported. You can only use *.txt, *.php and *.htm files as your start page.";
+$lang['invalidfiletypeerror'] = "File type not supported. You can only use %s files as your start page.";
 
 // Thread navigation (thread_list.php) ---------------------------------
 
@@ -1750,7 +1745,6 @@ $lang['changeall'] = "Change All";
 $lang['add'] = "Add";
 $lang['suggest'] = "Suggest";
 $lang['nosuggestions'] = "(no suggestions)";
-$lang['ok'] = "OK";
 $lang['cancel'] = "Cancel";
 $lang['dictionarynotinstalled'] = "No dictionary has been installed. Please contact the forum owner to remedy this.";
 
@@ -1823,8 +1817,6 @@ $lang['pmexportwordfilter'] = "Apply word filter to messages";
 
 // Thread merge / split options
 
-$lang['threadsplit'] = "Thread Split";
-$lang['threadmerged'] = "Thread Merged";
 $lang['threadhasbeensplit'] = "Thread has been split";
 $lang['threadhasbeenmerged'] = "Thread has been merged";
 $lang['mergesplitthread'] = "Merge / Split Thread";
@@ -1837,7 +1829,6 @@ $lang['selectedpostsandrepliesonly'] = "Selected post and replies only";
 $lang['selectedandallfollowingposts'] = "Selected and all following posts";
 
 $lang['threadmovedhere'] = "here";
-$lang['postmovedhere'] = "here";
 
 $lang['thisthreadhasmoved'] = "<b>Threads Merged:</b> This thread has moved %s";
 $lang['thisthreadwasmergedfrom'] = "<b>Threads Merged:</b> This thread was merged from %s";

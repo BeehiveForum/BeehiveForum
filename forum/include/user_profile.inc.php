@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.70 2007-06-01 21:02:33 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.71 2007-06-18 20:10:49 decoyduck Exp $ */
 
 /**
 * Functions relating to users interacting with profiles
@@ -45,7 +45,9 @@ include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "profile.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
+include_once(BH_INCLUDE_PATH. "timezone.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
+include_once(BH_INCLUDE_PATH. "user_rel.inc.php");
 
 function user_profile_update($uid, $piid, $entry, $privacy)
 {

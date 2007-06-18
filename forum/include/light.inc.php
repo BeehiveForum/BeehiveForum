@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.149 2007-06-07 23:56:50 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.150 2007-06-18 13:37:05 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1209,7 +1209,7 @@ function light_messages_nav_strip($tid,$pid,$length,$ppp)
 
 function light_html_guest_error ()
 {
-    $frame_top_target = (isset($GLOBALS['frame_top_target'])) ? $GLOBALS['frame_top_target'] : '_top';
+    $frame_top_target = html_get_top_frame_name();
      
     $lang = load_language_file();
 

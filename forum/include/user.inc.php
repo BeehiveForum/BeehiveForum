@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.326 2007-06-10 12:28:48 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.327 2007-06-18 13:37:05 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1090,89 +1090,6 @@ function user_get_ip_addresses($uid)
     }
 
     return $user_ip_addresses_array;
-}
-
-function users_get_recent()
-{
-    $db_users_get_recent = db_connect();
-
-    if (!$table_data = get_table_prefix()) return false;
-    
-    $forum_fid = $table_data['FID'];
-
-    $lang = load_language_file();
-
-    $uid = bh_session_get_value('UID');
-
-    if (forum_get_setting('guest_show_recent', 'Y')) {
-
-        $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
-        $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
-        $sql.= "SEARCH_ENGINE_BOTS.SID, SEARCH_ENGINE_BOTS.NAME, SEARCH_ENGINE_BOTS.URL ";
-        $sql.= "FROM VISITOR_LOG VISITOR_LOG ";
-        $sql.= "LEFT JOIN USER USER ON (USER.UID = VISITOR_LOG.UID) ";
-        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
-        $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
-        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS_FORUM ";
-        $sql.= "ON (USER_PREFS_FORUM.UID = USER.UID) ";
-        $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ";
-        $sql.= "ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
-        $sql.= "LEFT JOIN SEARCH_ENGINE_BOTS ON (SEARCH_ENGINE_BOTS.SID = VISITOR_LOG.SID) ";
-        $sql.= "WHERE VISITOR_LOG.LAST_LOGON IS NOT NULL AND VISITOR_LOG.LAST_LOGON > 0 ";
-        $sql.= "AND VISITOR_LOG.FORUM = '$forum_fid' ";
-        $sql.= "AND (USER_PREFS_FORUM.ANON_LOGON IS NULL OR USER_PREFS_FORUM.ANON_LOGON = 0) ";
-        $sql.= "AND (USER_PREFS_GLOBAL.ANON_LOGON IS NULL OR USER_PREFS_GLOBAL.ANON_LOGON = 0) ";
-        $sql.= "ORDER BY VISITOR_LOG.LAST_LOGON DESC LIMIT 10";
-
-    }else {
-
-        $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
-        $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
-        $sql.= "SEARCH_ENGINE_BOTS.SID, SEARCH_ENGINE_BOTS.NAME, SEARCH_ENGINE_BOTS.URL ";
-        $sql.= "FROM VISITOR_LOG VISITOR_LOG ";
-        $sql.= "LEFT JOIN USER USER ON (USER.UID = VISITOR_LOG.UID) ";
-        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
-        $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
-        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS_FORUM ";
-        $sql.= "ON (USER_PREFS_FORUM.UID = USER.UID) ";
-        $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ";
-        $sql.= "ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
-        $sql.= "LEFT JOIN SEARCH_ENGINE_BOTS ON (SEARCH_ENGINE_BOTS.SID = VISITOR_LOG.SID) ";
-        $sql.= "WHERE VISITOR_LOG.LAST_LOGON IS NOT NULL AND VISITOR_LOG.LAST_LOGON > 0 ";
-        $sql.= "AND VISITOR_LOG.FORUM = '$forum_fid' AND VISITOR_LOG.UID > 0 ";
-        $sql.= "AND (USER_PREFS_FORUM.ANON_LOGON IS NULL OR USER_PREFS_FORUM.ANON_LOGON = 0) ";
-        $sql.= "AND (USER_PREFS_GLOBAL.ANON_LOGON IS NULL OR USER_PREFS_GLOBAL.ANON_LOGON = 0) ";
-        $sql.= "ORDER BY VISITOR_LOG.LAST_LOGON DESC LIMIT 10";
-    }
-
-    if (!$result = db_query($sql, $db_users_get_recent)) return false;
-
-    if (db_num_rows($result) > 0) {
-
-        $users_get_recent_array = array();
-        
-        while ($visitor_array = db_fetch_array($result)) {
-            
-            if (!isset($visitor_array['UID']) || $visitor_array['UID'] == 0) {
-
-                $visitor_array['UID']      = 0;
-                $visitor_array['LOGON']    = $lang['guest'];
-                $visitor_array['NICKNAME'] = $lang['guest'];
-            }
-
-            if (isset($visitor_array['PEER_NICKNAME'])) {
-                if (!is_null($visitor_array['PEER_NICKNAME']) && strlen($visitor_array['PEER_NICKNAME']) > 0) {
-                    $visitor_array['NICKNAME'] = $visitor_array['PEER_NICKNAME'];
-                }
-            }
-
-            $users_get_recent_array[] = $visitor_array;
-        }
-
-        return $users_get_recent_array;
-    }
-
-    return false;
 }
 
 function user_get_friends($uid)

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: confirm_email.php,v 1.17 2007-05-31 21:59:14 decoyduck Exp $ */
+/* $Id: confirm_email.php,v 1.18 2007-06-18 13:37:05 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -104,6 +104,8 @@ if (!isset($uid) || !isset($key)) {
     html_draw_bottom();
     exit;
 }
+
+$frame_top_target = html_get_top_frame_name();
 
 if ($user = user_get_password($uid, $key)) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.php,v 1.98 2007-06-02 13:17:17 decoyduck Exp $ */
+/* $Id: visitor_log.php,v 1.99 2007-06-18 13:37:05 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -112,7 +112,7 @@ $error_html = "";
 
 // Get a list of available user_prefs and profile items for the user to browse.
 
-profile_items_get_list($profile_header_array, $profile_dropdown_array);
+visitor_log_get_profile_items($profile_header_array, $profile_dropdown_array);
 
 $profile_items_selected_array = array();
 
@@ -280,7 +280,7 @@ if (isset($error_html) && strlen($error_html) > 0) {
     echo $error_html;
 }
 
-$user_profile_array = profile_browse_items($user_search, $profile_items_selected_array, $start, $sort_by, $sort_dir, $hide_empty == 'Y', $hide_guests == 'Y');
+$user_profile_array = visitor_log_browse_items($user_search, $profile_items_selected_array, $start, $sort_by, $sort_dir, $hide_empty == 'Y', $hide_guests == 'Y');
 
 echo "<form name=\"f_profile\" action=\"visitor_log.php\" method=\"post\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";

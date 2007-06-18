@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.php,v 1.99 2007-06-18 13:37:05 decoyduck Exp $ */
+/* $Id: visitor_log.php,v 1.100 2007-06-18 14:08:50 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -473,6 +473,14 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
+echo "</form>\n";
+echo "<form name=\"f_profile\" action=\"visitor_log.php\" method=\"post\">\n";
+echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+echo "  ", form_input_hidden('page', _htmlentities($page)), "\n";
+echo "  ", form_input_hidden('sort_by', _htmlentities($sort_by)), "\n";
+echo "  ", form_input_hidden('sort_dir', _htmlentities($sort_dir)), "\n";
+echo "  ", form_input_hidden('user_search', _htmlentities($user_search)), "\n";
+echo "  ", form_input_hidden('profile_selection', _htmlentities($profile_items_selected_string)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"85%\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -514,6 +522,13 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
+echo "<form name=\"f_profile\" action=\"visitor_log.php\" method=\"post\">\n";
+echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+echo "  ", form_input_hidden('page', _htmlentities($page)), "\n";
+echo "  ", form_input_hidden('sort_by', _htmlentities($sort_by)), "\n";
+echo "  ", form_input_hidden('sort_dir', _htmlentities($sort_dir)), "\n";
+echo "  ", form_input_hidden('user_search', _htmlentities($user_search)), "\n";
+echo "  ", form_input_hidden('profile_selection', _htmlentities($profile_items_selected_string)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"85%\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";

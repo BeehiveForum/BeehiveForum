@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.161 2007-06-18 20:10:49 decoyduck Exp $ */
+/* $Id: register.php,v 1.162 2007-06-20 20:03:27 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -140,12 +140,23 @@ $available_timezones = get_available_timezones();
 
 $text_captcha = new captcha(6, 15, 25, 9, 30);
 
-if (isset($_POST['user_agree_rules'])) {
-    $user_agree_rules = 'Y';
-}elseif (isset($_GET['user_agree_rules'])) {
-    $user_agree_rules = 'Y';
-}else {
+if (forum_get_setting('forum_rules_enabled', 'Y', true)) {
+
     $user_agree_rules = 'N';
+
+    if (isset($_POST['forum_rules'])) {
+
+        if (isset($_POST['user_agree_rules']) && $_POST['user_agree_rules'] == 'Y') {       
+            $user_agree_rules = 'Y';
+        }else {
+            $error_html.= "<h2>{$lang['youmustagreetotheforumrules']}</h2>\n";
+            $valid = false;        
+        }
+    }
+
+}else {
+
+    $user_agree_rules = 'Y';
 }
 
 if (isset($_POST['cancel'])) {
@@ -156,22 +167,16 @@ if (isset($_POST['cancel'])) {
 }
 
 $valid = true;
-$error_html = "";
+$error_html = "";   
 
-if (isset($_POST['forum_rules'])) {
+if (isset($_POST['register'])) {
 
     if (isset($_POST['user_agree_rules']) && $_POST['user_agree_rules'] == 'Y') {
-
         $user_agree_rules = 'Y';
-
     }else {
-
         $error_html.= "<h2>{$lang['youmustagreetotheforumrules']}</h2>\n";
         $valid = false;        
     }
-}    
-
-if (isset($_POST['register'])) {
 
     if (isset($_POST['logon']) && strlen(trim(_stripslashes($_POST['logon']))) > 0) {
 
@@ -816,13 +821,10 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
 
     $frame_top_target = html_get_top_frame_name();
 
-    if (!$forum_rules = forum_get_setting('forum_rules')) {
-
-        $forum_rules = "<p><b>Forum Rules</b></p>\n";
-        $forum_rules.= "<p>Registration to $forum_name is free! We do insist that you abide by the rules and policies detailed below. If you agree to the terms, please check the 'I agree' checkbox and press the 'Register' button below. If you would like to cancel the registration, click <a href=\"index.php?webtag=$webtag\" target=\"$frame_top_target\">here</a> to return to the forums index.</p>\n";
-        $forum_rules.= "<p>Although the administrators and moderators of $forum_name will attempt to keep all objectionable messages off this forum, it is impossible for us to review all messages. All messages express the views of the author, and neither the owners of $forum_name, nor Project BeehiveForum and it's affiliates will be held responsible for the content of any message.</p>\n";
-        $forum_rules.= "<p>By agreeing to these rules, you warrant that you will not post any messages that are obscene, vulgar, sexually-orientated, hateful, threatening, or otherwise violative of any laws.</p>\n";
-        $forum_rules.= "<p>The owners of $forum_name reserve the right to remove, edit, move or close any thread for any reason.</p>\n";
+    if (!$forum_rules = forum_get_setting('forum_rules_message')) {
+        
+        $cancel_link = "<a href=\"index.php?webtag=$webtag\" target=\"$frame_top_target\">{$lang['cancellinktext']}</a>";
+        $forum_rules = sprintf($lang['forumrulesmessage'], $forum_name, $cancel_link);
     }
 
     echo "<div align=\"center\">\n";
@@ -845,7 +847,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
     echo "                        <td>{$lang['forumrulesnotification']}:</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td><div class=\"forum_rules_box\">$forum_rules</div></td>\n";
+    echo "                        <td><div class=\"forum_rules_box\">", fix_html($forum_rules), "</div></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td>", form_checkbox('user_agree_rules', 'Y', $lang['forumrulescheckbox']), "</td>\n";

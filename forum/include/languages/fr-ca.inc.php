@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.58 2007-06-18 20:10:49 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.59 2007-06-20 20:03:27 decoyduck Exp $ */
 
 // French Canadian language file
 
@@ -991,7 +991,7 @@ $lang['rememberpasswds'] = "Se souvenir des mots de passe";
 $lang['rememberpassword'] = "Se souvenir du mot de passe";
 $lang['enterasa'] = "Entrer comme un %s";
 $lang['donthaveanaccount'] = "Vous n'avez pas de compte? %s";
-$lang['registernow'] = "Enregistrez-vous maintenant.";
+$lang['registernow'] = "Enregistrez-vous maintenant";
 $lang['problemsloggingon'] = "Vous avez des problèmes d'ouverture de session?";
 $lang['deletecookies'] = "Supprimer les témoins";
 $lang['cookiessuccessfullydeleted'] = "Suppression des témoins réussie";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.444 2007-06-18 20:10:49 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.445 2007-06-20 20:03:27 decoyduck Exp $ */
 
 // British English language file
 
@@ -288,7 +288,7 @@ $lang['forumsettings'] = "Forum Settings";
 $lang['globalforumsettings'] = "Global Forum Settings";
 $lang['settingsaffectallforumswarning'] = "<b>Note:</b> These settings affect all forums. Where the setting is duplicated on the individual Forum's settings page that will take precedence over the settings you change here.";
 $lang['startpage'] = "Start Page";
-$lang['startpageerror'] = "Your start page could not be saved locally to the server because permission was denied.<br /><br />To change your start page please click the download button below which will prompt you to save the file to your hard drive. You can then upload this file to your server into the following folder, if necessary creating the folder structure in the process.<br /><br /><b>%s</b><br /><br />Please note that some browsers may change the name of the file upon download.  When uploading the file please make sure that it is named start_main.php otherwise your start page will appear unchanged.";
+$lang['startpageerror'] = "Your start page could not be saved locally to the server because permission was denied.</p><p>To change your start page please click the download button below which will prompt you to save the file to your hard drive. You can then upload this file to your server into the following folder, if necessary creating the folder structure in the process.</p><p><b>%s</b></p><p>Please note that some browsers may change the name of the file upon download.  When uploading the file please make sure that it is named start_main.php otherwise your start page will appear unchanged.";
 $lang['failedtoopenmasterstylesheet'] = "Your forum style could not be saved because the master style sheet could not be loaded. To save your style the master style sheet (make_style.css) must be located in the styles directory of your Beehive Forum installation.";
 $lang['makestyleerror'] = "Your forum style could not be saved locally to the server because permission was denied. To save your forum style please click the download button below which will prompt you to save the file to your hard drive. You can then upload this file to your server into %s folder, if necessary creating the folder structure in the process. You should note that some browsers may change the name of the file upon download. When uploading the file please make sure that it is named style.css otherwise the forum style will be unusable.";
 $lang['uploadfailed'] = "Your new start page could not be uploaded to the server because permission was denied. Please check that the web server / PHP process is able to write to the %s folder on your server.";
@@ -558,6 +558,8 @@ $lang['deleteselected'] = "Delete selected";
 $lang['noprofilesectionsfound'] = "There are no existing profile sections. To add a profile section please click the button below.";
 $lang['addnewprofilesection'] = "Add new profile section";
 $lang['successfullyaddedsection'] = "Successfully added section";
+$lang['forumrulesmessage'] = "<p><b>Forum Rules</b></p><p>\nRegistration to %1\$s is free! We do insist that you abide by the rules and policies detailed below. If you agree to the terms, please check the 'I agree' checkbox and press the 'Register' button below. If you would like to cancel the registration, click %2\$s to return to the forums index.</p><p>\nAlthough the administrators and moderators of %1\$s will attempt to keep all objectionable messages off this forum, it is impossible for us to review all messages. All messages express the views of the author, and neither the owners of %1\$s, nor Project BeehiveForum and it's affiliates will be held responsible for the content of any message.</p><p>\nBy agreeing to these rules, you warrant that you will not post any messages that are obscene, vulgar, sexually-orientated, hateful, threatening, or otherwise violative of any laws.</p><p>The owners of %1\$s reserve the right to remove, edit, move or close any thread for any reason.</p>";
+$lang['cancellinktext'] = "here";
 
 // Admin Log data (admin_viewlog.php) --------------------------------------------
 
@@ -750,6 +752,7 @@ $lang['allowguestaccess'] = "Allow Guest Access";
 $lang['userandguestaccesssettings'] = "User and guest access settings";
 $lang['allowuserstochangeusername'] = "Allow users to change username";
 $lang['requireuserapproval'] = "Require user approval by admin";
+$lang['requireforumrulesagreement'] = "Require user to agree to forum rules";
 $lang['enableattachments'] = "Enable Attachments";
 $lang['attachmentdir'] = "Attachment Dir";
 $lang['userattachmentspace'] = "Attachment space per user";
@@ -807,6 +810,8 @@ $lang['forum_settings_help_50'] = "<b>Require user approval by admin</b> allows 
 $lang['forum_settings_help_51'] = "Use <b>Closed Message</b>, <b>Restricted Message</b> and <b>Password Protected Message</b> to customise the message displayed when users access your forum in the various states.";
 $lang['forum_settings_help_52'] = "You can use HTML in your messages. Hyperlinks and email addresses will also be automatically converted to links. To use the default Beehive Forum messages clear the fields.";
 $lang['forum_settings_help_53'] = "<b>Allow users to change username</b> permits already registered users to change their username. When enabled you can track the changes a user makes to their username via the admin user tools.";
+$lang['forum_settings_help_54'] = "Use <b>Forum Rules</b> to enter an Accetable Use Policy that each user must agree to before registering on your forum.";
+$lang['forum_settings_help_55'] = "You can use HTML in your forum rules. Hyperlinks and email addresses will also be automatically converted to links. To use the default Beehive Forum AUP clear the field.";
 
 // Attachments (attachments.php, get_attachment.php) ---------------------------------------
 

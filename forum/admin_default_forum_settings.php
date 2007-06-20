@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.73 2007-06-10 12:28:42 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.74 2007-06-20 20:03:27 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -193,6 +193,18 @@ if (isset($_POST['submit'])) {
     }else {
         $new_forum_settings['require_email_confirmation'] = "N";
     }
+
+    if (isset($_POST['forum_rules_enabled']) && $_POST['forum_rules_enabled'] == "Y") {
+        $new_forum_settings['forum_rules_enabled'] = "Y";
+    }else {
+        $new_forum_settings['forum_rules_enabled'] = "N";
+    }
+
+    if (isset($_POST['forum_rules_message']) && strlen(trim(_stripslashes($_POST['forum_rules_message']))) > 0) {
+        $new_forum_settings['forum_rules_message'] = trim(_stripslashes($_POST['forum_rules_message']));
+    }else {
+        $new_forum_settings['forum_rules_message'] = "";
+    }    
 
     if (isset($_POST['text_captcha_enabled']) && $_POST['text_captcha_enabled'] == "Y") {
         $new_forum_settings['text_captcha_enabled'] = "Y";
@@ -571,6 +583,10 @@ echo "                        <td align=\"left\" width=\"250\">{$lang['requireem
 echo "                        <td align=\"left\">", form_radio("require_email_confirmation", "Y", $lang['yes'], (isset($forum_global_settings['require_email_confirmation']) && $forum_global_settings['require_email_confirmation'] == 'Y')), "&nbsp;", form_radio("require_email_confirmation", "N", $lang['no'], (isset($forum_global_settings['require_email_confirmation']) && $forum_global_settings['require_email_confirmation'] == 'N') || !isset($forum_global_settings['require_email_confirmation'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"270\">{$lang['requireforumrulesagreement']}:</td>\n";
+echo "                        <td align=\"left\">", form_radio("forum_rules_enabled", "Y", $lang['yes'] , ((isset($forum_global_settings['forum_rules_enabled']) && $forum_global_settings['forum_rules_enabled'] == 'Y') || !isset($forum_global_settings['forum_rules_enabled']))), "&nbsp;", form_radio("forum_rules_enabled", "N", $lang['no'] , (isset($forum_global_settings['forum_rules_enabled']) && $forum_global_settings['forum_rules_enabled'] == 'N')), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"250\">{$lang['usetextcaptcha']}:</td>\n";
 echo "                        <td align=\"left\">", form_radio("text_captcha_enabled", "Y", $lang['yes'], (isset($forum_global_settings['text_captcha_enabled']) && $forum_global_settings['text_captcha_enabled'] == 'Y')), "&nbsp;", form_radio("text_captcha_enabled", "N", $lang['no'], (isset($forum_global_settings['text_captcha_enabled']) && $forum_global_settings['text_captcha_enabled'] == 'N') || !isset($forum_global_settings['text_captcha_enabled'])), "</td>\n";
 echo "                      </tr>\n";
@@ -685,6 +701,42 @@ echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"3\">\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_41']}</p>\n";
+echo "                        </td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "  <br />\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">{$lang['forumrules']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"center\">\n";
+echo "                    <table class=\"posthead\" width=\"95%\">\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">{$lang['forumrules']}:</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">", form_textarea("forum_rules_message", (isset($forum_global_settings['forum_rules_message']) ? _htmlentities($forum_global_settings['forum_rules_message']) : ''), 10, 76), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">\n";
+echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_54']}</p>\n";
+echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_55']}</p>\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";

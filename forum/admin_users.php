@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.148 2007-05-31 21:59:14 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.149 2007-06-21 20:09:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -99,10 +99,11 @@ if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
 // Friendly display names for column sorting
 
-$sort_by_array = array('USER.UID'               => 'User ID',
-                       'USER.LOGON'             => 'Logon',
-                       'VISITOR_LOG.LAST_LOGON' => 'Last Logon',
-                       'SESSIONS.REFERER'        => 'Referer');
+$sort_by_array = array('USER.UID'               => $lang['memberno'],
+                       'USER.LOGON'             => $lang['logon'],
+                       'VISITOR_LOG.LAST_LOGON' => $lang['lastlogon'],
+                       'USER.REGISTERED'        => $lang['registered'],
+                       'SESSIONS.REFERER'       => $lang['referer']);
 
 // Column sorting stuff
 
@@ -111,6 +112,8 @@ if (isset($_GET['sort_by'])) {
         $sort_by = "USER.LOGON";
     } elseif ($_GET['sort_by'] == "LAST_LOGON") {
         $sort_by = "VISITOR_LOG.LAST_LOGON";
+    } elseif ($_GET['sort_by'] == "REGISTERED") {
+        $sort_by = "USER.REGISTERED";
     } elseif ($_GET['sort_by'] == "REFERER") {
         $sort_by = "SESSIONS.REFERER";
     } else {
@@ -254,6 +257,16 @@ if ($sort_by == 'VISITOR_LOG.LAST_LOGON' && $sort_dir == 'ASC') {
     echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LAST_LOGON&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;page=$page&amp;filter=$filter\">{$lang['lastlogon']}</a></td>\n";
 }
 
+if ($sort_by == 'USER.REGISTERED' && $sort_dir == 'ASC') {
+    echo "                   <td class=\"subhead_sort_asc\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=REGISTERED&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;page=$page&amp;filter=$filter\">{$lang['registered']}</a></td>\n";
+}elseif ($sort_by == 'USER.REGISTERED' && $sort_dir == 'DESC') {
+    echo "                   <td class=\"subhead_sort_desc\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=REGISTERED&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;page=$page&amp;filter=$filter\">{$lang['registered']}</a></td>\n";
+}elseif ($sort_dir == 'ASC') {
+    echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=REGISTERED&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;page=$page&amp;filter=$filter\">{$lang['registered']}</a></td>\n";
+}else {
+    echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=REGISTERED&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;page=$page&amp;filter=$filter\">{$lang['registered']}</a></td>\n";
+}
+
 if ($sort_by == 'SESSIONS.REFERER' && $sort_dir == 'ASC') {
     echo "                   <td class=\"subhead_sort_asc\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=REFERER&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;page=$page&amp;filter=$filter\">{$lang['sessionreferer']}</a></td>\n";
 }elseif ($sort_by == 'SESSIONS.REFERER' && $sort_dir == 'DESC') {
@@ -282,10 +295,16 @@ if (sizeof($admin_user_array['user_array']) > 0) {
 
         echo "                 <tr>\n";
         echo "                   <td align=\"center\">", form_checkbox("user_update[{$user['UID']}]", "Y", ""), "</td>\n";
-        echo "                   <td class=\"posthead\" align=\"left\" width=\"45%\">&nbsp;<a href=\"admin_user.php?webtag=$webtag&amp;uid=", $user['UID'], "\">", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</a></td>\n";
+        echo "                   <td class=\"posthead\" align=\"left\" width=\"35%\">&nbsp;<a href=\"admin_user.php?webtag=$webtag&amp;uid=", $user['UID'], "\">", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</a></td>\n";
 
         if (isset($user['LAST_LOGON']) && $user['LAST_LOGON'] > 0) {
             echo "                   <td class=\"posthead\" align=\"left\">&nbsp;", format_time($user['LAST_LOGON'], 1), "</td>\n";
+        }else {
+            echo "                   <td class=\"posthead\" align=\"left\">&nbsp;{$lang['unknown']}</td>\n";
+        }
+
+        if (isset($user['REGISTERED']) && $user['REGISTERED'] > 0) {
+            echo "                   <td class=\"posthead\" align=\"left\">&nbsp;", format_time($user['REGISTERED'], 1), "</td>\n";
         }else {
             echo "                   <td class=\"posthead\" align=\"left\">&nbsp;{$lang['unknown']}</td>\n";
         }

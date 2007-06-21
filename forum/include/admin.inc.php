@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.121 2007-05-26 15:04:33 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.122 2007-06-21 20:09:32 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -378,7 +378,7 @@ function admin_user_search($user_search, $sort_by = 'VISITOR_LOG.LAST_LOGON', $s
 {
     $db_user_search = db_connect();
 
-    $sort_by_array = array('USER.UID', 'USER.LOGON', 'VISITOR_LOG.LAST_LOGON', 'SESSIONS.REFERER');
+    $sort_by_array = array('USER.UID', 'USER.LOGON', 'VISITOR_LOG.LAST_LOGON', 'USER.REGISTERED', 'SESSIONS.REFERER');
     $sort_dir_array = array('ASC', 'DESC');
 
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'VISITOR_LOG.LAST_LOGON';
@@ -445,7 +445,8 @@ function admin_user_search($user_search, $sort_by = 'VISITOR_LOG.LAST_LOGON', $s
     
     $user_search_count = db_num_rows($result);
 
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, SESSIONS.HASH, SESSIONS.REFERER, ";
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, SESSIONS.HASH, ";
+    $sql.= "SESSIONS.REFERER, UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, ";
     $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
     $sql.= "BIT_OR(GROUP_PERMS.PERM) AS USER_PERM FROM USER USER ";
     $sql.= "LEFT JOIN SESSIONS ON (SESSIONS.UID = USER.UID) ";
@@ -497,7 +498,7 @@ function admin_user_get_all($sort_by = 'VISITOR_LOG.LAST_LOGON', $sort_dir = 'AS
     $db_user_get_all = db_connect();
     $user_get_all_array = array();
 
-    $sort_by_array  = array('USER.UID', 'USER.LOGON', 'VISITOR_LOG.LAST_LOGON', 'SESSIONS.REFERER');
+    $sort_by_array  = array('USER.UID', 'USER.LOGON', 'VISITOR_LOG.LAST_LOGON', 'USER.REGISTERED', 'SESSIONS.REFERER');
     $sort_dir_array = array('ASC', 'DESC');
 
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'VISITOR_LOG.LAST_LOGON';
@@ -560,7 +561,8 @@ function admin_user_get_all($sort_by = 'VISITOR_LOG.LAST_LOGON', $sort_dir = 'AS
     
     $user_get_all_count = db_num_rows($result);
 
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, SESSIONS.HASH, SESSIONS.REFERER, ";
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, SESSIONS.HASH, ";
+    $sql.= "SESSIONS.REFERER, UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, ";
     $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
     $sql.= "BIT_OR(GROUP_PERMS.PERM) AS USER_PERM FROM USER USER ";
     $sql.= "LEFT JOIN SESSIONS ON (SESSIONS.UID = USER.UID) ";

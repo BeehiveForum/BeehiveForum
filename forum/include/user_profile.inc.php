@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.71 2007-06-18 20:10:49 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.72 2007-06-22 17:36:29 decoyduck Exp $ */
 
 /**
 * Functions relating to users interacting with profiles
@@ -286,15 +286,17 @@ function user_get_profile_entries($uid)
 
     $user_friend = USER_FRIEND;
 
-    $sql = "SELECT PI.PSID, PI.PIID, PI.NAME, PI.TYPE, UP.ENTRY, ";
-    $sql.= "UP.PRIVACY FROM {$table_data['PREFIX']}PROFILE_ITEM PI ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PROFILE UP ";
-    $sql.= "ON (UP.PIID = PI.PIID AND UP.UID = '$uid' ";
-    $sql.= "AND (UP.PRIVACY = 0 OR UP.UID = '$session_uid' ";
-    $sql.= "OR (UP.PRIVACY = 1 AND ($peer_relationship ";
-    $sql.= "& $user_friend > 0)))) WHERE UP.ENTRY IS NOT NULL ";
-    $sql.= "AND LENGTH(UP.ENTRY) > 0 ";
-    $sql.= "ORDER BY PI.POSITION, PI.PIID";
+    $sql = "SELECT PROFILE_SECTION.PSID, PROFILE_ITEM.PIID, PROFILE_ITEM.NAME, ";
+    $sql.= "PROFILE_ITEM.TYPE, USER_PROFILE.ENTRY, USER_PROFILE.PRIVACY ";
+    $sql.= "FROM {$table_data['PREFIX']}PROFILE_SECTION PROFILE_SECTION ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}PROFILE_ITEM PROFILE_ITEM ";
+    $sql.= "ON (PROFILE_ITEM.PSID = PROFILE_SECTION.PSID) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PROFILE USER_PROFILE ";
+    $sql.= "ON (USER_PROFILE.PIID = PROFILE_ITEM.PIID AND USER_PROFILE.UID = '$uid' ";
+    $sql.= "AND (USER_PROFILE.PRIVACY = 0 OR USER_PROFILE.UID = '$session_uid' ";
+    $sql.= "OR (USER_PROFILE.PRIVACY = 1 AND ($peer_relationship & $user_friend > 0)))) ";
+    $sql.= "WHERE USER_PROFILE.ENTRY IS NOT NULL AND LENGTH(USER_PROFILE.ENTRY) > 0 ";
+    $sql.= "ORDER BY PROFILE_SECTION.POSITION, PROFILE_ITEM.POSITION, PROFILE_ITEM.PIID";
 
     if (!$result = db_query($sql, $db_user_get_profile_entries)) return false;
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.127 2007-06-18 20:10:49 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.128 2007-06-22 17:36:30 decoyduck Exp $ */
 
 /**
 * Displays user profiles
@@ -149,42 +149,23 @@ if (!isset($uid)) {
     exit;
 }
 
-if (!$profile_sections = profile_sections_get()) {
+// Get the Profile Sections.
 
-    html_draw_top();
-    html_error_msg($lang['profilesnotsetup']);
-    html_draw_bottom();
-    exit;
-}
+$profile_sections = profile_sections_get();
 
-if (!$user_profile = user_get_profile($uid)) {
+// Get the user's profile data.
 
-    html_draw_top();
-    html_error_msg($lang['profilesnotsetup']);
-    html_draw_bottom();
-    exit;
-}
+$user_profile = user_get_profile($uid);
+
+// User relationship.
 
 $peer_relationship = user_get_relationship($uid, bh_session_get_value('UID'));
 
-if (isset($_GET['psid']) && is_numeric($_GET['psid'])) {
-    $psid = $_GET['psid'];
-}else {
-    list($first_key) = array_keys($profile_sections);
-    $psid = $profile_sections[$first_key]['PSID'];
-}
+// Popup title.
 
 $title = word_filter_add_ob_tags(format_user_name($user_profile['LOGON'], $user_profile['NICKNAME']));
 
 html_draw_top("title=$title", "openprofile.js", "basetarget=_blank");
-
-// user has chosen to modify their relationship
-
-if (isset($_GET['setrel']) && ($uid != bh_session_get_value('UID')) && bh_session_get_value('UID') > 0) {
-
-    $user_profile['RELATIONSHIP'] = ($user_profile['RELATIONSHIP'] & (~(USER_FRIEND | USER_IGNORED)) | $_GET['setrel']);
-    user_rel_update(bh_session_get_value('UID'), $uid, $user_profile['RELATIONSHIP']);
-}
 
 echo "<div align=\"center\">\n";
 echo "  <table width=\"600\" cellpadding=\"0\" cellspacing=\"0\">\n";
@@ -336,53 +317,56 @@ if ($user_profile_array = user_get_profile_entries($uid)) {
 
     foreach ($user_profile_array as $psid => $user_profile_item_array) {
 
-        echo "              <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"profile_items_section\">\n";
-        echo "                <tr>\n";
-        echo "                  <td align=\"center\">\n";
-        echo "                    <table width=\"96%\" cellpadding=\"0\" cellspacing=\"0\">\n";
-        echo "                      <tr>\n";
-        echo "                        <td align=\"center\">\n";
-        echo "                          <table width=\"95%\">\n";
-        echo "                            <tr>\n";
-        echo "                              <td align=\"left\" class=\"postbody\"><b>{$profile_sections[$psid]['NAME']}</b></td>\n";
-        echo "                            </tr>\n";
-        echo "                            <tr>\n";
-        echo "                              <td align=\"center\">\n";
-        echo "                                <table width=\"94%\" class=\"profile_items\">\n";
+        if (isset($profile_sections[$psid]) && is_array($profile_sections[$psid])) {
+        
+            echo "              <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"profile_items_section\">\n";
+            echo "                <tr>\n";
+            echo "                  <td align=\"center\">\n";
+            echo "                    <table width=\"96%\" cellpadding=\"0\" cellspacing=\"0\">\n";
+            echo "                      <tr>\n";
+            echo "                        <td align=\"center\">\n";
+            echo "                          <table width=\"95%\">\n";
+            echo "                            <tr>\n";
+            echo "                              <td align=\"left\" class=\"postbody\"><b>{$profile_sections[$psid]['NAME']}</b></td>\n";
+            echo "                            </tr>\n";
+            echo "                            <tr>\n";
+            echo "                              <td align=\"center\">\n";
+            echo "                                <table width=\"94%\" class=\"profile_items\">\n";
 
-        foreach ($user_profile_item_array as $user_profile_entry) {
+            foreach ($user_profile_item_array as $user_profile_entry) {
 
-            if (($user_profile_entry['TYPE'] == PROFILE_ITEM_RADIO) || ($user_profile_entry['TYPE'] == PROFILE_ITEM_DROPDOWN)) {
+                if (($user_profile_entry['TYPE'] == PROFILE_ITEM_RADIO) || ($user_profile_entry['TYPE'] == PROFILE_ITEM_DROPDOWN)) {
 
-                list($field_name, $field_values) = explode(':', $user_profile_entry['NAME']);
+                    list($field_name, $field_values) = explode(':', $user_profile_entry['NAME']);
 
-                $field_values = explode(';', $field_values);
+                    $field_values = explode(';', $field_values);
 
-                echo "                                  <tr>\n";
-                echo "                                    <td align=\"left\" width=\"40%\" valign=\"top\" class=\"profile_item_name\">$field_name:</td>\n";
-                echo "                                    <td align=\"left\" class=\"profile_item_value\" valign=\"top\">{$field_values[$user_profile_entry['ENTRY']]}</td>\n";
-                echo "                                  </tr>\n";
+                    echo "                                  <tr>\n";
+                    echo "                                    <td align=\"left\" width=\"40%\" valign=\"top\" class=\"profile_item_name\">$field_name:</td>\n";
+                    echo "                                    <td align=\"left\" class=\"profile_item_value\" valign=\"top\">{$field_values[$user_profile_entry['ENTRY']]}</td>\n";
+                    echo "                                  </tr>\n";
 
-            }else {
+                }else {
 
-                echo "                                  <tr>\n";
-                echo "                                    <td align=\"left\" width=\"40%\" valign=\"top\" class=\"profile_item_name\">{$user_profile_entry['NAME']}:</td>\n";
-                echo "                                    <td align=\"left\" class=\"profile_item_value\" valign=\"top\">", isset($user_profile_entry['ENTRY']) ? nl2br(make_links($user_profile_entry['ENTRY'])) : "", "</td>\n";                
-                echo "                                  </tr>\n";
+                    echo "                                  <tr>\n";
+                    echo "                                    <td align=\"left\" width=\"40%\" valign=\"top\" class=\"profile_item_name\">{$user_profile_entry['NAME']}:</td>\n";
+                    echo "                                    <td align=\"left\" class=\"profile_item_value\" valign=\"top\">", isset($user_profile_entry['ENTRY']) ? nl2br(make_links($user_profile_entry['ENTRY'])) : "", "</td>\n";                
+                    echo "                                  </tr>\n";
+                }
             }
-        }
 
-        echo "                                </table>\n";
-        echo "                              </td>\n";
-        echo "                            </tr>\n";
-        echo "                          </table>\n";
-        echo "                          <br />\n";
-        echo "                        </td>\n";   
-        echo "                      </tr>\n";
-        echo "                    </table>\n";
-        echo "                  </td>\n";
-        echo "                </tr>\n";
-        echo "              </table>\n";
+            echo "                                </table>\n";
+            echo "                              </td>\n";
+            echo "                            </tr>\n";
+            echo "                          </table>\n";
+            echo "                          <br />\n";
+            echo "                        </td>\n";   
+            echo "                      </tr>\n";
+            echo "                    </table>\n";
+            echo "                  </td>\n";
+            echo "                </tr>\n";
+            echo "              </table>\n";
+        }
     }
 
 }else {

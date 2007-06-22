@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.81 2007-06-22 17:36:27 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.82 2007-06-22 17:44:08 decoyduck Exp $ */
 
 /**
 * Functions relating to profiles
@@ -345,6 +345,21 @@ function profile_section_delete($psid)
 
     if (!$table_data = get_table_prefix()) return false;
 
+    $sql = "SELECT PIID FROM {$table_data['PREFIX']}PROFILE_ITEM WHERE PSID = '$psid'";
+
+    if (!$result = db_query($sql, $db_profile_section_delete)) return false;
+
+    if (db_num_rows($result) > 0) {
+
+        while ($profile_item = db_fetch_array($result)) {
+
+            if (isset($profile_item['PIID']) && is_numeric($profile_item['PIID'])) {
+
+                profile_item_delete($profile_item['PIID']);
+            }
+        }
+    }
+
     $sql = "DELETE FROM {$table_data['PREFIX']}PROFILE_SECTION WHERE PSID = '$psid'";
     
     if (!$result = db_query($sql, $db_profile_section_delete)) return false;
@@ -359,6 +374,10 @@ function profile_item_delete($piid)
     if (!is_numeric($piid)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
+
+    $sql = "DELETE FROM {$table_data['PREFIX']}USER_PROFILE WHERE PIID = '$piid'";
+    
+    if (!$result = db_query($sql, $db_profile_item_delete)) return false;
 
     $sql = "DELETE FROM {$table_data['PREFIX']}PROFILE_ITEM WHERE PIID = '$piid'";
     

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.117 2007-05-31 21:59:14 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.118 2007-06-23 16:31:19 decoyduck Exp $ */
 
 /**
 * Displays and handles the Forum Settings page
@@ -350,13 +350,16 @@ if (isset($_POST['changepermissions'])) {
 
     if ($valid) {
 
-        forum_save_settings($new_forum_settings);
+        if (forum_save_settings($new_forum_settings)) {
 
-        $uid = bh_session_get_value('UID');
+            admin_add_log_entry(EDIT_FORUM_SETTINGS, $new_forum_settings['forum_name']);
+            header_redirect("./admin_forum_settings.php?webtag=$webtag&updated=true", $lang['forumsettingsupdated']);
+        
+        }else {
 
-        admin_add_log_entry(EDIT_FORUM_SETTINGS, $new_forum_settings['forum_name']);
-
-        header_redirect("./admin_forum_settings.php?webtag=$webtag&updated=true", $lang['forumsettingsupdated']);
+            $valid = false;
+            $error_html.= "<h2>{$lang['failedtoupdateforumsettings']}</h2>\n";
+        }
     }
 }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_wordfilter.php,v 1.97 2007-05-31 21:59:14 decoyduck Exp $ */
+/* $Id: admin_wordfilter.php,v 1.98 2007-06-23 16:31:19 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -157,14 +157,16 @@ if (isset($_POST['delete'])) {
         $new_forum_settings['admin_force_word_filter'] = "N";
     }
 
-    forum_save_settings($new_forum_settings);
+    if (forum_save_settings($new_forum_settings)) {
 
-    $uid = bh_session_get_value('UID');
-    admin_add_log_entry(EDIT_WORD_FILTER);
+        admin_add_log_entry(EDIT_WORD_FILTER);
+        header_redirect("./admin_wordfilter.php?webtag=$webtag&updated=true", $lang['wordfilterupdated']);
+    
+    }else {
 
-    $redirect = "./admin_wordfilter.php?webtag=$webtag&updated=true";
-    header_redirect($redirect, $lang['wordfilterupdated']);
-    exit;
+        $valid = false;
+        $error_html.= "<h2>{$lang['failedtoupdateforumsettings']}</h2>\n";
+    }
 
 }elseif (isset($_POST['addfilter_submit'])) {
     

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_links.php,v 1.44 2007-05-31 21:59:14 decoyduck Exp $ */
+/* $Id: admin_forum_links.php,v 1.45 2007-06-23 16:31:19 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -170,6 +170,11 @@ if (isset($_POST['delete'])) {
             admin_add_log_entry(EDIT_TOP_LINK_CAPTION, array($t_top_link_title, $t_old_top_link_title));
             $add_success = "<h2>{$lang['toplinktitlesuccessfullyupdated']}</h2>\n";
             unset($_POST['toplinksubmit'], $t_top_link_title, $t_old_top_link_title, $new_forum_settings);
+        
+        }else {
+
+            $valid = false;
+            $error_html.= "<h2>{$lang['failedtoupdateforumsettings']}</h2>\n";
         }
     }
 

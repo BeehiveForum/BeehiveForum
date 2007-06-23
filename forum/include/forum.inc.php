@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.241 2007-06-18 20:10:49 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.242 2007-06-23 16:31:19 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -497,19 +497,30 @@ function forum_save_settings($forum_settings_array)
 
     $forum_fid = $table_data['FID'];
 
-    $sql = "DELETE FROM FORUM_SETTINGS WHERE FID = '$forum_fid'";
-
-    if (!$result = db_query($sql, $db_forum_save_settings)) return false;
-
     foreach ($forum_settings_array as $sname => $svalue) {
 
-        $sname = db_escape_string($sname);
+        $sname  = db_escape_string($sname);
         $svalue = db_escape_string($svalue);
 
-        $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
-        $sql.= "VALUES ($forum_fid, '$sname', '$svalue')";
+        $sql = "SELECT SVALUE FROM FORUM_SETTINGS WHERE FID = '$forum_fid' ";
+        $sql.= "AND SNAME = '$sname'";
 
         if (!$result = db_query($sql, $db_forum_save_settings)) return false;
+
+        if (db_num_rows($result) > 0) {
+
+            $sql = "UPDATE FORUM_SETTINGS SET SVALUE = '$svalue' WHERE FID = '$forum_fid' ";
+            $sql.= "AND SNAME = '$sname'";
+
+            if (!$result = db_query($sql, $db_forum_save_settings)) return false;
+
+        }else {
+
+            $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
+            $sql.= "VALUES ($forum_fid, '$sname', '$svalue')";
+
+            if (!$result = db_query($sql, $db_forum_save_settings)) return false;
+        }
     }
 
     return true;

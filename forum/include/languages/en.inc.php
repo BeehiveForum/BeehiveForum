@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.445 2007-06-20 20:03:27 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.446 2007-06-23 16:31:19 decoyduck Exp $ */
 
 // British English language file
 
@@ -560,6 +560,7 @@ $lang['addnewprofilesection'] = "Add new profile section";
 $lang['successfullyaddedsection'] = "Successfully added section";
 $lang['forumrulesmessage'] = "<p><b>Forum Rules</b></p><p>\nRegistration to %1\$s is free! We do insist that you abide by the rules and policies detailed below. If you agree to the terms, please check the 'I agree' checkbox and press the 'Register' button below. If you would like to cancel the registration, click %2\$s to return to the forums index.</p><p>\nAlthough the administrators and moderators of %1\$s will attempt to keep all objectionable messages off this forum, it is impossible for us to review all messages. All messages express the views of the author, and neither the owners of %1\$s, nor Project BeehiveForum and it's affiliates will be held responsible for the content of any message.</p><p>\nBy agreeing to these rules, you warrant that you will not post any messages that are obscene, vulgar, sexually-orientated, hateful, threatening, or otherwise violative of any laws.</p><p>The owners of %1\$s reserve the right to remove, edit, move or close any thread for any reason.</p>";
 $lang['cancellinktext'] = "here";
+$lang['failedtoupdateforumsettings'] = "Failed to update forum settings. Please try again later.";
 
 // Admin Log data (admin_viewlog.php) --------------------------------------------
 

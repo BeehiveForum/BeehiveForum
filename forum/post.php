@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.312 2007-06-11 21:58:59 decoyduck Exp $ */
+/* $Id: post.php,v 1.313 2007-06-24 20:55:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -372,6 +372,9 @@ if (!isset($sig_html)) $sig_html = 0;
 
 if (isset($_POST['submit']) || isset($_POST['preview'])) {
 
+    $t_closed = isset($_POST['t_closed']) && $_POST['t_closed'] == 'Y' ? true : false;
+    $t_sticky = isset($_POST['t_sticky']) && $_POST['t_sticky'] == 'Y' ? 'Y' : 'N';
+
     if (isset($_POST['t_content']) && strlen(trim(_stripslashes($_POST['t_content']))) > 0) {
 
         $t_content = trim(_stripslashes($_POST['t_content']));
@@ -393,6 +396,7 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
         $t_sig = trim(_stripslashes($_POST['t_sig']));
 
         if ($sig_html && attachment_embed_check($t_sig)) {
+
             $error_html = "<h2>{$lang['notallowedembedattachmentsignature']}</h2>\n";
             $valid = false;
         }
@@ -627,8 +631,8 @@ if ($valid && isset($_POST['submit'])) {
 
                 if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
-                    $t_closed = isset($t_closed) && $t_closed == "Y" ? true : false;
-                    $t_sticky = isset($t_sticky) && $t_sticky == "Y" ? "Y" : "N";
+                    $t_closed = isset($_POST['t_closed']) && $_POST['t_closed'] == 'Y' ? true : false;
+                    $t_sticky = isset($_POST['t_sticky']) && $_POST['t_sticky'] == 'Y' ? 'Y' : 'N';
 
                 }else {
 
@@ -654,15 +658,18 @@ if ($valid && isset($_POST['submit'])) {
 
                 if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
-                    if (isset($t_closed) && isset($old_t_closed) && $t_closed != $old_t_closed && $t_closed == "Y") {
+                    $t_closed = isset($_POST['t_closed']) && $_POST['t_closed'] == 'Y' ? true : false;
+                    $t_sticky = isset($_POST['t_sticky']) && $_POST['t_sticky'] == 'Y' ? 'Y' : 'N';
+
+                    if (isset($t_closed) && $t_closed == "Y") {
                         thread_set_closed($t_tid, true);
-                    }elseif ((!isset($t_closed) || (isset($t_closed) && $t_closed != "Y")) && $old_t_closed == "Y") {
+                    }else {
                         thread_set_closed($t_tid, false);
                     }
 
-                    if (isset($t_sticky) && isset($old_t_sticky) && $t_sticky != $old_t_sticky && $t_sticky == "Y") {
+                    if (isset($t_sticky) && $t_sticky == "Y") {
                         thread_set_sticky($t_tid, true);
-                    }elseif ((!isset($t_sticky) || (isset($t_sticky) && $t_sticky != "Y")) && $old_t_sticky == "Y") {
+                    }else {
                         thread_set_sticky($t_tid, false);
                     }
                 }
@@ -948,7 +955,7 @@ echo "                    </tr>\n";
 if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
     echo "                    <tr>\n";
-    echo "                      <td align=\"left\">", form_input_hidden("old_t_closed", isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 ? "Y" : "N"), form_input_hidden("old_t_sticky", isset($threaddata['STICKY']) && $threaddata['STICKY'] == "Y" ? "Y" : "N"), "</td>\n";
+    echo "                      <td align=\"left\">&nbsp;</td>\n";
     echo "                    </tr>\n";
     echo "                    <tr>\n";
     echo "                      <td align=\"left\"><h2>{$lang['admin']}</h2></td>\n";

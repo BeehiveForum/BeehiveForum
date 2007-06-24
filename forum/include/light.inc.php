@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.150 2007-06-18 13:37:05 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.151 2007-06-24 19:58:10 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1051,7 +1051,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
     if ($is_poll !== true) $message['CONTENT'] = word_filter_add_ob_tags($message['CONTENT']);
 
-    echo "<p>{$message['CONTENT']}</p>\n";
+    echo $message['CONTENT'];
 
     if (($tid <> 0 && isset($message['PID'])) || isset($message['AID'])) {
 
@@ -1093,30 +1093,34 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
         }
     }
 
-    echo "<p>\n";
-
     if ($in_list && $limit_text != false) {
 
+        $links_array = array();
+        
         if (!$closed && bh_session_check_perm(USER_PERM_POST_CREATE, $folder_fid)) {
 
-            echo "<a href=\"lpost.php?webtag=$webtag&amp;replyto=$tid.{$message['PID']}\">{$lang['reply']}</a>";
+            $links_array[] = "<a href=\"lpost.php?webtag=$webtag&amp;replyto=$tid.{$message['PID']}\">{$lang['reply']}</a>";
         }
 
         if (($uid == $message['FROM_UID'] && bh_session_check_perm(USER_PERM_POST_DELETE, $folder_fid) && !(perm_get_user_permissions($uid) & USER_PERM_PILLORIED)) || $perm_is_moderator) {
 
-            echo "&nbsp;|&nbsp;<a href=\"ldelete.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\">{$lang['delete']}</a>";
+            $links_array[] = "<a href=\"ldelete.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\">{$lang['delete']}</a>";
         }
 
         if (((!perm_get_user_permissions($uid) & USER_PERM_PILLORIED) || ($uid != $message['FROM_UID'] && $from_user_permissions & USER_PERM_PILLORIED) || ($uid == $message['FROM_UID'])) && bh_session_check_perm(USER_PERM_POST_EDIT, $folder_fid) && ((time() - $message['CREATED']) < (forum_get_setting('post_edit_time', false, 0) * HOUR_IN_SECONDS) || forum_get_setting('post_edit_time', false, 0) == 0) && (forum_get_setting('allow_post_editing', 'Y')) || $perm_is_moderator) {
 
             if (!$is_poll) {
 
-                echo "&nbsp;|&nbsp;<a href=\"ledit.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\">{$lang['edit']}</a>";
+                $links_array[] = "<a href=\"ledit.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\">{$lang['edit']}</a>";
             }
+        }
+
+        if (sizeof($links_array) > 0) {
+
+            echo "<p>", implode('&nbsp;&nbsp;', $links_array), "</p>\n";
         }
     }
 
-    echo "</p>\n";
     echo "<hr />";
 }
 

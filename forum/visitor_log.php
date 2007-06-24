@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.php,v 1.102 2007-06-18 20:10:49 decoyduck Exp $ */
+/* $Id: visitor_log.php,v 1.103 2007-06-24 19:03:56 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -284,7 +284,9 @@ if (isset($error_html) && strlen($error_html) > 0) {
 
 $user_profile_array = visitor_log_browse_items($user_search, $profile_items_selected_array, $start, $sort_by, $sort_dir, $hide_empty == 'Y', $hide_guests == 'Y');
 
-echo "<form name=\"f_profile\" action=\"visitor_log.php\" method=\"post\">\n";
+echo "<br />\n";
+echo "<div align=\"center\">\n";    
+echo "<form name=\"f_visitor_log\" action=\"visitor_log.php\" method=\"post\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden('page', _htmlentities($page)), "\n";
 echo "  ", form_input_hidden('sort_by', _htmlentities($sort_by)), "\n";
@@ -296,8 +298,6 @@ echo "  ", form_input_hidden('profile_selection', _htmlentities($profile_items_s
 
 if (sizeof($user_profile_array['user_array']) > 0) {
 
-    echo "<br />\n";
-    echo "<div align=\"center\">\n";    
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"85%\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
@@ -478,7 +478,7 @@ echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";
-echo "<form name=\"f_profile\" action=\"visitor_log.php\" method=\"post\">\n";
+echo "<form name=\"f_options\" action=\"visitor_log.php\" method=\"post\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden('page', _htmlentities($page)), "\n";
 echo "  ", form_input_hidden('sort_by', _htmlentities($sort_by)), "\n";
@@ -526,7 +526,8 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
-echo "<form name=\"f_profile\" action=\"visitor_log.php\" method=\"post\">\n";
+echo "</form>\n";
+echo "<form name=\"f_user_search\" action=\"visitor_log.php\" method=\"post\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden('page', _htmlentities($page)), "\n";
 echo "  ", form_input_hidden('sort_by', _htmlentities($sort_by)), "\n";
@@ -564,9 +565,8 @@ echo "        </table>\n";
 echo "      </td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
-echo "</div>\n";
 echo "</form>\n";
-
+echo "</div>\n";
 
 html_draw_bottom();
 

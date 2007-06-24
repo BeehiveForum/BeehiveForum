@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_wordfilter.php,v 1.74 2007-06-10 12:28:43 decoyduck Exp $ */
+/* $Id: edit_wordfilter.php,v 1.75 2007-06-24 19:43:55 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -514,7 +514,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "                  <td align=\"left\" class=\"subhead\" width=\"20\">&nbsp;</td>\n";
     echo "                  <td align=\"left\" class=\"subhead\" nowrap=\"nowrap\">{$lang['filtername']}&nbsp;</td>\n";
     echo "                  <td align=\"left\" class=\"subhead\" nowrap=\"nowrap\">{$lang['filtertype']}&nbsp;</td>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" nowrap=\"nowrap\" width=\"100\" align=\"center\">{$lang['filterenabled']}&nbsp;</td>\n";
+    echo "                  <td align=\"center\" class=\"subhead\" nowrap=\"nowrap\" width=\"100\">{$lang['filterenabled']}&nbsp;</td>\n";
     echo "                </tr>\n";
 
     $start = floor($page - 1) * 10;

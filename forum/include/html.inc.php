@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.232 2007-06-13 21:21:27 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.233 2007-06-24 19:43:55 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -145,7 +145,10 @@ function html_display_msg($header_text, $string_msg, $href = false, $method = 'g
 
     echo "    </table>\n";
     echo "  </div>\n";
-    echo "</form>\n";
+
+    if (($href !== false) && strlen(trim($href)) > 0) {
+        echo "</form>\n";
+    }
 }
 
 function html_user_banned()

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_profile.php,v 1.77 2007-06-07 20:27:25 decoyduck Exp $ */
+/* $Id: edit_profile.php,v 1.78 2007-06-24 19:43:55 decoyduck Exp $ */
 
 /**
 * Displays the edit profile page, and processes sumbissions
@@ -180,19 +180,6 @@ if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) && ($uid != bh_session_ge
     exit;
 }
 
-html_draw_top();
-
-if ($admin_edit === true) {
-
-    $user = user_get($uid);
-
-    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</h1>\n";
-
-}else {
-
-    echo "<h1>{$lang['editprofile']}</h1>\n";
-}
-
 // Do updates
 
 if (isset($_POST['submit'])) {
@@ -226,6 +213,15 @@ if (isset($_POST['submit'])) {
 }
 
 if ($profile_items_array = profile_get_user_values($uid)) {
+
+    html_draw_top();
+
+    if ($admin_edit === true) {
+        $user = user_get($uid);
+        echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</h1>\n";
+    }else {
+        echo "<h1>{$lang['editprofile']}</h1>\n";
+    }
 
     if (isset($_GET['profile_updated'])) {
         echo "<h2>{$lang['profileupdated']}</h2>\n";
@@ -390,12 +386,13 @@ if ($profile_items_array = profile_get_user_values($uid)) {
 
     if ($admin_edit === true) echo "</div>\n";
 
+    html_draw_bottom();
+
 }else {
 
-    echo "<p>{$lang['profilesnotsetup']}</p>";
-
+    html_draw_top();
+    html_error_msg($lang['profilesnotsetup']);
+    html_draw_bottom();
 }
-
-html_draw_bottom();
 
 ?>

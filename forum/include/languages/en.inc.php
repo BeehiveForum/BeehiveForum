@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.446 2007-06-23 16:31:19 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.447 2007-06-25 20:21:40 decoyduck Exp $ */
 
 // British English language file
 
@@ -700,6 +700,7 @@ $lang['attachmentdirblank'] = "You must supply a directory to save attachments i
 $lang['mainsettings'] = "Main Settings";
 $lang['forumname'] = "Forum Name";
 $lang['forumemail'] = "Forum Email";
+$lang['forumnoreplyemail'] = "No-Reply Email";
 $lang['forumdesc'] = "Forum Description";
 $lang['forumkeywords'] = "Forum Keywords";
 $lang['defaultstyle'] = "Default Style";
@@ -813,6 +814,8 @@ $lang['forum_settings_help_52'] = "You can use HTML in your messages. Hyperlinks
 $lang['forum_settings_help_53'] = "<b>Allow users to change username</b> permits already registered users to change their username. When enabled you can track the changes a user makes to their username via the admin user tools.";
 $lang['forum_settings_help_54'] = "Use <b>Forum Rules</b> to enter an Accetable Use Policy that each user must agree to before registering on your forum.";
 $lang['forum_settings_help_55'] = "You can use HTML in your forum rules. Hyperlinks and email addresses will also be automatically converted to links. To use the default Beehive Forum AUP clear the field.";
+$lang['forum_settings_help_56'] = "Use <b>No-Reply Email</b> to specify an email address that does not exist or will not be monitored for replies. This email address will be used in the headers for all emails sent from your forum including but not limited to Post and PM notifications, user emails and password reminders.";
+$lang['forum_settings_help_57'] = "It is recommended that you use an email address that does not exist to help cut down on spam that may be directed at your main forum email address";
 
 // Attachments (attachments.php, get_attachment.php) ---------------------------------------
 

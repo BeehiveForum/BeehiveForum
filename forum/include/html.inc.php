@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.233 2007-06-24 19:43:55 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.234 2007-06-25 20:21:40 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -559,7 +559,6 @@ function html_draw_top()
     echo "<title>$title</title>\n";
     echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n";
     echo "<meta name=\"generator\" content=\"BeehiveForums ", BEEHIVE_VERSION, "\" />\n";
-    echo "<meta name=\"reply-to\" content=\"$forum_email\" />\n";
     echo "<meta name=\"keywords\" content=\"$forum_keywords\" />\n";
     echo "<meta name=\"description\" content=\"$forum_description\" />\n";
 

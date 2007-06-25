@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.458 2007-06-08 13:39:46 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.459 2007-06-25 20:21:40 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -719,10 +719,10 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     echo "    <td align=\"left\" width=\"2%\" valign=\"top\">\n";
     echo "      <table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\">\n";
     echo "        <tr>\n";
-    echo "          <td align=\"left\">$up_arrow</td>\n";
+    echo "          <td align=\"center\">$up_arrow</td>\n";
     echo "        </tr>\n";
     echo "        <tr>\n";
-    echo "          <td align=\"left\">$down_arrow</td>\n";
+    echo "          <td align=\"center\">$down_arrow</td>\n";
     echo "        </tr>\n";
     echo "      </table>\n";
     echo "    </td>\n";

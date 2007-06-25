@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.74 2007-06-20 20:03:27 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.75 2007-06-25 20:21:40 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -122,7 +122,13 @@ if (isset($_POST['submit'])) {
     if (isset($_POST['forum_email']) && strlen(trim(_stripslashes($_POST['forum_email']))) > 0) {
         $new_forum_settings['forum_email'] = trim(_stripslashes($_POST['forum_email']));
     }else {
-        $new_forum_settings['forum_email'] = "";
+        $new_forum_settings['forum_email'] = "admin@abeehiveforum.net";
+    }
+
+    if (isset($_POST['forum_noreply_email']) && strlen(trim(_stripslashes($_POST['forum_noreply_email']))) > 0) {
+        $new_forum_settings['forum_noreply_email'] = trim(_stripslashes($_POST['forum_noreply_email']));
+    }else {
+        $new_forum_settings['forum_noreply_email'] = "noreply@abeehiveforum.net";
     }
 
     if (isset($_POST['forum_desc']) && strlen(trim(_stripslashes($_POST['forum_desc']))) > 0) {
@@ -427,6 +433,10 @@ echo "                        <td align=\"left\" width=\"220\">{$lang['forumemai
 echo "                        <td align=\"left\">", form_input_text("forum_email", (isset($forum_global_settings['forum_email']) ? _htmlentities($forum_global_settings['forum_email']) : 'admin@abeehiveforum.net'), 42, 80), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"220\">{$lang['forumnoreplyemail']}:</td>\n";
+echo "                        <td align=\"left\">", form_input_text("forum_noreply_email", (isset($forum_global_settings['forum_noreply_email']) ? _htmlentities($forum_global_settings['forum_noreply_email']) : 'noreply@abeehiveforum.net'), 42, 80), "&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['forumdesc']}:</td>\n";
 echo "                        <td align=\"left\">", form_input_text("forum_desc", (isset($forum_global_settings['forum_desc']) ? _htmlentities($forum_global_settings['forum_desc']) : ''), 42, 80), "&nbsp;</td>\n";
 echo "                      </tr>\n";
@@ -435,7 +445,18 @@ echo "                        <td align=\"left\" width=\"220\">{$lang['forumkeyw
 echo "                        <td align=\"left\">", form_input_text("forum_keywords", (isset($forum_global_settings['forum_keywords']) ? _htmlentities($forum_global_settings['forum_keywords']) : ''), 42, 80), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+echo "                        <td align=\"left\" colspan=\"2\">\n";
+echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_56']}</p>\n";
+echo "                          <table class=\"text_captcha_error\" width=\"100%\">\n";
+echo "                            <tr>\n";
+echo "                              <td align=\"left\" width=\"20\" valign=\"top\"><img src=\"", style_image('warning.png'), "\" alt=\"\" /></td>\n";
+echo "                              <td align=\"left\">{$lang['forum_settings_help_57']}</td>\n";
+echo "                            </tr>\n";
+echo "                          </table>\n";
+echo "                        </td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\">&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
@@ -610,7 +631,7 @@ if (isset($forum_global_settings['text_captcha_enabled']) && $forum_global_setti
             echo "                      </tr>\n";
             echo "                      <tr>\n";
             echo "                        <td colspan=\"2\" align=\"center\">\n";
-            echo "                          <table class=\"text_captcha_error\" width=\"95%\">\n";
+            echo "                          <table class=\"text_captcha_error\" width=\"100%\">\n";
 
             switch ($errno) {
 
@@ -621,7 +642,7 @@ if (isset($forum_global_settings['text_captcha_enabled']) && $forum_global_setti
                     $text_captcha_dir.= "/fonts/";
                     
                     echo "                            <tr>\n";
-                    echo "                              <td align=\"left\" width=\"20\"><img src=\"", style_image('warning.png'), "\" alt=\"\" /></td>\n";
+                    echo "                              <td align=\"left\" width=\"20\" valign=\"top\"><img src=\"", style_image('warning.png'), "\" alt=\"\" /></td>\n";
                     echo "                              <td align=\"left\">", sprintf($lang['textcaptchafonterror'], $text_captcha_dir), "</td>\n";
                     echo "                            </tr>\n";
                     break;
@@ -629,14 +650,14 @@ if (isset($forum_global_settings['text_captcha_enabled']) && $forum_global_setti
                 case TEXT_CAPTCHA_DIR_ERROR:
 
                     echo "                            <tr>\n";
-                    echo "                              <td align=\"left\" width=\"20\"><img src=\"", style_image('warning.png'), "\" alt=\"\" /></td>\n";
+                    echo "                              <td align=\"left\" width=\"20\" valign=\"top\"><img src=\"", style_image('warning.png'), "\" alt=\"\" /></td>\n";
                     echo "                              <td align=\"left\">{$lang['textcaptchadirerror']}</td>\n";
                     break;
 
                 case TEXT_CAPTCHA_GD_ERROR:
 
                     echo "                            <tr>\n";
-                    echo "                              <td align=\"left\" width=\"20\"><img src=\"", style_image('warning.png'), "\" alt=\"\" /></td>\n";
+                    echo "                              <td align=\"left\" width=\"20\" valign=\"top\"><img src=\"", style_image('warning.png'), "\" alt=\"\" /></td>\n";
                     echo "                              <td align=\"left\">{$lang['textcaptchagderror']}</td>\n";
                     break;
             }
@@ -925,9 +946,9 @@ if (isset($forum_global_settings['attachments_enabled']) && $forum_global_settin
         echo "                      </tr>\n";
         echo "                      <tr>\n";
         echo "                        <td colspan=\"2\" align=\"center\">\n";
-        echo "                          <table class=\"text_captcha_error\" width=\"95%\">\n";
+        echo "                          <table class=\"text_captcha_error\" width=\"100%\">\n";
         echo "                            <tr>\n";
-        echo "                              <td align=\"left\" width=\"20\"><img src=\"", style_image('warning.png'), "\" /></td>\n";
+        echo "                              <td align=\"left\" width=\"20\" valign=\"top\"><img src=\"", style_image('warning.png'), "\" /></td>\n";
         echo "                              <td align=\"left\">{$lang['attachmentdirnotwritable']}</td>\n";
         echo "                            </tr>\n";
         echo "                          </table>\n";

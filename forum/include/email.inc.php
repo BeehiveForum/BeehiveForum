@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.114 2007-06-04 21:44:45 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.115 2007-06-25 20:21:40 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -83,7 +83,7 @@ function email_sendnotification($tuid, $fuid, $tid, $pid)
 
                 // Get the forum reply-to email address
 
-                $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
+                $forum_email = forum_get_setting('forum_noreply_email', false, 'noreply@abeehiveforum.net');
 
                 // Get the required variables (forum name, subject, recipient, etc.) and 
                 // pass them all through the recipient's word filter.
@@ -176,7 +176,7 @@ function email_sendsubscription($tuid, $fuid, $tid, $pid)
 
                 // Get the forum reply-to email address
 
-                $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
+                $forum_email = forum_get_setting('forum_noreply_email', false, 'noreply@abeehiveforum.net');
 
                 // Get the required variables (forum name, subject, recipient, etc.) and 
                 // pass them all through the recipient's word filter.
@@ -260,7 +260,7 @@ function email_send_pm_notification($tuid, $mid, $fuid)
 
                 // Get the forum reply-to email address
 
-                $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
+                $forum_email = forum_get_setting('forum_noreply_email', false, 'noreply@abeehiveforum.net');
 
                 // Get the forum name, subject, recipient, author, thread title and generate
                 // the messages link. Pass all of them through the recipient's word filter.
@@ -329,7 +329,7 @@ function email_send_pw_reminder($logon)
 
             // Get the forum reply-to email address
 
-            $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
+            $forum_email = forum_get_setting('forum_noreply_email', false, 'noreply@abeehiveforum.net');
 
             // Get the forum name, subject, recipient, author, thread title and generate
             // the messages link. Pass all of them through the recipient's word filter.
@@ -391,7 +391,7 @@ function email_send_new_pw_notification($tuid, $fuid, $new_password)
 
         // Get the forum reply-to email address
 
-        $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
+        $forum_email = forum_get_setting('forum_noreply_email', false, 'noreply@abeehiveforum.net');
 
         // Get the forum name, subject, recipient, author, thread title and generate
         // the messages link. Pass all of them through the recipient's word filter.
@@ -449,6 +449,7 @@ function email_send_user_confirmation($tuid)
         // Get the forum reply-to email address
 
         $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
+        $forum_no_reply_email = forum_get_setting('forum_noreply_email', false, 'noreply@abeehiveforum.net');
 
         // Get the forum name, subject, recipient, author, thread title and generate
         // the messages link. Pass all of them through the recipient's word filter.
@@ -467,9 +468,9 @@ function email_send_user_confirmation($tuid)
 
         // Email Headers (inc. PHP version and Beehive version)
 
-        $header = "Return-path: $forum_email\n";
-        $header.= "From: \"$forum_name\" <$forum_email>\n";
-        $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";
+        $header = "Return-path: $forum_no_reply_email\n";
+        $header.= "From: \"$forum_name\" <$forum_no_reply_email>\n";
+        $header.= "Reply-To: \"$forum_name\" <$forum_no_reply_email>\n";
         $header.= "Content-type: text/plain; charset=UTF-8\n";
         $header.= "X-Mailer: PHP/". phpversion(). "\n";
         $header.= "X-Beehive-Forum: Beehive Forum ". BEEHIVE_VERSION;
@@ -509,6 +510,7 @@ function email_send_changed_email_confirmation($tuid)
         // Get the forum reply-to email address
 
         $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
+        $forum_noreply_email = forum_get_setting('forum_noreply_email', false, 'noreply@abeehiveforum.net');
 
         // Get the forum name, subject, recipient, author, thread title and generate
         // the messages link. Pass all of them through the recipient's word filter.
@@ -527,9 +529,9 @@ function email_send_changed_email_confirmation($tuid)
 
         // Email Headers (inc. PHP version and Beehive version)
 
-        $header = "Return-path: $forum_email\n";
-        $header.= "From: \"$forum_name\" <$forum_email>\n";
-        $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";
+        $header = "Return-path: $forum_noreply_email\n";
+        $header.= "From: \"$forum_name\" <$forum_noreply_email>\n";
+        $header.= "Reply-To: \"$forum_name\" <$forum_noreply_email>\n";
         $header.= "Content-type: text/plain; charset=UTF-8\n";
         $header.= "X-Mailer: PHP/". phpversion(). "\n";
         $header.= "X-Beehive-Forum: Beehive Forum ". BEEHIVE_VERSION;
@@ -569,7 +571,7 @@ function email_send_message_to_user($tuid, $fuid, $subject, $message)
 
         // Get the forum reply-to email address
 
-        $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
+        $forum_email = forum_get_setting('forum_noreply_email', false, 'noreply@abeehiveforum.net');
 
         // Get the forum name, subject, recipient, author, thread title and generate
         // the messages link. Pass all of them through the recipient's word filter.

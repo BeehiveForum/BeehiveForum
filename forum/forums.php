@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forums.php,v 1.78 2007-06-18 20:10:49 decoyduck Exp $ */
+/* $Id: forums.php,v 1.79 2007-06-26 14:09:44 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -254,7 +254,7 @@ if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri'])))
     if (preg_match("/^$available_files_preg/", basename(trim(_stripslashes($_GET['final_uri'])))) > 0) {
 
         $final_uri = rawurldecode(trim(_stripslashes($_GET['final_uri'])));
-        $final_uri = href_remove_query_keys($final_uri, 'webtag');
+        $final_uri = href_cleanup_query_keys($final_uri, 'webtag');
     }
 }
 

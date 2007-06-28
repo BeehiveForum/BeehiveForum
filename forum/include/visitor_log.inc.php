@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.inc.php,v 1.3 2007-06-18 20:10:49 decoyduck Exp $ */
+/* $Id: visitor_log.inc.php,v 1.4 2007-06-28 22:46:19 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -409,7 +409,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
     // Count queries NULL column filtering
 
     if (sizeof($where_count_array) > 0) {
-        $where_count_sql = sprintf("WHERE (%s)", implode(" AND ", $where_count_array));
+        $where_count_sql = sprintf("WHERE %s", implode(" AND ", $where_count_array));
     }else {
         $where_count_sql = "";
     }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.145 2007-06-24 19:03:56 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.146 2007-06-28 22:46:19 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -331,7 +331,7 @@ if ($recent_visitors_array = visitor_log_get_recent()) {
 
         if (isset($recent_visitor['AVATAR_URL']) && strlen($recent_visitor['AVATAR_URL']) > 0) {
 
-            echo "                   <td class=\"postbody\" align=\"left\"><img src=\"{$recent_visitor['AVATAR_URL']}\" alt=\"", format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']), "\" title=\"", format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']), "\" border=\"0\" width=\"15\" height=\"15\" /></td>\n";
+            echo "                   <td valign=\"top\"  class=\"postbody\" align=\"left\"><img src=\"{$recent_visitor['AVATAR_URL']}\" alt=\"", format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']), "\" title=\"", format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']), "\" border=\"0\" width=\"15\" height=\"15\" /></td>\n";
 
         }elseif (isset($recent_visitor['AVATAR_AID']) && is_md5($recent_visitor['AVATAR_AID'])) {
 
@@ -349,33 +349,33 @@ if ($recent_visitors_array = visitor_log_get_recent()) {
                 $profile_picture_href.= "?webtag=$webtag&amp;profile_picture=1";
             }
 
-            echo "                   <td class=\"postbody\" align=\"left\"><img src=\"$profile_picture_href\" alt=\"", format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']), "\" title=\"", format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']), "\" border=\"0\" width=\"15\" height=\"15\" /></td>\n";
+            echo "                   <td valign=\"top\"  class=\"postbody\" align=\"left\"><img src=\"$profile_picture_href\" alt=\"", format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']), "\" title=\"", format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']), "\" border=\"0\" width=\"15\" height=\"15\" /></td>\n";
         
         }else {
 
-            echo "                   <td align=\"left\" class=\"postbody\"><img src=\"", style_image('bullet.png'), "\" alt=\"{$lang['user']}\" title=\"{$lang['user']}\" /></td>\n";
+            echo "                   <td valign=\"top\"  align=\"left\" class=\"postbody\"><img src=\"", style_image('bullet.png'), "\" alt=\"{$lang['user']}\" title=\"{$lang['user']}\" /></td>\n";
         }
 
         if (isset($recent_visitor['SID']) && !is_null($recent_visitor['SID'])) {
 
-            echo "                              <td align=\"left\"><a href=\"{$recent_visitor['URL']}\" target=\"_blank\">{$recent_visitor['NAME']}</a></td>\n";
+            echo "                              <td valign=\"top\"  align=\"left\"><a href=\"{$recent_visitor['URL']}\" target=\"_blank\">{$recent_visitor['NAME']}</a></td>\n";
 
         }elseif ($recent_visitor['UID'] > 0) {
 
-            echo "                              <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$recent_visitor['UID']}\" target=\"_blank\" onclick=\"return openProfile({$recent_visitor['UID']}, '$webtag')\">", word_filter_add_ob_tags(word_filter_add_ob_tags(format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']))), "</a></td>\n";
+            echo "                              <td valign=\"top\"  align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$recent_visitor['UID']}\" target=\"_blank\" onclick=\"return openProfile({$recent_visitor['UID']}, '$webtag')\">", word_filter_add_ob_tags(word_filter_add_ob_tags(format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']))), "</a></td>\n";
 
         }else {
 
-            echo "                              <td align=\"left\">", word_filter_add_ob_tags(word_filter_add_ob_tags(format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']))), "</td>\n";
+            echo "                              <td valign=\"top\"  align=\"left\">", word_filter_add_ob_tags(word_filter_add_ob_tags(format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']))), "</td>\n";
         }
 
         if (isset($recent_visitor['LAST_LOGON']) && $recent_visitor['LAST_LOGON'] > 0) {
 
-            echo "                              <td align=\"right\" nowrap=\"nowrap\">", format_time($recent_visitor['LAST_LOGON']), "&nbsp;</td>\n";
+            echo "                              <td valign=\"top\"  align=\"right\" nowrap=\"nowrap\">", format_time($recent_visitor['LAST_LOGON']), "&nbsp;</td>\n";
 
         }else {
 
-            echo "                              <td align=\"right\" nowrap=\"nowrap\">{$lang['unknown']}&nbsp;</td>\n";
+            echo "                              <td valign=\"top\"  align=\"right\" nowrap=\"nowrap\">{$lang['unknown']}&nbsp;</td>\n";
         }
 
         echo "                            </tr>\n";

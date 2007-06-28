@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06x-to-072.php,v 1.14 2007-05-31 16:27:49 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-072.php,v 1.15 2007-06-28 22:46:19 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-06x-to-072.php") {
 
@@ -660,6 +660,16 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 // convert it back to MYISAM.
 
 $sql = "ALTER TABLE SESSIONS TYPE = MYISAM";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// User approval is possible in Beehive as of 0.7.2.
+
+$sql = "ALTER TABLE USER ADD APPROVED DATETIME NULL";
 
 if (!$result = @db_query($sql, $db_install)) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.122 2007-06-21 20:09:32 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.123 2007-06-28 22:46:19 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -376,13 +376,13 @@ function admin_update_word_filter($filter_id, $filter_name, $match_text, $replac
 
 function admin_user_search($user_search, $sort_by = 'VISITOR_LOG.LAST_LOGON', $sort_dir = 'DESC', $filter = ADMIN_USER_FILTER_NONE, $offset = 0)
 {
-    $db_user_search = db_connect();
+    $db_admin_user_search = db_connect();
 
-    $sort_by_array = array('USER.UID', 'USER.LOGON', 'VISITOR_LOG.LAST_LOGON', 'USER.REGISTERED', 'SESSIONS.REFERER');
+    $sort_by_array  = array('USER.UID', 'USER.LOGON', 'VISITOR_LOG.LAST_LOGON', 'USER.REGISTERED', 'SESSIONS.REFERER');
     $sort_dir_array = array('ASC', 'DESC');
 
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'VISITOR_LOG.LAST_LOGON';
-    if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
+    if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'ASC';
 
     if (!is_numeric($offset)) $offset = 0;
     if (!is_numeric($filter)) $filter = ADMIN_USER_FILTER_NONE;
@@ -393,93 +393,114 @@ function admin_user_search($user_search, $sort_by = 'VISITOR_LOG.LAST_LOGON', $s
         $forum_fid = 0;
     }
 
-    $user_search_array = array();
+    $user_get_all_array = array();
 
-    $up_approved = USER_PERM_APPROVED;
     $up_banned = USER_PERM_BANNED;
-    $up_admin = USER_PERM_ADMIN_TOOLS;
+
+    $user_search = db_escape_string(str_replace("%", "", $user_search));
 
     switch ($filter) {
 
         case ADMIN_USER_FILTER_ONLINE: // Online Users
 
-            $having_sql = "HAVING (SESSIONS.HASH IS NOT NULL)";
+            $user_count_sql = "SELECT COUNT(DISTINCT SESSIONS.UID) AS USER_COUNT ";
+            $user_count_sql.= "FROM SESSIONS LEFT JOIN USER ON (USER.UID = SESSIONS.UID) ";
+            $user_count_sql.= "WHERE SESSIONS.FID = '$forum_fid' AND SESSIONS.UID > 0 ";
+            $user_count_sql.= "AND (USER.LOGON LIKE '$user_search%' ";
+            $user_count_sql.= "OR USER.NICKNAME LIKE '$user_search%') ";
+
+            $user_fetch_sql = "WHERE SESSIONS.HASH IS NOT NULL ";
+            $user_fetch_sql.= "AND (USER.LOGON LIKE '$user_search%' ";
+            $user_fetch_sql.= "OR USER.NICKNAME LIKE '$user_search%') ";
+
             break;
 
         case ADMIN_USER_FILTER_OFFLINE: // Offline Users
 
-            $having_sql = "HAVING (SESSIONS.HASH IS NULL)";
+            $user_count_sql = "SELECT COUNT(DISTINCT USER.UID) AS USER_COUNT FROM USER ";
+            $user_count_sql.= "LEFT JOIN SESSIONS ON (SESSIONS.UID = USER.UID ";
+            $user_count_sql.= "AND SESSIONS.FID = '$forum_fid') WHERE SESSIONS.HASH IS NULL ";
+            $user_count_sql.= "AND (USER.LOGON LIKE '$user_search%' ";
+            $user_count_sql.= "OR USER.NICKNAME LIKE '$user_search%') ";
+
+            $user_fetch_sql = "WHERE SESSIONS.HASH IS NULL ";
+            $user_fetch_sql.= "AND (USER.LOGON LIKE '$user_search%' ";
+            $user_fetch_sql.= "OR USER.NICKNAME LIKE '$user_search%') ";
+
             break;
 
         case ADMIN_USER_FILTER_APPROVAL: // Users awaiting approval
 
-            $having_sql = "HAVING (USER_PERM & $up_approved) = 0 ";
-            $having_sql.= "AND (USER_PERM & $up_banned) = 0 ";
-            $having_sql.= "AND (USER_PERM & $up_admin) = 0 ";
+            $user_count_sql = "SELECT COUNT(DISTINCT USER.UID) AS USER_COUNT FROM USER ";
+            $user_count_sql.= "WHERE USER.APPROVED IS NULL AND (USER.LOGON LIKE '$user_search%' ";
+            $user_count_sql.= "OR USER.NICKNAME LIKE '$user_search%') ";
+
+            $user_fetch_sql = "WHERE USER.APPROVED IS NULL ";
+            $user_fetch_sql.= "AND (USER.LOGON LIKE '$user_search%' ";
+            $user_fetch_sql.= "OR USER.NICKNAME LIKE '$user_search%') ";
 
             break;
 
         case ADMIN_USER_FILTER_BANNED: // Banned users
 
-            $having_sql = "HAVING (USER_PERM & $up_banned) > 0";
+            $user_count_sql = "SELECT COUNT(DISTINCT USER.UID) AS USER_COUNT FROM USER ";
+            $user_count_sql.= "LEFT JOIN GROUP_USERS ON (GROUP_USERS.UID = USER.UID) ";
+            $user_count_sql.= "LEFT JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID ";
+            $user_count_sql.= "AND GROUP_PERMS.FORUM IN (0, $forum_fid) AND GROUP_PERMS.FID = '0') ";
+            $user_count_sql.= "WHERE GROUP_PERMS.PERM & $up_banned > 0 ";
+            $user_count_sql.= "AND (USER.LOGON LIKE '$user_search%' ";
+            $user_count_sql.= "OR USER.NICKNAME LIKE '$user_search%') ";
+
+            $user_fetch_sql = "WHERE GROUP_PERMS.PERM & $up_banned > 0 ";
+            $user_fetch_sql.= "AND (USER.LOGON LIKE '$user_search%' ";
+            $user_fetch_sql.= "OR USER.NICKNAME LIKE '$user_search%') ";
+
             break;
 
         default:
 
-            $having_sql = "";
+            $user_count_sql = "SELECT COUNT(UID) AS USER_COUNT FROM USER ";
+            $user_count_sql.= "WHERE (USER.LOGON LIKE '$user_search%' ";
+            $user_count_sql.= "OR USER.NICKNAME LIKE '$user_search%') ";
+
+            $user_fetch_sql = "WHERE (USER.LOGON LIKE '$user_search%' ";
+            $user_fetch_sql.= "OR USER.NICKNAME LIKE '$user_search%') ";
+
+            break;
     }
 
-    $user_search = db_escape_string(str_replace("%", "", $user_search));
-
-    $sql = "SELECT USER.UID, SESSIONS.HASH, ";
-    $sql.= "BIT_OR(GROUP_PERMS.PERM) AS USER_PERM FROM USER USER ";
-    $sql.= "LEFT JOIN SESSIONS ON (SESSIONS.UID = USER.UID) ";
-    $sql.= "LEFT JOIN GROUP_USERS ON (GROUP_USERS.UID = USER.UID) ";
-    $sql.= "LEFT JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID ";
-    $sql.= "AND GROUP_PERMS.FORUM = '$forum_fid' AND GROUP_PERMS.FID = '0') ";
-    $sql.= "WHERE (USER.LOGON LIKE '$user_search%' ";
-    $sql.= "OR USER.NICKNAME LIKE '$user_search%') ";
-    $sql.= "GROUP BY USER.UID $having_sql ";
-
-    if (!$result = db_query($sql, $db_user_search)) return false;
+    if (!$result = db_query($user_count_sql, $db_admin_user_search)) return false;
     
-    $user_search_count = db_num_rows($result);
+    list($user_get_all_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, SESSIONS.HASH, ";
     $sql.= "SESSIONS.REFERER, UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, ";
-    $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
-    $sql.= "BIT_OR(GROUP_PERMS.PERM) AS USER_PERM FROM USER USER ";
+    $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM USER ";
     $sql.= "LEFT JOIN SESSIONS ON (SESSIONS.UID = USER.UID) ";
     $sql.= "LEFT JOIN GROUP_USERS ON (GROUP_USERS.UID = USER.UID) ";
     $sql.= "LEFT JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID ";
-    $sql.= "AND GROUP_PERMS.FORUM = '$forum_fid' AND GROUP_PERMS.FID = '0') ";
+    $sql.= "AND GROUP_PERMS.FORUM IN (0, $forum_fid) AND GROUP_PERMS.FID = '0') ";
     $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID ";
-    $sql.= "AND VISITOR_LOG.FORUM = '$forum_fid') ";
-    $sql.= "WHERE (USER.LOGON LIKE '$user_search%' ";
-    $sql.= "OR USER.NICKNAME LIKE '$user_search%') ";
-    $sql.= "GROUP BY USER.UID $having_sql ";
-    $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, 10 ";
+    $sql.= "AND VISITOR_LOG.FORUM IN (0, $forum_fid)) $user_fetch_sql ";
+    $sql.= "GROUP BY USER.UID ORDER BY $sort_by $sort_dir LIMIT $offset, 10 ";
 
-    if (!$result = db_query($sql, $db_user_search)) return false;
+    if (!$result = db_query($sql, $db_admin_user_search)) return false;
 
     if (db_num_rows($result) > 0) {
 
         while ($row = db_fetch_array($result)) {
-
-            if (!isset($user_search_array[$row['UID']])) {
-
-                $user_search_array[$row['UID']] = $row;
-            }
+            
+            $user_get_all_array[$row['UID']] = $row;
         }
-    
-    }else if ($user_search_count > 0) {
 
-        $offset = ($offset - 20) > 0 ? $offset - 20 : 0;        
-        return admin_user_search($usersearch, $sort_by, $sort_dir, $filter, $offset);
+    }else if ($user_get_all_count > 0) {
+
+        $offset = floor(($user_get_all_count - 1) / 10) * 10;
+        return admin_user_get_all($sort_by, $sort_dir, $filter, $offset);
     }
 
-    return array('user_count' => $user_search_count,
-                 'user_array' => $user_search_array);
+    return array('user_count' => $user_get_all_count,
+                 'user_array' => $user_get_all_array);
 }
 
 /**
@@ -515,64 +536,74 @@ function admin_user_get_all($sort_by = 'VISITOR_LOG.LAST_LOGON', $sort_dir = 'AS
 
     $user_get_all_array = array();
 
-    $up_approved = USER_PERM_APPROVED;
     $up_banned = USER_PERM_BANNED;
-    $up_admin = USER_PERM_ADMIN_TOOLS;
 
     switch ($filter) {
 
         case ADMIN_USER_FILTER_ONLINE: // Online Users
 
-            $having_sql = "HAVING (SESSIONS.HASH IS NOT NULL)";
+            $user_count_sql = "SELECT COUNT(DISTINCT SESSIONS.UID) AS USER_COUNT FROM SESSIONS ";
+            $user_count_sql.= "WHERE SESSIONS.FID = '$forum_fid' AND SESSIONS.UID > 0";
+
+            $user_fetch_sql = "WHERE SESSIONS.HASH IS NOT NULL";
+
             break;
 
         case ADMIN_USER_FILTER_OFFLINE: // Offline Users
 
-            $having_sql = "HAVING (SESSIONS.HASH IS NULL)";
+            $user_count_sql = "SELECT COUNT(DISTINCT USER.UID) AS USER_COUNT FROM USER ";
+            $user_count_sql.= "LEFT JOIN SESSIONS ON (SESSIONS.UID = USER.UID ";
+            $user_count_sql.= "AND SESSIONS.FID = '$forum_fid') ";
+            $user_count_sql.= "WHERE SESSIONS.HASH IS NULL";
+
+            $user_fetch_sql = "WHERE SESSIONS.HASH IS NULL";
+
             break;
 
         case ADMIN_USER_FILTER_APPROVAL: // Users awaiting approval
 
-            $having_sql = "HAVING (USER_PERM & $up_approved) = 0 ";
-            $having_sql.= "AND (USER_PERM & $up_banned) = 0 ";
-            $having_sql.= "AND (USER_PERM & $up_admin) = 0 ";
+            $user_count_sql = "SELECT COUNT(DISTINCT USER.UID) AS USER_COUNT FROM USER ";
+            $user_count_sql.= "WHERE USER.APPROVED IS NULL";
+
+            $user_fetch_sql = "WHERE USER.APPROVED IS NULL";
 
             break;
 
         case ADMIN_USER_FILTER_BANNED: // Banned users
 
-            $having_sql = "HAVING (USER_PERM & $up_banned) > 0";
+            $user_count_sql = "SELECT COUNT(DISTINCT USER.UID) AS USER_COUNT FROM USER ";
+            $user_count_sql.= "LEFT JOIN GROUP_USERS ON (GROUP_USERS.UID = USER.UID) ";
+            $user_count_sql.= "LEFT JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID ";
+            $user_count_sql.= "AND GROUP_PERMS.FORUM IN (0, $forum_fid) AND GROUP_PERMS.FID = '0') ";
+            $user_count_sql.= "WHERE GROUP_PERMS.PERM & $up_banned > 0";
+
+            $user_fetch_sql = "WHERE GROUP_PERMS.PERM & $up_banned > 0";
+
             break;
 
         default:
 
-            $having_sql = "";
+            $user_count_sql = "SELECT COUNT(UID) AS USER_COUNT FROM USER";
+
+            $user_fetch_sql = "";
+
+            break;
     }
 
-    $sql = "SELECT USER.UID, SESSIONS.HASH, ";
-    $sql.= "BIT_OR(GROUP_PERMS.PERM) AS USER_PERM FROM USER USER ";
-    $sql.= "LEFT JOIN SESSIONS ON (SESSIONS.UID = USER.UID) ";
-    $sql.= "LEFT JOIN GROUP_USERS ON (GROUP_USERS.UID = USER.UID) ";
-    $sql.= "LEFT JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID ";
-    $sql.= "AND GROUP_PERMS.FORUM IN (0, $forum_fid) AND GROUP_PERMS.FID = '0') ";
-    $sql.= "GROUP BY USER.UID $having_sql ";
-
-    if (!$result = db_query($sql, $db_user_get_all)) return false;
+    if (!$result = db_query($user_count_sql, $db_user_get_all)) return false;
     
-    $user_get_all_count = db_num_rows($result);
+    list($user_get_all_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, SESSIONS.HASH, ";
     $sql.= "SESSIONS.REFERER, UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, ";
-    $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
-    $sql.= "BIT_OR(GROUP_PERMS.PERM) AS USER_PERM FROM USER USER ";
+    $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM USER ";
     $sql.= "LEFT JOIN SESSIONS ON (SESSIONS.UID = USER.UID) ";
     $sql.= "LEFT JOIN GROUP_USERS ON (GROUP_USERS.UID = USER.UID) ";
     $sql.= "LEFT JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID ";
     $sql.= "AND GROUP_PERMS.FORUM IN (0, $forum_fid) AND GROUP_PERMS.FID = '0') ";
     $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID ";
-    $sql.= "AND VISITOR_LOG.FORUM IN (0, $forum_fid)) ";
-    $sql.= "GROUP BY USER.UID $having_sql ";
-    $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, 10 ";
+    $sql.= "AND VISITOR_LOG.FORUM IN (0, $forum_fid)) $user_fetch_sql ";
+    $sql.= "GROUP BY USER.UID ORDER BY $sort_by $sort_dir LIMIT $offset, 10 ";
 
     if (!$result = db_query($sql, $db_user_get_all)) return false;
 
@@ -585,7 +616,7 @@ function admin_user_get_all($sort_by = 'VISITOR_LOG.LAST_LOGON', $sort_dir = 'AS
 
     }else if ($user_get_all_count > 0) {
 
-        $offset = ($offset - 20) > 0 ? $offset - 20 : 0;        
+        $offset = floor(($user_get_all_count - 1) / 10) * 10;
         return admin_user_get_all($sort_by, $sort_dir, $filter, $offset);
     }
 
@@ -935,75 +966,6 @@ function admin_get_post_approval_queue($offset = 0)
 }
 
 /**
-* Fetch user approval queue.
-*
-* Fetches list of users awaiting approval from database.
-*
-* @return array
-* @param string $offset - Optional offset for results
-*/
-
-function admin_get_user_approval_queue($offset = 0)
-{
-    $db_admin_get_user_approval_queue = db_connect();
-
-    if (!is_numeric($offset)) $offset = 0;
-
-    if (!$table_data = get_table_prefix()) return false;
-
-    $forum_fid = $table_data['FID'];
-
-    if ($folder_list = bh_session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE)) {
-        $fidlist = implode(',', $folder_list);
-    }
-
-    $user_count = 0;
-    $user_approval_array = array();
-
-    $up_approved = USER_PERM_APPROVED;
-    $up_admin = USER_PERM_ADMIN_TOOLS;
-
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
-    $sql.= "BIT_OR(GROUP_PERMS.PERM) AS PERM ";
-    $sql.= "FROM USER LEFT JOIN GROUP_USERS ON (GROUP_USERS.UID = USER.UID) ";
-    $sql.= "LEFT JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID ";
-    $sql.= "AND GROUP_PERMS.FORUM = '$forum_fid' AND GROUP_PERMS.FID = '0') ";
-    $sql.= "GROUP BY USER.UID HAVING (PERM & $up_approved) = 0 ";
-    $sql.= "AND (PERM & $up_admin) = 0 ";
-
-    if (!$result = db_query($sql, $db_admin_get_user_approval_queue)) return false;
-    
-    $user_count = db_num_rows($result);
-
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
-    $sql.= "BIT_OR(GROUP_PERMS.PERM) AS PERM ";
-    $sql.= "FROM USER LEFT JOIN GROUP_USERS ON (GROUP_USERS.UID = USER.UID) ";
-    $sql.= "LEFT JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID ";
-    $sql.= "AND GROUP_PERMS.FORUM = '$forum_fid' AND GROUP_PERMS.FID = '0') ";
-    $sql.= "GROUP BY USER.UID HAVING (PERM & $up_approved) = 0 ";
-    $sql.= "AND (PERM & $up_admin) = 0 ";
-    $sql.= "LIMIT $offset, 10 ";
-
-    if (!$result = db_query($sql, $db_admin_get_user_approval_queue)) return false;
-
-    if (db_num_rows($result) > 0) {
-    
-        while ($user_array = db_fetch_array($result)) {
-
-            $user_approval_array[] = $user_array;
-        }
-
-    }else if ($user_count > 0) {
-
-        $offset = ($offset - 20) > 0 ? $offset - 20 : 0;        
-        return admin_get_user_approval_queue($offset);
-    }
-
-    return array('user_count' => $user_count,
-                 'user_array' => $user_approval_array);
-}
-
-/**
 * Fetch visitor log from database.
 *
 * Fetches an extended list of visitors from database including HTTP referer
@@ -1290,6 +1252,19 @@ function admin_clear_user_history($uid)
     if (!$result = db_query($sql, $db_admin_clear_user_history)) return false;
 
     return (db_affected_rows($db_admin_clear_user_history) > 0);
+}
+
+function admin_approve_user($uid)
+{
+    $db_admin_approve_user = db_connect();
+
+    if (!is_numeric($uid)) return false;
+
+    $sql = "UPDATE USER SET APPROVED = NOW() WHERE UID = '$uid'";
+
+    if (!$result = db_query($sql, $db_admin_approve_user)) return false;
+
+    return (db_affected_rows($db_admin_approve_user) > 0);
 }
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.56 2007-06-08 13:39:46 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.57 2007-06-28 22:46:19 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -238,9 +238,7 @@ function install_table_exists($table_name)
     
     if (!$result = db_query($sql, $db_install_table_exists)) return false;
 
-    $num_rows = db_num_rows($result);
-
-    return $num_rows > 0;
+    return (db_num_rows($result) > 0);
 }
 
 function install_get_table_conflicts($webtag = false, $forum_tables = false, $global_tables = false)

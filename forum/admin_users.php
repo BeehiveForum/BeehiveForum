@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.149 2007-06-21 20:09:32 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.150 2007-06-28 22:46:19 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -186,10 +186,10 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
                     $kick_user_success[] = "<a href=\"user_profile.php?webtag=$webtag&amp;uid=$user_uid\" target=\"_blank\" onclick=\"return openProfile($user_uid, '$webtag')\">$user_logon</a>";
                 }
+            }
 
-                if (sizeof($kick_user_success) > 0) {
-                    echo "<h2>{$lang['sessionsuccessfullyended']}: ", implode(", ", $kick_user_success), "</h2>\n";
-                }
+            if (sizeof($kick_user_success) > 0) {
+                echo "<h2>{$lang['sessionsuccessfullyended']}: ", implode(", ", $kick_user_success), "</h2>\n";
             }
         }
 
@@ -205,7 +205,7 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
                 foreach($approve_users as $user_uid) {
 
-                    if (perm_user_approve($user_uid)) {
+                    if (admin_approve_user($user_uid)) {
 
                         $user_logon = user_get_logon($user_uid);
                         admin_add_log_entry(APPROVED_USER, $user_logon);
@@ -384,7 +384,16 @@ if (sizeof($admin_user_array['user_array']) > 0) {
 }
 
 echo "      <td class=\"postbody\" align=\"center\">", page_links("admin_users.php?webtag=$webtag&sort_by=UID&sort_dir=DESC&usersearch=$usersearch&filter=$filter", $start, $admin_user_array['user_count'], 10), "</td>\n";
-echo "      <td align=\"right\" width=\"40%\" class=\"postbody\">{$lang['userfilter']}: ", form_dropdown_array("filter", array($lang['all'], $lang['onlineusers'], $lang['offlineusers'], $lang['usersawaitingapproval'], $lang['bannedusers']), $filter), "&nbsp;", form_submit("submit_filter", $lang['go']), "</td>\n";
+
+if (forum_get_setting('require_user_approval', 'Y')) {
+
+    echo "      <td align=\"right\" width=\"40%\" class=\"postbody\">{$lang['userfilter']}: ", form_dropdown_array("filter", array($lang['all'], $lang['onlineusers'], $lang['offlineusers'], $lang['bannedusers'], $lang['usersawaitingapproval']), $filter), "&nbsp;", form_submit("submit_filter", $lang['go']), "</td>\n";
+
+}else {
+
+    echo "      <td align=\"right\" width=\"40%\" class=\"postbody\">{$lang['userfilter']}: ", form_dropdown_array("filter", array($lang['all'], $lang['onlineusers'], $lang['offlineusers'], $lang['bannedusers']), $filter), "&nbsp;", form_submit("submit_filter", $lang['go']), "</td>\n";
+}
+
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.109 2007-05-26 15:04:33 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.110 2007-06-28 22:46:19 decoyduck Exp $ */
 
 /**
 * Functions relating to permissions
@@ -1263,44 +1263,6 @@ function perm_user_cancel_email_confirmation($uid)
         $sql = "UPDATE GROUP_PERMS SET PERM = '$perm' WHERE GID = '$gid'";
 
         if (!$result = db_query($sql, $db_perm_user_cancel_email_confirmation)) return false;
-    }
-
-    return true;
-}
-
-function perm_user_approve($uid)
-{
-    $db_perm_user_approve = db_connect();
-
-    if (!is_numeric($uid)) return false;
-
-    $perm = USER_PERM_APPROVED;
-
-    if ($gid = perm_get_global_user_gid($uid)) {
-
-        $sql = "UPDATE GROUP_PERMS SET PERM = PERM | $perm ";
-        $sql.= "WHERE GID = '$gid'";
-
-        if (!$result = db_query($sql, $db_perm_user_approve)) return false;
-
-    }else {
-
-        $sql = "INSERT INTO GROUPS (FORUM, AUTO_GROUP) VALUES (0, 1)";
-
-        if ($result = db_query($sql, $db_perm_user_approve)) {
-
-            $new_gid = db_insert_id($db_perm_user_approve);
-
-            $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, PERM, FID) ";
-            $sql.= "VALUES ('$new_gid', 0, '$perm', '0')";
-
-            if (!$result = db_query($sql, $db_perm_user_approve)) return false;
-
-            $sql = "INSERT INTO GROUP_USERS (GID, UID) ";
-            $sql.= "VALUES ('$new_gid', '$uid')";
-
-            if (!$result = db_query($sql, $db_perm_user_approve)) return false;
-        }
     }
 
     return true;

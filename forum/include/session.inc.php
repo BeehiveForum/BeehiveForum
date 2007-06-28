@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.308 2007-06-18 13:37:05 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.309 2007-06-28 22:46:19 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -109,12 +109,10 @@ function bh_session_check($show_session_fail = true, $use_sess_hash = false)
 
     if (isset($user_hash) && is_md5($user_hash)) {
 
-        $sql = "SELECT SESSIONS.HASH, SESSIONS.UID, SESSIONS.IPADDRESS, ";
-        $sql.= "UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, SESSIONS.FID, ";
-        $sql.= "SESSIONS.REFERER, USER.LOGON, USER.NICKNAME, USER.EMAIL, ";
-        $sql.= "USER.PASSWD FROM SESSIONS SESSIONS ";
-        $sql.= "LEFT JOIN USER ON (USER.UID = SESSIONS.UID) ";
-        $sql.= "WHERE SESSIONS.HASH = '$user_hash'";
+        $sql = "SELECT SESSIONS.HASH, SESSIONS.UID, SESSIONS.IPADDRESS, SESSIONS.FID, SESSIONS.REFERER, ";
+        $sql.= "UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, UNIX_TIMESTAMP(USER.APPROVED) AS APPROVED, ";
+        $sql.= "USER.LOGON, USER.NICKNAME, USER.EMAIL,USER.PASSWD FROM SESSIONS SESSIONS ";
+        $sql.= "LEFT JOIN USER ON (USER.UID = SESSIONS.UID) WHERE SESSIONS.HASH = '$user_hash'";
 
         if (!$result = db_query($sql, $db_bh_session_check)) return false;
 
@@ -1150,11 +1148,8 @@ function bh_session_user_approved()
 
     if (forum_get_setting('require_user_approval', 'Y')) {
 
-        if (bh_session_check_perm(USER_PERM_APPROVED, 0)) {
-            return true;
-        }
-
-        return false;
+        $user_approved = bh_session_get_value('APPROVED');
+        return $user_approved > 0;
     }
 
     return true;

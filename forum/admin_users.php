@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.150 2007-06-28 22:46:19 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.151 2007-06-29 17:53:26 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -385,7 +385,7 @@ if (sizeof($admin_user_array['user_array']) > 0) {
 
 echo "      <td class=\"postbody\" align=\"center\">", page_links("admin_users.php?webtag=$webtag&sort_by=UID&sort_dir=DESC&usersearch=$usersearch&filter=$filter", $start, $admin_user_array['user_count'], 10), "</td>\n";
 
-if (forum_get_setting('require_user_approval', 'Y')) {
+if (forum_get_setting('require_user_approval', 'Y') && (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0))) {
 
     echo "      <td align=\"right\" width=\"40%\" class=\"postbody\">{$lang['userfilter']}: ", form_dropdown_array("filter", array($lang['all'], $lang['onlineusers'], $lang['offlineusers'], $lang['bannedusers'], $lang['usersawaitingapproval']), $filter), "&nbsp;", form_submit("submit_filter", $lang['go']), "</td>\n";
 

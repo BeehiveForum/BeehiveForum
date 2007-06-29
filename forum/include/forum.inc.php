@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.242 2007-06-23 16:31:19 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.243 2007-06-29 17:53:26 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -708,8 +708,8 @@ function forum_create($webtag, $forum_name, $database_name, $access, &$error_str
     
     // Ensure the variables we've been given are valid
 
-    if (!preg_match("/^[A-Z0-9_]+$/", $webtag)) return false;
-    if (!preg_match("/^[A-Z0-9_]+$/i", $database_name)) return false;
+    if (!preg_match("/^[A-Z]{1}[A-Z0-9_]+$/", $webtag)) return false;
+    if (!preg_match("/^[A-Z]{1}[A-Z0-9_]+$/i", $database_name)) return false;
 
     if (!is_numeric($access)) $access = 0;
 

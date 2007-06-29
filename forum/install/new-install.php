@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.146 2007-06-02 11:39:24 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.147 2007-06-29 17:53:27 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
 
@@ -504,6 +504,9 @@ $sql = "CREATE TABLE {$forum_webtag}_USER_PREFS (";
 $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  HOMEPAGE_URL VARCHAR(255) NOT NULL DEFAULT '',";
 $sql.= "  PIC_URL VARCHAR(255) NOT NULL DEFAULT '',";
+$sql.= "  PIC_AID CHAR(32) NOT NULL DEFAULT '',";
+$sql.= "  AVATAR_URL VARCHAR(255) NOT NULL DEFAULT '',";
+$sql.= "  AVATAR_AID CHAR(32) NOT NULL DEFAULT '',";
 $sql.= "  EMAIL_NOTIFY CHAR(1) NOT NULL DEFAULT 'Y',";
 $sql.= "  MARK_AS_OF_INT CHAR(1) NOT NULL DEFAULT 'Y',";
 $sql.= "  POSTS_PER_PAGE VARCHAR(3) NOT NULL DEFAULT '20',";
@@ -851,6 +854,7 @@ $sql.= "  EMAIL VARCHAR(80) DEFAULT NULL,";
 $sql.= "  REGISTERED DATETIME DEFAULT NULL,";
 $sql.= "  IPADDRESS VARCHAR(15) DEFAULT NULL,";
 $sql.= "  REFERER VARCHAR(255) DEFAULT NULL,";
+$sql.= "  APPROVED DATETIME DEFAULT NULL,";
 $sql.= "  PRIMARY KEY  (UID), ";
 $sql.= "  KEY LOGON (LOGON),";
 $sql.= "  KEY NICKNAME (NICKNAME)";
@@ -900,6 +904,9 @@ $sql.= "  LASTNAME VARCHAR(32) NOT NULL DEFAULT '',";
 $sql.= "  DOB DATE NOT NULL DEFAULT '0000-00-00',";
 $sql.= "  HOMEPAGE_URL VARCHAR(255) NOT NULL DEFAULT '',";
 $sql.= "  PIC_URL VARCHAR(255) NOT NULL DEFAULT '',";
+$sql.= "  PIC_AID CHAR(32) NOT NULL DEFAULT '',";
+$sql.= "  AVATAR_URL VARCHAR(255) NOT NULL DEFAULT '',";
+$sql.= "  AVATAR_AID CHAR(32) NOT NULL DEFAULT '',";
 $sql.= "  EMAIL_NOTIFY CHAR(1) NOT NULL DEFAULT 'Y',";
 $sql.= "  TIMEZONE INT(11) NOT NULL DEFAULT '27',";
 $sql.= "  DL_SAVING CHAR(1) NOT NULL DEFAULT 'N',";

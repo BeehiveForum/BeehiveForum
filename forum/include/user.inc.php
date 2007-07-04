@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.328 2007-07-04 18:35:15 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.329 2007-07-04 20:54:02 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -815,27 +815,27 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
 
 function user_check_pref($name, $value)
 {
-        // Checks to ensure that a preference setting contains valid data
+    // Checks to ensure that a preference setting contains valid data
 
-        if (strlen(trim($value)) == 0) return true;
+    if (strlen(trim($value)) == 0) return true;
 
-        if ($name == "FIRSTNAME" || $name == "LASTNAME") {
-            return preg_match("/^[a-z0-9 ]*$/i", $value);
-        } elseif ($name == "STYLE" || $name == "EMOTICONS" || $name == "LANGUAGE") {
-            return preg_match("/^[a-z0-9_-]*$/i", $value);
-        } elseif ($name ==  "DOB") {
-            return preg_match("/^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$/", $value);
-        } elseif ($name == "HOMEPAGE_URL" || $name == "PIC_URL" || $name == "AVATAR_URL") {
-            return (preg_match("/^http:\/\/[_\.0-9a-z\-~]*/i", $value) || $value == "");
-        } elseif ($name == "EMAIL_NOTIFY" || $name == "DL_SAVING" || $name == "MARK_AS_OF_INT" || $name == "VIEW_SIGS" || $name == "PM_NOTIFY" || $name == "PM_NOTIFY_EMAIL" || $name == "PM_INCLUDE_REPLY" || $name == "PM_SAVE_SENT_ITEM" || $name == "PM_EXPORT_ATTACHMENTS" || $name == "PM_EXPORT_STYLE" || $name == "PM_EXPORT_WORDFILTER" || $name == "IMAGES_TO_LINKS" || $name == "SHOW_STATS" || $name == "USE_WORD_FILTER" || $name == "USE_ADMIN_FILTER" || $name == "ALLOW_EMAIL" || $name == "ALLOW_PM" || $name == "ENABLE_WIKI_WORDS" || $name == "USE_MOVER_SPOILER" || $name == "USE_OVERFLOW_RESIZE") {
-            return ($value == "Y" || $value == "N") ? true : false;
-        } elseif ($name == "PIC_AID" || $name == "AVATAR_AID") {
-            return (is_md5($value) || $value == "");
-        } elseif ($name == "ANON_LOGON" || $name == "TIMEZONE" || $name == "POSTS_PER_PAGE" || $name == "FONT_SIZE" || $name == "START_PAGE" || $name == "DOB_DISPLAY" || $name == "POST_PAGE" || $name == "SHOW_THUMBS" || $name == "PM_AUTO_PRUNE" || $name == "PM_EXPORT_FILE" || $name == "PM_EXPORT_TYPE") {
-            return is_numeric($value);
-        } else {
-            return false;
-        }
+    if ($name == "FIRSTNAME" || $name == "LASTNAME") {
+        return preg_match("/^[a-z0-9 ]*$/i", $value);
+    } elseif ($name == "STYLE" || $name == "EMOTICONS" || $name == "LANGUAGE") {
+        return preg_match("/^[a-z0-9_-]*$/i", $value);
+    } elseif ($name ==  "DOB") {
+        return preg_match("/^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$/", $value);
+    } elseif ($name == "HOMEPAGE_URL" || $name == "PIC_URL" || $name == "AVATAR_URL") {
+        return (preg_match("/^http:\/\/[_\.0-9a-z\-~]*/i", $value) || $value == "");
+    } elseif ($name == "EMAIL_NOTIFY" || $name == "DL_SAVING" || $name == "MARK_AS_OF_INT" || $name == "VIEW_SIGS" || $name == "PM_NOTIFY" || $name == "PM_NOTIFY_EMAIL" || $name == "PM_INCLUDE_REPLY" || $name == "PM_SAVE_SENT_ITEM" || $name == "PM_EXPORT_ATTACHMENTS" || $name == "PM_EXPORT_STYLE" || $name == "PM_EXPORT_WORDFILTER" || $name == "IMAGES_TO_LINKS" || $name == "SHOW_STATS" || $name == "USE_WORD_FILTER" || $name == "USE_ADMIN_FILTER" || $name == "ALLOW_EMAIL" || $name == "ALLOW_PM" || $name == "ENABLE_WIKI_WORDS" || $name == "USE_MOVER_SPOILER" || $name == "USE_OVERFLOW_RESIZE") {
+        return ($value == "Y" || $value == "N") ? true : false;
+    } elseif ($name == "PIC_AID" || $name == "AVATAR_AID") {
+        return (is_md5($value) || $value == "");
+    } elseif ($name == "ANON_LOGON" || $name == "TIMEZONE" || $name == "POSTS_PER_PAGE" || $name == "FONT_SIZE" || $name == "START_PAGE" || $name == "DOB_DISPLAY" || $name == "POST_PAGE" || $name == "SHOW_THUMBS" || $name == "PM_AUTO_PRUNE" || $name == "PM_EXPORT_FILE" || $name == "PM_EXPORT_TYPE") {
+        return is_numeric($value);
+    } else {
+        return false;
+    }
 }
 
 function user_update_sig($uid, $content, $html, $global_update = false)

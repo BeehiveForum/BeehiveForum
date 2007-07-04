@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.118 2007-06-23 16:31:19 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.119 2007-07-04 20:54:02 decoyduck Exp $ */
 
 /**
 * Displays and handles the Forum Settings page
@@ -889,7 +889,7 @@ echo "                        <td align=\"left\" width=\"220\">{$lang['allowgues
 echo "                        <td align=\"left\">", form_radio("guest_account_enabled", "Y", $lang['yes'], (isset($forum_settings['guest_account_enabled']) && $forum_settings['guest_account_enabled'] == "Y")), "&nbsp;", form_radio("guest_account_enabled", "N", $lang['no'], (isset($forum_settings['guest_account_enabled']) && $forum_settings['guest_account_enabled'] == "N") || !isset($forum_settings['guest_account_enabled'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"270\">{$lang['listguestsinvisitorlog']}:</td>\n";
+echo "                        <td align=\"left\" width=\"220\">{$lang['listguestsinvisitorlog']}:</td>\n";
 echo "                        <td align=\"left\">", form_radio("guest_show_recent", "Y", $lang['yes'], (isset($forum_settings['guest_show_recent']) && $forum_settings['guest_show_recent'] == 'Y') || !isset($forum_settings['guest_show_recent'])), "&nbsp;", form_radio("guest_show_recent", "N", $lang['no'], (isset($forum_settings['guest_show_recent']) && $forum_settings['guest_show_recent'] == 'N')), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.115 2007-05-31 21:59:14 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.116 2007-07-04 15:26:47 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -439,8 +439,8 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
                 if (sizeof($entry_array) > 0) {
 
-                    $forum_link = sprintf("<a href=\"admin_forum_links.php?webtag=$webtag&amp;lid=%s\" target=\"_blank\">%s</a>", $entry_array[0], $entry_array[1]);
-                    $action_text = sprintf($lang['editedforumlink'], $forum_link);
+                    $forum_link = sprintf("admin_forum_links.php?webtag=$webtag&amp;lid=%s", $entry_array[0]);
+                    $admin_link = sprintf("<a href=\"index.php?webtag=$webtag&final_uri=%s\" target=\"_blank\">%s</a>", rawurlencode($forum_link), $entry_array[1]);
 
                 }else {
 
@@ -451,8 +451,9 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
             case ADD_FORUM_LINKS:
 
-                $forum_link = sprintf("<a href=\"admin_forum_links.php?webtag=$webtag&amp;lid=%s\" target=\"_blank\">%s</a>", $entry_array[0], $entry_array[1]);
-                $action_text = sprintf($lang['addedforumlink'], $forum_link);
+                $forum_link = sprintf("admin_forum_links.php?webtag=$webtag&amp;lid=%s", $entry_array[0]);
+                $admin_link = sprintf("<a href=\"index.php?webtag=$webtag&final_uri=%s\" target=\"_blank\">%s</a>", rawurlencode($forum_link), $entry_array[1]);
+                $action_text = sprintf($lang['addedforumlink'], $admin_link);
                 break;
 
             case DELETE_FORUM_LINKS:
@@ -519,8 +520,9 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
                                              BAN_TYPE_EMAIL => $lang['emailban'],
                                              BAN_TYPE_REF   => $lang['refererban']);
 
-                $ban_link = sprintf("<a href=\"admin_banned.php?webtag=$webtag&amp;ban_id=%s\" target=\"_blank\">#%s</a>", $entry_array[0], $entry_array[0]);
-                $action_text = sprintf($lang['updatedban'], $ban_link, $admin_log_ban_types[$entry_array[1]], $admin_log_ban_types[$entry_array[3]], $entry_array[2], $entry_array[4]);
+                $ban_link = sprintf("admin_banned.php?webtag=$webtag&amp;ban_id=%s", $entry_array[0]);
+                $admin_link = sprintf("<a href=\"index.php?webtag=$webtag&final_uri=%s\" target=\"_blank\">%s</a>", rawurlencode($ban_link), $entry_array[4]);
+                $action_text = sprintf($lang['updatedban'], $admin_link, $admin_log_ban_types[$entry_array[3]], $admin_log_ban_types[$entry_array[1]], $entry_array[4], $entry_array[2]);
                 break;
 
             case THREAD_SPLIT:

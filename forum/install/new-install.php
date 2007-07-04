@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.147 2007-06-29 17:53:27 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.148 2007-07-04 15:26:47 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
 
@@ -1186,7 +1186,12 @@ foreach ($forum_settings as $sname => $svalue) {
     }
 }
 
-$global_settings = array('allow_search_spidering'     => 'Y',
+$global_settings = array('forum_keywords'             => 'A Beehive Forum, BeehiveForum, Project BeehiveForum',
+                         'forum_desc'                 => 'A Beehive Forum',
+                         'forum_email'                => 'admin@abeehiveforum.net',
+                         'forum_noreply_email'        => 'noreply@abeehiveforum.net',
+                         'forum_name'                 => 'A Beehive Forum',
+                         'allow_search_spidering'     => 'Y',
                          'pm_allow_attachments'       => 'Y',
                          'pm_auto_prune'              => '-60',
                          'pm_max_user_messages'       => '100',

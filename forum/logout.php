@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logout.php,v 1.92 2007-06-08 13:39:45 decoyduck Exp $ */
+/* $Id: logout.php,v 1.93 2007-07-04 16:30:37 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -87,6 +87,14 @@ if (user_is_guest()) {
     bh_session_remove_cookies();
     bh_setcookie("bh_logon", "1");
     header_redirect("./index.php?webtag=$webtag$final_uri");
+    exit;
+}
+
+// The logout link on nav.php needs to be redirected to index.php
+
+if (isset($_GET['check_cookie'])) {
+
+    header_redirect("index.php?webtag=$webtag&final_uri=logout.php%3Fwebtag%3D$webtag");
     exit;
 }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.207 2007-06-28 22:46:19 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.208 2007-07-04 18:35:14 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -285,14 +285,17 @@ if ($table_data = get_table_prefix()) {
 
     if (isset($_POST['t_confirm_delete_posts'])) {
 
-        if ($user_post_array = get_user_posts($uid)) {
-
-            foreach ($user_post_array as $user_post) {
-                post_delete($user_post['TID'], $user_post['PID']);
+        if ($user_logon = user_get_logon($uid)) {
+        
+            if ($user_post_array = get_user_posts($uid)) {
+    
+                foreach ($user_post_array as $user_post) {
+                    
+                    post_delete($user_post['TID'], $user_post['PID']);
+                }
+            
+                admin_add_log_entry(DELETE_ALL_USER_POSTS, $user_logon);
             }
-
-            $user_logon = user_get_logon($uid);
-            admin_add_log_entry(DELETE_ALL_USER_POSTS, $user_logon);
         }
     }
 }
@@ -547,19 +550,23 @@ if (isset($_POST['submit']) && (!isset($_POST['t_delete_posts']) || $_POST['t_de
 
         if ($t_reset_password === true && strlen($t_new_password) > 0) {
 
-            $fuid = bh_session_get_value('UID');
+            if ($user_logon = user_get_logon($uid)) {
+            
+                $fuid = bh_session_get_value('UID');
 
-            user_change_password($uid, $t_new_password);
+                user_change_password($uid, $t_new_password);
 
-            email_send_new_pw_notification($uid, $fuid, $t_new_password);
+                email_send_new_pw_notification($uid, $fuid, $t_new_password);
 
-            $user_logon = user_get_logon($uid);
-            admin_add_log_entry(CHANGE_USER_PASSWD, $user_logon);
+                admin_add_log_entry(CHANGE_USER_PASSWD, $user_logon);
+            }
 
         }else {
 
-            $user_logon = user_get_logon($uid);
-            admin_add_log_entry(CHANGE_USER_STATUS, $user_logon);
+            if ($user_logon = user_get_logon($uid)) {
+                
+                admin_add_log_entry(CHANGE_USER_STATUS, $user_logon);
+            }
         }
     }
 

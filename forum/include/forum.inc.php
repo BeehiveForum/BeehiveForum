@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.243 2007-06-29 17:53:26 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.244 2007-07-04 18:35:15 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -61,7 +61,7 @@ function get_forum_data()
         $webtag = trim(_stripslashes($_SERVER['argv'][1]));
     }
 
-    if (!is_array($forum_data) || !isset($forum_data['WEBTAG']) || !isset($forum_data['PREFIX'])) {
+    if (!is_array($forum_data) || !isset($forum_data['WEBTAG']) || !isset($forum_data['PREFIX']) || $uid != $forum_data['USER_UID']) {
 
         if (isset($webtag) && preg_match("/^[A-Z0-9_]+$/", $webtag) > 0) {
 
@@ -81,8 +81,10 @@ function get_forum_data()
 
                     $forum_data = db_fetch_array($result);
 
+                    $forum_data['USER_UID'] = $uid;
+                    
                     if (!isset($forum_data['ACCESS_LEVEL'])) $forum_data['ACCESS_LEVEL'] = 0;
-                    if (!isset($forum_data['ALLOWED'])) $forum_data['ALLOWED'] = 0;
+                    if (!isset($forum_data['ALLOWED'])) $forum_data['ALLOWED'] = 0;                    
 
                     return $forum_data;
                 }
@@ -105,6 +107,8 @@ function get_forum_data()
                 if (db_num_rows($result) > 0) {
 
                     $forum_data = db_fetch_array($result);
+
+                    $forum_data['USER_UID'] = $uid;
 
                     if (!isset($forum_data['ACCESS_LEVEL'])) $forum_data['ACCESS_LEVEL'] = 0;
                     if (!isset($forum_data['ALLOWED'])) $forum_data['ALLOWED'] = 0;
@@ -345,15 +349,8 @@ function forum_get_settings()
 
         $forum_settings_array = array('fid' => $forum_fid);
 
-        $sql = "SELECT WEBTAG, ACCESS_LEVEL FROM FORUMS WHERE FID = '$forum_fid'";
-
-        if (!$result = db_query($sql, $db_forum_get_settings)) return false;
-
-        list($webtag, $access_level) = db_fetch_array($result, DB_RESULT_NUM);
-
-        $forum_settings_array['webtag'] = $webtag;
-        $forum_settings_array['access_level'] = $access_level;
-
+        // Get the named settings from FORUM_SETTINGS table.
+        
         $sql = "SELECT SNAME, SVALUE FROM FORUM_SETTINGS WHERE FID = '$forum_fid'";
 
         if (!$result = db_query($sql, $db_forum_get_settings)) return false;
@@ -367,6 +364,8 @@ function forum_get_settings()
                 $forum_settings_array[$row['SNAME']] = $row['SVALUE'];
             }
         }
+
+        // Get the forum timezone, GMT offset and DST offset.
 
         $sql = "SELECT FORUM_SETTINGS.SVALUE, TIMEZONES.GMT_OFFSET, ";
         $sql.= "TIMEZONES.DST_OFFSET FROM FORUM_SETTINGS FORUM_SETTINGS ";
@@ -387,6 +386,17 @@ function forum_get_settings()
                 $forum_settings_array['forum_dst_offset'] = $row['DST_OFFSET'];
             }
         }
+
+        // Get the WEBTAG and ACCESS_LEVEL
+
+        $sql = "SELECT WEBTAG, ACCESS_LEVEL FROM FORUMS WHERE FID = '$forum_fid'";
+
+        if (!$result = db_query($sql, $db_forum_get_settings)) return false;
+
+        list($webtag, $access_level) = db_fetch_array($result, DB_RESULT_NUM);
+
+        $forum_settings_array['webtag'] = $webtag;
+        $forum_settings_array['access_level'] = $access_level;
     }
 
     return $forum_settings_array;
@@ -700,7 +710,7 @@ function forum_save_start_page($content)
     return false;
 }
 
-function forum_create($webtag, $forum_name, $database_name, $access, &$error_str)
+function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access, &$error_str)
 {
     // Load the language
 
@@ -711,6 +721,7 @@ function forum_create($webtag, $forum_name, $database_name, $access, &$error_str
     if (!preg_match("/^[A-Z]{1}[A-Z0-9_]+$/", $webtag)) return false;
     if (!preg_match("/^[A-Z]{1}[A-Z0-9_]+$/i", $database_name)) return false;
 
+    if (!is_numeric($owner_uid)) $owner_uid = 0;
     if (!is_numeric($access)) $access = 0;
 
     // Only users with acces to the forum tools can create / delete forums.
@@ -1462,8 +1473,8 @@ function forum_create($webtag, $forum_name, $database_name, $access, &$error_str
 
         // Save Webtag, Database name and Access Level.
 
-        $sql = "INSERT INTO FORUMS (WEBTAG, DATABASE_NAME, ACCESS_LEVEL) ";
-        $sql.= "VALUES ('$webtag', '$database_name', $access)";
+        $sql = "INSERT INTO FORUMS (WEBTAG, OWNER_UID, DATABASE_NAME, ACCESS_LEVEL) ";
+        $sql.= "VALUES ('$webtag', '$owner_uid', '$database_name', $access)";
 
         if (!$result = @db_query($sql, $db_forum_create)) {
 
@@ -1524,40 +1535,9 @@ function forum_create($webtag, $forum_name, $database_name, $access, &$error_str
             return false;
         }
 
-        // Create user permissions (current user)
+        // Create user permissions for forum leader
 
-        $sql = "INSERT INTO GROUPS (FORUM, GROUP_NAME, GROUP_DESC, AUTO_GROUP) ";
-        $sql.= "VALUES ('$forum_fid', NULL, NULL, 1);";
-
-        if (!$result = @db_query($sql, $db_forum_create)) {
-
-            forum_delete($forum_fid);
-            return false;
-        }
-
-        $new_gid = db_insert_id($db_forum_create);
-
-        $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) ";
-        $sql.= "VALUES ('$new_gid', '$forum_fid', 0, 1792);";
-
-        if (!$result = @db_query($sql, $db_forum_create)) {
-
-            forum_delete($forum_fid);
-            return false;
-        }
-
-        $sql = "INSERT INTO GROUP_USERS VALUES ($new_gid, $uid);";
-
-        if (!$result = @db_query($sql, $db_forum_create)) {
-
-            forum_delete($forum_fid);
-            return false;
-        }
-
-        $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) ";
-        $sql.= "VALUES ('$new_gid', '$forum_fid', 1, 6652);";
-
-        if (!$result = @db_query($sql, $db_forum_create)) {
+        if (!forum_apply_user_permissions($forum_fid, $owner_uid)) {
 
             forum_delete($forum_fid);
             return false;
@@ -1572,7 +1552,7 @@ function forum_create($webtag, $forum_name, $database_name, $access, &$error_str
         if (!$result = @db_query($sql, $db_forum_create)) {
 
             forum_delete($forum_fid);
-            return;
+            return false;
         }
 
         $sql = "INSERT INTO {$database_name}.{$webtag}_POST ";
@@ -1583,7 +1563,7 @@ function forum_create($webtag, $forum_name, $database_name, $access, &$error_str
         if (!$result = @db_query($sql, $db_forum_create)) {
 
             forum_delete($forum_fid);
-            return;
+            return false;;
         }
 
         $sql = "INSERT INTO {$database_name}.{$webtag}_POST_CONTENT (TID, PID, CONTENT) ";
@@ -1592,7 +1572,7 @@ function forum_create($webtag, $forum_name, $database_name, $access, &$error_str
         if (!$result = @db_query($sql, $db_forum_create)) {
 
             forum_delete($forum_fid);
-            return;
+            return false;;
         }
 
         // Create Top Level Links Folder
@@ -1664,9 +1644,10 @@ function forum_create($webtag, $forum_name, $database_name, $access, &$error_str
     return false;
 }
 
-function forum_update($fid, $forum_name, $access_level)
+function forum_update($fid, $forum_name, $owner_uid, $access_level)
 {
     if (!is_numeric($fid)) return false;
+    if (!is_numeric($owner_uid)) return false;
     if (!is_numeric($access_level)) return false;
     
     if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
@@ -1675,8 +1656,8 @@ function forum_update($fid, $forum_name, $access_level)
 
         $forum_name = db_escape_string($forum_name);
 
-        $sql = "UPDATE FORUMS SET ACCESS_LEVEL = '$access_level' ";
-        $sql.= "WHERE FID = '$fid'";
+        $sql = "UPDATE FORUMS SET ACCESS_LEVEL = '$access_level', ";
+        $sql.= "OWNER_UID = '$owner_uid' WHERE FID = '$fid'";
 
         if (!$result = db_query($sql, $db_forum_update)) return false;
 
@@ -1697,6 +1678,34 @@ function forum_update($fid, $forum_name, $access_level)
     }
 
     return false;
+}
+
+function forum_apply_user_permissions($forum_fid, $uid)
+{
+    $db_forum_apply_user_permissions = db_connect();
+
+    if (!is_numeric($forum_fid)) return false;
+    if (!is_numeric($uid)) return false;
+
+    $forum_user_perms = USER_PERM_ADMIN_TOOLS | USER_PERM_FOLDER_MODERATE;
+
+    $sql = "INSERT INTO GROUPS (FORUM, GROUP_NAME, GROUP_DESC, AUTO_GROUP) ";
+    $sql.= "VALUES ('$forum_fid', NULL, NULL, 1);";
+
+    if (!$result = db_query($sql, $db_forum_apply_user_permissions)) return false;
+
+    $new_gid = db_insert_id($db_forum_apply_user_permissions);
+
+    $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) ";
+    $sql.= "VALUES ('$new_gid', '$forum_fid', 0, '$forum_user_perms');";
+
+    if (!$result = db_query($sql, $db_forum_apply_user_permissions)) return false;
+
+    $sql = "INSERT INTO GROUP_USERS VALUES ($new_gid, $uid);";
+
+    if (!$result = db_query($sql, $db_forum_apply_user_permissions)) return false;
+
+    return true;
 }
 
 function forum_delete($fid)
@@ -1889,6 +1898,14 @@ function forum_get($fid)
 
             $forum_get_array = db_fetch_array($result);
             $forum_get_array['FORUM_SETTINGS'] = array();
+
+            if (isset($forum_get_array['OWNER_UID'])) {
+
+                if ($forum_leader = user_get_logon($forum_get_array['OWNER_UID'])) {
+
+                    $forum_get_array['FORUM_SETTINGS']['forum_leader'] = $forum_leader;
+                }
+            }
 
             $sql = "SELECT SNAME, SVALUE FROM FORUM_SETTINGS WHERE FID = '$fid'";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.327 2007-06-18 13:37:05 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.328 2007-07-04 18:35:15 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -279,31 +279,28 @@ function user_update_forums($uid, $forums_array)
     if (!is_numeric($uid)) return false;
     if (!is_array($forums_array)) return false;
 
-    foreach ($forums_array as $forum) {
+    foreach ($forums_array as $forum_fid => $allowed) {
 
-        if (isset($forum['fid']) && is_numeric($forum['fid'])) {
+        if (is_numeric($forum_fid) && is_numeric($allowed)) {
 
-            if (isset($forum['allowed']) && is_numeric($forum['allowed'])) {
+            $sql = "SELECT UID FROM USER_FORUM ";
+            $sql.= "WHERE UID = '$uid' AND FID = '$forum_fid'";
 
-                $sql = "SELECT UID FROM USER_FORUM ";
-                $sql.= "WHERE UID = '$uid' AND FID = '{$forum['fid']}'";
+            if (!$result = db_query($sql, $db_user_update_forums)) return false;
+
+            if (db_num_rows($result) > 0) {
+
+                $sql = "UPDATE USER_FORUM SET ALLOWED = '$allowed' ";
+                $sql.= "WHERE UID = '$uid' AND FID = '$forum_fid'";
 
                 if (!$result = db_query($sql, $db_user_update_forums)) return false;
 
-                if (db_num_rows($result) > 0) {
+            }else {
 
-                    $sql = "UPDATE USER_FORUM SET ALLOWED = '{$forum['allowed']}' ";
-                    $sql.= "WHERE UID = '$uid' AND FID = '{$forum['fid']}'";
+                $sql = "INSERT INTO USER_FORUM (UID, FID, ALLOWED) ";
+                $sql.= "VALUES ('$uid', '$forum_fid', '$allowed')";
 
-                    if (!$result = db_query($sql, $db_user_update_forums)) return false;
-
-                }else {
-
-                    $sql = "INSERT INTO USER_FORUM (UID, FID, ALLOWED) ";
-                    $sql.= "VALUES ('$uid', '{$forum['fid']}', '{$forum['allowed']}')";
-
-                    if (!$result = db_query($sql, $db_user_update_forums)) return false;
-                }
+                if (!$result = db_query($sql, $db_user_update_forums)) return false;
             }
         }
     }
@@ -425,12 +422,12 @@ function user_get_logon($uid)
         return $logon;
     }
 
-    return "Unknown";
+    return false;
 }
 
 function user_get_nickname($uid)
 {
-    $db_user_get_logon = db_connect();
+    $db_user_get_nickname = db_connect();
 
     if (!is_numeric($uid)) return false;
 
@@ -438,7 +435,7 @@ function user_get_nickname($uid)
 
     $sql = "SELECT NICKNAME FROM USER WHERE UID = '$uid'";
 
-    if (!$result = db_query($sql, $db_user_get_logon)) return false;
+    if (!$result = db_query($sql, $db_user_get_nickname)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -446,7 +443,7 @@ function user_get_nickname($uid)
         return $nickname;
     }
 
-    return "Unknown";
+    return false;
 }
 
 

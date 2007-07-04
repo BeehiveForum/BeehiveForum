@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06x-to-072.php,v 1.15 2007-06-28 22:46:19 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-072.php,v 1.16 2007-07-04 18:35:15 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-06x-to-072.php") {
 
@@ -710,10 +710,23 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
+
 // Set all the current forums to use the database name defined
 // in the config.inc.php / install form for this installation.
 
 $sql = "UPDATE FORUMS SET DATABASE_NAME = '$db_database'";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// You can also specify a user when creating a forum that is
+// automatically given admin access on that forum
+
+$sql = "ALTER TABLE FORUMS ADD OWNER_UID MEDIUMINT(8) UNSIGNED NOT NULL ";
+$sql.= "AFTER WEBTAG";
 
 if (!$result = @db_query($sql, $db_install)) {
 

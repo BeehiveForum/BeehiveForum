@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_access.php,v 1.54 2007-05-31 21:59:14 decoyduck Exp $ */
+/* $Id: admin_forum_access.php,v 1.55 2007-07-04 18:35:14 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -153,22 +153,22 @@ if (isset($_POST['clear'])) {
     $usersearch = '';
 }
 
-if (isset($_POST['add_recent_user'])) {
-
-    $uf[0]['fid'] = $fid;
-    $uf[0]['allowed'] = 1;
-
-    user_update_forums($_POST['t_to_uid'], $uf);
-
-}elseif (isset($_POST['add_searched_user'])) {
+if (isset($_POST['add_searched_user'])) {
 
     if (isset($_POST['user_add']) && is_array($_POST['user_add'])) {
 
-        for ($i = 0; $i < sizeof($_POST['user_add']); $i++) {
+        foreach ($_POST['user_add'] as $user_add_uid) {
+            
+            if ($user_logon = user_get_logon($user_add_uid)) {
+            
+                $user_update_array = array($fid => 1);
 
-            $uf[0]['fid'] = $fid;
-            $uf[0]['allowed'] = 1;
-            user_update_forums($_POST['user_add'][$i], $uf);
+                user_update_forums($user_add_uid, $user_update_array);
+
+                $forum_name = forum_get_name($fid);
+            
+                admin_add_log_entry(CHANGE_FORUM_ACCESS, array($forum_name, $user_logon));
+            }
         }
     }
 
@@ -176,17 +176,18 @@ if (isset($_POST['add_recent_user'])) {
 
     if (isset($_POST['user_remove']) && is_array($_POST['user_remove'])) {
 
-        for ($i = 0; $i < sizeof($_POST['user_remove']); $i++) {
+        foreach ($_POST['user_remove'] as $user_remove_uid) {
+           
+            if ($user_logon = user_get_logon($user_remove_uid)) {
+            
+                $user_update_array = array($fid => 0);
 
-            $uf[0]['fid'] = $fid;
-            $uf[0]['allowed'] = 0;
+                user_update_forums($user_remove_uid, $user_update_array);
 
-            user_update_forums($_POST['user_remove'][$i], $uf);
-
-            $forum_name = forum_get_name($fid);
-            $user_logon = user_get_logon($_POST['user_remove'][$i]);
-
-            admin_add_log_entry(CHANGE_FORUM_ACCESS, array($forum_name, $user_logon));
+                $forum_name = forum_get_name($fid);
+            
+                admin_add_log_entry(CHANGE_FORUM_ACCESS, array($forum_name, $user_logon));
+            }
         }
     }
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.244 2007-07-04 18:35:15 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.245 2007-07-04 20:54:02 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -61,7 +61,7 @@ function get_forum_data()
         $webtag = trim(_stripslashes($_SERVER['argv'][1]));
     }
 
-    if (!is_array($forum_data) || !isset($forum_data['WEBTAG']) || !isset($forum_data['PREFIX']) || $uid != $forum_data['USER_UID']) {
+    if (!is_array($forum_data) || !isset($forum_data['WEBTAG']) || !isset($forum_data['PREFIX'])) {
 
         if (isset($webtag) && preg_match("/^[A-Z0-9_]+$/", $webtag) > 0) {
 
@@ -81,8 +81,6 @@ function get_forum_data()
 
                     $forum_data = db_fetch_array($result);
 
-                    $forum_data['USER_UID'] = $uid;
-                    
                     if (!isset($forum_data['ACCESS_LEVEL'])) $forum_data['ACCESS_LEVEL'] = 0;
                     if (!isset($forum_data['ALLOWED'])) $forum_data['ALLOWED'] = 0;                    
 
@@ -107,8 +105,6 @@ function get_forum_data()
                 if (db_num_rows($result) > 0) {
 
                     $forum_data = db_fetch_array($result);
-
-                    $forum_data['USER_UID'] = $uid;
 
                     if (!isset($forum_data['ACCESS_LEVEL'])) $forum_data['ACCESS_LEVEL'] = 0;
                     if (!isset($forum_data['ALLOWED'])) $forum_data['ALLOWED'] = 0;
@@ -148,32 +144,47 @@ function get_table_prefix()
 
 function forum_check_access_level()
 {
-    $db_forum_check_access_level = db_connect();
+    static $forum_data = false;
     
+    $db_forum_check_access_level = db_connect();
+
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    if ($forum_data = get_forum_data()) {
+    if (!$table_data = get_table_prefix()) return true;
 
-        if (isset($forum_data['ACCESS_LEVEL'])) {
+    $forum_fid = $table_data['FID'];
 
-            if ($forum_data['ACCESS_LEVEL'] < FORUM_UNRESTRICTED) {
+    if (!is_array($forum_data) || !isset($forum_data['ACCESS_LEVEL']) || !isset($forum_data['ALLOWED'])) {
+    
+        $sql = "SELECT FORUMS.ACCESS_LEVEL, USER_FORUM.ALLOWED FROM FORUMS ";
+        $sql.= "LEFT JOIN USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
+        $sql.= "AND USER_FORUM.UID = '$uid') WHERE FORUMS.FID = '$forum_fid'";
 
-                return forum_closed_message();
+        if (!$result = db_query($sql, $db_forum_check_access_level)) return false;
 
-            }elseif ($forum_data['ACCESS_LEVEL'] == FORUM_RESTRICTED && $forum_data['ALLOWED'] <> FORUM_USER_ALLOWED) {
+        if (db_num_rows($result) > 0) {
 
-                return forum_restricted_message();
-
-            }elseif ($forum_data['ACCESS_LEVEL'] == FORUM_PASSWD_PROTECTED && !bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0, 0)) {
-
-                return forum_check_password($forum_data['FID']);
-            }
+            $forum_data = db_fetch_array($result);
         }
-
-        return true;
     }
 
-    return false;
+    if (isset($forum_data['ACCESS_LEVEL'])) {
+
+        if ($forum_data['ACCESS_LEVEL'] < FORUM_UNRESTRICTED) {
+
+            return forum_closed_message();
+
+        }elseif ($forum_data['ACCESS_LEVEL'] == FORUM_RESTRICTED && $forum_data['ALLOWED'] <> FORUM_USER_ALLOWED) {
+
+            return forum_restricted_message();
+
+        }elseif ($forum_data['ACCESS_LEVEL'] == FORUM_PASSWD_PROTECTED && !bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0, 0)) {
+
+            return forum_check_password($forum_data['FID']);
+        }
+    }
+
+    return true;
 }
 
 function forum_closed_message()
@@ -509,27 +520,30 @@ function forum_save_settings($forum_settings_array)
 
     foreach ($forum_settings_array as $sname => $svalue) {
 
-        $sname  = db_escape_string($sname);
-        $svalue = db_escape_string($svalue);
+        if (forum_check_setting_name($sname)) {
+        
+            $sname  = db_escape_string($sname);
+            $svalue = db_escape_string($svalue);
 
-        $sql = "SELECT SVALUE FROM FORUM_SETTINGS WHERE FID = '$forum_fid' ";
-        $sql.= "AND SNAME = '$sname'";
-
-        if (!$result = db_query($sql, $db_forum_save_settings)) return false;
-
-        if (db_num_rows($result) > 0) {
-
-            $sql = "UPDATE FORUM_SETTINGS SET SVALUE = '$svalue' WHERE FID = '$forum_fid' ";
+            $sql = "SELECT SVALUE FROM FORUM_SETTINGS WHERE FID = '$forum_fid' ";
             $sql.= "AND SNAME = '$sname'";
 
             if (!$result = db_query($sql, $db_forum_save_settings)) return false;
 
-        }else {
+            if (db_num_rows($result) > 0) {
 
-            $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
-            $sql.= "VALUES ($forum_fid, '$sname', '$svalue')";
+                $sql = "UPDATE FORUM_SETTINGS SET SVALUE = '$svalue' WHERE FID = '$forum_fid' ";
+                $sql.= "AND SNAME = '$sname'";
 
-            if (!$result = db_query($sql, $db_forum_save_settings)) return false;
+                if (!$result = db_query($sql, $db_forum_save_settings)) return false;
+
+            }else {
+
+                $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
+                $sql.= "VALUES ($forum_fid, '$sname', '$svalue')";
+
+                if (!$result = db_query($sql, $db_forum_save_settings)) return false;
+            }
         }
     }
 
@@ -548,14 +562,51 @@ function forum_save_default_settings($forum_settings_array)
 
     foreach ($forum_settings_array as $sname => $svalue) {
 
-        $sname = db_escape_string($sname);
-        $svalue = db_escape_string($svalue);
+        if (forum_check_global_setting_name($sname)) {
+        
+            $sname = db_escape_string($sname);
+            $svalue = db_escape_string($svalue);
 
-        $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
-        $sql.= "VALUES ('0', '$sname', '$svalue')";
+            $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
+            $sql.= "VALUES ('0', '$sname', '$svalue')";
 
-        if (!$result = db_query($sql, $db_forum_save_default_settings)) return false;
+            if (!$result = db_query($sql, $db_forum_save_default_settings)) return false;
+        }
     }
+}
+
+function forum_check_setting_name($setting_name)
+{
+    $valid_forum_settings = array('allow_polls', 'allow_post_editing', 'allow_search_spidering', 
+                                  'closed_message', 'default_emoticons', 'default_language', 
+                                  'default_style', 'enable_wiki_integration', 'enable_wiki_quick_links', 
+                                  'forum_desc', 'forum_dl_saving', 'forum_email', 
+                                  'forum_keywords', 'forum_name', 'forum_timezone', 
+                                  'guest_account_enabled', 'guest_show_recent', 'maximum_post_length', 
+                                  'minimum_post_frequency', 'password_protected_message', 'poll_allow_guests', 
+                                  'post_edit_grace_period', 'post_edit_time', 'require_post_approval', 
+                                  'restricted_message', 'show_links', 'show_stats', 
+                                  'wiki_integration_uri');
+
+    return in_array($setting_name, $valid_forum_settings);
+}
+
+function forum_check_global_setting_name($setting_name)
+{
+    $valid_global_forum_settings = array('active_sess_cutoff', 'allow_new_registrations', 'allow_search_spidering', 
+                                         'allow_username_changes', 'attachments_allow_embed', 'attachments_enabled', 
+                                         'attachments_max_user_space', 'attachment_allow_guests', 'attachment_dir', 
+                                         'attachment_use_old_method', 'forum_desc', 'forum_email', 
+                                         'forum_keywords', 'forum_name', 'forum_noreply_email', 
+                                         'forum_rules_enabled', 'forum_rules_message', 'guest_account_enabled', 
+                                         'guest_show_recent', 'messages_unread_cutoff', 'new_user_email_notify', 
+                                         'new_user_mark_as_of_int', 'new_user_pm_notify_email', 'pm_allow_attachments', 
+                                         'pm_auto_prune', 'pm_max_user_messages', 'require_email_confirmation', 
+                                         'require_unique_email', 'require_user_approval', 'search_min_frequency', 
+                                         'session_cutoff', 'showpopuponnewpm', 'show_pms', 
+                                         'text_captcha_dir', 'text_captcha_enabled', 'text_captcha_key');
+
+    return in_array($setting_name, $valid_global_forum_settings);
 }
 
 function forum_get_name($fid)

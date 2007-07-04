@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.123 2007-06-28 22:46:19 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.124 2007-07-04 15:26:47 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -1114,10 +1114,9 @@ function admin_get_user_aliases($uid)
 
     // Fetch the user's last 10 IP addresses from the POST table
 
-    $sql = "SELECT IPADDRESS FROM {$table_data['PREFIX']}POST ";
+    $sql = "SELECT DISTINCT IPADDRESS FROM {$table_data['PREFIX']}POST ";
     $sql.= "WHERE FROM_UID = '$uid' AND IPADDRESS IS NOT NULL ";
-    $sql.= "AND LENGTH(IPADDRESS) > 0 GROUP BY IPADDRESS ";
-    $sql.= "LIMIT 0, 10";
+    $sql.= "AND LENGTH(IPADDRESS) > 0 LIMIT 0, 10";
 
     if (!$result = db_query($sql, $db_user_get_aliases)) return false;
 
@@ -1142,14 +1141,14 @@ function admin_get_user_aliases($uid)
 
     if (strlen($user_ip_address_list) > 0) {
 
-        $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
-        $sql.= "POST.IPADDRESS FROM {$table_data['PREFIX']}POST POST ";
+        $sql = "SELECT DISTINCT USER.UID, USER.LOGON, USER.NICKNAME, ";
+        $sql.= "USER_PEER.PEER_NICKNAME, POST.IPADDRESS ";
+        $sql.= "FROM {$table_data['PREFIX']}POST POST ";
         $sql.= "LEFT JOIN USER USER ON (POST.FROM_UID = USER.UID) ";
         $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
         $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$sess_uid') ";
         $sql.= "WHERE (POST.IPADDRESS = '$user_ip_address_list') ";
-        $sql.= "AND POST.FROM_UID <> $uid GROUP BY USER.UID ";
-        $sql.= "LIMIT 0, 10";
+        $sql.= "AND POST.FROM_UID <> $uid LIMIT 0, 10";
 
         if (!$result = db_query($sql, $db_user_get_aliases)) return false;
 

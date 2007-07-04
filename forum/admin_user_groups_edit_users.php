@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit_users.php,v 1.47 2007-05-31 21:59:14 decoyduck Exp $ */
+/* $Id: admin_user_groups_edit_users.php,v 1.48 2007-07-04 18:35:15 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -164,14 +164,16 @@ if (isset($_POST['add'])) {
 
         foreach($_POST['add_user'] as $uid) {
 
-            if (!perm_user_in_group($uid, $gid)) {
+            if ($user_logon = user_get_logon($uid)) {
+                
+                if (!perm_user_in_group($uid, $gid)) {
+                
+                    perm_add_user_to_group($uid, $gid);
 
-                perm_add_user_to_group($uid, $gid);
+                    $group_name = perm_get_group_name($gid);
 
-                $group_name = perm_get_group_name($gid);
-                $user_logon = user_get_logon($uid);
-
-                admin_add_log_entry(ADD_USER_TO_GROUP, array($user_logon, $group_name));
+                    admin_add_log_entry(ADD_USER_TO_GROUP, array($user_logon, $group_name));
+                }
             }
         }
     }
@@ -183,14 +185,16 @@ if (isset($_POST['remove'])) {
 
         foreach($_POST['remove_user'] as $uid) {
 
-            if (perm_user_in_group($uid, $gid)) {
+            if ($user_logon = user_get_logon($uid)) {
 
-                perm_remove_user_from_group($uid, $gid);
+                if (perm_user_in_group($uid, $gid)) {
+                
+                    perm_remove_user_from_group($uid, $gid);
 
-                $group_name = perm_get_group_name($gid);
-                $user_logon = user_get_logon($uid);
+                    $group_name = perm_get_group_name($gid);                
 
-                admin_add_log_entry(REMOVE_USER_FROM_GROUP, array($user_logon, $group_name));
+                    admin_add_log_entry(REMOVE_USER_FROM_GROUP, array($user_logon, $group_name));
+                }
             }
         }
     }

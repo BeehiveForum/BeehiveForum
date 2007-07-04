@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.151 2007-06-29 17:53:26 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.152 2007-07-04 18:35:15 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -179,12 +179,13 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
             
             foreach($kick_users as $user_uid) {
 
-                if (admin_session_end($user_uid)) {
+                if ($user_logon = user_get_logon($user_uid)) {
 
-                    $user_logon = user_get_logon($user_uid);
-                    admin_add_log_entry(END_USER_SESSION, $user_logon);
-
-                    $kick_user_success[] = "<a href=\"user_profile.php?webtag=$webtag&amp;uid=$user_uid\" target=\"_blank\" onclick=\"return openProfile($user_uid, '$webtag')\">$user_logon</a>";
+                    if (admin_session_end($user_uid)) {
+                    
+                        admin_add_log_entry(END_USER_SESSION, $user_logon);
+                        $kick_user_success[] = "<a href=\"user_profile.php?webtag=$webtag&amp;uid=$user_uid\" target=\"_blank\" onclick=\"return openProfile($user_uid, '$webtag')\">$user_logon</a>";
+                    }
                 }
             }
 
@@ -205,12 +206,13 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
                 foreach($approve_users as $user_uid) {
 
-                    if (admin_approve_user($user_uid)) {
+                    if ($user_logon = user_get_logon($user_uid)) {
 
-                        $user_logon = user_get_logon($user_uid);
-                        admin_add_log_entry(APPROVED_USER, $user_logon);
-
-                        $approved_user_success[] = "<a href=\"user_profile.php?webtag=$webtag&amp;uid=$user_uid\" target=\"_blank\" onclick=\"return openProfile($user_uid, '$webtag')\">$user_logon</a>";
+                        if (admin_approve_user($user_uid)) {
+    
+                            admin_add_log_entry(APPROVED_USER, $user_logon);
+                            $approved_user_success[] = "<a href=\"user_profile.php?webtag=$webtag&amp;uid=$user_uid\" target=\"_blank\" onclick=\"return openProfile($user_uid, '$webtag')\">$user_logon</a>";
+                        }
                     }
                 }
 

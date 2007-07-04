@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.87 2007-06-10 12:28:44 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.88 2007-07-04 18:35:15 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -375,13 +375,14 @@ if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
 
         if ($del_uid = $_POST['t_to_uid_in_thread']) {
 
-            $user_logon = user_get_logon($del_uid['UID']);
+            if ($user_logon = user_get_logon($del_uid['UID'])) {
 
-            thread_delete_by_user($tid, $del_uid['UID']);
+                thread_delete_by_user($tid, $del_uid['UID']);
 
-            admin_add_log_entry(DELETE_USER_THREAD_POSTS, array($tid, $threaddata['TITLE'], $user_logon));
+                admin_add_log_entry(DELETE_USER_THREAD_POSTS, array($tid, $threaddata['TITLE'], $user_logon));
 
-            $update = true;
+                $update = true;
+            }
         }
     }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.459 2007-06-25 20:21:40 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.460 2007-07-04 18:35:15 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -904,11 +904,12 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
             if (($post_edit_grace_period == 0) || ($message['EDITED'] - $message['CREATED']) > ($post_edit_grace_period * MINUTE_IN_SECONDS)) {
 
-                $edit_user = user_get_logon($message['EDITED_BY']);
+                if ($edit_user = user_get_logon($message['EDITED_BY'])) {
                 
-                echo "              <tr>\n";
-                echo "                <td class=\"postbody\" align=\"left\"><p class=\"edit_text\">", sprintf($lang['editedbyuser'], format_time($message['EDITED'], 1), $edit_user), "</p></td>\n";
-                echo "              </tr>\n";
+                    echo "              <tr>\n";
+                    echo "                <td class=\"postbody\" align=\"left\"><p class=\"edit_text\">", sprintf($lang['editedbyuser'], format_time($message['EDITED'], 1), $edit_user), "</p></td>\n";
+                    echo "              </tr>\n";
+                }
             }
         }
 
@@ -916,11 +917,12 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
             if (isset($message['APPROVED_BY']) && $message['APPROVED_BY'] > 0 && $message['APPROVED_BY'] != $message['FROM_UID']) {
 
-                $approved_user = user_get_logon($message['APPROVED_BY']);
+                if ($approved_user = user_get_logon($message['APPROVED_BY'])) {
                 
-                echo "              <tr>\n";
-                echo "                <td class=\"postbody\" align=\"left\"><p class=\"approved_text\">", sprintf($lang['approvedbyuser'], format_time($message['APPROVED'], 1), $approved_user), "</p></td>\n";
-                echo "              </tr>\n";
+                    echo "              <tr>\n";
+                    echo "                <td class=\"postbody\" align=\"left\"><p class=\"approved_text\">", sprintf($lang['approvedbyuser'], format_time($message['APPROVED'], 1), $approved_user), "</p></td>\n";
+                    echo "              </tr>\n";
+                }
             }
         }
 
@@ -1100,8 +1102,19 @@ function message_display_deleted($tid, $pid, $message)
     echo "              <tr>\n";
 
     if (isset($message['EDITED']) && $message['EDITED'] > 0) {
-        echo "                <td align=\"left\">", sprintf($lang['messagedeletedbyuser'], $tid, $pid, format_time($message['EDITED'], 1), user_get_logon($message['EDITED_BY'])), "</td>\n";
+
+        if ($edit_user = user_get_logon($message['EDITED_BY'])) {
+
+            $message_delete_time = format_time($message['EDITED'], 1);
+            echo "                <td align=\"left\">", sprintf($lang['messagedeletedbyuser'], $tid, $pid, $message_delete_time, $edit_user), "</td>\n";
+
+        }else {
+
+            echo "                <td align=\"left\">", sprintf($lang['messagedeleted'], $tid, $pid), "</td>\n";
+        }
+
     }else {
+
         echo "                <td align=\"left\">", sprintf($lang['messagedeleted'], $tid, $pid), "</td>\n";
     }
 

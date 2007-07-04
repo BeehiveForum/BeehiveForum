@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forums.php,v 1.72 2007-06-29 17:53:26 decoyduck Exp $ */
+/* $Id: admin_forums.php,v 1.73 2007-07-04 18:35:14 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -245,6 +245,26 @@ if (isset($_POST['delete'])) {
         $valid = false;
     }
 
+    if (isset($_POST['t_owner']) && strlen(trim(_stripslashes($_POST['t_owner']))) > 0) {
+        
+        $t_owner = trim(_stripslashes($_POST['t_owner']));
+
+        if ($t_user_array = user_get_uid($t_owner)) {
+
+            $t_owner_uid = $t_user_array['UID'];
+
+        }else {
+
+            $valid = false;
+            $error_html.= "<h2>{$lang['unknownuser']}</h2>\n";
+        }
+
+    }else {
+
+        $t_owner = "";
+        $t_owner_uid = 0;
+    }
+
     if (isset($_POST['t_database']) && strlen(trim(_stripslashes($_POST['t_database']))) > 0) {
         
         $t_database = $_POST['t_database'];
@@ -276,7 +296,7 @@ if (isset($_POST['delete'])) {
 
     if ($valid) {
 
-        if ($new_fid = forum_create($t_webtag, $t_name, $t_database, $t_access, $error_str)) {
+        if ($new_fid = forum_create($t_webtag, $t_name, $t_owner_uid, $t_database, $t_access, $error_str)) {
 
             if ($t_default == 1) forum_update_default($new_fid);
             $add_success.= sprintf("<h2>{$lang['successfullycreatedforum']}</h2>", $t_webtag);
@@ -311,6 +331,26 @@ if (isset($_POST['delete'])) {
             $valid = false;
         }
 
+        if (isset($_POST['t_owner']) && strlen(trim(_stripslashes($_POST['t_owner']))) > 0) {
+
+            $t_owner = trim(_stripslashes($_POST['t_owner']));
+
+            if ($t_user_array = user_get_uid($t_owner)) {
+
+                $t_owner_uid = $t_user_array['UID'];
+
+            }else {
+
+                $valid = false;
+                $error_html.= "<h2>{$lang['unknownuser']}</h2>\n";
+            }
+
+        }else {
+
+            $t_owner = "";
+            $t_owner_uid = 0;
+        }
+
         if (isset($_POST['t_access']) && is_numeric($_POST['t_access'])) {
             $t_access = $_POST['t_access'];
         }else {
@@ -326,7 +366,7 @@ if (isset($_POST['delete'])) {
 
         if ($valid) {
 
-            if (forum_update($fid, $t_name, $t_access)) {
+            if (forum_update($fid, $t_name, $t_owner_uid, $t_access)) {
 
                 if ($forum_data['DEFAULT_FORUM'] == 1 && $t_default == 0) {
                     forum_update_default(0);
@@ -387,7 +427,7 @@ if (isset($_POST['delete'])) {
 
 if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
 
-    html_draw_top();
+    html_draw_top('admin.js');
     
     echo "<h1>{$lang['admin']} &raquo; {$lang['manageforums']} &raquo; {$lang['addforum']}</h1>\n";
 
@@ -416,11 +456,19 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">{$lang['forumwebtag']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("t_webtag", (isset($_POST['t_webtag']) ? _htmlentities(_stripslashes($_POST['t_webtag'])) : ""), 25, 15), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("t_webtag", (isset($_POST['t_webtag']) ? _htmlentities(_stripslashes($_POST['t_webtag'])) : ""), 30, 15), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">{$lang['forumname']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("t_name", (isset($_POST['t_name']) ? _htmlentities(_stripslashes($_POST['t_name'])) : ""), 35, 255), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("t_name", (isset($_POST['t_name']) ? _htmlentities(_stripslashes($_POST['t_name'])) : ""), 30, 255), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">{$lang['forumleader']}:</td>\n";
+    echo "                        <td align=\"left\"><div class=\"bhinputsearch\">", form_input_text("t_owner", (isset($_POST['t_owner']) ? _htmlentities(_stripslashes($_POST['t_owner'])) : ""), 27, 15, "", "search_logon"), "<a href=\"search_popup.php?webtag=$webtag&amp;type=1&amp;obj_name=t_owner\" onclick=\"return openLogonSearch('$webtag', 't_owner');\"><img src=\"", style_image('search_button.png'), "\" alt=\"{$lang['search']}\" title=\"{$lang['search']}\" border=\"0\" class=\"search_button\" /></a></div>&nbsp;</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">{$lang['accesslevel']}:</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("t_access", array('' => '&nbsp;', FORUM_CLOSED => $lang['closed'], FORUM_UNRESTRICTED => $lang['open'], FORUM_RESTRICTED => $lang['restricted'], FORUM_PASSWD_PROTECTED => $lang['passwordprotected']), (isset($_POST['t_access']) && is_numeric($_POST['t_access'])) ? $_POST['t_access'] : ''), "</td>\n";
     echo "                      </tr>\n";
 
     if ($available_databases = forums_get_available_dbs()) {
@@ -429,14 +477,10 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
         
         echo "                      <tr>\n";
         echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">{$lang['usedatabase']}:</td>\n";
-        echo "                        <td align=\"left\">", form_dropdown_array("t_database", $available_databases, (isset($_POST['t_database']) ? _stripslashes($_POST['t_database']) : (isset($forum_data['DATABASE_NAME']) ? $forum_data['DATABASE_NAME'] : ""))), form_input_hidden("t_database_old", (isset($forum_data['DATABASE_NAME']) ? _htmlentities($forum_data['DATABASE_NAME']) : "")), "</td>\n";
+        echo "                        <td align=\"left\">", form_dropdown_array("t_database", $available_databases, (isset($_POST['t_database']) ? _stripslashes($_POST['t_database']) : "")), "</td>\n";
         echo "                      </tr>\n";
     }
 
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">{$lang['accesslevel']}:</td>\n";
-    echo "                        <td align=\"left\">", form_dropdown_array("t_access", array('' => '&nbsp;', FORUM_CLOSED => $lang['closed'], FORUM_UNRESTRICTED => $lang['open'], FORUM_RESTRICTED => $lang['restricted'], FORUM_PASSWD_PROTECTED => $lang['passwordprotected']), (isset($_POST['t_access']) && is_numeric($_POST['t_access'])) ? $_POST['t_access'] : ''), "</td>\n";
-    echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">{$lang['defaultforum']}:</td>\n";
     echo "                        <td align=\"left\">", form_radio("t_default", 'Y', $lang['yes'], false), "&nbsp;", "</td>\n";
@@ -522,7 +566,7 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
         exit;
     }
 
-    html_draw_top();
+    html_draw_top('admin.js');
     
     echo "<h1>{$lang['admin']} &raquo; {$lang['manageforums']} &raquo; {$lang['editforum']} &raquo; {$forum_data['WEBTAG']}</h1>\n";
 
@@ -553,6 +597,10 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">{$lang['forumname']}:</td>\n";
     echo "                        <td align=\"left\">", form_input_text("t_name", (isset($_POST['t_name']) ? _htmlentities(_stripslashes($_POST['t_name'])) : (isset($forum_data['FORUM_SETTINGS']['forum_name']) ? _htmlentities($forum_data['FORUM_SETTINGS']['forum_name']) : "")), 35, 255), form_input_hidden("t_name_old", (isset($forum_data['FORUM_SETTINGS']['forum_name']) ? _htmlentities($forum_data['FORUM_SETTINGS']['forum_name']) : "")), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">{$lang['forumleader']}:</td>\n";
+    echo "                        <td align=\"left\"><div class=\"bhinputsearch\">", form_input_text("t_owner", (isset($_POST['t_owner']) ? _htmlentities(_stripslashes($_POST['t_owner'])) : (isset($forum_data['FORUM_SETTINGS']['forum_leader']) ? _htmlentities($forum_data['FORUM_SETTINGS']['forum_leader']) : "")), 32, 15, "", "search_logon"), "<a href=\"search_popup.php?webtag=$webtag&amp;type=1&amp;obj_name=t_owner\" onclick=\"return openLogonSearch('$webtag', 't_owner');\"><img src=\"", style_image('search_button.png'), "\" alt=\"{$lang['search']}\" title=\"{$lang['search']}\" border=\"0\" class=\"search_button\" /></a></div>", form_input_hidden("t_owner_old", (isset($forum_data['FORUM_SETTINGS']['forum_leader']) ? _htmlentities($forum_data['FORUM_SETTINGS']['forum_leader']) : "")), "</td>\n";
     echo "                      </tr>\n";
 
     if ($forum_data['ACCESS_LEVEL'] == FORUM_RESTRICTED) {

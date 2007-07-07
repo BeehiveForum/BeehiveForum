@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_main.php,v 1.23 2007-05-25 23:45:00 decoyduck Exp $ */
+/* $Id: start_main.php,v 1.24 2007-07-07 18:34:21 boughtonp Exp $ */
 
 // An example of what can be done with start_main.php
 // As used on: http://www.tehforum.net/forum/
@@ -207,7 +207,7 @@ if ((isset($_GET['upload'])) && (bh_session_get_value('UID') > 0)) {
 }elseif (isset($HTTP_GET_VARS['gallery'])) {
 
     echo "<h1>Convicts Gallery</h1>\n";
-    echo "<div class=\"gallery\">\n";
+    echo "<ul class=\"gallery\">\n";
 
     foreach($images_array as $key => $image) {
 
@@ -225,27 +225,18 @@ if ((isset($_GET['upload'])) && (bh_session_get_value('UID') > 0)) {
             $css_margin = floor((175 - $target_height) / 2);
             $modified_time = filemtime("$images_dir/$image");
 
-            echo "    <div class=\"thumbouter\">\n";
-            echo "      <div class=\"thumbinner\">\n";
-            echo "        <a href=\"{$HTTP_SERVER_VARS['PHP_SELF']}?view_image=", rawurlencode($image), "\"><img src=\"$images_dir/", rawurlencode($image), "?$modified_time\" border=\"0\" alt=\"", formatname($image), "\" title=\"", formatname($image), "\" width=\"$target_width\" height=\"$target_height\" style=\"margin-top: {$css_margin}px\"/></a>\n";
-            echo "      </div>\n";
-            echo "      <div class=\"thumbtitle\">\n";
-            echo "        <a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('$image', '$webtag')\">", formatname($image), "</a>\n";
-            echo "      </div>\n";
-            echo "    </div>\n";
+	        echo "    <li>\n";
+			echo "        <a href=\"{$HTTP_SERVER_VARS['PHP_SELF']}?view_image=", rawurlencode($image), "\"><img src=\"$images_dir/", rawurlencode($image), "?$modified_time\" alt=\"", formatname($image), "\" title=\"", formatname($image), "\" style=\"height: {$target_height}px; margin: {$css_margin}px 0;\"/></a>\n";
+			echo "        <label><a href=\"/forum/user_profile.php?webtag={$webtag}&logon={$image}\" onclick=\"openProfileByLogon('$image', '$webtag'); return false;\">", formatname($image), "</a></label>\n";
+			echo "    </li>\n";
         
         }elseif (strlen(trim($image)) < 1) {
 
-            echo "    <div class=\"thumbouter\">\n";
-            echo "      <div class=\"thumbinner\">\n";
-            echo "      </div>\n";
-            echo "      <div class=\"thumbtitle\">\n";
-            echo "      </div>\n";
-            echo "    </div>\n";
+			echo "<li><div style=\"height: 174px;\"></div><label>&nbsp;</label></li>\n";
         }
     }
 
-    echo "</div>\n";
+    echo "</ul>\n";
     echo "<div class=\"page_footer\">\n";
 
     if (bh_session_get_value('UID') > 0) {

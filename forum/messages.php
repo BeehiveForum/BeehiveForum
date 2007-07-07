@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.229 2007-07-07 22:39:33 decoyduck Exp $ */
+/* $Id: messages.php,v 1.230 2007-07-07 22:44:44 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -221,13 +221,13 @@ echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
 echo "<!--\n\n";
 echo "function initialisePostQuoting()\n";
 echo "{\n";
-echo "    var form_obj = getFormObjByName('quote_list');\n";
+echo "    var form_obj = getObjByName('quote_list');\n";
 echo "    form_obj.value = '';\n";
 echo "}\n\n";
 echo "function togglePostQuoting(post_id)\n";
 echo "{\n";
-echo "    var form_obj = getFormObjByName('quote_list');\n";
-echo "    var post_img = getFormObjByName('p' + post_id);\n";
+echo "    var form_obj = getObjByName('quote_list');\n";
+echo "    var post_img = getObjByName('p' + post_id);\n";
 echo "    if (form_obj.value.length > 0) {\n";
 echo "        var quote_list = form_obj.value.split(',');\n";
 echo "        for (var check_post_id in quote_list) {\n";
@@ -249,10 +249,10 @@ echo "    return false;\n";
 echo "}\n\n";
 echo "function checkPostQuoting(replyto_id)\n";
 echo "{\n";
-echo "    var form_obj = getFormObjByName('quote_list');\n";
+echo "    var form_obj = getObjByName('quote_list');\n";
 echo "    if (form_obj.value.length > 0) {\n";
-echo "        var f_quote = getFormObjByName('f_quote');\n";
-echo "        var replyto = getFormObjByName('replyto');\n";
+echo "        var f_quote = getObjByName('f_quote');\n";
+echo "        var replyto = getObjByName('replyto');\n";
 echo "        replyto.value = replyto_id;\n";
 echo "        f_quote.submit();\n";
 echo "        return false;\n";

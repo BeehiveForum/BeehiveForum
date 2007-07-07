@@ -19,12 +19,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.js,v 1.7 2007-03-01 14:37:24 decoyduck Exp $ */
+/* $Id: install.js,v 1.8 2007-07-07 22:44:42 decoyduck Exp $ */
 
 function confirm_install(button) {
 
-    var install_type = getFormObj('install_method');
-    var install_form = getFormObj('install_form');
+    var install_type = getObjById('install_method');
+    var install_form = getObjById('install_form');
 
     if (install_type.selectedIndex == 2) {
         confirm_text = 'Are you sure you want to perform a reinstall? Any existing BeehiveForum tables and their data will be permenantly lost!\n\n';

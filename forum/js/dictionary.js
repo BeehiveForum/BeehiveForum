@@ -19,12 +19,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.js,v 1.20 2007-05-06 17:24:57 decoyduck Exp $ */
+/* $Id: dictionary.js,v 1.21 2007-07-07 22:44:41 decoyduck Exp $ */
 
 function initialiseDictionary(obj_id) {
 
-    var dictObj = getFormObjByName('dictionary');
-    var contObj = getFormObjByName('content');
+    var dictObj = getObjByName('dictionary');
+    var contObj = getObjByName('content');
   
     if (window.opener.readContent) {
         
@@ -35,7 +35,7 @@ function initialiseDictionary(obj_id) {
 
 function changeWord(obj) {
 
-    var change_to = getFormObj('change_to'); 
+    var change_to = getObjById('change_to'); 
     var i = obj.options[obj.selectedIndex].value;
     
     // IE doesn't like .value when <object>value</object> is used instead
@@ -53,7 +53,7 @@ function readContent(obj_id) {
         return tinyMCE.getContent(obj_id);
     }
 
-    var form_obj = getFormObj(obj_id);
+    var form_obj = getObjById(obj_id);
     return form_obj.value;
 }
 
@@ -63,12 +63,12 @@ function updateContent(obj_id, content) {
         return tinyMCE.setContent(unescape(content));
     }
 
-    var form_obj = getFormObj(obj_id);
+    var form_obj = getObjById(obj_id);
     form_obj.value = unescape(content);
 }
 
 function showCurrentWord() {
 
-    var highlighted_word = getFormObj('highlighted_word');
+    var highlighted_word = getObjById('highlighted_word');
     highlighted_word.scrollIntoView(false);
 }

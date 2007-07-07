@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.460 2007-07-04 18:35:15 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.461 2007-07-07 15:32:16 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -978,7 +978,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
                 if ((!$closed && bh_session_check_perm(USER_PERM_POST_CREATE, $folder_fid)) || $perm_is_moderator) {
 
                     echo "<img src=\"", style_image('post.png'), "\" border=\"0\" alt=\"{$lang['reply']}\" title=\"{$lang['reply']}\" />";
-                    echo "&nbsp;<a href=\"post.php?webtag=$webtag&amp;replyto=$tid.{$message['PID']}\" target=\"_parent\">{$lang['reply']}</a>";
+                    echo "&nbsp;<a href=\"post.php?webtag=$webtag&amp;replyto=$tid.{$message['PID']}\" target=\"_parent\" onclick=\"return checkPostQuoting('$tid.{$message['PID']}')\">{$lang['reply']}</a>";
                 }
 
                 if (($uid == $message['FROM_UID'] && bh_session_check_perm(USER_PERM_POST_DELETE, $folder_fid) && !(perm_get_user_permissions($uid) & USER_PERM_PILLORIED)) || $perm_is_moderator) {
@@ -1013,6 +1013,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
             echo "</td>\n";
             echo "            <td width=\"25%\" align=\"right\" nowrap=\"nowrap\">";
 
+            echo "<a href=\"post.php?webtag=$webtag&amp;replyto=$tid.{$message['PID']}&amp;quote=$tid.{$message['PID']}\" target=\"_parent\" onclick=\"return togglePostQuoting({$message['PID']})\"><img src=\"", style_image('quote_disabled.png'), "\" border=\"0\" alt=\"{$lang['quote']}\" title=\"{$lang['quote']}\" name=\"p{$message['PID']}\" /></a>&nbsp;";
             echo "<a href=\"pm_write.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.{$message['PID']}\" target=\"_parent\" title=\"{$lang['pm_reply']}\"><img src=\"", style_image('pmunread.png'), "\" border=\"0\" alt=\"{$lang['pm_reply']}\" title=\"{$lang['pm_reply']}\" /></a>&nbsp;";
             echo "<a href=\"display.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_self\" title=\"{$lang['print']}\"><img src=\"", style_image('print.png'), "\" border=\"0\" alt=\"{$lang['print']}\" title=\"{$lang['print']}\" /></a>&nbsp;";
             echo "<a href=\"thread_options.php?webtag=$webtag&amp;msg=$tid.$first_msg&amp;markasread=", ($message['PID'] - 1), "\" target=\"_self\" title=\"{$lang['markasunread']}\"><img src=\"", style_image('markasunread.png'), "\" border=\"0\" alt=\"{$lang['markasunread']}\" title=\"{$lang['markasunread']}\" /></a>&nbsp;";

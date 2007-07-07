@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.313 2007-06-24 20:55:17 decoyduck Exp $ */
+/* $Id: post.php,v 1.314 2007-07-07 15:32:16 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -502,6 +502,35 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
         html_error_msg($lang['cannotcreatepostinfolder']);
         html_draw_bottom();
         exit;
+    }
+
+    if (isset($_GET['quote_list']) && strlen(trim($_GET['quote_list'])) > 0) {
+
+        $quote_list = preg_grep('/[0-9]+/', explode(',', $_GET['quote_list']));
+
+        sort($quote_list);
+
+        $t_content_array = array();
+        
+        foreach($quote_list as $quote_pid) {
+
+            if ($message_array = messages_get($reply_to_tid, $quote_pid)) {
+
+                $message_author = format_user_name($message_array['FLOGON'], $message_array['FNICK']);
+                
+                $t_quoted_post = "<quote source=\"$message_author\" ";
+                $t_quoted_post.= "url=\"messages.php?webtag=$webtag&amp;msg=$reply_to_tid.$quote_pid\">";
+                $t_quoted_post.= strip_tags(trim(message_get_content($reply_to_tid, $quote_pid))). "</quote>\n\n";
+
+                $t_content_array[] = $t_quoted_post;
+            }
+        }
+
+        if (sizeof($t_content_array) > 0) {
+            
+            $post->setContent(implode('', $t_content_array));
+            $post->setHTML(POST_HTML_AUTO);
+        }
     }
 
     $newthread = false;

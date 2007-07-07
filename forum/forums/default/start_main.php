@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_main.php,v 1.24 2007-07-07 18:34:21 boughtonp Exp $ */
+/* $Id: start_main.php,v 1.25 2007-07-07 22:39:33 decoyduck Exp $ */
 
 // An example of what can be done with start_main.php
 // As used on: http://www.tehforum.net/forum/
@@ -225,14 +225,14 @@ if ((isset($_GET['upload'])) && (bh_session_get_value('UID') > 0)) {
             $css_margin = floor((175 - $target_height) / 2);
             $modified_time = filemtime("$images_dir/$image");
 
-	        echo "    <li>\n";
-			echo "        <a href=\"{$HTTP_SERVER_VARS['PHP_SELF']}?view_image=", rawurlencode($image), "\"><img src=\"$images_dir/", rawurlencode($image), "?$modified_time\" alt=\"", formatname($image), "\" title=\"", formatname($image), "\" style=\"height: {$target_height}px; margin: {$css_margin}px 0;\"/></a>\n";
-			echo "        <label><a href=\"/forum/user_profile.php?webtag={$webtag}&logon={$image}\" onclick=\"openProfileByLogon('$image', '$webtag'); return false;\">", formatname($image), "</a></label>\n";
-			echo "    </li>\n";
+            echo "  <li>\n";
+            echo "    <a href=\"{$HTTP_SERVER_VARS['PHP_SELF']}?view_image=", rawurlencode($image), "\"><img src=\"$images_dir/", rawurlencode($image), "?$modified_time\" alt=\"", formatname($image), "\" title=\"", formatname($image), "\" style=\"height: {$target_height}px; margin: {$css_margin}px 0;\"/></a>\n";
+            echo "    <label><a href=\"/forum/user_profile.php?webtag={$webtag}&amp;logon=", rawurlencode($image), "\" onclick=\"openProfileByLogon('$image', '$webtag'); return false;\">", formatname($image), "</a></label>\n";
+            echo "  </li>\n";
         
         }elseif (strlen(trim($image)) < 1) {
 
-			echo "<li><div style=\"height: 174px;\"></div><label>&nbsp;</label></li>\n";
+            echo "<li><div style=\"height: 174px;\"></div><label>&nbsp;</label></li>\n";
         }
     }
 

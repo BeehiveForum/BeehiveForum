@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.227 2007-06-18 13:37:05 decoyduck Exp $ */
+/* $Id: messages.php,v 1.228 2007-07-07 15:32:16 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -217,6 +217,45 @@ $thread_title = thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE']
 
 html_draw_top("title=$forum_name > $thread_title", "openprofile.js", "post.js", "poll.js", "basetarget=_blank", "robots=index,follow");
 
+echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
+echo "<!--\n\n";
+echo "function togglePostQuoting(post_id)\n";
+echo "{\n";
+echo "    var form_obj = getFormObjByName('quote_list');\n";
+echo "    var post_img = getFormObjByName('p' + post_id);\n";
+echo "    if (form_obj.value.length > 0) {\n";
+echo "        var quote_list = form_obj.value.split(',');\n";
+echo "        for (var check_post_id in quote_list) {\n";
+echo "            if (quote_list[check_post_id] == post_id) {\n";
+echo "                quote_list.splice(check_post_id, 1);\n";
+echo "                form_obj.value = quote_list.join(',');\n";
+echo "                post_img.src = '", style_image('quote_disabled.png'), "';\n";
+echo "                return false;\n";
+echo "            }\n";
+echo "        }\n";
+echo "        quote_list.push(post_id);\n";
+echo "        post_img.src = '", style_image('quote_enabled.png'), "';\n";
+echo "        form_obj.value = quote_list.join(',');\n";
+echo "    }else {\n";
+echo "        post_img.src = '", style_image('quote_enabled.png'), "';\n";
+echo "        form_obj.value = post_id;\n";
+echo "    }\n";
+echo "    return false;\n";
+echo "}\n\n";
+echo "function checkPostQuoting(replyto_id)\n";
+echo "{\n";
+echo "    var form_obj = getFormObjByName('quote_list');\n";
+echo "    if (form_obj.value.length > 0) {\n";
+echo "        var f_quote = getFormObjByName('f_quote');\n";
+echo "        var replyto = getFormObjByName('replyto');\n";
+echo "        replyto.value = replyto_id;\n";
+echo "        f_quote.submit();\n";
+echo "        return false;\n";
+echo "    }\n";
+echo "}\n";
+echo "//-->\n";
+echo "</script>\n";
+
 if (isset($threaddata['STICKY']) && isset($threaddata['STICKY_UNTIL'])) {
 
     if ($threaddata['STICKY'] == "Y" && $threaddata['STICKY_UNTIL'] != 0 && time() > $threaddata['STICKY_UNTIL']) {
@@ -372,6 +411,11 @@ if ($tracking_data_array = thread_get_tracking_data($tid)) {
 }
 
 echo "</div>\n";
+echo "<form name=\"f_quote\" action=\"post.php\" method=\"get\" target=\"_self\">\n";
+echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+echo "  ", form_input_hidden('quote_list', ''), "\n";
+echo "  ", form_input_hidden('replyto', ''), "\n";
+echo "</form>\n";
 
 if ($msg_count > 0) {
 
@@ -430,7 +474,7 @@ echo "  </tr>\n";
 echo "  <tr valign=\"top\">\n";
 
 if (($threaddata['CLOSED'] == 0 && bh_session_check_perm(USER_PERM_POST_CREATE, $threaddata['FID'])) || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $threaddata['FID'])) {
-    echo "    <td width=\"33%\" align=\"left\"><p><img src=\"". style_image('reply_all.png') ."\" alt=\"{$lang['replyall']}\" title=\"{$lang['replyall']}\" border=\"0\" /> <a href=\"post.php?webtag=$webtag&amp;replyto=$tid.0\" target=\"_parent\"><b>{$lang['replyall']}</b></a></p></td>\n";
+    echo "    <td width=\"33%\" align=\"left\"><p><img src=\"". style_image('reply_all.png') ."\" alt=\"{$lang['replyall']}\" title=\"{$lang['replyall']}\" border=\"0\" /> <a href=\"post.php?webtag=$webtag&amp;replyto=$tid.0\" target=\"_parent\" onclick=\"return checkPostQuoting('$tid.0')\"><b>{$lang['replyall']}</b></a></p></td>\n";
 } else {
     echo "    <td width=\"33%\" align=\"left\">&nbsp;</td>\n";
 }

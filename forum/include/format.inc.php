@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.142 2007-06-18 20:10:49 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.143 2007-07-07 22:39:39 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -553,6 +553,20 @@ function html_entity_to_decimal($string)
                                '&rsaquo;'   => '&#8250;', '&euro;'    => '&#8364;');
 
     return preg_replace("/&[A-Za-z]+;/", " ", strtr($string,$entity_to_decimal));    
+}
+
+/**
+* Strip HTML paragraphs and line breaks
+*
+* Replaces <p> </p> and <br /> with new-line chars.
+*
+* @return string
+* @param string $string - string to convert.
+*/
+
+function strip_paragraphs($string)
+{
+    return preg_replace(array("/<p[^>]*>/iU", "/<\/p[^>]*>/iU", "/<br\s*?\/?>/i"), array("", "\n", "\n"), $string);
 }
 
 /**

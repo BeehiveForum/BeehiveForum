@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.228 2007-07-07 15:32:16 decoyduck Exp $ */
+/* $Id: messages.php,v 1.229 2007-07-07 22:39:33 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -215,10 +215,15 @@ if (!$threaddata = thread_get($tid, bh_session_check_perm(USER_PERM_ADMIN_TOOLS,
 $forum_name   = forum_get_setting('forum_name', false, 'A Beehive Forum');
 $thread_title = thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE']);
 
-html_draw_top("title=$forum_name > $thread_title", "openprofile.js", "post.js", "poll.js", "basetarget=_blank", "robots=index,follow");
+html_draw_top("title=$forum_name > $thread_title", "openprofile.js", "post.js", "poll.js", "basetarget=_blank", "robots=index,follow", "onload=initialisePostQuoting()");
 
 echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
 echo "<!--\n\n";
+echo "function initialisePostQuoting()\n";
+echo "{\n";
+echo "    var form_obj = getFormObjByName('quote_list');\n";
+echo "    form_obj.value = '';\n";
+echo "}\n\n";
 echo "function togglePostQuoting(post_id)\n";
 echo "{\n";
 echo "    var form_obj = getFormObjByName('quote_list');\n";
@@ -411,7 +416,7 @@ if ($tracking_data_array = thread_get_tracking_data($tid)) {
 }
 
 echo "</div>\n";
-echo "<form name=\"f_quote\" action=\"post.php\" method=\"get\" target=\"_self\">\n";
+echo "<form name=\"f_quote\" action=\"post.php\" method=\"get\" target=\"_parent\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden('quote_list', ''), "\n";
 echo "  ", form_input_hidden('replyto', ''), "\n";

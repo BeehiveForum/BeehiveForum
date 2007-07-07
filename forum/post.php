@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.314 2007-07-07 15:32:16 decoyduck Exp $ */
+/* $Id: post.php,v 1.315 2007-07-07 22:39:33 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -518,9 +518,12 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
                 $message_author = format_user_name($message_array['FLOGON'], $message_array['FNICK']);
                 
+                $message_content = message_get_content($reply_to_tid, $quote_pid);
+                $message_content = message_split_fiddle($message_content, false, true);
+                
                 $t_quoted_post = "<quote source=\"$message_author\" ";
                 $t_quoted_post.= "url=\"messages.php?webtag=$webtag&amp;msg=$reply_to_tid.$quote_pid\">";
-                $t_quoted_post.= strip_tags(trim(message_get_content($reply_to_tid, $quote_pid))). "</quote>\n\n";
+                $t_quoted_post.= strip_paragraphs(trim(_htmlentities_decode($message_content))). "</quote>\n\n";
 
                 $t_content_array[] = $t_quoted_post;
             }

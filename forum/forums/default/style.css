@@ -1,5 +1,4 @@
 body {
-    border: none;
     background-color: #EAEFF4;
     margin-top: 10px;
     margin-bottom: 10px;
@@ -10,24 +9,22 @@ body {
 }
 
 img {
-    vertical-align: middle;
+    vertical-align: text-top;
 }
 
 frameset {
-    border-style: none;
-    border-width: 0px;
+    border: 0px;
+    margin: 0px;
+    padding: 0px;
 }
 
 frame {
-    border-style: none;
-    border-width: 0px;
-    border-color: #000000;
-    margin: 0px 0px 0px 0px;
-    padding: 0px 0px 0px 0px;
+    border: 0px;
+    margin: 0px;
+    padding: 0px;
 }
 
 .navpage {
-    color: #000000;
     font-size: 10px;
     font-weight: bold;
     margin: 0px;
@@ -50,6 +47,7 @@ frame {
 
 .forumlinks {
     font-family: verdana, arial, helvetica, sans-serif;
+    color: #FFFFFF;
 }
 
 p, h1, h2 {
@@ -209,7 +207,7 @@ a {
     padding-bottom: 2px;
     padding-left: 2px;
     border: #000000;
-    border-style: none;
+    border-style: solid;
     border-top-width: 1px;
     border-right-width: 0px;
     border-bottom-width: 0px;
@@ -229,7 +227,7 @@ a {
     padding-bottom: 2px;
     padding-left: 2px;
     border: #000000;
-    border-style: none;
+    border-style: solid;
     border-top-width: 1px;
     border-right-width: 1px;
     border-bottom-width: 0px;
@@ -249,7 +247,7 @@ a {
     padding-bottom: 2px;
     padding-left: 2px;
     border: #000000;
-    border-style: none;
+    border-style: solid;
     border-top-width: 0px;
     border-right-width: 0px;
     border-bottom-width: 1px;
@@ -269,7 +267,7 @@ a {
     padding-bottom: 2px;
     padding-left: 2px;
     border: #000000;
-    border-style: none;
+    border-style: solid;
     border-top-width: 0px;
     border-right-width: 1px;
     border-bottom-width: 1px;
@@ -289,7 +287,7 @@ a {
     padding-bottom: 2px;
     padding-left: 2px;
     border: #000000;
-    border-style: none;
+    border-style: solid;
     border-top-width: 0px;
     border-right-width: 1px;
     border-bottom-width: 0px;
@@ -309,7 +307,7 @@ a {
     padding-bottom: 2px;
     padding-left: 2px;
     border: #000000;
-    border-style: none;
+    border-style: solid;
     border-top-width: 0px;
     border-right-width: 1px;
     border-bottom-width: 1px;
@@ -329,7 +327,7 @@ a {
     padding-bottom: 2px;
     padding-left: 2px;
     border: #000000;
-    border-style: none;
+    border-style: solid;
     border-top-width: 1px;
     border-right-width: 0px;
     border-bottom-width: 1px;
@@ -349,7 +347,7 @@ a {
     padding-bottom: 2px;
     padding-left: 2px;
     border: #000000;
-    border-style: none;
+    border-style: solid;
     border-top-width: 1px;
     border-right-width: 1px;
     border-bottom-width: 1px;
@@ -382,7 +380,6 @@ a {
 .threadxnewofy {
     font-size: 8pt;
     padding-left: 0px;
-    white-space: nowrap;
 }
 
 .foldername {
@@ -462,10 +459,8 @@ a {
     font-size: 10pt;
     font-style: normal;
     color: #000000;
-    border-top: 1px #C8D7E6 solid;
+    background-color: #EAEFF4;
     text-align: center;
-    padding-top: 1px;
-    padding-bottom: 1px;
 }
 
 .messagefoot {
@@ -535,8 +530,10 @@ a {
 .admin_startpage_textarea, .dictionary_word_display,
 .dictionary_best_selection, .dictionary_change_to,
 .post_folder_dropdown, .thread_title, .post_content,
-.signature_content, .to_uid_dropdown, .recipient_dropdown,
-.recent_user_dropdown, .user_in_thread_dropdown {
+.signature_content, .edit_signature_content, .to_uid_dropdown,
+.recipient_dropdown, .recent_user_dropdown,
+.user_in_thread_dropdown, .user_pref_field, 
+.user_pref_dob_dropdown, .user_pref_dropdown {
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 9pt;
     color: #000000;
@@ -547,6 +544,11 @@ a {
     border-left-width: 1px;
     padding-left: 2px;
     border-style: inset;
+}
+
+.bhselectoptgroup {
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-size: 9pt;
 }
 
 .bhinputcheckbox, .bhinputradio {
@@ -575,8 +577,7 @@ a {
 }
 
 .highlight {
-    background-color: #C8D7E6;
-    font-size: 10pt;
+    background-color: #C8D7E6
 }
 
 .quotetext {
@@ -623,6 +624,11 @@ a {
     padding: 3px;
 }
 
+.spoiler * {
+    color: #EEEEEE;
+    text-decoration: none;
+}
+
 .spoiler_reveal {
     font-family: verdana, arial, helvetica, sans-serif;
     border: 1px solid #CCCCCC;
@@ -640,7 +646,6 @@ a {
     margin-bottom: 3px;
     text-align: left;
     display: none;
-    background-image: url('../../images/html_toolbar.png');
     background-repeat: no-repeat;
 }
 
@@ -736,7 +741,6 @@ a {
 }
 
 .admin_folder_perms {
-    height: 140px;
     overflow: auto;
     padding: 2px;
 }
@@ -754,50 +758,6 @@ a {
 
 .install_dropdown {
     width: 234px;
-}
-
-.admin_startpage_textarea {
-    font-family: monospace;
-    width: 580px;
-}
-
-.dictionary_pretty_content {
-    height: 200px;
-    overflow: auto;
-}
-
-.dictionary_word_display {
-    width: 95%;
-}
-
-.dictionary_best_selection {
-    width: 100%;
-    height: 110px;
-}
-
-.dictionary_change_to {
-    width: 99%;
-}
-
-.dictionary_button {
-    width: 90%;
-}
-
-.thread_title {
-    width: 186px;
-}
-
-.post_to_others {
-    font-family: verdana, arial, helvetica, sans-serif;
-    font-size: 9pt;
-    color: #000000;
-    background-color: #FFFFFF;
-    width: 169px;
-    border: 0px;
-}
-
-.post_content {
-    width: 480px;
 }
 
 .logon_dropdown {
@@ -831,8 +791,51 @@ a {
     width: 228px;
 }
 
+.admin_startpage_textarea {
+    font-family: monospace;
+}
+
+.dictionary_pretty_content {
+    height: 200px;
+    overflow: auto;
+}
+
+.dictionary_word_display {
+    width: 95%;
+}
+
+.dictionary_best_selection {
+    width: 100%;
+    height: 90px;
+}
+
+.dictionary_change_to {
+    width: 99%;
+}
+
+.dictionary_button {
+    width: 90%;
+}
+
 .post_folder_dropdown {
     width: 190px;
+}
+
+.thread_title {
+    width: 190px;
+}
+
+.post_to_others {
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-size: 9pt;
+    color: #000000;
+    background-color: #FFFFFF;
+    width: 169px;
+    border: 0px;
+}
+
+.post_content {
+    width: 480px;
 }
 
 .to_uid_dropdown {
@@ -876,8 +879,12 @@ a {
     width: 190px;
 }
 
-.signature_content {
+.edit_signature_content {
     width: 550px;
+}
+
+.signature_content {
+    width: 480px;
 }
 
 .link_hidden {
@@ -992,7 +999,7 @@ a {
 }
 
 .subhead_sort_asc {
-    background-image: url('../../images/sort_asc.png');
+    background-image: url('../images/sort_asc.png');
     background-repeat: no-repeat;
     background-position: 98% 50%;
     font-family: verdana, arial, helvetica, sans-serif;
@@ -1006,8 +1013,9 @@ a {
     padding-left: 5px;
 }
 
+
 .subhead_sort_desc {
-    background-image: url('../../images/sort_desc.png');
+    background-image: url('../images/sort_desc.png');
     background-repeat: no-repeat;
     background-position: 98% 50%;
     font-family: verdana, arial, helvetica, sans-serif;
@@ -1033,6 +1041,7 @@ a {
 }
 
 .profile_logon {
+    font-size: 10pt;
     color: #000000;
 }
 
@@ -1050,51 +1059,44 @@ a {
     border: 1px solid #A6BED7;
 }
 
-.profile_tabs {
-    margin: 0px 0px 0px 0px;
-    padding: 0px 5px 0px 5px;
+.profile_items {
+    border-collapse: collapse;
+    margin: 5px;
+}
+
+.profile_header {
     background-color: #A6BED7;
 }
 
-.profile_items {
-    border-color: #FFFFFF;
-    border-style: solid
-    border-top-width: 1px;
-    border-right-width: 0px;
-    border-bottom-width: 1px;
-    border-left-width: 0px;
+.profile_footer {
+    background-color: #A6BED7;
+    border-top: 1px solid #FFFFFF;
 }
 
-.profile_item_text {
+.profile_items_section {
+    border-top: 1px solid #FFFFFF;
+    border-bottom: 0px solid #FFFFFF;
+    padding-top: 10px;
+    padding-bottom: 5px;
+}
+
+.profile_item_name {
+    font-size: 9pt;
+}
+
+.profile_item_value {
+    font-size: 9pt;
     padding: 2px 2px 2px 10px;
     border-left: 1px solid #000000;
 }
 
-.profile_tab {
-    border-width: 1px;
-    border-color: #000000;
-    border-style: solid;
-    background-color: #A6BED7;
-    padding: 5px;
-    text-align: center;
+.profile_item_value a {
+    font-size: 9pt;
 }
 
-.profile_tab a {
-    color: #000000;
-}
-
-.profile_tab_selected {
-    border-width: 1px;
-    border-color: #000000;
-    border-style: solid;
-    background-color: #C8D7E6;
-    padding: 5px;
-    text-align: center;
-}
-
-.image_resize_container {
-    border: 0px;
-    border-collapse: collapse;
+.profile_item_overflow {
+    overflow: hidden;
+    height: 1.2em;
 }
 
 .image_resize_text {
@@ -1105,10 +1107,6 @@ a {
     cursor: pointer;
 }
 
-.image_resize_image {
-    border: 0px;
-}
-
 .image_resize_icon {
     padding: 5px;
     vertical-align: middle;
@@ -1116,4 +1114,57 @@ a {
 
 .profile_browse_close {
     vertical-align: middle;
+}
+
+.user_pref_field {
+    width: 298px;
+}
+
+.user_pref_dropdown {
+    width: 302px;
+}
+
+.user_pref_dob_dropdown {
+    width: 97px;
+    margin-right: 1px;
+}
+
+.forum_rules_box {
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-size: 9pt;
+    color: #000000;
+    background-color: #FFFFFF;
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-style: inset;
+    height: 200px;
+    width: 500px;
+    padding: 0px 10px 0px 10px;
+    overflow: auto;
+}
+
+.post_options {
+    cursor: pointer;
+}
+
+.post_options_container_closed {
+    position: absolute;
+    text-align: left;
+    padding: 5px;
+    background-color: #FFFFFF;
+    border: 1px solid #000000;
+    display: none;
+    overflow: scroll;
+}
+
+.post_options_container_opened {
+    position: absolute;
+    text-align: left;
+    padding: 5px;
+    background-color: #FFFFFF;
+    border: 1px solid #000000;
+    display: block;
+    overflow: scroll;
 }

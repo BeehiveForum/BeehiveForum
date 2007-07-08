@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.462 2007-07-08 12:37:55 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.463 2007-07-08 13:56:24 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -970,7 +970,48 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
             echo "            <table width=\"100%\" class=\"postresponse\" cellspacing=\"1\" cellpadding=\"0\">\n";
             echo "              <tr>\n";
-            echo "                <td width=\"25%\" align=\"left\" nowrap=\"nowrap\">\n";
+            echo "                <td width=\"25%\">&nbsp;</td>\n";
+            echo "                <td width=\"50%\" nowrap=\"nowrap\">";
+
+            if ($msg_count > 0) {
+            
+                if ((!$closed && bh_session_check_perm(USER_PERM_POST_CREATE, $folder_fid)) || $perm_is_moderator) {
+
+                    echo "<img src=\"", style_image('post.png'), "\" border=\"0\" alt=\"{$lang['reply']}\" title=\"{$lang['reply']}\" />";
+                    echo "&nbsp;<a href=\"post.php?webtag=$webtag&amp;replyto=$tid.{$message['PID']}\" target=\"_parent\" onclick=\"return checkPostQuoting('$tid.{$message['PID']}')\">{$lang['reply']}</a>";
+                }
+
+                if (($uid == $message['FROM_UID'] && bh_session_check_perm(USER_PERM_POST_DELETE, $folder_fid) && !(perm_get_user_permissions($uid) & USER_PERM_PILLORIED)) || $perm_is_moderator) {
+                    echo "&nbsp;&nbsp;<img src=\"", style_image('delete.png'), "\" border=\"0\" alt=\"{$lang['delete']}\" title=\"{$lang['delete']}\" />";
+                    echo "&nbsp;<a href=\"delete.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_parent\">{$lang['delete']}</a>";
+                }
+
+                $post_edit_time = forum_get_setting('post_edit_time', false, 0);
+
+                if ((((!perm_get_user_permissions($uid) & USER_PERM_PILLORIED) || ($uid != $message['FROM_UID'] && $from_user_permissions & USER_PERM_PILLORIED) || ($uid == $message['FROM_UID'])) && bh_session_check_perm(USER_PERM_POST_EDIT, $folder_fid) && ($post_edit_time == 0 || (time() - $message['CREATED']) < ($post_edit_time * HOUR_IN_SECONDS)) && forum_get_setting('allow_post_editing', 'Y')) || $perm_is_moderator) {
+
+                    if ($is_poll && $message['PID'] == 1) {
+
+                        if (!poll_is_closed($tid) || $perm_is_moderator) {
+
+                            echo "&nbsp;&nbsp;<img src=\"", style_image('edit.png'), "\" border=\"0\" alt=\"{$lang['editpoll']}\" title=\"{$lang['editpoll']}\" />";
+                            echo "&nbsp;<a href=\"edit_poll.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_parent\">{$lang['editpoll']}</a>";
+                        }
+
+                    }else {
+
+                        echo "&nbsp;&nbsp;<img src=\"", style_image('edit.png'), "\" border=\"0\" alt=\"{$lang['edit']}\" title=\"{$lang['edit']}\" />";
+                        echo "&nbsp;<a href=\"edit.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_parent\">{$lang['edit']}</a>";
+                    }
+                }
+
+            }else {
+
+                echo "&nbsp;";
+            }
+
+            echo "</td>\n";
+            echo "                <td width=\"25%\" align=\"right\" nowrap=\"nowrap\">\n";
             echo "                  <img src=\"", style_image('post_options.png'), "\" width=\"17\" height=\"16\" class=\"post_options\" alt=\"{$lang['options']}\" title=\"{$lang['options']}\" onclick=\"openPostOptions({$message['PID']})\" id=\"post_options_{$message['PID']}\" />\n";
             echo "                    <div class=\"post_options_container_closed\" id=\"post_options_container_{$message['PID']}\">\n";
             echo "                      <img src=\"", style_image('quote_disabled.png'), "\" border=\"0\" alt=\"{$lang['quote']}\" title=\"{$lang['quote']}\" name=\"p{$message['PID']}\" />&nbsp;<a href=\"post.php?webtag=$webtag&amp;replyto=$tid.{$message['PID']}&amp;quote_list={$message['PID']}\" target=\"_parent\" onclick=\"return togglePostQuoting({$message['PID']})\">{$lang['quote']}</a><br />\n";
@@ -1035,47 +1076,6 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
             echo "                  </div>\n";
             echo "                </td>\n";
-            echo "                <td width=\"50%\" nowrap=\"nowrap\">";
-
-            if ($msg_count > 0) {
-            
-                if ((!$closed && bh_session_check_perm(USER_PERM_POST_CREATE, $folder_fid)) || $perm_is_moderator) {
-
-                    echo "<img src=\"", style_image('post.png'), "\" border=\"0\" alt=\"{$lang['reply']}\" title=\"{$lang['reply']}\" />";
-                    echo "&nbsp;<a href=\"post.php?webtag=$webtag&amp;replyto=$tid.{$message['PID']}\" target=\"_parent\" onclick=\"return checkPostQuoting('$tid.{$message['PID']}')\">{$lang['reply']}</a>";
-                }
-
-                if (($uid == $message['FROM_UID'] && bh_session_check_perm(USER_PERM_POST_DELETE, $folder_fid) && !(perm_get_user_permissions($uid) & USER_PERM_PILLORIED)) || $perm_is_moderator) {
-                    echo "&nbsp;&nbsp;<img src=\"", style_image('delete.png'), "\" border=\"0\" alt=\"{$lang['delete']}\" title=\"{$lang['delete']}\" />";
-                    echo "&nbsp;<a href=\"delete.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_parent\">{$lang['delete']}</a>";
-                }
-
-                $post_edit_time = forum_get_setting('post_edit_time', false, 0);
-
-                if ((((!perm_get_user_permissions($uid) & USER_PERM_PILLORIED) || ($uid != $message['FROM_UID'] && $from_user_permissions & USER_PERM_PILLORIED) || ($uid == $message['FROM_UID'])) && bh_session_check_perm(USER_PERM_POST_EDIT, $folder_fid) && ($post_edit_time == 0 || (time() - $message['CREATED']) < ($post_edit_time * HOUR_IN_SECONDS)) && forum_get_setting('allow_post_editing', 'Y')) || $perm_is_moderator) {
-
-                    if ($is_poll && $message['PID'] == 1) {
-
-                        if (!poll_is_closed($tid) || $perm_is_moderator) {
-
-                            echo "&nbsp;&nbsp;<img src=\"", style_image('edit.png'), "\" border=\"0\" alt=\"{$lang['editpoll']}\" title=\"{$lang['editpoll']}\" />";
-                            echo "&nbsp;<a href=\"edit_poll.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_parent\">{$lang['editpoll']}</a>";
-                        }
-
-                    }else {
-
-                        echo "&nbsp;&nbsp;<img src=\"", style_image('edit.png'), "\" border=\"0\" alt=\"{$lang['edit']}\" title=\"{$lang['edit']}\" />";
-                        echo "&nbsp;<a href=\"edit.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_parent\">{$lang['edit']}</a>";
-                    }
-                }
-
-            }else {
-
-                echo "&nbsp;";
-            }
-
-            echo "</td>\n";
-            echo "                <td width=\"25%\">&nbsp;</td>\n";
             echo "              </tr>";
             echo "            </table>\n";
         }

@@ -1170,13 +1170,15 @@ a {
     background-color: #FFFFFF;
     border: 1px solid #000000;
     display: none;
+    overflow: scroll;
 }
 
-.post_options_container_open {
+.post_options_container_opened {
     position: absolute;
     text-align: left;
     padding: 5px;
     background-color: #FFFFFF;
     border: 1px solid #000000;
     display: block;
+    overflow: scroll;
 }

@@ -19,9 +19,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.js,v 1.34 2007-07-08 12:37:56 decoyduck Exp $ */
+/* $Id: post.js,v 1.35 2007-07-08 13:56:24 decoyduck Exp $ */
 
 var search_logon = false;
+var menu_timeout = 0;
 
 function checkToRadio(num)
 {
@@ -95,8 +96,15 @@ function findPosY(obj)
     return curtop;
 }
 
+function delayMenuClickHandler()
+{
+    menu_timeout = setTimeout('attachMenuClickHandler()', 100);
+}
+
 function attachMenuClickHandler()
 {
+    clearTimeout(menu_timeout);
+    
     if (document.all) {
         document.attachEvent('onclick', closePostOptions);
     }else {
@@ -120,7 +128,7 @@ function closePostOptions()
 
     for (var i = 0; i < div_count; i++)  {
 
-        if (div_tags[i].className == 'post_options_container_open') {                    
+        if (div_tags[i].className == 'post_options_container_opened') {                    
 
             div_tags[i].className = 'post_options_container_closed';
         }
@@ -131,21 +139,53 @@ function closePostOptions()
 
 function openPostOptions(post_id)
 {
+    var IE = (document.all ? true : false);
+
+    closePostOptions();
+    
     var post_options_obj = getObjById('post_options_' + post_id);
     var post_options_container_obj = getObjById('post_options_container_' + post_id);
 
     if (post_options_container_obj.className == 'post_options_container_closed') {
 
+        post_options_container_obj.className = 'post_options_container_opened';
+        
+        post_options_container_obj.style.width = '0px';
+        post_options_container_obj.style.height = '0px';
+
+        if (IE) {
+
+            var scroll_width = parseInt(post_options_container_obj.scrollWidth);
+            
+            while (parseInt(post_options_container_obj.scrollWidth) > scroll_width) {
+                scroll_width = parseInt(post_options_container_obj.scrollWidth);
+            }
+        
+            var scroll_height = parseInt(post_options_container_obj.scrollHeight);
+            
+            while (parseInt(post_options_container_obj.scrollHeight) > scroll_height) {
+                scroll_height = parseInt(post_options_container_obj.scrollHeight);
+            }
+        
+        }else {
+
+            var scroll_width = post_options_container_obj.scrollWidth;
+            var scroll_height = post_options_container_obj.scrollHeight;            
+        }
+
+        post_options_container_obj.style.width = scroll_width + 'px';
+        post_options_container_obj.style.height = scroll_height + 'px';
+        post_options_container_obj.style.overflow = 'hidden';
+
         var container_left = findPosX(post_options_obj);
         var container_top = findPosY(post_options_obj);
 
-        container_top+= post_options_obj.height;
+        container_top  = post_options_obj.height + container_top;
+        container_left = (container_left - post_options_container_obj.scrollWidth) + post_options_obj.width;
 
         post_options_container_obj.style.left = container_left + 'px';
         post_options_container_obj.style.top = container_top + 'px';
-    
-        post_options_container_obj.className = 'post_options_container_open';
 
-        attachMenuClickHandler();
+        delayMenuClickHandler();
     }
 }

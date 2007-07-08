@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.js,v 1.33 2007-07-07 22:44:44 decoyduck Exp $ */
+/* $Id: post.js,v 1.34 2007-07-08 12:37:56 decoyduck Exp $ */
 
 var search_logon = false;
 
@@ -50,4 +50,102 @@ function returnSearchResult(obj_name, content)
 
     var to_radio_obj = document.getElementsByName('to_radio');
     to_radio_obj[to_radio_obj.length - 1].checked = true;
+}
+
+function findPosX(obj)
+{
+    var curleft = 0;
+
+    if (obj.offsetParent) {
+        
+        while(1) {
+
+            curleft += obj.offsetLeft;
+
+            if(!obj.offsetParent) break;
+            obj = obj.offsetParent;
+        }
+
+    }else if(obj.x) {
+
+        curleft += obj.x;
+    }
+    
+    return curleft;
+}
+
+function findPosY(obj)
+{
+    var curtop = 0;
+
+    if (obj.offsetParent) {
+        
+        while(1) {
+
+            curtop += obj.offsetTop;
+            if(!obj.offsetParent) break;
+            obj = obj.offsetParent;
+        }
+
+    } else if(obj.y) {
+        
+        curtop += obj.y;
+    }
+
+    return curtop;
+}
+
+function attachMenuClickHandler()
+{
+    if (document.all) {
+        document.attachEvent('onclick', closePostOptions);
+    }else {
+        document.addEventListener('click', closePostOptions, true);
+    }
+}
+
+function cancelMenuClickHandler()
+{
+    if (document.all) {    
+        document.detachEvent('onclick', closePostOptions);
+    }else {
+        document.removeEventListener('click', closePostOptions, false);
+    }
+}
+
+function closePostOptions()
+{
+    var div_tags  = document.getElementsByTagName('div');
+    var div_count = div_tags.length;
+
+    for (var i = 0; i < div_count; i++)  {
+
+        if (div_tags[i].className == 'post_options_container_open') {                    
+
+            div_tags[i].className = 'post_options_container_closed';
+        }
+    }
+
+    cancelMenuClickHandler();
+}
+
+function openPostOptions(post_id)
+{
+    var post_options_obj = getObjById('post_options_' + post_id);
+    var post_options_container_obj = getObjById('post_options_container_' + post_id);
+
+    if (post_options_container_obj.className == 'post_options_container_closed') {
+
+        var container_left = findPosX(post_options_obj);
+        var container_top = findPosY(post_options_obj);
+
+        container_top+= post_options_obj.height;
+
+        post_options_container_obj.style.left = container_left + 'px';
+        post_options_container_obj.style.top = container_top + 'px';
+    
+        post_options_container_obj.className = 'post_options_container_open';
+
+        attachMenuClickHandler();
+    }
 }

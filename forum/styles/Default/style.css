@@ -1166,9 +1166,6 @@ a {
 .post_options_container_closed {
     position: absolute;
     text-align: left;
-    padding: 5px;
-    background-color: #FFFFFF;
-    border: 1px solid #000000;
     display: none;
     overflow: scroll;
 }
@@ -1176,9 +1173,10 @@ a {
 .post_options_container_opened {
     position: absolute;
     text-align: left;
-    padding: 5px;
-    background-color: #FFFFFF;
-    border: 1px solid #000000;
     display: block;
     overflow: scroll;
+}
+
+.post_options_menu {
+   padding: 5px 10px 10px 5px;
 }

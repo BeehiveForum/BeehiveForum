@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.463 2007-07-08 13:56:24 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.464 2007-07-08 20:06:15 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1014,19 +1014,50 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
             echo "                <td width=\"25%\" align=\"right\" nowrap=\"nowrap\">\n";
             echo "                  <img src=\"", style_image('post_options.png'), "\" width=\"17\" height=\"16\" class=\"post_options\" alt=\"{$lang['options']}\" title=\"{$lang['options']}\" onclick=\"openPostOptions({$message['PID']})\" id=\"post_options_{$message['PID']}\" />\n";
             echo "                    <div class=\"post_options_container_closed\" id=\"post_options_container_{$message['PID']}\">\n";
-            echo "                      <img src=\"", style_image('quote_disabled.png'), "\" border=\"0\" alt=\"{$lang['quote']}\" title=\"{$lang['quote']}\" name=\"p{$message['PID']}\" />&nbsp;<a href=\"post.php?webtag=$webtag&amp;replyto=$tid.{$message['PID']}&amp;quote_list={$message['PID']}\" target=\"_parent\" onclick=\"return togglePostQuoting({$message['PID']})\">{$lang['quote']}</a><br />\n";
-            echo "                      <img src=\"", style_image('pmunread.png'), "\" border=\"0\" alt=\"{$lang['pm_reply']}\" title=\"{$lang['pm_reply']}\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.{$message['PID']}\" target=\"_parent\" title=\"{$lang['pm_reply']}\">{$lang['pm_reply']}</a><br />\n";
-            echo "                      <img src=\"", style_image('print.png'), "\" border=\"0\" alt=\"{$lang['print']}\" title=\"{$lang['print']}\" />&nbsp;<a href=\"display.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_self\" title=\"{$lang['print']}\">{$lang['print']}</a><br />\n";
-            echo "                      <img src=\"", style_image('markasunread.png'), "\" border=\"0\" alt=\"{$lang['markasunread']}\" title=\"{$lang['markasunread']}\" />&nbsp;<a href=\"thread_options.php?webtag=$webtag&amp;msg=$tid.$first_msg&amp;markasread=", ($message['PID'] - 1), "\" target=\"_self\" title=\"{$lang['markasunread']}\">{$lang['markasunread']}</a><br />\n";
+            echo "                      <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
+            echo "                        <tr>\n";
+            echo "                          <td align=\"left\" colspan=\"3\">\n";
+            echo "                            <table class=\"box\" width=\"100%\">\n";
+            echo "                              <tr>\n";
+            echo "                                <td align=\"left\" class=\"posthead\">\n";
+            echo "                                  <table class=\"posthead\" width=\"100%\">\n";
+            echo "                                    <tr>\n";
+            echo "                                      <td class=\"subhead\" colspan=\"2\">{$lang['options']}</td>\n";
+            echo "                                    </tr>\n";
+            echo "                                    <tr>\n";
+            echo "                                      <td align=\"center\">\n";
+            echo "                                        <table width=\"95%\" class=\"post_options_menu\">\n";
+            echo "                                          <tr>\n";
+            echo "                                            <td align=\"left\"><a href=\"post.php?webtag=$webtag&amp;replyto=$tid.{$message['PID']}&amp;quote_list={$message['PID']}\" target=\"_parent\" title=\"{$lang['quote']}\" onclick=\"return togglePostQuoting({$message['PID']})\"><img src=\"", style_image('quote_disabled.png'), "\" border=\"0\" alt=\"{$lang['quote']}\" title=\"{$lang['quote']}\" name=\"p{$message['PID']}\" /></a></td>\n";
+            echo "                                            <td align=\"left\" nowrap=\"nowrap\"><a href=\"post.php?webtag=$webtag&amp;replyto=$tid.{$message['PID']}&amp;quote_list={$message['PID']}\" target=\"_parent\" title=\"{$lang['quote']}\" onclick=\"return togglePostQuoting({$message['PID']})\">{$lang['quote']}</a></td>\n";
+            echo "                                          </tr>\n";
+            echo "                                          <tr>\n";
+            echo "                                            <td align=\"left\"><a href=\"pm_write.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.{$message['PID']}\" target=\"_parent\" title=\"{$lang['pm_reply']}\"><img src=\"", style_image('pmunread.png'), "\" border=\"0\" alt=\"{$lang['pm_reply']}\" title=\"{$lang['pm_reply']}\" /></a></td>\n";
+            echo "                                            <td align=\"left\" nowrap=\"nowrap\"><a href=\"pm_write.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.{$message['PID']}\" target=\"_parent\" title=\"{$lang['pm_reply']}\">{$lang['pm_reply']}</a></td>\n";
+            echo "                                          </tr>\n";
+            echo "                                          <tr>\n";
+            echo "                                            <td align=\"left\"><a href=\"display.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_self\" title=\"{$lang['print']}\"><img src=\"", style_image('print.png'), "\" border=\"0\" alt=\"{$lang['print']}\" title=\"{$lang['print']}\" /></a></td>\n";
+            echo "                                            <td align=\"left\" nowrap=\"nowrap\"><a href=\"display.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_self\" title=\"{$lang['print']}\">{$lang['print']}</a></td>\n";
+            echo "                                          </tr>\n";
+            echo "                                          <tr>\n";
+            echo "                                            <td align=\"left\"><a href=\"thread_options.php?webtag=$webtag&amp;msg=$tid.$first_msg&amp;markasread=", ($message['PID'] - 1), "\" target=\"_self\" title=\"{$lang['markasunread']}\"><img src=\"", style_image('markasunread.png'), "\" border=\"0\" alt=\"{$lang['markasunread']}\" title=\"{$lang['markasunread']}\" /></a></td>\n";
+            echo "                                            <td align=\"left\" nowrap=\"nowrap\"><a href=\"thread_options.php?webtag=$webtag&amp;msg=$tid.$first_msg&amp;markasread=", ($message['PID'] - 1), "\" target=\"_self\" title=\"{$lang['markasunread']}\">{$lang['markasunread']}</a></td>\n";
+            echo "                                          </tr>\n";
 
             if ($uid != $message['FROM_UID']) {
 
-                echo "                      <img src=\"", style_image('enemy.png'), "\" border=\"0\" alt=\"{$lang['relationship']}\" title=\"{$lang['relationship']}\" />&nbsp;<a href=\"user_rel.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.$first_msg\" target=\"_self\" title=\"{$lang['relationship']}\">{$lang['relationship']}</a><br />\n";
+                echo "                                          <tr>\n";
+                echo "                                            <td align=\"left\"><a href=\"user_rel.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.$first_msg\" target=\"_self\" title=\"{$lang['relationship']}\"><img src=\"", style_image('enemy.png'), "\" border=\"0\" alt=\"{$lang['relationship']}\" title=\"{$lang['relationship']}\" /></a></td>\n";
+                echo "                                            <td align=\"left\" nowrap=\"nowrap\"><a href=\"user_rel.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.$first_msg\" target=\"_self\" title=\"{$lang['relationship']}\">{$lang['relationship']}</a></td>\n";
+                echo "                                          </tr>\n";
             }
 
             if ($perm_has_admin_access) {
 
-                echo "                      <img src=\"", style_image('admintool.png'), "\" border=\"0\" alt=\"{$lang['privileges']}\" title=\"{$lang['privileges']}\" />&nbsp;<a href=\"admin_user.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.$first_msg\" target=\"_self\" title=\"{$lang['privileges']}\">{$lang['privileges']}</a><br />\n";
+                echo "                                          <tr>\n";
+                echo "                                            <td align=\"left\"><a href=\"admin_user.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.$first_msg\" target=\"_self\" title=\"{$lang['privileges']}\"><img src=\"", style_image('admintool.png'), "\" border=\"0\" alt=\"{$lang['privileges']}\" title=\"{$lang['privileges']}\" /></a></td>\n";
+                echo "                                            <td align=\"left\" nowrap=\"nowrap\"><a href=\"admin_user.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.$first_msg\" target=\"_self\" title=\"{$lang['privileges']}\">{$lang['privileges']}</a></td>\n";
+                echo "                                          </tr>\n";
             }
 
             if ($perm_is_moderator || $perm_has_admin_access) {
@@ -1035,7 +1066,10 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
                 
                     if (forum_get_setting('require_post_approval', 'Y') && isset($message['APPROVED']) && $message['APPROVED'] == 0) {
                 
-                        echo "                      <img src=\"", style_image('approved.png'), "\" border=\"0\" alt=\"{$lang['approvepost']}\" title=\"{$lang['approvepost']}\" />&nbsp;<a href=\"admin_post_approve.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_parent\" title=\"{$lang['approvepost']}\">{$lang['approvepost']}</a><br />\n";
+                        echo "                                          <tr>\n";
+                        echo "                                            <td align=\"left\"><a href=\"admin_post_approve.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_parent\" title=\"{$lang['approvepost']}\"><img src=\"", style_image('approved.png'), "\" border=\"0\" alt=\"{$lang['approvepost']}\" title=\"{$lang['approvepost']}\" /></a></td>\n";
+                        echo "                                            <td align=\"left\" nowrap=\"nowrap\"><a href=\"admin_post_approve.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_parent\" title=\"{$lang['approvepost']}\">{$lang['approvepost']}</a></td>\n";
+                        echo "                                          </tr>\n";
                     }
                 }
                 
@@ -1043,16 +1077,25 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
                     if (ip_is_banned($message['IPADDRESS'])) {
 
-                        echo "                      <span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> <a href=\"admin_banned.php?webtag=$webtag&amp;unban_ipaddress={$message['IPADDRESS']}&amp;msg=$tid.{$message['PID']}\" target=\"_self\">{$lang['banned']}</a></span>";
+                        echo "                                          <tr>\n";
+                        echo "                                            <td align=\"left\"><span class=\"adminipdisplay\"><b>{$lang['ip']}</b></span></td>\n";
+                        echo "                                            <td align=\"left\" nowrap=\"nowrap\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_ipaddress={$message['IPADDRESS']}&amp;msg=$tid.{$message['PID']}\" target=\"_self\">{$lang['banned']}</a></td>\n";
+                        echo "                                          </tr>";
 
                     }else {
 
-                        echo "                      <span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> <a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$message['IPADDRESS']}&amp;msg=$tid.{$message['PID']}\" target=\"_self\">{$message['IPADDRESS']}</a></span>";
+                        echo "                                          <tr>\n";
+                        echo "                                            <td align=\"left\"><span class=\"adminipdisplay\"><b>{$lang['ip']}</b></span></td>\n";
+                        echo "                                            <td align=\"left\" nowrap=\"nowrap\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$message['IPADDRESS']}&amp;msg=$tid.{$message['PID']}\" target=\"_self\">{$message['IPADDRESS']}</a></td>\n";
+                        echo "                                          </tr>";
                     }
 
                 }else {
 
-                    echo "                      <span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> {$lang['notlogged']}</span>";
+                    echo "                                          <tr>\n";
+                    echo "                                            <td align=\"left\"><span class=\"adminipdisplay\"><b>{$lang['ip']}</b></span></td>\n";
+                    echo "                                            <td align=\"left\" nowrap=\"nowrap\">{$lang['notlogged']}</td>\n";
+                    echo "                                          </tr>";
                 }
 
             }else {
@@ -1061,23 +1104,42 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
                     if ($uid == $message['FROM_UID']) {
 
-                        echo "                      <span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> {$message['IPADDRESS']}</span>";
+                        echo "                                          <tr>\n";
+                        echo "                                            <td align=\"left\"><span class=\"adminipdisplay\"><b>{$lang['ip']}</b></span></td>\n";
+                        echo "                                            <td align=\"left\" nowrap=\"nowrap\">{$message['IPADDRESS']}</td>\n";
+                        echo "                                          </tr>";
 
                     }else {
 
-                        echo "                      <span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> {$lang['logged']}</span>";
+                        echo "                                          <tr>\n";
+                        echo "                                            <td align=\"left\"><span class=\"adminipdisplay\"><b>{$lang['ip']}</b></span></td>\n";
+                        echo "                                            <td align=\"left\" nowrap=\"nowrap\">{$lang['logged']}</td>\n";
+                        echo "                                          </tr>";
                     }
 
                 }else {
 
-                    echo "                      <span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> {$lang['logged']}</span>";
+                    echo "                                          <tr>\n";
+                    echo "                                            <td align=\"left\"><span class=\"adminipdisplay\"><b>{$lang['ip']}</b></span></td>\n";
+                    echo "                                            <td align=\"left\" nowrap=\"nowrap\">{$lang['logged']}</td>\n";
+                    echo "                                          </tr>";
                 }
             }
 
-            echo "                  </div>\n";
-            echo "                </td>\n";
-            echo "              </tr>";
-            echo "            </table>\n";
+            echo "                                        </table>\n";
+            echo "                                      </td>\n";
+            echo "                                    </tr>\n";
+            echo "                                  </table>\n";
+            echo "                                </td>\n";
+            echo "                              </tr>\n";
+            echo "                            </table>\n";
+            echo "                          </td>\n";
+            echo "                        </tr>\n";
+            echo "                      </table>\n";
+            echo "                    </div>\n";
+            echo "                  </td>\n";
+            echo "                </tr>";
+            echo "              </table>\n";
         }
     }
 

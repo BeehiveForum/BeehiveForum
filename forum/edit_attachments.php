@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.118 2007-06-10 12:28:43 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.119 2007-07-08 22:19:28 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -419,7 +419,7 @@ if ($attachment_result) {
                 echo "                  <td align=\"center\" width=\"1%\">", form_checkbox("delete_attachment[{$attachment['hash']}]", "Y", ""), "</td>\n";
                 echo "                  <td align=\"left\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">$attachment_link</td>\n";
 
-                if (is_md5($aid) && is_md5($attachment['aid']) && $message_link = get_message_link($attachment['aid'])) {
+                if (!is_md5($aid) && is_md5($attachment['aid']) && $message_link = get_message_link($attachment['aid'])) {
 
                     echo "                  <td align=\"left\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\"><a href=\"$message_link\" target=\"_blank\">{$lang['viewmessage']}</a></td>\n";
 
@@ -442,12 +442,12 @@ if ($attachment_result) {
         foreach ($image_attachments_array as $key => $attachment) {
 
             if ($attachment_link = attachment_make_link($attachment, false, true)) {
-
+                
                 echo "                <tr>\n";
                 echo "                  <td align=\"center\" width=\"1%\">", form_checkbox("delete_attachment[{$attachment['hash']}]", "Y", ""), "</td>\n";
                 echo "                  <td align=\"left\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">$attachment_link</td>\n";
 
-                if (is_md5($aid) && is_md5($attachment['aid']) && $message_link = get_message_link($attachment['aid'])) {
+                if (!is_md5($aid) && is_md5($attachment['aid']) && $message_link = get_message_link($attachment['aid'])) {
 
                     echo "                  <td align=\"left\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\"><a href=\"$message_link\" target=\"_blank\">{$lang['viewmessage']}</a></td>\n";
 

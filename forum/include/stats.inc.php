@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.77 2007-05-18 11:49:30 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.78 2007-07-10 15:50:38 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -281,11 +281,18 @@ function get_longest_thread()
 
     if (!$table_data = get_table_prefix()) return false;
 
+    $sql = "SELECT MAX(LENGTH) FROM {$table_data['PREFIX']}THREAD";
+
+    if (!$result = db_query($sql, $db_get_longest_thread)) return false;
+
+    list($highest_thread_count) = db_fetch_array($result, DB_RESULT_NUM);
+
     $sql = "SELECT THREAD.TITLE, THREAD.TID, THREAD.LENGTH, FOLDER.PREFIX ";
     $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}FOLDER FOLDER ";
     $sql.= "ON (FOLDER.FID = THREAD.FID) ";
-    $sql.= "ORDER BY THREAD.LENGTH DESC LIMIT 0, 1";
+    $sql.= "WHERE THREAD.LENGTH = '$highest_thread_count'";
+    $sql.= "LIMIT 0, 1";
 
     if (!$result = db_query($sql, $db_get_longest_thread)) return false;
 
@@ -346,10 +353,16 @@ function get_newest_user()
 
     $uid = bh_session_get_value('UID');
 
+    $sql = "SELECT MAX(UID) FROM USER";
+
+    if (!$result = db_query($sql, $db_get_newest_user)) return false;
+
+    list($newest_user_uid) = db_fetch_array($result, DB_RESULT_NUM);
+    
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME ";
     $sql.= "FROM USER LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
-    $sql.= "ORDER BY UID DESC LIMIT 0, 1";
+    $sql.= "WHERE USER.UID = '$newest_user_uid'";
 
     if (!$result = db_query($sql, $db_get_newest_user)) return false;
 

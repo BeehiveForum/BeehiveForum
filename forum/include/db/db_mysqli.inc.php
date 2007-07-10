@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db_mysqli.inc.php,v 1.25 2007-05-26 17:36:56 decoyduck Exp $ */
+/* $Id: db_mysqli.inc.php,v 1.26 2007-07-10 15:50:38 decoyduck Exp $ */
 
 function db_get_connection_vars(&$db_server, &$db_username, &$db_password, &$db_database)
 {
@@ -62,8 +62,13 @@ function db_enable_big_selects($connection_id)
 
     if (isset($mysql_big_selects) && $mysql_big_selects === true) {
 
-        $sql = "SET OPTION SQL_BIG_SELECTS = 1";
-        return db_query($sql, $connection_id);
+        $sql = "SET SESSION SQL_BIG_SELECTS = 1";
+        if (!$result = db_query($sql, $connection_id)) return false;
+
+        $sql = "SET SESSION SQL_MAX_JOIN_SIZE = DEFAULT";
+        if (!$result = db_query($sql, $connection_id)) return false;
+
+        return true;
     }
 
     return false;

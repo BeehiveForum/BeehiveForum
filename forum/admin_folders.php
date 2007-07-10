@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folders.php,v 1.130 2007-05-31 21:59:13 decoyduck Exp $ */
+/* $Id: admin_folders.php,v 1.131 2007-07-10 15:50:35 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -238,13 +238,13 @@ if (sizeof($folder_array['folder_array']) > 0) {
             echo "                  <td align=\"left\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;page=$page&amp;fid={$folder['FID']}\" title=\"Click To Edit Folder Details\">{$folder['TITLE']}</a></td>\n";
         }
 
-        if ($thread_count = folder_get_thread_count($folder['FID'])) {
-            echo "                  <td align=\"left\">{$thread_count}</td>\n";
+        if (isset($folder['THREAD_COUNT']) && $folder['THREAD_COUNT'] > 0) {
+            echo "                  <td align=\"left\">{$folder['THREAD_COUNT']}</td>\n";
         }else {
             echo "                  <td align=\"left\">0</td>\n";
         }
 
-        if ($folder['FOLDER_PERM_COUNT'] > 0) {
+        if (isset($folder['FOLDER_PERM_COUNT']) && $folder['FOLDER_PERM_COUNT'] > 0) {
             echo "                  <td align=\"left\">", perm_display_list($folder['FOLDER_PERMS']), "</td>\n";
         }else {
             echo "                  <td align=\"left\">{$lang['none']}</td>\n";

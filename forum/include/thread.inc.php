@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.118 2007-06-10 12:28:47 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.119 2007-07-10 15:50:38 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -213,24 +213,35 @@ function thread_get_tracking_data($tid)
 
     if (!is_numeric($tid)) return false;
 
+    $tracking_data_array = array();
+    
     $sql = "SELECT TID, NEW_TID, TRACK_TYPE ";
     $sql.= "FROM {$table_data['PREFIX']}THREAD_TRACK ";
-    $sql.= "WHERE TID = '$tid' OR NEW_TID = '$tid'";
+    $sql.= "WHERE TID = '$tid'";
 
     if (!$result = db_query($sql, $db_thread_get_tracking_data)) return false;
 
     if (db_num_rows($result) > 0) {
     
-        $tracking_data_array = array();
-        
         while ($tracking_data = db_fetch_array($result)) {
             $tracking_data_array[] = $tracking_data;
         }
-
-        return $tracking_data_array;
     }
 
-    return false;
+    $sql = "SELECT TID, NEW_TID, TRACK_TYPE ";
+    $sql.= "FROM {$table_data['PREFIX']}THREAD_TRACK ";
+    $sql.= "WHERE NEW_TID = '$tid'";
+
+    if (!$result = db_query($sql, $db_thread_get_tracking_data)) return false;
+
+    if (db_num_rows($result) > 0) {
+    
+        while ($tracking_data = db_fetch_array($result)) {
+            $tracking_data_array[] = $tracking_data;
+        }
+    }
+
+    return sizeof($tracking_data_array) > 0 ? $tracking_data_array : false;
 }    
 
 function thread_set_length($tid, $length)

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.272 2007-06-08 13:39:47 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.273 2007-07-10 15:50:38 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1427,6 +1427,7 @@ function threads_process_list($result)
 function threads_get_folder_msgs()
 {
     $folder_msgs = array();
+
     $db_threads_get_folder_msgs = db_connect();
 
     if (!$table_data = get_table_prefix()) return 0;
@@ -1436,7 +1437,6 @@ function threads_get_folder_msgs()
     if (!$result = db_query($sql, $db_threads_get_folder_msgs)) return false;
 
     while($folder = db_fetch_array($result)){
-
         $folder_msgs[$folder['FID']] = $folder['TOTAL'];
     }
 
@@ -1883,8 +1883,8 @@ function threads_have_attachments(&$threads_array, $tid_array)
 
     $db_thread_has_attachments = db_connect();
 
-    $sql = "SELECT PAI.TID, PAF.AID FROM POST_ATTACHMENT_FILES PAF ";
-    $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
+    $sql = "SELECT PAI.TID, PAF.AID FROM POST_ATTACHMENT_IDS PAI ";
+    $sql.= "LEFT JOIN POST_ATTACHMENT_FILES PAF ON (PAF.AID = PAI.AID) ";
     $sql.= "WHERE PAI.FID = '$forum_fid' AND PAI.TID IN ($tid_list) ";
 
     if (!$result = db_query($sql, $db_thread_has_attachments)) return false;

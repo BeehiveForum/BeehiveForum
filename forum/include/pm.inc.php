@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.206 2007-06-08 13:39:46 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.207 2007-07-10 15:50:38 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -153,7 +153,7 @@ function pm_get_inbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
 
     $pm_inbox_items = PM_INBOX_ITEMS;
 
-    $sql = "SELECT COUNT(MID) AS MESSAGE_COUNT FROM PM PM ";
+    $sql = "SELECT COUNT(*) AS MESSAGE_COUNT FROM PM PM ";
     $sql.= "WHERE (TYPE & $pm_inbox_items > 0) AND TO_UID = '$uid'";
 
     if (!$result = db_query($sql, $db_pm_get_inbox)) return false;
@@ -222,7 +222,7 @@ function pm_get_outbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
 
     $pm_outbox_items = PM_OUTBOX_ITEMS;
 
-    $sql = "SELECT COUNT(MID) AS MESSAGE_COUNT FROM PM PM ";
+    $sql = "SELECT COUNT(*) AS MESSAGE_COUNT FROM PM PM ";
     $sql.= "WHERE (TYPE & $pm_outbox_items > 0) AND FROM_UID = '$uid' ";
 
     if (!$result = db_query($sql, $db_pm_get_outbox)) return false;
@@ -291,7 +291,7 @@ function pm_get_sent($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
 
     $pm_sent_items = PM_SENT_ITEMS;
 
-    $sql = "SELECT COUNT(MID) AS MESSAGE_COUNT FROM PM PM ";
+    $sql = "SELECT COUNT(*) AS MESSAGE_COUNT FROM PM PM ";
     $sql.= "WHERE (TYPE & $pm_sent_items > 0) AND FROM_UID = '$uid' ";
     $sql.= "AND SMID = 0";
 
@@ -362,7 +362,7 @@ function pm_get_saved_items($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = 
     $pm_saved_out = PM_SAVED_OUT;
     $pm_saved_in  = PM_SAVED_IN;
 
-    $sql = "SELECT COUNT(MID) AS MESSAGE_COUNT FROM PM PM ";
+    $sql = "SELECT COUNT(*) AS MESSAGE_COUNT FROM PM PM ";
     $sql.= "WHERE ((TYPE & $pm_saved_out > 0) AND FROM_UID = '$uid') OR ";
     $sql.= "((TYPE & $pm_saved_in > 0) AND TO_UID = '$uid')";
 
@@ -433,7 +433,7 @@ function pm_get_drafts($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
 
     $pm_draft_items = PM_DRAFT_ITEMS;
 
-    $sql = "SELECT COUNT(MID) AS MESSAGE_COUNT FROM PM PM ";
+    $sql = "SELECT COUNT(*) AS MESSAGE_COUNT FROM PM PM ";
     $sql.= "WHERE (TYPE & $pm_draft_items > 0) AND FROM_UID = '$uid'";
 
     if (!$result = db_query($sql, $db_pm_get_drafts)) return false;
@@ -638,7 +638,7 @@ function pm_get_folder_message_counts()
     $pm_saved_in     = PM_SAVED_IN;
     $pm_draft_items  = PM_DRAFT_ITEMS;
 
-    $sql = "SELECT COUNT(MID) AS MESSAGE_COUNT, TYPE ";
+    $sql = "SELECT COUNT(*) AS MESSAGE_COUNT, TYPE ";
     $sql.= "FROM PM WHERE ((TYPE & $pm_inbox_items > 0) AND TO_UID = '$uid') ";
     $sql.= "OR ((TYPE & $pm_sent_items > 0) AND FROM_UID = '$uid' AND SMID = 0) ";
     $sql.= "OR ((TYPE & $pm_outbox_items > 0) AND FROM_UID = '$uid') ";
@@ -713,7 +713,7 @@ function pm_get_free_space($uid = false)
     $pm_saved_in     = PM_SAVED_IN;
     $pm_draft_items  = PM_DRAFT_ITEMS;
 
-    $sql = "SELECT COUNT(MID) AS MESSAGE_COUNT ";
+    $sql = "SELECT COUNT(*) AS MESSAGE_COUNT ";
     $sql.= "FROM PM WHERE ((TYPE & $pm_inbox_items > 0) AND TO_UID = '$uid') ";
     $sql.= "OR ((TYPE & $pm_sent_items > 0) AND FROM_UID = '$uid' AND SMID = 0) ";
     $sql.= "OR ((TYPE & $pm_outbox_items > 0) AND FROM_UID = '$uid') ";
@@ -1710,7 +1710,7 @@ function pm_new_check(&$pm_new_count, &$pm_outbox_count)
 
         // Check for any undelivered messages waiting for the user.
 
-        $sql = "SELECT COUNT(MID) AS OUTBOX_COUNT FROM PM ";
+        $sql = "SELECT COUNT(*) AS OUTBOX_COUNT FROM PM ";
         $sql.= "WHERE TYPE = '$pm_outbox' AND TO_UID = '$uid'";
 
         if (!$result = db_query($sql, $db_pm_new_check)) return false;
@@ -1742,7 +1742,7 @@ function pm_get_unread_count()
 
     // Check to see if the user has any new PMs
 
-    $sql = "SELECT COUNT(MID) FROM PM WHERE (TYPE & $pm_unread > 0) ";
+    $sql = "SELECT COUNT(*) FROM PM WHERE (TYPE & $pm_unread > 0) ";
     $sql.= "AND TO_UID = '$uid'";
 
     if (!$result = db_query($sql, $db_pm_get_unread_count)) return false;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.130 2007-06-10 12:28:44 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.131 2007-07-10 15:50:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -54,11 +54,9 @@ function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $al
 
     $access_allowed = USER_PERM_THREAD_CREATE;
 
-    $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION ";
-    $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
-    $sql.= "WHERE FOLDER.ALLOWED_TYPES & $allowed_types > 0 ";
-    $sql.= "OR FOLDER.ALLOWED_TYPES IS NULL ";
-    $sql.= "ORDER BY FOLDER.FID ";
+    $sql = "SELECT FID, TITLE, DESCRIPTION FROM {$table_data['PREFIX']}FOLDER ";
+    $sql.= "WHERE ALLOWED_TYPES & $allowed_types > 0 OR ALLOWED_TYPES IS NULL ";
+    $sql.= "ORDER BY FID ";
 
     if (!$result = db_query($sql, $db_folder_draw_dropdown)) return false;
 
@@ -103,9 +101,7 @@ function folder_draw_dropdown_all($default_fid, $field_name="t_fid", $suffix="",
 
     $available_folders = array();
 
-    $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION ";
-    $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
-
+    $sql = "SELECT FID, TITLE, DESCRIPTION FROM {$table_data['PREFIX']}FOLDER";
     if (!$result = db_query($sql, $db_folder_draw_dropdown)) return false;
 
     if (db_num_rows($result) > 0) {
@@ -426,7 +422,10 @@ function folder_get_all_by_page($offset)
         while ($row = db_fetch_array($result)) {
 
             $folder_array[$row['FID']] = $row;
+            $fid_array[] = $row['FID'];
         }
+
+        folders_get_thread_counts($folder_array, $fid_array);
     
     }else if ($folder_count > 0) {
 
@@ -438,6 +437,29 @@ function folder_get_all_by_page($offset)
                  'folder_count' => $folder_count);
 }
 
+function folders_get_thread_counts(&$folder_array, $fid_array)
+{
+    if (!is_array($fid_array)) return false;
+    if (sizeof($fid_array) < 1) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $forum_fid = $table_data['FID'];
+
+    $fid_list = implode(",", preg_grep("/^[0-9]+$/", $fid_array));
+
+    $db_folder_get_thread_count = db_connect();
+
+    $sql = "SELECT FID, COUNT(TID) AS THREAD_COUNT FROM {$table_data['PREFIX']}THREAD ";
+    $sql.= "WHERE FID IN ($fid_list) GROUP BY FID";
+
+    if (!$result = db_query($sql, $db_folder_get_thread_count)) return false;
+
+    while ($row = db_fetch_array($result)) {
+        $folder_array[$row['FID']]['THREAD_COUNT'] = $row['THREAD_COUNT'];
+    }
+}
+
 function folder_get_thread_count($fid)
 {
     $db_folder_get_thread_count = db_connect();
@@ -446,12 +468,11 @@ function folder_get_thread_count($fid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT COUNT(TID) AS THREAD_COUNT ";
-    $sql.= "FROM {$table_data['PREFIX']}THREAD ";
+    $sql = "SELECT COUNT(TID) AS THREAD_COUNT FROM {$table_data['PREFIX']}THREAD ";
     $sql.= "WHERE FID = '$fid'";
 
     if (!$result = db_query($sql, $db_folder_get_thread_count)) return false;
-    
+
     list($thread_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     return $thread_count;
@@ -468,11 +489,8 @@ function folder_get($fid)
     $forum_fid = $table_data['FID'];
 
     $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, FOLDER.POSITION, ";
-    $sql.= "FOLDER.PREFIX, FOLDER.ALLOWED_TYPES, GROUP_PERMS.PERM, ";
-    $sql.= "COUNT(THREAD.FID) AS THREAD_COUNT ";
+    $sql.= "FOLDER.PREFIX, FOLDER.ALLOWED_TYPES, GROUP_PERMS.PERM ";
     $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ";
-    $sql.= "ON (THREAD.FID = FOLDER.FID) ";
     $sql.= "LEFT JOIN GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.FID = FOLDER.FID ";
     $sql.= "AND GROUP_PERMS.GID = 0 AND GROUP_PERMS.FORUM IN (0, $forum_fid)) ";
     $sql.= "WHERE FOLDER.FID = '$fid' GROUP BY FOLDER.FID, FOLDER.TITLE";
@@ -482,6 +500,8 @@ function folder_get($fid)
     if (db_num_rows($result) > 0) {
         
         $folder_array = db_fetch_array($result);
+        $folder_array['THREAD_COUNT'] = folder_get_thread_count($fid);
+
         return $folder_array;
     }
     

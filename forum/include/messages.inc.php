@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.464 2007-07-08 20:06:15 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.465 2007-07-10 01:24:55 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1012,7 +1012,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
             echo "</td>\n";
             echo "                <td width=\"25%\" align=\"right\" nowrap=\"nowrap\">\n";
-            echo "                  <img src=\"", style_image('post_options.png'), "\" width=\"17\" height=\"16\" class=\"post_options\" alt=\"{$lang['options']}\" title=\"{$lang['options']}\" onclick=\"openPostOptions({$message['PID']})\" id=\"post_options_{$message['PID']}\" />\n";
+            echo "                  <a href=\"javascript:void(0)\" onclick=\"openPostOptions({$message['PID']})\" target=\"_self\">{$lang['options']}&nbsp;<img src=\"", style_image('post_options.png'), "\" width=\"17\" height=\"16\" class=\"post_options\" alt=\"{$lang['options']}\" title=\"{$lang['options']}\" id=\"post_options_{$message['PID']}\" border=\"0\" /></a>\n";
             echo "                    <div class=\"post_options_container_closed\" id=\"post_options_container_{$message['PID']}\">\n";
             echo "                      <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
             echo "                        <tr>\n";

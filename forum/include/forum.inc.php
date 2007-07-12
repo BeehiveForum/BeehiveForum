@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.246 2007-07-10 15:50:35 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.247 2007-07-12 21:39:55 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -654,7 +654,7 @@ function forum_get_table_prefix($fid)
 
     if (!is_numeric($fid)) return false;
 
-    $sql = "SELECT CONCAT(FORUMS.DATABASE_NAME, '.', FORUMS.WEBTAG, '_') AS PREFIX ";
+    $sql = "SELECT CONCAT(FORUMS.DATABASE_NAME, '.', FORUMS.WEBTAG, '_') AS PREFIX, ";
     $sql.= "FID, WEBTAG FROM FORUMS WHERE FID = '$fid'";
 
     if (!$result = db_query($sql, $db_forum_get_webtag)) return false;

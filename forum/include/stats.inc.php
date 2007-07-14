@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.78 2007-07-10 15:50:38 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.79 2007-07-14 09:48:34 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -281,7 +281,14 @@ function get_longest_thread()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT MAX(LENGTH) FROM {$table_data['PREFIX']}THREAD";
+    // Get the folders the user can see.
+
+    $folders = folder_get_available();
+
+    // Find the longest thread.
+
+    $sql = "SELECT MAX(LENGTH) FROM {$table_data['PREFIX']}THREAD ";
+    $sql.= "WHERE FID IN ($folders)";
 
     if (!$result = db_query($sql, $db_get_longest_thread)) return false;
 

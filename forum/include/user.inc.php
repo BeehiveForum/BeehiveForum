@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.329 2007-07-04 20:54:02 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.330 2007-07-15 16:48:51 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -244,32 +244,38 @@ function user_reset_post_count($uid)
     return true;
 }
 
-function user_change_password($uid, $password, $old_passhash = false)
+function user_change_password($user_uid, $password, $old_passhash = false)
 {
     $db_user_change_password = db_connect();
 
-    if (!is_numeric($uid)) return false;
+    if (!is_numeric($user_uid)) return false;
+
+    $uid = bh_session_get_value('UID');
 
     $passhash = db_escape_string(md5($password));
 
     if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
 
         $sql = "UPDATE USER SET PASSWD = '$passhash' ";
-        $sql.= "WHERE UID = '$uid'";
+        $sql.= "WHERE UID = '$user_uid'";
 
         if (!$result = db_query($sql, $db_user_change_password)) return false;
+
+        return true;
     
     }elseif (is_md5($old_passhash)) {
 
-        $old_passhash = db_escape_string(md5($password));
+        $old_passhash = db_escape_string($old_passhash);
         
         $sql = "UPDATE USER SET PASSWD = '$passhash' ";
-        $sql.= "WHERE UID = '$uid' AND PASSWD = '$old_passhash'";
+        $sql.= "WHERE UID = '$user_uid' AND PASSWD = '$old_passhash'";
 
         if (!$result = db_query($sql, $db_user_change_password)) return false;
+
+        return (db_affected_rows($db_user_change_password) > 0);
     }
 
-    return true;
+    return false;
 }
 
 function user_update_forums($uid, $forums_array)

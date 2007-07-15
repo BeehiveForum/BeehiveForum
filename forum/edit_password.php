@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_password.php,v 1.59 2007-06-07 20:27:25 decoyduck Exp $ */
+/* $Id: edit_password.php,v 1.60 2007-07-15 16:48:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -116,78 +116,87 @@ if (isset($_POST['submit'])) {
     $valid = true;
     $error_html = "";
 
-    // Required fields
-
     if (isset($_POST['opw']) && strlen(trim(_stripslashes($_POST['opw']))) > 0) {
+        $t_old_pass = trim(_stripslashes($_POST['opw']));
+    }else {
+        $error_html.= "<h2>{$lang['passwdrequired']}</h2>\n";
+        $valid = false;
+    }
 
-        if (isset($_POST['npw']) && strlen(trim(_stripslashes($_POST['npw']))) > 0) {
+    if (isset($_POST['npw']) && strlen(trim(_stripslashes($_POST['npw']))) > 0) {
+        $t_new_pass = trim(_stripslashes($_POST['npw']));
+    }else {
+        $error_html.= "<h2>{$lang['passwdrequired']}</h2>\n";
+        $valid = false;
+    }
 
-            if (isset($_POST['cpw']) && strlen(trim(_stripslashes($_POST['cpw']))) > 0) {
-
-                if (trim(_stripslashes($_POST['npw'])) == trim(_stripslashes($_POST['cpw']))) {
-
-                    if (_htmlentities(trim(_stripslashes($_POST['npw']))) != trim(trim(_stripslashes($_POST['npw'])))) {
-                        $error_html.= "<h2>{$lang['passwdmustnotcontainHTML']}</h2>\n";
-                        $valid = false;
-                    }
-
-                    if (!preg_match("/^[a-z0-9_-]+$/i", trim(_stripslashes($_POST['npw'])))) {
-                        $error_html.= "<h2>{$lang['passwordinvalidchars']}</h2>\n";
-                        $valid = false;
-                    }
-
-                    if (strlen(trim(_stripslashes($_POST['npw']))) < 6) {
-                        $error_html.= "<h2>{$lang['passwdtooshort']}</h2>\n";
-                        $valid = false;
-                    }
-
-                    if ($valid) {
-                        $t_password = trim(_stripslashes($_POST['npw']));
-                        $t_passhash = md5(trim(_stripslashes($_POST['opw'])));
-                    }
-
-                }else {
-                    $error_html.= "<h2>{$lang['passwdsdonotmatch']}</h2>\n";
-                    $valid = false;
-                }
-
-            }else {
-                $error_html.= "<h2>{$lang['passwdrequired']}</h2>\n";
-                $valid = false;
-            }
-
-        }else {
-            $error_html.= "<h2>{$lang['passwdrequired']}</h2>\n";
-            $valid = false;
-        }
+    if (isset($_POST['cpw']) && strlen(trim(_stripslashes($_POST['cpw']))) > 0) {
+        $t_confirm_pass = trim(_stripslashes($_POST['cpw']));
+    }else {
+        $error_html.= "<h2>{$lang['passwdrequired']}</h2>\n";
+        $valid = false;
     }
 
     if ($valid) {
 
-        // User's UID for updating with.
+        if ($t_new_pass != $t_confirm_pass) {
+            $error_html.= "<h2>{$lang['passwdsdonotmatch']}</h2>\n";
+            $valid = false;
+        }
 
-        $uid = bh_session_get_value('UID');
+        if (_htmlentities($t_new_pass) != $t_new_pass) {
+            $error_html.= "<h2>{$lang['passwdmustnotcontainHTML']}</h2>\n";
+            $valid = false;
+        }
 
-        // Update the password and cookie
+        if (preg_match("/^[a-z0-9_-]+$/i", $t_new_pass) < 1) {
+            $error_html.= "<h2>{$lang['passwordinvalidchars']}</h2>\n";
+            $valid = false;
+        }
 
-        user_change_password($uid, $t_password, $t_passhash);
+        if (strlen($t_new_pass) < 6) {
+            $error_html.= "<h2>{$lang['passwdtooshort']}</h2>\n";
+            $valid = false;
+        }
 
-        // Retrieve existing cookie data if any
+        if ($valid) {
 
-        logon_get_cookies($username_array, $password_array, $passhash_array);
+            // User's UID for updating with.
 
-        // Fetch current logon.
+            $uid = bh_session_get_value('UID');
 
-        $logon = bh_session_get_value('LOGON');
+            // Fetch current logon.
 
-        // Update the password that matches the current logged on user
+            $logon = bh_session_get_value('LOGON');
 
-        logon_update_password_cookie($logon, $t_password);
+            // Generate MD5 hash of the old password
 
-        // Force redirect to prevent refreshing the page 
-        // prompting to user to resubmit form data.
+            $t_old_pass_hash = md5($t_old_pass);
 
-        header_redirect("./edit_password.php?webtag=$webtag&updated=true", $lang['passwdchanged']);
+            // Update the password and cookie
+
+            if (user_change_password($uid, $t_new_pass, $t_old_pass_hash)) {
+
+                // Retrieve existing cookie data if any
+
+                logon_get_cookies($username_array, $password_array, $passhash_array);
+
+                // Update the password that matches the current logged on user
+
+                logon_update_password_cookie($logon, $t_new_pass);
+
+                // Force redirect to prevent refreshing the page 
+                // prompting to user to resubmit form data.
+
+                header_redirect("./edit_password.php?webtag=$webtag&updated=true", $lang['passwdchanged']);
+                exit;
+
+            }else {
+
+                $error_html = "<h2>{$lang['updatefailed']}.</h2>";
+                $valid = false;
+            }
+        }
     }
 }
 

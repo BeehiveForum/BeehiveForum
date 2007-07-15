@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.208 2007-07-04 18:35:14 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.209 2007-07-15 16:48:48 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -554,11 +554,15 @@ if (isset($_POST['submit']) && (!isset($_POST['t_delete_posts']) || $_POST['t_de
             
                 $fuid = bh_session_get_value('UID');
 
-                user_change_password($uid, $t_new_password);
+                if (user_change_password($uid, $t_new_password)) {
 
-                email_send_new_pw_notification($uid, $fuid, $t_new_password);
+                    email_send_new_pw_notification($uid, $fuid, $t_new_password);
+                    admin_add_log_entry(CHANGE_USER_PASSWD, $user_logon);
 
-                admin_add_log_entry(CHANGE_USER_PASSWD, $user_logon);
+                }else {
+
+                    echo "<h2>{$lang['failedtoupdatepassword']}</h2>\n";
+                }
             }
 
         }else {

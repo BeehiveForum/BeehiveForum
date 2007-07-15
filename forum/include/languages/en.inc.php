@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.449 2007-07-04 18:35:15 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.450 2007-07-15 16:48:48 decoyduck Exp $ */
 
 // British English language file
 
@@ -566,6 +566,7 @@ $lang['failedtoupdateforumsettings'] = "Failed to update forum settings. Please 
 
 $lang['changedstatusforuser'] = "Changed user status for '%s'";
 $lang['changedpasswordforuser'] = "Changed password for '%s'";
+$lang['failedtoupdatepassword'] = "Failed to update password.";
 $lang['changedforumaccess'] = "Changed forum access permissions for '%s'";
 $lang['deletedallusersposts'] = "Deleted all posts for '%s'";
 

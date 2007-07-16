@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.304 2007-06-08 13:39:46 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.305 2007-07-16 17:42:01 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -526,7 +526,7 @@ foreach ($folder_order as $folder_number) {
                             echo "                  <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
                             echo "                    <tr>\n";
                             echo "                      <td valign=\"top\" align=\"center\" nowrap=\"nowrap\" width=\"20\">";
-                            echo "<a href=\"thread_options.php?webtag=$webtag&amp;tid={$thread['TID']}\" target=\"", html_get_frame_name('right'), "\">";
+                            echo "<a href=\"thread_options.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"", html_get_frame_name('right'), "\">";
 
                             if ($thread['LAST_READ'] == 0) {
 

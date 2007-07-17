@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_prefs.php,v 1.76 2007-06-18 20:10:49 decoyduck Exp $ */
+/* $Id: edit_prefs.php,v 1.77 2007-07-17 14:23:18 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -272,10 +272,18 @@ if (isset($_POST['submit'])) {
         $user_prefs['HOMEPAGE_URL'] = trim(_stripslashes($_POST['homepage_url']));
         $user_prefs_global['HOMEPAGE_URL'] = (isset($_POST['homepage_url_global'])) ? $_POST['homepage_url_global'] == "Y" : true;
 
-        if (!user_check_pref('HOMEPAGE_URL', $user_prefs['HOMEPAGE_URL'])) {
+        if (strlen(trim($user_prefs['HOMEPAGE_URL'])) > 0) {
 
-            $error_html.= "<h2>{$lang['homepageURL']} {$lang['containsinvalidchars']}</h2>";
-            $valid = false;
+            if (preg_match('/^http:\/\//', $user_prefs['HOMEPAGE_URL']) < 1) {
+
+                $error_html.= "<h2>{$lang['homepageurlmustincludeschema']}</h2>\n";
+                $valid = false;
+
+            }else if (!user_check_pref('HOMEPAGE_URL', $user_prefs['HOMEPAGE_URL'])) {
+
+                $error_html.= "<h2>{$lang['homepageURL']} {$lang['containsinvalidchars']}</h2>";
+                $valid = false;
+            }
         }
     }
 
@@ -284,10 +292,18 @@ if (isset($_POST['submit'])) {
         $user_prefs['PIC_URL'] = trim(_stripslashes($_POST['pic_url']));
         $user_prefs_global['PIC_URL'] = (isset($_POST['pic_url_global'])) ? $_POST['pic_url_global'] == "Y" : true;
 
-        if (!user_check_pref('PIC_URL', $user_prefs['PIC_URL'])) {
+        if (strlen(trim($user_prefs['PIC_URL'])) > 0) {
 
-            $error_html.= "<h2>{$lang['pictureURL']} {$lang['containsinvalidchars']}</h2>";
-            $valid = false;
+            if (preg_match('/^http:\/\//', $user_prefs['PIC_URL']) < 1) {
+
+                $error_html.= "<h2>{$lang['pictureurlmustincludeschema']}</h2>\n";
+                $valid = false;
+
+            }else if (!user_check_pref('PIC_URL', $user_prefs['PIC_URL'])) {
+
+                $error_html.= "<h2>{$lang['pictureURL']} {$lang['containsinvalidchars']}</h2>";
+                $valid = false;
+            }
         }
     }
 
@@ -355,10 +371,18 @@ if (isset($_POST['submit'])) {
         $user_prefs['AVATAR_URL'] = trim(_stripslashes($_POST['avatar_url']));
         $user_prefs_global['AVATAR_URL'] = (isset($_POST['avatar_url_global'])) ? $_POST['avatar_url_global'] == "Y" : true;
 
-        if (!user_check_pref('AVATAR_URL', $user_prefs['AVATAR_URL'])) {
+        if (strlen(trim($user_prefs['AVATAR_URL'])) > 0) {
+        
+            if (preg_match('/^http:\/\//', $user_prefs['AVATAR_URL']) < 1) {
 
-            $error_html.= "<h2>{$lang['pictureURL']} {$lang['containsinvalidchars']}</h2>";
-            $valid = false;
+                $error_html.= "<h2>{$lang['avatarurlmustincludeschema']}</h2>\n";
+                $valid = false;
+
+            }else if (!user_check_pref('AVATAR_URL', $user_prefs['AVATAR_URL'])) {
+
+                $error_html.= "<h2>{$lang['pictureURL']} {$lang['containsinvalidchars']}</h2>";
+                $valid = false;
+            }
         }
     }
 

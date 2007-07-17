@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.451 2007-07-15 17:32:16 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.452 2007-07-17 14:23:18 decoyduck Exp $ */
 
 // British English language file
 
@@ -1320,6 +1320,9 @@ $lang['birthdayanddateofbirth'] = "Birthday and date of birth display";
 $lang['includeadminfilter'] = "Include admin word filter in my list.";
 $lang['setforallforums'] = "Set for all forums?";
 $lang['containsinvalidchars'] = "contained invalid characters!";
+$lang['homepageurlmustincludeschema'] = "Homepage URL must include http:// schema.";
+$lang['pictureurlmustincludeschema'] = "Picture URL must include http:// schema.";
+$lang['avatarurlmustincludeschema'] = "Avatar URL must include http:// schema.";
 $lang['postpage'] = "Post Page";
 $lang['nohtmltoolbar'] = "No HTML toolbar";
 $lang['displaysimpletoolbar'] = "Display simple HTML toolbar";

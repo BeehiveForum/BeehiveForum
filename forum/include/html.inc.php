@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.235 2007-06-26 14:09:44 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.236 2007-07-17 16:23:07 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -52,7 +52,7 @@ function html_guest_error()
      
      $lang = load_language_file();
 
-     $final_uri = rawurlencode(get_request_uri());
+     $final_uri = basename(get_request_uri());
 
      html_draw_top("robots=noindex,nofollow");
      html_error_msg($lang['guesterror'], 'logout.php', 'get', array('submit' => $lang['loginnow']), array('final_uri' => $final_uri), $frame_top_target);
@@ -878,6 +878,43 @@ function bh_setcookie($name, $value, $expires = 0)
 
     return setcookie($name, $value, $expires);
 }
+
+function bh_remove_all_cookies()
+{
+    // Retrieve existing cookie data if any
+
+    logon_get_cookies($username_array, $password_array, $passhash_array);
+
+    // Remove logon tracking and session cookies
+
+    setcookie("bh_logon_failed", "", time() - YEAR_IN_SECONDS);
+    setcookie("bh_sess_hash", "", time() - YEAR_IN_SECONDS);
+    setcookie("bh_logon", "", time() - YEAR_IN_SECONDS);
+
+    // Remove the saved saved logon cookies
+
+    for ($i = 0; $i < sizeof($username_array); $i++) {
+
+        bh_setcookie("bh_remember_username[$i]", '', time() - YEAR_IN_SECONDS);
+        bh_setcookie("bh_remember_password[$i]", '', time() - YEAR_IN_SECONDS);
+        bh_setcookie("bh_remember_passhash[$i]", '', time() - YEAR_IN_SECONDS);
+    }
+
+    // Remove the light mode saved logon cookies.
+
+    setcookie("bh_light_remember_username", "", time() - YEAR_IN_SECONDS);
+    setcookie("bh_light_remember_password", "", time() - YEAR_IN_SECONDS);
+    setcookie("bh_light_remember_passhash", "", time() - YEAR_IN_SECONDS);
+
+    if ($webtag_array = forum_get_all_webtags()) {
+
+        foreach ($webtag_array as $fid => $forum_webtag) {
+
+            setcookie("bh_{$forum_webtag}_thread_mode", "", time() - YEAR_IN_SECONDS);
+            setcookie("bh_{$forum_webtag}_password", "", time() - YEAR_IN_SECONDS);
+        }
+    }
+}    
 
 // Remove named $keys from the query of a URI
 // $keys can be an array or a single key to remove

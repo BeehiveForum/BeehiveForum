@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.162 2007-06-20 20:03:27 decoyduck Exp $ */
+/* $Id: register.php,v 1.163 2007-07-17 16:23:06 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -82,7 +82,7 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri']))) > 0) {
     
-    $final_uri = rawurldecode(trim(_stripslashes($_GET['final_uri'])));
+    $final_uri = basename(trim(_stripslashes($_GET['final_uri'])));
 
     $available_files = get_available_files();
     $available_files_preg = implode("|^", array_map('preg_quote_callback', $available_files));
@@ -527,7 +527,7 @@ if (isset($error_html) && strlen($error_html) > 0) {
 if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
 
     echo "<div align=\"center\">\n";
-    echo "<form name=\"register\" action=\"register.php\" method=\"post\">\n";
+    echo "<form name=\"register\" action=\"", get_request_uri(), "\" method=\"post\">\n";
     echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "  ", form_input_hidden('user_agree_rules', _htmlentities($user_agree_rules)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
@@ -828,7 +828,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
     }
 
     echo "<div align=\"center\">\n";
-    echo "<form name=\"register\" action=\"register.php\" method=\"post\">\n";
+    echo "<form name=\"register\" action=\"", get_request_uri(), "\" method=\"post\">\n";
     echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";

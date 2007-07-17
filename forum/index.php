@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.147 2007-06-13 21:21:27 decoyduck Exp $ */
+/* $Id: index.php,v 1.148 2007-07-17 16:23:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -112,6 +112,8 @@ bh_setcookie("bh_logon", "1", time() - YEAR_IN_SECONDS);
 
 if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri']))) > 0) {
 
+    $final_uri_check = basename(trim(_stripslashes($_GET['final_uri'])));
+    
     $available_files = get_available_files();
     $available_files_preg = implode("|^", array_map('preg_quote_callback', $available_files));
 
@@ -120,26 +122,26 @@ if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri'])))
 
     $popup_files_preg = get_available_popup_files_preg();
     
-    if (preg_match("/^$available_files_preg/", basename(trim(_stripslashes($_GET['final_uri'])))) > 0) {
+    if (preg_match("/^$available_files_preg/", $final_uri_check) > 0) {
     
-        $final_uri = rawurldecode(trim(_stripslashes($_GET['final_uri'])));
-
-        if (preg_match("/^$popup_files_preg/", basename($final_uri)) > 0) {
+        $final_uri = basename(trim(_stripslashes($_GET['final_uri'])));
+        
+        if (preg_match("/^$popup_files_preg/", $final_uri) > 0) {
 
             header_redirect($final_uri);
             exit;
 
-        }else if (preg_match("/^admin_[^\.]+\.php/", basename($final_uri)) > 0) {
+        }else if (preg_match("/^admin_[^\.]+\.php/", $final_uri) > 0) {
 
             $final_uri = rawurlencode($final_uri);
             $final_uri = "admin.php?webtag=$webtag&page=$final_uri";
         
-        }else if (preg_match("/^$my_controls_preg/", basename($final_uri)) > 0) {
+        }else if (preg_match("/^$my_controls_preg/", $final_uri) > 0) {
 
             $final_uri = rawurlencode($final_uri);
             $final_uri = "user.php?webtag=$webtag&page=$final_uri";
         }
-    }    
+    }
 }
 
 if ($session_active && !$logon_failed) {

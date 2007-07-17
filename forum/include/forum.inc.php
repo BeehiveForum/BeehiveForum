@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.247 2007-07-12 21:39:55 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.248 2007-07-17 16:23:07 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -156,7 +156,7 @@ function forum_check_access_level()
 
     if (!is_array($forum_data) || !isset($forum_data['ACCESS_LEVEL']) || !isset($forum_data['ALLOWED'])) {
     
-        $sql = "SELECT FORUMS.ACCESS_LEVEL, USER_FORUM.ALLOWED FROM FORUMS ";
+        $sql = "SELECT FORUMS.FID, FORUMS.ACCESS_LEVEL, USER_FORUM.ALLOWED FROM FORUMS ";
         $sql.= "LEFT JOIN USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
         $sql.= "AND USER_FORUM.UID = '$uid') WHERE FORUMS.FID = '$forum_fid'";
 
@@ -291,15 +291,16 @@ function forum_check_password($forum_fid)
         }
 
         if (isset($_COOKIE["bh_{$webtag}_password"]) && strlen(trim(_stripslashes($_COOKIE["bh_{$webtag}_password"]))) > 0) {
+
             bh_setcookie("bh_{$webtag}_password", "", time() - YEAR_IN_SECONDS);
             echo "<h2>{$lang['usernameorpasswdnotvalid']}</h2>\n";
             echo "<h2>{$lang['pleasereenterpasswd']}</h2>\n";
         }
 
         echo "<div align=\"center\">\n";
-        echo "<form method=\"post\" action=\"./forum_password.php\" target=\"", html_get_top_frame_name(), "\">\n";
+        echo "<form method=\"post\" action=\"forum_password.php\" target=\"", html_get_top_frame_name(), "\">\n";
         echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-        echo "  ", form_input_hidden('ret', _htmlentities(get_request_uri())), "\n";
+        echo "  ", form_input_hidden('final_uri', _htmlentities(get_request_uri())), "\n";
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"350\">\n";
         echo "    <tr>\n";
         echo "      <td align=\"center\">\n";
@@ -333,7 +334,7 @@ function forum_check_password($forum_fid)
         echo "      <td align=\"left\">&nbsp;</td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
-        echo "      <td align=\"center\">", form_submit("submit", $lang['submit']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+        echo "      <td align=\"center\">", form_submit("submit", $lang['logon']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
         echo "    </tr>\n";
         echo "  </table>\n";
         echo "</form>\n";
@@ -2251,23 +2252,44 @@ function forum_search($forum_search, $offset)
 
 function forum_get_all_prefixes()
 {
-    $db_forum_get_all_webtags = db_connect();
+    $db_forum_get_all_prefixes = db_connect();
 
     $sql = "SELECT CONCAT(DATABASE_NAME, '.', WEBTAG, '_') AS PREFIX, ";
     $sql.= "FID FROM FORUMS ";
+
+    if (!$result = db_query($sql, $db_forum_get_all_prefixes)) return false;
+
+    if (db_num_rows($result) > 0) {
+
+        $prefix_array = array();
+
+        while ($forum_data = db_fetch_array($result)) {
+            $prefix_array[$forum_data['FID']] = $forum_data['PREFIX'];
+        }
+
+        return $prefix_array;
+    }
+
+    return false;
+}
+
+function forum_get_all_webtags()
+{
+    $db_forum_get_all_webtags = db_connect();
+
+    $sql = "SELECT FID, WEBTAG FROM FORUMS ";
 
     if (!$result = db_query($sql, $db_forum_get_all_webtags)) return false;
 
     if (db_num_rows($result) > 0) {
 
-        $webtags = array();
+        $webtag_array = array();
 
-        while ($row = db_fetch_array($result)) {
-
-            $webtags[$row['FID']] = $row['PREFIX'];
+        while ($forum_data = db_fetch_array($result)) {
+            $webtag_array[$forum_data['FID']] = $forum_data['WEBTAG'];
         }
 
-        return $webtags;
+        return $webtag_array;
     }
 
     return false;

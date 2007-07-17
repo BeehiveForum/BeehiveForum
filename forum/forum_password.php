@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_password.php,v 1.14 2007-05-02 23:15:40 decoyduck Exp $ */
+/* $Id: forum_password.php,v 1.15 2007-07-17 16:23:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -92,8 +92,9 @@ if (isset($_GET['webtag'])) {
 // User clicked Cancel so we send them to the My Forums page.
 
 if (isset($_POST['cancel'])) {
-    $ret = "./index.php?final_uri=forums.php";
-    header_redirect($ret);
+
+    $redirect_uri = "./index.php?final_uri=forums.php%3Fwebtag%3D$webtag";
+    header_redirect($redirect_uri);
 }
 
 // Check we have the password in the POST data
@@ -104,21 +105,25 @@ if (isset($_POST['forum_password']) && strlen(trim(_stripslashes($_POST['forum_p
     $forum_password = "";
 }
 
-if (isset($_POST['ret']) && strlen(trim(_stripslashes($_POST['ret']))) > 0) {
-    $ret = "index.php?webtag=$webtag&final_uri=". rawurlencode($_POST['ret']);
+if (isset($_POST['final_uri']) && strlen(trim(_stripslashes($_POST['final_uri']))) > 0) {
+    
+    $final_uri = basename(trim(_stripslashes($_POST['final_uri'])));
+    $redirect_uri = "index.php?webtag=$webtag&final_uri=". rawurlencode($final_uri);
+
 }else {
-    $ret = "index.php?webtag=$webtag";
+
+    $redirect_uri = "index.php?webtag=$webtag";
 }
 
 // validate the return to page
 
-if (isset($ret) && strlen(trim($ret)) > 0) {
+if (isset($redirect_uri) && strlen(trim($redirect_uri)) > 0) {
 
     $available_files = get_available_files();
     $available_files_preg = implode("|^", array_map('preg_quote_callback', $available_files));
 
-    if (preg_match("/^$available_files_preg/", basename($ret)) < 1) {
-        $ret = "index.php?webtag=$webtag";
+    if (preg_match("/^$available_files_preg/", basename($redirect_uri)) < 1) {
+        $redirect_uri = "index.php?webtag=$webtag";
     }
 }
 
@@ -133,6 +138,6 @@ if (isset($_POST['remember_password']) && $_POST['remember_password'] == "Y") {
     bh_setcookie("bh_{$webtag}_password", $forum_password);
 }
 
-header_redirect($ret);
+header_redirect($redirect_uri);
 
 ?>

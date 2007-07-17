@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.175 2007-05-31 21:59:18 decoyduck Exp $ */
+/* $Id: logon.php,v 1.176 2007-07-17 16:23:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -68,7 +68,7 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri']))) > 0) {
 
-    $final_uri = rawurldecode($_GET['final_uri']);
+    $final_uri = basename(trim(_stripslashes($_GET['final_uri'])));;
 
 }elseif (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
@@ -117,18 +117,7 @@ logon_get_cookies($username_array, $password_array, $passhash_array);
 
 if (isset($_GET['deletecookie']) && $_GET['deletecookie'] == 'yes') {
 
-    for ($i = 0; $i < sizeof($username_array); $i++) {
-
-        bh_setcookie("bh_remember_username[$i]", '', time() - YEAR_IN_SECONDS);
-        bh_setcookie("bh_remember_password[$i]", '', time() - YEAR_IN_SECONDS);
-        bh_setcookie("bh_remember_passhash[$i]", '', time() - YEAR_IN_SECONDS);
-    }
-
-    bh_setcookie("bh_remember_username", "", time() - YEAR_IN_SECONDS);
-    bh_setcookie("bh_remember_password", "", time() - YEAR_IN_SECONDS);
-    bh_setcookie("bh_remember_passhash", "", time() - YEAR_IN_SECONDS);
-
-    bh_session_remove_cookies();
+    bh_remove_all_cookies();
 
     bh_setcookie("bh_logon", "1");
 

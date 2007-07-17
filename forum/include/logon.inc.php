@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.65 2007-06-08 13:39:46 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.66 2007-07-17 16:23:07 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -274,7 +274,7 @@ function logon_perform($logon_main)
 
             // Remove any previously set cookies
             
-            bh_setcookie("bh_thread_mode", "1", time() - YEAR_IN_SECONDS);
+            bh_setcookie("bh_{$webtag}_thread_mode", "1", time() - YEAR_IN_SECONDS);
             bh_setcookie("bh_logon", "1", time() - YEAR_IN_SECONDS);
 
             // Initialise a user session.
@@ -486,9 +486,9 @@ function logon_draw_form()
         echo "</form>\n";
     }
 
-    if (isset($final_uri)) {
+    if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri']))) > 0) {
 
-        $final_uri = rawurlencode($final_uri);
+        $final_uri = rawurlencode(trim(_stripslashes($_GET['final_uri'])));
 
         echo "<p class=\"smalltext\">", sprintf($lang['donthaveanaccount'], "<a href=\"register.php?webtag=$webtag&amp;final_uri=$final_uri\" target=\"_self\">{$lang['registernow']}</a>"), "</p>\n";
         echo "<hr width=\"350\" />\n";

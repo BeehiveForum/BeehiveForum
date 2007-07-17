@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.79 2007-07-14 09:48:34 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.80 2007-07-17 20:49:37 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -33,6 +33,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 }
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
+include_once(BH_INCLUDE_PATH. "folder.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 

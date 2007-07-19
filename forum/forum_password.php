@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_password.php,v 1.15 2007-07-17 16:23:06 decoyduck Exp $ */
+/* $Id: forum_password.php,v 1.16 2007-07-19 22:14:13 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -99,11 +99,29 @@ if (isset($_POST['cancel'])) {
 
 // Check we have the password in the POST data
 
-if (isset($_POST['forum_password']) && strlen(trim(_stripslashes($_POST['forum_password']))) > 0) {
-    $forum_password = $_POST['forum_password'];
-}else {
-    $forum_password = "";
+if (isset($_POST['forum_password'])) {
+
+    $forum_password = _stripslashes($_POST['forum_password']);
+
+    if (strlen(trim($forum_password)) > 0) {
+
+        $forum_passhash = md5($forum_password);
+        $forum_password = str_repeat(chr(32), strlen($forum_password));
+
+    }else {
+
+        if (isset($_POST['forum_passhash']) && is_md5($_POST['forum_passhash'])) {
+
+            $forum_passhash = $_POST['forum_passhash'];
+
+        }else {
+
+            $forum_passhash = "";
+        }
+    }
 }
+
+// Check for a returning page.
 
 if (isset($_POST['final_uri']) && strlen(trim(_stripslashes($_POST['final_uri']))) > 0) {
     
@@ -115,7 +133,7 @@ if (isset($_POST['final_uri']) && strlen(trim(_stripslashes($_POST['final_uri'])
     $redirect_uri = "index.php?webtag=$webtag";
 }
 
-// validate the return to page
+// Validate the return to page
 
 if (isset($redirect_uri) && strlen(trim($redirect_uri)) > 0) {
 
@@ -133,10 +151,22 @@ if (isset($redirect_uri) && strlen(trim($redirect_uri)) > 0) {
 // access the forum.
 
 if (isset($_POST['remember_password']) && $_POST['remember_password'] == "Y") {
+    
     bh_setcookie("bh_{$webtag}_password", $forum_password, time() + YEAR_IN_SECONDS);
+    bh_setcookie("bh_{$webtag}_passhash", $forum_passhash, time() + YEAR_IN_SECONDS);
+
 }else {
-    bh_setcookie("bh_{$webtag}_password", $forum_password);
+
+    bh_setcookie("bh_{$webtag}_password", '', time() - YEAR_IN_SECONDS);
+    bh_setcookie("bh_{$webtag}_passhash", '', time() - YEAR_IN_SECONDS);
 }
+
+// Log the user into the forum by setting a session cookie
+// containing the forum's password as an MD5 hash.
+
+bh_setcookie("bh_{$webtag}_sesshash", $forum_passhash);
+
+// Redirect the user back to where they came from.
 
 header_redirect($redirect_uri);
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.452 2007-07-17 14:23:18 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.453 2007-07-19 22:14:13 decoyduck Exp $ */
 
 // British English language file
 
@@ -139,7 +139,6 @@ $lang['normal'] = "Normal";
 $lang['interested'] = "Interested";
 $lang['subscribe'] = "Subscribe";
 $lang['apply'] = "Apply";
-$lang['submit'] = "Submit";
 $lang['download'] = "Download";
 $lang['save'] = "Save";
 $lang['update'] = "Update";
@@ -243,15 +242,15 @@ $lang['adminforumclosedtip'] = "If you want to change some settings on your foru
 $lang['newfolder'] = "New Folder";
 $lang['forumadmin'] = "Forum Admin";
 $lang['adminexp_1'] = "Use the menu on the left to manage things in your forum.";
-$lang['adminexp_2'] = "<b>Users</b> allows you to set individual user permissions, including appointing Editors and gagging people.";
+$lang['adminexp_2'] = "<b>Users</b> allows you to set individual user permissions, including appointing moderators and gagging people.";
 $lang['adminexp_3'] = "<b>User Groups</b> allows you to create User Groups to assign permissions to as many or as few users quickly and easily.";
-$lang['adminexp_4'] = "<b>Ban Controls</b> allows the banning and un-banning of IP Addresses, Usernames, Email addresses and Nicknames.";
+$lang['adminexp_4'] = "<b>Ban Controls</b> allows the banning and un-banning of IP Addresses, HTTP Referers, Usernames, Email addresses and Nicknames.";
 $lang['adminexp_5'] = "<b>Folders</b> allows the creation, modification and deletion of folders.";
-$lang['adminexp_6'] = "<b>RSS Feeds</b> allows you to create and remove RSS feeds for propogation into your forum.";
+$lang['adminexp_6'] = "<b>RSS Feeds</b> allows you to manage RSS feeds for propogation into your forum.";
 $lang['adminexp_7'] = "<b>Profiles</b> lets you customise the items that appear in the user profiles.";
 $lang['adminexp_8'] = "<b>Forum Settings</b> allows you to customise your forum's name, appearance and many other things.";
 $lang['adminexp_9'] = "<b>Start Page</b> lets you customise your forum's start page.";
-$lang['adminexp_10'] = "<b>Forum style</b> allows you to create styles for your forum members to use.";
+$lang['adminexp_10'] = "<b>Forum style</b> allows you to generate random styles for your forum members to use.";
 $lang['adminexp_11'] = "<b>Word filter</b> allows you to filter words you don't want to be used on your forum.";
 $lang['adminexp_12'] = "<b>Posting stats</b> generates a report listing the top 10 posters in a defined period.";
 $lang['adminexp_13'] = "<b>Forum links</b> lets you manage the links dropdown in the navigation bar.";

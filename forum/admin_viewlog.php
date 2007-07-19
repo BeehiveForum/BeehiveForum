@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.116 2007-07-04 15:26:47 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.117 2007-07-19 22:14:13 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -441,6 +441,7 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
                     $forum_link = sprintf("admin_forum_links.php?webtag=$webtag&amp;lid=%s", $entry_array[0]);
                     $admin_link = sprintf("<a href=\"index.php?webtag=$webtag&final_uri=%s\" target=\"_blank\">%s</a>", rawurlencode($forum_link), $entry_array[1]);
+                    $action_text = sprintf($lang['editedforumlink'], $admin_link);
 
                 }else {
 

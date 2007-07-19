@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.59 2007-06-20 20:03:27 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.60 2007-07-19 22:14:13 decoyduck Exp $ */
 
 // French Canadian language file
 
@@ -139,7 +139,6 @@ $lang['normal'] = "Normal";
 $lang['interested'] = "Interessé";
 $lang['subscribe'] = "S'abonner à";
 $lang['apply'] = "Appliquer";
-$lang['submit'] = "Soumettre";
 $lang['download'] = "Télécharger";
 $lang['save'] = "Enregistrer";
 $lang['update'] = "Mettre à jour";
@@ -1016,7 +1015,6 @@ $lang['forumnounreadmessages'] = "No Unread Messages";
 $lang['removefromfavourites'] = "Supprimer de mes favoris";
 $lang['addtofavourites'] = "Ajouter à mes favoris";
 $lang['availableforums'] = "Forums disponibles";
-$lang['noforumsavailable'] = "Aucun forum de disponible.";
 $lang['noforumsavailablelogin'] = "Aucun forum de disponible. SVP ouvrir une session pour voir vos forums.";
 $lang['passwdprotectedforum'] = "Forum protégé par mot de passe";
 $lang['passwdprotectedwarning'] = "Ce forum est protégé par mot de passe. Pour y accéder, entrer le mot de passe ci-dessous.";
@@ -1252,7 +1250,6 @@ $lang['fontsize'] = "Taille de police";
 $lang['forumstyle'] = "Style du forum";
 $lang['forumemoticons'] = "Binettes du forum";
 $lang['startpage'] = "Page de démarrage";
-$lang['containsHTML'] = "Contient du HTML";
 $lang['preferredlang'] = "Langage préféré";
 $lang['donotshowmyageordobtoothers'] = "Masquer mon âge et ma date de naissance";
 $lang['showonlymyagetoothers'] = "Montrer uniquement mon âge aux autres utilisateurs";
@@ -1388,8 +1385,6 @@ $lang['age'] = "Âge";
 $lang['aged'] = "âgé";
 $lang['birthday'] = "Anniversaire";
 $lang['registered'] = "Enregistré";
-$lang['findusersposts'] = "Trouver les messages de l'usager";
-$lang['findmyposts'] = "Trouver mes messages";
 
 // Registration (register.php) -----------------------------------------
 
@@ -1770,7 +1765,6 @@ $lang['pmexportwordfilter'] = "Appliquer le filtre des mots aux messages";
 
 // Thread merge / split options
 
-$lang['threadmerge'] = "Thread has been merged";
 $lang['mergesplitthread'] = "Fusionner / Diviser fils de discussion";
 $lang['mergewiththreadid'] = "Fusionner avec identification de fils de discussion:";
 $lang['postsinthisthreadatstart'] = "Messages dans ce fils de discussion au début";
@@ -1780,7 +1774,6 @@ $lang['splitthreadatpost'] = "Diviser fils de discussion à message:";
 $lang['selectedpostsandrepliesonly'] = "Message sélectionné et réponses seulement";
 $lang['selectedandallfollowingposts'] = "Message sélectionné et tous les suivants";
 
-$lang['threadhere'] = "ici";
 $lang['thisthreadhasmoved'] = "<b>Fils de discussion fusionnés:</b> Ce fils de discussion a déménagé %s";
 $lang['thisthreadwasmergedfrom'] = "<b>Fils de discussion fusionnés:</b> Ce fils de discussion a été fusionné d'ici %s";
 $lang['somepostsinthisthreadhavebeenmoved'] = "<b>Division de fils de discussion:</b> Certains messages dans ce fils de discussion ont été déplacé %s";

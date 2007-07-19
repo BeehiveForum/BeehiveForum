@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.34 2007-06-18 20:10:49 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.35 2007-07-19 22:14:13 decoyduck Exp $ */
 
 // German language file
 
@@ -139,7 +139,6 @@ $lang['normal'] = "Normal";
 $lang['interested'] = "Interessiert";
 $lang['subscribe'] = "Wichtig";
 $lang['apply'] = "Bestaetigen";
-$lang['submit'] = "Absenden";
 $lang['download'] = "Download";
 $lang['save'] = "Speichern";
 $lang['update'] = "Aktualisierung";
@@ -1016,7 +1015,6 @@ $lang['forumnounreadmessages'] = "No Unread Messages";
 $lang['removefromfavourites'] = "Aus Bevorzugten loeschen";
 $lang['addtofavourites'] = "Zu Bevorzugten hinzufuegen";
 $lang['availableforums'] = "Erreichbare Foren";
-$lang['noforumsavailable'] = "Es sind keine Foren erreichbar.";
 $lang['noforumsavailablelogin'] = "Es sind keine Foren erreichbar. Bitte anmelden.";
 $lang['passwdprotectedforum'] = "Passwort-geschuetztes Forum";
 $lang['passwdprotectedwarning'] = "Dieses Forum ist passwortgeschuetzt. Fuer Zugriff bitte Passwort unten eingeben.";
@@ -1252,7 +1250,6 @@ $lang['fontsize'] = "Schriftgroesse";
 $lang['forumstyle'] = "Forenstil";
 $lang['forumemoticons'] = "Foren-Emoticons";
 $lang['startpage'] = "Startseite";
-$lang['containsHTML'] = "Enthaelt HTML";
 $lang['preferredlang'] = "Bevorzugte Sprache";
 $lang['donotshowmyageordobtoothers'] = "Mein Alter und Geburtsdatum nicht zeigen";
 $lang['showonlymyagetoothers'] = "Nur Alter sichtbar";
@@ -1388,8 +1385,6 @@ $lang['age'] = "Alter";
 $lang['aged'] = "gealtert";
 $lang['birthday'] = "Geburtstag";
 $lang['registered'] = "Registriert";
-$lang['findusersposts'] = "Find User's Posts";
-$lang['findmyposts'] = "Find My Posts";
 
 // Registration (register.php) -----------------------------------------
 
@@ -1770,7 +1765,6 @@ $lang['pmexportwordfilter'] = "Zutreffende Wortfilter in Nachrichten";
 
 // Thread merge / split options
 
-$lang['threadmerge'] = "Thread has been merged";
 $lang['mergesplitthread'] = "Zusammenfuegen/Trennen von Eintraegen";
 $lang['mergewiththreadid'] = "Zusammenfuegen mit Eintrag Nr:";
 $lang['postsinthisthreadatstart'] = "Beitraege in diesem Eintrag starten ab";
@@ -1780,7 +1774,6 @@ $lang['splitthreadatpost'] = "Trenne Eintrag bei Beitrag:";
 $lang['selectedpostsandrepliesonly'] = "Waehle Beitrag aus und beantworte nur";
 $lang['selectedandallfollowingposts'] = "Diesen und alle folgenden Beitraege auswaehlen";
 
-$lang['threadhere'] = "hier";
 $lang['thisthreadhasmoved'] = "<b>Eintraege zusammengefuegt:</b> Dieser Eintrag wurde verscvhoben nach %s";
 $lang['thisthreadwasmergedfrom'] = "<b>Eintraege zusammengefuegt:</b> Dieser Eintrag wurde angefuegt an %s";
 $lang['somepostsinthisthreadhavebeenmoved'] = "<b>Eintragsaufteilung:</b> Einige Beitraege in diesem Eintrag wurden verschoben nach %s";

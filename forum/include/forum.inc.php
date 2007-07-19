@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.250 2007-07-17 20:49:37 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.251 2007-07-19 22:14:13 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -256,6 +256,31 @@ function forum_get_password($forum_fid)
     return false;
 }
 
+function forum_get_saved_password(&$password, &$passhash, &$sesshash)
+{
+    $webtag = get_webtag($webtag_search);
+
+    if (isset($_COOKIE["bh_{$webtag}_password"]) && strlen(_stripslashes($_COOKIE["bh_{$webtag}_password"])) > 0) {
+        $password = _stripslashes($_COOKIE["bh_{$webtag}_password"]);
+    }else {
+        $password = "";
+    }
+
+    if (isset($_COOKIE["bh_{$webtag}_passhash"]) && is_md5($_COOKIE["bh_{$webtag}_passhash"])) {
+        $passhash = trim(_stripslashes($_COOKIE["bh_{$webtag}_passhash"]));
+    }else {
+        $passhash = "";
+    }
+
+    if (isset($_COOKIE["bh_{$webtag}_sesshash"]) && is_md5($_COOKIE["bh_{$webtag}_sesshash"])) {
+        $sesshash = trim(_stripslashes($_COOKIE["bh_{$webtag}_sesshash"]));
+    }else {
+        $sesshash = "";
+    }
+
+    return true;
+}
+
 function forum_check_password($forum_fid)
 {
     $frame_top_target = html_get_top_frame_name();
@@ -266,15 +291,11 @@ function forum_check_password($forum_fid)
 
     if (!is_numeric($forum_fid)) return false;
 
-    if ($forum_passwd = forum_get_password($forum_fid)) {
+    if ($forum_passhash = forum_get_password($forum_fid)) {
 
-        if (isset($_COOKIE["bh_{$webtag}_password"]) && strlen(trim(_stripslashes($_COOKIE["bh_{$webtag}_password"]))) > 0) {
-            $passwd = md5($_COOKIE["bh_{$webtag}_password"]);
-        }else {
-            $passwd = "";
-        }
+        forum_get_saved_password($password, $passhash, $sesshash);
 
-        if ($passwd == $forum_passwd) return true;
+        if ($sesshash == $forum_passhash) return true;
 
         // If we got this far then the password verification failed or
         // the user hasn't seen the password dialog before.
@@ -305,9 +326,9 @@ function forum_check_password($forum_fid)
             echo "      </tr>\n";
         }
 
-        if (isset($_COOKIE["bh_{$webtag}_password"]) && strlen(trim(_stripslashes($_COOKIE["bh_{$webtag}_password"]))) > 0) {
+        if (isset($_COOKIE["bh_{$webtag}_sesshash"]) && strlen(trim(_stripslashes($_COOKIE["bh_{$webtag}_sesshash"]))) > 0) {
 
-            bh_setcookie("bh_{$webtag}_password", "", time() - YEAR_IN_SECONDS);
+            bh_setcookie("bh_{$webtag}_sesshash", "", time() - YEAR_IN_SECONDS);
             
             echo "      <tr>\n";
             echo "        <td align=\"left\">&nbsp;</td>\n";
@@ -336,11 +357,11 @@ function forum_check_password($forum_fid)
         echo "                <table class=\"posthead\" width=\"90%\">\n";
         echo "                  <tr>\n";
         echo "                    <td align=\"left\">{$lang['passwd']}:</td>\n";
-        echo "                    <td align=\"left\">", form_input_password('forum_password', '', 40, false, "autocomplete=\"off\""), "</td>\n";
+        echo "                    <td align=\"left\">", form_input_password('forum_password', $password, 40, false, "autocomplete=\"off\""), form_input_hidden("forum_passhash", $passhash), "</td>\n";
         echo "                  </tr>\n";
         echo "                  <tr>\n";
         echo "                    <td align=\"left\">&nbsp;</td>\n";
-        echo "                    <td align=\"left\">", form_checkbox('remember_password', 'Y', $lang['rememberpassword'], false), "</td>\n";
+        echo "                    <td align=\"left\">", form_checkbox('remember_password', 'Y', $lang['rememberpassword'], (strlen($password) > 0 && strlen($passhash) > 0)), "</td>\n";
         echo "                  </tr>\n";
         echo "                  <tr>\n";
         echo "                    <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";

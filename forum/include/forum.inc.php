@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.251 2007-07-19 22:14:13 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.252 2007-07-21 15:36:19 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -305,7 +305,6 @@ function forum_check_password($forum_fid)
         html_draw_top();
 
         echo "<h1>{$lang['passwdprotectedforum']}</h1>\n";
-        echo "<div align=\"center\">\n";
         echo "<br />\n";
         echo "<div align=\"center\">\n";
         echo "  <form method=\"post\" action=\"forum_password.php\" target=\"", html_get_top_frame_name(), "\">\n";

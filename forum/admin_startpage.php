@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_startpage.php,v 1.91 2007-06-18 20:10:49 decoyduck Exp $ */
+/* $Id: admin_startpage.php,v 1.92 2007-07-21 15:36:19 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -219,7 +219,7 @@ $tools = new TextAreaHTML("startpage");
 
 echo "<br />\n";
 echo "<div align=\"center\">\n";
-echo "<form enctype=\"multipart/form-data\" method=\"post\" action=\"admin_startpage.php\">\n";
+echo "<form name=\"startpage\" enctype=\"multipart/form-data\" method=\"post\" action=\"admin_startpage.php\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";
@@ -231,11 +231,22 @@ echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" class=\"subhead\">{$lang['startpage']}</td>\n";
 echo "                </tr>\n";
+echo "              </table>\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\">", $tools->toolbar(true, form_submit('submit', $lang['save'])), "</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\">", $tools->textarea("content", _htmlentities($content), 20, 80, "off", "", "admin_startpage_textarea"), "</td>\n";
+echo "                  <td align=\"center\">\n";
+echo "                    <table class=\"posthead\" width=\"95%\">\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\">", $tools->toolbar(true, form_submit('submit', $lang['save'])), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\">", $tools->textarea("content", _htmlentities($content), 20, 85, "virtual", "", "admin_startpage_textarea"), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";
@@ -261,11 +272,19 @@ echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" class=\"subhead\">", sprintf($lang['uploadstartpage'], $allowed_file_exts), "</td>\n";
 echo "                </tr>\n";
+echo "              </table>\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\">{$lang['filename']}: ", form_input_file("userfile", "", 45, 0), "</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\">&nbsp;</td>\n";
+echo "                  <td align=\"center\">\n";
+echo "                    <table class=\"posthead\" width=\"95%\">\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\">{$lang['filename']}: ", form_input_file("userfile", "", 45, 0), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";

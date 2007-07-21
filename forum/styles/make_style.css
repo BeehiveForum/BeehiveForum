@@ -909,7 +909,8 @@ a {
 }
 
 .admin_startpage_textarea {
-    font-family: monospace
+    font-family: monospace;
+    width: 550px;
 }
 
 .dictionary_pretty_content {

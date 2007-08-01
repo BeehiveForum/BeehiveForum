@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.273 2007-07-10 15:50:38 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.274 2007-08-01 20:23:03 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1191,6 +1191,10 @@ function threads_get_most_recent($limit = 10, $folder_list_array = array(), $cre
 {
     $db_threads_get_recent = db_connect();
 
+    // Language file
+    
+    $lang = load_language_file();
+
     // If there are any problems with the function arguments we bail out.
     
     if (!is_numeric($limit)) return false;
@@ -1300,6 +1304,15 @@ function threads_get_most_recent($limit = 10, $folder_list_array = array(), $cre
 
         while ($thread = db_fetch_array($result)) {
 
+            if (isset($thread['LOGON']) && isset($thread['PEER_NICKNAME'])) {
+                if (!is_null($thread['PEER_NICKNAME']) && strlen($thread['PEER_NICKNAME']) > 0) {
+                    $thread['NICKNAME'] = $thread['PEER_NICKNAME'];
+                }
+            }
+                        
+            if (!isset($thread['LOGON'])) $thread['LOGON'] = $lang['unknownuser'];
+            if (!isset($thread['NICKNAME'])) $thread['NICKNAME'] = "";
+
             if (!isset($thread['RELATIONSHIP'])) $thread['RELATIONSHIP'] = 0;
             if (!isset($thread['INTEREST'])) $thread['INTEREST'] = 0;
             if (!isset($thread['UNREAD_CUTOFF'])) $thread['UNREAD_CUTOFF'] = time() - $unread_cutoff_stamp;
@@ -1317,12 +1330,6 @@ function threads_get_most_recent($limit = 10, $folder_list_array = array(), $cre
 
             $threads_get_array[$thread['TID']] = $thread;
             $tid_array[] = $thread['TID'];
-
-            if (isset($polldata['PEER_NICKNAME'])) {
-                if (!is_null($polldata['PEER_NICKNAME']) && strlen($polldata['PEER_NICKNAME']) > 0) {
-                    $polldata['NICKNAME'] = $polldata['PEER_NICKNAME'];
-                }
-            }
         }
 
         threads_have_attachments($threads_get_array, $tid_array);
@@ -1341,6 +1348,10 @@ function threads_process_list($result)
     $threads_array = 0;
     $folder = 0;
     $folder_order = 0;
+
+    // Language file
+    
+    $lang = load_language_file();
 
     // Thread cut off period for unread type messages
 
@@ -1404,11 +1415,14 @@ function threads_process_list($result)
                 }
             }
 
-            if (isset($thread['PEER_NICKNAME'])) {
+            if (isset($thread['LOGON']) && isset($thread['PEER_NICKNAME'])) {
                 if (!is_null($thread['PEER_NICKNAME']) && strlen($thread['PEER_NICKNAME']) > 0) {
                     $thread['NICKNAME'] = $thread['PEER_NICKNAME'];
                 }
             }
+                        
+            if (!isset($thread['LOGON'])) $thread['LOGON'] = $lang['unknownuser'];
+            if (!isset($thread['NICKNAME'])) $thread['NICKNAME'] = "";
 
             $threads_array[$thread['TID']] = $thread;
             $tid_array[] = $thread['TID'];
@@ -1889,9 +1903,9 @@ function threads_have_attachments(&$threads_array, $tid_array)
 
     if (!$result = db_query($sql, $db_thread_has_attachments)) return false;
 
-    while ($row = db_fetch_array($result)) {
+    while ($attachment_data = db_fetch_array($result)) {
 
-        $threads_array[$row['TID']]['AID'] = $row['AID'];
+        $threads_array[$attachment_data['TID']]['AID'] = $attachment_data['AID'];
     }
 }
 
@@ -1978,10 +1992,10 @@ function thread_auto_prune_unread_data($force_start = false)
 
             if (db_num_rows($result) > 0) {
 
-                while ($row = db_fetch_array($result)) {
+                while ($unread_data = db_fetch_array($result)) {
 
-                    thread_update_unread_cutoff($row['TID'], $row['LENGTH'], $row['MODIFIED']);
-                    $tid_array[] = $row['TID'];
+                    thread_update_unread_cutoff($unread_data['TID'], $unread_data['LENGTH'], $unread_data['MODIFIED']);
+                    $tid_array[] = $unread_data['TID'];
                 }
 
                 if (sizeof($tid_array) > 0) {

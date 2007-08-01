@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads_rss.php,v 1.46 2007-06-07 20:27:26 decoyduck Exp $ */
+/* $Id: threads_rss.php,v 1.47 2007-08-01 20:23:01 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -245,7 +245,7 @@ if ($threads_array = threads_get_most_recent($limit, $folder_list_array, $sort_c
 
         // Get the author of the message.
 
-        if (isset($t_user_array['LOGON']) && isset($t_user_array['NICKNAME'])) {
+        if (isset($t_user_array['LOGON'])) {
 
             $t_user = format_user_name($t_user_array['LOGON'], $t_user_array['NICKNAME']);
             echo "  <dc:creator>{$t_user}</dc:creator>\n";

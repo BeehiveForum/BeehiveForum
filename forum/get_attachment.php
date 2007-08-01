@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: get_attachment.php,v 1.26 2007-05-31 21:59:18 decoyduck Exp $ */
+/* $Id: get_attachment.php,v 1.27 2007-08-01 20:23:01 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -178,17 +178,17 @@ if (isset($hash) && is_md5($hash)) {
 
             if (isset($_GET['thumb']) && $_GET['thumb'] == 1) {
 
-                $filepath = "{$attachment_dir}/{$attachment_details['HASH']}.thumb";
+                $filepath = "{$attachment_dir}/{$attachment_details['hash']}.thumb";
 
             }elseif (!isset($_GET['profile_picture']) && !isset($_GET['avatar_picture'])) {
 
                 attachment_inc_dload_count($hash);
-                $filepath = "{$attachment_dir}/{$attachment_details['HASH']}";
+                $filepath = "{$attachment_dir}/{$attachment_details['hash']}";
             }
 
             // Use the filename quite a few times, so assign it to a variable to save some time.
 
-            $filename = rawurldecode(basename($attachment_details['FILENAME']));
+            $filename = rawurldecode(basename($attachment_details['filename']));
 
             if (@file_exists($filepath)) {
 
@@ -201,7 +201,7 @@ if (isset($hash) && is_md5($hash)) {
                 if (isset($_GET['download']) || (isset($_SERVER['SERVER_SOFTWARE']) && strstr($_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS'))) {
                     header("Content-Type: application/x-ms-download", true);
                 }else {
-                    header("Content-Type: ". $attachment_details['MIMETYPE'], true);
+                    header("Content-Type: ". $attachment_details['mimetype'], true);
                 }
 
                 // Only do the cache control if we're not running

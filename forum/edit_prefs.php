@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_prefs.php,v 1.77 2007-07-17 14:23:18 decoyduck Exp $ */
+/* $Id: edit_prefs.php,v 1.78 2007-08-01 20:23:01 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -151,35 +151,35 @@ if (isset($_POST['submit'])) {
         $user_info_new['LOGON'] = trim(_stripslashes($_POST['logon']));
 
         if (!preg_match("/^[a-z0-9_-]+$/i", $user_info_new['LOGON'])) {
-            $error_html.= "<h2>{$lang['usernameinvalidchars']}</h2>\n";
+            $error_html.= "{$lang['usernameinvalidchars']}";
             $valid = false;
         }
 
         if (strlen($user_info_new['LOGON']) < 2) {
-            $error_html.= "<h2>{$lang['usernametooshort']}</h2>\n";
+            $error_html.= "{$lang['usernametooshort']}";
             $valid = false;
         }
 
         if (strlen($user_info_new['LOGON']) > 15) {
-            $error_html.= "<h2>{$lang['usernametoolong']}</h2>\n";
+            $error_html.= "{$lang['usernametoolong']}";
             $valid = false;
         }
 
         if (logon_is_banned($user_info_new['LOGON'])) {
 
-            $error_html.= "<h2>{$lang['logonnotpermitted']}</h2>\n";
+            $error_html.= "{$lang['logonnotpermitted']}";
             $valid = false;
         }
 
         if (user_exists($user_info_new['LOGON'], $uid)) {
 
-            $error_html.= "<h2>{$lang['usernameexists']}</h2>\n";
+            $error_html.= "{$lang['usernameexists']}";
             $valid = false;
         }
 
     }else if (forum_get_setting('allow_username_changes', 'Y')) {
 
-        $error_html.= "<h2>{$lang['usernamerequired']}</h2>";
+        $error_html.= "{$lang['usernamerequired']}";
         $valid = false;
     }
 
@@ -189,13 +189,13 @@ if (isset($_POST['submit'])) {
 
         if (nickname_is_banned($user_info_new['NICKNAME'])) {
 
-            $error_html.= "<h2>{$lang['nicknamenotpermitted']}</h2>\n";
+            $error_html.= "{$lang['nicknamenotpermitted']}";
             $valid = false;
         }
 
     }else {
 
-        $error_html.= "<h2>{$lang['nicknamerequired']}</h2>";
+        $error_html.= "{$lang['nicknamerequired']}";
         $valid = false;
     }
 
@@ -205,27 +205,27 @@ if (isset($_POST['submit'])) {
 
         if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $user_info_new['EMAIL'])) {
 
-            $error_html.= "<h2>{$lang['invalidemailaddressformat']}</h2>\n";
+            $error_html.= "{$lang['invalidemailaddressformat']}";
             $valid = false;
 
         }else {
 
             if (email_is_banned($user_info_new['EMAIL'])) {
 
-                $error_html.= "<h2>{$lang['emailaddressnotpermitted']}</h2>\n";
+                $error_html.= "{$lang['emailaddressnotpermitted']}";
                 $valid = false;
             }
 
             if (forum_get_setting('require_unique_email', 'Y') && !email_is_unique($user_info_new['EMAIL'])) {
 
-                $error_html.= "<h2>{$lang['emailaddressalreadyinuse']}</h2>\n";
+                $error_html.= "{$lang['emailaddressalreadyinuse']}";
                 $valid = false;
             }
         }
 
     }else {
 
-        $error_html.= "<h2>{$lang['emailaddressrequired']}</h2>";
+        $error_html.= "{$lang['emailaddressrequired']}";
         $valid = false;
     }
 
@@ -239,7 +239,7 @@ if (isset($_POST['submit'])) {
 
     }else {
 
-        $error_html.= "<h2>{$lang['birthdayrequired']}</h2>";
+        $error_html.= "{$lang['birthdayrequired']}";
         $valid = false;
     }
 
@@ -251,7 +251,7 @@ if (isset($_POST['submit'])) {
 
         if (!user_check_pref('FIRSTNAME', $user_prefs['FIRSTNAME'])) {
 
-            $error_html.= "<h2>{$lang['firstname']} {$lang['containsinvalidchars']}</h2>";
+            $error_html.= "{$lang['firstname']} {$lang['containsinvalidchars']}";
             $valid = false;
         }
     }
@@ -262,7 +262,7 @@ if (isset($_POST['submit'])) {
 
         if (!user_check_pref('LASTNAME', $user_prefs['LASTNAME'])) {
 
-            $error_html.= "<h2>{$lang['lastname']} {$lang['containsinvalidchars']}</h2>";
+            $error_html.= "{$lang['lastname']} {$lang['containsinvalidchars']}";
             $valid = false;
         }
     }
@@ -276,12 +276,12 @@ if (isset($_POST['submit'])) {
 
             if (preg_match('/^http:\/\//', $user_prefs['HOMEPAGE_URL']) < 1) {
 
-                $error_html.= "<h2>{$lang['homepageurlmustincludeschema']}</h2>\n";
+                $error_html.= "{$lang['homepageurlmustincludeschema']}";
                 $valid = false;
 
             }else if (!user_check_pref('HOMEPAGE_URL', $user_prefs['HOMEPAGE_URL'])) {
 
-                $error_html.= "<h2>{$lang['homepageURL']} {$lang['containsinvalidchars']}</h2>";
+                $error_html.= "{$lang['homepageURL']} {$lang['containsinvalidchars']}";
                 $valid = false;
             }
         }
@@ -296,12 +296,12 @@ if (isset($_POST['submit'])) {
 
             if (preg_match('/^http:\/\//', $user_prefs['PIC_URL']) < 1) {
 
-                $error_html.= "<h2>{$lang['pictureurlmustincludeschema']}</h2>\n";
+                $error_html.= "{$lang['pictureurlmustincludeschema']}";
                 $valid = false;
 
             }else if (!user_check_pref('PIC_URL', $user_prefs['PIC_URL'])) {
 
-                $error_html.= "<h2>{$lang['pictureURL']} {$lang['containsinvalidchars']}</h2>";
+                $error_html.= "{$lang['pictureURL']} {$lang['containsinvalidchars']}";
                 $valid = false;
             }
         }
@@ -316,19 +316,19 @@ if (isset($_POST['submit'])) {
 
             if (!is_md5($user_prefs['PIC_AID'])) {
 
-                $error_html.= "<h2>{$lang['invalidattachmentid']}</h2>\n";
+                $error_html.= "{$lang['invalidattachmentid']}";
                 $valid = false;
 
             }elseif (isset($user_prefs['PIC_URL']) && strlen(trim($user_prefs['PIC_URL'])) > 0) {
 
-                $error_html.= "<h2>{$lang['profilepictureconflict']}</h2>\n";
+                $error_html.= "{$lang['profilepictureconflict']}";
                 $valid = false;
 
             }elseif ($attachment_dir = attachments_check_dir()) {
 
                 if ($attachment_details = get_attachment_by_hash($user_prefs['PIC_AID'])) {
                 
-                    $path_parts = pathinfo($attachment_details['FILENAME']);
+                    $path_parts = pathinfo($attachment_details['filename']);
                     
                     if (isset($path_parts['extension']) && in_array($path_parts['extension'], $allowed_image_types_array)) {
 
@@ -336,31 +336,31 @@ if (isset($_POST['submit'])) {
 
                             if (($image_info[0] > 95) || ($image_info[1] > 95)) {
 
-                                $error_html.= "<h2>{$lang['attachmenttoolargeforprofilepicture']}</h2>\n";
+                                $error_html.= "{$lang['attachmenttoolargeforprofilepicture']}";
                                 $valid = false;
                             }
                         
                         }else {
 
-                            $error_html.= sprintf("<h2>{$lang['unsupportedimagetype']}</h2>\n", $allowed_image_types);
+                            $error_html.= sprintf("{$lang['unsupportedimagetype']}", $allowed_image_types);
                             $valid = false;
                         }
                     
                     }else {
 
-                        $error_html.= sprintf("<h2>{$lang['unsupportedimagetype']}</h2>\n", $allowed_image_types);
+                        $error_html.= sprintf("{$lang['unsupportedimagetype']}", $allowed_image_types);
                         $valid = false;
                     }
 
                 }else {
 
-                    $error_html.= sprintf("<h2>{$lang['unsupportedimagetype']}</h2>\n", $allowed_image_types);
+                    $error_html.= sprintf("{$lang['unsupportedimagetype']}", $allowed_image_types);
                     $valid = false;
                 }
 
             }else {
 
-                $error_html.= "<h2>{$lang['attachmentshavebeendisabled']}</h2>\n";
+                $error_html.= "{$lang['attachmentshavebeendisabled']}";
                 $valid = false;
             }
         }
@@ -375,12 +375,12 @@ if (isset($_POST['submit'])) {
         
             if (preg_match('/^http:\/\//', $user_prefs['AVATAR_URL']) < 1) {
 
-                $error_html.= "<h2>{$lang['avatarurlmustincludeschema']}</h2>\n";
+                $error_html.= "{$lang['avatarurlmustincludeschema']}";
                 $valid = false;
 
             }else if (!user_check_pref('AVATAR_URL', $user_prefs['AVATAR_URL'])) {
 
-                $error_html.= "<h2>{$lang['pictureURL']} {$lang['containsinvalidchars']}</h2>";
+                $error_html.= "{$lang['pictureURL']} {$lang['containsinvalidchars']}";
                 $valid = false;
             }
         }
@@ -395,19 +395,19 @@ if (isset($_POST['submit'])) {
 
             if (!is_md5($user_prefs['AVATAR_AID'])) {
 
-                $error_html.= "<h2>{$lang['invalidattachmentid']}</h2>\n";
+                $error_html.= "{$lang['invalidattachmentid']}";
                 $valid = false;
 
             }elseif (isset($user_prefs['AVATAR_URL']) && strlen(trim($user_prefs['AVATAR_URL'])) > 0) {
 
-                $error_html.= "<h2>{$lang['avatarpictureconflict']}</h2>\n";
+                $error_html.= "{$lang['avatarpictureconflict']}";
                 $valid = false;
 
             }elseif ($attachment_dir = attachments_check_dir()) {
 
                 if ($attachment_details = get_attachment_by_hash($user_prefs['AVATAR_AID'])) {
                 
-                    $path_parts = pathinfo($attachment_details['FILENAME']);
+                    $path_parts = pathinfo($attachment_details['filename']);
                     
                     if (isset($path_parts['extension']) && in_array($path_parts['extension'], $allowed_image_types_array)) {
 
@@ -415,31 +415,31 @@ if (isset($_POST['submit'])) {
 
                             if (($image_info[0] > 95) || ($image_info[1] > 95)) {
 
-                                $error_html.= "<h2>{$lang['attachmenttoolargeforavatarpicture']}</h2>\n";
+                                $error_html.= "{$lang['attachmenttoolargeforavatarpicture']}";
                                 $valid = false;
                             }
                         
                         }else {
 
-                            $error_html.= sprintf("<h2>{$lang['unsupportedimagetype']}</h2>\n", $allowed_image_types);
+                            $error_html.= sprintf("{$lang['unsupportedimagetype']}", $allowed_image_types);
                             $valid = false;
                         }
                     
                     }else {
 
-                        $error_html.= sprintf("<h2>{$lang['unsupportedimagetype']}</h2>\n", $allowed_image_types);
+                        $error_html.= sprintf("{$lang['unsupportedimagetype']}", $allowed_image_types);
                         $valid = false;
                     }
 
                 }else {
 
-                    $error_html.= sprintf("<h2>{$lang['unsupportedimagetype']}</h2>\n", $allowed_image_types);
+                    $error_html.= sprintf("{$lang['unsupportedimagetype']}", $allowed_image_types);
                     $valid = false;
                 }
 
             }else {
 
-                $error_html.= "<h2>{$lang['attachmentshavebeendisabled']}</h2>\n";
+                $error_html.= "{$lang['attachmentshavebeendisabled']}";
                 $valid = false;
             }
         }
@@ -499,13 +499,13 @@ if (isset($_POST['submit'])) {
             
             }else {
 
-                $error_html.= "<h2>{$lang['failedtoupdateuserpreferences']}</h2>\n";
+                $error_html.= "{$lang['failedtoupdateuserpreferences']}";
                 $valid = false;
             }
 
         }else {
 
-            $error_html.= "<h2>{$lang['failedtoupdateuserdetails']}</h2>\n";
+            $error_html.= "{$lang['failedtoupdateuserdetails']}";
             $valid = false;
         }                
     }
@@ -556,7 +556,16 @@ echo "<h1>{$lang['userdetails']}</h1>\n";
 
 // Any error messages to display?
 
-echo $error_html;
+if (isset($error_html) && strlen(trim($error_html)) > 0) {
+
+    echo "<br />\n";
+    echo "<table class=\"text_captcha_error\" width=\"600\">\n";
+    echo "  <tr>\n";
+    echo "    <td align=\"left\" width=\"20\" valign=\"top\"><img src=\"", style_image('error.png'), "\" alt=\"{$lang['error']}\" /></td>\n";
+    echo "    <td align=\"left\">$error_html</td>\n";
+    echo "  </tr>\n";
+    echo "</table>\n";
+}
 
 if (isset($_GET['updated'])) {
     echo "<h2>{$lang['preferencesupdated']}</h2>\n";

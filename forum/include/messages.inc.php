@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.467 2007-07-27 20:39:47 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.468 2007-08-01 20:23:02 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -105,8 +105,20 @@ function messages_get($tid, $pid = 1, $limit = 1)
             if (!isset($message['FROM_RELATIONSHIP'])) $message['FROM_RELATIONSHIP'] = 0;
             if (!isset($message['TO_RELATIONSHIP'])) $message['TO_RELATIONSHIP'] = 0;
 
-            if (!isset($message['FNICK'])) $message['FNICK'] = "Unknown User";
-            if (!isset($message['FLOGON'])) $message['FLOGON'] = "Unknown User";
+            if (isset($message['TLOGON']) && isset($message['PTNICK'])) {
+                if (!is_null($message['PTNICK']) && strlen($message['PTNICK']) > 0) {
+                    $message['TNICK'] = $message['PTNICK'];
+                }
+            }
+
+            if (isset($message['FLOGON']) && isset($message['PFNICK'])) {
+                if (!is_null($message['PFNICK']) && strlen($message['PFNICK']) > 0) {
+                    $message['FNICK'] = $message['PFNICK'];
+                }
+            }
+
+            if (!isset($message['FNICK'])) $message['FNICK'] = $lang['unknownuser'];
+            if (!isset($message['FLOGON'])) $message['FLOGON'] = $lang['unknownuser'];
             if (!isset($message['FROM_UID'])) $message['FROM_UID'] = -1;
 
             if (!isset($message['TNICK'])) $message['TNICK'] = $lang['allcaps'];
@@ -114,18 +126,6 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
             if (!isset($message['MOVED_TID'])) $message['MOVED_TID'] = 0;
             if (!isset($message['MOVED_PID'])) $message['MOVED_PID'] = 0;
-
-            if (isset($message['PTNICK'])) {
-                if (!is_null($message['PTNICK']) && strlen($message['PTNICK']) > 0) {
-                    $message['TNICK'] = $message['PTNICK'];
-                }
-            }
-
-            if (isset($message['PFNICK'])) {
-                if (!is_null($message['PFNICK']) && strlen($message['PFNICK']) > 0) {
-                    $message['FNICK'] = $message['PFNICK'];
-                }
-            }
 
             $messages[] = $message;
         }
@@ -149,8 +149,8 @@ function messages_get($tid, $pid = 1, $limit = 1)
         if (!isset($messages['FROM_RELATIONSHIP'])) $messages['FROM_RELATIONSHIP'] = 0;
         if (!isset($messages['TO_RELATIONSHIP'])) $messages['TO_RELATIONSHIP'] = 0;
 
-        if (!isset($messages['FNICK'])) $messages['FNICK'] = "Unknown User";
-        if (!isset($messages['FLOGON'])) $messages['FLOGON'] = "Unknown User";
+        if (!isset($messages['FNICK'])) $messages['FNICK'] = $lang['unknownuser'];
+        if (!isset($messages['FLOGON'])) $messages['FLOGON'] = $lang['unknownuser'];
         if (!isset($messages['FROM_UID'])) $messages['FROM_UID'] = -1;
 
         if (!isset($messages['TNICK'])) $messages['TNICK'] = $lang['allcaps'];
@@ -1402,14 +1402,20 @@ function message_get_user_array($tid, $pid)
 {
     $db_message_get_user = db_connect();
 
+    $lang = load_language_file();
+
     if (!is_numeric($tid)) return false;
     if (!is_numeric($pid)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME ";
-    $sql.= "FROM {$table_data['PREFIX']}POST POST ";
+    if (($uid = bh_session_get_value('UID')) === false) return false;
+
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
+    $sql.= "USER_PEER.PEER_NICKNAME FROM {$table_data['PREFIX']}POST POST ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = POST.FROM_UID) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+    $sql.= "ON (USER_PEER.PEER_UID = POST.FROM_UID AND USER_PEER.UID = '$uid') ";
     $sql.= "WHERE POST.TID = '$tid' AND POST.PID = '$pid'";
 
     if (!$result = db_query($sql, $db_message_get_user)) return false;
@@ -1417,6 +1423,16 @@ function message_get_user_array($tid, $pid)
     if (db_num_rows($result) > 0) {
 
         $user_array = db_fetch_array($result);
+
+        if (isset($user_array['LOGON']) && isset($user_array['PEER_NICKNAME'])) {
+            if (!is_null($user_array['PEER_NICKNAME']) && strlen($user_array['PEER_NICKNAME']) > 0) {
+                $user_array['NICKNAME'] = $user_array['PEER_NICKNAME'];
+            }
+        }
+
+        if (!isset($user_array['LOGON'])) $user_array['LOGON'] = $lang['unknownuser'];
+        if (!isset($user_array['NICKNAME'])) $user_array['NICKNAME'] = "";
+
         return $user_array;
     }
 
@@ -1598,19 +1614,20 @@ function messages_get_most_recent($uid, $fid = false)
 
     if (db_num_rows($result) > 0) {
 
-        $row = db_fetch_array($result);
+        $message_data = db_fetch_array($result);
 
-        if (isset($row['LAST_READ'])) {
+        if (isset($message_data['LAST_READ'])) {
 
-            if ($row['LAST_READ'] < $row['LENGTH']) {
-                $row['LAST_READ']++;
+            if ($message_data['LAST_READ'] < $message_data['LENGTH']) {
+
+                $message_data['LAST_READ']++;
             }
 
-            return "{$row['TID']}.{$row['LAST_READ']}";
+            return "{$message_data['TID']}.{$message_data['LAST_READ']}";
 
         }else {
 
-            return "{$row['TID']}.1";
+            return "{$message_data['TID']}.1";
         }
     }
 

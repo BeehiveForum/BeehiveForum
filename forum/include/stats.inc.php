@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.80 2007-07-17 20:49:37 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.81 2007-08-01 20:23:03 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -165,29 +165,32 @@ function get_active_users()
 
     if (!$result = db_query($sql, $db_get_active_users)) return false;
 
-    while ($row = db_fetch_array($result)) {
+    while ($user_data = db_fetch_array($result)) {
 
-        if (isset($row['ANON_LOGON']) && $row['ANON_LOGON'] > USER_ANON_DISABLED) {
-            $anon_logon = $row['ANON_LOGON'];
-        }elseif (isset($row['ANON_LOGON_GLOBAL']) && $row['ANON_LOGON_GLOBAL'] > USER_ANON_DISABLED) {
-            $anon_logon = $row['ANON_LOGON_GLOBAL'];
+        if (isset($user_data['ANON_LOGON']) && $user_data['ANON_LOGON'] > USER_ANON_DISABLED) {
+            $anon_logon = $user_data['ANON_LOGON'];
+        }elseif (isset($user_data['ANON_LOGON_GLOBAL']) && $user_data['ANON_LOGON_GLOBAL'] > USER_ANON_DISABLED) {
+            $anon_logon = $user_data['ANON_LOGON_GLOBAL'];
         }else {
             $anon_logon = USER_ANON_DISABLED;
         }
 
-        if (!isset($row['USER_RELATIONSHIP'])) {
-            $row['USER_RELATIONSHIP'] = USER_NORMAL;
+        if (!isset($user_data['USER_RELATIONSHIP'])) {
+            $user_data['USER_RELATIONSHIP'] = USER_NORMAL;
         }
 
-        if (!isset($row['PEER_RELATIONSHIP'])) {
-            $row['PEER_RELATIONSHIP'] = USER_NORMAL;
+        if (!isset($user_data['PEER_RELATIONSHIP'])) {
+            $user_data['PEER_RELATIONSHIP'] = USER_NORMAL;
         }
 
-        if (isset($row['PEER_NICKNAME'])) {
-            if (!is_null($row['PEER_NICKNAME']) && strlen($row['PEER_NICKNAME']) > 0) {
-                $row['NICKNAME'] = $row['PEER_NICKNAME'];
+        if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
+            if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
+                $user_data['NICKNAME'] = $user_data['PEER_NICKNAME'];
             }
         }
+
+        if (!isset($user_data['LOGON'])) $user_data['LOGON'] = $lang['unknownuser'];
+        if (!isset($user_data['NICKNAME'])) $user_data['NICKNAME'] = "";
 
         if ($anon_logon > USER_ANON_DISABLED) {
             $stats['AUSERS']++;
@@ -195,17 +198,17 @@ function get_active_users()
             $stats['NUSERS']++;
         }
 
-        if (($row['USER_RELATIONSHIP'] & USER_IGNORED_COMPLETELY) > 0) {
+        if (($user_data['USER_RELATIONSHIP'] & USER_IGNORED_COMPLETELY) > 0) {
 
-            unset($row);
+            unset($user_data);
 
-        }elseif ($anon_logon == USER_ANON_DISABLED || $row['UID'] == $uid || (($row['PEER_RELATIONSHIP'] & USER_FRIEND) > 0 && $anon_logon == USER_ANON_FRIENDS_ONLY)) {
+        }elseif ($anon_logon == USER_ANON_DISABLED || $user_data['UID'] == $uid || (($user_data['PEER_RELATIONSHIP'] & USER_FRIEND) > 0 && $anon_logon == USER_ANON_FRIENDS_ONLY)) {
 
-            $stats['USERS'][$row['UID']] = array('UID'          => $row['UID'],
-                                                 'LOGON'        => $row['LOGON'],
-                                                 'NICKNAME'     => $row['NICKNAME'],
-                                                 'RELATIONSHIP' => $row['USER_RELATIONSHIP'],
-                                                 'ANON_LOGON'   => $anon_logon);
+            $stats['USERS'][$user_data['UID']] = array('UID'          => $user_data['UID'],
+                                                       'LOGON'        => $user_data['LOGON'],
+                                                       'NICKNAME'     => $user_data['NICKNAME'],
+                                                       'RELATIONSHIP' => $user_data['USER_RELATIONSHIP'],
+                                                       'ANON_LOGON'   => $anon_logon);
         }
     }
 
@@ -306,8 +309,8 @@ function get_longest_thread()
 
     if (db_num_rows($result) > 0) {
 
-        $row = db_fetch_array($result);
-        return $row;
+        $thread_data = db_fetch_array($result);
+        return $thread_data;
     }
 
     return false;
@@ -326,8 +329,8 @@ function get_most_users()
 
     if (db_num_rows($result) > 0) {
 
-        $row = db_fetch_array($result);
-        return $row;
+        $user_data = db_fetch_array($result);
+        return $user_data;
     }
 
     return false;
@@ -346,8 +349,8 @@ function get_most_posts()
 
     if (db_num_rows($result) > 0) {
 
-        $row = db_fetch_array($result);
-        return $row;
+        $post_data = db_fetch_array($result);
+        return $post_data;
     }
 
     return false;
@@ -376,15 +379,18 @@ function get_newest_user()
 
     if (db_num_rows($result) > 0) {
 
-        $row = db_fetch_array($result);
+        $user_data = db_fetch_array($result);
 
-        if (isset($row['PEER_NICKNAME'])) {
-            if (!is_null($row['PEER_NICKNAME']) && strlen($row['PEER_NICKNAME']) > 0) {
-                $row['NICKNAME'] = $row['PEER_NICKNAME'];
+        if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
+            if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
+                $user_data['NICKNAME'] = $user_data['PEER_NICKNAME'];
             }
         }
 
-        return $row;
+        if (!isset($user_data['LOGON'])) $user_data['LOGON'] = $lang['unknownuser'];
+        if (!isset($user_data['NICKNAME'])) $user_data['NICKNAME'] = "";
+
+        return $user_data;
     }
 
     return false;
@@ -393,6 +399,8 @@ function get_newest_user()
 function get_post_tallys($start_stamp, $end_stamp)
 {
     $db_get_month_post_tallys = db_connect();
+
+    $lang = load_language_file();
 
     if (!is_numeric($start_stamp)) return false;
     if (!is_numeric($end_stamp)) return false;
@@ -412,7 +420,7 @@ function get_post_tallys($start_stamp, $end_stamp)
     
     list($post_tallys['post_count']) = db_fetch_array($result, DB_RESULT_NUM);
 
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
+    $sql = "SELECT POST.FROM_UID AS UID, USER.LOGON, USER.NICKNAME, ";
     $sql.= "USER_PEER.PEER_NICKNAME, COUNT(POST.PID) AS POST_COUNT ";
     $sql.= "FROM {$table_data['PREFIX']}POST POST ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = POST.FROM_UID) ";
@@ -427,15 +435,18 @@ function get_post_tallys($start_stamp, $end_stamp)
 
     if (db_num_rows($result) > 0) {
 
-        while ($row = db_fetch_array($result)) {
+        while ($user_stats = db_fetch_array($result)) {
 
-            if (isset($row['PEER_NICKNAME'])) {
-                if (!is_null($row['PEER_NICKNAME']) && strlen($row['PEER_NICKNAME']) > 0) {
-                    $row['NICKNAME'] = $row['PEER_NICKNAME'];
+            if (isset($user_stats['LOGON']) && isset($user_stats['PEER_NICKNAME'])) {
+                if (!is_null($user_stats['PEER_NICKNAME']) && strlen($user_stats['PEER_NICKNAME']) > 0) {
+                    $user_stats['NICKNAME'] = $user_stats['PEER_NICKNAME'];
                 }
             }
 
-            $post_tallys['user_stats'][] = $row;
+            if (!isset($user_stats['LOGON'])) $user_stats['LOGON'] = $lang['unknownuser'];
+            if (!isset($user_stats['NICKNAME'])) $user_stats['NICKNAME'] = "";
+
+            $post_tallys['user_stats'][] = $user_stats;
         }
     }
 

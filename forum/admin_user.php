@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.209 2007-07-15 16:48:48 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.210 2007-08-01 20:23:01 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -1249,7 +1249,7 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
                 echo "                              <td align=\"left\" colspan=\"2\">\n";
                 echo "                                <div class=\"admin_folder_perms\">\n";
                 
-                foreach ($user_history_array as $row => $user_history) {
+                foreach ($user_history_array as $history_index => $user_history) {
 
                     echo "                                  <table class=\"posthead\" width=\"100%\">\n";
                     echo "                                    <tr>\n";

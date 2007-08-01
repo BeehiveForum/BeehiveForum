@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.115 2007-06-25 20:21:40 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.116 2007-08-01 20:23:01 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -152,7 +152,8 @@ function email_sendsubscription($tuid, $fuid, $tid, $pid)
         $sql.= "FROM {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
         $sql.= "LEFT JOIN USER USER ON (USER.UID = USER_THREAD.UID) ";
         $sql.= "WHERE USER_THREAD.TID = '$tid' AND USER_THREAD.INTEREST = 2 ";
-        $sql.= "AND USER_THREAD.UID NOT IN ($fuid, $tuid)";
+        $sql.= "AND USER_THREAD.UID NOT IN ($fuid, $tuid) ";
+        $sql.= "AND USER.UID IS NOT NULL";
 
         if (!$result = db_query($sql, $db_email_sendsubscription)) return false;
 

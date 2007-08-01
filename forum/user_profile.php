@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.129 2007-07-04 18:35:15 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.130 2007-08-01 20:23:01 decoyduck Exp $ */
 
 /**
 * Displays user profiles
@@ -262,25 +262,24 @@ if (isset($user_profile['PIC_URL'])) {
 
     $attachment = get_attachment_by_hash($user_profile['PIC_AID']);
 
-    if (forum_get_setting('attachment_use_old_method', 'Y')) {
+    if ($profile_picture_href = attachment_make_link($attachment, false, false, false, false)) {
 
-        $profile_picture_href = "get_attachment.php?webtag=$webtag&amp;hash={$attachment['HASH']}";
-        $profile_picture_href.= "&amp;filename={$attachment['FILENAME']}&amp;profile_picture=1";
+        echo "                      <tr>\n";
+        echo "                        <td align=\"right\" class=\"subhead\">\n";
+        echo "                          <div class=\"profile_image\">\n";
+        echo "                            <img src=\"$profile_picture_href\" width=\"95\" height=\"95\" alt=\"\" />\n";
+        echo "                          </div>\n";
+        echo "                        </td>\n";
+        echo "                      </tr>\n";
 
     }else {
 
-        $profile_picture_href = "get_attachment.php/{$attachment['HASH']}/";
-        $profile_picture_href.= rawurlencode($attachment['FILENAME']);
-        $profile_picture_href.= "?webtag=$webtag&amp;profile_picture=1";
+        echo "                      <tr>\n";
+        echo "                        <td align=\"right\" class=\"subhead\">\n";
+        echo "                          <div class=\"profile_image_none\"></div>\n";
+        echo "                        </td>\n";
+        echo "                      </tr>\n";
     }
-
-    echo "                      <tr>\n";
-    echo "                        <td align=\"right\" class=\"subhead\">\n";
-    echo "                          <div class=\"profile_image\">\n";
-    echo "                            <img src=\"$profile_picture_href\" width=\"95\" height=\"95\" alt=\"\" />\n";
-    echo "                          </div>\n";
-    echo "                        </td>\n";
-    echo "                      </tr>\n";
 
 }else {
 
@@ -300,12 +299,12 @@ if (isset($user_profile['HOMEPAGE_URL'])) {
     echo "<a href=\"{$user_profile['HOMEPAGE_URL']}\" target=\"_blank\"><img src=\"", style_image('home.png'), "\" alt=\"{$lang['visithomepage']}\" title=\"{$lang['visithomepage']}\" border=\"0\" /></a>&nbsp;";
 }
 
-echo "<a href=\"index.php?webtag=$webtag&amp;final_uri=", rawurlencode("./pm_write.php?webtag=$webtag&amp;uid=$uid"), "\" target=\"_blank\"><img src=\"", style_image('pmread.png'), "\" alt=\"{$lang['sendpm']}\" title=\"{$lang['sendpm']}\" border=\"0\" /></a>&nbsp;";
+echo "<a href=\"index.php?webtag=$webtag&amp;final_uri=pm_write.php%3Fwebtag%3D$webtag%26uid=$uid\" target=\"_blank\"><img src=\"", style_image('pmread.png'), "\" alt=\"{$lang['sendpm']}\" title=\"{$lang['sendpm']}\" border=\"0\" /></a>&nbsp;";
 echo "<a href=\"email.php?webtag=$webtag&amp;uid=$uid\" target=\"_blank\" onclick=\"return openEmailWindow('$uid', '$webtag');\"><img src=\"", style_image('email.png'), "\" alt=\"{$lang['sendemail']}\" title=\"{$lang['sendemail']}\" border=\"0\" /></a>&nbsp;";
 
 if ($uid <> bh_session_get_value('UID')) {
 
-    echo "<a href=\"user_rel.php?webtag=$webtag&amp;uid=$uid&amp;ret=", rawurlencode("user_profile.php?webtag=$webtag&amp;uid=$uid"), "\" target=\"_self\"><img src=\"", style_image('enemy.png'), "\" alt=\"{$lang['relationship']}\" title=\"{$lang['relationship']}\" border=\"0\" /></a>&nbsp;";
+    echo "<a href=\"user_rel.php?webtag=$webtag&amp;uid=$uid&amp;ret=user_profile.php%3Fwebtag%3D$webtag%26uid=$uid\" target=\"_self\"><img src=\"", style_image('enemy.png'), "\" alt=\"{$lang['relationship']}\" title=\"{$lang['relationship']}\" border=\"0\" /></a>&nbsp;";
     echo "<a href=\"search.php?webtag=$webtag&amp;logon=$logon\" target=\"_blank\" onclick=\"return findUserPosts('$logon', '$webtag');\"><img src=\"", style_image('search.png'), "\" alt=\"", sprintf($lang['findpostsmadebyuser'], $logon), "\" title=\"", sprintf($lang['findpostsmadebyuser'], $logon), "\" border=\"0\" /></a>&nbsp;";
 
 }else {

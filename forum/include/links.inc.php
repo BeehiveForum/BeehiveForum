@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.inc.php,v 1.68 2007-06-14 13:21:05 decoyduck Exp $ */
+/* $Id: links.inc.php,v 1.69 2007-08-01 20:23:02 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -39,49 +39,67 @@ include_once(BH_INCLUDE_PATH. "header.inc.php");
 
 function links_get_in_folder($fid, $invisible = false, $sort_by = "TITLE", $sort_dir = "ASC", $offset = 0) // setting $invisible to true gets links that are marked as not visible too
 {
-    $links_array = array();
-
     $db_links_get_in_folder = db_connect();
 
-    $sort_array = array('TITLE', 'DESCRIPTION', 'CREATED', 'RATING');
+    $lang = load_language_file();
 
-    if (!in_array($sort_by, $sort_array)) $sort_by = 'TITLE';
-    if ((trim($sort_dir) != 'DESC') && (trim($sort_dir) != 'ASC')) $sort_dir = 'DESC';
+    $sort_by_array = array('TITLE', 'DESCRIPTION', 'CREATED', 'RATING');
+    $sort_dir_array = array('ASC', 'DESC');
 
-    if (!$table_data = get_table_prefix()) return array('links_count' => 0,
-                                                        'links_array' => array());
+    if (!is_numeric($fid)) return false;
+    if (!is_numeric($offset)) return false;
+    if (!is_bool($invisible)) $invisible = false;
 
-    $sql = "SELECT COUNT(LID) AS LINK_COUNT ";
-    $sql.= "FROM {$table_data['PREFIX']}LINKS ";
+    if (!in_array($sort_by, $sort_by_array)) $sort_by = 'TITLE';
+    if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'ASC';
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $links_array = array();
+
+    $sql = "SELECT COUNT(LID) AS LINK_COUNT FROM {$table_data['PREFIX']}LINKS ";
     $sql.= "WHERE FID = '$fid'";
 
     if (!$result = db_query($sql, $db_links_get_in_folder)) return false;
     
     list($links_count) = db_fetch_array($result, DB_RESULT_NUM);
 
-    $sql = "SELECT LINKS.LID, LINKS.UID, USER.LOGON, USER.NICKNAME, LINKS.URI, LINKS.TITLE, ";
-    $sql.= "LINKS.DESCRIPTION, LINKS.VISIBLE, UNIX_TIMESTAMP(LINKS.CREATED) AS CREATED, LINKS.CLICKS, ";
-    $sql.= "AVG(LINKS_VOTE.RATING) AS RATING ";
-    $sql.= "FROM {$table_data['PREFIX']}LINKS LINKS ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}LINKS_VOTE LINKS_VOTE ";
-    $sql.= "ON (LINKS.LID = LINKS_VOTE.LID) ";
-    $sql.= "LEFT JOIN USER USER ";
-    $sql.= "ON (LINKS.UID = USER.UID) ";
-    $sql.= "WHERE LINKS.FID = '$fid' ";
+    if ($invisible === false) {
 
-    if (!$invisible) $sql.= "AND LINKS.VISIBLE = 'Y' ";
+        $sql = "SELECT LINKS.LID, LINKS.UID, USER.LOGON, USER.NICKNAME, LINKS.URI, LINKS.TITLE, ";
+        $sql.= "LINKS.DESCRIPTION, LINKS.VISIBLE, UNIX_TIMESTAMP(LINKS.CREATED) AS CREATED, LINKS.CLICKS, ";
+        $sql.= "AVG(LINKS_VOTE.RATING) AS RATING FROM {$table_data['PREFIX']}LINKS LINKS ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}LINKS_VOTE LINKS_VOTE ON (LINKS.LID = LINKS_VOTE.LID) ";
+        $sql.= "LEFT JOIN USER USER ON (LINKS.UID = USER.UID) WHERE LINKS.FID = '$fid' ";
+        $sql.= "AND LINKS.VISIBLE = 'Y' GROUP BY LINKS.LID ORDER BY $sort_by $sort_dir ";
+        $sql.= "LIMIT $offset, 20";
 
-    $sql.= "GROUP BY LINKS.LID ";
-    $sql.= "ORDER BY $sort_by $sort_dir ";
-    $sql.= "LIMIT $offset, 20";
+    }else {
+
+        $sql = "SELECT LINKS.LID, LINKS.UID, USER.LOGON, USER.NICKNAME, LINKS.URI, LINKS.TITLE, ";
+        $sql.= "LINKS.DESCRIPTION, LINKS.VISIBLE, UNIX_TIMESTAMP(LINKS.CREATED) AS CREATED, LINKS.CLICKS, ";
+        $sql.= "AVG(LINKS_VOTE.RATING) AS RATING FROM {$table_data['PREFIX']}LINKS LINKS ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}LINKS_VOTE LINKS_VOTE ON (LINKS.LID = LINKS_VOTE.LID) ";
+        $sql.= "LEFT JOIN USER USER ON (LINKS.UID = USER.UID) WHERE LINKS.FID = '$fid' ";
+        $sql.= "GROUP BY LINKS.LID ORDER BY $sort_by $sort_dir LIMIT $offset, 20";
+    }
 
     if (!$result = db_query($sql, $db_links_get_in_folder)) return false;
 
     if (db_num_rows($result) > 0) {
 
-        while ($row = db_fetch_array($result)) {
+        while ($links_data = db_fetch_array($result)) {
 
-            $links_array[$row['LID']] = $row;
+            if (isset($links_data['LOGON']) && isset($links_data['PEER_NICKNAME'])) {
+                if (!is_null($links_data['PEER_NICKNAME']) && strlen($links_data['PEER_NICKNAME']) > 0) {
+                    $links_data['NICKNAME'] = $links_data['PEER_NICKNAME'];
+                }
+            }
+
+            if (!isset($links_data['LOGON'])) $links_data['LOGON'] = $lang['unknownuser'];
+            if (!isset($links_data['NICKNAME'])) $links_data['NICKNAME'] = "";
+
+            $links_array[$links_data['LID']] = $links_data;
         }
 
     }else if ($links_count > 0) {
@@ -107,10 +125,10 @@ function links_folders_get($invisible = false)
 
     if (db_num_rows($result) > 0) {
 
-        $row = db_fetch_array($result);
+        $links_data = db_fetch_array($result);
 
-        $top_level = $row['FID'];
-        $folders[$row['FID']] =  $row;
+        $top_level = $links_data['FID'];
+        $folders[$links_data['FID']] =  $links_data;
 
         if ($invisible) {
 
@@ -127,9 +145,9 @@ function links_folders_get($invisible = false)
 
         if (db_num_rows($result) > 0) {
 
-            while ($row = db_fetch_array($result)) {
+            while ($links_data = db_fetch_array($result)) {
 
-                $folders[$row['FID']] =  $row;
+                $folders[$links_data['FID']] =  $links_data;
             }
         }
 
@@ -307,76 +325,103 @@ function links_click($lid)
 
 function links_get_single($lid)
 {
-    if (!is_numeric($lid)) return false;
-
     $db_links_get_single = db_connect();
+
+    $lang = load_language_file();
+
+    if (!is_numeric($lid)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql  = "SELECT LINKS.FID, LINKS.UID, LINKS.URI, LINKS.TITLE, LINKS.DESCRIPTION, UNIX_TIMESTAMP(LINKS.CREATED) AS CREATED, ";
-    $sql .= "LINKS.VISIBLE, LINKS.CLICKS, USER.LOGON, USER.NICKNAME, AVG(LINKS_VOTE.RATING) AS RATING, COUNT(LINKS_VOTE.RATING) AS VOTES ";
-    $sql .= "FROM {$table_data['PREFIX']}LINKS LINKS ";
-    $sql .= "LEFT JOIN USER USER ";
-    $sql .= "ON (LINKS.UID = USER.UID) ";
-    $sql .= "LEFT JOIN {$table_data['PREFIX']}LINKS_VOTE LINKS_VOTE ";
-    $sql .= "ON (LINKS.LID = LINKS_VOTE.LID) ";
-    $sql .= "WHERE LINKS.LID = '$lid' ";
-    $sql .= "GROUP BY LINKS_VOTE.LID";
+    $sql = "SELECT LINKS.FID, LINKS.UID, LINKS.URI, LINKS.TITLE, LINKS.DESCRIPTION, ";
+    $sql.= "UNIX_TIMESTAMP(LINKS.CREATED) AS CREATED, LINKS.VISIBLE, LINKS.CLICKS, ";
+    $sql.= "USER.LOGON, USER.NICKNAME, AVG(LINKS_VOTE.RATING) AS RATING, ";
+    $sql.= "COUNT(LINKS_VOTE.RATING) AS VOTES FROM {$table_data['PREFIX']}LINKS LINKS ";
+    $sql.= "LEFT JOIN USER USER ON (LINKS.UID = USER.UID) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}LINKS_VOTE LINKS_VOTE ON (LINKS.LID = LINKS_VOTE.LID) ";
+    $sql.= "WHERE LINKS.LID = '$lid' GROUP BY LINKS_VOTE.LID";
 
     if (!$result = db_query($sql, $db_links_get_single)) return false;
 
-    if ($result) {
-        $link = db_fetch_array($result);
-        return $link;
-    } else {
-        return false;
+    if (db_num_rows($result) > 0) {
+
+        $link_array = db_fetch_array($result);
+
+        if (isset($link_array['LOGON']) && isset($link_array['PEER_NICKNAME'])) {
+            if (!is_null($link_array['PEER_NICKNAME']) && strlen($link_array['PEER_NICKNAME']) > 0) {
+                $link_array['NICKNAME'] = $link_array['PEER_NICKNAME'];
+            }
+        }
+
+        if (!isset($link_array['LOGON'])) $link_array['LOGON'] = $lang['unknownuser'];
+        if (!isset($link_array['NICKNAME'])) $link_array['NICKNAME'] = "";
+
+        return $link_array;
     }
+    
+    return false;
 }
 
 function links_get_all($invisible = false, $sort_by = "TITLE", $sort_dir = "ASC", $offset = 0)
 {
-    $links_array = array();
-
-    $sort_array = array('TITLE', 'DESCRIPTION', 'CREATED', 'RATING');
-
-    if (!is_numeric($offset)) $offset = 0;
-    if ((trim($sort_dir) != 'DESC') && (trim($sort_dir) != 'ASC')) $sort_dir = 'ASC';
-    if (!in_array($sort_by, $sort_array)) $sort_by = 'TITLE';
-
     $db_links_get_in_folder = db_connect();
 
-    if (!$table_data = get_table_prefix()) return array('links_count' => 0,
-                                                        'links_array' => array());
+    $lang = load_language_file();
 
-    $sql = "SELECT COUNT(LID) AS LINK_COUNT ";
-    $sql.= "FROM {$table_data['PREFIX']}LINKS ";
+    $sort_by_array = array('TITLE', 'DESCRIPTION', 'CREATED', 'RATING');
+    $sort_dir_array = array('ASC', 'DESC');
+
+    if (!is_numeric($offset)) return false;
+    if (!is_bool($invisible)) $invisible = false;
+
+    if (!in_array($sort_by, $sort_by_array)) $sort_by = 'TITLE';
+    if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'ASC';
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $links_array = array();
+
+    $sql = "SELECT COUNT(LID) AS LINK_COUNT FROM {$table_data['PREFIX']}LINKS ";
 
     if (!$result = db_query($sql, $db_links_get_in_folder)) return false;
     
     list($links_count) = db_fetch_array($result, DB_RESULT_NUM);
 
-    $sql = "SELECT LINKS.LID, LINKS.UID, USER.LOGON, USER.NICKNAME, LINKS.URI, LINKS.TITLE, ";
-    $sql.= "LINKS.DESCRIPTION, LINKS.VISIBLE, UNIX_TIMESTAMP(LINKS.CREATED) AS CREATED, LINKS.CLICKS, ";
-    $sql.= "AVG(LINKS_VOTE.RATING) AS RATING ";
-    $sql.= "FROM {$table_data['PREFIX']}LINKS LINKS ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}LINKS_VOTE LINKS_VOTE ";
-    $sql.= "ON (LINKS.LID = LINKS_VOTE.LID) ";
-    $sql.= "LEFT JOIN USER USER ";
-    $sql.= "ON (LINKS.UID = USER.UID) ";
+    if ($invisible === false) {
 
-    if (!$invisible) $sql.= "WHERE LINKS.VISIBLE = 'Y' ";
+        $sql = "SELECT LINKS.LID, LINKS.UID, USER.LOGON, USER.NICKNAME, LINKS.URI, LINKS.TITLE, ";
+        $sql.= "LINKS.DESCRIPTION, LINKS.VISIBLE, UNIX_TIMESTAMP(LINKS.CREATED) AS CREATED, LINKS.CLICKS, ";
+        $sql.= "AVG(LINKS_VOTE.RATING) AS RATING FROM {$table_data['PREFIX']}LINKS LINKS ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}LINKS_VOTE LINKS_VOTE ON (LINKS.LID = LINKS_VOTE.LID) ";
+        $sql.= "LEFT JOIN USER USER ON (LINKS.UID = USER.UID) WHERE LINKS.VISIBLE = 'Y' ";
+        $sql.= "GROUP BY LINKS.LID ORDER BY $sort_by $sort_dir LIMIT $offset, 20";
 
-    $sql.= "GROUP BY LINKS.LID ";
-    $sql.= "ORDER BY $sort_by $sort_dir ";
-    $sql.= "LIMIT $offset, 20";
+    }else {
+
+        $sql = "SELECT LINKS.LID, LINKS.UID, USER.LOGON, USER.NICKNAME, LINKS.URI, LINKS.TITLE, ";
+        $sql.= "LINKS.DESCRIPTION, LINKS.VISIBLE, UNIX_TIMESTAMP(LINKS.CREATED) AS CREATED, LINKS.CLICKS, ";
+        $sql.= "AVG(LINKS_VOTE.RATING) AS RATING FROM {$table_data['PREFIX']}LINKS LINKS ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}LINKS_VOTE LINKS_VOTE ON (LINKS.LID = LINKS_VOTE.LID) ";
+        $sql.= "LEFT JOIN USER USER ON (LINKS.UID = USER.UID) GROUP BY LINKS.LID ";
+        $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, 20";
+    }
 
     if (!$result = db_query($sql, $db_links_get_in_folder)) return false;
 
     if (db_num_rows($result) > 0) {
 
-        while ($row = db_fetch_array($result)) {
+        while ($links_data = db_fetch_array($result)) {
 
-            $links_array[$row['LID']] = $row;
+            if (isset($links_data['LOGON']) && isset($links_data['PEER_NICKNAME'])) {
+                if (!is_null($links_data['PEER_NICKNAME']) && strlen($links_data['PEER_NICKNAME']) > 0) {
+                    $links_data['NICKNAME'] = $links_data['PEER_NICKNAME'];
+                }
+            }
+
+            if (!isset($links_data['LOGON'])) $links_data['LOGON'] = $lang['unknownuser'];
+            if (!isset($links_data['NICKNAME'])) $links_data['NICKNAME'] = "";
+
+            $links_array[$links_data['LID']] = $links_data;
         }
 
     }else if ($links_count > 0) {
@@ -527,30 +572,41 @@ function links_get_comments($lid)
 {
     $db_links_get_comments = db_connect();
 
+    $lang = load_language_file();
+
     if (!is_numeric($lid))  return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql  = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(LINKS_COMMENT.CREATED) AS CREATED, ";
-    $sql .= "LINKS_COMMENT.CID, LINKS_COMMENT.COMMENT ";
-    $sql .= "FROM {$table_data['PREFIX']}LINKS_COMMENT LINKS_COMMENT ";
-    $sql .= "LEFT JOIN USER USER ";
-    $sql .= "ON (LINKS_COMMENT.UID = USER.UID) ";
+    $links_comment_array = array();
+
+    $sql  = "SELECT LINKS_COMMENT.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(LINKS_COMMENT.CREATED) AS CREATED, ";
+    $sql .= "LINKS_COMMENT.CID, LINKS_COMMENT.COMMENT FROM {$table_data['PREFIX']}LINKS_COMMENT LINKS_COMMENT ";
+    $sql .= "LEFT JOIN USER USER ON (LINKS_COMMENT.UID = USER.UID) ";
     $sql .= "WHERE LINKS_COMMENT.LID = '$lid' ORDER BY CREATED ASC";
 
     if (!$result = db_query($sql, $db_links_get_comments)) return false;
 
     if (db_num_rows($result) > 0) {
 
-        while ($row = db_fetch_array($result)) {
-            $comments[] = $row;
+        while ($link_comment_data = db_fetch_array($result)) {
+
+            if (isset($link_comment_data['LOGON']) && isset($link_comment_data['PEER_NICKNAME'])) {
+                if (!is_null($link_comment_data['PEER_NICKNAME']) && strlen($link_comment_data['PEER_NICKNAME']) > 0) {
+                    $link_comment_data['NICKNAME'] = $link_comment_data['PEER_NICKNAME'];
+                }
+            }
+
+            if (!isset($link_comment_data['LOGON'])) $link_comment_data['LOGON'] = $lang['unknownuser'];
+            if (!isset($link_comment_data['NICKNAME'])) $link_comment_data['NICKNAME'] = "";
+
+            $links_comment_array[] = $link_comment_data;
         }
 
-        return $comments;
-
-    } else {
-        return false;
+        return $links_comment_array;
     }
+
+    return false;
 }
 
 function links_folder_dropdown($default_fid, $folders)

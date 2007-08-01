@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.119 2007-07-10 15:50:38 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.120 2007-08-01 20:23:03 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -66,6 +66,8 @@ function thread_get($tid, $inc_deleted = false)
 {
     $db_thread_get = db_connect();
 
+    $lang = load_language_file();
+
     $fidlist = folder_get_available();
 
     if (!$table_data = get_table_prefix()) return false;
@@ -103,9 +105,7 @@ function thread_get($tid, $inc_deleted = false)
 
         $threaddata = db_fetch_array($result);
 
-        if (!isset($threaddata['INTEREST'])) {
-            $threaddata['INTEREST'] = 0;
-        }
+        if (!isset($threaddata['INTEREST'])) $threaddata['INTEREST'] = 0;
 
         if (!isset($thread['LAST_READ']) || is_null($thread['LAST_READ'])) {
 
@@ -130,11 +130,14 @@ function thread_get($tid, $inc_deleted = false)
             $threaddata['CLOSED'] = 0;
         }
 
-        if (isset($threaddata['PEER_NICKNAME'])) {
+        if (isset($threaddata['LOGON']) && isset($threaddata['PEER_NICKNAME'])) {
             if (!is_null($threaddata['PEER_NICKNAME']) && strlen($threaddata['PEER_NICKNAME']) > 0) {
                 $threaddata['NICKNAME'] = $threaddata['PEER_NICKNAME'];
             }
         }
+
+        if (!isset($threaddata['LOGON'])) $threaddata['LOGON'] = $lang['unknownuser'];
+        if (!isset($threaddata['NICKNAME'])) $threaddata['NICKNAME'] = "";
 
         return $threaddata;
     }
@@ -196,13 +199,11 @@ function thread_get_length($tid)
 
     if (db_num_rows($result) > 0) {
 
-        $row = db_fetch_array($result);
-        return isset($row['LENGTH']) ? $row['LENGTH'] : 0;
-
-    }else {
-
-        return 0;
+        $thread_data = db_fetch_array($result);
+        return isset($thread_data['LENGTH']) ? $thread_data['LENGTH'] : 0;
     }
+
+    return 0;
 }
 
 function thread_get_tracking_data($tid)
@@ -314,13 +315,11 @@ function thread_get_interest($tid)
 
     if (db_num_rows($result) > 0) {
 
-        $row = db_fetch_array($result);
-        return isset($row['INTEREST']) ? $row['INTEREST'] : 0;
-
-    }else {
-
-        return 0;
+        $thread_data = db_fetch_array($result);
+        return isset($thread_data['INTEREST']) ? $thread_data['INTEREST'] : 0;
     }
+
+    return 0;
 }
 
 function thread_set_interest($tid, $interest)
@@ -489,11 +488,11 @@ function thread_delete_by_user($tid, $uid)
 
     if (!$result = db_query($sql, $db_thread_delete_by_user)) return false;
 
-    while ($row = db_fetch_array($result)) {
+    while ($thread_data = db_fetch_array($result)) {
 
         $sql = "UPDATE {$table_data['PREFIX']}POST_CONTENT ";
-        $sql.= "SET CONTENT = NULL WHERE TID = '{$row['TID']}' ";
-        $sql.= "AND PID = '{$row['PID']}'";
+        $sql.= "SET CONTENT = NULL WHERE TID = '{$thread_data['TID']}' ";
+        $sql.= "AND PID = '{$thread_data['PID']}'";
 
         if (!$result = db_query($sql, $db_thread_delete_by_user)) return false;
     }
@@ -1293,13 +1292,14 @@ function thread_get_unmoved_posts($tid)
 
     if (db_num_rows($result) > 0) {
 
-        $thread_data = array();
+        $thread_unmoved_posts_array = array();
         
-        while ($row = db_fetch_array($result)) {
-            $thread_data[$row['PID']] = $row['PID'];
+        while ($thread_data = db_fetch_array($result)) {
+
+            $thread_unmoved_posts_array[$thread_data['PID']] = $thread_data['PID'];
         }
 
-        return $thread_data;
+        return $thread_unmoved_posts_array;
     }
 
     return false;
@@ -1359,11 +1359,11 @@ function thread_search($thread_search, $offset = 0)
 
     if (db_num_rows($result) > 0) {
 
-        while ($row = db_fetch_array($result)) {
+        while ($thread_data = db_fetch_array($result)) {
 
-            if (!isset($results_array[$row['TID']])) {
+            if (!isset($results_array[$thread_data['TID']])) {
 
-                $results_array[$row['TID']] = $row;
+                $results_array[$thread_data['TID']] = $thread_data;
             }
         }
     

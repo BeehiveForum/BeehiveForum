@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.inc.php,v 1.4 2007-06-28 22:46:19 decoyduck Exp $ */
+/* $Id: visitor_log.inc.php,v 1.5 2007-08-01 20:23:04 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -54,7 +54,7 @@ function visitor_log_get_recent()
 
     if (forum_get_setting('guest_show_recent', 'Y')) {
 
-        $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
+        $sql = "SELECT VISITOR_LOG.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
         $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
         $sql.= "SEARCH_ENGINE_BOTS.SID, SEARCH_ENGINE_BOTS.NAME, SEARCH_ENGINE_BOTS.URL ";
         $sql.= "FROM VISITOR_LOG VISITOR_LOG ";
@@ -74,7 +74,7 @@ function visitor_log_get_recent()
 
     }else {
 
-        $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
+        $sql = "SELECT VISITOR_LOG.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
         $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
         $sql.= "SEARCH_ENGINE_BOTS.SID, SEARCH_ENGINE_BOTS.NAME, SEARCH_ENGINE_BOTS.URL ";
         $sql.= "FROM VISITOR_LOG VISITOR_LOG ";
@@ -101,15 +101,21 @@ function visitor_log_get_recent()
         
         while ($visitor_array = db_fetch_array($result)) {
             
-            if (!isset($visitor_array['UID']) || $visitor_array['UID'] == 0) {
+            if ($visitor_array['UID'] == 0) {
 
-                $visitor_array['UID']      = 0;
                 $visitor_array['LOGON']    = $lang['guest'];
                 $visitor_array['NICKNAME'] = $lang['guest'];
+            
+            }elseif (!isset($visitor_array['LOGON']) || is_null($visitor_array['LOGON'])) {
+            
+                $visitor_array['LOGON'] = $lang['unknownuser'];
+                $visitor_array['NICKNAME'] = "";
             }
 
             if (isset($visitor_array['PEER_NICKNAME'])) {
+
                 if (!is_null($visitor_array['PEER_NICKNAME']) && strlen($visitor_array['PEER_NICKNAME']) > 0) {
+
                     $visitor_array['NICKNAME'] = $visitor_array['PEER_NICKNAME'];
                 }
             }
@@ -239,8 +245,8 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
 
     // Main query.
 
-    $select_sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP, ";
-    $select_sql.= "SEARCH_ENGINE_BOTS.SID, SEARCH_ENGINE_BOTS.NAME, SEARCH_ENGINE_BOTS.URL, ";
+    $select_sql = "SELECT VISITOR_LOG.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP, ";
+    $select_sql.= "USER_PEER.PEER_NICKNAME, SEARCH_ENGINE_BOTS.SID, SEARCH_ENGINE_BOTS.NAME, SEARCH_ENGINE_BOTS.URL, ";
     $select_sql.= "USER_TRACK.POST_COUNT AS POST_COUNT, DATE_FORMAT(USER_PREFS_DOB.DOB, '0000-%m-%d') AS DOB, ";
     $select_sql.= "DATE_FORMAT(NOW(), '%Y') - DATE_FORMAT(USER_PREFS_AGE.DOB, '%Y') - ";
     $select_sql.= "(DATE_FORMAT(NOW(), '00-%m-%d') < DATE_FORMAT(USER_PREFS_AGE.DOB, '00-%m-%d')) AS AGE, ";
@@ -483,12 +489,22 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
         if (db_num_rows($result) > 0) {
            
             while ($user_data = db_fetch_array($result, DB_RESULT_ASSOC)) {
-                
-                if (is_null($user_data['UID']) || $user_data['UID'] == 0) {
 
-                    $user_data['UID']      = 0;
+                if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
+                    if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
+                        $user_data['NICKNAME'] = $user_data['PEER_NICKNAME'];
+                    }
+                }
+                
+                if ($user_data['UID'] == 0) {
+
                     $user_data['LOGON']    = $lang['guest'];
                     $user_data['NICKNAME'] = $lang['guest'];
+
+                }elseif (!isset($user_data['LOGON']) || is_null($user_data['LOGON'])) {
+
+                    $user_data['LOGON'] = $lang['unknownuser'];
+                    $user_data['NICKNAME'] = "";
                 }
 
                 if (isset($user_data['AVATAR_URL_FORUM']) && strlen($user_data['AVATAR_URL_FORUM']) > 0) {

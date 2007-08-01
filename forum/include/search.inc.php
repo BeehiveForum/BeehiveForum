@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.187 2007-06-10 12:28:44 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.188 2007-08-01 20:23:03 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -406,16 +406,16 @@ function search_get_word_lengths(&$min_length, &$max_length)
     $min_length = 4;
     $max_length = 84;
 
-    while ($row = db_fetch_array($result)) {
+    while ($mysql_variable_data = db_fetch_array($result)) {
 
-        if (isset($row['Variable_name']) && isset($row['Value'])) {
+        if (isset($mysql_variable_data['Variable_name']) && isset($mysql_variable_data['Value'])) {
 
-            if ($row['Variable_name'] == 'ft_max_word_len') {
-                $max_length = $row['Value'];
+            if ($mysql_variable_data['Variable_name'] == 'ft_max_word_len') {
+                $max_length = $mysql_variable_data['Value'];
             }
 
-            if ($row['Variable_name'] == 'ft_min_word_len') {
-                $min_length = $row['Value'];
+            if ($mysql_variable_data['Variable_name'] == 'ft_min_word_len') {
+                $min_length = $mysql_variable_data['Value'];
             }
         }
     }
@@ -476,6 +476,8 @@ function search_fetch_results($offset, $sort_by, $sort_dir)
 {
     $db_search_fetch_results = db_connect();
 
+    $lang = load_language_file();
+
     if (!$table_data = get_table_prefix()) return false;
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
@@ -499,8 +501,11 @@ function search_fetch_results($offset, $sort_by, $sort_dir)
         $sql = "SELECT SEARCH_RESULTS.FID, SEARCH_RESULTS.TID, SEARCH_RESULTS.PID, ";
         $sql.= "SEARCH_RESULTS.BY_UID, SEARCH_RESULTS.FROM_UID, SEARCH_RESULTS.TO_UID, ";
         $sql.= "USER_TRACK.LAST_SEARCH_KEYWORDS AS KEYWORDS, UNIX_TIMESTAMP(CREATED) AS CREATED, ";
-        $sql.= "USER.LOGON AS FROM_LOGON, USER.NICKNAME AS FROM_NICKNAME FROM SEARCH_RESULTS ";
+        $sql.= "USER.LOGON AS FROM_LOGON, USER.NICKNAME AS FROM_NICKNAME, ";
+        $sql.= "USER_PEER.PEER_NICKNAME FROM SEARCH_RESULTS ";
         $sql.= "LEFT JOIN USER ON (USER.UID = SEARCH_RESULTS.FROM_UID) ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+        $sql.= "ON (USER_PEER.PEER_UID = SEARCH_RESULTS.FROM_UID AND USER_PEER.UID = '$uid') ";
         $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_TRACK USER_TRACK ";
         $sql.= "ON (USER_TRACK.UID = SEARCH_RESULTS.UID) ";
         $sql.= "WHERE SEARCH_RESULTS.UID = '$uid' ";
@@ -535,6 +540,15 @@ function search_fetch_results($offset, $sort_by, $sort_dir)
             $search_results_array = array();
 
             while ($search_result = db_fetch_array($result)) {
+
+                if (isset($search_result['FROM_LOGON']) && isset($search_result['PEER_NICKNAME'])) {
+                    if (!is_null($search_result['PEER_NICKNAME']) && strlen($search_result['PEER_NICKNAME']) > 0) {
+                        $search_result['FROM_NICKNAME'] = $search_result['PEER_NICKNAME'];
+                    }
+                }
+
+                if (!isset($search_result['FROM_LOGON'])) $search_result['FROM_LOGON'] = $lang['unknownuser'];
+                if (!isset($search_result['FROM_NICKNAME'])) $search_result['FROM_NICKNAME'] = $lang['unknownuser'];
 
                 $search_results_array[] = $search_result;
             }
@@ -711,42 +725,6 @@ function search_date_range($from, $to)
     if (isset($to_timestamp)) $range.= "AND POST.CREATED <= FROM_UNIXTIME($to_timestamp) ";
 
     return $range;
-}
-
-function forum_search_dropdown()
-{
-    $lang = load_language_file();
-
-    $db_forum_search_dropdown = db_connect();
-
-    if (($uid = bh_session_get_value('UID')) === false) return false;
-
-    if (!$table_data = get_table_prefix()) return false;
-
-    $forum_fid = $table_data['FID'];
-
-    $sql = "SELECT FORUMS.FID, FORUM_SETTINGS.SVALUE FROM FORUMS FORUMS ";
-    $sql.= "LEFT JOIN FORUM_SETTINGS FORUM_SETTINGS ON (FORUM_SETTINGS.FID = FORUMS.FID ";
-    $sql.= "AND FORUM_SETTINGS.SNAME = 'forum_name') ";
-    $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.FID = FORUMS.FID) ";
-    $sql.= "WHERE FORUMS.ACCESS_LEVEL = 0 OR FORUMS.ACCESS_LEVEL = 2 ";
-    $sql.= "OR (FORUMS.ACCESS_LEVEL = 1 AND USER_FORUM.ALLOWED = 1) ";
-
-    if (!$result = db_query($sql, $db_forum_search_dropdown)) return false;
-
-    if (db_num_rows($result) > 0) {
-
-        $forums_array[0] = $lang['all_caps'];
-
-        while($row = db_fetch_array($result)) {
-
-            $forums_array[$row['FID']] = $row['SVALUE'];
-        }
-
-        return form_dropdown_array("forums", $forums_array, $forum_fid, false, "search_dropdown");
-    }
-
-    return false;
 }
 
 function folder_search_dropdown()

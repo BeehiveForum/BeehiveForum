@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.131 2007-07-10 15:50:35 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.132 2007-08-01 20:23:02 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -102,13 +102,14 @@ function folder_draw_dropdown_all($default_fid, $field_name="t_fid", $suffix="",
     $available_folders = array();
 
     $sql = "SELECT FID, TITLE, DESCRIPTION FROM {$table_data['PREFIX']}FOLDER";
+
     if (!$result = db_query($sql, $db_folder_draw_dropdown)) return false;
 
     if (db_num_rows($result) > 0) {
 
-        while($row = db_fetch_array($result)) {
+        while($folder_data = db_fetch_array($result)) {
 
-            $available_folders[$row['FID']] = $row['TITLE'];
+            $available_folders[$folder_data['FID']] = $folder_data['TITLE'];
         }
 
         if (sizeof($available_folders) > 0) {
@@ -183,8 +184,8 @@ function folder_create($title, $description = "", $prefix = "", $allowed_types =
 
     if (!$result = db_query($sql, $db_folder_create)) return false;
 
-    if ($row = db_fetch_array($result)) {
-        $new_pos = $row['NEW_POS'];
+    if ($folder_data = db_fetch_array($result)) {
+        $new_pos = $folder_data['NEW_POS'];
     }
 
     $sql = "INSERT INTO {$table_data['PREFIX']}FOLDER (TITLE, DESCRIPTION, PREFIX, ALLOWED_TYPES, POSITION) ";
@@ -376,8 +377,8 @@ function folder_get_all()
 
         $folder_list = array();
 
-        while ($row = db_fetch_array($result)) {
-            $folder_list[$row['FID']] = $row;
+        while ($folder_data = db_fetch_array($result)) {
+            $folder_list[$folder_data['FID']] = $folder_data;
         }
 
         return $folder_list;
@@ -419,10 +420,10 @@ function folder_get_all_by_page($offset)
 
     if (db_num_rows($result) > 0) {
 
-        while ($row = db_fetch_array($result)) {
+        while ($folder_data = db_fetch_array($result)) {
 
-            $folder_array[$row['FID']] = $row;
-            $fid_array[] = $row['FID'];
+            $folder_array[$folder_data['FID']] = $folder_data;
+            $fid_array[] = $folder_data['FID'];
         }
 
         folders_get_thread_counts($folder_array, $fid_array);
@@ -455,8 +456,8 @@ function folders_get_thread_counts(&$folder_array, $fid_array)
 
     if (!$result = db_query($sql, $db_folder_get_thread_count)) return false;
 
-    while ($row = db_fetch_array($result)) {
-        $folder_array[$row['FID']]['THREAD_COUNT'] = $row['THREAD_COUNT'];
+    while ($folder_data = db_fetch_array($result)) {
+        $folder_array[$folder_data['FID']]['THREAD_COUNT'] = $folder_data['THREAD_COUNT'];
     }
 }
 
@@ -580,11 +581,11 @@ function folder_thread_type_allowed($fid, $type) // for types see constants.inc.
 
     if (db_num_rows($result) > 0) {
 
-        $row = db_fetch_array($result);
+        $folder_data = db_fetch_array($result);
 
-        if (!isset($row['ALLOWED_TYPES']) || is_null($row['ALLOWED_TYPES'])) return true;
+        if (!isset($folder_data['ALLOWED_TYPES']) || is_null($folder_data['ALLOWED_TYPES'])) return true;
 
-        return $row['ALLOWED_TYPES'] ? ($row['ALLOWED_TYPES'] & $type) : true;
+        return $folder_data['ALLOWED_TYPES'] ? ($folder_data['ALLOWED_TYPES'] & $type) : true;
     }
 
     return false;
@@ -613,8 +614,8 @@ function folder_get_by_type_allowed($allowed_types = FOLDER_ALLOW_ALL_THREAD)
 
         $allowed_folders = array();
 
-        while($row = db_fetch_array($result)) {
-            $allowed_folders[] = $row['FID'];
+        while($folder_data = db_fetch_array($result)) {
+            $allowed_folders[] = $folder_data['FID'];
         }
 
         return $allowed_folders;
@@ -640,10 +641,10 @@ function folder_move_up($fid)
 
     if (!$result = db_query($sql, $db_folder_move_up)) return false;
 
-    while ($row = db_fetch_array($result)) {
+    while ($folder_data = db_fetch_array($result)) {
 
-        $folder_order[] = $row['FID'];
-        $folder_position[$row['FID']] = $row['POSITION'];
+        $folder_order[] = $folder_data['FID'];
+        $folder_position[$folder_data['FID']] = $folder_data['POSITION'];
     }
 
     // Search for our folder in the list of know folders.
@@ -692,10 +693,10 @@ function folder_move_down($fid)
 
     if (!$result = db_query($sql, $db_folder_move_down)) return false;
 
-    while ($row = db_fetch_array($result)) {
+    while ($folder_data = db_fetch_array($result)) {
 
-        $folder_order[] = $row['FID'];
-        $folder_position[$row['FID']] = $row['POSITION'];
+        $folder_order[] = $folder_data['FID'];
+        $folder_position[$folder_data['FID']] = $folder_data['POSITION'];
     }
 
     if (($folder_order_key = array_search($fid, $folder_order)) !== false) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.201 2007-05-18 11:49:30 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.202 2007-08-01 20:23:02 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -183,15 +183,15 @@ function poll_edit($fid, $tid, $thread_title, $poll_question, $poll_options, $an
 
 function poll_get($tid)
 {
+    $db_poll_get = db_connect();
+    
     $lang = load_language_file();
-
-    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (!is_numeric($tid)) return false;
 
-    $db_poll_get = db_connect();
-
     if (!$table_data = get_table_prefix()) return false;
+
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $sql = "SELECT POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, POST.TO_UID, ";
     $sql.= "UNIX_TIMESTAMP(POST.CREATED) AS CREATED, POST.VIEWED, ";
@@ -211,44 +211,57 @@ function poll_get($tid)
 
     if (!$result = db_query($sql, $db_poll_get)) return false;
 
-    $polldata = db_fetch_array($result);
+    if (db_num_rows($result) > 0) {
 
-    if (!isset($polldata['TNICK'])) {
-        $polldata['TNICK']  = $lang['allcaps'];
-        $polldata['TLOGON'] = $lang['allcaps'];
-    }
+        $polldata = db_fetch_array($result);
 
-    if (!isset($polldata['CLOSES'])) {
-        $polldata['CLOSES'] = 0;
-    }
-
-    if (!isset($polldata['CHANGEVOTE'])) {
-        $polldata['CHANGEVOTE'] = 1;
-    }
-
-    if (!isset($polldata['POLLTYPE'])) {
-        $polldata['POLLTYPE'] = 0;
-    }
-
-    if (!isset($polldata['SHOWRESULTS'])) {
-        $polldata['SHOWRESULTS'] = 1;
-    }
-
-    if (!isset($polldata['VOTETYPE'])) {
-        $polldata['VOTETYPE'] = 0;
-    }
-
-    if (!isset($polldata['OPTIONTYPE'])) {
-        $polldata['OPTIONTYPE'] = 0;
-    }
-
-    if (isset($polldata['PEER_NICKNAME'])) {
-        if (!is_null($polldata['PEER_NICKNAME']) && strlen($polldata['PEER_NICKNAME']) > 0) {
-            $polldata['FNICK'] = $polldata['PEER_NICKNAME'];
+        if (!isset($polldata['CLOSES'])) {
+            $polldata['CLOSES'] = 0;
         }
+
+        if (!isset($polldata['CHANGEVOTE'])) {
+            $polldata['CHANGEVOTE'] = 1;
+        }
+
+        if (!isset($polldata['POLLTYPE'])) {
+            $polldata['POLLTYPE'] = 0;
+        }
+
+        if (!isset($polldata['SHOWRESULTS'])) {
+            $polldata['SHOWRESULTS'] = 1;
+        }
+
+        if (!isset($polldata['VOTETYPE'])) {
+            $polldata['VOTETYPE'] = 0;
+        }
+
+        if (!isset($polldata['OPTIONTYPE'])) {
+            $polldata['OPTIONTYPE'] = 0;
+        }
+
+        if (isset($polldata['TLOGON']) && isset($polldata['PTNICK'])) {
+            if (!is_null($polldata['PTNICK']) && strlen($polldata['PTNICK']) > 0) {
+                $polldata['TNICK'] = $polldata['PTNICK'];
+            }
+        }
+
+        if (isset($polldata['FLOGON']) && isset($polldata['PFNICK'])) {
+            if (!is_null($polldata['PFNICK']) && strlen($polldata['PFNICK']) > 0) {
+                $polldata['FNICK'] = $polldata['PFNICK'];
+            }
+        }
+
+        if (!isset($polldata['FNICK'])) $polldata['FNICK'] = $lang['unknownuser'];
+        if (!isset($polldata['FLOGON'])) $polldata['FLOGON'] = $lang['unknownuser'];
+        if (!isset($polldata['FROM_UID'])) $polldata['FROM_UID'] = -1;
+
+        if (!isset($polldata['TNICK'])) $polldata['TNICK'] = $lang['allcaps'];
+        if (!isset($polldata['TLOGON'])) $polldata['TLOGON'] = $lang['allcaps'];
+
+        return $polldata;
     }
 
-    return $polldata;
+    return false;
 }
 
 function poll_get_votes($tid)
@@ -277,18 +290,18 @@ function poll_get_votes($tid)
 
     $poll_results = array();
 
-    while($row = db_fetch_array($result)) {
+    while($poll_data = db_fetch_array($result)) {
         
-        $option_ids[]    = $row['OPTION_ID'];
-        $option_names[]  = $row['OPTION_NAME'];
-        $option_groups[] = $row['GROUP_ID'];
-        $option_votes[]  = $row['VOTE_COUNT'];
+        $option_ids[]    = $poll_data['OPTION_ID'];
+        $option_names[]  = $poll_data['OPTION_NAME'];
+        $option_groups[] = $poll_data['GROUP_ID'];
+        $option_votes[]  = $poll_data['VOTE_COUNT'];
 
-        if (!isset($group_size[$row['GROUP_ID']])) {
-            $group_size[$row['GROUP_ID']] = 0;
+        if (!isset($group_size[$poll_data['GROUP_ID']])) {
+            $group_size[$poll_data['GROUP_ID']] = 0;
         }
 
-        $group_size[$row['GROUP_ID']]++;
+        $group_size[$poll_data['GROUP_ID']]++;
     }
 
     $poll_results = array('OPTION_ID'   => $option_ids,
@@ -343,12 +356,12 @@ function poll_get_user_votes($tid, $viewstyle)
 
     $poll_get_user_votes = array();
 
-    while($row = db_fetch_array($result)) {
+    while($poll_data = db_fetch_array($result)) {
 
         if ($viewstyle == POLL_VIEW_TYPE_OPTION) {
-            $poll_get_user_votes[$row['OPTION_ID']][] = $row['UID'];
+            $poll_get_user_votes[$poll_data['OPTION_ID']][] = $poll_data['UID'];
         }else {
-            $poll_get_user_votes[$row['UID']][] = $row['OPTION_ID'];
+            $poll_get_user_votes[$poll_data['UID']][] = $poll_data['OPTION_ID'];
         }
     }
 
@@ -377,9 +390,9 @@ function poll_get_user_vote($tid)
 
         $user_poll_data = array();
 
-        while($row = db_fetch_array($result)) {
+        while($poll_data = db_fetch_array($result)) {
 
-            $user_poll_data[] = $row;
+            $user_poll_data[] = $poll_data;
         }
 
         return $user_poll_data;
@@ -2003,11 +2016,11 @@ function poll_check_tabular_votes($tid, $votes)
 
     if (db_num_rows($result) > 0) {
 
-        $row = db_fetch_array($result);
+        $poll_data = db_fetch_array($result);
 
-        if ($row['POLLTYPE'] == POLL_TABLE_GRAPH) {
+        if ($poll_data['POLLTYPE'] == POLL_TABLE_GRAPH) {
 
-            return (sizeof($votes) == $row['GROUP_COUNT']);
+            return (sizeof($votes) == $poll_data['GROUP_COUNT']);
 
         }else {
             return true;

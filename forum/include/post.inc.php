@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.158 2007-05-15 22:13:17 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.159 2007-08-01 20:23:03 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -255,7 +255,7 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
         $html .= "<option value=\"0\">{$lang['allcaps']}</option>\n";
     }
 
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
+    $sql = "SELECT VISITOR_LOG.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
     $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM VISITOR_LOG VISITOR_LOG ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = VISITOR_LOG.UID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
@@ -266,18 +266,18 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
 
     if (!$result = db_query($sql, $db_post_draw_to_dropdown)) return false;
 
-    while ($row = db_fetch_array($result)) {
+    while ($user_data = db_fetch_array($result)) {
 
-        if (isset($row['LOGON']) && isset($row['NICKNAME'])) {
+        if (isset($user_data['LOGON'])) {
 
-            if (isset($row['PEER_NICKNAME'])) {
-                if (!is_null($row['PEER_NICKNAME']) && strlen($row['PEER_NICKNAME']) > 0) {
-                    $row['NICKNAME'] = $row['PEER_NICKNAME'];
+            if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
+                if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
+                    $user_data['NICKNAME'] = $user_data['PEER_NICKNAME'];
                 }
             }
-        
-            $fmt_username = word_filter_add_ob_tags(format_user_name($row['LOGON'], $row['NICKNAME']));
-            $html .= "<option value=\"{$row['UID']}\">$fmt_username</option>\n";
+
+            $fmt_username = word_filter_add_ob_tags(format_user_name($user_data['LOGON'], $user_data['NICKNAME']));
+            $html .= "<option value=\"{$user_data['UID']}\">$fmt_username</option>\n";
         }
     }
 
@@ -328,7 +328,7 @@ function post_draw_to_dropdown_recent($default_uid, $show_all = true)
         $html .= "<option value=\"0\">{$lang['allcaps']}</option>\n";
     }
 
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
+    $sql = "SELECT VISITOR_LOG.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
     $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM VISITOR_LOG VISITOR_LOG ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = VISITOR_LOG.UID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
@@ -339,18 +339,18 @@ function post_draw_to_dropdown_recent($default_uid, $show_all = true)
 
     if (!$result = db_query($sql, $db_post_draw_to_dropdown)) return false;
 
-    while ($row = db_fetch_array($result)) {
+    while ($user_data = db_fetch_array($result)) {
         
-        if (isset($row['LOGON']) && isset($row['NICKNAME'])) {
+        if (isset($user_data['LOGON'])) {
 
-            if (isset($row['PEER_NICKNAME'])) {
-                if (!is_null($row['PEER_NICKNAME']) && strlen($row['PEER_NICKNAME']) > 0) {
-                    $row['NICKNAME'] = $row['PEER_NICKNAME'];
+            if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
+                if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
+                    $user_data['NICKNAME'] = $user_data['PEER_NICKNAME'];
                 }
             }
         
-            $fmt_username = word_filter_add_ob_tags(format_user_name($row['LOGON'], $row['NICKNAME']));
-            $html .= "<option value=\"{$row['UID']}\">$fmt_username</option>\n";
+            $fmt_username = word_filter_add_ob_tags(format_user_name($user_data['LOGON'], $user_data['NICKNAME']));
+            $html .= "<option value=\"{$user_data['UID']}\">$fmt_username</option>\n";
         }
     }
 
@@ -420,18 +420,18 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $
 
     if (!$result = db_query($sql, $db_post_draw_to_dropdown)) return false;
 
-    while ($row = db_fetch_array($result)) {
+    while ($user_data = db_fetch_array($result)) {
 
-        if (isset($row['LOGON']) && isset($row['NICKNAME'])) {
+        if (isset($user_data['LOGON'])) {
 
-            if (isset($row['PEER_NICKNAME'])) {
-                if (!is_null($row['PEER_NICKNAME']) && strlen($row['PEER_NICKNAME']) > 0) {
-                    $row['NICKNAME'] = $row['PEER_NICKNAME'];
+            if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
+                if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
+                    $user_data['NICKNAME'] = $user_data['PEER_NICKNAME'];
                 }
             }
         
-            $fmt_username = word_filter_add_ob_tags(format_user_name($row['LOGON'], $row['NICKNAME']));
-            $html .= "<option value=\"{$row['UID']}\">$fmt_username</option>\n";
+            $fmt_username = word_filter_add_ob_tags(format_user_name($user_data['LOGON'], $user_data['NICKNAME']));
+            $html .= "<option value=\"{$user_data['UID']}\">$fmt_username</option>\n";
         }
     }
 
@@ -452,14 +452,19 @@ function get_user_posts($uid)
     if (!$result = db_query($sql, $db_get_user_posts)) return false;
 
     if (db_num_rows($result)) {
+
         $user_post_array = array();
-        while ($row = db_fetch_array($result)) {
-            $user_post_array[] = $row;
+
+        while ($post_data = db_fetch_array($result)) {
+
+            $user_post_array[] = $post_data;
         }
+
         return $user_post_array;
-    }else {
-        return false;
+
     }
+    
+    return false;
 }
 
 function check_ddkey($ddkey)

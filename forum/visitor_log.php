@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.php,v 1.103 2007-06-24 19:03:56 decoyduck Exp $ */
+/* $Id: visitor_log.php,v 1.104 2007-08-01 20:23:01 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -345,19 +345,14 @@ if (sizeof($user_profile_array['user_array']) > 0) {
 
             $attachment = get_attachment_by_hash($user_array['AVATAR_AID']);
 
-            if (forum_get_setting('attachment_use_old_method', 'Y')) {
+            if ($profile_picture_href = attachment_make_link($attachment, false, false, false, false)) {
 
-                $profile_picture_href = "get_attachment.php?webtag=$webtag&amp;hash={$attachment['HASH']}";
-                $profile_picture_href.= "&amp;filename={$attachment['FILENAME']}&amp;profile_picture=1";
+                echo "                   <td class=\"postbody\" align=\"left\" valign=\"top\"><img src=\"$profile_picture_href\" alt=\"", format_user_name($user_array['LOGON'], $user_array['NICKNAME']), "\" title=\"", format_user_name($user_array['LOGON'], $user_array['NICKNAME']), "\" border=\"0\" width=\"15\" height=\"15\" /></td>\n";
 
             }else {
 
-                $profile_picture_href = "get_attachment.php/{$attachment['HASH']}/";
-                $profile_picture_href.= rawurlencode($attachment['FILENAME']);
-                $profile_picture_href.= "?webtag=$webtag&amp;profile_picture=1";
+                echo "                   <td align=\"left\" valign=\"top\" class=\"postbody\"><img src=\"", style_image('bullet.png'), "\" alt=\"{$lang['user']}\" title=\"{$lang['user']}\" /></td>\n";
             }
-
-            echo "                   <td class=\"postbody\" align=\"left\" valign=\"top\"><img src=\"$profile_picture_href\" alt=\"", format_user_name($user_array['LOGON'], $user_array['NICKNAME']), "\" title=\"", format_user_name($user_array['LOGON'], $user_array['NICKNAME']), "\" border=\"0\" width=\"15\" height=\"15\" /></td>\n";
         
         }else {
 

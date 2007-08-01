@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db_mysql.inc.php,v 1.27 2007-07-10 15:50:38 decoyduck Exp $ */
+/* $Id: db_mysql.inc.php,v 1.28 2007-08-01 20:23:04 decoyduck Exp $ */
 
 function db_get_connection_vars(&$db_server, &$db_username, &$db_password, &$db_database)
 {
@@ -205,15 +205,15 @@ function db_fetch_mysql_version()
             $sql = "SELECT VERSION() AS version";
             $result = db_query($sql, $db_fetch_mysql_version);
 
-            if (!$row = db_fetch_array($result)) {
+            if (!$version_data = db_fetch_array($result)) {
 
                 $sql = "SHOW VARIABLES LIKE 'version'";
                 $result = db_query($sql, $db_fetch_mysql_version);
 
-                $row = db_fetch_array($result);
+                $version_data = db_fetch_array($result);
             }
 
-            $version_array = explode(".", $row['version']);
+            $version_array = explode(".", $version_data['version']);
 
             if (!isset($version_array) || !isset($version_array[0])) {
                 $version_array[0] = 3;

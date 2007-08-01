@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.311 2007-07-19 22:16:35 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.312 2007-08-01 20:23:03 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -109,10 +109,13 @@ function bh_session_check($show_session_fail = true, $use_sess_hash = false)
 
     if (isset($user_hash) && is_md5($user_hash)) {
 
-        $sql = "SELECT SESSIONS.HASH, SESSIONS.UID, SESSIONS.IPADDRESS, SESSIONS.FID, SESSIONS.REFERER, ";
-        $sql.= "UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, UNIX_TIMESTAMP(USER.APPROVED) AS APPROVED, ";
-        $sql.= "USER.LOGON, USER.NICKNAME, USER.EMAIL,USER.PASSWD FROM SESSIONS SESSIONS ";
-        $sql.= "LEFT JOIN USER ON (USER.UID = SESSIONS.UID) WHERE SESSIONS.HASH = '$user_hash'";
+        $sql = "SELECT SESSIONS.HASH, SESSIONS.UID, SESSIONS.IPADDRESS, SESSIONS.FID, ";
+        $sql.= "SESSIONS.REFERER, UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, ";
+        $sql.= "UNIX_TIMESTAMP(USER.APPROVED) AS APPROVED, USER.LOGON, USER.NICKNAME, ";
+        $sql.= "USER.EMAIL,USER.PASSWD FROM SESSIONS SESSIONS ";
+        $sql.= "LEFT JOIN USER ON (USER.UID = SESSIONS.UID) ";
+        $sql.= "WHERE SESSIONS.HASH = '$user_hash' ";
+        $sql.= "AND USER.UID IS NOT NULL ";
 
         if (!$result = db_query($sql, $db_bh_session_check)) return false;
 
@@ -984,11 +987,11 @@ function bh_session_get_perm_array($uid)
             
             if (!is_array($user_perm_array)) $user_perm_array = array();
             
-            while ($row = db_fetch_array($result)) {
+            while ($permission_data = db_fetch_array($result)) {
 
-                if ($row['USER_PERM_COUNT'] > 0) {
+                if ($permission_data['USER_PERM_COUNT'] > 0) {
 
-                    $user_perm_array[$row['FORUM']][$uid][$row['FID']] = $row['PERM'];
+                    $user_perm_array[$permission_data['FORUM']][$uid][$permission_data['FID']] = $permission_data['PERM'];
                 }
             }
         }
@@ -1003,14 +1006,14 @@ function bh_session_get_perm_array($uid)
             
             if (!is_array($user_perm_array)) $user_perm_array = array();
             
-            while ($row = db_fetch_array($result)) {
+            while ($permission_data = db_fetch_array($result)) {
 
-                if (!isset($user_perm_array[$row['FORUM']][$uid][$row['FID']])) {
+                if (!isset($user_perm_array[$permission_data['FORUM']][$uid][$permission_data['FID']])) {
                 
-                    $user_perm_array[$row['FORUM']][$uid][$row['FID']] = $row['PERM'];
+                    $user_perm_array[$permission_data['FORUM']][$uid][$permission_data['FID']] = $permission_data['PERM'];
                 }
 
-                $user_perm_array[$row['FORUM']][0][$row['FID']] = $row['PERM'];
+                $user_perm_array[$permission_data['FORUM']][0][$permission_data['FID']] = $permission_data['PERM'];
             }
         }
     }

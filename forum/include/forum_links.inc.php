@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_links.inc.php,v 1.34 2007-07-17 20:49:37 decoyduck Exp $ */
+/* $Id: forum_links.inc.php,v 1.35 2007-08-01 20:23:02 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -58,20 +58,20 @@ function forum_links_get_links()
 
         $links_array = array($forum_links_top_link);
 
-        while ($row = db_fetch_array($result)) {
+        while ($forum_links_data = db_fetch_array($result)) {
 
-            if (!isset($row['TITLE']) || strlen(trim($row['TITLE'])) < 1) {
-                $row['TITLE'] = '-';
+            if (!isset($forum_links_data['TITLE']) || strlen(trim($forum_links_data['TITLE'])) < 1) {
+                $forum_links_data['TITLE'] = '-';
             }
             
-            if (!isset($row['URI']) || strlen(trim($row['URI'])) < 1) {
+            if (!isset($forum_links_data['URI']) || strlen(trim($forum_links_data['URI'])) < 1) {
 
-                $links_array[] = $row['TITLE'];
+                $links_array[] = $forum_links_data['TITLE'];
             
             }else {
 
-                $row['URI'] = href_cleanup_query_keys($row['URI']);
-                $links_array[$row['URI']] = $row['TITLE'];
+                $forum_links_data['URI'] = href_cleanup_query_keys($forum_links_data['URI']);
+                $links_array[$forum_links_data['URI']] = $forum_links_data['TITLE'];
             }
         }
 
@@ -105,12 +105,12 @@ function forum_links_get_links_by_page($offset)
 
     if (db_num_rows($result) > 0) {
 
-        while ($row = db_fetch_array($result)) {
+        while ($forum_links_data = db_fetch_array($result)) {
 
-            if (!isset($row['URI'])) $row['URI'] = "";
-            if (!isset($row['TITLE'])) $row['TITLE'] = "-";
+            if (!isset($forum_links_data['URI'])) $forum_links_data['URI'] = "";
+            if (!isset($forum_links_data['TITLE'])) $forum_links_data['TITLE'] = "-";
 
-            $forum_links_array[] = $row;
+            $forum_links_array[] = $forum_links_data;
         }
     
     }else if ($forum_links_count > 0) {
@@ -280,10 +280,10 @@ function forum_links_move_up($lid)
 
     if (!$result = db_query($sql, $db_forum_links_move_up)) return false;
 
-    while ($row = db_fetch_array($result)) {
+    while ($forum_links_data = db_fetch_array($result)) {
 
-        $forum_links_order[] = $row['LID'];
-        $forum_links_position[$row['LID']] = $row['POS'];
+        $forum_links_order[] = $forum_links_data['LID'];
+        $forum_links_position[$forum_links_data['LID']] = $forum_links_data['POS'];
     }
 
     if (($forum_links_order_key = array_search($lid, $forum_links_order)) !== false) {
@@ -329,10 +329,10 @@ function forum_links_move_down($lid)
 
     if (!$result = db_query($sql, $db_forum_links_move_down)) return false;
 
-    while ($row = db_fetch_array($result)) {
+    while ($forum_links_data = db_fetch_array($result)) {
 
-        $forum_links_order[] = $row['LID'];
-        $forum_links_position[$row['LID']] = $row['POS'];
+        $forum_links_order[] = $forum_links_data['LID'];
+        $forum_links_position[$forum_links_data['LID']] = $forum_links_data['POS'];
     }
 
     if (($forum_links_order_key = array_search($lid, $forum_links_order)) !== false) {

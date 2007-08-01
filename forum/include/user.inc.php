@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.330 2007-07-15 16:48:51 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.331 2007-08-01 20:23:03 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -971,25 +971,23 @@ function user_get_forthcoming_birthdays()
 
     if (db_num_rows($result) > 0) {
 
-        $birthdays = array();
+        $user_birthdays_array = array();
 
-        while ($row = db_fetch_array($result)) {
+        while ($user_birthday_data = db_fetch_array($result)) {
 
-            if (isset($row['PEER_NICKNAME'])) {
-                if (!is_null($row['PEER_NICKNAME']) && strlen($row['PEER_NICKNAME']) > 0) {
-                    $row['NICKNAME'] = $row['PEER_NICKNAME'];
+            if (isset($user_birthday_data['PEER_NICKNAME'])) {
+                if (!is_null($user_birthday_data['PEER_NICKNAME']) && strlen($user_birthday_data['PEER_NICKNAME']) > 0) {
+                    $user_birthday_data['NICKNAME'] = $user_birthday_data['PEER_NICKNAME'];
                 }
             }
 
-            $birthdays[] = $row;
+            $user_birthdays_array[] = $user_birthday_data;
         }
 
-        return $birthdays;
-
-    }else {
-
-        return false;
+        return $user_birthdays_array;
     }
+
+    return false;
 }
 
 function user_search_array_clean($user_search)
@@ -1038,20 +1036,18 @@ function user_search($user_search, $offset = 0, $exclude_uid = 0)
 
     if (db_num_rows($result) > 0) {
 
-        while ($row = db_fetch_array($result)) {
+        while ($user_data = db_fetch_array($result)) {
 
-            if (!isset($results_array[$row['UID']])) {
-
-                if (isset($row['PEER_NICKNAME'])) {
-
-                    if (!is_null($row['PEER_NICKNAME']) && strlen($row['PEER_NICKNAME']) > 0) {
-
-                        $row['NICKNAME'] = $row['PEER_NICKNAME'];
-                    }
+            if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
+                if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
+                    $user_data['NICKNAME'] = $user_data['PEER_NICKNAME'];
                 }
-
-                $results_array[$row['UID']] = $row;
             }
+
+            if (!isset($user_data['LOGON'])) $user_data['LOGON'] = $lang['unknownuser'];
+            if (!isset($user_data['NICKNAME'])) $user_data['NICKNAME'] = "";
+
+            $results_array[$user_data['UID']] = $user_data;
         }
     
     }else if ($results_count > 0) {
@@ -1112,7 +1108,8 @@ function user_get_friends($uid)
     $sql.= "LEFT JOIN USER USER ON (USER.UID = USER_PEER.PEER_UID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$sess_uid') ";
-    $sql.= "WHERE USER_PEER.UID = '$uid' AND (USER_PEER.RELATIONSHIP & $user_rel > 0) ";
+    $sql.= "WHERE USER.UID IS NOT NULL AND USER_PEER.UID = '$uid' ";
+    $sql.= "AND (USER_PEER.RELATIONSHIP & $user_rel > 0) ";
     $sql.= "LIMIT 0, 20";
 
     if (!$result = db_query($sql, $db_user_get_peers)) return false;
@@ -1121,15 +1118,18 @@ function user_get_friends($uid)
 
         $user_get_peers_array = array();
 
-        while ($row = db_fetch_array($result)) {
+        while ($user_data = db_fetch_array($result)) {
 
-            if (isset($row['PEER_NICKNAME'])) {
-                if (!is_null($row['PEER_NICKNAME']) && strlen($row['PEER_NICKNAME']) > 0) {
-                    $row['NICKNAME'] = $row['PEER_NICKNAME'];
+            if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
+                if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
+                    $user_data['NICKNAME'] = $user_data['PEER_NICKNAME'];
                 }
             }
 
-            $user_get_peers_array[] = $row;
+            if (!isset($user_data['LOGON'])) $user_data['LOGON'] = $lang['unknownuser'];
+            if (!isset($user_data['NICKNAME'])) $user_data['NICKNAME'] = "";
+
+            $user_get_peers_array[] = $user_data;
         }
 
         return $user_get_peers_array;
@@ -1153,7 +1153,8 @@ function user_get_ignored($uid)
     $sql.= "LEFT JOIN USER USER ON (USER.UID = USER_PEER.PEER_UID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$sess_uid') ";
-    $sql.= "WHERE USER_PEER.UID = '$uid' AND (USER_PEER.RELATIONSHIP & $user_rel > 0) ";
+    $sql.= "WHERE USER.UID IS NOT NULL AND USER_PEER.UID = '$uid' ";
+    $sql.= "AND (USER_PEER.RELATIONSHIP & $user_rel > 0) ";
     $sql.= "LIMIT 0, 20";
 
     if (!$result = db_query($sql, $db_user_get_peers)) return false;
@@ -1162,15 +1163,18 @@ function user_get_ignored($uid)
 
         $user_get_peers_array = array();
 
-        while ($row = db_fetch_array($result)) {
+        while ($user_data = db_fetch_array($result)) {
 
-            if (isset($row['PEER_NICKNAME'])) {
-                if (!is_null($row['PEER_NICKNAME']) && strlen($row['PEER_NICKNAME']) > 0) {
-                    $row['NICKNAME'] = $row['PEER_NICKNAME'];
+            if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
+                if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
+                    $user_data['NICKNAME'] = $user_data['PEER_NICKNAME'];
                 }
             }
 
-            $user_get_peers_array[] = $row;
+            if (!isset($user_data['LOGON'])) $user_data['LOGON'] = $lang['unknownuser'];
+            if (!isset($user_data['NICKNAME'])) $user_data['NICKNAME'] = "";
+
+            $user_get_peers_array[] = $user_data;
         }
 
         return $user_get_peers_array;
@@ -1194,7 +1198,8 @@ function user_get_ignored_signatures($uid)
     $sql.= "LEFT JOIN USER USER ON (USER.UID = USER_PEER.PEER_UID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$sess_uid') ";
-    $sql.= "WHERE USER_PEER.UID = '$uid' AND (USER_PEER.RELATIONSHIP & $user_rel > 0) ";
+    $sql.= "WHERE USER.UID IS NOT NULL AND USER_PEER.UID = '$uid' ";
+    $sql.= "AND (USER_PEER.RELATIONSHIP & $user_rel > 0) ";
     $sql.= "LIMIT 0, 20";
 
     if (!$result = db_query($sql, $db_user_get_peers)) return false;
@@ -1203,15 +1208,18 @@ function user_get_ignored_signatures($uid)
 
         $user_get_peers_array = array();
 
-        while ($row = db_fetch_array($result)) {
+        while ($user_data = db_fetch_array($result)) {
 
-            if (isset($row['PEER_NICKNAME'])) {
-                if (!is_null($row['PEER_NICKNAME']) && strlen($row['PEER_NICKNAME']) > 0) {
-                    $row['NICKNAME'] = $row['PEER_NICKNAME'];
+            if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
+                if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
+                    $user_data['NICKNAME'] = $user_data['PEER_NICKNAME'];
                 }
             }
 
-            $user_get_peers_array[] = $row;
+            if (!isset($user_data['LOGON'])) $user_data['LOGON'] = $lang['unknownuser'];
+            if (!isset($user_data['NICKNAME'])) $user_data['NICKNAME'] = "";
+
+            $user_get_peers_array[] = $user_data;
         }
 
         return $user_get_peers_array;
@@ -1245,19 +1253,25 @@ function user_get_relationships($uid, $offset = 0)
     $sql.= "USER_PEER.RELATIONSHIP, USER_PEER.PEER_NICKNAME ";
     $sql.= "FROM {$table_data['PREFIX']}USER_PEER USER_PEER ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = USER_PEER.PEER_UID) ";
-    $sql.= "WHERE USER_PEER.UID = '$uid' ";
+    $sql.= "WHERE USER_PEER.UID = '$uid' AND USER.UID IS NOT NULL ";
     $sql.= "LIMIT $offset, 10";
 
     if (!$result = db_query($sql, $db_user_get_relationships)) return false;
 
     if (db_num_rows($result) > 0) {
 
-        while ($row = db_fetch_array($result)) {
+        while ($user_data = db_fetch_array($result)) {
 
-            if (!isset($user_search_array[$row['UID']])) {
-
-                $user_get_peers_array[$row['UID']] = $row;
+            if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
+                if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
+                    $user_data['NICKNAME'] = $user_data['PEER_NICKNAME'];
+                }
             }
+
+            if (!isset($user_data['LOGON'])) $user_data['LOGON'] = $lang['unknownuser'];
+            if (!isset($user_data['NICKNAME'])) $user_data['NICKNAME'] = "";
+
+            $user_get_peers_array[$user_data['UID']] = $user_data;
         }
     
     }else if ($user_get_peers_count > 0) {
@@ -1345,9 +1359,9 @@ function user_get_word_filter_list($offset)
 
     if (db_num_rows($result) > 0) {
 
-        while ($row = db_fetch_array($result)) {
+        while ($word_filter_data = db_fetch_array($result)) {
 
-            $word_filter_array[$row['FID']] = $row;
+            $word_filter_array[$word_filter_data['FID']] = $word_filter_data;
         }
 
     }else if ($word_filter_count > 0) {

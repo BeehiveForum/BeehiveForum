@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: word_filter.inc.php,v 1.41 2007-06-18 20:10:49 decoyduck Exp $ */
+/* $Id: word_filter.inc.php,v 1.42 2007-08-01 20:23:04 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -67,9 +67,9 @@ function word_filter_get($uid, &$word_filter_array)
 
     if (db_num_rows($result) > 0) {
 
-        while ($row = db_fetch_array($result)) {
+        while ($word_filter_data = db_fetch_array($result)) {
 
-            $word_filter_array[] = $row;
+            $word_filter_array[] = $word_filter_data;
         }
     }
 

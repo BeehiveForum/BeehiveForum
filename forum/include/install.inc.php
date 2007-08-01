@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.57 2007-06-28 22:46:19 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.58 2007-08-01 20:23:02 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -218,8 +218,8 @@ function install_get_webtags()
 
         $forum_webtag_array = array();
 
-        while ($row = db_fetch_array($result)) {
-            $forum_webtag_array[$row['FID']] = $row['WEBTAG'];
+        while ($forum_webtags_data = db_fetch_array($result)) {
+            $forum_webtag_array[$forum_webtags_data['FID']] = $forum_webtags_data['WEBTAG'];
         }
 
         return $forum_webtag_array;
@@ -328,11 +328,11 @@ function install_remove_table_keys($table_name)
     
     if (!$result = db_query($sql, $db_install_remove_table_keys)) return false;
     
-    while ($row = db_fetch_array($result)) {
+    while ($table_index_data = db_fetch_array($result)) {
 
-        if (preg_match("/^PRIMARY$/", strtoupper($row['Key_name'])) < 1) {
+        if (preg_match("/^PRIMARY$/", strtoupper($table_index_data['Key_name'])) < 1) {
 
-            $table_index[$row['Key_name']] = $row['Column_name'];
+            $table_index[$table_index_data['Key_name']] = $table_index_data['Column_name'];
         }
     }
 

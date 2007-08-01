@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.76 2007-06-29 17:53:26 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.77 2007-08-01 20:23:01 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -380,7 +380,7 @@ if (isset($_POST['submit'])) {
 
 // Start Output Here
 
-html_draw_top("emoticons.js");
+html_draw_top("emoticons.js", "htmltools.js");
 
 echo "<h1>{$lang['admin']} &raquo; {$lang['globalforumsettings']}</h1>\n";
 
@@ -401,7 +401,7 @@ $unread_cutoff_periods = array(UNREAD_MESSAGES_DISABLED  => $lang['disableunread
 
 echo "<br />\n";
 echo "<div align=\"center\">\n";
-echo "<form name=\"prefs\" action=\"admin_default_forum_settings.php\" method=\"post\" target=\"_self\">\n";
+echo "<form name=\"prefsform\" action=\"admin_default_forum_settings.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
 echo "    <tr>\n";
@@ -735,6 +735,9 @@ echo "      </td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <br />\n";
+
+$forum_rules = new TextAreaHTML("prefsform");
+
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -749,10 +752,13 @@ echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" colspan=\"2\">{$lang['forumrules']}:</td>\n";
+echo "                        <td align=\"left\">", $forum_rules->toolbar(true), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" colspan=\"2\">", form_textarea("forum_rules_message", (isset($forum_global_settings['forum_rules_message']) ? _htmlentities($forum_global_settings['forum_rules_message']) : ''), 10, 76), "</td>\n";
+echo "                        <td align=\"left\">", $forum_rules->textarea("forum_rules_message", (isset($forum_settings['forum_rules_message']) ? _htmlentities($forum_settings['forum_rules_message']) : ''), 10, 80, "virtual"), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\">", $forum_rules->js(), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.110 2007-06-28 22:46:19 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.111 2007-08-01 20:23:02 decoyduck Exp $ */
 
 /**
 * Functions relating to permissions
@@ -211,17 +211,17 @@ function perm_check_folder_permissions($fid, $access_level, $uid)
 
     if (!$result = db_query($sql, $db_perm_check_folder_permissions)) return false;
 
-    $row = db_fetch_array($result);
+    $permissions_data = db_fetch_array($result);
 
-    if ($row['USER_PERM_COUNT'] > 0) {
-
-        $folder_fid = $fid;
-        $user_status = $row['USER_STATUS'];
-
-    }elseif ($row['FOLDER_PERM_COUNT'] > 0) {
+    if ($permissions_data['USER_PERM_COUNT'] > 0) {
 
         $folder_fid = $fid;
-        $user_status = $row['FOLDER_PERMS'];
+        $user_status = $permissions_data['USER_STATUS'];
+
+    }elseif ($permissions_data['FOLDER_PERM_COUNT'] > 0) {
+
+        $folder_fid = $fid;
+        $user_status = $permissions_data['FOLDER_PERMS'];
     }
 
     return ($user_status & $access_level) == $access_level;
@@ -288,9 +288,9 @@ function perm_get_user_groups($offset, $sort_by = 'GROUP_NAME', $sort_dir = 'ASC
 
     if (db_num_rows($result) > 0) {
 
-        while ($row = db_fetch_array($result)) {
+        while ($permissions_data = db_fetch_array($result)) {
 
-            $user_groups_array[] = $row;
+            $user_groups_array[] = $permissions_data;
         }
     
     }else if ($user_groups_count > 0) {
@@ -325,9 +325,9 @@ function perm_user_get_groups($uid)
 
         $user_groups_array = array();
 
-        while ($row = db_fetch_array($result)) {
+        while ($permissions_data = db_fetch_array($result)) {
 
-            $user_groups_array[] = $row;
+            $user_groups_array[] = $permissions_data;
         }
 
         return $user_groups_array;
@@ -449,8 +449,8 @@ function perm_get_group($gid)
 
     if (db_num_rows($result) > 0) {
 
-        $row = db_fetch_array($result);
-        return $row;
+        $permissions_data = db_fetch_array($result);
+        return $permissions_data;
     }
 
     return false;
@@ -543,7 +543,7 @@ function perm_get_global_permissions_count()
     $sql.= "LEFT JOIN USER ON (USER.UID = GROUP_USERS.UID) ";
     $sql.= "WHERE GROUPS.AUTO_GROUP = 1 AND GROUP_PERMS.FID = 0 ";
     $sql.= "AND GROUP_PERMS.FORUM = 0 AND (GROUP_PERMS.PERM & $upft > 0 ";
-    $sql.= "OR GROUP_PERMS.PERM & $upat > 0) ";
+    $sql.= "OR GROUP_PERMS.PERM & $upat > 0) AND USER.UID IS NOT NULL ";
 
     if (!$result = db_query($sql, $db_perm_get_global_permissions)) return false;
     
@@ -570,7 +570,8 @@ function perm_get_admin_tools_perm_count()
     $sql.= "LEFT JOIN GROUP_USERS ON (GROUP_USERS.GID = GROUPS.GID) ";
     $sql.= "LEFT JOIN USER ON (USER.UID = GROUP_USERS.UID) ";
     $sql.= "WHERE GROUPS.AUTO_GROUP = 1 AND GROUP_PERMS.FID = 0 ";
-    $sql.= "AND GROUP_PERMS.FORUM = 0 AND (GROUP_PERMS.PERM & $upat > 0)";
+    $sql.= "AND GROUP_PERMS.FORUM = 0 AND (GROUP_PERMS.PERM & $upat > 0) ";
+    $sql.= "AND USER.UID IS NOT NULL";
 
     if (!$result = db_query($sql, $db_perm_get_global_permissions)) return false;
     
@@ -597,7 +598,8 @@ function perm_get_forum_tools_perm_count()
     $sql.= "LEFT JOIN GROUP_USERS ON (GROUP_USERS.GID = GROUPS.GID) ";
     $sql.= "LEFT JOIN USER ON (USER.UID = GROUP_USERS.UID) ";
     $sql.= "WHERE GROUPS.AUTO_GROUP = 1 AND GROUP_PERMS.FID = 0 ";
-    $sql.= "AND GROUP_PERMS.FORUM = 0 AND (GROUP_PERMS.PERM & $upft > 0)";
+    $sql.= "AND GROUP_PERMS.FORUM = 0 AND (GROUP_PERMS.PERM & $upft > 0) ";
+    $sql.= "AND USER.UID IS NOT NULL";
 
     if (!$result = db_query($sql, $db_perm_get_global_permissions)) return false;
     
@@ -677,8 +679,8 @@ function perm_get_group_permissions($gid)
 
         if (db_num_rows($result) > 0) {
 
-            $row = db_fetch_array($result);
-            return $row['PERM'];
+            $permissions_data = db_fetch_array($result);
+            return $permissions_data['PERM'];
         }
 
         return 0;
@@ -717,27 +719,27 @@ function perm_group_get_folders($gid)
 
         if (db_num_rows($result) > 0) {
 
-            while ($row = db_fetch_array($result)) {
+            while ($permissions_data = db_fetch_array($result)) {
 
-                if ($row['GROUP_PERM_COUNT'] > 0) {
+                if ($permissions_data['GROUP_PERM_COUNT'] > 0) {
 
-                    $folders_array[$row['FID']] = array('FID'          => $row['FID'],
-                                                        'TITLE'        => $row['TITLE'],
-                                                        'STATUS'       => $row['GROUP_PERMS'],
-                                                        'FOLDER_PERMS' => $row['FOLDER_PERMS']);
+                    $folders_array[$permissions_data['FID']] = array('FID'          => $permissions_data['FID'],
+                                                                     'TITLE'        => $permissions_data['TITLE'],
+                                                                     'STATUS'       => $permissions_data['GROUP_PERMS'],
+                                                                     'FOLDER_PERMS' => $permissions_data['FOLDER_PERMS']);
 
-                }elseif ($row['FOLDER_PERM_COUNT'] > 0) {
+                }elseif ($permissions_data['FOLDER_PERM_COUNT'] > 0) {
 
-                    $folders_array[$row['FID']] = array('FID'          => $row['FID'],
-                                                        'TITLE'        => $row['TITLE'],
-                                                        'STATUS'       => $row['FOLDER_PERMS'],
-                                                        'FOLDER_PERMS' => $row['FOLDER_PERMS']);
+                    $folders_array[$permissions_data['FID']] = array('FID'          => $permissions_data['FID'],
+                                                                     'TITLE'        => $permissions_data['TITLE'],
+                                                                     'STATUS'       => $permissions_data['FOLDER_PERMS'],
+                                                                     'FOLDER_PERMS' => $permissions_data['FOLDER_PERMS']);
                 }else {
 
-                    $folders_array[$row['FID']] = array('FID'          => $row['FID'],
-                                                        'TITLE'        => $row['TITLE'],
-                                                        'STATUS'       => 0,
-                                                        'FOLDER_PERMS' => $row['FOLDER_PERMS']);
+                    $folders_array[$permissions_data['FID']] = array('FID'          => $permissions_data['FID'],
+                                                                     'TITLE'        => $permissions_data['TITLE'],
+                                                                     'STATUS'       => 0,
+                                                                     'FOLDER_PERMS' => $permissions_data['FOLDER_PERMS']);
                 }
             }
 
@@ -817,8 +819,8 @@ function perm_get_user_permissions($uid)
 
     if (db_num_rows($result) > 0) {
 
-        $row = db_fetch_array($result);
-        return $row['STATUS'];
+        $permissions_data = db_fetch_array($result);
+        return $permissions_data['STATUS'];
     }
 
     return 0;
@@ -844,8 +846,8 @@ function perm_get_forum_user_permissions($uid)
 
     if (db_num_rows($result) > 0) {
 
-        $row = db_fetch_array($result);
-        return $row['STATUS'];
+        $permissions_data = db_fetch_array($result);
+        return $permissions_data['STATUS'];
     }
 
     return 0;
@@ -870,8 +872,8 @@ function perm_get_user_gid($uid)
 
     if (db_num_rows($result) > 0) {
 
-        $row = db_fetch_array($result);
-        return $row['GID'];
+        $permissions_data = db_fetch_array($result);
+        return $permissions_data['GID'];
     }
 
     return false;
@@ -892,8 +894,8 @@ function perm_get_global_user_gid($uid)
 
     if (db_num_rows($result) > 0) {
 
-        $row = db_fetch_array($result);
-        return $row['GID'];
+        $permissions_data = db_fetch_array($result);
+        return $permissions_data['GID'];
     }
 
     return false;
@@ -928,27 +930,27 @@ function perm_user_get_folders($uid)
 
     if (db_num_rows($result) > 0) {
 
-        while ($row = db_fetch_array($result)) {
+        while ($permissions_data = db_fetch_array($result)) {
 
-            if ($row['USER_PERM_COUNT'] > 0) {
+            if ($permissions_data['USER_PERM_COUNT'] > 0) {
 
-                $folders_array[$row['FID']] = array('FID'          => $row['FID'],
-                                                    'TITLE'        => $row['TITLE'],
-                                                    'STATUS'       => $row['USER_STATUS'],
-                                                    'FOLDER_PERMS' => $row['FOLDER_PERMS']);
+                $folders_array[$permissions_data['FID']] = array('FID'          => $permissions_data['FID'],
+                                                                 'TITLE'        => $permissions_data['TITLE'],
+                                                                 'STATUS'       => $permissions_data['USER_STATUS'],
+                                                                 'FOLDER_PERMS' => $permissions_data['FOLDER_PERMS']);
 
-            }elseif ($row['FOLDER_PERM_COUNT'] > 0) {
+            }elseif ($permissions_data['FOLDER_PERM_COUNT'] > 0) {
 
-                $folders_array[$row['FID']] = array('FID'          => $row['FID'],
-                                                    'TITLE'        => $row['TITLE'],
-                                                    'STATUS'       => $row['FOLDER_PERMS'],
-                                                    'FOLDER_PERMS' => $row['FOLDER_PERMS']);
+                $folders_array[$permissions_data['FID']] = array('FID'          => $permissions_data['FID'],
+                                                                 'TITLE'        => $permissions_data['TITLE'],
+                                                                 'STATUS'       => $permissions_data['FOLDER_PERMS'],
+                                                                 'FOLDER_PERMS' => $permissions_data['FOLDER_PERMS']);
             }else {
 
-                $folders_array[$row['FID']] = array('FID'          => $row['FID'],
-                                                    'TITLE'        => $row['TITLE'],
-                                                    'STATUS'       => 0,
-                                                    'FOLDER_PERMS' => $row['FOLDER_PERMS']);
+                $folders_array[$permissions_data['FID']] = array('FID'          => $permissions_data['FID'],
+                                                                 'TITLE'        => $permissions_data['TITLE'],
+                                                                 'STATUS'       => 0,
+                                                                 'FOLDER_PERMS' => $permissions_data['FOLDER_PERMS']);
             }
         }
 
@@ -1112,8 +1114,8 @@ function perm_folder_get_permissions($fid)
 
     if (db_num_rows($result) > 0) {
 
-        $row = db_fetch_array($result);
-        if (!is_null($row['STATUS'])) return $row['STATUS'];
+        $permissions_data = db_fetch_array($result);
+        if (!is_null($permissions_data['STATUS'])) return $permissions_data['STATUS'];
     }
 
     return false;
@@ -1160,6 +1162,8 @@ function perm_group_get_users($gid, $offset = 0)
 {
     $db_perm_group_get_users = db_connect();
 
+    $lang = load_language_file();
+
     if (!is_numeric($gid)) return 0;
     if (!is_numeric($offset)) $offset = 0;
 
@@ -1184,9 +1188,18 @@ function perm_group_get_users($gid, $offset = 0)
 
         if (db_num_rows($result) > 0) {
 
-            while ($row = db_fetch_array($result)) {
+            while ($user_data = db_fetch_array($result)) {
 
-                $group_user_array[] = $row;
+                if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
+                    if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
+                        $user_data['NICKNAME'] = $user_data['PEER_NICKNAME'];
+                    }
+                }
+
+                if (!isset($user_data['LOGON'])) $user_data['LOGON'] = $lang['unknownuser'];
+                if (!isset($user_data['NICKNAME'])) $user_data['NICKNAME'] = "";
+
+                $group_user_array[] = $user_data;
             }
         
         }else if ($group_user_count > 0) {

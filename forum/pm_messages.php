@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_messages.php,v 1.22 2007-06-07 23:56:50 decoyduck Exp $ */
+/* $Id: pm_messages.php,v 1.23 2007-08-01 20:23:01 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -496,13 +496,13 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
         }elseif ($current_folder == PM_FOLDER_SAVED) {
 
             echo "                  <td align=\"left\" class=\"postbody\">";
-            echo "            <a href=\"user_profile.php?webtag=$webtag&amp;uid={$message['TO_UID']}\" target=\"_blank\" onclick=\"return openProfile({$message['TO_UID']}, '$webtag')\">";
-            echo word_filter_add_ob_tags(format_user_name($message['TLOGON'], $message['TNICK'])) . "</a>";
+            echo "            <a href=\"user_profile.php?webtag=$webtag&amp;uid={$message['FROM_UID']}\" target=\"_blank\" onclick=\"return openProfile({$message['FROM_UID']}, '$webtag')\">";
+            echo word_filter_add_ob_tags(format_user_name($message['FLOGON'], $message['FNICK'])) . "</a>";
             echo "            </td>\n";
 
             echo "                  <td align=\"left\" class=\"postbody\">";
-            echo "            <a href=\"user_profile.php?webtag=$webtag&amp;uid={$message['FROM_UID']}\" target=\"_blank\" onclick=\"return openProfile({$message['FROM_UID']}, '$webtag')\">";
-            echo word_filter_add_ob_tags(format_user_name($message['FLOGON'], $message['FNICK'])) . "</a>";
+            echo "            <a href=\"user_profile.php?webtag=$webtag&amp;uid={$message['TO_UID']}\" target=\"_blank\" onclick=\"return openProfile({$message['TO_UID']}, '$webtag')\">";
+            echo word_filter_add_ob_tags(format_user_name($message['TLOGON'], $message['TNICK'])) . "</a>";
             echo "            </td>\n";
 
         }elseif ($current_folder == PM_FOLDER_DRAFTS) {

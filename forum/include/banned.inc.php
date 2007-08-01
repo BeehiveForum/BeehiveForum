@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: banned.inc.php,v 1.23 2007-05-19 14:07:53 decoyduck Exp $ */
+/* $Id: banned.inc.php,v 1.24 2007-08-01 20:23:01 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -317,6 +317,8 @@ function check_affected_sessions($ban_type, $ban_data)
 {
     $db_check_affected_sessions = db_connect();
 
+    $lang = load_language_file();
+
     if (!is_numeric($ban_type)) return false;
 
     $ban_data = db_escape_string($ban_data);
@@ -329,22 +331,39 @@ function check_affected_sessions($ban_type, $ban_data)
     $ban_type_email = BAN_TYPE_EMAIL;
     $ban_type_ref   = BAN_TYPE_REF;
 
-    $sql = "SELECT DISTINCT SESSIONS.UID, USER.LOGON, USER.NICKNAME FROM SESSIONS ";
-    $sql.= "LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) WHERE SESSIONS.UID > 0 ";
-    $sql.= "AND (((SESSIONS.IPADDRESS LIKE '$ban_data' OR USER.IPADDRESS LIKE '$ban_data') ";
-    $sql.= "AND '$ban_type' = '$ban_type_ip') OR ((SESSIONS.REFERER LIKE '$ban_data' ";
-    $sql.= "OR USER.REFERER LIKE '$ban_data') AND '$ban_type' = '$ban_type_ref') ";
-    $sql.= "OR (USER.LOGON LIKE '$ban_data' AND '$ban_type' = '$ban_type_logon') ";
-    $sql.= "OR (USER.NICKNAME LIKE '$ban_data' AND '$ban_type' = '$ban_type_nick') ";
-    $sql.= "OR (USER.EMAIL LIKE '$ban_data' AND '$ban_type' = '$ban_type_email'))";
+    if (!$table_data = get_table_prefix()) return false;
+
+    if (($uid = bh_session_get_value('UID')) === false) return false;
+
+    $sql = "SELECT DISTINCT SESSIONS.UID, USER.LOGON, ";
+    $sql.= "USER_PEER.PEER_NICKNAME, USER.NICKNAME FROM SESSIONS ";
+    $sql.= "LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+    $sql.= "ON (USER_PEER.PEER_UID = SESSIONS.UID AND USER_PEER.UID = '$uid') ";
+    $sql.= "WHERE SESSIONS.UID > 0 AND (((SESSIONS.IPADDRESS LIKE '$ban_data' ";
+    $sql.= "OR USER.IPADDRESS LIKE '$ban_data') AND '$ban_type' = '$ban_type_ip') ";
+    $sql.= "OR ((SESSIONS.REFERER LIKE '$ban_data' OR USER.REFERER LIKE '$ban_data') ";
+    $sql.= "AND '$ban_type' = '$ban_type_ref') OR (USER.LOGON LIKE '$ban_data' ";
+    $sql.= "AND '$ban_type' = '$ban_type_logon') OR (USER.NICKNAME LIKE '$ban_data' ";
+    $sql.= "AND '$ban_type' = '$ban_type_nick') OR (USER.EMAIL LIKE '$ban_data' ";
+    $sql.= "AND '$ban_type' = '$ban_type_email'))";
 
     if (!$result = db_query($sql, $db_check_affected_sessions)) return false;
 
     if (db_num_rows($result) > 0) {
 
-        while ($row = db_fetch_array($result)) {
+        while ($user_session = db_fetch_array($result)) {
+
+            if (isset($user_session['LOGON']) && isset($user_session['PEER_NICKNAME'])) {
+                if (!is_null($user_session['PEER_NICKNAME']) && strlen($user_session['PEER_NICKNAME']) > 0) {
+                    $user_session['NICKNAME'] = $user_session['PEER_NICKNAME'];
+                }
+            }
+
+            if (!isset($user_session['LOGON'])) $user_session['LOGON'] = $lang['unknownuser'];
+            if (!isset($user_session['NICKNAME'])) $user_session['NICKNAME'] = "";
         
-            $affected_sessions[$row['UID']] = $row;
+            $affected_sessions[$user_session['UID']] = $user_session;
         }
     }
 

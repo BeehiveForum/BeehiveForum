@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.252 2007-07-21 15:36:19 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.253 2007-08-01 20:23:02 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -423,9 +423,9 @@ function forum_get_settings()
 
             if (!is_array($forum_settings_array)) $forum_settings_array = array();
             
-            while ($row = db_fetch_array($result)) {
+            while ($forum_data = db_fetch_array($result)) {
             
-                $forum_settings_array[$row['SNAME']] = $row['SVALUE'];
+                $forum_settings_array[$forum_data['SNAME']] = $forum_data['SVALUE'];
             }
         }
 
@@ -443,11 +443,11 @@ function forum_get_settings()
 
             if (!is_array($forum_settings_array)) $forum_settings_array = array();
             
-            while ($row = db_fetch_array($result)) {
+            while ($forum_timezone_data = db_fetch_array($result)) {
 
-                $forum_settings_array['forum_timezone'] = $row['SVALUE'];
-                $forum_settings_array['forum_gmt_offset'] = $row['GMT_OFFSET'];
-                $forum_settings_array['forum_dst_offset'] = $row['DST_OFFSET'];
+                $forum_settings_array['forum_timezone'] = $forum_timezone_data['SVALUE'];
+                $forum_settings_array['forum_gmt_offset'] = $forum_timezone_data['GMT_OFFSET'];
+                $forum_settings_array['forum_dst_offset'] = $forum_timezone_data['DST_OFFSET'];
             }
         }
 
@@ -482,9 +482,9 @@ function forum_get_global_settings()
 
             if (!is_array($forum_global_settings_array)) $forum_global_settings_array = array();
             
-            while ($row = db_fetch_array($result)) {
+            while ($forum_data = db_fetch_array($result)) {
             
-                $forum_global_settings_array[$row['SNAME']] = $row['SVALUE'];
+                $forum_global_settings_array[$forum_data['SNAME']] = $forum_data['SVALUE'];
             }
         }
 
@@ -500,11 +500,11 @@ function forum_get_global_settings()
 
             if (!is_array($forum_global_settings_array)) $forum_global_settings_array = array();
             
-            while ($row = db_fetch_array($result)) {
+            while ($forum_timezone_data = db_fetch_array($result)) {
 
-                $forum_global_settings_array['forum_timezone'] = $row['SVALUE'];
-                $forum_global_settings_array['forum_gmt_offset'] = $row['GMT_OFFSET'];
-                $forum_global_settings_array['forum_dst_offset'] = $row['DST_OFFSET'];
+                $forum_global_settings_array['forum_timezone'] = $forum_timezone_data['SVALUE'];
+                $forum_global_settings_array['forum_gmt_offset'] = $forum_timezone_data['GMT_OFFSET'];
+                $forum_global_settings_array['forum_dst_offset'] = $forum_timezone_data['DST_OFFSET'];
             }
         }
     }
@@ -533,9 +533,9 @@ function forum_get_settings_by_fid($fid, $include_global_settings = true)
 
     if (!$result = db_query($sql, $db_forum_get_settings_by_fid)) return false;
 
-    while ($row = db_fetch_array($result)) {
+    while ($forum_data = db_fetch_array($result)) {
 
-        $forum_settings_array[$row['SNAME']] = $row['SVALUE'];
+        $forum_settings_array[$forum_data['SNAME']] = $forum_data['SVALUE'];
     }
 
     $sql = "SELECT FORUM_SETTINGS.SVALUE AS TIMEZONE, TIMEZONES.GMT_OFFSET, ";
@@ -2015,8 +2015,8 @@ function forum_get($fid)
 
             if (!$result = db_query($sql, $db_forum_get)) return false;
 
-            while ($row = db_fetch_array($result)) {
-                $forum_get_array['FORUM_SETTINGS'][$row['SNAME']] = $row['SVALUE'];
+            while ($forum_data = db_fetch_array($result)) {
+                $forum_get_array['FORUM_SETTINGS'][$forum_data['SNAME']] = $forum_data['SVALUE'];
             }
 
             return $forum_get_array;
@@ -2044,8 +2044,8 @@ function forum_get_permissions($fid)
 
             $forum_get_permissions_array = array();
 
-            while($row = db_fetch_array($result)) {
-                $forum_get_permissions_array[] = $row;
+            while($forum_data = db_fetch_array($result)) {
+                $forum_get_permissions_array[] = $forum_data;
             }
 
             return $forum_get_permissions_array;
@@ -2092,8 +2092,8 @@ function forum_get_post_count($webtag)
 
     if (db_num_rows($result_post_count) > 0) {
 
-        $row = db_fetch_array($result_post_count);
-        return $row['POST_COUNT'];
+        $$forum_data = db_fetch_array($result_post_count);
+        return $$forum_data['POST_COUNT'];
     }
 
     return 0;
@@ -2256,12 +2256,12 @@ function forum_search($forum_search, $offset)
 
                 if (!$result_unread_to_me = db_query($sql, $db_forum_search)) return false;
 
-                $row = db_fetch_array($result_unread_to_me);
+                $post_count_data = db_fetch_array($result_unread_to_me);
 
-                if (!isset($row['UNREAD_TO_ME']) || is_null($row['UNREAD_TO_ME'])) {
+                if (!isset($post_count_data['UNREAD_TO_ME']) || is_null($post_count_data['UNREAD_TO_ME'])) {
                     $forum_data['UNREAD_TO_ME'] = 0;
                 }else {
-                    $forum_data['UNREAD_TO_ME'] = $row['UNREAD_TO_ME'];
+                    $forum_data['UNREAD_TO_ME'] = $post_count_data['UNREAD_TO_ME'];
                 }
 
                 // Sometimes the USER_THREAD table might have a higher count that the thread
@@ -2280,12 +2280,12 @@ function forum_search($forum_search, $offset)
 
                 if (!$result_last_visit = db_query($sql, $db_forum_search)) return false;
 
-                $row = db_fetch_array($result_last_visit);
+                $user_last_visit_data = db_fetch_array($result_last_visit);
 
-                if (!isset($row['LAST_VISIT']) || is_null($row['LAST_VISIT'])) {
+                if (!isset($user_last_visit_data['LAST_VISIT']) || is_null($user_last_visit_data['LAST_VISIT'])) {
                     $forum_data['LAST_VISIT'] = 0;
                 }else {
-                    $forum_data['LAST_VISIT'] = $row['LAST_VISIT'];
+                    $forum_data['LAST_VISIT'] = $user_last_visit_data['LAST_VISIT'];
                 }
 
                 $forums_array[] = $forum_data;
@@ -2359,8 +2359,8 @@ function forum_get_all_fids()
 
         $fids_array = array();
 
-        while ($row = db_fetch_array($result)) {
-            $fids_array[] = $row['FID'];
+        while ($forum_data = db_fetch_array($result)) {
+            $fids_array[] = $forum_data['FID'];
         }
 
         return $fids_array;

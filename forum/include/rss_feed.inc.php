@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: rss_feed.inc.php,v 1.40 2007-05-19 18:24:32 decoyduck Exp $ */
+/* $Id: rss_feed.inc.php,v 1.41 2007-08-01 20:23:03 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -188,11 +188,13 @@ function rss_fetch_feed()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT RSSID, NAME, UID, FID, URL, PREFIX, FREQUENCY, LAST_RUN ";
+    $sql = "SELECT RSS_FEEDS.RSSID, RSS_FEEDS.NAME, RSS_FEEDS.UID, RSS_FEEDS.FID, ";
+    $sql.= "RSS_FEEDS.URL, RSS_FEEDS.PREFIX, RSS_FEEDS.FREQUENCY, RSS_FEEDS.LAST_RUN ";
     $sql.= "FROM {$table_data['PREFIX']}RSS_FEEDS RSS_FEEDS ";
+    $sql.= "LEFT JOIN USER ON (USER.UID = RSS_FEEDS.UID) ";
     $sql.= "WHERE NOW() >= DATE_ADD(RSS_FEEDS.LAST_RUN, INTERVAL ";
     $sql.= "RSS_FEEDS.FREQUENCY MINUTE) AND RSS_FEEDS.FREQUENCY > 0 ";
-    $sql.= "LIMIT 0, 1";
+    $sql.= "AND USER.UID IS NOT NULL LIMIT 0, 1";
 
     if (!$result = db_query($sql, $db_fetch_rss_feed)) return false;
 
@@ -265,6 +267,9 @@ function rss_check_feeds()
                 if (!rss_thread_exist($rss_feed['RSSID'], $rss_item->link)) {
 
                     $rss_title = strip_tags($rss_item->title);
+                    
+                    $rss_quote_source = "{$rss_feed['NAME']}: ";
+                    $rss_quote_source.= _htmlentities($rss_title);
 
                     if (isset($rss_feed['PREFIX']) && strlen(trim($rss_feed['PREFIX'])) > 0) {
                         $rss_title = "{$rss_feed['PREFIX']} {$rss_title}";
@@ -283,13 +288,15 @@ function rss_check_feeds()
 
                     if (strlen($rss_item->description) > 1) {
 
-                        $rss_content = new MessageText(true, $rss_item->description);
+                        $rss_content = _htmlentities_decode($rss_item->description);
+                        $rss_content = new MessageText(true, $rss_content);
+
                         $content = $rss_content->getContent();
-                        $content = fix_html("<quote source=\"{$rss_feed['NAME']}: {$rss_item->title}\" url=\"{$rss_item->link}\">$content</quote>");
+                        $content = fix_html("<quote source=\"$rss_quote_source\" url=\"{$rss_item->link}\">$content</quote>");
 
                     }else {
 
-                        $content = fix_html("<p>{$rss_item->title}</p>\n<p><a href=\"{$rss_item->link}\" target=\"_blank\">{$lang['rssclicktoreadarticle']}</a></p>");
+                        $content = fix_html("<p>$rss_quote_source</p>\n<p><a href=\"{$rss_item->link}\" target=\"_blank\">{$lang['rssclicktoreadarticle']}</a></p>");
                     }
 
                     $tid = post_create_thread($rss_feed['FID'], $rss_feed['UID'], $rss_title);
@@ -310,9 +317,13 @@ function rss_get_feeds($offset)
 {
     $db_rss_get_feeds = db_connect();
 
+    $lang = load_language_file();
+
     if (!is_numeric($offset)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
+
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $rss_feed_array = array();
 
@@ -323,17 +334,31 @@ function rss_get_feeds($offset)
     list($rss_feed_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT RSS_FEEDS.RSSID, RSS_FEEDS.NAME, USER.LOGON, ";
-    $sql.= "RSS_FEEDS.FID, RSS_FEEDS.URL, RSS_FEEDS.PREFIX, RSS_FEEDS.FREQUENCY ";
+    $sql.= "USER.NICKNAME, USER_PEER.PEER_NICKNAME, RSS_FEEDS.FID, ";
+    $sql.= "RSS_FEEDS.URL, RSS_FEEDS.PREFIX, RSS_FEEDS.FREQUENCY ";
     $sql.= "FROM {$table_data['PREFIX']}RSS_FEEDS RSS_FEEDS ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = RSS_FEEDS.UID) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+    $sql.= "ON (USER_PEER.PEER_UID = RSS_FEEDS.UID ";
+    $sql.= "AND USER_PEER.UID = '$uid') ";
     $sql.= "LIMIT $offset, 10";
 
     if (!$result = db_query($sql, $db_rss_get_feeds)) return false;
 
     if (db_num_rows($result) > 0) {
 
-        while($row = db_fetch_array($result)) {
-            $rss_feed_array[] = $row;
+        while($rss_feed_data = db_fetch_array($result)) {
+
+            if (isset($rss_feed_data['LOGON']) && isset($rss_feed_data['PEER_NICKNAME'])) {
+                if (!is_null($rss_feed_data['PEER_NICKNAME']) && strlen($rss_feed_data['PEER_NICKNAME']) > 0) {
+                    $rss_feed_data['NICKNAME'] = $rss_feed_data['PEER_NICKNAME'];
+                }
+            }
+
+            if (!isset($rss_feed_data['LOGON'])) $rss_feed_data['LOGON'] = $lang['unknownuser'];
+            if (!isset($rss_feed_data['NICKNAME'])) $rss_feed_data['NICKNAME'] = "";
+
+            $rss_feed_array[] = $rss_feed_data;
         }
     
     }else if ($rss_feed_count > 0) {
@@ -398,14 +423,22 @@ function rss_get_feed($feed_id)
 {
     $db_rss_get_feeds = db_connect();
 
+    $lang = load_language_file();
+
     if (!is_numeric($feed_id)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
+    if (($uid = bh_session_get_value('UID')) === false) return false;
+
     $sql = "SELECT RSS_FEEDS.RSSID, RSS_FEEDS.NAME, USER.LOGON, ";
-    $sql.= "RSS_FEEDS.FID, RSS_FEEDS.URL, RSS_FEEDS.PREFIX, RSS_FEEDS.FREQUENCY ";
+    $sql.= "USER.NICKNAME, USER_PEER.PEER_NICKNAME, RSS_FEEDS.FID, ";
+    $sql.= "RSS_FEEDS.URL, RSS_FEEDS.PREFIX, RSS_FEEDS.FREQUENCY ";
     $sql.= "FROM {$table_data['PREFIX']}RSS_FEEDS RSS_FEEDS ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = RSS_FEEDS.UID) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+    $sql.= "ON (USER_PEER.PEER_UID = RSS_FEEDS.UID ";
+    $sql.= "AND USER_PEER.UID = '$uid') ";
     $sql.= "WHERE RSS_FEEDS.RSSID = '$feed_id'";
 
     if (!$result = db_query($sql, $db_rss_get_feeds)) return false;
@@ -413,6 +446,16 @@ function rss_get_feed($feed_id)
     if (db_num_rows($result) > 0) {
 
         $rss_feed_array = db_fetch_array($result);
+
+        if (isset($rss_feed_array['LOGON']) && isset($rss_feed_array['PEER_NICKNAME'])) {
+            if (!is_null($rss_feed_array['PEER_NICKNAME']) && strlen($rss_feed_array['PEER_NICKNAME']) > 0) {
+                $rss_feed_array['NICKNAME'] = $rss_feed_array['PEER_NICKNAME'];
+            }
+        }
+
+        if (!isset($rss_feed_array['LOGON'])) $rss_feed_array['LOGON'] = $lang['unknownuser'];
+        if (!isset($rss_feed_array['NICKNAME'])) $rss_feed_array['NICKNAME'] = "";
+
         return $rss_feed_array;
     }
 

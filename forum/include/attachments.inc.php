@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.132 2007-05-25 23:45:00 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.133 2007-08-01 20:23:01 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -417,9 +417,9 @@ function delete_attachment_by_aid($aid)
 
     if (!$result = db_query($sql, $db_delete_attachment_by_aid)) return false;
 
-    while ($row = db_fetch_array($result)) {
+    while ($attachment_data = db_fetch_array($result)) {
 
-        delete_attachment($row['HASH']);
+        delete_attachment($attachment_data['HASH']);
     }
 }
 
@@ -458,19 +458,19 @@ function delete_attachment($hash)
 
     if (db_num_rows($result) > 0) {
 
-        $row = db_fetch_array($result);
+        $attachment_data = db_fetch_array($result);
 
-        if (($row['UID'] == $uid) || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $row['FID'])) {
+        if (($attachment_data['UID'] == $uid) || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $attachment_data['FID'])) {
 
             // Mark the related post as edited
 
-            if (isset($row['TID']) && isset($row['PID'])) {
+            if (isset($attachment_data['TID']) && isset($attachment_data['PID'])) {
 
-                post_add_edit_text($row['TID'], $row['PID']);
+                post_add_edit_text($attachment_data['TID'], $attachment_data['PID']);
 
-                if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $row['FID']) && ($row['UID'] != $uid)) {
+                if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $attachment_data['FID']) && ($attachment_data['UID'] != $uid)) {
 
-                    $log_data = array($row['TID'], $row['PID'], $row['FILENAME']);
+                    $log_data = array($attachment_data['TID'], $attachment_data['PID'], $attachment_data['FILENAME']);
                     admin_add_log_entry(DELETE_ATTACHMENT, $log_data);
                 }
             }
@@ -485,7 +485,7 @@ function delete_attachment($hash)
             // Check to see if there are anymore attachments with the same AID
 
             $sql = "SELECT AID FROM POST_ATTACHMENT_FILES ";
-            $sql.= "WHERE AID = '{$row['AID']}'";
+            $sql.= "WHERE AID = '{$attachment_data['AID']}'";
 
             if (!$result = db_query($sql, $db_delete_attachment)) return false;
 
@@ -532,19 +532,19 @@ function delete_attachment_thumbnail($hash)
 
     if (db_num_rows($result) > 0) {
 
-        $row = db_fetch_array($result);
+        $attachment_data = db_fetch_array($result);
 
-        if (($row['UID'] == $uid) || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $row['FID'])) {
+        if (($attachment_data['UID'] == $uid) || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $attachment_data['FID'])) {
 
             // Mark the related post as edited
 
-            if (isset($row['TID']) && isset($row['PID'])) {
+            if (isset($attachment_data['TID']) && isset($attachment_data['PID'])) {
 
-                post_add_edit_text($row['TID'], $row['PID']);
+                post_add_edit_text($attachment_data['TID'], $attachment_data['PID']);
 
-                if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $row['FID']) && ($row['UID'] != $uid)) {
+                if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $attachment_data['FID']) && ($attachment_data['UID'] != $uid)) {
 
-                    $log_data = array($row['TID'], $row['PID'], $row['FILENAME']);
+                    $log_data = array($attachment_data['TID'], $attachment_data['PID'], $attachment_data['FILENAME']);
                     admin_add_log_entry(DELETE_ATTACHMENT, $log_data);
                 }
             }
@@ -585,11 +585,11 @@ function get_free_attachment_space($uid)
 
     if (!$result = db_query($sql, $db_get_free_attachment_space)) return false;
 
-    while($row = db_fetch_array($result)) {
+    while($attachment_data = db_fetch_array($result)) {
 
-        if (@file_exists("$attachment_dir/{$row['HASH']}")) {
+        if (@file_exists("$attachment_dir/{$attachment_data['HASH']}")) {
 
-            $used_attachment_space += filesize("$attachment_dir/{$row['HASH']}");
+            $used_attachment_space += filesize("$attachment_dir/{$attachment_data['HASH']}");
         }
     }
 
@@ -625,8 +625,8 @@ function get_attachment_id($tid, $pid)
 
     if (db_num_rows($result) > 0) {
 
-        $attachment = db_fetch_array($result);
-        return $attachment['AID'];
+        list($attachment_id) = db_fetch_array($result, DB_RESULT_NUM);
+        return $attachment_id;
 
     }else{
 
@@ -662,8 +662,8 @@ function get_folder_fid($aid)
 
     if (db_num_rows($result) > 0) {
 
-        $folder_array = db_fetch_array($result);
-        return $folder_array['FID'];
+        list($folder_fid) = db_fetch_array($result, DB_RESULT_NUM);
+        return $folder_fid;
     }
 
     return false;
@@ -692,8 +692,8 @@ function get_pm_attachment_id($mid)
 
     if (db_num_rows($result) > 0) {
 
-        $attachment = db_fetch_array($result);
-        return $attachment['AID'];
+        list($attachment_id) = db_fetch_array($result, DB_RESULT_NUM);
+        return $attachment_id;
 
     }else{
 
@@ -729,8 +729,8 @@ function get_message_link($aid, $get_pm_link = true)
 
     if (db_num_rows($result) > 0) {
 
-        $row = db_fetch_array($result);
-        return "./messages.php?webtag={$row['WEBTAG']}&amp;msg={$row['TID']}.{$row['PID']}";
+        list($forum_webtag, $tid, $pid) = db_fetch_array($result, DB_RESULT_NUM);
+        return "./messages.php?webtag=$forum_webtag&amp;msg=$tid.$pid";
 
     }else if ($get_pm_link) {
 
@@ -740,8 +740,8 @@ function get_message_link($aid, $get_pm_link = true)
 
         if (db_num_rows($result) > 0) {
 
-            $mid = db_fetch_array($result);
-            return "./pm.php?webtag=$webtag&amp;mid=". $mid['MID'];
+            list($mid) = db_fetch_array($result, DB_RESULT_NUM);
+            return "./pm.php?webtag=$webtag&amp;mid=$mid";
         }
     }
 
@@ -794,6 +794,8 @@ function get_attachment_by_hash($hash)
 
     if (!is_md5($hash)) return false;
 
+    if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
+
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT AID, UID, FILENAME, MIMETYPE, HASH, DOWNLOADS ";
@@ -804,7 +806,14 @@ function get_attachment_by_hash($hash)
     if (db_num_rows($result) > 0) {
         
         $attachment_array = db_fetch_array($result);
-        return $attachment_array;
+
+        return array("filename"  => rawurldecode($attachment_array['FILENAME']),
+                     "filedate"  => filemtime("$attachment_dir/{$attachment_array['HASH']}"),
+                     "filesize"  => filesize("$attachment_dir/{$attachment_array['HASH']}"),
+                     "aid"       => $attachment_array['AID'],
+                     "hash"      => $attachment_array['HASH'],
+                     "mimetype"  => $attachment_array['MIMETYPE'],
+                     "downloads" => $attachment_array['DOWNLOADS']);
     }
 
     return false;
@@ -860,18 +869,20 @@ function attachment_embed_check($content)
 *
 * @return string
 * @param array $attachment - attachment array retrieved from get_attachments / get_all_attachments function
-* @param bool $show_thumbs - Optionally enable or disable the display of thumbnails for supported image attachments
-* @param bool $limit_filename - Optionally truncate the filename to 16 characters if it is too long
-* @param bool $local_path - Optionally not include the path to the attachment.
+* @param bool $show_thumbs - Optionally enable or disable the display of thumbnails for supported image attachments (default: true)
+* @param bool $limit_filename - Optionally truncate the filename to 16 characters if it is too long (default: false)
+* @param bool $local_path - Optionally include the path to the attachment (default: false).
+* @param bool $img_tag - Optionally include the HTML to construct the thumbnail / attachment icon (default: true).
 */
 
-function attachment_make_link($attachment, $show_thumbs = true, $limit_filename = false, $local_path = false)
+function attachment_make_link($attachment, $show_thumbs = true, $limit_filename = false, $local_path = false, $img_tag = true)
 {
     if (!is_array($attachment)) return false;
 
     if (!is_bool($show_thumbs)) $show_thumbs = true;
     if (!is_bool($limit_filename)) $limit_filename = false;
     if (!is_bool($local_path)) $local_path = false;
+    if (!is_bool($img_tag)) $img_tag = true;
 
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
 
@@ -900,84 +911,85 @@ function attachment_make_link($attachment, $show_thumbs = true, $limit_filename 
         $show_thumbs = false;
     }
 
-    $attachment_path = "$attachment_dir/";
-    $attachment_path.= md5($attachment['aid']);
-    $attachment_path.= rawurldecode($attachment['filename']);
-
     if ($local_path) {
 
-        $href = "attachments/{$attachment['filename']}";
+        $attachment_href = "attachments/{$attachment['filename']}";
     
     }else if (forum_get_setting('attachment_use_old_method', 'Y')) {
 
-        $href = "get_attachment.php?webtag=$webtag&amp;hash={$attachment['hash']}";
-        $href.= "&amp;filename={$attachment['filename']}";
+        $attachment_href = "get_attachment.php?webtag=$webtag&amp;hash={$attachment['hash']}";
+        $attachment_href.= "&amp;filename={$attachment['filename']}";
 
     }else {
 
-        $href = "get_attachment.php/{$attachment['hash']}/";
-        $href.= rawurlencode($attachment['filename']);
-        $href.= "?webtag=$webtag";
+        $attachment_href = "get_attachment.php/{$attachment['hash']}/";
+        $attachment_href.= rawurlencode($attachment['filename']);
+        $attachment_href.= "?webtag=$webtag";
     }
 
-    $title_array = array();
+    if ($img_tag === true) {
 
-    if (strlen($attachment['filename']) > 16 && $limit_filename) {
+        $title_array = array();
 
-        $title_array[] = "{$lang['filename']}: {$attachment['filename']}";
+        if (strlen($attachment['filename']) > 16 && $limit_filename) {
 
-        $attachment['filename'] = substr($attachment['filename'], 0, 16);
-        $attachment['filename'].= "&hellip;";
-    }
+            $title_array[] = "{$lang['filename']}: {$attachment['filename']}";
 
-    $title_array[] = "{$lang['size']}: ". format_file_size($attachment['filesize']);
-
-    if ($attachment['downloads'] == 1) {
-
-        $title_array[] = $lang['downloadedonetime'];
-
-    }else {
-
-        $title_array[] = sprintf($lang['downloadedxtimes'], $attachment['downloads']);
-    }
-
-    if (file_exists("$attachment_dir/{$attachment['hash']}.thumb") && $show_thumbs) {
-
-        if (@$image_info = getimagesize("$attachment_dir/{$attachment['hash']}")) {
-
-            $title_array[] = "{$lang['dimensions']}: {$image_info[0]}x{$image_info[1]}px";
-
-            $thumbnail_width  = $image_info[0];
-            $thumbnail_height = $image_info[1];
-
-            while ($thumbnail_width > $thumbnail_max_size || $thumbnail_height > $thumbnail_max_size) {
-
-                $thumbnail_width--;
-                $thumbnail_height = $thumbnail_width * ($image_info[1] / $image_info[0]);
-            }
-
-            $title = implode(", ", $title_array);
-
-            $attachment_link = "<div class=\"attachment_thumb\"><a href=\"$href\" title=\"$title\" ";
-            $attachment_link.= "target=\"_blank\"><img src=\"$href&amp;thumb=1\"";
-            $attachment_link.= "border=\"0\" width=\"$thumbnail_width\" height=\"$thumbnail_height\"";
-            $attachment_link.= "alt=\"$title\" title=\"$title\" /></a></div>";
-
-            return $attachment_link;
+            $attachment['filename'] = substr($attachment['filename'], 0, 16);
+            $attachment['filename'].= "&hellip;";
         }
+
+        $title_array[] = "{$lang['size']}: ". format_file_size($attachment['filesize']);
+
+        if ($attachment['downloads'] == 1) {
+
+            $title_array[] = $lang['downloadedonetime'];
+
+        }else {
+
+            $title_array[] = sprintf($lang['downloadedxtimes'], $attachment['downloads']);
+        }
+
+        if (file_exists("$attachment_dir/{$attachment['hash']}.thumb") && $show_thumbs) {
+
+            if (@$image_info = getimagesize("$attachment_dir/{$attachment['hash']}")) {
+
+                $title_array[] = "{$lang['dimensions']}: {$image_info[0]}x{$image_info[1]}px";
+
+                $thumbnail_width  = $image_info[0];
+                $thumbnail_height = $image_info[1];
+
+                while ($thumbnail_width > $thumbnail_max_size || $thumbnail_height > $thumbnail_max_size) {
+
+                    $thumbnail_width--;
+                    $thumbnail_height = $thumbnail_width * ($image_info[1] / $image_info[0]);
+                }
+
+                $title = implode(", ", $title_array);
+
+                $attachment_link = "<div class=\"attachment_thumb\"><a href=\"$attachment_href\" title=\"$title\" ";
+                $attachment_link.= "target=\"_blank\"><img src=\"$attachment_href&amp;thumb=1\"";
+                $attachment_link.= "border=\"0\" width=\"$thumbnail_width\" height=\"$thumbnail_height\"";
+                $attachment_link.= "alt=\"$title\" title=\"$title\" /></a></div>";
+
+                return $attachment_link;
+            }
+        }
+
+        $title = implode(", ", $title_array);
+
+        $attachment_link = "<img src=\"";
+        $attachment_link.= style_image('attach.png');
+        $attachment_link.= "\" width=\"14\" height=\"14\" border=\"0\"";
+        $attachment_link.= "alt=\"{$lang['attachment']}\" ";
+        $attachment_link.= "title=\"{$lang['attachment']}\" />";
+        $attachment_link.= "<a href=\"$attachment_href\" title=\"$title\" ";
+        $attachment_link.= "target=\"_blank\">{$attachment['filename']}</a><br />\n";
+
+        return $attachment_link;
     }
 
-    $title = implode(", ", $title_array);
-
-    $attachment_link = "<img src=\"";
-    $attachment_link.= style_image('attach.png');
-    $attachment_link.= "\" width=\"14\" height=\"14\" border=\"0\"";
-    $attachment_link.= "alt=\"{$lang['attachment']}\" ";
-    $attachment_link.= "title=\"{$lang['attachment']}\" />";
-    $attachment_link.= "<a href=\"$href\" title=\"$title\" ";
-    $attachment_link.= "target=\"_blank\">{$attachment['filename']}</a><br />\n";
-
-    return $attachment_link;
+    return $attachment_href;
 }
 
 /**

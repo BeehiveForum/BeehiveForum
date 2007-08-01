@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.72 2007-06-22 17:36:29 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.73 2007-08-01 20:23:03 decoyduck Exp $ */
 
 /**
 * Functions relating to users interacting with profiles
@@ -302,23 +302,23 @@ function user_get_profile_entries($uid)
 
     if (db_num_rows($result) > 0) {
 
-        while ($row = db_fetch_array($result)) {
+        while ($user_profile_data = db_fetch_array($result)) {
 
-            if (($row['TYPE'] == PROFILE_ITEM_RADIO) || ($row['TYPE'] == PROFILE_ITEM_DROPDOWN)) {
+            if (($user_profile_data['TYPE'] == PROFILE_ITEM_RADIO) || ($user_profile_data['TYPE'] == PROFILE_ITEM_DROPDOWN)) {
 
-                if (@list($field_name, $field_values) = explode(':', $row['NAME'])) {
+                if (@list($field_name, $field_values) = explode(':', $user_profile_data['NAME'])) {
 
                     $field_values = explode(';', $field_values);
 
-                    if (isset($row['ENTRY']) && isset($field_values[$row['ENTRY']])) {
+                    if (isset($user_profile_data['ENTRY']) && isset($field_values[$user_profile_data['ENTRY']])) {
 
-                        $user_profile_array[$row['PSID']][$row['PIID']] = $row;
+                        $user_profile_array[$user_profile_data['PSID']][$user_profile_data['PIID']] = $user_profile_data;
                     }
                 }
 
             }else {
 
-                $user_profile_array[$row['PSID']][$row['PIID']] = $row;
+                $user_profile_array[$user_profile_data['PSID']][$user_profile_data['PIID']] = $user_profile_data;
             }
         }
     }
@@ -334,14 +334,17 @@ function user_get_profile_image($uid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT PIC_URL from {$table_data['PREFIX']}USER_PREFS WHERE UID = '$uid'";
+    $sql = "SELECT PIC_URL FROM {$table_data['PREFIX']}USER_PREFS WHERE UID = '$uid'";
 
     if (!$result = db_query($sql, $db_user_get_profile_image)) return false;
 
-    $row = db_fetch_array($result);
+    if (db_num_rows($result) > 0) {
 
-    if (isset($row['PIC_URL']) && strlen($row['PIC_URL']) > 0) {
-        return $row['PIC_URL'];
+        $user_profile_data = db_fetch_array($result);
+
+        if (isset($user_profile_data['PIC_URL']) && strlen($user_profile_data['PIC_URL']) > 0) {
+            return $user_profile_data['PIC_URL'];
+        }
     }
 
     return false;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.124 2007-07-04 15:26:47 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.125 2007-08-01 20:23:01 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -119,6 +119,8 @@ function admin_get_log_entries($offset, $sort_by = 'CREATED', $sort_dir = 'DESC'
 {
     $db_admin_get_log_entries = db_connect();
 
+    $lang = load_language_file();
+
     $sort_by_array  = array('CREATED', 'UID', 'ACTION');
     $sort_dir_array = array('ASC', 'DESC');
 
@@ -131,6 +133,8 @@ function admin_get_log_entries($offset, $sort_by = 'CREATED', $sort_dir = 'DESC'
 
     if (!$table_data = get_table_prefix()) return false;
 
+    if (($uid = bh_session_get_value('UID')) === false) return false;
+
     $sql = "SELECT COUNT(ID) AS LOG_COUNT ";
     $sql.= "FROM {$table_data['PREFIX']}ADMIN_LOG ";
 
@@ -138,19 +142,31 @@ function admin_get_log_entries($offset, $sort_by = 'CREATED', $sort_dir = 'DESC'
 
     list($admin_log_count) = db_fetch_array($result, DB_RESULT_NUM);
 
-    $sql = "SELECT ADMIN_LOG.ID, UNIX_TIMESTAMP(ADMIN_LOG.CREATED) AS CREATED, ";
-    $sql.= "ADMIN_LOG.UID, ADMIN_LOG.ACTION, ADMIN_LOG.ENTRY, USER.LOGON, USER.NICKNAME ";
+    $sql = "SELECT ADMIN_LOG.ID, ADMIN_LOG.UID, ADMIN_LOG.ACTION, ADMIN_LOG.ENTRY, ";
+    $sql.= "USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
+    $sql.= "UNIX_TIMESTAMP(ADMIN_LOG.CREATED) AS CREATED ";
     $sql.= "FROM {$table_data['PREFIX']}ADMIN_LOG ADMIN_LOG ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = ADMIN_LOG.UID) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+    $sql.= "ON (USER_PEER.PEER_UID = ADMIN_LOG.UID AND USER_PEER.UID = '$uid') ";
     $sql.= "ORDER BY ADMIN_LOG.$sort_by $sort_dir LIMIT $offset, 10";
 
     if (!$result = db_query($sql, $db_admin_get_log_entries)) return false;
 
     if (db_num_rows($result) > 0) {
 
-        while ($row = db_fetch_array($result)) {
+        while ($admin_log_entry = db_fetch_array($result)) {
 
-            $admin_log_array[] = $row;
+            if (isset($admin_log_entry['LOGON']) && isset($admin_log_entry['PEER_NICKNAME'])) {
+                if (!is_null($admin_log_entry['PEER_NICKNAME']) && strlen($admin_log_entry['PEER_NICKNAME']) > 0) {
+                    $admin_log_entry['NICKNAME'] = $admin_log_entry['PEER_NICKNAME'];
+                }
+            }
+
+            if (!isset($admin_log_entry['LOGON'])) $admin_log_entry['LOGON'] = $lang['unknownuser'];
+            if (!isset($admin_log_entry['NICKNAME'])) $admin_log_entry['NICKNAME'] = "";
+
+            $admin_log_array[] = $admin_log_entry;
         }
 
     }else if ($admin_log_count > 0) {
@@ -199,9 +215,9 @@ function admin_get_word_filter_list($offset)
 
     if (db_num_rows($result) > 0) {
 
-        while ($row = db_fetch_array($result)) {
+        while ($word_filter_data = db_fetch_array($result)) {
 
-            $word_filter_array[$row['FID']] = $row;
+            $word_filter_array[$word_filter_data['FID']] = $word_filter_data;
         }
 
     }else if ($word_filter_count > 0) {
@@ -488,9 +504,9 @@ function admin_user_search($user_search, $sort_by = 'VISITOR_LOG.LAST_LOGON', $s
 
     if (db_num_rows($result) > 0) {
 
-        while ($row = db_fetch_array($result)) {
+        while ($user_data = db_fetch_array($result)) {
             
-            $user_get_all_array[$row['UID']] = $row;
+            $user_get_all_array[$user_data['UID']] = $user_data;
         }
 
     }else if ($user_get_all_count > 0) {
@@ -609,9 +625,9 @@ function admin_user_get_all($sort_by = 'VISITOR_LOG.LAST_LOGON', $sort_dir = 'AS
 
     if (db_num_rows($result) > 0) {
 
-        while ($row = db_fetch_array($result)) {
+        while ($user_data = db_fetch_array($result)) {
             
-            $user_get_all_array[$row['UID']] = $row;
+            $user_get_all_array[$user_data['UID']] = $user_data;
         }
 
     }else if ($user_get_all_count > 0) {
@@ -855,9 +871,9 @@ function admin_get_ban_data($sort_by = "ID", $sort_dir = "ASC", $offset = 0)
 
     if (db_num_rows($result) > 0) {
     
-        while ($row = db_fetch_array($result)) {
+        while ($ban_data = db_fetch_array($result)) {
 
-            $ban_data_array[$row['ID']] = $row;
+            $ban_data_array[$ban_data['ID']] = $ban_data;
         }
 
     }else if ($ban_data_count > 0) {
@@ -993,16 +1009,15 @@ function admin_get_visitor_log($offset)
 
     $forum_fid = $table_data['FID'];
 
-    $sql = "SELECT COUNT(USER.UID) AS USER_COUNT FROM VISITOR_LOG VISITOR_LOG ";
-    $sql.= "LEFT JOIN USER USER ON (USER.UID = VISITOR_LOG.UID) ";
-    $sql.= "WHERE VISITOR_LOG.LAST_LOGON IS NOT NULL AND VISITOR_LOG.LAST_LOGON > 0 ";
-    $sql.= "AND VISITOR_LOG.FORUM = '$forum_fid'";
+    $sql = "SELECT COUNT(UID) AS USER_COUNT FROM VISITOR_LOG ";
+    $sql.= "WHERE LAST_LOGON IS NOT NULL AND LAST_LOGON > 0 ";
+    $sql.= "AND FORUM = '$forum_fid'";
 
     if (!$result = db_query($sql, $db_admin_get_visitor_log)) return false;
     
     list($users_get_recent_count) = db_fetch_array($result, DB_RESULT_NUM);
 
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
+    $sql = "SELECT VISITOR_LOG.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
     $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
     $sql.= "VISITOR_LOG.IPADDRESS, VISITOR_LOG.REFERER, ";
     $sql.= "SEB.SID, SEB.NAME, SEB.URL FROM VISITOR_LOG VISITOR_LOG ";
@@ -1020,18 +1035,22 @@ function admin_get_visitor_log($offset)
     if (db_num_rows($result) > 0) {
 
         while ($visitor_array = db_fetch_array($result)) {
-            
-            if (!isset($visitor_array['UID']) || $visitor_array['UID'] == 0) {
 
-                $visitor_array['UID']      = 0;
-                $visitor_array['LOGON']    = $lang['guest'];
-                $visitor_array['NICKNAME'] = $lang['guest'];
-            }
-
-            if (isset($visitor_array['PEER_NICKNAME'])) {
+            if (isset($visitor_array['LOGON']) && isset($visitor_array['PEER_NICKNAME'])) {
                 if (!is_null($visitor_array['PEER_NICKNAME']) && strlen($visitor_array['PEER_NICKNAME']) > 0) {
                     $visitor_array['NICKNAME'] = $visitor_array['PEER_NICKNAME'];
                 }
+            }
+
+            if ($visitor_array['UID'] == 0) {
+
+                $visitor_array['LOGON']    = $lang['guest'];
+                $visitor_array['NICKNAME'] = $lang['guest'];
+
+            }elseif (!isset($visitor_array['LOGON']) || is_null($visitor_array['LOGON'])) {
+
+                $visitor_array['LOGON'] = $lang['unknownuser'];
+                $visitor_array['NICKNAME'] = "";
             }
 
             if (isset($visitor_array['REFERER']) && strlen(trim($visitor_array['REFERER'])) > 0) {
@@ -1099,6 +1118,8 @@ function admin_get_user_aliases($uid)
 {
     $db_user_get_aliases = db_connect();
 
+    $lang = load_language_file();
+
     if (!is_numeric($uid)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
@@ -1141,8 +1162,8 @@ function admin_get_user_aliases($uid)
 
     if (strlen($user_ip_address_list) > 0) {
 
-        $sql = "SELECT DISTINCT USER.UID, USER.LOGON, USER.NICKNAME, ";
-        $sql.= "USER_PEER.PEER_NICKNAME, POST.IPADDRESS ";
+        $sql = "SELECT DISTINCT POST.FROM_UID AS UID, USER.LOGON, ";
+        $sql.= "USER.NICKNAME, USER_PEER.PEER_NICKNAME, POST.IPADDRESS ";
         $sql.= "FROM {$table_data['PREFIX']}POST POST ";
         $sql.= "LEFT JOIN USER USER ON (POST.FROM_UID = USER.UID) ";
         $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
@@ -1154,17 +1175,18 @@ function admin_get_user_aliases($uid)
 
         if (db_num_rows($result) > 0) {
 
-            while($user_get_aliases_row = db_fetch_array($result)) {
+            while($user_aliases = db_fetch_array($result)) {
 
-                if (isset($user_get_aliases_row['PEER_NICKNAME'])) {
-
-                    if (!is_null($user_get_aliases_row['PEER_NICKNAME']) && strlen($user_get_aliases_row['PEER_NICKNAME']) > 0) {
-
-                        $user_get_aliases_row['NICKNAME'] = $user_get_aliases_row['PEER_NICKNAME'];
+                if (isset($user_aliases['LOGON']) && isset($user_aliases['PEER_NICKNAME'])) {
+                    if (!is_null($user_aliases['PEER_NICKNAME']) && strlen($user_aliases['PEER_NICKNAME']) > 0) {
+                        $user_aliases['NICKNAME'] = $user_aliases['PEER_NICKNAME'];
                     }
                 }
 
-                $user_aliases_array[$user_get_aliases_row['UID']] = $user_get_aliases_row;
+                if (!isset($user_aliases['LOGON'])) $user_aliases['LOGON'] = $lang['unknownuser'];
+                if (!isset($user_aliases['NICKNAME'])) $user_aliases['NICKNAME'] = "";
+
+                $user_aliases_array[$user_aliases['UID']] = $user_aliases;
             }
         }
     }

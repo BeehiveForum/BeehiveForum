@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_detail.php,v 1.93 2007-06-18 13:37:05 decoyduck Exp $ */
+/* $Id: links_detail.php,v 1.94 2007-08-01 20:23:01 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -150,6 +150,8 @@ if (isset($_POST['cancel'])) {
 
 if (!user_is_guest()) {
 
+    $valid = true;
+    
     if (isset($_POST['addvote'])) {
 
         if (isset($_POST['vote']) && is_numeric($_POST['vote'])) {
@@ -291,7 +293,7 @@ echo "                      <td align=\"left\"><a href=\"links.php?webtag=$webta
 echo "                    </tr>\n";
 echo "                    <tr>\n";
 echo "                      <td align=\"left\" nowrap=\"nowrap\" valign=\"top\">{$lang['submittedby']}:</td>\n";
-echo "                      <td align=\"left\">", (isset($link['LOGON']) ? word_filter_add_ob_tags(format_user_name($link['LOGON'], $link['NICKNAME'])) : "Unknown User"), "</td>\n";
+echo "                      <td align=\"left\">", (isset($link['LOGON']) ? word_filter_add_ob_tags(format_user_name($link['LOGON'], $link['NICKNAME'])) : $lang['unknownuser']), "</td>\n";
 echo "                    </tr>\n";
 echo "                    <tr>\n";
 echo "                      <td align=\"left\" nowrap=\"nowrap\" valign=\"top\">{$lang['description']}:</td>\n";
@@ -409,29 +411,22 @@ if ($comments_array = links_get_comments($lid)) {
 
     foreach($comments_array as $comment_id => $comment) {
 
-        echo "                <tr>\n";
+        $profile_link = "<a href=\"user_profile.php?webtag=$webtag&amp;uid={$comment['UID']}\" target=\"_blank\" onclick=\"return openProfile({$comment['UID']}, '$webtag')\">";
+        $profile_link.= word_filter_add_ob_tags(format_user_name($comment['LOGON'], $comment['NICKNAME'])). "</a>";
 
-        if (isset($comment['LOGON']) && isset($comment['NICKNAME'])) {
-
-            $profile_link = "<a href=\"user_profile.php?webtag=$webtag&amp;uid={$comment['UID']}\" target=\"_blank\" onclick=\"return openProfile({$comment['UID']}, '$webtag')\">";
-            $profile_link.= word_filter_add_ob_tags(format_user_name($comment['LOGON'], $comment['NICKNAME'])). "</a>";
-            
-            if (bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0) || $comment['UID'] == $uid) {
-                echo "                  <td align=\"left\" class=\"subhead\">", sprintf($lang['commentby'], $profile_link), " <a href=\"links_detail.php?webtag=$webtag&amp;delete_comment={$comment['CID']}&amp;lid=$lid\" class=\"threadtime\">[{$lang['delete']}]</a></td>\n";
-            }else {
-                echo "                  <td align=\"left\" class=\"subhead\">", sprintf($lang['commentby'], $profile_link), "</td>\n";
-            }
+        if (bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0) || $comment['UID'] == $uid) {
+        
+            echo "                <tr>\n";
+            echo "                  <td align=\"left\" class=\"subhead\">", sprintf($lang['commentby'], $profile_link), " <a href=\"links_detail.php?webtag=$webtag&amp;delete_comment={$comment['CID']}&amp;lid=$lid\" class=\"threadtime\">[{$lang['delete']}]</a></td>\n";
+            echo "                </tr>\n";
 
         }else {
 
-            if (bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0)) {
-                echo "                  <td align=\"left\" class=\"subhead\">", sprintf($lang['commentby'], $lang['unknownuser']), " <a href=\"links_detail.php?webtag=$webtag&amp;action=delete_comment&amp;cid={$comment['CID']}&amp;lid=$lid\" class=\"threadtime\">[{$lang['delete']}]</a></td>\n";
-            }else {
-                echo "                  <td align=\"left\" class=\"subhead\">", sprintf($lang['commentby'], $lang['unknownuser']), "</td>\n";
-            }
+            echo "                <tr>\n";
+            echo "                  <td align=\"left\" class=\"subhead\">", sprintf($lang['commentby'], $profile_link), "</td>\n";
+            echo "                </tr>\n";
         }
-
-        echo "                </tr>\n";
+        
         echo "                <tr>\n";
         echo "                  <td align=\"center\">\n";
         echo "                    <table class=\"posthead\" width=\"95%\">\n";

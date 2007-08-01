@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.83 2007-07-10 15:50:38 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.84 2007-08-01 20:23:03 decoyduck Exp $ */
 
 /**
 * Functions relating to profiles
@@ -131,9 +131,9 @@ function profile_sections_get()
 
         $profile_sections_get = array();
 
-        while($row = db_fetch_array($result)) {
+        while($profile_data = db_fetch_array($result)) {
 
-            $profile_sections_get[$row['PSID']] = $row;
+            $profile_sections_get[$profile_data['PSID']] = $profile_data;
         }
 
         return $profile_sections_get;
@@ -171,9 +171,9 @@ function profile_sections_get_by_page($offset)
 
     if (db_num_rows($result) > 0) {
 
-        while($row = db_fetch_array($result)) {
+        while($profile_data = db_fetch_array($result)) {
 
-            $profile_sections_array[] = $row;
+            $profile_sections_array[] = $profile_data;
         }
 
     }else if ($profile_sections_count > 0) {
@@ -204,9 +204,9 @@ function profile_items_get($psid)
 
         $profile_items_get = array();
 
-        while($row = db_fetch_array($result)) {
+        while($profile_data = db_fetch_array($result)) {
 
-            $profile_items_get[] = $row;
+            $profile_items_get[] = $profile_data;
         }
 
         return $profile_items_get;
@@ -448,9 +448,9 @@ function profile_get_user_values($uid)
 
         $profile_values_array = array();
 
-        while($row = db_fetch_array($result)) {
+        while($profile_data = db_fetch_array($result)) {
 
-            $profile_values_array[] = $row;
+            $profile_values_array[] = $profile_data;
         }
 
         return $profile_values_array;
@@ -478,10 +478,10 @@ function profile_section_move_up($psid)
 
     $profile_section_order = array();
 
-    while ($row = db_fetch_array($result)) {
+    while ($profile_data = db_fetch_array($result)) {
 
-        $profile_section_order[] = $row['PSID'];
-        $profile_section_position[$row['PSID']] = $row['POSITION'];
+        $profile_section_order[] = $profile_data['PSID'];
+        $profile_section_position[$profile_data['PSID']] = $profile_data['POSITION'];
     }
 
     if (($profile_section_order_key = array_search($psid, $profile_section_order)) !== false) {
@@ -529,10 +529,10 @@ function profile_section_move_down($psid)
 
     $profile_section_order = array();
 
-    while ($row = db_fetch_array($result)) {
+    while ($profile_data = db_fetch_array($result)) {
 
-        $profile_section_order[] = $row['PSID'];
-        $profile_section_position[$row['PSID']] = $row['POSITION'];
+        $profile_section_order[] = $profile_data['PSID'];
+        $profile_section_position[$profile_data['PSID']] = $profile_data['POSITION'];
     }
 
     if (($profile_section_order_key = array_search($psid, $profile_section_order)) !== false) {
@@ -584,10 +584,10 @@ function profile_item_move_up($psid, $piid)
 
     $profile_item_order = array();
 
-    while ($row = db_fetch_array($result)) {
+    while ($profile_data = db_fetch_array($result)) {
         
-        $profile_item_order[] = $row['PIID'];
-        $profile_item_position[$row['PIID']] = $row['POSITION'];
+        $profile_item_order[] = $profile_data['PIID'];
+        $profile_item_position[$profile_data['PIID']] = $profile_data['POSITION'];
     }
 
     if (($profile_item_order_key = array_search($piid, $profile_item_order)) !== false) {
@@ -637,10 +637,10 @@ function profile_item_move_down($psid, $piid)
 
     $profile_item_order = array();
 
-    while ($row = db_fetch_array($result)) {
+    while ($profile_data = db_fetch_array($result)) {
         
-        $profile_item_order[] = $row['PIID'];
-        $profile_item_position[$row['PIID']] = $row['POSITION'];
+        $profile_item_order[] = $profile_data['PIID'];
+        $profile_item_position[$profile_data['PIID']] = $profile_data['POSITION'];
     }
 
     if (($profile_item_order_key = array_search($piid, $profile_item_order)) !== false) {

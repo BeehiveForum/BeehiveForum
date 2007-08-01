@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-04-to-05.php,v 1.49 2007-05-15 22:13:17 decoyduck Exp $ */
+/* $Id: upgrade-04-to-05.php,v 1.50 2007-08-01 20:23:04 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-04-to-05.php") {
 
@@ -1189,7 +1189,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
             return;
         }
 
-        while ($row = db_fetch_array($result)) {
+        while ($user_data = db_fetch_array($result)) {
 
             $new_status = 0;
 
@@ -1204,7 +1204,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
             $gid = db_insert_id($db_install);
 
             $sql = "INSERT INTO {$forum_webtag}_GROUP_USERS (GID, UID) ";
-            $sql.= "VALUES ('$gid', '{$row['UID']}')";
+            $sql.= "VALUES ('$gid', '{$user_data['UID']}')";
 
             if (!$result_uid = @db_query($sql, $db_install)) {
 
@@ -1212,10 +1212,10 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
                 return;
             }
 
-            if (($row['STATUS'] & USER_PERM_QUEEN)   > 0) $new_status = (double)$new_status | USER_PERM_FORUM_TOOLS;
-            if (($row['STATUS'] & USER_PERM_SOLDIER) > 0) $new_status = (double)$new_status | USER_PERM_ADMIN_TOOLS;
-            if (($row['STATUS'] & USER_PERM_WORM)    > 0) $new_status = (double)$new_status | USER_PERM_WORMED;
-            if (($row['STATUS'] & USER_PERM_SPLAT)   > 0) $new_status = (double)$new_status | USER_PERM_BANNED;
+            if (($user_data['STATUS'] & USER_PERM_QUEEN)   > 0) $new_status = (double)$new_status | USER_PERM_FORUM_TOOLS;
+            if (($user_data['STATUS'] & USER_PERM_SOLDIER) > 0) $new_status = (double)$new_status | USER_PERM_ADMIN_TOOLS;
+            if (($user_data['STATUS'] & USER_PERM_WORM)    > 0) $new_status = (double)$new_status | USER_PERM_WORMED;
+            if (($user_data['STATUS'] & USER_PERM_SPLAT)   > 0) $new_status = (double)$new_status | USER_PERM_BANNED;
 
             $sql = "INSERT INTO {$forum_webtag}_GROUP_PERMS (GID, FID, PERM) ";
             $sql.= "VALUES ('$gid', '0', '$new_status')";
@@ -1226,7 +1226,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
                 return;
             }
 
-            if (($row['STATUS'] & USER_PERM_QUEEN) > 0 || ($row['STATUS'] & USER_PERM_SOLDIER) > 0 || ($row['STATUS'] & USER_PERM_WORKER) > 0) {
+            if (($user_data['STATUS'] & USER_PERM_QUEEN) > 0 || ($user_data['STATUS'] & USER_PERM_SOLDIER) > 0 || ($user_data['STATUS'] & USER_PERM_WORKER) > 0) {
 
                 $sql = "INSERT INTO {$forum_webtag}_GROUP_PERMS (GID, FID, PERM) ";
                 $sql.= "SELECT $gid, FID, 6652 FROM {$forum_webtag}_FOLDER ";
@@ -1272,9 +1272,9 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
             return;
         }
 
-        while ($row = db_fetch_array($result)) {
+        while ($user_folder_data = db_fetch_array($result)) {
 
-            $sql = "SELECT GID FROM {$forum_webtag}_GROUP_USERS WHERE UID = '{$row['UID']}'";
+            $sql = "SELECT GID FROM {$forum_webtag}_GROUP_USERS WHERE UID = '{$user_folder_data['UID']}'";
 
             if ($result_gid = @db_query($sql, $db_install)) {
 
@@ -1283,7 +1283,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
                     list($gid) = db_fetch_array($result_gid);
 
                     $sql = "INSERT INTO {$forum_webtag}_GROUP_PERMS (GID, FID, PERM) ";
-                    $sql.= "VALUES ('$gid', '{$row['FID']}', '6396')";
+                    $sql.= "VALUES ('$gid', '{$user_folder_data['FID']}', '6396')";
 
                     if (!$result_perm = @db_query($sql, $db_install)) {
 
@@ -1304,7 +1304,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
                     $gid = db_insert_id($db_install);
 
                     $sql = "INSERT INTO {$forum_webtag}_GROUP_USERS (GID, UID) ";
-                    $sql.= "VALUES ('$gid', '{$row['UID']}')";
+                    $sql.= "VALUES ('$gid', '{$user_folder_data['UID']}')";
 
                     if (!$result_uid = @db_query($sql, $db_install)) {
 
@@ -1313,7 +1313,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
                     }
 
                     $sql = "INSERT INTO {$forum_webtag}_GROUP_PERMS (GID, FID, PERM) ";
-                    $sql.= "VALUES ('$gid', '{$row['FID']}', '6396')";
+                    $sql.= "VALUES ('$gid', '{$user_folder_data['FID']}', '6396')";
 
                     if (!$result_perm = @db_query($sql, $db_install)) {
 

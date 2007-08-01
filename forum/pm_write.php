@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.177 2007-06-10 12:28:44 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.178 2007-08-01 20:23:01 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -229,7 +229,13 @@ if (isset($_POST['cancel'])) {
 
 if (isset($t_rmid) && $t_rmid > 0) {
 
-    if (!$forward_msg && !$edit_msg) $t_recipient_list = pm_get_user($t_rmid);
+    if (!$forward_msg && !$edit_msg) {
+    
+        if (!$t_recipient_list = pm_get_user($t_rmid)) {
+
+            $t_recipient_list = "";
+        }
+    }
 
     if ($pm_data = pm_message_get($t_rmid)) {
 
@@ -880,7 +886,7 @@ if ($friends_array = pm_user_get_friends()) {
     }
 
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" nowrap=\"nowrap\"><div class=\"bhinputsearch\">", form_input_text("t_recipient_list", isset($t_recipient_list) ? _htmlentities($t_recipient_list) : "", 0, 0, "title=\"{$lang['recipienttiptext']}\" onclick=\"checkToRadio(1)\"", "recipient_list"), "<a href=\"search_popup.php?webtag=$webtag&amp;type=1&amp;obj_name=t_recipient_list\" onclick=\"return openRecipientSearch('$webtag', 't_recipient_list');\"><img src=\"", style_image('search_button.png'), "\" alt=\"{$lang['search']}\" title=\"{$lang['search']}\" border=\"0\" class=\"search_button\" /></a></div></td>\n";
+    echo "                        <td align=\"left\" nowrap=\"nowrap\"><div class=\"bhinputsearch\">", form_input_text("t_recipient_list", isset($t_recipient_list) ? _htmlentities($t_recipient_list) : "", 0, 0, "title=\"{$lang['recipienttiptext']}\"", "recipient_list"), "<a href=\"search_popup.php?webtag=$webtag&amp;type=1&amp;obj_name=t_recipient_list\" onclick=\"return openRecipientSearch('$webtag', 't_recipient_list');\"><img src=\"", style_image('search_button.png'), "\" alt=\"{$lang['search']}\" title=\"{$lang['search']}\" border=\"0\" class=\"search_button\" /></a></div></td>\n";
     echo "                      </tr>\n";
 }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.146 2007-06-28 22:46:19 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.147 2007-08-01 20:23:01 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -337,19 +337,14 @@ if ($recent_visitors_array = visitor_log_get_recent()) {
 
             $attachment = get_attachment_by_hash($recent_visitor['AVATAR_AID']);
 
-            if (forum_get_setting('attachment_use_old_method', 'Y')) {
+            if ($profile_picture_href = attachment_make_link($attachment, false, false, false, false)) {
 
-                $profile_picture_href = "get_attachment.php?webtag=$webtag&amp;hash={$attachment['HASH']}";
-                $profile_picture_href.= "&amp;filename={$attachment['FILENAME']}&amp;profile_picture=1";
+                echo "                   <td valign=\"top\"  class=\"postbody\" align=\"left\"><img src=\"$profile_picture_href\" alt=\"", format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']), "\" title=\"", format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']), "\" border=\"0\" width=\"15\" height=\"15\" /></td>\n";
 
             }else {
 
-                $profile_picture_href = "get_attachment.php/{$attachment['HASH']}/";
-                $profile_picture_href.= rawurlencode($attachment['FILENAME']);
-                $profile_picture_href.= "?webtag=$webtag&amp;profile_picture=1";
+                echo "                   <td valign=\"top\"  align=\"left\" class=\"postbody\"><img src=\"", style_image('bullet.png'), "\" alt=\"{$lang['user']}\" title=\"{$lang['user']}\" /></td>\n";
             }
-
-            echo "                   <td valign=\"top\"  class=\"postbody\" align=\"left\"><img src=\"$profile_picture_href\" alt=\"", format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']), "\" title=\"", format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']), "\" border=\"0\" width=\"15\" height=\"15\" /></td>\n";
         
         }else {
 
@@ -413,7 +408,7 @@ echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <br />\n";
 
-if ($birthdays = user_get_forthcoming_birthdays()) {
+if ($user_birthdays_array = user_get_forthcoming_birthdays()) {
 
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"98%\">\n";
     echo "    <tr>\n";
@@ -434,12 +429,12 @@ if ($birthdays = user_get_forthcoming_birthdays()) {
     echo "                        <td align=\"center\">\n";
     echo "                          <table class=\"posthead\" border=\"0\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\n";
 
-    foreach ($birthdays as $row) {
+    foreach ($user_birthdays_array as $user_birthday) {
 
         echo "                            <tr>\n";
         echo "                              <td valign=\"top\" align=\"center\" nowrap=\"nowrap\" width=\"20\"><img src=\"", style_image('bullet.png'), "\" alt=\"{$lang['user']}\" title=\"{$lang['user']}\" /></td>\n";
-        echo "                              <td align=\"left\" valign=\"top\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$row['UID']}\" target=\"_blank\" onclick=\"return openProfile({$row['UID']}, '$webtag')\">", word_filter_add_ob_tags(format_user_name($row['LOGON'], $row['NICKNAME'])), "</a></td>\n";
-        echo "                              <td align=\"right\" nowrap=\"nowrap\" valign=\"top\">", format_birthday($row['DOB']), "&nbsp;</td>\n";
+        echo "                              <td align=\"left\" valign=\"top\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$user_birthday['UID']}\" target=\"_blank\" onclick=\"return openProfile({$user_birthday['UID']}, '$webtag')\">", word_filter_add_ob_tags(format_user_name($user_birthday['LOGON'], $user_birthday['NICKNAME'])), "</a></td>\n";
+        echo "                              <td align=\"right\" nowrap=\"nowrap\" valign=\"top\">", format_birthday($user_birthday['DOB']), "&nbsp;</td>\n";
         echo "                            </tr>\n";
     }
 

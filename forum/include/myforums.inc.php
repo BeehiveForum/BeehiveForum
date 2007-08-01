@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.70 2007-05-31 21:59:20 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.71 2007-08-01 20:23:02 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -98,12 +98,12 @@ function get_forum_list($offset)
 
             if (!$result_post_count = db_query($sql, $db_get_forum_list)) return false;
 
-            $row = db_fetch_array($result_post_count);
+            $forum_post_data = db_fetch_array($result_post_count);
 
-            if (!isset($row['POST_COUNT']) || is_null($row['POST_COUNT'])) {
+            if (!isset($forum_post_data['POST_COUNT']) || is_null($forum_post_data['POST_COUNT'])) {
                 $forum_data['MESSAGES'] = 0;
             }else {
-                $forum_data['MESSAGES'] = $row['POST_COUNT'];
+                $forum_data['MESSAGES'] = $forum_post_data['POST_COUNT'];
             }
 
             $forums_array[] = $forum_data;
@@ -301,12 +301,12 @@ function get_my_forums($view_type, $offset)
 
             if (!$result_unread_to_me = db_query($sql, $db_get_my_forums)) return false;
 
-            $row = db_fetch_array($result_unread_to_me);
+            $forum_unread_post_data = db_fetch_array($result_unread_to_me);
 
-            if (!isset($row['UNREAD_TO_ME']) || is_null($row['UNREAD_TO_ME'])) {
+            if (!isset($forum_unread_post_data['UNREAD_TO_ME']) || is_null($forum_unread_post_data['UNREAD_TO_ME'])) {
                 $forum_data['UNREAD_TO_ME'] = 0;
             }else {
-                $forum_data['UNREAD_TO_ME'] = $row['UNREAD_TO_ME'];
+                $forum_data['UNREAD_TO_ME'] = $forum_unread_post_data['UNREAD_TO_ME'];
             }
 
             // Sometimes the USER_THREAD table might have a higher count that the thread
@@ -325,12 +325,12 @@ function get_my_forums($view_type, $offset)
 
             if (!$result_last_visit = db_query($sql, $db_get_my_forums)) return false;
 
-            $row = db_fetch_array($result_last_visit);
+            $user_visit_data = db_fetch_array($result_last_visit);
 
-            if (!isset($row['LAST_VISIT']) || is_null($row['LAST_VISIT'])) {
+            if (!isset($user_visit_data['LAST_VISIT']) || is_null($user_visit_data['LAST_VISIT'])) {
                 $forum_data['LAST_VISIT'] = 0;
             }else {
-                $forum_data['LAST_VISIT'] = $row['LAST_VISIT'];
+                $forum_data['LAST_VISIT'] = $user_visit_data['LAST_VISIT'];
             }
 
             $forums_array[] = $forum_data;

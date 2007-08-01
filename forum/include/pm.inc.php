@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.207 2007-07-10 15:50:38 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.208 2007-08-01 20:23:02 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -138,15 +138,19 @@ function pm_get_inbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
 {
     $db_pm_get_inbox = db_connect();
 
+    $lang = load_language_file();
+
     $sort_by_array  = array('PM.SUBJECT', 'PM.FROM_UID', 'CREATED');
     $sort_dir_array = array('ASC', 'DESC');
-
-    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (!is_numeric($offset)) $offset = false;
 
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $pm_get_inbox_array = array();
     $mid_array = array();
@@ -158,13 +162,16 @@ function pm_get_inbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
 
     if (!$result = db_query($sql, $db_pm_get_inbox)) return false;
 
-    $result_array  = db_fetch_array($result);
-    $message_count = $result_array['MESSAGE_COUNT'];
+    list($message_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT PM.MID, PM.TYPE, PM.FROM_UID, PM.TO_UID, PM.SUBJECT, ";
-    $sql.= "PM.RECIPIENTS, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, ";
-    $sql.= "FUSER.LOGON AS FLOGON, TUSER.LOGON AS TLOGON, FUSER.NICKNAME AS FNICK, ";
-    $sql.= "TUSER.NICKNAME AS TNICK FROM PM PM ";
+    $sql.= "PM.RECIPIENTS, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, FUSER.LOGON AS FLOGON, ";
+    $sql.= "TUSER.LOGON AS TLOGON, FUSER.NICKNAME AS FNICK, TUSER.NICKNAME AS TNICK, ";
+    $sql.= "USER_PEER_TO.PEER_NICKNAME AS PTNICK, USER_PEER_FROM.PEER_NICKNAME AS PFNICK FROM PM PM ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER_TO ";
+    $sql.= "ON (USER_PEER_TO.PEER_UID = PM.TO_UID AND USER_PEER_TO.UID = '$uid') ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER_FROM ";
+    $sql.= "ON (USER_PEER_FROM.PEER_UID = PM.FROM_UID AND USER_PEER_FROM.UID = '$uid') ";
     $sql.= "LEFT JOIN USER FUSER ON (PM.FROM_UID = FUSER.UID) ";
     $sql.= "LEFT JOIN USER TUSER ON (PM.TO_UID = TUSER.UID) ";
     $sql.= "WHERE (PM.TYPE & $pm_inbox_items > 0) AND PM.TO_UID = '$uid' ";
@@ -176,10 +183,28 @@ function pm_get_inbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
 
     if (db_num_rows($result) > 0) {
 
-        while ($result_array = db_fetch_array($result, DB_RESULT_ASSOC)) {
+        while ($pm_data = db_fetch_array($result, DB_RESULT_ASSOC)) {
 
-            $pm_get_inbox_array[$result_array['MID']] = $result_array;
-            $mid_array[] = $result_array['MID'];
+            if (isset($pm_data['FLOGON']) && isset($pm_data['PFNICK'])) {
+                if (!is_null($pm_data['PFNICK']) && strlen($pm_data['PFNICK']) > 0) {
+                    $pm_data['FNICK'] = $pm_data['PFNICK'];
+                }
+            }
+
+            if (isset($pm_data['TLOGON']) && isset($pm_data['PTNICK'])) {
+                if (!is_null($pm_data['PTNICK']) && strlen($pm_data['PTNICK']) > 0) {
+                    $pm_data['TNICK'] = $pm_data['PTNICK'];
+                }
+            }
+
+            if (!isset($pm_data['FLOGON'])) $pm_data['FLOGON'] = $lang['unknownuser'];
+            if (!isset($pm_data['FNICK'])) $pm_data['FNICK'] = "";
+
+            if (!isset($pm_data['TLOGON'])) $pm_data['TLOGON'] = $lang['unknownuser'];
+            if (!isset($pm_data['TNICK'])) $pm_data['TNICK'] = "";
+            
+            $pm_get_inbox_array[$pm_data['MID']] = $pm_data;
+            $mid_array[] = $pm_data['MID'];
         }
 
     }else if ($message_count > 0) {
@@ -207,15 +232,19 @@ function pm_get_outbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
 {
     $db_pm_get_outbox = db_connect();
 
+    $lang = load_language_file();
+
     $sort_by_array  = array('PM.SUBJECT', 'PM.TO_UID', 'CREATED');
     $sort_dir_array = array('ASC', 'DESC');
-
-    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (!is_numeric($offset)) $offset = false;
 
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $pm_get_outbox_array = array();
     $mid_array = array();
@@ -227,13 +256,16 @@ function pm_get_outbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
 
     if (!$result = db_query($sql, $db_pm_get_outbox)) return false;
 
-    $result_array  = db_fetch_array($result);
-    $message_count = $result_array['MESSAGE_COUNT'];
+    list($message_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT PM.MID, PM.TYPE, PM.FROM_UID, PM.TO_UID, PM.SUBJECT, ";
-    $sql.= "PM.RECIPIENTS, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, ";
-    $sql.= "FUSER.LOGON AS FLOGON, TUSER.LOGON AS TLOGON, FUSER.NICKNAME AS FNICK, ";
-    $sql.= "TUSER.NICKNAME AS TNICK FROM PM PM ";
+    $sql.= "PM.RECIPIENTS, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, FUSER.LOGON AS FLOGON, ";
+    $sql.= "TUSER.LOGON AS TLOGON, FUSER.NICKNAME AS FNICK, TUSER.NICKNAME AS TNICK, ";
+    $sql.= "USER_PEER_TO.PEER_NICKNAME AS PTNICK, USER_PEER_FROM.PEER_NICKNAME AS PFNICK FROM PM PM ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER_TO ";
+    $sql.= "ON (USER_PEER_TO.PEER_UID = PM.TO_UID AND USER_PEER_TO.UID = '$uid') ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER_FROM ";
+    $sql.= "ON (USER_PEER_FROM.PEER_UID = PM.FROM_UID AND USER_PEER_FROM.UID = '$uid') ";
     $sql.= "LEFT JOIN USER FUSER ON (PM.FROM_UID = FUSER.UID) ";
     $sql.= "LEFT JOIN USER TUSER ON (PM.TO_UID = TUSER.UID) ";
     $sql.= "WHERE (PM.TYPE & $pm_outbox_items > 0) AND PM.FROM_UID = '$uid' ";
@@ -245,10 +277,28 @@ function pm_get_outbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
 
     if (db_num_rows($result) > 0) {
 
-        while ($result_array = db_fetch_array($result, DB_RESULT_ASSOC)) {
+        while ($pm_data = db_fetch_array($result, DB_RESULT_ASSOC)) {
 
-            $pm_get_outbox_array[$result_array['MID']] = $result_array;
-            $mid_array[] = $result_array['MID'];
+            if (isset($pm_data['FLOGON']) && isset($pm_data['PFNICK'])) {
+                if (!is_null($pm_data['PFNICK']) && strlen($pm_data['PFNICK']) > 0) {
+                    $pm_data['FNICK'] = $pm_data['PFNICK'];
+                }
+            }
+
+            if (isset($pm_data['TLOGON']) && isset($pm_data['PTNICK'])) {
+                if (!is_null($pm_data['PTNICK']) && strlen($pm_data['PTNICK']) > 0) {
+                    $pm_data['TNICK'] = $pm_data['PTNICK'];
+                }
+            }
+
+            if (!isset($pm_data['FLOGON'])) $pm_data['FLOGON'] = $lang['unknownuser'];
+            if (!isset($pm_data['FNICK'])) $pm_data['FNICK'] = "";
+
+            if (!isset($pm_data['TLOGON'])) $pm_data['TLOGON'] = $lang['unknownuser'];
+            if (!isset($pm_data['TNICK'])) $pm_data['TNICK'] = "";
+
+            $pm_get_outbox_array[$pm_data['MID']] = $pm_data;
+            $mid_array[] = $pm_data['MID'];
         }
 
     }else if ($message_count > 0) {
@@ -276,15 +326,19 @@ function pm_get_sent($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
 {
     $db_pm_get_sent = db_connect();
 
+    $lang = load_language_file();
+
     $sort_by_array  = array('PM.SUBJECT', 'PM.TO_UID', 'CREATED');
     $sort_dir_array = array('ASC', 'DESC');
-
-    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (!is_numeric($offset)) $offset = false;
 
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $pm_get_sent_array = array();
     $mid_array = array();
@@ -297,13 +351,16 @@ function pm_get_sent($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
 
     if (!$result = db_query($sql, $db_pm_get_sent)) return false;
 
-    $result_array  = db_fetch_array($result);
-    $message_count = $result_array['MESSAGE_COUNT'];
+    list($message_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT PM.MID, PM.TYPE, PM.FROM_UID, PM.TO_UID, PM.SUBJECT, ";
-    $sql.= "PM.RECIPIENTS, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, ";
-    $sql.= "FUSER.LOGON AS FLOGON, TUSER.LOGON AS TLOGON, FUSER.NICKNAME AS FNICK, ";
-    $sql.= "TUSER.NICKNAME AS TNICK FROM PM PM ";
+    $sql.= "PM.RECIPIENTS, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, FUSER.LOGON AS FLOGON, ";
+    $sql.= "TUSER.LOGON AS TLOGON, FUSER.NICKNAME AS FNICK, TUSER.NICKNAME AS TNICK, ";
+    $sql.= "USER_PEER_TO.PEER_NICKNAME AS PTNICK, USER_PEER_FROM.PEER_NICKNAME AS PFNICK FROM PM PM ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER_TO ";
+    $sql.= "ON (USER_PEER_TO.PEER_UID = PM.TO_UID AND USER_PEER_TO.UID = '$uid') ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER_FROM ";
+    $sql.= "ON (USER_PEER_FROM.PEER_UID = PM.FROM_UID AND USER_PEER_FROM.UID = '$uid') ";
     $sql.= "LEFT JOIN USER FUSER ON (PM.FROM_UID = FUSER.UID) ";
     $sql.= "LEFT JOIN USER TUSER ON (PM.TO_UID = TUSER.UID) ";
     $sql.= "WHERE (PM.TYPE & $pm_sent_items > 0) AND PM.FROM_UID = '$uid' ";
@@ -315,10 +372,28 @@ function pm_get_sent($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
 
     if (db_num_rows($result) > 0) {
 
-        while ($result_array = db_fetch_array($result, DB_RESULT_ASSOC)) {
+        while ($pm_data = db_fetch_array($result, DB_RESULT_ASSOC)) {
 
-            $pm_get_sent_array[$result_array['MID']] = $result_array;
-            $mid_array[] = $result_array['MID'];
+            if (isset($pm_data['FLOGON']) && isset($pm_data['PFNICK'])) {
+                if (!is_null($pm_data['PFNICK']) && strlen($pm_data['PFNICK']) > 0) {
+                    $pm_data['FNICK'] = $pm_data['PFNICK'];
+                }
+            }
+
+            if (isset($pm_data['TLOGON']) && isset($pm_data['PTNICK'])) {
+                if (!is_null($pm_data['PTNICK']) && strlen($pm_data['PTNICK']) > 0) {
+                    $pm_data['TNICK'] = $pm_data['PTNICK'];
+                }
+            }
+
+            if (!isset($pm_data['FLOGON'])) $pm_data['FLOGON'] = $lang['unknownuser'];
+            if (!isset($pm_data['FNICK'])) $pm_data['FNICK'] = "";
+
+            if (!isset($pm_data['TLOGON'])) $pm_data['TLOGON'] = $lang['unknownuser'];
+            if (!isset($pm_data['TNICK'])) $pm_data['TNICK'] = "";
+
+            $pm_get_sent_array[$pm_data['MID']] = $pm_data;
+            $mid_array[] = $pm_data['MID'];
         }
 
     }else if ($message_count > 0) {
@@ -346,15 +421,19 @@ function pm_get_saved_items($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = 
 {
     $db_pm_get_saved_items = db_connect();
 
+    $lang = load_language_file();
+
     $sort_by_array  = array('PM.SUBJECT', 'PM.FROM_UID', 'PM.TO_UID', 'CREATED');
     $sort_dir_array = array('ASC', 'DESC');
-
-    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (!is_numeric($offset)) $offset = false;
 
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $pm_get_saved_items_array = array();
     $mid_array = array();
@@ -368,13 +447,16 @@ function pm_get_saved_items($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = 
 
     if (!$result = db_query($sql, $db_pm_get_saved_items)) return false;
 
-    $result_array  = db_fetch_array($result);
-    $message_count = $result_array['MESSAGE_COUNT'];
+    list($message_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT PM.MID, PM.TYPE, PM.FROM_UID, PM.TO_UID, PM.SUBJECT, ";
-    $sql.= "PM.RECIPIENTS, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, ";
-    $sql.= "FUSER.LOGON AS FLOGON, TUSER.LOGON AS TLOGON, FUSER.NICKNAME AS FNICK, ";
-    $sql.= "TUSER.NICKNAME AS TNICK FROM PM PM ";
+    $sql.= "PM.RECIPIENTS, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, FUSER.LOGON AS FLOGON, ";
+    $sql.= "TUSER.LOGON AS TLOGON, FUSER.NICKNAME AS FNICK, TUSER.NICKNAME AS TNICK, ";
+    $sql.= "USER_PEER_TO.PEER_NICKNAME AS PTNICK, USER_PEER_FROM.PEER_NICKNAME AS PFNICK FROM PM PM ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER_TO ";
+    $sql.= "ON (USER_PEER_TO.PEER_UID = PM.TO_UID AND USER_PEER_TO.UID = '$uid') ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER_FROM ";
+    $sql.= "ON (USER_PEER_FROM.PEER_UID = PM.FROM_UID AND USER_PEER_FROM.UID = '$uid') ";
     $sql.= "LEFT JOIN USER FUSER ON (PM.FROM_UID = FUSER.UID) ";
     $sql.= "LEFT JOIN USER TUSER ON (PM.TO_UID = TUSER.UID) ";
     $sql.= "WHERE ((PM.TYPE & $pm_saved_out > 0) AND PM.FROM_UID = '$uid') OR ";
@@ -387,10 +469,28 @@ function pm_get_saved_items($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = 
 
     if (db_num_rows($result) > 0) {
 
-        while ($result_array = db_fetch_array($result, DB_RESULT_ASSOC)) {
+        while ($pm_data = db_fetch_array($result, DB_RESULT_ASSOC)) {
 
-            $pm_get_saved_items_array[$result_array['MID']] = $result_array;
-            $mid_array[] = $result_array['MID'];
+            if (isset($pm_data['FLOGON']) && isset($pm_data['PFNICK'])) {
+                if (!is_null($pm_data['PFNICK']) && strlen($pm_data['PFNICK']) > 0) {
+                    $pm_data['FNICK'] = $pm_data['PFNICK'];
+                }
+            }
+
+            if (isset($pm_data['TLOGON']) && isset($pm_data['PTNICK'])) {
+                if (!is_null($pm_data['PTNICK']) && strlen($pm_data['PTNICK']) > 0) {
+                    $pm_data['TNICK'] = $pm_data['PTNICK'];
+                }
+            }
+
+            if (!isset($pm_data['FLOGON'])) $pm_data['FLOGON'] = $lang['unknownuser'];
+            if (!isset($pm_data['FNICK'])) $pm_data['FNICK'] = "";
+
+            if (!isset($pm_data['TLOGON'])) $pm_data['TLOGON'] = $lang['unknownuser'];
+            if (!isset($pm_data['TNICK'])) $pm_data['TNICK'] = "";
+
+            $pm_get_saved_items_array[$pm_data['MID']] = $pm_data;
+            $mid_array[] = $pm_data['MID'];
         }
 
     }else if ($message_count > 0) {
@@ -418,15 +518,19 @@ function pm_get_drafts($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
 {
     $db_pm_get_drafts = db_connect();
 
+    $lang = load_language_file();
+
     $sort_by_array  = array('PM.SUBJECT', 'PM.TO_UID', 'CREATED');
     $sort_dir_array = array('ASC', 'DESC');
-
-    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (!is_numeric($offset)) $offset = false;
 
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $pm_get_drafts_array = array();
     $mid_array = array();
@@ -438,13 +542,16 @@ function pm_get_drafts($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
 
     if (!$result = db_query($sql, $db_pm_get_drafts)) return false;
 
-    $result_array  = db_fetch_array($result);
-    $message_count = $result_array['MESSAGE_COUNT'];
+    list($message_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT PM.MID, PM.TYPE, PM.FROM_UID, PM.TO_UID, PM.SUBJECT, ";
-    $sql.= "PM.RECIPIENTS, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, ";
-    $sql.= "FUSER.LOGON AS FLOGON, TUSER.LOGON AS TLOGON, FUSER.NICKNAME AS FNICK, ";
-    $sql.= "TUSER.NICKNAME AS TNICK FROM PM PM ";
+    $sql.= "PM.RECIPIENTS, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, FUSER.LOGON AS FLOGON, ";
+    $sql.= "TUSER.LOGON AS TLOGON, FUSER.NICKNAME AS FNICK, TUSER.NICKNAME AS TNICK, ";
+    $sql.= "USER_PEER_TO.PEER_NICKNAME AS PTNICK, USER_PEER_FROM.PEER_NICKNAME AS PFNICK FROM PM PM ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER_TO ";
+    $sql.= "ON (USER_PEER_TO.PEER_UID = PM.TO_UID AND USER_PEER_TO.UID = '$uid') ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER_FROM ";
+    $sql.= "ON (USER_PEER_FROM.PEER_UID = PM.FROM_UID AND USER_PEER_FROM.UID = '$uid') ";
     $sql.= "LEFT JOIN USER FUSER ON (PM.FROM_UID = FUSER.UID) ";
     $sql.= "LEFT JOIN USER TUSER ON (PM.TO_UID = TUSER.UID) ";
     $sql.= "WHERE (PM.TYPE & $pm_draft_items > 0) AND PM.FROM_UID = '$uid' ";
@@ -456,10 +563,28 @@ function pm_get_drafts($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
 
     if (db_num_rows($result) > 0) {
 
-        while ($result_array = db_fetch_array($result, DB_RESULT_ASSOC)) {
+        while ($pm_data = db_fetch_array($result, DB_RESULT_ASSOC)) {
 
-            $pm_get_drafts_array[$result_array['MID']] = $result_array;
-            $mid_array[] = $result_array['MID'];
+            if (isset($pm_data['FLOGON']) && isset($pm_data['PFNICK'])) {
+                if (!is_null($pm_data['PFNICK']) && strlen($pm_data['PFNICK']) > 0) {
+                    $pm_data['FNICK'] = $pm_data['PFNICK'];
+                }
+            }
+
+            if (isset($pm_data['TLOGON']) && isset($pm_data['PTNICK'])) {
+                if (!is_null($pm_data['PTNICK']) && strlen($pm_data['PTNICK']) > 0) {
+                    $pm_data['TNICK'] = $pm_data['PTNICK'];
+                }
+            }
+
+            if (!isset($pm_data['FLOGON'])) $pm_data['FLOGON'] = $lang['unknownuser'];
+            if (!isset($pm_data['FNICK'])) $pm_data['FNICK'] = "";
+
+            if (!isset($pm_data['TLOGON'])) $pm_data['TLOGON'] = $lang['unknownuser'];
+            if (!isset($pm_data['TNICK'])) $pm_data['TNICK'] = "";
+
+            $pm_get_drafts_array[$pm_data['MID']] = $pm_data;
+            $mid_array[] = $pm_data['MID'];
         }
 
     }else if ($message_count > 0) {
@@ -552,8 +677,8 @@ function pm_fetch_search_results ($sort_by = 'CREATED', $sort_dir = 'DESC', $off
 {
     $db_pm_fetch_search_results = db_connect();
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
-    
+    $lang = load_language_file();
+
     $sort_by_array  = array('PM.SUBJECT', 'TYPE', 'PM.FROM_UID', 'PM.TO_UID', 'CREATED');
     $sort_dir_array = array('ASC', 'DESC');
 
@@ -561,6 +686,10 @@ function pm_fetch_search_results ($sort_by = 'CREATED', $sort_dir = 'DESC', $off
 
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $pm_search_results_array = array();
     $mid_array = array();
@@ -580,7 +709,12 @@ function pm_fetch_search_results ($sort_by = 'CREATED', $sort_dir = 'DESC', $off
         $sql.= "PM_SEARCH_RESULTS.RECIPIENTS, PM_SEARCH_RESULTS.SUBJECT, ";
         $sql.= "UNIX_TIMESTAMP(PM_SEARCH_RESULTS.CREATED) AS CREATED, ";
         $sql.= "FUSER.LOGON AS FLOGON, TUSER.LOGON AS TLOGON, FUSER.NICKNAME AS FNICK, ";
-        $sql.= "TUSER.NICKNAME AS TNICK FROM PM_SEARCH_RESULTS ";
+        $sql.= "TUSER.NICKNAME AS TNICK, USER_PEER_TO.PEER_NICKNAME AS PTNICK, ";
+        $sql.= "USER_PEER_FROM.PEER_NICKNAME AS PFNICK FROM PM_SEARCH_RESULTS ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER_TO ";
+        $sql.= "ON (USER_PEER_TO.PEER_UID = PM_SEARCH_RESULTS.TO_UID AND USER_PEER_TO.UID = '$uid') ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER_FROM ";
+        $sql.= "ON (USER_PEER_FROM.PEER_UID = PM_SEARCH_RESULTS.FROM_UID AND USER_PEER_FROM.UID = '$uid') ";
         $sql.= "LEFT JOIN PM ON (PM.MID = PM_SEARCH_RESULTS.MID) ";
         $sql.= "LEFT JOIN USER FUSER ON (PM_SEARCH_RESULTS.FROM_UID = FUSER.UID) ";
         $sql.= "LEFT JOIN USER TUSER ON (PM_SEARCH_RESULTS.TO_UID = TUSER.UID) ";
@@ -592,10 +726,28 @@ function pm_fetch_search_results ($sort_by = 'CREATED', $sort_dir = 'DESC', $off
 
         if (db_num_rows($result) > 0) {
 
-            while ($result_array = db_fetch_array($result, DB_RESULT_ASSOC)) {
+            while ($pm_data = db_fetch_array($result, DB_RESULT_ASSOC)) {
 
-                $pm_search_results_array[$result_array['MID']] = $result_array;
-                $mid_array[] = $result_array['MID'];
+                if (isset($pm_data['FLOGON']) && isset($pm_data['PFNICK'])) {
+                    if (!is_null($pm_data['PFNICK']) && strlen($pm_data['PFNICK']) > 0) {
+                        $pm_data['FNICK'] = $pm_data['PFNICK'];
+                    }
+                }
+
+                if (isset($pm_data['TLOGON']) && isset($pm_data['PTNICK'])) {
+                    if (!is_null($pm_data['PTNICK']) && strlen($pm_data['PTNICK']) > 0) {
+                        $pm_data['TNICK'] = $pm_data['PTNICK'];
+                    }
+                }
+
+                if (!isset($pm_data['FLOGON'])) $pm_data['FLOGON'] = $lang['unknownuser'];
+                if (!isset($pm_data['FNICK'])) $pm_data['FNICK'] = "";
+
+                if (!isset($pm_data['TLOGON'])) $pm_data['TLOGON'] = $lang['unknownuser'];
+                if (!isset($pm_data['TNICK'])) $pm_data['TNICK'] = "";
+
+                $pm_search_results_array[$pm_data['MID']] = $pm_data;
+                $mid_array[] = $pm_data['MID'];
             }
 
             pms_have_attachments($pm_search_results_array, $mid_array);
@@ -745,20 +897,19 @@ function pm_get_user($mid)
 
     if (!is_numeric($mid)) return false;
 
-    $sql = "SELECT USER.LOGON FROM PM PM ";
+    $sql = "SELECT USER.LOGON FROM PM ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = PM.FROM_UID) ";
-    $sql.= "WHERE PM.MID = '$mid'";
+    $sql.= "WHERE PM.MID = '$mid' AND USER.UID IS NOT NULL";
 
     if (!$result = db_query($sql, $db_pm_get_user)) return false;
 
-    if ($result) {
-        $fa = db_fetch_array($result);
-        $logon = $fa['LOGON'];
-    } else {
-        $logon = "";
+    if (db_num_rows($result) > 0) {
+        
+        list($logon) = db_fetch_array($result);
+        return $logon;
     }
 
-    return $logon;
+    return false;
 }
 
 /**
@@ -772,6 +923,8 @@ function pm_get_user($mid)
 function pm_user_get_friends()
 {
     $db_pm_user_get_friends = db_connect();
+
+    $lang = load_language_file();
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -793,23 +946,27 @@ function pm_user_get_friends()
 
     if (db_num_rows($result) > 0) {
 
-        while ($row = db_fetch_array($result)) {
+        while ($user_data = db_fetch_array($result)) {
 
-            if (isset($row['PEER_NICKNAME'])) {
-                if (!is_null($row['PEER_NICKNAME']) && strlen($row['PEER_NICKNAME']) > 0) {
-                    $row['NICKNAME'] = $row['PEER_NICKNAME'];
+            if (isset($user_data['LOGON'])) {
+            
+                if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
+                    if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
+                        $user_data['NICKNAME'] = $user_data['PEER_NICKNAME'];
+                    }
                 }
-            }
 
-            $user_get_peers_array[$row['UID']] = word_filter_add_ob_tags(format_user_name($row['LOGON'], $row['NICKNAME']));
+                if (!isset($user_data['LOGON'])) $user_data['LOGON'] = $lang['unknownuser'];
+                if (!isset($user_data['NICKNAME'])) $user_data['NICKNAME'] = "";
+
+                $user_get_peers_array[$user_data['UID']] = word_filter_add_ob_tags(format_user_name($user_data['LOGON'], $user_data['NICKNAME']));
+            }
         }
 
         return $user_get_peers_array;
-
-    }else {
-
-        return false;
     }
+
+    return false;
 }
 
 /**
@@ -836,8 +993,8 @@ function pm_get_subject($mid, $tuid)
 
     if (db_num_rows($result) > 0) {
 
-        $row = db_fetch_array($result);
-        return $row['SUBJECT'];
+        $pm_data = db_fetch_array($result);
+        return $pm_data['SUBJECT'];
     }
 
     return false;
@@ -856,6 +1013,8 @@ function pm_get_subject($mid, $tuid)
 function pm_message_get($mid)
 {
     $db_pm_message_get = db_connect();
+
+    $lang = load_language_file();
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
@@ -1648,9 +1807,9 @@ function pm_get_new_messages($limit)
 
         $pm_new_message_array = array();
         
-        while ($row = db_fetch_array($result)) {
+        while ($pm_data = db_fetch_array($result)) {
 
-            $pm_new_message_array[$row['MID']] = $row;
+            $pm_new_message_array[$pm_data['MID']] = $pm_data;
         }
 
         return $pm_new_message_array;
@@ -1880,9 +2039,9 @@ function pms_have_attachments(&$pm_array, $mid_array)
 
     if (!$result = db_query($sql, $db_thread_has_attachments)) return false;
 
-    while ($row = db_fetch_array($result)) {
+    while ($pm_attachment_data = db_fetch_array($result)) {
 
-        $pm_array[$row['MID']]['AID'] = $row['AID'];
+        $pm_array[$pm_attachment_data['MID']]['AID'] = $pm_attachment_data['AID'];
     }
 }
 

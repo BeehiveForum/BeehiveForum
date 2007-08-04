@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.237 2007-07-17 20:49:37 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.238 2007-08-04 22:32:13 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -50,7 +50,7 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 function html_guest_error()
 {
      $frame_top_target = html_get_top_frame_name();
-     
+
      $lang = load_language_file();
 
      $final_uri = basename(get_request_uri());
@@ -62,14 +62,14 @@ function html_guest_error()
 
 function html_error_msg($error_msg, $href = false, $method = 'get', $button_array = false, $var_array = false, $target = "_self", $align = "left")
 {
-     $lang = load_language_file();     
+     $lang = load_language_file();
      html_display_msg($lang['error'], $error_msg, $href, $method, $button_array, $var_array, $target, $align);
 }
 
 function html_display_msg($header_text, $string_msg, $href = false, $method = 'get', $button_array = false, $var_array = false, $target = "_self", $align = "left")
 {
     $webtag = get_webtag($webtag_search);
-    
+
     $lang = load_language_file();
 
     $available_methods = array('get', 'post');
@@ -77,7 +77,7 @@ function html_display_msg($header_text, $string_msg, $href = false, $method = 'g
 
     $available_alignments = array('left', 'center', 'right');
     if (!in_array($align, $available_alignments)) $align = 'left';
-    
+
     echo "<h1>$header_text</h1>\n";
     echo "<br />\n";
 
@@ -128,7 +128,7 @@ function html_display_msg($header_text, $string_msg, $href = false, $method = 'g
     if (($href !== false) && strlen(trim($href)) > 0) {
 
         $button_html_array = array();
-        
+
         if (is_array($button_array) && sizeof($button_array) > 0) {
 
             foreach($button_array as $button_name => $button_label) {
@@ -164,7 +164,7 @@ function html_user_banned()
     html_error_msg($lang['error'], 'HTTP/1.0 500 Internal Server Error');
     html_draw_bottom();
     exit;
-}   
+}
 
 function html_user_require_approval()
 {
@@ -243,13 +243,13 @@ function html_get_style_sheet()
     }
 
     if ($user_style !== false) {
-        
+
         if (@is_dir("styles/$user_style") && @file_exists("styles/$user_style/$script_filename.css")) {
 
             $modified_time = date('YmdHis', filemtime("styles/$user_style/$script_filename.css"));
             return "styles/$user_style/$script_filename.css?$modified_time";
         }
-        
+
         if (@is_dir("styles/$user_style") && @file_exists("styles/$user_style/style.css")) {
 
             $modified_time = date('YmdHis', filemtime("styles/$user_style/style.css"));
@@ -261,9 +261,9 @@ function html_get_style_sheet()
             $modified_time = date('YmdHis', filemtime("forums/$webtag/styles/$user_style/$script_filename.css"));
             return "forums/$webtag/styles/$user_style/$script_filename.css?$modified_time";
         }
-                     
+
         if (@is_dir("forums/$webtag/styles/$user_style") && @file_exists("forums/$webtag/styles/$user_style/style.css")) {
-            
+
             $modified_time = date('YmdHis', filemtime("forums/$webtag/styles/$user_style/style.css"));
             return "forums/$webtag/styles/$user_style/style.css?$modified_time";
         }
@@ -272,14 +272,14 @@ function html_get_style_sheet()
     if ($webtag !== false) {
 
         if (@is_dir("forums/$webtag") && @file_exists("forums/$webtag/style.css")) {
-            
+
             $modified_time = date('YmdHis', filemtime("./forums/$webtag/style.css"));
             return "forums/$webtag/style.css?$modified_time";
         }
     }
 
     if (@is_dir("styles") && @file_exists("styles/style.css")) {
-        
+
         $modified_time = date('YmdHis', filemtime("./styles/style.css"));
         return "styles/style.css?$modified_time";
     }
@@ -360,13 +360,13 @@ function html_get_forum_email()
 function html_get_frame_name($basename)
 {
     // Forum URL
-    
+
     $forum_uri = html_get_forum_uri();
-   
+
     // If webtag available add that to the hash.
-    
+
     if ($webtag = get_webtag($webtag_search)) {
-        
+
         $frame_md5_hash = md5(sprintf('%s-%s-%s', $forum_uri, $webtag, $basename));
         return sprintf('bh_frame_%s', preg_replace('/[^a-z]+/i', '', $frame_md5_hash));
     }
@@ -639,15 +639,15 @@ function html_draw_top()
     }
 
     if ($include_body_tag === true) {
-    
+
         // Check for any new PMs.
-        
+
         if (!user_is_guest()) {
 
             // Get the new pm count and waiting pm count.
 
             pm_new_check($pm_new_count, $pm_outbox_count);
-        
+
             // Pages we don't want the popup to appear on
 
             $pm_popup_disabled_pages = array('admin.php', 'discussion.php', 'index.php',
@@ -695,7 +695,7 @@ function html_draw_top()
                     $pm_notification = sprintf($lang['youhavexpmwaiting'], $pm_outbox_count);
                 }
 
-                if ($pm_notification !== false) {                
+                if ($pm_notification !== false) {
 
                     echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
                     echo "<!--\n\n";
@@ -725,7 +725,7 @@ function html_draw_top()
                                         'edit_poll.php', 'edit_signature.php',
                                         'messages.php', 'post.php', 'pm_write.php',
                                         'pm_edit.php', 'pm_messages.php');
-        
+
             if (in_array(basename($_SERVER['PHP_SELF']), $resize_images_page)) {
 
                 if (bh_session_get_value('USE_OVERFLOW_RESIZE') == 'Y') {
@@ -737,12 +737,12 @@ function html_draw_top()
                 }
             }
 
-            // Mouseover spoiler pages            
+            // Mouseover spoiler pages
 
             $message_display_pages = array('admin_post_approve.php', 'create_poll.php',
-                                           'delete.php', 'display.php', 'edit.php', 
-                                           'edit_poll.php', 'edit_signature.php', 
-                                           'ldisplay.php', 'lmessages.php', 
+                                           'delete.php', 'display.php', 'edit.php',
+                                           'edit_poll.php', 'edit_signature.php',
+                                           'ldisplay.php', 'lmessages.php',
                                            'lpost.php', 'messages.php', 'post.php');
 
             if (in_array(basename($_SERVER['PHP_SELF']), $message_display_pages)) {
@@ -760,7 +760,7 @@ function html_draw_top()
 
     reset($arg_array);
 
-    $modified_time = date('YmdHis', filemtime("js/general.js"));    
+    $modified_time = date('YmdHis', filemtime("js/general.js"));
     echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"./js/general.js?$modified_time\"></script>\n";
 
     foreach($arg_array as $func_args) {
@@ -774,7 +774,7 @@ function html_draw_top()
                 echo TinyMCE();
 
             }else {
-                
+
                 $modified_time = date('YmdHis', filemtime("js/{$func_args}"));
                 echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"./js/{$func_args}?$modified_time\"></script>\n";
             }
@@ -888,34 +888,40 @@ function bh_remove_all_cookies()
 
     // Remove logon tracking and session cookies
 
-    setcookie("bh_logon_failed", "", time() - YEAR_IN_SECONDS);
-    setcookie("bh_sess_hash", "", time() - YEAR_IN_SECONDS);
-    setcookie("bh_logon", "", time() - YEAR_IN_SECONDS);
+    bh_setcookie("bh_logon_failed", "", time() - YEAR_IN_SECONDS);
+    bh_setcookie("bh_sess_hash", "", time() - YEAR_IN_SECONDS);
+    bh_setcookie("bh_logon", "", time() - YEAR_IN_SECONDS);
 
-    // Remove the saved saved logon cookies
+    // Remove the old saved logon cookies
 
     for ($i = 0; $i < sizeof($username_array); $i++) {
 
-        bh_setcookie("bh_remember_username[$i]", '', time() - YEAR_IN_SECONDS);
-        bh_setcookie("bh_remember_password[$i]", '', time() - YEAR_IN_SECONDS);
-        bh_setcookie("bh_remember_passhash[$i]", '', time() - YEAR_IN_SECONDS);
+        bh_setcookie("bh_remember_username[$i]", "", time() - YEAR_IN_SECONDS);
+        bh_setcookie("bh_remember_password[$i]", "", time() - YEAR_IN_SECONDS);
+        bh_setcookie("bh_remember_passhash[$i]", "", time() - YEAR_IN_SECONDS);
     }
+
+    // The newer cookie format.
+
+    bh_setcookie("bh_remember_username", "", time() - YEAR_IN_SECONDS);
+    bh_setcookie("bh_remember_password", "", time() - YEAR_IN_SECONDS);
+    bh_setcookie("bh_remember_passhash", "", time() - YEAR_IN_SECONDS);
 
     // Remove the light mode saved logon cookies.
 
-    setcookie("bh_light_remember_username", "", time() - YEAR_IN_SECONDS);
-    setcookie("bh_light_remember_password", "", time() - YEAR_IN_SECONDS);
-    setcookie("bh_light_remember_passhash", "", time() - YEAR_IN_SECONDS);
+    bh_setcookie("bh_light_remember_username", "", time() - YEAR_IN_SECONDS);
+    bh_setcookie("bh_light_remember_password", "", time() - YEAR_IN_SECONDS);
+    bh_setcookie("bh_light_remember_passhash", "", time() - YEAR_IN_SECONDS);
 
     if ($webtag_array = forum_get_all_webtags()) {
 
         foreach ($webtag_array as $fid => $forum_webtag) {
 
-            setcookie("bh_{$forum_webtag}_thread_mode", "", time() - YEAR_IN_SECONDS);
-            setcookie("bh_{$forum_webtag}_password", "", time() - YEAR_IN_SECONDS);
+            bh_setcookie("bh_{$forum_webtag}_thread_mode", "", time() - YEAR_IN_SECONDS);
+            bh_setcookie("bh_{$forum_webtag}_password", "", time() - YEAR_IN_SECONDS);
         }
     }
-}    
+}
 
 // Remove named $keys from the query of a URI
 // $keys can be an array or a single key to remove
@@ -932,13 +938,13 @@ function href_cleanup_query_keys($uri, $remove_keys = false, $seperator = "&amp;
         $uri_query_values = array();
 
         flatten_array($uri_query_array, $uri_query_keys, $uri_query_values);
-        
+
         $new_uri_query_array = array();
 
         foreach ($uri_query_keys as $key => $key_name) {
-        
+
             if (strlen($key_name) > 0) {
-            
+
                 if (!isset($uri_query_values[$key])) {
                     $uri_query_values[$key] = "";
                 }

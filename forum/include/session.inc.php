@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.312 2007-08-01 20:23:03 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.313 2007-08-04 22:32:13 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -88,7 +88,7 @@ function bh_session_check($show_session_fail = true, $use_sess_hash = false)
     if (!is_bool($use_sess_hash) && is_md5($use_sess_hash)) {
 
         $user_hash = $use_sess_hash;
-    
+
     }elseif (isset($_COOKIE['bh_sess_hash']) && is_md5($_COOKIE['bh_sess_hash'])) {
 
         $user_hash = $_COOKIE['bh_sess_hash'];
@@ -114,15 +114,15 @@ function bh_session_check($show_session_fail = true, $use_sess_hash = false)
         $sql.= "UNIX_TIMESTAMP(USER.APPROVED) AS APPROVED, USER.LOGON, USER.NICKNAME, ";
         $sql.= "USER.EMAIL,USER.PASSWD FROM SESSIONS SESSIONS ";
         $sql.= "LEFT JOIN USER ON (USER.UID = SESSIONS.UID) ";
-        $sql.= "WHERE SESSIONS.HASH = '$user_hash' ";
-        $sql.= "AND USER.UID IS NOT NULL ";
+        $sql.= "WHERE (USER.UID IS NOT NULL OR SESSIONS.UID = '0') ";
+        $sql.= "AND SESSIONS.HASH = '$user_hash'";
 
         if (!$result = db_query($sql, $db_bh_session_check)) return false;
 
         if (db_num_rows($result) > 0) {
 
             // Fetch the session data from the database
-            
+
             $user_sess = db_fetch_array($result, DB_RESULT_ASSOC);
 
             // If the session belongs to a guest pass control to bh_guest_session_init();
@@ -150,12 +150,12 @@ function bh_session_check($show_session_fail = true, $use_sess_hash = false)
             // simply update the user's time and IP address.
 
             if (isset($user_sess['FID']) && is_numeric($user_sess['FID']) && $user_sess['FID'] != $forum_fid) {
-                
+
                 $sql = "UPDATE SESSIONS SET FID = '$forum_fid', TIME = NOW(), ";
                 $sql.= "IPADDRESS = '$ipaddress' WHERE HASH = '$user_hash'";
 
                 if (!$result = db_query($sql, $db_bh_session_check)) return false;
-                
+
                 bh_update_visitor_log($user_sess['UID'], $forum_fid);
 
                 forum_update_last_visit($user_sess['UID']);
@@ -169,7 +169,7 @@ function bh_session_check($show_session_fail = true, $use_sess_hash = false)
             }
 
             // A unique MD5 has for some purposes (word filter, etc)
-            
+
             $user_sess['RAND_HASH'] = md5(uniqid(rand()));
 
             // Forum self-preservation functions. Each page load
@@ -213,9 +213,9 @@ function bh_session_expired()
     $webtag = get_webtag($webtag_search);
 
     $lang = load_language_file();
-    
+
     if (defined("BEEHIVEMODE_LIGHT")) {
-        
+
         $final_uri = rawurlencode(get_request_uri());
         header_redirect("./llogon.php?webtag=$webtag&final_uri=$final_uri");
     }
@@ -225,13 +225,13 @@ function bh_session_expired()
         if (logon_perform(false)) {
 
             logon_unset_post_data();
-                        
+
             $request_uri = get_request_uri(true, false);
 
             if (isset($_POST) && is_array($_POST) && sizeof($_POST) > 0) {
-            
+
                 html_draw_top('logon.js');
-                
+
                 echo "<h1>{$lang['loggedinsuccessfully']}</h1>";
 
                 $top_html = html_get_top_page();
@@ -260,7 +260,7 @@ function bh_session_expired()
                 echo form_input_hidden('webtag', _htmlentities($webtag));
 
                 $ignore_keys = array('user_logon', 'user_password', 'user_passhash', 'remember_user', 'webtag');
-                
+
                 echo form_input_hidden_array(_stripslashes($_POST), $ignore_keys);
 
                 echo form_submit('continue', $lang['continue']), "&nbsp;";
@@ -312,12 +312,12 @@ function bh_guest_session_init($use_sess_hash = false, $update_visitor_log = tru
     if (!is_bool($use_sess_hash) && is_md5($use_sess_hash)) {
 
         $user_hash = $use_sess_hash;
-    
+
     }else {
 
         $user_hash = md5($ipaddress);
     }
-    
+
     if (user_guest_enabled()) {
 
         // Guest user sessions are handled a bit differently.
@@ -348,7 +348,7 @@ function bh_guest_session_init($use_sess_hash = false, $update_visitor_log = tru
             $user_sess['PERMS'] = bh_session_get_perm_array(0);
 
             // A unique MD5 has for some purposes (word filter, etc)
-            
+
             $user_sess['RAND_HASH'] = md5(uniqid(rand()));
 
             // If the user isn't currently in the same forum we
@@ -357,14 +357,14 @@ function bh_guest_session_init($use_sess_hash = false, $update_visitor_log = tru
             // simply update the user's time and IP address.
 
             if ($user_sess['FID'] != $forum_fid) {
-                
+
                 $ipaddress = db_escape_string($ipaddress);
-                
+
                 $sql = "UPDATE SESSIONS SET FID = '$forum_fid', TIME = NOW(), ";
                 $sql.= "IPADDRESS = '$ipaddress' WHERE HASH = '$user_hash'";
 
                 if (!$result = db_query($sql, $db_bh_guest_session_init)) return false;
-                
+
                 bh_update_visitor_log(0, $forum_fid, true);
 
             }else {
@@ -380,7 +380,7 @@ function bh_guest_session_init($use_sess_hash = false, $update_visitor_log = tru
         }else {
 
             // HTTP referer
-        
+
             $http_referer = bh_session_get_referer();
 
             // Session array of default values.
@@ -429,9 +429,9 @@ function bh_guest_session_init($use_sess_hash = false, $update_visitor_log = tru
                 if (!bh_remove_stale_sessions()) {
 
                     if (!visitor_log_clean_up()) {
-                    
+
                         if (!captcha_clean_up()) {
-                    
+
                             thread_auto_prune_unread_data();
                         }
                     }
@@ -439,7 +439,7 @@ function bh_guest_session_init($use_sess_hash = false, $update_visitor_log = tru
             }
         }
 
-        return $user_sess;        
+        return $user_sess;
     }
 
     return false;
@@ -524,15 +524,15 @@ function bh_remove_stale_sessions()
             if (!$result = db_query($sql, $db_bh_remove_stale_sessions)) return false;
 
             while ($session_data = db_fetch_array($result)) {
-                
+
                 bh_update_user_time($session_data['UID']);
                 $expired_sessions_array[] = $session_data['HASH'];
-            }            
+            }
 
             if (sizeof($expired_sessions_array) > 0) {
-            
+
                 $expired_sessions = implode("', '", $expired_sessions_array);
-                
+
                 $sql = "DELETE FROM SESSIONS WHERE HASH IN ('$expired_sessions') ";
                 $sql.= "AND TIME < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $session_cutoff) ";
 
@@ -594,7 +594,7 @@ function bh_update_visitor_log($uid, $forum_fid = false, $force_update = false)
 
         if ($result = db_query($sql, $db_bh_update_visitor_log)) return true;
 
-    }else {
+    }elseif (!user_cookies_set()) {
 
         $http_referer = db_escape_string(bh_session_get_referer());
         $ipaddress = db_escape_string($ipaddress);
@@ -663,7 +663,7 @@ function bh_update_user_time($uid)
     $db_bh_update_user_time = db_connect();
 
     $active_sess_cutoff = intval(forum_get_setting('active_sess_cutoff', false, 900));
-        
+
     $sql = "SELECT UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
     $sql.= "UNIX_TIMESTAMP(USER_TRACK.USER_TIME_BEST) AS USER_TIME_BEST, ";
     $sql.= "UNIX_TIMESTAMP(USER_TRACK.USER_TIME_TOTAL) AS USER_TIME_TOTAL, ";
@@ -679,7 +679,7 @@ function bh_update_user_time($uid)
     if (db_num_rows($result) > 0) {
 
         // Fetch the existing data from the database.
-        
+
         $user_track = db_fetch_array($result);
 
         // Initialise our update array for updating the database.
@@ -733,7 +733,7 @@ function bh_update_user_time($uid)
         // If the user doesn't have a USER_TIME_UPDATED set then we need
         // to calculate the difference between TIME and LAST_LOGON and
         // set USER_TIME_UPDATED to some value.
-        // 
+        //
         // If the user's LAST_LOGON is newer than USER_TIME_UPDATED then
         // they have just logged on and we need to calculate the difference
         // between TIME and LAST_LOGON.
@@ -773,7 +773,7 @@ function bh_update_user_time($uid)
 
             // We need to have something to update otherwise
             // the query won't work and MySQL will generate
-            // an error which we don't want.            
+            // an error which we don't want.
 
             if (sizeof($update_columns_array) > 0) {
 
@@ -835,7 +835,7 @@ function bh_session_init($uid, $update_visitor_log = true, $skip_cookie = false)
     $http_referer = bh_session_get_referer();
 
     // Delete any guest sessions this user might have.
-    
+
     $user_hash = md5($ipaddress);
 
     $sql = "DELETE FROM SESSIONS WHERE HASH = '$user_hash'";
@@ -856,7 +856,7 @@ function bh_session_init($uid, $update_visitor_log = true, $skip_cookie = false)
     }else {
 
         $user_hash = md5(uniqid(rand()));
-        
+
         $ipaddress = db_escape_string($ipaddress);
         $http_referer = db_escape_string($http_referer);
 
@@ -868,7 +868,7 @@ function bh_session_init($uid, $update_visitor_log = true, $skip_cookie = false)
     }
 
     if ($update_visitor_log === true) {
-    
+
         bh_update_visitor_log($uid);
         forum_update_last_visit($uid);
     }
@@ -893,7 +893,7 @@ function bh_session_remove_cookies()
     $webtag = get_webtag($webtag_search);
 
     // Unset the session cookies.
-    
+
     bh_setcookie('bh_sess_hash', '', time() - YEAR_IN_SECONDS);
     bh_setcookie('bh_logon', '', time() - YEAR_IN_SECONDS);
 
@@ -932,7 +932,7 @@ function bh_session_end($remove_cookies = true)
 
         // If the user isn't a guest we should update how long
         // they have been actively logged in.
-        
+
         if ($uid > 0) bh_update_user_time($uid);
 
         // Remove the user session.
@@ -984,9 +984,9 @@ function bh_session_get_perm_array($uid)
         if (!$result = db_query($sql, $db_bh_session_get_perm_array)) return false;
 
         if (db_num_rows($result) > 0) {
-            
+
             if (!is_array($user_perm_array)) $user_perm_array = array();
-            
+
             while ($permission_data = db_fetch_array($result)) {
 
                 if ($permission_data['USER_PERM_COUNT'] > 0) {
@@ -1003,13 +1003,13 @@ function bh_session_get_perm_array($uid)
         if (!$result = db_query($sql, $db_bh_session_get_perm_array)) return false;
 
         if (db_num_rows($result) > 0) {
-            
+
             if (!is_array($user_perm_array)) $user_perm_array = array();
-            
+
             while ($permission_data = db_fetch_array($result)) {
 
                 if (!isset($user_perm_array[$permission_data['FORUM']][$uid][$permission_data['FID']])) {
-                
+
                     $user_perm_array[$permission_data['FORUM']][$uid][$permission_data['FID']] = $permission_data['PERM'];
                 }
 
@@ -1243,7 +1243,7 @@ function parse_array($array, $sep, &$result_var)
     flatten_array($array, $array_keys, $array_values);
 
     foreach ($array_keys as $key => $key_name) {
-        
+
         if (($key_name != 'webtag') && isset($array_values[$key])) {
 
             $array_values[$key] = urlencode($array_values[$key]);
@@ -1302,11 +1302,11 @@ function get_request_uri($include_webtag = true, $encoded_uri_query = true)
     // Remove trailing question mark / & / &amp;
 
     $request_uri = preg_replace("/\?$|&$|&amp;$/", "", $request_uri);
-    
+
     // Fix the slashes for forum running from sub-domain.
     // Rather dirty hack this, but it's the only idea I've got.
     // Any suggestions are welcome on how to handle this better.
-    
+
     return preg_replace("/\/\/+/", "/", $request_uri);
 }
 
@@ -1335,13 +1335,13 @@ function bh_session_get_post_page_prefs()
 function bh_session_is_search_engine()
 {
     $db_bh_session_is_search_engine = db_connect();
-        
+
     if (!$table_data = get_table_prefix()) return false;
 
     if (isset($_SERVER['HTTP_USER_AGENT']) && strlen(trim($_SERVER['HTTP_USER_AGENT'])) > 0) {
 
         $http_user_agent = db_escape_string($_SERVER['HTTP_USER_AGENT']);
-    
+
         $sql = "SELECT SID FROM SEARCH_ENGINE_BOTS ";
         $sql.= "WHERE  '$http_user_agent' LIKE AGENT_MATCH ";
 
@@ -1367,7 +1367,7 @@ function bh_session_get_referer()
             $forum_uri_preg = preg_quote(html_get_forum_uri(), '/');
 
             if (preg_match("/^$forum_uri_preg/i", $http_referer) > 0) $http_referer = "";
-             
+
         }else {
 
             $http_referer = "";

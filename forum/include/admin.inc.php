@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.125 2007-08-01 20:23:01 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.126 2007-08-04 22:32:13 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -390,14 +390,14 @@ function admin_update_word_filter($filter_id, $filter_name, $match_text, $replac
 * @param integer $offset - Offset of the rows returned by the query
 */
 
-function admin_user_search($user_search, $sort_by = 'VISITOR_LOG.LAST_LOGON', $sort_dir = 'DESC', $filter = ADMIN_USER_FILTER_NONE, $offset = 0)
+function admin_user_search($user_search, $sort_by = 'USER_FORUM.LAST_VISIT', $sort_dir = 'DESC', $filter = ADMIN_USER_FILTER_NONE, $offset = 0)
 {
     $db_admin_user_search = db_connect();
 
-    $sort_by_array  = array('USER.UID', 'USER.LOGON', 'VISITOR_LOG.LAST_LOGON', 'USER.REGISTERED', 'SESSIONS.REFERER');
+    $sort_by_array  = array('USER.UID', 'USER.LOGON', 'USER_FORUM.LAST_VISIT', 'USER.REGISTERED', 'SESSIONS.REFERER');
     $sort_dir_array = array('ASC', 'DESC');
 
-    if (!in_array($sort_by, $sort_by_array)) $sort_by = 'VISITOR_LOG.LAST_LOGON';
+    if (!in_array($sort_by, $sort_by_array)) $sort_by = 'USER_FORUM.LAST_VISIT';
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'ASC';
 
     if (!is_numeric($offset)) $offset = 0;
@@ -491,13 +491,13 @@ function admin_user_search($user_search, $sort_by = 'VISITOR_LOG.LAST_LOGON', $s
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, SESSIONS.HASH, ";
     $sql.= "SESSIONS.REFERER, UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, ";
-    $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM USER ";
+    $sql.= "UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT) AS LAST_VISIT FROM USER ";
     $sql.= "LEFT JOIN SESSIONS ON (SESSIONS.UID = USER.UID) ";
     $sql.= "LEFT JOIN GROUP_USERS ON (GROUP_USERS.UID = USER.UID) ";
     $sql.= "LEFT JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID ";
     $sql.= "AND GROUP_PERMS.FORUM IN (0, $forum_fid) AND GROUP_PERMS.FID = '0') ";
-    $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID ";
-    $sql.= "AND VISITOR_LOG.FORUM IN (0, $forum_fid)) $user_fetch_sql ";
+    $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER.UID = USER_FORUM.UID ";
+    $sql.= "AND USER_FORUM.FID = '$forum_fid') $user_fetch_sql ";
     $sql.= "GROUP BY USER.UID ORDER BY $sort_by $sort_dir LIMIT $offset, 10 ";
 
     if (!$result = db_query($sql, $db_admin_user_search)) return false;
@@ -530,15 +530,15 @@ function admin_user_search($user_search, $sort_by = 'VISITOR_LOG.LAST_LOGON', $s
 * @param integer $offset - Offset of the rows returned by the query
 */
 
-function admin_user_get_all($sort_by = 'VISITOR_LOG.LAST_LOGON', $sort_dir = 'ASC', $filter = ADMIN_USER_FILTER_NONE, $offset = 0)
+function admin_user_get_all($sort_by = 'USER_FORUM.LAST_VISIT', $sort_dir = 'ASC', $filter = ADMIN_USER_FILTER_NONE, $offset = 0)
 {
     $db_user_get_all = db_connect();
     $user_get_all_array = array();
 
-    $sort_by_array  = array('USER.UID', 'USER.LOGON', 'VISITOR_LOG.LAST_LOGON', 'USER.REGISTERED', 'SESSIONS.REFERER');
+    $sort_by_array  = array('USER.UID', 'USER.LOGON', 'USER_FORUM.LAST_VISIT', 'USER.REGISTERED', 'SESSIONS.REFERER');
     $sort_dir_array = array('ASC', 'DESC');
 
-    if (!in_array($sort_by, $sort_by_array)) $sort_by = 'VISITOR_LOG.LAST_LOGON';
+    if (!in_array($sort_by, $sort_by_array)) $sort_by = 'USER_FORUM.LAST_VISIT';
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'ASC';
 
     if (!is_numeric($offset)) $offset = 0;
@@ -612,13 +612,13 @@ function admin_user_get_all($sort_by = 'VISITOR_LOG.LAST_LOGON', $sort_dir = 'AS
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, SESSIONS.HASH, ";
     $sql.= "SESSIONS.REFERER, UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, ";
-    $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM USER ";
+    $sql.= "UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT) AS LAST_VISIT FROM USER ";
     $sql.= "LEFT JOIN SESSIONS ON (SESSIONS.UID = USER.UID) ";
     $sql.= "LEFT JOIN GROUP_USERS ON (GROUP_USERS.UID = USER.UID) ";
     $sql.= "LEFT JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID ";
     $sql.= "AND GROUP_PERMS.FORUM IN (0, $forum_fid) AND GROUP_PERMS.FID = '0') ";
-    $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID ";
-    $sql.= "AND VISITOR_LOG.FORUM IN (0, $forum_fid)) $user_fetch_sql ";
+    $sql.= "LEFT JOIN USER_FORUM  ON (USER.UID = USER_FORUM.UID ";
+    $sql.= "AND USER_FORUM.FID = '$forum_fid') $user_fetch_sql ";
     $sql.= "GROUP BY USER.UID ORDER BY $sort_by $sort_dir LIMIT $offset, 10 ";
 
     if (!$result = db_query($sql, $db_user_get_all)) return false;

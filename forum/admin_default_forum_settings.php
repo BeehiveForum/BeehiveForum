@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.77 2007-08-01 20:23:01 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.78 2007-08-05 21:42:29 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -210,7 +210,7 @@ if (isset($_POST['submit'])) {
         $new_forum_settings['forum_rules_message'] = trim(_stripslashes($_POST['forum_rules_message']));
     }else {
         $new_forum_settings['forum_rules_message'] = "";
-    }    
+    }
 
     if (isset($_POST['text_captcha_enabled']) && $_POST['text_captcha_enabled'] == "Y") {
         $new_forum_settings['text_captcha_enabled'] = "Y";
@@ -393,9 +393,9 @@ if (!empty($error_html)) {
 }
 
 $unread_cutoff_periods = array(UNREAD_MESSAGES_DISABLED  => $lang['disableunreadmessages'],
-                               UNREAD_MESSAGES_DEFAULT   => $lang['nocutoffdefault'], 
+                               UNREAD_MESSAGES_DEFAULT   => $lang['nocutoffdefault'],
                                AVG_MONTH_IN_SECONDS      => $lang['1month'],
-                               AVG_SIX_MONTHS_IN_SECONDS => $lang['6months'], 
+                               AVG_SIX_MONTHS_IN_SECONDS => $lang['6months'],
                                YEAR_IN_SECONDS           => $lang['1year'],
                                UNREAD_MESSAGES_CUSTOM    => $lang['customsetbelow']);
 
@@ -640,7 +640,7 @@ if (isset($forum_global_settings['text_captcha_enabled']) && $forum_global_setti
                     $text_captcha_dir = dirname($_SERVER['PHP_SELF']). "/";
                     $text_captcha_dir.= forum_get_setting('text_captcha_dir', false, 'text_captcha');
                     $text_captcha_dir.= "/fonts/";
-                    
+
                     echo "                            <tr>\n";
                     echo "                              <td align=\"left\" width=\"20\" valign=\"top\"><img src=\"", style_image('warning.png'), "\" alt=\"\" /></td>\n";
                     echo "                              <td align=\"left\">", sprintf($lang['textcaptchafonterror'], $text_captcha_dir), "</td>\n";
@@ -758,7 +758,7 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\">", $forum_rules->textarea("forum_rules_message", (isset($forum_settings['forum_rules_message']) ? _htmlentities($forum_settings['forum_rules_message']) : ''), 10, 80, "virtual"), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", $forum_rules->js(), "</td>\n";
+echo "                        <td align=\"left\">", $forum_rules->js(false), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.119 2007-07-08 22:19:28 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.120 2007-08-09 22:55:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -119,7 +119,7 @@ if (forum_get_setting('attachments_enabled', 'N')) {
 
 if (!$attachment_dir = attachments_check_dir()) {
 
-    html_draw_top();
+    html_draw_top('pm_popup_disabled');
     html_error_msg($lang['attachmentshavebeendisabled']);
     html_draw_bottom();
     exit;
@@ -189,8 +189,8 @@ if (isset($_GET['aid']) && is_md5($_GET['aid'])) {
 // attachments.
 
 if (($uid != bh_session_get_value('UID')) && !(bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid))) {
-   
-    html_draw_top();
+
+    html_draw_top('pm_popup_disabled');
     html_error_msg($lang['accessdeniedexp']);
     html_draw_bottom();
     exit;
@@ -200,26 +200,26 @@ $users_free_space = get_free_attachment_space($uid);
 $total_attachment_size = 0;
 
 if (isset($_POST['delete_confirm'])) {
-    
+
     if (isset($_POST['delete_attachment_confirm']) && is_array($_POST['delete_attachment_confirm'])) {
-        
+
         foreach($_POST['delete_attachment_confirm'] as $hash => $del_attachment) {
 
             if ($del_attachment == "Y" && get_attachment_by_hash($hash)) {
-    
+
                 delete_attachment($hash);
             }
         }
     }
 
 }elseif (isset($_POST['delete_thumbs_confirm'])) {
-    
+
     if (isset($_POST['delete_attachment_confirm']) && is_array($_POST['delete_attachment_confirm'])) {
-        
+
         foreach($_POST['delete_attachment_confirm'] as $hash => $del_attachment) {
 
             if ($del_attachment == "Y" && get_attachment_by_hash($hash)) {
-    
+
                 delete_attachment_thumbnail($hash);
             }
         }
@@ -228,7 +228,7 @@ if (isset($_POST['delete_confirm'])) {
 }elseif (isset($_POST['delete']) || isset($_POST['delete_thumbs'])) {
 
     $hash_array = array();
-    
+
     if (isset($_POST['delete_attachment']) && is_array($_POST['delete_attachment'])) {
         $hash_array = array_merge($hash_array, array_keys($_POST['delete_attachment']));
     }
@@ -240,8 +240,8 @@ if (isset($_POST['delete_confirm'])) {
     if (is_array($hash_array) && sizeof($hash_array) > 0) {
 
         if (get_users_attachments($uid, $attachments_array, $image_attachments_array, $hash_array)) {
-            
-            html_draw_top();
+
+            html_draw_top('pm_popup_disabled');
 
             if (isset($_POST['delete_thumbs'])) {
                 echo "<h1>{$lang['deletethumbnails']}</h1>\n";
@@ -274,7 +274,7 @@ if (isset($_POST['delete_confirm'])) {
                 echo "                      <tr>\n";
                 echo "                        <td align=\"left\">{$lang['deletethumbnailsconfirm']}</td>\n";
                 echo "                      </tr>\n";
-            
+
             }else {
 
                 echo "                <tr>\n";
@@ -295,7 +295,7 @@ if (isset($_POST['delete_confirm'])) {
             echo "                              <td><br />\n";
 
             if (is_array($attachments_array) && sizeof($attachments_array) > 0) {
-                
+
                 foreach($attachments_array as $attachment) {
 
                     echo "                                ", attachment_make_link($attachment, false, false), "\n";
@@ -356,7 +356,7 @@ if (isset($_POST['delete_confirm'])) {
 
 }elseif (isset($_POST['close']) && $popup == 1) {
 
-    html_draw_top();
+    html_draw_top('pm_popup_disabled');
 
     echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
     echo "  window.close();\n";
@@ -366,7 +366,7 @@ if (isset($_POST['delete_confirm'])) {
     exit;
 }
 
-html_draw_top('attachments.js', 'post.js');
+html_draw_top('attachments.js', 'post.js', 'pm_popup_disabled');
 
 echo "<h1>{$lang['attachments']}</h1>\n";
 echo "<br />\n";
@@ -395,7 +395,7 @@ if (is_md5($aid)) {
 if ($attachment_result) {
 
     if (is_md5($aid)) {
-    
+
         echo "                <tr>\n";
         echo "                  <td class=\"subhead_checkbox\" align=\"center\" width=\"1%\">", form_checkbox("toggle_main", "toggle_main", "", false, "onclick=\"attachment_toggle_main();\""), "</td>\n";
         echo "                  <td align=\"left\" colspan=\"4\" class=\"subhead\">{$lang['attachmentsforthismessage']}</td>\n";
@@ -442,7 +442,7 @@ if ($attachment_result) {
         foreach ($image_attachments_array as $key => $attachment) {
 
             if ($attachment_link = attachment_make_link($attachment, false, true)) {
-                
+
                 echo "                <tr>\n";
                 echo "                  <td align=\"center\" width=\"1%\">", form_checkbox("delete_attachment[{$attachment['hash']}]", "Y", ""), "</td>\n";
                 echo "                  <td align=\"left\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">$attachment_link</td>\n";
@@ -468,7 +468,7 @@ if ($attachment_result) {
 }else {
 
     if (is_md5($aid)) {
-    
+
         echo "                <tr>\n";
         echo "                  <td class=\"subhead_checkbox\" align=\"center\" width=\"25\">&nbsp;</td>\n";
         echo "                  <td align=\"left\" colspan=\"4\" class=\"subhead\">{$lang['attachmentsforthismessage']}</td>\n";
@@ -657,7 +657,7 @@ if ($uid == bh_session_get_value('UID')) {
 }elseif (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
     if ($popup == 1) {
-    
+
         echo "    <tr>\n";
         echo "      <td align=\"center\">", form_submit('delete', $lang['delete']), "&nbsp;", form_submit('delete_thumbs', $lang['deletethumbnails']), "&nbsp;", form_submit('close', $lang['close']), "</td>\n";
         echo "    </tr>\n";

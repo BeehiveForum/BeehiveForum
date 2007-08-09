@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.130 2007-08-01 20:23:01 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.131 2007-08-09 22:55:43 decoyduck Exp $ */
 
 /**
 * Displays user profiles
@@ -118,7 +118,7 @@ if (!forum_check_access_level()) {
 
 if (isset($_GET['close_window'])) {
 
-    html_draw_top();
+    html_draw_top('pm_popup_disabled');
 
     echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
     echo "  window.close();\n";
@@ -130,10 +130,10 @@ if (isset($_GET['close_window'])) {
 }elseif (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 
     $uid = $_GET['uid'];
-    
+
     if (!$logon = user_get_logon($uid)) {
 
-        html_draw_top();
+        html_draw_top('pm_popup_disabled');
         html_error_msg($lang['unknownuser']);
         html_draw_bottom();
         exit;
@@ -142,7 +142,7 @@ if (isset($_GET['close_window'])) {
 }elseif (isset($_GET['logon']) && strlen(trim(_stripslashes($_GET['logon']))) > 0) {
 
     $logon = trim(_stripslashes($_GET['logon']));
-    
+
     if ($user_array = user_get_uid($logon)) {
         $uid = $user_array['UID'];
     }
@@ -150,7 +150,7 @@ if (isset($_GET['close_window'])) {
 
 if (!isset($uid)) {
 
-    html_draw_top();
+    html_draw_top('pm_popup_disabled');
     html_error_msg($lang['nouserspecified']);
     html_draw_bottom();
     exit;
@@ -172,7 +172,7 @@ $peer_relationship = user_get_relationship($uid, bh_session_get_value('UID'));
 
 $title = word_filter_add_ob_tags(format_user_name($user_profile['LOGON'], $user_profile['NICKNAME']));
 
-html_draw_top("title=$title", "openprofile.js", "basetarget=_blank");
+html_draw_top("title=$title", "openprofile.js", "basetarget=_blank", 'pm_popup_disabled');
 
 echo "<div align=\"center\">\n";
 echo "  <table width=\"600\" cellpadding=\"0\" cellspacing=\"0\">\n";
@@ -324,7 +324,7 @@ if ($user_profile_array = user_get_profile_entries($uid)) {
     foreach ($user_profile_array as $psid => $user_profile_item_array) {
 
         if (isset($profile_sections[$psid]) && is_array($profile_sections[$psid])) {
-        
+
             echo "              <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"profile_items_section\">\n";
             echo "                <tr>\n";
             echo "                  <td align=\"center\">\n";
@@ -356,7 +356,7 @@ if ($user_profile_array = user_get_profile_entries($uid)) {
 
                     echo "                                  <tr>\n";
                     echo "                                    <td align=\"left\" width=\"40%\" valign=\"top\" class=\"profile_item_name\">{$user_profile_entry['NAME']}:</td>\n";
-                    echo "                                    <td align=\"left\" class=\"profile_item_value\" valign=\"top\">", isset($user_profile_entry['ENTRY']) ? nl2br(make_links($user_profile_entry['ENTRY'])) : "", "</td>\n";                
+                    echo "                                    <td align=\"left\" class=\"profile_item_value\" valign=\"top\">", isset($user_profile_entry['ENTRY']) ? nl2br(make_links($user_profile_entry['ENTRY'])) : "", "</td>\n";
                     echo "                                  </tr>\n";
                 }
             }
@@ -366,7 +366,7 @@ if ($user_profile_array = user_get_profile_entries($uid)) {
             echo "                            </tr>\n";
             echo "                          </table>\n";
             echo "                          <br />\n";
-            echo "                        </td>\n";   
+            echo "                        </td>\n";
             echo "                      </tr>\n";
             echo "                    </table>\n";
             echo "                  </td>\n";
@@ -398,13 +398,13 @@ if ($user_profile_array = user_get_profile_entries($uid)) {
     echo "                            </tr>\n";
     echo "                          </table>\n";
     echo "                          <br />\n";
-    echo "                        </td>\n";   
+    echo "                        </td>\n";
     echo "                      </tr>\n";
     echo "                    </table>\n";
     echo "                  </td>\n";
     echo "                </tr>\n";
     echo "              </table>\n";
-}    
+}
 
 echo "              <table class=\"profile_footer\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "                <tr>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.159 2007-08-01 20:23:03 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.160 2007-08-09 22:55:44 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -238,13 +238,13 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
         if (db_num_rows($result) > 0) {
 
             if ($top_user = db_fetch_array($result)) {
-                
+
                 if (isset($top_user['PEER_NICKNAME'])) {
                     if (!is_null($top_user['PEER_NICKNAME']) && strlen($top_user['PEER_NICKNAME']) > 0) {
                         $top_user['NICKNAME'] = $top_user['PEER_NICKNAME'];
                     }
                 }
-            
+
                 $fmt_username = word_filter_add_ob_tags(format_user_name($top_user['LOGON'], $top_user['NICKNAME']));
                 $html.= "<option value=\"$default_uid\" selected=\"selected\">$fmt_username</option>\n";
             }
@@ -311,13 +311,13 @@ function post_draw_to_dropdown_recent($default_uid, $show_all = true)
         if (db_num_rows($result) > 0) {
 
             if ($top_user = db_fetch_array($result)) {
-                
+
                 if (isset($top_user['PEER_NICKNAME'])) {
                     if (!is_null($top_user['PEER_NICKNAME']) && strlen($top_user['PEER_NICKNAME']) > 0) {
                         $top_user['NICKNAME'] = $top_user['PEER_NICKNAME'];
                     }
                 }
-            
+
                 $fmt_username = word_filter_add_ob_tags(format_user_name($top_user['LOGON'], $top_user['NICKNAME']));
                 $html.= "<option value=\"$default_uid\" selected=\"selected\">$fmt_username</option>\n";
             }
@@ -340,7 +340,7 @@ function post_draw_to_dropdown_recent($default_uid, $show_all = true)
     if (!$result = db_query($sql, $db_post_draw_to_dropdown)) return false;
 
     while ($user_data = db_fetch_array($result)) {
-        
+
         if (isset($user_data['LOGON'])) {
 
             if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
@@ -348,7 +348,7 @@ function post_draw_to_dropdown_recent($default_uid, $show_all = true)
                     $user_data['NICKNAME'] = $user_data['PEER_NICKNAME'];
                 }
             }
-        
+
             $fmt_username = word_filter_add_ob_tags(format_user_name($user_data['LOGON'], $user_data['NICKNAME']));
             $html .= "<option value=\"{$user_data['UID']}\">$fmt_username</option>\n";
         }
@@ -362,7 +362,7 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $
 {
     $lang = load_language_file();
 
-    $html = "<select name=\"t_to_uid_in_thread\" class=\"user_in_thread_dropdown\" ".$custom_html.">\n";
+    $html = "<select name=\"t_to_uid_in_thread\" class=\"user_in_thread_dropdown\" $custom_html>\n";
     $db_post_draw_to_dropdown = db_connect();
 
     if (!is_numeric($tid)) return false;
@@ -384,13 +384,13 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $
         if (db_num_rows($result) > 0) {
 
             if ($top_user = db_fetch_array($result)) {
-                
+
                 if (isset($top_user['PEER_NICKNAME'])) {
                     if (!is_null($top_user['PEER_NICKNAME']) && strlen($top_user['PEER_NICKNAME']) > 0) {
                         $top_user['NICKNAME'] = $top_user['PEER_NICKNAME'];
                     }
                 }
-            
+
                 $fmt_username = word_filter_add_ob_tags(format_user_name($top_user['LOGON'], $top_user['NICKNAME']));
                 $html.= "<option value=\"$default_uid\" selected=\"selected\">$fmt_username</option>\n";
             }
@@ -429,7 +429,7 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $
                     $user_data['NICKNAME'] = $user_data['PEER_NICKNAME'];
                 }
             }
-        
+
             $fmt_username = word_filter_add_ob_tags(format_user_name($user_data['LOGON'], $user_data['NICKNAME']));
             $html .= "<option value=\"{$user_data['UID']}\">$fmt_username</option>\n";
         }
@@ -463,7 +463,7 @@ function get_user_posts($uid)
         return $user_post_array;
 
     }
-    
+
     return false;
 }
 
@@ -579,7 +579,7 @@ class MessageText {
     }
 
     function setHTML ($html, $strip_tags = false)
-    {        
+    {
         if ($html == false || $html == "N") {
             $this->html = POST_HTML_DISABLED;
         } else if ($html == POST_HTML_AUTO || $html == "A") {
@@ -658,7 +658,7 @@ class MessageText {
         if ($htmlentities === true) {
             return _htmlentities($this->original_text);
         }
-        return $this->original_text;         
+        return $this->original_text;
     }
 
     function isDiff () {

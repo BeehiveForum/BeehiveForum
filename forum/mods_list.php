@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: mods_list.php,v 1.26 2007-05-31 21:59:18 decoyduck Exp $ */
+/* $Id: mods_list.php,v 1.27 2007-08-09 22:55:43 decoyduck Exp $ */
 
 /**
 * Displays list of moderators for a folder
@@ -123,7 +123,7 @@ if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
 
 }else {
 
-    html_draw_top();
+    html_draw_top('pm_popup_disabled');
     html_error_msg($lang['cantdisplaymods']);
     html_draw_bottom();
     exit;
@@ -131,7 +131,7 @@ if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
 
 $folder_title = folder_get_title($fid);
 
-html_draw_top("title={$lang['moderatorlist']} {$folder_title}", "openprofile.js");
+html_draw_top("title={$lang['moderatorlist']} {$folder_title}", "openprofile.js", 'pm_popup_disabled');
 
 if (isset($_POST['close'])) {
 

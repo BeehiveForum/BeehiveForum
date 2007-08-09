@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.php,v 1.42 2007-06-07 20:27:25 decoyduck Exp $ */
+/* $Id: dictionary.php,v 1.43 2007-08-09 22:55:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -123,7 +123,7 @@ if (isset($_POST['obj_id']) && strlen(trim(_stripslashes($_POST['obj_id']))) > 0
 
 }else {
 
-    html_draw_top();
+    html_draw_top('pm_popup_disabled');
     html_error_msg($lang['noformobj']);
     html_draw_bottom();
     exit;
@@ -140,7 +140,7 @@ if (isset($_POST['content']) && strlen(trim(_stripslashes($_POST['content']))) >
     // Apache has a limit on the length an URL query, so we need to
     // send the content to be checked via POST or Javascript.
 
-    html_draw_top('dictionary.js', "onload=initialiseDictionary('$obj_id')");
+    html_draw_top('dictionary.js', "onload=initialiseDictionary('$obj_id')", 'pm_popup_disabled');
 
     echo "<h1>{$lang['dictionary']}</h1>\n";
     echo "<h2>{$lang['initialisingdotdotdot']}</h2>\n";
@@ -192,7 +192,7 @@ $dictionary = new dictionary($t_content, $t_ignored_words, $current_word, $obj_i
 
 if (!$dictionary->is_installed()) {
 
-    html_draw_top();
+    html_draw_top('pm_popup_disabled');
     html_error_msg($lang['dictionarynotinstalled']);
     html_draw_bottom();
     exit;
@@ -202,7 +202,7 @@ if (!$dictionary->is_installed()) {
 
 if (isset($_POST['cancel'])) {
 
-    html_draw_top();
+    html_draw_top('pm_popup_disabled');
 
     echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
     echo "  if (window.opener.auto_check_spell_started) {\n";
@@ -219,7 +219,7 @@ if (isset($_POST['cancel'])) {
 
 if (isset($_POST['close'])) {
 
-    html_draw_top();
+    html_draw_top('pm_popup_disabled');
 
     $content = $dictionary->get_js_safe_content();
 
@@ -295,7 +295,7 @@ if (isset($_POST['ignoreall'])) {
     $dictionary->find_next_word();
 }
 
-html_draw_top('dictionary.js', 'onload=showCurrentWord()');
+html_draw_top('dictionary.js', 'onload=showCurrentWord()', 'pm_popup_disabled');
 
 echo "<h1>{$lang['dictionary']}</h1>\n";
 

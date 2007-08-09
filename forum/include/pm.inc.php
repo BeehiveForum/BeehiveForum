@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.208 2007-08-01 20:23:02 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.209 2007-08-09 22:55:44 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -176,7 +176,7 @@ function pm_get_inbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
     $sql.= "LEFT JOIN USER TUSER ON (PM.TO_UID = TUSER.UID) ";
     $sql.= "WHERE (PM.TYPE & $pm_inbox_items > 0) AND PM.TO_UID = '$uid' ";
     $sql.= "ORDER BY $sort_by $sort_dir ";
-    
+
     if (is_numeric($offset)) $sql.= "LIMIT $offset, 10";
 
     if (!$result = db_query($sql, $db_pm_get_inbox)) return false;
@@ -202,7 +202,7 @@ function pm_get_inbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
 
             if (!isset($pm_data['TLOGON'])) $pm_data['TLOGON'] = $lang['unknownuser'];
             if (!isset($pm_data['TNICK'])) $pm_data['TNICK'] = "";
-            
+
             $pm_get_inbox_array[$pm_data['MID']] = $pm_data;
             $mid_array[] = $pm_data['MID'];
         }
@@ -662,7 +662,7 @@ function pm_search_execute($search_string, &$error)
         if ($result = db_query($sql, $db_pm_search_execute)) {
             return true;
         }
-    
+
     }else {
 
         $error = SEARCH_NO_KEYWORDS;
@@ -806,7 +806,7 @@ function pm_get_folder_message_counts()
         if ($pm_data_array['TYPE'] & PM_INBOX_ITEMS) {
 
             $message_count_array[PM_FOLDER_INBOX] = $pm_data_array['MESSAGE_COUNT'];
-            
+
         }elseif ($pm_data_array['TYPE'] & PM_SENT_ITEMS) {
 
             $message_count_array[PM_FOLDER_SENT] = $pm_data_array['MESSAGE_COUNT'];
@@ -904,7 +904,7 @@ function pm_get_user($mid)
     if (!$result = db_query($sql, $db_pm_get_user)) return false;
 
     if (db_num_rows($result) > 0) {
-        
+
         list($logon) = db_fetch_array($result);
         return $logon;
     }
@@ -949,7 +949,7 @@ function pm_user_get_friends()
         while ($user_data = db_fetch_array($result)) {
 
             if (isset($user_data['LOGON'])) {
-            
+
                 if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
                     if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
                         $user_data['NICKNAME'] = $user_data['PEER_NICKNAME'];
@@ -1130,10 +1130,10 @@ function pm_display($pm_message_array, $folder, $preview = false, $export_html =
     if ($folder == PM_FOLDER_INBOX) {
 
         if ($export_html === true) {
-        
+
             echo "                        <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['from']}:&nbsp;</span></td>\n";
             echo "                        <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">", format_user_name($pm_message_array['FLOGON'], $pm_message_array['FNICK']), "</span></td>\n";
-        
+
         }else {
 
             echo "                        <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['from']}:&nbsp;</span></td>\n";
@@ -1147,9 +1147,9 @@ function pm_display($pm_message_array, $folder, $preview = false, $export_html =
             $recipient_array = preg_split("/[;|,]/", trim($pm_message_array['RECIPIENTS']));
 
             if ($pm_message_array['TO_UID'] > 0) {
-                $recipient_array = array_unique(array_merge($recipient_array, array($pm_message_array['TLOGON'])));               
+                $recipient_array = array_unique(array_merge($recipient_array, array($pm_message_array['TLOGON'])));
             }
-            
+
             if ($export_html === false) $recipient_array = array_map('user_profile_popup_callback', $recipient_array);
 
             echo "                        <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['to']}:&nbsp;</span></td>\n";
@@ -1161,11 +1161,11 @@ function pm_display($pm_message_array, $folder, $preview = false, $export_html =
             echo "                        <td nowrap=\"nowrap\" width=\"98%\" align=\"left\">\n";
 
             foreach ($pm_message_array['TO_UID'] as $key => $to_uid) {
-                
+
                 if ($export_html === true) {
-                
+
                     echo "                          <span class=\"posttofrom\">", format_user_name($pm_message_array['TLOGON'][$key], $pm_message_array['TNICK'][$key]), "</span>&nbsp;";
-                
+
                 }else {
 
                     echo "                          <span class=\"posttofrom\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$pm_message_array['TO_UID']}\" target=\"_blank\" onclick=\"return openProfile({$pm_message_array['TO_UID'][$key]}, '$webtag')\">", word_filter_add_ob_tags(format_user_name($pm_message_array['TLOGON'][$key], $pm_message_array['TNICK'][$key])), "</a></span>&nbsp;";
@@ -1186,7 +1186,7 @@ function pm_display($pm_message_array, $folder, $preview = false, $export_html =
                 echo "                        <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['to']}:&nbsp;</span></td>\n";
                 echo "                        <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$pm_message_array['TO_UID']}\" target=\"_blank\" onclick=\"return openProfile({$pm_message_array['TO_UID']}, '$webtag')\">", word_filter_add_ob_tags(format_user_name($pm_message_array['TLOGON'], $pm_message_array['TNICK'])), "</a></span></td>\n";
             }
-        }        
+        }
     }
 
     $pm_message_array['CONTENT'] = word_filter_add_ob_tags($pm_message_array['CONTENT']);
@@ -1260,7 +1260,7 @@ function pm_display($pm_message_array, $folder, $preview = false, $export_html =
     echo "                      <tr>\n";
 
     if ($preview === false) {
-        
+
         if ($folder == PM_FOLDER_INBOX) {
 
             echo "                        <td align=\"center\"><img src=\"", style_image('post.png'), "\" border=\"0\" alt=\"{$lang['reply']}\" title=\"{$lang['reply']}\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;replyto={$pm_message_array['MID']}\" target=\"", html_get_frame_name('main'), "\">{$lang['reply']}</a>&nbsp;&nbsp;<img src=\"", style_image('forward.png'), "\" border=\"0\" alt=\"{$lang['forward']}\" title=\"{$lang['forward']}\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\" target=\"", html_get_frame_name('main'), "\">{$lang['forward']}</a></td>\n";
@@ -1299,7 +1299,7 @@ function pm_display($pm_message_array, $folder, $preview = false, $export_html =
 
 function pm_display_html_export($pm_message_array, $folder)
 {
-    ob_start(); 
+    ob_start();
 
     pm_display($pm_message_array, $folder, true, true);
 
@@ -1348,7 +1348,7 @@ function pm_message_get_folder($mid, $type = 0)
     $sql.= "OR ((TYPE & $pm_saved_out > 0) AND FROM_UID = '$uid') ";
     $sql.= "OR ((TYPE & $pm_saved_in > 0) AND TO_UID = '$uid') ";
     $sql.= "OR ((TYPE & $pm_draft_items > 0) AND FROM_UID = '$uid')) ";
-    
+
     if (!$result = db_query($sql, $db_pm_message_get_folder)) return false;
 
     list($pm_message_type) = db_fetch_array($result, DB_RESULT_NUM);
@@ -1382,7 +1382,7 @@ function pm_save_attachment_id($mid, $aid)
     if (!$result = db_query($sql, $db_pm_save_attachment_id)) return false;
 
     if (db_num_rows($result) < 1) {
-    
+
         $sql = "INSERT INTO PM_ATTACHMENT_IDS (MID, AID) ";
         $sql.= "VALUES ('$mid', '$aid')";
 
@@ -1467,7 +1467,7 @@ function pm_send_message($tuid, $fuid, $subject, $content, $aid)
 * Add Sent Item
 *
 * Adds a PM Sent Item to the database PM tables.
-* Called by pm_send_message() function if the sender has sent items enabled. 
+* Called by pm_send_message() function if the sender has sent items enabled.
 *
 * @return mixed - false on failure, integer Message ID on success
 * @param integer $tuid - Sender UID
@@ -1727,11 +1727,11 @@ function pm_delete_message($mid)
     }
 
     $sql = "DELETE FROM PM WHERE MID = '$mid'";
-    
+
     if (!$result = db_query($sql, $db_delete_pm)) return false;
 
     $sql = "DELETE FROM PM_CONTENT WHERE MID = '$mid'";
-    
+
     if (!$result = db_query($sql, $db_delete_pm)) return false;
 
     return true;
@@ -1772,7 +1772,7 @@ function pm_archive_message($mid)
 
     $sql = "UPDATE PM SET TYPE = '$pm_saved_out' ";
     $sql.= "WHERE MID = '$mid' AND (TYPE & $pm_sent_items > 0) ";
-    $sql.= "AND FROM_UID = '$uid'";
+    $sql.= "AND SMID = 0 AND FROM_UID = '$uid'";
 
     if (!$result = db_query($sql, $db_pm_archive_message)) return false;
 }
@@ -1792,7 +1792,7 @@ function pm_get_new_messages($limit)
     $db_pm_get_new_messages = db_connect();
 
     if (!is_numeric($limit)) return false;
-    
+
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $pm_outbox = PM_OUTBOX;
@@ -1806,7 +1806,7 @@ function pm_get_new_messages($limit)
     if (db_num_rows($result) > 0) {
 
         $pm_new_message_array = array();
-        
+
         while ($pm_data = db_fetch_array($result)) {
 
             $pm_new_message_array[$pm_data['MID']] = $pm_data;
@@ -1816,7 +1816,7 @@ function pm_get_new_messages($limit)
     }
 
     return false;
-}    
+}
 
 /**
 * Check for new messages
@@ -1831,7 +1831,7 @@ function pm_get_new_messages($limit)
 function pm_new_check(&$pm_new_count, &$pm_outbox_count)
 {
     $db_pm_new_check = db_connect();
-    
+
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $pm_unread = PM_UNREAD;
@@ -1847,7 +1847,7 @@ function pm_new_check(&$pm_new_count, &$pm_outbox_count)
     if ($pm_messages_array = pm_get_new_messages($pm_free_space)) {
 
         // Convert the array keys into a comma separated list.
-        
+
         $mid_list = implode(',', preg_grep('/^[0-9]+$/', array_keys($pm_messages_array)));
 
         // Mark the selected messages as unread / received and make the
@@ -1873,7 +1873,7 @@ function pm_new_check(&$pm_new_count, &$pm_outbox_count)
         $sql.= "WHERE TYPE = '$pm_outbox' AND TO_UID = '$uid'";
 
         if (!$result = db_query($sql, $db_pm_new_check)) return false;
-    
+
         list($pm_outbox_count) = db_fetch_array($result, DB_RESULT_NUM);
     }
 }
@@ -1890,7 +1890,7 @@ function pm_new_check(&$pm_new_count, &$pm_outbox_count)
 function pm_get_unread_count()
 {
     $db_pm_get_unread_count = db_connect();
-    
+
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     // Guests don't do PMs.
@@ -1905,7 +1905,7 @@ function pm_get_unread_count()
     $sql.= "AND TO_UID = '$uid'";
 
     if (!$result = db_query($sql, $db_pm_get_unread_count)) return false;
-    
+
     list($pm_unread_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     return $pm_unread_count;
@@ -1935,7 +1935,7 @@ function pm_user_prune_folders($uid = false)
 
         $pm_read = PM_READ;
         $pm_sent_items = PM_SENT_ITEMS;
-        
+
         $pm_prune_length = intval($user_prefs['PM_AUTO_PRUNE']);
         $pm_prune_length = ($pm_prune_length * DAY_IN_SECONDS);
 
@@ -1972,10 +1972,10 @@ function pm_system_prune_folders()
         $pm_prune_length = intval(forum_get_setting('pm_auto_prune', false, 0));
 
         if ($pm_prune_length > 0) {
-            
+
             $pm_read = PM_READ;
             $pm_sent_items = PM_SENT_ITEMS;
-            
+
             $pm_prune_length = ($pm_prune_length * DAY_IN_SECONDS);
 
             $sql = "DELETE LOW_PRIORITY FROM PM WHERE ((TYPE & $pm_read > 0) OR (TYPE & $pm_sent_items > 0)) ";
@@ -2016,7 +2016,7 @@ function pm_auto_prune_enabled()
 /**
 * Check for attachments to messages
 *
-* Check to see if any of the messages have attachments and adds 
+* Check to see if any of the messages have attachments and adds
 * the attachment ID (AID) if applicable.
 *
 * @return void
@@ -2048,7 +2048,7 @@ function pms_have_attachments(&$pm_array, $mid_array)
 /**
 * Check for attachments to a message
 *
-* Check to see if a message has any attachments and applies 
+* Check to see if a message has any attachments and applies
 * the attachment ID (AID) if applicable.
 *
 * @return mixed - False on error, attachment ID on success
@@ -2100,7 +2100,7 @@ function pm_export_get_messages($folder)
     }elseif ($folder == PM_FOLDER_SAVED) {
 
         return pm_get_saved_items();
-    
+
     }elseif ($folder == PM_FOLDER_DRAFTS) {
 
         return pm_get_drafts();
@@ -2121,13 +2121,13 @@ function pm_export_get_messages($folder)
 function pm_export_html_top($mid)
 {
     $lang = load_language_file();
-    
+
     $html = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
     $html.= "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
     $html.= "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"{$lang['_isocode']}\" lang=\"{$lang['_isocode']}\" dir=\"{$lang['_textdir']}\">\n";
     $html.= "<head>\n";
 
-    if (is_bool($mid)) {    
+    if (is_bool($mid)) {
         $html.= "<title>{$lang['messages']}</title>\n";
     }else {
         $html.= sprintf("<title>{$lang['pmmessagenumber']}</title>\n", $mid);
@@ -2155,7 +2155,7 @@ function pm_export_html_top($mid)
 function pm_export_html_bottom()
 {
     $lang = load_language_file();
-    
+
     $html = "</body>\n";
     $html.= "</html>\n";
 
@@ -2279,7 +2279,7 @@ function pm_export_html($folder, &$zip_file)
             $pm_display.= pm_display_html_export($pm_message, $folder);
 
             if ($pm_export_file == PM_EXPORT_SINGLE) {
-                $pm_display.= "<br />\n";                
+                $pm_display.= "<br />\n";
             }
 
             if ($pm_export_file == PM_EXPORT_MANY) {
@@ -2332,7 +2332,7 @@ function pm_export_xml($folder, &$zip_file)
     if ($pm_messages_array = pm_export_get_messages($folder)) {
 
         $beehive_version = BEEHIVE_VERSION;
-        
+
         $pm_display = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n";
         $pm_display.= "  <beehiveforum>\n";
         $pm_display.= "    <version>$beehive_version</version>\n";
@@ -2349,7 +2349,7 @@ function pm_export_xml($folder, &$zip_file)
 
             foreach($pm_message as $key => $value) {
 
-                $key = strtolower($key);                
+                $key = strtolower($key);
                 $pm_display.= "        <$key>$value</$key>\n";
             }
 
@@ -2417,7 +2417,7 @@ function pm_export_plaintext($folder, &$zip_file)
 
             $pm_message['FOLDER'] = $folder;
             $pm_message['CONTENT'] = pm_get_content($pm_message['MID']);
-            
+
             $pm_message = array_map('pm_export_word_filter_apply', $pm_message);
 
             foreach($pm_message as $key => $value) {
@@ -2488,7 +2488,7 @@ function pm_export_attachments($aid, $from_uid, &$zip_file)
     $attachments_added_success = false;
 
     if ($attachment_dir = attachments_check_dir()) {
-        
+
         if (get_attachments($from_uid, $aid, $attachments_array, $image_attachments_array)) {
 
             if (is_array($attachments_array) && sizeof($attachments_array) > 0) {

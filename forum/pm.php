@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.126 2007-06-08 13:39:45 decoyduck Exp $ */
+/* $Id: pm.php,v 1.127 2007-08-09 22:55:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -115,12 +115,12 @@ $available_folders = array(PM_FOLDER_INBOX, PM_FOLDER_SENT, PM_FOLDER_OUTBOX,
 if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
 
     $mid = $_GET['mid'];
-    
+
     if (!$folder = pm_message_get_folder($mid)) {
         $folder = PM_FOLDER_INBOX;
     }
 
-    html_draw_top('body_tag=false', 'frames=true');
+    html_draw_top('body_tag=false', 'frames=true', 'pm_popup_disabled');
 
     echo "<frameset cols=\"280,*\" framespacing=\"0\" border=\"4\">\n";
     echo "  <frame src=\"./pm_folders.php?webtag=$webtag&amp;mid=$mid&amp;folder=$folder\" name=\"", html_get_frame_name('pm_folders'), "\" frameborder=\"0\" />\n";
@@ -134,7 +134,7 @@ if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
 
     $folder = (in_array($_GET['folder'], $available_folders)) ? $_GET['folder'] : PM_FOLDER_INBOX;
 
-    html_draw_top('body_tag=false', 'frames=true');
+    html_draw_top('body_tag=false', 'frames=true', 'pm_popup_disabled');
 
     echo "<frameset cols=\"280,*\" framespacing=\"0\" border=\"4\">\n";
     echo "  <frame src=\"./pm_folders.php?webtag=$webtag&amp;folder=$folder\" name=\"", html_get_frame_name('pm_folders'), "\" frameborder=\"0\" />\n";
@@ -145,7 +145,7 @@ if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
     exit;
 }
 
-html_draw_top('body_tag=false', 'frames=true');
+html_draw_top('body_tag=false', 'frames=true', 'pm_popup_disabled');
 
 echo "<frameset cols=\"280,*\" framespacing=\"0\" border=\"4\">\n";
 echo "  <frame src=\"./pm_folders.php?webtag=$webtag\" name=\"", html_get_frame_name('pm_folders'), "\" frameborder=\"0\" />\n";

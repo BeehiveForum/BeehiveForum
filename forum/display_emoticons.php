@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display_emoticons.php,v 1.50 2007-05-31 21:59:14 decoyduck Exp $ */
+/* $Id: display_emoticons.php,v 1.51 2007-08-09 22:55:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -120,7 +120,7 @@ if ($mode == "mini") {
     exit;
 }
 
-html_draw_top("emoticons.js");
+html_draw_top("emoticons.js", 'pm_popup_disabled');
 
 echo "<h1>{$lang['emoticons']}</h1>\n";
 

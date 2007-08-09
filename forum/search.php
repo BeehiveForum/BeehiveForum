@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.183 2007-06-08 13:39:46 decoyduck Exp $ */
+/* $Id: search.php,v 1.184 2007-08-09 22:55:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -151,43 +151,43 @@ if (isset($_GET['sort_dir']) && is_numeric($_GET['sort_dir'])) {
 // Drop down date from options
 
 $search_date_from_array = array(SEARCH_FROM_TODAY             => $lang['today'],
-                                SEARCH_FROM_YESTERDAY         => $lang['yesterday'], 
-                                SEARCH_FROM_DAYBEFORE         => $lang['daybeforeyesterday'], 
-                                SEARCH_FROM_ONE_WEEK_AGO      => sprintf($lang['weekago'], 1), 
-                                SEARCH_FROM_TWO_WEEKS_AGO     => sprintf($lang['weeksago'], 2), 
-                                SEARCH_FROM_THREE_WEEKS_AGO   => sprintf($lang['weeksago'], 3), 
-                                SEARCH_FROM_ONE_MONTH_AGO     => sprintf($lang['monthago'], 1), 
-                                SEARCH_FROM_TWO_MONTHS_AGO    => sprintf($lang['monthsago'], 2), 
-                                SEARCH_FROM_THREE_MONTHS_AGO  => sprintf($lang['monthsago'], 3), 
-                                SEARCH_FROM_SIX_MONTHS_AGO    => sprintf($lang['monthsago'], 6), 
-                                SEARCH_FROM_ONE_YEAR_AGO      => sprintf($lang['yearago'], 1), 
+                                SEARCH_FROM_YESTERDAY         => $lang['yesterday'],
+                                SEARCH_FROM_DAYBEFORE         => $lang['daybeforeyesterday'],
+                                SEARCH_FROM_ONE_WEEK_AGO      => sprintf($lang['weekago'], 1),
+                                SEARCH_FROM_TWO_WEEKS_AGO     => sprintf($lang['weeksago'], 2),
+                                SEARCH_FROM_THREE_WEEKS_AGO   => sprintf($lang['weeksago'], 3),
+                                SEARCH_FROM_ONE_MONTH_AGO     => sprintf($lang['monthago'], 1),
+                                SEARCH_FROM_TWO_MONTHS_AGO    => sprintf($lang['monthsago'], 2),
+                                SEARCH_FROM_THREE_MONTHS_AGO  => sprintf($lang['monthsago'], 3),
+                                SEARCH_FROM_SIX_MONTHS_AGO    => sprintf($lang['monthsago'], 6),
+                                SEARCH_FROM_ONE_YEAR_AGO      => sprintf($lang['yearago'], 1),
                                 SEARCH_FROM_BEGINNING_OF_TIME => $lang['beginningoftime']);
 
 // Drop down date to options
 
-$search_date_to_array = array(SEARCH_TO_NOW              => $lang['now'], 
-                              SEARCH_TO_TODAY            => $lang['today'], 
-                              SEARCH_TO_YESTERDAY        => $lang['yesterday'], 
-                              SEARCH_TO_DAYBEFORE        => $lang['daybeforeyesterday'], 
-                              SEARCH_TO_ONE_WEEK_AGO     => sprintf($lang['weekago'], 1), 
-                              SEARCH_TO_TWO_WEEKS_AGO    => sprintf($lang['weeksago'], 2), 
-                              SEARCH_TO_THREE_WEEKS_AGO  => sprintf($lang['weeksago'], 3), 
-                              SEARCH_TO_ONE_MONTH_AGO    => sprintf($lang['monthago'], 1), 
-                              SEARCH_TO_TWO_MONTHS_AGO   => sprintf($lang['monthsago'], 2), 
-                              SEARCH_TO_THREE_MONTHS_AGO => sprintf($lang['monthsago'], 3), 
-                              SEARCH_TO_SIX_MONTHS_AGO   => sprintf($lang['monthsago'], 6), 
+$search_date_to_array = array(SEARCH_TO_NOW              => $lang['now'],
+                              SEARCH_TO_TODAY            => $lang['today'],
+                              SEARCH_TO_YESTERDAY        => $lang['yesterday'],
+                              SEARCH_TO_DAYBEFORE        => $lang['daybeforeyesterday'],
+                              SEARCH_TO_ONE_WEEK_AGO     => sprintf($lang['weekago'], 1),
+                              SEARCH_TO_TWO_WEEKS_AGO    => sprintf($lang['weeksago'], 2),
+                              SEARCH_TO_THREE_WEEKS_AGO  => sprintf($lang['weeksago'], 3),
+                              SEARCH_TO_ONE_MONTH_AGO    => sprintf($lang['monthago'], 1),
+                              SEARCH_TO_TWO_MONTHS_AGO   => sprintf($lang['monthsago'], 2),
+                              SEARCH_TO_THREE_MONTHS_AGO => sprintf($lang['monthsago'], 3),
+                              SEARCH_TO_SIX_MONTHS_AGO   => sprintf($lang['monthsago'], 6),
                               SEARCH_TO_ONE_YEAR_AGO     => sprintf($lang['yearago'], 1));
 
 // Drop down sort by options
 
 $search_sort_by_array = array(SEARCH_SORT_CREATED     => $lang['lastpostdate'],
-                              SEARCH_SORT_NUM_REPLIES => $lang['numberofreplies'], 
-                              SEARCH_SORT_FOLDER_NAME => $lang['foldername'], 
+                              SEARCH_SORT_NUM_REPLIES => $lang['numberofreplies'],
+                              SEARCH_SORT_FOLDER_NAME => $lang['foldername'],
                               SEARCH_SORT_AUTHOR_NAME => $lang['authorname']);
 
 // Drop down sort dir options
 
-$search_sort_dir_array = array(SORT_DIR_DESC => $lang['decendingorder'], 
+$search_sort_dir_array = array(SORT_DIR_DESC => $lang['decendingorder'],
                                SORT_DIR_ASC  => $lang['ascendingorder']);
 
 // Get a list of available folders.
@@ -203,8 +203,8 @@ if (!$folder_dropdown = folder_search_dropdown()) {
 if (isset($_GET['show_stop_words'])) {
 
     $highlight_keywords_array = array();
-    
-    html_draw_top();
+
+    html_draw_top('pm_popup_disabled');
 
     if (isset($_GET['close'])) {
 
@@ -362,12 +362,12 @@ if ((isset($_POST) && sizeof($_POST) > 0) || isset($_GET['search_string']) || is
                 if (isset($search_arguments['search_string']) && strlen(trim(_stripslashes($search_arguments['search_string']))) > 0) {
 
                     $search_string = trim(_stripslashes($search_arguments['search_string']));
-                    
+
                     $keywords_error_array = search_strip_keywords($search_string, true);
                     $keywords_error_array['keywords'] = search_strip_special_chars($keywords_error_array['keywords'], false);
 
                     $stopped_keywords = urlencode(implode(' ', $keywords_error_array['keywords']));
-                    
+
                     $mysql_stop_word_link = "<a href=\"search.php?webtag=$webtag&amp;show_stop_words=true&amp;keywords=$stopped_keywords\" target=\"_blank\" onclick=\"return display_mysql_stopwords('$webtag', '$stopped_keywords')\">{$lang['mysqlstopwordlist']}</a>";
                     echo sprintf("<p>{$lang['notexttosearchfor']}</p>\n", $min_length, $max_length, $mysql_stop_word_link);
 
@@ -455,8 +455,8 @@ if (isset($search_success) && $search_success === true && isset($offset)) {
                     }
                 }
 
-                // Apply word filter to truncated thread title                
-                
+                // Apply word filter to truncated thread title
+
                 $message['TITLE'] = word_filter_add_ob_tags($message['TITLE']);
 
                 // Limit displayed post content to 35 characters
@@ -478,16 +478,16 @@ if (isset($search_success) && $search_success === true && isset($offset)) {
                 if ((thread_is_poll($search_result['TID']) && $search_result['PID'] == 1) || strlen($message['CONTENT']) < 1) {
 
                     // Apply word filter to content.
-                
+
                     $message['CONTENT'] = word_filter_add_ob_tags($message['CONTENT']);
 
                     echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;hightlight=yes\" target=\"", html_get_frame_name('right'), "\"><b>{$message['TITLE']}</b></a><br />";
                     echo "<span class=\"smalltext\"><b>{$lang['from']}:</b> ", word_filter_add_ob_tags(format_user_name($search_result['FROM_LOGON'], $search_result['FROM_NICKNAME'])), ", ", format_time($search_result['CREATED'], 1), "</span></p></li>\n";
-                    
+
                 }else {
 
                     // Apply word filter to content.
-                
+
                     $message['CONTENT'] = word_filter_add_ob_tags($message['CONTENT']);
 
                     echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;highlight=yes\" target=\"", html_get_frame_name('right'), "\"><b>{$message['TITLE']}</b></a><br />";
@@ -508,7 +508,7 @@ if (isset($search_success) && $search_success === true && isset($offset)) {
 
         thread_list_draw_top(SEARCH_RESULTS);
 
-        echo "<br />\n";        
+        echo "<br />\n";
         echo "<h1>{$lang['error']}</h1>\n";
         echo "<img src=\"", style_image('search.png'), "\" alt=\"{$lang['matches']}\" title=\"{$lang['matches']}\" />&nbsp;{$lang['found']}: 0 {$lang['matches']}<br />\n";
     }

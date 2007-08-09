@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.126 2007-08-04 22:32:13 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.127 2007-08-09 22:55:43 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -203,7 +203,7 @@ function admin_get_word_filter_list($offset)
     $sql.= "WHERE UID = 0";
 
     if (!$result = db_query($sql, $db_admin_get_word_filter)) return false;
-    
+
     list($word_filter_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT FID, FILTER_NAME, MATCH_TEXT, REPLACE_TEXT, FILTER_TYPE, ";
@@ -486,7 +486,7 @@ function admin_user_search($user_search, $sort_by = 'USER_FORUM.LAST_VISIT', $so
     }
 
     if (!$result = db_query($user_count_sql, $db_admin_user_search)) return false;
-    
+
     list($user_get_all_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, SESSIONS.HASH, ";
@@ -505,7 +505,7 @@ function admin_user_search($user_search, $sort_by = 'USER_FORUM.LAST_VISIT', $so
     if (db_num_rows($result) > 0) {
 
         while ($user_data = db_fetch_array($result)) {
-            
+
             $user_get_all_array[$user_data['UID']] = $user_data;
         }
 
@@ -607,7 +607,7 @@ function admin_user_get_all($sort_by = 'USER_FORUM.LAST_VISIT', $sort_dir = 'ASC
     }
 
     if (!$result = db_query($user_count_sql, $db_user_get_all)) return false;
-    
+
     list($user_get_all_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, SESSIONS.HASH, ";
@@ -626,7 +626,7 @@ function admin_user_get_all($sort_by = 'USER_FORUM.LAST_VISIT', $sort_dir = 'ASC
     if (db_num_rows($result) > 0) {
 
         while ($user_data = db_fetch_array($result)) {
-            
+
             $user_get_all_array[$user_data['UID']] = $user_data;
         }
 
@@ -791,7 +791,7 @@ function admin_get_forum_list($offset)
 
             $forums_array[] = $forum_data;
         }
-    
+
     }else if ($forums_count > 0) {
 
         $offset = floor(($forums_count - 1) / 10) * 10;
@@ -861,7 +861,7 @@ function admin_get_ban_data($sort_by = "ID", $sort_dir = "ASC", $offset = 0)
     $sql = "SELECT COUNT(ID) AS BAN_COUNT FROM {$table_data['PREFIX']}BANNED";
 
     if (!$result = db_query($sql, $db_admin_get_bandata)) return false;
-    
+
     list($ban_data_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT ID, BANTYPE, BANDATA, COMMENT FROM {$table_data['PREFIX']}BANNED ";
@@ -870,7 +870,7 @@ function admin_get_ban_data($sort_by = "ID", $sort_dir = "ASC", $offset = 0)
     if (!$result = db_query($sql, $db_admin_get_bandata)) return false;
 
     if (db_num_rows($result) > 0) {
-    
+
         while ($ban_data = db_fetch_array($result)) {
 
             $ban_data_array[$ban_data['ID']] = $ban_data;
@@ -909,7 +909,7 @@ function admin_get_ban($ban_id)
     if (!$result = db_query($sql, $db_admin_get_bandata)) return false;
 
     if (db_num_rows($result) > 0) {
-    
+
         $ban_data_array = db_fetch_array($result);
         return $ban_data_array;
     }
@@ -946,7 +946,7 @@ function admin_get_post_approval_queue($offset = 0)
     $sql.= "AND THREAD.FID IN ($fidlist)";
 
     if (!$result = db_query($sql, $db_admin_get_post_approval_queue)) return false;
-    
+
     list($post_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT THREAD.TITLE, POST.TID, POST.PID, FOLDER.PREFIX ";
@@ -959,13 +959,13 @@ function admin_get_post_approval_queue($offset = 0)
     if (!$result = db_query($sql, $db_admin_get_post_approval_queue)) return false;
 
     if (db_num_rows($result) > 0) {
-    
+
         while ($post_array = db_fetch_array($result)) {
 
             if (isset($post_array['TID']) && isset($post_array['PID'])) {
 
                 if (validate_msg("{$post_array['TID']}.{$post_array['PID']}")) {
-            
+
                     $post_approval_array[] = $post_array;
                 }
             }
@@ -1014,7 +1014,7 @@ function admin_get_visitor_log($offset)
     $sql.= "AND FORUM = '$forum_fid'";
 
     if (!$result = db_query($sql, $db_admin_get_visitor_log)) return false;
-    
+
     list($users_get_recent_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT VISITOR_LOG.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
@@ -1146,7 +1146,7 @@ function admin_get_user_aliases($uid)
         while ($user_get_aliases_row = db_fetch_array($result)) {
 
             if (strlen(trim($user_get_aliases_row['IPADDRESS'])) > 0) {
-            
+
                 $user_ip_address_array[] = $user_get_aliases_row['IPADDRESS'];
             }
         }
@@ -1223,7 +1223,7 @@ function admin_get_user_history($uid)
 
             $user_history_data_old = "";
             $user_history_data = "";
-            
+
             while ($user_history_row = db_fetch_array($result, DB_RESULT_NUM)) {
 
                 $user_history_data_array = array();
@@ -1245,14 +1245,14 @@ function admin_get_user_history($uid)
                 if (sizeof($user_history_data_array) > 0) {
 
                     $user_history_data = implode(". ", $user_history_data_array);
-                    
+
                     if ($user_history_data != $user_history_data_old) {
-                    
-                        $user_history_array[] = array('MODIFIED' => $modified_date, 
+
+                        $user_history_array[] = array('MODIFIED' => $modified_date,
                                                       'DATA'     => $user_history_data);
                     }
                 }
-                
+
                 list($logon, $nickname, $email) = $user_history_row;
                 $user_history_data_old = $user_history_data;
             }
@@ -1286,6 +1286,30 @@ function admin_approve_user($uid)
     if (!$result = db_query($sql, $db_admin_approve_user)) return false;
 
     return (db_affected_rows($db_admin_approve_user) > 0);
+}
+
+function admin_delete_users_posts($uid)
+{
+    $db_admin_delete_users_posts = db_connect();
+
+    if (!is_numeric($uid)) return false;
+
+    return true;
+
+    /*if ($user_logon = user_get_logon($uid)) {
+
+        if ($user_post_array = get_user_posts($uid)) {
+
+            foreach ($user_post_array as $user_post) {
+
+                if (!post_delete($user_post['TID'], $user_post['PID'])) {
+
+                    $valid = false;
+                    break;
+                }
+            }
+        }
+    }*/
 }
 
 ?>

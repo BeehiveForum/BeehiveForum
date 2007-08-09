@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: search_popup.php,v 1.15 2007-06-07 20:27:26 decoyduck Exp $ */
+/* $Id: search_popup.php,v 1.16 2007-08-09 22:55:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -127,16 +127,16 @@ if (isset($_POST['close'])) {
 if (isset($_GET['type']) && is_numeric($_GET['type'])) {
 
     if ($_GET['type'] == SEARCH_POPUP_TYPE_USER) {
-        
+
         $type = SEARCH_POPUP_TYPE_USER;
-    
+
     }elseif ($_GET['type'] == SEARCH_POPUP_TYPE_THREAD) {
 
         $type = SEARCH_POPUP_TYPE_THREAD;
-    
+
     }else {
 
-        html_draw_top();
+        html_draw_top('pm_popup_disabled');
         html_error_msg($lang['unkownsearchtypespecified'], 'search_popup.php', 'post', array('close' => $lang['close']));
         html_draw_bottom();
         exit;
@@ -151,10 +151,10 @@ if (isset($_GET['type']) && is_numeric($_GET['type'])) {
     }elseif ($_POST['type'] == SEARCH_POPUP_TYPE_THREAD) {
 
         $type = SEARCH_POPUP_TYPE_THREAD;
-    
+
     }else {
 
-        html_draw_top();
+        html_draw_top('pm_popup_disabled');
         html_error_msg($lang['unkownsearchtypespecified'], 'search_popup.php', 'post', array('close' => $lang['close']));
         html_draw_bottom();
         exit;
@@ -162,7 +162,7 @@ if (isset($_GET['type']) && is_numeric($_GET['type'])) {
 
 }else {
 
-    html_draw_top();
+    html_draw_top('pm_popup_disabled');
     html_error_msg($lang['mustspecifytypeofsearch'], 'search_popup.php', 'post', array('close' => $lang['close']));
     html_draw_bottom();
     exit;
@@ -180,7 +180,7 @@ if (isset($_POST['obj_name']) && strlen(trim(_stripslashes($_POST['obj_name'])))
 
 }else {
 
-    html_draw_top();
+    html_draw_top('pm_popup_disabled');
     html_error_msg($lang['noformobj'], 'search_popup.php', 'post', array('close' => $lang['close']));
     html_draw_bottom();
     exit;
@@ -210,7 +210,7 @@ if (isset($_POST['select_result'])) {
 
         $search_result = $_POST['search_result'];
 
-        html_draw_top();
+        html_draw_top('pm_popup_disabled');
 
         echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
         echo "  if (window.opener.returnSearchResult) {\n";
@@ -246,7 +246,7 @@ if (isset($_GET['search_query']) && strlen(trim(_stripslashes($_GET['search_quer
     $search_query = "";
 }
 
-html_draw_top('openprofile.js');
+html_draw_top('openprofile.js', 'pm_popup_disabled');
 
 echo "<h1>{$lang['search']}</h1>\n";
 echo "<br />\n";
@@ -307,7 +307,7 @@ if (strlen(trim($search_query)) > 0) {
     if ($type == SEARCH_POPUP_TYPE_USER) {
 
         $search_results_array = user_search($search_query, $start);
-    
+
     }elseif ($type == SEARCH_POPUP_TYPE_THREAD) {
 
         $search_results_array = thread_search($search_query, $start);
@@ -347,7 +347,7 @@ if (strlen(trim($search_query)) > 0) {
                     echo "                        <td align=\"left\">", form_checkbox("search_result[]", $search_result['LOGON'], ''), "&nbsp;<a href=\"user_profile.php?webtag=$webtag&amp;uid={$search_result['UID']}\" target=\"_blank\" onclick=\"return openProfile({$search_result['UID']}, '$webtag')\">", word_filter_add_ob_tags(format_user_name($search_result['LOGON'], $search_result['NICKNAME'])), "</a></td>\n";
                     echo "                      </tr>\n";
                 }
-            
+
             }else {
 
                 if (($search_results_array['results_count'] > 1) && $allow_multi === false) {
@@ -391,7 +391,7 @@ if (strlen(trim($search_query)) > 0) {
         echo "      <td align=\"center\">", form_submit('select_result', $lang['select']), "&nbsp;", form_submit('submit', $lang['searchagain']), "&nbsp;", form_submit('close', $lang['close']), "</td>\n";
         echo "    </tr>\n";
         echo "  </table>\n";
-    
+
     }else {
 
         echo "  <br />\n";

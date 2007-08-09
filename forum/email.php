@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.php,v 1.81 2007-06-07 20:27:25 decoyduck Exp $ */
+/* $Id: email.php,v 1.82 2007-08-09 22:55:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -121,7 +121,7 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 
 }else {
 
-    html_draw_top();
+    html_draw_top('pm_popup_disabled');
     html_error_msg($lang['nouserspecifiedforemail']);
     html_draw_bottom();
     exit;
@@ -129,7 +129,7 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 
 if (isset($_POST['close'])) {
 
-    html_draw_top();
+    html_draw_top('pm_popup_disabled');
     echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
     echo "  window.close();\n";
     echo "</script>\n";
@@ -175,14 +175,14 @@ if (isset($_POST['submit'])) {
 
         if (email_send_message_to_user($to_uid, $uid, $subject, $message)) {
 
-            html_draw_top("title={$lang['emailresult']}");
+            html_draw_top("title={$lang['emailresult']}", 'pm_popup_disabled');
             html_display_msg($lang['msgsent'], $lang['msgsentsuccessfully'], 'email.php', 'post', array('close' => $lang['close']), array('to_uid' => $to_uid), false, 'center');
             html_draw_bottom();
             exit;
 
         }else {
 
-            html_draw_top("title={$lang['emailresult']}");
+            html_draw_top("title={$lang['emailresult']}", 'pm_popup_disabled');
             html_error_msg($lang['mailsystemfailure'], 'email.php', 'post', array('close' => $lang['close']), array('to_uid' => $to_uid), false, 'center');
             html_draw_bottom();
             exit;
@@ -190,7 +190,7 @@ if (isset($_POST['submit'])) {
     }
 }
 
-html_draw_top("{$lang['email']} {$to_user['LOGON']}");
+html_draw_top("{$lang['email']} {$to_user['LOGON']}", 'pm_popup_disabled');
 
 if (!isset($subject)) $subject = "";
 if (!isset($message)) $message = "";

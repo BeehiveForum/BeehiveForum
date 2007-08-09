@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_folders.php,v 1.13 2007-06-09 16:18:38 decoyduck Exp $ */
+/* $Id: pm_folders.php,v 1.14 2007-08-09 22:55:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -78,7 +78,7 @@ if (!$user_sess = bh_session_check()) {
 // Check to see if the user is banned.
 
 if (bh_session_user_banned()) {
-    
+
     html_user_banned();
     exit;
 }
@@ -114,6 +114,10 @@ if (user_is_guest()) {
 // Check that PM system is enabled
 
 pm_enabled();
+
+// Check for new PMs
+
+pm_new_check($pm_new_count, $pm_outbox_count);
 
 // Various Headers for the PM folders
 
@@ -159,7 +163,7 @@ $pm_messages_frame = html_get_frame_name('pm_messages');
 
 // Draw the header.
 
-html_draw_top("basetarget=$pm_messages_frame", "pm.js");
+html_draw_top("basetarget=$pm_messages_frame", "pm.js", 'pm_popup_disabled');
 
 echo "<h1>{$lang['privatemessages']}</h1>\n";
 echo "<br />\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.238 2007-08-04 22:32:13 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.239 2007-08-09 22:55:44 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -468,6 +468,7 @@ function html_draw_top()
 
     $include_body_tag = true;
     $frameset_dtd = false;
+    $pm_popup_disabled = false;
 
     foreach($arg_array as $key => $func_args) {
 
@@ -532,6 +533,11 @@ function html_draw_top()
 
         if (preg_match("/^resize_width=/i", $func_args) > 0) {
             $resize_width = substr($func_args, 13);
+            unset($arg_array[$key]);
+        }
+
+        if (preg_match("/^pm_popup_disabled/i", $func_args) > 0) {
+            $pm_popup_disabled = true;
             unset($arg_array[$key]);
         }
     }
@@ -636,6 +642,10 @@ function html_draw_top()
             echo "//-->\n";
             echo "</script>\n";
         }
+
+        if (isset($_GET['disable_pm_popup'])) {
+            $pm_popup_disabled = true;
+        }
     }
 
     if ($include_body_tag === true) {
@@ -644,77 +654,83 @@ function html_draw_top()
 
         if (!user_is_guest()) {
 
-            // Get the new pm count and waiting pm count.
+            // Check to see if the PM popup is disabled on the current page.
 
-            pm_new_check($pm_new_count, $pm_outbox_count);
+            if ($pm_popup_disabled === false) {
 
-            // Pages we don't want the popup to appear on
+                // Get the new pm count and waiting pm count.
 
-            $pm_popup_disabled_pages = array('admin.php', 'discussion.php', 'index.php',
-                                             'pm.php', 'pm_edit.php', 'pm_folders.php',
-                                             'pm_messages.php', 'start.php', 'user.php');
+                pm_new_check($pm_new_count, $pm_outbox_count);
 
-            // Check that we're not on one of the pages.
+                // Pages we don't want the popup to appear on
 
-            if (!in_array(basename($_SERVER['PHP_SELF']), $pm_popup_disabled_pages)) {
+                $pm_popup_disabled_pages = array('attachments.php', 'dictionary.php', 'display_emoticons.php',
+                                                 'email.php', 'mods_list.php', 'pm.php', 'pm_edit.php',
+                                                 'pm_folders.php', 'pm_messages.php', 'pm_options.php',
+                                                 'poll_results.php', 'search_popup.php', 'user_profile.php');
 
-                // Format the popup message.
+                // Check that we're not on one of the pages.
 
-                $pm_notification = false;
+                if ((!in_array(basename($_SERVER['PHP_SELF']), $pm_popup_disabled_pages))) {
 
-                if ($pm_new_count == 1 && $pm_outbox_count == 0) {
+                    // Format the popup message.
 
-                    $pm_notification = $lang['youhave1newpm'];
+                    $pm_notification = false;
 
-                }elseif ($pm_new_count == 1 && $pm_outbox_count == 1) {
+                    if ($pm_new_count == 1 && $pm_outbox_count == 0) {
 
-                    $pm_notification = $lang['youhave1newpmand1waiting'];
+                        $pm_notification = $lang['youhave1newpm'];
 
-                }elseif ($pm_new_count == 0 && $pm_outbox_count == 1) {
+                    }elseif ($pm_new_count == 1 && $pm_outbox_count == 1) {
 
-                    $pm_notification = $lang['youhave1pmwaiting'];
+                        $pm_notification = $lang['youhave1newpmand1waiting'];
 
-                }elseif ($pm_new_count > 1 && $pm_outbox_count == 0) {
+                    }elseif ($pm_new_count == 0 && $pm_outbox_count == 1) {
 
-                    $pm_notification = sprintf($lang['youhavexnewpm'], $pm_new_count);
+                        $pm_notification = $lang['youhave1pmwaiting'];
 
-                }elseif ($pm_new_count > 1 && $pm_outbox_count == 1) {
+                    }elseif ($pm_new_count > 1 && $pm_outbox_count == 0) {
 
-                    $pm_notification = sprintf($lang['youhavexnewpmand1waiting'], $pm_new_count);
+                        $pm_notification = sprintf($lang['youhavexnewpm'], $pm_new_count);
 
-                }elseif ($pm_new_count > 1 && $pm_outbox_count > 1) {
+                    }elseif ($pm_new_count > 1 && $pm_outbox_count == 1) {
 
-                    $pm_notification = sprintf($lang['youhavexnewpmandxwaiting'], $pm_new_count, $pm_outbox_count);
+                        $pm_notification = sprintf($lang['youhavexnewpmand1waiting'], $pm_new_count);
 
-                }elseif ($pm_new_count == 1 && $pm_outbox_count > 1) {
+                    }elseif ($pm_new_count > 1 && $pm_outbox_count > 1) {
 
-                    $pm_notification = sprintf($lang['youhave1newpmandxwaiting'], $pm_outbox_count);
+                        $pm_notification = sprintf($lang['youhavexnewpmandxwaiting'], $pm_new_count, $pm_outbox_count);
 
-                }elseif ($pm_new_count == 0 && $pm_outbox_count > 1) {
+                    }elseif ($pm_new_count == 1 && $pm_outbox_count > 1) {
 
-                    $pm_notification = sprintf($lang['youhavexpmwaiting'], $pm_outbox_count);
-                }
+                        $pm_notification = sprintf($lang['youhave1newpmandxwaiting'], $pm_outbox_count);
 
-                if ($pm_notification !== false) {
+                    }elseif ($pm_new_count == 0 && $pm_outbox_count > 1) {
 
-                    echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
-                    echo "<!--\n\n";
-                    echo "var pm_timeout;\n\n";
-                    echo "function pm_notification() {\n";
-                    echo "    pm_timeout = setTimeout('pm_notification_popup()', 1);\n";
-                    echo "    return true;\n";
-                    echo "}\n\n";
-                    echo "function pm_notification_popup() {\n";
-                    echo "    clearTimeout(pm_timeout);\n";
-                    echo "    if (window.confirm('", wordwrap($pm_notification, 75, '\n'), "')) {\n";
-                    echo "        top.frames['", html_get_frame_name('main'), "'].location.replace('pm.php?webtag=$webtag');\n";
-                    echo "    }\n";
-                    echo "    return true;\n";
-                    echo "}\n\n";
-                    echo "//-->\n";
-                    echo "</script>\n";
+                        $pm_notification = sprintf($lang['youhavexpmwaiting'], $pm_outbox_count);
+                    }
 
-                    if (!in_array("pm_notification", $onload_array)) $onload_array[] = "pm_notification()";
+                    if ($pm_notification !== false) {
+
+                        echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
+                        echo "<!--\n\n";
+                        echo "var pm_timeout;\n\n";
+                        echo "function pm_notification() {\n";
+                        echo "    pm_timeout = setTimeout('pm_notification_popup()', 1);\n";
+                        echo "    return true;\n";
+                        echo "}\n\n";
+                        echo "function pm_notification_popup() {\n";
+                        echo "    clearTimeout(pm_timeout);\n";
+                        echo "    if (window.confirm('", wordwrap($pm_notification, 75, '\n'), "')) {\n";
+                        echo "        top.frames['", html_get_frame_name('main'), "'].location.replace('pm.php?webtag=$webtag');\n";
+                        echo "    }\n";
+                        echo "    return true;\n";
+                        echo "}\n\n";
+                        echo "//-->\n";
+                        echo "</script>\n";
+
+                        if (!in_array("pm_notification", $onload_array)) $onload_array[] = "pm_notification()";
+                    }
                 }
             }
 

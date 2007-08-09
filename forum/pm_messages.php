@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_messages.php,v 1.23 2007-08-01 20:23:01 decoyduck Exp $ */
+/* $Id: pm_messages.php,v 1.24 2007-08-09 22:55:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -79,7 +79,7 @@ if (!$user_sess = bh_session_check()) {
 // Check to see if the user is banned.
 
 if (bh_session_user_banned()) {
-    
+
     html_user_banned();
     exit;
 }
@@ -115,6 +115,10 @@ if (user_is_guest()) {
 // Check that PM system is enabled
 
 pm_enabled();
+
+// Check for new PMs
+
+pm_new_check($pm_new_count, $pm_outbox_count);
 
 // Various Headers for the PM folders
 
@@ -229,18 +233,18 @@ if (isset($_GET['folder'])) {
 // Check to see if we're displaying a message.
 
 if (isset($mid) && is_numeric($mid) && $mid > 0) {
-    
+
     if (($current_folder != PM_SEARCH_RESULTS) && ($current_folder != $message_folder)) {
-    
-        html_draw_top();
+
+        html_draw_top('pm_popup_disabled');
         html_error_msg($lang['messagenotfoundinselectedfolder']);
         html_draw_bottom();
         exit;
-    }    
-    
+    }
+
     if (!$pm_message_array = pm_message_get($mid)) {
 
-        html_draw_top();
+        html_draw_top('pm_popup_disabled');
         html_error_msg($lang['messagehasbeendeleted']);
         html_draw_bottom();
         exit;
@@ -296,7 +300,7 @@ if (isset($_POST['search'])) {
             case SEARCH_NO_KEYWORDS:
 
                 if (isset($search_string) && strlen(trim($search_string)) > 0) {
-                
+
                     $keywords_error_array = search_strip_keywords($search_string, true);
                     $keywords_error_array['keywords'] = search_strip_special_chars($keywords_error_array['keywords'], false);
 
@@ -308,7 +312,7 @@ if (isset($_POST['search'])) {
                     $error_msg.= "<h2>{$lang['keywordscontainingerrors']}</h2>\n";
                     $error_msg.= "<p><ul><li>". implode("</li>\n        <li>", $keywords_error_array['keywords']). "</li></ul></p>\n";
 
-                    html_draw_top();
+                    html_draw_top('pm_popup_disabled');
                     html_error_msg($error_msg);
                     html_draw_bottom();
                     exit;
@@ -316,8 +320,8 @@ if (isset($_POST['search'])) {
                 }else {
 
                     $mysql_stop_word_link = "<a href=\"search.php?webtag=$webtag&amp;show_stop_words=true\" target=\"_blank\" onclick=\"return display_mysql_stopwords('$webtag', '')\">{$lang['mysqlstopwordlist']}</a>";
-                    
-                    html_draw_top();
+
+                    html_draw_top('pm_popup_disabled');
                     html_error_msg(sprintf("<p>{$lang['notexttosearchfor']}</p>", $min_length, $max_length, $mysql_stop_word_link));
                     html_draw_bottom();
                     exit;
@@ -325,7 +329,7 @@ if (isset($_POST['search'])) {
 
             case SEARCH_FREQUENCY_TOO_GREAT:
 
-                html_draw_top();
+                html_draw_top('pm_popup_disabled');
                 html_error_msg(sprintf($lang['searchfrequencyerror'], $search_frequency));
                 html_draw_bottom();
                 exit;
@@ -337,7 +341,7 @@ if (isset($_POST['search'])) {
 
 pm_user_prune_folders();
 
-html_draw_top("basetarget=_blank", "openprofile.js", "search.js", "pm.js");
+html_draw_top("basetarget=_blank", "openprofile.js", "search.js", "pm.js", 'pm_popup_disabled');
 
 $start = floor($page - 1) * 10;
 if ($start < 0) $start = 0;
@@ -410,12 +414,12 @@ if ($current_folder == PM_SEARCH_RESULTS) {
     }else {
         echo "                   <td class=\"subhead\" align=\"left\" width=\"15%\" nowrap=\"nowrap\"><a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=TYPE&amp;sort_dir=DESC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">{$lang['folder']}</a></td>\n";
     }
-} 
+}
 
 if ($current_folder == PM_FOLDER_INBOX || $current_folder == PM_FOLDER_SAVED || $current_folder == PM_SEARCH_RESULTS) {
 
     $col_width = ($current_folder == PM_FOLDER_SAVED || $current_folder == PM_SEARCH_RESULTS) ? '15%' : '30%';
-    
+
     if ($sort_by == 'PM.FROM_UID' && $sort_dir == 'ASC') {
         echo "                   <td class=\"subhead_sort_asc\" align=\"left\" width=\"$col_width\" nowrap=\"nowrap\"><a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=FROM_UID&amp;sort_dir=DESC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">{$lang['from']}</a></td>\n";
     }elseif ($sort_by == 'PM.FROM_UID' && $sort_dir == 'DESC') {
@@ -455,7 +459,7 @@ if ($sort_by == 'CREATED' && $sort_dir == 'ASC') {
 echo "                </tr>\n";
 
 if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['message_array']) > 0) {
-    
+
     foreach($pm_messages_array['message_array'] as $message) {
 
         echo "                <tr>\n";
@@ -479,7 +483,7 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
         }
 
         echo "            <a href=\"pm_messages.php?webtag=$webtag&amp;folder=$current_folder&amp;mid={$message['MID']}&amp;page=$page\" target=\"_self\">", word_filter_add_ob_tags($message['SUBJECT']), "</a>";
-        
+
         if (isset($message['AID']) && pm_has_attachments($message['MID'])) {
             echo "            &nbsp;&nbsp;<img src=\"".style_image('attach.png')."\" border=\"0\" alt=\"{$lang['attachment']} - {$message['AID']}\" title=\"{$lang['attachment']}\" />";
         }
@@ -508,11 +512,11 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
         }elseif ($current_folder == PM_FOLDER_DRAFTS) {
 
             if (isset($message['RECIPIENTS']) && strlen(trim($message['RECIPIENTS'])) > 0) {
-                
+
                 $recipient_array = preg_split("/[;|,]/", trim($message['RECIPIENTS']));
-                
+
                 if ($message['TO_UID'] > 0) {
-                    $recipient_array = array_unique(array_merge($recipient_array, array($message['TLOGON'])));               
+                    $recipient_array = array_unique(array_merge($recipient_array, array($message['TLOGON'])));
                 }
 
                 $recipient_array = array_map('user_profile_popup_callback', $recipient_array);
@@ -543,7 +547,7 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
                     $recipient_array = preg_split("/[;|,]/", trim($message['RECIPIENTS']));
 
                     if ($message['TO_UID'] > 0) {
-                        $recipient_array = array_unique(array_merge($recipient_array, array($message['TLOGON'])));               
+                        $recipient_array = array_unique(array_merge($recipient_array, array($message['TLOGON'])));
                     }
 
                     $recipient_array = array_map('user_profile_popup_callback', $recipient_array);
@@ -582,7 +586,7 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
 }else {
 
     if ($current_folder == PM_SEARCH_RESULTS) {
-    
+
         echo "                <tr>\n";
         echo "                  <td class=\"postbody\"><img src=\"", style_image('search.png'), "\" alt=\"{$lang['matches']}\" title=\"{$lang['matches']}\" /></td><td align=\"left\" class=\"postbody\">{$lang['found']}: 0 {$lang['matches']}</td>\n";
         echo "                </tr>\n";
@@ -642,7 +646,7 @@ if (isset($pm_message_array) && is_array($pm_message_array)) {
     echo "    </tr>\n";
     echo "  </table>\n";
 }
-    
+
 echo "</form>\n";
 echo "</div>\n";
 

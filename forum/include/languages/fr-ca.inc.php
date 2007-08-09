@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.60 2007-07-19 22:14:13 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.61 2007-08-09 22:55:44 decoyduck Exp $ */
 
 // French Canadian language file
 
@@ -334,7 +334,6 @@ $lang['clearuserhistory'] = "Effacer l'historique de l'usager";
 $lang['changedlogonfromto'] = "Changement de la session d'ouverture de %s à %s";
 $lang['changednicknamefromto'] = "Changement du pseudonyme de %s à %s";
 $lang['changedemailfromto'] = "Changement de l'adresse courriel de %s à %s";
-$lang['usersettingsupdated'] = "La mise à jour des options d'utilisateurs réussie.";
 $lang['nomatches'] = "Aucune correspondance trouvée.";
 $lang['deleteposts'] = "Supprimer les messages";
 $lang['deleteallusersposts'] = "Supprimer tous les messages de cet utilisateur";

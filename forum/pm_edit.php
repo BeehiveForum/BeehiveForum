@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.108 2007-06-10 12:28:43 decoyduck Exp $ */
+/* $Id: pm_edit.php,v 1.109 2007-08-09 22:55:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -80,7 +80,7 @@ if (!$user_sess = bh_session_check()) {
 // Check to see if the user is banned.
 
 if (bh_session_user_banned()) {
-    
+
     html_user_banned();
     exit;
 }
@@ -137,7 +137,7 @@ if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
 
 }else {
 
-    html_draw_top();
+    html_draw_top('pm_popup_disabled');
     html_error_msg($lang['nomessagespecifiedforedit']);
     html_draw_bottom();
     exit;
@@ -282,7 +282,7 @@ if ($valid && isset($_POST['preview'])) {
 
     }else {
 
-        html_draw_top();
+        html_draw_top('pm_popup_disabled');
         pm_edit_refuse();
         html_draw_bottom();
         exit;
@@ -307,7 +307,7 @@ if ($valid && isset($_POST['preview'])) {
 
     }else {
 
-        html_draw_top();
+        html_draw_top('pm_popup_disabled');
         pm_edit_refuse();
         html_draw_bottom();
         exit;
@@ -345,7 +345,7 @@ if ($valid && isset($_POST['preview'])) {
     $user_prefs['POST_PAGE'] = $page_prefs;
 
     if (!user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
-        
+
         $error_html = "<h2>{$lang['failedtoupdateuserdetails']}</h2>\n";
         $valid = false;
     }
@@ -356,7 +356,7 @@ if ($valid && isset($_POST['preview'])) {
 
         if ($pm_message_array['TYPE'] != PM_OUTBOX) {
 
-            html_draw_top();
+            html_draw_top('pm_popup_disabled');
             pm_edit_refuse();
             html_draw_bottom();
             exit;
@@ -379,14 +379,14 @@ if ($valid && isset($_POST['preview'])) {
 
     }else {
 
-        html_draw_top();
+        html_draw_top('pm_popup_disabled');
         pm_edit_refuse();
         html_draw_bottom();
         exit;
     }
 }
 
-html_draw_top("onUnload=clearFocus()", "resize_width=720", "openprofile.js", "edit.js", "pm.js", "dictionary.js", "htmltools.js", "basetarget=_blank");
+html_draw_top("onUnload=clearFocus()", "resize_width=720", "openprofile.js", "edit.js", "pm.js", "dictionary.js", "htmltools.js", "basetarget=_blank", 'pm_popup_disabled');
 
 echo "<h1>{$lang['privatemessages']} &raquo; {$lang['editpm']}</h1>\n";
 echo "<br />\n";

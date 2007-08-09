@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.453 2007-07-19 22:14:13 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.454 2007-08-09 22:55:44 decoyduck Exp $ */
 
 // British English language file
 
@@ -323,6 +323,7 @@ $lang['manageuser'] = "Manage User";
 $lang['manageusers'] = "Manage Users";
 $lang['userstatusforforum'] = "User Status for %s";
 $lang['userdetails'] = "User Details";
+$lang['successfullyupdateduserdetails'] = "Successfully Updated User Details";
 $lang['warning_caps'] = "WARNING";
 $lang['userdeleteallpostswarning'] = "Are you sure you want to delete all of the selected user's posts? Once the posts are deleted they cannot be retrieved and will be lost forever.";
 $lang['postssuccessfullydeleted'] = "Posts were successfully deleted.";
@@ -335,10 +336,20 @@ $lang['clearuserhistory'] = "Clear User History";
 $lang['changedlogonfromto'] = "Changed Logon from %s to %s";
 $lang['changednicknamefromto'] = "Changed Nickname from %s to %s";
 $lang['changedemailfromto'] = "Changed Email from %s to %s";
-$lang['usersettingsupdated'] = "User Settings Successfully Updated";
+$lang['successfullycleareduserhistory'] = "Successfully cleared user history";
+$lang['failedtoclearuserhistory'] = "Failed to clear user history";
+$lang['usersettingssuccessfullyupdated'] = "User Settings Successfully Updated";
+$lang['failedtoupdateusersettings'] = "Failed To Update User Settings";
+$lang['successfullychangedpassword'] = "Successfully Changed Password";
+$lang['failedtochangepasswd'] = "Failed To Change Password";
 $lang['nomatches'] = "No matches";
 $lang['deleteposts'] = "Delete Posts";
 $lang['deleteallusersposts'] = "Delete all of this user's posts";
+$lang['deleteuser'] = "Delete User";
+$lang['userdeletewarning'] = "Are you sure you want to delete the selected user account? Once the account has been deleted it cannot be retrieved and will be lost forever.";
+$lang['deleteuseraccount'] = "Delete User Account";
+$lang['usersuccessfullydeleted'] = "User Successfully Deleted";
+$lang['failedtodeleteuser'] = "Failed To Delete User";
 $lang['noattachmentsforuser'] = "No attachments for this user";
 $lang['forgottenpassworddesc'] = "If this user has forgotten their password you can reset it for them here.";
 $lang['manageusersexp'] = "This list shows a selection of users who have logged on to your forum, sorted by %s. To alter a user's permissions click their name.";
@@ -459,6 +470,8 @@ $lang['replytothreads'] = "Reply to threads";
 $lang['createnewthreads'] = "Create new threads";
 $lang['editposts'] = "Edit posts";
 $lang['deleteposts'] = "Delete posts";
+$lang['postssuccessfullydeleted'] = "Posts Successfully Deleted";
+$lang['failedtodeleteusersposts'] = "Failed To Delete User's Posts";
 $lang['uploadattachments'] = "Upload attachments";
 $lang['moderatefolder'] = "Moderate folder";
 $lang['postinhtml'] = "Post in HTML";
@@ -543,10 +556,14 @@ $lang['requirepostapproval'] = "Require Post Approval";
 $lang['adminforumtoolsusercounterror'] = "There must be at least 1 user with admin tools and forum tools access on all forums!";
 $lang['postcount'] = "Post Count";
 $lang['resetpostcount'] = "Reset Post Count";
+$lang['successfullyresetpostcount'] = "Successfully Reset Post Count";
+$lang['failedtoresetuserpostcount'] = "Failed To Reset Post Count";
+$lang['userpostcountsuccessfullychanged'] = "User Post Count Successfully Changed";
+$lang['failedtochangeuserpostcount'] = "Failed To Change User Post Count";
 $lang['postapprovalqueue'] = "Post Approval Queue";
 $lang['nopostsawaitingapproval'] = "No posts are awaiting approval";
 $lang['approveselected'] = "Approve selected";
-$lang['successfullyapproveduser'] = "Successfully approved selected users";                                                
+$lang['successfullyapproveduser'] = "Successfully approved selected users";
 $lang['kickselected'] = "Kick selected";
 $lang['visitorlog'] = "Visitor Log";
 $lang['novisitorslogged'] = "No Visitors Logged";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.236 2007-07-19 22:14:13 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.237 2007-08-09 22:55:44 decoyduck Exp $ */
 
 // British English language file
 
@@ -335,7 +335,6 @@ $lang['clearuserhistory'] = "cL3@R u5er HI\$tOry";
 $lang['changedlogonfromto'] = "cH4N9ed lOg0n PHr0m %s tO %s";
 $lang['changednicknamefromto'] = "chANGeD NIckN4Me pHr0m %s tO %s";
 $lang['changedemailfromto'] = "cH@n93d 3m4IL fr0M %s TO %s";
-$lang['usersettingsupdated'] = "uSEr s3T+1ngS SUcc3\$sFulLY uPD@ted";
 $lang['nomatches'] = "no M4+ch3\$";
 $lang['deleteposts'] = "del3+E Po\$TS";
 $lang['deleteallusersposts'] = "deLe+e 4Ll OpH +HIs us3r'S Po\$TS";
@@ -546,7 +545,7 @@ $lang['resetpostcount'] = "rE5E+ P0S+ C0unt";
 $lang['postapprovalqueue'] = "po5t @pPrOV4l QueUE";
 $lang['nopostsawaitingapproval'] = "no p0\$T\$ AR3 4W41T1N9 4pProv@l";
 $lang['approveselected'] = "apPRove \$3l3c+ED";
-$lang['successfullyapproveduser'] = "succ3\$5Phully @PPr0V3D s3l3cT3d uSerS";                                                
+$lang['successfullyapproveduser'] = "succ3\$5Phully @PPr0V3D s3l3cT3d uSerS";
 $lang['kickselected'] = "kicK S3l3C+3D";
 $lang['visitorlog'] = "v1\$1t0R l09";
 $lang['novisitorslogged'] = "nO V151t0rs l099ED";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.142 2007-08-01 20:23:01 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.143 2007-08-09 22:55:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -109,7 +109,7 @@ if (!forum_check_access_level()) {
 
 if (forum_get_setting('attachments_enabled', 'N')) {
 
-    html_draw_top();
+    html_draw_top('pm_popup_disabled');
     html_error_msg($lang['attachmentshavebeendisabled']);
     html_draw_bottom();
     exit;
@@ -119,7 +119,7 @@ if (forum_get_setting('attachments_enabled', 'N')) {
 
 if (!$attachment_dir = attachments_check_dir()) {
 
-    html_draw_top();
+    html_draw_top('pm_popup_disabled');
     html_error_msg($lang['attachmentshavebeendisabled']);
     html_draw_bottom();
     exit;
@@ -137,7 +137,7 @@ if (isset($_GET['aid']) && is_md5($_GET['aid'])) {
 
 }else {
 
-    html_draw_top();
+    html_draw_top('pm_popup_disabled');
     html_error_msg($lang['aidnotspecified']);
     html_draw_bottom();
     exit;
@@ -242,22 +242,22 @@ if (isset($_POST['upload'])) {
     }
 
 }elseif (isset($_POST['delete_confirm'])) {
-    
+
     if (isset($_POST['delete_attachment_confirm']) && is_array($_POST['delete_attachment_confirm'])) {
-        
+
         foreach($_POST['delete_attachment_confirm'] as $hash => $del_attachment) {
 
             if ($del_attachment == "Y") {
-    
+
                 delete_attachment($hash);
             }
         }
     }
 
 }elseif (isset($_POST['delete'])) {
-    
+
     $hash_array = array();
-    
+
     if (isset($_POST['delete_attachment']) && is_array($_POST['delete_attachment'])) {
         $hash_array = array_merge($hash_array, array_keys($_POST['delete_attachment']));
     }
@@ -269,8 +269,8 @@ if (isset($_POST['upload'])) {
     if (is_array($hash_array) && sizeof($hash_array) > 0) {
 
         if (get_attachments($uid, $aid, $attachments_array, $image_attachments_array, $hash_array)) {
-            
-            html_draw_top();
+
+            html_draw_top('pm_popup_disabled');
 
             echo "<h1>{$lang['deleteattachments']}</h1>\n";
             echo "<br />\n";
@@ -300,7 +300,7 @@ if (isset($_POST['upload'])) {
             echo "                              <td><br />\n";
 
             if (is_array($attachments_array) && sizeof($attachments_array) > 0) {
-                
+
                 foreach($attachments_array as $attachment) {
 
                     echo "                                ", attachment_make_link($attachment, false, false), "\n";
@@ -350,8 +350,8 @@ if (isset($_POST['upload'])) {
 
 }elseif (isset($_POST['complete'])) {
 
-    html_draw_top();
-    
+    html_draw_top('pm_popup_disabled');
+
     echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
     echo "    try {\n";
     echo "        if (/edit_attachments.php|edit_prefs.php/.test(window.opener.location) == true) {\n";
@@ -367,7 +367,7 @@ if (isset($_POST['upload'])) {
 }
 
 
-html_draw_top('attachments.js', 'onload=add_upload_field_link()');
+html_draw_top('attachments.js', 'onload=add_upload_field_link()', 'pm_popup_disabled');
 
 echo "<script language=\"javascript\" type=\"text/javascript\">\n";
 echo "<!--\n\n";

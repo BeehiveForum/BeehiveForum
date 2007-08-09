@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll_results.php,v 1.25 2007-05-31 21:59:19 decoyduck Exp $ */
+/* $Id: poll_results.php,v 1.26 2007-08-09 22:55:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -107,7 +107,7 @@ if (!forum_check_access_level()) {
 
 if (isset($_POST['close'])) {
 
-    html_draw_top();
+    html_draw_top('pm_popup_disabled');
 
     echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
     echo "  window.close();\n";
@@ -123,7 +123,7 @@ if (isset($_GET['tid']) && is_numeric($_GET['tid'])) {
 
     if (!$t_fid = thread_get_folder($tid, 1)) {
 
-        html_draw_top();
+        html_draw_top('pm_popup_disabled');
         html_error_msg($lang['threadcouldnotbefound']);
         html_draw_bottom();
         exit;
@@ -131,7 +131,7 @@ if (isset($_GET['tid']) && is_numeric($_GET['tid'])) {
 
 }else {
 
-    html_draw_top();
+    html_draw_top('pm_popup_disabled');
     html_error_msg($lang['mustspecifypolltoview'], 'poll_results.php', 'post', array('close' => $lang['close']));
     html_draw_bottom();
     exit;
@@ -153,7 +153,7 @@ if (isset($_GET['view_style']) && is_numeric($_GET['view_style'])) {
     }
 }
 
-html_draw_top("openprofile.js");
+html_draw_top("openprofile.js", 'pm_popup_disabled');
 
 echo "<h1>{$lang['pollresults']}</h1>\n";
 echo "<br />\n";

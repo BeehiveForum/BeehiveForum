@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.454 2007-08-09 22:55:44 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.455 2007-08-12 21:46:35 decoyduck Exp $ */
 
 // British English language file
 
@@ -342,6 +342,8 @@ $lang['usersettingssuccessfullyupdated'] = "User Settings Successfully Updated";
 $lang['failedtoupdateusersettings'] = "Failed To Update User Settings";
 $lang['successfullychangedpassword'] = "Successfully Changed Password";
 $lang['failedtochangepasswd'] = "Failed To Change Password";
+$lang['viewuserhistory'] = "View User History";
+$lang['viewuseraliases'] = "View User Aliases";
 $lang['nomatches'] = "No matches";
 $lang['deleteposts'] = "Delete Posts";
 $lang['deleteallusersposts'] = "Delete all of this user's posts";
@@ -577,6 +579,7 @@ $lang['successfullyaddedsection'] = "Successfully added section";
 $lang['forumrulesmessage'] = "<p><b>Forum Rules</b></p><p>\nRegistration to %1\$s is free! We do insist that you abide by the rules and policies detailed below. If you agree to the terms, please check the 'I agree' checkbox and press the 'Register' button below. If you would like to cancel the registration, click %2\$s to return to the forums index.</p><p>\nAlthough the administrators and moderators of %1\$s will attempt to keep all objectionable messages off this forum, it is impossible for us to review all messages. All messages express the views of the author, and neither the owners of %1\$s, nor Project BeehiveForum and it's affiliates will be held responsible for the content of any message.</p><p>\nBy agreeing to these rules, you warrant that you will not post any messages that are obscene, vulgar, sexually-orientated, hateful, threatening, or otherwise violative of any laws.</p><p>The owners of %1\$s reserve the right to remove, edit, move or close any thread for any reason.</p>";
 $lang['cancellinktext'] = "here";
 $lang['failedtoupdateforumsettings'] = "Failed to update forum settings. Please try again later.";
+$lang['moreadminoptions'] = "More Admin Options";
 
 // Admin Log data (admin_viewlog.php) --------------------------------------------
 

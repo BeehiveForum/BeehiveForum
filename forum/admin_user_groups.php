@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups.php,v 1.43 2007-05-31 21:59:14 decoyduck Exp $ */
+/* $Id: admin_user_groups.php,v 1.44 2007-08-16 21:24:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -157,8 +157,12 @@ if (isset($_POST['delete'])) {
 
             if ($group_name = perm_get_group_name($gid)) {
 
-                perm_remove_group($gid);
-                admin_add_log_entry(DELETE_USER_GROUP, $group_name);
+                if (perm_remove_group($gid)) {
+
+                    admin_add_log_entry(DELETE_USER_GROUP, $group_name);
+                    header_redirect("admin_user_groups.php?webtag=$webtag&deleted=true");
+                    exit;
+                }
             }
         }
     }
@@ -168,12 +172,17 @@ html_draw_top('admin.js');
 
 echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['usergroups']}</h1>\n";
 
-if (isset($_GET['add_success']) && strlen(trim(_stripslashes($_GET['add_success']))) > 0) {
-    echo "<h2>{$lang['successfullyaddedgroup']}: ", _stripslashes($_GET['add_success']), "</h2>\n";
-}
+if (isset($_GET['added'])) {
 
-if (isset($_GET['del_success']) && strlen(trim(_stripslashes($_GET['del_success']))) > 0) {
-    echo "<h2>{$lang['successfullydeletedgroup']}: ", _stripslashes($_GET['del_success']), "</h2>\n";
+    html_display_success_msg($lang['successfullyaddedgroup'], '86%', 'center');
+
+}else if (isset($_GET['edited'])) {
+
+    html_display_success_msg($lang['successfullyeditedgroup'], '86%', 'center');
+
+}else if (isset($_GET['deleted'])) {
+
+    html_display_success_msg($lang['successfullydeletedgroup'], '86%', 'center');
 }
 
 echo "<br />\n";

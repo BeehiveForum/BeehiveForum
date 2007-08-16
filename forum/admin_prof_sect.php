@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_sect.php,v 1.101 2007-05-31 21:59:14 decoyduck Exp $ */
+/* $Id: admin_prof_sect.php,v 1.102 2007-08-16 21:24:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -111,45 +111,55 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
 $start = floor($page - 1) * 10;
 if ($start < 0) $start = 0;
 
-$error_html = "";
-$add_success = "";
-$del_success = "";
-$edit_success = "";
+// Array for holding error messages
 
-if (isset($_POST['cancel']) || isset($_POST['delete'])) {
+$error_msg_array = array();
 
-    unset($_POST['addsection'], $_GET['addsection'], $_POST['psid'], $_GET['psid']);
+// Cancel button clicked.
+
+if (isset($_POST['cancel'])) {
+
+    header_redirect("admin_prof_sect.php?webtag=$webtag");
+    exit;
 }
 
 if (isset($_POST['delete_sections'])) {
 
+    $valid = true;
+
     if (isset($_POST['delete_section']) && is_array($_POST['delete_section'])) {
 
         foreach($_POST['delete_section'] as $psid => $delete_section) {
-    
-            if (($delete_section == "Y") && ($profile_name = profile_section_get_name($psid))) {
+
+            if ($valid && $delete_section == "Y" && $profile_name = profile_section_get_name($psid)) {
 
                 if (profile_section_delete($psid)) {
 
                     admin_add_log_entry(DELETE_PROFILE_SECT, $profile_name);
-                    $del_success = "<h2>{$lang['successfullyremovedselectedprofilesections']}</h2>\n";
 
                 }else {
-                    
-                    $error_html.= "<h2>{$lang['failedtoremoveprofilesections']}</h2>\n";
-                }               
+
+                    $error_msg_array[] = $lang['failedtoremoveprofilesections'];
+                    $valid = false;
+                }
             }
+        }
+
+        if ($valid) {
+
+            header_redirect("admin_prof_sect.php?webtag=$webtag&deleted=true");
+            exit;
         }
     }
 
 }elseif (isset($_POST['addsectionsubmit'])) {
 
     $valid = true;
-    
+
     if (isset($_POST['t_name_new']) && strlen(trim(_stripslashes($_POST['t_name_new']))) > 0) {
         $t_name_new = trim(_stripslashes($_POST['t_name_new']));
     }else {
-        $error_html.= "<h2>{$lang['mustsepecifyaprofilesectionname']}</h2>\n";
+        $error_msg_array[] = $lang['mustsepecifyaprofilesectionname'];
         $valid = false;
     }
 
@@ -157,32 +167,31 @@ if (isset($_POST['delete_sections'])) {
 
         if ($new_psid = profile_section_create($t_name_new)) {
 
-            $add_success = "<h2>{$lang['successfullyaddedsection']}</h2>\n";
-            admin_add_log_entry(ADDED_PROFILE_SECT, $t_name_new);
-            unset($t_name_new, $_POST['addsection'], $_POST['addsectionsubmit']);
+            header_redirect("admin_prof_sect.php?webtag=$webtag&added=true");
+            exit;
         }
     }
 
 }elseif (isset($_POST['editfeedsubmit'])) {
 
     $valid = true;
-    
+
     if (isset($_POST['psid']) && is_numeric($_POST['psid'])) {
         $psid = $_POST['psid'];
     }else {
-        $error_html.= "<h2>{$lang['mustspecifyaprofilesectionid']}</h2>\n";
+        $error_msg_array[] = $lang['mustspecifyaprofilesectionid'];
         $valid = false;
     }
 
     if (isset($_POST['t_name_new']) && strlen(trim(_stripslashes($_POST['t_name_new']))) > 0) {
         $t_new_name = trim(_stripslashes($_POST['t_name_new']));
     }else {
-        $error_html.= "<h2>{$lang['mustsepecifyaprofilesectionname']}</h2>\n";
+        $error_msg_array[] = $lang['mustsepecifyaprofilesectionname'];
         $valid = false;
     }
 
     if ($valid) {
-    
+
         if (profile_section_update($psid, $t_new_name)) {
 
             $t_section_name = profile_section_get_name($psid);
@@ -191,8 +200,8 @@ if (isset($_POST['delete_sections'])) {
                 admin_add_log_entry(CHANGE_PROFILE_SECT, array($t_section_name, $t_new_name));
             }
 
-            $edit_success = "<h2>{$lang['successfullyeditedprofilesection']}</h2>\n";
-            unset($_POST['updatesectionsubmit'], $_POST['psid'], $_POST['t_name'], $psid, $t_new_name, $t_section_name);
+            header_redirect("admin_prof_sect.php?webtag=$webtag&edited=true");
+            exit;
         }
     }
 
@@ -225,11 +234,11 @@ if (isset($_POST['move_down']) && is_array($_POST['move_down'])) {
 if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
 
     html_draw_top();
-    
+
     echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageprofilesections']} &raquo; {$lang['addnewprofilesection']}</h1>\n";
 
-    if (isset($error_html) && strlen(trim($error_html)) > 0) {
-        echo $error_html;
+    if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+        html_display_error_array($error_msg_array, '500', 'center');
     }
 
     echo "<br />\n";
@@ -307,16 +316,12 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
     }
 
     html_draw_top();
-    
-    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageprofilesections']} &raquo; {$profile_section['NAME']}</h1>\n";
-    
-    if (isset($error_html) && strlen(trim($error_html)) > 0) {
-        echo $error_html;
-    }
 
-    if (isset($add_success) && strlen(trim($add_success)) > 0) echo $add_success;
-    if (isset($del_success) && strlen(trim($del_success)) > 0) echo $del_success;
-    if (isset($edit_success) && strlen(trim($edit_success)) > 0) echo $edit_success;
+    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageprofilesections']} &raquo; {$profile_section['NAME']}</h1>\n";
+
+    if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+        html_display_error_array($error_msg_array, '500', 'center');
+    }
 
     echo "<br />\n";
     echo "<div align=\"center\">\n";
@@ -351,7 +356,7 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
     echo "              </table>\n";
     echo "            </td>\n";
     echo "          </tr>\n";
-    echo "        </table>\n";    
+    echo "        </table>\n";
     echo "      </td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
@@ -369,16 +374,25 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
 }else {
 
     html_draw_top();
-    
+
     echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageprofilesections']}</h1>\n";
 
-    if (isset($error_html) && strlen(trim($error_html)) > 0) {
-        echo $error_html;
-    }
+    if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-    if (isset($add_success) && strlen(trim($add_success)) > 0) echo $add_success;
-    if (isset($del_success) && strlen(trim($del_success)) > 0) echo $del_success;
-    if (isset($edit_success) && strlen(trim($edit_success)) > 0) echo $edit_success;
+        html_display_error_array($error_msg_array, '500', 'center');
+
+    }else if (isset($_GET['added'])) {
+
+        html_display_success_msg($lang['successfullyaddedprofilesection'], '500', 'center');
+
+    }else if (isset($_GET['edited'])) {
+
+        html_display_success_msg($lang['successfullyeditedprofilesection'], '500', 'center');
+
+    }else if (isset($_GET['deleted'])) {
+
+        html_display_success_msg($lang['successfullyremovedselectedprofilesections'], '500', 'center');
+    }
 
     echo "<br />\n";
     echo "<div align=\"center\">\n";
@@ -434,7 +448,7 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
             echo "                  <td valign=\"top\" align=\"center\"><a href=\"admin_prof_items.php?webtag=$webtag&amp;psid={$profile_section['PSID']}&amp;sect_page=$page&amp;viewitems=yes\">{$profile_section['ITEM_COUNT']}</a></td>\n";
             echo "                </tr>\n";
         }
-    
+
     }else {
 
         echo "                <tr>\n";

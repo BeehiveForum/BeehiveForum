@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_add.php,v 1.46 2007-05-31 21:59:14 decoyduck Exp $ */
+/* $Id: admin_user_groups_add.php,v 1.47 2007-08-16 21:24:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -99,9 +99,9 @@ if (!$webtag = get_webtag($webtag_search)) {
 
 $lang = load_language_file();
 
-if (isset($_POST['cancel'])) {
-    header_redirect("./admin_user_groups.php?webtag=$webtag");
-}
+// Array to hold error messages
+
+$error_msg_array = array();
 
 if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
@@ -111,10 +111,13 @@ if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
     exit;
 }
 
-html_draw_top();
+// Cancel button clicked.
 
-// Draw the form
-echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageusergroups']} &raquo; {$lang['addusergroup']}</h1>\n";
+if (isset($_POST['cancel'])) {
+
+    header_redirect("./admin_user_groups.php?webtag=$webtag");
+    exit;
+}
 
 // Do updates
 
@@ -123,9 +126,12 @@ if (isset($_POST['submit'])) {
     $valid = true;
 
     if (isset($_POST['t_name']) && strlen(trim(_stripslashes($_POST['t_name']))) > 0) {
+
         $t_name = trim(_stripslashes($_POST['t_name']));
+
     }else {
-        $error_html = "<h2>{$lang['mustentergroupname']}</h2>\n";
+
+        $error_msg_array[] = $lang['mustentergroupname'];
         $valid = false;
     }
 
@@ -179,11 +185,18 @@ if (isset($_POST['submit'])) {
             }
 
             admin_add_log_entry(CREATE_USER_GROUP, $t_name);
-
-            $group_name = rawurlencode($t_name);
-            header_redirect("./admin_user_groups.php?webtag=$webtag&add_success=$group_name");
+            header_redirect("./admin_user_groups.php?webtag=$webtag&added=true");
+            exit;
         }
     }
+}
+
+html_draw_top();
+
+echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageusergroups']} &raquo; {$lang['addusergroup']}</h1>\n";
+
+if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+    html_display_error_array($error_msg_array, '550', 'center');
 }
 
 echo "<br />\n";

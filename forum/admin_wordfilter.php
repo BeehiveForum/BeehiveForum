@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_wordfilter.php,v 1.100 2007-06-29 18:00:14 decoyduck Exp $ */
+/* $Id: admin_wordfilter.php,v 1.101 2007-08-16 21:24:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -113,26 +113,33 @@ $admin_word_filter_options = array(WORD_FILTER_TYPE_ALL => $lang['all'],
 $admin_word_filter_enabled = array(WORD_FILTER_DISABLED => $lang['no'],
                                    WORD_FILTER_ENABLED => $lang['yes']);
 
+// Form validation
+
 $valid = true;
-$error_html = "";
+
+// Array to hold error messages
+
+$error_msg_array = array();
+
+// Submit code
 
 if (isset($_POST['cancel']) || isset($_POST['delete'])) {
-    
+
     unset($_POST['addfilter'], $_POST['filter_id'], $_GET['addfilter'], $_GET['filter_id']);
 }
 
 if (isset($_POST['delete'])) {
-    
+
     if (isset($_POST['delete_filters']) && is_array($_POST['delete_filters'])) {
 
         foreach($_POST['delete_filters'] as $filter_id => $delete_filter) {
 
             if (($delete_filter == "Y")) {
-                
+
                 if (!admin_delete_word_filter($filter_id)) {
 
                     $valid = false;
-                    $error_html = "<h2>{$lang['failedtoupdatewordfilter']}</h2>\n";
+                    $error_msg_array[] = $lang['failedtoupdatewordfilter'];
                 }
             }
         }
@@ -140,7 +147,7 @@ if (isset($_POST['delete'])) {
         if ($valid) {
 
             admin_add_log_entry(EDIT_WORD_FILTER);
-            
+
             $redirect = "./admin_wordfilter.php?webtag=$webtag&updated=true";
             header_redirect($redirect, $lang['wordfilterupdated']);
             exit;
@@ -150,7 +157,7 @@ if (isset($_POST['delete'])) {
 }elseif (isset($_POST['save'])) {
 
     $new_forum_settings = forum_get_settings();
-    
+
     if (isset($_POST['admin_force_word_filter']) && $_POST['admin_force_word_filter'] == "Y") {
         $new_forum_settings['admin_force_word_filter'] = "Y";
     }else {
@@ -161,34 +168,34 @@ if (isset($_POST['delete'])) {
 
         admin_add_log_entry(EDIT_WORD_FILTER);
         header_redirect("./admin_wordfilter.php?webtag=$webtag&updated=true", $lang['wordfilterupdated']);
-    
+
     }else {
 
         $valid = false;
-        $error_html.= "<h2>{$lang['failedtoupdateforumsettings']}</h2>\n";
+        $error_msg_array[] = $lang['failedtoupdateforumsettings'];
     }
 
 }elseif (isset($_POST['addfilter_submit'])) {
-    
+
     if (isset($_POST['add_new_filter_name']) && strlen(trim(_stripslashes($_POST['add_new_filter_name'])))) {
        $add_new_filter_name = trim(_stripslashes($_POST['add_new_filter_name']));
     }else {
        $valid = false;
-       $error_html.= "<h2>{$lang['mustspecifyfiltername']}</h2>\n";
+       $error_msg_array[] = $lang['mustspecifyfiltername'];
     }
 
     if (isset($_POST['add_new_match_text']) && strlen(trim(_stripslashes($_POST['add_new_match_text'])))) {
        $add_new_match_text = trim(_stripslashes($_POST['add_new_match_text']));
     }else {
        $valid = false;
-       $error_html.= "<h2>{$lang['mustspecifymatchedtext']}</h2>\n";
+       $error_msg_array[] = $lang['mustspecifymatchedtext'];
     }
 
     if (isset($_POST['add_new_filter_option']) && is_numeric($_POST['add_new_filter_option'])) {
        $add_new_filter_option = $_POST['add_new_filter_option'];
     }else {
        $valid = false;
-       $error_html.= "<h2>{$lang['mustspecifyfilteroption']}</h2>\n";
+       $error_msg_array[] = $lang['mustspecifyfilteroption'];
     }
 
     if (isset($_POST['add_new_filter_enabled']) && is_numeric($_POST['add_new_filter_enabled'])) {
@@ -226,28 +233,28 @@ if (isset($_POST['delete'])) {
         $filter_id = $_POST['filter_id'];
     }else {
         $valid = false;
-        $error_html.= "<h2>{$lang['mustspecifyfilterid']}</h2>\n";
+        $error_msg_array[] = $lang['mustspecifyfilterid'];
     }
 
     if (isset($_POST['filter_name']) && strlen(trim(_stripslashes($_POST['filter_name'])))) {
         $filter_name = trim(_stripslashes($_POST['filter_name']));
     }else {
         $valid = false;
-        $error_html.= "<h2>{$lang['mustspecifyfiltername']}</h2>\n";
+        $error_msg_array[] = $lang['mustspecifyfiltername'];
     }
-    
+
     if (isset($_POST['match_text']) && strlen(trim(_stripslashes($_POST['match_text'])))) {
         $match_text = trim(_stripslashes($_POST['match_text']));
     }else {
         $valid = false;
-        $error_html.= "<h2>{$lang['mustspecifymatchedtext']}</h2>\n";
+        $error_msg_array[] = $lang['mustspecifymatchedtext'];
     }
 
     if (isset($_POST['filter_option']) && is_numeric($_POST['filter_option'])) {
         $filter_option = $_POST['filter_option'];
     }else {
         $valid = false;
-        $error_html.= "<h2>{$lang['mustspecifyfilteroption']}</h2>\n";
+        $error_msg_array[] = $lang['mustspecifyfilteroption'];
     }
 
     if (isset($_POST['filter_enabled']) && is_numeric($_POST['filter_enabled'])) {
@@ -279,7 +286,7 @@ if (isset($_POST['delete'])) {
 
         }else {
 
-            $error_html.= "<h2>{$lang['failedtoupdatewordfilter']}2</h2>\n";
+            $error_msg_array[] = $lang['failedtoupdatewordfilter'];
         }
     }
 
@@ -293,10 +300,12 @@ if (isset($_POST['delete'])) {
 if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 
     html_draw_top();
-    
+
     echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['wordfilter']} &raquo; {$lang['addwordfilter']}</h1>\n";
 
-    if (isset($error_html) && strlen($error_html) > 0) echo $error_html;
+    if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+        html_display_error_array($error_msg_array, '450', 'center');
+    }
 
     echo "<br />\n";
     echo "<div align=\"center\">\n";
@@ -367,7 +376,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "  </table>\n";
     echo "</form>\n";
     echo "</div>\n";
-    
+
     html_draw_bottom();
 
 }elseif (isset($_POST['filter_id']) || isset($_GET['filter_id'])) {
@@ -397,10 +406,12 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     }
 
     html_draw_top();
-    
+
     echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['wordfilter']} &raquo; {$lang['editwordfilter']}</h1>\n";
 
-    if (isset($error_html) && strlen($error_html) > 0) echo $error_html;
+    if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+        html_display_error_array($error_msg_array, '450', 'center');
+    }
 
     echo "<br />\n";
     echo "<div align=\"center\">\n";
@@ -478,11 +489,16 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 }else {
 
     html_draw_top();
-    
+
     echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['wordfilter']}</h1>\n";
 
-    if (isset($_GET['updated'])) {
-        echo "<h2>{$lang['wordfilterupdated']}</h2>\n";
+    if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+
+        html_display_error_array($error_msg_array, '450', 'center');
+
+    }else if (isset($_GET['updated'])) {
+
+        html_display_success_msg($lang['wordfilterupdated'], '600', 'center');
     }
 
     echo "<br />\n";

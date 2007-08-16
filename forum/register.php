@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.163 2007-07-17 16:23:06 decoyduck Exp $ */
+/* $Id: register.php,v 1.164 2007-08-16 15:38:12 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -81,7 +81,7 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 // Where are we going after we've logged on?
 
 if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri']))) > 0) {
-    
+
     $final_uri = basename(trim(_stripslashes($_GET['final_uri'])));
 
     $available_files = get_available_files();
@@ -97,7 +97,7 @@ $user_sess = bh_session_check(false);
 // Check to see if the user is banned.
 
 if (bh_session_user_banned()) {
-    
+
     html_user_banned();
     exit;
 }
@@ -140,17 +140,26 @@ $available_timezones = get_available_timezones();
 
 $text_captcha = new captcha(6, 15, 25, 9, 30);
 
+// Array to hold error messages
+
+$error_msg_array = array();
+
+// Check to see if Forum Rules are enabled.
+
 if (forum_get_setting('forum_rules_enabled', 'Y', true)) {
 
     $user_agree_rules = 'N';
 
     if (isset($_POST['forum_rules'])) {
 
-        if (isset($_POST['user_agree_rules']) && $_POST['user_agree_rules'] == 'Y') {       
+        if (isset($_POST['user_agree_rules']) && $_POST['user_agree_rules'] == 'Y') {
+
             $user_agree_rules = 'Y';
+
         }else {
-            $error_html.= "<h2>{$lang['youmustagreetotheforumrules']}</h2>\n";
-            $valid = false;        
+
+            $error_msg_array[] = $lang['youmustagreetotheforumrules'];
+            $valid = false;
         }
     }
 
@@ -167,15 +176,17 @@ if (isset($_POST['cancel'])) {
 }
 
 $valid = true;
-$error_html = "";   
 
 if (isset($_POST['register'])) {
 
     if (isset($_POST['user_agree_rules']) && $_POST['user_agree_rules'] == 'Y') {
+
         $user_agree_rules = 'Y';
+
     }else {
-        $error_html.= "<h2>{$lang['youmustagreetotheforumrules']}</h2>\n";
-        $valid = false;        
+
+        $error_msg_array[] = $lang['youmustagreetotheforumrules'];
+        $valid = false;
     }
 
     if (isset($_POST['logon']) && strlen(trim(_stripslashes($_POST['logon']))) > 0) {
@@ -183,29 +194,32 @@ if (isset($_POST['register'])) {
         $logon = strtoupper(trim(_stripslashes($_POST['logon'])));
 
         if (!preg_match("/^[a-z0-9_-]+$/i", $logon)) {
-            $error_html.= "<h2>{$lang['usernameinvalidchars']}</h2>\n";
+
+            $error_msg_array[] = $lang['usernameinvalidchars'];
             $valid = false;
         }
 
         if (strlen($logon) < 2) {
-            $error_html.= "<h2>{$lang['usernametooshort']}</h2>\n";
+
+            $error_msg_array[] = $lang['usernametooshort'];
             $valid = false;
         }
 
         if (strlen($logon) > 15) {
-            $error_html.= "<h2>{$lang['usernametoolong']}</h2>\n";
+
+            $error_msg_array[] = $lang['usernametoolong'];
             $valid = false;
         }
 
         if (logon_is_banned($logon)) {
 
-            $error_html.= "<h2>{$lang['logonnotpermitted']}</h2>\n";
+            $error_msg_array[] = $lang['logonnotpermitted'];
             $valid = false;
         }
 
     }else {
 
-        $error_html.= "<h2>{$lang['usernamerequired']}</h2>\n";
+        $error_msg_array[] = $lang['usernamerequired'];
         $valid = false;
     }
 
@@ -214,18 +228,20 @@ if (isset($_POST['register'])) {
         $password = trim(_stripslashes($_POST['pw']));
 
         if (!preg_match("/^[a-z0-9_-]+$/i", $password)) {
-            $error_html.= "<h2>{$lang['passwordinvalidchars']}</h2>\n";
+
+            $error_msg_array[] = $lang['passwordinvalidchars'];
             $valid = false;
         }
 
         if (strlen($password) < 6) {
-            $error_html.= "<h2>{$lang['passwdtooshort']}</h2>\n";
+
+            $error_msg_array[] = $lang['passwdtooshort'];
             $valid = false;
         }
 
     }else {
 
-        $error_html.= "<h2>{$lang['passwdrequired']}</h2>\n";
+        $error_msg_array[] = $lang['passwdrequired'];
         $valid.= false;
     }
 
@@ -234,13 +250,14 @@ if (isset($_POST['register'])) {
         $check_password = trim(_stripslashes($_POST['cpw']));
 
         if (_htmlentities($check_password) != $check_password) {
-            $error_html.= "<h2>{$lang['passwdmustnotcontainHTML']}</h2>\n";
+
+            $error_msg_array[] = $lang['passwdmustnotcontainHTML'];
             $valid = false;
         }
 
     }else {
 
-        $error_html.= "<h2>{$lang['confirmationpasswdrequired']}</h2>\n";
+        $error_msg_array[] = $lang['confirmationpasswdrequired'];
         $valid = false;
     }
 
@@ -250,13 +267,13 @@ if (isset($_POST['register'])) {
 
         if (nickname_is_banned($nickname)) {
 
-            $error_html.= "<h2>{$lang['nicknamenotpermitted']}</h2>\n";
+            $error_msg_array[] = $lang['nicknamenotpermitted'];
             $valid = false;
         }
 
     }else {
 
-        $error_html.= "<h2>{$lang['nicknamerequired']}</h2>\n";
+        $error_msg_array[] = $lang['nicknamerequired'];
         $valid = false;
     }
 
@@ -266,27 +283,27 @@ if (isset($_POST['register'])) {
 
         if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $email)) {
 
-            $error_html.= "<h2>{$lang['invalidemailaddressformat']}</h2>\n";
+            $error_msg_array[] = $lang['invalidemailaddressformat'];
             $valid = false;
 
         }else {
 
             if (email_is_banned($email)) {
 
-                $error_html.= "<h2>{$lang['emailaddressnotpermitted']}</h2>\n";
+                $error_msg_array[] = $lang['emailaddressnotpermitted'];
                 $valid = false;
             }
 
             if (forum_get_setting('require_unique_email', 'Y') && !email_is_unique($email)) {
 
-                $error_html.= "<h2>{$lang['emailaddressalreadyinuse']}</h2>\n";
+                $error_msg_array[] = $lang['emailaddressalreadyinuse'];
                 $valid = false;
             }
         }
 
     }else {
 
-        $error_html.= "<h2>{$lang['emailrequired']}</h2>\n";
+        $error_msg_array[] = $lang['emailrequired'];
         $valid = false;
     }
 
@@ -301,7 +318,7 @@ if (isset($_POST['register'])) {
 
     }else {
 
-        $error_html.= "<h2>{$lang['birthdayrequired']}</h2>";
+        $error_msg_array[] = $lang['birthdayrequired'];
         $valid = false;
     }
 
@@ -392,9 +409,12 @@ if (isset($_POST['register'])) {
             $public_key = trim(_stripslashes($_POST['public_key']));
 
             if (isset($_POST['private_key']) && strlen(trim(_stripslashes($_POST['private_key']))) > 0) {
+
                 $private_key = trim(_stripslashes($_POST['private_key']));
+
             }else {
-                $error_html.= "<h2>{$lang['textcaptchamissingkey']}</h2>\n";
+
+                $error_msg_array[] = $lang['textcaptchamissingkey'];
                 $valid = false;
             }
 
@@ -404,7 +424,8 @@ if (isset($_POST['register'])) {
                 $text_captcha->destroy_image();
 
                 if (!$text_captcha->verify_keys($private_key)) {
-                    $error_html.= "<h2>{$lang['textcaptchaverificationfailed']}</h2>\n";
+
+                    $error_msg_array[] = $lang['textcaptchaverificationfailed'];
                     $valid = false;
                 }
             }
@@ -418,12 +439,14 @@ if (isset($_POST['register'])) {
     if ($valid) {
 
         if ($password != $check_password) {
-            $error_html.= "<h2>{$lang['passwdsdonotmatch']}</h2>\n";
+
+            $error_msg_array[] = $lang['passwdsdonotmatch'];
             $valid = false;
         }
 
         if (strtolower($logon) == strtolower($password)) {
-            $error_html.= "<h2>{$lang['usernamesameaspasswd']}</h2>\n";
+
+            $error_msg_array[] = $lang['usernamesameaspasswd'];
             $valid = false;
         }
     }
@@ -431,7 +454,8 @@ if (isset($_POST['register'])) {
     if ($valid) {
 
         if (user_exists($logon)) {
-            $error_html.= "<h2>{$lang['usernameexists']}</h2>\n";
+
+            $error_msg_array[] = $lang['usernameexists'];
             $valid = false;
         }
     }
@@ -473,7 +497,7 @@ if (isset($_POST['register'])) {
                 if (email_send_user_confirmation($new_uid)) {
 
                     perm_user_apply_email_confirmation($new_uid);
-                    
+
                     html_draw_top();
                     html_display_msg($lang['successfullycreateduseraccount'], $lang['useraccountcreatedconfirmsuccess'], 'index.php', 'get', array('continue' => $lang['continue']), array('final_uri' => $final_uri), '_top', 'center');
                     html_draw_bottom();
@@ -497,7 +521,7 @@ if (isset($_POST['register'])) {
 
         }else {
 
-            $error_html.= "<h2>{$lang['errorcreatinguserrecord']}</h2>\n";
+            $error_msg_array[] = $lang['errorcreatinguserrecord'];
             $valid = false;
         }
     }
@@ -507,25 +531,13 @@ html_draw_top();
 
 echo "<h1>{$lang['userregistration']}</h1>\n";
 
-if (isset($error_html) && strlen($error_html) > 0) {
-
-    echo "<br />\n";
-    echo "<div align=\"center\">\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\">$error_html</td>\n";
-    echo "    </tr>\n";
-    echo "  </table>\n";
-    echo "  <br />\n";
-    echo "</div>\n";
-
-}else {
-
-    echo "<br />\n";
+if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+    html_display_error_array($error_msg_array, '85%', 'center');
 }
 
 if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
 
+    echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "<form name=\"register\" action=\"", get_request_uri(), "\" method=\"post\">\n";
     echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
@@ -822,7 +834,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
     $frame_top_target = html_get_top_frame_name();
 
     if (!$forum_rules = forum_get_setting('forum_rules_message')) {
-        
+
         $cancel_link = "<a href=\"index.php?webtag=$webtag\" target=\"$frame_top_target\">{$lang['cancellinktext']}</a>";
         $forum_rules = sprintf($lang['forumrulesmessage'], $forum_name, $cancel_link);
     }

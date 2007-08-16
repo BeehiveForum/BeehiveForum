@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.109 2007-08-09 22:55:43 decoyduck Exp $ */
+/* $Id: pm_edit.php,v 1.110 2007-08-16 15:38:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -241,9 +241,12 @@ $post = new MessageText($post_html, "", $emots_enabled, $links_enabled);
 if (isset($_POST['submit']) || isset($_POST['preview'])) {
 
     if (isset($_POST['t_subject']) && strlen(trim(_stripslashes($_POST['t_subject']))) > 0) {
+
         $t_subject = trim(_stripslashes($_POST['t_subject']));
+
     }else {
-        $error_html = "<h2>{$lang['entersubjectformessage']}</h2>";
+
+        $error_msg_array[] = $lang['entersubjectformessage'];
         $valid = false;
     }
 
@@ -256,13 +259,13 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
 
         if (strlen($t_content) >= 65535) {
 
-            $error_html = "<h2>{$lang['reducemessagelength']} ".number_format(strlen($t_content)).")</h2>";
+            $error_msg_array[] = sprintf($lang['reducemessagelength'], number_format(strlen($t_content)));
             $valid = false;
         }
 
     }else {
 
-        $error_html = "<h2>{$lang['entercontentformessage']}</h2>";
+        $error_msg_array[] = $lang['entercontentformessage'];
         $valid = false;
     }
 }
@@ -301,7 +304,7 @@ if ($valid && isset($_POST['preview'])) {
 
         }else {
 
-            $error_html = "<h2>{$lang['errorcreatingpm']}</h2>";
+            $error_msg_array[] = $lang['errorcreatingpm'];
             $valid = false;
         }
 
@@ -346,7 +349,7 @@ if ($valid && isset($_POST['preview'])) {
 
     if (!user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
 
-        $error_html = "<h2>{$lang['failedtoupdateuserdetails']}</h2>\n";
+        $error_msg_array[] = $lang['failedtoupdateuserdetails'];
         $valid = false;
     }
 
@@ -389,6 +392,11 @@ if ($valid && isset($_POST['preview'])) {
 html_draw_top("onUnload=clearFocus()", "resize_width=720", "openprofile.js", "edit.js", "pm.js", "dictionary.js", "htmltools.js", "basetarget=_blank", 'pm_popup_disabled');
 
 echo "<h1>{$lang['privatemessages']} &raquo; {$lang['editpm']}</h1>\n";
+
+if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+    html_display_error_array($error_msg_array, '720', 'left');
+}
+
 echo "<br />\n";
 echo "<form name=\"f_post\" action=\"pm_edit.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
@@ -399,18 +407,6 @@ echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
-
-if (!$valid && isset($error_html) && strlen(trim($error_html)) > 0) {
-
-    echo "              <table class=\"posthead\" width=\"720\">\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\">{$lang['error']}</td>\n";
-    echo "                </tr>";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\">$error_html</td>\n";
-    echo "                </tr>\n";
-    echo "              </table>\n";
-}
 
 if ($valid && isset($_POST['preview'])) {
 

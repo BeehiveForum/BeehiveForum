@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_detail.php,v 1.94 2007-08-01 20:23:01 decoyduck Exp $ */
+/* $Id: links_detail.php,v 1.95 2007-08-16 15:38:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -140,36 +140,36 @@ if (isset($_POST['parent_fid'])) {
 
 $uid = bh_session_get_value('UID');
 
+$error_msg_array = array();
+$success_msg = "";
+
 if (isset($_POST['cancel'])) {
 
-    $redirect= "links.php?webtag=$webtag";
-    header_redirect($redirect);
+    header_redirect("links.php?webtag=$webtag");
     exit;
-
 }
 
 if (!user_is_guest()) {
 
     $valid = true;
-    
+
     if (isset($_POST['addvote'])) {
 
         if (isset($_POST['vote']) && is_numeric($_POST['vote'])) {
 
             links_vote($lid, $_POST['vote'], $uid);
-            $error_html = "<h2>{$lang['voterecorded']}</h2>\n";
+            $success_msg = $lang['voterecorded'];
 
         }else {
 
-            $error_html = "<b>{$lang['mustchooserating']}</b>";
+            $error_msg_array[] = $lang['mustchooserating'];
             $valid = false;
         }
-    }
 
-    if (isset($_POST['clearvote'])) {
+    }else if (isset($_POST['clearvote'])) {
 
         links_clear_vote($lid, $uid);
-        $error_html = "<b>{$lang['votecleared']}</b>\n";
+        $success_msg = $lang['votecleared'];
     }
 
     if (isset($_POST['addcomment'])) {
@@ -179,11 +179,11 @@ if (!user_is_guest()) {
             $comment = trim(_stripslashes($_POST['comment']));
 
             links_add_comment($lid, $uid, $comment);
-            $error_html = "<b>{$lang['commentadded']}</b>";
+            $success_msg = $lang['commentadded'];
 
         }else {
 
-            $error_html = "<b>{$lang['musttypecomment']}</b>";
+            $error_msg_array[] = $lang['musttypecomment'];
             $valid = false;
         }
     }
@@ -199,23 +199,32 @@ if (!user_is_guest()) {
         }else {
 
             if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
+
                 $fid = $_POST['fid'];
+
             }else {
-                $error_html = $lang['nofolderidspecified'];
+
+                $error_msg_array[] = $lang['nofolderidspecified'];
                 $valid = false;
             }
 
             if (isset($_POST['uri']) && preg_match("/\b([a-z]+:\/\/([-\w]{2,}\.)*[-\w]{2,}(:\d+)?(([^\s;,.?\"'[\]() {}<>]|\S[^\s;,.?\"'[\]() {}<>])*)?)/i", $_POST['uri'])) {
+
                 $uri = $_POST['uri'];
+
             }else {
-                $error_html = $lang['notvalidURI'];
+
+                $error_msg_array[] = $lang['notvalidURI'];
                 $valid = false;
             }
 
             if (isset($_POST['title']) && strlen(trim(_stripslashes($_POST['title']))) > 0) {
+
                 $title = trim(_stripslashes($_POST['title']));
+
             }else {
-                $error_html = $lang['mustspecifyname'];
+
+                $error_msg_array[] = $lang['mustspecifyname'];
                 $valid = false;
             }
 
@@ -248,8 +257,16 @@ if (isset($_GET['delete_comment']) && is_numeric($_GET['delete_comment'])) {
     $comment_uid = links_get_comment_uid($comment_id);
 
     if (bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0) || $comment_uid == $uid) {
-        
-        links_delete_comment($comment_id);
+
+        if (links_delete_comment($comment_id)) {
+
+            $success_msg = $lang['commentdeleted'];
+
+        }else {
+
+            $error_msg_array[] = $lang['commentcouldnotbedeleted'];
+            $valid = false;
+        }
     }
 }
 
@@ -267,12 +284,16 @@ html_draw_top('openprofile.js');
 
 echo "<h1>{$lang['links']} &raquo; ", links_display_folder_path($link['FID'], $folders, true, true, "./links.php?webtag=$webtag"), "&nbsp;&raquo;&nbsp;<a href=\"links.php?webtag=$webtag&amp;lid=$lid&amp;action=go\" target=\"_blank\">{$link['TITLE']}</a></h1>\n";
 
-if (isset($error_html) && strlen(trim($error_html)) > 0) {
-    echo "<p>$error_html</p>\n";
-}else {
-    echo "<br />\n";
+if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+
+    html_display_error_array($error_msg_array, '500', 'center');
+
+}else if (isset($success_msg) && strlen($success_msg) > 0) {
+
+    html_display_success_msg($success_msg, '500', 'center');
 }
 
+echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
 echo "  <tr>\n";
@@ -415,7 +436,7 @@ if ($comments_array = links_get_comments($lid)) {
         $profile_link.= word_filter_add_ob_tags(format_user_name($comment['LOGON'], $comment['NICKNAME'])). "</a>";
 
         if (bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0) || $comment['UID'] == $uid) {
-        
+
             echo "                <tr>\n";
             echo "                  <td align=\"left\" class=\"subhead\">", sprintf($lang['commentby'], $profile_link), " <a href=\"links_detail.php?webtag=$webtag&amp;delete_comment={$comment['CID']}&amp;lid=$lid\" class=\"threadtime\">[{$lang['delete']}]</a></td>\n";
             echo "                </tr>\n";
@@ -426,7 +447,7 @@ if ($comments_array = links_get_comments($lid)) {
             echo "                  <td align=\"left\" class=\"subhead\">", sprintf($lang['commentby'], $profile_link), "</td>\n";
             echo "                </tr>\n";
         }
-        
+
         echo "                <tr>\n";
         echo "                  <td align=\"center\">\n";
         echo "                    <table class=\"posthead\" width=\"95%\">\n";

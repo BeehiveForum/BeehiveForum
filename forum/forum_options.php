@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.121 2007-06-09 23:09:18 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.122 2007-08-16 15:38:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -115,6 +115,10 @@ if (user_is_guest()) {
     html_guest_error();
     exit;
 }
+
+// Array to hold error messages.
+
+$error_msg_array = array();
 
 // Get an array of available forum styles.
 
@@ -412,7 +416,7 @@ if (isset($_POST['submit'])) {
 
     }else {
 
-        $error_html.= "<h2>{$lang['failedtoupdateuserdetails']}</h2>\n";
+        $error_msg_array[] = $lang['failedtoupdateuserdetails'];
         $valid = false;
     }
 }
@@ -447,13 +451,13 @@ html_draw_top("emoticons.js");
 
 echo "<h1>{$lang['forumoptions']}</h1>\n";
 
-if (isset($error_html) && strlen(trim($error_html)) > 0) {
+if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-    echo $error_html;
+    html_display_error_array($error_msg_array, '600', 'left');
 
 }else if (isset($_GET['updated'])) {
 
-    echo "<h2>{$lang['preferencesupdated']}</h2>\n";
+    html_display_success_msg($lang['preferencesupdated'], '600', 'left');
 
     $top_html = html_get_top_page();
 
@@ -644,7 +648,7 @@ echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all)
 echo "                </tr>\n";
 
 if (sizeof($available_styles) > 1) {
-    
+
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\">{$lang['forumstyle']}:</td>\n";
     echo "                  <td align=\"left\">", form_dropdown_array("style", $available_styles, (isset($user_prefs['STYLE']) && in_array($user_prefs['STYLE'], array_keys($available_styles))) ? $user_prefs['STYLE'] : forum_get_setting('default_style', false, 'default')), "</td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.php,v 1.100 2007-06-14 13:21:10 decoyduck Exp $ */
+/* $Id: links.php,v 1.101 2007-08-16 15:38:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -217,6 +217,17 @@ if ($viewmode == LINKS_VIEW_HIERARCHICAL) {
     echo "<a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=1\"><b>{$lang['list']}</b></a></div>\n";
 }
 
+if (isset($_GET['link_added']) && strlen(trim(_stripslashes($_GET['link_added']))) > 0) {
+
+    $link_added = $_GET['link_added'];
+    html_display_success_msg(sprintf($lang['successfullyaddedlinkname'], $link_added), '65%', 'center');
+
+}elseif (isset($_GET['folder_added']) && strlen(trim(_stripslashes($_GET['folder_added']))) > 0) {
+
+    $folder_added = $_GET['folder_added'];
+    html_display_success_msg(sprintf($lang['successfullyaddedlinkname'], $folder_added), '65%', 'center');
+}
+
 // work out where we are in the folder hierarchy and display links to all the higher levels
 
 if ($viewmode == LINKS_VIEW_HIERARCHICAL) {
@@ -276,11 +287,11 @@ if ($viewmode == LINKS_VIEW_HIERARCHICAL) {
             }
 
             if (bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0)) {
-            
+
                 echo "<a href=\"links_folder_edit.php?webtag=$webtag&amp;fid=$val\" class=\"threadtime\">[{$lang['edit']}]</a>\n";
 
                 if (count(links_get_subfolders($val, $folders)) == 0) {
-                
+
                     echo "<a href=\"links.php?webtag=$webtag&amp;fid=$val&amp;action=folderdel&amp;new_fid=$fid\" class=\"threadtime\">[{$lang['delete']}]</a>\n";
                 }
             }

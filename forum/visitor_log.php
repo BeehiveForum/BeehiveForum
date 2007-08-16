@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.php,v 1.104 2007-08-01 20:23:01 decoyduck Exp $ */
+/* $Id: visitor_log.php,v 1.105 2007-08-16 15:38:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -108,9 +108,9 @@ if (!forum_check_access_level()) {
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
-// Error message variable
+// Arrays to hold success and error messages
 
-$error_html = "";
+$error_msg_array = array();
 
 // Get a list of available user_prefs and profile items for the user to browse.
 
@@ -156,28 +156,28 @@ if (isset($_POST['profile_selection'])) {
 if (isset($_POST['add'])) {
 
     if (isset($_POST['add_column']) && in_array($_POST['add_column'], array_keys($profile_header_array))) {
-    
+
         $add_column = $_POST['add_column'];
-        
+
         if (!in_array($add_column, array_keys($profile_items_selected_array))) {
 
             if (sizeof($profile_items_selected_array) < 3) {
 
                 $profile_items_selected_array[$add_column] = $profile_header_array[$add_column];
-            
+
             }else {
 
-                $error_html.= "<h2>{$lang['youcanonlyaddthreecolumns']}</h2>\n";
+                $error_msg_array[] = $lang['youcanonlyaddthreecolumns'];
             }
-        
+
         }else {
 
-            $error_html.= "<h2>{$lang['columnalreadyadded']}</h2>\n";
+            $error_msg_array[] = $lang['columnalreadyadded'];
         }
     }
 
 }elseif (isset($_POST['remove_column']) && is_array($_POST['remove_column'])) {
-    
+
     list($remove_column) = array_keys($_POST['remove_column']);
 
     if (in_array($remove_column, array_keys($profile_items_selected_array))) {
@@ -204,7 +204,7 @@ array_unshift($sort_by_array, 'LOGON');
 
 // Permitted sort directions.
 
-$sort_dir_array = array('ASC', 'DESC'); 
+$sort_dir_array = array('ASC', 'DESC');
 
 // Sort column
 
@@ -217,7 +217,7 @@ if (isset($_GET['sort_by']) && in_array($_GET['sort_by'], $sort_by_array)) {
     $sort_by = $_POST['sort_by'];
 
 }elseif (sizeof($profile_items_selected_array) > 0) {
-    
+
     list($sort_by) = array_keys($profile_items_selected_array);
 
 }else {
@@ -278,14 +278,14 @@ html_draw_top("robots=noindex,nofollow", "openprofile.js");
 
 echo "<h1>{$lang['userprofile']}</h1>\n";
 
-if (isset($error_html) && strlen($error_html) > 0) {
-    echo $error_html;
+if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+    html_display_error_array($error_msg_array, '85%', 'center');
 }
 
 $user_profile_array = visitor_log_browse_items($user_search, $profile_items_selected_array, $start, $sort_by, $sort_dir, $hide_empty == 'Y', $hide_guests == 'Y');
 
 echo "<br />\n";
-echo "<div align=\"center\">\n";    
+echo "<div align=\"center\">\n";
 echo "<form name=\"f_visitor_log\" action=\"visitor_log.php\" method=\"post\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden('page', _htmlentities($page)), "\n";
@@ -334,7 +334,7 @@ if (sizeof($user_profile_array['user_array']) > 0) {
     echo "                 </tr>\n";
 
     foreach ($user_profile_array['user_array'] as $user_array) {
-        
+
         echo "                 <tr>\n";
 
         if (isset($user_array['AVATAR_URL']) && strlen($user_array['AVATAR_URL']) > 0) {
@@ -353,7 +353,7 @@ if (sizeof($user_profile_array['user_array']) > 0) {
 
                 echo "                   <td align=\"left\" valign=\"top\" class=\"postbody\"><img src=\"", style_image('bullet.png'), "\" alt=\"{$lang['user']}\" title=\"{$lang['user']}\" /></td>\n";
             }
-        
+
         }else {
 
             echo "                   <td align=\"left\" valign=\"top\" class=\"postbody\"><img src=\"", style_image('bullet.png'), "\" alt=\"{$lang['user']}\" title=\"{$lang['user']}\" /></td>\n";
@@ -373,22 +373,22 @@ if (sizeof($user_profile_array['user_array']) > 0) {
         }
 
         foreach ($profile_items_selected_array as $key => $profile_item_selected) {
-            
+
             if (is_numeric($key)) {
-            
+
                 if (isset($user_array["ENTRY_$key"])) {
 
                     echo "                   <td class=\"postbody\" align=\"right\" valign=\"top\" width=\"20%\"><div class=\"profile_item_overflow\" title=\"", $user_array["ENTRY_$key"], "\">", $user_array["ENTRY_$key"], "&nbsp;</div></td>\n";
-                
+
                 }else {
 
                     echo "                   <td class=\"postbody\" align=\"right\" valign=\"top\" width=\"20%\"><div class=\"profile_item_overflow\" title=\"{$lang['unknown']}\">{$lang['unknown']}&nbsp;</div></td>\n";
                 }
-        
+
             }elseif (isset($profile_header_array[$key]) && isset($user_array[$key])) {
 
                 echo "                   <td class=\"postbody\" align=\"right\" valign=\"top\" width=\"20%\"><div class=\"profile_item_overflow\" title=\"{$user_array[$key]}\">{$user_array[$key]}&nbsp;</div></td>\n";
-            
+
             }else {
 
                 echo "                   <td class=\"postbody\" align=\"right\" valign=\"top\" width=\"20%\"><div class=\"profile_item_overflow\" title=\"{$lang['unknown']}\">{$lang['unknown']}&nbsp;</div></td>\n";

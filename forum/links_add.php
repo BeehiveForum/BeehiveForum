@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_add.php,v 1.87 2007-06-14 13:21:10 decoyduck Exp $ */
+/* $Id: links_add.php,v 1.88 2007-08-16 15:38:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -113,21 +113,33 @@ if (!forum_get_setting('show_links', 'Y')) {
     exit;
 }
 
-$folders = links_folders_get(bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0));
-
 if (user_is_guest()) {
 
     html_guest_error();
     exit;
 }
 
+// User's UID for later.
+
 $uid = bh_session_get_value('UID');
 
+// Array to hold error messages
+
+$error_msg_array = array();
+
+// User pressed cancel
+
 if (isset($_POST['cancel'])) {
-    
+
     header_redirect("./links.php?webtag=$webtag&fid={$_POST['fid']}");
     exit;
 }
+
+// Get the Links Folders.
+
+$folders = links_folders_get(bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0));
+
+// Check the mode.
 
 if (isset($_GET['mode'])) {
 
@@ -164,6 +176,8 @@ if (isset($_GET['mode'])) {
     $mode = LINKS_ADD_LINK;
 }
 
+// Submit code for adding a link.
+
 if (isset($_POST['submit']) && $mode == LINKS_ADD_LINK) {
 
     $valid = true;
@@ -175,16 +189,22 @@ if (isset($_POST['submit']) && $mode == LINKS_ADD_LINK) {
     }
 
     if (isset($_POST['uri']) && preg_match("/\b([a-z]+:\/\/([-\w]{2,}\.)*[-\w]{2,}(:\d+)?(([^\s;,.?\"'[\]() {}<>]|\S[^\s;,.?\"'[\]() {}<>])*)?)/i", $_POST['uri'])) {
+
         $uri = $_POST['uri'];
+
     }else {
-        $error_html = $lang['notvalidURI'];
+
+        $error_msg_array[] = $lang['notvalidURI'];
         $valid = false;
     }
 
     if (isset($_POST['name']) && strlen(trim(_stripslashes($_POST['name']))) > 0) {
+
         $name = trim(_stripslashes($_POST['name']));
+
     }else {
-        $error_html = $lang['mustspecifyname'];
+
+        $error_msg_array[] = $lang['mustspecifyname'];
         $valid = false;
     }
 
@@ -196,8 +216,16 @@ if (isset($_POST['submit']) && $mode == LINKS_ADD_LINK) {
 
     if ($valid) {
 
-        links_add($uri, $name, $description, $fid, $uid);
-        header_redirect("./links.php?webtag=$webtag&fid=$fid");
+        if (links_add($uri, $name, $description, $fid, $uid)) {
+
+            header_redirect("./links.php?webtag=$webtag&fid=$fid&link_added=$name");
+            exit;
+
+        }else {
+
+            $error_msg_array[] = $lang['failedtoaddlink'];
+            $valid = false;
+        }
     }
 
 }else if (isset($_POST['submit']) && $mode == LINKS_ADD_FOLDER) {
@@ -211,16 +239,27 @@ if (isset($_POST['submit']) && $mode == LINKS_ADD_LINK) {
     }
 
     if (isset($_POST['name']) && strlen(trim(_stripslashes($_POST['name']))) > 0) {
+
         $name = trim(_stripslashes($_POST['name']));
+
     }else {
-        $error_html = $lang['mustspecifyname'];
+
+        $error_msg_array[] = $lang['mustspecifyname'];
         $valid = false;
     }
 
     if ($valid) {
 
-        links_add_folder($fid, $name, true);
-        header_redirect("./links.php?webtag=$webtag&fid=$fid");
+        if (links_add_folder($fid, $name, true)) {
+
+            header_redirect("./links.php?webtag=$webtag&fid=$fid&folder_added=$name");
+            exit;
+
+        }else {
+
+            $error_msg_array[] = $lang['failedtoaddfolder'];
+            $valid = false;
+        }
     }
 
 }else if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
@@ -247,14 +286,12 @@ if ($mode == LINKS_ADD_LINK) {
 
     html_draw_top();
 
-    if (!isset($uri)) $uri = "http://";
-    if (!isset($name)) $name = "";
-    if (!isset($description)) $description = "";
-
     echo "<h1>{$lang['links']} &raquo; {$lang['addlink']}</h1>\n";
     echo "<p>{$lang['addinglinkin']}: <b>" . links_display_folder_path($fid, $folders, false) . "</b></p>\n";
 
-    if (isset($error)) echo "<h2>$error</h2>\n";
+    if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+        html_display_error_array($error_msg_array, '500', 'left');
+    }
 
     echo "<form name=\"linkadd\" action=\"links_add.php\" method=\"post\" target=\"_self\">\n";
     echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
@@ -275,15 +312,15 @@ if ($mode == LINKS_ADD_LINK) {
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">{$lang['addressurluri']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("uri", _htmlentities($uri), 50, 255), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("uri", (isset($uri)) ? _htmlentities($uri) : '', 50, 255), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">{$lang['name']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("name", _htmlentities($name), 50, 64), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("name", (isset($name)) ? _htmlentities($name) : '', 50, 64), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">{$lang['description']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("description", _htmlentities($description), 50), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("description", (isset($description)) ? _htmlentities($description) : '', 50), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
@@ -315,8 +352,8 @@ if ($mode == LINKS_ADD_LINK) {
     echo "<h1>{$lang['links']} &raquo; {$lang['addnewfolder']}</h1>\n";
     echo "<p>{$lang['addnewfolderunder']}: <b>". links_display_folder_path($fid, $folders, false) . "</b></p>\n";
 
-    if (isset($error_html) && strlen(trim($error_html))) {
-        echo "<h2>$error_html</h2>\n";
+    if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+        html_display_error_array($error_msg_array, '500', 'left');
     }
 
     echo "<form name=\"folderadd\" action=\"links_add.php\" method=\"post\" target=\"_self\">\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.204 2007-06-11 21:58:58 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.205 2007-08-16 15:38:12 decoyduck Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -124,6 +124,10 @@ if (user_is_guest()) {
     html_guest_error();
     exit;
 }
+
+// Array to hold error messages
+
+$error_msg_array = array();
 
 // Check to see if the forum owner has allowed the creation of polls
 
@@ -301,7 +305,7 @@ if (isset($_POST['cancel'])) {
     $uri = "./discussion.php?webtag=$webtag";
     header_redirect($uri);
 
-}elseif (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_POST['submit']) || isset($_POST['change_count'])) {
+}elseif (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_POST['submit'])) {
 
     $valid = true;
 
@@ -312,16 +316,19 @@ if (isset($_POST['cancel'])) {
     }
 
     if (isset($_POST['t_threadtitle']) && strlen(trim(_stripslashes($_POST['t_threadtitle']))) > 0) {
+
         $t_threadtitle = trim(_stripslashes($_POST['t_threadtitle']));
+
     }else {
-        $error_html = "<h2>{$lang['mustenterthreadtitle']}</h2>";
+
+        $error_msg_array[] = $lang['mustenterthreadtitle'];
         $valid = false;
     }
 
     if (isset($_POST['t_question']) && strlen(trim(_stripslashes($_POST['t_question']))) > 0) {
         $t_question = trim(_stripslashes($_POST['t_question']));
-    }elseif (isset($t_threadtitle)) {
-        $t_question = $t_threadtitle;
+    }else {
+        $t_question = '';
     }
 
     if (isset($_POST['t_fid']) && is_numeric($_POST['t_fid'])) {
@@ -330,25 +337,25 @@ if (isset($_POST['cancel'])) {
 
         if (!folder_is_valid($t_fid)) {
 
-            $error_html = "<h2>{$lang['unknownfolder']}</h2>\n";
+            $error_msg_array[] = $lang['unknownfolder'];
             $valid = false;
         }
 
         if (!bh_session_check_perm(USER_PERM_THREAD_CREATE | USER_PERM_POST_READ, $t_fid)) {
 
-            $error_html = "<h2>{$lang['cannotcreatethreadinfolder']}</h2>\n";
+            $error_msg_array[] = $lang['cannotcreatethreadinfolder'];
             $valid = false;
         }
 
         if (get_num_attachments($aid) > 0 && !bh_session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
 
-            $error_html = "<h2>{$lang['cannotattachfilesinfolder']}</h2>";
+            $error_msg_array[] = $lang['cannotattachfilesinfolder'];
             $valid = false;
         }
 
     }else {
 
-        $error_html = "<h2>{$lang['pleaseselectfolder']}</h2>\n";
+        $error_msg_array[] = $lang['pleaseselectfolder'];
         $valid = false;
     }
 
@@ -365,12 +372,12 @@ if (isset($_POST['cancel'])) {
         }
 
         if (!isset($t_answers[0]) || strlen(trim(_stripslashes($t_answers[0]))) == 0) {
-            $error_html = "<h2>{$lang['mustspecifyvalues1and2']}</h2>";
+            $error_msg_array[] = $lang['mustspecifyvalues1and2'];
             $valid = false;
         }
 
         if (!isset($t_answers[1]) || strlen(trim(_stripslashes($t_answers[1]))) == 0) {
-            $error_html = "<h2>{$lang['mustspecifyvalues1and2']}</h2>";
+            $error_msg_array[] = $lang['mustspecifyvalues1and2'];
             $valid = false;
         }
 
@@ -378,7 +385,7 @@ if (isset($_POST['cancel'])) {
 
             if (attachment_embed_check($t_answer) && $t_post_html == 'Y') {
 
-                $error_html = "<h2>{$lang['notallowedembedattachmentpost']}</h2>\n";
+                $error_msg_array[] = $lang['notallowedembedattachmentpost'];
                 $valid = false;
             }
         }
@@ -396,42 +403,42 @@ if (isset($_POST['cancel'])) {
 
     }else {
 
-        $error_html = "<h2>{$lang['mustprovideanswergroups']}</h2>\n";
+        $error_msg_array[] = $lang['mustprovideanswergroups'];
         $valid = false;
     }
 
     if (isset($_POST['poll_type']) && is_numeric($_POST['poll_type'])) {
         $t_poll_type = $_POST['poll_type'];
     }else {
-        $error_html = "<h2>{$lang['mustprovidepolltype']}</h2>\n";
+        $error_msg_array[] = $lang['mustprovidepolltype'];
         $valid = false;
     }
 
     if (isset($_POST['show_results']) && is_numeric($_POST['show_results'])) {
         $t_show_results = $_POST['show_results'];
     }else {
-        $error_html = "<h2>{$lang['mustprovidepollresultsdisplaytype']}</h2>\n";
+        $error_msg_array[] = $lang['mustprovidepollresultsdisplaytype'];
         $valid = false;
     }
 
     if (isset($_POST['poll_vote_type']) && is_numeric($_POST['poll_vote_type'])) {
         $t_poll_vote_type = $_POST['poll_vote_type'];
     }else {
-        $error_html = "<h2>{$lang['mustprovidepollvotetype']}</h2>\n";
+        $error_msg_array[] = $lang['mustprovidepollvotetype'];
         $valid = false;
     }
 
     if (isset($_POST['option_type']) && is_numeric($_POST['option_type'])) {
         $t_option_type = $_POST['option_type'];
     }else {
-        $error_html = "<h2>{$lang['mustprovidepolloptiontype']}</h2>\n";
+        $error_msg_array[] = $lang['mustprovidepolloptiontype'];
         $valid = false;
     }
 
     if (isset($_POST['change_vote']) && is_numeric($_POST['change_vote'])) {
         $t_change_vote = $_POST['change_vote'];
     }else {
-        $error_html = "<h2>{$lang['mustprovidepollvotetype']}</h2>\n";
+        $error_msg_array[] = $lang['mustprovidepollvotetype'];
         $valid = false;
     }
 
@@ -439,8 +446,8 @@ if (isset($_POST['cancel'])) {
         $t_allow_guests = $_POST['allow_guests'];
     }elseif (!forum_get_setting('poll_allow_guests', false)) {
         $t_allow_guests = POLL_GUEST_DENIED;
-    }else {        
-        $error_html = "<h2>{$lang['mustprovidepollguestvotetype']}</h2>\n";
+    }else {
+        $error_msg_array[] = $lang['mustprovidepollguestvotetype'];
         $valid = false;
     }
 
@@ -451,17 +458,20 @@ if (isset($_POST['cancel'])) {
     }
 
     if ($valid && $t_poll_type == POLL_TABLE_GRAPH && sizeof(array_unique($t_answer_groups)) != 2) {
-        $error_html = "<h2>{$lang['tablepollmusthave2groups']}</h2>";
+
+        $error_msg_array[] = $lang['tablepollmusthave2groups'];
         $valid = false;
     }
 
     if ($valid && $t_poll_type == POLL_TABLE_GRAPH && $t_change_vote == POLL_MULTIVOTE) {
-        $error_html = "<h2>{$lang['nomultivotetabulars']}</h2>";
+
+        $error_msg_array[] = $lang['nomultivotetabulars'];
         $valid = false;
     }
 
     if ($valid && $t_poll_vote_type == POLL_VOTE_PUBLIC && $t_change_vote == POLL_VOTE_MULTI) {
-        $error_html = "<h2>{$lang['nomultivotepublic']}</h2>";
+
+        $error_msg_array[] = $lang['nomultivotepublic'];
         $valid = false;
     }
 
@@ -471,7 +481,7 @@ if (isset($_POST['cancel'])) {
 
         if (attachment_embed_check($t_message_text) && $t_message_html == "Y") {
 
-            $error_html = "<h2>{$lang['notallowedembedattachmentpost']}</h2>\n";
+            $error_msg_array[] = $lang['notallowedembedattachmentpost'];
             $valid = false;
         }
     }
@@ -479,13 +489,15 @@ if (isset($_POST['cancel'])) {
     if (isset($t_sig)) {
 
         if (attachment_embed_check($t_sig) && $t_sig_html == "Y") {
-            $error_html = "<h2>{$lang['notallowedembedattachmentsignature']}</h2>\n";
+
+            $error_msg_array[] = $lang['notallowedembedattachmentsignature'];
             $valid = false;
         }
     }
 
     if ($valid && !folder_thread_type_allowed($t_fid, FOLDER_ALLOW_POLL_THREAD)) {
-        $error_html = "<h2>{$lang['cannotpostthisthreadtypeinfolder']}</h2>";
+
+        $error_msg_array[] = $lang['cannotpostthisthreadtypeinfolder'];
         $valid = false;
     }
 
@@ -511,18 +523,92 @@ if (isset($_POST['cancel'])) {
     $user_prefs['POST_PAGE'] = $page_prefs;
 
     if (!user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
-        
-        $error_html = "<h2>{$lang['failedtoupdateuserdetails']}</h2>\n";
+
+        $error_msg_array[] = $lang['failedtoupdateuserdetails'];
         $valid = false;
     }
 
     $fix_html = false;
-}
 
-if (isset($_POST['change_count'])) {
+}elseif (isset($_POST['change_count'])) {
 
-    $valid = true;
-    unset($error_html);
+    if (isset($_POST['t_post_html']) && $_POST['t_post_html'] == 'Y') {
+        $t_post_html = 'Y';
+    }else {
+        $t_post_html = 'N';
+    }
+
+    if (isset($_POST['t_threadtitle']) && strlen(trim(_stripslashes($_POST['t_threadtitle']))) > 0) {
+        $t_threadtitle = trim(_stripslashes($_POST['t_threadtitle']));
+    }else {
+        $t_threadtitle = '';
+    }
+
+    if (isset($_POST['t_question']) && strlen(trim(_stripslashes($_POST['t_question']))) > 0) {
+        $t_question = trim(_stripslashes($_POST['t_question']));
+    }else {
+        $t_question = '';
+    }
+
+    if (isset($_POST['t_fid']) && is_numeric($_POST['t_fid'])) {
+        $t_fid = $_POST['t_fid'];
+    }
+
+    if (isset($_POST['answers']) && is_array($_POST['answers'])) {
+
+        $t_answers = array();
+
+        foreach($_POST['answers'] as $t_answer) {
+
+            if (strlen(trim(_stripslashes($t_answer))) > 0) {
+
+                $t_answers[] = trim(_stripslashes($t_answer));
+            }
+        }
+    }
+
+    if (isset($_POST['answer_groups']) && is_array($_POST['answer_groups'])) {
+
+        foreach ($_POST['answer_groups'] as $key => $t_answer_group) {
+
+            if (isset($t_answers[$key])) {
+
+                $t_answer_groups[$key] = $t_answer_group;
+            }
+        }
+    }
+
+    if (isset($_POST['poll_type']) && is_numeric($_POST['poll_type'])) {
+        $t_poll_type = $_POST['poll_type'];
+    }
+
+    if (isset($_POST['show_results']) && is_numeric($_POST['show_results'])) {
+        $t_show_results = $_POST['show_results'];
+    }
+
+    if (isset($_POST['poll_vote_type']) && is_numeric($_POST['poll_vote_type'])) {
+        $t_poll_vote_type = $_POST['poll_vote_type'];
+    }
+
+    if (isset($_POST['option_type']) && is_numeric($_POST['option_type'])) {
+        $t_option_type = $_POST['option_type'];
+    }
+
+    if (isset($_POST['change_vote']) && is_numeric($_POST['change_vote'])) {
+        $t_change_vote = $_POST['change_vote'];
+    }
+
+    if (isset($_POST['allow_guests']) && is_numeric($_POST['allow_guests'])) {
+        $t_allow_guests = $_POST['allow_guests'];
+    }elseif (!forum_get_setting('poll_allow_guests', false)) {
+        $t_allow_guests = POLL_GUEST_DENIED;
+    }
+
+    if (isset($_POST['close_poll']) && is_numeric($_POST['close_poll'])) {
+        $t_close_poll = $_POST['close_poll'];
+    }else {
+        $t_close_poll = false;
+    }
 }
 
 if (isset($_POST['answer_count']) && is_numeric($_POST['answer_count'])) {
@@ -552,12 +638,14 @@ $t_message_text = $post->getContent();
 $t_sig = $sig->getContent();
 
 if (strlen($t_message_text) >= 65535) {
-    $error_html = "<h2>{$lang['reducemessagelength']} ".number_format(strlen($t_message_text)).")</h2>";
+
+    $error_msg_array[] = sprintf($lang['reducemessagelength'], number_format(strlen($t_message_text)));
     $valid = false;
 }
 
 if (strlen($t_sig) >= 65535) {
-    $error_html = "<h2>{$lang['reducesiglength']} ".number_format(strlen($t_sig)).")</h2>";
+
+    $error_msg_array[] = sprintf($lang['reducesiglength'], number_format(strlen($t_sig)));
     $valid = false;
 }
 
@@ -610,8 +698,8 @@ if ($valid && isset($_POST['submit'])) {
             $t_tid = post_create_thread($t_fid, $uid, $t_threadtitle, 'Y', 'N');
             $t_pid = post_create($t_fid, $t_tid, 0, $uid, $uid, 0, '');
 
-            // Ensure that Tablular polls have 
-            
+            // Ensure that Tablular polls have
+
             if ($t_poll_type == POLL_TABLE_GRAPH) $t_poll_vote_type = POLL_VOTE_PUBLIC;
 
             poll_create($t_tid, $t_answers, $t_answer_groups, $t_poll_closes, $t_change_vote, $t_poll_type, $t_show_results, $t_poll_vote_type, $t_option_type, $t_question, $t_allow_guests);
@@ -640,7 +728,7 @@ if ($valid && isset($_POST['submit'])) {
 
     }else {
 
-        $error_html = sprintf("<h2>{$lang['postfrequencytoogreat']}</h2>", forum_get_setting('minimum_post_frequency', false, 0));
+        $error_msg_array[] = sprintf($lang['postfrequencytoogreat'], forum_get_setting('minimum_post_frequency', false, 0));
     }
 }
 
@@ -663,27 +751,20 @@ if (!$folder_dropdown = folder_draw_dropdown($t_fid, "t_fid", "" ,FOLDER_ALLOW_P
 html_draw_top("basetarget=_blank", "onUnload=clearFocus()", "resize_width=785", "post.js", "attachments.js", "openprofile.js", "dictionary.js", "htmltools.js", "emoticons.js", "poll.js");
 
 echo "<h1>{$lang['postmessage']}</h1>\n";
+
+if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+    html_display_error_array($error_msg_array, '785', 'left');
+}
+
 echo "<br />\n";
 echo "<form name=\"f_poll\" action=\"create_poll.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"785\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
-
-if (isset($error_html)) {
-
-    echo "  <table class=\"posthead\" width=\"785\">\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\" class=\"subhead\">{$lang['error']}</td>\n";
-    echo "    </tr>";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\">$error_html</td>\n";
-    echo "    </tr>\n";
-    echo "  </table>\n";
-}
 
 if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) {
 

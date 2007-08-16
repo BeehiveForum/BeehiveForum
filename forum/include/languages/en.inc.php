@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.455 2007-08-12 21:46:35 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.456 2007-08-16 15:38:13 decoyduck Exp $ */
 
 // British English language file
 
@@ -193,6 +193,7 @@ $lang['confirm'] = "Confirm";
 $lang['email'] = "Email";
 $lang['poll'] = "Poll";
 $lang['friend'] = "Friend";
+$lang['success'] = "Success";
 $lang['error'] = "Error";
 $lang['guesterror'] = "Sorry, you need to be logged in to use this feature.";
 $lang['loginnow'] = "Login now";
@@ -870,9 +871,10 @@ $lang['newandoldpasswdarethesame'] = "New and old passwords are the same.";
 $lang['allfieldsrequired'] = "All fields are required.";
 $lang['requiredinformationnotfound'] = "Required information not found";
 $lang['forgotpasswd'] = "Forgot password";
-$lang['enternewpasswdforuser'] = "Enter a new password for user %s";
 $lang['resetpassword'] = "Reset Password";
 $lang['resetpasswordto'] = "Reset password to";
+$lang['invaliduseraccount'] = "Invalid user account specified. Check email for correct link";
+$lang['invaliduserkeyprovided'] = "Invalid user key provided. Check email for correct link";
 
 // Deleting messages (delete.php) --------------------------------------
 
@@ -987,6 +989,10 @@ $lang['notvalidURI'] = "That is not a valid URI!";
 $lang['mustspecifyname'] = "You must specify a name!";
 $lang['mustspecifyvalidfolder'] = "You must specify a valid folder!";
 $lang['mustspecifyfolder'] = "You must specify a folder!";
+$lang['successfullyaddedlinkname'] = "Successfully added link '%s'";
+$lang['failedtoaddlink'] = "Failed to add link";
+$lang['successfullyaddedfoldername'] = "Successfully added folder '%s'";
+$lang['failedtoaddfolder'] = "Failed to add folder";
 $lang['addlink'] = "Add a link";
 $lang['addinglinkin'] = "Adding link in";
 $lang['addressurluri'] = "Address";
@@ -996,6 +1002,8 @@ $lang['editfolder'] = "Edit Folder";
 $lang['editingfolder'] = "Editing folder";
 $lang['mustchooserating'] = "You must choose a rating!";
 $lang['commentadded'] = "Your comment was added.";
+$lang['commentdeleted'] = "Comment was deleted.";
+$lang['commentcouldnotbedeleted'] = "Comment could not be deleted.";
 $lang['musttypecomment'] = "You must type a comment!";
 $lang['mustprovidelinkID'] = "You must provide a link ID!";
 $lang['invalidlinkID'] = "Invalid link ID!";
@@ -1101,8 +1109,8 @@ $lang['fixhtmlexplanation'] = "This forum uses HTML filtering. Your submitted HT
 $lang['messageoptions'] = "Message options";
 $lang['notallowedembedattachmentpost'] = "You are not allowed to embed attachments in your posts.";
 $lang['notallowedembedattachmentsignature'] = "You are not allowed to embed attachments in your signature.";
-$lang['reducemessagelength'] = "Message length must be under 65,535 characters (currently:";
-$lang['reducesiglength'] = "Signature length must be under 65,535 characters (currently:";
+$lang['reducemessagelength'] = "Message length must be under 65,535 characters (currently: %s)";
+$lang['reducesiglength'] = "Signature length must be under 65,535 characters (currently: %s)";
 $lang['cannotcreatethreadinfolder'] = "You cannot create new threads in this folder";
 $lang['cannotcreatepostinfolder'] = "You cannot reply to posts in this folder";
 $lang['cannotattachfilesinfolder'] = "You cannot post attachments in this folder. Remove attachments to continue.";
@@ -1338,7 +1346,7 @@ $lang['forumanonymity'] = "Forum anonymity settings";
 $lang['birthdayanddateofbirth'] = "Birthday and date of birth display";
 $lang['includeadminfilter'] = "Include admin word filter in my list.";
 $lang['setforallforums'] = "Set for all forums?";
-$lang['containsinvalidchars'] = "contained invalid characters!";
+$lang['containsinvalidchars'] = "%s contains invalid characters!";
 $lang['homepageurlmustincludeschema'] = "Homepage URL must include http:// schema.";
 $lang['pictureurlmustincludeschema'] = "Picture URL must include http:// schema.";
 $lang['avatarurlmustincludeschema'] = "Avatar URL must include http:// schema.";
@@ -1361,6 +1369,9 @@ $lang['autoprunemypmfoldersevery'] = "Auto prune my PM folders every:";
 $lang['friendsonly'] = "Friends only?";
 $lang['globalstyles'] = "Global Styles";
 $lang['forumstyles'] = "Forum Styles";
+$lang['youmustenteryourcurrentpasswd'] = "You must enter your current password";
+$lang['youmustenteranewpasswd'] = "You must enter a new password";
+$lang['youmustconfirmyournewpasswd'] = "You must confirm your new password";
 
 // Polls (create_poll.php, poll_results.php) ---------------------------------------------
 

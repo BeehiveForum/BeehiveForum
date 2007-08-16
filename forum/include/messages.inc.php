@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.468 2007-08-01 20:23:02 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.469 2007-08-16 15:38:12 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -218,7 +218,7 @@ function message_get_content($tid, $pid)
 function message_split_fiddle($content, $emoticons = true, $ignore_sig = false)
 {
     $webtag = get_webtag($webtag_search);
-    
+
     $message = explode("<div class=\"sig\">", $content);
 
     if (count($message) > 1 && substr(trim(array_pop(array_values($message))), -6) == '</div>') {
@@ -477,9 +477,9 @@ function message_split_fiddle($content, $emoticons = true, $ignore_sig = false)
                             if (defined('BEEHIVEMODE_LIGHT')) {
 
                                 $html_parts[$j] = preg_replace("/\b(msg:([0-9]{1,}\.[0-9]{1,}))\b/i", "<a href=\"lmessages.php?msg=\\2\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
-                                
+
                             }else {
-                            
+
                                 $html_parts[$j] = preg_replace("/\b(msg:([0-9]{1,}\.[0-9]{1,}))\b/i", "<a href=\"index.php?webtag=$webtag&amp;msg=\\2\" target=\"_blank\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
                                 $html_parts[$j] = preg_replace("/\b(user:([a-z0-9_-]{2,15}))\b/i", "<a href=\"user_profile.php?webtag=$webtag&amp;logon=\\2\" target=\"_blank\" onclick=\"return openProfileByLogon('\\2', '$webtag')\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
                             }
@@ -699,8 +699,8 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     if (!$is_preview && ($message['MOVED_TID'] > 0) && ($message['MOVED_PID'] > 0)) {
 
         $post_link = "<a href=\"messages.php?webtag=$webtag&amp;msg=%s.%s\" target=\"_self\">%s</a>";
-        $post_link = sprintf($post_link, $message['MOVED_TID'], $message['MOVED_PID'], $lang['threadmovedhere']);        
-        
+        $post_link = sprintf($post_link, $message['MOVED_TID'], $message['MOVED_PID'], $lang['threadmovedhere']);
+
         echo "<br />\n";
         echo "<div align=\"center\">\n";
         echo "<table class=\"thread_track_notice\" width=\"96%\">\n";
@@ -905,7 +905,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
             if (($post_edit_grace_period == 0) || ($message['EDITED'] - $message['CREATED']) > ($post_edit_grace_period * MINUTE_IN_SECONDS)) {
 
                 if ($edit_user = user_get_logon($message['EDITED_BY'])) {
-                
+
                     echo "              <tr>\n";
                     echo "                <td class=\"postbody\" align=\"left\"><p class=\"edit_text\">", sprintf($lang['editedbyuser'], format_time($message['EDITED'], 1), $edit_user), "</p></td>\n";
                     echo "              </tr>\n";
@@ -918,7 +918,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
             if (isset($message['APPROVED_BY']) && $message['APPROVED_BY'] > 0 && $message['APPROVED_BY'] != $message['FROM_UID']) {
 
                 if ($approved_user = user_get_logon($message['APPROVED_BY'])) {
-                
+
                     echo "              <tr>\n";
                     echo "                <td class=\"postbody\" align=\"left\"><p class=\"approved_text\">", sprintf($lang['approvedbyuser'], format_time($message['APPROVED'], 1), $approved_user), "</p></td>\n";
                     echo "              </tr>\n";
@@ -929,7 +929,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
         if (($tid <> 0 && isset($message['PID'])) || isset($message['AID'])) {
 
             $aid = isset($message['AID']) ? $message['AID'] : get_attachment_id($tid, $message['PID']);
-            
+
             if (get_attachments($message['FROM_UID'], $aid, $attachments_array, $image_attachments_array)) {
 
                 echo "              <tr>\n";
@@ -952,7 +952,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
                     echo "                  <p><b>{$lang['imageattachments']}:</b><br />\n";
 
                     foreach($image_attachments_array as $key => $attachment) {
-                       
+
                         echo "                  ", attachment_make_link($attachment), "\n";
                     }
 
@@ -974,7 +974,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
             echo "                <td width=\"50%\" nowrap=\"nowrap\">";
 
             if ($msg_count > 0) {
-            
+
                 if ((!$closed && bh_session_check_perm(USER_PERM_POST_CREATE, $folder_fid)) || $perm_is_moderator) {
 
                     echo "<img src=\"", style_image('post.png'), "\" border=\"0\" alt=\"{$lang['reply']}\" title=\"{$lang['reply']}\" />";
@@ -982,6 +982,25 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
                     echo "&nbsp;&nbsp;<img src=\"", style_image('quote_disabled.png'), "\" border=\"0\" alt=\"{$lang['quote']}\" title=\"{$lang['quote']}\" name=\"p{$message['PID']}\" />";
                     echo "&nbsp;<a href=\"post.php?webtag=$webtag&amp;replyto=$tid.{$message['PID']}&amp;quote_list={$message['PID']}\" target=\"_parent\" title=\"{$lang['quote']}\" onclick=\"return togglePostQuoting({$message['PID']})\">{$lang['quote']}</a>";
+
+                    $post_edit_time = forum_get_setting('post_edit_time', false, 0);
+
+                    if ((((!perm_get_user_permissions($uid) & USER_PERM_PILLORIED) || ($uid != $message['FROM_UID'] && $from_user_permissions & USER_PERM_PILLORIED) || ($uid == $message['FROM_UID'])) && bh_session_check_perm(USER_PERM_POST_EDIT, $folder_fid) && ($post_edit_time == 0 || (time() - $message['CREATED']) < ($post_edit_time * HOUR_IN_SECONDS)) && forum_get_setting('allow_post_editing', 'Y')) || $perm_is_moderator) {
+
+                        if ($is_poll && $message['PID'] == 1) {
+
+                            if (!poll_is_closed($tid) || $perm_is_moderator) {
+
+                                echo "&nbsp;&nbsp;<img src=\"", style_image('edit.png'), "\" border=\"0\" alt=\"{$lang['editpoll']}\" title=\"{$lang['editpoll']}\" />";
+                                echo "&nbsp;<a href=\"edit_poll.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_parent\">{$lang['editpoll']}</a>\n";
+                            }
+
+                        }else {
+
+                            echo "&nbsp;&nbsp;<img src=\"", style_image('edit.png'), "\" border=\"0\" alt=\"{$lang['edit']}\" title=\"{$lang['edit']}\" />";
+                            echo "&nbsp;<a href=\"edit.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_parent\">{$lang['edit']}</a>";
+                        }
+                    }
                 }
 
             }else {
@@ -991,7 +1010,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
             echo "</td>\n";
             echo "                <td width=\"25%\" align=\"right\" nowrap=\"nowrap\">\n";
-            echo "                  <a href=\"javascript:void(0)\" onclick=\"openPostOptions({$message['PID']})\" target=\"_self\">{$lang['options']}&nbsp;<img src=\"", style_image('post_options.png'), "\" width=\"17\" height=\"16\" class=\"post_options\" alt=\"{$lang['options']}\" title=\"{$lang['options']}\" id=\"post_options_{$message['PID']}\" border=\"0\" /></a>\n";
+            echo "                  <a href=\"javascript:void(0)\" onclick=\"openPostOptions({$message['PID']})\" target=\"_self\">{$lang['more']}&nbsp;<img src=\"", style_image('post_options.png'), "\" width=\"17\" height=\"16\" class=\"post_options\" alt=\"{$lang['options']}\" title=\"{$lang['options']}\" id=\"post_options_{$message['PID']}\" border=\"0\" /></a>\n";
             echo "                    <div class=\"post_options_container_closed\" id=\"post_options_container_{$message['PID']}\">\n";
             echo "                      <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
             echo "                        <tr>\n";
@@ -1001,7 +1020,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
             echo "                                <td align=\"left\" class=\"posthead\">\n";
             echo "                                  <table class=\"posthead\" width=\"100%\">\n";
             echo "                                    <tr>\n";
-            echo "                                      <td class=\"subhead\" colspan=\"2\">{$lang['options']}</td>\n";
+            echo "                                      <td class=\"subhead\" colspan=\"2\">{$lang['postoptions']}</td>\n";
             echo "                                    </tr>\n";
             echo "                                    <tr>\n";
             echo "                                      <td align=\"center\">\n";
@@ -1013,29 +1032,6 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
                 echo "                                            <td align=\"left\"><a href=\"delete.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_parent\"><img src=\"", style_image('delete.png'), "\" border=\"0\" alt=\"{$lang['delete']}\" title=\"{$lang['delete']}\" /></a></td>\n";
                 echo "                                            <td align=\"left\" nowrap=\"nowrap\"><a href=\"delete.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_parent\">{$lang['delete']}</a></td>\n";
                 echo "                                          </tr>\n";
-            }
-
-            $post_edit_time = forum_get_setting('post_edit_time', false, 0);
-
-            if ((((!perm_get_user_permissions($uid) & USER_PERM_PILLORIED) || ($uid != $message['FROM_UID'] && $from_user_permissions & USER_PERM_PILLORIED) || ($uid == $message['FROM_UID'])) && bh_session_check_perm(USER_PERM_POST_EDIT, $folder_fid) && ($post_edit_time == 0 || (time() - $message['CREATED']) < ($post_edit_time * HOUR_IN_SECONDS)) && forum_get_setting('allow_post_editing', 'Y')) || $perm_is_moderator) {
-
-                if ($is_poll && $message['PID'] == 1) {
-
-                    if (!poll_is_closed($tid) || $perm_is_moderator) {
-
-                        echo "                                          <tr>\n";
-                        echo "                                            <td align=\"left\"><a href=\"edit_poll.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_parent\"><img src=\"", style_image('edit.png'), "\" border=\"0\" alt=\"{$lang['editpoll']}\" title=\"{$lang['editpoll']}\" /></a></td>\n";
-                        echo "                                            <td align=\"left\" nowrap=\"nowrap\"><a href=\"edit_poll.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_parent\">{$lang['editpoll']}</a></td>\n";
-                        echo "                                          </tr>\n";
-                    }
-
-                }else {
-
-                    echo "                                          <tr>\n";
-                    echo "                                            <td align=\"left\"><a href=\"edit.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_parent\"><img src=\"", style_image('edit.png'), "\" border=\"0\" alt=\"{$lang['edit']}\" title=\"{$lang['edit']}\" /></a></td>\n";
-                    echo "                                            <td align=\"left\" nowrap=\"nowrap\"><a href=\"edit.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_parent\">{$lang['edit']}</a></td>\n";
-                    echo "                                          <tr>\n";
-                }
             }
 
             echo "                                          <tr>\n";
@@ -1070,16 +1066,16 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
             if ($perm_is_moderator || $perm_has_admin_access) {
 
                 if ($perm_is_moderator) {
-                
+
                     if (forum_get_setting('require_post_approval', 'Y') && isset($message['APPROVED']) && $message['APPROVED'] == 0) {
-                
+
                         echo "                                          <tr>\n";
                         echo "                                            <td align=\"left\"><a href=\"admin_post_approve.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_parent\" title=\"{$lang['approvepost']}\"><img src=\"", style_image('approved.png'), "\" border=\"0\" alt=\"{$lang['approvepost']}\" title=\"{$lang['approvepost']}\" /></a></td>\n";
                         echo "                                            <td align=\"left\" nowrap=\"nowrap\"><a href=\"admin_post_approve.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_parent\" title=\"{$lang['approvepost']}\">{$lang['approvepost']}</a></td>\n";
                         echo "                                          </tr>\n";
                     }
                 }
-                
+
                 if (isset($message['IPADDRESS']) && strlen($message['IPADDRESS']) > 0) {
 
                     if (ip_is_banned($message['IPADDRESS'])) {
@@ -1327,7 +1323,7 @@ function messages_nav_strip($tid, $pid, $length, $ppp)
     }
 
     unset($navbits);
-    
+
     echo "            <table class=\"posthead\" width=\"100%\">\n";
     echo "              <tr>\n";
     echo "                <td align=\"center\">$html</td>\n";
@@ -1390,7 +1386,7 @@ function message_get_user($tid, $pid)
     if (!$result = db_query($sql, $db_message_get_user)) return false;
 
     if (db_num_rows($result) > 0) {
-        
+
         list($from_uid) = db_fetch_array($result, DB_RESULT_NUM);
         return $from_uid;
     }
@@ -1728,7 +1724,7 @@ function messages_forum_stats($tid, $pid)
             if ($user_stats = get_active_users()) {
 
                 $active_users_array = array();
-                
+
                 $session_cutoff = format_time_display(forum_get_setting('active_sess_cutoff', false, 86400), false);
 
                 $active_users_array[] = ($user_stats['GUESTS'] <> 1) ? sprintf($lang['numactiveguests'], $user_stats['GUESTS']) : $lang['oneactiveguest'];

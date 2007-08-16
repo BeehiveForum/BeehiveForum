@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_relations.php,v 1.75 2007-06-07 20:27:25 decoyduck Exp $ */
+/* $Id: edit_relations.php,v 1.76 2007-08-16 15:38:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -113,6 +113,10 @@ if (user_is_guest()) {
     exit;
 }
 
+// Array to hold error messages
+
+$error_msg_array = array();
+
 // Start output here
 
 html_draw_top("openprofile.js", "basetarget=_blank");
@@ -152,19 +156,19 @@ if (isset($_GET['usersearch']) && strlen(trim(_stripslashes($_GET['usersearch'])
 }
 
 if (isset($_POST['delete'])) {
-    
+
     $valid = true;
-    
+
     if (isset($_POST['delete_relationships']) && is_array($_POST['delete_relationships'])) {
 
         foreach($_POST['delete_relationships'] as $peer_uid => $delete_relationship) {
 
             if (($delete_relationship == "Y")) {
-                
+
                 if (!user_rel_update($uid, $peer_uid, 0)) {
 
                     $valid = false;
-                    $error_html = "<h2>{$lang['failedtoremoveselectedrelationships']}</h2>\n";
+                    $error_msg_array[] = $lang['failedtoremoveselectedrelationships'];
                 }
             }
         }
@@ -178,8 +182,13 @@ if (isset($_POST['delete'])) {
     }
 }
 
-if (isset($_GET['relupdated'])) {
-    echo "<h2>{$lang['relationshipsupdated']}</h2>\n";
+if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+
+    html_display_error_array($error_msg_array, '600', 'left');
+
+}else if (isset($_GET['relupdated'])) {
+
+    html_display_success_msg($lang['relationshipsupdated'], '600', 'left');
 }
 
 echo "<br />\n";

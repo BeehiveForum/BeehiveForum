@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: delete.php,v 1.125 2007-06-07 20:27:25 decoyduck Exp $ */
+/* $Id: delete.php,v 1.126 2007-08-16 15:38:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -119,10 +119,19 @@ if (user_is_guest()) {
     exit;
 }
 
+// Array to hold error messages
+
+$error_msg_array = array();
+
 // Check if the user is viewing signatures.
+
 $show_sigs = (bh_session_get_value('VIEW_SIGS') == 'N') ? false : true;
 
+// Form validation
+
 $valid = true;
+
+// Submit code.
 
 if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
 
@@ -216,14 +225,11 @@ if (isset($tid) && isset($pid) && is_numeric($tid) && is_numeric($pid)) {
     }
 }
 
-html_draw_top("openprofile.js", "post.js", "poll.js", "resize_width=720", "basetarget=_blank");
-
 if (isset($_POST['submit']) && is_numeric($tid) && is_numeric($pid)) {
 
     if (post_delete($tid, $pid)) {
 
         if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid) && $preview_message['FROM_UID'] != bh_session_get_value('UID')) {
-
             admin_add_log_entry(DELETE_POST, array($t_fid, $tid, $pid));
         }
 
@@ -233,18 +239,24 @@ if (isset($_POST['submit']) && is_numeric($tid) && is_numeric($pid)) {
             $msg = "$tid.$pid";
         }
 
+        html_draw_top();
         html_display_msg($lang['deletemessage'], $lang['postdelsuccessfully'], 'discussion.php', 'get', array('back' => $lang['back']), array('msg' => "$msg"));
         html_draw_bottom();
         exit;
 
     }else {
 
-        $error_html = "<h2>{$lang['errordelpost']}</h2>";
+        $error_msg_array[] = $lang['errordelpost'];
     }
 }
 
+html_draw_top("openprofile.js", "post.js", "poll.js", "resize_width=720", "basetarget=_blank");
+
 echo "<h1>{$lang['deletemessage']} {$tid}.{$pid}</h1>\n";
-echo "<br />\n";
+
+if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+    html_display_error_array($error_msg_array, '720', 'left');
+}
 
 if ($preview_message['TO_UID'] == 0) {
 
@@ -256,7 +268,6 @@ if ($preview_message['TO_UID'] == 0) {
     $preview_tuser = user_get($preview_message['TO_UID']);
     $preview_message['TLOGON'] = $preview_tuser['LOGON'];
     $preview_message['TNICK'] = $preview_tuser['NICKNAME'];
-
 }
 
 $preview_tuser = user_get($preview_message['FROM_UID']);
@@ -264,8 +275,7 @@ $preview_tuser = user_get($preview_message['FROM_UID']);
 $preview_message['FLOGON'] = $preview_tuser['LOGON'];
 $preview_message['FNICK'] = $preview_tuser['NICKNAME'];
 
-if (isset($error_html)) echo $error_html;
-
+echo "<br />\n";
 echo "<form name=\"f_delete\" action=\"delete.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden('msg', _htmlentities($msg)), "\n";

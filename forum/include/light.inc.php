@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.151 2007-06-24 19:58:10 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.152 2007-08-16 15:38:12 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -83,9 +83,9 @@ function light_html_draw_top($title = false)
     }
 
     $message_display_pages = array('admin_post_approve.php', 'create_poll.php',
-                                   'delete.php', 'display.php', 'edit.php', 
-                                   'edit_poll.php', 'edit_signature.php', 
-                                   'ldisplay.php', 'lmessages.php', 
+                                   'delete.php', 'display.php', 'edit.php',
+                                   'edit_poll.php', 'edit_signature.php',
+                                   'ldisplay.php', 'lmessages.php',
                                    'lpost.php', 'messages.php', 'post.php');
 
     if (in_array(basename($_SERVER['PHP_SELF']), $message_display_pages)) {
@@ -383,7 +383,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
                                 echo "<ul>\n";
                                 $folder_list_start = true;
                             }
-                           
+
                             echo "<li>\n";
 
                             if ($thread['LAST_READ'] == 0) {
@@ -513,7 +513,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
 function light_draw_my_forums()
 {
     $webtag = get_webtag($webtag_search);
-    
+
     $lang = load_language_file();
 
     if (isset($_GET['page']) && is_numeric($_GET['page'])) {
@@ -564,7 +564,7 @@ function light_draw_my_forums()
                 }else {
                     echo "<p>{$lang['lastvisited']}: {$lang['never']}</p>\n";
                 }
-                
+
                 echo page_links("lforums.php?webtag=$webtag", $start, $forums_array['forums_count'], 10);
             }
 
@@ -726,7 +726,7 @@ function light_poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list 
                 if (strlen(trim($poll_results['OPTION_NAME'][$i])) > 0) {
 
                     if ($poll_results['GROUP_ID'][$i] <> $poll_previous_group) {
-                
+
                         $poll_data['CONTENT'].= "<hr />\n";
                         $poll_group_count++;
                     }
@@ -747,7 +747,7 @@ function light_poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list 
                     if (strlen(trim($poll_results['OPTION_NAME'][$i])) > 0) {
 
                         if ($poll_results['GROUP_ID'][$i] <> $poll_previous_group) {
-                    
+
                             $poll_data['CONTENT'].= "<hr />\n";
                             $poll_group_count++;
                         }
@@ -766,7 +766,7 @@ function light_poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list 
                     if (strlen(trim($poll_results['OPTION_NAME'][$i])) > 0) {
 
                         if ($poll_results['GROUP_ID'][$i] <> $poll_previous_group) {
-                        
+
                             $poll_data['CONTENT'].= "<hr />\n";
                             $poll_group_count++;
                         }
@@ -787,7 +787,7 @@ function light_poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list 
             if (!empty($poll_results['OPTION_NAME'][$i])) {
 
                 if ($poll_results['GROUP_ID'][$i] <> $poll_previous_group) {
-                    
+
                     $poll_data['CONTENT'].= "<hr />\n";
                     $poll_group_count++;
                 }
@@ -805,7 +805,7 @@ function light_poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list 
         for ($i = 0; $i < sizeof($poll_results['OPTION_ID']); $i++) {
 
             if (!in_array($poll_results['GROUP_ID'][$i], $group_array)) {
-            
+
                 $group_array[] = $poll_results['GROUP_ID'][$i];
             }
         }
@@ -827,15 +827,15 @@ function light_poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list 
                 for ($i = 0; $i < sizeof($user_poll_data); $i++) {
 
                     for ($j = 0; $j < sizeof($poll_results['OPTION_ID']); $j++) {
-                    
+
                         if ($user_poll_data[$i]['OPTION_ID'] == $poll_results['OPTION_ID'][$j]) {
 
                             if ($poll_results['OPTION_NAME'][$j] == strip_tags($poll_results['OPTION_NAME'][$j])) {
 
                                 $user_poll_votes_array[] = "'{$poll_results['OPTION_NAME'][$j]}'";
-                            
+
                             }else {
-                                
+
                                 $user_poll_votes_array[] = "Option {$user_poll_data[$i]['OPTION_ID']}";
                             }
                         }
@@ -852,17 +852,17 @@ function light_poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list 
                 $user_poll_votes_array = array();
 
                 for ($i = 0; $i < sizeof($user_poll_data); $i++) {
-          
+
                     for ($j = 0; $j < sizeof($poll_results['OPTION_ID']); $j++) {
-              
+
                         if ($user_poll_data[$i]['OPTION_ID'] == $poll_results['OPTION_ID'][$j]) {
-                          
+
                             if ($poll_results['OPTION_NAME'][$j] == strip_tags($poll_results['OPTION_NAME'][$j])) {
-                  
+
                                 $user_poll_votes_array[] = "'{$poll_results['OPTION_NAME'][$j]}'";
-          
+
                             }else {
-                  
+
                                 $user_poll_votes_array[] = "Option {$user_poll_data[$i]['OPTION_ID']}";
                             }
                         }
@@ -946,7 +946,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
         $post_link = "<a href=\"messages.php?webtag=$webtag&amp;msg=%s.%s\" target=\"_self\">%s</a>";
         $post_link = sprintf($post_link, $message['MOVED_TID'], $message['MOVED_PID'], $lang['threadmovedhere']);
-        
+
         echo sprintf("<p>{$lang['thisposthasbeenmoved']}</p>\n", $post_link);
         return;
     }
@@ -1096,7 +1096,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
     if ($in_list && $limit_text != false) {
 
         $links_array = array();
-        
+
         if (!$closed && bh_session_check_perm(USER_PERM_POST_CREATE, $folder_fid)) {
 
             $links_array[] = "<a href=\"lpost.php?webtag=$webtag&amp;replyto=$tid.{$message['PID']}\">{$lang['reply']}</a>";
@@ -1214,7 +1214,7 @@ function light_messages_nav_strip($tid,$pid,$length,$ppp)
 function light_html_guest_error ()
 {
     $frame_top_target = html_get_top_frame_name();
-     
+
     $lang = load_language_file();
 
     $webtag = get_webtag($webtag_search);
@@ -1267,7 +1267,7 @@ function light_folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="
                 }
 
             }else {
-            
+
                 if (bh_session_check_perm($access_allowed, $folder_data['FID'])) {
 
                     $folders['FIDS'][]   = $folder_data['FID'];
@@ -1380,7 +1380,7 @@ function light_threads_draw_discussions_dropdown($mode)
 function light_mode_check_noframes()
 {
     $webtag = get_webtag($webtag_search);
-    
+
     if (isset($_GET['noframes'])) {
 
         if (bh_session_active() && !isset($_COOKIE['bh_logon_failed'])) {
@@ -1410,6 +1410,27 @@ function light_edit_refuse()
 
     echo "<h1>{$lang['error']}</h1>";
     echo "<h2>{$lang['nopermissiontoedit']}</h2>";
+}
+
+function light_html_display_error_array($error_list_array)
+{
+    $lang = load_language_file();
+
+    if (!is_array($error_list_array)) $error_msg_array = array($error_msg_array);
+
+    echo "<h2>The following errors were encountered:</h2>\n";
+    echo "<ul>\n";
+    echo "  <li>", implode("</li>\n  <li>", $error_list_array), "</li>\n";
+    echo "</ul>\n";
+}
+
+function light_html_display_success_msg($string_msg)
+{
+    $lang = load_language_file();
+
+    if (!is_string($string_msg)) return false;
+
+    echo "<h2>$string_msg</h2>\n";
 }
 
 ?>

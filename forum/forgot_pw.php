@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forgot_pw.php,v 1.52 2007-05-31 21:59:18 decoyduck Exp $ */
+/* $Id: forgot_pw.php,v 1.53 2007-08-16 15:38:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -70,6 +70,10 @@ $lang = load_language_file();
 
 $webtag = get_webtag($webtag_search);
 
+// Array for holding error messages
+
+$error_msg_array = array();
+
 if (isset($_POST['submit'])) {
 
     if (isset($_POST['logon'])) {
@@ -85,12 +89,12 @@ if (isset($_POST['submit'])) {
 
         }else {
 
-           $error_html = "<h2>{$lang['couldnotsendpasswordreminder']}</h2>\n";
+           $error_msg_array[] = $lang['couldnotsendpasswordreminder'];
         }
 
     }else {
 
-        $error_html = "<h2>{$lang['validusernamerequired']}</h2>\n";
+        $error_msg_array[] = $lang['validusernamerequired'];
     }
 }
 
@@ -98,25 +102,18 @@ html_draw_top();
 
 echo "<h1>{$lang['forgotpasswd']}</h1>";
 
-if (isset($error_html)) {
-    echo $error_html;
-}else {
-    echo "<br />\n";
+if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+    html_display_error_array($error_msg_array, '450', 'center');
 }
 
+echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "  <form name=\"forgot_pw\" action=\"forgot_pw.php\" method=\"post\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
-echo "      <tr>\n";
-echo "        <td align=\"left\">{$lang['forgotpasswdexp']}</td>\n";
-echo "      </tr>\n";
-echo "      <tr>\n";
-echo "        <td align=\"left\">&nbsp;</td>\n";
-echo "      </tr>\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"450\">\n";
 echo "      <tr>\n";
 echo "        <td align=\"center\">\n";
-echo "          <table class=\"box\" width=\"400\">\n";
+echo "          <table class=\"box\" width=\"450\">\n";
 echo "            <tr>\n";
 echo "              <td align=\"left\" class=\"posthead\">\n";
 echo "                <table class=\"posthead\" width=\"100%\">\n";
@@ -128,7 +125,7 @@ echo "                    <td align=\"center\">\n";
 echo "                      <table class=\"posthead\" width=\"95%\">\n";
 echo "                        <tr>\n";
 echo "                          <td align=\"left\">{$lang['username']}:</td>\n";
-echo "                          <td align=\"left\">", form_input_text("logon", (isset($logon) ? _htmlentities($logon) : ''), 40, 15), "</td>\n";
+echo "                          <td align=\"left\">", form_input_text("logon", (isset($logon) ? _htmlentities($logon) : ''), 37, 15), "</td>\n";
 echo "                        </tr>\n";
 echo "                      </table>\n";
 echo "                    </td>\n";

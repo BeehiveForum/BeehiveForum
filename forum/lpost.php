@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.107 2007-06-07 20:27:26 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.108 2007-08-16 15:38:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -167,28 +167,40 @@ if (isset($_POST['t_newthread'])) {
     $newthread = true;
 
     if (isset($_POST['t_threadtitle']) && strlen(trim(_stripslashes($_POST['t_threadtitle']))) > 0) {
+
         $t_threadtitle = trim(_stripslashes($_POST['t_threadtitle']));
+
     }else {
-        $error_html = "<h2>{$lang['mustenterthreadtitle']}</h2>";
+
+        $error_msg_array[] = $lang['mustenterthreadtitle'];
         $valid = false;
     }
 
     if (isset($_POST['t_fid'])) {
+
         if (folder_thread_type_allowed($_POST['t_fid'], FOLDER_ALLOW_NORMAL_THREAD)) {
+
             $t_fid = $_POST['t_fid'];
+
         }else {
-            $error_html = "<h2>{$lang['cannotpostthisthreadtypeinfolder']}</h2>";
+
+            $error_msg_array[] = $lang['cannotpostthisthreadtypeinfolder'];
             $valid = false;
         }
-    }else if ($valid) {
-        $error_html = "<h2>{$lang['pleaseselectfolder']}</h2>";
+
+    }else {
+
+        $error_msg_array[] = $lang['pleaseselectfolder'];
         $valid = false;
     }
 
     if (isset($_POST['t_content']) && strlen(trim(_stripslashes($_POST['t_content']))) > 0) {
+
         $t_content = _stripslashes($_POST['t_content']);
+
     }else {
-        $error_html = "<h2>{$lang['mustenterpostcontent']}</h2>";
+
+        $error_msg_array[] = $lang['mustenterpostcontent'];
         $valid = false;
     }
 
@@ -197,9 +209,12 @@ if (isset($_POST['t_newthread'])) {
     if (isset($_POST['t_tid'])) {
 
         if (isset($_POST['t_content']) && strlen($_POST['t_content']) > 0) {
+
             $t_content = _stripslashes($_POST['t_content']);
+
         }else {
-            $error_html = "<h2>{$lang['mustenterpostcontent']}</h2>";
+
+            $error_msg_array[] = $lang['mustenterpostcontent'];
             $valid = false;
         }
 
@@ -361,7 +376,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     if (isset($t_fid) && !folder_is_valid($t_fid)) {
 
-        $error_html = "<h2>{$lang['invalidfolderid']}</h2>\n";
+        $error_msg_array[] = $lang['invalidfolderid'];
         $valid = false;
     }
 
@@ -408,7 +423,7 @@ if (!$newthread) {
 
     $reply_message = messages_get($reply_to_tid, $reply_to_pid);
     $reply_message['CONTENT'] = message_get_content($reply_to_tid, $reply_to_pid);
-    
+
     if (!$threaddata = thread_get($reply_to_tid)) {
 
         light_html_draw_top();
@@ -420,7 +435,7 @@ if (!$newthread) {
 
     if (((perm_get_user_permissions($reply_message['FROM_UID']) & USER_PERM_WORMED) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) || ((!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") && $threaddata['POLL_FLAG'] != 'Y' && $reply_to_pid != 0)) {
 
-        $error_html = "<h2>{$lang['messagehasbeendeleted']}</h2>\n";
+        $error_msg_array[] = $lang['messagehasbeendeleted'];
         $valid = false;
     }
 }
@@ -488,13 +503,9 @@ if ($valid && isset($_POST['submit'])) {
         if ($new_pid > -1) {
 
             if ($t_tid > 0 && $t_rpid > 0) {
-
-              $uri = "./lmessages.php?webtag=$webtag&msg=$t_tid.$t_rpid";
-
+                $uri = "./lmessages.php?webtag=$webtag&msg=$t_tid.$t_rpid";
             }else {
-
-              $uri = "./lmessages.php?webtag=$webtag";
-
+                $uri = "./lmessages.php?webtag=$webtag";
             }
 
             header_redirect($uri);
@@ -502,13 +513,12 @@ if ($valid && isset($_POST['submit'])) {
 
         }else {
 
-            $error_html = "<h2>{$lang['errorcreatingpost']}</h2>";
-
+            $error_msg_array[] = $lang['errorcreatingpost'];
         }
 
     }else {
 
-        $error_html = sprintf("<h2>{$lang['postfrequencytoogreat']}</h2>", forum_get_setting('minimum_post_frequency', false, 0));
+        $error_msg_array[] = sprintf("<h2>{$lang['postfrequencytoogreat']}</h2>", forum_get_setting('minimum_post_frequency', false, 0));
     }
 }
 
@@ -549,6 +559,7 @@ if ($valid && isset($_POST['preview'])) {
     }
 
     light_message_display(0, $preview_message, 0, 0, 0, false, false, false, false, false, true);
+
     echo "<br />\n";
 }
 
@@ -611,8 +622,8 @@ if ($newthread) {
     }
 }
 
-if (isset($error_html)) {
-    echo $error_html;
+if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+    light_html_display_error_array($error_msg_array);
 }
 
 if (!isset($t_to_uid)) $t_to_uid = -1;

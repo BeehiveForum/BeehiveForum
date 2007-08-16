@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.230 2007-06-10 12:28:42 decoyduck Exp $ */
+/* $Id: edit.php,v 1.231 2007-08-16 15:38:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -208,6 +208,10 @@ if (!$threaddata = thread_get($tid)) {
     exit;
 }
 
+// Array to hold error messages
+
+$error_msg_array = array();
+
 // Check if the user is viewing signatures.
 
 $show_sigs = (bh_session_get_value('VIEW_SIGS') == 'N') ? false : true;
@@ -217,14 +221,21 @@ $show_sigs = (bh_session_get_value('VIEW_SIGS') == 'N') ? false : true;
 $uid = bh_session_get_value('UID');
 
 // Get the user's post page preferences.
+
 $page_prefs = bh_session_get_post_page_prefs();
+
+// Form validation
 
 $valid = true;
 
+// Enable Fix HTML
+
 $fix_html = true;
 
-$t_content = "";
-$t_sig = "";
+// Pre-set the content and signature vars
+
+//$t_content = "";
+//$t_sig = "";
 
 if (isset($_POST['t_post_emots'])) {
 
@@ -341,7 +352,7 @@ if (isset($_POST['t_content']) && strlen(trim(_stripslashes($_POST['t_content'])
 
     if ($post_html && attachment_embed_check($t_content)) {
 
-        $error_html = "<h2>{$lang['notallowedembedattachmentpost']}</h2>\n";
+        $error_msg_array[] = $lang['notallowedembedattachmentpost'];
         $valid = false;
     }
 
@@ -350,7 +361,7 @@ if (isset($_POST['t_content']) && strlen(trim(_stripslashes($_POST['t_content'])
 
     if (strlen($t_content) >= 65535) {
 
-        $error_html = "<h2>{$lang['reducemessagelength']} ".number_format(strlen($t_content)).")</h2>";
+        $error_msg_array[] = sprintf($lang['reducemessagelength'], number_format(strlen($t_content)));
         $valid = false;
     }
 }
@@ -361,7 +372,7 @@ if (isset($_POST['t_sig']) && strlen(trim(_stripslashes($_POST['t_sig']))) > 0) 
 
     if (attachment_embed_check($t_sig)) {
 
-        $error_html = "<h2>{$lang['notallowedembedattachmentpost']}</h2>\n";
+        $error_msg_array[] = $lang['notallowedembedattachmentpost'];
         $valid = false;
     }
 
@@ -370,7 +381,7 @@ if (isset($_POST['t_sig']) && strlen(trim(_stripslashes($_POST['t_sig']))) > 0) 
 
     if (strlen($t_sig) >= 65535) {
 
-        $error_html = "<h2>{$lang['reducesiglength']} ".number_format(strlen($t_sig)).")</h2>";
+        $error_msg_array[] = sprintf($lang['reducesiglength'], number_format(strlen($t_sig)));
         $valid = false;
     }
 }
@@ -380,26 +391,34 @@ if (isset($_POST['preview'])) {
     $preview_message = messages_get($tid, $pid, 1);
 
     if (isset($_POST['t_to_uid'])) {
+
         $to_uid = $_POST['t_to_uid'];
+
     }else {
-        $error_html = "<h2>{$lang['invalidusername']}</h2>\n";
+
+        $error_msg_array[] = $lang['invalidusername'];
         $valid = false;
     }
 
     if (isset($_POST['t_from_uid'])) {
+
         $from_uid = $_POST['t_from_uid'];
+
     }else {
-        $error_html = "<h2>{$lang['invalidusername']}</h2>\n";
+
+        $error_msg_array[] = $lang['invalidusername'];
         $valid = false;
     }
 
     if (strlen(trim($t_content)) == 0) {
-        $error_html = "<h2>{$lang['mustenterpostcontent']}</h2>";
+
+        $error_msg_array[] = $lang['mustenterpostcontent'];
         $valid = false;
     }
 
     if (get_num_attachments($aid) > 0 && !bh_session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
-        $error_html = "<h2>{$lang['cannotattachfilesinfolder']}</h2>";
+
+        $error_msg_array[] = $lang['cannotattachfilesinfolder'];
         $valid = false;
     }
 
@@ -407,8 +426,7 @@ if (isset($_POST['preview'])) {
 
         $preview_message['CONTENT'] = $t_content;
 
-        if ($allow_sig == true) {
-
+        if ($allow_sig == true && isset($t_sig)) {
             $preview_message['CONTENT'].= "<div class=\"sig\">$t_sig</div>";
         }
 
@@ -439,31 +457,39 @@ if (isset($_POST['preview'])) {
     $post_edit_time = forum_get_setting('post_edit_time', false, 0);
 
     if (isset($_POST['t_to_uid'])) {
+
         $to_uid = $_POST['t_to_uid'];
+
     }else {
-        $error_html = "<h2>{$lang['invalidusername']}</h2>\n";
+
+        $error_msg_array[] = $lang['invalidusername'];
         $valid = false;
     }
 
     if (isset($_POST['t_from_uid'])) {
+
         $from_uid = $_POST['t_from_uid'];
+
     }else {
-        $error_html = "<h2>{$lang['invalidusername']}</h2>\n";
+
+        $error_msg_array[] = $lang['invalidusername'];
         $valid = false;
     }
 
     if (strlen(trim($t_content)) == 0) {
-        $error_html = "<h2>{$lang['mustenterpostcontent']}</h2>";
+
+        $error_msg_array[] = $lang['mustenterpostcontent'];
         $valid = false;
     }
 
     if (get_num_attachments($aid) > 0 && !bh_session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
-        $error_html = "<h2>{$lang['cannotattachfilesinfolder']}</h2>";
+
+        $error_msg_array[] = $lang['cannotattachfilesinfolder'];
         $valid = false;
     }
-    
+
     if ((forum_get_setting('allow_post_editing', 'N') || (($uid != $edit_message['FROM_UID']) && !(perm_get_user_permissions($edit_message['FROM_UID']) & USER_PERM_PILLORIED)) || (perm_get_user_permissions($uid) & USER_PERM_PILLORIED) || ($post_edit_time > 0 && (time() - $edit_message['CREATED']) >= ($post_edit_time * HOUR_IN_SECONDS))) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
-    
+
         html_draw_top();
         html_error_msg($lang['nopermissiontoedit'], 'discussion.php', 'get', array('back' => $lang['back']), array('msg' => $edit_msg));
         html_draw_bottom();
@@ -474,16 +500,16 @@ if (isset($_POST['preview'])) {
 
     if ($valid) {
 
-        if ($allow_sig == true) {
+        if ($allow_sig == true && isset($t_sig)) {
 
-            $t_content_tmp = $t_content."<div class=\"sig\">$t_sig</div>";
+            $t_content_new = $t_content."<div class=\"sig\">$t_sig</div>";
 
         }else {
 
-            $t_content_tmp = $t_content;
+            $t_content_new = $t_content;
         }
 
-        if (post_update($t_fid, $tid, $pid, $t_content_tmp)) {
+        if (post_update($t_fid, $tid, $pid, $t_content_new)) {
 
             post_add_edit_text($tid, $pid);
 
@@ -500,7 +526,7 @@ if (isset($_POST['preview'])) {
 
         }else{
 
-            $error_html = "<h2>{$lang['errorupdatingpost']}</h2>";
+            $error_msg_array[] = $lang['errorupdatingpost'];
         }
     }
 
@@ -511,14 +537,14 @@ if (isset($_POST['preview'])) {
     if (isset($_POST['t_to_uid'])) {
         $to_uid = $_POST['t_to_uid'];
     }else {
-        $error_html = "<h2>{$lang['invalidusername']}</h2>\n";
+        $error_msg_array[] = $lang['invalidusername'];
         $valid = false;
     }
 
     if (isset($_POST['t_from_uid'])) {
         $from_uid = $_POST['t_from_uid'];
     }else {
-        $error_html = "<h2>{$lang['invalidusername']}</h2>\n";
+        $error_msg_array[] = $lang['invalidusername'];
         $valid = false;
     }
 
@@ -534,8 +560,8 @@ if (isset($_POST['preview'])) {
     $user_prefs['POST_PAGE'] = $page_prefs;
 
     if (!user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
-        
-        $error_html = "<h2>{$lang['failedtoupdateuserdetails']}</h2>\n";
+
+        $error_msg_array[] = $lang['failedtoupdateuserdetails'];
         $valid = false;
     }
 
@@ -560,14 +586,19 @@ if (isset($_POST['preview'])) {
             $preview_message = $edit_message;
 
             $to_uid = $edit_message['TO_UID'];
+
             $from_uid = $edit_message['FROM_UID'];
 
             $parsed_message = new MessageTextParse($edit_message['CONTENT'], $emots_enabled);
 
             $emots_enabled = $parsed_message->getEmoticons();
+
             $links_enabled = $parsed_message->getLinks();
+
             $t_content = $parsed_message->getMessage();
+
             $post_html = $parsed_message->getMessageHTML();
+
             $t_sig = $parsed_message->getSig();
 
             $post = new MessageText($allow_html ? $post_html : false, $t_content, $emots_enabled, $links_enabled);
@@ -599,6 +630,11 @@ if (isset($_POST['preview'])) {
 html_draw_top("onUnload=clearFocus()", "resize_width=720", "basetarget=_blank", "attachments.js", "edit.js", "openprofile.js", "dictionary.js", "htmltools.js", "emoticons.js", "post.js", "poll.js");
 
 echo "<h1>", sprintf($lang['editmessage'], $edit_msg), "</h1>\n";
+
+if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+    html_display_error_array($error_msg_array, '720', 'left');
+}
+
 echo "<br />\n";
 echo "<form name=\"f_edit\" action=\"edit.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
@@ -615,18 +651,6 @@ echo "            <td align=\"left\" class=\"posthead\">\n";
 $tools = new TextAreaHTML("f_edit");
 
 echo $tools->preload();
-
-if (isset($error_html)) {
-
-    echo "            <table class=\"posthead\" width=\"720\">\n";
-    echo "              <tr>\n";
-    echo "                <td align=\"left\" class=\"subhead\">{$lang['error']}</td>\n";
-    echo "              </tr>";
-    echo "              <tr>\n";
-    echo "                <td align=\"left\">$error_html</td>\n";
-    echo "              </tr>\n";
-    echo "            </table>\n";
-}
 
 if ($valid && isset($_POST['preview'])) {
 

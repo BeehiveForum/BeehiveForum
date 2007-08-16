@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.212 2007-08-12 21:46:35 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.213 2007-08-16 15:38:12 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -151,12 +151,6 @@ if (isset($ret) && strlen(trim($ret)) > 0) {
     }
 }
 
-if (isset($_GET['action']) && strlen(trim(_stripslashes($_GET['action']))) > 0) {
-    $action = trim(_stripslashes($_GET['action']));
-}elseif (isset($_POST['action']) && strlen(trim(_stripslashes($_POST['action']))) > 0) {
-    $action = trim(_stripslashes($_POST['action']));
-}
-
 if (isset($_POST['cancel'])) {
     header_redirect($ret);
 }
@@ -166,6 +160,14 @@ if (isset($_POST['edit_users']) && is_array($_POST['edit_users'])) {
     list($gid) = array_keys($_POST['edit_users']);
     header_redirect("./admin_user_groups_edit_users.php?webtag=$webtag&gid=$gid");
 }
+
+// Array to hold error messages
+
+$error_msg_array = array();
+
+// Success message string
+
+$success_html = "";
 
 // Get the user details.
 
@@ -283,10 +285,6 @@ if (isset($_POST['user_history_submit'])) {
 
     $valid = true;
 
-    $error_html = "";
-
-    $success_html = "";
-
     if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
 
         if (isset($_POST['t_logon']) && strlen(trim(_stripslashes($_POST['t_logon']))) > 0) {
@@ -294,29 +292,32 @@ if (isset($_POST['user_history_submit'])) {
             $t_logon = strtoupper(trim(_stripslashes($_POST['t_logon'])));
 
             if (!preg_match("/^[a-z0-9_-]+$/i", $t_logon)) {
-                $error_html.= "<h2>{$lang['usernameinvalidchars']}</h2>\n";
+
+                $error_msg_array[] = $lang['usernameinvalidchars'];
                 $valid = false;
             }
 
             if (strlen($t_logon) < 2) {
-                $error_html.= "<h2>{$lang['usernametooshort']}</h2>\n";
+
+                $error_msg_array[] = $lang['usernametooshort'];
                 $valid = false;
             }
 
             if (strlen($t_logon) > 15) {
-                $error_html.= "<h2>{$lang['usernametoolong']}</h2>\n";
+
+                $error_msg_array[] = $lang['usernametoolong'];
                 $valid = false;
             }
 
             if (logon_is_banned($t_logon)) {
 
-                $error_html.= "<h2>{$lang['logonnotpermitted']}</h2>\n";
+                $error_msg_array[] = $lang['logonnotpermitted'];
                 $valid = false;
             }
 
         }else {
 
-            $error_html.= "<h2>{$lang['usernamerequired']}</h2>";
+            $error_msg_array[] = $lang['usernamerequired'];
             $valid = false;
         }
 
@@ -326,13 +327,13 @@ if (isset($_POST['user_history_submit'])) {
 
             if (nickname_is_banned($t_nickname)) {
 
-                $error_html.= "<h2>{$lang['nicknamenotpermitted']}</h2>\n";
+                $error_msg_array[] = $lang['nicknamenotpermitted'];
                 $valid = false;
             }
 
         }else {
 
-            $error_html.= "<h2>{$lang['nicknamerequired']}</h2>";
+            $error_msg_array[] = $lang['nicknamerequired'];
             $valid = false;
         }
 
@@ -342,27 +343,27 @@ if (isset($_POST['user_history_submit'])) {
 
             if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $t_email)) {
 
-                $error_html.= "<h2>{$lang['invalidemailaddressformat']}</h2>\n";
+                $error_msg_array[] = $lang['invalidemailaddressformat'];
                 $valid = false;
 
             }else {
 
                 if (email_is_banned($t_email)) {
 
-                    $error_html.= "<h2>{$lang['emailaddressnotpermitted']}</h2>\n";
+                    $error_msg_array[] = $lang['emailaddressnotpermitted'];
                     $valid = false;
                 }
 
                 if (forum_get_setting('require_unique_email', 'Y') && !email_is_unique($t_email)) {
 
-                    $error_html.= "<h2>{$lang['emailaddressalreadyinuse']}</h2>\n";
+                    $error_msg_array[] = $lang['emailaddressalreadyinuse'];
                     $valid = false;
                 }
             }
 
         }else {
 
-            $error_html.= "<h2>{$lang['emailaddressrequired']}</h2>";
+            $error_msg_array[] = $lang['emailaddressrequired'];
             $valid = false;
         }
 
@@ -373,7 +374,7 @@ if (isset($_POST['user_history_submit'])) {
                 $user = user_get($uid);
                 $user['POST_COUNT'] = user_get_post_count($uid);
 
-                $success_html.= "<h2>{$lang['successfullyupdateduserdetails']}</h2>\n";
+                $success_html = $lang['successfullyupdateduserdetails'];
             }
         }
 
@@ -383,12 +384,12 @@ if (isset($_POST['user_history_submit'])) {
 
                 if (user_reset_post_count($uid)) {
 
-                    $success_html.= "<h2>{$lang['successfullyresetpostcount']}</h2>\n";
+                    $success_html = $lang['successfullyresetpostcount'];
 
                 }else {
 
                     $valid = false;
-                    $error_html.= "<h2>{$lang['failedtoresetuserpostcount']}</h2>\n";
+                    $error_msg_array[] = $lang['failedtoresetuserpostcount'];
                 }
 
             }else {
@@ -402,12 +403,12 @@ if (isset($_POST['user_history_submit'])) {
                         if (user_update_post_count($uid, $user_post_count)) {
 
                             $user['POST_COUNT'] = $user_post_count;
-                            $success_html.= "<h2>{$lang['userpostcountsuccessfullychanged']}</h2>\n";
+                            $success_html = $lang['userpostcountsuccessfullychanged'];
 
                         }else {
 
                             $valid = false;
-                            $error_html.= "<h2>{$lang['failedtochangeuserpostcount']}</h2>\n";
+                            $error_msg_array[] = $lang['failedtochangeuserpostcount'];
                         }
                     }
                 }
@@ -468,7 +469,7 @@ if (isset($_POST['user_history_submit'])) {
             if (!($new_global_user_perms & USER_PERM_FORUM_TOOLS)) {
 
                  $valid = false;
-                 $error_html.= "<h2>{$lang['adminforumtoolsusercounterror']}</h2>\n";
+                 $error_msg_array[] = $lang['adminforumtoolsusercounterror'];
             }
         }
 
@@ -477,7 +478,7 @@ if (isset($_POST['user_history_submit'])) {
             if (!($new_global_user_perms & USER_PERM_ADMIN_TOOLS)) {
 
                 $valid = false;
-                $error_html.= "<h2>{$lang['adminforumtoolsusercounterror']}</h2>\n";
+                $error_msg_array[] = $lang['adminforumtoolsusercounterror'];
             }
         }
 
@@ -530,7 +531,9 @@ if (isset($_POST['user_history_submit'])) {
     }
 }
 
-if (isset($action) && strlen(trim($action)) > 0) {
+if (isset($_POST['action_submit'])) {
+
+    $action = (isset($_POST['action'])) ? $_POST['action'] : '';
 
     if ($action == 'reset_passwd') {
 
@@ -937,7 +940,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
         echo "      <td align=\"left\">&nbsp;</td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
-        echo "      <td align=\"center\">", form_submit("delete_user_confirm", $lang['confirm']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+        echo "      <td align=\"center\">", form_submit("delete_user_confirm", $lang['confirm']), "&nbsp;", form_submit("cancel_delete_user", $lang['cancel']), "</td>\n";
         echo "    </tr>\n";
         echo "  </table>\n";
         echo "</form>\n";
@@ -1014,21 +1017,21 @@ if ($table_data = get_table_prefix()) {
     echo "<h1>{$lang['admin']} &raquo; {$lang['manageusers']} &raquo; ", format_user_name($user['LOGON'], $user['NICKNAME']), "</h1>\n";
 }
 
-if (isset($_GET['profile_updated'])) {
+if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-    echo "<h2>{$lang['profileupdated']}</h2>\n";
+    html_display_error_array($error_msg_array, '600', 'center');
+
+}else if (isset($success_html) && strlen(trim($success_html)) > 0) {
+
+    html_display_success_msg($success_html, '600', 'center');
+
+}else if (isset($_GET['profile_updated'])) {
+
+    html_display_success_msg($lang['profileupdated'], '600', 'left');
 
 }else if (isset($_GET['signature_updated'])) {
 
-    echo "<h2>{$lang['signatureupdated']}</h2>\n";
-}
-
-if (isset($error_html) && strlen(trim($error_html)) > 0) {
-    echo $error_html;
-}
-
-if (isset($success_html) && strlen(trim($success_html)) > 0) {
-    echo $success_html;
+    html_display_success_msg($lang['signatureupdated'], '600', 'center');
 }
 
 echo "<br />\n";

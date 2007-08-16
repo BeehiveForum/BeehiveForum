@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: mods_list.php,v 1.27 2007-08-09 22:55:43 decoyduck Exp $ */
+/* $Id: mods_list.php,v 1.28 2007-08-16 15:38:12 decoyduck Exp $ */
 
 /**
 * Displays list of moderators for a folder
@@ -109,9 +109,6 @@ if (!forum_check_access_level()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
-
-$valid = true;
-$error_html = "";
 
 if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
 

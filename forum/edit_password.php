@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_password.php,v 1.61 2007-07-15 17:32:16 decoyduck Exp $ */
+/* $Id: edit_password.php,v 1.62 2007-08-16 15:38:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -111,56 +111,75 @@ if (user_is_guest()) {
     exit;
 }
 
+// Array to hold error messages
+
+$error_msg_array = array();
+
+// Submit code
+
 if (isset($_POST['submit'])) {
 
     $valid = true;
-    $error_html = "";
 
     if (isset($_POST['opw']) && strlen(trim(_stripslashes($_POST['opw']))) > 0) {
+
         $t_old_pass = trim(_stripslashes($_POST['opw']));
+
     }else {
-        $error_html.= "<h2>{$lang['passwdrequired']}</h2>\n";
+
+        $error_msg_array[] = $lang['youmustenteryourcurrentpasswd'];
         $valid = false;
     }
 
     if (isset($_POST['npw']) && strlen(trim(_stripslashes($_POST['npw']))) > 0) {
+
         $t_new_pass = trim(_stripslashes($_POST['npw']));
+
     }else {
-        $error_html.= "<h2>{$lang['passwdrequired']}</h2>\n";
+
+        $error_msg_array[] = $lang['youmustenteranewpasswd'];
         $valid = false;
     }
 
     if (isset($_POST['cpw']) && strlen(trim(_stripslashes($_POST['cpw']))) > 0) {
+
         $t_confirm_pass = trim(_stripslashes($_POST['cpw']));
+
     }else {
-        $error_html.= "<h2>{$lang['passwdrequired']}</h2>\n";
+
+        $error_msg_array[] = $lang['youmustconfirmyournewpasswd'];
         $valid = false;
     }
 
     if ($valid) {
 
         if ($t_new_pass != $t_confirm_pass) {
-            $error_html.= "<h2>{$lang['passwdsdonotmatch']}</h2>\n";
+
+            $error_msg_array[] = $lang['passwdsdonotmatch'];
             $valid = false;
         }
 
         if (_htmlentities($t_new_pass) != $t_new_pass) {
-            $error_html.= "<h2>{$lang['passwdmustnotcontainHTML']}</h2>\n";
+
+            $error_msg_array[] = $lang['passwdmustnotcontainHTML'];
             $valid = false;
         }
 
         if (preg_match("/^[a-z0-9_-]+$/i", $t_new_pass) < 1) {
-            $error_html.= "<h2>{$lang['passwordinvalidchars']}</h2>\n";
+
+            $error_msg_array[] = $lang['passwordinvalidchars'];
             $valid = false;
         }
 
         if (strlen($t_new_pass) < 6) {
-            $error_html.= "<h2>{$lang['passwdtooshort']}</h2>\n";
+
+            $error_msg_array[] = $lang['passwdtooshort'];
             $valid = false;
         }
 
         if ($t_old_pass == $t_new_pass) {
-            $error_html.= "<h2>{$lang['newandoldpasswdarethesame']}</h2>\n";
+
+            $error_msg_array[] = $lang['newandoldpasswdarethesame'];
             $valid = false;
         }
 
@@ -190,7 +209,7 @@ if (isset($_POST['submit'])) {
 
                 logon_update_password_cookie($logon, $t_new_pass);
 
-                // Force redirect to prevent refreshing the page 
+                // Force redirect to prevent refreshing the page
                 // prompting to user to resubmit form data.
 
                 header_redirect("./edit_password.php?webtag=$webtag&updated=true", $lang['passwdchanged']);
@@ -198,7 +217,7 @@ if (isset($_POST['submit'])) {
 
             }else {
 
-                $error_html = "<h2>{$lang['updatefailed']}.</h2>";
+                $error_msg_array[] = $lang['updatefailed'];
                 $valid = false;
             }
         }
@@ -211,12 +230,13 @@ html_draw_top();
 
 echo "<h1>{$lang['changepassword']}</h1>\n";
 
-// Any error messages to display?
+if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-if (!empty($error_html)) {
-    echo $error_html;
+    html_display_error_array($error_msg_array, '600', 'left');
+
 }else if (isset($_GET['updated'])) {
-    echo "<h2>{$lang['passwdchanged']}</h2>\n";
+
+    html_display_success_msg($lang['preferencesupdated'], '600', 'left');
 }
 
 echo "<br />\n";

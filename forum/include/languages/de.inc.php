@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.36 2007-08-09 22:55:44 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.37 2007-08-16 15:38:13 decoyduck Exp $ */
 
 // German language file
 
@@ -832,7 +832,6 @@ $lang['passwdsdonotmatch'] = "Passwoerter stimmen nicht ueberein.";
 $lang['allfieldsrequired'] = "Es werden alle Felder benoetigt.";
 $lang['requiredinformationnotfound'] = "Notwendige Information nicht gefunden";
 $lang['forgotpasswd'] = "Passwort vergessen";
-$lang['enternewpasswdforuser'] = "Neues Passwort fuer Benutzer %s";
 $lang['resetpassword'] = "Passwort zuruecksetzen";
 $lang['resetpasswordto'] = "Passwort zuruecksetzen zu";
 
@@ -1052,8 +1051,8 @@ $lang['fixhtmlexplanation'] = "Dieses Forum benutzt HTML-Filter. Dein uebertrage
 $lang['messageoptions'] = "Nachrichtsoptionen";
 $lang['notallowedembedattachmentpost'] = "Du hast nicht das Recht eingebettete Anhaenge in Deinen Posts zu verwenden.";
 $lang['notallowedembedattachmentsignature'] = "Du hast nicht das Recht eingebettete Anhaenge in Deiner Signatur zu verwenden.";
-$lang['reducemessagelength'] = "Nachrichtenlaenge muss weniger als 65,535 Zeichen haben (im Moment:";
-$lang['reducesiglength'] = "Signaturlaenge muss weniger als 65,535 Zeichen haben (im Moment:";
+$lang['reducemessagelength'] = "Nachrichtenlaenge muss weniger als 65,535 Zeichen haben (im Moment: %s)";
+$lang['reducesiglength'] = "Signaturlaenge muss weniger als 65,535 Zeichen haben (im Moment: %s)";
 $lang['cannotcreatethreadinfolder'] = "Du kannst keine neuen Eintraege in diesem Ordner erstellen";
 $lang['cannotcreatepostinfolder'] = "Du kannst nicht auf Eintraege antworten in diesem Ordner";
 $lang['cannotattachfilesinfolder'] = "Du kannst keine Anhaenge in diesem Ordner posten. Entferne die Anhaenge um Fortzufahren.";

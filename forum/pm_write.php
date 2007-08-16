@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.178 2007-08-01 20:23:01 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.179 2007-08-16 15:38:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -82,7 +82,7 @@ if (!$user_sess = bh_session_check()) {
 // Check to see if the user is banned.
 
 if (bh_session_user_banned()) {
-    
+
     html_user_banned();
     exit;
 }
@@ -230,7 +230,7 @@ if (isset($_POST['cancel'])) {
 if (isset($t_rmid) && $t_rmid > 0) {
 
     if (!$forward_msg && !$edit_msg) {
-    
+
         if (!$t_recipient_list = pm_get_user($t_rmid)) {
 
             $t_recipient_list = "";
@@ -260,9 +260,9 @@ if (isset($t_rmid) && $t_rmid > 0) {
         }
 
         if ($edit_msg) {
-            
+
             $t_content = $pm_data['CONTENT'];
-            
+
             $t_to_uid = $pm_data['TO_UID'];
 
             $t_recipient_list = $pm_data['RECIPIENTS'];
@@ -346,10 +346,17 @@ if (isset($t_rmid) && $t_rmid > 0) {
 
 $valid = true;
 
+// Array to hold error messages
+
+$error_msg_array = array();
+
+// Enable Fix HTML.
+
 $fix_html = true;
 
 // For future's sake, if we ever add an admin option for allowing/disallowing HTML PMs.
 // Then just do something like $allow_html = forum_allow_html_pms() ? true : false
+
 $allow_html = true;
 
 // User clicked the emoticon panel toggle button
@@ -385,8 +392,8 @@ if (isset($_POST['emots_toggle_x']) || isset($_POST['emots_toggle_y'])) {
     $user_prefs['POST_PAGE'] = $page_prefs;
 
     if (!user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
-        
-        $error_html = "<h2>{$lang['failedtoupdateuserdetails']}</h2>\n";
+
+        $error_msg_array[] = $lang['failedtoupdateuserdetails'];
         $valid = false;
     }
 
@@ -403,7 +410,7 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
 
     }else {
 
-        $error_html = "<h2>{$lang['entersubjectformessage']}</h2>\n";
+        $error_msg_array[] = $lang['entersubjectformessage'];
         $valid = false;
     }
 
@@ -411,9 +418,9 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
 
         $t_content = trim(_stripslashes($_POST['t_content']));
 
-    }elseif ($valid) {
+    }else {
 
-        $error_html = "<h2>{$lang['entercontentformessage']}</h2>\n";
+        $error_msg_array[] = $lang['entercontentformessage'];
         $valid = false;
     }
 
@@ -431,93 +438,84 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
 
     if ($to_radio == POST_RADIO_FRIENDS && $t_to_uid == 0) {
 
-        $error_html = "<h2>{$lang['mustspecifyrecipient']}</h2>\n";
+        $error_msg_array[] = $lang['mustspecifyrecipient'];
         $valid = false;
     }
 
     if (isset($_POST['t_recipient_list']) && strlen(trim(_stripslashes($_POST['t_recipient_list']))) > 0) {
 
-        if ($valid) {
+        $t_recipient_array = preg_split("/[;|,]/", trim(_stripslashes($_POST['t_recipient_list'])));
 
-            $t_recipient_array = preg_split("/[;|,]/", trim(_stripslashes($_POST['t_recipient_list'])));
+        $t_new_recipient_array['TO_UID'] = array();
+        $t_new_recipient_array['LOGON']  = array();
+        $t_new_recipient_array['NICK']   = array();
 
-            $t_new_recipient_array['TO_UID'] = array();
-            $t_new_recipient_array['LOGON']  = array();
-            $t_new_recipient_array['NICK']   = array();
+        foreach ($t_recipient_array as $key => $t_recipient) {
 
-            foreach ($t_recipient_array as $key => $t_recipient) {
+            $to_logon = trim($t_recipient);
 
-                $to_logon = trim($t_recipient);
+            if ($to_user = user_get_uid($to_logon)) {
 
-                if ($to_user = user_get_uid($to_logon)) {
+                $peer_relationship = user_get_peer_relationship($to_user['UID'], $uid);
 
-                    $peer_relationship = user_get_peer_relationship($to_user['UID'], $uid);
+                if (!in_array($to_user['UID'], $t_new_recipient_array['TO_UID'])) {
 
-                    if (!in_array($to_user['UID'], $t_new_recipient_array['TO_UID'])) {
+                    $t_new_recipient_array['TO_UID'][] = $to_user['UID'];
+                    $t_new_recipient_array['LOGON'][]  = $to_user['LOGON'];
+                    $t_new_recipient_array['NICK'][]   = $to_user['NICKNAME'];
+                }
 
-                        $t_new_recipient_array['TO_UID'][] = $to_user['UID'];
-                        $t_new_recipient_array['LOGON'][]  = $to_user['LOGON'];
-                        $t_new_recipient_array['NICK'][]   = $to_user['NICKNAME'];
-                    }
+                if ($to_radio == POST_RADIO_OTHERS) {
 
-                    if ($to_radio == POST_RADIO_OTHERS) {
+                    if ((($peer_relationship ^ USER_BLOCK_PM) && user_allow_pm($to_user['UID'])) || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, 0)) {
 
-                        if ((($peer_relationship ^ USER_BLOCK_PM) && user_allow_pm($to_user['UID'])) || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, 0)) {
+                        pm_user_prune_folders();
 
-                            pm_user_prune_folders();
+                        if (pm_get_free_space($uid) < sizeof($t_new_recipient_array['TO_UID'])) {
 
-                            if (pm_get_free_space($uid) < sizeof($t_new_recipient_array['TO_UID'])) {
-
-                                $error_html = "<h2>{$lang['youdonothaveenoughfreespace']}</h2>\n";
-                                $valid = false;
-                            }
-
-                        }else {
-
-                            $error_html = sprintf("<h2>{$lang['userhasoptedoutofpm']}</h2>\n", $to_logon);
+                            $error_msg_array[] = $lang['youdonothaveenoughfreespace'];
                             $valid = false;
                         }
+
+                    }else {
+
+                        $error_msg_array[] = sprintf($lang['userhasoptedoutofpm'], $to_logon);
+                        $valid = false;
                     }
-
-                }elseif ($valid) {
-
-                    $error_html = sprintf("<h2>{$lang['usernotfound']}</h2>\n", $to_logon);
-                    $valid = false;
                 }
+
+            }else {
+
+                $error_msg_array[] = sprintf($lang['usernotfound'], $to_logon);
+                $valid = false;
             }
-
-            $t_recipient_list = implode('; ', $t_new_recipient_array['LOGON']);
-
-        }else {
-
-            $t_recipient_list = trim(_stripslashes($_POST['t_recipient_list']));
         }
+
+        $t_recipient_list = implode('; ', $t_new_recipient_array['LOGON']);
 
         if ($to_radio == POST_RADIO_OTHERS) {
 
             if ($valid && sizeof($t_new_recipient_array['TO_UID']) > 10) {
 
-                $error_html = "<h2>{$lang['maximumtenrecipientspermessage']}</h2>\n";
+                $error_msg_array[] = $lang['maximumtenrecipientspermessage'];
                 $valid = false;
             }
 
             if ($valid && sizeof($t_new_recipient_array['TO_UID']) < 1) {
 
-                $error_html = "<h2>{$lang['mustspecifyrecipient']}</h2>\n";
+                $error_msg_array[] = $lang['mustspecifyrecipient'];
                 $valid = false;
             }
         }
 
-    }elseif ($valid && $to_radio == POST_RADIO_OTHERS) {
+    }elseif ($to_radio == POST_RADIO_OTHERS) {
 
-        $error_html = "<h2>{$lang['mustspecifyrecipient']}</h2>\n";
+        $error_msg_array[] = $lang['mustspecifyrecipient'];
         $valid = false;
     }
 }
 
 if (isset($_POST['save'])) {
-
-    $error_html = "";
 
     if (isset($_POST['t_subject']) && strlen(trim(_stripslashes($_POST['t_subject']))) > 0) {
 
@@ -525,7 +523,7 @@ if (isset($_POST['save'])) {
 
     }else {
 
-        $error_html = "<h2>{$lang['entersubjectformessage']}</h2>\n";
+        $error_msg_array[] = $lang['entersubjectformessage'];
         $valid = false;
     }
 
@@ -533,9 +531,9 @@ if (isset($_POST['save'])) {
 
         $t_content = trim(_stripslashes($_POST['t_content']));
 
-    }elseif ($valid) {
+    }else {
 
-        $error_html = "<h2>{$lang['entercontentformessage']}</h2>\n";
+        $error_msg_array[] = $lang['entercontentformessage'];
         $valid = false;
     }
 
@@ -561,9 +559,9 @@ if (isset($_POST['save'])) {
 
         $t_recipient_array = preg_split("/[;|,]/", trim(_stripslashes($_POST['t_recipient_list'])));
 
-        if ($valid && sizeof($t_recipient_array) > 10) {
+        if (sizeof($t_recipient_array) > 10) {
 
-            $error_html = "<h2>{$lang['maximumtenrecipientspermessage']}</h2>\n";
+            $error_msg_array[] = $lang['maximumtenrecipientspermessage'];
             $valid = false;
         }
 
@@ -589,7 +587,7 @@ if (isset($_POST['save'])) {
 
             }else {
 
-                $error_html = "<h2>{$lang['couldnotsavemessage']}</h2>\n";
+                $error_msg_array[] = $lang['couldnotsavemessage'];
                 $valid = false;
             }
 
@@ -598,7 +596,7 @@ if (isset($_POST['save'])) {
             if ($saved_mid = pm_save_message($t_subject, $t_content, $t_to_uid, $t_recipient_list)) {
 
                 pm_save_attachment_id($saved_mid, $aid);
-                
+
                 html_draw_top();
                 html_display_msg($lang['messagesaved'], $lang['messagewassuccessfullysavedtodraftsfolder'], 'pm.php', 'get', array('continue' => $lang['continue']), array('mid' => $saved_mid, 'folder' => PM_FOLDER_DRAFTS));
                 html_draw_bottom();
@@ -606,7 +604,7 @@ if (isset($_POST['save'])) {
 
             }else {
 
-                $error_html = "<h2>{$lang['couldnotsavemessage']}</h2>\n";
+                $error_msg_array[] = $lang['couldnotsavemessage'];
                 $valid = false;
             }
         }
@@ -686,15 +684,19 @@ $post = new MessageText($post_html, $t_content, $emots_enabled, $links_enabled);
 $t_content = $post->getContent();
 
 if (strlen($t_content) >= 65535) {
-    $error_html = "<h2>{$lang['reducemessagelength']} ". number_format(strlen($t_content)). ")</h2>";
+
+    $error_msg_array[] = sprintf($lang['reducemessagelength'], number_format(strlen($t_content)));
     $valid = false;
 }
 
 // Attachment Unique ID
 
 if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
+
     $aid = $_POST['aid'];
+
 }else if (!isset($aid)) {
+
     $aid = md5(uniqid(rand()));
 }
 
@@ -712,7 +714,7 @@ if ($valid && isset($_POST['submit'])) {
 
             }else {
 
-                $error_html = "<h2>{$lang['errorcreatingpm']}</h2>\n";
+                $error_msg_array[] = $lang['errorcreatingpm'];
                 $valid = false;
             }
 
@@ -727,12 +729,12 @@ if ($valid && isset($_POST['submit'])) {
             foreach ($t_new_recipient_array['TO_UID'] as $t_to_uid) {
 
                 if ($new_mid = pm_send_message($t_to_uid, $uid, $t_subject, $t_content, $aid)) {
-                    
+
                     email_send_pm_notification($t_to_uid, $new_mid, $uid);
 
                 }else {
 
-                    $error_html = "<h2>{$lang['errorcreatingpm']}</h2>\n";
+                    $error_msg_array[] = $lang['errorcreatingpm'];
                     $valid = false;
                 }
             }
@@ -760,6 +762,11 @@ if ($valid && isset($_POST['submit'])) {
 html_draw_top("onUnload=clearFocus()", "resize_width=720", "openprofile.js", "pm.js", "attachments.js", "dictionary.js", "htmltools.js", "basetarget=_blank");
 
 echo "<h1>{$lang['privatemessages']} &raquo; {$lang['sendnewpm']}</h1>\n";
+
+if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+    html_display_error_array($error_msg_array, '720', 'left');
+}
+
 echo "<br />\n";
 echo "<form name=\"f_post\" action=\"pm_write.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
@@ -818,18 +825,6 @@ if ($valid && isset($_POST['preview'])) {
     echo "              </table>\n";
 }
 
-if (!$valid && isset($error_html) && strlen(trim($error_html)) > 0) {
-
-    echo "              <table class=\"posthead\" width=\"720\">\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\">{$lang['error']}</td>\n";
-    echo "                </tr>";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\">$error_html</td>\n";
-    echo "                </tr>\n";
-    echo "              </table>\n";
-}
-
 echo "              <table width=\"720\" class=\"posthead\">\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['writepm']}</td>\n";
@@ -848,7 +843,7 @@ echo "                        <td align=\"left\"><h2>{$lang['to']}</h2></td>\n";
 echo "                      </tr>\n";
 
 if ($friends_array = pm_user_get_friends()) {
-    
+
     if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 
         $to_user = user_get($_GET['uid']);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.149 2007-08-09 22:55:43 decoyduck Exp $ */
+/* $Id: index.php,v 1.150 2007-08-16 15:38:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -88,6 +88,10 @@ $webtag = get_webtag($webtag_search);
 $session_active = bh_session_active();
 $logon_failed = isset($_COOKIE['bh_logon_failed']);
 
+// Check to see if the user is trying to change their password.
+
+$user_change_pw = false;
+
 // Embedded light mode in this script.
 
 define('BEEHIVE_LIGHT_INCLUDE', 1);
@@ -126,7 +130,11 @@ if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri'])))
 
         $final_uri = basename(trim(_stripslashes($_GET['final_uri'])));
 
-        if (preg_match("/^$popup_files_preg/", $final_uri) > 0) {
+        if (preg_match("/^change_pw.php/", $final_uri) > 0) {
+
+            $user_change_pw = true;
+
+        }else if (preg_match("/^$popup_files_preg/", $final_uri) > 0) {
 
             header_redirect($final_uri);
             exit;
@@ -144,12 +152,23 @@ if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri'])))
     }
 }
 
-if ($session_active && !$logon_failed) {
+// Calculate how tall the nav frameset should be based on the user's fontsize.
 
-    // Calculate how tall the nav frameset should be based on the user's fontsize.
+$navsize = bh_session_get_value('FONT_SIZE');
+$navsize = max(($navsize ? $navsize * 2 : 22), 22);
 
-    $navsize = bh_session_get_value('FONT_SIZE');
-    $navsize = max(($navsize ? $navsize * 2 : 22), 22);
+// If user has requested password change show the form instead of the logon page.
+
+if ($user_change_pw === true) {
+
+    html_draw_top('body_tag=false', 'frames=true', 'robots=index,follow');
+
+    echo "<frameset rows=\"60,$navsize,*\" framespacing=\"0\" border=\"0\">\n";
+    echo "<frame src=\"$top_html\" name=\"", html_get_frame_name('ftop'), "\" frameborder=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize=\"noresize\" />\n";
+    echo "<frame src=\"./nav.php?webtag=$webtag\" name=\"", html_get_frame_name('fnav'), "\" frameborder=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"10\" noresize=\"noresize\" />\n";
+    echo "<frame src=\"$final_uri\" name=\"", html_get_frame_name('main'), "\" frameborder=\"0\" />\n";
+
+}else if ($session_active && !$logon_failed) {
 
     html_draw_top('body_tag=false', 'frames=true', 'robots=index,follow');
 

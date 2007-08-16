@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_folder_edit.php,v 1.1 2007-06-14 13:21:10 decoyduck Exp $ */
+/* $Id: links_folder_edit.php,v 1.2 2007-08-16 15:38:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -123,8 +123,10 @@ if (user_is_guest()) {
 
 $uid = bh_session_get_value('UID');
 
+$error_msg_array = array();
+
 if (isset($_POST['cancel'])) {
-    
+
     header_redirect("./links.php?webtag=$webtag&fid={$_POST['fid']}");
     exit;
 }
@@ -140,9 +142,12 @@ if (isset($_POST['update'])) {
     }
 
     if (isset($_POST['name']) && strlen(trim(_stripslashes($_POST['name']))) > 0) {
+
         $name = trim(_stripslashes($_POST['name']));
+
     }else {
-        $error_html = $lang['mustspecifyname'];
+
+        $error_msg_array[] = $lang['mustspecifyname'];
         $valid = false;
     }
 
@@ -177,8 +182,8 @@ html_draw_top();
 echo "<h1>{$lang['links']} &raquo; {$lang['editfolder']}</h1>\n";
 echo "<p>{$lang['editingfolder']}: <b>". links_display_folder_path($fid, $folders, false) . "</b></p>\n";
 
-if (isset($error_html) && strlen(trim($error_html))) {
-    echo "<h2>$error_html</h2>\n";
+if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+    html_display_error_array($error_msg_array, '500', 'left');
 }
 
 echo "<form name=\"folderadd\" action=\"links_folder_edit.php\" method=\"post\" target=\"_self\">\n";

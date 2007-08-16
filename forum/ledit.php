@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ledit.php,v 1.16 2007-06-10 12:28:43 decoyduck Exp $ */
+/* $Id: ledit.php,v 1.17 2007-08-16 15:38:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -344,7 +344,7 @@ if (isset($_POST['t_content']) && strlen(trim(_stripslashes($_POST['t_content'])
 
     if ($post_html && attachment_embed_check($t_content)) {
 
-        $error_html = "<h2>{$lang['notallowedembedattachmentpost']}</h2>\n";
+        $error_msg_array[] = $lang['notallowedembedattachmentpost'];
         $valid = false;
     }
 
@@ -353,7 +353,7 @@ if (isset($_POST['t_content']) && strlen(trim(_stripslashes($_POST['t_content'])
 
     if (strlen($t_content) >= 65535) {
 
-        $error_html = "<h2>{$lang['reducemessagelength']} ".number_format(strlen($t_content)).")</h2>";
+        $error_msg_array[] = sprintf($lang['reducemessagelength'], number_format(strlen($t_content)));
         $valid = false;
     }
 }
@@ -364,7 +364,7 @@ if (isset($_POST['t_sig']) && strlen(trim(_stripslashes($_POST['t_sig']))) > 0) 
 
     if (attachment_embed_check($t_sig)) {
 
-        $error_html = "<h2>{$lang['notallowedembedattachmentpost']}</h2>\n";
+        $error_msg_array[] = $lang['notallowedembedattachmentpost'];
         $valid = false;
     }
 
@@ -373,7 +373,7 @@ if (isset($_POST['t_sig']) && strlen(trim(_stripslashes($_POST['t_sig']))) > 0) 
 
     if (strlen($t_sig) >= 65535) {
 
-        $error_html = "<h2>{$lang['reducesiglength']} ".number_format(strlen($t_sig)).")</h2>";
+        $error_msg_array[] = sprintf($lang['reducesiglength'], number_format(strlen($t_sig)));
         $valid = false;
     }
 }
@@ -383,26 +383,33 @@ if (isset($_POST['preview'])) {
     $preview_message = messages_get($tid, $pid, 1);
 
     if (isset($_POST['t_to_uid'])) {
+
         $to_uid = $_POST['t_to_uid'];
+
     }else {
-        $error_html = "<h2>{$lang['invalidusername']}</h2>\n";
+
+        $error_msg_array[] = $lang['invalidusername'];
         $valid = false;
     }
 
     if (isset($_POST['t_from_uid'])) {
+
         $from_uid = $_POST['t_from_uid'];
+
     }else {
-        $error_html = "<h2>{$lang['invalidusername']}</h2>\n";
+
+        $error_msg_array[] = $lang['invalidusername'];
         $valid = false;
     }
 
     if (strlen(trim($t_content)) == 0) {
-        $error_html = "<h2>{$lang['mustenterpostcontent']}</h2>";
+
+        $error_msg_array[] = $lang['mustenterpostcontent'];
         $valid = false;
     }
 
     if (get_num_attachments($aid) > 0 && !bh_session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
-        $error_html = "<h2>{$lang['cannotattachfilesinfolder']}</h2>";
+        $error_msg_array[] = $lang['cannotattachfilesinfolder'];
         $valid = false;
     }
 
@@ -442,24 +449,24 @@ if (isset($_POST['preview'])) {
     if (isset($_POST['t_to_uid'])) {
         $to_uid = $_POST['t_to_uid'];
     }else {
-        $error_html = "<h2>{$lang['invalidusername']}</h2>\n";
+        $error_msg_array[] = $lang['invalidusername'];
         $valid = false;
     }
 
     if (isset($_POST['t_from_uid'])) {
         $from_uid = $_POST['t_from_uid'];
     }else {
-        $error_html = "<h2>{$lang['invalidusername']}</h2>\n";
+        $error_msg_array[] = $lang['invalidusername'];
         $valid = false;
     }
 
     if (strlen(trim($t_content)) == 0) {
-        $error_html = "<h2>{$lang['mustenterpostcontent']}</h2>";
+        $error_msg_array[] = $lang['mustenterpostcontent'];
         $valid = false;
     }
 
     if (get_num_attachments($aid) > 0 && !bh_session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
-        $error_html = "<h2>{$lang['cannotattachfilesinfolder']}</h2>";
+        $error_msg_array[] = $lang['cannotattachfilesinfolder'];
         $valid = false;
     }
 
@@ -503,7 +510,7 @@ if (isset($_POST['preview'])) {
 
         }else{
 
-            $error_html = "<h2>{$lang['errorupdatingpost']}</h2>";
+            $error_msg_array[] = $lang['errorupdatingpost'];
         }
     }
 
@@ -514,14 +521,14 @@ if (isset($_POST['preview'])) {
     if (isset($_POST['t_to_uid'])) {
         $to_uid = $_POST['t_to_uid'];
     }else {
-        $error_html = "<h2>{$lang['invalidusername']}</h2>\n";
+        $error_msg_array[] = $lang['invalidusername'];
         $valid = false;
     }
 
     if (isset($_POST['t_from_uid'])) {
         $from_uid = $_POST['t_from_uid'];
     }else {
-        $error_html = "<h2>{$lang['invalidusername']}</h2>\n";
+        $error_msg_array[] = $lang['invalidusername'];
         $valid = false;
     }
 
@@ -537,8 +544,8 @@ if (isset($_POST['preview'])) {
     $user_prefs['POST_PAGE'] = $page_prefs;
 
     if (!user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
-        
-        $error_html = "<h2>{$lang['failedtoupdateuserdetails']}</h2>\n";
+
+        $error_msg_array[] = $lang['failedtoupdateuserdetails'];
         $valid = false;
     }
 
@@ -600,6 +607,11 @@ if (isset($_POST['preview'])) {
 }
 
 echo sprintf("<h1>{$lang['editmessage']}</h1>\n", $edit_msg);
+
+if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+    light_html_display_error_array($error_msg_array);
+}
+
 echo "<form name=\"f_edit\" action=\"ledit.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo form_input_hidden("t_msg", _htmlentities($edit_msg));
@@ -607,7 +619,6 @@ echo form_input_hidden("t_to_uid", _htmlentities($to_uid));
 echo form_input_hidden("t_from_uid", _htmlentities($from_uid));
 
 if ($valid && isset($_POST['preview'])) {
-
     light_message_display($tid, $preview_message, $threaddata['LENGTH'], $pid, $threaddata['FID'], true, false, false, false, $show_sigs, true);
 }
 

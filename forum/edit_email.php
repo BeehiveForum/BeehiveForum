@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_email.php,v 1.74 2007-06-18 20:10:49 decoyduck Exp $ */
+/* $Id: edit_email.php,v 1.75 2007-08-16 15:38:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -112,6 +112,12 @@ if (user_is_guest()) {
     exit;
 }
 
+// Array to hold error messages
+
+$error_msg_array = array();
+
+// Submit code
+
 if (isset($_POST['submit'])) {
 
     $user_prefs = array();
@@ -196,7 +202,7 @@ if (isset($_POST['submit'])) {
 
     }else {
 
-        $error_html.= "<h2>{$lang['failedtoupdateuserdetails']}</h2>\n";
+        $error_msg_array[] = $lang['failedtoupdateuserdetails'];
         $valid = false;
     }
 }
@@ -210,17 +216,17 @@ $user_prefs = user_get_prefs($uid);
 
 $show_set_all = (forums_get_available_count() > 1) ? true : false;
 
-// Start output here
 html_draw_top();
 
 echo "<h1>{$lang['emailandprivacy']}</h1>\n";
 
-// Any error messages to display?
+if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-if (!empty($error_html)) {
-    echo $error_html;
+    html_display_error_array($error_msg_array, '600', 'left');
+
 }else if (isset($_GET['updated'])) {
-    echo "<h2>{$lang['preferencesupdated']}</h2>\n";
+
+    html_display_success_msg($lang['preferencesupdated'], '600', 'left');
 }
 
 echo "<br />\n";

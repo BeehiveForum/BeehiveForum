@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_options.php,v 1.7 2007-06-10 12:28:44 decoyduck Exp $ */
+/* $Id: pm_options.php,v 1.8 2007-08-16 15:38:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -105,6 +105,10 @@ if (user_is_guest()) {
     html_guest_error();
     exit;
 }
+
+// Array to hold error messages.
+
+$error_msg_array = array();
 
 // Submit code starts here.
 
@@ -190,17 +194,22 @@ if (isset($_POST['submit'])) {
 
     // Update USER_PREFS
 
-    if (!user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
-        
-        $error_html = "<h2>{$lang['failedtoupdateuserdetails']}</h2>\n";
+    if (user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
+
+        // Reinitialize the User's Session to save them having to logout and back in
+
+        bh_session_init($uid, false);
+
+        // Redirect back to the page so we correctly reload the user's preferences.
+
+        header_redirect("./pm_options.php?webtag=$webtag&updated=true", $lang['preferencesupdated']);
+        exit;
+
+    }else {
+
+        $error_msg_array[] = $lang['failedtoupdateuserdetails'];
         $valid = false;
     }
-
-    // Reinitialize the User's Session to save them having to logout and back in
-
-    bh_session_init($uid, false);
-
-    header_redirect("./pm_options.php?webtag=$webtag&updated=true", $lang['preferencesupdated']);
 }
 
 if (!isset($uid)) $uid = bh_session_get_value('UID');
@@ -215,13 +224,13 @@ html_draw_top("emoticons.js");
 
 echo "<h1>{$lang['privatemessageoptions']}</h1>\n";
 
-if (isset($error_html) && strlen($error_html) > 0) {
+if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-    echo $error_html;
+    html_display_error_array($error_msg_array, '600', 'left');
 
 }else if (isset($_GET['updated'])) {
 
-    echo "<h2>{$lang['preferencesupdated']}</h2>\n";
+    html_display_success_msg($lang['preferencesupdated'], '600', 'left');
 }
 
 echo "<br />\n";

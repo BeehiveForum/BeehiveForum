@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.inc.php,v 1.69 2007-08-01 20:23:02 decoyduck Exp $ */
+/* $Id: links.inc.php,v 1.70 2007-08-16 15:38:12 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -61,7 +61,7 @@ function links_get_in_folder($fid, $invisible = false, $sort_by = "TITLE", $sort
     $sql.= "WHERE FID = '$fid'";
 
     if (!$result = db_query($sql, $db_links_get_in_folder)) return false;
-    
+
     list($links_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     if ($invisible === false) {
@@ -297,7 +297,7 @@ function links_change_visibility($lid, $visible = true)
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "UPDATE {$table_data['PREFIX']}LINKS SET VISIBLE = '$visible' WHERE LID = '$lid'";
-    
+
     if (!$result = db_query($sql, $db_links_change_visibility)) return false;
 
     return true;
@@ -358,7 +358,7 @@ function links_get_single($lid)
 
         return $link_array;
     }
-    
+
     return false;
 }
 
@@ -384,7 +384,7 @@ function links_get_all($invisible = false, $sort_by = "TITLE", $sort_dir = "ASC"
     $sql = "SELECT COUNT(LID) AS LINK_COUNT FROM {$table_data['PREFIX']}LINKS ";
 
     if (!$result = db_query($sql, $db_links_get_in_folder)) return false;
-    
+
     list($links_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     if ($invisible === false) {
@@ -445,7 +445,7 @@ function links_folder_change_visibility($fid, $visible = true)
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "UPDATE {$table_data['PREFIX']}LINKS_FOLDERS SET VISIBLE = '$visible' WHERE FID = '$fid'";
-    
+
     if (!$result = db_query($sql, $db_links_folder_change_visibility)) return false;
 
     return true;
@@ -691,7 +691,7 @@ function links_get_creator_uid($lid)
     if (!$result = db_query($sql, $db_links_get_creator_uid)) return false;
 
     if (db_num_rows($result) > 0) {
-    
+
         list($creator_uid) = db_fetch_array($result);
         return $creator_uid;
     }
@@ -712,7 +712,7 @@ function links_get_comment_uid($cid)
     if (!$result = db_query($sql, $db_links_get_comment_uid)) return false;
 
     if (db_num_rows($result) > 0) {
-    
+
         list($comment_uid) = db_fetch_array($result);
         return $comment_uid;
     }

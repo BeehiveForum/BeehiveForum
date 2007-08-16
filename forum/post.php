@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.315 2007-07-07 22:39:33 decoyduck Exp $ */
+/* $Id: post.php,v 1.316 2007-08-16 15:38:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -183,7 +183,7 @@ if (isset($_POST['to_radio'])) {
 
         }else{
 
-            $error_html = "<h2>{$lang['invalidusername']}</h2>";
+            $error_msg_array[] = $lang['invalidusername'];
             $valid = false;
         }
     }else if ($to_radio == "in_thread") {
@@ -205,7 +205,7 @@ if (isset($_POST['t_newthread']) && (isset($_POST['submit']) || isset($_POST['pr
     if (isset($_POST['t_threadtitle']) && strlen(trim(_stripslashes($_POST['t_threadtitle']))) > 0) {
         $t_threadtitle = trim(_stripslashes($_POST['t_threadtitle']));
     }else{
-        $error_html = "<h2>{$lang['mustenterthreadtitle']}</h2>";
+        $error_msg_array[] = $lang['mustenterthreadtitle'];
         $valid = false;
     }
 
@@ -217,13 +217,13 @@ if (isset($_POST['t_newthread']) && (isset($_POST['submit']) || isset($_POST['pr
 
         }else {
 
-            $error_html = "<h2>{$lang['cannotpostthisthreadtypeinfolder']}</h2>";
+            $error_msg_array[] = $lang['cannotpostthisthreadtypeinfolder'];
             $valid = false;
         }
 
     }else if ($valid) {
 
-        $error_html = "<h2>{$lang['pleaseselectfolder']}</h2>";
+        $error_msg_array[] = $lang['pleaseselectfolder'];
         $valid = false;
     }
 
@@ -381,13 +381,13 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
 
         if (($post_html > POST_HTML_DISABLED) && attachment_embed_check($t_content)) {
 
-            $error_html = "<h2>{$lang['notallowedembedattachmentpost']}</h2>\n";
+            $error_msg_array[] = $lang['notallowedembedattachmentpost'];
             $valid = false;
         }
 
     }else {
 
-        $error_html = "<h2>{$lang['mustenterpostcontent']}</h2>\n";
+        $error_msg_array[] = $lang['mustenterpostcontent'];
         $valid = false;
     }
 
@@ -397,7 +397,7 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
 
         if ($sig_html && attachment_embed_check($t_sig)) {
 
-            $error_html = "<h2>{$lang['notallowedembedattachmentsignature']}</h2>\n";
+            $error_msg_array[] = $lang['notallowedembedattachmentsignature'];
             $valid = false;
         }
     }
@@ -420,7 +420,7 @@ if (isset($_POST['emots_toggle_x']) || isset($_POST['sig_toggle_x'])) {
 
             }else {
 
-                $error_html = "<h2>{$lang['cannotpostthisthreadtypeinfolder']}</h2>";
+                $error_msg_array[] = $lang['cannotpostthisthreadtypeinfolder'];
                 $valid = false;
             }
         }
@@ -448,8 +448,8 @@ if (isset($_POST['emots_toggle_x']) || isset($_POST['sig_toggle_x'])) {
     $user_prefs['POST_PAGE'] = $page_prefs;
 
     if (!user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
-        
-        $error_html = "<h2>{$lang['failedtoupdateuserdetails']}</h2>\n";
+
+        $error_msg_array[] = $lang['failedtoupdateuserdetails'];
         $valid = false;
     }
 
@@ -467,13 +467,13 @@ $t_sig = $sig->getContent();
 
 if (strlen($t_content) >= 65535) {
 
-    $error_html = "<h2>{$lang['reducemessagelength']} ".number_format(strlen($t_content)).")</h2>";
+    $error_msg_array[] = sprintf($lang['reducemessagelength'], number_format(strlen($t_content)));
     $valid = false;
 }
 
 if (strlen($t_sig) >= 65535) {
 
-    $error_html = "<h2>{$lang['reducesiglength']} ".number_format(strlen($t_sig)).")</h2>";
+    $error_msg_array[] = sprintf($lang['reducesiglength'], number_format(strlen($t_sig)));
     $valid = false;
 }
 
@@ -511,16 +511,16 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
         sort($quote_list);
 
         $t_content_array = array();
-        
+
         foreach($quote_list as $quote_pid) {
 
             if ($message_array = messages_get($reply_to_tid, $quote_pid)) {
 
                 $message_author = format_user_name($message_array['FLOGON'], $message_array['FNICK']);
-                
+
                 $message_content = message_get_content($reply_to_tid, $quote_pid);
                 $message_content = message_split_fiddle($message_content, false, true);
-                
+
                 $t_quoted_post = "<quote source=\"$message_author\" ";
                 $t_quoted_post.= "url=\"messages.php?webtag=$webtag&amp;msg=$reply_to_tid.$quote_pid\">";
                 $t_quoted_post.= strip_paragraphs(trim(_htmlentities_decode($message_content))). "</quote>\n\n";
@@ -530,7 +530,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
         }
 
         if (sizeof($t_content_array) > 0) {
-            
+
             $post->setContent(implode('', $t_content_array));
             $post->setHTML(POST_HTML_AUTO);
         }
@@ -567,7 +567,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     if (get_num_attachments($aid) > 0 && !bh_session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
 
-        $error_html = "<h2>{$lang['cannotattachfilesinfolder']}</h2>";
+        $error_msg_array[] = $lang['cannotattachfilesinfolder'];
         $valid = false;
     }
 
@@ -585,7 +585,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     if (isset($t_fid) && !folder_is_valid($t_fid)) {
 
-        $error_html = "<h2>{$lang['invalidfolderid']}</h2>\n";
+        $error_msg_array[] = $lang['invalidfolderid'];
         $valid = false;
     }
 
@@ -597,13 +597,13 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     if (isset($t_fid) && !bh_session_check_perm(USER_PERM_THREAD_CREATE | USER_PERM_POST_READ, $t_fid)) {
 
-        $error_html = "<h2>{$lang['cannotcreatethreadinfolder']}</h2>";
+        $error_msg_array[] = $lang['cannotcreatethreadinfolder'];
         $valid = false;
     }
 
     if (get_num_attachments($aid) > 0 && !bh_session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
 
-        $error_html = "<h2>{$lang['cannotattachfilesinfolder']}</h2>";
+        $error_msg_array[] = $lang['cannotattachfilesinfolder'];
         $valid = false;
     }
 }
@@ -635,7 +635,7 @@ if (!$newthread) {
 
     $reply_message = messages_get($reply_to_tid, $reply_to_pid);
     $reply_message['CONTENT'] = message_get_content($reply_to_tid, $reply_to_pid);
-    
+
     if (!$threaddata = thread_get($reply_to_tid)) {
 
         html_draw_top();
@@ -766,12 +766,12 @@ if ($valid && isset($_POST['submit'])) {
 
         }else{
 
-            $error_html = "<h2>{$lang['errorcreatingpost']}</h2>";
+            $error_msg_array[] = $lang['errorcreatingpost'];
         }
 
     }else {
 
-        $error_html = sprintf("<h2>{$lang['postfrequencytoogreat']}</h2>", forum_get_setting('minimum_post_frequency', false, 0));
+        $error_msg_array[] = sprintf("<h2>{$lang['postfrequencytoogreat']}</h2>", forum_get_setting('minimum_post_frequency', false, 0));
     }
 }
 
@@ -798,6 +798,11 @@ if (isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 && !bh_session_che
 html_draw_top("onUnload=clearFocus()", "resize_width=720", "basetarget=_blank", "post.js", "attachments.js", "poll.js", "openprofile.js", "htmltools.js", "emoticons.js", "dictionary.js");
 
 echo "<h1>{$lang['postmessage']}</h1>\n";
+
+if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+    html_display_error_array($error_msg_array, '720', 'left');
+}
+
 echo "<br /><form name=\"f_post\" action=\"post.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
@@ -876,18 +881,6 @@ if (!$newthread) {
     }else {
         $t_to_uid = $_POST['t_to_uid'];
     }
-}
-
-if (isset($error_html)) {
-
-    echo "            <table class=\"posthead\" width=\"720\">\n";
-    echo "              <tr>\n";
-    echo "                <td align=\"left\" class=\"subhead\">{$lang['error']}</td>\n";
-    echo "              </tr>";
-    echo "              <tr>\n";
-    echo "                <td align=\"left\">", $error_html, "</td>\n";
-    echo "              </tr>\n";
-    echo "            </table>\n";
 }
 
 if (!isset($t_threadtitle)) $t_threadtitle = "";
@@ -1132,7 +1125,7 @@ if ($allow_sig == true) {
         echo "                          </tr>\n";
         echo "                          <tr>\n";
         echo "                            <td align=\"left\" colspan=\"2\">", $tools->textarea("t_sig", $t_sig, 5, 75, "virtual", "tabindex=\"7\"", "signature_content"), form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N"), "</td>\n";
-        
+
 
         if ($sig->isDiff() && $fix_html && !$fetched_sig) {
             echo $tools->compare_original("t_sig", $sig->getOriginalContent());

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.237 2007-08-09 22:55:44 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.238 2007-08-16 15:38:13 decoyduck Exp $ */
 
 // British English language file
 
@@ -1080,8 +1080,8 @@ $lang['fixhtmlexplanation'] = "tH15 PH0rUM US3s HtML pHil+eriNg. Y0ur sU8M1Tt3d 
 $lang['messageoptions'] = "m3SS4Ge op+10nS";
 $lang['notallowedembedattachmentpost'] = "j00 @Re n0+ @Ll0w3d +0 3M83D 4+t4chm3N+S In Y0Ur p0S+\$.";
 $lang['notallowedembedattachmentsignature'] = "j00 @RE N0+ @Ll0WED tO EMbed @+T4chmENt\$ 1n YoUR \$1gn4+Ure.";
-$lang['reducemessagelength'] = "meSS4Ge leNg+h must b3 Und3R 65,535 ch@r4ct3rS (cUrrentLy:";
-$lang['reducesiglength'] = "s19N4+ure leng+h muSt 83 UND3R 65,535 ch4r4C+er5 (Curr3n+Ly:";
+$lang['reducemessagelength'] = "meSS4Ge leNg+h must b3 Und3R 65,535 ch@r4ct3rS (cUrrentLy: %s)";
+$lang['reducesiglength'] = "s19N4+ure leng+h muSt 83 UND3R 65,535 ch4r4C+er5 (Curr3n+Ly: %s)";
 $lang['cannotcreatethreadinfolder'] = "j00 C@nno+ cr34+e N3w tHr34dS iN Th15 pH0Ld3R";
 $lang['cannotcreatepostinfolder'] = "j00 c4nNo+ Reply +0 p0\$TS 1N +H15 ph0Lder";
 $lang['cannotattachfilesinfolder'] = "j00 c@NN0+ Po5t @+t4Chm3n+\$ 1n ThiS fOldEr. rEM0ve 4+T4chm3ntS +O cONTiNu3.";

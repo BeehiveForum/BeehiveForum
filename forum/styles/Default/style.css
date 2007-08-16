@@ -1184,3 +1184,21 @@ a {
 .admin_options_dropdown {
     width: 300px;
 }
+
+.error_msg {    
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-size: 9pt;
+    background-color: #FDFC9F;
+    border: 1px solid #000000;
+    padding: 10px;
+    margin: 10px 0px 10px 0px;
+}
+
+.success_msg {
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-size: 9pt;
+    background-color: #FDFC9F;
+    border: 1px solid #000000;
+    padding: 10px;
+    margin: 10px 0px 10px 0px;
+}

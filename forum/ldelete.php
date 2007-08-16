@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ldelete.php,v 1.9 2007-06-07 20:27:25 decoyduck Exp $ */
+/* $Id: ldelete.php,v 1.10 2007-08-16 15:38:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -124,13 +124,19 @@ if (user_is_guest()) {
 }
 
 // Check if the user is viewing signatures.
+
 $show_sigs = (bh_session_get_value('VIEW_SIGS') == 'N') ? false : true;
 
-$valid = true;
+// Array to hold error messages
+
+$error_msg_array = array();
+
+// Submit code.
 
 if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
 
     $msg = $_POST['msg'];
+
     list($tid, $pid) = explode(".", $msg);
 
     if (!$t_fid = thread_get_folder($tid, $pid)) {
@@ -145,6 +151,7 @@ if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
 }elseif (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     $msg = $_GET['msg'];
+
     list($tid, $pid) = explode(".", $msg);
 
     if (!$t_fid = thread_get_folder($tid, $pid)) {
@@ -253,7 +260,7 @@ if (isset($_POST['submit']) && is_numeric($tid) && is_numeric($pid)) {
 
     }else {
 
-        $error_html = "<h2>{$lang['errordelpost']}</h2>";
+        $error_msg_array[] = $lang['errordelpost'];
     }
 }
 
@@ -272,7 +279,6 @@ if ($preview_message['TO_UID'] == 0) {
     $preview_tuser = user_get($preview_message['TO_UID']);
     $preview_message['TLOGON'] = $preview_tuser['LOGON'];
     $preview_message['TNICK'] = $preview_tuser['NICKNAME'];
-
 }
 
 $preview_tuser = user_get($preview_message['FROM_UID']);
@@ -280,9 +286,12 @@ $preview_tuser = user_get($preview_message['FROM_UID']);
 $preview_message['FLOGON'] = $preview_tuser['LOGON'];
 $preview_message['FNICK'] = $preview_tuser['NICKNAME'];
 
-if (isset($error_html)) echo $error_html;
-
 echo "<h2>{$lang['deletemessage']}</h2>\n";
+
+if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+    light_html_display_error_array($error_msg_array);
+}
+
 echo "<form name=\"f_delete\" action=\"ldelete.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden('msg', _htmlentities($msg)), "\n";

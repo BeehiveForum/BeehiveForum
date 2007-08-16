@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_wordfilter.php,v 1.75 2007-06-24 19:43:55 decoyduck Exp $ */
+/* $Id: edit_wordfilter.php,v 1.76 2007-08-16 15:38:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -119,25 +119,32 @@ $word_filter_enabled = array(WORD_FILTER_DISABLED => $lang['no'],
                              WORD_FILTER_ENABLED => $lang['yes']);
 
 $valid = true;
-$error_html = "";
+
+// Array to hold error messages
+
+$error_msg_array = array();
+
+// User click cancel
 
 if (isset($_POST['cancel']) || isset($_POST['delete'])) {
-    
+
     unset($_POST['addfilter'], $_POST['filter_id'], $_GET['addfilter'], $_GET['filter_id']);
 }
 
+// Submit code (Delete, Save, Add, etc.)
+
 if (isset($_POST['delete'])) {
-    
+
     if (isset($_POST['delete_filters']) && is_array($_POST['delete_filters'])) {
 
         foreach($_POST['delete_filters'] as $filter_id => $delete_filter) {
 
             if (($delete_filter == "Y")) {
-                
+
                 if (!user_delete_word_filter($filter_id)) {
 
                     $valid = false;
-                    $error_html = "<h2>{$lang['failedtoupdatewordfilter']}</h2>\n";
+                    $error_msg_array[] = $lang['failedtoupdatewordfilter'];
                 }
             }
         }
@@ -151,7 +158,7 @@ if (isset($_POST['delete'])) {
     }
 
 }elseif (isset($_POST['save'])) {
-   
+
     if (isset($_POST['use_admin_filter']) && $_POST['use_admin_filter'] == "Y") {
         $user_prefs['USE_ADMIN_FILTER'] = "Y";
         $user_prefs_global['USE_ADMIN_FILTER'] = false;
@@ -169,7 +176,7 @@ if (isset($_POST['delete'])) {
     }
 
     $uid = bh_session_get_value('UID');
-    
+
     if (user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
 
         header_redirect("./edit_wordfilter.php?webtag=$webtag&updated=true", $lang['preferencesupdated']);
@@ -177,31 +184,31 @@ if (isset($_POST['delete'])) {
 
     }else {
 
-        $error_html.= "<h2>{$lang['failedtoupdateuserdetails']}</h2>\n";
+        $error_msg_array[] = $lang['failedtoupdateuserdetails'];
         $valid = false;
     }
 
 }elseif (isset($_POST['addfilter_submit'])) {
-    
+
     if (isset($_POST['add_new_filter_name']) && strlen(trim(_stripslashes($_POST['add_new_filter_name'])))) {
        $add_new_filter_name = trim(_stripslashes($_POST['add_new_filter_name']));
     }else {
        $valid = false;
-       $error_html.= "<h2>{$lang['mustspecifyfiltername']}</h2>\n";
+       $error_msg_array[] = $lang['mustspecifyfiltername'];
     }
 
     if (isset($_POST['add_new_match_text']) && strlen(trim(_stripslashes($_POST['add_new_match_text'])))) {
        $add_new_match_text = trim(_stripslashes($_POST['add_new_match_text']));
     }else {
        $valid = false;
-       $error_html.= "<h2>{$lang['mustspecifymatchedtext']}</h2>\n";
+       $error_msg_array[] = $lang['mustspecifymatchedtext'];
     }
 
     if (isset($_POST['add_new_filter_option']) && is_numeric($_POST['add_new_filter_option'])) {
        $add_new_filter_option = $_POST['add_new_filter_option'];
     }else {
        $valid = false;
-       $error_html.= "<h2>{$lang['mustspecifyfilteroption']}</h2>\n";
+       $error_msg_array[] = $lang['mustspecifyfilteroption'];
     }
 
     if (isset($_POST['add_new_filter_enabled']) && is_numeric($_POST['add_new_filter_enabled'])) {
@@ -236,28 +243,28 @@ if (isset($_POST['delete'])) {
         $filter_id = $_POST['filter_id'];
     }else {
         $valid = false;
-        $error_html.= "<h2>{$lang['mustspecifyfilterid']}</h2>\n";
+        $error_msg_array[] = $lang['mustspecifyfilterid'];
     }
 
     if (isset($_POST['filter_name']) && strlen(trim(_stripslashes($_POST['filter_name'])))) {
         $filter_name = trim(_stripslashes($_POST['filter_name']));
     }else {
         $valid = false;
-        $error_html.= "<h2>{$lang['mustspecifyfiltername']}</h2>\n";
+        $error_msg_array[] = $lang['mustspecifyfiltername'];
     }
-    
+
     if (isset($_POST['match_text']) && strlen(trim(_stripslashes($_POST['match_text'])))) {
         $match_text = trim(_stripslashes($_POST['match_text']));
     }else {
         $valid = false;
-        $error_html.= "<h2>{$lang['mustspecifymatchedtext']}</h2>\n";
+        $error_msg_array[] = $lang['mustspecifymatchedtext'];
     }
 
     if (isset($_POST['filter_option']) && is_numeric($_POST['filter_option'])) {
         $filter_option = $_POST['filter_option'];
     }else {
         $valid = false;
-        $error_html.= "<h2>{$lang['mustspecifyfilteroption']}</h2>\n";
+        $error_msg_array[] = $lang['mustspecifyfilteroption'];
     }
 
     if (isset($_POST['filter_enabled']) && is_numeric($_POST['filter_enabled'])) {
@@ -286,7 +293,7 @@ if (isset($_POST['delete'])) {
 
         }else {
 
-            $error_html.= "<h2>{$lang['failedtoupdatewordfilter']}2</h2>\n";
+            $error_msg_array[] = $lang['failedtoupdatewordfilter'];
         }
     }
 
@@ -300,10 +307,12 @@ if (isset($_POST['delete'])) {
 if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 
     html_draw_top();
-    
+
     echo "<h1>{$lang['editwordfilter']}</h1>\n";
 
-    if (isset($error_html) && strlen($error_html) > 0) echo $error_html;
+    if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+        html_display_error_array($error_msg_array, '600', 'left');
+    }
 
     echo "<br />\n";
     echo "<form name=\"startpage\" method=\"post\" action=\"edit_wordfilter.php\">\n";
@@ -378,7 +387,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</form>\n";
-    
+
     html_draw_bottom();
 
 }elseif (isset($_POST['filter_id']) || isset($_GET['filter_id'])) {
@@ -408,10 +417,12 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     }
 
     html_draw_top();
-    
+
     echo "<h1>{$lang['editwordfilter']}</h1>\n";
 
-    if (isset($error_html) && strlen($error_html) > 0) echo $error_html;
+    if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+        html_display_error_array($error_msg_array, '600', 'left');
+    }
 
     echo "<br />\n";
     echo "<form name=\"startpage\" method=\"post\" action=\"edit_wordfilter.php\">\n";
@@ -493,11 +504,16 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 }else {
 
     html_draw_top();
-    
+
     echo "<h1>{$lang['editwordfilter']}</h1>\n";
 
-    if (isset($_GET['updated'])) {
-        echo "<h2>{$lang['wordfilterupdated']}</h2>\n";
+    if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+
+        html_display_error_array($error_msg_array, '600', 'left');
+
+    }elseif (isset($_GET['updated'])) {
+
+        html_display_success_msg($lang['wordfilterupdated'], '600', 'left');
     }
 
     echo "<br />\n";

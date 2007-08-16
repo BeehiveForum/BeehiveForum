@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.99 2007-07-04 18:35:15 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.100 2007-08-16 15:38:12 decoyduck Exp $ */
 
 /**
 * Displays and handles the User Relationship page
@@ -166,7 +166,7 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
         html_draw_top();
         html_error_msg($lang['invalidusername']);
         html_draw_bottom();
-        exit;        
+        exit;
     }
 
 }elseif (isset($_POST['uid']) && is_numeric($_POST['uid'])) {
@@ -178,7 +178,7 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
         html_draw_top();
         html_error_msg($lang['invalidusername']);
         html_draw_bottom();
-        exit;        
+        exit;
     }
 
 }else {
@@ -194,11 +194,13 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 $user_perms = perm_get_user_permissions($uid);
 $peer_perms = perm_get_user_permissions($peer_uid);
 
+// Array to hold error messages.
+
+$error_msg_array = array();
+
 // Form submt code
 
 if (isset($_POST['submit'])) {
-
-    $valid = true;
 
     $peer_user_status = (double) (isset($_POST['peer_user_status'])) ? $_POST['peer_user_status'] : 0;
     $peer_sig_display = (double) (isset($_POST['peer_sig_display'])) ? $_POST['peer_sig_display'] : 0;
@@ -207,7 +209,7 @@ if (isset($_POST['submit'])) {
     $peer_relationship = (double) $peer_user_status | $peer_sig_display | $peer_block_pm;
 
     if (isset($_POST['nickname']) && strlen(_stripslashes($_POST['nickname'])) > 0) {
-        
+
         $peer_nickname = strip_tags(_stripslashes($_POST['nickname']));
 
     }else {
@@ -215,18 +217,15 @@ if (isset($_POST['submit'])) {
         if (!$peer_nickname = user_get_nickname($peer_uid)) $peer_nickname = "";
     }
 
-    if ($valid) {
+    if (user_rel_update($uid, $peer_uid, $peer_relationship, $peer_nickname)) {
 
-        if (user_rel_update($uid, $peer_uid, $peer_relationship, $peer_nickname)) {
+        header_redirect("$ret&relupdated=true");
+        exit;
 
-            header_redirect("$ret&relupdated=true");
-            exit;
+    }else {
 
-        }else {
-
-            $error_html = "<h2>{$lang['relationshipupdatefailed']}</h2>\n";
-            $valid = false;
-        }
+        $error_msg_array[] = $lang['relationshipupdatefailed'];
+        $valid = false;
     }
 }
 
@@ -243,11 +242,12 @@ html_draw_top("openprofile.js");
 $peer_relationship = user_get_relationship($uid, $peer_uid);
 $peer_nickname = user_get_peer_nickname($uid, $peer_uid);
 
-if (isset($error_html) && strlen($error_html) > 0) {
-    echo $error_html;
+echo "<h1>{$lang['userrelationship']} &raquo; <a href=\"user_profile.php?webtag=$webtag&amp;uid=$peer_uid\" target=\"_blank\" onclick=\"return openProfile($peer_uid, '$webtag')\">", word_filter_add_ob_tags(format_user_name($user_peer['LOGON'], $user_peer['NICKNAME'])), "</a></h1>\n";
+
+if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+    html_display_error_array($error_msg_array, '85%', 'center');
 }
 
-echo "<h1>{$lang['userrelationship']} &raquo; <a href=\"user_profile.php?webtag=$webtag&amp;uid=$peer_uid\" target=\"_blank\" onclick=\"return openProfile($peer_uid, '$webtag')\">", word_filter_add_ob_tags(format_user_name($user_peer['LOGON'], $user_peer['NICKNAME'])), "</a></h1>\n";
 echo "<br />\n";
 
 if (isset($_POST['preview_signature'])) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_signature.php,v 1.97 2007-06-07 23:56:50 decoyduck Exp $ */
+/* $Id: edit_signature.php,v 1.98 2007-08-16 15:38:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -119,7 +119,7 @@ if (user_is_guest()) {
 $admin_edit = false;
 
 if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
-    
+
     if (isset($_GET['siguid'])) {
 
         if (is_numeric($_GET['siguid'])) {
@@ -176,6 +176,8 @@ if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) && ($uid != bh_session_ge
 
 $valid = true;
 
+$error_msg_array = array();
+
 if (isset($_POST['submit']) || isset($_POST['preview'])) {
 
     if (isset($_POST['sig_content']) && strlen(trim(_stripslashes($_POST['sig_content']))) > 0) {
@@ -202,7 +204,7 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
 
     if (attachment_embed_check($t_sig_content) && $t_sig_html == "Y") {
 
-        $error_html.= "<h2>{$lang['notallowedembedattachmentsignature']}</h2>\n";
+        $error_msg_array[] = $lang['notallowedembedattachmentsignature'];
         $valid = false;
     }
 }
@@ -260,19 +262,17 @@ if ($admin_edit === true) {
     echo "<h1>{$lang['editsignature']}</h1>\n";
 }
 
-// Any error messages to display?
+if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-if (isset($error_html) && strlen(trim($error_html)) > 0) {
-
-    echo $error_html;
+    html_display_error_array($error_msg_array, '600', 'left');
 
 }else if (isset($_GET['updated'])) {
 
-    echo "<h2>{$lang['signatureupdated']}</h2>\n";
+    html_display_success_msg($lang['signatureupdated'], '600', 'left');
 
 }else if (isset($_GET['updated_global'])) {
 
-    echo "<h2>{$lang['signatureupdatedforallforums']}</h2>\n";
+    html_display_success_msg($lang['signatureupdatedforallforums'], '600', 'left');
 }
 
 if (isset($t_sig_html)) {

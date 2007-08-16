@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.61 2007-08-09 22:55:44 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.62 2007-08-16 15:38:13 decoyduck Exp $ */
 
 // French Canadian language file
 
@@ -1052,8 +1052,8 @@ $lang['fixhtmlexplanation'] = "Ce forum utilise le filtrage d'HTML. Le code HTML
 $lang['messageoptions'] = "Options de message";
 $lang['notallowedembedattachmentpost'] = "Vous n'avez pas la permission d'incorporer des fichiers joints dans vos messages.";
 $lang['notallowedembedattachmentsignature'] = "Vous n'avez pas la permission d'incorporer des fichiers joints dans votre signature.";
-$lang['reducemessagelength'] = "La longueure du message doit être moins de 65,535 charactères (actuellement: ";
-$lang['reducesiglength'] = "La longueure de la signature doit être moins de 65,535 charactères (actuellement: ";
+$lang['reducemessagelength'] = "La longueure du message doit être moins de 65,535 charactères (actuellement: %s)";
+$lang['reducesiglength'] = "La longueure de la signature doit être moins de 65,535 charactères (actuellement: %s)";
 $lang['cannotcreatethreadinfolder'] = "Vous ne pouvez pas créer de nouveaux fils de discussion dans ce dossier";
 $lang['cannotcreatepostinfolder'] = "Vous ne pouvez pas répondre aux messages dans ce dossier";
 $lang['cannotattachfilesinfolder'] = "Vous ne pouvez pas poster des fichiers joints dans ce dossier. Enlever les fichiers joints pour continuer.";

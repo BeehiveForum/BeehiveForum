@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.62 2007-08-16 15:38:13 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.63 2007-08-16 21:24:06 decoyduck Exp $ */
 
 // French Canadian language file
 
@@ -497,8 +497,7 @@ $lang['sendemailnotificationonreply'] = "Avertissement par courriel sur réponse 
 $lang['sendemailnotificationonpm'] = "Avertissement par courriel sur MP à l'utilisateur";
 $lang['showpopuponnewpm'] = "Afficher fenêtre contextuelle sur réception de nouveau MP";
 $lang['setautomatichighinterestonpost'] = "Établir intérêt élevé automatique sur postage";
-$lang['top20postersforperiod'] = "Les 20 posteurs les plus prolifiques pour la période %s à %s";
-$lang['postingstats'] = "Statistiques de postage";
+$lang['postingstatsforperiod'] = "Statistiques de postage pour la période %s à %s";
 $lang['nodata'] = "Aucune donnée";
 $lang['totalposts'] = "Contributions totales";
 $lang['totalpostsforthisperiod'] = "Contributions totales pour cette période";

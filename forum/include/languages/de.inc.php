@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.37 2007-08-16 15:38:13 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.38 2007-08-16 21:24:06 decoyduck Exp $ */
 
 // German language file
 
@@ -497,8 +497,7 @@ $lang['sendemailnotificationonreply'] = "Emailmitteilung ueber Antwort von Benut
 $lang['sendemailnotificationonpm'] = "Emailmitteilung ueber PM von Benutzer";
 $lang['showpopuponnewpm'] = "Zeige Pop-Up wenn neue PM eingeht";
 $lang['setautomatichighinterestonpost'] = "Setze automatisch Hohes Interesse in Posts";
-$lang['top20postersforperiod'] = "Top 20 Posters fuer Zeitraum von %s bis %s";
-$lang['postingstats'] = "Posting Statistik";
+$lang['postingstatsforperiod'] = "Posting Statistik fuer Zeitraum von %s bis %s";
 $lang['nodata'] = "Keine Daten";
 $lang['totalposts'] = "Totale Posts";
 $lang['totalpostsforthisperiod'] = "Totale Posts fuer diesen Zeitraum";

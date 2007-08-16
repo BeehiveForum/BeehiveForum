@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.456 2007-08-16 15:38:13 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.457 2007-08-16 21:24:06 decoyduck Exp $ */
 
 // British English language file
 
@@ -304,18 +304,28 @@ $lang['sectionname'] = "Section Name";
 $lang['items'] = "Items";
 $lang['mustspecifyaprofilesectionid'] = "Must specify a profile section ID";
 $lang['mustsepecifyaprofilesectionname'] = "Must specify a profile section name";
+$lang['noprofilesectionsfound'] = "There are no existing profile sections. To add a profile section please click the button below.";
+$lang['addnewprofilesection'] = "Add new profile section";
+$lang['successfullyaddedprofilesection'] = "Successfully added profile section";
 $lang['successfullyeditedprofilesection'] = "Successfully edited profile section";
 $lang['addnewprofilesection'] = "Add new profile section";
 $lang['mustsepecifyaprofilesectionname'] = "Must specify a profile section name";
 $lang['successfullyremovedselectedprofilesections'] = "Successfully removed selected profile sections";
 $lang['failedtoremoveprofilesections'] = "Failed to remove profile sections";
 $lang['viewitems'] = "View items";
+$lang['successfullyaddednewprofileitem'] = "Successfully added new profile item";
+$lang['successfullyeditedprofileitem'] = "Successfully edited profile item";
 $lang['successfullyremovedselectedprofileitems'] = "Successfully removed selected profile items";
 $lang['failedtoremoveprofileitems'] = "Failed to remove profile items";
 $lang['noexistingprofileitemsfound'] = "There are no existing profile items in this section. To add a profile item click the button below.";
 $lang['edititem'] = "Edit item";
-$lang['invaliditemidoritemnotfound'] = "Invalid item ID or item not found";
+$lang['invalidprofilesectionid'] = "Invalid profile section ID or section not found";
+$lang['invalidprofileitemid'] = "Invalid profile item ID or item not found";
 $lang['addnewitem'] = "Add new item";
+$lang['youmustenteraprofileitemname'] = "You must enter a profile item name";
+$lang['invalidprofileitemtype'] = "Invalid profile item type selected";
+$lang['failedtocreatenewprofileitem'] = "Failed to create new profile item";
+$lang['failedtoupdateprofileitem'] = "Failed to update profile item";
 $lang['startpageupdated'] = "Start Page updated";
 $lang['viewupdatedstartpage'] = "View updated Start Page";
 $lang['editstartpage'] = "Edit Start Page";
@@ -446,6 +456,7 @@ $lang['useringroups'] = "This user is a member of the following groups";
 $lang['usernotinanygroups'] = "This user is not in any user groups";
 $lang['usergroupwarning'] = "Note: This user may be inheriting additional permissions from any user groups listed below.";
 $lang['successfullyaddedgroup'] = "Successfully added group";
+$lang['successfullyeditedgroup'] = "Successfully edited group";
 $lang['successfullydeletedgroup'] = "Successfully deleted group";
 $lang['usercanaccessforumtools'] = "User can access forum tools and can create, delete and edit forums";
 $lang['usercanmodallfoldersonallforums'] = "User can moderate <b>all folders</b> on <b>all forums</b>";
@@ -517,8 +528,7 @@ $lang['sendemailnotificationonreply'] = "Email notification on reply to user";
 $lang['sendemailnotificationonpm'] = "Email notification on PM to user";
 $lang['showpopuponnewpm'] = "Show popup when receiving new PM";
 $lang['setautomatichighinterestonpost'] = "Set automatic high interest on post";
-$lang['top20postersforperiod'] = "Top 20 posters for period %s to %s";
-$lang['postingstats'] = "Posting Stats";
+$lang['postingstatsforperiod'] = "Posting Stats For Period %s to %s";
 $lang['nodata'] = "No data";
 $lang['totalposts'] = "Total posts";
 $lang['totalpostsforthisperiod'] = "Total posts for this period";
@@ -574,9 +584,6 @@ $lang['addselectedusers'] = "Add selected users";
 $lang['removeselectedusers'] = "Remove selected users";
 $lang['addnew'] = "Add new";
 $lang['deleteselected'] = "Delete selected";
-$lang['noprofilesectionsfound'] = "There are no existing profile sections. To add a profile section please click the button below.";
-$lang['addnewprofilesection'] = "Add new profile section";
-$lang['successfullyaddedsection'] = "Successfully added section";
 $lang['forumrulesmessage'] = "<p><b>Forum Rules</b></p><p>\nRegistration to %1\$s is free! We do insist that you abide by the rules and policies detailed below. If you agree to the terms, please check the 'I agree' checkbox and press the 'Register' button below. If you would like to cancel the registration, click %2\$s to return to the forums index.</p><p>\nAlthough the administrators and moderators of %1\$s will attempt to keep all objectionable messages off this forum, it is impossible for us to review all messages. All messages express the views of the author, and neither the owners of %1\$s, nor Project BeehiveForum and it's affiliates will be held responsible for the content of any message.</p><p>\nBy agreeing to these rules, you warrant that you will not post any messages that are obscene, vulgar, sexually-orientated, hateful, threatening, or otherwise violative of any laws.</p><p>The owners of %1\$s reserve the right to remove, edit, move or close any thread for any reason.</p>";
 $lang['cancellinktext'] = "here";
 $lang['failedtoupdateforumsettings'] = "Failed to update forum settings. Please try again later.";
@@ -1840,6 +1847,7 @@ $lang['rssfeeduserauthentication'] = "RSS Feed does not support HTTP user authen
 $lang['successfullyremovedselectedfeeds'] = "Successfully removed selected feeds";
 $lang['successfullyaddedfeed'] = "Successfully added new feed";
 $lang['successfullyeditedfeed'] = "Successfully edited feed";
+$lang['successfullydeletedfeed'] = "Successfully deleted feed";
 $lang['failedtoremovefeeds'] = "Failed to remove some or all of the selected feeds";
 $lang['failedtoaddnewrssfeed'] = "Failed to add new RSS Feed";
 $lang['failedtoupdaterssfeed'] = "Failed to update RSS Feed";

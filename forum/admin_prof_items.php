@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_items.php,v 1.109 2007-05-31 21:59:14 decoyduck Exp $ */
+/* $Id: admin_prof_items.php,v 1.110 2007-08-16 21:24:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -135,6 +135,12 @@ if (isset($_GET['psid']) && is_numeric($_GET['psid'])) {
     exit;
 }
 
+// Array to hold error messages
+
+$error_msg_array = array();
+
+// View type
+
 if (isset($_GET['viewitems'])) {
     $viewitems = "yes";
 }elseif (isset($_POST['viewitems'])) {
@@ -143,44 +149,52 @@ if (isset($_GET['viewitems'])) {
 
 if (isset($_POST['delete'])) {
 
+    $valid = true;
+
     if (isset($_POST['delete_item']) && is_array($_POST['delete_item'])) {
 
         foreach($_POST['delete_item'] as $piid => $delete_item) {
 
-            if (($delete_item == "Y") && ($profile_item_name = profile_item_get_name($piid))) {
+            if ($valid && $delete_item == "Y" && $profile_item_name = profile_item_get_name($piid)) {
 
                 if ($section_name = profile_section_get_name($_POST['psid'])) {
 
                     if (profile_item_delete($piid)) {
 
                         admin_add_log_entry(DELETE_PROFILE_ITEM, array($section_name, $profile_item_name));
-                        $del_success = "<h2>{$lang['successfullyremovedselectedprofileitems']}</h2>\n";
-                        unset($_POST['piid'], $_GET['piid'], $piid);
 
                     }else {
 
-                        $error_html.= "<h2>{$lang['failedtoremoveprofileitems']}</h2>\n";
-                    }               
+                        $error_msg_array[] = $lang['failedtoremoveprofileitems'];
+                        $valid = false;
+                    }
                 }
             }
+        }
+
+        if ($valid) {
+
+            header_redirect("admin_prof_items.php?webtag=$webtag&psid=$psid&deleted=true");
+            exit;
         }
     }
 }
 
 if (isset($_POST['cancel'])) {
 
-    unset($_POST['additem'], $_GET['additem'], $_POST['piid'], $_GET['piid']);
+    header_redirect("admin_prof_items.php?webtag=$webtag");
+    exit;
 }
 
 if (isset($_POST['back'])) {
-    
+
     if (isset($viewitems)) {
 
         $redirect = "./admin_prof_sect.php?webtag=$webtag&page=$sect_page";
         header_redirect($redirect);
 
     }else {
-    
+
         $redirect = "./admin_prof_sect.php?webtag=$webtag&psid=$psid&page=$sect_page";
         header_redirect($redirect);
     }
@@ -191,22 +205,40 @@ if (isset($_POST['additemsubmit'])) {
     $valid = true;
 
     if (isset($_POST['t_name_new']) && strlen(trim(_stripslashes($_POST['t_name_new']))) > 0) {
+
         $t_new_name = trim(_stripslashes($_POST['t_name_new']));
+
     }else {
+
+        $error_msg_array[] = $lang['youmustenteraprofileitemname'];
         $valid = false;
     }
 
     if (isset($_POST['t_type_new']) && is_numeric($_POST['t_type_new'])) {
+
         $t_type_new = $_POST['t_type_new'];
+
     }else {
+
+        $error_msg_array[] = $lang['invalidprofileitemtype'];
         $valid = false;
     }
 
     if ($valid) {
 
-        $new_piid = profile_item_create($psid, $t_new_name, $t_type_new);
-        $t_section_name = profile_section_get_name($psid);
-        admin_add_log_entry(ADDED_PROFILE_ITEM, array($t_section_name, $t_new_name));
+        if ($new_piid = profile_item_create($psid, $t_new_name, $t_type_new)) {
+
+            $t_section_name = profile_section_get_name($psid);
+
+            admin_add_log_entry(ADDED_PROFILE_ITEM, array($t_section_name, $t_new_name));
+            header_redirect("admin_prof_items.php?webtag=$webtag&psid=$psid&added=true");
+            exit;
+
+        }else {
+
+            $error_msg_error[] = $lang['failedtocreatenewprofileitem'];
+            $valid = false;
+        }
     }
 
 }elseif (isset($_POST['edititemsubmit'])) {
@@ -214,26 +246,42 @@ if (isset($_POST['additemsubmit'])) {
     $valid = true;
 
     if (isset($_POST['piid']) && is_numeric($_POST['piid'])) {
+
         $piid = $_POST['piid'];
+
     }else {
+
+        $error_msg_array[] = $lang['invalidprofileitemid'];
         $valid = false;
     }
 
     if (isset($_POST['t_name_new']) && strlen(trim(_stripslashes($_POST['t_name_new']))) > 0) {
+
         $t_name_new = trim(_stripslashes($_POST['t_name_new']));
+
     }else {
+
+        $error_msg_array[] = $lang['youmustenteraprofileitemname'];
         $valid = false;
     }
 
     if (isset($_POST['t_type_new']) && is_numeric($_POST['t_type_new'])) {
+
         $t_type_new = $_POST['t_type_new'];
+
     }else {
+
+        $error_msg_array[] = $lang['invalidprofileitemtype'];
         $valid = false;
     }
 
     if (isset($_POST['t_section_new']) && is_numeric($_POST['t_section_new'])) {
+
         $t_section_new = $_POST['t_section_new'];
+
     }else {
+
+        $error_msg_array[] = $lang['invalidprofilesectionid'];
         $valid = false;
     }
 
@@ -244,13 +292,18 @@ if (isset($_POST['additemsubmit'])) {
             $profile_item = profile_get_item($piid);
 
             if (($t_name_new != $profile_item['NAME']) || ($t_type_new != $profile_item['TYPE']) || ($t_section_new != $psid)) {
-                
+
                 $log_data = array($t_name_new, $profile_item['NAME'], $t_type_new, $profile_item['TYPE'], $t_section_new, $psid);
                 admin_add_log_entry(CHANGE_PROFILE_ITEM, $log_data);
             }
 
-            $edit_success = "<h2>{$lang['successfullyeditedprofilesection']}</h2>\n";
-            unset($_POST['edititemsubmit'], $_POST['psid'], $_POST['piid'], $_POST['t_name_new'], $profile_item, $piid, $t_name_new, $t_type_new, $t_section_new);
+            header_redirect("admin_prof_items.php?webtag=$webtag&psid=$psid&edited=true");
+            exit;
+
+        }else {
+
+            $error_msg_array[] = $lang['failedtoupdateprofileitem'];
+            $valid = false;
         }
     }
 
@@ -279,8 +332,8 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
 
     echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageprofilesections']} &raquo; ", profile_section_get_name($psid), " &raquo; {$lang['addnewitem']}</h1>\n";
 
-    if (isset($error_html) && strlen(trim($error_html)) > 0) {
-        echo $error_html;
+    if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+        html_display_error_array($error_msg_array, '500', 'center');
     }
 
     echo "<br />\n";
@@ -289,7 +342,7 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
     echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "  ", form_input_hidden("psid", _htmlentities($psid)), "\n";
     echo "  ", form_input_hidden("sect_page", _htmlentities($sect_page)), "\n";
-    
+
     if (isset($viewitems)) echo "  ", form_input_hidden("viewitems", "yes"), "\n";
 
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
@@ -359,7 +412,7 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
     }else {
 
         html_draw_top();
-        html_error_msg($lang['invaliditemidoritemnotfound'], 'admin_prof_sect.php', 'get', array('back' => $lang['back']));
+        html_error_msg($lang['invalidprofileitemid'], 'admin_prof_sect.php', 'get', array('back' => $lang['back']));
         html_draw_bottom();
         exit;
     }
@@ -367,17 +420,17 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
     if (!$profile_item = profile_get_item($piid)) {
 
         html_draw_top();
-        html_error_msg($lang['invaliditemidoritemnotfound'], 'admin_prof_sect.php', 'get', array('back' => $lang['back']));
+        html_error_msg($lang['invalidprofileitemid'], 'admin_prof_sect.php', 'get', array('back' => $lang['back']));
         html_draw_bottom();
         exit;
     }
 
     html_draw_top();
-    
+
     echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageprofilesections']} &raquo; ", profile_section_get_name($psid), " &raquo; {$lang['edititem']} &raquo; {$profile_item['NAME']}</h1>\n";
 
-    if (isset($error_html) && strlen(trim($error_html)) > 0) {
-        echo $error_html;
+    if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+        html_display_error_array($error_msg_array, '500', 'center');
     }
 
     echo "<br />\n";
@@ -451,21 +504,30 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
 
 }else {
 
-    $item_types_array = array($lang['largetextfield'], $lang['mediumtextfield'], 
-                              $lang['smalltextfield'], $lang['multilinetextfield'], 
+    $item_types_array = array($lang['largetextfield'], $lang['mediumtextfield'],
+                              $lang['smalltextfield'], $lang['multilinetextfield'],
                               $lang['radiobuttons'], $lang['dropdown']);
 
     html_draw_top();
-    
+
     echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageprofilesections']} &raquo; ", profile_section_get_name($psid), " &raquo; {$lang['viewitems']}</h1>\n";
 
-    if (isset($error_html) && strlen(trim($error_html)) > 0) {
-        echo $error_html;
-    }
+    if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-    if (isset($add_success) && strlen(trim($add_success)) > 0) echo $add_success;
-    if (isset($del_success) && strlen(trim($del_success)) > 0) echo $del_success;
-    if (isset($edit_success) && strlen(trim($edit_success)) > 0) echo $edit_success;
+        html_display_error_array($error_msg_array, '500', 'center');
+
+    }else if (isset($_GET['added'])) {
+
+        html_display_success_msg($lang['successfullyaddednewprofileitem'], '500', 'center');
+
+    }else if (isset($_GET['edited'])) {
+
+        html_display_success_msg($lang['successfullyeditedprofileitem'], '500', 'center');
+
+    }else if (isset($_GET['deleted'])) {
+
+        html_display_success_msg($lang['successfullyremovedselectedprofileitems'], '500', 'center');
+    }
 
     echo "<br />\n";
     echo "<div align=\"center\">\n";
@@ -521,11 +583,11 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
                 echo "                  <td align=\"center\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up_disabled", "Move Up", "title=\"Move Up\" onclick=\"return false\"", "move_up_ctrl_disabled"), form_submit_image('move_down.png', "move_down[{$profile_item['PIID']}]", "Move Down", "title=\"Move Down\"", "move_down_ctrl"), "</td>\n";
                 echo "                  <td valign=\"top\" align=\"left\"><a href=\"admin_prof_items.php?webtag=$webtag&amp;psid=$psid&amp;piid={$profile_item['PIID']}&amp;sect_page=$sect_page\">{$profile_item['NAME']}</a></td>\n";
             }
-            
+
             echo "                  <td valign=\"top\" align=\"left\">{$item_types_array[$profile_item['TYPE']]}</td>\n";
             echo "                </tr>\n";
         }
-    
+
     }else {
 
         echo "                <tr>\n";

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: admin_post_stats.php,v 1.35 2007-05-31 21:59:14 decoyduck Exp $ */
+/* $Id: admin_post_stats.php,v 1.36 2007-08-16 21:24:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -104,55 +104,59 @@ if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
     exit;
 }
 
-html_draw_top("robots=noindex,nofollow");
+// Array to hold error messages
 
-echo "  <h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['postingstats']}</h1>\n";
-echo "  <br />\n";
+$error_msg_array = array();
+
+// Empty array for post stats
+
+$user_stats_array = array();
+
+// Submit code
 
 if (isset($_POST['update'])) {
 
     $valid = true;
-    $error_html = "";
 
     if (isset($_POST['from_day']) && is_numeric($_POST['from_day'])) {
         $from_day = $_POST['from_day'];
     }else {
-        $error_html.= "<h2>{$lang['mustchooseastartday']}</h2>\n";
+        $error_msg_array[] = $lang['mustchooseastartday'];
         $valid = false;
     }
 
     if (isset($_POST['from_month']) && is_numeric($_POST['from_month'])) {
         $from_month = $_POST['from_month'];
     }else {
-        $error_html.= "<h2>{$lang['mustchooseastartmonth']}</h2>\n";
+        $error_msg_array[] = $lang['mustchooseastartmonth'];
         $valid = false;
     }
 
     if (isset($_POST['from_year']) && is_numeric($_POST['from_year'])) {
         $from_year = $_POST['from_year'];
     }else {
-        $error_html.= "<h2>{$lang['mustchooseastartyear']}</h2>\n";
+        $error_msg_array[] = $lang['mustchooseastartyear'];
         $valid = false;
     }
 
     if (isset($_POST['to_day']) && is_numeric($_POST['to_day'])) {
         $to_day = $_POST['to_day'];
     }else {
-        $error_html.= "<h2>{$lang['mustchooseaendday']}</h2>\n";
+        $error_msg_array[] = $lang['mustchooseaendday'];
         $valid = false;
     }
 
     if (isset($_POST['to_month']) && is_numeric($_POST['to_month'])) {
         $to_month = $_POST['to_month'];
     }else {
-        $error_html.= "<h2>{$lang['mustchooseaendmonth']}</h2>\n";
+        $error_msg_array[] = $lang['mustchooseaendmonth'];
         $valid = false;
     }
 
     if (isset($_POST['to_year']) && is_numeric($_POST['to_year'])) {
         $to_year = $_POST['to_year'];
     }else {
-        $error_html.= "<h2>{$lang['mustchooseaendyear']}</h2>\n";
+        $error_msg_array[] = $lang['mustchooseaendyear'];
         $valid = false;
     }
 
@@ -163,7 +167,7 @@ if (isset($_POST['update'])) {
 
         if ($stats_start > $stats_end) {
 
-            $error_html.= "<h2>{$lang['startperiodisaheadofendperiod']}</h2>\n";
+            $error_msg_array[] = $lang['startperiodisaheadofendperiod'];
             $valid = false;
 
         }else {
@@ -172,37 +176,31 @@ if (isset($_POST['update'])) {
             $user_stats_array = get_post_tallys($stats_start, $stats_end);
         }
     }
-}
 
-if (!isset($user_stats_array) || !is_array($user_stats_array)) {
+}else {
 
-    // Default to showing the stats for this month only
+    $from_day = 1; $from_month = date('n'); $from_year = date('Y');
+    $to_day = date('t'); $to_month = date('n'); $to_year = date('Y');
 
-    $from_day = 1;
-    $from_month = date('n');
-    $from_year = date('Y');
-
-    $to_day = date('t');
-    $to_month = date('n');
-    $to_year = date('Y');
-
-    $stats_start = mktime(0, 0, 0, $from_month, $from_day, $from_year);
-    $stats_end = mktime(23, 59, 59, $to_month, $to_day, $to_year);
+    $stats_start = mktime(0, 0, 0, date('n'), 1, date('Y'));
+    $stats_end = mktime(23, 59, 59, date('n'), date('t'), date('Y'));
 
     $num_days = ((($stats_end - $stats_start) / 60) / 60) / 24;
 
     $user_stats_array = get_post_tallys($stats_start, $stats_end);
 }
 
-if (isset($error_html) && strlen($error_html) > 0) {
-    echo $error_html;
-    echo "<br />\n";
+html_draw_top("robots=noindex,nofollow");
+
+echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; ", sprintf($lang['postingstatsforperiod'], date("d/m/Y", $stats_start), date("d/m/Y", $stats_end)), "</h1>\n";
+
+if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+    html_display_error_array($error_msg_array, '700', 'center');
 }
 
-echo "  <div align=\"center\">\n";
-echo "  <h2>", sprintf($lang['top20postersforperiod'], date("d/m/Y", $stats_start), date("d/m/Y", $stats_end)), "</h2>\n";
 echo "  <br />\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+echo "  <div align=\"center\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
@@ -210,39 +208,46 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\">{$lang['user']}</td>\n";
-echo "                  <td align=\"left\" class=\"subhead\">{$lang['totalposts']}</td>\n";
-echo "                  <td align=\"left\" class=\"subhead\">{$lang['posts']}</td>\n";
-echo "                  <td align=\"left\" class=\"subhead\">{$lang['percent']}</td>\n";
-echo "                  <td align=\"left\" class=\"subhead\">{$lang['average']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\" width=\"20\">&nbsp;</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\" width=\"200\">{$lang['user']}</td>\n";
+echo "                  <td align=\"center\" class=\"subhead\" width=\"120\">{$lang['totalposts']}</td>\n";
+echo "                  <td align=\"center\" class=\"subhead\" width=\"120\">{$lang['posts']}</td>\n";
+echo "                  <td align=\"center\" class=\"subhead\" width=\"120\">{$lang['percent']}</td>\n";
+echo "                  <td align=\"center\" class=\"subhead\" width=\"120\">{$lang['average']}</td>\n";
 echo "                </tr>\n";
 
-if (sizeof($user_stats_array['user_stats']) > 0) {
+if (isset($user_stats_array['user_stats']) && sizeof($user_stats_array['user_stats']) > 0) {
 
     foreach ($user_stats_array['user_stats'] as $user_stats) {
 
         echo "                <tr>\n";
+        echo "                  <td align=\"left\">&nbsp;</td>\n";
         echo "                  <td align=\"left\">", word_filter_add_ob_tags(format_user_name($user_stats['LOGON'], $user_stats['NICKNAME'])), "</td>\n";
-        echo "                  <td align=\"left\">", user_get_post_count($user_stats['UID']), "</td>\n";
-        echo "                  <td align=\"left\">{$user_stats['POST_COUNT']}</td>\n";
-        echo "                  <td align=\"left\">", number_format(round((100 / $user_stats_array['post_count']) * $user_stats['POST_COUNT'], 2), 2, '.', ','), "%</td>\n";
-        echo "                  <td align=\"left\">", number_format(round($user_stats['POST_COUNT'] / ($num_days), 2), 2, '.', ','), "</td>\n";
+        echo "                  <td align=\"center\">", user_get_post_count($user_stats['UID']), "</td>\n";
+        echo "                  <td align=\"center\">{$user_stats['POST_COUNT']}</td>\n";
+        echo "                  <td align=\"center\">", number_format(round((100 / $user_stats_array['post_count']) * $user_stats['POST_COUNT'], 2), 2, '.', ','), "%</td>\n";
+        echo "                  <td align=\"center\">", number_format(round($user_stats['POST_COUNT'] / ($num_days), 2), 2, '.', ','), "</td>\n";
         echo "                </tr>\n";
     }
+
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" colspan=\"6\">&nbsp;</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td colspan=\"6\" align=\"center\">{$lang['totalpostsforthisperiod']}: {$user_stats_array['post_count']}</td>\n";
+    echo "                </tr>\n";
 
 }else {
 
     echo "                <tr>\n";
+    echo "                  <td align=\"left\">&nbsp;</td>\n";
     echo "                  <td align=\"left\" colspan=\"5\">{$lang['nodata']}</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" colspan=\"6\">&nbsp;</td>\n";
     echo "                </tr>\n";
 }
 
-echo "                <tr>\n";
-echo "                  <td align=\"left\" colspan=\"5\">&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td colspan=\"5\" align=\"center\">{$lang['totalpostsforthisperiod']}: {$user_stats_array['post_count']}</td>\n";
-echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";
 echo "          </tr>\n";
@@ -253,7 +258,7 @@ echo "  </table>\n";
 echo "  <br />\n";
 echo "  <form action=\"admin_post_stats.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";

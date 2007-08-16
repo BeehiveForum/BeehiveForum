@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_rss_feeds.php,v 1.45 2007-05-31 21:59:14 decoyduck Exp $ */
+/* $Id: admin_rss_feeds.php,v 1.46 2007-08-16 21:24:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -112,52 +112,62 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
 }
 
 $update_frequencies_array = array(RSS_FEED_UPDATE_NEVER        => $lang['never'],
-                                  RSS_FEED_UPDATE_THIRTY_MINS  => $lang['every30mins'], 
+                                  RSS_FEED_UPDATE_THIRTY_MINS  => $lang['every30mins'],
                                   RSS_FEED_UPDATE_ONE_HOUR     => $lang['onceanhour'],
-                                  RSS_FEED_UPDATE_SIX_HOURS    => $lang['every6hours'], 
+                                  RSS_FEED_UPDATE_SIX_HOURS    => $lang['every6hours'],
                                   RSS_FEED_UPDATE_TWELVE_HOURS => $lang['every12hours'],
                                   RSS_FEED_UPDATE_ONCE_A_DAY   => $lang['onceaday']);
 
 $start = floor($page - 1) * 10;
 if ($start < 0) $start = 0;
 
-$error_html = "";
-$add_success = "";
-$del_success = "";
-$edit_success = "";
+// Array to hold error messages
 
-if (isset($_POST['cancel']) || isset($_POST['delete'])) {
+$error_msg_array = array();
 
-    unset($_POST['addfeed'], $_POST['feed_id'], $_GET['feed_id']);
+// Cancel clicked.
+
+if (isset($_POST['cancel'])) {
+
+    header_redirect("admin_rss_feeds.php?webtag=$webtag");
+    exit;
 }
 
 if (isset($_POST['delete'])) {
 
+    $valid = true;
+
     if (isset($_POST['t_delete']) && is_array($_POST['t_delete'])) {
 
         foreach($_POST['t_delete'] as $feed_id => $delete_feed) {
-    
-            if (($delete_feed == "Y") && ($rss_feed = rss_get_feed($feed_id))) {
+
+            if ($valid && $delete_feed == "Y" && $rss_feed = rss_get_feed($feed_id)) {
 
                 if (rss_remove_feed($feed_id)) {
 
                     admin_add_log_entry(DELETED_RSS_FEED, $rss_feed['NAME']);
-                    $del_success = "<h2>{$lang['successfullyremovedselectedfeeds']}</h2>\n";
 
                 }else {
-                    
-                    $error_html.= "<h2>{$lang['failedtoremovefeeds']}</h2>\n";
-                }               
+
+                    $error_msg_array[] = $lang['failedtoremovefeeds'];
+                    $valid = false;
+                }
             }
+        }
+
+        if ($valid) {
+
+            header_redirect("admin_rss_feeds.php?webtag=$webtag&deleted=true");
+            exit;
         }
     }
 
 }elseif (isset($_POST['checkfeedsubmit'])) {
 
     $valid = true;
-    
+
     if (isset($_POST['t_url']) && strlen(trim(_stripslashes($_POST['t_url']))) > 0) {
-    
+
         $t_url = trim(_stripslashes($_POST['t_url']));
 
     }elseif (isset($_POST['t_url_new']) && strlen(trim(_stripslashes($_POST['t_url_new']))) > 0) {
@@ -166,7 +176,7 @@ if (isset($_POST['delete'])) {
 
     }else {
 
-        $error_html.= "<h2>{$lang['mustspecifyrssfeedurl']}</h2>\n";
+        $error_msg_array[] = $lang['mustspecifyrssfeedurl'];
         $valid = false;
     }
 
@@ -176,16 +186,16 @@ if (isset($_POST['delete'])) {
 
             if (is_array($rss_items) && sizeof($rss_items) > 0) {
 
-                $error_html.= "<h2>{$lang['rssstreamworkingcorrectly']}</h2>\n";
+                $rss_stream_success = $lang['rssstreamworkingcorrectly'];
 
             }else {
 
-                $error_html.= "<h2>{$lang['rssstreamnotworkingcorrectly']}</h2>\n";
+                $error_msg_array[] = $lang['rssstreamnotworkingcorrectly'];
             }
 
         }else {
 
-            $error_html.= "<h2>{$lang['rssstreamnotworkingcorrectly']}</h2>\n";
+            $error_msg_array[] = $lang['rssstreamnotworkingcorrectly'];
         }
     }
 
@@ -199,7 +209,7 @@ if (isset($_POST['delete'])) {
         $t_name_new = trim(_stripslashes($_POST['t_name_new']));
     }else {
         $valid = false;
-        $error_html.= "<h2>{$lang['mustspecifyrssfeedname']}</h2>\n";
+        $error_msg_array[] = $lang['mustspecifyrssfeedname'];
     }
 
     if (isset($_POST['t_user_new']) && strlen(trim(_stripslashes($_POST['t_user_new']))) > 0) {
@@ -213,20 +223,23 @@ if (isset($_POST['delete'])) {
         }else {
 
             $valid = false;
-            $error_html.= "<h2>{$lang['unknownrssuseraccount']}</h2>\n";
+            $error_msg_array[] = $lang['unknownrssuseraccount'];
         }
 
     }else {
 
         $valid = false;
-        $error_html.= "<h2>{$lang['mustspecifyrssfeeduseraccount']}</h2>\n";
+        $error_msg_array[] = $lang['mustspecifyrssfeeduseraccount'];
     }
 
     if (isset($_POST['t_fid_new']) && is_numeric($_POST['t_fid_new'])) {
+
         $t_fid_new = $_POST['t_fid_new'];
+
     }else {
+
         $valid = false;
-        $error_html.= "<h2>{$lang['mustspecifyrssfeedfolder']}</h2>\n";
+        $error_msg_array[] = $lang['mustspecifyrssfeedfolder'];
     }
 
     if (isset($_POST['t_url_new']) && strlen(trim(_stripslashes($_POST['t_url_new']))) > 0) {
@@ -238,25 +251,25 @@ if (isset($_POST['delete'])) {
         if (!isset($check_url['scheme']) || $check_url['scheme'] != "http") {
 
             $valid = false;
-            $error_html.= "<h2>{$lang['rssfeedsupportshttpurlsonly']}</h2>\n";
+            $error_msg_array[] = $lang['rssfeedsupportshttpurlsonly'];
         }
 
         if (!isset($check_url['host']) || strlen(trim($check_url['host'])) < 1) {
 
             $valid = false;
-            $error_html.= "<h2>{$lang['rssfeedurlformatinvalid']}</h2>\n";
+            $error_msg_array[] = $lang['rssfeedurlformatinvalid'];
         }
 
         if (isset($check_url['user']) || isset($check_url['pass'])) {
 
             $valid = false;
-            $error_html.= "<h2>{$lang['rssfeeduserauthentication']}</h2>\n";
+            $error_msg_array[] = $lang['rssfeeduserauthentication'];
         }
 
     }else {
 
         $valid = false;
-        $error_html.= "<h2>{$lang['mustspecifyrssfeedurl']}</h2>\n";
+        $error_msg_array[] = $lang['mustspecifyrssfeedurl'];
     }
 
     if (isset($_POST['t_prefix_new']) && strlen(trim(_stripslashes($_POST['t_prefix_new']))) > 0) {
@@ -266,10 +279,13 @@ if (isset($_POST['delete'])) {
     }
 
     if (isset($_POST['t_frequency_new']) && is_numeric($_POST['t_frequency_new'])) {
+
         $t_frequency_new = $_POST['t_frequency_new'];
+
     }else {
+
         $valid = false;
-        $error_html.= "<h2>{$lang['mustspecifyrssfeedupdatefrequency']}</h2>\n";
+        $error_msg_array[] = $lang['mustspecifyrssfeedupdatefrequency'];
     }
 
     if ($valid) {
@@ -277,28 +293,31 @@ if (isset($_POST['delete'])) {
         if (rss_add_feed($t_name_new, $t_user_uid, $t_fid_new, $t_url_new, $t_prefix_new, $t_frequency_new)) {
 
             admin_add_log_entry(ADDED_RSS_FEED, array($t_name_new, $t_url_new));
-            $add_success = "<h2>{$lang['successfullyaddedfeed']}</h2>\n";
-            unset($t_name_new, $t_user_uid, $t_fid_new, $t_url_new, $t_prefix_new, $t_frequency_new, $_POST['addfeed']);
+            header_redirect("admin_rss_feeds.php?webtag=$webtag&added=true");
+            exit;
 
         }else {
 
-            $error_html.= "<h2>{$lang['failedtoaddnewrssfeed']}</h2>\n";
+            $error_msg_array[] = $lang['failedtoaddnewrssfeed'];
         }
     }
 
 }elseif (isset($_POST['updatefeedsubmit'])) {
 
     $valid = true;
-    
+
     if (isset($_POST['feed_id']) && is_numeric($_POST['feed_id'])) {
 
         $feed_id = $_POST['feed_id'];
-        
+
         if (isset($_POST['t_name']) && strlen(trim(_stripslashes($_POST['t_name']))) > 0) {
+
             $t_new_name = trim(_stripslashes($_POST['t_name']));
+
         }else {
+
             $valid = false;
-            $error_html.= "<h2>{$lang['mustspecifyrssfeedname']}</h2>\n";
+            $error_msg_array[] = $lang['mustspecifyrssfeedname'];
         }
 
         if (isset($_POST['t_old_name']) && strlen(trim(_stripslashes($_POST['t_old_name']))) > 0) {
@@ -308,10 +327,13 @@ if (isset($_POST['delete'])) {
         }
 
         if (isset($_POST['t_user']) && strlen(trim(_stripslashes($_POST['t_user']))) > 0) {
+
             $t_new_user = trim(_stripslashes($_POST['t_user']));
+
         }else {
+
             $valid = false;
-            $error_html.= "<h2>{$lang['mustspecifyrssfeeduseraccount']}</h2>\n";
+            $error_msg_array[] = $lang['mustspecifyrssfeeduseraccount'];
         }
 
         if (isset($_POST['t_old_user']) && strlen(trim(_stripslashes($_POST['t_old_user']))) > 0) {
@@ -321,10 +343,13 @@ if (isset($_POST['delete'])) {
         }
 
         if (isset($_POST['t_fid']) && is_numeric($_POST['t_fid'])) {
+
             $t_new_fid = $_POST['t_fid'];
+
         }else {
+
             $valid = false;
-            $error_html.= "<h2>{$lang['mustspecifyrssfeedfolder']}</h2>\n";
+            $error_msg_array[] = $lang['mustspecifyrssfeedfolder'];
         }
 
         if (isset($_POST['t_old_fid']) && is_numeric($_POST['t_old_fid'])) {
@@ -337,7 +362,7 @@ if (isset($_POST['delete'])) {
             $t_new_url = $_POST['t_url'];
         }else {
             $valid = false;
-            $error_html.= "<h2>{$lang['mustspecifyrssfeedurl']}</h2>\n";
+            $error_msg_array[] = $lang['mustspecifyrssfeedurl'];
         }
 
         if (isset($_POST['t_old_url']) && strlen(trim(_stripslashes($_POST['t_old_url']))) > 0) {
@@ -359,10 +384,13 @@ if (isset($_POST['delete'])) {
         }
 
         if (isset($_POST['t_frequency']) && is_numeric($_POST['t_frequency'])) {
+
             $t_new_frequency = $_POST['t_frequency'];
+
         }else {
+
             $valid = false;
-            $error_html.= "<h2>{$lang['mustspecifyrssfeedupdatefrequency']}</h2>\n";
+            $error_msg_array[] = $lang['mustspecifyrssfeedupdatefrequency'];
         }
 
         if (isset($_POST['t_old_frequency']) && is_numeric($_POST['t_old_frequency'])) {
@@ -379,18 +407,20 @@ if (isset($_POST['delete'])) {
 
                 if (rss_feed_update($feed_id, $t_new_name, $t_new_uid, $t_new_fid, $t_new_url, $t_new_prefix, $t_new_frequency)) {
 
-                    admin_add_log_entry(EDITED_RSS_FEED, array($t_new_name, $t_old_name, $t_new_user, $t_old_user, $t_new_fid, $t_old_fid, $t_new_url, $t_old_url, $t_new_prefix, $t_old_prefix, $t_new_frequency, $t_old_frequency));
-                    $edit_success = "<h2>{$lang['successfullyeditedfeed']}: $t_new_name</h2>\n";
-                    unset($feed_id, $t_new_name, $t_old_name, $t_new_user, $t_old_user, $t_new_fid, $t_old_fid, $t_new_url, $t_old_url, $t_new_prefix, $t_old_prefix, $t_new_frequency, $t_old_frequency, $_POST['feed_id'], $_GET['feed_id']);
+                    $log_data = array($t_new_name, $t_old_name, $t_new_user, $t_old_user, $t_new_fid, $t_old_fid, $t_new_url, $t_old_url, $t_new_prefix, $t_old_prefix, $t_new_frequency, $t_old_frequency);
+
+                    admin_add_log_entry(EDITED_RSS_FEED, $log_data);
+                    header_redirect("admin_rss_feeds.php?webtag=$webtag&edited=true");
+                    exit;
 
                 }else {
 
-                    $error_html.= "<h2>{$lang['failedtoupdaterssfeed']}</h2>\n";
+                    $error_msg_array[] = $lang['failedtoupdaterssfeed'];
                 }
 
             }else {
 
-                $error_html.= "<h2>{$lang['unknownrssuseraccount']}</h2>\n";
+                $error_msg_array[] = $lang['unknownrssuseraccount'];
             }
         }
     }
@@ -405,11 +435,16 @@ if (isset($_POST['delete'])) {
 if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
 
     html_draw_top('admin.js');
-    
+
     echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['rssfeeds']} &raquo; {$lang['addnewfeed']}</h1>\n";
 
-    if (isset($error_html) && strlen(trim($error_html)) > 0) {
-        echo $error_html;
+    if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+
+        html_display_error_array($error_msg_array, '500', 'center');
+
+    }else if (isset($rss_stream_success)) {
+
+        html_display_success_msg($rss_stream_success, '500', 'center');
     }
 
     echo "<br />\n";
@@ -529,11 +564,16 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
     }
 
     html_draw_top('admin.js');
-    
+
     echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['rssfeeds']} &raquo; {$lang['editfeed']} &raquo; {$rss_feed['NAME']}</h1>\n";
 
-    if (isset($error_html) && strlen(trim($error_html)) > 0) {
-        echo $error_html;
+    if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+
+        html_display_error_array($error_msg_array, '500', 'center');
+
+    }else if (isset($rss_stream_success)) {
+
+        html_display_success_msg($rss_stream_success, '500', 'center');
     }
 
     echo "<br />\n";
@@ -631,20 +671,24 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
 
     html_draw_top('admin.js');
 
-    // Draw the form
     echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['rssfeeds']}</h1>\n";
 
-    if (isset($error_html) && strlen(trim($error_html)) > 0) {
-        echo $error_html;
+    if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+
+        html_display_error_array($error_msg_array, '550', 'center');
+
+    }else if (isset($_GET['added'])) {
+
+        html_display_success_msg($lang['successfullyaddedfeed'], '550', 'center');
+
+    }else if (isset($_GET['edited'])) {
+
+        html_display_success_msg($lang['successfullyeditedfeed'], '550', 'center');
+
+    }else if (isset($_GET['deleted'])) {
+
+        html_display_success_msg($lang['successfullyremovedselectedfeeds'], '550', 'center');
     }
-
-    if (isset($add_success) && strlen(trim($add_success)) > 0) echo $add_success;
-    if (isset($del_success) && strlen(trim($del_success)) > 0) echo $del_success;
-    if (isset($edit_success) && strlen(trim($edit_success)) > 0) echo $edit_success;
-
-    $update_labels = array('0'   => $lang['never'],        '30'   => $lang['every30mins'],
-                           '60'  => $lang['onceanhour'],   '360'  => $lang['every6hours'], 
-                           '720' => $lang['every12hours'], '1440' => $lang['onceaday']);
 
     echo "<br />\n";
     echo "<div align=\"center\">\n";
@@ -669,11 +713,11 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
     if (sizeof($rss_feeds['rss_feed_array']) > 0) {
 
         foreach ($rss_feeds['rss_feed_array'] as $rss_feed) {
-            
+
             echo "                <tr>\n";
             echo "                  <td valign=\"top\" align=\"center\" width=\"1%\">", form_checkbox("t_delete[{$rss_feed['RSSID']}]", "Y", false), "</td>\n";
             echo "                  <td valign=\"top\" align=\"left\" width=\"300\"><a href=\"admin_rss_feeds.php?webtag=$webtag&amp;page=$page&amp;feed_id={$rss_feed['RSSID']}\">{$rss_feed['NAME']}</a></td>\n";
-            echo "                  <td valign=\"top\" align=\"left\" width=\"225\">", (in_array($rss_feed['FREQUENCY'], array_keys($update_labels))) ? $update_labels[$rss_feed['FREQUENCY']] : $lang['unknown'], "</td>\n";
+            echo "                  <td valign=\"top\" align=\"left\" width=\"225\">", (in_array($rss_feed['FREQUENCY'], array_keys($update_frequencies_array))) ? $update_frequencies_array[$rss_feed['FREQUENCY']] : $lang['unknown'], "</td>\n";
             echo "                </tr>\n";
         }
 

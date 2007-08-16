@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_banned.php,v 1.60 2007-05-31 21:59:13 decoyduck Exp $ */
+/* $Id: admin_banned.php,v 1.61 2007-08-16 21:24:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -141,12 +141,13 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
     $page = 1;
 }
 
-$valid = true;
-$error_html = "";
+// Form Validation
 
-$add_success = "";
-$del_success = "";
-$edit_success = "";
+$valid = true;
+
+// Array to hold error messages
+
+$error_msg_array = array();
 
 // Constant translation of adding and removing bans to log entries.
 
@@ -188,30 +189,42 @@ if (isset($_POST['back']) && isset($ret)) {
     header_redirect($ret);
 }
 
-if (isset($_POST['cancel']) || isset($_POST['delete'])) {
-    unset($_POST['addban'], $_POST['ban_id'], $_GET['ban_id'], $ban_id);
+// Cancel button has been pressed.
+
+if (isset($_POST['cancel'])) {
+
+    header_redirect("admin_banned.php?webtag=$webtag");
+    exit;
 }
 
 // Delete existing ban entry
 
 if (isset($_POST['delete'])) {
 
+    $valid = true;
+
     if (isset($_POST['delete_ban']) && is_array($_POST['delete_ban'])) {
 
         foreach($_POST['delete_ban'] as $ban_id => $delete_ban) {
 
-            if (($delete_ban == "Y") && $ban_data_array = admin_get_ban($ban_id)) {
-            
+            if ($valid == true && $delete_ban == "Y" && $ban_data_array = admin_get_ban($ban_id)) {
+
                 if (remove_ban_data_by_id($ban_id)) {
 
                     admin_add_log_entry($admin_log_rem_types[$ban_data_array['BANTYPE']], $ban_data_array['BANDATA']);
-                    $del_success = "<h2>{$lang['successfullyremovedselectedbans']}</h2>\n";
 
                 }else {
-                    
-                    $error_html.= "<h2>{$lang['failedtoremovebans']}</h2>\n";
+
+                    $error_msg_array[] = $lang['failedtoremovebans'];
+                    $valid = false;
                 }
             }
+        }
+
+        if ($valid) {
+
+            header_redirect("admin_banned.php?webtag=$webtag&removed=true");
+            exit;
         }
     }
 }
@@ -226,7 +239,7 @@ if (isset($_GET['ban_ipaddress']) && strlen(trim(_stripslashes($_GET['ban_ipaddr
 }elseif (isset($_GET['unban_ipaddress']) && strlen(trim(_stripslashes($_GET['unban_ipaddress'])))) {
 
     $unban_ipaddress = trim(_stripslashes($_GET['unban_ipaddress']));
-    
+
     if (!$remove_ban_id = check_ban_data(BAN_TYPE_IP, $unban_ipaddress)) {
         unset($remove_ban_id);
     }
@@ -254,13 +267,13 @@ if (isset($_POST['add']) || isset($_POST['check'])) {
 
         if ($new_ban_type < 1 || $new_ban_type > 5) {
 
-            $error_html.= "<h2>{$lang['mustspecifybantype']}</h2>\n";
+            $error_msg_array[] = $lang['mustspecifybantype'];
             $valid = false;
         }
 
     }else {
 
-        $error_html.= "<h2>{$lang['mustspecifybantype']}</h2>\n";
+        $error_msg_array[] = $lang['mustspecifybantype'];
         $valid = false;
     }
 
@@ -269,14 +282,14 @@ if (isset($_POST['add']) || isset($_POST['check'])) {
         $new_ban_data = trim(_stripslashes($_POST['newbandata']));
 
         if (preg_match("/^%+$/", $new_ban_data) > 0) {
-        
-            $error_html.= "<h2>{$lang['cannotusewildcardonown']}</h2>\n";
+
+            $error_msg_array[] = $lang['cannotusewildcardonown'];
             $valid = false;
         }
 
     }else {
 
-        $error_html.= "<h2>{$lang['mustspecifybandata']}</h2>\n";
+        $error_msg_array[] = $lang['mustspecifybandata'];
         $valid = false;
     }
 
@@ -291,22 +304,22 @@ if (isset($_POST['add']) || isset($_POST['check'])) {
         if (!check_ban_data($new_ban_type, $new_ban_data)) {
 
             if (isset($_POST['add'])) {
-            
+
                 if (add_ban_data($new_ban_type, $new_ban_data, $comment)) {
 
                     admin_add_log_entry($admin_log_add_types[$new_ban_type], array($new_ban_data, $comment));
-                    $add_success = "<h2>{$lang['successfullyaddedban']}</h2>\n";
-                    unset($_POST['addban'], $_GET['ban_id'], $ban_id);
+                    header_redirect("admin_banned.php?webtag=$webtag&added=true");
+                    exit;
 
                 }else {
 
-                    $error_html.= "<h2>{$lang['failedtoaddnewban']}</h2>\n";
+                    $error_msg_array[] = $lang['failedtoaddnewban'];
                 }
             }
 
         }else {
 
-            $error_html.= "<h2>{$lang['duplicatebandataentered']}</h2>\n";
+            $error_msg_array[] = $lang['duplicatebandataentered'];
             $valid = false;
         }
     }
@@ -323,13 +336,13 @@ if (isset($_POST['add']) || isset($_POST['check'])) {
 
             if ($ban_type < 1 || $ban_type > 5) {
 
-                $error_html.= "<h2>{$lang['mustspecifybantype']}</h2>\n";
+                $error_msg_array[] = $lang['mustspecifybantype'];
                 $valid = false;
             }
 
         }else {
 
-            $error_html.= "<h2>{$lang['mustspecifybantype']}</h2>\n";
+            $error_msg_array[] = $lang['mustspecifybantype'];
             $valid = false;
         }
 
@@ -339,13 +352,13 @@ if (isset($_POST['add']) || isset($_POST['check'])) {
 
             if (preg_match("/^%+$/", $ban_data) > 0) {
 
-                $error_html.= "<h2>{$lang['cannotusewildcardonown']}</h2>\n";
+                $error_msg_array[] = $lang['cannotusewildcardonown'];
                 $valid = false;
             }
 
         }else {
 
-            $error_html.= "<h2>{$lang['mustspecifybandata']}</h2>\n";
+            $error_msg_array[] = $lang['mustspecifybandata'];
             $valid = false;
         }
 
@@ -376,7 +389,7 @@ if (isset($_POST['add']) || isset($_POST['check'])) {
         if ($valid) {
 
             $dup_ban_id = check_ban_data($ban_type, $ban_data);
-            
+
             if ((!$dup_ban_id) || ($dup_ban_id == $ban_id)) {
 
                 if (update_ban_data($ban_id, $ban_type, $ban_data, $comment)) {
@@ -387,13 +400,13 @@ if (isset($_POST['add']) || isset($_POST['check'])) {
                         admin_add_log_entry(UPDATED_BAN, $log_data);
                     }
 
-                    $edit_success = "<h2>{$lang['successfullyupdatedban']}</h2>\n";
-                    unset($_POST['ban_id'], $_GET['ban_id'], $ban_id, $ban_type, $ban_data, $comment, $old_ban_type, $old_ban_data, $old_comment);
+                    header_redirect("admin_banned.php?webtag=$webtag&edited=true");
+                    exit;
                 }
 
             }else {
 
-                $error_html.= "<h2>{$lang['duplicatebandataentered']}</h2>\n";
+                $error_msg_array[] = $lang['duplicatebandataentered'];
                 $valid = false;
             }
         }
@@ -412,7 +425,9 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
 
     echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['bancontrols']}</h1>\n";
 
-    if (isset($error_html) && strlen($error_html) > 0) echo $error_html;
+    if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+        html_display_error_array($error_msg_array, '500', 'center');
+    }
 
     echo "<br />\n";
     echo "<div align=\"center\">\n";
@@ -498,7 +513,7 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
             echo "            </td>\n";
             echo "          </tr>\n";
             echo "        </table>\n";
-        
+
         }else {
 
             echo "        <br />\n";
@@ -562,7 +577,7 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
     }elseif (isset($remove_ban_id) && is_numeric($remove_ban_id)) {
 
         $ban_id = $remove_ban_id;
-    
+
     }else {
 
         html_draw_top();
@@ -598,8 +613,9 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
 
     echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['bancontrols']}</h1>\n";
 
-    if (isset($error_html) && strlen($error_html) > 0) echo $error_html;
-    if (isset($edit_success) && strlen(trim($edit_success)) > 0) echo $edit_success;
+    if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+        html_display_error_array($error_msg_array, '500', 'center');
+    }
 
     echo "<br />\n";
     echo "<div align=\"center\">\n";
@@ -732,13 +748,22 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
 
     echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['bancontrols']}</h1>\n";
 
-    if (isset($error_html) && strlen(trim($error_html)) > 0) {
-        echo $error_html;
-    }
+    if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-    if (isset($add_success) && strlen(trim($add_success)) > 0) echo $add_success;
-    if (isset($del_success) && strlen(trim($del_success)) > 0) echo $del_success;
-    if (isset($edit_success) && strlen(trim($edit_success)) > 0) echo $edit_success;
+        html_display_error_array($error_msg_array, '600', 'center');
+
+    }else if (isset($_GET['added'])) {
+
+        html_display_success_msg($lang['successfullyaddedban'], '600', 'center');
+
+    }else if (isset($_GET['removed'])) {
+
+        html_display_success_msg($lang['successfullyremovedselectedbans'], '600', 'center');
+
+    }else if (isset($_GET['edited'])) {
+
+        html_display_success_msg($lang['successfullyupdatedban'], '600', 'center');
+    }
 
     echo "<br />\n";
     echo "<div align=\"center\">\n";
@@ -783,9 +808,9 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
 
     $ban_list_array = admin_get_ban_data($sort_by, $sort_dir, $start);
 
-    $ban_types_array = array('1' => 'IP Address', '2' => 'Logon', 
+    $ban_types_array = array('1' => 'IP Address', '2' => 'Logon',
                              '3' => 'Nickname',   '4' => 'Email',
-                             '5' => 'HTTP Referer'); 
+                             '5' => 'HTTP Referer');
 
     if (sizeof($ban_list_array['ban_array']) > 0) {
 

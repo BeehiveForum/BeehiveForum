@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.79 2007-08-17 22:50:20 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.80 2007-08-17 22:52:37 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -398,6 +398,17 @@ if (isset($_POST['submit'])) {
 html_draw_top("emoticons.js", "htmltools.js");
 
 echo "<h1>{$lang['admin']} &raquo; {$lang['globalforumsettings']}</h1>\n";
+echo "<br />\n";
+echo "<div align=\"center\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">{$lang['settingsaffectallforumswarning']}</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">&nbsp;</td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "</div>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -419,14 +430,6 @@ echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form name=\"prefsform\" action=\"admin_default_forum_settings.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
-echo "    <tr>\n";
-echo "      <td align=\"left\">{$lang['settingsaffectallforumswarning']}</td>\n";
-echo "    </tr>\n";
-echo "    <tr>\n";
-echo "      <td align=\"left\">&nbsp;</td>\n";
-echo "    </tr>\n";
-echo "  </table>\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";

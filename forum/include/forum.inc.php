@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.253 2007-08-01 20:23:02 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.254 2007-08-17 22:50:20 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -49,7 +49,7 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 function get_forum_data()
 {
     static $forum_data = false;
-    
+
     $db_get_forum_data = db_connect();
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
@@ -83,7 +83,7 @@ function get_forum_data()
                     $forum_data = db_fetch_array($result);
 
                     if (!isset($forum_data['ACCESS_LEVEL'])) $forum_data['ACCESS_LEVEL'] = 0;
-                    if (!isset($forum_data['ALLOWED'])) $forum_data['ALLOWED'] = 0;                    
+                    if (!isset($forum_data['ALLOWED'])) $forum_data['ALLOWED'] = 0;
 
                     return $forum_data;
                 }
@@ -146,7 +146,7 @@ function get_table_prefix()
 function forum_check_access_level()
 {
     static $forum_data = false;
-    
+
     $db_forum_check_access_level = db_connect();
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
@@ -156,7 +156,7 @@ function forum_check_access_level()
     $forum_fid = $table_data['FID'];
 
     if (!is_array($forum_data) || !isset($forum_data['ACCESS_LEVEL']) || !isset($forum_data['ALLOWED'])) {
-    
+
         $sql = "SELECT FORUMS.FID, FORUMS.ACCESS_LEVEL, USER_FORUM.ALLOWED FROM FORUMS ";
         $sql.= "LEFT JOIN USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
         $sql.= "AND USER_FORUM.UID = '$uid') WHERE FORUMS.FID = '$forum_fid'";
@@ -197,7 +197,7 @@ function forum_closed_message()
     $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
 
     echo "<h1>{$lang['closed']}</h1>\n";
-    
+
     if ($closed_message = forum_get_setting('closed_message', false)) {
         echo "<h2>", fix_html($closed_message), "</h2>\n";
     }else {
@@ -221,7 +221,7 @@ function forum_restricted_message()
     $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
 
     echo "<h1>{$lang['restricted']}</h1>\n";
-    
+
     if ($restricted_message = forum_get_setting('restricted_message', false)) {
         echo "<h2>", fix_html($restricted_message), "</h2>\n";
     }else {
@@ -284,7 +284,7 @@ function forum_get_saved_password(&$password, &$passhash, &$sesshash)
 function forum_check_password($forum_fid)
 {
     $frame_top_target = html_get_top_frame_name();
-    
+
     $db_forum_check_password = db_connect();
 
     $webtag = get_webtag($webtag_search);
@@ -328,7 +328,7 @@ function forum_check_password($forum_fid)
         if (isset($_COOKIE["bh_{$webtag}_sesshash"]) && strlen(trim(_stripslashes($_COOKIE["bh_{$webtag}_sesshash"]))) > 0) {
 
             bh_setcookie("bh_{$webtag}_sesshash", "", time() - YEAR_IN_SECONDS);
-            
+
             echo "      <tr>\n";
             echo "        <td align=\"left\">&nbsp;</td>\n";
             echo "      </tr>\n";
@@ -337,7 +337,7 @@ function forum_check_password($forum_fid)
             echo "          <h2>{$lang['usernameorpasswdnotvalid']}</h2>\n";
             echo "          <h2>{$lang['pleasereenterpasswd']}</h2>\n";
             echo "        </td>\n";
-            echo "      </tr>\n";        
+            echo "      </tr>\n";
         }
 
         echo "      <tr>\n";
@@ -414,7 +414,7 @@ function forum_get_settings()
         $forum_settings_array = array('fid' => $forum_fid);
 
         // Get the named settings from FORUM_SETTINGS table.
-        
+
         $sql = "SELECT SNAME, SVALUE FROM FORUM_SETTINGS WHERE FID = '$forum_fid'";
 
         if (!$result = db_query($sql, $db_forum_get_settings)) return false;
@@ -422,9 +422,9 @@ function forum_get_settings()
         if (db_num_rows($result) > 0) {
 
             if (!is_array($forum_settings_array)) $forum_settings_array = array();
-            
+
             while ($forum_data = db_fetch_array($result)) {
-            
+
                 $forum_settings_array[$forum_data['SNAME']] = $forum_data['SVALUE'];
             }
         }
@@ -442,7 +442,7 @@ function forum_get_settings()
         if (db_num_rows($result) > 0) {
 
             if (!is_array($forum_settings_array)) $forum_settings_array = array();
-            
+
             while ($forum_timezone_data = db_fetch_array($result)) {
 
                 $forum_settings_array['forum_timezone'] = $forum_timezone_data['SVALUE'];
@@ -481,9 +481,9 @@ function forum_get_global_settings()
         if (db_num_rows($result) > 0) {
 
             if (!is_array($forum_global_settings_array)) $forum_global_settings_array = array();
-            
+
             while ($forum_data = db_fetch_array($result)) {
-            
+
                 $forum_global_settings_array[$forum_data['SNAME']] = $forum_data['SVALUE'];
             }
         }
@@ -499,7 +499,7 @@ function forum_get_global_settings()
         if (db_num_rows($result) > 0) {
 
             if (!is_array($forum_global_settings_array)) $forum_global_settings_array = array();
-            
+
             while ($forum_timezone_data = db_fetch_array($result)) {
 
                 $forum_global_settings_array['forum_timezone'] = $forum_timezone_data['SVALUE'];
@@ -574,7 +574,7 @@ function forum_save_settings($forum_settings_array)
     foreach ($forum_settings_array as $sname => $svalue) {
 
         if (forum_check_setting_name($sname)) {
-        
+
             $sname  = db_escape_string($sname);
             $svalue = db_escape_string($svalue);
 
@@ -616,7 +616,7 @@ function forum_save_default_settings($forum_settings_array)
     foreach ($forum_settings_array as $sname => $svalue) {
 
         if (forum_check_global_setting_name($sname)) {
-        
+
             $sname = db_escape_string($sname);
             $svalue = db_escape_string($svalue);
 
@@ -626,19 +626,21 @@ function forum_save_default_settings($forum_settings_array)
             if (!$result = db_query($sql, $db_forum_save_default_settings)) return false;
         }
     }
+
+    return true;
 }
 
 function forum_check_setting_name($setting_name)
 {
-    $valid_forum_settings = array('allow_polls', 'allow_post_editing', 'allow_search_spidering', 
-                                  'closed_message', 'default_emoticons', 'default_language', 
-                                  'default_style', 'enable_wiki_integration', 'enable_wiki_quick_links', 
-                                  'forum_desc', 'forum_dl_saving', 'forum_email', 
-                                  'forum_keywords', 'forum_name', 'forum_timezone', 
-                                  'guest_account_enabled', 'guest_show_recent', 'maximum_post_length', 
-                                  'minimum_post_frequency', 'password_protected_message', 'poll_allow_guests', 
-                                  'post_edit_grace_period', 'post_edit_time', 'require_post_approval', 
-                                  'restricted_message', 'show_links', 'show_stats', 
+    $valid_forum_settings = array('allow_polls', 'allow_post_editing', 'allow_search_spidering',
+                                  'closed_message', 'default_emoticons', 'default_language',
+                                  'default_style', 'enable_wiki_integration', 'enable_wiki_quick_links',
+                                  'forum_desc', 'forum_dl_saving', 'forum_email',
+                                  'forum_keywords', 'forum_name', 'forum_timezone',
+                                  'guest_account_enabled', 'guest_show_recent', 'maximum_post_length',
+                                  'minimum_post_frequency', 'password_protected_message', 'poll_allow_guests',
+                                  'post_edit_grace_period', 'post_edit_time', 'require_post_approval',
+                                  'restricted_message', 'show_links', 'show_stats',
                                   'wiki_integration_uri');
 
     return in_array($setting_name, $valid_forum_settings);
@@ -646,17 +648,17 @@ function forum_check_setting_name($setting_name)
 
 function forum_check_global_setting_name($setting_name)
 {
-    $valid_global_forum_settings = array('active_sess_cutoff', 'allow_new_registrations', 'allow_search_spidering', 
-                                         'allow_username_changes', 'attachments_allow_embed', 'attachments_enabled', 
-                                         'attachments_max_user_space', 'attachment_allow_guests', 'attachment_dir', 
-                                         'attachment_use_old_method', 'forum_desc', 'forum_email', 
-                                         'forum_keywords', 'forum_name', 'forum_noreply_email', 
-                                         'forum_rules_enabled', 'forum_rules_message', 'guest_account_enabled', 
-                                         'guest_show_recent', 'messages_unread_cutoff', 'new_user_email_notify', 
-                                         'new_user_mark_as_of_int', 'new_user_pm_notify_email', 'pm_allow_attachments', 
-                                         'pm_auto_prune', 'pm_max_user_messages', 'require_email_confirmation', 
-                                         'require_unique_email', 'require_user_approval', 'search_min_frequency', 
-                                         'session_cutoff', 'showpopuponnewpm', 'show_pms', 
+    $valid_global_forum_settings = array('active_sess_cutoff', 'allow_new_registrations', 'allow_search_spidering',
+                                         'allow_username_changes', 'attachments_allow_embed', 'attachments_enabled',
+                                         'attachments_max_user_space', 'attachment_allow_guests', 'attachment_dir',
+                                         'attachment_use_old_method', 'forum_desc', 'forum_email',
+                                         'forum_keywords', 'forum_name', 'forum_noreply_email',
+                                         'forum_rules_enabled', 'forum_rules_message', 'guest_account_enabled',
+                                         'guest_show_recent', 'messages_unread_cutoff', 'new_user_email_notify',
+                                         'new_user_mark_as_of_int', 'new_user_pm_notify_email', 'pm_allow_attachments',
+                                         'pm_auto_prune', 'pm_max_user_messages', 'require_email_confirmation',
+                                         'require_unique_email', 'require_user_approval', 'search_min_frequency',
+                                         'session_cutoff', 'showpopuponnewpm', 'show_pms',
                                          'text_captcha_dir', 'text_captcha_enabled', 'text_captcha_key');
 
     return in_array($setting_name, $valid_global_forum_settings);
@@ -819,7 +821,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
     // Load the language
 
     $lang = load_language_file();
-    
+
     // Ensure the variables we've been given are valid
 
     if (!preg_match("/^[A-Z]{1}[A-Z0-9_]+$/", $webtag)) return false;
@@ -843,8 +845,8 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         if (!$result = @db_query($sql, $db_forum_create)) return false;
 
         if (db_num_rows($result) > 0) {
-        
-            $error_str = "<h2>{$lang['selectedwebtagisalreadyinuse']}</h2>\n";
+
+            $error_str = $lang['selectedwebtagisalreadyinuse'];
             return false;
         }
 
@@ -852,7 +854,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
 
         if ($conflicting_tables_array = install_get_table_conflicts($webtag, true, false)) {
 
-            $error_str = "<h2>{$lang['selecteddatabasecontainsconflictingtables']}</h2>\n";
+            $error_str = $lang['selecteddatabasecontainsconflictingtables'];
             $error_str.= sprintf("<p>%s</p>\n", implode(", ", $conflicting_tables_array));
 
             return false;
@@ -1583,7 +1585,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         if (!$result = @db_query($sql, $db_forum_create)) {
 
             forum_delete_tables($webtag, $database_name);
-            
+
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
                 db_trigger_error($sql, $db_forum_create);
             }
@@ -1753,7 +1755,7 @@ function forum_update($fid, $forum_name, $owner_uid, $access_level)
     if (!is_numeric($fid)) return false;
     if (!is_numeric($owner_uid)) return false;
     if (!is_numeric($access_level)) return false;
-    
+
     if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
 
         $db_forum_update = db_connect();
@@ -1968,7 +1970,7 @@ function forum_update_access($fid, $access)
 function forum_update_password($fid, $password)
 {
     $db_forum_update_password = db_connect();
-    
+
     if (!is_numeric($fid)) return false;
 
     if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
@@ -2115,7 +2117,7 @@ function forum_search($forum_search, $offset)
     $lang = load_language_file();
 
     // Array to hold our forums in.
-    
+
     $forums_array = array();
     $forums_count = 0;
 
@@ -2289,7 +2291,7 @@ function forum_search($forum_search, $offset)
                 }
 
                 $forums_array[] = $forum_data;
-            }        
+            }
 
         }else if ($forums_count > 0) {
 
@@ -2378,7 +2380,7 @@ function forum_update_last_visit($uid)
     if (!$table_data = get_table_prefix()) return false;
 
     $forum_fid = $table_data['FID'];
-    
+
     if ($uid > 0) {
 
         $sql = "SELECT LAST_VISIT FROM USER_FORUM WHERE UID = '$uid'";
@@ -2414,11 +2416,11 @@ function forums_get_available_dbs()
     if (db_num_rows($result) > 0) {
 
         $database_array = array();
-        
+
         while ($database = db_fetch_array($result)) {
 
             if (!stristr('information_schema', $database['Database'])) {
-            
+
                 $database_array[$database['Database']] = $database['Database'];
             }
         }

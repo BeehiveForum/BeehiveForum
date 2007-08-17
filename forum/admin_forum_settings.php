@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.121 2007-08-05 21:42:29 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.122 2007-08-17 22:50:20 decoyduck Exp $ */
 
 /**
 * Displays and handles the Forum Settings page
@@ -115,9 +115,9 @@ if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
     exit;
 }
 
-// Variable to hold our error messages.
+// Array to hold error messages.
 
-$error_html = "";
+$error_msg_array = array();
 
 // Get an array of available forum styles.
 
@@ -160,14 +160,14 @@ if (isset($_POST['changepermissions'])) {
     if (isset($_POST['forum_name']) && strlen(trim(_stripslashes($_POST['forum_name']))) > 0) {
         $new_forum_settings['forum_name'] = trim(_stripslashes($_POST['forum_name']));
     }else {
-        $error_html = "<h2>{$lang['mustsupplyforumname']}</h2>\n";
+        $error_msg_array[] = $lang['mustsupplyforumname'];
         $valid = false;
     }
 
     if (isset($_POST['forum_email']) && strlen(trim(_stripslashes($_POST['forum_email']))) > 0) {
         $new_forum_settings['forum_email'] = trim(_stripslashes($_POST['forum_email']));
     }else {
-        $error_html = "<h2>{$lang['mustsupplyforumemail']}</h2>\n";
+        $error_msg_array[] = $lang['mustsupplyforumemail'];
         $valid = false;
     }
 
@@ -189,7 +189,7 @@ if (isset($_POST['changepermissions'])) {
 
     }else {
 
-        $error_html = "<h2>{$lang['mustchoosedefaultstyle']}</h2>\n";
+        $error_msg_array[] = $lang['mustchoosedefaultstyle'];
         $valid = false;
     }
 
@@ -198,13 +198,13 @@ if (isset($_POST['changepermissions'])) {
         $new_forum_settings['default_emoticons'] = trim(_stripslashes($_POST['default_emoticons']));
 
         if (!emoticons_set_exists($new_forum_settings['default_emoticons'])) {
-            $error_html = "<h2>{$lang['unknownemoticonsname']}</h2>\n";
+            $error_msg_array[] = $lang['unknownemoticonsname'];
             $valid = false;
         }
 
     }else {
 
-        $error_html = "<h2>{$lang['mustchoosedefaultemoticons']}</h2>\n";
+        $error_msg_array[] = $lang['mustchoosedefaultemoticons'];
         $valid = false;
     }
 
@@ -214,7 +214,7 @@ if (isset($_POST['changepermissions'])) {
 
     }else {
 
-        $error_html = "<h2>{$lang['mustchoosedefaultlang']}</h2>\n";
+        $error_msg_array[] = $lang['mustchoosedefaultlang'];
         $valid = false;
     }
 
@@ -358,7 +358,7 @@ if (isset($_POST['changepermissions'])) {
         }else {
 
             $valid = false;
-            $error_html.= "<h2>{$lang['failedtoupdateforumsettings']}</h2>\n";
+            $error_msg_array[] = $lang['failedtoupdateforumsettings'];
         }
     }
 }
@@ -369,12 +369,13 @@ html_draw_top("emoticons.js", "htmltools.js");
 
 echo "<h1>{$lang['admin']} &raquo; {$lang['forumsettings']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), "</h1>\n";
 
-// Any error messages to display?
+if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-if (!empty($error_html)) {
-    echo $error_html;
+    html_display_error_array($error_msg_array, '550', 'center');
+
 }else if (isset($_GET['updated'])) {
-    echo "<h2>{$lang['forumsettingsupdated']}</h2>\n";
+
+    html_display_success_msg($lang['preferencesupdated'], '550', 'center');
 }
 
 echo "<br />\n";

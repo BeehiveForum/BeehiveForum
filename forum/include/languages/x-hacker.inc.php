@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.239 2007-08-16 21:24:06 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.240 2007-08-17 22:50:20 decoyduck Exp $ */
 
 // British English language file
 
@@ -404,10 +404,8 @@ $lang['word_filter_help_2'] = "<b>whol3 woRD</b> M4+cH3S @gain\$t WHol3 wOrd\$ 0
 $lang['word_filter_help_3'] = "<b>prE9</b> allOws j00 +o u\$3 P3rl REGUlar ExPre5510NS To M@+ch +eXt.";
 $lang['nameanddesc'] = "n4Me 4nD de5crip+1oN";
 $lang['movethreads'] = "m0vE tHr34DS";
-$lang['threadsmovedsuccessfully'] = "tHRe4Ds movEd SUCC35sPhulLy";
 $lang['movethreadstofolder'] = "m0V3 Thr34DS T0 f0LD3r";
 $lang['resetuserpermissions'] = "rE\$et uSEr PErm1S5i0N5";
-$lang['userpermissionsresetsuccessfully'] = "u53r PeRM1s510Ns re5Et SuCc3SsfUlly";
 $lang['allowfoldertocontain'] = "aLlOw pH0ld3R tO C0n+@IN";
 $lang['addnewfolder'] = "add NeW PH0ld3r";
 $lang['mustenterfoldername'] = "j00 MUs+ eNteR 4 F0lder n4m3";

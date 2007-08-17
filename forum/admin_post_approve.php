@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_post_approve.php,v 1.50 2007-05-31 21:59:14 decoyduck Exp $ */
+/* $Id: admin_post_approve.php,v 1.51 2007-08-17 22:50:20 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -100,6 +100,10 @@ if (!$webtag = get_webtag($webtag_search)) {
 
 $lang = load_language_file();
 
+// Array to hold error messages
+
+$error_msg_array = array();
+
 // Returning to the approval queue?
 
 if (isset($_POST['return_queue']) && $_POST['return_queue'] == 'Y') {
@@ -156,7 +160,7 @@ if (isset($_POST['cancel'])) {
         header_redirect("admin_post_approve.php?webtag=$webtag");
 
     }else {
-    
+
         $uri = "./discussion.php?webtag=$webtag&msg=$msg";
         header_redirect($uri);
     }
@@ -165,9 +169,9 @@ if (isset($_POST['cancel'])) {
 if (isset($msg) && validate_msg($msg)) {
 
     $valid = true;
-    
+
     list($tid, $pid) = explode('.', $msg);
-    
+
     if (!$t_fid = thread_get_folder($tid, $pid)) {
 
         html_draw_top();
@@ -240,14 +244,13 @@ if (isset($msg) && validate_msg($msg)) {
 
             }else {
 
-                $error_html = "<h2>{$lang['postapprovalfailed']}</h2>";
+                $error_msg_array[] = $lang['postapprovalfailed'];
             }
         }
 
         html_draw_top("post.js", "poll.js", "resize_width=720");
 
         echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['approvepost']}</h1>\n";
-        echo "<br />\n";
 
         if ($preview_message['TO_UID'] == 0) {
 
@@ -268,8 +271,11 @@ if (isset($msg) && validate_msg($msg)) {
 
         $show_sigs = (bh_session_get_value('VIEW_SIGS') == 'N') ? false : true;
 
-        if (isset($error_html)) echo $error_html;
+        if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+            html_display_error_array($error_msg_array, '720', 'left');
+        }
 
+        echo "<br />\n";
         echo "<form name=\"f_delete\" action=\"admin_post_approve.php\" method=\"post\" target=\"_self\">\n";
         echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
         echo "  ", form_input_hidden('msg', _htmlentities($msg)), "\n";
@@ -337,7 +343,7 @@ if (isset($msg) && validate_msg($msg)) {
     }
 
     html_draw_top();
-   
+
     echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['postapprovalqueue']}</h1>\n";
     echo "<br />\n";
     echo "<div align=\"center\">\n";

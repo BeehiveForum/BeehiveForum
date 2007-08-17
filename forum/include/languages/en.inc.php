@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.457 2007-08-16 21:24:06 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.458 2007-08-17 22:50:20 decoyduck Exp $ */
 
 // British English language file
 
@@ -429,19 +429,21 @@ $lang['word_filter_help_2'] = "<b>Whole Word</b> matches against whole words onl
 $lang['word_filter_help_3'] = "<b>PREG</b> allows you to use Perl Regular Expressions to match text.";
 $lang['nameanddesc'] = "Name and Description";
 $lang['movethreads'] = "Move Threads";
-$lang['threadsmovedsuccessfully'] = "Threads moved successfully";
 $lang['movethreadstofolder'] = "Move threads to folder";
 $lang['resetuserpermissions'] = "Reset user permissions";
-$lang['userpermissionsresetsuccessfully'] = "User permissions reset successfully";
+$lang['failedtoresetuserpermissions'] = "Failed to reset user permissions";
 $lang['allowfoldertocontain'] = "Allow folder to contain";
 $lang['addnewfolder'] = "Add New Folder";
 $lang['mustenterfoldername'] = "You must enter a folder name";
 $lang['nofolderidspecified'] = "No Folder ID specified";
 $lang['invalidfolderid'] = "Invalid Folder ID. Check that a folder with this ID exists!";
-$lang['successfullyaddedfolder'] = "Successfully Added Folder";
-$lang['successfullydeletedfolder'] = "Successfully Deleted Folder";
+$lang['successfullyaddednewfolder'] = "Successfully added new folder";
+$lang['successfullyremovedselectedfolders'] = "Successfully removed selected folders";
+$lang['successfullyeditedfolder'] = "Successfully edited folder";
+$lang['failedtocreatenewfolder'] = "Failed to create new folder";
 $lang['failedtodeletefolder'] = "Failed to delete folder.";
 $lang['folderupdatedsuccessfully'] = "Folder updated successfully";
+$lang['failedtoupdatefolder'] = "Failed to update folder";
 $lang['cannotdeletefolderwiththreads'] = "Cannot delete folders that still contain threads.";
 $lang['forumisnotrestricted'] = "Forum is not restricted";
 $lang['groups'] = "Groups";
@@ -501,13 +503,13 @@ $lang['editlink'] = "Edit link";
 $lang['addnewforumlink'] = "Add new forum link";
 $lang['forumlinktitle'] = "Forum Link Title";
 $lang['forumlinklocation'] = "Forum Link Location";
-$lang['successfullyaddedlink'] = "Successfully added link: '%s'";
-$lang['successfullyeditedlink'] = "Successfully edited link: '%s'";
+$lang['successfullyaddednewforumlink'] = "Successfully added new forum link";
+$lang['successfullyeditedforumlink'] = "Successfully edited forum link";
 $lang['invalidlinkidorlinknotfound'] = "Invalid link id or link not found";
-$lang['successfullyremovedselectedlinks'] = "Successfully removed selected links";
-$lang['failedtoremovelinks'] = "Failed to remove selected links";
-$lang['failedtoaddnewlink'] = "Failed to add new link: '%s'";
-$lang['failedtoupdatelink'] = "Failed to update link: '%s'";
+$lang['successfullyremovedselectedforumlinks'] = "Successfully removed selected links";
+$lang['failedtoremoveforumlinks'] = "Failed to remove selected forum links";
+$lang['failedtoaddnewforumlink'] = "Failed to add new forum link";
+$lang['failedtoupdateforumlink'] = "Failed to update forum link";
 $lang['toplinkcaption'] = "Top link caption";
 $lang['allowguestaccess'] = "Allow Guest Access";
 $lang['searchenginespidering'] = "Search Engine Spidering";
@@ -528,6 +530,7 @@ $lang['sendemailnotificationonreply'] = "Email notification on reply to user";
 $lang['sendemailnotificationonpm'] = "Email notification on PM to user";
 $lang['showpopuponnewpm'] = "Show popup when receiving new PM";
 $lang['setautomatichighinterestonpost'] = "Set automatic high interest on post";
+$lang['postingstats'] = "Posting Stats";
 $lang['postingstatsforperiod'] = "Posting Stats For Period %s to %s";
 $lang['nodata'] = "No data";
 $lang['totalposts'] = "Total posts";
@@ -687,15 +690,14 @@ $lang['noexistingforums'] = "No existing forums found. To create a new forum ple
 $lang['webtaginvalidchars'] = "Webtag can only contain uppercase A-Z, 0-9 and underscore characters";
 $lang['databasenameinvalidchars'] = "Database name can only contain a-z, A-Z, 0-9 and underscore characters";
 $lang['invalidforumidorforumnotfound'] = "Invalid forum FID for forum not found";
-$lang['successfullyupdatedforum'] = "Successfully updated forum: '%s'";
+$lang['successfullyupdatedforum'] = "Successfully updated forum";
 $lang['failedtoupdateforum'] = "Failed to update forum: '%s'";
-$lang['successfullycreatedforum'] = "Successfully created forum: '%s'";
-$lang['failedtocreateforum'] = "Failed to create forum '%s'";
+$lang['successfullycreatednewforum'] = "Successfully created new forum";
 $lang['selectedwebtagisalreadyinuse'] = "The selected webtag is already in use. Please choose another.";
 $lang['selecteddatabasecontainsconflictingtables'] = "The selected database contains conflicting tables. Conflicting table names are:";
 $lang['forumdeleteconfirmation'] = "Are you sure you want to delete all of the selected forums?";
 $lang['forumdeletewarning'] = "Please note that you cannot recover deleted forums. Once deleted a forum and all of it's associated data is permenantly removed from the database. If you do not wish to delete the selected forums please click cancel.";
-$lang['successfullydeletedforum'] = "Successfully deleted forum: '%s'";
+$lang['successfullyremovedselectedforums'] = "Successfully deleted selected forums";
 $lang['failedtodeleteforum'] = "Failed to deleted forum: '%s'";
 $lang['addforum'] = "Add Forum";
 $lang['editforum'] = "Edit Forum";

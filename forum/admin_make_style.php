@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.108 2007-05-31 21:59:14 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.109 2007-08-17 22:50:20 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -99,6 +99,10 @@ if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
     exit;
 }
 
+// Array to hold error messages
+
+$error_msg_array = array();
+
 // Save the style
 
 if (isset($_POST['submit'])) {
@@ -109,13 +113,15 @@ if (isset($_POST['submit'])) {
         $stylename = trim(_stripslashes($_POST['stylename']));
     }else {
         $valid = false;
-        $result_html = "<h2>{$lang['stylenofilename']}</h2>\n";
+        $error_msg_array[] = $lang['stylenofilename'];
     }
 
     if (isset($_POST['styledesc']) && strlen(trim(_stripslashes($_POST['styledesc']))) > 0) {
         $styledesc = trim(_stripslashes($_POST['styledesc']));
-    }else {
+    }else if (isset($stylename)) {
         $styledesc = $stylename;
+    }else {
+        $valid = false;
     }
 
     if (isset($_POST['stylesheet']) && strlen(trim(_stripslashes($_POST['stylesheet']))) > 0) {
@@ -137,13 +143,13 @@ if (isset($_POST['submit'])) {
         }else {
 
             $valid = false;
-            $result_html = "<h2>{$lang['failedtoopenmasterstylesheet']}</h2>\n";
+            $error_msg_array[] = $lang['failedtoopenmasterstylesheet'];
         }
 
     }else {
 
         $valid = false;
-        $result_html = "<h2>{$lang['stylenodatasubmitted']}</h2>\n";
+        $error_msg_array[] = $lang['stylenodatasubmitted'];
     }
 
     if ($valid) {
@@ -153,7 +159,7 @@ if (isset($_POST['submit'])) {
             if ($error_code == STYLE_ALREADY_EXISTS) {
 
                 $valid = false;
-                $result_html = "<h2>{$lang['stylealreadyexists']}</h2>\n";
+                $error_msg_array[] = $lang['stylealreadyexists'];
 
             }else {
 
@@ -208,7 +214,8 @@ if (isset($_POST['submit'])) {
 
         }else {
 
-            $result_html = sprintf("<h2>{$lang['newstylesuccessfullycreated']}</h2>\n", $stylename);
+            header_redirect("admin_make_style.php?webtag=$webtag&saved=true");
+            exit;
         }
     }
 
@@ -234,9 +241,15 @@ if (isset($_POST['submit'])) {
 html_draw_top();
 
 echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['createforumstyle']}</h1>\n";
+echo "<p>{$lang['styleexp']}</p>\n";
 
-if (isset($result_html) && strlen($result_html) > 0) {
-    echo $result_html;
+if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+
+    html_display_error_array($error_msg_array, '70%', 'center');
+
+}else if (isset($_GET['saved'])) {
+
+    html_display_success_msg($lang['newstylesuccessfullycreated'], '70%', 'center');
 }
 
 // Check to see if any of the required variables were passed via the URL Query or POST_VARS
@@ -276,8 +289,7 @@ list ($r, $g, $b) = hexToDec($colour);
 
 $steps = sizeof($elements);
 
-
-echo "<p>{$lang['styleexp']}</p>\n";
+echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "  <table width=\"70%\" class=\"box\">\n";
 echo "    <tr>\n";

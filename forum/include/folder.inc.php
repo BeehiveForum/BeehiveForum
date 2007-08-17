@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.132 2007-08-01 20:23:02 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.133 2007-08-17 22:50:20 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -72,7 +72,7 @@ function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $al
                 }
 
             }else {
-            
+
                 if (bh_session_check_perm($access_allowed, $folder_order['FID'])) {
 
                     $available_folders[$folder_order['FID']] = $folder_order['TITLE'];
@@ -200,7 +200,7 @@ function folder_create($title, $description = "", $prefix = "", $allowed_types =
 
     if (!$result = db_query($sql, $db_folder_create)) return false;
 
-    return true;
+    return $new_fid;
 }
 
 function folder_delete($fid)
@@ -427,7 +427,7 @@ function folder_get_all_by_page($offset)
         }
 
         folders_get_thread_counts($folder_array, $fid_array);
-    
+
     }else if ($folder_count > 0) {
 
         $offset = floor(($folder_count - 1) / 10) * 10;
@@ -499,13 +499,13 @@ function folder_get($fid)
     if (!$result = db_query($sql, $db_folder_get)) return false;
 
     if (db_num_rows($result) > 0) {
-        
+
         $folder_array = db_fetch_array($result);
         $folder_array['THREAD_COUNT'] = folder_get_thread_count($fid);
 
         return $folder_array;
     }
-    
+
     return false;
 }
 
@@ -652,7 +652,7 @@ function folder_move_up($fid)
     if (($folder_order_key = array_search($fid, $folder_order)) !== false) {
 
         // Move the folder above to the same location as our selected folder.
-        
+
         $folder_order_key--;
         if ($folder_order_key < 0) $folder_order_key = 0;
 
@@ -705,10 +705,10 @@ function folder_move_down($fid)
 
         if ($folder_order_key > sizeof($folder_order)) {
             $folder_order_key = sizeof($folder_order);
-        }        
+        }
 
         $new_position = $folder_position[$fid];
-        
+
         $sql = "UPDATE {$table_data['PREFIX']}FOLDER SET POSITION = '$new_position' ";
         $sql.= "WHERE FID = '{$folder_order[$folder_order_key]}'";
 
@@ -745,13 +745,13 @@ function folder_positions_update()
         if (isset($fid) && is_numeric($fid)) {
 
             $new_position++;
-        
+
             $sql = "UPDATE {$table_data['PREFIX']}FOLDER ";
             $sql.= "SET POSITION = '$new_position' WHERE FID = '$fid'";
 
             if (!$result_update = db_query($sql, $db_folder_positions_update)) return false;
         }
     }
-}    
+}
 
 ?>

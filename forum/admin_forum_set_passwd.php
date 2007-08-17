@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_set_passwd.php,v 1.24 2007-05-31 21:59:14 decoyduck Exp $ */
+/* $Id: admin_forum_set_passwd.php,v 1.25 2007-08-17 22:50:20 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -109,6 +109,10 @@ if (isset($_POST['ret']) && strlen(trim(_stripslashes($_POST['ret']))) > 0) {
     $ret = "admin_forums.php?webtag=$webtag";
 }
 
+// Array to hold error messages
+
+$error_msg_array = array();
+
 // validate the return to page
 
 if (isset($ret) && strlen(trim($ret)) > 0) {
@@ -144,13 +148,11 @@ if (!$fid = forum_get_setting('fid')) {
 if (isset($_POST['submit'])) {
 
     $valid = true;
-    $error_html = "";
-    $success_html = "";
 
     if (isset($_POST['pw']) && strlen(trim(_stripslashes($_POST['pw']))) > 0) {
         $t_password = trim(_stripslashes($_POST['pw']));
     }else {
-        $error_html.= "<h2>{$lang['passwdrequired']}</h2>\n";
+        $error_msg_array[] = $lang['passwdrequired'];
         $valid = false;
     }
 
@@ -164,25 +166,25 @@ if (isset($_POST['submit'])) {
 
         if ($t_password != $t_check_password) {
 
-            $error_html.= "<h2>{$lang['passwdsdonotmatch']}</h2>\n";
+            $error_msg_array[] = $lang['passwdsdonotmatch'];
             $valid = false;
         }
 
         if (_htmlentities($t_password) != $t_password) {
 
-            $error_html.= "<h2>{$lang['passwdmustnotcontainHTML']}</h2>\n";
+            $error_msg_array[] = $lang['passwdmustnotcontainHTML'];
             $valid = false;
         }
 
         if (!preg_match("/^[a-z0-9_-]+$/i", $t_password)) {
 
-            $error_html.= "<h2>{$lang['passwordinvalidchars']}</h2>\n";
+            $error_msg_array[] = $lang['passwordinvalidchars'];
             $valid = false;
         }
 
         if (strlen($t_password) < 6) {
 
-            $error_html.= "<h2>{$lang['passwdtooshort']}</h2>\n";
+            $error_msg_array[] = $lang['passwdtooshort'];
             $valid = false;
         }
 
@@ -190,7 +192,8 @@ if (isset($_POST['submit'])) {
 
             if (forum_update_password($fid, $t_password)) {
 
-                $success_html.= "<h2>{$lang['passwdchanged']}</h2>\n";
+                header_redirect("admin_forum_set_passwd.php?webtag=$webtag&ret=$ret&updated=true");
+                exit;
             }
         }
     }
@@ -200,12 +203,13 @@ html_draw_top();
 
 echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['changepassword']}</h1>\n";
 
-if (isset($error_html) && strlen(trim($error_html)) > 0) {
-    echo $error_html;
-}
+if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-if (isset($success_html) && strlen(trim($success_html)) > 0) {
-    echo $success_html;
+    html_display_error_array($error_msg_array, '450', 'center');
+
+}else if (isset($_GET['updated'])) {
+
+    html_display_success_msg($lang['passwdchanged'], '450', 'center');
 }
 
 echo "<br />\n";

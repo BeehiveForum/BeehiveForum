@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_edit.php,v 1.58 2007-05-31 21:59:13 decoyduck Exp $ */
+/* $Id: admin_folder_edit.php,v 1.59 2007-08-17 22:50:20 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -108,8 +108,10 @@ if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
     exit;
 }
 
-if (isset($_POST['back'])) {
+if (isset($_POST['cancel'])) {
+
     header_redirect("./admin_folders.php?webtag=$webtag&page=$page");
+    exit;
 }
 
 if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
@@ -140,12 +142,10 @@ if (isset($_POST['submit'])) {
 
     $valid = true;
 
-    $status_html = "";
-
     if (isset($_POST['name']) && strlen(trim(_stripslashes($_POST['name']))) > 0) {
         $folder_data['TITLE'] = trim(_stripslashes($_POST['name']));
     }else {
-        $status_html = "<h2>{$lang['mustenterfoldername']}</h2>\n";
+        $error_msg_array[] = $lang['mustenterfoldername'];
         $valid = false;
     }
 
@@ -218,34 +218,49 @@ if (isset($_POST['submit'])) {
 
         if (folder_update($fid, $folder_data)) {
 
-            $status_html = "<h2>{$lang['folderupdatedsuccessfully']}</h2>\n";
-        }
+            admin_add_log_entry(EDIT_THREAD_OPTIONS, $folder_data);
 
-        admin_add_log_entry(EDIT_THREAD_OPTIONS, $folder_data);
+            if (isset($_POST['move_confirm']) && $_POST['move_confirm'] == "Y") {
 
-        if (isset($_POST['move']) && is_numeric($_POST['move'])
-            && isset($_POST['move_confirm']) && $_POST['move_confirm'] == "Y") {
+                if (isset($_POST['fid_move']) && is_numeric($_POST['fid_move'])) {
 
-            if ($fid != $_POST['move']) {
+                    $fid_move = $_POST['fid_move'];
 
-                if (folder_move_threads($fid, $_POST['move'])) {
+                    if ($fid != $fid_move) {
 
-                    $status_html.= "<h2>{$lang['threadsmovedsuccessfully']}</h2>\n";
+                        if (folder_move_threads($fid, $_POST['fid_move'])) {
+
+                            $new_folder_title = folder_get_title($fid_move);
+                            admin_add_log_entry(MOVED_THREADS, array($folder_data['TITLE'], $new_folder_title));
+
+                        }else {
+
+                            $error_msg_array[] = $lang['failedtomovethreads'];
+                            $valid = false;
+                        }
+                    }
                 }
-
-                $new_folder_title = folder_get_title($_POST['move']);
-
-                admin_add_log_entry(MOVED_THREADS, array($folder_data['TITLE'], $new_folder_title));
             }
+
+            if (isset($_POST['t_reset_user_perms']) && $_POST['t_reset_user_perms'] == "Y" && isset($_POST['t_reset_user_perms_con']) && $_POST['t_reset_user_perms_con'] == "Y") {
+
+                if (!perm_folder_reset_user_permissions($fid)) {
+
+                    $error_msg_array[] = $lang['failedtoresetuserpermissions'];
+                    $valid = false;
+                }
+            }
+
+        }else {
+
+            $error_msg_array[] = $lang['failedtoupdatefolder'];
+            $valid = false;
         }
 
-        if (isset($_POST['t_reset_user_perms']) && $_POST['t_reset_user_perms'] == "Y"
-            && isset($_POST['t_reset_user_perms_con']) && $_POST['t_reset_user_perms_con'] == "Y") {
+        if ($valid) {
 
-            if (perm_folder_reset_user_permissions($fid)) {
-
-                $status_html.= "<h2>{$lang['userpermissionsresetsuccessfully']}</h2>\n";
-            }
+            header_redirect("admin_folders.php?webtag=$webtag&edited=true&page=$page");
+            exit;
         }
     }
 }
@@ -259,18 +274,19 @@ if (isset($_POST['delete'])) {
         if (folder_delete($fid)) {
 
             admin_add_log_entry(DELETE_FOLDER, $folder_data['TITLE']);
-
-            $del_success = rawurlencode($folder_data['TITLE']);
-            header_redirect("./admin_folders.php?webtag=$webtag&del_success=$del_success&page=$page");
+            header_redirect("./admin_folders.php?webtag=$webtag&deleted=true&page=$page");
+            exit;
 
         }else {
 
-            $status_html = "<h2>{$lang['failedtodeletefolder']}</h2>\n";
+            $error_msg_array[] = $lang['failedtodeletefolder'];
+            $valid = false;
         }
 
     }else {
 
-        $status_html = "<h2>{$lang['cannotdeletefolderwiththreads']}</h2>\n";
+        $error_msg_array[] = $lang['cannotdeletefolderwiththreads'];
+        $valid = false;
     }
 }
 
@@ -284,8 +300,8 @@ html_draw_top();
 
 echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['managefolders']} &raquo; {$folder_data['TITLE']}</h1>\n";
 
-if (isset($status_html) && strlen($status_html) > 0) {
-    echo $status_html;
+if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+    html_display_error_array($error_msg_array, '500', 'center');
 }
 
 echo "<br />\n";
@@ -333,7 +349,7 @@ echo "          </tr>\n";
 echo "        </table>\n";
 echo "        <br />\n";
 
-if ($folder_dropdown = folder_draw_dropdown_all($folder_data['FID'], "move", "", "", "post_folder_dropdown")) {
+if ($folder_dropdown = folder_draw_dropdown_all($folder_data['FID'], 'fid_move', "", "", "post_folder_dropdown")) {
 
     echo "        <table class=\"box\" width=\"100%\">\n";
     echo "          <tr>\n";
@@ -471,7 +487,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("submit", $lang['save']), " &nbsp;", form_submit("delete", $lang['delete']), "&nbsp;", form_submit("back", $lang['back']), "</td>\n";
+echo "      <td align=\"center\">", form_submit("submit", $lang['save']), " &nbsp;", form_submit("delete", $lang['delete']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "  </form>\n";

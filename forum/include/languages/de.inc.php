@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.38 2007-08-16 21:24:06 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.39 2007-08-17 22:50:20 decoyduck Exp $ */
 
 // German language file
 
@@ -401,10 +401,8 @@ $lang['word_filter_help_2'] = "<b>Ganzes Wort</b> gefundene Texte werden nur so 
 $lang['word_filter_help_3'] = "<b>PREG</b> Erlaubt Dir Perl-Regulaere Erweiterungen zu nutzen m Texte zu finden.";
 $lang['nameanddesc'] = "Name und Beschreibung";
 $lang['movethreads'] = "Verschiebe Eintraege";
-$lang['threadsmovedsuccessfully'] = "Eintraege erfolgreich verschoben";
 $lang['movethreadstofolder'] = "Verschiebe Eintraege in Ordner";
 $lang['resetuserpermissions'] = "Benutzerrechte zuruecksetzen";
-$lang['userpermissionsresetsuccessfully'] = "Benutzerrechte erfolgreich zurueckgesetzt";
 $lang['allowfoldertocontain'] = "Erlaubter Ordnerinhalt";
 $lang['addnewfolder'] = "Neuen Ordner hinzufuegen";
 $lang['mustenterfoldername'] = "Du musst einen Ordnernamen eingeben";
@@ -470,13 +468,13 @@ $lang['editlink'] = "Edit link";
 $lang['addnewforumlink'] = "Add new forum link";
 $lang['forumlinktitle'] = "Forum Link Title";
 $lang['forumlinklocation'] = "Forum Link Location";
-$lang['successfullyaddedlink'] = "Successfully added link: '%s'";
-$lang['successfullyeditedlink'] = "Successfully edited link: '%s'";
+$lang['successfullyaddednewforumlink'] = "Successfully added new forum link";
+$lang['successfullyeditedlink'] = "Successfully edited forum link";
 $lang['invalidlinkidorlinknotfound'] = "Invalid link id or link not found";
 $lang['successfullyremovedselectedlinks'] = "Successfully removed selected links";
 $lang['failedtoremovelinks'] = "Failed to remove selected links";
-$lang['failedtoaddnewlink'] = "Failed to add new link: '%s'";
-$lang['failedtoupdatelink'] = "Failed to update link: '%s'";
+$lang['failedtoaddnewlink'] = "Failed to add new link";
+$lang['failedtoupdatelink'] = "Failed to update link";
 $lang['toplinkcaption'] = "Top link caption";
 $lang['allowguestaccess'] = "Erlaube Gast-Zugriff";
 $lang['searchenginespidering'] = "Suche ueber Engine Spider-ing";
@@ -650,18 +648,20 @@ $lang['noexistingforums'] = "No existing forums found. To create a new forum ple
 $lang['webtaginvalidchars'] = "Webtag akzeptiert nur grossgeschriebene A-Z und 0-9, _ - Zeichen";
 $lang['databasenameinvalidchars'] = "Database name can only contain a-z, A-Z, 0-9 and underscore characters";
 $lang['invalidforumidorforumnotfound'] = "Invalid forum FID for forum not found";
-$lang['successfullyupdatedforum'] = "Successfully updated forum: '%s'";
+$lang['successfullyupdatedforum'] = "Successfully updated forum";
 $lang['failedtoupdateforum'] = "Failed to update forum: '%s'";
-$lang['successfullycreatedforum'] = "Forum erfolgreich erstellt";
-$lang['failedtocreateforum'] = "Failed to create forum '%s'. Please check to make sure the webtag and table names aren't already in use.";
+$lang['successfullycreatednewforum'] = "Forum erfolgreich erstellt";
+$lang['selectedwebtagisalreadyinuse'] = "The selected webtag is already in use. Please choose another.";
+$lang['selecteddatabasecontainsconflictingtables'] = "The selected database contains conflicting tables. Conflicting table names are:";
 $lang['forumdeleteconfirmation'] = "Are you sure you want to delete all of the selected forums?";
 $lang['forumdeletewarning'] = "Bist Du sicher dass das ausgewaehlte Forum geloescht werden soll? Sobald es geloescht ist ist es nicht mehr wiederherstellbar.";
-$lang['successfullydeletedforum'] = "Successfully deleted forum: '%s'";
+$lang['successfullyremovedselectedforums'] = "Successfully deleted selected forums";
 $lang['failedtodeleteforum'] = "Failed to deleted forum: '%s'";
 $lang['addforum'] = "Add Forum";
 $lang['editforum'] = "Edit Forum";
 $lang['visitforum'] = "Visit Forum: %s";
 $lang['accesslevel'] = "Access level";
+$lang['forumleader'] = "Forum Leader";
 $lang['usedatabase'] = "Use Database";
 $lang['unknownmessagecount'] = "Unknown";
 $lang['forumwebtag'] = "Forum Webtag";

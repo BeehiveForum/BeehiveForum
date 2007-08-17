@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folders.php,v 1.131 2007-07-10 15:50:35 decoyduck Exp $ */
+/* $Id: admin_folders.php,v 1.132 2007-08-17 22:50:20 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -112,78 +112,104 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
 $start = floor($page - 1) * 10;
 if ($start < 0) $start = 0;
 
-$error_html = "";
+// Array to hold error messages
+
+$error_msg_array = array();
+
+// Delete folders.
 
 if (isset($_POST['delete'])) {
+
+    $valid = true;
 
     if (isset($_POST['t_delete']) && is_array($_POST['t_delete'])) {
 
         foreach($_POST['t_delete'] as $fid => $delete_folder) {
-    
-            if (($delete_folder == "Y") && ($folder_data = folder_get($fid))) {
+
+            if ($valid && $delete_folder == "Y" && $folder_data = folder_get($fid)) {
 
                 if ($folder_data['THREAD_COUNT'] < 1) {
-                
+
                     if (folder_delete($fid)) {
 
                         admin_add_log_entry(DELETE_FOLDER, $folder_data['TITLE']);
-                        $del_success = "<h2>{$lang['successfullydeletedfolder']}</h2>\n";
 
                     }else {
-                    
-                        $error_html.= "<h2>{$lang['failedtodeletefolder']}</h2>\n";
+
+                        $error_msg_array[] = $lang['failedtodeletefolder'];
+                        $valid = false;
                     }
-                
+
                 }else {
 
-                    $error_html = "<h2>{$lang['cannotdeletefolderwiththreads']}</h2>\n";
-                }                
+                    $error_msg_array[] = $lang['cannotdeletefolderwiththreads'];
+                    $valid = false;
+                }
             }
+        }
+
+        if ($valid) {
+
+            header_redirect("admin_folders.php?webtag=$webtag&page=$page&deleted=true");
+            exit;
         }
     }
 
 }
 
 if (isset($_POST['addnew'])) {
+
     header_redirect("./admin_folder_add.php?webtag=$webtag&page=$page");
+    exit;
 }
 
 if (isset($_POST['move_up']) && is_array($_POST['move_up'])) {
 
     list($fid) = array_keys($_POST['move_up']);
-    
+
     if (folder_move_up($fid)) {
+
         header_redirect("admin_folders.php?webtag=$webtag&page=$page");
+        exit;
     }
 }
 
 if (isset($_POST['move_down']) && is_array($_POST['move_down'])) {
 
     list($fid) = array_keys($_POST['move_down']);
-    
+
     if (folder_move_down($fid)) {
+
         header_redirect("admin_folders.php?webtag=$webtag&page=$page");
+        exit;
     }
 }
 
 if (isset($_POST['move_up_disabled']) || isset($_POST['move_down_disabled'])) {
+
     header_redirect("admin_folders.php?webtag=$webtag&page=$page");
+    exit;
 }
 
 html_draw_top();
 
 echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['managefolders']}</h1>\n";
 
-if (isset($_GET['add_success']) && strlen(trim(_stripslashes($_GET['add_success']))) > 0) {
-    echo "<h2>{$lang['successfullyaddedfolder']}: ", trim(_stripslashes($_GET['add_success'])), "</h2>\n";
-}
+if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-if (isset($_GET['del_success']) && strlen(trim(_stripslashes($_GET['del_success']))) > 0) {
-    echo "<h2>{$lang['successfullydeletedfolder']}: ", trim(_stripslashes($_GET['del_success'])), "</h2>\n";
-}
+    html_display_error_array($error_msg_array, '500', 'center');
 
-if (isset($error_html) && strlen($error_html) > 0) {
-    echo $error_html;
+}else if (isset($_GET['added'])) {
+
+    html_display_success_msg($lang['successfullyaddednewfolder'], '500', 'center');
+
+}else if (isset($_GET['edited'])) {
+
+    html_display_success_msg($lang['successfullyeditedfolder'], '500', 'center');
+
+}else if (isset($_GET['deleted'])) {
+
+    html_display_success_msg($lang['successfullyremovedselectedfolders'], '500', 'center');
 }
 
 echo "<br />\n";

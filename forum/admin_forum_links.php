@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_links.php,v 1.45 2007-06-23 16:31:19 decoyduck Exp $ */
+/* $Id: admin_forum_links.php,v 1.46 2007-08-17 22:50:20 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -94,6 +94,8 @@ if (!$webtag = get_webtag($webtag_search)) {
 
 $lang = load_language_file();
 
+// Check user has access to this script
+
 if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
     html_draw_top();
@@ -101,6 +103,8 @@ if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
     html_draw_bottom();
     exit;
 }
+
+// Get page number and offset for SQL queries.
 
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
     $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
@@ -113,45 +117,55 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
 $start = floor($page - 1) * 10;
 if ($start < 0) $start = 0;
 
-$error_html = "";
-$add_success = "";
-$del_success = "";
-$edit_success = "";
+// Array to hold error messages
 
-if (isset($_POST['cancel']) || isset($_POST['delete'])) {
+$error_msg_array = array();
 
-    unset($_POST['addlink'], $_POST['lid'], $_GET['lid']);
+// Cancel was clicked
+
+if (isset($_POST['cancel'])) {
+
+    header_redirect("admin_forum_links.php?webtag=$webtag&page=$page");
+    exit;
 }
 
 if (isset($_POST['delete'])) {
 
+    $valid = true;
+
     if (isset($_POST['t_delete']) && is_array($_POST['t_delete'])) {
 
         foreach($_POST['t_delete'] as $lid => $delete_link) {
-    
-            if (($delete_link == "Y") && ($forum_link = forum_links_get_link($lid))) {
+
+            if ($valid && $delete_link == "Y" && $forum_link = forum_links_get_link($lid)) {
 
                 if (forum_links_delete($lid)) {
 
                     admin_add_log_entry(DELETE_FORUM_LINKS, $forum_link['TITLE']);
-                    $del_success = "<h2>{$lang['successfullyremovedselectedlinks']}</h2>\n";
 
                 }else {
-                    
-                    $error_html.= "<h2>{$lang['failedtoremovelinks']}</h2>\n";
-                }               
+
+                    $error_msg_array[] = $lang['failedtoremovelinks'];
+                    $valid = false;
+                }
             }
+        }
+
+        if ($valid) {
+
+            header_redirect("admin_forum_links.php?webtag=$webtag&page=$page&deleted=true");
+            exit;
         }
     }
 
 }elseif (isset($_POST['toplinksubmit'])) {
-    
+
     $valid = true;
 
     if (isset($_POST['t_top_link_title']) && strlen(trim(_stripslashes($_POST['t_top_link_title']))) > 0) {
         $t_top_link_title = trim(_stripslashes($_POST['t_top_link_title']));
     }else {
-        $error_html.= "<h2>{$lang['notoplevellinktitlespecified']}</h2>\n";
+        $error_msg_array[] = $lang['notoplevellinktitlespecified'];
         $valid = false;
     }
 
@@ -168,13 +182,12 @@ if (isset($_POST['delete'])) {
         if (forum_save_settings($new_forum_settings)) {
 
             admin_add_log_entry(EDIT_TOP_LINK_CAPTION, array($t_top_link_title, $t_old_top_link_title));
-            $add_success = "<h2>{$lang['toplinktitlesuccessfullyupdated']}</h2>\n";
-            unset($_POST['toplinksubmit'], $t_top_link_title, $t_old_top_link_title, $new_forum_settings);
-        
+            header_redirect("admin_forum_links.php?webtag=$webtag&page=$page&updated=true");
+
         }else {
 
+            $error_msg_array[] = $lang['failedtoupdateforumsettings'];
             $valid = false;
-            $error_html.= "<h2>{$lang['failedtoupdateforumsettings']}</h2>\n";
         }
     }
 
@@ -186,7 +199,7 @@ if (isset($_POST['delete'])) {
         $t_title = trim(_stripslashes($_POST['t_title']));
     }else {
         $valid = false;
-        $error_html.= "<h2>{$lang['youmustenteralinktitle']}</h2>\n";
+        $error_msg_array[] = $lang['youmustenteralinktitle'];
     }
 
     if (isset($_POST['t_uri']) && strlen(trim(_stripslashes($_POST['t_uri']))) > 0) {
@@ -195,7 +208,7 @@ if (isset($_POST['delete'])) {
 
         if (preg_match("/^[a-z0-9]+:\/\//i", $t_uri) < 1) {
 
-            $error_html.= "<h2>{$lang['alllinkurismuststartwithaschema']}</h2>\n";
+            $error_msg_array[] = $lang['alllinkurismuststartwithaschema'];
             $valid = false;
         }
 
@@ -209,28 +222,28 @@ if (isset($_POST['delete'])) {
         if ($t_new_lid = forum_links_add_link($t_title, $t_uri)) {
 
             admin_add_log_entry(ADD_FORUM_LINKS, array($t_new_lid, $t_title));
-            $add_success = sprintf("<h2>{$lang['successfullyaddedlink']}</h2>\n", $t_title);
-            unset($t_title, $t_uri, $_POST['addlink']);
-        
+            header_redirect("admin_forum_links.php?webtag=$webtag&page=$page&added=true");
+
         }else {
 
-            $error_html.= sprintf("<h2>{$lang['failedtoaddnewlink']}</h2>\n", $t_title);
+            $error_msg_array[] = sprintf($lang['failedtoaddnewlink'], $t_title);
+            $valid = false;
         }
     }
 
 }elseif (isset($_POST['updatelinksubmit'])) {
 
     $valid = true;
-    
+
     if (isset($_POST['lid']) && is_numeric($_POST['lid'])) {
 
         $lid = $_POST['lid'];
-        
+
         if (isset($_POST['t_title']) && strlen(trim(_stripslashes($_POST['t_title']))) > 0) {
             $t_title = trim(_stripslashes($_POST['t_title']));
         }else {
             $valid = false;
-            $error_html.= "<h2>{$lang['youmustenteralinktitle']}</h2>\n";
+            $error_msg_array[] = $lang['youmustenteralinktitle'];
         }
 
         if (isset($_POST['t_uri']) && strlen(trim(_stripslashes($_POST['t_uri']))) > 0) {
@@ -239,7 +252,7 @@ if (isset($_POST['delete'])) {
 
             if (preg_match("/^[a-z0-9]+:\/\//i", $t_uri) < 1) {
 
-                $error_html.= "<h2>{$lang['alllinkurismuststartwithaschema']}</h2>\n";
+                $error_msg_array[] = $lang['alllinkurismuststartwithaschema'];
                 $valid = false;
             }
 
@@ -265,20 +278,19 @@ if (isset($_POST['delete'])) {
             if (forum_links_update_link($lid, $t_title, $t_uri)) {
 
                 admin_add_log_entry(EDIT_FORUM_LINKS, array($lid, $t_title));
-                $edit_success = sprintf("<h2>{$lang['successfullyeditedlink']}</h2>\n", $t_title);
-                unset($lid, $t_title, $t_uri, $_POST['lid'], $_GET['lid']);
-            
+                header_redirect("admin_forum_links.php?webtag=$webtag&page=$page&edited=true");
+
             }else {
 
-                $error_html.= sprintf("<h2>{$lang['failedtoupdatelink']}</h2>\n", $t_title);
+                $error_msg_array[] = sprintf($lang['failedtoupdatelink'], $t_title);
+                $valid = false;
             }
         }
     }
 
 }elseif (isset($_POST['addlink'])) {
 
-    $redirect = "./admin_forum_links.php?webtag=$webtag&page=$page&addlink=true";
-    header_redirect($redirect);
+    header_redirect("admin_forum_links.php?webtag=$webtag&page=$page&addlink=true");
     exit;
 }
 
@@ -287,21 +299,27 @@ if (isset($_POST['move_up']) && is_array($_POST['move_up'])) {
     list($lid) = array_keys($_POST['move_up']);
 
     if (forum_links_move_up($lid)) {
+
         header_redirect("admin_forum_links.php?webtag=$webtag&page=$page");
+        exit;
     }
 }
 
 if (isset($_POST['move_down']) && is_array($_POST['move_down'])) {
 
     list($lid) = array_keys($_POST['move_down']);
-    
+
     if (forum_links_move_down($lid)) {
+
         header_redirect("admin_forum_links.php?webtag=$webtag&page=$page");
+        exit;
     }
 }
 
 if (isset($_POST['move_up_disabled']) || isset($_POST['move_down_disabled'])) {
+
     header_redirect("admin_forum_links.php?webtag=$webtag&page=$page");
+    exit;
 }
 
 if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
@@ -310,8 +328,8 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
 
     echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['forumlinks']} &raquo; {$lang['addnewforumlink']}</h1>\n";
 
-    if (isset($error_html) && strlen(trim($error_html)) > 0) {
-        echo $error_html;
+    if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+        html_display_error_array($error_msg_array, '500', 'center');
     }
 
     echo "<br />\n";
@@ -393,11 +411,11 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
     }
 
     html_draw_top();
-    
+
     echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['forumlinks']} &raquo; {$lang['editlink']} &raquo; {$forum_link['TITLE']}</h1>\n";
 
-    if (isset($error_html) && strlen(trim($error_html)) > 0) {
-        echo $error_html;
+    if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+        html_display_error_array($error_msg_array, '500', 'center');
     }
 
     echo "<br />\n";
@@ -458,26 +476,41 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
     html_draw_top();
 
     echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['editforumlinks']}</h1>\n";
+    echo "<br />\n";
+    echo "<div align=\"center\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">{$lang['editforumlinks_exp']}</td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "</div>\n";
 
-    if (isset($error_html) && strlen(trim($error_html)) > 0) {
-        echo $error_html;
+    if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+
+        html_display_error_array($error_msg_array, '500', 'center');
+
+    }else if (isset($_GET['added'])) {
+
+        html_display_success_msg($lang['successfullyaddednewforumlink'], '500', 'center');
+
+    }else if (isset($_GET['edited'])) {
+
+        html_display_success_msg($lang['successfullyeditedforumlink'], '500', 'center');
+
+    }else if (isset($_GET['deleted'])) {
+
+        html_display_success_msg($lang['successfullyremovedselectedforumlinks'], '500', 'center');
+
+    }else if (isset($_GET['updated'])) {
+
+        html_display_success_msg($lang['preferencesupdated'], '500', 'center');
     }
-
-    if (isset($add_success) && strlen(trim($add_success)) > 0) echo $add_success;
-    if (isset($del_success) && strlen(trim($del_success)) > 0) echo $del_success;
-    if (isset($edit_success) && strlen(trim($edit_success)) > 0) echo $edit_success;
 
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "<form method=\"post\" action=\"admin_forum_links.php\">\n";
     echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "  ", form_input_hidden('page', _htmlentities($page)), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\">{$lang['editforumlinks_exp']}</td>\n";
-    echo "    </tr>\n";
-    echo "  </table>\n";
-    echo "  <br />\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
@@ -522,7 +555,7 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
                 echo "                  <td align=\"center\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up_disabled", "Move Up", "title=\"Move Up\" onclick=\"return false\"", "move_up_ctrl_disabled"), form_submit_image('move_down.png', "move_down[{$forum_link['LID']}]", "Move Down", "title=\"Move Down\"", "move_down_ctrl"), "</td>\n";
                 echo "                  <td align=\"left\"><a href=\"admin_forum_links.php?webtag=$webtag&amp;page=$page&amp;lid={$forum_link['LID']}\">{$forum_link['TITLE']}</a></td>\n";
             }
-            
+
             echo "                </tr>\n";
         }
 

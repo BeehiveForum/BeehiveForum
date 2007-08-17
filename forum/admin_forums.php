@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forums.php,v 1.74 2007-07-17 20:49:37 decoyduck Exp $ */
+/* $Id: admin_forums.php,v 1.75 2007-08-17 22:50:20 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -110,22 +110,26 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
 $start = floor($page - 1) * 10;
 if ($start < 0) $start = 0;
 
-$error_html = "";
-$add_success = "";
-$del_success = "";
-$edit_success = "";
+// Array to hold error messages
 
-if (isset($_POST['cancel']) || isset($_POST['delete'])) {
+$error_msg_array = array();
 
-    unset($_POST['addforum'], $_GET['addforum'], $_POST['fid'], $_GET['fid']);
+// Cancel button clicked.
+
+if (isset($_POST['cancel'])) {
+
+    header_redirect("admin_forums.php?webtag=$webtag&page=$page");
+    exit;
 }
+
+// Confirm forum deletion.
 
 if (isset($_POST['delete'])) {
 
     if (isset($_POST['t_delete']) && is_array($_POST['t_delete'])) {
 
         foreach($_POST['t_delete'] as $forum_fid => $delete_forum) {
-    
+
             if (($delete_forum == "Y") && ($forum_name = forum_get_name($forum_fid))) {
 
                 $forum_delete_array[$forum_fid] = "{$forum_name}";
@@ -196,21 +200,25 @@ if (isset($_POST['delete'])) {
 
 }elseif (isset($_POST['t_confirm_delete'])) {
 
+    $valid = true;
+
     if (isset($_POST['t_delete']) && is_array($_POST['t_delete'])) {
 
         foreach($_POST['t_delete'] as $forum_fid => $delete_forum) {
-    
-            if (($delete_forum == "Y") && ($forum_name = forum_get_name($forum_fid))) {
 
-                if (forum_delete($forum_fid)) {
+            if ($valid && $delete_forum == "Y" && $forum_name = forum_get_name($forum_fid)) {
 
-                    $del_success.= sprintf("<h2>{$lang['successfullydeletedforum']}</h2>", $forum_name);
-                
-                }else {
+                if (!forum_delete($forum_fid)) {
 
-                    $error_html.= sprintf("<h2>{$lang['failedtodeleteforum']}</h2>", $forum_name);
+                    $error_msg_array[] = sprintf($lang['failedtodeleteforum'], $forum_name);
                 }
             }
+        }
+
+        if ($valid) {
+
+            header_redirect("admin_forums.php?webtag=$webtag&page=$page&deleted=true");
+            exit;
         }
     }
 
@@ -222,32 +230,32 @@ if (isset($_POST['delete'])) {
 }elseif (isset($_POST['addforumsubmit'])) {
 
     $valid = true;
-    
+
     if (isset($_POST['t_webtag']) && strlen(trim(_stripslashes($_POST['t_webtag']))) > 0) {
-        
+
         $t_webtag = strtoupper(trim(_stripslashes($_POST['t_webtag'])));
 
         if (!preg_match("/^[A-Z0-9_]+$/", $t_webtag)) {
 
-            $error_html.= "<h2>{$lang['webtaginvalidchars']}</h2>\n";
+            $error_msg_array[] = $lang['webtaginvalidchars'];
             $valid = false;
         }
 
     }else {
 
-        $error_html.= "<h2>{$lang['mustsupplyforumwebtag']}</h2>\n";
+        $error_msg_array[] = $lang['mustsupplyforumwebtag'];
         $valid = false;
     }
 
     if (isset($_POST['t_name']) && strlen(trim(_stripslashes($_POST['t_name']))) > 0) {
         $t_name = trim(_stripslashes($_POST['t_name']));
     }else {
-        $error_html.= "<h2>{$lang['mustsupplyforumname']}</h2>\n";
+        $error_msg_array[] = $lang['mustsupplyforumname'];
         $valid = false;
     }
 
     if (isset($_POST['t_owner']) && strlen(trim(_stripslashes($_POST['t_owner']))) > 0) {
-        
+
         $t_owner = trim(_stripslashes($_POST['t_owner']));
 
         if ($t_user_array = user_get_uid($t_owner)) {
@@ -257,7 +265,7 @@ if (isset($_POST['delete'])) {
         }else {
 
             $valid = false;
-            $error_html.= "<h2>{$lang['unknownuser']}</h2>\n";
+            $error_msg_array[] = $lang['unknownuser'];
         }
 
     }else {
@@ -267,25 +275,25 @@ if (isset($_POST['delete'])) {
     }
 
     if (isset($_POST['t_database']) && strlen(trim(_stripslashes($_POST['t_database']))) > 0) {
-        
+
         $t_database = $_POST['t_database'];
 
         if (!preg_match("/^[A-Z0-9_]+$/i", $t_database)) {
 
-            $error_html.= "<h2>{$lang['databasenameinvalidchars']}</h2>\n";
+            $error_msg_array[] = $lang['databasenameinvalidchars'];
             $valid = false;
         }
 
     }else {
 
-        $error_html.= "<h2>{$lang['mustsupplyforumdatabasename']}</h2>\n";
+        $error_msg_array[] = $lang['mustsupplyforumdatabasename'];
         $valid = false;
     }
 
     if (isset($_POST['t_access']) && is_numeric($_POST['t_access'])) {
         $t_access = $_POST['t_access'];
     }else {
-        $error_html.= "<h2>{$lang['mustsupplyforumaccesslevel']}</h2>\n";
+        $error_msg_array[] = $lang['mustsupplyforumaccesslevel'];
         $valid = false;
     }
 
@@ -300,15 +308,12 @@ if (isset($_POST['delete'])) {
         if ($new_fid = forum_create($t_webtag, $t_name, $t_owner_uid, $t_database, $t_access, $error_str)) {
 
             if ($t_default == 1) forum_update_default($new_fid);
-            $add_success.= sprintf("<h2>{$lang['successfullycreatedforum']}</h2>", $t_webtag);
-            unset($_POST['addforum'], $_GET['addforum']);
+            header_redirect("admin_forums.php?webtag=$webtag&page=$page&added=true");
 
         }else {
 
-            $error_html.= sprintf("<h2>{$lang['failedtocreateforum']}</h2>", $t_webtag);
-            $error_html.= $error_str;
-
-            unset($_POST['addnew'], $_GET['addnew']);
+            $error_msg_array[] = $error_str;
+            $valid = false;
         }
     }
 
@@ -319,16 +324,16 @@ if (isset($_POST['delete'])) {
     if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
         $fid = $_POST['fid'];
     }else {
-        $error_html.= "<h2>{$lang['invalidforumidorforumnotfound']}</h2>\n";
+        $error_msg_array[] = $lang['invalidforumidorforumnotfound'];
         $valid = false;
     }
 
     if ($valid && $forum_data = forum_get($fid)) {
-    
+
         if (isset($_POST['t_name']) && strlen(trim(_stripslashes($_POST['t_name']))) > 0) {
             $t_name = trim(_stripslashes($_POST['t_name']));
         }else {
-            $error_html.= "<h2>{$lang['mustsupplyforumname']}</h2>\n";
+            $error_msg_array[] = $lang['mustsupplyforumname'];
             $valid = false;
         }
 
@@ -343,7 +348,7 @@ if (isset($_POST['delete'])) {
             }else {
 
                 $valid = false;
-                $error_html.= "<h2>{$lang['unknownuser']}</h2>\n";
+                $error_msg_array[] = $lang['unknownuser'];
             }
 
         }else {
@@ -355,7 +360,7 @@ if (isset($_POST['delete'])) {
         if (isset($_POST['t_access']) && is_numeric($_POST['t_access'])) {
             $t_access = $_POST['t_access'];
         }else {
-            $error_html.= "<h2>{$lang['mustsupplyforumaccesslevel']}</h2>\n";
+            $error_msg_array[] = $lang['mustsupplyforumaccesslevel'];
             $valid = false;
         }
 
@@ -375,28 +380,29 @@ if (isset($_POST['delete'])) {
                     forum_update_default($fid);
                 }
 
-                $error_html = sprintf("<h2>{$lang['successfullyupdatedforum']}</h2>", $forum_data['WEBTAG']);
+                header_redirect("admin_forums.php?webtag=$webtag&page=$page&edited=true");
+                exit;
 
             }else {
 
-                $error_html = sprintf("<h2>{$lang['failedtoupdateforum']}</h2>", $forum_data['WEBTAG']);
+                $error_msg_array[] = sprintf($lang['failedtoupdateforum'], $forum_data['WEBTAG']);
+                $valid = false;
             }
         }
 
     }else {
 
-        $error_html.= "<h2>{$lang['invalidforumidorforumnotfound']}</h2>\n";
+        $error_msg_array[] = $lang['invalidforumidorforumnotfound'];
         $valid = false;
     }
 
 }elseif (isset($_POST['addforum'])) {
 
-    $redirect = "./admin_forums.php?webtag=$webtag&page=$page&addforum=true";
-    header_redirect($redirect);
+    header_redirect("./admin_forums.php?webtag=$webtag&page=$page&addforum=true");
     exit;
 
 }elseif (isset($_POST['changepermissions']) && is_array($_POST['changepermissions'])) {
-    
+
     list($forum_webtag) = array_keys($_POST['changepermissions']);
 
     $redirect_uri = "admin_forum_access.php?webtag=$forum_webtag&";
@@ -429,11 +435,11 @@ if (isset($_POST['delete'])) {
 if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
 
     html_draw_top('admin.js');
-    
+
     echo "<h1>{$lang['admin']} &raquo; {$lang['manageforums']} &raquo; {$lang['addforum']}</h1>\n";
 
-    if (isset($error_html) && strlen(trim($error_html)) > 0) {
-        echo $error_html;
+    if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+        html_display_error_array($error_msg_array, '500', 'center');
     }
 
     echo "<br />\n";
@@ -475,7 +481,7 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
     if ($available_databases = forums_get_available_dbs()) {
 
         $available_databases = array_merge(array('&nbsp;'), $available_databases);
-        
+
         echo "                      <tr>\n";
         echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">{$lang['usedatabase']}:</td>\n";
         echo "                        <td align=\"left\">", form_dropdown_array("t_database", $available_databases, (isset($_POST['t_database']) ? _stripslashes($_POST['t_database']) : "")), "</td>\n";
@@ -568,11 +574,11 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
     }
 
     html_draw_top('admin.js');
-    
+
     echo "<h1>{$lang['admin']} &raquo; {$lang['manageforums']} &raquo; {$lang['editforum']} &raquo; {$forum_data['WEBTAG']}</h1>\n";
 
-    if (isset($error_html) && strlen(trim($error_html)) > 0) {
-        echo $error_html;
+    if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+        html_display_error_array($error_msg_array, '500', 'center');
     }
 
     echo "<br />\n";
@@ -675,16 +681,25 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
 }else {
 
     html_draw_top();
-    
+
     echo "<h1>{$lang['admin']} &raquo; {$lang['manageforums']}</h1>\n";
 
-    if (isset($error_html) && strlen(trim($error_html)) > 0) {
-        echo $error_html;
-    }
+    if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-    if (isset($add_success) && strlen(trim($add_success)) > 0) echo $add_success;
-    if (isset($del_success) && strlen(trim($del_success)) > 0) echo $del_success;
-    if (isset($edit_success) && strlen(trim($edit_success)) > 0) echo $edit_success;
+        html_display_error_array($error_msg_array, '600', 'center');
+
+    }else if (isset($_GET['added'])) {
+
+        html_display_success_msg($lang['successfullycreatednewforum'], '600', 'center');
+
+    }else if (isset($_GET['edited'])) {
+
+        html_display_success_msg($lang['successfullyupdatedforum'], '600', 'center');
+
+    }else if (isset($_GET['deleted'])) {
+
+        html_display_success_msg($lang['successfullyremovedselectedforums'], '600', 'center');
+    }
 
     echo "<br />\n";
     echo "<div align=\"center\">\n";

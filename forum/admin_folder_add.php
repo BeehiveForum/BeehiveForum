@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_add.php,v 1.46 2007-05-31 21:59:13 decoyduck Exp $ */
+/* $Id: admin_folder_add.php,v 1.47 2007-08-17 22:50:20 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -109,7 +109,9 @@ if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 }
 
 if (isset($_POST['cancel'])) {
+
     header_redirect("./admin_folders.php?webtag=$webtag&page=$page");
+    exit;
 }
 
 if (isset($_POST['submit'])) {
@@ -119,7 +121,7 @@ if (isset($_POST['submit'])) {
     if (isset($_POST['t_name']) && strlen(trim(_stripslashes($_POST['t_name']))) > 0) {
         $t_name = trim(_stripslashes($_POST['t_name']));
     }else {
-        $error_html = "<h2>{$lang['mustenterfoldername']}</h2>\n";
+        $error_msg_array[] = $lang['mustenterfoldername'];
         $valid = false;
     }
 
@@ -160,11 +162,17 @@ if (isset($_POST['submit'])) {
 
     if ($valid) {
 
-        $new_fid = folder_create($t_name, $t_description, $t_prefix, $t_allowed_types, $t_permissions);
-        admin_add_log_entry(CREATE_FOLDER, $t_name);
+        if ($new_fid = folder_create($t_name, $t_description, $t_prefix, $t_allowed_types, $t_permissions)) {
 
-        $add_success = rawurlencode($t_name);
-        header_redirect("./admin_folders.php?webtag=$webtag&add_success=$add_success&page=$page");
+            admin_add_log_entry(CREATE_FOLDER, $t_name);
+            header_redirect("./admin_folders.php?webtag=$webtag&added=true&page=$page");
+            exit;
+
+        }else {
+
+            $error_msg_array = $lang['failedtocreatenewfolder'];
+            $valid = false;
+        }
     }
 }
 
@@ -178,12 +186,11 @@ html_draw_top();
 
 echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['managefolders']} &raquo; {$lang['addnewfolder']}</h1>\n";
 
-if (isset($error_html) && strlen($error_html) > 0) {
-    echo $error_html;
-}else {
-    echo "<br />\n";
+if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+    html_display_error_array($error_msg_array, '500', 'center');
 }
 
+echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "  <form name=\"thread_options\" action=\"admin_folder_add.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";

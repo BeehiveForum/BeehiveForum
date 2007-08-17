@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.63 2007-08-16 21:24:06 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.64 2007-08-17 22:50:20 decoyduck Exp $ */
 
 // French Canadian language file
 
@@ -401,10 +401,8 @@ $lang['word_filter_help_2'] = "<b>Mot complet</b> recherche correspondance avec 
 $lang['word_filter_help_3'] = "<b>PREG</b> permet l'utilisation des Regular Expressions du langage Perl pour trouver des correspondances de texte";
 $lang['nameanddesc'] = "Nom et Description";
 $lang['movethreads'] = "Déplacer fils de discussion";
-$lang['threadsmovedsuccessfully'] = "Déplacement de fils de discussion réussie";
 $lang['movethreadstofolder'] = "Déplacer fils de discussion au dossier";
 $lang['resetuserpermissions'] = "Réinitialiser les permissions d'utilisateur";
-$lang['userpermissionsresetsuccessfully'] = "Réinitialisation des permissions d'utilisateur réussie";
 $lang['allowfoldertocontain'] = "Permettre au dossier de contenir";
 $lang['addnewfolder'] = "Ajouter nouveau dossier";
 $lang['mustenterfoldername'] = "Vous devez inscrire un nom de dossier";
@@ -470,13 +468,13 @@ $lang['editlink'] = "Modifier lien";
 $lang['addnewforumlink'] = "Ajouter nouveau lien de forum";
 $lang['forumlinktitle'] = "Titre du lien de forum";
 $lang['forumlinklocation'] = "Localisation du lien de forum";
-$lang['successfullyaddedlink'] = "Ajout du lien réussi: '%s'";
-$lang['successfullyeditedlink'] = "Modification du lien réussi: '%s'";
+$lang['successfullyaddednewforumlink'] = "Ajout du lien réussi";
+$lang['successfullyeditedforumlink'] = "Modification du lien réussi";
 $lang['invalidlinkidorlinknotfound'] = "Identification du lien invalide ou lien introuvable";
-$lang['successfullyremovedselectedlinks'] = "La suppression des liens sélectionnés réussi";
-$lang['failedtoremovelinks'] = "La suppression des liens sélectionnés a échoué";
-$lang['failedtoaddnewlink'] = "Ajout du nouveau lien non-réussi: '%s'";
-$lang['failedtoupdatelink'] = "Mise à jour du lien échouée: '%s'";
+$lang['successfullyremovedselectedforumlinks'] = "La suppression des liens sélectionnés réussi";
+$lang['failedtoremoveforumlinks'] = "La suppression des liens sélectionnés a échoué";
+$lang['failedtoaddnewforumlink'] = "Ajout du nouveau lien non-réussi";
+$lang['failedtoupdateforumlink'] = "Mise à jour du lien échouée";
 $lang['toplinkcaption'] = "Légende du lien de premier niveau";
 $lang['allowguestaccess'] = "Permettre l'accès aux visiteurs";
 $lang['searchenginespidering'] = "Balayage par moteurs de recherche";
@@ -650,18 +648,20 @@ $lang['noexistingforums'] = "Aucun forum existent retrouvé. Pour créer un nouvea
 $lang['webtaginvalidchars'] = "Balise d'adresse web peut contenir des caractères capitales A-Z, 0-9, _ - uniquement";
 $lang['databasenameinvalidchars'] = "Le nom de la base de données ne peut inclure les caractères a-z, A-Z, 0-9 et le soulignement";
 $lang['invalidforumidorforumnotfound'] = "Identification du forum (FID) invalide ou non trouvée";
-$lang['successfullyupdatedforum'] = "Mise à jour du forum: '%s' réussie ";
-$lang['failedtoupdateforum'] = " Mise à jour du forum: '%s' échouée";
+$lang['successfullyupdatedforum'] = "Mise à jour du forum réussie";
+$lang['failedtoupdateforum'] = " Mise à jour du forum échouée";
 $lang['successfullycreatedforum'] = "Création de forum réussie";
-$lang['failedtocreateforum'] = "La creation du forum '%s' n'est pas réussie. Veuillez vérifier que le l'identification du forum (webtag) et les noms des tables ne sont pas déjà en usage.";
+$lang['selectedwebtagisalreadyinuse'] = "The selected webtag is already in use. Please choose another.";
+$lang['selecteddatabasecontainsconflictingtables'] = "The selected database contains conflicting tables. Conflicting table names are:";
 $lang['forumdeleteconfirmation'] = "Êtes-vous certain de vouloir supprimer tous les forums selections?";
 $lang['forumdeletewarning'] = "Étes-vous certain de vouloir supprimer le forum sélectionné? Une fois le forum supprimé, le contenu est perdu pour toujours et ne peut pas être récupéré.";
-$lang['successfullydeletedforum'] = "Suppression du forum: '%s' réussie";
+$lang['successfullyremovedselectedforums'] = "Successfully deleted selected forums";
 $lang['failedtodeleteforum'] = "Suppression du forum: '%s' échoué";
 $lang['addforum'] = "Ajouter forum";
 $lang['editforum'] = "Modifier forum";
 $lang['visitforum'] = "Visiter forum: %s";
 $lang['accesslevel'] = "Niveau d'accès";
+$lang['forumleader'] = "Forum Leader";
 $lang['usedatabase'] = "Utiliser la base de données";
 $lang['unknownmessagecount'] = "Inconnu";
 $lang['forumwebtag'] = "Identification (webtag) du forum";

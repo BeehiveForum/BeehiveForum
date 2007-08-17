@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.213 2007-08-16 15:38:12 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.214 2007-08-17 22:50:20 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -164,10 +164,6 @@ if (isset($_POST['edit_users']) && is_array($_POST['edit_users'])) {
 // Array to hold error messages
 
 $error_msg_array = array();
-
-// Success message string
-
-$success_html = "";
 
 // Get the user details.
 
@@ -373,8 +369,6 @@ if (isset($_POST['user_history_submit'])) {
 
                 $user = user_get($uid);
                 $user['POST_COUNT'] = user_get_post_count($uid);
-
-                $success_html = $lang['successfullyupdateduserdetails'];
             }
         }
 
@@ -382,11 +376,7 @@ if (isset($_POST['user_history_submit'])) {
 
             if (isset($_POST['t_reset_post_count']) && $_POST['t_reset_post_count'] == "Y") {
 
-                if (user_reset_post_count($uid)) {
-
-                    $success_html = $lang['successfullyresetpostcount'];
-
-                }else {
+                if (!user_reset_post_count($uid)) {
 
                     $valid = false;
                     $error_msg_array[] = $lang['failedtoresetuserpostcount'];
@@ -403,7 +393,6 @@ if (isset($_POST['user_history_submit'])) {
                         if (user_update_post_count($uid, $user_post_count)) {
 
                             $user['POST_COUNT'] = $user_post_count;
-                            $success_html = $lang['userpostcountsuccessfullychanged'];
 
                         }else {
 

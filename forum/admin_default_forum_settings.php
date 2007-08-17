@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.78 2007-08-05 21:42:29 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.79 2007-08-17 22:50:20 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -101,12 +101,19 @@ if (!(bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0))) {
     exit;
 }
 
-$error_html = "";
+// Array to hold error messages
+
+$error_msg_array = array();
+
+// Variable to track creation of text-captcha directories.
+
 $text_captcha_dir_created = false;
 
 // Text captcha class
 
 $text_captcha = new captcha(6, 15, 25, 9, 30);
+
+// Submit code.
 
 if (isset($_POST['submit'])) {
 
@@ -115,7 +122,7 @@ if (isset($_POST['submit'])) {
     if (isset($_POST['forum_name']) && strlen(trim(_stripslashes($_POST['forum_name']))) > 0) {
         $new_forum_settings['forum_name'] = trim(_stripslashes($_POST['forum_name']));
     }else {
-        $error_html = "<h2>{$lang['mustsupplyforumname']}</h2>\n";
+        $error_msg_array[] = $lang['mustsupplyforumname'];
         $valid = false;
     }
 
@@ -173,7 +180,7 @@ if (isset($_POST['submit'])) {
 
         }else {
 
-            $error_html = "<h2>{$lang['activesessiongreaterthansession']}</h2>\n";
+            $error_msg_array[] = $lang['activesessiongreaterthansession'];
             $valid = false;
         }
 
@@ -224,7 +231,7 @@ if (isset($_POST['submit'])) {
 
     }else if (strtoupper($new_forum_settings['text_captcha_enabled']) == "Y") {
 
-        $error_html = "<h2>{$lang['textcaptchadirblank']}</h2>\n";
+        $error_msg_array[] = $lang['textcaptchadirblank'];
         $valid = false;
     }
 
@@ -341,7 +348,7 @@ if (isset($_POST['submit'])) {
 
     }elseif (strtoupper($new_forum_settings['attachments_enabled']) == "Y") {
 
-        $error_html = "<h2>{$lang['attachmentdirblank']}</h2>\n";
+        $error_msg_array[] = $lang['attachmentdirblank'];
         $valid = false;
     }
 
@@ -371,8 +378,16 @@ if (isset($_POST['submit'])) {
 
     if ($valid) {
 
-        forum_save_default_settings($new_forum_settings);
-        header_redirect("./admin_default_forum_settings.php?webtag=$webtag&updated=true", $lang['forumsettingsupdated']);
+        if (forum_save_default_settings($new_forum_settings)) {
+
+            admin_add_log_entry(EDIT_FORUM_SETTINGS, $new_forum_settings['forum_name']);
+            header_redirect("./admin_default_forum_settings.php?webtag=$webtag&updated=true", $lang['forumsettingsupdated']);
+
+        }else {
+
+            $valid = false;
+            $error_msg_array[] = $lang['failedtoupdateforumsettings'];
+        }
     }
 
     $forum_global_settings = array_merge($forum_global_settings, $new_forum_settings);
@@ -384,12 +399,13 @@ html_draw_top("emoticons.js", "htmltools.js");
 
 echo "<h1>{$lang['admin']} &raquo; {$lang['globalforumsettings']}</h1>\n";
 
-// Any error messages to display?
+if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-if (!empty($error_html)) {
-    echo $error_html;
+    html_display_error_array($error_msg_array, '550', 'center');
+
 }else if (isset($_GET['updated'])) {
-    echo "<h2>{$lang['forumsettingsupdated']}</h2>\n";
+
+    html_display_success_msg($lang['preferencesupdated'], '550', 'center');
 }
 
 $unread_cutoff_periods = array(UNREAD_MESSAGES_DISABLED  => $lang['disableunreadmessages'],

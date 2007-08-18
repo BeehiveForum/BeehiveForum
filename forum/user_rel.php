@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.100 2007-08-16 15:38:12 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.101 2007-08-18 19:42:00 decoyduck Exp $ */
 
 /**
 * Displays and handles the User Relationship page
@@ -245,7 +245,7 @@ $peer_nickname = user_get_peer_nickname($uid, $peer_uid);
 echo "<h1>{$lang['userrelationship']} &raquo; <a href=\"user_profile.php?webtag=$webtag&amp;uid=$peer_uid\" target=\"_blank\" onclick=\"return openProfile($peer_uid, '$webtag')\">", word_filter_add_ob_tags(format_user_name($user_peer['LOGON'], $user_peer['NICKNAME'])), "</a></h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
-    html_display_error_array($error_msg_array, '85%', 'center');
+    html_display_error_array($error_msg_array, '600', 'left');
 }
 
 echo "<br />\n";

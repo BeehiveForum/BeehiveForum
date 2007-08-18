@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.127 2007-08-09 22:55:43 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.128 2007-08-18 12:26:20 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -1294,9 +1294,7 @@ function admin_delete_users_posts($uid)
 
     if (!is_numeric($uid)) return false;
 
-    return true;
-
-    /*if ($user_logon = user_get_logon($uid)) {
+    if ($user_logon = user_get_logon($uid)) {
 
         if ($user_post_array = get_user_posts($uid)) {
 
@@ -1304,12 +1302,36 @@ function admin_delete_users_posts($uid)
 
                 if (!post_delete($user_post['TID'], $user_post['PID'])) {
 
-                    $valid = false;
-                    break;
+                    return false;
                 }
             }
+
+            return true;
         }
-    }*/
+    }
+
+    return false;
+}
+
+function admin_prepare_affected_sessions($affected_session)
+{
+    $lang = load_language_file();
+
+    $webtag = get_webtag($webtag_search);
+
+    if ($affected_session['UID'] > 0) {
+
+        $affected_session_text = "<a href=\"user_profile.php?webtag=$webtag&amp;uid={$affected_session['UID']};\" ";
+        $affected_session_text.= "target=\"_blank\" onclick=\"return openProfile({$affected_session['UID']}, '$webtag')\">";
+        $affected_session_text.= word_filter_add_ob_tags(format_user_name($affected_session['LOGON'], $affected_session['NICKNAME']));
+        $affected_session_text.= "</a></li>\n";
+
+    }else {
+
+        $affected_session_text = word_filter_add_ob_tags(format_user_name($affected_session['LOGON'], $affected_session['NICKNAME']));
+    }
+
+    return $affected_session_text ;
 }
 
 ?>

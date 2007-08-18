@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forums.php,v 1.75 2007-08-17 22:50:20 decoyduck Exp $ */
+/* $Id: admin_forums.php,v 1.76 2007-08-18 12:26:20 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -380,7 +380,7 @@ if (isset($_POST['delete'])) {
                     forum_update_default($fid);
                 }
 
-                header_redirect("admin_forums.php?webtag=$webtag&page=$page&edited=true");
+                header_redirect("admin_forums.php?webtag=$webtag&fid=$fid&page=$page&edited=true");
                 exit;
 
             }else {
@@ -517,32 +517,10 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "  </form>\n";
-    echo "  <br />\n";
-    echo "  <table width=\"500\">\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"center\">\n";
-    echo "        <table class=\"text_captcha_error\" width=\"100%\">\n";
-    echo "          <tr>\n";
-    echo "            <td align=\"left\" width=\"20\"><img src=\"", style_image('warning.png'), "\" width=\"16\" height=\"16\" alt=\"warning\" /></td>\n";
-    echo "            <td align=\"left\">{$lang['forum_settings_help_38']}</td>\n";
-    echo "          </tr>\n";
-    echo "        </table>\n";
-    echo "      </td>\n";
-    echo "    </tr>\n";
-    echo "  </table>\n";
-    echo "  <br />\n";
-    echo "  <table width=\"500\">\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"center\">\n";
-    echo "        <table class=\"text_captcha_error\" width=\"100%\">\n";
-    echo "          <tr>\n";
-    echo "            <td align=\"left\" width=\"20\"><img src=\"", style_image('warning.png'), "\" width=\"16\" height=\"16\" alt=\"warning\" /></td>\n";
-    echo "            <td align=\"left\">{$lang['forumdatabasewarning']}</td>\n";
-    echo "          </tr>\n";
-    echo "        </table>\n";
-    echo "      </td>\n";
-    echo "    </tr>\n";
-    echo "  </table>\n";
+
+    html_display_warning_msg($lang['forum_settings_help_38'], '500', 'center');
+    html_display_warning_msg($lang['forumdatabasewarning'], '500', 'center');
+
     echo "</div>\n";
 
     html_draw_bottom();
@@ -578,7 +556,12 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
     echo "<h1>{$lang['admin']} &raquo; {$lang['manageforums']} &raquo; {$lang['editforum']} &raquo; {$forum_data['WEBTAG']}</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+
         html_display_error_array($error_msg_array, '500', 'center');
+
+    }else if (isset($_GET['edited'])) {
+
+        html_display_success_msg($lang['successfullyupdatedforum'], '500', 'center');
     }
 
     echo "<br />\n";
@@ -660,19 +643,9 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
     echo "      <td align=\"center\">", form_submit("updateforumsubmit", $lang['save']), " &nbsp;", form_submit("delete", $lang['delete']), " &nbsp;",form_submit("cancel", $lang['back']), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
-    echo "  <br />\n";
-    echo "  <table width=\"500\">\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"center\">\n";
-    echo "        <table class=\"text_captcha_error\" width=\"100%\">\n";
-    echo "          <tr>\n";
-    echo "            <td align=\"left\" width=\"20\"><img src=\"", style_image('warning.png'), "\" width=\"16\" height=\"16\" alt=\"warning\" /></td>\n";
-    echo "            <td align=\"left\">{$lang['forum_settings_help_38']}</td>\n";
-    echo "          </tr>\n";
-    echo "        </table>\n";
-    echo "      </td>\n";
-    echo "    </tr>\n";
-    echo "  </table>\n";
+
+    html_display_warning_msg($lang['forum_settings_help_38'], '500', 'center');
+
     echo "  </form>\n";
     echo "</div>\n";
 

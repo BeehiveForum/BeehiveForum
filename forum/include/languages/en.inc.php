@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.460 2007-08-18 15:01:38 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.461 2007-08-18 15:18:30 decoyduck Exp $ */
 
 // British English language file
 
@@ -248,7 +248,7 @@ $lang['adminexp_2'] = "<b>Users</b> allows you to set individual user permission
 $lang['adminexp_3'] = "<b>User Groups</b> allows you to create User Groups to assign permissions to as many or as few users quickly and easily.";
 $lang['adminexp_4'] = "<b>Ban Controls</b> allows the banning and un-banning of IP Addresses, HTTP Referers, Usernames, Email addresses and Nicknames.";
 $lang['adminexp_5'] = "<b>Folders</b> allows the creation, modification and deletion of folders.";
-$lang['adminexp_6'] = "<b>RSS Feeds</b> allows you to manage RSS feeds for propogation into your forum.";
+$lang['adminexp_6'] = "<b>RSS Feeds</b> allows you to manage RSS feeds for propagation into your forum.";
 $lang['adminexp_7'] = "<b>Profiles</b> lets you customise the items that appear in the user profiles.";
 $lang['adminexp_8'] = "<b>Forum Settings</b> allows you to customise your forum's name, appearance and many other things.";
 $lang['adminexp_9'] = "<b>Start Page</b> lets you customise your forum's start page.";
@@ -683,7 +683,7 @@ $lang['successfullycreatednewforum'] = "Successfully created new forum";
 $lang['selectedwebtagisalreadyinuse'] = "The selected webtag is already in use. Please choose another.";
 $lang['selecteddatabasecontainsconflictingtables'] = "The selected database contains conflicting tables. Conflicting table names are:";
 $lang['forumdeleteconfirmation'] = "Are you sure you want to delete all of the selected forums?";
-$lang['forumdeletewarning'] = "Please note that you cannot recover deleted forums. Once deleted a forum and all of it's associated data is permenantly removed from the database. If you do not wish to delete the selected forums please click cancel.";
+$lang['forumdeletewarning'] = "Please note that you cannot recover deleted forums. Once deleted a forum and all of it's associated data is permanently removed from the database. If you do not wish to delete the selected forums please click cancel.";
 $lang['successfullyremovedselectedforums'] = "Successfully deleted selected forums";
 $lang['failedtodeleteforum'] = "Failed to deleted forum: '%s'";
 $lang['addforum'] = "Add Forum";
@@ -815,14 +815,14 @@ $lang['forum_settings_help_35'] = "<b>Closed</b> prevents access for all users, 
 $lang['forum_settings_help_36'] = "<b>Restricted</b> allows to set a list of users who are allowed access to your forum.";
 $lang['forum_settings_help_37'] = "<b>Password Protected</b> allows you to set a password to give out to users so they can access your forum.";
 $lang['forum_settings_help_38'] = "When setting Restricted or Password Protected mode you will need to save your changes before you can change the user access privileges or password.";
-$lang['forum_settings_help_39'] = "<b>Search Frequency</b> defines how long a user must wait before performing another search. Searches place a high demand on the database so it is recommended that you set this to at least 30 seconds to prevent \"search spamming\" from killing the server.";
+$lang['forum_settings_help_39'] = "<b>Search Frequency</b> defines how long a user must wait before performing another search. Searches place a high demand on the database so it is recommended that you set this to at least 30 seconds to prevent \"search spamming\"from killing the server.";
 $lang['forum_settings_help_40'] = "<b>Post Frequency</b> is the minimum time a user must wait before they can post again. This setting also affects the creation of polls. Set to 0 to disable the restriction.";
 $lang['forum_settings_help_41'] = "The above options change the default values for the user registration form. Where applicable other settings will use the forum's own default settings.";
 $lang['forum_settings_help_42'] = "<b>Prevent use of duplicate email addresses</b> forces Beehive to check the user accounts against the email address the user is registering with and prompts them to use another if it is already in use.";
 $lang['forum_settings_help_43'] = "<b>Require email confirmation</b> when enabled will send an email to each new user with a link that can be used to confirm their email address. Until they confirm their email address they will not be able to post unless their user permissions are changed manually by an admin.";
 $lang['forum_settings_help_44'] = "<b>Use text-captcha</b> presents the new user with a mangled image which they must copy a number from into a text field on the registration form. Use this option to prevent automated sign-up via scripts.";
 $lang['forum_settings_help_45'] = "<b>Text-captcha directory</b> specifies the location that Beehive will store it's text-captcha images and fonts in. This directory must be writable by the web server / PHP process and must be accessible via HTTP. After you have enabled text-captcha you must upload some true type fonts into the fonts sub-directory of your main text-captcha directory otherwise Beehive will skip the text-captcha during user registration.";
-$lang['forum_settings_help_46'] = "<b>Text Captcha key</b> allows you to change the key used by Beehive for generating the text captcha code that appears in the image. The more unique you make the key the harder it will be for automated processes to \"guess\" the code.";
+$lang['forum_settings_help_46'] = "<b>Text Captcha key</b> allows you to change the key used by Beehive for generating the text captcha code that appears in the image. The more unique you make the key the harder it will be for automated processes to \"guess\"the code.";
 $lang['forum_settings_help_47'] = "<b>Post Edit Grace Period</b> allows you to define a period in minutes where users may edit posts without the 'EDITED BY' text appearing on their posts. If set to 0 the 'EDITED BY' text will always appear.";
 $lang['forum_settings_help_48'] = "<b>Unread messages cut-off</b> specifies how long unread messages are retained. You may choose from various preset values or enter your own cut-off period in seconds. Threads modified earlier than the defined cut-off period will automatically appear as read.";
 $lang['forum_settings_help_49'] = "Choosing <b>Disable unread messages</b> will completely remove unread messages support and remove the relevant options from the discussion type drop down on the thread list.";
@@ -830,7 +830,7 @@ $lang['forum_settings_help_50'] = "<b>Require user approval by admin</b> allows 
 $lang['forum_settings_help_51'] = "Use <b>Closed Message</b>, <b>Restricted Message</b> and <b>Password Protected Message</b> to customise the message displayed when users access your forum in the various states.";
 $lang['forum_settings_help_52'] = "You can use HTML in your messages. Hyperlinks and email addresses will also be automatically converted to links. To use the default Beehive Forum messages clear the fields.";
 $lang['forum_settings_help_53'] = "<b>Allow users to change username</b> permits already registered users to change their username. When enabled you can track the changes a user makes to their username via the admin user tools.";
-$lang['forum_settings_help_54'] = "Use <b>Forum Rules</b> to enter an Accetable Use Policy that each user must agree to before registering on your forum.";
+$lang['forum_settings_help_54'] = "Use <b>Forum Rules</b> to enter an Acceptable Use Policy that each user must agree to before registering on your forum.";
 $lang['forum_settings_help_55'] = "You can use HTML in your forum rules. Hyperlinks and email addresses will also be automatically converted to links. To use the default Beehive Forum AUP clear the field.";
 $lang['forum_settings_help_56'] = "Use <b>No-Reply Email</b> to specify an email address that does not exist or will not be monitored for replies. This email address will be used in the headers for all emails sent from your forum including but not limited to Post and PM notifications, user emails and password reminders.";
 $lang['forum_settings_help_57'] = "It is recommended that you use an email address that does not exist to help cut down on spam that may be directed at your main forum email address";
@@ -1054,7 +1054,7 @@ $lang['allavailableforums'] = "All Available Forums";
 $lang['favouriteforums'] = "Favourite Forums";
 $lang['ignoredforums'] = "Ignored Forums";
 $lang['ignoreforum'] = "Ignore forum";
-$lang['unignoreforum'] = "Unignore forum";
+$lang['unignoreforum'] = "Un-ignore forum";
 $lang['lastvisited'] = "Last Visited";
 $lang['forumunreadmessages'] = "%s Unread Messages";
 $lang['forummessages'] = "%s Messages";
@@ -1754,7 +1754,7 @@ $lang['closedforposting'] = "Closed for posting";
 $lang['locktitleandfolder'] = "Lock title and folder";
 $lang['deletepostsinthreadbyuser'] = "Delete posts in thread by user";
 $lang['deletethread'] = "Delete Thread";
-$lang['permenantlydelete'] = "Permenantly Delete";
+$lang['permenantlydelete'] = "Permanently Delete";
 $lang['movetodeleteditems'] = "Move to Deleted Threads";
 $lang['undeletethread'] = "Undelete Thread";
 $lang['threaddeletedpermenantly'] = "Thread deleted permanently. Cannot undelete.";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.216 2007-08-18 19:42:00 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.217 2007-08-18 19:51:06 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -185,7 +185,43 @@ $user_perms = perm_get_forum_user_permissions($uid);
 
 // Do updates
 
-if (isset($_POST['user_history_submit'])) {
+if (isset($_POST['action_submit'])) {
+
+    if (isset($_POST['action']) && strlen(trim(_stripslashes($_POST['action']))) > 0) {
+
+        $post_action = trim(_stripslashes($_POST['action']));
+
+        if ($post_action == 'reset_passwd') {
+
+            header_redirect("admin_user.php?webtag=$webtag&uid=$uid&action=reset_passwd");
+            exit;
+
+        }elseif ($post_action == 'view_history') {
+
+            header_redirect("admin_user.php?webtag=$webtag&uid=$uid&action=view_history");
+            exit;
+
+        }elseif ($post_action == 'user_aliases') {
+
+            header_redirect("admin_user.php?webtag=$webtag&uid=$uid&action=user_aliases");
+            exit;
+
+        }elseif ($post_action == 'delete_user') {
+
+            header_redirect("admin_user.php?webtag=$webtag&uid=$uid&action=delete_user");
+            exit;
+
+        }elseif ($post_action == 'delete_posts') {
+
+            header_redirect("admin_user.php?webtag=$webtag&uid=$uid&action=delete_posts");
+            exit;
+        }
+    }
+
+    header_redirect("admin_user.php?webtag=$webtag&uid=$uid");
+    exit;
+
+}else if (isset($_POST['user_history_submit'])) {
 
     if (isset($_POST['clear_user_history']) && $_POST['clear_user_history'] == "Y") {
 
@@ -526,9 +562,9 @@ if (isset($_POST['user_history_submit'])) {
     }
 }
 
-if (isset($_POST['action_submit'])) {
+if (isset($_GET['action']) && strlen(trim(_stripslashes($_GET['action']))) > 0) {
 
-    $action = (isset($_POST['action'])) ? $_POST['action'] : '';
+    $action = trim(_stripslashes($_GET['action']));
 
     if ($action == 'reset_passwd') {
 

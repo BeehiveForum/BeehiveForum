@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.72 2007-06-29 17:53:26 decoyduck Exp $ */
+/* $Id: install.php,v 1.73 2007-08-18 12:27:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -187,13 +187,13 @@ if (isset($_POST['install_method']) && (!defined('BEEHIVE_INSTALED') || $force_i
         if ($db_install = db_connect(false)) {
 
             if (($install_method == 4) && (@file_exists('./install/upgrade-07x-to-072.php'))) {
-            
+
                 include_once("./install/upgrade-07x-to-072.php");
 
             }elseif (($install_method == 3) && (@file_exists('./install/upgrade-06x-to-072.php'))) {
 
                 include_once("./install/upgrade-06x-to-072.php");
-            
+
             }elseif (($install_method == 1) && (@file_exists('./install/new-install.php'))) {
 
                 $remove_conflicts = true;
@@ -566,7 +566,7 @@ if (!@file_exists(BH_INCLUDE_PATH. "config.inc.php") || $force_install) {
         echo "      <td align=\"left\" colspan=\"2\"><hr /></td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
-        echo "      <td align=\"left\"><img src=\"./images/warning.png\" /></td>\n";
+        echo "      <td align=\"left\"><img src=\"./images/warning.png\" alt=\"Warning\" title=\"Warning\" /></td>\n";
         echo "      <td align=\"left\"><h2>The following errors need correcting before you continue</h2></td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.215 2007-08-18 12:26:20 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.216 2007-08-18 19:42:00 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -110,7 +110,7 @@ $lang = load_language_file();
 if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
     html_draw_top();
-    html_error_msg($lang['accessdeniedexp']);
+    html_error_msg($lang['accessdeniedexp'], 'admin_users.php', 'get', array('back' => $lang['back']));
     html_draw_bottom();
     exit;
 }
@@ -167,7 +167,13 @@ $error_msg_array = array();
 
 // Get the user details.
 
-$user = user_get($uid);
+if (!$user = user_get($uid)) {
+
+    html_draw_top();
+    html_error_msg($lang['unknownuseraccount'], 'admin_users.php', 'get', array('back' => $lang['back']));
+    html_draw_bottom();
+    exit;
+}
 
 // Get the user's post count.
 
@@ -186,14 +192,14 @@ if (isset($_POST['user_history_submit'])) {
         if (admin_clear_user_history($uid)) {
 
             html_draw_top();
-            html_display_msg($lang['userhistory'], $lang['successfullycleareduserhistory'], 'admin_user.php', 'get', array('back' => $lang['back']), false, '_self', 'center');
+            html_display_msg($lang['userhistory'], $lang['successfullycleareduserhistory'], 'admin_user.php', 'get', array('back' => $lang['back']), array('uid' => $uid), '_self', 'center');
             html_draw_bottom();
             exit;
 
         }else {
 
             html_draw_top();
-            html_error_msg($lang['failedtoclearuserhistory'], 'admin_user.php', 'get', array('back' => $lang['back']), array('uid' => $uid, 'action' => $action), '_self', 'center');
+            html_error_msg($lang['failedtoclearuserhistory'], 'admin_user.php', 'get', array('back' => $lang['back']), array('uid' => $uid), '_self', 'center');
             html_draw_bottom();
             exit;
         }
@@ -204,7 +210,7 @@ if (isset($_POST['user_history_submit'])) {
     if (!bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
 
         html_draw_top();
-        html_error_msg($lang['accessdeniedexp'], 'admin_user.php', 'get', array('back' => $lang['back']), false, '_self', 'center');
+        html_error_msg($lang['accessdeniedexp'], 'admin_user.php', 'get', array('back' => $lang['back']), array('uid' => $uid), '_self', 'center');
         html_draw_bottom();
         exit;
     }
@@ -228,7 +234,7 @@ if (isset($_POST['user_history_submit'])) {
         }
 
         html_draw_top();
-        html_error_msg($lang['failedtochangepasswd'], 'admin_user.php', 'get', array('back' => $lang['back']), array('uid' => $uid, 'action' => $action), '_self', 'center');
+        html_error_msg($lang['failedtochangepasswd'], 'admin_user.php', 'get', array('back' => $lang['back']), array('uid' => $uid), '_self', 'center');
         html_draw_bottom();
         exit;
     }
@@ -238,7 +244,7 @@ if (isset($_POST['user_history_submit'])) {
     if (!bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
 
         html_draw_top();
-        html_error_msg($lang['accessdeniedexp'], 'admin_users.php', 'get', array('back' => $lang['back']), false, '_self', 'center');
+        html_error_msg($lang['accessdeniedexp'], 'admin_user.php', 'get', array('back' => $lang['back']), array('uid' => $uid), '_self', 'center');
         html_draw_bottom();
         exit;
     }
@@ -253,7 +259,7 @@ if (isset($_POST['user_history_submit'])) {
     }else {
 
         html_draw_top();
-        html_error_msg($lang['failedtodeleteuser'], 'admin_user.php', 'get', array('back' => $lang['back']), array('uid' => $uid, 'action' => $action), '_self', 'center');
+        html_error_msg($lang['failedtodeleteuser'], 'admin_user.php', 'get', array('back' => $lang['back']), array('uid' => $uid), '_self', 'center');
         html_draw_bottom();
         exit;
     }
@@ -272,7 +278,7 @@ if (isset($_POST['user_history_submit'])) {
     }else {
 
         html_draw_top();
-        html_error_msg($lang['failedtodeleteusersposts'], 'admin_user.php', 'get', array('back' => $lang['back']), array('uid' => $uid, 'action' => $action), '_self', 'center');
+        html_error_msg($lang['failedtodeleteusersposts'], 'admin_user.php', 'get', array('back' => $lang['back']), array('uid' => $uid), '_self', 'center');
         html_draw_bottom();
         exit;
     }
@@ -529,7 +535,7 @@ if (isset($_POST['action_submit'])) {
         if (!bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
 
             html_draw_top();
-            html_error_msg($lang['accessdeniedexp'], 'admin_user.php', 'get', array('back' => $lang['back']));
+            html_error_msg($lang['accessdeniedexp'], 'admin_user.php', 'get', array('back' => $lang['back']), array('uid' => $uid));
             html_draw_bottom();
             exit;
         }
@@ -877,7 +883,7 @@ if (isset($_POST['action_submit'])) {
         if (!bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
 
             html_draw_top();
-            html_error_msg($lang['accessdeniedexp'], 'admin_users.php', 'get', array('back' => $lang['back']));
+            html_error_msg($lang['accessdeniedexp'], 'admin_user.php', 'get', array('back' => $lang['back']), array('uid' => $uid));
             html_draw_bottom();
             exit;
         }
@@ -913,11 +919,14 @@ if (isset($_POST['action_submit'])) {
         echo "                      <tr>\n";
         echo "                        <td align=\"left\">{$lang['userdeletewarning']}</td>\n";
         echo "                      </tr>\n";
+        echo "                      <tr>\n";
+        echo "                        <td align=\"left\">&nbsp;</td>\n";
+        echo "                      </tr>\n";
+        echo "                      <tr>\n";
+        echo "                        <td align=\"left\">", form_checkbox('delete_content', 'Y', $lang['alsodeleteusercontent'], false), "</td>\n";
+        echo "                      </tr>\n";
         echo "                    </table>\n";
         echo "                  </td>\n";
-        echo "                </tr>\n";
-        echo "                <tr>\n";
-        echo "                  <td align=\"left\">&nbsp;</td>\n";
         echo "                </tr>\n";
         echo "              </table>\n";
         echo "            </td>\n";
@@ -1016,7 +1025,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 }else if (isset($_GET['profile_updated'])) {
 
-    html_display_success_msg($lang['profileupdated'], '600', 'left');
+    html_display_success_msg($lang['profileupdated'], '600', 'center');
 
 }else if (isset($_GET['signature_updated'])) {
 

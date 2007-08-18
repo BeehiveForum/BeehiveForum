@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folders.php,v 1.132 2007-08-17 22:50:20 decoyduck Exp $ */
+/* $Id: admin_folders.php,v 1.133 2007-08-18 19:42:00 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -326,34 +326,40 @@ echo "                <tr>\n";
 echo "                  <td colspan=\"4\" class=\"subhead\" align=\"left\" nowrap=\"nowrap\">Permissions Key</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\"><b>R</b></td>\n";
-echo "                  <td align=\"left\">{$lang['postreadingallowed']}</td>\n";
-echo "                  <td align=\"left\"><b>W</b></td>\n";
-echo "                  <td align=\"left\">{$lang['postcreationallowed']}</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\"><b>T</b></td>\n";
-echo "                  <td align=\"left\">{$lang['threadcreationallowed']}</td>\n";
-echo "                  <td align=\"left\"><b>E</b></td>\n";
-echo "                  <td align=\"left\">{$lang['posteditingallowed']}</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\"><b>D</b></td>\n";
-echo "                  <td align=\"left\">{$lang['postdeletionallowed']}</td>\n";
-echo "                  <td align=\"left\"><b>A</b></td>\n";
-echo "                  <td align=\"left\">{$lang['attachmentsallowed']}</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\"><b>H</b></td>\n";
-echo "                  <td align=\"left\">{$lang['htmlpostingallowed']}</td>\n";
-echo "                  <td align=\"left\"><b>S</b></td>\n";
-echo "                  <td align=\"left\">{$lang['signatureallowed']}</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\"><b>G</b></td>\n";
-echo "                  <td align=\"left\">{$lang['guestaccessallowed']}</td>\n";
-echo "                  <td align=\"left\"><b>V</b></td>\n";
-echo "                  <td align=\"left\">{$lang['postapprovalrequired']}</td>\n";
+echo "                  <td align=\"center\">\n";
+echo "                    <table width=\"95%\">\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\"><b>R</b></td>\n";
+echo "                        <td align=\"left\">{$lang['postreadingallowed']}</td>\n";
+echo "                        <td align=\"left\"><b>W</b></td>\n";
+echo "                        <td align=\"left\">{$lang['postcreationallowed']}</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\"><b>T</b></td>\n";
+echo "                        <td align=\"left\">{$lang['threadcreationallowed']}</td>\n";
+echo "                        <td align=\"left\"><b>E</b></td>\n";
+echo "                        <td align=\"left\">{$lang['posteditingallowed']}</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\"><b>D</b></td>\n";
+echo "                        <td align=\"left\">{$lang['postdeletionallowed']}</td>\n";
+echo "                        <td align=\"left\"><b>A</b></td>\n";
+echo "                        <td align=\"left\">{$lang['attachmentsallowed']}</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\"><b>H</b></td>\n";
+echo "                        <td align=\"left\">{$lang['htmlpostingallowed']}</td>\n";
+echo "                        <td align=\"left\"><b>S</b></td>\n";
+echo "                        <td align=\"left\">{$lang['signatureallowed']}</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\"><b>G</b></td>\n";
+echo "                        <td align=\"left\">{$lang['guestaccessallowed']}</td>\n";
+echo "                        <td align=\"left\"><b>V</b></td>\n";
+echo "                        <td align=\"left\">{$lang['postapprovalrequired']}</td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" colspan=\"8\">&nbsp;</td>\n";

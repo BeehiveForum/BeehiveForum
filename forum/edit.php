@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.231 2007-08-16 15:38:12 decoyduck Exp $ */
+/* $Id: edit.php,v 1.232 2007-08-18 19:42:00 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -641,7 +641,7 @@ echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden("t_msg", _htmlentities($edit_msg));
 echo "  ", form_input_hidden("t_to_uid", _htmlentities($to_uid));
 echo "  ", form_input_hidden("t_from_uid", _htmlentities($from_uid));
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";

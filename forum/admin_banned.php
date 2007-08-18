@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_banned.php,v 1.62 2007-08-18 12:26:20 decoyduck Exp $ */
+/* $Id: admin_banned.php,v 1.63 2007-08-18 19:42:00 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -426,7 +426,7 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
     echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['bancontrols']}</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
-        html_display_error_array($error_msg_array, '500', 'center');
+        html_display_error_array($error_msg_array, '420', 'center');
     }
 
     echo "<br />\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.461 2007-08-18 15:18:30 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.462 2007-08-18 19:42:01 decoyduck Exp $ */
 
 // British English language file
 
@@ -356,6 +356,7 @@ $lang['viewuseraliases'] = "View User Aliases";
 $lang['nomatches'] = "No matches";
 $lang['deleteposts'] = "Delete Posts";
 $lang['deleteuser'] = "Delete User";
+$lang['alsodeleteusercontent'] = "Also delete all of the content created by this user";
 $lang['userdeletewarning'] = "Are you sure you want to delete the selected user account? Once the account has been deleted it cannot be retrieved and will be lost forever.";
 $lang['usersuccessfullydeleted'] = "User Successfully Deleted";
 $lang['failedtodeleteuser'] = "Failed To Delete User";
@@ -375,6 +376,7 @@ $lang['adminaccesslog'] = "Admin Access Log";
 $lang['adminlogexp'] = "This list shows the last actions sanctioned by users with Admin privileges.";
 $lang['datetime'] = "Date/Time";
 $lang['unknownuser'] = "Unknown user";
+$lang['unknownuseraccount'] = "Unknown user account";
 $lang['unknownfolder'] = "Unknown folder";
 $lang['ip'] = "IP";
 $lang['lastipaddress'] = "Last IP Address";

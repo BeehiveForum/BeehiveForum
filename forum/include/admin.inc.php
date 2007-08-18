@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.129 2007-08-18 15:01:38 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.130 2007-08-18 19:42:00 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -1288,6 +1288,231 @@ function admin_approve_user($uid)
     if (!$result = db_query($sql, $db_admin_approve_user)) return false;
 
     return (db_affected_rows($db_admin_approve_user) > 0);
+}
+
+function admin_delete_user($uid, $delete_content = false)
+{
+    $db_admin_delete_user = db_connect();
+
+    if (!is_numeric($uid)) return false;
+    if (!is_bool($delete_content)) $delete_content = false;
+
+    if ($user_logon = user_get_logon($uid)) {
+
+        if ($delete_content === true) {
+
+            // Get a list of available forums
+
+            if ($forum_prefix_array = forum_get_all_prefixes()) {
+
+                // Loop through all forums and delete all the user data from every forum.
+
+                foreach($forum_prefix_array as $forum_prefix) {
+
+                    // Delete log entries created by the user
+
+                    $sql = "DELETE FROM {$forum_prefix}ADMIN_LOG WHERE UID = '$uid'";
+
+                    if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+
+                    // Delete Links created by the user
+
+                    $sql = "DELETE FROM {$forum_prefix}LINKS WHERE UID = '$uid'";
+
+                    if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+
+                    // Delete Link Votes made by the user
+
+                    $sql = "DELETE FROM {$forum_prefix}LINKS_VOTE WHERE UID = '$uid'";
+
+                    if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+
+                    // Delete Link Comments made by the user
+
+                    $sql = "DELETE FROM {$forum_prefix}LINKS_COMMENT WHERE UID = '$uid'";
+
+                    if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+
+                    // Delete Poll Votes made by the user
+
+                    $sql = "DELETE FROM {$forum_prefix}USER_POLL_VOTES WHERE UID = '$uid'";
+
+                    if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+
+                    // Delete Relationship data for the user and relationships
+                    // with this user made by other users.
+
+                    $sql = "DELETE FROM {$forum_prefix}USER_PEER WHERE UID = '$uid' OR PEER_UID = '$uid'";
+
+                    if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+
+                    // Delete folder preferences set by the user
+
+                    $sql = "DELETE FROM {$forum_prefix}USER_FOLDER WHERE UID = '$uid'";
+
+                    if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+
+                    // Delete User's Preferences
+
+                    $sql = "DELETE FROM {$forum_prefix}USER_PREFS WHERE UID = '$uid'";
+
+                    if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+
+                    // Delete User's Profile.
+
+                    $sql = "DELETE FROM {$forum_prefix}USER_PROFILE WHERE UID = '$uid'";
+
+                    if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+
+                    // Delete User's Signature
+
+                    $sql = "DELETE FROM {$forum_prefix}USER_SIG WHERE UID = '$uid'";
+
+                    if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+
+                    // Delete User's Thread Read Data
+
+                    $sql = "DELETE FROM {$forum_prefix}USER_THREAD WHERE UID = '$uid'";
+
+                    if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+
+                    // Delete User's Tracking data (Post Count, etc.)
+
+                    $sql = "DELETE FROM {$forum_prefix}USER_TRACK WHERE UID = '$uid'";
+
+                    if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+
+                    // Delete Word Filter Entries made by user
+
+                    $sql = "DELETE FROM {$forum_prefix}WORD_FILTER WHERE UID = '$uid'";
+
+                    if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+
+                    // Delete content of posts made by this user
+
+                    $sql = "DELETE FROM {$forum_prefix}POST_CONTENT USING {$forum_prefix}POST_CONTENT ";
+                    $sql.= "LEFT JOIN {$forum_prefix}POST ON ({$forum_prefix}POST.TID = {$forum_prefix}POST_CONTENT.TID ";
+                    $sql.= "AND {$forum_prefix}POST.PID = {$forum_prefix}POST_CONTENT.PID) ";
+                    $sql.= "WHERE {$forum_prefix}POST.FROM_UID = '$uid'";
+
+                    if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+
+                    // Delete the posts made by this user.
+
+                    $sql = "DELETE FROM {$forum_prefix}POST WHERE FROM_UID = '$uid'";
+
+                    if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+
+                    // Delete Threads started by this user.
+
+                    $sql = "DELETE FROM {$forum_prefix}THREAD WHERE BY_UID = '$uid'";
+
+                    if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+                }
+            }
+
+            // Delete Dictionary entries added by user
+
+            $sql = "DELETE FROM DICTIONARY WHERE UID = '$uid'";
+
+            if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+
+            // Delete User Group Entries related to this user.
+
+            $sql = "DELETE FROM GROUP_USERS WHERE UID = '$uid'";
+
+            if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+
+            // Delete User's PM Content
+
+            $sql = "DELETE FROM PM_CONTENT USING PM_CONTENT LEFT JOIN PM ON (PM.MID = PM_CONTENT.MID) ";
+            $sql.= "WHERE ((PM.TYPE & $pm_inbox_items > 0) AND PM.TO_UID = '$uid') ";
+            $sql.= "OR ((PM.TYPE & $pm_sent_items > 0) AND PM.FROM_UID = '$uid' AND PM.SMID = 0) ";
+            $sql.= "OR ((PM.TYPE & $pm_outbox_items > 0) AND PM.FROM_UID = '$uid') ";
+            $sql.= "OR ((PM.TYPE & $pm_saved_out > 0) AND PM.FROM_UID = '$uid') ";
+            $sql.= "OR ((PM.TYPE & $pm_saved_in > 0) AND PM.TO_UID = '$uid') ";
+            $sql.= "OR ((PM.TYPE & $pm_draft_items > 0) AND PM.FROM_UID = '$uid') ";
+
+            if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+
+            // Delete User's PMs.
+
+            $sql = "DELETE FROM PM WHERE ((TYPE & $pm_inbox_items > 0) AND TO_UID = '$uid') ";
+            $sql.= "OR ((TYPE & $pm_sent_items > 0) AND FROM_UID = '$uid' AND SMID = 0) ";
+            $sql.= "OR ((TYPE & $pm_outbox_items > 0) AND FROM_UID = '$uid') ";
+            $sql.= "OR ((TYPE & $pm_saved_out > 0) AND FROM_UID = '$uid') ";
+            $sql.= "OR ((TYPE & $pm_saved_in > 0) AND TO_UID = '$uid') ";
+            $sql.= "OR ((TYPE & $pm_draft_items > 0) AND FROM_UID = '$uid') ";
+
+            if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+
+            // Delete User's PM Search Results
+
+            $sql = "DELETE FROM PM_SEARCH_RESULTS WHERE UID = '$uid'";
+
+            if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+
+            // Delete User's Attachments (doesn't remove the physical files).
+
+            $sql = "DELETE FROM POST_ATTACHMENT_FILES WHERE UID = '$uid'";
+
+            if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+
+            // Delete User's Search Results.
+
+            $sql = "DELETE FROM SEARCH_RESULTS WHERE UID = '$uid'";
+
+            if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+
+            // Delete User's Sessions
+
+            $sql = "DELETE FROM SESSIONS WHERE UID = '$uid'";
+
+            if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+
+            // Delete User's Forum Preferences and Permissions
+
+            $sql = "DELETE FROM USER_FORUM WHERE UID = '$uid'";
+
+            if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+
+            // Delete User's History Data (Logon, Nickname, Email address changes)
+
+            $sql = "DELETE FROM USER_HISTORY WHERE UID = '$uid'";
+
+            if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+
+            // Delete User's Global Preferences
+
+            $sql = "DELETE FROM USER_PREFS WHERE UID = '$uid'";
+
+            if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+
+            // Delete User's Visitor Log Data
+
+            $sql = "DELETE FROM VISITOR_LOG WHERE UID = '$uid'";
+
+            if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+
+            // Add a log entry to show what we've done.
+
+            admin_add_log_entry(DELETE_USER_DATA, array($uid, $user_logon));
+        }
+
+        // Delete the User account.
+
+        $sql = "DELETE FROM USER WHERE UID = '$uid'";
+
+        if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+
+        // Add log entry to show that we've deleted the user account.
+
+        admin_add_log_entry(DELETE_USER, array($uid, $user_logon));
+
+        return true;
+    }
+
+    return false;
 }
 
 function admin_delete_users_posts($uid)

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.214 2007-08-17 22:50:20 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.215 2007-08-18 12:26:20 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -1216,25 +1216,10 @@ if ($table_data = get_table_prefix()) {
     echo "                        <td align=\"left\">", form_checkbox("t_ignoreadmin", USER_PERM_CAN_IGNORE_ADMIN, $lang['usercanignoreadmin'], $user_perms & USER_PERM_CAN_IGNORE_ADMIN), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"center\">\n";
-    echo "                          <table width=\"100%\" class=\"posthead\">\n";
-    echo "                            <tr>\n";
-    echo "                              <td align=\"left\">&nbsp;</td>\n";
-    echo "                            </tr>\n";
-    echo "                            <tr>\n";
-    echo "                              <td align=\"center\">\n";
-    echo "                                <table class=\"text_captcha_error\" width=\"95%\">\n";
-    echo "                                  <tr>\n";
-    echo "                                    <td align=\"left\" width=\"20\"><img src=\"", style_image('warning.png'), "\" alt=\"\" /></td>\n";
-    echo "                                    <td align=\"left\">{$lang['usergroupwarning']}</td>\n";
-    echo "                                  </tr>\n";
-    echo "                                </table>\n";
-    echo "                              </td>\n";
-    echo "                            </tr>\n";
-    echo "                            <tr>\n";
-    echo "                              <td align=\"left\">&nbsp;</td>\n";
-    echo "                            </tr>\n";
-    echo "                          </table>\n";
+    echo "                        <td>";
+
+    html_display_warning_msg($lang['usergroupwarning'], '95%', 'center');
+
     echo "                        </td>\n";
     echo "                      </tr>\n";
     echo "                    </table>\n";
@@ -1408,25 +1393,10 @@ if ($folder_array = perm_user_get_folders($uid)) {
     echo "                  </td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"center\">\n";
-    echo "                    <table width=\"95%\" class=\"posthead\">\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\">&nbsp;</td>\n";
-    echo "                      </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"center\">\n";
-    echo "                          <table class=\"text_captcha_error\" width=\"95%\">\n";
-    echo "                            <tr>\n";
-    echo "                              <td align=\"left\" width=\"20\"><img src=\"", style_image('warning.png'), "\" alt=\"\" /></td>\n";
-    echo "                              <td align=\"left\">{$lang['usergroupwarning']}</td>\n";
-    echo "                            </tr>\n";
-    echo "                          </table>\n";
-    echo "                        </td>\n";
-    echo "                      </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\">&nbsp;</td>\n";
-    echo "                      </tr>\n";
-    echo "                    </table>\n";
+    echo "                  <td>\n";
+
+    html_display_warning_msg($lang['usergroupwarning'], '95%', 'center');
+
     echo "                  </td>\n";
     echo "                </tr>\n";
     echo "              </table>\n";

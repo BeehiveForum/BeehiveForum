@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.122 2007-08-17 22:50:20 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.123 2007-08-18 12:26:20 decoyduck Exp $ */
 
 /**
 * Displays and handles the Forum Settings page
@@ -526,28 +526,22 @@ if (!isset($forum_settings['access_level']) || $forum_settings['access_level'] >
 
     }elseif ($forum_settings['access_level'] == FORUM_PASSWD_PROTECTED) {
 
-        if (!forum_get_password($forum_settings['fid'])) {
-
-            echo "                      <tr>\n";
-            echo "                        <td align=\"left\">&nbsp;</td>\n";
-            echo "                        <td align=\"left\">&nbsp;</td>\n";
-            echo "                      </tr>\n";
-            echo "                      <tr>\n";
-            echo "                        <td align=\"center\" colspan=\"2\">\n";
-            echo "                          <table class=\"text_captcha_error\" width=\"95%\">\n";
-            echo "                            <tr>\n";
-            echo "                              <td align=\"left\" width=\"20\" valign=\"top\"><img src=\"", style_image('warning.png'), "\" alt=\"\" /></td>\n";
-            echo "                              <td align=\"left\">{$lang['passwordprotectwarning']}</td>\n";
-            echo "                            </tr>\n";
-            echo "                          </table>\n";
-            echo "                        </td>\n";
-            echo "                      </tr>\n";
-        }
-
         echo "                      <tr>\n";
         echo "                        <td align=\"left\">&nbsp;</td>\n";
         echo "                        <td align=\"left\">&nbsp;</td>\n";
         echo "                      </tr>\n";
+
+        if (!forum_get_password($forum_settings['fid'])) {
+
+            echo "                      <tr>\n";
+            echo "                        <td align=\"center\" colspan=\"2\">\n";
+
+            html_display_warning_msg($lang['passwordprotectwarning'], '95%', 'center');
+
+            echo "                        </td>\n";
+            echo "                      </tr>\n";
+        }
+
         echo "                      <tr>\n";
         echo "                        <td align=\"center\" colspan=\"2\">", form_submit("changepassword", $lang['changepassword']), "</td>\n";
         echo "                      </tr>\n";
@@ -564,20 +558,13 @@ if (!isset($forum_settings['access_level']) || $forum_settings['access_level'] >
     echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_35']}</p>\n";
     echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_36']}</p>\n";
     echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_37']}</p>\n";
-    echo "                          <br />\n";
-    echo "                          <table class=\"text_captcha_error\" width=\"100%\">\n";
-    echo "                            <tr>\n";
-    echo "                              <td align=\"left\" width=\"20\" valign=\"top\"><img src=\"", style_image('warning.png'), "\" alt=\"\" /></td>\n";
-    echo "                              <td align=\"left\">{$lang['forum_settings_help_38']}</td>\n";
-    echo "                            </tr>\n";
-    echo "                          </table>\n";
+
+    html_display_warning_msg($lang['forum_settings_help_38'], '95%', 'center');
+
     echo "                        </td>\n";
     echo "                      </tr>\n";
     echo "                    </table>\n";
     echo "                  </td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"center\">&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "              </table>\n";
     echo "            </td>\n";

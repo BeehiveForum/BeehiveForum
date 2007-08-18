@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_banned.php,v 1.61 2007-08-16 21:24:06 decoyduck Exp $ */
+/* $Id: admin_banned.php,v 1.62 2007-08-18 12:26:20 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -485,49 +485,14 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
 
         if ($affected_sessions_array = check_affected_sessions($add_new_ban_type, $add_new_ban_data)) {
 
-            echo "        <br />\n";
-            echo "        <table width=\"100%\">\n";
-            echo "          <tr>\n";
-            echo "            <td align=\"center\">\n";
-            echo "              <table class=\"text_captcha_error\" width=\"100%\">\n";
-            echo "                <tr>\n";
-            echo "                  <td align=\"left\"><img src=\"", style_image('warning.png'), "\" width=\"16\" height=\"16\" alt=\"warning\" />&nbsp;{$lang['affectsessionwarnadd']}:</td>\n";
-            echo "                </tr>\n";
-            echo "                <tr>\n";
-            echo "                  <td align=\"left\">\n";
-            echo "                    <ul>\n";
+            $affected_sessions_text = implode('</li><li>', array_map('admin_prepare_affected_sessions', $affected_sessions_array));
+            $affected_sessions_text = sprintf("{$lang['affectsessionwarnadd']}<ul><li>%s</li></ul>", $affected_sessions_text);
 
-            foreach($affected_sessions_array as $affected_session) {
-
-                if ($affected_session['UID'] > 0) {
-                    echo "                    <li><a href=\"user_profile.php?webtag=$webtag&amp;uid={$affected_session['UID']};\" target=\"_blank\" onclick=\"return openProfile({$affected_session['UID']}, '$webtag')\">", word_filter_add_ob_tags(format_user_name($affected_session['LOGON'], $affected_session['NICKNAME'])), "</a></li>\n";
-                }else {
-                    echo "                    <li>", word_filter_add_ob_tags(format_user_name($affected_session['LOGON'], $affected_session['NICKNAME'])), "</li>\n";
-                }
-            }
-
-            echo "                    </ul>\n";
-            echo "                  </td>\n";
-            echo "                </tr>\n";
-            echo "              </table>\n";
-            echo "            </td>\n";
-            echo "          </tr>\n";
-            echo "        </table>\n";
+            html_display_warning_msg($affected_sessions_text, '420', 'center');
 
         }else {
 
-            echo "        <br />\n";
-            echo "        <table width=\"100%\">\n";
-            echo "          <tr>\n";
-            echo "            <td align=\"center\">\n";
-            echo "              <table class=\"text_captcha_error\" width=\"100%\">\n";
-            echo "                <tr>\n";
-            echo "                  <td align=\"left\"><img src=\"", style_image('warning.png'), "\" width=\"16\" height=\"16\" alt=\"warning\" />&nbsp;{$lang['noaffectsessionwarn']}</td>\n";
-            echo "                </tr>\n";
-            echo "              </table>\n";
-            echo "            </td>\n";
-            echo "          </tr>\n";
-            echo "        </table>\n";
+            html_display_warning_msg($lang['noaffectsessionwarn'], '420', 'center');
         }
     }
 
@@ -664,49 +629,14 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
 
     if ($affected_sessions_array = check_affected_sessions($ban_data_array['BANTYPE'], $ban_data_array['BANDATA'])) {
 
-        echo "        <br />\n";
-        echo "        <table width=\"100%\">\n";
-        echo "          <tr>\n";
-        echo "            <td align=\"center\">\n";
-        echo "              <table class=\"text_captcha_error\" width=\"100%\">\n";
-        echo "                <tr>\n";
-        echo "                  <td align=\"left\"><img src=\"", style_image('warning.png'), "\" width=\"16\" height=\"16\" alt=\"warning\" />&nbsp;{$lang['affectsessionwarnadd']}:</td>\n";
-        echo "                </tr>\n";
-        echo "                <tr>\n";
-        echo "                  <td align=\"left\">\n";
-        echo "                    <ul>\n";
+        $affected_sessions_text = implode('</li><li>', array_map('admin_prepare_affected_sessions', $affected_sessions_array));
+        $affected_sessions_text = sprintf("{$lang['affectsessionwarnadd']}<ul><li>%s</li></ul>", $affected_sessions_text);
 
-        foreach($affected_sessions_array as $affected_session) {
-
-            if ($affected_session['UID'] > 0) {
-                echo "                      <li><a href=\"user_profile.php?webtag=$webtag&amp;uid={$affected_session['UID']}\" target=\"_blank\" onclick=\"return openProfile({$affected_session['UID']}, '$webtag')\">", word_filter_add_ob_tags(format_user_name($affected_session['LOGON'], $affected_session['NICKNAME'])), "</a></li>\n";
-            }else {
-                echo "                      <li>", word_filter_add_ob_tags(format_user_name($affected_session['LOGON'], $affected_session['NICKNAME'])), "</li>\n";
-            }
-        }
-
-        echo "                    </ul>\n";
-        echo "                  </td>\n";
-        echo "                </tr>\n";
-        echo "              </table>\n";
-        echo "            </td>\n";
-        echo "          </tr>\n";
-        echo "        </table>\n";
+        html_display_warning_msg($affected_sessions_text, '420', 'center');
 
     }else {
 
-        echo "        <br />\n";
-        echo "        <table width=\"100%\">\n";
-        echo "          <tr>\n";
-        echo "            <td align=\"center\">\n";
-        echo "              <table class=\"text_captcha_error\" width=\"100%\">\n";
-        echo "                <tr>\n";
-        echo "                  <td align=\"left\"><img src=\"", style_image('warning.png'), "\" width=\"16\" height=\"16\" alt=\"warning\" />&nbsp;{$lang['noaffectsessionwarn']}</td>\n";
-        echo "                </tr>\n";
-        echo "              </table>\n";
-        echo "            </td>\n";
-        echo "          </tr>\n";
-        echo "        </table>\n";
+        html_display_warning_msg($lang['noaffectsessionwarn'], '420', 'center');
     }
 
     echo "      </td>\n";

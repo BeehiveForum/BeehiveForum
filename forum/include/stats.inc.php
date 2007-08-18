@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.81 2007-08-01 20:23:03 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.82 2007-08-18 15:01:38 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -35,6 +35,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "folder.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
+include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 
 function update_stats()
@@ -77,7 +78,7 @@ function update_stats()
 
                 if (!$result = db_query($sql, $db_update_stats)) return false;
             }
-            
+
             return true;
 
         }else {
@@ -144,7 +145,7 @@ function get_active_users()
     $sql.= "AND SESSIONS.FID = '$forum_fid'";
 
     if (!$result = db_query($sql, $db_get_active_users)) return false;
-    
+
     list($stats['GUESTS']) = db_fetch_array($result, DB_RESULT_NUM);
 
     // Curent active users
@@ -369,7 +370,7 @@ function get_newest_user()
     if (!$result = db_query($sql, $db_get_newest_user)) return false;
 
     list($newest_user_uid) = db_fetch_array($result, DB_RESULT_NUM);
-    
+
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME ";
     $sql.= "FROM USER LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
@@ -417,7 +418,7 @@ function get_post_tallys($start_stamp, $end_stamp)
     $sql.= "AND POST.CREATED < FROM_UNIXTIME($end_stamp)";
 
     if (!$result = db_query($sql, $db_get_month_post_tallys)) return false;
-    
+
     list($post_tallys['post_count']) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT POST.FROM_UID AS UID, USER.LOGON, USER.NICKNAME, ";

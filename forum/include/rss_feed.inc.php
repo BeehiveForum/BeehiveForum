@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: rss_feed.inc.php,v 1.41 2007-08-01 20:23:03 decoyduck Exp $ */
+/* $Id: rss_feed.inc.php,v 1.42 2007-08-18 15:01:38 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -40,6 +40,7 @@ include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "post.inc.php");
+include_once(BH_INCLUDE_PATH. "session.inc.php");
 
 class rss_item
 {
@@ -267,7 +268,7 @@ function rss_check_feeds()
                 if (!rss_thread_exist($rss_feed['RSSID'], $rss_item->link)) {
 
                     $rss_title = strip_tags($rss_item->title);
-                    
+
                     $rss_quote_source = "{$rss_feed['NAME']}: ";
                     $rss_quote_source.= _htmlentities($rss_title);
 
@@ -360,7 +361,7 @@ function rss_get_feeds($offset)
 
             $rss_feed_array[] = $rss_feed_data;
         }
-    
+
     }else if ($rss_feed_count > 0) {
 
         $offset = floor(($rss_feed_count - 1) / 10) * 10;

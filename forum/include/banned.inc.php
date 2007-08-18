@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: banned.inc.php,v 1.24 2007-08-01 20:23:01 decoyduck Exp $ */
+/* $Id: banned.inc.php,v 1.25 2007-08-18 15:01:38 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -38,6 +38,8 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "ip.inc.php");
+include_once(BH_INCLUDE_PATH. "lang.inc.php");
+include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 function ban_check($user_sess, $user_is_guest = false)
@@ -72,19 +74,19 @@ function ban_check($user_sess, $user_is_guest = false)
     if ($user_is_guest === false) {
 
         if (isset($user_sess['LOGON']) && strlen(trim($user_sess['LOGON'])) > 0) {
-            
+
             $logon = db_escape_string($user_sess['LOGON']);
             $ban_check_array[] = "('$logon' LIKE BANDATA AND BANTYPE = $ban_type_logon)";
         }
 
         if (isset($user_sess['NICKNAME']) && strlen(trim($user_sess['NICKNAME'])) > 0) {
-            
+
             $nickname = db_escape_string($user_sess['NICKNAME']);
             $ban_check_array[] = "('$nickname' LIKE BANDATA AND BANTYPE = $ban_type_nick)";
         }
 
         if (isset($user_sess['EMAIL']) && strlen(trim($user_sess['EMAIL'])) > 0) {
-            
+
             $email = db_escape_string($user_sess['EMAIL']);
             $ban_check_array[] = "('$email' LIKE BANDATA AND BANTYPE = $ban_type_email)";
         }
@@ -102,7 +104,7 @@ function ban_check($user_sess, $user_is_guest = false)
         if (!$result = db_query($sql, $db_ban_check)) return false;
 
         list($ban_count) = db_fetch_array($result, DB_RESULT_NUM);
-        
+
         if ($ban_count > 0) {
 
             if (!strstr(php_sapi_name(), 'cgi')) {
@@ -284,7 +286,7 @@ function check_ban_data($ban_type, $ban_data, $check_ban_id = false)
 
     if (!is_numeric($ban_type)) return false;
     if (!is_numeric($check_ban_id)) $ban_id = false;
-    
+
     $ban_data = db_escape_string($ban_data);
 
     if (!$table_data = get_table_prefix()) return false;
@@ -362,7 +364,7 @@ function check_affected_sessions($ban_type, $ban_data)
 
             if (!isset($user_session['LOGON'])) $user_session['LOGON'] = $lang['unknownuser'];
             if (!isset($user_session['NICKNAME'])) $user_session['NICKNAME'] = "";
-        
+
             $affected_sessions[$user_session['UID']] = $user_session;
         }
     }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_password.php,v 1.16 2007-07-19 22:14:13 decoyduck Exp $ */
+/* $Id: forum_password.php,v 1.17 2007-08-18 15:01:38 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -42,6 +42,7 @@ include_once(BH_INCLUDE_PATH. "install.inc.php");
 check_install();
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
+include_once(BH_INCLUDE_PATH. "format.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "header.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
@@ -124,7 +125,7 @@ if (isset($_POST['forum_password'])) {
 // Check for a returning page.
 
 if (isset($_POST['final_uri']) && strlen(trim(_stripslashes($_POST['final_uri']))) > 0) {
-    
+
     $final_uri = basename(trim(_stripslashes($_POST['final_uri'])));
     $redirect_uri = "index.php?webtag=$webtag&final_uri=". rawurlencode($final_uri);
 
@@ -151,7 +152,7 @@ if (isset($redirect_uri) && strlen(trim($redirect_uri)) > 0) {
 // access the forum.
 
 if (isset($_POST['remember_password']) && $_POST['remember_password'] == "Y") {
-    
+
     bh_setcookie("bh_{$webtag}_password", $forum_password, time() + YEAR_IN_SECONDS);
     bh_setcookie("bh_{$webtag}_passhash", $forum_passhash, time() + YEAR_IN_SECONDS);
 

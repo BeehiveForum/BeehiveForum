@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.459 2007-08-18 12:26:20 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.460 2007-08-18 15:01:38 decoyduck Exp $ */
 
 // British English language file
 
@@ -335,7 +335,6 @@ $lang['manageuser'] = "Manage User";
 $lang['manageusers'] = "Manage Users";
 $lang['userstatusforforum'] = "User Status for %s";
 $lang['userdetails'] = "User Details";
-$lang['successfullyupdateduserdetails'] = "Successfully Updated User Details";
 $lang['warning_caps'] = "WARNING";
 $lang['userdeleteallpostswarning'] = "Are you sure you want to delete all of the selected user's posts? Once the posts are deleted they cannot be retrieved and will be lost forever.";
 $lang['postssuccessfullydeleted'] = "Posts were successfully deleted.";
@@ -350,21 +349,16 @@ $lang['changednicknamefromto'] = "Changed Nickname from %s to %s";
 $lang['changedemailfromto'] = "Changed Email from %s to %s";
 $lang['successfullycleareduserhistory'] = "Successfully cleared user history";
 $lang['failedtoclearuserhistory'] = "Failed to clear user history";
-$lang['usersettingssuccessfullyupdated'] = "User Settings Successfully Updated";
-$lang['failedtoupdateusersettings'] = "Failed To Update User Settings";
 $lang['successfullychangedpassword'] = "Successfully Changed Password";
 $lang['failedtochangepasswd'] = "Failed To Change Password";
 $lang['viewuserhistory'] = "View User History";
 $lang['viewuseraliases'] = "View User Aliases";
 $lang['nomatches'] = "No matches";
 $lang['deleteposts'] = "Delete Posts";
-$lang['deleteallusersposts'] = "Delete all of this user's posts";
 $lang['deleteuser'] = "Delete User";
 $lang['userdeletewarning'] = "Are you sure you want to delete the selected user account? Once the account has been deleted it cannot be retrieved and will be lost forever.";
-$lang['deleteuseraccount'] = "Delete User Account";
 $lang['usersuccessfullydeleted'] = "User Successfully Deleted";
 $lang['failedtodeleteuser'] = "Failed To Delete User";
-$lang['noattachmentsforuser'] = "No attachments for this user";
 $lang['forgottenpassworddesc'] = "If this user has forgotten their password you can reset it for them here.";
 $lang['manageusersexp'] = "This list shows a selection of users who have logged on to your forum, sorted by %s. To alter a user's permissions click their name.";
 $lang['userfilter'] = "User filter";
@@ -443,7 +437,6 @@ $lang['successfullyremovedselectedfolders'] = "Successfully removed selected fol
 $lang['successfullyeditedfolder'] = "Successfully edited folder";
 $lang['failedtocreatenewfolder'] = "Failed to create new folder";
 $lang['failedtodeletefolder'] = "Failed to delete folder.";
-$lang['folderupdatedsuccessfully'] = "Folder updated successfully";
 $lang['failedtoupdatefolder'] = "Failed to update folder";
 $lang['cannotdeletefolderwiththreads'] = "Cannot delete folders that still contain threads.";
 $lang['forumisnotrestricted'] = "Forum is not restricted";
@@ -496,7 +489,6 @@ $lang['postasignature'] = "Post a signature";
 $lang['editforumlinks'] = "Edit Forum Links";
 $lang['editforumlinks_exp'] = "Use this page to add links to the drop-down list displayed in the top-right of the forum frameset. If no links are set, the drop-down list will not be displayed.";
 $lang['notoplevellinktitlespecified'] = "No top level link title specified";
-$lang['toplinktitlesuccessfullyupdated'] = "Top level link title successfully updated";
 $lang['youmustenteralinktitle'] = "You must enter a link title";
 $lang['alllinkurismuststartwithaschema'] = "All link URIs must start with a schema (i.e. http://, ftp://, irc://)";
 $lang['noexistingforumlinksfound'] = "There are no existing forum links. To add a forum link click the button below.";
@@ -508,9 +500,6 @@ $lang['successfullyaddednewforumlink'] = "Successfully added new forum link";
 $lang['successfullyeditedforumlink'] = "Successfully edited forum link";
 $lang['invalidlinkidorlinknotfound'] = "Invalid link id or link not found";
 $lang['successfullyremovedselectedforumlinks'] = "Successfully removed selected links";
-$lang['failedtoremoveforumlinks'] = "Failed to remove selected forum links";
-$lang['failedtoaddnewforumlink'] = "Failed to add new forum link";
-$lang['failedtoupdateforumlink'] = "Failed to update forum link";
 $lang['toplinkcaption'] = "Top link caption";
 $lang['allowguestaccess'] = "Allow Guest Access";
 $lang['searchenginespidering'] = "Search Engine Spidering";
@@ -573,9 +562,7 @@ $lang['requirepostapproval'] = "Require Post Approval";
 $lang['adminforumtoolsusercounterror'] = "There must be at least 1 user with admin tools and forum tools access on all forums!";
 $lang['postcount'] = "Post Count";
 $lang['resetpostcount'] = "Reset Post Count";
-$lang['successfullyresetpostcount'] = "Successfully Reset Post Count";
 $lang['failedtoresetuserpostcount'] = "Failed To Reset Post Count";
-$lang['userpostcountsuccessfullychanged'] = "User Post Count Successfully Changed";
 $lang['failedtochangeuserpostcount'] = "Failed To Change User Post Count";
 $lang['postapprovalqueue'] = "Post Approval Queue";
 $lang['nopostsawaitingapproval'] = "No posts are awaiting approval";
@@ -597,7 +584,6 @@ $lang['moreadminoptions'] = "More Admin Options";
 
 $lang['changedstatusforuser'] = "Changed user status for '%s'";
 $lang['changedpasswordforuser'] = "Changed password for '%s'";
-$lang['failedtoupdatepassword'] = "Failed to update password.";
 $lang['changedforumaccess'] = "Changed forum access permissions for '%s'";
 $lang['deletedallusersposts'] = "Deleted all posts for '%s'";
 
@@ -878,7 +864,6 @@ $lang['passedchangedexp'] = "Your password has been changed.";
 $lang['updatefailed'] = "Update failed";
 $lang['passwdsdonotmatch'] = "Passwords do not match.";
 $lang['newandoldpasswdarethesame'] = "New and old passwords are the same.";
-$lang['allfieldsrequired'] = "All fields are required.";
 $lang['requiredinformationnotfound'] = "Required information not found";
 $lang['forgotpasswd'] = "Forgot password";
 $lang['resetpassword'] = "Reset Password";
@@ -964,7 +949,6 @@ $lang['passwdresetemailsent'] = "Password reset e-mail sent";
 $lang['passwdresetexp'] = "You should shortly receive an e-mail containing instructions for resetting your password.";
 $lang['validusernamerequired'] = "A valid username is required";
 $lang['forgottenpasswd'] = "Forgot password";
-$lang['forgotpasswdexp'] = "If you have forgotten your password, you can request to have it reset by entering your logon name below. Instructions on how to reset your password will be sent to your registered email address.";
 $lang['couldnotsendpasswordreminder'] = "Could not send password reminder. Please contact the forum owner.";
 $lang['request'] = "Request";
 
@@ -1001,7 +985,6 @@ $lang['mustspecifyvalidfolder'] = "You must specify a valid folder!";
 $lang['mustspecifyfolder'] = "You must specify a folder!";
 $lang['successfullyaddedlinkname'] = "Successfully added link '%s'";
 $lang['failedtoaddlink'] = "Failed to add link";
-$lang['successfullyaddedfoldername'] = "Successfully added folder '%s'";
 $lang['failedtoaddfolder'] = "Failed to add folder";
 $lang['addlink'] = "Add a link";
 $lang['addinglinkin'] = "Adding link in";
@@ -1850,7 +1833,6 @@ $lang['rssfeeduserauthentication'] = "RSS Feed does not support HTTP user authen
 $lang['successfullyremovedselectedfeeds'] = "Successfully removed selected feeds";
 $lang['successfullyaddedfeed'] = "Successfully added new feed";
 $lang['successfullyeditedfeed'] = "Successfully edited feed";
-$lang['successfullydeletedfeed'] = "Successfully deleted feed";
 $lang['failedtoremovefeeds'] = "Failed to remove some or all of the selected feeds";
 $lang['failedtoaddnewrssfeed'] = "Failed to add new RSS Feed";
 $lang['failedtoupdaterssfeed'] = "Failed to update RSS Feed";

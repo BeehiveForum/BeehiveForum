@@ -646,7 +646,7 @@ a {
 .dictionary_best_selection, .dictionary_change_to,
 .post_folder_dropdown, .thread_title, .post_content,
 .signature_content, .edit_signature_content, .to_uid_dropdown,
-.recipient_dropdown, .recent_user_dropdown,
+.recipient_dropdown, .recent_user_dropdown, .admin_options_dropdown,
 .user_in_thread_dropdown, .user_pref_field, 
 .user_pref_dob_dropdown, .user_pref_dropdown {
     font-family: verdana, arial, helvetica, sans-serif;
@@ -1277,4 +1277,35 @@ a {
 
 .post_options_menu {
    padding: 5px 10px 10px 5px;
+}
+
+.admin_options_dropdown {
+    width: 300px;
+}
+
+.error_msg {    
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-size: 9pt;
+    background-color: #FDFC9F;
+    border: 1px solid #000000;
+    padding: 10px;
+    margin: 10px 0px 10px 0px;
+}
+
+.success_msg {
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-size: 9pt;
+    background-color: #FDFC9F;
+    border: 1px solid #000000;
+    padding: 10px;
+    margin: 10px 0px 10px 0px;
+}
+
+.warning_msg {
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-size: 9pt;
+    background-color: #FDFC9F;
+    border: 1px solid #000000;
+    padding: 10px;
+    margin: 10px 0px 10px 0px;
 }

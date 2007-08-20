@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.154 2007-08-09 22:55:43 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.155 2007-08-20 17:42:20 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -88,6 +88,12 @@ $webtag = get_webtag($webtag_search);
 // Load language file
 
 $lang = load_language_file();
+
+// Array to hold error messages
+
+$error_msg_array = array();
+
+// Check we have permission to access this page.
 
 if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
@@ -167,30 +173,40 @@ if ($table_data = get_table_prefix()) {
     echo "<h1>{$lang['admin']} &raquo; {$lang['manageusers']}</h1>\n";
 }
 
+echo sprintf("<p>{$lang['manageusersexp']}</p>", $sort_by_array[$sort_by]);
+
 if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
     if (isset($_POST['kick_submit'])) {
+
+        $valid = true;
 
         if (isset($_POST['user_update']) && is_array($_POST['user_update'])) {
 
             $kick_users = preg_grep("/^[0-9]+$/", array_keys($_POST['user_update']));
 
-            $kick_user_success = array();
+            $kick_user_success_array = array();
 
             foreach($kick_users as $user_uid) {
 
-                if ($user_logon = user_get_logon($user_uid)) {
+                if ($valid && $user_logon = user_get_logon($user_uid)) {
 
                     if (admin_session_end($user_uid)) {
 
                         admin_add_log_entry(END_USER_SESSION, $user_logon);
-                        $kick_user_success[] = "<a href=\"user_profile.php?webtag=$webtag&amp;uid=$user_uid\" target=\"_blank\" onclick=\"return openProfile($user_uid, '$webtag')\">$user_logon</a>";
+
+                    }else {
+
+                        $error_msg_array[] = sprintf($lang['failedtoendsessionforuser'], $user_logon);
+                        $valid = false;
                     }
                 }
             }
 
-            if (sizeof($kick_user_success) > 0) {
-                echo "<h2>{$lang['sessionsuccessfullyended']}: ", implode(", ", $kick_user_success), "</h2>\n";
+            if ($valid) {
+
+                header_redirect("admin_users.php?webtag=$webtag&page=$page&kicked=true");
+                exit;
             }
         }
 
@@ -198,33 +214,54 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
         if (forum_get_setting('require_user_approval', 'Y')) {
 
+            $valid = true;
+
             if (isset($_POST['user_update']) && is_array($_POST['user_update'])) {
 
                 $approve_users = preg_grep("/^[0-9]+$/", array_keys($_POST['user_update']));
 
-                $approved_user_success = array();
+                $approved_user_success_array = array();
 
                 foreach($approve_users as $user_uid) {
 
-                    if ($user_logon = user_get_logon($user_uid)) {
+                    if ($valid && $user_logon = user_get_logon($user_uid)) {
 
                         if (admin_approve_user($user_uid)) {
 
                             admin_add_log_entry(APPROVED_USER, $user_logon);
-                            $approved_user_success[] = "<a href=\"user_profile.php?webtag=$webtag&amp;uid=$user_uid\" target=\"_blank\" onclick=\"return openProfile($user_uid, '$webtag')\">$user_logon</a>";
+
+                        }else {
+
+                            $error_msg_array[] = sprintf($lang['failedtoapproveuser'], $user_logon);
+                            $valid = false;
                         }
                     }
                 }
 
-                if (sizeof($approved_user_success) > 0) {
-                    echo "<h2>{$lang['successfullyapproveduser']}: ", implode(", ", $approved_user_success), "</h2>\n";
+                if ($valid) {
+
+                    header_redirect("admin_users.php?webtag=$webtag&page=$page&approved=true");
+                    exit;
                 }
             }
         }
     }
 }
 
-echo sprintf("<p>{$lang['manageusersexp']}</p>", $sort_by_array[$sort_by]);
+if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+
+    html_display_error_array($error_msg_array, '86%', 'center');
+
+}else if (isset($_GET['kicked'])) {
+
+    html_display_success_msg($lang['successfullyendedusersessionsforselectedusers'], '86%', 'center');
+
+}elseif (isset($_GET['approved'])) {
+
+    html_display_success_msg($lang['successfullyapprovedselectedusers'], '86%', 'center');
+}
+
+echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form action=\"admin_users.php\" method=\"post\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";

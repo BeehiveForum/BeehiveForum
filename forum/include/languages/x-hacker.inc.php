@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.241 2007-08-18 15:01:38 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.242 2007-08-20 17:42:20 decoyduck Exp $ */
 
 // British English language file
 
@@ -414,7 +414,7 @@ $lang['fieldtypeexample1'] = "fOr r4di0 8uT+on\$ And DRoP D0wN f1ELd\$ J00 N33D 
 $lang['fieldtypeexample2'] = "ex4mpLE: to CR34+E 4 b4SIC 9EnD3r R4d1o 8U+T0NS, w1+H TW0 \$el3C+10n\$ PHor M@le AnD FEm4L3, J00 W0Uld En+3r: <b>gEnD3r:mAl3;F3M@L3</b> iN The I+3M N@M3 PHI3LD.";
 $lang['editedwordfilter'] = "eDI+3d WOrD FilTEr";
 $lang['editedforumsettings'] = "eDI+ED PhOrum sE+T1nG5";
-$lang['sessionsuccessfullyended'] = "suCC35\$PhULly ENDEd S3\$\$10nS F0r s3L3CtED u\$3r\$";
+$lang['successfullyendedusersessionsforselectedusers'] = "suCC35\$PhULly ENDEd S3\$\$10nS F0r s3L3CtED u\$3r\$";
 $lang['matchedtext'] = "matCh3D TEx+";
 $lang['replacementtext'] = "r3Pl4c3MEnT T3XT";
 $lang['preg'] = "pR3G";

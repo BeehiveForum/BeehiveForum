@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.462 2007-08-18 19:42:01 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.463 2007-08-20 17:42:20 decoyduck Exp $ */
 
 // British English language file
 
@@ -416,7 +416,8 @@ $lang['fieldtypeexample1'] = "For Radio Buttons and Drop Down Fields you need to
 $lang['fieldtypeexample2'] = "Example: To create a basic Gender radio buttons, with two selections for Male and Female, you would enter: <b>Gender:Male;Female</b> in the Item Name field.";
 $lang['editedwordfilter'] = "Edited Word Filter";
 $lang['editedforumsettings'] = "Edited Forum Settings";
-$lang['sessionsuccessfullyended'] = "Successfully ended sessions for selected users";
+$lang['successfullyendedusersessionsforselectedusers'] = "Successfully ended sessions for selected users";
+$lang['failedtoendsessionforuser'] = "Failed to end session for user %s";
 $lang['matchedtext'] = "Matched Text";
 $lang['replacementtext'] = "Replacement Text";
 $lang['preg'] = "PREG";
@@ -569,7 +570,8 @@ $lang['failedtochangeuserpostcount'] = "Failed To Change User Post Count";
 $lang['postapprovalqueue'] = "Post Approval Queue";
 $lang['nopostsawaitingapproval'] = "No posts are awaiting approval";
 $lang['approveselected'] = "Approve selected";
-$lang['successfullyapproveduser'] = "Successfully approved selected users";
+$lang['successfullyapprovedselecteduser'] = "Successfully approved selected users";
+$lang['failedtoapproveuser'] = "Failed to approve user %s";
 $lang['kickselected'] = "Kick selected";
 $lang['visitorlog'] = "Visitor Log";
 $lang['novisitorslogged'] = "No Visitors Logged";

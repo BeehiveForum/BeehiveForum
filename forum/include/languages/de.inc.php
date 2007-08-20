@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.40 2007-08-18 15:01:38 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.41 2007-08-20 17:42:20 decoyduck Exp $ */
 
 // British English language file
 
@@ -420,7 +420,7 @@ $lang['fieldtypeexample1'] = "Fuer Radio-Buttons und Drop-Down-Felder benoetigst
 $lang['fieldtypeexample2'] = "Beispiel: um einen Geschlechts-Radio-Button zu erstellen mit den 2 Auswahlmoeglichkeiten Maennlich und Weiblich, musst Du eingeben: <b>Geschlecht:Maennlich;Weiblich</b> im Eintrags-Namensfeld.";
 $lang['editedwordfilter'] = "Editierter Wortfilter";
 $lang['editedforumsettings'] = "Editierte Foreneinstellungen";
-$lang['sessionsuccessfullyended'] = "Sitzung erfolgreich beendet fuer Benutzer";
+$lang['successfullyendedusersessionsforselectedusers'] = "Sitzung erfolgreich beendet fuer Benutzer";
 $lang['matchedtext'] = "Gefundener Text";
 $lang['replacementtext'] = "Ersetzter Text";
 $lang['preg'] = "PREG";

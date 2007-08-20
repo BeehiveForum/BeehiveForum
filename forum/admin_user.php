@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.217 2007-08-18 19:51:06 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.218 2007-08-20 17:42:20 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -603,7 +603,7 @@ if (isset($_GET['action']) && strlen(trim(_stripslashes($_GET['action']))) > 0) 
         echo "                </tr>\n";
         echo "                <tr>\n";
         echo "                  <td align=\"center\">\n";
-        echo "                    <table width=\"90%\" class=\"posthead\">\n";
+        echo "                    <table width=\"95%\" class=\"posthead\">\n";
         echo "                      <tr>\n";
         echo "                        <td align=\"left\">{$lang['forgottenpassworddesc']}</td>\n";
         echo "                      </tr>\n";
@@ -612,7 +612,7 @@ if (isset($_GET['action']) && strlen(trim(_stripslashes($_GET['action']))) > 0) 
         echo "                </tr>\n";
         echo "                <tr>\n";
         echo "                  <td align=\"center\">\n";
-        echo "                    <table class=\"posthead\" width=\"90%\">\n";
+        echo "                    <table class=\"posthead\" width=\"95%\">\n";
         echo "                      <tr>\n";
         echo "                        <td align=\"left\" width=\"150\">{$lang['resetpasswordto']}:</td>\n";
         echo "                        <td align=\"left\">", form_input_password("t_new_password", "", 32, false, "autocomplete=\"off\""), "</td>\n";
@@ -679,7 +679,7 @@ if (isset($_GET['action']) && strlen(trim(_stripslashes($_GET['action']))) > 0) 
                 echo "                </tr>\n";
                 echo "                <tr>\n";
                 echo "                  <td align=\"center\">\n";
-                echo "                    <table class=\"box\" width=\"90%\">\n";
+                echo "                    <table class=\"box\" width=\"95%\">\n";
                 echo "                      <tr>\n";
                 echo "                        <td align=\"left\">\n";
                 echo "                          <table class=\"posthead\" width=\"100%\">\n";
@@ -739,7 +739,7 @@ if (isset($_GET['action']) && strlen(trim(_stripslashes($_GET['action']))) > 0) 
                     echo "                </tr>\n";
                     echo "                <tr>\n";
                     echo "                  <td align=\"center\">\n";
-                    echo "                    <table width=\"90%\">\n";
+                    echo "                    <table width=\"95%\">\n";
                     echo "                      <tr>\n";
                     echo "                        <td align=\"left\" width=\"250\">{$lang['clearuserhistory']}:</td>\n";
                     echo "                        <td align=\"left\">", form_radio('clear_user_history', 'Y', $lang['yes']), form_radio('clear_user_history', 'N', $lang['no'], true), "</td>\n";
@@ -770,7 +770,7 @@ if (isset($_GET['action']) && strlen(trim(_stripslashes($_GET['action']))) > 0) 
 
             echo "                <tr>\n";
             echo "                  <td align=\"center\">\n";
-            echo "                    <table class=\"posthead\" width=\"90%\">\n";
+            echo "                    <table class=\"posthead\" width=\"95%\">\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\">{$lang['nohistory']}</td>\n";
             echo "                      </tr>\n";
@@ -838,7 +838,7 @@ if (isset($_GET['action']) && strlen(trim(_stripslashes($_GET['action']))) > 0) 
                 echo "                </tr>\n";
                 echo "                <tr>\n";
                 echo "                  <td align=\"center\">\n";
-                echo "                    <table class=\"box\" width=\"90%\">\n";
+                echo "                    <table class=\"box\" width=\"95%\">\n";
                 echo "                      <tr>\n";
                 echo "                        <td align=\"left\">\n";
                 echo "                          <table class=\"posthead\" width=\"100%\">\n";
@@ -883,7 +883,7 @@ if (isset($_GET['action']) && strlen(trim(_stripslashes($_GET['action']))) > 0) 
 
             echo "                <tr>\n";
             echo "                  <td align=\"center\">\n";
-            echo "                    <table class=\"posthead\" width=\"90%\">\n";
+            echo "                    <table class=\"posthead\" width=\"95%\">\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\">{$lang['nomatches']}</td>\n";
             echo "                      </tr>\n";
@@ -951,7 +951,7 @@ if (isset($_GET['action']) && strlen(trim(_stripslashes($_GET['action']))) > 0) 
         echo "                </tr>\n";
         echo "                <tr>\n";
         echo "                  <td align=\"center\">\n";
-        echo "                    <table class=\"posthead\" width=\"90%\">\n";
+        echo "                    <table class=\"posthead\" width=\"95%\">\n";
         echo "                      <tr>\n";
         echo "                        <td align=\"left\">{$lang['userdeletewarning']}</td>\n";
         echo "                      </tr>\n";
@@ -1012,7 +1012,7 @@ if (isset($_GET['action']) && strlen(trim(_stripslashes($_GET['action']))) > 0) 
         echo "                </tr>\n";
         echo "                <tr>\n";
         echo "                  <td align=\"center\">\n";
-        echo "                    <table class=\"posthead\" width=\"90%\">\n";
+        echo "                    <table class=\"posthead\" width=\"95%\">\n";
         echo "                      <tr>\n";
         echo "                        <td align=\"left\">{$lang['userdeleteallpostswarning']}</td>\n";
         echo "                      </tr>\n";
@@ -1260,14 +1260,14 @@ if ($table_data = get_table_prefix()) {
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">", form_checkbox("t_ignoreadmin", USER_PERM_CAN_IGNORE_ADMIN, $lang['usercanignoreadmin'], $user_perms & USER_PERM_CAN_IGNORE_ADMIN), "</td>\n";
     echo "                      </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td>";
+    echo "                    </table>\n";
+    echo "                  </td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td>";
 
     html_display_warning_msg($lang['usergroupwarning'], '95%', 'center');
 
-    echo "                        </td>\n";
-    echo "                      </tr>\n";
-    echo "                    </table>\n";
     echo "                  </td>\n";
     echo "                </tr>\n";
     echo "              </table>\n";

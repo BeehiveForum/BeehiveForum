@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.65 2007-08-18 15:01:38 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.66 2007-08-20 17:42:20 decoyduck Exp $ */
 
 // British English language file
 
@@ -420,7 +420,7 @@ $lang['fieldtypeexample1'] = "Pour les cases d'option et les champs déroulants v
 $lang['fieldtypeexample2'] = "Example: Pour créer des cases d'option pour le sexe, avec deux sélections pour Homme et Femme, inscrire: <b>Sexe:Homme;Femme</b> dans le champ Nom d'Item.";
 $lang['editedwordfilter'] = "Filtre de mots modifié";
 $lang['editedforumsettings'] = "Options de forum modifiés";
-$lang['sessionsuccessfullyended'] = "Terminaison de session réussie pour l'utilisateur";
+$lang['successfullyendedusersessionsforselectedusers'] = "Terminaison de session réussie pour l'utilisateur";
 $lang['matchedtext'] = "Texte correspondant";
 $lang['replacementtext'] = "Texte de remplacement";
 $lang['preg'] = "PREG";

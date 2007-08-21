@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.316 2007-08-16 15:38:12 decoyduck Exp $ */
+/* $Id: post.php,v 1.317 2007-08-21 20:27:39 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -771,7 +771,7 @@ if ($valid && isset($_POST['submit'])) {
 
     }else {
 
-        $error_msg_array[] = sprintf("<h2>{$lang['postfrequencytoogreat']}</h2>", forum_get_setting('minimum_post_frequency', false, 0));
+        $error_msg_array[] = sprintf($lang['postfrequencytoogreat'], forum_get_setting('minimum_post_frequency', false, 0));
     }
 }
 
@@ -803,6 +803,10 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     html_display_error_array($error_msg_array, '720', 'left');
 }
 
+if (!$newthread && isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 && bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+    html_display_warning_msg($lang['moderatorthreadclosed'], '720', 'left');
+}
+
 echo "<br /><form name=\"f_post\" action=\"post.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
@@ -811,21 +815,6 @@ echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
-
-if (!$newthread) {
-
-    if (isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 && bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
-
-        echo "            <table class=\"posthead\" width=\"720\">\n";
-        echo "              <tr>\n";
-        echo "                <td align=\"left\" class=\"subhead\">{$lang['threadclosed']}</td>\n";
-        echo "              </tr>\n";
-        echo "              <tr>\n";
-        echo "                <td align=\"left\"><h2>{$lang['moderatorthreadclosed']}</h2></td>\n";
-        echo "              </tr>\n";
-        echo "            </table>\n";
-    }
-}
 
 $tools = new TextAreaHTML("f_post");
 echo $tools->preload();

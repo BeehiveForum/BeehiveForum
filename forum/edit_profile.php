@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_profile.php,v 1.79 2007-08-09 22:55:43 decoyduck Exp $ */
+/* $Id: edit_profile.php,v 1.80 2007-08-21 20:27:39 decoyduck Exp $ */
 
 /**
 * Displays the edit profile page, and processes sumbissions
@@ -180,9 +180,15 @@ if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) && ($uid != bh_session_ge
     exit;
 }
 
+// Array to hold error messages
+
+$error_msg_array = array();
+
 // Do updates
 
 if (isset($_POST['submit'])) {
+
+    $valid = true;
 
     if (isset($_POST['t_entry']) && is_array($_POST['t_entry'])) {
 
@@ -196,18 +202,25 @@ if (isset($_POST['submit'])) {
                 $privacy = PROFILE_ITEM_PUBLIC;
             }
 
-            user_profile_update($uid, $piid, $profile_entry, $privacy);
+            if (!user_profile_update($uid, $piid, $profile_entry, $privacy)) {
+
+                $error_msg_array[] = $lang['failedtoupdateuserprofile'];
+                $valid = false;
+            }
         }
 
-        if ($admin_edit === true) {
+        if ($valid) {
 
-            header_redirect("./admin_user.php?webtag=$webtag&uid=$uid&profile_updated=true", $lang['profileupdated']);
-            exit;
+            if ($admin_edit === true) {
 
-        }else {
+                header_redirect("./admin_user.php?webtag=$webtag&uid=$uid&profile_updated=true", $lang['profileupdated']);
+                exit;
 
-            header_redirect("./edit_profile.php?webtag=$webtag&uid=$uid&profile_updated=true", $lang['profileupdated']);
-            exit;
+            }else {
+
+                header_redirect("./edit_profile.php?webtag=$webtag&uid=$uid&profile_updated=true", $lang['profileupdated']);
+                exit;
+            }
         }
     }
 }
@@ -217,14 +230,22 @@ if ($profile_items_array = profile_get_user_values($uid)) {
     html_draw_top();
 
     if ($admin_edit === true) {
+
         $user = user_get($uid);
         echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</h1>\n";
+
     }else {
+
         echo "<h1>{$lang['editprofile']}</h1>\n";
     }
 
-    if (isset($_GET['profile_updated'])) {
-        echo "<h2>{$lang['profileupdated']}</h2>\n";
+    if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+
+        html_display_error_array($error_msg_array, '600', ($admin_edit) ? 'center' : 'left');
+
+    }elseif (isset($_GET['profile_updated'])) {
+
+        html_display_success_msg($lang['profileupdated'], '600', ($admin_edit) ? 'center' : 'left');
     }
 
     if ($admin_edit === true) echo "<div align=\"center\">\n";

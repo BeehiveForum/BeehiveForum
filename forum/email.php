@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.php,v 1.82 2007-08-09 22:55:43 decoyduck Exp $ */
+/* $Id: email.php,v 1.83 2007-08-21 20:27:39 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -111,6 +111,12 @@ if (user_is_guest()) {
     exit;
 }
 
+// Array to hold error messages
+
+$error_msg_array = array();
+
+// User UID to send email to.
+
 if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 
     $to_uid = $_GET['uid'];
@@ -148,26 +154,34 @@ if (isset($_POST['submit'])) {
     $valid = true;
 
     if (isset($_POST['t_subject']) && strlen(trim(_stripslashes($_POST['t_subject']))) > 0) {
+
         $subject = trim(_stripslashes($_POST['t_subject']));
+
     }else {
-        $error = "<h2>{$lang['entersubjectformessage']}</h2>";
+
+        $error_msg_array[] = $lang['entersubjectformessage'];
         $valid = false;
     }
 
     if (isset($_POST['t_message']) && strlen(trim(_stripslashes($_POST['t_message']))) > 0) {
+
         $message = trim(_stripslashes($_POST['t_message']));
+
     }else {
-        $error = "<h2>{$lang['entercontentformessage']}</h2>";
+
+        $error_msg_array[] = $lang['entercontentformessage'];
         $valid = false;
     }
 
     if (!user_allow_email($to_user['UID'])) {
+
         $error = "<h2>{$lang['user']} {$to_user['LOGON']} {$lang['hasoptedoutofemail']}</h2>\n";
         $valid = false;
     }
 
     if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $to_user['EMAIL'])) {
-        $error = "<h2>{$lang['user']} {$to_user['LOGON']} {$lang['hasinvalidemailaddress']}</h2>\n";
+
+        $error_msg_array[] = sprintf($lang['hasinvalidemailaddress'], $to_user['LOGON']);
         $valid = false;
     }
 
@@ -192,21 +206,13 @@ if (isset($_POST['submit'])) {
 
 html_draw_top("{$lang['email']} {$to_user['LOGON']}", 'pm_popup_disabled');
 
-if (!isset($subject)) $subject = "";
-if (!isset($message)) $message = "";
-
 echo "<div align=\"center\">\n";
 echo "<form name=\"f_email\" action=\"email.php\" method=\"post\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden("to_uid", _htmlentities($to_uid)), "\n";
 
-if (isset($error) && strlen(trim($error)) > 0) {
-
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"480\">\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\">$error</td>\n";
-    echo "    </tr>\n";
-    echo "  </table>\n";
+if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+    html_display_error_array($error_msg_array, '480', 'center');
 }
 
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"480\">\n";
@@ -228,11 +234,11 @@ echo "                        <td align=\"left\">{$from_user['NICKNAME']} ({$fro
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">{$lang['subject']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("t_subject", _htmlentities($subject), 54, 128), "</td>\n";
+echo "                        <td align=\"left\">", form_input_text("t_subject", (isset($subject) ? _htmlentities($subject) : ''), 54, 128), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" valign=\"top\">{$lang['message']}:</td>\n";
-echo "                        <td align=\"left\">", form_textarea("t_message", _htmlentities($message), 12, 51), "</td>\n";
+echo "                        <td align=\"left\">", form_textarea("t_message", (isset($message) ? _htmlentities($message) : ''), 12, 51), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";

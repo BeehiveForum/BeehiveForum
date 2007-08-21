@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.463 2007-08-20 17:42:20 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.464 2007-08-21 20:27:40 decoyduck Exp $ */
 
 // British English language file
 
@@ -237,8 +237,8 @@ $lang['move'] = "Move";
 $lang['closed'] = "Closed";
 $lang['open'] = "Open";
 $lang['restricted'] = "Restricted";
-$lang['iscurrentlyclosed'] = "is currently closed";
-$lang['youdonothaveaccessto'] = "You do not have access to";
+$lang['forumiscurrentlyclosed'] = "%s is currently closed";
+$lang['youdonothaveaccesstoforum'] = "You do not have access to %s";
 $lang['toapplyforaccessplease'] = "To apply for access please contact the forum owner.";
 $lang['adminforumclosedtip'] = "If you want to change some settings on your forum click the Admin link in the navigation bar above.";
 $lang['newfolder'] = "New Folder";
@@ -327,7 +327,7 @@ $lang['youmustenteraprofileitemname'] = "You must enter a profile item name";
 $lang['invalidprofileitemtype'] = "Invalid profile item type selected";
 $lang['failedtocreatenewprofileitem'] = "Failed to create new profile item";
 $lang['failedtoupdateprofileitem'] = "Failed to update profile item";
-$lang['startpageupdated'] = "Start Page updated";
+$lang['startpageupdated'] = "Start Page updated. %s";
 $lang['viewupdatedstartpage'] = "View updated Start Page";
 $lang['editstartpage'] = "Edit Start Page";
 $lang['nouserspecified'] = "No user specified.";
@@ -845,8 +845,8 @@ $lang['aidnotspecified'] = "AID not specified.";
 $lang['upload'] = "Upload";
 $lang['uploadnewattachment'] = "Upload New Attachment";
 $lang['waitdotdot'] = "wait..";
-$lang['successfullyuploaded'] = "Successfully Uploaded";
-$lang['failedtoupload'] = "Failed to upload";
+$lang['successfullyuploaded'] = "Successfully Uploaded: %s";
+$lang['failedtoupload'] = "Failed to upload: %s";
 $lang['complete'] = "Complete";
 $lang['uploadattachment'] = "Upload a file for attachment to the message";
 $lang['enterfilenamestoupload'] = "Enter filename(s) to upload";
@@ -913,7 +913,7 @@ $lang['msgsentfromby'] = "This message was sent from %s by %s";
 $lang['subject'] = "Subject";
 $lang['send'] = "Send";
 $lang['hasoptedoutofemail'] = "has opted out of email contact";
-$lang['hasinvalidemailaddress'] = "has an invalid email address";
+$lang['userhasinvalidemailaddress'] = "User %s has an invalid email address";
 
 // Message nofificaiton ------------------------------------------------
 
@@ -1552,7 +1552,7 @@ $lang['previewsignature'] = "Preview Signature";
 $lang['searchresults'] = "Search Results";
 $lang['usernamenotfound'] = "The username you specified in the to or from field was not found.";
 $lang['notexttosearchfor'] = "One or all of your search keywords were invalid. Search keywords must be no shorter than %d characters, no longer than %d characters and must not appear in the %s";
-$lang['keywordscontainingerrors'] = "Keywords Containing Errors";
+$lang['keywordscontainingerrors'] = "Keywords Containing Errors: %s";
 $lang['mysqlstopwordlist'] = "MySQL stopword list";
 $lang['foundzeromatches'] = "Found: 0 matches";
 $lang['found'] = "Found";
@@ -1749,7 +1749,7 @@ $lang['statsdisplayenabled'] = "Stats Display Enabled";
 
 // Thread Options (thread_options.php) ---------------------------------
 
-$lang['updatesmade'] = "Updates Made";
+$lang['updatessavedsuccessfully'] = "Updates saved successfully";
 $lang['useroptions'] = "User Options";
 $lang['markedasread'] = "Marked as read";
 $lang['postsoutof'] = "posts out of";

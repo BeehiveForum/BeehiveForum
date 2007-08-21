@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.php,v 1.105 2007-08-16 15:38:12 decoyduck Exp $ */
+/* $Id: visitor_log.php,v 1.106 2007-08-21 20:27:39 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -404,7 +404,8 @@ if (sizeof($user_profile_array['user_array']) > 0) {
 
 }else {
 
-    echo "<h2>{$lang['yoursearchdidnotreturnanymatches']}</h2>\n";
+    html_display_error_msg($lang['yoursearchdidnotreturnanymatches'], '85%', 'center');
+
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"85%\">\n";

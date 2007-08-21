@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_startpage.php,v 1.93 2007-08-05 21:42:29 decoyduck Exp $ */
+/* $Id: admin_startpage.php,v 1.94 2007-08-21 20:27:39 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -101,6 +101,10 @@ if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
     exit;
 }
 
+// Array to hold error messages
+
+$error_msg_array = array();
+
 // List of allowed extensions.
 
 $allowed_file_exts_array = array('html', 'htm', 'php', 'txt');
@@ -115,6 +119,8 @@ $forum_path.= "/forums/$webtag/";
 
 if (isset($_POST['submit'])) {
 
+    $valid = true;
+
     if (isset($_POST['content']) && strlen(trim(_stripslashes($_POST['content']))) > 0) {
         $content = trim(_stripslashes($_POST['content']));
     }else {
@@ -123,11 +129,9 @@ if (isset($_POST['submit'])) {
 
     if (forum_save_start_page($content)) {
 
-        $status_text = "<p><b>{$lang['startpageupdated']}</b> ";
-        $status_text.= "<a href=\"start_main.php?webtag=$webtag\" target=\"_blank\">";
-        $status_text.= "{$lang['viewupdatedstartpage']}</a></p>";
-
         admin_add_log_entry(EDITED_START_PAGE);
+        header_redirect("admin_startpage.php?webtag=$webtag&updated=true");
+        exit;
 
     }elseif (isset($_POST['uploaded']) && $_POST['uploaded'] == "yes") {
 
@@ -138,13 +142,13 @@ if (isset($_POST['submit'])) {
 
     }else {
 
-        html_draw_top();
-        html_error_msg(sprintf($lang['startpageerror'], $forum_path), 'admin_startpage.php', 'post', array('download' => $lang['download'], 'cancel' => $lang['cancel']), array('content' => $content));
-        html_draw_bottom();
-        exit;
+        $error_msg_array[] = sprintf($lang['startpageerror'], $forum_path);
+        $valid = false;
     }
 
 }elseif (isset($_POST['upload'])) {
+
+    $valid = true;
 
     if (isset($_FILES['userfile']['tmp_name']) && strlen(trim($_FILES['userfile']['tmp_name'])) > 0) {
 
@@ -154,13 +158,9 @@ if (isset($_POST['submit'])) {
 
             if (@move_uploaded_file($_FILES['userfile']['tmp_name'], "forums/$webtag/start_main.php")) {
 
-                $content = forum_load_start_page();
-
-                $status_text = "<p><b>{$lang['startpageupdated']}</b> ";
-                $status_text.= "<a href=\"start_main.php?webtag=$webtag\" target=\"_blank\">";
-                $status_text.= "{$lang['viewupdatedstartpage']}</a></p>";
-
                 admin_add_log_entry(EDITED_START_PAGE);
+                header_redirect("admin_startpage.php?webtag=$webtag&updated=true");
+                exit;
 
             }else {
 
@@ -174,7 +174,8 @@ if (isset($_POST['submit'])) {
 
         }else {
 
-            $status_text = sprintf("<h2>{$lang['invalidfiletypeerror']}</h2>", $allowed_file_exts);
+            $error_msg_array[] = sprintf($lang['invalidfiletypeerror'], $allowed_file_exts);
+            $valid = false;
         }
     }
 
@@ -211,8 +212,14 @@ html_draw_top("dictionary.js", "htmltools.js");
 
 echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['editstartpage']}</h1>\n";
 
-if (isset($status_text) && strlen($status_text) > 0) {
-    echo $status_text;
+if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+
+    html_display_error_array($error_msg_array, '600', 'center');
+
+}elseif (isset($_GET['updated'])) {
+
+    $start_page_link = sprintf("<a href=\"start_main.php?webtag=$webtag\" target=\"_blank\">%s</a>", $lang['viewupdatedstartpage']);
+    html_display_success_msg(sprintf($lang['startpageupdated'], $start_page_link), '600', 'center');
 }
 
 $tools = new TextAreaHTML("startpage");

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.241 2007-08-18 12:26:20 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.242 2007-08-21 20:27:39 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -195,6 +195,27 @@ function html_display_success_msg($string_msg, $width = '600', $align = 'center'
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"$width\" class=\"success_msg\">\n";
     echo "    <tr>\n";
     echo "      <td valign=\"top\" width=\"25\"><img src=\"", style_image('success.png'), "\" width=\"15\" height=\"15\" alt=\"{$lang['success']}\" title=\"{$lang['success']}\" /></td>\n";
+    echo "      <td valign=\"top\">$string_msg</td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "</div>\n";
+}
+
+function html_display_error_msg($string_msg, $width = '600', $align = 'center')
+{
+    $lang = load_language_file();
+
+    if (!preg_match('/[0-9]+%?/', $width)) $width = '600';
+
+    if (!is_string($string_msg)) return false;
+
+    $available_alignments = array('left', 'center', 'right');
+    if (!in_array($align, $available_alignments)) $align = 'left';
+
+    echo "<div align=\"$align\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"$width\" class=\"error_msg\">\n";
+    echo "    <tr>\n";
+    echo "      <td valign=\"top\" width=\"25\"><img src=\"", style_image('error.png'), "\" width=\"15\" height=\"15\" alt=\"{$lang['error']}\" title=\"{$lang['error']}\" /></td>\n";
     echo "      <td valign=\"top\">$string_msg</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";

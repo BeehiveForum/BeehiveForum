@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.41 2007-08-20 17:42:20 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.42 2007-08-21 20:27:40 decoyduck Exp $ */
 
 // British English language file
 
@@ -237,8 +237,8 @@ $lang['move'] = "Verschieben";
 $lang['closed'] = "Geschlossen";
 $lang['open'] = "Geoeffnet";
 $lang['restricted'] = "Eingeschraenkt";
-$lang['iscurrentlyclosed'] = "ist momentan geschlossen";
-$lang['youdonothaveaccessto'] = "Sie haben keinen Zugriff auf";
+$lang['forumiscurrentlyclosed'] = "%s ist momentan geschlossen";
+$lang['youdonothaveaccesstoforum'] = "Sie haben keinen Zugriff auf %s";
 $lang['toapplyforaccessplease'] = "Um Zugriff zu erhalten bitte den Admin kontaktieren.";
 $lang['adminforumclosedtip'] = "Wenn Du einige Einstellungen aendern willst klicke auf den Admin-Link.";
 $lang['newfolder'] = "Neuer Ordner";
@@ -327,7 +327,7 @@ $lang['youmustenteraprofileitemname'] = "You must enter a profile item name";
 $lang['invalidprofileitemtype'] = "Invalid profile item type selected";
 $lang['failedtocreatenewprofileitem'] = "Failed to create new profile item";
 $lang['failedtoupdateprofileitem'] = "Failed to update profile item";
-$lang['startpageupdated'] = "Startseite geaendert";
+$lang['startpageupdated'] = "Startseite geaendert. %s";
 $lang['viewupdatedstartpage'] = "geaenderte Startseite anzeigen";
 $lang['editstartpage'] = "Startseite editieren";
 $lang['nouserspecified'] = "Kein Benutzer definiert.";
@@ -855,8 +855,8 @@ $lang['aidnotspecified'] = "AID nicht bekannt.";
 $lang['upload'] = "Hochlanden";
 $lang['uploadnewattachment'] = "Neuer Dateianhang hochladen";
 $lang['waitdotdot'] = "warten..";
-$lang['successfullyuploaded'] = "Erfolgreich hochgeladen";
-$lang['failedtoupload'] = "Fehler beim Hochladen";
+$lang['successfullyuploaded'] = "Erfolgreich hochgeladen: %s";
+$lang['failedtoupload'] = "Fehler beim Hochladen: %s";
 $lang['complete'] = "Fertig";
 $lang['uploadattachment'] = "Dateianhang fuer eine Nachricht hochladen";
 $lang['enterfilenamestoupload'] = "Dateinamen zum Hochladen eingeben";
@@ -924,7 +924,7 @@ $lang['msgsentfromby'] = "Diese Nachricht wurde gesendet von %s durch %s";
 $lang['subject'] = "Thema";
 $lang['send'] = "Senden";
 $lang['hasoptedoutofemail'] = "hat durch eMail-Kontakt entschieden";
-$lang['hasinvalidemailaddress'] = "hat ungueltige eMail-Adresse";
+$lang['userhasinvalidemailaddress'] = "Benutzerhat %s ungueltige eMail-Adresse";
 
 // Message nofificaiton ------------------------------------------------
 
@@ -1565,7 +1565,7 @@ $lang['previewsignature'] = "Preview Signature";
 $lang['searchresults'] = "Suchergebnisse";
 $lang['usernamenotfound'] = "Der definierte Benutzername im An- oder Von-Feld wurde nicht gefunden.";
 $lang['notexttosearchfor'] = "Einer oder alle Deine Suchbegriffe sind ungueltig. Suchbegriffe muessen kuerzer als %d Zeichen und nicht laenger als %d Zeichen sein und duerfen nicht in der %s erscheinen";
-$lang['keywordscontainingerrors'] = "Keywords Containing Errors";
+$lang['keywordscontainingerrors'] = "Keywords Containing Errors: %s";
 $lang['mysqlstopwordlist'] = "MySQL Stopwortliste";
 $lang['foundzeromatches'] = "Gefunden: 0 Treffer";
 $lang['found'] = "Gefunden";
@@ -1762,7 +1762,7 @@ $lang['statsdisplayenabled'] = "Statistikanzeige eingeschaltet";
 
 // Thread Options (thread_options.php) ---------------------------------
 
-$lang['updatesmade'] = "Aenderungen durchgefuehrt";
+$lang['updatessavedsuccessfully'] = "Updates saved successfully";
 $lang['useroptions'] = "Benutzeroptionen";
 $lang['markedasread'] = "Als gelesen markieren";
 $lang['postsoutof'] = "Posts aus";

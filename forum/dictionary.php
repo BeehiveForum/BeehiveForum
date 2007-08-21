@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.php,v 1.43 2007-08-09 22:55:43 decoyduck Exp $ */
+/* $Id: dictionary.php,v 1.44 2007-08-21 20:27:39 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -300,7 +300,7 @@ html_draw_top('dictionary.js', 'onload=showCurrentWord()', 'pm_popup_disabled');
 echo "<h1>{$lang['dictionary']}</h1>\n";
 
 if ($dictionary->is_check_complete()) {
-    echo "<h2>{$lang['spellcheckcomplete']}</h2>\n";
+    html_display_success_msg($lang['spellcheckcomplete'], '400', 'left');
 }
 
 echo "<br />\n";

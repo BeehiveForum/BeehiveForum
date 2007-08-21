@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.66 2007-08-20 17:42:20 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.67 2007-08-21 20:27:40 decoyduck Exp $ */
 
 // British English language file
 
@@ -237,8 +237,8 @@ $lang['move'] = "Déplacer";
 $lang['closed'] = "Fermé";
 $lang['open'] = "Ouvert";
 $lang['restricted'] = "Limité";
-$lang['iscurrentlyclosed'] = "est présentement fermé";
-$lang['youdonothaveaccessto'] = "Vous n'avez pas les droits d'accès à";
+$lang['forumiscurrentlyclosed'] = "%s est présentement fermé";
+$lang['youdonothaveaccesstoforum'] = "Vous n'avez pas les droits d'accès à %s";
 $lang['toapplyforaccessplease'] = "Pour demander accès, veuillez contacter le propriétaire du forum.";
 $lang['adminforumclosedtip'] = "Si vous désirez changer certains réglages sur votre forum, cliquer le lien Admin dans la barre de navigation ci-dessus.";
 $lang['newfolder'] = "Nouveau dossier";
@@ -327,7 +327,7 @@ $lang['youmustenteraprofileitemname'] = "You must enter a profile item name";
 $lang['invalidprofileitemtype'] = "Invalid profile item type selected";
 $lang['failedtocreatenewprofileitem'] = "Failed to create new profile item";
 $lang['failedtoupdateprofileitem'] = "Failed to update profile item";
-$lang['startpageupdated'] = "Page de démarrage mise à jour";
+$lang['startpageupdated'] = "Page de démarrage mise à jour. %s";
 $lang['viewupdatedstartpage'] = "Visualiser la page de démarrage mise à jour";
 $lang['editstartpage'] = "Modifier la page de démarrage";
 $lang['nouserspecified'] = "Aucun utilisateur de spécifié";
@@ -855,8 +855,8 @@ $lang['aidnotspecified'] = "Identification de fichier joint non indiquée.";
 $lang['upload'] = "Téléverser";
 $lang['uploadnewattachment'] = "Téléverser nouveau fichier joint";
 $lang['waitdotdot'] = "patienter..";
-$lang['successfullyuploaded'] = "Téléversement réussi";
-$lang['failedtoupload'] = "Téléversement échoué";
+$lang['successfullyuploaded'] = "Téléversement réussi: %s";
+$lang['failedtoupload'] = "Téléversement échoué: %s";
 $lang['complete'] = "Compléter";
 $lang['uploadattachment'] = "Téléverser un fichier pour joindre au message";
 $lang['enterfilenamestoupload'] = "Entrer nom(s) de fichier(s) à téléverser";
@@ -924,7 +924,7 @@ $lang['msgsentfromby'] = "Ce message a été envoyé de %s par %s";
 $lang['subject'] = "Sujet";
 $lang['send'] = "Envoyer";
 $lang['hasoptedoutofemail'] = "refuse d'être contacté par courriel";
-$lang['hasinvalidemailaddress'] = "a une adresse courriel invalide";
+$lang['hasinvalidemailaddress'] = "Utilisateur %s a une adresse courriel invalide";
 
 // Message nofificaiton ------------------------------------------------
 
@@ -1565,7 +1565,7 @@ $lang['previewsignature'] = "Preview Signature";
 $lang['searchresults'] = "Résultats de recherche";
 $lang['usernamenotfound'] = "Le nom d'utilisateur spécifié dans le champs à ou dans le champs de n'a pas été retrouvé.";
 $lang['notexttosearchfor'] = "Un ou tous vos mots-clés de recherche étaient invalides. Les mots-clés de recherche doivent avoir un minimum de %d caractères et un maximum de %d caractères et ne doivent pas apparaître dans le %s.";
-$lang['keywordscontainingerrors'] = "Keywords Containing Errors";
+$lang['keywordscontainingerrors'] = "Keywords Containing Errors: %s";
 $lang['mysqlstopwordlist'] = "liste de mots vides MySQL";
 $lang['foundzeromatches'] = "Correspondances trouvées: 0";
 $lang['found'] = "Trouvé";
@@ -1762,7 +1762,7 @@ $lang['statsdisplayenabled'] = "Affichage de statistiques activé";
 
 // Thread Options (thread_options.php) ---------------------------------
 
-$lang['updatesmade'] = "Mises à jour effectuées";
+$lang['updatessavedsuccessfully'] = "Updates saved successfully";
 $lang['useroptions'] = "Options d'utilisateur";
 $lang['markedasread'] = "Marquer comme lu";
 $lang['postsoutof'] = "messages sur";

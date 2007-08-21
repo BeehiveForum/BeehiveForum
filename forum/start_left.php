@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.147 2007-08-01 20:23:01 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.148 2007-08-21 20:27:39 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -232,7 +232,7 @@ if (is_array($folder_info) && sizeof($folder_info) > 0) {
     }else {
 
         echo "                      <tr>\n";
-        echo "                        <td align=\"center\"><h2>{$lang['nomessages']}</h2></td>\n";
+        echo "                        <td align=\"center\">{$lang['nomessages']}</td>\n";
         echo "                      </tr>\n";
     }
 
@@ -345,7 +345,7 @@ if ($recent_visitors_array = visitor_log_get_recent()) {
 
                 echo "                   <td valign=\"top\"  align=\"left\" class=\"postbody\"><img src=\"", style_image('bullet.png'), "\" alt=\"{$lang['user']}\" title=\"{$lang['user']}\" /></td>\n";
             }
-        
+
         }else {
 
             echo "                   <td valign=\"top\"  align=\"left\" class=\"postbody\"><img src=\"", style_image('bullet.png'), "\" alt=\"{$lang['user']}\" title=\"{$lang['user']}\" /></td>\n";

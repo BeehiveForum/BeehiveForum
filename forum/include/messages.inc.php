@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.469 2007-08-16 15:38:12 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.470 2007-08-21 20:27:40 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1560,6 +1560,8 @@ function messages_set_read($tid, $pid, $uid, $modified)
     $sql.= "WHERE TID = '$tid' AND PID >= '$pid' AND TO_UID = '$uid'";
 
     if (!$result = db_query($sql, $db_message_set_read)) return false;
+
+    return true;
 }
 
 function messages_get_most_recent($uid, $fid = false)

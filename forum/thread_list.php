@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.305 2007-07-16 17:42:01 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.306 2007-08-21 20:27:39 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -129,7 +129,7 @@ if (user_is_guest()) {
     $uid = 0; // default to UID 0 if no other UID specified
 
     if (isset($_GET['mode']) && is_numeric($_GET['mode'])) {
-        
+
         // non-logged in users can only display "All" threads
         // or those in the past x days, since the other options
         // would be impossible
@@ -156,15 +156,15 @@ if (user_is_guest()) {
     $threads_any_unread = threads_any_unread();
 
     if (isset($_GET['markread'])) {
-        
+
         if ($_GET['markread'] == THREAD_MARK_READ_VISIBLE) {
-        
+
             if (isset($_GET['tid_array']) && is_array($_GET['tid_array'])) {
 
                 $tid_array = preg_grep("/^[0-9]+$/", $_GET['tid_array']);
 
                 $thread_data = array();
-                
+
                 threads_get_unread_data($thread_data, $tid_array);
                 threads_mark_read($thread_data);
             }
@@ -193,7 +193,7 @@ if (user_is_guest()) {
 
             header_redirect("./search.php?offset=0");
             exit;
-        }        
+        }
 
     }else {
 
@@ -204,7 +204,7 @@ if (user_is_guest()) {
             if ($mode == UNREAD_DISCUSSIONS && !$threads_any_unread) {
 
                 $mode = ALL_DISCUSSIONS;
-            }           
+            }
 
         }else {
 
@@ -246,64 +246,64 @@ if (isset($folder)) {
     list($thread_info, $folder_order) = threads_get_folder($uid, $folder, $start_from);
 }else {
     switch ($mode) {
-        case ALL_DISCUSSIONS: 
+        case ALL_DISCUSSIONS:
             list($thread_info, $folder_order) = threads_get_all($uid, $start_from);
             break;
-        case UNREAD_DISCUSSIONS: 
+        case UNREAD_DISCUSSIONS:
             list($thread_info, $folder_order) = threads_get_unread($uid);
             break;
-        case UNREAD_DISCUSSIONS_TO_ME: 
+        case UNREAD_DISCUSSIONS_TO_ME:
             list($thread_info, $folder_order) = threads_get_unread_to_me($uid);
             break;
-        case TODAYS_DISCUSSIONS: 
+        case TODAYS_DISCUSSIONS:
             list($thread_info, $folder_order) = threads_get_by_days($uid, 1);
             break;
-        case UNREAD_TODAY: 
+        case UNREAD_TODAY:
             list($thread_info, $folder_order) = threads_get_unread_by_days($uid);
             break;
-        case TWO_DAYS_BACK: 
+        case TWO_DAYS_BACK:
             list($thread_info, $folder_order) = threads_get_by_days($uid, 2);
             break;
-        case SEVEN_DAYS_BACK: 
+        case SEVEN_DAYS_BACK:
             list($thread_info, $folder_order) = threads_get_by_days($uid, 7);
             break;
-        case HIGH_INTEREST: 
+        case HIGH_INTEREST:
             list($thread_info, $folder_order) = threads_get_by_interest($uid, 1);
             break;
-        case UNREAD_HIGH_INTEREST: 
+        case UNREAD_HIGH_INTEREST:
             list($thread_info, $folder_order) = threads_get_unread_by_interest($uid, 1);
             break;
-        case RECENTLY_SEEN: 
+        case RECENTLY_SEEN:
             list($thread_info, $folder_order) = threads_get_recently_viewed($uid);
             break;
-        case IGNORED: 
+        case IGNORED:
             list($thread_info, $folder_order) = threads_get_by_interest($uid, -1);
             break;
-        case BY_IGNORED_USERS: 
+        case BY_IGNORED_USERS:
             list($thread_info, $folder_order) = threads_get_by_relationship($uid, USER_IGNORED_COMPLETELY);
             break;
-        case SUBSCRIBED_TO: 
+        case SUBSCRIBED_TO:
             list($thread_info, $folder_order) = threads_get_by_interest($uid, 2);
             break;
-        case STARTED_BY_FRIEND: 
+        case STARTED_BY_FRIEND:
             list($thread_info, $folder_order) = threads_get_by_relationship($uid, USER_FRIEND);
             break;
-        case UNREAD_STARTED_BY_FRIEND: 
+        case UNREAD_STARTED_BY_FRIEND:
             list($thread_info, $folder_order) = threads_get_unread_by_relationship($uid, USER_FRIEND);
             break;
-        case STARTED_BY_ME: 
+        case STARTED_BY_ME:
             list($thread_info, $folder_order) = threads_get_started_by_me($uid);
             break;
-        case POLLS: 
+        case POLLS:
             list($thread_info, $folder_order) = threads_get_polls($uid);
             break;
-        case STICKY_THREADS: 
+        case STICKY_THREADS:
             list($thread_info, $folder_order) = threads_get_sticky($uid);
             break;
-        case MOST_UNREAD_POSTS: 
+        case MOST_UNREAD_POSTS:
             list($thread_info, $folder_order) = threads_get_longest_unread($uid);
             break;
-        case DELETED_THREADS: 
+        case DELETED_THREADS:
             list($thread_info, $folder_order) = threads_get_deleted($uid);
             break;
         default:
@@ -318,9 +318,7 @@ if (isset($folder)) {
 
 if (!$folder_info = threads_get_folders()) {
 
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<h2>{$lang['couldnotretrievefolderinformation']}</h2>\n";
-
+    html_error_msg($lang['couldnotretrievefolderinformation']);
     html_draw_bottom();
     exit;
 }
@@ -514,7 +512,7 @@ foreach ($folder_order as $folder_number) {
 
                     echo "              <tr>\n";
                     echo "                <td align=\"left\" class=\"threads_left_right_bottom\" colspan=\"2\">\n";
-                    
+
 
                     foreach($thread_info as $thread) {
 
@@ -648,7 +646,7 @@ foreach ($folder_order as $folder_number) {
                             echo "                      <td align=\"left\" colspan=\"3\"><a href=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$folder&amp;start_from=".($start_from + 50)."\" class=\"folderinfo\">", sprintf($lang['nextxthreads'], $more_threads), "</a></td>\n";
                             echo "                    </tr>\n";
                             echo "                  </table>\n";
-                            
+
                         }
 
                         if ($more_threads > 50) {
@@ -728,7 +726,7 @@ foreach ($folder_order as $folder_number) {
                 echo "            </table>\n";
 
             }
-            
+
             echo "          </td>\n";
             echo "        </tr>\n";
             echo "      </table>\n";
@@ -754,9 +752,9 @@ if ($mode == ALL_DISCUSSIONS && !isset($folder)) {
         }
 
         $more_threads = $total_threads - $start_from - 50;
-  
+
         if ($more_threads > 0 && $more_threads <= 50) {
-      
+
             echo "<tr>\n";
             echo "  <td colspan=\"2\">&nbsp;</td>\n";
             echo "</tr>\n";
@@ -765,7 +763,7 @@ if ($mode == ALL_DISCUSSIONS && !isset($folder)) {
             echo "</tr>\n";
 
         }elseif ($more_threads > 50)  {
-      
+
             echo "<tr>\n";
             echo "  <td colspan=\"2\">&nbsp;</td>\n";
             echo "</tr>\n";

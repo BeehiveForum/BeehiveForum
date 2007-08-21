@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.254 2007-08-17 22:50:20 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.255 2007-08-21 20:27:39 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -199,13 +199,17 @@ function forum_closed_message()
     echo "<h1>{$lang['closed']}</h1>\n";
 
     if ($closed_message = forum_get_setting('closed_message', false)) {
-        echo "<h2>", fix_html($closed_message), "</h2>\n";
+
+        html_display_error_msg(fix_html($closed_message), '600', 'center');
+
     }else {
-        echo "<h2>$forum_name {$lang['iscurrentlyclosed']}</h2>\n";
+
+        html_display_error_msg(sprintf($lang['forumiscurrentlyclosed'], $forum_name), '600', 'center');
     }
 
     if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
-        echo "<p>{$lang['adminforumclosedtip']}</p>\n";
+
+        html_display_warning_msg($lang['adminforumclosedtip'], '600', 'center');
     }
 
     html_draw_bottom();
@@ -223,14 +227,18 @@ function forum_restricted_message()
     echo "<h1>{$lang['restricted']}</h1>\n";
 
     if ($restricted_message = forum_get_setting('restricted_message', false)) {
-        echo "<h2>", fix_html($restricted_message), "</h2>\n";
+
+        html_display_error_msg(fix_html($restricted_message), '600', 'center');
+
     }else {
-        echo "<h2>{$lang['youdonothaveaccessto']} $forum_name.</h2>\n";
-        echo "<h2>{$lang['toapplyforaccessplease']}</h2>\n";
+
+        html_display_error_msg(sprintf($lang['youdonothaveaccesstoforum'], $forum_name), '600', 'center');
+        html_display_warning_msg($lang['toapplyforaccessplease'], '600', 'center');
     }
 
     if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
-        echo "<p>{$lang['adminforumclosedtip']}</p>\n";
+
+        html_display_warning_msg($lang['adminforumclosedtip'], '600', 'center');
     }
 
     html_draw_bottom();
@@ -305,6 +313,13 @@ function forum_check_password($forum_fid)
         html_draw_top();
 
         echo "<h1>{$lang['passwdprotectedforum']}</h1>\n";
+
+        if (isset($_COOKIE["bh_{$webtag}_sesshash"]) && strlen(trim(_stripslashes($_COOKIE["bh_{$webtag}_sesshash"]))) > 0) {
+
+            bh_setcookie("bh_{$webtag}_sesshash", "", time() - YEAR_IN_SECONDS);
+            html_display_error_msg($lang['usernameorpasswdnotvalid'], '400', 'center');
+        }
+
         echo "<br />\n";
         echo "<div align=\"center\">\n";
         echo "  <form method=\"post\" action=\"forum_password.php\" target=\"", html_get_top_frame_name(), "\">\n";
@@ -322,21 +337,6 @@ function forum_check_password($forum_fid)
 
             echo "      <tr>\n";
             echo "        <td align=\"center\">{$lang['passwdprotectedwarning']}</td>\n";
-            echo "      </tr>\n";
-        }
-
-        if (isset($_COOKIE["bh_{$webtag}_sesshash"]) && strlen(trim(_stripslashes($_COOKIE["bh_{$webtag}_sesshash"]))) > 0) {
-
-            bh_setcookie("bh_{$webtag}_sesshash", "", time() - YEAR_IN_SECONDS);
-
-            echo "      <tr>\n";
-            echo "        <td align=\"left\">&nbsp;</td>\n";
-            echo "      </tr>\n";
-            echo "      <tr>\n";
-            echo "        <td align=\"center\">\n";
-            echo "          <h2>{$lang['usernameorpasswdnotvalid']}</h2>\n";
-            echo "          <h2>{$lang['pleasereenterpasswd']}</h2>\n";
-            echo "        </td>\n";
             echo "      </tr>\n";
         }
 

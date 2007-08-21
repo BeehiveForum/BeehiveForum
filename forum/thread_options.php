@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.88 2007-07-04 18:35:15 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.89 2007-08-21 20:27:39 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -156,6 +156,8 @@ if (!$fid = thread_get_folder($tid)) {
 
 $uid = bh_session_get_value('UID');
 
+// Get the existing thread data.
+
 if (!$threaddata = thread_get($tid, true)) {
 
     html_draw_top();
@@ -164,260 +166,305 @@ if (!$threaddata = thread_get($tid, true)) {
     exit;
 }
 
-$update = false;
+// Array to hold error messages
+
+$error_msg_array = array();
+
+// Back button clicked.
 
 if (isset($_POST['back'])) {
 
-    $uri = "./messages.php?webtag=$webtag&msg=$msg";
-    header_redirect($uri);
+    header_redirect("./messages.php?webtag=$webtag&msg=$msg");
     exit;
 }
 
-// User Options
+// Code for handling functionality from messages.php
 
-if (isset($_POST['markasread']) && is_numeric($_POST['markasread']) && $_POST['markasread'] != $threaddata['LAST_READ']) {
+if (isset($_GET['markasread']) && is_numeric($_GET['markasread'])) {
 
-    $threaddata['LAST_READ'] = $_POST['markasread'];
-    messages_set_read($tid, $threaddata['LAST_READ'], $uid, $threaddata['MODIFIED']);
-    $update = true;
+    $mark_as_read = $_GET['markasread'];
 
-}else if (isset($_GET['markasread']) && is_numeric($_GET['markasread'])) {
+    if (messages_set_read($tid, $mark_as_read, $uid, $threaddata['MODIFIED'])) {
 
-    $markasread = $_GET['markasread'];
-    messages_set_read($tid, $markasread, $uid, $threaddata['MODIFIED']);
+        header_redirect("./messages.php?webtag=$webtag&msg=$msg&markasread=1");
+        exit;
+    }
 
-    $uri = "./messages.php?webtag=$webtag&msg=$msg&markasread=1";
-    header_redirect($uri);
-    exit;
+}else if (isset($_POST['setinterest']) && is_numeric($_POST['setinterest'])) {
+
+    $thread_interest = $_POST['setinterest'];
+
+    if (thread_set_interest($tid, $thread_interest)) {
+
+        header_redirect("./messages.php?webtag=$webtag&msg=$msg&setinterest=1");
+        exit;
+    }
 }
 
-if (isset($_POST['setinterest']) && is_numeric($_POST['setinterest']) && $_POST['setinterest'] != $threaddata['INTEREST']) {
+// Submit Code
 
-    $threaddata['INTEREST'] = $_POST['setinterest'];
-    thread_set_interest($tid, $threaddata['INTEREST']);
-    $update = true;
+if (isset($_POST['submit'])) {
 
-    $uri = "./messages.php?webtag=$webtag&msg=$msg&setinterest=1";
-    header_redirect($uri);
-    exit;
-}
+    $valid = true;
 
-if (isset($_POST['interest']) && is_numeric($_POST['interest']) && $_POST['interest'] != $threaddata['INTEREST']) {
-    $threaddata['INTEREST'] = $_POST['interest'];
-    thread_set_interest($tid, $threaddata['INTEREST']);
-    $update = true;
-}
+    if (isset($_POST['markasread']) && is_numeric($_POST['markasread'])) {
 
-// Admin Options
+        $mark_as_read = $_POST['markasread'];
 
-if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid) || ((($threaddata['FROM_UID'] == $uid) && $threaddata['ADMIN_LOCK'] == THREAD_ADMIN_LOCK_DISABLED) && ((forum_get_setting('allow_post_editing', 'Y')) && intval(forum_get_setting('post_edit_time', false, 0)) == 0) || ((time() - $threaddata['CREATED']) < (intval(forum_get_setting('post_edit_time', false, 0)) * MINUTE_IN_SECONDS)))) {
+        if (!messages_set_read($tid, $mark_as_read, $uid, $threaddata['MODIFIED'])) {
 
-    if (isset($_POST['rename']) && strlen(trim(_stripslashes($_POST['rename']))) > 0) {
-
-        $t_rename = trim(_stripslashes($_POST['rename']));
-
-        if ($t_rename != $threaddata['TITLE']) {
-
-            thread_change_title($fid, $tid, $t_rename);
-
-            post_add_edit_text($tid, 1);
-
-            if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
-
-                admin_add_log_entry(RENAME_THREAD, array($tid, $threaddata['TITLE'], $t_rename));
-            }
-
-            $threaddata['TITLE'] = _htmlentities($t_rename);
-            $update = true;
+            $error_msg_array[] = $lang['failedtoupdatethreadreadstatus'];
+            $valid = false;
         }
     }
 
-    if (isset($_POST['move']) && is_numeric($_POST['move'])) {
+    if (isset($_POST['interest']) && is_numeric($_POST['interest'])) {
 
-        $t_move = $_POST['move'];
+        $thread_interest = $_POST['interest'];
 
-        if (folder_is_valid($t_move) && $t_move != $threaddata['FID']) {
+        if (!thread_set_interest($tid, $threaddata['INTEREST'])) {
 
-            if (bh_session_check_perm(USER_PERM_THREAD_CREATE, $t_move)) {
+            $error_msg_array[] = $lang['failedtoupdatethreadinterest'];
+            $valid = false;
+        }
+    }
 
-                thread_change_folder($tid, $t_move);
+    // Admin Options
 
-                $new_folder_title = folder_get_title($t_move);
-                $old_folder_title = folder_get_title($threaddata['FID']);
+    if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid) || ((($threaddata['FROM_UID'] == $uid) && $threaddata['ADMIN_LOCK'] == THREAD_ADMIN_LOCK_DISABLED) && ((forum_get_setting('allow_post_editing', 'Y')) && intval(forum_get_setting('post_edit_time', false, 0)) == 0) || ((time() - $threaddata['CREATED']) < (intval(forum_get_setting('post_edit_time', false, 0)) * MINUTE_IN_SECONDS)))) {
+
+        if (isset($_POST['rename']) && strlen(trim(_stripslashes($_POST['rename']))) > 0) {
+
+            $t_rename = trim(_stripslashes($_POST['rename']));
+
+            if (thread_change_title($fid, $tid, $t_rename)) {
 
                 post_add_edit_text($tid, 1);
 
                 if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
 
-                    admin_add_log_entry(MOVED_THREAD, array($tid, $threaddata['TITLE'], $old_folder_title, $new_folder_title));
+                    admin_add_log_entry(RENAME_THREAD, array($tid, $threaddata['TITLE'], $t_rename));
                 }
 
-                $threaddata['FID'] = $_POST['move'];
-                $update = true;
+            }else {
+
+                $error_msg_array[] = $lang['failedtorenamethread'];
+                $valid = false;
+            }
+        }
+
+        if (isset($_POST['move']) && is_numeric($_POST['move'])) {
+
+            $t_move = $_POST['move'];
+
+            if (folder_is_valid($t_move) && bh_session_check_perm(USER_PERM_THREAD_CREATE, $t_move)) {
+
+                if (thread_change_folder($tid, $t_move)) {
+
+                    $new_folder_title = folder_get_title($t_move);
+                    $old_folder_title = folder_get_title($threaddata['FID']);
+
+                    post_add_edit_text($tid, 1);
+
+                    if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
+
+                        admin_add_log_entry(MOVED_THREAD, array($tid, $threaddata['TITLE'], $old_folder_title, $new_folder_title));
+                    }
+
+                }else {
+
+                    $error_msg_array[] = $lang['failedtomovethread'];
+                    $valid = false;
+                }
             }
         }
     }
-}
 
-if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
+    if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
 
-    if (isset($_POST['closed'])) {
-
-        if (($_POST['closed'] == "Y") != $threaddata['CLOSED']) {
+        if (isset($_POST['closed']) && in_array($_POST['closed'], array('Y', 'N'))) {
 
             $threaddata['CLOSED'] = ($_POST['closed'] == "Y");
-            thread_set_closed($tid, $threaddata['CLOSED']);
-            admin_add_log_entry(($threaddata['CLOSED']) ? CLOSED_THREAD : OPENED_THREAD, array($tid, $threaddata['TITLE']));
-            $update = true;
+
+            if (thread_set_closed($tid, $threaddata['CLOSED'])) {
+
+                admin_add_log_entry(($threaddata['CLOSED']) ? CLOSED_THREAD : OPENED_THREAD, array($tid, $threaddata['TITLE']));
+
+            }else {
+
+                $error_msg_array[] = $lang['failedtoupdatethreadstickystatus'];
+                $valid = false;
+            }
         }
-    }
 
-    if (isset($_POST['lock'])) {
-
-        if (($_POST['lock'] == "Y") != $threaddata['ADMIN_LOCK']) {
+        if (isset($_POST['lock']) && in_array($_POST['lock'], array('Y', 'N'))) {
 
             $threaddata['ADMIN_LOCK'] = ($_POST['lock'] == "Y");
-            thread_admin_lock($tid, $threaddata['ADMIN_LOCK']);
-            admin_add_log_entry(($threaddata['ADMIN_LOCK']) ? LOCKED_THREAD : UNLOCKED_THREAD, array($tid, $threaddata['TITLE']));
-            $update = true;
+
+            if (thread_admin_lock($tid, $threaddata['ADMIN_LOCK'])) {
+
+                admin_add_log_entry(($threaddata['ADMIN_LOCK']) ? LOCKED_THREAD : UNLOCKED_THREAD, array($tid, $threaddata['TITLE']));
+
+            }else {
+
+                $error_msg_array[] = $lang['failedtoupdatethreadlockstatus'];
+                $valid = false;
+            }
         }
-    }
 
-    if (isset($_POST['sticky'])) {
+        if (isset($_POST['sticky']) && $_POST['sticky'] == "Y") {
 
-        if ($_POST['sticky'] == "Y") {
+            if (isset($_POST['sticky_year']) && isset($_POST['sticky_month']) && isset($_POST['sticky_day'])) {
 
-            $day = isset($_POST['sticky_day']) && is_numeric($_POST['sticky_day']) ? $_POST['sticky_day'] : 0;
-            $month = isset($_POST['sticky_month']) && is_numeric($_POST['sticky_month']) ? $_POST['sticky_month'] : 0;
-            $year = isset($_POST['sticky_year']) && is_numeric($_POST['sticky_year']) ? $_POST['sticky_year'] : 0;
-            $tmp_sticky_until = $day || $month || $year ? mktime(0, 0, 0, $month, $day, $year) : false;
+                $sticky_day   = trim(_stripslashes($_POST['sticky_day']));
+                $sticky_month = trim(_stripslashes($_POST['sticky_month']));
+                $sticky_year  = trim(_stripslashes($_POST['sticky_year']));
 
-            if (($_POST['sticky'] == $threaddata['STICKY'] && $tmp_sticky_until != $threaddata['STICKY_UNTIL']) || $_POST['sticky'] != $threaddata['STICKY']) {
+                if (@checkdate($sticky_month, $sticky_day, $sticky_year)) {
 
-                $threaddata['STICKY'] = $_POST['sticky'];
-                $threaddata['STICKY_UNTIL'] = $tmp_sticky_until;
-                thread_set_sticky($tid, true, $threaddata['STICKY_UNTIL']);
-                admin_add_log_entry(CREATE_THREAD_STICKY, array($tid, $threaddata['TITLE']));
-                $update = true;
+                    $thread_sticky_until = mktime(0, 0, 0, $sticky_month, $sticky_day, $sticky_year);
+
+                    $threaddata['STICKY'] = $_POST['sticky'];
+                    $threaddata['STICKY_UNTIL'] = $thread_sticky_until;
+
+                    if (thread_set_sticky($tid, true, $thread_sticky_until)) {
+
+                        admin_add_log_entry(CREATE_THREAD_STICKY, array($tid, $threaddata['TITLE']));
+
+                    }else {
+
+                        $error_msg_array[] = $lang['failedtoupdatethreadstickystatus'];
+                        $valid = false;
+                    }
+
+                }else {
+
+                    $error_msg_array[] = $lang['failedtoupdatethreadstickystatus'];
+                    $valid = false;
+                }
             }
 
-        }elseif ($_POST['sticky'] != $threaddata['STICKY']) {
+        }else {
 
             $threaddata['STICKY'] = $_POST['sticky'];
-            thread_set_sticky($tid, false);
 
-            admin_add_log_entry(REMOVE_THREAD_STICKY, array($tid, $threaddata['TITLE']));
+            if (thread_set_sticky($tid, false)) {
 
-            $update = true;
+                admin_add_log_entry(REMOVE_THREAD_STICKY, array($tid, $threaddata['TITLE']));
+
+            }else {
+
+                $error_msg_array[] = $lang['failedtoupdatethreadstickystatus'];
+                $valid = false;
+            }
         }
-    }
 
-    if (isset($_POST['thread_merge_split']) && is_numeric($_POST['thread_merge_split'])) {
+        if (isset($_POST['thread_merge_split']) && is_numeric($_POST['thread_merge_split'])) {
 
-        if ($_POST['thread_merge_split'] == THREAD_TYPE_MERGE) {
+            if ($_POST['thread_merge_split'] == THREAD_TYPE_MERGE) {
 
-            if (isset($_POST['merge_thread']) && is_numeric($_POST['merge_thread'])
-                && isset($_POST['merge_type']) && is_numeric($_POST['merge_type'])
-                && isset($_POST['merge_thread_con']) && $_POST['merge_thread_con'] == "Y") {
+                if (isset($_POST['merge_thread']) && is_numeric($_POST['merge_thread'])) {
 
-                $merge_thread = $_POST['merge_thread'];
-                $merge_type = $_POST['merge_type'];
+                    if (isset($_POST['merge_type']) && is_numeric($_POST['merge_type']) && isset($_POST['merge_thread_con']) && $_POST['merge_thread_con'] == "Y") {
 
-                if (validate_msg($merge_thread)) {
-                    list($merge_thread,) = explode('.', $merge_thread);
+                        $merge_thread = $_POST['merge_thread'];
+                        $merge_type   = $_POST['merge_type'];
+
+                        if (validate_msg($merge_thread)) list($merge_thread,) = explode('.', $merge_thread);
+
+                        if ($merge_result = thread_merge($merge_thread, $tid, $merge_type, $error_str)) {
+
+                            admin_add_log_entry(THREAD_MERGE, $merge_result);
+
+                        }else {
+
+                            $error_msg_array[] = $error_str;
+                            $valid = false;
+                        }
+                    }
                 }
 
-                $error_str = "";
+            }elseif ($_POST['thread_merge_split'] == THREAD_TYPE_SPLIT) {
 
-                if ($merge_result = thread_merge($merge_thread, $tid, $merge_type, $error_str)) {
+                if (isset($_POST['split_thread']) && is_numeric($_POST['split_thread']) && $_POST['split_thread'] > 1) {
 
-                    admin_add_log_entry(THREAD_MERGE, $merge_result);
-                    $update = true;
+                    if (isset($_POST['split_type']) && is_numeric($_POST['split_type']) && isset($_POST['split_thread_con']) && $_POST['split_thread_con'] == "Y") {
+
+                        $split_start = $_POST['split_thread'];
+                        $split_type  = $_POST['split_type'];
+
+                        if ($split_result = thread_split($tid, $split_start, $split_type, $error_str)) {
+
+                            admin_add_log_entry(THREAD_SPLIT, $split_result);
+
+                        }else {
+
+                            $error_msg_array[] = $error_str;
+                            $valid = false;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (isset($_POST['t_to_uid_in_thread']) && is_numeric($_POST['t_to_uid_in_thread']) && isset($_POST['deluser_con']) && $_POST['deluser_con'] == "Y") {
+
+            if ($del_uid = $_POST['t_to_uid_in_thread']) {
+
+                if ($user_logon = user_get_logon($del_uid['UID'])) {
+
+                    if (thread_delete_by_user($tid, $del_uid['UID'])) {
+
+                        admin_add_log_entry(DELETE_USER_THREAD_POSTS, array($tid, $threaddata['TITLE'], $user_logon));
+
+                    }else {
+
+                        $error_msg_array[] = sprintf($lang['failedtodeletepostsbyuser'], $user_logon);
+                        $valid = false;
+                    }
+                }
+            }
+        }
+
+        if (isset($_POST['delthread']) && is_numeric($_POST['delthread'])) {
+
+            if (isset($_POST['delthread_con']) && $_POST['delthread_con'] == "Y") {
+
+                $delete_thread = $_POST['delthread'];
+
+                if (thread_delete($tid, $delete_thread)) {
+
+                    admin_add_log_entry(DELETE_THREAD, array($tid, $threaddata['TITLE']));
 
                 }else {
 
-                    html_draw_top();
-                    html_error_msg($error_str);
-                    html_draw_bottom();
-                    exit;
+                    $error_msg_array[] = $lang['failedtodeletethread'];
+                    $valid = false;
                 }
             }
+        }
 
-        }elseif ($_POST['thread_merge_split'] == THREAD_TYPE_SPLIT) {
-            
-            if (isset($_POST['split_thread']) && is_numeric($_POST['split_thread'])
-                && $_POST['split_thread'] > 1 && isset($_POST['split_type']) 
-                && is_numeric($_POST['split_type']) && isset($_POST['split_thread_con']) 
-                && $_POST['split_thread_con'] == "Y") {
+        if (isset($_POST['undelthread']) && $_POST['undelthread'] == "Y") {
 
-                $split_start = $_POST['split_thread'];
-                $split_type = $_POST['split_type'];
+            if (isset($_POST['undelthread_con']) && $_POST['undelthread_con'] == "Y") {
 
-                $error_str = "";
+                if (thread_undelete($tid)) {
 
-                if ($split_result = thread_split($tid, $split_start, $split_type, $error_str)) {
-
-                    admin_add_log_entry(THREAD_SPLIT, $split_result);
-                    $update = true;
+                    admin_add_log_entry(UNDELETE_THREAD, array($tid, $threaddata['TITLE']));
 
                 }else {
 
-                    html_draw_top();
-                    html_error_msg($error_str);
-                    html_draw_bottom();
-                    exit;
+                    $error_msg_array[] = $lang['failedtoundeletethread'];
+                    $valid = false;
                 }
             }
         }
-    }
 
-    if (isset($_POST['t_to_uid_in_thread']) && is_numeric($_POST['t_to_uid_in_thread']) && isset($_POST['deluser_con']) && $_POST['deluser_con'] == "Y") {
+        if ($valid) {
 
-        if ($del_uid = $_POST['t_to_uid_in_thread']) {
-
-            if ($user_logon = user_get_logon($del_uid['UID'])) {
-
-                thread_delete_by_user($tid, $del_uid['UID']);
-
-                admin_add_log_entry(DELETE_USER_THREAD_POSTS, array($tid, $threaddata['TITLE'], $user_logon));
-
-                $update = true;
-            }
+            header_redirect("thread_options.php?webtag=$webtag&msg=$msg&updated=true");
+            exit;
         }
-    }
-
-    if (isset($_POST['delthread']) && is_numeric($_POST['delthread'])) {
-
-        if (isset($_POST['delthread_con']) && $_POST['delthread_con'] == "Y") {
-
-            $delthread = $_POST['delthread'];
-            
-            thread_delete($tid, $delthread);
-
-            admin_add_log_entry(DELETE_THREAD, array($tid, $threaddata['TITLE']));
-
-            $update = true;
-        }
-    }
-
-    if (isset($_POST['undelthread']) && $_POST['undelthread'] == "Y") {
-
-        if (isset($_POST['undelthread_con']) && $_POST['undelthread_con'] == "Y") {
-
-            thread_undelete($tid);
-
-            admin_add_log_entry(UNDELETE_THREAD, array($tid, $threaddata['TITLE']));
-
-            $update = true;
-        }
-    }
-
-    if (!$threaddata = thread_get($tid, true)) {
-
-        html_draw_top();
-        html_error_msg($lang['threadcouldnotbefound']);
-        html_draw_bottom();
-        exit;
     }
 }
 
@@ -426,14 +473,17 @@ if ($threaddata['LENGTH'] > 0) {
     html_draw_top("basetarget=_blank", "robots=noindex,nofollow", 'thread_options.js');
 
     echo "<h1>{$lang['threadoptions']} &raquo; <a href=\"messages.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\">#{$tid} ", thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE']), "</a></h1>\n";
-    echo "<br />\n";
 
-    if ($update) {
+    if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-        echo "<h2>{$lang['updatesmade']}</h2>\n";
-        echo "<br />\n";
+        html_display_error_array($error_msg_array, '500', 'center');
+
+    }else if (isset($_GET['updated'])) {
+
+        html_display_success_msg($lang['updatessavedsuccessfully'], '500', 'center');
     }
 
+    echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "  <form name=\"thread_options\" action=\"thread_options.php\" method=\"post\" target=\"_self\">\n";
     echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
@@ -526,7 +576,7 @@ if ($threaddata['LENGTH'] > 0) {
 
         if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
 
-            $thread_available_pids = thread_get_unmoved_posts($tid);   
+            $thread_available_pids = thread_get_unmoved_posts($tid);
 
             if (thread_is_poll($tid) && $thread_available_pids) {
 
@@ -701,18 +751,18 @@ if ($threaddata['LENGTH'] > 0) {
 
             if ($threaddata['STICKY_UNTIL'] && $threaddata['STICKY'] == "Y") {
 
-                $year = date("Y", $threaddata['STICKY_UNTIL']);
-                $month = date("n", $threaddata['STICKY_UNTIL']);
-                $day = date("j", $threaddata['STICKY_UNTIL']);
+                $sticky_year  = date("Y", $threaddata['STICKY_UNTIL']);
+                $sticky_month = date("n", $threaddata['STICKY_UNTIL']);
+                $sticky_day   = date("j", $threaddata['STICKY_UNTIL']);
 
             }else {
 
-                $year = 0;
-                $month = 0;
-                $day = 0;
+                $sticky_year  = 0;
+                $sticky_month = 0;
+                $sticky_day   = 0;
             }
 
-            echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_radio("sticky", "Y", $lang['until'], $threaddata['STICKY'] == "Y"), "&nbsp;", form_date_dropdowns($year, $month, $day, "sticky_"), "&nbsp;&nbsp;</td>\n";
+            echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_radio("sticky", "Y", $lang['until'], $threaddata['STICKY'] == "Y"), "&nbsp;", form_date_dropdowns($sticky_year, $sticky_month, $sticky_day, "sticky_"), "&nbsp;&nbsp;</td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -852,7 +902,7 @@ if ($threaddata['LENGTH'] > 0) {
     html_draw_bottom();
 
 }elseif ($thread_length = thread_can_be_undeleted($tid)) {
-    
+
     html_draw_top("basetarget=_blank", "robots=noindex,nofollow", 'thread_options.js');
 
     echo "<h1>{$lang['threadoptions']}: <a href=\"messages.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\">#{$tid} ", thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE']), "</a></h1>\n";

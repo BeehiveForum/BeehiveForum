@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.184 2007-08-09 22:55:43 decoyduck Exp $ */
+/* $Id: search.php,v 1.185 2007-08-21 20:27:39 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -285,7 +285,7 @@ if (isset($_GET['show_stop_words'])) {
 
 search_get_word_lengths($min_length, $max_length);
 
-if ((isset($_POST) && sizeof($_POST) > 0) || isset($_GET['search_string']) || isset($_GET['logon'])) {
+if (isset($_POST['search']) || isset($_GET['search_string']) || isset($_GET['logon'])) {
 
     $offset = 0;
 
@@ -340,21 +340,31 @@ if ((isset($_POST) && sizeof($_POST) > 0) || isset($_GET['search_string']) || is
         $search_arguments['group_by_thread'] = $_POST['group_by_thread'];
     }
 
-    if (!$search_success = search_execute($search_arguments, $error)) {
+    if ($search_success = search_execute($search_arguments, $error)) {
 
-        html_draw_top("search.js", "robots=noindex,nofollow", "onload=enable_search_button()");
+        if (isset($_GET['search_string']) || isset($_GET['logon'])) {
 
-        echo "<h1>{$lang['error']}</h1>\n";
+            $redirect_uri = "./index.php?webtag=$webtag&final_uri=.%2Fdiscussion.php";
+            $redirect_uri.= "%3Fwebtag%3D$webtag%26amp%3Bleft%3Dsearch_results";
 
-        search_get_word_lengths($min_length, $max_length);
+            header_redirect($redirect_uri);
+            exit;
 
-        $search_frequency = forum_get_setting('search_min_frequency', false, 0);
+        }else {
 
-        switch($error) {
+            header_redirect("search.php?webtag=$webtag&search_success=true");
+            exit;
+        }
+
+    }else {
+
+        switch ($error) {
 
             case SEARCH_USER_NOT_FOUND:
 
-                echo "<p>{$lang['usernamenotfound']}</p>\n";
+                $error_msg_array[] = $lang['usernamenotfound'];
+                $valid = false;
+
                 break;
 
             case SEARCH_NO_KEYWORDS:
@@ -369,49 +379,31 @@ if ((isset($_POST) && sizeof($_POST) > 0) || isset($_GET['search_string']) || is
                     $stopped_keywords = urlencode(implode(' ', $keywords_error_array['keywords']));
 
                     $mysql_stop_word_link = "<a href=\"search.php?webtag=$webtag&amp;show_stop_words=true&amp;keywords=$stopped_keywords\" target=\"_blank\" onclick=\"return display_mysql_stopwords('$webtag', '$stopped_keywords')\">{$lang['mysqlstopwordlist']}</a>";
-                    echo sprintf("<p>{$lang['notexttosearchfor']}</p>\n", $min_length, $max_length, $mysql_stop_word_link);
+                    $error_msg_array[] = sprintf($lang['notexttosearchfor'], $min_length, $max_length, $mysql_stop_word_link);
 
-                    echo "<h2>{$lang['keywordscontainingerrors']}</h2>\n";
-                    echo "<ul>\n";
+                    $keywords_error_str = implode(", ", $keywords_error_array['keywords']);
+                    $error_msg_array[] = sprintf($lang['keywordscontainingerrors'], $keywords_error_str);
 
-                    foreach($keywords_error_array['keywords'] as $keyword_error) {
-                        echo "  <li>$keyword_error</li>\n";
-                    }
-
-                    echo "</ul>\n";
+                    break;
 
                 }else {
 
                     $mysql_stop_word_link = "<a href=\"search.php?webtag=$webtag&amp;show_stop_words=true\" target=\"_blank\" onclick=\"return display_mysql_stopwords('$webtag', '')\">{$lang['mysqlstopwordlist']}</a>";
-                    echo sprintf("<p>{$lang['notexttosearchfor']}</p>\n", $min_length, $max_length, $mysql_stop_word_link);
-                }
+                    $error_msg_array[] = sprintf($lang['notexttosearchfor'], $min_length, $max_length, $mysql_stop_word_link);
 
-                break;
+                    break;
+                }
 
             case SEARCH_FREQUENCY_TOO_GREAT:
 
-                echo sprintf("<p>{$lang['searchfrequencyerror']}</p>\n", $search_frequency);
+                $error_msg_array[] = sprintf($lang['searchfrequencyerror'], $search_frequency);
                 break;
         }
-
-        echo "</table>\n";
     }
 
 }elseif (isset($_GET['offset']) && is_numeric($_GET['offset'])) {
 
-    $search_success = true;
     $offset = $_GET['offset'];
-}
-
-if (isset($search_success) && $search_success === true && (isset($_GET['search_string']) || isset($_GET['logon']))) {
-
-    $redirect_uri = "./index.php?webtag=$webtag&final_uri=.%2Fdiscussion.php";
-    $redirect_uri.= "%3Fwebtag%3D$webtag%26amp%3Bleft%3Dsearch_results";
-    header_redirect($redirect_uri);
-    exit;
-}
-
-if (isset($search_success) && $search_success === true && isset($offset)) {
 
     if ($search_results_array = search_fetch_results($offset, $sort_by, $sort_dir)) {
 
@@ -502,6 +494,26 @@ if (isset($search_success) && $search_success === true && isset($offset)) {
             echo "<img src=\"", style_image('current_thread.png'), "\" alt=\"{$lang['findmore']}\" title=\"{$lang['findmore']}\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;offset=", $offset + 20, "&amp;sort_by=$sort_by\">{$lang['findmore']}</a><br />\n";
         }
 
+        echo "<form name=\"f_nav\" method=\"get\" action=\"search.php\" target=\"_self\">\n";
+        echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
+        echo "  ", form_input_hidden("offset", isset($offset) ? _htmlentities($offset) : 0), "\n";
+        echo "  <table cellpadding=\"2\" cellspacing=\"0\">\n";
+        echo "    <tr>\n";
+        echo "      <td align=\"left\" class=\"smalltext\" colspan=\"2\">{$lang['sortresults']}:</td>\n";
+        echo "    </tr>\n";
+        echo "    <tr>\n";
+        echo "      <td align=\"left\">&nbsp;</td>\n";
+        echo "      <td align=\"left\" colspan=\"2\">", form_dropdown_array("sort_by", $search_sort_by_array, $sort_by), "</td>\n";
+        echo "    </tr>\n";
+        echo"     <tr>\n";
+        echo "      <td align=\"left\">&nbsp;</td>\n";
+        echo "      <td align=\"left\">", form_dropdown_array("sort_dir", $search_sort_dir_array, $sort_dir), "</td>\n";
+        echo "      <td align=\"left\">", form_submit("go",$lang['goexcmark']). "</td>\n";
+        echo "    </tr>\n";
+        echo "  </table>\n";
+        echo "</form>\n";
+        echo "<br />\n";
+
     }else {
 
         html_draw_top("search.js", "robots=noindex,nofollow", "onload=enable_search_button()");
@@ -512,188 +524,6 @@ if (isset($search_success) && $search_success === true && isset($offset)) {
         echo "<h1>{$lang['error']}</h1>\n";
         echo "<img src=\"", style_image('search.png'), "\" alt=\"{$lang['matches']}\" title=\"{$lang['matches']}\" />&nbsp;{$lang['found']}: 0 {$lang['matches']}<br />\n";
     }
-
-}elseif (!isset($search_success)) {
-
-    html_draw_top("search.js", "robots=noindex,nofollow");
-
-    echo "<h1>{$lang['searchmessages']}</h1>\n";
-    echo "<br />\n";
-    echo "<div align=\"center\">\n";
-    echo "<form id=\"search_form\" method=\"post\" action=\"search.php\" target=\"", html_get_frame_name('left'), "\">\n";
-    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\">\n";
-    echo "        <table class=\"box\" width=\"100%\">\n";
-    echo "          <tr>\n";
-    echo "            <td align=\"left\" class=\"posthead\">\n";
-    echo "              <table class=\"posthead\" width=\"100%\">\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" colspan=\"2\" class=\"subhead\">{$lang['searchdiscussions']}</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"center\">\n";
-    echo "                    <table class=\"posthead\" width=\"95%\">\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"40%\">{$lang['keywords']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("search_string", "", 32), "&nbsp;</td>\n";
-    echo "                      </tr>\n";
-    echo "                    </table>\n";
-    echo "                  </td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\">&nbsp;</td>\n";
-    echo "                  <td align=\"left\">&nbsp;</td>\n";
-    echo "                </tr>\n";
-    echo "              </table>\n";
-    echo "            </td>\n";
-    echo "          </tr>\n";
-    echo "        </table>\n";
-    echo "      </td>\n";
-    echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"center\">&nbsp;</td>\n";
-    echo "    </tr>\n";
-    echo "  </table>\n";
-    echo "  <br />\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\">\n";
-    echo "        <table class=\"box\" width=\"100%\">\n";
-    echo "          <tr>\n";
-    echo "            <td align=\"left\" class=\"posthead\">\n";
-    echo "              <table class=\"posthead\" width=\"100%\">\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" colspan=\"2\" class=\"subhead\">{$lang['searchbyuser']}</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"center\">\n";
-    echo "                    <table class=\"posthead\" width=\"95%\">\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"40%\">{$lang['username']}:</td>\n";
-    echo "                        <td align=\"left\" nowrap=\"nowrap\"><div class=\"bhinputsearch\">", form_input_text("username", "", 28, 15, "", "search_logon"), "<a href=\"search_popup.php?webtag=$webtag&amp;type=1&amp;obj_name=username\" onclick=\"return openLogonSearch('$webtag', 'username');\"><img src=\"", style_image('search_button.png'), "\" alt=\"{$lang['search']}\" title=\"{$lang['search']}\" border=\"0\" class=\"search_button\" /></a></div>&nbsp;</td>\n";
-    echo "                      </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\">&nbsp;</td>\n";
-    echo "                        <td align=\"left\">", form_radio("user_include", SEARCH_USER_FROM, $lang['postsfromuser'], true), "&nbsp;", "</td>\n";
-    echo "                      </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\">&nbsp;</td>\n";
-    echo "                        <td align=\"left\">", form_radio("user_include", SEARCH_USER_TO, $lang['poststouser'], false), "&nbsp;", "</td>\n";
-    echo "                      </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\">&nbsp;</td>\n";
-    echo "                        <td align=\"left\">", form_radio("user_include", SEARCH_USER_BOTH, $lang['poststoandfromuser'], false), "&nbsp;", "</td>\n";
-    echo "                      </tr>\n";
-    echo "                    </table>\n";
-    echo "                  </td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\">&nbsp;</td>\n";
-    echo "                  <td align=\"left\">&nbsp;</td>\n";
-    echo "                </tr>\n";
-    echo "              </table>\n";
-    echo "            </td>\n";
-    echo "          </tr>\n";
-    echo "        </table>\n";
-    echo "      </td>\n";
-    echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"center\">&nbsp;</td>\n";
-    echo "    </tr>\n";
-    echo "  </table>\n";
-    echo "  <br />\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\">\n";
-    echo "        <table class=\"box\" width=\"100%\">\n";
-    echo "          <tr>\n";
-    echo "            <td align=\"left\" class=\"posthead\">\n";
-    echo "              <table class=\"posthead\" width=\"100%\">\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" colspan=\"2\" class=\"subhead\">{$lang['additionalcriteria']}</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"center\">\n";
-    echo "                    <table class=\"posthead\" width=\"95%\">\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"40%\">{$lang['folderbrackets_s']}:</td>\n";
-    echo "                        <td align=\"left\">", $folder_dropdown, "&nbsp;</td>\n";
-    echo "                      </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\">{$lang['postedfrom']}:</td>\n";
-    echo "                        <td align=\"left\">", form_dropdown_array("date_from", $search_date_from_array, SEARCH_FROM_ONE_MONTH_AGO, false, "search_dropdown"), "&nbsp;</td>\n";
-    echo "                      </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\">{$lang['postedto']}:</td>\n";
-    echo "                        <td align=\"left\">", form_dropdown_array("date_to", $search_date_to_array, SEARCH_TO_TODAY, false, "search_dropdown"), "&nbsp;</td>\n";
-    echo "                      </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\">{$lang['sortby']}:</td>\n";
-    echo "                        <td align=\"left\">", form_dropdown_array("sort_by", $search_sort_by_array, SEARCH_SORT_CREATED, false, "search_dropdown"), "&nbsp;</td>\n";
-    echo "                      </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\">{$lang['sortdir']}:</td>\n";
-    echo "                        <td align=\"left\">", form_dropdown_array("sort_dir", $search_sort_dir_array, SORT_DIR_DESC, false, "search_dropdown"), "&nbsp;</td>\n";
-    echo "                      </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['groupbythread']}:</td>\n";
-    echo "                        <td align=\"left\">", form_radio("group_by_thread", SEARCH_GROUP_THREADS, $lang['yes'], false), "&nbsp;", form_radio("group_by_thread", SEARCH_GROUP_NONE, $lang['no'], true), "&nbsp;</td>\n";
-    echo "                      </tr>\n";
-    echo "                    </table>\n";
-    echo "                  </td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\">&nbsp;</td>\n";
-    echo "                  <td align=\"left\">&nbsp;</td>\n";
-    echo "                </tr>\n";
-    echo "              </table>\n";
-    echo "            </td>\n";
-    echo "          </tr>\n";
-    echo "        </table>\n";
-    echo "      </td>\n";
-    echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\">&nbsp;</td>\n";
-    echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_button("go_button", $lang['find'], "onclick=\"disable_button(this); submit_form('search_form')\""), "</td>\n";
-    echo "    </tr>\n";
-    echo "  </table>\n";
-    echo "</form>\n";
-    echo "</div>\n";
-
-    html_draw_bottom();
-    exit;
-}
-
-echo "<br />\n";
-
-if (isset($search_success) && $search_success === true) {
-
-    echo "<form name=\"f_nav\" method=\"get\" action=\"search.php\" target=\"_self\">\n";
-    echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
-    echo "  ", form_input_hidden("offset", isset($offset) ? _htmlentities($offset) : 0), "\n";
-    echo "  <table cellpadding=\"2\" cellspacing=\"0\">\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\" class=\"smalltext\" colspan=\"2\">{$lang['sortresults']}:</td>\n";
-    echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\">&nbsp;</td>\n";
-    echo "      <td align=\"left\" colspan=\"2\">", form_dropdown_array("sort_by", $search_sort_by_array, $sort_by), "</td>\n";
-    echo "    </tr>\n";
-    echo"     <tr>\n";
-    echo "      <td align=\"left\">&nbsp;</td>\n";
-    echo "      <td align=\"left\">", form_dropdown_array("sort_dir", $search_sort_dir_array, $sort_dir), "</td>\n";
-    echo "      <td align=\"left\">", form_submit("go",$lang['goexcmark']). "</td>\n";
-    echo "    </tr>\n";
-    echo "  </table>\n";
-    echo "</form>\n";
-    echo "<br />\n";
-}
-
-if (!isset($_GET['search_string'])) {
 
     echo "<table cellpadding=\"2\" cellspacing=\"0\">\n";
     echo "  <tr>\n";
@@ -726,7 +556,179 @@ if (!isset($_GET['search_string'])) {
     echo "    </td>\n";
     echo "  </tr>\n";
     echo "</table>\n";
+
+    html_draw_bottom();
+    exit;
 }
+
+html_draw_top("search.js", "robots=noindex,nofollow");
+
+echo "<h1>{$lang['searchmessages']}</h1>\n";
+
+if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+
+    html_display_error_array($error_msg_array, '600', 'center');
+
+}elseif (isset($_GET['search_success'])) {
+
+    html_display_success_msg("Search in progress", '600', 'center');
+
+    echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
+    echo "<!--\n\n";
+    echo "if (top.document.body.rows) {\n\n";
+    echo "    top.frames['", html_get_frame_name('main'), "'].frames['", html_get_frame_name('left'), "'].location.replace('search.php?webtag=$webtag&offset=0');\n\n";
+    echo "} else if (top.document.body.cols) {\n\n";
+    echo "    top.frames['", html_get_frame_name('left'), "'].location.replace('search.php?webtag=$webtag&offset=0');\n\n";
+    echo "}\n\n";
+    echo "-->\n";
+    echo "</script>";
+}
+
+echo "<br />\n";
+echo "<div align=\"center\">\n";
+echo "<form id=\"search_form\" method=\"post\" action=\"search.php\" target=\"_self\">\n";
+echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\" colspan=\"2\" class=\"subhead\">{$lang['searchdiscussions']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"center\">\n";
+echo "                    <table class=\"posthead\" width=\"95%\">\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"40%\">{$lang['keywords']}:</td>\n";
+echo "                        <td align=\"left\">", form_input_text("search_string", "", 32), "&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\">&nbsp;</td>\n";
+echo "                  <td align=\"left\">&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td align=\"center\">&nbsp;</td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "  <br />\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\" colspan=\"2\" class=\"subhead\">{$lang['searchbyuser']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"center\">\n";
+echo "                    <table class=\"posthead\" width=\"95%\">\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"40%\">{$lang['username']}:</td>\n";
+echo "                        <td align=\"left\" nowrap=\"nowrap\"><div class=\"bhinputsearch\">", form_input_text("username", "", 28, 15, "", "search_logon"), "<a href=\"search_popup.php?webtag=$webtag&amp;type=1&amp;obj_name=username\" onclick=\"return openLogonSearch('$webtag', 'username');\"><img src=\"", style_image('search_button.png'), "\" alt=\"{$lang['search']}\" title=\"{$lang['search']}\" border=\"0\" class=\"search_button\" /></a></div>&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\">&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_radio("user_include", SEARCH_USER_FROM, $lang['postsfromuser'], true), "&nbsp;", "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\">&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_radio("user_include", SEARCH_USER_TO, $lang['poststouser'], false), "&nbsp;", "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\">&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_radio("user_include", SEARCH_USER_BOTH, $lang['poststoandfromuser'], false), "&nbsp;", "</td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\">&nbsp;</td>\n";
+echo "                  <td align=\"left\">&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td align=\"center\">&nbsp;</td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "  <br />\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\" colspan=\"2\" class=\"subhead\">{$lang['additionalcriteria']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"center\">\n";
+echo "                    <table class=\"posthead\" width=\"95%\">\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"40%\">{$lang['folderbrackets_s']}:</td>\n";
+echo "                        <td align=\"left\">", $folder_dropdown, "&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\">{$lang['postedfrom']}:</td>\n";
+echo "                        <td align=\"left\">", form_dropdown_array("date_from", $search_date_from_array, SEARCH_FROM_ONE_MONTH_AGO, false, "search_dropdown"), "&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\">{$lang['postedto']}:</td>\n";
+echo "                        <td align=\"left\">", form_dropdown_array("date_to", $search_date_to_array, SEARCH_TO_TODAY, false, "search_dropdown"), "&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\">{$lang['sortby']}:</td>\n";
+echo "                        <td align=\"left\">", form_dropdown_array("sort_by", $search_sort_by_array, SEARCH_SORT_CREATED, false, "search_dropdown"), "&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\">{$lang['sortdir']}:</td>\n";
+echo "                        <td align=\"left\">", form_dropdown_array("sort_dir", $search_sort_dir_array, SORT_DIR_DESC, false, "search_dropdown"), "&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['groupbythread']}:</td>\n";
+echo "                        <td align=\"left\">", form_radio("group_by_thread", SEARCH_GROUP_THREADS, $lang['yes'], false), "&nbsp;", form_radio("group_by_thread", SEARCH_GROUP_NONE, $lang['no'], true), "&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\">&nbsp;</td>\n";
+echo "                  <td align=\"left\">&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">&nbsp;</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td align=\"center\">", form_submit("search", $lang['find']), "</td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "</form>\n";
+echo "</div>\n";
 
 html_draw_bottom();
 

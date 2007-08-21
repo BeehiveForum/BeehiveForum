@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.108 2007-08-16 15:38:12 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.109 2007-08-21 20:27:39 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -518,7 +518,7 @@ if ($valid && isset($_POST['submit'])) {
 
     }else {
 
-        $error_msg_array[] = sprintf("<h2>{$lang['postfrequencytoogreat']}</h2>", forum_get_setting('minimum_post_frequency', false, 0));
+        $error_msg_array[] = sprintf($lang['postfrequencytoogreat'], forum_get_setting('minimum_post_frequency', false, 0));
     }
 }
 

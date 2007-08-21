@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.66 2007-07-17 16:23:07 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.67 2007-08-21 20:27:39 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -142,7 +142,7 @@ function logon_update_password_cookie($logon, $password)
 function logon_update_cookies($logon, $password, $passhash, $save_password)
 {
     // Retrieve the existing cookies
-    
+
     logon_get_cookies($username_array, $password_array, $passhash_array);
 
     // Light mode uses different cookies to the main site.
@@ -273,7 +273,7 @@ function logon_perform($logon_main)
         if ($luid = user_logon($logon, $passhash)) {
 
             // Remove any previously set cookies
-            
+
             bh_setcookie("bh_{$webtag}_thread_mode", "1", time() - YEAR_IN_SECONDS);
             bh_setcookie("bh_logon", "1", time() - YEAR_IN_SECONDS);
 
@@ -291,9 +291,8 @@ function logon_perform($logon_main)
 
     if ($logon_main === false) {
 
+        html_display_error_msg($lang['usernameorpasswdnotvalid'], '400', 'center');
         echo "<div align=\"center\">\n";
-        echo "<h2>{$lang['usernameorpasswdnotvalid']}</h2>\n";
-        echo "<h2>{$lang['pleasereenterpasswd']}</h2>\n";
     }
 
     return false;
@@ -302,7 +301,7 @@ function logon_perform($logon_main)
 function logon_draw_form()
 {
     $frame_top_target = html_get_top_frame_name();
-   
+
     $lang = load_language_file();
 
     $webtag = get_webtag($webtag_search);
@@ -324,16 +323,14 @@ function logon_draw_form()
     if (isset($_COOKIE['bh_logon_failed'])) {
 
         bh_setcookie("bh_logon_failed", "1", time() - YEAR_IN_SECONDS);
-
-        echo "<h2>{$lang['usernameorpasswdnotvalid']}</h2>\n";
-        echo "<h2>{$lang['pleasereenterpasswd']}</h2>\n";
+        html_display_error_msg($lang['usernameorpasswdnotvalid'], '400', 'center');
     }
 
     // Get the original requested page url.
 
     $request_uri = get_request_uri();
 
-    // If the request is for logon.php then we are performing 
+    // If the request is for logon.php then we are performing
     // a normal login, otherwise potentially a failed session.
 
     if (stristr($request_uri, 'logon.php')) {

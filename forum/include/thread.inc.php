@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.120 2007-08-01 20:23:03 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.121 2007-08-21 20:27:40 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -50,7 +50,7 @@ function thread_get_title($tid)
     if (!is_numeric($tid)) return false;
 
     $sql = "SELECT TITLE FROM {$table_data['PREFIX']}THREAD WHERE TID = '$tid'";
-    
+
     if (!$result = db_query($sql, $db_thread_get_title)) return false;
 
     if (db_num_rows($result) > 0) {
@@ -96,7 +96,7 @@ function thread_get($tid, $inc_deleted = false)
     $sql.= "ON (FOLDER.FID = THREAD.FID) ";
     $sql.= "WHERE THREAD.TID = '$tid' ";
     $sql.= "AND THREAD.FID IN ($fidlist) ";
-    
+
     if ($inc_deleted === false) $sql.= "AND THREAD.LENGTH > 0 ";
 
     if (!$result = db_query($sql, $db_thread_get)) return false;
@@ -194,7 +194,7 @@ function thread_get_length($tid)
     if (!is_numeric($tid)) return false;
 
     $sql = "SELECT LENGTH FROM {$table_data['PREFIX']}THREAD WHERE TID = '$tid'";
-    
+
     if (!$result = db_query($sql, $db_thread_get_length)) return false;
 
     if (db_num_rows($result) > 0) {
@@ -215,7 +215,7 @@ function thread_get_tracking_data($tid)
     if (!is_numeric($tid)) return false;
 
     $tracking_data_array = array();
-    
+
     $sql = "SELECT TID, NEW_TID, TRACK_TYPE ";
     $sql.= "FROM {$table_data['PREFIX']}THREAD_TRACK ";
     $sql.= "WHERE TID = '$tid'";
@@ -223,7 +223,7 @@ function thread_get_tracking_data($tid)
     if (!$result = db_query($sql, $db_thread_get_tracking_data)) return false;
 
     if (db_num_rows($result) > 0) {
-    
+
         while ($tracking_data = db_fetch_array($result)) {
             $tracking_data_array[] = $tracking_data;
         }
@@ -236,14 +236,14 @@ function thread_get_tracking_data($tid)
     if (!$result = db_query($sql, $db_thread_get_tracking_data)) return false;
 
     if (db_num_rows($result) > 0) {
-    
+
         while ($tracking_data = db_fetch_array($result)) {
             $tracking_data_array[] = $tracking_data;
         }
     }
 
     return sizeof($tracking_data_array) > 0 ? $tracking_data_array : false;
-}    
+}
 
 function thread_set_length($tid, $length)
 {
@@ -345,7 +345,7 @@ function thread_set_interest($tid, $interest)
 
         if (!$result = db_query($sql, $db_thread_set_interest)) return false;
     }
-    
+
     return true;
 }
 
@@ -375,7 +375,7 @@ function thread_set_high_interest($tid)
 
         if (!$result = db_query($sql, $db_thread_set_high_interest)) return false;
     }
-    
+
     return $result;
 }
 
@@ -396,9 +396,7 @@ function thread_set_sticky($tid, $sticky = true, $sticky_until = false)
 
     if (!$result = db_query($sql, $db_thread_set_sticky)) return false;
 
-    $affected_rows = db_affected_rows($db_thread_set_sticky);
-
-    return $affected_rows > 0;
+    return true;
 }
 
 function thread_set_closed($tid, $closed = true)
@@ -416,9 +414,7 @@ function thread_set_closed($tid, $closed = true)
 
     if (!$result = db_query($sql, $db_thread_set_closed)) return false;
 
-    $affected_rows = db_affected_rows($db_thread_set_closed);
-
-    return $affected_rows > 0;
+    return true;
 }
 
 function thread_admin_lock($tid, $locked = true)
@@ -436,9 +432,7 @@ function thread_admin_lock($tid, $locked = true)
 
     if (!$result = db_query($sql, $db_thread_admin_lock)) return false;
 
-    $affected_rows = db_affected_rows($db_thread_admin_lock);
-
-    return $affected_rows > 0;
+    return true;
 }
 
 function thread_change_folder($tid, $new_fid)
@@ -451,7 +445,7 @@ function thread_change_folder($tid, $new_fid)
     if (!is_numeric($new_fid)) return false;
 
     $sql = "UPDATE {$table_data['PREFIX']}THREAD SET FID = '$new_fid' WHERE TID = '$tid'";
-    
+
     if (!$result = db_query($sql, $db_thread_set_closed)) return false;
 
     return true;
@@ -468,7 +462,7 @@ function thread_change_title($fid, $tid, $new_title)
     $new_title = db_escape_string(_htmlentities($new_title));
 
     $sql = "UPDATE {$table_data['PREFIX']}THREAD SET TITLE = '$new_title' WHERE TID = '$tid'";
-    
+
     if (!$result = db_query($sql, $db_thread_change_title)) return false;
 
     return true;
@@ -497,7 +491,7 @@ function thread_delete_by_user($tid, $uid)
         if (!$result = db_query($sql, $db_thread_delete_by_user)) return false;
     }
 
-    return $result;
+    return true;
 }
 
 function thread_delete($tid, $delete_type)
@@ -592,7 +586,7 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
     }
 
     $forum_fid = $table_data['FID'];
-        
+
     if (isset($threada['TITLE']) && isset($threadb['TITLE'])) {
 
         $tida_closed = thread_set_closed($tida, true);
@@ -634,7 +628,7 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
 
                     return false;
                 }
-                
+
                 foreach ($required_post_keys_array as $required_post_key) {
 
                     if (!in_array($required_post_key, array_keys($post_data))) {
@@ -654,7 +648,7 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
                 $required_thread_keys_array = array('FID', 'BY_UID', 'TITLE');
 
                 if (!is_array($new_thread)) {
-                    
+
                     thread_merge_error($tida, $tidb, THREAD_MERGE_THREAD_ERROR, $error_str);
 
                     if ($tidb_closed) thread_set_closed($tidb, false);
@@ -662,7 +656,7 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
 
                     return false;
                 }
-                
+
                 foreach ($required_thread_keys_array as $required_thread_key) {
 
                     if (!in_array($required_thread_key, array_keys($new_thread))) {
@@ -731,7 +725,7 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
                     thread_set_closed($new_tid, false);
 
                     return array($tida, $threada['TITLE'], $tidb, $threadb['TITLE'], $new_tid, $thread_new['TITLE']);
-                
+
                 }else {
 
                     thread_merge_error($tida, $tidb, THREAD_MERGE_CREATE_ERROR, $error_str);
@@ -741,7 +735,7 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
 
                     return false;
                 }
-            
+
             }else {
 
                 thread_merge_error($tida, $tidb, THREAD_MERGE_THREAD_ERROR, $error_str);
@@ -751,7 +745,7 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
 
                 return false;
             }
-        
+
         }else {
 
             thread_merge_error($tida, $tidb, THREAD_MERGE_POST_ERROR, $error_str);
@@ -772,32 +766,32 @@ function thread_merge_error($tida, $tidb, $error_code, &$error_str)
 
         case THREAD_MERGE_INVALID_ARGS:
 
-            $error_str = "<h2>{$lang['invalidfunctionarguments']}</h2>\n";
+            $error_str = $lang['invalidfunctionarguments'];
             break;
 
         case THREAD_MERGE_FORUM_ERROR:
 
-            $error_str = "<h2>{$lang['couldnotretrieveforumdata']}</h2>\n";
+            $error_str = $lang['couldnotretrieveforumdata'];
             break;
 
         case THREAD_MERGE_POLL_ERROR:
 
-            $error_str = "<h2>{$lang['cannotmergepolls']}</h2>\n";
+            $error_str = $lang['cannotmergepolls'];
             break;
 
         case THREAD_MERGE_THREAD_ERROR:
 
-            $error_str = "<h2>{$lang['couldnotretrievethreaddatamerge']}</h2>\n";
+            $error_str = $lang['couldnotretrievethreaddatamerge'];
             break;
 
         case THREAD_MERGE_POST_ERROR:
 
-            $error_str = "<h2>{$lang['couldnotretrievepostdatamerge']}</h2>\n";
+            $error_str = $lang['couldnotretrievepostdatamerge'];
             break;
 
         case THREAD_MERGE_CREATE_ERROR:
 
-            $error_str = "<h2>{$lang['failedtocreatenewthreadformerge']}</h2>\n";
+            $error_str = $lang['failedtocreatenewthreadformerge'];
             break;
 
         default:
@@ -817,7 +811,7 @@ function thread_merge_get_by_created($dest_tid, $source_tid)
     if (!$table_data = get_table_prefix()) return false;
 
     $forum_fid = $table_data['FID'];
-    
+
     $db_thread_merge_get_by_created = db_connect();
 
     $post_data_array = array();
@@ -879,7 +873,7 @@ function thread_merge_get($tida, $tidb)
     if (!$table_data = get_table_prefix()) return false;
 
     $forum_fid = $table_data['FID'];
-    
+
     $db_thread_merge_get_by_created = db_connect();
 
     $post_data_array = array();
@@ -978,13 +972,13 @@ function thread_split($tid, $spid, $split_type, &$error_str)
         switch ($split_type) {
 
             case THREAD_SPLIT_REPLIES:
-        
+
                 $post_data_array = thread_split_get_replies($tid, $spid);
                 break;
 
             case THREAD_SPLIT_FOLLOWING:
 
-                $post_data_array = thread_split_get_following($tid, $spid);               
+                $post_data_array = thread_split_get_following($tid, $spid);
                 break;
         }
 
@@ -995,12 +989,12 @@ function thread_split($tid, $spid, $split_type, &$error_str)
             foreach ($post_data_array as $post_data) {
 
                 if (!is_array($post_data)) {
-                    
+
                     thread_split_error($tid, THREAD_SPLIT_POST_ERROR, $error_str);
                     if ($tid_closed) thread_set_closed($tid, false);
                     return false;
                 }
-                
+
                 foreach ($required_post_keys_array as $required_post_key) {
 
                     if (!in_array($required_post_key, array_keys($post_data))) {
@@ -1068,7 +1062,7 @@ function thread_split($tid, $spid, $split_type, &$error_str)
                 thread_set_closed($new_tid, false);
 
                 return array($tid, $spid, $new_tid, $thread_new['TITLE']);
-            
+
             }else {
 
                 thread_split_error($tid, THREAD_SPLIT_CREATE_ERROR, $error_str);
@@ -1091,32 +1085,32 @@ function thread_split($tid, $spid, $split_type, &$error_str)
 function thread_split_error($tid, $error_code, &$error_str)
 {
     $lang = load_language_file();
-    
+
     switch ($error_code) {
 
         case THREAD_SPLIT_INVALID_ARGS:
 
-            $error_str = "<h2>{$lang['invalidfunctionarguments']}</h2>\n";
+            $error_str = $lang['invalidfunctionarguments'];
             break;
 
         case THREAD_SPLIT_FORUM_ERROR:
 
-            $error_str = "<h2>{$lang['couldnotretrieveforumdata']}</h2>\n";
+            $error_str = $lang['couldnotretrieveforumdata'];
             break;
 
         case THREAD_SPLIT_THREAD_ERROR:
 
-            $error_str = "<h2>{$lang['couldnotretrievethreaddatasplit']}</h2>\n";
+            $error_str = $lang['couldnotretrievethreaddatasplit'];
             break;
 
         case THREAD_SPLIT_POST_ERROR :
 
-            $error_str = "<h2>{$lang['couldnotretrievepostdatasplit']}</h2>\n";
+            $error_str = $lang['couldnotretrievepostdatasplit'];
             break;
 
         case THREAD_SPLIT_CREATE_ERROR:
 
-            $error_str = "<h2>{$lang['failedtocreatenewthreadforsplit']}</h2>\n";
+            $error_str = $lang['failedtocreatenewthreadforsplit'];
             break;
 
         default:
@@ -1154,7 +1148,7 @@ function thread_split_get_replies($tid, $pid)
     if (!$result = db_query($sql, $db_thread_split_get)) return false;
 
     if ($post_data = db_fetch_array($result, DB_RESULT_ASSOC)) {
-        
+
         $new_post_pid = 1;
 
         $dest_pid_array[$post_data['PID']] = $new_post_pid;
@@ -1197,7 +1191,7 @@ function thread_split_get_following($tid, $spid)
         $post_data_array = array();
 
         $new_post_pid = 0;
-        
+
         while ($post_data = db_fetch_array($result, DB_RESULT_ASSOC)) {
 
             $new_post_pid++;
@@ -1293,7 +1287,7 @@ function thread_get_unmoved_posts($tid)
     if (db_num_rows($result) > 0) {
 
         $thread_unmoved_posts_array = array();
-        
+
         while ($thread_data = db_fetch_array($result)) {
 
             $thread_unmoved_posts_array[$thread_data['PID']] = $thread_data['PID'];
@@ -1310,7 +1304,7 @@ function thread_can_be_undeleted($tid)
     if (!is_numeric($tid)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
-    
+
     $db_thread_can_be_undeleted = db_connect();
 
     $sql = "SELECT MAX(PID) AS LENGTH FROM ";
@@ -1366,7 +1360,7 @@ function thread_search($thread_search, $offset = 0)
                 $results_array[$thread_data['TID']] = $thread_data;
             }
         }
-    
+
     }else if ($results_count > 0) {
 
         $offset = floor(($results_count - 1) / 10) * 10;

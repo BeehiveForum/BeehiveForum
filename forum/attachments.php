@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.143 2007-08-09 22:55:43 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.144 2007-08-21 20:27:39 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -401,6 +401,15 @@ echo "//-->\n";
 echo "</script>\n";
 
 echo "<h1>{$lang['attachments']}</h1>\n";
+
+if (isset($upload_success) && is_array($upload_success) && sizeof($upload_success) > 0) {
+    html_display_success_msg(sprintf($lang['successfullyuploaded'], implode(", ", $upload_success)), '600', 'left');
+}
+
+if (isset($upload_failure) && is_array($upload_failure) && sizeof($upload_failure) > 0) {
+    html_display_error_msg(sprintf($lang['failedtoupload'], implode(", ", $upload_failure)), '600', 'left');
+}
+
 echo "<br />\n";
 echo "<form name=\"attachments\" enctype=\"multipart/form-data\" method=\"post\" action=\"attachments.php\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
@@ -432,23 +441,6 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">&nbsp;</td>\n";
 echo "                        <td align=\"left\" colspan=\"2\" class=\"smalltext\"><div id=\"upload_fields_link\"></div></td>\n";
 echo "                      </tr>\n";
-
-if (isset($upload_success) && is_array($upload_success) && sizeof($upload_success) > 0) {
-
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"220\">&nbsp;</td>\n";
-    echo "                        <td align=\"left\" colspan=\"2\"><h2>{$lang['successfullyuploaded']}:<br />", implode(",<br />", $upload_success), ".</h2></td>\n";
-    echo "                      </tr>\n";
-}
-
-if (isset($upload_failure) && is_array($upload_failure) && sizeof($upload_failure) > 0) {
-
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"220\">&nbsp;</td>\n";
-    echo "                        <td align=\"left\" colspan=\"2\"><h2>{$lang['failedtoupload']}:<br />", implode(",<br />", $upload_failure), ".</h2></td>\n";
-    echo "                      </tr>\n";
-}
-
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"3\">&nbsp;</td>\n";
 echo "                      </tr>\n";

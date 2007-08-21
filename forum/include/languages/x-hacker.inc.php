@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.242 2007-08-20 17:42:20 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.243 2007-08-21 20:27:40 decoyduck Exp $ */
 
 // British English language file
 
@@ -237,8 +237,8 @@ $lang['move'] = "m0V3";
 $lang['closed'] = "cl0\$ed";
 $lang['open'] = "oPen";
 $lang['restricted'] = "rE\$+R1CtED";
-$lang['iscurrentlyclosed'] = "iS curR3nTLy CLo\$ED";
-$lang['youdonothaveaccessto'] = "j00 d0 N0t H4Ve @CCEs\$ t0";
+$lang['forumiscurrentlyclosed'] = "%s iS curR3nTLy CLo\$ED";
+$lang['youdonothaveaccesstoforum'] = "j00 d0 N0t H4Ve @CCEs\$ t0 %s";
 $lang['toapplyforaccessplease'] = "to @PpLY F0R aCc35S PL3@53 C0Nt4ct +hE fOrUM OwNER.";
 $lang['adminforumclosedtip'] = "if j00 W4N+ TO cH4n93 5omE 53+T1NG5 ON Y0ur f0RUM CL1ck TEh @DM1n LInk 1n +H3 N4vI94+10n 8@R 48oVE.";
 $lang['newfolder'] = "n3W F0lD3r";
@@ -327,7 +327,7 @@ $lang['youmustenteraprofileitemname'] = "j00 MUs+ 3NT3R 4 PROFiLE 1+3m N4M3";
 $lang['invalidprofileitemtype'] = "iNv4lID PR0f1lE 1+3M +YP3 S3l3C+3D";
 $lang['failedtocreatenewprofileitem'] = "f@1L3d +O CrE4tE NEW pROFiL3 I+3m";
 $lang['failedtoupdateprofileitem'] = "f@1l3d +0 UPD@+3 Pr0f1L3 ItEm";
-$lang['startpageupdated'] = "s+4RT P@9E upD4+3D";
+$lang['startpageupdated'] = "s+4RT P@9E upD4+3D. %s";
 $lang['viewupdatedstartpage'] = "vi3W UpD4+3D 5t4R+ PAG3";
 $lang['editstartpage'] = "eD1+ \$+4r+ P4gE";
 $lang['nouserspecified'] = "nO Us3r \$p3C1ph1ED.";
@@ -841,8 +841,8 @@ $lang['aidnotspecified'] = "a1d N0+ sP3cifI3D.";
 $lang['upload'] = "uplo4d";
 $lang['uploadnewattachment'] = "uPl0@D N3w AT+4chMEN+";
 $lang['waitdotdot'] = "w41+..";
-$lang['successfullyuploaded'] = "sucCE\$\$FuLlY Upl04D3D";
-$lang['failedtoupload'] = "fA1L3d T0 uPl04D";
+$lang['successfullyuploaded'] = "sucCE\$\$FuLlY Upl04D3D: %s";
+$lang['failedtoupload'] = "fA1L3d T0 uPl04D: %s";
 $lang['complete'] = "comPL3+3";
 $lang['uploadattachment'] = "uPLO4d A FiL3 ph0r ATt4ChM3nt T0 TEh M3\$s@G3";
 $lang['enterfilenamestoupload'] = "eNtEr FiLEn4mE(s) T0 UpL04D";
@@ -909,7 +909,7 @@ $lang['msgsentfromby'] = "tH1\$ mEs5@9e W4\$ \$3nt FroM %s 8y %s";
 $lang['subject'] = "sU8J3c+";
 $lang['send'] = "s3nd";
 $lang['hasoptedoutofemail'] = "h@S op+3D OUT Oph 3M4IL Con+4CT";
-$lang['hasinvalidemailaddress'] = "h4s @n 1NV@L1d 3m41l 4dDre5\$";
+$lang['hasinvalidemailaddress'] = "U5£r %s h4s @n 1NV@L1d 3m41l 4dDre5\$";
 
 // Message nofificaiton ------------------------------------------------
 
@@ -1548,7 +1548,7 @@ $lang['previewsignature'] = "pr3Vi3w siGnA+Ure";
 $lang['searchresults'] = "s3@rCh reSUl+s";
 $lang['usernamenotfound'] = "th3 US3RN@M3 j00 SPeC1PhIED In TEh +0 0r PHRom fI3lD W45 n0T F0unD.";
 $lang['notexttosearchfor'] = "oN3 or 4Ll 0F Y0ur sE4rCH K3ywOrD\$ w3r3 1nV@l1D. \$34RCH KeywOrDs mU\$+ 8e No sh0R+Er tH4n %d CH4R4C+3rs, N0 loN9ER Th4n %d Ch4r4C+eR\$ aND mUs+ N0t 4ppE4R IN ThE %s";
-$lang['keywordscontainingerrors'] = "keYw0rD\$ C0nt41nIN9 3rRoR\$";
+$lang['keywordscontainingerrors'] = "keYw0rD\$ C0nt41nIN9 3rRoR\$: %s";
 $lang['mysqlstopwordlist'] = "mY\$QL s+0pWOrd Lis+";
 $lang['foundzeromatches'] = "f0uND: 0 M4Tch3\$";
 $lang['found'] = "fOunD";
@@ -1745,7 +1745,7 @@ $lang['statsdisplayenabled'] = "s+4+s D1sPL@y En@8lED";
 
 // Thread Options (thread_options.php) ---------------------------------
 
-$lang['updatesmade'] = "uPd4t3S m4DE";
+$lang['updatessavedsuccessfully'] = "Updates saved successfully";
 $lang['useroptions'] = "useR 0P+I0NS";
 $lang['markedasread'] = "m4Rk3D @\$ Re4D";
 $lang['postsoutof'] = "po5+s 0Ut OpH";

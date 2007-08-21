@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_subscriptions.php,v 1.25 2007-06-18 20:10:49 decoyduck Exp $ */
+/* $Id: edit_subscriptions.php,v 1.26 2007-08-21 20:27:39 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -115,13 +115,12 @@ if (user_is_guest()) {
     exit;
 }
 
-// Start output here
+// Array to store error messages.
 
-html_draw_top('edit_subscriptions.js');
+$error_msg_array = array();
 
-// Array to store the update texts in
+// Array to track changed threads.
 
-$update_array = array();
 $threads_array = array();
 
 // User pressed Save button
@@ -134,23 +133,23 @@ if (isset($_POST['save'])) {
 
         foreach ($_POST['set_interest'] as $thread) {
 
-            $threads_array[] = $thread;
-            
-            if (is_numeric($thread)) {
+            if ($valid && is_numeric($thread)) {
 
-                if (thread_set_interest($thread, 0)) {
+                $threads_array[] = $thread;
 
-                    if (!in_array($lang['threadinterestsupdatedsuccessfully'], $update_array)) {
-                        $update_array[] = "{$lang['threadinterestsupdatedsuccessfully']}";
-                    }
-                
-                }else {
+                if (!thread_set_interest($thread, 0)) {
 
+                    $error_msg_array[] = sprintf("{$lang['couldnotupdateinterestonthread']}", $thread_title);
                     $valid = false;
-                    $thread_title = thread_get_title($thread);
-                    $update_array[] = sprintf("{$lang['couldnotupdateinterestonthread']}", $thread_title);
                 }
             }
+        }
+
+        if ($valid) {
+
+            $threads_list = implode(",", preg_grep("/[0-9]+/", $threads_array));
+            header_redirect("edit_subscriptions.php?webtag=$webtag&updated=true&threads=$threads_list");
+            exit;
         }
     }
 }
@@ -201,11 +200,21 @@ if (isset($_GET['view_filter']) && is_numeric($_GET['view_filter'])) {
     $view_filter = THREAD_NOINTEREST;
 }
 
+// Thread tracking
+
+if (isset($_GET['threads']) && strlen(trim(_stripslashes($_GET['threads']))) > 0) {
+    $threads_array = preg_grep("/[0-9]+/", explode(",", $_GET['threads']));
+}
+
 // Clear search?
 
 if (isset($_POST['clear'])) {
     $threadsearch = "";
 }
+
+// User UID
+
+$uid = bh_session_get_value('UID');
 
 // Save button text and header text change depending on view selected.
 
@@ -215,18 +224,19 @@ $header_text_array = array('0' => $lang['allthreadtypes'], '-1' => $lang['ignore
 $interest_level_array = array('-1' => $lang['ignored'], '0' => $lang['normal'],
                               '1'  => $lang['interested'], '2' => $lang['subscribe']);
 
+// Start output here
+
+html_draw_top('edit_subscriptions.js');
+
 echo "<h1>{$lang['threadsubscriptions']} &raquo; {$header_text_array[$view_filter]}</h1>\n";
 
-$uid = bh_session_get_value('UID');
+if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-// Any messages to display?
+    html_display_error_array($error_msg_array, '600', 'left');
 
-if (isset($update_array) && is_array($update_array) && sizeof($update_array) > 0) {
+}else if (isset($_GET['updated'])) {
 
-    foreach($update_array as $update_text) {
-
-        echo "<h2>$update_text</h2>\n";
-    }
+    html_display_success_msg($lang['threadinterestsupdatedsuccessfully'], '600', 'left');
 }
 
 echo "<br />\n";
@@ -297,7 +307,7 @@ if (isset($threadsearch) && strlen(trim($threadsearch)) > 0) {
     echo "    </tr>\n";
 
     if (sizeof($thread_search_array['thread_array']) > 0) {
-    
+
         echo "    <tr>\n";
         echo "      <td align=\"left\">&nbsp;</td>\n";
         echo "    </tr>\n";

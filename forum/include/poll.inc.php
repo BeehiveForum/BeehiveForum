@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.202 2007-08-01 20:23:02 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.203 2007-08-21 20:27:40 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -184,7 +184,7 @@ function poll_edit($fid, $tid, $thread_title, $poll_question, $poll_options, $an
 function poll_get($tid)
 {
     $db_poll_get = db_connect();
-    
+
     $lang = load_language_file();
 
     if (!is_numeric($tid)) return false;
@@ -291,7 +291,7 @@ function poll_get_votes($tid)
     $poll_results = array();
 
     while($poll_data = db_fetch_array($result)) {
-        
+
         $option_ids[]    = $poll_data['OPTION_ID'];
         $option_names[]  = $poll_data['OPTION_NAME'];
         $option_groups[] = $poll_data['GROUP_ID'];
@@ -324,14 +324,14 @@ function poll_get_total_votes($tid, &$total_votes, &$guestvotes)
     $sql.= "WHERE TID = '$tid' AND UID > 0";
 
     if (!$result = db_query($sql, $db_poll_get_total_votes)) return false;
-    
+
     list($total_votes) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT COUNT(UID) FROM {$table_data['PREFIX']}USER_POLL_VOTES ";
     $sql.= "WHERE TID = '$tid' AND UID = 0";
 
     if (!$result = db_query($sql, $db_poll_get_total_votes)) return false;
-    
+
     list($guestvotes) = db_fetch_array($result, DB_RESULT_NUM);
 
     return true;
@@ -452,7 +452,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
             $polldata['CONTENT'].= "                              <table width=\"100%\">\n";
 
             array_multisort($poll_results['GROUP_ID'], SORT_NUMERIC, SORT_ASC, $poll_results['OPTION_ID'], $poll_results['OPTION_NAME'], $poll_results['VOTES']);
-            
+
             for ($i = 0; $i < sizeof($poll_results['OPTION_ID']); $i++) {
 
                 if (!isset($poll_previous_group)) {
@@ -1750,7 +1750,7 @@ function poll_public_ballot($tid, $viewstyle)
                 }
 
                 $polldisplay.= "                                <tr>\n";
-                $polldisplay.= "                                  <td align=\"left\" width=\"150\" class=\"$row_class\" style=\"border - bottom: 1px solid\"><h2>{$poll_results['OPTION_NAME'][$i]}</h2></td>\n";
+                $polldisplay.= "                                  <td align=\"left\" width=\"150\" class=\"$row_class\" style=\"border-bottom: 1px solid\"><h2>{$poll_results['OPTION_NAME'][$i]}</h2></td>\n";
 
                 if ($poll_results['VOTES'][$i] > 0) {
 
@@ -1760,7 +1760,7 @@ function poll_public_ballot($tid, $viewstyle)
                         $vote_percent = 0;
                     }
 
-                    $polldisplay.= "                                  <td align=\"left\"    class=\"$row_class\" style=\"border - bottom: 1px solid\">{$poll_results['VOTES'][$i]} {$lang['votes']} ({$vote_percent}%)</td>\n";
+                    $polldisplay.= "                                  <td align=\"left\"    class=\"$row_class\" style=\"border-bottom: 1px solid\">{$poll_results['VOTES'][$i]} {$lang['votes']} ({$vote_percent}%)</td>\n";
                     $polldisplay.= "                                </tr>\n";
 
                     if (isset($user_poll_votes[$poll_results['OPTION_ID'][$i]]) && is_array($user_poll_votes[$poll_results['OPTION_ID'][$i]])) {
@@ -1810,7 +1810,7 @@ function poll_public_ballot($tid, $viewstyle)
                 $polldisplay.= "                              <div align=\"center\">\n";
                 $polldisplay.= "                              <table width=\"460\" cellpadding=\"5\" cellspacing=\"0\" class=\"$table_class\">\n";
                 $polldisplay.= "                                <tr>\n";
-                $polldisplay.= "                                  <td align=\"left\" width=\"150\" class=\"$row_class\" style=\"border - bottom: 1px solid\" colspan=\"2\"><h2><a href=\"user_profile.php?webtag=$webtag&amp;uid={$user['UID']}\" target=\"_blank\" onclick=\"return openProfile({$user['UID']}, '$webtag')\">". word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME'])). "</a><h2></td>\n";
+                $polldisplay.= "                                  <td align=\"left\" width=\"150\" class=\"$row_class\" style=\"border-bottom: 1px solid\" colspan=\"2\"><h2><a href=\"user_profile.php?webtag=$webtag&amp;uid={$user['UID']}\" target=\"_blank\" onclick=\"return openProfile({$user['UID']}, '$webtag')\">". word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME'])). "</a></h2></td>\n";
                 $polldisplay.= "                                </tr>\n";
 
                 for ($i = 0; $i < sizeof($option_id_array); $i++) {
@@ -1842,7 +1842,7 @@ function poll_confirm_close($tid)
         edit_refuse($tid, 1);
         return;
     }
-    
+
     if (!$threaddata = thread_get($tid)) {
 
         edit_refuse($tid, 1);
@@ -1953,7 +1953,7 @@ function poll_vote($tid, $vote_array)
         foreach ($vote_array as $user_vote) {
 
             if (is_numeric($user_vote)) {
-            
+
                 $sql = "INSERT INTO {$table_data['PREFIX']}USER_POLL_VOTES (TID, UID, OPTION_ID, TSTAMP) ";
                 $sql.= "VALUES ('$tid', '$uid', '$user_vote', NOW())";
 

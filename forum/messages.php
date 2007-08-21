@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.231 2007-07-17 20:49:37 decoyduck Exp $ */
+/* $Id: messages.php,v 1.232 2007-08-21 20:27:39 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -337,43 +337,33 @@ if ($threaddata['POLL_FLAG'] == 'Y' && $messages[0]['PID'] != 1) {
 }
 
 echo "  </tr>\n";
+echo "</table>\n";
 
 if (isset($_GET['markasread'])) {
-
-    echo "  <tr>\n";
-    echo "    <td align=\"left\"><h2>{$lang['threareadstatusupdated']}</h2></td>\n";
-    echo "  </tr>\n";
+    html_display_success_msg($lang['threareadstatusupdated'], '96%', 'center');
 }
 
 if (isset($_GET['setinterest'])) {
-
-    echo "  <tr>\n";
-    echo "    <td align=\"left\"><h2>{$lang['interestupdated']}</h2></td>\n";
-    echo "  </tr>\n";
+    html_display_success_msg($lang['interestupdated'], '96%', 'center');
 }
 
 if (isset($_GET['relupdated'])) {
-
-    echo "  <tr>\n";
-    echo "    <td align=\"left\"><h2>{$lang['relationshipsupdated']}</h2></td>\n";
-    echo "  </tr>\n";
+    html_display_success_msg($lang['relationshipsupdated'], '96%', 'center');
 }
-
-echo "</table>\n";
 
 if ($tracking_data_array = thread_get_tracking_data($tid)) {
 
     echo "<table class=\"thread_track_notice\" width=\"96%\">\n";
 
     foreach ($tracking_data_array as $tracking_data) {
-        
+
         if ($tracking_data['TRACK_TYPE'] == THREAD_TYPE_MERGE) { // Thread merged
-        
+
             if ($tracking_data['TID'] == $tid) {
 
                 $thread_link = "<a href=\"messages.php?webtag=$webtag&amp;msg=%s.1\" target=\"_self\">%s</a>";
                 $thread_link = sprintf($thread_link, $tracking_data['NEW_TID'], $lang['threadmovedhere']);
-                
+
                 echo "  <tr>\n";
                 echo "    <td align=\"left\">", sprintf($lang['thisthreadhasmoved'], $thread_link), "</td>\n";
                 echo "  </tr>\n";

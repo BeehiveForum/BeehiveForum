@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.465 2007-08-22 18:48:07 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.466 2007-08-22 19:50:31 decoyduck Exp $ */
 
 // British English language file
 
@@ -419,6 +419,7 @@ $lang['editedwordfilter'] = "Edited Word Filter";
 $lang['editedforumsettings'] = "Edited Forum Settings";
 $lang['successfullyendedusersessionsforselectedusers'] = "Successfully ended sessions for selected users";
 $lang['failedtoendsessionforuser'] = "Failed to end session for user %s";
+$lang['successfullyapprovedselectedusers'] = "Successfully approved selected users";
 $lang['matchedtext'] = "Matched Text";
 $lang['replacementtext'] = "Replacement Text";
 $lang['preg'] = "PREG";
@@ -429,6 +430,7 @@ $lang['word_filter_help_3'] = "<b>PREG</b> allows you to use Perl Regular Expres
 $lang['nameanddesc'] = "Name and Description";
 $lang['movethreads'] = "Move Threads";
 $lang['movethreadstofolder'] = "Move threads to folder";
+$lang['failedtomovethreads'] = "Failed to move threads to specified folder";
 $lang['resetuserpermissions'] = "Reset user permissions";
 $lang['failedtoresetuserpermissions'] = "Failed to reset user permissions";
 $lang['allowfoldertocontain'] = "Allow folder to contain";
@@ -492,6 +494,9 @@ $lang['postinhtml'] = "Post in HTML";
 $lang['postasignature'] = "Post a signature";
 $lang['editforumlinks'] = "Edit Forum Links";
 $lang['editforumlinks_exp'] = "Use this page to add links to the drop-down list displayed in the top-right of the forum frameset. If no links are set, the drop-down list will not be displayed.";
+$lang['failedtoremoveforumlink'] = "Failed to remove forum link '%s'";
+$lang['failedtoaddnewforumlink'] = "Failed to add new forum link '%s'";
+$lang['failedtoupdateforumlink'] = "Failed to update forum link '%s'";
 $lang['notoplevellinktitlespecified'] = "No top level link title specified";
 $lang['youmustenteralinktitle'] = "You must enter a link title";
 $lang['alllinkurismuststartwithaschema'] = "All link URIs must start with a schema (i.e. http://, ftp://, irc://)";
@@ -1370,6 +1375,7 @@ $lang['forumstyles'] = "Forum Styles";
 $lang['youmustenteryourcurrentpasswd'] = "You must enter your current password";
 $lang['youmustenteranewpasswd'] = "You must enter a new password";
 $lang['youmustconfirmyournewpasswd'] = "You must confirm your new password";
+$lang['failedtoupdateuserprofile'] = "Failed to update user profile";
 
 // Polls (create_poll.php, poll_results.php) ---------------------------------------------
 
@@ -1769,6 +1775,15 @@ $lang['markasunread'] = "Mark as unread";
 $lang['makethreadsticky'] = "Make Thread Sticky";
 $lang['threareadstatusupdated'] = "Thread Read Status Updated Successfully";
 $lang['interestupdated'] = "Thread Interest Status Updated Successfully";
+$lang['failedtoupdatethreadreadstatus'] = "Failed to update thread read status";
+$lang['failedtoupdatethreadinterest'] = "Failed to update thread interest";
+$lang['failedtorenamethread'] = "Failed to rename thread";
+$lang['failedtomovethread'] = "Failed to move thread to specified folder";
+$lang['failedtoupdatethreadstickystatus'] = "Failed to update thread sticky status";
+$lang['failedtoupdatethreadlockstatus'] = "Failed to update thread lock status";
+$lang['failedtodeletepostsbyuser'] = "Failed to delete posts by selected user";
+$lang['failedtodeletethread'] = "Failed to delete thread.";
+$lang['failedtoundeletethread'] = "Failed to un-delete thread";
 
 // Dictionary (dictionary.php) -----------------------------------------
 

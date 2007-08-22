@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.185 2007-08-21 20:27:39 decoyduck Exp $ */
+/* $Id: search.php,v 1.186 2007-08-22 18:48:07 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -571,7 +571,12 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 }elseif (isset($_GET['search_success'])) {
 
-    html_display_success_msg("Search in progress", '600', 'center');
+    $frame_target = html_get_frame_name('left');
+    $results_link = sprintf("<a href=\"search.php?webtag=$webtag&amp;offset=0\" target=\"$frame_target\">%s</a>", $lang['clickheretoviewresults']);
+
+    echo "<div id=\"search_success\">\n";
+    html_display_success_msg(sprintf($lang['searchsuccessfullycompleted'], $results_link), '600', 'center');
+    echo "</div>\n";
 
     echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
     echo "<!--\n\n";
@@ -580,8 +585,10 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     echo "} else if (top.document.body.cols) {\n\n";
     echo "    top.frames['", html_get_frame_name('left'), "'].location.replace('search.php?webtag=$webtag&offset=0');\n\n";
     echo "}\n\n";
+    echo "var search_success_container = getObjById('search_success');\n";
+    echo "search_success_container.innerHTML = unescape('", html_display_success_msg_js(sprintf($lang['searchsuccessfullycompleted'], ''), '600', 'center'), "');\n\n";
     echo "-->\n";
-    echo "</script>";
+    echo "</script>\n\n";
 }
 
 echo "<br />\n";
@@ -724,7 +731,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("search", $lang['find']), "</td>\n";
+echo "      <td align=\"center\">", form_submit("search", $lang['find'], "onclick=\"disable_button(this)\""), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

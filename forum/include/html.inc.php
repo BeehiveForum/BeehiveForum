@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.242 2007-08-21 20:27:39 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.243 2007-08-22 18:48:07 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -167,7 +167,7 @@ function html_display_error_array($error_list_array, $width = '600', $align = 'c
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"$width\" class=\"error_msg\">\n";
     echo "    <tr>\n";
     echo "      <td rowspan=\"2\" valign=\"top\" width=\"25\"><img src=\"", style_image('error.png'), "\" width=\"15\" height=\"15\" alt=\"{$lang['error']}\" title=\"{$lang['error']}\" /></td>\n";
-    echo "      <td>The following errors were encountered:</td>\n";
+    echo "      <td>{$lang['thefollowingerrorswereencountered']}</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td>\n";
@@ -241,6 +241,19 @@ function html_display_warning_msg($string_msg, $width = '600', $align = 'center'
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</div>\n";
+}
+
+function html_display_success_msg_js($string_msg, $width = '600', $align = 'center')
+{
+    ob_start();
+
+    html_display_success_msg($string_msg, $width, $align);
+
+    $html_display_success_msg_html = ob_get_contents();
+
+    ob_end_clean();
+
+    return rawurlencode($html_display_success_msg_html);
 }
 
 function html_user_banned()

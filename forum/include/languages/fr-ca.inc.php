@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.67 2007-08-21 20:27:40 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.68 2007-08-22 19:50:31 decoyduck Exp $ */
 
 // British English language file
 
@@ -223,6 +223,7 @@ $lang['show'] = "Montrer";
 $lang['hint'] = "Indice";
 $lang['new'] = "Nouveau";
 $lang['referer'] = "Référent";
+$lang['thefollowingerrorswereencountered'] = "The following errors were encountered:";
 
 // Admin interface (admin*.php) ----------------------------------------
 
@@ -335,7 +336,6 @@ $lang['manageuser'] = "Gérer l'utilisateur";
 $lang['manageusers'] = "Gérer les utilisateurs";
 $lang['userstatusforforum'] = "User Status for %s";
 $lang['userdetails'] = "Détails d'utilisateur";
-$lang['successfullyupdateduserdetails'] = "Successfully Updated User Details";
 $lang['warning_caps'] = "MISE EN GARDE";
 $lang['userdeleteallpostswarning'] = "Êtes-vous certain de vouloir supprimer tous les messages de l'utilisateur sélectionné? Une fois supprimés, les messages ne peuvent être récupérés et seront perdus pour toujours.";
 $lang['postssuccessfullydeleted'] = "Suppression de messages réussie.";
@@ -350,21 +350,17 @@ $lang['changednicknamefromto'] = "Changement du pseudonyme de %s à %s";
 $lang['changedemailfromto'] = "Changement de l'adresse courriel de %s à %s";
 $lang['successfullycleareduserhistory'] = "Successfully cleared user history";
 $lang['failedtoclearuserhistory'] = "Failed to clear user history";
-$lang['usersettingssuccessfullyupdated'] = "User Settings Successfully Updated";
-$lang['failedtoupdateusersettings'] = "Failed To Update User Settings";
 $lang['successfullychangedpassword'] = "Successfully Changed Password";
 $lang['failedtochangepasswd'] = "Failed To Change Password";
 $lang['viewuserhistory'] = "View User History";
 $lang['viewuseraliases'] = "View User Aliases";
 $lang['nomatches'] = "Aucune correspondance trouvée.";
 $lang['deleteposts'] = "Supprimer les messages";
-$lang['deleteallusersposts'] = "Supprimer tous les messages de cet utilisateur";
 $lang['deleteuser'] = "Delete User";
+$lang['alsodeleteusercontent'] = "Also delete all of the content created by this user";
 $lang['userdeletewarning'] = "Are you sure you want to delete the selected user account? Once the account has been deleted it cannot be retrieved and will be lost forever.";
-$lang['deleteuseraccount'] = "Delete User Account";
 $lang['usersuccessfullydeleted'] = "User Successfully Deleted";
 $lang['failedtodeleteuser'] = "Failed To Delete User";
-$lang['noattachmentsforuser'] = "Aucun fichier joint pour cet utilisateur";
 $lang['forgottenpassworddesc'] = "Si cet utilisateur a oublié leur mot de passe, vous pouvez le réinitialiser ici.";
 $lang['manageusersexp'] = "Cette liste démontre une sélection d'utilisateurs qui ont ouvert une session sur votre forum, triée par %s. Pour modifier les droits d'accès d'un utilisateur, cliquer sur leur nom.";
 $lang['userfilter'] = "Filtre des usagers";
@@ -381,6 +377,7 @@ $lang['adminaccesslog'] = "Fichier journal d'accès admin";
 $lang['adminlogexp'] = "Liste des dernières actions sanctionnées par les utilisateurs avec les droits d'accès admin.";
 $lang['datetime'] = "Date/Heure";
 $lang['unknownuser'] = "Utilisateur inconnu";
+$lang['unknownuseraccount'] = "Unknown user account";
 $lang['unknownfolder'] = "Dossier inconnu";
 $lang['ip'] = "IP";
 $lang['lastipaddress'] = "Dernière adresse IP";
@@ -421,6 +418,8 @@ $lang['fieldtypeexample2'] = "Example: Pour créer des cases d'option pour le sex
 $lang['editedwordfilter'] = "Filtre de mots modifié";
 $lang['editedforumsettings'] = "Options de forum modifiés";
 $lang['successfullyendedusersessionsforselectedusers'] = "Terminaison de session réussie pour l'utilisateur";
+$lang['failedtoendsessionforuser'] = "Failed to end session for user %s";
+$lang['successfullyapprovedselectedusers'] = "Successfully approved selected users";
 $lang['matchedtext'] = "Texte correspondant";
 $lang['replacementtext'] = "Texte de remplacement";
 $lang['preg'] = "PREG";
@@ -431,6 +430,7 @@ $lang['word_filter_help_3'] = "<b>PREG</b> permet l'utilisation des Regular Expr
 $lang['nameanddesc'] = "Nom et Description";
 $lang['movethreads'] = "Déplacer fils de discussion";
 $lang['movethreadstofolder'] = "Déplacer fils de discussion au dossier";
+$lang['failedtomovethreads'] = "Failed to move threads to specified folder";
 $lang['resetuserpermissions'] = "Réinitialiser les permissions d'utilisateur";
 $lang['failedtoresetuserpermissions'] = "Failed to reset user permissions";
 $lang['allowfoldertocontain'] = "Permettre au dossier de contenir";
@@ -443,7 +443,6 @@ $lang['successfullyremovedselectedfolders'] = "Successfully removed selected fol
 $lang['successfullyeditedfolder'] = "Successfully edited folder";
 $lang['failedtocreatenewfolder'] = "Failed to create new folder";
 $lang['failedtodeletefolder'] = "La suppression du dossier a échoué.";
-$lang['folderupdatedsuccessfully'] = "Mise à jour du dossier réussie";
 $lang['failedtoupdatefolder'] = "Failed to update folder";
 $lang['cannotdeletefolderwiththreads'] = "Impossible de supprimer les dossiers contenant toujours des fils de discussion.";
 $lang['forumisnotrestricted'] = "Forum n'est pas limité";
@@ -495,8 +494,10 @@ $lang['postinhtml'] = "Poster en HTML";
 $lang['postasignature'] = "Poster une signature";
 $lang['editforumlinks'] = "Modifier les Liens de Forum";
 $lang['editforumlinks_exp'] = "Utiliser cette page pour l'ajout de liens à la liste déroulante verticale affichée au dessus-droit du cadre du forum. Si aucun lien est positionné, la liste déroulante verticale ne sera pas afficher.";
+$lang['failedtoremoveforumlink'] = "Failed to remove forum link '%s'";
+$lang['failedtoaddnewforumlink'] = "Failed to add new forum link '%s'";
+$lang['failedtoupdateforumlink'] = "Failed to update forum link '%s'";
 $lang['notoplevellinktitlespecified'] = "Aucun titre le lien de niveau supérieur d'indiqué";
-$lang['toplinktitlesuccessfullyupdated'] = "Mise à jour du titre du lien de premier niveau réussi";
 $lang['youmustenteralinktitle'] = "Vous devez entrer un titre de lien";
 $lang['alllinkurismuststartwithaschema'] = "Tous URIs de liens doivent commencés avec un schéma (i.e. http://, ftp://, irc://)";
 $lang['noexistingforumlinksfound'] = "Il n'y a pas de liens de forum existants. Pour ajouter un lien de forum, cliquez le bouton ci-dessous.";
@@ -508,9 +509,6 @@ $lang['successfullyaddednewforumlink'] = "Ajout du lien réussi";
 $lang['successfullyeditedforumlink'] = "Modification du lien réussi";
 $lang['invalidlinkidorlinknotfound'] = "Identification du lien invalide ou lien introuvable";
 $lang['successfullyremovedselectedforumlinks'] = "La suppression des liens sélectionnés réussi";
-$lang['failedtoremoveforumlinks'] = "La suppression des liens sélectionnés a échoué";
-$lang['failedtoaddnewforumlink'] = "Ajout du nouveau lien non-réussi";
-$lang['failedtoupdateforumlink'] = "Mise à jour du lien échouée";
 $lang['toplinkcaption'] = "Légende du lien de premier niveau";
 $lang['allowguestaccess'] = "Permettre l'accès aux visiteurs";
 $lang['searchenginespidering'] = "Balayage par moteurs de recherche";
@@ -573,14 +571,13 @@ $lang['requirepostapproval'] = "Exiger approbation du message";
 $lang['adminforumtoolsusercounterror'] = "Il doit y avoir au moins un utilisateur avec accès aux outils admin et aux outils de forum sur tous les forums!";
 $lang['postcount'] = "Compte de postes";
 $lang['resetpostcount'] = "Réinitialisation du compte de postes";
-$lang['successfullyresetpostcount'] = "Successfully Reset Post Count";
 $lang['failedtoresetuserpostcount'] = "Failed To Reset Post Count";
-$lang['userpostcountsuccessfullychanged'] = "User Post Count Successfully Changed";
 $lang['failedtochangeuserpostcount'] = "Failed To Change User Post Count";
 $lang['postapprovalqueue'] = "File d'attente d'approbation de messages";
 $lang['nopostsawaitingapproval'] = "Aucun message en attente d'approbation";
 $lang['approveselected'] = "Approuver sélectionné(s)";
-$lang['successfullyapproveduser'] = "Approbation de l'usager réussi";
+$lang['successfullyapprovedselecteduser'] = "Successfully approved selected users";
+$lang['failedtoapproveuser'] = "Failed to approve user %s";
 $lang['kickselected'] = "Éjecter sélectionné";
 $lang['visitorlog'] = "Feuille de contrôle des visiteurs";
 $lang['novisitorslogged'] = "Aucun visiteur journalisé";
@@ -597,7 +594,6 @@ $lang['moreadminoptions'] = "More Admin Options";
 
 $lang['changedstatusforuser'] = "A changé le statut d'utilisateur pour '%s'";
 $lang['changedpasswordforuser'] = "A changé mot de passe pour '%s'";
-$lang['failedtoupdatepassword'] = "Failed to update password.";
 $lang['changedforumaccess'] = "A changé droits d'accès au forum pour '%s'";
 $lang['deletedallusersposts'] = "A supprimé tous les messages pour '%s'";
 
@@ -878,7 +874,6 @@ $lang['passedchangedexp'] = "Votre mot de passe a été changé.";
 $lang['updatefailed'] = "Mise à jour non-réussie";
 $lang['passwdsdonotmatch'] = "Les mots de passe ne correspondent pas.";
 $lang['newandoldpasswdarethesame'] = "New and old passwords are the same.";
-$lang['allfieldsrequired'] = "Tous les champs sont requis.";
 $lang['requiredinformationnotfound'] = "Information requise non trouvée";
 $lang['forgotpasswd'] = "Oublier mot de passe";
 $lang['resetpassword'] = "Réinitialiser le mot de passe";
@@ -924,7 +919,7 @@ $lang['msgsentfromby'] = "Ce message a été envoyé de %s par %s";
 $lang['subject'] = "Sujet";
 $lang['send'] = "Envoyer";
 $lang['hasoptedoutofemail'] = "refuse d'être contacté par courriel";
-$lang['hasinvalidemailaddress'] = "Utilisateur %s a une adresse courriel invalide";
+$lang['userhasinvalidemailaddress'] = "User %s has an invalid email address";
 
 // Message nofificaiton ------------------------------------------------
 
@@ -964,7 +959,6 @@ $lang['passwdresetemailsent'] = "Courriel de réinitialisation de mot de passe en
 $lang['passwdresetexp'] = "Un courriel avec les instructions pour réinitialiser votre mot de passe vous parviendra sous peu.";
 $lang['validusernamerequired'] = "Un nom d'utilisateur valide est requis";
 $lang['forgottenpasswd'] = "Vous avez oublié votre mot de passe?";
-$lang['forgotpasswdexp'] = "Si vous avez oublié votre mot de passe, vous pouvez demander qu'il soit réinitialisé en entrant votre nom d'utilisateur ci-dessous. Un courriel avec les instructions de réinitisalisation de mot de passe vous sera acheminé à l'adresse courriel enregistrée.";
 $lang['couldnotsendpasswordreminder'] = "Incapable d'envoyer rappel de mot de passe. Veuillez contacter le propriétaire du forum.";
 $lang['request'] = "Demander";
 
@@ -1001,7 +995,6 @@ $lang['mustspecifyvalidfolder'] = "Vous devez indiquer un dossier valide!";
 $lang['mustspecifyfolder'] = "Vous devez indiquer un dossier!";
 $lang['successfullyaddedlinkname'] = "Successfully added link '%s'";
 $lang['failedtoaddlink'] = "Failed to add link";
-$lang['successfullyaddedfoldername'] = "Successfully added folder '%s'";
 $lang['failedtoaddfolder'] = "Failed to add folder";
 $lang['addlink'] = "Ajouter un lien";
 $lang['addinglinkin'] = "Ajout de lien dans";
@@ -1382,6 +1375,7 @@ $lang['forumstyles'] = "Forum Styles";
 $lang['youmustenteryourcurrentpasswd'] = "You must enter your current password";
 $lang['youmustenteranewpasswd'] = "You must enter a new password";
 $lang['youmustconfirmyournewpasswd'] = "You must confirm your new password";
+$lang['failedtoupdateuserprofile'] = "Failed to update user profile";
 
 // Polls (create_poll.php, poll_results.php) ---------------------------------------------
 
@@ -1605,6 +1599,8 @@ $lang['postsfromuser'] = "Messages de cet utilisateur";
 $lang['poststouser'] = "Messages à cet utilisateur";
 $lang['poststoandfromuser'] = "Messages à et de cet utilisateur";
 $lang['searchfrequencyerror'] = "Vous pouvez chercher seulement une fois tous les %s secondes. Veuillez essayer de nouveau plus tard.";
+$lang['searchsuccessfullycompleted'] = "Search successfully completed. %s";
+$lang['clickheretoviewresults'] = "Click here to view results.";
 
 // Search Popup (search_popup.php) -------------------------------------
 
@@ -1779,6 +1775,15 @@ $lang['markasunread'] = "Marquer comme non-lu";
 $lang['makethreadsticky'] = "Rendre le fil de discussion collant";
 $lang['threareadstatusupdated'] = "Mise à jour du statut de lecture du fil de discussion réussie";
 $lang['interestupdated'] = "Mise à jour du statut de l'intérêt du fil de discussion réussie";
+$lang['failedtoupdatethreadreadstatus'] = "Failed to update thread read status";
+$lang['failedtoupdatethreadinterest'] = "Failed to update thread interest";
+$lang['failedtorenamethread'] = "Failed to rename thread";
+$lang['failedtomovethread'] = "Failed to move thread to specified folder";
+$lang['failedtoupdatethreadstickystatus'] = "Failed to update thread sticky status";
+$lang['failedtoupdatethreadlockstatus'] = "Failed to update thread lock status";
+$lang['failedtodeletepostsbyuser'] = "Failed to delete posts by selected user";
+$lang['failedtodeletethread'] = "Failed to delete thread.";
+$lang['failedtoundeletethread'] = "Failed to un-delete thread";
 
 // Dictionary (dictionary.php) -----------------------------------------
 
@@ -1850,7 +1855,6 @@ $lang['rssfeeduserauthentication'] = "L'alimentation RSS ne supporte pas l'authe
 $lang['successfullyremovedselectedfeeds'] = "Supression des sources de données sélectionnées réussie";
 $lang['successfullyaddedfeed'] = "Ajout de nouvelle souce de données réussi";
 $lang['successfullyeditedfeed'] = "Modification de la source de donnée réussie";
-$lang['successfullydeletedfeed'] = "Successfully deleted feed";
 $lang['failedtoremovefeeds'] = "La suppression de certaines ou de toutes les sources de données sélectionnées a échoué";
 $lang['failedtoaddnewrssfeed'] = "L'ajout d'une nouvelle source de données RSS a échoué";
 $lang['failedtoupdaterssfeed'] = "Mise à jour de la source de données RSS a échoué";

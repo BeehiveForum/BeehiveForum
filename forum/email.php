@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.php,v 1.83 2007-08-21 20:27:39 decoyduck Exp $ */
+/* $Id: email.php,v 1.84 2007-08-22 19:50:31 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -181,7 +181,7 @@ if (isset($_POST['submit'])) {
 
     if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $to_user['EMAIL'])) {
 
-        $error_msg_array[] = sprintf($lang['hasinvalidemailaddress'], $to_user['LOGON']);
+        $error_msg_array[] = sprintf($lang['userhasinvalidemailaddress'], $to_user['LOGON']);
         $valid = false;
     }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_links.php,v 1.46 2007-08-17 22:50:20 decoyduck Exp $ */
+/* $Id: admin_forum_links.php,v 1.47 2007-08-22 19:50:31 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -145,7 +145,7 @@ if (isset($_POST['delete'])) {
 
                 }else {
 
-                    $error_msg_array[] = $lang['failedtoremovelinks'];
+                    $error_msg_array[] = sprintf($lang['failedtoremoveforumlink'], $forum_link['TITLE']);
                     $valid = false;
                 }
             }
@@ -226,7 +226,7 @@ if (isset($_POST['delete'])) {
 
         }else {
 
-            $error_msg_array[] = sprintf($lang['failedtoaddnewlink'], $t_title);
+            $error_msg_array[] = sprintf($lang['failedtoaddnewforumlink'], $t_title);
             $valid = false;
         }
     }
@@ -282,7 +282,7 @@ if (isset($_POST['delete'])) {
 
             }else {
 
-                $error_msg_array[] = sprintf($lang['failedtoupdatelink'], $t_title);
+                $error_msg_array[] = sprintf($lang['failedtoupdateforumlink'], $t_title);
                 $valid = false;
             }
         }

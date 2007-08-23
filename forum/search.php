@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.187 2007-08-22 19:50:31 decoyduck Exp $ */
+/* $Id: search.php,v 1.188 2007-08-23 22:08:25 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -217,7 +217,10 @@ if (isset($_GET['show_stop_words'])) {
     }
 
     if (isset($_GET['keywords']) && strlen(trim(_stripslashes($_GET['keywords']))) > 0) {
+
         $highlight_keywords_array = explode(" ", trim(_stripslashes($_GET['keywords'])));
+        array_walk($highlight_keywords_array, 'mysql_fulltext_callback', '/');
+        $highlight_keywords_preg = implode('$|^', $highlight_keywords_array);
     }
 
     include(BH_INCLUDE_PATH. "search_stopwords.inc.php");
@@ -252,9 +255,12 @@ if (isset($_GET['show_stop_words'])) {
             echo "                      <tr>\n";
         }
 
-        if (in_array($mysql_fulltext_stopwords[$i], $highlight_keywords_array)) {
-            echo "                        <td align=\"left\" class=\"postbody\"><span class=\"highlight\">{$mysql_fulltext_stopwords[$i]}</span></td>\n";
+        if (preg_match("/^$highlight_keywords_preg$/i", $mysql_fulltext_stopwords[$i]) > 0) {
+
+            echo "                        <td align=\"left\" class=\"postbody\"><span class=\"search_keyword_highlight\">{$mysql_fulltext_stopwords[$i]}</span></td>\n";
+
         }else {
+
             echo "                        <td align=\"left\" class=\"postbody\">{$mysql_fulltext_stopwords[$i]}</td>\n";
         }
     }
@@ -285,7 +291,7 @@ if (isset($_GET['show_stop_words'])) {
 
 search_get_word_lengths($min_length, $max_length);
 
-if (isset($_POST['search']) || isset($_GET['search_string']) || isset($_GET['logon'])) {
+if ((isset($_POST) && sizeof($_POST) > 0) || isset($_GET['search_string']) || isset($_GET['logon'])) {
 
     $offset = 0;
 

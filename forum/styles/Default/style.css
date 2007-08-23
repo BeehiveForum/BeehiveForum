@@ -591,6 +591,11 @@ a {
     font-size: 10pt;
 }
 
+.search_keyword_highlight {
+    font-weight: bold;
+    font-style: italic;
+}
+
 .quotetext {
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 8pt;
@@ -1185,6 +1190,10 @@ a {
     border: 1px solid #000000;
     padding: 10px;
     margin: 10px 0px 10px 0px;
+}
+
+.error_msg ul li {
+    padding-bottom: 5px;
 }
 
 .success_msg {

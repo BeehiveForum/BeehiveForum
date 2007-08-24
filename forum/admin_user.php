@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.218 2007-08-20 17:42:20 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.219 2007-08-24 12:30:29 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -191,7 +191,17 @@ if (isset($_POST['action_submit'])) {
 
         $post_action = trim(_stripslashes($_POST['action']));
 
-        if ($post_action == 'reset_passwd') {
+        if ($post_action == 'edit_signature') {
+
+            header_redirect("edit_signature.php?webtag=$webtag&siguid=$uid");
+            exit;
+
+        }elseif ($post_action == 'edit_profile') {
+
+            header_redirect("edit_profile.php?webtag=$webtag&profileuid=$uid");
+            exit;
+
+        }elseif ($post_action == 'reset_passwd') {
 
             header_redirect("admin_user.php?webtag=$webtag&uid=$uid&action=reset_passwd");
             exit;
@@ -1157,13 +1167,6 @@ if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
         }
 
         echo "                      </tr>\n";
-        echo "                      <tr>\n";
-        echo "                        <td align=\"left\">&nbsp;</td>\n";
-        echo "                        <td align=\"left\">&nbsp;</td>\n";
-        echo "                      </tr>\n";
-        echo "                      <tr>\n";
-        echo "                        <td align=\"center\" colspan=\"2\">", form_button("editsignature", $lang['editsignature'], "onclick=\"document.location.href='edit_signature.php?webtag=$webtag&amp;siguid=$uid'\""), "&nbsp;", form_button("editprofile", $lang['editprofile'], "onclick=\"document.location.href='edit_profile.php?webtag=$webtag&amp;profileuid=$uid'\""), "</td>\n";
-        echo "                      </tr>\n";
     }
 
     echo "                    </table>\n";
@@ -1181,11 +1184,13 @@ if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
     echo "  </table>\n";
     echo "  <br />\n";
 
-    $admin_options_dropdown = array('reset_passwd' => $lang['resetpassword'],
-                                    'view_history' => $lang['viewuserhistory'],
-                                    'user_aliases' => $lang['viewuseraliases'],
-                                    'delete_user'  => $lang['deleteuser'],
-                                    'delete_posts' => $lang['deleteposts']);
+    $admin_options_dropdown = array('edit_signature' => $lang['editsignature'],
+                                    'edit_profile'   => $lang['editprofile'],
+                                    'reset_passwd'   => $lang['resetpassword'],
+                                    'view_history'   => $lang['viewuserhistory'],
+                                    'user_aliases'   => $lang['viewuseraliases'],
+                                    'delete_user'    => $lang['deleteuser'],
+                                    'delete_posts'   => $lang['deleteposts']);
 
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";

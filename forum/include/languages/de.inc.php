@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.43 2007-08-22 19:50:31 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.44 2007-08-24 12:30:29 decoyduck Exp $ */
 
 // British English language file
 
@@ -576,7 +576,6 @@ $lang['failedtochangeuserpostcount'] = "Failed To Change User Post Count";
 $lang['postapprovalqueue'] = "Post Zustimmungswarteschlange";
 $lang['nopostsawaitingapproval'] = "Keine Posts warten auf Zustimmung";
 $lang['approveselected'] = "Zustimmung ausgewaehlt";
-$lang['successfullyapprovedselecteduser'] = "Successfully approved selected users";
 $lang['failedtoapproveuser'] = "Failed to approve user %s";
 $lang['kickselected'] = "Kick (kurzfristiger Rauswurf) ausgewaehlt";
 $lang['visitorlog'] = "Benutzer Log";
@@ -1039,7 +1038,6 @@ $lang['votecleared'] = "Your vote has been cleared";
 $lang['loggedinsuccessfully'] = "Erfolgreich angemeldet.";
 $lang['presscontinuetoresend'] = "Klick auf Weiter um Formulardaten nochmal zu senden oder Abbrechen um diese Seite nochmal zu starten.";
 $lang['usernameorpasswdnotvalid'] = "Benutzername oder Passwort nicht gueltig.";
-$lang['pleasereenterpasswd'] = "Bitte Passwort noch einmal eingeben und nochmal versuchen.";
 $lang['rememberpasswds'] = "Passworterinnerung";
 $lang['rememberpassword'] = "Passworterinnerung";
 $lang['enterasa'] = "Eingeben als ein %s";
@@ -1098,7 +1096,6 @@ $lang['cannotpostthisthreadtype'] = "Du kannst diesen Eintragstyp nicht posten d
 $lang['cannotcreatenewthreads'] = "Du kannst keine neuen Eintraege erstellen.";
 $lang['threadisclosedforposting'] = "Dieser Eintrag ist geschlossen, Du kannst hier nichts mehr eintragen!";
 $lang['moderatorthreadclosed'] = "Achtung: dieser Eintrag wurde geschlossen fuer normale Benutzer.";
-$lang['threadclosed'] = "Eintrag geschlossen";
 $lang['usersinthread'] = "Benutzer im Eintrag";
 $lang['correctedcode'] = "Korrigierter Code";
 $lang['submittedcode'] = "Gesendeter Code";

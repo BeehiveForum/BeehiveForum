@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.68 2007-08-22 19:50:31 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.69 2007-08-24 12:30:29 decoyduck Exp $ */
 
 // British English language file
 
@@ -576,7 +576,6 @@ $lang['failedtochangeuserpostcount'] = "Failed To Change User Post Count";
 $lang['postapprovalqueue'] = "File d'attente d'approbation de messages";
 $lang['nopostsawaitingapproval'] = "Aucun message en attente d'approbation";
 $lang['approveselected'] = "Approuver sélectionné(s)";
-$lang['successfullyapprovedselecteduser'] = "Successfully approved selected users";
 $lang['failedtoapproveuser'] = "Failed to approve user %s";
 $lang['kickselected'] = "Éjecter sélectionné";
 $lang['visitorlog'] = "Feuille de contrôle des visiteurs";
@@ -1039,7 +1038,6 @@ $lang['votecleared'] = "Your vote has been cleared";
 $lang['loggedinsuccessfully'] = "Ouverture de session réussie.";
 $lang['presscontinuetoresend'] = "Appuyer Continuer pour renvoyer les données du formulaire ou annuler pour renvoyer la page.";
 $lang['usernameorpasswdnotvalid'] = "Le nom d'utilisateur ou le mot de passe que vous avez entré n'est pas valide.";
-$lang['pleasereenterpasswd'] = "SVP ré-introduire votre mot de passe de essayer de nouveau.";
 $lang['rememberpasswds'] = "Se souvenir des mots de passe";
 $lang['rememberpassword'] = "Se souvenir du mot de passe";
 $lang['enterasa'] = "Entrer comme un %s";
@@ -1098,7 +1096,6 @@ $lang['cannotpostthisthreadtype'] = "Vous ne pouvez pas poster ce type de fil de
 $lang['cannotcreatenewthreads'] = "Vous ne pouvez pas créer des nouveaux fils de discussion.";
 $lang['threadisclosedforposting'] = "Ce fil de discussion est fermé aux contributions. Vous ne pouvez pas y poster un message!";
 $lang['moderatorthreadclosed'] = "Mise en garde: ce fil de discussion est fermé pour contributions aux utilisateurs réguliers.";
-$lang['threadclosed'] = "Fil de discussion fermé aux contributions";
 $lang['usersinthread'] = "Utilisateurs dans le fil de discussion";
 $lang['correctedcode'] = "Code corrigé";
 $lang['submittedcode'] = "Code soumis";

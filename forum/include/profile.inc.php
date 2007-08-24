@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.84 2007-08-01 20:23:03 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.85 2007-08-24 12:30:30 decoyduck Exp $ */
 
 /**
 * Functions relating to profiles
@@ -85,11 +85,11 @@ function profile_section_create($name)
     $sql.= "VALUES ('$name', '$new_position')";
 
     if ($result = db_query($sql, $db_profile_section_create)) {
-        
+
         $new_psid = db_insert_id($db_profile_section_create);
         return $new_psid;
     }
-    
+
     return false;
 }
 
@@ -309,7 +309,7 @@ function profile_item_create($psid, $name, $type)
     $sql.= "VALUES ('$psid', '$name', '$type', '$new_position')";
 
     if ($result = db_query($sql, $db_profile_item_create)) {
-        
+
         $new_piid = db_insert_id($db_profile_item_create);
         return $new_piid;
     }
@@ -361,7 +361,7 @@ function profile_section_delete($psid)
     }
 
     $sql = "DELETE FROM {$table_data['PREFIX']}PROFILE_SECTION WHERE PSID = '$psid'";
-    
+
     if (!$result = db_query($sql, $db_profile_section_delete)) return false;
 
     return true;
@@ -376,11 +376,11 @@ function profile_item_delete($piid)
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "DELETE FROM {$table_data['PREFIX']}USER_PROFILE WHERE PIID = '$piid'";
-    
+
     if (!$result = db_query($sql, $db_profile_item_delete)) return false;
 
     $sql = "DELETE FROM {$table_data['PREFIX']}PROFILE_ITEM WHERE PIID = '$piid'";
-    
+
     if (!$result = db_query($sql, $db_profile_item_delete)) return false;
 
     return true;
@@ -439,8 +439,9 @@ function profile_get_user_values($uid)
     $sql.= "ON (PROFILE_ITEM.PSID = PROFILE_SECTION.PSID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PROFILE USER_PROFILE ";
     $sql.= "ON (USER_PROFILE.PIID = PROFILE_ITEM.PIID AND USER_PROFILE.UID = '$uid') ";
+    $sql.= "WHERE PROFILE_ITEM.PIID IS NOT NULL ";
     $sql.= "ORDER BY PROFILE_SECTION.POSITION, PROFILE_SECTION.PSID, ";
-    $sql.= "PROFILE_ITEM.POSITION, PROFILE_ITEM.PIID";
+    $sql.= "PROFILE_ITEM.POSITION, PROFILE_ITEM.PIID ";
 
     if (!$result = db_query($sql, $db_profile_get_user_values)) return false;
 
@@ -585,7 +586,7 @@ function profile_item_move_up($psid, $piid)
     $profile_item_order = array();
 
     while ($profile_data = db_fetch_array($result)) {
-        
+
         $profile_item_order[] = $profile_data['PIID'];
         $profile_item_position[$profile_data['PIID']] = $profile_data['POSITION'];
     }
@@ -638,7 +639,7 @@ function profile_item_move_down($psid, $piid)
     $profile_item_order = array();
 
     while ($profile_data = db_fetch_array($result)) {
-        
+
         $profile_item_order[] = $profile_data['PIID'];
         $profile_item_position[$profile_data['PIID']] = $profile_data['POSITION'];
     }
@@ -690,7 +691,7 @@ function profile_sections_positions_update()
         if (isset($psid) && is_numeric($psid)) {
 
             $new_position++;
-        
+
             $sql = "UPDATE {$table_data['PREFIX']}PROFILE_SECTION ";
             $sql.= "SET POSITION = '$new_position' WHERE PSID = '$psid'";
 
@@ -714,17 +715,17 @@ function profile_items_positions_update()
     if (!$result = db_query($sql, $db_profile_items_positions_update)) return false;
 
     while (list($piid, $psid) = db_fetch_array($result, DB_RESULT_NUM)) {
-        
+
         if (($current_section == false) || ($current_section <> $psid)) {
-            
+
             $new_position = 0;
             $current_section = $psid;
         }
-        
+
         if (isset($piid) && is_numeric($piid)) {
 
             $new_position++;
-        
+
             $sql = "UPDATE {$table_data['PREFIX']}PROFILE_ITEM ";
             $sql.= "SET POSITION = '$new_position' WHERE PIID = '$piid'";
 

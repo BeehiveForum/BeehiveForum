@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.244 2007-08-22 19:50:31 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.245 2007-08-24 12:30:30 decoyduck Exp $ */
 
 // British English language file
 
@@ -576,7 +576,6 @@ $lang['failedtochangeuserpostcount'] = "f@IleD +0 Ch@nG3 UsEr po\$+ C0unt";
 $lang['postapprovalqueue'] = "p0St 4pPR0V4l qu3u3";
 $lang['nopostsawaitingapproval'] = "n0 Pos+\$ @R3 @w@I+IN9 APPR0VAL";
 $lang['approveselected'] = "aPPR0ve \$el3ctEd";
-$lang['successfullyapprovedselecteduser'] = "sUcc3\$sPhUllY APpr0vED 5eL3C+ED U\$3r\$";
 $lang['failedtoapproveuser'] = "f4ILED to 4pPR0ve u\$ER %s";
 $lang['kickselected'] = "k1ck \$El3c+3D";
 $lang['visitorlog'] = "vI5i+0R lOg";
@@ -1039,7 +1038,6 @@ $lang['votecleared'] = "y0ur voTe has 8e3N CL3ArEd";
 $lang['loggedinsuccessfully'] = "j00 Lo9G3D iN \$UCC3sSFUlly.";
 $lang['presscontinuetoresend'] = "pr3Ss C0n+1NUE +o Res3nD phorm Da+4 or C4nC3l +o rELo4d p4g3.";
 $lang['usernameorpasswdnotvalid'] = "tEH Us3Rn4me Or P4sSW0rd J00 suppLi3d 1\$ nO+ V@L1d.";
-$lang['pleasereenterpasswd'] = "pLE@\$e r3-en+3R YoUr p4s\$W0rD @nD TrY @G@In.";
 $lang['rememberpasswds'] = "r3meM8Er PAs5w0rd\$";
 $lang['rememberpassword'] = "rEm3MBER p45SwoRd";
 $lang['enterasa'] = "en+er @\$ 4 %s";
@@ -1098,7 +1096,6 @@ $lang['cannotpostthisthreadtype'] = "j00 c@Nn0t P0st +H1\$ THREad +YPe @s +H3r3 
 $lang['cannotcreatenewthreads'] = "j00 C4nn0T CR3@+E n3W +Hr34Ds.";
 $lang['threadisclosedforposting'] = "thI\$ ThR34D 1s CL0seD, j00 C4nn0+ P0st IN 1t!";
 $lang['moderatorthreadclosed'] = "w4rNIn9: th1\$ +HrE@D 1\$ Cl0sEd F0R p05+iNG t0 N0rm4L usErs.";
-$lang['threadclosed'] = "thR34d ClosED";
 $lang['usersinthread'] = "uSeR5 In THrE4d";
 $lang['correctedcode'] = "c0rRECt3d C0d3";
 $lang['submittedcode'] = "su8mI++ed cOd3";

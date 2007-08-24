@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.466 2007-08-22 19:50:31 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.467 2007-08-24 12:30:29 decoyduck Exp $ */
 
 // British English language file
 
@@ -576,7 +576,6 @@ $lang['failedtochangeuserpostcount'] = "Failed To Change User Post Count";
 $lang['postapprovalqueue'] = "Post Approval Queue";
 $lang['nopostsawaitingapproval'] = "No posts are awaiting approval";
 $lang['approveselected'] = "Approve selected";
-$lang['successfullyapprovedselecteduser'] = "Successfully approved selected users";
 $lang['failedtoapproveuser'] = "Failed to approve user %s";
 $lang['kickselected'] = "Kick selected";
 $lang['visitorlog'] = "Visitor Log";
@@ -1039,7 +1038,6 @@ $lang['votecleared'] = "Your vote has been cleared";
 $lang['loggedinsuccessfully'] = "You logged in successfully.";
 $lang['presscontinuetoresend'] = "Press Continue to resend form data or cancel to reload page.";
 $lang['usernameorpasswdnotvalid'] = "The username or password you supplied is not valid.";
-$lang['pleasereenterpasswd'] = "Please re-enter your password and try again.";
 $lang['rememberpasswds'] = "Remember passwords";
 $lang['rememberpassword'] = "Remember password";
 $lang['enterasa'] = "Enter as a %s";
@@ -1098,7 +1096,6 @@ $lang['cannotpostthisthreadtype'] = "You cannot post this thread type as there a
 $lang['cannotcreatenewthreads'] = "You cannot create new threads.";
 $lang['threadisclosedforposting'] = "This thread is closed, you cannot post in it!";
 $lang['moderatorthreadclosed'] = "Warning: this thread is closed for posting to normal users.";
-$lang['threadclosed'] = "Thread closed";
 $lang['usersinthread'] = "Users in thread";
 $lang['correctedcode'] = "Corrected code";
 $lang['submittedcode'] = "Submitted code";

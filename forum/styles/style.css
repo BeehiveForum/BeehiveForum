@@ -577,7 +577,12 @@ a {
 }
 
 .highlight {
-    background-color: #C8D7E6
+    background-color: #C8D7E6;
+}
+
+.search_keyword_highlight {
+    font-weight: bold;
+    font-style: italic;
 }
 
 .quotetext {
@@ -1172,6 +1177,10 @@ a {
     border: 1px solid #000000;
     padding: 10px;
     margin: 10px 0px 10px 0px;
+}
+
+.error_msg ul li {
+    padding-bottom: 5px;
 }
 
 .success_msg {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.470 2007-08-21 20:27:40 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.471 2007-08-25 20:38:49 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1442,24 +1442,30 @@ function message_get_user_array($tid, $pid)
 * Increments VIEWCOUNT column in THREAD_STATS.
 *
 * @return bool
-* @param integer $tid  - Thread ID
-* @param integer $pid  - Post ID
-* @param integer $uid  - User UID
+* @param integer $tid - Thread ID
+* @param integer $pid - Post ID
+* @param integer $last_read - User's last read post
+* @param integer $length - Length of the thread.
 * @param integer $modified - Unix Timestamp thread modified date for mark as read cutoff.
 */
 
-function messages_update_read($tid, $pid, $uid, $modified)
+function messages_update_read($tid, $pid, $last_read, $length, $modified)
 {
     $db_message_update_read = db_connect();
 
     if (!is_numeric($tid)) return false;
     if (!is_numeric($pid)) return false;
-    if (!is_numeric($uid)) return false;
+    if (!is_numeric($last_read)) return false;
+    if (!is_numeric($length)) return false;
     if (!is_numeric($modified)) return false;
 
     // Check for existing entry in USER_THREAD
 
     if (!$table_data = get_table_prefix()) return false;
+
+    // User UID
+
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     // Mark as read cut off
 
@@ -1467,18 +1473,27 @@ function messages_update_read($tid, $pid, $uid, $modified)
 
     // Guest users' can't mark as read!
 
-    if ($uid > 0) {
+    if (!user_is_guest()) {
 
-        if ($unread_cutoff_stamp !== false && (($modified > $unread_cutoff_stamp) || $unread_cutoff_stamp = 0)) {
+        if ($last_read < $length && $unread_cutoff_stamp !== false && (($modified > $unread_cutoff_stamp) || $unread_cutoff_stamp = 0)) {
 
-            $sql = "UPDATE {$table_data['PREFIX']}USER_THREAD ";
-            $sql.= "SET LAST_READ = '$pid', LAST_READ_AT = NOW() ";
-            $sql.= "WHERE UID = '$uid' AND TID = '$tid' ";
-            $sql.= "AND (LAST_READ < '$pid' OR LAST_READ IS NULL)";
+            $sql = "SELECT COUNT(TID) AS THREAD_COUNT FROM {$table_data['PREFIX']}USER_THREAD ";
+            $sql.= "WHERE UID = '$uid' AND TID = '$tid'";
 
             if (!$result = db_query($sql, $db_message_update_read)) return false;
 
-            if (db_affected_rows($db_message_update_read) < 1) {
+            list($thread_count) = db_fetch_array($result, DB_RESULT_NUM);
+
+            if ($thread_count > 0) {
+
+                $sql = "UPDATE {$table_data['PREFIX']}USER_THREAD ";
+                $sql.= "SET LAST_READ = '$pid', LAST_READ_AT = NOW() ";
+                $sql.= "WHERE UID = '$uid' AND TID = '$tid' ";
+                $sql.= "AND (LAST_READ < '$pid' OR LAST_READ IS NULL)";
+
+               if (!$result = db_query($sql, $db_message_update_read)) return false;
+
+            }else {
 
                 $sql = "INSERT IGNORE INTO {$table_data['PREFIX']}USER_THREAD ";
                 $sql.= "(UID, TID, LAST_READ, LAST_READ_AT) ";

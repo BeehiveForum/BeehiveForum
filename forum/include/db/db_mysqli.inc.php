@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db_mysqli.inc.php,v 1.27 2007-08-01 20:23:04 decoyduck Exp $ */
+/* $Id: db_mysqli.inc.php,v 1.28 2007-08-25 20:38:49 decoyduck Exp $ */
 
 function db_get_connection_vars(&$db_server, &$db_username, &$db_password, &$db_database)
 {
@@ -76,7 +76,17 @@ function db_enable_big_selects($connection_id)
 
 function db_query($sql, $connection_id)
 {
+    $start_time = microtime_float();
+
     if ($result = @mysqli_query($connection_id, $sql)) {
+
+        $end_time = microtime_float();
+        $total_time = $end_time - $start_time;
+
+        if (function_exists('file_put_contents') && defined('BEEHIVE_DB_LOG_FILE')) {
+            @file_put_contents(BEEHIVE_DB_LOG_FILE, "$total_time\t$sql\n", FILE_APPEND);
+        }
+
         return $result;
     }
 
@@ -223,7 +233,7 @@ function db_fetch_mysql_version()
 function db_escape_string($str)
 {
     $db_escape_string = db_connect();
-    
+
     if (function_exists('mysql_real_escape_string')) {
         return @mysql_real_escape_string($str, $db_escape_string);
     } else {

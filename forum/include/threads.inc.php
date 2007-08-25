@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.275 2007-08-21 20:27:40 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.276 2007-08-25 20:38:49 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1523,7 +1523,8 @@ function threads_mark_all_read()
 
     }else {
 
-        $sql = "SELECT THREAD.TID, THREAD.LENGTH, UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED ";
+        $sql = "SELECT THREAD.TID, THREAD.LENGTH, THREAD.LENGTH AS LAST_READ, ";
+        $sql.= "UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED ";
         $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
         $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ON ";
         $sql.= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
@@ -1576,7 +1577,8 @@ function threads_mark_50_read()
 
     }else {
 
-        $sql = "SELECT THREAD.TID, THREAD.LENGTH, UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED ";
+        $sql = "SELECT THREAD.TID, THREAD.LENGTH, THREAD.LENGTH AS LAST_READ, ";
+        $sql.= "UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED ";
         $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
         $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ON ";
         $sql.= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
@@ -1630,7 +1632,8 @@ function threads_mark_folder_read($fid)
 
     }else {
 
-        $sql = "SELECT THREAD.TID, THREAD.LENGTH, UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED ";
+        $sql = "SELECT THREAD.TID, THREAD.LENGTH, THREAD.LENGTH AS LAST_READ, ";
+        $sql.= "UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED ";
         $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
         $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ON ";
         $sql.= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
@@ -1700,6 +1703,13 @@ function threads_mark_read($tid_array)
                 $result_var = false;
             }
 
+            if (isset($thread_data['LAST_READ']) && is_numeric($thread_data['LAST_READ'])) {
+                $last_read = $thread_data['LAST_READ'];
+            }else {
+                $valid = false;
+                $result_var = false;
+            }
+
             if (isset($thread_data['LENGTH']) && is_numeric($thread_data['LENGTH'])) {
                 $length = $thread_data['LENGTH'];
             }else {
@@ -1716,7 +1726,7 @@ function threads_mark_read($tid_array)
 
             if ($valid) {
 
-                if (!$result = messages_update_read($tid, $length, $uid, $modified)) {
+                if (!$result = messages_update_read($tid, $length, $last_read, $length, $modified)) {
 
                     $result_var = false;
                 }
@@ -1738,7 +1748,7 @@ function threads_get_unread_data(&$threads_array, $tid_array)
 
     $db_threads_get_modified = db_connect();
 
-    $sql = "SELECT TID, LENGTH, UNIX_TIMESTAMP(MODIFIED) AS MODIFIED ";
+    $sql = "SELECT TID, LENGTH, LENGTH AS LAST_READ, UNIX_TIMESTAMP(MODIFIED) AS MODIFIED ";
     $sql.= "FROM {$table_data['PREFIX']}THREAD WHERE TID IN ($tid_list)";
 
     if (!$result = db_query($sql, $db_threads_get_modified)) return false;

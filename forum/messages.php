@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.232 2007-08-21 20:27:39 decoyduck Exp $ */
+/* $Id: messages.php,v 1.233 2007-08-25 20:38:49 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -456,10 +456,8 @@ if ($msg_count > 0) {
     }
 }
 
-unset($messages, $message);
-
 if ($msg_count > 0 && !user_is_guest() && !isset($_GET['markasread'])) {
-    messages_update_read($tid, $last_pid, $uid, $threaddata['MODIFIED']);
+    messages_update_read($tid, $pid, $threaddata['LAST_READ'], $threaddata['LENGTH'], $threaddata['MODIFIED']);
 }
 
 echo "<div align=\"center\">\n";

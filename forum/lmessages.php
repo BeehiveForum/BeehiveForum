@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lmessages.php,v 1.84 2007-06-18 13:37:05 decoyduck Exp $ */
+/* $Id: lmessages.php,v 1.85 2007-08-25 20:38:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -192,7 +192,7 @@ if (!$threaddata = thread_get($tid, bh_session_check_perm(USER_PERM_ADMIN_TOOLS,
 
 $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
 $thread_title = thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE']);
- 
+
 light_html_draw_top("$forum_name > $thread_title");
 
 $foldertitle = folder_get_title($threaddata['FID']);
@@ -204,14 +204,14 @@ light_messages_top($msg, $threaddata['PREFIX'], $threaddata['TITLE'], $threaddat
 if ($tracking_data_array = thread_get_tracking_data($tid)) {
 
     foreach ($tracking_data_array as $tracking_data) {
-        
+
         if ($tracking_data['TRACK_TYPE'] == THREAD_TYPE_MERGE) { // Thread merged
-        
+
             if ($tracking_data['TID'] == $tid) {
 
                 $thread_link = "<a href=\"messages.php?webtag=$webtag&amp;msg=%s.1\" target=\"_self\">%s</a>";
                 $thread_link = sprintf($thread_link, $tracking_data['NEW_TID'], $lang['threadmovedhere']);
-                
+
                 echo "<p>", sprintf($lang['thisthreadhasmoved'], $thread_link), "</p>\n";
             }
 
@@ -311,7 +311,7 @@ echo "<h6>&copy; ", date('Y'), " <a href=\"http://www.beehiveforum.net/\" target
 light_html_draw_bottom();
 
 if ($msg_count > 0 && !user_is_guest()) {
-    messages_update_read($tid, $last_pid, $uid, $threaddata['MODIFIED']);
+    messages_update_read($tid, $pid, $threaddata['LAST_READ'], $threaddata['LENGTH'], $threaddata['MODIFIED']);
 }
 
 ?>

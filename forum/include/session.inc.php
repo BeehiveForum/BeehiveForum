@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.315 2007-08-21 20:27:40 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.316 2007-08-25 20:38:49 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -79,9 +79,17 @@ function bh_session_check($show_session_fail = true, $use_sess_hash = false)
 {
     $db_bh_session_check = db_connect();
 
+    // Fetch the user's IP Address
+
     if (!$ipaddress = get_ip_address()) $ipaddress = "";
 
+    // Get the forum settings data.
+
     $forum_settings = forum_get_settings();
+
+    // Session cut off timestamp
+
+    $active_sess_cutoff = intval(forum_get_setting('active_sess_cutoff', false, 900));
 
     // Check to see if we've been given a MD5 hash to use instead of the cookie.
 
@@ -109,10 +117,11 @@ function bh_session_check($show_session_fail = true, $use_sess_hash = false)
 
     if (isset($user_hash) && is_md5($user_hash)) {
 
-        $sql = "SELECT SESSIONS.HASH, SESSIONS.UID, SESSIONS.IPADDRESS, SESSIONS.FID, ";
+        $sql = "SELECT SESSIONS.HASH, SESSIONS.UID, SESSIONS.IPADDRESS, ";
         $sql.= "SESSIONS.REFERER, UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, ";
-        $sql.= "UNIX_TIMESTAMP(USER.APPROVED) AS APPROVED, USER.LOGON, USER.NICKNAME, ";
-        $sql.= "USER.EMAIL,USER.PASSWD FROM SESSIONS SESSIONS ";
+        $sql.= "UNIX_TIMESTAMP(NOW()) AS CURRENT_SERVER_TIME, SESSIONS.FID, ";
+        $sql.= "UNIX_TIMESTAMP(USER.APPROVED) AS APPROVED, USER.LOGON, ";
+        $sql.= "USER.NICKNAME, USER.EMAIL,USER.PASSWD FROM SESSIONS SESSIONS ";
         $sql.= "LEFT JOIN USER ON (USER.UID = SESSIONS.UID) ";
         $sql.= "WHERE (USER.UID IS NOT NULL OR SESSIONS.UID = '0') ";
         $sql.= "AND SESSIONS.HASH = '$user_hash'";
@@ -144,51 +153,56 @@ function bh_session_check($show_session_fail = true, $use_sess_hash = false)
 
             $user_sess['PERMS'] = bh_session_get_perm_array($user_sess['UID']);
 
-            // If the user isn't currently in the same forum we
-            // need to update the session so they appear on the
-            // active user log and visitor log otherwise we
-            // simply update the user's time and IP address.
+            // Check the forum FID the user is currently visiting
 
-            if (isset($user_sess['FID']) && is_numeric($user_sess['FID']) && $user_sess['FID'] != $forum_fid) {
+            if (!is_numeric($user_sess['FID'])) $user_sess['FID'] = 0;
 
-                $sql = "UPDATE SESSIONS SET FID = '$forum_fid', TIME = NOW(), ";
-                $sql.= "IPADDRESS = '$ipaddress' WHERE HASH = '$user_hash'";
+            // Check the session time. If it is higher than 'active_sess_cutoff'
+            // or the user has changed forums we should update the user's session data.
 
-                if (!$result = db_query($sql, $db_bh_session_check)) return false;
+            if ((($user_sess['CURRENT_SERVER_TIME'] - $user_sess['TIME']) > $active_sess_cutoff) || $user_sess['FID'] != $forum_fid) {
 
-                bh_update_visitor_log($user_sess['UID'], $forum_fid);
+                if ($user_sess['FID'] != $forum_fid) {
 
-                forum_update_last_visit($user_sess['UID']);
+                    $sql = "UPDATE SESSIONS SET FID = '$forum_fid', TIME = NOW(), ";
+                    $sql.= "IPADDRESS = '$ipaddress' WHERE HASH = '$user_hash'";
 
-            }else {
+                    if (!$result = db_query($sql, $db_bh_session_check)) return false;
 
-                $sql = "UPDATE SESSIONS SET TIME = NOW(), IPADDRESS = '$ipaddress' ";
-                $sql.= "WHERE HASH = '$user_hash'";
+                    bh_update_visitor_log($user_sess['UID'], $forum_fid);
 
-                if (!$result = db_query($sql, $db_bh_session_check)) return false;
-            }
+                    forum_update_last_visit($user_sess['UID']);
 
-            // A unique MD5 has for some purposes (word filter, etc)
+                }else {
 
-            $user_sess['RAND_HASH'] = md5(uniqid(rand()));
+                    $sql = "UPDATE SESSIONS SET TIME = NOW(), IPADDRESS = '$ipaddress' ";
+                    $sql.= "WHERE HASH = '$user_hash'";
 
-            // Forum self-preservation functions. Each page load
-            // we only do one of these. The functions themselves
-            // return false if the random probability meant they
-            // ended up doing nothing so we can then try the next
-            // one and so forth.
+                    if (!$result = db_query($sql, $db_bh_session_check)) return false;
+                }
 
-            if (!update_stats()) {
+                // A unique MD5 has for some purposes (word filter, etc)
 
-                if (!bh_update_user_time($user_sess['UID'])) {
+                $user_sess['RAND_HASH'] = md5(uniqid(rand()));
 
-                    if (!pm_system_prune_folders()) {
+                // Forum self-preservation functions. Each page load
+                // we only do one of these. The functions themselves
+                // return false if the random probability meant they
+                // ended up doing nothing so we can then try the next
+                // one and so forth.
 
-                        if (!bh_remove_stale_sessions()) {
+                if (!update_stats()) {
 
-                            if (!thread_auto_prune_unread_data()) {
+                    if (!bh_update_user_time($user_sess['UID'])) {
 
-                                captcha_clean_up();
+                        if (!pm_system_prune_folders()) {
+
+                            if (!bh_remove_stale_sessions()) {
+
+                                if (!thread_auto_prune_unread_data()) {
+
+                                    captcha_clean_up();
+                                }
                             }
                         }
                     }

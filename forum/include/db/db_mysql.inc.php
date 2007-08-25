@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db_mysql.inc.php,v 1.28 2007-08-01 20:23:04 decoyduck Exp $ */
+/* $Id: db_mysql.inc.php,v 1.29 2007-08-25 20:38:49 decoyduck Exp $ */
 
 function db_get_connection_vars(&$db_server, &$db_username, &$db_password, &$db_database)
 {
@@ -76,7 +76,17 @@ function db_enable_big_selects($connection_id)
 
 function db_query($sql, $connection_id)
 {
+    $start_time = microtime_float();
+
     if ($result = @mysql_query($sql, $connection_id)) {
+
+        $end_time = microtime_float();
+        $total_time = $end_time - $start_time;
+
+        if (function_exists('file_put_contents') && defined('BEEHIVE_DB_LOG_FILE')) {
+            @file_put_contents(BEEHIVE_DB_LOG_FILE, "$total_time\t$sql\n", FILE_APPEND);
+        }
+
         return $result;
     }
 
@@ -87,16 +97,24 @@ function db_unbuffered_query($sql, $connection_id)
 {
     if (function_exists("mysql_unbuffered_query")) {
 
+        $start_time = microtime_float();
+
         if ($result = @mysql_unbuffered_query($sql, $connection_id)) {
+
+            $end_time = microtime_float();
+            $total_time = $end_time - $start_time;
+
+            if (function_exists('file_put_contents') && defined('BEEHIVE_DB_LOG_FILE')) {
+                @file_put_contents(BEEHIVE_DB_LOG_FILE, "$total_time\t$sql\n", FILE_APPEND);
+            }
+
             return $result;
         }
 
         db_trigger_error($sql, $connection_id);
-
-    }else {
-
-        return db_query($sql, $connection_id);
     }
+
+    return db_query($sql, $connection_id);
 }
 
 function db_data_seek($result, $offset)
@@ -150,7 +168,7 @@ function db_trigger_error($sql, $connection_id, $file = false, $line = false)
 
         if ($file === false) $file = __FILE__;
         if (!is_numeric($line)) $line = __LINE__;
-        
+
         $errno  = db_errno($connection_id);
         $errstr = db_error($connection_id);
 
@@ -161,7 +179,7 @@ function db_trigger_error($sql, $connection_id, $file = false, $line = false)
 function db_error($connection_id = false)
 {
     if ($connection_id !== false) {
-    
+
         if ($errstr = @mysql_error($connection_id)) {
             return $errstr;
         }
@@ -237,7 +255,7 @@ function db_fetch_mysql_version()
 function db_escape_string($str)
 {
     $db_escape_string = db_connect();
-    
+
     if (function_exists('mysql_real_escape_string')) {
         return @mysql_real_escape_string($str, $db_escape_string);
     } else {

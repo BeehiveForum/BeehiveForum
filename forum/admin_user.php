@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.219 2007-08-24 12:30:29 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.220 2007-08-25 20:38:49 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -589,9 +589,9 @@ if (isset($_GET['action']) && strlen(trim(_stripslashes($_GET['action']))) > 0) 
         html_draw_top('admin.js');
 
         if ($table_data = get_table_prefix()) {
-            echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageusers']} &raquo; ", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</h1>\n";
+            echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</h1>\n";
         }else {
-            echo "<h1>{$lang['admin']} &raquo; {$lang['manageusers']} &raquo; ", format_user_name($user['LOGON'], $user['NICKNAME']), "</h1>\n";
+            echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", format_user_name($user['LOGON'], $user['NICKNAME']), "</h1>\n";
         }
 
         echo "<br />\n";
@@ -657,9 +657,9 @@ if (isset($_GET['action']) && strlen(trim(_stripslashes($_GET['action']))) > 0) 
         html_draw_top('admin.js');
 
         if ($table_data = get_table_prefix()) {
-            echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageusers']} &raquo; ", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</h1>\n";
+            echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</h1>\n";
         }else {
-            echo "<h1>{$lang['admin']} &raquo; {$lang['manageusers']} &raquo; ", format_user_name($user['LOGON'], $user['NICKNAME']), "</h1>\n";
+            echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", format_user_name($user['LOGON'], $user['NICKNAME']), "</h1>\n";
         }
 
         echo "<br />\n";
@@ -816,9 +816,9 @@ if (isset($_GET['action']) && strlen(trim(_stripslashes($_GET['action']))) > 0) 
         html_draw_top('admin.js');
 
         if ($table_data = get_table_prefix()) {
-            echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageusers']} &raquo; ", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</h1>\n";
+            echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</h1>\n";
         }else {
-            echo "<h1>{$lang['admin']} &raquo; {$lang['manageusers']} &raquo; ", format_user_name($user['LOGON'], $user['NICKNAME']), "</h1>\n";
+            echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", format_user_name($user['LOGON'], $user['NICKNAME']), "</h1>\n";
         }
 
         echo "<br />\n";
@@ -937,9 +937,9 @@ if (isset($_GET['action']) && strlen(trim(_stripslashes($_GET['action']))) > 0) 
         html_draw_top('admin.js');
 
         if ($table_data = get_table_prefix()) {
-            echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageusers']} &raquo; ", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</h1>\n";
+            echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</h1>\n";
         }else {
-            echo "<h1>{$lang['admin']} &raquo; {$lang['manageusers']} &raquo; ", format_user_name($user['LOGON'], $user['NICKNAME']), "</h1>\n";
+            echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", format_user_name($user['LOGON'], $user['NICKNAME']), "</h1>\n";
         }
 
         echo "<br />\n";
@@ -998,9 +998,9 @@ if (isset($_GET['action']) && strlen(trim(_stripslashes($_GET['action']))) > 0) 
         html_draw_top('admin.js');
 
         if ($table_data = get_table_prefix()) {
-            echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageusers']} &raquo; ", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</h1>\n";
+            echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</h1>\n";
         }else {
-            echo "<h1>{$lang['admin']} &raquo; {$lang['manageusers']} &raquo; ", format_user_name($user['LOGON'], $user['NICKNAME']), "</h1>\n";
+            echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", format_user_name($user['LOGON'], $user['NICKNAME']), "</h1>\n";
         }
 
         echo "<br />\n";
@@ -1056,9 +1056,9 @@ if (isset($_GET['action']) && strlen(trim(_stripslashes($_GET['action']))) > 0) 
 html_draw_top('admin.js');
 
 if ($table_data = get_table_prefix()) {
-    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageusers']} &raquo; ", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</h1>\n";
+    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</h1>\n";
 }else {
-    echo "<h1>{$lang['admin']} &raquo; {$lang['manageusers']} &raquo; ", format_user_name($user['LOGON'], $user['NICKNAME']), "</h1>\n";
+    echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", format_user_name($user['LOGON'], $user['NICKNAME']), "</h1>\n";
 }
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {

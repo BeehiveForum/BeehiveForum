@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.148 2007-08-21 20:27:39 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.149 2007-08-26 11:30:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -331,7 +331,7 @@ if ($recent_visitors_array = visitor_log_get_recent()) {
 
         if (isset($recent_visitor['AVATAR_URL']) && strlen($recent_visitor['AVATAR_URL']) > 0) {
 
-            echo "                   <td valign=\"top\"  class=\"postbody\" align=\"left\"><img src=\"{$recent_visitor['AVATAR_URL']}\" alt=\"", format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']), "\" title=\"", format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']), "\" border=\"0\" width=\"15\" height=\"15\" /></td>\n";
+            echo "                   <td valign=\"top\"  class=\"postbody\" align=\"left\" width=\"20\"><img src=\"{$recent_visitor['AVATAR_URL']}\" alt=\"", format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']), "\" title=\"", format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']), "\" border=\"0\" width=\"15\" height=\"15\" /></td>\n";
 
         }elseif (isset($recent_visitor['AVATAR_AID']) && is_md5($recent_visitor['AVATAR_AID'])) {
 
@@ -339,16 +339,16 @@ if ($recent_visitors_array = visitor_log_get_recent()) {
 
             if ($profile_picture_href = attachment_make_link($attachment, false, false, false, false)) {
 
-                echo "                   <td valign=\"top\"  class=\"postbody\" align=\"left\"><img src=\"$profile_picture_href\" alt=\"", format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']), "\" title=\"", format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']), "\" border=\"0\" width=\"15\" height=\"15\" /></td>\n";
+                echo "                   <td valign=\"top\"  class=\"postbody\" align=\"left\" width=\"20\"><img src=\"$profile_picture_href\" alt=\"", format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']), "\" title=\"", format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']), "\" border=\"0\" width=\"15\" height=\"15\" /></td>\n";
 
             }else {
 
-                echo "                   <td valign=\"top\"  align=\"left\" class=\"postbody\"><img src=\"", style_image('bullet.png'), "\" alt=\"{$lang['user']}\" title=\"{$lang['user']}\" /></td>\n";
+                echo "                   <td valign=\"top\"  align=\"left\" class=\"postbody\" width=\"20\"><img src=\"", style_image('bullet.png'), "\" alt=\"{$lang['user']}\" title=\"{$lang['user']}\" /></td>\n";
             }
 
         }else {
 
-            echo "                   <td valign=\"top\"  align=\"left\" class=\"postbody\"><img src=\"", style_image('bullet.png'), "\" alt=\"{$lang['user']}\" title=\"{$lang['user']}\" /></td>\n";
+            echo "                   <td valign=\"top\"  align=\"left\" class=\"postbody\" width=\"20\"><img src=\"", style_image('bullet.png'), "\" alt=\"{$lang['user']}\" title=\"{$lang['user']}\" /></td>\n";
         }
 
         if (isset($recent_visitor['SID']) && !is_null($recent_visitor['SID'])) {

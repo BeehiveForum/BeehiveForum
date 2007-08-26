@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.331 2007-08-01 20:23:03 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.332 2007-08-26 11:30:32 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -71,7 +71,7 @@ function user_exists($logon, $check_uid = false)
         $sql.= "WHERE LOGON = '$logon'";
     }
 
-    $result = db_query($sql, $db_user_exists);    
+    $result = db_query($sql, $db_user_exists);
     list($user_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     return ($user_count > 0);
@@ -135,9 +135,9 @@ function user_update($uid, $logon, $nickname, $email)
     // data and compare it to the new details.
 
     if (db_num_rows($result_check) > 0) {
-    
+
         // Get the old data from the database and escape it so the strcmp works.
-        
+
         $user_history_array = array_map('db_escape_string', db_fetch_array($result_check));
 
         // Check the data against that passed to the function.
@@ -147,13 +147,13 @@ function user_update($uid, $logon, $nickname, $email)
             // If there are any differences we need to save the changes.
             // We save everything so that future changes don't cause
             // additional matches (NULL != $logon, etc.)
-            
+
             $sql = "INSERT INTO USER_HISTORY (UID, LOGON, NICKNAME, EMAIL, MODIFIED) ";
             $sql.= "VALUES ('$uid', '$logon', '$nickname', '$email', NOW())";
 
             if (!$result_update = db_query($sql, $db_user_update)) return false;
         }
-    
+
     }else {
 
         // No previous data so we just save what we have.
@@ -262,11 +262,11 @@ function user_change_password($user_uid, $password, $old_passhash = false)
         if (!$result = db_query($sql, $db_user_change_password)) return false;
 
         return true;
-    
+
     }elseif (is_md5($old_passhash)) {
 
         $old_passhash = db_escape_string($old_passhash);
-        
+
         $sql = "UPDATE USER SET PASSWD = '$passhash' ";
         $sql.= "WHERE UID = '$user_uid' AND PASSWD = '$old_passhash'";
 
@@ -327,7 +327,7 @@ function user_logon($logon, $passhash)
 
     if (!$table_data = get_table_prefix()) $table_data['FID'] = 0;
 
-    $sql = "SELECT UID FROM USER WHERE LOGON = '$logon' AND PASSWD = '$passhash' ";
+    $sql = "SELECT UID, IPADDRESS FROM USER WHERE LOGON = '$logon' AND PASSWD = '$passhash' ";
 
     if (!$result = db_query($sql, $db_user_logon)) return false;
 
@@ -335,11 +335,14 @@ function user_logon($logon, $passhash)
 
         $user_data = db_fetch_array($result);
 
-        $sql = "UPDATE USER SET IPADDRESS = '$ipaddress' WHERE UID = '{$user_data['UID']}'";
-        if (!$result = db_query($sql, $db_user_logon)) return false;
-
         if (isset($user_data['UID']) && is_numeric($user_data['UID'])) {
-        
+
+            if (strcmp($user_data['IPADDRESS'], $ipaddress) <> 0) {
+
+                $sql = "UPDATE USER SET IPADDRESS = '$ipaddress' WHERE UID = '{$user_data['UID']}'";
+                if (!$result = db_query($sql, $db_user_logon)) return false;
+            }
+
             return $user_data['UID'];
         }
     }
@@ -356,7 +359,7 @@ function user_get($uid)
     $sess_uid = bh_session_get_value('UID');
 
     if ((!$table_data = get_table_prefix()) || ($uid == $sess_uid)) {
-        
+
         $sql = "SELECT UID, LOGON, PASSWD, NICKNAME, USER.EMAIL, ";
         $sql.= "IPADDRESS, REFERER FROM USER WHERE UID = '$uid'";
 
@@ -615,23 +618,23 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
     // names of preferences that can be set globally
 
     $global_pref_names = array('FIRSTNAME', 'LASTNAME', 'DOB', 'HOMEPAGE_URL',
-                               'PIC_URL', 'PIC_AID', 'AVATAR_URL', 'AVATAR_AID', 
+                               'PIC_URL', 'PIC_AID', 'AVATAR_URL', 'AVATAR_AID',
                                'EMAIL_NOTIFY', 'TIMEZONE', 'DL_SAVING',
                                'MARK_AS_OF_INT', 'POSTS_PER_PAGE', 'FONT_SIZE',
-                               'VIEW_SIGS', 'START_PAGE', 'LANGUAGE', 'PM_NOTIFY', 
-                               'PM_NOTIFY_EMAIL', 'PM_SAVE_SENT_ITEM', 'PM_INCLUDE_REPLY', 
-                               'PM_AUTO_PRUNE', 'PM_EXPORT_FILE', 'PM_EXPORT_TYPE', 
-                               'PM_EXPORT_ATTACHMENTS', 'PM_EXPORT_STYLE', 
+                               'VIEW_SIGS', 'START_PAGE', 'LANGUAGE', 'PM_NOTIFY',
+                               'PM_NOTIFY_EMAIL', 'PM_SAVE_SENT_ITEM', 'PM_INCLUDE_REPLY',
+                               'PM_AUTO_PRUNE', 'PM_EXPORT_FILE', 'PM_EXPORT_TYPE',
+                               'PM_EXPORT_ATTACHMENTS', 'PM_EXPORT_STYLE',
                                'PM_EXPORT_WORDFILTER', 'DOB_DISPLAY', 'ANON_LOGON',
-                               'SHOW_STATS', 'IMAGES_TO_LINKS', 'USE_WORD_FILTER', 
-                               'USE_ADMIN_FILTER',  'ALLOW_EMAIL', 'ALLOW_PM', 
+                               'SHOW_STATS', 'IMAGES_TO_LINKS', 'USE_WORD_FILTER',
+                               'USE_ADMIN_FILTER',  'ALLOW_EMAIL', 'ALLOW_PM',
                                'POST_PAGE', 'SHOW_THUMBS', 'ENABLE_WIKI_WORDS',
                                'USE_MOVER_SPOILER', 'USE_OVERFLOW_RESIZE');
 
     // names of preferences that can be set on a per-forum basis
 
     $forum_pref_names =  array('HOMEPAGE_URL', 'PIC_URL', 'PIC_AID', 'AVATAR_URL',
-                               'AVATAR_AID', 'EMAIL_NOTIFY', 'MARK_AS_OF_INT', 
+                               'AVATAR_AID', 'EMAIL_NOTIFY', 'MARK_AS_OF_INT',
                                'POSTS_PER_PAGE', 'FONT_SIZE', 'STYLE', 'VIEW_SIGS',
                                'START_PAGE', 'LANGUAGE', 'DOB_DISPLAY', 'ANON_LOGON',
                                'SHOW_STATS', 'IMAGES_TO_LINKS', 'USE_WORD_FILTER',
@@ -691,7 +694,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
             $values_array = array();
 
             foreach($global_prefs as $pref_name => $pref_setting) {
-                 
+
                  $pref_setting = db_escape_string($pref_setting);
                  $values_array[] = "$pref_name = '$pref_setting'";
             }
@@ -715,7 +718,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
             $values_array = array();
 
             foreach($global_prefs as $pref_name => $pref_setting) {
-                 
+
                  $pref_setting = db_escape_string($pref_setting);
                  $values_array[$pref_name] = "'$pref_setting'";
             }
@@ -775,7 +778,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
             $values_array = array();
 
             foreach($forum_prefs as $pref_name => $pref_setting) {
-                
+
                 $pref_setting = db_escape_string($pref_setting);
                 $values_array[] = "$pref_name = '$pref_setting'";
             }
@@ -785,7 +788,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
                 $values = implode(", ", $values_array);
 
                 $sql = "UPDATE {$table_data['PREFIX']}USER_PREFS SET $values WHERE UID = '$uid'";
-                
+
                 if (!$result_forum = db_query($sql, $db_user_update_prefs)) return false;
             }
 
@@ -799,7 +802,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
             $values_array = array();
 
             foreach($forum_prefs as $pref_name => $pref_setting) {
-                 
+
                  $pref_setting = db_escape_string($pref_setting);
                  $values_array[$pref_name] = "'$pref_setting'";
             }
@@ -1011,7 +1014,7 @@ function user_search($user_search, $offset = 0, $exclude_uid = 0)
 
     $user_search_array = explode(";", $user_search);
     $user_search_array = array_map('user_search_array_clean', $user_search_array);
-    
+
     $user_search_logon = implode("%' OR LOGON LIKE '", $user_search_array);
     $user_search_nickname = implode("%' OR NICKNAME LIKE '", $user_search_array);
 
@@ -1049,7 +1052,7 @@ function user_search($user_search, $offset = 0, $exclude_uid = 0)
 
             $results_array[$user_data['UID']] = $user_data;
         }
-    
+
     }else if ($results_count > 0) {
 
         $offset = floor(($results_count - 1) / 10) * 10;
@@ -1273,7 +1276,7 @@ function user_get_relationships($uid, $offset = 0)
 
             $user_get_peers_array[$user_data['UID']] = $user_data;
         }
-    
+
     }else if ($user_get_peers_count > 0) {
 
         $offset = floor(($user_get_peers_count - 1) / 10) * 10;
@@ -1519,12 +1522,12 @@ function user_prefs_prep_attachments($image_attachments_array)
     $lang = load_language_file();
 
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return array();
-   
+
     foreach ($image_attachments_array as $hash => $attachment_details) {
 
         if ($image_info = getimagesize("$attachment_dir/$hash")) {
 
-            $dimensions_text = "{$lang['dimensions']}: {$image_info[0]}x{$image_info[1]}px";            
+            $dimensions_text = "{$lang['dimensions']}: {$image_info[0]}x{$image_info[1]}px";
             $attachments_array_prepared[$hash] = "{$attachment_details['filename']}, $dimensions_text";
         }
     }

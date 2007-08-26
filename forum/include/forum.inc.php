@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.255 2007-08-21 20:27:39 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.256 2007-08-26 11:30:32 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -71,10 +71,9 @@ function get_forum_data()
 
             $webtag = db_escape_string($webtag);
 
-            $sql = "SELECT FORUMS.FID, FORUMS.WEBTAG, FORUMS.ACCESS_LEVEL, USER_FORUM.ALLOWED, ";
-            $sql.= "CONCAT(FORUMS.DATABASE_NAME, '.', FORUMS.WEBTAG, '_') AS PREFIX FROM FORUMS ";
-            $sql.= "LEFT JOIN USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
-            $sql.= "AND USER_FORUM.UID = '$uid') WHERE WEBTAG = '$webtag'";
+            $sql = "SELECT FORUMS.FID, FORUMS.WEBTAG, FORUMS.ACCESS_LEVEL, ";
+            $sql.= "CONCAT(FORUMS.DATABASE_NAME, '.', FORUMS.WEBTAG, '_') AS PREFIX ";
+            $sql.= "FROM FORUMS WHERE WEBTAG = '$webtag'";
 
             if ($result = db_query($sql, $db_get_forum_data)) {
 
@@ -96,10 +95,9 @@ function get_forum_data()
             // Check #2: Try and select a default webtag from
             // the databse
 
-            $sql = "SELECT FORUMS.FID, FORUMS.WEBTAG, FORUMS.ACCESS_LEVEL, USER_FORUM.ALLOWED, ";
-            $sql.= "CONCAT(FORUMS.DATABASE_NAME, '.', FORUMS.WEBTAG, '_') AS PREFIX FROM FORUMS ";
-            $sql.= "LEFT JOIN USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
-            $sql.= "AND USER_FORUM.UID = '$uid') WHERE DEFAULT_FORUM = 1";
+            $sql = "SELECT FORUMS.FID, FORUMS.WEBTAG, FORUMS.ACCESS_LEVEL, ";
+            $sql.= "CONCAT(FORUMS.DATABASE_NAME, '.', FORUMS.WEBTAG, '_') AS PREFIX ";
+            $sql.= "FROM FORUMS WHERE DEFAULT_FORUM = 1";
 
             if ($result = db_query($sql, $db_get_forum_data)) {
 

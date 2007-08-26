@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.276 2007-08-25 20:38:49 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.277 2007-08-26 11:30:32 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1778,12 +1778,17 @@ function thread_update_unread_cutoff($tid, $unread_pid, $unread_created)
 
     if (($unread_cutoff_stamp = forum_get_unread_cutoff()) === false) return false;
 
-    $sql = "UPDATE {$table_data['PREFIX']}THREAD_STATS SET UNREAD_PID = '$unread_pid', ";
-    $sql.= "UNREAD_CREATED = FROM_UNIXTIME('$unread_created') WHERE TID = '$tid'";
-
+    $sql = "SELECT TID FROM {$table_data['PREFIX']}THREAD_STATS WHERE TID = '$tid'";
     if (!$result = db_query($sql, $db_thread_update_unread_cutoff)) return false;
 
-    if (db_affected_rows($result) < 1) {
+    if (db_num_rows($result) > 0) {
+
+        $sql = "UPDATE {$table_data['PREFIX']}THREAD_STATS SET UNREAD_PID = '$unread_pid', ";
+        $sql.= "UNREAD_CREATED = FROM_UNIXTIME('$unread_created') WHERE TID = '$tid'";
+
+        if (!$result = db_query($sql, $db_thread_update_unread_cutoff)) return false;
+
+    }else {
 
         $sql = "INSERT IGNORE INTO {$table_data['PREFIX']}THREAD_STATS ";
         $sql.= "(TID, UNREAD_PID, UNREAD_CREATED) VALUES ('$tid', ";

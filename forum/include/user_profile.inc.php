@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.73 2007-08-01 20:23:03 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.74 2007-08-26 11:30:32 decoyduck Exp $ */
 
 /**
 * Functions relating to users interacting with profiles
@@ -78,7 +78,7 @@ function user_profile_update($uid, $piid, $entry, $privacy)
 function user_get_profile($uid)
 {
     $lang = load_language_file();
-    
+
     $db_user_get_profile = db_connect();
 
     if (!is_numeric($uid)) return false;
@@ -219,7 +219,7 @@ function user_get_profile($uid)
 
         $user_profile['POST_COUNT'] = user_get_post_count($uid);
 
-        $user_profile['LOCAL_TIME'] = user_format_local_time($user_prefs); 
+        $user_profile['LOCAL_TIME'] = user_format_local_time($user_prefs);
 
         return $user_profile;
     }
@@ -254,7 +254,7 @@ function user_format_local_time(&$user_prefs_array)
     }else {
         $dl_saving = forum_get_setting('forum_dl_saving', false, 'N');
     }
-    
+
     if ($dl_saving == "Y" && timestamp_is_dst($timezone_id, $gmt_offset)) {
         $local_time = time() + ($gmt_offset * HOUR_IN_SECONDS) + ($dst_offset * HOUR_IN_SECONDS);
     }else {
@@ -368,9 +368,22 @@ function user_get_post_count($uid)
         $post_count = db_fetch_array($result);
 
         if (isset($post_count['POST_COUNT']) && !is_null($post_count['POST_COUNT'])) {
-
             return $post_count['POST_COUNT'];
         }
+
+        $sql = "SELECT COUNT(PID) AS COUNT FROM {$table_data['PREFIX']}POST ";
+        $sql.= "WHERE FROM_UID = '$uid'";
+
+        if (!$result = db_query($sql, $db_user_get_post_count)) return false;
+
+        list($post_count) = db_fetch_array($result, DB_RESULT_NUM);
+
+        $sql = "UPDATE {$table_data['PREFIX']}USER_TRACK ";
+        $sql.= "SET POST_COUNT = '$post_count' WHERE UID = '$uid'";
+
+        if (!$result = db_query($sql, $db_user_get_post_count)) return false;
+
+        return $post_count;
     }
 
     $sql = "SELECT COUNT(PID) AS COUNT FROM {$table_data['PREFIX']}POST ";
@@ -378,20 +391,10 @@ function user_get_post_count($uid)
 
     if (!$result = db_query($sql, $db_user_get_post_count)) return false;
 
-    list($post_count) = db_fetch_array($result, DB_RESULT_NUM);
-
-    $sql = "UPDATE {$table_data['PREFIX']}USER_TRACK ";
-    $sql.= "SET POST_COUNT = '$post_count' WHERE UID = '$uid'";
+    $sql = "INSERT IGNORE INTO {$table_data['PREFIX']}USER_TRACK ";
+    $sql.= "(UID, POST_COUNT) VALUES ($uid, $post_count)";
 
     if (!$result = db_query($sql, $db_user_get_post_count)) return false;
-
-    if (db_affected_rows($db_user_get_post_count) < 1) {
-
-        $sql = "INSERT IGNORE INTO {$table_data['PREFIX']}USER_TRACK ";
-        $sql.= "(UID, POST_COUNT) VALUES ($uid, $post_count)";
-
-        if (!$result = db_query($sql, $db_user_get_post_count)) return false;
-    }
 
     return $post_count;
 }
@@ -399,7 +402,7 @@ function user_get_post_count($uid)
 function user_profile_popup_callback($logon)
 {
     $webtag = get_webtag($webtag_search);
-    
+
     $html = "<a href=\"user_profile.php?webtag=$webtag&amp;logon=$logon\" target=\"_blank\" ";
     $html.= "onclick=\"return openProfileByLogon('$logon', '$webtag')\">$logon</a>";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.122 2007-08-25 20:38:49 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.123 2007-08-27 16:01:22 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -320,14 +320,23 @@ function thread_set_interest($tid, $interest)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_THREAD ";
-    $sql.= "SET INTEREST = '$interest' WHERE UID = '$uid' AND TID = '$tid'";
+    $sql = "SELECT COUNT(TID) FROM {$table_data['PREFIX']}USER_THREAD ";
+    $sql.= "WHERE UID = '$uid' AND TID = '$tid'";
 
     if (!$result = db_query($sql, $db_thread_set_interest)) return false;
 
-    if (db_affected_rows($db_thread_set_interest) < 1) {
+    list($thread_count) = db_fetch_array($result, DB_RESULT_NUM);
 
-        $sql = "INSERT IGNORE INTO {$table_data['PREFIX']}USER_THREAD (UID, TID, INTEREST) ";
+    if ($thread_count > 0) {
+
+        $sql = "UPDATE {$table_data['PREFIX']}USER_THREAD ";
+        $sql.= "SET INTEREST = '$interest' WHERE UID = '$uid' AND TID = '$tid'";
+
+        if (!$result = db_query($sql, $db_thread_set_interest)) return false;
+
+    }else {
+
+        $sql = "INSERT INTO {$table_data['PREFIX']}USER_THREAD (UID, TID, INTEREST) ";
         $sql.= "VALUES ('$uid', '$tid', '$interest')";
 
         if (!$result = db_query($sql, $db_thread_set_interest)) return false;
@@ -349,15 +358,24 @@ function thread_set_high_interest($tid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_THREAD ";
-    $sql.= "SET INTEREST = 1 WHERE UID = '$uid' AND TID = '$tid' ";
-    $sql.= "AND (INTEREST = 0 OR INTEREST IS NULL)";
+    $sql = "SELECT COUNT(TID) FROM {$table_data['PREFIX']}USER_THREAD ";
+    $sql.= "WHERE UID = '$uid' AND TID = '$tid'";
 
     if (!$result = db_query($sql, $db_thread_set_high_interest)) return false;
 
-    if (db_affected_rows($db_thread_set_high_interest) < 1) {
+    list($thread_count) = db_fetch_array($result, DB_RESULT_NUM);
 
-        $sql = "INSERT IGNORE INTO {$table_data['PREFIX']}USER_THREAD (UID, TID, INTEREST) ";
+    if ($thread_count > 0) {
+
+        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_THREAD ";
+        $sql.= "SET INTEREST = 1 WHERE UID = '$uid' AND TID = '$tid' ";
+        $sql.= "AND (INTEREST = 0 OR INTEREST IS NULL)";
+
+        if (!$result = db_query($sql, $db_thread_set_high_interest)) return false;
+
+    }else {
+
+        $sql = "INSERT INTO {$table_data['PREFIX']}USER_THREAD (UID, TID, INTEREST) ";
         $sql.= "VALUES ('$uid', '$tid', 1)";
 
         if (!$result = db_query($sql, $db_thread_set_high_interest)) return false;

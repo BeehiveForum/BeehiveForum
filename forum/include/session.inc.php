@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.316 2007-08-25 20:38:49 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.317 2007-08-27 16:01:22 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -119,7 +119,7 @@ function bh_session_check($show_session_fail = true, $use_sess_hash = false)
 
         $sql = "SELECT SESSIONS.HASH, SESSIONS.UID, SESSIONS.IPADDRESS, ";
         $sql.= "SESSIONS.REFERER, UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, ";
-        $sql.= "UNIX_TIMESTAMP(NOW()) AS CURRENT_SERVER_TIME, SESSIONS.FID, ";
+        $sql.= "UNIX_TIMESTAMP(NOW()) AS SERVER_TIME, SESSIONS.FID, ";
         $sql.= "UNIX_TIMESTAMP(USER.APPROVED) AS APPROVED, USER.LOGON, ";
         $sql.= "USER.NICKNAME, USER.EMAIL,USER.PASSWD FROM SESSIONS SESSIONS ";
         $sql.= "LEFT JOIN USER ON (USER.UID = SESSIONS.UID) ";
@@ -153,6 +153,10 @@ function bh_session_check($show_session_fail = true, $use_sess_hash = false)
 
             $user_sess['PERMS'] = bh_session_get_perm_array($user_sess['UID']);
 
+            // A unique MD5 has for some purposes (word filter, etc)
+
+            $user_sess['RAND_HASH'] = md5(uniqid(rand()));
+
             // Check the forum FID the user is currently visiting
 
             if (!is_numeric($user_sess['FID'])) $user_sess['FID'] = 0;
@@ -160,7 +164,7 @@ function bh_session_check($show_session_fail = true, $use_sess_hash = false)
             // Check the session time. If it is higher than 'active_sess_cutoff'
             // or the user has changed forums we should update the user's session data.
 
-            if ((($user_sess['CURRENT_SERVER_TIME'] - $user_sess['TIME']) > $active_sess_cutoff) || $user_sess['FID'] != $forum_fid) {
+            if ((($user_sess['SERVER_TIME'] - $user_sess['TIME']) > $active_sess_cutoff) || $user_sess['FID'] != $forum_fid) {
 
                 if ($user_sess['FID'] != $forum_fid) {
 
@@ -180,10 +184,6 @@ function bh_session_check($show_session_fail = true, $use_sess_hash = false)
 
                     if (!$result = db_query($sql, $db_bh_session_check)) return false;
                 }
-
-                // A unique MD5 has for some purposes (word filter, etc)
-
-                $user_sess['RAND_HASH'] = md5(uniqid(rand()));
 
                 // Forum self-preservation functions. Each page load
                 // we only do one of these. The functions themselves
@@ -322,6 +322,10 @@ function bh_guest_session_init($use_sess_hash = false, $update_visitor_log = tru
 
     $forum_settings = forum_get_settings();
 
+    // Session cut off timestamp
+
+    $active_sess_cutoff = intval(forum_get_setting('active_sess_cutoff', false, 900));
+
     // Check to see if we've been given a MD5 hash to use instead of the cookie.
 
     if (!is_bool($use_sess_hash) && is_md5($use_sess_hash)) {
@@ -349,8 +353,9 @@ function bh_guest_session_init($use_sess_hash = false, $update_visitor_log = tru
         }
 
         $sql = "SELECT HASH, UID, UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, ";
-        $sql.= "'GUEST' AS LOGON, MD5('GUEST') AS PASSWD, FID, IPADDRESS, ";
-        $sql.= "REFERER FROM SESSIONS WHERE HASH = '$user_hash' ";
+        $sql.= "UNIX_TIMESTAMP(NOW()) AS SERVER_TIME, FID, IPADDRESS, ";
+        $sql.= "'GUEST' AS LOGON, MD5('GUEST') AS PASSWD, REFERER ";
+        $sql.= "FROM SESSIONS WHERE HASH = '$user_hash' ";
 
         if (!$result = db_query($sql, $db_bh_guest_session_init)) return false;
 
@@ -366,30 +371,35 @@ function bh_guest_session_init($use_sess_hash = false, $update_visitor_log = tru
 
             $user_sess['RAND_HASH'] = md5(uniqid(rand()));
 
-            // If the user isn't currently in the same forum we
-            // need to update the session so they appear on the
-            // active user log and visitor log otherwise we
-            // simply update the user's time and IP address.
+            // Check the forum FID the user is currently visiting
 
-            if ($user_sess['FID'] != $forum_fid) {
+            if (!is_numeric($user_sess['FID'])) $user_sess['FID'] = 0;
 
-                $ipaddress = db_escape_string($ipaddress);
+            // Check the session time. If it is higher than 'active_sess_cutoff'
+            // or the user has changed forums we should update the user's session data.
 
-                $sql = "UPDATE SESSIONS SET FID = '$forum_fid', TIME = NOW(), ";
-                $sql.= "IPADDRESS = '$ipaddress' WHERE HASH = '$user_hash'";
+            if ((($user_sess['SERVER_TIME'] - $user_sess['TIME']) > $active_sess_cutoff) || $user_sess['FID'] != $forum_fid) {
 
-                if (!$result = db_query($sql, $db_bh_guest_session_init)) return false;
+                if ($user_sess['FID'] != $forum_fid) {
 
-                bh_update_visitor_log(0, $forum_fid, true);
+                    $ipaddress = db_escape_string($ipaddress);
 
-            }else {
+                    $sql = "UPDATE SESSIONS SET FID = '$forum_fid', TIME = NOW(), ";
+                    $sql.= "IPADDRESS = '$ipaddress' WHERE HASH = '$user_hash'";
 
-                $ipaddress = db_escape_string($ipaddress);
+                    if (!$result = db_query($sql, $db_bh_guest_session_init)) return false;
 
-                $sql = "UPDATE SESSIONS SET TIME = NOW(), IPADDRESS = '$ipaddress' ";
-                $sql.= "WHERE HASH = '$user_hash'";
+                    bh_update_visitor_log(0, $forum_fid, true);
 
-                if (!$result = db_query($sql, $db_bh_guest_session_init)) return false;
+                }else {
+
+                    $ipaddress = db_escape_string($ipaddress);
+
+                    $sql = "UPDATE SESSIONS SET TIME = NOW(), IPADDRESS = '$ipaddress' ";
+                    $sql.= "WHERE HASH = '$user_hash'";
+
+                    if (!$result = db_query($sql, $db_bh_guest_session_init)) return false;
+                }
             }
 
         }else {
@@ -400,15 +410,16 @@ function bh_guest_session_init($use_sess_hash = false, $update_visitor_log = tru
 
             // Session array of default values.
 
-            $user_sess = array('UID'       => 0,
-                               'TIME'      => mktime(),
-                               'LOGON'     => 'GUEST',
-                               'PASSWD'    => md5('GUEST'),
-                               'FID'       => $forum_fid,
-                               'IPADDRESS' => $ipaddress,
-                               'REFERER'   => $http_referer,
-                               'PERMS'     => bh_session_get_perm_array(0),
-                               'RAND_HASH' => md5(uniqid(rand())));
+            $user_sess = array('UID'         => 0,
+                               'TIME'        => mktime(),
+                               'SERVER_TIME' => mktime(),
+                               'LOGON'       => 'GUEST',
+                               'PASSWD'      => md5('GUEST'),
+                               'FID'         => $forum_fid,
+                               'IPADDRESS'   => $ipaddress,
+                               'REFERER'     => $http_referer,
+                               'PERMS'       => bh_session_get_perm_array(0),
+                               'RAND_HASH'   => md5(uniqid(rand())));
 
             $http_referer = db_escape_string($http_referer);
 
@@ -437,17 +448,20 @@ function bh_guest_session_init($use_sess_hash = false, $update_visitor_log = tru
         // ended up doing nothing so we can then try the next
         // one and so forth.
 
-        if (!update_stats()) {
+        if (($user_sess['SERVER_TIME'] - $user_sess['TIME']) > $active_sess_cutoff) {
 
-            if (!pm_system_prune_folders()) {
+            if (!update_stats()) {
 
-                if (!bh_remove_stale_sessions()) {
+                if (!pm_system_prune_folders()) {
 
-                    if (!visitor_log_clean_up()) {
+                    if (!bh_remove_stale_sessions()) {
 
-                        if (!captcha_clean_up()) {
+                        if (!visitor_log_clean_up()) {
 
-                            thread_auto_prune_unread_data();
+                            if (!captcha_clean_up()) {
+
+                                thread_auto_prune_unread_data();
+                            }
                         }
                     }
                 }
@@ -798,14 +812,23 @@ function bh_update_user_time($uid)
                 // updated will be 1 otherwise we need to try and save
                 // the data.
 
-                $sql = "UPDATE {$table_data['PREFIX']}USER_TRACK SET $update_columns, ";
-                $sql.= "USER_TIME_UPDATED = NOW() WHERE UID = '$uid'";
+                $sql = "SELECT COUNT(UID) FROM {$table_data['PREFIX']}USER_TRACK ";
+                $sql.= "WHERE UID = '$uid'";
 
                 if (!$result = db_query($sql, $db_bh_update_user_time)) return false;
 
-                if (db_affected_rows($db_bh_update_user_time) < 1) {
+                list($user_count) = db_fetch_array($result, DB_RESULT_NUM);
 
-                    $sql = "INSERT IGNORE INTO {$table_data['PREFIX']}USER_TRACK ";
+                if ($user_count > 0) {
+
+                    $sql = "UPDATE {$table_data['PREFIX']}USER_TRACK SET $update_columns, ";
+                    $sql.= "USER_TIME_UPDATED = NOW() WHERE UID = '$uid'";
+
+                    if (!$result = db_query($sql, $db_bh_update_user_time)) return false;
+
+                }else {
+
+                    $sql = "INSERT INTO {$table_data['PREFIX']}USER_TRACK ";
                     $sql.= "(UID, USER_TIME_BEST, USER_TIME_TOTAL, USER_TIME_UPDATED) ";
                     $sql.= "VALUES ('$uid', FROM_UNIXTIME('$session_length'), ";
                     $sql.= "FROM_UNIXTIME('$session_total_time'), NOW())";

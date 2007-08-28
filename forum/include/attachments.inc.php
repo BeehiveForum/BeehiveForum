@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.133 2007-08-01 20:23:01 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.134 2007-08-28 22:54:03 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -69,7 +69,7 @@ function attachments_get_upload_tmp_dir()
     if (($upload_tmp_dir = @ini_get('upload_tmp_dir')) !== false) {
 
         return $upload_tmp_dir;
-    
+
     }else {
 
         return system_get_temp_dir();
@@ -94,12 +94,12 @@ function attachments_check_dir()
     if ($attachment_dir = forum_get_setting('attachment_dir')) {
 
         // Check that the temporary upload directory is writable
-        
+
         if (!@is_writable(attachments_get_upload_tmp_dir())) return false;
 
         // Check to make sure the $attachment_dir exists and is writable.
-        
-        if (!@is_dir($attachment_dir)) @mkdir($attachment_dir, 0755);      
+
+        if (!@is_dir($attachment_dir)) @mkdir($attachment_dir, 0755);
         if (@is_writable($attachment_dir)) return $attachment_dir;
     }
 
@@ -581,7 +581,7 @@ function get_free_attachment_space($uid)
 
     $max_attachment_space = forum_get_setting('attachments_max_user_space', false, 1048576);
 
-    $sql = "SELECT * FROM POST_ATTACHMENT_FILES WHERE UID = '$uid'";
+    $sql = "SELECT HASH FROM POST_ATTACHMENT_FILES WHERE UID = '$uid'";
 
     if (!$result = db_query($sql, $db_get_free_attachment_space)) return false;
 
@@ -773,7 +773,7 @@ function get_num_attachments($aid)
     $sql.= "WHERE AID = '$aid' LIMIT 0, 1";
 
     if (!$result = db_query($sql, $db_get_num_attachments)) return false;
-    
+
     list($num_attachments) = db_fetch_array($result, DB_RESULT_NUM);
 
     return $num_attachments;
@@ -804,7 +804,7 @@ function get_attachment_by_hash($hash)
     if (!$result = db_query($sql, $db_get_attachment_by_hash)) return false;
 
     if (db_num_rows($result) > 0) {
-        
+
         $attachment_array = db_fetch_array($result);
 
         return array("filename"  => rawurldecode($attachment_array['FILENAME']),
@@ -914,7 +914,7 @@ function attachment_make_link($attachment, $show_thumbs = true, $limit_filename 
     if ($local_path) {
 
         $attachment_href = "attachments/{$attachment['filename']}";
-    
+
     }else if (forum_get_setting('attachment_use_old_method', 'Y')) {
 
         $attachment_href = "get_attachment.php?webtag=$webtag&amp;hash={$attachment['hash']}";
@@ -995,7 +995,7 @@ function attachment_make_link($attachment, $show_thumbs = true, $limit_filename 
 /**
 * Set thumb transparency
 *
-* Assigns alpha transparency to an image to correctly create thumbnails from 
+* Assigns alpha transparency to an image to correctly create thumbnails from
 * pngs with alpha transparency.
 *
 * @return GD image resource

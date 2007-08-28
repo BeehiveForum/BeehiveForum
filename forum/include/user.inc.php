@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.332 2007-08-26 11:30:32 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.333 2007-08-28 22:54:03 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -399,7 +399,8 @@ function user_get_password($uid, $passwd_hash)
     if (!is_numeric($uid)) return false;
     if (!is_md5($passwd_hash)) return false;
 
-    $sql = "SELECT * FROM USER WHERE UID = '$uid' ";
+    $sql = "SELECT UID, LOGON, PASSWD, NICKNAME, EMAIL, REGISTERED, ";
+    $sql.= "IPADDRESS, REFERER, APPROVED FROM USER WHERE UID = '$uid' ";
     $sql.= "AND PASSWD = '$passwd_hash'";
 
     if (!$result = db_query($sql, $db_user_get)) return false;
@@ -462,7 +463,9 @@ function user_get_uid($logon)
 
     $logon = db_escape_string($logon);
 
-    $sql = "SELECT * FROM USER WHERE LOGON LIKE '$logon'";
+    $sql = "SELECT UID, LOGON, PASSWD, NICKNAME, EMAIL, ";
+    $sql.= "REGISTERED, IPADDRESS, REFERER, APPROVED ";
+    $sql.= "FROM USER WHERE LOGON LIKE '$logon'";
 
     if (!$result = db_query($sql, $db_user_get_uid)) return false;
 
@@ -764,7 +767,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
 
     if (isset($forum_prefs) && is_array($forum_prefs) && $table_data = get_table_prefix()) {
 
-        $sql = "SELECT * FROM {$table_data['PREFIX']}USER_PREFS WHERE UID = '$uid'";
+        $sql = "SELECT UID FROM {$table_data['PREFIX']}USER_PREFS WHERE UID = '$uid'";
 
         if (!$result_forum = db_query($sql, $db_user_update_prefs)) return false;
 

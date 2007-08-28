@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display.php,v 1.83 2007-05-31 21:59:14 decoyduck Exp $ */
+/* $Id: display.php,v 1.84 2007-08-28 17:38:55 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -109,15 +109,12 @@ if (!forum_check_access_level()) {
 }
 
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
-    $msg = $_GET['msg'];
+    list($tid, $pid) = explode('.', $_GET['msg']);
+}elseif (isset($_GET['print_msg']) && validate_msg($_GET['print_msg'])) {
+    list($tid, $pid) = explode('.', $_GET['print_msg']);
 }else {
-    $msg = "1.1";
+    $tid = 1; $pid = 1;
 }
-
-@list($tid, $pid) = explode('.', $msg);
-
-if (!isset($tid) || !is_numeric($tid)) $tid = 1;
-if (!isset($pid) || !is_numeric($pid)) $pid = 1;
 
 if (!$message = messages_get($tid, $pid, 1)) {
 
@@ -199,24 +196,17 @@ if ($message) {
         if ($message['PID'] == 1) {
 
             poll_display($tid, $threaddata['LENGTH'], $first_msg, $threaddata['FID'], true, $threaddata['CLOSED'], false, true, $show_sigs, true);
-            $last_pid = $message['PID'];
 
         }else {
 
             message_display($tid, $message, $threaddata['LENGTH'], $first_msg, $threaddata['FID'], true, $threaddata['CLOSED'], false, false, $show_sigs, true);
-            $last_pid = $message['PID'];
-
         }
 
     }else {
 
         message_display($tid, $message, $threaddata['LENGTH'], $first_msg, $threaddata['FID'], true, $threaddata['CLOSED'], false, false, $show_sigs, true);
-        $last_pid = $message['PID'];
-
     }
 }
-
-//messages_end_panel();
 
 echo "<table width=\"96%\" border=\"0\">\n";
 echo "  <tr>\n";
@@ -224,7 +214,13 @@ echo "    <td align=\"center\">\n";
 echo "      <form name=\"display\" method=\"get\" action=\"messages.php\" target=\"_self\">\n";
 echo "        ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
 echo "        ", form_input_hidden("msg", _htmlentities("$tid.$pid")), "\n";
-echo "        ", form_submit("submit", $lang['back']), "&nbsp;", form_button("print", $lang['print'], "onclick=\"window.print()\""), "\n";
+
+if (isset($_GET['print_msg']) && is_numeric($_GET['print_msg'])) {
+    echo "        ", form_submit("submit", $lang['back']), "&nbsp;", form_button("print", $lang['print'], "onclick=\"self.print()\""), "\n";
+}else {
+    echo "        ", form_submit("submit", $lang['back']), "\n";
+}
+
 echo "      </form>\n";
 echo "    </td>\n";
 echo "  </tr>\n";

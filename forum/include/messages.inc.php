@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.472 2007-08-27 16:01:21 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.473 2007-08-28 17:38:55 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1039,8 +1039,8 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
             echo "                                            <td align=\"left\" nowrap=\"nowrap\"><a href=\"pm_write.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.{$message['PID']}\" target=\"_parent\" title=\"{$lang['pm_reply']}\">{$lang['pm_reply']}</a></td>\n";
             echo "                                          </tr>\n";
             echo "                                          <tr>\n";
-            echo "                                            <td align=\"left\"><a href=\"display.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_self\" title=\"{$lang['print']}\"><img src=\"", style_image('print.png'), "\" border=\"0\" alt=\"{$lang['print']}\" title=\"{$lang['print']}\" /></a></td>\n";
-            echo "                                            <td align=\"left\" nowrap=\"nowrap\"><a href=\"display.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_self\" title=\"{$lang['print']}\">{$lang['print']}</a></td>\n";
+            echo "                                            <td align=\"left\"><a href=\"display.php?webtag=$webtag&amp;print_msg=$tid.{$message['PID']}\" target=\"_self\" title=\"{$lang['print']}\"><img src=\"", style_image('print.png'), "\" border=\"0\" alt=\"{$lang['print']}\" title=\"{$lang['print']}\" /></a></td>\n";
+            echo "                                            <td align=\"left\" nowrap=\"nowrap\"><a href=\"display.php?webtag=$webtag&amp;print_msg=$tid.{$message['PID']}\" target=\"_self\" title=\"{$lang['print']}\">{$lang['print']}</a></td>\n";
             echo "                                          </tr>\n";
             echo "                                          <tr>\n";
             echo "                                            <td align=\"left\"><a href=\"thread_options.php?webtag=$webtag&amp;msg=$tid.$first_msg&amp;markasread=", ($message['PID'] - 1), "\" target=\"_self\" title=\"{$lang['markasunread']}\"><img src=\"", style_image('markasunread.png'), "\" border=\"0\" alt=\"{$lang['markasunread']}\" title=\"{$lang['markasunread']}\" /></a></td>\n";
@@ -1143,6 +1143,14 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
             echo "                  </td>\n";
             echo "                </tr>";
             echo "              </table>\n";
+
+        }else {
+
+            echo "            <table width=\"100%\" class=\"postresponse\" cellspacing=\"1\" cellpadding=\"0\">\n";
+            echo "              <tr>\n";
+            echo "                <td>&nbsp;</td>\n";
+            echo "              </tr>\n";
+            echo "            </table>\n";
         }
     }
 

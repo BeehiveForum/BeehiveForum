@@ -21,11 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: config.inc.php,v 1.140 2007-08-26 11:30:32 decoyduck Exp $ */
+/* $Id: config.inc.php,v 1.141 2007-08-28 22:36:00 decoyduck Exp $ */
 
 // MAIN CONFIGURATION FILE
 
 define('BEEHIVE_INSTALL_NOWARN', 1);
+
+// Database logging
+
+define('BEEHIVE_DB_LOG_FILE', 'db.log');
+define('BEEHIVE_DB_LOG_MAX_LINES', 100);
 
 // Database stuff ------------------------------------------------------
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.209 2007-08-09 22:55:44 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.210 2007-08-28 22:54:03 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1797,7 +1797,8 @@ function pm_get_new_messages($limit)
 
     $pm_outbox = PM_OUTBOX;
 
-    $sql = "SELECT * FROM PM WHERE TYPE = '$pm_outbox' ";
+    $sql = "SELECT MID, TYPE, TO_UID, FROM_UID, SUBJECT, RECIPIENTS, ";
+    $sql.= "CREATED, NOTIFIED, SMID FROM PM WHERE TYPE = '$pm_outbox' ";
     $sql.= "AND TO_UID = '$uid' ORDER BY CREATED ASC ";
     $sql.= "LIMIT $limit";
 

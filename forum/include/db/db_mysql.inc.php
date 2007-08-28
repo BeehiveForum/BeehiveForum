@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db_mysql.inc.php,v 1.30 2007-08-28 22:36:00 decoyduck Exp $ */
+/* $Id: db_mysql.inc.php,v 1.31 2007-08-28 22:54:03 decoyduck Exp $ */
 
 function db_get_connection_vars(&$db_server, &$db_username, &$db_password, &$db_database)
 {
@@ -76,25 +76,27 @@ function db_enable_big_selects($connection_id)
 
 function db_query($sql, $connection_id)
 {
+    $log_time = date('YmdHis', mktime());
+
     $start_time = microtime_float();
 
     if ($result = @mysql_query($sql, $connection_id)) {
 
         $end_time = microtime_float();
-        $total_time = $end_time - $start_time;
+        $total_time = str_pad($end_time - $start_time, 17, '0');
 
         if (function_exists('file_put_contents') && defined('BEEHIVE_DB_LOG_FILE')) {
 
             if (defined('BEEHIVE_DB_LOG_MAX_LINES') && file_exists(BEEHIVE_DB_LOG_FILE)) {
 
-                $log_data_array = file(BEEHIVE_DB_LOG_FILE); $log_data_array[] = "$total_time\t$sql\n";
+                $log_data_array = file(BEEHIVE_DB_LOG_FILE); $log_data_array[] = "$log_time\t$total_time\t$sql\n";
                 $log_data_array = array_chunk(array_reverse($log_data_array), BEEHIVE_DB_LOG_MAX_LINES);
 
-                file_put_contents(BEEHIVE_DB_LOG_FILE, implode('', array_reverse($log_data_array[0])));
+                @file_put_contents(BEEHIVE_DB_LOG_FILE, implode('', array_reverse($log_data_array[0])));
 
             }else {
 
-                file_put_contents(BEEHIVE_DB_LOG_FILE, "$total_time\t$sql\n", FILE_APPEND);
+                @file_put_contents(BEEHIVE_DB_LOG_FILE, "$log_time\t$total_time\t$sql\n", FILE_APPEND);
             }
         }
 
@@ -108,15 +110,28 @@ function db_unbuffered_query($sql, $connection_id)
 {
     if (function_exists("mysql_unbuffered_query")) {
 
+        $log_time = date('YmdHis', mktime());
+
         $start_time = microtime_float();
 
         if ($result = @mysql_unbuffered_query($sql, $connection_id)) {
 
             $end_time = microtime_float();
-            $total_time = $end_time - $start_time;
+            $total_time = str_pad($end_time - $start_time, 17, '0');
 
             if (function_exists('file_put_contents') && defined('BEEHIVE_DB_LOG_FILE')) {
-                @file_put_contents(BEEHIVE_DB_LOG_FILE, "$total_time\t$sql\n", FILE_APPEND);
+
+                if (defined('BEEHIVE_DB_LOG_MAX_LINES') && file_exists(BEEHIVE_DB_LOG_FILE)) {
+
+                    $log_data_array = file(BEEHIVE_DB_LOG_FILE); $log_data_array[] = "$log_time\t$total_time\t$sql\n";
+                    $log_data_array = array_chunk(array_reverse($log_data_array), BEEHIVE_DB_LOG_MAX_LINES);
+
+                    @file_put_contents(BEEHIVE_DB_LOG_FILE, implode('', array_reverse($log_data_array[0])));
+
+                }else {
+
+                    @file_put_contents(BEEHIVE_DB_LOG_FILE, "$log_time\t$total_time\t$sql\n", FILE_APPEND);
+                }
             }
 
             return $result;

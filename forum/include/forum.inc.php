@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.256 2007-08-26 11:30:32 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.257 2007-08-28 22:54:03 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1994,7 +1994,8 @@ function forum_get($fid)
 
         $db_forum_get = db_connect();
 
-        $sql = "SELECT * FROM FORUMS WHERE FID = '$fid'";
+        $sql = "SELECT FID, WEBTAG, OWNER_UID, DATABASE_NAME, DEFAULT_FORUM, ";
+        $sql.= "ACCESS_LEVEL, FORUM_PASSWD FROM FORUMS WHERE FID = '$fid'";
 
         if (!$result = db_query($sql, $db_forum_get)) return false;
 

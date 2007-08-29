@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lmessages.php,v 1.85 2007-08-25 20:38:49 decoyduck Exp $ */
+/* $Id: lmessages.php,v 1.86 2007-08-29 22:22:59 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -311,7 +311,7 @@ echo "<h6>&copy; ", date('Y'), " <a href=\"http://www.beehiveforum.net/\" target
 light_html_draw_bottom();
 
 if ($msg_count > 0 && !user_is_guest()) {
-    messages_update_read($tid, $pid, $threaddata['LAST_READ'], $threaddata['LENGTH'], $threaddata['MODIFIED']);
+    messages_update_read($tid, $last_pid, $threaddata['LAST_READ'], $threaddata['LENGTH'], $threaddata['MODIFIED']);
 }
 
 ?>

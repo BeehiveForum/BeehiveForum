@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.210 2007-08-28 22:54:03 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.211 2007-08-29 21:38:23 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -157,7 +157,7 @@ function pm_get_inbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
 
     $pm_inbox_items = PM_INBOX_ITEMS;
 
-    $sql = "SELECT COUNT(*) AS MESSAGE_COUNT FROM PM PM ";
+    $sql = "SELECT COUNT(MID) AS MESSAGE_COUNT FROM PM PM ";
     $sql.= "WHERE (TYPE & $pm_inbox_items > 0) AND TO_UID = '$uid'";
 
     if (!$result = db_query($sql, $db_pm_get_inbox)) return false;
@@ -251,7 +251,7 @@ function pm_get_outbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
 
     $pm_outbox_items = PM_OUTBOX_ITEMS;
 
-    $sql = "SELECT COUNT(*) AS MESSAGE_COUNT FROM PM PM ";
+    $sql = "SELECT COUNT(MID) AS MESSAGE_COUNT FROM PM PM ";
     $sql.= "WHERE (TYPE & $pm_outbox_items > 0) AND FROM_UID = '$uid' ";
 
     if (!$result = db_query($sql, $db_pm_get_outbox)) return false;
@@ -345,7 +345,7 @@ function pm_get_sent($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
 
     $pm_sent_items = PM_SENT_ITEMS;
 
-    $sql = "SELECT COUNT(*) AS MESSAGE_COUNT FROM PM PM ";
+    $sql = "SELECT COUNT(MID) AS MESSAGE_COUNT FROM PM PM ";
     $sql.= "WHERE (TYPE & $pm_sent_items > 0) AND FROM_UID = '$uid' ";
     $sql.= "AND SMID = 0";
 
@@ -441,7 +441,7 @@ function pm_get_saved_items($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = 
     $pm_saved_out = PM_SAVED_OUT;
     $pm_saved_in  = PM_SAVED_IN;
 
-    $sql = "SELECT COUNT(*) AS MESSAGE_COUNT FROM PM PM ";
+    $sql = "SELECT COUNT(MID) AS MESSAGE_COUNT FROM PM PM ";
     $sql.= "WHERE ((TYPE & $pm_saved_out > 0) AND FROM_UID = '$uid') OR ";
     $sql.= "((TYPE & $pm_saved_in > 0) AND TO_UID = '$uid')";
 
@@ -537,7 +537,7 @@ function pm_get_drafts($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
 
     $pm_draft_items = PM_DRAFT_ITEMS;
 
-    $sql = "SELECT COUNT(*) AS MESSAGE_COUNT FROM PM PM ";
+    $sql = "SELECT COUNT(MID) AS MESSAGE_COUNT FROM PM PM ";
     $sql.= "WHERE (TYPE & $pm_draft_items > 0) AND FROM_UID = '$uid'";
 
     if (!$result = db_query($sql, $db_pm_get_drafts)) return false;
@@ -694,7 +694,7 @@ function pm_fetch_search_results ($sort_by = 'CREATED', $sort_dir = 'DESC', $off
     $pm_search_results_array = array();
     $mid_array = array();
 
-    $sql = "SELECT COUNT(*) AS RESULT_COUNT FROM PM_SEARCH_RESULTS ";
+    $sql = "SELECT COUNT(MID) AS RESULT_COUNT FROM PM_SEARCH_RESULTS ";
     $sql.= "LEFT JOIN PM ON (PM.MID = PM_SEARCH_RESULTS.MID) ";
     $sql.= "WHERE UID = '$uid' AND PM.MID IS NOT NULL";
 
@@ -790,7 +790,7 @@ function pm_get_folder_message_counts()
     $pm_saved_in     = PM_SAVED_IN;
     $pm_draft_items  = PM_DRAFT_ITEMS;
 
-    $sql = "SELECT COUNT(*) AS MESSAGE_COUNT, TYPE ";
+    $sql = "SELECT COUNT(MID) AS MESSAGE_COUNT, TYPE ";
     $sql.= "FROM PM WHERE ((TYPE & $pm_inbox_items > 0) AND TO_UID = '$uid') ";
     $sql.= "OR ((TYPE & $pm_sent_items > 0) AND FROM_UID = '$uid' AND SMID = 0) ";
     $sql.= "OR ((TYPE & $pm_outbox_items > 0) AND FROM_UID = '$uid') ";
@@ -825,7 +825,7 @@ function pm_get_folder_message_counts()
         }
     }
 
-    $sql = "SELECT COUNT(*) AS RESULT_COUNT FROM PM_SEARCH_RESULTS ";
+    $sql = "SELECT COUNT(MID) AS RESULT_COUNT FROM PM_SEARCH_RESULTS ";
     $sql.= "LEFT JOIN PM ON (PM.MID = PM_SEARCH_RESULTS.MID) ";
     $sql.= "WHERE UID = '$uid' AND PM.MID IS NOT NULL";
 
@@ -865,7 +865,7 @@ function pm_get_free_space($uid = false)
     $pm_saved_in     = PM_SAVED_IN;
     $pm_draft_items  = PM_DRAFT_ITEMS;
 
-    $sql = "SELECT COUNT(*) AS MESSAGE_COUNT ";
+    $sql = "SELECT COUNT(MID) AS MESSAGE_COUNT ";
     $sql.= "FROM PM WHERE ((TYPE & $pm_inbox_items > 0) AND TO_UID = '$uid') ";
     $sql.= "OR ((TYPE & $pm_sent_items > 0) AND FROM_UID = '$uid' AND SMID = 0) ";
     $sql.= "OR ((TYPE & $pm_outbox_items > 0) AND FROM_UID = '$uid') ";
@@ -1870,7 +1870,7 @@ function pm_new_check(&$pm_new_count, &$pm_outbox_count)
 
         // Check for any undelivered messages waiting for the user.
 
-        $sql = "SELECT COUNT(*) AS OUTBOX_COUNT FROM PM ";
+        $sql = "SELECT COUNT(MID) AS OUTBOX_COUNT FROM PM ";
         $sql.= "WHERE TYPE = '$pm_outbox' AND TO_UID = '$uid'";
 
         if (!$result = db_query($sql, $db_pm_new_check)) return false;
@@ -1902,7 +1902,7 @@ function pm_get_unread_count()
 
     // Check to see if the user has any new PMs
 
-    $sql = "SELECT COUNT(*) FROM PM WHERE (TYPE & $pm_unread > 0) ";
+    $sql = "SELECT COUNT(MID) FROM PM WHERE (TYPE & $pm_unread > 0) ";
     $sql.= "AND TO_UID = '$uid'";
 
     if (!$result = db_query($sql, $db_pm_get_unread_count)) return false;

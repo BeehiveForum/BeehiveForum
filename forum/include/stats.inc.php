@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.83 2007-08-28 22:54:03 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.84 2007-08-29 21:38:23 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -61,23 +61,17 @@ function update_stats()
 
         if (db_num_rows($result) > 0) {
 
-            $stats_array = db_fetch_array($result);
+            $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}STATS SET ";
+            $sql.= "MOST_USERS_DATE = NOW(), MOST_USERS_COUNT = '$num_sessions' ";
+            $sql.= "WHERE MOST_USERS_COUNT < $num_sessions";
 
-            if ($num_sessions > $stats_array['MOST_USERS_COUNT']) {
+            if (!$result = db_query($sql, $db_update_stats)) return false;
 
-                $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}STATS SET ";
-                $sql.= "MOST_USERS_DATE = NOW(), MOST_USERS_COUNT = '$num_sessions'";
+            $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}STATS SET ";
+            $sql.= "MOST_POSTS_DATE = NOW(), MOST_POSTS_COUNT = '$num_recent_posts' ";
+            $sql.= "WHERE MOST_POSTS_COUNT < $num_recent_posts";
 
-                if (!$result = db_query($sql, $db_update_stats)) return false;
-            }
-
-            if ($num_recent_posts > $stats_array['MOST_POSTS_COUNT']) {
-
-                $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}STATS SET ";
-                $sql.= "MOST_POSTS_DATE = NOW(), MOST_POSTS_COUNT = '$num_recent_posts'";
-
-                if (!$result = db_query($sql, $db_update_stats)) return false;
-            }
+            if (!$result = db_query($sql, $db_update_stats)) return false;
 
             return true;
 

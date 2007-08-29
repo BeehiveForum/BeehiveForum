@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.277 2007-08-26 11:30:32 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.278 2007-08-29 21:38:23 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1446,7 +1446,7 @@ function threads_get_folder_msgs()
 
     if (!$table_data = get_table_prefix()) return 0;
 
-    $sql = "SELECT FID, COUNT(*) AS TOTAL FROM {$table_data['PREFIX']}THREAD GROUP BY FID";
+    $sql = "SELECT FID, COUNT(TID) AS TOTAL FROM {$table_data['PREFIX']}THREAD GROUP BY FID";
 
     if (!$result = db_query($sql, $db_threads_get_folder_msgs)) return false;
 

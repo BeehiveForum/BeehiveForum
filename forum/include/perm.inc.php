@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.113 2007-08-18 15:01:38 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.114 2007-08-29 21:38:23 decoyduck Exp $ */
 
 /**
 * Functions relating to permissions
@@ -278,7 +278,8 @@ function perm_get_user_groups($offset, $sort_by = 'GROUP_NAME', $sort_dir = 'ASC
 
     list($user_groups_count) = db_fetch_array($result, DB_RESULT_NUM);
 
-    $sql = "SELECT GROUPS.*, COUNT(GROUP_USERS.UID) AS USER_COUNT ";
+    $sql = "SELECT GROUPS.GID, GROUPS.FORUM, GROUPS.GROUP_NAME, GROUPS.GROUP_DESC, ";
+    $sql.= "GROUPS.AUTO_GROUP, COUNT(GROUP_USERS.UID) AS USER_COUNT ";
     $sql.= "FROM GROUPS GROUPS LEFT JOIN GROUP_USERS GROUP_USERS ";
     $sql.= "ON (GROUP_USERS.GID = GROUPS.GID) ";
     $sql.= "WHERE GROUPS.AUTO_GROUP = 0 AND GROUPS.FORUM = '$forum_fid' ";
@@ -314,7 +315,8 @@ function perm_user_get_groups($uid)
 
     $forum_fid = $table_data['FID'];
 
-    $sql = "SELECT GROUPS.*, COUNT(GROUP_USER_COUNT.UID) AS USER_COUNT FROM GROUPS GROUPS ";
+    $sql = "SELECT GROUPS.GID, GROUPS.FORUM, GROUPS.GROUP_NAME, GROUPS.GROUP_DESC, ";
+    $sql.= "GROUPS.AUTO_GROUP, COUNT(GROUP_USER_COUNT.UID) AS USER_COUNT FROM GROUPS GROUPS ";
     $sql.= "LEFT JOIN GROUP_USERS GROUP_USER_COUNT ON (GROUP_USER_COUNT.GID = GROUPS.GID) ";
     $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = GROUPS.GID) ";
     $sql.= "WHERE GROUPS.AUTO_GROUP = 0 AND GROUPS.FORUM = '$forum_fid' AND GROUP_USERS.UID = '$uid'";

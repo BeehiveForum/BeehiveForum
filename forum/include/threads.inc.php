@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.278 2007-08-29 21:38:23 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.279 2007-08-30 18:18:42 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1404,7 +1404,7 @@ function threads_process_list($result)
             // not set we check to see how old the thread is before
             // we mark it as unread.
 
-            if (!isset($thread['LAST_READ']) || is_null($thread['LAST_READ'])) {
+            if (!isset($thread['LAST_READ']) || !is_numeric($thread['LAST_READ'])) {
 
                 $thread['LAST_READ'] = 0;
 

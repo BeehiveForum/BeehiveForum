@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.123 2007-08-27 16:01:22 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.124 2007-08-30 18:18:42 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -76,6 +76,8 @@ function thread_get($tid, $inc_deleted = false)
 
     if (!is_numeric($tid)) return false;
 
+    $unread_cutoff_stamp = forum_get_unread_cutoff();
+
     $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.BY_UID, THREAD.TITLE, ";
     $sql.= "THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.STICKY, THREAD_STATS.VIEWCOUNT, ";
     $sql.= "UNIX_TIMESTAMP(THREAD.STICKY_UNTIL) AS STICKY_UNTIL, FOLDER.PREFIX, ";
@@ -103,43 +105,43 @@ function thread_get($tid, $inc_deleted = false)
 
     if (db_num_rows($result) > 0) {
 
-        $threaddata = db_fetch_array($result);
+        $thread_data = db_fetch_array($result);
 
-        if (!isset($threaddata['INTEREST'])) $threaddata['INTEREST'] = 0;
+        if (!isset($thread_data['INTEREST'])) $thread_data['INTEREST'] = 0;
 
-        if (!isset($thread['LAST_READ']) || is_null($thread['LAST_READ'])) {
+        if (!isset($thread_data['LAST_READ']) || !is_numeric($thread_data['LAST_READ'])) {
 
-            $thread['LAST_READ'] = 0;
+            $thread_data['LAST_READ'] = 0;
 
-            if (isset($thread['MODIFIED']) && ($thread['MODIFIED'] > $unread_cutoff_stamp)) {
-                $thread['LAST_READ'] = 0;
+            if (isset($thread_data['MODIFIED']) && ($thread_data['MODIFIED'] > $unread_cutoff_stamp)) {
+                $thread_data['LAST_READ'] = 0;
             }else if (isset($thread['LENGTH'])) {
-                $thread['LAST_READ'] = $thread['LENGTH'];
+                $thread_data['LAST_READ'] = $thread_data['LENGTH'];
             }
         }
 
-        if (!isset($threaddata['STICKY_UNTIL'])) {
-            $threaddata['STICKY_UNTIL'] = 0;
+        if (!isset($thread_data['STICKY_UNTIL'])) {
+            $thread_data['STICKY_UNTIL'] = 0;
         }
 
-        if (!isset($threaddata['ADMIN_LOCK'])) {
-            $threaddata['ADMIN_LOCK'] = 0;
+        if (!isset($thread_data['ADMIN_LOCK'])) {
+            $thread_data['ADMIN_LOCK'] = 0;
         }
 
-        if (!isset($threaddata['CLOSED'])) {
-            $threaddata['CLOSED'] = 0;
+        if (!isset($thread_data['CLOSED'])) {
+            $thread_data['CLOSED'] = 0;
         }
 
-        if (isset($threaddata['LOGON']) && isset($threaddata['PEER_NICKNAME'])) {
-            if (!is_null($threaddata['PEER_NICKNAME']) && strlen($threaddata['PEER_NICKNAME']) > 0) {
-                $threaddata['NICKNAME'] = $threaddata['PEER_NICKNAME'];
+        if (isset($thread_data['LOGON']) && isset($thread_data['PEER_NICKNAME'])) {
+            if (!is_null($thread_data['PEER_NICKNAME']) && strlen($thread_data['PEER_NICKNAME']) > 0) {
+                $thread_data['NICKNAME'] = $thread_data['PEER_NICKNAME'];
             }
         }
 
-        if (!isset($threaddata['LOGON'])) $threaddata['LOGON'] = $lang['unknownuser'];
-        if (!isset($threaddata['NICKNAME'])) $threaddata['NICKNAME'] = "";
+        if (!isset($thread_data['LOGON'])) $thread_data['LOGON'] = $lang['unknownuser'];
+        if (!isset($thread_data['NICKNAME'])) $thread_data['NICKNAME'] = "";
 
-        return $threaddata;
+        return $thread_data;
     }
 
     return false;

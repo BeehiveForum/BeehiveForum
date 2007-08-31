@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.220 2007-08-25 20:38:49 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.221 2007-08-31 21:02:35 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -526,6 +526,7 @@ if (isset($_POST['action_submit'])) {
         if ($valid && ($new_global_user_perms <> $global_user_perm)) {
 
             perm_update_global_perms($uid, $new_global_user_perms);
+            $global_user_perm = perm_get_global_user_permissions($uid);
         }
     }
 

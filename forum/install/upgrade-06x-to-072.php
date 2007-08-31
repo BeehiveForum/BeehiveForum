@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06x-to-072.php,v 1.17 2007-08-01 20:23:04 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-072.php,v 1.18 2007-08-31 21:02:35 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-06x-to-072.php") {
 
@@ -82,8 +82,7 @@ if (db_num_rows($result) > 0) {
 // Remove the old SEARCH_* tables as we don't need them
 // anymore as Beehive uses MySQL FULLTEXT searches.
 
-$remove_tables = array('SEARCH_KEYWORDS', 'SEARCH_MATCH',
-                       'SEARCH_POSTS', 'SEARCH_RESULTS');
+$remove_tables = array('SEARCH_KEYWORDS', 'SEARCH_MATCH', 'SEARCH_POSTS', 'SEARCH_RESULTS');
 
 foreach ($remove_tables as $remove_table) {
 
@@ -99,7 +98,7 @@ foreach ($remove_tables as $remove_table) {
 // Check that we have no global tables which conflict
 // with those we're about to create or remove.
 
-$global_tables = array('USER_HISTORY', 'SEARCH_ENGINE_BOTS', 'SEARCH_RESULTS', 'TIMEZONES');
+$global_tables = array('USER_HISTORY', 'SEARCH_ENGINE_BOTS', 'SEARCH_RESULTS', 'PM_SEARCH_RESULTS', 'TIMEZONES');
 
 if (isset($remove_conflicts) && $remove_conflicts === true) {
 
@@ -118,7 +117,7 @@ if (isset($remove_conflicts) && $remove_conflicts === true) {
 // Check that we have no per-forum tables which conflict
 // with those we're about to create.
 
-$forum_tables  = array('THREAD_STATS', 'USER_TRACK', 'THREAD_TRACK');
+$forum_tables  = array('BANNED', 'THREAD_STATS', 'USER_TRACK', 'THREAD_TRACK');
 
 if (isset($remove_conflicts) && $remove_conflicts === true) {
 
@@ -216,7 +215,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
             $sql.= "WHERE $old_column_name IS NOT NULL";
 
             if (!$result = @db_query($sql, $db_install)) {
-            
+
                 $valid = false;
                 return;
             }
@@ -234,7 +233,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     }
 
     // Rename our new BANNED table
-    
+
     $sql = "ALTER TABLE {$forum_webtag}_{$banned_new} RENAME {$forum_webtag}_BANNED";
 
     if (!$result = @db_query($sql, $db_install)) {
@@ -281,7 +280,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     // Counter-change to older 0.6 builds. USER_TRACK is now
     // a per-forum table so we can use it to store user's
     // post counts for each forum they visit.
-  
+
     $sql = "CREATE TABLE {$forum_webtag}_USER_TRACK (";
     $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
     $sql.= "  DDKEY DATETIME DEFAULT NULL,";
@@ -352,7 +351,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         $valid = false;
         return;
     }
-    
+
     $sql = "INSERT IGNORE INTO {$forum_webtag}_{$upv_new} (TID, UID, OPTION_ID, TSTAMP) ";
     $sql.= "SELECT TID, UID, OPTION_ID, TSTAMP FROM {$forum_webtag}_USER_POLL_VOTES";
 
@@ -361,7 +360,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         $valid = false;
         return;
     }
-    
+
     $sql = "DROP TABLE IF EXISTS {$forum_webtag}_USER_POLL_VOTES";
 
     if (!$result = @db_query($sql, $db_install)) {
@@ -369,7 +368,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         $valid = false;
         return;
     }
-    
+
     $sql = "ALTER TABLE {$forum_webtag}_{$upv_new} RENAME {$forum_webtag}_USER_POLL_VOTES";
 
     if (!$result = @db_query($sql, $db_install)) {
@@ -434,7 +433,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         return;
     }
 
-    // The Forum Links dropdown caption (top link) has moved 
+    // The Forum Links dropdown caption (top link) has moved
     // to the FORUM_SETTINGS table to allow for improved
     // functionality to the Admin section.
 
@@ -444,7 +443,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     if ($result = @db_query($sql, $db_install)) {
 
         if (db_num_rows($result) > 0) {
-        
+
             list($lid, $forum_links_top_link) = db_fetch_array($result, DB_RESULT_NUM);
 
             // Save the existing forum link caption to the FORUM_SETTINGS table
@@ -490,9 +489,9 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     // User's can now give each other nicknames without them knowing about it.
 
     $sql = "ALTER TABLE {$forum_webtag}_USER_PEER ADD PEER_NICKNAME VARCHAR(32)";
-    
+
     if (!$result = @db_query($sql, $db_install)) {
-    
+
         $valid = false;
         return;
     }
@@ -505,7 +504,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql.= "ADD MOVED_PID MEDIUMINT(8) UNSIGNED";
 
     if (!$result = @db_query($sql, $db_install)) {
-    
+
         $valid = false;
         return;
     }
@@ -517,7 +516,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql.= "ADD INDEX IPADDRESS (IPADDRESS, FROM_UID)";
 
     if (!$result = @db_query($sql, $db_install)) {
-    
+
         $valid = false;
         return;
     }
@@ -528,7 +527,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql = "ALTER TABLE {$forum_webtag}_POST ADD INDEX APPROVED (APPROVED)";
 
     if (!$result = @db_query($sql, $db_install)) {
-    
+
         $valid = false;
         return;
     }
@@ -536,7 +535,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql = "ALTER TABLE {$forum_webtag}_POST_CONTENT ADD FULLTEXT (CONTENT)";
 
     if (!$result = @db_query($sql, $db_install)) {
-    
+
         $valid = false;
         return;
     }
@@ -548,7 +547,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql = "DELETE FROM {$forum_webtag}_USER_PEER WHERE RELATIONSHIP = 0";
 
     if (!$result = @db_query($sql, $db_install)) {
-    
+
         $valid = false;
         return;
     }
@@ -559,7 +558,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql.= "PARENT_FID PARENT_FID SMALLINT(5) UNSIGNED NULL";
 
     if (!$result = @db_query($sql, $db_install)) {
-    
+
         $valid = false;
         return;
     }
@@ -571,7 +570,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql = "ALTER TABLE {$forum_webtag}_USER_THREAD ADD INDEX TID (TID)";
 
     if (!$result = @db_query($sql, $db_install)) {
-    
+
         $valid = false;
         return;
     }
@@ -579,7 +578,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql = "ALTER TABLE {$forum_webtag}_USER_THREAD ADD INDEX LAST_READ (LAST_READ)";
 
     if (!$result = @db_query($sql, $db_install)) {
-    
+
         $valid = false;
         return;
     }
@@ -592,7 +591,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql = "ALTER TABLE {$forum_webtag}_THREAD ADD INDEX TITLE (TITLE)";
 
     if (!$result = @db_query($sql, $db_install)) {
-    
+
         $valid = false;
         return;
     }
@@ -600,7 +599,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql = "ALTER TABLE {$forum_webtag}_THREAD ADD INDEX BY_UID (BY_UID)";
 
     if (!$result = @db_query($sql, $db_install)) {
-    
+
         $valid = false;
         return;
     }
@@ -608,7 +607,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql = "ALTER TABLE {$forum_webtag}_THREAD ADD INDEX STICKY (STICKY, MODIFIED)";
 
     if (!$result = @db_query($sql, $db_install)) {
-    
+
         $valid = false;
         return;
     }
@@ -616,7 +615,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql = "ALTER TABLE {$forum_webtag}_THREAD ADD INDEX LENGTH (LENGTH)";
 
     if (!$result = @db_query($sql, $db_install)) {
-    
+
         $valid = false;
         return;
     }
@@ -630,7 +629,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         while ($folder_data = db_fetch_array($result)) {
 
             $fid = $folder_data['FID'];
-            
+
             if (!isset($folder_data['TITLE'])) $folder_data['TITLE'] = "";
             if (!isset($folder_data['DESCRIPTION'])) $folder_data['DESCRIPTION'] = "";
 
@@ -646,9 +645,72 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
                 return;
             }
         }
-    
-    }else {        
-        
+
+    }else {
+
+        $valid = false;
+        return;
+    }
+
+    // New Word Filter table format to allow switching on
+    // and off individual filters.
+
+    $sql = "CREATE TABLE {$forum_webtag}_WORD_FILTER (";
+    $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
+    $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+    $sql.= "  FILTER_NAME VARCHAR(255) NOT NULL,";
+    $sql.= "  MATCH_TEXT TEXT NOT NULL,";
+    $sql.= "  REPLACE_TEXT TEXT NOT NULL,";
+    $sql.= "  FILTER_TYPE TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',";
+    $sql.= "  FILTER_ENABLED TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',";
+    $sql.= "  PRIMARY KEY  (UID, FID)";
+    $sql.= ") TYPE = MYISAM";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // Copy the existing entries into the new table.
+
+    $sql = "INSERT INTO {$forum_webtag}_WORD_FILTER (UID, FILTER_NAME, MATCH_TEXT, ";
+    $sql.= "REPLACE_TEXT, FILTER_TYPE, FILTER_ENABLED) SELECT UID, '', MATCH_TEXT, ";
+    $sql.= "REPLACE_TEXT, FILTER_OPTION, 1 FROM {$forum_webtag}_FILTER_LIST";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // Update the new table to name all the entries with
+    // the name 'Filter #num'
+
+    $sql = "UPDATE {$forum_webtag}_WORD_FILTER SET FILTER_NAME = CONCAT('Filter #', FID);";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // Remove the old FILTER_LIST table
+
+    $sql = "DROP TABLE {$forum_webtag}_FILTER_LIST";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // Sort the new table to order by UID.
+
+    $sql = "ALTER TABLE {$forum_webtag}_WORD_FILTER ORDER BY UID";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
         $valid = false;
         return;
     }
@@ -1163,28 +1225,28 @@ if (!$result = @db_query($sql, $db_install)) {
 
 $timezones_array = array(1  => array(-12, 0),  2  => array(-11, 0),  3  => array(-10, 0),
                          4  => array(-9, 1),   5  => array(-8, 1),   6  => array(-7, 0),
-                         7  => array(-7, 1),   8  => array(-7, 1),   9  => array(-6, 0), 
-                         10 => array(-6, 1),   11 => array(-6, 1),   12 => array(-6, 0), 
-                         13 => array(-5, 0),   14 => array(-5, 1),   15 => array(-5, 0), 
-                         16 => array(-4, 1),   17 => array(-4, 0),   18 => array(-4, 1), 
-                         19 => array(-3.5, 1), 20 => array(-3, 1),   21 => array(-3, 0), 
-                         22 => array(-3, 1),   23 => array(-2, 1),   24 => array(-1, 1), 
-                         25 => array(-1, 0),   26 => array(0, 0),    27 => array(0, 1), 
-                         28 => array(1, 1),    29 => array(1, 1),    30 => array(1, 1), 
-                         31 => array(1, 1),    32 => array(1, 0),    33 => array(2, 1), 
-                         34 => array(2, 1),    35 => array(2, 1),    36 => array(2, 0), 
-                         37 => array(2, 1),    38 => array(2, 0),    39 => array(3, 1), 
-                         40 => array(3, 0),    41 => array(3, 1),    42 => array(3, 0), 
-                         43 => array(3.5, 1),  44 => array(4, 0),    45 => array(4, 1), 
-                         46 => array(4.5, 0),  47 => array(5, 1),    48 => array(5, 0), 
-                         49 => array(5.5, 0),  50 => array(5.75, 0), 51 => array(6, 1), 
-                         52 => array(6, 0),    53 => array(6, 0),    54 => array(6.5, 0), 
-                         55 => array(7, 0),    56 => array(7, 1),    57 => array(8, 0), 
-                         58 => array(8, 1),    59 => array(8, 0),    60 => array(8, 0), 
-                         61 => array(8, 0),    62 => array(9, 0),    63 => array(9, 0), 
-                         64 => array(9, 1),    65 => array(9.5, 1),  66 => array(9.5, 0), 
-                         67 => array(10, 0),   68 => array(10, 1),   69 => array(10, 0), 
-                         70 => array(10, 1),   71 => array(10, 1),   72 => array(11, 0), 
+                         7  => array(-7, 1),   8  => array(-7, 1),   9  => array(-6, 0),
+                         10 => array(-6, 1),   11 => array(-6, 1),   12 => array(-6, 0),
+                         13 => array(-5, 0),   14 => array(-5, 1),   15 => array(-5, 0),
+                         16 => array(-4, 1),   17 => array(-4, 0),   18 => array(-4, 1),
+                         19 => array(-3.5, 1), 20 => array(-3, 1),   21 => array(-3, 0),
+                         22 => array(-3, 1),   23 => array(-2, 1),   24 => array(-1, 1),
+                         25 => array(-1, 0),   26 => array(0, 0),    27 => array(0, 1),
+                         28 => array(1, 1),    29 => array(1, 1),    30 => array(1, 1),
+                         31 => array(1, 1),    32 => array(1, 0),    33 => array(2, 1),
+                         34 => array(2, 1),    35 => array(2, 1),    36 => array(2, 0),
+                         37 => array(2, 1),    38 => array(2, 0),    39 => array(3, 1),
+                         40 => array(3, 0),    41 => array(3, 1),    42 => array(3, 0),
+                         43 => array(3.5, 1),  44 => array(4, 0),    45 => array(4, 1),
+                         46 => array(4.5, 0),  47 => array(5, 1),    48 => array(5, 0),
+                         49 => array(5.5, 0),  50 => array(5.75, 0), 51 => array(6, 1),
+                         52 => array(6, 0),    53 => array(6, 0),    54 => array(6.5, 0),
+                         55 => array(7, 0),    56 => array(7, 1),    57 => array(8, 0),
+                         58 => array(8, 1),    59 => array(8, 0),    60 => array(8, 0),
+                         61 => array(8, 0),    62 => array(9, 0),    63 => array(9, 0),
+                         64 => array(9, 1),    65 => array(9.5, 1),  66 => array(9.5, 0),
+                         67 => array(10, 0),   68 => array(10, 1),   69 => array(10, 0),
+                         70 => array(10, 1),   71 => array(10, 1),   72 => array(11, 0),
                          73 => array(12, 1),   74 => array(12, 0),   75 => array(13, 0));
 
 // Insert the above data into the TIMEZONES table while also
@@ -1197,7 +1259,7 @@ foreach ($timezones_array as $tzid => $tz_data) {
 
     if (!isset($tz_data[0]) || !is_numeric($tz_data[0])) return false;
     if (!isset($tz_data[1]) || !is_numeric($tz_data[1])) return false;
-    
+
     $sql = "INSERT INTO TIMEZONES (TZID, GMT_OFFSET, DST_OFFSET) ";
     $sql.= "VALUES ('$tzid', '{$tz_data[0]}', '{$tz_data[1]}')";
 
@@ -1241,69 +1303,6 @@ foreach ($timezones_array as $tzid => $tz_data) {
             }
         }
     }
-}
-
-// New Word Filter table format to allow switching on
-// and off individual filters.
-
-$sql = "CREATE TABLE {$forum_webtag}_WORD_FILTER (";
-$sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
-$sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-$sql.= "  FILTER_NAME VARCHAR(255) NOT NULL,";
-$sql.= "  MATCH_TEXT TEXT NOT NULL,";
-$sql.= "  REPLACE_TEXT TEXT NOT NULL,";
-$sql.= "  FILTER_TYPE TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  FILTER_ENABLED TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  PRIMARY KEY  (UID, FID)";
-$sql.= ") TYPE = MYISAM";
-
-if (!$result = @db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-// Copy the existing entries into the new table.
-
-$sql = "INSERT INTO {$forum_webtag}_WORD_FILTER (UID, FILTER_NAME, MATCH_TEXT, ";
-$sql.= "REPLACE_TEXT, FILTER_TYPE, FILTER_ENABLED) SELECT UID, '', MATCH_TEXT, ";
-$sql.= "REPLACE_TEXT, FILTER_OPTION, 1 FROM {$forum_webtag}_FILTER_LIST";
-
-if (!$result = @db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-// Update the new table to name all the entries with
-// the name 'Filter #num'
-
-$sql = "UPDATE {$forum_webtag}_WORD_FILTER SET FILTER_NAME = CONCAT('Filter #', FID);";
-
-if (!$result = @db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-// Remove the old FILTER_LIST table
-
-$sql = "DROP TABLE {$forum_webtag}_FILTER_LIST";
-
-if (!$result = @db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-// Sort the new table to order by UID.
-
-$sql = "ALTER TABLE {$forum_webtag}_WORD_FILTER ORDER BY UID";
-
-if (!$result = @db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
 }
 
 // Change to Visitor log.
@@ -1395,7 +1394,7 @@ if (db_num_rows($result) > 0) {
     }
 
     // Create our new table.
-    
+
     $sql = "CREATE TABLE $dictionary_new (";
     $sql.= "  WORD VARCHAR(64) NOT NULL DEFAULT '',";
     $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";

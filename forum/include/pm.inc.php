@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.211 2007-08-29 21:38:23 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.212 2007-08-31 21:02:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -694,8 +694,9 @@ function pm_fetch_search_results ($sort_by = 'CREATED', $sort_dir = 'DESC', $off
     $pm_search_results_array = array();
     $mid_array = array();
 
-    $sql = "SELECT COUNT(MID) AS RESULT_COUNT FROM PM_SEARCH_RESULTS ";
-    $sql.= "LEFT JOIN PM ON (PM.MID = PM_SEARCH_RESULTS.MID) ";
+    $sql = "SELECT COUNT(PM_SEARCH_RESULTS.MID) AS RESULT_COUNT ";
+    $sql.= "FROM PM_SEARCH_RESULTS LEFT JOIN PM ";
+    $sql.= "ON (PM.MID = PM_SEARCH_RESULTS.MID) ";
     $sql.= "WHERE UID = '$uid' AND PM.MID IS NOT NULL";
 
     if (!$result = db_query($sql, $db_pm_fetch_search_results)) return false;
@@ -825,8 +826,9 @@ function pm_get_folder_message_counts()
         }
     }
 
-    $sql = "SELECT COUNT(MID) AS RESULT_COUNT FROM PM_SEARCH_RESULTS ";
-    $sql.= "LEFT JOIN PM ON (PM.MID = PM_SEARCH_RESULTS.MID) ";
+    $sql = "SELECT COUNT(PM_SEARCH_RESULTS.MID) AS RESULT_COUNT ";
+    $sql.= "FROM PM_SEARCH_RESULTS LEFT JOIN PM ";
+    $sql.= "ON (PM.MID = PM_SEARCH_RESULTS.MID) ";
     $sql.= "WHERE UID = '$uid' AND PM.MID IS NOT NULL";
 
     if (!$result = db_query($sql, $db_pm_get_folder_message_counts)) return false;

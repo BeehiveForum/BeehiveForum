@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.114 2007-08-29 21:38:23 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.115 2007-08-31 21:02:35 decoyduck Exp $ */
 
 /**
 * Functions relating to permissions
@@ -239,7 +239,7 @@ function perm_check_global_permissions($access_level, $uid)
         return bh_session_check_perm($access_level, 0);
     }
 
-    $sql = "SELECT GROUP_PERMS.PERM FROM GROUPS ";
+    $sql = "SELECT BIT_OR(GROUP_PERMS.PERM) AS USER_PERM FROM GROUPS ";
     $sql.= "LEFT JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUPS.GID) ";
     $sql.= "LEFT JOIN GROUP_USERS ON (GROUP_USERS.GID = GROUPS.GID) ";
     $sql.= "WHERE GROUPS.AUTO_GROUP = 1 AND GROUP_PERMS.FID = 0 ";
@@ -513,7 +513,7 @@ function perm_get_global_user_permissions($uid)
 
     if (!is_numeric($uid)) return 0;
 
-    $sql = "SELECT GROUP_PERMS.PERM FROM GROUPS ";
+    $sql = "SELECT BIT_OR(GROUP_PERMS.PERM) AS USER_PERM FROM GROUPS ";
     $sql.= "LEFT JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUPS.GID) ";
     $sql.= "LEFT JOIN GROUP_USERS ON (GROUP_USERS.GID = GROUPS.GID) ";
     $sql.= "WHERE GROUPS.AUTO_GROUP = 1 AND GROUP_PERMS.FID = 0 ";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.317 2007-08-27 16:01:22 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.318 2007-08-31 21:02:35 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -1011,12 +1011,10 @@ function bh_session_get_perm_array($uid)
             $forum_fid = 0;
         }
 
-        $sql = "SELECT GROUP_PERMS.GID, GROUP_PERMS.FORUM, ";
-        $sql.= "GROUP_PERMS.FID, BIT_OR(GROUP_PERMS.PERM) AS PERM, ";
-        $sql.= "COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT FROM GROUP_PERMS GROUP_PERMS ";
-        $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = GROUP_PERMS.GID) ";
-        $sql.= "LEFT JOIN GROUPS GROUPS ON (GROUPS.GID = GROUP_PERMS.GID) ";
-        $sql.= "WHERE GROUP_USERS.UID = '$uid' AND GROUP_PERMS.GID IS NOT NULL ";
+        $sql = "SELECT GROUP_PERMS.GID, GROUP_PERMS.FORUM, GROUP_PERMS.FID, ";
+        $sql.= "BIT_OR(GROUP_PERMS.PERM) AS PERM, COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT ";
+        $sql.= "FROM GROUP_USERS LEFT JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID ";
+        $sql.= "AND GROUP_PERMS.GID IS NOT NULL) WHERE GROUP_USERS.UID = '$uid' ";
         $sql.= "GROUP BY GROUP_PERMS.FORUM, GROUP_PERMS.FID";
 
         if (!$result = db_query($sql, $db_bh_session_get_perm_array)) return false;
@@ -1034,9 +1032,8 @@ function bh_session_get_perm_array($uid)
             }
         }
 
-        $sql = "SELECT FORUM, FID, BIT_OR(PERM) AS PERM ";
-        $sql.= "FROM GROUP_PERMS WHERE GID = 0 ";
-        $sql.= "GROUP BY FORUM, FID";
+        $sql = "SELECT FORUM, FID, BIT_OR(PERM) AS PERM FROM GROUP_PERMS ";
+        $sql.= "WHERE GID = 0 GROUP BY FORUM, FID";
 
         if (!$result = db_query($sql, $db_bh_session_get_perm_array)) return false;
 

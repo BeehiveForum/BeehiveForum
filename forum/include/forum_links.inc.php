@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_links.inc.php,v 1.35 2007-08-01 20:23:02 decoyduck Exp $ */
+/* $Id: forum_links.inc.php,v 1.36 2007-08-31 21:02:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -48,9 +48,9 @@ function forum_links_get_links()
     $lang = load_language_file();
 
     $forum_links_top_link = forum_get_setting('forum_links_top_link', false, $lang['forumlinks']);
-    
+
     $sql = "SELECT TITLE, URI FROM {$table_data['PREFIX']}FORUM_LINKS ";
-    $sql.= "ORDER BY POS ASC, LID ASC";
+    $sql.= "ORDER BY POS ASC";
 
     if (!$result = db_query($sql, $db_forum_links_get_links)) return false;
 
@@ -63,11 +63,11 @@ function forum_links_get_links()
             if (!isset($forum_links_data['TITLE']) || strlen(trim($forum_links_data['TITLE'])) < 1) {
                 $forum_links_data['TITLE'] = '-';
             }
-            
+
             if (!isset($forum_links_data['URI']) || strlen(trim($forum_links_data['URI'])) < 1) {
 
                 $links_array[] = $forum_links_data['TITLE'];
-            
+
             }else {
 
                 $forum_links_data['URI'] = href_cleanup_query_keys($forum_links_data['URI']);
@@ -98,8 +98,7 @@ function forum_links_get_links_by_page($offset)
     list($forum_links_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT LID, POS, URI, TITLE FROM {$table_data['PREFIX']}FORUM_LINKS ";
-    $sql.= "ORDER BY POS ASC, LID ASC ";
-    $sql.= "LIMIT $offset, 10";
+    $sql.= "ORDER BY POS ASC LIMIT $offset, 10";
 
     if (!$result = db_query($sql, $db_forum_links_get_links_by_page)) return false;
 
@@ -112,7 +111,7 @@ function forum_links_get_links_by_page($offset)
 
             $forum_links_array[] = $forum_links_data;
         }
-    
+
     }else if ($forum_links_count > 0) {
 
         $offset = floor(($forum_links_count - 1) / 10) * 10;
@@ -153,7 +152,7 @@ function forum_links_fix_url($uri)
     }
 
     return $uri;
-    
+
 }
 
 function forum_links_draw_dropdown()
@@ -341,8 +340,8 @@ function forum_links_move_down($lid)
 
         if ($forum_links_order_key > sizeof($forum_links_order)) {
             $forum_links_order_key = sizeof($forum_links_order);
-        }        
-        
+        }
+
         $new_position = $forum_links_position[$lid];
 
         $sql = "UPDATE {$table_data['PREFIX']}FORUM_LINKS SET POS = '$new_position' ";
@@ -381,7 +380,7 @@ function forum_links_positions_update()
         if (isset($lid) && is_numeric($lid)) {
 
             $new_position++;
-        
+
             $sql = "UPDATE {$table_data['PREFIX']}FORUM_LINKS ";
             $sql.= "SET POS = '$new_position' WHERE LID = '$lid'";
 

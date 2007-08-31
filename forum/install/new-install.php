@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.150 2007-07-12 21:39:55 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.151 2007-08-31 21:02:35 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
 
@@ -55,8 +55,8 @@ if (isset($remove_conflicts) && $remove_conflicts === true) {
 
     $forum_tables = array('ADMIN_LOG',     'BANNED',          'FOLDER',
                           'FORUM_LINKS',   'LINKS',           'LINKS_COMMENT',
-                          'LINKS_FOLDERS', 'LINKS_VOTE',      'POLL',          
-                          'POLL_VOTES',    'POST',            'POST_CONTENT',  
+                          'LINKS_FOLDERS', 'LINKS_VOTE',      'POLL',
+                          'POLL_VOTES',    'POST',            'POST_CONTENT',
                           'PROFILE_ITEM',  'PROFILE_SECTION', 'RSS_FEEDS',
                           'RSS_HISTORY',   'STATS',           'THREAD',
                           'THREAD_TRACK',  'THREAD_STATS',    'USER_FOLDER',
@@ -64,12 +64,13 @@ if (isset($remove_conflicts) && $remove_conflicts === true) {
                           'USER_PROFILE',  'USER_SIG',        'USER_THREAD',
                           'USER_TRACK',    'WORD_FILTER');
 
-    $global_tables = array('DICTIONARY',            'FORUM_SETTINGS',      'FORUMS',
-                           'GROUP_PERMS',           'GROUP_USERS',         'GROUPS',
-                           'PM',                    'PM_ATTACHMENT_IDS',   'PM_CONTENT',
-                           'POST_ATTACHMENT_FILES', 'POST_ATTACHMENT_IDS', 'SEARCH_ENGINE_BOTS',
-                           'SEARCH_RESULTS',        'SESSIONS',            'USER',
-                           'USER_FORUM',            'USER_PREFS',          'VISITOR_LOG');
+    $global_tables = array('DICTIONARY',          'FORUM_SETTINGS',        'FORUMS',
+                           'GROUP_PERMS',         'GROUP_USERS',           'GROUPS',
+                           'PM',                  'PM_ATTACHMENT_IDS',     'PM_CONTENT',
+                           'PM_SEARCH_RESULTS',   'POST_ATTACHMENT_FILES', 'POST_ATTACHMENT_IDS',
+                           'SEARCH_ENGINE_BOTS',  'SEARCH_RESULTS',        'SESSIONS',
+                           'TIMEZONES',           'USER',                  'USER_FORUM',
+                           'USER_HISTORY',        'USER_PREFS',            'VISITOR_LOG');
 
     foreach ($forum_tables as $forum_table) {
 
@@ -1299,28 +1300,28 @@ foreach ($bots_array as $agent => $details) {
 
 $timezones_array = array(1  => array(-12, 0),  2  => array(-11, 0),  3  => array(-10, 0),
                          4  => array(-9, 1),   5  => array(-8, 1),   6  => array(-7, 0),
-                         7  => array(-7, 1),   8  => array(-7, 1),   9  => array(-6, 0), 
-                         10 => array(-6, 1),   11 => array(-6, 1),   12 => array(-6, 0), 
-                         13 => array(-5, 0),   14 => array(-5, 1),   15 => array(-5, 0), 
-                         16 => array(-4, 1),   17 => array(-4, 0),   18 => array(-4, 1), 
-                         19 => array(-3.5, 1), 20 => array(-3, 1),   21 => array(-3, 0), 
-                         22 => array(-3, 1),   23 => array(-2, 1),   24 => array(-1, 1), 
-                         25 => array(-1, 0),   26 => array(0, 0),    27 => array(0, 1), 
-                         28 => array(1, 1),    29 => array(1, 1),    30 => array(1, 1), 
-                         31 => array(1, 1),    32 => array(1, 0),    33 => array(2, 1), 
-                         34 => array(2, 1),    35 => array(2, 1),    36 => array(2, 0), 
-                         37 => array(2, 1),    38 => array(2, 0),    39 => array(3, 1), 
-                         40 => array(3, 0),    41 => array(3, 1),    42 => array(3, 0), 
-                         43 => array(3.5, 1),  44 => array(4, 0),    45 => array(4, 1), 
-                         46 => array(4.5, 0),  47 => array(5, 1),    48 => array(5, 0), 
-                         49 => array(5.5, 0),  50 => array(5.75, 0), 51 => array(6, 1), 
-                         52 => array(6, 0),    53 => array(6, 0),    54 => array(6.5, 0), 
-                         55 => array(7, 0),    56 => array(7, 1),    57 => array(8, 0), 
-                         58 => array(8, 1),    59 => array(8, 0),    60 => array(8, 0), 
-                         61 => array(8, 0),    62 => array(9, 0),    63 => array(9, 0), 
-                         64 => array(9, 1),    65 => array(9.5, 1),  66 => array(9.5, 0), 
-                         67 => array(10, 0),   68 => array(10, 1),   69 => array(10, 0), 
-                         70 => array(10, 1),   71 => array(10, 1),   72 => array(11, 0), 
+                         7  => array(-7, 1),   8  => array(-7, 1),   9  => array(-6, 0),
+                         10 => array(-6, 1),   11 => array(-6, 1),   12 => array(-6, 0),
+                         13 => array(-5, 0),   14 => array(-5, 1),   15 => array(-5, 0),
+                         16 => array(-4, 1),   17 => array(-4, 0),   18 => array(-4, 1),
+                         19 => array(-3.5, 1), 20 => array(-3, 1),   21 => array(-3, 0),
+                         22 => array(-3, 1),   23 => array(-2, 1),   24 => array(-1, 1),
+                         25 => array(-1, 0),   26 => array(0, 0),    27 => array(0, 1),
+                         28 => array(1, 1),    29 => array(1, 1),    30 => array(1, 1),
+                         31 => array(1, 1),    32 => array(1, 0),    33 => array(2, 1),
+                         34 => array(2, 1),    35 => array(2, 1),    36 => array(2, 0),
+                         37 => array(2, 1),    38 => array(2, 0),    39 => array(3, 1),
+                         40 => array(3, 0),    41 => array(3, 1),    42 => array(3, 0),
+                         43 => array(3.5, 1),  44 => array(4, 0),    45 => array(4, 1),
+                         46 => array(4.5, 0),  47 => array(5, 1),    48 => array(5, 0),
+                         49 => array(5.5, 0),  50 => array(5.75, 0), 51 => array(6, 1),
+                         52 => array(6, 0),    53 => array(6, 0),    54 => array(6.5, 0),
+                         55 => array(7, 0),    56 => array(7, 1),    57 => array(8, 0),
+                         58 => array(8, 1),    59 => array(8, 0),    60 => array(8, 0),
+                         61 => array(8, 0),    62 => array(9, 0),    63 => array(9, 0),
+                         64 => array(9, 1),    65 => array(9.5, 1),  66 => array(9.5, 0),
+                         67 => array(10, 0),   68 => array(10, 1),   69 => array(10, 0),
+                         70 => array(10, 1),   71 => array(10, 1),   72 => array(11, 0),
                          73 => array(12, 1),   74 => array(12, 0),   75 => array(13, 0));
 
 foreach ($timezones_array as $tzid => $tz_data) {
@@ -1329,7 +1330,7 @@ foreach ($timezones_array as $tzid => $tz_data) {
 
     if (!isset($tz_data[0]) || !is_numeric($tz_data[0])) return false;
     if (!isset($tz_data[1]) || !is_numeric($tz_data[1])) return false;
-    
+
     $sql = "INSERT INTO TIMEZONES (TZID, GMT_OFFSET, DST_OFFSET) ";
     $sql.= "VALUES ('$tzid', '{$tz_data[0]}', '{$tz_data[1]}')";
 

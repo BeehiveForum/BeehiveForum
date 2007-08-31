@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.86 2007-05-26 17:36:56 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.87 2007-08-31 22:39:58 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -55,9 +55,9 @@ error_reporting(E_ALL);
 
 // Beehive Error Handler Function
 
-function bh_error_handler($errno, $errstr, $errfile, $errline)
+function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
 {
-    $show_friendly_errors = (isset($GLOBALS['show_friendly_errors'])) ? $GLOBALS['show_friendly_errors'] : false; 
+    $show_friendly_errors = (isset($GLOBALS['show_friendly_errors'])) ? $GLOBALS['show_friendly_errors'] : false;
 
     // Bad Coding Practises Alert!!
     // We're going to ignore any E_STRICT error messages
@@ -78,26 +78,26 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
                 case E_USER_ERROR:
 
                     echo "<p><b>E_USER_ERROR</b> [$errno] $errstr</p>\n";
-                    echo "<p>Fatal error in line $errline of file ", basename($errfile), "</p>\n";
                     break;
 
                 case E_USER_WARNING:
 
                     echo "<p><b>E_USER_WARNING</b> [$errno] $errstr</p>\n";
-                    echo "<p>Error in line $errline of file ", basename($errfile), "</p>\n";
                     break;
 
                 case E_USER_NOTICE:
 
                     echo "<p><b>E_USER_NOTICE</b> [$errno] $errstr</p>\n";
-                    echo "<p>Warning in line $errline of file ", basename($errfile), "</p>\n";
                     break;
 
                 default:
 
                     echo "<p><b>Unknown error</b> [$errno] $errstr</p>\n";
-                    echo "<p>Unknown error in line $errline of file ", basename($errfile), "</p>\n";
                     break;
+            }
+
+            if (strlen(trim(basename($errfile))) > 0) {
+                echo "<p>Error in line $errline of file ", basename($errfile), "</p>\n";
             }
 
             exit;
@@ -194,35 +194,34 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
             case E_USER_ERROR:
 
                 echo "            <p><b>E_USER_ERROR</b> [$errno] $errstr</p>\n";
-                echo "            <p>Fatal error in line $errline of file ", basename($errfile), "</p>\n";
                 break;
 
             case E_USER_WARNING:
 
                 echo "            <p><b>E_USER_WARNING</b> [$errno] $errstr</p>\n";
-                echo "            <p>Error in line $errline of file ", basename($errfile), "</p>\n";
                 break;
 
             case E_USER_NOTICE:
 
                 echo "            <p><b>E_USER_NOTICE</b> [$errno] $errstr</p>\n";
-                echo "            <p>Warning in line $errline of file ", basename($errfile), "</p>\n";
                 break;
 
             default:
 
                 echo "            <p><b>Unknown error</b> [$errno] $errstr</p>\n";
-                echo "            <p>Unknown error in line $errline of file ", basename($errfile), "</p>\n";
                 break;
+        }
+
+        if (strlen(trim(basename($errfile))) > 0) {
+            echo "<p>Error in line $errline of file ", basename($errfile), "</p>\n";
         }
 
         $version_strings = array();
 
         // Beehive Forum Version
-        
+
         if (defined('BEEHIVE_VERSION')) {
-           $beehive_version = BEEHIVE_VERSION;
-           $version_strings[] = "Beehive Forum $beehive_version";
+           $version_strings[] = sprintf("Beehive Forum %s", BEEHIVE_VERSION);
         }
 
         // PHP Version

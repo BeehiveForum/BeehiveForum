@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.474 2007-08-29 21:38:23 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.475 2007-08-31 22:13:56 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -86,7 +86,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
     if ($limit > 1) {
 
-        $messages = array();
+        $messages = false;
 
         while($message = db_fetch_array($result)) {
 
@@ -127,6 +127,8 @@ function messages_get($tid, $pid = 1, $limit = 1)
             if (!isset($message['MOVED_TID'])) $message['MOVED_TID'] = 0;
             if (!isset($message['MOVED_PID'])) $message['MOVED_PID'] = 0;
 
+            if (!is_array($messages)) $messages = array();
+
             $messages[] = $message;
         }
 
@@ -134,44 +136,45 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
     }else {
 
-        $messages = db_fetch_array($result);
+        if ($messages = db_fetch_array($result)) {
 
-        if (!isset($messages['VIEWED'])) $messages['VIEWED'] = 0;
+            if (!isset($messages['VIEWED'])) $messages['VIEWED'] = 0;
 
-        if (!isset($messages['APPROVED'])) $messages['APPROVED'] = 0;
-        if (!isset($messages['APPROVED_BY'])) $messages['APPROVED_BY'] = 0;
+            if (!isset($messages['APPROVED'])) $messages['APPROVED'] = 0;
+            if (!isset($messages['APPROVED_BY'])) $messages['APPROVED_BY'] = 0;
 
-        if (!isset($messages['EDITED'])) $messages['EDITED'] = 0;
-        if (!isset($messages['EDITED_BY'])) $messages['EDITED_BY'] = 0;
+            if (!isset($messages['EDITED'])) $messages['EDITED'] = 0;
+            if (!isset($messages['EDITED_BY'])) $messages['EDITED_BY'] = 0;
 
-        if (!isset($messages['IPADDRESS'])) $messages['IPADDRESS'] = "";
+            if (!isset($messages['IPADDRESS'])) $messages['IPADDRESS'] = "";
 
-        if (!isset($messages['FROM_RELATIONSHIP'])) $messages['FROM_RELATIONSHIP'] = 0;
-        if (!isset($messages['TO_RELATIONSHIP'])) $messages['TO_RELATIONSHIP'] = 0;
+            if (!isset($messages['FROM_RELATIONSHIP'])) $messages['FROM_RELATIONSHIP'] = 0;
+            if (!isset($messages['TO_RELATIONSHIP'])) $messages['TO_RELATIONSHIP'] = 0;
 
-        if (!isset($messages['FNICK'])) $messages['FNICK'] = $lang['unknownuser'];
-        if (!isset($messages['FLOGON'])) $messages['FLOGON'] = $lang['unknownuser'];
-        if (!isset($messages['FROM_UID'])) $messages['FROM_UID'] = -1;
+            if (!isset($messages['FNICK'])) $messages['FNICK'] = $lang['unknownuser'];
+            if (!isset($messages['FLOGON'])) $messages['FLOGON'] = $lang['unknownuser'];
+            if (!isset($messages['FROM_UID'])) $messages['FROM_UID'] = -1;
 
-        if (!isset($messages['TNICK'])) $messages['TNICK'] = $lang['allcaps'];
-        if (!isset($messages['TLOGON'])) $messages['TLOGON'] = $lang['allcaps'];
+            if (!isset($messages['TNICK'])) $messages['TNICK'] = $lang['allcaps'];
+            if (!isset($messages['TLOGON'])) $messages['TLOGON'] = $lang['allcaps'];
 
-        if (!isset($messages['MOVED_TID'])) $messages['MOVED_TID'] = 0;
-        if (!isset($messages['MOVED_PID'])) $messages['MOVED_PID'] = 0;
+            if (!isset($messages['MOVED_TID'])) $messages['MOVED_TID'] = 0;
+            if (!isset($messages['MOVED_PID'])) $messages['MOVED_PID'] = 0;
 
-        if (isset($messages['PTNICK'])) {
-            if (!is_null($messages['PTNICK']) && strlen($messages['PTNICK']) > 0) {
-                $messages['TNICK'] = $messages['PTNICK'];
+            if (isset($messages['PTNICK'])) {
+                if (!is_null($messages['PTNICK']) && strlen($messages['PTNICK']) > 0) {
+                    $messages['TNICK'] = $messages['PTNICK'];
+                }
             }
-        }
 
-        if (isset($messages['PFNICK'])) {
-            if (!is_null($messages['PFNICK']) && strlen($messages['PFNICK']) > 0) {
-                $messages['FNICK'] = $messages['PFNICK'];
+            if (isset($messages['PFNICK'])) {
+                if (!is_null($messages['PFNICK']) && strlen($messages['PFNICK']) > 0) {
+                    $messages['FNICK'] = $messages['PFNICK'];
+                }
             }
-        }
 
-        return $messages;
+            return $messages;
+        }
     }
 
     return false;

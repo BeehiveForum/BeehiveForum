@@ -21,13 +21,15 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.73 2007-08-18 12:27:48 decoyduck Exp $ */
+/* $Id: install.php,v 1.74 2007-09-01 16:17:11 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
 
 // Installation checking functions
 include_once(BH_INCLUDE_PATH. "install.inc.php");
+
+install_check_mysql_version();
 
 // Multiple forum support
 include_once(BH_INCLUDE_PATH. "forum.inc.php");

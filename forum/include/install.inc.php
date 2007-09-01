@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.58 2007-08-01 20:23:02 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.59 2007-09-01 16:17:23 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -52,6 +52,8 @@ function dir_exists($dir)
 
 function check_install()
 {
+    install_check_mysql_version();
+
     if (isset($_POST['install_remove_files']) && $_POST['install_remove_files'] == 'Y') {
 
         install_remove_files();
@@ -153,7 +155,7 @@ function rmdir_recursive($path)
 function install_incomplete()
 {
     $frame_top_target = html_get_top_frame_name();
-    
+
     echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
     echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"ltr\">\n";
@@ -206,12 +208,58 @@ function install_incomplete()
     exit;
 }
 
+function install_check_mysql_version()
+{
+    if (db_fetch_mysql_version() < 40116) {
+
+        echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
+        echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
+        echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"ltr\">\n";
+        echo "<head>\n";
+        echo "<title>BeehiveForum ", BEEHIVE_VERSION, " - Installation</title>\n";
+        echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
+        echo "<link rel=\"icon\" href=\"./images/favicon.ico\" type=\"image/ico\">\n";
+        echo "<link rel=\"stylesheet\" href=\"./styles/style.css\" type=\"text/css\" />\n";
+        echo "</head>\n";
+        echo "<h1>BeehiveForum Minimum Requirements Error</h1>\n";
+        echo "<br />\n";
+        echo "<div align=\"center\">\n";
+        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";
+        echo "    <tr>\n";
+        echo "      <td align=\"left\">\n";
+        echo "        <table class=\"box\">\n";
+        echo "          <tr>\n";
+        echo "            <td align=\"left\" class=\"posthead\">\n";
+        echo "              <table class=\"posthead\" width=\"500\">\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\" colspan=\"2\" class=\"subhead\">Minimum Requirements not met</td>\n";
+        echo "                </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\">MySQL Server Version 4.1.16 or newer is required to run Beehive Forum. Please upgrade.</td>\n";
+        echo "                </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\">&nbsp;</td>\n";
+        echo "                </tr>\n";
+        echo "              </table>\n";
+        echo "            </td>\n";
+        echo "          </tr>\n";
+        echo "        </table>\n";
+        echo "      </td>\n";
+        echo "    </tr>\n";
+        echo "  </table>\n";
+        echo "</div>\n";
+        echo "</body>\n";
+        echo "</html>\n";
+        exit;
+    }
+}
+
 function install_get_webtags()
 {
     $db_install_get_webtags = db_connect();
 
     $sql = "SELECT FID, WEBTAG FROM FORUMS ";
-    
+
     if (!$result = db_query($sql, $db_install_get_webtags)) return false;
 
     if (db_num_rows($result) > 0) {
@@ -235,7 +283,7 @@ function install_table_exists($table_name)
     $table_name = db_escape_string($table_name);
 
     $sql = "SHOW TABLES LIKE '$table_name' ";
-    
+
     if (!$result = db_query($sql, $db_install_table_exists)) return false;
 
     return (db_num_rows($result) > 0);
@@ -254,8 +302,8 @@ function install_get_table_conflicts($webtag = false, $forum_tables = false, $gl
 
         $forum_tables = array('ADMIN_LOG',     'BANNED',          'FOLDER',
                               'FORUM_LINKS',   'LINKS',           'LINKS_COMMENT',
-                              'LINKS_FOLDERS', 'LINKS_VOTE',      'POLL',          
-                              'POLL_VOTES',    'POST',            'POST_CONTENT',  
+                              'LINKS_FOLDERS', 'LINKS_VOTE',      'POLL',
+                              'POLL_VOTES',    'POST',            'POST_CONTENT',
                               'PROFILE_ITEM',  'PROFILE_SECTION', 'RSS_FEEDS',
                               'RSS_HISTORY',   'STATS',           'THREAD',
                               'THREAD_TRACK',  'THREAD_STATS',    'USER_FOLDER',
@@ -277,17 +325,17 @@ function install_get_table_conflicts($webtag = false, $forum_tables = false, $gl
     if (($webtag !== false) && preg_match("/^[A-Z0-9_]+$/", $webtag) > 0) {
 
         if (is_array($forum_tables) && sizeof($forum_tables) > 0) {
-        
+
             foreach ($forum_tables as $forum_table) {
 
                 $forum_table = db_escape_string($forum_table);
-                
+
                 $sql = "SHOW TABLES LIKE '{$webtag}_{$forum_table}' ";
-                
+
                 if (!$result = db_query($sql, $db_install_get_table_conflicts)) return false;
 
                 if (db_num_rows($result) > 0) {
-                    $conflicting_tables_array[] = "'{$webtag}_{$forum_table}'";                
+                    $conflicting_tables_array[] = "'{$webtag}_{$forum_table}'";
                 }
             }
         }
@@ -300,7 +348,7 @@ function install_get_table_conflicts($webtag = false, $forum_tables = false, $gl
             $global_table = db_escape_string($global_table);
 
             $sql = "SHOW TABLES LIKE '$global_table' ";
-            
+
             if (!$result = db_query($sql, $db_install_get_table_conflicts)) return false;
 
             if (db_num_rows($result) > 0) {
@@ -325,9 +373,9 @@ function install_remove_table_keys($table_name)
     $table_index = array();
 
     $sql = "SHOW INDEX FROM $table_name";
-    
+
     if (!$result = db_query($sql, $db_install_remove_table_keys)) return false;
-    
+
     while ($table_index_data = db_fetch_array($result)) {
 
         if (preg_match("/^PRIMARY$/", strtoupper($table_index_data['Key_name'])) < 1) {
@@ -337,9 +385,9 @@ function install_remove_table_keys($table_name)
     }
 
     foreach ($table_index as $key_name => $column_name) {
-        
+
         $sql = "ALTER TABLE $table_name DROP INDEX $key_name";
-        
+
         if (!$result = @db_query($sql, $db_install_remove_table_keys)) return false;
     }
 

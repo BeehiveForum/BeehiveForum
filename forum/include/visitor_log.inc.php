@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.inc.php,v 1.5 2007-08-01 20:23:04 decoyduck Exp $ */
+/* $Id: visitor_log.inc.php,v 1.6 2007-09-01 16:17:23 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -45,7 +45,7 @@ function visitor_log_get_recent()
     $db_visitor_log_get_recent = db_connect();
 
     if (!$table_data = get_table_prefix()) return false;
-    
+
     $forum_fid = $table_data['FID'];
 
     $lang = load_language_file();
@@ -98,16 +98,16 @@ function visitor_log_get_recent()
     if (db_num_rows($result) > 0) {
 
         $users_get_recent_array = array();
-        
+
         while ($visitor_array = db_fetch_array($result)) {
-            
+
             if ($visitor_array['UID'] == 0) {
 
                 $visitor_array['LOGON']    = $lang['guest'];
                 $visitor_array['NICKNAME'] = $lang['guest'];
-            
+
             }elseif (!isset($visitor_array['LOGON']) || is_null($visitor_array['LOGON'])) {
-            
+
                 $visitor_array['LOGON'] = $lang['unknownuser'];
                 $visitor_array['NICKNAME'] = "";
             }
@@ -134,11 +134,11 @@ function visitor_log_get_profile_items(&$profile_header_array, &$profile_dropdow
     $db_visitor_log_get_profile_items = db_connect();
 
     $lang = load_language_file();
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
-    // Pre-defined profile options    
-    
+    // Pre-defined profile options
+
     $profile_header_array = array('POST_COUNT'      => $lang['postcount'],
                                   'LAST_VISIT'      => $lang['lastvisit'],
                                   'REGISTERED'      => $lang['registered'],
@@ -203,7 +203,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
 
     // Permitted sort directions.
 
-    $sort_dir_array = array('ASC', 'DESC'); 
+    $sort_dir_array = array('ASC', 'DESC');
 
     // Check the specified sort by and sort directions. If they're
     // invalid default to LAST_VISIT DESC.
@@ -274,7 +274,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
     }
 
     // From portion which selects users and guests from the VISITOR_LOG table.
-    
+
     $from_sql = "FROM VISITOR_LOG LEFT JOIN USER ON (USER.UID = VISITOR_LOG.UID) ";
 
     // Union from portion which flips the from and join so that we get the users
@@ -282,8 +282,8 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
 
     $union_sql = "FROM USER LEFT JOIN VISITOR_LOG ON (VISITOR_LOG.UID = USER.UID) ";
 
-    // Join to get the user's DOB.    
-    
+    // Join to get the user's DOB.
+
     $join_sql = "LEFT JOIN USER_PREFS USER_PREFS_DOB ON (USER_PREFS_DOB.UID = USER.UID ";
     $join_sql.= "AND USER_PREFS_DOB.DOB_DISPLAY > 1 AND USER_PREFS_DOB.DOB > 0) ";
 
@@ -358,11 +358,11 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
     if (($user_search !== false) && strlen(trim($user_search)) > 0) {
 
         $user_search = db_escape_string(str_replace('%', '', $user_search));
-        
+
         $user_search_sql = "(USER.LOGON LIKE '$user_search%' OR ";
         $user_search_sql.= "USER.NICKNAME LIKE '$user_search%' OR ";
         $user_search_sql.= "SEARCH_ENGINE_BOTS.NAME LIKE '$user_search%') ";
-        
+
         $where_query_array[] = $user_search_sql;
         $where_union_array[] = $user_search_sql;
         $where_count_array[] = $user_search_sql;
@@ -459,35 +459,19 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
     }
 
     if (($user_count + $visitor_count) > 0) {
-        
-        // If we're running on MySQL 4.0.16 or better we can perform
-        // a UNION and duplicate the main query with the JOIN on VISITOR_LOG
-        // and FROM USER parts of the query switched so we include users who are not
-        // listed in the visitor log.
 
         // Officially Beehive's first ever UNION - 23rd April 2007
 
-        if (db_fetch_mysql_version() >= 40116) {
-
-            $sql = implode(",", array_merge(array($select_sql), $profile_query_array));
-            $sql.= "$from_sql $join_sql $where_sql $having_sql UNION ";
-            $sql.= implode(",", array_merge(array($select_sql), $profile_query_array));
-            $sql.= "$union_sql $join_sql $where_union_sql $having_sql $order_sql ";
-            $sql.= "$limit_sql";
-
-        }else {
-
-            $sql = implode(",", array_merge(array($select_sql), $profile_query_array));
-            $sql.= "$union_sql $join_sql $where_sql $having_sql $order_sql ";
-            $sql.= "$limit_sql";
-        }
-
-        // Execute the query.
+        $sql = implode(",", array_merge(array($select_sql), $profile_query_array));
+        $sql.= "$from_sql $join_sql $where_sql $having_sql UNION ";
+        $sql.= implode(",", array_merge(array($select_sql), $profile_query_array));
+        $sql.= "$union_sql $join_sql $where_union_sql $having_sql $order_sql ";
+        $sql.= "$limit_sql";
 
         if (!$result = db_query($sql, $db_visitor_log_browse_items)) return false;
 
         if (db_num_rows($result) > 0) {
-           
+
             while ($user_data = db_fetch_array($result, DB_RESULT_ASSOC)) {
 
                 if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
@@ -495,7 +479,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
                         $user_data['NICKNAME'] = $user_data['PEER_NICKNAME'];
                     }
                 }
-                
+
                 if ($user_data['UID'] == 0) {
 
                     $user_data['LOGON']    = $lang['guest'];
@@ -512,7 +496,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
                 }elseif (isset($user_data['AVATAR_URL_GLOBAL']) && strlen($user_data['AVATAR_URL_GLOBAL']) > 0) {
                     $user_data['AVATAR_URL'] = $user_data['AVATAR_URL_GLOBAL'];
                 }
-                
+
                 if (isset($user_data['AVATAR_AID_FORUM']) && strlen($user_data['AVATAR_AID_FORUM']) > 0) {
                     $user_data['AVATAR_AID'] = $user_data['AVATAR_AID_FORUM'];
                 }elseif (isset($user_data['AVATAR_AID_GLOBAL']) && strlen($user_data['AVATAR_AID_GLOBAL']) > 0) {
@@ -523,7 +507,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
                     $user_data['LAST_VISIT'] = format_time($user_data['LAST_VISIT']);
                 }else {
                     $user_data['LAST_VISIT'] = $lang['unknown'];
-                }            
+                }
 
                 if (isset($user_data['REGISTERED']) && !is_null($user_data['REGISTERED'])) {
                     $user_data['REGISTERED'] = format_date($user_data['REGISTERED']);
@@ -565,7 +549,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
 
                 $user_array[] = $user_data;
             }
-        
+
         }else {
 
             $offset = floor((($user_count + $visitor_count) - 1) / 10) * 10;
@@ -594,11 +578,11 @@ function visitor_log_clean_up()
     if ($visitor_log_clean_up_prob > 10000) $visitor_log_clean_up_prob = 10000;
 
     if (($mt_result = mt_rand(1, $visitor_log_clean_up_prob)) == 1) {
-   
+
         // Keep visitor log for 7 days.
-        
+
         $visitor_cutoff_stamp = DAY_IN_SECONDS * 7;
-    
+
         $sql = "DELETE FROM VISITOR_LOG WHERE FORUM = '$forum_fid' ";
         $sql.= "AND LAST_LOGON < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) ";
         $sql.= "- $visitor_cutoff_stamp)";

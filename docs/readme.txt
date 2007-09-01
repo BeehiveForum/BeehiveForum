@@ -69,15 +69,10 @@ in release.txt.
 You need web hosting which provides:
 
   - PHP 4.2.0 or above
-  - MySQL 3.5 or above (must support compound AUTO_INCREMENT).
+  - MySQL 4.1.16 or above
 
 1.1.1 Requirements Notes
 ========================
-
-- The Beehive Forum team can't stress enough how much of an improvement
-  MySQL 4.1 is compared to older versions. You may continue to use an
-  older version of MySQL (so long as they support compound AUTO_INCREMENT)
-  but performance will improve greatly through the use of MySQL 4.1.
 
 - As a minimum Beehive Forum requires the following privileges on the
   database and tables it runs from:

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.212 2007-08-31 21:02:35 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.213 2007-09-01 16:17:23 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -631,8 +631,6 @@ function pm_search_execute($search_string, &$error)
 
     if ($filtered_keyword_count > 0 && $filtered_keyword_count == $unfiltered_keyword_count) {
 
-        $bool_mode = (db_fetch_mysql_version() > 40010) ? " IN BOOLEAN MODE" : "";
-
         $search_string_checked = db_escape_string(implode(' ', $search_keywords_array['keywords']));
 
         $pm_max_user_messages = forum_get_setting('pm_max_user_messages', false, 100);
@@ -655,8 +653,8 @@ function pm_search_execute($search_string, &$error)
         $sql.= "OR ((PM.TYPE = $pm_saved_out AND PM.FROM_UID = '$uid') OR ";
         $sql.= "((PM.TYPE & $pm_saved_in > 0) AND PM.TO_UID = '$uid') OR ";
         $sql.= "((PM.TYPE & $pm_draft_items > 0) AND PM.FROM_UID = '$uid'))) ";
-        $sql.= "AND (MATCH(PM_CONTENT.CONTENT) AGAINST('$search_string_checked'$bool_mode) ";
-        $sql.= "OR (MATCH(PM.SUBJECT) AGAINST('$search_string_checked'$bool_mode))) ";
+        $sql.= "AND (MATCH(PM_CONTENT.CONTENT) AGAINST('$search_string_checked' IN BOOLEAN MODE) ";
+        $sql.= "OR (MATCH(PM.SUBJECT) AGAINST('$search_string_checked' IN BOOLEAN MODE))) ";
         $sql.= "ORDER BY CREATED LIMIT $limit";
 
         if ($result = db_query($sql, $db_pm_search_execute)) {

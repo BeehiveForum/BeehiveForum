@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.190 2007-08-29 21:38:23 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.191 2007-09-01 16:17:23 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -195,8 +195,6 @@ function search_execute($search_arguments, &$error)
 
             // Include the keyword matching portion of the where clause.
 
-            $bool_mode = (db_fetch_mysql_version() > 40010) ? " IN BOOLEAN MODE" : "";
-
             $search_string = db_escape_string(implode(' ', $search_keywords_array['keywords']));
 
             search_save_keywords($search_keywords_array['keywords']);
@@ -208,7 +206,7 @@ function search_execute($search_arguments, &$error)
                 $select_sql.= "SELECT $uid, $forum_fid, THREAD.FID, POST_CONTENT.TID, ";
                 $select_sql.= "POST_CONTENT.PID, THREAD.BY_UID, POST.FROM_UID, POST.TO_UID, ";
                 $select_sql.= "THREAD.MODIFIED AS DATE_CREATED, THREAD.LENGTH, ";
-                $select_sql.= "MATCH(POST_CONTENT.CONTENT) AGAINST('$search_string'$bool_mode) ";
+                $select_sql.= "MATCH(POST_CONTENT.CONTENT) AGAINST('$search_string' IN BOOLEAN MODE) ";
                 $select_sql.= "AS RELEVANCE";
 
             }else {
@@ -218,11 +216,11 @@ function search_execute($search_arguments, &$error)
                 $select_sql.= "SELECT $uid, $forum_fid, THREAD.FID, POST_CONTENT.TID, ";
                 $select_sql.= "POST_CONTENT.PID, THREAD.BY_UID, POST.FROM_UID, POST.TO_UID, ";
                 $select_sql.= "POST.CREATED AS DATE_CREATED, THREAD.LENGTH, ";
-                $select_sql.= "MATCH(POST_CONTENT.CONTENT) AGAINST('$search_string'$bool_mode) ";
+                $select_sql.= "MATCH(POST_CONTENT.CONTENT) AGAINST('$search_string' IN BOOLEAN MODE) ";
                 $select_sql.= "AS RELEVANCE";
             }
 
-            $where_sql.= "AND MATCH(POST_CONTENT.CONTENT) AGAINST('$search_string'$bool_mode) ";
+            $where_sql.= "AND MATCH(POST_CONTENT.CONTENT) AGAINST('$search_string' IN BOOLEAN MODE) ";
 
         }else {
 

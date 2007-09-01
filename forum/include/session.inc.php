@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.318 2007-08-31 21:02:35 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.319 2007-09-01 11:53:29 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -147,11 +147,15 @@ function bh_session_check($show_session_fail = true, $use_sess_hash = false)
 
             // Add preference settings
 
-            $user_sess = array_merge($user_sess, user_get_prefs($user_sess['UID']));
+            if ($user_prefs = user_get_prefs($user_sess['UID'])) {
+                $user_sess = array_merge($user_sess, $user_prefs);
+            }
 
             // Add user perms
 
-            $user_sess['PERMS'] = bh_session_get_perm_array($user_sess['UID']);
+            if ($user_perms = bh_session_get_perm_array($user_sess['UID'])) {
+                $user_sess['PERMS'] = $user_perms;
+            }
 
             // A unique MD5 has for some purposes (word filter, etc)
 

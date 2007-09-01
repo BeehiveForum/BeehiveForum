@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db_mysql.inc.php,v 1.32 2007-08-31 22:39:58 decoyduck Exp $ */
+/* $Id: db_mysql.inc.php,v 1.33 2007-09-01 18:10:36 decoyduck Exp $ */
 
 function db_get_connection_vars(&$db_server, &$db_username, &$db_password, &$db_database)
 {
@@ -89,14 +89,14 @@ function db_query($sql, $connection_id)
 
             if (defined('BEEHIVE_DB_LOG_MAX_LINES') && file_exists(BEEHIVE_DB_LOG_FILE)) {
 
-                $log_data_array = file(BEEHIVE_DB_LOG_FILE); $log_data_array[] = "$log_time\t$total_time\t$sql\n";
+                $log_data_array = file(BEEHIVE_DB_LOG_FILE); $log_data_array[] = "$log_time\t$total_time\t$sql\r\n";
                 $log_data_array = array_chunk(array_reverse($log_data_array), BEEHIVE_DB_LOG_MAX_LINES);
 
                 @file_put_contents(BEEHIVE_DB_LOG_FILE, implode('', array_reverse($log_data_array[0])));
 
             }else {
 
-                @file_put_contents(BEEHIVE_DB_LOG_FILE, "$log_time\t$total_time\t$sql\n", FILE_APPEND);
+                @file_put_contents(BEEHIVE_DB_LOG_FILE, "$log_time\t$total_time\t$sql\r\n", FILE_APPEND);
             }
         }
 
@@ -123,14 +123,14 @@ function db_unbuffered_query($sql, $connection_id)
 
                 if (defined('BEEHIVE_DB_LOG_MAX_LINES') && file_exists(BEEHIVE_DB_LOG_FILE)) {
 
-                    $log_data_array = file(BEEHIVE_DB_LOG_FILE); $log_data_array[] = "$log_time\t$total_time\t$sql\n";
+                    $log_data_array = file(BEEHIVE_DB_LOG_FILE); $log_data_array[] = "$log_time\t$total_time\t$sql\r\n";
                     $log_data_array = array_chunk(array_reverse($log_data_array), BEEHIVE_DB_LOG_MAX_LINES);
 
                     @file_put_contents(BEEHIVE_DB_LOG_FILE, implode('', array_reverse($log_data_array[0])));
 
                 }else {
 
-                    @file_put_contents(BEEHIVE_DB_LOG_FILE, "$log_time\t$total_time\t$sql\n", FILE_APPEND);
+                    @file_put_contents(BEEHIVE_DB_LOG_FILE, "$log_time\t$total_time\t$sql\r\n", FILE_APPEND);
                 }
             }
 

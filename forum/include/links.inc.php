@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.inc.php,v 1.71 2007-08-18 15:01:38 decoyduck Exp $ */
+/* $Id: links.inc.php,v 1.72 2007-09-01 11:53:29 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -239,15 +239,16 @@ function links_display_folder_path($fid, $folders, $links = true, $link_last_too
 {
     $webtag = get_webtag($webtag_search);
 
-    $tree_fid = $fid;
-    $tree     = '';
+    if (!is_numeric($fid)) return false;
+    if (!is_array($folders)) return false;
+
+    $tree_fid = $fid; $tree_array = array();
 
     list($key) = array_keys($folders);
 
     while ($tree_fid != $key) {
-
-          $tree[] = $tree_fid;
-          $tree_fid = $folders[$tree_fid]['PARENT_FID'];
+        $tree_array[] = $tree_fid;
+        $tree_fid = $folders[$tree_fid]['PARENT_FID'];
     }
 
     $link_base = $link_base ? $link_base : "./links.php?webtag=$webtag";
@@ -258,14 +259,14 @@ function links_display_folder_path($fid, $folders, $links = true, $link_last_too
         $html = $links ? "<a href=\"$link_base&amp;fid=$key\">". $folders[$key]['NAME']. "</a>" : $folders[$key]['NAME'];
     }
 
-    if (is_array($tree)) {
+    if (is_array($tree_array) && sizeof($tree_array) > 0) {
 
         while ($val = array_pop($tree)) {
 
             if (($val != $fid && $links) || $link_last_too) {
-                $html .= "&nbsp;&raquo;&nbsp;<a href=\"$link_base&amp;fid=$val\">". $folders[$val]['NAME']. "</a>";
+                $html.= "&nbsp;&raquo;&nbsp;<a href=\"$link_base&amp;fid=$val\">". $folders[$val]['NAME']. "</a>";
             } else {
-                $html .= "&nbsp;&raquo;&nbsp;". $folders[$val]['NAME'];
+                $html.= "&nbsp;&raquo;&nbsp;". $folders[$val]['NAME'];
             }
         }
     }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.124 2007-08-30 18:18:42 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.125 2007-09-02 18:46:56 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -220,7 +220,20 @@ function thread_get_tracking_data($tid)
 
     $sql = "SELECT TID, NEW_TID, TRACK_TYPE ";
     $sql.= "FROM {$table_data['PREFIX']}THREAD_TRACK ";
-    $sql.= "WHERE TID = '$tid' OR NEW_TID = '$tid'";
+    $sql.= "WHERE TID = '$tid'";
+
+    if (!$result = db_query($sql, $db_thread_get_tracking_data)) return false;
+
+    if (db_num_rows($result) > 0) {
+
+        while ($tracking_data = db_fetch_array($result)) {
+            $tracking_data_array[] = $tracking_data;
+        }
+    }
+
+    $sql = "SELECT TID, NEW_TID, TRACK_TYPE ";
+    $sql.= "FROM {$table_data['PREFIX']}THREAD_TRACK ";
+    $sql.= "WHERE NEW_TID = '$tid'";
 
     if (!$result = db_query($sql, $db_thread_get_tracking_data)) return false;
 

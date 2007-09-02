@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.67 2007-08-21 20:27:39 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.68 2007-09-02 18:46:56 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -289,16 +289,10 @@ function logon_perform($logon_main)
         }
     }
 
-    if ($logon_main === false) {
-
-        html_display_error_msg($lang['usernameorpasswdnotvalid'], '400', 'center');
-        echo "<div align=\"center\">\n";
-    }
-
     return false;
 }
 
-function logon_draw_form()
+function logon_draw_form($session_expired = false)
 {
     $frame_top_target = html_get_top_frame_name();
 
@@ -320,10 +314,10 @@ function logon_draw_form()
 
     // Check for previously failed logon.
 
-    if (isset($_COOKIE['bh_logon_failed'])) {
+    if (isset($_COOKIE['bh_logon_failed']) && !$session_expired) {
 
         bh_setcookie("bh_logon_failed", "1", time() - YEAR_IN_SECONDS);
-        html_display_error_msg($lang['usernameorpasswdnotvalid'], '400', 'center');
+        html_display_error_msg($lang['usernameorpasswdnotvalid'], '500', 'center');
     }
 
     // Get the original requested page url.
@@ -488,7 +482,7 @@ function logon_draw_form()
         $final_uri = rawurlencode(trim(_stripslashes($_GET['final_uri'])));
 
         echo "<p class=\"smalltext\">", sprintf($lang['donthaveanaccount'], "<a href=\"register.php?webtag=$webtag&amp;final_uri=$final_uri\" target=\"_self\">{$lang['registernow']}</a>"), "</p>\n";
-        echo "<hr width=\"350\" />\n";
+        echo "<hr class=\"logon_separator\" />\n";
         echo "<h2>{$lang['problemsloggingon']}</h2>\n";
         echo "<p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes&amp;final_uri=$final_uri\" target=\"", html_get_top_frame_name(), "\">{$lang['deletecookies']}</a></p>\n";
         echo "<p class=\"smalltext\"><a href=\"forgot_pw.php?webtag=$webtag&amp;final_uri=$final_uri\" target=\"_self\">{$lang['forgottenpasswd']}</a></p>\n";
@@ -496,13 +490,13 @@ function logon_draw_form()
     }else {
 
         echo "<p class=\"smalltext\">", sprintf($lang['donthaveanaccount'], "<a href=\"register.php?webtag=$webtag\" target=\"_self\">{$lang['registernow']}</a>"), "</p>\n";
-        echo "<hr width=\"350\" />\n";
+        echo "<hr class=\"logon_separator\" />\n";
         echo "<h2>{$lang['problemsloggingon']}</h2>\n";
         echo "<p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes\" target=\"", html_get_top_frame_name(), "\">{$lang['deletecookies']}</a></p>\n";
         echo "<p class=\"smalltext\"><a href=\"forgot_pw.php?webtag=$webtag\" target=\"_self\">{$lang['forgottenpasswd']}</a></p>\n";
     }
 
-    echo "<hr width=\"350\" />\n";
+    echo "<hr class=\"logon_separator\" />\n";
     echo "<h2>{$lang['usingaPDA']}</h2>\n";
     echo "<p class=\"smalltext\"><a href=\"index.php?webtag=$webtag&amp;noframes\" target=\"", html_get_top_frame_name(), "\">{$lang['lightHTMLversion']}</a></p>\n";
 }

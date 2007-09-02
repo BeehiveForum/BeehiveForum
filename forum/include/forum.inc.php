@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.257 2007-08-28 22:54:03 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.258 2007-09-02 18:46:56 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -315,7 +315,7 @@ function forum_check_password($forum_fid)
         if (isset($_COOKIE["bh_{$webtag}_sesshash"]) && strlen(trim(_stripslashes($_COOKIE["bh_{$webtag}_sesshash"]))) > 0) {
 
             bh_setcookie("bh_{$webtag}_sesshash", "", time() - YEAR_IN_SECONDS);
-            html_display_error_msg($lang['usernameorpasswdnotvalid'], '400', 'center');
+            html_display_error_msg($lang['usernameorpasswdnotvalid'], '550', 'center');
         }
 
         echo "<br />\n";

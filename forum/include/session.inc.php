@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.319 2007-09-01 11:53:29 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.320 2007-09-02 18:46:56 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -238,6 +238,8 @@ function bh_session_expired()
         header_redirect("./llogon.php?webtag=$webtag&final_uri=$final_uri");
     }
 
+    html_draw_top('logon.js');
+
     if (isset($_POST['logon']) || isset($_POST['guest_logon'])) {
 
         if (logon_perform(false)) {
@@ -301,16 +303,17 @@ function bh_session_expired()
 
         }else {
 
-            bh_setcookie("bh_logon_failed", "1");
+            html_display_error_msg($lang['usernameorpasswdnotvalid'], '500', 'center');
         }
-    }
 
-    html_draw_top('logon.js');
-    html_display_error_msg($lang['yoursessionhasexpired'], '600', 'center');
+    }else {
+
+        html_display_error_msg($lang['yoursessionhasexpired'], '500', 'center');
+    }
 
     echo "<div align=\"center\">\n";
 
-    logon_draw_form(false);
+    logon_draw_form(true);
 
     echo "</div>\n";
 
@@ -1018,7 +1021,7 @@ function bh_session_get_perm_array($uid)
         $sql = "SELECT GROUP_PERMS.GID, GROUP_PERMS.FORUM, GROUP_PERMS.FID, ";
         $sql.= "BIT_OR(GROUP_PERMS.PERM) AS PERM, COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT ";
         $sql.= "FROM GROUP_USERS LEFT JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID ";
-        $sql.= "AND GROUP_PERMS.GID IS NOT NULL) WHERE GROUP_USERS.UID = '$uid' ";
+        $sql.= "AND GROUP_PERMS.FORUM IN (0, $forum_fid)) WHERE GROUP_USERS.UID = '$uid' ";
         $sql.= "GROUP BY GROUP_PERMS.FORUM, GROUP_PERMS.FID";
 
         if (!$result = db_query($sql, $db_bh_session_get_perm_array)) return false;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.321 2007-09-03 20:07:41 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.322 2007-09-03 21:43:48 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -546,7 +546,7 @@ function bh_remove_stale_sessions()
 
         if ($session_cutoff = forum_get_setting('session_cutoff', false, 86400)) {
 
-            $sql = "DELETE FROM SESSIONS WHERE UID = 0 AND ";
+            $sql = "DELETE QUICK IGNORE FROM SESSIONS WHERE UID = 0 AND ";
             $sql.= "TIME < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $session_cutoff) ";
 
             if (!$result = db_query($sql, $db_bh_remove_stale_sessions)) return false;
@@ -569,7 +569,7 @@ function bh_remove_stale_sessions()
 
                 $expired_sessions = implode("', '", $expired_sessions_array);
 
-                $sql = "DELETE FROM SESSIONS WHERE HASH IN ('$expired_sessions') ";
+                $sql = "DELETE QUICK IGNORE FROM SESSIONS WHERE HASH IN ('$expired_sessions') ";
                 $sql.= "AND TIME < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $session_cutoff) ";
 
                 if (!$result = db_query($sql, $db_bh_remove_stale_sessions)) return false;

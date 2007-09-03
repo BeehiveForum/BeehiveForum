@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.280 2007-09-01 16:17:23 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.281 2007-09-03 21:43:48 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1841,7 +1841,7 @@ function thread_auto_prune_unread_data($force_start = false)
 
         if (!$result = db_query($sql, $db_thread_prune_unread_data)) return false;
 
-        $sql = "DELETE FROM {$table_data['PREFIX']}USER_THREAD ";
+        $sql = "DELETE QUICK IGNORE FROM {$table_data['PREFIX']}USER_THREAD ";
         $sql.= "USING {$table_data['PREFIX']}USER_THREAD ";
         $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD ";
         $sql.= "ON ({$table_data['PREFIX']}USER_THREAD.TID = ";

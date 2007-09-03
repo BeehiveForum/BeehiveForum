@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.125 2007-09-02 18:46:56 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.126 2007-09-03 21:43:48 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -525,19 +525,19 @@ function thread_delete($tid, $delete_type)
 
     if ($delete_type == THREAD_DELETE_PERMENANT) {
 
-        $sql = "DELETE FROM {$table_data['PREFIX']}POST_CONTENT WHERE TID = '$tid'";
+        $sql = "DELETE QUICK IGNORE FROM {$table_data['PREFIX']}POST_CONTENT WHERE TID = '$tid'";
 
         if (!$result = db_query($sql, $db_thread_delete)) return false;
 
-        $sql = "DELETE FROM {$table_data['PREFIX']}POST WHERE TID = '$tid'";
+        $sql = "DELETE QUICK IGNORE FROM {$table_data['PREFIX']}POST WHERE TID = '$tid'";
 
         if (!$result = db_query($sql, $db_thread_delete)) return false;
 
-        $sql = "DELETE FROM {$table_data['PREFIX']}THREAD WHERE TID = '$tid'";
+        $sql = "DELETE QUICK IGNORE FROM {$table_data['PREFIX']}THREAD WHERE TID = '$tid'";
 
         if (!$result = db_query($sql, $db_thread_delete)) return false;
 
-        $sql = "DELETE FROM {$table_data['PREFIX']}USER_THREAD WHERE TID = '$tid'";
+        $sql = "DELETE QUICK IGNORE FROM {$table_data['PREFIX']}USER_THREAD WHERE TID = '$tid'";
 
         if (!$result = db_query($sql, $db_thread_delete)) return false;
 

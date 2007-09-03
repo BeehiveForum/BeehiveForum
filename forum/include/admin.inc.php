@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.130 2007-08-18 19:42:00 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.131 2007-09-03 21:39:18 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -1297,7 +1297,20 @@ function admin_delete_user($uid, $delete_content = false)
     if (!is_numeric($uid)) return false;
     if (!is_bool($delete_content)) $delete_content = false;
 
+    // Constants for deleting PM data
+
+    $pm_inbox_items  = PM_INBOX_ITEMS;
+    $pm_sent_items   = PM_SENT_ITEMS;
+    $pm_outbox_items = PM_OUTBOX_ITEMS;
+    $pm_saved_out    = PM_SAVED_OUT;
+    $pm_saved_in     = PM_SAVED_IN;
+    $pm_draft_items  = PM_DRAFT_ITEMS;
+
+    // Before we delete we verify the user account exists.
+
     if ($user_logon = user_get_logon($uid)) {
+
+        // Check to see if we're also deleting the user's content.
 
         if ($delete_content === true) {
 
@@ -1390,7 +1403,7 @@ function admin_delete_user($uid, $delete_content = false)
 
                     // Delete content of posts made by this user
 
-                    $sql = "DELETE FROM {$forum_prefix}POST_CONTENT USING {$forum_prefix}POST_CONTENT ";
+                    $sql = "DELETE QUICK IGNORE FROM {$forum_prefix}POST_CONTENT USING {$forum_prefix}POST_CONTENT ";
                     $sql.= "LEFT JOIN {$forum_prefix}POST ON ({$forum_prefix}POST.TID = {$forum_prefix}POST_CONTENT.TID ";
                     $sql.= "AND {$forum_prefix}POST.PID = {$forum_prefix}POST_CONTENT.PID) ";
                     $sql.= "WHERE {$forum_prefix}POST.FROM_UID = '$uid'";
@@ -1399,7 +1412,7 @@ function admin_delete_user($uid, $delete_content = false)
 
                     // Delete the posts made by this user.
 
-                    $sql = "DELETE FROM {$forum_prefix}POST WHERE FROM_UID = '$uid'";
+                    $sql = "DELETE QUICK IGNORE FROM {$forum_prefix}POST WHERE FROM_UID = '$uid'";
 
                     if (!$result = db_query($sql, $db_admin_delete_user)) return false;
 
@@ -1425,7 +1438,8 @@ function admin_delete_user($uid, $delete_content = false)
 
             // Delete User's PM Content
 
-            $sql = "DELETE FROM PM_CONTENT USING PM_CONTENT LEFT JOIN PM ON (PM.MID = PM_CONTENT.MID) ";
+            $sql = "DELETE QUICK IGNORE FROM PM_CONTENT USING PM_CONTENT ";
+            $sql.= "LEFT JOIN PM ON (PM.MID = PM_CONTENT.MID) ";
             $sql.= "WHERE ((PM.TYPE & $pm_inbox_items > 0) AND PM.TO_UID = '$uid') ";
             $sql.= "OR ((PM.TYPE & $pm_sent_items > 0) AND PM.FROM_UID = '$uid' AND PM.SMID = 0) ";
             $sql.= "OR ((PM.TYPE & $pm_outbox_items > 0) AND PM.FROM_UID = '$uid') ";
@@ -1437,12 +1451,13 @@ function admin_delete_user($uid, $delete_content = false)
 
             // Delete User's PMs.
 
-            $sql = "DELETE FROM PM WHERE ((TYPE & $pm_inbox_items > 0) AND TO_UID = '$uid') ";
-            $sql.= "OR ((TYPE & $pm_sent_items > 0) AND FROM_UID = '$uid' AND SMID = 0) ";
-            $sql.= "OR ((TYPE & $pm_outbox_items > 0) AND FROM_UID = '$uid') ";
-            $sql.= "OR ((TYPE & $pm_saved_out > 0) AND FROM_UID = '$uid') ";
-            $sql.= "OR ((TYPE & $pm_saved_in > 0) AND TO_UID = '$uid') ";
-            $sql.= "OR ((TYPE & $pm_draft_items > 0) AND FROM_UID = '$uid') ";
+            $sql = "DELETE QUICK IGNORE FROM PM WHERE ((TYPE & $pm_inbox_items > 0) ";
+            $sql.= "AND TO_UID = '$uid') OR ((TYPE & $pm_sent_items > 0) ";
+            $sql.= "AND FROM_UID = '$uid' AND SMID = 0) OR ((TYPE & $pm_outbox_items > 0) ";
+            $sql.= "AND FROM_UID = '$uid') OR ((TYPE & $pm_saved_out > 0) ";
+            $sql.= "AND FROM_UID = '$uid') OR ((TYPE & $pm_saved_in > 0) ";
+            $sql.= "AND TO_UID = '$uid') OR ((TYPE & $pm_draft_items > 0) ";
+            $sql.= "AND FROM_UID = '$uid') ";
 
             if (!$result = db_query($sql, $db_admin_delete_user)) return false;
 

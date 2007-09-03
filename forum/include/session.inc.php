@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.320 2007-09-02 18:46:56 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.321 2007-09-03 20:07:41 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -248,7 +248,7 @@ function bh_session_expired()
 
             $request_uri = get_request_uri(true, false);
 
-            if (isset($_POST) && is_array($_POST) && sizeof($_POST) > 0) {
+            if ((isset($_POST) && is_array($_POST) && sizeof($_POST) > 0) && !user_is_guest()) {
 
                 html_draw_top('logon.js');
 

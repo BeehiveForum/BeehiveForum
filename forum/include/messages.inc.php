@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.475 2007-08-31 22:13:56 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.476 2007-09-03 22:43:16 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1607,13 +1607,17 @@ function messages_get_most_recent($uid, $fid = false)
     $unread_cutoff_stamp = forum_get_unread_cutoff();
 
     $sql = "SELECT THREAD.TID, THREAD.MODIFIED, THREAD.LENGTH, USER_THREAD.LAST_READ, ";
-    $sql.= "USER_PEER.RELATIONSHIP FROM {$table_data['PREFIX']}THREAD THREAD ";
+    $sql.= "UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp AS UNREAD_CUTOFF, ";
+    $sql.= "THREAD_STATS.UNREAD_PID, USER_PEER.RELATIONSHIP ";
+    $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ON ";
     $sql.= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
     $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_FOLDER USER_FOLDER ";
     $sql.= "ON (USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD_STATS THREAD_STATS ";
+    $sql.= "ON (THREAD_STATS.TID = THREAD.TID) ";
     $sql.= "WHERE THREAD.FID in ($fidlist) ";
     $sql.= "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED_COMPLETELY. ") = 0 ";
     $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
@@ -1640,10 +1644,24 @@ function messages_get_most_recent($uid, $fid = false)
 
         $message_data = db_fetch_array($result);
 
-        if (isset($message_data['LAST_READ'])) {
+        if (!isset($message_data['LAST_READ']) || !is_numeric($message_data['LAST_READ'])) {
+
+            if (isset($message_data['MODIFIED']) && $message_data['MODIFIED'] < $message_data['UNREAD_CUTOFF']) {
+
+                return "{$message_data['TID']}.{$message_data['LENGTH']}";
+
+            }elseif (isset($message_data['UNREAD_PID']) && !is_null($message_data['UNREAD_PID']) && $message_data['UNREAD_PID'] > 0) {
+
+                if ($message_data['UNREAD_PID'] < $message_data['LENGTH']) {
+                    $message_data['UNREAD_PID']++;
+                }
+
+                return "{$message_data['TID']}.{$message_data['UNREAD_PID']}";
+            }
+
+        }else if (isset($message_data['LAST_READ']) && is_numeric($message_data['LAST_READ'])) {
 
             if ($message_data['LAST_READ'] < $message_data['LENGTH']) {
-
                 $message_data['LAST_READ']++;
             }
 

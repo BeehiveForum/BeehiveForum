@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.126 2007-09-03 21:43:48 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.127 2007-09-03 22:43:16 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -85,7 +85,9 @@ function thread_get($tid, $inc_deleted = false)
     $sql.= "UNIX_TIMESTAMP(THREAD.CREATED) AS CREATED, THREAD.ADMIN_LOCK, ";
     $sql.= "USER_THREAD.INTEREST, USER_THREAD.LAST_READ, USER.UID AS FROM_UID, ";
     $sql.= "USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
-    $sql.= "USER_PEER.RELATIONSHIP, FOLDER.TITLE AS FOLDER_TITLE ";
+    $sql.= "USER_PEER.RELATIONSHIP, FOLDER.TITLE AS FOLDER_TITLE, ";
+    $sql.= "UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp AS UNREAD_CUTOFF, ";
+    $sql.= "THREAD_STATS.UNREAD_PID, USER_PEER.RELATIONSHIP ";
     $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD_STATS THREAD_STATS ";
     $sql.= "ON (THREAD_STATS.TID = THREAD.TID) ";
@@ -113,10 +115,13 @@ function thread_get($tid, $inc_deleted = false)
 
             $thread_data['LAST_READ'] = 0;
 
-            if (isset($thread_data['MODIFIED']) && ($thread_data['MODIFIED'] > $unread_cutoff_stamp)) {
-                $thread_data['LAST_READ'] = 0;
-            }else if (isset($thread['LENGTH'])) {
+            if (isset($thread_data['MODIFIED']) && $thread_data['MODIFIED'] < $thread_data['UNREAD_CUTOFF']) {
+
                 $thread_data['LAST_READ'] = $thread_data['LENGTH'];
+
+            }elseif (isset($thread_data['UNREAD_PID']) && !is_null($thread_data['UNREAD_PID']) && $thread_data['UNREAD_PID'] > 0) {
+
+                $thread_data['LAST_READ'] = $thread_data['UNREAD_PID'];
             }
         }
 

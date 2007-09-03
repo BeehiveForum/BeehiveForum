@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.68 2007-09-02 18:46:56 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.69 2007-09-03 20:07:41 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -312,6 +312,10 @@ function logon_draw_form($session_expired = false)
 
     $other_logon = (isset($_GET['other_logon']) || isset($_POST['other_logon'])) ? true : false;
 
+    // Frame target for when we're showing an expired session.
+
+
+
     // Check for previously failed logon.
 
     if (isset($_COOKIE['bh_logon_failed']) && !$session_expired) {
@@ -472,7 +476,7 @@ function logon_draw_form($session_expired = false)
 
     if (user_guest_enabled()) {
 
-        echo "<form name=\"guest\" action=\"", get_request_uri(), "\" method=\"post\" target=\"", html_get_top_frame_name(), "\">\n";
+        echo "<form name=\"guest\" action=\"logon.php?webtag=$webtag\" method=\"post\" target=\"", html_get_top_frame_name(), "\">\n";
         echo "  <p class=\"smalltext\">", sprintf($lang['enterasa'], form_submit('guest_logon', $lang['guest'])), "</p>\n";
         echo "</form>\n";
     }
@@ -481,19 +485,22 @@ function logon_draw_form($session_expired = false)
 
         $final_uri = rawurlencode(trim(_stripslashes($_GET['final_uri'])));
 
-        echo "<p class=\"smalltext\">", sprintf($lang['donthaveanaccount'], "<a href=\"register.php?webtag=$webtag&amp;final_uri=$final_uri\" target=\"_self\">{$lang['registernow']}</a>"), "</p>\n";
+        $register_link = rawurlencode("register.php?webtag=$webtag&final_uri=$final_uri");
+        $forgot_pw_link = rawurlencode("forgot_pw.php?webtag=$webtag&final_uri=$final_uri");
+
+        echo "<p class=\"smalltext\">", sprintf($lang['donthaveanaccount'], "<a href=\"index.php?webtag=$webtag&amp;final_uri=$register_link\" target=\"". html_get_top_frame_name(). "\">{$lang['registernow']}</a>"), "</p>\n";
         echo "<hr class=\"logon_separator\" />\n";
         echo "<h2>{$lang['problemsloggingon']}</h2>\n";
         echo "<p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes&amp;final_uri=$final_uri\" target=\"", html_get_top_frame_name(), "\">{$lang['deletecookies']}</a></p>\n";
-        echo "<p class=\"smalltext\"><a href=\"forgot_pw.php?webtag=$webtag&amp;final_uri=$final_uri\" target=\"_self\">{$lang['forgottenpasswd']}</a></p>\n";
+        echo "<p class=\"smalltext\"><a href=\"index.php?webtag=$webtag&amp;final_uri=$forgot_pw_link\" target=\"", html_get_top_frame_name(), "\">{$lang['forgottenpasswd']}</a></p>\n";
 
     }else {
 
-        echo "<p class=\"smalltext\">", sprintf($lang['donthaveanaccount'], "<a href=\"register.php?webtag=$webtag\" target=\"_self\">{$lang['registernow']}</a>"), "</p>\n";
+        echo "<p class=\"smalltext\">", sprintf($lang['donthaveanaccount'], "<a href=\"index.php?webtag=$webtag&amp;final_uri=register.php%3Fwebtag%3D$webtag\" target=\"". html_get_top_frame_name(). "\">{$lang['registernow']}</a>"), "</p>\n";
         echo "<hr class=\"logon_separator\" />\n";
         echo "<h2>{$lang['problemsloggingon']}</h2>\n";
         echo "<p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes\" target=\"", html_get_top_frame_name(), "\">{$lang['deletecookies']}</a></p>\n";
-        echo "<p class=\"smalltext\"><a href=\"forgot_pw.php?webtag=$webtag\" target=\"_self\">{$lang['forgottenpasswd']}</a></p>\n";
+        echo "<p class=\"smalltext\"><a href=\"index.php?webtag=$webtag&amp;final_uri=forgot_pw.php%3Fwebtag%3D$webtag\" target=\"", html_get_top_frame_name(), "\">{$lang['forgottenpasswd']}</a></p>\n";
     }
 
     echo "<hr class=\"logon_separator\" />\n";

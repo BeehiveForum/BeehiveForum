@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.165 2007-08-18 19:42:00 decoyduck Exp $ */
+/* $Id: register.php,v 1.166 2007-09-03 20:07:41 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -839,6 +839,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
         $forum_rules = sprintf($lang['forumrulesmessage'], $forum_name, $cancel_link);
     }
 
+    echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "<form name=\"register\" action=\"", get_request_uri(), "\" method=\"post\">\n";
     echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";

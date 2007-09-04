@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.203 2007-08-21 20:27:40 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.204 2007-09-04 18:01:16 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -85,29 +85,26 @@ function poll_create($tid, $poll_options, $answer_groups, $closes, $change_vote,
     $sql.= "VALUES ('$tid', $closes, '$change_vote', '$poll_type', '$show_results', ";
     $sql.= "'$poll_vote_type', '$option_type', '$question', '$allow_guests')";
 
-    if (db_query($sql, $db_poll_create)) {
+    if (!$result = db_query($sql, $db_poll_create)) return false;
 
-        for ($i = 0; $i <= sizeof($poll_options); $i++) {
+    foreach ($poll_options as $key => $poll_option) {
 
-            if (isset($poll_options[$i]) && strlen(trim($poll_options[$i])) > 0) {
+        if (strlen(trim($poll_option)) > 0) {
 
-                $option_name  = db_escape_string($poll_options[$i]);
-                $option_group = (isset($answer_groups[$i])) ? $answer_groups[$i] : 1;
+            $option_name  = db_escape_string($poll_option);
+            $option_group = (isset($answer_groups[$i])) ? $answer_groups[$i] : 1;
 
-                $sql = "INSERT INTO {$table_data['PREFIX']}POLL_VOTES (TID, OPTION_NAME, GROUP_ID) ";
-                $sql.= "VALUES ('$tid', '$option_name', '$option_group')";
+            $sql = "INSERT INTO {$table_data['PREFIX']}POLL_VOTES (TID, OPTION_NAME, GROUP_ID) ";
+            $sql.= "VALUES ('$tid', '$option_name', '$option_group')";
 
-                if (!$result = db_query($sql, $db_poll_create)) return false;
-            }
+            if (!$result = db_query($sql, $db_poll_create)) return false;
         }
-
-    }else {
-
-        return false;
     }
+
+    return true;
 }
 
-function poll_edit($fid, $tid, $thread_title, $poll_question, $poll_options, $answer_groups, $closes, $change_vote, $poll_type, $show_results, $poll_vote_type, $option_type, $allow_guests, $hardedit)
+function poll_edit($fid, $tid, $thread_title, $poll_question, $poll_options, $answer_groups, $closes, $change_vote, $poll_type, $show_results, $poll_vote_type, $option_type, $allow_guests, $delete_votes)
 {
     $db_poll_edit = db_connect();
 
@@ -123,11 +120,12 @@ function poll_edit($fid, $tid, $thread_title, $poll_question, $poll_options, $an
     if (!is_numeric($option_type))    $option_type    = POLL_OPTIONS_RADIOS;
     if (!is_numeric($allow_guests))   $allow_guests   = POLL_GUEST_DENIED;
 
+    $thread_title = db_escape_string(_htmlentities($thread_title));
+    $poll_question = db_escape_string(_htmlentities($poll_question));
+
     if (!forum_get_setting('poll_allow_guests', false)) $allow_guests = POLL_GUEST_DENIED;
 
     $edit_uid = bh_session_get_value('UID');
-
-    $thread_title = db_escape_string(_htmlentities($thread_title));
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -135,43 +133,43 @@ function poll_edit($fid, $tid, $thread_title, $poll_question, $poll_options, $an
 
     if (!$result = db_query($sql, $db_poll_edit)) return false;
 
-    if ($hardedit) {
+    if ($delete_votes) {
 
-        $sql = "DELETE FROM {$table_data['PREFIX']}USER_POLL_VOTES WHERE TID = '$tid'";
+        $sql = "DELETE QUICK IGNORE FROM {$table_data['PREFIX']}USER_POLL_VOTES WHERE TID = '$tid'";
+        if (!$result = db_query($sql, $db_poll_edit)) return false;
+    }
+
+    if (is_numeric($closes)) {
+
+        $sql = "UPDATE {$table_data['PREFIX']}POLL SET CHANGEVOTE = '$change_vote', ";
+        $sql.= "POLLTYPE = '$poll_type', SHOWRESULTS = '$show_results', ";
+        $sql.= "VOTETYPE = '$poll_vote_type', OPTIONTYPE = '$option_type', ";
+        $sql.= "QUESTION = '$poll_question', ALLOWGUESTS = '$allow_guests', ";
+        $sql.= "CLOSES = FROM_UNIXTIME($closes) WHERE TID = '$tid'";
+
+        if (!$result = db_query($sql, $db_poll_edit)) return false;
+
+    }else {
+
+        $sql = "UPDATE {$table_data['PREFIX']}POLL SET CHANGEVOTE = '$change_vote', ";
+        $sql.= "POLLTYPE = '$poll_type', SHOWRESULTS = '$show_results', ";
+        $sql.= "VOTETYPE = '$poll_vote_type', OPTIONTYPE = '$option_type', ";
+        $sql.= "QUESTION = '$poll_question', ALLOWGUESTS = '$allow_guests' ";
+        $sql.= "WHERE TID = '$tid'";
 
         if (!$result = db_query($sql, $db_poll_edit)) return false;
     }
 
-    $poll_question = db_escape_string($poll_question);
-
-    $sql = "UPDATE {$table_data['PREFIX']}POLL SET CHANGEVOTE = '$change_vote', ";
-    $sql.= "POLLTYPE = '$poll_type', SHOWRESULTS = '$show_results', ";
-    $sql.= "VOTETYPE = '$poll_vote_type', OPTIONTYPE = '$option_type', ";
-    $sql.= "QUESTION = '$poll_question', ALLOWGUESTS = '$allow_guests' ";
-
-    if ($closes) {
-
-        if ($closes > 0) {
-            $sql.= ", CLOSES = FROM_UNIXTIME($closes) ";
-        }else {
-            $sql.= ", CLOSES = NULL ";
-        }
-    }
-
-    $sql.= "WHERE TID = '$tid'";
+    $sql = "DELETE QUICK IGNORE FROM {$table_data['PREFIX']}POLL_VOTES WHERE TID = '$tid'";
 
     if (!$result = db_query($sql, $db_poll_edit)) return false;
 
-    $sql = "DELETE FROM {$table_data['PREFIX']}POLL_VOTES WHERE TID = '$tid'";
+    foreach ($poll_options as $key => $poll_option) {
 
-    if (!$result = db_query($sql, $db_poll_edit)) return false;
+        if (strlen(trim($poll_option)) > 0) {
 
-    for ($i = 0; $i <= sizeof($poll_options); $i++) {
-
-        if (isset($poll_options[$i]) && strlen(trim($poll_options[$i])) > 0) {
-
-            $option_name    = db_escape_string($poll_options[$i]);
-            $option_group = (isset($answer_groups[$i])) ? $answer_groups[$i] : 1;
+            $option_name  = db_escape_string($poll_option);
+            $option_group = (isset($answer_groups[$key])) ? $answer_groups[$key] : 1;
 
             $sql = "INSERT INTO {$table_data['PREFIX']}POLL_VOTES (TID, OPTION_NAME, GROUP_ID) ";
             $sql.= "VALUES ('$tid', '$option_name', '$option_group')";
@@ -179,6 +177,8 @@ function poll_edit($fid, $tid, $thread_title, $poll_question, $poll_options, $an
             if (!$result = db_query($sql, $db_poll_edit)) return false;
         }
     }
+
+    return true;
 }
 
 function poll_get($tid)
@@ -1973,7 +1973,7 @@ function poll_delete_vote($tid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "DELETE FROM {$table_data['PREFIX']}USER_POLL_VOTES ";
+    $sql = "DELETE QUICK IGNORE FROM {$table_data['PREFIX']}USER_POLL_VOTES ";
     $sql.= "WHERE TID = '$tid' AND UID = '$uid'";
 
     if (!$result = db_query($sql, $db_poll_delete_vote)) return false;

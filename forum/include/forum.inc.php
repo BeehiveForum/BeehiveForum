@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.258 2007-09-02 18:46:56 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.259 2007-09-04 18:01:16 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -607,10 +607,6 @@ function forum_save_default_settings($forum_settings_array)
 
     $db_forum_save_default_settings = db_connect();
 
-    $sql = "DELETE FROM FORUM_SETTINGS WHERE FID = '0'";
-
-    if (!$result = db_query($sql, $db_forum_save_default_settings)) return false;
-
     foreach ($forum_settings_array as $sname => $svalue) {
 
         if (forum_check_global_setting_name($sname)) {
@@ -618,10 +614,25 @@ function forum_save_default_settings($forum_settings_array)
             $sname = db_escape_string($sname);
             $svalue = db_escape_string($svalue);
 
-            $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
-            $sql.= "VALUES ('0', '$sname', '$svalue')";
+            $sql = "SELECT SVALUE FROM FORUM_SETTINGS WHERE FID = '0' ";
+            $sql.= "AND SNAME = '$sname'";
 
             if (!$result = db_query($sql, $db_forum_save_default_settings)) return false;
+
+            if (db_num_rows($result) > 0) {
+
+                $sql = "UPDATE FORUM_SETTINGS SET SVALUE = '$svalue' WHERE FID = '0' ";
+                $sql.= "AND SNAME = '$sname'";
+
+                if (!$result = db_query($sql, $db_forum_save_default_settings)) return false;
+
+            }else {
+
+                $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
+                $sql.= "VALUES ('0', '$sname', '$svalue')";
+
+                if (!$result = db_query($sql, $db_forum_save_default_settings)) return false;
+            }
         }
     }
 
@@ -1828,15 +1839,15 @@ function forum_delete($fid)
 
             list($webtag, $database_name) = db_fetch_array($result, DB_RESULT_NUM);
 
-            $sql = "DELETE FROM FORUMS WHERE FID = '$fid'";
+            $sql = "DELETE QUICK IGNORE FROM FORUMS WHERE FID = '$fid'";
 
             if (!$result = db_query($sql, $db_forum_delete)) return false;
 
-            $sql = "DELETE FROM FORUM_SETTINGS WHERE FID = '$fid'";
+            $sql = "DELETE QUICK IGNORE FROM FORUM_SETTINGS WHERE FID = '$fid'";
 
             if (!$result = db_query($sql, $db_forum_delete)) return false;
 
-            $sql = "DELETE FROM GROUP_PERMS WHERE FORUM = '$fid'";
+            $sql = "DELETE QUICK IGNORE FROM GROUP_PERMS WHERE FORUM = '$fid'";
 
             if (!$result = db_query($sql, $db_forum_delete)) return false;
 
@@ -1846,24 +1857,24 @@ function forum_delete($fid)
 
             while($user_perms = db_fetch_array($result)) {
 
-                $sql = "DELETE FROM GROUP_USERS WHERE GID = '{$user_perms['GID']}'";
+                $sql = "DELETE QUICK IGNORE FROM GROUP_USERS WHERE GID = '{$user_perms['GID']}'";
 
                 if (!$result_remove = db_query($sql, $db_forum_delete)) return false;
             }
 
-            $sql = "DELETE FROM GROUPS WHERE FORUM = '$fid'";
+            $sql = "DELETE QUICK IGNORE FROM GROUPS WHERE FORUM = '$fid'";
 
             if (!$result = db_query($sql, $db_forum_delete)) return false;
 
-            $sql = "DELETE FROM USER_FORUM WHERE FID = '$fid'";
+            $sql = "DELETE QUICK IGNORE FROM USER_FORUM WHERE FID = '$fid'";
 
             if (!$result = db_query($sql, $db_forum_delete)) return false;
 
-            $sql = "DELETE FROM VISITOR_LOG WHERE FORUM = '$fid'";
+            $sql = "DELETE QUICK IGNORE FROM VISITOR_LOG WHERE FORUM = '$fid'";
 
             if (!$result = db_query($sql, $db_forum_delete)) return false;
 
-            $sql = "DELETE FROM SEARCH_RESULTS WHERE FORUM = '$fid'";
+            $sql = "DELETE QUICK IGNORE FROM SEARCH_RESULTS WHERE FORUM = '$fid'";
 
             if (!$result = db_query($sql, $db_forum_delete)) return false;
 
@@ -1875,7 +1886,7 @@ function forum_delete($fid)
                 delete_attachment_by_aid($attachment_data['AID']);
             }
 
-            $sql = "DELETE FROM POST_ATTACHMENT_IDS WHERE FID = '$fid'";
+            $sql = "DELETE QUICK IGNORE FROM POST_ATTACHMENT_IDS WHERE FID = '$fid'";
 
             if (!$result = db_query($sql, $db_forum_delete)) return false;
 

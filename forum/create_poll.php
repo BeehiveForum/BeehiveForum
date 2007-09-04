@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.205 2007-08-16 15:38:12 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.206 2007-09-04 18:01:15 decoyduck Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -773,7 +773,6 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
     echo "    <td align=\"left\" class=\"subhead\">{$lang['preview']}</td>\n";
     echo "  </tr>";
 
-
     $polldata['TLOGON'] = $lang['allcaps'];
     $polldata['TNICK'] = $lang['allcaps'];
 
@@ -790,7 +789,7 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
     $polldata['CONTENT'].= "    <td align=\"center\">\n";
     $polldata['CONTENT'].= "      <table width=\"95%\">\n";
     $polldata['CONTENT'].= "        <tr>\n";
-    $polldata['CONTENT'].= "          <td align=\"left\"><h2>{$t_question}</h2></td>\n";
+    $polldata['CONTENT'].= "          <td align=\"left\"><h2>". _htmlentities($t_question). "</h2></td>\n";
     $polldata['CONTENT'].= "        </tr>\n";
     $polldata['CONTENT'].= "        <tr>\n";
     $polldata['CONTENT'].= "          <td align=\"left\" class=\"postbody\">\n";

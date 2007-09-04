@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.85 2007-08-24 12:30:30 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.86 2007-09-04 18:01:16 decoyduck Exp $ */
 
 /**
 * Functions relating to profiles
@@ -345,24 +345,20 @@ function profile_section_delete($psid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT PIID FROM {$table_data['PREFIX']}PROFILE_ITEM WHERE PSID = '$psid'";
+    $sql = "DELETE QUICK IGNORE FROM {$table_data['PREFIX']}PROFILE_ITEM WHERE PSID = '$psid'";
 
     if (!$result = db_query($sql, $db_profile_section_delete)) return false;
 
-    if (db_num_rows($result) > 0) {
-
-        while ($profile_item = db_fetch_array($result)) {
-
-            if (isset($profile_item['PIID']) && is_numeric($profile_item['PIID'])) {
-
-                profile_item_delete($profile_item['PIID']);
-            }
-        }
-    }
-
-    $sql = "DELETE FROM {$table_data['PREFIX']}PROFILE_SECTION WHERE PSID = '$psid'";
+    $sql = "DELETE QUICK IGNORE FROM {$table_data['PREFIX']}PROFILE_SECTION WHERE PSID = '$psid'";
 
     if (!$result = db_query($sql, $db_profile_section_delete)) return false;
+
+    $sql = "DELETE QUICK IGNORE FROM {$table_data['PREFIX']}USER_PROFILE ";
+    $sql.= "USING {$table_data['PREFIX']} LEFT JOIN {$table_data['PREFIX']}PROFILE_ITEM ";
+    $sql.= "ON ({$table_data['PREFIX']}PROFILE_ITEM.PIID = {$table_data['PREFIX']}USER_PROFILE) ";
+    $sql.= "WHERE {$table_data['PREFIX']}PROFILE_ITEM.PIID IS NULL";
+
+    if (!$result = db_query($sql, $db_profile_item_delete)) return false;
 
     return true;
 }
@@ -375,11 +371,11 @@ function profile_item_delete($piid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "DELETE FROM {$table_data['PREFIX']}USER_PROFILE WHERE PIID = '$piid'";
+    $sql = "DELETE QUICK IGNORE FROM {$table_data['PREFIX']}USER_PROFILE WHERE PIID = '$piid'";
 
     if (!$result = db_query($sql, $db_profile_item_delete)) return false;
 
-    $sql = "DELETE FROM {$table_data['PREFIX']}PROFILE_ITEM WHERE PIID = '$piid'";
+    $sql = "DELETE QUICK IGNORE FROM {$table_data['PREFIX']}PROFILE_ITEM WHERE PIID = '$piid'";
 
     if (!$result = db_query($sql, $db_profile_item_delete)) return false;
 

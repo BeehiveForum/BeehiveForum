@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: rss_feed.inc.php,v 1.43 2007-08-28 22:54:03 decoyduck Exp $ */
+/* $Id: rss_feed.inc.php,v 1.44 2007-09-04 18:01:16 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -472,7 +472,7 @@ function rss_remove_feed($rssid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "DELETE FROM {$table_data['PREFIX']}RSS_FEEDS WHERE RSSID = '$rssid'";
+    $sql = "DELETE QUICK IGNORE FROM {$table_data['PREFIX']}RSS_FEEDS WHERE RSSID = '$rssid'";
 
     if (!$result = db_query($sql, $db_rss_remove_feed)) return false;
 

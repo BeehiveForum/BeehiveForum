@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_links.inc.php,v 1.36 2007-08-31 21:02:35 decoyduck Exp $ */
+/* $Id: forum_links.inc.php,v 1.37 2007-09-04 18:01:16 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -174,26 +174,11 @@ function forum_links_delete($lid)
 
     if (!is_numeric($lid)) return false;
 
-    $sql = "SELECT LID FROM {$table_data['PREFIX']}FORUM_LINKS ";
-    $sql.= "ORDER BY POS LIMIT 0, 1";
+    $sql = "DELETE QUICK IGNORE FROM {$table_data['PREFIX']}FORUM_LINKS WHERE LID = '$lid'";
 
     if (!$result = db_query($sql, $db_forum_links_delete)) return false;
 
-    if (db_num_rows($result) > 0) {
-
-        list($top_lid) = db_fetch_array($result, DB_RESULT_NUM);
-
-        if ($top_lid != $lid) {
-
-            $sql = "DELETE FROM {$table_data['PREFIX']}FORUM_LINKS WHERE LID = '$lid'";
-
-            if (!$result = db_query($sql, $db_forum_links_delete)) return false;
-
-            return true;
-        }
-    }
-
-    return false;
+    return true;
 }
 
 function forum_links_update_link($lid, $title, $uri = "")

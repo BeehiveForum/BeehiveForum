@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.213 2007-09-01 16:17:23 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.214 2007-09-04 18:01:16 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -614,7 +614,7 @@ function pm_search_execute($search_string, &$error)
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    $sql = "DELETE FROM PM_SEARCH_RESULTS WHERE UID = '$uid'";
+    $sql = "DELETE QUICK IGNORE FROM PM_SEARCH_RESULTS WHERE UID = '$uid'";
 
     if (!$result = db_query($sql, $db_pm_search_execute)) return false;
 
@@ -1726,11 +1726,11 @@ function pm_delete_message($mid)
         delete_attachment_by_aid($db_delete_pm_row['AID']);
     }
 
-    $sql = "DELETE FROM PM WHERE MID = '$mid'";
+    $sql = "DELETE QUICK IGNORE FROM PM WHERE MID = '$mid'";
 
     if (!$result = db_query($sql, $db_delete_pm)) return false;
 
-    $sql = "DELETE FROM PM_CONTENT WHERE MID = '$mid'";
+    $sql = "DELETE QUICK IGNORE FROM PM_CONTENT WHERE MID = '$mid'";
 
     if (!$result = db_query($sql, $db_delete_pm)) return false;
 

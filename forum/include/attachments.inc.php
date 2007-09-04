@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.134 2007-08-28 22:54:03 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.135 2007-09-04 18:01:15 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -477,7 +477,7 @@ function delete_attachment($hash)
 
             // Delete the attachment record from the database
 
-            $sql = "DELETE FROM POST_ATTACHMENT_FILES ";
+            $sql = "DELETE QUICK IGNORE FROM POST_ATTACHMENT_FILES ";
             $sql.= "WHERE HASH = '$hash'";
 
             if (!$result = db_query($sql, $db_delete_attachment)) return false;

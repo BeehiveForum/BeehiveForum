@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.127 2007-09-03 22:43:16 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.128 2007-09-04 18:01:16 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -548,8 +548,7 @@ function thread_delete($tid, $delete_type)
 
     }else {
 
-        $sql = "UPDATE {$table_data['PREFIX']}THREAD ";
-        $sql.= "SET LENGTH = 0 WHERE TID = '$tid'";
+        $sql = "UPDATE {$table_data['PREFIX']}THREAD SET LENGTH = 0 WHERE TID = '$tid'";
 
         if (!$result = db_query($sql, $db_thread_delete)) return false;
     }

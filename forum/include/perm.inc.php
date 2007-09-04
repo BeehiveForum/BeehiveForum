@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.115 2007-08-31 21:02:35 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.116 2007-09-04 18:01:16 decoyduck Exp $ */
 
 /**
 * Functions relating to permissions
@@ -424,15 +424,15 @@ function perm_remove_group($gid)
 
     if (!is_numeric($gid)) return false;
 
-    $sql = "DELETE FROM GROUP_PERMS WHERE GID = '$gid'";
+    $sql = "DELETE QUICK IGNORE FROM GROUP_PERMS WHERE GID = '$gid'";
 
     if (!$result = db_query($sql, $db_perm_remove_group)) return false;
 
-    $sql = "DELETE FROM GROUP_USERS WHERE GID = '$gid'";
+    $sql = "DELETE QUICK IGNORE FROM GROUP_USERS WHERE GID = '$gid'";
 
     if (!$result = db_query($sql, $db_perm_remove_group)) return false;
 
-    $sql = "DELETE FROM GROUPS WHERE GID = '$gid'";
+    $sql = "DELETE QUICK IGNORE FROM GROUPS WHERE GID = '$gid'";
 
     if (!$result = db_query($sql, $db_perm_remove_group)) return false;
 
@@ -780,7 +780,7 @@ function perm_remove_user_from_group($uid, $gid)
 
     if (perm_is_group($gid)) {
 
-        $sql = "DELETE FROM GROUP_USERS ";
+        $sql = "DELETE QUICK IGNORE FROM GROUP_USERS ";
         $sql.= "WHERE GID = '$gid' AND UID = '$uid'";
 
         if (!$result = db_query($sql, $db_perm_remove_user_from_group)) return false;

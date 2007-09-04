@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.191 2007-09-01 16:17:23 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.192 2007-09-04 18:01:16 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -77,7 +77,7 @@ function search_execute($search_arguments, &$error)
     // Each user can only store one search result so we should
     // clean up their previous search if applicable.
 
-    $sql = "DELETE FROM SEARCH_RESULTS WHERE UID = '$uid'";
+    $sql = "DELETE QUICK IGNORE FROM SEARCH_RESULTS WHERE UID = '$uid'";
 
     if (!$result = db_query($sql, $db_search_execute)) return false;
 

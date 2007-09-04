@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.134 2007-09-02 18:46:56 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.135 2007-09-04 18:01:16 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -209,7 +209,7 @@ function folder_delete($fid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "DELETE FROM {$table_data['PREFIX']}FOLDER WHERE FID = '$fid'";
+    $sql = "DELETE QUICK IGNORE FROM {$table_data['PREFIX']}FOLDER WHERE FID = '$fid'";
 
     if (!$result = db_query($sql, $db_folder_delete)) return false;
 
@@ -248,15 +248,25 @@ function folder_update($fid, $folder_data)
 
     if (!$result = db_query($sql, $db_folder_update)) return false;
 
-    $sql = "DELETE FROM GROUP_PERMS WHERE FID = '$fid' ";
+    $sql = "SELECT FID FROM GROUP_PERMS WHERE FID = '$fid' ";
     $sql.= "AND FORUM = '$forum_fid' AND GID = '0'";
 
     if (!$result = db_query($sql, $db_folder_update)) return false;
 
-    $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) ";
-    $sql.= "VALUES ('0', '$forum_fid', '$fid', '{$folder_data['PERM']}')";
+    if (db_num_rows($result) > 0) {
 
-    if (!$result = db_query($sql, $db_folder_update)) return false;
+        $sql = "UPDATE GROUP_PERMS SET PERM = '{$folder_data['PERM']}' ";
+        $sql.= "WHERE FID = '$fid' AND FORUM = '$forum_fid' AND GID = '0'";
+
+        if (!$result = db_query($sql, $db_folder_update)) return false;
+
+    }else {
+
+        $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) ";
+        $sql.= "VALUES ('0', '$forum_fid', '$fid', '{$folder_data['PERM']}')";
+
+        if (!$result = db_query($sql, $db_folder_update)) return false;
+    }
 
     return true;
 }

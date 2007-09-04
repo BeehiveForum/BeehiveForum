@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.75 2007-08-27 16:01:22 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.76 2007-09-04 18:01:16 decoyduck Exp $ */
 
 /**
 * Functions relating to users interacting with profiles
@@ -61,13 +61,23 @@ function user_profile_update($uid, $piid, $entry, $privacy)
 
     $entry = db_escape_string(_htmlentities($entry));
 
-    $sql = "DELETE FROM {$table_data['PREFIX']}USER_PROFILE ";
-    $sql.= "WHERE UID = '$uid' AND PIID = '$piid'";
+    $sql = "SELECT PIID FROM {$table_data['PREFIX']}USER_PROFILE ";
+    $sql.= "WHERE PIID = '$piid' AND UID = '$uid'";
 
-    if ($result = db_query($sql, $db_user_profile_update)) {
+    if (!$result = db_query($sql, $db_user_profile_update)) return false;
+
+    if (db_num_rows($result) > 0) {
+
+        $sql = "UPDATE {$table_data['PREFIX']}USER_PROFILE ";
+        $sql.= "SET ENTRY = '$entry', PRIVACY = '$privacy' ";
+        $sql.= "WHERE UID = '$uid' AND PIID = '$piid'";
+
+        if (!$result = db_query($sql, $db_user_profile_update)) return false;
+
+    }else {
 
         $sql = "INSERT INTO {$table_data['PREFIX']}USER_PROFILE (UID, PIID, ENTRY, PRIVACY) ";
-        $sql.= "VALUES ($uid, $piid, '$entry', $privacy)";
+        $sql.= "VALUES ('$uid', '$piid', '$entry', '$privacy')";
 
         if (!$result = db_query($sql, $db_user_profile_update)) return false;
     }

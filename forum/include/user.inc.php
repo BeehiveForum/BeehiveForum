@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.333 2007-08-28 22:54:03 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.334 2007-09-04 18:01:16 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1414,7 +1414,7 @@ function user_clear_word_filter()
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    $sql = "DELETE FROM {$table_data['PREFIX']}WORD_FILTER WHERE UID = '$uid'";
+    $sql = "DELETE QUICK IGNORE FROM {$table_data['PREFIX']}WORD_FILTER WHERE UID = '$uid'";
 
     if (!$result = db_query($sql, $db_user_clear_word_filter)) return false;
 
@@ -1482,7 +1482,7 @@ function user_delete_word_filter($filter_id)
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    $sql = "DELETE FROM {$table_data['PREFIX']}WORD_FILTER ";
+    $sql = "DELETE QUICK IGNORE FROM {$table_data['PREFIX']}WORD_FILTER ";
     $sql.= "WHERE UID = '$uid' AND FID = '$filter_id'";
 
     if (!$result = db_query($sql, $db_user_delete_word_filter)) return false;

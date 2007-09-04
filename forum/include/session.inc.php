@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.322 2007-09-03 21:43:48 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.323 2007-09-04 18:01:16 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -883,7 +883,7 @@ function bh_session_init($uid, $update_visitor_log = true, $skip_cookie = false)
 
     $user_hash = md5($ipaddress);
 
-    $sql = "DELETE FROM SESSIONS WHERE HASH = '$user_hash'";
+    $sql = "DELETE QUICK IGNORE FROM SESSIONS WHERE HASH = '$user_hash'";
 
     if (!$result = db_query($sql, $db_bh_session_init)) return false;
 
@@ -982,7 +982,7 @@ function bh_session_end($remove_cookies = true)
 
         // Remove the user session.
 
-        $sql = "DELETE FROM SESSIONS WHERE HASH = '$user_hash'";
+        $sql = "DELETE QUICK IGNORE FROM SESSIONS WHERE HASH = '$user_hash'";
 
         if (!$result = db_query($sql, $db_bh_session_end)) return false;
     }

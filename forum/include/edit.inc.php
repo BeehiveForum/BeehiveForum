@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.inc.php,v 1.69 2007-05-06 20:33:42 decoyduck Exp $ */
+/* $Id: edit.inc.php,v 1.70 2007-09-04 18:01:16 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -102,7 +102,7 @@ function post_delete($tid, $pid)
         if (!$result = db_query($sql, $db_post_delete)) return false;
     }
 
-    $sql = "DELETE FROM {$table_data['PREFIX']}THREAD ";
+    $sql = "UPDATE {$table_data['PREFIX']}THREAD SET LENGTH = '0' ";
     $sql.= "WHERE TID = '$tid' AND LENGTH = 1";
 
     if (!$result = db_query($sql, $db_post_delete)) return false;

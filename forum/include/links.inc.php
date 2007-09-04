@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.inc.php,v 1.73 2007-09-02 18:46:56 decoyduck Exp $ */
+/* $Id: links.inc.php,v 1.74 2007-09-04 18:01:16 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -474,7 +474,7 @@ function links_folder_delete($fid)
 
     if (!$result = db_query($sql, $db_links_folder_delete)) return false;
 
-    $sql = "DELETE FROM {$table_data['PREFIX']}LINKS_FOLDERS WHERE FID = '$fid'";
+    $sql = "DELETE QUICK IGNORE FROM {$table_data['PREFIX']}LINKS_FOLDERS WHERE FID = '$fid'";
 
     if (!$result = db_query($sql, $db_links_folder_delete)) return false;
 
@@ -543,7 +543,7 @@ function links_clear_vote($lid, $uid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "DELETE FROM {$table_data['PREFIX']}LINKS_VOTE ";
+    $sql = "DELETE QUICK IGNORE FROM {$table_data['PREFIX']}LINKS_VOTE ";
     $sql.= "WHERE UID = '$uid' AND LID = '$lid'";
 
     if (!$result = db_query($sql, $db_links_clear_vote)) return false;
@@ -630,7 +630,7 @@ function links_delete_comment($cid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "DELETE FROM {$table_data['PREFIX']}LINKS_COMMENT WHERE CID = '$cid'";
+    $sql = "DELETE QUICK IGNORE FROM {$table_data['PREFIX']}LINKS_COMMENT WHERE CID = '$cid'";
 
     if (!$result = db_query($sql, $db_links_delete_comment)) return false;
 
@@ -645,15 +645,15 @@ function links_delete($lid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "DELETE FROM {$table_data['PREFIX']}LINKS WHERE LID = '$lid'";
+    $sql = "DELETE QUICK IGNORE FROM {$table_data['PREFIX']}LINKS WHERE LID = '$lid'";
 
     if (!$result = db_query($sql, $db_links_delete)) return false;
 
-    $sql = "DELETE FROM {$table_data['PREFIX']}LINKS_COMMENT WHERE LID = '$lid'";
+    $sql = "DELETE QUICK IGNORE FROM {$table_data['PREFIX']}LINKS_COMMENT WHERE LID = '$lid'";
 
     if (!$result = db_query($sql, $db_links_delete)) return false;
 
-    $sql = "DELETE FROM {$table_data['PREFIX']}LINKS_VOTE WHERE LID = '$lid'";
+    $sql = "DELETE QUICK IGNORE FROM {$table_data['PREFIX']}LINKS_VOTE WHERE LID = '$lid'";
 
     if (!$result = db_query($sql, $db_links_delete)) return false;
 }

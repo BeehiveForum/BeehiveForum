@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.150 2007-08-16 15:38:12 decoyduck Exp $ */
+/* $Id: index.php,v 1.151 2007-09-04 19:55:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -90,7 +90,7 @@ $logon_failed = isset($_COOKIE['bh_logon_failed']);
 
 // Check to see if the user is trying to change their password.
 
-$user_change_pw = false;
+$skip_logon_page = false;
 
 // Embedded light mode in this script.
 
@@ -130,9 +130,9 @@ if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri'])))
 
         $final_uri = basename(trim(_stripslashes($_GET['final_uri'])));
 
-        if (preg_match("/^change_pw.php/", $final_uri) > 0) {
+        if (preg_match("/^change_pw.php|^register.php/", $final_uri) > 0) {
 
-            $user_change_pw = true;
+            $skip_logon_page = true;
 
         }else if (preg_match("/^$popup_files_preg/", $final_uri) > 0) {
 
@@ -159,7 +159,7 @@ $navsize = max(($navsize ? $navsize * 2 : 22), 22);
 
 // If user has requested password change show the form instead of the logon page.
 
-if ($user_change_pw === true) {
+if ($skip_logon_page === true) {
 
     html_draw_top('body_tag=false', 'frames=true', 'robots=index,follow');
 

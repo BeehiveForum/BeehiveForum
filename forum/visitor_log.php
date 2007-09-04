@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.php,v 1.106 2007-08-21 20:27:39 decoyduck Exp $ */
+/* $Id: visitor_log.php,v 1.107 2007-09-04 19:55:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -263,9 +263,9 @@ $start = floor($page - 1) * 10;
 if ($start < 0) $start = 0;
 
 if (isset($_POST['user_search']) && strlen(trim(_stripslashes($_POST['user_search']))) > 0) {
-    $user_search = $_POST['user_search'];
+    $user_search = trim(_stripslashes($_POST['user_search']));
 }elseif (isset($_GET['user_search']) && strlen(trim(_stripslashes($_GET['user_search']))) > 0) {
-    $user_search = $_GET['user_search'];
+    $user_search = trim(_stripslashes($_GET['user_search']));
 }else {
     $user_search = "";
 }
@@ -309,25 +309,25 @@ if (sizeof($user_profile_array['user_array']) > 0) {
     echo "                   <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
 
     if ($sort_by == 'LOGON' && $sort_dir == 'ASC') {
-        echo "                   <td class=\"subhead_sort_asc\" align=\"left\" valign=\"top\"><a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=DESC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=$user_search&amp;hide_empty=$hide_empty&amp;hide_guests=$hide_guests\">{$lang['member']}</a></td>\n";
+        echo "                   <td class=\"subhead_sort_asc\" align=\"left\" valign=\"top\"><a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=DESC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=", _htmlentities($user_search), "&amp;hide_empty=$hide_empty&amp;hide_guests=$hide_guests\">{$lang['member']}</a></td>\n";
     }elseif ($sort_by == 'LOGON' && $sort_dir == 'DESC') {
-        echo "                   <td class=\"subhead_sort_desc\" align=\"left\" valign=\"top\"><a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=ASC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=$user_search&amp;hide_empty=$hide_empty&amp;hide_guests=$hide_guests\">{$lang['member']}</a></td>\n";
+        echo "                   <td class=\"subhead_sort_desc\" align=\"left\" valign=\"top\"><a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=ASC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=", _htmlentities($user_search), "&amp;hide_empty=$hide_empty&amp;hide_guests=$hide_guests\">{$lang['member']}</a></td>\n";
     }elseif ($sort_dir == 'ASC') {
-        echo "                   <td class=\"subhead\" align=\"left\" valign=\"top\"><a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=ASC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=$user_search&amp;hide_empty=$hide_empty&amp;hide_guests=$hide_guests\">{$lang['member']}</a></td>\n";
+        echo "                   <td class=\"subhead\" align=\"left\" valign=\"top\"><a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=ASC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=", _htmlentities($user_search), "&amp;hide_empty=$hide_empty&amp;hide_guests=$hide_guests\">{$lang['member']}</a></td>\n";
     }else {
-        echo "                   <td class=\"subhead\" align=\"left\" valign=\"top\"><a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=DESC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=$user_search&amp;hide_empty=$hide_empty&amp;hide_guests=$hide_guests\">{$lang['member']}</a></td>\n";
+        echo "                   <td class=\"subhead\" align=\"left\" valign=\"top\"><a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=DESC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=", _htmlentities($user_search), "&amp;hide_empty=$hide_empty&amp;hide_guests=$hide_guests\">{$lang['member']}</a></td>\n";
     }
 
     foreach ($profile_items_selected_array as $key => $profile_item_selected) {
 
         if ($sort_by == $key && $sort_dir == 'ASC') {
-            echo "                   <td class=\"subhead_sort_asc\" align=\"left\" valign=\"top\" width=\"20%\">", form_submit_image('close.png', "remove_column[$key]", $lang['close'], "title=\"{$lang['close']}\"", "profile_browse_close"), "&nbsp;<a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=$key&amp;sort_dir=DESC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=$user_search&amp;hide_empty=$hide_empty&amp;hide_guests=$hide_guests\">{$profile_item_selected}</a></td>\n";
+            echo "                   <td class=\"subhead_sort_asc\" align=\"left\" valign=\"top\" width=\"20%\">", form_submit_image('close.png', "remove_column[$key]", $lang['close'], "title=\"{$lang['close']}\"", "profile_browse_close"), "&nbsp;<a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=$key&amp;sort_dir=DESC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=", _htmlentities($user_search), "&amp;hide_empty=$hide_empty&amp;hide_guests=$hide_guests\">{$profile_item_selected}</a></td>\n";
         }elseif ($sort_by == $key && $sort_dir == 'DESC') {
-            echo "                   <td class=\"subhead_sort_desc\" align=\"left\" valign=\"top\" width=\"20%\">", form_submit_image('close.png', "remove_column[$key]", $lang['close'], "title=\"{$lang['close']}\"", "profile_browse_close"), "&nbsp;<a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=$key&amp;sort_dir=ASC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=$user_search&amp;hide_empty=$hide_empty&amp;hide_guests=$hide_guests\">{$profile_item_selected}</a></td>\n";
+            echo "                   <td class=\"subhead_sort_desc\" align=\"left\" valign=\"top\" width=\"20%\">", form_submit_image('close.png', "remove_column[$key]", $lang['close'], "title=\"{$lang['close']}\"", "profile_browse_close"), "&nbsp;<a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=$key&amp;sort_dir=ASC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=", _htmlentities($user_search), "&amp;hide_empty=$hide_empty&amp;hide_guests=$hide_guests\">{$profile_item_selected}</a></td>\n";
         }elseif ($sort_dir == 'ASC') {
-            echo "                   <td class=\"subhead\" align=\"left\" valign=\"top\" width=\"20%\">", form_submit_image('close.png', "remove_column[$key]", $lang['close'], "title=\"{$lang['close']}\"", "profile_browse_close"), "&nbsp;<a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=$key&amp;sort_dir=ASC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=$user_search&amp;hide_empty=$hide_empty&amp;hide_guests=$hide_guests\">{$profile_item_selected}</a></td>\n";
+            echo "                   <td class=\"subhead\" align=\"left\" valign=\"top\" width=\"20%\">", form_submit_image('close.png', "remove_column[$key]", $lang['close'], "title=\"{$lang['close']}\"", "profile_browse_close"), "&nbsp;<a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=$key&amp;sort_dir=ASC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=", _htmlentities($user_search), "&amp;hide_empty=$hide_empty&amp;hide_guests=$hide_guests\">{$profile_item_selected}</a></td>\n";
         }else {
-            echo "                   <td class=\"subhead\" align=\"left\" valign=\"top\" width=\"20%\">", form_submit_image('close.png', "remove_column[$key]", $lang['close'], "title=\"{$lang['close']}\"", "profile_browse_close"), "&nbsp;<a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=$key&amp;sort_dir=DESC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=$user_search&amp;hide_empty=$hide_empty&amp;hide_guests=$hide_guests\">{$profile_item_selected}</a></td>\n";
+            echo "                   <td class=\"subhead\" align=\"left\" valign=\"top\" width=\"20%\">", form_submit_image('close.png', "remove_column[$key]", $lang['close'], "title=\"{$lang['close']}\"", "profile_browse_close"), "&nbsp;<a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=$key&amp;sort_dir=DESC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=", _htmlentities($user_search), "&amp;hide_empty=$hide_empty&amp;hide_guests=$hide_guests\">{$profile_item_selected}</a></td>\n";
         }
     }
 
@@ -418,25 +418,25 @@ if (sizeof($user_profile_array['user_array']) > 0) {
     echo "                 <tr>\n";
 
     if ($sort_by == 'LOGON' && $sort_dir == 'ASC') {
-        echo "                   <td class=\"subhead_sort_asc\" align=\"left\"><a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=DESC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=$user_search&amp;hide_empty=$hide_empty&amp;hide_guests=$hide_guests\">{$lang['member']}</a></td>\n";
+        echo "                   <td class=\"subhead_sort_asc\" align=\"left\"><a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=DESC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=", _htmlentities($user_search), "&amp;hide_empty=$hide_empty&amp;hide_guests=$hide_guests\">{$lang['member']}</a></td>\n";
     }elseif ($sort_by == 'LOGON' && $sort_dir == 'DESC') {
-        echo "                   <td class=\"subhead_sort_desc\" align=\"left\"><a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=ASC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=$user_search&amp;hide_empty=$hide_empty&amp;hide_guests=$hide_guests\">{$lang['member']}</a></td>\n";
+        echo "                   <td class=\"subhead_sort_desc\" align=\"left\"><a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=ASC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=", _htmlentities($user_search), "&amp;hide_empty=$hide_empty&amp;hide_guests=$hide_guests\">{$lang['member']}</a></td>\n";
     }elseif ($sort_dir == 'ASC') {
-        echo "                   <td class=\"subhead\" align=\"left\"><a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=ASC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=$user_search&amp;hide_empty=$hide_empty&amp;hide_guests=$hide_guests\">{$lang['member']}</a></td>\n";
+        echo "                   <td class=\"subhead\" align=\"left\"><a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=ASC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=", _htmlentities($user_search), "&amp;hide_empty=$hide_empty&amp;hide_guests=$hide_guests\">{$lang['member']}</a></td>\n";
     }else {
-        echo "                   <td class=\"subhead\" align=\"left\"><a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=DESC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=$user_search&amp;hide_empty=$hide_empty&amp;hide_guests=$hide_guests\">{$lang['member']}</a></td>\n";
+        echo "                   <td class=\"subhead\" align=\"left\"><a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=DESC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=", _htmlentities($user_search), "&amp;hide_empty=$hide_empty&amp;hide_guests=$hide_guests\">{$lang['member']}</a></td>\n";
     }
 
     foreach ($profile_items_selected_array as $key => $profile_item_selected) {
 
         if ($sort_by == $key && $sort_dir == 'ASC') {
-            echo "                   <td class=\"subhead_sort_asc\" align=\"left\" width=\"20%\">", form_submit_image('close.png', "remove_column[$key]", $lang['close'], "title=\"{$lang['close']}\"", "profile_browse_close"), "&nbsp;<a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=$key&amp;sort_dir=DESC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=$user_search&amp;hide_empty=$hide_empty&amp;hide_guests=$hide_guests\">{$profile_item_selected}</a></td>\n";
+            echo "                   <td class=\"subhead_sort_asc\" align=\"left\" width=\"20%\">", form_submit_image('close.png', "remove_column[$key]", $lang['close'], "title=\"{$lang['close']}\"", "profile_browse_close"), "&nbsp;<a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=$key&amp;sort_dir=DESC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=", _htmlentities($user_search), "&amp;hide_empty=$hide_empty&amp;hide_guests=$hide_guests\">{$profile_item_selected}</a></td>\n";
         }elseif ($sort_by == $key && $sort_dir == 'DESC') {
-            echo "                   <td class=\"subhead_sort_desc\" align=\"left\" width=\"20%\">", form_submit_image('close.png', "remove_column[$key]", $lang['close'], "title=\"{$lang['close']}\"", "profile_browse_close"), "&nbsp;<a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=$key&amp;sort_dir=ASC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=$user_search&amp;hide_empty=$hide_empty&amp;hide_guests=$hide_guests\">{$profile_item_selected}</a></td>\n";
+            echo "                   <td class=\"subhead_sort_desc\" align=\"left\" width=\"20%\">", form_submit_image('close.png', "remove_column[$key]", $lang['close'], "title=\"{$lang['close']}\"", "profile_browse_close"), "&nbsp;<a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=$key&amp;sort_dir=ASC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=", _htmlentities($user_search), "&amp;hide_empty=$hide_empty&amp;hide_guests=$hide_guests\">{$profile_item_selected}</a></td>\n";
         }elseif ($sort_dir == 'ASC') {
-            echo "                   <td class=\"subhead\" align=\"left\" width=\"20%\">", form_submit_image('close.png', "remove_column[$key]", $lang['close'], "title=\"{$lang['close']}\"", "profile_browse_close"), "&nbsp;<a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=$key&amp;sort_dir=ASC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=$user_search&amp;hide_empty=$hide_empty&amp;hide_guests=$hide_guests\">{$profile_item_selected}</a></td>\n";
+            echo "                   <td class=\"subhead\" align=\"left\" width=\"20%\">", form_submit_image('close.png', "remove_column[$key]", $lang['close'], "title=\"{$lang['close']}\"", "profile_browse_close"), "&nbsp;<a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=$key&amp;sort_dir=ASC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=", _htmlentities($user_search), "&amp;hide_empty=$hide_empty&amp;hide_guests=$hide_guests\">{$profile_item_selected}</a></td>\n";
         }else {
-            echo "                   <td class=\"subhead\" align=\"left\" width=\"20%\">", form_submit_image('close.png', "remove_column[$key]", $lang['close'], "title=\"{$lang['close']}\"", "profile_browse_close"), "&nbsp;<a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=$key&amp;sort_dir=DESC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=$user_search&amp;hide_empty=$hide_empty&amp;hide_guests=$hide_guests\">{$profile_item_selected}</a></td>\n";
+            echo "                   <td class=\"subhead\" align=\"left\" width=\"20%\">", form_submit_image('close.png', "remove_column[$key]", $lang['close'], "title=\"{$lang['close']}\"", "profile_browse_close"), "&nbsp;<a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=$key&amp;sort_dir=DESC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=", _htmlentities($user_search), "&amp;hide_empty=$hide_empty&amp;hide_guests=$hide_guests\">{$profile_item_selected}</a></td>\n";
         }
     }
 

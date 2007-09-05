@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.206 2007-09-04 18:01:15 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.207 2007-09-05 19:42:09 decoyduck Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -395,7 +395,7 @@ if (isset($_POST['cancel'])) {
 
         foreach ($_POST['answer_groups'] as $key => $t_answer_group) {
 
-            if (isset($t_answers[$key])) {
+            if (isset($t_answers[$key]) && is_numeric($t_answer_group)) {
 
                 $t_answer_groups[$key] = $t_answer_group;
             }
@@ -457,7 +457,7 @@ if (isset($_POST['cancel'])) {
         $t_close_poll = false;
     }
 
-    if ($valid && $t_poll_type == POLL_TABLE_GRAPH && sizeof(array_unique($t_answer_groups)) != 2) {
+    if ($valid && $t_poll_type == POLL_TABLE_GRAPH && sizeof(array_unique($t_answer_groups)) <> 2) {
 
         $error_msg_array[] = $lang['tablepollmusthave2groups'];
         $valid = false;
@@ -571,7 +571,7 @@ if (isset($_POST['cancel'])) {
 
         foreach ($_POST['answer_groups'] as $key => $t_answer_group) {
 
-            if (isset($t_answers[$key])) {
+            if (isset($t_answers[$key]) && is_numeric($t_answer_group)) {
 
                 $t_answer_groups[$key] = $t_answer_group;
             }
@@ -1006,7 +1006,7 @@ echo "                            </tr>\n";
 
 $available_answers = array(5, 10, 15, 20);
 
-if (isset($t_answer_count)) {
+if (isset($t_answer_count) && is_numeric($t_answer_count)) {
     $answer_count = $available_answers[$t_answer_count];
 }else {
     $answer_count = 5;

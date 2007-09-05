@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_links.inc.php,v 1.37 2007-09-04 18:01:16 decoyduck Exp $ */
+/* $Id: forum_links.inc.php,v 1.38 2007-09-05 22:56:37 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -174,7 +174,7 @@ function forum_links_delete($lid)
 
     if (!is_numeric($lid)) return false;
 
-    $sql = "DELETE QUICK IGNORE FROM {$table_data['PREFIX']}FORUM_LINKS WHERE LID = '$lid'";
+    $sql = "DELETE QUICK FROM {$table_data['PREFIX']}FORUM_LINKS WHERE LID = '$lid'";
 
     if (!$result = db_query($sql, $db_forum_links_delete)) return false;
 
@@ -192,7 +192,7 @@ function forum_links_update_link($lid, $title, $uri = "")
     $title = db_escape_string($title);
     $uri = db_escape_string($uri);
 
-    $sql = "UPDATE {$table_data['PREFIX']}FORUM_LINKS SET TITLE = '$title', ";
+    $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}FORUM_LINKS SET TITLE = '$title', ";
     $sql.= "URI = '$uri' WHERE LID = '$lid'";
 
     if (!$result = db_query($sql, $db_forum_links_update)) return false;
@@ -280,14 +280,14 @@ function forum_links_move_up($lid)
 
         $new_position = $forum_links_position[$lid];
 
-        $sql = "UPDATE {$table_data['PREFIX']}FORUM_LINKS SET POS = '$new_position' ";
+        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}FORUM_LINKS SET POS = '$new_position' ";
         $sql.= "WHERE LID = '{$forum_links_order[$forum_links_order_key]}'";
 
         if (!$result = db_query($sql, $db_forum_links_move_up)) return false;
 
         $new_position = $forum_links_position[$forum_links_order[$forum_links_order_key]];
 
-        $sql = "UPDATE {$table_data['PREFIX']}FORUM_LINKS SET POS = '$new_position' ";
+        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}FORUM_LINKS SET POS = '$new_position' ";
         $sql.= "WHERE LID = '$lid'";
 
         if (!$result = db_query($sql, $db_forum_links_move_up)) return false;
@@ -329,14 +329,14 @@ function forum_links_move_down($lid)
 
         $new_position = $forum_links_position[$lid];
 
-        $sql = "UPDATE {$table_data['PREFIX']}FORUM_LINKS SET POS = '$new_position' ";
+        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}FORUM_LINKS SET POS = '$new_position' ";
         $sql.= "WHERE LID = '{$forum_links_order[$forum_links_order_key]}'";
 
         if (!$result = db_query($sql, $db_forum_links_move_down)) return false;
 
         $new_position = $forum_links_position[$forum_links_order[$forum_links_order_key]];
 
-        $sql = "UPDATE {$table_data['PREFIX']}FORUM_LINKS SET POS = '$new_position' ";
+        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}FORUM_LINKS SET POS = '$new_position' ";
         $sql.= "WHERE LID = '$lid'";
 
         if (!$result = db_query($sql, $db_forum_links_move_down)) return false;
@@ -366,7 +366,7 @@ function forum_links_positions_update()
 
             $new_position++;
 
-            $sql = "UPDATE {$table_data['PREFIX']}FORUM_LINKS ";
+            $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}FORUM_LINKS ";
             $sql.= "SET POS = '$new_position' WHERE LID = '$lid'";
 
             if (!$result_update = db_query($sql, $db_forum_links_positions_update)) return false;

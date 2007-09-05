@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: banned.inc.php,v 1.26 2007-09-04 18:01:16 decoyduck Exp $ */
+/* $Id: banned.inc.php,v 1.27 2007-09-05 22:56:37 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -248,7 +248,7 @@ function remove_ban_data_by_id($ban_id)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "DELETE QUICK IGNORE FROM {$table_data['PREFIX']}BANNED ";
+    $sql = "DELETE QUICK FROM {$table_data['PREFIX']}BANNED ";
     $sql.= "WHERE ID = '$ban_id'";
 
     if (!$result = db_query($sql, $db_remove_ban_data)) return false;
@@ -271,7 +271,7 @@ function update_ban_data($ban_id, $type, $data, $comment)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "UPDATE {$table_data['PREFIX']}BANNED ";
+    $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}BANNED ";
     $sql.= "SET BANTYPE = '$type', BANDATA = '$data', ";
     $sql.= "COMMENT = '$comment' WHERE ID = '$ban_id'";
 

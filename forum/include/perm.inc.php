@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.116 2007-09-04 18:01:16 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.117 2007-09-05 22:56:37 decoyduck Exp $ */
 
 /**
 * Functions relating to permissions
@@ -389,7 +389,7 @@ function perm_update_group($gid, $group_name, $group_desc, $perm)
 
     if (perm_is_group($gid)) {
 
-        $sql = "UPDATE GROUPS SET GROUP_NAME = '$group_name', ";
+        $sql = "UPDATE LOW_PRIORITY GROUPS SET GROUP_NAME = '$group_name', ";
         $sql.= "GROUP_DESC = '$group_desc' WHERE GID = '$gid'";
 
         if (!$result = db_query($sql, $db_perm_update_group)) return false;
@@ -401,7 +401,7 @@ function perm_update_group($gid, $group_name, $group_desc, $perm)
 
         if (db_num_rows($result) > 0) {
 
-            $sql = "UPDATE GROUP_PERMS SET PERM = '$perm' WHERE ";
+            $sql = "UPDATE LOW_PRIORITY GROUP_PERMS SET PERM = '$perm' WHERE ";
             $sql.= "GID = '$gid' AND FORUM = '$forum_fid' AND FID = 0";
 
             if (!$result = db_query($sql, $db_perm_update_group)) return false;
@@ -424,15 +424,15 @@ function perm_remove_group($gid)
 
     if (!is_numeric($gid)) return false;
 
-    $sql = "DELETE QUICK IGNORE FROM GROUP_PERMS WHERE GID = '$gid'";
+    $sql = "DELETE QUICK FROM GROUP_PERMS WHERE GID = '$gid'";
 
     if (!$result = db_query($sql, $db_perm_remove_group)) return false;
 
-    $sql = "DELETE QUICK IGNORE FROM GROUP_USERS WHERE GID = '$gid'";
+    $sql = "DELETE QUICK FROM GROUP_USERS WHERE GID = '$gid'";
 
     if (!$result = db_query($sql, $db_perm_remove_group)) return false;
 
-    $sql = "DELETE QUICK IGNORE FROM GROUPS WHERE GID = '$gid'";
+    $sql = "DELETE QUICK FROM GROUPS WHERE GID = '$gid'";
 
     if (!$result = db_query($sql, $db_perm_remove_group)) return false;
 
@@ -627,7 +627,7 @@ function perm_update_global_perms($uid, $perm)
 
         if (db_num_rows($result) > 0) {
 
-            $sql = "UPDATE GROUP_PERMS SET PERM = '$perm' WHERE GID = '$gid' ";
+            $sql = "UPDATE LOW_PRIORITY GROUP_PERMS SET PERM = '$perm' WHERE GID = '$gid' ";
             $sql.= "AND FORUM = '0' AND FID = '0'";
 
             if (!$result = db_query($sql, $db_perm_add_global_perms)) return false;
@@ -780,7 +780,7 @@ function perm_remove_user_from_group($uid, $gid)
 
     if (perm_is_group($gid)) {
 
-        $sql = "DELETE QUICK IGNORE FROM GROUP_USERS ";
+        $sql = "DELETE QUICK FROM GROUP_USERS ";
         $sql.= "WHERE GID = '$gid' AND UID = '$uid'";
 
         if (!$result = db_query($sql, $db_perm_remove_user_from_group)) return false;
@@ -984,7 +984,7 @@ function perm_update_user_folder_perms($uid, $fid, $perm)
 
         if (db_num_rows($result) > 0) {
 
-            $sql = "UPDATE GROUP_PERMS SET PERM = '$perm' WHERE ";
+            $sql = "UPDATE LOW_PRIORITY GROUP_PERMS SET PERM = '$perm' WHERE ";
             $sql.= "GID = '$gid' AND FORUM = '$forum_fid' AND FID = '$fid'";
 
             if (!$result = db_query($sql, $db_perm_update_user_folder_perms)) return false;
@@ -1022,7 +1022,7 @@ function perm_update_group_folder_perms($gid, $fid, $perm)
 
         if (db_num_rows($result) > 0) {
 
-            $sql = "UPDATE GROUP_PERMS SET PERM = '$perm' ";
+            $sql = "UPDATE LOW_PRIORITY GROUP_PERMS SET PERM = '$perm' ";
             $sql.= "WHERE GID = '$gid' AND FID = '$fid' ";
             $sql.= "AND FORUM = '$forum_fid'";
 
@@ -1060,7 +1060,7 @@ function perm_update_user_permissions($uid, $perm)
 
         if (db_num_rows($result) > 0) {
 
-            $sql = "UPDATE GROUP_PERMS SET PERM = '$perm' WHERE ";
+            $sql = "UPDATE LOW_PRIORITY GROUP_PERMS SET PERM = '$perm' WHERE ";
             $sql.= "GID = '$gid' AND FORUM = '$forum_fid' AND FID = 0";
 
             if (!$result = db_query($sql, $db_perm_update_user_permissions)) return false;
@@ -1153,7 +1153,7 @@ function perm_folder_reset_user_permissions($fid)
     // Process the permissions without affecting the user's
     // moderation level on the forum or the groups they're in.
 
-    $sql = "UPDATE GROUP_PERMS SET PERM = '$folder_perms' | (PERM & $upfm) ";
+    $sql = "UPDATE LOW_PRIORITY GROUP_PERMS SET PERM = '$folder_perms' | (PERM & $upfm) ";
     $sql.= "WHERE FID = '$fid' AND GID <> '0' AND FORUM = '$forum_fid'";
 
     if (!$result = db_query($sql, $db_perm_folder_reset_user_permissions)) return false;
@@ -1228,7 +1228,7 @@ function perm_user_apply_email_confirmation($uid)
 
     if ($gid = perm_get_global_user_gid($uid)) {
 
-        $sql = "UPDATE GROUP_PERMS SET PERM = PERM | $perm ";
+        $sql = "UPDATE LOW_PRIORITY GROUP_PERMS SET PERM = PERM | $perm ";
         $sql.= "WHERE GID = '$gid'";
 
         if (!$result = db_query($sql, $db_perm_user_apply_email_confirmation)) return false;
@@ -1276,7 +1276,7 @@ function perm_user_cancel_email_confirmation($uid)
             $perm = $perm ^ USER_PERM_EMAIL_CONFIRM;
         }
 
-        $sql = "UPDATE GROUP_PERMS SET PERM = '$perm' WHERE GID = '$gid'";
+        $sql = "UPDATE LOW_PRIORITY GROUP_PERMS SET PERM = '$perm' WHERE GID = '$gid'";
 
         if (!$result = db_query($sql, $db_perm_user_cancel_email_confirmation)) return false;
     }

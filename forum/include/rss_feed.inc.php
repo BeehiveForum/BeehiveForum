@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: rss_feed.inc.php,v 1.44 2007-09-04 18:01:16 decoyduck Exp $ */
+/* $Id: rss_feed.inc.php,v 1.45 2007-09-05 22:56:37 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -203,7 +203,7 @@ function rss_fetch_feed()
 
         $rss_feed = db_fetch_array($result, DB_RESULT_ASSOC);
 
-        $sql = "UPDATE {$table_data['PREFIX']}RSS_FEEDS SET LAST_RUN = NOW() ";
+        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}RSS_FEEDS SET LAST_RUN = NOW() ";
         $sql.= "WHERE RSSID = {$rss_feed['RSSID']} AND LAST_RUN = '{$rss_feed['LAST_RUN']}'";
 
         if (!$result = db_query($sql, $db_fetch_rss_feed)) return false;
@@ -412,7 +412,7 @@ function rss_feed_update($rssid, $name, $uid, $fid, $url, $prefix, $frequency)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "UPDATE {$table_data['PREFIX']}RSS_FEEDS SET NAME = '$name', UID = '$uid', ";
+    $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}RSS_FEEDS SET NAME = '$name', UID = '$uid', ";
     $sql.= "FID = '$fid', URL = '$url', PREFIX = '$prefix', FREQUENCY = '$frequency' ";
     $sql.= "WHERE RSSID = '$rssid'";
 
@@ -472,7 +472,7 @@ function rss_remove_feed($rssid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "DELETE QUICK IGNORE FROM {$table_data['PREFIX']}RSS_FEEDS WHERE RSSID = '$rssid'";
+    $sql = "DELETE QUICK FROM {$table_data['PREFIX']}RSS_FEEDS WHERE RSSID = '$rssid'";
 
     if (!$result = db_query($sql, $db_rss_remove_feed)) return false;
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.205 2007-09-05 19:42:09 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.206 2007-09-05 22:56:37 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -129,19 +129,19 @@ function poll_edit($fid, $tid, $thread_title, $poll_question, $poll_options, $an
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "UPDATE {$table_data['PREFIX']}THREAD SET TITLE = '$thread_title' WHERE TID = '$tid'";
+    $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}THREAD SET TITLE = '$thread_title' WHERE TID = '$tid'";
 
     if (!$result = db_query($sql, $db_poll_edit)) return false;
 
     if ($delete_votes) {
 
-        $sql = "DELETE QUICK IGNORE FROM {$table_data['PREFIX']}USER_POLL_VOTES WHERE TID = '$tid'";
+        $sql = "DELETE QUICK FROM {$table_data['PREFIX']}USER_POLL_VOTES WHERE TID = '$tid'";
         if (!$result = db_query($sql, $db_poll_edit)) return false;
     }
 
     if (is_numeric($closes)) {
 
-        $sql = "UPDATE {$table_data['PREFIX']}POLL SET CHANGEVOTE = '$change_vote', ";
+        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}POLL SET CHANGEVOTE = '$change_vote', ";
         $sql.= "POLLTYPE = '$poll_type', SHOWRESULTS = '$show_results', ";
         $sql.= "VOTETYPE = '$poll_vote_type', OPTIONTYPE = '$option_type', ";
         $sql.= "QUESTION = '$poll_question', ALLOWGUESTS = '$allow_guests', ";
@@ -151,7 +151,7 @@ function poll_edit($fid, $tid, $thread_title, $poll_question, $poll_options, $an
 
     }else {
 
-        $sql = "UPDATE {$table_data['PREFIX']}POLL SET CHANGEVOTE = '$change_vote', ";
+        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}POLL SET CHANGEVOTE = '$change_vote', ";
         $sql.= "POLLTYPE = '$poll_type', SHOWRESULTS = '$show_results', ";
         $sql.= "VOTETYPE = '$poll_vote_type', OPTIONTYPE = '$option_type', ";
         $sql.= "QUESTION = '$poll_question', ALLOWGUESTS = '$allow_guests' ";
@@ -160,7 +160,7 @@ function poll_edit($fid, $tid, $thread_title, $poll_question, $poll_options, $an
         if (!$result = db_query($sql, $db_poll_edit)) return false;
     }
 
-    $sql = "DELETE QUICK IGNORE FROM {$table_data['PREFIX']}POLL_VOTES WHERE TID = '$tid'";
+    $sql = "DELETE QUICK FROM {$table_data['PREFIX']}POLL_VOTES WHERE TID = '$tid'";
 
     if (!$result = db_query($sql, $db_poll_edit)) return false;
 
@@ -1906,7 +1906,7 @@ function poll_close($tid)
 
             $timestamp = mktime();
 
-            $sql = "UPDATE {$table_data['PREFIX']}POLL SET ";
+            $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}POLL SET ";
             $sql.= "CLOSES = FROM_UNIXTIME($timestamp) WHERE TID = '$tid'";
 
             if (!$result = db_query($sql, $db_poll_close)) return false;
@@ -1973,7 +1973,7 @@ function poll_delete_vote($tid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "DELETE QUICK IGNORE FROM {$table_data['PREFIX']}USER_POLL_VOTES ";
+    $sql = "DELETE QUICK FROM {$table_data['PREFIX']}USER_POLL_VOTES ";
     $sql.= "WHERE TID = '$tid' AND UID = '$uid'";
 
     if (!$result = db_query($sql, $db_poll_delete_vote)) return false;

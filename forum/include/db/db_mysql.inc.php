@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db_mysql.inc.php,v 1.33 2007-09-01 18:10:36 decoyduck Exp $ */
+/* $Id: db_mysql.inc.php,v 1.34 2007-09-05 22:56:39 decoyduck Exp $ */
 
 function db_get_connection_vars(&$db_server, &$db_username, &$db_password, &$db_database)
 {
@@ -235,44 +235,41 @@ function db_errno($connection_id = false)
     return 0;
 }
 
-function db_fetch_mysql_version()
+function db_fetch_mysql_version(&$mysql_version)
 {
-    static $mysql_version = false;
+    if ($db_fetch_mysql_version = db_connect()) {
 
-    if (!$mysql_version) {
+        $sql = "SELECT VERSION() AS version";
+        $result = db_query($sql, $db_fetch_mysql_version);
 
-        if ($db_fetch_mysql_version = db_connect(false)) {
+        if (!$version_data = db_fetch_array($result)) {
 
-            $sql = "SELECT VERSION() AS version";
+            $sql = "SHOW VARIABLES LIKE 'version'";
             $result = db_query($sql, $db_fetch_mysql_version);
 
-            if (!$version_data = db_fetch_array($result)) {
-
-                $sql = "SHOW VARIABLES LIKE 'version'";
-                $result = db_query($sql, $db_fetch_mysql_version);
-
-                $version_data = db_fetch_array($result);
-            }
-
-            $version_array = explode(".", $version_data['version']);
-
-            if (!isset($version_array) || !isset($version_array[0])) {
-                $version_array[0] = 3;
-            }
-
-            if (!isset($version_array[1])) {
-                $version_array[1] = 21;
-            }
-
-            if (!isset($version_array[2])) {
-                $version_array[2] = 0;
-            }
-
-            $mysql_version = (int)sprintf('%d%02d%02d', $version_array[0], $version_array[1], intval($version_array[2]));
+            $version_data = db_fetch_array($result);
         }
+
+        $version_array = explode(".", $version_data['version']);
+
+        if (!isset($version_array) || !isset($version_array[0])) {
+            $version_array[0] = 3;
+        }
+
+        if (!isset($version_array[1])) {
+            $version_array[1] = 21;
+        }
+
+        if (!isset($version_array[2])) {
+            $version_array[2] = 0;
+        }
+
+        $mysql_version = (int)sprintf('%d%02d%02d', $version_array[0], $version_array[1], intval($version_array[2]));
+
+        return true;
     }
 
-    return $mysql_version;
+    return false;
 }
 
 function db_escape_string($str)

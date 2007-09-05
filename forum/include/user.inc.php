@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.334 2007-09-04 18:01:16 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.335 2007-09-05 22:56:38 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -166,7 +166,7 @@ function user_update($uid, $logon, $nickname, $email)
 
     // Update the user details
 
-    $sql = "UPDATE USER SET LOGON = '$logon', NICKNAME = '$nickname', ";
+    $sql = "UPDATE LOW_PRIORITY USER SET LOGON = '$logon', NICKNAME = '$nickname', ";
     $sql.= "EMAIL = '$email' WHERE UID = '$uid'";
 
     if (!$result_update = db_query($sql, $db_user_update)) return false;
@@ -184,7 +184,7 @@ function user_update_nickname($uid, $nickname)
 
     $nickname = db_escape_string(_htmlentities($nickname));
 
-    $sql = "UPDATE USER SET NICKNAME = '$nickname' ";
+    $sql = "UPDATE LOW_PRIORITY USER SET NICKNAME = '$nickname' ";
     $sql.= "WHERE UID = '$uid'";
 
     if (!$result = db_query($sql, $db_user_update)) return false;
@@ -202,7 +202,7 @@ function user_change_logon($uid, $logon)
 
     $logon = db_escape_string(_htmlentities($logon));
 
-    $sql = "UPDATE USER SET LOGON = '$logon' ";
+    $sql = "UPDATE LOW_PRIORITY USER SET LOGON = '$logon' ";
     $sql.= "WHERE UID = '$uid'";
 
     if (!$result = db_query($sql, $db_user_change_logon)) return false;
@@ -219,7 +219,7 @@ function user_update_post_count($uid, $post_count)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "UPDATE {$table_data['PREFIX']}USER_TRACK ";
+    $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_TRACK ";
     $sql.= "SET POST_COUNT = '$post_count' ";
     $sql.= "WHERE UID = '$uid'";
 
@@ -236,7 +236,7 @@ function user_reset_post_count($uid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "UPDATE {$table_data['PREFIX']}USER_TRACK ";
+    $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_TRACK ";
     $sql.= "SET POST_COUNT = NULL WHERE UID = '$uid'";
 
     if (!$result = db_query($sql, $db_user_reset_post_count)) return false;
@@ -256,7 +256,7 @@ function user_change_password($user_uid, $password, $old_passhash = false)
 
     if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
 
-        $sql = "UPDATE USER SET PASSWD = '$passhash' ";
+        $sql = "UPDATE LOW_PRIORITY USER SET PASSWD = '$passhash' ";
         $sql.= "WHERE UID = '$user_uid'";
 
         if (!$result = db_query($sql, $db_user_change_password)) return false;
@@ -267,7 +267,7 @@ function user_change_password($user_uid, $password, $old_passhash = false)
 
         $old_passhash = db_escape_string($old_passhash);
 
-        $sql = "UPDATE USER SET PASSWD = '$passhash' ";
+        $sql = "UPDATE LOW_PRIORITY USER SET PASSWD = '$passhash' ";
         $sql.= "WHERE UID = '$user_uid' AND PASSWD = '$old_passhash'";
 
         if (!$result = db_query($sql, $db_user_change_password)) return false;
@@ -296,7 +296,7 @@ function user_update_forums($uid, $forums_array)
 
             if (db_num_rows($result) > 0) {
 
-                $sql = "UPDATE USER_FORUM SET ALLOWED = '$allowed' ";
+                $sql = "UPDATE LOW_PRIORITY USER_FORUM SET ALLOWED = '$allowed' ";
                 $sql.= "WHERE UID = '$uid' AND FID = '$forum_fid'";
 
                 if (!$result = db_query($sql, $db_user_update_forums)) return false;
@@ -339,7 +339,7 @@ function user_logon($logon, $passhash)
 
             if (strcmp($user_data['IPADDRESS'], $ipaddress) <> 0) {
 
-                $sql = "UPDATE USER SET IPADDRESS = '$ipaddress' WHERE UID = '{$user_data['UID']}'";
+                $sql = "UPDATE LOW_PRIORITY USER SET IPADDRESS = '$ipaddress' WHERE UID = '{$user_data['UID']}'";
                 if (!$result = db_query($sql, $db_user_logon)) return false;
             }
 
@@ -706,7 +706,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
 
                 $values = implode(", ", $values_array);
 
-                $sql = "UPDATE USER_PREFS SET $values  WHERE UID = '$uid'";
+                $sql = "UPDATE LOW_PRIORITY USER_PREFS SET $values  WHERE UID = '$uid'";
 
                 if (!$result_global = db_query($sql, $db_user_update_prefs)) return false;
             }
@@ -758,7 +758,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
 
             foreach($forum_prefix_array as $forum_prefix) {
 
-                $sql = "UPDATE {$forum_prefix}USER_PREFS SET $values WHERE UID = '$uid'";
+                $sql = "UPDATE LOW_PRIORITY {$forum_prefix}USER_PREFS SET $values WHERE UID = '$uid'";
 
                 if (!$result = db_query($sql, $db_user_update_prefs)) return false;
             }
@@ -790,7 +790,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
 
                 $values = implode(", ", $values_array);
 
-                $sql = "UPDATE {$table_data['PREFIX']}USER_PREFS SET $values WHERE UID = '$uid'";
+                $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_PREFS SET $values WHERE UID = '$uid'";
 
                 if (!$result_forum = db_query($sql, $db_user_update_prefs)) return false;
             }
@@ -872,7 +872,7 @@ function user_update_sig($uid, $content, $html, $global_update = false)
 
             if (db_num_rows($result) > 0) {
 
-                $sql = "UPDATE {$forum_prefix}USER_SIG SET CONTENT = '$content', ";
+                $sql = "UPDATE LOW_PRIORITY {$forum_prefix}USER_SIG SET CONTENT = '$content', ";
                 $sql.= "HTML = '$html' WHERE UID = '$uid'";
 
             }else {
@@ -895,7 +895,7 @@ function user_update_sig($uid, $content, $html, $global_update = false)
 
         if (db_num_rows($result) > 0) {
 
-            $sql = "UPDATE {$table_data['PREFIX']}USER_SIG SET CONTENT = '$content', ";
+            $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_SIG SET CONTENT = '$content', ";
             $sql.= "HTML = '$html' WHERE UID = '$uid'";
 
         }else {
@@ -1414,7 +1414,7 @@ function user_clear_word_filter()
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    $sql = "DELETE QUICK IGNORE FROM {$table_data['PREFIX']}WORD_FILTER WHERE UID = '$uid'";
+    $sql = "DELETE QUICK FROM {$table_data['PREFIX']}WORD_FILTER WHERE UID = '$uid'";
 
     if (!$result = db_query($sql, $db_user_clear_word_filter)) return false;
 
@@ -1462,7 +1462,7 @@ function user_update_word_filter($filter_id, $filter_name, $match_text, $replace
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    $sql = "UPDATE {$table_data['PREFIX']}WORD_FILTER SET FILTER_NAME = '$filter_name', ";
+    $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}WORD_FILTER SET FILTER_NAME = '$filter_name', ";
     $sql.= "MATCH_TEXT = '$match_text', REPLACE_TEXT = '$replace_text', ";
     $sql.= "FILTER_TYPE = '$filter_option', FILTER_ENABLED = '$filter_enabled' ";
     $sql.= "WHERE UID = '$uid' AND FID = '$filter_id'";
@@ -1482,7 +1482,7 @@ function user_delete_word_filter($filter_id)
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    $sql = "DELETE QUICK IGNORE FROM {$table_data['PREFIX']}WORD_FILTER ";
+    $sql = "DELETE QUICK FROM {$table_data['PREFIX']}WORD_FILTER ";
     $sql.= "WHERE UID = '$uid' AND FID = '$filter_id'";
 
     if (!$result = db_query($sql, $db_user_delete_word_filter)) return false;

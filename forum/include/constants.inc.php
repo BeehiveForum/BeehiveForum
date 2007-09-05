@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: constants.inc.php,v 1.116 2007-08-18 19:42:00 decoyduck Exp $ */
+/* $Id: constants.inc.php,v 1.117 2007-09-05 22:56:37 decoyduck Exp $ */
 
 /**
 * Constants used throughout Beehive.
@@ -379,7 +379,7 @@ define("DELETE_USER_GROUP", 39);
 define("ADD_USER_TO_GROUP", 40);
 define("REMOVE_USER_FROM_GROUP", 41);
 define("CHANGE_USER_PASSWD", 42);
-define("UPDATE_USER_GROUP", 43);
+define("UPDATE LOW_PRIORITY_USER_GROUP", 43);
 define("ADD_BANNED_IP", 44);
 define("REMOVE_BANNED_IP", 45);
 define("ADD_BANNED_LOGON", 46);
@@ -394,7 +394,7 @@ define("UNDELETE_THREAD", 54);
 define("ADD_BANNED_REFERER", 55);
 define("REMOVE_BANNED_REFERER", 56);
 define("DELETED_RSS_FEED", 57);
-define("UPDATED_BAN", 58);
+define("UPDATE LOW_PRIORITYD_BAN", 58);
 define("THREAD_SPLIT", 59);
 define("THREAD_MERGE", 60);
 define("APPROVED_USER", 61);

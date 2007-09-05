@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.76 2007-09-04 18:01:16 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.77 2007-09-05 22:56:39 decoyduck Exp $ */
 
 /**
 * Functions relating to users interacting with profiles
@@ -68,7 +68,7 @@ function user_profile_update($uid, $piid, $entry, $privacy)
 
     if (db_num_rows($result) > 0) {
 
-        $sql = "UPDATE {$table_data['PREFIX']}USER_PROFILE ";
+        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_PROFILE ";
         $sql.= "SET ENTRY = '$entry', PRIVACY = '$privacy' ";
         $sql.= "WHERE UID = '$uid' AND PIID = '$piid'";
 
@@ -388,7 +388,7 @@ function user_get_post_count($uid)
 
         list($post_count) = db_fetch_array($result, DB_RESULT_NUM);
 
-        $sql = "UPDATE {$table_data['PREFIX']}USER_TRACK ";
+        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_TRACK ";
         $sql.= "SET POST_COUNT = '$post_count' WHERE UID = '$uid'";
 
         if (!$result = db_query($sql, $db_user_get_post_count)) return false;

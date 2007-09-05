@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.215 2007-09-05 19:42:09 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.216 2007-09-05 22:56:37 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -87,7 +87,7 @@ function pm_mark_as_read($mid)
 
     $pm_read = PM_READ;
 
-    $sql = "UPDATE PM SET TYPE = '$pm_read', NOTIFIED = 1 ";
+    $sql = "UPDATE LOW_PRIORITY PM SET TYPE = '$pm_read', NOTIFIED = 1 ";
     $sql.= "WHERE MID = '$mid' AND TO_UID = '$uid'";
 
     if (!$result = db_query($sql, $db_pm_mark_as_read)) return false;
@@ -614,7 +614,7 @@ function pm_search_execute($search_string, &$error)
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    $sql = "DELETE QUICK IGNORE FROM PM_SEARCH_RESULTS WHERE UID = '$uid'";
+    $sql = "DELETE QUICK FROM PM_SEARCH_RESULTS WHERE UID = '$uid'";
 
     if (!$result = db_query($sql, $db_pm_search_execute)) return false;
 
@@ -1390,7 +1390,7 @@ function pm_save_attachment_id($mid, $aid)
 
     }else {
 
-        $sql = "UPDATE PM_ATTACHMENT_IDS SET AID = '$aid' ";
+        $sql = "UPDATE LOW_PRIORITY PM_ATTACHMENT_IDS SET AID = '$aid' ";
         $sql.= "WHERE MID = '$mid'";
 
         if (!$result = db_query($sql, $db_pm_save_attachment_id)) return false;
@@ -1600,14 +1600,14 @@ function pm_update_saved_message($mid, $subject, $content, $tuid, $recipient_lis
 
     // Update the subject text
 
-    $sql = "UPDATE PM SET SUBJECT = '$subject', TO_UID = '$tuid', ";
+    $sql = "UPDATE LOW_PRIORITY PM SET SUBJECT = '$subject', TO_UID = '$tuid', ";
     $sql.= "RECIPIENTS = '$recipient_list' WHERE MID = '$mid'";
 
     if (!$result_subject = db_query($sql, $db_pm_edit_messages)) return false;
 
     // Update the content
 
-    $sql = "UPDATE PM_CONTENT SET CONTENT = '$content' WHERE MID = '$mid'";
+    $sql = "UPDATE LOW_PRIORITY PM_CONTENT SET CONTENT = '$content' WHERE MID = '$mid'";
     if (!$result_content = db_query($sql, $db_pm_edit_messages)) return false;
 
     return true;
@@ -1635,12 +1635,12 @@ function pm_edit_message($mid, $subject, $content)
 
     // Update the subject text
 
-    $sql = "UPDATE PM SET SUBJECT = '$subject_escaped' WHERE MID = '$mid'";
+    $sql = "UPDATE LOW_PRIORITY PM SET SUBJECT = '$subject_escaped' WHERE MID = '$mid'";
     if (!$result_subject = db_query($sql, $db_pm_edit_messages)) return false;
 
     // Update the content
 
-    $sql = "UPDATE PM_CONTENT SET CONTENT = '$content_escaped' WHERE MID = '$mid'";
+    $sql = "UPDATE LOW_PRIORITY PM_CONTENT SET CONTENT = '$content_escaped' WHERE MID = '$mid'";
     if (!$result_content = db_query($sql, $db_pm_edit_messages)) return false;
 
     return pm_update_sent_item($mid, $subject, $content);
@@ -1677,12 +1677,12 @@ function pm_update_sent_item($mid, $subject, $content)
 
     // Update the sent items subject text
 
-    $sql = "UPDATE PM SET SUBJECT = '$subject' WHERE MID = '$smid'";
+    $sql = "UPDATE LOW_PRIORITY PM SET SUBJECT = '$subject' WHERE MID = '$smid'";
     if (!$result_subject = db_query($sql, $db_pm_edit_messages)) return false;
 
     // Update the sent item content
 
-    $sql = "UPDATE PM_CONTENT SET CONTENT = '$content' WHERE MID = '$smid'";
+    $sql = "UPDATE LOW_PRIORITY PM_CONTENT SET CONTENT = '$content' WHERE MID = '$smid'";
     if (!$result_content = db_query($sql, $db_pm_edit_messages)) return false;
 
     return true;
@@ -1726,11 +1726,11 @@ function pm_delete_message($mid)
         delete_attachment_by_aid($db_delete_pm_row['AID']);
     }
 
-    $sql = "DELETE QUICK IGNORE FROM PM WHERE MID = '$mid'";
+    $sql = "DELETE QUICK FROM PM WHERE MID = '$mid'";
 
     if (!$result = db_query($sql, $db_delete_pm)) return false;
 
-    $sql = "DELETE QUICK IGNORE FROM PM_CONTENT WHERE MID = '$mid'";
+    $sql = "DELETE QUICK FROM PM_CONTENT WHERE MID = '$mid'";
 
     if (!$result = db_query($sql, $db_delete_pm)) return false;
 
@@ -1762,7 +1762,7 @@ function pm_archive_message($mid)
 
     // Archive any PM that are in the User's Inbox
 
-    $sql = "UPDATE PM SET TYPE = '$pm_saved_in' ";
+    $sql = "UPDATE LOW_PRIORITY PM SET TYPE = '$pm_saved_in' ";
     $sql.= "WHERE MID = '$mid' AND (TYPE & $pm_inbox_items > 0) ";
     $sql.= "AND TO_UID = '$uid'";
 
@@ -1770,7 +1770,7 @@ function pm_archive_message($mid)
 
     // Archive any PM that are in the User's Sent Items
 
-    $sql = "UPDATE PM SET TYPE = '$pm_saved_out' ";
+    $sql = "UPDATE LOW_PRIORITY PM SET TYPE = '$pm_saved_out' ";
     $sql.= "WHERE MID = '$mid' AND (TYPE & $pm_sent_items > 0) ";
     $sql.= "AND SMID = 0 AND FROM_UID = '$uid'";
 
@@ -1854,12 +1854,12 @@ function pm_new_check(&$pm_new_count, &$pm_outbox_count)
         // Mark the selected messages as unread / received and make the
         // sent items visible to the sender.
 
-        $sql = "UPDATE PM SET TYPE = '$pm_unread' WHERE MID in ($mid_list) ";
+        $sql = "UPDATE LOW_PRIORITY PM SET TYPE = '$pm_unread' WHERE MID in ($mid_list) ";
         $sql.= "AND TO_UID = '$uid'";
 
         if (!$result = db_query($sql, $db_pm_new_check)) return false;
 
-        $sql = "UPDATE PM SET SMID = 0 WHERE SMID IN ($mid_list) ";
+        $sql = "UPDATE LOW_PRIORITY PM SET SMID = 0 WHERE SMID IN ($mid_list) ";
         $sql.= "AND TYPE = '$pm_sent_item' AND TO_UID = '$uid'";
 
         if (!$result = db_query($sql, $db_pm_new_check)) return false;

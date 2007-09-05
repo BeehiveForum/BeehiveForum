@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.476 2007-09-03 22:43:16 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.477 2007-09-05 22:56:37 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1497,7 +1497,7 @@ function messages_update_read($tid, $pid, $last_read, $length, $modified)
 
             if ($thread_count > 0) {
 
-                $sql = "UPDATE {$table_data['PREFIX']}USER_THREAD ";
+                $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_THREAD ";
                 $sql.= "SET LAST_READ = '$pid', LAST_READ_AT = NOW() ";
                 $sql.= "WHERE UID = '$uid' AND TID = '$tid' ";
                 $sql.= "AND (LAST_READ < '$pid' OR LAST_READ IS NULL)";
@@ -1525,7 +1525,7 @@ function messages_update_read($tid, $pid, $last_read, $length, $modified)
 
     // Update thread viewed counter
 
-    $sql = "UPDATE {$table_data['PREFIX']}THREAD_STATS ";
+    $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}THREAD_STATS ";
     $sql.= "SET VIEWCOUNT = VIEWCOUNT + 1 WHERE TID = '$tid'";
 
     if (!$result = db_query($sql, $db_message_update_read)) return false;
@@ -1563,7 +1563,7 @@ function messages_set_read($tid, $pid, $uid, $modified)
 
         if ($unread_cutoff_stamp !== false && (($modified > $unread_cutoff_stamp) || $unread_cutoff_stamp = 0)) {
 
-            $sql = "UPDATE {$table_data['PREFIX']}USER_THREAD ";
+            $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_THREAD ";
             $sql.= "SET LAST_READ = '$pid', LAST_READ_AT = NULL ";
             $sql.= "WHERE UID = '$uid' AND TID = '$tid'";
 

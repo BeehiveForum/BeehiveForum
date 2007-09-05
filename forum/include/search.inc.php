@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.192 2007-09-04 18:01:16 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.193 2007-09-05 22:56:37 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -77,7 +77,7 @@ function search_execute($search_arguments, &$error)
     // Each user can only store one search result so we should
     // clean up their previous search if applicable.
 
-    $sql = "DELETE QUICK IGNORE FROM SEARCH_RESULTS WHERE UID = '$uid'";
+    $sql = "DELETE QUICK FROM SEARCH_RESULTS WHERE UID = '$uid'";
 
     if (!$result = db_query($sql, $db_search_execute)) return false;
 
@@ -433,7 +433,7 @@ function search_save_keywords($keywords_array)
 
     $keywords = db_escape_string(implode("\x00", $keywords_array));
 
-    $sql = "UPDATE {$table_data['PREFIX']}USER_TRACK ";
+    $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_TRACK ";
     $sql.= "SET LAST_SEARCH_KEYWORDS = '$keywords' ";
     $sql.= "WHERE UID = '$uid'";
 
@@ -798,7 +798,7 @@ function check_search_frequency()
 
         if (!is_numeric($last_search_stamp) || $last_search_stamp < $current_timestamp) {
 
-            $sql = "UPDATE {$table_data['PREFIX']}USER_TRACK ";
+            $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_TRACK ";
             $sql.= "SET LAST_SEARCH = NOW() WHERE UID = '$uid'";
 
             if (!$result = db_query($sql, $db_check_search_frequency)) return false;

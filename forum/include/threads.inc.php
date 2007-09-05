@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.281 2007-09-03 21:43:48 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.282 2007-09-05 22:56:37 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1653,7 +1653,7 @@ function thread_update_unread_cutoff($tid, $unread_pid, $unread_created)
 
     if (db_num_rows($result) > 0) {
 
-        $sql = "UPDATE {$table_data['PREFIX']}THREAD_STATS SET UNREAD_PID = '$unread_pid', ";
+        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}THREAD_STATS SET UNREAD_PID = '$unread_pid', ";
         $sql.= "UNREAD_CREATED = FROM_UNIXTIME('$unread_created') WHERE TID = '$tid'";
 
         if (!$result = db_query($sql, $db_thread_update_unread_cutoff)) return false;
@@ -1841,7 +1841,7 @@ function thread_auto_prune_unread_data($force_start = false)
 
         if (!$result = db_query($sql, $db_thread_prune_unread_data)) return false;
 
-        $sql = "DELETE QUICK IGNORE FROM {$table_data['PREFIX']}USER_THREAD ";
+        $sql = "DELETE QUICK FROM {$table_data['PREFIX']}USER_THREAD ";
         $sql.= "USING {$table_data['PREFIX']}USER_THREAD ";
         $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD ";
         $sql.= "ON ({$table_data['PREFIX']}USER_THREAD.TID = ";

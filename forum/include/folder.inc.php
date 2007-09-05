@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.135 2007-09-04 18:01:16 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.136 2007-09-05 22:56:37 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -209,7 +209,7 @@ function folder_delete($fid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "DELETE QUICK IGNORE FROM {$table_data['PREFIX']}FOLDER WHERE FID = '$fid'";
+    $sql = "DELETE QUICK FROM {$table_data['PREFIX']}FOLDER WHERE FID = '$fid'";
 
     if (!$result = db_query($sql, $db_folder_delete)) return false;
 
@@ -255,7 +255,7 @@ function folder_update($fid, $folder_data)
 
     if (db_num_rows($result) > 0) {
 
-        $sql = "UPDATE GROUP_PERMS SET PERM = '{$folder_data['PERM']}' ";
+        $sql = "UPDATE LOW_PRIORITY GROUP_PERMS SET PERM = '{$folder_data['PERM']}' ";
         $sql.= "WHERE FID = '$fid' AND FORUM = '$forum_fid' AND GID = '0'";
 
         if (!$result = db_query($sql, $db_folder_update)) return false;
@@ -280,7 +280,7 @@ function folder_move_threads($from, $to)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "UPDATE {$table_data['PREFIX']}THREAD SET FID = '$to' WHERE FID = '$from'";
+    $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}THREAD SET FID = '$to' WHERE FID = '$from'";
 
     if (!$result = db_query($sql, $db_folder_move_threads)) return false;
 
@@ -558,7 +558,7 @@ function user_set_folder_interest($fid, $interest)
 
     if (db_num_rows($result) > 0) {
 
-        $sql = "UPDATE {$table_data['PREFIX']}USER_FOLDER SET INTEREST = '$interest' ";
+        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_FOLDER SET INTEREST = '$interest' ";
         $sql.= "WHERE UID = '$uid' AND FID = '$fid'";
 
     }else {
@@ -664,7 +664,7 @@ function folder_move_up($fid)
 
         $new_position = $folder_position[$fid];
 
-        $sql = "UPDATE {$table_data['PREFIX']}FOLDER SET POSITION = '$new_position' ";
+        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}FOLDER SET POSITION = '$new_position' ";
         $sql.= "WHERE FID = '{$folder_order[$folder_order_key]}'";
 
         if (!$result = db_query($sql, $db_folder_move_up)) return false;
@@ -673,7 +673,7 @@ function folder_move_up($fid)
 
         $new_position = $folder_position[$folder_order[$folder_order_key]];
 
-        $sql = "UPDATE {$table_data['PREFIX']}FOLDER SET POSITION = '$new_position' ";
+        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}FOLDER SET POSITION = '$new_position' ";
         $sql.= "WHERE FID = '$fid'";
 
         if (!$result = db_query($sql, $db_folder_move_up)) return false;
@@ -715,14 +715,14 @@ function folder_move_down($fid)
 
         $new_position = $folder_position[$fid];
 
-        $sql = "UPDATE {$table_data['PREFIX']}FOLDER SET POSITION = '$new_position' ";
+        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}FOLDER SET POSITION = '$new_position' ";
         $sql.= "WHERE FID = '{$folder_order[$folder_order_key]}'";
 
         if (!$result = db_query($sql, $db_folder_move_down)) return false;
 
         $new_position = $folder_position[$folder_order[$folder_order_key]];
 
-        $sql = "UPDATE {$table_data['PREFIX']}FOLDER SET POSITION = '$new_position' ";
+        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}FOLDER SET POSITION = '$new_position' ";
         $sql.= "WHERE FID = '$fid'";
 
         if (!$result = db_query($sql, $db_folder_move_down)) return false;
@@ -752,7 +752,7 @@ function folder_positions_update()
 
             $new_position++;
 
-            $sql = "UPDATE {$table_data['PREFIX']}FOLDER ";
+            $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}FOLDER ";
             $sql.= "SET POSITION = '$new_position' WHERE FID = '$fid'";
 
             if (!$result_update = db_query($sql, $db_folder_positions_update)) return false;

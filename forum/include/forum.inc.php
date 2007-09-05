@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.259 2007-09-04 18:01:16 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.260 2007-09-05 22:56:37 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -583,7 +583,7 @@ function forum_save_settings($forum_settings_array)
 
             if (db_num_rows($result) > 0) {
 
-                $sql = "UPDATE FORUM_SETTINGS SET SVALUE = '$svalue' WHERE FID = '$forum_fid' ";
+                $sql = "UPDATE LOW_PRIORITY FORUM_SETTINGS SET SVALUE = '$svalue' WHERE FID = '$forum_fid' ";
                 $sql.= "AND SNAME = '$sname'";
 
                 if (!$result = db_query($sql, $db_forum_save_settings)) return false;
@@ -621,7 +621,7 @@ function forum_save_default_settings($forum_settings_array)
 
             if (db_num_rows($result) > 0) {
 
-                $sql = "UPDATE FORUM_SETTINGS SET SVALUE = '$svalue' WHERE FID = '0' ";
+                $sql = "UPDATE LOW_PRIORITY FORUM_SETTINGS SET SVALUE = '$svalue' WHERE FID = '0' ";
                 $sql.= "AND SNAME = '$sname'";
 
                 if (!$result = db_query($sql, $db_forum_save_default_settings)) return false;
@@ -1771,12 +1771,12 @@ function forum_update($fid, $forum_name, $owner_uid, $access_level)
 
         $forum_name = db_escape_string($forum_name);
 
-        $sql = "UPDATE FORUMS SET ACCESS_LEVEL = '$access_level', ";
+        $sql = "UPDATE LOW_PRIORITY FORUMS SET ACCESS_LEVEL = '$access_level', ";
         $sql.= "OWNER_UID = '$owner_uid' WHERE FID = '$fid'";
 
         if (!$result = db_query($sql, $db_forum_update)) return false;
 
-        $sql = "UPDATE FORUM_SETTINGS SET SVALUE = '$forum_name' ";
+        $sql = "UPDATE LOW_PRIORITY FORUM_SETTINGS SET SVALUE = '$forum_name' ";
         $sql.= "WHERE SNAME = 'forum_name' AND FID = '$fid'";
 
         if (!$result = db_query($sql, $db_forum_update)) return false;
@@ -1839,15 +1839,15 @@ function forum_delete($fid)
 
             list($webtag, $database_name) = db_fetch_array($result, DB_RESULT_NUM);
 
-            $sql = "DELETE QUICK IGNORE FROM FORUMS WHERE FID = '$fid'";
+            $sql = "DELETE QUICK FROM FORUMS WHERE FID = '$fid'";
 
             if (!$result = db_query($sql, $db_forum_delete)) return false;
 
-            $sql = "DELETE QUICK IGNORE FROM FORUM_SETTINGS WHERE FID = '$fid'";
+            $sql = "DELETE QUICK FROM FORUM_SETTINGS WHERE FID = '$fid'";
 
             if (!$result = db_query($sql, $db_forum_delete)) return false;
 
-            $sql = "DELETE QUICK IGNORE FROM GROUP_PERMS WHERE FORUM = '$fid'";
+            $sql = "DELETE QUICK FROM GROUP_PERMS WHERE FORUM = '$fid'";
 
             if (!$result = db_query($sql, $db_forum_delete)) return false;
 
@@ -1857,24 +1857,24 @@ function forum_delete($fid)
 
             while($user_perms = db_fetch_array($result)) {
 
-                $sql = "DELETE QUICK IGNORE FROM GROUP_USERS WHERE GID = '{$user_perms['GID']}'";
+                $sql = "DELETE QUICK FROM GROUP_USERS WHERE GID = '{$user_perms['GID']}'";
 
                 if (!$result_remove = db_query($sql, $db_forum_delete)) return false;
             }
 
-            $sql = "DELETE QUICK IGNORE FROM GROUPS WHERE FORUM = '$fid'";
+            $sql = "DELETE QUICK FROM GROUPS WHERE FORUM = '$fid'";
 
             if (!$result = db_query($sql, $db_forum_delete)) return false;
 
-            $sql = "DELETE QUICK IGNORE FROM USER_FORUM WHERE FID = '$fid'";
+            $sql = "DELETE QUICK FROM USER_FORUM WHERE FID = '$fid'";
 
             if (!$result = db_query($sql, $db_forum_delete)) return false;
 
-            $sql = "DELETE QUICK IGNORE FROM VISITOR_LOG WHERE FORUM = '$fid'";
+            $sql = "DELETE QUICK FROM VISITOR_LOG WHERE FORUM = '$fid'";
 
             if (!$result = db_query($sql, $db_forum_delete)) return false;
 
-            $sql = "DELETE QUICK IGNORE FROM SEARCH_RESULTS WHERE FORUM = '$fid'";
+            $sql = "DELETE QUICK FROM SEARCH_RESULTS WHERE FORUM = '$fid'";
 
             if (!$result = db_query($sql, $db_forum_delete)) return false;
 
@@ -1886,7 +1886,7 @@ function forum_delete($fid)
                 delete_attachment_by_aid($attachment_data['AID']);
             }
 
-            $sql = "DELETE QUICK IGNORE FROM POST_ATTACHMENT_IDS WHERE FID = '$fid'";
+            $sql = "DELETE QUICK FROM POST_ATTACHMENT_IDS WHERE FID = '$fid'";
 
             if (!$result = db_query($sql, $db_forum_delete)) return false;
 
@@ -1946,7 +1946,7 @@ function forum_update_access($fid, $access)
 
         $db_forum_update_access = db_connect();
 
-        $sql = "UPDATE FORUMS SET ACCESS_LEVEL = '$access' ";
+        $sql = "UPDATE LOW_PRIORITY FORUMS SET ACCESS_LEVEL = '$access' ";
         $sql.= "WHERE FID = '$fid'";
 
         if (!$result = db_query($sql, $db_forum_update_access)) return false;
@@ -1958,7 +1958,7 @@ function forum_update_access($fid, $access)
 
         if (db_num_rows($result) > 0) {
 
-            $sql = "UPDATE USER_FORUM SET ALLOWED = 1 WHERE UID = '$uid' AND FID = '$fid'";
+            $sql = "UPDATE LOW_PRIORITY USER_FORUM SET ALLOWED = 1 WHERE UID = '$uid' AND FID = '$fid'";
 
             if (!$result = db_query($sql, $db_forum_update_access)) return false;
 
@@ -1986,7 +1986,7 @@ function forum_update_password($fid, $password)
 
         $password = db_escape_string(md5($password));
 
-        $sql = "UPDATE FORUMS SET FORUM_PASSWD = '$password' ";
+        $sql = "UPDATE LOW_PRIORITY FORUMS SET FORUM_PASSWD = '$password' ";
         $sql.= "WHERE FID = '$fid'";
 
         if (!$result = db_query($sql, $db_forum_update_password)) return false;
@@ -2075,13 +2075,13 @@ function forum_update_default($fid)
 
         $db_forum_get_permissions = db_connect();
 
-        $sql = "UPDATE FORUMS SET DEFAULT_FORUM = 0";
+        $sql = "UPDATE LOW_PRIORITY FORUMS SET DEFAULT_FORUM = 0";
 
         if (!$result = db_query($sql, $db_forum_get_permissions)) return false;
 
         if ($fid > 0) {
 
-            $sql = "UPDATE FORUMS SET DEFAULT_FORUM = 1 WHERE FID = '$fid'";
+            $sql = "UPDATE LOW_PRIORITY FORUMS SET DEFAULT_FORUM = 1 WHERE FID = '$fid'";
 
             if (!$result = db_query($sql, $db_forum_get_permissions)) return false;
         }
@@ -2400,7 +2400,7 @@ function forum_update_last_visit($uid)
 
         if (db_num_rows($result) > 0) {
 
-            $sql = "UPDATE USER_FORUM SET LAST_VISIT = NOW() ";
+            $sql = "UPDATE LOW_PRIORITY USER_FORUM SET LAST_VISIT = NOW() ";
             $sql.= "WHERE UID = '$uid' AND FID = '$forum_fid'";
 
         }else {

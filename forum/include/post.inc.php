@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.160 2007-08-09 22:55:44 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.161 2007-09-05 22:56:37 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -104,14 +104,14 @@ function post_create($fid, $tid, $reply_pid, $by_uid, $fuid, $tuid, $content, $h
 
             // Update the thread length so it matches the number of posts
 
-            $sql = "UPDATE {$table_data['PREFIX']}THREAD SET LENGTH = '$new_pid', MODIFIED = NOW() ";
+            $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}THREAD SET LENGTH = '$new_pid', MODIFIED = NOW() ";
             $sql.= "WHERE TID = '$tid'";
 
             if (!$result = db_query($sql, $db_post_create)) return false;
 
             // Update the user's post count.
 
-            $sql = "UPDATE {$table_data['PREFIX']}USER_TRACK SET LAST_POST = NOW(), ";
+            $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_TRACK SET LAST_POST = NOW(), ";
             $sql.= "POST_COUNT = POST_COUNT + 1 WHERE UID = '$fuid'";
 
             if (!$result = db_query($sql, $db_post_create)) return false;
@@ -140,7 +140,7 @@ function post_approve($tid, $pid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "UPDATE {$table_data['PREFIX']}POST SET APPROVED = NOW(), APPROVED_BY = '$approve_uid' ";
+    $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}POST SET APPROVED = NOW(), APPROVED_BY = '$approve_uid' ";
     $sql.= "WHERE TID = '$tid' AND PID = '$pid'";
 
     if (!$result = db_query($sql, $db_post_approve)) return false;
@@ -167,7 +167,7 @@ function post_save_attachment_id($tid, $pid, $aid)
 
     if (db_num_rows($result) > 0) {
 
-        $sql = "UPDATE POST_ATTACHMENT_IDS SET AID = '$aid' ";
+        $sql = "UPDATE LOW_PRIORITY POST_ATTACHMENT_IDS SET AID = '$aid' ";
         $sql.= "WHERE FID = '$forum_fid' AND TID = '$tid' AND PID = '$pid'";
 
     }else {
@@ -484,7 +484,7 @@ function check_ddkey($ddkey)
 
         list($ddkey_check) = db_fetch_array($result);
 
-        $sql = "UPDATE {$table_data['PREFIX']}USER_TRACK ";
+        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_TRACK ";
         $sql.= "SET DDKEY = FROM_UNIXTIME($ddkey) WHERE UID = '$uid'";
 
         if (!$result = db_query($sql, $db_check_ddkey)) return false;
@@ -526,7 +526,7 @@ function check_post_frequency()
 
         if (!is_numeric($last_post_stamp) || $last_post_stamp < $current_timestamp) {
 
-            $sql = "UPDATE {$table_data['PREFIX']}USER_TRACK ";
+            $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_TRACK ";
             $sql.= "SET LAST_POST = NOW() WHERE UID = '$uid'";
 
             if (!$result = db_query($sql, $db_check_post_frequency)) return false;

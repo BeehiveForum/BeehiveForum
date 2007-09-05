@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.86 2007-09-04 18:01:16 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.87 2007-09-05 22:56:37 decoyduck Exp $ */
 
 /**
 * Functions relating to profiles
@@ -103,7 +103,7 @@ function profile_section_update($psid, $name)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "UPDATE {$table_data['PREFIX']}PROFILE_SECTION ";
+    $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}PROFILE_SECTION ";
     $sql.= "SET NAME = '$name' WHERE PSID = '$psid'";
 
     if (!$result = db_query($sql, $db_profile_section_update)) return false;
@@ -329,7 +329,7 @@ function profile_item_update($piid, $psid, $type, $name)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "UPDATE {$table_data['PREFIX']}PROFILE_ITEM SET PSID = '$psid', ";
+    $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}PROFILE_ITEM SET PSID = '$psid', ";
     $sql.= "TYPE = '$type', NAME = '$name' WHERE PIID = '$piid'";
 
     if (!$result = db_query($sql, $db_profile_item_update)) return false;
@@ -345,15 +345,15 @@ function profile_section_delete($psid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "DELETE QUICK IGNORE FROM {$table_data['PREFIX']}PROFILE_ITEM WHERE PSID = '$psid'";
+    $sql = "DELETE QUICK FROM {$table_data['PREFIX']}PROFILE_ITEM WHERE PSID = '$psid'";
 
     if (!$result = db_query($sql, $db_profile_section_delete)) return false;
 
-    $sql = "DELETE QUICK IGNORE FROM {$table_data['PREFIX']}PROFILE_SECTION WHERE PSID = '$psid'";
+    $sql = "DELETE QUICK FROM {$table_data['PREFIX']}PROFILE_SECTION WHERE PSID = '$psid'";
 
     if (!$result = db_query($sql, $db_profile_section_delete)) return false;
 
-    $sql = "DELETE QUICK IGNORE FROM {$table_data['PREFIX']}USER_PROFILE ";
+    $sql = "DELETE QUICK FROM {$table_data['PREFIX']}USER_PROFILE ";
     $sql.= "USING {$table_data['PREFIX']} LEFT JOIN {$table_data['PREFIX']}PROFILE_ITEM ";
     $sql.= "ON ({$table_data['PREFIX']}PROFILE_ITEM.PIID = {$table_data['PREFIX']}USER_PROFILE) ";
     $sql.= "WHERE {$table_data['PREFIX']}PROFILE_ITEM.PIID IS NULL";
@@ -371,11 +371,11 @@ function profile_item_delete($piid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "DELETE QUICK IGNORE FROM {$table_data['PREFIX']}USER_PROFILE WHERE PIID = '$piid'";
+    $sql = "DELETE QUICK FROM {$table_data['PREFIX']}USER_PROFILE WHERE PIID = '$piid'";
 
     if (!$result = db_query($sql, $db_profile_item_delete)) return false;
 
-    $sql = "DELETE QUICK IGNORE FROM {$table_data['PREFIX']}PROFILE_ITEM WHERE PIID = '$piid'";
+    $sql = "DELETE QUICK FROM {$table_data['PREFIX']}PROFILE_ITEM WHERE PIID = '$piid'";
 
     if (!$result = db_query($sql, $db_profile_item_delete)) return false;
 
@@ -491,14 +491,14 @@ function profile_section_move_up($psid)
 
         $new_position = $profile_section_position[$psid];
 
-        $sql = "UPDATE {$table_data['PREFIX']}PROFILE_SECTION SET POSITION = '$new_position' ";
+        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}PROFILE_SECTION SET POSITION = '$new_position' ";
         $sql.= "WHERE PSID = '{$profile_section_order[$profile_section_order_key]}'";
 
         if (!$result = db_query($sql, $db_profile_section_move_up)) return false;
 
         $new_position = $profile_section_position[$profile_section_order[$profile_section_order_key]];
 
-        $sql = "UPDATE {$table_data['PREFIX']}PROFILE_SECTION SET POSITION = '$new_position' ";
+        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}PROFILE_SECTION SET POSITION = '$new_position' ";
         $sql.= "WHERE PSID = '$psid'";
 
         if (!$result = db_query($sql, $db_profile_section_move_up)) return false;
@@ -544,14 +544,14 @@ function profile_section_move_down($psid)
 
         if (isset($profile_section_order[$profile_section_order_key])) {
 
-            $sql = "UPDATE {$table_data['PREFIX']}PROFILE_SECTION SET POSITION = '$new_position' ";
+            $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}PROFILE_SECTION SET POSITION = '$new_position' ";
             $sql.= "WHERE PSID = '{$profile_section_order[$profile_section_order_key]}'";
 
             if (!$result = db_query($sql, $db_profile_section_move_down)) return false;
 
             $new_position = $profile_section_position[$profile_section_order[$profile_section_order_key]];
 
-            $sql = "UPDATE {$table_data['PREFIX']}PROFILE_SECTION SET POSITION = '$new_position' ";
+            $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}PROFILE_SECTION SET POSITION = '$new_position' ";
             $sql.= "WHERE PSID = '$psid'";
 
             if (!$result = db_query($sql, $db_profile_section_move_down)) return false;
@@ -597,7 +597,7 @@ function profile_item_move_up($psid, $piid)
 
         $new_position = $profile_item_position[$piid];
 
-        $sql = "UPDATE {$table_data['PREFIX']}PROFILE_ITEM SET POSITION = '$new_position' ";
+        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}PROFILE_ITEM SET POSITION = '$new_position' ";
         $sql.= "WHERE PIID = '{$profile_item_order[$profile_item_order_key]}' ";
         $sql.= "AND PSID = '$psid'";
 
@@ -605,7 +605,7 @@ function profile_item_move_up($psid, $piid)
 
         $new_position = $profile_item_position[$profile_item_order[$profile_item_order_key]];
 
-        $sql = "UPDATE {$table_data['PREFIX']}PROFILE_ITEM SET POSITION = '$new_position' ";
+        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}PROFILE_ITEM SET POSITION = '$new_position' ";
         $sql.= "WHERE PIID = '$piid' AND PSID = '$psid'";
 
         if (!$result = db_query($sql, $db_profile_item_move_down)) return false;
@@ -650,7 +650,7 @@ function profile_item_move_down($psid, $piid)
 
         $new_position = $profile_item_position[$piid];
 
-        $sql = "UPDATE {$table_data['PREFIX']}PROFILE_ITEM SET POSITION = '$new_position' ";
+        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}PROFILE_ITEM SET POSITION = '$new_position' ";
         $sql.= "WHERE PIID = '{$profile_item_order[$profile_item_order_key]}' ";
         $sql.= "AND PSID = '$psid'";
 
@@ -658,7 +658,7 @@ function profile_item_move_down($psid, $piid)
 
         $new_position = $profile_item_position[$profile_item_order[$profile_item_order_key]];
 
-        $sql = "UPDATE {$table_data['PREFIX']}PROFILE_ITEM SET POSITION = '$new_position' ";
+        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}PROFILE_ITEM SET POSITION = '$new_position' ";
         $sql.= "WHERE PIID = '$piid' AND PSID = '$psid'";
 
         if (!$result = db_query($sql, $db_profile_item_move_down)) return false;
@@ -688,7 +688,7 @@ function profile_sections_positions_update()
 
             $new_position++;
 
-            $sql = "UPDATE {$table_data['PREFIX']}PROFILE_SECTION ";
+            $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}PROFILE_SECTION ";
             $sql.= "SET POSITION = '$new_position' WHERE PSID = '$psid'";
 
             if (!$result_update = db_query($sql, $db_profile_sections_positions_update)) return false;
@@ -722,7 +722,7 @@ function profile_items_positions_update()
 
             $new_position++;
 
-            $sql = "UPDATE {$table_data['PREFIX']}PROFILE_ITEM ";
+            $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}PROFILE_ITEM ";
             $sql.= "SET POSITION = '$new_position' WHERE PIID = '$piid'";
 
             if (!$result_update = db_query($sql, $db_profile_items_positions_update)) return false;

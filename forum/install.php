@@ -21,15 +21,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.74 2007-09-01 16:17:11 decoyduck Exp $ */
+/* $Id: install.php,v 1.75 2007-09-05 22:56:39 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
 
 // Installation checking functions
 include_once(BH_INCLUDE_PATH. "install.inc.php");
-
-install_check_mysql_version();
 
 // Multiple forum support
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
@@ -40,6 +38,8 @@ if (@file_exists(BH_INCLUDE_PATH. "config.inc.php")) {
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
+
+// Check for a forced install
 
 if (isset($_GET['force_install']) && $_GET['force_install'] == 'yes') {
     $force_install = true;
@@ -187,6 +187,12 @@ if (isset($_POST['install_method']) && (!defined('BEEHIVE_INSTALED') || $force_i
     if ($valid) {
 
         if ($db_install = db_connect(false)) {
+
+            // Check the MySQL version
+
+            install_check_mysql_version();
+
+            // Check the install method
 
             if (($install_method == 4) && (@file_exists('./install/upgrade-07x-to-072.php'))) {
 

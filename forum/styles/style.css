@@ -733,7 +733,7 @@ a {
 .pmbar {
     height: 11px;
     background-color: transparent;
-    background-image: url('../../images/pbar.png');
+    background-image: url('../images/pbar.png');
     background-repeat: repeat-x;
 }
 
@@ -1101,7 +1101,7 @@ a {
 .image_resize_text {
     border: 1px dashed #000000;
     height: 30px;
-    background-image: url('../../images/warningbg.png');
+    background-image: url('../images/warningbg.png');
     font-size: 8pt;
     cursor: pointer;
 }

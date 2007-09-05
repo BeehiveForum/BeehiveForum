@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.142 2007-09-04 18:01:15 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.143 2007-09-05 19:42:09 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -279,7 +279,7 @@ if (isset($_POST['cancel'])) {
 
         foreach ($_POST['answer_groups'] as $key => $t_answer_group) {
 
-            if (isset($t_answers[$key])) {
+            if (isset($t_answers[$key]) && is_numeric($t_answer_group)) {
 
                 $t_answer_groups[$key] = $t_answer_group;
             }
@@ -371,7 +371,7 @@ if (isset($_POST['cancel'])) {
         $valid = false;
     }
 
-    if ($valid && $t_poll_type == POLL_TABLE_GRAPH && sizeof(array_unique($t_answer_groups))  != 2) {
+    if ($valid && $t_poll_type == POLL_TABLE_GRAPH && sizeof(array_unique($t_answer_groups)) <> 2) {
 
         $error_msg_array[] = $lang['tablepollmusthave2groups'];
         $valid = false;
@@ -418,7 +418,7 @@ if (isset($_POST['cancel'])) {
 
         foreach ($_POST['answer_groups'] as $key => $t_answer_group) {
 
-            if (isset($t_answers[$key])) {
+            if (isset($t_answers[$key]) && is_numeric($t_answer_group)) {
 
                 $t_answer_groups[$key] = $t_answer_group;
             }
@@ -642,11 +642,11 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
         }
     }
 
-    foreach ($t_answer_groups as $key => $value) {
+    foreach ($t_answer_groups as $key => $answer_group) {
 
-        if (!isset($pollresults['GROUP_ID'][$key])) {
+        if (!isset($pollresults['GROUP_ID'][$key]) && is_numeric($answer_group)) {
 
-            $pollresults['GROUP_ID'][$key] = $value;
+            $pollresults['GROUP_ID'][$key] = $answer_group;
         }
     }
 
@@ -814,7 +814,7 @@ echo "                                      <table border=\"0\" class=\"posthead
 
 $available_answers = array(5, 10, 15, 20);
 
-if (isset($t_answer_count)) {
+if (isset($t_answer_count) && is_numeric($t_answer_count)) {
 
     $answer_count = $available_answers[$t_answer_count];
     $answer_selection = $t_answer_count;
@@ -904,20 +904,17 @@ for ($i = 0; $i < $answer_count; $i++) {
         }
     }
 
-    if (isset($t_answer_groups[$i])) {
+    if (isset($t_answer_groups[$i]) && is_numeric($t_answer_groups[$i])) {
 
         echo "                                          <td align=\"center\">", form_dropdown_array("answer_groups[]", $answer_groups, $t_answer_groups[$i]), "</td>\n";
 
+    }elseif (isset($pollresults['GROUP_ID'][$i]) && is_numeric($pollresults['GROUP_ID'][$i])) {
+
+        echo "                                          <td align=\"center\">", form_dropdown_array("answer_groups[]", $answer_groups, $pollresults['GROUP_ID'][$i]), "</td>\n";
+
     }else {
 
-        if (isset($pollresults['GROUP_ID'][$i])) {
-
-            echo "                                          <td align=\"center\">", form_dropdown_array("answer_groups[]", $answer_groups, $pollresults['GROUP_ID'][$i]), "</td>\n";
-
-        }else {
-
-            echo "                                          <td align=\"center\">", form_dropdown_array("answer_groups[]", $answer_groups, 1), "</td>\n";
-        }
+        echo "                                          <td align=\"center\">", form_dropdown_array("answer_groups[]", $answer_groups, 1), "</td>\n";
     }
 
     echo "                                          <td align=\"left\">&nbsp;</td>\n";

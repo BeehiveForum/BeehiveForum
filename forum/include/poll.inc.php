@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.204 2007-09-04 18:01:16 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.205 2007-09-05 19:42:09 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -92,7 +92,7 @@ function poll_create($tid, $poll_options, $answer_groups, $closes, $change_vote,
         if (strlen(trim($poll_option)) > 0) {
 
             $option_name  = db_escape_string($poll_option);
-            $option_group = (isset($answer_groups[$i])) ? $answer_groups[$i] : 1;
+            $option_group = (isset($answer_groups[$i]) && is_numeric($answer_groups[$i])) ? $answer_groups[$i] : 1;
 
             $sql = "INSERT INTO {$table_data['PREFIX']}POLL_VOTES (TID, OPTION_NAME, GROUP_ID) ";
             $sql.= "VALUES ('$tid', '$option_name', '$option_group')";
@@ -169,7 +169,7 @@ function poll_edit($fid, $tid, $thread_title, $poll_question, $poll_options, $an
         if (strlen(trim($poll_option)) > 0) {
 
             $option_name  = db_escape_string($poll_option);
-            $option_group = (isset($answer_groups[$key])) ? $answer_groups[$key] : 1;
+            $option_group = (isset($answer_groups[$key]) && is_numeric($answer_groups[$key])) ? $answer_groups[$key] : 1;
 
             $sql = "INSERT INTO {$table_data['PREFIX']}POLL_VOTES (TID, OPTION_NAME, GROUP_ID) ";
             $sql.= "VALUES ('$tid', '$option_name', '$option_group')";

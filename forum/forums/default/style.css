@@ -993,7 +993,7 @@ a {
 }
 
 .subhead_sort_asc {
-    background-image: url('../images/sort_asc.png');
+    background-image: url('../../images/sort_asc.png');
     background-repeat: no-repeat;
     background-position: 98% 50%;
     font-family: verdana, arial, helvetica, sans-serif;
@@ -1009,7 +1009,7 @@ a {
 
 
 .subhead_sort_desc {
-    background-image: url('../images/sort_desc.png');
+    background-image: url('../../images/sort_desc.png');
     background-repeat: no-repeat;
     background-position: 98% 50%;
     font-family: verdana, arial, helvetica, sans-serif;

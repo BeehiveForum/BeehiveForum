@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.467 2007-08-24 12:30:29 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.468 2007-09-07 20:47:45 decoyduck Exp $ */
 
 // British English language file
 
@@ -1777,6 +1777,7 @@ $lang['failedtoupdatethreadinterest'] = "Failed to update thread interest";
 $lang['failedtorenamethread'] = "Failed to rename thread";
 $lang['failedtomovethread'] = "Failed to move thread to specified folder";
 $lang['failedtoupdatethreadstickystatus'] = "Failed to update thread sticky status";
+$lang['failedtoupdatethreadclosedstatus'] = "Failed to update thread closed status";
 $lang['failedtoupdatethreadlockstatus'] = "Failed to update thread lock status";
 $lang['failedtodeletepostsbyuser'] = "Failed to delete posts by selected user";
 $lang['failedtodeletethread'] = "Failed to delete thread.";

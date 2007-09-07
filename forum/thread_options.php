@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.89 2007-08-21 20:27:39 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.90 2007-09-07 20:47:45 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -292,7 +292,7 @@ if (isset($_POST['submit'])) {
 
             }else {
 
-                $error_msg_array[] = $lang['failedtoupdatethreadstickystatus'];
+                $error_msg_array[] = $lang['failedtoupdatethreadclosedstatus'];
                 $valid = false;
             }
         }
@@ -320,16 +320,24 @@ if (isset($_POST['submit'])) {
                 $sticky_month = trim(_stripslashes($_POST['sticky_month']));
                 $sticky_year  = trim(_stripslashes($_POST['sticky_year']));
 
-                if (@checkdate($sticky_month, $sticky_day, $sticky_year)) {
+                if (is_numeric($sticky_month) && $sticky_month > 0 && is_numeric($sticky_day) && $sticky_day > 0 && is_numeric($sticky_year) && $sticky_year > 0) {
 
-                    $thread_sticky_until = mktime(0, 0, 0, $sticky_month, $sticky_day, $sticky_year);
+                    if (@checkdate($sticky_month, $sticky_day, $sticky_year)) {
 
-                    $threaddata['STICKY'] = $_POST['sticky'];
-                    $threaddata['STICKY_UNTIL'] = $thread_sticky_until;
+                        $thread_sticky_until = mktime(0, 0, 0, $sticky_month, $sticky_day, $sticky_year);
 
-                    if (thread_set_sticky($tid, true, $thread_sticky_until)) {
+                        $threaddata['STICKY'] = $_POST['sticky'];
+                        $threaddata['STICKY_UNTIL'] = $thread_sticky_until;
 
-                        admin_add_log_entry(CREATE_THREAD_STICKY, array($tid, $threaddata['TITLE']));
+                        if (thread_set_sticky($tid, true, $thread_sticky_until)) {
+
+                            admin_add_log_entry(CREATE_THREAD_STICKY, array($tid, $threaddata['TITLE']));
+
+                        }else {
+
+                            $error_msg_array[] = $lang['failedtoupdatethreadstickystatus'];
+                            $valid = false;
+                        }
 
                     }else {
 
@@ -339,14 +347,19 @@ if (isset($_POST['submit'])) {
 
                 }else {
 
-                    $error_msg_array[] = $lang['failedtoupdatethreadstickystatus'];
-                    $valid = false;
+                    if (thread_set_sticky($tid, true)) {
+
+                        admin_add_log_entry(REMOVE_THREAD_STICKY, array($tid, $threaddata['TITLE']));
+
+                    }else {
+
+                        $error_msg_array[] = $lang['failedtoupdatethreadstickystatus'];
+                        $valid = false;
+                    }
                 }
             }
 
         }else {
-
-            $threaddata['STICKY'] = $_POST['sticky'];
 
             if (thread_set_sticky($tid, false)) {
 

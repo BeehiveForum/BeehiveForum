@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.inc.php,v 1.75 2007-09-05 22:56:37 decoyduck Exp $ */
+/* $Id: links.inc.php,v 1.76 2007-09-08 17:42:41 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -163,10 +163,10 @@ function links_add($uri, $title, $description, $fid, $uid, $visible = true)
     if (!is_numeric($fid)) return false;
     if (!is_numeric($uid)) return false;
 
-    $uri = db_escape_string(_htmlentities($uri));
+    $uri = db_escape_string($uri);
 
-    $title = db_escape_string(_htmlentities($title));
-    $description = db_escape_string(_htmlentities($description));
+    $title = db_escape_string($title);
+    $description = db_escape_string($description);
 
     $db_links_add = db_connect();
 
@@ -186,7 +186,7 @@ function links_create_top_folder($name)
 {
     $db_links_create_top_folder = db_connect();
 
-    $name = db_escape_string(_htmlentities($name));
+    $name = db_escape_string($name);
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -202,7 +202,7 @@ function links_add_folder($fid, $name, $visible = false)
 {
     if (!is_numeric($fid)) return false;
 
-    $name = db_escape_string(_htmlentities($name));
+    $name = db_escape_string($name);
 
     $db_links_add_folder = db_connect();
 
@@ -224,7 +224,7 @@ function links_update_folder($fid, $name)
 
     if (!is_numeric($fid)) return false;
 
-    $name = db_escape_string(_htmlentities($name));
+    $name = db_escape_string($name);
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -254,9 +254,9 @@ function links_display_folder_path($fid, $folders, $links = true, $link_last_too
     $link_base = $link_base ? $link_base : "./links.php?webtag=$webtag";
 
     if (strstr($link_base, "?")) {
-        $html = $links ? "<a href=\"$link_base&amp;fid=$key\">". $folders[$key]['NAME']. "</a>" : $folders[$key]['NAME'];
+        $html = $links ? "<a href=\"$link_base&amp;fid=$key\">". word_filter_add_ob_tags(_htmlentities($folders[$key]['NAME'])). "</a>" : word_filter_add_ob_tags(_htmlentities($folders[$key]['NAME']));
     }else {
-        $html = $links ? "<a href=\"$link_base&amp;fid=$key\">". $folders[$key]['NAME']. "</a>" : $folders[$key]['NAME'];
+        $html = $links ? "<a href=\"$link_base&amp;fid=$key\">". word_filter_add_ob_tags(_htmlentities($folders[$key]['NAME'])). "</a>" : word_filter_add_ob_tags(_htmlentities($folders[$key]['NAME']));
     }
 
     if (is_array($tree_array) && sizeof($tree_array) > 0) {
@@ -264,9 +264,9 @@ function links_display_folder_path($fid, $folders, $links = true, $link_last_too
         while ($val = array_pop($tree_array)) {
 
             if (($val != $fid && $links) || $link_last_too) {
-                $html.= "&nbsp;&raquo;&nbsp;<a href=\"$link_base&amp;fid=$val\">". $folders[$val]['NAME']. "</a>";
+                $html.= "&nbsp;&raquo;&nbsp;<a href=\"$link_base&amp;fid=$val\">". word_filter_add_ob_tags(_htmlentities($folders[$val]['NAME'])). "</a>";
             } else {
-                $html.= "&nbsp;&raquo;&nbsp;". $folders[$val]['NAME'];
+                $html.= "&nbsp;&raquo;&nbsp;". word_filter_add_ob_tags(_htmlentities($folders[$val]['NAME']));
             }
         }
     }
@@ -558,7 +558,7 @@ function links_add_comment($lid, $uid, $comment)
     if (!is_numeric($lid))  return false;
     if (!is_numeric($uid))  return false;
 
-    $comment = db_escape_string(_htmlentities($comment));
+    $comment = db_escape_string($comment);
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -665,10 +665,10 @@ function links_update($lid, $fid, $title, $uri, $description)
     if (!is_numeric($lid)) return false;
     if (!is_numeric($fid)) return false;
 
-    $uri = db_escape_string(_htmlentities($uri));
+    $uri = db_escape_string($uri);
 
-    $title = db_escape_string(_htmlentities($title));
-    $description = db_escape_string(_htmlentities($description));
+    $title = db_escape_string($title);
+    $description = db_escape_string($description);
 
     if (!$table_data = get_table_prefix()) return false;
 

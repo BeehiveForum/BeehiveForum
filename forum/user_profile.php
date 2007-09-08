@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.131 2007-08-09 22:55:43 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.132 2007-09-08 17:42:41 decoyduck Exp $ */
 
 /**
 * Displays user profiles
@@ -333,7 +333,7 @@ if ($user_profile_array = user_get_profile_entries($uid)) {
             echo "                        <td align=\"center\">\n";
             echo "                          <table width=\"95%\">\n";
             echo "                            <tr>\n";
-            echo "                              <td align=\"left\" class=\"postbody\"><b>{$profile_sections[$psid]['NAME']}</b></td>\n";
+            echo "                              <td align=\"left\" class=\"postbody\"><b>", word_filter_add_ob_tags(_htmlentities($profile_sections[$psid]['NAME'])), "</b></td>\n";
             echo "                            </tr>\n";
             echo "                            <tr>\n";
             echo "                              <td align=\"center\">\n";
@@ -349,14 +349,14 @@ if ($user_profile_array = user_get_profile_entries($uid)) {
 
                     echo "                                  <tr>\n";
                     echo "                                    <td align=\"left\" width=\"40%\" valign=\"top\" class=\"profile_item_name\">$field_name:</td>\n";
-                    echo "                                    <td align=\"left\" class=\"profile_item_value\" valign=\"top\">{$field_values[$user_profile_entry['ENTRY']]}</td>\n";
+                    echo "                                    <td align=\"left\" class=\"profile_item_value\" valign=\"top\">", word_filter_add_ob_tags(_htmlentities($field_values[$user_profile_entry['ENTRY']])), "</td>\n";
                     echo "                                  </tr>\n";
 
                 }else {
 
                     echo "                                  <tr>\n";
-                    echo "                                    <td align=\"left\" width=\"40%\" valign=\"top\" class=\"profile_item_name\">{$user_profile_entry['NAME']}:</td>\n";
-                    echo "                                    <td align=\"left\" class=\"profile_item_value\" valign=\"top\">", isset($user_profile_entry['ENTRY']) ? nl2br(make_links($user_profile_entry['ENTRY'])) : "", "</td>\n";
+                    echo "                                    <td align=\"left\" width=\"40%\" valign=\"top\" class=\"profile_item_name\">", word_filter_add_ob_tags(_htmlentities($user_profile_entry['NAME'])), "</td>\n";
+                    echo "                                    <td align=\"left\" class=\"profile_item_value\" valign=\"top\">", isset($user_profile_entry['ENTRY']) ? word_filter_add_ob_tags(nl2br(make_links(_htmlentities($user_profile_entry['ENTRY'])))) : "", "</td>\n";
                     echo "                                  </tr>\n";
                 }
             }

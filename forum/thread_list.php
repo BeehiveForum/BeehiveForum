@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.307 2007-09-04 19:55:49 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.308 2007-09-08 17:42:41 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -442,7 +442,7 @@ foreach ($folder_order as $folder_number) {
             echo "            <img src=\"".style_image('folder_ignored.png')."\" alt=\"{$lang['ignoredfolder']}\" title=\"{$lang['ignoredfolder']}\" />\n";
         }
 
-        echo "            <a href=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$folder_number\" title=\"", word_filter_add_ob_tags($folder_info[$folder_number]['DESCRIPTION']), "\">", word_filter_add_ob_tags($folder_info[$folder_number]['TITLE']), "</a>\n";
+        echo "            <a href=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$folder_number\" title=\"", word_filter_add_ob_tags(_htmlentities($folder_info[$folder_number]['DESCRIPTION'])), "\">", word_filter_add_ob_tags($folder_info[$folder_number]['TITLE']), "</a>\n";
         echo "          </td>\n";
 
         if (bh_session_get_value('UID') > 0) {
@@ -616,7 +616,7 @@ foreach ($folder_order as $folder_number) {
                             echo "                      <td align=\"left\" valign=\"top\">";
                             echo "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.{$latest_post}\" target=\"", html_get_frame_name('right'), "\" class=\"threadname\" onclick=\"change_current_thread('{$thread['TID']}');\"";
                             echo "title=\"", sprintf($lang['threadstartedbytooltip'], $thread['TID'], word_filter_add_ob_tags(format_user_name($thread['LOGON'], $thread['NICKNAME'])), ($thread['VIEWCOUNT'] == 1) ? $lang['threadviewedonetime'] : sprintf($lang['threadviewedtimes'], $thread['VIEWCOUNT'])), "\">";
-                            echo word_filter_add_ob_tags(thread_format_prefix($thread['PREFIX'], $thread['TITLE'])), "</a> ";
+                            echo word_filter_add_ob_tags(_htmlentities(thread_format_prefix($thread['PREFIX'], $thread['TITLE']))), "</a> ";
 
                             if (isset($thread['INTEREST']) && $thread['INTEREST'] == THREAD_INTERESTED) echo "<img src=\"".style_image('high_interest.png')."\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" /> ";
                             if (isset($thread['INTEREST']) && $thread['INTEREST'] == THREAD_SUBSCRIBED) echo "<img src=\"".style_image('subscribe.png')."\" alt=\"{$lang['subscribed']}\" title=\"{$lang['subscribed']}\" /> ";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-07x-to-072.php,v 1.44 2007-08-31 21:02:35 decoyduck Exp $ */
+/* $Id: upgrade-07x-to-072.php,v 1.45 2007-09-08 17:42:42 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-07x-to-072.php") {
 
@@ -407,38 +407,6 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql.= "DEFAULT NULL AFTER DESCRIPTION";
 
     if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-
-    // Resolved bug with folder titles & descriptions not being htmlentities'd
-
-    $sql = "SELECT FID, TITLE, DESCRIPTION FROM {$forum_webtag}_FOLDER";
-
-    if ($result = @db_query($sql, $db_install)) {
-
-        while ($folder_data = db_fetch_array($result)) {
-
-            $fid = $folder_data['FID'];
-
-            if (!isset($folder_data['TITLE'])) $folder_data['TITLE'] = "";
-            if (!isset($folder_data['DESCRIPTION'])) $folder_data['DESCRIPTION'] = "";
-
-            $new_title = db_escape_string(_htmlentities($folder_data['TITLE']));
-            $new_description = db_escape_string(_htmlentities($folder_data['DESCRIPTION']));
-
-            $sql = "UPDATE {$forum_webtag}_FOLDER SET TITLE = '$new_title', ";
-            $sql.= "DESCRIPTION = '$new_description' WHERE FID = '$fid'";
-
-            if (!$result = @db_query($sql, $db_install)) {
-
-                $valid = false;
-                return;
-            }
-        }
-
-    }else {
 
         $valid = false;
         return;

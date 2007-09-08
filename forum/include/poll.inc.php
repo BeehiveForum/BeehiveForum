@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.206 2007-09-05 22:56:37 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.207 2007-09-08 17:42:42 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -76,7 +76,7 @@ function poll_create($tid, $poll_options, $answer_groups, $closes, $change_vote,
 
     if (!forum_get_setting('poll_allow_guests', false)) $allow_guests = POLL_GUEST_DENIED;
 
-    $question = db_escape_string(_htmlentities($question));
+    $question = db_escape_string($question);
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -120,8 +120,8 @@ function poll_edit($fid, $tid, $thread_title, $poll_question, $poll_options, $an
     if (!is_numeric($option_type))    $option_type    = POLL_OPTIONS_RADIOS;
     if (!is_numeric($allow_guests))   $allow_guests   = POLL_GUEST_DENIED;
 
-    $thread_title = db_escape_string(_htmlentities($thread_title));
-    $poll_question = db_escape_string(_htmlentities($poll_question));
+    $thread_title = db_escape_string($thread_title);
+    $poll_question = db_escape_string($poll_question);
 
     if (!forum_get_setting('poll_allow_guests', false)) $allow_guests = POLL_GUEST_DENIED;
 
@@ -433,12 +433,12 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
     $polldata['CONTENT'].= "                <table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" width=\"475\">\n";
     $polldata['CONTENT'].= "                  <tr>\n";
     $polldata['CONTENT'].= "                    <td align=\"left\">\n";
-    $polldata['CONTENT'].= "                      <form method=\"post\" action=\"". $_SERVER['PHP_SELF']. "\" target=\"_self\">\n";
+    $polldata['CONTENT'].= "                      <form method=\"post\" action=\"". basename($_SERVER['PHP_SELF']). "\" target=\"_self\">\n";
     $polldata['CONTENT'].= "                        ". form_input_hidden("webtag", _htmlentities($webtag)). "\n";
     $polldata['CONTENT'].= "                        ". form_input_hidden('tid', _htmlentities($tid)). "\n";
     $polldata['CONTENT'].= "                        <table width=\"450\">\n";
     $polldata['CONTENT'].= "                          <tr>\n";
-    $polldata['CONTENT'].= "                            <td align=\"left\"><h2>". word_filter_add_ob_tags($question). "</h2></td>\n";
+    $polldata['CONTENT'].= "                            <td align=\"left\"><h2>". word_filter_add_ob_tags(_htmlentities($question)). "</h2></td>\n";
     $polldata['CONTENT'].= "                          </tr>\n";
 
     $poll_group_count = 1;

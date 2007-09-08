@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.90 2007-09-07 20:47:45 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.91 2007-09-08 17:42:41 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -485,7 +485,7 @@ if ($threaddata['LENGTH'] > 0) {
 
     html_draw_top("basetarget=_blank", "robots=noindex,nofollow", 'thread_options.js');
 
-    echo "<h1>{$lang['threadoptions']} &raquo; <a href=\"messages.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\">#{$tid} ", thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE']), "</a></h1>\n";
+    echo "<h1>{$lang['threadoptions']} &raquo; <a href=\"messages.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\">#{$tid} ", word_filter_add_ob_tags(_htmlentities(thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE']))), "</a></h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -565,7 +565,7 @@ if ($threaddata['LENGTH'] > 0) {
         if (thread_is_poll($tid)) {
             echo "                        <td align=\"left\"><a href=\"edit_poll.php?webtag=$webtag&amp;msg=$msg\" target=\"_parent\">{$lang['editthepoll']}</a> {$lang['torenamethisthread']}.</td>\n";
         }else {
-            echo "                        <td align=\"left\">", form_input_text("rename", $threaddata['TITLE'], 30, 64), "</td>\n";
+            echo "                        <td align=\"left\">", form_input_text("rename", _htmlentities($threaddata['TITLE']), 30, 64), "</td>\n";
         }
 
         $thread_type = (thread_is_poll($tid) ? FOLDER_ALLOW_POLL_THREAD : FOLDER_ALLOW_NORMAL_THREAD);
@@ -918,7 +918,7 @@ if ($threaddata['LENGTH'] > 0) {
 
     html_draw_top("basetarget=_blank", "robots=noindex,nofollow", 'thread_options.js');
 
-    echo "<h1>{$lang['threadoptions']}: <a href=\"messages.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\">#{$tid} ", thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE']), "</a></h1>\n";
+    echo "<h1>{$lang['threadoptions']}: <a href=\"messages.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\">#{$tid} ", word_filter_add_ob_tags(_htmlentities(thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE']))), "</a></h1>\n";
     echo "<br />\n";
 
     echo "<div align=\"center\">\n";

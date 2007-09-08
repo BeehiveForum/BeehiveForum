@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.335 2007-09-05 22:56:38 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.336 2007-09-08 17:42:42 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -118,9 +118,9 @@ function user_update($uid, $logon, $nickname, $email)
 
     // Encode HTML tags and db_escape_string for protection.
 
-    $logon = db_escape_string(_htmlentities($logon));
-    $nickname = db_escape_string(_htmlentities($nickname));
-    $email = db_escape_string(_htmlentities($email));
+    $logon = db_escape_string($logon);
+    $nickname = db_escape_string($nickname);
+    $email = db_escape_string($email);
 
     // Check to see if we need to save the current
     // details to the USER_HISTORY table.
@@ -182,7 +182,7 @@ function user_update_nickname($uid, $nickname)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $nickname = db_escape_string(_htmlentities($nickname));
+    $nickname = db_escape_string($nickname);
 
     $sql = "UPDATE LOW_PRIORITY USER SET NICKNAME = '$nickname' ";
     $sql.= "WHERE UID = '$uid'";
@@ -200,7 +200,7 @@ function user_change_logon($uid, $logon)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $logon = db_escape_string(_htmlentities($logon));
+    $logon = db_escape_string($logon);
 
     $sql = "UPDATE LOW_PRIORITY USER SET LOGON = '$logon' ";
     $sql.= "WHERE UID = '$uid'";

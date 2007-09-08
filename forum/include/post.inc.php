@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.161 2007-09-05 22:56:37 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.162 2007-09-08 17:42:42 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -186,7 +186,7 @@ function post_create_thread($fid, $uid, $title, $poll = 'N', $sticky = 'N', $clo
     if (!is_numeric($fid)) return -1;
     if (!is_numeric($uid)) return -1;
 
-    $title = db_escape_string(_htmlentities($title));
+    $title = db_escape_string($title);
 
     $poll = ($poll == 'Y') ? 'Y' : 'N';
     $sticky = ($sticky == 'Y') ? 'Y' : 'N';

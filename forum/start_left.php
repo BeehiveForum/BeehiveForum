@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.149 2007-08-26 11:30:32 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.150 2007-09-08 17:42:40 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -215,7 +215,7 @@ if (is_array($folder_info) && sizeof($folder_info) > 0) {
 
             echo "                        <td align=\"left\" valign=\"top\"><a href=\"discussion.php?webtag=$webtag&amp;msg=$tid.$pid\" target=\"", html_get_frame_name('main'), "\" ";
             echo "title=\"", sprintf($lang['threadstartedbytooltip'], $thread['TID'], word_filter_add_ob_tags(format_user_name($thread['LOGON'], $thread['NICKNAME'])), ($thread['VIEWCOUNT'] == 1) ? $lang['threadviewedonetime'] : sprintf($lang['threadviewedtimes'], $thread['VIEWCOUNT'])), "\">";
-            echo word_filter_add_ob_tags(thread_format_prefix($thread['PREFIX'], $thread['TITLE'])), "</a> ";
+            echo word_filter_add_ob_tags(_htmlentities(thread_format_prefix($thread['PREFIX'], $thread['TITLE']))), "</a> ";
 
             if (isset($thread['INTEREST']) && $thread['INTEREST'] == THREAD_INTERESTED) echo "<img src=\"", style_image('high_interest.png'), "\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" /> ";
             if (isset($thread['INTEREST']) && $thread['INTEREST'] == THREAD_SUBSCRIBED) echo "<img src=\"", style_image('subscribe.png'), "\" alt=\"{$lang['subscribed']}\" title=\"{$lang['subscribed']}\" /> ";
@@ -353,7 +353,7 @@ if ($recent_visitors_array = visitor_log_get_recent()) {
 
         if (isset($recent_visitor['SID']) && !is_null($recent_visitor['SID'])) {
 
-            echo "                              <td valign=\"top\"  align=\"left\"><a href=\"{$recent_visitor['URL']}\" target=\"_blank\">{$recent_visitor['NAME']}</a></td>\n";
+            echo "                              <td valign=\"top\"  align=\"left\"><a href=\"{$recent_visitor['URL']}\" target=\"_blank\">", word_filter_add_ob_tags(_htmlentities($recent_visitor['NAME'])), "</a></td>\n";
 
         }elseif ($recent_visitor['UID'] > 0) {
 

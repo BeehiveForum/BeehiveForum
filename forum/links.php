@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.php,v 1.101 2007-08-16 15:38:12 decoyduck Exp $ */
+/* $Id: links.php,v 1.102 2007-09-08 17:42:40 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -274,8 +274,8 @@ if ($viewmode == LINKS_VIEW_HIERARCHICAL) {
         while (list($key, $val) = each($subfolders)) {
 
             echo "                          <tr>\n";
-            echo "                            <td class=\"postbody\">\n";
-            echo "                              <img src=\"" . style_image("folder.png") . "\" alt=\"{$lang['folder']}\" title=\"{$lang['folder']}\" /></td><td align=\"left\" class=\"postbody\"><a href=\"links.php?webtag=$webtag&amp;fid=$val\""; if ($folders[$val]['VISIBLE'] == "N") echo "class=\"link_hidden\""; echo ">{$folders[$val]['NAME']}</a>";
+            echo "                            <td class=\"postbody\"><img src=\"" . style_image("folder.png") . "\" alt=\"{$lang['folder']}\" title=\"{$lang['folder']}\" /></td>\n";
+            echo "                            <td align=\"left\" class=\"postbody\"><a href=\"links.php?webtag=$webtag&amp;fid=$val\" class=\"", ($folders[$val]['VISIBLE'] == "N") ? "link_hidden" : "", "\">", word_filter_add_ob_tags(_htmlentities($folders[$val]['NAME'])), "</a>";
 
             if (bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0) && $folders[$val]['VISIBLE'] == "Y") {
 
@@ -426,12 +426,12 @@ if (sizeof($links['links_array']) > 0 ) {
         if ($link['VISIBLE'] == "N") {
 
             echo "                <tr class=\"link_hidden\">\n";
-            echo "                  <td align=\"left\" class=\"postbody\" valign=\"top\">&nbsp;<a href=\"links_detail.php?webtag=$webtag&amp;lid=$key&amp;fid=$fid&amp;page=$page\" class=\"link_hidden\">{$link['TITLE']}</a></td>\n";
+            echo "                  <td align=\"left\" class=\"postbody\" valign=\"top\">&nbsp;<a href=\"links_detail.php?webtag=$webtag&amp;lid=$key&amp;fid=$fid&amp;page=$page\" class=\"link_hidden\">", word_filter_add_ob_tags(_htmlentities($link['TITLE'])), "</a></td>\n";
 
         }else {
 
             echo "                <tr>\n";
-            echo "                  <td align=\"left\" class=\"postbody\" valign=\"top\">&nbsp;<a href=\"links_detail.php?webtag=$webtag&amp;lid=$key&amp;fid=$fid&amp;page=$page\">{$link['TITLE']}</a></td>\n";
+            echo "                  <td align=\"left\" class=\"postbody\" valign=\"top\">&nbsp;<a href=\"links_detail.php?webtag=$webtag&amp;lid=$key&amp;fid=$fid&amp;page=$page\">", word_filter_add_ob_tags(_htmlentities($link['TITLE'])), "</a></td>\n";
         }
 
         echo "                  <td align=\"center\" class=\"postbody\" valign=\"top\">", format_time($link['CREATED']), "</td>\n";

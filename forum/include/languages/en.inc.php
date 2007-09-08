@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.468 2007-09-07 20:47:45 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.469 2007-09-08 17:42:42 decoyduck Exp $ */
 
 // British English language file
 
@@ -413,6 +413,7 @@ $lang['multilinetextfield'] = "Multi-line Text Field";
 $lang['radiobuttons'] = "Radio Buttons";
 $lang['dropdown'] = "Drop Down";
 $lang['threadcount'] = "Thread Count";
+$lang['clicktoeditfolder'] = "Click To Edit Folder";
 $lang['fieldtypeexample1'] = "For Radio Buttons and Drop Down Fields you need to separate the fieldname and the values with a colon and each value should be separated by semi-colons.";
 $lang['fieldtypeexample2'] = "Example: To create a basic Gender radio buttons, with two selections for Male and Female, you would enter: <b>Gender:Male;Female</b> in the Item Name field.";
 $lang['editedwordfilter'] = "Edited Word Filter";

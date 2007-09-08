@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.179 2007-08-16 15:38:12 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.180 2007-09-08 17:42:40 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -243,18 +243,16 @@ if (isset($t_rmid) && $t_rmid > 0) {
 
         if (!isset($_POST['t_subject']) || trim($_POST['t_subject']) == "") {
 
-            $t_subject = _htmlentities_decode($pm_data['SUBJECT']);
-
             if ($forward_msg) {
 
                 if (strtoupper(substr($t_subject, 0, 4)) != "FWD:") {
-                    $t_subject = "Fwd:$t_subject";
+                    $t_subject = "Fwd:{$pm_data['SUBJECT']}";
                 }
 
             }elseif (!$edit_msg) {
 
                 if (strtoupper(substr($t_subject, 0, 3)) != "RE:") {
-                    $t_subject = "Re:$t_subject";
+                    $t_subject = "Re:{$pm_data['SUBJECT']}";
                 }
             }
         }
@@ -808,7 +806,7 @@ if ($valid && isset($_POST['preview'])) {
     $pm_preview_array['FNICK']  = $preview_fuser['NICKNAME'];
     $pm_preview_array['FROM_UID'] = $preview_fuser['UID'];
 
-    $pm_preview_array['SUBJECT'] = _htmlentities($t_subject);
+    $pm_preview_array['SUBJECT'] = $t_subject;
     $pm_preview_array['CREATED'] = mktime();
     $pm_preview_array['AID'] = $aid;
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.232 2007-08-18 19:42:00 decoyduck Exp $ */
+/* $Id: edit.php,v 1.233 2007-09-08 17:42:40 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -677,9 +677,9 @@ echo "                  <table class=\"posthead\" width=\"210\">\n";
 echo "                    <tr>\n";
 echo "                      <td align=\"left\">\n";
 echo "                        <h2>{$lang['folder']}</h2>\n";
-echo "                        ", word_filter_add_ob_tags($threaddata['FOLDER_TITLE']), "\n";
+echo "                        ", word_filter_add_ob_tags(_htmlentities($threaddata['FOLDER_TITLE'])), "\n";
 echo "                        <h2>{$lang['threadtitle']}</h2>\n";
-echo "                        ", word_filter_add_ob_tags(thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE'])), "\n";
+echo "                        ", word_filter_add_ob_tags(_htmlentities(thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE']))), "\n";
 echo "                        <h2>{$lang['to']}</h2>\n";
 
 if ($preview_message['TLOGON'] != $lang['allcaps']) {

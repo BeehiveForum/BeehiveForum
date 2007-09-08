@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.77 2007-09-05 22:56:39 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.78 2007-09-08 17:42:42 decoyduck Exp $ */
 
 /**
 * Functions relating to users interacting with profiles
@@ -59,7 +59,7 @@ function user_profile_update($uid, $piid, $entry, $privacy)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $entry = db_escape_string(_htmlentities($entry));
+    $entry = db_escape_string($entry);
 
     $sql = "SELECT PIID FROM {$table_data['PREFIX']}USER_PROFILE ";
     $sql.= "WHERE PIID = '$piid' AND UID = '$uid'";

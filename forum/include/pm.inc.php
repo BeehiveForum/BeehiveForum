@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.216 2007-09-05 22:56:37 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.217 2007-09-08 17:42:42 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1189,17 +1189,15 @@ function pm_display($pm_message_array, $folder, $preview = false, $export_html =
         }
     }
 
-    $pm_message_array['CONTENT'] = word_filter_add_ob_tags($pm_message_array['CONTENT']);
-    $pm_message_array['SUBJECT'] = word_filter_add_ob_tags($pm_message_array['SUBJECT']);
-
-    // Add emoticons/wikilinks
+    // Add emoticons/wikilinks and word filter tags
 
     $pm_message_array['CONTENT'] = message_split_fiddle($pm_message_array['CONTENT']);
+    $pm_message_array['CONTENT'] = word_filter_add_ob_tags($pm_message_array['CONTENT']);
 
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['subject']}:&nbsp;</span></td>\n";
-    echo "                        <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">{$pm_message_array['SUBJECT']}</span></td>\n";
+    echo "                        <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">", word_filter_add_ob_tags(_htmlentities($pm_message_array['SUBJECT'])), "</span></td>\n";
     echo "                        <td align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\">", format_time($pm_message_array['CREATED']), "&nbsp;</span></td>\n";
     echo "                      </tr>\n";
     echo "                    </table>\n";
@@ -1421,7 +1419,7 @@ function pm_send_message($tuid, $fuid, $subject, $content, $aid)
 
     if (!is_md5($aid)) return false;
 
-    $subject_escaped = db_escape_string(_htmlentities($subject));
+    $subject_escaped = db_escape_string($subject);
     $content_escaped = db_escape_string($content);
 
     // PM_OUTBOX constant.
@@ -1487,7 +1485,7 @@ function pm_add_sent_item($smid, $tuid, $fuid, $subject, $content, $aid)
 
     if (!is_md5($aid)) return false;
 
-    $subject_escaped = db_escape_string(_htmlentities($subject));
+    $subject_escaped = db_escape_string($subject);
     $content_escaped = db_escape_string($content);
 
     // PM_SENT constant.
@@ -1541,7 +1539,7 @@ function pm_save_message($subject, $content, $tuid, $recipient_list)
 
     if (!is_numeric($tuid)) return false;
 
-    $subject = db_escape_string(_htmlentities($subject));
+    $subject = db_escape_string($subject);
     $recipient_list = db_escape_string($recipient_list);
     $content = db_escape_string($content);
 
@@ -1593,7 +1591,7 @@ function pm_update_saved_message($mid, $subject, $content, $tuid, $recipient_lis
     if (!is_numeric($mid)) return false;
     if (!is_numeric($tuid)) return false;
 
-    $subject = db_escape_string(_htmlentities($subject));
+    $subject = db_escape_string($subject);
     $content = db_escape_string($content);
 
     $recipient_list = db_escape_string($recipient_list);
@@ -1630,7 +1628,7 @@ function pm_edit_message($mid, $subject, $content)
 
     if (!is_numeric($mid)) return false;
 
-    $subject_escaped = db_escape_string(_htmlentities($subject));
+    $subject_escaped = db_escape_string($subject);
     $content_escaped = db_escape_string($content);
 
     // Update the subject text
@@ -1663,7 +1661,7 @@ function pm_update_sent_item($mid, $subject, $content)
 
     if (!is_numeric($mid)) return false;
 
-    $subject = db_escape_string(_htmlentities($subject));
+    $subject = db_escape_string($subject);
     $content = db_escape_string($content);
 
     // Query the database for the sent item's MID

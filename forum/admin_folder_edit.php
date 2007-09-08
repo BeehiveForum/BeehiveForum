@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_edit.php,v 1.60 2007-09-02 18:46:56 decoyduck Exp $ */
+/* $Id: admin_folder_edit.php,v 1.61 2007-09-08 17:42:40 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -298,7 +298,7 @@ $allowed_post_types = array(FOLDER_ALLOW_NORMAL_THREAD => $lang['normalthreadson
 
 html_draw_top();
 
-echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['managefolders']} &raquo; {$folder_data['TITLE']}</h1>\n";
+echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['managefolders']} &raquo; ", word_filter_add_ob_tags(_htmlentities($folder_data['TITLE'])), "</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     html_display_error_array($error_msg_array, '500', 'center');
@@ -331,7 +331,7 @@ echo "                        <td align=\"left\">", form_input_text("name", $fol
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['description']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("description", $folder_data['DESCRIPTION'], 30, 255), form_input_hidden("old_description", _htmlentities($folder_data['DESCRIPTION'])), "</td>\n";
+echo "                        <td align=\"left\">", form_input_text("description", _htmlentities($folder_data['DESCRIPTION']), 30, 255), form_input_hidden("old_description", _htmlentities($folder_data['DESCRIPTION'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['threadtitleprefix']}:</td>\n";

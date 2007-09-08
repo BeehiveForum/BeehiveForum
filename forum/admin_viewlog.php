@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.117 2007-07-19 22:14:13 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.118 2007-09-08 17:42:40 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -198,7 +198,7 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
         echo "                    <td align=\"left\" valign=\"top\">", format_time($admin_log_entry['CREATED']), "</td>\n";
         echo "                    <td align=\"left\" valign=\"top\"><a href=\"admin_user.php?webtag=$webtag&amp;uid=", $admin_log_entry['UID'], "\">", word_filter_add_ob_tags(format_user_name($admin_log_entry['LOGON'], $admin_log_entry['NICKNAME'])), "</a></td>\n";
 
-        $entry_array = explode("\x00", $admin_log_entry['ENTRY']);
+        $entry_array = _htmlentities(explode("\x00", $admin_log_entry['ENTRY']));
 
         foreach($entry_array as $key => $value) {
             if (strlen($value) < 1) $entry_array[$key] = "Unknown";
@@ -385,7 +385,7 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
             case REMOVE_THREAD_STICKY:
 
-                $thread_link = sprintf("<a href=\"index.php?webtag=$webtag&amp;msg=%s.1\" target=\"_blank\">%s</a>", $entry_array[0], $entry_array[1]); 
+                $thread_link = sprintf("<a href=\"index.php?webtag=$webtag&amp;msg=%s.1\" target=\"_blank\">%s</a>", $entry_array[0], $entry_array[1]);
                 $action_text = sprintf($lang['madethreadnonsticky'], $thread_link);
                 break;
 

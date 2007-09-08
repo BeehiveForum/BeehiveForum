@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.143 2007-09-05 19:42:09 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.144 2007-09-08 17:42:40 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -681,7 +681,7 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
     $polldata['CONTENT'].= "    <td align=\"center\">\n";
     $polldata['CONTENT'].= "      <table width=\"95%\">\n";
     $polldata['CONTENT'].= "        <tr>\n";
-    $polldata['CONTENT'].= "          <td align=\"left\"><h2>". word_filter_add_ob_tags($polldata['QUESTION']). "</h2></td>\n";
+    $polldata['CONTENT'].= "          <td align=\"left\"><h2>". word_filter_add_ob_tags(_htmlentities($polldata['QUESTION'])). "</h2></td>\n";
     $polldata['CONTENT'].= "        </tr>\n";
     $polldata['CONTENT'].= "        <tr>\n";
     $polldata['CONTENT'].= "          <td align=\"left\" class=\"postbody\">\n";
@@ -771,9 +771,9 @@ echo "                    <table class=\"posthead\" width=\"210\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">\n";
 echo "                          <h2>{$lang['threadtitle']}</h2>\n";
-echo "                          ", form_input_text('t_threadtitle', isset($t_threadtitle) ? _htmlentities($t_threadtitle) : $threaddata['TITLE'], 30, 64), "\n";
+echo "                          ", form_input_text('t_threadtitle', isset($t_threadtitle) ? _htmlentities($t_threadtitle) : _htmlentities($threaddata['TITLE']), 30, 64), "\n";
 echo "                          <h2>{$lang['pollquestion']}</h2>\n";
-echo "                          ", form_input_text('question', isset($t_question) ? _htmlentities($t_question) : $polldata['QUESTION'], 30, 64), "\n";
+echo "                          ", form_input_text('question', isset($t_question) ? _htmlentities($t_question) : _htmlentities($polldata['QUESTION']), 30, 64), "\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";

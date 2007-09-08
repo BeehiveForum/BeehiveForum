@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.477 2007-09-05 22:56:37 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.478 2007-09-08 17:42:41 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -525,7 +525,7 @@ function messages_top($folder_title, $thread_prefix, $thread_title, $interest_le
     $lang = load_language_file();
 
     echo "<p><img src=\"", style_image('folder.png'). "\" alt=\"{$lang['folder']}\" title=\"{$lang['folder']}\" />&nbsp;";
-    echo word_filter_add_ob_tags($folder_title), ": ", word_filter_add_ob_tags(thread_format_prefix($thread_prefix, $thread_title));
+    echo word_filter_add_ob_tags(_htmlentities($folder_title)), ": ", word_filter_add_ob_tags(_htmlentities(thread_format_prefix($thread_prefix, $thread_title)));
 
     if ($closed) echo "&nbsp;<img src=\"", style_image('thread_closed.png'), "\" alt=\"{$lang['closed']}\" title=\"{$lang['closed']}\" />\n";
     if ($interest_level == THREAD_INTERESTED) echo "&nbsp;<img src=\"", style_image('high_interest.png'), "\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" />";

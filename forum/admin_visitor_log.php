@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_visitor_log.php,v 1.17 2007-05-31 21:59:14 decoyduck Exp $ */
+/* $Id: admin_visitor_log.php,v 1.18 2007-09-08 17:42:40 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -150,7 +150,7 @@ if ($admin_visitor_log_array = admin_get_visitor_log($start, 10)) {
 
             if (isset($visitor['SID']) && !is_null($visitor['SID'])) {
 
-                echo "                   <td class=\"postbody\" align=\"left\"><a href=\"{$visitor['URL']}\" target=\"_blank\">{$visitor['NAME']}</a></td>\n";
+                echo "                   <td class=\"postbody\" align=\"left\"><a href=\"{$visitor['URL']}\" target=\"_blank\">", word_filter_add_ob_tags(_htmlentities($visitor['NAME'])), "</a></td>\n";
 
             }elseif ($visitor['UID'] > 0) {
 

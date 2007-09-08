@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_detail.php,v 1.95 2007-08-16 15:38:12 decoyduck Exp $ */
+/* $Id: links_detail.php,v 1.96 2007-09-08 17:42:40 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -282,7 +282,7 @@ $folders = links_folders_get(bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0))
 
 html_draw_top('openprofile.js');
 
-echo "<h1>{$lang['links']} &raquo; ", links_display_folder_path($link['FID'], $folders, true, true, "./links.php?webtag=$webtag"), "&nbsp;&raquo;&nbsp;<a href=\"links.php?webtag=$webtag&amp;lid=$lid&amp;action=go\" target=\"_blank\">{$link['TITLE']}</a></h1>\n";
+echo "<h1>{$lang['links']} &raquo; ", links_display_folder_path($link['FID'], $folders, true, true, "./links.php?webtag=$webtag"), "&nbsp;&raquo;&nbsp;<a href=\"links.php?webtag=$webtag&amp;lid=$lid&amp;action=go\" target=\"_blank\">", word_filter_add_ob_tags(_htmlentities($link['TITLE'])), "</a></h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -310,7 +310,7 @@ echo "                <td align=\"center\">\n";
 echo "                  <table class=\"posthead\" width=\"95%\">\n";
 echo "                    <tr>\n";
 echo "                      <td align=\"left\" nowrap=\"nowrap\" valign=\"top\" width=\"120\">{$lang['address']}:</td>\n";
-echo "                      <td align=\"left\"><a href=\"links.php?webtag=$webtag&amp;lid=$lid&amp;action=go\" target=\"_blank\">", strlen($link['URI']) > 35 ? substr($link['URI'], 0, 35) . '&hellip;' : $link['URI'], "</a></td>\n";
+echo "                      <td align=\"left\"><a href=\"links.php?webtag=$webtag&amp;lid=$lid&amp;action=go\" target=\"_blank\">", strlen($link['URI']) > 35 ? _htmlentities(substr($link['URI'], 0, 35)) . '&hellip;' : _htmlentities($link['URI']), "</a></td>\n";
 echo "                    </tr>\n";
 echo "                    <tr>\n";
 echo "                      <td align=\"left\" nowrap=\"nowrap\" valign=\"top\">{$lang['submittedby']}:</td>\n";
@@ -318,7 +318,7 @@ echo "                      <td align=\"left\">", (isset($link['LOGON']) ? word_
 echo "                    </tr>\n";
 echo "                    <tr>\n";
 echo "                      <td align=\"left\" nowrap=\"nowrap\" valign=\"top\">{$lang['description']}:</td>\n";
-echo "                      <td align=\"left\">{$link['DESCRIPTION']}</td>\n";
+echo "                      <td align=\"left\">", word_filter_add_ob_tags(_htmlentities($link['DESCRIPTION'])), "</td>\n";
 echo "                    </tr>\n";
 echo "                    <tr>\n";
 echo "                      <td align=\"left\" nowrap=\"nowrap\" valign=\"top\">{$lang['date']}:</td>\n";
@@ -387,7 +387,7 @@ if (!user_is_guest()) {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">{$lang['rate']} {$link['TITLE']}: </td>";
+    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">{$lang['rate']} ", word_filter_add_ob_tags(_htmlentities($link['TITLE'])), ": </td>";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"center\">\n";
@@ -452,7 +452,7 @@ if ($comments_array = links_get_comments($lid)) {
         echo "                  <td align=\"center\">\n";
         echo "                    <table class=\"posthead\" width=\"95%\">\n";
         echo "                      <tr>\n";
-        echo "                        <td align=\"left\">{$comment['COMMENT']}</td>\n";
+        echo "                        <td align=\"left\">", word_filter_add_ob_tags(_htmlentities($comment['COMMENT'])), "</td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
         echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -487,7 +487,7 @@ if (!user_is_guest()) {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\">{$lang['addacommentabout']} {$link['TITLE']}: </td>";
+    echo "                  <td align=\"left\" class=\"subhead\">{$lang['addacommentabout']} ", word_filter_add_ob_tags(_htmlentities($link['TITLE'])), "</td>";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"center\">\n";

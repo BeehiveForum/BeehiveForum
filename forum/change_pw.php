@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: change_pw.php,v 1.64 2007-08-16 15:38:12 decoyduck Exp $ */
+/* $Id: change_pw.php,v 1.65 2007-09-08 19:34:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -181,11 +181,7 @@ if (isset($_GET['u']) && is_numeric($_GET['u']) && isset($_GET['h']) && is_md5($
     exit;
 }
 
-if ($user = user_get_password($uid, $key)) {
-
-    $logon = strtoupper($user['LOGON']);
-
-}else {
+if (!$user = user_get_password($uid, $key)) {
 
     html_draw_top();
     html_error_msg($lang['requiredinformationnotfound']);

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: search_popup.php,v 1.17 2007-09-08 17:42:40 decoyduck Exp $ */
+/* $Id: search_popup.php,v 1.18 2007-09-08 19:34:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -338,13 +338,13 @@ if (strlen(trim($search_query)) > 0) {
                 if (($search_results_array['results_count'] > 1) && $allow_multi === false) {
 
                     echo "                      <tr>\n";
-                    echo "                        <td align=\"left\">", form_radio("search_result[]", $search_result['LOGON'], ''), "&nbsp;<a href=\"user_profile.php?webtag=$webtag&amp;uid={$search_result['UID']}\" target=\"_blank\" onclick=\"return openProfile({$search_result['UID']}, '$webtag')\">", word_filter_add_ob_tags(format_user_name($search_result['LOGON'], $search_result['NICKNAME'])), "</a></td>\n";
+                    echo "                        <td align=\"left\">", form_radio("search_result[]", _htmlentities($search_result['LOGON']), ''), "&nbsp;<a href=\"user_profile.php?webtag=$webtag&amp;uid={$search_result['UID']}\" target=\"_blank\" onclick=\"return openProfile({$search_result['UID']}, '$webtag')\">", word_filter_add_ob_tags(_htmlentities(format_user_name($search_result['LOGON'], $search_result['NICKNAME']))), "</a></td>\n";
                     echo "                      </tr>\n";
 
                 }else {
 
                     echo "                      <tr>\n";
-                    echo "                        <td align=\"left\">", form_checkbox("search_result[]", $search_result['LOGON'], ''), "&nbsp;<a href=\"user_profile.php?webtag=$webtag&amp;uid={$search_result['UID']}\" target=\"_blank\" onclick=\"return openProfile({$search_result['UID']}, '$webtag')\">", word_filter_add_ob_tags(format_user_name($search_result['LOGON'], $search_result['NICKNAME'])), "</a></td>\n";
+                    echo "                        <td align=\"left\">", form_checkbox("search_result[]", _htmlentities($search_result['LOGON']), ''), "&nbsp;<a href=\"user_profile.php?webtag=$webtag&amp;uid={$search_result['UID']}\" target=\"_blank\" onclick=\"return openProfile({$search_result['UID']}, '$webtag')\">", word_filter_add_ob_tags(_htmlentities(format_user_name($search_result['LOGON'], $search_result['NICKNAME']))), "</a></td>\n";
                     echo "                      </tr>\n";
                 }
 

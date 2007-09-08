@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.478 2007-09-08 17:42:41 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.479 2007-09-08 19:34:17 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1817,7 +1817,7 @@ function messages_forum_stats($tid, $pid)
                             $active_user.= "<span class=\"user_stats_normal\">";
                         }
 
-                        $active_user.= str_replace(" ", "&nbsp;", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME'])));
+                        $active_user.= str_replace(" ", "&nbsp;", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))));
                         $active_user.= "</span></a>";
 
                         $active_users_array[] = $active_user;
@@ -1858,7 +1858,7 @@ function messages_forum_stats($tid, $pid)
 
             if ($longest_thread = get_longest_thread()) {
 
-                $longest_thread_link = sprintf("<a href=\"./index.php?webtag=$webtag&amp;msg=%s.1\">%s</a>", $longest_thread['TID'], thread_format_prefix($longest_thread['PREFIX'], $longest_thread['TITLE']));
+                $longest_thread_link = sprintf("<a href=\"./index.php?webtag=$webtag&amp;msg=%s.1\">%s</a>", $longest_thread['TID'], _htmlentities(thread_format_prefix($longest_thread['PREFIX'], $longest_thread['TITLE'])));
                 $longest_thread_post_count = ($longest_thread['LENGTH'] <> 1) ? sprintf($lang['numpostscreated'], number_format($longest_thread['LENGTH'], 0, ",", ",")) : $lang['onepostcreated'];
 
                 echo "                    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
@@ -1914,7 +1914,7 @@ function messages_forum_stats($tid, $pid)
 
                 if ($newest_member = get_newest_user()) {
 
-                    $newest_member_profile_link = sprintf("<a href=\"user_profile.php?webtag=$webtag&amp;uid=%1\$s\" target=\"_blank\" onclick=\"return openProfile(%1\$s, '$webtag')\">%2\$s</a>", $newest_member['UID'], word_filter_add_ob_tags(format_user_name($newest_member['LOGON'], $newest_member['NICKNAME'])));
+                    $newest_member_profile_link = sprintf("<a href=\"user_profile.php?webtag=$webtag&amp;uid=%1\$s\" target=\"_blank\" onclick=\"return openProfile(%1\$s, '$webtag')\">%2\$s</a>", $newest_member['UID'], word_filter_add_ob_tags(_htmlentities(format_user_name($newest_member['LOGON'], $newest_member['NICKNAME']))));
                     echo "                        <td align=\"left\">", sprintf($lang['wehavenumregisteredmembersandthenewestmemberismembername'], $user_count, $newest_member_profile_link);
 
                 }else {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.php,v 1.84 2007-08-22 19:50:31 decoyduck Exp $ */
+/* $Id: email.php,v 1.85 2007-09-08 19:34:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -175,13 +175,13 @@ if (isset($_POST['submit'])) {
 
     if (!user_allow_email($to_user['UID'])) {
 
-        $error = "<h2>{$lang['user']} {$to_user['LOGON']} {$lang['hasoptedoutofemail']}</h2>\n";
+        $error_msg_array[] = sprintf($lang['userhasoptedoutofemail'], word_filter_add_ob_tags(_htmlentities(format_user_name($to_user['LOGON'], $to_user['NICKNAME']))));
         $valid = false;
     }
 
     if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $to_user['EMAIL'])) {
 
-        $error_msg_array[] = sprintf($lang['userhasinvalidemailaddress'], $to_user['LOGON']);
+        $error_msg_array[] = sprintf($lang['userhasinvalidemailaddress'], word_filter_add_ob_tags(_htmlentities(format_user_name($to_user['LOGON'], $to_user['NICKNAME']))));
         $valid = false;
     }
 
@@ -204,7 +204,9 @@ if (isset($_POST['submit'])) {
     }
 }
 
-html_draw_top("{$lang['email']} {$to_user['LOGON']}", 'pm_popup_disabled');
+$title = sprintf($lang['sendemailtouser'], _htmlentities(format_user_name($to_user['LOGON'], $to_user['NICKNAME'])));
+
+html_draw_top("title=$title", 'pm_popup_disabled');
 
 echo "<div align=\"center\">\n";
 echo "<form name=\"f_email\" action=\"email.php\" method=\"post\">\n";
@@ -223,14 +225,14 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"480\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['email']}&nbsp;{$to_user['NICKNAME']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">", sprintf($lang['sendemailtouser'], _htmlentities(format_user_name($to_user['LOGON'], $to_user['NICKNAME']))), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"25%\">{$lang['from']}:</td>\n";
-echo "                        <td align=\"left\">{$from_user['NICKNAME']} ({$from_user['EMAIL']})</td>\n";
+echo "                        <td align=\"left\">", word_filter_add_ob_tags(_htmlentities($from_user['NICKNAME'])), " (", word_filter_add_ob_tags(_htmlentities($from_user['EMAIL'])), ")</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">{$lang['subject']}:</td>\n";

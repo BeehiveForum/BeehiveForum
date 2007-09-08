@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.162 2007-09-08 17:42:42 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.163 2007-09-08 19:34:18 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -245,7 +245,7 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
                     }
                 }
 
-                $fmt_username = word_filter_add_ob_tags(format_user_name($top_user['LOGON'], $top_user['NICKNAME']));
+                $fmt_username = word_filter_add_ob_tags(_htmlentities(format_user_name($top_user['LOGON'], $top_user['NICKNAME'])));
                 $html.= "<option value=\"$default_uid\" selected=\"selected\">$fmt_username</option>\n";
             }
         }
@@ -276,7 +276,7 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
                 }
             }
 
-            $fmt_username = word_filter_add_ob_tags(format_user_name($user_data['LOGON'], $user_data['NICKNAME']));
+            $fmt_username = word_filter_add_ob_tags(_htmlentities(format_user_name($user_data['LOGON'], $user_data['NICKNAME'])));
             $html .= "<option value=\"{$user_data['UID']}\">$fmt_username</option>\n";
         }
     }
@@ -318,7 +318,7 @@ function post_draw_to_dropdown_recent($default_uid, $show_all = true)
                     }
                 }
 
-                $fmt_username = word_filter_add_ob_tags(format_user_name($top_user['LOGON'], $top_user['NICKNAME']));
+                $fmt_username = word_filter_add_ob_tags(_htmlentities(format_user_name($top_user['LOGON'], $top_user['NICKNAME'])));
                 $html.= "<option value=\"$default_uid\" selected=\"selected\">$fmt_username</option>\n";
             }
         }
@@ -349,7 +349,7 @@ function post_draw_to_dropdown_recent($default_uid, $show_all = true)
                 }
             }
 
-            $fmt_username = word_filter_add_ob_tags(format_user_name($user_data['LOGON'], $user_data['NICKNAME']));
+            $fmt_username = word_filter_add_ob_tags(_htmlentities(format_user_name($user_data['LOGON'], $user_data['NICKNAME'])));
             $html .= "<option value=\"{$user_data['UID']}\">$fmt_username</option>\n";
         }
     }
@@ -391,7 +391,7 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $
                     }
                 }
 
-                $fmt_username = word_filter_add_ob_tags(format_user_name($top_user['LOGON'], $top_user['NICKNAME']));
+                $fmt_username = word_filter_add_ob_tags(_htmlentities(format_user_name($top_user['LOGON'], $top_user['NICKNAME'])));
                 $html.= "<option value=\"$default_uid\" selected=\"selected\">$fmt_username</option>\n";
             }
         }
@@ -430,7 +430,7 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $
                 }
             }
 
-            $fmt_username = word_filter_add_ob_tags(format_user_name($user_data['LOGON'], $user_data['NICKNAME']));
+            $fmt_username = word_filter_add_ob_tags(_htmlentities(format_user_name($user_data['LOGON'], $user_data['NICKNAME'])));
             $html .= "<option value=\"{$user_data['UID']}\">$fmt_username</option>\n";
         }
     }

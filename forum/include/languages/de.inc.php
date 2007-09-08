@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.44 2007-08-24 12:30:29 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.45 2007-09-08 19:34:18 decoyduck Exp $ */
 
 // British English language file
 
@@ -917,8 +917,8 @@ $lang['entercontentformessage'] = "Bitte Inhalt der Nachricht eingeben";
 $lang['msgsentfromby'] = "Diese Nachricht wurde gesendet von %s durch %s";
 $lang['subject'] = "Thema";
 $lang['send'] = "Senden";
-$lang['hasoptedoutofemail'] = "hat durch eMail-Kontakt entschieden";
-$lang['userhasinvalidemailaddress'] = "Benutzerhat %s ungueltige eMail-Adresse";
+$lang['userhasoptedoutofemail'] = "%s hat durch eMail-Kontakt entschieden";
+$lang['userhasinvalidemailaddress'] = "%s ungueltige eMail-Adresse";
 
 // Message nofificaiton ------------------------------------------------
 

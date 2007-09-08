@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_access.php,v 1.56 2007-07-04 20:54:02 decoyduck Exp $ */
+/* $Id: admin_forum_access.php,v 1.57 2007-09-08 19:34:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -158,15 +158,15 @@ if (isset($_POST['add_searched_user'])) {
     if (isset($_POST['user_add']) && is_array($_POST['user_add'])) {
 
         foreach ($_POST['user_add'] as $user_add_uid) {
-            
+
             if ($user_logon = user_get_logon($user_add_uid)) {
-            
+
                 $user_update_array = array($fid => 1);
 
                 user_update_forums($user_add_uid, $user_update_array);
 
                 $forum_name = forum_get_name($fid);
-            
+
                 admin_add_log_entry(CHANGE_FORUM_ACCESS, array($forum_name, $user_logon));
             }
         }
@@ -177,15 +177,15 @@ if (isset($_POST['add_searched_user'])) {
     if (isset($_POST['user_remove']) && is_array($_POST['user_remove'])) {
 
         foreach ($_POST['user_remove'] as $user_remove_uid) {
-           
+
             if ($user_logon = user_get_logon($user_remove_uid)) {
-            
+
                 $user_update_array = array($fid => 0);
 
                 user_update_forums($user_remove_uid, $user_update_array);
 
                 $forum_name = forum_get_name($fid);
-            
+
                 admin_add_log_entry(CHANGE_FORUM_ACCESS, array($forum_name, $user_logon));
             }
         }
@@ -219,7 +219,7 @@ if ($user_array = forum_get_permissions($fid)) {
     foreach ($user_array as $user_permission) {
 
         echo "                      <tr>\n";
-        echo "                        <td align=\"left\">", form_checkbox("user_remove[]", $user_permission['UID'], ''), "&nbsp;", word_filter_add_ob_tags(format_user_name($user_permission['LOGON'], $user_permission['NICKNAME'])), "</td>\n";
+        echo "                        <td align=\"left\">", form_checkbox("user_remove[]", $user_permission['UID'], ''), "&nbsp;", word_filter_add_ob_tags(_htmlentities(format_user_name($user_permission['LOGON'], $user_permission['NICKNAME']))), "</td>\n";
         echo "                      </tr>\n";
     }
 
@@ -250,7 +250,7 @@ if ($user_array = forum_get_permissions($fid)) {
     echo "                        <td align=\"left\">{$lang['nousers']}</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">&nbsp;</td>\n";   
+    echo "                        <td align=\"left\">&nbsp;</td>\n";
     echo "                      </tr>\n";
     echo "                    </table>\n";
     echo "                  </td>\n";
@@ -288,7 +288,7 @@ if (strlen($usersearch) > 0) {
         foreach ($user_search_array['user_array'] as $user_search) {
 
             echo "                      <tr>\n";
-            echo "                        <td align=\"left\">", form_checkbox("user_add[]", $user_search['UID'], ''), "&nbsp;", word_filter_add_ob_tags(format_user_name($user_search['LOGON'], $user_search['NICKNAME'])), "</td>\n";
+            echo "                        <td align=\"left\">", form_checkbox("user_add[]", $user_search['UID'], ''), "&nbsp;", word_filter_add_ob_tags(_htmlentities(format_user_name($user_search['LOGON'], $user_search['NICKNAME']))), "</td>\n";
             echo "                      </tr>\n";
         }
 

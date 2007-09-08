@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lmessages.php,v 1.86 2007-08-29 22:22:59 decoyduck Exp $ */
+/* $Id: lmessages.php,v 1.87 2007-09-08 19:34:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -191,7 +191,7 @@ if (!$threaddata = thread_get($tid, bh_session_check_perm(USER_PERM_ADMIN_TOOLS,
 }
 
 $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
-$thread_title = thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE']);
+$thread_title = _htmlentities(thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE']));
 
 light_html_draw_top("$forum_name > $thread_title");
 

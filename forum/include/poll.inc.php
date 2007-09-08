@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.207 2007-09-08 17:42:42 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.208 2007-09-08 19:34:18 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -1771,7 +1771,7 @@ function poll_public_ballot($tid, $viewstyle)
 
                                 $polldisplay.= "                                <tr>\n";
                                 $polldisplay.= "                                  <td align=\"left\" width=\"150\" class=\"$row_class\">&nbsp;</td>\n";
-                                $polldisplay.= "                                  <td align=\"left\" width=\"150\" class=\"$row_class\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$user['UID']}\" target=\"_blank\" onclick=\"return openProfile({$user['UID']}, '$webtag')\">". word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME'])). "</a></td>\n";
+                                $polldisplay.= "                                  <td align=\"left\" width=\"150\" class=\"$row_class\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$user['UID']}\" target=\"_blank\" onclick=\"return openProfile({$user['UID']}, '$webtag')\">". word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))). "</a></td>\n";
                                 $polldisplay.= "                                </tr>\n";
                             }
                         }
@@ -1810,7 +1810,7 @@ function poll_public_ballot($tid, $viewstyle)
                 $polldisplay.= "                              <div align=\"center\">\n";
                 $polldisplay.= "                              <table width=\"460\" cellpadding=\"5\" cellspacing=\"0\" class=\"$table_class\">\n";
                 $polldisplay.= "                                <tr>\n";
-                $polldisplay.= "                                  <td align=\"left\" width=\"150\" class=\"$row_class\" style=\"border-bottom: 1px solid\" colspan=\"2\"><h2><a href=\"user_profile.php?webtag=$webtag&amp;uid={$user['UID']}\" target=\"_blank\" onclick=\"return openProfile({$user['UID']}, '$webtag')\">". word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME'])). "</a></h2></td>\n";
+                $polldisplay.= "                                  <td align=\"left\" width=\"150\" class=\"$row_class\" style=\"border-bottom: 1px solid\" colspan=\"2\"><h2><a href=\"user_profile.php?webtag=$webtag&amp;uid={$user['UID']}\" target=\"_blank\" onclick=\"return openProfile({$user['UID']}, '$webtag')\">". word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))). "</a></h2></td>\n";
                 $polldisplay.= "                                </tr>\n";
 
                 for ($i = 0; $i < sizeof($option_id_array); $i++) {

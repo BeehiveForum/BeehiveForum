@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.223 2007-09-08 17:42:40 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.224 2007-09-08 19:34:17 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -592,9 +592,9 @@ if (isset($_GET['action']) && strlen(trim(_stripslashes($_GET['action']))) > 0) 
         html_draw_top('admin.js');
 
         if ($table_data = get_table_prefix()) {
-            echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</h1>\n";
+            echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
         }else {
-            echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", format_user_name($user['LOGON'], $user['NICKNAME']), "</h1>\n";
+            echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
         }
 
         echo "<br />\n";
@@ -660,9 +660,9 @@ if (isset($_GET['action']) && strlen(trim(_stripslashes($_GET['action']))) > 0) 
         html_draw_top('admin.js');
 
         if ($table_data = get_table_prefix()) {
-            echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</h1>\n";
+            echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
         }else {
-            echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", format_user_name($user['LOGON'], $user['NICKNAME']), "</h1>\n";
+            echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
         }
 
         echo "<br />\n";
@@ -819,9 +819,9 @@ if (isset($_GET['action']) && strlen(trim(_stripslashes($_GET['action']))) > 0) 
         html_draw_top('admin.js');
 
         if ($table_data = get_table_prefix()) {
-            echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</h1>\n";
+            echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
         }else {
-            echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", format_user_name($user['LOGON'], $user['NICKNAME']), "</h1>\n";
+            echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
         }
 
         echo "<br />\n";
@@ -868,8 +868,8 @@ if (isset($_GET['action']) && strlen(trim(_stripslashes($_GET['action']))) > 0) 
 
                     echo "                                  <table class=\"posthead\" width=\"100%\">\n";
                     echo "                                    <tr>\n";
-                    echo "                                      <td align=\"left\" width=\"150\"><a href=\"admin_user.php?webtag=$webtag&amp;uid={$user_alias['UID']}\">{$user_alias['LOGON']}</a></td>\n";
-                    echo "                                      <td align=\"left\" width=\"150\">{$user_alias['NICKNAME']}</td>\n";
+                    echo "                                      <td align=\"left\" width=\"150\"><a href=\"admin_user.php?webtag=$webtag&amp;uid={$user_alias['UID']}\">", word_filter_add_ob_tags(_htmlentities($user_alias['LOGON'])), "</a></td>\n";
+                    echo "                                      <td align=\"left\" width=\"150\">", word_filter_add_ob_tags(_htmlentities($user_alias['NICKNAME'])), "</td>\n";
 
                     if (ip_is_banned($user_alias['IPADDRESS'])) {
                         echo "                                      <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_ipaddress={$user_alias['IPADDRESS']}\" target=\"_self\">{$lang['banned']}</a>&nbsp;</td>";
@@ -940,9 +940,9 @@ if (isset($_GET['action']) && strlen(trim(_stripslashes($_GET['action']))) > 0) 
         html_draw_top('admin.js');
 
         if ($table_data = get_table_prefix()) {
-            echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</h1>\n";
+            echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
         }else {
-            echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", format_user_name($user['LOGON'], $user['NICKNAME']), "</h1>\n";
+            echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
         }
 
         echo "<br />\n";
@@ -1001,9 +1001,9 @@ if (isset($_GET['action']) && strlen(trim(_stripslashes($_GET['action']))) > 0) 
         html_draw_top('admin.js');
 
         if ($table_data = get_table_prefix()) {
-            echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</h1>\n";
+            echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
         }else {
-            echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", format_user_name($user['LOGON'], $user['NICKNAME']), "</h1>\n";
+            echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
         }
 
         echo "<br />\n";
@@ -1059,9 +1059,9 @@ if (isset($_GET['action']) && strlen(trim(_stripslashes($_GET['action']))) > 0) 
 html_draw_top('admin.js');
 
 if ($table_data = get_table_prefix()) {
-    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</h1>\n";
+    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
 }else {
-    echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", format_user_name($user['LOGON'], $user['NICKNAME']), "</h1>\n";
+    echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
 }
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {

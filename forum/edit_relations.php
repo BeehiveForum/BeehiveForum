@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_relations.php,v 1.76 2007-08-16 15:38:12 decoyduck Exp $ */
+/* $Id: edit_relations.php,v 1.77 2007-09-08 19:34:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -220,7 +220,7 @@ if (sizeof($user_peers['user_array']) > 0) {
 
         echo "                <tr>\n";
         echo "                  <td align=\"center\">", form_checkbox("delete_relationships[{$user_peer['UID']}]", "Y", false), "</td>\n";
-        echo "                  <td align=\"left\">&nbsp;<a href=\"user_rel.php?webtag=$webtag&amp;uid={$user_peer['UID']}&ret=edit_relations.php%3Fwebtag%3D$webtag\" target=\"_self\">", format_user_name($user_peer['LOGON'], $user_peer['PEER_NICKNAME']), "</a></td>\n";
+        echo "                  <td align=\"left\">&nbsp;<a href=\"user_rel.php?webtag=$webtag&amp;uid={$user_peer['UID']}&ret=edit_relations.php%3Fwebtag%3D$webtag\" target=\"_self\">", word_filter_add_ob_tags(_htmlentities(format_user_name($user_peer['LOGON'], $user_peer['PEER_NICKNAME']))), "</a></td>\n";
 
         if ($user_peer['RELATIONSHIP'] & USER_FRIEND) {
 
@@ -326,7 +326,7 @@ if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
 
             echo "                <tr>\n";
             echo "                  <td align=\"left\" width=\"20\">&nbsp;</td>\n";
-            echo "                  <td align=\"left\">&nbsp;<a href=\"user_rel.php?webtag=$webtag&amp;uid={$user_peer['UID']}&ret=edit_relations.php%3Fwebtag%3D$webtag\" target=\"_self\">", format_user_name($user_peer['LOGON'], $user_peer['NICKNAME']), "</a></td>\n";
+            echo "                  <td align=\"left\">&nbsp;<a href=\"user_rel.php?webtag=$webtag&amp;uid={$user_peer['UID']}&ret=edit_relations.php%3Fwebtag%3D$webtag\" target=\"_self\">", word_filter_add_ob_tags(_htmlentities(format_user_name($user_peer['LOGON'], $user_peer['NICKNAME']))), "</a></td>\n";
 
             if ($user_peer['RELATIONSHIP'] & USER_FRIEND) {
 

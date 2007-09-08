@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_detail.php,v 1.96 2007-09-08 17:42:40 decoyduck Exp $ */
+/* $Id: links_detail.php,v 1.97 2007-09-08 19:34:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -314,7 +314,7 @@ echo "                      <td align=\"left\"><a href=\"links.php?webtag=$webta
 echo "                    </tr>\n";
 echo "                    <tr>\n";
 echo "                      <td align=\"left\" nowrap=\"nowrap\" valign=\"top\">{$lang['submittedby']}:</td>\n";
-echo "                      <td align=\"left\">", (isset($link['LOGON']) ? word_filter_add_ob_tags(format_user_name($link['LOGON'], $link['NICKNAME'])) : $lang['unknownuser']), "</td>\n";
+echo "                      <td align=\"left\">", (isset($link['LOGON']) ? word_filter_add_ob_tags(_htmlentities(format_user_name($link['LOGON'], $link['NICKNAME']))) : $lang['unknownuser']), "</td>\n";
 echo "                    </tr>\n";
 echo "                    <tr>\n";
 echo "                      <td align=\"left\" nowrap=\"nowrap\" valign=\"top\">{$lang['description']}:</td>\n";
@@ -433,7 +433,7 @@ if ($comments_array = links_get_comments($lid)) {
     foreach($comments_array as $comment_id => $comment) {
 
         $profile_link = "<a href=\"user_profile.php?webtag=$webtag&amp;uid={$comment['UID']}\" target=\"_blank\" onclick=\"return openProfile({$comment['UID']}, '$webtag')\">";
-        $profile_link.= word_filter_add_ob_tags(format_user_name($comment['LOGON'], $comment['NICKNAME'])). "</a>";
+        $profile_link.= word_filter_add_ob_tags(_htmlentities(format_user_name($comment['LOGON'], $comment['NICKNAME']))). "</a>";
 
         if (bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0) || $comment['UID'] == $uid) {
 

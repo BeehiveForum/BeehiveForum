@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: admin_post_stats.php,v 1.36 2007-08-16 21:24:06 decoyduck Exp $ */
+/* $Id: admin_post_stats.php,v 1.37 2007-09-08 19:34:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -222,7 +222,7 @@ if (isset($user_stats_array['user_stats']) && sizeof($user_stats_array['user_sta
 
         echo "                <tr>\n";
         echo "                  <td align=\"left\">&nbsp;</td>\n";
-        echo "                  <td align=\"left\">", word_filter_add_ob_tags(format_user_name($user_stats['LOGON'], $user_stats['NICKNAME'])), "</td>\n";
+        echo "                  <td align=\"left\">", word_filter_add_ob_tags(_htmlentities(format_user_name($user_stats['LOGON'], $user_stats['NICKNAME']))), "</td>\n";
         echo "                  <td align=\"center\">", user_get_post_count($user_stats['UID']), "</td>\n";
         echo "                  <td align=\"center\">{$user_stats['POST_COUNT']}</td>\n";
         echo "                  <td align=\"center\">", number_format(round((100 / $user_stats_array['post_count']) * $user_stats['POST_COUNT'], 2), 2, '.', ','), "%</td>\n";

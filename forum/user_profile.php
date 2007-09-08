@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.132 2007-09-08 17:42:41 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.133 2007-09-08 19:34:17 decoyduck Exp $ */
 
 /**
 * Displays user profiles
@@ -170,7 +170,7 @@ $peer_relationship = user_get_relationship($uid, bh_session_get_value('UID'));
 
 // Popup title.
 
-$title = word_filter_add_ob_tags(format_user_name($user_profile['LOGON'], $user_profile['NICKNAME']));
+$title = word_filter_add_ob_tags(_htmlentities(format_user_name($user_profile['LOGON'], $user_profile['NICKNAME'])));
 
 html_draw_top("title=$title", "openprofile.js", "basetarget=_blank", 'pm_popup_disabled');
 
@@ -189,15 +189,15 @@ echo "                      <tr>\n";
 
 if (isset($user_profile['RELATIONSHIP']) && ($user_profile['RELATIONSHIP'] & USER_FRIEND)) {
 
-    echo "                        <td align=\"left\" class=\"subhead\"><h2 class=\"profile_logon\">", word_filter_add_ob_tags(format_user_name($user_profile['LOGON'], $user_profile['NICKNAME'])), "&nbsp;&nbsp;<img src=\"", style_image('friend.png'), "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" /></h2></td>\n";
+    echo "                        <td align=\"left\" class=\"subhead\"><h2 class=\"profile_logon\">", word_filter_add_ob_tags(_htmlentities(format_user_name($user_profile['LOGON'], $user_profile['NICKNAME']))), "&nbsp;&nbsp;<img src=\"", style_image('friend.png'), "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" /></h2></td>\n";
 
 }else if (isset($user_profile['RELATIONSHIP']) && ($user_profile['RELATIONSHIP'] & USER_IGNORED)) {
 
-    echo "                        <td align=\"left\" class=\"subhead\"><h2 class=\"profile_logon\">", word_filter_add_ob_tags(format_user_name($user_profile['LOGON'], $user_profile['NICKNAME'])), "&nbsp;&nbsp;<img src=\"", style_image('enemy.png'), "\" alt=\"{$lang['ignoreduser']}\" title=\"{$lang['ignoreduser']}\" /></h2></td>\n";
+    echo "                        <td align=\"left\" class=\"subhead\"><h2 class=\"profile_logon\">", word_filter_add_ob_tags(_htmlentities(format_user_name($user_profile['LOGON'], $user_profile['NICKNAME']))), "&nbsp;&nbsp;<img src=\"", style_image('enemy.png'), "\" alt=\"{$lang['ignoreduser']}\" title=\"{$lang['ignoreduser']}\" /></h2></td>\n";
 
 }else {
 
-    echo "                        <td align=\"left\" class=\"subhead\"><h2 class=\"profile_logon\">", word_filter_add_ob_tags(format_user_name($user_profile['LOGON'], $user_profile['NICKNAME'])), "</h2></td>\n";
+    echo "                        <td align=\"left\" class=\"subhead\"><h2 class=\"profile_logon\">", word_filter_add_ob_tags(_htmlentities(format_user_name($user_profile['LOGON'], $user_profile['NICKNAME']))), "</h2></td>\n";
 }
 
 echo "                      </tr>\n";

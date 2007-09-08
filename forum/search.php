@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.191 2007-09-08 17:42:40 decoyduck Exp $ */
+/* $Id: search.php,v 1.192 2007-09-08 19:34:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -441,51 +441,31 @@ if ((isset($_POST) && sizeof($_POST) > 0) || isset($_GET['search_string']) || is
                 // Limit thread title to 20 characters.
 
                 if (strlen($message['TITLE']) > 20) {
-
-                    $message['TITLE'] = substr($message['TITLE'], 0, 15);
-
-                    if (($pos = strrpos($message['TITLE'], ' ')) !== false) {
-
-                        $message['TITLE'] = trim(substr($message['TITLE'], 0, $pos));
-
-                    }else {
-
-                        $message['TITLE'] = trim(substr($message['TITLE'], 0, 17). "&hellip;");
-                    }
+                    $message['TITLE'] = substr($message['TITLE'], 0, 20). "&hellip;";
                 }
 
                 // Limit displayed post content to 35 characters
 
                 if (strlen($message['CONTENT']) > 35) {
-
-                    $message['CONTENT'] = substr($message['CONTENT'], 0, 25);
-
-                    if (($pos = strrpos($message['CONTENT'], ' ')) !== false) {
-
-                        $message['CONTENT'] = trim(substr($message['CONTENT'], 0, $pos));
-
-                    }else {
-
-                        $message['CONTENT'] = trim(substr($message['CONTENT'], 0, 32). "&hellip;");
-                    }
+                    $message['CONTENT'] = substr($message['CONTENT'], 0, 35). "&hellip;";
                 }
+
+                // Apply word filter to thread title.
+
+                $message['TITLE'] = word_filter_add_ob_tags(_htmlentities($message['TITLE']));
+
+                // Apply word filter to post content.
+
+                $message['CONTENT'] = word_filter_add_ob_tags($message['CONTENT']);
 
                 if ((thread_is_poll($search_result['TID']) && $search_result['PID'] == 1) || strlen($message['CONTENT']) < 1) {
 
-                    // Apply word filter to content.
-
-                    $message['CONTENT'] = word_filter_add_ob_tags($message['CONTENT']);
-
-                    echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;hightlight=yes\" target=\"", html_get_frame_name('right'), "\"><b>", word_filter_add_ob_tags(_htmlentities($message['TITLE'])), "</b></a><br />";
+                    echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;hightlight=yes\" target=\"", html_get_frame_name('right'), "\"><b>{$message['TITLE']}</b></a><br />";
                     echo "<span class=\"smalltext\"><b>{$lang['from']}:</b> ", word_filter_add_ob_tags(format_user_name($search_result['FROM_LOGON'], $search_result['FROM_NICKNAME'])), ", ", format_time($search_result['CREATED'], 1), "</span></p></li>\n";
 
                 }else {
 
-                    // Apply word filter to content.
-
-                    $message['CONTENT'] = word_filter_add_ob_tags($message['CONTENT']);
-
-                    echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;highlight=yes\" target=\"", html_get_frame_name('right'), "\"><b>", word_filter_add_ob_tags(_htmlentities($message['TITLE'])), "</b></a><br />";
+                    echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;highlight=yes\" target=\"", html_get_frame_name('right'), "\"><b>{$message['TITLE']}</b></a><br />";
                     echo "{$message['CONTENT']}<br /><span class=\"smalltext\"><b>{$lang['from']}:</b> ", word_filter_add_ob_tags(format_user_name($search_result['FROM_LOGON'], $search_result['FROM_NICKNAME'])), ", ", format_time($search_result['CREATED'], 1), "</span></p></li>\n";
                 }
             }

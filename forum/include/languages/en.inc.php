@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.469 2007-09-08 17:42:42 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.470 2007-09-08 19:34:18 decoyduck Exp $ */
 
 // British English language file
 
@@ -912,14 +912,15 @@ $lang['messagewasnotfound'] = "Message %s was not found";
 
 // Email (email.php) ---------------------------------------------------
 
+$lang['sendemailtouser'] = "Send Email to %s";
 $lang['nouserspecifiedforemail'] = "No user specified for emailing.";
 $lang['entersubjectformessage'] = "Enter a subject for the message";
 $lang['entercontentformessage'] = "Enter some content for the message";
 $lang['msgsentfromby'] = "This message was sent from %s by %s";
 $lang['subject'] = "Subject";
 $lang['send'] = "Send";
-$lang['hasoptedoutofemail'] = "has opted out of email contact";
-$lang['userhasinvalidemailaddress'] = "User %s has an invalid email address";
+$lang['userhasoptedoutofemail'] = "%s has opted out of email contact";
+$lang['userhasinvalidemailaddress'] = "%s has an invalid email address";
 
 // Message nofificaiton ------------------------------------------------
 

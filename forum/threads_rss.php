@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads_rss.php,v 1.47 2007-08-01 20:23:01 decoyduck Exp $ */
+/* $Id: threads_rss.php,v 1.48 2007-09-08 19:34:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -134,7 +134,7 @@ if (!bh_session_user_approved()) {
 // Maximum to display is 20. Minimum is 1.
 
 if (isset($_GET['limit']) && is_numeric($_GET['limit'])) {
-    
+
     $limit = $_GET['limit'];
 
     if ($limit > 20) $limit = 20;
@@ -153,7 +153,7 @@ if (isset($_GET['fid']) && strlen(trim(stripslashes($_GET['fid']))) > 0) {
     $fid = trim(stripslashes($_GET['fid']));
 
     if (preg_match("/(([0-9]+),)+,?/", $fid)) {
-        
+
         $folder_list_array = preg_grep("/^[0-9]+$/", explode(",", $fid));
 
     }elseif (is_numeric($_GET['fid'])) {
@@ -192,7 +192,7 @@ if ($threads_array = threads_get_most_recent($limit, $folder_list_array, $sort_c
     foreach ($threads_array as $thread) {
 
         $t_title = $thread['TITLE'];
-        
+
         // Make the date human readable and fetch the content of the last
         // post in the thread. Can easily change this if it isn't right
         // by making it fetch post 1.
@@ -214,7 +214,7 @@ if ($threads_array = threads_get_most_recent($limit, $folder_list_array, $sort_c
 
         // Strip signatures from the RSS feed
 
-        $t_content = message_split_fiddle($t_content, false, true);        
+        $t_content = message_split_fiddle($t_content, false, true);
 
         // Strip HTML and trim the content back.
 
@@ -231,7 +231,7 @@ if ($threads_array = threads_get_most_recent($limit, $folder_list_array, $sort_c
         $t_title   = preg_replace("/&amp;(#[0-9]+|[a-z]+);/i", "&\\1;", $t_title);
 
         // Convert HTML entities to XML literals.
-        
+
         $t_content = html_entity_to_decimal($t_content);
         $t_title   = html_entity_to_decimal($t_title);
 
@@ -247,10 +247,10 @@ if ($threads_array = threads_get_most_recent($limit, $folder_list_array, $sort_c
 
         if (isset($t_user_array['LOGON'])) {
 
-            $t_user = format_user_name($t_user_array['LOGON'], $t_user_array['NICKNAME']);
+            $t_user = _htmlentities(format_user_name($t_user_array['LOGON'], $t_user_array['NICKNAME']));
             echo "  <dc:creator>{$t_user}</dc:creator>\n";
         }
-        
+
         echo "  <description><![CDATA[{$t_content}]]></description>\n";
         echo "  <comments>{$forum_location}/?webtag=$webtag&amp;msg={$thread['TID']}.1</comments>\n";
         echo "</item>\n";

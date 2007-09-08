@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.117 2007-08-16 15:38:12 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.118 2007-09-08 19:34:17 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -92,7 +92,7 @@ function email_sendnotification($tuid, $fuid, $tid, $pid)
                 $subject        = word_filter_apply(sprintf($lang['msgnotification_subject'], $forum_name), $tuid);
                 $recipient      = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid);
                 $message_author = word_filter_apply(format_user_name($from_user['LOGON'], $from_user['NICKNAME']), $tuid);
-                $thread_title   = word_filter_apply(_htmlentities_decode(thread_format_prefix($thread['PREFIX'], $thread['TITLE'])), $tuid);
+                $thread_title   = word_filter_apply(thread_format_prefix($thread['PREFIX'], $thread['TITLE']), $tuid);
 
                 // Generate link to the forum itself
 
@@ -186,7 +186,7 @@ function email_sendsubscription($tuid, $fuid, $tid, $pid)
                 $subject        = word_filter_apply(sprintf($lang['subnotification_subject'], $forum_name), $tuid);
                 $recipient      = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid);
                 $message_author = word_filter_apply(format_user_name($from_user['LOGON'], $from_user['NICKNAME']), $tuid);
-                $thread_title   = word_filter_apply(_htmlentities_decode(thread_format_prefix($thread['PREFIX'], $thread['TITLE'])), $tuid);
+                $thread_title   = word_filter_apply(thread_format_prefix($thread['PREFIX'], $thread['TITLE']), $tuid);
 
                 // Generate link to the forum itself
 

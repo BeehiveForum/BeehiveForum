@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.245 2007-08-24 12:30:30 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.246 2007-09-08 19:34:18 decoyduck Exp $ */
 
 // British English language file
 
@@ -917,8 +917,8 @@ $lang['entercontentformessage'] = "ent3R \$0Me ConTenT f0r +H3 M3ss493";
 $lang['msgsentfromby'] = "tHIS m3s\$49E w@\$ \$EN+ froM %s 8y %s";
 $lang['subject'] = "suBjeCt";
 $lang['send'] = "s3nd";
-$lang['hasoptedoutofemail'] = "hA5 oPteD out Oph 3M@Il ConT4Ct";
-$lang['userhasinvalidemailaddress'] = "uSER %s h4s 4N InV@LiD Em41L AdDreS5";
+$lang['userhasoptedoutofemail'] = "%s hA5 oPteD out Oph 3M@Il ConT4Ct";
+$lang['userhasinvalidemailaddress'] = "%s h4s 4N InV@LiD Em41L AdDreS5";
 
 // Message nofificaiton ------------------------------------------------
 

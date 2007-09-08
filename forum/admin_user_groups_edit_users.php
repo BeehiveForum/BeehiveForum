@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit_users.php,v 1.49 2007-08-01 20:23:01 decoyduck Exp $ */
+/* $Id: admin_user_groups_edit_users.php,v 1.50 2007-09-08 19:34:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -165,7 +165,7 @@ if (isset($_POST['add'])) {
         foreach($_POST['add_user'] as $uid) {
 
             if (!perm_user_in_group($uid, $gid)) {
-                
+
                 perm_add_user_to_group($uid, $gid);
 
                 if ($user_logon = user_get_logon($uid) && $group_name = perm_get_group_name($gid)) {
@@ -184,7 +184,7 @@ if (isset($_POST['remove'])) {
         foreach($_POST['remove_user'] as $uid) {
 
             if (perm_user_in_group($uid, $gid)) {
-                
+
                 perm_remove_user_from_group($uid, $gid);
 
                 if ($user_logon = user_get_logon($uid) && $group_name = perm_get_group_name($gid)) {
@@ -227,7 +227,7 @@ if (sizeof($group_users_array['user_array']) > 0) {
 
         echo "                <tr>\n";
         echo "                  <td align=\"left\" width=\"1%\">", form_checkbox("remove_user[]", $user['UID'], "", false), "</td>\n";
-        echo "                  <td align=\"left\">", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</td>\n";
+        echo "                  <td align=\"left\">", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</td>\n";
         echo "                </tr>\n";
     }
 
@@ -302,10 +302,10 @@ if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
     if (sizeof($user_search_array['user_array']) > 0) {
 
         foreach ($user_search_array['user_array'] as $user) {
-            
+
             echo "                <tr>\n";
             echo "                  <td align=\"left\" width=\"1%\">", form_checkbox("add_user[]", $user['UID'], "", false), "</td>\n";
-            echo "                  <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$user['UID']}\" target=\"_blank\" onclick=\"return openProfile({$user['UID']}, '$webtag')\">", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</a></td>\n";
+            echo "                  <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$user['UID']}\" target=\"_blank\" onclick=\"return openProfile({$user['UID']}, '$webtag')\">", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</a></td>\n";
             echo "                </tr>\n";
         }
 

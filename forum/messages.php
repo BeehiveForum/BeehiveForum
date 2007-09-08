@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.234 2007-08-29 22:22:59 decoyduck Exp $ */
+/* $Id: messages.php,v 1.235 2007-09-08 19:34:17 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -214,7 +214,7 @@ if (!$threaddata = thread_get($tid, bh_session_check_perm(USER_PERM_ADMIN_TOOLS,
 }
 
 $forum_name   = forum_get_setting('forum_name', false, 'A Beehive Forum');
-$thread_title = thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE']);
+$thread_title = _htmlentities(thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE']));
 
 html_draw_top("title=$forum_name > $thread_title", "openprofile.js", "post.js", "poll.js", "basetarget=_blank", "robots=index,follow", "onload=initialisePostQuoting()");
 

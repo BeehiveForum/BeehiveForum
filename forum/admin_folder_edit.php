@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_edit.php,v 1.61 2007-09-08 17:42:40 decoyduck Exp $ */
+/* $Id: admin_folder_edit.php,v 1.62 2007-09-08 19:34:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -327,7 +327,7 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['name']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("name", $folder_data['TITLE'], 30, 32), form_input_hidden("old_name", _htmlentities($folder_data['TITLE'])), "</td>\n";
+echo "                        <td align=\"left\">", form_input_text("name", _htmlentities($folder_data['TITLE']), 30, 32), form_input_hidden("old_name", _htmlentities($folder_data['TITLE'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['description']}:</td>\n";
@@ -335,7 +335,7 @@ echo "                        <td align=\"left\">", form_input_text("description
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['threadtitleprefix']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("prefix", $folder_data['PREFIX'], 30, 16), form_input_hidden("old_prefix", _htmlentities($folder_data['PREFIX'])), "</td>\n";
+echo "                        <td align=\"left\">", form_input_text("prefix", _htmlentities($folder_data['PREFIX']), 30, 16), form_input_hidden("old_prefix", _htmlentities($folder_data['PREFIX'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";

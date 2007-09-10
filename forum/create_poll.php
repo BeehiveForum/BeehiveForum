@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.207 2007-09-05 19:42:09 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.208 2007-09-10 13:16:36 decoyduck Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -286,6 +286,9 @@ if (isset($_POST['t_sig_html'])) {
     $fetched_sig = true;
 }
 
+$allow_html = true;
+$allow_sig = true;
+
 if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
     $aid = $_POST['aid'];
 }else{
@@ -361,29 +364,46 @@ if (isset($_POST['cancel'])) {
 
     if (isset($_POST['answers']) && is_array($_POST['answers'])) {
 
-        $t_answers = array();
+        $t_answers_array = array_filter(_stripslashes($_POST['answers']), "strlen");
 
-        foreach($_POST['answers'] as $t_answer) {
+        $t_answer_html = POST_HTML_DISABLED;
 
-            if (strlen(trim(_stripslashes($t_answer))) > 0) {
+        $poll_answers_valid = true;
 
-                $t_answers[] = trim(_stripslashes($t_answer));
+        if ($allow_html == true && isset($t_post_html) && $t_post_html == 'Y') {
+            $t_answer_html = POST_HTML_ENABLED;
+        }
+
+        foreach($t_answers_array as $key => $t_poll_answer) {
+
+            $t_poll_check_html = new MessageText($t_answer_html, $t_poll_answer);
+            $t_answers_array[$key] = $t_poll_check_html->getContent();
+
+            if ($poll_answers_valid == true && strlen(trim($t_answers_array[$key])) < 1) {
+
+                $t_answers_array[$key] = $t_poll_check_html->getOriginalContent();
+
+                $error_msg_array[] = $lang['pollquestioncontainsinvalidhtml'];
+                $poll_answers_valid = false;
+                $valid = false;
             }
         }
 
-        if (!isset($t_answers[0]) || strlen(trim(_stripslashes($t_answers[0]))) == 0) {
+        if (!isset($t_answers_array[0]) || strlen(trim(_stripslashes($t_answers_array[0]))) == 0) {
+
             $error_msg_array[] = $lang['mustspecifyvalues1and2'];
             $valid = false;
         }
 
-        if (!isset($t_answers[1]) || strlen(trim(_stripslashes($t_answers[1]))) == 0) {
+        if (!isset($t_answers_array[1]) || strlen(trim(_stripslashes($t_answers_array[1]))) == 0) {
+
             $error_msg_array[] = $lang['mustspecifyvalues1and2'];
             $valid = false;
         }
 
-        foreach($t_answers as $t_answer) {
+        foreach($t_answers_array as $t_poll_answer) {
 
-            if (attachment_embed_check($t_answer) && $t_post_html == 'Y') {
+            if (attachment_embed_check($t_poll_answer) && $t_post_html == 'Y') {
 
                 $error_msg_array[] = $lang['notallowedembedattachmentpost'];
                 $valid = false;
@@ -395,7 +415,7 @@ if (isset($_POST['cancel'])) {
 
         foreach ($_POST['answer_groups'] as $key => $t_answer_group) {
 
-            if (isset($t_answers[$key]) && is_numeric($t_answer_group)) {
+            if (isset($t_answers_array[$key]) && is_numeric($t_answer_group)) {
 
                 $t_answer_groups[$key] = $t_answer_group;
             }
@@ -556,13 +576,13 @@ if (isset($_POST['cancel'])) {
 
     if (isset($_POST['answers']) && is_array($_POST['answers'])) {
 
-        $t_answers = array();
+        $t_answers_array = array();
 
         foreach($_POST['answers'] as $t_answer) {
 
             if (strlen(trim(_stripslashes($t_answer))) > 0) {
 
-                $t_answers[] = trim(_stripslashes($t_answer));
+                $t_answers_array[] = trim(_stripslashes($t_answer));
             }
         }
     }
@@ -571,7 +591,7 @@ if (isset($_POST['cancel'])) {
 
         foreach ($_POST['answer_groups'] as $key => $t_answer_group) {
 
-            if (isset($t_answers[$key]) && is_numeric($t_answer_group)) {
+            if (isset($t_answers_array[$key]) && is_numeric($t_answer_group)) {
 
                 $t_answer_groups[$key] = $t_answer_group;
             }
@@ -616,9 +636,6 @@ if (isset($_POST['answer_count']) && is_numeric($_POST['answer_count'])) {
 }else {
     $t_answer_count = 0;
 }
-
-$allow_html = true;
-$allow_sig = true;
 
 if (isset($t_fid) && !bh_session_check_perm(USER_PERM_HTML_POSTING, $t_fid)) {
     $allow_html = false;
@@ -681,16 +698,16 @@ if ($valid && isset($_POST['submit'])) {
             // Check HTML tick box, innit.
 
             $answers = array();
-            $ans_h = POST_HTML_DISABLED;
+            $t_answers_html = POST_HTML_DISABLED;
 
             if ($allow_html == true && isset($t_post_html) && $t_post_html == 'Y') {
-                $ans_h = POST_HTML_ENABLED;
+                $t_answers_html = POST_HTML_ENABLED;
             }
 
-            foreach($t_answers as $key => $poll_answer) {
+            foreach($t_answers_array as $key => $poll_answer) {
 
-                $answers[$key] = new MessageText($ans_h, $poll_answer);
-                $t_answers[$key] = $answers[$key]->getContent();
+                $answers[$key] = new MessageText($t_answers_html, $poll_answer);
+                $t_answers_array[$key] = $answers[$key]->getContent();
             }
 
             // Create the poll thread with the poll_flag set to Y and sticky flag set to N
@@ -702,7 +719,7 @@ if ($valid && isset($_POST['submit'])) {
 
             if ($t_poll_type == POLL_TABLE_GRAPH) $t_poll_vote_type = POLL_VOTE_PUBLIC;
 
-            poll_create($t_tid, $t_answers, $t_answer_groups, $t_poll_closes, $t_change_vote, $t_poll_type, $t_show_results, $t_poll_vote_type, $t_option_type, $t_question, $t_allow_guests);
+            poll_create($t_tid, $t_answers_array, $t_answer_groups, $t_poll_closes, $t_change_vote, $t_poll_type, $t_show_results, $t_poll_vote_type, $t_option_type, $t_question, $t_allow_guests);
 
             post_save_attachment_id($t_tid, $t_pid, $aid);
 
@@ -800,15 +817,15 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
     $totalvotes  = 0;
     $optioncount = 0;
 
-    $ans_h = POST_HTML_DISABLED;
+    $t_answers_html = POST_HTML_DISABLED;
 
     if ($allow_html == true && isset($t_post_html) && $t_post_html == 'Y') {
-        $ans_h = POST_HTML_ENABLED;
+        $t_answers_html = POST_HTML_ENABLED;
     }
 
-    foreach($t_answers as $key => $answer_text) {
+    foreach($t_answers_array as $key => $answer_text) {
 
-        $answer_tmp = new MessageText($ans_h, _stripslashes($answer_text));
+        $answer_tmp = new MessageText($t_answers_html, _stripslashes($answer_text));
         $poll_answers_array[$key] = $answer_tmp->getContent();
 
         srand((double)microtime()*1000000);
@@ -1019,7 +1036,7 @@ for ($i = 0; $i < $answer_count; $i++) {
 
     echo "            <tr>\n";
     echo "              <td align=\"left\">", $i + 1, ". </td>\n";
-    echo "              <td align=\"left\">", form_input_text("answers[]", isset($t_answers[$i]) ? _htmlentities($t_answers[$i]) : '', 40, 255), "</td>\n";
+    echo "              <td align=\"left\">", form_input_text("answers[]", isset($t_answers_array[$i]) ? _htmlentities($t_answers_array[$i]) : '', 40, 255), "</td>\n";
     echo "              <td align=\"center\">", form_dropdown_array("answer_groups[]", $answer_groups, (isset($t_answer_groups[$i])) ? $t_answer_groups[$i] : 0), "</td>\n";
     echo "              <td align=\"left\">&nbsp;</td>\n";
     echo "            </tr>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.146 2007-09-10 12:36:19 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.147 2007-09-10 13:16:36 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -225,12 +225,20 @@ if (!$threaddata = thread_get($tid)) {
     exit;
 }
 
+$allow_html = true;
+
 if (isset($_POST['cancel'])) {
 
     $uri = "./discussion.php?webtag=$webtag&msg=$edit_msg";
     header_redirect($uri);
 
 }elseif (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_POST['submit'])) {
+
+    if (isset($_POST['t_post_html']) && $_POST['t_post_html'] == 'Y') {
+        $t_post_html = 'Y';
+    }else {
+        $t_post_html = 'N';
+    }
 
     if (isset($_POST['t_threadtitle']) && strlen(trim(_stripslashes($_POST['t_threadtitle']))) > 0) {
 
@@ -254,24 +262,50 @@ if (isset($_POST['cancel'])) {
 
     if (isset($_POST['answers']) && is_array($_POST['answers'])) {
 
-        foreach($_POST['answers'] as $t_answer) {
+        $t_answers_array = array_filter(_stripslashes($_POST['answers']), "strlen");
 
-            if (strlen(trim(_stripslashes($t_answer))) > 0) {
+        $t_answer_html = POST_HTML_DISABLED;
 
-                $t_answers[] = trim(_stripslashes($t_answer));
+        $poll_answers_valid = true;
+
+        if ($allow_html == true && isset($t_post_html) && $t_post_html == 'Y') {
+            $t_answer_html = POST_HTML_ENABLED;
+        }
+
+        foreach($t_answers_array as $key => $t_poll_answer) {
+
+            $t_poll_check_html = new MessageText($t_answer_html, $t_poll_answer);
+            $t_answers_array[$key] = $t_poll_check_html->getContent();
+
+            if ($poll_answers_valid == true && strlen(trim($t_answers_array[$key])) < 1) {
+
+                $t_answers_array[$key] = $t_poll_check_html->getOriginalContent();
+
+                $error_msg_array[] = $lang['pollquestioncontainsinvalidhtml'];
+                $poll_answers_valid = false;
+                $valid = false;
             }
         }
 
-        if (!isset($t_answers[0]) || strlen(trim(_stripslashes($t_answers[0]))) == 0) {
+        if (!isset($t_answers_array[0]) || strlen(trim(_stripslashes($t_answers_array[0]))) == 0) {
 
             $error_msg_array[] = $lang['mustspecifyvalues1and2'];
             $valid = false;
         }
 
-        if (!isset($t_answers[1]) || strlen(trim(_stripslashes($t_answers[1]))) == 0) {
+        if (!isset($t_answers_array[1]) || strlen(trim(_stripslashes($t_answers_array[1]))) == 0) {
 
             $error_msg_array[] = $lang['mustspecifyvalues1and2'];
             $valid = false;
+        }
+
+        foreach($t_answers_array as $t_poll_answer) {
+
+            if (attachment_embed_check($t_poll_answer) && $t_post_html == 'Y') {
+
+                $error_msg_array[] = $lang['notallowedembedattachmentpost'];
+                $valid = false;
+            }
         }
     }
 
@@ -279,7 +313,7 @@ if (isset($_POST['cancel'])) {
 
         foreach ($_POST['answer_groups'] as $key => $t_answer_group) {
 
-            if (isset($t_answers[$key]) && is_numeric($t_answer_group)) {
+            if (isset($t_answers_array[$key]) && is_numeric($t_answer_group)) {
 
                 $t_answer_groups[$key] = $t_answer_group;
             }
@@ -359,12 +393,6 @@ if (isset($_POST['cancel'])) {
         $t_close_poll = false;
     }
 
-    if (isset($_POST['t_post_html']) && $_POST['t_post_html'] == 'Y') {
-        $t_post_html = 'Y';
-    }else {
-        $t_post_html = 'N';
-    }
-
     if (get_num_attachments($aid) > 0 && !bh_session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
 
         $error_msg_array[] = $lang['cannotattachfilesinfolder'];
@@ -391,6 +419,12 @@ if (isset($_POST['cancel'])) {
 
 }else if (isset($_POST['change_count'])) {
 
+    if (isset($_POST['t_post_html']) && $_POST['t_post_html'] == 'Y') {
+        $t_post_html = 'Y';
+    }else {
+        $t_post_html = 'N';
+    }
+
     if (isset($_POST['t_threadtitle']) && strlen(trim(_stripslashes($_POST['t_threadtitle']))) > 0) {
         $t_threadtitle = trim(_stripslashes($_POST['t_threadtitle']));
     }
@@ -409,7 +443,7 @@ if (isset($_POST['cancel'])) {
 
             if (strlen(trim(_stripslashes($t_answer))) > 0) {
 
-                $t_answers[] = trim(_stripslashes($t_answer));
+                $t_answers_array[] = trim(_stripslashes($t_answer));
             }
         }
     }
@@ -418,7 +452,7 @@ if (isset($_POST['cancel'])) {
 
         foreach ($_POST['answer_groups'] as $key => $t_answer_group) {
 
-            if (isset($t_answers[$key]) && is_numeric($t_answer_group)) {
+            if (isset($t_answers_array[$key]) && is_numeric($t_answer_group)) {
 
                 $t_answer_groups[$key] = $t_answer_group;
             }
@@ -457,17 +491,9 @@ if (isset($_POST['cancel'])) {
     }else {
         $t_close_poll = false;
     }
-
-    if (isset($_POST['t_post_html']) && $_POST['t_post_html'] == 'Y') {
-        $t_post_html = 'Y';
-    }else {
-        $t_post_html = 'N';
-    }
 }
 
 html_draw_top("basetarget=_blank", "resize_width=785", "openprofile.js", "post.js", "poll.js");
-
-$allow_html = true;
 
 if (isset($t_fid) && !bh_session_check_perm(USER_PERM_HTML_POSTING, $t_fid)) {
     $allow_html = false;
@@ -506,15 +532,15 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
     $totalvotes  = 0;
     $optioncount = 0;
 
-    $ans_h = POST_HTML_DISABLED;
+    $t_answers_array_html = POST_HTML_DISABLED;
 
     if ($allow_html == true && isset($t_post_html) && $t_post_html == 'Y') {
-        $ans_h = POST_HTML_ENABLED;
+        $t_answers_array_html = POST_HTML_ENABLED;
     }
 
-    foreach($t_answers as $key => $answer_text) {
+    foreach($t_answers_array as $key => $answer_text) {
 
-        $answer_tmp = new MessageText($ans_h, $answer_text);
+        $answer_tmp = new MessageText($t_answers_array_html, $answer_text);
         $poll_answers_array[$key] = $answer_tmp->getContent();
 
         srand((double)microtime()*1000000);
@@ -617,16 +643,16 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
 
     $answers = array();
 
-    $ans_h = POST_HTML_DISABLED;
+    $t_answers_array_html = POST_HTML_DISABLED;
 
     if ($allow_html == true && isset($t_post_html) && $t_post_html == 'Y') {
-        $ans_h = POST_HTML_ENABLED;
+        $t_answers_array_html = POST_HTML_ENABLED;
     }
 
-    foreach($t_answers as $key => $poll_answer) {
+    foreach($t_answers_array as $key => $poll_answer) {
 
-        $answers[$key] = new MessageText($ans_h, $poll_answer);
-        $t_answers[$key] = $answers[$key]->getContent();
+        $answers[$key] = new MessageText($t_answers_array_html, $poll_answer);
+        $t_answers_array[$key] = $answers[$key]->getContent();
     }
 
     if ($t_poll_type == POLL_TABLE_GRAPH) {
@@ -634,7 +660,7 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
         $t_poll_vote_type = POLL_VOTE_PUBLIC;
     }
 
-    foreach ($t_answers as $key => $value) {
+    foreach ($t_answers_array as $key => $value) {
 
         if (!isset($pollresults['OPTION_NAME'][$key])) {
 
@@ -652,11 +678,11 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
 
     $hardedit = false;
 
-    if ($t_answers != $pollresults['OPTION_NAME'] || $t_answer_groups != $pollresults['GROUP_ID'] || ($polldata['POLLTYPE'] <> POLL_TABLE_GRAPH && $t_poll_type == POLL_TABLE_GRAPH) || ($t_poll_vote_type == POLL_VOTE_PUBLIC && $polldata['VOTETYPE'] == POLL_VOTE_ANON)) {
+    if ($t_answers_array != $pollresults['OPTION_NAME'] || $t_answer_groups != $pollresults['GROUP_ID'] || ($polldata['POLLTYPE'] <> POLL_TABLE_GRAPH && $t_poll_type == POLL_TABLE_GRAPH) || ($t_poll_vote_type == POLL_VOTE_PUBLIC && $polldata['VOTETYPE'] == POLL_VOTE_ANON)) {
         $hardedit = true;
     }
 
-    poll_edit($fid, $tid, $t_threadtitle, $t_question, $t_answers, $t_answer_groups, $t_poll_closes, $t_change_vote, $t_poll_type, $t_show_results, $t_poll_vote_type, $t_option_type, $t_allow_guests, $hardedit);
+    poll_edit($fid, $tid, $t_threadtitle, $t_question, $t_answers_array, $t_answer_groups, $t_poll_closes, $t_change_vote, $t_poll_type, $t_show_results, $t_poll_vote_type, $t_option_type, $t_allow_guests, $hardedit);
     post_add_edit_text($tid, 1);
 
     post_save_attachment_id($tid, $pid, $aid);
@@ -876,9 +902,9 @@ for ($i = 0; $i < $answer_count; $i++) {
     echo "                                        <tr>\n";
     echo "                                          <td align=\"left\">", ($i + 1), ". </td>\n";
 
-    if (isset($t_answers[$i])) {
+    if (isset($t_answers_array[$i])) {
 
-        echo "                                          <td align=\"left\">", form_input_text("answers[$i]", _htmlentities($t_answers[$i]), 40, 255), "</td>\n";
+        echo "                                          <td align=\"left\">", form_input_text("answers[$i]", _htmlentities($t_answers_array[$i]), 40, 255), "</td>\n";
 
     }else {
 

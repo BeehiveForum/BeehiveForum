@@ -769,6 +769,11 @@ a {
     width: 96px;
 }
 
+.logon_separator {
+   max-width: 100%;
+   width: 350px;
+}
+
 .search_dropdown {
     width: 175px;
 }
@@ -1177,6 +1182,7 @@ a {
     border: 1px solid #000000;
     padding: 10px;
     margin: 10px 0px 10px 0px;
+    max-width: 100%;
 }
 
 .error_msg ul li {
@@ -1190,6 +1196,7 @@ a {
     border: 1px solid #000000;
     padding: 10px;
     margin: 10px 0px 10px 0px;
+    max-width: 100%;
 }
 
 .warning_msg {
@@ -1199,4 +1206,5 @@ a {
     border: 1px solid #000000;
     padding: 10px;
     margin: 10px 0px 10px 0px;
+    max-width: 100%;
 }

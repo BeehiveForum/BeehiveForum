@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.147 2007-09-10 13:16:36 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.148 2007-09-10 16:14:13 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -774,14 +774,14 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
 echo sprintf("<h1>{$lang['editmessage']}</h1>\n", $edit_msg);
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
-    html_display_error_array($error_msg_array, '720', 'left');
+    html_display_error_array($error_msg_array, '785', 'left');
 }
 
 echo "<br />\n";
 echo "<form name=\"f_edit_poll\" action=\"edit_poll.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden("t_msg", _htmlentities($edit_msg)), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"785\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.471 2007-09-10 12:36:20 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.472 2007-09-10 13:16:36 decoyduck Exp $ */
 
 // British English language file
 
@@ -1384,6 +1384,7 @@ $lang['mustprovidepollvotetype'] = "You must provide a poll vote type";
 $lang['mustprovidepollguestvotetype'] = "You must specify if guests should be allowed to vote";
 $lang['mustprovidepolloptiontype'] = "You must provide a poll option type";
 $lang['mustprovidepollchangevotetype'] = "You must provide a poll change vote type";
+$lang['pollquestioncontainsinvalidhtml'] = "One or more of your Poll Questions contains invalid HTML.";
 $lang['pleaseselectfolder'] = "Please select a folder";
 $lang['mustspecifyvalues1and2'] = "You must specify values for answers 1 and 2";
 $lang['tablepollmusthave2groups'] = "Tabular format polls must have precisely two voting groups";

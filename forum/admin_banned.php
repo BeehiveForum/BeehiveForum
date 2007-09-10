@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_banned.php,v 1.63 2007-08-18 19:42:00 decoyduck Exp $ */
+/* $Id: admin_banned.php,v 1.64 2007-09-10 12:36:19 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -294,9 +294,9 @@ if (isset($_POST['add']) || isset($_POST['check'])) {
     }
 
     if (isset($_POST['newbancomment']) && strlen(trim(_stripslashes($_POST['newbancomment']))) > 0) {
-        $comment = trim(_stripslashes($_POST['newbancomment']));
+        $new_ban_comment = trim(_stripslashes($_POST['newbancomment']));
     }else {
-        $comment = "";
+        $new_ban_comment = "";
     }
 
     if ($valid) {
@@ -305,9 +305,9 @@ if (isset($_POST['add']) || isset($_POST['check'])) {
 
             if (isset($_POST['add'])) {
 
-                if (add_ban_data($new_ban_type, $new_ban_data, $comment)) {
+                if (add_ban_data($new_ban_type, $new_ban_data, $new_ban_comment)) {
 
-                    admin_add_log_entry($admin_log_add_types[$new_ban_type], array($new_ban_data, $comment));
+                    admin_add_log_entry($admin_log_add_types[$new_ban_type], array($new_ban_data, $new_ban_comment));
                     header_redirect("admin_banned.php?webtag=$webtag&added=true");
                     exit;
 
@@ -363,9 +363,9 @@ if (isset($_POST['add']) || isset($_POST['check'])) {
         }
 
         if (isset($_POST['bancomment']) && strlen(trim(_stripslashes($_POST['bancomment']))) > 0) {
-            $comment = trim(_stripslashes($_POST['bancomment']));
+            $ban_comment = trim(_stripslashes($_POST['bancomment']));
         }else {
-            $comment = "";
+            $ban_comment = "";
         }
 
         if (isset($_POST['old_bantype']) && strlen(trim(_stripslashes($_POST['old_bantype']))) > 0) {
@@ -392,7 +392,7 @@ if (isset($_POST['add']) || isset($_POST['check'])) {
 
             if ((!$dup_ban_id) || ($dup_ban_id == $ban_id)) {
 
-                if (update_ban_data($ban_id, $ban_type, $ban_data, $comment)) {
+                if (update_ban_data($ban_id, $ban_type, $ban_data, $ban_comment)) {
 
                     if (($ban_type != $old_ban_type) || ($ban_data != $old_ban_data)) {
 

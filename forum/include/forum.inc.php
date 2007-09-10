@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.260 2007-09-05 22:56:37 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.261 2007-09-10 12:36:20 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -354,7 +354,7 @@ function forum_check_password($forum_fid)
         echo "                <table class=\"posthead\" width=\"90%\">\n";
         echo "                  <tr>\n";
         echo "                    <td align=\"left\">{$lang['passwd']}:</td>\n";
-        echo "                    <td align=\"left\">", form_input_password('forum_password', $password, 40, false, "autocomplete=\"off\""), form_input_hidden("forum_passhash", $passhash), "</td>\n";
+        echo "                    <td align=\"left\">", form_input_password('forum_password', _htmlentities($password), 40, false, "autocomplete=\"off\""), form_input_hidden("forum_passhash", _htmlentities($passhash)), "</td>\n";
         echo "                  </tr>\n";
         echo "                  <tr>\n";
         echo "                    <td align=\"left\">&nbsp;</td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.470 2007-09-08 19:34:18 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.471 2007-09-10 12:36:20 decoyduck Exp $ */
 
 // British English language file
 
@@ -1156,8 +1156,7 @@ $lang['messagewasdeleted'] = "Message %s.%s was deleted";
 $lang['stopignoringthisuser'] = "Stop ignoring this user";
 $lang['renamethread'] = "Rename thread";
 $lang['movethread'] = "Move thread";
-$lang['editthepoll'] = "Edit the poll";
-$lang['torenamethisthread'] = "to rename this thread";
+$lang['torenamethisthreadyoumusteditthepoll'] = "To rename this thread you must edit the poll.";
 $lang['closeforposting'] = "Close for posting";
 $lang['until'] = "Until 00:00 UTC";
 $lang['approvalrequired'] = "Approval Required";

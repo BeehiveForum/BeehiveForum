@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.122 2007-08-16 15:38:12 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.123 2007-09-10 12:36:19 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -499,7 +499,7 @@ echo "                  <td align=\"left\" rowspan=\"3\" width=\"1%\">&nbsp;</td
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" nowrap=\"nowrap\">{$lang['timezonefromGMT']}:</td>\n";
-echo "                  <td align=\"left\">", form_dropdown_array("timezone", $available_timezones, (isset($user_prefs['TIMEZONE']) && in_array($user_prefs['TIMEZONE'], array_keys($available_timezones))) ? $user_prefs['TIMEZONE'] : forum_get_setting('forum_timezone', false, 27), false, 'timezone_dropdown'), "</td>\n";
+echo "                  <td align=\"left\">", form_dropdown_array("timezone", _htmlentities($available_timezones), (isset($user_prefs['TIMEZONE']) && in_array($user_prefs['TIMEZONE'], array_keys($available_timezones))) ? $user_prefs['TIMEZONE'] : forum_get_setting('forum_timezone', false, 27), false, 'timezone_dropdown'), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\">&nbsp;</td>\n";
@@ -537,7 +537,7 @@ echo "                  <td align=\"left\" rowspan=\"6\" width=\"1%\">&nbsp;</td
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" nowrap=\"nowrap\">{$lang['preferredlang']}:</td>\n";
-echo "                  <td align=\"left\">", form_dropdown_array("language", $available_langs, (isset($user_prefs['LANGUAGE']) ? $user_prefs['LANGUAGE'] : 0)), "</td>\n";
+echo "                  <td align=\"left\">", form_dropdown_array("language", _htmlentities($available_langs), (isset($user_prefs['LANGUAGE']) ? $user_prefs['LANGUAGE'] : 0)), "</td>\n";
 echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("language_global", "Y", '', (isset($user_prefs['LANGUAGE_GLOBAL']) ? $user_prefs['LANGUAGE_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("language_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";

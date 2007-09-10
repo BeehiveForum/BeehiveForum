@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.104 2007-06-10 12:28:44 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.105 2007-09-10 12:36:20 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -118,7 +118,7 @@ function form_input_hidden_array($array, $ignore_keys = array())
         
         if (($key_name != 'webtag') && isset($array_values[$key])) {
         
-            $result_var.= form_input_hidden($key_name, _htmlentities($array_values[$key])). "\n";
+            $result_var.= form_input_hidden(_htmlentities($key_name), _htmlentities($array_values[$key])). "\n";
         }
     }
 

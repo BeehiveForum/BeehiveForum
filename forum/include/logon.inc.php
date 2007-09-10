@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.69 2007-09-03 20:07:41 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.70 2007-09-10 12:36:20 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -372,7 +372,7 @@ function logon_draw_form($session_expired = false)
         echo "                        <td align=\"right\">{$lang['username']}:</td>\n";
         echo "                        <td align=\"left\" nowrap=\"nowrap\">";
 
-        $username_dropdown_array = array_flip($username_array);
+        $username_dropdown_array = array_flip(_htmlentities($username_array));
         array_walk($username_dropdown_array, create_function('&$item, $key', '$item = $key;'));
 
         reset($username_array);

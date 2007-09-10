@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.246 2007-09-08 19:34:18 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.247 2007-09-10 12:36:20 decoyduck Exp $ */
 
 // British English language file
 
@@ -1154,8 +1154,7 @@ $lang['messagewasdeleted'] = "m3s\$49e %s.%s w4s d3l3+3D";
 $lang['stopignoringthisuser'] = "st0p iGnOriNG Th1\$ UsEr";
 $lang['renamethread'] = "reN@Me +hR34D";
 $lang['movethread'] = "m0v3 +hr34D";
-$lang['editthepoll'] = "ed1+ Th3 Poll";
-$lang['torenamethisthread'] = "to ReN4m3 +Hi5 ThRE4D";
+$lang['editthepolltorenamethisthread'] = "ed1+ Th3 Poll to ReN4m3 +Hi5 ThRE4D";
 $lang['closeforposting'] = "cL0se PH0r p05+iNG";
 $lang['until'] = "uNT1l 00:00 utc";
 $lang['approvalrequired'] = "approv4l REqu1red";

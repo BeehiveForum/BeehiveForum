@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.244 2007-08-28 17:38:55 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.245 2007-09-10 12:36:20 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -132,7 +132,7 @@ function html_display_msg($header_text, $string_msg, $href = false, $method = 'g
         if (is_array($button_array) && sizeof($button_array) > 0) {
 
             foreach($button_array as $button_name => $button_label) {
-                $button_html_array[] = form_submit($button_name, $button_label);
+                $button_html_array[] = form_submit(_htmlentities($button_name), _htmlentities($button_label));
             }
         }
 

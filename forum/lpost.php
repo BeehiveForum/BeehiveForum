@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.109 2007-08-21 20:27:39 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.110 2007-09-10 12:36:20 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -598,7 +598,7 @@ if ($newthread) {
     echo "<p>{$lang['selectfolder']}: ";
     echo light_folder_draw_dropdown($t_fid, "t_fid"), "</p>\n";
     echo "<p>{$lang['threadtitle']}: ";
-    echo light_form_input_text("t_threadtitle", _htmlentities(_stripslashes($t_threadtitle)), 30, 64);
+    echo light_form_input_text("t_threadtitle", _htmlentities($t_threadtitle), 30, 64);
     echo "</p>\n";
     echo form_input_hidden("t_newthread", "Y");
 

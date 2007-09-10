@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.87 2007-09-05 22:56:37 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.88 2007-09-10 12:36:20 decoyduck Exp $ */
 
 /**
 * Functions relating to profiles
@@ -395,7 +395,7 @@ function profile_section_dropdown($default_psid, $field_name = 't_psid')
     if (db_num_rows($result) > 0) {
 
         while ($profile_section_data = db_fetch_array($result)) {
-            $profile_sections_array[$profile_section_data['PSID']] = $profile_section_data['NAME'];
+            $profile_sections_array[$profile_section_data['PSID']] = _htmlentities($profile_section_data['NAME']);
         }
 
         return form_dropdown_array($field_name, $profile_sections_array, $default_psid);

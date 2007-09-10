@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.282 2007-09-05 22:56:37 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.283 2007-09-10 12:36:20 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1725,7 +1725,7 @@ function thread_list_draw_top($mode)
         $labels = array(ALL_DISCUSSIONS => $lang['alldiscussions'], TODAYS_DISCUSSIONS => $lang['todaysdiscussions'],
                         TWO_DAYS_BACK => $lang['2daysback'], SEVEN_DAYS_BACK => $lang['7daysback']);
 
-        echo form_dropdown_array("mode", $labels, $mode, "onchange=\"submit()\"");
+        echo form_dropdown_array("mode", $labels, _htmlentities($mode), "onchange=\"submit()\"");
 
     }else {
 
@@ -1759,7 +1759,7 @@ function thread_list_draw_top($mode)
 
         }
 
-        echo form_dropdown_array("mode", $labels, $mode, "onchange=\"submit()\"");
+        echo form_dropdown_array("mode", $labels, _htmlentities($mode), "onchange=\"submit()\"");
     }
 
     echo "        ", form_submit("go",$lang['goexcmark']), "\n";

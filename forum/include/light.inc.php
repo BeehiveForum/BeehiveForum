@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.154 2007-09-08 19:34:17 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.155 2007-09-10 12:36:20 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -125,15 +125,15 @@ function light_draw_logon_form()
     echo "<form name=\"logonform\" action=\"llogon.php\" method=\"post\">\n";
     echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
     echo "  <p>{$lang['username']}: ";
-    echo light_form_input_text("user_logon", (isset($_COOKIE['bh_light_remember_username']) ? _htmlentities($_COOKIE['bh_light_remember_username']) : "")). "</p>\n";
+    echo light_form_input_text("user_logon", (isset($_COOKIE['bh_light_remember_username']) ? _htmlentities(_stripslashes($_COOKIE['bh_light_remember_username'])) : "")). "</p>\n";
 
     if (isset($_COOKIE['bh_light_remember_password']) && strlen($_COOKIE['bh_light_remember_password']) > 0) {
 
         if (isset($_COOKIE['bh_light_remember_passhash']) && is_md5($_COOKIE['bh_light_remember_passhash'])) {
 
             echo "  <p>{$lang['passwd']}: ";
-            echo light_form_input_password("user_password", _htmlentities($_COOKIE['bh_light_remember_password']));
-            echo form_input_hidden("user_passhash", _htmlentities($_COOKIE['bh_light_remember_passhash'])), "</p>\n";
+            echo light_form_input_password("user_password", _htmlentities(_stripslashes($_COOKIE['bh_light_remember_password'])));
+            echo form_input_hidden("user_passhash", _htmlentities(_stripslashes($_COOKIE['bh_light_remember_passhash']))), "</p>\n";
 
         }else {
 
@@ -731,7 +731,7 @@ function light_poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list 
                         $poll_group_count++;
                     }
 
-                    $poll_data['CONTENT'].= light_form_radio("pollvote[{$poll_results['GROUP_ID'][$i]}]", $poll_results['OPTION_ID'][$i], '', false). "&nbsp;{$poll_results['OPTION_NAME'][$i]}<br />\n";
+                    $poll_data['CONTENT'].= light_form_radio("pollvote[{$poll_results['GROUP_ID'][$i]}]", _htmlentities($poll_results['OPTION_ID'][$i]), '', false). "&nbsp;{$poll_results['OPTION_NAME'][$i]}<br />\n";
                     $poll_previous_group = $poll_results['GROUP_ID'][$i];
                 }
             }
@@ -1263,7 +1263,7 @@ function light_folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="
                 if (bh_session_check_perm(USER_PERM_GUEST_ACCESS, $folder_data['FID'])) {
 
                     $folders['FIDS'][]   = $folder_data['FID'];
-                    $folders['TITLES'][] = $folder_data['TITLE'];
+                    $folders['TITLES'][] = _htmlentities($folder_data['TITLE']);
                 }
 
             }else {
@@ -1271,7 +1271,7 @@ function light_folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="
                 if (bh_session_check_perm($access_allowed, $folder_data['FID'])) {
 
                     $folders['FIDS'][]   = $folder_data['FID'];
-                    $folders['TITLES'][] = $folder_data['TITLE'];
+                    $folders['TITLES'][] = _htmlentities($folder_data['TITLE']);
                 }
             }
         }

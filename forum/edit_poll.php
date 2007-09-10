@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.145 2007-09-08 19:34:17 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.146 2007-09-10 12:36:19 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -845,7 +845,7 @@ if (isset($t_answer_count) && is_numeric($t_answer_count)) {
 
 echo "                                        <tr>\n";
 echo "                                          <td align=\"left\">&nbsp;</td>\n";
-echo "                                          <td align=\"left\">{$lang['numberanswers']}: ", form_dropdown_array('answer_count', array('5', '10', '15', '20'), $answer_selection), "&nbsp;", form_submit('change_count', $lang['change']) , "</td>\n";
+echo "                                          <td align=\"left\">{$lang['numberanswers']}: ", form_dropdown_array('answer_count', array('5', '10', '15', '20'), _htmlentities($answer_selection)), "&nbsp;", form_submit('change_count', $lang['change']) , "</td>\n";
 echo "                                          <td align=\"left\">&nbsp;</td>\n";
 echo "                                          <td align=\"left\">&nbsp;</td>\n";
 echo "                                        </tr>\n";

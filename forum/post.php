@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.319 2007-09-08 19:34:17 decoyduck Exp $ */
+/* $Id: post.php,v 1.320 2007-09-10 12:36:20 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -1113,7 +1113,7 @@ if ($allow_sig == true) {
         echo "                            <td class=\"subhead\" align=\"right\">", form_submit_image('sig_hide.png', 'sig_toggle', 'hide'). "&nbsp;</td>\n";
         echo "                          </tr>\n";
         echo "                          <tr>\n";
-        echo "                            <td align=\"left\" colspan=\"2\">", $tools->textarea("t_sig", $t_sig, 5, 75, "virtual", "tabindex=\"7\"", "signature_content"), form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N"), "</td>\n";
+        echo "                            <td align=\"left\" colspan=\"2\">", $tools->textarea("t_sig", $t_sig, 5, 75, "virtual", "tabindex=\"7\"", "signature_content"), form_input_hidden("t_sig_html", _htmlentities($sig->getHTML()) ? "Y" : "N"), "</td>\n";
 
 
         if ($sig->isDiff() && $fix_html && !$fetched_sig) {
@@ -1123,7 +1123,7 @@ if ($allow_sig == true) {
     }else {
 
         echo "                            <td class=\"subhead\" align=\"right\">", form_submit_image('sig_show.png', 'sig_toggle', 'show'), "&nbsp;</td>\n";
-        echo "    ", form_input_hidden("t_sig", $t_sig), "\n";
+        echo "    ", form_input_hidden("t_sig", _htmlentities($t_sig)), "\n";
     }
 
     echo "                          </tr>\n";

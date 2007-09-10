@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_links.php,v 1.48 2007-09-08 17:42:40 decoyduck Exp $ */
+/* $Id: admin_forum_links.php,v 1.49 2007-09-10 12:36:19 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -608,7 +608,7 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['toplinkcaption']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("t_top_link_title", (isset($_POST['t_top_link_title']) ? _htmlentities(_stripslashes($_POST['t_top_link_title'])) : forum_get_setting('forum_links_top_link', false, $lang['forumlinks'])), 40, 32), form_input_hidden('t_old_top_link_title', _htmlentities(forum_get_setting('forum_links_top_link', false, $lang['forumlinks']))), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("t_top_link_title", (isset($_POST['t_top_link_title']) ? _htmlentities(_stripslashes($_POST['t_top_link_title'])) : _htmlentities(forum_get_setting('forum_links_top_link', false, $lang['forumlinks']))), 40, 32), form_input_hidden('t_old_top_link_title', _htmlentities(forum_get_setting('forum_links_top_link', false, $lang['forumlinks']))), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";

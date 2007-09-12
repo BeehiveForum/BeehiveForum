@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: font_size.php,v 1.17 2007-08-18 12:26:20 decoyduck Exp $ */
+/* $Id: font_size.php,v 1.18 2007-09-12 18:43:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -185,6 +185,9 @@ if ($fontsize <> 10) {
     echo ".navpage                   { font-size: ", $fontsize * 0.9, "pt }\n";
     echo ".subhead_sort_asc          { font-size: ", $fontsize, "pt; }\n";
     echo ".subhead_sort_desc         { font-size: ", $fontsize, "pt; }\n";
+    echo ".error_msg                 { font-size: ", $fontsize * 0.9, "pt }\n";
+    echo ".success_msg               { font-size: ", $fontsize * 0.9, "pt }\n";
+    echo ".warning_msg               { font-size: ", $fontsize * 0.9, "pt }\n";
 }
 
 ?>

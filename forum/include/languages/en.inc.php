@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.472 2007-09-10 13:16:36 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.473 2007-09-12 18:43:43 decoyduck Exp $ */
 
 // British English language file
 
@@ -1135,6 +1135,8 @@ $lang['faq'] = "FAQ";
 $lang['docs'] = "Docs";
 $lang['support'] = "Support";
 $lang['donateexcmark'] = "Donate!";
+$lang['fontsizechanged'] = "Font Size Changed. %s";
+$lang['framesmustbereloaded'] = "Frames must be reloaded manually to see changes.";
 $lang['threadcouldnotbefound'] = "The requested thread could not be found or access was denied.";
 $lang['mustselectpolloption'] = "You must select an option to vote for!";
 $lang['mustvoteforallgroups'] = "You must vote in every group.";
@@ -1657,9 +1659,8 @@ $lang['visiblediscussions'] = "Visible discussions";
 $lang['selectedfolder'] = "Selected folder";
 $lang['navigate'] = "Navigate";
 $lang['couldnotretrievefolderinformation'] = "There are no folders available.";
-$lang['nomessagesinthiscategory'] = "No messages in this category. Please select another, or";
+$lang['nomessagesinthiscategory'] = "No messages in this category. Please select another, or %s for all threads";
 $lang['clickhere'] = "click here";
-$lang['forallthreads'] = "for all threads";
 $lang['prev50threads'] = "Previous 50 threads";
 $lang['next50threads'] = "Next 50 threads";
 $lang['nextxthreads'] = "Next %s threads";

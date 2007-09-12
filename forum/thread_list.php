@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.310 2007-09-10 14:44:28 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.311 2007-09-12 18:43:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -406,8 +406,12 @@ thread_list_draw_top($mode);
 // If no threads are returned, say something to that effect
 
 if (!$thread_info) {
-    echo "<p>{$lang['nomessagesinthiscategory']} <a href=\"thread_list.php?webtag=$webtag&amp;mode=0\">{$lang['clickhere']}</a> {$lang['forallthreads']}.</p>\n";
+
+    $all_discussions_link = sprintf("<a href=\"thread_list.php?webtag=$webtag&amp;mode=0\">%s</a>", $lang['clickhere']);
+    html_display_warning_msg(sprintf($lang['nomessagesinthiscategory'], $all_discussions_link), '100%', 'left');
+
 }else {
+
     echo "<br />\n";
 }
 

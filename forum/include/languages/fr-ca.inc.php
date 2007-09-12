@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.71 2007-09-10 12:36:20 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.72 2007-09-12 18:43:43 decoyduck Exp $ */
 
 // British English language file
 
@@ -1654,9 +1654,8 @@ $lang['visiblediscussions'] = "Discussions Visibles";
 $lang['selectedfolder'] = "Dossier sélectionné";
 $lang['navigate'] = "Naviguer";
 $lang['couldnotretrievefolderinformation'] = "Aucun dossier de disponible.";
-$lang['nomessagesinthiscategory'] = "Aucun message dans cette catégorie. Veuillez sélectionner un autre, ou";
+$lang['nomessagesinthiscategory'] = "Aucun message dans cette catégorie. Veuillez sélectionner un autre, ou %s pour tous les fils de discussion";
 $lang['clickhere'] = "cliquer ici";
-$lang['forallthreads'] = "pour tous les fils de discussion";
 $lang['prev50threads'] = "Premiers 50 fil de discussion";
 $lang['next50threads'] = "Prochains 50 fils de discussion";
 $lang['nextxthreads'] = "Prochains %s fils de discussion";

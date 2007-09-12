@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.192 2007-09-08 19:34:17 decoyduck Exp $ */
+/* $Id: search.php,v 1.193 2007-09-12 18:49:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -441,22 +441,18 @@ if ((isset($_POST) && sizeof($_POST) > 0) || isset($_GET['search_string']) || is
                 // Limit thread title to 20 characters.
 
                 if (strlen($message['TITLE']) > 20) {
-                    $message['TITLE'] = substr($message['TITLE'], 0, 20). "&hellip;";
+                    $message['TITLE'] = word_filter_add_ob_tags(substr(_htmlentities($message['TITLE']), 0, 20)). "&hellip;";
+                }else {
+                    $message['TITLE'] = word_filter_add_ob_tags(_htmlentities($message['TITLE']));
                 }
 
                 // Limit displayed post content to 35 characters
 
                 if (strlen($message['CONTENT']) > 35) {
-                    $message['CONTENT'] = substr($message['CONTENT'], 0, 35). "&hellip;";
+                    $message['CONTENT'] = word_filter_add_ob_tags(substr(_htmlentities($message['CONTENT']), 0, 35)). "&hellip;";
+                }else {
+                    $message['CONTENT'] = word_filter_add_ob_tags(_htmlentities($message['CONTENT']));
                 }
-
-                // Apply word filter to thread title.
-
-                $message['TITLE'] = word_filter_add_ob_tags(_htmlentities($message['TITLE']));
-
-                // Apply word filter to post content.
-
-                $message['CONTENT'] = word_filter_add_ob_tags($message['CONTENT']);
 
                 if ((thread_is_poll($search_result['TID']) && $search_result['PID'] == 1) || strlen($message['CONTENT']) < 1) {
 

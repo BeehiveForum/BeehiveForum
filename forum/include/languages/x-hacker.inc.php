@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.247 2007-09-10 12:36:20 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.248 2007-09-12 18:43:43 decoyduck Exp $ */
 
 // British English language file
 
@@ -1654,9 +1654,8 @@ $lang['visiblediscussions'] = "v1\$18l3 Di\$cuSsi0Ns";
 $lang['selectedfolder'] = "s3Lec+3d F0ld3R";
 $lang['navigate'] = "nav194t3";
 $lang['couldnotretrievefolderinformation'] = "ther3 4re n0 f0ld3r5 Av4iL4bl3.";
-$lang['nomessagesinthiscategory'] = "nO MEss@Ge\$ in tHis C4te90RY. pl34se \$3l3C+ An0th3r, 0r";
+$lang['nomessagesinthiscategory'] = "nO MEss@Ge\$ in tHis C4te90RY. pl34se \$3l3C+ An0th3r, 0r %s fOr 4Ll tHrE4DS";
 $lang['clickhere'] = "cl1Ck herE";
-$lang['forallthreads'] = "fOr 4Ll tHrE4DS";
 $lang['prev50threads'] = "prEvIous 50 +Hr3@ds";
 $lang['next50threads'] = "nEXt 50 ThRE4ds";
 $lang['nextxthreads'] = "nExt %s thrE4ds";

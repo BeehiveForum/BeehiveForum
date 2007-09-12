@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.245 2007-09-10 12:36:20 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.246 2007-09-12 18:43:43 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -747,7 +747,7 @@ function html_draw_top()
             echo "<style type=\"text/css\">@import \"font_size.php?webtag=$webtag\";</style>\n";
         }
 
-        if (isset($_GET['fontresize'])) {
+        if (isset($_GET['font_resize'])) {
 
             echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
             echo "<!--\n\n";

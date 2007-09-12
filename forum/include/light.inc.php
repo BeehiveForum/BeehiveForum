@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.155 2007-09-10 12:36:20 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.156 2007-09-12 18:43:43 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -332,7 +332,8 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
 
     if (!$thread_info) {
 
-        echo "<p>{$lang['nomessagesinthiscategory']} <a href=\"lthread_list.php?webtag=$webtag&amp;mode=0\">{$lang['clickhere']}</a> {$lang['forallthreads']}.</p>\n";
+        $all_discussions_link = sprintf("<a href=\"thread_list.php?webtag=$webtag&amp;mode=0\">%s</a>", $lang['clickhere']);
+        light_html_display_warning_msg(sprintf($lang['nomessagesinthiscategory'], $all_discussions_link);
     }
 
     if ($start_from != 0 && $mode == ALL_DISCUSSIONS && !isset($folder)) echo "<p><a href=\"lthread_list.php?webtag=$webtag&amp;mode=0&amp;start_from=".($start_from - 50)."\">{$lang['prev50threads']}</a></p>\n";
@@ -1425,6 +1426,15 @@ function light_html_display_error_array($error_list_array)
 }
 
 function light_html_display_success_msg($string_msg)
+{
+    $lang = load_language_file();
+
+    if (!is_string($string_msg)) return false;
+
+    echo "<h2>$string_msg</h2>\n";
+}
+
+function light_html_display_warning_msg($string_msg)
 {
     $lang = load_language_file();
 

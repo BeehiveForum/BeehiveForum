@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.88 2007-09-05 22:56:37 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.89 2007-09-14 20:15:44 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -180,88 +180,93 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
         echo "        <tr>\n";
         echo "          <td align=\"left\">&nbsp;</td>\n";
         echo "        </tr>\n";
-        echo "        <tr>\n";
-        echo "          <td align=\"left\"><hr /></td>\n";
-        echo "        </tr>\n";
-        echo "        <tr>\n";
-        echo "          <td align=\"left\"><h2>Error Message for server admins and developers</h2></td>\n";
-        echo "        </tr>\n";
-        echo "        <tr>\n";
-        echo "          <td align=\"left\" class=\"postbody\">\n";
 
-        switch ($errno) {
+        if (defined("BEEHIVE_INSTALL_NOWARN")) {
 
-            case E_USER_ERROR:
+            echo "        <tr>\n";
+            echo "          <td align=\"left\"><hr /></td>\n";
+            echo "        </tr>\n";
+            echo "        <tr>\n";
+            echo "          <td align=\"left\"><h2>Error Message for server admins and developers</h2></td>\n";
+            echo "        </tr>\n";
+            echo "        <tr>\n";
+            echo "          <td align=\"left\" class=\"postbody\">\n";
 
-                echo "            <p><b>E_USER_ERROR</b> [$errno] $errstr</p>\n";
-                break;
+            switch ($errno) {
 
-            case E_USER_WARNING:
+                case E_USER_ERROR:
 
-                echo "            <p><b>E_USER_WARNING</b> [$errno] $errstr</p>\n";
-                break;
+                    echo "            <p><b>E_USER_ERROR</b> [$errno] $errstr</p>\n";
+                    break;
 
-            case E_USER_NOTICE:
+                case E_USER_WARNING:
 
-                echo "            <p><b>E_USER_NOTICE</b> [$errno] $errstr</p>\n";
-                break;
+                    echo "            <p><b>E_USER_WARNING</b> [$errno] $errstr</p>\n";
+                    break;
 
-            default:
+                case E_USER_NOTICE:
 
-                echo "            <p><b>Unknown error</b> [$errno] $errstr</p>\n";
-                break;
+                    echo "            <p><b>E_USER_NOTICE</b> [$errno] $errstr</p>\n";
+                    break;
+
+                default:
+
+                    echo "            <p><b>Unknown error</b> [$errno] $errstr</p>\n";
+                    break;
+            }
+
+            if (strlen(trim(basename($errfile))) > 0) {
+                echo "<p>Error in line $errline of file ", basename($errfile), "</p>\n";
+            }
+
+            $version_strings = array();
+
+            // Beehive Forum Version
+
+            if (defined('BEEHIVE_VERSION')) {
+               $version_strings[] = sprintf("Beehive Forum %s", BEEHIVE_VERSION);
+            }
+
+            // PHP Version
+
+            if ($php_version = phpversion()) {
+                $version_strings[] = "on PHP/$php_version";
+            }
+
+            // PHP OS (WINNT, Linux, etc)
+
+            if (defined('PHP_OS')) {
+                $version_strings[] = PHP_OS;
+            }
+
+            // PHP interface (CGI, APACHE, IIS, etc)
+
+            if ($php_sapi = php_sapi_name()) {
+                $version_strings[] = strtoupper($php_sapi);
+            }
+
+            // Join together the above strings into a single array index.
+
+            if (isset($version_strings) && sizeof($version_strings) > 0) {
+                $version_strings = array(implode(" ", $version_strings));
+            }
+
+            // Add the MySQL version if it's available.
+
+            if (db_fetch_mysql_version($mysql_version)) {
+                $version_strings[] = "MySQL/$mysql_version";
+            }
+
+            // Display the entire version string to the user.
+
+            if (isset($version_strings) && sizeof($version_strings) > 0) {
+                echo "            <p>", implode(", ", $version_strings), "</p>\n";
+            }
+
+            echo "          </td>\n";
+            echo "        </tr>\n";
         }
 
-        if (strlen(trim(basename($errfile))) > 0) {
-            echo "<p>Error in line $errline of file ", basename($errfile), "</p>\n";
-        }
-
-        $version_strings = array();
-
-        // Beehive Forum Version
-
-        if (defined('BEEHIVE_VERSION')) {
-           $version_strings[] = sprintf("Beehive Forum %s", BEEHIVE_VERSION);
-        }
-
-        // PHP Version
-
-        if ($php_version = phpversion()) {
-            $version_strings[] = "on PHP/$php_version";
-        }
-
-        // PHP OS (WINNT, Linux, etc)
-
-        if (defined('PHP_OS')) {
-            $version_strings[] = PHP_OS;
-        }
-
-        // PHP interface (CGI, APACHE, IIS, etc)
-
-        if ($php_sapi = php_sapi_name()) {
-            $version_strings[] = strtoupper($php_sapi);
-        }
-
-        // Join together the above strings into a single array index.
-
-        if (isset($version_strings) && sizeof($version_strings) > 0) {
-            $version_strings = array(implode(" ", $version_strings));
-        }
-
-        // Add the MySQL version if it's available.
-
-        if (db_fetch_mysql_version($mysql_version)) {
-            $version_strings[] = "MySQL/$mysql_version";
-        }
-
-        // Display the entire version string to the user.
-
-        if (isset($version_strings) && sizeof($version_strings) > 0) {
-            echo "            <p>", implode(", ", $version_strings), "</p>\n";
-        }
-
-        echo "          </td>\n";
-        echo "        </tr>\n";
         echo "      </table>\n";
         echo "    </td>\n";
         echo "  </tr>\n";

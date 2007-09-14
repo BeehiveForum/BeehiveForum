@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_prefs.php,v 1.81 2007-09-10 12:36:19 decoyduck Exp $ */
+/* $Id: edit_prefs.php,v 1.82 2007-09-14 17:41:16 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -340,7 +340,7 @@ if (isset($_POST['submit'])) {
 
                             if (($image_info[0] > 95) || ($image_info[1] > 95)) {
 
-                                $error_msg_array[] = $lang['attachmenttoolargeforprofilepicture'];
+                                $error_msg_array[] = sprintf($lang['attachmenttoolargeforprofilepicture'], '95x95px');
                                 $valid = false;
                             }
 
@@ -419,7 +419,7 @@ if (isset($_POST['submit'])) {
 
                             if (($image_info[0] > 95) || ($image_info[1] > 95)) {
 
-                                $error_msg_array[] = $lang['attachmenttoolargeforavatarpicture'];
+                                $error_msg_array[] = sprintf($lang['attachmenttoolargeforavatarpicture'], '15x15px');
                                 $valid = false;
                             }
 

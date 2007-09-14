@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.208 2007-09-10 13:16:36 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.209 2007-09-14 17:41:16 decoyduck Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -527,8 +527,8 @@ if (isset($_POST['cancel'])) {
         $t_message_text = trim(_stripslashes($_POST['t_message_text']));
     }
 
-    if (isset($t_sig)) {
-        $t_sig = _htmlentities($t_sig);
+    if (isset($_POST['t_sig'])) {
+        $t_sig = trim(_stripslashes($_POST['t_sig']));
     }
 
     if (isset($_POST['emots_toggle_x'])) {
@@ -540,7 +540,8 @@ if (isset($_POST['cancel'])) {
         $page_prefs = (double) $page_prefs ^ POST_SIGNATURE_DISPLAY;
     }
 
-    $user_prefs['POST_PAGE'] = $page_prefs;
+    $user_prefs = array('POST_PAGE' => $page_prefs);
+    $user_prefs_global = array();
 
     if (!user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
 
@@ -1262,7 +1263,7 @@ if ($allow_sig == true) {
         echo "              <tr>\n";
         echo "                <td align=\"left\" class=\"subhead\">{$lang['signature']}</td>\n";
 
-        $t_sig = ($fix_html ? $sig->getTidyContent() : $sig->getOriginalContent(true));
+        $t_sig = ($fix_html ? $sig->getTidyContent() : $sig->getOriginalContent());
 
         if (($page_prefs & POST_SIGNATURE_DISPLAY) > 0) {
 

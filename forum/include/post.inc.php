@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.163 2007-09-08 19:34:18 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.164 2007-09-14 17:41:26 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -654,10 +654,7 @@ class MessageText {
         }
     }
 
-    function getOriginalContent ($htmlentities = false) {
-        if ($htmlentities === true) {
-            return _htmlentities($this->original_text);
-        }
+    function getOriginalContent () {
         return $this->original_text;
     }
 

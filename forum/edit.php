@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.233 2007-09-08 17:42:40 decoyduck Exp $ */
+/* $Id: edit.php,v 1.234 2007-09-14 17:41:16 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -557,7 +557,8 @@ if (isset($_POST['preview'])) {
         $page_prefs = (double) $page_prefs ^ POST_SIGNATURE_DISPLAY;
     }
 
-    $user_prefs['POST_PAGE'] = $page_prefs;
+    $user_prefs = array('POST_PAGE' => $page_prefs);
+    $user_prefs_global = array();
 
     if (!user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
 
@@ -731,7 +732,7 @@ echo "                    <tr>\n";
 echo "                      <td align=\"left\">\n";
 echo "                        <h2>{$lang['message']}</h2>\n";
 
-$t_content = ($fix_html ? $post->getTidyContent() : $post->getOriginalContent(true));
+$t_content = ($fix_html ? $post->getTidyContent() : $post->getOriginalContent());
 
 $tool_type = POST_TOOLBAR_DISABLED;
 
@@ -808,7 +809,7 @@ if ($allow_sig == true) {
     echo "  <tr>\n";
     echo "    <td align=\"left\" class=\"subhead\">{$lang['signature']}</td>\n";
 
-    $t_sig = ($fix_html ? $sig->getTidyContent() : $sig->getOriginalContent(true));
+    $t_sig = ($fix_html ? $sig->getTidyContent() : $sig->getOriginalContent());
 
     if (($page_prefs & POST_SIGNATURE_DISPLAY) > 0) {
 

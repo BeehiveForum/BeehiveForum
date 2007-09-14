@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ledit.php,v 1.17 2007-08-16 15:38:12 decoyduck Exp $ */
+/* $Id: ledit.php,v 1.18 2007-09-14 17:41:16 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -541,7 +541,8 @@ if (isset($_POST['preview'])) {
         $page_prefs = (double) $page_prefs ^ POST_SIGNATURE_DISPLAY;
     }
 
-    $user_prefs['POST_PAGE'] = $page_prefs;
+    $user_prefs = array('POST_PAGE' => $page_prefs);
+    $user_prefs_global = array();
 
     if (!user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
 

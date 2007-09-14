@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.324 2007-09-05 22:56:37 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.325 2007-09-14 19:46:56 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -42,6 +42,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
     exit;
 }
 
+include_once(BH_INCLUDE_PATH. "admin.inc.php");
 include_once(BH_INCLUDE_PATH. "banned.inc.php");
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
@@ -181,6 +182,8 @@ function bh_session_check($show_session_fail = true, $use_sess_hash = false)
 
                     forum_update_last_visit($user_sess['UID']);
 
+                    bh_update_user_time($user_sess['UID']);
+
                 }else {
 
                     $sql = "UPDATE LOW_PRIORITY SESSIONS SET TIME = NOW(), IPADDRESS = '$ipaddress' ";
@@ -197,16 +200,13 @@ function bh_session_check($show_session_fail = true, $use_sess_hash = false)
 
                 if (!update_stats()) {
 
-                    if (!bh_update_user_time($user_sess['UID'])) {
+                    if (!pm_system_prune_folders()) {
 
-                        if (!pm_system_prune_folders()) {
+                        if (!bh_remove_stale_sessions()) {
 
-                            if (!bh_remove_stale_sessions()) {
+                            if (!thread_auto_prune_unread_data()) {
 
-                                if (!thread_auto_prune_unread_data()) {
-
-                                    captcha_clean_up();
-                                }
+                                captcha_clean_up();
                             }
                         }
                     }
@@ -535,10 +535,10 @@ function bh_session_get_value($session_key)
 
 function bh_remove_stale_sessions()
 {
-    $sess_rem_prob = intval(forum_get_setting('forum_self_clean_prob', false, 10000));
+    $sess_rem_prob = intval(forum_get_setting('forum_self_clean_prob', false, 1000));
 
     if ($sess_rem_prob < 1) $sess_rem_prob = 1;
-    if ($sess_rem_prob > 10000) $sess_rem_prob = 10000;
+    if ($sess_rem_prob > 1000) $sess_rem_prob = 1000;
 
     if (($mt_result = mt_rand(1, $sess_rem_prob)) == 1) {
 
@@ -573,6 +573,8 @@ function bh_remove_stale_sessions()
                 $sql.= "AND TIME < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $session_cutoff) ";
 
                 if (!$result = db_query($sql, $db_bh_remove_stale_sessions)) return false;
+
+                admin_add_log_entry(FORUM_AUTO_PRUNE_SESSIONS);
 
                 return true;
             }

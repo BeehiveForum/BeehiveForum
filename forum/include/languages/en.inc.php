@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.474 2007-09-14 17:41:16 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.475 2007-09-14 19:46:56 decoyduck Exp $ */
 
 // British English language file
 
@@ -677,6 +677,12 @@ $lang['splitthreadatpostintonewthread'] = "Split thread '%s' at post %s  into ne
 $lang['mergedthreadintonewthread'] = "Merged threads '%s' and '%s' into new thread '%s'";
 
 $lang['approveduser'] = "Approved user '%s'";
+
+$lang['forumautoupdatestats'] = "Forum Auto Update: Stats Updated";
+$lang['forumautoprunepm'] = "Forum Auto Update: PM Folders Pruned";
+$lang['forumautoprunesessions'] = "Forum Auto Update: Sessions Pruned";
+$lang['forumautocleanthreadunread'] = "Forum Auto Update: Thread Unread Data Cleaned";
+$lang['forumautocleancaptcha'] = "Forum Auto Update: Text-Captcha Images Cleaned";
 
 $lang['adminlogempty'] = "Admin Log is empty";
 $lang['clearlog'] = "Clear Log";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.218 2007-09-08 19:34:18 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.219 2007-09-14 19:46:56 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -32,6 +32,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
     exit;
 }
 
+include_once(BH_INCLUDE_PATH. "admin.inc.php");
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "form.inc.php");
@@ -1961,10 +1962,10 @@ function pm_system_prune_folders()
 {
     $db_pm_prune_folders = db_connect();
 
-    $pm_prune_prob = intval(forum_get_setting('forum_self_clean_prob', false, 10000));
+    $pm_prune_prob = intval(forum_get_setting('forum_self_clean_prob', false, 1000));
 
     if ($pm_prune_prob < 1) $pm_prune_prob = 1;
-    if ($pm_prune_prob > 10000) $pm_prune_prob = 10000;
+    if ($pm_prune_prob > 1000) $pm_prune_prob = 1000;
 
     if (($mt_result = mt_rand(1, $pm_prune_prob)) == 1) {
 
@@ -1981,6 +1982,8 @@ function pm_system_prune_folders()
             $sql.= "AND CREATED < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $pm_prune_length)";
 
             if (!$result = db_query($sql, $db_pm_prune_folders)) return false;
+
+            admin_add_log_entry(FORUM_AUTO_PRUNE_PM);
 
             return true;
         }

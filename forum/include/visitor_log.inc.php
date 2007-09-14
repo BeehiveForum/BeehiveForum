@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.inc.php,v 1.10 2007-09-12 15:01:47 decoyduck Exp $ */
+/* $Id: visitor_log.inc.php,v 1.11 2007-09-14 19:46:56 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -593,10 +593,10 @@ function visitor_log_clean_up()
 
     $forum_fid = $table_data['FID'];
 
-    $visitor_log_clean_up_prob = intval(forum_get_setting('forum_self_clean_prob', false, 10000));
+    $visitor_log_clean_up_prob = intval(forum_get_setting('forum_self_clean_prob', false, 1000));
 
     if ($visitor_log_clean_up_prob < 1) $visitor_log_clean_up_prob = 1;
-    if ($visitor_log_clean_up_prob > 10000) $visitor_log_clean_up_prob = 10000;
+    if ($visitor_log_clean_up_prob > 1000) $visitor_log_clean_up_prob = 1000;
 
     if (($mt_result = mt_rand(1, $visitor_log_clean_up_prob)) == 1) {
 

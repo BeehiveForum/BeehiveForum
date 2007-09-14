@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.84 2007-08-29 21:38:23 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.85 2007-09-14 19:46:56 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -32,6 +32,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
     exit;
 }
 
+include_once(BH_INCLUDE_PATH. "admin.inc.php");
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "folder.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
@@ -44,10 +45,10 @@ function update_stats()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $stats_update_prob = intval(forum_get_setting('forum_self_clean_prob', false, 10000));
+    $stats_update_prob = intval(forum_get_setting('forum_self_clean_prob', false, 1000));
 
     if ($stats_update_prob < 1) $stats_update_prob = 1;
-    if ($stats_update_prob > 10000) $stats_update_prob = 10000;
+    if ($stats_update_prob > 1000) $stats_update_prob = 1000;
 
     if (forum_get_setting('show_stats', 'Y') && (($mt_result = mt_rand(1, $stats_update_prob)) == 1)) {
 
@@ -73,8 +74,6 @@ function update_stats()
 
             if (!$result = db_query($sql, $db_update_stats)) return false;
 
-            return true;
-
         }else {
 
             $sql = "INSERT LOW_PRIORITY INTO {$table_data['PREFIX']}STATS (MOST_USERS_DATE, ";
@@ -82,9 +81,11 @@ function update_stats()
             $sql.= "VALUES (NOW(), '$num_sessions', NOW(), '$num_recent_posts')";
 
             if (!$result = db_query($sql, $db_update_stats)) return false;
-
-            return true;
         }
+
+        admin_add_log_entry(FORUM_AUTO_UPDATE_STATS);
+
+        return true;
     }
 
     return false;

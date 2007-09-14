@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.283 2007-09-10 12:36:20 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.284 2007-09-14 19:46:56 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -32,6 +32,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
     exit;
 }
 
+include_once(BH_INCLUDE_PATH. "admin.inc.php");
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "folder.inc.php");
 include_once(BH_INCLUDE_PATH. "form.inc.php");
@@ -1824,10 +1825,10 @@ function thread_auto_prune_unread_data($force_start = false)
 
     if (($unread_cutoff_stamp = forum_get_unread_cutoff()) === false) return false;
 
-    $unread_rem_prob = intval(forum_get_setting('forum_self_clean_prob', false, 10000));
+    $unread_rem_prob = intval(forum_get_setting('forum_self_clean_prob', false, 1000));
 
     if ($unread_rem_prob < 1) $unread_rem_prob = 1;
-    if ($unread_rem_prob > 10000) $unread_rem_prob = 10000;
+    if ($unread_rem_prob > 1000) $unread_rem_prob = 1000;
 
     if ((($mt_result = mt_rand(1, $unread_rem_prob)) == 1) || $force_start === true) {
 
@@ -1854,6 +1855,8 @@ function thread_auto_prune_unread_data($force_start = false)
         $sql.= "OR {$table_data['PREFIX']}USER_THREAD.INTEREST = 0) ";
 
         if (!$result = db_query($sql, $db_thread_prune_unread_data)) return false;
+
+        admin_add_log_entry(FORUM_AUTO_CLEAN_THREAD_UNREAD);
 
         return true;
     }

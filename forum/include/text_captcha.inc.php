@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: text_captcha.inc.php,v 1.16 2007-04-14 01:35:58 decoyduck Exp $ */
+/* $Id: text_captcha.inc.php,v 1.17 2007-09-14 19:46:56 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -411,11 +411,11 @@ function captcha_clean_up()
 {
     $unlink_count = 0;
 
-    $captcha_clean_up_prob = intval(forum_get_setting('forum_self_clean_prob', false, 10000));
+    $captcha_clean_up_prob = intval(forum_get_setting('forum_self_clean_prob', false, 1000));
 
     if ($captcha_clean_up_prob < 1) $captcha_clean_up_prob = 1;
-    if ($captcha_clean_up_prob > 10000) $captcha_clean_up_prob = 10000;
-    
+    if ($captcha_clean_up_prob > 1000) $captcha_clean_up_prob = 1000;
+
     if ($text_captcha_dir = forum_get_setting('text_captcha_dir')) {
 
         if (($mt_result = mt_rand(1, $captcha_clean_up_prob)) == 1) {
@@ -436,9 +436,15 @@ function captcha_clean_up()
                         }
                     }
                 }
+
+                admin_add_log_entry(FORUM_AUTO_CLEAN_CAPTCHA);
+
+                return true;
             }
         }
     }
+
+    return false;
 }
 
 ?>

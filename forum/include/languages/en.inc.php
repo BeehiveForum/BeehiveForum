@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.473 2007-09-12 18:43:43 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.474 2007-09-14 17:41:16 decoyduck Exp $ */
 
 // British English language file
 
@@ -686,7 +686,7 @@ $lang['clearlog'] = "Clear Log";
 $lang['noexistingforums'] = "No existing forums found. To create a new forum please click the button below.";
 $lang['webtaginvalidchars'] = "Webtag can only contain uppercase A-Z, 0-9 and underscore characters";
 $lang['databasenameinvalidchars'] = "Database name can only contain a-z, A-Z, 0-9 and underscore characters";
-$lang['invalidforumidorforumnotfound'] = "Invalid forum FID for forum not found";
+$lang['invalidforumidorforumnotfound'] = "Invalid forum FID or forum not found";
 $lang['successfullyupdatedforum'] = "Successfully updated forum";
 $lang['failedtoupdateforum'] = "Failed to update forum: '%s'";
 $lang['successfullycreatednewforum'] = "Successfully created new forum";
@@ -1300,8 +1300,8 @@ $lang['pictureURL'] = "Picture URL";
 $lang['avatarURL'] = "Avatar URL";
 $lang['profilepictureconflict'] = "To use an attachment for your profile picture the Picture URL field must be blank.";
 $lang['avatarpictureconflict'] = "To use an attachment for your avatar picture the Avatar URL field must be blank.";
-$lang['attachmenttoolargeforprofilepicture'] = "Selected attachment is too large for profile picture. Maximum dimensions are 95x95px";
-$lang['attachmenttoolargeforavatarpicture'] = "Selected attachment is too large for avatar picture. Maximum dimensions are 15x15px";
+$lang['attachmenttoolargeforprofilepicture'] = "Selected attachment is too large for profile picture. Maximum dimensions are %s";
+$lang['attachmenttoolargeforavatarpicture'] = "Selected attachment is too large for avatar picture. Maximum dimensions are %s";
 $lang['failedtoupdateuserdetails'] = "Some or all of your user account details could not be updated. Please try again later.";
 $lang['failedtoupdateuserpreferences'] = "Some or all of your user preferences could not be updated. Please try again later.";
 $lang['emailaddresschanged'] = "Email address has been changed";

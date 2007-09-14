@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.180 2007-09-08 17:42:40 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.181 2007-09-14 17:41:16 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -177,9 +177,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
         if ($threaddata = thread_get($tid)) {
 
-           $thread_title = _htmlentities_decode($threaddata['TITLE']);
-           $thread_title = thread_format_prefix($threaddata['PREFIX'], $thread_title);
-
+           $thread_title = thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE']);
            $t_subject = "Re:$thread_title [$tid.$pid]";
         }
     }
@@ -245,13 +243,13 @@ if (isset($t_rmid) && $t_rmid > 0) {
 
             if ($forward_msg) {
 
-                if (strtoupper(substr($t_subject, 0, 4)) != "FWD:") {
+                if (strtoupper(substr($pm_data['SUBJECT'], 0, 4)) != "FWD:") {
                     $t_subject = "Fwd:{$pm_data['SUBJECT']}";
                 }
 
             }elseif (!$edit_msg) {
 
-                if (strtoupper(substr($t_subject, 0, 3)) != "RE:") {
+                if (strtoupper(substr($pm_data['SUBJECT'], 0, 3)) != "RE:") {
                     $t_subject = "Re:{$pm_data['SUBJECT']}";
                 }
             }
@@ -387,7 +385,8 @@ if (isset($_POST['emots_toggle_x']) || isset($_POST['emots_toggle_y'])) {
 
     $page_prefs = (double) $page_prefs ^ POST_EMOTICONS_DISPLAY;
 
-    $user_prefs['POST_PAGE'] = $page_prefs;
+    $user_prefs = array('POST_PAGE' => $page_prefs);
+    $user_prefs_global = array();
 
     if (!user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
 
@@ -948,7 +947,7 @@ echo "                         <h2>{$lang['message']}</h2>\n";
 
 $tools = new TextAreaHTML("f_post");
 
-$t_content = ($fix_html ? $post->getTidyContent() : $post->getOriginalContent(true));
+$t_content = ($fix_html ? $post->getTidyContent() : $post->getOriginalContent());
 
 $tool_type = POST_TOOLBAR_DISABLED;
 

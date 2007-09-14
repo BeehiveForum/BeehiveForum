@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.248 2007-09-12 18:43:43 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.249 2007-09-14 17:41:17 decoyduck Exp $ */
 
 // British English language file
 
@@ -685,7 +685,7 @@ $lang['clearlog'] = "cle@r l09";
 $lang['noexistingforums'] = "n0 3x1\$+1nG pH0RUm5 pHound. T0 Cr3@TE @ NeW pHorUm pl34\$e ClICk tEh 8U+Ton 83LOw.";
 $lang['webtaginvalidchars'] = "wEb+@G CaN 0NLy C0NT41N UppErC4S3 4-Z, 0-9 4nD und3R\$corE Ch4r4C+3r\$";
 $lang['databasenameinvalidchars'] = "d4t4BaS3 N@M3 C4N 0NLy c0n+A1N 4-Z, 4-Z, 0-9 @ND Und3r\$c0RE Ch@r4CtEr\$";
-$lang['invalidforumidorforumnotfound'] = "inV4liD pH0rum pHiD FoR Ph0rum n0t Found";
+$lang['invalidforumidorforumnotfound'] = "inV4liD pH0rum pHiD oR Ph0rum n0t Found";
 $lang['successfullyupdatedforum'] = "succ3\$sfulLy Upd@ted ForUm";
 $lang['failedtoupdateforum'] = "f41l3d +o uPd@+3 pHorum: '%s'";
 $lang['successfullycreatednewforum'] = "sucC35\$phuLly CrE4TED n3w ph0RUM";
@@ -1296,8 +1296,8 @@ $lang['pictureURL'] = "pictur3 uRl";
 $lang['avatarURL'] = "aV4T4R UrL";
 $lang['profilepictureconflict'] = "t0 u\$e 4N @++@CHm3n+ pH0r Y0ur pr0pHiLe p1c+uR3 +HE pIC+UrE url f13Ld Must 8E 8L4Nk.";
 $lang['avatarpictureconflict'] = "t0 uSE An @++4Chm3N+ f0r your Av4+@R p1C+UrE +H3 @V4tar url F1Eld mUsT B3 8L4nk.";
-$lang['attachmenttoolargeforprofilepicture'] = "s3L3c+3D @++4ChM3NT I\$ +0o L@R9e pHor pR0ph1lE p1cTuRE. M@x1mum DiM3n\$10N\$ 4rE 95X95px";
-$lang['attachmenttoolargeforavatarpicture'] = "s3LectED 4+T4chmen+ I\$ +0O l4r93 f0r @V@+4r p1CtuR3. M4XimUm D1MeN5I0ns @R3 15X15px";
+$lang['attachmenttoolargeforprofilepicture'] = "s3L3c+3D @++4ChM3NT I\$ +0o L@R9e pHor pR0ph1lE p1cTuRE. M@x1mum DiM3n\$10N\$ 4rE %s";
+$lang['attachmenttoolargeforavatarpicture'] = "s3LectED 4+T4chmen+ I\$ +0O l4r93 f0r @V@+4r p1CtuR3. M4XimUm D1MeN5I0ns @R3 %s";
 $lang['failedtoupdateuserdetails'] = "s0mE 0r 4lL of yOuR User 4cCouNt D3T41L\$ C0uld NoT B3 UpD4+3D. PlE4S3 +rY 4G@1n l@+3r.";
 $lang['failedtoupdateuserpreferences'] = "s0m3 OR 4ll oF y0ur u\$er PRePherENc3s C0uld n0t 8e upD@+ED. pLe4SE +Ry @g@In LaTer.";
 $lang['emailaddresschanged'] = "eM@il adDr3ss h45 B33N CH4N93D";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.325 2007-09-14 19:46:56 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.326 2007-09-15 13:22:32 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -192,25 +192,9 @@ function bh_session_check($show_session_fail = true, $use_sess_hash = false)
                     if (!$result = db_query($sql, $db_bh_session_check)) return false;
                 }
 
-                // Forum self-preservation functions. Each page load
-                // we only do one of these. The functions themselves
-                // return false if the random probability meant they
-                // ended up doing nothing so we can then try the next
-                // one and so forth.
+                // Forum self-preservation
 
-                if (!update_stats()) {
-
-                    if (!pm_system_prune_folders()) {
-
-                        if (!bh_remove_stale_sessions()) {
-
-                            if (!thread_auto_prune_unread_data()) {
-
-                                captcha_clean_up();
-                            }
-                        }
-                    }
-                }
+                forum_perform_self_clean();
             }
 
             // Return session data
@@ -444,35 +428,16 @@ function bh_guest_session_init($use_sess_hash = false, $update_visitor_log = tru
             }
         }
 
-        // check to see if the user's credentials match the
+        // Check to see if the user's credentials match the
         // ban data set up on this forum.
 
         ban_check($user_sess, true);
 
-        // Forum self-preservation functions. Each page load
-        // we only do one of these. The functions themselves
-        // return false if the random probability meant they
-        // ended up doing nothing so we can then try the next
-        // one and so forth.
+        // Forum self-preservation
 
         if (($user_sess['SERVER_TIME'] - $user_sess['TIME']) > $active_sess_cutoff) {
 
-            if (!update_stats()) {
-
-                if (!pm_system_prune_folders()) {
-
-                    if (!bh_remove_stale_sessions()) {
-
-                        if (!visitor_log_clean_up()) {
-
-                            if (!captcha_clean_up()) {
-
-                                thread_auto_prune_unread_data();
-                            }
-                        }
-                    }
-                }
-            }
+            forum_perform_self_clean();
         }
 
         return $user_sess;
@@ -535,53 +500,43 @@ function bh_session_get_value($session_key)
 
 function bh_remove_stale_sessions()
 {
-    $sess_rem_prob = intval(forum_get_setting('forum_self_clean_prob', false, 1000));
+    $db_bh_remove_stale_sessions = db_connect();
 
-    if ($sess_rem_prob < 1) $sess_rem_prob = 1;
-    if ($sess_rem_prob > 1000) $sess_rem_prob = 1000;
+    if ($session_cutoff = forum_get_setting('session_cutoff', false, 86400)) {
 
-    if (($mt_result = mt_rand(1, $sess_rem_prob)) == 1) {
+        $sql = "DELETE QUICK FROM SESSIONS WHERE UID = 0 AND ";
+        $sql.= "TIME < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $session_cutoff) ";
 
-        $db_bh_remove_stale_sessions = db_connect();
+        if (!$result = db_query($sql, $db_bh_remove_stale_sessions)) return false;
 
-        if ($session_cutoff = forum_get_setting('session_cutoff', false, 86400)) {
+        $expired_sessions_array = array();
 
-            $sql = "DELETE QUICK FROM SESSIONS WHERE UID = 0 AND ";
-            $sql.= "TIME < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $session_cutoff) ";
+        $sql = "SELECT HASH, UID FROM SESSIONS WHERE ";
+        $sql.= "TIME < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $session_cutoff) ";
+        $sql.= "AND UID > 0 LIMIT 0, 5";
+
+        if (!$result = db_query($sql, $db_bh_remove_stale_sessions)) return false;
+
+        while ($session_data = db_fetch_array($result)) {
+
+            bh_update_user_time($session_data['UID']);
+            $expired_sessions_array[] = $session_data['HASH'];
+        }
+
+        if (sizeof($expired_sessions_array) > 0) {
+
+            $expired_sessions = implode("', '", $expired_sessions_array);
+
+            $sql = "DELETE QUICK FROM SESSIONS WHERE HASH IN ('$expired_sessions') ";
+            $sql.= "AND TIME < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $session_cutoff) ";
 
             if (!$result = db_query($sql, $db_bh_remove_stale_sessions)) return false;
 
-            $expired_sessions_array = array();
+            admin_add_log_entry(FORUM_AUTO_PRUNE_SESSIONS);
 
-            $sql = "SELECT HASH, UID FROM SESSIONS WHERE ";
-            $sql.= "TIME < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $session_cutoff) ";
-            $sql.= "AND UID > 0 LIMIT 0, 5";
-
-            if (!$result = db_query($sql, $db_bh_remove_stale_sessions)) return false;
-
-            while ($session_data = db_fetch_array($result)) {
-
-                bh_update_user_time($session_data['UID']);
-                $expired_sessions_array[] = $session_data['HASH'];
-            }
-
-            if (sizeof($expired_sessions_array) > 0) {
-
-                $expired_sessions = implode("', '", $expired_sessions_array);
-
-                $sql = "DELETE QUICK FROM SESSIONS WHERE HASH IN ('$expired_sessions') ";
-                $sql.= "AND TIME < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $session_cutoff) ";
-
-                if (!$result = db_query($sql, $db_bh_remove_stale_sessions)) return false;
-
-                admin_add_log_entry(FORUM_AUTO_PRUNE_SESSIONS);
-
-                return true;
-            }
+            return true;
         }
     }
-
-    return false;
 }
 
 // Updates the visitor log for the current user

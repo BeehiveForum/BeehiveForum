@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.261 2007-09-10 12:36:20 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.262 2007-09-15 13:22:32 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -43,7 +43,11 @@ include_once(BH_INCLUDE_PATH. "header.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "install.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
+include_once(BH_INCLUDE_PATH. "pm.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
+include_once(BH_INCLUDE_PATH. "stats.inc.php");
+include_once(BH_INCLUDE_PATH. "text_captcha.inc.php");
+include_once(BH_INCLUDE_PATH. "threads.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 function get_forum_data()
@@ -2459,6 +2463,36 @@ function forums_get_available_count()
 
         list($forum_available_count) = db_fetch_array($result, DB_RESULT_NUM);
         return $forum_available_count;
+    }
+
+    return false;
+}
+
+// Forum self-preservation functions. Randomly picks a function to
+// run which helps preserve functionality of Beehive.
+
+function forum_perform_self_clean()
+{
+    $forum_self_clean_functions_array = array('update_stats',
+                                              'pm_system_prune_folders',
+                                              'bh_remove_stale_sessions',
+                                              'thread_auto_prune_unread_data',
+                                              'captcha_clean_up');
+
+    $forum_self_clean_prob = intval(forum_get_setting('forum_self_clean_prob', false, 1000));
+
+    if ($forum_self_clean_prob < 1) $forum_self_clean_prob = 1;
+    if ($forum_self_clean_prob > 1000) $forum_self_clean_prob = 1000;
+
+    if (($mt_result = mt_rand(1, $forum_self_clean_prob)) == 1) {
+
+        $forum_self_clean_function = mt_rand(0, sizeof($forum_self_clean_functions_array) - 1);
+
+        if (isset($forum_self_clean_functions_array[$forum_self_clean_function])
+          && function_exists($forum_self_clean_functions_array[$forum_self_clean_function])) {
+
+            return $forum_self_clean_functions_array[$forum_self_clean_function]();
+        }
     }
 
     return false;

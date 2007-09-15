@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.120 2007-09-14 19:46:55 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.121 2007-09-15 12:05:33 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -193,6 +193,8 @@ $admin_log_array = admin_get_log_entries($start, $sort_by, $sort_dir);
 if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
     foreach ($admin_log_array['admin_log_array'] as $admin_log_entry) {
+
+        $auto_update = false;
 
         echo "                  <tr>\n";
         echo "                    <td align=\"left\" valign=\"top\">", format_time($admin_log_entry['CREATED']), "</td>\n";
@@ -549,31 +551,31 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
             case FORUM_AUTO_UPDATE_STATS:
 
+                $auto_update = true;
                 $action_text = $lang['forumautoupdatestats'];
-                break;
-
-            case FORUM_AUTO_UPDATE_SESSIONS:
-
-                $action_text = $lang['forumautoupdatesessions'];
                 break;
 
             case FORUM_AUTO_PRUNE_PM:
 
+                $auto_update = true;
                 $action_text = $lang['forumautoprunepm'];
                 break;
 
             case FORUM_AUTO_PRUNE_SESSIONS:
 
+                $auto_update = true;
                 $action_text = $lang['forumautoprunesessions'];
                 break;
 
             case FORUM_AUTO_CLEAN_THREAD_UNREAD:
 
+                $auto_update = true;
                 $action_text = $lang['forumautocleanthreadunread'];
                 break;
 
             case FORUM_AUTO_CLEAN_CAPTCHA:
 
+                $auto_update = true;
                 $action_text = $lang['forumautocleancaptcha'];
                 break;
 
@@ -584,7 +586,12 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
                 break;
         }
 
-        echo "                    <td align=\"left\" valign=\"top\"><a href=\"admin_user.php?webtag=$webtag&amp;uid=", $admin_log_entry['UID'], "\">", word_filter_add_ob_tags(_htmlentities(format_user_name($admin_log_entry['LOGON'], $admin_log_entry['NICKNAME']))), "</a></td>\n";
+        if ($auto_update === true) {
+            echo "                    <td align=\"left\" valign=\"top\">{$lang['none']}</td>\n";
+        }else {
+            echo "                    <td align=\"left\" valign=\"top\"><a href=\"admin_user.php?webtag=$webtag&amp;uid=", $admin_log_entry['UID'], "\">", word_filter_add_ob_tags(_htmlentities(format_user_name($admin_log_entry['LOGON'], $admin_log_entry['NICKNAME']))), "</a></td>\n";
+        }
+
         echo "                    <td align=\"left\">", $action_text, "</td>\n";
         echo "                  </tr>\n";
 

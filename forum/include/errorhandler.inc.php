@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.90 2007-09-15 16:48:33 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.91 2007-09-15 16:51:31 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -137,7 +137,7 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
         echo "          <td align=\"left\">", form_input_hidden_array(_stripslashes($_POST)), "</td>\n";
         echo "        </tr>\n";
         echo "        <tr>\n";
-        echo "          <td align=\"center\"><input class=\"button\" type=\"submit\" name=\"", md5(uniqid(rand())), "\" value=\"Retry\" /></td>\n";
+        echo "          <td align=\"center\"><input class=\"button\" type=\"submit\" name=\"", md5(uniqid(mt_rand())), "\" value=\"Retry\" /></td>\n";
         echo "        </tr>\n";
 
         if (isset($_GET['retryerror']) && isset($_POST['t_content']) && strlen(trim(_stripslashes($_POST['t_content']))) > 0) {

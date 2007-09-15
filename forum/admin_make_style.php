@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.109 2007-08-17 22:50:20 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.110 2007-09-15 16:51:30 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -256,12 +256,15 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 // Otherwise create some random numbers to work with.
 
 if (isset($_GET['seed'])) {
+
     $seed = substr(preg_replace("/[^0-9|A-F]/i", "", $_GET['seed']), 0, 6);
     list ($red, $green, $blue) = hexToDec($seed);
+
 }else {
-    $red = rand(0, 255);
-    $green = rand(0, 255);
-    $blue = rand(0, 255);
+
+    $red = mt_rand(0, 255);
+    $green = mt_rand(0, 255);
+    $blue = mt_rand(0, 255);
 }
 
 if (isset($_GET['mode']) && $_GET['mode'] == 'rand') {
@@ -355,7 +358,7 @@ if (($boxr < 150 && $boxg < 150 && $boxb < 150) || (($boxr + $boxg + $boxb) / 3)
     $text_colour = "#000000";
 }
 
-$r = rand(0, 1000);
+$r = mt_rand(0, 1000);
 
 echo "                  <td class=\"subhead\" align=\"left\">{$lang['new']}</td>\n";
 echo "                </tr>\n";

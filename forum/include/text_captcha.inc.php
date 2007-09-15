@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: text_captcha.inc.php,v 1.19 2007-09-15 16:48:33 decoyduck Exp $ */
+/* $Id: text_captcha.inc.php,v 1.20 2007-09-15 16:51:31 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -195,7 +195,7 @@ class captcha {
 
                     $noise_angle  = intval(mt_rand(0, 360));
 
-                    $noise_x = intval(rand(0, $this->image_x));
+                    $noise_x = intval(mt_rand(0, $this->image_x));
 
                     $noise_y = intval(mt_rand(0, (int)($this->image_y - ($noise_size / 5))));
 

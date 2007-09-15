@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.326 2007-09-15 13:22:32 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.327 2007-09-15 16:51:31 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -160,7 +160,7 @@ function bh_session_check($show_session_fail = true, $use_sess_hash = false)
 
             // A unique MD5 has for some purposes (word filter, etc)
 
-            $user_sess['RAND_HASH'] = md5(uniqid(rand()));
+            $user_sess['RAND_HASH'] = md5(uniqid(mt_rand()));
 
             // Check the forum FID the user is currently visiting
 
@@ -360,7 +360,7 @@ function bh_guest_session_init($use_sess_hash = false, $update_visitor_log = tru
 
             // A unique MD5 has for some purposes (word filter, etc)
 
-            $user_sess['RAND_HASH'] = md5(uniqid(rand()));
+            $user_sess['RAND_HASH'] = md5(uniqid(mt_rand()));
 
             // Check the forum FID the user is currently visiting
 
@@ -410,7 +410,7 @@ function bh_guest_session_init($use_sess_hash = false, $update_visitor_log = tru
                                'IPADDRESS'   => $ipaddress,
                                'REFERER'     => $http_referer,
                                'PERMS'       => bh_session_get_perm_array(0),
-                               'RAND_HASH'   => md5(uniqid(rand())));
+                               'RAND_HASH'   => md5(uniqid(mt_rand())));
 
             $http_referer = db_escape_string($http_referer);
 
@@ -857,7 +857,7 @@ function bh_session_init($uid, $update_visitor_log = true, $skip_cookie = false)
 
     }else {
 
-        $user_hash = md5(uniqid(rand()));
+        $user_hash = md5(uniqid(mt_rand()));
 
         $ipaddress = db_escape_string($ipaddress);
         $http_referer = db_escape_string($http_referer);

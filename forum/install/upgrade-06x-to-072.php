@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06x-to-072.php,v 1.19 2007-09-08 17:42:42 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-072.php,v 1.20 2007-09-15 16:51:31 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-06x-to-072.php") {
 
@@ -173,10 +173,10 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     // New BANNED table format for new 0.7 admin_banned.php
 
-    $banned_new = preg_replace("/[^a-z]/", "", md5(uniqid(rand())));
+    $banned_new = preg_replace("/[^a-z]/", "", md5(uniqid(mt_rand())));
 
     while (install_get_table_conflicts(false, false, array($banned_new))) {
-        $banned_new = preg_replace("/[^a-z]/", "", md5(uniqid(rand())));
+        $banned_new = preg_replace("/[^a-z]/", "", md5(uniqid(mt_rand())));
     }
 
     $sql = "CREATE TABLE {$forum_webtag}_{$banned_new} (";
@@ -330,10 +330,10 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     // Table structure for USER_POLL_VOTES has changed to make
     // lookups use the TID primary key and allow guests to vote.
 
-    $upv_new = preg_replace("/[^a-z]/", "", md5(uniqid(rand())));
+    $upv_new = preg_replace("/[^a-z]/", "", md5(uniqid(mt_rand())));
 
     while (install_get_table_conflicts(false, false, array($upv_new))) {
-        $upv_new = preg_replace("/[^a-z]/", "", md5(uniqid(rand())));
+        $upv_new = preg_replace("/[^a-z]/", "", md5(uniqid(mt_rand())));
     }
 
     $sql = "CREATE TABLE {$forum_webtag}_{$upv_new} (";
@@ -816,10 +816,10 @@ if (!$result = @db_query($sql, $db_install)) {
 
 // Table structure for POST_ATTACHMENT_FILES has changed.
 
-$paf_new = preg_replace("/[^a-z]/", "", md5(uniqid(rand())));
+$paf_new = preg_replace("/[^a-z]/", "", md5(uniqid(mt_rand())));
 
 while (install_get_table_conflicts(false, false, array($paf_new))) {
-    $paf_new = preg_replace("/[^a-z]/", "", md5(uniqid(rand())));
+    $paf_new = preg_replace("/[^a-z]/", "", md5(uniqid(mt_rand())));
 }
 
 $sql = "CREATE TABLE $paf_new (";
@@ -1275,10 +1275,10 @@ foreach ($timezones_array as $tzid => $tz_data) {
 
 // Change to Visitor log.
 
-$visitor_log_new = preg_replace("/[^a-z]/", "", md5(uniqid(rand())));
+$visitor_log_new = preg_replace("/[^a-z]/", "", md5(uniqid(mt_rand())));
 
 while (install_get_table_conflicts(false, false, array($visitor_log_new))) {
-    $visitor_log_new = preg_replace("/[^a-z]/", "", md5(uniqid(rand())));
+    $visitor_log_new = preg_replace("/[^a-z]/", "", md5(uniqid(mt_rand())));
 }
 
 // Create the new table. Auto-increment has been changed to a compound
@@ -1355,10 +1355,10 @@ if (db_num_rows($result) > 0) {
     // Generate a unique random table name and keep
     // doing so until we have one that doesn't exist.
 
-    $dictionary_new = preg_replace("/[^a-z]/", "", md5(uniqid(rand())));
+    $dictionary_new = preg_replace("/[^a-z]/", "", md5(uniqid(mt_rand())));
 
     while (install_get_table_conflicts(false, false, array($dictionary_new))) {
-        $dictionary_new = preg_replace("/[^a-z]/", "", md5(uniqid(rand())));
+        $dictionary_new = preg_replace("/[^a-z]/", "", md5(uniqid(mt_rand())));
     }
 
     // Create our new table.

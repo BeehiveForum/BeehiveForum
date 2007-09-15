@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.181 2007-09-14 17:41:16 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.182 2007-09-15 16:51:31 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -549,7 +549,7 @@ if (isset($_POST['save'])) {
     if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
         $aid = $_POST['aid'];
     }else{
-        $aid = md5(uniqid(rand()));
+        $aid = md5(uniqid(mt_rand()));
     }
 
     if (isset($_POST['t_recipient_list']) && strlen(trim(_stripslashes($_POST['t_recipient_list']))) > 0) {
@@ -694,7 +694,7 @@ if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
 
 }else if (!isset($aid)) {
 
-    $aid = md5(uniqid(rand()));
+    $aid = md5(uniqid(mt_rand()));
 }
 
 // Send the PM

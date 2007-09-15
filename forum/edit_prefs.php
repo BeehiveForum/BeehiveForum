@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_prefs.php,v 1.82 2007-09-14 17:41:16 decoyduck Exp $ */
+/* $Id: edit_prefs.php,v 1.83 2007-09-15 16:51:30 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -537,7 +537,7 @@ if (isset($user_prefs['DOB']) && preg_match("/\d{4,}-\d{2,}-\d{2,}/", $user_pref
 if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
     $aid = $_POST['aid'];
 }else {
-    $aid = md5(uniqid(rand()));
+    $aid = md5(uniqid(mt_rand()));
 }
 
 // Check to see if we should show the set for all forums checkboxes

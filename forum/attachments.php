@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.144 2007-08-21 20:27:39 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.145 2007-09-15 16:51:30 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -204,7 +204,7 @@ if (isset($_POST['upload'])) {
 
                     }else {
 
-                        $uniqfileid = md5(uniqid(rand()));
+                        $uniqfileid = md5(uniqid(mt_rand()));
 
                         $filehash = md5("{$aid}{$uniqfileid}{$filename}");
                         $filepath = "$attachment_dir/$filehash";

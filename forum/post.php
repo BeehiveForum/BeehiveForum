@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.321 2007-09-14 17:41:16 decoyduck Exp $ */
+/* $Id: post.php,v 1.322 2007-09-15 16:51:31 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -365,7 +365,7 @@ if (isset($_POST['t_sig_html'])) {
 if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
     $aid = $_POST['aid'];
 }else{
-    $aid = md5(uniqid(rand()));
+    $aid = md5(uniqid(mt_rand()));
 }
 
 if (!isset($sig_html)) $sig_html = 0;

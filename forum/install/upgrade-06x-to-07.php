@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06x-to-07.php,v 1.7 2007-08-01 20:23:04 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-07.php,v 1.8 2007-09-15 16:51:31 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-06x-to-07.php") {
 
@@ -174,10 +174,10 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     // New BANNED table format for new 0.7 admin_banned.php
 
-    $banned_new = preg_replace("/[^a-z]/", "", md5(uniqid(rand())));
+    $banned_new = preg_replace("/[^a-z]/", "", md5(uniqid(mt_rand())));
 
     while (install_get_table_conflicts(false, false, array($banned_new))) {
-        $banned_new = preg_replace("/[^a-z]/", "", md5(uniqid(rand())));
+        $banned_new = preg_replace("/[^a-z]/", "", md5(uniqid(mt_rand())));
     }
 
     $sql = "CREATE TABLE {$forum_webtag}_{$banned_new} (";
@@ -230,7 +230,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     }
 
     // Rename our new BANNED table
-    
+
     $sql = "ALTER TABLE {$forum_webtag}_{$banned_new} RENAME {$forum_webtag}_BANNED";
 
     if (!$result = @db_query($sql, $db_install)) {
@@ -277,7 +277,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     // Counter-change to older 0.6 builds. USER_TRACK is now
     // a per-forum table so we can use it to store user's
     // post counts for each forum they visit.
-  
+
     $sql = "CREATE TABLE {$forum_webtag}_USER_TRACK (";
     $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
     $sql.= "  DDKEY DATETIME DEFAULT NULL,";
@@ -317,10 +317,10 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     // Table structure for USER_POLL_VOTES has changed to make
     // lookups use the TID primary key.
 
-    $upv_new = preg_replace("/[^a-z]/", "", md5(uniqid(rand())));
+    $upv_new = preg_replace("/[^a-z]/", "", md5(uniqid(mt_rand())));
 
     while (install_get_table_conflicts(false, false, array($upv_new))) {
-        $upv_new = preg_replace("/[^a-z]/", "", md5(uniqid(rand())));
+        $upv_new = preg_replace("/[^a-z]/", "", md5(uniqid(mt_rand())));
     }
 
     $sql = "CREATE TABLE {$forum_webtag}_{$upv_new} (";
@@ -337,7 +337,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         $valid = false;
         return;
     }
-    
+
     $sql = "INSERT IGNORE INTO {$forum_webtag}_{$upv_new} (TID, UID, OPTION_ID, TSTAMP) ";
     $sql.= "SELECT TID, UID, OPTION_ID, TSTAMP FROM {$forum_webtag}_USER_POLL_VOTES";
 
@@ -346,7 +346,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         $valid = false;
         return;
     }
-    
+
     $sql = "DROP TABLE {$forum_webtag}_USER_POLL_VOTES";
 
     if (!$result = @db_query($sql, $db_install)) {
@@ -354,7 +354,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         $valid = false;
         return;
     }
-    
+
     $sql = "ALTER TABLE {$forum_webtag}_{$upv_new} RENAME {$forum_webtag}_USER_POLL_VOTES";
 
     if (!$result = @db_query($sql, $db_install)) {
@@ -389,7 +389,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql = "ALTER TABLE {$forum_webtag}_LINKS_FOLDERS CHANGE ";
     $sql.= "PARENT_FID PARENT_FID SMALLINT(5) UNSIGNED NULL";
 
-    $result = @db_query($sql, $db_install);           
+    $result = @db_query($sql, $db_install);
 
     // Indexes on USER_THREAD to make email notification queries run quicker
 
@@ -430,10 +430,10 @@ $result = @db_query($sql, $db_install);
 
 // Table structure for POST_ATTACHMENT_FILES has changed.
 
-$paf_new = preg_replace("/[^a-z]/", "", md5(uniqid(rand())));
+$paf_new = preg_replace("/[^a-z]/", "", md5(uniqid(mt_rand())));
 
 while (install_get_table_conflicts(false, false, array($paf_new))) {
-    $paf_new = preg_replace("/[^a-z]/", "", md5(uniqid(rand())));
+    $paf_new = preg_replace("/[^a-z]/", "", md5(uniqid(mt_rand())));
 }
 
 $sql = "CREATE TABLE $paf_new (";
@@ -605,14 +605,14 @@ if (db_num_rows($result) > 0) {
     // Generate a unique random table name and keep
     // doing so until we have one that doesn't exist.
 
-    $dictionary_new = preg_replace("/[^a-z]/", "", md5(uniqid(rand())));
+    $dictionary_new = preg_replace("/[^a-z]/", "", md5(uniqid(mt_rand())));
 
     while (install_get_table_conflicts(false, false, array($dictionary_new))) {
-        $dictionary_new = preg_replace("/[^a-z]/", "", md5(uniqid(rand())));
+        $dictionary_new = preg_replace("/[^a-z]/", "", md5(uniqid(mt_rand())));
     }
 
     // Create our new table.
-    
+
     $sql = "CREATE TABLE $dictionary_new (";
     $sql.= "  WORD VARCHAR(64) NOT NULL DEFAULT '',";
     $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";

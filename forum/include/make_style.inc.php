@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: make_style.inc.php,v 1.13 2007-05-02 23:15:42 decoyduck Exp $ */
+/* $Id: make_style.inc.php,v 1.14 2007-09-15 16:51:31 decoyduck Exp $ */
 
 /**
 * make_style.inc.php - attachment upload handling
@@ -132,7 +132,7 @@ function hexToDec ($rgb)
 function changeColour ($r, $g, $b, $variance, $mode, $steps)
 {
 
-    if (rand(0, 20) == 1 and $mode == "rand") {
+    if (mt_rand(0, 20) == 1 and $mode == "rand") {
         $r1 = $r;
         $g1 = $g;
         $b1 = $b;
@@ -145,11 +145,11 @@ function changeColour ($r, $g, $b, $variance, $mode, $steps)
     $plus_minus = array (1, -1);
 
     if ($mode == "rand") {
-        $newr = $r + ((rand(0, $variance * 2) + $variance) * $plus_minus[rand(0, 1)]);
+        $newr = $r + ((mt_rand(0, $variance * 2) + $variance) * $plus_minus[rand(0, 1)]);
     } else {
         $rarr = ((255-$r) / $steps) + (((255 - $r) / $steps) * (3 / 5));
         if ($rarr < 1) $rarr = 1;
-        $newr = $r + rand(0, $rarr);
+        $newr = $r + mt_rand(0, $rarr);
     }
 
     if ($newr > 255) {
@@ -159,11 +159,11 @@ function changeColour ($r, $g, $b, $variance, $mode, $steps)
     }
 
     if ($mode == "rand") {
-        $newg = $g + ((rand(0, $variance * 2) + $variance) * $plus_minus[rand(0, 1)]);
+        $newg = $g + ((mt_rand(0, $variance * 2) + $variance) * $plus_minus[rand(0, 1)]);
     }else {
         $rarg = ((255 - $g) / $steps) + (((255 - $g) / $steps) * (3 / 5));
         if ($rarg < 1) $rarg = 1;
-        $newg = $g + rand(0, $rarg);
+        $newg = $g + mt_rand(0, $rarg);
     }
 
     if ($newg > 255) {
@@ -173,11 +173,11 @@ function changeColour ($r, $g, $b, $variance, $mode, $steps)
     }
 
     if ($mode == "rand") {
-        $newb = $b + ((rand(0, $variance * 2) + $variance) * $plus_minus[rand(0, 1)]);
+        $newb = $b + ((mt_rand(0, $variance * 2) + $variance) * $plus_minus[rand(0, 1)]);
     }else {
         $rarb = ((255 - $b) / $steps) + (((255 - $b) / $steps) * (3 / 5));
         if ($rarb < 1) $rarb = 1;
-        $newb = $b + rand(0, $rarb);
+        $newb = $b + mt_rand(0, $rarb);
     }
 
     if ($newb > 255) {
@@ -193,7 +193,7 @@ function changeColour ($r, $g, $b, $variance, $mode, $steps)
 
 function rand_sort($a, $b)
 {
-    return (rand(0, 1));
+    return (mt_rand(0, 1));
 }
 
 // calculates the luminance, saturation and hue of a supplied

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.php,v 1.109 2007-09-08 19:34:17 decoyduck Exp $ */
+/* $Id: visitor_log.php,v 1.110 2007-09-15 22:13:45 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -378,7 +378,7 @@ if (sizeof($user_profile_array['user_array']) > 0) {
 
                 if (isset($user_array["ENTRY_$key"])) {
 
-                    echo "                   <td class=\"postbody\" align=\"right\" valign=\"top\" width=\"20%\"><div class=\"profile_item_overflow\" title=\"", $user_array["ENTRY_$key"], "\">", $user_array["ENTRY_$key"], "&nbsp;</div></td>\n";
+                    echo "                   <td class=\"postbody\" align=\"right\" valign=\"top\" width=\"20%\"><div class=\"profile_item_overflow\" title=\"", _htmlentities($user_array["ENTRY_$key"]), "\">", word_filter_add_ob_tags(_htmlentities($user_array["ENTRY_$key"])), "&nbsp;</div></td>\n";
 
                 }else {
 
@@ -387,7 +387,7 @@ if (sizeof($user_profile_array['user_array']) > 0) {
 
             }elseif (isset($profile_header_array[$key]) && isset($user_array[$key])) {
 
-                echo "                   <td class=\"postbody\" align=\"right\" valign=\"top\" width=\"20%\"><div class=\"profile_item_overflow\" title=\"{$user_array[$key]}\">{$user_array[$key]}&nbsp;</div></td>\n";
+                echo "                   <td class=\"postbody\" align=\"right\" valign=\"top\" width=\"20%\"><div class=\"profile_item_overflow\" title=\"", _htmlentities($user_array[$key]), "\">", word_filter_add_ob_tags(_htmlentities($user_array[$key])), "&nbsp;</div></td>\n";
 
             }else {
 

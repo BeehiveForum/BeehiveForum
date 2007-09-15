@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.inc.php,v 1.12 2007-09-15 13:22:32 decoyduck Exp $ */
+/* $Id: visitor_log.inc.php,v 1.13 2007-09-15 22:13:45 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -230,8 +230,8 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
                                              'REGISTERED'      => '(REGISTERED IS NOT NULL AND LENGTH(REGISTERED) > 0)',
                                              'USER_TIME_BEST'  => '(USER_TIME_BEST IS NOT NULL AND LENGTH(USER_TIME_BEST) > 0)',
                                              'USER_TIME_TOTAL' => '(USER_TIME_TOTAL IS NOT NULL AND LENGTH(USER_TIME_TOTAL) > 0)',
-                                             'DOB'             => '(DOB IS NOT NULL AND LENGTH(DOB) > 0)',
-                                             'AGE'             => '(AGE IS NOT NULL AND LENGTH(AGE) > 0)',
+                                             'DOB'             => '(DOB IS NOT NULL)',
+                                             'AGE'             => '(AGE IS NOT NULL AND AGE > 0)',
                                              'TIMEZONE'        => '(TIMEZONE IS NOT NULL AND LENGTH(TIMEZONE) > 0)');
 
     $column_null_filter_where_array = array('POST_COUNT'      => '(USER_TRACK.POST_COUNT IS NOT NULL AND USER_TRACK.POST_COUNT > 0)',
@@ -464,112 +464,103 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
         list($user_count) = db_fetch_array($result, DB_RESULT_NUM);
     }
 
-    if ($user_count > 0) {
+    if ($hide_guests === true) {
 
-        if ($hide_guests === true) {
+        $sql = implode(",", array_merge(array($select_sql), $profile_query_array, array($search_bot_sql, $last_visit_sql)));
+        $sql.= "$from_sql $join_sql $where_sql $having_sql $order_sql $limit_sql";
 
-            $sql = implode(",", array_merge(array($select_sql), $profile_query_array, array($search_bot_sql, $last_visit_sql)));
-            $sql.= "$from_sql $join_sql $where_sql $having_sql $order_sql $limit_sql";
+    }else {
 
-        }else {
+        $union_dummy_columns = implode(', ', array_map('visitor_log_dummy_column', range(0, 15 + sizeof($profile_query_array))));
 
-            $union_dummy_columns = implode(', ', array_map('visitor_log_dummy_column', range(0, 15 + sizeof($profile_query_array))));
+        $sql = implode(",", array_merge(array($select_sql), $profile_query_array, array($search_bot_sql, $last_visit_sql)));
+        $sql.= "$from_sql $join_sql $where_sql $having_sql UNION SELECT VISITOR_LOG.UID, ";
+        $sql.= "$union_dummy_columns, SEARCH_ENGINE_BOTS.SID, SEARCH_ENGINE_BOTS.NAME, ";
+        $sql.= "SEARCH_ENGINE_BOTS.URL, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_VISIT ";
+        $sql.= "FROM VISITOR_LOG LEFT JOIN SEARCH_ENGINE_BOTS ON (SEARCH_ENGINE_BOTS.SID = VISITOR_LOG.SID) ";
+        $sql.= "$where_visitor_sql $order_sql $limit_sql";
+    }
 
-            $sql = implode(",", array_merge(array($select_sql), $profile_query_array, array($search_bot_sql, $last_visit_sql)));
-            $sql.= "$from_sql $join_sql $where_sql $having_sql UNION SELECT VISITOR_LOG.UID, ";
-            $sql.= "$union_dummy_columns, SEARCH_ENGINE_BOTS.SID, SEARCH_ENGINE_BOTS.NAME, ";
-            $sql.= "SEARCH_ENGINE_BOTS.URL, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_VISIT ";
-            $sql.= "FROM VISITOR_LOG LEFT JOIN SEARCH_ENGINE_BOTS ON (SEARCH_ENGINE_BOTS.SID = VISITOR_LOG.SID) ";
-            $sql.= "$where_visitor_sql $order_sql $limit_sql";
-        }
+    if (!$result = db_query($sql, $db_visitor_log_browse_items)) return false;
 
-        if (!$result = db_query($sql, $db_visitor_log_browse_items)) return false;
+    if (db_num_rows($result) > 0) {
 
-        if (db_num_rows($result) > 0) {
+        while ($user_data = db_fetch_array($result, DB_RESULT_ASSOC)) {
 
-            while ($user_data = db_fetch_array($result, DB_RESULT_ASSOC)) {
-
-                if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
-                    if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
-                        $user_data['NICKNAME'] = $user_data['PEER_NICKNAME'];
-                    }
+            if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
+                if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
+                    $user_data['NICKNAME'] = $user_data['PEER_NICKNAME'];
                 }
-
-                if ($user_data['UID'] == 0) {
-
-                    $user_data['LOGON']    = $lang['guest'];
-                    $user_data['NICKNAME'] = $lang['guest'];
-
-                }elseif (!isset($user_data['LOGON']) || is_null($user_data['LOGON'])) {
-
-                    $user_data['LOGON'] = $lang['unknownuser'];
-                    $user_data['NICKNAME'] = "";
-                }
-
-                if (isset($user_data['AVATAR_URL_FORUM']) && strlen($user_data['AVATAR_URL_FORUM']) > 0) {
-                    $user_data['AVATAR_URL'] = $user_data['AVATAR_URL_FORUM'];
-                }elseif (isset($user_data['AVATAR_URL_GLOBAL']) && strlen($user_data['AVATAR_URL_GLOBAL']) > 0) {
-                    $user_data['AVATAR_URL'] = $user_data['AVATAR_URL_GLOBAL'];
-                }
-
-                if (isset($user_data['AVATAR_AID_FORUM']) && strlen($user_data['AVATAR_AID_FORUM']) > 0) {
-                    $user_data['AVATAR_AID'] = $user_data['AVATAR_AID_FORUM'];
-                }elseif (isset($user_data['AVATAR_AID_GLOBAL']) && strlen($user_data['AVATAR_AID_GLOBAL']) > 0) {
-                    $user_data['AVATAR_AID'] = $user_data['AVATAR_AID_GLOBAL'];
-                }
-
-                if (isset($user_data['LAST_VISIT']) && is_numeric($user_data['LAST_VISIT'])) {
-                    $user_data['LAST_VISIT'] = format_time($user_data['LAST_VISIT']);
-                }else {
-                    $user_data['LAST_VISIT'] = $lang['unknown'];
-                }
-
-                if (isset($user_data['REGISTERED']) && is_numeric($user_data['REGISTERED'])) {
-                    $user_data['REGISTERED'] = format_date($user_data['REGISTERED']);
-                }else {
-                    $user_data['REGISTERED'] = $lang['unknown'];
-                }
-
-                if (isset($user_data['USER_TIME_BEST']) && is_numeric($user_data['USER_TIME_BEST'])) {
-                    $user_data['USER_TIME_BEST'] = format_time_display($user_data['USER_TIME_BEST']);
-                }else {
-                    $user_data['USER_TIME_BEST'] = $lang['unknown'];
-                }
-
-                if (isset($user_data['USER_TIME_TOTAL']) && is_numeric($user_data['USER_TIME_TOTAL'])) {
-                    $user_data['USER_TIME_TOTAL'] = format_time_display($user_data['USER_TIME_TOTAL']);
-                }else {
-                    $user_data['USER_TIME_TOTAL'] = $lang['unknown'];
-                }
-
-                if (!isset($user_data['AGE']) || !is_numeric($user_data['AGE'])) {
-                    $user_data['AGE'] = $lang['unknown'];
-                }
-
-                if (isset($user_data['DOB']) && is_numeric($user_data['DOB'])) {
-                    $user_data['DOB'] = format_birthday($user_data['DOB']);
-                }else {
-                    $user_data['DOB'] = $lang['unknown'];
-                }
-
-                if (isset($user_data['TIMEZONE']) && is_numeric($user_data['TIMEZONE'])) {
-                    $user_data['TIMEZONE'] = timezone_id_to_string($user_data['TIMEZONE']);
-                }else {
-                    $user_data['TIMEZONE'] = $lang['unknown'];
-                }
-
-                if (!isset($user_data['POST_COUNT']) || !is_numeric($user_data['POST_COUNT'])) {
-                    $user_data['POST_COUNT'] = 0;
-                }
-
-                $user_array[] = $user_data;
             }
 
-        }else {
+            if ($user_data['UID'] == 0) {
 
-            $offset = floor((($user_count + $visitor_count) - 1) / 10) * 10;
-            return visitor_log_browse_items($user_search, $profile_items_array, $offset, $sort_by, $sort_dir, $hide_empty, $hide_guests);
+                $user_data['LOGON']    = $lang['guest'];
+                $user_data['NICKNAME'] = $lang['guest'];
+
+            }elseif (!isset($user_data['LOGON']) || is_null($user_data['LOGON'])) {
+
+                $user_data['LOGON'] = $lang['unknownuser'];
+                $user_data['NICKNAME'] = "";
+            }
+
+            if (isset($user_data['AVATAR_URL_FORUM']) && strlen($user_data['AVATAR_URL_FORUM']) > 0) {
+                $user_data['AVATAR_URL'] = $user_data['AVATAR_URL_FORUM'];
+            }elseif (isset($user_data['AVATAR_URL_GLOBAL']) && strlen($user_data['AVATAR_URL_GLOBAL']) > 0) {
+                $user_data['AVATAR_URL'] = $user_data['AVATAR_URL_GLOBAL'];
+            }
+
+            if (isset($user_data['AVATAR_AID_FORUM']) && strlen($user_data['AVATAR_AID_FORUM']) > 0) {
+                $user_data['AVATAR_AID'] = $user_data['AVATAR_AID_FORUM'];
+            }elseif (isset($user_data['AVATAR_AID_GLOBAL']) && strlen($user_data['AVATAR_AID_GLOBAL']) > 0) {
+                $user_data['AVATAR_AID'] = $user_data['AVATAR_AID_GLOBAL'];
+            }
+
+            if (isset($user_data['LAST_VISIT']) && is_numeric($user_data['LAST_VISIT'])) {
+                $user_data['LAST_VISIT'] = format_time($user_data['LAST_VISIT']);
+            }else {
+                $user_data['LAST_VISIT'] = $lang['unknown'];
+            }
+
+            if (isset($user_data['REGISTERED']) && is_numeric($user_data['REGISTERED'])) {
+                $user_data['REGISTERED'] = format_date($user_data['REGISTERED']);
+            }else {
+                $user_data['REGISTERED'] = $lang['unknown'];
+            }
+
+            if (isset($user_data['USER_TIME_BEST']) && is_numeric($user_data['USER_TIME_BEST'])) {
+                $user_data['USER_TIME_BEST'] = format_time_display($user_data['USER_TIME_BEST']);
+            }else {
+                $user_data['USER_TIME_BEST'] = $lang['unknown'];
+            }
+
+            if (isset($user_data['USER_TIME_TOTAL']) && is_numeric($user_data['USER_TIME_TOTAL'])) {
+                $user_data['USER_TIME_TOTAL'] = format_time_display($user_data['USER_TIME_TOTAL']);
+            }else {
+                $user_data['USER_TIME_TOTAL'] = $lang['unknown'];
+            }
+
+            if (!isset($user_data['AGE']) || !is_numeric($user_data['AGE'])) {
+                $user_data['AGE'] = $lang['unknown'];
+            }
+
+            if (!$user_data['DOB'] = format_birthday($user_data['DOB'])) {
+                $user_data['DOB'] = $lang['unknown'];
+            }
+
+            $user_data['TIMEZONE'] = timezone_id_to_string($user_data['TIMEZONE']);
+
+            if (!isset($user_data['POST_COUNT']) || !is_numeric($user_data['POST_COUNT'])) {
+                $user_data['POST_COUNT'] = 0;
+            }
+
+            $user_array[] = $user_data;
         }
+
+    }elseif ($user_count > 0) {
+
+        $offset = floor(($user_count - 1) / 10) * 10;
+        return visitor_log_browse_items($user_search, $profile_items_array, $offset, $sort_by, $sort_dir, $hide_empty, $hide_guests);
     }
 
     return array('user_count' => $user_count,

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.284 2007-09-14 19:46:56 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.285 2007-09-15 13:22:32 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1815,53 +1815,41 @@ function thread_has_attachments($tid)
     return (db_num_rows($result) > 0);
 }
 
-function thread_auto_prune_unread_data($force_start = false)
+function thread_auto_prune_unread_data()
 {
     $db_thread_prune_unread_data = db_connect();
-
-    if (!is_bool($force_start)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
     if (($unread_cutoff_stamp = forum_get_unread_cutoff()) === false) return false;
 
-    $unread_rem_prob = intval(forum_get_setting('forum_self_clean_prob', false, 1000));
+    $sql = "INSERT INTO {$table_data['PREFIX']}THREAD_STATS (TID, UNREAD_PID, UNREAD_CREATED) ";
+    $sql.= "SELECT POST.TID, MAX(POST.PID), MAX(POST.CREATED) FROM {$table_data['PREFIX']}POST POST ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD_STATS THREAD_STATS ON (THREAD_STATS.TID = POST.TID) ";
+    $sql.= "WHERE (POST.CREATED < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp) ";
+    $sql.= "AND $unread_cutoff_stamp > 0) AND (THREAD_STATS.UNREAD_PID < POST.PID ";
+    $sql.= "OR THREAD_STATS.UNREAD_PID IS NULL) GROUP BY POST.TID ON DUPLICATE KEY ";
+    $sql.= "UPDATE UNREAD_PID = VALUES(UNREAD_PID), UNREAD_CREATED = VALUES(UNREAD_CREATED)";
 
-    if ($unread_rem_prob < 1) $unread_rem_prob = 1;
-    if ($unread_rem_prob > 1000) $unread_rem_prob = 1000;
+    if (!$result = db_query($sql, $db_thread_prune_unread_data)) return false;
 
-    if ((($mt_result = mt_rand(1, $unread_rem_prob)) == 1) || $force_start === true) {
+    $sql = "DELETE QUICK FROM {$table_data['PREFIX']}USER_THREAD ";
+    $sql.= "USING {$table_data['PREFIX']}USER_THREAD ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD ";
+    $sql.= "ON ({$table_data['PREFIX']}USER_THREAD.TID = ";
+    $sql.= "{$table_data['PREFIX']}THREAD.TID) ";
+    $sql.= "WHERE ({$table_data['PREFIX']}THREAD.MODIFIED IS NOT NULL ";
+    $sql.= "AND {$table_data['PREFIX']}THREAD.MODIFIED < ";
+    $sql.= "FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp) ";
+    $sql.= "AND $unread_cutoff_stamp > 0) ";
+    $sql.= "AND ({$table_data['PREFIX']}USER_THREAD.INTEREST IS NULL ";
+    $sql.= "OR {$table_data['PREFIX']}USER_THREAD.INTEREST = 0) ";
 
-        $sql = "INSERT INTO {$table_data['PREFIX']}THREAD_STATS (TID, UNREAD_PID, UNREAD_CREATED) ";
-        $sql.= "SELECT POST.TID, MAX(POST.PID), MAX(POST.CREATED) FROM {$table_data['PREFIX']}POST POST ";
-        $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD_STATS THREAD_STATS ON (THREAD_STATS.TID = POST.TID) ";
-        $sql.= "WHERE (POST.CREATED < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp) ";
-        $sql.= "AND $unread_cutoff_stamp > 0) AND (THREAD_STATS.UNREAD_PID < POST.PID ";
-        $sql.= "OR THREAD_STATS.UNREAD_PID IS NULL) GROUP BY POST.TID ON DUPLICATE KEY ";
-        $sql.= "UPDATE UNREAD_PID = VALUES(UNREAD_PID), UNREAD_CREATED = VALUES(UNREAD_CREATED)";
+    if (!$result = db_query($sql, $db_thread_prune_unread_data)) return false;
 
-        if (!$result = db_query($sql, $db_thread_prune_unread_data)) return false;
+    admin_add_log_entry(FORUM_AUTO_CLEAN_THREAD_UNREAD);
 
-        $sql = "DELETE QUICK FROM {$table_data['PREFIX']}USER_THREAD ";
-        $sql.= "USING {$table_data['PREFIX']}USER_THREAD ";
-        $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD ";
-        $sql.= "ON ({$table_data['PREFIX']}USER_THREAD.TID = ";
-        $sql.= "{$table_data['PREFIX']}THREAD.TID) ";
-        $sql.= "WHERE ({$table_data['PREFIX']}THREAD.MODIFIED IS NOT NULL ";
-        $sql.= "AND {$table_data['PREFIX']}THREAD.MODIFIED < ";
-        $sql.= "FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp) ";
-        $sql.= "AND $unread_cutoff_stamp > 0) ";
-        $sql.= "AND ({$table_data['PREFIX']}USER_THREAD.INTEREST IS NULL ";
-        $sql.= "OR {$table_data['PREFIX']}USER_THREAD.INTEREST = 0) ";
-
-        if (!$result = db_query($sql, $db_thread_prune_unread_data)) return false;
-
-        admin_add_log_entry(FORUM_AUTO_CLEAN_THREAD_UNREAD);
-
-        return true;
-    }
-
-    return false;
+    return true;
 }
 
 function threads_get_user_subscriptions($include_threads = array(), $interest_type = THREAD_NOINTEREST, $offset = 0)

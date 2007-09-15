@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.85 2007-09-14 19:46:56 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.86 2007-09-15 13:22:32 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -45,50 +45,40 @@ function update_stats()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $stats_update_prob = intval(forum_get_setting('forum_self_clean_prob', false, 1000));
+    $num_sessions = get_num_sessions();
+    $num_recent_posts = get_recent_post_count();
 
-    if ($stats_update_prob < 1) $stats_update_prob = 1;
-    if ($stats_update_prob > 1000) $stats_update_prob = 1000;
+    $sql = "SELECT ID FROM {$table_data['PREFIX']}STATS ";
+    $sql.= "ORDER BY ID DESC LIMIT 0, 1";
 
-    if (forum_get_setting('show_stats', 'Y') && (($mt_result = mt_rand(1, $stats_update_prob)) == 1)) {
+    if (!$result = db_query($sql, $db_update_stats)) return false;
 
-        $num_sessions = get_num_sessions();
-        $num_recent_posts = get_recent_post_count();
+    if (db_num_rows($result) > 0) {
 
-        $sql = "SELECT ID FROM {$table_data['PREFIX']}STATS ";
-        $sql.= "ORDER BY ID DESC LIMIT 0, 1";
+        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}STATS SET ";
+        $sql.= "MOST_USERS_DATE = NOW(), MOST_USERS_COUNT = '$num_sessions' ";
+        $sql.= "WHERE MOST_USERS_COUNT < $num_sessions";
 
         if (!$result = db_query($sql, $db_update_stats)) return false;
 
-        if (db_num_rows($result) > 0) {
+        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}STATS SET ";
+        $sql.= "MOST_POSTS_DATE = NOW(), MOST_POSTS_COUNT = '$num_recent_posts' ";
+        $sql.= "WHERE MOST_POSTS_COUNT < $num_recent_posts";
 
-            $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}STATS SET ";
-            $sql.= "MOST_USERS_DATE = NOW(), MOST_USERS_COUNT = '$num_sessions' ";
-            $sql.= "WHERE MOST_USERS_COUNT < $num_sessions";
+        if (!$result = db_query($sql, $db_update_stats)) return false;
 
-            if (!$result = db_query($sql, $db_update_stats)) return false;
+    }else {
 
-            $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}STATS SET ";
-            $sql.= "MOST_POSTS_DATE = NOW(), MOST_POSTS_COUNT = '$num_recent_posts' ";
-            $sql.= "WHERE MOST_POSTS_COUNT < $num_recent_posts";
+        $sql = "INSERT LOW_PRIORITY INTO {$table_data['PREFIX']}STATS (MOST_USERS_DATE, ";
+        $sql.= "MOST_USERS_COUNT, MOST_POSTS_DATE, MOST_POSTS_COUNT) ";
+        $sql.= "VALUES (NOW(), '$num_sessions', NOW(), '$num_recent_posts')";
 
-            if (!$result = db_query($sql, $db_update_stats)) return false;
-
-        }else {
-
-            $sql = "INSERT LOW_PRIORITY INTO {$table_data['PREFIX']}STATS (MOST_USERS_DATE, ";
-            $sql.= "MOST_USERS_COUNT, MOST_POSTS_DATE, MOST_POSTS_COUNT) ";
-            $sql.= "VALUES (NOW(), '$num_sessions', NOW(), '$num_recent_posts')";
-
-            if (!$result = db_query($sql, $db_update_stats)) return false;
-        }
-
-        admin_add_log_entry(FORUM_AUTO_UPDATE_STATS);
-
-        return true;
+        if (!$result = db_query($sql, $db_update_stats)) return false;
     }
 
-    return false;
+    admin_add_log_entry(FORUM_AUTO_UPDATE_STATS);
+
+    return true;
 }
 
 function get_num_sessions()

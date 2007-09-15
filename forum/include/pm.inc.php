@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.219 2007-09-14 19:46:56 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.220 2007-09-15 13:22:32 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1962,31 +1962,23 @@ function pm_system_prune_folders()
 {
     $db_pm_prune_folders = db_connect();
 
-    $pm_prune_prob = intval(forum_get_setting('forum_self_clean_prob', false, 1000));
+    $pm_prune_length = intval(forum_get_setting('pm_auto_prune', false, 0));
 
-    if ($pm_prune_prob < 1) $pm_prune_prob = 1;
-    if ($pm_prune_prob > 1000) $pm_prune_prob = 1000;
+    if ($pm_prune_length > 0) {
 
-    if (($mt_result = mt_rand(1, $pm_prune_prob)) == 1) {
+        $pm_read = PM_READ;
+        $pm_sent_items = PM_SENT_ITEMS;
 
-        $pm_prune_length = intval(forum_get_setting('pm_auto_prune', false, 0));
+        $pm_prune_length = ($pm_prune_length * DAY_IN_SECONDS);
 
-        if ($pm_prune_length > 0) {
+        $sql = "DELETE LOW_PRIORITY FROM PM WHERE ((TYPE & $pm_read > 0) OR (TYPE & $pm_sent_items > 0)) ";
+        $sql.= "AND CREATED < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $pm_prune_length)";
 
-            $pm_read = PM_READ;
-            $pm_sent_items = PM_SENT_ITEMS;
+        if (!$result = db_query($sql, $db_pm_prune_folders)) return false;
 
-            $pm_prune_length = ($pm_prune_length * DAY_IN_SECONDS);
+        admin_add_log_entry(FORUM_AUTO_PRUNE_PM);
 
-            $sql = "DELETE LOW_PRIORITY FROM PM WHERE ((TYPE & $pm_read > 0) OR (TYPE & $pm_sent_items > 0)) ";
-            $sql.= "AND CREATED < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $pm_prune_length)";
-
-            if (!$result = db_query($sql, $db_pm_prune_folders)) return false;
-
-            admin_add_log_entry(FORUM_AUTO_PRUNE_PM);
-
-            return true;
-        }
+        return true;
     }
 
     return false;

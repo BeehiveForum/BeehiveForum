@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.inc.php,v 1.11 2007-09-14 19:46:56 decoyduck Exp $ */
+/* $Id: visitor_log.inc.php,v 1.12 2007-09-15 13:22:32 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -593,27 +593,17 @@ function visitor_log_clean_up()
 
     $forum_fid = $table_data['FID'];
 
-    $visitor_log_clean_up_prob = intval(forum_get_setting('forum_self_clean_prob', false, 1000));
+    // Keep visitor log for 7 days.
 
-    if ($visitor_log_clean_up_prob < 1) $visitor_log_clean_up_prob = 1;
-    if ($visitor_log_clean_up_prob > 1000) $visitor_log_clean_up_prob = 1000;
+    $visitor_cutoff_stamp = DAY_IN_SECONDS * 7;
 
-    if (($mt_result = mt_rand(1, $visitor_log_clean_up_prob)) == 1) {
+    $sql = "DELETE QUICK FROM VISITOR_LOG WHERE FORUM = '$forum_fid' ";
+    $sql.= "AND LAST_LOGON < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) ";
+    $sql.= "- $visitor_cutoff_stamp)";
 
-        // Keep visitor log for 7 days.
+    if (!$result = db_query($sql, $db_visitor_log_clean_up)) return false;
 
-        $visitor_cutoff_stamp = DAY_IN_SECONDS * 7;
-
-        $sql = "DELETE QUICK FROM VISITOR_LOG WHERE FORUM = '$forum_fid' ";
-        $sql.= "AND LAST_LOGON < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) ";
-        $sql.= "- $visitor_cutoff_stamp)";
-
-        $result = db_query($sql, $db_visitor_log_clean_up);
-
-        return true;
-    }
-
-    return false;
+    return true;
 }
 
 ?>

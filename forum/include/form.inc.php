@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.105 2007-09-10 12:36:20 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.106 2007-09-15 16:51:31 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -70,7 +70,7 @@ function form_field($name, $value = false, $width = false, $maxchars = false, $t
 
 function form_unique_id()
 {
-    return preg_replace("/[^a-z]/", "", md5(uniqid(rand())));
+    return preg_replace("/[^a-z]/", "", md5(uniqid(mt_rand())));
 }
 
 // Creates a text input field
@@ -115,9 +115,9 @@ function form_input_hidden_array($array, $ignore_keys = array())
     $result_var = "";
 
     foreach ($array_keys as $key => $key_name) {
-        
+
         if (($key_name != 'webtag') && isset($array_values[$key])) {
-        
+
             $result_var.= form_input_hidden(_htmlentities($key_name), _htmlentities($array_values[$key])). "\n";
         }
     }
@@ -173,13 +173,13 @@ function form_dropdown_array($name, $options_array, $default = false, $custom_ht
     $html.= ">";
 
     if (is_array($options_array)) {
-        
+
         foreach ($options_array as $option_key => $option_text) {
 
             if (is_array($option_text)) {
 
                 $html.= form_dropdown_objgroup_array($option_key, $option_text, $default, $custom_html, $group_class);
-            
+
             }else {
 
                 $selected = (strtolower($option_key) == strtolower($default)) ? " selected=\"selected\"" : "";
@@ -216,7 +216,7 @@ function form_dropdown_objgroup_array($name, $options_array, $default = false, $
         $html.= "</optgroup>";
         return $html;
     }
-}    
+}
 
 // Creates a checkbox field
 
@@ -315,7 +315,7 @@ function form_radio($name, $value, $text, $checked = false, $custom_html = false
 function form_radio_array($name, $options_array, $checked = false, $custom_html = false)
 {
     $html = "";
-    
+
     foreach ($options_array as $option_key => $option_text) {
 
         if (!is_array($option_text)) {
@@ -332,7 +332,7 @@ function form_radio_array($name, $options_array, $checked = false, $custom_html 
 function form_submit($name = "submit", $value = "Submit", $custom_html = false, $class = "button")
 {
     $id = form_unique_id();
-    
+
     $html = "<input type=\"submit\" name=\"$name\" id=\"$id\" value=\"$value\" class=\"$class\" ";
 
     if ($custom_html) {
@@ -349,7 +349,7 @@ function form_submit($name = "submit", $value = "Submit", $custom_html = false, 
 function form_submit_image($image, $name = "submit", $value = "Submit", $custom_html = false, $class = false)
 {
     $id = form_unique_id();
-    
+
     $html = "<input name=\"$name\" value=\"$value\" id=\"$id\" ";
     $html.= "type=\"image\" src=\"". style_image($image). "\" ";
 
@@ -417,7 +417,7 @@ function form_quick_button($href, $label, $var_array = false, $target = "_self")
         foreach($var_array as $var_name => $var_value) {
 
             if (!is_array($var_value)) {
-            
+
                 $html.= form_input_hidden($var_name, _htmlentities($var_value));
             }
         }

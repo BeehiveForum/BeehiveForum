@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.130 2007-09-08 17:42:42 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.131 2007-09-15 16:51:31 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -729,7 +729,7 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
 
                             if (!$result_update = db_query($sql, $db_thread_merge)) return false;
 
-                            $aid = md5(uniqid(rand()));
+                            $aid = md5(uniqid(mt_rand()));
 
                             $sql = "INSERT INTO POST_ATTACHMENT_IDS (FID, TID, PID, AID) ";
                             $sql.= "VALUES ('$forum_fid', '$new_tid', '$new_pid', '$aid')";
@@ -1065,7 +1065,7 @@ function thread_split($tid, $spid, $split_type, &$error_str)
 
                         if (!$result_update = db_query($sql, $db_thread_split)) return false;
 
-                        $aid = md5(uniqid(rand()));
+                        $aid = md5(uniqid(mt_rand()));
 
                         $sql = "INSERT INTO POST_ATTACHMENT_IDS (FID, TID, PID, AID) ";
                         $sql.= "VALUES ('$forum_fid', '$new_tid', '$new_pid', '$aid')";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.151 2007-08-31 21:02:35 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.152 2007-09-15 16:51:31 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
 
@@ -1228,7 +1228,7 @@ $global_settings = array('forum_keywords'             => 'A Beehive Forum, Beehi
                          'showpopuponnewpm'           => 'Y',
                          'new_user_pm_notify_email'   => 'Y',
                          'new_user_email_notify'      => 'Y',
-                         'text_captcha_key'           => md5(uniqid(rand())),
+                         'text_captcha_key'           => md5(uniqid(mt_rand())),
                          'text_captcha_dir'           => 'text_captcha',
                          'text_captcha_enabled'       => 'N',
                          'require_email_confirmation' => 'N',

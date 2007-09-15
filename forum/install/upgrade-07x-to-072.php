@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-07x-to-072.php,v 1.45 2007-09-08 17:42:42 decoyduck Exp $ */
+/* $Id: upgrade-07x-to-072.php,v 1.46 2007-09-15 16:51:31 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-07x-to-072.php") {
 
@@ -286,10 +286,10 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     // New USER_POLL_VOTES table format to allow guests to vote in polls
 
-    $upv_new = preg_replace("/[^a-z]/", "", md5(uniqid(rand())));
+    $upv_new = preg_replace("/[^a-z]/", "", md5(uniqid(mt_rand())));
 
     while (install_get_table_conflicts(false, false, array($upv_new))) {
-        $upv_new = preg_replace("/[^a-z]/", "", md5(uniqid(rand())));
+        $upv_new = preg_replace("/[^a-z]/", "", md5(uniqid(mt_rand())));
     }
 
     $sql = "CREATE TABLE {$forum_webtag}_{$upv_new} (";
@@ -953,10 +953,10 @@ foreach ($timezones_array as $tzid => $tz_data) {
 
 // Change to Visitor log.
 
-$visitor_log_new = preg_replace("/[^a-z]/", "", md5(uniqid(rand())));
+$visitor_log_new = preg_replace("/[^a-z]/", "", md5(uniqid(mt_rand())));
 
 while (install_get_table_conflicts(false, false, array($visitor_log_new))) {
-    $visitor_log_new = preg_replace("/[^a-z]/", "", md5(uniqid(rand())));
+    $visitor_log_new = preg_replace("/[^a-z]/", "", md5(uniqid(mt_rand())));
 }
 
 // Create the new table. Auto-increment has been changed to a compound

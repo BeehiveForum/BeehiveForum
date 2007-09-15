@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: server.inc.php,v 1.17 2007-06-10 12:28:44 decoyduck Exp $ */
+/* $Id: server.inc.php,v 1.18 2007-09-15 16:51:31 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -117,32 +117,32 @@ function server_get_cpu_load()
 function system_get_temp_dir()
 {
     $env_array = array_merge($_ENV, $_SERVER);
-    
+
     if (function_exists('sys_get_temp_dir')) {
 
         return sys_get_temp_dir();
-    
+
     }elseif (isset($env_array['TEMP']) && is_dir($env_array['TEMP'])) {
-    
+
         return $env_array['TEMP'];
-    
-    }elseif (isset($env_array['TMP']) && is_dir($env_array['TMP'])) {    
-     
-        return $env_array['TMP'];       
-    
-    }elseif (isset($env_array['TMPDIR']) && is_dir($env_array['TMPDIR'])) {    
-        
-        return $env_array['TMPDIR'];    
-    
-    }elseif (file_exists('/tmp/') && is_dir('/tmp/')) {    
-                
-        return '/tmp/';   
-    
-    }elseif ($temp_file = tempnam(md5(uniqid(rand())), '')) {
-                
+
+    }elseif (isset($env_array['TMP']) && is_dir($env_array['TMP'])) {
+
+        return $env_array['TMP'];
+
+    }elseif (isset($env_array['TMPDIR']) && is_dir($env_array['TMPDIR'])) {
+
+        return $env_array['TMPDIR'];
+
+    }elseif (file_exists('/tmp/') && is_dir('/tmp/')) {
+
+        return '/tmp/';
+
+    }elseif ($temp_file = tempnam(md5(uniqid(mt_rand())), '')) {
+
         unlink($temp_file);
         return realpath(dirname($temp_file));
-    }        
+    }
 
     return false;
 }
@@ -264,9 +264,9 @@ function get_available_admin_files()
 
 function get_available_user_control_files()
 {
-    return array('edit_prefs.php', 'edit_profile.php', 'edit_password.php', 
-                 'edit_email.php', 'forum_options.php', 'pm_options.php', 
-                 'edit_attachments.php', 'edit_signature.php', 'edit_relations.php', 
+    return array('edit_prefs.php', 'edit_profile.php', 'edit_password.php',
+                 'edit_email.php', 'forum_options.php', 'pm_options.php',
+                 'edit_attachments.php', 'edit_signature.php', 'edit_relations.php',
                  'edit_wordfilter.php', 'edit_subscriptions.php');
 }
 
@@ -283,8 +283,8 @@ function get_available_popup_files_preg()
 {
     return implode("|^", array('^attachments\.php', '^dictionary\.php',
                                '^display_emoticons\.php', '^edit_attachments\.php.+popup=1',
-                               '^email\.php', '^mods_list\.php', 
-                               '^poll_results\.php', '^search_popup\.php', 
+                               '^email\.php', '^mods_list\.php',
+                               '^poll_results\.php', '^search_popup\.php',
                                '^search\.php.+show_stop_words=true', '^user_profile\.php'));
 }
 

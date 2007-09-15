@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.89 2007-09-14 20:15:44 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.90 2007-09-15 16:48:33 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -110,10 +110,6 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
         if (($errno == ER_NO_SUCH_TABLE || $errno == ER_WRONG_COLUMN_NAME) && !defined("BEEHIVE_INSTALL_NOWARN")) {
             install_incomplete();
         }
-
-        srand((double)microtime() * 1000000);
-
-        // REQUEST_URI doesn't exist in IIS so we need to make our own.
 
         $request_uri = "{$_SERVER['PHP_SELF']}?";
         parse_array($_GET, "&amp;", $request_uri);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.82 2007-08-18 15:01:38 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.83 2007-09-15 16:51:30 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -631,7 +631,7 @@ echo "                        <td align=\"left\">", form_input_text("text_captch
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"270\">{$lang['textcaptchakey']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("text_captcha_key", (isset($forum_global_settings['text_captcha_key'])) ? _htmlentities($forum_global_settings['text_captcha_key']) : md5(uniqid(rand())), 35, 255), "</td>\n";
+echo "                        <td align=\"left\">", form_input_text("text_captcha_key", (isset($forum_global_settings['text_captcha_key'])) ? _htmlentities($forum_global_settings['text_captcha_key']) : md5(uniqid(mt_rand())), 35, 255), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">\n";

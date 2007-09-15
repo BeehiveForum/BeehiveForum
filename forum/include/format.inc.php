@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.145 2007-09-07 20:47:45 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.146 2007-09-15 14:37:12 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -834,6 +834,32 @@ function flatten_array($array, &$result_keys, &$result_values, $key_str = "")
 function preg_quote_callback($str)
 {
     return preg_quote($str, "/");
+}
+
+/**
+* Array of random numbers
+*
+* Generate an array of random numbers.
+*
+* @return array
+* @param integer $start_index - The first index of the returned array
+* @param integer $num - Number of elements to insert into array
+* @param integer $range_min - Starting range for random numbers
+* @param integer $range_max - Ending range for random numbers
+
+*/
+
+function rand_array($start_index, $num, $range_min, $range_max)
+{
+    $array_rand = array_fill($start_index, $num, 1);
+
+    srand((double)microtime() * 1000000);
+
+    foreach($array_rand as $key => $value) {
+        $array_rand[$key] = rand($range_min, $range_max);
+    }
+
+    return $array_rand;
 }
 
 ?>

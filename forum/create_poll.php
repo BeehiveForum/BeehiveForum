@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.209 2007-09-14 17:41:16 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.210 2007-09-15 14:37:12 decoyduck Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -366,26 +366,19 @@ if (isset($_POST['cancel'])) {
 
         $t_answers_array = array_filter(_stripslashes($_POST['answers']), "strlen");
 
-        $t_answer_html = POST_HTML_DISABLED;
-
-        $poll_answers_valid = true;
-
         if ($allow_html == true && isset($t_post_html) && $t_post_html == 'Y') {
-            $t_answer_html = POST_HTML_ENABLED;
-        }
 
-        foreach($t_answers_array as $key => $t_poll_answer) {
+            foreach($t_answers_array as $key => $t_poll_answer) {
 
-            $t_poll_check_html = new MessageText($t_answer_html, $t_poll_answer);
-            $t_answers_array[$key] = $t_poll_check_html->getContent();
+                $t_poll_check_html = new MessageText(POST_HTML_ENABLED, $t_poll_answer);
+                $t_answers_array[$key] = $t_poll_check_html->getContent();
 
-            if ($poll_answers_valid == true && strlen(trim($t_answers_array[$key])) < 1) {
+                if ($valid == true && strlen(trim($t_answers_array[$key])) < 1) {
 
-                $t_answers_array[$key] = $t_poll_check_html->getOriginalContent();
-
-                $error_msg_array[] = $lang['pollquestioncontainsinvalidhtml'];
-                $poll_answers_valid = false;
-                $valid = false;
+                    $t_answers_array[$key] = $t_poll_check_html->getOriginalContent();
+                    $error_msg_array[] = $lang['pollquestioncontainsinvalidhtml'];
+                    $valid = false;
+                }
             }
         }
 
@@ -696,19 +689,8 @@ if ($valid && isset($_POST['submit'])) {
                 $t_poll_closes = false;
             }
 
-            // Check HTML tick box, innit.
-
-            $answers = array();
-            $t_answers_html = POST_HTML_DISABLED;
-
-            if ($allow_html == true && isset($t_post_html) && $t_post_html == 'Y') {
-                $t_answers_html = POST_HTML_ENABLED;
-            }
-
-            foreach($t_answers_array as $key => $poll_answer) {
-
-                $answers[$key] = new MessageText($t_answers_html, $poll_answer);
-                $t_answers_array[$key] = $answers[$key]->getContent();
+            if ($allow_html == false || !isset($t_post_html) || $t_post_html == 'N') {
+                $t_answers_array = _htmlentities($t_answers_array);
             }
 
             // Create the poll thread with the poll_flag set to Y and sticky flag set to N
@@ -818,36 +800,30 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
     $totalvotes  = 0;
     $optioncount = 0;
 
-    $t_answers_html = POST_HTML_DISABLED;
+    // Poll answers and groups. If HTML is disabled we need to pass
+    // the answers through _htmlentities.
 
-    if ($allow_html == true && isset($t_post_html) && $t_post_html == 'Y') {
-        $t_answers_html = POST_HTML_ENABLED;
+    if ($allow_html == false || !isset($t_post_html) || $t_post_html == 'N') {
+        $poll_preview_answers_array = _htmlentities($t_answers_array);
+    }else {
+        $poll_preview_answers_array = $t_answers_array;
     }
 
-    foreach($t_answers_array as $key => $answer_text) {
+    // Get the poll groups.
 
-        $answer_tmp = new MessageText($t_answers_html, _stripslashes($answer_text));
-        $poll_answers_array[$key] = $answer_tmp->getContent();
+    $poll_preview_groups_array = $t_answer_groups;
 
-        srand((double)microtime()*1000000);
-        $poll_vote = rand(1, 10);
+    // Generate some random votes
 
-        if ($poll_vote > $max_value) $max_value = $poll_vote;
-
-        $poll_votes_array[] = $poll_vote;
-        $totalvotes += $poll_vote;
-        $optioncount++;
-    }
-
-    $poll_groups_array = $t_answer_groups;
+    $poll_preview_votes_array = rand_array(0, sizeof($t_answers_array), 1, 10);
 
     // Construct the pollresults array that will be used to display the graph
     // Modified to handle the new Group ID.
 
-    $pollresults = array('OPTION_ID'   => array_keys($poll_answers_array),
-                         'OPTION_NAME' => $poll_answers_array,
-                         'GROUP_ID'    => $poll_groups_array,
-                         'VOTES'       => $poll_votes_array);
+    $pollresults = array('OPTION_ID'   => array_keys($poll_preview_answers_array),
+                         'OPTION_NAME' => $poll_preview_answers_array,
+                         'GROUP_ID'    => $poll_preview_groups_array,
+                         'VOTES'       => $poll_preview_votes_array);
 
     if (isset($_POST['option_type']) && is_numeric($_POST['option_type'])) {
         $pollpreviewdata['OPTIONTYPE'] = $t_option_type;

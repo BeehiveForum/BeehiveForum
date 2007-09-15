@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_add.php,v 1.88 2007-08-16 15:38:12 decoyduck Exp $ */
+/* $Id: links_add.php,v 1.89 2007-09-15 20:20:18 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -375,7 +375,7 @@ if ($mode == LINKS_ADD_LINK) {
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">{$lang['name']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("name", isset($name) ? _htmlentities($name) : '', 50, 64), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("name", isset($name) ? _htmlentities($name) : '', 50, 32), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";

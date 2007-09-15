@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.149 2007-09-15 14:37:12 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.150 2007-09-15 15:21:03 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -887,15 +887,11 @@ for ($i = 0; $i < $answer_count; $i++) {
 
         if (isset($pollresults['OPTION_NAME'][$i])) {
 
-            if (strip_tags($pollresults['OPTION_NAME'][$i]) != $pollresults['OPTION_NAME'][$i]) {
+            $parsed_poll_option_name = new MessageTextParse($pollresults['OPTION_NAME'][$i], false);
 
-                $t_post_html = true;
-                echo "                                          <td align=\"left\">", form_input_text("answers[$i]", _htmlentities($pollresults['OPTION_NAME'][$i]), 40, 255), "</td>\n";
+            $t_answer_text = $parsed_poll_option_name->getMessage(); $t_post_html = $parsed_poll_option_name->getMessageHTML();
 
-            }else {
-
-                echo "                                          <td align=\"left\">", form_input_text("answers[$i]", $pollresults['OPTION_NAME'][$i], 40, 255), "</td>\n";
-            }
+            echo "                                          <td align=\"left\">", form_input_text("answers[$i]", $t_answer_text, 40, 255), "</td>\n";
 
         }else {
 

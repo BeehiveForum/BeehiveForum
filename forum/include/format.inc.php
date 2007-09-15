@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.146 2007-09-15 14:37:12 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.147 2007-09-15 16:48:33 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -853,10 +853,8 @@ function rand_array($start_index, $num, $range_min, $range_max)
 {
     $array_rand = array_fill($start_index, $num, 1);
 
-    srand((double)microtime() * 1000000);
-
     foreach($array_rand as $key => $value) {
-        $array_rand[$key] = rand($range_min, $range_max);
+        $array_rand[$key] = mt_rand($range_min, $range_max);
     }
 
     return $array_rand;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: text_captcha.inc.php,v 1.18 2007-09-15 13:22:32 decoyduck Exp $ */
+/* $Id: text_captcha.inc.php,v 1.19 2007-09-15 16:48:33 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -86,7 +86,7 @@ class captcha {
 
         $this->max_rotation = $max_rotation;
 
-        $this->key = md5(forum_get_setting('text_captcha_key', false, md5(uniqid(rand()))));
+        $this->key = md5(forum_get_setting('text_captcha_key', false, md5(uniqid(mt_rand()))));
 
         $this->image_x = ($num_chars + 1) * (int)(($this->max_char_size + $this->min_char_size) / 1.5);
         $this->image_y = (int)(2.4 * $this->max_char_size);
@@ -191,23 +191,19 @@ class captcha {
 
                 for ($i = 0; $i < $this->noise_level; $i++) {
 
-                    srand((double)microtime() * 1000000);
-                    $noise_size = intval(rand((int)($this->min_char_size / 2.3), (int)($this->max_char_size / 1.7)));
+                    $noise_size = intval(mt_rand((int)($this->min_char_size / 2.3), (int)($this->max_char_size / 1.7)));
 
-                    srand((double)microtime() * 1000000);
-                    $noise_angle  = intval(rand(0, 360));
+                    $noise_angle  = intval(mt_rand(0, 360));
 
-                    srand((double)microtime() * 1000000);
                     $noise_x = intval(rand(0, $this->image_x));
 
-                    srand((double)microtime() * 1000000);
-                    $noise_y = intval(rand(0, (int)($this->image_y - ($noise_size / 5))));
+                    $noise_y = intval(mt_rand(0, (int)($this->image_y - ($noise_size / 5))));
 
                     $this->random_color(160, 224);
+
                     $noise_color = imagecolorclosest($image, $this->color_red, $this->color_green, $this->color_blue);
 
-                    srand((double)microtime() * 1000000);
-                    $noise_text = chr(intval(rand(45, 250)));
+                    $noise_text = chr(intval(mt_rand(45, 250)));
 
                     if (!@imagettftext($image, $noise_size, $noise_angle, $noise_x, $noise_y, $noise_color, $this->random_font(), $noise_text)) {
 
@@ -230,18 +226,15 @@ class captcha {
                     imageline($image, 0, $i, $this->image_x, $i, $line_color);
                 }
 
-                for($i = 0, $text_x = intval(rand($this->min_char_size,$this->max_char_size)); $i < $this->num_chars; $i++) {
+                for($i = 0, $text_x = intval(mt_rand($this->min_char_size,$this->max_char_size)); $i < $this->num_chars; $i++) {
 
                     $text = strtoupper(substr($this->private_key, $i, 1));
 
-                    srand((double)microtime() * 1000000);
-                    $text_angle = intval(rand(($this->max_rotation * -1), $this->max_rotation));
+                    $text_angle = intval(mt_rand(($this->max_rotation * -1), $this->max_rotation));
 
-                    srand((double)microtime() * 1000000);
-                    $text_size = intval(rand($this->min_char_size, $this->max_char_size));
+                    $text_size = intval(mt_rand($this->min_char_size, $this->max_char_size));
 
-                    srand((double)microtime() * 1000000);
-                    $text_y = intval(rand((int)($text_size * 1.5), (int)($this->image_y - ($text_size / 7))));
+                    $text_y = intval(mt_rand((int)($text_size * 1.5), (int)($this->image_y - ($text_size / 7))));
 
                     $this->random_color(0, 127);
                     $color = imagecolorclosest($image, $this->color_red, $this->color_green, $this->color_blue);
@@ -330,7 +323,7 @@ class captcha {
 
     function generate_public_key()
     {
-        $this->public_key = substr(md5(uniqid(rand(), true)), 0, $this->num_chars);
+        $this->public_key = substr(md5(uniqid(mt_rand(), true)), 0, $this->num_chars);
         $this->pub_key_done = true;
 
         return true;
@@ -364,7 +357,6 @@ class captcha {
             return false;
         }
 
-        srand((float)microtime() * 10000000);
         $this->current_font = $this->available_fonts[array_rand($this->available_fonts)];
 
         return "{$this->text_captcha_dir}/fonts/{$this->current_font}";
@@ -396,14 +388,11 @@ class captcha {
 
     function random_color($min, $max)
     {
-        srand((double)microtime() * 1000000);
-        $this->color_red = intval(rand($min ,$max));
+        $this->color_red = intval(mt_rand($min ,$max));
 
-        srand((double)microtime() * 1000000);
-        $this->color_green = intval(rand($min, $max));
+        $this->color_green = intval(mt_rand($min, $max));
 
-        srand((double)microtime() * 1000000);
-        $this->color_blue = intval(rand($min, $max));
+        $this->color_blue = intval(mt_rand($min, $max));
     }
 }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.210 2007-09-15 14:37:12 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.211 2007-09-15 15:48:55 decoyduck Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -768,10 +768,10 @@ echo "            <td align=\"left\" class=\"posthead\">\n";
 
 if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) {
 
-    echo "<table class=\"posthead\" width=\"785\">\n";
-    echo "  <tr>\n";
-    echo "    <td align=\"left\" class=\"subhead\">{$lang['preview']}</td>\n";
-    echo "  </tr>";
+    echo "              <table class=\"posthead\" width=\"785\">\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">{$lang['preview']}</td>\n";
+    echo "                </tr>";
 
     $polldata['TLOGON'] = $lang['allcaps'];
     $polldata['TNICK'] = $lang['allcaps'];
@@ -874,9 +874,13 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
     $polldata['CONTENT'].= "</div>\n";
     $polldata['CONTENT'].= "<p class=\"postbody\" align=\"center\">{$lang['pollvotesrandom']}</p>\n";
 
-    echo "<tr><td align=\"left\">\n";
-    message_display(0, $polldata, 0, 0, 0, false, false, false, true, $show_sigs, true);
-    echo "</td></tr>\n";
+    // Attachments preview
+
+    $polldata['AID'] = $aid;
+
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\">", message_display(0, $polldata, 0, 0, 0, false, false, false, true, $show_sigs, true), "</td>\n";
+    echo "                </tr>\n";
 
     if (strlen($t_message_text) > 0) {
 
@@ -887,13 +891,15 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
             $polldata['CONTENT'].= "<div class=\"sig\">". $t_sig. "</div>";
         }
 
-        echo "<tr><td align=\"left\">\n";
-        message_display(0, $polldata, 0, 0, 0, false, false, false, true, $show_sigs, true);
-        echo "</td></tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\">", message_display(0, $polldata, 0, 0, 0, false, false, false, true, $show_sigs, true), "</td>\n";
+        echo "                </tr>\n";
     }
 
-    echo "<tr><td align=\"left\">&nbsp;</td></tr>\n";
-    echo "</table>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\">&nbsp;</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
 }
 
 echo "  <table class=\"posthead\" width=\"785\">\n";
@@ -1285,7 +1291,7 @@ echo form_submit("submit", $lang['post'], "onclick=\"return autoCheckSpell('$web
 
 if (forum_get_setting('attachments_enabled', 'Y')) {
 
-    echo "            &nbsp;".form_button("attachments", $lang['attachments'], "onclick=\"launchAttachWin('{$aid}', '$webtag')\"");
+    echo "&nbsp;".form_button("attachments", $lang['attachments'], "onclick=\"launchAttachWin('{$aid}', '$webtag')\"");
     echo form_input_hidden("aid", _htmlentities($aid));
 }
 

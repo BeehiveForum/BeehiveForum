@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.210 2007-09-10 13:16:36 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.211 2007-09-15 14:37:12 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -981,7 +981,7 @@ function poll_preview_graph_horz($poll_results)
                 $polldisplay.= "                                  <td align=\"left\" width=\"300\">\n";
                 $polldisplay.= "                                    <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"height: 25px; width: ". floor(round(300 / $max_values[$poll_results['GROUP_ID'][$i]], 2) * $poll_results['VOTES'][$i]). "px\">\n";
                 $polldisplay.= "                                      <tr>\n";
-                $polldisplay.= "                                        <td align=\"left\" class=\"pollbar". $bar_color. "\">&nbsp;</td>\n";
+                $polldisplay.= "                                        <td align=\"left\" class=\"pollbar$bar_color\">&nbsp;</td>\n";
                 $polldisplay.= "                                      </tr>\n";
                 $polldisplay.= "                                    </table>\n";
                 $polldisplay.= "                                  </td>\n";

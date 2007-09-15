@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.148 2007-09-10 16:14:13 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.149 2007-09-15 14:37:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -264,26 +264,23 @@ if (isset($_POST['cancel'])) {
 
         $t_answers_array = array_filter(_stripslashes($_POST['answers']), "strlen");
 
-        $t_answer_html = POST_HTML_DISABLED;
-
         $poll_answers_valid = true;
 
         if ($allow_html == true && isset($t_post_html) && $t_post_html == 'Y') {
-            $t_answer_html = POST_HTML_ENABLED;
-        }
 
-        foreach($t_answers_array as $key => $t_poll_answer) {
+            foreach($t_answers_array as $key => $t_poll_answer) {
 
-            $t_poll_check_html = new MessageText($t_answer_html, $t_poll_answer);
-            $t_answers_array[$key] = $t_poll_check_html->getContent();
+                $t_poll_check_html = new MessageText(POST_HTML_ENABLED, $t_poll_answer);
+                $t_answers_array[$key] = $t_poll_check_html->getContent();
 
-            if ($poll_answers_valid == true && strlen(trim($t_answers_array[$key])) < 1) {
+                if ($poll_answers_valid == true && strlen(trim($t_answers_array[$key])) < 1) {
 
-                $t_answers_array[$key] = $t_poll_check_html->getOriginalContent();
+                    $t_answers_array[$key] = $t_poll_check_html->getOriginalContent();
 
-                $error_msg_array[] = $lang['pollquestioncontainsinvalidhtml'];
-                $poll_answers_valid = false;
-                $valid = false;
+                    $error_msg_array[] = $lang['pollquestioncontainsinvalidhtml'];
+                    $poll_answers_valid = false;
+                    $valid = false;
+                }
             }
         }
 
@@ -438,25 +435,11 @@ if (isset($_POST['cancel'])) {
     }
 
     if (isset($_POST['answers']) && is_array($_POST['answers'])) {
-
-        foreach($_POST['answers'] as $t_answer) {
-
-            if (strlen(trim(_stripslashes($t_answer))) > 0) {
-
-                $t_answers_array[] = trim(_stripslashes($t_answer));
-            }
-        }
+        $t_answers_array = array_filter(_stripslashes($_POST['answers']), "strlen");
     }
 
     if (isset($_POST['answer_groups']) && is_array($_POST['answer_groups'])) {
-
-        foreach ($_POST['answer_groups'] as $key => $t_answer_group) {
-
-            if (isset($t_answers_array[$key]) && is_numeric($t_answer_group)) {
-
-                $t_answer_groups[$key] = $t_answer_group;
-            }
-        }
+        $t_answer_groups = array_filter(_stripslashes($_POST['answer_groups']), "is_numeric");
     }
 
     if (isset($_POST['poll_type']) && is_numeric($_POST['poll_type'])) {
@@ -532,36 +515,30 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
     $totalvotes  = 0;
     $optioncount = 0;
 
-    $t_answers_array_html = POST_HTML_DISABLED;
+    // Poll answers and groups. If HTML is disabled we need to pass
+    // the answers through _htmlentities.
 
-    if ($allow_html == true && isset($t_post_html) && $t_post_html == 'Y') {
-        $t_answers_array_html = POST_HTML_ENABLED;
+    if ($allow_html == false || !isset($t_post_html) || $t_post_html == 'N') {
+        $poll_preview_answers_array = _htmlentities($t_answers_array);
+    }else {
+        $poll_preview_answers_array = $t_answers_array;
     }
 
-    foreach($t_answers_array as $key => $answer_text) {
+    // Get the poll groups.
 
-        $answer_tmp = new MessageText($t_answers_array_html, $answer_text);
-        $poll_answers_array[$key] = $answer_tmp->getContent();
+    $poll_preview_groups_array = $t_answer_groups;
 
-        srand((double)microtime()*1000000);
-        $poll_vote = rand(1, 10);
+    // Generate some random votes
 
-        if ($poll_vote > $max_value) $max_value = $poll_vote;
-
-        $poll_votes_array[] = $poll_vote;
-        $totalvotes += $poll_vote;
-        $optioncount++;
-    }
-
-    $poll_groups_array = $t_answer_groups;
+    $poll_preview_votes_array = rand_array(0, sizeof($t_answers_array), 1, 10);
 
     // Construct the pollresults array that will be used to display the graph
     // Modified to handle the new Group ID.
 
-    $pollresults = array('OPTION_ID'   => array_keys($poll_answers_array),
-                         'OPTION_NAME' => $poll_answers_array,
-                         'GROUP_ID'    => $poll_groups_array,
-                         'VOTES'       => $poll_votes_array);
+    $pollresults = array('OPTION_ID'   => array_keys($poll_preview_answers_array),
+                         'OPTION_NAME' => $poll_preview_answers_array,
+                         'GROUP_ID'    => $poll_preview_groups_array,
+                         'VOTES'       => $poll_preview_votes_array);
 
     if (isset($_POST['option_type']) && is_numeric($_POST['option_type'])) {
         $pollpreviewdata['OPTIONTYPE'] = $t_option_type;
@@ -910,18 +887,14 @@ for ($i = 0; $i < $answer_count; $i++) {
 
         if (isset($pollresults['OPTION_NAME'][$i])) {
 
-            //$pollresults['OPTION_NAME'][$i] = clean_emoticons($pollresults['OPTION_NAME'][$i]);
-            $pollresults['OPTION_NAME'][$i] = $pollresults['OPTION_NAME'][$i];
-
             if (strip_tags($pollresults['OPTION_NAME'][$i]) != $pollresults['OPTION_NAME'][$i]) {
 
                 $t_post_html = true;
-
                 echo "                                          <td align=\"left\">", form_input_text("answers[$i]", _htmlentities($pollresults['OPTION_NAME'][$i]), 40, 255), "</td>\n";
 
             }else {
 
-                echo "                                          <td align=\"left\">", form_input_text("answers[$i]", _htmlentities($pollresults['OPTION_NAME'][$i]), 40, 255), "</td>\n";
+                echo "                                          <td align=\"left\">", form_input_text("answers[$i]", $pollresults['OPTION_NAME'][$i], 40, 255), "</td>\n";
             }
 
         }else {

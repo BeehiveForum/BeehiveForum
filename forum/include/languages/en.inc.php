@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.475 2007-09-14 19:46:56 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.476 2007-09-15 20:20:18 decoyduck Exp $ */
 
 // British English language file
 
@@ -1040,6 +1040,7 @@ $lang['linkdetails'] = "Link Details";
 $lang['addcomment'] = "Add Comment";
 $lang['voterecorded'] = "Your vote has been recorded";
 $lang['votecleared'] = "Your vote has been cleared";
+$lang['linksfoldernametoolong'] = "Folder name too long. Maximum length is %s characters";
 
 // Login / logout (llogon.php, logon.php, logout.php) -----------------------------------------
 

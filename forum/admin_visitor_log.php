@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_visitor_log.php,v 1.19 2007-09-08 19:34:17 decoyduck Exp $ */
+/* $Id: admin_visitor_log.php,v 1.20 2007-09-16 13:24:20 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -140,82 +140,72 @@ echo "                   <td class=\"subhead\" align=\"left\" width=\"150\">{$la
 echo "                   <td class=\"subhead\" align=\"left\" width=\"400\">{$lang['referer']}</td>\n";
 echo "                 </tr>\n";
 
-if ($admin_visitor_log_array = admin_get_visitor_log($start, 10)) {
+$admin_visitor_log_array = admin_get_visitor_log($start, 10);
 
-    if (sizeof($admin_visitor_log_array['user_array']) > 0) {
+if (sizeof($admin_visitor_log_array['user_array']) > 0) {
 
-        foreach ($admin_visitor_log_array['user_array'] as $visitor) {
+    foreach ($admin_visitor_log_array['user_array'] as $visitor) {
 
-            echo "                 <tr>\n";
+        echo "                 <tr>\n";
 
-            if (isset($visitor['SID']) && !is_null($visitor['SID'])) {
+        if (isset($visitor['SID']) && !is_null($visitor['SID'])) {
 
-                echo "                   <td class=\"postbody\" align=\"left\"><a href=\"{$visitor['URL']}\" target=\"_blank\">", word_filter_add_ob_tags(_htmlentities($visitor['NAME'])), "</a></td>\n";
+            echo "                   <td class=\"postbody\" align=\"left\"><a href=\"{$visitor['URL']}\" target=\"_blank\">", word_filter_add_ob_tags(_htmlentities($visitor['NAME'])), "</a></td>\n";
 
-            }elseif ($visitor['UID'] > 0) {
+        }elseif ($visitor['UID'] > 0) {
 
-                echo "                   <td class=\"postbody\" align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$visitor['UID']}\" target=\"_blank\" onclick=\"return openProfile({$visitor['UID']}, '$webtag')\">", word_filter_add_ob_tags(_htmlentities(format_user_name($visitor['LOGON'], $visitor['NICKNAME']))), "</a></td>\n";
+            echo "                   <td class=\"postbody\" align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$visitor['UID']}\" target=\"_blank\" onclick=\"return openProfile({$visitor['UID']}, '$webtag')\">", word_filter_add_ob_tags(_htmlentities(format_user_name($visitor['LOGON'], $visitor['NICKNAME']))), "</a></td>\n";
 
-            }else {
+        }else {
 
-                echo "                   <td class=\"postbody\" align=\"left\">", word_filter_add_ob_tags(_htmlentities(format_user_name($visitor['LOGON'], $visitor['NICKNAME']))), "</td>\n";
-            }
-
-            if (isset($visitor['LAST_LOGON']) && $visitor['LAST_LOGON'] > 0) {
-                echo "                   <td class=\"postbody\" align=\"left\" width=\"100\">", format_time($visitor['LAST_LOGON']), "</td>\n";
-            }else {
-                echo "                   <td class=\"postbody\" align=\"left\" width=\"100\">{$lang['unknown']}</td>\n";
-            }
-
-            if (isset($visitor['IPADDRESS']) && $visitor['IPADDRESS'] > 0) {
-                echo "                   <td class=\"postbody\" align=\"left\" width=\"150\">{$visitor['IPADDRESS']}</td>\n";
-            }else {
-                echo "                   <td class=\"postbody\" align=\"left\" width=\"150\">{$lang['unknown']}</td>\n";
-            }
-
-            if (isset($visitor['REFERER']) && strlen(trim($visitor['REFERER'])) > 0) {
-
-                $visitor['REFERER_FULL'] = $visitor['REFERER'];
-
-                if (!$visitor['REFERER'] = split_url($visitor['REFERER'])) {
-                    if (strlen($visitor['REFERER_FULL']) > 25) {
-                        $visitor['REFERER'] = substr($visitor['REFERER_FULL'], 0, 25);
-                        $visitor['REFERER'].= "&hellip;";
-                    }
-                }
-
-                if (referer_is_banned($visitor['REFERER'])) {
-                    echo "                   <td class=\"posthead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?unban_referer=", rawurlencode($visitor['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$visitor['REFERER_FULL']}\">{$visitor['REFERER']}</a> ({$lang['banned']})</td>\n";
-                }else {
-                    echo "                   <td class=\"posthead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?ban_referer=", rawurlencode($visitor['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$visitor['REFERER_FULL']}\">{$visitor['REFERER']}</a></td>\n";
-                }
-
-            }else {
-
-                echo "                   <td class=\"posthead\" align=\"left\">&nbsp;{$lang['unknown']}</td>\n";
-            }
-
-            echo "                 </tr>\n";
+            echo "                   <td class=\"postbody\" align=\"left\">", word_filter_add_ob_tags(_htmlentities(format_user_name($visitor['LOGON'], $visitor['NICKNAME']))), "</td>\n";
         }
 
-        echo "                 <tr>\n";
-        echo "                   <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
-        echo "                 </tr>\n";
+        if (isset($visitor['LAST_LOGON']) && $visitor['LAST_LOGON'] > 0) {
+            echo "                   <td class=\"postbody\" align=\"left\" width=\"100\">", format_time($visitor['LAST_LOGON']), "</td>\n";
+        }else {
+            echo "                   <td class=\"postbody\" align=\"left\" width=\"100\">{$lang['unknown']}</td>\n";
+        }
 
-    }else {
+        if (isset($visitor['IPADDRESS']) && $visitor['IPADDRESS'] > 0) {
+            echo "                   <td class=\"postbody\" align=\"left\" width=\"150\">{$visitor['IPADDRESS']}</td>\n";
+        }else {
+            echo "                   <td class=\"postbody\" align=\"left\" width=\"150\">{$lang['unknown']}</td>\n";
+        }
 
-        echo "                 <tr>\n";
-        echo "                   <td align=\"left\" class=\"postbody\">{$lang['novisitorslogged']}</td>\n";
-        echo "                 </tr>\n";
-        echo "                 <tr>\n";
-        echo "                   <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
+        if (isset($visitor['REFERER']) && strlen(trim($visitor['REFERER'])) > 0) {
+
+            $visitor['REFERER_FULL'] = $visitor['REFERER'];
+
+            if (!$visitor['REFERER'] = split_url($visitor['REFERER'])) {
+                if (strlen($visitor['REFERER_FULL']) > 25) {
+                    $visitor['REFERER'] = substr($visitor['REFERER_FULL'], 0, 25);
+                    $visitor['REFERER'].= "&hellip;";
+                }
+            }
+
+            if (referer_is_banned($visitor['REFERER'])) {
+                echo "                   <td class=\"posthead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?unban_referer=", rawurlencode($visitor['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$visitor['REFERER_FULL']}\">{$visitor['REFERER']}</a> ({$lang['banned']})</td>\n";
+            }else {
+                echo "                   <td class=\"posthead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?ban_referer=", rawurlencode($visitor['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$visitor['REFERER_FULL']}\">{$visitor['REFERER']}</a></td>\n";
+            }
+
+        }else {
+
+            echo "                   <td class=\"posthead\" align=\"left\">&nbsp;{$lang['unknown']}</td>\n";
+        }
+
         echo "                 </tr>\n";
     }
+
+    echo "                 <tr>\n";
+    echo "                   <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
+    echo "                 </tr>\n";
 
 }else {
 
     echo "                 <tr>\n";
-    echo "                   <td class=\"postbody\" align=\"left\">{$lang['novisitorslogged']}</td>\n";
+    echo "                   <td align=\"left\" class=\"postbody\">{$lang['novisitorslogged']}</td>\n";
     echo "                 </tr>\n";
     echo "                 <tr>\n";
     echo "                   <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.88 2007-09-10 12:36:20 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.89 2007-09-16 13:24:20 decoyduck Exp $ */
 
 /**
 * Functions relating to profiles
@@ -354,11 +354,11 @@ function profile_section_delete($psid)
     if (!$result = db_query($sql, $db_profile_section_delete)) return false;
 
     $sql = "DELETE QUICK FROM {$table_data['PREFIX']}USER_PROFILE ";
-    $sql.= "USING {$table_data['PREFIX']} LEFT JOIN {$table_data['PREFIX']}PROFILE_ITEM ";
-    $sql.= "ON ({$table_data['PREFIX']}PROFILE_ITEM.PIID = {$table_data['PREFIX']}USER_PROFILE) ";
+    $sql.= "USING {$table_data['PREFIX']}USER_PROFILE LEFT JOIN {$table_data['PREFIX']}PROFILE_ITEM ";
+    $sql.= "ON ({$table_data['PREFIX']}PROFILE_ITEM.PIID = {$table_data['PREFIX']}USER_PROFILE.PIID) ";
     $sql.= "WHERE {$table_data['PREFIX']}PROFILE_ITEM.PIID IS NULL";
 
-    if (!$result = db_query($sql, $db_profile_item_delete)) return false;
+    if (!$result = db_query($sql, $db_profile_section_delete)) return false;
 
     return true;
 }

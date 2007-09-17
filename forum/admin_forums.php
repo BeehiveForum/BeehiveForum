@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forums.php,v 1.76 2007-08-18 12:26:20 decoyduck Exp $ */
+/* $Id: admin_forums.php,v 1.77 2007-09-17 19:47:41 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -655,6 +655,8 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
 
     html_draw_top();
 
+    $forums_array = admin_get_forum_list($start);
+
     echo "<h1>{$lang['admin']} &raquo; {$lang['manageforums']}</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
@@ -672,6 +674,10 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
     }else if (isset($_GET['deleted'])) {
 
         html_display_success_msg($lang['successfullyremovedselectedforums'], '600', 'center');
+
+    }else if (sizeof($forums_array['forums_array']) < 1) {
+
+        html_display_warning_msg($lang['noexistingforums'], '600', 'center');
     }
 
     echo "<br />\n";
@@ -693,8 +699,6 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
     echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">{$lang['messages']}</td>\n";
     echo "                  <td class=\"subhead\" align=\"center\" width=\"20\">&nbsp;</td>\n";
     echo "                </tr>\n";
-
-    $forums_array = admin_get_forum_list($start);
 
     if (sizeof($forums_array['forums_array']) > 0) {
 
@@ -719,13 +723,6 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
 
             echo "                </tr>\n";
         }
-
-    }else {
-
-        echo "                <tr>\n";
-        echo "                  <td valign=\"top\" align=\"center\" width=\"25\">&nbsp;</td>\n";
-        echo "                  <td valign=\"top\" align=\"left\" colspan=\"3\">{$lang['noexistingforums']}</td>\n";
-        echo "                </tr>\n";
     }
 
     echo "                <tr>\n";

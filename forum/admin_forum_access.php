@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_access.php,v 1.57 2007-09-08 19:34:17 decoyduck Exp $ */
+/* $Id: admin_forum_access.php,v 1.58 2007-09-17 19:47:41 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -143,17 +143,21 @@ if (!$fid = forum_get_setting('fid')) {
     exit;
 }
 
-if (isset($_POST['usersearch']) && strlen(trim(_stripslashes($_POST['usersearch']))) > 0) {
-    $usersearch = trim(_stripslashes($_POST['usersearch']));
+if (isset($_POST['user_search']) && strlen(trim(_stripslashes($_POST['user_search']))) > 0) {
+    $user_search = trim(_stripslashes($_POST['user_search']));
+}else if (isset($_GET['user_search']) && strlen(trim(_stripslashes($_GET['user_search']))) > 0) {
+    $user_search = trim(_stripslashes($_GET['user_search']));
 }else {
-    $usersearch = '';
+    $user_search = '';
 }
 
 if (isset($_POST['clear'])) {
-    $usersearch = '';
+    $user_search = '';
 }
 
 if (isset($_POST['add_searched_user'])) {
+
+    $valid = true;
 
     if (isset($_POST['user_add']) && is_array($_POST['user_add'])) {
 
@@ -163,16 +167,32 @@ if (isset($_POST['add_searched_user'])) {
 
                 $user_update_array = array($fid => 1);
 
-                user_update_forums($user_add_uid, $user_update_array);
+                if (user_update_forums($user_add_uid, $user_update_array)) {
 
-                $forum_name = forum_get_name($fid);
+                    $forum_name = forum_get_name($fid);
+                    admin_add_log_entry(CHANGE_FORUM_ACCESS, array($forum_name, $user_logon));
 
-                admin_add_log_entry(CHANGE_FORUM_ACCESS, array($forum_name, $user_logon));
+                }else {
+
+                    $error_msg_array[] = sprintf($lang['failedtoaddpermissionsforuser'], $user_logon);
+                    $valid = false;
+                }
             }
+        }
+
+        if ($valid) {
+
+            $ret = rawurlencode($ret);
+            $user_search = rawurlencode($user_search);
+
+            header_redirect("admin_forum_access.php?webtag=$webtag&user_search=$user_search&ret=$ret&added=true");
+            exit;
         }
     }
 
 }elseif (isset($_POST['remove_user'])) {
+
+    $valid = true;
 
     if (isset($_POST['user_remove']) && is_array($_POST['user_remove'])) {
 
@@ -182,19 +202,49 @@ if (isset($_POST['add_searched_user'])) {
 
                 $user_update_array = array($fid => 0);
 
-                user_update_forums($user_remove_uid, $user_update_array);
+                if (user_update_forums($user_remove_uid, $user_update_array)) {
 
-                $forum_name = forum_get_name($fid);
+                    $forum_name = forum_get_name($fid);
+                    admin_add_log_entry(CHANGE_FORUM_ACCESS, array($forum_name, $user_logon));
 
-                admin_add_log_entry(CHANGE_FORUM_ACCESS, array($forum_name, $user_logon));
+                }else {
+
+                    $error_msg_array[] = sprintf($lang['failedtoremovepermissionsfromuser'], $user_logon);
+                    $valid = false;
+                }
             }
+        }
+
+        if ($valid) {
+
+            $ret = rawurlencode($ret);
+            $user_search = rawurlencode($user_search);
+
+            header_redirect("admin_forum_access.php?webtag=$webtag&user_search=$user_search&ret=$ret&removed=true");
+            exit;
         }
     }
 }
 
 html_draw_top();
 
+$user_permissions_array = forum_get_permissions($fid);
+
 echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageforumpermissions']}</h1>\n";
+
+if (isset($_GET['added'])) {
+
+    html_display_success_msg($lang['successfullyaddedpermissionsforselectedusers'], '500', 'center');
+
+}else if (isset($_GET['removed'])) {
+
+    html_display_success_msg($lang['successfullyremovedpermissionsfromselectedusers'], '500', 'center');
+
+}else if (sizeof($user_permissions_array) < 1) {
+
+    html_display_warning_msg($lang['nousershavebeengrantedpermission'], '500', 'center');
+}
+
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form name=\"f_user\" action=\"admin_forum_access.php\" method=\"post\">\n";
@@ -214,9 +264,9 @@ echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 
-if ($user_array = forum_get_permissions($fid)) {
+if (sizeof($user_permissions_array) > 0) {
 
-    foreach ($user_array as $user_permission) {
+    foreach ($user_permissions_array as $user_permission) {
 
         echo "                      <tr>\n";
         echo "                        <td align=\"left\">", form_checkbox("user_remove[]", $user_permission['UID'], ''), "&nbsp;", word_filter_add_ob_tags(_htmlentities(format_user_name($user_permission['LOGON'], $user_permission['NICKNAME']))), "</td>\n";
@@ -247,9 +297,6 @@ if ($user_array = forum_get_permissions($fid)) {
 }else {
 
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">{$lang['nousers']}</td>\n";
-    echo "                      </tr>\n";
-    echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";
     echo "                      </tr>\n";
     echo "                    </table>\n";
@@ -265,7 +312,7 @@ if ($user_array = forum_get_permissions($fid)) {
     echo "  <br />\n";
 }
 
-if (strlen($usersearch) > 0) {
+if (strlen($user_search) > 0) {
 
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
@@ -281,14 +328,14 @@ if (strlen($usersearch) > 0) {
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
 
-    $user_search_array = admin_user_search($usersearch);
+    $user_search_array = admin_user_search($user_search);
 
     if (sizeof($user_search_array['user_array']) > 0) {
 
-        foreach ($user_search_array['user_array'] as $user_search) {
+        foreach ($user_search_array['user_array'] as $user_search_result) {
 
             echo "                      <tr>\n";
-            echo "                        <td align=\"left\">", form_checkbox("user_add[]", $user_search['UID'], ''), "&nbsp;", word_filter_add_ob_tags(_htmlentities(format_user_name($user_search['LOGON'], $user_search['NICKNAME']))), "</td>\n";
+            echo "                        <td align=\"left\">", form_checkbox("user_add[]", $user_search_result['UID'], ''), "&nbsp;", word_filter_add_ob_tags(_htmlentities(format_user_name($user_search_result['LOGON'], $user_search_result['NICKNAME']))), "</td>\n";
             echo "                      </tr>\n";
         }
 
@@ -346,7 +393,7 @@ echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">{$lang['search']}: ", form_input_text('usersearch', _htmlentities($usersearch), 32, 15), "&nbsp;", form_submit('search', $lang['search']), "&nbsp;", form_submit('clear', $lang['clear']), "</td>\n";
+echo "                        <td align=\"left\">{$lang['search']}: ", form_input_text('user_search', _htmlentities($user_search), 32, 15), "&nbsp;", form_submit('search', $lang['search']), "&nbsp;", form_submit('clear', $lang['clear']), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";

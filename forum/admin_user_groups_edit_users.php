@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit_users.php,v 1.50 2007-09-08 19:34:17 decoyduck Exp $ */
+/* $Id: admin_user_groups_edit_users.php,v 1.51 2007-09-17 19:47:41 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -100,9 +100,7 @@ if (!$webtag = get_webtag($webtag_search)) {
 
 $lang = load_language_file();
 
-if (isset($_POST['back'])) {
-    header_redirect("./admin_user_groups.php?webtag=$webtag");
-}
+// Check we have permission to access this page.
 
 if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
@@ -110,6 +108,34 @@ if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
     html_error_msg($lang['accessdeniedexp']);
     html_draw_bottom();
     exit;
+}
+
+// Are we returning somewhere?
+
+if (isset($_POST['ret']) && strlen(trim(_stripslashes($_POST['ret']))) > 0) {
+    $ret = rawurldecode(trim(_stripslashes($_POST['ret'])));
+}elseif (isset($_GET['ret']) && strlen(trim(_stripslashes($_GET['ret']))) > 0) {
+    $ret = rawurldecode(trim(_stripslashes($_GET['ret'])));
+}else {
+    $ret = "admin_user_groups.php?webtag=$webtag";
+}
+
+// validate the return to page
+
+if (isset($ret) && strlen(trim($ret)) > 0) {
+
+    $available_pages = array('admin_user_groups_edit.php', 'admin_users_groups.php');
+    $available_pages_preg = implode("|^", array_map('preg_quote_callback', $available_pages));
+
+    if (preg_match("/^$available_pages_preg/", basename($ret)) < 1) {
+        $ret = "admin_user_groups.php?webtag=$webtag";
+    }
+}
+
+// Return to the page we came from.
+
+if (isset($_POST['back'])) {
+    header_redirect($ret);
 }
 
 if (isset($_GET['gid']) && is_numeric($_GET['gid'])) {
@@ -198,9 +224,27 @@ if (isset($_POST['remove'])) {
 
 html_draw_top('openprofile.js');
 
-$group = perm_get_group($gid);
+if (!$group = perm_get_group($gid)) {
+
+    html_draw_top();
+    html_error_msg($lang['suppliedgidisnotausergroup'], 'admin_user_groups.php', 'get', array('back' => $lang['back']));
+    html_draw_bottom();
+    exit;
+}
+
+$group_users_array = perm_group_get_users($gid, $start_main);
 
 echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageusergroups']} &raquo; {$group['GROUP_NAME']} &raquo; {$lang['addremoveusers']}</h1>\n";
+
+if (isset($_GET['added'])) {
+
+    html_display_success_msg($lang['groupaddedaddnewuser'], '650', 'center');
+
+}else if (sizeof($group_users_array['user_array']) < 1) {
+
+    html_display_warning_msg($lang['nousersingroup'], '650', 'center');
+}
+
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form name=\"f_folders\" action=\"admin_user_groups_edit_users.php\" method=\"post\">\n";
@@ -208,6 +252,7 @@ echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden('gid', _htmlentities($gid)), "\n";
 echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
 echo "  ", form_input_hidden("search_page", _htmlentities($search_page)), "\n";
+echo "  ", form_input_hidden("ret", _htmlentities($ret)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"650\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -219,8 +264,6 @@ echo "                <tr>\n";
 echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['users']}</td>\n";
 echo "                </tr>\n";
 
-$group_users_array = perm_group_get_users($gid, $start_main);
-
 if (sizeof($group_users_array['user_array']) > 0) {
 
     foreach($group_users_array['user_array'] as $user) {
@@ -230,13 +273,6 @@ if (sizeof($group_users_array['user_array']) > 0) {
         echo "                  <td align=\"left\">", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</td>\n";
         echo "                </tr>\n";
     }
-
-}else {
-
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\">&nbsp;</td>\n";
-    echo "                  <td align=\"left\">{$lang['nousersingroup']}</td>\n";
-    echo "                </tr>\n";
 }
 
 echo "                 <tr>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_post_approve.php,v 1.52 2007-09-08 17:42:40 decoyduck Exp $ */
+/* $Id: admin_post_approve.php,v 1.53 2007-09-17 19:47:41 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -150,6 +150,9 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
 }else {
     $page = 1;
 }
+
+$start = floor($page - 1) * 10;
+if ($start < 0) $start = 0;
 
 // User clicked cancel
 
@@ -344,7 +347,14 @@ if (isset($msg) && validate_msg($msg)) {
 
     html_draw_top();
 
+    $post_approval_array = admin_get_post_approval_queue($start);
+
     echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['postapprovalqueue']}</h1>\n";
+
+    if (sizeof($post_approval_array['post_array']) < 1) {
+        html_display_warning_msg($lang['nopostsawaitingapproval'], '720', 'center');
+    }
+
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
@@ -360,11 +370,6 @@ if (isset($msg) && validate_msg($msg)) {
     echo "                   <td class=\"subhead\" align=\"left\" width=\"100\">&nbsp;</td>\n";
     echo "                 </tr>\n";
 
-    $start = floor($page - 1) * 10;
-    if ($start < 0) $start = 0;
-
-    $post_approval_array = admin_get_post_approval_queue($start);
-
     if (sizeof($post_approval_array['post_array']) > 0) {
 
         foreach($post_approval_array['post_array'] as $post_approval_entry) {
@@ -375,21 +380,11 @@ if (isset($msg) && validate_msg($msg)) {
             echo "                   <td align=\"left\">", form_quick_button("admin_post_approve.php", $lang['approve'], array('msg' => $post_approval_entry['MSG'], 'return_queue' => "Y")), "</td>\n";
             echo "                 </tr>\n";
         }
-
-        echo "                 <tr>\n";
-        echo "                   <td align=\"left\" colspan=\"3\">&nbsp;</td>\n";
-        echo "                 </tr>\n";
-
-    }else {
-
-        echo "                 <tr>\n";
-        echo "                   <td align=\"left\" colspan=\"3\">&nbsp;{$lang['nopostsawaitingapproval']}</td>\n";
-        echo "                 </tr>\n";
-        echo "                 <tr>\n";
-        echo "                   <td align=\"left\" colspan=\"3\">&nbsp;</td>\n";
-        echo "                 </tr>\n";
     }
 
+    echo "                 <tr>\n";
+    echo "                   <td align=\"left\" colspan=\"3\">&nbsp;</td>\n";
+    echo "                 </tr>\n";
     echo "               </table>\n";
     echo "             </td>\n";
     echo "           </tr>\n";

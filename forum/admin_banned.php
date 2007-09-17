@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_banned.php,v 1.64 2007-09-10 12:36:19 decoyduck Exp $ */
+/* $Id: admin_banned.php,v 1.65 2007-09-17 19:47:41 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -141,6 +141,9 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
     $page = 1;
 }
 
+$start = floor($page - 1) * 10;
+if ($start < 0) $start = 0;
+
 // Form Validation
 
 $valid = true;
@@ -149,7 +152,7 @@ $valid = true;
 
 $error_msg_array = array();
 
-// Constant translation of adding and removing bans to log entries.
+// Constant translation of adding and removing bans to log entries and string display for Ban Type column.
 
 $admin_log_add_types = array(BAN_TYPE_IP    => ADD_BANNED_IP,
                              BAN_TYPE_LOGON => ADD_BANNED_LOGON,
@@ -162,6 +165,12 @@ $admin_log_rem_types = array(BAN_TYPE_IP    => REMOVE_BANNED_IP,
                              BAN_TYPE_NICK  => REMOVE_BANNED_NICKNAME,
                              BAN_TYPE_EMAIL => REMOVE_BANNED_EMAIL,
                              BAN_TYPE_REF   => REMOVE_BANNED_REFERER);
+
+$ban_types_array = array(BAN_TYPE_IP    => $lang['ipban'],
+                         BAN_TYPE_LOGON => $lang['logonban'],
+                         BAN_TYPE_NICK  => $lang['nicknameban'],
+                         BAN_TYPE_EMAIL => $lang['emailban'],
+                         BAN_TYPE_REF   => $lang['refererban']);
 
 // Are we returning somewhere?
 
@@ -426,7 +435,12 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
     echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['bancontrols']}</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+
         html_display_error_array($error_msg_array, '420', 'center');
+
+    }else {
+
+        html_display_warning_msg($lang['youcanusethepercentwildcard'], '420', 'center');
     }
 
     echo "<br />\n";
@@ -515,14 +529,6 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
         echo "    </tr>\n";
     }
 
-    echo "  </table>\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"420\">\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\">&nbsp;</td>\n";
-    echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\" class=\"postbody\">{$lang['youcanusethepercentwildcard']}</td>\n";
-    echo "    </tr>\n";
     echo "  </table>\n";
     echo "</form>\n";
     echo "</div>\n";
@@ -676,6 +682,8 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
 
     html_draw_top('openprofile.js');
 
+    $ban_list_array = admin_get_ban_data($sort_by, $sort_dir, $start);
+
     echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['bancontrols']}</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
@@ -693,6 +701,10 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
     }else if (isset($_GET['edited'])) {
 
         html_display_success_msg($lang['successfullyupdatedban'], '600', 'center');
+
+    }else if (sizeof($ban_list_array['ban_array']) < 1) {
+
+        html_display_warning_msg($lang['noexistingbandata'], '600', 'center');
     }
 
     echo "<br />\n";
@@ -733,15 +745,6 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
 
     echo "                 </tr>\n";
 
-    $start = floor($page - 1) * 10;
-    if ($start < 0) $start = 0;
-
-    $ban_list_array = admin_get_ban_data($sort_by, $sort_dir, $start);
-
-    $ban_types_array = array('1' => 'IP Address', '2' => 'Logon',
-                             '3' => 'Nickname',   '4' => 'Email',
-                             '5' => 'HTTP Referer');
-
     if (sizeof($ban_list_array['ban_array']) > 0) {
 
         foreach($ban_list_array['ban_array'] as $ban_list_id => $ban_list_entry) {
@@ -752,66 +755,41 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
             echo "                   <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_id=$ban_list_id&amp;page=$page\">", (in_array($ban_list_entry['BANTYPE'], array_keys($ban_types_array)) ? $ban_types_array[$ban_list_entry['BANTYPE']] : $lang['unknown']), "</a></td>\n";
             echo "                 </tr>\n";
         }
+    }
 
-        echo "                 <tr>\n";
-        echo "                   <td align=\"left\" colspan=\"5\">&nbsp;</td>\n";
-        echo "                 </tr>\n";
-        echo "               </table>\n";
-        echo "             </td>\n";
-        echo "           </tr>\n";
-        echo "         </table>\n";
-        echo "      </td>\n";
-        echo "    </tr>\n";
+    echo "                 <tr>\n";
+    echo "                   <td align=\"left\" colspan=\"5\">&nbsp;</td>\n";
+    echo "                 </tr>\n";
+    echo "               </table>\n";
+    echo "             </td>\n";
+    echo "           </tr>\n";
+    echo "         </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">&nbsp;</td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td class=\"postbody\" align=\"center\">", page_links(get_request_uri(true, false), $start, $ban_list_array['ban_count'], 10), "</td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">&nbsp;</td>\n";
+    echo "    </tr>\n";
+
+    if (isset($ret)) {
+
         echo "    <tr>\n";
-        echo "      <td align=\"left\">&nbsp;</td>\n";
+        echo "      <td colspan=\"2\" align=\"center\">", form_submit("addban", $lang['addnew']), "&nbsp;", form_submit("delete", $lang['deleteselected']), "&nbsp;", form_submit("back", $lang['back']), "</td>\n";
         echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td class=\"postbody\" align=\"center\">", page_links(get_request_uri(true, false), $start, $ban_list_array['ban_count'], 10), "</td>\n";
-        echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"left\">&nbsp;</td>\n";
-        echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td colspan=\"2\" align=\"center\">", form_submit("addban", $lang['addnew']), "&nbsp;", form_submit("delete", $lang['deleteselected']), "</td>\n";
-        echo "    </tr>\n";
-        echo "  </table>\n";
 
     }else {
 
-        echo "                 <tr>\n";
-        echo "                   <td align=\"left\">&nbsp;</td>\n";
-        echo "                   <td align=\"left\" colspan=\"4\">{$lang['noexistingbandata']}</td>\n";
-        echo "                 </tr>\n";
-        echo "                 <tr>\n";
-        echo "                   <td align=\"left\" colspan=\"5\">&nbsp;</td>\n";
-        echo "                 </tr>\n";
-        echo "               </table>\n";
-        echo "             </td>\n";
-        echo "           </tr>\n";
-        echo "         </table>\n";
-        echo "      </td>\n";
-        echo "    </tr>\n";
         echo "    <tr>\n";
-        echo "      <td align=\"left\">&nbsp;</td>\n";
+        echo "      <td colspan=\"2\" align=\"center\">", form_submit("addban", $lang['addnew']), "&nbsp;", form_submit("delete", $lang['deleteselected']), "</td>\n";
         echo "    </tr>\n";
-
-        if (isset($ret)) {
-
-            echo "    <tr>\n";
-            echo "      <td colspan=\"2\" align=\"center\">", form_submit("addban", $lang['addnew']), "&nbsp;", form_submit("delete", $lang['deleteselected']), "&nbsp;", form_submit("back", $lang['back']), "</td>\n";
-            echo "    </tr>\n";
-
-        }else {
-
-            echo "    <tr>\n";
-            echo "      <td colspan=\"2\" align=\"center\">", form_submit("addban", $lang['addnew']), "&nbsp;", form_submit("delete", $lang['deleteselected']), "</td>\n";
-            echo "    </tr>\n";
-        }
-
-        echo "  </table>\n";
     }
 
-    echo "  <br />\n";
+    echo "  </table>\n";
     echo "</form>\n";
     echo "</div>\n";
 

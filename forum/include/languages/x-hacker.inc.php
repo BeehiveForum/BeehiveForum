@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.249 2007-09-14 17:41:17 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.250 2007-09-17 19:47:41 decoyduck Exp $ */
 
 // British English language file
 
@@ -306,7 +306,6 @@ $lang['sectionname'] = "sEc+10n N4mE";
 $lang['items'] = "i+ems";
 $lang['mustspecifyaprofilesectionid'] = "mu\$+ \$P3C1FY 4 PR0f1Le s3ct1on 1D";
 $lang['mustsepecifyaprofilesectionname'] = "mu\$+ 5P3C1fy 4 PRoFiLe s3ctioN n@Me";
-$lang['noprofilesectionsfound'] = "th3Re @R3 no 3x1S+inG pR0f1le 53CTions. +o @Dd 4 pR0pH1l3 \$3C+I0N pl3453 CL1cK +H3 8u+T0N BEloW.";
 $lang['addnewprofilesection'] = "add New Pr0pHILE seC+10N";
 $lang['successfullyaddedprofilesection'] = "sUccE\$SFUllY @DDeD pR0F1L3 \$ec+1on";
 $lang['successfullyeditedprofilesection'] = "sucCE\$SfUllY eDi+3D PR0F1le \$eCt1on";
@@ -319,7 +318,6 @@ $lang['successfullyaddednewprofileitem'] = "succ3\$SfUllY 4Dd3d n3W PrOfile I+3m
 $lang['successfullyeditedprofileitem'] = "succe\$sfUlly 3D1+3d Prof1l3 I+3m";
 $lang['successfullyremovedselectedprofileitems'] = "succe\$\$fullY R3MoVeD sEl3ctED PR0F1l3 1+Ems";
 $lang['failedtoremoveprofileitems'] = "f4iL3D +o reM0VE pR0PH1l3 I+EmS";
-$lang['noexistingprofileitemsfound'] = "tHer3 4Re No Exi5+1N9 pR0f1l3 1+3ms 1N +HI\$ seCt10n. +0 ADd 4 PrOpH1L3 ItEm cl1ck TH3 BU++0n b3L0W.";
 $lang['edititem'] = "ed1+ i+3M";
 $lang['invalidprofilesectionid'] = "inv4L1d pRofIl3 53Ct10n ID 0R \$3C+i0N n0T f0UnD";
 $lang['invalidprofileitemid'] = "iNV@L1D PRoPhil3 i+Em 1D Or 1+3m NOt f0unD";
@@ -390,7 +388,6 @@ $lang['filtername'] = "f1L+Er N4M3";
 $lang['filtertype'] = "fiL+3r TYP3";
 $lang['filterenabled'] = "fIL+Er 3n4bLeD";
 $lang['editwordfilter'] = "ed1+ w0rD PhIlTer";
-$lang['nowordfilterentriesfound'] = "n0 ex1\$t1ng wOrd PHILTEr 3ntRIE\$ phOunD. To 4dD @ Word PHILTeR cl1Ck TeH Bu++0n B3l0w.";
 $lang['mustspecifyfiltername'] = "j00 MUst Sp3c1fy 4 F1L+Er nAme";
 $lang['mustspecifymatchedtext'] = "j00 mUs+ Sp3C1PHY MA+CH3D TExt";
 $lang['mustspecifyfilteroption'] = "j00 must sPec1fY a Fil+3r oPt10n";
@@ -403,7 +400,6 @@ $lang['normalthreadsonly'] = "norm4l +Hr34ds onlY";
 $lang['pollthreadsonly'] = "p0Ll +HRe4ds onLy";
 $lang['both'] = "bOth +Hr34D typEs";
 $lang['existingpermissions'] = "exIs+1N9 peRmis\$i0Ns";
-$lang['nousers'] = "n0 USEr\$";
 $lang['searchforuser'] = "se@rch pHoR UsEr";
 $lang['browsernegotiation'] = "bR0WsEr Neg0t1@+ED";
 $lang['largetextfield'] = "lArge +3xt FI3lD";
@@ -447,13 +443,11 @@ $lang['failedtoupdatefolder'] = "f41led t0 Upda+E ph0LD3r";
 $lang['cannotdeletefolderwiththreads'] = "c4nno+ DElE+e ph0LD3R\$ th@+ \$+1ll C0n+@1N +hR34DS.";
 $lang['forumisnotrestricted'] = "f0rum iS no+ RES+riCTEd";
 $lang['groups'] = "gr0ups";
-$lang['nousergroups'] = "n0 UseR Gr0Ups h@V3 B3en s3t Up";
 $lang['suppliedgidisnotausergroup'] = "suppL13D 9ID is No+ A useR 9roUp";
 $lang['manageusergroups'] = "mAn493 u\$ER gr0upS";
 $lang['groupstatus'] = "gR0up s+4tUs";
 $lang['addusergroup'] = "add 9Roup";
 $lang['addremoveusers'] = "add/rEm0vE useR5";
-$lang['nousersingroup'] = "th3R3 4rE N0 us3R5 iN tH1\$ gr0Up";
 $lang['useringroups'] = "tHIS User 1\$ 4 mEM83r oPh th3 PHoll0win9 9roUp\$";
 $lang['usernotinanygroups'] = "th1\$ UseR i\$ NOT in @Ny U53R 9roUps";
 $lang['usergroupwarning'] = "n0T3: +HIs usEr m4y 8E 1nhEri+InG aDdI+ioN@L P3RMi\$Si0ns pHroM 4ny UseR 9R0ups Li\$+3D 8el0w.";
@@ -1836,7 +1830,6 @@ $lang['rssclicktoreadarticle'] = "clIck h3R3 t0 R34D +HIs @RT1Cl3";
 $lang['addnewfeed'] = "add NEw F3ED";
 $lang['editfeed'] = "edi+ F3Ed";
 $lang['feeduseraccount'] = "f33D u\$3R @CCoUnT";
-$lang['noexistingfeeds'] = "nO 3x1S+1N9 Rss phEED\$ fouNd. To 4dd @ FEeD pLe4SE CliCk thE BU++0N BEl0w";
 $lang['rssfeedhelp'] = "h3R3 J00 C@n \$EtUp s0mE r5\$ phe3d5 pHor aU+0m4+iC proP494t10N 1n+0 Y0UR pHorum. tH3 I+Ems phrom tHE r5\$ phe3DS j00 @DD wIlL 8E crE4+3D As +Hr3@dS WhicH usEr5 can r3ply +0 as iF +h3y w3r3 n0rm4L pO\$+s. Th3 R\$S F3eD mUSt BE 4CCEs51Ble v14 HtTp 0r i+ W1ll no+ Work.";
 $lang['mustspecifyrssfeedname'] = "mUS+ \$P3C1FY Rs5 pHEEd n4m3";
 $lang['mustspecifyrssfeeduseraccount'] = "mU\$+ 5p3Ciphy r\$S FE3D U53R 4CCoUnt";

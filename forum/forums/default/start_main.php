@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_main.php,v 1.25 2007-07-07 22:39:33 decoyduck Exp $ */
+/* $Id: start_main.php,v 1.26 2007-09-17 19:47:41 decoyduck Exp $ */
 
 // An example of what can be done with start_main.php
 // As used on: http://www.tehforum.net/forum/
@@ -86,7 +86,7 @@ if ((isset($_POST['upload'])) && (bh_session_get_value('UID') > 0)) {
     if (isset($_FILES['userimage']['tmp_name']) && @is_readable($_FILES['userimage']['tmp_name'])) {
 
         $logon = bh_session_get_value('LOGON');
-        
+
         $tempfile = $_FILES['userimage']['tmp_name'];
         $filepath = "$images_dir/$logon";
 
@@ -96,20 +96,22 @@ if ((isset($_POST['upload'])) && (bh_session_get_value('UID') > 0)) {
 
                 if (attachment_create_thumb($filepath, 300, 300)) {
 
-                    unlink($filepath);
-                    rename("$filepath.thumb", $filepath);
+                    if (@unlink($filepath)) {
 
-                    html_draw_top();
+                        rename("$filepath.thumb", $filepath);
 
-                    echo "<h1>Uploaded Image</h1>\n";
-                    echo "<div class=\"image\">\n";
-                    echo "<p><div align=\"center\"><a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('$logon', '$webtag')\"><img src=\"$images_dir/", rawurlencode($logon), "\" border=\"0\" alt=\"", formatname($logon), "\" title=\"", formatname($logon), "\" /></a></div></p>\n";
-                    echo "<p><div align=\"center\"><a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('$logon', '$webtag')\">", formatname($logon), "</a></div></p>\n";
-                    echo "<p><div align=\"center\">[<a href=\"{$HTTP_SERVER_VARS['PHP_SELF']}\">Random Image</a> | <a href=\"{$HTTP_SERVER_VARS['PHP_SELF']}?gallery\">Gallery</a> | <a href=\"?upload\">Upload different image</a>]</div></p>\n";
-                    echo "</div>\n";
+                        html_draw_top();
 
-                    html_draw_bottom();
-                    exit;
+                        echo "<h1>Uploaded Image</h1>\n";
+                        echo "<div class=\"image\">\n";
+                        echo "<p><div align=\"center\"><a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('$logon', '$webtag')\"><img src=\"$images_dir/", rawurlencode($logon), "\" border=\"0\" alt=\"", formatname($logon), "\" title=\"", formatname($logon), "\" /></a></div></p>\n";
+                        echo "<p><div align=\"center\"><a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('$logon', '$webtag')\">", formatname($logon), "</a></div></p>\n";
+                        echo "<p><div align=\"center\">[<a href=\"{$HTTP_SERVER_VARS['PHP_SELF']}\">Random Image</a> | <a href=\"{$HTTP_SERVER_VARS['PHP_SELF']}?gallery\">Gallery</a> | <a href=\"?upload\">Upload different image</a>]</div></p>\n";
+                        echo "</div>\n";
+
+                        html_draw_bottom();
+                        exit;
+                    }
                 }
             }
         }
@@ -118,6 +120,7 @@ if ((isset($_POST['upload'])) && (bh_session_get_value('UID') > 0)) {
         echo "<h1>Error</h1>\n";
         echo "<p>Something went wrong. You'll be needing to try again.</p>";
         html_draw_bottom();
+        exit;
     }
 }
 
@@ -180,7 +183,14 @@ if (isset($_GET['delete'])) {
 
         if (@file_exists("forums/$webtag/images/forumites/$image")) {
 
-            unlink("forums/$webtag/images/forumites/$image");
+            if (!@unlink("forums/$webtag/images/forumites/$image")) {
+
+                html_draw_top();
+                echo "<h1>Error</h1>\n";
+                echo "<p>Something went wrong. You'll be needing to try again.</p>";
+                html_draw_bottom();
+                exit;
+            }
         }
     }
 }
@@ -229,7 +239,7 @@ if ((isset($_GET['upload'])) && (bh_session_get_value('UID') > 0)) {
             echo "    <a href=\"{$HTTP_SERVER_VARS['PHP_SELF']}?view_image=", rawurlencode($image), "\"><img src=\"$images_dir/", rawurlencode($image), "?$modified_time\" alt=\"", formatname($image), "\" title=\"", formatname($image), "\" style=\"height: {$target_height}px; margin: {$css_margin}px 0;\"/></a>\n";
             echo "    <label><a href=\"/forum/user_profile.php?webtag={$webtag}&amp;logon=", rawurlencode($image), "\" onclick=\"openProfileByLogon('$image', '$webtag'); return false;\">", formatname($image), "</a></label>\n";
             echo "  </li>\n";
-        
+
         }elseif (strlen(trim($image)) < 1) {
 
             echo "<li><div style=\"height: 174px;\"></div><label>&nbsp;</label></li>\n";
@@ -256,11 +266,11 @@ if ((isset($_GET['upload'])) && (bh_session_get_value('UID') > 0)) {
 }elseif (is_array($images_array) && sizeof($images_array) > 0) {
 
     $logon = bh_session_get_value('LOGON');
-    
+
     if (isset($_GET['view_image'])) {
-        
+
         $image = $_GET['view_image'];
-        
+
         if (!in_array($image, $images_array)) {
 
             echo "<h1>Convicts Gallery</h1>\n";
@@ -269,10 +279,11 @@ if ((isset($_GET['upload'])) && (bh_session_get_value('UID') > 0)) {
             html_draw_bottom();
             exit;
         }
-    
+
     }else {
 
-        $image = $images_array[array_rand($images_array)];
+        $random_image_id = mt_rand(0, sizeof($images_array) - 1);
+        $image = $images_array[$random_image_id];
     }
 
     $modified_time = filemtime("$images_dir/$image");

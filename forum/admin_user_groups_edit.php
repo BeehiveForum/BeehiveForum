@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit.php,v 1.57 2007-09-15 20:20:18 decoyduck Exp $ */
+/* $Id: admin_user_groups_edit.php,v 1.58 2007-09-17 19:47:41 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -226,14 +226,29 @@ if (isset($_POST['submit'])) {
     }
 
     $group_permissions = perm_get_group_permissions($gid);
+
+}else if (isset($_POST['addusers'])) {
+
+    $redirect_uri = "admin_user_groups_edit_users.php?webtag=$webtag&gid=$gid";
+    $redirect_uri.= "&ret=admin_user_groups_edit.php%3Fwebtag%3D$webtag%26gid%3D$gid";
+
+    header_redirect($redirect_uri);
+    exit;
 }
 
 html_draw_top();
 
+$group_users_array = perm_group_get_users($gid, 0);
+
 echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageusergroups']} &raquo; {$group['GROUP_NAME']}</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+
     html_display_error_array($error_msg_array, '550', 'center');
+
+}else if (sizeof($group_users_array['user_array']) < 1) {
+
+    html_display_warning_msg($lang['nousersingroupaddusers'], '550', 'center');
 }
 
 echo "<br />\n";
@@ -430,7 +445,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "&nbsp;", form_submit("addusers", $lang['addremoveusers']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

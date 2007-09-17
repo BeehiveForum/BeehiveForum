@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: admin_post_stats.php,v 1.37 2007-09-08 19:34:17 decoyduck Exp $ */
+/* $Id: admin_post_stats.php,v 1.38 2007-09-17 19:47:41 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -108,9 +108,9 @@ if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
 $error_msg_array = array();
 
-// Empty array for post stats
+// Empty array for the stats
 
-$user_stats_array = array();
+$user_stats_array = array('user_stats' => array());
 
 // Submit code
 
@@ -195,7 +195,12 @@ html_draw_top("robots=noindex,nofollow");
 echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; ", sprintf($lang['postingstatsforperiod'], date("d/m/Y", $stats_start), date("d/m/Y", $stats_end)), "</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+
     html_display_error_array($error_msg_array, '700', 'center');
+
+}else if (sizeof($user_stats_array['user_stats']) < 1) {
+
+    html_display_warning_msg($lang['nopostdatarecordedforthisperiod'], '700', 'center');
 }
 
 echo "  <br />\n";
@@ -216,7 +221,7 @@ echo "                  <td align=\"center\" class=\"subhead\" width=\"120\">{$l
 echo "                  <td align=\"center\" class=\"subhead\" width=\"120\">{$lang['average']}</td>\n";
 echo "                </tr>\n";
 
-if (isset($user_stats_array['user_stats']) && sizeof($user_stats_array['user_stats']) > 0) {
+if (sizeof($user_stats_array['user_stats']) > 0) {
 
     foreach ($user_stats_array['user_stats'] as $user_stats) {
 
@@ -239,10 +244,6 @@ if (isset($user_stats_array['user_stats']) && sizeof($user_stats_array['user_sta
 
 }else {
 
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\">&nbsp;</td>\n";
-    echo "                  <td align=\"left\" colspan=\"5\">{$lang['nodata']}</td>\n";
-    echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\" colspan=\"6\">&nbsp;</td>\n";
     echo "                </tr>\n";

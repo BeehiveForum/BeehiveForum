@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_items.php,v 1.112 2007-09-15 20:20:17 decoyduck Exp $ */
+/* $Id: admin_prof_items.php,v 1.113 2007-09-17 19:47:41 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -511,6 +511,8 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
 
     html_draw_top();
 
+    $profile_items = profile_items_get_by_page($psid, $start);
+
     echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageprofilesections']} &raquo; ", profile_section_get_name($psid), " &raquo; {$lang['viewitems']}</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
@@ -528,6 +530,10 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
     }else if (isset($_GET['deleted'])) {
 
         html_display_success_msg($lang['successfullyremovedselectedprofileitems'], '500', 'center');
+
+    }else if (sizeof($profile_items['profile_items_array']) < 1) {
+
+        html_display_warning_msg($lang['noexistingprofileitemsfound'], '500', 'center');
     }
 
     echo "<br />\n";
@@ -551,8 +557,6 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
     echo "                  <td class=\"subhead\" align=\"left\" colspan=\"2\">{$lang['itemname']}</td>\n";
     echo "                  <td class=\"subhead\" align=\"left\">{$lang['type']}</td>\n";
     echo "                </tr>\n";
-
-    $profile_items = profile_items_get_by_page($psid, $start);
 
     if (sizeof($profile_items['profile_items_array']) > 0) {
 
@@ -588,13 +592,6 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
             echo "                  <td valign=\"top\" align=\"left\">{$item_types_array[$profile_item['TYPE']]}</td>\n";
             echo "                </tr>\n";
         }
-
-    }else {
-
-        echo "                <tr>\n";
-        echo "                  <td align=\"left\" colspan=\"4\">{$lang['noexistingprofileitemsfound']}</td>\n";
-        echo "                </tr>\n";
-
     }
 
     echo "                <tr>\n";

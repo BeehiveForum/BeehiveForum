@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.48 2007-09-14 17:41:16 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.49 2007-09-17 19:47:41 decoyduck Exp $ */
 
 // British English language file
 
@@ -306,7 +306,6 @@ $lang['sectionname'] = "Bereichsname";
 $lang['items'] = "Eintraege";
 $lang['mustspecifyaprofilesectionid'] = "Eine Profilbereichs-ID muss festgelegt werden";
 $lang['mustsepecifyaprofilesectionname'] = "Ein Profilbereichsname muss festgelegt werden";
-$lang['noprofilesectionsfound'] = "Es existieren keine Profilbereiche. Um einen Profilbereich hinzuzufuegen folgende Schaltflaeche klicken.";
 $lang['addnewprofilesection'] = "Neuen Profilbereich anlegen";
 $lang['successfullyaddedprofilesection'] = "Successfully added profile section";
 $lang['successfullyeditedprofilesection'] = "Profilbereich erfolgreich bearbeitet";
@@ -319,7 +318,6 @@ $lang['successfullyaddednewprofileitem'] = "Successfully added new profile item"
 $lang['successfullyeditedprofileitem'] = "Successfully edited profile item";
 $lang['successfullyremovedselectedprofileitems'] = "ausgewaehlter Profileintrag erfolgreich geloescht";
 $lang['failedtoremoveprofileitems'] = "Profileintrag konnte nicht geloescht werden";
-$lang['noexistingprofileitemsfound'] = "Es existieren keine Profileintraege in diesem Bereich. Um einen Profileintrag anzulegen folgende Schaltflaeche klicken.";
 $lang['edititem'] = "Eintrag bearbeiten";
 $lang['invalidprofilesectionid'] = "Invalid profile section ID or section not found";
 $lang['invalidprofileitemid'] = "Invalid profile item ID or item not found";
@@ -390,7 +388,6 @@ $lang['filtername'] = "Filter Name";
 $lang['filtertype'] = "Filtertyp";
 $lang['filterenabled'] = "Filter Enabled";
 $lang['editwordfilter'] = "Wortfilter editieren";
-$lang['nowordfilterentriesfound'] = "Kein existierender Wortfilter gefunden. Um einen Wortfilter hinzuzufuegen folgenden Button klicken.";
 $lang['mustspecifyfiltername'] = "You must specify a filter name";
 $lang['mustspecifymatchedtext'] = "Bitte Trefferauswahl definieren";
 $lang['mustspecifyfilteroption'] = "Bitte Filteroption definieren";
@@ -403,7 +400,6 @@ $lang['normalthreadsonly'] = "Nur Normale Eintraege";
 $lang['pollthreadsonly'] = "Nur Abstimmungseintraege";
 $lang['both'] = "Beide Eintragstypen";
 $lang['existingpermissions'] = "Erteilte Erlaubnis";
-$lang['nousers'] = "Keine Benutzer";
 $lang['searchforuser'] = "Suche nach Benutzer";
 $lang['browsernegotiation'] = "Browser ermittelt";
 $lang['largetextfield'] = "Grosses Textfeld";
@@ -448,13 +444,11 @@ $lang['failedtoupdatefolder'] = "Failed to update folder";
 $lang['cannotdeletefolderwiththreads'] = "Kann Ordner die noch Eintraege enthalten nicht loeschen.";
 $lang['forumisnotrestricted'] = "kein eingeschraenktes Forum";
 $lang['groups'] = "Gruppen";
-$lang['nousergroups'] = "keine Benutzergruppen vorhanden";
 $lang['suppliedgidisnotausergroup'] = "angegebene GID ist keine Benutzergruppe";
 $lang['manageusergroups'] = "Manage Benutzergruppen";
 $lang['groupstatus'] = "Gruppenstatus";
 $lang['addusergroup'] = "Gruppe hinzufuegen";
 $lang['addremoveusers'] = "Anfuegen/Loeschen Benutzer";
-$lang['nousersingroup'] = "Es sind keine Benutzer in dieser Gruppe";
 $lang['useringroups'] = "Dieser Benutzer ist Mitglied folgender Gruppen";
 $lang['usernotinanygroups'] = "Dieser Benutzer ist in keiner Benutzergruppe";
 $lang['usergroupwarning'] = "Anmerkung: Dieser Benutzer koennte zusaetzliche Rechte von jeder unten aufgefuehrten Benutzergruppe erhalten.";
@@ -1842,7 +1836,6 @@ $lang['rssclicktoreadarticle'] = "Hier klicken um den Artikel zu lesen";
 $lang['addnewfeed'] = "Neuen Feed hinzufuegen";
 $lang['editfeed'] = "Feed bearbeiten";
 $lang['feeduseraccount'] = "Feed Benutzerkonto";
-$lang['noexistingfeeds'] = "Keinen bestehenden RSS Feed gefunden. Um einen Feed hinzuzufuegen folgende Schaltflaeche klicken";
 $lang['rssfeedhelp'] = "Hier kannst Du RSS-Feeds installieren fuer automatische Verbreitung in Deinem Forum. Die Eintraege der RSS-Feeds die Du anfuegst werden in Threads erstellt mit denen Benutzer antworten koennen als waeren es normale Posts. Beim Hinzufuegen eines RSS-Feeds musst Du den Benutzerlogon definieren der benutzt werden soll um Threads zu starten, Der Ordner in dem er erstellt werden soll und die Lokation des Feeds. Die Feed-Lokation muss via HTTP erreichbar sein, ansonsten wird es nicht funktionieren.";
 $lang['mustspecifyrssfeedname'] = "RSS Feed Name muss definiert sein";
 $lang['mustspecifyrssfeeduseraccount'] = "RSS Feed Benutzerkonto muss definiert sein";

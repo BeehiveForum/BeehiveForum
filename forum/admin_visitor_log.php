@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_visitor_log.php,v 1.20 2007-09-16 13:24:20 decoyduck Exp $ */
+/* $Id: admin_visitor_log.php,v 1.21 2007-09-17 19:47:41 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -123,7 +123,14 @@ if (isset($_POST['clear'])) {
 
 html_draw_top('openprofile.js');
 
+$admin_visitor_log_array = admin_get_visitor_log($start, 10);
+
 echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['visitorlog']}</h1>\n";
+
+if (sizeof($admin_visitor_log_array['user_array']) < 1) {
+    html_display_warning_msg($lang['novisitorslogged'], '85%', 'center');
+}
+
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"85%\">\n";
@@ -139,8 +146,6 @@ echo "                   <td class=\"subhead\" align=\"left\" width=\"100\">{$la
 echo "                   <td class=\"subhead\" align=\"left\" width=\"150\">{$lang['lastipaddress']}</td>\n";
 echo "                   <td class=\"subhead\" align=\"left\" width=\"400\">{$lang['referer']}</td>\n";
 echo "                 </tr>\n";
-
-$admin_visitor_log_array = admin_get_visitor_log($start, 10);
 
 if (sizeof($admin_visitor_log_array['user_array']) > 0) {
 
@@ -197,21 +202,11 @@ if (sizeof($admin_visitor_log_array['user_array']) > 0) {
 
         echo "                 </tr>\n";
     }
-
-    echo "                 <tr>\n";
-    echo "                   <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
-    echo "                 </tr>\n";
-
-}else {
-
-    echo "                 <tr>\n";
-    echo "                   <td align=\"left\" class=\"postbody\">{$lang['novisitorslogged']}</td>\n";
-    echo "                 </tr>\n";
-    echo "                 <tr>\n";
-    echo "                   <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
-    echo "                 </tr>\n";
 }
 
+echo "                 <tr>\n";
+echo "                   <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
+echo "                 </tr>\n";
 echo "               </table>\n";
 echo "             </td>\n";
 echo "           </tr>\n";
@@ -227,14 +222,19 @@ echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
-echo "    <tr>\n";
-echo "      <td align=\"center\">\n";
-echo "        <form name=\"f_post\" action=\"admin_visitor_log.php?webtag=$webtag\" method=\"post\" target=\"_self\">\n";
-echo "          ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
-echo "          ", form_submit('clear', $lang['clearlog']), "\n";
-echo "        </form>\n";
-echo "      </td>";
-echo "    </tr>\n";
+
+if (sizeof($admin_visitor_log_array['user_array']) > 0) {
+
+    echo "    <tr>\n";
+    echo "      <td align=\"center\">\n";
+    echo "        <form name=\"f_post\" action=\"admin_visitor_log.php?webtag=$webtag\" method=\"post\" target=\"_self\">\n";
+    echo "          ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
+    echo "          ", form_submit('clear', $lang['clearlog']), "\n";
+    echo "        </form>\n";
+    echo "      </td>";
+    echo "    </tr>\n";
+}
+
 echo "  </table>\n";
 echo "</div>\n";
 

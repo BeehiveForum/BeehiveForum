@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups.php,v 1.44 2007-08-16 21:24:06 decoyduck Exp $ */
+/* $Id: admin_user_groups.php,v 1.45 2007-09-17 19:47:41 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -149,7 +149,12 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
     $page = 1;
 }
 
+$start = floor($page - 1) * 10;
+if ($start < 0) $start = 0;
+
 if (isset($_POST['delete'])) {
+
+    $valid = true;
 
     if (isset($_POST['delete_group']) && is_array($_POST['delete_group'])) {
 
@@ -160,15 +165,26 @@ if (isset($_POST['delete'])) {
                 if (perm_remove_group($gid)) {
 
                     admin_add_log_entry(DELETE_USER_GROUP, $group_name);
-                    header_redirect("admin_user_groups.php?webtag=$webtag&deleted=true");
-                    exit;
+
+                }else {
+
+                    $error_msg_array[] = sprintf($lang['failedtodeletegroupname'], $group_name);
+                    $valid = false;
                 }
             }
+        }
+
+        if ($valid) {
+
+            header_redirect("admin_user_groups.php?webtag=$webtag&deleted=true");
+            exit;
         }
     }
 }
 
 html_draw_top('admin.js');
+
+$user_groups_array = perm_get_user_groups($start, $sort_by, $sort_dir);
 
 echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['usergroups']}</h1>\n";
 
@@ -182,7 +198,11 @@ if (isset($_GET['added'])) {
 
 }else if (isset($_GET['deleted'])) {
 
-    html_display_success_msg($lang['successfullydeletedgroup'], '86%', 'center');
+    html_display_success_msg($lang['successfullydeletedselectedgroups'], '86%', 'center');
+
+}else if (sizeof($user_groups_array['user_groups_array']) < 1) {
+
+    html_display_warning_msg($lang['nousergroups'], '86%', 'center');
 }
 
 echo "<br />\n";
@@ -232,11 +252,6 @@ if ($sort_by == 'USER_COUNT' && $sort_dir == 'ASC') {
 echo "                  <td align=\"left\" class=\"subhead\">&nbsp;</td>\n";
 echo "                </tr>\n";
 
-$start = floor($page - 1) * 10;
-if ($start < 0) $start = 0;
-
-$user_groups_array = perm_get_user_groups($start, $sort_by, $sort_dir);
-
 if (sizeof($user_groups_array['user_groups_array']) > 0) {
 
     foreach ($user_groups_array['user_groups_array'] as $user_group) {
@@ -249,13 +264,6 @@ if (sizeof($user_groups_array['user_groups_array']) > 0) {
         echo "                  <td width=\"180\" align=\"center\">", form_submit("edit_users[{$user_group['GID']}]", $lang['addremoveusers']), "&nbsp;</td>\n";
         echo "                </tr>\n";
     }
-
-}else {
-
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\">&nbsp;</td>\n";
-    echo "                  <td align=\"left\" colspan=\"4\">{$lang['nousergroups']}</td>\n";
-    echo "                </tr>\n";
 }
 
 echo "                <tr>\n";

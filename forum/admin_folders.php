@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folders.php,v 1.135 2007-09-15 20:20:17 decoyduck Exp $ */
+/* $Id: admin_folders.php,v 1.136 2007-09-17 19:47:41 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -194,6 +194,8 @@ if (isset($_POST['move_up_disabled']) || isset($_POST['move_down_disabled'])) {
 
 html_draw_top();
 
+$folder_array = folder_get_all_by_page($start);
+
 echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['managefolders']}</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
@@ -211,6 +213,10 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 }else if (isset($_GET['deleted'])) {
 
     html_display_success_msg($lang['successfullyremovedselectedfolders'], '500', 'center');
+
+}else if (sizeof($folder_array['folder_array']) < 1) {
+
+    html_display_warning_msg($lang['nofoldersfound'], '500', 'center');
 }
 
 echo "<br />\n";
@@ -231,8 +237,6 @@ echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\" c
 echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">{$lang['threadcount']}</td>\n";
 echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">{$lang['permissions']}</td>\n";
 echo "                </tr>\n";
-
-$folder_array = folder_get_all_by_page($start);
 
 if (sizeof($folder_array['folder_array']) > 0) {
 
@@ -279,12 +283,6 @@ if (sizeof($folder_array['folder_array']) > 0) {
 
         echo "                </tr>\n";
     }
-
-}else {
-
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" colspan=\"8\">{$lang['couldnotretrievefolderinformation']}</td>\n";
-    echo "                </tr>\n";
 }
 
 echo "                <tr>\n";

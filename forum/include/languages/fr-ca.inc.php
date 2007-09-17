@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.73 2007-09-14 17:41:17 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.74 2007-09-17 19:47:41 decoyduck Exp $ */
 
 // British English language file
 
@@ -306,7 +306,6 @@ $lang['sectionname'] = "Nom de section";
 $lang['items'] = "Items";
 $lang['mustspecifyaprofilesectionid'] = "Vous devez spécifier une identification pour la section du profil";
 $lang['mustsepecifyaprofilesectionname'] = "Vous devez spécifier un nom pour la section du profil";
-$lang['noprofilesectionsfound'] = "Il n'y a aucune section de profil existante. Pour ajouter une section de profil, cliquez le bouton ci-dessous.";
 $lang['addnewprofilesection'] = "Ajouter une nouvelle section au profil";
 $lang['successfullyaddedprofilesection'] = "Successfully added profile section";
 $lang['successfullyeditedprofilesection'] = "Modification de la section du profil réussie";
@@ -319,7 +318,6 @@ $lang['successfullyaddednewprofileitem'] = "Successfully added new profile item"
 $lang['successfullyeditedprofileitem'] = "Successfully edited profile item";
 $lang['successfullyremovedselectedprofileitems'] = "La suppression des sections du profil selectionnées réussi";
 $lang['failedtoremoveprofileitems'] = " La suppression  des items du profil a échoué";
-$lang['noexistingprofileitemsfound'] = "Il n'y a pas d'items de profil existants dans cette section. Pour ajouter un item de profil, cliquer le bouton ci-dessous.";
 $lang['edititem'] = "Modifier l'item";
 $lang['invalidprofilesectionid'] = "Invalid profile section ID or section not found";
 $lang['invalidprofileitemid'] = "Invalid profile item ID or item not found";
@@ -390,7 +388,6 @@ $lang['filtername'] = "Filter Name";
 $lang['filtertype'] = "Type de filtre";
 $lang['filterenabled'] = "Filter Enabled";
 $lang['editwordfilter'] = "Modifier le filtre de mots";
-$lang['nowordfilterentriesfound'] = "Aucune entrée de filtre des mots existante trouvée. Pour ajouter un filtre des mots, cliquez le bouton ci-dessous.";
 $lang['mustspecifyfiltername'] = "You must specify a filter name";
 $lang['mustspecifymatchedtext'] = "Vous devez spécifier le texte apparié";
 $lang['mustspecifyfilteroption'] = "Vous devez spécifier une option de filtre";
@@ -403,7 +400,6 @@ $lang['normalthreadsonly'] = "Fils de discussion normales uniquement";
 $lang['pollthreadsonly'] = "Fils de discussion avec scrutins uniquement";
 $lang['both'] = "Les deux types de fils de discussion permis";
 $lang['existingpermissions'] = "Droits d'accès existants";
-$lang['nousers'] = "Aucun utilisateur";
 $lang['searchforuser'] = "Chercher pour utilisateur";
 $lang['browsernegotiation'] = "Négocié par navigateur web";
 $lang['largetextfield'] = "Gros champ de texte";
@@ -447,13 +443,11 @@ $lang['failedtoupdatefolder'] = "Failed to update folder";
 $lang['cannotdeletefolderwiththreads'] = "Impossible de supprimer les dossiers contenant toujours des fils de discussion.";
 $lang['forumisnotrestricted'] = "Forum n'est pas limité";
 $lang['groups'] = "Groupes";
-$lang['nousergroups'] = "Aucun groupe d'utilisateur établit";
 $lang['suppliedgidisnotausergroup'] = "L'identification de group fournie n'est pas un groupe d'utilisateur";
 $lang['manageusergroups'] = "Organiser les groupes d'utilisateurs";
 $lang['groupstatus'] = "Statut de groupe";
 $lang['addusergroup'] = "Ajouter groupe";
 $lang['addremoveusers'] = "Ajouter/enlever utilisateurs";
-$lang['nousersingroup'] = "Il n'y a pas d'utilisateurs dans ce groupe";
 $lang['useringroups'] = "Cet utilisateur est membre des groupes suivants";
 $lang['usernotinanygroups'] = "Cet utilisateur n'est pas dans aucun groupe d'utilisateurs";
 $lang['usergroupwarning'] = "Note: Cet utilisateur pourrait accumuler les droits d'accès supplémentaires de un ou plusieurs des groupes d'utilisateurs énumérés ci-dessous.";
@@ -1836,7 +1830,6 @@ $lang['rssclicktoreadarticle'] = "Cliquer ici pour lire cette article";
 $lang['addnewfeed'] = "Ajouter nouvelle source de données";
 $lang['editfeed'] = "Modifier source de données";
 $lang['feeduseraccount'] = "Nom d'utilisateur de la souce de données";
-$lang['noexistingfeeds'] = "Aucune source de données RSS existante trouvé. Pour ajouter une souce de données, veuillez cliquer le bouton ci-dessous";
 $lang['rssfeedhelp'] = "Vous pouvez ici régler des sources de données RSS pour propagation automatique dans votre forum. Les items des sources de données RSS que vous ajoutez seront créés comme fils de discussion auquels vos utilisateurs pourront répondre comme si c'étaient des messages normales. Lorsque vous ajouter une source de données RSS, vous devez indiquer le nom d'utilisateur à utiliser pour commencer les fils de discussion, le dossier dans lequel ils seront créés et le repérage des sources de données. Le repérage des sources de données lui-même doit être accessible via HTTP, sinon les sources de données ne fonctionneront pas.";
 $lang['mustspecifyrssfeedname'] = "Vous devez spécifier le nom de l'alimentation RSS";
 $lang['mustspecifyrssfeeduseraccount'] = "Vous devez spécifier le compte d'utilisateur de l'alimentation RSS";

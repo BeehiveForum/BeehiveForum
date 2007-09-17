@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_links.php,v 1.50 2007-09-15 20:20:17 decoyduck Exp $ */
+/* $Id: admin_forum_links.php,v 1.51 2007-09-17 19:47:41 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -476,15 +476,9 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
 
     html_draw_top();
 
+    $forum_links_array = forum_links_get_links_by_page($start);
+
     echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['editforumlinks']}</h1>\n";
-    echo "<br />\n";
-    echo "<div align=\"center\">\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\">{$lang['editforumlinks_exp']}</td>\n";
-    echo "    </tr>\n";
-    echo "  </table>\n";
-    echo "</div>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -505,6 +499,14 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
     }else if (isset($_GET['updated'])) {
 
         html_display_success_msg($lang['preferencesupdated'], '500', 'center');
+
+    }else if (sizeof($forum_links_array['forum_links_array']) < 1) {
+
+        html_display_warning_msg($lang['linksaddedhereappearindropdownaddnew'], '500', 'center');
+
+    }else {
+
+        html_display_warning_msg($lang['linksaddedhereappearindropdown'], '500', 'center');
     }
 
     echo "<br />\n";
@@ -520,11 +522,9 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\">&nbsp;</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" width=\"20\">&nbsp;</td>\n";
     echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['name']}</td>\n";
     echo "                </tr>\n";
-
-    $forum_links_array = forum_links_get_links_by_page($start);
 
     if (sizeof($forum_links_array['forum_links_array']) > 0) {
 
@@ -559,12 +559,6 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
 
             echo "                </tr>\n";
         }
-
-    }else {
-
-        echo "                  <td align=\"left\">&nbsp;</td>\n";
-        echo "                  <td align=\"left\" colspan=\"3\">{$lang['noexistingforumlinksfound']}</td>\n";
-        echo "                </tr>\n";
     }
 
     echo "                <tr>\n";

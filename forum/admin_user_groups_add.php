@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_add.php,v 1.49 2007-09-15 20:20:17 decoyduck Exp $ */
+/* $Id: admin_user_groups_add.php,v 1.50 2007-09-17 19:47:41 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -122,7 +122,7 @@ if (isset($_POST['cancel'])) {
 
 // Do updates
 
-if (isset($_POST['submit'])) {
+if (isset($_POST['add_group']) || isset($_POST['add_users'])) {
 
     $valid = true;
 
@@ -186,8 +186,17 @@ if (isset($_POST['submit'])) {
             }
 
             admin_add_log_entry(CREATE_USER_GROUP, $t_name);
-            header_redirect("./admin_user_groups.php?webtag=$webtag&added=true");
-            exit;
+
+            if (isset($_POST['add_users'])) {
+
+                header_redirect("./admin_user_groups_edit_users.php?webtag=$webtag&gid=$new_gid&added=true");
+                exit;
+
+            }else {
+
+                header_redirect("./admin_user_groups.php?webtag=$webtag&added=true");
+                exit;
+            }
         }
     }
 }
@@ -391,7 +400,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("submit", $lang['add']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+echo "      <td align=\"center\">", form_submit("add_group", $lang['addemptygroup']), "&nbsp;", form_submit("add_users", $lang['adduserstogroup']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

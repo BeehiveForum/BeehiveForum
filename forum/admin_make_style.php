@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.110 2007-09-15 16:51:30 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.111 2007-09-17 19:47:41 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -241,7 +241,6 @@ if (isset($_POST['submit'])) {
 html_draw_top();
 
 echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['createforumstyle']}</h1>\n";
-echo "<p>{$lang['styleexp']}</p>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -250,6 +249,10 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 }else if (isset($_GET['saved'])) {
 
     html_display_success_msg($lang['newstylesuccessfullycreated'], '70%', 'center');
+
+}else {
+
+    html_display_warning_msg($lang['styleexp'], '70%', 'center');
 }
 
 // Check to see if any of the required variables were passed via the URL Query or POST_VARS
@@ -436,7 +439,7 @@ echo "<br />\n";
 echo "<h1>{$lang['stylepreview']}</h1>\n";
 echo "<br />\n";
 echo "<div align=\"center\">\n";
-echo "<table width=\"96%\" cellpadding=\"0\" cellspacing=\"0\" class=\"box\">\n";
+echo "<table width=\"70%\" cellpadding=\"0\" cellspacing=\"0\" class=\"box\">\n";
 echo "  <tr>\n";
 echo "    <td align=\"center\">\n";
 echo "      <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"background-color: #{$elements['body']}; color: #", contrastFont($elements['body']), "\">\n";
@@ -444,6 +447,7 @@ echo "        <tr>\n";
 echo "          <td align=\"left\" colspan=\"3\" height=\"20\" style=\"background-color: #{$elements['navpage']}; color: #", contrastFont($elements['navpage']), "; font-size: 10px; font-weight: bold; text-decoration: none\">&nbsp;\n";
 echo "            <a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['navpage']), "\">{$lang['start']}</a>&nbsp;|&nbsp;\n";
 echo "            <a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['navpage']), "\">{$lang['messages']}</a>&nbsp;|&nbsp;\n";
+echo "            <a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['navpage']), "\">{$lang['search']}</a>&nbsp;|&nbsp;\n";
 echo "            <a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['navpage']), "\">{$lang['links']}</a>&nbsp;|&nbsp;\n";
 echo "            <a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['navpage']), "\">{$lang['pminbox']}</a>&nbsp;|&nbsp;\n";
 echo "            <a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['navpage']), "\">{$lang['mycontrols']}</a>&nbsp;|&nbsp;\n";

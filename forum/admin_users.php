@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.156 2007-09-08 19:34:17 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.157 2007-09-17 19:47:41 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -173,8 +173,6 @@ if ($table_data = get_table_prefix()) {
     echo "<h1>{$lang['admin']} &raquo; {$lang['manageusers']}</h1>\n";
 }
 
-echo sprintf("<p>{$lang['manageusersexp']}</p>", $sort_by_array[$sort_by]);
-
 if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
     if (isset($_POST['kick_submit'])) {
@@ -259,6 +257,10 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 }elseif (isset($_GET['approved'])) {
 
     html_display_success_msg($lang['successfullyapprovedselectedusers'], '86%', 'center');
+
+}else {
+
+    html_display_warning_msg(sprintf($lang['manageusersexp'], $sort_by_array[$sort_by]), '86%', 'center');
 }
 
 echo "<br />\n";

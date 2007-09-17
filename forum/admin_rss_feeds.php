@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_rss_feeds.php,v 1.48 2007-09-15 20:20:17 decoyduck Exp $ */
+/* $Id: admin_rss_feeds.php,v 1.49 2007-09-17 19:47:41 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -672,6 +672,8 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
 
     html_draw_top('admin.js');
 
+    $rss_feeds = rss_get_feeds($start);
+
     echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['rssfeeds']}</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
@@ -689,6 +691,10 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
     }else if (isset($_GET['deleted'])) {
 
         html_display_success_msg($lang['successfullyremovedselectedfeeds'], '550', 'center');
+
+    }else if (sizeof($rss_feeds['rss_feed_array']) < 1) {
+
+        html_display_warning_msg($lang['noexistingfeeds'], '550', 'center');
     }
 
     echo "<br />\n";
@@ -709,8 +715,6 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
     echo "                  <td class=\"subhead\" align=\"left\" width=\"225\">{$lang['updatefrequency']}&nbsp;</td>\n";
     echo "                </tr>\n";
 
-    $rss_feeds = rss_get_feeds($start);
-
     if (sizeof($rss_feeds['rss_feed_array']) > 0) {
 
         foreach ($rss_feeds['rss_feed_array'] as $rss_feed) {
@@ -721,13 +725,6 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
             echo "                  <td valign=\"top\" align=\"left\" width=\"225\">", (in_array($rss_feed['FREQUENCY'], array_keys($update_frequencies_array))) ? $update_frequencies_array[$rss_feed['FREQUENCY']] : $lang['unknown'], "</td>\n";
             echo "                </tr>\n";
         }
-
-    }else {
-
-        echo "                <tr>\n";
-        echo "                  <td valign=\"top\" align=\"center\" width=\"25\">&nbsp;</td>\n";
-        echo "                  <td valign=\"top\" align=\"left\" colspan=\"3\">{$lang['noexistingfeeds']}</td>\n";
-        echo "                </tr>\n";
     }
 
     echo "                <tr>\n";
@@ -754,12 +751,11 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
     echo "    <tr>\n";
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td class=\"postbody\" align=\"left\">{$lang['rssfeedhelp']}</td>\n";
-    echo "    </tr>\n";
     echo "  </table>\n";
     echo "</form>\n";
     echo "</div>\n";
+
+    html_display_warning_msg($lang['rssfeedhelp'], '550', 'center');
 
     html_draw_bottom();
 }

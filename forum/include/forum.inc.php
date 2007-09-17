@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.262 2007-09-15 13:22:32 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.263 2007-09-17 19:47:41 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -2046,29 +2046,25 @@ function forum_get_permissions($fid)
 {
     if (!is_numeric($fid)) return false;
 
-    if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
+    $db_forum_get_permissions = db_connect();
 
-        $db_forum_get_permissions = db_connect();
+    $forum_get_permissions_array = array();
 
-        $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME FROM USER USER ";
-        $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.UID = USER.UID) ";
-        $sql.= "WHERE USER_FORUM.FID = '$fid' AND USER_FORUM.ALLOWED = 1";
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME FROM USER USER ";
+    $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.UID = USER.UID) ";
+    $sql.= "WHERE USER_FORUM.FID = '$fid' AND USER_FORUM.ALLOWED = 1";
 
-        if (!$result = db_query($sql, $db_forum_get_permissions)) return false;
+    if (!$result = db_query($sql, $db_forum_get_permissions)) return false;
 
-        if (db_num_rows($result) > 0) {
+    if (db_num_rows($result) > 0) {
 
-            $forum_get_permissions_array = array();
+        while($forum_data = db_fetch_array($result)) {
 
-            while($forum_data = db_fetch_array($result)) {
-                $forum_get_permissions_array[] = $forum_data;
-            }
-
-            return $forum_get_permissions_array;
+            $forum_get_permissions_array[] = $forum_data;
         }
     }
 
-    return false;
+    return $forum_get_permissions_array;
 }
 
 function forum_update_default($fid)

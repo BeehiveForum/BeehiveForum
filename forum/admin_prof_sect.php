@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_sect.php,v 1.104 2007-09-15 20:20:17 decoyduck Exp $ */
+/* $Id: admin_prof_sect.php,v 1.105 2007-09-17 19:47:41 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -376,6 +376,8 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
 
     html_draw_top();
 
+    $profile_sections = profile_sections_get_by_page($start);
+
     echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageprofilesections']}</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
@@ -393,6 +395,10 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
     }else if (isset($_GET['deleted'])) {
 
         html_display_success_msg($lang['successfullyremovedselectedprofilesections'], '500', 'center');
+
+    }else if (sizeof($profile_sections['profile_sections_array']) < 1) {
+
+        html_display_warning_msg($lang['noprofilesectionsfound'], '500', 'center');
     }
 
     echo "<br />\n";
@@ -412,8 +418,6 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
     echo "                  <td class=\"subhead\" align=\"left\" colspan=\"2\">{$lang['sectionname']}</td>\n";
     echo "                  <td class=\"subhead\" align=\"center\">{$lang['items']}</td>\n";
     echo "                </tr>\n";
-
-    $profile_sections = profile_sections_get_by_page($start);
 
     if (sizeof($profile_sections['profile_sections_array']) > 0) {
 
@@ -449,13 +453,6 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
             echo "                  <td valign=\"top\" align=\"center\"><a href=\"admin_prof_items.php?webtag=$webtag&amp;psid={$profile_section['PSID']}&amp;sect_page=$page&amp;viewitems=yes\">", _htmlentities($profile_section['ITEM_COUNT']), "</a></td>\n";
             echo "                </tr>\n";
         }
-
-    }else {
-
-        echo "                <tr>\n";
-        echo "                  <td align=\"left\">&nbsp;</td>\n";
-        echo "                  <td align=\"left\" colspan=\"3\">{$lang['noprofilesectionsfound']}</td>\n";
-        echo "                </tr>\n";
     }
 
     echo "                <tr>\n";

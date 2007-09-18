@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.182 2007-09-15 16:51:31 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.183 2007-09-18 20:02:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -1010,14 +1010,14 @@ if ($allow_html == true) {
 
 echo "              <br />\n";
 
-echo "              &nbsp;", form_submit('submit', $lang['send'], "tabindex=\"2\" target=\"_blank\" onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\"");
-echo "              &nbsp;", form_submit('save', $lang['save'], 'tabindex="3" onclick="clearFocus()"');
-echo "              &nbsp;", form_submit('preview', $lang['preview'], 'tabindex="4" onclick="clearFocus()"');
-echo "              &nbsp;", form_submit('cancel', $lang['cancel'], 'tabindex="5" onclick="closeAttachWin(); clearFocus()"');
+echo "&nbsp;", form_submit('submit', $lang['send'], "tabindex=\"2\" target=\"_blank\" onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\"");
+echo "&nbsp;", form_submit('save', $lang['save'], 'tabindex="3" onclick="clearFocus()"');
+echo "&nbsp;", form_submit('preview', $lang['preview'], 'tabindex="4" onclick="clearFocus()"');
+echo "&nbsp;", form_submit('cancel', $lang['cancel'], 'tabindex="5" onclick="closeAttachWin(); clearFocus()"');
 
 if (forum_get_setting('attachments_enabled', 'Y') && forum_get_setting('pm_allow_attachments', 'Y')) {
 
-    echo "              &nbsp;".form_button("attachments", $lang['attachments'], "onclick=\"launchAttachWin('{$aid}', '$webtag')\"");
+    echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachWin('{$aid}', '$webtag')\"");
     echo form_input_hidden("aid", _htmlentities($aid));
 }
 

@@ -493,6 +493,10 @@ a {
     color: #$text_colour[threads]
 }
 
+.pm_message_count {
+    font-size: 8pt;
+}
+
 .posthead a {
     background-color: transparent;
     color: #$text_colour[threads]

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_messages.php,v 1.25 2007-09-08 17:42:40 decoyduck Exp $ */
+/* $Id: pm_messages.php,v 1.26 2007-09-18 20:02:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -111,6 +111,10 @@ if (user_is_guest()) {
     html_guest_error();
     exit;
 }
+
+// Array to hold error messages
+
+$error_msg_array = array();
 
 // Check that PM system is enabled
 
@@ -254,9 +258,24 @@ if (isset($mid) && is_numeric($mid) && $mid > 0) {
 // Delete Messages
 
 if (isset($_POST['deletemessages'])) {
-    if (isset($_POST['process']) && is_array($_POST['process']) && sizeof($_POST['process']) > 0) {
+
+    $valid = true;
+
+    if (isset($_POST['process']) && is_array($_POST['process'])) {
+
         foreach($_POST['process'] as $delete_mid) {
-            pm_delete_message($delete_mid);
+
+            if (!pm_delete_message($delete_mid)) {
+
+                $error_msg_array[] = $lang['failedtodeleteselectedmessages'];
+                $valid = false;
+            }
+        }
+
+        if ($valid) {
+
+            header_redirect("pm_messages.php?webtag=$webtag&folder=$current_folder&deleted=true");
+            exit;
         }
     }
 }
@@ -264,9 +283,24 @@ if (isset($_POST['deletemessages'])) {
 // Archive Messages
 
 if (isset($_POST['savemessages'])) {
-    if (isset($_POST['process']) && is_array($_POST['process']) && sizeof($_POST['process']) > 0) {
+
+    $valid = true;
+
+    if (isset($_POST['process']) && is_array($_POST['process'])) {
+
         foreach($_POST['process'] as $archive_mid) {
-            pm_archive_message($archive_mid);
+
+            if (!pm_archive_message($archive_mid)) {
+
+                $error_msg_array[] = $lang['failedtoarchiveselectedmessages'];
+                $valid = false;
+            }
+        }
+
+        if ($valid) {
+
+            header_redirect("pm_messages.php?webtag=$webtag&folder=$current_folder&archived=true");
+            exit;
         }
     }
 }
@@ -372,13 +406,38 @@ if ($current_folder == PM_FOLDER_INBOX) {
 }
 
 echo "<h1>{$pm_header_array[$current_folder]}</h1>\n";
+
+if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+
+    html_display_error_array($error_msg_array, '96%', 'center');
+
+}else if (isset($_GET['deleted'])) {
+
+    html_display_success_msg($lang['successfullydeletedselectedmessages'], '96%', 'center');
+
+}else if (isset($_GET['archived'])) {
+
+    html_display_success_msg($lang['successfullyarchivedselectedmessages'], '96%', 'center');
+
+}else if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['message_array']) < 1) {
+
+    if ($current_folder == PM_SEARCH_RESULTS) {
+
+        html_display_warning_msg($lang['yoursearchreturnednomatches'], '96%', 'center');
+
+    }else {
+
+        html_display_warning_msg(sprintf($lang['yourfoldernamefolderisempty'], $pm_header_array[$current_folder]), '96%', 'center');
+    }
+}
+
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form name=\"pm\" action=\"pm_messages.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden('folder', _htmlentities($current_folder)), "\n";
 echo "  ", form_input_hidden('page', _htmlentities($page)), "\n";
-echo "  <table cellpadding=\"5\" cellspacing=\"0\" width=\"96%\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"96%\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\" valign=\"top\" width=\"100%\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
@@ -580,21 +639,6 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
         }
 
         echo "                  <td align=\"left\" class=\"postbody\">", format_time($message['CREATED']), "</td>\n";
-        echo "                </tr>\n";
-    }
-
-}else {
-
-    if ($current_folder == PM_SEARCH_RESULTS) {
-
-        echo "                <tr>\n";
-        echo "                  <td class=\"postbody\"><img src=\"", style_image('search.png'), "\" alt=\"{$lang['matches']}\" title=\"{$lang['matches']}\" /></td><td align=\"left\" class=\"postbody\">{$lang['found']}: 0 {$lang['matches']}</td>\n";
-        echo "                </tr>\n";
-
-    }else {
-
-        echo "                <tr>\n";
-        echo "                  <td class=\"postbody\">&nbsp;</td><td align=\"left\" class=\"postbody\">{$lang['nomessages']}</td>\n";
         echo "                </tr>\n";
     }
 }

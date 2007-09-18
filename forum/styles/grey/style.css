@@ -428,6 +428,10 @@ a {
       padding: 0px;
 }
 
+.pm_message_count {
+    font-size: 8pt;
+}
+
 .postbody {
       font-size: 10pt;
       padding-top: 2px;

@@ -429,6 +429,11 @@ a {
     padding: 0px;
     height: 20px;
 }
+
+.pm_message_count {
+    font-size: 8pt;
+}
+
 .postbody {
     font-size: 10pt;
     padding-top: 2px;

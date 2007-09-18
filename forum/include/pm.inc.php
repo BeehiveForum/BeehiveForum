@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.220 2007-09-15 13:22:32 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.221 2007-09-18 20:03:09 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1774,6 +1774,8 @@ function pm_archive_message($mid)
     $sql.= "AND SMID = 0 AND FROM_UID = '$uid'";
 
     if (!$result = db_query($sql, $db_pm_archive_message)) return false;
+
+    return true;
 }
 
 /**

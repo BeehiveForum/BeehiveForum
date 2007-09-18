@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.477 2007-09-17 19:47:41 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.478 2007-09-18 20:03:09 decoyduck Exp $ */
 
 // British English language file
 
@@ -1229,7 +1229,6 @@ $lang['usernotfound'] = "User %s not found";
 $lang['sendnewpm'] = "Send New PM";
 $lang['savemessage'] = "Save Message";
 $lang['timesent'] = "Time Sent";
-$lang['nomessages'] = "No Messages";
 $lang['errorcreatingpm'] = "Error creating PM! Please try again in a few minutes";
 $lang['writepm'] = "Write Message";
 $lang['editpm'] = "Edit Message";
@@ -1265,6 +1264,12 @@ $lang['pmtooltip1message'] = "1 message";
 
 $lang['allowusertosendpm'] = "Allow user to send personal messages to me";
 $lang['blockuserfromsendingpm'] = "Block user from sending personal messages to me";
+$lang['yourfoldernamefolderisempty'] = "Your %s folder is empty";
+$lang['yoursearchreturnednomatches'] = "Your search returned no matches or you have no saved search results.";
+$lang['successfullydeletedselectedmessages'] = "Successfully deleted selected messages";
+$lang['successfullyarchivedselectedmessages'] = "Successfully archived selected messages";
+$lang['failedtodeleteselectedmessages'] = "Failed to delete selected messages";
+$lang['failedtoarchiveselectedmessages'] = "Failed to archive selected messages";
 
 // Preferences / Profile (user_*.php) ---------------------------------------------
 
@@ -1705,6 +1710,7 @@ $lang['viewmessagesinthisfolderonly'] = "View messages in this folder only";
 $lang['shownext50threads'] = "Show next 50 threads";
 $lang['showprev50threads'] = "Show previous 50 threads";
 $lang['createnewdiscussioninthisfolder'] = "Create new discussion in this folder";
+$lang['nomessages'] = "No Messages";
 
 // HTML toolbar (htmltools.inc.php) ------------------------------------
 $lang['bold'] = "Bold";

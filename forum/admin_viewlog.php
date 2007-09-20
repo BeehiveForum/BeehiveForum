@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.122 2007-09-17 19:47:41 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.123 2007-09-20 20:46:18 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -132,6 +132,9 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
     $page = 1;
 }
 
+$start = floor($page - 1) * 20;
+if ($start < 0) $start = 0;
+
 // Clear the admin log.
 
 if (isset($_POST['clear'])) {
@@ -140,10 +143,18 @@ if (isset($_POST['clear'])) {
 
 html_draw_top();
 
-// Draw the form
+$admin_log_array = admin_get_log_entries($start, $sort_by, $sort_dir);
+
 echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['adminaccesslog']}</h1>\n";
 
-html_display_warning_msg($lang['adminlogexp'], '85%', 'center');
+if (sizeof($admin_log_array['admin_log_array']) < 1) {
+
+    html_display_warning_msg($lang['adminlogempty'], '85%', 'center');
+
+}else {
+
+    html_display_warning_msg($lang['adminlogexp'], '85%', 'center');
+}
 
 echo "<div align=\"center\">\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"85%\">\n";
@@ -186,11 +197,6 @@ if ($sort_by == 'ACTION' && $sort_dir == 'ASC') {
 }
 
 echo "                  </tr>\n";
-
-$start = floor($page - 1) * 20;
-if ($start < 0) $start = 0;
-
-$admin_log_array = admin_get_log_entries($start, $sort_by, $sort_dir);
 
 if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
@@ -596,14 +602,7 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
         echo "                    <td align=\"left\">", $action_text, "</td>\n";
         echo "                  </tr>\n";
-
     }
-
-}else {
-
-    echo "                  <tr>\n";
-    echo "                    <td colspan=\"3\" align=\"left\">{$lang['adminlogempty']}</td>\n";
-    echo "                  </tr>\n";
 }
 
 echo "                <tr>\n";

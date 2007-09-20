@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_items.php,v 1.113 2007-09-17 19:47:41 decoyduck Exp $ */
+/* $Id: admin_prof_items.php,v 1.114 2007-09-20 20:46:18 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -183,7 +183,7 @@ if (isset($_POST['delete'])) {
 
 if (isset($_POST['cancel'])) {
 
-    header_redirect("admin_prof_items.php?webtag=$webtag");
+    header_redirect("admin_prof_items.php?webtag=$webtag&psid=$psid");
     exit;
 }
 

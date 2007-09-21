@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.478 2007-09-18 20:03:09 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.479 2007-09-21 19:54:58 decoyduck Exp $ */
 
 // British English language file
 
@@ -264,7 +264,7 @@ $lang['adminexp_16'] = "<b>Global Forum Settings</b> allows you to modify settin
 $lang['adminexp_17'] = "<b>Post Approval Queue</b> allows you to view any posts awaiting approval by a moderator.";
 $lang['adminexp_18'] = "<b>Visitor Log</b> allows you to view an extended list of visitors including their HTTP referers.";
 $lang['createforumstyle'] = "Create a Forum Style";
-$lang['newstylesuccessfullycreated'] = "New style %s successfully created.";
+$lang['newstylesuccessfullycreated'] = "New style successfully created.";
 $lang['stylealreadyexists'] = "A style with that filename already exists.";
 $lang['stylenofilename'] = "You did not enter a filename to save the style with.";
 $lang['stylenodatasubmitted'] = "Could not read forum style data.";
@@ -278,7 +278,7 @@ $lang['thiscolour'] = "This Colour";
 $lang['enterhexcolour'] = "or enter a hex colour to base a new style sheet on";
 $lang['savestyle'] = "Save this style";
 $lang['styledesc'] = "Style Description";
-$lang['fileallowedchars'] = "(lowercase letters (a-z), numbers (0-9) and underscores (_) only)";
+$lang['stylefilenamemayonlycontain'] = "Style filename may only contain lowercase letters (a-z), numbers (0-9) and underscore.";
 $lang['stylepreview'] = "Style Preview";
 $lang['welcome'] = "Welcome";
 $lang['messagepreview'] = "Message Preview";

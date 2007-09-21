@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.111 2007-09-17 19:47:41 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.112 2007-09-21 19:54:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -110,17 +110,31 @@ if (isset($_POST['submit'])) {
     $valid = true;
 
     if (isset($_POST['stylename']) && strlen(trim(_stripslashes($_POST['stylename']))) > 0) {
+
         $stylename = trim(_stripslashes($_POST['stylename']));
+
+        if (preg_match("/^[a-z0-9_]+$/", $stylename) < 1) {
+
+            $error_msg_array[] = $lang['stylefilenamemayonlycontain'];
+            $valid = false;
+        }
+
     }else {
+
         $valid = false;
         $error_msg_array[] = $lang['stylenofilename'];
     }
 
     if (isset($_POST['styledesc']) && strlen(trim(_stripslashes($_POST['styledesc']))) > 0) {
+
         $styledesc = trim(_stripslashes($_POST['styledesc']));
-    }else if (isset($stylename)) {
+
+    }else if (isset($stylename) && $valid) {
+
         $styledesc = $stylename;
+
     }else {
+
         $valid = false;
     }
 
@@ -425,7 +439,7 @@ echo "                    </form>\n";
 echo "                  </td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"posthead\">{$lang['fileallowedchars']}</td>\n";
+echo "                  <td align=\"left\" class=\"posthead\">\n"; html_display_warning_msg($lang['stylefilenamemayonlycontain'], '500', 'left'); echo "                  </td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";

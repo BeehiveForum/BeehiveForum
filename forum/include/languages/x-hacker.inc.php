@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.250 2007-09-17 19:47:41 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.251 2007-09-21 19:54:58 decoyduck Exp $ */
 
 // British English language file
 
@@ -263,7 +263,7 @@ $lang['adminexp_16'] = "<b>gL0B4L F0Rum \$e++1n9\$</b> @Ll0w\$ j00 t0 m0d1Fy se+
 $lang['adminexp_17'] = "<b>p0st 4ppr0v4L QUEu3</b> @LL0wS j00 T0 v1ew 4ny PO5+s @W@1+Ing APPRov4l 8y @ MODeR4TOr.";
 $lang['adminexp_18'] = "<b>v1\$1t0r Log</b> 4lL0Ws j00 +0 v13W @N 3xtEND3d L1\$+ oF V15I+0rS InCLud1n9 +HE1r hTTp REFeR3R5.";
 $lang['createforumstyle'] = "cRE4t3 @ Forum \$+yle";
-$lang['newstylesuccessfullycreated'] = "n3w sTyl3 %s 5UcCEs\$fully CrE4t3d.";
+$lang['newstylesuccessfullycreated'] = "n3w sTyl3 5UcCEs\$fully CrE4t3d.";
 $lang['stylealreadyexists'] = "a styLe wI+h thAT FiLeN4ME 4lR34Dy 3xis+\$.";
 $lang['stylenofilename'] = "j00 DiD N0+ 3nTEr 4 PHIL3N4Me +0 S@V3 +EH \$+ylE wI+H.";
 $lang['stylenodatasubmitted'] = "c0uld N0t R34d f0rum s+YLe d@+4.";

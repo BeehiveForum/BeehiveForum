@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.74 2007-09-17 19:47:41 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.75 2007-09-21 19:54:58 decoyduck Exp $ */
 
 // British English language file
 
@@ -263,7 +263,7 @@ $lang['adminexp_16'] = "<b>Options de forum globales</b> vous permet de modifier
 $lang['adminexp_17'] = "<b>File d'attente de postes à approuver</b> vous permet de voir tous messages en attente d'approbation par un modérateur.";
 $lang['adminexp_18'] = "<b>Fichier journal des visiteurs</b> vous permet de voir une liste détaillée des visiteurs, y inclut leur référent HTTP.";
 $lang['createforumstyle'] = "Créer un style pour le forum";
-$lang['newstylesuccessfullycreated'] = "Nouveau style %s créé avec succès.";
+$lang['newstylesuccessfullycreated'] = "Nouveau style créé avec succès.";
 $lang['stylealreadyexists'] = "Un style avec ce nom de fichier existe déjà.";
 $lang['stylenofilename'] = "Vous n'avez pas entrer un nom de fichier pour enregistrer ce style.";
 $lang['stylenodatasubmitted'] = "Impossible de lire les données du style de forum.";

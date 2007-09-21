@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.49 2007-09-17 19:47:41 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.50 2007-09-21 19:54:58 decoyduck Exp $ */
 
 // British English language file
 
@@ -263,7 +263,7 @@ $lang['adminexp_16'] = "<b>Global Foreneinstellungen</b> Aenderung der Einstellu
 $lang['adminexp_17'] = "<b>Post Zustimmungswarteschlange</b> zeigt alle Posts die auf Zustimmung/Akzeptierung des Moderators warten.";
 $lang['adminexp_18'] = "<b>Besucher Log</b> zeigt eine erweiterte Liste aller Besucher inkl. deren HTTP-Verweise.";
 $lang['createforumstyle'] = "Forenstil erstellen";
-$lang['newstylesuccessfullycreated'] = "Neuer Stil %s erfolgreich erstellt.";
+$lang['newstylesuccessfullycreated'] = "Neuer Stil erfolgreich erstellt.";
 $lang['stylealreadyexists'] = "Ein Stil mit diesem Dateinamen existiert bereits.";
 $lang['stylenofilename'] = "Sie haben keinen Dateinamen eingeben für diesen Stil.";
 $lang['stylenodatasubmitted'] = "Kann Forenstil-Daten nicht lesen.";

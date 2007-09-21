@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.263 2007-09-17 19:47:41 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.264 2007-09-21 19:54:58 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -2096,7 +2096,7 @@ function forum_get_post_count($webtag)
 {
     $db_forum_get_post_count = db_connect();
 
-    if (!preg_match("/[^a-z|0-9|'_']/", $webtag)) return 0;
+    if (preg_match("/^[a-z0-9_]+$/i", $webtag) < 1) return 0;
 
     $sql = "SELECT COUNT(PID) AS POST_COUNT FROM {$webtag}_POST POST ";
 

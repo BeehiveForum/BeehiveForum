@@ -650,6 +650,18 @@ a {
     padding: 3px;
 }
 
+.spoiler_light {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    border: 1px solid #CCCCCC;
+    color: #CCCCCC;
+    background-color: #EEEEEE;
+    margin-top: 0px;
+    margin-bottom: 10px;
+    margin-left: 40px;
+    margin-right: 10px;
+    padding: 3px;
+}
+
 .tools {
     margin: 0;
     margin-bottom: 3px;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.157 2007-09-12 18:45:03 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.158 2007-09-22 18:46:42 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -92,6 +92,7 @@ function light_html_draw_top($title = false)
 
         if (bh_session_get_value('USE_MOVER_SPOILER') == "Y") {
 
+            echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"./js/general.js\"></script>\n";
             echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"./js/spoiler.js\"></script>\n";
             echo "</head>\n";
             echo "<body onload=\"spoilerInitialise()\">\n";
@@ -1048,6 +1049,10 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
     $message['CONTENT'] = message_split_fiddle($message['CONTENT'], false, true);
 
+    // Fix spoiler on light mode
+
+    $message['CONTENT'] = light_spoiler_enable($message['CONTENT']);
+
     // Check for words that should be filtered ---------------------------------
 
     if ($is_poll !== true) $message['CONTENT'] = word_filter_add_ob_tags($message['CONTENT']);
@@ -1123,6 +1128,15 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
     }
 
     echo "<hr />";
+}
+
+function light_spoiler_enable($message)
+{
+    if (isset($_SERVER['HTTP_USER_AGENT']) && stristr($_SERVER['HTTP_USER_AGENT'], "Smartphone")) {
+        return str_replace("<div class=\"spoiler\">", "<div class=\"spoiler_light\">", $message);
+    }
+
+    return $message;
 }
 
 function light_message_display_deleted($tid,$pid)

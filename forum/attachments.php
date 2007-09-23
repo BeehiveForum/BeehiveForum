@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.145 2007-09-15 16:51:30 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.146 2007-09-23 21:43:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -403,11 +403,11 @@ echo "</script>\n";
 echo "<h1>{$lang['attachments']}</h1>\n";
 
 if (isset($upload_success) && is_array($upload_success) && sizeof($upload_success) > 0) {
-    html_display_success_msg(sprintf($lang['successfullyuploaded'], implode(", ", $upload_success)), '600', 'left');
+    html_display_success_msg(sprintf($lang['successfullyuploaded'], _htmlentities(implode(", ", $upload_success))), '600', 'left');
 }
 
 if (isset($upload_failure) && is_array($upload_failure) && sizeof($upload_failure) > 0) {
-    html_display_error_msg(sprintf($lang['failedtoupload'], implode(", ", $upload_failure)), '600', 'left');
+    html_display_error_msg(sprintf($lang['failedtoupload'], _htmlentities(implode(", ", $upload_failure))), '600', 'left');
 }
 
 echo "<br />\n";

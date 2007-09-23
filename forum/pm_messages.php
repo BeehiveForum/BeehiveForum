@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_messages.php,v 1.26 2007-09-18 20:02:49 decoyduck Exp $ */
+/* $Id: pm_messages.php,v 1.27 2007-09-23 21:43:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -427,7 +427,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
     }else {
 
-        html_display_warning_msg(sprintf($lang['yourfoldernamefolderisempty'], $pm_header_array[$current_folder]), '96%', 'center');
+        html_display_warning_msg(sprintf($lang['yourfoldernamefolderisempty'], _htmlentities($pm_header_array[$current_folder])), '96%', 'center');
     }
 }
 

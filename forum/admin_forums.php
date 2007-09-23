@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forums.php,v 1.77 2007-09-17 19:47:41 decoyduck Exp $ */
+/* $Id: admin_forums.php,v 1.78 2007-09-23 21:43:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -738,7 +738,7 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td class=\"postbody\" align=\"center\">", page_links(get_request_uri(true, false), $start, $forums_array['forums_count'], 10), "</td>\n";
+    echo "      <td class=\"postbody\" align=\"center\">", page_links("admin_forums.php?webtag=$webtag", $start, $forums_array['forums_count'], 10), "</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">&nbsp;</td>\n";

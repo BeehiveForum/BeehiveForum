@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_items.php,v 1.114 2007-09-20 20:46:18 decoyduck Exp $ */
+/* $Id: admin_prof_items.php,v 1.115 2007-09-23 21:43:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -385,16 +385,12 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
     echo "    <tr>\n";
     echo "      <td align=\"center\">", form_submit("additemsubmit", $lang['add']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
     echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\">&nbsp;</td>\n";
-    echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\"><p>{$lang['fieldtypeexample1']}</p></td>\n";
-    echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\"><p>{$lang['fieldtypeexample2']}</p></td>\n";
-    echo "    </tr>\n";
     echo "  </table>\n";
+
+    html_display_warning_msg($lang['fieldtypeexample1'], '500', 'center');
+
+    html_display_warning_msg($lang['fieldtypeexample2'], '500', 'center');
+
     echo "</form>\n";
     echo "</div>\n";
 
@@ -488,16 +484,12 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
     echo "    <tr>\n";
     echo "      <td align=\"center\">", form_submit("edititemsubmit", $lang['save']), "&nbsp;", form_submit("delete", $lang['delete']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
     echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\">&nbsp;</td>\n";
-    echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\"><p>{$lang['fieldtypeexample1']}</p></td>\n";
-    echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\"><p>{$lang['fieldtypeexample2']}</p></td>\n";
-    echo "    </tr>\n";
     echo "  </table>\n";
+
+    html_display_warning_msg($lang['fieldtypeexample1'], '500', 'center');
+
+    html_display_warning_msg($lang['fieldtypeexample2'], '500', 'center');
+
     echo "</form>\n";
     echo "</div>\n";
 
@@ -607,7 +599,7 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td class=\"postbody\" align=\"center\">", page_links(get_request_uri(true, false), $start, $profile_items['profile_items_count'], 10), "</td>\n";
+    echo "      <td class=\"postbody\" align=\"center\">", page_links("admin_prof_items.php?webtag=$webtag&psid=$psid&sect_page=$sect_page", $start, $profile_items['profile_items_count'], 10), "</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">&nbsp;</td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.php,v 1.103 2007-09-15 20:20:18 decoyduck Exp $ */
+/* $Id: links.php,v 1.104 2007-09-23 21:43:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -221,12 +221,12 @@ if ($viewmode == LINKS_VIEW_HIERARCHICAL) {
 if (isset($_GET['link_added']) && strlen(trim(_stripslashes($_GET['link_added']))) > 0) {
 
     $link_added = $_GET['link_added'];
-    html_display_success_msg(sprintf($lang['successfullyaddedlinkname'], $link_added), '65%', 'center');
+    html_display_success_msg(sprintf($lang['successfullyaddedlinkname'], _htmlentities($link_added)), '65%', 'center');
 
 }elseif (isset($_GET['folder_added']) && strlen(trim(_stripslashes($_GET['folder_added']))) > 0) {
 
     $folder_added = $_GET['folder_added'];
-    html_display_success_msg(sprintf($lang['successfullyaddedlinkname'], $folder_added), '65%', 'center');
+    html_display_success_msg(sprintf($lang['successfullyaddedlinkname'], _htmlentities($folder_added)), '65%', 'center');
 }
 
 // work out where we are in the folder hierarchy and display links to all the higher levels
@@ -356,6 +356,8 @@ if (isset($_GET['sort_by'])) {
         $sort_by = "CLICKS";
     }elseif ($_GET['sort_by'] == "RATING") {
         $sort_by = "RATING";
+    }else {
+        $sort_by = "TITLE";
     }
 
 }else {
@@ -470,7 +472,7 @@ echo "      <td align=\"left\">\n";
 echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td align=\"left\" width=\"25%\"><img src=\"", style_image("ct.png"), "\" alt=\"\" /> <a href=\"links_add.php?webtag=$webtag&amp;mode=", LINKS_ADD_LINK, "&amp;fid=$fid\">{$lang['addlinkhere']}</a></td>\n";
-echo "            <td width=\"50%\" align=\"center\">", page_links(get_request_uri(true, false), $start, $links['links_count'], 20), "</td>\n";
+echo "            <td width=\"50%\" align=\"center\">", page_links("links.php?webtag=$webtag&fid=$fid&viewmode=$viewmode&sort_by=$sort_by&sort_dir=$sort_dir", $start, $links['links_count'], 20), "</td>\n";
 echo "            <td align=\"left\" width=\"25%\">&nbsp;</td>\n";
 echo "          </tr>\n";
 echo "        </table>\n";

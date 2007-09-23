@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.264 2007-09-21 19:54:58 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.265 2007-09-23 21:43:49 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -206,7 +206,7 @@ function forum_closed_message()
 
     }else {
 
-        html_display_error_msg(sprintf($lang['forumiscurrentlyclosed'], $forum_name), '600', 'center');
+        html_display_error_msg(sprintf($lang['forumiscurrentlyclosed'], _htmlentities($forum_name)), '600', 'center');
     }
 
     if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
@@ -234,7 +234,7 @@ function forum_restricted_message()
 
     }else {
 
-        html_display_error_msg(sprintf($lang['youdonothaveaccesstoforum'], $forum_name), '600', 'center');
+        html_display_error_msg(sprintf($lang['youdonothaveaccesstoforum'], _htmlentities($forum_name)), '600', 'center');
         html_display_warning_msg($lang['toapplyforaccessplease'], '600', 'center');
     }
 

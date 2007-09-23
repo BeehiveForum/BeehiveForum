@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_wordfilter.php,v 1.103 2007-09-17 19:47:41 decoyduck Exp $ */
+/* $Id: admin_wordfilter.php,v 1.104 2007-09-23 21:43:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -556,7 +556,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td class=\"postbody\" align=\"center\">", page_links(get_request_uri(true, false), $start, $word_filter_array['word_filter_count'], 10), "</td>\n";
+    echo "      <td class=\"postbody\" align=\"center\">", page_links("admin_wordfilter.php?webtag=$webtag", $start, $word_filter_array['word_filter_count'], 10), "</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">&nbsp;</td>\n";

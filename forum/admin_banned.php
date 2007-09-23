@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_banned.php,v 1.65 2007-09-17 19:47:41 decoyduck Exp $ */
+/* $Id: admin_banned.php,v 1.66 2007-09-23 21:43:47 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -180,6 +180,8 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     $ret = rawurldecode(trim(_stripslashes($_POST['ret'])));
 }elseif (isset($_GET['ret']) && strlen(trim(_stripslashes($_GET['ret']))) > 0) {
     $ret = rawurldecode(trim(_stripslashes($_GET['ret'])));
+}else {
+    $ret = "admin_banned.php?webtag=$webtag";
 }
 
 // validate the return to page
@@ -189,20 +191,16 @@ if (isset($ret) && strlen(trim($ret)) > 0) {
     $available_pages = array('admin_user.php', 'admin_users.php', 'admin_visitor_log.php', 'messages.php');
     $available_pages_preg = implode("|^", array_map('preg_quote_callback', $available_pages));
 
-    if (preg_match("/^$available_pages_preg/", basename($ret)) < 1) unset($ret);
-}
-
-// Return to the page we came from.
-
-if (isset($_POST['back']) && isset($ret)) {
-    header_redirect($ret);
+    if (preg_match("/^$available_pages_preg/", basename($ret)) < 1) {
+        $ret = "admin_banned.php?webtag=$webtag";
+    }
 }
 
 // Cancel button has been pressed.
 
 if (isset($_POST['cancel'])) {
 
-    header_redirect("admin_banned.php?webtag=$webtag");
+    header_redirect($ret);
     exit;
 }
 
@@ -448,7 +446,7 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
     echo "<form name=\"admin_banned_form\" action=\"admin_banned.php\" method=\"post\">\n";
     echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "  ", form_input_hidden('addban', ''), "\n";
-    echo "  ", form_input_hidden("ret", (isset($ret) ? _htmlentities($ret) : '')), "\n";
+    echo "  ", form_input_hidden("ret", _htmlentities($ret)), "\n";
     echo "  ", form_input_hidden("page", _htmlentities($page)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"420\">\n";
     echo "    <tr>\n";
@@ -515,20 +513,9 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
     echo "    <tr>\n";
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
-
-    if (isset($ret)) {
-
-        echo "    <tr>\n";
-        echo "      <td colspan=\"2\" align=\"center\">", form_submit("add", $lang['add']), "&nbsp;", form_submit("check", $lang['checkban']), "&nbsp;", form_submit("back", $lang['back']), "</td>\n";
-        echo "    </tr>\n";
-
-    }else {
-
-        echo "    <tr>\n";
-        echo "      <td colspan=\"2\" align=\"center\">", form_submit("add", $lang['add']), "&nbsp;", form_submit("check", $lang['checkban']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
-        echo "    </tr>\n";
-    }
-
+    echo "    <tr>\n";
+    echo "      <td colspan=\"2\" align=\"center\">", form_submit("add", $lang['add']), "&nbsp;", form_submit("check", $lang['checkban']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+    echo "    </tr>\n";
     echo "  </table>\n";
     echo "</form>\n";
     echo "</div>\n";
@@ -594,7 +581,7 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
     echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "  ", form_input_hidden('ban_id', _htmlentities($ban_id)), "\n";
     echo "  ", form_input_hidden("delete_ban[$ban_id]", "Y"), "\n";
-    echo "  ", form_input_hidden("ret", (isset($ret) ? _htmlentities($ret) : '')), "\n";
+    echo "  ", form_input_hidden("ret", _htmlentities($ret)), "\n";
     echo "  ", form_input_hidden("page", _htmlentities($page)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"420\">\n";
     echo "    <tr>\n";
@@ -650,20 +637,9 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
     echo "    <tr>\n";
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
-
-    if (isset($ret)) {
-
-        echo "    <tr>\n";
-        echo "      <td colspan=\"2\" align=\"center\">", form_submit("update", $lang['save']), "&nbsp;", form_submit("edit_check", $lang['checkban']), "&nbsp;", form_submit("delete", $lang['delete']), "&nbsp;", form_submit("back", $lang['back']), "</td>\n";
-        echo "    </tr>\n";
-
-    }else {
-
-        echo "    <tr>\n";
-        echo "      <td colspan=\"2\" align=\"center\">", form_submit("update", $lang['save']), "&nbsp;", form_submit("edit_check", $lang['checkban']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
-        echo "    </tr>\n";
-    }
-
+    echo "    <tr>\n";
+    echo "      <td colspan=\"2\" align=\"center\">", form_submit("update", $lang['save']), "&nbsp;", form_submit("edit_check", $lang['checkban']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+    echo "    </tr>\n";
     echo "  </table>\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"420\">\n";
     echo "    <tr>\n";
@@ -711,7 +687,7 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
     echo "<div align=\"center\">\n";
     echo "<form name=\"admin_banned_form\" action=\"admin_banned.php\" method=\"post\">\n";
     echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-    echo "  ", form_input_hidden("ret", (isset($ret) ? _htmlentities($ret) : '')), "\n";
+    echo "  ", form_input_hidden("ret", _htmlentities($ret)), "\n";
     echo "  ", form_input_hidden("page", _htmlentities($page)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";
@@ -770,25 +746,14 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td class=\"postbody\" align=\"center\">", page_links(get_request_uri(true, false), $start, $ban_list_array['ban_count'], 10), "</td>\n";
+    echo "      <td class=\"postbody\" align=\"center\">", page_links("admin_banned.php?webtag=$webtag&sort_by=$sort_by&sort_dir=$sort_dir&ret=$ret", $start, $ban_list_array['ban_count'], 10), "</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
-
-    if (isset($ret)) {
-
-        echo "    <tr>\n";
-        echo "      <td colspan=\"2\" align=\"center\">", form_submit("addban", $lang['addnew']), "&nbsp;", form_submit("delete", $lang['deleteselected']), "&nbsp;", form_submit("back", $lang['back']), "</td>\n";
-        echo "    </tr>\n";
-
-    }else {
-
-        echo "    <tr>\n";
-        echo "      <td colspan=\"2\" align=\"center\">", form_submit("addban", $lang['addnew']), "&nbsp;", form_submit("delete", $lang['deleteselected']), "</td>\n";
-        echo "    </tr>\n";
-    }
-
+    echo "    <tr>\n";
+    echo "      <td colspan=\"2\" align=\"center\">", form_submit("addban", $lang['addnew']), "&nbsp;", form_submit("delete", $lang['deleteselected']), "</td>\n";
+    echo "    </tr>\n";
     echo "  </table>\n";
     echo "</form>\n";
     echo "</div>\n";

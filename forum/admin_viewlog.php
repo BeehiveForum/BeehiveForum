@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.123 2007-09-20 20:46:18 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.124 2007-09-23 21:43:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -100,6 +100,81 @@ if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
     exit;
 }
 
+// Types of admin log entries
+
+$admin_log_type_array = array(ALL_LOG_ENTIES => 'All Log Entries',
+                              CHANGE_USER_STATUS => 'User Status Changes',
+                              CHANGE_FORUM_ACCESS => 'Forum Access Changes',
+                              DELETE_ALL_USER_POSTS => 'User Mass Post Deletion',
+                              BANNED_IPADDRESS => 'IP Address Ban Additions',
+                              UNBANNED_IPADDRESS => 'IP Address Ban Deletions',
+                              EDIT_THREAD_OPTIONS => 'Thread Title Edits',
+                              MOVED_THREADS => 'Mass Thread Moves',
+                              CREATE_FOLDER => 'Folder Creations',
+                              DELETE_FOLDER => 'Folder Deletions',
+                              CHANGE_PROFILE_SECT => 'Profile Section Changes',
+                              ADDED_PROFILE_SECT => 'Profile Section Additions',
+                              DELETE_PROFILE_SECT => 'Profile Section Deletions',
+                              CHANGE_PROFILE_ITEM => 'Profile Item Changes',
+                              ADDED_PROFILE_ITEM => 'Profile Item Additions',
+                              DELETE_PROFILE_ITEM => 'Profile Item Deletions',
+                              EDITED_START_PAGE => 'Start Page Changes',
+                              CREATED_NEW_STYLE => 'Forum Style Creations',
+                              MOVED_THREAD => 'Thread Moves',
+                              CLOSED_THREAD => 'Thread Closures',
+                              OPENED_THREAD => 'Thread Openings',
+                              RENAME_THREAD => 'Thread Renames',
+                              DELETE_POST => 'Post Deletions',
+                              EDIT_POST => 'Post Edits',
+                              EDIT_WORD_FILTER => 'Word Filter Edits',
+                              CREATE_THREAD_STICKY => 'Thread Sticky Creations',
+                              REMOVE_THREAD_STICKY => 'Thread Sticky Deletions',
+                              END_USER_SESSION => 'User Session Deletions',
+                              EDIT_FORUM_SETTINGS => 'Forum Settings Edits',
+                              LOCKED_THREAD => 'Thread Locks',
+                              UNLOCKED_THREAD => 'Thread Unlocks',
+                              DELETE_USER_THREAD_POSTS => 'User Mass Post Deletions in a Thread',
+                              DELETE_THREAD => 'Thread Deletions',
+                              DELETE_ATTACHMENT => 'Attachment Deletions',
+                              EDIT_FORUM_LINKS => 'Forum Link Edits',
+                              APPROVED_POST => 'Post Approvals',
+                              CREATE_USER_GROUP => 'User Group Creations',
+                              DELETE_USER_GROUP => 'User Group Deletions',
+                              ADD_USER_TO_GROUP => 'User Group User Addition',
+                              REMOVE_USER_FROM_GROUP => 'User Group User Removal',
+                              CHANGE_USER_PASSWD => 'User Password Change',
+                              UPDATE_USER_GROUP => 'User Group Changes',
+                              ADD_BANNED_IP => 'IP Address Ban Additions',
+                              REMOVE_BANNED_IP => 'IP Address Ban Deletions',
+                              ADD_BANNED_LOGON => 'Logon Ban Additions',
+                              REMOVE_BANNED_LOGON => 'Logon Ban Deletions',
+                              ADD_BANNED_NICKNAME => 'Nickname Ban Additions',
+                              REMOVE_BANNED_NICKNAME => 'Nickname Ban Additions',
+                              ADD_BANNED_EMAIL => 'E-Mail Ban Additions',
+                              REMOVE_BANNED_EMAIL => 'E-Mail Ban Deletions',
+                              ADDED_RSS_FEED => 'RSS Feed Additions',
+                              EDITED_RSS_FEED => 'RSS Feed Changes',
+                              UNDELETE_THREAD => 'Thread Undeletions',
+                              ADD_BANNED_REFERER => 'HTTP Referer Ban Additions',
+                              REMOVE_BANNED_REFERER => 'HTTP Referer Ban Deletions',
+                              DELETED_RSS_FEED => 'RSS Feed Deletions',
+                              UPDATED_BAN => 'Ban Changes',
+                              THREAD_SPLIT => 'Thread Splits',
+                              THREAD_MERGE => 'Thread Merges',
+                              APPROVED_USER => 'User Approvals',
+                              ADD_FORUM_LINKS => 'Forum Link Additions',
+                              DELETE_FORUM_LINKS => 'Forum Link Deletions',
+                              EDIT_TOP_LINK_CAPTION => 'Forum Link Top Caption Changes',
+                              EDIT_FOLDER => 'Folder Edits',
+                              DELETE_USER => 'User Deletions',
+                              DELETE_USER_DATA => 'User Data Deletions',
+                              FORUM_AUTO_UPDATE_STATS => 'Forum Stats Auto Updates',
+                              FORUM_AUTO_PRUNE_PM => 'Forum Auto PM Pruning',
+                              FORUM_AUTO_PRUNE_SESSIONS => 'Forum Auto Session Pruning',
+                              FORUM_AUTO_CLEAN_THREAD_UNREAD => 'Forum Auto Thread Unread Data Updates',
+                              FORUM_AUTO_CLEAN_CAPTCHA => 'Forum Auto Text Captcha Clean-Ups',
+                              UPDATE_USER_GROUP => 'User Group Changes');
+
 // Column sorting stuff
 
 if (isset($_GET['sort_by'])) {
@@ -149,15 +224,15 @@ echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A 
 
 if (sizeof($admin_log_array['admin_log_array']) < 1) {
 
-    html_display_warning_msg($lang['adminlogempty'], '85%', 'center');
+    html_display_warning_msg($lang['adminlogempty'], '75%', 'center');
 
 }else {
 
-    html_display_warning_msg($lang['adminlogexp'], '85%', 'center');
+    html_display_warning_msg($lang['adminlogexp'], '75%', 'center');
 }
 
 echo "<div align=\"center\">\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"85%\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"75%\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
@@ -618,20 +693,56 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td class=\"postbody\" align=\"center\">", page_links(get_request_uri(true, false), $start, $admin_log_array['admin_log_count'], 20), "</td>\n";
+echo "      <td class=\"postbody\" align=\"center\">", page_links("admin_viewlog.php?webtag=$webtag&sort_by=$sort_by&sort_dir=$sort_dir", $start, $admin_log_array['admin_log_count'], 20), "</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
+echo "  </table>\n";
+echo "  <br />\n";
+echo "  <form action=\"admin_viewlog.php\" method=\"post\" target=\"_self\">\n";
+echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"75%\">\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">\n";
-echo "        <form name=\"f_post\" action=\"admin_viewlog.php?webtag=$webtag\" method=\"post\" target=\"_self\">\n";
-echo "          ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
-echo "          ", form_submit('clear',$lang['clearlog']), "\n";
-echo "        </form>\n";
-echo "      </td>";
+echo "      <td align=\"left\">\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\" class=\"subhead\">{$lang['options']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"center\">\n";
+echo "                    <table class=\"posthead\" width=\"95%\">\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"250\" nowrap=\"nowrap\">{$lang['removeentriesrelatingtoaction']}:</td>\n";
+echo "                        <td align=\"left\">", form_dropdown_array('remove_type', $admin_log_type_array, false), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"250\" nowrap=\"nowrap\">{$lang['removeentriesolderthandays']}:</td>\n";
+echo "                        <td align=\"left\">", form_input_text('remove_days', '', 15, 4), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td>&nbsp;</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td colspan=\"2\" align=\"center\">", form_submit("prune_log", $lang['prune_log']), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
+echo "  </form>\n";
 echo "</div>\n";
 
 html_draw_bottom();

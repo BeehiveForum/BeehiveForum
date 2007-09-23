@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.479 2007-09-21 19:54:58 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.480 2007-09-23 21:43:49 decoyduck Exp $ */
 
 // British English language file
 
@@ -591,6 +591,7 @@ $lang['approveselected'] = "Approve selected";
 $lang['failedtoapproveuser'] = "Failed to approve user %s";
 $lang['kickselected'] = "Kick selected";
 $lang['visitorlog'] = "Visitor Log";
+$lang['clearvisitorlog'] = "Clear Visitor Log";
 $lang['novisitorslogged'] = "No Visitors Logged";
 $lang['addselectedusers'] = "Add Selected Users";
 $lang['removeselectedusers'] = "Remove Selected Users";
@@ -696,7 +697,11 @@ $lang['forumautocleanthreadunread'] = "Forum Auto Update: Thread Unread Data Cle
 $lang['forumautocleancaptcha'] = "Forum Auto Update: Text-Captcha Images Cleaned";
 
 $lang['adminlogempty'] = "Admin Log is empty";
-$lang['clearlog'] = "Clear Log";
+
+$lang['removeentriesrelatingtoaction'] = "Remove Entries Relating to Action";
+$lang['removeentriesolderthandays'] = "Remove Entries Older Than (Days)";
+
+$lang['prune_log'] = "Prune Log";
 
 // Admin Forms (admin_forums.php) ------------------------------------------------
 

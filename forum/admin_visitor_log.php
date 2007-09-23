@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_visitor_log.php,v 1.21 2007-09-17 19:47:41 decoyduck Exp $ */
+/* $Id: admin_visitor_log.php,v 1.22 2007-09-23 21:43:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -217,7 +217,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", page_links(get_request_uri(true, false), $start, $admin_visitor_log_array['user_count'], 10), "</td>\n";
+echo "      <td align=\"center\">", page_links("admin_visitor_log.php?webtag=$webtag", $start, $admin_visitor_log_array['user_count'], 10), "</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
@@ -229,7 +229,7 @@ if (sizeof($admin_visitor_log_array['user_array']) > 0) {
     echo "      <td align=\"center\">\n";
     echo "        <form name=\"f_post\" action=\"admin_visitor_log.php?webtag=$webtag\" method=\"post\" target=\"_self\">\n";
     echo "          ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
-    echo "          ", form_submit('clear', $lang['clearlog']), "\n";
+    echo "          ", form_submit('clear', $lang['clearvisitorlog']), "\n";
     echo "        </form>\n";
     echo "      </td>";
     echo "    </tr>\n";

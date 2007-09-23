@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ldisplay.php,v 1.21 2007-05-31 21:59:18 decoyduck Exp $ */
+/* $Id: ldisplay.php,v 1.22 2007-09-23 22:40:25 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -102,7 +102,6 @@ if (!bh_session_user_approved()) {
 // Check we have a webtag
 
 if (!$webtag = get_webtag($webtag_search)) {
-
     header_redirect("./lforums.php");
 }
 
@@ -116,20 +115,31 @@ if (!forum_check_access_level()) {
     header_redirect("./lforums.php");
 }
 
+// User UID for fetching recent message
+
+$uid = bh_session_get_value('UID');
+
+// Check that required variables are set
+// default to display most recent discussion for user
+
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+
     $msg = $_GET['msg'];
-}else {
-    if (bh_session_get_value('UID')) {
-        $msg = messages_get_most_recent(bh_session_get_value('UID'));
-    } else {
-        $msg = "1.1";
-    }
+
+}else if (!$msg = messages_get_most_recent($uid)) {
+
+    light_html_draw_top();
+    echo "<h1>{$lang['error']}</h1>\n";
+    echo "<h2>{$lang['nomessages']}</h2>";
+    light_html_draw_bottom();
+    exit;
 }
+
+// Seperate the msg var into TID and PID
 
 list($tid, $pid) = explode('.', $msg);
 
-if (!is_numeric($pid)) $pid = 1;
-if (!is_numeric($tid)) $tid = 1;
+// Try and fetch the messages
 
 if (!$message = messages_get($tid, $pid, 1)) {
 

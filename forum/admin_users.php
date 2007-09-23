@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.157 2007-09-17 19:47:41 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.158 2007-09-23 21:43:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -260,7 +260,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 }else {
 
-    html_display_warning_msg(sprintf($lang['manageusersexp'], $sort_by_array[$sort_by]), '86%', 'center');
+    html_display_warning_msg(sprintf($lang['manageusersexp'], _htmlentities($sort_by_array[$sort_by])), '86%', 'center');
 }
 
 echo "<br />\n";

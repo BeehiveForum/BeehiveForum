@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_post_approve.php,v 1.53 2007-09-17 19:47:41 decoyduck Exp $ */
+/* $Id: admin_post_approve.php,v 1.54 2007-09-23 21:43:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -395,7 +395,7 @@ if (isset($msg) && validate_msg($msg)) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td class=\"postbody\" align=\"center\">", page_links(get_request_uri(true, false), $start, $post_approval_array['post_count'], 10), "</td>\n";
+    echo "      <td class=\"postbody\" align=\"center\">", page_links("admin_post_approve.php?webtag=$webtag&return_queue=$return_queue", $start, $post_approval_array['post_count'], 10), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</div>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.124 2007-09-23 21:43:48 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.125 2007-09-23 22:40:25 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -210,10 +210,45 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
 $start = floor($page - 1) * 20;
 if ($start < 0) $start = 0;
 
+// Array to hold our error messages
+
+$error_msg_array = array();
+
 // Clear the admin log.
 
-if (isset($_POST['clear'])) {
-    admin_clearlog();
+if (isset($_POST['prune_log'])) {
+
+    $valid = true;
+
+    if (isset($_POST['remove_type']) && is_numeric($_POST['remove_type'])) {
+
+        $remove_type = $_POST['remove_type'];
+
+    }else {
+
+        $error_msg_array[] = $lang['youmustspecifyaactiontypetoremove'];
+        $valid = false;
+    }
+
+    if (isset($_POST['remove_days']) && is_numeric($_POST['remove_days'])) {
+        $remove_days = $_POST['remove_days'];
+    }else {
+        $remove_days = 0;
+    }
+
+    if ($valid) {
+
+        if (admin_prune_log($remove_type, $remove_days)) {
+
+            header_redirect("admin_viewlog.php?webtag=$webtag&pruned=true");
+            exit;
+
+        }else {
+
+            $error_msg_array[] = $lang['failedtopruneadminlog'];
+            $valid = false;
+        }
+    }
 }
 
 html_draw_top();
@@ -222,7 +257,15 @@ $admin_log_array = admin_get_log_entries($start, $sort_by, $sort_dir);
 
 echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['adminaccesslog']}</h1>\n";
 
-if (sizeof($admin_log_array['admin_log_array']) < 1) {
+if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+
+    html_display_error_array($error_msg_array, '75%', 'center');
+
+}else if (isset($_GET['pruned'])) {
+
+    html_display_success_msg($lang['successfullyprunedadminlog'], '75%', 'center');
+
+}else if (sizeof($admin_log_array['admin_log_array']) < 1) {
 
     html_display_warning_msg($lang['adminlogempty'], '75%', 'center');
 

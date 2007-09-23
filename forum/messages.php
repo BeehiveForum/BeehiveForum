@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.236 2007-09-12 18:43:43 decoyduck Exp $ */
+/* $Id: messages.php,v 1.237 2007-09-23 22:40:25 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -116,27 +116,28 @@ if (!forum_check_access_level()) {
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
+// User UID for fetching recent message
+
+$uid = bh_session_get_value('UID');
+
 // Check that required variables are set
 // default to display most recent discussion for user
 
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
-    $uid = bh_session_get_value('UID');
     $msg = $_GET['msg'];
 
-}else {
+}else if (!$msg = messages_get_most_recent($uid)) {
 
-    if ($uid = bh_session_get_value('UID')) {
-        $msg = messages_get_most_recent($uid);
-    } else {
-        $msg = "1.1";
-    }
+    html_draw_top();
+    html_error_msg($lang['nomessages']);
+    html_draw_bottom();
+    exit;
 }
 
-@list($tid, $pid) = explode('.', $msg);
+// Seperate the msg var into TID and PID
 
-if (!isset($tid) || !is_numeric($tid)) $tid = 1;
-if (!isset($pid) || !is_numeric($pid)) $pid = 1;
+list($tid, $pid) = explode('.', $msg);
 
 // Poll stuff
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06x-to-072.php,v 1.20 2007-09-15 16:51:31 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-072.php,v 1.21 2007-09-24 17:21:17 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-06x-to-072.php") {
 
@@ -481,6 +481,69 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql.= "DEFAULT NULL AFTER DESCRIPTION";
 
     if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // Previous versions of Beehive ran folder titles and descriptions through
+    // htmlentities() which causes problems when international characters are
+    // used and the encoded string becomes too long for the column in MySQL.
+
+    $sql = "SELECT FID, TITLE, DESCRIPTION FROM {$forum_webtag}_FOLDER";
+
+    if ($result = @db_query($sql, $db_install)) {
+
+        while ($folder_data = db_fetch_array($result)) {
+
+            $fid = $folder_data['FID'];
+
+            if (!isset($folder_data['TITLE'])) $folder_data['TITLE'] = "";
+            if (!isset($folder_data['DESCRIPTION'])) $folder_data['DESCRIPTION'] = "";
+
+            $new_title = db_escape_string(_htmlentities_decode($folder_data['TITLE']));
+            $new_description = db_escape_string(_htmlentities_decode($folder_data['DESCRIPTION']));
+
+            $sql = "UPDATE {$forum_webtag}_FOLDER SET TITLE = '$new_title', ";
+            $sql.= "DESCRIPTION = '$new_description' WHERE FID = '$fid'";
+
+            if (!$result = @db_query($sql, $db_install)) {
+
+                $valid = false;
+                return;
+            }
+        }
+
+    }else {
+
+        $valid = false;
+        return;
+    }
+
+    // Same problem with Thread Titles.
+
+    $sql = "SELECT TID, TITLE FROM {$forum_webtag}_THREAD";
+
+    if ($result = @db_query($sql, $db_install)) {
+
+        while ($thread_data = db_fetch_array($result)) {
+
+            $tid = $thread_data['FID'];
+
+            if (!isset($thread_data['TITLE'])) $thread_data['TITLE'] = "";
+
+            $new_title = db_escape_string(_htmlentities_decode($thread_data['TITLE']));
+
+            $sql = "UPDATE {$forum_webtag}_THREAD SET TITLE = '$new_title' WHERE TID = '$tid'";
+
+            if (!$result = @db_query($sql, $db_install)) {
+
+                $valid = false;
+                return;
+            }
+        }
+
+    }else {
 
         $valid = false;
         return;

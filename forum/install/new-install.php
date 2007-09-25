@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.152 2007-09-15 16:51:31 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.153 2007-09-25 12:04:49 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
 
@@ -519,6 +519,7 @@ $sql.= "  ALLOW_PM CHAR(1) NOT NULL DEFAULT 'Y', ";
 $sql.= "  SHOW_THUMBS CHAR(2) NOT NULL DEFAULT '2', ";
 $sql.= "  ENABLE_WIKI_WORDS CHAR(1) NOT NULL DEFAULT 'Y', ";
 $sql.= "  USE_MOVER_SPOILER CHAR(1) NOT NULL DEFAULT 'N', ";
+$sql.= "  USE_LIGHT_MODE_SPOILER CHAR(1) NOT NULL DEFAULT 'N', ";
 $sql.= "  USE_OVERFLOW_RESIZE CHAR(1) NOT NULL DEFAULT 'Y', ";
 $sql.= "  PRIMARY KEY (UID)";
 $sql.= ") TYPE=MYISAM";
@@ -966,6 +967,7 @@ $sql.= "  POST_PAGE CHAR(3) NOT NULL DEFAULT '0', ";
 $sql.= "  SHOW_THUMBS CHAR(2) NOT NULL DEFAULT '2', ";
 $sql.= "  ENABLE_WIKI_WORDS CHAR(1) NOT NULL DEFAULT 'Y', ";
 $sql.= "  USE_MOVER_SPOILER CHAR(1) NOT NULL DEFAULT 'N', ";
+$sql.= "  USE_LIGHT_MODE_SPOILER CHAR(1) NOT NULL DEFAULT 'N', ";
 $sql.= "  USE_OVERFLOW_RESIZE CHAR(1) NOT NULL DEFAULT 'Y', ";
 $sql.= "  PRIMARY KEY (UID), ";
 $sql.= "  KEY DOB (DOB), ";

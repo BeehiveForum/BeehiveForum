@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.158 2007-09-22 18:46:42 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.159 2007-09-25 12:04:48 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1132,7 +1132,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
 function light_spoiler_enable($message)
 {
-    if (isset($_SERVER['HTTP_USER_AGENT']) && stristr($_SERVER['HTTP_USER_AGENT'], "Smartphone")) {
+    if (bh_session_get_value('USE_LIGHT_MODE_SPOILER') == "Y") {
         return str_replace("<div class=\"spoiler\">", "<div class=\"spoiler_light\">", $message);
     }
 

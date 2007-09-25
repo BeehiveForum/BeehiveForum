@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-07x-to-072.php,v 1.47 2007-09-24 17:21:17 decoyduck Exp $ */
+/* $Id: upgrade-07x-to-072.php,v 1.48 2007-09-25 12:04:49 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-07x-to-072.php") {
 
@@ -199,6 +199,17 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     $sql = "ALTER TABLE {$forum_webtag}_USER_PREFS ADD ";
     $sql.= "USE_MOVER_SPOILER CHAR(1) NOT NULL DEFAULT 'N'";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // New User preference for light mode spoiler support
+
+    $sql = "ALTER TABLE {$forum_webtag}_USER_PREFS ADD ";
+    $sql.= "USE_LIGHT_MODE_SPOILER CHAR(1) NOT NULL DEFAULT 'N'";
 
     if (!$result = @db_query($sql, $db_install)) {
 
@@ -624,6 +635,17 @@ if (!$result = @db_query($sql, $db_install)) {
 // New User preference for mouseover spoiler reveal
 
 $sql = "ALTER TABLE USER_PREFS ADD USE_MOVER_SPOILER ";
+$sql.= "CHAR(1) NOT NULL DEFAULT 'N'";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// New User preference for light mode spoiler support
+
+$sql = "ALTER TABLE USER_PREFS ADD USE_LIGHT_MODE_SPOILER ";
 $sql.= "CHAR(1) NOT NULL DEFAULT 'N'";
 
 if (!$result = @db_query($sql, $db_install)) {

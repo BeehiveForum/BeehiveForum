@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.123 2007-09-10 12:36:19 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.124 2007-09-25 12:04:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -261,6 +261,18 @@ if (isset($_POST['submit'])) {
         $user_prefs_global['USE_MOVER_SPOILER'] = ($_POST['use_mover_spoiler_global'] == "Y") ? true : false;
     }else {
         $user_prefs_global['USE_MOVER_SPOILER'] = false;
+    }
+
+    if (isset($_POST['use_light_mode_spoiler']) && $_POST['use_light_mode_spoiler'] == "Y") {
+        $user_prefs['USE_LIGHT_MODE_SPOILER'] = "Y";
+    }else {
+        $user_prefs['USE_LIGHT_MODE_SPOILER'] = "N";
+    }
+
+    if (isset($_POST['use_light_mode_spoiler_global'])) {
+        $user_prefs_global['USE_LIGHT_MODE_SPOILER'] = ($_POST['use_light_mode_spoiler_global'] == "Y") ? true : false;
+    }else {
+        $user_prefs_global['USE_LIGHT_MODE_SPOILER'] = false;
     }
 
     if (isset($_POST['use_overflow_resize']) && $_POST['use_overflow_resize'] == "Y") {
@@ -593,6 +605,10 @@ echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("use_mover_spoiler", "Y", $lang['revealspoileronmouseover'], (isset($user_prefs['USE_MOVER_SPOILER']) && $user_prefs['USE_MOVER_SPOILER'] == "Y")), "</td>\n";
 echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("use_mover_spoiler_global", "Y", '', (isset($user_prefs['USE_MOVER_SPOILER_GLOBAL']) ? $user_prefs['USE_MOVER_SPOILER_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("use_mover_spoiler_global", 'Y'), "&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("use_light_mode_spoiler", "Y", $lang['showspoilersinlightmode'], (isset($user_prefs['USE_LIGHT_MODE_SPOILER']) && $user_prefs['USE_LIGHT_MODE_SPOILER'] == "Y")), "</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("use_light_mode_spoiler_global", "Y", '', (isset($user_prefs['USE_LIGHT_MODE_SPOILER_GLOBAL']) ? $user_prefs['USE_LIGHT_MODE_SPOILER_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("use_light_mode_spoiler_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("show_stats", "Y", $lang['showforumstats'], (isset($user_prefs['SHOW_STATS']) && $user_prefs['SHOW_STATS'] == "Y") ? true : false), "</td>\n";

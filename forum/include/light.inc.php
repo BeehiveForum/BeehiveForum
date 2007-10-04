@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.159 2007-09-25 12:04:48 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.160 2007-10-04 12:15:55 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -81,6 +81,8 @@ function light_html_draw_top($title = false)
     if ($stylesheet = html_get_style_sheet()) {
         echo "<link rel=\"stylesheet\" href=\"$stylesheet\" type=\"text/css\" />\n";
     }
+
+    echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"./js/general.js\"></script>\n";
 
     $message_display_pages = array('admin_post_approve.php', 'create_poll.php',
                                    'delete.php', 'display.php', 'edit.php',
@@ -335,6 +337,14 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
 
         $all_discussions_link = sprintf("<a href=\"thread_list.php?webtag=$webtag&amp;mode=0\">%s</a>", $lang['clickhere']);
         light_html_display_warning_msg(sprintf($lang['nomessagesinthiscategory'], $all_discussions_link));
+
+    }else if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+
+        light_html_display_error_array($error_msg_array, '100%', 'left');
+
+    }else if (isset($_GET['mark_read_success'])) {
+
+        light_html_display_success_msg($lang['successfullymarkreadselectedthreads'], '100%', 'left');
     }
 
     if ($start_from != 0 && $mode == ALL_DISCUSSIONS && !isset($folder)) echo "<p><a href=\"lthread_list.php?webtag=$webtag&amp;mode=0&amp;start_from=".($start_from - 50)."\">{$lang['prev50threads']}</a></p>\n";
@@ -483,6 +493,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
         echo "  <h5>{$lang['markasread']}</h5>\n";
         echo "    <form name=\"f_mark\" method=\"get\" action=\"lthread_list.php\">\n";
         echo "      ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
+        echo "      ", form_input_hidden("mark_read_confirm", 'N'), "\n";
 
         $labels = array($lang['alldiscussions'], $lang['next50discussions']);
         $selected_option = THREAD_MARK_READ_ALL;
@@ -493,7 +504,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
             $selected_option = THREAD_MARK_READ_VISIBLE;
 
             foreach ($visible_threads_array as $tid) {
-                echo "        ", form_input_hidden("tid_array[]", _htmlentities($tid)), "\n";
+                echo "        ", form_input_hidden("mark_read_threads_array[]", _htmlentities($tid)), "\n";
             }
         }
 
@@ -505,8 +516,8 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
             $selected_option = THREAD_MARK_READ_FOLDER;
         }
 
-        echo light_form_dropdown_array("markread", range(0, sizeof($labels) -1), $labels, $selected_option). "\n";
-        echo light_form_submit("go", $lang['goexcmark']). "\n";
+        echo light_form_dropdown_array("mark_read_type", range(0, sizeof($labels) -1), $labels, $selected_option). "\n";
+        echo light_form_submit("mark_read_submit", $lang['goexcmark'], "onclick=\"return confirmMarkAsRead()\""). "\n";
         echo "    </form>\n";
 
     }
@@ -618,9 +629,10 @@ function light_form_dropdown_array($name, $value, $label, $default = "")
 }
 
 // create a <input type="submit"> button
-function light_form_submit($name = "submit", $value = "Submit")
+function light_form_submit($name = "submit", $value = "Submit", $custom_html = "")
 {
-    return "<input type=\"submit\" name=\"$name\" value=\"$value\" />";
+    $custom_html = trim($custom_html);
+    return "<input type=\"submit\" name=\"$name\" value=\"$value\" $custom_html />";
 }
 
 function light_poll_confirm_close($tid)
@@ -978,7 +990,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
     if (isset($message['PID'])) {
 
-        echo "<p><b>{$lang['from']}: ", word_filter_add_ob_tags(format_user_name($message['FLOGON'], $message['FNICK'])), "</b> [#{$message['PID']}]<br />";
+        echo "<p><b>{$lang['from']}: ", word_filter_add_ob_tags(format_user_name($message['FLOGON'], $message['FNICK'])), "</b> [<a href=\"lmessages.php?webtag=$webtag&amp;msg={$tid}.{$message['PID']}\">#{$message['PID']}</a>]<br />";
 
     }else {
 
@@ -1017,7 +1029,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
         echo "<b>{$lang['to']}: " . word_filter_add_ob_tags(format_user_name($message['TLOGON'], $message['TNICK']))."</b>";
 
-        if (isset($message['REPLY_TO_PID']) && $message['REPLY_TO_PID'] > 0) echo " [#{$message['REPLY_TO_PID']}]";
+        if (isset($message['REPLY_TO_PID']) && $message['REPLY_TO_PID'] > 0) echo " [<a href=\"lmessages.php?webtag=$webtag&amp;msg={$tid}.{$message['REPLY_TO_PID']}\">#{$message['REPLY_TO_PID']}</a>]";
 
         if($message['TO_RELATIONSHIP'] & USER_FRIEND) {
             echo "&nbsp;({$lang['friend']})";
@@ -1427,13 +1439,59 @@ function light_edit_refuse()
     echo "<h2>{$lang['nopermissiontoedit']}</h2>";
 }
 
+function light_html_display_msg($header_text, $string_msg, $href = false, $method = 'get', $button_array = false, $var_array = false, $target = "_self")
+{
+    $webtag = get_webtag($webtag_search);
+
+    $lang = load_language_file();
+
+    $available_methods = array('get', 'post');
+    if (!in_array($method, $available_methods)) $method = 'get';
+
+    echo "<h1>$header_text</h1>\n";
+    echo "<br />\n";
+
+    if (($href !== false) && strlen(trim($href)) > 0) {
+
+        echo "<form action=\"$href\" method=\"$method\" target=\"$target\">\n";
+        echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+
+        if (is_array($var_array)) {
+
+            echo "  ", form_input_hidden_array($var_array), "\n";
+        }
+    }
+
+    echo "<h2>$string_msg</h2>\n";
+
+    if (($href !== false) && strlen(trim($href)) > 0) {
+
+        $button_html_array = array();
+
+        if (is_array($button_array) && sizeof($button_array) > 0) {
+
+            foreach($button_array as $button_name => $button_label) {
+                $button_html_array[] = form_submit(_htmlentities($button_name), _htmlentities($button_label));
+            }
+        }
+
+        if (sizeof($button_html_array) > 0) {
+            echo implode("&nbsp;", $button_html_array);
+        }
+    }
+
+    if (($href !== false) && strlen(trim($href)) > 0) {
+        echo "</form>\n";
+    }
+}
+
 function light_html_display_error_array($error_list_array)
 {
     $lang = load_language_file();
 
     if (!is_array($error_list_array)) $error_msg_array = array($error_msg_array);
 
-    echo "<h2>The following errors were encountered:</h2>\n";
+    echo "<h2><img src=\"", style_image('error.png'), "\" width=\"15\" height=\"15\" alt=\"{$lang['error']}\" title=\"{$lang['error']}\" />&nbsp;{$lang['thefollowingerrorswereencountered']}:</h2>\n";
     echo "<ul>\n";
     echo "  <li>", implode("</li>\n  <li>", $error_list_array), "</li>\n";
     echo "</ul>\n";
@@ -1445,7 +1503,7 @@ function light_html_display_success_msg($string_msg)
 
     if (!is_string($string_msg)) return false;
 
-    echo "<h2>$string_msg</h2>\n";
+    echo "<h2><img src=\"", style_image('success.png'), "\" width=\"15\" height=\"15\" alt=\"{$lang['success']}\" title=\"{$lang['success']}\" />&nbsp;$string_msg</h2>\n";
 }
 
 function light_html_display_warning_msg($string_msg)
@@ -1454,7 +1512,16 @@ function light_html_display_warning_msg($string_msg)
 
     if (!is_string($string_msg)) return false;
 
-    echo "<h2>$string_msg</h2>\n";
+    echo "<h2><img src=\"", style_image('warning.png'), "\" width=\"15\" height=\"15\" alt=\"{$lang['warning']}\" title=\"{$lang['warning']}\" />&nbsp;$string_msg</h2>\n";
+}
+
+function light_html_display_error_msg($string_msg)
+{
+    $lang = load_language_file();
+
+    if (!is_string($string_msg)) return false;
+
+    echo "<h2><img src=\"", style_image('error.png'), "\" width=\"15\" height=\"15\" alt=\"{$lang['error']}\" title=\"{$lang['error']}\" />&nbsp;$string_msg</h2>\n";
 }
 
 ?>

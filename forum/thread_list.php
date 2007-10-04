@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.311 2007-09-12 18:43:43 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.312 2007-10-04 12:15:55 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -107,6 +107,10 @@ $lang = load_language_file();
 
 rss_check_feeds();
 
+// Array to hold error messages
+
+$error_msg_array = array();
+
 // Check that we have access to this forum
 
 if (!forum_check_access_level()) {
@@ -120,6 +124,10 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
 
     $folder = $_GET['folder'];
     $mode = ALL_DISCUSSIONS;
+
+}else {
+
+    $folder = false;
 }
 
 // Check that required variables are set
@@ -154,34 +162,6 @@ if (user_is_guest()) {
     $uid = bh_session_get_value('UID');
 
     $threads_any_unread = threads_any_unread();
-
-    if (isset($_GET['markread'])) {
-
-        if ($_GET['markread'] == THREAD_MARK_READ_VISIBLE) {
-
-            if (isset($_GET['tid_array']) && is_array($_GET['tid_array'])) {
-
-                $tid_array = preg_grep("/^[0-9]+$/", $_GET['tid_array']);
-
-                $thread_data = array();
-
-                threads_get_unread_data($thread_data, $tid_array);
-                threads_mark_read($thread_data);
-            }
-
-        }elseif ($_GET['markread'] == THREAD_MARK_READ_ALL) {
-
-            threads_mark_all_read();
-
-        }elseif ($_GET['markread'] == THREAD_MARK_READ_FIFTY) {
-
-            threads_mark_50_read();
-
-        }elseif ($_GET['markread'] == THREAD_MARK_READ_FOLDER && isset($folder)) {
-
-            threads_mark_folder_read($folder);
-        }
-    }
 
     if (isset($_GET['mode']) && is_numeric($_GET['mode'])) {
 
@@ -218,6 +198,83 @@ if (user_is_guest()) {
             }
         }
     }
+
+    if (isset($_GET['mark_read_submit'])) {
+
+        if (isset($_GET['mark_read_confirm']) && $_GET['mark_read_confirm'] == 'Y') {
+
+            if ($_GET['mark_read_type'] == THREAD_MARK_READ_VISIBLE) {
+
+                if (isset($_GET['mark_read_threads_array']) && is_array($_GET['mark_read_threads_array'])) {
+
+                    $mark_read_threads_array = preg_grep("/^[0-9]+$/", $_GET['mark_read_threads_array']);
+
+                    $thread_data = array();
+
+                    threads_get_unread_data($thread_data, $mark_read_threads_array);
+
+                    if (threads_mark_read($thread_data)) {
+
+                        header_redirect("thread_list.php?webtag=$webtag&mode=$mode&folder=$folder&mark_read_success=true");
+                        exit;
+
+                    }else {
+
+                        $error_msg_array[] = $lang['failedtomarkselectedthreadsasread'];
+                        $valid = false;
+                    }
+                }
+
+            }elseif ($_GET['mark_read_type'] == THREAD_MARK_READ_ALL) {
+
+                if (threads_mark_all_read()) {
+
+                    header_redirect("thread_list.php?webtag=$webtag&mode=$mode&folder=$folder&mark_read_success=true");
+                    exit;
+
+                }else {
+
+                    $error_msg_array[] = $lang['failedtomarkselectedthreadsasread'];
+                    $valid = false;
+                }
+
+            }elseif ($_GET['mark_read_type'] == THREAD_MARK_READ_FIFTY) {
+
+                if (threads_mark_50_read()) {
+
+                    header_redirect("thread_list.php?webtag=$webtag&mode=$mode&folder=$folder&mark_read_success=true");
+                    exit;
+
+                }else {
+
+                    $error_msg_array[] = $lang['failedtomarkselectedthreadsasread'];
+                    $valid = false;
+                }
+
+            }elseif ($_GET['mark_read_type'] == THREAD_MARK_READ_FOLDER && isset($folder) && is_numeric($folder)) {
+
+                if (threads_mark_folder_read($folder)) {
+
+                    header_redirect("thread_list.php?webtag=$webtag&mode=$mode&folder=$folder&mark_read_success=true");
+                    exit;
+
+                }else {
+
+                    $error_msg_array[] = $lang['failedtomarkselectedthreadsasread'];
+                    $valid = false;
+                }
+            }
+
+        }else {
+
+            unset($_GET['mark_read_submit'], $_GET['mark_read_confirm']);
+
+            html_draw_top();
+            html_display_msg($lang['confirm'], $lang['confirmmarkasread'], 'thread_list.php', 'get', array('mark_read_submit' => $lang['confirm'], 'cancel' => $lang['cancel']), array_merge($_GET, array('mark_read_confirm' => 'Y')));
+            html_draw_bottom();
+            exit;
+        }
+    }
 }
 
 if (isset($_GET['start_from']) && is_numeric($_GET['start_from'])) {
@@ -227,7 +284,7 @@ if (isset($_GET['start_from']) && is_numeric($_GET['start_from'])) {
 }
 
 // Output XHTML header
-html_draw_top("modslist.js", "poll.js");
+html_draw_top("modslist.js", "poll.js", "thread_options.js");
 
 echo "<script language=\"javascript\" type=\"text/javascript\">\n";
 echo "<!--\n\n";
@@ -237,12 +294,23 @@ echo "}\n\n";
 echo "function confirmFolderUnignore() {\n";
 echo "    return window.confirm('{$lang['unignorefolderconfirm']}');\n";
 echo "}\n\n";
+echo "function confirmMarkAsRead() {\n";
+echo "    if (mark_read_type = getObjByName('mark_read_type')) {\n";
+echo "        if (window.confirm('{$lang['confirmmarkasread']}')) {\n";
+echo "            if (mark_read_confirm = getObjByName('mark_read_confirm')) {\n";
+echo "                mark_read_confirm.value = 'Y';\n";
+echo "                return true;\n";
+echo "            }\n";
+echo "        }\n";
+echo "    }\n\n";
+echo "    return false;\n";
+echo "}\n\n";
 echo "//-->\n";
 echo "</script>\n";
 
 // The tricky bit - displaying the right threads for whatever mode is selected
 
-if (isset($folder)) {
+if (isset($folder) && is_numeric($folder) && $folder > 0) {
     list($thread_info, $folder_order) = threads_get_folder($uid, $folder, $start_from);
 }else {
     switch ($mode) {
@@ -409,6 +477,14 @@ if (!$thread_info) {
 
     $all_discussions_link = sprintf("<a href=\"thread_list.php?webtag=$webtag&amp;mode=0\">%s</a>", $lang['clickhere']);
     html_display_warning_msg(sprintf($lang['nomessagesinthiscategory'], $all_discussions_link), '100%', 'left');
+
+}else if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+
+    html_display_error_array($error_msg_array, '100%', 'left');
+
+}else if (isset($_GET['mark_read_success'])) {
+
+    html_display_success_msg($lang['successfullymarkreadselectedthreads'], '100%', 'left');
 
 }else {
 
@@ -794,6 +870,7 @@ if (bh_session_get_value('UID') != 0) {
     echo "    <td align=\"left\" class=\"smalltext\">\n";
     echo "      <form name=\"f_mark\" method=\"get\" action=\"thread_list.php\">\n";
     echo "        ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+    echo "        ", form_input_hidden('mark_read_confirm', 'N'), "\n";
 
     $labels = array($lang['alldiscussions'], $lang['next50discussions']);
     $selected_option = THREAD_MARK_READ_ALL;
@@ -804,7 +881,7 @@ if (bh_session_get_value('UID') != 0) {
         $selected_option = THREAD_MARK_READ_VISIBLE;
 
         foreach ($visible_threads_array as $tid) {
-            echo "        ", form_input_hidden("tid_array[]", _htmlentities($tid)), "\n";
+            echo "        ", form_input_hidden("mark_read_threads_array[]", _htmlentities($tid)), "\n";
         }
     }
 
@@ -816,8 +893,8 @@ if (bh_session_get_value('UID') != 0) {
         $selected_option = THREAD_MARK_READ_FOLDER;
     }
 
-    echo "        ", form_dropdown_array("markread", $labels, $selected_option). "\n";
-    echo "        ", form_submit("go",$lang['goexcmark']). "\n";
+    echo "        ", form_dropdown_array("mark_read_type", $labels, $selected_option). "\n";
+    echo "        ", form_submit("mark_read_submit", $lang['goexcmark'], "onclick=\"return confirmMarkAsRead()\""). "\n";
     echo "      </form>\n";
     echo "    </td>\n";
     echo "  </tr>\n";

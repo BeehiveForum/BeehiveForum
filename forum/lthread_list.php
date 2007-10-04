@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lthread_list.php,v 1.83 2007-06-07 20:27:26 decoyduck Exp $ */
+/* $Id: lthread_list.php,v 1.84 2007-10-04 12:15:55 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -117,6 +117,18 @@ if (!forum_check_access_level()) {
     header_redirect("./lforums.php");
 }
 
+// Are we viewing a specific folder only?
+
+if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
+
+    $folder = $_GET['folder'];
+    $mode = 0;
+
+}else {
+
+    $folder = false;
+}
+
 // Check that required variables are set
 
 if (user_is_guest()) {
@@ -124,7 +136,7 @@ if (user_is_guest()) {
     $uid = 0; // default to UID 0 if no other UID specified
 
     if (isset($_GET['mode']) && is_numeric($_GET['mode'])) {
-        
+
         // non-logged in users can only display "All" threads
         // or those in the past x days, since the other options
         // would be impossible
@@ -150,39 +162,11 @@ if (user_is_guest()) {
 
     $threads_any_unread = threads_any_unread();
 
-    if (isset($_GET['markread'])) {
-        
-        if ($_GET['markread'] == THREAD_MARK_READ_VISIBLE) {
-        
-            if (isset($_GET['tid_array']) && is_array($_GET['tid_array'])) {
-
-                $tid_array = preg_grep("/^[0-9]+$/", $_GET['tid_array']);
-
-                $thread_data = array();
-                
-                threads_get_unread_data($thread_data, $tid_array);
-                threads_mark_read($thread_data);
-            }
-
-        }elseif ($_GET['markread'] == THREAD_MARK_READ_ALL) {
-
-            threads_mark_all_read();
-
-        }elseif ($_GET['markread'] == THREAD_MARK_READ_FIFTY) {
-
-            threads_mark_50_read();
-
-        }elseif ($_GET['markread'] == THREAD_MARK_READ_FOLDER && isset($folder)) {
-
-            threads_mark_folder_read($folder);
-        }
-    }
-
     if (isset($_GET['mode']) && is_numeric($_GET['mode'])) {
 
         $mode = $_GET['mode'];
 
-        bh_setcookie("bh_{$webtag}_thread_mode", $mode);       
+        bh_setcookie("bh_{$webtag}_thread_mode", $mode);
 
     }else {
 
@@ -193,7 +177,7 @@ if (user_is_guest()) {
             if ($mode == UNREAD_DISCUSSIONS && !$threads_any_unread) {
 
                 $mode = ALL_DISCUSSIONS;
-            }           
+            }
 
         }else {
 
@@ -207,16 +191,83 @@ if (user_is_guest()) {
             }
         }
     }
-}
 
-if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
+    if (isset($_GET['mark_read_submit'])) {
 
-    $folder = $_GET['folder'];
-    $mode = 0;
+        if (isset($_GET['mark_read_confirm']) && $_GET['mark_read_confirm'] == 'Y') {
 
-}else {
+            if ($_GET['mark_read_type'] == THREAD_MARK_READ_VISIBLE) {
 
-    $folder = false;
+                if (isset($_GET['mark_read_threads_array']) && is_array($_GET['mark_read_threads_array'])) {
+
+                    $mark_read_threads_array = preg_grep("/^[0-9]+$/", $_GET['mark_read_threads_array']);
+
+                    $thread_data = array();
+
+                    threads_get_unread_data($thread_data, $mark_read_threads_array);
+
+                    if (threads_mark_read($thread_data)) {
+
+                        header_redirect("lthread_list.php?webtag=$webtag&mode=$mode&folder=$folder&mark_read_success=true");
+                        exit;
+
+                    }else {
+
+                        $error_msg_array[] = $lang['failedtomarkselectedthreadsasread'];
+                        $valid = false;
+                    }
+                }
+
+            }elseif ($_GET['mark_read_type'] == THREAD_MARK_READ_ALL) {
+
+                if (threads_mark_all_read()) {
+
+                    header_redirect("lthread_list.php?webtag=$webtag&mode=$mode&folder=$folder&mark_read_success=true");
+                    exit;
+
+                }else {
+
+                    $error_msg_array[] = $lang['failedtomarkselectedthreadsasread'];
+                    $valid = false;
+                }
+
+            }elseif ($_GET['mark_read_type'] == THREAD_MARK_READ_FIFTY) {
+
+                if (threads_mark_50_read()) {
+
+                    header_redirect("lthread_list.php?webtag=$webtag&mode=$mode&folder=$folder&mark_read_success=true");
+                    exit;
+
+                }else {
+
+                    $error_msg_array[] = $lang['failedtomarkselectedthreadsasread'];
+                    $valid = false;
+                }
+
+            }elseif ($_GET['mark_read_type'] == THREAD_MARK_READ_FOLDER && isset($folder) && is_numeric($folder)) {
+
+                if (threads_mark_folder_read($folder)) {
+
+                    header_redirect("lthread_list.php?webtag=$webtag&mode=$mode&folder=$folder&mark_read_success=true");
+                    exit;
+
+                }else {
+
+                    $error_msg_array[] = $lang['failedtomarkselectedthreadsasread'];
+                    $valid = false;
+                }
+            }
+
+        }else {
+
+            unset($_GET['mark_read_submit'], $_GET['mark_read_confirm']);
+
+            light_html_draw_top();
+            light_html_display_msg($lang['confirm'], $lang['confirmmarkasread'], 'lthread_list.php', 'get', array('mark_read_submit' => $lang['confirm'], 'cancel' => $lang['cancel']), array_merge($_GET, array('mark_read_confirm' => 'Y')));
+            light_html_draw_bottom();
+            exit;
+        }
+    }
 }
 
 bh_setcookie("bh_{$webtag}_thread_mode", $mode);
@@ -229,6 +280,16 @@ if (isset($_GET['start_from']) && is_numeric($_GET['start_from'])) {
 
 // Output XHTML header
 light_html_draw_top();
+
+echo "<script language=\"javascript\" type=\"text/javascript\">\n";
+echo "<!--\n\n";
+echo "function confirmMarkAsRead() {\n";
+echo "    if (mark_read_type = getObjByName('mark_read_type')) {\n";
+echo "        return window.confirm('{$lang['confirmmarkasread']}');\n";
+echo "    }\n";
+echo "}\n\n";
+echo "//-->\n";
+echo "</script>\n";
 
 echo "<h1>{$lang['threadlist']}</h1>\n";
 echo "<br />\n";

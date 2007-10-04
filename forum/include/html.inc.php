@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.248 2007-09-25 11:34:53 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.249 2007-10-04 12:15:55 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -93,7 +93,7 @@ function html_display_msg($header_text, $string_msg, $href = false, $method = 'g
     }
 
     echo "  <div align=\"$align\">\n";
-    echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+    echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\" class=\"message_box\">\n";
     echo "      <tr>\n";
     echo "        <td align=\"left\">\n";
     echo "          <table class=\"box\" width=\"100%\">\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.481 2007-09-25 12:04:49 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.482 2007-10-04 12:15:55 decoyduck Exp $ */
 
 // British English language file
 
@@ -1710,6 +1710,9 @@ $lang['onenewoflength'] = "%d new of %d";
 $lang['manynewoflength'] = "%d new of %d";
 $lang['ignorefolderconfirm'] = "Are you sure you want to ignore this folder?";
 $lang['unignorefolderconfirm'] = "Are you sure you want to stop ignoring this folder?";
+$lang['confirmmarkasread'] = "Are you sure you want to mark the selected threads as read?";
+$lang['successfullymarkreadselectedthreads'] = "Successfully marked selected threads as read";
+$lang['failedtomarkselectedthreadsasread'] = "Failed to mark selected threads as read";
 $lang['gotofirstpostinthread'] = "Go to first post in thread";
 $lang['gotolastpostinthread'] = "Go to last post in thread";
 $lang['viewmessagesinthisfolderonly'] = "View messages in this folder only";

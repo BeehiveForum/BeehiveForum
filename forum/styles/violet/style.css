@@ -1198,6 +1198,10 @@ a {
     width: 300px;
 }
 
+.message_box {
+    max-width: 100%;
+}
+
 .error_msg {    
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 9pt;

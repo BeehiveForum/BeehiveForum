@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.127 2007-05-02 23:15:41 decoyduck Exp $ */
+/* $Id: fixhtml.inc.php,v 1.128 2007-10-07 10:35:13 decoyduck Exp $ */
 
 /** A range of functions for filtering/cleaning posted HTML
 *
@@ -194,23 +194,23 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
                                     $open_code++;
                                 }
 
-                                $tmpcode .= "<".$html_parts[$j].">";
+                                $tmpcode.= "<".$html_parts[$j].">";
 
                             }else {
 
-                                $tmpcode .= $html_parts[$j];
+                                $tmpcode.= $html_parts[$j];
                             }
                         }
 
                         if ($tmpcode != "<closed>") {
 
                             array_splice($html_parts, $i+1, 0, array("", "/pre"));
-                            $i += 2;
+                            $i+= 2;
                         }
 
                         array_splice($html_parts, $i, 0, array("div class=\"quotetext\" id=\"code-$lang\"", "", "b", $lang.' '.$fix_html_code_text, "/b", "", "/div", ""));
 
-                        $i += 10;
+                        $i+= 10;
 
                     }else if ($tag == "quote" && $close == true) {
 
@@ -305,13 +305,13 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
 
                             array_splice($html_parts, $i, 0, array("div class=\"quotetext\" id=\"quote\"", "", "b", "$fix_html_quote_text ", "/b", "", "a href=\"$url_name\"", $source_name, "/a", "", "/div", ""));
 
-                            $i += 12;
+                            $i+= 12;
 
                         }else {
 
                             $html_parts[$i] = "div class=\"quote\"";
                             array_splice($html_parts, $i, 0, array("div class=\"quotetext\" id=\"quote\"", "", "b", "$fix_html_quote_text ", "/b", $source_name, "/div", ""));
-                            $i += 8;
+                            $i+= 8;
                         }
 
                     }else if ($tag == "spoiler" && $close == true) {
@@ -324,7 +324,7 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
 
                         array_splice($html_parts, $i, 0, array("div class=\"quotetext\" id=\"spoiler\"", "", "b", "$fix_html_spoiler_text ", "/b", "", "/div", ""));
 
-                        $i += 8;
+                        $i+= 8;
                     }
 
                 }else {
@@ -393,9 +393,9 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
 
                     if (in_array($tag, $bad_tags) || in_array($tag, $single_tags)) {
 
-                        $html_parts[$i-1] .= $html_parts[$i+1];
+                        $html_parts[$i-1].= $html_parts[$i+1];
                         array_splice($html_parts, $i, 2);
-                        $i -= 2;
+                        $i-= 2;
 
                     }else {
 
@@ -411,7 +411,7 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
 
                         }else if ($opentags[$tag] <= 0) {
 
-                            $html_parts[$i-1] .= $html_parts[$i+1];
+                            $html_parts[$i-1].= $html_parts[$i+1];
                             array_splice($html_parts, $i, 2);
                             $i--;
 
@@ -467,9 +467,9 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
 
                     if (in_array($tag, $bad_tags)) {
 
-                        $html_parts[$i-1] .= $html_parts[$i+1];
+                        $html_parts[$i-1].= $html_parts[$i+1];
                         array_splice($html_parts, $i, 2);
-                        $i -= 2;
+                        $i-= 2;
 
                     }else if(!in_array($tag, $single_tags)) {
 
@@ -511,7 +511,7 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
 
                                     array_splice($html_parts, $tmp_len, 0, array($nest[$tmp_nest][0], ""));
 
-                                    $i += 2;
+                                    $i+= 2;
                                     array_splice($tmp_tags, 1, 0, $nest[$tmp_nest][0]);
                                     $last_tag2 = $tmp_tags[1];
                                     $tmp_nest = $nest[$tmp_nest][0];
@@ -555,7 +555,7 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
 
                                 if (in_array($no_nest[$tag][$j], array_keys($opentags))) {
 
-                                    $opencount += $opentags[$no_nest[$tag][$j]];
+                                    $opencount+= $opentags[$no_nest[$tag][$j]];
                                 }
                             }
 
@@ -584,7 +584,7 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
 
                                         $opentags[$last_tag[$j]]--;
                                         array_splice($last_tag, $j, 1);
-                                        $i+=2;
+                                        $i+= 2;
                                     }
                                 }
 
@@ -598,7 +598,7 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
                                 }
 
                                 $opentags[$tag]--;
-                                $i+=2;
+                                $i+= 2;
                             }
                         }
 
@@ -642,7 +642,7 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
                     if (($tag == 'noemots' && $noemots > 0) || ($tag == '/noemots' && $noemots > 1)) {
                         // disallows <noemots> nesting
                     } else {
-                        $ret_text .= "<".$tag.">";
+                        $ret_text.= "<".$tag.">";
                     }
 
                     if ($tag == 'noemots') {
@@ -682,7 +682,7 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
                     $html_parts[$i] = make_links($html_parts[$i]);
                 }
 
-                $ret_text .= $html_parts[$i];
+                $ret_text.= $html_parts[$i];
             }
         }
 
@@ -776,7 +776,7 @@ function clean_attributes ($tag)
 
                 for ($j = $i + 1; $j < count($split_tag); $j++) {
 
-                    $tempstr .= " ".$split_tag[$j];
+                    $tempstr.= " ".$split_tag[$j];
                     $lastchar = substr($split_tag[$j], -1);
 
                     if ($lastchar == $quote) {
@@ -835,7 +835,7 @@ function clean_attributes ($tag)
                     $attrib_value = preg_replace("/javascript:/ix", "", $attrib_value);
                 }
 
-                $tmp_attrib .= "\"".$attrib_value."\"";
+                $tmp_attrib.= "\"".$attrib_value."\"";
 
                 $split_tag[$i] = $tmp_attrib;
             }
@@ -875,7 +875,7 @@ function clean_attributes ($tag)
                     $attrib_value = clean_styles($attrib_value);
                 }
 
-                $tmp_attrib .= "\"".$attrib_value."\"";
+                $tmp_attrib.= "\"".$attrib_value."\"";
 
                 $split_tag[$i] = $tmp_attrib;
             }
@@ -948,13 +948,13 @@ function tidy_html ($html, $linebreaks = true, $links = true, $tidymce = false)
 
     while (($pos = strpos($html_right, "<div class=\"quotetext\" id=\"quote\">")) > -1) {
 
-        $html_left .= substr($html_right, 0, $pos);
+        $html_left.= substr($html_right, 0, $pos);
 
         $matches = array();
 
         if (preg_match("/^<div class=\"quotetext\" id=\"quote\">.+?(<a href=\"([^\"]*)\">)?([^<>]*)(<\/a>)?<\/div>\s*<div class=\"quote\">.*<\/div>/is", substr($html_right, $pos), $matches) > 0) {
 
-            $html_left .= "<quote source=\"".$matches[3]."\" url=\"".$matches[2]."\">";
+            $html_left.= "<quote source=\"".$matches[3]."\" url=\"".$matches[2]."\">";
 
             $search = "class=\"quote\"";
 
@@ -991,12 +991,12 @@ function tidy_html ($html, $linebreaks = true, $links = true, $tidymce = false)
                 $j = $open+1;
             }
 
-            $html_left .= tidy_html(substr($html_right, $first, $j-$first), $linebreaks)."</quote>";
+            $html_left.= tidy_html(substr($html_right, $first, $j-$first), $linebreaks)."</quote>";
             $html_right = substr($html_right, $j + strlen("</div>"));
 
         }else {
 
-            $html_left .= substr($html_right, $pos, 1);
+            $html_left.= substr($html_right, $pos, 1);
             $html_right = substr($html_right, $pos + 1);
         }
     }
@@ -1010,11 +1010,11 @@ function tidy_html ($html, $linebreaks = true, $links = true, $tidymce = false)
 
     while (($pos = strpos($html_right, "<div class=\"quotetext\" id=\"spoiler\">")) > -1) {
 
-        $html_left .= substr($html_right, 0, $pos);
+        $html_left.= substr($html_right, 0, $pos);
 
         if (preg_match("/^<div class=\"quotetext\" id=\"spoiler\">.+?<\/div>.*?<div class=\"spoiler\">.*<\/div>/is", substr($html_right, $pos))) {
 
-            $html_left .= "<spoiler>";
+            $html_left.= "<spoiler>";
 
             $search = "class=\"spoiler\"";
 
@@ -1052,12 +1052,12 @@ function tidy_html ($html, $linebreaks = true, $links = true, $tidymce = false)
                 $j = $open+1;
             }
 
-            $html_left .= tidy_html(substr($html_right, $first, $j-$first), $linebreaks)."</spoiler>";
+            $html_left.= tidy_html(substr($html_right, $first, $j-$first), $linebreaks)."</spoiler>";
             $html_right = substr($html_right, $j + strlen("</div>"));
 
         }else {
 
-            $html_left .= substr($html_right, $pos, 1);
+            $html_left.= substr($html_right, $pos, 1);
             $html_right = substr($html_right, $pos + 1);
         }
     }
@@ -1108,11 +1108,11 @@ function tidy_tinymce ($html)
 
     while (($pos = strpos($html_right, "<span class=\"noemots\">")) > -1) {
 
-        $html_left .= substr($html_right, 0, $pos);
+        $html_left.= substr($html_right, 0, $pos);
 
         if (preg_match("/^<span class=\"noemots\">.*<\/span>/is", substr($html_right, $pos)) > 0) {
 
-            $html_left .= "<noemots>";
+            $html_left.= "<noemots>";
 
             $search = "class=\"noemots\"";
 
@@ -1150,12 +1150,12 @@ function tidy_tinymce ($html)
                 $j = $open+1;
             }
 
-            $html_left .= tidy_tinymce(substr($html_right, $first, $j-$first))."</noemots>";
+            $html_left.= tidy_tinymce(substr($html_right, $first, $j-$first))."</noemots>";
             $html_right = substr($html_right, $j + strlen("</span>"));
 
         }else {
 
-            $html_left .= substr($html_right, $pos, 1);
+            $html_left.= substr($html_right, $pos, 1);
             $html_right = substr($html_right, $pos + 1);
         }
     }
@@ -1214,34 +1214,34 @@ function clean_styles ($style)
 
     $valid_attributes_array = array('font-family', 'font-style', 'font-variant', 'font-weight',
                                     'font-size', 'font', 'color', 'background-color', 'word-spacing',
-                                    'letter-spacing', 'text-decoration', 'vertical-align', 
-                                    'text-transform', 'text-align', 'text-indent', 'line-height', 
-                                    'margin-top', 'margin-bottom', 'margin-left', 'margin-right', 
-                                    'margin', 'padding-top', 'padding-bottom', 'padding-left', 
-                                    'padding-right', 'padding', 'border-top-width', 'border-top-width', 
-                                    'border-right-width', 'border-bottom-width', 'border-left-width', 
-                                    'border-width', 'border-color', 'border-style', 'border-top', 
-                                    'border-right', 'border-bottom', 'border-left', 'border', 
-                                    'width', 'height', 'float', 'clear', 'white-space', 
+                                    'letter-spacing', 'text-decoration', 'vertical-align',
+                                    'text-transform', 'text-align', 'text-indent', 'line-height',
+                                    'margin-top', 'margin-bottom', 'margin-left', 'margin-right',
+                                    'margin', 'padding-top', 'padding-bottom', 'padding-left',
+                                    'padding-right', 'padding', 'border-top-width', 'border-top-width',
+                                    'border-right-width', 'border-bottom-width', 'border-left-width',
+                                    'border-width', 'border-color', 'border-style', 'border-top',
+                                    'border-right', 'border-bottom', 'border-left', 'border',
+                                    'width', 'height', 'float', 'clear', 'white-space',
                                     'list-style-type', 'list-style-image', 'list-style-position',
                                     'list-style');
 
     // Array of attributes to restrict (dimensions);
 
     $restrict_attributes_array = array('height', 'width', 'margin', 'margin-top', 'margin-bottom',
-                                       'margin-left', 'margin-right', 'padding', 'padding-top', 
+                                       'margin-left', 'margin-right', 'padding', 'padding-top',
                                        'padding-bottom', 'padding-left', 'padding-right');
 
     // Array of valid units for restricted attributes
-    
+
     $restrict_units_array = array('px', 'pt', 'em', '%');
 
     // Convert arrays to strings for regular express matching
 
     $valid_attributes_preg = implode("$|^", array_map('preg_quote_callback', $valid_attributes_array));
-    
+
     $restrict_attributes = implode("|", $restrict_attributes_array);
-    
+
     $restrict_units = implode("|", $restrict_units_array);
 
     // Split the in-line style string into an array of attributes and values.
@@ -1249,7 +1249,7 @@ function clean_styles ($style)
     if (preg_match_all('/(([^:]+):([^;]+));?/m', trim($style), $matches_array) > 0) {
 
         // Clean up the attribute names and values (trim)
-        
+
         $attribute_names_array  = array_map('trim', $matches_array[2]);
         $attribute_values_array = array_map('trim', $matches_array[3]);
 
@@ -1440,7 +1440,7 @@ function add_paragraphs ($html, $base = true, $br_only = true)
         $html_a[$html_p+2] = substr($html_a[$html_p], $close);
         $html_a[$html_p] = substr($html_a[$html_p], 0, $cur_pos);
 
-        $html_p += 2;
+        $html_p+= 2;
     }
 
     $return = "";
@@ -1529,22 +1529,21 @@ function add_paragraphs ($html, $base = true, $br_only = true)
                     $html_a[$i] = $tmp[0].$tmp[1].$tmp[2];
                 }
 
-            }
+                if (isset($tags_nest[$tag[1]][1]) && $tags_nest[$tag[1]][1] != true) {
 
-            if (isset($tags_nest[$tag[1]][1]) && $tags_nest[$tag[1]][1] != true) {
+                    if (trim($html_a[$i+1]) == "") {
 
-                if (trim($html_a[$i+1]) == "") {
+                        $return.= $html_a[$i]."\n";
 
-                    $return .= $html_a[$i]."\n";
+                    }else {
+
+                        $return.= $html_a[$i]."\n\n";
+                    }
 
                 }else {
 
-                    $return .= $html_a[$i]."\n\n";
+                    $return.= $html_a[$i];
                 }
-
-            }else {
-
-                $return .= $html_a[$i];
             }
 
         }else if ($br_only == false) {
@@ -1596,7 +1595,7 @@ function add_paragraphs ($html, $base = true, $br_only = true)
 
                         $p_open = false;
 
-                        $tmp[$j] .= "</p>";
+                        $tmp[$j].= "</p>";
 
                         if (!isset($tmp[$j+2])) break;
 
@@ -1610,7 +1609,7 @@ function add_paragraphs ($html, $base = true, $br_only = true)
                         $j++;
 
                     }else {
-                        $tmp[$j] .= "<br />";
+                        $tmp[$j].= "<br />";
                     }
 
                 } else {
@@ -1623,7 +1622,7 @@ function add_paragraphs ($html, $base = true, $br_only = true)
 
             if ($p_open == true && !preg_match("/<\/p>$/i", $tmp[$j]) && strlen(trim($tmp[$j])) > 0) {
 
-                $tmp[$j] .= "</p>";
+                $tmp[$j].= "</p>";
             }
 
             $html_a[$i] = implode("\n", $tmp);
@@ -1637,11 +1636,11 @@ function add_paragraphs ($html, $base = true, $br_only = true)
 
                 if ($tags_nest[$tag[1]][1] != true && strlen(trim($html_a[$i])) > 0) {
 
-                    $html_a[$i] .= "\n\n";
+                    $html_a[$i].= "\n\n";
                 }
             }
 
-            $return .= $html_a[$i];
+            $return.= $html_a[$i];
 
         } else {
 
@@ -1652,7 +1651,7 @@ function add_paragraphs ($html, $base = true, $br_only = true)
 
             $html_a[$i] = nl2br($html_a[$i]);
 
-            $return .= $html_a[$i];
+            $return.= $html_a[$i];
         }
     }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.249 2007-10-04 12:15:55 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.250 2007-10-07 11:40:38 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -166,8 +166,8 @@ function html_display_error_array($error_list_array, $width = '600', $align = 'c
     echo "<div align=\"$align\">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"$width\" class=\"error_msg\">\n";
     echo "    <tr>\n";
-    echo "      <td rowspan=\"2\" valign=\"top\" width=\"25\"><img src=\"", style_image('error.png'), "\" width=\"15\" height=\"15\" alt=\"{$lang['error']}\" title=\"{$lang['error']}\" /></td>\n";
-    echo "      <td>{$lang['thefollowingerrorswereencountered']}</td>\n";
+    echo "      <td rowspan=\"2\" valign=\"top\" width=\"25\" class=\"error_msg_icon\"><img src=\"", style_image('error.png'), "\" width=\"15\" height=\"15\" alt=\"{$lang['error']}\" title=\"{$lang['error']}\" /></td>\n";
+    echo "      <td class=\"error_msg_icon\">{$lang['thefollowingerrorswereencountered']}</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td>\n";
@@ -194,8 +194,8 @@ function html_display_success_msg($string_msg, $width = '600', $align = 'center'
     echo "<div align=\"$align\">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"$width\" class=\"success_msg\">\n";
     echo "    <tr>\n";
-    echo "      <td valign=\"top\" width=\"25\"><img src=\"", style_image('success.png'), "\" width=\"15\" height=\"15\" alt=\"{$lang['success']}\" title=\"{$lang['success']}\" /></td>\n";
-    echo "      <td valign=\"top\">$string_msg</td>\n";
+    echo "      <td valign=\"top\" width=\"25\" class=\"success_msg_icon\"><img src=\"", style_image('success.png'), "\" width=\"15\" height=\"15\" alt=\"{$lang['success']}\" title=\"{$lang['success']}\" /></td>\n";
+    echo "      <td valign=\"top\" class=\"success_msg_icon\">$string_msg</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</div>\n";
@@ -215,8 +215,8 @@ function html_display_error_msg($string_msg, $width = '600', $align = 'center')
     echo "<div align=\"$align\">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"$width\" class=\"error_msg\">\n";
     echo "    <tr>\n";
-    echo "      <td valign=\"top\" width=\"25\"><img src=\"", style_image('error.png'), "\" width=\"15\" height=\"15\" alt=\"{$lang['error']}\" title=\"{$lang['error']}\" /></td>\n";
-    echo "      <td valign=\"top\">$string_msg</td>\n";
+    echo "      <td valign=\"top\" width=\"25\" class=\"error_msg_icon\"><img src=\"", style_image('error.png'), "\" width=\"15\" height=\"15\" alt=\"{$lang['error']}\" title=\"{$lang['error']}\" /></td>\n";
+    echo "      <td valign=\"top\" class=\"error_msg_icon\">$string_msg</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</div>\n";
@@ -236,8 +236,8 @@ function html_display_warning_msg($string_msg, $width = '600', $align = 'center'
     echo "<div align=\"$align\">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"$width\" class=\"warning_msg\">\n";
     echo "    <tr>\n";
-    echo "      <td valign=\"top\" width=\"25\"><img src=\"", style_image('warning.png'), "\" width=\"15\" height=\"15\" alt=\"{$lang['warning']}\" title=\"{$lang['warning']}\" /></td>\n";
-    echo "      <td valign=\"top\">$string_msg</td>\n";
+    echo "      <td valign=\"top\" width=\"25\" class=\"warning_msg_icon\"><img src=\"", style_image('warning.png'), "\" width=\"15\" height=\"15\" alt=\"{$lang['warning']}\" title=\"{$lang['warning']}\" /></td>\n";
+    echo "      <td valign=\"top\" class=\"warning_msg_text\">$string_msg</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</div>\n";
@@ -773,20 +773,20 @@ function html_draw_top()
 
             if ($pm_popup_disabled === false) {
 
-                // Get the new pm count and waiting pm count.
-
-                pm_new_check($pm_new_count, $pm_outbox_count);
-
                 // Pages we don't want the popup to appear on
 
                 $pm_popup_disabled_pages = array('attachments.php', 'dictionary.php', 'display_emoticons.php',
-                                                 'email.php', 'mods_list.php', 'pm.php', 'pm_edit.php',
+                                                 'email.php', 'mods_list.php', 'nav.php', 'pm.php', 'pm_edit.php',
                                                  'pm_folders.php', 'pm_messages.php', 'pm_options.php',
                                                  'poll_results.php', 'search_popup.php', 'user_profile.php');
 
                 // Check that we're not on one of the pages.
 
                 if ((!in_array(basename($_SERVER['PHP_SELF']), $pm_popup_disabled_pages))) {
+
+                    // Get the new pm count and waiting pm count.
+
+                    pm_new_check($pm_new_count, $pm_outbox_count);
 
                     // Format the popup message.
 

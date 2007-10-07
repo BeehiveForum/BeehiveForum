@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.128 2007-09-18 20:02:49 decoyduck Exp $ */
+/* $Id: pm.php,v 1.129 2007-10-07 11:40:31 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -131,7 +131,7 @@ if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
     echo "  <frame src=\"./pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;folder=$folder\" name=\"", html_get_frame_name('pm_messages'), "\" frameborder=\"0\" />\n";
     echo "</frameset>\n";
 
-    html_draw_bottom();
+    html_draw_bottom(false);
     exit;
 
 }elseif (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
@@ -145,7 +145,7 @@ if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
     echo "  <frame src=\"./pm_messages.php?webtag=$webtag&amp;folder=$folder\" name=\"", html_get_frame_name('pm_messages'), "\" frameborder=\"0\" />\n";
     echo "</frameset>\n";
 
-    html_draw_bottom();
+    html_draw_bottom(false);
     exit;
 }
 
@@ -156,6 +156,6 @@ echo "  <frame src=\"./pm_folders.php?webtag=$webtag\" name=\"", html_get_frame_
 echo "  <frame src=\"./pm_messages.php?webtag=$webtag\" name=\"", html_get_frame_name('pm_messages'), "\" frameborder=\"0\" />\n";
 echo "</frameset>\n";
 
-html_draw_bottom();
+html_draw_bottom(false);
 
 ?>

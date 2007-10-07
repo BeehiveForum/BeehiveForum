@@ -1174,6 +1174,7 @@ a {
     width: 500px;
     padding: 0px 10px 0px 10px;
     overflow: auto;
+    text-align: left;
 }
 
 .post_options {
@@ -1214,10 +1215,12 @@ a {
     padding: 10px;
     margin: 10px 0px 10px 0px;
     max-width: 100%;
+    text-align: left;
 }
 
 .error_msg ul li {
     padding-bottom: 5px;
+    text-align: left;
 }
 
 .success_msg {
@@ -1228,6 +1231,7 @@ a {
     padding: 10px;
     margin: 10px 0px 10px 0px;
     max-width: 100%;
+    text-align: left;
 }
 
 .warning_msg {
@@ -1238,4 +1242,5 @@ a {
     padding: 10px;
     margin: 10px 0px 10px 0px;
     max-width: 100%;
+    text-align: left;
 }

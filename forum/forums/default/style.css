@@ -1141,6 +1141,7 @@ a {
     width: 500px;
     padding: 0px 10px 0px 10px;
     overflow: auto;
+    text-align: left;
 }
 
 .post_options {

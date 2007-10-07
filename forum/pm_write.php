@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.183 2007-09-18 20:02:49 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.184 2007-10-07 13:54:14 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -243,15 +243,13 @@ if (isset($t_rmid) && $t_rmid > 0) {
 
             if ($forward_msg) {
 
-                if (strtoupper(substr($pm_data['SUBJECT'], 0, 4)) != "FWD:") {
-                    $t_subject = "Fwd:{$pm_data['SUBJECT']}";
-                }
+                $t_subject = preg_replace('/^FWD:/i', '', $pm_data['SUBJECT']);
+                $t_subject = "FWD:$t_subject";
 
             }elseif (!$edit_msg) {
 
-                if (strtoupper(substr($pm_data['SUBJECT'], 0, 3)) != "RE:") {
-                    $t_subject = "Re:{$pm_data['SUBJECT']}";
-                }
+                $t_subject = preg_replace('/^RE:/i', '', $pm_data['SUBJECT']);
+                $t_subject = "RE:$t_subject";
             }
         }
 

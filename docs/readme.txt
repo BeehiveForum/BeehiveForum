@@ -68,21 +68,28 @@ in release.txt.
 
 You need web hosting which provides:
 
-  - PHP 4.2.0 or above
+  - PHP 4.3.2 or above
   - MySQL 4.1.16 or above
 
 1.1.1 Requirements Notes
 ========================
 
+- Beehive Forum requires PHP 4.3.2 as a minimum, but we recommend installing
+  the latest PHP5 release where ever possible.
+
+- MySQL 4.1.16 or newer is required by Beehive Forum. As with PHP we recommend
+  installing the latest release of MySQL 5 if possible.
+
 - As a minimum Beehive Forum requires the following privileges on the
-  database and tables it runs from:
+  MySQL database and tables it runs from:
 
   SELECT, CREATE, CREATE TEMPORARY TABLES, 
   INSERT, ALTER, UPDATE, INDEX, DELETE and DROP.
 
-- You may optionally grant the FILE permission to speed up the creation
-  of the dictionary during installation but Beehive Forum doesn't require
-  it to remain enabled.
+  You may optionally grant the FILE permission to speed up the creation
+  of the dictionary during installation but Beehive Forum. Once installation
+  has completed you may restore the default permissions without suffering
+  any reduced functionality.
 
 1.2 Instructions
 ================
@@ -514,7 +521,7 @@ directory:
 
 http://www.mysite.com/forumtemp/install.php
 
-Make sure you select the right 'Upgrade' proceedure from the installation
+Make sure you select the correct 'Upgrade' proceedure from the installation
 method drop-down list, and then follow the instructions.
 
 
@@ -532,7 +539,7 @@ upgrading and you should really only have to do it once.
 ==================================
 
 0.5PR1 is no longer supported by the development team. If you are still running
-this version of Beehive Forum please upgrade to the 0.5 or a later release.
+this version of Beehive Forum please upgrade to 0.5 or a later release.
 
 
 1.4.4 Upgrading from 0.3 to 0.4

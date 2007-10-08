@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.60 2007-09-05 22:56:37 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.61 2007-10-08 14:19:28 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -52,6 +52,8 @@ function dir_exists($dir)
 
 function check_install()
 {
+    install_check_php_version();
+
     install_check_mysql_version();
 
     if (isset($_POST['install_remove_files']) && $_POST['install_remove_files'] == 'Y') {
@@ -260,6 +262,58 @@ function install_check_mysql_version()
             echo "</html>\n";
             exit;
         }
+    }
+}
+
+function install_check_php_version()
+{
+    if (version_compare(phpversion(), "4.3.2", "<")) {
+
+        echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
+        echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
+        echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"ltr\">\n";
+        echo "<head>\n";
+        echo "<title>BeehiveForum ", BEEHIVE_VERSION, " - Installation</title>\n";
+        echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
+        echo "<link rel=\"icon\" href=\"./images/favicon.ico\" type=\"image/ico\">\n";
+        echo "<link rel=\"stylesheet\" href=\"./styles/style.css\" type=\"text/css\" />\n";
+        echo "</head>\n";
+        echo "<h1>BeehiveForum Minimum Requirements Error</h1>\n";
+        echo "<br />\n";
+        echo "<div align=\"center\">\n";
+        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";
+        echo "    <tr>\n";
+        echo "      <td align=\"left\">\n";
+        echo "        <table class=\"box\">\n";
+        echo "          <tr>\n";
+        echo "            <td align=\"left\" class=\"posthead\">\n";
+        echo "              <table class=\"posthead\" width=\"500\">\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\" colspan=\"2\" class=\"subhead\">Minimum Requirements not met</td>\n";
+        echo "                </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"center\">\n";
+        echo "                    <table class=\"posthead\" width=\"95%\">\n";
+        echo "                      <tr>\n";
+        echo "                        <td align=\"left\">PHP Version 4.3.2 or newer is required to run Beehive Forum. Please upgrade.</td>\n";
+        echo "                      </tr>\n";
+        echo "                      <tr>\n";
+        echo "                        <td align=\"left\">&nbsp;</td>\n";
+        echo "                      </tr>\n";
+        echo "                    </table>\n";
+        echo "                  </td>\n";
+        echo "                </tr>\n";
+        echo "              </table>\n";
+        echo "            </td>\n";
+        echo "          </tr>\n";
+        echo "        </table>\n";
+        echo "      </td>\n";
+        echo "    </tr>\n";
+        echo "  </table>\n";
+        echo "</div>\n";
+        echo "</body>\n";
+        echo "</html>\n";
+        exit;
     }
 }
 

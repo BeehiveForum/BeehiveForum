@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.482 2007-10-04 12:15:55 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.483 2007-10-08 17:10:24 decoyduck Exp $ */
 
 // British English language file
 
@@ -464,7 +464,6 @@ $lang['addremoveusers'] = "Add/Remove Users";
 $lang['nousersingroup'] = "There are no users in this group. Add users to this group by searching for them below.";
 $lang['groupaddedaddnewuser'] = "Successfully added group. Add users to this group by searching for them below.";
 $lang['nousersingroupaddusers'] = "There are no users in this group. To add users click the 'Add/Remove Users' button below.";
-$lang['addgroupandusers'] = "Add Group and Users";
 $lang['useringroups'] = "This user is a member of the following groups";
 $lang['usernotinanygroups'] = "This user is not in any user groups";
 $lang['usergroupwarning'] = "Note: This user may be inheriting additional permissions from any user groups listed below.";
@@ -698,8 +697,13 @@ $lang['forumautocleancaptcha'] = "Forum Auto Update: Text-Captcha Images Cleaned
 
 $lang['adminlogempty'] = "Admin Log is empty";
 
+$lang['youmustspecifyanactiontypetoremove'] = "You must specify an action type to remove";
+
 $lang['removeentriesrelatingtoaction'] = "Remove Entries Relating to Action";
 $lang['removeentriesolderthandays'] = "Remove Entries Older Than (Days)";
+
+$lang['successfullyprunedadminlog'] = "Successfully Pruned Admin Log";
+$lang['failedtopruneadminlog'] = "Failed To Prune Admin Log";
 
 $lang['prune_log'] = "Prune Log";
 
@@ -1056,7 +1060,9 @@ $lang['linkdetails'] = "Link Details";
 $lang['addcomment'] = "Add Comment";
 $lang['voterecorded'] = "Your vote has been recorded";
 $lang['votecleared'] = "Your vote has been cleared";
-$lang['linksfoldernametoolong'] = "Folder name too long. Maximum length is %s characters";
+$lang['linknametoolong'] = "Link name too long. Maximum is %s characters";
+$lang['linkurltoolong'] = "Link URL too long. Maximum is %s characters";
+$lang['linkfoldernametoolong'] = "Folder name too long. Maximum length is %s characters";
 
 // Login / logout (llogon.php, logon.php, logout.php) -----------------------------------------
 

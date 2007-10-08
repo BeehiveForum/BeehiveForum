@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.125 2007-09-23 22:40:25 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.126 2007-10-08 17:10:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -226,7 +226,7 @@ if (isset($_POST['prune_log'])) {
 
     }else {
 
-        $error_msg_array[] = $lang['youmustspecifyaactiontypetoremove'];
+        $error_msg_array[] = $lang['youmustspecifyanactiontypetoremove'];
         $valid = false;
     }
 
@@ -764,7 +764,7 @@ echo "                        <td align=\"left\">", form_dropdown_array('remove_
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"250\" nowrap=\"nowrap\">{$lang['removeentriesolderthandays']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text('remove_days', '', 15, 4), "</td>\n";
+echo "                        <td align=\"left\">", form_input_text('remove_days', '7', 15, 4), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";

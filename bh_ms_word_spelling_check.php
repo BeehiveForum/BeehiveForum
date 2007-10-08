@@ -21,23 +21,23 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_ms_word_spelling_check.php,v 1.5 2007-04-29 14:28:34 decoyduck Exp $ */
+/* $Id: bh_ms_word_spelling_check.php,v 1.6 2007-10-08 17:10:24 decoyduck Exp $ */
 
 function word_spell_check($matches)
 {
     // Our Word COM Object
-    
-    global $word_obj; 
+
+    global $word_obj;
 
     // Our string to check
 
     $string_check = trim($matches[1]);
 
     echo "Checking: $string_check...\n";
-    
+
     // Create new document and paste in string.
-    
-    $word_obj->Visible = 0;
+
+    $word_obj->Visible = 1;
     $word_obj->Documents->Add();
     $word_obj->Selection->TypeText($string_check);
 
@@ -47,7 +47,7 @@ function word_spell_check($matches)
     // Select the whole document.
     $word_obj->Selection->WholeStory();
 
-    // Get the corrected string        
+    // Get the corrected string
     $string_corrected = $word_obj->Selection->Text;
 
     // Close the document and do not save changes.
@@ -71,7 +71,7 @@ $word_obj = new COM("word.application");
 // Load the language file.
 
 if ($langfile = file('./forum/include/languages/en.inc.php')) {
-    
+
     if ($fp = fopen('./forum/include/languages/en-new.inc.php', 'w')) {
 
         foreach($langfile as $line) {

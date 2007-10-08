@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.135 2007-09-16 13:24:20 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.136 2007-10-08 17:10:24 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -90,16 +90,24 @@ function admin_add_log_entry($action, $data = "")
 * Clears the forum admin log
 *
 * @return bool
-* @param void
+* @param integer $remove_type - Action ID (see constants.inc.php) type to remove. (0 = All)
+* @param mixed $remove_days - Remove entries older than days.
 */
 
-function admin_clearlog()
+function admin_prune_log($remove_type, $remove_days)
 {
     $db_admin_clearlog = db_connect();
 
+    if (!is_numeric($remove_type)) return false;
+    if (!is_numeric($remove_days)) return false;
+
+    $remove_days_seconds = $remove_days * DAY_IN_SECONDS;
+
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "DELETE QUICK FROM {$table_data['PREFIX']}ADMIN_LOG";
+    $sql = "DELETE QUICK FROM {$table_data['PREFIX']}ADMIN_LOG ";
+    $sql.= "WHERE UNIX_TIMESTAMP(CREATED) < UNIX_TIMESTAMP(NOW()) - $remove_days_seconds ";
+    $sql.= "AND (ACTION = '$remove_type' OR '$remove_type' = 0)";
 
     if (!$result = db_query($sql, $db_admin_clearlog)) return false;
 

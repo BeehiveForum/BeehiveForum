@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.75 2007-09-05 22:56:39 decoyduck Exp $ */
+/* $Id: install.php,v 1.76 2007-10-08 14:19:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -38,6 +38,10 @@ if (@file_exists(BH_INCLUDE_PATH. "config.inc.php")) {
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
+
+// Check the PHP version
+
+install_check_php_version();
 
 // Check for a forced install
 

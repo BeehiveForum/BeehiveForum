@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_add.php,v 1.89 2007-09-15 20:20:18 decoyduck Exp $ */
+/* $Id: links_add.php,v 1.90 2007-10-08 17:10:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -188,9 +188,15 @@ if (isset($_POST['submit']) && $mode == LINKS_ADD_LINK) {
         $fid = 1;
     }
 
-    if (isset($_POST['uri']) && preg_match("/\b([a-z]+:\/\/([-\w]{2,}\.)*[-\w]{2,}(:\d+)?(([^\s;,.?\"'[\]() {}<>]|\S[^\s;,.?\"'[\]() {}<>])*)?)/i", $_POST['uri'])) {
+    if (isset($_POST['uri']) && preg_match("/\b([a-z]+:\/\/([-\w]{2,}\.)*[-\w]{2,}(:\d+)?(([^\s;,.?\"'[\]() {}<>]|\S[^\s;,.?\"'[\]() {}<>])*)?)/i", trim(_stripslashes($_POST['uri'])))) {
 
-        $uri = $_POST['uri'];
+        $uri = trim(_stripslashes($_POST['uri']));
+
+        if (strlen($uri) > 255) {
+
+            $error_msg_array[] = sprintf($lang['linkurltoolong'], 255);
+            $valid = false;
+        }
 
     }else {
 
@@ -201,6 +207,12 @@ if (isset($_POST['submit']) && $mode == LINKS_ADD_LINK) {
     if (isset($_POST['name']) && strlen(trim(_stripslashes($_POST['name']))) > 0) {
 
         $name = trim(_stripslashes($_POST['name']));
+
+        if (strlen($name) > 64) {
+
+            $error_msg_array[] = sprintf($lang['linknametoolong'], 64);
+            $valid = false;
+        }
 
     }else {
 
@@ -241,6 +253,12 @@ if (isset($_POST['submit']) && $mode == LINKS_ADD_LINK) {
     if (isset($_POST['name']) && strlen(trim(_stripslashes($_POST['name']))) > 0) {
 
         $name = trim(_stripslashes($_POST['name']));
+
+        if (strlen($name) > 32) {
+
+            $error_msg_array[] = sprintf($lang['linkfoldernametoolong'], 32);
+            $valid = false;
+        }
 
     }else {
 

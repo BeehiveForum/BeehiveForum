@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.93 2007-09-15 20:20:18 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.94 2007-10-08 16:21:51 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -159,7 +159,7 @@ $uid = bh_session_get_value('UID');
 
 // Get the existing thread data.
 
-if (!$threaddata = thread_get($tid, true)) {
+if (!$thread_data = thread_get($tid, true)) {
 
     html_draw_top();
     html_error_msg($lang['threadcouldnotbefound']);
@@ -185,7 +185,7 @@ if (isset($_GET['markasread']) && is_numeric($_GET['markasread'])) {
 
     $mark_as_read = $_GET['markasread'];
 
-    if (messages_set_read($tid, $mark_as_read, $uid, $threaddata['MODIFIED'])) {
+    if (messages_set_read($tid, $mark_as_read, $uid, $thread_data['MODIFIED'])) {
 
         header_redirect("./messages.php?webtag=$webtag&msg=$msg&markasread=1");
         exit;
@@ -212,7 +212,7 @@ if (isset($_POST['submit'])) {
 
         $mark_as_read = $_POST['markasread'];
 
-        if (!messages_set_read($tid, $mark_as_read, $uid, $threaddata['MODIFIED'])) {
+        if (!messages_set_read($tid, $mark_as_read, $uid, $thread_data['MODIFIED'])) {
 
             $error_msg_array[] = $lang['failedtoupdatethreadreadstatus'];
             $valid = false;
@@ -223,7 +223,7 @@ if (isset($_POST['submit'])) {
 
         $thread_interest = $_POST['interest'];
 
-        if (!thread_set_interest($tid, $threaddata['INTEREST'])) {
+        if (!thread_set_interest($tid, $thread_data['INTEREST'])) {
 
             $error_msg_array[] = $lang['failedtoupdatethreadinterest'];
             $valid = false;
@@ -232,25 +232,28 @@ if (isset($_POST['submit'])) {
 
     // Admin Options
 
-    if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid) || ((($threaddata['FROM_UID'] == $uid) && $threaddata['ADMIN_LOCK'] == THREAD_ADMIN_LOCK_DISABLED) && ((forum_get_setting('allow_post_editing', 'Y')) && intval(forum_get_setting('post_edit_time', false, 0)) == 0) || ((time() - $threaddata['CREATED']) < (intval(forum_get_setting('post_edit_time', false, 0)) * MINUTE_IN_SECONDS)))) {
+    if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid) || ((($thread_data['FROM_UID'] == $uid) && $thread_data['ADMIN_LOCK'] == THREAD_ADMIN_LOCK_DISABLED) && ((forum_get_setting('allow_post_editing', 'Y')) && intval(forum_get_setting('post_edit_time', false, 0)) == 0) || ((time() - $thread_data['CREATED']) < (intval(forum_get_setting('post_edit_time', false, 0)) * MINUTE_IN_SECONDS)))) {
 
         if (isset($_POST['rename']) && strlen(trim(_stripslashes($_POST['rename']))) > 0) {
 
             $t_rename = trim(_stripslashes($_POST['rename']));
 
-            if (thread_change_title($fid, $tid, $t_rename)) {
+            if ($t_rename !== trim($thread_data['TITLE'])) {
 
-                post_add_edit_text($tid, 1);
+                if (thread_change_title($fid, $tid, $t_rename)) {
 
-                if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
+                    post_add_edit_text($tid, 1);
 
-                    admin_add_log_entry(RENAME_THREAD, array($tid, $threaddata['TITLE'], $t_rename));
+                    if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
+
+                        admin_add_log_entry(RENAME_THREAD, array($tid, $thread_data['TITLE'], $t_rename));
+                    }
+
+                }else {
+
+                    $error_msg_array[] = $lang['failedtorenamethread'];
+                    $valid = false;
                 }
-
-            }else {
-
-                $error_msg_array[] = $lang['failedtorenamethread'];
-                $valid = false;
             }
         }
 
@@ -258,18 +261,18 @@ if (isset($_POST['submit'])) {
 
             $t_move = $_POST['move'];
 
-            if (folder_is_valid($t_move) && bh_session_check_perm(USER_PERM_THREAD_CREATE, $t_move)) {
+            if (folder_is_valid($t_move) && bh_session_check_perm(USER_PERM_THREAD_CREATE, $t_move) && $t_move !== $thread_data['FID']) {
 
                 if (thread_change_folder($tid, $t_move)) {
 
                     $new_folder_title = folder_get_title($t_move);
-                    $old_folder_title = folder_get_title($threaddata['FID']);
+                    $old_folder_title = folder_get_title($thread_data['FID']);
 
                     post_add_edit_text($tid, 1);
 
                     if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
 
-                        admin_add_log_entry(MOVED_THREAD, array($tid, $threaddata['TITLE'], $old_folder_title, $new_folder_title));
+                        admin_add_log_entry(MOVED_THREAD, array($tid, $thread_data['TITLE'], $old_folder_title, $new_folder_title));
                     }
 
                 }else {
@@ -283,37 +286,45 @@ if (isset($_POST['submit'])) {
 
     if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
 
-        if (isset($_POST['closed']) && in_array($_POST['closed'], array('Y', 'N'))) {
+        if (isset($_POST['closed']) && is_numeric($_POST['closed'])) {
 
-            $threaddata['CLOSED'] = ($_POST['closed'] == "Y");
+            $t_closed = in_array($_POST['closed'], range(0, 1)) ? $_POST['closed'] : $thread_data['CLOSED'];
 
-            if (thread_set_closed($tid, $threaddata['CLOSED'])) {
+            if ($t_closed != $thread_data['CLOSED']) {
 
-                admin_add_log_entry(($threaddata['CLOSED']) ? CLOSED_THREAD : OPENED_THREAD, array($tid, $threaddata['TITLE']));
+                if (thread_set_closed($tid, $t_closed > 0)) {
 
-            }else {
+                    admin_add_log_entry(($t_closed > 0) ? CLOSED_THREAD : OPENED_THREAD, array($tid, $thread_data['TITLE']));
 
-                $error_msg_array[] = $lang['failedtoupdatethreadclosedstatus'];
-                $valid = false;
+                }else {
+
+                    $error_msg_array[] = $lang['failedtoupdatethreadclosedstatus'];
+                    $valid = false;
+                }
             }
         }
 
-        if (isset($_POST['lock']) && in_array($_POST['lock'], array('Y', 'N'))) {
+        if (isset($_POST['admin_lock']) && is_numeric($_POST['admin_lock'])) {
 
-            $threaddata['ADMIN_LOCK'] = ($_POST['lock'] == "Y");
+            $t_admin_lock = in_array($_POST['admin_lock'], range(0, 1)) ? $_POST['admin_lock'] : $thread_data['ADMIN_LOCK'];
 
-            if (thread_admin_lock($tid, $threaddata['ADMIN_LOCK'])) {
+            if ($t_admin_lock != $thread_data['ADMIN_LOCK']) {
 
-                admin_add_log_entry(($threaddata['ADMIN_LOCK']) ? LOCKED_THREAD : UNLOCKED_THREAD, array($tid, $threaddata['TITLE']));
+                if (thread_admin_lock($tid, $t_admin_lock > 0)) {
 
-            }else {
+                    admin_add_log_entry(($t_admin_lock > 0) ? LOCKED_THREAD : UNLOCKED_THREAD, array($tid, $thread_data['TITLE']));
 
-                $error_msg_array[] = $lang['failedtoupdatethreadlockstatus'];
-                $valid = false;
+                }else {
+
+                    $error_msg_array[] = $lang['failedtoupdatethreadlockstatus'];
+                    $valid = false;
+                }
             }
         }
 
         if (isset($_POST['sticky']) && $_POST['sticky'] == "Y") {
+
+            $t_sticky = $_POST['sticky'];
 
             if (isset($_POST['sticky_year']) && isset($_POST['sticky_month']) && isset($_POST['sticky_day'])) {
 
@@ -325,19 +336,22 @@ if (isset($_POST['submit'])) {
 
                     if (@checkdate($sticky_month, $sticky_day, $sticky_year)) {
 
-                        $thread_sticky_until = mktime(0, 0, 0, $sticky_month, $sticky_day, $sticky_year);
+                        $t_sticky_until = mktime(0, 0, 0, $sticky_month, $sticky_day, $sticky_year);
 
-                        $threaddata['STICKY'] = $_POST['sticky'];
-                        $threaddata['STICKY_UNTIL'] = $thread_sticky_until;
+                        if (($t_sticky != $thread_data['STICKY']) || ($t_sticky_until != $thread_data['STICKY_UNTIL'])) {
 
-                        if (thread_set_sticky($tid, true, $thread_sticky_until)) {
+                            $thread_data['STICKY'] = $_POST['sticky'];
+                            $thread_data['STICKY_UNTIL'] = $t_sticky_until;
 
-                            admin_add_log_entry(CREATE_THREAD_STICKY, array($tid, $threaddata['TITLE']));
+                            if (thread_set_sticky($tid, true, $t_sticky_until)) {
 
-                        }else {
+                                admin_add_log_entry(CREATE_THREAD_STICKY, array($tid, $thread_data['TITLE']));
 
-                            $error_msg_array[] = $lang['failedtoupdatethreadstickystatus'];
-                            $valid = false;
+                            }else {
+
+                                $error_msg_array[] = $lang['failedtoupdatethreadstickystatus'];
+                                $valid = false;
+                            }
                         }
 
                     }else {
@@ -350,7 +364,7 @@ if (isset($_POST['submit'])) {
 
                     if (thread_set_sticky($tid, true)) {
 
-                        admin_add_log_entry(REMOVE_THREAD_STICKY, array($tid, $threaddata['TITLE']));
+                        admin_add_log_entry(CREATE_THREAD_STICKY, array($tid, $thread_data['TITLE']));
 
                     }else {
 
@@ -360,16 +374,21 @@ if (isset($_POST['submit'])) {
                 }
             }
 
-        }else {
+        }else if (isset($_POST['sticky']) && $_POST['sticky'] == "N") {
 
-            if (thread_set_sticky($tid, false)) {
+            $t_sticky = $_POST['sticky'];
 
-                admin_add_log_entry(REMOVE_THREAD_STICKY, array($tid, $threaddata['TITLE']));
+            if ($t_sticky != $thread_data['STICKY']) {
 
-            }else {
+                if (thread_set_sticky($tid, false)) {
 
-                $error_msg_array[] = $lang['failedtoupdatethreadstickystatus'];
-                $valid = false;
+                    admin_add_log_entry(REMOVE_THREAD_STICKY, array($tid, $thread_data['TITLE']));
+
+                }else {
+
+                    $error_msg_array[] = $lang['failedtoupdatethreadstickystatus'];
+                    $valid = false;
+                }
             }
         }
 
@@ -429,7 +448,7 @@ if (isset($_POST['submit'])) {
 
                     if (thread_delete_by_user($tid, $del_uid['UID'])) {
 
-                        admin_add_log_entry(DELETE_USER_THREAD_POSTS, array($tid, $threaddata['TITLE'], $user_logon));
+                        admin_add_log_entry(DELETE_USER_THREAD_POSTS, array($tid, $thread_data['TITLE'], $user_logon));
 
                     }else {
 
@@ -448,7 +467,7 @@ if (isset($_POST['submit'])) {
 
                 if (thread_delete($tid, $delete_thread)) {
 
-                    admin_add_log_entry(DELETE_THREAD, array($tid, $threaddata['TITLE']));
+                    admin_add_log_entry(DELETE_THREAD, array($tid, $thread_data['TITLE']));
 
                 }else {
 
@@ -464,7 +483,7 @@ if (isset($_POST['submit'])) {
 
                 if (thread_undelete($tid)) {
 
-                    admin_add_log_entry(UNDELETE_THREAD, array($tid, $threaddata['TITLE']));
+                    admin_add_log_entry(UNDELETE_THREAD, array($tid, $thread_data['TITLE']));
 
                 }else {
 
@@ -482,11 +501,11 @@ if (isset($_POST['submit'])) {
     }
 }
 
-if ($threaddata['LENGTH'] > 0) {
+if ($thread_data['LENGTH'] > 0) {
 
     html_draw_top("basetarget=_blank", "robots=noindex,nofollow", 'thread_options.js');
 
-    echo "<h1>{$lang['threadoptions']} &raquo; <a href=\"messages.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\">#{$tid} ", word_filter_add_ob_tags(_htmlentities(thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE']))), "</a></h1>\n";
+    echo "<h1>{$lang['threadoptions']} &raquo; <a href=\"messages.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\">#{$tid} ", word_filter_add_ob_tags(_htmlentities(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']))), "</a></h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -517,23 +536,23 @@ if ($threaddata['LENGTH'] > 0) {
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"250\" class=\"posthead\">{$lang['markedasread']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("markasread", _htmlentities($threaddata['LAST_READ']), 5), " {$lang['postsoutof']} {$threaddata['LENGTH']}</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("markasread", _htmlentities($thread_data['LAST_READ']), 5), " {$lang['postsoutof']} {$thread_data['LENGTH']}</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" valign=\"top\" class=\"posthead\">{$lang['interest']}:</td>\n";
-    echo "                        <td align=\"left\">", form_radio("interest", THREAD_IGNORED, $lang['ignore'], $threaddata['INTEREST'] == THREAD_IGNORED), "</td>\n";
+    echo "                        <td align=\"left\">", form_radio("interest", THREAD_IGNORED, $lang['ignore'], $thread_data['INTEREST'] == THREAD_IGNORED), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";
-    echo "                        <td align=\"left\">", form_radio("interest", THREAD_NOINTEREST, $lang['normal'], $threaddata['INTEREST'] == THREAD_NOINTEREST), "</td>\n";
+    echo "                        <td align=\"left\">", form_radio("interest", THREAD_NOINTEREST, $lang['normal'], $thread_data['INTEREST'] == THREAD_NOINTEREST), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";
-    echo "                        <td align=\"left\">", form_radio("interest", THREAD_INTERESTED, $lang['interested'], $threaddata['INTEREST'] == THREAD_INTERESTED), "</td>\n";
+    echo "                        <td align=\"left\">", form_radio("interest", THREAD_INTERESTED, $lang['interested'], $thread_data['INTEREST'] == THREAD_INTERESTED), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";
-    echo "                        <td align=\"left\">", form_radio("interest", THREAD_SUBSCRIBED, $lang['subscribe'], $threaddata['INTEREST'] == THREAD_SUBSCRIBED), "</td>\n";
+    echo "                        <td align=\"left\">", form_radio("interest", THREAD_SUBSCRIBED, $lang['subscribe'], $thread_data['INTEREST'] == THREAD_SUBSCRIBED), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -547,7 +566,7 @@ if ($threaddata['LENGTH'] > 0) {
     echo "          </tr>\n";
     echo "        </table>\n";
 
-    if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid) || ((($threaddata['FROM_UID'] == $uid) && $threaddata['ADMIN_LOCK'] == THREAD_ADMIN_LOCK_DISABLED) && ((forum_get_setting('allow_post_editing', 'Y')) && intval(forum_get_setting('post_edit_time', false, 0)) == 0) || ((time() - $threaddata['CREATED']) < (intval(forum_get_setting('post_edit_time', false, 0)) * MINUTE_IN_SECONDS)))) {
+    if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid) || ((($thread_data['FROM_UID'] == $uid) && $thread_data['ADMIN_LOCK'] == THREAD_ADMIN_LOCK_DISABLED) && ((forum_get_setting('allow_post_editing', 'Y')) && intval(forum_get_setting('post_edit_time', false, 0)) == 0) || ((time() - $thread_data['CREATED']) < (intval(forum_get_setting('post_edit_time', false, 0)) * MINUTE_IN_SECONDS)))) {
 
         if (!thread_is_poll($tid)) {
 
@@ -564,11 +583,11 @@ if ($threaddata['LENGTH'] > 0) {
             echo "                    <table class=\"posthead\" width=\"95%\">\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\" width=\"250\" class=\"posthead\">{$lang['renamethread']}:</td>\n";
-            echo "                        <td align=\"left\">", form_input_text("rename", _htmlentities($threaddata['TITLE']), 30, 64), "</td>\n";
+            echo "                        <td align=\"left\">", form_input_text("rename", _htmlentities($thread_data['TITLE']), 30, 64), "</td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\" class=\"posthead\">{$lang['movethread']}:</td>\n";
-            echo "                        <td align=\"left\">", folder_draw_dropdown($threaddata['FID'], "move", "", FOLDER_ALLOW_NORMAL_THREAD, "", "post_folder_dropdown"), "</td>\n";
+            echo "                        <td align=\"left\">", folder_draw_dropdown($thread_data['FID'], "move", "", FOLDER_ALLOW_NORMAL_THREAD, "", "post_folder_dropdown"), "</td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -597,7 +616,7 @@ if ($threaddata['LENGTH'] > 0) {
             echo "                    <table class=\"posthead\" width=\"95%\">\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\" width=\"250\" class=\"posthead\">{$lang['movethread']}:</td>\n";
-            echo "                        <td align=\"left\">", folder_draw_dropdown($threaddata['FID'], "move", "", FOLDER_ALLOW_POLL_THREAD, "", "post_folder_dropdown"), "</td>\n";
+            echo "                        <td align=\"left\">", folder_draw_dropdown($thread_data['FID'], "move", "", FOLDER_ALLOW_POLL_THREAD, "", "post_folder_dropdown"), "</td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -812,11 +831,11 @@ if ($threaddata['LENGTH'] > 0) {
             echo "                      <tr>\n";
             echo "                        <td align=\"left\" width=\"50%\" class=\"posthead\">{$lang['sticky']}:</td>\n";
 
-            if ($threaddata['STICKY_UNTIL'] && $threaddata['STICKY'] == "Y") {
+            if ($thread_data['STICKY_UNTIL'] && $thread_data['STICKY'] == "Y") {
 
-                $sticky_year  = date("Y", $threaddata['STICKY_UNTIL']);
-                $sticky_month = date("n", $threaddata['STICKY_UNTIL']);
-                $sticky_day   = date("j", $threaddata['STICKY_UNTIL']);
+                $sticky_year  = date("Y", $thread_data['STICKY_UNTIL']);
+                $sticky_month = date("n", $thread_data['STICKY_UNTIL']);
+                $sticky_day   = date("j", $thread_data['STICKY_UNTIL']);
 
             }else {
 
@@ -825,11 +844,11 @@ if ($threaddata['LENGTH'] > 0) {
                 $sticky_day   = 0;
             }
 
-            echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_radio("sticky", "Y", $lang['until'], $threaddata['STICKY'] == "Y"), "&nbsp;", form_date_dropdowns($sticky_year, $sticky_month, $sticky_day, "sticky_"), "&nbsp;&nbsp;</td>\n";
+            echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_radio("sticky", "Y", $lang['until'], $thread_data['STICKY'] == "Y"), "&nbsp;", form_date_dropdowns($sticky_year, $sticky_month, $sticky_day, "sticky_"), "&nbsp;&nbsp;</td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\">&nbsp;</td>\n";
-            echo "                        <td align=\"left\">", form_radio("sticky", "N", $lang['no'], $threaddata['STICKY'] == "N"), "</td>\n";
+            echo "                        <td align=\"left\">", form_radio("sticky", "N", $lang['no'], $thread_data['STICKY'] == "N"), "</td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -856,15 +875,15 @@ if ($threaddata['LENGTH'] > 0) {
             echo "                      <tr>\n";
             echo "                        <td align=\"left\" class=\"posthead\">{$lang['closedforposting']}:</td>\n";
             echo "                        <td align=\"left\">\n";
-            echo "                          ", form_radio("closed", "Y", $lang['yes'], $threaddata['CLOSED']), " \n";
-            echo "                          ", form_radio("closed", "N", $lang['no'], !$threaddata['CLOSED']), "\n";
+            echo "                          ", form_radio("closed", 1, $lang['yes'], $thread_data['CLOSED'] > 0), " \n";
+            echo "                          ", form_radio("closed", 0, $lang['no'], $thread_data['CLOSED'] < 1), "\n";
             echo "                        </td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\" class=\"posthead\">{$lang['locktitleandfolder']}:</td>\n";
             echo "                        <td align=\"left\">\n";
-            echo "                          ", form_radio("lock", "Y", $lang['yes'], $threaddata['ADMIN_LOCK']), " \n";
-            echo "                          ", form_radio("lock", "N", $lang['no'], !$threaddata['ADMIN_LOCK']), "\n";
+            echo "                          ", form_radio("admin_lock", 1, $lang['yes'], $thread_data['ADMIN_LOCK'] > 0), " \n";
+            echo "                          ", form_radio("admin_lock", 0, $lang['no'], $thread_data['ADMIN_LOCK'] < 1), "\n";
             echo "                        </td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
@@ -968,7 +987,7 @@ if ($threaddata['LENGTH'] > 0) {
 
     html_draw_top("basetarget=_blank", "robots=noindex,nofollow", 'thread_options.js');
 
-    echo "<h1>{$lang['threadoptions']}: <a href=\"messages.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\">#{$tid} ", word_filter_add_ob_tags(_htmlentities(thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE']))), "</a></h1>\n";
+    echo "<h1>{$lang['threadoptions']}: <a href=\"messages.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\">#{$tid} ", word_filter_add_ob_tags(_htmlentities(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']))), "</a></h1>\n";
     echo "<br />\n";
 
     echo "<div align=\"center\">\n";

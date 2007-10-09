@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.inc.php,v 1.13 2007-09-15 22:13:45 decoyduck Exp $ */
+/* $Id: visitor_log.inc.php,v 1.14 2007-10-09 23:16:05 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -42,7 +42,7 @@ include_once(BH_INCLUDE_PATH. "timezone.inc.php");
 
 function visitor_log_get_recent()
 {
-    $db_visitor_log_get_recent = db_connect();
+    if (!$db_visitor_log_get_recent = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -131,7 +131,7 @@ function visitor_log_get_recent()
 
 function visitor_log_get_profile_items(&$profile_header_array, &$profile_dropdown_array)
 {
-    $db_visitor_log_get_profile_items = db_connect();
+    if (!$db_visitor_log_get_profile_items = db_connect()) return false;
 
     $lang = load_language_file();
 
@@ -181,7 +181,7 @@ function visitor_log_get_profile_items(&$profile_header_array, &$profile_dropdow
 
 function visitor_log_browse_items($user_search, $profile_items_array, $offset, $sort_by, $sort_dir, $hide_empty, $hide_guests)
 {
-    $db_visitor_log_browse_items = db_connect();
+    if (!$db_visitor_log_browse_items = db_connect()) return false;
 
     // Check the function parameters are all correct.
 
@@ -578,7 +578,7 @@ function visitor_log_dummy_column()
 
 function visitor_log_clean_up()
 {
-    $db_visitor_log_clean_up = db_connect();
+    if (!$db_visitor_log_clean_up = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 

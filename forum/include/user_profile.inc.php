@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.78 2007-09-08 17:42:42 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.79 2007-10-09 23:16:05 decoyduck Exp $ */
 
 /**
 * Functions relating to users interacting with profiles
@@ -51,7 +51,7 @@ include_once(BH_INCLUDE_PATH. "user_rel.inc.php");
 
 function user_profile_update($uid, $piid, $entry, $privacy)
 {
-    $db_user_profile_update = db_connect();
+    if (!$db_user_profile_update = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
     if (!is_numeric($piid)) return false;
@@ -89,7 +89,7 @@ function user_get_profile($uid)
 {
     $lang = load_language_file();
 
-    $db_user_get_profile = db_connect();
+    if (!$db_user_get_profile = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
 
@@ -282,7 +282,7 @@ function user_format_local_time(&$user_prefs_array)
 
 function user_get_profile_entries($uid)
 {
-    $db_user_get_profile_entries = db_connect();
+    if (!$db_user_get_profile_entries = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
 
@@ -338,7 +338,7 @@ function user_get_profile_entries($uid)
 
 function user_get_profile_image($uid)
 {
-    $db_user_get_profile_image = db_connect();
+    if (!$db_user_get_profile_image = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
 
@@ -366,7 +366,7 @@ function user_get_post_count($uid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $db_user_get_post_count = db_connect();
+    if (!$db_user_get_post_count = db_connect()) return false;
 
     $sql = "SELECT POST_COUNT FROM {$table_data['PREFIX']}USER_TRACK ";
     $sql.= "WHERE UID = '$uid'";

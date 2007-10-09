@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.195 2007-09-15 20:20:18 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.196 2007-10-09 23:16:04 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -73,7 +73,7 @@ function search_execute($search_arguments, &$error)
         $search_arguments['sort_dir'] = 'DESC';
     }
 
-    $db_search_execute = db_connect();
+    if (!$db_search_execute = db_connect()) return false;
 
     // Each user can only store one search result so we should
     // clean up their previous search if applicable.
@@ -396,7 +396,7 @@ function search_strip_special_chars($keywords_array, $remove_non_matches = true)
 
 function search_get_word_lengths(&$min_length, &$max_length)
 {
-    $db_search_get_word_lengths = db_connect();
+    if (!$db_search_get_word_lengths = db_connect()) return false;
 
     $sql = "SHOW VARIABLES LIKE 'ft_%'";
 
@@ -422,7 +422,7 @@ function search_get_word_lengths(&$min_length, &$max_length)
 
 function search_save_keywords($keywords_array)
 {
-    $db_search_save_keywords = db_connect();
+    if (!$db_search_save_keywords = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -445,7 +445,7 @@ function search_save_keywords($keywords_array)
 
 function search_get_keywords()
 {
-    $db_search_get_keywords = db_connect();
+    if (!$db_search_get_keywords = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -473,7 +473,7 @@ function search_get_keywords()
 
 function search_fetch_results($offset, $sort_by, $sort_dir)
 {
-    $db_search_fetch_results = db_connect();
+    if (!$db_search_fetch_results = db_connect()) return false;
 
     $lang = load_language_file();
 
@@ -567,7 +567,7 @@ function search_fetch_results($offset, $sort_by, $sort_dir)
 
 function search_get_first_result_msg()
 {
-    $db_search_fetch_results = db_connect();
+    if (!$db_search_fetch_results = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -730,7 +730,7 @@ function folder_search_dropdown()
 {
     $lang = load_language_file();
 
-    $db_folder_search_dropdown = db_connect();
+    if (!$db_folder_search_dropdown = db_connect()) return false;
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
@@ -777,7 +777,7 @@ function folder_search_dropdown()
 
 function check_search_frequency()
 {
-    $db_check_search_frequency = db_connect();
+    if (!$db_check_search_frequency = db_connect()) return false;
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 

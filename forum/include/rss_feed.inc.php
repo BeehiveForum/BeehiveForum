@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: rss_feed.inc.php,v 1.47 2007-09-08 19:34:18 decoyduck Exp $ */
+/* $Id: rss_feed.inc.php,v 1.48 2007-10-09 23:16:04 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -185,7 +185,7 @@ function rss_parse_item($ivalues)
 
 function rss_fetch_feed()
 {
-    $db_fetch_rss_feed = db_connect();
+    if (!$db_fetch_rss_feed = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -219,7 +219,7 @@ function rss_fetch_feed()
 
 function rss_thread_exist($rss_id, $link)
 {
-    $db_rss_thread_exist = db_connect();
+    if (!$db_rss_thread_exist = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -238,7 +238,7 @@ function rss_thread_exist($rss_id, $link)
 
 function rss_create_history($rss_id, $link)
 {
-    $db_rss_create_history = db_connect();
+    if (!$db_rss_create_history = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -320,7 +320,7 @@ function rss_check_feeds()
 
 function rss_get_feeds($offset)
 {
-    $db_rss_get_feeds = db_connect();
+    if (!$db_rss_get_feeds = db_connect()) return false;
 
     $lang = load_language_file();
 
@@ -378,7 +378,7 @@ function rss_get_feeds($offset)
 
 function rss_add_feed($name, $uid, $fid, $url, $prefix, $frequency)
 {
-    $db_rss_add_feed = db_connect();
+    if (!$db_rss_add_feed = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
     if (!is_numeric($fid)) return false;
@@ -402,7 +402,7 @@ function rss_add_feed($name, $uid, $fid, $url, $prefix, $frequency)
 
 function rss_feed_update($rssid, $name, $uid, $fid, $url, $prefix, $frequency)
 {
-    $db_rss_feed_update = db_connect();
+    if (!$db_rss_feed_update = db_connect()) return false;
 
     if (!is_numeric($rssid)) return false;
     if (!is_numeric($uid)) return false;
@@ -426,7 +426,7 @@ function rss_feed_update($rssid, $name, $uid, $fid, $url, $prefix, $frequency)
 
 function rss_get_feed($feed_id)
 {
-    $db_rss_get_feeds = db_connect();
+    if (!$db_rss_get_feeds = db_connect()) return false;
 
     $lang = load_language_file();
 
@@ -469,7 +469,7 @@ function rss_get_feed($feed_id)
 
 function rss_remove_feed($rssid)
 {
-    $db_rss_remove_feed = db_connect();
+    if (!$db_rss_remove_feed = db_connect()) return false;
 
     if (!is_numeric($rssid)) return false;
 

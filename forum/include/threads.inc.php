@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.286 2007-09-23 22:40:25 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.287 2007-10-09 23:16:04 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -50,7 +50,7 @@ function threads_get_folders()
 {
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    $db_threads_get_folders = db_connect();
+    if (!$db_threads_get_folders = db_connect()) return false;
 
     $access_allowed = USER_PERM_POST_READ;
 
@@ -115,7 +115,7 @@ function threads_get_folders()
 
 function threads_get_all($uid, $start = 0) // get "all" threads (i.e. most recent threads, irrespective of read or unread status).
 {
-    $db_threads_get_all = db_connect();
+    if (!$db_threads_get_all = db_connect()) return false;
 
     // If there are any problems with the function arguments we bail out.
 
@@ -195,7 +195,7 @@ function threads_get_all($uid, $start = 0) // get "all" threads (i.e. most recen
 
 function threads_get_started_by_me($uid, $start = 0) // get threads started by user
 {
-    $db_threads_get_started_by_me = db_connect();
+    if (!$db_threads_get_started_by_me = db_connect()) return false;
 
     // If there are any problems with the function arguments we bail out.
 
@@ -250,7 +250,7 @@ function threads_get_started_by_me($uid, $start = 0) // get threads started by u
 
 function threads_get_unread($uid) // get unread messages for $uid
 {
-    $db_threads_get_unread = db_connect();
+    if (!$db_threads_get_unread = db_connect()) return false;
 
     // If there are any problems with the function arguments we bail out.
 
@@ -319,7 +319,7 @@ function threads_get_unread($uid) // get unread messages for $uid
 
 function threads_get_unread_to_me($uid) // get unread messages to $uid (ignores folder interest level)
 {
-    $db_threads_get_unread_to_me = db_connect();
+    if (!$db_threads_get_unread_to_me = db_connect()) return false;
 
     // If there are any problems with the function arguments we bail out.
 
@@ -380,7 +380,7 @@ function threads_get_unread_to_me($uid) // get unread messages to $uid (ignores 
 
 function threads_get_by_days($uid, $days = 1) // get threads from the last $days days
 {
-    $db_threads_get_by_days = db_connect();
+    if (!$db_threads_get_by_days = db_connect()) return false;
 
     // If there are any problems with the function arguments we bail out.
 
@@ -463,7 +463,7 @@ function threads_get_by_days($uid, $days = 1) // get threads from the last $days
 
 function threads_get_by_interest($uid, $interest = THREAD_INTERESTED) // get messages for $uid by interest (default High Interest)
 {
-    $db_threads_get_by_interest = db_connect();
+    if (!$db_threads_get_by_interest = db_connect()) return false;
 
     // If there are any problems with the function arguments we bail out.
 
@@ -527,7 +527,7 @@ function threads_get_by_interest($uid, $interest = THREAD_INTERESTED) // get mes
 
 function threads_get_unread_by_interest($uid, $interest = THREAD_INTERESTED) // get unread messages for $uid by interest (default High Interest)
 {
-    $db_threads_get_unread_by_interest = db_connect();
+    if (!$db_threads_get_unread_by_interest = db_connect()) return false;
 
     // If there are any problems with the function arguments we bail out.
 
@@ -598,7 +598,7 @@ function threads_get_unread_by_interest($uid, $interest = THREAD_INTERESTED) // 
 
 function threads_get_recently_viewed($uid) // get messages recently seem by $uid
 {
-    $db_threads_get_recently_viewed = db_connect();
+    if (!$db_threads_get_recently_viewed = db_connect()) return false;
 
     // If there are any problems with the function arguments we bail out.
 
@@ -662,7 +662,7 @@ function threads_get_recently_viewed($uid) // get messages recently seem by $uid
 
 function threads_get_by_relationship($uid, $relationship = USER_FRIEND, $start = 0) // get threads started by people of a particular relationship (default friend)
 {
-    $db_threads_get_by_relationship = db_connect();
+    if (!$db_threads_get_by_relationship = db_connect()) return false;
 
     // If there are any problems with the function arguments we bail out.
 
@@ -723,7 +723,7 @@ function threads_get_by_relationship($uid, $relationship = USER_FRIEND, $start =
 
 function threads_get_unread_by_relationship($uid, $relationship = USER_FRIEND) // get unread messages started by people of a particular relationship (default friend)
 {
-    $db_threads_get_unread = db_connect();
+    if (!$db_threads_get_unread = db_connect()) return false;
 
     // If there are any problems with the function arguments we bail out.
 
@@ -791,7 +791,7 @@ function threads_get_unread_by_relationship($uid, $relationship = USER_FRIEND) /
 
 function threads_get_polls($uid, $start = 0)
 {
-    $db_threads_get_polls = db_connect();
+    if (!$db_threads_get_polls = db_connect()) return false;
 
     // If there are any problems with the function arguments we bail out.
 
@@ -856,7 +856,7 @@ function threads_get_polls($uid, $start = 0)
 
 function threads_get_sticky($uid, $start = 0)
 {
-    $db_threads_get_all = db_connect();
+    if (!$db_threads_get_all = db_connect()) return false;
 
     // If there are any problems with the function arguments we bail out.
 
@@ -921,7 +921,7 @@ function threads_get_sticky($uid, $start = 0)
 
 function threads_get_longest_unread($uid) // get unread messages for $uid
 {
-    $db_threads_get_unread = db_connect();
+    if (!$db_threads_get_unread = db_connect()) return false;
 
     // If there are any problems with the function arguments we bail out.
 
@@ -992,7 +992,7 @@ function threads_get_longest_unread($uid) // get unread messages for $uid
 
 function threads_get_folder($uid, $fid, $start = 0)
 {
-    $db_threads_get_folder = db_connect();
+    if (!$db_threads_get_folder = db_connect()) return false;
 
     // If there are any problems with the function arguments we bail out.
 
@@ -1055,7 +1055,7 @@ function threads_get_folder($uid, $fid, $start = 0)
 
 function threads_get_deleted($uid, $start = 0)
 {
-    $db_threads_get_all = db_connect();
+    if (!$db_threads_get_all = db_connect()) return false;
 
     // If there are any problems with the function arguments we bail out.
 
@@ -1119,7 +1119,7 @@ function threads_get_deleted($uid, $start = 0)
 
 function threads_get_unread_by_days($uid, $days = 0) // get unread messages for $uid
 {
-    $db_threads_get_unread = db_connect();
+    if (!$db_threads_get_unread = db_connect()) return false;
 
     // If there are any problems with the function arguments we bail out.
 
@@ -1190,7 +1190,7 @@ function threads_get_unread_by_days($uid, $days = 0) // get unread messages for 
 
 function threads_get_most_recent($limit = 10, $folder_list_array = array(), $creation_order = false)
 {
-    $db_threads_get_recent = db_connect();
+    if (!$db_threads_get_recent = db_connect()) return false;
 
     // Language file
 
@@ -1443,7 +1443,7 @@ function threads_get_folder_msgs()
 {
     $folder_msgs = array();
 
-    $db_threads_get_folder_msgs = db_connect();
+    if (!$db_threads_get_folder_msgs = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return 0;
 
@@ -1460,7 +1460,7 @@ function threads_get_folder_msgs()
 
 function threads_any_unread()
 {
-    $db_threads_any_unread = db_connect();
+    if (!$db_threads_any_unread = db_connect()) return false;
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
@@ -1496,7 +1496,7 @@ function threads_mark_all_read()
 {
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    $db_threads_mark_all_read = db_connect();
+    if (!$db_threads_mark_all_read = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -1523,7 +1523,7 @@ function threads_mark_50_read()
 {
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    $db_threads_mark_50_read = db_connect();
+    if (!$db_threads_mark_50_read = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -1549,7 +1549,7 @@ function threads_mark_50_read()
 
 function threads_mark_folder_read($fid)
 {
-    $db_threads_mark_folder_read = db_connect();
+    if (!$db_threads_mark_folder_read = db_connect()) return false;
 
     if (!is_numeric($fid)) return false;
 
@@ -1578,7 +1578,7 @@ function threads_mark_folder_read($fid)
 
 function threads_mark_read($tid_array)
 {
-    $db_threads_mark_read = db_connect();
+    if (!$db_threads_mark_read = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -1617,7 +1617,7 @@ function threads_get_unread_data(&$threads_array, $tid_array)
 
     $tid_list = implode(",", preg_grep("/^[0-9]+$/", $tid_array));
 
-    $db_threads_get_modified = db_connect();
+    if (!$db_threads_get_modified = db_connect()) return false;
 
     $sql = "SELECT TID, LENGTH, LENGTH AS LAST_READ, UNIX_TIMESTAMP(MODIFIED) AS MODIFIED ";
     $sql.= "FROM {$table_data['PREFIX']}THREAD WHERE TID IN ($tid_list)";
@@ -1639,7 +1639,7 @@ function threads_get_unread_data(&$threads_array, $tid_array)
 
 function thread_update_unread_cutoff($tid, $unread_pid, $unread_created)
 {
-    $db_thread_update_unread_cutoff = db_connect();
+    if (!$db_thread_update_unread_cutoff = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -1781,7 +1781,7 @@ function threads_have_attachments(&$threads_array, $tid_array)
 
     $tid_list = implode(",", preg_grep("/^[0-9]+$/", $tid_array));
 
-    $db_thread_has_attachments = db_connect();
+    if (!$db_thread_has_attachments = db_connect()) return false;
 
     $sql = "SELECT PAI.TID, PAF.AID FROM POST_ATTACHMENT_IDS PAI ";
     $sql.= "LEFT JOIN POST_ATTACHMENT_FILES PAF ON (PAF.AID = PAI.AID) ";
@@ -1803,7 +1803,7 @@ function thread_has_attachments($tid)
 
     $forum_fid = $table_data['FID'];
 
-    $db_thread_has_attachments = db_connect();
+    if (!$db_thread_has_attachments = db_connect()) return false;
 
     $sql = "SELECT PAF.AID FROM POST_ATTACHMENT_FILES PAF ";
     $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
@@ -1817,7 +1817,7 @@ function thread_has_attachments($tid)
 
 function thread_auto_prune_unread_data()
 {
-    $db_thread_prune_unread_data = db_connect();
+    if (!$db_thread_prune_unread_data = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -1854,7 +1854,7 @@ function thread_auto_prune_unread_data()
 
 function threads_get_user_subscriptions($include_threads = array(), $interest_type = THREAD_NOINTEREST, $offset = 0)
 {
-    $db_threads_get_user_subscriptions = db_connect();
+    if (!$db_threads_get_user_subscriptions = db_connect()) return false;
 
     $thread_array = array();
     $thread_count = 0;
@@ -1930,7 +1930,7 @@ function threads_get_user_subscriptions($include_threads = array(), $interest_ty
 
 function threads_search_user_subscriptions($threadsearch, $include_threads = array(), $interest_type = THREAD_NOINTEREST, $offset = 0)
 {
-    $db_threads_search_user_subscriptions = db_connect();
+    if (!$db_threads_search_user_subscriptions = db_connect()) return false;
 
     if (!is_numeric($offset)) $offset = 0;
     if (!is_numeric($interest_type)) $interest_type = THREAD_NOINTEREST;

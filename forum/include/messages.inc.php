@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.484 2007-10-09 19:03:46 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.485 2007-10-09 23:16:03 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -56,7 +56,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    $db_messages_get = db_connect();
+    if (!$db_messages_get = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -182,7 +182,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
 function message_get_content($tid, $pid)
 {
-    $db_message_get_content = db_connect();
+    if (!$db_message_get_content = db_connect()) return false;
 
     if (!is_numeric($tid)) return "";
     if (!is_numeric($pid)) return "";
@@ -1384,7 +1384,7 @@ function messages_interest_form($tid,$pid)
 
 function message_get_user($tid, $pid)
 {
-    $db_message_get_user = db_connect();
+    if (!$db_message_get_user = db_connect()) return false;
 
     if (!is_numeric($tid)) return "";
     if (!is_numeric($pid)) return "";
@@ -1407,7 +1407,7 @@ function message_get_user($tid, $pid)
 
 function message_get_user_array($tid, $pid)
 {
-    $db_message_get_user = db_connect();
+    if (!$db_message_get_user = db_connect()) return false;
 
     $lang = load_language_file();
 
@@ -1462,7 +1462,7 @@ function message_get_user_array($tid, $pid)
 
 function messages_update_read($tid, $pid, $last_read, $length, $modified)
 {
-    $db_message_update_read = db_connect();
+    if (!$db_message_update_read = db_connect()) return false;
 
     if (!is_numeric($tid)) return false;
     if (!is_numeric($pid)) return false;
@@ -1543,7 +1543,7 @@ function messages_update_read($tid, $pid, $last_read, $length, $modified)
 
 function messages_set_read($tid, $pid, $uid, $modified)
 {
-    $db_message_set_read = db_connect();
+    if (!$db_message_set_read = db_connect()) return false;
 
     if (!is_numeric($tid)) return false;
     if (!is_numeric($pid)) return false;
@@ -1592,7 +1592,7 @@ function messages_set_read($tid, $pid, $uid, $modified)
 
 function messages_get_most_recent($uid, $fid = false)
 {
-    $db_messages_get_most_recent = db_connect();
+    if (!$db_messages_get_most_recent = db_connect()) return false;
 
     if (is_numeric($fid)) {
         $fidlist = $fid;

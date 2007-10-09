@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: banned.inc.php,v 1.27 2007-09-05 22:56:37 decoyduck Exp $ */
+/* $Id: banned.inc.php,v 1.28 2007-10-09 23:16:02 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -44,7 +44,7 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 function ban_check($user_sess, $user_is_guest = false)
 {
-    $db_ban_check = db_connect();
+    if (!$db_ban_check = db_connect()) return false;
 
     if (!is_array($user_sess)) return false;
     if (!is_bool($user_is_guest)) $user_is_guest = false;
@@ -121,7 +121,7 @@ function ban_check($user_sess, $user_is_guest = false)
 
 function ip_is_banned($ipaddress)
 {
-    $db_ip_is_banned = db_connect();
+    if (!$db_ip_is_banned = db_connect()) return false;
 
     $ipaddress = db_escape_string($ipaddress);
 
@@ -141,7 +141,7 @@ function ip_is_banned($ipaddress)
 
 function logon_is_banned($logon)
 {
-    $db_logon_is_banned = db_connect();
+    if (!$db_logon_is_banned = db_connect()) return false;
 
     $logon = db_escape_string($logon);
 
@@ -161,7 +161,7 @@ function logon_is_banned($logon)
 
 function nickname_is_banned($nickname)
 {
-    $db_nickname_is_banned = db_connect();
+    if (!$db_nickname_is_banned = db_connect()) return false;
 
     $nickname = db_escape_string($nickname);
 
@@ -181,7 +181,7 @@ function nickname_is_banned($nickname)
 
 function email_is_banned($email)
 {
-    $db_email_is_banned = db_connect();
+    if (!$db_email_is_banned = db_connect()) return false;
 
     $email = db_escape_string($email);
 
@@ -201,7 +201,7 @@ function email_is_banned($email)
 
 function referer_is_banned($referer)
 {
-    $db_referer_is_banned = db_connect();
+    if (!$db_referer_is_banned = db_connect()) return false;
 
     $referer = db_escape_string($referer);
 
@@ -221,7 +221,7 @@ function referer_is_banned($referer)
 
 function add_ban_data($type, $data, $comment)
 {
-    $db_add_ban_data = db_connect();
+    if (!$db_add_ban_data = db_connect()) return false;
 
     $data_types_array = array(BAN_TYPE_IP, BAN_TYPE_LOGON, BAN_TYPE_NICK, BAN_TYPE_EMAIL, BAN_TYPE_REF);
 
@@ -242,7 +242,7 @@ function add_ban_data($type, $data, $comment)
 
 function remove_ban_data_by_id($ban_id)
 {
-    $db_remove_ban_data = db_connect();
+    if (!$db_remove_ban_data = db_connect()) return false;
 
     if (!is_numeric($ban_id)) return false;
 
@@ -258,7 +258,7 @@ function remove_ban_data_by_id($ban_id)
 
 function update_ban_data($ban_id, $type, $data, $comment)
 {
-    $db_remove_ban_data = db_connect();
+    if (!$db_remove_ban_data = db_connect()) return false;
 
     if (!is_numeric($ban_id)) return false;
 
@@ -282,7 +282,7 @@ function update_ban_data($ban_id, $type, $data, $comment)
 
 function check_ban_data($ban_type, $ban_data, $check_ban_id = false)
 {
-    $db_referer_is_banned = db_connect();
+    if (!$db_referer_is_banned = db_connect()) return false;
 
     if (!is_numeric($ban_type)) return false;
     if (!is_numeric($check_ban_id)) $ban_id = false;
@@ -317,7 +317,7 @@ function check_ban_data($ban_type, $ban_data, $check_ban_id = false)
 
 function check_affected_sessions($ban_type, $ban_data)
 {
-    $db_check_affected_sessions = db_connect();
+    if (!$db_check_affected_sessions = db_connect()) return false;
 
     $lang = load_language_file();
 

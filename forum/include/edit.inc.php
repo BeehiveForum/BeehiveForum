@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.inc.php,v 1.71 2007-09-05 22:56:37 decoyduck Exp $ */
+/* $Id: edit.inc.php,v 1.72 2007-10-09 23:16:02 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -45,7 +45,7 @@ function post_update($fid, $tid, $pid, $content)
     if (!is_numeric($tid)) return false;
     if (!is_numeric($pid)) return false;
 
-    $db_post_update = db_connect();
+    if (!$db_post_update = db_connect()) return false;
 
     $content = db_escape_string($content);
 
@@ -72,7 +72,7 @@ function post_add_edit_text($tid, $pid)
     if (!is_numeric($tid)) return false;
     if (!is_numeric($pid)) return false;
 
-    $db_post_add_edit_text = db_connect();
+    if (!$db_post_add_edit_text = db_connect()) return false;
     $edit_uid = bh_session_get_value('UID');
 
     if (!$table_data = get_table_prefix()) return false;
@@ -92,7 +92,7 @@ function post_delete($tid, $pid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $db_post_delete = db_connect();
+    if (!$db_post_delete = db_connect()) return false;
 
     if (thread_is_poll($tid) && $pid == 1) {
 

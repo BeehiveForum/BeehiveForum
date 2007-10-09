@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: word_filter.inc.php,v 1.42 2007-08-01 20:23:04 decoyduck Exp $ */
+/* $Id: word_filter.inc.php,v 1.43 2007-10-09 23:16:05 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -50,7 +50,7 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 function word_filter_get($uid, &$word_filter_array)
 {
-    $db_word_filter_get = db_connect();
+    if (!$db_word_filter_get = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
 
@@ -90,7 +90,7 @@ function word_filter_get_by_sess_uid()
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $word_filter_array = array();
-    
+
     if (bh_session_get_value('USE_ADMIN_FILTER') == 'Y' || forum_get_setting('admin_force_word_filter', 'Y', false)) {
 
         if (!word_filter_get(0, $word_filter_array)) {
@@ -127,7 +127,7 @@ function word_filter_get_by_uid($uid)
     static $last_user_uid = false;
 
     if ((!is_array($word_filter_array)) || $last_user_uid !== $uid) {
-    
+
         $last_user_uid = $uid;
 
         if ($user_prefs = user_get_prefs($uid)) {
@@ -166,7 +166,7 @@ function word_filter_get_by_uid($uid)
 function word_filter_prepare($word_filter_array)
 {
     if (!is_array($word_filter_array)) return false;
-    
+
     $pattern_array = array();
     $replace_array = array();
 
@@ -227,7 +227,7 @@ function word_filter_add_ob_tags($content)
     if (!$rand_hash = bh_session_get_value('RAND_HASH')) return $content;
 
     $rand_hash = preg_replace("/[^a-z]/i", "", $rand_hash);
-    
+
     return "<$rand_hash>$content</$rand_hash>";
 }
 
@@ -245,7 +245,7 @@ function word_filter_rem_ob_tags($content)
     if (!$rand_hash = bh_session_get_value('RAND_HASH')) return $content;
 
     $rand_hash = preg_replace("/[^a-z]/i", "", $rand_hash);
-    
+
     return preg_replace("/<\/?$rand_hash>/", "", $content);
 }
 
@@ -267,7 +267,7 @@ function word_filter_obstart($content)
     $rand_hash = preg_replace("/[^a-z]/i", "", $rand_hash);
 
     if ($user_wordfilter = word_filter_get_by_sess_uid()) {
-        
+
         $pattern_array = $user_wordfilter['pattern_array'];
         $replace_array = $user_wordfilter['replace_array'];
 
@@ -288,7 +288,7 @@ function word_filter_obstart($content)
     }
 
     return $content;
-}    
+}
 
 /**
 * Apply word filter
@@ -303,9 +303,9 @@ function word_filter_obstart($content)
 function word_filter_apply($content, $uid)
 {
     if (!is_numeric($uid)) return $content;
-    
+
     if ($user_wordfilter = word_filter_get_by_uid($uid)) {
-        
+
         $pattern_array = $user_wordfilter['pattern_array'];
         $replace_array = $user_wordfilter['replace_array'];
 

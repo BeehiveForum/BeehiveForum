@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.338 2007-10-09 19:03:46 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.339 2007-10-09 23:16:04 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -40,7 +40,7 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 
 function user_count()
 {
-   $db_user_count = db_connect();
+   if (!$db_user_count = db_connect()) return false;
 
    if (!$table_data = get_table_prefix()) return false;
 
@@ -55,7 +55,7 @@ function user_count()
 
 function user_exists($logon, $check_uid = false)
 {
-    $db_user_exists = db_connect();
+    if (!$db_user_exists = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -81,7 +81,7 @@ function user_exists($logon, $check_uid = false)
 
 function user_create($logon, $password, $nickname, $email)
 {
-    $db_user_create = db_connect();
+    if (!$db_user_create = db_connect()) return false;
 
     $logon     = db_escape_string($logon);
     $nickname  = db_escape_string($nickname);
@@ -112,7 +112,7 @@ function user_create($logon, $password, $nickname, $email)
 
 function user_update($uid, $logon, $nickname, $email)
 {
-    $db_user_update = db_connect();
+    if (!$db_user_update = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
 
@@ -178,7 +178,7 @@ function user_update($uid, $logon, $nickname, $email)
 
 function user_update_nickname($uid, $nickname)
 {
-    $db_user_update = db_connect();
+    if (!$db_user_update = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
 
@@ -196,7 +196,7 @@ function user_update_nickname($uid, $nickname)
 
 function user_change_logon($uid, $logon)
 {
-    $db_user_change_logon = db_connect();
+    if (!$db_user_change_logon = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
 
@@ -214,7 +214,7 @@ function user_change_logon($uid, $logon)
 
 function user_update_post_count($uid, $post_count)
 {
-    $db_user_update_post_count = db_connect();
+    if (!$db_user_update_post_count = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
     if (!is_numeric($post_count)) return false;
@@ -232,7 +232,7 @@ function user_update_post_count($uid, $post_count)
 
 function user_reset_post_count($uid)
 {
-    $db_user_reset_post_count = db_connect();
+    if (!$db_user_reset_post_count = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
 
@@ -248,7 +248,7 @@ function user_reset_post_count($uid)
 
 function user_change_password($user_uid, $password, $old_passhash = false)
 {
-    $db_user_change_password = db_connect();
+    if (!$db_user_change_password = db_connect()) return false;
 
     if (!is_numeric($user_uid)) return false;
 
@@ -282,7 +282,7 @@ function user_change_password($user_uid, $password, $old_passhash = false)
 
 function user_update_forums($uid, $forums_array)
 {
-    $db_user_update_forums = db_connect();
+    if (!$db_user_update_forums = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
     if (!is_array($forums_array)) return false;
@@ -318,7 +318,7 @@ function user_update_forums($uid, $forums_array)
 
 function user_logon($logon, $passhash)
 {
-    $db_user_logon = db_connect();
+    if (!$db_user_logon = db_connect()) return false;
 
     if (!is_md5($passhash)) return false;
 
@@ -354,7 +354,7 @@ function user_logon($logon, $passhash)
 
 function user_get($uid)
 {
-    $db_user_get = db_connect();
+    if (!$db_user_get = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
 
@@ -396,7 +396,7 @@ function user_get($uid)
 
 function user_get_password($uid, $passwd_hash)
 {
-    $db_user_get = db_connect();
+    if (!$db_user_get = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
     if (!is_md5($passwd_hash)) return false;
@@ -418,7 +418,7 @@ function user_get_password($uid, $passwd_hash)
 
 function user_get_logon($uid)
 {
-    $db_user_get_logon = db_connect();
+    if (!$db_user_get_logon = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
 
@@ -439,7 +439,7 @@ function user_get_logon($uid)
 
 function user_get_nickname($uid)
 {
-    $db_user_get_nickname = db_connect();
+    if (!$db_user_get_nickname = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
 
@@ -461,7 +461,7 @@ function user_get_nickname($uid)
 
 function user_get_uid($logon)
 {
-    $db_user_get_uid = db_connect();
+    if (!$db_user_get_uid = db_connect()) return false;
 
     $logon = db_escape_string($logon);
 
@@ -482,7 +482,7 @@ function user_get_uid($logon)
 
 function user_get_sig($uid, &$content, &$html)
 {
-    $db_user_get_sig = db_connect();
+    if (!$db_user_get_sig = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
 
@@ -503,7 +503,7 @@ function user_get_sig($uid, &$content, &$html)
 
 function user_get_last_ip_address($uid)
 {
-    $db_user_get_last_ip_address = db_connect();
+    if (!$db_user_get_last_ip_address = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
 
@@ -526,7 +526,7 @@ function user_get_prefs($uid)
 {
     // See user_update_prefs() below for an explanation of the prefs system.
 
-    $db_user_get_prefs = db_connect();
+    if (!$db_user_get_prefs = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
 
@@ -679,7 +679,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
         }
     }
 
-    $db_user_update_prefs = db_connect();
+    if (!$db_user_update_prefs = db_connect()) return false;
 
     $result_global = true;
     $result_forum  = true;
@@ -857,7 +857,7 @@ function user_check_pref($name, $value)
 
 function user_update_sig($uid, $content, $html, $global_update = false)
 {
-    $db_user_update_sig = db_connect();
+    if (!$db_user_update_sig = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
 
@@ -957,7 +957,7 @@ function user_cookies_set()
 
 function user_get_forthcoming_birthdays()
 {
-    $db_user_get_forthcoming_birthdays = db_connect();
+    if (!$db_user_get_forthcoming_birthdays = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -1008,7 +1008,7 @@ function user_search_array_clean($user_search)
 
 function user_search($user_search, $offset = 0, $exclude_uid = 0)
 {
-    $db_user_search = db_connect();
+    if (!$db_user_search = db_connect()) return false;
 
     if (!is_numeric($offset)) return false;
     if (!is_numeric($exclude_uid)) return false;
@@ -1073,7 +1073,7 @@ function user_search($user_search, $offset = 0, $exclude_uid = 0)
 
 function user_get_ip_addresses($uid)
 {
-    $db_user_get_ip_addresses = db_connect();
+    if (!$db_user_get_ip_addresses = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
 
@@ -1104,7 +1104,7 @@ function user_get_ip_addresses($uid)
 
 function user_get_friends($uid)
 {
-    $db_user_get_peers = db_connect();
+    if (!$db_user_get_peers = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
 
@@ -1151,7 +1151,7 @@ function user_get_friends($uid)
 
 function user_get_ignored($uid)
 {
-    $db_user_get_peers = db_connect();
+    if (!$db_user_get_peers = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
 
@@ -1196,7 +1196,7 @@ function user_get_ignored($uid)
 
 function user_get_ignored_signatures($uid)
 {
-    $db_user_get_peers = db_connect();
+    if (!$db_user_get_peers = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
 
@@ -1241,7 +1241,7 @@ function user_get_ignored_signatures($uid)
 
 function user_get_relationships($uid, $offset = 0)
 {
-    $db_user_get_relationships = db_connect();
+    if (!$db_user_get_relationships = db_connect()) return false;
 
     $user_get_peers_array = array();
     $user_get_peers_count = 0;
@@ -1297,7 +1297,7 @@ function user_get_relationships($uid, $offset = 0)
 
 function user_get_peer_relationship($uid, $peer_uid)
 {
-    $db_user_get_peer_relationship = db_connect();
+    if (!$db_user_get_peer_relationship = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
     if (!is_numeric($peer_uid)) return false;
@@ -1320,7 +1320,7 @@ function user_get_peer_relationship($uid, $peer_uid)
 
 function user_get_peer_nickname($uid, $peer_uid)
 {
-    $db_user_get_peer_nickname = db_connect();
+    if (!$db_user_get_peer_nickname = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
     if (!is_numeric($peer_uid)) return false;
@@ -1343,7 +1343,7 @@ function user_get_peer_nickname($uid, $peer_uid)
 
 function user_get_word_filter_list($offset)
 {
-    $db_user_get_word_filter_list = db_connect();
+    if (!$db_user_get_word_filter_list = db_connect()) return false;
 
     if (!is_numeric($offset)) $offset = 0;
 
@@ -1387,7 +1387,7 @@ function user_get_word_filter_list($offset)
 
 function user_get_word_filter($filter_id)
 {
-    $db_user_get_word_filter = db_connect();
+    if (!$db_user_get_word_filter = db_connect()) return false;
 
     if (!is_numeric($filter_id)) return false;
 
@@ -1413,7 +1413,7 @@ function user_get_word_filter($filter_id)
 
 function user_clear_word_filter()
 {
-    $db_user_clear_word_filter = db_connect();
+    if (!$db_user_clear_word_filter = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -1428,7 +1428,7 @@ function user_clear_word_filter()
 
 function user_add_word_filter($filter_name, $match_text, $replace_text, $filter_option, $filter_enabled)
 {
-    $db_user_add_word_filter = db_connect();
+    if (!$db_user_add_word_filter = db_connect()) return false;
 
     $filter_name  = db_escape_string($filter_name);
     $match_text   = db_escape_string($match_text);
@@ -1452,7 +1452,7 @@ function user_add_word_filter($filter_name, $match_text, $replace_text, $filter_
 
 function user_update_word_filter($filter_id, $filter_name, $match_text, $replace_text, $filter_option, $filter_enabled)
 {
-    $db_user_save_word_filter = db_connect();
+    if (!$db_user_save_word_filter = db_connect()) return false;
 
     if (!is_numeric($filter_id)) return false;
 
@@ -1479,7 +1479,7 @@ function user_update_word_filter($filter_id, $filter_name, $match_text, $replace
 
 function user_delete_word_filter($filter_id)
 {
-    $db_user_delete_word_filter = db_connect();
+    if (!$db_user_delete_word_filter = db_connect()) return false;
 
     if (!is_numeric($filter_id)) return false;
 
@@ -1497,7 +1497,7 @@ function user_delete_word_filter($filter_id)
 
 function user_is_active($uid)
 {
-    $db_user_is_active = db_connect();
+    if (!$db_user_is_active = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
 

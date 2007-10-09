@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.131 2007-09-15 16:51:31 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.132 2007-10-09 23:16:04 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -43,7 +43,7 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 
 function thread_get_title($tid)
 {
-    $db_thread_get_title = db_connect();
+    if (!$db_thread_get_title = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -64,7 +64,7 @@ function thread_get_title($tid)
 
 function thread_get($tid, $inc_deleted = false)
 {
-    $db_thread_get = db_connect();
+    if (!$db_thread_get = db_connect()) return false;
 
     $lang = load_language_file();
 
@@ -154,7 +154,7 @@ function thread_get($tid, $inc_deleted = false)
 
 function thread_get_by_uid($tid)
 {
-    $db_thread_get_author = db_connect();
+    if (!$db_thread_get_author = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return "";
 
@@ -172,7 +172,7 @@ function thread_get_by_uid($tid)
 
 function thread_get_folder($tid)
 {
-    $db_thread_get_folder = db_connect();
+    if (!$db_thread_get_folder = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -194,7 +194,7 @@ function thread_get_folder($tid)
 
 function thread_get_length($tid)
 {
-    $db_thread_get_length = db_connect();
+    if (!$db_thread_get_length = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return 0;
 
@@ -215,7 +215,7 @@ function thread_get_length($tid)
 
 function thread_get_tracking_data($tid)
 {
-    $db_thread_get_tracking_data = db_connect();
+    if (!$db_thread_get_tracking_data = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -254,7 +254,7 @@ function thread_get_tracking_data($tid)
 
 function thread_set_length($tid, $length)
 {
-    $db_thread_get_length = db_connect();
+    if (!$db_thread_get_length = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -271,7 +271,7 @@ function thread_set_length($tid, $length)
 
 function thread_set_moved($old_tid, $new_tid)
 {
-    $db_thread_set_moved = db_connect();
+    if (!$db_thread_set_moved = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -289,7 +289,7 @@ function thread_set_moved($old_tid, $new_tid)
 
 function thread_set_split($old_tid, $new_tid)
 {
-    $db_thread_set_split = db_connect();
+    if (!$db_thread_set_split = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -309,7 +309,7 @@ function thread_get_interest($tid)
 {
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    $db_thread_get_interest = db_connect();
+    if (!$db_thread_get_interest = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return 0;
 
@@ -331,7 +331,7 @@ function thread_get_interest($tid)
 
 function thread_set_interest($tid, $interest)
 {
-    $db_thread_set_interest = db_connect();
+    if (!$db_thread_set_interest = db_connect()) return false;
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
@@ -370,7 +370,7 @@ function thread_set_interest($tid, $interest)
 
 function thread_set_high_interest($tid)
 {
-    $db_thread_set_high_interest = db_connect();
+    if (!$db_thread_set_high_interest = db_connect()) return false;
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
@@ -406,7 +406,7 @@ function thread_set_high_interest($tid)
 
 function thread_set_sticky($tid, $sticky = true, $sticky_until = false)
 {
-    $db_thread_set_sticky = db_connect();
+    if (!$db_thread_set_sticky = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -426,7 +426,7 @@ function thread_set_sticky($tid, $sticky = true, $sticky_until = false)
 
 function thread_set_closed($tid, $closed = true)
 {
-    $db_thread_set_closed = db_connect();
+    if (!$db_thread_set_closed = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -444,7 +444,7 @@ function thread_set_closed($tid, $closed = true)
 
 function thread_admin_lock($tid, $locked = true)
 {
-    $db_thread_admin_lock = db_connect();
+    if (!$db_thread_admin_lock = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -462,7 +462,7 @@ function thread_admin_lock($tid, $locked = true)
 
 function thread_change_folder($tid, $new_fid)
 {
-    $db_thread_set_closed = db_connect();
+    if (!$db_thread_set_closed = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -478,7 +478,7 @@ function thread_change_folder($tid, $new_fid)
 
 function thread_change_title($fid, $tid, $new_title)
 {
-    $db_thread_change_title = db_connect();
+    if (!$db_thread_change_title = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -495,7 +495,7 @@ function thread_change_title($fid, $tid, $new_title)
 
 function thread_delete_by_user($tid, $uid)
 {
-    $db_thread_delete_by_user = db_connect();
+    if (!$db_thread_delete_by_user = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -521,7 +521,7 @@ function thread_delete_by_user($tid, $uid)
 
 function thread_delete($tid, $delete_type)
 {
-    $db_thread_delete = db_connect();
+    if (!$db_thread_delete = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -558,7 +558,7 @@ function thread_delete($tid, $delete_type)
 
 function thread_undelete($tid)
 {
-    $db_thread_undelete = db_connect();
+    if (!$db_thread_undelete = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -576,7 +576,7 @@ function thread_undelete($tid)
 
 function thread_merge($tida, $tidb, $merge_type, &$error_str)
 {
-    $db_thread_merge = db_connect();
+    if (!$db_thread_merge = db_connect()) return false;
 
     $tida_closed = true;
     $tidb_closed = true;
@@ -836,7 +836,7 @@ function thread_merge_get_by_created($dest_tid, $source_tid)
 
     $forum_fid = $table_data['FID'];
 
-    $db_thread_merge_get_by_created = db_connect();
+    if (!$db_thread_merge_get_by_created = db_connect()) return false;
 
     $post_data_array = array();
 
@@ -898,7 +898,7 @@ function thread_merge_get($tida, $tidb)
 
     $forum_fid = $table_data['FID'];
 
-    $db_thread_merge_get_by_created = db_connect();
+    if (!$db_thread_merge_get_by_created = db_connect()) return false;
 
     $post_data_array = array();
 
@@ -952,7 +952,7 @@ function thread_merge_get($tida, $tidb)
 
 function thread_split($tid, $spid, $split_type, &$error_str)
 {
-    $db_thread_split = db_connect();
+    if (!$db_thread_split = db_connect()) return false;
 
     $tid_closed = true;
 
@@ -1155,7 +1155,7 @@ function thread_split_get_replies($tid, $pid)
 
     $forum_fid = $table_data['FID'];
 
-    $db_thread_split_get = db_connect();
+    if (!$db_thread_split_get = db_connect()) return false;
 
     $post_data_array = array();
     $dest_pid_array  = array();
@@ -1195,7 +1195,7 @@ function thread_split_get_following($tid, $spid)
 
     $forum_fid = $table_data['FID'];
 
-    $db_thread_split_get_following = db_connect();
+    if (!$db_thread_split_get_following = db_connect()) return false;
 
     $sql = "SELECT POST.TID, POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, ";
     $sql.= "POST.TO_UID, POST.CREATED, POST.APPROVED, POST.APPROVED_BY, ";
@@ -1254,7 +1254,7 @@ function thread_split_recursive($tid, $spid, &$post_data_array, &$dest_pid_array
 
     $forum_fid = $table_data['FID'];
 
-    $db_thread_split_recursive = db_connect();
+    if (!$db_thread_split_recursive = db_connect()) return false;
 
     $sql = "SELECT POST.TID, POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, ";
     $sql.= "POST.TO_UID, POST.CREATED, POST.APPROVED, POST.APPROVED_BY, ";
@@ -1300,7 +1300,7 @@ function thread_get_unmoved_posts($tid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $db_thread_get_unmoved_posts = db_connect();
+    if (!$db_thread_get_unmoved_posts = db_connect()) return false;
 
     $sql = "SELECT PID FROM {$table_data['PREFIX']}POST ";
     $sql.= "WHERE TID = '$tid' AND MOVED_TID IS NULL ";
@@ -1329,7 +1329,7 @@ function thread_can_be_undeleted($tid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $db_thread_can_be_undeleted = db_connect();
+    if (!$db_thread_can_be_undeleted = db_connect()) return false;
 
     $sql = "SELECT MAX(PID) AS LENGTH FROM ";
     $sql.= "{$table_data['PREFIX']}POST WHERE TID = '$tid'";
@@ -1343,7 +1343,7 @@ function thread_can_be_undeleted($tid)
 
 function thread_search($thread_search, $offset = 0)
 {
-    $db_thread_search = db_connect();
+    if (!$db_thread_search = db_connect()) return false;
 
     if (!is_numeric($offset)) return false;
 

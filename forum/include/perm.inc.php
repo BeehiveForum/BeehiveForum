@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.117 2007-09-05 22:56:37 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.118 2007-10-09 23:16:03 decoyduck Exp $ */
 
 /**
 * Functions relating to permissions
@@ -50,7 +50,7 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 
 function perm_is_moderator($fid, $uid)
 {
-    $db_perm_is_moderator = db_connect();
+    if (!$db_perm_is_moderator = db_connect()) return false;
 
     if (!is_numeric($fid)) return false;
     if (!is_numeric($uid)) return false;
@@ -80,7 +80,7 @@ function perm_is_moderator($fid, $uid)
 
 function perm_has_admin_access($uid)
 {
-    $db_perm_has_admin_access = db_connect();
+    if (!$db_perm_has_admin_access = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
 
@@ -109,7 +109,7 @@ function perm_has_admin_access($uid)
 
 function perm_has_global_admin_access($uid)
 {
-    $db_perm_has_global_admin_access = db_connect();
+    if (!$db_perm_has_global_admin_access = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
 
@@ -132,7 +132,7 @@ function perm_has_global_admin_access($uid)
 
 function perm_has_forumtools_access($uid)
 {
-    $db_perm_has_forumtools_access = db_connect();
+    if (!$db_perm_has_forumtools_access = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
 
@@ -155,7 +155,7 @@ function perm_has_forumtools_access($uid)
 
 function perm_is_links_moderator($uid)
 {
-    $db_perm_has_forumtools_access = db_connect();
+    if (!$db_perm_has_forumtools_access = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
 
@@ -184,7 +184,7 @@ function perm_is_links_moderator($uid)
 
 function perm_check_folder_permissions($fid, $access_level, $uid)
 {
-    $db_perm_check_folder_permissions = db_connect();
+    if (!$db_perm_check_folder_permissions = db_connect()) return false;
 
     if (!is_numeric($fid)) return false;
     if (!is_numeric($access_level)) return false;
@@ -230,7 +230,7 @@ function perm_check_folder_permissions($fid, $access_level, $uid)
 
 function perm_check_global_permissions($access_level, $uid)
 {
-    $db_perm_get_global_permissions = db_connect();
+    if (!$db_perm_get_global_permissions = db_connect()) return false;
 
     if (!is_numeric($access_level)) return false;
     if (!is_numeric($uid)) return false;
@@ -254,7 +254,7 @@ function perm_check_global_permissions($access_level, $uid)
 
 function perm_get_user_groups($offset, $sort_by = 'GROUP_NAME', $sort_dir = 'ASC')
 {
-    $db_perm_get_user_groups = db_connect();
+    if (!$db_perm_get_user_groups = db_connect()) return false;
 
     $sort_by_array  = array('GROUPS.GROUP_NAME', 'GROUPS.GROUP_DESC', 'USER_COUNT');
     $sort_dir_array = array('ASC', 'DESC');
@@ -307,7 +307,7 @@ function perm_get_user_groups($offset, $sort_by = 'GROUP_NAME', $sort_dir = 'ASC
 
 function perm_user_get_groups($uid)
 {
-    $db_perm_user_get_groups = db_connect();
+    if (!$db_perm_user_get_groups = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
 
@@ -341,7 +341,7 @@ function perm_user_get_groups($uid)
 
 function perm_add_group($group_name, $group_desc, $perm)
 {
-    $db_perm_add_group = db_connect();
+    if (!$db_perm_add_group = db_connect()) return false;
 
     if (!is_numeric($perm)) return false;
 
@@ -375,7 +375,7 @@ function perm_add_group($group_name, $group_desc, $perm)
 
 function perm_update_group($gid, $group_name, $group_desc, $perm)
 {
-    $db_perm_update_group = db_connect();
+    if (!$db_perm_update_group = db_connect()) return false;
 
     if (!is_numeric($gid)) return false;
     if (!is_numeric($perm)) return false;
@@ -420,7 +420,7 @@ function perm_update_group($gid, $group_name, $group_desc, $perm)
 
 function perm_remove_group($gid)
 {
-    $db_perm_remove_group = db_connect();
+    if (!$db_perm_remove_group = db_connect()) return false;
 
     if (!is_numeric($gid)) return false;
 
@@ -441,7 +441,7 @@ function perm_remove_group($gid)
 
 function perm_get_group($gid)
 {
-    $db_perm_get_group = db_connect();
+    if (!$db_perm_get_group = db_connect()) return false;
 
     if (!is_numeric($gid)) return false;
 
@@ -461,7 +461,7 @@ function perm_get_group($gid)
 
 function perm_get_group_name($gid)
 {
-    $db_perm_get_group_name = db_connect();
+    if (!$db_perm_get_group_name = db_connect()) return false;
 
     if (!is_numeric($gid)) return false;
 
@@ -480,7 +480,7 @@ function perm_get_group_name($gid)
 
 function perm_is_group($gid)
 {
-    $db_perm_is_group = db_connect();
+    if (!$db_perm_is_group = db_connect()) return false;
 
     if (!is_numeric($gid)) return false;
 
@@ -494,7 +494,7 @@ function perm_is_group($gid)
 
 function perm_user_in_group($uid, $gid)
 {
-    $db_perm_user_in_group = db_connect();
+    if (!$db_perm_user_in_group = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
     if (!is_numeric($gid)) return false;
@@ -509,7 +509,7 @@ function perm_user_in_group($uid, $gid)
 
 function perm_get_global_user_permissions($uid)
 {
-    $db_perm_get_global_permissions = db_connect();
+    if (!$db_perm_get_global_permissions = db_connect()) return false;
 
     if (!is_numeric($uid)) return 0;
 
@@ -535,7 +535,7 @@ function perm_get_global_user_permissions($uid)
 */
 function perm_get_global_permissions_count()
 {
-    $db_perm_get_global_permissions = db_connect();
+    if (!$db_perm_get_global_permissions = db_connect()) return false;
 
     $upft = USER_PERM_FORUM_TOOLS;
     $upat = USER_PERM_ADMIN_TOOLS;
@@ -564,7 +564,7 @@ function perm_get_global_permissions_count()
 */
 function perm_get_admin_tools_perm_count()
 {
-    $db_perm_get_global_permissions = db_connect();
+    if (!$db_perm_get_global_permissions = db_connect()) return false;
 
     $upat = USER_PERM_ADMIN_TOOLS;
 
@@ -592,7 +592,7 @@ function perm_get_admin_tools_perm_count()
 */
 function perm_get_forum_tools_perm_count()
 {
-    $db_perm_get_global_permissions = db_connect();
+    if (!$db_perm_get_global_permissions = db_connect()) return false;
 
     $upft = USER_PERM_FORUM_TOOLS;
 
@@ -613,7 +613,7 @@ function perm_get_forum_tools_perm_count()
 
 function perm_update_global_perms($uid, $perm)
 {
-    $db_perm_add_global_perms = db_connect();
+    if (!$db_perm_add_global_perms = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
     if (!is_numeric($perm)) return false;
@@ -665,7 +665,7 @@ function perm_update_global_perms($uid, $perm)
 
 function perm_get_group_permissions($gid)
 {
-    $db_perm_get_group_permissions = db_connect();
+    if (!$db_perm_get_group_permissions = db_connect()) return false;
 
     if (!is_numeric($gid)) return false;
 
@@ -694,7 +694,7 @@ function perm_get_group_permissions($gid)
 
 function perm_group_get_folders($gid)
 {
-    $db_perm_get_group_folder_perms = db_connect();
+    if (!$db_perm_get_group_folder_perms = db_connect()) return false;
 
     $folders_array = array();
 
@@ -755,7 +755,7 @@ function perm_group_get_folders($gid)
 
 function perm_add_user_to_group($uid, $gid)
 {
-    $db_perm_add_user_to_group = db_connect();
+    if (!$db_perm_add_user_to_group = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
     if (!is_numeric($gid)) return false;
@@ -773,7 +773,7 @@ function perm_add_user_to_group($uid, $gid)
 
 function perm_remove_user_from_group($uid, $gid)
 {
-    $db_perm_remove_user_from_group = db_connect();
+    if (!$db_perm_remove_user_from_group = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
     if (!is_numeric($gid)) return false;
@@ -801,7 +801,7 @@ function perm_remove_user_from_group($uid, $gid)
 */
 function perm_get_user_permissions($uid)
 {
-    $db_perm_get_user_permissions = db_connect();
+    if (!$db_perm_get_user_permissions = db_connect()) return false;
 
     if (!is_numeric($uid)) return 0;
 
@@ -831,7 +831,7 @@ function perm_get_user_permissions($uid)
 
 function perm_get_forum_user_permissions($uid)
 {
-    $db_perm_get_user_permissions = db_connect();
+    if (!$db_perm_get_user_permissions = db_connect()) return false;
 
     if (!is_numeric($uid)) return 0;
 
@@ -858,7 +858,7 @@ function perm_get_forum_user_permissions($uid)
 
 function perm_get_user_gid($uid)
 {
-    $db_perm_get_user_gid = db_connect();
+    if (!$db_perm_get_user_gid = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
 
@@ -884,7 +884,7 @@ function perm_get_user_gid($uid)
 
 function perm_get_global_user_gid($uid)
 {
-    $db_perm_get_user_gid = db_connect();
+    if (!$db_perm_get_user_gid = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
 
@@ -906,7 +906,7 @@ function perm_get_global_user_gid($uid)
 
 function perm_user_get_folders($uid)
 {
-    $db_perm_user_get_user_folders = db_connect();
+    if (!$db_perm_user_get_user_folders = db_connect()) return false;
 
     $folders_array = array();
 
@@ -965,7 +965,7 @@ function perm_user_get_folders($uid)
 
 function perm_update_user_folder_perms($uid, $fid, $perm)
 {
-    $db_perm_update_user_folder_perms = db_connect();
+    if (!$db_perm_update_user_folder_perms = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
     if (!is_numeric($fid)) return false;
@@ -1003,7 +1003,7 @@ function perm_update_user_folder_perms($uid, $fid, $perm)
 
 function perm_update_group_folder_perms($gid, $fid, $perm)
 {
-    $db_perm_update_group_folder_perms = db_connect();
+    if (!$db_perm_update_group_folder_perms = db_connect()) return false;
 
     if (!is_numeric($gid)) return false;
     if (!is_numeric($fid)) return false;
@@ -1042,7 +1042,7 @@ function perm_update_group_folder_perms($gid, $fid, $perm)
 
 function perm_update_user_permissions($uid, $perm)
 {
-    $db_perm_update_user_permissions = db_connect();
+    if (!$db_perm_update_user_permissions = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
     if (!is_numeric($perm)) return false;
@@ -1102,7 +1102,7 @@ function perm_update_user_permissions($uid, $perm)
 
 function perm_folder_get_permissions($fid)
 {
-    $db_perm_folder_get_permissions = db_connect();
+    if (!$db_perm_folder_get_permissions = db_connect()) return false;
 
     if (!is_numeric($fid)) return 0;
 
@@ -1126,7 +1126,7 @@ function perm_folder_get_permissions($fid)
 
 function perm_folder_reset_user_permissions($fid)
 {
-    $db_perm_folder_reset_user_permissions = db_connect();
+    if (!$db_perm_folder_reset_user_permissions = db_connect()) return false;
 
     if (!is_numeric($fid)) return false;
 
@@ -1163,7 +1163,7 @@ function perm_folder_reset_user_permissions($fid)
 
 function perm_group_get_users($gid, $offset = 0)
 {
-    $db_perm_group_get_users = db_connect();
+    if (!$db_perm_group_get_users = db_connect()) return false;
 
     $lang = load_language_file();
 
@@ -1220,7 +1220,7 @@ function perm_group_get_users($gid, $offset = 0)
 
 function perm_user_apply_email_confirmation($uid)
 {
-    $db_perm_user_apply_email_confirmation = db_connect();
+    if (!$db_perm_user_apply_email_confirmation = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
 
@@ -1260,7 +1260,7 @@ function perm_user_apply_email_confirmation($uid)
 
 function perm_user_cancel_email_confirmation($uid)
 {
-    $db_perm_user_cancel_email_confirmation = db_connect();
+    if (!$db_perm_user_cancel_email_confirmation = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
 

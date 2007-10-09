@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.212 2007-09-15 16:51:31 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.213 2007-10-09 23:16:03 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -54,7 +54,7 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 function poll_create($tid, $poll_options, $answer_groups, $closes, $change_vote, $poll_type, $show_results, $poll_vote_type, $option_type, $question, $allow_guests)
 {
-    $db_poll_create = db_connect();
+    if (!$db_poll_create = db_connect()) return false;
 
     if (is_numeric($closes)) {
         $closes = "FROM_UNIXTIME($closes)";
@@ -106,7 +106,7 @@ function poll_create($tid, $poll_options, $answer_groups, $closes, $change_vote,
 
 function poll_edit($fid, $tid, $thread_title, $poll_question, $poll_options, $answer_groups, $closes, $change_vote, $poll_type, $show_results, $poll_vote_type, $option_type, $allow_guests, $delete_votes)
 {
-    $db_poll_edit = db_connect();
+    if (!$db_poll_edit = db_connect()) return false;
 
     if (!is_numeric($tid)) return false;
 
@@ -183,7 +183,7 @@ function poll_edit($fid, $tid, $thread_title, $poll_question, $poll_options, $an
 
 function poll_get($tid)
 {
-    $db_poll_get = db_connect();
+    if (!$db_poll_get = db_connect()) return false;
 
     $lang = load_language_file();
 
@@ -266,7 +266,7 @@ function poll_get($tid)
 
 function poll_get_votes($tid)
 {
-    $db_poll_get_votes = db_connect();
+    if (!$db_poll_get_votes = db_connect()) return false;
 
     if (!is_numeric($tid)) return false;
 
@@ -315,7 +315,7 @@ function poll_get_votes($tid)
 
 function poll_get_total_votes($tid, &$total_votes, &$guestvotes)
 {
-    $db_poll_get_total_votes = db_connect();
+    if (!$db_poll_get_total_votes = db_connect()) return false;
 
     if (!is_numeric($tid)) return 0;
     if (!$table_data = get_table_prefix()) return 0;
@@ -339,7 +339,7 @@ function poll_get_total_votes($tid, &$total_votes, &$guestvotes)
 
 function poll_get_user_votes($tid, $viewstyle)
 {
-    $db_poll_get_user_vote_hashes = db_connect();
+    if (!$db_poll_get_user_vote_hashes = db_connect()) return false;
 
     if (!is_numeric($tid)) return false;
     if (!is_numeric($viewstyle)) $viewstyle = POLL_VIEW_TYPE_OPTION;
@@ -372,7 +372,7 @@ function poll_get_user_vote($tid)
 {
     if (!is_numeric($tid)) return false;
 
-    $db_poll_get_user_vote = db_connect();
+    if (!$db_poll_get_user_vote = db_connect()) return false;
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
@@ -1479,7 +1479,7 @@ function poll_vertical_graph($tid)
 
 function poll_get_table_votes($tid)
 {
-    $db_poll_get_votes = db_connect();
+    if (!$db_poll_get_votes = db_connect()) return false;
 
     if (!is_numeric($tid)) return false;
 
@@ -1888,7 +1888,7 @@ function poll_confirm_close($tid)
 
 function poll_close($tid)
 {
-    $db_poll_close = db_connect();
+    if (!$db_poll_close = db_connect()) return false;
 
     if (!is_numeric($tid)) return false;
 
@@ -1916,7 +1916,7 @@ function poll_close($tid)
 
 function poll_is_closed($tid)
 {
-    $db_poll_is_closed = db_connect();
+    if (!$db_poll_is_closed = db_connect()) return false;
 
     if (!is_numeric($tid)) return false;
 
@@ -1942,7 +1942,7 @@ function poll_vote($tid, $vote_array)
     if (!is_numeric($tid)) return false;
     if (!is_array($vote_array)) return false;
 
-    $db_poll_vote = db_connect();
+    if (!$db_poll_vote = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -1965,7 +1965,7 @@ function poll_vote($tid, $vote_array)
 
 function poll_delete_vote($tid)
 {
-    $db_poll_delete_vote = db_connect();
+    if (!$db_poll_delete_vote = db_connect()) return false;
 
     if (!is_numeric($tid)) return false;
 
@@ -1981,7 +1981,7 @@ function poll_delete_vote($tid)
 
 function thread_is_poll($tid)
 {
-    $db_thread_is_poll = db_connect();
+    if (!$db_thread_is_poll = db_connect()) return false;
 
     if (!is_numeric($tid)) return false;
 
@@ -2001,7 +2001,7 @@ function thread_is_poll($tid)
 
 function poll_check_tabular_votes($tid, $votes)
 {
-    $db_poll_check_tabular_votes = db_connect();
+    if (!$db_poll_check_tabular_votes = db_connect()) return false;
 
     if (!is_numeric($tid)) return false;
 

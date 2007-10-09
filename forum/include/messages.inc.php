@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.483 2007-09-23 22:40:25 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.484 2007-10-09 19:03:46 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -717,7 +717,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
     echo "<br />\n";
     echo "<div align=\"center\">\n";
-    echo "<table width=\"100%\" cellspacing=\"0\"cellpadding=\"0\">\n";
+    echo "<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\">\n";
     echo "  <tr>\n";
     echo "    <td align=\"left\" width=\"2%\" valign=\"top\">\n";
     echo "      <table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\">\n";
@@ -1171,7 +1171,7 @@ function message_display_deleted($tid, $pid, $message)
     $lang = load_language_file();
 
     echo "<br /><div align=\"center\">";
-    echo "<table width=\"96%\" cellspacing=\"0\"cellpadding=\"0\">\n";
+    echo "<table width=\"96%\" cellspacing=\"0\" cellpadding=\"0\">\n";
     echo "  <tr>\n";
     echo "    <td align=\"left\">\n";
     echo "      <table width=\"100%\" class=\"box\" cellpadding=\"0\">\n";
@@ -1213,7 +1213,7 @@ function message_display_approval_req($tid, $pid)
     $lang = load_language_file();
 
     echo "<br /><div align=\"center\">";
-    echo "<table width=\"96%\" cellspacing=\"0\"cellpadding=\"0\">\n";
+    echo "<table width=\"96%\" cellspacing=\"0\" cellpadding=\"0\">\n";
     echo "  <tr>\n";
     echo "    <td align=\"left\">\n";
     echo "      <table width=\"100%\" class=\"box\" cellpadding=\"0\">\n";

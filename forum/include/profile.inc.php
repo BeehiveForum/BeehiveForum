@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.89 2007-09-16 13:24:20 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.90 2007-10-09 23:16:04 decoyduck Exp $ */
 
 /**
 * Functions relating to profiles
@@ -48,7 +48,7 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 
 function profile_section_get_name($psid)
 {
-   $db_profile_section_get_name = db_connect();
+   if (!$db_profile_section_get_name = db_connect()) return false;
 
    if (!is_numeric($psid)) return false;
 
@@ -69,7 +69,7 @@ function profile_section_get_name($psid)
 
 function profile_section_create($name)
 {
-    $db_profile_section_create = db_connect();
+    if (!$db_profile_section_create = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -95,7 +95,7 @@ function profile_section_create($name)
 
 function profile_section_update($psid, $name)
 {
-    $db_profile_section_update = db_connect();
+    if (!$db_profile_section_update = db_connect()) return false;
 
     if (!is_numeric($psid)) return false;
 
@@ -113,7 +113,7 @@ function profile_section_update($psid, $name)
 
 function profile_sections_get()
 {
-    $db_profile_section_get = db_connect();
+    if (!$db_profile_section_get = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -144,7 +144,7 @@ function profile_sections_get()
 
 function profile_sections_get_by_page($offset)
 {
-    $db_profile_sections_get_by_page = db_connect();
+    if (!$db_profile_sections_get_by_page = db_connect()) return false;
 
     if (!is_numeric($offset)) return false;
 
@@ -188,7 +188,7 @@ function profile_sections_get_by_page($offset)
 
 function profile_items_get($psid)
 {
-    $db_profile_items_get = db_connect();
+    if (!$db_profile_items_get = db_connect()) return false;
 
     if (!is_numeric($psid)) return false;
 
@@ -219,7 +219,7 @@ function profile_items_get($psid)
 
 function profile_items_get_by_page($psid, $offset)
 {
-    $db_profile_items_get_by_page = db_connect();
+    if (!$db_profile_items_get_by_page = db_connect()) return false;
 
     if (!is_numeric($psid)) return false;
     if (!is_numeric($offset)) return false;
@@ -265,7 +265,7 @@ function profile_items_get_by_page($psid, $offset)
 
 function profile_item_get_name($piid)
 {
-    $db_profile_item_get = db_connect();
+    if (!$db_profile_item_get = db_connect()) return false;
 
     if (!is_numeric($piid)) return false;
 
@@ -287,7 +287,7 @@ function profile_item_get_name($piid)
 
 function profile_item_create($psid, $name, $type)
 {
-    $db_profile_item_create = db_connect();
+    if (!$db_profile_item_create = db_connect()) return false;
 
     if (!is_numeric($psid)) return false;
     if (!is_numeric($type)) return false;
@@ -319,7 +319,7 @@ function profile_item_create($psid, $name, $type)
 
 function profile_item_update($piid, $psid, $type, $name)
 {
-    $db_profile_item_update = db_connect();
+    if (!$db_profile_item_update = db_connect()) return false;
 
     if (!is_numeric($piid)) return false;
     if (!is_numeric($psid)) return false;
@@ -339,7 +339,7 @@ function profile_item_update($piid, $psid, $type, $name)
 
 function profile_section_delete($psid)
 {
-    $db_profile_section_delete = db_connect();
+    if (!$db_profile_section_delete = db_connect()) return false;
 
     if (!is_numeric($psid)) return false;
 
@@ -365,7 +365,7 @@ function profile_section_delete($psid)
 
 function profile_item_delete($piid)
 {
-    $db_profile_item_delete = db_connect();
+    if (!$db_profile_item_delete = db_connect()) return false;
 
     if (!is_numeric($piid)) return false;
 
@@ -384,7 +384,7 @@ function profile_item_delete($piid)
 
 function profile_section_dropdown($default_psid, $field_name = 't_psid')
 {
-    $db_profile_section_dropdown = db_connect();
+    if (!$db_profile_section_dropdown = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return "";
 
@@ -421,7 +421,7 @@ function profile_section_dropdown($default_psid, $field_name = 't_psid')
 */
 function profile_get_user_values($uid)
 {
-    $db_profile_get_user_values = db_connect();
+    if (!$db_profile_get_user_values = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
 
@@ -460,7 +460,7 @@ function profile_get_user_values($uid)
 
 function profile_section_move_up($psid)
 {
-    $db_profile_section_move_up = db_connect();
+    if (!$db_profile_section_move_up = db_connect()) return false;
 
     if (!is_numeric($psid)) return false;
 
@@ -511,7 +511,7 @@ function profile_section_move_up($psid)
 
 function profile_section_move_down($psid)
 {
-    $db_profile_section_move_down = db_connect();
+    if (!$db_profile_section_move_down = db_connect()) return false;
 
     if (!is_numeric($psid)) return false;
 
@@ -565,7 +565,7 @@ function profile_section_move_down($psid)
 
 function profile_item_move_up($psid, $piid)
 {
-    $db_profile_item_move_down = db_connect();
+    if (!$db_profile_item_move_down = db_connect()) return false;
 
     if (!is_numeric($piid)) return false;
     if (!is_numeric($psid)) return false;
@@ -618,7 +618,7 @@ function profile_item_move_up($psid, $piid)
 
 function profile_item_move_down($psid, $piid)
 {
-    $db_profile_item_move_down = db_connect();
+    if (!$db_profile_item_move_down = db_connect()) return false;
 
     if (!is_numeric($piid)) return false;
     if (!is_numeric($psid)) return false;
@@ -673,7 +673,7 @@ function profile_sections_positions_update()
 {
     $new_position = 0;
 
-    $db_profile_sections_positions_update = db_connect();
+    if (!$db_profile_sections_positions_update = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return;
 
@@ -701,7 +701,7 @@ function profile_items_positions_update()
     $new_position = 0;
     $current_section = false;
 
-    $db_profile_items_positions_update = db_connect();
+    if (!$db_profile_items_positions_update = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return;
 
@@ -732,7 +732,7 @@ function profile_items_positions_update()
 
 function profile_get_section($psid)
 {
-    $db_profile_get_section = db_connect();
+    if (!$db_profile_get_section = db_connect()) return false;
 
     if (!is_numeric($psid)) return false;
 
@@ -754,7 +754,7 @@ function profile_get_section($psid)
 
 function profile_get_item($piid)
 {
-    $db_profile_get_item = db_connect();
+    if (!$db_profile_get_item = db_connect()) return false;
 
     if (!is_numeric($piid)) return false;
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.136 2007-09-05 22:56:37 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.137 2007-10-09 23:16:02 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -123,7 +123,7 @@ function get_attachments($uid, $aid, &$user_attachments, &$user_image_attachment
     $user_attachments = array();
     $user_image_attachments = array();
 
-    $db_get_attachments = db_connect();
+    if (!$db_get_attachments = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
     if (!is_md5($aid)) return false;
@@ -213,7 +213,7 @@ function get_all_attachments($uid, $aid, &$user_attachments, &$user_image_attach
     $user_attachments = array();
     $user_image_attachments = array();
 
-    $db_get_all_attachments = db_connect();
+    if (!$db_get_all_attachments = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
     if (!is_md5($aid)) return false;
@@ -282,7 +282,7 @@ function get_users_attachments($uid, &$user_attachments, &$user_image_attachment
     $user_attachments = array();
     $user_image_attachments = array();
 
-    $db_get_users_attachments = db_connect();
+    if (!$db_get_users_attachments = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
     if (!is_array($hash_array)) return false;
@@ -366,7 +366,7 @@ function get_users_attachments($uid, &$user_attachments, &$user_image_attachment
 
 function add_attachment($uid, $aid, $fileid, $filename, $mimetype)
 {
-    $db_add_attachment = db_connect();
+    if (!$db_add_attachment = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
     if (!is_md5($aid)) return false;
@@ -400,7 +400,7 @@ function delete_attachment_by_aid($aid)
 {
     if (!is_md5($aid)) return false;
 
-    $db_delete_attachment_by_aid = db_connect();
+    if (!$db_delete_attachment_by_aid = db_connect()) return false;
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
     if(!$table_data = get_table_prefix()) return false;
@@ -436,7 +436,7 @@ function delete_attachment($hash)
 {
     if (!is_md5($hash)) return false;
 
-    $db_delete_attachment = db_connect();
+    if (!$db_delete_attachment = db_connect()) return false;
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
     if (!$table_data = get_table_prefix()) return false;
@@ -510,7 +510,7 @@ function delete_attachment_thumbnail($hash)
 {
     if (!is_md5($hash)) return false;
 
-    $db_delete_attachment_thumbnail = db_connect();
+    if (!$db_delete_attachment_thumbnail = db_connect()) return false;
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
     if (!$table_data = get_table_prefix()) return false;
@@ -569,7 +569,7 @@ function get_free_attachment_space($uid)
 {
     $used_attachment_space = 0;
 
-    $db_get_free_attachment_space = db_connect();
+    if (!$db_get_free_attachment_space = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
 
@@ -609,7 +609,7 @@ function get_free_attachment_space($uid)
 
 function get_attachment_id($tid, $pid)
 {
-    $db_get_attachment_id = db_connect();
+    if (!$db_get_attachment_id = db_connect()) return false;
 
     if (!is_numeric($tid)) return false;
     if (!is_numeric($pid)) return false;
@@ -645,7 +645,7 @@ function get_attachment_id($tid, $pid)
 
 function get_folder_fid($aid)
 {
-    $db_get_folder_fid = db_connect();
+    if (!$db_get_folder_fid = db_connect()) return false;
 
     if (!is_md5($aid)) return false;
 
@@ -680,7 +680,7 @@ function get_folder_fid($aid)
 
 function get_pm_attachment_id($mid)
 {
-    $db_get_pm_attachment_id = db_connect();
+    if (!$db_get_pm_attachment_id = db_connect()) return false;
 
     if (!is_numeric($mid)) return false;
 
@@ -713,7 +713,7 @@ function get_pm_attachment_id($mid)
 
 function get_message_link($aid, $get_pm_link = true)
 {
-    $db_get_message_link = db_connect();
+    if (!$db_get_message_link = db_connect()) return false;
 
     if (!is_md5($aid)) return false;
 
@@ -759,7 +759,7 @@ function get_message_link($aid, $get_pm_link = true)
 
 function get_num_attachments($aid)
 {
-    $db_get_num_attachments = db_connect();
+    if (!$db_get_num_attachments = db_connect()) return false;
 
     if (!is_md5($aid)) return false;
 
@@ -790,7 +790,7 @@ function get_num_attachments($aid)
 
 function get_attachment_by_hash($hash)
 {
-    $db_get_attachment_by_hash = db_connect();
+    if (!$db_get_attachment_by_hash = db_connect()) return false;
 
     if (!is_md5($hash)) return false;
 
@@ -830,7 +830,7 @@ function get_attachment_by_hash($hash)
 
 function attachment_inc_dload_count($hash)
 {
-    $db_attachment_inc_dload_count = db_connect();
+    if (!$db_attachment_inc_dload_count = db_connect()) return false;
 
     if (!is_md5($hash)) return false;
 

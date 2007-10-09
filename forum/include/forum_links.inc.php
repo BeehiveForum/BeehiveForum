@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_links.inc.php,v 1.38 2007-09-05 22:56:37 decoyduck Exp $ */
+/* $Id: forum_links.inc.php,v 1.39 2007-10-09 23:16:03 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -41,7 +41,7 @@ include_once(BH_INCLUDE_PATH. "links.inc.php");
 
 function forum_links_get_links()
 {
-    $db_forum_links_get_links = db_connect();
+    if (!$db_forum_links_get_links = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -83,7 +83,7 @@ function forum_links_get_links()
 
 function forum_links_get_links_by_page($offset)
 {
-    $db_forum_links_get_links_by_page = db_connect();
+    if (!$db_forum_links_get_links_by_page = db_connect()) return false;
 
     if (!is_numeric($offset)) return false;
 
@@ -168,7 +168,7 @@ function forum_links_draw_dropdown()
 
 function forum_links_delete($lid)
 {
-    $db_forum_links_delete = db_connect();
+    if (!$db_forum_links_delete = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -183,7 +183,7 @@ function forum_links_delete($lid)
 
 function forum_links_update_link($lid, $title, $uri = "")
 {
-    $db_forum_links_update = db_connect();
+    if (!$db_forum_links_update = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -202,7 +202,7 @@ function forum_links_update_link($lid, $title, $uri = "")
 
 function forum_links_add_link($title, $uri = "")
 {
-    $db_forum_links_add = db_connect();
+    if (!$db_forum_links_add = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -228,7 +228,7 @@ function forum_links_add_link($title, $uri = "")
 
 function forum_links_get_link($lid)
 {
-    $db_forum_links_get_link = db_connect();
+    if (!$db_forum_links_get_link = db_connect()) return false;
 
     if (!is_numeric($lid)) return false;
 
@@ -251,7 +251,7 @@ function forum_links_get_link($lid)
 
 function forum_links_move_up($lid)
 {
-    $db_forum_links_move_up = db_connect();
+    if (!$db_forum_links_move_up = db_connect()) return false;
 
     if (!is_numeric($lid)) return false;
 
@@ -300,7 +300,7 @@ function forum_links_move_up($lid)
 
 function forum_links_move_down($lid)
 {
-    $db_forum_links_move_down = db_connect();
+    if (!$db_forum_links_move_down = db_connect()) return false;
 
     if (!is_numeric($lid)) return false;
 
@@ -351,7 +351,7 @@ function forum_links_positions_update()
 {
     $new_position = 0;
 
-    $db_forum_links_positions_update = db_connect();
+    if (!$db_forum_links_positions_update = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return;
 

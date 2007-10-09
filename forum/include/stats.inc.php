@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.86 2007-09-15 13:22:32 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.87 2007-10-09 23:16:04 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -41,7 +41,7 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 
 function update_stats()
 {
-    $db_update_stats = db_connect();
+    if (!$db_update_stats = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -83,7 +83,7 @@ function update_stats()
 
 function get_num_sessions()
 {
-    $get_num_sessions = db_connect();
+    if (!$get_num_sessions = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return 0;
 
@@ -110,7 +110,7 @@ function get_num_sessions()
 
 function get_active_users()
 {
-    $db_get_active_users = db_connect();
+    if (!$db_get_active_users = db_connect()) return false;
 
     $stats = array('GUESTS' => 0, 'NUSERS' => 0,
                    'AUSERS' => 0, 'USERS'  => array());
@@ -206,7 +206,7 @@ function get_active_users()
 
 function get_thread_count()
 {
-    $db_get_thread_count = db_connect();
+    if (!$db_get_thread_count = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return 0;
 
@@ -226,7 +226,7 @@ function get_thread_count()
 
 function get_post_count()
 {
-    $db_get_post_count = db_connect();
+    if (!$db_get_post_count = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return 0;
 
@@ -245,7 +245,7 @@ function get_post_count()
 
 function get_recent_post_count()
 {
-    $db_get_post_count = db_connect();
+    if (!$db_get_post_count = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return 0;
 
@@ -267,7 +267,7 @@ function get_recent_post_count()
 
 function get_longest_thread()
 {
-    $db_get_longest_thread = db_connect();
+    if (!$db_get_longest_thread = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -304,7 +304,7 @@ function get_longest_thread()
 
 function get_most_users()
 {
-    $db_get_most_users = db_connect();
+    if (!$db_get_most_users = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -324,7 +324,7 @@ function get_most_users()
 
 function get_most_posts()
 {
-    $db_get_most_posts = db_connect();
+    if (!$db_get_most_posts = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -344,7 +344,7 @@ function get_most_posts()
 
 function get_newest_user()
 {
-    $db_get_newest_user = db_connect();
+    if (!$db_get_newest_user = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -384,7 +384,7 @@ function get_newest_user()
 
 function get_post_tallys($start_stamp, $end_stamp)
 {
-    $db_get_month_post_tallys = db_connect();
+    if (!$db_get_month_post_tallys = db_connect()) return false;
 
     $lang = load_language_file();
 

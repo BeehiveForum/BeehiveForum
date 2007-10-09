@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.139 2007-09-15 20:20:18 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.140 2007-10-09 23:16:02 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -41,7 +41,7 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $allowed_types = FOLDER_ALLOW_ALL_THREAD, $custom_html = "", $class="bhselect")
 {
-    $db_folder_draw_dropdown = db_connect();
+    if (!$db_folder_draw_dropdown = db_connect()) return false;
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
@@ -92,7 +92,7 @@ function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $al
 
 function folder_draw_dropdown_all($default_fid, $field_name="t_fid", $suffix="", $custom_html = "", $class="bhselect")
 {
-    $db_folder_draw_dropdown = db_connect();
+    if (!$db_folder_draw_dropdown = db_connect()) return false;
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
@@ -124,7 +124,7 @@ function folder_draw_dropdown_all($default_fid, $field_name="t_fid", $suffix="",
 
 function folder_get_title($fid)
 {
-    $db_folder_get_title = db_connect();
+    if (!$db_folder_get_title = db_connect()) return false;
 
     if (!is_numeric($fid)) return "The Unknown Folder";
 
@@ -145,7 +145,7 @@ function folder_get_title($fid)
 
 function folder_get_prefix($fid)
 {
-    $db_folder_get_title = db_connect();
+    if (!$db_folder_get_title = db_connect()) return false;
 
     if (!is_numeric($fid)) return "";
 
@@ -166,7 +166,7 @@ function folder_get_prefix($fid)
 
 function folder_create($title, $description = "", $prefix = "", $allowed_types = FOLDER_ALLOW_ALL_THREAD, $permissions = 0)
 {
-    $db_folder_create = db_connect();
+    if (!$db_folder_create = db_connect()) return false;
 
     $title = db_escape_string($title);
     $description = db_escape_string($description);
@@ -204,7 +204,7 @@ function folder_create($title, $description = "", $prefix = "", $allowed_types =
 
 function folder_delete($fid)
 {
-    $db_folder_delete = db_connect();
+    if (!$db_folder_delete = db_connect()) return false;
 
     if (!is_numeric($fid)) return false;
 
@@ -219,7 +219,7 @@ function folder_delete($fid)
 
 function folder_update($fid, $folder_data)
 {
-    $db_folder_update = db_connect();
+    if (!$db_folder_update = db_connect()) return false;
 
     if (!is_numeric($fid)) return false;
     if (!is_array($folder_data)) return false;
@@ -274,7 +274,7 @@ function folder_update($fid, $folder_data)
 
 function folder_move_threads($from, $to)
 {
-    $db_folder_move_threads = db_connect();
+    if (!$db_folder_move_threads = db_connect()) return false;
 
     if (!is_numeric($from)) return false;
     if (!is_numeric($to)) return false;
@@ -362,7 +362,7 @@ function folder_get_available_array_by_forum($forum_fid)
 
 function folder_get_all()
 {
-    $db_folder_get_all = db_connect();
+    if (!$db_folder_get_all = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return array();
 
@@ -396,7 +396,7 @@ function folder_get_all()
 
 function folder_get_all_by_page($offset)
 {
-    $db_folder_get_all_by_page = db_connect();
+    if (!$db_folder_get_all_by_page = db_connect()) return false;
 
     if (!is_numeric($offset)) return false;
 
@@ -456,7 +456,7 @@ function folders_get_thread_counts(&$folder_array, $fid_array)
 
     $fid_list = implode(",", preg_grep("/^[0-9]+$/", $fid_array));
 
-    $db_folder_get_thread_count = db_connect();
+    if (!$db_folder_get_thread_count = db_connect()) return false;
 
     $sql = "SELECT FID, COUNT(TID) AS THREAD_COUNT FROM {$table_data['PREFIX']}THREAD ";
     $sql.= "WHERE FID IN ($fid_list) GROUP BY FID";
@@ -470,7 +470,7 @@ function folders_get_thread_counts(&$folder_array, $fid_array)
 
 function folder_get_thread_count($fid)
 {
-    $db_folder_get_thread_count = db_connect();
+    if (!$db_folder_get_thread_count = db_connect()) return false;
 
     if (!is_numeric($fid)) return false;
 
@@ -488,7 +488,7 @@ function folder_get_thread_count($fid)
 
 function folder_get($fid)
 {
-    $db_folder_get = db_connect();
+    if (!$db_folder_get = db_connect()) return false;
 
     if (!is_numeric($fid)) return false;
 
@@ -520,7 +520,7 @@ function folder_get($fid)
 
 function folder_is_valid($fid)
 {
-    $db_folder_get_available = db_connect();
+    if (!$db_folder_get_available = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -545,7 +545,7 @@ function user_set_folder_interest($fid, $interest)
 {
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    $db_user_set_folder_interest = db_connect();
+    if (!$db_user_set_folder_interest = db_connect()) return false;
 
     if (!is_numeric($fid)) return false;
     if (!is_numeric($interest)) return false;
@@ -575,7 +575,7 @@ function user_set_folder_interest($fid, $interest)
 
 function folder_thread_type_allowed($fid, $type) // for types see constants.inc.php
 {
-    $db_folder_thread_type_allowed = db_connect();
+    if (!$db_folder_thread_type_allowed = db_connect()) return false;
 
     if (!is_numeric($fid)) return false;
     if (!is_numeric($type)) $type = FOLDER_ALLOW_ALL_THREAD;
@@ -604,7 +604,7 @@ function folder_thread_type_allowed($fid, $type) // for types see constants.inc.
 
 function folder_get_by_type_allowed($allowed_types = FOLDER_ALLOW_ALL_THREAD)
 {
-    $db_folder_get_by_type_allowed = db_connect();
+    if (!$db_folder_get_by_type_allowed = db_connect()) return false;
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
@@ -635,7 +635,7 @@ function folder_get_by_type_allowed($allowed_types = FOLDER_ALLOW_ALL_THREAD)
 
 function folder_move_up($fid)
 {
-    $db_folder_move_up = db_connect();
+    if (!$db_folder_move_up = db_connect()) return false;
 
     if (!is_numeric($fid)) return false;
 
@@ -687,7 +687,7 @@ function folder_move_up($fid)
 
 function folder_move_down($fid)
 {
-    $db_folder_move_down = db_connect();
+    if (!$db_folder_move_down = db_connect()) return false;
 
     if (!is_numeric($fid)) return false;
 
@@ -738,7 +738,7 @@ function folder_positions_update()
 {
     $new_position = 0;
 
-    $db_folder_positions_update = db_connect();
+    if (!$db_folder_positions_update = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return;
 

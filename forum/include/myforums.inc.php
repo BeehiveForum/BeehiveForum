@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.72 2007-09-05 22:56:37 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.73 2007-10-09 23:16:03 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -42,7 +42,7 @@ include_once(BH_INCLUDE_PATH. "threads.inc.php");
 
 function get_forum_list($offset)
 {
-    $db_get_forum_list = db_connect();
+    if (!$db_get_forum_list = db_connect()) return false;
 
     if (!is_numeric($offset)) return false;
 
@@ -121,7 +121,7 @@ function get_forum_list($offset)
 
 function get_my_forums($view_type, $offset)
 {
-    $db_get_my_forums = db_connect();
+    if (!$db_get_my_forums = db_connect()) return false;
 
     if (!is_numeric($view_type)) return false;
     if (!is_numeric($offset)) return false;
@@ -348,7 +348,7 @@ function get_my_forums($view_type, $offset)
 
 function user_set_forum_interest($fid, $interest)
 {
-    $db_user_set_forum_interest = db_connect();
+    if (!$db_user_set_forum_interest = db_connect()) return false;
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
@@ -380,7 +380,7 @@ function user_set_forum_interest($fid, $interest)
 
 function forums_any_favourites()
 {
-    $db_forums_any_favourites = db_connect();
+    if (!$db_forums_any_favourites = db_connect()) return false;
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 

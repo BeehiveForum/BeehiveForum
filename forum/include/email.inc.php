@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.118 2007-09-08 19:34:17 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.119 2007-10-09 23:16:02 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -138,7 +138,7 @@ function email_sendsubscription($tuid, $fuid, $tid, $pid)
     if (!is_numeric($tid)) return false;
     if (!is_numeric($pid)) return false;
 
-    $db_email_sendsubscription = db_connect();
+    if (!$db_email_sendsubscription = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -648,7 +648,7 @@ function email_get_language($to_uid)
 
 function email_is_unique($email_address)
 {
-    $db_email_is_unique = db_connect();
+    if (!$db_email_is_unique = db_connect()) return false;
 
     $email_address = db_escape_string($email_address);
 

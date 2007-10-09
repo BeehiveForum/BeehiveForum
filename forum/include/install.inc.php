@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.61 2007-10-08 14:19:28 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.62 2007-10-09 23:16:03 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -319,7 +319,7 @@ function install_check_php_version()
 
 function install_get_webtags()
 {
-    $db_install_get_webtags = db_connect();
+    if (!$db_install_get_webtags = db_connect()) return false;
 
     $sql = "SELECT FID, WEBTAG FROM FORUMS ";
 
@@ -341,7 +341,7 @@ function install_get_webtags()
 
 function install_table_exists($table_name)
 {
-    $db_install_table_exists = db_connect();
+    if (!$db_install_table_exists = db_connect()) return false;
 
     $table_name = db_escape_string($table_name);
 
@@ -354,7 +354,7 @@ function install_table_exists($table_name)
 
 function install_get_table_conflicts($webtag = false, $forum_tables = false, $global_tables = false)
 {
-    $db_install_get_table_conflicts = db_connect();
+    if (!$db_install_get_table_conflicts = db_connect()) return false;
 
     $conflicting_tables_array = array();
 
@@ -429,7 +429,7 @@ function install_get_table_conflicts($webtag = false, $forum_tables = false, $gl
 
 function install_remove_table_keys($table_name)
 {
-    $db_install_remove_table_keys = db_connect();
+    if (!$db_install_remove_table_keys = db_connect()) return false;
 
     if ($table_name !== db_escape_string($table_name)) return false;
 

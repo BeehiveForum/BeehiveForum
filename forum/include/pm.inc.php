@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.221 2007-09-18 20:03:09 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.222 2007-10-09 23:16:03 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -80,7 +80,7 @@ function pm_enabled()
 
 function pm_mark_as_read($mid)
 {
-    $db_pm_mark_as_read = db_connect();
+    if (!$db_pm_mark_as_read = db_connect()) return false;
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
@@ -137,7 +137,7 @@ function pm_error_refuse()
 
 function pm_get_inbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
 {
-    $db_pm_get_inbox = db_connect();
+    if (!$db_pm_get_inbox = db_connect()) return false;
 
     $lang = load_language_file();
 
@@ -231,7 +231,7 @@ function pm_get_inbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
 
 function pm_get_outbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
 {
-    $db_pm_get_outbox = db_connect();
+    if (!$db_pm_get_outbox = db_connect()) return false;
 
     $lang = load_language_file();
 
@@ -325,7 +325,7 @@ function pm_get_outbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
 
 function pm_get_sent($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
 {
-    $db_pm_get_sent = db_connect();
+    if (!$db_pm_get_sent = db_connect()) return false;
 
     $lang = load_language_file();
 
@@ -420,7 +420,7 @@ function pm_get_sent($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
 
 function pm_get_saved_items($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
 {
-    $db_pm_get_saved_items = db_connect();
+    if (!$db_pm_get_saved_items = db_connect()) return false;
 
     $lang = load_language_file();
 
@@ -517,7 +517,7 @@ function pm_get_saved_items($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = 
 
 function pm_get_drafts($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
 {
-    $db_pm_get_drafts = db_connect();
+    if (!$db_pm_get_drafts = db_connect()) return false;
 
     $lang = load_language_file();
 
@@ -611,7 +611,7 @@ function pm_get_drafts($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
 
 function pm_search_execute($search_string, &$error)
 {
-    $db_pm_search_execute = db_connect();
+    if (!$db_pm_search_execute = db_connect()) return false;
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
@@ -674,7 +674,7 @@ function pm_search_execute($search_string, &$error)
 
 function pm_fetch_search_results ($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = 0)
 {
-    $db_pm_fetch_search_results = db_connect();
+    if (!$db_pm_fetch_search_results = db_connect()) return false;
 
     $lang = load_language_file();
 
@@ -775,7 +775,7 @@ function pm_fetch_search_results ($sort_by = 'CREATED', $sort_dir = 'DESC', $off
 
 function pm_get_folder_message_counts()
 {
-    $db_pm_get_folder_message_counts = db_connect();
+    if (!$db_pm_get_folder_message_counts = db_connect()) return false;
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
@@ -851,7 +851,7 @@ function pm_get_folder_message_counts()
 
 function pm_get_free_space($uid = false)
 {
-    $db_pm_get_free_space = db_connect();
+    if (!$db_pm_get_free_space = db_connect()) return false;
 
     if ($uid === false) {
         if (($uid = bh_session_get_value('UID')) === false) return false;
@@ -894,7 +894,7 @@ function pm_get_free_space($uid = false)
 
 function pm_get_user($mid)
 {
-    $db_pm_get_user = db_connect();
+    if (!$db_pm_get_user = db_connect()) return false;
 
     if (!is_numeric($mid)) return false;
 
@@ -923,7 +923,7 @@ function pm_get_user($mid)
 
 function pm_user_get_friends()
 {
-    $db_pm_user_get_friends = db_connect();
+    if (!$db_pm_user_get_friends = db_connect()) return false;
 
     $lang = load_language_file();
 
@@ -982,7 +982,7 @@ function pm_user_get_friends()
 
 function pm_get_subject($mid, $tuid)
 {
-    $db_pm_get_subject = db_connect();
+    if (!$db_pm_get_subject = db_connect()) return false;
 
     if (!is_numeric($mid)) return false;
     if (!is_numeric($tuid)) return false;
@@ -1013,7 +1013,7 @@ function pm_get_subject($mid, $tuid)
 
 function pm_message_get($mid)
 {
-    $db_pm_message_get = db_connect();
+    if (!$db_pm_message_get = db_connect()) return false;
 
     $lang = load_language_file();
 
@@ -1079,7 +1079,7 @@ function pm_message_get($mid)
 
 function pm_get_content($mid)
 {
-    $db_pm_get_content = db_connect();
+    if (!$db_pm_get_content = db_connect()) return false;
 
     if (!is_numeric($mid)) return false;
 
@@ -1311,7 +1311,7 @@ function pm_display_html_export($pm_message_array, $folder)
 
 function pm_message_get_folder($mid, $type = 0)
 {
-    $db_pm_message_get_folder = db_connect();
+    if (!$db_pm_message_get_folder = db_connect()) return false;
 
     if (!is_numeric($mid)) return false;
 
@@ -1374,7 +1374,7 @@ function pm_save_attachment_id($mid, $aid)
     if (!is_numeric($mid)) return false;
     if (!is_md5($aid)) return false;
 
-    $db_pm_save_attachment_id = db_connect();
+    if (!$db_pm_save_attachment_id = db_connect()) return false;
 
     $sql = "SELECT AID FROM PM_ATTACHMENT_IDS WHERE MID = '$mid'";
 
@@ -1413,7 +1413,7 @@ function pm_save_attachment_id($mid, $aid)
 
 function pm_send_message($tuid, $fuid, $subject, $content, $aid)
 {
-    $db_pm_send_message = db_connect();
+    if (!$db_pm_send_message = db_connect()) return false;
 
     if (!is_numeric($tuid)) return false;
     if (!is_numeric($fuid)) return false;
@@ -1478,7 +1478,7 @@ function pm_send_message($tuid, $fuid, $subject, $content, $aid)
 
 function pm_add_sent_item($smid, $tuid, $fuid, $subject, $content, $aid)
 {
-    $db_pm_add_sent_item = db_connect();
+    if (!$db_pm_add_sent_item = db_connect()) return false;
 
     if (!is_numeric($smid)) return false;
     if (!is_numeric($tuid)) return false;
@@ -1534,7 +1534,7 @@ function pm_add_sent_item($smid, $tuid, $fuid, $subject, $content, $aid)
 
 function pm_save_message($subject, $content, $tuid, $recipient_list)
 {
-    $db_pm_save_message = db_connect();
+    if (!$db_pm_save_message = db_connect()) return false;
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
@@ -1587,7 +1587,7 @@ function pm_save_message($subject, $content, $tuid, $recipient_list)
 
 function pm_update_saved_message($mid, $subject, $content, $tuid, $recipient_list)
 {
-    $db_pm_edit_messages = db_connect();
+    if (!$db_pm_edit_messages = db_connect()) return false;
 
     if (!is_numeric($mid)) return false;
     if (!is_numeric($tuid)) return false;
@@ -1625,7 +1625,7 @@ function pm_update_saved_message($mid, $subject, $content, $tuid, $recipient_lis
 
 function pm_edit_message($mid, $subject, $content)
 {
-    $db_pm_edit_messages = db_connect();
+    if (!$db_pm_edit_messages = db_connect()) return false;
 
     if (!is_numeric($mid)) return false;
 
@@ -1658,7 +1658,7 @@ function pm_edit_message($mid, $subject, $content)
 
 function pm_update_sent_item($mid, $subject, $content)
 {
-    $db_pm_edit_messages = db_connect();
+    if (!$db_pm_edit_messages = db_connect()) return false;
 
     if (!is_numeric($mid)) return false;
 
@@ -1698,7 +1698,7 @@ function pm_update_sent_item($mid, $subject, $content)
 
 function pm_delete_message($mid)
 {
-    $db_delete_pm = db_connect();
+    if (!$db_delete_pm = db_connect()) return false;
 
     if (!is_numeric($mid)) return false;
 
@@ -1747,7 +1747,7 @@ function pm_delete_message($mid)
 
 function pm_archive_message($mid)
 {
-    $db_pm_archive_message = db_connect();
+    if (!$db_pm_archive_message = db_connect()) return false;
 
     if (!is_numeric($mid)) return false;
 
@@ -1790,7 +1790,7 @@ function pm_archive_message($mid)
 
 function pm_get_new_messages($limit)
 {
-    $db_pm_get_new_messages = db_connect();
+    if (!$db_pm_get_new_messages = db_connect()) return false;
 
     if (!is_numeric($limit)) return false;
 
@@ -1832,7 +1832,7 @@ function pm_get_new_messages($limit)
 
 function pm_new_check(&$pm_new_count, &$pm_outbox_count)
 {
-    $db_pm_new_check = db_connect();
+    if (!$db_pm_new_check = db_connect()) return false;
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
@@ -1891,7 +1891,7 @@ function pm_new_check(&$pm_new_count, &$pm_outbox_count)
 
 function pm_get_unread_count()
 {
-    $db_pm_get_unread_count = db_connect();
+    if (!$db_pm_get_unread_count = db_connect()) return false;
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
@@ -1925,7 +1925,7 @@ function pm_get_unread_count()
 
 function pm_user_prune_folders($uid = false)
 {
-    $db_pm_prune_folders = db_connect();
+    if (!$db_pm_prune_folders = db_connect()) return false;
 
     if ($uid === false) {
         if (($uid = bh_session_get_value('UID')) === false) return false;
@@ -1962,7 +1962,7 @@ function pm_user_prune_folders($uid = false)
 
 function pm_system_prune_folders()
 {
-    $db_pm_prune_folders = db_connect();
+    if (!$db_pm_prune_folders = db_connect()) return false;
 
     $pm_prune_length = intval(forum_get_setting('pm_auto_prune', false, 0));
 
@@ -2027,7 +2027,7 @@ function pms_have_attachments(&$pm_array, $mid_array)
 
     $mid_list = implode(",", preg_grep("/^[0-9]+$/", $mid_array));
 
-    $db_thread_has_attachments = db_connect();
+    if (!$db_thread_has_attachments = db_connect()) return false;
 
     $sql = "SELECT PMI.MID, PAF.AID FROM POST_ATTACHMENT_FILES PAF ";
     $sql.= "LEFT JOIN PM_ATTACHMENT_IDS PMI ON (PMI.AID = PAF.AID) ";
@@ -2055,7 +2055,7 @@ function pm_has_attachments($mid)
 {
     if (!is_numeric($mid)) return false;
 
-    $db_thread_has_attachments = db_connect();
+    if (!$db_thread_has_attachments = db_connect()) return false;
 
     $sql = "SELECT AID FROM PM_ATTACHMENT_IDS WHERE MID = '$mid'";
 

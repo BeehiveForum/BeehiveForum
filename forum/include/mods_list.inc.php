@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: mods_list.inc.php,v 1.9 2007-08-01 20:23:02 decoyduck Exp $ */
+/* $Id: mods_list.inc.php,v 1.10 2007-10-09 23:16:03 decoyduck Exp $ */
 
 /**
 * Fucntions related to generating the folder moderators lists
@@ -48,7 +48,7 @@ include_once(BH_INCLUDE_PATH. "forum.inc.php");
 */
 function mods_list_get_mods($fid)
 {
-    $db_mods_list_get_mods = db_connect();
+    if (!$db_mods_list_get_mods = db_connect()) return false;
 
     $mod_list_array = array();
 

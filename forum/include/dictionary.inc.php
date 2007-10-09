@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.inc.php,v 1.43 2007-08-28 22:54:03 decoyduck Exp $ */
+/* $Id: dictionary.inc.php,v 1.44 2007-10-09 23:16:02 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -86,7 +86,7 @@ class dictionary {
 
     function is_installed()
     {
-        $db_dictionary_check_setup = db_connect();
+        if (!$db_dictionary_check_setup = db_connect()) return false;
 
         $sql = "SELECT WORD FROM DICTIONARY LIMIT 0, 1";
 
@@ -163,7 +163,7 @@ class dictionary {
 
     function add_custom_word($word)
     {
-        $db_dictionary_add_custom_word = db_connect();
+        if (!$db_dictionary_add_custom_word = db_connect()) return false;
 
         $metaphone = db_escape_string(metaphone(trim($word)));
         $word = db_escape_string(trim($word));
@@ -253,7 +253,7 @@ class dictionary {
 
     function word_get_suggestions()
     {
-        $db_dictionary_word_get_suggestions = db_connect();
+        if (!$db_dictionary_word_get_suggestions = db_connect()) return false;
 
         if (!isset($this->content_array[$this->current_word])) return;
 

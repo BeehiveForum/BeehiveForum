@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.160 2007-10-04 12:15:55 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.161 2007-10-09 23:16:03 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1259,7 +1259,7 @@ function light_html_guest_error ()
 
 function light_folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="")
 {
-    $db_folder_draw_dropdown = db_connect();
+    if (!$db_folder_draw_dropdown = db_connect()) return false;
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 

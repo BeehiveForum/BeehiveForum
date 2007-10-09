@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db_mysql.inc.php,v 1.34 2007-09-05 22:56:39 decoyduck Exp $ */
+/* $Id: db_mysql.inc.php,v 1.35 2007-10-09 23:16:05 decoyduck Exp $ */
 
 function db_get_connection_vars(&$db_server, &$db_username, &$db_password, &$db_database)
 {
@@ -274,7 +274,7 @@ function db_fetch_mysql_version(&$mysql_version)
 
 function db_escape_string($str)
 {
-    $db_escape_string = db_connect();
+    if (!$db_escape_string = db_connect()) return false;
 
     if (function_exists('mysql_real_escape_string')) {
         return @mysql_real_escape_string($str, $db_escape_string);

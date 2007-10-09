@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.266 2007-09-25 12:04:48 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.267 2007-10-09 23:16:02 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -54,7 +54,7 @@ function get_forum_data()
 {
     static $forum_data = false;
 
-    $db_get_forum_data = db_connect();
+    if (!$db_get_forum_data = db_connect()) return false;
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
@@ -149,7 +149,7 @@ function forum_check_access_level()
 {
     static $forum_data = false;
 
-    $db_forum_check_access_level = db_connect();
+    if (!$db_forum_check_access_level = db_connect()) return false;
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
@@ -249,7 +249,7 @@ function forum_restricted_message()
 
 function forum_get_password($forum_fid)
 {
-    $db_forum_get_password = db_connect();
+    if (!$db_forum_get_password = db_connect()) return false;
 
     if (!is_numeric($forum_fid)) return false;
 
@@ -295,7 +295,7 @@ function forum_check_password($forum_fid)
 {
     $frame_top_target = html_get_top_frame_name();
 
-    $db_forum_check_password = db_connect();
+    if (!$db_forum_check_password = db_connect()) return false;
 
     $webtag = get_webtag($webtag_search);
 
@@ -403,7 +403,7 @@ function forum_check_password($forum_fid)
 
 function forum_get_settings()
 {
-    $db_forum_get_settings = db_connect();
+    if (!$db_forum_get_settings = db_connect()) return false;
 
     static $forum_settings_array = false;
 
@@ -470,7 +470,7 @@ function forum_get_settings()
 
 function forum_get_global_settings()
 {
-    $db_forum_get_global_settings = db_connect();
+    if (!$db_forum_get_global_settings = db_connect()) return false;
 
     static $forum_global_settings_array = false;
 
@@ -516,7 +516,7 @@ function forum_get_global_settings()
 
 function forum_get_settings_by_fid($fid, $include_global_settings = true)
 {
-    $db_forum_get_settings_by_fid = db_connect();
+    if (!$db_forum_get_settings_by_fid = db_connect()) return false;
 
     if (!is_numeric($fid)) return false;
 
@@ -567,7 +567,7 @@ function forum_save_settings($forum_settings_array)
 {
     if (!is_array($forum_settings_array)) return false;
 
-    $db_forum_save_settings = db_connect();
+    if (!$db_forum_save_settings = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -609,7 +609,7 @@ function forum_save_default_settings($forum_settings_array)
 {
     if (!is_array($forum_settings_array)) return false;
 
-    $db_forum_save_default_settings = db_connect();
+    if (!$db_forum_save_default_settings = db_connect()) return false;
 
     foreach ($forum_settings_array as $sname => $svalue) {
 
@@ -679,7 +679,7 @@ function forum_check_global_setting_name($setting_name)
 
 function forum_get_name($fid)
 {
-    $db_forum_get_name = db_connect();
+    if (!$db_forum_get_name = db_connect()) return false;
 
     if (!is_numeric($fid)) return "A Beehive Forum";
 
@@ -699,7 +699,7 @@ function forum_get_name($fid)
 
 function forum_get_webtag($fid)
 {
-    $db_forum_get_webtag = db_connect();
+    if (!$db_forum_get_webtag = db_connect()) return false;
 
     if (!is_numeric($fid)) return false;
 
@@ -718,7 +718,7 @@ function forum_get_webtag($fid)
 
 function forum_get_table_prefix($fid)
 {
-    $db_forum_get_webtag = db_connect();
+    if (!$db_forum_get_webtag = db_connect()) return false;
 
     if (!is_numeric($fid)) return false;
 
@@ -849,7 +849,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
 
         if (($uid = bh_session_get_value('UID')) === false) return false;
 
-        $db_forum_create = db_connect();
+        if (!$db_forum_create = db_connect()) return false;
 
         // Check that the WEBTAG is unique.
 
@@ -1772,7 +1772,7 @@ function forum_update($fid, $forum_name, $owner_uid, $access_level)
 
     if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
 
-        $db_forum_update = db_connect();
+        if (!$db_forum_update = db_connect()) return false;
 
         $forum_name = db_escape_string($forum_name);
 
@@ -1802,7 +1802,7 @@ function forum_update($fid, $forum_name, $owner_uid, $access_level)
 
 function forum_apply_user_permissions($forum_fid, $uid)
 {
-    $db_forum_apply_user_permissions = db_connect();
+    if (!$db_forum_apply_user_permissions = db_connect()) return false;
 
     if (!is_numeric($forum_fid)) return false;
     if (!is_numeric($uid)) return false;
@@ -1832,7 +1832,7 @@ function forum_delete($fid)
 {
     if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
 
-        $db_forum_delete = db_connect();
+        if (!$db_forum_delete = db_connect()) return false;
 
         if (!is_numeric($fid)) return false;
 
@@ -1913,7 +1913,7 @@ function forum_delete_tables($webtag, $database_name)
 
     if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
 
-        $db_forum_delete_tables = db_connect();
+        if (!$db_forum_delete_tables = db_connect()) return false;
 
         $table_array = array('ADMIN_LOG',     'BANNED',          'FOLDER',
                              'FORUM_LINKS',   'GROUPS',          'GROUP_PERMS',
@@ -1949,7 +1949,7 @@ function forum_update_access($fid, $access)
 
         if (($uid = bh_session_get_value('UID')) === false) return false;
 
-        $db_forum_update_access = db_connect();
+        if (!$db_forum_update_access = db_connect()) return false;
 
         $sql = "UPDATE LOW_PRIORITY FORUMS SET ACCESS_LEVEL = '$access' ";
         $sql.= "WHERE FID = '$fid'";
@@ -1983,7 +1983,7 @@ function forum_update_access($fid, $access)
 
 function forum_update_password($fid, $password)
 {
-    $db_forum_update_password = db_connect();
+    if (!$db_forum_update_password = db_connect()) return false;
 
     if (!is_numeric($fid)) return false;
 
@@ -2008,7 +2008,7 @@ function forum_get($fid)
 
     if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
-        $db_forum_get = db_connect();
+        if (!$db_forum_get = db_connect()) return false;
 
         $sql = "SELECT FID, WEBTAG, OWNER_UID, DATABASE_NAME, DEFAULT_FORUM, ";
         $sql.= "ACCESS_LEVEL, FORUM_PASSWD FROM FORUMS WHERE FID = '$fid'";
@@ -2047,7 +2047,7 @@ function forum_get_permissions($fid)
 {
     if (!is_numeric($fid)) return false;
 
-    $db_forum_get_permissions = db_connect();
+    if (!$db_forum_get_permissions = db_connect()) return false;
 
     $forum_get_permissions_array = array();
 
@@ -2074,7 +2074,7 @@ function forum_update_default($fid)
 
     if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
 
-        $db_forum_get_permissions = db_connect();
+        if (!$db_forum_get_permissions = db_connect()) return false;
 
         $sql = "UPDATE LOW_PRIORITY FORUMS SET DEFAULT_FORUM = 0";
 
@@ -2095,7 +2095,7 @@ function forum_update_default($fid)
 
 function forum_get_post_count($webtag)
 {
-    $db_forum_get_post_count = db_connect();
+    if (!$db_forum_get_post_count = db_connect()) return false;
 
     if (preg_match("/^[a-z0-9_]+$/i", $webtag) < 1) return 0;
 
@@ -2119,7 +2119,7 @@ function forum_search_array_clean($forum_search)
 
 function forum_search($forum_search, $offset)
 {
-    $db_forum_search = db_connect();
+    if (!$db_forum_search = db_connect()) return false;
 
     if (!is_numeric($offset)) return false;
 
@@ -2317,7 +2317,7 @@ function forum_search($forum_search, $offset)
 
 function forum_get_all_prefixes()
 {
-    $db_forum_get_all_prefixes = db_connect();
+    if (!$db_forum_get_all_prefixes = db_connect()) return false;
 
     $sql = "SELECT CONCAT(DATABASE_NAME, '.', WEBTAG, '_') AS PREFIX, ";
     $sql.= "FID FROM FORUMS ";
@@ -2340,7 +2340,7 @@ function forum_get_all_prefixes()
 
 function forum_get_all_webtags()
 {
-    $db_forum_get_all_webtags = db_connect();
+    if (!$db_forum_get_all_webtags = db_connect()) return false;
 
     $sql = "SELECT FID, WEBTAG FROM FORUMS ";
 
@@ -2362,7 +2362,7 @@ function forum_get_all_webtags()
 
 function forum_get_all_fids()
 {
-    $db_forum_get_all_fids = db_connect();
+    if (!$db_forum_get_all_fids = db_connect()) return false;
 
     $sql = "SELECT FID FROM FORUMS";
 
@@ -2384,7 +2384,7 @@ function forum_get_all_fids()
 
 function forum_update_last_visit($uid)
 {
-    $db_forum_update_last_visit = db_connect();
+    if (!$db_forum_update_last_visit = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
 
@@ -2418,7 +2418,7 @@ function forum_update_last_visit($uid)
 
 function forums_get_available_dbs()
 {
-    $db_forums_get_available_dbs = db_connect();
+    if (!$db_forums_get_available_dbs = db_connect()) return false;
 
     $sql = "SHOW DATABASES";
 
@@ -2444,7 +2444,7 @@ function forums_get_available_dbs()
 
 function forums_get_available_count()
 {
-    $db_forums_get_available_count = db_connect();
+    if (!$db_forums_get_available_count = db_connect()) return false;
 
     if (($uid = bh_session_get_value('UID')) === false) return 0;
 

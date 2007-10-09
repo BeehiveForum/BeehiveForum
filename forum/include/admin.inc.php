@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.136 2007-10-08 17:10:24 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.137 2007-10-09 23:16:02 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -64,7 +64,7 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 function admin_add_log_entry($action, $data = "")
 {
-    $db_admin_add_log_entry = db_connect();
+    if (!$db_admin_add_log_entry = db_connect()) return false;
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
@@ -96,7 +96,7 @@ function admin_add_log_entry($action, $data = "")
 
 function admin_prune_log($remove_type, $remove_days)
 {
-    $db_admin_clearlog = db_connect();
+    if (!$db_admin_clearlog = db_connect()) return false;
 
     if (!is_numeric($remove_type)) return false;
     if (!is_numeric($remove_days)) return false;
@@ -127,7 +127,7 @@ function admin_prune_log($remove_type, $remove_days)
 
 function admin_get_log_entries($offset, $sort_by = 'CREATED', $sort_dir = 'DESC')
 {
-    $db_admin_get_log_entries = db_connect();
+    if (!$db_admin_get_log_entries = db_connect()) return false;
 
     $lang = load_language_file();
 
@@ -200,7 +200,7 @@ function admin_get_log_entries($offset, $sort_by = 'CREATED', $sort_dir = 'DESC'
 
 function admin_get_word_filter_list($offset)
 {
-    $db_admin_get_word_filter = db_connect();
+    if (!$db_admin_get_word_filter = db_connect()) return false;
 
     if (!is_numeric($offset)) $offset = 0;
 
@@ -251,7 +251,7 @@ function admin_get_word_filter_list($offset)
 
 function admin_get_word_filter($filter_id)
 {
-    $db_admin_get_word_filter = db_connect();
+    if (!$db_admin_get_word_filter = db_connect()) return false;
 
     if (!is_numeric($filter_id)) return false;
 
@@ -283,7 +283,7 @@ function admin_get_word_filter($filter_id)
 
 function admin_delete_word_filter($filter_id)
 {
-    $db_user_delete_word_filter = db_connect();
+    if (!$db_user_delete_word_filter = db_connect()) return false;
 
     if (!is_numeric($filter_id)) return false;
 
@@ -308,7 +308,7 @@ function admin_delete_word_filter($filter_id)
 
 function admin_clear_word_filter()
 {
-    $db_admin_clear_word_filter = db_connect();
+    if (!$db_admin_clear_word_filter = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -332,7 +332,7 @@ function admin_clear_word_filter()
 
 function admin_add_word_filter($filter_name, $match_text, $replace_text, $filter_option, $filter_enabled)
 {
-    $db_admin_add_word_filter = db_connect();
+    if (!$db_admin_add_word_filter = db_connect()) return false;
 
     $filter_name  = db_escape_string($filter_name);
     $match_text   = db_escape_string($match_text);
@@ -365,7 +365,7 @@ function admin_add_word_filter($filter_name, $match_text, $replace_text, $filter
 
 function admin_update_word_filter($filter_id, $filter_name, $match_text, $replace_text, $filter_option, $filter_enabled)
 {
-    $db_admin_add_word_filter = db_connect();
+    if (!$db_admin_add_word_filter = db_connect()) return false;
 
     if (!is_numeric($filter_id)) return false;
 
@@ -402,7 +402,7 @@ function admin_update_word_filter($filter_id, $filter_name, $match_text, $replac
 
 function admin_user_search($user_search, $sort_by = 'USER_FORUM.LAST_VISIT', $sort_dir = 'DESC', $filter = ADMIN_USER_FILTER_NONE, $offset = 0)
 {
-    $db_admin_user_search = db_connect();
+    if (!$db_admin_user_search = db_connect()) return false;
 
     $sort_by_array  = array('USER.UID', 'USER.LOGON', 'USER_FORUM.LAST_VISIT', 'USER.REGISTERED', 'SESSIONS.REFERER');
     $sort_dir_array = array('ASC', 'DESC');
@@ -542,7 +542,7 @@ function admin_user_search($user_search, $sort_by = 'USER_FORUM.LAST_VISIT', $so
 
 function admin_user_get_all($sort_by = 'USER_FORUM.LAST_VISIT', $sort_dir = 'ASC', $filter = ADMIN_USER_FILTER_NONE, $offset = 0)
 {
-    $db_user_get_all = db_connect();
+    if (!$db_user_get_all = db_connect()) return false;
     $user_get_all_array = array();
 
     $sort_by_array  = array('USER.UID', 'USER.LOGON', 'USER_FORUM.LAST_VISIT', 'USER.REGISTERED', 'SESSIONS.REFERER');
@@ -661,7 +661,7 @@ function admin_user_get_all($sort_by = 'USER_FORUM.LAST_VISIT', $sort_dir = 'ASC
 
 function admin_session_end($uid)
 {
-    $db_admin_session_end = db_connect();
+    if (!$db_admin_session_end = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
 
@@ -691,7 +691,7 @@ function admin_get_users_attachments($uid, &$user_attachments, &$user_image_atta
     $user_attachments = array();
     $user_image_attachments = array();
 
-    $db_get_users_attachments = db_connect();
+    if (!$db_get_users_attachments = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
 
@@ -771,7 +771,7 @@ function admin_get_users_attachments($uid, &$user_attachments, &$user_image_atta
 
 function admin_get_forum_list($offset)
 {
-    $db_admin_get_forum_list = db_connect();
+    if (!$db_admin_get_forum_list = db_connect()) return false;
 
     if (!is_numeric($offset)) return false;
 
@@ -823,7 +823,7 @@ function admin_get_forum_list($offset)
 
 function admin_forum_get_post_count($fid)
 {
-    $db_admin_forum_get_post_count = db_connect();
+    if (!$db_admin_forum_get_post_count = db_connect()) return false;
 
     if (!is_numeric($fid)) return false;
 
@@ -854,7 +854,7 @@ function admin_forum_get_post_count($fid)
 
 function admin_get_ban_data($sort_by = "ID", $sort_dir = "ASC", $offset = 0)
 {
-    $db_admin_get_bandata = db_connect();
+    if (!$db_admin_get_bandata = db_connect()) return false;
 
     $sort_by_array = array('ID', 'BANTYPE', 'BANDATA', 'COMMENT');
     $sort_dir_array = array('ASC', 'DESC');
@@ -907,7 +907,7 @@ function admin_get_ban_data($sort_by = "ID", $sort_dir = "ASC", $offset = 0)
 
 function admin_get_ban($ban_id)
 {
-    $db_admin_get_bandata = db_connect();
+    if (!$db_admin_get_bandata = db_connect()) return false;
 
     if (!is_numeric($ban_id)) return false;
 
@@ -938,7 +938,7 @@ function admin_get_ban($ban_id)
 
 function admin_get_post_approval_queue($offset = 0)
 {
-    $db_admin_get_post_approval_queue = db_connect();
+    if (!$db_admin_get_post_approval_queue = db_connect()) return false;
 
     if (!is_numeric($offset)) $offset = 0;
 
@@ -1004,7 +1004,7 @@ function admin_get_post_approval_queue($offset = 0)
 
 function admin_get_visitor_log($offset)
 {
-    $db_admin_get_visitor_log = db_connect();
+    if (!$db_admin_get_visitor_log = db_connect()) return false;
 
     if (!is_numeric($offset)) $offset = 0;
 
@@ -1100,7 +1100,7 @@ function admin_get_visitor_log($offset)
 
 function admin_clear_visitor_log()
 {
-    $db_admin_clear_visitor_log = db_connect();
+    if (!$db_admin_clear_visitor_log = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -1125,7 +1125,7 @@ function admin_clear_visitor_log()
 
 function admin_get_user_aliases($uid)
 {
-    $db_user_get_aliases = db_connect();
+    if (!$db_user_get_aliases = db_connect()) return false;
 
     $lang = load_language_file();
 
@@ -1205,7 +1205,7 @@ function admin_get_user_aliases($uid)
 
 function admin_get_user_history($uid)
 {
-    $db_admin_get_user_history = db_connect();
+    if (!$db_admin_get_user_history = db_connect()) return false;
 
     $lang = load_language_file();
 
@@ -1273,7 +1273,7 @@ function admin_get_user_history($uid)
 
 function admin_clear_user_history($uid)
 {
-    $db_admin_clear_user_history = db_connect();
+    if (!$db_admin_clear_user_history = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
 
@@ -1286,7 +1286,7 @@ function admin_clear_user_history($uid)
 
 function admin_approve_user($uid)
 {
-    $db_admin_approve_user = db_connect();
+    if (!$db_admin_approve_user = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
 
@@ -1299,7 +1299,7 @@ function admin_approve_user($uid)
 
 function admin_delete_user($uid, $delete_content = false)
 {
-    $db_admin_delete_user = db_connect();
+    if (!$db_admin_delete_user = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
     if (!is_bool($delete_content)) $delete_content = false;
@@ -1539,7 +1539,7 @@ function admin_delete_user($uid, $delete_content = false)
 
 function admin_delete_users_posts($uid)
 {
-    $db_admin_delete_users_posts = db_connect();
+    if (!$db_admin_delete_users_posts = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
 

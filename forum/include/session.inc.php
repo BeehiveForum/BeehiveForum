@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.327 2007-09-15 16:51:31 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.328 2007-10-09 23:16:04 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -78,7 +78,7 @@ include_once(BH_INCLUDE_PATH. "visitor_log.inc.php");
 
 function bh_session_check($show_session_fail = true, $use_sess_hash = false)
 {
-    $db_bh_session_check = db_connect();
+    if (!$db_bh_session_check = db_connect()) return false;
 
     // Fetch the user's IP Address
 
@@ -307,7 +307,7 @@ function bh_session_expired()
 
 function bh_guest_session_init($use_sess_hash = false, $update_visitor_log = true)
 {
-    $db_bh_guest_session_init = db_connect();
+    if (!$db_bh_guest_session_init = db_connect()) return false;
 
     if (!$ipaddress = get_ip_address()) $ipaddress = "";
 
@@ -500,7 +500,7 @@ function bh_session_get_value($session_key)
 
 function bh_remove_stale_sessions()
 {
-    $db_bh_remove_stale_sessions = db_connect();
+    if (!$db_bh_remove_stale_sessions = db_connect()) return false;
 
     if ($session_cutoff = forum_get_setting('session_cutoff', false, 86400)) {
 
@@ -561,7 +561,7 @@ function bh_update_visitor_log($uid, $forum_fid = false, $force_update = false)
 
     if (!$ipaddress = get_ip_address()) $ipaddress = "";
 
-    $db_bh_update_visitor_log = db_connect();
+    if (!$db_bh_update_visitor_log = db_connect()) return false;
 
     if ($uid > 0) {
 
@@ -653,7 +653,7 @@ function bh_update_user_time($uid)
 
     $forum_fid = $table_data['FID'];
 
-    $db_bh_update_user_time = db_connect();
+    if (!$db_bh_update_user_time = db_connect()) return false;
 
     $active_sess_cutoff = intval(forum_get_setting('active_sess_cutoff', false, 900));
 
@@ -822,7 +822,7 @@ function bh_update_user_time($uid)
 
 function bh_session_init($uid, $update_visitor_log = true, $skip_cookie = false)
 {
-    $db_bh_session_init = db_connect();
+    if (!$db_bh_session_init = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
 
@@ -916,7 +916,7 @@ function bh_session_remove_cookies()
 
 function bh_session_end($remove_cookies = true)
 {
-    $db_bh_session_end = db_connect();
+    if (!$db_bh_session_end = db_connect()) return false;
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
@@ -961,7 +961,7 @@ function bh_session_end($remove_cookies = true)
 
 function bh_session_get_perm_array($uid)
 {
-    $db_bh_session_get_perm_array = db_connect();
+    if (!$db_bh_session_get_perm_array = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
 
@@ -1333,7 +1333,7 @@ function bh_session_get_post_page_prefs()
 
 function bh_session_is_search_engine()
 {
-    $db_bh_session_is_search_engine = db_connect();
+    if (!$db_bh_session_is_search_engine = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 

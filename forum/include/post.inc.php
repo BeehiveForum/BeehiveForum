@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.164 2007-09-14 17:41:26 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.165 2007-10-09 23:16:03 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -46,7 +46,7 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 function post_create($fid, $tid, $reply_pid, $by_uid, $fuid, $tuid, $content, $hide_ipaddress = false)
 {
-    $db_post_create = db_connect();
+    if (!$db_post_create = db_connect()) return false;
 
     $post_content = db_escape_string($content);
 
@@ -134,7 +134,7 @@ function post_approve($tid, $pid)
     if (!is_numeric($tid)) return false;
     if (!is_numeric($pid)) return false;
 
-    $db_post_approve = db_connect();
+    if (!$db_post_approve = db_connect()) return false;
 
     $approve_uid = bh_session_get_value('UID');
 
@@ -154,7 +154,7 @@ function post_save_attachment_id($tid, $pid, $aid)
     if (!is_numeric($pid)) return false;
     if (!is_md5($aid)) return false;
 
-    $db_post_save_attachment_id = db_connect();
+    if (!$db_post_save_attachment_id = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -192,7 +192,7 @@ function post_create_thread($fid, $uid, $title, $poll = 'N', $sticky = 'N', $clo
     $sticky = ($sticky == 'Y') ? 'Y' : 'N';
     $closed = $closed ? "NOW()" : "NULL";
 
-    $db_post_create_thread = db_connect();
+    if (!$db_post_create_thread = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return -1;
 
@@ -216,7 +216,7 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
     $lang = load_language_file();
 
     $html = "<select name=\"t_to_uid\">\n";
-    $db_post_draw_to_dropdown = db_connect();
+    if (!$db_post_draw_to_dropdown = db_connect()) return false;
 
     if (!is_numeric($default_uid)) $default_uid = 0;
 
@@ -290,7 +290,7 @@ function post_draw_to_dropdown_recent($default_uid, $show_all = true)
     $lang = load_language_file();
 
     $html = "<select name=\"t_to_uid_recent\" class=\"recent_user_dropdown\" onclick=\"checkToRadio(". ($default_uid == 0 ? 1 : 0).")\">\n";
-    $db_post_draw_to_dropdown = db_connect();
+    if (!$db_post_draw_to_dropdown = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
     if (!is_numeric($default_uid)) $default_uid = 0;
@@ -363,7 +363,7 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $
     $lang = load_language_file();
 
     $html = "<select name=\"t_to_uid_in_thread\" class=\"user_in_thread_dropdown\" $custom_html>\n";
-    $db_post_draw_to_dropdown = db_connect();
+    if (!$db_post_draw_to_dropdown = db_connect()) return false;
 
     if (!is_numeric($tid)) return false;
     if (!is_numeric($default_uid)) $default_uid = 0;
@@ -441,7 +441,7 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $
 
 function get_user_posts($uid)
 {
-    $db_get_user_posts = db_connect();
+    if (!$db_get_user_posts = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
 
@@ -469,7 +469,7 @@ function get_user_posts($uid)
 
 function check_ddkey($ddkey)
 {
-    $db_check_ddkey = db_connect();
+    if (!$db_check_ddkey = db_connect()) return false;
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
@@ -504,7 +504,7 @@ function check_ddkey($ddkey)
 
 function check_post_frequency()
 {
-    $db_check_post_frequency = db_connect();
+    if (!$db_check_post_frequency = db_connect()) return false;
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 

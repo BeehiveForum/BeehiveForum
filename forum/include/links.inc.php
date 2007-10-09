@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.inc.php,v 1.77 2007-09-15 20:20:18 decoyduck Exp $ */
+/* $Id: links.inc.php,v 1.78 2007-10-09 23:16:03 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -41,7 +41,7 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 function links_get_in_folder($fid, $invisible = false, $sort_by = "TITLE", $sort_dir = "ASC", $offset = 0) // setting $invisible to true gets links that are marked as not visible too
 {
-    $db_links_get_in_folder = db_connect();
+    if (!$db_links_get_in_folder = db_connect()) return false;
 
     $lang = load_language_file();
 
@@ -116,7 +116,7 @@ function links_get_in_folder($fid, $invisible = false, $sort_by = "TITLE", $sort
 
 function links_folders_get($invisible = false)
 {
-    $db_links_folders_get = db_connect();
+    if (!$db_links_folders_get = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -169,7 +169,7 @@ function links_add($uri, $title, $description, $fid, $uid, $visible = true)
     $title = db_escape_string($title);
     $description = db_escape_string($description);
 
-    $db_links_add = db_connect();
+    if (!$db_links_add = db_connect()) return false;
 
     $visible = $visible ? "Y" : "N";
 
@@ -185,7 +185,7 @@ function links_add($uri, $title, $description, $fid, $uid, $visible = true)
 
 function links_create_top_folder($name)
 {
-    $db_links_create_top_folder = db_connect();
+    if (!$db_links_create_top_folder = db_connect()) return false;
 
     $name = db_escape_string($name);
 
@@ -205,7 +205,7 @@ function links_add_folder($fid, $name, $visible = false)
 
     $name = db_escape_string($name);
 
-    $db_links_add_folder = db_connect();
+    if (!$db_links_add_folder = db_connect()) return false;
 
     $visible = $visible ? "Y" : "N";
 
@@ -221,7 +221,7 @@ function links_add_folder($fid, $name, $visible = false)
 
 function links_update_folder($fid, $name)
 {
-    $db_links_update_folder = db_connect();
+    if (!$db_links_update_folder = db_connect()) return false;
 
     if (!is_numeric($fid)) return false;
 
@@ -295,7 +295,7 @@ function links_change_visibility($lid, $visible = true)
     if (!is_numeric($lid)) return false;
     $visible = $visible ? "Y" : "N";
 
-    $db_links_change_visibility = db_connect();
+    if (!$db_links_change_visibility = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -310,7 +310,7 @@ function links_click($lid)
 {
     if (!is_numeric($lid)) return false;
 
-    $db_links_click = db_connect();
+    if (!$db_links_click = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -328,7 +328,7 @@ function links_click($lid)
 
 function links_get_single($lid)
 {
-    $db_links_get_single = db_connect();
+    if (!$db_links_get_single = db_connect()) return false;
 
     $lang = load_language_file();
 
@@ -367,7 +367,7 @@ function links_get_single($lid)
 
 function links_get_all($invisible = false, $sort_by = "TITLE", $sort_dir = "ASC", $offset = 0)
 {
-    $db_links_get_in_folder = db_connect();
+    if (!$db_links_get_in_folder = db_connect()) return false;
 
     $lang = load_language_file();
 
@@ -439,7 +439,7 @@ function links_get_all($invisible = false, $sort_by = "TITLE", $sort_dir = "ASC"
 
 function links_folder_change_visibility($fid, $visible = true)
 {
-    $db_links_folder_change_visibility = db_connect();
+    if (!$db_links_folder_change_visibility = db_connect()) return false;
 
     if (!is_numeric($fid)) return false;
 
@@ -460,7 +460,7 @@ function links_folder_delete($fid)
 
     $folders = links_folders_get(bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0));
 
-    $db_links_folder_delete = db_connect();
+    if (!$db_links_folder_delete = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -484,7 +484,7 @@ function links_folder_delete($fid)
 
 function links_get_vote($lid, $uid)
 {
-    $db_links_get_vote = db_connect();
+    if (!$db_links_get_vote = db_connect()) return false;
 
     if (!is_numeric($lid)) return false;
     if (!is_numeric($uid)) return false;
@@ -506,7 +506,7 @@ function links_get_vote($lid, $uid)
 
 function links_vote($lid, $vote, $uid)
 {
-    $db_links_vote = db_connect();
+    if (!$db_links_vote = db_connect()) return false;
 
     if (!is_numeric($lid))  return false;
     if (!is_numeric($vote)) return false;
@@ -537,7 +537,7 @@ function links_vote($lid, $vote, $uid)
 
 function links_clear_vote($lid, $uid)
 {
-    $db_links_clear_vote = db_connect();
+    if (!$db_links_clear_vote = db_connect()) return false;
 
     if (!is_numeric($lid)) return false;
     if (!is_numeric($uid)) return false;
@@ -554,7 +554,7 @@ function links_clear_vote($lid, $uid)
 
 function links_add_comment($lid, $uid, $comment)
 {
-    $db_links_add_comment = db_connect();
+    if (!$db_links_add_comment = db_connect()) return false;
 
     if (!is_numeric($lid))  return false;
     if (!is_numeric($uid))  return false;
@@ -573,7 +573,7 @@ function links_add_comment($lid, $uid, $comment)
 
 function links_get_comments($lid)
 {
-    $db_links_get_comments = db_connect();
+    if (!$db_links_get_comments = db_connect()) return false;
 
     $lang = load_language_file();
 
@@ -625,7 +625,7 @@ function links_folder_dropdown($default_fid, $folders)
 
 function links_delete_comment($cid)
 {
-    $db_links_delete_comment = db_connect();
+    if (!$db_links_delete_comment = db_connect()) return false;
 
     if (!is_numeric($cid)) return false;
 
@@ -640,7 +640,7 @@ function links_delete_comment($cid)
 
 function links_delete($lid)
 {
-    $db_links_delete = db_connect();
+    if (!$db_links_delete = db_connect()) return false;
 
     if (!is_numeric($lid)) return false;
 
@@ -661,7 +661,7 @@ function links_delete($lid)
 
 function links_update($lid, $fid, $title, $uri, $description)
 {
-    $db_links_update = db_connect();
+    if (!$db_links_update = db_connect()) return false;
 
     if (!is_numeric($lid)) return false;
     if (!is_numeric($fid)) return false;
@@ -683,7 +683,7 @@ function links_update($lid, $fid, $title, $uri, $description)
 
 function links_get_creator_uid($lid)
 {
-    $db_links_get_creator_uid = db_connect();
+    if (!$db_links_get_creator_uid = db_connect()) return false;
 
     if (!is_numeric($lid))  return false;
 
@@ -704,7 +704,7 @@ function links_get_creator_uid($lid)
 
 function links_get_comment_uid($cid)
 {
-    $db_links_get_comment_uid = db_connect();
+    if (!$db_links_get_comment_uid = db_connect()) return false;
 
     if (!is_numeric($cid))  return false;
 

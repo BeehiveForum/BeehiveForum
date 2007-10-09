@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forums.php,v 1.80 2007-07-17 16:23:06 decoyduck Exp $ */
+/* $Id: forums.php,v 1.81 2007-10-09 23:11:53 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -70,7 +70,7 @@ $user_sess = bh_session_check(false);
 // Check to see if the user is banned.
 
 if (bh_session_user_banned()) {
-    
+
     html_user_banned();
     exit;
 }
@@ -91,6 +91,12 @@ $webtag = get_webtag($webtag_search);
 
 $lang = load_language_file();
 
+// Array to hold error messages
+
+$error_msg_array = array();
+
+// Top of the page.
+
 html_draw_top("basetarget=_top");
 
 // Types of available forums.
@@ -109,77 +115,6 @@ if (!forums_any_favourites() || user_is_guest()) {
     $view_type = FORUMS_SHOW_ALL;
 }else {
     $view_type = FORUMS_SHOW_FAVS;
-}
-
-// Handle adding and removing of favourites
-
-if (isset($_POST['add_fav']) && is_array($_POST['add_fav'])) {
-
-    if (user_is_guest()) {
-
-        html_guest_error();
-        exit;
-    }
-
-    list($forum_fid_add_fav) = array_keys($_POST['add_fav']);
-    user_set_forum_interest($forum_fid_add_fav, 1);
-
-}elseif (isset($_POST['rem_fav']) && is_array($_POST['rem_fav'])) {
-
-    if (user_is_guest()) {
-
-        html_guest_error();
-        exit;
-    }
-
-    list($forum_fid_rev_fav) = array_keys($_POST['rem_fav']);
-    user_set_forum_interest($forum_fid_rev_fav, 0);
-
-}elseif (isset($_POST['ignore_forum']) && is_array($_POST['ignore_forum'])) {
-
-    if (user_is_guest()) {
-
-        html_guest_error();
-        exit;
-    }
-
-    list($forum_fid_ignore) = array_keys($_POST['ignore_forum']);
-    user_set_forum_interest($forum_fid_ignore, -1);
-
-}elseif (isset($_POST['unignore_forum']) && is_array($_POST['unignore_forum'])) {
-
-    if (user_is_guest()) {
-
-        html_guest_error();
-        exit;
-    }
-
-    list($forum_fid_unignore) = array_keys($_POST['unignore_forum']);
-    user_set_forum_interest($forum_fid_unignore, 0);
-}
-
-// Page numbers
-
-if (isset($_GET['main_page']) && is_numeric($_GET['main_page'])) {
-    $main_page = $_GET['main_page'];
-    $start_main = floor($main_page - 1) * 20;
-}else if (isset($_POST['main_page']) && is_numeric($_POST['main_page'])) {
-    $main_page = $_POST['main_page'];
-    $start_main = floor($main_page - 1) * 20;
-}else {
-    $main_page = 1;
-    $start_main = 0;
-}
-
-if (isset($_GET['search_page']) && is_numeric($_GET['search_page'])) {
-    $search_page = $_GET['search_page'];
-    $start_search = floor($search_page - 1) * 20;
-}else if (isset($_POST['search_page']) && is_numeric($_POST['search_page'])) {
-    $search_page = $_POST['search_page'];
-    $start_search = floor($search_page - 1) * 20;
-}else {
-    $search_page = 1;
-    $start_search = 0;
 }
 
 // Handle changing the view type. If a Guest tries to change
@@ -228,6 +163,31 @@ if (isset($_POST['change_view'])) {
     }
 }
 
+
+// Page numbers
+
+if (isset($_GET['main_page']) && is_numeric($_GET['main_page'])) {
+    $main_page = $_GET['main_page'];
+    $start_main = floor($main_page - 1) * 20;
+}else if (isset($_POST['main_page']) && is_numeric($_POST['main_page'])) {
+    $main_page = $_POST['main_page'];
+    $start_main = floor($main_page - 1) * 20;
+}else {
+    $main_page = 1;
+    $start_main = 0;
+}
+
+if (isset($_GET['search_page']) && is_numeric($_GET['search_page'])) {
+    $search_page = $_GET['search_page'];
+    $start_search = floor($search_page - 1) * 20;
+}else if (isset($_POST['search_page']) && is_numeric($_POST['search_page'])) {
+    $search_page = $_POST['search_page'];
+    $start_search = floor($search_page - 1) * 20;
+}else {
+    $search_page = 1;
+    $start_search = 0;
+}
+
 // Webtag search
 
 if (isset($_POST['webtag_search']) && strlen(trim(_stripslashes($_POST['webtag_search']))) > 0) {
@@ -247,7 +207,7 @@ if (isset($_POST['clear_search']) || isset($_GET['clear_search'])) {
 // Are we being redirected somewhere?
 
 if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri']))) > 0) {
-    
+
     $available_files = get_available_files();
     $available_files_preg = implode("|^", array_map('preg_quote_callback', $available_files));
 
@@ -258,41 +218,157 @@ if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri'])))
     }
 }
 
+// Handle adding and removing of favourites
+
+if (isset($_POST['add_fav']) && is_array($_POST['add_fav'])) {
+
+    if (user_is_guest()) {
+
+        html_guest_error();
+        exit;
+    }
+
+    list($forum_fid_add_fav) = array_keys($_POST['add_fav']);
+
+    if (user_set_forum_interest($forum_fid_add_fav, FORUM_FAVOURITE)) {
+
+        header_redirect("forums.php?view_type=$view_type&main_page=$main_page&search_page=$search_page&webtag_search=$webtag_search&added=true");
+        exit;
+
+    }else {
+
+        $error_msg_array[] = $lang['failedtoupdateforuminterestlevel'];
+        $valid = false;
+    }
+
+}elseif (isset($_POST['rem_fav']) && is_array($_POST['rem_fav'])) {
+
+    if (user_is_guest()) {
+
+        html_guest_error();
+        exit;
+    }
+
+    list($forum_fid_rev_fav) = array_keys($_POST['rem_fav']);
+
+    if (user_set_forum_interest($forum_fid_rev_fav, FORUM_NOINTEREST)) {
+
+        header_redirect("forums.php?view_type=$view_type&main_page=$main_page&search_page=$search_page&webtag_search=$webtag_search&removed=true");
+        exit;
+
+    }else {
+
+        $error_msg_array[] = $lang['failedtoupdateforuminterestlevel'];
+        $valid = false;
+    }
+
+}elseif (isset($_POST['ignore_forum']) && is_array($_POST['ignore_forum'])) {
+
+    if (user_is_guest()) {
+
+        html_guest_error();
+        exit;
+    }
+
+    list($forum_fid_ignore) = array_keys($_POST['ignore_forum']);
+
+    if (user_set_forum_interest($forum_fid_ignore, FORUM_IGNORED)) {
+
+        header_redirect("forums.php?view_type=$view_type&main_page=$main_page&search_page=$search_page&webtag_search=$webtag_search&ignored=true");
+        exit;
+
+    }else {
+
+        $error_msg_array[] = $lang['failedtoupdateforuminterestlevel'];
+        $valid = false;
+    }
+
+}elseif (isset($_POST['unignore_forum']) && is_array($_POST['unignore_forum'])) {
+
+    if (user_is_guest()) {
+
+        html_guest_error();
+        exit;
+    }
+
+    list($forum_fid_unignore) = array_keys($_POST['unignore_forum']);
+
+    if (user_set_forum_interest($forum_fid_unignore, FORUM_NOINTEREST)) {
+
+        header_redirect("forums.php?view_type=$view_type&main_page=$main_page&search_page=$search_page&webtag_search=$webtag_search&unignored=true");
+        exit;
+
+    }else {
+
+        $error_msg_array[] = $lang['failedtoupdateforuminterestlevel'];
+        $valid = false;
+    }
+}
+
 if (!user_is_guest()) {
 
     $forums_array = get_my_forums($view_type, $start_main);
 
-    if (sizeof($forums_array['forums_array']) > 0) {
+    echo "<h1>{$lang['myforums']}</h1>\n";
 
-        echo "<h1>{$lang['myforums']}</h1>\n";
+    if (isset($_GET['added'])) {
+
+        html_display_success_msg($lang['successfullyaddedforumtofavourites'], '70%', 'center');
+
+    }else if (isset($_GET['removed'])) {
+
+        html_display_success_msg($lang['successfullyremovedforumfromfavourites'], '70%', 'center');
+
+    }else if (isset($_GET['ignored'])) {
+
+        html_display_success_msg($lang['successfullyignoredforum'], '70%', 'center');
+
+    }else if (isset($_GET['unignored'])) {
+
+        html_display_success_msg($lang['successfullyunignoredforum'], '70%', 'center');
+
+    }else if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+
+        html_display_error_array($error_msg_array, '70%', 'center');
+
+    }else if (sizeof($forums_array['forums_array']) < 1) {
+
+        html_display_warning_msg($lang['noforumsofselectedtype'], '70%', 'center');
+
+    }else {
+
         echo "<br />\n";
-        echo "<div align=\"center\">\n";
-        echo "<form name=\"prefs\" action=\"forums.php\" method=\"post\" target=\"_self\">\n";
-        echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
-        echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
-        echo "  ", form_input_hidden("search_page", _htmlentities($search_page)), "\n";
-        echo "  ", form_input_hidden("webtag_search", _htmlentities($webtag_search)), "\n";
-        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"70%\">\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"left\">\n";
-        echo "        <table class=\"box\" width=\"100%\">\n";
-        echo "          <tr>\n";
-        echo "            <td align=\"left\" class=\"posthead\">\n";
-        echo "              <table class=\"posthead\" width=\"100%\">\n";
-        echo "                <tr>\n";
-        echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
-        echo "                  <td align=\"left\" class=\"subhead\">{$forum_header_array[$view_type]}</td>\n";
-        echo "                  <td align=\"left\" class=\"subhead\">{$lang['unreadmessages']}</td>\n";
-        echo "                  <td align=\"left\" class=\"subhead\">{$lang['lastvisited']}</td>\n";
-        echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
-        echo "                </tr>\n";
+    }
+
+    echo "<div align=\"center\">\n";
+    echo "<form name=\"prefs\" action=\"forums.php\" method=\"post\" target=\"_self\">\n";
+    echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
+    echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
+    echo "  ", form_input_hidden("search_page", _htmlentities($search_page)), "\n";
+    echo "  ", form_input_hidden("webtag_search", _htmlentities($webtag_search)), "\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"70%\">\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td align=\"left\" class=\"posthead\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">{$forum_header_array[$view_type]}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">{$lang['unreadmessages']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">{$lang['lastvisited']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
+    echo "                </tr>\n";
+
+    if (sizeof($forums_array['forums_array']) < 1) {
 
         foreach ($forums_array['forums_array'] as $forum) {
 
             echo "                <tr>\n";
 
             if (isset($forum['INTEREST']) && $forum['INTEREST'] == FORUM_FAVOURITE) {
-                
+
                 echo "                  <td align=\"center\" width=\"1%\">", form_submit_image('forum_rem_fav.png', "rem_fav[{$forum['FID']}]", "{$lang['removefromfavourites']}", "title=\"{$lang['removefromfavourites']}\""), "</td>\n";
 
             }else {
@@ -346,7 +422,7 @@ if (!user_is_guest()) {
             }
 
             if (isset($forum['INTEREST']) && $forum['INTEREST'] > -1) {
-                
+
                 echo "                  <td align=\"center\" width=\"1%\">", form_submit_image('forum_hide.png', "ignore_forum[{$forum['FID']}]", "{$lang['ignoreforum']}", "title=\"{$lang['ignoreforum']}\""), "</td>\n";
 
             }else {
@@ -356,124 +432,70 @@ if (!user_is_guest()) {
 
             echo "                </tr>\n";
         }
-
-        echo "                <tr>\n";
-        echo "                  <td align=\"left\" colspan=\"5\">&nbsp;</td>\n";
-        echo "                </tr>\n";
-        echo "              </table>\n";
-        echo "            </td>\n";
-        echo "          </tr>\n";
-        echo "        </table>\n";
-        echo "      </td>\n";
-        echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"left\">&nbsp;</td>\n";
-        echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"left\">\n";
-        echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
-        echo "          <tr>\n";
-        echo "            <td class=\"postbody\">&nbsp;</td>\n";
-        echo "            <td class=\"postbody\" align=\"center\" width=\"33%\" nowrap=\"nowrap\">", page_links("forums.php?webtag=$webtag&view_type=$view_type&webtag_search=$webtag_search&main_page=$main_page&search_page=$search_page", $start_main, $forums_array['forums_count'], 10, 'main_page'), "</td>\n";
-        echo "            <td align=\"right\" width=\"33%\" nowrap=\"nowrap\">{$lang['view']}:&nbsp;", form_dropdown_array('view_type', $forum_header_array, $view_type), "&nbsp;", form_submit('change_view', $lang['go']), "</td>\n";
-        echo "          </tr>\n";
-        echo "        </table>\n";
-        echo "      </td>\n";
-        echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"left\">&nbsp;</td>\n";
-        echo "    </tr>\n";
-        echo "  </table>\n";
-        echo "  <br />\n";
-        echo "</form>\n";
-        echo "</div>\n";
-
-    }else {
-
-        echo "<h1>{$lang['myforums']}</h1>\n";
-        echo "<br />\n";
-        echo "<div align=\"center\">\n";
-        echo "<form name=\"prefs\" action=\"forums.php\" method=\"post\" target=\"_self\">\n";
-        echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
-        echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
-        echo "  ", form_input_hidden("search_page", _htmlentities($search_page)), "\n";
-        echo "  ", form_input_hidden("webtag_search", _htmlentities($webtag_search)), "\n";
-        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"70%\">\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"left\">\n";
-        echo "        <table class=\"box\" width=\"100%\">\n";
-        echo "          <tr>\n";
-        echo "            <td align=\"left\" class=\"posthead\">\n";
-        echo "              <table class=\"posthead\" width=\"100%\">\n";
-        echo "                <tr>\n";
-        echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
-        echo "                  <td align=\"left\" class=\"subhead\">{$forum_header_array[$view_type]}</td>\n";
-        echo "                  <td align=\"left\" class=\"subhead\">{$lang['unreadmessages']}</td>\n";
-        echo "                  <td align=\"left\" class=\"subhead\">{$lang['lastvisited']}</td>\n";
-        echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
-        echo "                </tr>\n";
-        echo "                <tr>\n";
-        echo "                  <td align=\"left\" width=\"1%\">&nbsp;</td>\n";
-        echo "                  <td align=\"left\" colspan=\"4\">{$lang['noforumsofselectedtype']}</td>\n";
-        echo "                </tr>\n";
-        echo "                <tr>\n";
-        echo "                  <td align=\"left\" colspan=\"5\">&nbsp;</td>\n";
-        echo "                </tr>\n";
-        echo "              </table>\n";
-        echo "            </td>\n";
-        echo "          </tr>\n";
-        echo "        </table>\n";
-        echo "      </td>\n";
-        echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"left\">&nbsp;</td>\n";
-        echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"left\">\n";
-        echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
-        echo "          <tr>\n";
-        echo "            <td align=\"left\">&nbsp;</td>\n";
-        echo "            <td align=\"right\" width=\"33%\" nowrap=\"nowrap\">{$lang['view']}:&nbsp;", form_dropdown_array('view_type', $forum_header_array, $view_type), "&nbsp;", form_submit('change_view', $lang['go']), "</td>\n";
-        echo "          </tr>\n";
-        echo "        </table>\n";
-        echo "      </td>\n";
-        echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"left\">&nbsp;</td>\n";
-        echo "    </tr>\n";
-        echo "  </table>\n";
-        echo "  <br />\n";
-        echo "</form>\n";
-        echo "</div>\n";
     }
+
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" colspan=\"5\">&nbsp;</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">&nbsp;</td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">\n";
+    echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td class=\"postbody\">&nbsp;</td>\n";
+    echo "            <td class=\"postbody\" align=\"center\" width=\"33%\" nowrap=\"nowrap\">", page_links("forums.php?webtag=$webtag&view_type=$view_type&webtag_search=$webtag_search&main_page=$main_page&search_page=$search_page", $start_main, $forums_array['forums_count'], 10, 'main_page'), "</td>\n";
+    echo "            <td align=\"right\" width=\"33%\" nowrap=\"nowrap\">{$lang['view']}:&nbsp;", form_dropdown_array('view_type', $forum_header_array, $view_type), "&nbsp;", form_submit('change_view', $lang['go']), "</td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">&nbsp;</td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "  <br />\n";
+    echo "</form>\n";
+    echo "</div>\n";
 
 }else {
 
     $forums_array = get_forum_list($start_main);
 
-    if (isset($forums_array['forums_array']) && sizeof($forums_array['forums_array']) > 0) {
+    if (isset($forums_array['forums_array']) && sizeof($forums_array['forums_array']) < 1) {
+        html_display_warning_msg($lang['noforumsofselectedtype'], '70%', 'center');
+    }
 
-        echo "<h1>{$lang['myforums']}</h1>\n";
-        echo "<br />\n";
-        echo "<div align=\"center\">\n";
-        echo "<form name=\"prefs\" action=\"forums.php\" method=\"post\" target=\"_self\">\n";
-        echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
-        echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
-        echo "  ", form_input_hidden("search_page", _htmlentities($search_page)), "\n";
-        echo "  ", form_input_hidden("webtag_search", _htmlentities($webtag_search)), "\n";
-        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"70%\">\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"left\">\n";
-        echo "        <table class=\"box\" width=\"100%\">\n";
-        echo "          <tr>\n";
-        echo "            <td align=\"left\" class=\"posthead\">\n";
-        echo "              <table class=\"posthead\" width=\"100%\">\n";
-        echo "                <tr>\n";
-        echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
-        echo "                  <td align=\"left\" class=\"subhead\">{$lang['availableforums']}</td>\n";
-        echo "                  <td align=\"left\" class=\"subhead\">{$lang['messages']}</td>\n";
-        echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
-        echo "                </tr>\n";
+    echo "<h1>{$lang['myforums']}</h1>\n";
+    echo "<br />\n";
+    echo "<div align=\"center\">\n";
+    echo "<form name=\"prefs\" action=\"forums.php\" method=\"post\" target=\"_self\">\n";
+    echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
+    echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
+    echo "  ", form_input_hidden("search_page", _htmlentities($search_page)), "\n";
+    echo "  ", form_input_hidden("webtag_search", _htmlentities($webtag_search)), "\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"70%\">\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td align=\"left\" class=\"posthead\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">{$lang['availableforums']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">{$lang['messages']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
+    echo "                </tr>\n";
+
+    if (isset($forums_array['forums_array']) && sizeof($forums_array['forums_array']) > 0) {
 
         foreach ($forums_array['forums_array'] as $forum) {
 
@@ -500,132 +522,78 @@ if (!user_is_guest()) {
             echo "                  <td align=\"center\" width=\"1%\">", form_submit_image('forum_hide.png', "ignore_forum[{$forum['FID']}]", "{$lang['ignoreforum']}", "title=\"{$lang['ignoreforum']}\""), "</td>\n";
             echo "                </tr>\n";
         }
-
-        echo "                <tr>\n";
-        echo "                  <td align=\"left\" colspan=\"5\">&nbsp;</td>\n";
-        echo "                </tr>\n";
-        echo "              </table>\n";
-        echo "            </td>\n";
-        echo "          </tr>\n";
-        echo "        </table>\n";
-        echo "      </td>\n";
-        echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"left\">&nbsp;</td>\n";
-        echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"left\">\n";
-        echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
-        echo "          <tr>\n";
-        echo "            <td class=\"postbody\">&nbsp;</td>\n";
-        echo "            <td class=\"postbody\" align=\"center\" width=\"33%\" nowrap=\"nowrap\">", page_links("forums.php?webtag=$webtag&view_type=$view_type&webtag_search=$webtag_search&main_page=$main_page&search_page=$search_page", $start_main, $forums_array['forums_count'], 10, 'main_page'), "</td>\n";
-        echo "            <td align=\"right\" width=\"33%\" nowrap=\"nowrap\">{$lang['view']}:&nbsp;", form_dropdown_array('view_type', $forum_header_array, $view_type), "&nbsp;", form_submit('change_view', $lang['go']), "</td>\n";
-        echo "          </tr>\n";
-        echo "        </table>\n";
-        echo "      </td>\n";
-        echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"left\">&nbsp;</td>\n";
-        echo "    </tr>\n";
-        echo "  </table>\n";
-        echo "  <br />\n";
-        echo "</form>\n";
-        echo "</div>\n";
-
-    }else {
-
-        echo "<h1>{$lang['myforums']}</h1>\n";
-        echo "<br />\n";
-        echo "<div align=\"center\">\n";
-        echo "<form name=\"prefs\" action=\"forums.php\" method=\"post\" target=\"_self\">\n";
-        echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
-        echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
-        echo "  ", form_input_hidden("search_page", _htmlentities($search_page)), "\n";
-        echo "  ", form_input_hidden("webtag_search", _htmlentities($webtag_search)), "\n";
-        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"70%\">\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"left\">\n";
-        echo "        <table class=\"box\" width=\"100%\">\n";
-        echo "          <tr>\n";
-        echo "            <td align=\"left\" class=\"posthead\">\n";
-        echo "              <table class=\"posthead\" width=\"100%\">\n";
-        echo "                <tr>\n";
-        echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
-        echo "                  <td align=\"left\" class=\"subhead\">{$lang['availableforums']}</td>\n";
-        echo "                  <td align=\"left\" class=\"subhead\">{$lang['unreadmessages']}</td>\n";
-        echo "                  <td align=\"left\" class=\"subhead\">&nbsp;</td>\n";
-        echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
-        echo "                </tr>\n";
-        echo "                <tr>\n";
-        echo "                  <td align=\"left\" width=\"1%\">&nbsp;</td>\n";
-        echo "                  <td align=\"left\" colspan=\"4\">{$lang['noforumsofselectedtype']}</td>\n";
-        echo "                </tr>\n";
-        echo "                <tr>\n";
-        echo "                  <td align=\"left\" colspan=\"5\">&nbsp;</td>\n";
-        echo "                </tr>\n";
-        echo "              </table>\n";
-        echo "            </td>\n";
-        echo "          </tr>\n";
-        echo "        </table>\n";
-        echo "      </td>\n";
-        echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"left\">&nbsp;</td>\n";
-        echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"left\">\n";
-        echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
-        echo "          <tr>\n";
-        echo "            <td align=\"left\">&nbsp;</td>\n";
-        echo "            <td align=\"right\" width=\"33%\" nowrap=\"nowrap\">{$lang['view']}:&nbsp;", form_dropdown_array('view_type', $forum_header_array, $view_type), "&nbsp;", form_submit('change_view', $lang['go']), "</td>\n";
-        echo "          </tr>\n";
-        echo "        </table>\n";
-        echo "      </td>\n";
-        echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"left\">&nbsp;</td>\n";
-        echo "    </tr>\n";
-        echo "  </table>\n";
-        echo "  <br />\n";
-        echo "</form>\n";
-        echo "</div>\n";
     }
+
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" colspan=\"5\">&nbsp;</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">&nbsp;</td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">\n";
+    echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td class=\"postbody\">&nbsp;</td>\n";
+    echo "            <td class=\"postbody\" align=\"center\" width=\"33%\" nowrap=\"nowrap\">", page_links("forums.php?webtag=$webtag&view_type=$view_type&webtag_search=$webtag_search&main_page=$main_page&search_page=$search_page", $start_main, $forums_array['forums_count'], 10, 'main_page'), "</td>\n";
+    echo "            <td align=\"right\" width=\"33%\" nowrap=\"nowrap\">{$lang['view']}:&nbsp;", form_dropdown_array('view_type', $forum_header_array, $view_type), "&nbsp;", form_submit('change_view', $lang['go']), "</td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">&nbsp;</td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "  <br />\n";
+    echo "</form>\n";
+    echo "</div>\n";
 }
 
 if (isset($webtag_search) && strlen($webtag_search) > 0) {
 
     $forums_array = forum_search($webtag_search, $start_search);
 
-    if (isset($forums_array['forums_array']) && sizeof($forums_array['forums_array']) > 0) {
+    if (isset($forums_array['forums_array']) && sizeof($forums_array['forums_array']) < 1) {
+        html_display_error_msg($lang['foundzeromatches'], '70%', 'center');
+    }
 
-        echo "<div align=\"center\">\n";
-        echo "<form name=\"prefs\" action=\"forums.php\" method=\"post\" target=\"_self\">\n";
-        echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
-        echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
-        echo "  ", form_input_hidden("search_page", _htmlentities($search_page)), "\n";
-        echo "  ", form_input_hidden("webtag_search", _htmlentities($webtag_search)), "\n";
-        echo "  ", form_input_hidden("view_type", _htmlentities($view_type)), "\n";
-        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"70%\">\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"left\">\n";
-        echo "        <table class=\"box\" width=\"100%\">\n";
-        echo "          <tr>\n";
-        echo "            <td align=\"left\" class=\"posthead\">\n";
-        echo "              <table class=\"posthead\" width=\"100%\">\n";
-        echo "                <tr>\n";
-        echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
-        echo "                  <td align=\"left\" class=\"subhead\">{$lang['searchresults']}</td>\n";
-        echo "                  <td align=\"left\" class=\"subhead\">{$lang['unreadmessages']}</td>\n";
-        echo "                  <td align=\"left\" class=\"subhead\">{$lang['lastvisited']}</td>\n";
-        echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
-        echo "                </tr>\n";
+    echo "<div align=\"center\">\n";
+    echo "<form name=\"prefs\" action=\"forums.php\" method=\"post\" target=\"_self\">\n";
+    echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
+    echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
+    echo "  ", form_input_hidden("search_page", _htmlentities($search_page)), "\n";
+    echo "  ", form_input_hidden("webtag_search", _htmlentities($webtag_search)), "\n";
+    echo "  ", form_input_hidden("view_type", _htmlentities($view_type)), "\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"70%\">\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td align=\"left\" class=\"posthead\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">{$lang['searchresults']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">{$lang['unreadmessages']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">{$lang['lastvisited']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
+    echo "                </tr>\n";
+
+    if (isset($forums_array['forums_array']) && sizeof($forums_array['forums_array']) > 0) {
 
         foreach ($forums_array['forums_array'] as $forum) {
 
             echo "                <tr>\n";
 
             if ((isset($forum['INTEREST']) && $forum['INTEREST'] == FORUM_FAVOURITE) || user_is_guest()) {
-                
+
                 echo "                  <td align=\"center\" width=\"1%\">", form_submit_image('forum_rem_fav.png', "rem_fav[{$forum['FID']}]", "{$lang['removefromfavourites']}", "title=\"{$lang['removefromfavourites']}\""), "</td>\n";
 
             }else {
@@ -676,7 +644,7 @@ if (isset($webtag_search) && strlen($webtag_search) > 0) {
             }
 
             if (isset($forum['INTEREST']) && $forum['INTEREST'] > -1) {
-                
+
                 echo "                  <td align=\"center\" width=\"1%\">", form_submit_image('forum_hide.png', "ignore_forum[{$forum['FID']}]", "{$lang['ignoreforum']}", "title=\"{$lang['ignoreforum']}\""), "</td>\n";
 
             }else {
@@ -686,81 +654,38 @@ if (isset($webtag_search) && strlen($webtag_search) > 0) {
 
             echo "                </tr>\n";
         }
-
-        echo "                <tr>\n";
-        echo "                  <td align=\"left\" colspan=\"5\">&nbsp;</td>\n";
-        echo "                </tr>\n";
-        echo "              </table>\n";
-        echo "            </td>\n";
-        echo "          </tr>\n";
-        echo "        </table>\n";
-        echo "      </td>\n";
-        echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"left\">&nbsp;</td>\n";
-        echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"left\">\n";
-        echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
-        echo "          <tr>\n";
-        echo "            <td align=\"left\" width=\"33%\">&nbsp;</td>\n";
-        echo "            <td class=\"postbody\" align=\"center\" width=\"33%\" nowrap=\"nowrap\">", page_links("forums.php?webtag=$webtag&view_type=$view_type&webtag_search=$webtag_search&main_page=$main_page&search_page=$search_page", $start_search, $forums_array['forums_count'], 10, 'search_page'), "</td>\n";
-        echo "            <td class=\"postbody\">&nbsp;</td>\n";
-        echo "          </tr>\n";
-        echo "        </table>\n";
-        echo "      </td>\n";
-        echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"left\">&nbsp;</td>\n";
-        echo "    </tr>\n";
-        echo "  </table>\n";
-        echo "</form>\n";
-        echo "</div>\n";
-        echo "<br />\n";
-
-    }else {
-
-        echo "<div align=\"center\">\n";
-        echo "<form name=\"prefs\" action=\"forums.php\" method=\"post\" target=\"_self\">\n";
-        echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
-        echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
-        echo "  ", form_input_hidden("search_page", _htmlentities($search_page)), "\n";
-        echo "  ", form_input_hidden("view_type", _htmlentities($view_type)), "\n";
-        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"80%\">\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"left\">\n";
-        echo "        <table class=\"box\" width=\"100%\">\n";
-        echo "          <tr>\n";
-        echo "            <td align=\"left\" class=\"posthead\">\n";
-        echo "              <table class=\"posthead\" width=\"100%\">\n";
-        echo "                <tr>\n";
-        echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
-        echo "                  <td align=\"left\" class=\"subhead\">{$lang['searchresults']}</td>\n";
-        echo "                  <td align=\"left\" class=\"subhead\">{$lang['unreadmessages']}</td>\n";
-        echo "                  <td align=\"left\" class=\"subhead\">{$lang['lastvisited']}</td>\n";
-        echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
-        echo "                </tr>\n";
-        echo "                <tr>\n";
-        echo "                  <td align=\"left\" width=\"1%\">&nbsp;</td>\n";
-        echo "                  <td align=\"left\" colspan=\"4\">{$lang['foundzeromatches']}</td>\n";
-        echo "                </tr>\n";
-        echo "                <tr>\n";
-        echo "                  <td align=\"left\" colspan=\"5\">&nbsp;</td>\n";
-        echo "                </tr>\n";
-        echo "              </table>\n";
-        echo "            </td>\n";
-        echo "          </tr>\n";
-        echo "        </table>\n";
-        echo "      </td>\n";
-        echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"left\">&nbsp;</td>\n";
-        echo "    </tr>\n";
-        echo "  </table>\n";
-        echo "</form>\n";
-        echo "</div>\n";
-        echo "<br />\n";
     }
+
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" colspan=\"5\">&nbsp;</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">&nbsp;</td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">\n";
+    echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td align=\"left\" width=\"33%\">&nbsp;</td>\n";
+    echo "            <td class=\"postbody\" align=\"center\" width=\"33%\" nowrap=\"nowrap\">", page_links("forums.php?webtag=$webtag&view_type=$view_type&webtag_search=$webtag_search&main_page=$main_page&search_page=$search_page", $start_search, $forums_array['forums_count'], 10, 'search_page'), "</td>\n";
+    echo "            <td class=\"postbody\">&nbsp;</td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">&nbsp;</td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "</form>\n";
+    echo "</div>\n";
+    echo "<br />\n";
 }
 
 echo "<div align=\"center\">\n";

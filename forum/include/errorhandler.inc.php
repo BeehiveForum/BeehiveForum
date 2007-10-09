@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.91 2007-09-15 16:51:31 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.92 2007-10-09 23:28:49 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -67,38 +67,67 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
 
     if (($errno & E_STRICT) > 0) return;
 
+    // No REQUEST_URI in IIS.
+
+    $request_uri = "{$_SERVER['PHP_SELF']}?";
+    parse_array($_GET, "&amp;", $request_uri);
+
     // Now we can carry on with any other errors.
 
     if (error_reporting()) {
 
         if ((isset($show_friendly_errors) && $show_friendly_errors === false) || defined("BEEHIVEMODE_LIGHT")) {
 
-            switch ($errno) {
+            echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
+            echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
+            echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"utf-8\" lang=\"en\" dir=\"ltr\">\n";
+            echo "<head>\n";
+            echo "<title>Beehive Forum - Error Handler</title>\n";
+            echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
+            echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\" />\n";
+            echo "<link rel=\"stylesheet\" href=\"styles/default/style.css\" type=\"text/css\" />\n";
+            echo "</head>\n";
+            echo "<body>\n";
+            echo "<form name=\"f_error\" method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
 
-                case E_USER_ERROR:
+            echo form_input_hidden_array(_stripslashes($_POST));
 
-                    echo "<p><b>E_USER_ERROR</b> [$errno] $errstr</p>\n";
-                    break;
+            echo "<p>An error has occured. Please wait a few minutes and then click the Retry button below.</p>\n";
+            echo "<p><input type=\"submit\" name=\"", md5(uniqid(mt_rand())), "\" value=\"Retry\" /></p>\n";
 
-                case E_USER_WARNING:
+            if (defined("BEEHIVE_INSTALL_NOWARN")) {
 
-                    echo "<p><b>E_USER_WARNING</b> [$errno] $errstr</p>\n";
-                    break;
+                switch ($errno) {
 
-                case E_USER_NOTICE:
+                    case E_USER_ERROR:
 
-                    echo "<p><b>E_USER_NOTICE</b> [$errno] $errstr</p>\n";
-                    break;
+                        echo "<p><b>E_USER_ERROR</b> [$errno] $errstr</p>\n";
+                        break;
 
-                default:
+                    case E_USER_WARNING:
 
-                    echo "<p><b>Unknown error</b> [$errno] $errstr</p>\n";
-                    break;
+                        echo "<p><b>E_USER_WARNING</b> [$errno] $errstr</p>\n";
+                        break;
+
+                    case E_USER_NOTICE:
+
+                        echo "<p><b>E_USER_NOTICE</b> [$errno] $errstr</p>\n";
+                        break;
+
+                    default:
+
+                        echo "<p><b>Unknown error</b> [$errno] $errstr</p>\n";
+                        break;
+                }
+
+                if (strlen(trim(basename($errfile))) > 0) {
+                    echo "<p>Error in line $errline of file ", basename($errfile), "</p>\n";
+                }
             }
 
-            if (strlen(trim(basename($errfile))) > 0) {
-                echo "<p>Error in line $errline of file ", basename($errfile), "</p>\n";
-            }
+            echo "</form>\n";
+            echo "</body>\n";
+            echo "</html>\n";
 
             exit;
         }
@@ -110,9 +139,6 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
         if (($errno == ER_NO_SUCH_TABLE || $errno == ER_WRONG_COLUMN_NAME) && !defined("BEEHIVE_INSTALL_NOWARN")) {
             install_incomplete();
         }
-
-        $request_uri = "{$_SERVER['PHP_SELF']}?";
-        parse_array($_GET, "&amp;", $request_uri);
 
         echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
         echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";

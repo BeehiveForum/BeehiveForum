@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.250 2007-10-07 11:40:38 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.251 2007-10-09 22:49:36 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -350,26 +350,30 @@ function html_get_style_sheet()
 
         if (@is_dir("styles/$user_style") && @file_exists("styles/$user_style/$script_filename.css")) {
 
-            $modified_time = date('YmdHis', filemtime("styles/$user_style/$script_filename.css"));
-            return "styles/$user_style/$script_filename.css?$modified_time";
+            if ($modified_time = @filemtime("styles/$user_style/$script_filename.css")) {
+                return sprintf("styles/$user_style/$script_filename.css?%s", date('YmdHis', $modified_time));
+            }
         }
 
         if (@is_dir("styles/$user_style") && @file_exists("styles/$user_style/style.css")) {
 
-            $modified_time = date('YmdHis', filemtime("styles/$user_style/style.css"));
-            return "styles/$user_style/style.css?$modified_time";
+            if ($modified_time = @filemtime("styles/$user_style/style.css")) {
+                return sprintf("styles/$user_style/style.css?%s", date('YmdHis', $modified_time));
+            }
         }
 
         if (@is_dir("forums/$webtag/styles/$user_style") && @file_exists("forums/$webtag/styles/$user_style/$script_filename.css")) {
 
-            $modified_time = date('YmdHis', filemtime("forums/$webtag/styles/$user_style/$script_filename.css"));
-            return "forums/$webtag/styles/$user_style/$script_filename.css?$modified_time";
+            if ($modified_time = @filemtime("forums/$webtag/styles/$user_style/$script_filename.css")) {
+                return sprintf("forums/$webtag/styles/$user_style/$script_filename.css?%s", date('YmdHis', $modified_time));
+            }
         }
 
         if (@is_dir("forums/$webtag/styles/$user_style") && @file_exists("forums/$webtag/styles/$user_style/style.css")) {
 
-            $modified_time = date('YmdHis', filemtime("forums/$webtag/styles/$user_style/style.css"));
-            return "forums/$webtag/styles/$user_style/style.css?$modified_time";
+            if ($modified_time = @filemtime("forums/$webtag/styles/$user_style/style.css")) {
+                return sprintf("forums/$webtag/styles/$user_style/style.css?%s", date('YmdHis', $modified_time));
+            }
         }
     }
 
@@ -377,15 +381,17 @@ function html_get_style_sheet()
 
         if (@is_dir("forums/$webtag") && @file_exists("forums/$webtag/style.css")) {
 
-            $modified_time = date('YmdHis', filemtime("./forums/$webtag/style.css"));
-            return "forums/$webtag/style.css?$modified_time";
+            if ($modified_time = @filemtime("./forums/$webtag/style.css")) {
+                return sprintf("forums/$webtag/style.css?%s", date('YmdHis', $modified_time));
+            }
         }
     }
 
     if (@is_dir("styles") && @file_exists("styles/style.css")) {
 
-        $modified_time = date('YmdHis', filemtime("./styles/style.css"));
-        return "styles/style.css?$modified_time";
+        if ($modified_time = @filemtime("./styles/style.css")) {
+            return sprintf("styles/style.css?%s", date('YmdHis', $modified_time));
+        }
     }
 
     return false;
@@ -405,14 +411,16 @@ function html_get_emoticon_style_sheet()
 
         if (@is_dir("emoticons/$user_emots") && file_exists("emoticons/$user_emots/style.css")) {
 
-            $modified_time = date('YmdHis', filemtime("emoticons/$user_emots/style.css"));
-            return "emoticons/$user_emots/style.css?$modified_time";
+            if ($modified_time = @filemtime("emoticons/$user_emots/style.css")) {
+                return sprintf("emoticons/$user_emots/style.css?%s", date('YmdHis', $modified_time));
+            }
         }
 
         if (@is_dir("forums/$webtag/emoticons/$user_emots") && file_exists("forums/$webtag/emoticons/$user_emots/style.css")) {
 
-            $modified_time = date('YmdHis', filemtime("forums/$webtag/emoticons/$user_emots/style.css"));
-            return "forums/$webtag/emoticons/$user_emots/style.css?$modified_time";
+            if ($modified_time = @filemtime("forums/$webtag/emoticons/$user_emots/style.css")) {
+                return sprintf("forums/$webtag/emoticons/$user_emots/style.css?%s", date('YmdHis', $modified_time));
+            }
         }
     }
 
@@ -886,10 +894,11 @@ function html_draw_top()
 
                 if (bh_session_get_value('USE_MOVER_SPOILER') == "Y") {
 
-                    $modified_time = date('YmdHis', filemtime("js/spoiler.js"));
+                    if ($modified_time = @filemtime("js/spoiler.js")) {
 
-                    echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"./js/spoiler.js?$modified_time\"></script>\n";
-                    if (!in_array("spoilerInitialise", $onload_array)) $onload_array[] = "spoilerInitialise()";
+                        echo sprintf("<script language=\"Javascript\" type=\"text/javascript\" src=\"./js/spoiler.js?%s\"></script>\n", date('YmdHis', $modified_time));
+                        if (!in_array("spoilerInitialise", $onload_array)) $onload_array[] = "spoilerInitialise()";
+                    }
                 }
             }
         }
@@ -897,8 +906,9 @@ function html_draw_top()
 
     reset($arg_array);
 
-    $modified_time = date('YmdHis', filemtime("js/general.js"));
-    echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"./js/general.js?$modified_time\"></script>\n";
+    if ($modified_time = @filemtime("js/general.js")) {
+        echo sprintf("<script language=\"Javascript\" type=\"text/javascript\" src=\"./js/general.js?%s\"></script>\n", date('YmdHis', $modified_time));
+    }
 
     foreach($arg_array as $func_args) {
 
@@ -912,14 +922,16 @@ function html_draw_top()
 
             }else {
 
-                $modified_time = date('YmdHis', filemtime("js/{$func_args}"));
-                echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"./js/{$func_args}?$modified_time\"></script>\n";
+                if ($modified_time = @filemtime("js/{$func_args}")) {
+                    echo sprintf("<script language=\"Javascript\" type=\"text/javascript\" src=\"./js/{$func_args}?%s\"></script>\n", date('YmdHis', $modified_time));
+                }
             }
 
         }else if (@is_dir("./js/") && @file_exists("./js/$func_args")) {
 
-            $modified_time = date('YmdHis', filemtime("js/{$func_args}"));
-            echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"./js/{$func_args}?$modified_time\"></script>\n";
+            if ($modified_time = @filemtime("js/{$func_args}")) {
+                echo sprintf("<script language=\"Javascript\" type=\"text/javascript\" src=\"./js/{$func_args}?%s\"></script>\n", date('YmdHis', $modified_time));
+            }
         }
     }
 

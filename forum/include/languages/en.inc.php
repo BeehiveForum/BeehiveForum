@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.483 2007-10-08 17:10:24 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.484 2007-10-09 23:11:53 decoyduck Exp $ */
 
 // British English language file
 
@@ -1103,6 +1103,10 @@ $lang['removefromfavourites'] = "Remove From Favourites";
 $lang['addtofavourites'] = "Add To Favourites";
 $lang['availableforums'] = "Available Forums";
 $lang['noforumsofselectedtype'] = "There are no forums of the selected type available. Please select a different type.";
+$lang['successfullyaddedforumtofavourites'] = "Successfully added forum to Favourites.";
+$lang['successfullyremovedforumfromfavourites'] = "Successfully removed forum from Favourites.";
+$lang['successfullyignoredforum'] = "Successfully ignored forum.";
+$lang['successfullyunignoredforum'] = "Successfully un-ignored forum.";
 $lang['noforumsavailablelogin'] = "There are no forums available. Please login to view your forums.";
 $lang['passwdprotectedforum'] = "Password Protected Forum";
 $lang['passwdprotectedwarning'] = "This forum is password protected. To gain access enter the password below.";

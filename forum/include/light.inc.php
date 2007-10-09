@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.161 2007-10-09 23:16:03 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.162 2007-10-09 23:28:49 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -152,8 +152,8 @@ function light_draw_logon_form()
         echo form_input_hidden("user_passhash", ''), "</p>\n";
     }
 
-    echo "<p>", form_checkbox("remember_user", "Y", $lang['rememberpassword'], (isset($_COOKIE['bh_light_remember_username']) && isset($_COOKIE['bh_light_remember_password']) ? true : false)), "</p>\n";
-    echo "<p>", form_submit('submit', $lang['logon']), "</p>\n";
+    echo "<p>", light_form_checkbox("remember_user", "Y", $lang['rememberpassword'], (isset($_COOKIE['bh_light_remember_username']) && isset($_COOKIE['bh_light_remember_password']) ? true : false)), "</p>\n";
+    echo "<p>", light_form_submit('submit', $lang['logon']), "</p>\n";
     echo "</form>\n";
 }
 
@@ -1471,7 +1471,7 @@ function light_html_display_msg($header_text, $string_msg, $href = false, $metho
         if (is_array($button_array) && sizeof($button_array) > 0) {
 
             foreach($button_array as $button_name => $button_label) {
-                $button_html_array[] = form_submit(_htmlentities($button_name), _htmlentities($button_label));
+                $button_html_array[] = light_form_submit(_htmlentities($button_name), _htmlentities($button_label));
             }
         }
 

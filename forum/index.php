@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.152 2007-10-07 11:40:31 decoyduck Exp $ */
+/* $Id: index.php,v 1.153 2007-10-10 19:45:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -125,8 +125,6 @@ if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri'])))
     $my_controls_preg = implode("|^", array_map('preg_quote_callback', $my_controls_files));
 
     $popup_files_preg = get_available_popup_files_preg();
-
-    $pm_popup_disabled_files_preg = get_disabled_pm_popup_files_preg();
 
     if (preg_match("/^$available_files_preg/", $final_uri_check) > 0) {
 

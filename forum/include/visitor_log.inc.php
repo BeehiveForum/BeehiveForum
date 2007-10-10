@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.inc.php,v 1.14 2007-10-09 23:16:05 decoyduck Exp $ */
+/* $Id: visitor_log.inc.php,v 1.15 2007-10-10 19:52:05 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -54,9 +54,14 @@ function visitor_log_get_recent()
 
     if (forum_get_setting('guest_show_recent', 'Y')) {
 
-        $sql = "SELECT VISITOR_LOG.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
-        $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
-        $sql.= "SEARCH_ENGINE_BOTS.SID, SEARCH_ENGINE_BOTS.NAME, SEARCH_ENGINE_BOTS.URL ";
+        $sql = "SELECT VISITOR_LOG.UID, USER.LOGON, USER.NICKNAME, ";
+        $sql.= "USER_PEER.PEER_NICKNAME, SEARCH_ENGINE_BOTS.NAME, ";
+        $sql.= "SEARCH_ENGINE_BOTS.URL, SEARCH_ENGINE_BOTS.SID, ";
+        $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON,  ";
+        $sql.= "USER_PREFS_FORUM.AVATAR_URL AS AVATAR_URL_FORUM, ";
+        $sql.= "USER_PREFS_FORUM.AVATAR_AID AS AVATAR_AID_FORUM, ";
+        $sql.= "USER_PREFS_GLOBAL.AVATAR_URL AS AVATAR_URL_GLOBAL, ";
+        $sql.= "USER_PREFS_GLOBAL.AVATAR_AID AS AVATAR_AID_GLOBAL ";
         $sql.= "FROM VISITOR_LOG VISITOR_LOG ";
         $sql.= "LEFT JOIN USER USER ON (USER.UID = VISITOR_LOG.UID) ";
         $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
@@ -74,9 +79,14 @@ function visitor_log_get_recent()
 
     }else {
 
-        $sql = "SELECT VISITOR_LOG.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
-        $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
-        $sql.= "SEARCH_ENGINE_BOTS.SID, SEARCH_ENGINE_BOTS.NAME, SEARCH_ENGINE_BOTS.URL ";
+        $sql = "SELECT VISITOR_LOG.UID, USER.LOGON, USER.NICKNAME, ";
+        $sql.= "USER_PEER.PEER_NICKNAME, SEARCH_ENGINE_BOTS.NAME, ";
+        $sql.= "SEARCH_ENGINE_BOTS.URL, SEARCH_ENGINE_BOTS.SID, ";
+        $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON,  ";
+        $sql.= "USER_PREFS_FORUM.AVATAR_URL AS AVATAR_URL_FORUM, ";
+        $sql.= "USER_PREFS_FORUM.AVATAR_AID AS AVATAR_AID_FORUM, ";
+        $sql.= "USER_PREFS_GLOBAL.AVATAR_URL AS AVATAR_URL_GLOBAL, ";
+        $sql.= "USER_PREFS_GLOBAL.AVATAR_AID AS AVATAR_AID_GLOBAL ";
         $sql.= "FROM VISITOR_LOG VISITOR_LOG ";
         $sql.= "LEFT JOIN USER USER ON (USER.UID = VISITOR_LOG.UID) ";
         $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
@@ -110,6 +120,18 @@ function visitor_log_get_recent()
 
                 $visitor_array['LOGON'] = $lang['unknownuser'];
                 $visitor_array['NICKNAME'] = "";
+            }
+
+            if (isset($visitor_array['AVATAR_URL_FORUM']) && strlen($visitor_array['AVATAR_URL_FORUM']) > 0) {
+                $visitor_array['AVATAR_URL'] = $visitor_array['AVATAR_URL_FORUM'];
+            }elseif (isset($visitor_array['AVATAR_URL_GLOBAL']) && strlen($visitor_array['AVATAR_URL_GLOBAL']) > 0) {
+                $visitor_array['AVATAR_URL'] = $visitor_array['AVATAR_URL_GLOBAL'];
+            }
+
+            if (isset($visitor_array['AVATAR_AID_FORUM']) && strlen($visitor_array['AVATAR_AID_FORUM']) > 0) {
+                $visitor_array['AVATAR_AID'] = $visitor_array['AVATAR_AID_FORUM'];
+            }elseif (isset($visitor_array['AVATAR_AID_GLOBAL']) && strlen($visitor_array['AVATAR_AID_GLOBAL']) > 0) {
+                $visitor_array['AVATAR_AID'] = $visitor_array['AVATAR_AID_GLOBAL'];
             }
 
             if (isset($visitor_array['PEER_NICKNAME'])) {

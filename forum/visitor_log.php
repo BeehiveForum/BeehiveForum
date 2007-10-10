@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.php,v 1.110 2007-09-15 22:13:45 decoyduck Exp $ */
+/* $Id: visitor_log.php,v 1.111 2007-10-10 19:45:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -120,32 +120,46 @@ $profile_items_selected_array = array();
 
 if (isset($_POST['profile_selection'])) {
 
-    if (strlen(trim(_stripslashes($_POST['profile_selection']))) > 0) {
+    if (!user_is_guest()) {
 
-        $profile_selection = explode(",", $_POST['profile_selection']);
+        if (strlen(trim(_stripslashes($_POST['profile_selection']))) > 0) {
 
-        foreach($profile_selection as $profile_item_key) {
+            $profile_selection = explode(",", $_POST['profile_selection']);
 
-            if (isset($profile_header_array[$profile_item_key])) {
+            foreach($profile_selection as $profile_item_key) {
 
-                $profile_items_selected_array[$profile_item_key] = $profile_header_array[$profile_item_key];
+                if (isset($profile_header_array[$profile_item_key])) {
+
+                    $profile_items_selected_array[$profile_item_key] = $profile_header_array[$profile_item_key];
+                }
             }
         }
+
+    }else {
+
+        $profile_items_selected_array = array('LAST_VISIT' => $profile_header_array['LAST_VISIT']);
     }
 
 }else if (isset($_GET['profile_selection'])) {
 
-    if (strlen(trim(_stripslashes($_GET['profile_selection']))) > 0) {
+    if (!user_is_guest()) {
 
-        $profile_selection = explode(",", $_GET['profile_selection']);
+        if (strlen(trim(_stripslashes($_GET['profile_selection']))) > 0) {
 
-        foreach($profile_selection as $profile_item_key) {
+            $profile_selection = explode(",", $_GET['profile_selection']);
 
-            if (isset($profile_header_array[$profile_item_key])) {
+            foreach($profile_selection as $profile_item_key) {
 
-                $profile_items_selected_array[$profile_item_key] = $profile_header_array[$profile_item_key];
+                if (isset($profile_header_array[$profile_item_key])) {
+
+                    $profile_items_selected_array[$profile_item_key] = $profile_header_array[$profile_item_key];
+                }
             }
         }
+
+    }else {
+
+        $profile_items_selected_array = array('LAST_VISIT' => $profile_header_array['LAST_VISIT']);
     }
 
 }else {
@@ -154,6 +168,12 @@ if (isset($_POST['profile_selection'])) {
 }
 
 if (isset($_POST['add'])) {
+
+    if (user_is_guest()) {
+
+        html_guest_error();
+        exit;
+    }
 
     if (isset($_POST['add_column']) && in_array($_POST['add_column'], array_keys($profile_header_array))) {
 
@@ -177,6 +197,12 @@ if (isset($_POST['add'])) {
     }
 
 }elseif (isset($_POST['remove_column']) && is_array($_POST['remove_column'])) {
+
+    if (user_is_guest()) {
+
+        html_guest_error();
+        exit;
+    }
 
     list($remove_column) = array_keys($_POST['remove_column']);
 

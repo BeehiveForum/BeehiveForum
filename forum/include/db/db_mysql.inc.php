@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db_mysql.inc.php,v 1.35 2007-10-09 23:16:05 decoyduck Exp $ */
+/* $Id: db_mysql.inc.php,v 1.36 2007-10-10 22:19:27 decoyduck Exp $ */
 
 function db_get_connection_vars(&$db_server, &$db_username, &$db_password, &$db_database)
 {
@@ -43,7 +43,7 @@ function db_connect($trigger_error = true)
 
             if (@mysql_select_db($db_database, $connection_id)) {
 
-                db_enable_big_selects($connection_id);
+                db_enable_compat_mode($connection_id);
                 return $connection_id;
             }
         }
@@ -56,9 +56,12 @@ function db_connect($trigger_error = true)
     return $connection_id;
 }
 
-function db_enable_big_selects($connection_id)
+function db_enable_compat_mode($connection_id)
 {
     $mysql_big_selects = isset($GLOBALS['mysql_big_selects']) ? $GLOBALS['mysql_big_selects'] : false;
+
+    $sql = "SET SESSION SQL_MODE = ''";
+    if (!$result = db_query($sql, $connection_id)) return false;
 
     if (isset($mysql_big_selects) && $mysql_big_selects === true) {
 
@@ -67,11 +70,9 @@ function db_enable_big_selects($connection_id)
 
         $sql = "SET SESSION SQL_MAX_JOIN_SIZE = DEFAULT";
         if (!$result = db_query($sql, $connection_id)) return false;
-
-        return true;
     }
 
-    return false;
+    return true;
 }
 
 function db_query($sql, $connection_id)

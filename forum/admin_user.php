@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.224 2007-09-08 19:34:17 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.225 2007-10-10 22:35:01 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -430,7 +430,11 @@ if (isset($_POST['action_submit'])) {
 
             if (isset($_POST['t_reset_post_count']) && $_POST['t_reset_post_count'] == "Y") {
 
-                if (!user_reset_post_count($uid)) {
+                if (user_reset_post_count($uid)) {
+
+                    $user['POST_COUNT'] = user_get_post_count($uid);
+
+                }else {
 
                     $valid = false;
                     $error_msg_array[] = $lang['failedtoresetuserpostcount'];

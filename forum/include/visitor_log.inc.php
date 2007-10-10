@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.inc.php,v 1.15 2007-10-10 19:52:05 decoyduck Exp $ */
+/* $Id: visitor_log.inc.php,v 1.16 2007-10-10 19:54:34 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -128,9 +128,9 @@ function visitor_log_get_recent()
                 $visitor_array['AVATAR_URL'] = $visitor_array['AVATAR_URL_GLOBAL'];
             }
 
-            if (isset($visitor_array['AVATAR_AID_FORUM']) && strlen($visitor_array['AVATAR_AID_FORUM']) > 0) {
+            if (isset($visitor_array['AVATAR_AID_FORUM']) && is_md5($visitor_array['AVATAR_AID_FORUM'])) {
                 $visitor_array['AVATAR_AID'] = $visitor_array['AVATAR_AID_FORUM'];
-            }elseif (isset($visitor_array['AVATAR_AID_GLOBAL']) && strlen($visitor_array['AVATAR_AID_GLOBAL']) > 0) {
+            }elseif (isset($visitor_array['AVATAR_AID_GLOBAL']) && is_md5($visitor_array['AVATAR_AID_GLOBAL'])) {
                 $visitor_array['AVATAR_AID'] = $visitor_array['AVATAR_AID_GLOBAL'];
             }
 
@@ -532,9 +532,9 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
                 $user_data['AVATAR_URL'] = $user_data['AVATAR_URL_GLOBAL'];
             }
 
-            if (isset($user_data['AVATAR_AID_FORUM']) && strlen($user_data['AVATAR_AID_FORUM']) > 0) {
+            if (isset($user_data['AVATAR_AID_FORUM']) && is_md5($user_data['AVATAR_AID_FORUM'])) {
                 $user_data['AVATAR_AID'] = $user_data['AVATAR_AID_FORUM'];
-            }elseif (isset($user_data['AVATAR_AID_GLOBAL']) && strlen($user_data['AVATAR_AID_GLOBAL']) > 0) {
+            }elseif (isset($user_data['AVATAR_AID_GLOBAL']) && is_md5($user_data['AVATAR_AID_GLOBAL'])) {
                 $user_data['AVATAR_AID'] = $user_data['AVATAR_AID_GLOBAL'];
             }
 

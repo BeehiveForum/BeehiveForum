@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.165 2007-10-09 23:16:03 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.166 2007-10-10 22:19:27 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -66,10 +66,6 @@ function post_create($fid, $tid, $reply_pid, $by_uid, $fuid, $tuid, $content, $h
 
     if (!$table_data = get_table_prefix()) return -1;
 
-    // Make sure the user's post count is up to date.
-
-    user_get_post_count($fuid);
-
     // Check that the post needs approval. If the user is a moderator
     // their posts are self-approved.
 
@@ -86,9 +82,7 @@ function post_create($fid, $tid, $reply_pid, $by_uid, $fuid, $tuid, $content, $h
         $sql.= "VALUES ($tid, $reply_pid, $fuid, $tuid, NOW(), NOW(), $fuid, '$ipaddress')";
     }
 
-    if (!$result = db_query($sql, $db_post_create)) return false;
-
-    if ($result) {
+    if ($result = db_query($sql, $db_post_create)) {
 
         $new_pid = db_insert_id($db_post_create);
 
@@ -98,35 +92,25 @@ function post_create($fid, $tid, $reply_pid, $by_uid, $fuid, $tuid, $content, $h
         $sql = "INSERT INTO {$table_data['PREFIX']}POST_CONTENT (TID, PID, CONTENT) ";
         $sql.= "VALUES ('$tid', '$new_pid', '$post_content')";
 
-        if (!$result = db_query($sql, $db_post_create)) return false;
-
-        if ($result) {
+        if ($result = db_query($sql, $db_post_create)) {
 
             // Update the thread length so it matches the number of posts
 
-            $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}THREAD SET LENGTH = '$new_pid', MODIFIED = NOW() ";
-            $sql.= "WHERE TID = '$tid'";
-
-            if (!$result = db_query($sql, $db_post_create)) return false;
+            thread_set_length($tid, $new_pid);
 
             // Update the user's post count.
 
-            $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_TRACK SET LAST_POST = NOW(), ";
-            $sql.= "POST_COUNT = POST_COUNT + 1 WHERE UID = '$fuid'";
+            if ($post_count = user_get_post_count($fuid)) {
 
-            if (!$result = db_query($sql, $db_post_create)) return false;
+                $post_count++;
+                user_update_post_count($fuid, $post_count);
+            }
 
-        }else {
-
-            $new_pid = -1;
+            return $new_pid;
         }
-
-    }else {
-
-        $new_pid = -1;
     }
 
-    return $new_pid;
+    return -1;
 }
 
 function post_approve($tid, $pid)

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.125 2007-10-11 13:01:11 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.126 2007-10-11 13:03:39 decoyduck Exp $ */
 
 /**
 * Displays and handles the Forum Settings page
@@ -402,7 +402,7 @@ echo "                        <td align=\"left\">", form_input_text("forum_name"
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['forumemail']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("forum_email", (isset($forum_settings['forum_email']) ? _htmlentities($forum_settings['forum_email']) : 'admin@aBeehive Forum.net'), 42, 80), "&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_input_text("forum_email", (isset($forum_settings['forum_email']) ? _htmlentities($forum_settings['forum_email']) : 'admin@abeehiveforum.net'), 42, 80), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['forumdesc']}:</td>\n";

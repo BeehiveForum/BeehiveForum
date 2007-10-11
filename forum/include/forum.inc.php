@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.268 2007-10-11 13:01:19 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.269 2007-10-11 13:03:39 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1723,7 +1723,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
                                 'default_style'           => 'Default',
                                 'forum_keywords'          => 'A Beehive Forum, Beehive Forum, Project Beehive Forum',
                                 'forum_desc'              => 'A Beehive Forum',
-                                'forum_email'             => 'admin@aBeehive Forum.net',
+                                'forum_email'             => 'admin@abeehiveforum.net',
                                 'forum_name'              => $forum_name,
                                 'show_links'              => 'Y',
                                 'allow_polls'             => 'Y',

@@ -1,16 +1,16 @@
 <?php
 
 /*======================================================================
-Copyright Project BeehiveForum 2002
+Copyright Project Beehive Forum 2002
 
-This file is part of BeehiveForum.
+This file is part of Beehive Forum.
 
-BeehiveForum is free software; you can redistribute it and/or modify
+Beehive Forum is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 
-BeehiveForum is distributed in the hope that it will be useful,
+Beehive Forum is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.70 2007-09-10 12:36:20 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.71 2007-10-11 13:01:19 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -84,7 +84,7 @@ function logon_update_logon_cookie($old_logon, $new_logon)
 
         $username_array[$key] = $new_logon;
 
-        // Remove old 0.7.1 and older cookies
+        // Remove old format cookies
 
         for ($i = 0; $i < sizeof($username_array); $i++) {
 
@@ -93,7 +93,7 @@ function logon_update_logon_cookie($old_logon, $new_logon)
             bh_setcookie("bh_remember_passhash[$i]", '', time() - YEAR_IN_SECONDS);
         }
 
-        // New format cookies for 0.7.2 for better compatibility with more browsers.
+        // New format cookies for 0.8 for better compatibility with more browsers.
 
         $username_cookie = implode(",", $username_array);
         $password_cookie = implode(",", $password_array);
@@ -116,7 +116,7 @@ function logon_update_password_cookie($logon, $password)
         $password_array[$key] = str_repeat(chr(32), strlen($password));
         $passhash_array[$key] = md5($password);
 
-        // Remove old 0.7.1 and older cookies
+        // Remove old format cookies
 
         for ($i = 0; $i < sizeof($username_array); $i++) {
 
@@ -125,7 +125,7 @@ function logon_update_password_cookie($logon, $password)
             bh_setcookie("bh_remember_passhash[$i]", '', time() - YEAR_IN_SECONDS);
         }
 
-        // New format cookies for 0.7.2 for better compatibility with more browsers.
+        // New format cookies for 0.8 for better compatibility with more browsers.
 
         $username_cookie = implode(",", $username_array);
         $password_cookie = implode(",", $password_array);
@@ -194,7 +194,7 @@ function logon_update_cookies($logon, $password, $passhash, $save_password)
             array_unshift($passhash_array, "");
         }
 
-        // Remove old 0.7.1 and older cookies
+        // Remove old format cookies
 
         for ($i = 0; $i < sizeof($username_array); $i++) {
 
@@ -203,7 +203,7 @@ function logon_update_cookies($logon, $password, $passhash, $save_password)
             bh_setcookie("bh_remember_passhash[$i]", '', time() - YEAR_IN_SECONDS);
         }
 
-        // New format cookies for 0.7.2 for better compatibility with more browsers.
+        // New format cookies for 0.8 for better compatibility with more browsers.
 
         $username_cookie = implode(",", $username_array);
         $password_cookie = implode(",", $password_array);

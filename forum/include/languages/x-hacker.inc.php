@@ -1,16 +1,16 @@
 <?php
 
 /*======================================================================
-Copyright Project BeehiveForum 2002
+Copyright Project Beehive Forum 2002
 
-This file is part of BeehiveForum.
+This file is part of Beehive Forum.
 
-BeehiveForum is free software; you can redistribute it and/or modify
+Beehive Forum is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 
-BeehiveForum is distributed in the hope that it will be useful,
+Beehive Forum is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.251 2007-09-21 19:54:58 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.252 2007-10-11 13:01:21 decoyduck Exp $ */
 
 // British English language file
 
@@ -60,7 +60,7 @@ $lang['month_short'][12] = "d3c";
 
 // Dates ---------------------------------------------------------------
 
-// Various date and time formats as used by BeehiveForum. All times are
+// Various date and time formats as used by Beehive Forum. All times are
 // expressed as 24 hour time format.
 
 $lang['daymonthyear'] = "%s %s %s";                  // 1 Jan 2005
@@ -72,7 +72,7 @@ $lang['hourminute'] = "%s:%s";                       // 12:00
 
 // Periods -------------------------------------------------------------
 
-// Various time periods as used by BeehiveForum.
+// Various time periods as used by Beehive Forum.
 
 $lang['date_periods']['year']   = "%s Y34r";
 $lang['date_periods']['month']  = "%s m0Nth";

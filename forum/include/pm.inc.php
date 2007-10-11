@@ -1,16 +1,16 @@
 <?php
 
 /*======================================================================
-Copyright Project BeehiveForum 2002
+Copyright Project Beehive Forum 2002
 
-This file is part of BeehiveForum.
+This file is part of Beehive Forum.
 
-BeehiveForum is free software; you can redistribute it and/or modify
+Beehive Forum is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 
-BeehiveForum is distributed in the hope that it will be useful,
+Beehive Forum is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.222 2007-10-09 23:16:03 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.223 2007-10-11 13:01:19 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -2330,7 +2330,7 @@ function pm_export_xml($folder, &$zip_file)
         $beehive_version = BEEHIVE_VERSION;
 
         $pm_display = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n";
-        $pm_display.= "  <beehiveforum>\n";
+        $pm_display.= "  <Beehive Forum>\n";
         $pm_display.= "    <version>$beehive_version</version>\n";
         $pm_display.= "    <messages>\n";
 
@@ -2355,14 +2355,14 @@ function pm_export_xml($folder, &$zip_file)
             if ($pm_export_file == PM_EXPORT_MANY) {
 
                 $pm_display.= "    </messages>\n";
-                $pm_display.= "  </beehiveforum>\n";
+                $pm_display.= "  </Beehive Forum>\n";
 
                 $filename = "message_{$pm_message['MID']}.xml";
 
                 $zip_file->add_file($pm_display, $filename);
 
                 $pm_display = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n";
-                $pm_display.= "  <beehiveforum>\n";
+                $pm_display.= "  <Beehive Forum>\n";
                 $pm_display.= "    <messages>\n";
             }
 
@@ -2374,7 +2374,7 @@ function pm_export_xml($folder, &$zip_file)
         if ($pm_export_file == PM_EXPORT_SINGLE) {
 
             $pm_display.= "    </messages>\n";
-            $pm_display.= "  </beehiveforum>\n";
+            $pm_display.= "  </Beehive Forum>\n";
 
             $filename = "messages.xml";
             $zip_file->add_file($pm_display, $filename);

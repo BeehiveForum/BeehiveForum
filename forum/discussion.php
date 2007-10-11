@@ -1,16 +1,16 @@
 <?php
 
 /*======================================================================
-Copyright Project BeehiveForum 2002
+Copyright Project Beehive Forum 2002
 
-This file is part of BeehiveForum.
+This file is part of Beehive Forum.
 
-BeehiveForum is free software; you can redistribute it and/or modify
+Beehive Forum is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 
-BeehiveForum is distributed in the hope that it will be useful,
+Beehive Forum is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: discussion.php,v 1.107 2007-06-08 13:39:45 decoyduck Exp $ */
+/* $Id: discussion.php,v 1.108 2007-10-11 13:01:13 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -125,7 +125,7 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
     $msg = messages_get_most_recent($uid, $fid);
 
     html_draw_top('body_tag=false', 'frames=true');
-    
+
     echo "<frameset cols=\"280,*\" framespacing=\"0\" border=\"4\">\n";
     echo "  <frame src=\"./thread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$fid\" name=\"", html_get_frame_name('left'), "\" frameborder=\"0\" />\n";
     echo "  <frame src=\"./messages.php?webtag=$webtag&amp;msg=$msg\" name=\"", html_get_frame_name('right'), "\" frameborder=\"0\" />\n";
@@ -136,7 +136,7 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
 }elseif (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     html_draw_top('body_tag=false', 'frames=true');
-    
+
     echo "<frameset cols=\"280,*\" framespacing=\"0\" border=\"4\">\n";
     echo "  <frame src=\"./thread_list.php?webtag=$webtag&amp;msg={$_GET['msg']}\" name=\"", html_get_frame_name('left'), "\" frameborder=\"0\" />\n";
     echo "  <frame src=\"./messages.php?webtag=$webtag&amp;msg={$_GET['msg']}\" name=\"", html_get_frame_name('right'), "\" frameborder=\"0\" />\n";
@@ -152,10 +152,10 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
 
         html_guest_error();
         exit;
-    }    
-    
+    }
+
     html_draw_top('body_tag=false', 'frames=true');
-    
+
     echo "<frameset cols=\"280,*\" framespacing=\"0\" border=\"4\">\n";
     echo "  <frame src=\"./thread_list.php?webtag=$webtag\" name=\"", html_get_frame_name('left'), "\" frameborder=\"0\" />\n";
     echo "  <frame src=\"./search.php?webtag=$webtag\" name=\"", html_get_frame_name('right'), "\" frameborder=\"0\" />\n";
@@ -171,12 +171,12 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
 
         html_guest_error();
         exit;
-    }    
+    }
 
     html_draw_top('body_tag=false', 'frames=true');
 
     if ($search_msg = search_get_first_result_msg()) {
-    
+
         echo "<frameset cols=\"280,*\" framespacing=\"0\" border=\"4\">\n";
         echo "  <frame src=\"./search.php?webtag=$webtag&amp;offset=0\" name=\"", html_get_frame_name('left'), "\" frameborder=\"0\" />\n";
         echo "  <frame src=\"./messages.php?webtag=$webtag&amp;msg=$search_msg&amp;highlight=yes\" name=\"", html_get_frame_name('right'), "\" frameborder=\"0\" />\n";
@@ -199,7 +199,7 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
     bh_setcookie("bh_{$webtag}_thread_mode", 0, time() - YEAR_IN_SECONDS);
 
     html_draw_top('body_tag=false', 'frames=true');
-    
+
     echo "<frameset cols=\"280,*\" framespacing=\"0\" border=\"4\">\n";
     echo "  <frame src=\"./thread_list.php?webtag=$webtag&amp;msg=$msg\" name=\"", html_get_frame_name('left'), "\" frameborder=\"0\" />\n";
     echo "  <frame src=\"./messages.php?webtag=$webtag&amp;msg=$msg\" name=\"", html_get_frame_name('right'), "\" frameborder=\"0\" />\n";

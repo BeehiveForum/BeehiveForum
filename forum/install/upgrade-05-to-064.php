@@ -1,16 +1,16 @@
 <?php
 
 /*======================================================================
-Copyright Project BeehiveForum 2002
+Copyright Project Beehive Forum 2002
 
-This file is part of BeehiveForum.
+This file is part of Beehive Forum.
 
-BeehiveForum is free software; you can redistribute it and/or modify
+Beehive Forum is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 
-BeehiveForum is distributed in the hope that it will be useful,
+Beehive Forum is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-064.php,v 1.27 2007-08-01 20:23:04 decoyduck Exp $ */
+/* $Id: upgrade-05-to-064.php,v 1.28 2007-10-11 13:01:23 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-05-to-064.php") {
 
@@ -55,7 +55,7 @@ $sql = "SHOW TABLES LIKE 'FORUMS'";
 
 if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>Could not locate any previous BeehiveForum installations!</h2>\n";
+    $error_html.= "<h2>Could not locate any previous Beehive Forum installations!</h2>\n";
     $valid = false;
     return;
 }
@@ -73,7 +73,7 @@ if (db_num_rows($result) > 0) {
 
     }else {
 
-        $error_html.= "<h2>Could not locate any previous BeehiveForum installations!</h2>\n";
+        $error_html.= "<h2>Could not locate any previous Beehive Forum installations!</h2>\n";
         $valid = false;
         return;
     }
@@ -978,10 +978,10 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
             list($pm_auto_prune_length) = db_fetch_array($result, DB_RESULT_NUM);
 
             if (is_numeric($pm_auto_prune_length)) {
-            
+
                 $pm_prune_enabled = $pm_auto_prune_length;
                 $pm_prune_disabled = $pm_auto_prune_length * -1;
-                
+
                 $sql = "UPDATE FORUM_SETTINGS SET SVALUE = '$pm_prune_enabled' ";
                 $sql.= "WHERE SVALUE = 'Y' AND SNAME = 'pm_auto_prune' ";
                 $sql.= "AND FID = '$forum_fid'";
@@ -1174,7 +1174,7 @@ $sql = "SHOW TABLES LIKE 'DICTIONARY'";
 
 if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>Could not locate any previous BeehiveForum installations!</h2>\n";
+    $error_html.= "<h2>Could not locate any previous Beehive Forum installations!</h2>\n";
     $valid = false;
     return;
 }

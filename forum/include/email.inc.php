@@ -1,16 +1,16 @@
 <?php
 
 /*======================================================================
-Copyright Project BeehiveForum 2002
+Copyright Project Beehive Forum 2002
 
-This file is part of BeehiveForum.
+This file is part of Beehive Forum.
 
-BeehiveForum is free software; you can redistribute it and/or modify
+Beehive Forum is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 
-BeehiveForum is distributed in the hope that it will be useful,
+Beehive Forum is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.119 2007-10-09 23:16:02 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.120 2007-10-11 13:01:18 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -83,7 +83,7 @@ function email_sendnotification($tuid, $fuid, $tid, $pid)
 
                 // Get the forum reply-to email address
 
-                $forum_email = forum_get_setting('forum_noreply_email', false, 'noreply@abeehiveforum.net');
+                $forum_email = forum_get_setting('forum_noreply_email', false, 'noreply@aBeehive Forum.net');
 
                 // Get the required variables (forum name, subject, recipient, etc.) and
                 // pass them all through the recipient's word filter.
@@ -119,7 +119,7 @@ function email_sendnotification($tuid, $fuid, $tid, $pid)
                 // -------------------
                 // RFC2822 compliancy requires that the RCPT TO portion of the
                 // email headers only contain the email address in < >
-                // i.e. <someuser@abeehiveforum.net>
+                // i.e. <someuser@aBeehive Forum.net>
 
                 if (@mail($to_user['EMAIL'], $subject, $message, $header)) return true;
             }
@@ -177,7 +177,7 @@ function email_sendsubscription($tuid, $fuid, $tid, $pid)
 
                 // Get the forum reply-to email address
 
-                $forum_email = forum_get_setting('forum_noreply_email', false, 'noreply@abeehiveforum.net');
+                $forum_email = forum_get_setting('forum_noreply_email', false, 'noreply@aBeehive Forum.net');
 
                 // Get the required variables (forum name, subject, recipient, etc.) and
                 // pass them all through the recipient's word filter.
@@ -213,7 +213,7 @@ function email_sendsubscription($tuid, $fuid, $tid, $pid)
                 // -------------------
                 // RFC2822 compliancy requires that the RCPT TO portion of the
                 // email headers only contain the email address in < >
-                // i.e. <someuser@abeehiveforum.net>
+                // i.e. <someuser@aBeehive Forum.net>
 
                 if (@mail($to_user['EMAIL'], $subject, $message, $header)) return true;
             }
@@ -261,7 +261,7 @@ function email_send_pm_notification($tuid, $mid, $fuid)
 
                 // Get the forum reply-to email address
 
-                $forum_email = forum_get_setting('forum_noreply_email', false, 'noreply@abeehiveforum.net');
+                $forum_email = forum_get_setting('forum_noreply_email', false, 'noreply@aBeehive Forum.net');
 
                 // Get the forum name, subject, recipient, author, thread title and generate
                 // the messages link. Pass all of them through the recipient's word filter.
@@ -297,7 +297,7 @@ function email_send_pm_notification($tuid, $mid, $fuid)
                 // -------------------
                 // RFC2822 compliancy requires that the RCPT TO portion of the
                 // email headers only contain the email address in < >
-                // i.e. <someuser@abeehiveforum.net>
+                // i.e. <someuser@aBeehive Forum.net>
 
                 if (@mail($to_user['EMAIL'], $subject, $message, $header)) return true;
             }
@@ -330,7 +330,7 @@ function email_send_pw_reminder($logon)
 
             // Get the forum reply-to email address
 
-            $forum_email = forum_get_setting('forum_noreply_email', false, 'noreply@abeehiveforum.net');
+            $forum_email = forum_get_setting('forum_noreply_email', false, 'noreply@aBeehive Forum.net');
 
             // Get the forum name, subject, recipient, author, thread title and generate
             // the messages link. Pass all of them through the recipient's word filter.
@@ -361,7 +361,7 @@ function email_send_pw_reminder($logon)
             // -------------------
             // RFC2822 compliancy requires that the RCPT TO portion of the
             // email headers only contain the email address in < >
-            // i.e. <someuser@abeehiveforum.net>
+            // i.e. <someuser@aBeehive Forum.net>
 
             if (@mail($to_user['EMAIL'], $subject, $message, $header)) return true;
         }
@@ -393,7 +393,7 @@ function email_send_new_pw_notification($tuid, $fuid, $new_password)
 
         // Get the forum reply-to email address
 
-        $forum_email = forum_get_setting('forum_noreply_email', false, 'noreply@abeehiveforum.net');
+        $forum_email = forum_get_setting('forum_noreply_email', false, 'noreply@aBeehive Forum.net');
 
         // Get the forum name, subject, recipient, author, thread title and generate
         // the messages link. Pass all of them through the recipient's word filter.
@@ -420,7 +420,7 @@ function email_send_new_pw_notification($tuid, $fuid, $new_password)
         // -------------------
         // RFC2822 compliancy requires that the RCPT TO portion of the
         // email headers only contain the email address in < >
-        // i.e. <someuser@abeehiveforum.net>
+        // i.e. <someuser@aBeehive Forum.net>
 
         if (@mail($to_user['EMAIL'], $subject, $message, $header)) return true;
     }
@@ -450,8 +450,8 @@ function email_send_user_confirmation($tuid)
 
         // Get the forum reply-to email address
 
-        $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
-        $forum_no_reply_email = forum_get_setting('forum_noreply_email', false, 'noreply@abeehiveforum.net');
+        $forum_email = forum_get_setting('forum_email', false, 'admin@aBeehive Forum.net');
+        $forum_no_reply_email = forum_get_setting('forum_noreply_email', false, 'noreply@aBeehive Forum.net');
 
         // Get the forum name, subject, recipient, author, thread title and generate
         // the messages link. Pass all of them through the recipient's word filter.
@@ -481,7 +481,7 @@ function email_send_user_confirmation($tuid)
         // -------------------
         // RFC2822 compliancy requires that the RCPT TO portion of the
         // email headers only contain the email address in < >
-        // i.e. <someuser@abeehiveforum.net>
+        // i.e. <someuser@aBeehive Forum.net>
 
         if (@mail($to_user['EMAIL'], $subject, $message, $header)) return true;
     }
@@ -511,8 +511,8 @@ function email_send_changed_email_confirmation($tuid)
 
         // Get the forum reply-to email address
 
-        $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
-        $forum_noreply_email = forum_get_setting('forum_noreply_email', false, 'noreply@abeehiveforum.net');
+        $forum_email = forum_get_setting('forum_email', false, 'admin@aBeehive Forum.net');
+        $forum_noreply_email = forum_get_setting('forum_noreply_email', false, 'noreply@aBeehive Forum.net');
 
         // Get the forum name, subject, recipient, author, thread title and generate
         // the messages link. Pass all of them through the recipient's word filter.
@@ -542,7 +542,7 @@ function email_send_changed_email_confirmation($tuid)
         // -------------------
         // RFC2822 compliancy requires that the RCPT TO portion of the
         // email headers only contain the email address in < >
-        // i.e. <someuser@abeehiveforum.net>
+        // i.e. <someuser@aBeehive Forum.net>
 
         if (@mail($to_user['EMAIL'], $subject, $message, $header)) return true;
     }
@@ -573,7 +573,7 @@ function email_send_message_to_user($tuid, $fuid, $subject, $message)
 
         // Get the forum reply-to email address
 
-        $forum_email = forum_get_setting('forum_noreply_email', false, 'noreply@abeehiveforum.net');
+        $forum_email = forum_get_setting('forum_noreply_email', false, 'noreply@aBeehive Forum.net');
 
         // Get the forum name, subject, recipient, author, thread title and generate
         // the messages link. Pass all of them through the recipient's word filter.
@@ -603,7 +603,7 @@ function email_send_message_to_user($tuid, $fuid, $subject, $message)
         // -------------------
         // RFC2822 compliancy requires that the RCPT TO portion of the
         // email headers only contain the email address in < >
-        // i.e. <someuser@abeehiveforum.net>
+        // i.e. <someuser@aBeehive Forum.net>
 
         if (@mail($to_user['EMAIL'], $subject, $message, $header)) return true;
     }

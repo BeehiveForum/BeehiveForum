@@ -1,16 +1,16 @@
 <?php
 
 /*======================================================================
-Copyright Project BeehiveForum 2002
+Copyright Project Beehive Forum 2002
 
-This file is part of BeehiveForum.
+This file is part of Beehive Forum.
 
-BeehiveForum is free software; you can redistribute it and/or modify
+Beehive Forum is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2.1 of the License, or
 (at your option) any later version.
 
-BeehiveForum is distributed in the hope that it will be useful,
+Beehive Forum is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: timezone.inc.php,v 1.6 2007-06-18 20:10:49 decoyduck Exp $ */
+/* $Id: timezone.inc.php,v 1.7 2007-10-11 13:01:20 decoyduck Exp $ */
 
 /**
 * timezone.inc.php - International Timezones with DST support
@@ -130,7 +130,7 @@ function get_available_timezones()
 function timezone_id_to_string($timezone_id)
 {
     $lang = load_language_file();
-    
+
     $timezones_array = get_available_timezones();
 
     if (isset($timezones_array[$timezone_id])) return $timezones_array[$timezone_id];
@@ -238,7 +238,7 @@ function timestamp_is_dst($timezoneid, $gmt_offset)
                 return false;
             break;
 
-        case 43:    /*    Tehran, Iran - Note: This is an approximation to 
+        case 43:    /*    Tehran, Iran - Note: This is an approximation to
                         the actual DST dates since Iran goes by the Persian
                         calendar.  There are tools for converting between
                         Gregorian and Persian calendars at www.farsiweb.info.
@@ -284,7 +284,7 @@ function timestamp_is_dst($timezoneid, $gmt_offset)
 function afterFirstDayInMonth($curYear, $year, $month, $day, $gmt_offset)
 {
     for ($i = 1; $i < 8; $i++) {
-        
+
         if (date("D", mktime(0, 0, 0, $month, $i)) == $day) {
 
             $first_day = $i;

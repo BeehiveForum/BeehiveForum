@@ -1,16 +1,16 @@
 <?php
 
 /*======================================================================
-Copyright Project BeehiveForum 2002
+Copyright Project Beehive Forum 2002
 
-This file is part of BeehiveForum.
+This file is part of Beehive Forum.
 
-BeehiveForum is free software; you can redistribute it and/or modify
+Beehive Forum is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 
-BeehiveForum is distributed in the hope that it will be useful,
+Beehive Forum is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: config.inc.php,v 1.141 2007-08-28 22:36:00 decoyduck Exp $ */
+/* $Id: config.inc.php,v 1.142 2007-10-11 13:01:17 decoyduck Exp $ */
 
 // MAIN CONFIGURATION FILE
 
@@ -78,9 +78,9 @@ $cookie_domain = "";
 // URI for your forum, for example where your forum is accessible
 // from all of the following addresses:
 //
-// http://www.mybeehiveforum.net/forum/
-// http://forum.mybeehiveforum.net/
-// http://mybeehiveforum.net/forum/
+// http://www.myBeehive Forum.net/forum/
+// http://forum.myBeehive Forum.net/
+// http://myBeehive Forum.net/forum/
 //
 // Usually cookies set at one address will be unavailable at the
 // others which forces your users to login multiple times and keep
@@ -90,7 +90,7 @@ $cookie_domain = "";
 // and have them accessible from all addresses you would set the
 // $cookie_domain value as follows:
 //
-// $cookie_domain = "mybeehiveforum.net/forum/";
+// $cookie_domain = "myBeehive Forum.net/forum/";
 //
 // As you may have noticed the string used is common to all of
 // addresses listed above and so any cookies set at any of the domains

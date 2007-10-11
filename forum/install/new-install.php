@@ -1,16 +1,16 @@
 <?php
 
 /*======================================================================
-Copyright Project BeehiveForum 2002
+Copyright Project Beehive Forum 2002
 
-This file is part of BeehiveForum.
+This file is part of Beehive Forum.
 
-BeehiveForum is free software; you can redistribute it and/or modify
+Beehive Forum is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 
-BeehiveForum is distributed in the hope that it will be useful,
+Beehive Forum is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.153 2007-09-25 12:04:49 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.154 2007-10-11 13:01:23 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
 
@@ -96,8 +96,8 @@ if (isset($remove_conflicts) && $remove_conflicts === true) {
 
 }elseif ($conflicting_tables = install_get_table_conflicts($forum_webtag, true, true)) {
 
-    $error_str = "<h2>Selected database contains tables which conflict with BeehiveForum.";
-    $error_str.= "If this database contains an existing BeehiveForum installation please ";
+    $error_str = "<h2>Selected database contains tables which conflict with Beehive Forum.";
+    $error_str.= "If this database contains an existing Beehive Forum installation please ";
     $error_str.= "check that you have selected the correct install / upgrade method.<h2>\n";
 
     $error_array[] = $error_str;
@@ -1190,7 +1190,7 @@ $forum_settings = array('wiki_integration_uri'    => 'http://en.wikipedia.org/wi
                         'default_language'        => 'en',
                         'default_emoticons'       => 'default',
                         'default_style'           => 'Default',
-                        'forum_keywords'          => 'A Beehive Forum, BeehiveForum, Project BeehiveForum',
+                        'forum_keywords'          => 'A Beehive Forum, Beehive Forum, Project Beehive Forum',
                         'forum_desc'              => 'A Beehive Forum',
                         'forum_email'             => 'admin@abeehiveforum.net',
                         'forum_name'              => 'A Beehive Forum',
@@ -1216,7 +1216,7 @@ foreach ($forum_settings as $sname => $svalue) {
     }
 }
 
-$global_settings = array('forum_keywords'             => 'A Beehive Forum, BeehiveForum, Project BeehiveForum',
+$global_settings = array('forum_keywords'             => 'A Beehive Forum, Beehive Forum, Project Beehive Forum',
                          'forum_desc'                 => 'A Beehive Forum',
                          'forum_email'                => 'admin@abeehiveforum.net',
                          'forum_noreply_email'        => 'noreply@abeehiveforum.net',

@@ -1,16 +1,16 @@
 <?php
 
 /*======================================================================
-Copyright Project BeehiveForum 2002
+Copyright Project Beehive Forum 2002
 
-This file is part of BeehiveForum.
+This file is part of Beehive Forum.
 
-BeehiveForum is free software; you can redistribute it and/or modify
+Beehive Forum is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 
-BeehiveForum is distributed in the hope that it will be useful,
+Beehive Forum is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06x-to-072.php,v 1.22 2007-09-25 12:04:49 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-072.php,v 1.23 2007-10-11 13:01:23 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-06x-to-072.php") {
 
@@ -55,7 +55,7 @@ $sql = "SHOW TABLES LIKE 'FORUMS'";
 
 if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>Could not locate any previous BeehiveForum installations!</h2>\n";
+    $error_html.= "<h2>Could not locate any previous Beehive Forum installations!</h2>\n";
     $valid = false;
     return;
 }
@@ -73,7 +73,7 @@ if (db_num_rows($result) > 0) {
 
     }else {
 
-        $error_html.= "<h2>Could not locate any previous BeehiveForum installations!</h2>\n";
+        $error_html.= "<h2>Could not locate any previous Beehive Forum installations!</h2>\n";
         $valid = false;
         return;
     }
@@ -145,8 +145,8 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     if ($conflicting_tables = install_get_table_conflicts($forum_webtag, $forum_tables, $global_tables)) {
 
-        $error_str = "<h2>Selected database contains tables which conflict with BeehiveForum.";
-        $error_str.= "If this database contains an existing BeehiveForum installation please ";
+        $error_str = "<h2>Selected database contains tables which conflict with Beehive Forum.";
+        $error_str.= "If this database contains an existing Beehive Forum installation please ";
         $error_str.= "check that you have selected the correct install / upgrade method.<h2>\n";
 
         $error_array[] = $error_str;
@@ -770,7 +770,7 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
-// User approval is possible in Beehive as of 0.7.2.
+// User approval is possible in Beehive as of 0.8.
 
 $sql = "ALTER TABLE USER ADD APPROVED DATETIME NULL";
 
@@ -799,7 +799,7 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
-// As of Beehive Forum 0.7.2 you can keep your per-forum tables
+// As of Beehive Forum 0.8 you can keep your per-forum tables
 // and global tables in seperate databases. In order to track
 // the database names for each forum we need to store that in
 // FORUMS table.

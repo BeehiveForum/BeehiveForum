@@ -1,16 +1,16 @@
 <?php
 
 /*======================================================================
-Copyright Project BeehiveForum 2002
+Copyright Project Beehive Forum 2002
 
-This file is part of BeehiveForum.
+This file is part of Beehive Forum.
 
-BeehiveForum is free software; you can redistribute it and/or modify
+Beehive Forum is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 
-BeehiveForum is distributed in the hope that it will be useful,
+Beehive Forum is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.75 2007-09-21 19:54:58 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.76 2007-10-11 13:01:21 decoyduck Exp $ */
 
 // British English language file
 
@@ -60,7 +60,7 @@ $lang['month_short'][12] = "déc";
 
 // Dates ---------------------------------------------------------------
 
-// Various date and time formats as used by BeehiveForum. All times are
+// Various date and time formats as used by Beehive Forum. All times are
 // expressed as 24 hour time format.
 
 $lang['daymonthyear'] = "%s %s %s";                 // e.g. 1 Jan 2005
@@ -72,7 +72,7 @@ $lang['hourminute'] = "%sh%s";                      // e.g. 12:00
 
 // Periods -------------------------------------------------------------
 
-// Various time periods as used by BeehiveForum.
+// Various time periods as used by Beehive Forum.
 
 $lang['date_periods']['year']   = "%s year";
 $lang['date_periods']['month']  = "%s month";
@@ -578,7 +578,7 @@ $lang['addselectedusers'] = "Ajouter usagers sélectionnés";
 $lang['removeselectedusers'] = "Enlever usagers sélectionnés";
 $lang['addnew'] = "Ajouter nouveau";
 $lang['deleteselected'] = "Supprimer sélectionné";
-$lang['forumrulesmessage'] = "<p><b>Forum Rules</b></p><p>\nRegistration to %1\$s is free! We do insist that you abide by the rules and policies detailed below. If you agree to the terms, please check the 'I agree' checkbox and press the 'Register' button below. If you would like to cancel the registration, click %2\$s to return to the forums index.</p><p>\nAlthough the administrators and moderators of %1\$s will attempt to keep all objectionable messages off this forum, it is impossible for us to review all messages. All messages express the views of the author, and neither the owners of %1\$s, nor Project BeehiveForum and it's affiliates will be held responsible for the content of any message.</p><p>\nBy agreeing to these rules, you warrant that you will not post any messages that are obscene, vulgar, sexually-orientated, hateful, threatening, or otherwise violative of any laws.</p><p>The owners of %1\$s reserve the right to remove, edit, move or close any thread for any reason.</p>";
+$lang['forumrulesmessage'] = "<p><b>Forum Rules</b></p><p>\nRegistration to %1\$s is free! We do insist that you abide by the rules and policies detailed below. If you agree to the terms, please check the 'I agree' checkbox and press the 'Register' button below. If you would like to cancel the registration, click %2\$s to return to the forums index.</p><p>\nAlthough the administrators and moderators of %1\$s will attempt to keep all objectionable messages off this forum, it is impossible for us to review all messages. All messages express the views of the author, and neither the owners of %1\$s, nor Project Beehive Forum and it's affiliates will be held responsible for the content of any message.</p><p>\nBy agreeing to these rules, you warrant that you will not post any messages that are obscene, vulgar, sexually-orientated, hateful, threatening, or otherwise violative of any laws.</p><p>The owners of %1\$s reserve the right to remove, edit, move or close any thread for any reason.</p>";
 $lang['cancellinktext'] = "here";
 $lang['failedtoupdateforumsettings'] = "Failed to update forum settings. Please try again later.";
 $lang['moreadminoptions'] = "More Admin Options";

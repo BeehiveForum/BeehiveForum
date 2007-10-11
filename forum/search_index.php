@@ -1,16 +1,16 @@
 <?php
 
 /*======================================================================
-Copyright Project BeehiveForum 2002
+Copyright Project Beehive Forum 2002
 
-This file is part of BeehiveForum.
+This file is part of Beehive Forum.
 
-BeehiveForum is free software; you can redistribute it and/or modify
+Beehive Forum is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 
-BeehiveForum is distributed in the hope that it will be useful,
+Beehive Forum is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
@@ -31,7 +31,7 @@ USA
 
 // You can optionally add the webtag of the forum you wish to index
 // as a command line argument to the script if you run multiple
-// forums on your BeehiveForum installation. If you don't specify
+// forums on your Beehive Forum installation. If you don't specify
 // a webtag or you specify an invalid webtag the script will index
 // your default forum only. If you do not have a default forum no
 // posts will be indexed.
@@ -45,6 +45,6 @@ define("BH_INCLUDE_PATH", "./include/");
 
 include_once(BH_INCLUDE_PATH. "search.inc.php");
 
-echo "Search Indexing is no longer required by BeehiveForum 0.6.2 and higher";
+echo "Search Indexing is no longer required by Beehive Forum 0.6.2 and higher";
 
 ?>

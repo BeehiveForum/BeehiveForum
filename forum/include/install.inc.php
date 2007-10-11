@@ -1,16 +1,16 @@
 <?php
 
 /*======================================================================
-Copyright Project BeehiveForum 2002
+Copyright Project Beehive Forum 2002
 
-This file is part of BeehiveForum.
+This file is part of Beehive Forum.
 
-BeehiveForum is free software; you can redistribute it and/or modify
+Beehive Forum is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 
-BeehiveForum is distributed in the hope that it will be useful,
+Beehive Forum is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.62 2007-10-09 23:16:03 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.63 2007-10-11 13:01:19 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -70,12 +70,12 @@ function check_install()
             echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
             echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"ltr\">\n";
             echo "<head>\n";
-            echo "<title>BeehiveForum ", BEEHIVE_VERSION, " - Installation</title>\n";
+            echo "<title>Beehive Forum ", BEEHIVE_VERSION, " - Installation</title>\n";
             echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
             echo "<link rel=\"icon\" href=\"./images/favicon.ico\" type=\"image/ico\">\n";
             echo "<link rel=\"stylesheet\" href=\"./styles/style.css\" type=\"text/css\" />\n";
             echo "</head>\n";
-            echo "<h1>BeehiveForum Installation Error</h1>\n";
+            echo "<h1>Beehive Forum Installation Error</h1>\n";
             echo "<br />\n";
             echo "<div align=\"center\">\n";
             echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";
@@ -89,7 +89,7 @@ function check_install()
             echo "                  <td align=\"left\" colspan=\"2\" class=\"subhead\">Installation Incomplete</td>\n";
             echo "                </tr>\n";
             echo "                <tr>\n";
-            echo "                  <td align=\"left\">Your BeehiveForum would appear to be already installed, but you have not removed the installation files. You must delete both the 'install' directory and install.php before your Beehive Forum can be used.</td>\n";
+            echo "                  <td align=\"left\">Your Beehive Forum would appear to be already installed, but you have not removed the installation files. You must delete both the 'install' directory and install.php before your Beehive Forum can be used.</td>\n";
             echo "                </tr>\n";
             echo "                <tr>\n";
             echo "                  <td align=\"left\">&nbsp;</td>\n";
@@ -162,12 +162,12 @@ function install_incomplete()
     echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
     echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"ltr\">\n";
     echo "<head>\n";
-    echo "<title>BeehiveForum ", BEEHIVE_VERSION, " - Installation</title>\n";
+    echo "<title>Beehive Forum ", BEEHIVE_VERSION, " - Installation</title>\n";
     echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
     echo "<link rel=\"icon\" href=\"./images/favicon.ico\" type=\"image/ico\">\n";
     echo "<link rel=\"stylesheet\" href=\"./styles/style.css\" type=\"text/css\" />\n";
     echo "</head>\n";
-    echo "<h1>BeehiveForum Installation Error</h1>\n";
+    echo "<h1>Beehive Forum Installation Error</h1>\n";
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";
@@ -181,7 +181,7 @@ function install_incomplete()
     echo "                  <td align=\"left\" colspan=\"2\" class=\"subhead\">Installation Incomplete</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\">Your BeehiveForum is not installed correctly. Click the install button below to start the installation.</td>\n";
+    echo "                  <td align=\"left\">Your Beehive Forum is not installed correctly. Click the install button below to start the installation.</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\">&nbsp;</td>\n";
@@ -220,12 +220,12 @@ function install_check_mysql_version()
             echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
             echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"ltr\">\n";
             echo "<head>\n";
-            echo "<title>BeehiveForum ", BEEHIVE_VERSION, " - Installation</title>\n";
+            echo "<title>Beehive Forum ", BEEHIVE_VERSION, " - Installation</title>\n";
             echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
             echo "<link rel=\"icon\" href=\"./images/favicon.ico\" type=\"image/ico\">\n";
             echo "<link rel=\"stylesheet\" href=\"./styles/style.css\" type=\"text/css\" />\n";
             echo "</head>\n";
-            echo "<h1>BeehiveForum Minimum Requirements Error</h1>\n";
+            echo "<h1>Beehive Forum Minimum Requirements Error</h1>\n";
             echo "<br />\n";
             echo "<div align=\"center\">\n";
             echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";
@@ -273,12 +273,12 @@ function install_check_php_version()
         echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
         echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"ltr\">\n";
         echo "<head>\n";
-        echo "<title>BeehiveForum ", BEEHIVE_VERSION, " - Installation</title>\n";
+        echo "<title>Beehive Forum ", BEEHIVE_VERSION, " - Installation</title>\n";
         echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
         echo "<link rel=\"icon\" href=\"./images/favicon.ico\" type=\"image/ico\">\n";
         echo "<link rel=\"stylesheet\" href=\"./styles/style.css\" type=\"text/css\" />\n";
         echo "</head>\n";
-        echo "<h1>BeehiveForum Minimum Requirements Error</h1>\n";
+        echo "<h1>Beehive Forum Minimum Requirements Error</h1>\n";
         echo "<br />\n";
         echo "<div align=\"center\">\n";
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";

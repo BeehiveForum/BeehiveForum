@@ -1,16 +1,16 @@
 <?php
 
 /*======================================================================
-Copyright Project BeehiveForum 2002
+Copyright Project Beehive Forum 2002
 
-This file is part of BeehiveForum.
+This file is part of Beehive Forum.
 
-BeehiveForum is free software; you can redistribute it and/or modify
+Beehive Forum is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 
-BeehiveForum is distributed in the hope that it will be useful,
+Beehive Forum is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.76 2007-10-08 14:19:22 decoyduck Exp $ */
+/* $Id: install.php,v 1.77 2007-10-11 13:01:15 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -255,12 +255,12 @@ if (isset($_POST['install_method']) && (!defined('BEEHIVE_INSTALED') || $force_i
                     echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
                     echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"ltr\">\n";
                     echo "<head>\n";
-                    echo "<title>BeehiveForum ", BEEHIVE_VERSION, " Installation</title>\n";
+                    echo "<title>Beehive Forum ", BEEHIVE_VERSION, " Installation</title>\n";
                     echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
                     echo "<link rel=\"icon\" href=\"./images/favicon.ico\" type=\"image/ico\" />\n";
                     echo "<link rel=\"stylesheet\" href=\"./styles/style.css\" type=\"text/css\" />\n";
                     echo "</head>\n";
-                    echo "<h1>BeehiveForum ", BEEHIVE_VERSION, " Installation</h1>\n";
+                    echo "<h1>Beehive Forum ", BEEHIVE_VERSION, " Installation</h1>\n";
                     echo "<br />\n";
                     echo "<div align=\"center\">\n";
 
@@ -456,13 +456,13 @@ if (isset($_POST['install_method']) && (!defined('BEEHIVE_INSTALED') || $force_i
             echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
             echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"ltr\">\n";
             echo "<head>\n";
-            echo "<title>BeehiveForum ", BEEHIVE_VERSION, " - Installation</title>\n";
+            echo "<title>Beehive Forum ", BEEHIVE_VERSION, " - Installation</title>\n";
             echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
             echo "<link rel=\"icon\" href=\"./images/favicon.ico\" type=\"image/ico\" />\n";
             echo "<link rel=\"stylesheet\" href=\"./styles/style.css\" type=\"text/css\" />\n";
             echo "</head>\n";
 
-            echo "<h1>BeehiveForum ", BEEHIVE_VERSION, " Installation</h1>\n";
+            echo "<h1>Beehive Forum ", BEEHIVE_VERSION, " Installation</h1>\n";
             echo "<br />\n";
             echo "<div align=\"center\">\n";
             echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
@@ -549,7 +549,7 @@ echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
 echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"ltr\">\n";
 echo "<head>\n";
-echo "<title>BeehiveForum ", BEEHIVE_VERSION, " - Installation</title>\n";
+echo "<title>Beehive Forum ", BEEHIVE_VERSION, " - Installation</title>\n";
 echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
 echo "<link rel=\"icon\" href=\"./images/favicon.ico\" type=\"image/ico\" />\n";
 echo "<link rel=\"stylesheet\" href=\"./styles/style.css\" type=\"text/css\" />\n";
@@ -562,12 +562,12 @@ if (!@file_exists(BH_INCLUDE_PATH. "config.inc.php") || $force_install) {
 
     echo "<form id=\"install_form\" method=\"post\" action=\"install.php\">\n";
     echo "<input type=\"hidden\" name=\"force_install\" value=\"", ($force_install) ? "yes" : "no", "\" />\n";
-    echo "<h1>BeehiveForum ", BEEHIVE_VERSION, " Installation</h1>\n";
+    echo "<h1>Beehive Forum ", BEEHIVE_VERSION, " Installation</h1>\n";
     echo "<div align=\"center\">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\" colspan=\"2\">\n";
-    echo "        <p>Welcome to the BeehiveForum installation script. To get everything kicking off to a great start please fill out the details below and click the Install button!</p>\n";
+    echo "        <p>Welcome to the Beehive Forum installation script. To get everything kicking off to a great start please fill out the details below and click the Install button!</p>\n";
     echo "        <p><b>WARNING</b>: Proceed only if you have performed a backup of your database! Failure to do so could result in loss of your forum. You have been warned!</p>\n";
     echo "      </td>\n";
     echo "    </tr>\n";
@@ -614,8 +614,8 @@ if (!@file_exists(BH_INCLUDE_PATH. "config.inc.php") || $force_install) {
     echo "                            <option value=\"0\" ", (isset($install_method) && $install_method == 0) ? "selected=\"selected\"" : "", ">New Install</option>\n";
     echo "                            <option value=\"1\" ", (isset($install_method) && $install_method == 1) ? "selected=\"selected\"" : "", ">Reinstall</option>\n";
     echo "                            <option value=\"2\" ", (isset($install_method) && $install_method == 2) ? "selected=\"selected\"" : "", ">Reconnect</option>\n";
-    echo "                            <option value=\"3\" ", (isset($install_method) && $install_method == 3) ? "selected=\"selected\"" : "", ">Upgrade 0.6 to 0.7.2</option>\n";
-    echo "                            <option value=\"4\" ", (isset($install_method) && $install_method == 4) ? "selected=\"selected\"" : "", ">Upgrade 0.7.x to 0.7.2</option>\n";
+    echo "                            <option value=\"3\" ", (isset($install_method) && $install_method == 3) ? "selected=\"selected\"" : "", ">Upgrade 0.6 to 0.8</option>\n";
+    echo "                            <option value=\"4\" ", (isset($install_method) && $install_method == 4) ? "selected=\"selected\"" : "", ">Upgrade 0.7.x to 0.8</option>\n";
     echo "                          </select>\n";
     echo "                        </td>\n";
     echo "                      </tr>\n";
@@ -744,7 +744,7 @@ if (!@file_exists(BH_INCLUDE_PATH. "config.inc.php") || $force_install) {
     echo "                  <td align=\"center\" colspan=\"2\">\n";
     echo "                    <table cellpadding=\"2\" cellspacing=\"0\" width=\"95%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\"><span class=\"bhinputcheckbox\"><input type=\"checkbox\" name=\"remove_conflicts\" id=\"remove_conflicts\" value=\"Y\" tabindex=\"12\" /><label for=\"remove_conflicts\">Automatically remove tables that conflict with BeehiveForum's own.</label></span></td>\n";
+    echo "                        <td align=\"left\"><span class=\"bhinputcheckbox\"><input type=\"checkbox\" name=\"remove_conflicts\" id=\"remove_conflicts\" value=\"Y\" tabindex=\"12\" /><label for=\"remove_conflicts\">Automatically remove tables that conflict with Beehive Forum's own.</label></span></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\"><span class=\"bhinputcheckbox\"><input type=\"checkbox\" name=\"skip_dictionary\" id=\"skip_dictionary\" value=\"Y\" tabindex=\"13\" /><label for=\"skip_dictionary\">Skip dictionary setup (recommended only if install fails to complete).</label></span></td>\n";
@@ -797,7 +797,7 @@ if (!@file_exists(BH_INCLUDE_PATH. "config.inc.php") || $force_install) {
     echo "                  <td align=\"center\" colspan=\"2\">\n";
     echo "                    <table cellpadding=\"2\" cellspacing=\"0\" width=\"95%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">Your BeehiveForum would appear to be already installed. If this is not the case or you need to perform an upgrade please click the ignore button below.</td>\n";
+    echo "                        <td align=\"left\">Your Beehive Forum would appear to be already installed. If this is not the case or you need to perform an upgrade please click the ignore button below.</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";

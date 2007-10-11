@@ -1,16 +1,16 @@
 <?php
 
 /*======================================================================
-Copyright Project BeehiveForum 2002
+Copyright Project Beehive Forum 2002
 
-This file is part of BeehiveForum.
+This file is part of Beehive Forum.
 
-BeehiveForum is free software; you can redistribute it and/or modify
+Beehive Forum is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 
-BeehiveForum is distributed in the hope that it will be useful,
+Beehive Forum is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lang.inc.php,v 1.33 2007-05-09 14:50:42 decoyduck Exp $ */
+/* $Id: lang.inc.php,v 1.34 2007-10-11 13:01:19 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -55,7 +55,7 @@ function load_language_file()
         if (!file_exists(BH_INCLUDE_PATH. "languages/en.inc.php")) {
             trigger_error("<p>Could not load English language file (en.inc.php)</p>", E_USER_ERROR);
         }
-        
+
         include(BH_INCLUDE_PATH. "languages/en.inc.php");
 
         $default_language = forum_get_setting('default_language', false, 'en');
@@ -139,7 +139,7 @@ function lang_get_available($inc_browser_negotiation = true)
 
             if (($pos = strpos($file, '.inc.php')) !== false) {
 
-                $lang_name = substr($file, 0, $pos);                
+                $lang_name = substr($file, 0, $pos);
                 $available_langs[$lang_name] = $lang_name;
             }
         }

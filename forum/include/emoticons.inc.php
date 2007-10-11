@@ -1,16 +1,16 @@
 <?php
 
 /*======================================================================
-Copyright Project BeehiveForum 2002
+Copyright Project Beehive Forum 2002
 
-This file is part of BeehiveForum.
+This file is part of Beehive Forum.
 
-BeehiveForum is free software; you can redistribute it and/or modify
+Beehive Forum is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 
-BeehiveForum is distributed in the hope that it will be useful,
+Beehive Forum is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: emoticons.inc.php,v 1.63 2007-06-10 12:28:44 decoyduck Exp $ */
+/* $Id: emoticons.inc.php,v 1.64 2007-10-11 13:01:18 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -50,7 +50,7 @@ class Emoticons
 
             // Get the user's emoticon set from their sesion.
             // Fall back to using the forum default or Beehive default.
-            
+
             if (!$user_emots = bh_session_get_value('EMOTICONS')) {
                 $user_emots = forum_get_setting('default_emoticons', false, 'default');
             }
@@ -75,7 +75,7 @@ class Emoticons
                         if ($file != '.' && $file != '..' && is_dir("emoticons/$file")) {
 
                             if (file_exists("emoticons/$file/definitions.php")) {
-                            
+
                                 include("emoticons/$file/definitions.php");
                             }
                         }
@@ -112,7 +112,7 @@ class Emoticons
             // we bail out.
 
             if (sizeof($emoticon) > 0) {
-                
+
                 // Reverse the order of the keys and reset the
                 // internal pointer.
 

@@ -1,16 +1,16 @@
 <?php
 
 /*======================================================================
-Copyright Project BeehiveForum 2002
+Copyright Project Beehive Forum 2002
 
-This file is part of BeehiveForum.
+This file is part of Beehive Forum.
 
-BeehiveForum is free software; you can redistribute it and/or modify
+Beehive Forum is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 
-BeehiveForum is distributed in the hope that it will be useful,
+Beehive Forum is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.php,v 1.100 2007-06-08 13:39:45 decoyduck Exp $ */
+/* $Id: admin.php,v 1.101 2007-10-11 13:01:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -99,16 +99,16 @@ if ((!bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) && !bh_session_check_perm(
 if (isset($_GET['page']) && strlen(trim(_stripslashes($_GET['page']))) > 0) {
 
     $requested_page = trim(_stripslashes($_GET['page']));
-    
+
     $available_pages = get_available_admin_files();
     $available_pages_preg = implode("|^", array_map('preg_quote_callback', $available_pages));
 
     if (preg_match("/^$available_pages_preg/", basename($requested_page)) > 0) {
 
         html_draw_top('body_tag=false', 'frames=true');
-        
+
         echo "<frameset cols=\"250,*\" framespacing=\"0\" border=\"4\">\n";
-        echo "  <frame src=\"./admin_menu.php?webtag=$webtag\" name=\"", html_get_frame_name('left'), "\" frameborder=\"0\" />\n";   
+        echo "  <frame src=\"./admin_menu.php?webtag=$webtag\" name=\"", html_get_frame_name('left'), "\" frameborder=\"0\" />\n";
         echo "  <frame src=\"$requested_page\" name=\"", html_get_frame_name('right'), "\" frameborder=\"0\" />\n";
         echo "</frameset>\n";
 
@@ -120,7 +120,7 @@ if (isset($_GET['page']) && strlen(trim(_stripslashes($_GET['page']))) > 0) {
 html_draw_top('body_tag=false', 'frames=true');
 
 echo "<frameset cols=\"250,*\" framespacing=\"0\" border=\"4\">\n";
-echo "  <frame src=\"./admin_menu.php?webtag=$webtag\" name=\"", html_get_frame_name('left'), "\" frameborder=\"0\" />\n";   
+echo "  <frame src=\"./admin_menu.php?webtag=$webtag\" name=\"", html_get_frame_name('left'), "\" frameborder=\"0\" />\n";
 echo "  <frame src=\"./admin_main.php?webtag=$webtag\" name=\"", html_get_frame_name('right'), "\" frameborder=\"0\" />\n";
 echo "</frameset>\n";
 

@@ -1,16 +1,16 @@
 <?php
 
 /*======================================================================
-Copyright Project BeehiveForum 2002
+Copyright Project Beehive Forum 2002
 
-This file is part of BeehiveForum.
+This file is part of Beehive Forum.
 
-BeehiveForum is free software; you can redistribute it and/or modify
+Beehive Forum is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 
-BeehiveForum is distributed in the hope that it will be useful,
+Beehive Forum is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.85 2007-09-23 21:43:47 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.86 2007-10-11 13:01:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -130,13 +130,13 @@ if (isset($_POST['submit'])) {
     if (isset($_POST['forum_email']) && strlen(trim(_stripslashes($_POST['forum_email']))) > 0) {
         $new_forum_settings['forum_email'] = trim(_stripslashes($_POST['forum_email']));
     }else {
-        $new_forum_settings['forum_email'] = "admin@abeehiveforum.net";
+        $new_forum_settings['forum_email'] = "admin@aBeehive Forum.net";
     }
 
     if (isset($_POST['forum_noreply_email']) && strlen(trim(_stripslashes($_POST['forum_noreply_email']))) > 0) {
         $new_forum_settings['forum_noreply_email'] = trim(_stripslashes($_POST['forum_noreply_email']));
     }else {
-        $new_forum_settings['forum_noreply_email'] = "noreply@abeehiveforum.net";
+        $new_forum_settings['forum_noreply_email'] = "noreply@aBeehive Forum.net";
     }
 
     if (isset($_POST['forum_desc']) && strlen(trim(_stripslashes($_POST['forum_desc']))) > 0) {
@@ -450,11 +450,11 @@ echo "                        <td align=\"left\">", form_input_text("forum_name"
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['forumemail']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("forum_email", (isset($forum_global_settings['forum_email']) ? _htmlentities($forum_global_settings['forum_email']) : 'admin@abeehiveforum.net'), 42, 80), "&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_input_text("forum_email", (isset($forum_global_settings['forum_email']) ? _htmlentities($forum_global_settings['forum_email']) : 'admin@aBeehive Forum.net'), 42, 80), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['forumnoreplyemail']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("forum_noreply_email", (isset($forum_global_settings['forum_noreply_email']) ? _htmlentities($forum_global_settings['forum_noreply_email']) : 'noreply@abeehiveforum.net'), 42, 80), "&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_input_text("forum_noreply_email", (isset($forum_global_settings['forum_noreply_email']) ? _htmlentities($forum_global_settings['forum_noreply_email']) : 'noreply@aBeehive Forum.net'), 42, 80), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['forumdesc']}:</td>\n";

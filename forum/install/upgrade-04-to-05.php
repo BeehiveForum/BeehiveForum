@@ -1,16 +1,16 @@
 <?php
 
 /*======================================================================
-Copyright Project BeehiveForum 2002
+Copyright Project Beehive Forum 2002
 
-This file is part of BeehiveForum.
+This file is part of Beehive Forum.
 
-BeehiveForum is free software; you can redistribute it and/or modify
+Beehive Forum is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 
-BeehiveForum is distributed in the hope that it will be useful,
+Beehive Forum is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-04-to-05.php,v 1.50 2007-08-01 20:23:04 decoyduck Exp $ */
+/* $Id: upgrade-04-to-05.php,v 1.51 2007-10-11 13:01:23 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-04-to-05.php") {
 
@@ -998,7 +998,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $forum_settings = array('1' => array('forum_name'             => 'A Beehive Forum',
                                              'forum_email'            => 'admin@abeehiveforum.net',
                                              'forum_desc'             => 'A Beehive Forum',
-                                             'forum_keywords'         => 'BeehiveForums, Beehive, Forum, Community',
+                                             'forum_keywords'         => 'Beehive Forum, Beehive, Forum, Community',
                                              'default_style'          => 'default',
                                              'default_emoticons'      => 'default',
                                              'default_language'       => 'en',

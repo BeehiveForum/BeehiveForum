@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.195 2007-10-12 23:45:59 decoyduck Exp $ */
+/* $Id: search.php,v 1.196 2007-10-12 23:50:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -369,10 +369,8 @@ if ((isset($_POST) && sizeof($_POST) > 0) || isset($_GET['search_string']) || is
 
             case SEARCH_NO_MATCHES:
 
-                $error_msg_array[] = $lang['searchreturnednoresults'];
-                $valid = false;
-
-                break;
+                header_redirect("search.php?webtag=$webtag&search_no_results=true");
+                exit;
 
             case SEARCH_USER_NOT_FOUND:
 
@@ -576,6 +574,10 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     echo "}\n\n";
     echo "-->\n";
     echo "</script>\n\n";
+
+}elseif (isset($_GET['search_no_results'])) {
+
+    html_display_warning_msg($lang['searchreturnednoresults'], '600', 'center');
 }
 
 echo "<br />\n";

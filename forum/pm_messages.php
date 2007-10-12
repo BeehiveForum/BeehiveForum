@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_messages.php,v 1.29 2007-10-12 23:45:59 decoyduck Exp $ */
+/* $Id: pm_messages.php,v 1.30 2007-10-12 23:50:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -333,10 +333,8 @@ if (isset($_POST['search'])) {
 
             case SEARCH_NO_MATCHES:
 
-                $error_msg_array[] = $lang['searchreturnednoresults'];
-                $valid = false;
-
-                break;
+                header_redirect("pm_messages.php?webtag=$webtag&folder=6&search_no_results=true");
+                exit;
 
             case SEARCH_NO_KEYWORDS:
 
@@ -426,16 +424,13 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
     html_display_success_msg($lang['successfullyarchivedselectedmessages'], '96%', 'center');
 
+}else if (isset($_GET['search_no_results'])) {
+
+    html_display_warning_msg($lang['searchreturnednoresults'], '96%', 'center');
+
 }else if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['message_array']) < 1) {
 
-    if ($current_folder == PM_SEARCH_RESULTS) {
-
-        html_display_warning_msg($lang['yoursearchreturnednomatches'], '96%', 'center');
-
-    }else {
-
-        html_display_warning_msg(sprintf($lang['yourfoldernamefolderisempty'], _htmlentities($pm_header_array[$current_folder])), '96%', 'center');
-    }
+    html_display_warning_msg(sprintf($lang['yourfoldernamefolderisempty'], _htmlentities($pm_header_array[$current_folder])), '96%', 'center');
 }
 
 echo "<br />\n";

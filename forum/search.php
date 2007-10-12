@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.194 2007-10-11 13:01:16 decoyduck Exp $ */
+/* $Id: search.php,v 1.195 2007-10-12 23:45:59 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -367,6 +367,13 @@ if ((isset($_POST) && sizeof($_POST) > 0) || isset($_GET['search_string']) || is
 
         switch ($error) {
 
+            case SEARCH_NO_MATCHES:
+
+                $error_msg_array[] = $lang['searchreturnednoresults'];
+                $valid = false;
+
+                break;
+
             case SEARCH_USER_NOT_FOUND:
 
                 $error_msg_array[] = $lang['usernamenotfound'];
@@ -501,7 +508,7 @@ if ((isset($_POST) && sizeof($_POST) > 0) || isset($_GET['search_string']) || is
 
         echo "<br />\n";
         echo "<h1>{$lang['error']}</h1>\n";
-        echo "<img src=\"", style_image('search.png'), "\" alt=\"{$lang['matches']}\" title=\"{$lang['matches']}\" />&nbsp;{$lang['found']}: 0 {$lang['matches']}<br />\n";
+        echo "<img src=\"", style_image('search.png'), "\" alt=\"{$lang['matches']}\" title=\"{$lang['matches']}\" />&nbsp;{$lang['found']}: 0 {$lang['matches']}<br /><br />\n";
     }
 
     echo "<table cellpadding=\"2\" cellspacing=\"0\">\n";
@@ -564,8 +571,9 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     echo "} else if (top.document.body.cols) {\n\n";
     echo "    top.frames['", html_get_frame_name('left'), "'].location.replace('search.php?webtag=$webtag&offset=0');\n\n";
     echo "}\n\n";
-    echo "var search_success_container = getObjById('search_success');\n";
-    echo "search_success_container.innerHTML = unescape('", html_display_success_msg_js(sprintf($lang['searchsuccessfullycompleted'], ''), '600', 'center'), "');\n\n";
+    echo "if (search_success_container = getObjById('search_success')) {\n";
+    echo "    search_success_container.innerHTML = unescape('", html_display_success_msg_js(sprintf($lang['searchsuccessfullycompleted'], ''), '600', 'center'), "');\n\n";
+    echo "}\n\n";
     echo "-->\n";
     echo "</script>\n\n";
 }

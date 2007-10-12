@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_messages.php,v 1.28 2007-10-11 13:01:16 decoyduck Exp $ */
+/* $Id: pm_messages.php,v 1.29 2007-10-12 23:45:59 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -330,6 +330,13 @@ if (isset($_POST['search'])) {
         $search_frequency = forum_get_setting('search_min_frequency', false, 0);
 
         switch($error) {
+
+            case SEARCH_NO_MATCHES:
+
+                $error_msg_array[] = $lang['searchreturnednoresults'];
+                $valid = false;
+
+                break;
 
             case SEARCH_NO_KEYWORDS:
 

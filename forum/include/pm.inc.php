@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.223 2007-10-11 13:01:19 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.224 2007-10-12 23:45:59 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -658,9 +658,13 @@ function pm_search_execute($search_string, &$error)
         $sql.= "OR (MATCH(PM.SUBJECT) AGAINST('$search_string_checked' IN BOOLEAN MODE))) ";
         $sql.= "ORDER BY CREATED LIMIT $limit";
 
-        if ($result = db_query($sql, $db_pm_search_execute)) {
-            return true;
-        }
+        if (!$result = db_query($sql, $db_pm_search_execute)) return false;
+
+        if (db_affected_rows($db_pm_search_execute) > 0) return true;
+
+        $error = SEARCH_NO_MATCHES;
+
+        return false;
 
     }else {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.197 2007-10-11 13:01:20 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.198 2007-10-12 23:45:59 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -291,10 +291,13 @@ function search_execute($search_arguments, &$error)
 
     // Execute the query
 
-    if ($result = db_query($sql, $db_search_execute)) {
+    if (!$result = db_query($sql, $db_search_execute)) return false;
 
-        return true;
-    }
+    // Check the number of results
+
+    if (db_affected_rows($db_search_execute) > 0) return true;
+
+    // No results from search.
 
     $error = SEARCH_NO_MATCHES;
     return false;

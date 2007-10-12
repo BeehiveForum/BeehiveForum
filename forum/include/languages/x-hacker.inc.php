@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.252 2007-10-11 13:01:21 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.253 2007-10-12 23:28:12 decoyduck Exp $ */
 
 // British English language file
 
@@ -352,7 +352,6 @@ $lang['successfullychangedpassword'] = "succe\$Sfully CH4n9ED p4\$\$W0RD";
 $lang['failedtochangepasswd'] = "f@il3D +0 ChAnge P@Ssw0rd";
 $lang['viewuserhistory'] = "v13W U\$3R H1st0rY";
 $lang['viewuseraliases'] = "v1ew us3r aL1As3s";
-$lang['nomatches'] = "no M@+ChEs";
 $lang['deleteposts'] = "d3let3 p0s+5";
 $lang['deleteuser'] = "d3l3+3 User";
 $lang['alsodeleteusercontent'] = "aL\$0 d3lEtE @lL 0PH tHe C0NtEn+ CRE4tED bY tH1S Us3r";

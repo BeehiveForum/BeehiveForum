@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_wordfilter.php,v 1.78 2007-10-11 13:01:14 decoyduck Exp $ */
+/* $Id: edit_wordfilter.php,v 1.79 2007-10-12 23:28:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -110,6 +110,9 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
 }else {
     $page = 1;
 }
+
+$start = floor($page - 1) * 10;
+if ($start < 0) $start = 0;
 
 $word_filter_options = array(WORD_FILTER_TYPE_ALL => $lang['all'],
                              WORD_FILTER_TYPE_WHOLE_WORD => $lang['wholeword'],
@@ -505,6 +508,8 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 
     html_draw_top();
 
+    $word_filter_array = user_get_word_filter_list($start);
+
     echo "<h1>{$lang['editwordfilter']}</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
@@ -514,6 +519,10 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     }elseif (isset($_GET['updated'])) {
 
         html_display_success_msg($lang['wordfilterupdated'], '600', 'left');
+
+    }else if (sizeof($word_filter_array['word_filter_array']) < 1) {
+
+        html_display_warning_msg($lang['nowordfilterentriesfound'], '600', 'left');
     }
 
     echo "<br />\n";
@@ -533,11 +542,6 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "                  <td align=\"center\" class=\"subhead\" nowrap=\"nowrap\" width=\"100\">{$lang['filterenabled']}&nbsp;</td>\n";
     echo "                </tr>\n";
 
-    $start = floor($page - 1) * 10;
-    if ($start < 0) $start = 0;
-
-    $word_filter_array = user_get_word_filter_list($start);
-
     if (sizeof($word_filter_array['word_filter_array']) > 0) {
 
         foreach ($word_filter_array['word_filter_array'] as $filter_id => $word_filter) {
@@ -549,13 +553,6 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
             echo "                  <td align=\"center\">{$word_filter_enabled[$word_filter['FILTER_ENABLED']]}&nbsp;</td>\n";
             echo "                </tr>\n";
         }
-
-    }else {
-
-        echo "                <tr>\n";
-        echo "                  <td align=\"left\">&nbsp;</td>\n";
-        echo "                  <td align=\"left\" colspan=\"5\">{$lang['nowordfilterentriesfound']}</td>\n";
-        echo "                </tr>\n";
     }
 
     echo "                <tr>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.51 2007-10-11 13:01:21 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.52 2007-10-12 23:28:12 decoyduck Exp $ */
 
 // British English language file
 
@@ -352,7 +352,6 @@ $lang['successfullychangedpassword'] = "Successfully Changed Password";
 $lang['failedtochangepasswd'] = "Failed To Change Password";
 $lang['viewuserhistory'] = "View User History";
 $lang['viewuseraliases'] = "View User Aliases";
-$lang['nomatches'] = "Keine Treffer";
 $lang['deleteposts'] = "Loesche Eintraege";
 $lang['deleteuser'] = "Delete User";
 $lang['alsodeleteusercontent'] = "Also delete all of the content created by this user";
@@ -1262,7 +1261,6 @@ $lang['userdetails'] = "Benutzerdetails";
 $lang['userprofile'] = "Benutzer-Profil";
 $lang['emailandprivacy'] = "Email &amp; Privat";
 $lang['editsignature'] = "Signatur editieren";
-$lang['norelationships'] = "Du hast keine Benutzer-Verhaeltnisse";
 $lang['editwordfilter'] = "Wortfilter editieren";
 $lang['userinformation'] = "Benutzer-Information";
 $lang['changepassword'] = "Passwort aendern";

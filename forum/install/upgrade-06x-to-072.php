@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06x-to-072.php,v 1.23 2007-10-11 13:01:23 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-072.php,v 1.24 2007-10-12 23:28:14 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-06x-to-072.php") {
 
@@ -538,7 +538,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
         while ($thread_data = db_fetch_array($result)) {
 
-            $tid = $thread_data['FID'];
+            $tid = $thread_data['TID'];
 
             if (!isset($thread_data['TITLE'])) $thread_data['TITLE'] = "";
 

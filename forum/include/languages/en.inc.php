@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.485 2007-10-11 13:01:21 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.486 2007-10-12 23:28:12 decoyduck Exp $ */
 
 // British English language file
 
@@ -355,7 +355,7 @@ $lang['successfullychangedpassword'] = "Successfully Changed Password";
 $lang['failedtochangepasswd'] = "Failed To Change Password";
 $lang['viewuserhistory'] = "View User History";
 $lang['viewuseraliases'] = "View User Aliases";
-$lang['nomatches'] = "No matches";
+$lang['searchreturnednoresults'] = "Search Returned No Results";
 $lang['deleteposts'] = "Delete Posts";
 $lang['deleteuser'] = "Delete User";
 $lang['alsodeleteusercontent'] = "Also delete all of the content created by this user";
@@ -1093,7 +1093,7 @@ $lang['allavailableforums'] = "All Available Forums";
 $lang['favouriteforums'] = "Favourite Forums";
 $lang['ignoredforums'] = "Ignored Forums";
 $lang['ignoreforum'] = "Ignore forum";
-$lang['unignoreforum'] = "Un-ignore forum";
+$lang['unignoreforum'] = "Unignore forum";
 $lang['lastvisited'] = "Last Visited";
 $lang['forumunreadmessages'] = "%s Unread Messages";
 $lang['forummessages'] = "%s Messages";
@@ -1106,7 +1106,7 @@ $lang['noforumsofselectedtype'] = "There are no forums of the selected type avai
 $lang['successfullyaddedforumtofavourites'] = "Successfully added forum to Favourites.";
 $lang['successfullyremovedforumfromfavourites'] = "Successfully removed forum from Favourites.";
 $lang['successfullyignoredforum'] = "Successfully ignored forum.";
-$lang['successfullyunignoredforum'] = "Successfully un-ignored forum.";
+$lang['successfullyunignoredforum'] = "Successfully unignored forum.";
 $lang['noforumsavailablelogin'] = "There are no forums available. Please login to view your forums.";
 $lang['passwdprotectedforum'] = "Password Protected Forum";
 $lang['passwdprotectedwarning'] = "This forum is password protected. To gain access enter the password below.";
@@ -1306,7 +1306,7 @@ $lang['userdetails'] = "User Details";
 $lang['userprofile'] = "User Profile";
 $lang['emailandprivacy'] = "Email &amp; Privacy";
 $lang['editsignature'] = "Edit Signature";
-$lang['norelationships'] = "You have no user relationships set up";
+$lang['norelationshipssetup'] = "You have no user relationships set up. Add a new user by searching below.";
 $lang['editwordfilter'] = "Edit Word Filter";
 $lang['userinformation'] = "User Information";
 $lang['changepassword'] = "Change Password";
@@ -1956,6 +1956,7 @@ $lang['failedtocreatenewthreadforsplit'] = "Failed to create new thread for spli
 $lang['threadsubscriptions'] = "Thread Subscriptions";
 $lang['couldnotupdateinterestonthread'] = "Could not update interest on thread '%s'";
 $lang['threadinterestsupdatedsuccessfully'] = "Thread interests updated successfully";
+$lang['nothreadsubscriptions'] = "You are not subscribed to any threads.";
 $lang['resetselected'] = "Reset Selected";
 $lang['allthreadtypes'] = "All Thread Types";
 $lang['ignoredthreads'] = "Ignored Threads";

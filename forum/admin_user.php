@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.226 2007-10-11 13:01:12 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.227 2007-10-12 23:28:12 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -663,10 +663,16 @@ if (isset($_GET['action']) && strlen(trim(_stripslashes($_GET['action']))) > 0) 
 
         html_draw_top('admin.js');
 
+        $user_history_array = admin_get_user_history($user['UID']);
+
         if ($table_data = get_table_prefix()) {
             echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
         }else {
             echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
+        }
+
+        if (is_array($user_history_array) && sizeof($user_history_array) < 1) {
+            html_display_warning_msg($lang['nohistory'], '600', 'center');
         }
 
         echo "<br />\n";
@@ -687,113 +693,101 @@ if (isset($_GET['action']) && strlen(trim(_stripslashes($_GET['action']))) > 0) 
         echo "                  <td class=\"subhead\" align=\"left\">{$lang['userhistory']}</td>\n";
         echo "                </tr>\n";
 
-        if ($user_history_array = admin_get_user_history($user['UID'])) {
-
-            if (sizeof($user_history_array) > 0) {
-
-                echo "                <tr>\n";
-                echo "                  <td>&nbsp;</td>\n";
-                echo "                </tr>\n";
-                echo "                <tr>\n";
-                echo "                  <td align=\"center\">\n";
-                echo "                    <table class=\"box\" width=\"95%\">\n";
-                echo "                      <tr>\n";
-                echo "                        <td align=\"left\">\n";
-                echo "                          <table class=\"posthead\" width=\"100%\">\n";
-                echo "                            <tr>\n";
-                echo "                              <td align=\"left\" class=\"subhead\" width=\"100\">{$lang['date']}</td>\n";
-                echo "                              <td align=\"left\" class=\"subhead\">{$lang['userhistorychanges']}</td>\n";
-                echo "                            </tr>\n";
-                echo "                            <tr>\n";
-                echo "                              <td align=\"left\" colspan=\"2\">\n";
-                echo "                                <div class=\"admin_folder_perms\">\n";
-
-                foreach ($user_history_array as $history_index => $user_history) {
-
-                    echo "                                  <table class=\"posthead\" width=\"100%\">\n";
-                    echo "                                    <tr>\n";
-                    echo "                                      <td align=\"left\" valign=\"top\" width=\"100\">", format_date($user_history['MODIFIED']), "</td>\n";
-                    echo "                                      <td align=\"left\">{$user_history['DATA']}</td>\n";
-                    echo "                                    </tr>\n";
-                    echo "                                    <tr>\n";
-                    echo "                                      <td align=\"left\" colspan=\"2\"><hr /></td>\n";
-                    echo "                                    </tr>\n";
-                    echo "                                  </table>\n";
-                }
-
-                echo "                                </div>\n";
-                echo "                              </td>\n";
-                echo "                            </tr>\n";
-                echo "                          </table>\n";
-                echo "                        </td>\n";
-                echo "                      </tr>\n";
-                echo "                    </table>\n";
-                echo "                  </td>\n";
-                echo "                </tr>\n";
-
-                if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
-
-                    echo "                <tr>\n";
-                    echo "                  <td align=\"left\">&nbsp;</td>\n";
-                    echo "                </tr>\n";
-                    echo "              </table>\n";
-                    echo "            </td>\n";
-                    echo "          </tr>\n";
-                    echo "        </table>\n";
-                    echo "      </td>\n";
-                    echo "    </tr>\n";
-                    echo "  </table>\n";
-                    echo "  <br />\n";
-                    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
-                    echo "    <tr>\n";
-                    echo "      <td align=\"left\">\n";
-                    echo "        <table class=\"box\" width=\"100%\">\n";
-                    echo "          <tr>\n";
-                    echo "            <td align=\"left\" class=\"posthead\">\n";
-                    echo "              <table class=\"posthead\" width=\"100%\">\n";
-                    echo "                <tr>\n";
-                    echo "                  <td class=\"subhead\" align=\"left\">{$lang['userhistory']}</td>\n";
-                    echo "                </tr>\n";
-                    echo "                <tr>\n";
-                    echo "                  <td align=\"center\">\n";
-                    echo "                    <table width=\"95%\">\n";
-                    echo "                      <tr>\n";
-                    echo "                        <td align=\"left\" width=\"250\">{$lang['clearuserhistory']}:</td>\n";
-                    echo "                        <td align=\"left\">", form_radio('clear_user_history', 'Y', $lang['yes']), form_radio('clear_user_history', 'N', $lang['no'], true), "</td>\n";
-                    echo "                      </tr>\n";
-                    echo "                    </table>\n";
-                    echo "                  </td>\n";
-                    echo "                </tr>\n";
-                    echo "                <tr>\n";
-                    echo "                  <td align=\"left\">&nbsp;</td>\n";
-                    echo "                </tr>\n";
-                    echo "              </table>\n";
-                    echo "            </td>\n";
-                    echo "          </tr>\n";
-                    echo "        </table>\n";
-                    echo "      </td>\n";
-                    echo "    </tr>\n";
-                    echo "    <tr>\n";
-                    echo "      <td align=\"left\">&nbsp;</td>\n";
-                    echo "    </tr>\n";
-                    echo "    <tr>\n";
-                    echo "      <td align=\"center\">", form_submit("user_history_submit", $lang['update']), "&nbsp;", form_submit("cancel", $lang['back']), "</td>\n";
-                    echo "    </tr>\n";
-                    echo "  </table>\n";
-                }
-            }
-
-        }else {
+        if (sizeof($user_history_array) > 0) {
 
             echo "                <tr>\n";
+            echo "                  <td>&nbsp;</td>\n";
+            echo "                </tr>\n";
+            echo "                <tr>\n";
             echo "                  <td align=\"center\">\n";
-            echo "                    <table class=\"posthead\" width=\"95%\">\n";
+            echo "                    <table class=\"box\" width=\"95%\">\n";
             echo "                      <tr>\n";
-            echo "                        <td align=\"left\">{$lang['nohistory']}</td>\n";
+            echo "                        <td align=\"left\">\n";
+            echo "                          <table class=\"posthead\" width=\"100%\">\n";
+            echo "                            <tr>\n";
+            echo "                              <td align=\"left\" class=\"subhead\" width=\"100\">{$lang['date']}</td>\n";
+            echo "                              <td align=\"left\" class=\"subhead\">{$lang['userhistorychanges']}</td>\n";
+            echo "                            </tr>\n";
+            echo "                            <tr>\n";
+            echo "                              <td align=\"left\" colspan=\"2\">\n";
+            echo "                                <div class=\"admin_folder_perms\">\n";
+
+            foreach ($user_history_array as $history_index => $user_history) {
+
+                echo "                                  <table class=\"posthead\" width=\"100%\">\n";
+                echo "                                    <tr>\n";
+                echo "                                      <td align=\"left\" valign=\"top\" width=\"100\">", format_date($user_history['MODIFIED']), "</td>\n";
+                echo "                                      <td align=\"left\">{$user_history['DATA']}</td>\n";
+                echo "                                    </tr>\n";
+                echo "                                    <tr>\n";
+                echo "                                      <td align=\"left\" colspan=\"2\"><hr /></td>\n";
+                echo "                                    </tr>\n";
+                echo "                                  </table>\n";
+            }
+
+            echo "                                </div>\n";
+            echo "                              </td>\n";
+            echo "                            </tr>\n";
+            echo "                          </table>\n";
+            echo "                        </td>\n";
             echo "                      </tr>\n";
             echo "                    </table>\n";
             echo "                  </td>\n";
             echo "                </tr>\n";
+
+            if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
+
+                echo "                <tr>\n";
+                echo "                  <td align=\"left\">&nbsp;</td>\n";
+                echo "                </tr>\n";
+                echo "              </table>\n";
+                echo "            </td>\n";
+                echo "          </tr>\n";
+                echo "        </table>\n";
+                echo "      </td>\n";
+                echo "    </tr>\n";
+                echo "  </table>\n";
+                echo "  <br />\n";
+                echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+                echo "    <tr>\n";
+                echo "      <td align=\"left\">\n";
+                echo "        <table class=\"box\" width=\"100%\">\n";
+                echo "          <tr>\n";
+                echo "            <td align=\"left\" class=\"posthead\">\n";
+                echo "              <table class=\"posthead\" width=\"100%\">\n";
+                echo "                <tr>\n";
+                echo "                  <td class=\"subhead\" align=\"left\">{$lang['userhistory']}</td>\n";
+                echo "                </tr>\n";
+                echo "                <tr>\n";
+                echo "                  <td align=\"center\">\n";
+                echo "                    <table width=\"95%\">\n";
+                echo "                      <tr>\n";
+                echo "                        <td align=\"left\" width=\"250\">{$lang['clearuserhistory']}:</td>\n";
+                echo "                        <td align=\"left\">", form_radio('clear_user_history', 'Y', $lang['yes']), form_radio('clear_user_history', 'N', $lang['no'], true), "</td>\n";
+                echo "                      </tr>\n";
+                echo "                    </table>\n";
+                echo "                  </td>\n";
+                echo "                </tr>\n";
+                echo "                <tr>\n";
+                echo "                  <td align=\"left\">&nbsp;</td>\n";
+                echo "                </tr>\n";
+                echo "              </table>\n";
+                echo "            </td>\n";
+                echo "          </tr>\n";
+                echo "        </table>\n";
+                echo "      </td>\n";
+                echo "    </tr>\n";
+                echo "    <tr>\n";
+                echo "      <td align=\"left\">&nbsp;</td>\n";
+                echo "    </tr>\n";
+                echo "    <tr>\n";
+                echo "      <td align=\"center\">", form_submit("user_history_submit", $lang['update']), "&nbsp;", form_submit("cancel", $lang['back']), "</td>\n";
+                echo "    </tr>\n";
+                echo "  </table>\n";
+            }
+
+        }else {
+
             echo "                <tr>\n";
             echo "                  <td align=\"left\">&nbsp;</td>\n";
             echo "                </tr>\n";
@@ -822,10 +816,16 @@ if (isset($_GET['action']) && strlen(trim(_stripslashes($_GET['action']))) > 0) 
 
         html_draw_top('admin.js');
 
+        $user_alias_array = admin_get_user_aliases($user['UID']);
+
         if ($table_data = get_table_prefix()) {
             echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
         }else {
             echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
+        }
+
+        if (is_array($user_alias_array) && sizeof($user_alias_array) < 1) {
+            html_display_warning_msg($lang['searchreturnednoresults'], '600', 'center');
         }
 
         echo "<br />\n";
@@ -846,63 +846,48 @@ if (isset($_GET['action']) && strlen(trim(_stripslashes($_GET['action']))) > 0) 
         echo "                  <td class=\"subhead\" align=\"left\">{$lang['possiblealiases']}</td>\n";
         echo "                </tr>\n";
 
-        if ($user_alias_array = admin_get_user_aliases($user['UID'])) {
-
-            if (sizeof($user_alias_array) > 0) {
-
-                echo "                <tr>\n";
-                echo "                  <td>&nbsp;</td>\n";
-                echo "                </tr>\n";
-                echo "                <tr>\n";
-                echo "                  <td align=\"center\">\n";
-                echo "                    <table class=\"box\" width=\"95%\">\n";
-                echo "                      <tr>\n";
-                echo "                        <td align=\"left\">\n";
-                echo "                          <table class=\"posthead\" width=\"100%\">\n";
-                echo "                            <tr>\n";
-                echo "                              <td align=\"left\" class=\"subhead\" width=\"150\">{$lang['logon']}</td>\n";
-                echo "                              <td align=\"left\" class=\"subhead\" width=\"150\">{$lang['nickname']}</td>\n";
-                echo "                              <td align=\"left\" class=\"subhead\">{$lang['ip']}</td>\n";
-                echo "                            </tr>\n";
-                echo "                            <tr>\n";
-                echo "                              <td align=\"left\" colspan=\"3\">\n";
-                echo "                                <div class=\"admin_folder_perms\">\n";
-
-                foreach ($user_alias_array as $user_alias) {
-
-                    echo "                                  <table class=\"posthead\" width=\"100%\">\n";
-                    echo "                                    <tr>\n";
-                    echo "                                      <td align=\"left\" width=\"150\"><a href=\"admin_user.php?webtag=$webtag&amp;uid={$user_alias['UID']}\">", word_filter_add_ob_tags(_htmlentities($user_alias['LOGON'])), "</a></td>\n";
-                    echo "                                      <td align=\"left\" width=\"150\">", word_filter_add_ob_tags(_htmlentities($user_alias['NICKNAME'])), "</td>\n";
-
-                    if (ip_is_banned($user_alias['IPADDRESS'])) {
-                        echo "                                      <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_ipaddress={$user_alias['IPADDRESS']}\" target=\"_self\">{$lang['banned']}</a>&nbsp;</td>";
-                    }else {
-                        echo "                                      <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$user_alias['IPADDRESS']}\" target=\"_self\">{$user_alias['IPADDRESS']}</a>&nbsp;</td>";
-                    }
-
-                    echo "                                    </tr>\n";
-                    echo "                                  </table>\n";
-                }
-
-                echo "                                </div>\n";
-                echo "                              </td>\n";
-                echo "                            </tr>\n";
-                echo "                          </table>\n";
-                echo "                        </td>\n";
-                echo "                      </tr>\n";
-                echo "                    </table>\n";
-                echo "                  </td>\n";
-                echo "                </tr>\n";
-            }
-
-        }else {
+        if (is_array($user_alias_array) && sizeof($user_alias_array) > 0) {
 
             echo "                <tr>\n";
+            echo "                  <td>&nbsp;</td>\n";
+            echo "                </tr>\n";
+            echo "                <tr>\n";
             echo "                  <td align=\"center\">\n";
-            echo "                    <table class=\"posthead\" width=\"95%\">\n";
+            echo "                    <table class=\"box\" width=\"95%\">\n";
             echo "                      <tr>\n";
-            echo "                        <td align=\"left\">{$lang['nomatches']}</td>\n";
+            echo "                        <td align=\"left\">\n";
+            echo "                          <table class=\"posthead\" width=\"100%\">\n";
+            echo "                            <tr>\n";
+            echo "                              <td align=\"left\" class=\"subhead\" width=\"150\">{$lang['logon']}</td>\n";
+            echo "                              <td align=\"left\" class=\"subhead\" width=\"150\">{$lang['nickname']}</td>\n";
+            echo "                              <td align=\"left\" class=\"subhead\">{$lang['ip']}</td>\n";
+            echo "                            </tr>\n";
+            echo "                            <tr>\n";
+            echo "                              <td align=\"left\" colspan=\"3\">\n";
+            echo "                                <div class=\"admin_folder_perms\">\n";
+
+            foreach ($user_alias_array as $user_alias) {
+
+                echo "                                  <table class=\"posthead\" width=\"100%\">\n";
+                echo "                                    <tr>\n";
+                echo "                                      <td align=\"left\" width=\"150\"><a href=\"admin_user.php?webtag=$webtag&amp;uid={$user_alias['UID']}\">", word_filter_add_ob_tags(_htmlentities($user_alias['LOGON'])), "</a></td>\n";
+                echo "                                      <td align=\"left\" width=\"150\">", word_filter_add_ob_tags(_htmlentities($user_alias['NICKNAME'])), "</td>\n";
+
+                if (ip_is_banned($user_alias['IPADDRESS'])) {
+                    echo "                                      <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_ipaddress={$user_alias['IPADDRESS']}\" target=\"_self\">{$lang['banned']}</a>&nbsp;</td>";
+                }else {
+                    echo "                                      <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$user_alias['IPADDRESS']}\" target=\"_self\">{$user_alias['IPADDRESS']}</a>&nbsp;</td>";
+                }
+
+                echo "                                    </tr>\n";
+                echo "                                  </table>\n";
+            }
+
+            echo "                                </div>\n";
+            echo "                              </td>\n";
+            echo "                            </tr>\n";
+            echo "                          </table>\n";
+            echo "                        </td>\n";
             echo "                      </tr>\n";
             echo "                    </table>\n";
             echo "                  </td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_access.php,v 1.59 2007-10-11 13:01:07 decoyduck Exp $ */
+/* $Id: admin_forum_access.php,v 1.60 2007-10-12 23:28:11 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -314,6 +314,12 @@ if (sizeof($user_permissions_array) > 0) {
 
 if (strlen($user_search) > 0) {
 
+    $user_search_array = admin_user_search($user_search);
+
+    if (sizeof($user_search_array['user_array']) < 1) {
+        html_display_warning_msg($lang['searchreturnednoresults'], '500', 'center');
+    }
+
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
@@ -327,8 +333,6 @@ if (strlen($user_search) > 0) {
     echo "                <tr>\n";
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
-
-    $user_search_array = admin_user_search($user_search);
 
     if (sizeof($user_search_array['user_array']) > 0) {
 
@@ -363,7 +367,7 @@ if (strlen($user_search) > 0) {
     }else {
 
         echo "                      <tr>\n";
-        echo "                        <td align=\"left\">{$lang['nomatches']}</td>\n";
+        echo "                        <td align=\"left\">&nbsp;</td>\n";
         echo "                      </tr>\n";
         echo "                    </table>\n";
         echo "                  </td>\n";

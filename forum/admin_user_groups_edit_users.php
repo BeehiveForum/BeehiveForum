@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit_users.php,v 1.52 2007-10-11 13:01:13 decoyduck Exp $ */
+/* $Id: admin_user_groups_edit_users.php,v 1.53 2007-10-12 23:28:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -316,6 +316,12 @@ echo "<br />\n";
 
 if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
 
+    $user_search_array = admin_user_search($usersearch, 'USER.LOGON', 'ASC', 0, $start_search);
+
+    if (sizeof($user_search_array['user_array']) < 1) {
+        html_display_warning_msg($lang['searchreturnednoresults'], '650', 'center');
+    }
+
     echo "<form method=\"post\" action=\"admin_user_groups_edit_users.php\" target=\"_self\">\n";
     echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "  ", form_input_hidden('gid', _htmlentities($gid)), "\n";
@@ -333,8 +339,6 @@ if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
     echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['searchresults']}</td>\n";
     echo "                </tr>\n";
 
-    $user_search_array = admin_user_search($usersearch, 'USER.LOGON', 'ASC', 0, $start_search);
-
     if (sizeof($user_search_array['user_array']) > 0) {
 
         foreach ($user_search_array['user_array'] as $user) {
@@ -344,13 +348,6 @@ if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
             echo "                  <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$user['UID']}\" target=\"_blank\" onclick=\"return openProfile({$user['UID']}, '$webtag')\">", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</a></td>\n";
             echo "                </tr>\n";
         }
-
-    }else {
-
-        echo "                <tr>\n";
-        echo "                  <td align=\"left\">&nbsp;</td>\n";
-        echo "                  <td align=\"left\">{$lang['nomatches']}</td>\n";
-        echo "                </tr>\n";
     }
 
     echo "                <tr>\n";

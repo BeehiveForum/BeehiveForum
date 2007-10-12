@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_relations.php,v 1.79 2007-10-11 13:01:14 decoyduck Exp $ */
+/* $Id: edit_relations.php,v 1.80 2007-10-12 23:28:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -148,12 +148,16 @@ if (isset($_GET['search_page']) && is_numeric($_GET['search_page'])) {
     $start_search = 0;
 }
 
-if (isset($_GET['usersearch']) && strlen(trim(_stripslashes($_GET['usersearch']))) > 0) {
-    $usersearch = trim(_stripslashes($_GET['usersearch']));
-}else if (isset($_POST['usersearch']) && strlen(trim(_stripslashes($_POST['usersearch']))) > 0) {
-    $usersearch = trim(_stripslashes($_POST['usersearch']));
+if (isset($_POST['user_search']) && strlen(trim(_stripslashes($_POST['user_search']))) > 0) {
+    $user_search = trim(_stripslashes($_POST['user_search']));
+}elseif (isset($_GET['user_search']) && strlen(trim(_stripslashes($_GET['user_search']))) > 0) {
+    $user_search = trim(_stripslashes($_GET['user_search']));
 }else {
-    $usersearch = "";
+    $user_search = "";
+}
+
+if (isset($_POST['clear_search'])) {
+    $user_search = "";
 }
 
 if (isset($_POST['delete'])) {
@@ -183,6 +187,16 @@ if (isset($_POST['delete'])) {
     }
 }
 
+// Check if we're searching for a user or simply listing the existing relationships.
+
+if (isset($user_search) && strlen(trim($user_search)) > 0) {
+    $user_peers_array = user_search_relationships($user_search, $start_search, $uid);
+}else {
+    $user_peers_array = user_get_relationships($uid, $start_main);
+}
+
+// Output any messages.
+
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
     html_display_error_array($error_msg_array, '600', 'left');
@@ -190,6 +204,17 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 }else if (isset($_GET['relupdated'])) {
 
     html_display_success_msg($lang['relationshipsupdated'], '600', 'left');
+
+}else if (sizeof($user_peers_array['user_array']) < 1) {
+
+    if (isset($user_search) && strlen(trim($user_search)) > 0) {
+
+        html_display_warning_msg($lang['searchreturnednoresults'], '600', 'left');
+
+    }else {
+
+        html_display_warning_msg($lang['norelationshipssetup'], '600', 'left');
+    }
 }
 
 echo "<br />\n";
@@ -197,7 +222,7 @@ echo "<form name=\"prefs\" action=\"edit_relations.php\" method=\"post\" target=
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
 echo "  ", form_input_hidden("search_page", _htmlentities($search_page)), "\n";
-echo "  ", form_input_hidden("usersearch", _htmlentities($usersearch)), "\n";
+echo "  ", form_input_hidden("user_search", _htmlentities($user_search)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -213,11 +238,9 @@ echo "                  <td align=\"center\" class=\"subhead\">{$lang['signature
 echo "                  <td align=\"center\" class=\"subhead\">{$lang['personalmessages']}</td>\n";
 echo "                </tr>\n";
 
-$user_peers = user_get_relationships($uid, $start_main);
+if (sizeof($user_peers_array['user_array']) > 0) {
 
-if (sizeof($user_peers['user_array']) > 0) {
-
-    foreach ($user_peers['user_array'] as $user_peer) {
+    foreach ($user_peers_array['user_array'] as $user_peer) {
 
         echo "                <tr>\n";
         echo "                  <td align=\"center\">", form_checkbox("delete_relationships[{$user_peer['UID']}]", "Y", false), "</td>\n";
@@ -258,13 +281,6 @@ if (sizeof($user_peers['user_array']) > 0) {
             echo "                  <td align=\"center\"><img src=\"", style_image("friend.png"), "\" alt=\"{$lang['allow']}\" title=\"{$lang['allow']}\" /></td>\n";
         }
     }
-
-}else {
-
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" width=\"20\">&nbsp;</td>\n";
-    echo "                  <td align=\"left\" colspan=\"3\">{$lang['norelationships']}</td>\n";
-    echo "                </tr>\n";
 }
 
 echo "                <tr>\n";
@@ -277,13 +293,13 @@ echo "        </table>\n";
 echo "      </td>\n";
 echo "    </tr>\n";
 
-if (sizeof($user_peers['user_array']) > 0) {
+if (sizeof($user_peers_array['user_array']) > 0) {
 
     echo "    <tr>\n";
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td class=\"postbody\" align=\"center\">", page_links("edit_relations.php?webtag=$webtag&usersearch=$usersearch&search_page=$search_page", $start_main, $user_peers['user_count'], 10, "main_page"), "</td>\n";
+    echo "      <td class=\"postbody\" align=\"center\">", page_links("edit_relations.php?webtag=$webtag&user_search=$user_search&search_page=$search_page", $start_main, $user_peers_array['user_count'], 10, "main_page"), "</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">&nbsp;</td>\n";
@@ -296,108 +312,6 @@ if (sizeof($user_peers['user_array']) > 0) {
 echo "  </table>\n";
 echo "</form>\n";
 echo "<br />\n";
-
-if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
-
-    echo "<form method=\"post\" action=\"edit_relations.php\" target=\"_self\">\n";
-    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-    echo "  ", form_input_hidden("usersearch", _htmlentities($usersearch)), "\n";
-    echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
-    echo "  ", form_input_hidden("search_page", _htmlentities($search_page)), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\" class=\"posthead\">\n";
-    echo "        <table class=\"box\" width=\"100%\">\n";
-    echo "          <tr>\n";
-    echo "            <td align=\"left\" class=\"posthead\">\n";
-    echo "              <table class=\"posthead\" width=\"100%\">\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" width=\"20\">&nbsp;</td>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" width=\"200\">{$lang['user']}</td>\n";
-    echo "                  <td align=\"center\" class=\"subhead\">{$lang['relationship']}</td>\n";
-    echo "                  <td align=\"center\" class=\"subhead\">{$lang['signature']}</td>\n";
-    echo "                  <td align=\"center\" class=\"subhead\">{$lang['personalmessages']}</td>\n";
-    echo "                </tr>\n";
-
-    $user_search_array = user_search($usersearch, $start_search, $uid);
-
-    if (sizeof($user_search_array['results_array']) > 0) {
-
-        foreach ($user_search_array['results_array'] as $user_peer) {
-
-            echo "                <tr>\n";
-            echo "                  <td align=\"left\" width=\"20\">&nbsp;</td>\n";
-            echo "                  <td align=\"left\">&nbsp;<a href=\"user_rel.php?webtag=$webtag&amp;uid={$user_peer['UID']}&ret=edit_relations.php%3Fwebtag%3D$webtag\" target=\"_self\">", word_filter_add_ob_tags(_htmlentities(format_user_name($user_peer['LOGON'], $user_peer['NICKNAME']))), "</a></td>\n";
-
-            if ($user_peer['RELATIONSHIP'] & USER_FRIEND) {
-
-                echo "                  <td align=\"center\"><img src=\"", style_image("friend.png"), "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" /></td>\n";
-
-            }elseif ($user_peer['RELATIONSHIP'] & USER_IGNORED) {
-
-                echo "                  <td align=\"center\"><img src=\"", style_image("enemy.png"), "\" alt=\"{$lang['ignored']}\" title=\"{$lang['ignored']}\" /></td>\n";
-
-            }elseif ($user_peer['RELATIONSHIP'] & USER_IGNORED_COMPLETELY) {
-
-                echo "                  <td align=\"center\"><img src=\"", style_image("enemy.png"), "\" alt=\"{$lang['ignoredcompletely']}\" title=\"{$lang['ignoredcompletely']}\" /><img src=\"", style_image("enemy.png"), "\" alt=\"{$lang['ignoredcompletely']}\" title=\"{$lang['ignoredcompletely']}\" /></td>\n";
-
-            }else {
-
-                echo "                  <td align=\"center\">{$lang['normal']}</td>\n";
-            }
-
-            if ($user_peer['RELATIONSHIP'] & USER_IGNORED_SIG) {
-
-                echo "                  <td align=\"center\"><img src=\"", style_image("enemy.png"), "\" alt=\"{$lang['ignored']}\" title=\"{$lang['ignored']}\" /></td>\n";
-
-            }else {
-
-                echo "                  <td align=\"center\"><img src=\"", style_image("friend.png"), "\" alt=\"{$lang['display']}\" title=\"{$lang['display']}\" /></td>\n";
-            }
-
-            if ($user_peer['RELATIONSHIP'] & USER_BLOCK_PM) {
-
-                echo "                  <td align=\"center\"><img src=\"", style_image("enemy.png"), "\" alt=\"{$lang['block']}\" title=\"{$lang['block']}\" /></td>\n";
-
-            }else {
-
-                echo "                  <td align=\"center\"><img src=\"", style_image("friend.png"), "\" alt=\"{$lang['allow']}\" title=\"{$lang['allow']}\" /></td>\n";
-            }
-        }
-
-    }else {
-
-        echo "                <tr>\n";
-        echo "                  <td align=\"left\" width=\"20\">&nbsp;</td>\n";
-        echo "                  <td class=\"posthead\" colspan=\"7\" align=\"left\">{$lang['nomatches']}</td>\n";
-        echo "                </tr>\n";
-    }
-
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\">&nbsp;</td>\n";
-    echo "                </tr>\n";
-    echo "              </table>\n";
-    echo "            </td>\n";
-    echo "          </tr>\n";
-    echo "        </table>\n";
-    echo "      </td>\n";
-    echo "    </tr>\n";
-
-    if (sizeof($user_search_array['results_array']) > 0) {
-
-        echo "    <tr>\n";
-        echo "      <td align=\"left\">&nbsp;</td>\n";
-        echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td class=\"postbody\" align=\"center\">", page_links("edit_relations.php?webtag=$webtag&usersearch=$usersearch&main_page=$main_page", $start_search, $user_search_array['results_count'], 10, "search_page"), "</td>\n";
-        echo "    </tr>\n";
-    }
-
-    echo "  </table>\n";
-    echo "</form>\n";
-    echo "<br />\n";
-}
-
 echo "<form method=\"post\" action=\"edit_relations.php\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
@@ -419,9 +333,7 @@ echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td class=\"posthead\" align=\"left\">\n";
-echo "                          {$lang['username']}: ", form_input_text("usersearch", isset($usersearch) ? _htmlentities($usersearch) : "", 30, 64), " ", form_submit('submit', $lang['search']), "\n";
-echo "                        </td>\n";
+echo "                        <td class=\"posthead\" align=\"left\">{$lang['username']}: ", form_input_text('user_search', _htmlentities($user_search), 30, 64), " ", form_submit('search', $lang['search']), " ", form_submit('clear_search', $lang['clear']), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_email.php,v 1.76 2007-10-11 13:01:13 decoyduck Exp $ */
+/* $Id: edit_email.php,v 1.77 2007-10-12 23:28:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -243,14 +243,14 @@ echo "              <table class=\"posthead\" width=\"100%\">\n";
 if ($show_set_all) {
 
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">{$lang['emailsettings']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['emailsettings']}</td>\n";
     echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
     echo "                </tr>\n";
 
 }else {
 
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"4\">{$lang['emailsettings']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['emailsettings']}</td>\n";
     echo "                </tr>\n";
 }
 
@@ -290,14 +290,14 @@ echo "              <table class=\"posthead\" width=\"100%\">\n";
 if ($show_set_all) {
 
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">{$lang['birthdayanddateofbirth']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['birthdayanddateofbirth']}</td>\n";
     echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
     echo "                </tr>\n";
 
 }else {
 
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"4\">{$lang['birthdayanddateofbirth']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">{$lang['birthdayanddateofbirth']}</td>\n";
     echo "                </tr>\n";
 }
 
@@ -305,19 +305,19 @@ echo "                <tr>\n";
 echo "                  <td align=\"left\" rowspan=\"6\" width=\"1%\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" colspan=\"2\" nowrap=\"nowrap\">", form_radio("dob_display", 0, $lang['donotshowmyageordobtoothers'], ((isset($user_prefs['DOB_DISPLAY']) && $user_prefs['DOB_DISPLAY'] == USER_DOB_DISPLAY_NONE) || !isset($user_prefs['DOB_DISPLAY'])) ? true : false), "</td>\n";
+echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_radio("dob_display", 0, $lang['donotshowmyageordobtoothers'], ((isset($user_prefs['DOB_DISPLAY']) && $user_prefs['DOB_DISPLAY'] == USER_DOB_DISPLAY_NONE) || !isset($user_prefs['DOB_DISPLAY'])) ? true : false), "</td>\n";
 echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("dob_display_global", "Y", '', (isset($user_prefs['DOB_DISPLAY_GLOBAL']) ? $user_prefs['DOB_DISPLAY_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("dob_display_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" colspan=\"2\" nowrap=\"nowrap\">", form_radio("dob_display", 1, $lang['showonlymyagetoothers'], (isset($user_prefs['DOB_DISPLAY']) && $user_prefs['DOB_DISPLAY'] == USER_DOB_DISPLAY_AGE) ? true : false), "</td>\n";
+echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_radio("dob_display", 1, $lang['showonlymyagetoothers'], (isset($user_prefs['DOB_DISPLAY']) && $user_prefs['DOB_DISPLAY'] == USER_DOB_DISPLAY_AGE) ? true : false), "</td>\n";
 echo "                  <td align=\"left\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" colspan=\"2\" nowrap=\"nowrap\">", form_radio("dob_display", 3, $lang['showonlymydayandmonthofbirthytoothers'], (isset($user_prefs['DOB_DISPLAY']) && $user_prefs['DOB_DISPLAY'] == USER_DOB_DISPLAY_BOTH) ? true : false), "</td>\n";
+echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_radio("dob_display", 3, $lang['showonlymydayandmonthofbirthytoothers'], (isset($user_prefs['DOB_DISPLAY']) && $user_prefs['DOB_DISPLAY'] == USER_DOB_DISPLAY_BOTH) ? true : false), "</td>\n";
 echo "                  <td align=\"left\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" colspan=\"2\" nowrap=\"nowrap\">", form_radio("dob_display", 2, $lang['showmyageanddobtoothers'], (isset($user_prefs['DOB_DISPLAY']) && $user_prefs['DOB_DISPLAY'] == USER_DOB_DISPLAY_DATE) ? true : false), "</td>\n";
+echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_radio("dob_display", 2, $lang['showmyageanddobtoothers'], (isset($user_prefs['DOB_DISPLAY']) && $user_prefs['DOB_DISPLAY'] == USER_DOB_DISPLAY_DATE) ? true : false), "</td>\n";
 echo "                  <td align=\"left\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
@@ -337,14 +337,14 @@ echo "              <table class=\"posthead\" width=\"100%\">\n";
 if ($show_set_all) {
 
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">{$lang['forumanonymity']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['forumanonymity']}</td>\n";
     echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
     echo "                </tr>\n";
 
 }else {
 
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"4\">{$lang['forumanonymity']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">{$lang['forumanonymity']}</td>\n";
     echo "                </tr>\n";
 }
 
@@ -352,15 +352,15 @@ echo "                <tr>\n";
 echo "                  <td align=\"left\" rowspan=\"5\" width=\"1%\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" colspan=\"2\" nowrap=\"nowrap\">", form_radio("anon_logon", USER_ANON_DISABLED, $lang['listmeontheactiveusersdisplay'], ((isset($user_prefs['ANON_LOGON']) && $user_prefs['ANON_LOGON'] == USER_ANON_DISABLED) || !isset($user_prefs['ANON_LOGON'])) ? true : false), "</td>\n";
+echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_radio("anon_logon", USER_ANON_DISABLED, $lang['listmeontheactiveusersdisplay'], ((isset($user_prefs['ANON_LOGON']) && $user_prefs['ANON_LOGON'] == USER_ANON_DISABLED) || !isset($user_prefs['ANON_LOGON'])) ? true : false), "</td>\n";
 echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("anon_logon_global", "Y", '', (isset($user_prefs['ANON_LOGON_GLOBAL']) ? $user_prefs['ANON_LOGON_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("anon_logon_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" colspan=\"2\" nowrap=\"nowrap\">", form_radio("anon_logon", USER_ANON_ENABLED, $lang['browseanonymously'], (isset($user_prefs['ANON_LOGON']) && $user_prefs['ANON_LOGON'] == USER_ANON_ENABLED) ? true : false), "</td>\n";
+echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_radio("anon_logon", USER_ANON_ENABLED, $lang['browseanonymously'], (isset($user_prefs['ANON_LOGON']) && $user_prefs['ANON_LOGON'] == USER_ANON_ENABLED) ? true : false), "</td>\n";
 echo "                  <td align=\"left\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" colspan=\"2\" nowrap=\"nowrap\">", form_radio("anon_logon", USER_ANON_FRIENDS_ONLY, $lang['allowfriendstoseemeasonline'], (isset($user_prefs['ANON_LOGON']) && $user_prefs['ANON_LOGON'] == USER_ANON_FRIENDS_ONLY) ? true : false), "</td>\n";
+echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_radio("anon_logon", USER_ANON_FRIENDS_ONLY, $lang['allowfriendstoseemeasonline'], (isset($user_prefs['ANON_LOGON']) && $user_prefs['ANON_LOGON'] == USER_ANON_FRIENDS_ONLY) ? true : false), "</td>\n";
 echo "                  <td align=\"left\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";

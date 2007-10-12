@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: search_popup.php,v 1.19 2007-10-11 13:01:16 decoyduck Exp $ */
+/* $Id: search_popup.php,v 1.20 2007-10-12 23:28:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -246,10 +246,37 @@ if (isset($_GET['search_query']) && strlen(trim(_stripslashes($_GET['search_quer
     $search_query = "";
 }
 
+// Empty array for storing the results of our search
+
+$search_results_array = array();
+
+// Check if we should be performing a search
+
+if (strlen(trim($search_query)) > 0) {
+
+    if ($type == SEARCH_POPUP_TYPE_USER) {
+
+        $search_results_array = user_search($search_query, $start);
+
+    }elseif ($type == SEARCH_POPUP_TYPE_THREAD) {
+
+        $search_results_array = thread_search($search_query, $start);
+    }
+}
+
 html_draw_top('openprofile.js', 'pm_popup_disabled');
 
 echo "<h1>{$lang['search']}</h1>\n";
-echo "<br />\n";
+
+if (isset($search_results_array['results_array']) && sizeof($search_results_array['results_array']) < 1) {
+
+    html_display_warning_msg($lang['searchreturnednoresults'], '475', 'center');
+
+}else {
+
+    echo "<br />\n";
+}
+
 echo "<div align=\"center\">\n";
 echo "<form action=\"search_popup.php\" method=\"post\">\n";
 echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
@@ -302,135 +329,84 @@ echo "      </td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 
-if (strlen(trim($search_query)) > 0) {
+if (isset($search_results_array) && sizeof($search_results_array['results_array']) > 0) {
 
-    if ($type == SEARCH_POPUP_TYPE_USER) {
+    echo "  <br />\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"475\">\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td align=\"left\" class=\"posthead\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td class=\"subhead\" align=\"left\">{$lang['results']}</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"center\">\n";
+    echo "                    <div class=\"search_popup_results\">\n";
+    echo "                      <table width=\"95%\">\n";
 
-        $search_results_array = user_search($search_query, $start);
+    foreach ($search_results_array['results_array'] as $search_result) {
 
-    }elseif ($type == SEARCH_POPUP_TYPE_THREAD) {
+        if ($type == SEARCH_POPUP_TYPE_USER) {
 
-        $search_results_array = thread_search($search_query, $start);
-    }
+            if (($search_results_array['results_count'] > 1) && $allow_multi === false) {
 
-    if (sizeof($search_results_array['results_array']) > 0) {
-
-        echo "  <br />\n";
-        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"475\">\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"left\">\n";
-        echo "        <table class=\"box\" width=\"100%\">\n";
-        echo "          <tr>\n";
-        echo "            <td align=\"left\" class=\"posthead\">\n";
-        echo "              <table class=\"posthead\" width=\"100%\">\n";
-        echo "                <tr>\n";
-        echo "                  <td class=\"subhead\" align=\"left\">{$lang['results']}</td>\n";
-        echo "                </tr>\n";
-        echo "                <tr>\n";
-        echo "                  <td align=\"center\">\n";
-        echo "                    <div class=\"search_popup_results\">\n";
-        echo "                      <table width=\"95%\">\n";
-
-        foreach ($search_results_array['results_array'] as $search_result) {
-
-            if ($type == SEARCH_POPUP_TYPE_USER) {
-
-                if (($search_results_array['results_count'] > 1) && $allow_multi === false) {
-
-                    echo "                      <tr>\n";
-                    echo "                        <td align=\"left\">", form_radio("search_result[]", _htmlentities($search_result['LOGON']), ''), "&nbsp;<a href=\"user_profile.php?webtag=$webtag&amp;uid={$search_result['UID']}\" target=\"_blank\" onclick=\"return openProfile({$search_result['UID']}, '$webtag')\">", word_filter_add_ob_tags(_htmlentities(format_user_name($search_result['LOGON'], $search_result['NICKNAME']))), "</a></td>\n";
-                    echo "                      </tr>\n";
-
-                }else {
-
-                    echo "                      <tr>\n";
-                    echo "                        <td align=\"left\">", form_checkbox("search_result[]", _htmlentities($search_result['LOGON']), ''), "&nbsp;<a href=\"user_profile.php?webtag=$webtag&amp;uid={$search_result['UID']}\" target=\"_blank\" onclick=\"return openProfile({$search_result['UID']}, '$webtag')\">", word_filter_add_ob_tags(_htmlentities(format_user_name($search_result['LOGON'], $search_result['NICKNAME']))), "</a></td>\n";
-                    echo "                      </tr>\n";
-                }
+                echo "                      <tr>\n";
+                echo "                        <td align=\"left\">", form_radio("search_result[]", _htmlentities($search_result['LOGON']), ''), "&nbsp;<a href=\"user_profile.php?webtag=$webtag&amp;uid={$search_result['UID']}\" target=\"_blank\" onclick=\"return openProfile({$search_result['UID']}, '$webtag')\">", word_filter_add_ob_tags(_htmlentities(format_user_name($search_result['LOGON'], $search_result['NICKNAME']))), "</a></td>\n";
+                echo "                      </tr>\n";
 
             }else {
 
-                if (($search_results_array['results_count'] > 1) && $allow_multi === false) {
+                echo "                      <tr>\n";
+                echo "                        <td align=\"left\">", form_checkbox("search_result[]", _htmlentities($search_result['LOGON']), ''), "&nbsp;<a href=\"user_profile.php?webtag=$webtag&amp;uid={$search_result['UID']}\" target=\"_blank\" onclick=\"return openProfile({$search_result['UID']}, '$webtag')\">", word_filter_add_ob_tags(_htmlentities(format_user_name($search_result['LOGON'], $search_result['NICKNAME']))), "</a></td>\n";
+                echo "                      </tr>\n";
+            }
 
-                    echo "                      <tr>\n";
-                    echo "                        <td align=\"left\">", form_radio("search_result[]", $search_result['TID'], ''), "&nbsp;<a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.1\" target=\"_blank\">", word_filter_add_ob_tags(_htmlentities(thread_format_prefix($search_result['PREFIX'], $search_result['TITLE']))), "</a></td>\n";
-                    echo "                      </tr>\n";
+        }else {
 
-                }else {
+            if (($search_results_array['results_count'] > 1) && $allow_multi === false) {
 
-                    echo "                      <tr>\n";
-                    echo "                        <td align=\"left\">", form_checkbox("search_result[]", $search_result['TID'], ''), "&nbsp;<a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.1\" target=\"_blank\">", word_filter_add_ob_tags(_htmlentities(thread_format_prefix($search_result['PREFIX'], $search_result['TITLE']))), "</a></td>\n";
-                    echo "                      </tr>\n";
-                }
+                echo "                      <tr>\n";
+                echo "                        <td align=\"left\">", form_radio("search_result[]", $search_result['TID'], ''), "&nbsp;<a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.1\" target=\"_blank\">", word_filter_add_ob_tags(_htmlentities(thread_format_prefix($search_result['PREFIX'], $search_result['TITLE']))), "</a></td>\n";
+                echo "                      </tr>\n";
+
+            }else {
+
+                echo "                      <tr>\n";
+                echo "                        <td align=\"left\">", form_checkbox("search_result[]", $search_result['TID'], ''), "&nbsp;<a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.1\" target=\"_blank\">", word_filter_add_ob_tags(_htmlentities(thread_format_prefix($search_result['PREFIX'], $search_result['TITLE']))), "</a></td>\n";
+                echo "                      </tr>\n";
             }
         }
-
-        echo "                        <tr>\n";
-        echo "                          <td class=\"postbody\">&nbsp;</td>\n";
-        echo "                        </tr>\n";
-        echo "                      </table>\n";
-        echo "                    </div>\n";
-        echo "                  </td>\n";
-        echo "                </tr>\n";
-        echo "              </table>\n";
-        echo "            </td>\n";
-        echo "          </tr>\n";
-        echo "        </table>\n";
-        echo "      </td>\n";
-        echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td class=\"postbody\">&nbsp;</td>\n";
-        echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td class=\"postbody\" align=\"center\">", page_links("search_popup.php?webtag=$webtag&search_query=$search_query&type=$type", $start, $search_results_array['results_count'], 10), "</td>\n";
-        echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td class=\"postbody\">&nbsp;</td>\n";
-        echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"center\">", form_submit('select_result', $lang['select']), "&nbsp;", form_submit('submit', $lang['searchagain']), "&nbsp;", form_submit('close', $lang['close']), "</td>\n";
-        echo "    </tr>\n";
-        echo "  </table>\n";
-
-    }else {
-
-        echo "  <br />\n";
-        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"475\">\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"left\">\n";
-        echo "        <table class=\"box\" width=\"100%\">\n";
-        echo "          <tr>\n";
-        echo "            <td align=\"left\" class=\"posthead\">\n";
-        echo "              <table class=\"posthead\" width=\"100%\">\n";
-        echo "                <tr>\n";
-        echo "                  <td class=\"subhead\" align=\"left\">{$lang['results']}</td>\n";
-        echo "                </tr>\n";
-        echo "                <tr>\n";
-        echo "                  <td align=\"center\">\n";
-        echo "                    <table width=\"95%\">\n";
-        echo "                      <tr>\n";
-        echo "                        <td class=\"postbody\">{$lang['nomatches']}</td>\n";
-        echo "                      </tr>\n";
-        echo "                      <tr>\n";
-        echo "                        <td class=\"postbody\">&nbsp;</td>\n";
-        echo "                      </tr>\n";
-        echo "                    </table>\n";
-        echo "                  </td>\n";
-        echo "                </tr>\n";
-        echo "              </table>\n";
-        echo "            </td>\n";
-        echo "          </tr>\n";
-        echo "        </table>\n";
-        echo "      </td>\n";
-        echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td class=\"postbody\">&nbsp;</td>\n";
-        echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"center\">", form_submit('submit', $lang['search']), "&nbsp;", form_submit('close', $lang['close']), "</td>\n";
-        echo "    </tr>\n";
-        echo "  </table>\n";
     }
+
+    echo "                        <tr>\n";
+    echo "                          <td class=\"postbody\">&nbsp;</td>\n";
+    echo "                        </tr>\n";
+    echo "                      </table>\n";
+    echo "                    </div>\n";
+    echo "                  </td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td class=\"postbody\">&nbsp;</td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td class=\"postbody\" align=\"center\">", page_links("search_popup.php?webtag=$webtag&search_query=$search_query&type=$type", $start, $search_results_array['results_count'], 10), "</td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td class=\"postbody\">&nbsp;</td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"center\">", form_submit('select_result', $lang['select']), "&nbsp;", form_submit('submit', $lang['searchagain']), "&nbsp;", form_submit('close', $lang['close']), "</td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
 
 }else {
 

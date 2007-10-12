@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.340 2007-10-11 13:01:20 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.341 2007-10-12 23:28:14 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1339,6 +1339,71 @@ function user_get_peer_nickname($uid, $peer_uid)
     }
 
     return user_get_nickname($peer_uid);
+}
+
+function user_search_relationships($user_search, $offset = 0, $exclude_uid = 0)
+{
+    if (!$db_user_search = db_connect()) return false;
+
+    if (!is_numeric($offset)) return false;
+    if (!is_numeric($exclude_uid)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $user_search_peers_array = array();
+    $user_search_peers_count = 0;
+
+    $uid = bh_session_get_value('UID');
+
+    $user_search_array = explode(";", $user_search);
+    $user_search_array = array_map('user_search_array_clean', $user_search_array);
+
+    $user_search_logon = implode("%' OR LOGON LIKE '", $user_search_array);
+    $user_search_nickname = implode("%' OR NICKNAME LIKE '", $user_search_array);
+
+    $sql = "SELECT COUNT(USER.UID) AS USER_COUNT FROM USER ";
+    $sql.= "WHERE (LOGON LIKE '$user_search_logon%' ";
+    $sql.= "OR NICKNAME LIKE '$user_search_nickname%') ";
+    $sql.= "AND USER.UID <> $exclude_uid";
+
+    if (!$result = db_query($sql, $db_user_search)) return false;
+
+    list($user_search_peers_count) = db_fetch_array($result, DB_RESULT_NUM);
+
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
+    $sql.= "USER_PEER.PEER_NICKNAME, USER_PEER.RELATIONSHIP ";
+    $sql.= "FROM USER USER LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
+    $sql.= "WHERE (LOGON LIKE '$user_search_logon%' ";
+    $sql.= "OR NICKNAME LIKE '$user_search_nickname%') ";
+    $sql.= "AND USER.UID <> $exclude_uid LIMIT $offset, 10";
+
+    if (!$result = db_query($sql, $db_user_search)) return false;
+
+    if (db_num_rows($result) > 0) {
+
+        while ($user_data = db_fetch_array($result)) {
+
+            if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
+                if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
+                    $user_data['NICKNAME'] = $user_data['PEER_NICKNAME'];
+                }
+            }
+
+            if (!isset($user_data['LOGON'])) $user_data['LOGON'] = $lang['unknownuser'];
+            if (!isset($user_data['NICKNAME'])) $user_data['NICKNAME'] = "";
+
+            $user_search_peers_array[$user_data['UID']] = $user_data;
+        }
+
+    }else if ($user_search_peers_count > 0) {
+
+        $offset = floor(($user_search_peers_count - 1) / 10) * 10;
+        return user_search_relationships($user_search, $offset, $exclude_uid);
+    }
+
+    return array('user_count' => $user_search_peers_count,
+                 'user_array' => $user_search_peers_array);
 }
 
 function user_get_word_filter_list($offset)

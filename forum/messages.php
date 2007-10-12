@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.238 2007-10-11 13:01:15 decoyduck Exp $ */
+/* $Id: messages.php,v 1.239 2007-10-12 23:45:59 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -360,8 +360,9 @@ if (isset($_GET['font_resize'])) {
 
     echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
     echo "<!--\n\n";
-    echo "var font_resize_success_container = getObjById('font_resize_success');\n";
-    echo "font_resize_success_container.innerHTML = unescape('", html_display_success_msg_js(sprintf($lang['fontsizechanged'], ''), '96%', 'center'), "');\n\n";
+    echo "if (font_resize_success_container = getObjById('font_resize_success')) {\n";
+    echo "    font_resize_success_container.innerHTML = unescape('", html_display_success_msg_js(sprintf($lang['fontsizechanged'], ''), '96%', 'center'), "');\n\n";
+    echo "}\n\n";
     echo "-->\n";
     echo "</script>\n\n";
 }

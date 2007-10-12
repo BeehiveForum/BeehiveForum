@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: search_popup.php,v 1.20 2007-10-12 23:28:12 decoyduck Exp $ */
+/* $Id: search_popup.php,v 1.21 2007-10-12 23:28:50 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -329,7 +329,7 @@ echo "      </td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 
-if (isset($search_results_array) && sizeof($search_results_array['results_array']) > 0) {
+if (isset($search_results_array['results_array']) && sizeof($search_results_array['results_array']) > 0) {
 
     echo "  <br />\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"475\">\n";

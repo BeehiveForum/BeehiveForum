@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.js,v 1.10 2007-10-13 00:21:40 decoyduck Exp $ */
+/* $Id: thread_options.js,v 1.11 2007-10-13 19:13:01 decoyduck Exp $ */
 
 var search_thread = false;
 
@@ -31,9 +31,9 @@ function openThreadSearch(webtag, obj_name)
     
     }else {
     
-        if (form_obj = getObjByName(obj_name)) {
+        if (form_obj = getObjsByName(obj_name)) {
             
-            search_thread = window.open('search_popup.php?webtag=' + webtag + '&type=2&value=' + form_obj.value + '&obj_name='+ obj_name, 'search_thread', 'width=500, height=400, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=yes. scrollbars=yes');
+            search_thread = window.open('search_popup.php?webtag=' + webtag + '&type=2&search_query=' + form_obj[0].value + '&obj_name='+ obj_name, 'search_thread', 'width=500, height=400, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=yes. scrollbars=yes');
         }
     }
 
@@ -42,9 +42,9 @@ function openThreadSearch(webtag, obj_name)
 
 function returnSearchResult(obj_name, content)
 {
-    if (form_obj = getObjByName(obj_name)) {
+    if (form_obj = getObjsByName(obj_name)) {
         
-        form_obj.value = content;
+        form_obj[0].value = unescape(content);
         return true;
     }
 

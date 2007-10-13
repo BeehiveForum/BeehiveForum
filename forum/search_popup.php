@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: search_popup.php,v 1.21 2007-10-12 23:28:50 decoyduck Exp $ */
+/* $Id: search_popup.php,v 1.22 2007-10-13 19:12:42 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -186,6 +186,8 @@ if (isset($_POST['obj_name']) && strlen(trim(_stripslashes($_POST['obj_name'])))
     exit;
 }
 
+// Check if we're allowed multiple-select.
+
 if (isset($_POST['allow_multi'])) {
     $allow_multi = true;
 }elseif (isset($_GET['allow_multi'])) {
@@ -194,6 +196,7 @@ if (isset($_POST['allow_multi'])) {
     $allow_multi = false;
 }
 
+// Page numbers for results.
 
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
     $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
@@ -204,11 +207,17 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
 $start = floor($page - 1) * 10;
 if ($start < 0) $start = 0;
 
+// Array to hold any error messages
+
+$error_msg_array = array();
+
+// Handle result selection.
+
 if (isset($_POST['select_result'])) {
 
     if (isset($_POST['search_result'])) {
 
-        $search_result = $_POST['search_result'];
+        $search_result = _stripslashes($_POST['search_result']);
 
         html_draw_top('pm_popup_disabled');
 
@@ -217,15 +226,24 @@ if (isset($_POST['select_result'])) {
 
         if (is_array($search_result)) {
 
-            foreach($search_result as $search_result_part) {
+            if ($allow_multi) {
 
-                $search_result_part = trim(_stripslashes($search_result_part));
-                echo "    window.opener.returnSearchResult('$obj_name', '$search_result_part');\n";
+                foreach($search_result as $search_result_part) {
+
+                    $search_result_part = rawurlencode(trim($search_result_part));
+                    echo "    window.opener.returnSearchResult('$obj_name', '$search_result_part');\n";
+                }
+
+            }else {
+
+                list($search_result) = array_values($search_result);
+                $search_result = rawurlencode(trim($search_result));
+                echo "    window.opener.returnSearchResult('$obj_name', '$search_result');\n";
             }
 
         }else {
 
-            $search_result = trim(_stripslashes($search_result));
+            $search_result = rawurlencode(trim($search_result));
             echo "    window.opener.returnSearchResult('$obj_name', '$search_result');\n";
         }
 
@@ -238,21 +256,45 @@ if (isset($_POST['select_result'])) {
     }
 }
 
-if (isset($_GET['search_query']) && strlen(trim(_stripslashes($_GET['search_query']))) > 0) {
-    $search_query = trim(_stripslashes($_GET['search_query']));
-}elseif (isset($_POST['search_query']) && strlen(trim(_stripslashes($_POST['search_query']))) > 0) {
-    $search_query = trim(_stripslashes($_POST['search_query']));
+$valid = true;
+
+// Validate the input
+
+if (isset($_GET['search_query'])) {
+
+    if (strlen(trim(_stripslashes($_GET['search_query']))) > 0) {
+
+        $search_query = trim(_stripslashes($_GET['search_query']));
+
+    }else {
+
+        $valid = false;
+    }
+
+}elseif (isset($_POST['search'])) {
+
+    if (isset($_POST['search_query']) && strlen(trim(_stripslashes($_POST['search_query']))) > 0) {
+
+        $search_query = trim(_stripslashes($_POST['search_query']));
+
+    }else {
+
+        $error_msg_array[] = $lang['mustentersomethingtosearchfor'];
+        $valid = false;
+    }
+
 }else {
-    $search_query = "";
+
+    $valid = false;
 }
 
 // Empty array for storing the results of our search
 
 $search_results_array = array();
 
-// Check if we should be performing a search
+// If everything is OK we can perform the search.
 
-if (strlen(trim($search_query)) > 0) {
+if ($valid) {
 
     if ($type == SEARCH_POPUP_TYPE_USER) {
 
@@ -268,7 +310,11 @@ html_draw_top('openprofile.js', 'pm_popup_disabled');
 
 echo "<h1>{$lang['search']}</h1>\n";
 
-if (isset($search_results_array['results_array']) && sizeof($search_results_array['results_array']) < 1) {
+if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+
+    html_display_error_array($error_msg_array, '475', 'center');
+
+}elseif (isset($search_results_array['results_array']) && sizeof($search_results_array['results_array']) < 1) {
 
     html_display_warning_msg($lang['searchreturnednoresults'], '475', 'center');
 
@@ -313,7 +359,7 @@ if ($type == SEARCH_POPUP_TYPE_USER) {
     echo "                        <td align=\"left\" width=\"100\">{$lang['threadtitle']}:</td>\n";
 }
 
-echo "                        <td class=\"posthead\" align=\"left\">", form_input_text('search_query', _htmlentities($search_query), 45, 64), "</td>\n";
+echo "                        <td class=\"posthead\" align=\"left\">", form_input_text('search_query', (isset($search_query) ? _htmlentities($search_query) : ''), 45, 64), "</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
@@ -404,7 +450,7 @@ if (isset($search_results_array['results_array']) && sizeof($search_results_arra
     echo "      <td class=\"postbody\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit('select_result', $lang['select']), "&nbsp;", form_submit('submit', $lang['searchagain']), "&nbsp;", form_submit('close', $lang['close']), "</td>\n";
+    echo "      <td align=\"center\">", form_submit('select_result', $lang['select']), "&nbsp;", form_submit('search', $lang['searchagain']), "&nbsp;", form_submit('close', $lang['close']), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
 
@@ -413,7 +459,7 @@ if (isset($search_results_array['results_array']) && sizeof($search_results_arra
     echo "  <br />\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"475\">\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit('submit', $lang['search']), "&nbsp;", form_submit('close', $lang['close']), "</td>\n";
+    echo "      <td align=\"center\">", form_submit('search', $lang['search']), "&nbsp;", form_submit('close', $lang['close']), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
 }

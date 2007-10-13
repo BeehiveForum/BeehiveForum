@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: general.js,v 1.27 2007-09-25 11:34:53 decoyduck Exp $ */
+/* $Id: general.js,v 1.28 2007-10-13 00:21:40 decoyduck Exp $ */
 
 var IE = (document.all ? true : false);
 
@@ -363,20 +363,24 @@ function resizeImage(img, index)
                     
         }else {
 
-            img_resize_container = getObjById(img.resize_container_id);
-            img_resize_container.style.width = Math.round(maxWidth * 0.8) + 'px';
+            if (img_resize_container = getObjById(img.resize_container_id)) {              
+                img_resize_container.style.width = Math.round(maxWidth * 0.8) + 'px';
+            }
 
-            img_resize_info_bar = getObjById(img.resize_info_bar_id);
-            img_resize_info_bar.style.display = 'block';
+            if (img_resize_info_bar = getObjById(img.resize_info_bar_id)) {
+                img_resize_info_bar.style.display = 'block';
+            }
         }
     
     }else if (is_defined(img.resize_info_bar_id)) {
 
-        img_resize_container = getObjById(img.resize_container_id);
-        img_resize_container.style.width = img.original_width + 'px';
+        if (img_resize_container = getObjById(img.resize_container_id)) {
+            img_resize_container.style.width = img.original_width + 'px';
+        }
         
-        img_resize_info_bar = getObjById(img.resize_info_bar_id);
-        img_resize_info_bar.style.display = 'none';
+        if (img_resize_info_bar = getObjById(img.resize_info_bar_id)) {
+            img_resize_info_bar.style.display = 'none';
+        }
     }
 }    
 

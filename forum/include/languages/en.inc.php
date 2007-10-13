@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.487 2007-10-13 19:12:42 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.488 2007-10-13 20:41:22 decoyduck Exp $ */
 
 // British English language file
 
@@ -1107,6 +1107,7 @@ $lang['successfullyaddedforumtofavourites'] = "Successfully added forum to Favou
 $lang['successfullyremovedforumfromfavourites'] = "Successfully removed forum from Favourites.";
 $lang['successfullyignoredforum'] = "Successfully ignored forum.";
 $lang['successfullyunignoredforum'] = "Successfully unignored forum.";
+$lang['failedtoupdateforuminterestlevel'] = "Failed to update forum interest level";
 $lang['noforumsavailablelogin'] = "There are no forums available. Please login to view your forums.";
 $lang['passwdprotectedforum'] = "Password Protected Forum";
 $lang['passwdprotectedwarning'] = "This forum is password protected. To gain access enter the password below.";
@@ -1280,7 +1281,6 @@ $lang['pmtooltip1message'] = "1 message";
 $lang['allowusertosendpm'] = "Allow user to send personal messages to me";
 $lang['blockuserfromsendingpm'] = "Block user from sending personal messages to me";
 $lang['yourfoldernamefolderisempty'] = "Your %s folder is empty";
-$lang['yoursearchreturnednomatches'] = "Your search returned no matches or you have no saved search results.";
 $lang['successfullydeletedselectedmessages'] = "Successfully deleted selected messages";
 $lang['successfullyarchivedselectedmessages'] = "Successfully archived selected messages";
 $lang['failedtodeleteselectedmessages'] = "Failed to delete selected messages";

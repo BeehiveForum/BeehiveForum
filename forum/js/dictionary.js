@@ -19,32 +19,37 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.js,v 1.21 2007-07-07 22:44:41 decoyduck Exp $ */
+/* $Id: dictionary.js,v 1.22 2007-10-13 00:21:40 decoyduck Exp $ */
 
 function initialiseDictionary(obj_id) {
 
-    var dictObj = getObjByName('dictionary');
-    var contObj = getObjByName('content');
+    if (dictObj = getObjByName('dictionary')) {
+    
+        if (contObj = getObjByName('content')) {
   
-    if (window.opener.readContent) {
+            if (window.opener.readContent) {
         
-        contObj.value = window.opener.readContent(obj_id);
-        dictObj.submit();
+                contObj.value = window.opener.readContent(obj_id);
+                dictObj.submit();
+            }
+        }
     }
 }
 
 function changeWord(obj) {
 
-    var change_to = getObjById('change_to'); 
-    var i = obj.options[obj.selectedIndex].value;
+    if (change_to = getObjById('change_to')) {
     
-    // IE doesn't like .value when <object>value</object> is used instead
-    // of <object value="value">value</object> so we use innerText
+        var i = obj.options[obj.selectedIndex].value;   
 
-    if (i.length == 0) i = obj.options[obj.selectedIndex].innerText;
+        if (i.length == 0) i = obj.options[obj.selectedIndex].innerText;
+    
+        change_to.value = i;
 
-    change_to.value = i;
+        return true;
+    }
 
+    return false;
 }
 
 function readContent(obj_id) {
@@ -53,8 +58,9 @@ function readContent(obj_id) {
         return tinyMCE.getContent(obj_id);
     }
 
-    var form_obj = getObjById(obj_id);
-    return form_obj.value;
+    if (form_obj = getObjById(obj_id)) {
+        return form_obj.value;
+    }
 }
 
 function updateContent(obj_id, content) {
@@ -63,12 +69,14 @@ function updateContent(obj_id, content) {
         return tinyMCE.setContent(unescape(content));
     }
 
-    var form_obj = getObjById(obj_id);
-    form_obj.value = unescape(content);
+    if (form_obj = getObjById(obj_id)) {
+        form_obj.value = unescape(content);
+    }
 }
 
 function showCurrentWord() {
 
-    var highlighted_word = getObjById('highlighted_word');
-    highlighted_word.scrollIntoView(false);
+    if (highlighted_word = getObjById('highlighted_word')) {
+        highlighted_word.scrollIntoView(false);
+    }
 }

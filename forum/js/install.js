@@ -19,38 +19,42 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.js,v 1.8 2007-07-07 22:44:42 decoyduck Exp $ */
+/* $Id: install.js,v 1.9 2007-10-13 00:21:40 decoyduck Exp $ */
 
 function confirm_install(button) {
 
-    var install_type = getObjById('install_method');
-    var install_form = getObjById('install_form');
+    if (install_type = getObjById('install_method')) {
+    
+        if (install_form = getObjById('install_form')) {
 
-    if (install_type.selectedIndex == 2) {
-        confirm_text = 'Are you sure you want to perform a reinstall? Any existing BeehiveForum tables and their data will be permenantly lost!\n\n';
-        confirm_text+= 'If you haven\'t performed a backup of your database and files now would be a good time to do it! Don\'t say we didn\'t warn you!';
-    }else if (install_type.selectedIndex == 3) {
-        confirm_text = 'Are you sure you want to perform a reconnect? Any customised values in your config.inc.php file will be lost!\n\n';
-        confirm_text+= 'If you haven\'t performed a backup of your database and files now would be a good time to do it! Don\'t say we didn\'t warn you!';
-    }else if (install_type.selectedIndex > 3) {
-        confirm_text = 'Are you sure you want to perform an upgrade? If you have selected the wrong upgrade method your forum may become unusable!\n\n';
-        confirm_text+= 'If you haven\'t performed a backup of your database and files now would be a good time to do it! Don\'t say we didn\'t warn you!';
-    }
+            var confirm_text = '';
+            
+            if (install_type.selectedIndex == 2) {
+                confirm_text = 'Are you sure you want to perform a reinstall? Any existing BeehiveForum tables and their data will be permenantly lost!\n\n';
+                confirm_text+= 'If you haven\'t performed a backup of your database and files now would be a good time to do it! Don\'t say we didn\'t warn you!';
+            }else if (install_type.selectedIndex == 3) {
+                confirm_text = 'Are you sure you want to perform a reconnect? Any customised values in your config.inc.php file will be lost!\n\n';
+                confirm_text+= 'If you haven\'t performed a backup of your database and files now would be a good time to do it! Don\'t say we didn\'t warn you!';
+            }else if (install_type.selectedIndex > 3) {
+                confirm_text = 'Are you sure you want to perform an upgrade? If you have selected the wrong upgrade method your forum may become unusable!\n\n';
+                confirm_text+= 'If you haven\'t performed a backup of your database and files now would be a good time to do it! Don\'t say we didn\'t warn you!';
+            }
 
-    if (install_type.selectedIndex > 0) {
+            if (confirm_text.length > 0) {
 
-        if (window.confirm(confirm_text)) {
+                if (window.confirm(confirm_text)) {
 
-            disable_button(button);
-            install_form.submit();
-            return true;
+                    disable_button(button);
+                    install_form.submit();
+                }
+            }
         }
-
-        return false;
     }
 }
 
-function show_install_help(topic) {
+function show_install_help(topic)
+{
+    var topic_text = '';
 
     if (topic == 0) {
 
@@ -60,7 +64,7 @@ function show_install_help(topic) {
       topic_text+= 'For reconnects the database setup is skipped and the installation simply rewrites your config.inc.php file. Use this if for example you\'re moving hosts. The webtag field is ignored.\n\n';
       topic_text+= 'For upgrades please select the correct upgrade process. The webtag field is ignored.';
 
-    } else if (topic == 1) {
+    }else if (topic == 1) {
 
       topic_text = 'These are the MySQL database details required by to install and run your BeehiveForum.\n\n';
       topic_text+= 'Hostname: The address of the MySQL server. This may be an IP or a DNS for example 127.0.0.1 or localhost or mysql.myhosting.com\n\n';
@@ -69,11 +73,11 @@ function show_install_help(topic) {
       topic_text+= 'Password: The password needed to connect to the MySQL server.\n\n';
       topic_text+= 'If you do not know what these settings are please contact your hosting provider.';
 
-    } else if (topic == 2) {
+    }else if (topic == 2) {
 
       topic_text = 'The credentials of the user you want to have initial Admin access. This information is only required for new installations. Upgrades will leave the existing user accounts intact.';
 
-    } else if (topic == 3) {
+    }else if (topic == 3) {
 
       topic_text = 'USE THESE OPTIONS WITH EXTREME CAUTION!\n\n';
       topic_text+= 'These options are recommended for advanced users only. There use can have a detrimental effect on the functionality of your BeehiveForum AND other software you may have installed.\n\n';
@@ -83,6 +87,10 @@ function show_install_help(topic) {
       
     }
 
-    alert(topic_text);
+    if (topic_text.length > 0) {
+
+        alert(topic_text);
+    }
+
     return true;
 }

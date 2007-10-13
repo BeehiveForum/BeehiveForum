@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: general.js,v 1.29 2007-10-13 19:13:01 decoyduck Exp $ */
+/* $Id: general.js,v 1.30 2007-10-13 19:36:51 decoyduck Exp $ */
 
 var IE = (document.all ? true : false);
 
@@ -81,12 +81,6 @@ function is_numeric(value)
     return true;
 }
 
-function is_defined(var_name)
-{
-    if (typeof(var_name) !="undefined") return true;
-    return false;
-}
-
 function getObjById(obj_id)
 {
     var form_obj;
@@ -123,7 +117,7 @@ function getObjsByName(obj_name)
 
 function getImageMaxWidth()
 {
-    if (is_defined(document.maxWidth) && document.maxWidth > 0) {
+    if (typeof(document.maxWidth) != 'undefined' && document.maxWidth > 0) {
         return document.maxWidth;
     }
 
@@ -133,7 +127,7 @@ function getImageMaxWidth()
 
 function getImageResizeText()
 {
-    if (is_defined(document.resizeText) && document.resizeText.length > 0) {
+    if (typeof(document.resizeText) != 'undefined' && document.resizeText.length > 0) {
         return unescape(document.resizeText);
     }
 
@@ -158,7 +152,7 @@ function addOverflow()
             
             if (td_tags[i].clientWidth >= maxWidth) {
 
-                if (!is_defined(td_tags[i].resized)) {
+                if (typeof(td_tags[i].resized) == 'undefined') {
                 
                     var new_div = document.createElement('div');
 
@@ -263,7 +257,7 @@ function resizeImages()
 
 function resizeImage(img, index)
 {
-    if (!is_defined(img.original_width)) {
+    if (typeof(img.original_width) == 'undefined') {
 
        img.original_width = img.width;
        img.original_height = img.height;
@@ -275,7 +269,7 @@ function resizeImage(img, index)
 
     if (img.original_width > maxWidth) {
 
-        if (!is_defined(img.resize_container_id)) {
+        if (typeof(img.resize_container_id) == 'undefined') {
         
             // Give the image an ID to track it later
     
@@ -372,7 +366,7 @@ function resizeImage(img, index)
             }
         }
     
-    }else if (is_defined(img.resize_info_bar_id)) {
+    }else if (typeof(img.resize_info_bar_id) != 'undefined') {
 
         if (img_resize_container = getObjById(img.resize_container_id)) {
             img_resize_container.style.width = img.original_width + 'px';
@@ -388,7 +382,7 @@ function popupImage(img_id)
 {   
     var img_obj = document.getElementById(img_id);
    
-    if (!is_defined(img_obj.popup_window)) img_obj.popup_window = false;
+    if (typeof(img_obj.popup_window) == 'undefined') img_obj.popup_window = false;
 
     if (!img_obj.popup_window.closed && img_obj.popup_window.location) {
 

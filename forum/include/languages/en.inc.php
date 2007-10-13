@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.486 2007-10-12 23:28:12 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.487 2007-10-13 19:12:42 decoyduck Exp $ */
 
 // British English language file
 
@@ -1648,6 +1648,7 @@ $lang['select'] = "Select";
 $lang['searchforthread'] = "Search For Thread";
 $lang['mustspecifytypeofsearch'] = "You must specify type of search to perform";
 $lang['unkownsearchtypespecified'] = "Unknown search type specified";
+$lang['mustentersomethingtosearchfor'] = "You must enter something to search for";
 
 // Start page (start_left.php) -----------------------------------------
 

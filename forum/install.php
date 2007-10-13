@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.77 2007-10-11 13:01:15 decoyduck Exp $ */
+/* $Id: install.php,v 1.78 2007-10-13 21:06:44 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -198,13 +198,13 @@ if (isset($_POST['install_method']) && (!defined('BEEHIVE_INSTALED') || $force_i
 
             // Check the install method
 
-            if (($install_method == 4) && (@file_exists('./install/upgrade-07x-to-072.php'))) {
+            if (($install_method == 4) && (@file_exists('./install/upgrade-07x-to-08.php'))) {
 
-                include_once("./install/upgrade-07x-to-072.php");
+                include_once("./install/upgrade-07x-to-08.php");
 
-            }elseif (($install_method == 3) && (@file_exists('./install/upgrade-06x-to-072.php'))) {
+            }elseif (($install_method == 3) && (@file_exists('./install/upgrade-06x-to-08.php'))) {
 
-                include_once("./install/upgrade-06x-to-072.php");
+                include_once("./install/upgrade-06x-to-08.php");
 
             }elseif (($install_method == 1) && (@file_exists('./install/new-install.php'))) {
 

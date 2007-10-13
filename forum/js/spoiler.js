@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: spoiler.js,v 1.5 2007-04-25 21:34:32 decoyduck Exp $ */
+/* $Id: spoiler.js,v 1.6 2007-10-13 19:36:51 decoyduck Exp $ */
 
 function containsDOM(container, containee)
 {
@@ -79,7 +79,7 @@ function spoilerInitialise()
 
 function spoilerAttachEvent(element)
 {
-    if (is_defined(element.tagName)) {
+    if (typeof(element.tagName) != 'undefined')) {
                
         if (IE) {
 

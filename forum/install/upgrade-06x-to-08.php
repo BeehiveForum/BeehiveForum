@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06x-to-08.php,v 1.1 2007-10-13 21:06:44 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-08.php,v 1.2 2007-10-15 18:00:28 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-06x-to-072.php") {
 
@@ -117,7 +117,7 @@ if (isset($remove_conflicts) && $remove_conflicts === true) {
 // Check that we have no per-forum tables which conflict
 // with those we're about to create.
 
-$forum_tables  = array('BANNED', 'THREAD_STATS', 'USER_TRACK', 'THREAD_TRACK');
+$forum_tables  = array('THREAD_STATS', 'USER_TRACK', 'THREAD_TRACK');
 
 if (isset($remove_conflicts) && $remove_conflicts === true) {
 
@@ -145,7 +145,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     if ($conflicting_tables = install_get_table_conflicts($forum_webtag, $forum_tables, $global_tables)) {
 
-        $error_str = "<h2>Selected database contains tables which conflict with Beehive Forum.";
+        $error_str = "<h2>Selected database contains tables which conflict with Beehive Forum. ";
         $error_str.= "If this database contains an existing Beehive Forum installation please ";
         $error_str.= "check that you have selected the correct install / upgrade method.<h2>\n";
 
@@ -1097,7 +1097,7 @@ if (!$result = @db_query($sql, $db_install)) {
 
 // New User preference for light mode spoiler support
 
-$sql = "ALTER TABLE {$forum_webtag}_USER_PREFS ADD USE_LIGHT_MODE_SPOILER CHAR(1) NOT NULL DEFAULT 'N'";
+$sql = "ALTER TABLE USER_PREFS ADD USE_LIGHT_MODE_SPOILER CHAR(1) NOT NULL DEFAULT 'N'";
 
 if (!$result = @db_query($sql, $db_install)) {
 

@@ -1214,6 +1214,23 @@ a {
     max-width: 100%;
 }
 
+.error_handler_details {
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-size: 9pt;
+    color: #000000;
+    background-color: #FFFFFF;
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-style: inset;
+    height: 200px;
+    width: 95%;
+    padding: 0px 10px 0px 10px;
+    overflow: auto;
+    text-align: left;
+}
+
 .error_msg {    
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 9pt;

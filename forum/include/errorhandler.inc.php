@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.95 2007-10-16 17:09:23 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.96 2007-10-16 20:40:36 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -168,7 +168,7 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
 
         if (strlen($error_report_email_addr) > 0) {
 
-            $error_log_email_message = strip_tags(implode(". ", $error_msg_array));
+            $error_log_email_message = strip_tags(implode("\n", $error_msg_array));
 
             $headers = "Return-path: no-reply@beehiveforum.net\n";
             $headers.= "From: \"Beehive Forum Error Report\" <no-reply@beehiveforum.net>\n";

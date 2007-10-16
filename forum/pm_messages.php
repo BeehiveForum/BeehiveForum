@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_messages.php,v 1.31 2007-10-16 17:09:23 decoyduck Exp $ */
+/* $Id: pm_messages.php,v 1.32 2007-10-16 21:47:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -584,12 +584,16 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
 
                 echo "                  <td align=\"left\" class=\"postbody\">", word_filter_add_ob_tags(implode('; ', $recipient_array)), "</td>\n";
 
-            }else {
+            }else if (isset($message['TO_UID']) && $message['TO_UID'] > 0) {
 
                 echo "                  <td align=\"left\" class=\"postbody\">";
                 echo "            <a href=\"user_profile.php?webtag=$webtag&amp;uid={$message['TO_UID']}\" target=\"_blank\" onclick=\"return openProfile({$message['TO_UID']}, '$webtag')\">";
                 echo word_filter_add_ob_tags(format_user_name($message['TLOGON'], $message['TNICK'])) . "</a>";
                 echo "            </td>\n";
+
+            }else {
+
+                echo "                  <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
             }
 
         }elseif ($current_folder == PM_SEARCH_RESULTS) {

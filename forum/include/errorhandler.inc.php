@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.96 2007-10-16 20:40:36 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.97 2007-10-16 20:44:00 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -177,7 +177,7 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
             $headers.= "X-Mailer: PHP/". phpversion(). "\n";
             $headers.= "X-Beehive-Forum: Beehive Forum ". BEEHIVE_VERSION;
 
-            error_log($error_log_email_message, 1, $error_report_email_addr, $headers);
+            @error_log($error_log_email_message, 1, $error_report_email_addr, $headers);
         }
 
         // Format the error array for adding to the system error log.
@@ -186,7 +186,7 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
 
         // Add the error to the log.
 
-        error_log($error_log_message);
+        @error_log($error_log_message);
 
         // Light mode / basic error message display.
 

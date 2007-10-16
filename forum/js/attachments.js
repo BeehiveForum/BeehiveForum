@@ -19,33 +19,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.js,v 1.9 2007-03-30 00:54:49 decoyduck Exp $ */
+/* $Id: attachments.js,v 1.10 2007-10-16 17:09:23 decoyduck Exp $ */
 
 var attachments_window = false;
 var attachments_window_edit = false;
 
-function attachment_toggle_all()
-{
-    for (var i = 0; i < document.admin_user_form.elements.length; i++) {
-
-        if (document.admin_user_form.elements[i].type == 'checkbox') {
-
-            if (document.admin_user_form.elements[i].name.substring(0, 17)  == 'delete_attachment') {
-            
-                if (document.admin_user_form.toggle_all.checked == true) {
-
-                    document.admin_user_form.elements[i].checked = true;
-
-                }else {
-
-                    document.admin_user_form.elements[i].checked = false;
-                }
-            }
-        }
-    }
-}
-
-function attachment_toggle_main()
+function attachmentToggleMain()
 {
     for (var i = 0; i < document.attachments.elements.length; i++) {
 
@@ -66,7 +45,7 @@ function attachment_toggle_main()
     }
 }
 
-function attachment_toggle_other()
+function attachmentToggleOther()
 {
     for (var i = 0; i < document.attachments.elements.length; i++) {
 

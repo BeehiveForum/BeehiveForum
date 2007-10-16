@@ -19,11 +19,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: general.js,v 1.30 2007-10-13 19:36:51 decoyduck Exp $ */
+/* $Id: general.js,v 1.31 2007-10-16 17:09:23 decoyduck Exp $ */
 
 var IE = (document.all ? true : false);
 
-function forum_get_url()
+function forumGetURL()
 {
     var domain = document.domain;
     var pathname = location.pathname.substring(0, location.pathname.lastIndexOf('\/') + 1);
@@ -31,7 +31,7 @@ function forum_get_url()
     return domain + pathname;
 }
 
-function disable_button(button)
+function disableButton(button)
 {
     button.className = 'button_disabled';
     
@@ -45,7 +45,7 @@ function disable_button(button)
     return true;
 }
 
-function enable_button(button)
+function enableButton(button)
 {
     button.className = 'button';
     
@@ -55,29 +55,6 @@ function enable_button(button)
         button.onclick = button.oldonclick;
     }
 
-    return true;
-}
-
-function submit_form(form)
-{
-    var form_obj;
-
-    if (document.getElementById) {
-        form_obj = eval("document.getElementById('" + form + "')");
-    }else if (document.all) {
-        form_obj = eval("document.all." + form);
-    }else if (document.layer) {
-        form_obj = eval("document." + form);
-    }else {
-        return false;
-    }
-    
-    form_obj.submit();
-}        
-
-function is_numeric(value)
-{
-    if ((isNaN(value)) || (value.length == 0)) return false;
     return true;
 }
 
@@ -238,7 +215,7 @@ function attachListener(obj, img_id)
 
 function resizeImages()
 {
-    var forum_url = forum_get_url();
+    var forum_url = forumGetURL();
     
     var body_tag = document.getElementsByTagName('body');
     var body_tag = body_tag[0];

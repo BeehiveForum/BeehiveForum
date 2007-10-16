@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_subscriptions.php,v 1.30 2007-10-12 23:28:12 decoyduck Exp $ */
+/* $Id: edit_subscriptions.php,v 1.31 2007-10-16 17:09:23 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -263,7 +263,7 @@ echo "              <table class=\"posthead\" width=\"100%\">\n";
 if (sizeof($thread_subscriptions['thread_array']) > 0) {
 
     echo "                <tr>\n";
-    echo "                  <td align=\"center\" class=\"subhead_checkbox\" width=\"1%\">", form_checkbox("toggle_all", "toggle_all", "", false, "onclick=\"subscriptions_toggle_all();\""), "</td>\n";
+    echo "                  <td align=\"center\" class=\"subhead_checkbox\" width=\"1%\">", form_checkbox("toggle_all", "toggle_all", "", false, "onclick=\"subscriptionsToggleAll();\""), "</td>\n";
     echo "                  <td align=\"left\" class=\"subhead\" width=\"450\">{$lang['threadtitle']}</td>\n";
     echo "                  <td align=\"center\" class=\"subhead\" width=\"150\">{$lang['currentinterest']}</td>\n";
     echo "                </tr>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_messages.php,v 1.30 2007-10-12 23:50:49 decoyduck Exp $ */
+/* $Id: pm_messages.php,v 1.31 2007-10-16 17:09:23 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -345,7 +345,7 @@ if (isset($_POST['search'])) {
 
                     $stopped_keywords = urlencode(implode(' ', $keywords_error_array['keywords']));
 
-                    $mysql_stop_word_link = "<a href=\"search.php?webtag=$webtag&amp;show_stop_words=true&amp;keywords=$stopped_keywords\" target=\"_blank\" onclick=\"return display_mysql_stopwords('$webtag', '$stopped_keywords')\">{$lang['mysqlstopwordlist']}</a>";
+                    $mysql_stop_word_link = "<a href=\"search.php?webtag=$webtag&amp;show_stop_words=true&amp;keywords=$stopped_keywords\" target=\"_blank\" onclick=\"return displayMysqlStopwords('$webtag', '$stopped_keywords')\">{$lang['mysqlstopwordlist']}</a>";
 
                     $error_msg = sprintf("<p>{$lang['notexttosearchfor']}</p>", $min_length, $max_length, $mysql_stop_word_link);
                     $error_msg.= "<h2>{$lang['keywordscontainingerrors']}</h2>\n";
@@ -358,7 +358,7 @@ if (isset($_POST['search'])) {
 
                 }else {
 
-                    $mysql_stop_word_link = "<a href=\"search.php?webtag=$webtag&amp;show_stop_words=true\" target=\"_blank\" onclick=\"return display_mysql_stopwords('$webtag', '')\">{$lang['mysqlstopwordlist']}</a>";
+                    $mysql_stop_word_link = "<a href=\"search.php?webtag=$webtag&amp;show_stop_words=true\" target=\"_blank\" onclick=\"return displayMysqlStopwords('$webtag', '')\">{$lang['mysqlstopwordlist']}</a>";
 
                     html_draw_top('pm_popup_disabled');
                     html_error_msg(sprintf("<p>{$lang['notexttosearchfor']}</p>", $min_length, $max_length, $mysql_stop_word_link));
@@ -449,7 +449,7 @@ echo "              <table width=\"100%\" border=\"0\">\n";
 echo "                <tr>\n";
 
 if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['message_array']) > 0) {
-    echo "                  <td class=\"subhead_checkbox\" align=\"center\" width=\"1%\">", form_checkbox("toggle_all", "toggle_all", "", false, "onclick=\"pm_toggle_all();\""), "</td>\n";
+    echo "                  <td class=\"subhead_checkbox\" align=\"center\" width=\"1%\">", form_checkbox("toggle_all", "toggle_all", "", false, "onclick=\"pmToggleAll();\""), "</td>\n";
 }else {
     echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
 }

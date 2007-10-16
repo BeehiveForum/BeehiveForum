@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db_mysql.inc.php,v 1.37 2007-10-11 13:01:21 decoyduck Exp $ */
+/* $Id: db_mysql.inc.php,v 1.38 2007-10-16 15:47:11 decoyduck Exp $ */
 
 function db_get_connection_vars(&$db_server, &$db_username, &$db_password, &$db_database)
 {
@@ -238,7 +238,7 @@ function db_errno($connection_id = false)
 
 function db_fetch_mysql_version(&$mysql_version)
 {
-    if ($db_fetch_mysql_version = db_connect()) {
+    if ($db_fetch_mysql_version = db_connect(false)) {
 
         $sql = "SELECT VERSION() AS version";
         $result = db_query($sql, $db_fetch_mysql_version);

@@ -19,9 +19,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.js,v 1.9 2007-10-13 00:21:40 decoyduck Exp $ */
+/* $Id: install.js,v 1.10 2007-10-16 17:09:23 decoyduck Exp $ */
 
-function confirm_install(button) {
+function confirmInstall(button) {
 
     if (install_type = getObjById('install_method')) {
     
@@ -44,7 +44,7 @@ function confirm_install(button) {
 
                 if (window.confirm(confirm_text)) {
 
-                    disable_button(button);
+                    disableButton(button);
                     install_form.submit();
                 }
             }
@@ -52,7 +52,7 @@ function confirm_install(button) {
     }
 }
 
-function show_install_help(topic)
+function showInstallHelp(topic)
 {
     var topic_text = '';
 

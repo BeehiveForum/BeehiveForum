@@ -21,16 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: config.inc.php,v 1.9 2007-10-11 13:01:22 decoyduck Exp $ */
+/* $Id: config.inc.php,v 1.10 2007-10-16 17:09:23 decoyduck Exp $ */
 
 // MAIN CONFIGURATION FILE
 
 // Database stuff ------------------------------------------------------
 
-$db_server   = "{db_server}";    // the address of your MySQL server
-$db_username = "{db_username}";  // your MySQL username
-$db_password = "{db_password}";  // your MySQL password
-$db_database = "{db_database}";  // the name of your MySQL database
+$db_server   = "{db_server}";    // The address of your MySQL server
+$db_username = "{db_username}";  // Your MySQL username
+$db_password = "{db_password}";  // Your MySQL password
+$db_database = "{db_database}";  // The name of your MySQL database
 
 // ---------------------------------------------------------------------
 
@@ -49,10 +49,29 @@ $mysql_big_selects = false;
 
 $show_friendly_errors = true;
 
-// Should Beehive replace PHP's default error handler? If you have
-// problems with blank pages, etc, you should try turning this option
-// off to see if it goes away.
+// If you want Beehive to display user friendly error messages you can
+// enable this option.
+//
+// Note: Under some circumstances this setting can cause problems
+//       with PHP's error handler that result in blank pages
+//       appearing instead of the appropriate error message.
+//       If you encounter such issues you should consider
+//       disabling this option.
+//
+// ---------------------------------------------------------------------
 
+// Error Reporting Email -----------------------------------------------
+
+$error_report_email_addr = '';
+
+// In addition to the error message displayed to end users Beehive can
+// also send error reports to an email address. To enable this
+// functionality simply change the value above to a valid email address.
+//
+// For example:
+//
+// $error_report_email_addr = 'support@mybeehiveforum.net'
+//
 // ---------------------------------------------------------------------
 
 // Cookie Domain -------------------------------------------------------
@@ -71,9 +90,9 @@ $cookie_domain = "";
 // URI for your forum, for example where your forum is accessible
 // from all of the following addresses:
 //
-// http://www.myBeehive Forum.net/forum/
-// http://forum.myBeehive Forum.net/
-// http://myBeehive Forum.net/forum/
+// http://www.mybeehiveforum.net/forum/
+// http://forum.mybeehiveforum.net/
+// http://mybeehiveforum.net/forum/
 //
 // Usually cookies set at one address will be unavailable at the
 // others which forces your users to login multiple times and keep
@@ -83,7 +102,7 @@ $cookie_domain = "";
 // and have them accessible from all addresses you would set the
 // $cookie_domain value as follows:
 //
-// $cookie_domain = "myBeehive Forum.net/forum/";
+// $cookie_domain = "mybeehiveforum.net/forum/";
 //
 // As you may have noticed the string used is common to all of
 // addresses listed above and so any cookies set at any of the domains
@@ -102,15 +121,28 @@ $gzip_compress_level  = 1;
 // amounts of bandwidth, but can also increase the CPU load on the
 // server.
 //
-// WARNING: IF YOU ARE USING MOD_GZIP OR ANY OTHER GZIPPING MODULE
-//          TO HANDLE THE COMPRESSION OF FILES ON YOUR WEB SERVER,
-//          DO NOT ENABLE THE BUILT IN GZIP COMPRESSION IN BEEHIVE.
-//          TO DO SO CAN MAKE YOUR FORUM UNUSABLE.
+// Note: If you are using mod_gzip or any other gzipping module
+//       to handle the compression of files on your web server,
+//       do not enable the built in gzip compression in Beehive.
+//       To do so can make your forum inaccessible.
+
+// ---------------------------------------------------------------------
+
+// Frame top target ----------------------------------------------------
+
+$frame_top_target = "_top";
+
+// This option allows you to specify the "top" frame for Beehive to use
+// when navigating between frames. If you intend to use your Beehive
+// Forum embedded into another site (for example within an iframe)
+// then you could change the value of this variable to match the name
+// attribute of your iframe and prevent Beehive from breaking out of
+// the frameset.
 //
-// You can also change the level of the gzip compression as long as PHP
-// 4.2.0 is installed. The maximum level of compression available is 9,
-// while the lowest is 1. A higher level will result in increased server
-// load.
+// Note: That when using Beehive within a iframe you should ensure that
+//       it is running from the same domain as it's parent page
+//       otherwise browsers may refuse the session cookies required
+//       by Beehive and your users will not be able to login.
 
 // ---------------------------------------------------------------------
 

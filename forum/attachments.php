@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.147 2007-10-11 13:01:13 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.148 2007-10-16 17:09:23 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -540,7 +540,7 @@ echo "              <table class=\"posthead\" width=\"100%\">\n";
 if (get_all_attachments($uid, $aid, $attachments_array, $image_attachments_array)) {
 
     echo "                <tr>\n";
-    echo "                  <td class=\"subhead_checkbox\" align=\"center\" width=\"1%\">", form_checkbox("toggle_other", "toggle_other", "", false, "onclick=\"attachment_toggle_other();\""), "</td>\n";
+    echo "                  <td class=\"subhead_checkbox\" align=\"center\" width=\"1%\">", form_checkbox("toggle_other", "toggle_other", "", false, "onclick=\"attachmentToggleOther();\""), "</td>\n";
     echo "                  <td align=\"left\" colspan=\"4\" class=\"subhead\">{$lang['otherattachmentsincludingpm']}</td>\n";
     echo "                </tr>\n";
 

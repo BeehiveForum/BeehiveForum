@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.94 2007-10-16 15:47:11 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.95 2007-10-16 17:09:23 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -58,6 +58,8 @@ error_reporting(E_ALL);
 function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
 {
     $show_friendly_errors = (isset($GLOBALS['show_friendly_errors'])) ? $GLOBALS['show_friendly_errors'] : false;
+
+    $error_report_email_addr = (isset($GLOBALS['error_report_email_addr'])) ? $GLOBALS['error_report_email_addr'] : '';
 
     // Bad Coding Practises Alert!!
     // We're going to ignore any E_STRICT error messages
@@ -160,6 +162,22 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
 
         if (isset($version_strings) && sizeof($version_strings) > 0) {
             $error_msg_array[] = implode(", ", $version_strings);
+        }
+
+        // Check to see if we need to send the error report by email
+
+        if (strlen($error_report_email_addr) > 0) {
+
+            $error_log_email_message = strip_tags(implode(". ", $error_msg_array));
+
+            $headers = "Return-path: no-reply@beehiveforum.net\n";
+            $headers.= "From: \"Beehive Forum Error Report\" <no-reply@beehiveforum.net>\n";
+            $headers.= "Reply-To: \"Beehive Forum Error Report\" <no-reply@beehiveforum.net>\n";
+            $headers.= "Content-type: text/plain; charset=UTF-8\n";
+            $headers.= "X-Mailer: PHP/". phpversion(). "\n";
+            $headers.= "X-Beehive-Forum: Beehive Forum ". BEEHIVE_VERSION;
+
+            error_log($error_log_email_message, 1, $error_report_email_addr, $headers);
         }
 
         // Format the error array for adding to the system error log.

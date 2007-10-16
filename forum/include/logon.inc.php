@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.71 2007-10-11 13:01:19 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.72 2007-10-16 17:09:23 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -381,7 +381,7 @@ function logon_draw_form($session_expired = false)
 
         $current_logon = key($username_array);
 
-        echo form_dropdown_array("logonarray", $username_dropdown_array, "", "onchange=\"changepassword()\" autocomplete=\"off\"", "logon_dropdown");
+        echo form_dropdown_array("logonarray", $username_dropdown_array, "", "onchange=\"changePassword()\" autocomplete=\"off\"", "logon_dropdown");
         echo form_input_hidden("user_logon", _htmlentities($username_array[$current_logon]));
 
         foreach($username_array as $key => $logon) {

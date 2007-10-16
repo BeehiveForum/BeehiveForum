@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.52 2007-10-12 23:28:12 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.53 2007-10-16 21:47:57 decoyduck Exp $ */
 
 // British English language file
 
@@ -243,6 +243,7 @@ $lang['youdonothaveaccesstoforum'] = "Sie haben keinen Zugriff auf %s";
 $lang['toapplyforaccessplease'] = "Um Zugriff zu erhalten bitte den Admin kontaktieren.";
 $lang['adminforumclosedtip'] = "Wenn Du einige Einstellungen aendern willst klicke auf den Admin-Link.";
 $lang['newfolder'] = "Neuer Ordner";
+$lang['nofoldersfound'] = "No existing folders found. To add a folder click the 'Add New' button below.";
 $lang['forumadmin'] = "Forum Admin";
 $lang['adminexp_1'] = "Benutze das linke Menü um dein Forum zu bearbeiten.";
 $lang['adminexp_2'] = "<b>Benutzer</b> ist zum Setzen von Benutzerberechtigungen und Einstellungen.";
@@ -277,7 +278,7 @@ $lang['thiscolour'] = "Diese Farbe";
 $lang['enterhexcolour'] = "Oder trage eine HEX-Farbe als Basis des neuen Stils ein";
 $lang['savestyle'] = "Stil speichern";
 $lang['styledesc'] = "Stil absteigend";
-$lang['fileallowedchars'] = "(nur Kleinbuchstaben (a-z), Zahlen (0-9) and Unterstrich (_) )";
+$lang['stylefilenamemayonlycontain'] = "Style filename may only contain lowercase letters (a-z), numbers (0-9) and underscore.";
 $lang['stylepreview'] = "Stil Voransicht";
 $lang['welcome'] = "Willkommen";
 $lang['messagepreview'] = "Nachricht Voransicht";
@@ -306,6 +307,7 @@ $lang['sectionname'] = "Bereichsname";
 $lang['items'] = "Eintraege";
 $lang['mustspecifyaprofilesectionid'] = "Eine Profilbereichs-ID muss festgelegt werden";
 $lang['mustsepecifyaprofilesectionname'] = "Ein Profilbereichsname muss festgelegt werden";
+$lang['noprofilesectionsfound'] = "No existing profile sections found. To add a profile section click the 'Add New' button below.";
 $lang['addnewprofilesection'] = "Neuen Profilbereich anlegen";
 $lang['successfullyaddedprofilesection'] = "Successfully added profile section";
 $lang['successfullyeditedprofilesection'] = "Profilbereich erfolgreich bearbeitet";
@@ -318,6 +320,7 @@ $lang['successfullyaddednewprofileitem'] = "Successfully added new profile item"
 $lang['successfullyeditedprofileitem'] = "Successfully edited profile item";
 $lang['successfullyremovedselectedprofileitems'] = "ausgewaehlter Profileintrag erfolgreich geloescht";
 $lang['failedtoremoveprofileitems'] = "Profileintrag konnte nicht geloescht werden";
+$lang['noexistingprofileitemsfound'] = "There are no existing profile items in this section. To add an item click the 'Add New' button below.";
 $lang['edititem'] = "Eintrag bearbeiten";
 $lang['invalidprofilesectionid'] = "Invalid profile section ID or section not found";
 $lang['invalidprofileitemid'] = "Invalid profile item ID or item not found";
@@ -352,6 +355,7 @@ $lang['successfullychangedpassword'] = "Successfully Changed Password";
 $lang['failedtochangepasswd'] = "Failed To Change Password";
 $lang['viewuserhistory'] = "View User History";
 $lang['viewuseraliases'] = "View User Aliases";
+$lang['searchreturnednoresults'] = "Search Returned No Results";
 $lang['deleteposts'] = "Loesche Eintraege";
 $lang['deleteuser'] = "Delete User";
 $lang['alsodeleteusercontent'] = "Also delete all of the content created by this user";
@@ -387,6 +391,7 @@ $lang['filtername'] = "Filter Name";
 $lang['filtertype'] = "Filtertyp";
 $lang['filterenabled'] = "Filter Enabled";
 $lang['editwordfilter'] = "Wortfilter editieren";
+$lang['nowordfilterentriesfound'] = "No existing word filter entries found. To add a filter click the 'Add New' button below.";
 $lang['mustspecifyfiltername'] = "You must specify a filter name";
 $lang['mustspecifymatchedtext'] = "Bitte Trefferauswahl definieren";
 $lang['mustspecifyfilteroption'] = "Bitte Filteroption definieren";
@@ -399,6 +404,11 @@ $lang['normalthreadsonly'] = "Nur Normale Eintraege";
 $lang['pollthreadsonly'] = "Nur Abstimmungseintraege";
 $lang['both'] = "Beide Eintragstypen";
 $lang['existingpermissions'] = "Erteilte Erlaubnis";
+$lang['nousershavebeengrantedpermission'] = "No existing users permissions found. To grant permission to users search for them below.";
+$lang['successfullyaddedpermissionsforselectedusers'] = "Successfully added permissions for selected users";
+$lang['successfullyremovedpermissionsfromselectedusers'] = "Successfully removed permissions from selected users";
+$lang['failedtoaddpermissionsforuser'] = "Failed to add permissions for user '%s'";
+$lang['failedtoremovepermissionsfromuser'] = "Failed to remove permissions from user '%s'";
 $lang['searchforuser'] = "Suche nach Benutzer";
 $lang['browsernegotiation'] = "Browser ermittelt";
 $lang['largetextfield'] = "Grosses Textfeld";
@@ -443,17 +453,24 @@ $lang['failedtoupdatefolder'] = "Failed to update folder";
 $lang['cannotdeletefolderwiththreads'] = "Kann Ordner die noch Eintraege enthalten nicht loeschen.";
 $lang['forumisnotrestricted'] = "kein eingeschraenktes Forum";
 $lang['groups'] = "Gruppen";
+$lang['nousergroups'] = "No User Groups have been set up. To add a group click the 'Add New' button below.";
 $lang['suppliedgidisnotausergroup'] = "angegebene GID ist keine Benutzergruppe";
 $lang['manageusergroups'] = "Manage Benutzergruppen";
 $lang['groupstatus'] = "Gruppenstatus";
 $lang['addusergroup'] = "Gruppe hinzufuegen";
+$lang['addemptygroup'] = "Add Empty Group";
+$lang['adduserstogroup'] = "Add Users To Group";
 $lang['addremoveusers'] = "Anfuegen/Loeschen Benutzer";
+$lang['nousersingroup'] = "There are no users in this group. Add users to this group by searching for them below.";
+$lang['groupaddedaddnewuser'] = "Successfully added group. Add users to this group by searching for them below.";
+$lang['nousersingroupaddusers'] = "There are no users in this group. To add users click the 'Add/Remove Users' button below.";
 $lang['useringroups'] = "Dieser Benutzer ist Mitglied folgender Gruppen";
 $lang['usernotinanygroups'] = "Dieser Benutzer ist in keiner Benutzergruppe";
 $lang['usergroupwarning'] = "Anmerkung: Dieser Benutzer koennte zusaetzliche Rechte von jeder unten aufgefuehrten Benutzergruppe erhalten.";
 $lang['successfullyaddedgroup'] = "Gruppe erfolgreich angefuegt";
 $lang['successfullyeditedgroup'] = "Successfully edited group";
-$lang['successfullydeletedgroup'] = "Gruppe erfolgreich geloescht";
+$lang['successfullydeletedselectedgroups'] = "Successfully deleted selected groups";
+$lang['failedtodeletegroupname'] = "Failed to delete group %s";
 $lang['usercanaccessforumtools'] = "Benutzer hat Zugriff auf Foren-Tools und kann Foren erstellen, loeschen und editieren";
 $lang['usercanmodallfoldersonallforums'] = "Benutzer ist Moderator ueber <b>alle Ordner</b> in <b>allen Foren</b>";
 $lang['usercanmodlinkssectiononallforums'] = "Benutzer kann den Links-Bereicht moderieren in <b>allen Foren</b>";
@@ -487,14 +504,14 @@ $lang['moderatefolder'] = "Moderiere Ordner";
 $lang['postinhtml'] = "Post in HTML";
 $lang['postasignature'] = "Poste eine Signatur";
 $lang['editforumlinks'] = "Editiere Forum-Links";
-$lang['editforumlinks_exp'] = "Benutze diese Seite um Links in der Drop-Down-Liste anzufuegen, die  rechts oben im Forum angezeigt wird. Sind keine Links vorhanden wird die Drop-Down-Liste nicht angezeigt.";
+$lang['linksaddedhereappearindropdown'] = "Links added here appear in a drop down in the top right of the frame set.";
+$lang['linksaddedhereappearindropdownaddnew'] = "Links added here appear in a drop down in the top right of the frame set. To add a link click the 'Add New' button below.";
 $lang['failedtoremoveforumlink'] = "Failed to remove forum link '%s'";
 $lang['failedtoaddnewforumlink'] = "Failed to add new forum link '%s'";
 $lang['failedtoupdateforumlink'] = "Failed to update forum link '%s'";
 $lang['notoplevellinktitlespecified'] = "Kein top level link Titel angegeben";
 $lang['youmustenteralinktitle'] = "Ein Link-Titel muss angegeben werden";
 $lang['alllinkurismuststartwithaschema'] = "All Link-URLs muessen so beginnen (z.B. http://, ftp://, irc://)";
-$lang['noexistingforumlinksfound'] = "Es existieren keine Foren-Links. Um einen Foren-Link hinzuzufuegen folgende Schaltflaeche klicken.";
 $lang['editlink'] = "Link bearbeiten";
 $lang['addnewforumlink'] = "Neuen Link hinzufuegen";
 $lang['forumlinktitle'] = "Forum Link Titel";
@@ -525,7 +542,7 @@ $lang['showpopuponnewpm'] = "Zeige Pop-Up wenn neue PM eingeht";
 $lang['setautomatichighinterestonpost'] = "Setze automatisch Hohes Interesse in Posts";
 $lang['postingstats'] = "Posting Stats";
 $lang['postingstatsforperiod'] = "Posting Statistik fuer Zeitraum von %s bis %s";
-$lang['nodata'] = "Keine Daten";
+$lang['nopostdatarecordedforthisperiod'] = "No post data recorded for this period.";
 $lang['totalposts'] = "Totale Posts";
 $lang['totalpostsforthisperiod'] = "Totale Posts fuer diesen Zeitraum";
 $lang['mustchooseastartday'] = "Waehle Start Tag";
@@ -573,6 +590,7 @@ $lang['approveselected'] = "Zustimmung ausgewaehlt";
 $lang['failedtoapproveuser'] = "Failed to approve user %s";
 $lang['kickselected'] = "Kick (kurzfristiger Rauswurf) ausgewaehlt";
 $lang['visitorlog'] = "Benutzer Log";
+$lang['clearvisitorlog'] = "Clear Visitor Log";
 $lang['novisitorslogged'] = "Kein Besucher protokolliert";
 $lang['addselectedusers'] = "Ausgewaehlte Benutzer hinzufuegen";
 $lang['removeselectedusers'] = "Ausgewaehlte Benutzer loeschen";
@@ -671,8 +689,23 @@ $lang['mergedthreadintonewthread'] = "Gemischte Eintraege '%s' und '%s' in neuen
 
 $lang['approveduser'] = "Anerkannter Benutzer '%s'";
 
+$lang['forumautoupdatestats'] = "Forum Auto Update: Stats Updated";
+$lang['forumautoprunepm'] = "Forum Auto Update: PM Folders Pruned";
+$lang['forumautoprunesessions'] = "Forum Auto Update: Sessions Pruned";
+$lang['forumautocleanthreadunread'] = "Forum Auto Update: Thread Unread Data Cleaned";
+$lang['forumautocleancaptcha'] = "Forum Auto Update: Text-Captcha Images Cleaned";
+
 $lang['adminlogempty'] = "Admin Log ist leer";
-$lang['clearlog'] = "Log leeren";
+
+$lang['youmustspecifyanactiontypetoremove'] = "You must specify an action type to remove";
+
+$lang['removeentriesrelatingtoaction'] = "Remove Entries Relating to Action";
+$lang['removeentriesolderthandays'] = "Remove Entries Older Than (Days)";
+
+$lang['successfullyprunedadminlog'] = "Successfully Pruned Admin Log";
+$lang['failedtopruneadminlog'] = "Failed To Prune Admin Log";
+
+$lang['prune_log'] = "Prune Log";
 
 // Admin Forms (admin_forums.php) ------------------------------------------------
 
@@ -1027,6 +1060,9 @@ $lang['linkdetails'] = "Link-Details";
 $lang['addcomment'] = "Kommentar anfuegen";
 $lang['voterecorded'] = "Deine Stimme wurde gespeichert";
 $lang['votecleared'] = "Your vote has been cleared";
+$lang['linknametoolong'] = "Link name too long. Maximum is %s characters";
+$lang['linkurltoolong'] = "Link URL too long. Maximum is %s characters";
+$lang['linkfoldernametoolong'] = "Folder name too long. Maximum length is %s characters";
 
 // Login / logout (llogon.php, logon.php, logout.php) -----------------------------------------
 
@@ -1067,6 +1103,11 @@ $lang['removefromfavourites'] = "Aus Bevorzugten loeschen";
 $lang['addtofavourites'] = "Zu Bevorzugten hinzufuegen";
 $lang['availableforums'] = "Erreichbare Foren";
 $lang['noforumsofselectedtype'] = "There are no forums of the selected type available. Please select a different type.";
+$lang['successfullyaddedforumtofavourites'] = "Successfully added forum to Favourites.";
+$lang['successfullyremovedforumfromfavourites'] = "Successfully removed forum from Favourites.";
+$lang['successfullyignoredforum'] = "Successfully ignored forum.";
+$lang['successfullyunignoredforum'] = "Successfully unignored forum.";
+$lang['failedtoupdateforuminterestlevel'] = "Failed to update forum interest level";
 $lang['noforumsavailablelogin'] = "Es sind keine Foren erreichbar. Bitte anmelden.";
 $lang['passwdprotectedforum'] = "Passwort-geschuetztes Forum";
 $lang['passwdprotectedwarning'] = "Dieses Forum ist passwortgeschuetzt. Fuer Zugriff bitte Passwort unten eingeben.";
@@ -1204,7 +1245,6 @@ $lang['usernotfound'] = "Benutzer %s nicht gefunden.";
 $lang['sendnewpm'] = "Neue Nachricht senden";
 $lang['savemessage'] = "Nachricht speichern";
 $lang['timesent'] = "Uhrzeit gesendet";
-$lang['nomessages'] = "Keine Nachrichten";
 $lang['errorcreatingpm'] = "Fehler beim Erstellen der Nachricht! Bitte in ein paar Minuten ncohmal probieren";
 $lang['writepm'] = "Nachricht schreiben";
 $lang['editpm'] = "Nachricht anzeigen";
@@ -1240,6 +1280,11 @@ $lang['pmtooltip1message'] = "1 message";
 
 $lang['allowusertosendpm'] = "Allow user to send personal messages to me";
 $lang['blockuserfromsendingpm'] = "Block user from sending personal messages to me";
+$lang['yourfoldernamefolderisempty'] = "Your %s folder is empty";
+$lang['successfullydeletedselectedmessages'] = "Successfully deleted selected messages";
+$lang['successfullyarchivedselectedmessages'] = "Successfully archived selected messages";
+$lang['failedtodeleteselectedmessages'] = "Failed to delete selected messages";
+$lang['failedtoarchiveselectedmessages'] = "Failed to archive selected messages";
 
 // Preferences / Profile (user_*.php) ---------------------------------------------
 
@@ -1261,6 +1306,7 @@ $lang['userdetails'] = "Benutzerdetails";
 $lang['userprofile'] = "Benutzer-Profil";
 $lang['emailandprivacy'] = "Email &amp; Privat";
 $lang['editsignature'] = "Signatur editieren";
+$lang['norelationshipssetup'] = "You have no user relationships set up. Add a new user by searching below.";
 $lang['editwordfilter'] = "Wortfilter editieren";
 $lang['userinformation'] = "Benutzer-Information";
 $lang['changepassword'] = "Passwort aendern";
@@ -1330,6 +1376,7 @@ $lang['listmeontheactiveusersdisplay'] = "In den Aktiven Benutzern anzeigen wenn
 $lang['browseanonymously'] = "Forum anonym durchsuchen";
 $lang['allowfriendstoseemeasonline'] = "anonym durchsuchen, aber Freunden erlauben mich als Online zu sehen";
 $lang['revealspoileronmouseover'] = "Spoiler hervorheben durch Mouse-Over";
+$lang['showspoilersinlightmode'] = "Always show spoilers in light mode (uses lighter font colour)";
 $lang['resizeimagesandreflowpage'] = "Bildgroessen aendern und Seite aktualisieren um horizontales Scrollen zu vermeiden.";
 $lang['showforumstats'] = "Zeige Forenstatistik am Fuss der Nachrichten";
 $lang['usewordfilter'] = "Wortfilter aktivieren.";
@@ -1601,6 +1648,7 @@ $lang['select'] = "Auswaehlen";
 $lang['searchforthread'] = "Suche nach Eintrag";
 $lang['mustspecifytypeofsearch'] = "You must specify type of search to perform";
 $lang['unkownsearchtypespecified'] = "Unknown search type specified";
+$lang['mustentersomethingtosearchfor'] = "You must enter something to search for";
 
 // Start page (start_left.php) -----------------------------------------
 
@@ -1673,12 +1721,16 @@ $lang['onenewoflength'] = "%d neu von %d";
 $lang['manynewoflength'] = "%d neu von %d";
 $lang['ignorefolderconfirm'] = "Bist Du sicher dass Du diesen Ordner ignorieren willst?";
 $lang['unignorefolderconfirm'] = "Bist Du sicher dass Du diesen Ordner nicht mehr ignorieren willst?";
+$lang['confirmmarkasread'] = "Are you sure you want to mark the selected threads as read?";
+$lang['successfullymarkreadselectedthreads'] = "Successfully marked selected threads as read";
+$lang['failedtomarkselectedthreadsasread'] = "Failed to mark selected threads as read";
 $lang['gotofirstpostinthread'] = "Springe zum ersten Post im Eintrag";
 $lang['gotolastpostinthread'] = "Springe zu letztem Post im Eintrag";
 $lang['viewmessagesinthisfolderonly'] = "Nachrichten nur in diesem Ordner anzeigen";
 $lang['shownext50threads'] = "Zeige naechste 50 Eintraege";
 $lang['showprev50threads'] = "Zeige vorherige 50 Eintraege";
 $lang['createnewdiscussioninthisfolder'] = "Erstelle neue Diskussion in diesem Ordner";
+$lang['nomessages'] = "Keine Nachrichten";
 
 // HTML toolbar (htmltools.inc.php) ------------------------------------
 $lang['bold'] = "Fellt";
@@ -1834,6 +1886,7 @@ $lang['rssclicktoreadarticle'] = "Hier klicken um den Artikel zu lesen";
 $lang['addnewfeed'] = "Neuen Feed hinzufuegen";
 $lang['editfeed'] = "Feed bearbeiten";
 $lang['feeduseraccount'] = "Feed Benutzerkonto";
+$lang['noexistingfeeds'] = "No existing RSS Feeds found. To add a feed click the 'Add New' button below";
 $lang['rssfeedhelp'] = "Hier kannst Du RSS-Feeds installieren fuer automatische Verbreitung in Deinem Forum. Die Eintraege der RSS-Feeds die Du anfuegst werden in Threads erstellt mit denen Benutzer antworten koennen als waeren es normale Posts. Beim Hinzufuegen eines RSS-Feeds musst Du den Benutzerlogon definieren der benutzt werden soll um Threads zu starten, Der Ordner in dem er erstellt werden soll und die Lokation des Feeds. Die Feed-Lokation muss via HTTP erreichbar sein, ansonsten wird es nicht funktionieren.";
 $lang['mustspecifyrssfeedname'] = "RSS Feed Name muss definiert sein";
 $lang['mustspecifyrssfeeduseraccount'] = "RSS Feed Benutzerkonto muss definiert sein";
@@ -1904,6 +1957,7 @@ $lang['failedtocreatenewthreadforsplit'] = "Kann neuen Eintrag nicht anlegen zur
 $lang['threadsubscriptions'] = "Eintragsbeschreibungen";
 $lang['couldnotupdateinterestonthread'] = "Konnte Interessensfunktion in Eintrag '%s' nicht aendern";
 $lang['threadinterestsupdatedsuccessfully'] = "Interessensfunktion des Eintrags erfolgreich geaendert";
+$lang['nothreadsubscriptions'] = "You are not subscribed to any threads.";
 $lang['resetselected'] = "Auswahl zuruecksetzen";
 $lang['allthreadtypes'] = "Alle Eintragstypen";
 $lang['ignoredthreads'] = "Ignoriere Eintraege";

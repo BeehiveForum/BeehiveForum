@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.168 2007-10-13 20:41:26 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.169 2007-10-17 19:32:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -98,7 +98,7 @@ function post_create($fid, $tid, $reply_pid, $by_uid, $fuid, $tuid, $content, $h
 
             // Update the thread length so it matches the number of posts
 
-            thread_set_length($tid, $new_pid);
+            post_update_thread_length($tid, $new_pid);
 
             // Update the user's post count.
 
@@ -195,6 +195,23 @@ function post_create_thread($fid, $uid, $title, $poll = 'N', $sticky = 'N', $clo
     }
 
     return $new_tid;
+}
+
+function post_update_thread_length($tid, $length)
+{
+    if (!$db_post_update_thread_length = db_connect()) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    if (!is_numeric($tid)) return false;
+    if (!is_numeric($length)) return false;
+
+    $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}THREAD ";
+    $sql.= "SET LENGTH = '$length', MODIFIED = NOW() WHERE TID = '$tid'";
+
+    if (!$result = db_query($sql, $db_post_update_thread_length)) return false;
+
+    return true;
 }
 
 function post_draw_to_dropdown($default_uid, $show_all = true)

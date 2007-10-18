@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.159 2007-10-11 13:01:13 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.160 2007-10-18 14:42:29 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -117,7 +117,7 @@ if (isset($_GET['sort_by'])) {
     if ($_GET['sort_by'] == "LOGON") {
         $sort_by = "USER.LOGON";
     } elseif ($_GET['sort_by'] == "LAST_LOGON") {
-        $sort_by = "VISITOR_LOG.LAST_LOGON";
+        $sort_by = "USER_FORUM.LAST_VISIT";
     } elseif ($_GET['sort_by'] == "REGISTERED") {
         $sort_by = "USER.REGISTERED";
     } elseif ($_GET['sort_by'] == "REFERER") {

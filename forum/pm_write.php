@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.186 2007-10-16 21:47:59 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.187 2007-10-18 20:51:00 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -678,19 +678,24 @@ if (strlen($t_content) >= 65535) {
 // Attachment Unique ID
 
 if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
-
     $aid = $_POST['aid'];
-
 }else if (!isset($aid)) {
-
     $aid = md5(uniqid(mt_rand()));
+}
+
+// De-dupe key
+
+if (isset($_POST['t_dedupe']) && is_numeric($_POST['t_dedupe'])) {
+    $t_dedupe = $_POST['t_dedupe'];
+}else{
+    $t_dedupe = mktime();
 }
 
 // Send the PM
 
 if ($valid && isset($_POST['submit'])) {
 
-    if (check_ddkey($_POST['t_dedupe'])) {
+    if (check_ddkey($t_dedupe)) {
 
         if (isset($to_radio) && $to_radio == POST_RADIO_FRIENDS) {
 
@@ -795,6 +800,7 @@ echo "<br />\n";
 echo "<form name=\"f_post\" action=\"pm_write.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden('folder', _htmlentities($folder)), "\n";
+echo "  ", form_input_hidden("t_dedupe", _htmlentities($t_dedupe));
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -1059,12 +1065,6 @@ echo "                </tr>\n";
 echo "              </table>\n";
 
 echo $tools->js();
-
-if (isset($_POST['t_dedupe'])) {
-    echo form_input_hidden("t_dedupe", _htmlentities($_POST['t_dedupe']));
-}else{
-    echo form_input_hidden("t_dedupe", _htmlentities(mktime()));
-}
 
 if (isset($t_rmid) && $forward_msg === false && $edit_msg == false) {
     echo form_input_hidden("replyto", _htmlentities($t_rmid)), "\n";

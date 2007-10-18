@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.323 2007-10-11 13:01:16 decoyduck Exp $ */
+/* $Id: post.php,v 1.324 2007-10-18 20:51:00 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -368,6 +368,12 @@ if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
     $aid = md5(uniqid(mt_rand()));
 }
 
+if (isset($_POST['t_dedupe']) && is_numeric($_POST['t_dedupe'])) {
+    $t_dedupe = $_POST['t_dedupe'];
+}else{
+    $t_dedupe = mktime();
+}
+
 if (!isset($sig_html)) $sig_html = 0;
 
 if (isset($_POST['submit']) || isset($_POST['preview'])) {
@@ -658,7 +664,7 @@ if ($valid && isset($_POST['submit'])) {
 
     if (check_post_frequency()) {
 
-        if (check_ddkey($_POST['t_dedupe'])) {
+        if (check_ddkey($t_dedupe)) {
 
             if ($newthread) {
 
@@ -810,6 +816,7 @@ if (!$newthread && isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 && 
 
 echo "<br /><form name=\"f_post\" action=\"post.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+echo "  ", form_input_hidden('t_dedupe', _htmlentities($t_dedupe)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -1142,12 +1149,6 @@ echo "              </tr>\n";
 echo "            </table>\n";
 
 echo $tools->js();
-
-if (isset($_POST['t_dedupe'])) {
-    echo form_input_hidden("t_dedupe", _htmlentities($_POST['t_dedupe']));
-}else{
-    echo form_input_hidden("t_dedupe", _htmlentities(mktime()));
-}
 
 if (!$newthread && $reply_to_pid > 0) {
 

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.112 2007-10-11 13:01:15 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.113 2007-10-18 20:51:00 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -440,11 +440,19 @@ if (!$newthread) {
     }
 }
 
+// De-dupe key
+
+if (isset($_POST['t_dedupe']) && is_numeric($_POST['t_dedupe'])) {
+    $t_dedupe = $_POST['t_dedupe'];
+}else{
+    $t_dedupe = mktime();
+}
+
 if ($valid && isset($_POST['submit'])) {
 
     if (check_post_frequency()) {
 
-        if (check_ddkey($_POST['t_dedupe'])) {
+        if (check_ddkey($t_dedupe)) {
 
             if ($newthread) {
 
@@ -587,6 +595,7 @@ if (!$newthread) {
 }
 
 echo "<form name=\"f_post\" action=\"" . get_request_uri() . "\" method=\"post\">\n";
+echo form_input_hidden('t_dedupe', _htmlentities($t_dedupe));
 
 if (!isset($t_threadtitle)) {
     $t_threadtitle = "";
@@ -652,12 +661,6 @@ if ($allow_html == true) {
 
 echo "<p>", light_form_submit("submit",$lang['post']), "&nbsp;", light_form_submit("preview",$lang['preview']), "&nbsp;", light_form_submit("cancel", $lang['cancel']);
 echo "</p>";
-
-if (isset($_POST['t_dedupe'])) {
-    echo form_input_hidden("t_dedupe", _htmlentities($_POST['t_dedupe']));
-}else {
-    echo form_input_hidden("t_dedupe", _htmlentities(mktime()));
-}
 
 echo "</form>\n";
 

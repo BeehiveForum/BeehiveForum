@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.169 2007-10-17 19:32:35 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.170 2007-10-18 20:51:00 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -474,6 +474,8 @@ function check_ddkey($ddkey)
 {
     if (!$db_check_ddkey = db_connect()) return false;
 
+    if (!is_numeric($ddkey)) return false;
+
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (!$table_data = get_table_prefix()) return false;
@@ -570,9 +572,11 @@ class MessageText {
     function MessageText ($html = 0, $content = "", $emoticons = true, $links = true)
     {
         $post_prefs = bh_session_get_post_page_prefs();
+
         if ($post_prefs & POST_TINYMCE_DISPLAY) {
             $this->tinymce = true;
         }
+
         $this->diff = false;
         $this->original_text = "";
         $this->links = $links;
@@ -704,7 +708,7 @@ class MessageTextParse {
             $emoticons = false;
         }
 
-        $html = 0;
+        $html = POST_HTML_DISABLED;
 
         $message_temp = preg_replace("/<a href=\"(http:\/\/)?([^\"]*)\">((http:\/\/)?\\2)<\/a>/", "\\3", $message);
 
@@ -718,10 +722,11 @@ class MessageTextParse {
 
         if (strip_tags($message, '<p><br>') != $message_temp) {
 
-            $html = 2;
+            $html = POST_HTML_ENABLED;
 
             if (add_paragraphs($message) == $message) {
-                $html = 1;
+
+                $html = POST_HTML_AUTO;
             }
 
         } else {

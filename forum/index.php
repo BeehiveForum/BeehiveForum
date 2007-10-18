@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.154 2007-10-11 13:01:14 decoyduck Exp $ */
+/* $Id: index.php,v 1.155 2007-10-18 14:42:29 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -155,7 +155,7 @@ if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri'])))
 // Calculate how tall the nav frameset should be based on the user's fontsize.
 
 $navsize = bh_session_get_value('FONT_SIZE');
-$navsize = max(($navsize ? $navsize * 2 : 22), 22);
+$navsize = max((is_numeric($navsize) ? $navsize * 2 : 22), 22);
 
 // If user has requested password change show the form instead of the logon page.
 

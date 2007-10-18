@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.213 2007-10-11 13:01:13 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.214 2007-10-18 20:51:00 decoyduck Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -660,11 +660,19 @@ if (strlen($t_sig) >= 65535) {
     $valid = false;
 }
 
+// De-dupe key
+
+if (isset($_POST['t_dedupe']) && is_numeric($_POST['t_dedupe'])) {
+    $t_dedupe = $_POST['t_dedupe'];
+}else{
+    $t_dedupe = mktime();
+}
+
 if ($valid && isset($_POST['submit'])) {
 
     if (check_post_frequency()) {
 
-        if (check_ddkey($_POST['t_dedupe'])) {
+        if (check_ddkey($t_dedupe)) {
 
             // Work out when the poll will close.
 
@@ -759,6 +767,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 echo "<br />\n";
 echo "<form name=\"f_poll\" action=\"create_poll.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+echo "  ", form_input_hidden('t_dedupe', _htmlentities($t_dedupe)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"785\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -1306,13 +1315,6 @@ echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "  ", $tools->js(false);
-
-if (isset($_POST['t_dedupe'])) {
-    echo "  ", form_input_hidden("t_dedupe", _htmlentities($_POST['t_dedupe'])), "\n";
-}else{
-    echo "  ", form_input_hidden("t_dedupe", _htmlentities(mktime())), "\n";
-}
-
 echo "            </td>\n";
 echo "          </tr>\n";
 echo "        </table>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.php,v 1.112 2007-10-11 13:01:17 decoyduck Exp $ */
+/* $Id: visitor_log.php,v 1.113 2007-10-21 15:05:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -400,20 +400,13 @@ if (sizeof($user_profile_array['user_array']) > 0) {
 
         foreach ($profile_items_selected_array as $key => $profile_item_selected) {
 
-            if (is_numeric($key)) {
+            if (is_numeric($key) && isset($user_array["ENTRY_$key"])) {
 
-                if (isset($user_array["ENTRY_$key"])) {
+                echo "                   <td class=\"postbody\" align=\"right\" valign=\"top\" width=\"20%\"><div class=\"profile_item_overflow\" title=\"", _htmlentities($user_array["ENTRY_$key"]), "\">", word_filter_add_ob_tags(nl2br(make_links(_htmlentities($user_array["ENTRY_$key"])))), "&nbsp;</div></td>\n";
 
-                    echo "                   <td class=\"postbody\" align=\"right\" valign=\"top\" width=\"20%\"><div class=\"profile_item_overflow\" title=\"", _htmlentities($user_array["ENTRY_$key"]), "\">", word_filter_add_ob_tags(_htmlentities($user_array["ENTRY_$key"])), "&nbsp;</div></td>\n";
+            }elseif (is_numeric($key) && isset($profile_header_array[$key]) && isset($user_array[$key])) {
 
-                }else {
-
-                    echo "                   <td class=\"postbody\" align=\"right\" valign=\"top\" width=\"20%\"><div class=\"profile_item_overflow\" title=\"{$lang['unknown']}\">{$lang['unknown']}&nbsp;</div></td>\n";
-                }
-
-            }elseif (isset($profile_header_array[$key]) && isset($user_array[$key])) {
-
-                echo "                   <td class=\"postbody\" align=\"right\" valign=\"top\" width=\"20%\"><div class=\"profile_item_overflow\" title=\"", _htmlentities($user_array[$key]), "\">", word_filter_add_ob_tags(_htmlentities($user_array[$key])), "&nbsp;</div></td>\n";
+                echo "                   <td class=\"postbody\" align=\"right\" valign=\"top\" width=\"20%\"><div class=\"profile_item_overflow\" title=\"", _htmlentities($user_array[$key]), "\">", word_filter_add_ob_tags(nl2br(make_links(_htmlentities($user_array[$key])))), "&nbsp;</div></td>\n";
 
             }else {
 

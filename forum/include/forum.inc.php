@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.269 2007-10-11 13:03:39 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.270 2007-10-21 19:59:22 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1138,6 +1138,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  PSID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
         $sql.= "  NAME VARCHAR(64) DEFAULT NULL,";
         $sql.= "  TYPE TINYINT(3) UNSIGNED DEFAULT '0',";
+        $sql.= "  OPTIONS TEXT NOT NULL, ";
         $sql.= "  POSITION MEDIUMINT(3) UNSIGNED DEFAULT '0',";
         $sql.= "  PRIMARY KEY  (PIID)";
         $sql.= ") TYPE=MYISAM";
@@ -1154,7 +1155,8 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         }
 
         $sql = "INSERT INTO {$database_name}.{$webtag}_PROFILE_ITEM ";
-        $sql.= "(PSID, NAME, TYPE, POSITION) VALUES (1, 'Location', 0, 1)";
+        $sql.= "(PSID, NAME, TYPE, OPTIONS, POSITION) ";
+        $sql.= "VALUES (1, 'Location', 0, '', 1)";
 
         if (!$result = @db_query($sql, $db_forum_create)) {
 
@@ -1168,7 +1170,8 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         }
 
         $sql = "INSERT INTO {$database_name}.{$webtag}_PROFILE_ITEM ";
-        $sql.= "(PSID, NAME, TYPE, POSITION) VALUES (1, 'Age', 0, 2)";
+        $sql.= "(PSID, NAME, TYPE, OPTIONS, POSITION) ";
+        $sql.= "VALUES (1, 'Age', 0, '', 2)";
 
         if (!$result = @db_query($sql, $db_forum_create)) {
 
@@ -1182,7 +1185,8 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         }
 
         $sql = "INSERT INTO {$database_name}.{$webtag}_PROFILE_ITEM ";
-        $sql.= "(PSID, NAME, TYPE, POSITION) VALUES (1, 'Gender', 0, 3)";
+        $sql.= "(PSID, NAME, TYPE, OPTIONS, POSITION) VALUES ";
+        $sql.= "(1, 'Gender', 5, 'Male\nFemale\nUnspecified', 3)";
 
         if (!$result = @db_query($sql, $db_forum_create)) {
 
@@ -1196,7 +1200,8 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         }
 
         $sql = "INSERT INTO {$database_name}.{$webtag}_PROFILE_ITEM ";
-        $sql.= "(PSID, NAME, TYPE, POSITION) VALUES (1, 'Quote', 0, 4)";
+        $sql.= "(PSID, NAME, TYPE, OPTIONS, POSITION) ";
+        $sql.= "VALUES (1, 'Quote', 0, '', 4)";
 
         if (!$result = @db_query($sql, $db_forum_create)) {
 
@@ -1210,7 +1215,8 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         }
 
         $sql = "INSERT INTO {$database_name}.{$webtag}_PROFILE_ITEM ";
-        $sql.= "(PSID, NAME, TYPE, POSITION) VALUES (1, 'Occupation', 0, 5)";
+        $sql.= "(PSID, NAME, TYPE, OPTIONS, POSITION) ";
+        $sql.= "VALUES (1, 'Occupation', 0, '', 5)";
 
         if (!$result = @db_query($sql, $db_forum_create)) {
 

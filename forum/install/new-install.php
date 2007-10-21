@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.155 2007-10-15 18:00:28 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.156 2007-10-21 19:59:22 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
 
@@ -322,6 +322,7 @@ $sql.= "  PIID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, ";
 $sql.= "  PSID MEDIUMINT(8) UNSIGNED DEFAULT NULL, ";
 $sql.= "  NAME VARCHAR(64) DEFAULT NULL, ";
 $sql.= "  TYPE TINYINT(3) UNSIGNED DEFAULT '0', ";
+$sql.= "  OPTIONS TEXT NOT NULL, ";
 $sql.= "  POSITION MEDIUMINT(3) UNSIGNED DEFAULT '0', ";
 $sql.= "  PRIMARY KEY (PIID), ";
 $sql.= "  KEY PSID (PSID)";
@@ -1122,8 +1123,8 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "INSERT INTO {$forum_webtag}_PROFILE_ITEM (PSID, NAME, TYPE, POSITION) ";
-$sql.= "VALUES (1, 'Location', 0, 1)";
+$sql = "INSERT INTO {$forum_webtag}_PROFILE_ITEM (PSID, NAME, TYPE, OPTIONS, POSITION) ";
+$sql.= "VALUES (1, 'Location', 0, '', 1)";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -1131,8 +1132,8 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "INSERT INTO {$forum_webtag}_PROFILE_ITEM (PSID, NAME, TYPE, POSITION) ";
-$sql.= "VALUES (1, 'Gender', 0, 3)";
+$sql = "INSERT INTO {$forum_webtag}_PROFILE_ITEM (PSID, NAME, TYPE, OPTIONS, POSITION) ";
+$sql.= "VALUES (1, 'Gender', 5, 'Male\nFemale\nUnspecified', 3)";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -1140,8 +1141,8 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "INSERT INTO {$forum_webtag}_PROFILE_ITEM (PSID, NAME, TYPE, POSITION) ";
-$sql.= "VALUES (1, 'Quote', 0, 4)";
+$sql = "INSERT INTO {$forum_webtag}_PROFILE_ITEM (PSID, NAME, TYPE, OPTIONS, POSITION) ";
+$sql.= "VALUES (1, 'Quote', 0, '', 4)";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -1149,8 +1150,8 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "INSERT INTO {$forum_webtag}_PROFILE_ITEM (PSID, NAME, TYPE, POSITION) ";
-$sql.= "VALUES (1, 'Occupation', 0, 5)";
+$sql = "INSERT INTO {$forum_webtag}_PROFILE_ITEM (PSID, NAME, TYPE, OPTIONS, POSITION) ";
+$sql.= "VALUES (1, 'Occupation', 0, '', 5)";
 
 if (!$result = @db_query($sql, $db_install)) {
 

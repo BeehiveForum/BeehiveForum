@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.81 2007-10-21 18:08:48 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.82 2007-10-21 19:45:00 decoyduck Exp $ */
 
 /**
 * Functions relating to users interacting with profiles
@@ -314,7 +314,19 @@ function user_get_profile_entries($uid)
 
         while ($user_profile_data = db_fetch_array($result)) {
 
-            $user_profile_array[$user_profile_data['PSID']][$user_profile_data['PIID']] = $user_profile_data;
+            if (($user_profile_data['TYPE'] == PROFILE_ITEM_RADIO) || ($user_profile_data['TYPE'] == PROFILE_ITEM_DROPDOWN)) {
+
+                $profile_item_options_array = explode("\n", $user_profile_data['OPTIONS']);
+
+                if (isset($profile_item_options_array[$user_profile_data['ENTRY']])) {
+
+                    $user_profile_array[$user_profile_data['PSID']][$user_profile_data['PIID']] = $user_profile_data;
+                }
+
+            }else {
+
+                $user_profile_array[$user_profile_data['PSID']][$user_profile_data['PIID']] = $user_profile_data;
+            }
         }
     }
 

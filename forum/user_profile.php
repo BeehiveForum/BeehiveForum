@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.135 2007-10-21 18:08:48 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.136 2007-10-21 19:45:00 decoyduck Exp $ */
 
 /**
 * Displays user profiles
@@ -345,10 +345,20 @@ if ($user_profile_array = user_get_profile_entries($uid)) {
 
                     $profile_item_options_array = explode("\n", $user_profile_entry['OPTIONS']);
 
-                    echo "                                  <tr>\n";
-                    echo "                                    <td align=\"left\" width=\"40%\" valign=\"top\" class=\"profile_item_name\">", word_filter_add_ob_tags(_htmlentities($user_profile_entry['NAME'])), "</td>\n";
-                    echo "                                    <td align=\"left\" class=\"profile_item_value\" valign=\"top\">", word_filter_add_ob_tags(_htmlentities($profile_item_options_array[$user_profile_entry['ENTRY']])), "</td>\n";
-                    echo "                                  </tr>\n";
+                    if (isset($profile_item_options_array[$user_profile_entry['ENTRY']])) {
+
+                        echo "                                  <tr>\n";
+                        echo "                                    <td align=\"left\" width=\"40%\" valign=\"top\" class=\"profile_item_name\"><div class=\"profile_item_overflow\" title=\"", word_filter_add_ob_tags(_htmlentities($user_profile_entry['NAME'])), "\">", word_filter_add_ob_tags(_htmlentities($user_profile_entry['NAME'])), "</div></td>\n";
+                        echo "                                    <td align=\"left\" class=\"profile_item_value\" valign=\"top\"><div class=\"profile_item_overflow\" title=\"", word_filter_add_ob_tags(_htmlentities($profile_item_options_array[$user_profile_entry['ENTRY']])), "\">", word_filter_add_ob_tags(_htmlentities($profile_item_options_array[$user_profile_entry['ENTRY']])), "</div></td>\n";
+                        echo "                                  </tr>\n";
+
+                    }else {
+
+                        echo "                                  <tr>\n";
+                        echo "                                    <td align=\"left\" width=\"40%\" valign=\"top\" class=\"profile_item_name\"><div class=\"profile_item_overflow\" title=\"", word_filter_add_ob_tags(_htmlentities($user_profile_entry['NAME'])), "\">", word_filter_add_ob_tags(_htmlentities($user_profile_entry['NAME'])), "</div></td>\n";
+                        echo "                                    <td align=\"left\" class=\"profile_item_value\" valign=\"top\">&nbsp;</td>\n";
+                        echo "                                  </tr>\n";
+                    }
 
                 }else if ($user_profile_entry['TYPE'] == PROFILE_ITEM_HYPERLINK) {
 
@@ -356,15 +366,15 @@ if ($user_profile_array = user_get_profile_entries($uid)) {
                     $profile_item_hyper_link = sprintf("<a href=\"%s\" target=\"_blank\">%s</a>", $profile_item_hyper_link, word_filter_add_ob_tags(_htmlentities($user_profile_entry['ENTRY'])));
 
                     echo "                                  <tr>\n";
-                    echo "                                    <td align=\"left\" width=\"40%\" valign=\"top\" class=\"profile_item_name\">", word_filter_add_ob_tags(_htmlentities($user_profile_entry['NAME'])), "</td>\n";
-                    echo "                                    <td align=\"left\" class=\"profile_item_value\" valign=\"top\">$profile_item_hyper_link</td>\n";
+                    echo "                                    <td align=\"left\" width=\"40%\" valign=\"top\" class=\"profile_item_name\"><div class=\"profile_item_overflow\" title=\"", word_filter_add_ob_tags(_htmlentities($user_profile_entry['NAME'])), "\">", word_filter_add_ob_tags(_htmlentities($user_profile_entry['NAME'])), "</div></td>\n";
+                    echo "                                    <td align=\"left\" class=\"profile_item_value\" valign=\"top\"><div class=\"profile_item_overflow\" title=\"", word_filter_add_ob_tags(_htmlentities($user_profile_entry['ENTRY'])), "\">$profile_item_hyper_link</div></td>\n";
                     echo "                                  </tr>\n";
 
                 }else {
 
                     echo "                                  <tr>\n";
-                    echo "                                    <td align=\"left\" width=\"40%\" valign=\"top\" class=\"profile_item_name\">", word_filter_add_ob_tags(_htmlentities($user_profile_entry['NAME'])), "</td>\n";
-                    echo "                                    <td align=\"left\" class=\"profile_item_value\" valign=\"top\">", word_filter_add_ob_tags(_htmlentities($user_profile_entry['ENTRY'])), "</td>\n";
+                    echo "                                    <td align=\"left\" width=\"40%\" valign=\"top\" class=\"profile_item_name\"><div class=\"profile_item_overflow\" title=\"", word_filter_add_ob_tags(_htmlentities($user_profile_entry['NAME'])), "\">", word_filter_add_ob_tags(_htmlentities($user_profile_entry['NAME'])), "</div></td>\n";
+                    echo "                                    <td align=\"left\" class=\"profile_item_value\" valign=\"top\"><div class=\"profile_item_overflow\" title=\"", word_filter_add_ob_tags(_htmlentities($user_profile_entry['ENTRY'])), "\">", word_filter_add_ob_tags(_htmlentities($user_profile_entry['ENTRY'])), "</div></td>\n";
                     echo "                                  </tr>\n";
                 }
             }

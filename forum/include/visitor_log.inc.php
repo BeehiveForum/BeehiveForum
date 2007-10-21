@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.inc.php,v 1.19 2007-10-21 18:08:48 decoyduck Exp $ */
+/* $Id: visitor_log.inc.php,v 1.20 2007-10-21 19:45:00 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -510,11 +510,11 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
         $query_array_merge = array_merge(array($select_sql), $profile_entry_array, $profile_item_type_array);
         $query_array_merge = array_merge($query_array_merge, $profile_item_options_array, array($search_bot_sql, $last_visit_sql));
 
-        $sql = implode(",", $query_array_merge). "$from_sql $join_sql $where_sql $having_sql ";
-        $sql.= "UNION SELECT VISITOR_LOG.UID, $union_dummy_columns, SEARCH_ENGINE_BOTS.SID, ";
-        $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_VISIT, SEARCH_ENGINE_BOTS.NAME, ";
-        $sql.= "SEARCH_ENGINE_BOTS.URL FROM VISITOR_LOG LEFT JOIN SEARCH_ENGINE_BOTS ";
-        $sql.= "ON (SEARCH_ENGINE_BOTS.SID = VISITOR_LOG.SID) ";
+        $sql = implode(",", $query_array_merge). "$from_sql $join_sql $where_sql ";
+        $sql.= "$having_sql UNION SELECT VISITOR_LOG.UID, $union_dummy_columns, ";
+        $sql.= "SEARCH_ENGINE_BOTS.SID, SEARCH_ENGINE_BOTS.NAME, SEARCH_ENGINE_BOTS.URL, ";
+        $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_VISIT FROM VISITOR_LOG ";
+        $sql.= "LEFT JOIN SEARCH_ENGINE_BOTS ON (SEARCH_ENGINE_BOTS.SID = VISITOR_LOG.SID) ";
         $sql.= "$where_visitor_sql $order_sql $limit_sql";
     }
 

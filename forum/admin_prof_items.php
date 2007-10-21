@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_items.php,v 1.116 2007-10-11 13:01:12 decoyduck Exp $ */
+/* $Id: admin_prof_items.php,v 1.117 2007-10-21 18:08:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -225,9 +225,54 @@ if (isset($_POST['additemsubmit'])) {
         $valid = false;
     }
 
+    if (isset($_POST['t_options_new']) && strlen(trim(_stripslashes($_POST['t_options_new']))) > 0) {
+
+        $t_options_new = trim(_stripslashes($_POST['t_options_new']));
+
+        if ($valid && ($t_type_new == PROFILE_ITEM_RADIO || $t_type_new == PROFILE_ITEM_DROPDOWN)) {
+
+            if (sizeof(explode("\n", $t_options_new)) < 1) {
+
+                $error_msg_array[] = $lang['youmustentermorethanoneoptionforitem'];
+                $valid = false;
+            }
+
+        }else if ($valid && $t_type_new == PROFILE_ITEM_HYPERLINK) {
+
+            $check_url = parse_url($t_options_new);
+
+            if (!isset($check_url['scheme']) || $check_url['scheme'] != "http") {
+
+                $valid = false;
+                $error_msg_array[] = $lang['profileitemhyperlinkssupportshttpurlsonly'];
+            }
+
+            if ($valid && (!isset($check_url['host']) || strlen(trim($check_url['host'])) < 1)) {
+
+                $valid = false;
+                $error_msg_array[] = $lang['profileitemhyperlinkformatinvalid'];
+            }
+
+            if (preg_match("/\[ProfileEntry\]/i", $t_options_new) < 1) {
+
+                $error_msg_array[] = $lang['youmustincludeprofileentryinhyperlinks'];
+                $valid = false;
+            }
+        }
+
+    }else if ($valid && ($t_type_new == PROFILE_ITEM_RADIO || $t_type_new == PROFILE_ITEM_DROPDOWN || $t_type_new == PROFILE_ITEM_HYPERLINK)) {
+
+        $error_msg_array[] = $lang['youmustenteroptionsforselectedprofileitemtype'];
+        $valid = false;
+
+    }else {
+
+        $t_options_new = "";
+    }
+
     if ($valid) {
 
-        if ($new_piid = profile_item_create($psid, $t_new_name, $t_type_new)) {
+        if ($new_piid = profile_item_create($psid, $t_new_name, $t_type_new, $t_options_new)) {
 
             $t_section_name = profile_section_get_name($psid);
 
@@ -276,6 +321,51 @@ if (isset($_POST['additemsubmit'])) {
         $valid = false;
     }
 
+    if (isset($_POST['t_options_new']) && strlen(trim(_stripslashes($_POST['t_options_new']))) > 0) {
+
+        $t_options_new = trim(_stripslashes($_POST['t_options_new']));
+
+        if ($valid && ($t_type_new == PROFILE_ITEM_RADIO || $t_type_new == PROFILE_ITEM_DROPDOWN)) {
+
+            if (sizeof(explode("\n", $t_options_new)) < 1) {
+
+                $error_msg_array[] = $lang['youmustentermorethanoneoptionforitem'];
+                $valid = false;
+            }
+
+        }else if ($valid && $t_type_new == PROFILE_ITEM_HYPERLINK) {
+
+            $check_url = parse_url($t_options_new);
+
+            if (!isset($check_url['scheme']) || $check_url['scheme'] != "http") {
+
+                $valid = false;
+                $error_msg_array[] = $lang['profileitemhyperlinkssupportshttpurlsonly'];
+            }
+
+            if ($valid && (!isset($check_url['host']) || strlen(trim($check_url['host'])) < 1)) {
+
+                $valid = false;
+                $error_msg_array[] = $lang['profileitemhyperlinkformatinvalid'];
+            }
+
+            if (preg_match("/\[ProfileEntry\]/i", $t_options_new) < 1) {
+
+                $error_msg_array[] = $lang['youmustincludeprofileentryinhyperlinks'];
+                $valid = false;
+            }
+        }
+
+    }else if ($valid && ($t_type_new == PROFILE_ITEM_RADIO || $t_type_new == PROFILE_ITEM_DROPDOWN || $t_type_new == PROFILE_ITEM_HYPERLINK)) {
+
+        $error_msg_array[] = $lang['youmustenteroptionsforselectedprofileitemtype'];
+        $valid = false;
+
+    }else {
+
+        $t_options_new = "";
+    }
+
     if (isset($_POST['t_section_new']) && is_numeric($_POST['t_section_new'])) {
 
         $t_section_new = $_POST['t_section_new'];
@@ -288,11 +378,11 @@ if (isset($_POST['additemsubmit'])) {
 
     if ($valid) {
 
-        if (profile_item_update($piid, $t_section_new, $t_type_new, $t_name_new)) {
+        if (profile_item_update($piid, $t_section_new, $t_type_new, $t_name_new, $t_options_new)) {
 
             $profile_item = profile_get_item($piid);
 
-            if (($t_name_new != $profile_item['NAME']) || ($t_type_new != $profile_item['TYPE']) || ($t_section_new != $psid)) {
+            if (($t_name_new != $profile_item['NAME']) || ($t_type_new != $profile_item['TYPE']) || ($t_section_new != $psid) || ($t_options_new != $profile_item['OPTIONS'])) {
 
                 $log_data = array($t_name_new, $profile_item['NAME'], $t_type_new, $profile_item['TYPE'], $t_section_new, $psid);
                 admin_add_log_entry(CHANGE_PROFILE_ITEM, $log_data);
@@ -360,12 +450,16 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"150\">{$lang['itemname']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("t_name_new", (isset($_POST['t_name_new']) ? _htmlentities(_stripslashes($_POST['t_name_new'])) : ""), 32, 64), "</td>\n";
+    echo "                        <td align=\"left\" width=\"150\">{$lang['type']}:</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("t_type_new", array($lang['largetextfield'], $lang['mediumtextfield'], $lang['smalltextfield'], $lang['multilinetextfield'], $lang['radiobuttons'], $lang['dropdownlist'], $lang['clickablehyperlink'])), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"150\">{$lang['type']}:</td>\n";
-    echo "                        <td align=\"left\">", form_dropdown_array("t_type_new", array($lang['largetextfield'], $lang['mediumtextfield'], $lang['smalltextfield'], $lang['multilinetextfield'], $lang['radiobuttons'], $lang['dropdown'])), "</td>\n";
+    echo "                        <td align=\"left\" width=\"150\">{$lang['itemname']}:</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("t_name_new", (isset($_POST['t_name_new']) ? _htmlentities(_stripslashes($_POST['t_name_new'])) : ""), 48, 64), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" width=\"150\" valign=\"top\">{$lang['options']}:</td>\n";
+    echo "                        <td align=\"left\">", form_textarea("t_options_new", (isset($_POST['t_options_new']) ? _htmlentities(_stripslashes($_POST['t_options_new'])) : ""), 4, 45), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" colspan=\"4\">&nbsp;</td>\n";
@@ -455,16 +549,20 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"150\">{$lang['itemname']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("t_name_new", (isset($_POST['t_name_new']) ? _htmlentities(_stripslashes($_POST['t_name_new'])) : _htmlentities($profile_item['NAME'])), 32, 64), "</td>\n";
-    echo "                      </tr>\n";
-    echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\">{$lang['type']}:</td>\n";
-    echo "                        <td align=\"left\">", form_dropdown_array("t_type_new", array($lang['largetextfield'], $lang['mediumtextfield'], $lang['smalltextfield'], $lang['multilinetextfield'], $lang['radiobuttons'], $lang['dropdown']), (isset($_POST['t_type_new']) && is_numeric($_POST['t_type_new']) ? $_POST['t_type_new'] : $profile_item['TYPE'])), "</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("t_type_new", array($lang['largetextfield'], $lang['mediumtextfield'], $lang['smalltextfield'], $lang['multilinetextfield'], $lang['radiobuttons'], $lang['dropdownlist'], $lang['clickablehyperlink']), (isset($_POST['t_type_new']) && is_numeric($_POST['t_type_new']) ? $_POST['t_type_new'] : $profile_item['TYPE'])), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"150\">{$lang['moveto']}</td>\n";
+    echo "                        <td align=\"left\" width=\"150\">{$lang['sectionname']}:</td>\n";
     echo "                        <td align=\"left\">", profile_section_dropdown($psid, "t_section_new"), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" width=\"150\">{$lang['itemname']}:</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("t_name_new", (isset($_POST['t_name_new']) ? _htmlentities(_stripslashes($_POST['t_name_new'])) : _htmlentities($profile_item['NAME'])), 48, 64), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" width=\"150\" valign=\"top\">{$lang['options']}:</td>\n";
+    echo "                        <td align=\"left\">", form_textarea("t_options_new", (isset($_POST['t_options_new']) ? _htmlentities(_stripslashes($_POST['t_options_new'])) : _htmlentities($profile_item['OPTIONS'])), 4, 45), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" colspan=\"4\">&nbsp;</td>\n";
@@ -499,7 +597,7 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
 
     $item_types_array = array($lang['largetextfield'], $lang['mediumtextfield'],
                               $lang['smalltextfield'], $lang['multilinetextfield'],
-                              $lang['radiobuttons'], $lang['dropdown']);
+                              $lang['radiobuttons'], $lang['dropdownlist'], $lang['clickablehyperlink']);
 
     html_draw_top();
 

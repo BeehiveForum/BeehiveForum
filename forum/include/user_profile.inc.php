@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.80 2007-10-11 13:01:20 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.81 2007-10-21 18:08:48 decoyduck Exp $ */
 
 /**
 * Functions relating to users interacting with profiles
@@ -297,7 +297,7 @@ function user_get_profile_entries($uid)
     $user_friend = USER_FRIEND;
 
     $sql = "SELECT PROFILE_SECTION.PSID, PROFILE_ITEM.PIID, PROFILE_ITEM.NAME, ";
-    $sql.= "PROFILE_ITEM.TYPE, USER_PROFILE.ENTRY, USER_PROFILE.PRIVACY ";
+    $sql.= "PROFILE_ITEM.TYPE, PROFILE_ITEM.OPTIONS, USER_PROFILE.ENTRY, USER_PROFILE.PRIVACY ";
     $sql.= "FROM {$table_data['PREFIX']}PROFILE_SECTION PROFILE_SECTION ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}PROFILE_ITEM PROFILE_ITEM ";
     $sql.= "ON (PROFILE_ITEM.PSID = PROFILE_SECTION.PSID) ";
@@ -314,22 +314,7 @@ function user_get_profile_entries($uid)
 
         while ($user_profile_data = db_fetch_array($result)) {
 
-            if (($user_profile_data['TYPE'] == PROFILE_ITEM_RADIO) || ($user_profile_data['TYPE'] == PROFILE_ITEM_DROPDOWN)) {
-
-                if (@list($field_name, $field_values) = explode(':', $user_profile_data['NAME'])) {
-
-                    $field_values = explode(';', $field_values);
-
-                    if (isset($user_profile_data['ENTRY']) && isset($field_values[$user_profile_data['ENTRY']])) {
-
-                        $user_profile_array[$user_profile_data['PSID']][$user_profile_data['PIID']] = $user_profile_data;
-                    }
-                }
-
-            }else {
-
-                $user_profile_array[$user_profile_data['PSID']][$user_profile_data['PIID']] = $user_profile_data;
-            }
+            $user_profile_array[$user_profile_data['PSID']][$user_profile_data['PIID']] = $user_profile_data;
         }
     }
 

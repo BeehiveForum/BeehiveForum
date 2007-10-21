@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.488 2007-10-13 20:41:22 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.489 2007-10-21 18:08:48 decoyduck Exp $ */
 
 // British English language file
 
@@ -327,6 +327,11 @@ $lang['invalidprofileitemid'] = "Invalid profile item ID or item not found";
 $lang['addnewitem'] = "Add new item";
 $lang['youmustenteraprofileitemname'] = "You must enter a profile item name";
 $lang['invalidprofileitemtype'] = "Invalid profile item type selected";
+$lang['youmustenteroptionsforselectedprofileitemtype'] = "You must enter some options for selected profile item type";
+$lang['youmustentermorethanoneoptionforitem'] = "You must enter more than one option for selected profile item type";
+$lang['profileitemhyperlinkssupportshttpurlsonly'] = "Profile item hyperlinks support HTTP URLs only";
+$lang['profileitemhyperlinkformatinvalid'] = "Profile item hyperlink format invalid";
+$lang['youmustincludeprofileentryinhyperlinks'] = "You must include <i>[ProfileEntry]</i> in the URL of clickable hyperlinks";
 $lang['failedtocreatenewprofileitem'] = "Failed to create new profile item";
 $lang['failedtoupdateprofileitem'] = "Failed to update profile item";
 $lang['startpageupdated'] = "Start Page updated. %s";
@@ -416,11 +421,12 @@ $lang['mediumtextfield'] = "Medium Text Field";
 $lang['smalltextfield'] = "Small Text Field";
 $lang['multilinetextfield'] = "Multi-line Text Field";
 $lang['radiobuttons'] = "Radio Buttons";
-$lang['dropdown'] = "Drop Down";
+$lang['dropdownlist'] = "Drop Down List";
+$lang['clickablehyperlink'] = "Clickable Hyperlink";
 $lang['threadcount'] = "Thread Count";
 $lang['clicktoeditfolder'] = "Click To Edit Folder";
-$lang['fieldtypeexample1'] = "For Radio Buttons and Drop Down Fields you need to separate the fieldname and the values with a colon and each value should be separated by semi-colons.";
-$lang['fieldtypeexample2'] = "Example: To create a basic Gender radio buttons, with two selections for Male and Female, you would enter: <b>Gender:Male;Female</b> in the Item Name field.";
+$lang['fieldtypeexample1'] = "To create Radio Buttons or a Drop Down List you need to enter each individual value on a separate line in the Options field.";
+$lang['fieldtypeexample2'] = "To create clickable links enter the URL in the Options field and use <i>[ProfileEntry]</i> where the entry from the user's profile should appear. Examples: <p>MySpace: <i>http://www.myspace.com/[ProfileEntry]</i><br />Xbox LIVE: <i>http://profile.mygamercard.net/[ProfileEntry]</i>";
 $lang['editedwordfilter'] = "Edited Word Filter";
 $lang['editedforumsettings'] = "Edited Forum Settings";
 $lang['successfullyendedusersessionsforselectedusers'] = "Successfully ended sessions for selected users";
@@ -1414,6 +1420,7 @@ $lang['forumstyles'] = "Forum Styles";
 $lang['youmustenteryourcurrentpasswd'] = "You must enter your current password";
 $lang['youmustenteranewpasswd'] = "You must enter a new password";
 $lang['youmustconfirmyournewpasswd'] = "You must confirm your new password";
+$lang['profileentriesmustnotincludehtml'] = "Profile Entries must not include HTML";
 $lang['failedtoupdateuserprofile'] = "Failed to update user profile";
 
 // Polls (create_poll.php, poll_results.php) ---------------------------------------------

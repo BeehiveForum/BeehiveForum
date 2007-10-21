@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.inc.php,v 1.18 2007-10-21 15:05:58 decoyduck Exp $ */
+/* $Id: visitor_log.inc.php,v 1.19 2007-10-21 18:08:48 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -174,10 +174,10 @@ function visitor_log_get_profile_items(&$profile_header_array, &$profile_dropdow
 
     $profile_dropdown_array[$lang['userdetails']] = $profile_header_array;
 
-    // Query the database to get the
+    // Query the database to get the profile items
 
-    $sql = "SELECT PROFILE_SECTION.PSID, PROFILE_SECTION.NAME AS SECTION_NAME, ";
-    $sql.= "PROFILE_ITEM.PIID, PROFILE_ITEM.NAME AS ITEM_NAME, PROFILE_ITEM.TYPE ";
+    $sql = "SELECT PROFILE_SECTION.NAME AS SECTION_NAME, ";
+    $sql.= "PROFILE_ITEM.PIID, PROFILE_ITEM.NAME AS ITEM_NAME ";
     $sql.= "FROM {$table_data['PREFIX']}PROFILE_ITEM PROFILE_ITEM ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}PROFILE_SECTION PROFILE_SECTION ";
     $sql.= "ON (PROFILE_SECTION.PSID = PROFILE_ITEM.PSID) ";
@@ -189,10 +189,6 @@ function visitor_log_get_profile_items(&$profile_header_array, &$profile_dropdow
     if (db_num_rows($result) > 0) {
 
         while ($profile_item = db_fetch_array($result)) {
-
-            if (($profile_item['TYPE'] == PROFILE_ITEM_RADIO) || ($profile_item['TYPE'] == PROFILE_ITEM_DROPDOWN)) {
-                @list($profile_item['ITEM_NAME']) = explode(':', $profile_item['ITEM_NAME']);
-            }
 
             $profile_header_array[$profile_item['PIID']] = _htmlentities($profile_item['ITEM_NAME']);
             $profile_dropdown_array[$profile_item['SECTION_NAME']][$profile_item['PIID']] = _htmlentities($profile_item['ITEM_NAME']);
@@ -291,14 +287,27 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
 
     // Include the selected numeric (PIID) profile items
 
-    $profile_query_array = array();
+    $profile_entry_array = array();
+
+    // Include the profile item types and options.
+
+    $profile_item_type_array = array();
+    $profile_item_options_array = array();
+
+    // Iterate through them.
 
     foreach($profile_items_array as $column => $value) {
 
         if (is_numeric($column)) {
 
-            $profile_sql = "USER_PROFILE_{$column}.ENTRY AS ENTRY_{$column} ";
-            $profile_query_array[] = $profile_sql;
+            $profile_entry_sql = "USER_PROFILE_{$column}.ENTRY AS ENTRY_{$column} ";
+            $profile_entry_array[] = $profile_entry_sql;
+
+            $profile_item_type_sql = "PROFILE_ITEM_{$column}.TYPE AS PROFILE_ITEM_TYPE_{$column} ";
+            $profile_item_type_array[] = $profile_item_type_sql;
+
+            $profile_item_options_sql = "PROFILE_ITEM_{$column}.OPTIONS AS PROFILE_ITEM_OPTIONS_{$column} ";
+            $profile_item_options_array[] = $profile_item_options_sql;
         }
     }
 
@@ -489,18 +498,23 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
 
     if ($hide_guests === true) {
 
-        $sql = implode(",", array_merge(array($select_sql), $profile_query_array, array($search_bot_sql, $last_visit_sql)));
-        $sql.= "$from_sql $join_sql $where_sql $having_sql $order_sql $limit_sql";
+        $query_array_merge = array_merge(array($select_sql), $profile_entry_array, $profile_item_type_array);
+        $query_array_merge = array_merge($query_array_merge, $profile_item_options_array, array($search_bot_sql, $last_visit_sql));
+
+        $sql = implode(",", $query_array_merge). "$from_sql $join_sql $where_sql $having_sql $order_sql $limit_sql";
 
     }else {
 
-        $union_dummy_columns = implode(', ', array_map('visitor_log_dummy_column', range(0, 15 + sizeof($profile_query_array))));
+        $union_dummy_columns = implode(', ', array_map('visitor_log_dummy_column', range(0, 15 + (sizeof($profile_entry_array) * 3))));
 
-        $sql = implode(",", array_merge(array($select_sql), $profile_query_array, array($search_bot_sql, $last_visit_sql)));
-        $sql.= "$from_sql $join_sql $where_sql $having_sql UNION SELECT VISITOR_LOG.UID, ";
-        $sql.= "$union_dummy_columns, SEARCH_ENGINE_BOTS.SID, SEARCH_ENGINE_BOTS.NAME, ";
-        $sql.= "SEARCH_ENGINE_BOTS.URL, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_VISIT ";
-        $sql.= "FROM VISITOR_LOG LEFT JOIN SEARCH_ENGINE_BOTS ON (SEARCH_ENGINE_BOTS.SID = VISITOR_LOG.SID) ";
+        $query_array_merge = array_merge(array($select_sql), $profile_entry_array, $profile_item_type_array);
+        $query_array_merge = array_merge($query_array_merge, $profile_item_options_array, array($search_bot_sql, $last_visit_sql));
+
+        $sql = implode(",", $query_array_merge). "$from_sql $join_sql $where_sql $having_sql ";
+        $sql.= "UNION SELECT VISITOR_LOG.UID, $union_dummy_columns, SEARCH_ENGINE_BOTS.SID, ";
+        $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_VISIT, SEARCH_ENGINE_BOTS.NAME, ";
+        $sql.= "SEARCH_ENGINE_BOTS.URL FROM VISITOR_LOG LEFT JOIN SEARCH_ENGINE_BOTS ";
+        $sql.= "ON (SEARCH_ENGINE_BOTS.SID = VISITOR_LOG.SID) ";
         $sql.= "$where_visitor_sql $order_sql $limit_sql";
     }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.91 2007-10-11 13:01:19 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.92 2007-10-21 18:08:48 decoyduck Exp $ */
 
 /**
 * Functions relating to profiles
@@ -235,7 +235,7 @@ function profile_items_get_by_page($psid, $offset)
 
     list($profile_items_count) = db_fetch_array($result, DB_RESULT_NUM);
 
-    $sql = "SELECT PIID, NAME, TYPE, POSITION ";
+    $sql = "SELECT PIID, NAME, TYPE, OPTIONS, POSITION ";
     $sql.= "FROM {$table_data['PREFIX']}PROFILE_ITEM ";
     $sql.= "WHERE PSID = '$psid' ORDER BY POSITION, PIID ";
     $sql.= "LIMIT $offset, 10";
@@ -245,10 +245,6 @@ function profile_items_get_by_page($psid, $offset)
     if (db_num_rows($result) > 0) {
 
         while($profile_item = db_fetch_array($result)) {
-
-            if (($profile_item['TYPE'] == PROFILE_ITEM_RADIO) || ($profile_item['TYPE'] == PROFILE_ITEM_DROPDOWN)) {
-                @list($profile_item['NAME']) = explode(':', $profile_item['NAME']);
-            }
 
             $profile_items_array[] = $profile_item;
         }
@@ -285,7 +281,7 @@ function profile_item_get_name($piid)
     return false;
 }
 
-function profile_item_create($psid, $name, $type)
+function profile_item_create($psid, $name, $type, $options)
 {
     if (!$db_profile_item_create = db_connect()) return false;
 
@@ -293,6 +289,7 @@ function profile_item_create($psid, $name, $type)
     if (!is_numeric($type)) return false;
 
     $name = db_escape_string($name);
+    $options = db_escape_string($options);
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -305,8 +302,8 @@ function profile_item_create($psid, $name, $type)
 
     list($new_position) = db_fetch_array($result, DB_RESULT_NUM);
 
-    $sql = "INSERT INTO {$table_data['PREFIX']}PROFILE_ITEM (PSID, NAME, TYPE, POSITION) ";
-    $sql.= "VALUES ('$psid', '$name', '$type', '$new_position')";
+    $sql = "INSERT INTO {$table_data['PREFIX']}PROFILE_ITEM (PSID, NAME, TYPE, OPTIONS, POSITION) ";
+    $sql.= "VALUES ('$psid', '$name', '$type', '$options', '$new_position')";
 
     if ($result = db_query($sql, $db_profile_item_create)) {
 
@@ -317,7 +314,7 @@ function profile_item_create($psid, $name, $type)
     return false;
 }
 
-function profile_item_update($piid, $psid, $type, $name)
+function profile_item_update($piid, $psid, $type, $name, $options)
 {
     if (!$db_profile_item_update = db_connect()) return false;
 
@@ -326,11 +323,12 @@ function profile_item_update($piid, $psid, $type, $name)
     if (!is_numeric($type)) return false;
 
     $name = db_escape_string($name);
+    $options = db_escape_string($options);
 
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}PROFILE_ITEM SET PSID = '$psid', ";
-    $sql.= "TYPE = '$type', NAME = '$name' WHERE PIID = '$piid'";
+    $sql.= "TYPE = '$type', NAME = '$name', OPTIONS = '$options' WHERE PIID = '$piid'";
 
     if (!$result = db_query($sql, $db_profile_item_update)) return false;
 
@@ -429,7 +427,8 @@ function profile_get_user_values($uid)
 
     $sql = "SELECT PROFILE_SECTION.PSID, PROFILE_SECTION.NAME AS SECTION_NAME, ";
     $sql.= "PROFILE_ITEM.PIID, PROFILE_ITEM.NAME AS ITEM_NAME, PROFILE_ITEM.TYPE, ";
-    $sql.= "USER_PROFILE.PIID AS CHECK_PIID, USER_PROFILE.ENTRY, USER_PROFILE.PRIVACY ";
+    $sql.= "PROFILE_ITEM.OPTIONS, USER_PROFILE.PIID AS CHECK_PIID, ";
+    $sql.= "USER_PROFILE.ENTRY, USER_PROFILE.PRIVACY ";
     $sql.= "FROM {$table_data['PREFIX']}PROFILE_SECTION PROFILE_SECTION ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}PROFILE_ITEM PROFILE_ITEM ";
     $sql.= "ON (PROFILE_ITEM.PSID = PROFILE_SECTION.PSID) ";
@@ -760,7 +759,7 @@ function profile_get_item($piid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT NAME, TYPE FROM {$table_data['PREFIX']}PROFILE_ITEM ";
+    $sql = "SELECT NAME, TYPE, OPTIONS FROM {$table_data['PREFIX']}PROFILE_ITEM ";
     $sql.= "WHERE PIID = '$piid'";
 
     if (!$result = db_query($sql, $db_profile_get_item)) return false;

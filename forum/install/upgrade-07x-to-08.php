@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-07x-to-08.php,v 1.2 2007-10-15 18:00:28 decoyduck Exp $ */
+/* $Id: upgrade-07x-to-08.php,v 1.3 2007-10-21 18:08:48 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-07x-to-072.php") {
 
@@ -170,6 +170,16 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 // Start by creating and updating the per-forum tables.
 
 foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
+
+    // Profile Items have changed to make them easier to understand
+
+    $sql = "ALTER TABLE {$forum_webtag}_PROFILE_ITEM ADD OPTIONS TEXT NOT NULL AFTER TYPE";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
 
     // Fix the invalid primary key on THREAD_TRACK table which
     // causes an error when splitting a thread that has been split once already.

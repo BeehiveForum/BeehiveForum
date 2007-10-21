@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.php,v 1.113 2007-10-21 15:05:58 decoyduck Exp $ */
+/* $Id: visitor_log.php,v 1.114 2007-10-21 18:08:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -402,11 +402,27 @@ if (sizeof($user_profile_array['user_array']) > 0) {
 
             if (is_numeric($key) && isset($user_array["ENTRY_$key"])) {
 
-                echo "                   <td class=\"postbody\" align=\"right\" valign=\"top\" width=\"20%\"><div class=\"profile_item_overflow\" title=\"", _htmlentities($user_array["ENTRY_$key"]), "\">", word_filter_add_ob_tags(nl2br(make_links(_htmlentities($user_array["ENTRY_$key"])))), "&nbsp;</div></td>\n";
+                if (($user_array["PROFILE_ITEM_TYPE_$key"] == PROFILE_ITEM_RADIO) || ($user_array["PROFILE_ITEM_TYPE_$key"] == PROFILE_ITEM_DROPDOWN)) {
 
-            }elseif (is_numeric($key) && isset($profile_header_array[$key]) && isset($user_array[$key])) {
+                    $profile_item_options_array = explode("\n", $user_array["PROFILE_ITEM_OPTIONS_$key"]);
 
-                echo "                   <td class=\"postbody\" align=\"right\" valign=\"top\" width=\"20%\"><div class=\"profile_item_overflow\" title=\"", _htmlentities($user_array[$key]), "\">", word_filter_add_ob_tags(nl2br(make_links(_htmlentities($user_array[$key])))), "&nbsp;</div></td>\n";
+                    echo "                   <td class=\"postbody\" align=\"right\" valign=\"top\" width=\"20%\"><div class=\"profile_item_overflow\" title=\"", _htmlentities($profile_item_options_array[$user_array["ENTRY_$key"]]), "\">", word_filter_add_ob_tags(_htmlentities($profile_item_options_array[$user_array["ENTRY_$key"]])), "&nbsp;</div></td>\n";
+
+                }else if ($user_array["PROFILE_ITEM_TYPE_$key"] == PROFILE_ITEM_HYPERLINK) {
+
+                    $profile_item_hyper_link = str_replace("[ProfileEntry]", word_filter_add_ob_tags(_htmlentities($user_array["ENTRY_$key"])), $user_array["PROFILE_ITEM_OPTIONS_$key"]);
+                    $profile_item_hyper_link = sprintf("<a href=\"%s\" target=\"_blank\">%s</a>", $profile_item_hyper_link, word_filter_add_ob_tags(_htmlentities($user_array["ENTRY_$key"])));
+
+                    echo "                   <td class=\"postbody\" align=\"right\" valign=\"top\" width=\"20%\"><div class=\"profile_item_overflow\" title=\"", word_filter_add_ob_tags(_htmlentities($user_array["ENTRY_$key"])), "\">$profile_item_hyper_link&nbsp;</div></td>\n";
+
+                }else {
+
+                    echo "                   <td class=\"postbody\" align=\"right\" valign=\"top\" width=\"20%\"><div class=\"profile_item_overflow\" title=\"", _htmlentities($user_array["ENTRY_$key"]), "\">", word_filter_add_ob_tags(_htmlentities($user_array["ENTRY_$key"])), "&nbsp;</div></td>\n";
+                }
+
+            }elseif (isset($profile_header_array[$key]) && isset($user_array[$key])) {
+
+                echo "                   <td class=\"postbody\" align=\"right\" valign=\"top\" width=\"20%\"><div class=\"profile_item_overflow\" title=\"", _htmlentities($user_array[$key]), "\">", word_filter_add_ob_tags(_htmlentities($user_array[$key])), "&nbsp;</div></td>\n";
 
             }else {
 

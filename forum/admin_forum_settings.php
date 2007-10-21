@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.126 2007-10-11 13:03:39 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.127 2007-10-21 15:05:58 decoyduck Exp $ */
 
 /**
 * Displays and handles the Forum Settings page
@@ -726,7 +726,7 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_30']}</p>\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_31']}</p>\n";
-echo "                          <p class=\"smalltext\">", sprintf($lang['forum_settings_help_32'], "<a href=\"http://en.wikipedia.org/\" target=\"_blank\">Wikipedia.org</a>"), "</p>\n";
+echo "                          <p class=\"smalltext\">", sprintf($lang['forum_settings_help_32'], "<a href=\"http://en.wikipedia.org/wiki/\" target=\"_blank\">Wikipedia.org</a>"), "</p>\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";

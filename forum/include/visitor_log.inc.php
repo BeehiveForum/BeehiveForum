@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.inc.php,v 1.17 2007-10-11 13:01:20 decoyduck Exp $ */
+/* $Id: visitor_log.inc.php,v 1.18 2007-10-21 15:05:58 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -181,7 +181,8 @@ function visitor_log_get_profile_items(&$profile_header_array, &$profile_dropdow
     $sql.= "FROM {$table_data['PREFIX']}PROFILE_ITEM PROFILE_ITEM ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}PROFILE_SECTION PROFILE_SECTION ";
     $sql.= "ON (PROFILE_SECTION.PSID = PROFILE_ITEM.PSID) ";
-    $sql.= "WHERE PROFILE_SECTION.PSID IS NOT NULL";
+    $sql.= "WHERE PROFILE_SECTION.PSID IS NOT NULL ";
+    $sql.= "ORDER BY PROFILE_SECTION.POSITION, PROFILE_ITEM.POSITION";
 
     if (!$result = db_query($sql, $db_visitor_log_get_profile_items)) return false;
 

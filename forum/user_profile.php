@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.136 2007-10-21 19:45:00 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.137 2007-10-21 19:48:33 decoyduck Exp $ */
 
 /**
 * Displays user profiles
@@ -362,7 +362,7 @@ if ($user_profile_array = user_get_profile_entries($uid)) {
 
                 }else if ($user_profile_entry['TYPE'] == PROFILE_ITEM_HYPERLINK) {
 
-                    $profile_item_hyper_link = str_replace("[ProfileEntry]", word_filter_add_ob_tags(_htmlentities($user_profile_entry['ENTRY'])), $user_profile_entry['OPTIONS']);
+                    $profile_item_hyper_link = str_replace("[ProfileEntry]", word_filter_add_ob_tags(urlencode($user_profile_entry['ENTRY'])), $user_profile_entry['OPTIONS']);
                     $profile_item_hyper_link = sprintf("<a href=\"%s\" target=\"_blank\">%s</a>", $profile_item_hyper_link, word_filter_add_ob_tags(_htmlentities($user_profile_entry['ENTRY'])));
 
                     echo "                                  <tr>\n";

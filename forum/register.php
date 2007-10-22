@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.167 2007-10-11 13:01:16 decoyduck Exp $ */
+/* $Id: register.php,v 1.168 2007-10-22 23:29:04 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -860,7 +860,9 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
     echo "                        <td>{$lang['forumrulesnotification']}:</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td><div class=\"forum_rules_box\">", fix_html($forum_rules), "</div></td>\n";
+    echo "                        <td>\n";
+    echo "                          <div class=\"forum_rules_box\">", fix_html($forum_rules), "</div>\n";
+    echo "                        </td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td>", form_checkbox('user_agree_rules', 'Y', $lang['forumrulescheckbox']), "</td>\n";

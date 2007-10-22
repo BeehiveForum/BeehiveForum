@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.197 2007-10-16 17:09:23 decoyduck Exp $ */
+/* $Id: search.php,v 1.198 2007-10-22 23:16:14 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -408,7 +408,10 @@ if ((isset($_POST) && sizeof($_POST) > 0) || isset($_GET['search_string']) || is
 
             case SEARCH_FREQUENCY_TOO_GREAT:
 
+                $search_frequency = forum_get_setting('search_min_frequency', false, 0);
+
                 $error_msg_array[] = sprintf($lang['searchfrequencyerror'], $search_frequency);
+
                 break;
         }
     }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.341 2007-10-12 23:28:14 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.342 2007-10-22 23:19:52 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -72,7 +72,7 @@ function user_exists($logon, $check_uid = false)
         $sql.= "WHERE LOGON = '$logon'";
     }
 
-    if (!$result = db_query($sql, $db_user_count)) return false;
+    if (!$result = db_query($sql, $db_user_exists)) return false;
 
     list($user_count) = db_fetch_array($result, DB_RESULT_NUM);
 

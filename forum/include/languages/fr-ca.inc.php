@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.78 2007-10-16 21:47:57 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.79 2007-10-22 17:25:43 decoyduck Exp $ */
 
 // British English language file
 
@@ -419,8 +419,6 @@ $lang['radiobuttons'] = "Cases d'option";
 $lang['dropdown'] = "Déroulant vertical";
 $lang['threadcount'] = "Dénombrement des fils de discussion";
 $lang['clicktoeditfolder'] = "Click To Edit Folder";
-$lang['fieldtypeexample1'] = "Pour les cases d'option et les champs déroulants verticaux vous devez séparer le nom de champ et les valeurs avec un deux-points et chaque valeur doit être séparée par un point-virgule.";
-$lang['fieldtypeexample2'] = "Example: Pour créer des cases d'option pour le sexe, avec deux sélections pour Homme et Femme, inscrire: <b>Sexe:Homme;Femme</b> dans le champ Nom d'Item.";
 $lang['editedwordfilter'] = "Filtre de mots modifié";
 $lang['editedforumsettings'] = "Options de forum modifiés";
 $lang['successfullyendedusersessionsforselectedusers'] = "Terminaison de session réussie pour l'utilisateur";

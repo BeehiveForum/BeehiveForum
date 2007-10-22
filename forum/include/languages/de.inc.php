@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.54 2007-10-17 17:29:09 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.55 2007-10-22 17:25:43 decoyduck Exp $ */
 
 // German language file
 
@@ -327,6 +327,11 @@ $lang['invalidprofileitemid'] = "Ungueltige Profilartikel-ID oder Artikel nicht 
 $lang['addnewitem'] = "Neuen Eintrag hinzufuegen";
 $lang['youmustenteraprofileitemname'] = "Profilartikelname muss eingegeben werden";
 $lang['invalidprofileitemtype'] = "Ungueltiger Profilartikeltyp angegeben";
+$lang['youmustenteroptionsforselectedprofileitemtype'] = "Fuer den ausgewaehlten Profileintrags-Typ muessen einige Optionen eingegeben werden";
+$lang['youmustentermorethanoneoptionforitem'] = "Fuer den ausgewaehlten Profileintrags-Typ muss mehr als eine Option eingegeben werden";
+$lang['profileitemhyperlinkssupportshttpurlsonly'] = "Profileintrags-Hyperlinks unterstuetzen nur HTTP-URLs";
+$lang['profileitemhyperlinkformatinvalid'] = "Profileintrags-Hyperlinkformat ungueltig";
+$lang['youmustincludeprofileentryinhyperlinks'] = "Fuer anklickbare Hyperlinks muss <i>[ProfileEntry]</i> in der URL eingetragen sein";
 $lang['failedtocreatenewprofileitem'] = "Fehler beim Erstellen des neuen Profilartikels";
 $lang['failedtoupdateprofileitem'] = "Fehler beim Aendern des Profilartikels";
 $lang['startpageupdated'] = "Startseite geaendert. %s";
@@ -416,11 +421,12 @@ $lang['mediumtextfield'] = "Mittleres Textfeld";
 $lang['smalltextfield'] = "Kleines Textfeld";
 $lang['multilinetextfield'] = "Mehrzeilen-Textfeld";
 $lang['radiobuttons'] = "Radio-Buttons";
-$lang['dropdown'] = "Drop-Down";
+$lang['dropdownlist'] = "Drop-Down Liste";
+$lang['clickablehyperlink'] = "Anklickbarer Hyperlink";
 $lang['threadcount'] = "Eintragszaehler";
 $lang['clicktoeditfolder'] = "Klicken um Ordner zu bearbeiten";
-$lang['fieldtypeexample1'] = "Fuer Radio-Buttons und Drop-Down-Felder benoetigst Du eigene Feldnamen, Werte mit Doppelpunkt und jeder Wert sollte durch Semikolons getrennt sein.";
-$lang['fieldtypeexample2'] = "Beispiel: um einen Geschlechts-Radio-Button zu erstellen mit den 2 Auswahlmoeglichkeiten Maennlich und Weiblich, musst Du eingeben: <b>Geschlecht:Maennlich;Weiblich</b> im Eintrags-Namensfeld.";
+$lang['fieldtypeexample1'] = "Um Radio Buttons oder eine Drop-Downliste zu erstellen muss fuer jeden Wert eine separate Zeile im Optionsfeld eingegeben werden.";
+$lang['fieldtypeexample2'] = "Um anklickbare Links zu erstellen bitte die URL im Optionsfeld angeben und <i>[ProfileEntry]</i> benutzen bei dem der Eintrag des Benutzerprofils erscheinen sollte. Beispiel: <p>MySpace: <i>http://www.myspace.com/[ProfileEntry]</i><br />Xbox LIVE: <i>http://profile.mygamercard.net/[ProfileEntry]</i>";
 $lang['editedwordfilter'] = "Editierter Wortfilter";
 $lang['editedforumsettings'] = "Editierte Foreneinstellungen";
 $lang['successfullyendedusersessionsforselectedusers'] = "Sitzung erfolgreich beendet fuer Benutzer";
@@ -1414,6 +1420,7 @@ $lang['forumstyles'] = "Forenstile";
 $lang['youmustenteryourcurrentpasswd'] = "Bitte aktuelles Passwort eingeben";
 $lang['youmustenteranewpasswd'] = "Bitte neues Passwort eingeben";
 $lang['youmustconfirmyournewpasswd'] = "Bitte neues Passwort bestaetigen";
+$lang['profileentriesmustnotincludehtml'] = "Profileintraege muessen keinen HTML-Code beinhalten";
 $lang['failedtoupdateuserprofile'] = "Fehler beim Aendern des Benutzerprofils";
 
 // Polls (create_poll.php, poll_results.php) ---------------------------------------------

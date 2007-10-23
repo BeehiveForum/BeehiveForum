@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_main.php,v 1.27 2007-10-11 13:01:17 decoyduck Exp $ */
+/* $Id: start_main.php,v 1.28 2007-10-23 21:19:57 decoyduck Exp $ */
 
 // An example of what can be done with start_main.php
 // As used on: http://www.tehforum.net/forum/
@@ -130,7 +130,7 @@ if (@$dir = opendir($images_dir)) {
 
     while(($file = readdir($dir)) !== false) {
 
-        if ($file != '.' && $file != '..') {
+        if ($file != '.' && $file != '..' && !is_dir($file)) {
 
             if (@$image_info = getimagesize("$images_dir/$file")) {
 
@@ -145,10 +145,6 @@ if (@$dir = opendir($images_dir)) {
 // Sort the files by name ASC
 
 sort($images_array);
-
-// pad the array to a multiple of 3
-
-$images_array = array_pad($images_array, ceil(sizeof($images_array) / 3) * 3, '');
 
 // Draw the HTML header
 
@@ -215,6 +211,8 @@ if ((isset($_GET['upload'])) && (bh_session_get_value('UID') > 0)) {
     echo "</ol>\n";
 
 }elseif (isset($HTTP_GET_VARS['gallery'])) {
+
+    $images_array = array_pad($images_array, ceil(sizeof($images_array) / 3) * 3, '');
 
     echo "<h1>Convicts Gallery</h1>\n";
     echo "<ul class=\"gallery\">\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.119 2007-10-11 13:01:19 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.120 2007-10-24 19:57:09 decoyduck Exp $ */
 
 /**
 * Functions relating to permissions
@@ -270,15 +270,7 @@ function perm_get_user_groups($offset, $sort_by = 'GROUP_NAME', $sort_dir = 'ASC
 
     $user_groups_array = array();
 
-    $sql = "SELECT COUNT(GROUPS.GID) FROM GROUPS ";
-    $sql.= "WHERE GROUPS.AUTO_GROUP = 0 ";
-    $sql.= "AND GROUPS.FORUM = '$forum_fid' ";
-
-    if (!$result = db_query($sql, $db_perm_get_user_groups)) return false;
-
-    list($user_groups_count) = db_fetch_array($result, DB_RESULT_NUM);
-
-    $sql = "SELECT GROUPS.GID, GROUPS.FORUM, GROUPS.GROUP_NAME, GROUPS.GROUP_DESC, ";
+    $sql = "SELECT SQL_CALC_FOUND_ROWS GROUPS.GID, GROUPS.FORUM, GROUPS.GROUP_NAME, GROUPS.GROUP_DESC, ";
     $sql.= "GROUPS.AUTO_GROUP, COUNT(GROUP_USERS.UID) AS USER_COUNT ";
     $sql.= "FROM GROUPS GROUPS LEFT JOIN GROUP_USERS GROUP_USERS ";
     $sql.= "ON (GROUP_USERS.GID = GROUPS.GID) ";
@@ -287,6 +279,14 @@ function perm_get_user_groups($offset, $sort_by = 'GROUP_NAME', $sort_dir = 'ASC
     $sql.= "LIMIT $offset, 10";
 
     if (!$result = db_query($sql, $db_perm_get_user_groups)) return false;
+
+    // Fetch the number of total results
+
+    $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
+
+    if (!$result_count = db_query($sql, $db_perm_get_user_groups)) return false;
+
+    list($user_groups_count) = db_fetch_array($result_count, DB_RESULT_NUM);
 
     if (db_num_rows($result) > 0) {
 
@@ -1173,21 +1173,22 @@ function perm_group_get_users($gid, $offset = 0)
     if (perm_is_group($gid)) {
 
         $group_user_array = array();
-        $group_user_count = 0;
 
-        $sql = "SELECT COUNT(UID) AS USER_COUNT ";
-        $sql.= "FROM GROUP_USERS WHERE GID = '$gid'";
-
-        if (!$result = db_query($sql, $db_perm_group_get_users)) return false;
-
-        list($group_user_count) = db_fetch_array($result, DB_RESULT_NUM);
-
-        $sql = "SELECT GROUP_USERS.UID, USER.LOGON, USER.NICKNAME FROM GROUP_USERS ";
+        $sql = "SELECT SQL_CALC_FOUND_ROWS GROUP_USERS.UID, ";
+        $sql.= "USER.LOGON, USER.NICKNAME FROM GROUP_USERS ";
         $sql.= "LEFT JOIN USER ON (USER.UID = GROUP_USERS.UID) ";
         $sql.= "WHERE GROUP_USERS.GID = '$gid' ";
         $sql.= "LIMIT $offset, 20";
 
         if (!$result = db_query($sql, $db_perm_group_get_users)) return false;
+
+        // Fetch the number of total results
+
+        $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
+
+        if (!$result_count = db_query($sql, $db_perm_group_get_users)) return false;
+
+        list($group_user_count) = db_fetch_array($result_count, DB_RESULT_NUM);
 
         if (db_num_rows($result) > 0) {
 

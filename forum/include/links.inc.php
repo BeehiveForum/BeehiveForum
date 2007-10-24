@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.inc.php,v 1.79 2007-10-11 13:01:19 decoyduck Exp $ */
+/* $Id: links.inc.php,v 1.80 2007-10-24 19:57:09 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -59,16 +59,9 @@ function links_get_in_folder($fid, $invisible = false, $sort_by = "TITLE", $sort
 
     $links_array = array();
 
-    $sql = "SELECT COUNT(LID) AS LINK_COUNT FROM {$table_data['PREFIX']}LINKS ";
-    $sql.= "WHERE FID = '$fid'";
-
-    if (!$result = db_query($sql, $db_links_get_in_folder)) return false;
-
-    list($links_count) = db_fetch_array($result, DB_RESULT_NUM);
-
     if ($invisible === false) {
 
-        $sql = "SELECT LINKS.LID, LINKS.UID, USER.LOGON, USER.NICKNAME, LINKS.URI, LINKS.TITLE, ";
+        $sql = "SELECT SQL_CALC_FOUND_ROWS LINKS.LID, LINKS.UID, USER.LOGON, USER.NICKNAME, LINKS.URI, LINKS.TITLE, ";
         $sql.= "LINKS.DESCRIPTION, LINKS.VISIBLE, UNIX_TIMESTAMP(LINKS.CREATED) AS CREATED, LINKS.CLICKS, ";
         $sql.= "AVG(LINKS_VOTE.RATING) AS RATING FROM {$table_data['PREFIX']}LINKS LINKS ";
         $sql.= "LEFT JOIN {$table_data['PREFIX']}LINKS_VOTE LINKS_VOTE ON (LINKS.LID = LINKS_VOTE.LID) ";
@@ -78,7 +71,7 @@ function links_get_in_folder($fid, $invisible = false, $sort_by = "TITLE", $sort
 
     }else {
 
-        $sql = "SELECT LINKS.LID, LINKS.UID, USER.LOGON, USER.NICKNAME, LINKS.URI, LINKS.TITLE, ";
+        $sql = "SELECT SQL_CALC_FOUND_ROWS LINKS.LID, LINKS.UID, USER.LOGON, USER.NICKNAME, LINKS.URI, LINKS.TITLE, ";
         $sql.= "LINKS.DESCRIPTION, LINKS.VISIBLE, UNIX_TIMESTAMP(LINKS.CREATED) AS CREATED, LINKS.CLICKS, ";
         $sql.= "AVG(LINKS_VOTE.RATING) AS RATING FROM {$table_data['PREFIX']}LINKS LINKS ";
         $sql.= "LEFT JOIN {$table_data['PREFIX']}LINKS_VOTE LINKS_VOTE ON (LINKS.LID = LINKS_VOTE.LID) ";
@@ -87,6 +80,14 @@ function links_get_in_folder($fid, $invisible = false, $sort_by = "TITLE", $sort
     }
 
     if (!$result = db_query($sql, $db_links_get_in_folder)) return false;
+
+    // Fetch the number of total results
+
+    $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
+
+    if (!$result_count = db_query($sql, $db_links_get_in_folder)) return false;
+
+    list($links_count) = db_fetch_array($result_count, DB_RESULT_NUM);
 
     if (db_num_rows($result) > 0) {
 
@@ -384,15 +385,9 @@ function links_get_all($invisible = false, $sort_by = "TITLE", $sort_dir = "ASC"
 
     $links_array = array();
 
-    $sql = "SELECT COUNT(LID) AS LINK_COUNT FROM {$table_data['PREFIX']}LINKS ";
-
-    if (!$result = db_query($sql, $db_links_get_in_folder)) return false;
-
-    list($links_count) = db_fetch_array($result, DB_RESULT_NUM);
-
     if ($invisible === false) {
 
-        $sql = "SELECT LINKS.LID, LINKS.UID, USER.LOGON, USER.NICKNAME, LINKS.URI, LINKS.TITLE, ";
+        $sql = "SELECT SQL_CALC_FOUND_ROWS LINKS.LID, LINKS.UID, USER.LOGON, USER.NICKNAME, LINKS.URI, LINKS.TITLE, ";
         $sql.= "LINKS.DESCRIPTION, LINKS.VISIBLE, UNIX_TIMESTAMP(LINKS.CREATED) AS CREATED, LINKS.CLICKS, ";
         $sql.= "AVG(LINKS_VOTE.RATING) AS RATING FROM {$table_data['PREFIX']}LINKS LINKS ";
         $sql.= "LEFT JOIN {$table_data['PREFIX']}LINKS_VOTE LINKS_VOTE ON (LINKS.LID = LINKS_VOTE.LID) ";
@@ -401,7 +396,7 @@ function links_get_all($invisible = false, $sort_by = "TITLE", $sort_dir = "ASC"
 
     }else {
 
-        $sql = "SELECT LINKS.LID, LINKS.UID, USER.LOGON, USER.NICKNAME, LINKS.URI, LINKS.TITLE, ";
+        $sql = "SELECT SQL_CALC_FOUND_ROWS LINKS.LID, LINKS.UID, USER.LOGON, USER.NICKNAME, LINKS.URI, LINKS.TITLE, ";
         $sql.= "LINKS.DESCRIPTION, LINKS.VISIBLE, UNIX_TIMESTAMP(LINKS.CREATED) AS CREATED, LINKS.CLICKS, ";
         $sql.= "AVG(LINKS_VOTE.RATING) AS RATING FROM {$table_data['PREFIX']}LINKS LINKS ";
         $sql.= "LEFT JOIN {$table_data['PREFIX']}LINKS_VOTE LINKS_VOTE ON (LINKS.LID = LINKS_VOTE.LID) ";
@@ -410,6 +405,14 @@ function links_get_all($invisible = false, $sort_by = "TITLE", $sort_dir = "ASC"
     }
 
     if (!$result = db_query($sql, $db_links_get_in_folder)) return false;
+
+    // Fetch the number of total results
+
+    $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
+
+    if (!$result_count = db_query($sql, $db_links_get_in_folder)) return false;
+
+    list($links_count) = db_fetch_array($result_count, DB_RESULT_NUM);
 
     if (db_num_rows($result) > 0) {
 

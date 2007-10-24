@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.289 2007-10-12 23:28:13 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.290 2007-10-24 19:57:09 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1862,33 +1862,13 @@ function threads_get_user_subscriptions($interest_type = THREAD_NOINTEREST, $off
     if (!$table_data = get_table_prefix()) return false;
 
     $thread_subscriptions_array = array();
-    $thread_subscriptions_count = 0;
 
     $uid = bh_session_get_value('UID');
 
     if ($interest_type <> THREAD_NOINTEREST) {
 
-        $sql = "SELECT COUNT(THREAD.TID) FROM {$table_data['PREFIX']}THREAD THREAD ";
-        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
-        $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
-        $sql.= "WHERE USER_THREAD.INTEREST = '$interest_type' ";
-
-    }else {
-
-        $sql = "SELECT COUNT(THREAD.TID) FROM {$table_data['PREFIX']}THREAD THREAD ";
-        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
-        $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
-        $sql.= "WHERE USER_THREAD.INTEREST <> 0 ";
-    }
-
-    if (!$result = db_query($sql, $db_threads_get_user_subscriptions)) return false;
-
-    list($thread_subscriptions_count) = db_fetch_array($result, DB_RESULT_NUM);
-
-    if ($interest_type <> THREAD_NOINTEREST) {
-
-        $sql = "SELECT THREAD.TID, THREAD.TITLE, FOLDER.PREFIX, USER_THREAD.INTEREST ";
-        $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
+        $sql = "SELECT SQL_CALC_FOUND_ROWS THREAD.TID, THREAD.TITLE, FOLDER.PREFIX, ";
+        $sql.= "USER_THREAD.INTEREST FROM {$table_data['PREFIX']}THREAD THREAD ";
         $sql.= "LEFT JOIN {$table_data['PREFIX']}FOLDER FOLDER ";
         $sql.= "ON (FOLDER.FID = THREAD.FID) ";
         $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
@@ -1899,8 +1879,8 @@ function threads_get_user_subscriptions($interest_type = THREAD_NOINTEREST, $off
 
     }else {
 
-        $sql = "SELECT THREAD.TID, THREAD.TITLE, FOLDER.PREFIX, USER_THREAD.INTEREST ";
-        $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
+        $sql = "SELECT SQL_CALC_FOUND_ROWS THREAD.TID, THREAD.TITLE, FOLDER.PREFIX, ";
+        $sql.= "USER_THREAD.INTEREST FROM {$table_data['PREFIX']}THREAD THREAD ";
         $sql.= "LEFT JOIN {$table_data['PREFIX']}FOLDER FOLDER ";
         $sql.= "ON (FOLDER.FID = THREAD.FID) ";
         $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
@@ -1911,6 +1891,14 @@ function threads_get_user_subscriptions($interest_type = THREAD_NOINTEREST, $off
     }
 
     if (!$result = db_query($sql, $db_threads_get_user_subscriptions)) return false;
+
+    // Fetch the number of total results
+
+    $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
+
+    if (!$result_count = db_query($sql, $db_threads_get_user_subscriptions)) return false;
+
+    list($thread_subscriptions_count) = db_fetch_array($result_count, DB_RESULT_NUM);
 
     if (db_num_rows($result) > 0) {
 
@@ -1941,36 +1929,13 @@ function threads_search_user_subscriptions($thread_search, $interest_type = THRE
     $thread_search = db_escape_string($thread_search);
 
     $thread_subscriptions_array = array();
-    $thread_subscriptions_count = 0;
 
     $uid = bh_session_get_value('UID');
 
     if ($interest_type <> THREAD_NOINTEREST) {
 
-        $sql = "SELECT COUNT(THREAD.TID) FROM {$table_data['PREFIX']}THREAD THREAD ";
-        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
-        $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
-        $sql.= "WHERE USER_THREAD.INTEREST <> 0 ";
-        $sql.= "AND USER_THREAD.INTEREST = '$interest_type' ";
-        $sql.= "AND THREAD.TITLE LIKE '$thread_search%' ";
-
-    }else {
-
-        $sql = "SELECT COUNT(THREAD.TID) FROM {$table_data['PREFIX']}THREAD THREAD ";
-        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
-        $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
-        $sql.= "WHERE USER_THREAD.INTEREST <> 0 ";
-        $sql.= "AND THREAD.TITLE LIKE '$thread_search%' ";
-    }
-
-    if (!$result = db_query($sql, $db_threads_search_user_subscriptions)) return false;
-
-    list($thread_subscriptions_count) = db_fetch_array($result, DB_RESULT_NUM);
-
-    if ($interest_type <> THREAD_NOINTEREST) {
-
-        $sql = "SELECT THREAD.TID, THREAD.TITLE, FOLDER.PREFIX, USER_THREAD.INTEREST ";
-        $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
+        $sql = "SELECT SQL_CALC_FOUND_ROWS THREAD.TID, THREAD.TITLE, FOLDER.PREFIX, ";
+        $sql.= "USER_THREAD.INTEREST FROM {$table_data['PREFIX']}THREAD THREAD ";
         $sql.= "LEFT JOIN {$table_data['PREFIX']}FOLDER FOLDER ";
         $sql.= "ON (FOLDER.FID = THREAD.FID) ";
         $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
@@ -1982,8 +1947,8 @@ function threads_search_user_subscriptions($thread_search, $interest_type = THRE
 
     }else {
 
-        $sql = "SELECT THREAD.TID, THREAD.TITLE, FOLDER.PREFIX, USER_THREAD.INTEREST ";
-        $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
+        $sql = "SELECT SQL_CALC_FOUND_ROWS THREAD.TID, THREAD.TITLE, FOLDER.PREFIX, ";
+        $sql.= "USER_THREAD.INTEREST FROM {$table_data['PREFIX']}THREAD THREAD ";
         $sql.= "LEFT JOIN {$table_data['PREFIX']}FOLDER FOLDER ";
         $sql.= "ON (FOLDER.FID = THREAD.FID) ";
         $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
@@ -1995,6 +1960,14 @@ function threads_search_user_subscriptions($thread_search, $interest_type = THRE
     }
 
     if (!$result = db_query($sql, $db_threads_search_user_subscriptions)) return false;
+
+    // Fetch the number of total results
+
+    $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
+
+    if (!$result_count = db_query($sql, $db_threads_search_user_subscriptions)) return false;
+
+    list($thread_subscriptions_count) = db_fetch_array($result_count, DB_RESULT_NUM);
 
     if (db_num_rows($result) > 0) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.198 2007-10-12 23:45:59 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.199 2007-10-24 19:57:09 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -492,77 +492,76 @@ function search_fetch_results($offset, $sort_by, $sort_dir)
         $sort_dir = 'DESC';
     }
 
-    $sql = "SELECT COUNT(UID) AS RESULT_COUNT FROM SEARCH_RESULTS WHERE UID = '$uid'";
+    $sql = "SELECT SQL_CALC_FOUND_ROWS SEARCH_RESULTS.FID, SEARCH_RESULTS.TID, SEARCH_RESULTS.PID, ";
+    $sql.= "SEARCH_RESULTS.BY_UID, SEARCH_RESULTS.FROM_UID, SEARCH_RESULTS.TO_UID, ";
+    $sql.= "USER_TRACK.LAST_SEARCH_KEYWORDS AS KEYWORDS, UNIX_TIMESTAMP(CREATED) AS CREATED, ";
+    $sql.= "USER.LOGON AS FROM_LOGON, USER.NICKNAME AS FROM_NICKNAME, ";
+    $sql.= "USER_PEER.PEER_NICKNAME FROM SEARCH_RESULTS ";
+    $sql.= "LEFT JOIN USER ON (USER.UID = SEARCH_RESULTS.FROM_UID) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+    $sql.= "ON (USER_PEER.PEER_UID = SEARCH_RESULTS.FROM_UID AND USER_PEER.UID = '$uid') ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_TRACK USER_TRACK ";
+    $sql.= "ON (USER_TRACK.UID = SEARCH_RESULTS.UID) ";
+    $sql.= "WHERE SEARCH_RESULTS.UID = '$uid' ";
+
+    switch($sort_by) {
+
+        case SEARCH_SORT_NUM_REPLIES:
+
+            $sql.= "ORDER BY SEARCH_RESULTS.LENGTH $sort_dir LIMIT $offset, 20";
+            break;
+
+        case SEARCH_SORT_FOLDER_NAME:
+
+            $sql.= "ORDER BY SEARCH_RESULTS.FID $sort_dir LIMIT $offset, 20";
+            break;
+
+        case SEARCH_SORT_AUTHOR_NAME:
+
+            $sql.= "ORDER BY FROM_UID $sort_dir LIMIT $offset, 20";
+            break;
+
+        default:
+
+            $sql.= "ORDER BY SEARCH_RESULTS.CREATED $sort_dir LIMIT $offset, 20";
+            break;
+    }
 
     if (!$result = db_query($sql, $db_search_fetch_results)) return false;
 
-    list($result_count) = db_fetch_array($result, DB_RESULT_NUM);
+    // Fetch the number of total results
 
-    if ($result_count > 0) {
+    $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-        $sql = "SELECT SEARCH_RESULTS.FID, SEARCH_RESULTS.TID, SEARCH_RESULTS.PID, ";
-        $sql.= "SEARCH_RESULTS.BY_UID, SEARCH_RESULTS.FROM_UID, SEARCH_RESULTS.TO_UID, ";
-        $sql.= "USER_TRACK.LAST_SEARCH_KEYWORDS AS KEYWORDS, UNIX_TIMESTAMP(CREATED) AS CREATED, ";
-        $sql.= "USER.LOGON AS FROM_LOGON, USER.NICKNAME AS FROM_NICKNAME, ";
-        $sql.= "USER_PEER.PEER_NICKNAME FROM SEARCH_RESULTS ";
-        $sql.= "LEFT JOIN USER ON (USER.UID = SEARCH_RESULTS.FROM_UID) ";
-        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
-        $sql.= "ON (USER_PEER.PEER_UID = SEARCH_RESULTS.FROM_UID AND USER_PEER.UID = '$uid') ";
-        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_TRACK USER_TRACK ";
-        $sql.= "ON (USER_TRACK.UID = SEARCH_RESULTS.UID) ";
-        $sql.= "WHERE SEARCH_RESULTS.UID = '$uid' ";
+    if (!$result_count = db_query($sql, $db_search_fetch_results)) return false;
 
-        switch($sort_by) {
+    list($result_count) = db_fetch_array($result_count, DB_RESULT_NUM);
 
-            case SEARCH_SORT_NUM_REPLIES:
+    if (db_num_rows($result) > 0) {
 
-                $sql.= "ORDER BY SEARCH_RESULTS.LENGTH $sort_dir LIMIT $offset, 20";
-                break;
+        $search_results_array = array();
 
-            case SEARCH_SORT_FOLDER_NAME:
+        while ($search_result = db_fetch_array($result)) {
 
-                $sql.= "ORDER BY SEARCH_RESULTS.FID $sort_dir LIMIT $offset, 20";
-                break;
-
-            case SEARCH_SORT_AUTHOR_NAME:
-
-                $sql.= "ORDER BY FROM_UID $sort_dir LIMIT $offset, 20";
-                break;
-
-            default:
-
-                $sql.= "ORDER BY SEARCH_RESULTS.CREATED $sort_dir LIMIT $offset, 20";
-                break;
-        }
-
-        if (!$result = db_query($sql, $db_search_fetch_results)) return false;
-
-        if (db_num_rows($result) > 0) {
-
-            $search_results_array = array();
-
-            while ($search_result = db_fetch_array($result)) {
-
-                if (isset($search_result['FROM_LOGON']) && isset($search_result['PEER_NICKNAME'])) {
-                    if (!is_null($search_result['PEER_NICKNAME']) && strlen($search_result['PEER_NICKNAME']) > 0) {
-                        $search_result['FROM_NICKNAME'] = $search_result['PEER_NICKNAME'];
-                    }
+            if (isset($search_result['FROM_LOGON']) && isset($search_result['PEER_NICKNAME'])) {
+                if (!is_null($search_result['PEER_NICKNAME']) && strlen($search_result['PEER_NICKNAME']) > 0) {
+                    $search_result['FROM_NICKNAME'] = $search_result['PEER_NICKNAME'];
                 }
-
-                if (!isset($search_result['FROM_LOGON'])) $search_result['FROM_LOGON'] = $lang['unknownuser'];
-                if (!isset($search_result['FROM_NICKNAME'])) $search_result['FROM_NICKNAME'] = $lang['unknownuser'];
-
-                $search_results_array[] = $search_result;
             }
 
-            return array('result_count' => $result_count,
-                         'result_array' => $search_results_array);
+            if (!isset($search_result['FROM_LOGON'])) $search_result['FROM_LOGON'] = $lang['unknownuser'];
+            if (!isset($search_result['FROM_NICKNAME'])) $search_result['FROM_NICKNAME'] = $lang['unknownuser'];
 
-        }else if ($result_count > 0) {
-
-            $offset = floor(($result_count - 1) / 20) * 20;
-            return search_fetch_results($offset, $sort_by, $sort_dir);
+            $search_results_array[] = $search_result;
         }
+
+        return array('result_count' => $result_count,
+                     'result_array' => $search_results_array);
+
+    }else if ($result_count > 0) {
+
+        $offset = floor(($result_count - 1) / 20) * 20;
+        return search_fetch_results($offset, $sort_by, $sort_dir);
     }
 
     return false;

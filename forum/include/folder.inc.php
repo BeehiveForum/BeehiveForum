@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.141 2007-10-11 13:01:18 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.142 2007-10-24 19:57:08 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -406,13 +406,7 @@ function folder_get_all_by_page($offset)
 
     $folder_array = array();
 
-    $sql = "SELECT COUNT(FID) FROM {$table_data['PREFIX']}FOLDER ";
-
-    if (!$result = db_query($sql, $db_folder_get_all_by_page)) return false;
-
-    list($folder_count) = db_fetch_array($result, DB_RESULT_NUM);
-
-    $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, ";
+    $sql = "SELECT SQL_CALC_FOUND_ROWS FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, ";
     $sql.= "FOLDER.ALLOWED_TYPES, FOLDER.POSITION, FOLDER.PREFIX, ";
     $sql.= "BIT_OR(FOLDER_PERMS.PERM) AS FOLDER_PERMS, ";
     $sql.= "COUNT(FOLDER_PERMS.PERM) AS FOLDER_PERM_COUNT ";
@@ -424,6 +418,14 @@ function folder_get_all_by_page($offset)
     $sql.= "LIMIT $offset, 10";
 
     if (!$result = db_query($sql, $db_folder_get_all_by_page)) return false;
+
+    // Fetch the number of total results
+
+    $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
+
+    if (!$result_count = db_query($sql, $db_folder_get_all_by_page)) return false;
+
+    list($folder_count) = db_fetch_array($result_count, DB_RESULT_NUM);
 
     if (db_num_rows($result) > 0) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: rss_feed.inc.php,v 1.49 2007-10-11 13:01:19 decoyduck Exp $ */
+/* $Id: rss_feed.inc.php,v 1.50 2007-10-24 19:57:09 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -332,14 +332,8 @@ function rss_get_feeds($offset)
 
     $rss_feed_array = array();
 
-    $sql = "SELECT COUNT(RSSID) FROM {$table_data['PREFIX']}RSS_FEEDS";
-
-    if (!$result = db_query($sql, $db_rss_get_feeds)) return false;
-
-    list($rss_feed_count) = db_fetch_array($result, DB_RESULT_NUM);
-
-    $sql = "SELECT RSS_FEEDS.RSSID, RSS_FEEDS.NAME, USER.LOGON, ";
-    $sql.= "USER.NICKNAME, USER_PEER.PEER_NICKNAME, RSS_FEEDS.FID, ";
+    $sql = "SELECT SQL_CALC_FOUND_ROWS RSS_FEEDS.RSSID, RSS_FEEDS.NAME, ";
+    $sql.= "USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, RSS_FEEDS.FID, ";
     $sql.= "RSS_FEEDS.URL, RSS_FEEDS.PREFIX, RSS_FEEDS.FREQUENCY ";
     $sql.= "FROM {$table_data['PREFIX']}RSS_FEEDS RSS_FEEDS ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = RSS_FEEDS.UID) ";
@@ -349,6 +343,14 @@ function rss_get_feeds($offset)
     $sql.= "LIMIT $offset, 10";
 
     if (!$result = db_query($sql, $db_rss_get_feeds)) return false;
+
+    // Fetch the number of total results
+
+    $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
+
+    if (!$result_count = db_query($sql, $db_rss_get_feeds)) return false;
+
+    list($rss_feed_count) = db_fetch_array($result_count, DB_RESULT_NUM);
 
     if (db_num_rows($result) > 0) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_links.inc.php,v 1.40 2007-10-11 13:01:19 decoyduck Exp $ */
+/* $Id: forum_links.inc.php,v 1.41 2007-10-24 19:57:08 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -91,16 +91,19 @@ function forum_links_get_links_by_page($offset)
 
     $forum_links_array = array();
 
-    $sql = "SELECT COUNT(LID) FROM {$table_data['PREFIX']}FORUM_LINKS ";
-
-    if (!$result = db_query($sql, $db_forum_links_get_links_by_page)) return false;
-
-    list($forum_links_count) = db_fetch_array($result, DB_RESULT_NUM);
-
-    $sql = "SELECT LID, POS, URI, TITLE FROM {$table_data['PREFIX']}FORUM_LINKS ";
+    $sql = "SELECT SQL_CALC_FOUND_ROWS LID, POS, URI, TITLE ";
+    $sql.= "FROM {$table_data['PREFIX']}FORUM_LINKS ";
     $sql.= "ORDER BY POS ASC LIMIT $offset, 10";
 
     if (!$result = db_query($sql, $db_forum_links_get_links_by_page)) return false;
+
+    // Fetch the number of total results
+
+    $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
+
+    if (!$result_count = db_query($sql, $db_forum_links_get_links_by_page)) return false;
+
+    list($forum_links_count) = db_fetch_array($result_count, DB_RESULT_NUM);
 
     if (db_num_rows($result) > 0) {
 

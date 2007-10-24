@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.133 2007-10-11 13:01:20 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.134 2007-10-24 19:57:09 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1350,23 +1350,13 @@ function thread_search($thread_search, $offset = 0)
     if (!$table_data = get_table_prefix()) return false;
 
     $results_array = array();
-    $results_count = 0;
 
     $fidlist = folder_get_available();
 
     $thread_search = db_escape_string(str_replace("%", "", $thread_search));
 
-    $sql = "SELECT COUNT(THREAD.TID) AS THREAD_COUNT ";
-    $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
-    $sql.= "WHERE TITLE LIKE '$thread_search%' ";
-    $sql.= "AND THREAD.FID IN ($fidlist) ";
-
-    if (!$result = db_query($sql, $db_thread_search)) return false;
-
-    list($results_count) = db_fetch_array($result, DB_RESULT_NUM);
-
-    $sql = "SELECT THREAD.TID, THREAD.TITLE, FOLDER.PREFIX ";
-    $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
+    $sql = "SELECT SQL_CALC_FOUND_ROWS THREAD.TID, THREAD.TITLE, ";
+    $sql.= "FOLDER.PREFIX FROM {$table_data['PREFIX']}THREAD THREAD ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}FOLDER FOLDER ";
     $sql.= "ON (FOLDER.FID = THREAD.FID) ";
     $sql.= "WHERE THREAD.TITLE LIKE '$thread_search%' ";
@@ -1374,6 +1364,14 @@ function thread_search($thread_search, $offset = 0)
     $sql.= "LIMIT $offset, 10";
 
     if (!$result = db_query($sql, $db_thread_search)) return false;
+
+    // Fetch the number of total results
+
+    $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
+
+    if (!$result_count = db_query($sql, $db_thread_search)) return false;
+
+    list($results_count) = db_fetch_array($result_count, DB_RESULT_NUM);
 
     if (db_num_rows($result) > 0) {
 

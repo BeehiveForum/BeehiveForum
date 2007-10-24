@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_banned.php,v 1.67 2007-10-11 13:01:06 decoyduck Exp $ */
+/* $Id: admin_banned.php,v 1.68 2007-10-24 19:57:08 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -432,7 +432,29 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
 
     echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['bancontrols']}</h1>\n";
 
-    if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+    if (isset($_POST['newbantype']) && is_numeric($_POST['newbantype'])) {
+        $add_new_ban_type = $_POST['newbantype'];
+    }
+
+    if (isset($_POST['newbandata']) && strlen(trim(_stripslashes($_POST['newbandata']))) > 0) {
+        $add_new_ban_data = $_POST['newbandata'];
+    }
+
+    if (isset($add_new_ban_type) && isset($add_new_ban_data)) {
+
+        if ($affected_sessions_array = check_affected_sessions($add_new_ban_type, $add_new_ban_data)) {
+
+            $affected_sessions_text = implode('</li><li>', array_map('admin_prepare_affected_sessions', $affected_sessions_array));
+            $affected_sessions_text = sprintf("{$lang['affectsessionwarnadd']}<ul><li>%s</li></ul>", $affected_sessions_text);
+
+            html_display_warning_msg($affected_sessions_text, '420', 'center');
+
+        }else {
+
+            html_display_warning_msg($lang['noaffectsessionwarn'], '420', 'center');
+        }
+
+    }else if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
         html_display_error_array($error_msg_array, '420', 'center');
 
@@ -484,30 +506,6 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
     echo "            </td>\n";
     echo "          </tr>\n";
     echo "        </table>\n";
-
-    if (isset($_POST['newbantype']) && is_numeric($_POST['newbantype'])) {
-        $add_new_ban_type = $_POST['newbantype'];
-    }
-
-    if (isset($_POST['newbandata']) && strlen(trim(_stripslashes($_POST['newbandata']))) > 0) {
-        $add_new_ban_data = $_POST['newbandata'];
-    }
-
-    if (isset($add_new_ban_type) && isset($add_new_ban_data)) {
-
-        if ($affected_sessions_array = check_affected_sessions($add_new_ban_type, $add_new_ban_data)) {
-
-            $affected_sessions_text = implode('</li><li>', array_map('admin_prepare_affected_sessions', $affected_sessions_array));
-            $affected_sessions_text = sprintf("{$lang['affectsessionwarnadd']}<ul><li>%s</li></ul>", $affected_sessions_text);
-
-            html_display_warning_msg($affected_sessions_text, '420', 'center');
-
-        }else {
-
-            html_display_warning_msg($lang['noaffectsessionwarn'], '420', 'center');
-        }
-    }
-
     echo "      </td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
@@ -552,6 +550,10 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
         exit;
     }
 
+    html_draw_top('openprofile.js');
+
+    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['bancontrols']}</h1>\n";
+
     if (isset($_POST['edit_check'])) {
 
         if (isset($_POST['bantype']) && is_numeric($_POST['bantype'])) {
@@ -565,13 +567,21 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
         if (isset($_POST['bancomment']) && strlen(trim(_stripslashes($_POST['bancomment']))) > 0) {
             $ban_data_array['COMMENT'] = trim(_stripslashes($_POST['bancomment']));
         }
-    }
 
-    html_draw_top('openprofile.js');
+        if ($affected_sessions_array = check_affected_sessions($ban_data_array['BANTYPE'], $ban_data_array['BANDATA'])) {
 
-    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['bancontrols']}</h1>\n";
+            $affected_sessions_text = implode('</li><li>', array_map('admin_prepare_affected_sessions', $affected_sessions_array));
+            $affected_sessions_text = sprintf("{$lang['affectsessionwarnadd']}<ul><li>%s</li></ul>", $affected_sessions_text);
 
-    if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+            html_display_warning_msg($affected_sessions_text, '420', 'center');
+
+        }else {
+
+            html_display_warning_msg($lang['noaffectsessionwarn'], '420', 'center');
+        }
+
+    }else if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+
         html_display_error_array($error_msg_array, '500', 'center');
     }
 
@@ -619,19 +629,6 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
     echo "            </td>\n";
     echo "          </tr>\n";
     echo "        </table>\n";
-
-    if ($affected_sessions_array = check_affected_sessions($ban_data_array['BANTYPE'], $ban_data_array['BANDATA'])) {
-
-        $affected_sessions_text = implode('</li><li>', array_map('admin_prepare_affected_sessions', $affected_sessions_array));
-        $affected_sessions_text = sprintf("{$lang['affectsessionwarnadd']}<ul><li>%s</li></ul>", $affected_sessions_text);
-
-        html_display_warning_msg($affected_sessions_text, '420', 'center');
-
-    }else {
-
-        html_display_warning_msg($lang['noaffectsessionwarn'], '420', 'center');
-    }
-
     echo "      </td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";

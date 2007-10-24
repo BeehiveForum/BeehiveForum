@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.74 2007-10-11 13:01:19 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.75 2007-10-24 19:57:09 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -54,23 +54,21 @@ function get_forum_list($offset)
 
     $forums_array = array();
 
-    // Get the number of forums
-
-    $sql = "SELECT COUNT(FORUMS.FID) FROM FORUMS ";
-    $sql.= "LEFT JOIN USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
-    $sql.= "AND USER_FORUM.UID = '$uid') WHERE FORUMS.ACCESS_LEVEL > -1 ";
-
-    if (!$result_forums = db_query($sql, $db_get_forum_list)) return false;
-
-    list($forums_count) = db_fetch_array($result_forums, DB_RESULT_NUM);
-
-    $sql = "SELECT FORUMS.FID, FORUMS.ACCESS_LEVEL, USER_FORUM.INTEREST, ";
+    $sql = "SELECT SQL_CALC_FOUND_ROWS FORUMS.FID, FORUMS.ACCESS_LEVEL, USER_FORUM.INTEREST, ";
     $sql.= "CONCAT(FORUMS.DATABASE_NAME, '.', FORUMS.WEBTAG, '_') AS PREFIX FROM FORUMS ";
     $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
     $sql.= "AND USER_FORUM.UID = '$uid') WHERE FORUMS.ACCESS_LEVEL > -1 ";
     $sql.= "ORDER BY FORUMS.FID LIMIT $offset, 10";
 
     if (!$result_forums = db_query($sql, $db_get_forum_list)) return false;
+
+    // Fetch the number of total results
+
+    $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
+
+    if (!$result_count = db_query($sql, $db_get_forum_list)) return false;
+
+    list($forums_count) = db_fetch_array($result_count, DB_RESULT_NUM);
 
     if (db_num_rows($result_forums) > 0) {
 
@@ -134,39 +132,11 @@ function get_my_forums($view_type, $offset)
 
     $forums_array = array();
 
-    // Get the number of forums
-
-    if ($view_type == FORUMS_SHOW_ALL) {
-
-        $sql = "SELECT COUNT(FORUMS.FID) FROM FORUMS ";
-        $sql.= "LEFT JOIN USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
-        $sql.= "AND USER_FORUM.UID = '$uid') WHERE FORUMS.ACCESS_LEVEL > -1 ";
-        $sql.= "AND USER_FORUM.INTEREST > -1";
-
-    }elseif ($view_type == FORUMS_SHOW_FAVS) {
-
-        $sql = "SELECT COUNT(FORUMS.FID) FROM FORUMS ";
-        $sql.= "LEFT JOIN USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
-        $sql.= "AND USER_FORUM.UID = '$uid') WHERE FORUMS.ACCESS_LEVEL > -1 ";
-        $sql.= "AND USER_FORUM.INTEREST = 1";
-
-    }elseif ($view_type == FORUMS_SHOW_IGNORED) {
-
-        $sql = "SELECT COUNT(FORUMS.FID) FROM FORUMS ";
-        $sql.= "LEFT JOIN USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
-        $sql.= "AND USER_FORUM.UID = '$uid') WHERE FORUMS.ACCESS_LEVEL > -1 ";
-        $sql.= "AND USER_FORUM.INTEREST = -1 ";
-    }
-
-    if (!$result_forums = db_query($sql, $db_get_my_forums)) return false;
-
-    list($forums_count) = db_fetch_array($result_forums, DB_RESULT_NUM);
-
     // Fetch the forums
 
     if ($view_type == FORUMS_SHOW_ALL) {
 
-        $sql = "SELECT FORUMS.FID, FORUMS.ACCESS_LEVEL, USER_FORUM.INTEREST, ";
+        $sql = "SELECT SQL_CALC_FOUND_ROWS FORUMS.FID, FORUMS.ACCESS_LEVEL, USER_FORUM.INTEREST, ";
         $sql.= "CONCAT(FORUMS.DATABASE_NAME, '.', FORUMS.WEBTAG, '_') AS PREFIX FROM FORUMS ";
         $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
         $sql.= "AND USER_FORUM.UID = '$uid') WHERE FORUMS.ACCESS_LEVEL > -1 ";
@@ -175,7 +145,7 @@ function get_my_forums($view_type, $offset)
 
     }elseif ($view_type == FORUMS_SHOW_FAVS) {
 
-        $sql = "SELECT FORUMS.FID, FORUMS.ACCESS_LEVEL, USER_FORUM.INTEREST, ";
+        $sql = "SELECT SQL_CALC_FOUND_ROWS FORUMS.FID, FORUMS.ACCESS_LEVEL, USER_FORUM.INTEREST, ";
         $sql.= "CONCAT(FORUMS.DATABASE_NAME, '.', FORUMS.WEBTAG, '_') AS PREFIX FROM FORUMS ";
         $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
         $sql.= "AND USER_FORUM.UID = '$uid') WHERE FORUMS.ACCESS_LEVEL > -1 ";
@@ -184,7 +154,7 @@ function get_my_forums($view_type, $offset)
 
     }elseif ($view_type == FORUMS_SHOW_IGNORED) {
 
-        $sql = "SELECT FORUMS.FID, FORUMS.ACCESS_LEVEL, USER_FORUM.INTEREST, ";
+        $sql = "SELECT SQL_CALC_FOUND_ROWS FORUMS.FID, FORUMS.ACCESS_LEVEL, USER_FORUM.INTEREST, ";
         $sql.= "CONCAT(FORUMS.DATABASE_NAME, '.', FORUMS.WEBTAG, '_') AS PREFIX FROM FORUMS ";
         $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
         $sql.= "AND USER_FORUM.UID = '$uid') WHERE FORUMS.ACCESS_LEVEL > -1 ";
@@ -193,6 +163,14 @@ function get_my_forums($view_type, $offset)
     }
 
     if (!$result_forums = db_query($sql, $db_get_my_forums)) return false;
+
+    // Fetch the number of total results
+
+    $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
+
+    if (!$result_count = db_query($sql, $db_get_my_forums)) return false;
+
+    list($forums_count) = db_fetch_array($result_count, DB_RESULT_NUM);
 
     if (db_num_rows($result_forums) > 0) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.270 2007-10-21 19:59:22 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.271 2007-10-24 19:57:08 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -2136,7 +2136,6 @@ function forum_search($forum_search, $offset)
     // Array to hold our forums in.
 
     $forums_array = array();
-    $forums_count = 0;
 
     if (strlen(trim($forum_search)) > 0) {
 
@@ -2146,18 +2145,7 @@ function forum_search($forum_search, $offset)
         $forum_search_webtag = implode("%' OR FORUMS.WEBTAG LIKE '%", $forum_search_array);
         $forum_search_svalue = implode("%' OR FORUM_SETTINGS.SVALUE LIKE '%", $forum_search_array);
 
-        $sql = "SELECT COUNT(DISTINCT FORUMS.FID) AS FORUMS_COUNT FROM FORUM_SETTINGS ";
-        $sql.= "LEFT JOIN USER_FORUM ON (USER_FORUM.FID = FORUM_SETTINGS.FID ";
-        $sql.= "AND USER_FORUM.UID = '$uid') LEFT JOIN FORUMS ON (FORUMS.FID = FORUM_SETTINGS.FID) ";
-        $sql.= "WHERE FORUMS.ACCESS_LEVEL > -1 AND (FORUMS.WEBTAG LIKE ";
-        $sql.= "'%$forum_search_webtag%' OR FORUM_SETTINGS.SVALUE LIKE ";
-        $sql.= "'%$forum_search_svalue%')";
-
-        if (!$result_forums = db_query($sql, $db_forum_search)) return false;
-
-        list($forums_count) = db_fetch_array($result_forums, DB_RESULT_NUM);
-
-        $sql = "SELECT CONCAT(FORUMS.DATABASE_NAME, '.', FORUMS.WEBTAG, '_') AS PREFIX, ";
+        $sql = "SELECT SQL_CALC_FOUND_ROWS CONCAT(FORUMS.DATABASE_NAME, '.', FORUMS.WEBTAG, '_') AS PREFIX, ";
         $sql.= "FORUMS.FID, FORUMS.ACCESS_LEVEL, USER_FORUM.INTEREST FROM FORUM_SETTINGS ";
         $sql.= "LEFT JOIN USER_FORUM ON (USER_FORUM.FID = FORUM_SETTINGS.FID ";
         $sql.= "AND USER_FORUM.UID = '$uid') LEFT JOIN FORUMS ON (FORUMS.FID = FORUM_SETTINGS.FID) ";
@@ -2167,6 +2155,14 @@ function forum_search($forum_search, $offset)
         $sql.= "LIMIT $offset, 10";
 
         if (!$result_forums = db_query($sql, $db_forum_search)) return false;
+
+        // Fetch the number of total results
+
+        $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
+
+        if (!$result_count = db_query($sql, $db_forum_search)) return false;
+
+        list($forums_count) = db_fetch_array($result_count, DB_RESULT_NUM);
 
         if (db_num_rows($result_forums) > 0) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.inc.php,v 1.20 2007-10-21 19:45:00 decoyduck Exp $ */
+/* $Id: visitor_log.inc.php,v 1.21 2007-10-24 19:57:09 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -264,8 +264,9 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
 
     // Main query.
 
-    $select_sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP, USER_PEER.PEER_NICKNAME, ";
-    $select_sql.= "USER_TRACK.POST_COUNT AS POST_COUNT, DATE_FORMAT(USER_PREFS_DOB.DOB, '0000-%m-%d') AS DOB, ";
+    $select_sql = "SELECT SQL_CALC_FOUND_ROWS USER.UID, USER.LOGON, USER.NICKNAME, ";
+    $select_sql.= "USER_PEER.RELATIONSHIP, USER_PEER.PEER_NICKNAME, USER_TRACK.POST_COUNT AS POST_COUNT, ";
+    $select_sql.= "DATE_FORMAT(USER_PREFS_DOB.DOB, '0000-%m-%d') AS DOB, ";
     $select_sql.= "DATE_FORMAT(NOW(), '%Y') - DATE_FORMAT(USER_PREFS_AGE.DOB, '%Y') - ";
     $select_sql.= "(DATE_FORMAT(NOW(), '00-%m-%d') < DATE_FORMAT(USER_PREFS_AGE.DOB, '00-%m-%d')) AS AGE, ";
     $select_sql.= "TIMEZONES.TZID AS TIMEZONE, UNIX_TIMESTAMP(NOW()) AS LOCAL_TIME, ";
@@ -469,32 +470,11 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
 
     $limit_sql = "LIMIT $offset, 10";
 
-    // By default we have 0 users found.
-
-    $user_count = 0;
-
     // Array to store our results in.
 
     $user_array = array();
 
-    // Get the number of users in our database matching the criteria.
-
-    $sql = "SELECT COUNT(USER.UID) AS USER_COUNT $from_sql $join_sql $where_count_sql";
-
-    if (!$result = db_query($sql, $db_visitor_log_browse_items)) return false;
-
-    list($user_count) = db_fetch_array($result, DB_RESULT_NUM);
-
-    if ($hide_guests === false) {
-
-        $sql = "SELECT $user_count + COUNT(VISITOR_LOG.UID) AS USER_COUNT FROM VISITOR_LOG ";
-        $sql.= "LEFT JOIN SEARCH_ENGINE_BOTS ON (SEARCH_ENGINE_BOTS.SID = VISITOR_LOG.SID) ";
-        $sql.= "$where_visitor_sql";
-
-        if (!$result = db_query($sql, $db_visitor_log_browse_items)) return false;
-
-        list($user_count) = db_fetch_array($result, DB_RESULT_NUM);
-    }
+    // Perform a different query if we're hiding guests.
 
     if ($hide_guests === true) {
 
@@ -519,6 +499,16 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
     }
 
     if (!$result = db_query($sql, $db_visitor_log_browse_items)) return false;
+
+    // Fetch the number of total results
+
+    $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
+
+    if (!$result_count = db_query($sql, $db_visitor_log_browse_items)) return false;
+
+    list($user_count) = db_fetch_array($result_count, DB_RESULT_NUM);
+
+    // Check if we have any results.
 
     if (db_num_rows($result) > 0) {
 

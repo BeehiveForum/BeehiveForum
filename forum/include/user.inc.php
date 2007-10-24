@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.342 2007-10-22 23:19:52 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.343 2007-10-24 19:57:09 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1015,8 +1015,7 @@ function user_search($user_search, $offset = 0, $exclude_uid = 0)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $results_array = array();
-    $results_count = 0;
+    $user_array = array();
 
     $uid = bh_session_get_value('UID');
 
@@ -1026,16 +1025,9 @@ function user_search($user_search, $offset = 0, $exclude_uid = 0)
     $user_search_logon = implode("%' OR LOGON LIKE '", $user_search_array);
     $user_search_nickname = implode("%' OR NICKNAME LIKE '", $user_search_array);
 
-    $sql = "SELECT COUNT(USER.UID) AS USER_COUNT FROM USER ";
-    $sql.= "WHERE (LOGON LIKE '$user_search_logon%' ";
-    $sql.= "OR NICKNAME LIKE '$user_search_nickname%') ";
-    $sql.= "AND USER.UID <> $exclude_uid";
+    // Main query.
 
-    if (!$result = db_query($sql, $db_user_search)) return false;
-
-    list($results_count) = db_fetch_array($result, DB_RESULT_NUM);
-
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
+    $sql = "SELECT SQL_CALC_FOUND_ROWS USER.UID, USER.LOGON, USER.NICKNAME, ";
     $sql.= "USER_PEER.PEER_NICKNAME, USER_PEER.RELATIONSHIP ";
     $sql.= "FROM USER USER LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
@@ -1044,6 +1036,16 @@ function user_search($user_search, $offset = 0, $exclude_uid = 0)
     $sql.= "AND USER.UID <> $exclude_uid LIMIT $offset, 10";
 
     if (!$result = db_query($sql, $db_user_search)) return false;
+
+    // Fetch the number of total results
+
+    $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
+
+    if (!$result_count = db_query($sql, $db_user_search)) return false;
+
+    list($user_count) = db_fetch_array($result_count, DB_RESULT_NUM);
+
+    // Check if we have any results.
 
     if (db_num_rows($result) > 0) {
 
@@ -1058,17 +1060,17 @@ function user_search($user_search, $offset = 0, $exclude_uid = 0)
             if (!isset($user_data['LOGON'])) $user_data['LOGON'] = $lang['unknownuser'];
             if (!isset($user_data['NICKNAME'])) $user_data['NICKNAME'] = "";
 
-            $results_array[$user_data['UID']] = $user_data;
+            $user_array[$user_data['UID']] = $user_data;
         }
 
-    }else if ($results_count > 0) {
+    }else if ($user_count > 0) {
 
-        $offset = floor(($results_count - 1) / 10) * 10;
+        $offset = floor(($user_count - 1) / 10) * 10;
         return user_search($user_search, $offset, $exclude_uid);
     }
 
-    return array('results_count' => $results_count,
-                 'results_array' => $results_array);
+    return array('results_count' => $user_count,
+                 'results_array' => $user_array);
 }
 
 function user_get_ip_addresses($uid)
@@ -1244,30 +1246,30 @@ function user_get_relationships($uid, $offset = 0)
     if (!$db_user_get_relationships = db_connect()) return false;
 
     $user_get_peers_array = array();
-    $user_get_peers_count = 0;
 
     if (!is_numeric($uid)) return false;
     if (!is_numeric($offset)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT COUNT(USER.UID) AS USER_COUNT FROM USER USER ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER ";
-    $sql.= "USER_PEER ON (USER_PEER.PEER_UID = USER.UID) ";
-    $sql.= "WHERE USER_PEER.UID = '$uid'";
-
-    if (!$result = db_query($sql, $db_user_get_relationships)) return false;
-
-    list($user_get_peers_count) = db_fetch_array($result, DB_RESULT_NUM);
-
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
-    $sql.= "USER_PEER.RELATIONSHIP, USER_PEER.PEER_NICKNAME ";
+    $sql = "SELECT SQL_CALC_FOUND_ROWS USER.UID, USER.LOGON, USER.NICKNAME, ";
+    $sql.= "USER_PEER.PEER_NICKNAME, USER_PEER.RELATIONSHIP, USER_PEER.PEER_NICKNAME ";
     $sql.= "FROM {$table_data['PREFIX']}USER_PEER USER_PEER ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = USER_PEER.PEER_UID) ";
     $sql.= "WHERE USER_PEER.UID = '$uid' AND USER.UID IS NOT NULL ";
     $sql.= "LIMIT $offset, 10";
 
     if (!$result = db_query($sql, $db_user_get_relationships)) return false;
+
+    // Fetch the number of total results
+
+    $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
+
+    if (!$result_count = db_query($sql, $db_user_get_relationships)) return false;
+
+    list($user_get_peers_count) = db_fetch_array($result_count, DB_RESULT_NUM);
+
+    // Check if we have any results.
 
     if (db_num_rows($result) > 0) {
 
@@ -1351,9 +1353,8 @@ function user_search_relationships($user_search, $offset = 0, $exclude_uid = 0)
     if (!$table_data = get_table_prefix()) return false;
 
     $user_search_peers_array = array();
-    $user_search_peers_count = 0;
 
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $user_search_array = explode(";", $user_search);
     $user_search_array = array_map('user_search_array_clean', $user_search_array);
@@ -1361,16 +1362,7 @@ function user_search_relationships($user_search, $offset = 0, $exclude_uid = 0)
     $user_search_logon = implode("%' OR LOGON LIKE '", $user_search_array);
     $user_search_nickname = implode("%' OR NICKNAME LIKE '", $user_search_array);
 
-    $sql = "SELECT COUNT(USER.UID) AS USER_COUNT FROM USER ";
-    $sql.= "WHERE (LOGON LIKE '$user_search_logon%' ";
-    $sql.= "OR NICKNAME LIKE '$user_search_nickname%') ";
-    $sql.= "AND USER.UID <> $exclude_uid";
-
-    if (!$result = db_query($sql, $db_user_search)) return false;
-
-    list($user_search_peers_count) = db_fetch_array($result, DB_RESULT_NUM);
-
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
+    $sql = "SELECT SQL_CALC_FOUND_ROWS USER.UID, USER.LOGON, USER.NICKNAME, ";
     $sql.= "USER_PEER.PEER_NICKNAME, USER_PEER.RELATIONSHIP ";
     $sql.= "FROM USER USER LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
@@ -1379,6 +1371,16 @@ function user_search_relationships($user_search, $offset = 0, $exclude_uid = 0)
     $sql.= "AND USER.UID <> $exclude_uid LIMIT $offset, 10";
 
     if (!$result = db_query($sql, $db_user_search)) return false;
+
+    // Fetch the number of total results
+
+    $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
+
+    if (!$result_count = db_query($sql, $db_user_search)) return false;
+
+    list($user_search_peers_count) = db_fetch_array($result_count, DB_RESULT_NUM);
+
+    // Check if we have any results.
 
     if (db_num_rows($result) > 0) {
 
@@ -1413,25 +1415,28 @@ function user_get_word_filter_list($offset)
     if (!is_numeric($offset)) $offset = 0;
 
     $word_filter_array = array();
-    $word_filter_count = 0;
 
     if (!$table_data = get_table_prefix()) return false;
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    $sql = "SELECT COUNT(FID) FROM {$table_data['PREFIX']}WORD_FILTER ";
-    $sql.= "WHERE UID = '$uid'";
-
-    if (!$result = db_query($sql, $db_user_get_word_filter_list)) return false;
-
-    list($word_filter_count) = db_fetch_array($result, DB_RESULT_NUM);
-
-    $sql = "SELECT FID, FILTER_NAME, MATCH_TEXT, REPLACE_TEXT, FILTER_TYPE, ";
-    $sql.= "FILTER_ENABLED FROM {$table_data['PREFIX']}WORD_FILTER ";
+    $sql = "SELECT SQL_CALC_FOUND_ROWS FID, FILTER_NAME, MATCH_TEXT, ";
+    $sql.= "REPLACE_TEXT, FILTER_TYPE, FILTER_ENABLED ";
+    $sql.= "FROM {$table_data['PREFIX']}WORD_FILTER ";
     $sql.= "WHERE UID = '$uid' ORDER BY FID ";
     $sql.= "LIMIT $offset, 10";
 
     if (!$result = db_query($sql, $db_user_get_word_filter_list)) return false;
+
+    // Fetch the number of total results
+
+    $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
+
+    if (!$result_count = db_query($sql, $db_user_get_word_filter_list)) return false;
+
+    list($word_filter_count) = db_fetch_array($result_count, DB_RESULT_NUM);
+
+    // Check if we have any results.
 
     if (db_num_rows($result) > 0) {
 

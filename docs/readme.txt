@@ -195,15 +195,18 @@ it should work in an existing one.
 1.2.3 MySQL permissions
 =======================
 
-As a minimum Beehive Forum requires the following privileges granted on the user
-account it will use for interacting with your database:
+To ensure full functionality as a minimum Beehive Forum requires the following
+privileges granted on the user account it will use for interacting with your
+MySQL database:
 
-SELECT, CREATE, CREATE TEMPORARY TABLES, GRANT, INSERT, ALTER, UPDATE,
-INDEX, DELETE and DROP.
+SELECT, CREATE, CREATE TEMPORARY TABLES, INSERT, ALTER,
+UPDATE, INDEX, DELETE and DROP.
 
 Additionally you can grant the FILE privilege globally for the user account to
-aid in the creation of the dictionary. Without the FILE privilege the installer
-for Beehive Forum will still function but it will take a lot longer to complete.
+aid in the creation of the dictionary. To do this will also require GRANT
+permission on the database you are to install Beehive to. Without the FILE
+privilege the installer for Beehive Forum will still function but it will
+take a lot longer to complete.
 
 1.2.4 Upload
 ============

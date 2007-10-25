@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.php,v 1.105 2007-10-11 13:01:15 decoyduck Exp $ */
+/* $Id: links.php,v 1.106 2007-10-25 13:48:51 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -338,8 +338,16 @@ if ($viewmode == LINKS_VIEW_HIERARCHICAL) {
 
 }else {
 
-    echo "<h2>{$lang['listview']}</h2>\n";
-    echo "<p><span class=\"threadtime\">{$lang['listviewcannotaddfolders']}</span></p>\n";
+    echo "<div align=\"center\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"65%\">\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">\n";
+    echo "        <h2>{$lang['listview']}</h2>\n";
+    echo "        <p><span class=\"threadtime\">{$lang['listviewcannotaddfolders']}</span></p>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "</div>\n";
 }
 
 if (isset($_GET['sort_by'])) {

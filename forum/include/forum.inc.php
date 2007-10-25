@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.271 2007-10-24 19:57:08 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.272 2007-10-25 15:00:54 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -2049,29 +2049,54 @@ function forum_get($fid)
     return false;
 }
 
-function forum_get_permissions($fid)
+function forum_get_permissions($fid, $offset = 0)
 {
-    if (!is_numeric($fid)) return false;
-
     if (!$db_forum_get_permissions = db_connect()) return false;
 
-    $forum_get_permissions_array = array();
+    if (!is_numeric($fid)) return false;
+    if (!is_numeric($offset)) $offset = 0;
 
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME FROM USER USER ";
+    $perms_user_array = array();
+
+    $sql = "SELECT SQL_CALC_FOUND_ROWS USER.UID, USER.LOGON, USER.NICKNAME FROM USER USER ";
     $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.UID = USER.UID) ";
-    $sql.= "WHERE USER_FORUM.FID = '$fid' AND USER_FORUM.ALLOWED = 1";
+    $sql.= "WHERE USER_FORUM.FID = '$fid' AND USER_FORUM.ALLOWED = 1 ";
+    $sql.= "LIMIT $offset, 20";
 
     if (!$result = db_query($sql, $db_forum_get_permissions)) return false;
 
+    // Fetch the number of total results
+
+    $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
+
+    if (!$result_count = db_query($sql, $db_forum_get_permissions)) return false;
+
+    list($perms_user_count) = db_fetch_array($result_count, DB_RESULT_NUM);
+
     if (db_num_rows($result) > 0) {
 
-        while($forum_data = db_fetch_array($result)) {
+        while ($user_data = db_fetch_array($result)) {
 
-            $forum_get_permissions_array[] = $forum_data;
+            if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
+                if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
+                    $user_data['NICKNAME'] = $user_data['PEER_NICKNAME'];
+                }
+            }
+
+            if (!isset($user_data['LOGON'])) $user_data['LOGON'] = $lang['unknownuser'];
+            if (!isset($user_data['NICKNAME'])) $user_data['NICKNAME'] = "";
+
+            $perms_user_array[] = $user_data;
         }
+
+    }else if ($perms_user_count > 0) {
+
+        $offset = floor(($group_user_count - 1) / 10) * 10;
+        return perm_group_get_users($gid, $offset);
     }
 
-    return $forum_get_permissions_array;
+    return array('user_count' => $perms_user_count,
+                 'user_array' => $perms_user_array);
 }
 
 function forum_update_default($fid)

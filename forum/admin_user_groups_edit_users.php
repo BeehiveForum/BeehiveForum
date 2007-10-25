@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit_users.php,v 1.55 2007-10-25 15:00:54 decoyduck Exp $ */
+/* $Id: admin_user_groups_edit_users.php,v 1.56 2007-10-25 15:02:25 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -303,7 +303,7 @@ if (sizeof($group_users_array['user_array']) > 0) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("remove", $lang['removeselectedusers']), "&nbsp;", form_submit("back", $lang['back']), "</td>\n";
+    echo "      <td align=\"center\">", form_submit("remove", $lang['removeselectedusers']), "</td>\n";
     echo "    </tr>\n";
 
 }else {
@@ -428,11 +428,16 @@ echo "          </tr>\n";
 echo "        </table>\n";
 echo "      </td>\n";
 echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">&nbsp;</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td align=\"center\">", form_submit("back", $lang['back']), "</td>\n";
+echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";
 echo "</div>\n";
 
 html_draw_bottom();
-
 
 ?>

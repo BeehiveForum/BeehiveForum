@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.139 2007-10-24 19:57:08 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.140 2007-10-25 15:00:54 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -401,15 +401,16 @@ function admin_update_word_filter($filter_id, $filter_name, $match_text, $replac
 * @param integer $offset - Offset of the rows returned by the query
 */
 
-function admin_user_search($user_search, $sort_by = 'USER_FORUM.LAST_VISIT', $sort_dir = 'DESC', $filter = ADMIN_USER_FILTER_NONE, $offset = 0)
+function admin_user_search($user_search, $sort_by = 'LAST_VISIT', $sort_dir = 'DESC', $filter = ADMIN_USER_FILTER_NONE, $offset = 0)
 {
     if (!$db_admin_user_search = db_connect()) return false;
 
-    $sort_by_array  = array('USER.UID', 'USER.LOGON', 'USER_FORUM.LAST_VISIT', 'USER.REGISTERED', 'SESSIONS.REFERER');
-    $sort_dir_array = array('ASC', 'DESC');
+    $sort_by_array  = array('LOGON'      => 'USER.LOGON',
+                            'LAST_VISIT' => 'USER_FORUM.LAST_VISIT',
+                            'REGISTERED' => 'USER.REGISTERED',
+                            'REFERER'    => 'SESSIONS.REFERER');
 
-    if (!in_array($sort_by, $sort_by_array)) $sort_by = 'USER_FORUM.LAST_VISIT';
-    if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'ASC';
+    if (!in_array($sort_dir, array('ASC', 'DESC'))) $sort_dir = 'ASC';
 
     if (!is_numeric($offset)) $offset = 0;
     if (!is_numeric($filter)) $filter = ADMIN_USER_FILTER_NONE;
@@ -418,6 +419,12 @@ function admin_user_search($user_search, $sort_by = 'USER_FORUM.LAST_VISIT', $so
         $forum_fid = $table_data['FID'];
     }else {
         $forum_fid = 0;
+    }
+
+    if (in_array($sort_by, array_keys($sort_by_array))) {
+        $sort_by_array[$sort_by];
+    }else {
+        $sort_by = 'USER_FORUM.LAST_VISIT';
     }
 
     $user_get_all_array = array();
@@ -517,16 +524,16 @@ function admin_user_search($user_search, $sort_by = 'USER_FORUM.LAST_VISIT', $so
 * @param integer $offset - Offset of the rows returned by the query
 */
 
-function admin_user_get_all($sort_by = 'USER_FORUM.LAST_VISIT', $sort_dir = 'ASC', $filter = ADMIN_USER_FILTER_NONE, $offset = 0)
+function admin_user_get_all($sort_by = 'LAST_VISIT', $sort_dir = 'ASC', $filter = ADMIN_USER_FILTER_NONE, $offset = 0)
 {
     if (!$db_user_get_all = db_connect()) return false;
-    $user_get_all_array = array();
 
-    $sort_by_array  = array('USER.UID', 'USER.LOGON', 'USER_FORUM.LAST_VISIT', 'USER.REGISTERED', 'SESSIONS.REFERER');
-    $sort_dir_array = array('ASC', 'DESC');
+    $sort_by_array  = array('LOGON'      => 'USER.LOGON',
+                            'LAST_VISIT' => 'USER_FORUM.LAST_VISIT',
+                            'REGISTERED' => 'USER.REGISTERED',
+                            'REFERER'    => 'SESSIONS.REFERER');
 
-    if (!in_array($sort_by, $sort_by_array)) $sort_by = 'USER_FORUM.LAST_VISIT';
-    if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'ASC';
+    if (!in_array($sort_dir, array('ASC', 'DESC'))) $sort_dir = 'ASC';
 
     if (!is_numeric($offset)) $offset = 0;
     if (!is_numeric($filter)) $filter = ADMIN_USER_FILTER_NONE;
@@ -535,6 +542,12 @@ function admin_user_get_all($sort_by = 'USER_FORUM.LAST_VISIT', $sort_dir = 'ASC
         $forum_fid = $table_data['FID'];
     }else {
         $forum_fid = 0;
+    }
+
+    if (in_array($sort_by, array_keys($sort_by_array))) {
+        $sort_by_array[$sort_by];
+    }else {
+        $sort_by = 'USER_FORUM.LAST_VISIT';
     }
 
     $user_get_all_array = array();

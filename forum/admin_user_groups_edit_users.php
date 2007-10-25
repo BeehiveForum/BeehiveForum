@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit_users.php,v 1.54 2007-10-24 19:57:08 decoyduck Exp $ */
+/* $Id: admin_user_groups_edit_users.php,v 1.55 2007-10-25 15:00:54 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -263,20 +263,26 @@ echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['users']}</td>\n";
 echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"center\">\n";
+echo "                    <table class=\"posthead\" width=\"95%\">\n";
 
 if (sizeof($group_users_array['user_array']) > 0) {
 
     foreach($group_users_array['user_array'] as $user) {
 
-        echo "                <tr>\n";
-        echo "                  <td align=\"left\" width=\"1%\">", form_checkbox("remove_user[]", $user['UID'], "", false), "</td>\n";
-        echo "                  <td align=\"left\">", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</td>\n";
-        echo "                </tr>\n";
+        echo "                      <tr>\n";
+        echo "                        <td align=\"left\" width=\"1%\">", form_checkbox("remove_user[]", $user['UID'], "", false), "</td>\n";
+        echo "                        <td align=\"left\">", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</td>\n";
+        echo "                      </tr>\n";
     }
 }
 
-echo "                 <tr>\n";
-echo "                   <td align=\"left\">&nbsp;</td>\n";
+echo "                       <tr>\n";
+echo "                         <td align=\"left\">&nbsp;</td>\n";
+echo "                       </tr>\n";
+echo "                     </table>\n";
+echo "                   </td>\n";
 echo "                 </tr>\n";
 echo "               </table>\n";
 echo "             </td>\n";
@@ -316,7 +322,7 @@ echo "<br />\n";
 
 if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
 
-    $user_search_array = admin_user_search($usersearch, 'USER.LOGON', 'ASC', 0, $start_search);
+    $user_search_array = admin_user_search($usersearch, 'LOGON', 'ASC', 0, $start_search);
 
     if (sizeof($user_search_array['user_array']) < 1) {
         html_display_warning_msg($lang['searchreturnednoresults'], '650', 'center');
@@ -338,20 +344,26 @@ if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
     echo "                <tr>\n";
     echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['searchresults']}</td>\n";
     echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"center\">\n";
+    echo "                    <table class=\"posthead\" width=\"95%\">\n";
 
     if (sizeof($user_search_array['user_array']) > 0) {
 
         foreach ($user_search_array['user_array'] as $user) {
 
-            echo "                <tr>\n";
-            echo "                  <td align=\"left\" width=\"1%\">", form_checkbox("add_user[]", $user['UID'], "", false), "</td>\n";
-            echo "                  <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$user['UID']}\" target=\"_blank\" onclick=\"return openProfile({$user['UID']}, '$webtag')\">", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</a></td>\n";
-            echo "                </tr>\n";
+            echo "                      <tr>\n";
+            echo "                        <td align=\"left\" width=\"1%\">", form_checkbox("add_user[]", $user['UID'], "", false), "</td>\n";
+            echo "                        <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$user['UID']}\" target=\"_blank\" onclick=\"return openProfile({$user['UID']}, '$webtag')\">", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</a></td>\n";
+            echo "                      </tr>\n";
         }
     }
 
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\">&nbsp;</td>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">&nbsp;</td>\n";
+    echo "                      </tr>\n";
+    echo "                    </table>\n";
+    echo "                  </td>\n";
     echo "                </tr>\n";
     echo "              </table>\n";
     echo "            </td>\n";

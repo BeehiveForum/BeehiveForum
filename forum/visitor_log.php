@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.php,v 1.115 2007-10-21 19:48:33 decoyduck Exp $ */
+/* $Id: visitor_log.php,v 1.116 2007-10-26 19:52:47 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -406,7 +406,14 @@ if (sizeof($user_profile_array['user_array']) > 0) {
 
                     $profile_item_options_array = explode("\n", $user_array["PROFILE_ITEM_OPTIONS_$key"]);
 
-                    echo "                   <td class=\"postbody\" align=\"right\" valign=\"top\" width=\"20%\"><div class=\"profile_item_overflow\" title=\"", _htmlentities($profile_item_options_array[$user_array["ENTRY_$key"]]), "\">", word_filter_add_ob_tags(_htmlentities($profile_item_options_array[$user_array["ENTRY_$key"]])), "&nbsp;</div></td>\n";
+                    if (isset($profile_item_options_array[$user_array["PROFILE_ITEM_OPTIONS_$key"]])) {
+
+                        echo "                   <td class=\"postbody\" align=\"right\" valign=\"top\" width=\"20%\"><div class=\"profile_item_overflow\" title=\"", _htmlentities($profile_item_options_array[$user_array["ENTRY_$key"]]), "\">", word_filter_add_ob_tags(_htmlentities($profile_item_options_array[$user_array["ENTRY_$key"]])), "&nbsp;</div></td>\n";
+
+                    }else {
+
+                        echo "                   <td class=\"postbody\" align=\"right\" valign=\"top\" width=\"20%\"><div class=\"profile_item_overflow\" title=\"\">&nbsp;</div></td>\n";
+                    }
 
                 }else if ($user_array["PROFILE_ITEM_TYPE_$key"] == PROFILE_ITEM_HYPERLINK) {
 
@@ -426,7 +433,7 @@ if (sizeof($user_profile_array['user_array']) > 0) {
 
             }else {
 
-                echo "                   <td class=\"postbody\" align=\"right\" valign=\"top\" width=\"20%\"><div class=\"profile_item_overflow\" title=\"{$lang['unknown']}\">{$lang['unknown']}&nbsp;</div></td>\n";
+                echo "                   <td class=\"postbody\" align=\"right\" valign=\"top\" width=\"20%\"><div class=\"profile_item_overflow\" title=\"\">&nbsp;</div></td>\n";
             }
         }
 

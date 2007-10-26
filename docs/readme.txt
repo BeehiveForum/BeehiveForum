@@ -717,7 +717,7 @@ Andy Black.
 ================
 
 French Canadian - Joanne McNair.
-German          - Arda
+German          - Armin Damm.
 X-Hacker        - Matt Beale.
 
 

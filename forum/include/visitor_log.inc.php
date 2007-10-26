@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.inc.php,v 1.22 2007-10-26 19:52:53 decoyduck Exp $ */
+/* $Id: visitor_log.inc.php,v 1.23 2007-10-26 20:48:42 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -215,6 +215,10 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
     // Forum FID which we'll need later.
 
     $forum_fid = $table_data['FID'];
+
+    // Forum timezone ID for Guests
+
+    $timezone_id = forum_get_setting('forum_timezone', false, 27);
 
     // Permitted columns to sort the results by
 
@@ -485,17 +489,43 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
 
     }else {
 
-        $union_dummy_columns = implode(', ', array_map('visitor_log_dummy_column', range(0, 15 + (sizeof($profile_entry_array) * 3))));
-
         $query_array_merge = array_merge(array($select_sql), $profile_entry_array, $profile_item_type_array);
         $query_array_merge = array_merge($query_array_merge, $profile_item_options_array, array($search_bot_sql, $last_visit_sql));
 
-        $sql = implode(",", $query_array_merge). "$from_sql $join_sql $where_sql ";
-        $sql.= "$having_sql UNION SELECT VISITOR_LOG.UID, $union_dummy_columns, ";
-        $sql.= "SEARCH_ENGINE_BOTS.SID, SEARCH_ENGINE_BOTS.NAME, SEARCH_ENGINE_BOTS.URL, ";
-        $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_VISIT FROM VISITOR_LOG ";
-        $sql.= "LEFT JOIN SEARCH_ENGINE_BOTS ON (SEARCH_ENGINE_BOTS.SID = VISITOR_LOG.SID) ";
-        $sql.= "$where_visitor_sql $order_sql $limit_sql";
+        $profile_entry_array = preg_grep("/[0-9]+/", $profile_entry_array);
+
+        if (sizeof($profile_entry_array) > 0) {
+
+            $profile_item_columns = implode(', ', array_map('visitor_log_prof_item_column', $profile_entry_array));
+
+            $sql = implode(",", $query_array_merge). "$from_sql $join_sql $where_sql $having_sql ";
+            $sql.= "UNION SELECT VISITOR_LOG.UID, '' AS LOGON, '' AS NICKNAME, ";
+            $sql.= "NULL AS RELATIONSHIP, '' AS PEER_NICKNAME, 0 AS POST_COUNT, ";
+            $sql.= "NULL AS DOB, NULL AS AGE, $timezone_id as TIMEZONE, ";
+            $sql.= "UNIX_TIMESTAMP(NOW()) AS LOCAL_TIME, NULL AS REGISTERED, ";
+            $sql.= "NULL AS USER_TIME_BEST, NULL AS USER_TIME_TOTAL, ";
+            $sql.= "'' AS AVATAR_URL_FORUM, '' AS AVATAR_AID_FORUM, ";
+            $sql.= "'' AS AVATAR_URL_GLOBAL, '' AS AVATAR_AID_GLOBAL, $profile_item_columns, ";
+            $sql.= "SEARCH_ENGINE_BOTS.SID, SEARCH_ENGINE_BOTS.NAME, SEARCH_ENGINE_BOTS.URL, ";
+            $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_VISIT FROM VISITOR_LOG ";
+            $sql.= "LEFT JOIN SEARCH_ENGINE_BOTS ON (SEARCH_ENGINE_BOTS.SID = VISITOR_LOG.SID) ";
+            $sql.= "$where_visitor_sql $order_sql $limit_sql";
+
+        }else {
+
+            $sql = implode(",", $query_array_merge). "$from_sql $join_sql $where_sql $having_sql ";
+            $sql.= "UNION SELECT VISITOR_LOG.UID, '' AS LOGON, '' AS NICKNAME, ";
+            $sql.= "NULL AS RELATIONSHIP, '' AS PEER_NICKNAME, 0 AS POST_COUNT, ";
+            $sql.= "NULL AS DOB, NULL AS AGE, $timezone_id as TIMEZONE, ";
+            $sql.= "UNIX_TIMESTAMP(NOW()) AS LOCAL_TIME, NULL AS REGISTERED, ";
+            $sql.= "NULL AS USER_TIME_BEST, NULL AS USER_TIME_TOTAL, ";
+            $sql.= "'' AS AVATAR_URL_FORUM, '' AS AVATAR_AID_FORUM, ";
+            $sql.= "'' AS AVATAR_URL_GLOBAL, '' AS AVATAR_AID_GLOBAL, ";
+            $sql.= "SEARCH_ENGINE_BOTS.SID, SEARCH_ENGINE_BOTS.NAME, SEARCH_ENGINE_BOTS.URL, ";
+            $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_VISIT FROM VISITOR_LOG ";
+            $sql.= "LEFT JOIN SEARCH_ENGINE_BOTS ON (SEARCH_ENGINE_BOTS.SID = VISITOR_LOG.SID) ";
+            $sql.= "$where_visitor_sql $order_sql $limit_sql";
+        }
     }
 
     if (!$result = db_query($sql, $db_visitor_log_browse_items)) return false;
@@ -594,13 +624,23 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
                  'user_array' => $user_array);
 }
 
-function visitor_log_dummy_column()
+function visitor_log_user_pref_column($column_value)
 {
     static $column_count = 0;
-
     $column_count++;
+    return "$column_value AS DUMMY_COL_$column_count";
+}
 
-    return "0 AS DUMMY_COL_$column_count";
+function visitor_log_prof_item_column()
+{
+    static $column = 0;
+    $column++;
+
+    $profile_column_sql = "'' AS ENTRY_{$column}, ";
+    $profile_column_sql.= "0 AS PROFILE_ITEM_TYPE_{$column}, ";
+    $profile_column_sql.= "'' AS PROFILE_ITEM_OPTIONS_{$column} ";
+
+    return $profile_column_sql;
 }
 
 function visitor_log_clean_up()

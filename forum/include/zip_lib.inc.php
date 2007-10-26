@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: zip_lib.inc.php,v 1.3 2007-10-11 13:01:21 decoyduck Exp $ */
+/* $Id: zip_lib.inc.php,v 1.4 2007-10-26 19:52:53 decoyduck Exp $ */
 
 /**
 * zip_lib.inc.php - Zip Creation Class Library
@@ -65,7 +65,7 @@ class zip_file
 
     function unix2dostime($unixtime = 0) {
 
-        $timearray = ($unixtime == 0) ? getdate() : getdate($unixtime);
+        $timearray = (!is_numeric($unixtime) || $unixtime == 0) ? getdate() : getdate($unixtime);
 
         if ($timearray['year'] < 1980) {
 

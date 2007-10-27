@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: search_popup.php,v 1.22 2007-10-13 19:12:42 decoyduck Exp $ */
+/* $Id: search_popup.php,v 1.23 2007-10-27 18:38:45 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -312,7 +312,7 @@ echo "<h1>{$lang['search']}</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-    html_display_error_array($error_msg_array, '475', 'center');
+    html_display_error_array($error_msg_array, '500', 'center');
 
 }elseif (isset($search_results_array['results_array']) && sizeof($search_results_array['results_array']) < 1) {
 
@@ -328,7 +328,7 @@ echo "<form action=\"search_popup.php\" method=\"post\">\n";
 echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden("type", _htmlentities($type)), "\n";
 echo "  ", form_input_hidden("obj_name", _htmlentities($obj_name)), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"475\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
@@ -378,7 +378,7 @@ echo "  </table>\n";
 if (isset($search_results_array['results_array']) && sizeof($search_results_array['results_array']) > 0) {
 
     echo "  <br />\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"475\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -457,7 +457,7 @@ if (isset($search_results_array['results_array']) && sizeof($search_results_arra
 }else {
 
     echo "  <br />\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"475\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"center\">", form_submit('search', $lang['search']), "&nbsp;", form_submit('close', $lang['close']), "</td>\n";
     echo "    </tr>\n";

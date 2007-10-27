@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.js,v 1.13 2007-10-27 18:38:45 decoyduck Exp $ */
+/* $Id: admin.js,v 1.14 2007-10-27 19:57:21 decoyduck Exp $ */
 
 var search_logon = false;
 
@@ -31,9 +31,11 @@ function openLogonSearch(webtag, obj_name)
 
     }else {
 
-        if (form_obj = getObjsByName(obj_name)) {
+        var form_obj = getObjByName(obj_name);
 
-            search_logon = window.open('search_popup.php?webtag=' + webtag + '&type=1&search_query=' + form_obj[0].value + '&obj_name=' + obj_name, 'search_logon', 'width=550, height=400, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=yes, scrollbars=yes');
+        if (typeof form_obj == 'object') {
+
+            search_logon = window.open('search_popup.php?webtag=' + webtag + '&type=1&search_query=' + form_obj.value + '&obj_name=' + obj_name, 'search_logon', 'width=550, height=400, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=yes, scrollbars=yes');
         }
     }
 
@@ -42,9 +44,11 @@ function openLogonSearch(webtag, obj_name)
 
 function returnSearchResult(obj_name, content)
 {
-    if (form_obj = getObjsByName(obj_name)) {
+    var form_obj = getObjByName(obj_name);
+
+    if (typeof form_obj == 'object') {
         
-        form_obj[0].value = unescape(content);
+        form_obj.value = unescape(content);
         return true;
     }
 

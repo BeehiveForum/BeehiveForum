@@ -19,26 +19,28 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.js,v 1.23 2007-10-13 19:13:01 decoyduck Exp $ */
+/* $Id: dictionary.js,v 1.24 2007-10-27 19:57:21 decoyduck Exp $ */
 
 function initialiseDictionary(obj_id) {
 
-    if (dictObj = getObjsByName('dictionary')) {
-    
-        if (contObj = getObjsByName('content')) {
+    var dictObj = getObjByName('dictionary');
+    var contObj = getObjByName('content');
+
+    if (typeof dictObj == 'object' && typeof contObj == 'object') {
   
-            if (window.opener.readContent) {
+        if (window.opener.readContent) {
         
-                contObj[0].value = window.opener.readContent(obj_id);
-                dictObj[0].submit();
-            }
+            contObj.value = window.opener.readContent(obj_id);
+            dictObj.submit();
         }
     }
 }
 
 function changeWord(obj) {
 
-    if (change_to = getObjById('change_to')) {
+    var change_to = getObjById('change_to');
+
+    if (typeof change_to == 'object') {
     
         var i = obj.options[obj.selectedIndex].value;   
 
@@ -58,7 +60,10 @@ function readContent(obj_id) {
         return tinyMCE.getContent(obj_id);
     }
 
-    if (form_obj = getObjById(obj_id)) {
+    var form_obj = getObjById(obj_id);
+
+    if (typeof form_obj == 'object') {
+
         return form_obj.value;
     }
 }
@@ -69,14 +74,20 @@ function updateContent(obj_id, content) {
         return tinyMCE.setContent(unescape(content));
     }
 
-    if (form_obj = getObjById(obj_id)) {
+    var form_obj = getObjById(obj_id);
+
+    if (typeof form_obj == 'object') {
+
         form_obj.value = unescape(content);
     }
 }
 
 function showCurrentWord() {
 
-    if (highlighted_word = getObjById('highlighted_word')) {
+    var highlighted_word = getObjById('highlighted_word');
+
+    if (typeof highlighted_word == 'object') {
+
         highlighted_word.scrollIntoView(false);
     }
 }

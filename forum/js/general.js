@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: general.js,v 1.31 2007-10-16 17:09:23 decoyduck Exp $ */
+/* $Id: general.js,v 1.32 2007-10-27 19:57:21 decoyduck Exp $ */
 
 var IE = (document.all ? true : false);
 
@@ -81,6 +81,23 @@ function getObjsByName(obj_name)
 
     if (document.getElementsByName) {
         form_obj = eval("document.getElementsByName('" + obj_name + "')");
+    }else if (document.all) {
+        form_obj = eval("document.all." + obj_name);
+    }else if (document.layer) {
+        form_obj = eval("document." + obj_name);
+    }else {
+        return false;
+    }
+
+    return form_obj;
+}
+
+function getObjByName(obj_name)
+{
+    var form_obj;
+
+    if (document.getElementsByName) {
+        form_obj = eval("document.getElementsByName('" + obj_name + "')[0]");
     }else if (document.all) {
         form_obj = eval("document.all." + obj_name);
     }else if (document.layer) {
@@ -334,22 +351,30 @@ function resizeImage(img, index)
                     
         }else {
 
-            if (img_resize_container = getObjById(img.resize_container_id)) {              
+            var img_resize_container = getObjById(img.resize_container_id);
+
+            if (typeof img_resize_container == 'object') {
                 img_resize_container.style.width = Math.round(maxWidth * 0.8) + 'px';
             }
 
-            if (img_resize_info_bar = getObjById(img.resize_info_bar_id)) {
+            var img_resize_info_bar = getObjById(img.resize_info_bar_id);
+
+            if (typeof img_resize_info_bar == 'object') {
                 img_resize_info_bar.style.display = 'block';
             }
         }
     
     }else if (typeof(img.resize_info_bar_id) != 'undefined') {
 
-        if (img_resize_container = getObjById(img.resize_container_id)) {
+        var img_resize_container = getObjById(img.resize_container_id);
+
+        if (typeof img_resize_container == 'object') {
             img_resize_container.style.width = img.original_width + 'px';
         }
         
-        if (img_resize_info_bar = getObjById(img.resize_info_bar_id)) {
+        var img_resize_info_bar = getObjById(img.resize_info_bar_id);
+
+        if (typeof img_resize_info_bar == 'object') {
             img_resize_info_bar.style.display = 'none';
         }
     }

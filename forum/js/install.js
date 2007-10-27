@@ -19,34 +19,34 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.js,v 1.10 2007-10-16 17:09:23 decoyduck Exp $ */
+/* $Id: install.js,v 1.11 2007-10-27 19:57:21 decoyduck Exp $ */
 
-function confirmInstall(button) {
+function confirmInstall(button)
+{
+    var install_type = getObjById('install_method');
+    var install_form = getObjById('install_form');
 
-    if (install_type = getObjById('install_method')) {
+    if (typeof install_type == 'object' && typeof install_form == 'object') {
     
-        if (install_form = getObjById('install_form')) {
+        var confirm_text = '';
 
-            var confirm_text = '';
-            
-            if (install_type.selectedIndex == 2) {
-                confirm_text = 'Are you sure you want to perform a reinstall? Any existing BeehiveForum tables and their data will be permenantly lost!\n\n';
-                confirm_text+= 'If you haven\'t performed a backup of your database and files now would be a good time to do it! Don\'t say we didn\'t warn you!';
-            }else if (install_type.selectedIndex == 3) {
-                confirm_text = 'Are you sure you want to perform a reconnect? Any customised values in your config.inc.php file will be lost!\n\n';
-                confirm_text+= 'If you haven\'t performed a backup of your database and files now would be a good time to do it! Don\'t say we didn\'t warn you!';
-            }else if (install_type.selectedIndex > 3) {
-                confirm_text = 'Are you sure you want to perform an upgrade? If you have selected the wrong upgrade method your forum may become unusable!\n\n';
-                confirm_text+= 'If you haven\'t performed a backup of your database and files now would be a good time to do it! Don\'t say we didn\'t warn you!';
-            }
+        if (install_type.selectedIndex == 2) {
+            confirm_text = 'Are you sure you want to perform a reinstall? Any existing BeehiveForum tables and their data will be permenantly lost!\n\n';
+            confirm_text+= 'If you haven\'t performed a backup of your database and files now would be a good time to do it! Don\'t say we didn\'t warn you!';
+        }else if (install_type.selectedIndex == 3) {
+            confirm_text = 'Are you sure you want to perform a reconnect? Any customised values in your config.inc.php file will be lost!\n\n';
+            confirm_text+= 'If you haven\'t performed a backup of your database and files now would be a good time to do it! Don\'t say we didn\'t warn you!';
+        }else if (install_type.selectedIndex > 3) {
+            confirm_text = 'Are you sure you want to perform an upgrade? If you have selected the wrong upgrade method your forum may become unusable!\n\n';
+            confirm_text+= 'If you haven\'t performed a backup of your database and files now would be a good time to do it! Don\'t say we didn\'t warn you!';
+        }
 
-            if (confirm_text.length > 0) {
+        if (confirm_text.length > 0) {
 
-                if (window.confirm(confirm_text)) {
+            if (window.confirm(confirm_text)) {
 
-                    disableButton(button);
-                    install_form.submit();
-                }
+                disableButton(button);
+                install_form.submit();
             }
         }
     }

@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.js,v 1.15 2007-10-27 18:38:45 decoyduck Exp $ */
+/* $Id: pm.js,v 1.16 2007-10-27 19:57:21 decoyduck Exp $ */
 
 var pm_logon_search = false;
 
@@ -49,9 +49,11 @@ function openRecipientSearch(webtag, obj_name)
 
     }else {
 
-        if (form_obj = getObjsByName(obj_name)) {
+        var form_obj = getObjByName(obj_name);
 
-            pm_logon_search = window.open('search_popup.php?webtag=' + webtag + '&allow_multi=1&type=1&search_query=' + form_obj[0].value + '&obj_name='+ obj_name, 'pm_logon_search', 'width=550, height=400, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=yes, scrollbars=yes');
+        if (typeof form_obj == 'object') {
+
+            pm_logon_search = window.open('search_popup.php?webtag=' + webtag + '&allow_multi=1&type=1&search_query=' + form_obj.value + '&obj_name='+ obj_name, 'pm_logon_search', 'width=550, height=400, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=yes, scrollbars=yes');
         }
     }
 
@@ -60,16 +62,18 @@ function openRecipientSearch(webtag, obj_name)
 
 function returnSearchResult(obj_name, content)
 {
-    if (form_obj = getObjsByName(obj_name)) {
+    var form_obj = getObjByName(obj_name);
 
-        if (form_obj[0].value.length == 0) {
+    if (typeof form_obj == 'object') {
+
+        if (form_obj.value.length == 0) {
             
-            form_obj[0].value = unescape(content);
+            form_obj.value = unescape(content);
             return true;
 
         }else {
             
-            form_obj[0].value+= '; ' + unescape(content);
+            form_obj.value+= '; ' + unescape(content);
             return true;
         }
     }
@@ -79,5 +83,9 @@ function returnSearchResult(obj_name, content)
 
 function checkToRadio(num)
 {
-    document.f_post.to_radio[num].checked=true;
+    var to_radio_obj = getObjsByName('to_radio');
+
+    if (typeof to_radio_obj[num] == 'object') {
+        to_radio_obj[num].checked = true;
+    }
 }

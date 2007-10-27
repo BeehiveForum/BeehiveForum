@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.314 2007-10-13 19:12:42 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.315 2007-10-27 19:57:21 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -288,19 +288,22 @@ html_draw_top("modslist.js", "poll.js", "thread_options.js");
 
 echo "<script language=\"javascript\" type=\"text/javascript\">\n";
 echo "<!--\n\n";
-echo "function confirmFolderIgnore() {\n";
+echo "function confirmFolderIgnore()\n";
+echo "{\n";
 echo "    return window.confirm('{$lang['ignorefolderconfirm']}');\n";
 echo "}\n\n";
-echo "function confirmFolderUnignore() {\n";
+echo "function confirmFolderUnignore()\n";
+echo "{\n";
 echo "    return window.confirm('{$lang['unignorefolderconfirm']}');\n";
 echo "}\n\n";
-echo "function confirmMarkAsRead() {\n";
-echo "    if (mark_read_type = getObjsByName('mark_read_type')) {\n";
-echo "        if (window.confirm('{$lang['confirmmarkasread']}')) {\n";
-echo "            if (mark_read_confirm = getObjsByName('mark_read_confirm')) {\n";
-echo "                mark_read_confirm[0].value = 'Y';\n";
-echo "                return true;\n";
-echo "            }\n";
+echo "function confirmMarkAsRead()\n";
+echo "{\n";
+echo "    var mark_read_type = getObjByName('mark_read_type');\n";
+echo "    var mark_read_confirm = getObjByName('mark_read_confirm');\n\n";
+echo "    if (typeof mark_read_type == 'object' && typeof mark_read_confirm == 'object') {\n\n";
+echo "        if (window.confirm('{$lang['confirmmarkasread']}')) {\n\n";
+echo "            mark_read_confirm.value = 'Y';\n";
+echo "            return true;\n";
 echo "        }\n";
 echo "    }\n\n";
 echo "    return false;\n";

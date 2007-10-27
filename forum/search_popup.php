@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: search_popup.php,v 1.24 2007-10-27 19:57:21 decoyduck Exp $ */
+/* $Id: search_popup.php,v 1.25 2007-10-27 21:02:20 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -320,7 +320,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 }elseif (isset($search_results_array['results_array']) && sizeof($search_results_array['results_array']) < 1) {
 
-    html_display_warning_msg($lang['searchreturnednoresults'], '475', 'center');
+    html_display_warning_msg($lang['searchreturnednoresults'], '500', 'center');
 
 }else {
 

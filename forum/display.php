@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display.php,v 1.86 2007-10-11 13:01:13 decoyduck Exp $ */
+/* $Id: display.php,v 1.87 2007-10-27 17:09:39 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -124,7 +124,7 @@ if (!$message = messages_get($tid, $pid, 1)) {
     exit;
 }
 
-if (!$threaddata = thread_get($tid)) {
+if (!$thread_data = thread_get($tid)) {
 
     html_draw_top();
     html_error_msg($lang['threadcouldnotbefound']);
@@ -133,29 +133,30 @@ if (!$threaddata = thread_get($tid)) {
 }
 
 $forum_name   = forum_get_setting('forum_name', false, 'A Beehive Forum');
-$thread_title = _htmlentities(thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE']));
+
+$folder_title = _htmlentities($thread_data['FOLDER_TITLE']);
+
+$thread_title = _htmlentities(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']));
 
 html_draw_top("title=$forum_name > $thread_title", "openprofile.js", "post.js", "poll.js", "basetarget=_blank", "robots=index,follow");
 
-if (isset($threaddata['STICKY']) && isset($threaddata['STICKY_UNTIL'])) {
+if (isset($thread_data['STICKY']) && isset($thread_data['STICKY_UNTIL'])) {
 
-    if ($threaddata['STICKY'] == "Y" && $threaddata['STICKY_UNTIL'] != 0 && time() > $threaddata['STICKY_UNTIL']) {
+    if ($thread_data['STICKY'] == "Y" && $thread_data['STICKY_UNTIL'] != 0 && time() > $thread_data['STICKY_UNTIL']) {
 
         thread_set_sticky($tid, false);
-        $threaddata['STICKY'] == "N";
+        $thread_data['STICKY'] == "N";
     }
 }
-
-$foldertitle = folder_get_title($threaddata['FID']);
 
 $show_sigs = (bh_session_get_value('VIEW_SIGS') == 'N') ? false : true;
 
 echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" border=\"0\">\n";
 echo "  <tr>\n";
-echo "    <td align=\"left\">", messages_top($foldertitle, $threaddata['PREFIX'], $threaddata['TITLE'], $threaddata['INTEREST'], $threaddata['STICKY'], $threaddata['CLOSED'], $threaddata['ADMIN_LOCK']), "</td>\n";
+echo "    <td align=\"left\">", messages_top($folder_title, $thread_title, $thread_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK']), "</td>\n";
 
-if ($threaddata['POLL_FLAG'] == 'Y' && $message['PID'] != 1) {
+if ($thread_data['POLL_FLAG'] == 'Y' && $message['PID'] != 1) {
 
     if ($userpollvote = poll_get_user_vote($tid)) {
 
@@ -191,20 +192,20 @@ if ($message) {
     $first_msg = $message['PID'];
     $message['CONTENT'] = message_get_content($tid, $message['PID']);
 
-    if ($threaddata['POLL_FLAG'] == 'Y') {
+    if ($thread_data['POLL_FLAG'] == 'Y') {
 
         if ($message['PID'] == 1) {
 
-            poll_display($tid, $threaddata['LENGTH'], $first_msg, $threaddata['FID'], true, $threaddata['CLOSED'], false, true, $show_sigs, true);
+            poll_display($tid, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], true, $thread_data['CLOSED'], false, true, $show_sigs, true);
 
         }else {
 
-            message_display($tid, $message, $threaddata['LENGTH'], $first_msg, $threaddata['FID'], true, $threaddata['CLOSED'], false, false, $show_sigs, true);
+            message_display($tid, $message, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], true, $thread_data['CLOSED'], false, false, $show_sigs, true);
         }
 
     }else {
 
-        message_display($tid, $message, $threaddata['LENGTH'], $first_msg, $threaddata['FID'], true, $threaddata['CLOSED'], false, false, $show_sigs, true);
+        message_display($tid, $message, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], true, $thread_data['CLOSED'], false, false, $show_sigs, true);
     }
 }
 

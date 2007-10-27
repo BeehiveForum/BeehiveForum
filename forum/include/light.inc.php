@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.163 2007-10-11 13:01:19 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.164 2007-10-27 17:09:40 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -674,7 +674,7 @@ function light_poll_confirm_close($tid)
 
     echo "<h1>{$lang['pollconfirmclose']}</h1>\n";
 
-    light_poll_display($tid, $preview_message, 0, $threaddata['FID'], 0, false);
+    light_poll_display($tid, $preview_message, 0, $thread_data['FID'], 0, false);
 
     echo "<p><form name=\"f_delete\" action=\"{$_SERVER['PHP_SELF']}\" method=\"post\" target=\"_self\">";
     echo form_input_hidden('webtag', _htmlentities($webtag)), "\n";
@@ -685,13 +685,13 @@ function light_poll_confirm_close($tid)
     echo "</form>\n";
 }
 
-function light_messages_top($msg, $thread_prefix, $thread_title, $interest_level = THREAD_NOINTEREST, $sticky = "N", $closed = false, $locked = false)
+function light_messages_top($msg, $thread_title, $interest_level = THREAD_NOINTEREST, $sticky = "N", $closed = false, $locked = false)
 {
     $lang = load_language_file();
 
     $webtag = get_webtag($webtag_search);
 
-    echo "<h1>Full Version: <a href=\"index.php?webtag=$webtag&amp;msg=$msg\">", word_filter_add_ob_tags(thread_format_prefix($thread_prefix, $thread_title)), "</a>";
+    echo "<h1>Full Version: <a href=\"index.php?webtag=$webtag&amp;msg=$msg\">", word_filter_add_ob_tags($thread_title), "</a>";
 
     if ($closed) echo "&nbsp;<font color=\"#FF0000\">({$lang['closed']})</font>\n";
     if ($interest_level == THREAD_INTERESTED) echo "&nbsp;<font color=\"#FF0000\">({$lang['highinterest']})</font>";

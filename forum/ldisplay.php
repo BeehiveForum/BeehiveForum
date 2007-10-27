@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ldisplay.php,v 1.23 2007-10-11 13:01:15 decoyduck Exp $ */
+/* $Id: ldisplay.php,v 1.24 2007-10-27 17:09:39 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -150,7 +150,7 @@ if (!$message = messages_get($tid, $pid, 1)) {
    exit;
 }
 
-if (!$threaddata = thread_get($tid)) {
+if (!$thread_data = thread_get($tid)) {
 
     light_html_draw_top();
     echo "<h1>{$lang['error']}</h1>\n";
@@ -159,31 +159,35 @@ if (!$threaddata = thread_get($tid)) {
     exit;
 }
 
-$foldertitle = folder_get_title($threaddata['FID']);
+$forum_name   = forum_get_setting('forum_name', false, 'A Beehive Forum');
 
-light_html_draw_top();
+$folder_title = _htmlentities($thread_data['FOLDER_TITLE']);
 
-light_messages_top($msg, $threaddata['PREFIX'], $threaddata['TITLE'], $threaddata['INTEREST'], $threaddata['STICKY'], $threaddata['CLOSED'], $threaddata['ADMIN_LOCK']);
+$thread_title = _htmlentities(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']));
+
+light_html_draw_top("$forum_name > $thread_title");
+
+light_messages_top($msg, $thread_title, $thread_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK']);
 
 $first_msg = $message['PID'];
 $message['CONTENT'] = message_get_content($tid, $message['PID']);
 
-if ($threaddata['POLL_FLAG'] == 'Y') {
+if ($thread_data['POLL_FLAG'] == 'Y') {
 
     if ($message['PID'] == 1) {
 
-        light_poll_display($tid, $threaddata['LENGTH'], $first_msg, $threaddata['FID'], true, $threaddata['CLOSED'], false, true, false, false);
+        light_poll_display($tid, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], true, $thread_data['CLOSED'], false, true, false, false);
         $last_pid = $message['PID'];
 
     }else {
 
-        light_message_display($tid, $message, $threaddata['LENGTH'], $first_msg, $threaddata['FID'], true, $threaddata['CLOSED'], false, true, false, false);
+        light_message_display($tid, $message, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], true, $thread_data['CLOSED'], false, true, false, false);
         $last_pid = $message['PID'];
     }
 
 }else {
 
-    light_message_display($tid, $message, $threaddata['LENGTH'], $first_msg, $threaddata['FID'], true, $threaddata['CLOSED'], false, false, false, false);
+    light_message_display($tid, $message, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], true, $thread_data['CLOSED'], false, false, false, false);
     $last_pid = $message['PID'];
 }
 

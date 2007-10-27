@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lmessages.php,v 1.90 2007-10-11 13:01:15 decoyduck Exp $ */
+/* $Id: lmessages.php,v 1.91 2007-10-27 17:09:39 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -184,7 +184,7 @@ if (!$messages = messages_get($tid, $pid, $posts_per_page)) {
     exit;
 }
 
-if (!$threaddata = thread_get($tid, bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
+if (!$thread_data = thread_get($tid, bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
     light_html_draw_top();
     echo "<h1>{$lang['error']}</h1>\n";
@@ -193,16 +193,19 @@ if (!$threaddata = thread_get($tid, bh_session_check_perm(USER_PERM_ADMIN_TOOLS,
     exit;
 }
 
-$forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
-$thread_title = _htmlentities(thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE']));
+$forum_name   = forum_get_setting('forum_name', false, 'A Beehive Forum');
+
+$folder_title = _htmlentities($thread_data['FOLDER_TITLE']);
+
+$thread_title = _htmlentities(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']));
 
 light_html_draw_top("$forum_name > $thread_title");
 
-$foldertitle = folder_get_title($threaddata['FID']);
+$foldertitle = folder_get_title($thread_data['FID']);
 
 $msg_count = count($messages);
 
-light_messages_top($msg, $threaddata['PREFIX'], $threaddata['TITLE'], $threaddata['INTEREST'], $threaddata['STICKY'], $threaddata['CLOSED'], $threaddata['ADMIN_LOCK']);
+light_messages_top($msg, $thread_title, $thread_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK']);
 
 if ($tracking_data_array = thread_get_tracking_data($tid)) {
 
@@ -267,22 +270,22 @@ if ($msg_count > 0) {
 
         }
 
-        if ($threaddata['POLL_FLAG'] == 'Y') {
+        if ($thread_data['POLL_FLAG'] == 'Y') {
 
             if ($message['PID'] == 1) {
 
-                light_poll_display($tid, $threaddata['LENGTH'], $first_msg, $threaddata['FID'], true, $threaddata['CLOSED'], true);
+                light_poll_display($tid, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], true, $thread_data['CLOSED'], true);
                 $last_pid = $message['PID'];
 
             }else {
 
-                light_message_display($tid, $message, $threaddata['LENGTH'], $first_msg, $threaddata['FID'], true, $threaddata['CLOSED'], true, true, false, false);
+                light_message_display($tid, $message, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], true, $thread_data['CLOSED'], true, true, false, false);
                 $last_pid = $message['PID'];
             }
 
         }else {
 
-            light_message_display($tid, $message, $threaddata['LENGTH'], $first_msg, $threaddata['FID'], true, $threaddata['CLOSED'], true, false, false, false);
+            light_message_display($tid, $message, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], true, $thread_data['CLOSED'], true, false, false, false);
             $last_pid = $message['PID'];
 
         }
@@ -291,15 +294,15 @@ if ($msg_count > 0) {
 
 unset($messages, $message);
 
-if ($last_pid < $threaddata['LENGTH']) {
+if ($last_pid < $thread_data['LENGTH']) {
 
     $npid = $last_pid + 1;
     echo form_quick_button("./lmessages.php", $lang['keepreading'], array('msg' => "$tid.$npid"));
 }
 
-light_messages_nav_strip($tid, $pid, $threaddata['LENGTH'], $posts_per_page);
+light_messages_nav_strip($tid, $pid, $thread_data['LENGTH'], $posts_per_page);
 
-if (($threaddata['CLOSED'] == 0 && bh_session_check_perm(USER_PERM_POST_CREATE, $threaddata['FID'])) || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $threaddata['FID'])) {
+if (($thread_data['CLOSED'] == 0 && bh_session_check_perm(USER_PERM_POST_CREATE, $thread_data['FID'])) || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $thread_data['FID'])) {
     echo "<p><a href=\"lpost.php?webtag=$webtag&amp;replyto=$tid.0\" target=\"_parent\">{$lang['replyall']}</a></p>\n";
 }
 
@@ -314,7 +317,7 @@ echo "<h6>&copy; ", date('Y'), " <a href=\"http://www.beehiveforum.net/\" target
 light_html_draw_bottom();
 
 if ($msg_count > 0 && !user_is_guest()) {
-    messages_update_read($tid, $last_pid, $threaddata['LAST_READ'], $threaddata['LENGTH'], $threaddata['MODIFIED']);
+    messages_update_read($tid, $last_pid, $thread_data['LAST_READ'], $thread_data['LENGTH'], $thread_data['MODIFIED']);
 }
 
 ?>

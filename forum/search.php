@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.198 2007-10-22 23:16:14 decoyduck Exp $ */
+/* $Id: search.php,v 1.199 2007-10-27 18:38:45 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -723,7 +723,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("search", $lang['find'], "onclick=\"disableButton(this)\""), "</td>\n";
+echo "      <td align=\"center\">", form_submit("search", $lang['find'], "onclick=\"disableButton(this);search_form.submit();\""), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.240 2007-10-13 19:12:42 decoyduck Exp $ */
+/* $Id: messages.php,v 1.241 2007-10-27 17:09:39 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -206,7 +206,7 @@ if (!$messages = messages_get($tid, $pid, $posts_per_page)) {
     exit;
 }
 
-if (!$threaddata = thread_get($tid, bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
+if (!$thread_data = thread_get($tid, bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
     html_draw_top();
     html_error_msg($lang['threadcouldnotbefound']);
@@ -215,7 +215,10 @@ if (!$threaddata = thread_get($tid, bh_session_check_perm(USER_PERM_ADMIN_TOOLS,
 }
 
 $forum_name   = forum_get_setting('forum_name', false, 'A Beehive Forum');
-$thread_title = _htmlentities(thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE']));
+
+$folder_title = _htmlentities($thread_data['FOLDER_TITLE']);
+
+$thread_title = _htmlentities(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']));
 
 html_draw_top("title=$forum_name > $thread_title", "openprofile.js", "post.js", "poll.js", "basetarget=_blank", "robots=index,follow", "onload=initialisePostQuoting()");
 
@@ -267,16 +270,16 @@ echo "}\n";
 echo "//-->\n";
 echo "</script>\n";
 
-if (isset($threaddata['STICKY']) && isset($threaddata['STICKY_UNTIL'])) {
+if (isset($thread_data['STICKY']) && isset($thread_data['STICKY_UNTIL'])) {
 
-    if ($threaddata['STICKY'] == "Y" && $threaddata['STICKY_UNTIL'] != 0 && time() > $threaddata['STICKY_UNTIL']) {
+    if ($thread_data['STICKY'] == "Y" && $thread_data['STICKY_UNTIL'] != 0 && time() > $thread_data['STICKY_UNTIL']) {
 
         thread_set_sticky($tid, false);
-        $threaddata['STICKY'] == "N";
+        $thread_data['STICKY'] == "N";
     }
 }
 
-$foldertitle = folder_get_title($threaddata['FID']);
+$foldertitle = folder_get_title($thread_data['FID']);
 
 $show_sigs = (bh_session_get_value('VIEW_SIGS') == 'N') ? false : true;
 
@@ -303,7 +306,7 @@ if (sizeof($highlight_array) > 0) {
         $highlight_replace[$key] = "<span class=\"highlight\">\\1</span>";
     }
 
-    $thread_parts = preg_split('/([<|>])/', $threaddata['TITLE'], -1, PREG_SPLIT_DELIM_CAPTURE);
+    $thread_parts = preg_split('/([<|>])/', $thread_title, -1, PREG_SPLIT_DELIM_CAPTURE);
 
     for ($i = 0; $i < sizeof($thread_parts); $i++) {
 
@@ -313,15 +316,15 @@ if (sizeof($highlight_array) > 0) {
         }
     }
 
-    $threaddata['TITLE'] = implode('', $thread_parts);
+    $thread_title = implode('', $thread_parts);
 }
 
 echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" border=\"0\">\n";
 echo "  <tr>\n";
-echo "    <td align=\"left\">", messages_top($foldertitle, $threaddata['PREFIX'], $threaddata['TITLE'], $threaddata['INTEREST'], $threaddata['STICKY'], $threaddata['CLOSED'], $threaddata['ADMIN_LOCK'], ($threaddata['LENGTH'] < 1)), "</td>\n";
+echo "    <td align=\"left\">", messages_top($folder_title, $thread_title, $thread_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK'], ($thread_data['LENGTH'] < 1)), "</td>\n";
 
-if ($threaddata['POLL_FLAG'] == 'Y' && $messages[0]['PID'] != 1) {
+if ($thread_data['POLL_FLAG'] == 'Y' && $messages[0]['PID'] != 1) {
 
     if ($userpollvote = poll_get_user_vote($tid)) {
 
@@ -453,23 +456,23 @@ if ($msg_count > 0) {
 
         }
 
-        if ($threaddata['POLL_FLAG'] == 'Y') {
+        if ($thread_data['POLL_FLAG'] == 'Y') {
 
           if ($message['PID'] == 1) {
 
-            poll_display($tid, $threaddata['LENGTH'], $first_msg, $threaddata['FID'], true, $threaddata['CLOSED'], false, true, true, false, $highlight_array);
+            poll_display($tid, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], true, $thread_data['CLOSED'], false, true, true, false, $highlight_array);
             $last_pid = $message['PID'];
 
           }else {
 
-            message_display($tid, $message, $threaddata['LENGTH'], $first_msg, $threaddata['FID'], true, $threaddata['CLOSED'], true, true, $show_sigs, false, $highlight_array);
+            message_display($tid, $message, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], true, $thread_data['CLOSED'], true, true, $show_sigs, false, $highlight_array);
             $last_pid = $message['PID'];
 
           }
 
         }else {
 
-          message_display($tid, $message, $threaddata['LENGTH'], $first_msg, $threaddata['FID'], true, $threaddata['CLOSED'], true, false, $show_sigs, false, $highlight_array);
+          message_display($tid, $message, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], true, $thread_data['CLOSED'], true, false, $show_sigs, false, $highlight_array);
           $last_pid = $message['PID'];
 
         }
@@ -477,7 +480,7 @@ if ($msg_count > 0) {
 }
 
 if ($msg_count > 0 && !user_is_guest() && !isset($_GET['markasread'])) {
-    messages_update_read($tid, $last_pid, $threaddata['LAST_READ'], $threaddata['LENGTH'], $threaddata['MODIFIED']);
+    messages_update_read($tid, $last_pid, $thread_data['LAST_READ'], $thread_data['LENGTH'], $thread_data['MODIFIED']);
 }
 
 echo "<div align=\"center\">\n";
@@ -487,7 +490,7 @@ echo "    <td align=\"left\" colspan=\"3\">&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "  <tr valign=\"top\">\n";
 
-if (($threaddata['CLOSED'] == 0 && bh_session_check_perm(USER_PERM_POST_CREATE, $threaddata['FID'])) || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $threaddata['FID'])) {
+if (($thread_data['CLOSED'] == 0 && bh_session_check_perm(USER_PERM_POST_CREATE, $thread_data['FID'])) || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $thread_data['FID'])) {
     echo "    <td width=\"33%\" align=\"left\"><p><img src=\"". style_image('reply_all.png') ."\" alt=\"{$lang['replyall']}\" title=\"{$lang['replyall']}\" border=\"0\" /> <a href=\"post.php?webtag=$webtag&amp;replyto=$tid.0\" target=\"_parent\" onclick=\"return checkPostQuoting('$tid.0')\"><b>{$lang['replyall']}</b></a></p></td>\n";
 } else {
     echo "    <td width=\"33%\" align=\"left\">&nbsp;</td>\n";
@@ -497,7 +500,7 @@ echo "    <td width=\"33%\" align=\"center\"><p>";
 
 if (!user_is_guest()) {
 
-    if ($threaddata['LENGTH'] > 0) {
+    if ($thread_data['LENGTH'] > 0) {
         echo "<img src=\"". style_image('thread_options.png') ."\" alt=\"{$lang['editthreadoptions']}\" title=\"{$lang['editthreadoptions']}\" border=\"0\" /> <a href=\"thread_options.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\"><b>{$lang['editthreadoptions']}</b></a>";
     }else {
         echo "<img src=\"". style_image('thread_options.png') ."\" alt=\"{$lang['undeletethread']}\" title=\"{$lang['undeletethread']}\" border=\"0\" /> <a href=\"thread_options.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\"><b>{$lang['undeletethread']}</b></a>";
@@ -512,7 +515,7 @@ echo "</p></td>\n";
 
 echo "    <td width=\"33%\" align=\"right\">";
 
-if ($last_pid < $threaddata['LENGTH']) {
+if ($last_pid < $thread_data['LENGTH']) {
 
     $npid = $last_pid + 1;
     echo form_quick_button("./messages.php", "{$lang['keepreading']}  &raquo;", array('msg' => "$tid.$npid"));
@@ -532,9 +535,9 @@ echo "</div>\n";
 
 messages_start_panel();
 
-messages_nav_strip($tid, $pid, $threaddata['LENGTH'], $posts_per_page);
+messages_nav_strip($tid, $pid, $thread_data['LENGTH'], $posts_per_page);
 
-if ($threaddata['POLL_FLAG'] == 'Y') {
+if ($thread_data['POLL_FLAG'] == 'Y') {
 
     echo "            <table class=\"posthead\" width=\"100%\">\n";
     echo "              <tr>\n";

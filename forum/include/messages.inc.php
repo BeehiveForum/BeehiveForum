@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.486 2007-10-11 13:01:19 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.487 2007-10-27 17:09:40 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -520,12 +520,12 @@ function message_split_fiddle($content, $emoticons = true, $ignore_sig = false)
     return preg_replace("/<\/?noemots>|<\/?nowiki>/", "", $message);
 }
 
-function messages_top($folder_title, $thread_prefix, $thread_title, $interest_level = THREAD_NOINTEREST, $sticky = "N", $closed = false, $locked = false, $deleted = false)
+function messages_top($folder_title, $thread_title, $interest_level = THREAD_NOINTEREST, $sticky = "N", $closed = false, $locked = false, $deleted = false)
 {
     $lang = load_language_file();
 
     echo "<p><img src=\"", style_image('folder.png'). "\" alt=\"{$lang['folder']}\" title=\"{$lang['folder']}\" />&nbsp;";
-    echo word_filter_add_ob_tags(_htmlentities($folder_title)), ": ", word_filter_add_ob_tags(_htmlentities(thread_format_prefix($thread_prefix, $thread_title)));
+    echo word_filter_add_ob_tags($folder_title), ": ", word_filter_add_ob_tags($thread_title);
 
     if ($closed) echo "&nbsp;<img src=\"", style_image('thread_closed.png'), "\" alt=\"{$lang['closed']}\" title=\"{$lang['closed']}\" />\n";
     if ($interest_level == THREAD_INTERESTED) echo "&nbsp;<img src=\"", style_image('high_interest.png'), "\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" />";

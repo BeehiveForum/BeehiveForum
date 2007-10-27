@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.199 2007-10-27 18:38:45 decoyduck Exp $ */
+/* $Id: search.php,v 1.200 2007-10-27 19:57:21 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -567,13 +567,14 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
     echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
     echo "<!--\n\n";
-    echo "if (top.document.body.rows) {\n\n";
-    echo "    top.frames['", html_get_frame_name('main'), "'].frames['", html_get_frame_name('left'), "'].location.replace('search.php?webtag=$webtag&offset=0');\n\n";
-    echo "} else if (top.document.body.cols) {\n\n";
-    echo "    top.frames['", html_get_frame_name('left'), "'].location.replace('search.php?webtag=$webtag&offset=0');\n\n";
+    echo "if (top.document.body.rows) {\n";
+    echo "    top.frames['", html_get_frame_name('main'), "'].frames['", html_get_frame_name('left'), "'].location.replace('search.php?webtag=$webtag&offset=0');\n";
+    echo "}else if (top.document.body.cols) {\n";
+    echo "    top.frames['", html_get_frame_name('left'), "'].location.replace('search.php?webtag=$webtag&offset=0');\n";
     echo "}\n\n";
-    echo "if (search_success_container = getObjById('search_success')) {\n";
-    echo "    search_success_container.innerHTML = unescape('", html_display_success_msg_js(sprintf($lang['searchsuccessfullycompleted'], ''), '600', 'center'), "');\n\n";
+    echo "var search_success_container = getObjById('search_success');\n\n";
+    echo "if (typeof search_success_container == 'object') {\n";
+    echo "    search_success_container.innerHTML = unescape('", html_display_success_msg_js(sprintf($lang['searchsuccessfullycompleted'], ''), '600', 'center'), "');\n";
     echo "}\n\n";
     echo "-->\n";
     echo "</script>\n\n";
@@ -723,7 +724,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("search", $lang['find'], "onclick=\"disableButton(this);search_form.submit();\""), "</td>\n";
+echo "      <td align=\"center\">", form_submit('search_submit', $lang['find'], "onclick=\"searchFormSubmit()\""), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

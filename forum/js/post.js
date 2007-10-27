@@ -19,14 +19,18 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.js,v 1.39 2007-10-27 18:38:45 decoyduck Exp $ */
+/* $Id: post.js,v 1.40 2007-10-27 19:57:21 decoyduck Exp $ */
 
 var search_logon = false;
 var menu_timeout = 0;
 
 function checkToRadio(num)
 {
-    document.f_post.to_radio[num].checked=true;
+    var to_radio_obj = getObjsByName('to_radio');
+
+    if (typeof to_radio_obj[num] == 'object') {
+        to_radio_obj[num].checked = true;
+    }
 }
 
 function openLogonSearch(webtag, obj_name)
@@ -37,9 +41,11 @@ function openLogonSearch(webtag, obj_name)
     
     }else {
     
-        if (form_obj = getObjsByName(obj_name)) {
+        var form_obj = getObjByName(obj_name);
+
+        if (typeof form_obj == 'object') {
         
-            search_logon = window.open('search_popup.php?webtag=' + webtag + '&type=1&search_query=' + form_obj[0].value + '&obj_name=' + obj_name, 'search_logon', 'width=550, height=400, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=yes, scrollbars=yes');
+            search_logon = window.open('search_popup.php?webtag=' + webtag + '&type=1&search_query=' + form_obj.value + '&obj_name=' + obj_name, 'search_logon', 'width=550, height=400, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=yes, scrollbars=yes');
         }
     }
 
@@ -48,11 +54,15 @@ function openLogonSearch(webtag, obj_name)
 
 function returnSearchResult(obj_name, content)
 {
-    if (form_obj = getObjsByName(obj_name)) {
+    var form_obj = getObjByName(obj_name);
 
-        form_obj[0].value = unescape(content);
+    if (typeof form_obj == 'object') {
 
-        if (to_radio_obj = getObjsByName('to_radio')) {
+        form_obj.value = unescape(content);
+
+        var to_radio_obj = getObjsByName('to_radio');
+
+        if (to_radio_obj.length > 0) {
             to_radio_obj[to_radio_obj.length - 1].checked = true;
         }
 
@@ -152,54 +162,54 @@ function openPostOptions(post_id)
 
     closePostOptions();
     
-    if (post_options_obj = getObjById('post_options_' + post_id)) {
-    
-        if (post_options_container_obj = getObjById('post_options_container_' + post_id)) {
+    var post_options_obj = getObjById('post_options_' + post_id);
+    var post_options_container_obj = getObjById('post_options_container_' + post_id);
 
-            if (post_options_container_obj.className == 'post_options_container_closed') {
+    if (typeof post_options_obj == 'object' && typeof post_options_container_obj == 'object') {
 
-                post_options_container_obj.style.left = '100px';
+        if (post_options_container_obj.className == 'post_options_container_closed') {
 
-                post_options_container_obj.className = 'post_options_container_opened';
+            post_options_container_obj.style.left = '100px';
 
-                post_options_container_obj.style.width = '0px';
-                post_options_container_obj.style.height = '0px';
+            post_options_container_obj.className = 'post_options_container_opened';
 
-                if (IE) {
+            post_options_container_obj.style.width = '0px';
+            post_options_container_obj.style.height = '0px';
 
-                    var scroll_width = parseInt(post_options_container_obj.scrollWidth);
+            if (IE) {
 
-                    while (parseInt(post_options_container_obj.scrollWidth) > scroll_width) {
-                        scroll_width = parseInt(post_options_container_obj.scrollWidth);
-                    }
+                var scroll_width = parseInt(post_options_container_obj.scrollWidth);
 
-                    var scroll_height = parseInt(post_options_container_obj.scrollHeight);
-
-                    while (parseInt(post_options_container_obj.scrollHeight) > scroll_height) {
-                        scroll_height = parseInt(post_options_container_obj.scrollHeight);
-                    }
-
-                }else {
-
-                    var scroll_width = post_options_container_obj.scrollWidth;
-                    var scroll_height = post_options_container_obj.scrollHeight;            
+                while (parseInt(post_options_container_obj.scrollWidth) > scroll_width) {
+                    scroll_width = parseInt(post_options_container_obj.scrollWidth);
                 }
 
-                post_options_container_obj.style.width = scroll_width + 'px';
-                post_options_container_obj.style.height = scroll_height + 'px';
-                post_options_container_obj.style.overflow = 'hidden';
+                var scroll_height = parseInt(post_options_container_obj.scrollHeight);
 
-                var container_left = findPosX(post_options_obj);
-                var container_top = findPosY(post_options_obj);
+                while (parseInt(post_options_container_obj.scrollHeight) > scroll_height) {
+                    scroll_height = parseInt(post_options_container_obj.scrollHeight);
+                }
 
-                container_top  = post_options_obj.height + container_top;
-                container_left = (container_left - post_options_container_obj.scrollWidth) + post_options_obj.width;
+            }else {
 
-                post_options_container_obj.style.left = container_left + 'px';
-                post_options_container_obj.style.top = container_top + 'px';
-
-                delayMenuClickHandler();
+                var scroll_width = post_options_container_obj.scrollWidth;
+                var scroll_height = post_options_container_obj.scrollHeight;            
             }
+
+            post_options_container_obj.style.width = scroll_width + 'px';
+            post_options_container_obj.style.height = scroll_height + 'px';
+            post_options_container_obj.style.overflow = 'hidden';
+
+            var container_left = findPosX(post_options_obj);
+            var container_top = findPosY(post_options_obj);
+
+            container_top  = post_options_obj.height + container_top;
+            container_left = (container_left - post_options_container_obj.scrollWidth) + post_options_obj.width;
+
+            post_options_container_obj.style.left = container_left + 'px';
+            post_options_container_obj.style.top = container_top + 'px';
+
+            delayMenuClickHandler();
         }
     }
 }

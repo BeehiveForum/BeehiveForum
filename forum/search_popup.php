@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: search_popup.php,v 1.23 2007-10-27 18:38:45 decoyduck Exp $ */
+/* $Id: search_popup.php,v 1.24 2007-10-27 19:57:21 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -302,7 +302,11 @@ if ($valid) {
 
     }elseif ($type == SEARCH_POPUP_TYPE_THREAD) {
 
-        $search_results_array = thread_search($search_query, $start);
+        if ($thread_data = thread_get($search_query)) {
+
+            $search_query = $thread_data['TITLE'];
+            $search_results_array = thread_search($search_query, $start);
+        }
     }
 }
 

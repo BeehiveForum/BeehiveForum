@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.241 2007-10-27 17:09:39 decoyduck Exp $ */
+/* $Id: messages.php,v 1.242 2007-10-27 19:57:21 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -226,47 +226,51 @@ echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
 echo "<!--\n\n";
 echo "function initialisePostQuoting()\n";
 echo "{\n";
-echo "    var form_obj = getObjsByName('quote_list');\n";
-echo "    form_obj[0].value = '';\n";
+echo "    var form_obj = getObjByName('quote_list');\n\n";
+echo "    if (typeof form_obj == 'object') {\n";
+echo "        form_obj.value = '';\n";
+echo "    }\n";
 echo "}\n\n";
 echo "function togglePostQuoting(post_id)\n";
 echo "{\n";
-echo "    if (form_obj = getObjsByName('quote_list')) {\n\n";
-echo "        if (post_img = getObjsByName('p' + post_id)) {\n\n";
-echo "            if (form_obj[0].value.length > 0) {\n";
-echo "                var quote_list = form_obj[0].value.split(',');\n";
-echo "                for (var check_post_id in quote_list) {\n";
-echo "                    if (quote_list[check_post_id] == post_id) {\n";
-echo "                        quote_list.splice(check_post_id, 1);\n";
-echo "                        form_obj[0].value = quote_list.join(',');\n";
-echo "                        post_img[0].src = '", style_image('quote_disabled.png'), "';\n";
-echo "                        return false;\n";
-echo "                    }\n";
+echo "    var form_obj = getObjByName('quote_list');\n";
+echo "    var post_img = getObjByName('p' + post_id);\n\n";
+echo "    if (typeof form_obj == 'object' && typeof post_img == 'object') {\n\n";
+echo "        if (form_obj.value.length > 0) {\n\n";
+echo "            var quote_list = form_obj.value.split(',');\n\n";
+echo "            for (var check_post_id in quote_list) {\n\n";
+echo "                if (quote_list[check_post_id] == post_id) {\n\n";
+echo "                    quote_list.splice(check_post_id, 1);\n";
+echo "                    form_obj.value = quote_list.join(',');\n";
+echo "                    post_img.src = '", style_image('quote_disabled.png'), "';\n";
+echo "                    return false;\n";
 echo "                }\n";
-echo "                quote_list.push(post_id);\n";
-echo "                post_img[0].src = '", style_image('quote_enabled.png'), "';\n";
-echo "                form_obj[0].value = quote_list.join(',');\n";
-echo "            }else {\n";
-echo "                post_img[0].src = '", style_image('quote_enabled.png'), "';\n";
-echo "                form_obj[0].value = post_id;\n";
-echo "            }\n";
+echo "            }\n\n";
+echo "            quote_list.push(post_id);\n";
+echo "            post_img.src = '", style_image('quote_enabled.png'), "';\n";
+echo "            form_obj.value = quote_list.join(',');\n\n";
+echo "        }else {\n\n";
+echo "            post_img.src = '", style_image('quote_enabled.png'), "';\n";
+echo "            form_obj.value = post_id;\n";
 echo "        }\n";
 echo "    }\n";
 echo "    return false;\n";
 echo "}\n\n";
 echo "function checkPostQuoting(replyto_id)\n";
 echo "{\n";
-echo "    var form_obj = getObjsByName('quote_list');\n\n";
-echo "    if (form_obj[0].value.length > 0) {\n\n";
-echo "        if (f_quote = getObjsByName('f_quote')) {\n\n";
-echo "            if (replyto = getObjsByName('replyto')) {\n\n";
-echo "                replyto[0].value = replyto_id;\n";
-echo "                f_quote[0].submit();\n";
+echo "    var quote_list_obj = getObjByName('quote_list');\n\n";
+echo "    if (typeof quote_list_obj == 'object') {\n\n";
+echo "        var f_quote_obj = getObjByName('f_quote');\n";
+echo "        var replyto_obj = getObjByName('replyto');\n\n";
+echo "        if (typeof f_quote_obj == 'object' && typeof replyto_obj == 'object') {\n\n";
+echo "            if (quote_list_obj.value.length > 0) {\n\n";
+echo "                replyto_obj.value = replyto_id;\n";
+echo "                f_quote_obj.submit();\n";
 echo "                return false;\n";
 echo "            }\n";
 echo "        }\n";
 echo "    }\n";
-echo "}\n";
+echo "}\n\n";
 echo "//-->\n";
 echo "</script>\n";
 
@@ -367,7 +371,8 @@ if (isset($_GET['font_resize'])) {
 
     echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
     echo "<!--\n\n";
-    echo "if (font_resize_success_container = getObjById('font_resize_success')) {\n";
+    echo "var font_resize_success_container = getObjById('font_resize_success');\n\n";
+    echo "if (typeof font_resize_success_container == 'object') {\n\n";
     echo "    font_resize_success_container.innerHTML = unescape('", html_display_success_msg_js(sprintf($lang['fontsizechanged'], ''), '96%', 'center'), "');\n\n";
     echo "}\n\n";
     echo "-->\n";

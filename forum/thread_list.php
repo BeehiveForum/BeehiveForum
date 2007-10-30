@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.315 2007-10-27 19:57:21 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.316 2007-10-30 22:50:00 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -40,6 +40,9 @@ include_once(BH_INCLUDE_PATH. "install.inc.php");
 
 // Check that Beehive is installed correctly
 check_install();
+
+// Thread List Cache Control
+thread_list_check_cache_header();
 
 // Multiple forum support
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
@@ -284,6 +287,7 @@ if (isset($_GET['start_from']) && is_numeric($_GET['start_from'])) {
 }
 
 // Output XHTML header
+
 html_draw_top("modslist.js", "poll.js", "thread_options.js");
 
 echo "<script language=\"javascript\" type=\"text/javascript\">\n";

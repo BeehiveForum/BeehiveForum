@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.487 2007-10-27 17:09:40 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.488 2007-10-30 22:50:00 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -518,6 +518,69 @@ function message_split_fiddle($content, $emoticons = true, $ignore_sig = false)
     }
 
     return preg_replace("/<\/?noemots>|<\/?nowiki>/", "", $message);
+}
+
+function messages_check_cache_header()
+{
+    if (strstr(php_sapi_name(), 'cgi')) return false;
+
+    if (!$db_messages_check_cache_header = db_connect()) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+
+        list($tid) = explode('.', $_GET['msg']);
+
+        $sql = "SELECT UNIX_TIMESTAMP(MODIFIED) AS MODIFIED ";
+        $sql.= "FROM {$table_data['PREFIX']}THREAD ";
+        $sql.= "WHERE TID = '$tid'";
+
+    }else {
+
+        $sql = "SELECT UNIX_TIMESTAMP(MODIFIED) AS MODIFIED ";
+        $sql.= "FROM {$table_data['PREFIX']}THREAD ";
+        $sql.= "ORDER BY MODIFIED DESC LIMIT 0, 1";
+    }
+
+    if (!$result = db_query($sql, $db_messages_check_cache_header)) return false;
+
+    if (db_num_rows($result) > 0) {
+
+        list($thread_modified_date) = db_fetch_array($result, DB_RESULT_NUM);
+
+        // Etag Header for cache control
+
+        $local_etag  = md5(gmdate("D, d M Y H:i:s", $thread_modified_date). " GMT");
+
+        if (isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
+            $remote_etag = substr(_stripslashes($_SERVER['HTTP_IF_NONE_MATCH']), 1, -1);
+        }else {
+            $remote_etag = false;
+        }
+
+        // Last Modified Header for cache control
+
+        $local_last_modified  = gmdate("D, d M Y H:i:s", $thread_modified_date). "GMT";
+
+        if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
+            $remote_last_modified = _stripslashes($_SERVER['HTTP_IF_MODIFIED_SINCE']);
+        }else {
+            $remote_last_modified = false;
+        }
+
+        if (strcmp($remote_etag, $local_etag) == "0" || strcmp($remote_last_modified, $local_last_modified) == "0") {
+
+            header("HTTP/1.1 304 Not Modified");
+            exit;
+        }
+
+        header("Last-Modified: $local_last_modified", true);
+        header("Etag: \"$local_etag\"", true);
+        header('Cache-Control: private');
+    }
+
+    return true;
 }
 
 function messages_top($folder_title, $thread_title, $interest_level = THREAD_NOINTEREST, $sticky = "N", $closed = false, $locked = false, $deleted = false)

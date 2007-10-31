@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.inc.php,v 1.73 2007-10-11 13:01:18 decoyduck Exp $ */
+/* $Id: edit.inc.php,v 1.74 2007-10-31 01:05:12 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -112,7 +112,7 @@ function post_delete($tid, $pid)
 
     if (!$result = db_query($sql, $db_post_delete)) return false;
 
-    return post_add_edit_text($tid, $pid);
+    return true;
 }
 
 function edit_refuse($tid, $pid)

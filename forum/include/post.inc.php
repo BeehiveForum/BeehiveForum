@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.170 2007-10-18 20:51:00 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.171 2007-10-31 01:05:12 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -210,6 +210,22 @@ function post_update_thread_length($tid, $length)
     $sql.= "SET LENGTH = '$length', MODIFIED = NOW() WHERE TID = '$tid'";
 
     if (!$result = db_query($sql, $db_post_update_thread_length)) return false;
+
+    return true;
+}
+
+function post_update_modified($tid)
+{
+    if (!$db_post_update_modified = db_connect()) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    if (!is_numeric($tid)) return false;
+
+    $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}THREAD ";
+    $sql.= "SET MODIFIED = NOW() WHERE TID = '$tid'";
+
+    if (!$result = db_query($sql, $db_post_update_modified)) return false;
 
     return true;
 }

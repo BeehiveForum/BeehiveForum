@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.138 2007-10-11 13:01:17 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.139 2007-10-31 01:05:12 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -468,6 +468,8 @@ function delete_attachment($hash)
 
                 post_add_edit_text($attachment_data['TID'], $attachment_data['PID']);
 
+                post_update_modified($attachment_data['TID']);
+
                 if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $attachment_data['FID']) && ($attachment_data['UID'] != $uid)) {
 
                     $log_data = array($attachment_data['TID'], $attachment_data['PID'], $attachment_data['FILENAME']);
@@ -541,6 +543,8 @@ function delete_attachment_thumbnail($hash)
             if (isset($attachment_data['TID']) && isset($attachment_data['PID'])) {
 
                 post_add_edit_text($attachment_data['TID'], $attachment_data['PID']);
+
+                post_update_modified($attachment_data['TID']);
 
                 if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $attachment_data['FID']) && ($attachment_data['UID'] != $uid)) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.291 2007-10-30 22:50:00 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.292 2007-10-31 01:05:12 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1675,6 +1675,8 @@ function thread_list_check_cache_header()
 {
     if (strstr(php_sapi_name(), 'cgi')) return false;
 
+    if (isset($_GET['modified']) && is_numeric($_GET['modified'])) return false;
+
     // Last Modified Header for cache control
 
     if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
@@ -1692,7 +1694,7 @@ function thread_list_check_cache_header()
     $local_last_modified = gmdate("D, d M Y H:i:s", time()). " GMT";
 
     header("Last-Modified: $local_last_modified", true);
-    header('Cache-Control: private');
+    header('Cache-Control: private, must-revalidate', true);
     return true;
 }
 

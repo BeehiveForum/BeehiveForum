@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.95 2007-10-11 13:01:16 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.96 2007-10-31 01:05:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -244,6 +244,8 @@ if (isset($_POST['submit'])) {
 
                     post_add_edit_text($tid, 1);
 
+                    post_update_modified($tid);
+
                     if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
 
                         admin_add_log_entry(RENAME_THREAD, array($tid, $thread_data['TITLE'], $t_rename));
@@ -270,6 +272,8 @@ if (isset($_POST['submit'])) {
 
                     post_add_edit_text($tid, 1);
 
+                    post_update_modified($tid);
+
                     if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
 
                         admin_add_log_entry(MOVED_THREAD, array($tid, $thread_data['TITLE'], $old_folder_title, $new_folder_title));
@@ -294,6 +298,8 @@ if (isset($_POST['submit'])) {
 
                 if (thread_set_closed($tid, $t_closed > 0)) {
 
+                    post_update_modified($tid);
+
                     admin_add_log_entry(($t_closed > 0) ? CLOSED_THREAD : OPENED_THREAD, array($tid, $thread_data['TITLE']));
 
                 }else {
@@ -311,6 +317,8 @@ if (isset($_POST['submit'])) {
             if ($t_admin_lock != $thread_data['ADMIN_LOCK']) {
 
                 if (thread_admin_lock($tid, $t_admin_lock > 0)) {
+
+                    post_update_modified($tid);
 
                     admin_add_log_entry(($t_admin_lock > 0) ? LOCKED_THREAD : UNLOCKED_THREAD, array($tid, $thread_data['TITLE']));
 
@@ -345,6 +353,8 @@ if (isset($_POST['submit'])) {
 
                             if (thread_set_sticky($tid, true, $t_sticky_until)) {
 
+                                post_update_modified($tid);
+
                                 admin_add_log_entry(CREATE_THREAD_STICKY, array($tid, $thread_data['TITLE']));
 
                             }else {
@@ -364,6 +374,8 @@ if (isset($_POST['submit'])) {
 
                     if (thread_set_sticky($tid, true)) {
 
+                        post_update_modified($tid);
+
                         admin_add_log_entry(CREATE_THREAD_STICKY, array($tid, $thread_data['TITLE']));
 
                     }else {
@@ -381,6 +393,8 @@ if (isset($_POST['submit'])) {
             if ($t_sticky != $thread_data['STICKY']) {
 
                 if (thread_set_sticky($tid, false)) {
+
+                    post_update_modified($tid);
 
                     admin_add_log_entry(REMOVE_THREAD_STICKY, array($tid, $thread_data['TITLE']));
 
@@ -407,6 +421,8 @@ if (isset($_POST['submit'])) {
 
                         if ($merge_result = thread_merge($merge_thread, $tid, $merge_type, $error_str)) {
 
+                            post_update_modified($tid);
+
                             admin_add_log_entry(THREAD_MERGE, $merge_result);
 
                         }else {
@@ -428,6 +444,8 @@ if (isset($_POST['submit'])) {
 
                         if ($split_result = thread_split($tid, $split_start, $split_type, $error_str)) {
 
+                            post_update_modified($tid);
+
                             admin_add_log_entry(THREAD_SPLIT, $split_result);
 
                         }else {
@@ -448,6 +466,8 @@ if (isset($_POST['submit'])) {
 
                     if (thread_delete_by_user($tid, $del_uid['UID'])) {
 
+                        post_update_modified($tid);
+
                         admin_add_log_entry(DELETE_USER_THREAD_POSTS, array($tid, $thread_data['TITLE'], $user_logon));
 
                     }else {
@@ -467,6 +487,8 @@ if (isset($_POST['submit'])) {
 
                 if (thread_delete($tid, $delete_thread)) {
 
+                    post_update_modified($tid);
+
                     admin_add_log_entry(DELETE_THREAD, array($tid, $thread_data['TITLE']));
 
                 }else {
@@ -482,6 +504,8 @@ if (isset($_POST['submit'])) {
             if (isset($_POST['undelthread_con']) && $_POST['undelthread_con'] == "Y") {
 
                 if (thread_undelete($tid)) {
+
+                    post_update_modified($tid);
 
                     admin_add_log_entry(UNDELETE_THREAD, array($tid, $thread_data['TITLE']));
 

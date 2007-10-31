@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.488 2007-10-30 22:50:00 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.489 2007-10-31 01:05:12 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -524,6 +524,8 @@ function messages_check_cache_header()
 {
     if (strstr(php_sapi_name(), 'cgi')) return false;
 
+    if (isset($_GET['modified']) && is_numeric($_GET['modified'])) return false;
+
     if (!$db_messages_check_cache_header = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
@@ -576,8 +578,8 @@ function messages_check_cache_header()
         }
 
         header("Last-Modified: $local_last_modified", true);
+        header('Cache-Control: private, must-revalidate', true);
         header("Etag: \"$local_etag\"", true);
-        header('Cache-Control: private');
     }
 
     return true;

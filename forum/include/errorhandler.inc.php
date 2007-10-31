@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.97 2007-10-16 20:44:00 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.98 2007-10-31 13:53:30 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -57,9 +57,23 @@ error_reporting(E_ALL);
 
 function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
 {
-    $show_friendly_errors = (isset($GLOBALS['show_friendly_errors'])) ? $GLOBALS['show_friendly_errors'] : false;
+    if (isset($GLOBALS['show_friendly_errors']) && $GLOBALS['show_friendly_errors'] == true) {
+        $show_friendly_errors = true;
+    }else {
+        $show_friendly_errors = false;
+    }
 
-    $error_report_email_addr = (isset($GLOBALS['error_report_email_addr'])) ? $GLOBALS['error_report_email_addr'] : '';
+    if (isset($GLOBALS['error_report_email_addr_to']) && strlen(trim(_stripslashes($GLOBALS['error_report_email_addr_to']))) > 0) {
+        $error_report_email_addr_to = trim(_stripslashes($GLOBALS['error_report_email_addr_to']));
+    }else {
+        $error_report_email_addr_to = '';
+    }
+
+    if (isset($GLOBALS['error_report_email_addr_from']) && strlen(trim(_stripslashes($GLOBALS['error_report_email_addr_from']))) > 0) {
+        $error_report_email_addr_from = trim(_stripslashes($GLOBALS['error_report_email_addr_from']));
+    }else {
+        $error_report_email_addr_from = '$error_report_email_addr_from';
+    }
 
     // Bad Coding Practises Alert!!
     // We're going to ignore any E_STRICT error messages
@@ -170,9 +184,9 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
 
             $error_log_email_message = strip_tags(implode("\n", $error_msg_array));
 
-            $headers = "Return-path: no-reply@beehiveforum.net\n";
-            $headers.= "From: \"Beehive Forum Error Report\" <no-reply@beehiveforum.net>\n";
-            $headers.= "Reply-To: \"Beehive Forum Error Report\" <no-reply@beehiveforum.net>\n";
+            $headers = "Return-path: $error_report_email_addr_from\n";
+            $headers.= "From: \"Beehive Forum Error Report\" <$error_report_email_addr_from>\n";
+            $headers.= "Reply-To: \"Beehive Forum Error Report\" <$error_report_email_addr_from>\n";
             $headers.= "Content-type: text/plain; charset=UTF-8\n";
             $headers.= "X-Mailer: PHP/". phpversion(). "\n";
             $headers.= "X-Beehive-Forum: Beehive Forum ". BEEHIVE_VERSION;

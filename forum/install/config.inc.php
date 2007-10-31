@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: config.inc.php,v 1.10 2007-10-16 17:09:23 decoyduck Exp $ */
+/* $Id: config.inc.php,v 1.11 2007-10-31 13:53:30 decoyduck Exp $ */
 
 // MAIN CONFIGURATION FILE
 
@@ -62,7 +62,8 @@ $show_friendly_errors = true;
 
 // Error Reporting Email -----------------------------------------------
 
-$error_report_email_addr = '';
+$error_report_email_addr_to = '';
+$error_report_email_addr_from = 'no-reply@beehiveforum.net';
 
 // In addition to the error message displayed to end users Beehive can
 // also send error reports to an email address. To enable this
@@ -70,7 +71,16 @@ $error_report_email_addr = '';
 //
 // For example:
 //
-// $error_report_email_addr = 'support@mybeehiveforum.net'
+// $error_report_email_addr_to = 'support@mybeehiveforum.net'
+//
+// By default emails will be sent from 'no-reply@beehiveforum.net'.
+// To change this you can also edit the $error_report_email_addr_from
+// variable.
+
+// Note: The no-reply email saved in the database is not used by the
+//       Beehive Forum error handler in order to avoid logging another
+//       error message trying to connect to a database server that is
+//       not available.
 //
 // ---------------------------------------------------------------------
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.489 2007-10-31 01:05:12 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.490 2007-10-31 01:29:36 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -524,8 +524,6 @@ function messages_check_cache_header()
 {
     if (strstr(php_sapi_name(), 'cgi')) return false;
 
-    if (isset($_GET['modified']) && is_numeric($_GET['modified'])) return false;
-
     if (!$db_messages_check_cache_header = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
@@ -551,35 +549,24 @@ function messages_check_cache_header()
 
         list($thread_modified_date) = db_fetch_array($result, DB_RESULT_NUM);
 
-        // Etag Header for cache control
-
-        $local_etag  = md5(gmdate("D, d M Y H:i:s", $thread_modified_date). " GMT");
-
-        if (isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
-            $remote_etag = substr(_stripslashes($_SERVER['HTTP_IF_NONE_MATCH']), 1, -1);
-        }else {
-            $remote_etag = false;
-        }
-
         // Last Modified Header for cache control
 
-        $local_last_modified  = gmdate("D, d M Y H:i:s", $thread_modified_date). "GMT";
+        $local_last_modified  = gmdate("D, d M Y H:i:s", $thread_modified_date). " GMT";
+
+        header("Expires: Mon, 08 Apr 2002 12:00:00 GMT");
+        header('Cache-Control: public, must-revalidate', true);
+        header("Last-Modified: $local_last_modified", true);
 
         if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
+
             $remote_last_modified = _stripslashes($_SERVER['HTTP_IF_MODIFIED_SINCE']);
-        }else {
-            $remote_last_modified = false;
+
+            if (strcmp($remote_last_modified, $local_last_modified) == "0") {
+
+                header("HTTP/1.1 304 Not Modified");
+                exit;
+            }
         }
-
-        if (strcmp($remote_etag, $local_etag) == "0" || strcmp($remote_last_modified, $local_last_modified) == "0") {
-
-            header("HTTP/1.1 304 Not Modified");
-            exit;
-        }
-
-        header("Last-Modified: $local_last_modified", true);
-        header('Cache-Control: private, must-revalidate', true);
-        header("Etag: \"$local_etag\"", true);
     }
 
     return true;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.98 2007-10-31 13:53:30 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.99 2007-10-31 14:15:01 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -35,6 +35,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "form.inc.php");
 include_once(BH_INCLUDE_PATH. "format.inc.php");
+include_once(BH_INCLUDE_PATH. "header.inc.php");
 include_once(BH_INCLUDE_PATH. "install.inc.php");
 include_once(BH_INCLUDE_PATH. "messages.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
@@ -180,7 +181,7 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
 
         // Check to see if we need to send the error report by email
 
-        if (strlen($error_report_email_addr) > 0) {
+        if (strlen($error_report_email_addr_to) > 0) {
 
             $error_log_email_message = strip_tags(implode("\n", $error_msg_array));
 
@@ -191,7 +192,7 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
             $headers.= "X-Mailer: PHP/". phpversion(). "\n";
             $headers.= "X-Beehive-Forum: Beehive Forum ". BEEHIVE_VERSION;
 
-            @error_log($error_log_email_message, 1, $error_report_email_addr, $headers);
+            @error_log($error_log_email_message, 1, $error_report_email_addr_to, $headers);
         }
 
         // Format the error array for adding to the system error log.
@@ -217,6 +218,10 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
         while (@ob_end_clean());
         ob_start("bh_gzhandler");
         ob_implicit_flush(0);
+
+        // Prevent caching of error handler
+
+        header_no_cache();
 
         // Full mode error message display with Retry button.
 

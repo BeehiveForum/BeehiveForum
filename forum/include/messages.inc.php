@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.490 2007-10-31 01:29:36 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.491 2007-10-31 13:30:54 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -551,11 +551,12 @@ function messages_check_cache_header()
 
         // Last Modified Header for cache control
 
-        $local_last_modified  = gmdate("D, d M Y H:i:s", $thread_modified_date). " GMT";
+        $local_last_modified = gmdate("D, d M Y H:i:s", $thread_modified_date). " GMT";
+        $local_cache_expires = gmdate("D, d M Y H:i:s", $thread_modified_date). " GMT";
 
-        header("Expires: Mon, 08 Apr 2002 12:00:00 GMT");
-        header('Cache-Control: public, must-revalidate', true);
+        header("Expires: $local_cache_expires", true);
         header("Last-Modified: $local_last_modified", true);
+        header('Cache-Control: private, must-revalidate', true);
 
         if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
 

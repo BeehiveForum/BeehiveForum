@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: search_popup.php,v 1.25 2007-10-27 21:02:20 decoyduck Exp $ */
+/* $Id: search_popup.php,v 1.26 2007-10-31 13:30:55 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -448,7 +448,7 @@ if (isset($search_results_array['results_array']) && sizeof($search_results_arra
     echo "      <td class=\"postbody\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td class=\"postbody\" align=\"center\">", page_links("search_popup.php?webtag=$webtag&search_query=$search_query&type=$type", $start, $search_results_array['results_count'], 10), "</td>\n";
+    echo "      <td class=\"postbody\" align=\"center\">", page_links("search_popup.php?webtag=$webtag&search_query=$search_query&type=$type&obj_name=$obj_name&allow_multi=$allow_multi", $start, $search_results_array['results_count'], 10), "</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td class=\"postbody\">&nbsp;</td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.295 2007-10-31 14:15:01 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.296 2007-10-31 15:58:30 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1742,9 +1742,9 @@ function thread_list_get_last_read_date()
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    $sql = "SELECT UNIX_TIMESTAMP(LAST_READ) AS LAST_READ ";
+    $sql = "SELECT UNIX_TIMESTAMP(LAST_READ_AT) AS LAST_READ_AT ";
     $sql.= "FROM {$table_data['PREFIX']}USER_THREAD ";
-    $sql.= "WHERE UID = '$uid' ORDER BY LAST_READ DESC ";
+    $sql.= "WHERE UID = '$uid' ORDER BY LAST_READ_AT DESC ";
     $sql.= "LIMIT 0, 1";
 
     if (!$result = db_query($sql, $db_thread_list_get_last_read_date)) return false;

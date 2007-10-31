@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.293 2007-10-31 01:29:36 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.294 2007-10-31 13:30:55 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1675,23 +1675,38 @@ function thread_list_check_cache_header()
 {
     if (strstr(php_sapi_name(), 'cgi')) return false;
 
-    // Last Modified Header for cache control
+    if (!$db_thread_list_check_cache_header = db_connect()) return false;
 
-    $local_last_modified = gmdate("D, d M Y H:i:s", time()). " GMT";
+    if (!$table_data = get_table_prefix()) return false;
 
-    header("Expires: Mon, 08 Apr 2002 12:00:00 GMT");
-    header('Cache-Control: public, must-revalidate', true);
-    header("Last-Modified: $local_last_modified", true);
+    $sql = "SELECT UNIX_TIMESTAMP(MODIFIED) AS MODIFIED ";
+    $sql.= "FROM {$table_data['PREFIX']}THREAD ";
+    $sql.= "ORDER BY MODIFIED DESC LIMIT 0, 1";
 
-    if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
+    if (!$result = db_query($sql, $db_thread_list_check_cache_header)) return false;
 
-        $remote_last_modified = _stripslashes($_SERVER['HTTP_IF_MODIFIED_SINCE']);
-        $remote_last_modified_check = gmdate("D, d M Y H:i:s", time() - 10). " GMT";
+    if (db_num_rows($result) > 0) {
 
-        if (strcmp($remote_last_modified, $remote_last_modified_check) > 0) {
+        list($thread_modified_date) = db_fetch_array($result, DB_RESULT_NUM);
 
-            header("HTTP/1.1 304 Not Modified");
-            exit;
+        // Last Modified Header for cache control
+
+        $local_last_modified = gmdate("D, d M Y H:i:s", $thread_modified_date). " GMT";
+        $local_cache_expires = gmdate("D, d M Y H:i:s", $thread_modified_date). " GMT";
+
+        header("Expires: $local_cache_expires", true);
+        header("Last-Modified: $local_last_modified", true);
+        header('Cache-Control: private, must-revalidate', true);
+
+        if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
+
+            $remote_last_modified = _stripslashes($_SERVER['HTTP_IF_MODIFIED_SINCE']);
+
+            if (strcmp($remote_last_modified, $local_last_modified) == "0") {
+
+                header("HTTP/1.1 304 Not Modified");
+                exit;
+            }
         }
     }
 

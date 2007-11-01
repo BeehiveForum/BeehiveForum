@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_startpage.php,v 1.95 2007-10-11 13:01:12 decoyduck Exp $ */
+/* $Id: admin_startpage.php,v 1.96 2007-11-01 20:16:00 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -107,7 +107,7 @@ $error_msg_array = array();
 
 // List of allowed extensions.
 
-$allowed_file_exts_array = array('html', 'htm', 'php', 'txt');
+$allowed_file_exts_array = array('html', 'htm');
 $allowed_file_exts = "*.". implode(", *.", $allowed_file_exts_array);
 
 // Path to the Forum folder for saving start page.
@@ -115,97 +115,35 @@ $allowed_file_exts = "*.". implode(", *.", $allowed_file_exts_array);
 $forum_path = dirname($_SERVER['PHP_SELF']);
 $forum_path.= "/forums/$webtag/";
 
-// Submit code...
+// Submit code
 
 if (isset($_POST['submit'])) {
 
-    $valid = true;
-
-    if (isset($_POST['content']) && strlen(trim(_stripslashes($_POST['content']))) > 0) {
-        $content = trim(_stripslashes($_POST['content']));
+    if (isset($_POST['t_content']) && strlen(trim(_stripslashes($_POST['t_content']))) > 0) {
+        $t_content = trim(_stripslashes($_POST['t_content']));
     }else {
-        $content = "";
+        $t_content = "";
     }
+}
 
-    if (forum_save_start_page($content)) {
+if (!isset($t_content)) $t_content = forum_load_start_page();
+
+$start_page = new MessageText(POST_HTML_ENABLED, $t_content, true, true);
+
+$t_content = $start_page->getContent();
+
+if (isset($_POST['submit'])) {
+
+    if (forum_save_start_page($t_content)) {
 
         admin_add_log_entry(EDITED_START_PAGE);
         header_redirect("admin_startpage.php?webtag=$webtag&updated=true");
         exit;
 
-    }elseif (isset($_POST['uploaded']) && $_POST['uploaded'] == "yes") {
-
-        html_draw_top();
-        html_error_msg(sprintf($lang['uploadfailed'], $forum_path), 'admin_startpage.php', 'post', array('submit' => $lang['retry'], 'cancel_upload' => $lang['cancel']), array('content' => $content, 'uploaded' => 'yes'));
-        html_draw_bottom();
-        exit;
-
     }else {
 
         $error_msg_array[] = sprintf($lang['startpageerror'], $forum_path);
-        $valid = false;
     }
-
-}elseif (isset($_POST['upload'])) {
-
-    $valid = true;
-
-    if (isset($_FILES['userfile']['tmp_name']) && strlen(trim($_FILES['userfile']['tmp_name'])) > 0) {
-
-        $path_parts = pathinfo($_FILES['userfile']['name']);
-
-        if (isset($path_parts['extension']) && in_array($path_parts['extension'], $allowed_file_exts_array)) {
-
-            if (@move_uploaded_file($_FILES['userfile']['tmp_name'], "forums/$webtag/start_main.php")) {
-
-                admin_add_log_entry(EDITED_START_PAGE);
-                header_redirect("admin_startpage.php?webtag=$webtag&updated=true");
-                exit;
-
-            }else {
-
-                $content = implode('', file($_FILES['userfile']['tmp_name']));
-
-                html_draw_top();
-                html_error_msg(sprintf($lang['uploadfailed'], $forum_path), 'admin_startpage.php', 'post', array('submit' => $lang['retry'], 'cancel_upload' => $lang['cancel']), array('content' => $content, 'uploaded' => 'yes'));
-                html_draw_bottom();
-                exit;
-            }
-
-        }else {
-
-            $error_msg_array[] = sprintf($lang['invalidfiletypeerror'], $allowed_file_exts);
-            $valid = false;
-        }
-    }
-
-}elseif (isset($_POST['download'])) {
-
-    if (isset($_POST['content']) && strlen(trim(_stripslashes($_POST['content']))) > 0) {
-        $content = trim(_stripslashes($_POST['content']));
-    }else {
-        $content = "";
-    }
-
-    $length = strlen($content);
-
-    header("Content-Type: application/x-ms-download", true);
-    header("Content-Length: $length", true);
-    header("Content-disposition: attachment; filename=\"start_main.php\"", true);
-    echo $content;
-    exit;
-
-}elseif (isset($_POST['cancel'])) {
-
-    if (isset($_POST['content']) && strlen(trim(_stripslashes($_POST['content']))) > 0) {
-        $content = trim(_stripslashes($_POST['content']));
-    }else {
-        $content = "";
-    }
-}
-
-if (!isset($content)) {
-    $content = forum_load_start_page();
 }
 
 html_draw_top("dictionary.js", "htmltools.js");
@@ -247,7 +185,7 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\">", $tools->toolbar(true, form_submit('submit', $lang['save'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", $tools->textarea("content", _htmlentities($content), 20, 85, "virtual", "", "admin_startpage_textarea"), "</td>\n";
+echo "                        <td align=\"left\">", $tools->textarea("t_content", _htmlentities($t_content), 20, 85, "virtual", "", "admin_startpage_textarea"), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -265,45 +203,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "&nbsp;", form_reset(), "</td>\n";
-echo "    </tr>\n";
-echo "  </table>\n";
-echo "  <br />\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
-echo "    <tr>\n";
-echo "      <td align=\"left\">\n";
-echo "        <table class=\"box\" width=\"100%\">\n";
-echo "          <tr>\n";
-echo "            <td align=\"left\" class=\"posthead\">\n";
-echo "              <table class=\"posthead\" width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\">", sprintf($lang['uploadstartpage'], $allowed_file_exts), "</td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "              <table class=\"posthead\" width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td align=\"center\">\n";
-echo "                    <table class=\"posthead\" width=\"95%\">\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\">{$lang['filename']}: ", form_input_file("userfile", "", 45, 0), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\">&nbsp;</td>\n";
-echo "                      </tr>\n";
-echo "                    </table>\n";
-echo "                  </td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "            </td>\n";
-echo "          </tr>\n";
-echo "        </table>\n";
-echo "      </td>\n";
-echo "    </tr>\n";
-echo "    <tr>\n";
-echo "      <td align=\"left\">&nbsp;</td>\n";
-echo "    </tr>\n";
-echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("upload", $lang['upload']), "</td>\n";
+echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads_rss.php,v 1.49 2007-10-11 13:01:17 decoyduck Exp $ */
+/* $Id: threads_rss.php,v 1.50 2007-11-01 00:34:38 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -108,12 +108,6 @@ if (!$user_sess = bh_session_check(false, $user_hash)) {
     }
 }
 
-// Default values (limit 20, all folders, sort by modified)
-
-$limit = 20;
-$fid_list = false;
-$sort_created = false;
-
 // Check to see if the user is banned.
 
 if (bh_session_user_banned()) {
@@ -129,6 +123,16 @@ if (!bh_session_user_approved()) {
     html_user_require_approval();
     exit;
 }
+
+// Thread List Cache Control
+
+thread_list_check_cache_header();
+
+// Default values (limit 20, all folders, sort by modified)
+
+$limit = 20;
+$fid_list = false;
+$sort_created = false;
 
 // Check to see if the user wants a custom number of threads.
 // Maximum to display is 20. Minimum is 1.

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.296 2007-10-31 15:58:30 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.297 2007-11-01 00:34:38 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1736,6 +1736,8 @@ function thread_list_get_last_modified_date()
 
 function thread_list_get_last_read_date()
 {
+    if (user_is_guest()) return false;
+
     if (!$db_thread_list_get_last_read_date = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;

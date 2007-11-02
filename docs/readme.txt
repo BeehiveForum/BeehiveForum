@@ -2,7 +2,7 @@ Beehive Forum Readme
 
 http://www.beehiveforum.net/
 
-Version 0.7.1 / 13th October 2006
+Version 0.8 / 3rd November 2007
 
 A list of changes since previous Beehive Forum versions can be found
 in release.txt.
@@ -312,24 +312,25 @@ Then copy in the contents of one of the existing folders to base your new style 
 (the "default" folder is probably a good start) - style.css, top.html and the images
 folder with contents.
 
-Additionally you can also create random styles by using the forum styles tool in the
-admin section of the forum. Unfortunately this tool does not allow you to specify
-different multiple colours to use, rather it rather cunningly chooses some for you
-that are mathematically determined to be suitable based on your first choice. Watch
-this space for a fully fledged style editor.
+You can also create random styles by using the forum styles tool in the admin section
+of the forum. Unfortunately this tool does not allow you to specify different multiple
+colours to use, rather it rather cunningly chooses some for you that are mathematically
+determined to be suitable based on your first choice.
 
-Note: Due to the new multi-forum capabilities of Beehive Forum 0.5+, there are now two 
+Notes:
+
+Due to the new multi-forum capabilities of Beehive Forum 0.5+, there are now two 
 locations where style sheets/images etc. are held. For styles which you wish to be
 globally available to all forums on your server, add/change the styles in the /styles
 subdirectory. For forum-specific styles, you will need to add/change the styles in
 the /forums/FORUM_WEBTAG/styles directory, where 'FORUM_WEBTAG' is the webtag of your
 forum that you chose on forum-creation. See /forums/default as an example.
 
-Note: Styles created using the admin styles creator will be saved as forum-specific
+Styles created using the admin styles creator will be saved as forum-specific
 styles. If you wish for a style you create through it to be global, you will need to
 manually copy the style into the global /styles directory through your FTP program.
 
-Note: start_main.php, style.css and top.html can also be present in the 
+The files start_main.php, style.css and top.html can also be present in the 
 /forums/FORUM_WEBTAG directory, which allows for per-forum start pages, default forum 
 styles, and top frames.
 
@@ -341,7 +342,7 @@ If you know how to do CSS, you can edit the style.css file in the
 /styles/[stylename] folder to change colours, fonts and things like that.
 We recommend taking a backup first, though, in case you make a mess of it.
 
-As of BeehiveForum 0.7.2 you can also create per-file style sheets that allow you
+As of BeehiveForum 0.8 you can also create per-file style sheets that allow you
 to give different pages different designs. This would for example allow you to
 give the thread list a background image but leave the other pages using the
 same design.
@@ -350,7 +351,7 @@ To do this all you would need to do is create a .css file with the same name
 as the PHP script you want it to affect, sans it's extension. i.e. for the thread
 list you would create a style sheet named thread_list.css and place it in the
 same folder as the main style.css. Beehive will automatically find and use this
-style sheet automatically in preference to the main style.css.
+style sheet in preference to the main style.css.
 
 There is one caveat though of course (isn't there always?). When Beehive
 encounters the per-file style sheet it will leave out the main style.css so any
@@ -666,7 +667,6 @@ least bundled here amongst the other credits.
 Current complete translations are as follows:
 
 English (UK)
-French Canadian
 German
 X-Hacker
 
@@ -675,7 +675,8 @@ X-Hacker
 
 Current incomplete translations also available include:
 
-English (US) - Still contains some British-isms.
+French Canadian
+English (US)
 
 These translations can be obtained from the Beehive Forum Project CVS Repository.
 For instructions on accessing the CVS Reporistory please see:

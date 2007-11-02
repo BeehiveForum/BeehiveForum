@@ -21,13 +21,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_cvs_log_parse.php,v 1.8 2007-04-29 14:28:34 decoyduck Exp $ */
+/* $Id: bh_cvs_log_parse.php,v 1.9 2007-11-02 21:55:01 decoyduck Exp $ */
 
 /**
 * bh_cvs_log_parse.php
 *
 * Automated collection and processing of CVS LOG entries into a human
-* readable changelog.txt. 
+* readable changelog.txt.
 *
 * For this to work you need to have correctly set up SSH and CVS and
 * have created a ssh key otherwise you will be prompted for your
@@ -56,13 +56,13 @@ function get_cvs_log_data($dir, $date)
     $cwd = getcwd();
 
     if (is_dir($dir)) {
-       
+
         chdir($dir);
-        
-        if (@$log_handle = popen("cvs log -l -N -d \">$date\" 2>&1", 'r')) {
+
+        if ($log_handle = popen("cvs log -l -N -d \">$date\" 2>&1", 'r')) {
 
             $log_contents = "";
-            
+
             while(!feof($log_handle)) {
                 $log_contents.= fgets($log_handle);
             }
@@ -93,19 +93,19 @@ function get_cvs_log_data($dir, $date)
 function get_cvs_dirs($path, &$cvs_dir_array)
 {
     global $exclude_dirs;
-    
+
     if (!is_array($cvs_dir_array)) {
         $cvs_dir_array = array();
     }
-    
+
     if ($dir = opendir($path)) {
 
         while (($file = readdir($dir)) !== false) {
 
             if ($file != "." && $file != ".." && $file != "CVS") {
-            
+
                 $grep_match = preg_quote("$path/$file", "/");
-                
+
                 if (is_dir("$path/$file")) {
 
                     if (!preg_grep("/^$grep_match$/", $exclude_dirs)) {
@@ -139,7 +139,7 @@ if (file_exists('bh_cvs_log_parse_exclude.php')) {
 // then we need to bail out.
 
 if (isset($_SERVER['argv'][1]) && preg_match("/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/", $_SERVER['argv'][1]) > 0) {
-    
+
     $date_from = $_SERVER['argv'][1];
 
     // Get a list of directories to use
@@ -163,7 +163,7 @@ if (isset($_SERVER['argv'][1]) && preg_match("/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/", $
             echo ".";
         }
 
-        fclose($fp);        
+        fclose($fp);
     }
 
     // Got the log data, split it into an array by lines.

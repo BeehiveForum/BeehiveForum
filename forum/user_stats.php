@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_stats.php,v 1.52 2007-10-11 13:01:17 decoyduck Exp $ */
+/* $Id: user_stats.php,v 1.53 2007-11-02 21:55:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -125,12 +125,12 @@ if (isset($_GET['show_stats']) && !user_is_guest()) {
 
     if (user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
 
-        header_redirect("./messages.php?webtag=$webtag&msg=$msg", $lang['statsdisplayenabled']);
+        header_redirect("./messages.php?webtag=$webtag&msg=$msg&setstats=1", $lang['statsdisplaychanged']);
 
     }else {
 
         html_draw_top();
-        html_error_msg($lang['failedtoupdateuserdetails'], 'messages.php', 'get', array('back' => $lang['back']), array('msg' => $msg));
+        html_error_msg($lang['failedtoupdateuserdetails'], 'messages.php', 'get', array('back' => $lang['back']), array('msg' => $msg, 'setstats' => 1));
         html_draw_bottom();
     }
 

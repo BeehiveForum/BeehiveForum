@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.79 2007-10-22 17:25:43 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.80 2007-11-02 21:55:01 decoyduck Exp $ */
 
 // British English language file
 
@@ -1796,7 +1796,7 @@ $lang['wehavenumregisteredmembersandthenewestmemberismembername'] = "We have <b>
 $lang['wehavenumregisteredmember'] = "We have %s registered members.";
 $lang['wehaveoneregisteredmember'] = "We have one registered member.";
 $lang['mostuserseveronlinewasnumondate'] = "Most users ever online was <b>%s</b> on %s.";
-$lang['statsdisplayenabled'] = "Affichage de statistiques activé";
+$lang['statsdisplaychanged'] = "Stats Display Changed";
 
 // Thread Options (thread_options.php) ---------------------------------
 

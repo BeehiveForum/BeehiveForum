@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.243 2007-10-30 22:50:00 decoyduck Exp $ */
+/* $Id: messages.php,v 1.244 2007-11-02 21:55:03 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -366,6 +366,10 @@ if (isset($_GET['setinterest'])) {
 
 if (isset($_GET['relupdated'])) {
     html_display_success_msg($lang['relationshipsupdated'], '96%', 'center');
+}
+
+if (isset($_GET['setstats'])) {
+    html_display_success_msg($lang['statsdisplaychanged'], '96%', 'center');
 }
 
 if (isset($_GET['font_resize'])) {

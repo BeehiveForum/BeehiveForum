@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.258 2007-10-31 17:10:05 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.259 2007-11-02 21:55:01 decoyduck Exp $ */
 
 // British English language file
 
@@ -1805,7 +1805,7 @@ $lang['wehavenumregisteredmembersandthenewestmemberismembername'] = "we H@v3 <b>
 $lang['wehavenumregisteredmember'] = "w3 h@v3 %s rEGis+3R3d M3m8er5.";
 $lang['wehaveoneregisteredmember'] = "wE HaVE 0N3 r3gis+Er3d m3MB3r.";
 $lang['mostuserseveronlinewasnumondate'] = "m0s+ u5Ers 3VEr oNl1ne was <b>%s</b> on %s.";
-$lang['statsdisplayenabled'] = "s+@+s D1SPl4Y EN@8led";
+$lang['statsdisplaychanged'] = "s+@+s D1SPl4Y cH@NGED";
 
 // Thread Options (thread_options.php) ---------------------------------
 

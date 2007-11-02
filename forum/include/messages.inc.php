@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.491 2007-10-31 13:30:54 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.492 2007-11-02 21:55:01 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -527,6 +527,11 @@ function messages_check_cache_header()
     if (!$db_messages_check_cache_header = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
+
+    if (isset($_GET['markasread'])) return false;
+    if (isset($_GET['setinterest'])) return false;
+    if (isset($_GET['relupdated'])) return false;
+    if (isset($_GET['setstats'])) return false;
 
     if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 

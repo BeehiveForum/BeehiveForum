@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: header.inc.php,v 1.28 2007-10-11 13:01:19 decoyduck Exp $ */
+/* $Id: header.inc.php,v 1.29 2007-11-02 21:55:01 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -38,8 +38,6 @@ include_once(BH_INCLUDE_PATH. "form.inc.php");
 
 function header_no_cache()
 {
-    $lang = load_language_file();
-
     header("Expires: Mon, 08 Apr 2002 12:00:00 GMT");               // Date in the past (Beehive birthday)
     header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");  // always modified
     header("Content-Type: text/html; charset=UTF-8");               // Internet Explorer Bug

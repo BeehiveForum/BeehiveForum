@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.56 2007-11-02 21:55:01 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.57 2007-11-03 20:13:27 decoyduck Exp $ */
 
 // German language file
 
@@ -331,7 +331,7 @@ $lang['youmustenteroptionsforselectedprofileitemtype'] = "Fuer den ausgewaehlten
 $lang['youmustentermorethanoneoptionforitem'] = "Fuer den ausgewaehlten Profileintrags-Typ muss mehr als eine Option eingegeben werden";
 $lang['profileitemhyperlinkssupportshttpurlsonly'] = "Profileintrags-Hyperlinks unterstuetzen nur HTTP-URLs";
 $lang['profileitemhyperlinkformatinvalid'] = "Profileintrags-Hyperlinkformat ungueltig";
-$lang['youmustincludeprofileentryinhyperlinks'] = "Fuer anklickbare Hyperlinks muss <i>[ProfileEntry]</i> in der URL eingetragen sein";
+$lang['youmustincludeprofileentryinhyperlinks'] = "Fuer anklickbare Hyperlinks muss <i>%s</i> in der URL eingetragen sein";
 $lang['failedtocreatenewprofileitem'] = "Fehler beim Erstellen des neuen Profilartikels";
 $lang['failedtoupdateprofileitem'] = "Fehler beim Aendern des Profilartikels";
 $lang['startpageupdated'] = "Startseite geaendert. %s";
@@ -850,7 +850,7 @@ $lang['forum_settings_help_28'] = "Diese Einstellung erlaubt Suchmaschinen Dein 
 $lang['forum_settings_help_29'] = "<b>Erlaubt neuen Benutzern sich zu registrieren</b> ist dies abgeschaltet koennen sich keine neuen Benutzer registrieren.";
 $lang['forum_settings_help_30'] = "<b>Aktiviert WikiWiki Integration</b> erlaubt WikiWord-Zugriff in den Foren-Posts. WikiWords sind miteinander verkettete Woerter in Grossbuchstaben. Wenn Du so ein Wort schreibst wird es automatisch in ein Hyperlink geaendert das auf den WikiWiki-Seiten gesucht/erklaert wird.";
 $lang['forum_settings_help_31'] = "<b>Aktivert WikiWiki Quick Links</b> aktiviert die Benutzung von msg:1.1 und User:Logon-Stilen erweiterten WikiLinks die Hyperlinks zu den spezifizierten Nachrichten / Benutzerprofilen erstellen.";
-$lang['forum_settings_help_32'] = "<b>WikiWiki Position</b> hier wird der Pfad zu deinem gewuenschten WikiWiki angegeben. Bei Eingabe der URL sollte dies: [WikiWord] als Platzhalter fuer das betreffende Wort angegeben werden, z.B.: <i>http://de.wikipedia.org/wiki/[WikiWord]</i> sendet das WikiWord an %s";
+$lang['forum_settings_help_32'] = "<b>WikiWiki Position</b> hier wird der Pfad zu deinem gewuenschten WikiWiki angegeben. Bei Eingabe der URL sollte dies: <i>%s</i> als Platzhalter fuer das betreffende Wort angegeben werden, z.B.: <i>http://en.wikipedia.org/wiki/%s</i> sendet das WikiWord an %s";
 $lang['forum_settings_help_33'] = "<b>Forum Access Status</b> ueberprueft wielvie Benutzer das Forum nutzen.";
 $lang['forum_settings_help_34'] = "<b>Offen</b> Erlaubt allen Benutzern und Gaesten das Forum zu nutzen.";
 $lang['forum_settings_help_35'] = "<b>Geschlossen</b> Laesst keinen Zugriff mehr zu ausser dem Admin in die Admin-Tools.";

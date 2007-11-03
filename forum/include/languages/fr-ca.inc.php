@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.80 2007-11-02 21:55:01 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.81 2007-11-03 20:13:27 decoyduck Exp $ */
 
 // British English language file
 
@@ -842,7 +842,7 @@ $lang['forum_settings_help_28'] = "Cette option permet le balayage de votre foru
 $lang['forum_settings_help_29'] = "<b>Permettre enregistrement de nouveaux comptes</b> permet ou empêche la céation de nouveaux comptes d'utilisateurs. Si vous le réglé à non, le formulaire d'enregistrement sera complètement désactivé.";
 $lang['forum_settings_help_30'] = "<b>Activer intégration WikiWiki</b> fournit un support WikiWord dans les messages sur votre forum. Un mot WikiWord consiste de deux ou plusieurs mots concaténés avec capitales (qu'on appelle aussi CamelCase). Si vous écrivez un mot de cette façon, il sera converti automatiquement en hyperlien pointant à votre Wiki de choix.";
 $lang['forum_settings_help_31'] = "<b>Activer hyperliens rapides WikiWiki</b> active l'usage de liens étendues du style msg:1.1 et User:Logon qui créent des hyperliens au message spécifié / profile d'utilisateur de l'utilisateur spécifié.";
-$lang['forum_settings_help_32'] = "<b>Localisation WikiWiki</b> est utilisée pour spécifier le URI de votre WikiWiki. Lorsque vous entrer le URI, utilisez [WikiWord] pour indiquer où dans le URI le WikiWord devrait apparaître, i.e.: <i>http://en.wikipedia.org/wiki/[WikiWord]</i> hyperlierait vos WikiWords à %s";
+$lang['forum_settings_help_32'] = "<b>Localisation WikiWiki</b> est utilisée pour spécifier le URI de votre WikiWiki. Lorsque vous entrer le URI, utilisez <i>%s</i> pour indiquer où dans le URI le WikiWord devrait apparaître, i.e.: <i>http://en.wikipedia.org/wiki/%s</i> hyperlierait vos WikiWords à %s";
 $lang['forum_settings_help_33'] = "<b>Statut d'accès au forum</b> contrôle de quelle façon les utilisateurs peuvent accéder à votre forum.";
 $lang['forum_settings_help_34'] = "<b>Ouvert</b> permettra à tous les utilisateurs et visiteurs d'avoir accès à votre forum sans restrictions.";
 $lang['forum_settings_help_35'] = "<b>Fermé</b> empêche l'accès à tous les utilisateurs, à l'exception des Admins qui pourront toujours accéder au panneau admin.";

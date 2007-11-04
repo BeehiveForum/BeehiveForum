@@ -19,19 +19,21 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: xml_http.js,v 1.1 2007-11-04 18:34:11 decoyduck Exp $ */
+/* $Id: xml_http.js,v 1.2 2007-11-04 23:06:55 decoyduck Exp $ */
 
 function xml_http_request()
 {
     xml_http_request.prototype._url = undefined;
+    xml_http_request.prototype._handler = undefined;
     xml_http_request.prototype._request = undefined;
     xml_http_request.prototype._response = undefined;
 
-    xml_http_request.prototype.get_url = function(url)
+    xml_http_request.prototype.get_url = function(url, handler_function)
     {
+        this._handler = handler_function;
         this._request = this._xml_http_request(); var _this = this;
-        this._request.onreadystatechange = function(){ _this._on_state_change() };
-        this._request.open("GET", url, false);
+        this._request.onreadystatechange = function() { _this._on_state_change() };
+        this._request.open("GET", url, true);
         this._request.send(null);
     }
 
@@ -46,7 +48,7 @@ function xml_http_request()
 
             if (this._request.status == '200') {
 
-                this._response = this._request.responseText;
+                this._handler(this._request.responseText);
                 delete this._request;
             }
         }

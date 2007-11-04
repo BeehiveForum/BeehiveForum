@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.491 2007-11-03 20:13:27 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.492 2007-11-04 16:56:09 decoyduck Exp $ */
 
 // British English language file
 
@@ -1975,6 +1975,6 @@ $lang['currentinterest'] = "Current Interest";
 // Browseable user profiles
 
 $lang['youcanonlyaddthreecolumns'] = "You can only add 3 columns. To add a new column close an existing one";
-$lang['columnalreadyadded'] = "You have already added this column. If you want to remove it click it's close button";
+$lang['columnalreadyadded'] = "You have already added this column. If you want to remove it click its close button";
 
 ?>

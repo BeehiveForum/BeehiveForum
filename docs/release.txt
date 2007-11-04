@@ -1,6 +1,6 @@
 Beehive Forum Release Notes
 
-What's new in 0.8 (Released 3rd November 2007)
+What's new in 0.8 (Released 4th November 2007)
 =================
 
 - Important Notes

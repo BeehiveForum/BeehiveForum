@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.php,v 1.117 2007-10-27 21:14:36 decoyduck Exp $ */
+/* $Id: visitor_log.php,v 1.118 2007-11-04 15:09:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -116,54 +116,52 @@ $error_msg_array = array();
 
 visitor_log_get_profile_items($profile_header_array, $profile_dropdown_array);
 
+// Empty array for columns
+
 $profile_items_selected_array = array();
+
+// Check for any custom columns
 
 if (isset($_POST['profile_selection'])) {
 
-    if (!user_is_guest()) {
+    if (strlen(trim(_stripslashes($_POST['profile_selection']))) > 0) {
 
-        if (strlen(trim(_stripslashes($_POST['profile_selection']))) > 0) {
+        $profile_selection = explode(",", $_POST['profile_selection']);
 
-            $profile_selection = explode(",", $_POST['profile_selection']);
-
-            foreach($profile_selection as $profile_item_key) {
-
-                if (isset($profile_header_array[$profile_item_key])) {
-
-                    $profile_items_selected_array[$profile_item_key] = $profile_header_array[$profile_item_key];
-                }
-            }
+        if (user_is_guest()) {
+            $profile_selection = preg_grep('/^DOB$|^AGE$|^LAST_VISIT$/', $profile_selection);
         }
 
-    }else {
+        foreach($profile_selection as $profile_item_key) {
 
-        $profile_items_selected_array = array('LAST_VISIT' => $profile_header_array['LAST_VISIT']);
+            if (isset($profile_header_array[$profile_item_key])) {
+
+                $profile_items_selected_array[$profile_item_key] = $profile_header_array[$profile_item_key];
+            }
+        }
     }
 
 }else if (isset($_GET['profile_selection'])) {
 
-    if (!user_is_guest()) {
+    if (strlen(trim(_stripslashes($_GET['profile_selection']))) > 0) {
 
-        if (strlen(trim(_stripslashes($_GET['profile_selection']))) > 0) {
+        $profile_selection = explode(",", $_GET['profile_selection']);
 
-            $profile_selection = explode(",", $_GET['profile_selection']);
-
-            foreach($profile_selection as $profile_item_key) {
-
-                if (isset($profile_header_array[$profile_item_key])) {
-
-                    $profile_items_selected_array[$profile_item_key] = $profile_header_array[$profile_item_key];
-                }
-            }
+        if (user_is_guest()) {
+            $profile_selection = preg_grep('/^DOB$|^AGE$|^LAST_VISIT$/', $profile_selection);
         }
 
-    }else {
+        foreach($profile_selection as $profile_item_key) {
 
-        $profile_items_selected_array = array('LAST_VISIT' => $profile_header_array['LAST_VISIT']);
+            if (isset($profile_header_array[$profile_item_key])) {
+
+                $profile_items_selected_array[$profile_item_key] = $profile_header_array[$profile_item_key];
+            }
+        }
     }
+}
 
-}else {
-
+if (sizeof($profile_items_selected_array) < 1) {
     $profile_items_selected_array = array('LAST_VISIT' => $profile_header_array['LAST_VISIT']);
 }
 

@@ -666,7 +666,8 @@ least bundled here amongst the other credits.
 
 Current complete translations are as follows:
 
-English (UK)
+English British
+French Canadian
 German
 X-Hacker
 
@@ -675,7 +676,6 @@ X-Hacker
 
 Current incomplete translations also available include:
 
-French Canadian
 English (US)
 
 These translations can be obtained from the Beehive Forum Project CVS Repository.

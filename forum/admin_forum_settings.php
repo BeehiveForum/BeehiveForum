@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.128 2007-11-03 20:13:27 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.129 2007-11-06 21:05:24 decoyduck Exp $ */
 
 /**
 * Displays and handles the Forum Settings page
@@ -417,15 +417,15 @@ echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['defaultstyle']}:</td>\n";
-echo "                        <td align=\"left\">", form_dropdown_array("default_style", $available_styles, (isset($forum_settings['default_style']) && in_array($forum_settings['default_style'], array_keys($available_styles)) ? $forum_settings['default_style'] : 'default')), "</td>\n";
+echo "                        <td align=\"left\">", form_dropdown_array("default_style", _htmlentities($available_styles), (isset($forum_settings['default_style']) && in_array($forum_settings['default_style'], array_keys($available_styles)) ? $forum_settings['default_style'] : 'default')), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['defaultemoticons']} [<a href=\"display_emoticons.php?webtag=$webtag\" target=\"_blank\" onclick=\"return openEmoticons('','$webtag')\">{$lang['preview']}</a>]:</td>\n";
-echo "                        <td align=\"left\">", form_dropdown_array("default_emoticons", $available_emoticons, (isset($forum_settings['default_emoticons']) && in_array($forum_settings['default_emoticons'], array_keys($available_emoticons)) ? $forum_settings['default_emoticons'] : 'none')), "</td>\n";
+echo "                        <td align=\"left\">", form_dropdown_array("default_emoticons", _htmlentities($available_emoticons), (isset($forum_settings['default_emoticons']) && in_array($forum_settings['default_emoticons'], array_keys($available_emoticons)) ? $forum_settings['default_emoticons'] : 'none')), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['defaultlanguage']}:</td>\n";
-echo "                        <td align=\"left\">", form_dropdown_array("default_language", $available_langs, (isset($forum_settings['default_language']) && in_array($forum_settings['default_language'], $available_langs) ? $forum_settings['default_language'] : 'en')), "</td>\n";
+echo "                        <td align=\"left\">", form_dropdown_array("default_language", _htmlentities($available_langs), (isset($forum_settings['default_language']) && in_array($forum_settings['default_language'], $available_langs) ? $forum_settings['default_language'] : 'en')), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
@@ -458,7 +458,7 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['timezonefromGMT']}:</td>\n";
-echo "                        <td align=\"left\">", form_dropdown_array("forum_timezone", $available_timezones, (isset($forum_settings['forum_timezone']) && is_numeric($forum_settings['forum_timezone']) ? $forum_settings['forum_timezone'] : 27)), "</td>\n";
+echo "                        <td align=\"left\">", form_dropdown_array("forum_timezone", _htmlentities($available_timezones), (isset($forum_settings['forum_timezone']) && is_numeric($forum_settings['forum_timezone']) ? $forum_settings['forum_timezone'] : 27), false, 'timezone_dropdown'), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -726,7 +726,7 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_30']}</p>\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_31']}</p>\n";
-echo "                          <p class=\"smalltext\">", sprintf($lang['forum_settings_help_32'], '[WikiWord]', '[WikiWord]', "<a href=\"http://en.wikipedia.org/wiki/\" target=\"_blank\">Wikipedia.org</a>"), "</p>\n";
+echo "                          <p class=\"smalltext\">", sprintf($lang['forum_settings_help_32'], '[WikiWord]', "<a href=\"http://en.wikipedia.org/wiki/\" target=\"_blank\">Wikipedia.org</a>"), "</p>\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";

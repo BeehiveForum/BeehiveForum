@@ -1,9 +1,21 @@
-Beehive Forum Change Log
-
-Changes from 0.7.1
-==================
-
 Author: decoyduck
+Date: Sun, 04 Nov 2007 23:06:55
+-----------------------
+Changed: Removed caching of thread list and message pane as they cause
+problems with our javascript implementation.
+
+Date: Sun, 04 Nov 2007 15:09:17
+-----------------------
+Fixed: Guests Couldn't browse to birthday list.
+Fixed: Double encoded & (&amp;) in Timezone drop down.
+Changed: Release delayed until receive notification from Synmantec.
+
+Date: Sun, 04 Nov 2007 01:42:35
+-----------------------
+Changed: Updated release.txt
+Changed: New and better bh_cvs_log_parse.php that can create a
+changelog.txt via a MySQL database.
+
 Date: Sat, 03 Nov 2007 20:13:27
 -----------------------
 Fixed: [WikiWord] and [ProfileEntry] placeholders were being translated in

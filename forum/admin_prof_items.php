@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_items.php,v 1.118 2007-11-03 20:13:27 decoyduck Exp $ */
+/* $Id: admin_prof_items.php,v 1.119 2007-11-06 21:05:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -483,7 +483,7 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
 
     html_display_warning_msg($lang['fieldtypeexample1'], '500', 'center');
 
-    html_display_warning_msg($lang['fieldtypeexample2'], '500', 'center');
+    html_display_warning_msg(sprintf($lang['fieldtypeexample2'], '[ProfileEntry]'), '500', 'center');
 
     echo "</form>\n";
     echo "</div>\n";
@@ -586,7 +586,7 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
 
     html_display_warning_msg($lang['fieldtypeexample1'], '500', 'center');
 
-    html_display_warning_msg($lang['fieldtypeexample2'], '500', 'center');
+    html_display_warning_msg(sprintf($lang['fieldtypeexample2'], '[ProfileEntry]'), '500', 'center');
 
     echo "</form>\n";
     echo "</div>\n";

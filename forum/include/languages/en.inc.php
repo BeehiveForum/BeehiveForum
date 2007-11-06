@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.492 2007-11-04 16:56:09 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.493 2007-11-06 21:05:46 decoyduck Exp $ */
 
 // British English language file
 
@@ -426,7 +426,7 @@ $lang['clickablehyperlink'] = "Clickable Hyperlink";
 $lang['threadcount'] = "Thread Count";
 $lang['clicktoeditfolder'] = "Click To Edit Folder";
 $lang['fieldtypeexample1'] = "To create Radio Buttons or a Drop Down List you need to enter each individual value on a separate line in the Options field.";
-$lang['fieldtypeexample2'] = "To create clickable links enter the URL in the Options field and use <i>[ProfileEntry]</i> where the entry from the user's profile should appear. Examples: <p>MySpace: <i>http://www.myspace.com/[ProfileEntry]</i><br />Xbox LIVE: <i>http://profile.mygamercard.net/[ProfileEntry]</i>";
+$lang['fieldtypeexample2'] = "To create clickable links enter the URL in the Options field and use <i>%1\$s</i> where the entry from the user's profile should appear. Examples: <p>MySpace: <i>http://www.myspace.com/%1\$s</i><br />Xbox LIVE: <i>http://profile.mygamercard.net/%1\$s</i>";
 $lang['editedwordfilter'] = "Edited Word Filter";
 $lang['editedforumsettings'] = "Edited Forum Settings";
 $lang['successfullyendedusersessionsforselectedusers'] = "Successfully ended sessions for selected users";

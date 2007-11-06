@@ -21,9 +21,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.83 2007-11-06 21:05:46 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.84 2007-11-06 22:25:32 decoyduck Exp $ */
 
-// British English language file
+// French Canadian language file
 
 // Language character set and text direction options -------------------
 
@@ -327,11 +327,11 @@ $lang['invalidprofileitemid'] = "Identification d'item de profile invalide ou it
 $lang['addnewitem'] = "Ajouter un nouveau item";
 $lang['youmustenteraprofileitemname'] = "Vous devez entrer un nom d'item de profile";
 $lang['invalidprofileitemtype'] = "Type d'item de profile sélectionné invalide";
-$lang['youmustenteroptionsforselectedprofileitemtype'] = "You must enter some options for selected profile item type";
-$lang['youmustentermorethanoneoptionforitem'] = "You must enter more than one option for selected profile item type";
-$lang['profileitemhyperlinkssupportshttpurlsonly'] = "Profile item hyperlinks support HTTP URLs only";
-$lang['profileitemhyperlinkformatinvalid'] = "Profile item hyperlink format invalid";
-$lang['youmustincludeprofileentryinhyperlinks'] = "You must include <i>%s</i> in the URL of clickable hyperlinks";
+$lang['youmustenteroptionsforselectedprofileitemtype'] = "Vous devez entrer quelques options pour les types d'items de profile sélectionnés";
+$lang['youmustentermorethanoneoptionforitem'] = "Vous devez entrer plus qu'une option pour le type d'item de profile sélectionné";
+$lang['profileitemhyperlinkssupportshttpurlsonly'] = "Les hyperliens d'item de profile supportent seulement des adresses URL HTTP";
+$lang['profileitemhyperlinkformatinvalid'] = "Format d'hyperlien d'item de profile non valide";
+$lang['youmustincludeprofileentryinhyperlinks'] = "Vous devez inclure <i>[DonnéeProfile]</i> dans l'adresse URL des hyperliens cliquables";
 $lang['failedtocreatenewprofileitem'] = "La création d'un nouvel item de profile a échouée";
 $lang['failedtoupdateprofileitem'] = "La mise à jour de l'item de profile a échouée";
 $lang['startpageupdated'] = "Page de démarrage mise à jour. %s";
@@ -421,12 +421,12 @@ $lang['mediumtextfield'] = "Champ de texte moyen";
 $lang['smalltextfield'] = "Petit champ de texte";
 $lang['multilinetextfield'] = "Champ de texte multiligne";
 $lang['radiobuttons'] = "Cases d'option";
-$lang['dropdownlist'] = "Drop Down List";
-$lang['clickablehyperlink'] = "Clickable Hyperlink";
+$lang['dropdownlist'] = "Liste déroulante verticalement";
+$lang['clickablehyperlink'] = "Hyperlien cliquable";
 $lang['threadcount'] = "Dénombrement des fils de discussion";
 $lang['clicktoeditfolder'] = "Cliquez pour modifier le fichier";
-$lang['fieldtypeexample1'] = "To create Radio Buttons or a Drop Down List you need to enter each individual value on a separate line in the Options field.";
-$lang['fieldtypeexample2'] = "To create clickable links enter the URL in the Options field and use <i>%1\$s</i> where the entry from the user's profile should appear. Examples: <p>MySpace: <i>http://www.myspace.com/%1\$s</i><br />Xbox LIVE: <i>http://profile.mygamercard.net/%1\$s</i>";
+$lang['fieldtypeexample1'] = "Pour créer des boutons radio ou une liste déroulante verticalement vous devez entrer chaque valeur individuelle sur une ligne séparée dans le champ pour Options.";
+$lang['fieldtypeexample2'] = "Pour créer des liens cliquables, ajoutez le hyperlien dans le champ pour Options et utilisez <i>[DonnéeProfile] où les données du profile de l'utilisateur devraient paraître. Exemples: <p>MySpace: <i>http://www.myspace.com/[DonnéeProfile]</i><br />Xbox LIVE: <i>http://profile.mygamercard.net/[DonnéeProfile]</i>";
 $lang['editedwordfilter'] = "Filtre de mots modifié";
 $lang['editedforumsettings'] = "Options de forum modifiés";
 $lang['successfullyendedusersessionsforselectedusers'] = "Terminaison de session réussie pour l'utilisateur";
@@ -1420,7 +1420,7 @@ $lang['forumstyles'] = "Styles du forum";
 $lang['youmustenteryourcurrentpasswd'] = "Vous devez entrer votre mot de passe actuel";
 $lang['youmustenteranewpasswd'] = "Vous devez entrer un nouveau mot de passe";
 $lang['youmustconfirmyournewpasswd'] = "Vous devez confirmer votre nouveau mot de passe";
-$lang['profileentriesmustnotincludehtml'] = "Profile Entries must not include HTML";
+$lang['profileentriesmustnotincludehtml'] = "Les données de profile ne doivent pas inclure du langage HTML";
 $lang['failedtoupdateuserprofile'] = "La mise à jour de votre profile d'utilisateur a échoué";
 
 // Polls (create_poll.php, poll_results.php) ---------------------------------------------
@@ -1805,7 +1805,7 @@ $lang['wehavenumregisteredmembersandthenewestmemberismembername'] = "Nous avons 
 $lang['wehavenumregisteredmember'] = "Nous avons %s membres enregistrés.";
 $lang['wehaveoneregisteredmember'] = "Nous avons un membre enregistré.";
 $lang['mostuserseveronlinewasnumondate'] = "Le plus grand nombre d'utilisateurs en ligne à la fois était <b>%s</b> le %s.";
-$lang['statsdisplaychanged'] = "Stats Display Changed";
+$lang['statsdisplaychanged'] = "Stats affichage changé";
 
 // Thread Options (thread_options.php) ---------------------------------
 

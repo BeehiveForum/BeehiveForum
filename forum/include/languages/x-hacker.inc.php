@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.260 2007-11-03 20:13:27 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.261 2007-11-06 21:05:46 decoyduck Exp $ */
 
 // British English language file
 
@@ -426,7 +426,7 @@ $lang['clickablehyperlink'] = "cl1ckA8lE hyPerL1NK";
 $lang['threadcount'] = "tHre4D C0UNt";
 $lang['clicktoeditfolder'] = "cL1Ck t0 edi+ F0LD3r";
 $lang['fieldtypeexample1'] = "t0 Cr34TE R4di0 8U+t0n\$ 0r a dR0P DOwn lIs+ j00 n33D to eNtER EACH 1nd1V1du4L V@lUE 0N A \$Ep@r@+3 L1NE iN th3 0p+10ns Ph1ELD.";
-$lang['fieldtypeexample2'] = "t0 Cr3ATe CL1CKA8l3 L1nKs 3nter TH3 UrL 1n +h3 0PT10ns fi3LD 4nD U\$3 <i>[propHiL3En+rY]</i> Wh3R3 TH3 en+rY from +3h usER's pr0PH1l3 sH0UlD 4PpE4r. 3x4mples: <p>mY\$p@CE: <i>h+Tp://www.mY\$p4CE.C0m/[pR0fIl3EN+Ry]</i><br />x8ox l1v3: <i>htTP://pR0phil3.my9@mErc4RD.net/[proF1l3ENTry]</i>";
+$lang['fieldtypeexample2'] = "t0 Cr3ATe CL1CKA8l3 L1nKs 3nter TH3 UrL 1n +h3 0PT10ns fi3LD 4nD U\$3 <i>%1\$s</i> Wh3R3 TH3 en+rY from +3h usER's pr0PH1l3 sH0UlD 4PpE4r. 3x4mples: <p>MySpace: <i>http://www.myspace.com/%1\$s</i><br />Xbox Live: <i>http://profile.mygamercard.net/%1\$s</i>";
 $lang['editedwordfilter'] = "eDi+3D woRD Ph1ltEr";
 $lang['editedforumsettings'] = "eDi+3D pH0RUM sET+1NGs";
 $lang['successfullyendedusersessionsforselectedusers'] = "succE5\$PHuLLy 3NDEd \$3ssi0Ns phOr s3lEC+3D Us3Rs";
@@ -850,7 +850,7 @@ $lang['forum_settings_help_28'] = "tH1s sE++1NG AlLow\$ y0Ur pH0RUm +0 b3 sp1D3r
 $lang['forum_settings_help_29'] = "<b>alL0W new U53r rE9i\$tr4T10n\$</b> 4ll0W\$ 0r DI\$@LL0w5 T3h CR3at1On oPh n3w u\$er 4cc0uN+S. s3tt1nG +h3 0P+1on to n0 COmPLETEly DIs@bles tH3 R391\$+r@T10n F0Rm.";
 $lang['forum_settings_help_30'] = "<b>enA8L3 w1KIw1kI 1nt3gR@+ioN</b> pR0v1D3s wIkiwOrD \$uPP0rt 1N Y0ur Ph0rUm PosTs. 4 WIKIwOrD 1S M4dE Up 0f tw0 oR M0RE COnC@+3n4TED W0rds Wi+H UPP3Rc4sE L3+tERs (0f+3n rEPhERr3d +O @5 C4m3LC4\$E). If j00 wRi+3 4 wOrD thi\$ w@y 1+ wILl 4U+0m4+ic4Lly BE CH4n9ED inT0 4 hyPERlInk p01n+1Ng +0 Y0ur chO53N w1Kiwik1.";
 $lang['forum_settings_help_31'] = "<b>en@8le wiKIwIkI QuiCK LiNk\$</b> EN48LE\$ +3h u\$3 0F mSG:1.1 4nD u\$eR:l090n stylE 3XTEND3D WiKil1nk\$ whiCH CR34+3 Hyp3RL1nkS To tHe \$p3CIPHi3d m3S\$49E / USER pR0PHILE 0f +HE \$P3c1fI3D usEr.";
-$lang['forum_settings_help_32'] = "<b>w1k1w1Ki LoC4t10n</b> 1\$ uSED +0 sPEcipHy +EH URi 0f y0ur wIKiW1KI. wHen ENtERiN9 +h3 uR1 UsE [wiKIW0RD] +o 1nD1c4+3 WhERE 1n THE Ur1 +3H w1K1w0RD \$HoULD 4pp3@r, 1.3.: <i>hTTp://En.wiK1p3D1A.0RG/WikI/%s</i> W0ulD L1Nk YoUr wik1WORD\$ +0 %s";
+$lang['forum_settings_help_32'] = "<b>w1k1w1Ki LoC4t10n</b> 1\$ uSED +0 sPEcipHy +EH URi 0f y0ur wIKiW1KI. wHen ENtERiN9 +h3 uR1 UsE %1\$s +o 1nD1c4+3 WhERE 1n THE Ur1 +3H w1K1w0RD \$HoULD 4pp3@r, 1.3.: <i>hTTp://En.wiK1p3D1A.0RG/WikI/%1\$s</i> W0ulD L1Nk YoUr wik1WORD\$ +0 %s";
 $lang['forum_settings_help_33'] = "<b>fOruM 4cc3sS \$T4+Us</b> cONTr0ls h0W uS3Rs m@Y 4cCeS\$ yOUR foRUm.";
 $lang['forum_settings_help_34'] = "<b>oP3n</b> w1ll 4Ll0W ALl us3r5 4ND 9uE\$+S 4cc3\$s +o y0ur pHorUM withou+ rES+RiCt10n.";
 $lang['forum_settings_help_35'] = "<b>cLO53D</b> Pr3V3nts @Cc3ss F0r @LL U\$3rs, wi+h +H3 3XCEP+I0N 0ph tH3 4dm1N WhO mAy 5+ill 4cc3ss +h3 4DM1N pANEL.";

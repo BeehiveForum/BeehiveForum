@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.187 2007-10-18 20:51:00 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.188 2007-11-07 20:23:50 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -282,9 +282,78 @@ if (isset($_POST['emots_toggle_x']) || isset($_POST['emots_toggle_y'])) {
     $fix_html = false;
 }
 
-// User clicked the submit button - check the data that was submitted
+// Some Options.
+
+if (isset($_POST['t_post_emots'])) {
+
+    if ($_POST['t_post_emots'] == "disabled") {
+        $emots_enabled = false;
+    }else {
+        $emots_enabled = true;
+    }
+
+}else {
+
+    $emots_enabled = true;
+}
+
+if (isset($_POST['t_post_links'])) {
+
+   if ($_POST['t_post_links'] == "enabled") {
+        $links_enabled = true;
+   } else {
+        $links_enabled = false;
+   }
+
+}else {
+
+   $links_enabled = false;
+}
+
+if (isset($_POST['t_check_spelling'])) {
+
+    if ($_POST['t_check_spelling'] == "enabled") {
+        $spelling_enabled = true;
+    } else {
+        $spelling_enabled = false;
+    }
+
+}else {
+
+    $spelling_enabled = ($page_prefs & POST_CHECK_SPELLING);
+}
+
+if (isset($_POST['t_post_html'])) {
+
+    $t_post_html = $_POST['t_post_html'];
+
+    if ($t_post_html == "enabled_auto") {
+        $post_html = POST_HTML_AUTO;
+    }else if ($t_post_html == "enabled") {
+        $post_html = POST_HTML_ENABLED;
+    }else {
+        $post_html = POST_HTML_DISABLED;
+    }
+
+}else if (!isset($post_html)) {
+
+    if (($page_prefs & POST_AUTOHTML_DEFAULT) > 0) {
+        $post_html = POST_HTML_AUTO;
+    }else if (($page_prefs & POST_HTML_DEFAULT) > 0) {
+        $post_html = POST_HTML_ENABLED;
+    }else {
+        $post_html = POST_HTML_DISABLED;
+    }
+
+    $emots_enabled = !($page_prefs & POST_EMOTICONS_DISABLED);
+    $links_enabled = ($page_prefs & POST_AUTO_LINKS);
+}
+
+// Submit handling code
 
 if (isset($_POST['submit']) || isset($_POST['preview'])) {
+
+    // User clicked the send or preview button - check the data that was submitted
 
     if (isset($_POST['t_subject']) && strlen(trim(_stripslashes($_POST['t_subject']))) > 0) {
 
@@ -299,6 +368,10 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
     if (isset($_POST['t_content']) && strlen(trim(_stripslashes($_POST['t_content']))) > 0) {
 
         $t_content = trim(_stripslashes($_POST['t_content']));
+
+        $post = new MessageText($post_html, $t_content, $emots_enabled, $links_enabled);
+
+        $t_content = $post->getContent();
 
     }else {
 
@@ -395,11 +468,10 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
         $error_msg_array[] = $lang['mustspecifyrecipient'];
         $valid = false;
     }
-}
 
-// User click the save button - Check the data that was submitted.
+}else if (isset($_POST['save'])) {
 
-if (isset($_POST['save'])) {
+    // User click the save button - Check the data that was submitted.
 
     if (isset($_POST['t_subject']) && strlen(trim(_stripslashes($_POST['t_subject']))) > 0) {
 
@@ -414,6 +486,10 @@ if (isset($_POST['save'])) {
     if (isset($_POST['t_content']) && strlen(trim(_stripslashes($_POST['t_content']))) > 0) {
 
         $t_content = trim(_stripslashes($_POST['t_content']));
+
+        $post = new MessageText($post_html, $t_content, $emots_enabled, $links_enabled);
+
+        $t_content = $post->getContent();
 
     }else {
 
@@ -455,84 +531,8 @@ if (isset($_POST['save'])) {
 
         $t_recipient_list = "";
     }
-}
 
-if (isset($_POST['t_post_emots'])) {
-
-    if ($_POST['t_post_emots'] == "disabled") {
-        $emots_enabled = false;
-    }else {
-        $emots_enabled = true;
-    }
-
-}else {
-
-    $emots_enabled = true;
-}
-
-if (isset($_POST['t_post_links'])) {
-
-   if ($_POST['t_post_links'] == "enabled") {
-        $links_enabled = true;
-   } else {
-        $links_enabled = false;
-   }
-
-}else {
-
-   $links_enabled = false;
-}
-
-if (isset($_POST['t_check_spelling'])) {
-
-    if ($_POST['t_check_spelling'] == "enabled") {
-        $spelling_enabled = true;
-    } else {
-        $spelling_enabled = false;
-    }
-
-}else {
-
-    $spelling_enabled = ($page_prefs & POST_CHECK_SPELLING);
-}
-
-if (isset($_POST['t_post_html'])) {
-
-    $t_post_html = $_POST['t_post_html'];
-
-    if ($t_post_html == "enabled_auto") {
-        $post_html = POST_HTML_AUTO;
-    }else if ($t_post_html == "enabled") {
-        $post_html = POST_HTML_ENABLED;
-    }else {
-        $post_html = POST_HTML_DISABLED;
-    }
-
-}else if (!isset($post_html)) {
-
-    if (($page_prefs & POST_AUTOHTML_DEFAULT) > 0) {
-        $post_html = POST_HTML_AUTO;
-    }else if (($page_prefs & POST_HTML_DEFAULT) > 0) {
-        $post_html = POST_HTML_ENABLED;
-    }else {
-        $post_html = POST_HTML_DISABLED;
-    }
-
-    $emots_enabled = !($page_prefs & POST_EMOTICONS_DISABLED);
-    $links_enabled = ($page_prefs & POST_AUTO_LINKS);
-}
-
-if (!isset($t_content)) $t_content = "";
-
-// Process the data based on what we know.
-
-$post = new MessageText($post_html, $t_content, $emots_enabled, $links_enabled);
-
-$t_content = $post->getContent();
-
-// Check the MID to see if it is valid and accessible.
-
-if (isset($t_rmid) && $t_rmid > 0) {
+}else if (isset($t_rmid) && $t_rmid > 0) {
 
     if (!$forward_msg && !$edit_msg) {
 
@@ -546,22 +546,19 @@ if (isset($t_rmid) && $t_rmid > 0) {
 
         $pm_data['CONTENT'] = pm_get_content($t_rmid);
 
-        if (!isset($_POST['t_subject']) || trim($_POST['t_subject']) == "") {
+        if ($forward_msg) {
 
-            if ($forward_msg) {
+            $t_subject = preg_replace('/^FWD:/i', '', $pm_data['SUBJECT']);
+            $t_subject = "FWD:$t_subject";
 
-                $t_subject = preg_replace('/^FWD:/i', '', $pm_data['SUBJECT']);
-                $t_subject = "FWD:$t_subject";
+        }elseif (!$edit_msg) {
 
-            }elseif (!$edit_msg) {
+            $t_subject = preg_replace('/^RE:/i', '', $pm_data['SUBJECT']);
+            $t_subject = "RE:$t_subject";
 
-                $t_subject = preg_replace('/^RE:/i', '', $pm_data['SUBJECT']);
-                $t_subject = "RE:$t_subject";
+        }else {
 
-            }else {
-
-                $t_subject = $pm_data['SUBJECT'];
-            }
+            $t_subject = $pm_data['SUBJECT'];
         }
 
         if ($edit_msg) {
@@ -596,9 +593,7 @@ if (isset($t_rmid) && $t_rmid > 0) {
 
         }else {
 
-            $page_prefs = bh_session_get_post_page_prefs();
-
-            if ($forward_msg) {
+            if ($forward_msg || bh_session_get_value('PM_INCLUDE_REPLY') == 'Y') {
 
                 if ($page_prefs & POST_TINYMCE_DISPLAY) {
 
@@ -606,7 +601,7 @@ if (isset($t_rmid) && $t_rmid > 0) {
                     $t_content.= "<b>quote: </b>";
                     $t_content.= format_user_name($pm_data['FLOGON'], $pm_data['FNICK']);
                     $t_content.= "</div><div class=\"quote\">";
-                    $t_content.= trim($pm_data['CONTENT']);
+                    $t_content.= trim(strip_tags(strip_paragraphs($pm_data['CONTENT'])));
                     $t_content.= "</div><p>&nbsp;</p>";
 
                 }else {
@@ -614,37 +609,7 @@ if (isset($t_rmid) && $t_rmid > 0) {
                     $t_content = "<quote source=\"";
                     $t_content.= format_user_name($pm_data['FLOGON'], $pm_data['FNICK']);
                     $t_content.= "\" url=\"\">";
-                    $t_content.= trim($pm_data['CONTENT']);
-                    $t_content.= "</quote>\n\n";
-                }
-
-                // Set the HTML mode to 'with automatic line breaks' so
-                // the quote is handled correctly when the user previews
-                // the message.
-
-                $post = new MessageText(POST_HTML_AUTO, $t_content, $emots_enabled, $links_enabled);
-
-                $t_content = $post->getContent();
-
-                $post_html = POST_HTML_AUTO;
-
-            }elseif (bh_session_get_value('PM_INCLUDE_REPLY') == 'Y') {
-
-                if ($page_prefs & POST_TINYMCE_DISPLAY) {
-
-                    $t_content = "<div class=\"quotetext\" id=\"quote\">";
-                    $t_content.= "<b>quote: </b>";
-                    $t_content.= format_user_name($pm_data['FLOGON'], $pm_data['FNICK']);
-                    $t_content.= "</div><div class=\"quote\">";
-                    $t_content.= trim($pm_data['CONTENT']);
-                    $t_content.= "</div><p>&nbsp;</p>";
-
-                }else {
-
-                    $t_content = "<quote source=\"";
-                    $t_content.= format_user_name($pm_data['FLOGON'], $pm_data['FNICK']);
-                    $t_content.= "\" url=\"\">";
-                    $t_content.= trim($pm_data['CONTENT']);
+                    $t_content.= trim(strip_tags(strip_paragraphs($pm_data['CONTENT'])));
                     $t_content.= "</quote>\n\n";
                 }
 
@@ -668,6 +633,8 @@ if (isset($t_rmid) && $t_rmid > 0) {
         exit;
     }
 }
+
+if (!isset($t_content)) $t_content = "";
 
 if (strlen($t_content) >= 65535) {
 

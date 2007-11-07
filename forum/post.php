@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.325 2007-10-27 20:50:19 decoyduck Exp $ */
+/* $Id: post.php,v 1.326 2007-11-07 20:23:50 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -528,9 +528,21 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
                 $message_content = message_get_content($reply_to_tid, $quote_pid);
                 $message_content = message_split_fiddle($message_content, false, true);
 
-                $t_quoted_post = "<quote source=\"$message_author\" ";
-                $t_quoted_post.= "url=\"messages.php?webtag=$webtag&amp;msg=$reply_to_tid.$quote_pid\">";
-                $t_quoted_post.= trim(strip_tags(strip_paragraphs($message_content))). "</quote>\n\n";
+                if ($page_prefs & POST_TINYMCE_DISPLAY) {
+
+                    $t_quoted_post = "<div class=\"quotetext\" id=\"quote\">";
+                    $t_quoted_post.= "<b>quote: </b>";
+                    $t_quoted_post.= format_user_name($pm_data['FLOGON'], $pm_data['FNICK']);
+                    $t_quoted_post.= "</div><div class=\"quote\">";
+                    $t_quoted_post.= trim(strip_tags(strip_paragraphs($pm_data['CONTENT'])));
+                    $t_quoted_post.= "</div><p>&nbsp;</p>";
+
+                }else {
+
+                    $t_quoted_post = "<quote source=\"$message_author\" ";
+                    $t_quoted_post.= "url=\"messages.php?webtag=$webtag&amp;msg=$reply_to_tid.$quote_pid\">";
+                    $t_quoted_post.= trim(strip_tags(strip_paragraphs($message_content))). "</quote>\n\n";
+                }
 
                 $t_content_array[] = $t_quoted_post;
             }

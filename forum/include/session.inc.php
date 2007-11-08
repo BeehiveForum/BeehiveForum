@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.329 2007-10-11 13:01:20 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.330 2007-11-08 22:22:16 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -82,7 +82,7 @@ function bh_session_check($show_session_fail = true, $use_sess_hash = false)
 
     // Fetch the user's IP Address
 
-    if (!$ipaddress = get_ip_address()) $ipaddress = "";
+    if (!$ipaddress = get_ip_address()) return false;
 
     // Get the forum settings data.
 
@@ -309,7 +309,7 @@ function bh_guest_session_init($use_sess_hash = false, $update_visitor_log = tru
 {
     if (!$db_bh_guest_session_init = db_connect()) return false;
 
-    if (!$ipaddress = get_ip_address()) $ipaddress = "";
+    if (!$ipaddress = get_ip_address()) return false;
 
     $forum_settings = forum_get_settings();
 
@@ -559,7 +559,7 @@ function bh_update_visitor_log($uid, $forum_fid = false, $force_update = false)
     if (!is_numeric($forum_fid)) $forum_fid = $table_data['FID'];
     if (!is_bool($force_update)) $force_update = false;
 
-    if (!$ipaddress = get_ip_address()) $ipaddress = "";
+    if (!$ipaddress = get_ip_address()) return false;
 
     if (!$db_bh_update_visitor_log = db_connect()) return false;
 
@@ -826,7 +826,7 @@ function bh_session_init($uid, $update_visitor_log = true, $skip_cookie = false)
 
     if (!is_numeric($uid)) return false;
 
-    if (!$ipaddress = get_ip_address()) $ipaddress = "";
+    if (!$ipaddress = get_ip_address()) return false;
 
     if ($table_data = get_table_prefix()) {
         $forum_fid = $table_data['FID'];
@@ -920,7 +920,7 @@ function bh_session_end($remove_cookies = true)
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    if (!$ipaddress = get_ip_address()) $ipaddress = "";
+    if (!$ipaddress = get_ip_address()) return false;
 
     // Session cookie
 

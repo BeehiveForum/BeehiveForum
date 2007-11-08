@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.172 2007-10-31 13:30:55 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.173 2007-11-08 22:22:16 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -56,7 +56,7 @@ function post_create($fid, $tid, $reply_pid, $by_uid, $fuid, $tuid, $content, $h
     // set to true. Useful for automated functionality like the RSS Feeder.
 
     if ($hide_ipaddress === false) {
-        if (!$ipaddress = get_ip_address()) $ipaddress = "";
+        if (!$ipaddress = get_ip_address()) return false;
     }else {
         $ipaddress = "";
     }

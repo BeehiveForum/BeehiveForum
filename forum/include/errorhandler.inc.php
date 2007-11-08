@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.99 2007-10-31 14:15:01 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.100 2007-11-08 17:13:18 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -53,6 +53,23 @@ if (!defined("E_STRICT")) {
 // not work.
 
 error_reporting(E_ALL);
+
+// Debug Backtrace function argument array processor
+
+function bh_error_handler_process_args($func_args_array)
+{
+    $arguments_array = array();
+
+    foreach ($func_args_array as $func_arg) {
+        if (is_array($func_arg) && sizeof($func_arg) > 0) {
+            $arguments_string.= sprintf("Array(%s)", bh_error_handler_process_args($func_arg));
+        }else {
+            $arguments_array[] = is_array($func_arg) ? 'Array(void)' : "'$func_arg'";
+        }
+    }
+
+    return implode(", ", $arguments_array);
+}
 
 // Beehive Error Handler Function
 
@@ -133,6 +150,36 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
 
                 $error_msg_array[] = "<b>Unknown error</b> [$errno] $errstr";
                 break;
+        }
+
+        if ($debug_backtrace_array = debug_backtrace()) {
+
+            $debug_backtrace_array = array_reverse($debug_backtrace_array);
+
+            $error_msg_array[] = "<b>Backtrace Result</b>";
+
+            foreach ($debug_backtrace_array as $debug_backtrace) {
+
+                if (!isset($debug_backtrace['function'])) $debug_backtrace['function'] = 'PHP_CORE_FUNCTION';
+
+                if (!in_array($debug_backtrace['function'], array('bh_error_handler', 'trigger_error'))) {
+
+                    if (sizeof($debug_backtrace['args']) > 0) {
+
+                        $debug_backtrace_file_line = sprintf("%s:%s", basename($debug_backtrace['file']), $debug_backtrace['line']);
+                        $debug_backtrace_func_args = sprintf("%s(<i>%s</i>)", $debug_backtrace['function'], bh_error_handler_process_args($debug_backtrace['args']));
+
+                        $error_msg_array[] = sprintf("%s:%s", $debug_backtrace_file_line, $debug_backtrace_func_args);
+
+                    }else {
+
+                        $debug_backtrace_file_line = sprintf("%s:%s", basename($debug_backtrace['file']), $debug_backtrace['line']);
+                        $debug_backtrace_func_args = sprintf("%s(<i>void</i>)", $debug_backtrace['function']);
+
+                        $error_msg_array[] = sprintf("%s:%s", $debug_backtrace_file_line, $debug_backtrace_func_args);
+                    }
+                }
+            }
         }
 
         // Add the file and line number to the error message array

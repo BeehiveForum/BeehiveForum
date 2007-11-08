@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_check_php_version.php,v 1.1 2007-10-08 13:48:58 decoyduck Exp $ */
+/* $Id: bh_check_php_version.php,v 1.2 2007-11-08 17:13:18 decoyduck Exp $ */
 
 // Requires PHP PEAR to be installed and PHP_CompatInfo Class.
 // See: http://www.laurent-laville.org/index.php?module=pear&desc=pci
@@ -39,7 +39,19 @@ $options = array('debug'        => false, // Disabled Debug mode
                  'recurse_dir'  => true,  // Recurse all directories below 'forum'
                  'ignore_dirs'  => array('.\forum\geshi', '.\forum\tiny_mce'), // Ignore Geshi and TinyMCE
                  'ignore_files' => array('.\forum\include\db\db_mysql.inc.php',    // Ignore our DB connection scripts.
-                                         '.\forum\include\db\db_mysqli.inc.php')); // We know these work on PHP4.
+                                         '.\forum\include\db\db_mysqli.inc.php',  // We know these work on PHP4.
+                                         '.\bh_check_dependencies.php',            // Support scripts which we don't dsitribute
+                                         '.\bh_check_languages.php',
+                                         '.\bh_check_php_version.php',
+                                         '.\bh_check_styles.php',
+                                         '.\bh_cvs_log_parse.php',
+                                         '.\bh_cvs_log_parse_exclude.php',
+                                         '.\bh_find_deprecated_consts_and_langs.php',
+                                         '.\bh_find_undefined_language_strings.php',
+                                         '.\bh_ms_word_spelling_check.php',
+                                         '.\bh_update_language.php',
+                                         '.\bh_x-hacker_translate.php',
+                                         '.\userdb_beehive.php'));
 
 // Tell the user what we're doing.
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.100 2007-11-08 17:13:18 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.101 2007-11-09 10:17:45 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -68,7 +68,7 @@ function bh_error_handler_process_args($func_args_array)
         }
     }
 
-    return implode(", ", $arguments_array);
+    return implode(", ", _htmlentities($arguments_array));
 }
 
 // Beehive Error Handler Function

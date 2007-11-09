@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.493 2007-11-06 21:05:46 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.494 2007-11-09 10:15:25 decoyduck Exp $ */
 
 // British English language file
 
@@ -850,7 +850,7 @@ $lang['forum_settings_help_28'] = "This setting allows your forum to be spidered
 $lang['forum_settings_help_29'] = "<b>Allow new user registrations</b> allows or disallows the creation of new user accounts. Setting the option to no completely disables the registration form.";
 $lang['forum_settings_help_30'] = "<b>Enable WikiWiki Integration</b> provides WikiWord support in your Forum posts. A WikiWord is made up of two or more concatenated words with uppercase letters (often referred to as CamelCase). If you write a word this way it will automatically be changed into a hyperlink pointing to your chosen WikiWiki.";
 $lang['forum_settings_help_31'] = "<b>Enable WikiWiki Quick Links</b> enables the use of msg:1.1 and User:Logon style extended WikiLinks which create hyperlinks to the specified message / user profile of the specified user.";
-$lang['forum_settings_help_32'] = "<b>WikiWiki Location</b> is used to specify the URI of your WikiWiki. When entering the URI use <i>%s</i> to indicate where in the URI the WikiWord should appear, i.e.: <i>http://en.wikipedia.org/wiki/%s</i> would link your WikiWords to %s";
+$lang['forum_settings_help_32'] = "<b>WikiWiki Location</b> is used to specify the URI of your WikiWiki. When entering the URI use <i>%1\$s</i> to indicate where in the URI the WikiWord should appear, i.e.: <i>http://en.wikipedia.org/wiki/%1\$s</i> would link your WikiWords to %s";
 $lang['forum_settings_help_33'] = "<b>Forum Access Status</b> controls how users may access your forum.";
 $lang['forum_settings_help_34'] = "<b>Open</b> will allow all users and guests access to your forum without restriction.";
 $lang['forum_settings_help_35'] = "<b>Closed</b> prevents access for all users, with the exception of the admin who may still access the admin panel.";

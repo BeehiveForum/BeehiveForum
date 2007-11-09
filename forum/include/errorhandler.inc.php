@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.101 2007-11-09 10:17:45 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.102 2007-11-09 10:23:59 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -68,7 +68,7 @@ function bh_error_handler_process_args($func_args_array)
         }
     }
 
-    return implode(", ", _htmlentities($arguments_array));
+    return implode(", ", $arguments_array);
 }
 
 // Beehive Error Handler Function
@@ -166,15 +166,15 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
 
                     if (sizeof($debug_backtrace['args']) > 0) {
 
-                        $debug_backtrace_file_line = sprintf("%s:%s", basename($debug_backtrace['file']), $debug_backtrace['line']);
-                        $debug_backtrace_func_args = sprintf("%s(<i>%s</i>)", $debug_backtrace['function'], bh_error_handler_process_args($debug_backtrace['args']));
+                        $debug_backtrace_file_line = sprintf("%s:%s", _htmlentities(basename($debug_backtrace['file'])), _htmlentities($debug_backtrace['line']));
+                        $debug_backtrace_func_args = sprintf("%s(<i>%s</i>)", _htmlentities($debug_backtrace['function']), _htmlentities(bh_error_handler_process_args($debug_backtrace['args'])));
 
                         $error_msg_array[] = sprintf("%s:%s", $debug_backtrace_file_line, $debug_backtrace_func_args);
 
                     }else {
 
-                        $debug_backtrace_file_line = sprintf("%s:%s", basename($debug_backtrace['file']), $debug_backtrace['line']);
-                        $debug_backtrace_func_args = sprintf("%s(<i>void</i>)", $debug_backtrace['function']);
+                        $debug_backtrace_file_line = sprintf("%s:%s", _htmlentities(basename($debug_backtrace['file'])), _htmlentities($debug_backtrace['line']));
+                        $debug_backtrace_func_args = sprintf("%s(<i>void</i>)", _htmlentities($debug_backtrace['function']));
 
                         $error_msg_array[] = sprintf("%s:%s", $debug_backtrace_file_line, $debug_backtrace_func_args);
                     }

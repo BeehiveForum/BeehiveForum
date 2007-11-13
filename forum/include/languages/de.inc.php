@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.58 2007-11-06 21:05:46 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.59 2007-11-13 19:46:28 decoyduck Exp $ */
 
 // German language file
 
@@ -1260,12 +1260,12 @@ $lang['pmmessagenumber'] = "Nachricht %s";
 
 $lang['youhavexnewpm'] = "Du hast %d neue PMs. Willst Du jetzt in den Posteingang wechseln?";
 $lang['youhave1newpm'] = "'Du hast 1 neue PM. Willst du jetzt in den Posteingang wechseln?";
-$lang['youhave1newpmand1waiting'] = "Sie haben eine neue Nachricht.\n\nSie haben 1 weitere Nachricht im Empfang. Um diese Nachricht zu erhalten loeschen Sie einige Nachrichten in Ihrem Postordner.\n\nWollen Sie nun in den Posteingang wechseln?";
-$lang['youhave1pmwaiting'] = "Sie haben eine Nachricht im Empfang. Um die Nachricht zu erhalten loeschen Sie einige Nachrichten in Ihrem Postordner.\n\nWollen Sie nun zum Posteingang wechseln?";
-$lang['youhavexnewpmand1waiting'] = "Sie haben %d neue Nachrichten.\n\nSie haben 1 weitere Nachricht im Empfang. Um die Nachricht zu erhalten loeschen Sie einige Nachrichten in Ihrem Postordner.\n\nWollen Sie nun zum Posteingang wechseln?";
-$lang['youhavexnewpmandxwaiting'] = "Sie haben %d neue Nachrichten.\n\nSie haben weitere %d Nachrichten im Empfang. Um diese Nachrichten zu erhalten loeschen Sie einige Nachrichten in Ihrem Postordner.\n\nWollen Sie nun zum Posteingang wechseln?";
-$lang['youhave1newpmandxwaiting'] = "Sie haben 1 neue Nachricht.\n\nSie haben weitere %d Nachrichten im Empfang. Um diese Nachrichten zu erhalten loeschen Sie einige Nachrichten in Ihrem Postordner.\n\nWollen Sie nun zum Posteingang wechseln?";
-$lang['youhavexpmwaiting'] = "Sie haben %d neue Nachrichten.\n\nSie haben weitere %d Nachrichten im Empfang. Um diese Nachrichten zu erhalten loeschen Sie einige Nachrichten in Ihrem Postordner.\n\nWollen Sie nun zum Posteingang wechseln?";
+$lang['youhave1newpmand1waiting'] = "Sie haben eine neue Nachricht.\\n\\nSie haben 1 weitere Nachricht im Empfang. Um diese Nachricht zu erhalten loeschen Sie einige Nachrichten in Ihrem Postordner.\\n\\nWollen Sie nun in den Posteingang wechseln?";
+$lang['youhave1pmwaiting'] = "Sie haben eine Nachricht im Empfang. Um die Nachricht zu erhalten loeschen Sie einige Nachrichten in Ihrem Postordner.\\n\\nWollen Sie nun zum Posteingang wechseln?";
+$lang['youhavexnewpmand1waiting'] = "Sie haben %d neue Nachrichten.\\n\\nSie haben 1 weitere Nachricht im Empfang. Um die Nachricht zu erhalten loeschen Sie einige Nachrichten in Ihrem Postordner.\\n\\nWollen Sie nun zum Posteingang wechseln?";
+$lang['youhavexnewpmandxwaiting'] = "Sie haben %d neue Nachrichten.\\n\\nSie haben weitere %d Nachrichten im Empfang. Um diese Nachrichten zu erhalten loeschen Sie einige Nachrichten in Ihrem Postordner.\\n\\nWollen Sie nun zum Posteingang wechseln?";
+$lang['youhave1newpmandxwaiting'] = "Sie haben 1 neue Nachricht.\\n\\nSie haben weitere %d Nachrichten im Empfang. Um diese Nachrichten zu erhalten loeschen Sie einige Nachrichten in Ihrem Postordner.\\n\\nWollen Sie nun zum Posteingang wechseln?";
+$lang['youhavexpmwaiting'] = "Sie haben %d neue Nachrichten.\\n\\nSie haben weitere %d Nachrichten im Empfang. Um diese Nachrichten zu erhalten loeschen Sie einige Nachrichten in Ihrem Postordner.\\n\\nWollen Sie nun zum Posteingang wechseln?";
 
 $lang['youdonothaveenoughfreespace'] = "Du hast nicht genug freien Speicher um die Nachricht zu senden.";
 $lang['userhasoptedoutofpm'] = "%s wurde aus dem PM-Empfang entfernt";

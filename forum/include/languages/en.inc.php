@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.494 2007-11-09 10:15:25 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.495 2007-11-13 19:46:28 decoyduck Exp $ */
 
 // British English language file
 
@@ -1260,12 +1260,12 @@ $lang['pmmessagenumber'] = "Message %s";
 
 $lang['youhavexnewpm'] = "You have %d new messages. Would you like to go to your Inbox now?";
 $lang['youhave1newpm'] = "You have 1 new message. Would you like to go to your Inbox now?";
-$lang['youhave1newpmand1waiting'] = "You have 1 new message.\\n\\nYou also have 1 message awaiting delivery. To receive this message please clear some space in your Inbox.\\n\\nWould you like to go to your Inbox now?";
-$lang['youhave1pmwaiting'] = "You have 1 message awaiting delivery. To receive this message please clear some space in your Inbox.\\n\\nWould you like to go to your Inbox now?";
-$lang['youhavexnewpmand1waiting'] = "You have %d new messages.\\n\\nYou also have 1 message awaiting delivery. To receive this message please clear some space in your Inbox.\\n\\nWould you like to go to your Inbox now?";
-$lang['youhavexnewpmandxwaiting'] = "You have %d new messages.\\n\\nYou also have %d messages awaiting delivery. To receive these message please clear some space in your Inbox.\\n\\nWould you like to go to your Inbox now?";
-$lang['youhave1newpmandxwaiting'] = "You have 1 new message.\\n\\nYou also have %d messages awaiting delivery. To receive these messages please clear some space in your Inbox.\\n\\nWould you like to go to your Inbox now?";
-$lang['youhavexpmwaiting'] = "You have %d messages awaiting delivery. To receive these messages please clear some space in your Inbox.\\n\\nWould you like to go to your Inbox now?";
+$lang['youhave1newpmand1waiting'] = "You have 1 new message.\n\nYou also have 1 message awaiting delivery. To receive this message please clear some space in your Inbox.\n\nWould you like to go to your Inbox now?";
+$lang['youhave1pmwaiting'] = "You have 1 message awaiting delivery. To receive this message please clear some space in your Inbox.\n\nWould you like to go to your Inbox now?";
+$lang['youhavexnewpmand1waiting'] = "You have %d new messages.\n\nYou also have 1 message awaiting delivery. To receive this message please clear some space in your Inbox.\n\nWould you like to go to your Inbox now?";
+$lang['youhavexnewpmandxwaiting'] = "You have %d new messages.\n\nYou also have %d messages awaiting delivery. To receive these message please clear some space in your Inbox.\n\nWould you like to go to your Inbox now?";
+$lang['youhave1newpmandxwaiting'] = "You have 1 new message.\n\nYou also have %d messages awaiting delivery. To receive these messages please clear some space in your Inbox.\n\nWould you like to go to your Inbox now?";
+$lang['youhavexpmwaiting'] = "You have %d messages awaiting delivery. To receive these messages please clear some space in your Inbox.\n\nWould you like to go to your Inbox now?";
 
 $lang['youdonothaveenoughfreespace'] = "You do not have enough free space to send this message.";
 $lang['userhasoptedoutofpm'] = "%s has opted out of receiving personal messages";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.102 2007-11-09 10:23:59 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.103 2007-11-13 19:46:27 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -162,7 +162,7 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
 
                 if (!isset($debug_backtrace['function'])) $debug_backtrace['function'] = 'PHP_CORE_FUNCTION';
 
-                if (!in_array($debug_backtrace['function'], array('bh_error_handler', 'trigger_error'))) {
+                if (!in_array($debug_backtrace['function'], array('bh_error_handler', 'trigger_error', 'db_trigger_error'))) {
 
                     if (sizeof($debug_backtrace['args']) > 0) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.252 2007-10-11 13:01:19 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.253 2007-11-13 19:46:27 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -745,6 +745,14 @@ function html_draw_top()
     echo "//-->\n";
     echo "</script>\n";
 
+    if ($modified_time = @filemtime("js/general.js")) {
+        echo sprintf("<script language=\"Javascript\" type=\"text/javascript\" src=\"./js/general.js?%s\"></script>\n", date('YmdHis', $modified_time));
+    }
+
+    if ($modified_time = @filemtime("js/xml_http.js")) {
+        echo sprintf("<script language=\"Javascript\" type=\"text/javascript\" src=\"./js/xml_http.js?%s\"></script>\n", date('YmdHis', $modified_time));
+    }
+
     // Font size (not for Guests)
 
     if (!user_is_guest()) {
@@ -792,68 +800,38 @@ function html_draw_top()
 
                 if ((!in_array(basename($_SERVER['PHP_SELF']), $pm_popup_disabled_pages))) {
 
-                    // Get the new pm count and waiting pm count.
+                    echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
+                    echo "<!--\n\n";
+                    echo "var pm_timeout;\n";
+                    echo "var pm_notification = new xml_http_request();\n\n";
+                    echo "function pm_notification_initialise()\n";
+                    echo "{\n";
+                    echo "    pm_timeout = setTimeout('pm_notification_check_messages()', 1);\n";
+                    echo "    return true;\n";
+                    echo "}\n\n";
+                    echo "function pm_notification_check_messages()\n";
+                    echo "{\n";
+                    echo "    clearTimeout(pm_timeout);\n\n";
+                    echo "    pm_notification.set_handler(pm_notification_handler);\n";
+                    echo "    pm_notification.get_url('pm.php?webtag=$webtag&pm_new_check=true');\n";
+                    echo "}\n\n";
+                    echo "function pm_notification_handler()\n";
+                    echo "{\n";
+                    echo "    var response_xml = pm_notification.get_response_xml();\n\n";
+                    echo "    pm_notification.close();\n\n";
+                    echo "    var message_array = response_xml.getElementsByTagName('message');\n";
+                    echo "    var message_count = message_array.length;\n\n";
+                    echo "    if (message_count > 0) {\n\n";
+                    echo "        if (window.confirm(unescape(message_array[0].childNodes[0].nodeValue))) {\n\n";
+                    echo "            top.frames['", html_get_frame_name('main'), "'].location.replace('pm.php?webtag=$webtag');\n";
+                    echo "        }\n";
+                    echo "    }\n";
+                    echo "    return true;\n";
+                    echo "}\n\n";
+                    echo "//-->\n";
+                    echo "</script>\n";
 
-                    pm_new_check($pm_new_count, $pm_outbox_count);
-
-                    // Format the popup message.
-
-                    $pm_notification = false;
-
-                    if ($pm_new_count == 1 && $pm_outbox_count == 0) {
-
-                        $pm_notification = $lang['youhave1newpm'];
-
-                    }elseif ($pm_new_count == 1 && $pm_outbox_count == 1) {
-
-                        $pm_notification = $lang['youhave1newpmand1waiting'];
-
-                    }elseif ($pm_new_count == 0 && $pm_outbox_count == 1) {
-
-                        $pm_notification = $lang['youhave1pmwaiting'];
-
-                    }elseif ($pm_new_count > 1 && $pm_outbox_count == 0) {
-
-                        $pm_notification = sprintf($lang['youhavexnewpm'], $pm_new_count);
-
-                    }elseif ($pm_new_count > 1 && $pm_outbox_count == 1) {
-
-                        $pm_notification = sprintf($lang['youhavexnewpmand1waiting'], $pm_new_count);
-
-                    }elseif ($pm_new_count > 1 && $pm_outbox_count > 1) {
-
-                        $pm_notification = sprintf($lang['youhavexnewpmandxwaiting'], $pm_new_count, $pm_outbox_count);
-
-                    }elseif ($pm_new_count == 1 && $pm_outbox_count > 1) {
-
-                        $pm_notification = sprintf($lang['youhave1newpmandxwaiting'], $pm_outbox_count);
-
-                    }elseif ($pm_new_count == 0 && $pm_outbox_count > 1) {
-
-                        $pm_notification = sprintf($lang['youhavexpmwaiting'], $pm_outbox_count);
-                    }
-
-                    if ($pm_notification !== false) {
-
-                        echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
-                        echo "<!--\n\n";
-                        echo "var pm_timeout;\n\n";
-                        echo "function pm_notification() {\n";
-                        echo "    pm_timeout = setTimeout('pm_notification_popup()', 1);\n";
-                        echo "    return true;\n";
-                        echo "}\n\n";
-                        echo "function pm_notification_popup() {\n";
-                        echo "    clearTimeout(pm_timeout);\n";
-                        echo "    if (window.confirm('", wordwrap($pm_notification, 75, '\n'), "')) {\n";
-                        echo "        top.frames['", html_get_frame_name('main'), "'].location.replace('pm.php?webtag=$webtag');\n";
-                        echo "    }\n";
-                        echo "    return true;\n";
-                        echo "}\n\n";
-                        echo "//-->\n";
-                        echo "</script>\n";
-
-                        if (!in_array("pm_notification", $onload_array)) $onload_array[] = "pm_notification()";
-                    }
+                    if (!in_array("pm_notification_initialise()", $onload_array)) $onload_array[] = "pm_notification_initialise()";
                 }
             }
 
@@ -905,10 +883,6 @@ function html_draw_top()
     }
 
     reset($arg_array);
-
-    if ($modified_time = @filemtime("js/general.js")) {
-        echo sprintf("<script language=\"Javascript\" type=\"text/javascript\" src=\"./js/general.js?%s\"></script>\n", date('YmdHis', $modified_time));
-    }
 
     foreach($arg_array as $func_args) {
 

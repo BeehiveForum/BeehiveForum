@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.225 2007-10-24 19:57:09 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.226 2007-11-13 19:46:28 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1833,11 +1833,22 @@ function pm_get_new_messages($limit)
 * @param integer &$outbox_count - Number of undeliverable messages waiting for the user.
 */
 
-function pm_new_check(&$pm_new_count, &$pm_outbox_count)
+function pm_get_message_count(&$pm_new_count, &$pm_outbox_count)
 {
-    if (!$db_pm_new_check = db_connect()) return false;
+    // Default the variables to return 0 even on error.
+
+    $pm_new_count = 0;
+    $pm_outbox_count = 0;
+
+    // Connect to the database.
+
+    if (!$db_pm_get_message_count = db_connect()) return false;
+
+    // Check the user UID.
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
+
+    // PM folder types we'll be using.
 
     $pm_unread = PM_UNREAD;
     $pm_outbox = PM_OUTBOX;
@@ -1861,12 +1872,12 @@ function pm_new_check(&$pm_new_count, &$pm_outbox_count)
         $sql = "UPDATE LOW_PRIORITY PM SET TYPE = '$pm_unread' WHERE MID in ($mid_list) ";
         $sql.= "AND TO_UID = '$uid'";
 
-        if (!$result = db_query($sql, $db_pm_new_check)) return false;
+        if (!$result = db_query($sql, $db_pm_get_message_count)) return false;
 
         $sql = "UPDATE LOW_PRIORITY PM SET SMID = 0 WHERE SMID IN ($mid_list) ";
         $sql.= "AND TYPE = '$pm_sent_item' AND TO_UID = '$uid'";
 
-        if (!$result = db_query($sql, $db_pm_new_check)) return false;
+        if (!$result = db_query($sql, $db_pm_get_message_count)) return false;
 
         // Number of new messages we've received for popup.
 
@@ -1877,10 +1888,85 @@ function pm_new_check(&$pm_new_count, &$pm_outbox_count)
         $sql = "SELECT COUNT(MID) AS OUTBOX_COUNT FROM PM ";
         $sql.= "WHERE TYPE = '$pm_outbox' AND TO_UID = '$uid'";
 
-        if (!$result = db_query($sql, $db_pm_new_check)) return false;
+        if (!$result = db_query($sql, $db_pm_get_message_count)) return false;
 
         list($pm_outbox_count) = db_fetch_array($result, DB_RESULT_NUM);
     }
+
+    return true;
+}
+
+/**
+* Check number of PM Messages unread and in outbox.
+*
+* Gets the number of unread messages in inbox and those awaiting
+* delivery in another user's outbox. Output is XML for use in
+* XML HTTP functionality.
+*
+* @return integer - number of unread messages.
+* @param void
+*/
+
+function pm_new_check()
+{
+    // Outputting XML
+
+    header('Content-Type: text/xml', true);
+
+    // Load the Language file
+
+    $lang = load_language_file();
+
+    // Get the number of messages.
+
+    pm_get_message_count($pm_new_count, $pm_outbox_count);
+
+    // XML header
+
+    echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+
+    // Format the message sent to the client.
+
+    if ($pm_new_count == 1 && $pm_outbox_count == 0) {
+
+        $pm_notification = $lang['youhave1newpm'];
+
+    }elseif ($pm_new_count == 1 && $pm_outbox_count == 1) {
+
+        $pm_notification = $lang['youhave1newpmand1waiting'];
+
+    }elseif ($pm_new_count == 0 && $pm_outbox_count == 1) {
+
+        $pm_notification = $lang['youhave1pmwaiting'];
+
+    }elseif ($pm_new_count > 1 && $pm_outbox_count == 0) {
+
+        $pm_notification = sprintf($lang['youhavexnewpm'], $pm_new_count);
+
+    }elseif ($pm_new_count > 1 && $pm_outbox_count == 1) {
+
+        $pm_notification = sprintf($lang['youhavexnewpmand1waiting'], $pm_new_count);
+
+    }elseif ($pm_new_count > 1 && $pm_outbox_count > 1) {
+
+        $pm_notification = sprintf($lang['youhavexnewpmandxwaiting'], $pm_new_count, $pm_outbox_count);
+
+    }elseif ($pm_new_count == 1 && $pm_outbox_count > 1) {
+
+        $pm_notification = sprintf($lang['youhave1newpmandxwaiting'], $pm_outbox_count);
+
+    }elseif ($pm_new_count == 0 && $pm_outbox_count > 1) {
+
+        $pm_notification = sprintf($lang['youhavexpmwaiting'], $pm_outbox_count);
+    }
+
+    // Check we're outputting anything.
+
+    if (isset($pm_notification) && strlen(trim($pm_notification)) > 0) {
+        echo "<message><![CDATA[", rawurlencode(wordwrap($pm_notification, 65, "\n")), "]]></message>\n";
+    }
+
+    exit;
 }
 
 /**

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.84 2007-11-06 22:25:32 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.85 2007-11-13 19:46:28 decoyduck Exp $ */
 
 // French Canadian language file
 
@@ -1260,12 +1260,12 @@ $lang['pmmessagenumber'] = "Message %s";
 
 $lang['youhavexnewpm'] = "Vous avez %d un nouveau MP. Désirez-vous ouvrir votre boite de réception maintenant?";
 $lang['youhave1newpm'] = "Vous avez 1 un nouveau MP. Désirez-vous ouvrir votre boite de réception maintenant?";
-$lang['youhave1newpmand1waiting'] = "Vous avez 1 nouveau message.\n\nVous avez aussi 1 message en attente de livraison. Pour recevoir ce message veuillez libérer de l'espace dans votre boîte de réception.\n\nVoulez-vous aller à votre boîte de réception maintenant?";
-$lang['youhave1pmwaiting'] = "Vous avez 1 message en attente de livraison. Pour recevoir ce message, veuillez libérer de l'espace dans votre boîte de réception.\n\nVoulez-vous aller à votre boîte de réception maintenant?";
-$lang['youhavexnewpmand1waiting'] = "Vous avez %d nouveaux messages.\n\nVous avez aussi 1 message en attente de livraison. Pour recevoir ce message veuillez libérer de l'espace dans votre boîte de réception.\n\nVoulez-vous aller à votre boîte de réception maintenant?";
-$lang['youhavexnewpmandxwaiting'] = "Vous avez %d nouveaux messages.\n\nVous avez aussi %d messages en attente de livraison. Pour recevoir ce message veuillez libérer de l'espace dans votre boîte de réception.\n\nVoulez-vous aller à votre boîte de réception maintenant?";
-$lang['youhave1newpmandxwaiting'] = "Vous avez 1 nouveau message.\n\nVous avez aussi %d messages en attente de livraison. Pour recevoir ces messages, veuillez libérer de l'espace dans votre boîte de réception.\n\nVoulez-vous aller à votre boîte de réception maintenant?";
-$lang['youhavexpmwaiting'] = "Vous avez %d messages en attente de livraison. Pour recevoir ces messages, veuillez libérer de l'espace dans votre boîte de réception.\n\nVoulez-vous aller à votre boîte de réception maintenant?";
+$lang['youhave1newpmand1waiting'] = "Vous avez 1 nouveau message.\\n\\nVous avez aussi 1 message en attente de livraison. Pour recevoir ce message veuillez libérer de l'espace dans votre boîte de réception.\\n\\nVoulez-vous aller à votre boîte de réception maintenant?";
+$lang['youhave1pmwaiting'] = "Vous avez 1 message en attente de livraison. Pour recevoir ce message, veuillez libérer de l'espace dans votre boîte de réception.\\n\\nVoulez-vous aller à votre boîte de réception maintenant?";
+$lang['youhavexnewpmand1waiting'] = "Vous avez %d nouveaux messages.\\n\\nVous avez aussi 1 message en attente de livraison. Pour recevoir ce message veuillez libérer de l'espace dans votre boîte de réception.\\n\\nVoulez-vous aller à votre boîte de réception maintenant?";
+$lang['youhavexnewpmandxwaiting'] = "Vous avez %d nouveaux messages.\\n\\nVous avez aussi %d messages en attente de livraison. Pour recevoir ce message veuillez libérer de l'espace dans votre boîte de réception.\\n\\nVoulez-vous aller à votre boîte de réception maintenant?";
+$lang['youhave1newpmandxwaiting'] = "Vous avez 1 nouveau message.\\n\\nVous avez aussi %d messages en attente de livraison. Pour recevoir ces messages, veuillez libérer de l'espace dans votre boîte de réception.\\n\\nVoulez-vous aller à votre boîte de réception maintenant?";
+$lang['youhavexpmwaiting'] = "Vous avez %d messages en attente de livraison. Pour recevoir ces messages, veuillez libérer de l'espace dans votre boîte de réception.\\n\\nVoulez-vous aller à votre boîte de réception maintenant?";
 
 $lang['youdonothaveenoughfreespace'] = "Vous n'avez pas assez d'espace libre pour envoyer ce message.";
 $lang['userhasoptedoutofpm'] = "%s a choisi de ne pas recevoir les messages personnels";

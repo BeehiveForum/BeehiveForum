@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.253 2007-11-13 19:46:27 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.254 2007-11-14 19:33:19 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -309,29 +309,31 @@ function html_get_top_page()
 
     $forum_settings = forum_get_settings();
 
+    $forum_path = defined('BH_FORUM_PATH') ? BH_FORUM_PATH : '.';
+
     if (!$user_style = bh_session_get_value('STYLE')) {
         $user_style = forum_get_setting('default_style');
     }
 
     if ($user_style !== false) {
 
-        if (@is_dir("./styles/$user_style") && @file_exists("./styles/$user_style/top.html")) {
-            return "./styles/$user_style/top.html";
+        if (@is_dir("$forum_path/styles/$user_style") && @file_exists("$forum_path/styles/$user_style/top.html")) {
+            return "$forum_path/styles/$user_style/top.html";
         }
 
-        if (@is_dir("./forums/$webtag/styles/$user_style") && @file_exists("./forums/$webtag/styles/$user_style/top.html")) {
-            return "./forums/$webtag/styles/$user_style/top.html";
+        if (@is_dir("$forum_path/forums/$webtag/styles/$user_style") && @file_exists("$forum_path/forums/$webtag/styles/$user_style/top.html")) {
+            return "$forum_path/forums/$webtag/styles/$user_style/top.html";
         }
     }
 
     if ($webtag !== false) {
 
-        if (@is_dir("./forums/$webtag") && @file_exists("./forums/$webtag/top.html")) {
-            return "./forums/$webtag/top.html";
+        if (@is_dir("$forum_path/forums/$webtag") && @file_exists("$forum_path/forums/$webtag/top.html")) {
+            return "$forum_path/forums/$webtag/top.html";
         }
     }
 
-    return "./styles/top.html";
+    return "$forum_path/styles/top.html";
 }
 
 function html_get_style_sheet()
@@ -339,6 +341,8 @@ function html_get_style_sheet()
     $webtag = get_webtag($webtag_search);
 
     $forum_settings = forum_get_settings();
+
+    $forum_path = defined('BH_FORUM_PATH') ? BH_FORUM_PATH : '.';
 
     $script_filename = basename($_SERVER['PHP_SELF'], '.php');
 
@@ -348,49 +352,49 @@ function html_get_style_sheet()
 
     if ($user_style !== false) {
 
-        if (@is_dir("styles/$user_style") && @file_exists("styles/$user_style/$script_filename.css")) {
+        if (@is_dir("$forum_path/styles/$user_style") && @file_exists("$forum_path/styles/$user_style/$script_filename.css")) {
 
-            if ($modified_time = @filemtime("styles/$user_style/$script_filename.css")) {
-                return sprintf("styles/$user_style/$script_filename.css?%s", date('YmdHis', $modified_time));
+            if ($modified_time = @filemtime("$forum_path/styles/$user_style/$script_filename.css")) {
+                return sprintf("$forum_path/styles/$user_style/$script_filename.css?%s", date('YmdHis', $modified_time));
             }
         }
 
-        if (@is_dir("styles/$user_style") && @file_exists("styles/$user_style/style.css")) {
+        if (@is_dir("$forum_path/styles/$user_style") && @file_exists("$forum_path/styles/$user_style/style.css")) {
 
-            if ($modified_time = @filemtime("styles/$user_style/style.css")) {
-                return sprintf("styles/$user_style/style.css?%s", date('YmdHis', $modified_time));
+            if ($modified_time = @filemtime("$forum_path/styles/$user_style/style.css")) {
+                return sprintf("$forum_path/styles/$user_style/style.css?%s", date('YmdHis', $modified_time));
             }
         }
 
-        if (@is_dir("forums/$webtag/styles/$user_style") && @file_exists("forums/$webtag/styles/$user_style/$script_filename.css")) {
+        if (@is_dir("$forum_path/forums/$webtag/styles/$user_style") && @file_exists("$forum_path/forums/$webtag/styles/$user_style/$script_filename.css")) {
 
-            if ($modified_time = @filemtime("forums/$webtag/styles/$user_style/$script_filename.css")) {
-                return sprintf("forums/$webtag/styles/$user_style/$script_filename.css?%s", date('YmdHis', $modified_time));
+            if ($modified_time = @filemtime("$forum_path/forums/$webtag/styles/$user_style/$script_filename.css")) {
+                return sprintf("$forum_path/forums/$webtag/styles/$user_style/$script_filename.css?%s", date('YmdHis', $modified_time));
             }
         }
 
-        if (@is_dir("forums/$webtag/styles/$user_style") && @file_exists("forums/$webtag/styles/$user_style/style.css")) {
+        if (@is_dir("$forum_path/forums/$webtag/styles/$user_style") && @file_exists("$forum_path/forums/$webtag/styles/$user_style/style.css")) {
 
-            if ($modified_time = @filemtime("forums/$webtag/styles/$user_style/style.css")) {
-                return sprintf("forums/$webtag/styles/$user_style/style.css?%s", date('YmdHis', $modified_time));
+            if ($modified_time = @filemtime("$forum_path/forums/$webtag/styles/$user_style/style.css")) {
+                return sprintf("$forum_path/forums/$webtag/styles/$user_style/style.css?%s", date('YmdHis', $modified_time));
             }
         }
     }
 
     if ($webtag !== false) {
 
-        if (@is_dir("forums/$webtag") && @file_exists("forums/$webtag/style.css")) {
+        if (@is_dir("$forum_path/forums/$webtag") && @file_exists("$forum_path/forums/$webtag/style.css")) {
 
-            if ($modified_time = @filemtime("./forums/$webtag/style.css")) {
-                return sprintf("forums/$webtag/style.css?%s", date('YmdHis', $modified_time));
+            if ($modified_time = @filemtime("$forum_path/forums/$webtag/style.css")) {
+                return sprintf("$forum_path/forums/$webtag/style.css?%s", date('YmdHis', $modified_time));
             }
         }
     }
 
-    if (@is_dir("styles") && @file_exists("styles/style.css")) {
+    if (@is_dir("$forum_path/styles") && @file_exists("$forum_path/styles/style.css")) {
 
-        if ($modified_time = @filemtime("./styles/style.css")) {
-            return sprintf("styles/style.css?%s", date('YmdHis', $modified_time));
+        if ($modified_time = @filemtime("$forum_path/styles/style.css")) {
+            return sprintf("$forum_path/styles/style.css?%s", date('YmdHis', $modified_time));
         }
     }
 
@@ -403,23 +407,25 @@ function html_get_emoticon_style_sheet()
 
     $forum_settings = forum_get_settings();
 
+    $forum_path = defined('BH_FORUM_PATH') ? BH_FORUM_PATH : '.';
+
     if (!$user_emots = bh_session_get_value('EMOTICONS')) {
         $user_emots = forum_get_setting('default_emoticons');
     }
 
     if ($user_emots !== false) {
 
-        if (@is_dir("emoticons/$user_emots") && file_exists("emoticons/$user_emots/style.css")) {
+        if (@is_dir("$forum_path/emoticons/$user_emots") && file_exists("$forum_path/emoticons/$user_emots/style.css")) {
 
-            if ($modified_time = @filemtime("emoticons/$user_emots/style.css")) {
-                return sprintf("emoticons/$user_emots/style.css?%s", date('YmdHis', $modified_time));
+            if ($modified_time = @filemtime("$forum_path/emoticons/$user_emots/style.css")) {
+                return sprintf("$forum_path/emoticons/$user_emots/style.css?%s", date('YmdHis', $modified_time));
             }
         }
 
-        if (@is_dir("forums/$webtag/emoticons/$user_emots") && file_exists("forums/$webtag/emoticons/$user_emots/style.css")) {
+        if (@is_dir("$forum_path/forums/$webtag/emoticons/$user_emots") && file_exists("$forum_path/forums/$webtag/emoticons/$user_emots/style.css")) {
 
-            if ($modified_time = @filemtime("forums/$webtag/emoticons/$user_emots/style.css")) {
-                return sprintf("forums/$webtag/emoticons/$user_emots/style.css?%s", date('YmdHis', $modified_time));
+            if ($modified_time = @filemtime("$forum_path/forums/$webtag/emoticons/$user_emots/style.css")) {
+                return sprintf("$forum_path/forums/$webtag/emoticons/$user_emots/style.css?%s", date('YmdHis', $modified_time));
             }
         }
     }
@@ -576,7 +582,10 @@ function html_draw_top()
     $robots = "noindex,follow";
 
     $forum_settings = forum_get_settings();
+
     $webtag = get_webtag($webtag_search);
+
+    $forum_path = defined('BH_FORUM_PATH') ? BH_FORUM_PATH : '.';
 
     $include_body_tag = true;
     $frameset_dtd = false;
@@ -668,8 +677,6 @@ function html_draw_top()
     $forum_keywords = html_get_forum_keywords();
     $forum_description = html_get_forum_description();
     $forum_email = html_get_forum_email();
-
-    $forum_path = html_get_forum_uri();
 
     echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 
@@ -886,7 +893,7 @@ function html_draw_top()
 
     foreach($arg_array as $func_args) {
 
-        if ($func_args == "htmltools.js" && @file_exists("./tiny_mce/tiny_mce.js")) {
+        if ($func_args == "htmltools.js" && @file_exists("$forum_path/tiny_mce/tiny_mce.js")) {
 
             $page_prefs = bh_session_get_post_page_prefs();
 
@@ -897,14 +904,14 @@ function html_draw_top()
             }else {
 
                 if ($modified_time = @filemtime("js/{$func_args}")) {
-                    echo sprintf("<script language=\"Javascript\" type=\"text/javascript\" src=\"./js/{$func_args}?%s\"></script>\n", date('YmdHis', $modified_time));
+                    echo sprintf("<script language=\"Javascript\" type=\"text/javascript\" src=\"$forum_path/js/{$func_args}?%s\"></script>\n", date('YmdHis', $modified_time));
                 }
             }
 
-        }else if (@is_dir("./js/") && @file_exists("./js/$func_args")) {
+        }else if (@is_dir("$forum_path/js/") && @file_exists("$forum_path/js/$func_args")) {
 
             if ($modified_time = @filemtime("js/{$func_args}")) {
-                echo sprintf("<script language=\"Javascript\" type=\"text/javascript\" src=\"./js/{$func_args}?%s\"></script>\n", date('YmdHis', $modified_time));
+                echo sprintf("<script language=\"Javascript\" type=\"text/javascript\" src=\"$forum_path/js/{$func_args}?%s\"></script>\n", date('YmdHis', $modified_time));
             }
         }
     }
@@ -952,23 +959,25 @@ function style_image($img)
 
     $forum_settings = forum_get_settings();
 
+    $forum_path = defined('BH_FORUM_PATH') ? BH_FORUM_PATH : '.';
+
     if (!$user_style = bh_session_get_value('STYLE')) {
         $user_style = forum_get_setting('default_style');
     }
 
-    if (@is_dir("styles/$user_style/images") && @file_exists("styles/$user_style/images/$img")) {
-        return "styles/$user_style/images/$img";
+    if (@is_dir("$forum_path/styles/$user_style/images") && @file_exists("$forum_path/styles/$user_style/images/$img")) {
+        return "$forum_path/styles/$user_style/images/$img";
     }
 
-    if (@is_dir("forums/$webtag/styles/$user_style/images") && @file_exists("forums/$webtag/styles/$user_style/images/$img")) {
-        return "forums/$webtag/styles/$user_style/images/$img";
+    if (@is_dir("$forum_path/forums/$webtag/styles/$user_style/images") && @file_exists("$forum_path/forums/$webtag/styles/$user_style/images/$img")) {
+        return "$forum_path/forums/$webtag/styles/$user_style/images/$img";
     }
 
-    if (@is_dir("./forums/$webtag/images") && @file_exists("./forums/$webtag/images/$img")) {
-        return "forums/$webtag/images/$img";
+    if (@is_dir("$forum_path/forums/$webtag/images") && @file_exists("$forum_path/forums/$webtag/images/$img")) {
+        return "$forum_path/forums/$webtag/images/$img";
     }
 
-    return "images/$img";
+    return "$forum_path/images/$img";
 }
 
 function bh_setcookie($name, $value, $expires = 0)

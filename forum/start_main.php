@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_main.php,v 1.55 2007-11-01 21:10:58 decoyduck Exp $ */
+/* $Id: start_main.php,v 1.56 2007-11-14 19:33:20 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -107,7 +107,7 @@ if (!forum_check_access_level()) {
 
 if (@file_exists("forums/$webtag/start_main.php")) {
 
-    html_draw_top();
+    html_draw_top("stylesheet=./forums/$webtag/start_main.css");
     echo message_split_fiddle(forum_load_start_page());
     html_draw_bottom();
 

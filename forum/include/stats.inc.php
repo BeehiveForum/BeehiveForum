@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.88 2007-10-11 13:01:20 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.89 2007-11-15 22:34:16 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -79,6 +79,119 @@ function update_stats()
     admin_add_log_entry(FORUM_AUTO_UPDATE_STATS);
 
     return true;
+}
+
+function stats_output_xml()
+{
+    header('Content-Type: text/xml', true);
+
+    echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+    echo "<stats>\n";
+    echo "  <users>\n";
+
+    if ($user_count = user_count()) {
+        echo sprintf("    <count>%s</count>\n", number_format($user_count, 0, ",", ","));
+    }
+
+    if ($user_stats = get_active_users()) {
+
+        echo "    <active>\n";
+        echo "      <guests>{$user_stats['GUESTS']}</guests>\n";
+        echo "      <visible>{$user_stats['NUSERS']}</visible>\n";
+        echo "      <anonymous>{$user_stats['AUSERS']}</anonymous>\n";
+
+        if (isset($user_stats['USERS']) && sizeof($user_stats['USERS']) > 0) {
+
+            echo "    <list>\n";
+
+            foreach ($user_stats['USERS'] as $active_user) {
+
+                $active_user['DISPLAY'] = word_filter_add_ob_tags(_htmlentities(format_user_name($active_user['LOGON'], $active_user['NICKNAME'])));
+
+                echo "      <user>\n";
+                echo "        <uid>{$active_user['UID']}</uid>\n";
+                echo "        <display>{$active_user['DISPLAY']}</display>\n";
+                echo "        <relationship>{$active_user['RELATIONSHIP']}</relationship>\n";
+                echo "      </user>\n";
+            }
+
+            echo "    </list>\n";
+        }
+
+        echo "    </active>\n";
+    }
+
+    if ($newest_user = get_newest_user()) {
+
+        $newest_user['DISPLAY'] = word_filter_add_ob_tags(_htmlentities(format_user_name($newest_user['LOGON'], $newest_user['NICKNAME'])));
+
+        echo "    <newest>\n";
+        echo "      <uid>{$newest_user['UID']}</uid>\n";
+        echo "      <display>{$newest_user['DISPLAY']}</display>\n";
+        echo "    </newest>\n";
+    }
+
+    if ($most_users = get_most_users()) {
+
+        $most_users_count = number_format($most_users['MOST_USERS_COUNT'], 0, ",", ",");
+        $most_users_date =  format_time($most_users['MOST_USERS_DATE'], 1);
+
+        echo "    <record>\n";
+        echo "      <count>$most_users_count</count>\n";
+        echo "      <date>$most_users_date</date>\n";
+        echo "    </record>\n";
+    }
+
+    echo "  </users>\n";
+    echo "  <threads>\n";
+
+    if ($thread_count = get_thread_count()) {
+        echo sprintf("    <count>%s</count>\n", number_format($thread_count, 0, ",", ","));
+    }
+
+    if ($longest_thread = get_longest_thread()) {
+
+        $longest_thread_title = word_filter_add_ob_tags(_htmlentities(thread_format_prefix($longest_thread['PREFIX'], $longest_thread['TITLE'])));
+        $longest_thread_post_count = number_format($longest_thread['LENGTH'], 0, ",", ",");
+
+        echo "    <longest>\n";
+        echo "      <tid>{$longest_thread['TID']}</tid>\n";
+        echo "      <title>$longest_thread_title</title>\n";
+        echo "      <length>$longest_thread_post_count</length>\n";
+        echo "    </longest>\n";
+    }
+
+    echo "  </threads>\n";
+    echo "  <posts>\n";
+
+    if ($post_count = get_post_count()) {
+        echo sprintf("    <count>%s</count>\n", number_format($post_count, 0, ",", ","));
+    }
+
+    if ($recent_post_count = get_recent_post_count()) {
+
+        $recent_post_count = number_format($recent_post_count, 0, ",", ",");
+
+        echo "    <recent>\n";
+        echo sprintf("    <count>%s</count>\n", number_format($recent_post_count, 0, ",", ","));
+
+        if ($most_posts = get_most_posts()) {
+
+            $most_posts_date = format_time($most_posts['MOST_POSTS_DATE'], 1);
+            $most_posts_count = number_format($most_posts['MOST_POSTS_COUNT'], 0, ",", ",");
+
+            echo "      <record>\n";
+            echo "        <count>$most_posts_count</count>\n";
+            echo "        <date>$most_posts_date</date>\n";
+            echo "      </record>\n";
+        }
+
+        echo "    </recent>\n";
+    }
+
+    echo "  </posts>\n";
+    echo "</stats>\n";
+    exit;
 }
 
 function get_num_sessions()

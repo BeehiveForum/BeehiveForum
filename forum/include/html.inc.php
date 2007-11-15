@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.254 2007-11-14 19:33:19 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.255 2007-11-15 22:34:16 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -826,7 +826,19 @@ function html_draw_top()
                     echo "{\n";
                     echo "    var response_xml = pm_notification.get_response_xml();\n\n";
                     echo "    pm_notification.close();\n\n";
-                    echo "    var message_array = response_xml.getElementsByTagName('message');\n";
+                    echo "    var pm_new_count_obj = getObjById('pm_new_count');\n\n";
+                    echo "    if (typeof(pm_new_count_obj) == 'object') {\n\n";
+                    echo "        var pm_unread_element = response_xml.getElementsByTagName('unread');\n";
+                    echo "        var pm_unread_count = pm_unread_element[0].childNodes[0].nodeValue;\n\n";
+                    echo "        var pm_new_element = response_xml.getElementsByTagName('new');\n";
+                    echo "        var pm_new_count = pm_new_element[0].childNodes[0].nodeValue;\n\n";
+                    echo "        if (pm_new_count > 0) {\n\n";
+                    echo "            pm_new_count_obj.innerHTML = '[' + pm_new_count + ' {$lang['new']}]';\n\n";
+                    echo "        }else if (pm_unread_count > 0) {\n\n";
+                    echo "            pm_new_count_obj.innerHTML = '[' + pm_unread_count + ' {$lang['unread']}]';\n";
+                    echo "        }\n";
+                    echo "    }\n\n";
+                    echo "    var message_array = response_xml.getElementsByTagName('notification');\n";
                     echo "    var message_count = message_array.length;\n\n";
                     echo "    if (message_count > 0) {\n\n";
                     echo "        if (window.confirm(unescape(message_array[0].childNodes[0].nodeValue))) {\n\n";
@@ -839,6 +851,28 @@ function html_draw_top()
                     echo "</script>\n";
 
                     if (!in_array("pm_notification_initialise()", $onload_array)) $onload_array[] = "pm_notification_initialise()";
+                }
+            }
+
+            // Stats Display pages
+
+            $stats_display_pages = array('messages.php');
+
+            if (in_array(basename($_SERVER['PHP_SELF']), $stats_display_pages)) {
+
+                if (bh_session_get_value('SHOW_STATS') == 'Y') {
+
+                    echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
+                    echo "<!--\n\n";
+                    echo "var stats_timeout;\n";
+                    echo "var stats_data = new xml_http_request();\n\n";
+                    echo "function stats_display_initialise()\n";
+                    echo "{\n";
+                    echo "    stats_timeout = setTimeout('stats_display_get_data()', 1);\n";
+                    echo "    return true;\n";
+                    echo "}\n\n";
+                    echo "//-->\n";
+                    echo "</script>\n";
                 }
             }
 

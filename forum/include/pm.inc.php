@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.226 2007-11-13 19:46:28 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.227 2007-11-15 22:34:16 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1833,12 +1833,13 @@ function pm_get_new_messages($limit)
 * @param integer &$outbox_count - Number of undeliverable messages waiting for the user.
 */
 
-function pm_get_message_count(&$pm_new_count, &$pm_outbox_count)
+function pm_get_message_count(&$pm_new_count, &$pm_outbox_count, &$pm_unread_count)
 {
     // Default the variables to return 0 even on error.
 
     $pm_new_count = 0;
     $pm_outbox_count = 0;
+    $pm_unread_count = 0;
 
     // Connect to the database.
 
@@ -1891,6 +1892,15 @@ function pm_get_message_count(&$pm_new_count, &$pm_outbox_count)
         if (!$result = db_query($sql, $db_pm_get_message_count)) return false;
 
         list($pm_outbox_count) = db_fetch_array($result, DB_RESULT_NUM);
+
+        // Unread message count.
+
+        $sql = "SELECT COUNT(MID) FROM PM WHERE (TYPE & $pm_unread > 0) ";
+        $sql.= "AND TO_UID = '$uid'";
+
+        if (!$result = db_query($sql, $db_pm_get_message_count)) return false;
+
+        list($pm_unread_count) = db_fetch_array($result, DB_RESULT_NUM);
     }
 
     return true;
@@ -1919,7 +1929,7 @@ function pm_new_check()
 
     // Get the number of messages.
 
-    pm_get_message_count($pm_new_count, $pm_outbox_count);
+    pm_get_message_count($pm_new_count, $pm_outbox_count, $pm_unread_count);
 
     // XML header
 
@@ -1960,11 +1970,16 @@ function pm_new_check()
         $pm_notification = sprintf($lang['youhavexpmwaiting'], $pm_outbox_count);
     }
 
-    // Check we're outputting anything.
+    echo "<inbox>\n";
+    echo "  <new>$pm_new_count</new>\n";
+    echo "  <outbox>$pm_outbox_count</outbox>\n";
+    echo "  <unread>$pm_unread_count</unread>\n";
 
     if (isset($pm_notification) && strlen(trim($pm_notification)) > 0) {
-        echo "<message><![CDATA[", rawurlencode(wordwrap($pm_notification, 65, "\n")), "]]></message>\n";
+        echo "  <notification><![CDATA[", rawurlencode(wordwrap($pm_notification, 65, "\n")), "]]></notification>\n";
     }
+
+    echo "</inbox>\n";
 
     exit;
 }

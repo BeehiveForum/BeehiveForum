@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_stats.php,v 1.53 2007-11-02 21:55:06 decoyduck Exp $ */
+/* $Id: user_stats.php,v 1.54 2007-11-15 22:34:16 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -134,9 +134,14 @@ if (isset($_GET['show_stats']) && !user_is_guest()) {
         html_draw_bottom();
     }
 
+}else if (isset($_GET['get_stats'])) {
+
+    stats_output_xml();
+    exit;
+
 }else {
 
-   header_redirect("./messages.php?webtag=$webtag&msg=$msg");
+    header_redirect("./messages.php?webtag=$webtag&msg=$msg");
 }
 
 ?>

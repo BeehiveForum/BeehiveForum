@@ -794,6 +794,12 @@ a {
     width: 234px;
 }
 
+.install_table_list {
+    height: 140px;
+    overflow: auto;
+    padding: 2px;
+}
+
 .logon_dropdown {
     width: 96px;
 }

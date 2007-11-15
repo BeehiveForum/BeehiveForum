@@ -798,6 +798,12 @@ a {
     width: 234px;
 }
 
+.install_table_list {
+    height: 140px;
+    overflow: auto;
+    padding: 2px;
+}
+
 .admin_startpage_textarea {
     font-family: monospace;
     width: 550px;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06x-to-07.php,v 1.10 2007-10-15 18:00:28 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-07.php,v 1.11 2007-11-15 22:34:16 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-06x-to-07.php") {
 
@@ -148,7 +148,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
         $error_str = "<h2>Selected database contains tables which conflict with Beehive Forum. ";
         $error_str.= "If this database contains an existing Beehive Forum installation please ";
-        $error_str.= "check that you have selected the correct install / upgrade method.<h2>\n";
+        $error_str.= "check that you have selected the correct install / upgrade method.</h2>\n";
 
         $error_array[] = $error_str;
 
@@ -158,7 +158,9 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         $error_array[] = $error_str;
 
         $error_str = "<h2>Conflicting tables</h2>\n";
-        $error_str.= sprintf("<p>%s</p>\n", implode("</li><li>", $conflicting_tables));
+        $error_str.= "<div id=\"conflicting_tables\" class=\"install_table_list\">\n";
+        $error_str.= sprintf("<ul><li>%s</li></ul>\n", implode("</li><li>", $conflicting_tables));
+        $error_str.= "</div>\n";
 
         $error_array[] = $error_str;
 

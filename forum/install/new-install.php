@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.156 2007-10-21 19:59:22 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.157 2007-11-15 22:34:16 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
 
@@ -98,7 +98,7 @@ if (isset($remove_conflicts) && $remove_conflicts === true) {
 
     $error_str = "<h2>Selected database contains tables which conflict with Beehive Forum. ";
     $error_str.= "If this database contains an existing Beehive Forum installation please ";
-    $error_str.= "check that you have selected the correct install / upgrade method.<h2>\n";
+    $error_str.= "check that you have selected the correct install / upgrade method.</h2>\n";
 
     $error_array[] = $error_str;
 
@@ -108,7 +108,9 @@ if (isset($remove_conflicts) && $remove_conflicts === true) {
     $error_array[] = $error_str;
 
     $error_str = "<h2>Conflicting tables</h2>\n";
-    $error_str.= sprintf("<p>%s</p>\n", implode("</li><li>", $conflicting_tables));
+    $error_str.= "<div id=\"conflicting_tables\" class=\"install_table_list\">\n";
+    $error_str.= sprintf("<ul><li>%s</li></ul>\n", implode("</li><li>", $conflicting_tables));
+    $error_str.= "</div>\n";
 
     $error_array[] = $error_str;
 

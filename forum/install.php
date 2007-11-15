@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.80 2007-10-16 17:09:23 decoyduck Exp $ */
+/* $Id: install.php,v 1.81 2007-11-15 22:34:16 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -771,7 +771,7 @@ if (!@file_exists(BH_INCLUDE_PATH. "config.inc.php") || $force_install) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\"><input type=\"submit\" name=\"install\" value=\"Install\" class=\"button\" target=\"_blank\" onclick=\"return confirmInstall(this);\" tabindex=\"14\" /></td>\n";
+    echo "      <td align=\"center\"><input type=\"submit\" name=\"install\" value=\"Install\" class=\"button\" onclick=\"return confirmInstall(this);\" tabindex=\"14\" /></td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</div>\n";

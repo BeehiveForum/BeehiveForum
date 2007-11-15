@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.148 2007-10-11 13:01:19 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.149 2007-11-15 22:34:16 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -348,6 +348,8 @@ function _htmlentities($var)
 
         return htmlentities($var, ENT_COMPAT, 'UTF-8');
     }
+
+    return $var;
 }
 
 /**

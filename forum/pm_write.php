@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.189 2007-11-07 20:26:54 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.190 2007-11-17 20:11:05 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -714,9 +714,9 @@ if ($valid && isset($_POST['submit'])) {
     if ($valid) {
 
         if (isset($mid)) {
-            $uri = "./pm.php?webtag=$webtag&mid=$mid";
+            $uri = "./pm.php?webtag=$webtag&mid=$mid&message_sent=true";
         }else {
-            $uri = "./pm.php?webtag=$webtag";
+            $uri = "./pm.php?webtag=$webtag&message_sent=true";
         }
 
         header_redirect($uri);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.257 2007-11-17 18:38:05 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.258 2007-11-17 20:05:48 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -948,8 +948,11 @@ function html_draw_top()
                 echo "lang['mostuserseveronlinewasnumondate'] = '", rawurlencode($lang['mostuserseveronlinewasnumondate']), "';\n\n";
                 echo "function stats_display_initialise()\n";
                 echo "{\n";
-                echo "    stats_timeout = setTimeout('stats_display_get_data()', 3);\n";
-                echo "    return true;\n";
+                echo "    var forum_stats_obj = getObjById('forum_stats');\n\n";
+                echo "    if (typeof(forum_stats_obj) == 'object') {\n\n";
+                echo "        stats_timeout = setTimeout('stats_display_get_data()', 3);\n";
+                echo "        return true;\n";
+                echo "    }\n";
                 echo "}\n\n";
                 echo "function stats_display_get_data()\n";
                 echo "{\n";

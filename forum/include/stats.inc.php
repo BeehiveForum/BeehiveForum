@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.89 2007-11-15 22:34:16 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.90 2007-11-17 12:40:24 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -112,6 +112,7 @@ function stats_output_xml()
                 echo "        <uid>{$active_user['UID']}</uid>\n";
                 echo "        <display>{$active_user['DISPLAY']}</display>\n";
                 echo "        <relationship>{$active_user['RELATIONSHIP']}</relationship>\n";
+                echo "        <anonymous>{$active_user['ANON_LOGON']}</anonymous>\n";
                 echo "      </user>\n";
             }
 
@@ -168,27 +169,25 @@ function stats_output_xml()
         echo sprintf("    <count>%s</count>\n", number_format($post_count, 0, ",", ","));
     }
 
-    if ($recent_post_count = get_recent_post_count()) {
+    $recent_post_count = get_recent_post_count();
 
-        $recent_post_count = number_format($recent_post_count, 0, ",", ",");
+    $recent_post_count = number_format($recent_post_count, 0, ",", ",");
 
-        echo "    <recent>\n";
-        echo sprintf("    <count>%s</count>\n", number_format($recent_post_count, 0, ",", ","));
+    echo "    <recent>\n";
+    echo sprintf("    <count>%s</count>\n", number_format($recent_post_count, 0, ",", ","));
 
-        if ($most_posts = get_most_posts()) {
+    if ($most_posts = get_most_posts()) {
 
-            $most_posts_date = format_time($most_posts['MOST_POSTS_DATE'], 1);
-            $most_posts_count = number_format($most_posts['MOST_POSTS_COUNT'], 0, ",", ",");
+        $most_posts_date = format_time($most_posts['MOST_POSTS_DATE'], 1);
+        $most_posts_count = number_format($most_posts['MOST_POSTS_COUNT'], 0, ",", ",");
 
-            echo "      <record>\n";
-            echo "        <count>$most_posts_count</count>\n";
-            echo "        <date>$most_posts_date</date>\n";
-            echo "      </record>\n";
-        }
-
-        echo "    </recent>\n";
+        echo "      <record>\n";
+        echo "        <count>$most_posts_count</count>\n";
+        echo "        <date>$most_posts_date</date>\n";
+        echo "      </record>\n";
     }
 
+    echo "    </recent>\n";
     echo "  </posts>\n";
     echo "</stats>\n";
     exit;

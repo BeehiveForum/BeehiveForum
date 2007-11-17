@@ -19,14 +19,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.js,v 1.24 2007-10-27 19:57:21 decoyduck Exp $ */
+/* $Id: dictionary.js,v 1.25 2007-11-17 18:38:05 decoyduck Exp $ */
 
 function initialiseDictionary(obj_id) {
 
-    var dictObj = getObjByName('dictionary');
-    var contObj = getObjByName('content');
+    var dictObj = getObjsByName('dictionary')[0];
+    var contObj = getObjsByName('content')[0];
 
-    if (typeof dictObj == 'object' && typeof contObj == 'object') {
+    if ((typeof dictObj == 'object') && (typeof contObj == 'object')) {
   
         if (window.opener.readContent) {
         

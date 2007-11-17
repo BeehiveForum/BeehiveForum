@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.131 2007-11-13 19:46:28 decoyduck Exp $ */
+/* $Id: pm.php,v 1.132 2007-11-17 18:38:05 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -107,9 +107,9 @@ if (user_is_guest()) {
 
 // Check to see if we're looking for new messages.
 
-if (isset($_GET['pm_new_check'])) {
+if (isset($_GET['check_messages'])) {
 
-    pm_new_check();
+    pm_check_messages();
     exit;
 }
 

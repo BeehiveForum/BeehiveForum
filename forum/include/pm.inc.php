@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.228 2007-11-17 12:40:24 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.229 2007-11-17 18:38:05 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1917,7 +1917,7 @@ function pm_get_message_count(&$pm_new_count, &$pm_outbox_count, &$pm_unread_cou
 * @param void
 */
 
-function pm_new_check()
+function pm_check_messages()
 {
     // Outputting XML
 

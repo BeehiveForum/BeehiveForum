@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.246 2007-11-13 19:46:28 decoyduck Exp $ */
+/* $Id: messages.php,v 1.247 2007-11-17 18:38:05 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -231,16 +231,16 @@ echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
 echo "<!--\n\n";
 echo "function initialisePostQuoting()\n";
 echo "{\n";
-echo "    var form_obj = getObjByName('quote_list');\n\n";
+echo "    var form_obj = getObjsByName('quote_list')[0];\n\n";
 echo "    if (typeof form_obj == 'object') {\n";
 echo "        form_obj.value = '';\n";
 echo "    }\n";
 echo "}\n\n";
 echo "function togglePostQuoting(post_id)\n";
 echo "{\n";
-echo "    var form_obj = getObjByName('quote_list');\n";
-echo "    var post_img = getObjByName('p' + post_id);\n\n";
-echo "    if (typeof form_obj == 'object' && typeof post_img == 'object') {\n\n";
+echo "    var form_obj = getObjsByName('quote_list')[0];\n";
+echo "    var post_img = getObjsByName('p' + post_id)[0];\n\n";
+echo "    if ((typeof form_obj == 'object') && (typeof post_img == 'object')) {\n\n";
 echo "        if (form_obj.value.length > 0) {\n\n";
 echo "            var quote_list = form_obj.value.split(',');\n\n";
 echo "            for (var check_post_id in quote_list) {\n\n";
@@ -263,10 +263,10 @@ echo "    return false;\n";
 echo "}\n\n";
 echo "function checkPostQuoting(replyto_id)\n";
 echo "{\n";
-echo "    var quote_list_obj = getObjByName('quote_list');\n\n";
+echo "    var quote_list_obj = getObjsByName('quote_list')[0];\n\n";
 echo "    if (typeof quote_list_obj == 'object') {\n\n";
-echo "        var f_quote_obj = getObjByName('f_quote');\n";
-echo "        var replyto_obj = getObjByName('replyto');\n\n";
+echo "        var f_quote_obj = getObjsByName('f_quote')[0];\n";
+echo "        var replyto_obj = getObjsByName('replyto')[0];\n\n";
 echo "        if (typeof f_quote_obj == 'object' && typeof replyto_obj == 'object') {\n\n";
 echo "            if (quote_list_obj.value.length > 0) {\n\n";
 echo "                replyto_obj.value = replyto_id;\n";

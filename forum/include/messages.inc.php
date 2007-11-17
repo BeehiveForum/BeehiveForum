@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.494 2007-11-13 19:46:27 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.495 2007-11-17 12:40:24 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1822,142 +1822,7 @@ function messages_forum_stats($tid, $pid)
 
             echo "                </tr>\n";
             echo "                <tr>\n";
-            echo "                  <td colspan=\"2\" align=\"left\">\n";
-
-            if ($user_stats = get_active_users()) {
-
-                $active_users_array = array();
-
-                $session_cutoff = format_time_display(forum_get_setting('active_sess_cutoff', false, 86400), false);
-
-                $active_users_array[] = ($user_stats['GUESTS'] <> 1) ? sprintf($lang['numactiveguests'], $user_stats['GUESTS']) : $lang['oneactiveguest'];
-                $active_users_array[] = ($user_stats['NUSERS'] <> 1) ? sprintf($lang['numactivemembers'], $user_stats['NUSERS']) : $lang['oneactivemember'];
-                $active_users_array[] = ($user_stats['AUSERS'] <> 1) ? sprintf($lang['numactiveanonymousmembers'], $user_stats['AUSERS']) : $lang['oneactiveanonymousmember'];
-
-                echo "                    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
-                echo "                      <tr>\n";
-                echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
-                echo "                        <td align=\"left\">&nbsp;</td>\n";
-                echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
-                echo "                      </tr>\n";
-                echo "                      <tr>\n";
-                echo "                        <td align=\"left\">&nbsp;</td>\n";
-                echo "                        <td align=\"left\">", sprintf($lang['usersactiveinthepasttimeperiod'], implode(", ", $active_users_array), $session_cutoff), " [ <a href=\"start.php?webtag=$webtag&amp;show=visitors\" target=\"", html_get_frame_name('main'), "\">{$lang['viewcompletelist']}</a> ]</td>\n";
-                echo "                        <td align=\"left\">&nbsp;</td>\n";
-                echo "                      </tr>\n";
-
-                if (sizeof($user_stats['USERS']) > 0) {
-
-                    $active_users_array = array();
-
-                    foreach ($user_stats['USERS'] as $user) {
-
-                        $active_user = "<a href=\"user_profile.php?webtag=$webtag&amp;uid={$user['UID']}\" target=\"_blank\" onclick=\"return openProfile({$user['UID']}, '$webtag')\">";
-
-                        if ($user['UID'] == $uid) {
-
-                            if (isset($user['ANON_LOGON']) && $user['ANON_LOGON'] > USER_ANON_DISABLED) {
-
-                                $active_user.= "<span class=\"user_stats_curuser\" title=\"{$lang['youinvisible']}\">";
-
-                            }else {
-
-                                $active_user.= "<span class=\"user_stats_curuser\" title=\"{$lang['younormal']}\">";
-                            }
-
-                        }elseif ($user['RELATIONSHIP'] & USER_FRIEND) {
-
-                            $active_user.= "<span class=\"user_stats_friend\" title=\"Friend\">";
-
-                        }else {
-
-                            $active_user.= "<span class=\"user_stats_normal\">";
-                        }
-
-                        $active_user.= str_replace(" ", "&nbsp;", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))));
-                        $active_user.= "</span></a>";
-
-                        $active_users_array[] = $active_user;
-                    }
-
-                    echo "                      <tr>\n";
-                    echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
-                    echo "                        <td align=\"left\">&nbsp;</td>\n";
-                    echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
-                    echo "                      </tr>\n";
-                    echo "                      <tr>";
-                    echo "                        <td align=\"left\">&nbsp;</td>\n";
-                    echo "                        <td align=\"left\" class=\"activeusers\">", implode(", ", $active_users_array), "</td>\n";
-                    echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
-                    echo "                      </tr>\n";
-                }
-
-                echo "                      <tr>\n";
-                echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
-                echo "                        <td align=\"left\">&nbsp;</td>\n";
-                echo "                      </tr>\n";
-                echo "                    </table>\n";
-            }
-
-            $thread_count = get_thread_count();
-            $post_count = get_post_count();
-
-            $num_threads_display = ($thread_count <> 1) ? sprintf($lang['numthreadscreated'], number_format(get_thread_count(), 0, ".", ",")) : $lang['onethreadcreated'];
-            $num_posts_display = ($post_count <> 1) ? sprintf($lang['numpostscreated'], number_format(get_post_count(), 0, ",", ",")) : $lang['onepostcreated'];
-
-            echo "                    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
-            echo "                      <tr>\n";
-            echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
-            echo "                        <td align=\"left\">", sprintf($lang['ourmembershavemadeatotalofnumthreadsandnumposts'], $num_threads_display, $num_posts_display), "</td>\n";
-            echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
-            echo "                      </tr>\n";
-            echo "                    </table>\n";
-
-            if ($longest_thread = get_longest_thread()) {
-
-                $longest_thread_link = sprintf("<a href=\"./index.php?webtag=$webtag&amp;msg=%s.1\">%s</a>", $longest_thread['TID'], _htmlentities(thread_format_prefix($longest_thread['PREFIX'], $longest_thread['TITLE'])));
-                $longest_thread_post_count = ($longest_thread['LENGTH'] <> 1) ? sprintf($lang['numpostscreated'], number_format($longest_thread['LENGTH'], 0, ",", ",")) : $lang['onepostcreated'];
-
-                echo "                    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
-                echo "                      <tr>\n";
-                echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
-                echo "                        <td align=\"left\">", sprintf($lang['longestthreadisthreadnamewithnumposts'], $longest_thread_link, $longest_thread_post_count), "</td>\n";
-                echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
-                echo "                      </tr>\n";
-                echo "                    </table>\n";
-            }
-
-            $recent_post_count = get_recent_post_count();
-
-            echo "                    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
-            echo "                      <tr>\n";
-            echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
-            echo "                        <td align=\"left\">&nbsp;</td>\n";
-            echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
-            echo "                      </tr>\n";
-            echo "                    </table>\n";
-            echo "                    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
-            echo "                      <tr>\n";
-            echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
-            echo "                        <td align=\"left\">", ($recent_post_count <> 1) ? sprintf($lang['therehavebeenxpostsmadeinthelastsixtyminutes'], $recent_post_count) : $lang['therehasbeenonepostmadeinthelastsxityminutes'], "</td>\n";
-            echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
-            echo "                      </tr>\n";
-            echo "                    </table>\n";
-
-            if ($most_posts = get_most_posts()) {
-
-                if ($most_posts['MOST_POSTS_COUNT'] > 0 && $most_posts['MOST_POSTS_DATE'] > 0) {
-
-                    echo "                    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
-                    echo "                      <tr>\n";
-                    echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
-                    echo "                        <td align=\"left\">", sprintf($lang['mostpostsevermadeinasinglesixtyminuteperiodwasnumposts'], number_format($most_posts['MOST_POSTS_COUNT'], 0, ",", ","), format_time($most_posts['MOST_POSTS_DATE'], 1)), "</td>\n";
-                    echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
-                    echo "                      </tr>\n";
-                    echo "                    </table>\n";
-                }
-            }
-
+            echo "                  <td colspan=\"2\" align=\"center\">\n";
             echo "                    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
@@ -1966,57 +1831,60 @@ function messages_forum_stats($tid, $pid)
             echo "                      </tr>\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
-
-            if (($user_count = user_count()) <> 1) {
-
-                if ($newest_member = get_newest_user()) {
-
-                    $newest_member_profile_link = sprintf("<a href=\"user_profile.php?webtag=$webtag&amp;uid=%1\$s\" target=\"_blank\" onclick=\"return openProfile(%1\$s, '$webtag')\">%2\$s</a>", $newest_member['UID'], word_filter_add_ob_tags(_htmlentities(format_user_name($newest_member['LOGON'], $newest_member['NICKNAME']))));
-                    echo "                        <td align=\"left\">", sprintf($lang['wehavenumregisteredmembersandthenewestmemberismembername'], $user_count, $newest_member_profile_link);
-
-                }else {
-
-                    echo "                        <td align=\"left\">", sprintf($lang['wehavenumregisteredmember'], $user_count), "</td>\n";
-                }
-
-            }else {
-
-                echo "                        <td align=\"left\">{$lang['wehaveoneregisteredmember']}</td>\n";
-            }
-
+            echo "                        <td align=\"left\" id=\"active_user_counts\"></td>\n";
             echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
             echo "                      </tr>\n";
-            echo "                    </table>\n";
-
-            if ($most_users = get_most_users()) {
-
-                if ($most_users['MOST_USERS_COUNT'] > 0 && $most_users['MOST_USERS_DATE'] > 0) {
-
-                    echo "                    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
-                    echo "                      <tr>\n";
-                    echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
-                    echo "                        <td align=\"left\">", sprintf($lang['mostuserseveronlinewasnumondate'], number_format($most_users['MOST_USERS_COUNT'], 0, ",", ","), format_time($most_users['MOST_USERS_DATE'], 1)), "</td>\n";
-                    echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
-                    echo "                      </tr>\n";
-                    echo "                    </table>\n";
-                }
-            }
-
-            echo "                    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
+            echo "                      <tr>\n";
+            echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
+            echo "                        <td align=\"left\">&nbsp;</td>\n";
+            echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
+            echo "                      </tr>\n";
+            echo "                      <tr>\n";
+            echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
+            echo "                        <td align=\"left\" class=\"activeusers\" id=\"active_user_list\">&nbsp;</td>\n";
+            echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
+            echo "                      </tr>\n";
+            echo "                      <tr>\n";
+            echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
+            echo "                        <td align=\"left\">&nbsp;</td>\n";
+            echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
+            echo "                      </tr>\n";
+            echo "                      <tr>\n";
+            echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
+            echo "                        <td align=\"left\" id=\"thread_stats\">&nbsp;</td>\n";
+            echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
+            echo "                      </tr>\n";
+            echo "                      <tr>\n";
+            echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
+            echo "                        <td align=\"left\">&nbsp;</td>\n";
+            echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
+            echo "                      </tr>\n";
+            echo "                      <tr>\n";
+            echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
+            echo "                        <td align=\"left\" id=\"post_stats\">&nbsp;</td>\n";
+            echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
+            echo "                      </tr>\n";
+            echo "                      <tr>\n";
+            echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
+            echo "                        <td align=\"left\">&nbsp;</td>\n";
+            echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
+            echo "                      </tr>\n";
+            echo "                      <tr>\n";
+            echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
+            echo "                        <td align=\"left\" id=\"user_stats\">&nbsp;</td>\n";
+            echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
+            echo "                      </tr>\n";
+            echo "                      <tr>\n";
+            echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
+            echo "                        <td align=\"left\">&nbsp;</td>\n";
+            echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
+            echo "                      </tr>\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
             echo "                        <td align=\"left\">&nbsp;</td>\n";
             echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
             echo "                      </tr>\n";
             echo "                    </table>\n";
-            echo "                    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
-            echo "                      <tr>\n";
-            echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
-            echo "                        <td align=\"left\">&nbsp;</td>\n";
-            echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
-            echo "                      </tr>\n";
-            echo "                    </table>\n";
-
             echo "                  </td>\n";
 
         }else {

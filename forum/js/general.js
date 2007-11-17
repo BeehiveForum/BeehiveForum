@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: general.js,v 1.33 2007-11-15 22:34:16 decoyduck Exp $ */
+/* $Id: general.js,v 1.34 2007-11-17 12:40:24 decoyduck Exp $ */
 
 // sprintf function based on code available at http://jan.moesen.nu
 
@@ -223,12 +223,12 @@ function redoOverFlow()
     }
 }
 
-function attachListener(obj, img_id)
+function attachListener(obj, event, func)
 {
     if (document.all) {
-        obj.attachEvent('onclick', function() { popupImage(img_id) } );
+        obj.attachEvent('on' + event, function() { return eval(func) } );
     }else {
-        obj.addEventListener('click', function() { popupImage(img_id) }, true);
+        obj.addEventListener(event, function() { return eval(func) }, true);
     }
 }
 
@@ -296,7 +296,7 @@ function resizeImage(img, index)
    
             // Set up an onclick handler for the info bar
         
-            attachListener(img_resize_info_bar, img.id);
+            attachListener(img_resize_info_bar, 'click', 'popupImage(img.id)');
         
             // Stick the original dimensions of the image in the text and
             // create the link to the full-sized image.

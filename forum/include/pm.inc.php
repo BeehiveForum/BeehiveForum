@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.227 2007-11-15 22:34:16 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.228 2007-11-17 12:40:24 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1859,7 +1859,7 @@ function pm_get_message_count(&$pm_new_count, &$pm_outbox_count, &$pm_unread_cou
 
     $pm_free_space = pm_get_free_space($uid);
 
-    // Get a list of messages we have recived.
+    // Get a list of messages we have received.
 
     if ($pm_messages_array = pm_get_new_messages($pm_free_space)) {
 
@@ -1883,25 +1883,25 @@ function pm_get_message_count(&$pm_new_count, &$pm_outbox_count, &$pm_unread_cou
         // Number of new messages we've received for popup.
 
         $pm_new_count = sizeof($pm_messages_array);
-
-        // Check for any undelivered messages waiting for the user.
-
-        $sql = "SELECT COUNT(MID) AS OUTBOX_COUNT FROM PM ";
-        $sql.= "WHERE TYPE = '$pm_outbox' AND TO_UID = '$uid'";
-
-        if (!$result = db_query($sql, $db_pm_get_message_count)) return false;
-
-        list($pm_outbox_count) = db_fetch_array($result, DB_RESULT_NUM);
-
-        // Unread message count.
-
-        $sql = "SELECT COUNT(MID) FROM PM WHERE (TYPE & $pm_unread > 0) ";
-        $sql.= "AND TO_UID = '$uid'";
-
-        if (!$result = db_query($sql, $db_pm_get_message_count)) return false;
-
-        list($pm_unread_count) = db_fetch_array($result, DB_RESULT_NUM);
     }
+
+    // Unread message count.
+
+    $sql = "SELECT COUNT(MID) FROM PM WHERE (TYPE & $pm_unread > 0) ";
+    $sql.= "AND TO_UID = '$uid'";
+
+    if (!$result = db_query($sql, $db_pm_get_message_count)) return false;
+
+    list($pm_unread_count) = db_fetch_array($result, DB_RESULT_NUM);
+
+    // Check for any undelivered messages waiting for the user.
+
+    $sql = "SELECT COUNT(MID) AS OUTBOX_COUNT FROM PM ";
+    $sql.= "WHERE TYPE = '$pm_outbox' AND TO_UID = '$uid'";
+
+    if (!$result = db_query($sql, $db_pm_get_message_count)) return false;
+
+    list($pm_outbox_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     return true;
 }

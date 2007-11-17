@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.js,v 1.21 2007-10-27 19:57:21 decoyduck Exp $ */
+/* $Id: search.js,v 1.22 2007-11-17 18:38:05 decoyduck Exp $ */
 
 var search_stop_words = false;
 var search_logon = false;
@@ -27,9 +27,9 @@ var search_logon = false;
 function searchFormSubmit()
 {
     var search_form = getObjById('search_form');
-    var search_submit = getObjByName('search_submit');
+    var search_submit = getObjsByName('search_submit')[0];
 
-    if (typeof search_form == 'object' && typeof search_submit == 'object') {
+    if ((typeof search_form == 'object') && (typeof search_submit == 'object')) {
 
         disableButton(search_submit);
         search_form.submit();
@@ -55,7 +55,7 @@ function openLogonSearch(webtag, obj_name)
 
     }else {
 
-        var form_obj = getObjByName(obj_name);
+        var form_obj = getObjsByName(obj_name)[0];
         
         if (typeof form_obj == 'object') {
 
@@ -68,7 +68,7 @@ function openLogonSearch(webtag, obj_name)
 
 function returnSearchResult(obj_name, content)
 {
-    var form_obj = getObjByName(obj_name);
+    var form_obj = getObjsByName(obj_name)[0];
 
     if (typeof form_obj == 'object') {
 

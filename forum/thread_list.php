@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.319 2007-11-13 19:46:28 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.320 2007-11-17 18:38:05 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -303,9 +303,9 @@ echo "    return window.confirm('{$lang['unignorefolderconfirm']}');\n";
 echo "}\n\n";
 echo "function confirmMarkAsRead()\n";
 echo "{\n";
-echo "    var mark_read_type = getObjByName('mark_read_type');\n";
-echo "    var mark_read_confirm = getObjByName('mark_read_confirm');\n\n";
-echo "    if (typeof mark_read_type == 'object' && typeof mark_read_confirm == 'object') {\n\n";
+echo "    var mark_read_type = getObjsByName('mark_read_type')[0];\n";
+echo "    var mark_read_confirm = getObjsByName('mark_read_confirm')[0];\n\n";
+echo "    if ((typeof mark_read_type == 'object') && (typeof mark_read_confirm == 'object')) {\n\n";
 echo "        if (window.confirm('{$lang['confirmmarkasread']}')) {\n\n";
 echo "            mark_read_confirm.value = 'Y';\n";
 echo "            return true;\n";

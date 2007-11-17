@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: general.js,v 1.34 2007-11-17 12:40:24 decoyduck Exp $ */
+/* $Id: general.js,v 1.35 2007-11-17 18:38:05 decoyduck Exp $ */
 
 // sprintf function based on code available at http://jan.moesen.nu
 
@@ -62,53 +62,30 @@ function enableButton(button)
 
 function getObjById(obj_id)
 {
-    var form_obj;
-
-    if (document.getElementById) {
-        form_obj = eval("document.getElementById('" + obj_id + "')");
+    if (document.getElementById) {       
+        var obj = document.getElementById(obj_id);
     }else if (document.all) {
-        form_obj = eval("document.all." + obj_id);
+        var obj = eval("document.all." + obj_id);
     }else if (document.layer) {
-        form_obj = eval("document." + obj_id);
-    }else {
-        return false;
+        var obj = eval("document." + obj_id);
     }
 
-    return form_obj;
+    if (obj != null) return obj;
+    return false;
 }
 
 function getObjsByName(obj_name)
 {
-    var form_obj;
-
     if (document.getElementsByName) {
-        form_obj = eval("document.getElementsByName('" + obj_name + "')");
+        var obj = document.getElementsByName(obj_name);
     }else if (document.all) {
-        form_obj = eval("document.all." + obj_name);
+        var obj = eval("document.all." + obj_name);
     }else if (document.layer) {
-        form_obj = eval("document." + obj_name);
-    }else {
-        return false;
+        var obj = eval("document." + obj_name);
     }
-
-    return form_obj;
-}
-
-function getObjByName(obj_name)
-{
-    var form_obj;
-
-    if (document.getElementsByName) {
-        form_obj = eval("document.getElementsByName('" + obj_name + "')[0]");
-    }else if (document.all) {
-        form_obj = eval("document.all." + obj_name);
-    }else if (document.layer) {
-        form_obj = eval("document." + obj_name);
-    }else {
-        return false;
-    }
-
-    return form_obj;
+    
+    if (obj != null) return obj;
+    return false;
 }
 
 function getImageMaxWidth()

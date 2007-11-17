@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_messages.php,v 1.35 2007-11-15 22:34:16 decoyduck Exp $ */
+/* $Id: pm_messages.php,v 1.36 2007-11-17 20:11:05 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -415,6 +415,10 @@ echo "<h1>{$pm_header_array[$current_folder]}</h1>\n";
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
     html_display_error_array($error_msg_array, '96%', 'center');
+
+}else if (isset($_GET['message_sent'])) {
+
+    html_display_success_msg($lang['msgsentsuccessfully'], '96%', 'center');
 
 }else if (isset($_GET['deleted'])) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.320 2007-11-17 18:38:05 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.321 2007-11-18 13:55:18 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -295,18 +295,18 @@ echo "<script language=\"javascript\" type=\"text/javascript\">\n";
 echo "<!--\n\n";
 echo "function confirmFolderIgnore()\n";
 echo "{\n";
-echo "    return window.confirm('{$lang['ignorefolderconfirm']}');\n";
+echo "    return window.confirm('", html_js_safe_str($lang['ignorefolderconfirm']), "');\n";
 echo "}\n\n";
 echo "function confirmFolderUnignore()\n";
 echo "{\n";
-echo "    return window.confirm('{$lang['unignorefolderconfirm']}');\n";
+echo "    return window.confirm('", html_js_safe_str($lang['unignorefolderconfirm']), "');\n";
 echo "}\n\n";
 echo "function confirmMarkAsRead()\n";
 echo "{\n";
 echo "    var mark_read_type = getObjsByName('mark_read_type')[0];\n";
 echo "    var mark_read_confirm = getObjsByName('mark_read_confirm')[0];\n\n";
 echo "    if ((typeof mark_read_type == 'object') && (typeof mark_read_confirm == 'object')) {\n\n";
-echo "        if (window.confirm('{$lang['confirmmarkasread']}')) {\n\n";
+echo "        if (window.confirm('", html_js_safe_str($lang['confirmmarkasread']), "')) {\n\n";
 echo "            mark_read_confirm.value = 'Y';\n";
 echo "            return true;\n";
 echo "        }\n";

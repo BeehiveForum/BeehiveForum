@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.148 2007-10-16 17:09:23 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.149 2007-11-18 13:55:18 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -369,11 +369,14 @@ if (isset($_POST['upload'])) {
 
 html_draw_top('attachments.js', 'onload=add_upload_field_link()', 'pm_popup_disabled');
 
+$javascript_upload_link = "<img src=\"%1\$s\" border=\"0\" alt=\"%2\$s\" title=\"%2\$s\" />";
+$javascript_upload_link.= "<a href=\"javascript:void(0)\" onclick=\"add_upload_field()\">%3\$s</a>";
+
 echo "<script language=\"javascript\" type=\"text/javascript\">\n";
 echo "<!--\n\n";
 echo "var upload_field_array = new Array();\n\n";
 echo "var upload_field_html = '", form_input_file("userfile[]", "", 30, 0),"';\n";
-echo "var upload_field_link_html = '<img src=\"", style_image('attach.png'), "\" border=\"0\" alt=\"{$lang['attachment']}\" title=\"{$lang['attachment']}\" /><a href=\"javascript:void(0)\" onclick=\"add_upload_field()\">Upload another file<\/a>';\n\n";
+echo "var upload_field_link_html = '", html_js_safe_str(sprintf($javascript_upload_link, style_image('attach.png'), $lang['attachment'], 'Upload another file')), "';\n\n";
 echo "function add_upload_field_link()\n";
 echo "{\n";
 echo "    var upload_field_link_obj;\n\n";
@@ -393,7 +396,7 @@ echo "            new_upload_div = document.createElement('div');\n";
 echo "            upload_field_obj.appendChild(new_upload_div);\n";
 echo "            new_upload_div.innerHTML =  upload_field_html;\n\n";
 echo "        }else {\n\n";
-echo "            alert('{$lang['canonlyuploadmaximum']}');\n";
+echo "            alert('", html_js_safe_str($lang['canonlyuploadmaximum']), "');\n";
 echo "        }\n";
 echo "    }\n";
 echo "}\n\n";

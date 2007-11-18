@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.inc.php,v 1.45 2007-10-11 13:01:18 decoyduck Exp $ */
+/* $Id: dictionary.inc.php,v 1.46 2007-11-18 13:55:19 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -108,7 +108,7 @@ class dictionary {
     function get_js_safe_content()
     {
         $content = $this->get_content();
-        return rawurlencode($content);
+        return html_js_safe_str($content);
     }
 
     function get_ignored_words()

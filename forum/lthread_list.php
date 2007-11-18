@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lthread_list.php,v 1.88 2007-11-17 18:38:05 decoyduck Exp $ */
+/* $Id: lthread_list.php,v 1.89 2007-11-18 13:55:18 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -287,7 +287,7 @@ echo "function confirmMarkAsRead()\n";
 echo "{\n";
 echo "    var mark_read_type = getObjsByName('mark_read_type')[0];\n\n";
 echo "    if (typeof mark_read_type == 'object') {\n\n";
-echo "        return window.confirm('{$lang['confirmmarkasread']}');\n";
+echo "        return window.confirm('", html_js_safe_str($lang['confirmmarkasread']), "');\n";
 echo "    }\n";
 echo "}\n\n";
 echo "//-->\n";

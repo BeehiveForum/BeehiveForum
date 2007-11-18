@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.js,v 1.22 2007-11-17 18:38:05 decoyduck Exp $ */
+/* $Id: search.js,v 1.23 2007-11-18 13:55:19 decoyduck Exp $ */
 
 var search_stop_words = false;
 var search_logon = false;
@@ -74,12 +74,12 @@ function returnSearchResult(obj_name, content)
 
         if (form_obj.value.length == 0) {
 
-            form_obj.value = unescape(content);
+            form_obj.value = content;
             return true;
 
         }else {
 
-            form_obj.value+= '; ' + unescape(content);
+            form_obj.value+= '; ' + content;
             return true;
         }
     }

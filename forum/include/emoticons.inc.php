@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: emoticons.inc.php,v 1.64 2007-10-11 13:01:18 decoyduck Exp $ */
+/* $Id: emoticons.inc.php,v 1.65 2007-11-18 13:55:19 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -349,7 +349,7 @@ function emoticons_preview($set, $width=190, $height=100, $num = 35)
 
             $emot_tiptext = trim(implode(" ", $emot_tooltip_matches));
 
-            $str.= "<img src=\"$path/{$emots_array[$i]['img']}\" alt=\"{$emot_tiptext}\" title=\"{$emot_tiptext}\" onclick=\"add_text(' ". rawurlencode($emots_array[$i]['matches'][0]) ." ');\" /> ";
+            $str.= "<img src=\"$path/{$emots_array[$i]['img']}\" alt=\"{$emot_tiptext}\" title=\"{$emot_tiptext}\" onclick=\"add_text(' ". html_js_safe_str($emots_array[$i]['matches'][0]) ." ');\" /> ";
         }
 
         if ($num < count($emots_array)) {

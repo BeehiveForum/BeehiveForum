@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.200 2007-10-27 19:57:21 decoyduck Exp $ */
+/* $Id: search.php,v 1.201 2007-11-18 13:55:18 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -574,7 +574,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     echo "}\n\n";
     echo "var search_success_container = getObjById('search_success');\n\n";
     echo "if (typeof search_success_container == 'object') {\n";
-    echo "    search_success_container.innerHTML = unescape('", html_display_success_msg_js(sprintf($lang['searchsuccessfullycompleted'], ''), '600', 'center'), "');\n";
+    echo "    search_success_container.innerHTML = '", html_display_success_msg_js(sprintf($lang['searchsuccessfullycompleted'], ''), '600', 'center'), "';\n";
     echo "}\n\n";
     echo "-->\n";
     echo "</script>\n\n";

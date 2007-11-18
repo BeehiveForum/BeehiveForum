@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: general.js,v 1.35 2007-11-17 18:38:05 decoyduck Exp $ */
+/* $Id: general.js,v 1.36 2007-11-18 13:55:19 decoyduck Exp $ */
 
 // sprintf function based on code available at http://jan.moesen.nu
 
@@ -101,7 +101,7 @@ function getImageMaxWidth()
 function getImageResizeText()
 {
     if (typeof(document.resizeText) != 'undefined' && document.resizeText.length > 0) {
-        return unescape(document.resizeText);
+        return document.resizeText;
     }
 
     return 'This image has been resized (original size %1$sx%2$s). To view the full-size image click here.';
@@ -279,7 +279,7 @@ function resizeImage(img, index)
             // create the link to the full-sized image.
         
             var img_resize_icon = document.createElement('img');
-            var img_resize_text = document.createTextNode(unescape(resizeText.replace('%1$s', img.original_width).replace('%2$s', img.original_height)));
+            var img_resize_text = document.createTextNode(resizeText.replace('%1$s', img.original_width).replace('%2$s', img.original_height));
         
             // Set up the link and the image.
         

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: search_popup.php,v 1.26 2007-10-31 13:30:55 decoyduck Exp $ */
+/* $Id: search_popup.php,v 1.27 2007-11-18 13:55:18 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -230,20 +230,23 @@ if (isset($_POST['select_result'])) {
 
                 foreach($search_result as $search_result_part) {
 
-                    $search_result_part = rawurlencode(trim($search_result_part));
+                    $search_result_part = html_js_safe_str(trim($search_result_part));
                     echo "    window.opener.returnSearchResult('$obj_name', '$search_result_part');\n";
                 }
 
             }else {
 
                 list($search_result) = array_values($search_result);
-                $search_result = rawurlencode(trim($search_result));
+
+                $search_result = html_js_safe_str(trim($search_result));
+
                 echo "    window.opener.returnSearchResult('$obj_name', '$search_result');\n";
             }
 
         }else {
 
-            $search_result = rawurlencode(trim($search_result));
+            $search_result = html_js_safe_str(trim($search_result));
+
             echo "    window.opener.returnSearchResult('$obj_name', '$search_result');\n";
         }
 

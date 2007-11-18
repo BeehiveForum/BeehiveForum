@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.261 2007-11-18 16:27:08 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.262 2007-11-18 23:59:12 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -825,24 +825,26 @@ function html_draw_top()
                     echo "function pm_notification_handler()\n";
                     echo "{\n";
                     echo "    var response_xml = pm_notification.get_response_xml();\n\n";
-                    echo "    if (typeof(response_xml) == 'object') {\n\n";
+                    echo "    if (typeof(response_xml) == 'object' && response_xml.length > 0) {\n\n";
                     echo "        var pm_message_count_obj = getObjById('pm_message_count');\n\n";
-                    echo "        if (typeof(pm_message_count_obj) == 'object') {\n\n";
+                    echo "        if (typeof(pm_message_count_obj) == 'object' && pm_message_count_obj.length > 0) {\n\n";
                     echo "            var pm_unread_element = response_xml.getElementsByTagName('unread')[0];\n";
                     echo "            var pm_new_element = response_xml.getElementsByTagName('new')[0];\n\n";
                     echo "            if (typeof(pm_unread_element) == 'object' && typeof(pm_new_element) == 'object') {\n\n";
-                    echo "                var pm_unread_count = pm_unread_element.childNodes[0].nodeValue;\n";
-                    echo "                var pm_new_count = pm_new_element.childNodes[0].nodeValue;\n\n";
-                    echo "                if (pm_new_count > 0) {\n\n";
-                    echo "                    pm_message_count_obj.innerHTML = '[' + pm_new_count + ' {$lang['new']}]';\n\n";
-                    echo "                }else if (pm_unread_count > 0) {\n\n";
-                    echo "                    pm_message_count_obj.innerHTML = '[' + pm_unread_count + ' {$lang['unread']}]';\n";
+                    echo "                if (pm_unread_element.length > 0 && pm_new_element.length > 0) {\n\n";
+                    echo "                    var pm_unread_count = pm_unread_element.childNodes[0].nodeValue;\n";
+                    echo "                    var pm_new_count = pm_new_element.childNodes[0].nodeValue;\n\n";
+                    echo "                    if (pm_new_count > 0) {\n\n";
+                    echo "                        pm_message_count_obj.innerHTML = '[' + pm_new_count + ' {$lang['new']}]';\n\n";
+                    echo "                    }else if (pm_unread_count > 0) {\n\n";
+                    echo "                        pm_message_count_obj.innerHTML = '[' + pm_unread_count + ' {$lang['unread']}]';\n";
+                    echo "                    }\n";
                     echo "                }\n";
                     echo "            }\n";
                     echo "        }\n\n";
-                    echo "        var message_array = response_xml.getElementsByTagName('notification')[0];\n\n";
-                    echo "        if (typeof(message_array) == 'object') {\n\n";
-                    echo "            var message_display_text = message_array.childNodes[0].nodeValue;\n\n";
+                    echo "        var message_array = response_xml.getElementsByTagName('notification');\n\n";
+                    echo "        if (typeof(message_array) == 'object' && message_array.length > 0) {\n\n";
+                    echo "            var message_display_text = message_array[0].childNodes[0].nodeValue;\n\n";
                     echo "            if (message_display_text.length > 0) {\n\n";
                     echo "                if (window.confirm(message_display_text)) {\n\n";
                     echo "                    top.frames['", html_get_frame_name('main'), "'].location.replace('pm.php?webtag=$webtag');\n";

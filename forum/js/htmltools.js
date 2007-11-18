@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: htmltools.js,v 1.28 2007-11-18 13:55:19 decoyduck Exp $ */
+/* $Id: htmltools.js,v 1.29 2007-11-18 23:59:12 decoyduck Exp $ */
 
 var selected_text = '';
 var active_field  = '';
@@ -991,7 +991,7 @@ function show_hide(layer_ref, state)
 { 
     if (document.all) {
         
-        eval("document.all." + layer_ref + ".style.display = " + state); 
+        eval("document.all." + layer_ref + ".style.display = '" + state + "'"); 
     
     }else if (document.layers) {
         

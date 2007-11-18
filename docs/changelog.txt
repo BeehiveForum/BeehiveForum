@@ -1,4 +1,133 @@
 Author: decoyduck
+Date: Sun, 18 Nov 2007 15:28:17
+-----------------------
+Changed: Updated Dependencies.
+Fixed: Missing visitor log link in stats display.
+
+Date: Sun, 18 Nov 2007 13:55:18
+-----------------------
+Added: xml_http.js javascript class file.
+Changed: Replaced rawurlencode(str) / unencode combo with
+html_js_safe_str() which makes a string Javascript safe from PHP.
+Changed: Escaped all $lang strings in embedded Javascript.
+
+Date: Sat, 17 Nov 2007 20:11:05
+-----------------------
+Added: Message Sent Successfully notice after sending a PM.
+
+Date: Sat, 17 Nov 2007 20:05:48
+-----------------------
+Fixed: Hiding stats display wasn't stopping the XML HTTP request from
+running.
+
+Date: Sat, 17 Nov 2007 18:38:05
+-----------------------
+Fixed: Active user list wasn't always display in stats
+Fixed: Error in Javascript due to getObjById not returning false when
+object not found.
+Changed: Removed getObjByName and replaced all calls to it with
+getObjsByName.
+
+Date: Sat, 17 Nov 2007 12:40:24
+-----------------------
+Added: User Stats at bottom of message pane now uses XML HTTP to retrieve
+the data so it's not cached by the client.
+Fixed: PM notification XML HTTP requests wasn't always including the
+correct number of unread or outbox messages.
+
+Date: Fri, 16 Nov 2007 02:25:21
+-----------------------
+Fixed: Incorrect variable name in _stripslashes
+
+Date: Thu, 15 Nov 2007 23:06:37
+-----------------------
+Fixed: Error with _stripslashes when magic quotes is switched off.
+
+Date: Thu, 15 Nov 2007 22:34:16
+-----------------------
+Changed: Started work on making stats use XML HTTP request to get the data
+so it isn't cached along with the message pane.
+Changed: Reimplemented unread / new message count for PM Inbox in thread
+list.
+Fixed: Error with _stripslashes when magic quotes is switched off.
+Fixed: Install page conflicting table names placed into scrollable DIV to
+prevent scrolling the form off the page.
+
+Date: Wed, 14 Nov 2007 19:33:20
+-----------------------
+Added: You can now specify where the main forum path is for things like
+stylesheets, javascript includes etc via a optional constant named
+BH_FORUM_PATH
+Added: Include start_main.css in start_main.php to allow external
+stylesheet to start page.
+
+Date: Tue, 13 Nov 2007 19:46:28
+-----------------------
+Changed: Reenabled the thread list and message pane caching.
+Changed: PM notification popup now uses XML HTTP to prevent it being
+affected by the cache.
+Changed: Removed db_trigger_error from back trace results.
+
+Date: Sat, 10 Nov 2007 11:53:36
+-----------------------
+Fixed: Changing thread options (Admin only: Sticky, Lock, Close, etc.) now
+adds Edited By to first post in thread.
+
+Date: Fri, 09 Nov 2007 10:23:59
+-----------------------
+Fixed: Incorrectly escaped function arguments in backtrace.
+
+Date: Fri, 09 Nov 2007 10:17:45
+-----------------------
+Fixed: Arguments in function trace back weren't not being escaped
+correctly.
+
+Date: Fri, 09 Nov 2007 10:15:25
+-----------------------
+Fixed: Error in sprintf in admin_forum_settings.php caused by incorrect
+number of place holders in language string.
+
+Date: Thu, 08 Nov 2007 22:22:16
+-----------------------
+Changed: return value from get_ip_address() is now required. Doesn't
+substitue IP for empty string anymore.
+
+Date: Thu, 08 Nov 2007 17:13:18
+-----------------------
+Added: Backtrace support added to bh_error_handler() to make it easier to
+work out why errors occured.
+Changed: Excluded support functions bh_*.php in root of CVS from
+bh_check_php_version.php to prevent it from tainting the results.
+
+Date: Wed, 07 Nov 2007 20:26:54
+-----------------------
+Fixed: Undefined variable $post in pm_write.php when trying to compose a
+new message.
+
+Date: Wed, 07 Nov 2007 20:23:50
+-----------------------
+Fixed: Sending a quoted PM lost any additional content added to the
+message when clicking Preview / Send / Save
+Fixed: Enabling TinyMCE mode broke the quoting multiple posts
+functionality of messages.php and post.php
+
+Date: Tue, 06 Nov 2007 22:27:10
+-----------------------
+Changed: Updated readme.txt to correctly reflect the status of the French
+language file.
+
+Date: Tue, 06 Nov 2007 21:05:24
+-----------------------
+Fixed: Incorrect number of arguments in sprintf in language files in
+admin_forum_settings.php
+Fixed: Timezone drop down in admin_forum_settings.php not using
+timezone_dropdown class.
+Fixed: Timezone entries in admin_forum_settings.php and register.php not
+using _htmlentities.
+Fixed: [ProfileEntry] text translations issues still evident in some
+language strings.
+Changed: Updated changelog.txt
+
 Date: Sun, 04 Nov 2007 23:06:55
 -----------------------
 Changed: Removed caching of thread list and message pane as they cause

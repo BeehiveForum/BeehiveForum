@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.260 2007-11-18 15:28:17 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.261 2007-11-18 16:27:08 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -975,7 +975,7 @@ function html_draw_top()
                 echo "                var active_guest_count = active_users_xml.getElementsByTagName('guests')[0].childNodes[0].nodeValue;\n";
                 echo "                var active_nuser_count = active_users_xml.getElementsByTagName('visible')[0].childNodes[0].nodeValue;\n";
                 echo "                var active_auser_count = active_users_xml.getElementsByTagName('anonymous')[0].childNodes[0].nodeValue;\n\n";
-                echo "                var visitor_log_link = sprintf('[ <a href=\"visitor_log.php?webtag=$webtag\">%s</a> ]', lang['viewcompletelist']);\n\n";
+                echo "                var visitor_log_link = sprintf('[ <a href=\"start.php?webtag=$webtag&amp;show=visitors\" target=\"%s\">%s</a> ]', '", html_get_frame_name('main'), "', lang['viewcompletelist']);\n\n";
                 echo "                var active_users_array = new Array();\n\n";
                 echo "                active_users_array[0] = (active_guest_count != 1) ? sprintf(lang['numactiveguests'], active_guest_count) : lang['oneactiveguest'];\n";
                 echo "                active_users_array[1] = (active_nuser_count != 1) ? sprintf(lang['numactivemembers'], active_nuser_count) : lang['oneactivemember'];\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.85 2007-11-13 19:46:28 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.86 2007-11-18 15:28:18 decoyduck Exp $ */
 
 // French Canadian language file
 
@@ -143,7 +143,6 @@ $lang['download'] = "Télécharger";
 $lang['save'] = "Enregistrer";
 $lang['update'] = "Mettre à jour";
 $lang['cancel'] = "Annuler";
-$lang['retry'] = "Relancez";
 $lang['continue'] = "Continuer";
 $lang['attachment'] = "Fichier joint";
 $lang['attachments'] = "Fichiers joints";
@@ -294,7 +293,6 @@ $lang['startpage'] = "Page de démarrage";
 $lang['startpageerror'] = "Votre page de démarrage n'a pas pu être entregistrer locallement sur le serveur à cause de déni de permission. Pour modifier votre page de démarrage, SVP cliquer le bouton de téléchargement ci-dessous qui vous invitera à enregister le fichier sur votre disque dur. Vous pourriez par la suite téléverser ce fichier vers le dossier %s sur votre serveur. SVP noter que certains navigateurs web pourraient changer le nom du fichier sur téléchargement. Lorsque vous téléversez le fichier, SVP vous assurer de le nommer start_main.php sinon les modifications n'apparaîtront pas.";
 $lang['failedtoopenmasterstylesheet'] = "Votre style de forum n'a pas pu être enregistré parce que la feuille de style maîtresse n'a pas pu être chargée. Pour enregistrer votre style, la feuille de style maîtresse (make_style.css) doit être située dans le répertoire styles de votre installation Beehive Forum.";
 $lang['makestyleerror'] = "Votre style de forum n'a pas pu être sauvegarder localement sur le serveur parce que la permission a été refusée. Pour sauvegarder votre style de forum, cliquer le bouton de téléchargement ci-dessous ce qui vous invitera à sauvegarder le fichier sur votre lecteur de disque dur. Vous pouvez ensuite téléverser ce fichier à votre serveur dans le dossier %s et si nécéssaire, créant la structure de dossier en même temps. SVP noter que certains navigateurs web changeront peut-être le nom du fichier sur téléchargement. Lors du téléversement de ce fichier, SVP vous assurer qu'il est nommé style.css sinon ce style de forum sera inutilisable.";
-$lang['uploadfailed'] = "Votre nouvelle page de démarrage n'a pas pu être téléversée au serveur à cause de déni de permission. SVP vérifier que le serveur web / processus PHP est capable d'écrire au dossier %s sur votre serveur.";
 $lang['forumstyle'] = "Style du forum";
 $lang['wordfilter'] = "Filtre des mots";
 $lang['forumlinks'] = "Liens de forum";
@@ -1669,8 +1667,6 @@ $lang['forthcomingbirthdays'] = "Anniversaires à venir";
 // Start page (start_main.php) -----------------------------------------
 
 $lang['editstartpage_help'] = "Vous pouvez modifier cette page de l'interface admin";
-$lang['uploadstartpage'] = "Téléverser page de démarrage (%s)";
-$lang['invalidfiletypeerror'] = "Type de fichier invalide. Vous pouvez utiliser seulement les fichiers *.txt, *.php et *.htm pour votre page de démarrage.";
 
 // Thread navigation (thread_list.php) ---------------------------------
 
@@ -1779,7 +1775,7 @@ $lang['lightblue'] = "Bleu pâle";
 // Forum Stats (messages.inc.php - messages_forum_stats()) -------------
 
 $lang['forumstats'] = "Statistiques du forum";
-$lang['usersactiveinthepasttimeperiod'] = "%s actifs durant les dernières %s.";
+$lang['usersactiveinthepasttimeperiod'] = "%s actifs durant les dernières %s. %s";
 
 $lang['numactiveguests'] = "<b>%s</b> invités";
 $lang['oneactiveguest'] = "<b>1</b> invité";

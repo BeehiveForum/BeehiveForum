@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.259 2007-11-18 13:55:19 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.260 2007-11-18 15:28:17 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -945,7 +945,8 @@ function html_draw_top()
                 echo "lang['wehavenumregisteredmembersandthenewestmemberismembername'] = '", html_js_safe_str($lang['wehavenumregisteredmembersandthenewestmemberismembername']), "';\n";
                 echo "lang['wehavenumregisteredmember'] = '", html_js_safe_str($lang['wehavenumregisteredmember']), "';\n";
                 echo "lang['wehaveoneregisteredmember'] = '", html_js_safe_str($lang['wehaveoneregisteredmember']), "';\n";
-                echo "lang['mostuserseveronlinewasnumondate'] = '", html_js_safe_str($lang['mostuserseveronlinewasnumondate']), "';\n\n";
+                echo "lang['mostuserseveronlinewasnumondate'] = '", html_js_safe_str($lang['mostuserseveronlinewasnumondate']), "';\n";
+                echo "lang['viewcompletelist'] = '", html_js_safe_str($lang['viewcompletelist']), "';\n\n";
                 echo "function stats_display_initialise()\n";
                 echo "{\n";
                 echo "    var forum_stats_obj = getObjById('forum_stats');\n\n";
@@ -974,11 +975,12 @@ function html_draw_top()
                 echo "                var active_guest_count = active_users_xml.getElementsByTagName('guests')[0].childNodes[0].nodeValue;\n";
                 echo "                var active_nuser_count = active_users_xml.getElementsByTagName('visible')[0].childNodes[0].nodeValue;\n";
                 echo "                var active_auser_count = active_users_xml.getElementsByTagName('anonymous')[0].childNodes[0].nodeValue;\n\n";
+                echo "                var visitor_log_link = sprintf('[ <a href=\"visitor_log.php?webtag=$webtag\">%s</a> ]', lang['viewcompletelist']);\n\n";
                 echo "                var active_users_array = new Array();\n\n";
                 echo "                active_users_array[0] = (active_guest_count != 1) ? sprintf(lang['numactiveguests'], active_guest_count) : lang['oneactiveguest'];\n";
                 echo "                active_users_array[1] = (active_nuser_count != 1) ? sprintf(lang['numactivemembers'], active_nuser_count) : lang['oneactivemember'];\n";
                 echo "                active_users_array[2] = (active_auser_count != 1) ? sprintf(lang['numactiveanonymousmembers'], active_auser_count) : lang['oneactiveanonymousmember'];\n\n";
-                echo "                var active_user_text = sprintf(lang['usersactiveinthepasttimeperiod'], active_users_array.join(', '), '", format_time_display(forum_get_setting('active_sess_cutoff', false, 86400), false), "');\n\n";
+                echo "                var active_user_text = sprintf(lang['usersactiveinthepasttimeperiod'], active_users_array.join(', '), '", format_time_display(forum_get_setting('active_sess_cutoff', false, 86400), false), "', visitor_log_link);\n\n";
                 echo "                active_user_counts_obj.innerHTML = active_user_text;\n";
                 echo "            }\n\n";
                 echo "        }\n\n";

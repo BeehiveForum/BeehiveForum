@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.262 2007-11-06 22:25:32 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.263 2007-11-18 15:28:18 decoyduck Exp $ */
 
 // X-Hacker (British English) Language File
 
@@ -143,7 +143,6 @@ $lang['download'] = "downl0aD";
 $lang['save'] = "s4ve";
 $lang['update'] = "uPDate";
 $lang['cancel'] = "c4NC3l";
-$lang['retry'] = "retry";
 $lang['continue'] = "coN+InU3";
 $lang['attachment'] = "a+t4ChmEnT";
 $lang['attachments'] = "aT+4CHm3nTS";
@@ -294,7 +293,6 @@ $lang['startpage'] = "sTar+ p@g3";
 $lang['startpageerror'] = "your \$t4Rt p@GE COUlD NoT B3 s4V3D loc@llY t0 t3h 53Rver BecaU\$e pErMI\$\$1on wAs D3n13D.</p><p>to Ch4n93 y0uR St4rt P@G3 pLE4Se CliCK TEH DOwnlo4d BU+T0N 83l0W Wh1CH wiLL PromP+ J00 +o \$@V3 +He PhiL3 +0 Y0ur h4RD DR1v3. J00 c4n TH3n upL0@D th1\$ PHiLE +o y0uR Serv3r intO +h3 F0lloWing ph0LDEr, Iph n3C3Ss4ry CRE4+iN9 +h3 PholDER s+RUC+Ur3 1n t3H procEss.</p><p><b>%s</b></p><p>pLe4s3 NOT3 +h4+ soME 8rowSErs m@y CH4NgE +he N@mE oF +he fIl3 upoN D0wnloaD.  wh3N Uplo4Din9 +Eh f1l3 pl34\$e m@ke suRe that it 1\$ N4m3d s+4r+_m4In.php 0+HErwis3 y0ur 5+@r+ p@Ge will 4ppE4r unCH4N9ed.";
 $lang['failedtoopenmasterstylesheet'] = "your pHorum S+Yl3 C0uld n0+ BE s@VED 83C4u\$e +H3 m4\$+3r 5+Yl3 \$h33+ CoULD nOT B3 l04D3d. t0 \$@VE Y0ur StYL3 +eh m@\$+3R \$TYl3 5H3et (M@K3_S+YlE.C5\$) MUs+ 8E LOCATED IN +EH StYl3s D1r3c+0RY opH Y0UR b3ehIV3 PhoRUM in\$+4lL4T10N.";
 $lang['makestyleerror'] = "yOUR pHoRuM Styl3 cOUlD no+ Be \$AV3D l0c@llY To +HE \$erv3R BEC@UsE pERmiss1on W4S D3n13D. +0 \$4v3 yoUR pH0RUM s+yl3 pL3@s3 CL1ck THE D0wNl04d BUT+On b3low wH1CH w1ll Pr0mPT j00 TO s4V3 +h3 fil3 t0 y0Ur H@RD DRIV3. J00 C4n +Hen uPL04d +HiS Ph1l3 +0 y0UR serveR 1nto %s pholDEr, 1F neC35s4ry crE4+iN9 T3H f0lD3r \$+ructUrE 1N the pR0C3sS. j00 sh0ulD not3 +h4T sOM3 Br0wSERs m@Y Ch4Ng3 th3 n4M3 of The f1L3 Upon Downlo4D. wh3N upL0@Ding +Eh f1L3 pl34\$3 makE 5Ur3 th4+ i+ is n@Med 5+YL3.c5\$ 0thErw15e +H3 phorUm styl3 W1ll 83 unu5@BlE.";
-$lang['uploadfailed'] = "y0UR nEw 5+4RT p@GE C0ulD No+ BE UpLo4d3d T0 TEH S3RVER 8EC4u\$e peRMI\$si0N W4\$ DEN1eD. PL34sE ChECK TH4T +HE W3b 53rv3R / pHP proC3ss I\$ @8L3 to wRi+3 +0 +h3 %s phoLDER On y0ur \$3rver.";
 $lang['forumstyle'] = "f0rum s+yl3";
 $lang['wordfilter'] = "wOrD philTER";
 $lang['forumlinks'] = "fOrum links";
@@ -1669,8 +1667,6 @@ $lang['forthcomingbirthdays'] = "f0R+hCOminG 81r+HD@ys";
 // Start page (start_main.php) -----------------------------------------
 
 $lang['editstartpage_help'] = "j00 caN eD1+ Thi\$ p4g3 fR0M TEh 4DM1N InTErF4C3";
-$lang['uploadstartpage'] = "uPlO4d 5+@RT p49E (%s)";
-$lang['invalidfiletypeerror'] = "f1l3 +yPE n0+ SUPP0r+ed. J00 C@N 0NLY UsE %s f1L3s 4S Your \$+@R+ Pa93.";
 
 // Thread navigation (thread_list.php) ---------------------------------
 
@@ -1779,7 +1775,7 @@ $lang['lightblue'] = "l19ht 8LU3";
 // Forum Stats (messages.inc.php - messages_forum_stats()) -------------
 
 $lang['forumstats'] = "f0rum s+@+S";
-$lang['usersactiveinthepasttimeperiod'] = "%s AC+1v3 iN +h3 P@\$T %s.";
+$lang['usersactiveinthepasttimeperiod'] = "%s AC+1v3 iN +h3 P@\$T %s. %s";
 
 $lang['numactiveguests'] = "<b>%s</b> Gu3\$+S";
 $lang['oneactiveguest'] = "<b>1</b> GU3St";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: emoticons.inc.php,v 1.65 2007-11-18 13:55:19 decoyduck Exp $ */
+/* $Id: emoticons.inc.php,v 1.66 2007-11-18 15:28:17 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -36,6 +36,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 
 include_once(BH_INCLUDE_PATH. "format.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
+include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 

@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: xml_http.js,v 1.4 2007-11-18 13:55:19 decoyduck Exp $ */
+/* $Id: xml_http.js,v 1.5 2007-11-19 00:13:41 decoyduck Exp $ */
 
 function xml_http_request()
 {
@@ -33,22 +33,32 @@ function xml_http_request()
 
     xml_http_request.prototype.get_url = function(url)
     {       
-        this._request = this._xml_http_request(); var _this = this;
-        this._request.onreadystatechange = function() { _this._on_state_change() };
-        this._request.open("GET", url, true);
-        this._request.send(null);
-    }
+        var _this = this;
 
-    xml_http_request.prototype.check_obj = function()
-    {
-        for (obj in this._request) {
-            alert('xml_http_request.' + obj + ' => ' + this._request[obj]);
+        this._request = this._xml_http_request();
+
+        try {
+
+            this._request.onreadystatechange = function() { _this._on_state_change() };
+            this._request.open("GET", url, true);
+            this._request.send(null);
+
+        }catch(e) {
+
+            return false;
         }
     }
 
     xml_http_request.prototype.get_response_xml = function()
     {
-        return this._request.responseXML;
+        try {
+            
+            return this._request.responseXML;
+
+        }catch (e) {
+
+            return false;
+        }
     }
 
     xml_http_request.prototype.close = function()
@@ -58,12 +68,19 @@ function xml_http_request()
 
     xml_http_request.prototype._on_state_change = function()
     {
-        if (this._request.readyState == 4) {
+        try {
+        
+            if (this._request.readyState == 4) {
 
-            if (this._request.status == '200') {
+                if (this._request.status == '200') {
 
-                this._handler();
+                    this._handler();
+                }
             }
+        
+        }catch(e) {
+
+            return false;
         }
     }
 

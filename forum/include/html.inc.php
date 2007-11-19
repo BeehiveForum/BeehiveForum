@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.262 2007-11-18 23:59:12 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.263 2007-11-19 00:16:12 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -813,7 +813,7 @@ function html_draw_top()
                     echo "var pm_notification = new xml_http_request();\n\n";
                     echo "function pm_notification_initialise()\n";
                     echo "{\n";
-                    echo "    pm_timeout = setTimeout('pm_notification_check_messages()', 1);\n";
+                    echo "    pm_timeout = setTimeout('pm_notification_check_messages()', 1000);\n";
                     echo "    return true;\n";
                     echo "}\n\n";
                     echo "function pm_notification_check_messages()\n";
@@ -953,7 +953,7 @@ function html_draw_top()
                 echo "{\n";
                 echo "    var forum_stats_obj = getObjById('forum_stats');\n\n";
                 echo "    if (typeof(forum_stats_obj) == 'object') {\n\n";
-                echo "        stats_timeout = setTimeout('stats_display_get_data()', 1);\n";
+                echo "        stats_timeout = setTimeout('stats_display_get_data()', 1000);\n";
                 echo "        return true;\n";
                 echo "    }\n";
                 echo "}\n\n";

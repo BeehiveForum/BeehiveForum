@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.263 2007-11-19 00:16:12 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.264 2007-11-19 18:40:10 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -575,6 +575,8 @@ function html_draw_top()
 
     $onload_array = array();
     $onunload_array = array();
+    $onbeforeunload_array = array();
+
     $arg_array = func_get_args();
     $meta_refresh_delay = false;
     $meta_refresh_url = false;
@@ -615,6 +617,11 @@ function html_draw_top()
 
         if (preg_match("/^onunload=([^$]+)$/i", $func_args, $func_matches) > 0) {
             $onunload_array[] = $func_matches[1];
+            unset($arg_array[$key]);
+        }
+
+        if (preg_match("/^onbeforeunload=([^$]+)$/i", $func_args, $func_matches) > 0) {
+            $onbeforeunload_array[] = $func_matches[1];
             unset($arg_array[$key]);
         }
 
@@ -822,6 +829,12 @@ function html_draw_top()
                     echo "    pm_notification.set_handler(pm_notification_handler);\n";
                     echo "    pm_notification.get_url('pm.php?webtag=$webtag&check_messages=true');\n";
                     echo "}\n\n";
+                    echo "function pm_notification_abort()\n";
+                    echo "{\n";
+                    echo "    pm_notification.abort();\n";
+                    echo "    pm_notification.close();\n";
+                    echo "    delete pm_notification;\n";
+                    echo "}\n\n";
                     echo "function pm_notification_handler()\n";
                     echo "{\n";
                     echo "    var response_xml = pm_notification.get_response_xml();\n\n";
@@ -858,6 +871,7 @@ function html_draw_top()
                     echo "</script>\n";
 
                     if (!in_array("pm_notification_initialise()", $onload_array)) $onload_array[] = "pm_notification_initialise()";
+                    if (!in_array("pm_notification_abort()", $onbeforeunload_array)) $onbeforeunload_array[] = "pm_notification_abort()";
                 }
             }
 
@@ -963,6 +977,12 @@ function html_draw_top()
                 echo "    stats_data.set_handler(stats_display_handler);\n";
                 echo "    stats_data.get_url('user_stats.php?webtag=$webtag&get_stats=true');\n";
                 echo "}\n\n";
+                echo "function stats_display_abort()\n";
+                echo "{\n";
+                echo "    stats_data.abort();\n";
+                echo "    stats_data.close();\n";
+                echo "    delete stats_data;\n";
+                echo "}\n\n";
                 echo "function stats_display_handler()\n";
                 echo "{\n";
                 echo "    var response_xml = stats_data.get_response_xml();\n\n";
@@ -982,7 +1002,7 @@ function html_draw_top()
                 echo "                active_users_array[0] = (active_guest_count != 1) ? sprintf(lang['numactiveguests'], active_guest_count) : lang['oneactiveguest'];\n";
                 echo "                active_users_array[1] = (active_nuser_count != 1) ? sprintf(lang['numactivemembers'], active_nuser_count) : lang['oneactivemember'];\n";
                 echo "                active_users_array[2] = (active_auser_count != 1) ? sprintf(lang['numactiveanonymousmembers'], active_auser_count) : lang['oneactiveanonymousmember'];\n\n";
-                echo "                var active_user_text = sprintf(lang['usersactiveinthepasttimeperiod'], active_users_array.join(', '), '", format_time_display(forum_get_setting('active_sess_cutoff', false, 86400), false), "', visitor_log_link);\n\n";
+                echo "                var active_user_text = sprintf(lang['usersactiveinthepasttimeperiod'], active_users_array.join(', '), '", format_time_display(forum_get_setting('active_sess_cutoff', false, 900), false), "', visitor_log_link);\n\n";
                 echo "                active_user_counts_obj.innerHTML = active_user_text;\n";
                 echo "            }\n\n";
                 echo "        }\n\n";
@@ -1086,6 +1106,7 @@ function html_draw_top()
                 echo "</script>\n";
 
                 if (!in_array("stats_display_initialise()", $onload_array)) $onload_array[] = "stats_display_initialise()";
+                if (!in_array("stats_display_abort()", $onbeforeunload_array)) $onbeforeunload_array[] = "stats_display_abort()";
             }
         }
     }
@@ -1132,7 +1153,10 @@ function html_draw_top()
     }
 
     $onload = trim(implode(";", $onload_array));
+
     $onunload = trim(implode(";", $onunload_array));
+
+    $onbeforeunload = trim(implode(";", $onbeforeunload_array));
 
     echo "</head>\n\n";
 
@@ -1141,6 +1165,7 @@ function html_draw_top()
         echo "<body", ($body_class) ? " class=\"$body_class\"" : "";
         echo (strlen($onload) > 0) ? " onload=\"$onload\"" : "";
         echo (strlen($onunload) > 0) ? " onunload=\"$onunload\"" : "";
+        echo (strlen($onbeforeunload) > 0) ? " onbeforeunload=\"$onbeforeunload\"" : "";
         echo ">\n";
     }
 }

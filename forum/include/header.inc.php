@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: header.inc.php,v 1.29 2007-11-02 21:55:01 decoyduck Exp $ */
+/* $Id: header.inc.php,v 1.30 2007-11-20 21:12:09 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -36,6 +36,16 @@ include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "form.inc.php");
 
+/**
+* Prevent caching of a page.
+*
+* Prevents caching of a page by sending headers which indicate that the page
+* is always modified.
+*
+* @return void
+* @param void
+*/
+
 function header_no_cache()
 {
     header("Expires: Mon, 08 Apr 2002 12:00:00 GMT");               // Date in the past (Beehive birthday)
@@ -45,6 +55,19 @@ function header_no_cache()
     header("Cache-Control: post-check=0, pre-check=0", false);
     header("Pragma: no-cache");
 }
+
+/**
+* Redirect client to another page.
+*
+* Redirect client to another page. For Apache and other servers sends
+* appropriate HTTP headers to correctly redirect the client to the
+* specified address. For IIS we use Javascript and a backup form
+* button to click.
+*
+* @return none - Functions exits code execution.
+* @param string $uri - Address to redirect the client to.
+* @param string $reason - Option text message advising the client why they're being redirected
+*/
 
 function header_redirect($uri, $reason = false)
 {
@@ -84,6 +107,51 @@ function header_redirect($uri, $reason = false)
         html_draw_bottom();
         exit;
     }
+}
+
+/**
+* Check cache header.
+*
+* Checks appropriate HTTP headers for cache hits. Prevents client
+* from hitting pages already in cache. Default cache is 5 minutes.
+*
+* @return mixed - void or no return (exit)
+* @param string $seconds - Interval to check for cache (default: 5 minutes)
+*/
+
+function header_check_cache($seconds = 300)
+{
+    if (strstr(php_sapi_name(), 'cgi')) return false;
+
+    if (!is_numeric($seconds)) return false;
+
+    // Generate our last-modified and expires date stamps
+
+    $local_last_modified = gmdate("D, d M Y H:i:s", time()). " GMT";
+    $local_cache_expires = gmdate("D, d M Y H:i:s", time()). " GMT";
+
+    // Check to see if the cache header exists.
+
+    if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
+
+        $remote_last_modified = _stripslashes($_SERVER['HTTP_IF_MODIFIED_SINCE']);
+
+        // Check to see if the cache is older than 5 minutes.
+
+        if ((time() - strtotime($remote_last_modified)) < $seconds) {
+
+            header("Expires: $local_cache_expires", true);
+            header("Last-Modified: $remote_last_modified", true);
+            header('Cache-Control: private, must-revalidate', true);
+
+            header("HTTP/1.1 304 Not Modified");
+            exit;
+        }
+    }
+
+    header("Expires: $local_cache_expires", true);
+    header("Last-Modified: $local_last_modified", true);
+    header('Cache-Control: private, must-revalidate', true);
 }
 
 ?>

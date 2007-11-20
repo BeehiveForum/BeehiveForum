@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.91 2007-11-18 15:28:18 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.92 2007-11-20 21:12:09 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -37,6 +37,7 @@ include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "folder.inc.php");
 include_once(BH_INCLUDE_PATH. "format.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
+include_once(BH_INCLUDE_PATH. "header.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
@@ -86,7 +87,15 @@ function update_stats()
 
 function stats_output_xml()
 {
+    // Outputting XML
+
     header('Content-Type: text/xml', true);
+
+    // Check HTTP cache headers
+
+    header_check_cache();
+
+    // Output the XML document.
 
     echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
     echo "<stats>\n";

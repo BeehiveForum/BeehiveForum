@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lthread_list.php,v 1.89 2007-11-18 13:55:18 decoyduck Exp $ */
+/* $Id: lthread_list.php,v 1.90 2007-11-22 20:24:09 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -106,6 +106,10 @@ if (!$webtag = get_webtag($webtag_search)) {
 
     header_redirect("./lforums.php");
 }
+
+// Thread List Cache Control
+
+thread_list_check_cache_header();
 
 // Load language file
 

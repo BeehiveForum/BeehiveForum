@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lmessages.php,v 1.91 2007-10-27 17:09:39 decoyduck Exp $ */
+/* $Id: lmessages.php,v 1.92 2007-11-22 20:24:09 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -43,6 +43,9 @@ include_once(BH_INCLUDE_PATH. "install.inc.php");
 
 // Check that Beehive is installed correctly
 check_install();
+
+// Message pane caching
+messages_check_cache_header();
 
 // Multiple forum support
 include_once(BH_INCLUDE_PATH. "forum.inc.php");

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: header.inc.php,v 1.30 2007-11-20 21:12:09 decoyduck Exp $ */
+/* $Id: header.inc.php,v 1.31 2007-11-22 20:24:09 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -32,7 +32,6 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
     exit;
 }
 
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "form.inc.php");
 
@@ -84,8 +83,6 @@ function header_redirect($uri, $reason = false)
 
         html_draw_top();
 
-        $lang = load_language_file();
-
         // Try a Javascript redirect
         echo "<script language=\"javascript\" type=\"text/javascript\">\n";
         echo "<!--\n";
@@ -122,6 +119,8 @@ function header_redirect($uri, $reason = false)
 function header_check_cache($seconds = 300)
 {
     if (strstr(php_sapi_name(), 'cgi')) return false;
+
+    if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') return false;
 
     if (!is_numeric($seconds)) return false;
 

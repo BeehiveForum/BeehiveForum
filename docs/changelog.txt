@@ -1,4 +1,37 @@
 Author: decoyduck
+Date: Thu, 22 Nov 2007 20:24:09
+-----------------------
+Added: Caching added to light mode thread list and message display
+Changed: Removed load_language_file() from header_redirect as it wasn't
+required.
+
+Date: Mon, 19 Nov 2007 18:40:10
+-----------------------
+Changed: Added abort method to XML HTTP class and implemented it in the
+stats and PM notification functions.
+
+Date: Mon, 19 Nov 2007 00:16:12
+-----------------------
+Changed: Increased the value used by setTimeOut for initialising the XML
+HTTP requests.
+
+Date: Mon, 19 Nov 2007 00:13:41
+-----------------------
+Added: Few more try catch error traps to xml_http.js to try and stop the
+errors occurring due to a timeout of the HTTP request.
+
+Date: Sun, 18 Nov 2007 23:59:12
+-----------------------
+Fixed: Undefined 'block' in IE7.
+Fixed: Object required error in IE7.
+
+Date: Sun, 18 Nov 2007 16:26:59
+-----------------------
+Fixed: Stats box was expanding / bouncing as the stats loaded. Padded it
+with <br /> tags stops it.
+Fixed: The 'View Complete List' link was opening in a new tab / window.
+Changed: Updated Change log
+
 Date: Sun, 18 Nov 2007 15:28:17
 -----------------------
 Changed: Updated Dependencies.
@@ -47,7 +80,7 @@ Date: Thu, 15 Nov 2007 22:34:16
 -----------------------
 Changed: Started work on making stats use XML HTTP request to get the data
 so it isn't cached along with the message pane.
-Changed: Reimplemented unread / new message count for PM Inbox in thread
+Changed: Re-implemented unread / new message count for PM Inbox in thread
 list.
 Fixed: Error with _stripslashes when magic quotes is switched off.
 Fixed: Install page conflicting table names placed into scrollable DIV to
@@ -63,7 +96,7 @@ stylesheet to start page.
 
 Date: Tue, 13 Nov 2007 19:46:28
 -----------------------
-Changed: Reenabled the thread list and message pane caching.
+Changed: Re-enabled the thread list and message pane caching.
 Changed: PM notification popup now uses XML HTTP to prevent it being
 affected by the cache.
 Changed: Removed db_trigger_error from back trace results.
@@ -75,7 +108,7 @@ adds Edited By to first post in thread.
 
 Date: Fri, 09 Nov 2007 10:23:59
 -----------------------
-Fixed: Incorrectly escaped function arguments in backtrace.
+Fixed: Incorrectly escaped function arguments in back trace.
 
 Date: Fri, 09 Nov 2007 10:17:45
 -----------------------
@@ -90,12 +123,12 @@ number of place holders in language string.
 Date: Thu, 08 Nov 2007 22:22:16
 -----------------------
 Changed: return value from get_ip_address() is now required. Doesn't
-substitue IP for empty string anymore.
+substitute IP for empty string anymore.
 
 Date: Thu, 08 Nov 2007 17:13:18
 -----------------------
-Added: Backtrace support added to bh_error_handler() to make it easier to
-work out why errors occured.
+Added: Back trace support added to bh_error_handler() to make it easier to
+work out why errors occurred.
 Changed: Excluded support functions bh_*.php in root of CVS from
 bh_check_php_version.php to prevent it from tainting the results.
 
@@ -137,7 +170,7 @@ Date: Sun, 04 Nov 2007 15:09:17
 -----------------------
 Fixed: Guests Couldn't browse to birthday list.
 Fixed: Double encoded & (&amp;) in Timezone drop down.
-Changed: Release delayed until receive notification from Synmantec.
+Changed: Release delayed until receive notification from Symantec.
 
 Date: Sun, 04 Nov 2007 01:42:35
 -----------------------
@@ -157,7 +190,7 @@ welcome page.
 
 Date: Fri, 02 Nov 2007 21:55:01
 -----------------------
-Fixed: Clicking the stats display link in messages.php didn't immediatly
+Fixed: Clicking the stats display link in messages.php didn't immediately
 affect the page display due to caching.
 Changed: Updated readme.txt and release.txt for this weekend's release of
 0.8.
@@ -305,8 +338,9 @@ Fixed: Undefined variable $search_frequency
 Date: Mon, 22 Oct 2007 16:25:43
 -----------------------
 Changed: Updated German Language File.
-Changed: Removed unrequired strings from French Language File. Waiting for
-update from contributor for full 0.8 compliant language pack.
+Changed: Removed strings from French Language file that are no longer
+required. Waiting for update from contributor for full 0.8 compliant
+language pack.
 
 Date: Sun, 21 Oct 2007 18:59:22
 -----------------------
@@ -329,7 +363,7 @@ values for drop downs and lists don't match the user's profile data.
 Date: Sun, 21 Oct 2007 17:08:48
 -----------------------
 Added: Hyperlink template support added to profile items to allow users to
-link to profiles on other websites by entering their tag or screen name.
+link to profiles on other web sites by entering their tag or screen name.
 Changed: Made the profile item section easier to understand by adding an
 options field in which to type radio and drop down list items.
 
@@ -358,7 +392,7 @@ Fixed: Deleting or archiving messages didn't retain page number.
 
 Date: Tue, 16 Oct 2007 19:44:00
 -----------------------
-Changed: Supress errors generated by calling error_log() function.
+Changed: Suppress errors generated by calling error_log() function.
 
 Date: Tue, 16 Oct 2007 19:40:36
 -----------------------
@@ -490,7 +524,7 @@ Added: Length checks to links_add.php and links_folder_edit.php.
 
 Date: Mon, 08 Oct 2007 15:21:51
 -----------------------
-Fixed: Erranous logging when using thread_options.php.
+Fixed: Erroneous logging when using thread_options.php.
 
 Date: Mon, 08 Oct 2007 13:19:22
 -----------------------
@@ -511,7 +545,7 @@ Re:) resulted in pm_write.php having a blank subject.
 
 Date: Sun, 07 Oct 2007 10:40:31
 -----------------------
-Fixed: Visting a page where the PM popup is disabled still marked the
+Fixed: Visiting a page where the PM popup is disabled still marked the
 message as notified.
 Fixed: Incorrectly encoded url in final_uri argument to index.php
 Fixed: html_draw_bottom() was including the </body> tag in pm.php
@@ -557,7 +591,7 @@ message_split_fiddle when emoticons are disabled.
 
 Date: Fri, 21 Sep 2007 18:54:58
 -----------------------
-Fixed: Image reflow javascript was messing up layout of images.
+Fixed: Image re-flow javascript was messing up layout of images.
 Fixed: Missed info text in admin_make_style not using
 html_display_warning_msg()
 Fixed: Using %s in string in admin_make_style when it's not replaced with
@@ -798,7 +832,7 @@ rows.
 
 Date: Thu, 30 Aug 2007 17:18:42
 -----------------------
-Fixed: Unread data not being correctly retrived for new unread threads by
+Fixed: Unread data not being correctly retrieved for new unread threads by
 thread_get function.
 
 Date: Wed, 29 Aug 2007 21:22:59
@@ -878,7 +912,7 @@ last update.
 
 Date: Mon, 20 Aug 2007 16:42:20
 -----------------------
-Fixed: Approved and Kick success messages were not using new notifcation
+Fixed: Approved and Kick success messages were not using new notification
 style.
 
 Date: Sat, 18 Aug 2007 18:51:06
@@ -934,7 +968,7 @@ Date: Thu, 09 Aug 2007 21:55:43
 -----------------------
 Changed: Moved a lot of the Admin User Tools out of admin_user.php main
 display and into individual pages selectable from admin_users.php
-Changed: Disabled PM notifcation on Javascript popup windows.
+Changed: Disabled PM notification on Javascript popup windows.
 Fixed: Archiving Sent Items with PMs waiting for delivery removed the PMs
 from your Outbox.
 
@@ -1056,7 +1090,7 @@ Date: Sun, 08 Jul 2007 12:56:24
 -----------------------
 Changed: Moved Post Options menu to right hand side.
 Fixed: Menu not displaying on IE because attachEvent was catching the
-click to show the menu and hiding it immediatly.
+click to show the menu and hiding it immediately.
 Fixed: Menu not resizing correctly on IE because scrollHeight and
 scrollWidth weren't updating quick enough.
 Added: Images for the quoting and such like.
@@ -1203,7 +1237,7 @@ Date: Sun, 10 Jun 2007 11:28:42
 -----------------------
 Changed: Removed array_merge_keys as it wasn't working as expected.
 Changed numerically index arrays to use + and not array_merge to avoid
-reindexing arrays.
+re-indexing arrays.
 Added: Error message if updating preferences wasn't available to all pages
 that use user_update_prefs()
 
@@ -1246,7 +1280,7 @@ Date: Mon, 04 Jun 2007 20:44:45
 -----------------------
 Added: Requirement to reconfirm email address if email confirmation is
 switched on and user changes their email address.
-Added: Better checking of updated user preferences and user detals to
+Added: Better checking of updated user preferences and user details to
 edit_prefs.php with error message if they fail.
 Changed: Removed tickbox column in edit_email.php, edit_prefs.php and
 forum_options.php when there is only one forum.
@@ -1264,7 +1298,7 @@ Changed: Some layout tweaks to the Installer.
 
 Date: Sat, 02 Jun 2007 12:17:15
 -----------------------
-Changed: All occurances of array_merge changed to array_merge_keys so that
+Changed: All occurrences of array_merge changed to array_merge_keys so that
 they're key safe merges.
 
 Date: Sat, 02 Jun 2007 10:39:24
@@ -1332,7 +1366,7 @@ Date: Thu, 31 May 2007 13:36:46
 -----------------------
 Fixed: User Profile popup had an error if the user didn't have any
 preferences saved.
-Fixed: Upgrade scripts now corectly set the timezone id for timezones with
+Fixed: Upgrade scripts now correctly set the timezone id for timezones with
 day light savings.
 
 Date: Wed, 30 May 2007 23:06:42
@@ -1397,7 +1431,7 @@ options hidden from start_left.php when no folders available.
 Date: Sat, 26 May 2007 16:36:55
 -----------------------
 Changed: Switched use of global with superglobals $GLOBALS array var.
-Fixed: Inconsitent display of user permissions when saving them in
+Fixed: Inconsistent display of user permissions when saving them in
 admin_user.php (showed old perms instead of new ones)
 
 Date: Sat, 26 May 2007 14:23:51
@@ -1430,7 +1464,7 @@ Fixed: Approved users still appearing on Awaiting Approval list.
 Added: More error checking added to email functions.
 Added: Optional argument to html_get_forum_uri() which allows you to
 append a path to the root uri.
-Changed: Comma seperated users in successful kick / approval rather than
+Changed: Comma separated users in successful kick / approval rather than
 repeat the approval text and logon.
 Changed: The confirm_email.php script now uses html_display_msg()
 functions to better fit in with rest of forum.
@@ -1493,7 +1527,7 @@ Date: Sun, 20 May 2007 23:14:20
 Fixed: Redirecting to forums.php wasn't working correctly.
 Fixed: Various already defined and undefined constant problems in admin
 pages.
-Added: Reimplemented the redirection through admin.php of the admin page
+Added: Re-implemented the redirection through admin.php of the admin page
 you were trying to view without a webtag.
 
 Date: Sun, 20 May 2007 16:53:34
@@ -1532,7 +1566,7 @@ browser.
 
 Date: Fri, 18 May 2007 20:36:23
 -----------------------
-Fixed: Check ban button was only checking IP and HTTP referer.
+Fixed: Check ban button was only checking IP and HTTP referrer.
 
 Date: Fri, 18 May 2007 14:28:38
 -----------------------
@@ -1543,7 +1577,7 @@ Changed: All constants assigned to variables before used in queries.
 
 Date: Tue, 15 May 2007 21:13:16
 -----------------------
-Changed: Converted lots of numerical valaues to defined constants to make
+Changed: Converted lots of numerical values to defined constants to make
 reading code easier.
 
 Date: Tue, 15 May 2007 16:14:40
@@ -1554,7 +1588,7 @@ Date: Tue, 15 May 2007 15:21:47
 -----------------------
 Fixed: Alignment of favourites icons and ignore icons on My Forums were
 out of whack in FireFox.
-Fixed: Light mode wasn't browseable by Guests.
+Fixed: Light mode wasn't accessible by Guests.
 
 Date: Mon, 14 May 2007 22:20:37
 -----------------------
@@ -1579,13 +1613,14 @@ Date: Sun, 13 May 2007 20:23:17
 Changed: New layout and functionality for My Forums. You can now ignore
 forums and hide them from the list.
 Fixed: Javascript resizeImages function split into resizeImages and
-redoResizeImages which are called separatly like addOverFlow and
+redoResizeImages which are called separately like addOverFlow and
 redoOverFlow
 Fixed: Guests no longer check for unread PMs or resize images or page
 layout.
 Fixed: Unread PMs were being marked read by any user and not just the
 recipient.
-Removed: Removed unrequired classes from default style sheet.
+Removed: Removed classes from default style sheet that are no longer
+required.
 
 Date: Sat, 12 May 2007 12:39:04
 -----------------------
@@ -1605,7 +1640,7 @@ user is a moderator.
 Fixed: threads_rss.php not using the hash generated by bh_session_init().
 Fixed: Column layout changed in pm_messages.php which prevents checkbox
 column from expanding oddly when window is resized in FireFox.
-Changed: Apply strip_tags to user's sigature if they're posting / editing
+Changed: Apply strip_tags to user's signature if they're posting / editing
 in a folder with HTML disabled.
 
 Date: Thu, 10 May 2007 22:03:43
@@ -1614,7 +1649,8 @@ Fixed: PM Search results to and from column data in wrong order.
 
 Date: Thu, 10 May 2007 22:00:57
 -----------------------
-Fixed: Unreceived sent items showing in Search Results in PM section.
+Fixed: Sent items for items not yet received showing in Search Results
+in PM section.
 
 Date: Thu, 10 May 2007 21:59:23
 -----------------------
@@ -1626,7 +1662,7 @@ Date: Thu, 10 May 2007 21:03:17
 Changed: Moved PM options into their own page instead of dumping them in
 with Forum Options. Might try moving Timezone and Language into separate
 pages as well.
-Changed: Rejigged layout of user word filter pages to fit better with rest
+Changed: Re-jigged layout of user word filter pages to fit better with rest
 of My Controls section.
 Fixed: More messages changed to use html_error_msg() and
 html_display_msg() functions.
@@ -1642,7 +1678,7 @@ Fixed: Attachment ID wasn't being saved to PM sent item.
 Fixed: It was possible to select Browser Negotiated for the Forum language
 file and have problems occur by not having the language header in the HTTP
 request.
-Fixed: Editing a PM already recived bounced you back to discussion.php
+Fixed: Editing a PM already received bounced you back to discussion.php
 rather than pm.php.
 Changed: Placed the PM sent items code in it's own function called by
 pm_send_message()
@@ -1654,7 +1690,7 @@ Date: Tue, 08 May 2007 16:54:47
 Added: Installer and Forum Creation tools now correctly create the new
 WORD_FILTER table.
 Changed: More reliable way of handling PM sent items which adds the sent
-item as soon as the PM is recived, not when it's read.
+item as soon as the PM is received, not when it's read.
 
 Date: Sun, 06 May 2007 21:38:46
 -----------------------
@@ -1687,7 +1723,7 @@ Fixed: edit.php was using post instead of get when redirecting back to
 discussion.php which caused you to end up at a different post.
 Changed: New table format for word filter and layout for
 admin_wordfilter.php and edit_wordfilter.php (later of which is incomplete)
-Changed: Layout of disctionary changed slightly.
+Changed: Layout of dictionary changed slightly.
 Changed: Forum links function now uses form_dropdown_array function to
 draw the drop down.
 Changed: Updated language files.
@@ -1853,7 +1889,7 @@ Date: Sat, 21 Apr 2007 17:14:55
 -----------------------
 Fixed: Unquoted variables in SQL queries could result in SQL injection
 attacks.
-Fixed: Sanitisting of available folders from query to prevent unauthorised
+Fixed: Sanitising of available folders from query to prevent unauthorised
 access from SQL injection.
 
 Date: Sat, 21 Apr 2007 13:15:40
@@ -1886,7 +1922,7 @@ Fixed: Dates always showing as day month rather than hours and minutes.
 
 Date: Wed, 18 Apr 2007 22:20:26
 -----------------------
-Changed: Rewritten the word filter to use seperate functions for apply
+Changed: Rewritten the word filter to use separate functions for apply
 another user's word filter and applying your own.
 
 Date: Tue, 17 Apr 2007 22:48:43
@@ -1972,7 +2008,7 @@ browser.
 Changed: Yet more strings changed to use sprintf for translation
 compatibility.
 Changed: Variable $error_msg changed to $string_msg in html_display_msg
-function for completness.
+function for completeness.
 
 Date: Thu, 12 Apr 2007 20:13:36
 -----------------------
@@ -2029,7 +2065,7 @@ Added: Icons for thread split and merge to thread list.
 
 Date: Mon, 02 Apr 2007 14:26:16
 -----------------------
-Fixed: TinyMCE dictionary button opened disctionary popup even if there
+Fixed: TinyMCE dictionary button opened dictionary popup even if there
 was no text to check.
 
 Date: Mon, 02 Apr 2007 12:57:55
@@ -2044,7 +2080,7 @@ dir so they can be easily accessed from a web browser.
 
 Date: Thu, 29 Mar 2007 23:54:49
 -----------------------
-Changed: All JS popups are now resizable windows.
+Changed: All JS popups are now re-sizable windows.
 
 Date: Thu, 29 Mar 2007 23:29:48
 -----------------------
@@ -2070,7 +2106,7 @@ Date: Tue, 27 Mar 2007 22:16:18
 Removed: onkeypress handler for enter key press in form fields.
 Changed: submit_image of search button to basic anchor tag and image with
 onclick handler in anchor
-Added: Language strings for permenantly delete and move to deleted items
+Added: Language strings for permanently delete and move to deleted items
 in thread_options.php
 
 Date: Mon, 26 Mar 2007 20:57:21
@@ -2108,7 +2144,7 @@ Fixed: List of forums in admin_forums.php was empty if no webtag.
 
 Date: Sat, 24 Mar 2007 22:12:07
 -----------------------
-Fixed: HTTP Referer showing forum URI in extended admin visitor log.
+Fixed: HTTP Referrer showing forum URI in extended admin visitor log.
 Fixed: Undefined offset 0 in format.inc.php when trying to format a
 birthday where the database doesn't contain a value for the user's DOB.
 Fixed: Unset DOB incorrectly calculates the user's age as the current year
@@ -2195,7 +2231,7 @@ correctly with column sorting.
 
 Date: Wed, 07 Mar 2007 00:03:50
 -----------------------
-New: Customiseable visitor_log which allows you to add / remove columns
+New: Customisable visitor_log which allows you to add / remove columns
 from user preferences and profile.
 Fixed: href_remove_query_keys function was stripping empty keys from the
 URL when we sometimes needed them.
@@ -2206,7 +2242,7 @@ Date: Mon, 05 Mar 2007 20:58:41
 -----------------------
 Fixed: Search sort_by and sort_dir weren't working correctly.
 Changed: Removed colon from postcount language string.
-Fixed: It was possible for functions with pagenation to return the same
+Fixed: It was possible for functions with pagination to return the same
 results constantly.
 Added: Some functions to support the new profile browsing page in
 development.
@@ -2246,8 +2282,8 @@ Date: Sat, 24 Feb 2007 16:51:15
 -----------------------
 Added: Upgrade process from 0.6.x to 0.7.2 added to CVS.
 Removed: Upgrade process from 0.6.x to 0.7 removed from CVS
-Fixed: HTML in Teh Forum top.html example page now validates corectly.
-Changed: Removed My Forums link from lite mode thread list when there is
+Fixed: HTML in Teh Forum top.html example page now validates correctly.
+Changed: Removed My Forums link from Lite mode thread list when there is
 only one forum.
 
 Date: Fri, 23 Feb 2007 21:40:56
@@ -2263,7 +2299,7 @@ Fixed: HTML errors with unencoded & in timezone dropdowns.
 Date: Thu, 22 Feb 2007 21:38:02
 -----------------------
 Changed: Removed redundant functions from timezone.inc.php
-Changed: bh_update_language.php no longer flags untranslated lines so that
+Changed: bh_update_language.php no longer flags un-translated lines so that
 bh_check_languages can still find the missing ones.
 
 Date: Thu, 22 Feb 2007 13:11:45
@@ -2285,7 +2321,7 @@ Date: Tue, 20 Feb 2007 18:50:00
 Changed: Timezone drop down in forum_options.php and register.php forced
 to a fixed width.
 Fixed: Undefined variable $logon in start_main.php example script.
-Fixed: Session referrer now correctly identifies if the referer was one of
+Fixed: Session referrer now correctly identifies if the referrer was one of
 Beehive's own scripts.
 
 Date: Mon, 19 Feb 2007 16:06:49
@@ -2361,7 +2397,7 @@ removed it.
 
 Date: Sun, 11 Feb 2007 16:37:46
 -----------------------
-Changed: bh_update_language.php comments out untranslated English strings
+Changed: bh_update_language.php comments out un-translated English strings
 rather than use the English strings as is.
 Changed: Folder prefix is now done programmatically rather than being
 stored in the database.
@@ -2413,7 +2449,7 @@ by web server.
 
 Date: Tue, 06 Feb 2007 14:58:28
 -----------------------
-Changed: Readded get_table_data() function query caching to drastically
+Changed: Re-added get_table_data() function query caching to drastically
 reduce the number of times BH hits the DB.
 
 Date: Sun, 04 Feb 2007 22:20:39
@@ -2467,7 +2503,7 @@ Added: Attachment confirm delete dialog added to edit_attachments.php.
 Date: Sat, 27 Jan 2007 20:43:19
 -----------------------
 Fixed: Error message when an attachment can't be accessed (file not found)
-was on an unstyled page.
+was on an un-styled page.
 Fixed: Unknown table when saving global prefs due to unneeded underscore
 in table name.
 
@@ -2556,7 +2592,7 @@ Date: Sat, 20 Jan 2007 16:56:22
 -----------------------
 Added: Quicker and less resource intensive pruning for MySQL 4.1.16. Not
 supported on older 4.1 builds due to MySQL bug in ON DUPLICATE KEY usage.
-Fixed: Thread merge / split notifcation at top of thread list didn't have
+Fixed: Thread merge / split notification at top of thread list didn't have
 a black border in IE as it does FireFox.
 Fixed: Upgrade script was referring to WEBTAG_POST_ATTACHMENT_IDS when
 such table didn't exist.
@@ -2600,7 +2636,7 @@ Added: Search popup to thread_options.php merge thread option.
 
 Date: Wed, 17 Jan 2007 18:36:22
 -----------------------
-Added: Functions to manage return of result from search_popup.php to to
+Added: Functions to manage return of result from search_popup.php to 
 t_to_uid_other field in post.php
 
 Date: Tue, 16 Jan 2007 22:16:22
@@ -2621,7 +2657,7 @@ Added: Missing Forum Links Admin Log entries.
 Date: Mon, 15 Jan 2007 00:10:34
 -----------------------
 Fixed: Constant looping on $lang test in bh_check_dependencies.php
-Fixed: Include file dependecy check for all other files. Any problems
+Fixed: Include file dependency check for all other files. Any problems
 (there shouldn't be any ... ) let me know please.
 Added: New form for changing the Forum Links Top link title to
 admin_forum_links.php
@@ -2637,7 +2673,7 @@ than 0, 1, 2, 3, etc.
 Changed: bh_check_dependencies.php is now a lot more accurate but a lot
 slower.
 Changed: href_remove_query_keys function now takes an optional 3rd
-parameter to allow you to specify the seperator
+parameter to allow you to specify the separator
 Added: Function to validate the format of the links in the Forum links
 drop down.
 
@@ -2703,7 +2739,7 @@ Fixed: Stat functions were returning invalid values on error.
 Date: Fri, 05 Jan 2007 22:17:06
 -----------------------
 Changed: Unified the add / delete buttons in the admin sections.
-Fixed: Referer was lost if you logged out and then revisited the forum.
+Fixed: Referrer was lost if you logged out and then revisited the forum.
 
 Date: Thu, 04 Jan 2007 18:42:24
 -----------------------
@@ -2770,11 +2806,11 @@ Fixed: Default column sorting in banned data was set to the tickboxes.
 
 Date: Fri, 29 Dec 2006 20:12:04
 -----------------------
-Fixed: HTTP referer not tracking from guest to user logon.
+Fixed: HTTP referrer not tracking from guest to user logon.
 
 Date: Fri, 29 Dec 2006 19:13:42
 -----------------------
-Fixed: Double slashed referer and sometimes user's had blank referer.
+Fixed: Double slashed referrer and sometimes user's had blank referrer.
 
 Date: Thu, 28 Dec 2006 23:21:47
 -----------------------
@@ -2886,7 +2922,7 @@ because it only had onclick event handler.
 
 Date: Sat, 09 Dec 2006 15:48:48
 -----------------------
-Fixed: Session renewal code wasn't refreshing the framset if there was no
+Fixed: Session renewal code wasn't refreshing the frameset if there was no
 POST data
 Fixed: Session renewal code wasn't removing all logon form data from POST
 array.
@@ -2968,8 +3004,8 @@ Fixed: Layout issues in some pages.
 
 Date: Sun, 03 Dec 2006 20:31:32
 -----------------------
-Fixed: HTTP Referer not working correctly due to new check to see if the
-referer was the forum.
+Fixed: HTTP Referrer not working correctly due to new check to see if the
+referrer was the forum.
 Changed: Removed debug code from DB connection scripts.
 
 Date: Sun, 03 Dec 2006 00:17:06
@@ -2992,7 +3028,7 @@ Added: Somewhere safe to keep the font used for the logo generation.
 
 Date: Sat, 02 Dec 2006 19:17:27
 -----------------------
-Fixed: FireFox randomly muddles up the dopr down order on the logon form.
+Fixed: FireFox randomly muddles up the drop down order on the logon form.
 Hopefully this will fix it.
 Fixed: Undefined variable $db_threads_mark_50_read when marking a folder
 as read
@@ -3016,7 +3052,7 @@ Fixed: Overlarge fonts in IE6 in some tables and normal text.
 
 Date: Thu, 30 Nov 2006 21:39:01
 -----------------------
-Fixed: Preview in pm_write previwed the message you were replying to and
+Fixed: Preview in pm_write previewed the message you were replying to and
 not your own message.
 Changed: Updated language files with changes from authors.
 Changed: Updated credits in readme.txt
@@ -3038,7 +3074,7 @@ Added: Link to find user's posts from their user profile popup.
 Date: Mon, 27 Nov 2006 22:50:51
 -----------------------
 Changed: Removed optional $forum_fid from bh_session_check_perm as it is
-now redudant (check is done anyway).
+now redundant (check is done anyway).
 
 Date: Mon, 27 Nov 2006 01:29:08
 -----------------------
@@ -3048,7 +3084,7 @@ together in thread_merge function.
 Date: Sun, 26 Nov 2006 23:39:08
 -----------------------
 Changed: Radical overhaul of the Admin Word Filter pages.
-Fixed: get_request_uri() broken by hardcoding webtag into it.
+Fixed: get_request_uri() broken by hard coding webtag into it.
 Added: Option to prevent guests from being able to view attachments.
 
 Date: Sun, 26 Nov 2006 15:32:39
@@ -3090,16 +3126,16 @@ Changed: New double border layout applied to PM interface.
 
 Date: Fri, 24 Nov 2006 20:59:25
 -----------------------
-Added: Extended Visitor Log to Admin section with HTTP Referer for
+Added: Extended Visitor Log to Admin section with HTTP Referrer for
 checking where visitors come from.
 Fixed: Undefined variable $onload_array in light.inc.php
-Changed: bh_session_get_referer() now filters out referer if it is a page
+Changed: bh_session_get_referer() now filters out referrer if it is a page
 from the forum you're viewing.
 
 Date: Thu, 23 Nov 2006 21:42:53
 -----------------------
 Changed: Spoiler mouseover changed to use Javascript so it's more
-compatible with more browsers (lite mode)
+compatible with more browsers (Lite mode)
 
 Date: Thu, 23 Nov 2006 21:26:07
 -----------------------
@@ -3136,7 +3172,7 @@ group which were still being applied to users when the logged in.
 
 Date: Tue, 21 Nov 2006 09:06:54
 -----------------------
-Fixed: Error in query for autoprune. TIMESTAMP not TIMESTMAMP.
+Fixed: Error in query for auto-prune. TIMESTAMP not TIMESTMAMP.
 Fixed: Prune was deleting messages newer than specified.
 
 Date: Mon, 20 Nov 2006 22:10:22
@@ -3192,7 +3228,7 @@ Date: Wed, 15 Nov 2006 22:34:54
 Changed: Better looking Delete and Admin Post Approve dialogs with double
 edge border and fixed width (720px same as post.php)
 Changed: Function bh_session_get_value() now returns 0 for UID even if a
-session isn't intiated.
+session isn't initiated.
 
 Date: Wed, 15 Nov 2006 18:56:41
 -----------------------
@@ -3293,7 +3329,7 @@ Changed: Readme corrections.
 Date: Fri, 03 Nov 2006 23:00:10
 -----------------------
 Changed: Some layout changes for the message pane.
-Fixed: Function thread_merge_get() was artifically increasing the PID of
+Fixed: Function thread_merge_get() was artificially increasing the PID of
 the posts it found for merging resulting in deleted posts instead of merged
 posts.
 Fixed: Thread merge was not working correctly. Need to add some error

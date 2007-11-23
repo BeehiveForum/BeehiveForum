@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.264 2007-11-19 18:40:10 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.265 2007-11-23 18:12:29 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -575,7 +575,6 @@ function html_draw_top()
 
     $onload_array = array();
     $onunload_array = array();
-    $onbeforeunload_array = array();
 
     $arg_array = func_get_args();
     $meta_refresh_delay = false;
@@ -617,11 +616,6 @@ function html_draw_top()
 
         if (preg_match("/^onunload=([^$]+)$/i", $func_args, $func_matches) > 0) {
             $onunload_array[] = $func_matches[1];
-            unset($arg_array[$key]);
-        }
-
-        if (preg_match("/^onbeforeunload=([^$]+)$/i", $func_args, $func_matches) > 0) {
-            $onbeforeunload_array[] = $func_matches[1];
             unset($arg_array[$key]);
         }
 
@@ -838,26 +832,22 @@ function html_draw_top()
                     echo "function pm_notification_handler()\n";
                     echo "{\n";
                     echo "    var response_xml = pm_notification.get_response_xml();\n\n";
-                    echo "    if (typeof(response_xml) == 'object' && response_xml.length > 0) {\n\n";
-                    echo "        var pm_message_count_obj = getObjById('pm_message_count');\n\n";
-                    echo "        if (typeof(pm_message_count_obj) == 'object' && pm_message_count_obj.length > 0) {\n\n";
-                    echo "            var pm_unread_element = response_xml.getElementsByTagName('unread')[0];\n";
-                    echo "            var pm_new_element = response_xml.getElementsByTagName('new')[0];\n\n";
-                    echo "            if (typeof(pm_unread_element) == 'object' && typeof(pm_new_element) == 'object') {\n\n";
-                    echo "                if (pm_unread_element.length > 0 && pm_new_element.length > 0) {\n\n";
-                    echo "                    var pm_unread_count = pm_unread_element.childNodes[0].nodeValue;\n";
-                    echo "                    var pm_new_count = pm_new_element.childNodes[0].nodeValue;\n\n";
-                    echo "                    if (pm_new_count > 0) {\n\n";
-                    echo "                        pm_message_count_obj.innerHTML = '[' + pm_new_count + ' {$lang['new']}]';\n\n";
-                    echo "                    }else if (pm_unread_count > 0) {\n\n";
-                    echo "                        pm_message_count_obj.innerHTML = '[' + pm_unread_count + ' {$lang['unread']}]';\n";
-                    echo "                    }\n";
-                    echo "                }\n";
+                    echo "    var pm_message_count_obj = getObjById('pm_message_count');\n\n";
+                    echo "    if (typeof(pm_message_count_obj) == 'object' && pm_message_count_obj.getElementsByTagName) {\n\n";
+                    echo "        var pm_unread_element = response_xml.getElementsByTagName('unread')[0];\n";
+                    echo "        var pm_new_element = response_xml.getElementsByTagName('new')[0];\n\n";
+                    echo "        if (typeof(pm_unread_element) == 'object' && typeof(pm_new_element) == 'object') {\n\n";
+                    echo "            var pm_unread_count = pm_unread_element.childNodes[0].nodeValue;\n";
+                    echo "            var pm_new_count = pm_new_element.childNodes[0].nodeValue;\n\n";
+                    echo "            if (pm_new_count > 0) {\n\n";
+                    echo "               pm_message_count_obj.innerHTML = '[' + pm_new_count + ' {$lang['new']}]';\n\n";
+                    echo "            }else if (pm_unread_count > 0) {\n\n";
+                    echo "               pm_message_count_obj.innerHTML = '[' + pm_unread_count + ' {$lang['unread']}]';\n";
                     echo "            }\n";
                     echo "        }\n\n";
-                    echo "        var message_array = response_xml.getElementsByTagName('notification');\n\n";
-                    echo "        if (typeof(message_array) == 'object' && message_array.length > 0) {\n\n";
-                    echo "            var message_display_text = message_array[0].childNodes[0].nodeValue;\n\n";
+                    echo "        var message_array = response_xml.getElementsByTagName('notification')[0];\n\n";
+                    echo "        if (typeof(message_array) == 'object') {\n\n";
+                    echo "            var message_display_text = message_array.childNodes[0].nodeValue;\n\n";
                     echo "            if (message_display_text.length > 0) {\n\n";
                     echo "                if (window.confirm(message_display_text)) {\n\n";
                     echo "                    top.frames['", html_get_frame_name('main'), "'].location.replace('pm.php?webtag=$webtag');\n";
@@ -871,7 +861,7 @@ function html_draw_top()
                     echo "</script>\n";
 
                     if (!in_array("pm_notification_initialise()", $onload_array)) $onload_array[] = "pm_notification_initialise()";
-                    if (!in_array("pm_notification_abort()", $onbeforeunload_array)) $onbeforeunload_array[] = "pm_notification_abort()";
+                    if (!in_array("pm_notification_abort()", $onunload_array)) $onunload_array[] = "pm_notification_abort()";
                 }
             }
 
@@ -1106,7 +1096,7 @@ function html_draw_top()
                 echo "</script>\n";
 
                 if (!in_array("stats_display_initialise()", $onload_array)) $onload_array[] = "stats_display_initialise()";
-                if (!in_array("stats_display_abort()", $onbeforeunload_array)) $onbeforeunload_array[] = "stats_display_abort()";
+                if (!in_array("stats_display_abort()", $onunload_array)) $onunload_array[] = "stats_display_abort()";
             }
         }
     }
@@ -1156,8 +1146,6 @@ function html_draw_top()
 
     $onunload = trim(implode(";", $onunload_array));
 
-    $onbeforeunload = trim(implode(";", $onbeforeunload_array));
-
     echo "</head>\n\n";
 
     if ($include_body_tag === true) {
@@ -1165,7 +1153,6 @@ function html_draw_top()
         echo "<body", ($body_class) ? " class=\"$body_class\"" : "";
         echo (strlen($onload) > 0) ? " onload=\"$onload\"" : "";
         echo (strlen($onunload) > 0) ? " onunload=\"$onunload\"" : "";
-        echo (strlen($onbeforeunload) > 0) ? " onbeforeunload=\"$onbeforeunload\"" : "";
         echo ">\n";
     }
 }

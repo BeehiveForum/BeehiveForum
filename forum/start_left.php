@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.153 2007-10-11 13:01:16 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.154 2007-11-24 14:43:09 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -457,7 +457,7 @@ if ($user_birthdays_array = user_get_forthcoming_birthdays()) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\" colspan=\"2\">", form_quick_button("./visitor_log.php", "{$lang['more']} &raquo;", array('profile_selection' => 'DOB,AGE', 'sort_by' => 'DOB', 'sort_dir' => 'ASC', 'hide_empty' => 'Y'), html_get_frame_name('right')), "</td>\n";
+    echo "      <td align=\"center\" colspan=\"2\">", form_quick_button("./visitor_log.php", "{$lang['more']} &raquo;", array('profile_selection' => 'DOB,AGE', 'sort_by' => 'DOB', 'sort_dir' => 'ASC', 'hide_empty' => 'Y', 'hide_guests' => 'Y'), html_get_frame_name('right')), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "  <br />\n";

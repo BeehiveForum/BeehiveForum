@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.86 2007-11-18 15:28:18 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.87 2007-11-24 14:43:09 decoyduck Exp $ */
 
 // French Canadian language file
 
@@ -1708,8 +1708,8 @@ $lang['prev50threads'] = "Premiers 50 fil de discussion";
 $lang['next50threads'] = "Prochains 50 fils de discussion";
 $lang['nextxthreads'] = "Prochains %s fils de discussion";
 $lang['threadstartedbytooltip'] = "Fil de discussion #%s commencé par %s. Visualisé %s";
-$lang['threadviewedonetime'] = "Vu: 1 fois";
-$lang['threadviewedtimes'] = "Vu: %d fois";
+$lang['threadviewedonetime'] = "1 fois";
+$lang['threadviewedtimes'] = "%d fois";
 $lang['unreadthread'] = "Fil de discussion non-lu";
 $lang['readthread'] = "Lire fil de discussion";
 $lang['unreadmessages'] = "Messages non-lus";

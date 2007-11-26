@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_check_dependencies.php,v 1.20 2007-05-02 23:15:39 decoyduck Exp $ */
+/* $Id: bh_check_dependencies.php,v 1.21 2007-11-26 19:58:15 decoyduck Exp $ */
 
 // Callback function to escape array of strings.
 
@@ -73,7 +73,7 @@ foreach($source_files_dir_array as $include_file_dir) {
                     if (!isset($include_files_functions_array[$file])) {
 
                         if (sizeof($ignore_functions_array) > 0) {
-                        
+
                             $function_matches = preg_grep("/$ignore_functions/", $function_matches[1], PREG_GREP_INVERT);
                             $include_files_functions_array[$file] = $function_matches;
 
@@ -130,7 +130,7 @@ foreach($source_files_dir_array as $include_file_dir) {
             }
         }
     }
-}            
+}
 
 echo "Processing files...\n\n";
 
@@ -145,7 +145,7 @@ foreach($source_files_array as $source_file) {
     foreach($include_files_functions_array as $include_file => $function_names_array) {
 
         if ($include_file !== basename($source_file)) {
-        
+
             $include_file_line = "include_once(BH_INCLUDE_PATH. \"$include_file\")";
             $include_file_line_preg = preg_quote($include_file_line, "/");
 
@@ -171,7 +171,7 @@ foreach($source_files_array as $source_file) {
     foreach($include_files_constants_array as $include_file => $constant_names_array) {
 
         if ($include_file !== basename($source_file)) {
-        
+
             $include_file_line = "include_once(BH_INCLUDE_PATH. \"$include_file\")";
             $include_file_line_preg = preg_quote($include_file_line, "/");
 
@@ -197,5 +197,5 @@ foreach($source_files_array as $source_file) {
     echo implode(";\n", $include_files_required_array);
     echo (sizeof($include_files_required_array) > 0) ? ";\n\n" : "\n";
 }
-        
+
 ?>

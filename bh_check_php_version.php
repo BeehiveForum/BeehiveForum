@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_check_php_version.php,v 1.2 2007-11-08 17:13:18 decoyduck Exp $ */
+/* $Id: bh_check_php_version.php,v 1.3 2007-11-26 19:58:16 decoyduck Exp $ */
 
 // Requires PHP PEAR to be installed and PHP_CompatInfo Class.
 // See: http://www.laurent-laville.org/index.php?module=pear&desc=pci
@@ -40,7 +40,7 @@ $options = array('debug'        => false, // Disabled Debug mode
                  'ignore_dirs'  => array('.\forum\geshi', '.\forum\tiny_mce'), // Ignore Geshi and TinyMCE
                  'ignore_files' => array('.\forum\include\db\db_mysql.inc.php',    // Ignore our DB connection scripts.
                                          '.\forum\include\db\db_mysqli.inc.php',  // We know these work on PHP4.
-                                         '.\bh_check_dependencies.php',            // Support scripts which we don't dsitribute
+                                         '.\bh_check_dependencies.php',            // Support scripts which we don't distribute
                                          '.\bh_check_languages.php',
                                          '.\bh_check_php_version.php',
                                          '.\bh_check_styles.php',

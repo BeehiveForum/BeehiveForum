@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.265 2007-11-23 18:12:29 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.266 2007-11-26 20:37:10 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1056,12 +1056,14 @@ function html_draw_top()
                 echo "                if (typeof(post_stats_recent) == 'object') {\n\n";
                 echo "                    post_stats_recent_count = post_stats_recent.getElementsByTagName('count')[0].childNodes[0].nodeValue;\n\n";
                 echo "                    post_stats_record = post_stats_recent.getElementsByTagName('record')[0];\n";
-                echo "                    post_stats_record_count = post_stats_record.getElementsByTagName('count')[0].childNodes[0].nodeValue;\n";
-                echo "                    post_stats_record_date = post_stats_record.getElementsByTagName('date')[0].childNodes[0].nodeValue;\n\n";
+                echo "                    if (typeof(post_stats_record) == 'object') {\n\n";
+                echo "                        post_stats_record_count = post_stats_record.getElementsByTagName('count')[0].childNodes[0].nodeValue;\n";
+                echo "                        post_stats_record_date = post_stats_record.getElementsByTagName('date')[0].childNodes[0].nodeValue;\n\n";
+                echo "                        post_stats_record_text = sprintf(lang['mostpostsevermadeinasinglesixtyminuteperiodwasnumposts'], post_stats_record_count, post_stats_record_date);\n\n";
+                echo "                        post_stats_obj.innerHTML+= post_stats_record_text;\n";
+                echo "                    }\n\n";
                 echo "                    post_stats_recent_text = (post_stats_recent_count != 1) ? sprintf(lang['therehavebeenxpostsmadeinthelastsixtyminutes'] + '<br />', post_stats_recent_count) : lang['therehasbeenonepostmadeinthelastsxityminutes'];\n\n";
                 echo "                    post_stats_obj.innerHTML = post_stats_recent_text;\n\n";
-                echo "                    post_stats_record_text = sprintf(lang['mostpostsevermadeinasinglesixtyminuteperiodwasnumposts'], post_stats_record_count, post_stats_record_date);\n\n";
-                echo "                    post_stats_obj.innerHTML+= post_stats_record_text;\n";
                 echo "                }\n";
                 echo "            }\n";
                 echo "        }\n\n";

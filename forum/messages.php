@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.248 2007-11-18 13:55:18 decoyduck Exp $ */
+/* $Id: messages.php,v 1.249 2007-12-01 20:44:16 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -146,49 +146,61 @@ list($tid, $pid) = explode('.', $msg);
 
 if (isset($_POST['pollsubmit'])) {
 
-    if (isset($_POST['pollvote'])) {
+    if (isset($_POST['tid']) && is_numeric($_POST['tid'])) {
 
-        if (poll_check_tabular_votes($_POST['tid'], $_POST['pollvote'])) {
+        $tid = $_POST['tid'];
 
-            poll_vote($_POST['tid'], $_POST['pollvote']);
-            $user_poll_votes = implode(",", $_POST['pollvote']);
-            header_redirect("./messages.php?webtag=$webtag&user_poll_votes=$user_poll_votes&msg=". $_POST['tid']. ".1");
+        if (isset($_POST['pollvote']) && is_array($_POST['pollvote'])) {
+
+            $poll_votes = $_POST['pollvote'];
+
+            if (poll_check_tabular_votes($tid, $poll_votes)) {
+
+                poll_vote($tid, $poll_votes);
+
+            }else {
+
+                html_draw_top();
+                html_error_msg($lang['mustvoteforallgroups'], 'messages.php', 'get', array('back' => $lang['back']), array('msg' => $msg));
+                html_draw_bottom();
+                exit;
+            }
 
         }else {
 
             html_draw_top();
-            html_error_msg($lang['mustvoteforallgroups'], 'messages.php', 'get', array('back' => $lang['back']), array('msg' => $msg));
+            html_error_msg($lang['mustselectpolloption'], 'messages.php', 'get', array('back' => $lang['back']), array('msg' => $msg));
             html_draw_bottom();
             exit;
         }
-
-    }else {
-
-        html_draw_top();
-        html_error_msg($lang['mustselectpolloption'], 'messages.php', 'get', array('back' => $lang['back']), array('msg' => $msg));
-        html_draw_bottom();
-        exit;
     }
 
 }elseif (isset($_POST['pollclose'])) {
 
-    if (isset($_POST['confirm_pollclose'])) {
+    if (isset($_POST['tid']) && is_numeric($_POST['tid'])) {
 
-        poll_close($_POST['tid']);
-        header_redirect("./messages.php?webtag=$webtag&msg=". $_POST['tid']. ".1");
+        $tid = $_POST['tid'];
 
-    }else {
+        if (isset($_POST['confirm_pollclose'])) {
 
-        html_draw_top("openprofile.js", "poll.js");
-        poll_confirm_close($_POST['tid']);
-        html_draw_bottom();
-        exit;
+            poll_close($tid);
+
+        }else {
+
+            html_draw_top("openprofile.js", "poll.js");
+            poll_confirm_close($tid);
+            html_draw_bottom();
+            exit;
+        }
     }
 
 }elseif (isset($_POST['pollchangevote'])) {
 
-    poll_delete_vote($_POST['tid']);
-    header_redirect("./messages.php?webtag=$webtag&msg=". $_POST['tid']. ".1");
+    if (isset($_POST['tid']) && is_numeric($_POST['tid'])) {
+
+        $tid = $_POST['tid'];
+        poll_delete_vote($tid);
+    }
 }
 
 if ($posts_per_page = bh_session_get_value('POSTS_PER_PAGE')) {

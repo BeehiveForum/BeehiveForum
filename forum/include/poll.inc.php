@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.217 2007-12-01 17:16:21 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.218 2007-12-01 20:44:16 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -425,12 +425,14 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
     $total_votes  = 0;
     $option_count = 0;
 
+    $request_uri = get_request_uri();
+
     $poll_data['CONTENT'] = "<br />\n";
     $poll_data['CONTENT'].= "                <div align=\"center\">\n";
     $poll_data['CONTENT'].= "                <table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" width=\"475\">\n";
     $poll_data['CONTENT'].= "                  <tr>\n";
     $poll_data['CONTENT'].= "                    <td align=\"left\">\n";
-    $poll_data['CONTENT'].= "                      <form method=\"post\" action=\"". basename($_SERVER['PHP_SELF']). "\" target=\"_self\">\n";
+    $poll_data['CONTENT'].= "                      <form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
     $poll_data['CONTENT'].= "                        ". form_input_hidden("webtag", _htmlentities($webtag)). "\n";
     $poll_data['CONTENT'].= "                        ". form_input_hidden('tid', _htmlentities($tid)). "\n";
     $poll_data['CONTENT'].= "                        <table width=\"460\">\n";
@@ -470,7 +472,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
 
                             $poll_data['CONTENT'].= "                                <tr>\n";
                             $poll_data['CONTENT'].= "                                  <td align=\"left\" colspan=\"2\"><hr /></td>\n";
-                            $poll_data['CONTENT'].= "                                <tr>\n";
+                            $poll_data['CONTENT'].= "                                </tr>\n";
                         }
 
                         unset($drop_down_data);
@@ -566,7 +568,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
 
                             $poll_data['CONTENT'].= "                          <tr>\n";
                             $poll_data['CONTENT'].= "                            <td align=\"left\" colspan=\"2\"><hr /></td>\n";
-                            $poll_data['CONTENT'].= "                          <tr>\n";
+                            $poll_data['CONTENT'].= "                          </tr>\n";
 
                             $poll_group_count++;
                         }
@@ -923,7 +925,7 @@ function poll_preview_form($poll_results, $poll_data)
 
                     $poll_display.= "                      <tr>\n";
                     $poll_display.= "                        <td align=\"left\" colspan=\"2\"><hr /></td>\n";
-                    $poll_display.= "                      <tr>\n";
+                    $poll_display.= "                      </tr>\n";
                 }
 
                 unset($drop_down_data);
@@ -1945,7 +1947,8 @@ function poll_confirm_close($tid)
     $show_sigs = !(bh_session_get_value('VIEW_SIGS'));
 
     echo "<h1>{$lang['endpoll']}</h1>\n";
-    echo "<h2>{$lang['pollconfirmclose']}</h2>\n";
+
+    html_display_warning_msg($lang['pollconfirmclose'], '96%', 'center');
 
     poll_display($tid, $threaddata['LENGTH'], 1, $threaddata['FID'], false, false, false, true, $show_sigs, true);
 
@@ -2070,11 +2073,13 @@ function thread_is_poll($tid)
     return false;
 }
 
-function poll_check_tabular_votes($tid, $votes)
+function poll_check_tabular_votes($tid, $votes_array)
 {
     if (!$db_poll_check_tabular_votes = db_connect()) return false;
 
     if (!is_numeric($tid)) return false;
+
+    if (!is_array($votes_array)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -2091,7 +2096,7 @@ function poll_check_tabular_votes($tid, $votes)
 
         if ($poll_data['POLLTYPE'] == POLL_TABLE_GRAPH) {
 
-            return (sizeof($votes) == $poll_data['GROUP_COUNT']);
+            return (sizeof($votes_array) == $poll_data['GROUP_COUNT']);
 
         }else {
             return true;

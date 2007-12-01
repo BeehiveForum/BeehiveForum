@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.498 2007-11-18 16:27:08 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.499 2007-12-01 20:44:16 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -533,13 +533,27 @@ function messages_check_cache_header()
     if (isset($_GET['relupdated'])) return false;
     if (isset($_GET['setstats'])) return false;
 
+    if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
+        return header_no_cache();
+    }
+
     if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
-        list($tid) = explode('.', $_GET['msg']);
+        list($tid, $pid) = explode('.', $_GET['msg']);
 
-        $sql = "SELECT UNIX_TIMESTAMP(MODIFIED) AS MODIFIED ";
-        $sql.= "FROM {$table_data['PREFIX']}THREAD ";
-        $sql.= "WHERE TID = '$tid'";
+        if (thread_is_poll($tid) && $pid == 1) {
+
+            $sql = "SELECT UNIX_TIMESTAMP(TSTAMP) AS MODIFIED ";
+            $sql.= "FROM {$table_data['PREFIX']}USER_POLL_VOTES ";
+            $sql.= "WHERE TID = '$tid' ORDER BY MODIFIED DESC ";
+            $sql.= "LIMIT 0, 1";
+
+        }else {
+
+            $sql = "SELECT UNIX_TIMESTAMP(MODIFIED) AS MODIFIED ";
+            $sql.= "FROM {$table_data['PREFIX']}THREAD ";
+            $sql.= "WHERE TID = '$tid'";
+        }
 
     }else {
 

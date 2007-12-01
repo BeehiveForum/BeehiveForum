@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.154 2007-10-31 01:05:12 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.155 2007-12-01 16:53:20 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -536,9 +536,9 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
     // Modified to handle the new Group ID.
 
     $pollresults = array('OPTION_ID'   => array_keys($poll_preview_answers_array),
-                         'OPTION_NAME' => $poll_preview_answers_array,
-                         'GROUP_ID'    => $poll_preview_groups_array,
-                         'VOTES'       => $poll_preview_votes_array);
+                         'OPTION_NAME' => array_values($poll_preview_answers_array),
+                         'GROUP_ID'    => array_values($poll_preview_groups_array),
+                         'VOTES'       => array_values($poll_preview_votes_array));
 
     if (isset($_POST['option_type']) && is_numeric($_POST['option_type'])) {
         $pollpreviewdata['OPTIONTYPE'] = $t_option_type;
@@ -555,7 +555,7 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
         if ($t_poll_type == POLL_VERTICAL_GRAPH) {
             $polldata['CONTENT'].= poll_preview_graph_vert($pollresults);
         }elseif ($t_poll_type == POLL_TABLE_GRAPH) {
-            $polldata['CONTENT'] .= poll_preview_graph_table($pollresults);
+            $polldata['CONTENT'].= poll_preview_graph_table($pollresults);
         } else {
             $polldata['CONTENT'].= poll_preview_graph_horz($pollresults);
         }

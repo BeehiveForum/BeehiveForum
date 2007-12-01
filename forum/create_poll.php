@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.214 2007-10-18 20:51:00 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.215 2007-12-01 16:53:20 decoyduck Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -476,7 +476,7 @@ if (isset($_POST['cancel'])) {
         $valid = false;
     }
 
-    if ($valid && $t_poll_type == POLL_TABLE_GRAPH && $t_change_vote == POLL_MULTIVOTE) {
+    if ($valid && $t_poll_type == POLL_TABLE_GRAPH && $t_change_vote == POLL_VOTE_MULTI) {
 
         $error_msg_array[] = $lang['nomultivotetabulars'];
         $valid = false;
@@ -830,9 +830,9 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
     // Modified to handle the new Group ID.
 
     $pollresults = array('OPTION_ID'   => array_keys($poll_preview_answers_array),
-                         'OPTION_NAME' => $poll_preview_answers_array,
-                         'GROUP_ID'    => $poll_preview_groups_array,
-                         'VOTES'       => $poll_preview_votes_array);
+                         'OPTION_NAME' => array_values($poll_preview_answers_array),
+                         'GROUP_ID'    => array_values($poll_preview_groups_array),
+                         'VOTES'       => array_values($poll_preview_votes_array));
 
     if (isset($_POST['option_type']) && is_numeric($_POST['option_type'])) {
         $pollpreviewdata['OPTIONTYPE'] = $t_option_type;

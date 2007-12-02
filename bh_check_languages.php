@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_check_languages.php,v 1.32 2007-06-18 20:10:49 decoyduck Exp $ */
+/* $Id: bh_check_languages.php,v 1.33 2007-12-02 11:45:18 decoyduck Exp $ */
 
 // Compare two language files.
 
@@ -49,9 +49,9 @@ function parse_lang_data($key, $data, $prefix)
     }else {
 
         if (!preg_match("/^_/", $key)) {
-       
+
             $data = str_replace("\n", "\\n", $data);
-            
+
             if (is_string($key)) {
                 return "{$prefix}['$key'] = \"$data\";";
             }else {
@@ -69,14 +69,15 @@ $master_lang = load_language_file("en.inc.php");
 
 // Slave Language Files.
 
-$slave_langs = array("x-hacker.inc.php" => array('lang' => load_language_file("x-hacker.inc.php"), 'showut' => false),
+$slave_langs = array("en-us.inc.php"    => array('lang' => load_language_file("en-us.inc.php"), 'showut' => false),
+                     "x-hacker.inc.php" => array('lang' => load_language_file("x-hacker.inc.php"), 'showut' => false),
                      "fr-ca.inc.php"    => array('lang' => load_language_file("fr-ca.inc.php"), 'showut' => true),
                      "de.inc.php"       => array('lang' => load_language_file("de.inc.php"), 'showut' => true));
 
 foreach ($slave_langs as $lang_name => $slave_lang) {
 
     if (isset($slave_lang['lang']) && is_array($slave_lang['lang'])) {
-    
+
         echo $lang_name, "\n", str_repeat("=", strlen($lang_name)), "\n\n";
 
         $strings = $slave_lang['lang'];

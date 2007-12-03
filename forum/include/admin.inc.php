@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.142 2007-10-31 17:10:05 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.143 2007-12-03 18:38:49 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -1527,21 +1527,21 @@ function admin_delete_users_posts($uid)
 
         if ($user_post_array = get_user_posts($uid)) {
 
+            $valid = true;
+
             foreach ($user_post_array as $user_post) {
 
                 if (post_delete($user_post['TID'], $user_post['PID'])) {
 
                     post_add_edit_text($tid, $pid);
 
-                    post_update_modified($tid);
-
                 }else {
 
-                    return false;
+                    $valid = false;
                 }
             }
 
-            return true;
+            return $valid;
         }
     }
 

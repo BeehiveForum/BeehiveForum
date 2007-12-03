@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.301 2007-11-17 18:38:05 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.302 2007-12-03 18:38:49 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1669,95 +1669,6 @@ function thread_update_unread_cutoff($tid, $unread_pid, $unread_created)
     }
 
     return true;
-}
-
-function thread_list_check_cache_header()
-{
-    if (strstr(php_sapi_name(), 'cgi')) return false;
-
-    if (!$db_thread_list_check_cache_header = db_connect()) return false;
-
-    // Get the thread last modified date and user last read date.
-
-    $thread_modified_date = thread_list_get_last_modified_date();
-    $thread_last_read_date = thread_list_get_last_read_date();
-
-    // Work out which is newer and generate Last Modified Header for cache control
-
-    if ($thread_modified_date > $thread_last_read_date) {
-
-        $local_last_modified = gmdate("D, d M Y H:i:s", $thread_modified_date). " GMT";
-        $local_cache_expires = gmdate("D, d M Y H:i:s", $thread_modified_date). " GMT";
-
-    }else {
-
-        $local_last_modified = gmdate("D, d M Y H:i:s", $thread_last_read_date). " GMT";
-        $local_cache_expires = gmdate("D, d M Y H:i:s", $thread_last_read_date). " GMT";
-    }
-
-    header("Expires: $local_cache_expires", true);
-    header("Last-Modified: $local_last_modified", true);
-    header('Cache-Control: private, must-revalidate', true);
-
-    if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
-
-        $remote_last_modified = _stripslashes($_SERVER['HTTP_IF_MODIFIED_SINCE']);
-
-        if (strcmp($remote_last_modified, $local_last_modified) == "0") {
-
-            header("HTTP/1.1 304 Not Modified");
-            exit;
-        }
-    }
-
-    return true;
-}
-
-function thread_list_get_last_modified_date()
-{
-    if (!$db_thread_list_get_last_modified = db_connect()) return false;
-
-    if (!$table_data = get_table_prefix()) return false;
-
-    $sql = "SELECT UNIX_TIMESTAMP(MODIFIED) AS MODIFIED ";
-    $sql.= "FROM {$table_data['PREFIX']}THREAD ";
-    $sql.= "ORDER BY MODIFIED DESC LIMIT 0, 1";
-
-    if (!$result = db_query($sql, $db_thread_list_get_last_modified)) return false;
-
-    if (db_num_rows($result) > 0) {
-
-        list($thread_modified_date) = db_fetch_array($result, DB_RESULT_NUM);
-        return $thread_modified_date;
-    }
-
-    return false;
-}
-
-function thread_list_get_last_read_date()
-{
-    if (user_is_guest()) return false;
-
-    if (!$db_thread_list_get_last_read_date = db_connect()) return false;
-
-    if (!$table_data = get_table_prefix()) return false;
-
-    if (($uid = bh_session_get_value('UID')) === false) return false;
-
-    $sql = "SELECT UNIX_TIMESTAMP(LAST_READ_AT) AS LAST_READ_AT ";
-    $sql.= "FROM {$table_data['PREFIX']}USER_THREAD ";
-    $sql.= "WHERE UID = '$uid' ORDER BY LAST_READ_AT DESC ";
-    $sql.= "LIMIT 0, 1";
-
-    if (!$result = db_query($sql, $db_thread_list_get_last_read_date)) return false;
-
-    if (db_num_rows($result) > 0) {
-
-        list($thread_last_read_date) = db_fetch_array($result, DB_RESULT_NUM);
-        return $thread_last_read_date;
-    }
-
-    return false;
 }
 
 function thread_list_draw_top($mode)

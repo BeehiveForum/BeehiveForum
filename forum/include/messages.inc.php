@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.499 2007-12-01 20:44:16 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.500 2007-12-03 18:38:49 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -518,78 +518,6 @@ function message_split_fiddle($content, $emoticons = true, $ignore_sig = false)
     }
 
     return preg_replace("/<\/?noemots>|<\/?nowiki>/", "", $message);
-}
-
-function messages_check_cache_header()
-{
-    if (strstr(php_sapi_name(), 'cgi')) return false;
-
-    if (!$db_messages_check_cache_header = db_connect()) return false;
-
-    if (!$table_data = get_table_prefix()) return false;
-
-    if (isset($_GET['markasread'])) return false;
-    if (isset($_GET['setinterest'])) return false;
-    if (isset($_GET['relupdated'])) return false;
-    if (isset($_GET['setstats'])) return false;
-
-    if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
-        return header_no_cache();
-    }
-
-    if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
-
-        list($tid, $pid) = explode('.', $_GET['msg']);
-
-        if (thread_is_poll($tid) && $pid == 1) {
-
-            $sql = "SELECT UNIX_TIMESTAMP(TSTAMP) AS MODIFIED ";
-            $sql.= "FROM {$table_data['PREFIX']}USER_POLL_VOTES ";
-            $sql.= "WHERE TID = '$tid' ORDER BY MODIFIED DESC ";
-            $sql.= "LIMIT 0, 1";
-
-        }else {
-
-            $sql = "SELECT UNIX_TIMESTAMP(MODIFIED) AS MODIFIED ";
-            $sql.= "FROM {$table_data['PREFIX']}THREAD ";
-            $sql.= "WHERE TID = '$tid'";
-        }
-
-    }else {
-
-        $sql = "SELECT UNIX_TIMESTAMP(MODIFIED) AS MODIFIED ";
-        $sql.= "FROM {$table_data['PREFIX']}THREAD ";
-        $sql.= "ORDER BY MODIFIED DESC LIMIT 0, 1";
-    }
-
-    if (!$result = db_query($sql, $db_messages_check_cache_header)) return false;
-
-    if (db_num_rows($result) > 0) {
-
-        list($thread_modified_date) = db_fetch_array($result, DB_RESULT_NUM);
-
-        // Last Modified Header for cache control
-
-        $local_last_modified = gmdate("D, d M Y H:i:s", $thread_modified_date). " GMT";
-        $local_cache_expires = gmdate("D, d M Y H:i:s", $thread_modified_date). " GMT";
-
-        header("Expires: $local_cache_expires", true);
-        header("Last-Modified: $local_last_modified", true);
-        header('Cache-Control: private, must-revalidate', true);
-
-        if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
-
-            $remote_last_modified = _stripslashes($_SERVER['HTTP_IF_MODIFIED_SINCE']);
-
-            if (strcmp($remote_last_modified, $local_last_modified) == "0") {
-
-                header("HTTP/1.1 304 Not Modified");
-                exit;
-            }
-        }
-    }
-
-    return true;
 }
 
 function messages_top($folder_title, $thread_title, $interest_level = THREAD_NOINTEREST, $sticky = "N", $closed = false, $locked = false, $deleted = false)

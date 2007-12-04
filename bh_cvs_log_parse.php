@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_cvs_log_parse.php,v 1.10 2007-11-04 01:42:35 decoyduck Exp $ */
+/* $Id: bh_cvs_log_parse.php,v 1.11 2007-12-04 23:43:36 decoyduck Exp $ */
 
 /**
 * bh_cvs_log_parse.php
@@ -177,13 +177,13 @@ function cvs_mysql_parse($cvs_log_contents)
 {
     if (!$db_cvs_log_parse = db_connect()) return false;
 
-    $cvs_log_array = preg_split("/\nrevision [0-9\.]+/", $cvs_log_contents, -1, PREG_SPLIT_DELIM_CAPTURE);
+    $cvs_log_array = preg_split("/\n={77}|\n-{22}/", $cvs_log_contents, -1, PREG_SPLIT_DELIM_CAPTURE);
 
     foreach ($cvs_log_array as $cvs_log_entry) {
 
         $description_match = "/date: ([0-9]{4})\/([0-9]{2})\/([0-9]{2}) ([0-9]{2}):([0-9]{2}):([0-9]{2});  ";
         $description_match.= "author: ([^;]+);  state: [^;]+;  lines: \+[0-9]+ \-[0-9]+\n";
-        $description_match.= "([^=-]+)\n[=-]+/";
+        $description_match.= "(.+)/";
 
         if (preg_match_all($description_match, trim($cvs_log_entry), $cvs_log_match_array, PREG_SET_ORDER) > 0) {
 
@@ -292,7 +292,7 @@ if (isset($_SERVER['argv'][1]) && preg_match("/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/", $
 
                     if (!cvs_mysql_parse($cvs_log_contents)) {
 
-                        echo "Error while parsing CVS log contents";
+                        echo "Error while fetching or parsing CVS log contents";
                         exit;
                     }
 

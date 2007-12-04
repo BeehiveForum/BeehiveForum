@@ -21,10 +21,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ldisplay.php,v 1.25 2007-10-31 17:10:06 decoyduck Exp $ */
+/* $Id: ldisplay.php,v 1.26 2007-12-04 23:43:36 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
+
+// Light Mode Detection
+define("BEEHIVEMODE_LIGHT", true);
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");

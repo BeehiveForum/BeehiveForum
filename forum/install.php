@@ -21,10 +21,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.82 2007-12-04 20:33:21 decoyduck Exp $ */
+/* $Id: install.php,v 1.83 2007-12-04 23:43:36 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
+
+// Installer Detection
+define("BEEHIVEMODE_LIGHT", true);
 
 // Installation checking functions
 include_once(BH_INCLUDE_PATH. "install.inc.php");
@@ -46,14 +49,14 @@ install_check_php_version();
 // Check for a forced install
 
 if (isset($_GET['force_install']) && $_GET['force_install'] == 'yes') {
-    $force_install = true;
+    define('BEEHIVE_INSTALL_NOWARN', 1);
 }elseif (isset($_POST['force_install']) && $_POST['force_install'] == 'yes') {
-    $force_install = true;
-}else {
-    $force_install = false;
+    define('BEEHIVE_INSTALL_NOWARN', 1);
 }
 
-if (isset($_POST['install_method']) && (!defined('BEEHIVE_INSTALED') || $force_install)) {
+// Post Data handling.
+
+if (isset($_POST['install_method']) && defined('BEEHIVE_INSTALL_NOWARN')) {
 
     install_msie_buffer_fix();
 
@@ -273,7 +276,7 @@ if (isset($_POST['install_method']) && (!defined('BEEHIVE_INSTALED') || $force_i
                     if ($config_saved) {
 
                         echo "<form method=\"post\" action=\"index.php\">\n";
-                        echo "  <input type=\"hidden\" name=\"force_install\" value=\"", ($force_install) ? "yes" : "no", "\" />\n";
+                        echo "  <input type=\"hidden\" name=\"force_install\" value=\"", defined('BEEHIVE_INSTALL_NOWARN') ? "yes" : "no", "\" />\n";
                         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
                         echo "    <tr>\n";
                         echo "      <td align=\"left\" width=\"500\">\n";
@@ -317,7 +320,7 @@ if (isset($_POST['install_method']) && (!defined('BEEHIVE_INSTALED') || $force_i
                     }else {
 
                         echo "<form method=\"post\" action=\"install.php\">\n";
-                        echo "  <input type=\"hidden\" name=\"force_install\" value=\"", ($force_install) ? "yes" : "no", "\" />\n";
+                        echo "  <input type=\"hidden\" name=\"force_install\" value=\"", defined('BEEHIVE_INSTALL_NOWARN') ? "yes" : "no", "\" />\n";
                         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
                         echo "    <tr>\n";
                         echo "      <td align=\"left\" width=\"500\">\n";
@@ -403,7 +406,7 @@ if (isset($_POST['install_method']) && (!defined('BEEHIVE_INSTALED') || $force_i
         }
     }
 
-}elseif (isset($_POST['download_config']) && (!@file_exists(BH_INCLUDE_PATH. "config.inc.php") || $force_install)) {
+}elseif (isset($_POST['download_config']) && (!@file_exists(BH_INCLUDE_PATH. "config.inc.php") || defined('BEEHIVE_INSTALL_NOWARN'))) {
 
     $config_file = "";
 
@@ -528,7 +531,7 @@ if (isset($_POST['install_method']) && (!defined('BEEHIVE_INSTALED') || $force_i
             echo "    </tr>\n";
             echo "  </table>\n";
             echo "  <form method=\"post\" action=\"./install.php\">\n";
-            echo "    <input type=\"hidden\" name=\"force_install\" value=\"", ($force_install) ? "yes" : "no", "\" />\n";
+            echo "    <input type=\"hidden\" name=\"force_install\" value=\"", defined('BEEHIVE_INSTALL_NOWARN') ? "yes" : "no", "\" />\n";
             echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
             echo "      <tr>\n";
             echo "        <td align=\"left\" width=\"500\">&nbsp;</td>\n";
@@ -564,10 +567,10 @@ echo "<script language=\"javascript\" type=\"text/javascript\" src=\"./js/instal
 echo "</head>\n";
 echo "<body>\n";
 
-if (!@file_exists(BH_INCLUDE_PATH. "config.inc.php") || $force_install) {
+if (!@file_exists(BH_INCLUDE_PATH. "config.inc.php") || defined('BEEHIVE_INSTALL_NOWARN')) {
 
     echo "<form id=\"install_form\" method=\"post\" action=\"install.php\">\n";
-    echo "<input type=\"hidden\" name=\"force_install\" value=\"", ($force_install) ? "yes" : "no", "\" />\n";
+    echo "<input type=\"hidden\" name=\"force_install\" value=\"", defined('BEEHIVE_INSTALL_NOWARN') ? "yes" : "no", "\" />\n";
     echo "<h1>Beehive Forum ", BEEHIVE_VERSION, " Installation</h1>\n";
     echo "<div align=\"center\">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";

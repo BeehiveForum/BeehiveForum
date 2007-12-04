@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.81 2007-11-15 22:34:16 decoyduck Exp $ */
+/* $Id: install.php,v 1.82 2007-12-04 20:33:21 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -178,11 +178,13 @@ if (isset($_POST['install_method']) && (!defined('BEEHIVE_INSTALED') || $force_i
     if ($valid) {
 
         if ($install_method == 0 && ($admin_password != $admin_cpassword)) {
+
             $error_array[] = "Administrator account passwords do not match.\n";
             $valid = false;
         }
 
         if ($db_password != $db_cpassword) {
+
             $error_array[] = "MySQL database passwords do not match.\n";
             $valid = false;
         }
@@ -198,13 +200,17 @@ if (isset($_POST['install_method']) && (!defined('BEEHIVE_INSTALED') || $force_i
 
             // Check the install method
 
-            if (($install_method == 4) && (@file_exists('./install/upgrade-07x-to-08.php'))) {
+            if (($install_method == 5) && (@file_exists('./install/upgrade-08-to-081.php'))) {
 
-                include_once("./install/upgrade-07x-to-08.php");
+                include_once("./install/upgrade-08-to-081.php");
 
-            }elseif (($install_method == 3) && (@file_exists('./install/upgrade-06x-to-08.php'))) {
+            }elseif (($install_method == 4) && (@file_exists('./install/upgrade-07x-to-081.php'))) {
 
-                include_once("./install/upgrade-06x-to-08.php");
+                include_once("./install/upgrade-07x-to-081.php");
+
+            }elseif (($install_method == 3) && (@file_exists('./install/upgrade-06x-to-081.php'))) {
+
+                include_once("./install/upgrade-06x-to-081.php");
 
             }elseif (($install_method == 1) && (@file_exists('./install/new-install.php'))) {
 
@@ -614,8 +620,9 @@ if (!@file_exists(BH_INCLUDE_PATH. "config.inc.php") || $force_install) {
     echo "                            <option value=\"0\" ", (isset($install_method) && $install_method == 0) ? "selected=\"selected\"" : "", ">New Install</option>\n";
     echo "                            <option value=\"1\" ", (isset($install_method) && $install_method == 1) ? "selected=\"selected\"" : "", ">Reinstall</option>\n";
     echo "                            <option value=\"2\" ", (isset($install_method) && $install_method == 2) ? "selected=\"selected\"" : "", ">Reconnect</option>\n";
-    echo "                            <option value=\"3\" ", (isset($install_method) && $install_method == 3) ? "selected=\"selected\"" : "", ">Upgrade 0.6.x to 0.8</option>\n";
-    echo "                            <option value=\"4\" ", (isset($install_method) && $install_method == 4) ? "selected=\"selected\"" : "", ">Upgrade 0.7.x to 0.8</option>\n";
+    echo "                            <option value=\"3\" ", (isset($install_method) && $install_method == 3) ? "selected=\"selected\"" : "", ">Upgrade 0.6.x to 0.8.1</option>\n";
+    echo "                            <option value=\"4\" ", (isset($install_method) && $install_method == 4) ? "selected=\"selected\"" : "", ">Upgrade 0.7.x to 0.8.1</option>\n";
+    echo "                            <option value=\"5\" ", (isset($install_method) && $install_method == 5) ? "selected=\"selected\"" : "", ">Upgrade 0.8 to 0.8.1</option>\n";
     echo "                          </select>\n";
     echo "                        </td>\n";
     echo "                      </tr>\n";

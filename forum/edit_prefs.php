@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_prefs.php,v 1.84 2007-10-11 13:01:14 decoyduck Exp $ */
+/* $Id: edit_prefs.php,v 1.85 2007-12-05 19:08:20 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -220,7 +220,7 @@ if (isset($_POST['submit'])) {
                 $valid = false;
             }
 
-            if (forum_get_setting('require_unique_email', 'Y') && !email_is_unique($user_info_new['EMAIL'])) {
+            if (forum_get_setting('require_unique_email', 'Y') && !email_is_unique($user_info_new['EMAIL'], $uid)) {
 
                 $error_msg_array[] = $lang['emailaddressalreadyinuse'];
                 $valid = false;

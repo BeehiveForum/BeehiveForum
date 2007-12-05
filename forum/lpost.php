@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.113 2007-10-18 20:51:00 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.114 2007-12-05 19:08:21 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -224,7 +224,7 @@ if (isset($_POST['t_newthread'])) {
     }
 }
 
-if (!$high_interest = bh_session_get_value('MARK_AS_OF_INT')) {
+if (($high_interest = bh_session_get_value('MARK_AS_OF_INT')) === false) {
     $high_interest = "N";
 }
 

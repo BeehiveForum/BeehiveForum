@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.151 2007-11-16 02:25:21 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.152 2007-12-05 19:08:21 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -120,19 +120,19 @@ function format_time($time, $verbose = false)
 
     $lang = load_language_file();
 
-    if (!$timezone_id = bh_session_get_value('TIMEZONE')) {
+    if (($timezone_id = bh_session_get_value('TIMEZONE')) === false) {
         $timezone_id = forum_get_setting('forum_timezone', false, 27);
     }
 
-    if (!$gmt_offset = bh_session_get_value('GMT_OFFSET')) {
+    if (($gmt_offset = bh_session_get_value('GMT_OFFSET')) === false) {
         $gmt_offset = forum_get_setting('forum_gmt_offset', false, 0);
     }
 
-    if (!$dst_offset = bh_session_get_value('DST_OFFSET')) {
+    if (($dst_offset = bh_session_get_value('DST_OFFSET')) === false) {
         $dst_offset = forum_get_setting('forum_dst_offset', false, 0);
     }
 
-    if (!$dl_saving = bh_session_get_value('DL_SAVING')) {
+    if (($dl_saving = bh_session_get_value('DL_SAVING')) === false) {
         $dl_saving = forum_get_setting('forum_dl_saving', false, 'N');
     }
 
@@ -202,19 +202,19 @@ function format_date($time)
 {
     $lang = load_language_file();
 
-    if (!$timezone_id = bh_session_get_value('TIMEZONE')) {
+    if (($timezone_id = bh_session_get_value('TIMEZONE')) === false) {
         $timezone_id = forum_get_setting('forum_timezone', false, 27);
     }
 
-    if (!$gmt_offset = bh_session_get_value('GMT_OFFSET')) {
+    if (($gmt_offset = bh_session_get_value('GMT_OFFSET')) === false) {
         $gmt_offset = forum_get_setting('forum_gmt_offset', false, 0);
     }
 
-    if (!$dst_offset = bh_session_get_value('DST_OFFSET')) {
+    if (($dst_offset = bh_session_get_value('DST_OFFSET')) === false) {
         $dst_offset = forum_get_setting('forum_dst_offset', false, 0);
     }
 
-    if (!$dl_saving = bh_session_get_value('DL_SAVING')) {
+    if (($dl_saving = bh_session_get_value('DL_SAVING')) === false) {
         $dl_saving = forum_get_setting('forum_dl_saving', false, 'N');
     }
 
@@ -675,19 +675,19 @@ function is_md5($hash)
 
 function get_local_time()
 {
-    if (!$timezone_id = bh_session_get_value('TIMEZONE')) {
+    if (($timezone_id = bh_session_get_value('TIMEZONE')) === false) {
         $timezone_id = forum_get_setting('forum_timezone', false, 27);
     }
 
-    if (!$gmt_offset = bh_session_get_value('GMT_OFFSET')) {
+    if (($gmt_offset = bh_session_get_value('GMT_OFFSET')) === false) {
         $gmt_offset = forum_get_setting('forum_gmt_offset', false, 0);
     }
 
-    if (!$dst_offset = bh_session_get_value('DST_OFFSET')) {
+    if (($dst_offset = bh_session_get_value('DST_OFFSET')) === false) {
         $dst_offset = forum_get_setting('forum_dst_offset', false, 0);
     }
 
-    if (!$dl_saving = bh_session_get_value('DL_SAVING')) {
+    if (($dl_saving = bh_session_get_value('DL_SAVING')) === false) {
         $dl_saving = forum_get_setting('forum_dl_saving', false, 'N');
     }
 

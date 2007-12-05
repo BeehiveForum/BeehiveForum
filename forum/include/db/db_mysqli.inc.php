@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db_mysqli.inc.php,v 1.38 2007-12-05 21:47:13 decoyduck Exp $ */
+/* $Id: db_mysqli.inc.php,v 1.39 2007-12-05 21:47:52 decoyduck Exp $ */
 
 function db_get_connection_vars(&$db_server, &$db_username, &$db_password, &$db_database)
 {
@@ -62,7 +62,7 @@ function db_enable_compat_mode($connection_id)
 
     if (db_fetch_mysql_version($mysql_version)) {
 
-        if ($mysql_version < 40100) {
+        if ($mysql_version >= 40100) {
 
             $sql = "SET SESSION SQL_MODE = ''";
             if (!$result = db_query($sql, $connection_id, false)) return false;

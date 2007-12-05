@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.267 2007-12-01 12:20:19 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.268 2007-12-05 19:08:21 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -311,7 +311,7 @@ function html_get_top_page()
 
     $forum_path = defined('BH_FORUM_PATH') ? BH_FORUM_PATH : '.';
 
-    if (!$user_style = bh_session_get_value('STYLE')) {
+    if (($user_style = bh_session_get_value('STYLE')) === false) {
         $user_style = forum_get_setting('default_style');
     }
 
@@ -346,7 +346,7 @@ function html_get_style_sheet()
 
     $script_filename = basename($_SERVER['PHP_SELF'], '.php');
 
-    if (!$user_style = bh_session_get_value('STYLE')) {
+    if (($user_style = bh_session_get_value('STYLE')) === false) {
         $user_style = forum_get_setting('default_style');
     }
 
@@ -409,7 +409,7 @@ function html_get_emoticon_style_sheet()
 
     $forum_path = defined('BH_FORUM_PATH') ? BH_FORUM_PATH : '.';
 
-    if (!$user_emots = bh_session_get_value('EMOTICONS')) {
+    if (($user_emots = bh_session_get_value('EMOTICONS')) === false) {
         $user_emots = forum_get_setting('default_emoticons');
     }
 
@@ -1185,7 +1185,7 @@ function style_image($img)
 
     $forum_path = defined('BH_FORUM_PATH') ? BH_FORUM_PATH : '.';
 
-    if (!$user_style = bh_session_get_value('STYLE')) {
+    if (($user_style = bh_session_get_value('STYLE')) === false) {
         $user_style = forum_get_setting('default_style');
     }
 

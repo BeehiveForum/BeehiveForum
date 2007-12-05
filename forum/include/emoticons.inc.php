@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: emoticons.inc.php,v 1.66 2007-11-18 15:28:17 decoyduck Exp $ */
+/* $Id: emoticons.inc.php,v 1.67 2007-12-05 19:08:21 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -52,7 +52,7 @@ class Emoticons
             // Get the user's emoticon set from their sesion.
             // Fall back to using the forum default or Beehive default.
 
-            if (!$user_emots = bh_session_get_value('EMOTICONS')) {
+            if (($user_emots = bh_session_get_value('EMOTICONS')) === false) {
                 $user_emots = forum_get_setting('default_emoticons', false, 'default');
             }
 

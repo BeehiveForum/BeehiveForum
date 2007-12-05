@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.500 2007-12-03 18:38:49 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.501 2007-12-05 19:08:21 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -556,7 +556,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    if (!$posts_per_page = bh_session_get_value('POST_PER_PAGE')) {
+    if (($posts_per_page = bh_session_get_value('POST_PER_PAGE')) === false) {
         $posts_per_page = 20;
     }
 

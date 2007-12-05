@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: word_filter.inc.php,v 1.44 2007-10-11 13:01:20 decoyduck Exp $ */
+/* $Id: word_filter.inc.php,v 1.45 2007-12-05 19:08:21 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -224,7 +224,9 @@ function word_filter_prepare($word_filter_array)
 
 function word_filter_add_ob_tags($content)
 {
-    if (!$rand_hash = bh_session_get_value('RAND_HASH')) return $content;
+    if (($rand_hash = bh_session_get_value('RAND_HASH')) === false) {
+        return $content;
+    }
 
     $rand_hash = preg_replace("/[^a-z]/i", "", $rand_hash);
 
@@ -242,7 +244,9 @@ function word_filter_add_ob_tags($content)
 
 function word_filter_rem_ob_tags($content)
 {
-    if (!$rand_hash = bh_session_get_value('RAND_HASH')) return $content;
+    if (($rand_hash = bh_session_get_value('RAND_HASH')) === false) {
+        return $content;
+    }
 
     $rand_hash = preg_replace("/[^a-z]/i", "", $rand_hash);
 
@@ -262,7 +266,9 @@ function word_filter_rem_ob_tags($content)
 
 function word_filter_obstart($content)
 {
-    if (!$rand_hash = bh_session_get_value('RAND_HASH')) return $content;
+    if (($rand_hash = bh_session_get_value('RAND_HASH')) === false) {
+        return $content;
+    }
 
     $rand_hash = preg_replace("/[^a-z]/i", "", $rand_hash);
 

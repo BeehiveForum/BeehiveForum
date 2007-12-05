@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_cvs_log_parse.php,v 1.11 2007-12-04 23:43:36 decoyduck Exp $ */
+/* $Id: bh_cvs_log_parse.php,v 1.12 2007-12-05 19:56:16 decoyduck Exp $ */
 
 /**
 * bh_cvs_log_parse.php
@@ -64,72 +64,21 @@ include_once(BH_INCLUDE_PATH. "db.inc.php");
 * @param string $file - File to get the CVS LOG data for.
 */
 
-function get_cvs_log_data($date, $dir)
+function get_cvs_log_data($date)
 {
-    $cwd = getcwd();
+    if ($log_handle = popen("cvs log -N -d \">$date\" * 2>&1", 'r')) {
 
-    if (is_dir($dir)) {
+        $log_contents = '';
 
-        chdir($dir);
-
-        if ($log_handle = popen("cvs log -l -N -d \">$date\" 2>&1", 'r')) {
-
-            $log_contents = "";
-
-            while(!feof($log_handle)) {
-                $log_contents.= fgets($log_handle);
-            }
-
-            pclose($log_handle);
-            chdir($cwd);
-            return $log_contents;
+        while(!feof($log_handle)) {
+            $log_contents.= fgets($log_handle);
         }
+
+        pclose($log_handle);
+        return $log_contents;
     }
 
-    chdir($cwd);
     return false;
-}
-
-/**
-* Get directory file listing that we want CVS log data from.
-*
-* Fetches a list of files that we want to fetch CVS LOG data
-* from. Recurses through the child directories ignoring CVS folders.
-* Is influenced by the array $exclude_dirs which contains an array
-* of paths to ignore.
-*
-* @return void
-* @param string $path - Directory to start in.
-* @param array $date - By Reference array which the paths are returned in.
-*/
-
-function get_cvs_dir_list($path, &$cvs_dir_array)
-{
-    if (!is_array($cvs_dir_array)) $cvs_dir_array = array();
-
-    if ($dir = opendir($path)) {
-
-        while (($file = readdir($dir)) !== false) {
-
-            if ($file != "." && $file != ".." && $file != "CVS") {
-
-                $grep_match = preg_quote("$path/$file", "/");
-
-                if (is_dir("$path/$file")) {
-
-                    if (!preg_grep("/^$grep_match$/", $GLOBALS['exclude_dirs'])) {
-                        $cvs_dir_array[] = "$path/$file";
-                    }
-
-                    get_cvs_dir_list("$path/$file", $cvs_dir_array);
-                }
-            }
-        }
-
-        closedir($dir);
-    }
-
-    return sizeof($cvs_dir_array) > 0;
 }
 
 /**
@@ -183,7 +132,7 @@ function cvs_mysql_parse($cvs_log_contents)
 
         $description_match = "/date: ([0-9]{4})\/([0-9]{2})\/([0-9]{2}) ([0-9]{2}):([0-9]{2}):([0-9]{2});  ";
         $description_match.= "author: ([^;]+);  state: [^;]+;  lines: \+[0-9]+ \-[0-9]+\n";
-        $description_match.= "(.+)/";
+        $description_match.= "(.+)/s";
 
         if (preg_match_all($description_match, trim($cvs_log_entry), $cvs_log_match_array, PREG_SET_ORDER) > 0) {
 
@@ -230,7 +179,7 @@ function cvs_mysql_output_log($log_filename)
         $cvs_log_entry_author = '';
         $cvs_log_entry_date = '';
 
-        file_put_contents($log_filename, '');
+        file_put_contents($log_filename, sprintf("Project Beehive Forum Change Log (Generated: %s)\n\n", gmdate('D, d M Y H:i:s')));
 
         while ($cvs_log_entry_array = db_fetch_array($result, DB_RESULT_ASSOC)) {
 
@@ -259,15 +208,6 @@ function cvs_mysql_output_log($log_filename)
 
 @set_time_limit(0);
 
-// Fetch our exclude list. This allows us to ignore some
-// BH addons which are included in CVS (Geshi and TinyMCE)
-
-$exclude_dirs = array();
-
-if (file_exists('bh_cvs_log_parse_exclude.php')) {
-    include('bh_cvs_log_parse_exclude.php');
-}
-
 // Check to see if we have a date on the command line and
 // that it is in the valid format YYYY-MM-DD. If we don't
 // we use Beehive's birthday.
@@ -276,50 +216,37 @@ if (isset($_SERVER['argv'][1]) && preg_match("/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/", $
 
     $modified_date = $_SERVER['argv'][1];
 
-    // Grab the files and do the log processing.
+    if (cvs_mysql_prepare_table()) {
 
-    if (get_cvs_dir_list('.', $cvs_dir_array)) {
+        echo "Fetching CVS Log Data...\n";
 
-        if (cvs_mysql_prepare_table()) {
+        if ($cvs_log_contents = get_cvs_log_data($modified_date)) {
 
-            foreach ($cvs_dir_array as $cvs_dir) {
+            echo "Parsing CVS Log Data...\n";
 
-                echo "Fetch CVS log: $cvs_dir\n";
+            if (!cvs_mysql_parse($cvs_log_contents)) {
 
-                if ($cvs_log_contents = get_cvs_log_data($modified_date, $cvs_dir)) {
-
-                    echo "Parse CVS log: $cvs_dir\n";
-
-                    if (!cvs_mysql_parse($cvs_log_contents)) {
-
-                        echo "Error while fetching or parsing CVS log contents";
-                        exit;
-                    }
-
-                }else {
-
-                    echo "Error while fetching CVS log for $cvs_dir";
-                    exit;
-                }
+                echo "Error while fetching or parsing CVS log contents\n";
+                exit;
             }
-
-            if (isset($_SERVER['argv'][2]) && strlen(trim($_SERVER['argv'][2])) > 0) {
-
-                $output_log_filename = trim($_SERVER['argv'][2]);
-                cvs_mysql_output_log($output_log_filename);
-            }
-
-            exit;
 
         }else {
 
-            echo "Error while preparing MySQL Database table";
+            echo "Error while fetching CVS log for $cvs_dir\n";
+            exit;
+        }
+
+        if (isset($_SERVER['argv'][2]) && strlen(trim($_SERVER['argv'][2])) > 0) {
+
+            $output_log_filename = trim($_SERVER['argv'][2]);
+            echo "Generating Change Log. Saving to $output_log_filename\n";
+            cvs_mysql_output_log($output_log_filename);
             exit;
         }
 
     }else {
 
-        echo "Error while fetching CVS directory list";
+        echo "Error while preparing MySQL Database table";
         exit;
     }
 }

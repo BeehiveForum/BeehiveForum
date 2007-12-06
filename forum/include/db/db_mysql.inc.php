@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db_mysql.inc.php,v 1.41 2007-12-05 21:47:52 decoyduck Exp $ */
+/* $Id: db_mysql.inc.php,v 1.42 2007-12-06 14:00:26 decoyduck Exp $ */
 
 function db_get_connection_vars(&$db_server, &$db_username, &$db_password, &$db_database)
 {
@@ -65,32 +65,32 @@ function db_enable_compat_mode($connection_id)
         if ($mysql_version >= 40100) {
 
             $sql = "SET SESSION SQL_MODE = ''";
-            if (!$result = db_query($sql, $connection_id, false)) return false;
+            if (!$result = db_query($sql, $connection_id)) return false;
         }
     }
 
     if (isset($mysql_big_selects) && $mysql_big_selects === true) {
 
         $sql = "SET SESSION SQL_BIG_SELECTS = 1";
-        if (!$result = db_query($sql, $connection_id, false)) return false;
+        if (!$result = db_query($sql, $connection_id)) return false;
 
         $sql = "SET SESSION SQL_MAX_JOIN_SIZE = DEFAULT";
-        if (!$result = db_query($sql, $connection_id, false)) return false;
+        if (!$result = db_query($sql, $connection_id)) return false;
     }
 
     return true;
 }
 
-function db_query($sql, $connection_id, $trigger_error = true)
+function db_query($sql, $connection_id)
 {
     if ($result = @mysql_query($sql, $connection_id)) {
         return $result;
     }
 
-    if ($trigger_error === true) db_trigger_error($sql, $connection_id);
+    db_trigger_error($sql, $connection_id);
 }
 
-function db_unbuffered_query($sql, $connection_id, $trigger_error = true)
+function db_unbuffered_query($sql, $connection_id)
 {
     if (function_exists("mysql_unbuffered_query")) {
 
@@ -98,10 +98,10 @@ function db_unbuffered_query($sql, $connection_id, $trigger_error = true)
             return $result;
         }
 
-        if ($trigger_error === true) db_trigger_error($sql, $connection_id);
+        db_trigger_error($sql, $connection_id);
     }
 
-    return db_query($sql, $connection_id, $trigger_error);
+    return db_query($sql, $connection_id);
 }
 
 function db_data_seek($result, $offset)

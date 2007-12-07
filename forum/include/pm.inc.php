@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.232 2007-11-23 18:12:29 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.233 2007-12-07 23:49:12 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1196,7 +1196,7 @@ function pm_display($pm_message_array, $folder, $preview = false, $export_html =
 
     // Add emoticons/wikilinks and word filter tags
 
-    $pm_message_array['CONTENT'] = message_split_fiddle($pm_message_array['CONTENT']);
+    $pm_message_array['CONTENT'] = message_apply_formatting($pm_message_array['CONTENT']);
     $pm_message_array['CONTENT'] = word_filter_add_ob_tags($pm_message_array['CONTENT']);
 
     echo "                      </tr>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.164 2007-10-27 17:09:40 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.165 2007-12-07 23:49:12 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1059,7 +1059,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
     // Light mode never displays user signatures.
 
-    $message['CONTENT'] = message_split_fiddle($message['CONTENT'], false, true);
+    $message['CONTENT'] = message_apply_formatting($message['CONTENT'], false, true);
 
     // Fix spoiler on light mode
 

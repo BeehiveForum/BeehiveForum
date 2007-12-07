@@ -1,6 +1,14 @@
-Project Beehive Forum Change Log (Generated: Wed, 05 Dec 2007 19:56:33)
+Project Beehive Forum Change Log (Generated: Thu, 06 Dec 2007 20:37:00)
 
 Author: decoyduck
+Date: Thu, 06 Dec 2007 14:00:26
+-----------------------
+Changed: Removed trigger_error argument from db connection files.
+
+Date: Wed, 05 Dec 2007 21:47:52
+-----------------------
+Fixed: SQL_MODE not available in MySQL versions older than 4.1
+
 Date: Wed, 05 Dec 2007 19:56:16
 -----------------------
 Fixed: bh_cvs_log_parse wasn't recognising multiline comments.

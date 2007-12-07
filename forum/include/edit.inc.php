@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.inc.php,v 1.74 2007-10-31 01:05:12 decoyduck Exp $ */
+/* $Id: edit.inc.php,v 1.75 2007-12-07 21:58:45 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -32,6 +32,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
     exit;
 }
 
+include_once(BH_INCLUDE_PATH. "cache.inc.php");
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "form.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
@@ -63,6 +64,8 @@ function post_update($fid, $tid, $pid, $content)
 
         if (!$result = db_query($sql, $db_post_update)) return false;
     }
+
+    cache_remove("$tid.$pid");
 
     return $result;
 }
@@ -111,6 +114,8 @@ function post_delete($tid, $pid)
     $sql.= "WHERE TID = '$tid' AND PID = '$pid'";
 
     if (!$result = db_query($sql, $db_post_delete)) return false;
+
+    cache_remove("$tid.$pid");
 
     return true;
 }

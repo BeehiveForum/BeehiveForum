@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.502 2007-12-07 21:58:45 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.503 2007-12-07 23:46:28 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -222,33 +222,30 @@ function message_get_content($tid, $pid)
 * emoticons are added where appropriate.
 *
 * @return string
-* @param string $content Message HTML
+* @param string $message Message HTML
 * @param boolean $emoticons Toggle to add emoticons (default true)
-* @param boolean $sig Toggle to ignore signature (default false)
+* @param boolean $ignore_sig Toggle to ignore signature (default false)
 */
-function message_split_fiddle($content, $emoticons = true, $ignore_sig = false)
+function message_split_fiddle($message, $emoticons = true, $ignore_sig = false)
 {
     $webtag = get_webtag($webtag_search);
 
-    $message = explode("<div class=\"sig\">", $content);
+    $message_parts = preg_split('/(<[^<>]+>)/', $message, -1, PREG_SPLIT_DELIM_CAPTURE);
 
-    if (count($message) > 1 && substr(trim(array_pop(array_values($message))), -6) == '</div>') {
+    $signature_parts = array();
 
-        $sig = "<div class=\"sig\">";
-        $sig.= array_pop($message);
+    if (($signature_offset = array_search("<div class=\"sig\">", $message_parts)) !== false) {
 
-        while(1) {
+        while (sizeof($message_parts) > 0) {
 
-            if (count(explode('<div', $sig)) == count(explode('</div>', $sig))) break;
-            $sig = "<div class=\"sig\">". array_pop($message). $sig;
+            $signature_parts = array_merge($signature_parts, array_splice($message_parts, $signature_offset, 1));
+            if (count(explode('<div', implode('', $signature_parts))) == count(explode('</div>', implode('', $signature_parts)))) break;
         }
-
-    }else {
-
-        $sig = "";
     }
 
-    $message = implode("", $message);
+    $signature = implode('', $signature_parts);
+
+    $message = implode('', $message_parts);
 
     $message_parts = preg_split('/<([^<>]+)>/', $message, -1, PREG_SPLIT_DELIM_CAPTURE);
 
@@ -429,27 +426,27 @@ function message_split_fiddle($content, $emoticons = true, $ignore_sig = false)
 
             if ($ignore_sig == false) {
 
-                $message_parts = preg_split('/<([^<>]+)>/', $sig, -1, PREG_SPLIT_DELIM_CAPTURE);
+                $message_parts = preg_split('/<([^<>]+)>/', $signature, -1, PREG_SPLIT_DELIM_CAPTURE);
 
             }else {
 
-                $sig = "";
+                $signature = "";
                 break;
             }
 
         }else {
 
-            $sig = "";
+            $signature = "";
 
             for ($i = 0; $i < sizeof($message_parts); $i++) {
 
                 if ($i % 2) {
 
-                    $sig.= '<'.$message_parts[$i].'>';
+                    $signature.= '<'.$message_parts[$i].'>';
 
                 }else {
 
-                    $sig.= $message_parts[$i];
+                    $signature.= $message_parts[$i];
                 }
             }
         }
@@ -510,9 +507,9 @@ function message_split_fiddle($content, $emoticons = true, $ignore_sig = false)
         $emots = new Emoticons();
 
         $message_parts = preg_split("/<\/?noemots>/", $message);
-        $sig_parts = preg_split("/<\/?noemots>/", $sig);
+        $signature_parts = preg_split("/<\/?noemots>/", $signature);
 
-        $message_parts = array_merge($message_parts, $sig_parts);
+        $message_parts = array_merge($message_parts, $signature_parts);
 
         for ($i = 0; $i < sizeof($message_parts); $i++) {
 
@@ -609,6 +606,8 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
         $message['CONTENT'] = preg_replace("/<img[^>]*src=\"([^\"]*)\"[^>]*>/i", "[img: <a href=\"\\1\">\\1</a>]", $message['CONTENT']);
         $message['CONTENT'] = preg_replace("/<embed[^>]*src=\"([^\"]*)\"[^>]*>/i", "[object: <a href=\"\\1\">\\1</a>]", $message['CONTENT']);
     }
+
+    $message['CONTENT'] = "<div class=\"pear_cache_lite\">{$message['CONTENT']}<div>\n";
 
     $message['CONTENT'] = message_split_fiddle($message['CONTENT'], true, (($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) || !$show_sigs));
 

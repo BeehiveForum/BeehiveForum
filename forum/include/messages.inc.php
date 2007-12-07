@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.503 2007-12-07 23:46:28 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.504 2007-12-07 23:49:12 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -212,7 +212,7 @@ function message_get_content($tid, $pid)
 }
 
 /**
-* Adds emoticons/wikilinks to posts; ignores signature
+* Apply message formatting such as emoticons, wikilinks to posts; ignores signatures
 *
 * Message text is split into the message/sig parts. If the user ignores this sig/all sigs the
 * sig is set to an empty string. The message is then split into it's HTML and text parts.
@@ -226,7 +226,7 @@ function message_get_content($tid, $pid)
 * @param boolean $emoticons Toggle to add emoticons (default true)
 * @param boolean $ignore_sig Toggle to ignore signature (default false)
 */
-function message_split_fiddle($message, $emoticons = true, $ignore_sig = false)
+function message_apply_formatting($message, $emoticons = true, $ignore_sig = false)
 {
     $webtag = get_webtag($webtag_search);
 
@@ -609,7 +609,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
     $message['CONTENT'] = "<div class=\"pear_cache_lite\">{$message['CONTENT']}<div>\n";
 
-    $message['CONTENT'] = message_split_fiddle($message['CONTENT'], true, (($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) || !$show_sigs));
+    $message['CONTENT'] = message_apply_formatting($message['CONTENT'], true, (($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) || !$show_sigs));
 
     // Check length of post to see if we should truncate it for display --------
 

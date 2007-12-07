@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.327 2007-12-05 19:08:21 decoyduck Exp $ */
+/* $Id: post.php,v 1.328 2007-12-07 23:49:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -526,7 +526,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
                 $message_author = format_user_name($message_array['FLOGON'], $message_array['FNICK']);
 
                 $message_content = message_get_content($reply_to_tid, $quote_pid);
-                $message_content = message_split_fiddle($message_content, false, true);
+                $message_content = message_apply_formatting($message_content, false, true);
 
                 if ($page_prefs & POST_TINYMCE_DISPLAY) {
 

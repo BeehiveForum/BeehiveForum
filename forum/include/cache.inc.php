@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: cache.inc.php,v 1.1 2007-12-07 21:59:51 decoyduck Exp $ */
+/* $Id: cache.inc.php,v 1.2 2007-12-07 22:51:22 decoyduck Exp $ */
 
 /**
 * cache.inc.php - cache functions
@@ -53,7 +53,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 
 function cache_enabled()
 {
-    $include_path_array = explode(';', ini_get('include_path'));
+    $include_path_array = explode(PATH_SEPARATOR, ini_get('include_path'));
 
     foreach ($include_path_array as $include_path_dir) {
 

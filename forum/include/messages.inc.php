@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.501 2007-12-05 19:08:21 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.502 2007-12-07 21:58:45 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -34,6 +34,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
 include_once(BH_INCLUDE_PATH. "banned.inc.php");
+include_once(BH_INCLUDE_PATH. "cache.inc.php");
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "emoticons.inc.php");
 include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
@@ -182,6 +183,10 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
 function message_get_content($tid, $pid)
 {
+    if ($message_content = cache_check("$tid.$pid")) {
+        return $message_content;
+    }
+
     if (!$db_message_get_content = db_connect()) return false;
 
     if (!is_numeric($tid)) return "";
@@ -197,6 +202,9 @@ function message_get_content($tid, $pid)
     if (db_num_rows($result) > 0) {
 
         list($message_content) = db_fetch_array($result, DB_RESULT_NUM);
+
+        cache_save("$tid.$pid", $message_content);
+
         return $message_content;
     }
 

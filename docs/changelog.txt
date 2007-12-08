@@ -1,6 +1,32 @@
-Project Beehive Forum Change Log (Generated: Thu, 06 Dec 2007 20:37:00)
+Project Beehive Forum Change Log (Generated: Sat, 08 Dec 2007 16:51:01)
 
 Author: decoyduck
+Date: Sat, 08 Dec 2007 14:58:53
+-----------------------
+Fixed: Closed another exploit that could allow directory traversal.
+
+Date: Sat, 08 Dec 2007 09:22:37
+-----------------------
+Changed: Added caching back to threads_rss.php
+
+Date: Fri, 07 Dec 2007 23:49:12
+-----------------------
+Changed: message_split_fiddle renamed to message_apply_formatting.
+
+Date: Fri, 07 Dec 2007 23:46:28
+-----------------------
+Fixed: message_split_fiddle would get stuck in a loop if it was fed broken
+HTML.
+
+Date: Fri, 07 Dec 2007 22:51:22
+-----------------------
+Fixed: Wrong constant for splitting include_dir
+
+Date: Fri, 07 Dec 2007 21:58:38
+-----------------------
+Changed: Replaced built-in HTTP cache with PEAR Cache_Lite support.
+Dynamically enables support if Cache_Lite is found to be installed.
+
 Date: Thu, 06 Dec 2007 14:00:26
 -----------------------
 Changed: Removed trigger_error argument from db connection files.

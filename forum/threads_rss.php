@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads_rss.php,v 1.52 2007-12-07 23:49:12 decoyduck Exp $ */
+/* $Id: threads_rss.php,v 1.53 2007-12-08 09:22:37 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -54,6 +54,7 @@ $forum_global_settings = forum_get_global_settings();
 
 include_once(BH_INCLUDE_PATH. "format.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
+include_once(BH_INCLUDE_PATH. "header.inc.php");
 include_once(BH_INCLUDE_PATH. "logon.inc.php");
 include_once(BH_INCLUDE_PATH. "messages.inc.php");
 include_once(BH_INCLUDE_PATH. "post.inc.php");
@@ -120,9 +121,13 @@ if (bh_session_user_banned()) {
 
 if (!bh_session_user_approved()) {
 
-    html_user_require_approval();
+    html_user_banned();
     exit;
 }
+
+// Enable caching on RSS Feed
+
+header_check_cache();
 
 // Default values (limit 20, all folders, sort by modified)
 

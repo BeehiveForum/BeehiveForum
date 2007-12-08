@@ -1,6 +1,11 @@
-Project Beehive Forum Change Log (Generated: Sat, 08 Dec 2007 16:51:01)
+Project Beehive Forum Change Log (Generated: Sat, 08 Dec 2007 17:41:08)
 
 Author: decoyduck
+Date: Sat, 08 Dec 2007 17:38:27
+-----------------------
+Fixed: Installer wasn't working correctly without BEEHIVE_INSTALL_NOWARN
+set.
+
 Date: Sat, 08 Dec 2007 14:58:53
 -----------------------
 Fixed: Closed another exploit that could allow directory traversal.

@@ -21,13 +21,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.83 2007-12-04 23:43:36 decoyduck Exp $ */
+/* $Id: install.php,v 1.84 2007-12-08 17:38:27 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
 
 // Installer Detection
-define("BEEHIVEMODE_LIGHT", true);
+define("BEEHIVEMODE_INSTALL", true);
 
 // Installation checking functions
 include_once(BH_INCLUDE_PATH. "install.inc.php");
@@ -46,17 +46,9 @@ include_once(BH_INCLUDE_PATH. "db.inc.php");
 
 install_check_php_version();
 
-// Check for a forced install
-
-if (isset($_GET['force_install']) && $_GET['force_install'] == 'yes') {
-    define('BEEHIVE_INSTALL_NOWARN', 1);
-}elseif (isset($_POST['force_install']) && $_POST['force_install'] == 'yes') {
-    define('BEEHIVE_INSTALL_NOWARN', 1);
-}
-
 // Post Data handling.
 
-if (isset($_POST['install_method']) && defined('BEEHIVE_INSTALL_NOWARN')) {
+if (isset($_POST['install_method'])) {
 
     install_msie_buffer_fix();
 
@@ -276,7 +268,6 @@ if (isset($_POST['install_method']) && defined('BEEHIVE_INSTALL_NOWARN')) {
                     if ($config_saved) {
 
                         echo "<form method=\"post\" action=\"index.php\">\n";
-                        echo "  <input type=\"hidden\" name=\"force_install\" value=\"", defined('BEEHIVE_INSTALL_NOWARN') ? "yes" : "no", "\" />\n";
                         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
                         echo "    <tr>\n";
                         echo "      <td align=\"left\" width=\"500\">\n";
@@ -320,7 +311,6 @@ if (isset($_POST['install_method']) && defined('BEEHIVE_INSTALL_NOWARN')) {
                     }else {
 
                         echo "<form method=\"post\" action=\"install.php\">\n";
-                        echo "  <input type=\"hidden\" name=\"force_install\" value=\"", defined('BEEHIVE_INSTALL_NOWARN') ? "yes" : "no", "\" />\n";
                         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
                         echo "    <tr>\n";
                         echo "      <td align=\"left\" width=\"500\">\n";
@@ -406,7 +396,7 @@ if (isset($_POST['install_method']) && defined('BEEHIVE_INSTALL_NOWARN')) {
         }
     }
 
-}elseif (isset($_POST['download_config']) && (!@file_exists(BH_INCLUDE_PATH. "config.inc.php") || defined('BEEHIVE_INSTALL_NOWARN'))) {
+}elseif (isset($_POST['download_config'])) {
 
     $config_file = "";
 
@@ -470,7 +460,6 @@ if (isset($_POST['install_method']) && defined('BEEHIVE_INSTALL_NOWARN')) {
             echo "<link rel=\"icon\" href=\"./images/favicon.ico\" type=\"image/ico\" />\n";
             echo "<link rel=\"stylesheet\" href=\"./styles/style.css\" type=\"text/css\" />\n";
             echo "</head>\n";
-
             echo "<h1>Beehive Forum ", BEEHIVE_VERSION, " Installation</h1>\n";
             echo "<br />\n";
             echo "<div align=\"center\">\n";
@@ -531,7 +520,6 @@ if (isset($_POST['install_method']) && defined('BEEHIVE_INSTALL_NOWARN')) {
             echo "    </tr>\n";
             echo "  </table>\n";
             echo "  <form method=\"post\" action=\"./install.php\">\n";
-            echo "    <input type=\"hidden\" name=\"force_install\" value=\"", defined('BEEHIVE_INSTALL_NOWARN') ? "yes" : "no", "\" />\n";
             echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
             echo "      <tr>\n";
             echo "        <td align=\"left\" width=\"500\">&nbsp;</td>\n";
@@ -566,272 +554,222 @@ echo "<script language=\"javascript\" type=\"text/javascript\" src=\"./js/genera
 echo "<script language=\"javascript\" type=\"text/javascript\" src=\"./js/install.js\"></script>\n";
 echo "</head>\n";
 echo "<body>\n";
+echo "<form id=\"install_form\" method=\"post\" action=\"install.php\">\n";
+echo "<h1>Beehive Forum ", BEEHIVE_VERSION, " Installation</h1>\n";
+echo "<div align=\"center\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\" colspan=\"2\">\n";
+echo "        <p>Welcome to the Beehive Forum installation script. To get everything kicking off to a great start please fill out the details below and click the Install button!</p>\n";
+echo "        <p><b>WARNING</b>: Proceed only if you have performed a backup of your database! Failure to do so could result in loss of your forum. You have been warned!</p>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
 
-if (!@file_exists(BH_INCLUDE_PATH. "config.inc.php") || defined('BEEHIVE_INSTALL_NOWARN')) {
+if (isset($error_array) && sizeof($error_array) > 0) {
 
-    echo "<form id=\"install_form\" method=\"post\" action=\"install.php\">\n";
-    echo "<input type=\"hidden\" name=\"force_install\" value=\"", defined('BEEHIVE_INSTALL_NOWARN') ? "yes" : "no", "\" />\n";
-    echo "<h1>Beehive Forum ", BEEHIVE_VERSION, " Installation</h1>\n";
-    echo "<div align=\"center\">\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\" colspan=\"2\"><hr /></td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\"><img src=\"./images/warning.png\" alt=\"Warning\" title=\"Warning\" /></td>\n";
+    echo "      <td align=\"left\"><h2>The following errors need correcting before you continue</h2></td>\n";
+    echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\" colspan=\"2\">\n";
-    echo "        <p>Welcome to the Beehive Forum installation script. To get everything kicking off to a great start please fill out the details below and click the Install button!</p>\n";
-    echo "        <p><b>WARNING</b>: Proceed only if you have performed a backup of your database! Failure to do so could result in loss of your forum. You have been warned!</p>\n";
+    echo "        <ul>\n";
+    echo "          <li>", implode("</li><li>", $error_array), "</li>\n";
+    echo "        </ul>\n";
     echo "      </td>\n";
     echo "    </tr>\n";
-
-    if (isset($error_array) && sizeof($error_array) > 0) {
-
-        echo "    <tr>\n";
-        echo "      <td align=\"left\" colspan=\"2\"><hr /></td>\n";
-        echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"left\"><img src=\"./images/warning.png\" alt=\"Warning\" title=\"Warning\" /></td>\n";
-        echo "      <td align=\"left\"><h2>The following errors need correcting before you continue</h2></td>\n";
-        echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"left\" colspan=\"2\">\n";
-        echo "        <ul>\n";
-        echo "          <li>", implode("</li><li>", $error_array), "</li>\n";
-        echo "        </ul>\n";
-        echo "      </td>\n";
-        echo "    </tr>\n";
-    }
-
-    echo "  </table>\n";
-    echo "  <br />\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\" width=\"500\">\n";
-    echo "        <table class=\"box\" width=\"100%\">\n";
-    echo "          <tr>\n";
-    echo "            <td align=\"left\" class=\"posthead\">\n";
-    echo "              <table cellpadding=\"2\" cellspacing=\"0\" class=\"posthead\" width=\"100%\">\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" nowrap=\"nowrap\" class=\"subhead\">Basic Configuration</td>\n";
-    echo "                  <td nowrap=\"nowrap\" class=\"subhead\" align=\"right\"><a href=\"javascript:void(0)\" onclick=\"return showInstallHelp(0)\" tabindex=\"15\"><img src=\"./images/help.png\" border=\"0\" alt=\"Help!\" title=\"Help!\" /></a></td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"center\" colspan=\"2\">\n";
-    echo "                    <table cellpadding=\"2\" cellspacing=\"0\" width=\"95%\">\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Installation Method:</td>\n";
-    echo "                        <td align=\"left\">\n";
-    echo "                          <select name=\"install_method\" id =\"install_method\" class=\"install_dropdown\" tabindex=\"1\">\n";
-    echo "                            <option value=\"\">Please select...</option>\n";
-    echo "                            <option value=\"0\" ", (isset($install_method) && $install_method == 0) ? "selected=\"selected\"" : "", ">New Install</option>\n";
-    echo "                            <option value=\"1\" ", (isset($install_method) && $install_method == 1) ? "selected=\"selected\"" : "", ">Reinstall</option>\n";
-    echo "                            <option value=\"2\" ", (isset($install_method) && $install_method == 2) ? "selected=\"selected\"" : "", ">Reconnect</option>\n";
-    echo "                            <option value=\"3\" ", (isset($install_method) && $install_method == 3) ? "selected=\"selected\"" : "", ">Upgrade 0.6.x to 0.8.1</option>\n";
-    echo "                            <option value=\"4\" ", (isset($install_method) && $install_method == 4) ? "selected=\"selected\"" : "", ">Upgrade 0.7.x to 0.8.1</option>\n";
-    echo "                            <option value=\"5\" ", (isset($install_method) && $install_method == 5) ? "selected=\"selected\"" : "", ">Upgrade 0.8 to 0.8.1</option>\n";
-    echo "                          </select>\n";
-    echo "                        </td>\n";
-    echo "                      </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"200\" valign=\"top\" class=\"postbody\">Default Forum Webtag:</td>\n";
-    echo "                        <td align=\"left\"><input type=\"text\" name=\"forum_webtag\" class=\"bhinputtext\" value=\"", (isset($forum_webtag) ? $forum_webtag : ""), "\" size=\"36\" maxlength=\"64\" tabindex=\"2\" /></td>\n";
-    echo "                      </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
-    echo "                      </tr>\n";
-    echo "                    </table>\n";
-    echo "                  </td>\n";
-    echo "                </tr>\n";
-    echo "              </table>\n";
-    echo "            </td>\n";
-    echo "          </tr>\n";
-    echo "        </table>\n";
-    echo "      </td>\n";
-    echo "    </tr>\n";
-    echo "  </table>\n";
-    echo "  <br />\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\" width=\"500\">\n";
-    echo "        <table class=\"box\" width=\"100%\">\n";
-    echo "          <tr>\n";
-    echo "            <td align=\"left\" class=\"posthead\">\n";
-    echo "              <table cellpadding=\"2\" cellspacing=\"0\" class=\"posthead\" width=\"100%\">\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" nowrap=\"nowrap\" class=\"subhead\">MySQL Database Configuration</td>\n";
-    echo "                  <td nowrap=\"nowrap\" class=\"subhead\" align=\"right\"><a href=\"javascript:void(0)\" onclick=\"return showInstallHelp(1)\" tabindex=\"16\"><img src=\"./images/help.png\" border=\"0\" alt=\"Help!\" title=\"Help!\" /></a></td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"center\" colspan=\"2\">\n";
-    echo "                    <table cellpadding=\"2\" cellspacing=\"0\" width=\"95%\">\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Hostname:</td>\n";
-    echo "                        <td align=\"left\"><input type=\"text\" name=\"db_server\" class=\"bhinputtext\" value=\"", (isset($db_server) ? $db_server : "localhost"), "\" size=\"36\" maxlength=\"64\" tabindex=\"3\" /></td>\n";
-    echo "                      </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Database Name:</td>\n";
-    echo "                        <td align=\"left\"><input type=\"text\" name=\"db_database\" class=\"bhinputtext\" value=\"", (isset($db_database) ? $db_database : ""), "\" size=\"36\" maxlength=\"64\" tabindex=\"4\" /></td>\n";
-    echo "                      </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Username:</td>\n";
-    echo "                        <td align=\"left\"><input type=\"text\" name=\"db_username\" class=\"bhinputtext\" value=\"", (isset($db_username) ? $db_username : ""), "\" size=\"36\" maxlength=\"64\" tabindex=\"5\" /></td>\n";
-    echo "                      </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Password:</td>\n";
-    echo "                        <td align=\"left\"><input type=\"password\" name=\"db_password\" class=\"bhinputtext\" value=\"\" size=\"36\" maxlength=\"64\" tabindex=\"6\" /></td>\n";
-    echo "                      </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Confirm Password:</td>\n";
-    echo "                        <td align=\"left\"><input type=\"password\" name=\"db_cpassword\" class=\"bhinputtext\" value=\"\" size=\"36\" maxlength=\"64\" tabindex=\"7\" /></td>\n";
-    echo "                      </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
-    echo "                      </tr>\n";
-    echo "                    </table>\n";
-    echo "                  </td>\n";
-    echo "                </tr>\n";
-    echo "              </table>\n";
-    echo "            </td>\n";
-    echo "          </tr>\n";
-    echo "        </table>\n";
-    echo "      </td>\n";
-    echo "    </tr>\n";
-    echo "  </table>\n";
-    echo "  <br />\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\" width=\"500\">\n";
-    echo "        <table class=\"box\" width=\"100%\">\n";
-    echo "          <tr>\n";
-    echo "            <td align=\"left\" class=\"posthead\">\n";
-    echo "              <table cellpadding=\"2\" cellspacing=\"0\" class=\"posthead\" width=\"100%\">\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" nowrap=\"nowrap\" class=\"subhead\">Admin Account (New installations only)</td>\n";
-    echo "                  <td nowrap=\"nowrap\" class=\"subhead\" align=\"right\"><a href=\"javascript:void(0)\" onclick=\"return showInstallHelp(2)\" tabindex=\"17\"><img src=\"./images/help.png\" border=\"0\" alt=\"Help!\" title=\"Help!\" /></a></td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"center\" colspan=\"2\">\n";
-    echo "                    <table cellpadding=\"2\" cellspacing=\"0\" width=\"95%\">\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Admin Username:</td>\n";
-    echo "                        <td align=\"left\"><input type=\"text\" name=\"admin_username\" class=\"bhinputtext\" value=\"", (isset($admin_username) ? $admin_username : ""), "\" size=\"36\" maxlength=\"64\" tabindex=\"8\" /></td>\n";
-    echo "                      </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Admin Email Address:</td>\n";
-    echo "                        <td align=\"left\"><input type=\"text\" name=\"admin_email\" class=\"bhinputtext\" value=\"", (isset($admin_email) ? $admin_email : ""), "\" size=\"36\" maxlength=\"64\" tabindex=\"9\" /></td>\n";
-    echo "                      </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Admin Password:</td>\n";
-    echo "                        <td align=\"left\"><input type=\"password\" name=\"admin_password\" class=\"bhinputtext\" value=\"\" size=\"36\" maxlength=\"64\" tabindex=\"10\" /></td>\n";
-    echo "                      </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Confirm Password:</td>\n";
-    echo "                        <td align=\"left\"><input type=\"password\" name=\"admin_cpassword\" class=\"bhinputtext\" value=\"\" size=\"36\" maxlength=\"64\" tabindex=\"11\" /></td>\n";
-    echo "                      </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
-    echo "                      </tr>\n";
-    echo "                    </table>\n";
-    echo "                  </td>\n";
-    echo "                </tr>\n";
-    echo "              </table>\n";
-    echo "            </td>\n";
-    echo "          </tr>\n";
-    echo "        </table>\n";
-    echo "      </td>\n";
-    echo "    </tr>\n";
-    echo "  </table>\n";
-    echo "  <br />\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\" width=\"500\">\n";
-    echo "        <table class=\"box\" width=\"100%\">\n";
-    echo "          <tr>\n";
-    echo "            <td align=\"left\" class=\"posthead\">\n";
-    echo "              <table cellpadding=\"2\" cellspacing=\"0\" class=\"posthead\" width=\"100%\">\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" nowrap=\"nowrap\" class=\"subhead\">Advanced Options</td>\n";
-    echo "                  <td nowrap=\"nowrap\" class=\"subhead\" align=\"right\"><a href=\"javascript:void(0)\" onclick=\"return showInstallHelp(3)\" tabindex=\"18\"><img src=\"./images/help.png\" border=\"0\" alt=\"Help!\" title=\"Help!\" /></a></td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"center\" colspan=\"2\">\n";
-    echo "                    <table cellpadding=\"2\" cellspacing=\"0\" width=\"95%\">\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\"><span class=\"bhinputcheckbox\"><input type=\"checkbox\" name=\"remove_conflicts\" id=\"remove_conflicts\" value=\"Y\" tabindex=\"12\" /><label for=\"remove_conflicts\">Automatically remove tables that conflict with Beehive Forum's own.</label></span></td>\n";
-    echo "                      </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\"><span class=\"bhinputcheckbox\"><input type=\"checkbox\" name=\"skip_dictionary\" id=\"skip_dictionary\" value=\"Y\" tabindex=\"13\" /><label for=\"skip_dictionary\">Skip dictionary setup (recommended only if install fails to complete).</label></span></td>\n";
-    echo "                      </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
-    echo "                      </tr>\n";
-    echo "                    </table>\n";
-    echo "                  </td>\n";
-    echo "                </tr>\n";
-    echo "              </table>\n";
-    echo "            </td>\n";
-    echo "          </tr>\n";
-    echo "        </table>\n";
-    echo "      </td>\n";
-    echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\">&nbsp;</td>\n";
-    echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\"><p>The installation process may take several minutes to complete. Please click the Install button once and once only. Clicking it multiple times may cause your installation to become corrupted.</p></td>\n";
-    echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\">&nbsp;</td>\n";
-    echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"center\"><input type=\"submit\" name=\"install\" value=\"Install\" class=\"button\" onclick=\"return confirmInstall(this);\" tabindex=\"14\" /></td>\n";
-    echo "    </tr>\n";
-    echo "  </table>\n";
-    echo "</div>\n";
-    echo "</form>\n";
-
-}else {
-
-    echo "<br />\n";
-    echo "<div align=\"center\">\n";
-    echo "<form id=\"install_form\" method=\"post\" action=\"install.php\">\n";
-    echo "  <input type=\"hidden\" name=\"force_install\" value=\"yes\" />\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\">\n";
-    echo "        <table class=\"box\">\n";
-    echo "          <tr>\n";
-    echo "            <td align=\"left\" class=\"posthead\">\n";
-    echo "              <table class=\"posthead\" width=\"500\">\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\">Installation Already Complete</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"center\" colspan=\"2\">\n";
-    echo "                    <table cellpadding=\"2\" cellspacing=\"0\" width=\"95%\">\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\">Your Beehive Forum would appear to be already installed. If this is not the case or you need to perform an upgrade please click the ignore button below.</td>\n";
-    echo "                      </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\">&nbsp;</td>\n";
-    echo "                      </tr>\n";
-    echo "                    </table>\n";
-    echo "                  </td>\n";
-    echo "                </tr>\n";
-    echo "              </table>\n";
-    echo "            </td>\n";
-    echo "          </tr>\n";
-    echo "        </table>\n";
-    echo "      </td>\n";
-    echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\">&nbsp;</td>\n";
-    echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"center\"><input type=\"submit\" name=\"install\" value=\"Ignore\" class=\"button\" /></td>\n";
-    echo "    </tr>\n";
-    echo "  </table>\n";
-    echo "</form>\n";
-    echo "</div>\n";
 }
 
+echo "  </table>\n";
+echo "  <br />\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\" width=\"500\">\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
+echo "              <table cellpadding=\"2\" cellspacing=\"0\" class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\" nowrap=\"nowrap\" class=\"subhead\">Basic Configuration</td>\n";
+echo "                  <td nowrap=\"nowrap\" class=\"subhead\" align=\"right\"><a href=\"javascript:void(0)\" onclick=\"return showInstallHelp(0)\" tabindex=\"15\"><img src=\"./images/help.png\" border=\"0\" alt=\"Help!\" title=\"Help!\" /></a></td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"center\" colspan=\"2\">\n";
+echo "                    <table cellpadding=\"2\" cellspacing=\"0\" width=\"95%\">\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Installation Method:</td>\n";
+echo "                        <td align=\"left\">\n";
+echo "                          <select name=\"install_method\" id =\"install_method\" class=\"install_dropdown\" tabindex=\"1\">\n";
+echo "                            <option value=\"\">Please select...</option>\n";
+echo "                            <option value=\"0\" ", (isset($install_method) && $install_method == 0) ? "selected=\"selected\"" : "", ">New Install</option>\n";
+echo "                            <option value=\"1\" ", (isset($install_method) && $install_method == 1) ? "selected=\"selected\"" : "", ">Reinstall</option>\n";
+echo "                            <option value=\"2\" ", (isset($install_method) && $install_method == 2) ? "selected=\"selected\"" : "", ">Reconnect</option>\n";
+echo "                            <option value=\"3\" ", (isset($install_method) && $install_method == 3) ? "selected=\"selected\"" : "", ">Upgrade 0.6.x to 0.8.1</option>\n";
+echo "                            <option value=\"4\" ", (isset($install_method) && $install_method == 4) ? "selected=\"selected\"" : "", ">Upgrade 0.7.x to 0.8.1</option>\n";
+echo "                            <option value=\"5\" ", (isset($install_method) && $install_method == 5) ? "selected=\"selected\"" : "", ">Upgrade 0.8 to 0.8.1</option>\n";
+echo "                          </select>\n";
+echo "                        </td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"200\" valign=\"top\" class=\"postbody\">Default Forum Webtag:</td>\n";
+echo "                        <td align=\"left\"><input type=\"text\" name=\"forum_webtag\" class=\"bhinputtext\" value=\"", (isset($forum_webtag) ? $forum_webtag : ""), "\" size=\"36\" maxlength=\"64\" tabindex=\"2\" /></td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "  <br />\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\" width=\"500\">\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
+echo "              <table cellpadding=\"2\" cellspacing=\"0\" class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\" nowrap=\"nowrap\" class=\"subhead\">MySQL Database Configuration</td>\n";
+echo "                  <td nowrap=\"nowrap\" class=\"subhead\" align=\"right\"><a href=\"javascript:void(0)\" onclick=\"return showInstallHelp(1)\" tabindex=\"16\"><img src=\"./images/help.png\" border=\"0\" alt=\"Help!\" title=\"Help!\" /></a></td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"center\" colspan=\"2\">\n";
+echo "                    <table cellpadding=\"2\" cellspacing=\"0\" width=\"95%\">\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Hostname:</td>\n";
+echo "                        <td align=\"left\"><input type=\"text\" name=\"db_server\" class=\"bhinputtext\" value=\"", (isset($db_server) ? $db_server : "localhost"), "\" size=\"36\" maxlength=\"64\" tabindex=\"3\" /></td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Database Name:</td>\n";
+echo "                        <td align=\"left\"><input type=\"text\" name=\"db_database\" class=\"bhinputtext\" value=\"", (isset($db_database) ? $db_database : ""), "\" size=\"36\" maxlength=\"64\" tabindex=\"4\" /></td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Username:</td>\n";
+echo "                        <td align=\"left\"><input type=\"text\" name=\"db_username\" class=\"bhinputtext\" value=\"", (isset($db_username) ? $db_username : ""), "\" size=\"36\" maxlength=\"64\" tabindex=\"5\" /></td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Password:</td>\n";
+echo "                        <td align=\"left\"><input type=\"password\" name=\"db_password\" class=\"bhinputtext\" value=\"\" size=\"36\" maxlength=\"64\" tabindex=\"6\" /></td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Confirm Password:</td>\n";
+echo "                        <td align=\"left\"><input type=\"password\" name=\"db_cpassword\" class=\"bhinputtext\" value=\"\" size=\"36\" maxlength=\"64\" tabindex=\"7\" /></td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "  <br />\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\" width=\"500\">\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
+echo "              <table cellpadding=\"2\" cellspacing=\"0\" class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\" nowrap=\"nowrap\" class=\"subhead\">Admin Account (New installations only)</td>\n";
+echo "                  <td nowrap=\"nowrap\" class=\"subhead\" align=\"right\"><a href=\"javascript:void(0)\" onclick=\"return showInstallHelp(2)\" tabindex=\"17\"><img src=\"./images/help.png\" border=\"0\" alt=\"Help!\" title=\"Help!\" /></a></td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"center\" colspan=\"2\">\n";
+echo "                    <table cellpadding=\"2\" cellspacing=\"0\" width=\"95%\">\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Admin Username:</td>\n";
+echo "                        <td align=\"left\"><input type=\"text\" name=\"admin_username\" class=\"bhinputtext\" value=\"", (isset($admin_username) ? $admin_username : ""), "\" size=\"36\" maxlength=\"64\" tabindex=\"8\" /></td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Admin Email Address:</td>\n";
+echo "                        <td align=\"left\"><input type=\"text\" name=\"admin_email\" class=\"bhinputtext\" value=\"", (isset($admin_email) ? $admin_email : ""), "\" size=\"36\" maxlength=\"64\" tabindex=\"9\" /></td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Admin Password:</td>\n";
+echo "                        <td align=\"left\"><input type=\"password\" name=\"admin_password\" class=\"bhinputtext\" value=\"\" size=\"36\" maxlength=\"64\" tabindex=\"10\" /></td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Confirm Password:</td>\n";
+echo "                        <td align=\"left\"><input type=\"password\" name=\"admin_cpassword\" class=\"bhinputtext\" value=\"\" size=\"36\" maxlength=\"64\" tabindex=\"11\" /></td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "  <br />\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\" width=\"500\">\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
+echo "              <table cellpadding=\"2\" cellspacing=\"0\" class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\" nowrap=\"nowrap\" class=\"subhead\">Advanced Options</td>\n";
+echo "                  <td nowrap=\"nowrap\" class=\"subhead\" align=\"right\"><a href=\"javascript:void(0)\" onclick=\"return showInstallHelp(3)\" tabindex=\"18\"><img src=\"./images/help.png\" border=\"0\" alt=\"Help!\" title=\"Help!\" /></a></td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"center\" colspan=\"2\">\n";
+echo "                    <table cellpadding=\"2\" cellspacing=\"0\" width=\"95%\">\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\"><span class=\"bhinputcheckbox\"><input type=\"checkbox\" name=\"remove_conflicts\" id=\"remove_conflicts\" value=\"Y\" tabindex=\"12\" /><label for=\"remove_conflicts\">Automatically remove tables that conflict with Beehive Forum's own.</label></span></td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\"><span class=\"bhinputcheckbox\"><input type=\"checkbox\" name=\"skip_dictionary\" id=\"skip_dictionary\" value=\"Y\" tabindex=\"13\" /><label for=\"skip_dictionary\">Skip dictionary setup (recommended only if install fails to complete).</label></span></td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">&nbsp;</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\"><p>The installation process may take several minutes to complete. Please click the Install button once and once only. Clicking it multiple times may cause your installation to become corrupted.</p></td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">&nbsp;</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td align=\"center\"><input type=\"submit\" name=\"install\" value=\"Install\" class=\"button\" onclick=\"return confirmInstall(this);\" tabindex=\"14\" /></td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "</div>\n";
+echo "</form>\n";
 echo "</body>\n";
 echo "</html>\n";
 

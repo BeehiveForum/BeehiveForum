@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.103 2007-11-13 19:46:27 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.104 2007-12-08 17:38:27 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -115,7 +115,7 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
 
         // Check for an installation error.
 
-        if (($errno == ER_NO_SUCH_TABLE || $errno == ER_WRONG_COLUMN_NAME) && !defined("BEEHIVE_INSTALL_NOWARN")) {
+        if (($errno == ER_NO_SUCH_TABLE || $errno == ER_WRONG_COLUMN_NAME) && !defined('BEEHIVE_INSTALL_NOWARN')) {
             install_incomplete();
         }
 
@@ -256,7 +256,11 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
 
             echo "<p>An error has occured. Please wait a few moments before trying again.</p>\n";
             echo "<p>Details of the error have been saved to the default error log.</p>\n";
-            if (defined("BEEHIVE_INSTALL_NOWARN")) echo "<p>", implode("</p>\n<p>", $error_msg_array), "</p>\n";
+
+            if (defined('BEEHIVE_INSTALL_NOWARN') || defined('BEEHIVEMODE_INSTALL')) {
+                echo "<p>", implode("</p>\n<p>", $error_msg_array), "</p>\n";
+            }
+
             exit;
         }
 
@@ -368,7 +372,7 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
             echo "  </table>\n";
         }
 
-        if (defined("BEEHIVE_INSTALL_NOWARN")) {
+        if (defined('BEEHIVE_INSTALL_NOWARN') || defined('BEEHIVEMODE_INSTALL')) {
 
             echo "  <br />\n";
             echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";

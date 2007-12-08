@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: emoticons.inc.php,v 1.67 2007-12-05 19:08:21 decoyduck Exp $ */
+/* $Id: emoticons.inc.php,v 1.68 2007-12-08 14:58:53 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -213,8 +213,8 @@ class Emoticons
 
 function emoticons_get_available($include_text_none = true)
 {
-    $sets_normal = array();
-    $sets_txtnon = array();
+    $emoticon_sets_normal = array();
+    $emoticon_sets_txtnon = array();
 
     if (@$dir = opendir('emoticons')) {
 
@@ -229,11 +229,11 @@ function emoticons_get_available($include_text_none = true)
                          if (@file_exists("./emoticons/$file/desc.txt")) {
 
                              $pack_name = implode("", file("./emoticons/$file/desc.txt"));
-                             $sets_txtnon[$file] = _htmlentities($pack_name);
+                             $emoticon_sets_txtnon[$file] = _htmlentities($pack_name);
 
                          }else {
 
-                             $sets_txtnon[$file] = _htmlentities($file);
+                             $emoticon_sets_txtnon[$file] = _htmlentities($file);
                          }
                      }
 
@@ -242,11 +242,11 @@ function emoticons_get_available($include_text_none = true)
                      if (@file_exists("./emoticons/$file/desc.txt")) {
 
                          $pack_name = implode("", file("./emoticons/$file/desc.txt"));
-                         $sets_normal[$file] = _htmlentities($pack_name);
+                         $emoticon_sets_normal[$file] = _htmlentities($pack_name);
 
                      }else {
 
-                         $sets_normal[$file] = _htmlentities($file);
+                         $emoticon_sets_normal[$file] = _htmlentities($file);
                      }
                  }
              }
@@ -255,10 +255,10 @@ function emoticons_get_available($include_text_none = true)
         closedir($dir);
     }
 
-    asort($sets_normal);
-    reset($sets_normal);
+    asort($emoticon_sets_normal);
+    reset($emoticon_sets_normal);
 
-    $available_sets = array_merge($sets_txtnon, $sets_normal);
+    $available_sets = array_merge($emoticon_sets_txtnon, $emoticon_sets_normal);
 
     return $available_sets;
 }
@@ -269,33 +269,35 @@ function sort_by_length_callback($a, $b)
     return (strlen($a) > strlen($b) ? -1 : 1);
 }
 
-function emoticons_set_exists($set)
+function emoticons_set_exists($emoticon_set)
 {
-    return (@file_exists("./emoticons/$set/style.css") || $set == "text" || $set == "none");
+    $emoticon_set = basename($emoticon_set);
+    return (@file_exists("./emoticons/$emoticon_set/style.css") || $emoticon_set == "text" || $emoticon_set == "none");
 }
 
-function emoticons_preview($set, $width=190, $height=100, $num = 35)
+function emoticons_preview($emoticon_set, $width = 190, $height = 100, $num = 35)
 {
     $lang = load_language_file();
 
     $webtag = get_webtag($webtag_search);
 
-    $emots_array = array();
+    $html = '';
 
-    $str = "";
+    $emoticons_array = array();
 
-    if (!emoticons_set_exists($set)) {
-        $set = forum_get_setting('default_emoticons', false, 'default');
+    $emoticon_set = basename($emoticon_set);
+
+    if (!emoticons_set_exists($emoticon_set)) {
+        $emoticon_set = basename(forum_get_setting('default_emoticons', false, 'default'));
     }
 
-    if ($set != 'text' && $set != 'none') {
+    if ($emoticon_set != 'text' && $emoticon_set != 'none') {
 
-        $path = "./emoticons/$set";
+        $emoticon = array();
+        $emoticon_text = array();
 
-        $emoticon = $emoticon_text = array();
-
-        if (@file_exists("$path/definitions.php")) {
-            include("$path/definitions.php");
+        if (@file_exists("emoticons/$emoticon_set/definitions.php")) {
+            include("emoticons/$emoticon_set/definitions.php");
         }
 
         if (count($emoticon) > 0) {
@@ -311,9 +313,9 @@ function emoticons_preview($set, $width=190, $height=100, $num = 35)
             }
         }
 
-        if (@$fp = fopen("$path/style.css", "r")) {
+        if (@$fp = fopen("emoticons/$emoticon_set/style.css", "r")) {
 
-            $style = fread($fp, filesize("$path/style.css"));
+            $style = fread($fp, filesize("emoticons/$emoticon_set/style.css"));
 
             preg_match_all("/\.e_([\w_]+) \{[^\}]*background-image\s*:\s*url\s*\([\"\']\.?\/?([^\"\']*)[\"\']\)[^\}]*\}/i", $style, $matches);
 
@@ -328,39 +330,40 @@ function emoticons_preview($set, $width=190, $height=100, $num = 35)
                         $string_matches[] = $emoticon_text[$matches[1][$i]][$j];
                     }
 
-                    $emots_array[] = array('matches' => $string_matches,
-                                           'text'    => $matches[1][$i],
-                                           'img'     => $matches[2][$i]);
+                    $emoticons_array[] = array('matches' => $string_matches,
+                                               'text'    => $matches[1][$i],
+                                               'img'     => $matches[2][$i]);
                 }
             }
         }
 
-        array_multisort($emots_array, SORT_DESC);
+        array_multisort($emoticons_array, SORT_DESC);
 
-        $str.= "<div style=\"width: {$width}px; height: {$height}px\" class=\"emoticon_preview\">";
+        $html.= "<div style=\"width: {$width}px; height: {$height}px\" class=\"emoticon_preview\">";
 
-        for ($i = 0; $i < min(count($emots_array), $num); $i++) {
+        for ($i = 0; $i < min(count($emoticons_array), $num); $i++) {
 
             $emot_tooltip_matches = array();
 
-            foreach ($emots_array[$i]['matches'] as $key => $emot_match) {
+            foreach ($emoticons_array[$i]['matches'] as $key => $emot_match) {
 
                 $emot_tooltip_matches[] = _htmlentities($emot_match);
             }
 
             $emot_tiptext = trim(implode(" ", $emot_tooltip_matches));
 
-            $str.= "<img src=\"$path/{$emots_array[$i]['img']}\" alt=\"{$emot_tiptext}\" title=\"{$emot_tiptext}\" onclick=\"add_text(' ". html_js_safe_str($emots_array[$i]['matches'][0]) ." ');\" /> ";
+            $html.= "<img src=\"emoticons/$emoticon_set/{$emoticons_array[$i]['img']}\" alt=\"{$emot_tiptext}\" title=\"{$emot_tiptext}\" onclick=\"add_text(' ". html_js_safe_str($emoticons_array[$i]['matches'][0]) ." ');\" /> ";
         }
 
-        if ($num < count($emots_array)) {
-                $str.= " <b><a href=\"display_emoticons.php?webtag=$webtag&amp;pack=user\" target=\"_blank\" onclick=\"return openEmoticons('user','$webtag');\">{$lang['more']}</a></b>";
+        if ($num < count($emoticons_array)) {
+
+            $html.= " <b><a href=\"display_emoticons.php?webtag=$webtag&amp;pack=user\" target=\"_blank\" onclick=\"return openEmoticons('user','$webtag');\">{$lang['more']}</a></b>";
         }
 
-        $str.= "</div>";
+        $html.= "</div>";
     }
 
-    return $str;
+    return $html;
 }
 
 ?>

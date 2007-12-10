@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ldisplay.php,v 1.26 2007-12-04 23:43:36 decoyduck Exp $ */
+/* $Id: ldisplay.php,v 1.27 2007-12-10 22:40:52 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -71,17 +71,17 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "thread.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
-// Light mode check to see if we should bounce to the logon screen.
+// Check we're logged in correctly
 
-if (!bh_session_active()) {
+if (!$user_sess = bh_session_check()) {
 
     $webtag = get_webtag($webtag_search);
     header_redirect("./llogon.php?webtag=$webtag");
 }
 
-// Check we're logged in correctly
+// Light mode check to see if we should bounce to the logon screen.
 
-if (!$user_sess = bh_session_check()) {
+if (!bh_session_active()) {
 
     $webtag = get_webtag($webtag_search);
     header_redirect("./llogon.php?webtag=$webtag");

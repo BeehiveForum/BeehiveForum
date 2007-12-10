@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.275 2007-11-18 15:28:17 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.276 2007-12-10 21:37:28 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -669,11 +669,11 @@ function forum_check_global_setting_name($setting_name)
                                          'attachment_use_old_method', 'forum_desc', 'forum_email',
                                          'forum_keywords', 'forum_name', 'forum_noreply_email',
                                          'forum_rules_enabled', 'forum_rules_message', 'guest_account_enabled',
-                                         'guest_show_recent', 'messages_unread_cutoff', 'new_user_email_notify',
-                                         'new_user_mark_as_of_int', 'new_user_pm_notify_email', 'pm_allow_attachments',
-                                         'pm_auto_prune', 'pm_max_user_messages', 'require_email_confirmation',
-                                         'require_unique_email', 'require_user_approval', 'search_min_frequency',
-                                         'session_cutoff', 'showpopuponnewpm', 'show_pms',
+                                         'guest_show_recent', 'messages_unread_cutoff', 'messages_unread_cutoff_custom',
+                                         'new_user_email_notify', 'new_user_mark_as_of_int', 'new_user_pm_notify_email',
+                                         'pm_allow_attachments', 'pm_auto_prune', 'pm_max_user_messages',
+                                         'require_email_confirmation', 'require_unique_email', 'require_user_approval',
+                                         'search_min_frequency', 'session_cutoff', 'showpopuponnewpm', 'show_pms',
                                          'text_captcha_dir', 'text_captcha_enabled', 'text_captcha_key');
 
     return in_array($setting_name, $valid_global_forum_settings);
@@ -778,7 +778,18 @@ function forum_get_setting($setting_name, $value = false, $default = false)
 
 function forum_get_unread_cutoff()
 {
-    $messages_unread_cutoff = forum_get_setting('messages_unread_cutoff', false, 31536000);
+    // Unread cutoff value
+
+    $messages_unread_cutoff = forum_get_setting('messages_unread_cutoff', false, 0);
+
+    // Unread cutoff custom value
+
+    $messages_unread_cutoff_custom = forum_get_setting('messages_unread_cutoff_custom', false, 0);
+
+    // If $messages_unread_cutoff lower than -1 then we should return
+    // $messages_unread_cutoff_custom instead
+
+    if ($messages_unread_cutoff < -1) return $messages_unread_cutoff_custom;
 
     // If $messages_unread_cutoff lower than 0 then unread
     // functionality is disabled and we return false.
@@ -2236,7 +2247,18 @@ function forum_search($forum_search, $offset)
 
                 if (isset($forum_settings['messages_unread_cutoff'])) {
 
-                    if ($forum_settings['messages_unread_cutoff'] < 0) {
+                    if ($forum_settings['messages_unread_cutoff'] < -1) {
+
+                        if (isset($forum_settings['messages_unread_cutoff_custom'])) {
+
+                            $unread_cutoff_stamp = $forum_settings['messages_unread_cutoff_custom'];
+
+                        }else {
+
+                            $unread_cutoff_stamp = 0;
+                        }
+
+                    }elseif ($forum_settings['messages_unread_cutoff'] < 0) {
 
                         $unread_cutoff_stamp = false;
 
@@ -2251,7 +2273,7 @@ function forum_search($forum_search, $offset)
 
                 }else {
 
-                    $unread_cutoff_stamp = 31536000;
+                    $unread_cutoff_stamp = 0;
                 }
 
                 // Get available folders for queries below

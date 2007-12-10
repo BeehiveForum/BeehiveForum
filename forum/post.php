@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.328 2007-12-07 23:49:12 decoyduck Exp $ */
+/* $Id: post.php,v 1.329 2007-12-10 22:50:54 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -1142,8 +1142,7 @@ if ($allow_sig == true) {
 
     }else {
 
-        echo "                            <td class=\"subhead\" align=\"right\">", form_submit_image('sig_show.png', 'sig_toggle', 'show'), "&nbsp;</td>\n";
-        echo "    ", form_input_hidden("t_sig", _htmlentities($t_sig)), "\n";
+        echo "                            <td class=\"subhead\" align=\"right\">", form_submit_image('sig_show.png', 'sig_toggle', 'show'), form_input_hidden("t_sig", $t_sig), "&nbsp;</td>\n";
     }
 
     echo "                          </tr>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ledit.php,v 1.22 2007-12-03 18:38:49 decoyduck Exp $ */
+/* $Id: ledit.php,v 1.23 2007-12-10 22:50:54 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -512,42 +512,6 @@ if (isset($_POST['preview'])) {
 
             $error_msg_array[] = $lang['errorupdatingpost'];
         }
-    }
-
-}else if (isset($_POST['emots_toggle_x']) || isset($_POST['sig_toggle_x'])) {
-
-    $preview_message = messages_get($tid, $pid, 1);
-
-    if (isset($_POST['t_to_uid'])) {
-        $to_uid = $_POST['t_to_uid'];
-    }else {
-        $error_msg_array[] = $lang['invalidusername'];
-        $valid = false;
-    }
-
-    if (isset($_POST['t_from_uid'])) {
-        $from_uid = $_POST['t_from_uid'];
-    }else {
-        $error_msg_array[] = $lang['invalidusername'];
-        $valid = false;
-    }
-
-    if (isset($_POST['emots_toggle_x'])) {
-
-        $page_prefs = (double) $page_prefs ^ POST_EMOTICONS_DISPLAY;
-
-    }elseif (isset($_POST['sig_toggle_x'])) {
-
-        $page_prefs = (double) $page_prefs ^ POST_SIGNATURE_DISPLAY;
-    }
-
-    $user_prefs = array('POST_PAGE' => $page_prefs);
-    $user_prefs_global = array();
-
-    if (!user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
-
-        $error_msg_array[] = $lang['failedtoupdateuserdetails'];
-        $valid = false;
     }
 
 }else {

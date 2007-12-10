@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.114 2007-12-05 19:08:21 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.115 2007-12-10 22:40:52 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -75,17 +75,17 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "thread.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
-// Light mode check to see if we should bounce to the logon screen.
+// Check we're logged in correctly
 
-if (!bh_session_active()) {
+if (!$user_sess = bh_session_check()) {
 
     $webtag = get_webtag($webtag_search);
     header_redirect("./llogon.php?webtag=$webtag");
 }
 
-// Check we're logged in correctly
+// Light mode check to see if we should bounce to the logon screen.
 
-if (!$user_sess = bh_session_check()) {
+if (!bh_session_active()) {
 
     $webtag = get_webtag($webtag_search);
     header_redirect("./llogon.php?webtag=$webtag");

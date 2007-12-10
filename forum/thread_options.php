@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.98 2007-12-03 18:38:49 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.99 2007-12-10 20:44:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -232,7 +232,7 @@ if (isset($_POST['submit'])) {
 
     // Admin Options
 
-    if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid) || ((($thread_data['FROM_UID'] == $uid) && $thread_data['ADMIN_LOCK'] == THREAD_ADMIN_LOCK_DISABLED) && ((forum_get_setting('allow_post_editing', 'Y')) && intval(forum_get_setting('post_edit_time', false, 0)) == 0) || ((time() - $thread_data['CREATED']) < (intval(forum_get_setting('post_edit_time', false, 0)) * MINUTE_IN_SECONDS)))) {
+    if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid) || (($thread_data['FROM_UID'] == $uid) && ($thread_data['ADMIN_LOCK'] == THREAD_ADMIN_LOCK_DISABLED) && forum_get_setting('allow_post_editing', 'Y') && ((intval(forum_get_setting('post_edit_time', false, 0)) == 0) || ((time() - $thread_data['CREATED']) < (intval(forum_get_setting('post_edit_time', false, 0) * MINUTE_IN_SECONDS)))))) {
 
         if (isset($_POST['rename']) && strlen(trim(_stripslashes($_POST['rename']))) > 0) {
 
@@ -586,7 +586,7 @@ if ($thread_data['LENGTH'] > 0) {
     echo "          </tr>\n";
     echo "        </table>\n";
 
-    if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid) || ((($thread_data['FROM_UID'] == $uid) && $thread_data['ADMIN_LOCK'] == THREAD_ADMIN_LOCK_DISABLED) && ((forum_get_setting('allow_post_editing', 'Y')) && intval(forum_get_setting('post_edit_time', false, 0)) == 0) || ((time() - $thread_data['CREATED']) < (intval(forum_get_setting('post_edit_time', false, 0)) * MINUTE_IN_SECONDS)))) {
+     if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid) || (($thread_data['FROM_UID'] == $uid) && ($thread_data['ADMIN_LOCK'] == THREAD_ADMIN_LOCK_DISABLED) && forum_get_setting('allow_post_editing', 'Y') && ((intval(forum_get_setting('post_edit_time', false, 0)) == 0) || ((time() - $thread_data['CREATED']) < (intval(forum_get_setting('post_edit_time', false, 0) * MINUTE_IN_SECONDS)))))) {
 
         if (!thread_is_poll($tid)) {
 

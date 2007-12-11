@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.268 2007-12-05 19:08:21 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.269 2007-12-11 18:13:24 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1497,6 +1497,8 @@ function html_get_forum_uri($append_path = "")
 
         $uri_array['path'] = dirname("{$uri_array['path']}beehive");
     }
+
+    $uri_array['path'] = rtrim($uri_array['path'], '/');
 
     if (strlen(trim($append_path)) > 0) {
 

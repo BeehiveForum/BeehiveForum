@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.276 2007-12-10 21:37:28 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.277 2007-12-11 18:13:24 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -780,25 +780,28 @@ function forum_get_unread_cutoff()
 {
     // Unread cutoff value
 
-    $messages_unread_cutoff = forum_get_setting('messages_unread_cutoff', false, 0);
+    $messages_unread_cutoff = forum_get_setting('messages_unread_cutoff', false, UNREAD_MESSAGES_DEFAULT);
 
     // Unread cutoff custom value
 
     $messages_unread_cutoff_custom = forum_get_setting('messages_unread_cutoff_custom', false, 0);
 
     // If $messages_unread_cutoff lower than -1 then we should return
-    // $messages_unread_cutoff_custom instead
+    // $messages_unread_cutoff_custom instead or false if $messages_unread_cutoff_custom
+    // is zero.
 
-    if ($messages_unread_cutoff < -1) return $messages_unread_cutoff_custom;
+    if ($messages_unread_cutoff == UNREAD_MESSAGES_CUSTOM) {
+        return ($messages_unread_cutoff_custom > 0) ? $messages_unread_cutoff_custom : false;
+    }
 
     // If $messages_unread_cutoff lower than 0 then unread
     // functionality is disabled and we return false.
 
-    if ($messages_unread_cutoff < 0) return false;
+    if ($messages_unread_cutoff == UNREAD_MESSAGES_DISABLED) return false;
 
-    // If $messages_unread_cutoff equal 0 then we return 0
+    // If $messages_unread_cutoff is the default then we return 0
 
-    if ($messages_unread_cutoff == 0) return 0;
+    if ($messages_unread_cutoff == UNREAD_MESSAGES_DEFAULT) return 0;
 
     // Failing the above we return the value saved in the database.
 

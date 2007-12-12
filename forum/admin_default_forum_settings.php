@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.88 2007-12-10 21:37:28 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.89 2007-12-12 20:50:28 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -160,7 +160,7 @@ if (isset($_POST['submit'])) {
     if (isset($_POST['messages_unread_cutoff_custom']) && is_numeric($_POST['messages_unread_cutoff_custom'])) {
         $new_forum_settings['messages_unread_cutoff_custom'] = $_POST['messages_unread_cutoff_custom'];
     }else {
-        $new_forum_settings['messages_unread_cutoff_custom'] = 0;
+        $new_forum_settings['messages_unread_cutoff_custom'] = '';
     }
 
     if (isset($_POST['search_min_frequency']) && is_numeric($_POST['search_min_frequency'])) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.278 2007-12-12 20:50:28 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.279 2007-12-12 22:28:23 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -776,6 +776,15 @@ function forum_get_setting($setting_name, $value = false, $default = false)
     return $default;
 }
 
+/**
+* Get Unread Cutoff
+*
+* Retrieves and validates the current forum's unread cut-off value.
+*
+* @return mixed - False if unread messages are disabled or integer number of seconds the cut-off is set to.
+* @param void
+*/
+
 function forum_get_unread_cutoff()
 {
     // Unread cutoff value
@@ -785,6 +794,66 @@ function forum_get_unread_cutoff()
     // Unread cutoff custom value
 
     $messages_unread_cutoff_custom = forum_get_setting('messages_unread_cutoff_custom', false, 0);
+
+    // If $messages_unread_cutoff lower than -1 then we should return
+    // $messages_unread_cutoff_custom instead or default (UNREAD_MESSAGES_DISABLED)
+    // if $messages_unread_cutoff_custom is zero.
+
+    if ($messages_unread_cutoff == UNREAD_MESSAGES_CUSTOM) {
+
+        if (is_numeric($messages_unread_cutoff_custom) && $messages_unread_cutoff_custom > 0) {
+            return $messages_unread_cutoff_custom;
+        }
+
+        return UNREAD_MESSAGES_DISABLED;
+    }
+
+    // If $messages_unread_cutoff lower than 0 then unread
+    // functionality is disabled and we return false.
+
+    if ($messages_unread_cutoff == UNREAD_MESSAGES_DISABLED) return false;
+
+    // If $messages_unread_cutoff is the default then we return 0
+
+    if ($messages_unread_cutoff == UNREAD_MESSAGES_DEFAULT) return 0;
+
+    // Failing the above we return the value saved in the database.
+
+    return is_numeric($messages_unread_cutoff) ? $messages_unread_cutoff : 0;
+}
+
+/**
+* Process Unread Cutoff
+*
+* Processes and validates a forum unread cut-off value saved in a settings array.
+* Works the same as forum_get_unread_cutoff() but is intended to be passed an
+* array of forum settings from forum_get_settings() or other.
+*
+* @return mixed - False if unread messages are disabled or integer number of seconds the cut-off is set to.
+* @param void
+*/
+
+function forum_process_unread_cutoff($forum_settings)
+{
+    // Check the $forum_settings array.
+
+    if (!is_array($forum_settings)) return UNREAD_MESSAGES_DEFAULT;
+
+    // Unread cutoff value
+
+    if (isset($forum_settings['messages_unread_cutoff'])) {
+        $messages_unread_cutoff = $forum_settings['messages_unread_cutoff'];
+    }else {
+        $messages_unread_cutoff = UNREAD_MESSAGES_DEFAULT;
+    }
+
+    // Unread cutoff custom value
+
+    if (isset($forum_settings['messages_unread_cutoff_custom'])) {
+        $messages_unread_cutoff_custom = $forum_settings['messages_unread_cutoff_custom'];
+    }else {
+        $messages_unread_cutoff_custom = 0;
+    }
 
     // If $messages_unread_cutoff lower than -1 then we should return
     // $messages_unread_cutoff_custom instead or default (UNREAD_MESSAGES_DISABLED)
@@ -2243,9 +2312,13 @@ function forum_search($forum_search, $offset)
                     }
                 }
 
-                if (!isset($forum_data['FORUM_NAME'])) {
+                // Check the forum name is set. If it isn't set it to 'A Beehive Forum'
+
+                if (!isset($forum_data['FORUM_NAME']) || strlen(trim($forum_data['FORUM_NAME'])) < 1) {
                     $forum_data['FORUM_NAME'] = "A Beehive Forum";
                 }
+
+                // Check the forum description variable is set.
 
                 if (!isset($forum_data['FORUM_DESC'])) {
                     $forum_data['FORUM_DESC'] = "";
@@ -2253,36 +2326,7 @@ function forum_search($forum_search, $offset)
 
                 // Unread cut-off stamp.
 
-                if (isset($forum_settings['messages_unread_cutoff'])) {
-
-                    if ($forum_settings['messages_unread_cutoff'] < -1) {
-
-                        if (isset($forum_settings['messages_unread_cutoff_custom'])) {
-
-                            $unread_cutoff_stamp = $forum_settings['messages_unread_cutoff_custom'];
-
-                        }else {
-
-                            $unread_cutoff_stamp = 0;
-                        }
-
-                    }elseif ($forum_settings['messages_unread_cutoff'] < 0) {
-
-                        $unread_cutoff_stamp = false;
-
-                    }elseif ($forum_settings['messages_unread_cutoff'] == 0) {
-
-                        $unread_cutoff_stamp = 0;
-
-                    }else {
-
-                        $unread_cutoff_stamp = $forum_settings['messages_unread_cutoff'];
-                    }
-
-                }else {
-
-                    $unread_cutoff_stamp = 0;
-                }
+                $unread_cutoff_stamp = forum_process_unread_cutoff($forum_settings);
 
                 // Get available folders for queries below
 
@@ -2297,16 +2341,13 @@ function forum_search($forum_search, $offset)
 
                 if (is_numeric($unread_cutoff_stamp) && $unread_cutoff_stamp !== false) {
 
-                    $sql = "SELECT COUNT(POST.PID) AS UNREAD_MESSAGES ";
-                    $sql.= "FROM {$forum_data['PREFIX']}POST POST ";
+                    $sql = "SELECT SUM(THREAD.LENGTH) - SUM(COALESCE(USER_THREAD.LAST_READ, 0)) ";
+                    $sql.= "AS UNREAD_MESSAGES FROM {$forum_data['PREFIX']}THREAD THREAD ";
                     $sql.= "LEFT JOIN {$forum_data['PREFIX']}USER_THREAD USER_THREAD ";
-                    $sql.= "ON (USER_THREAD.TID = POST.TID AND USER_THREAD.UID = '$uid') ";
-                    $sql.= "LEFT JOIN {$forum_data['PREFIX']}THREAD THREAD ON (THREAD.TID = POST.TID) ";
-                    $sql.= "WHERE (POST.CREATED > FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - ";
+                    $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
+                    $sql.= "WHERE THREAD.FID IN ($folders) ";
+                    $sql.= "AND (THREAD.MODIFIED > FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - ";
                     $sql.= "$unread_cutoff_stamp) OR $unread_cutoff_stamp = 0) ";
-                    $sql.= "AND THREAD.FID IN ($folders) AND THREAD.LENGTH > 0 ";
-                    $sql.= "AND (USER_THREAD.LAST_READ < POST.PID ";
-                    $sql.= "OR USER_THREAD.LAST_READ IS NULL)";
 
                     if (!$result_unread_count = db_query($sql, $db_forum_search)) return false;
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.302 2007-12-03 18:38:49 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.303 2007-12-12 20:50:28 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1500,7 +1500,7 @@ function threads_mark_all_read()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    if (($unread_cutoff_stamp = forum_get_unread_cutoff()) === false) return array(0, 0);
+    if (($unread_cutoff_stamp = forum_get_unread_cutoff()) === false) return false;
 
     $sql = "INSERT INTO {$table_data['PREFIX']}USER_THREAD (UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
     $sql.= "SELECT $uid, {$table_data['PREFIX']}THREAD.TID, {$table_data['PREFIX']}THREAD.LENGTH, NOW(), ";

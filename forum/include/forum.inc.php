@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.277 2007-12-11 18:13:24 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.278 2007-12-12 20:50:28 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -787,11 +787,16 @@ function forum_get_unread_cutoff()
     $messages_unread_cutoff_custom = forum_get_setting('messages_unread_cutoff_custom', false, 0);
 
     // If $messages_unread_cutoff lower than -1 then we should return
-    // $messages_unread_cutoff_custom instead or false if $messages_unread_cutoff_custom
-    // is zero.
+    // $messages_unread_cutoff_custom instead or default (UNREAD_MESSAGES_DISABLED)
+    // if $messages_unread_cutoff_custom is zero.
 
     if ($messages_unread_cutoff == UNREAD_MESSAGES_CUSTOM) {
-        return ($messages_unread_cutoff_custom > 0) ? $messages_unread_cutoff_custom : false;
+
+        if (is_numeric($messages_unread_cutoff_custom) && $messages_unread_cutoff_custom > 0) {
+            return $messages_unread_cutoff_custom;
+        }
+
+        return UNREAD_MESSAGES_DISABLED;
     }
 
     // If $messages_unread_cutoff lower than 0 then unread
@@ -805,7 +810,7 @@ function forum_get_unread_cutoff()
 
     // Failing the above we return the value saved in the database.
 
-    return $messages_unread_cutoff;
+    return is_numeric($messages_unread_cutoff) ? $messages_unread_cutoff : 0;
 }
 
 function forum_load_start_page()

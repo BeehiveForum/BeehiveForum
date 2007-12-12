@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forums.php,v 1.84 2007-10-24 19:57:08 decoyduck Exp $ */
+/* $Id: forums.php,v 1.85 2007-12-12 22:28:23 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -109,6 +109,12 @@ $forum_header_array = array(FORUMS_SHOW_ALL => $lang['allavailableforums'],
                             FORUMS_SHOW_FAVS => $lang['favouriteforums'],
                             FORUMS_SHOW_IGNORED => $lang['ignoredforums']);
 
+$forum_search_header_array = array(FORUMS_SHOW_SEARCH => $lang['searchresults'],
+                                   FORUMS_SHOW_ALL => $lang['allavailableforums'],
+                                   FORUMS_SHOW_FAVS => $lang['favouriteforums'],
+                                   FORUMS_SHOW_IGNORED => $lang['ignoredforums']);
+
+
 // Set the default view type.
 
 if (!forums_any_favourites() || user_is_guest()) {
@@ -117,12 +123,30 @@ if (!forums_any_favourites() || user_is_guest()) {
     $view_type = FORUMS_SHOW_FAVS;
 }
 
+// Webtag search
+
+if (isset($_POST['webtag_search']) && strlen(trim(_stripslashes($_POST['webtag_search']))) > 0) {
+
+    $webtag_search = trim(_stripslashes($_POST['webtag_search']));
+    $search_page = 1; $start_search = 0;
+
+}elseif (isset($_GET['webtag_search']) && strlen(trim(_stripslashes($_GET['webtag_search']))) > 0) {
+
+    $webtag_search = trim(_stripslashes($_GET['webtag_search']));
+}
+
+if (isset($_POST['clear_search']) || isset($_GET['clear_search'])) {
+    $webtag_search = "";
+}
+
 // Handle changing the view type. If a Guest tries to change
 // the view type we show them the Guest Error messages.
 
 if (isset($_POST['change_view'])) {
 
     if (isset($_POST['view_type']) && is_numeric($_POST['view_type'])) {
+
+        $webtag_search = "";
 
         $view_type = $_POST['view_type'];
 
@@ -142,6 +166,8 @@ if (isset($_POST['change_view'])) {
 
     if (!user_is_guest()) {
 
+        $webtag_search = "";
+
         $view_type = $_POST['view_type'];
 
         if (!in_array($view_type, $available_forum_views)) {
@@ -153,6 +179,8 @@ if (isset($_POST['change_view'])) {
 }elseif (isset($_GET['view_type']) && is_numeric($_GET['view_type'])) {
 
     if (!user_is_guest()) {
+
+        $webtag_search = "";
 
         $view_type = $_GET['view_type'];
 
@@ -186,22 +214,6 @@ if (isset($_GET['search_page']) && is_numeric($_GET['search_page'])) {
 }else {
     $search_page = 1;
     $start_search = 0;
-}
-
-// Webtag search
-
-if (isset($_POST['webtag_search']) && strlen(trim(_stripslashes($_POST['webtag_search']))) > 0) {
-
-    $webtag_search = trim(_stripslashes($_POST['webtag_search']));
-    $search_page = 1; $start_search = 0;
-
-}elseif (isset($_GET['webtag_search']) && strlen(trim(_stripslashes($_GET['webtag_search']))) > 0) {
-
-    $webtag_search = trim(_stripslashes($_GET['webtag_search']));
-}
-
-if (isset($_POST['clear_search']) || isset($_GET['clear_search'])) {
-    $webtag_search = "";
 }
 
 // Are we being redirected somewhere?
@@ -315,6 +327,8 @@ if (!user_is_guest()) {
 
         if (isset($forums_array['forums_array']) && sizeof($forums_array['forums_array']) < 1) {
             html_display_error_msg($lang['foundzeromatches'], '70%', 'center');
+        }else {
+            echo "<br />\n";
         }
 
         echo "<div align=\"center\">\n";
@@ -427,7 +441,7 @@ if (!user_is_guest()) {
         echo "          <tr>\n";
         echo "            <td align=\"left\" width=\"33%\">&nbsp;</td>\n";
         echo "            <td class=\"postbody\" align=\"center\" width=\"33%\" nowrap=\"nowrap\">", page_links("forums.php?webtag=$webtag&view_type=$view_type&webtag_search=$webtag_search&main_page=$main_page&search_page=$search_page", $start_search, $forums_array['forums_count'], 10, 'search_page'), "</td>\n";
-        echo "            <td class=\"postbody\">&nbsp;</td>\n";
+        echo "            <td align=\"right\" width=\"33%\" nowrap=\"nowrap\">{$lang['view']}:&nbsp;", form_dropdown_array('view_type', $forum_search_header_array, FORUMS_SHOW_SEARCH, "onchange=\"submit()\""), "&nbsp;", form_submit('change_view', $lang['go']), "</td>\n";
         echo "          </tr>\n";
         echo "        </table>\n";
         echo "      </td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.87 2007-11-24 14:43:09 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.88 2007-12-13 20:14:51 decoyduck Exp $ */
 
 // French Canadian language file
 
@@ -786,11 +786,11 @@ $lang['allowguestvotesinpolls'] = "Permettre invités de voter dans les scrutins
 $lang['unreadmessagescutoff'] = "Période limite pour messages non-lus";
 $lang['unreadcutoffseconds'] = "secondes";
 $lang['disableunreadmessages'] = "Désactiver messages non-lus";
-$lang['nocutoffdefault'] = "Aucune période limite (défault)";
-$lang['1month'] = "1 mois";
-$lang['6months'] = "6 mois";
-$lang['1year'] = "1 ans";
-$lang['customsetbelow'] = "Valeur personnalisée (régler ci-dessous)";
+$lang['thirtynumberdays'] = "30 jours";
+$lang['sixtynumberdays'] = "60 jours";
+$lang['ninetynumberdays'] = "90 jours";
+$lang['hundredeightynumberdays'] = "180 jours";
+$lang['onenumberyear'] = "1 années";
 $lang['searchoptions'] = "Options de recherche";
 $lang['searchfrequency'] = "Fréquence de recherche";
 $lang['sessions'] = "Sessions";
@@ -864,7 +864,6 @@ $lang['forum_settings_help_44'] = "<b>Utiliser le Captcha de texte</b> presente 
 $lang['forum_settings_help_45'] = "<b>Répertoire de Captcha de texte</b> spécifie l'endroit où Beehive conservera ses images et polices captcha. Ce répertoire doit être inscriptible par le serveur web / processus PHP et doit être accessible via HTTP. Après que vous avez activé le captcha de texte, vous devez téléverser les polices truetype au sous-répertoire de votre répertoire principale de captcha de texte sinon Beehive sautera le captcha de texte durant l'enregistrement d'utilisateur.";
 $lang['forum_settings_help_46'] = "<b>Clé de Captcha de texte</b> vous permet de changer la clé utilisée par Beehive pour générer le code captcha de texte qui apparait dans l'image. Le plus unique la clé, le plus difficile que ça devient pour les processus automatisés de \"deviner\" le code.";
 $lang['forum_settings_help_47'] = "<b>Période de délai de grâce pour modification de poste</b> vous permet de définir une période en minutes durant laquelle les utilisateurs peuvent modifier leurs messages sans que le texte 'MODIFIÉ PAR' apparait dans le message. Si régler à 0 le texte 'MODIFIÉ PAR' va toujours paraître.";
-$lang['forum_settings_help_48'] = "<b>Période limite pour messages non-lus</b> spécifie pour quelle durée de temps les messages non-lus seront conservés. Vous pouvez choisir entre des valeurs pré-établies ou choisir votre propre période limite en secondes. Les fils de discussion modifiés antérieurement à la période limite définie apparaîtront automatiquement comme lues.";
 $lang['forum_settings_help_49'] = "La sélection de <b>Désactiver messages non-lus</b> enlèvera complètement tout support pour messages non-lus et enlèvera aussi les options reliées du menu déroulant vertical de types de discussions sur la liste des fils de discussions.";
 $lang['forum_settings_help_50'] = "Vous pouvez exiger l'approbation de tout nouveau compte d'usager avant qu'il soit utilisé en activant cette fonction. Sans approbation, un usager ne peut accéder à aucune section de l'installation du forum Beehive, y inclut les forums individuels, la boîte de réception MP et sections Mes Forums.";
 $lang['forum_settings_help_51'] = "Utilisez <b>Message de fermeture</b>, <b>Message d'accès restreint</b> et <b>Message de protégé par mot de passe</b> pour personnaliser le message affiché lorsque les usagers accèdent au forum dans ses états variés.";

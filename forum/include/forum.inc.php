@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.280 2007-12-13 17:10:58 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.281 2007-12-13 20:14:51 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -787,39 +787,24 @@ function forum_get_setting($setting_name, $value = false, $default = false)
 
 function forum_get_unread_cutoff()
 {
-    // Unread cutoff value
+    // Array of valid Unread cutoff periods.
 
-    $messages_unread_cutoff = forum_get_setting('messages_unread_cutoff', false, UNREAD_MESSAGES_DEFAULT);
+    $unread_cutoff_periods = array(THIRTY_DAYS_IN_SECONDS, SIXTY_DAYS_IN_SECONDS,
+                                   NINETY_DAYS_IN_SECONDS, HUNDRED_EIGHTY_DAYS_IN_SECONDS,
+                                   YEAR_IN_SECONDS);
 
-    // Unread cutoff custom value
+    // Fetch the unread cutoff value
 
-    $messages_unread_cutoff_custom = forum_get_setting('messages_unread_cutoff_custom', false, 0);
+    $messages_unread_cutoff = forum_get_setting('messages_unread_cutoff');
 
-    // If $messages_unread_cutoff lower than -1 then we should return
-    // $messages_unread_cutoff_custom instead or default (UNREAD_MESSAGES_DEFAULT)
-    // if $messages_unread_cutoff_custom is zero.
-
-    if ($messages_unread_cutoff == UNREAD_MESSAGES_CUSTOM) {
-
-        if (is_numeric($messages_unread_cutoff_custom) && $messages_unread_cutoff_custom > 0) {
-            return $messages_unread_cutoff_custom;
-        }
-
-        return UNREAD_MESSAGES_DEFAULT;
-    }
-
-    // If $messages_unread_cutoff lower than 0 then unread
-    // functionality is disabled and we return false.
+    // If unread message support is disabled we return false.
 
     if ($messages_unread_cutoff == UNREAD_MESSAGES_DISABLED) return false;
 
-    // If $messages_unread_cutoff is the default then we return 0
+    // If unread message support isn't disabled we should check that
+    // It is a valid value and return it or return the default of one year.
 
-    if ($messages_unread_cutoff == UNREAD_MESSAGES_DEFAULT) return 0;
-
-    // Failing the above we return the value saved in the database.
-
-    return is_numeric($messages_unread_cutoff) ? $messages_unread_cutoff : 0;
+    return in_array($messages_unread_cutoff, $unread_cutoff_periods) ? $messages_unread_cutoff : YEAR_IN_SECONDS;
 }
 
 /**
@@ -837,9 +822,15 @@ function forum_process_unread_cutoff($forum_settings)
 {
     // Check the $forum_settings array.
 
-    if (!is_array($forum_settings)) return UNREAD_MESSAGES_DEFAULT;
+    if (!is_array($forum_settings)) return YEAR_IN_SECONDS;
 
-    // Unread cutoff value
+    // Array of valid Unread cutoff periods.
+
+    $unread_cutoff_periods = array(THIRTY_DAYS_IN_SECONDS, SIXTY_DAYS_IN_SECONDS,
+                                   NINETY_DAYS_IN_SECONDS, HUNDRED_EIGHTY_DAYS_IN_SECONDS,
+                                   YEAR_IN_SECONDS);
+
+    // Fetch the unread cutoff value from the settings array
 
     if (isset($forum_settings['messages_unread_cutoff'])) {
         $messages_unread_cutoff = $forum_settings['messages_unread_cutoff'];
@@ -847,39 +838,14 @@ function forum_process_unread_cutoff($forum_settings)
         $messages_unread_cutoff = UNREAD_MESSAGES_DEFAULT;
     }
 
-    // Unread cutoff custom value
-
-    if (isset($forum_settings['messages_unread_cutoff_custom'])) {
-        $messages_unread_cutoff_custom = $forum_settings['messages_unread_cutoff_custom'];
-    }else {
-        $messages_unread_cutoff_custom = 0;
-    }
-
-    // If $messages_unread_cutoff lower than -1 then we should return
-    // $messages_unread_cutoff_custom instead or default (UNREAD_MESSAGES_DEFAULT)
-    // if $messages_unread_cutoff_custom is zero.
-
-    if ($messages_unread_cutoff == UNREAD_MESSAGES_CUSTOM) {
-
-        if (is_numeric($messages_unread_cutoff_custom) && $messages_unread_cutoff_custom > 0) {
-            return $messages_unread_cutoff_custom;
-        }
-
-        return UNREAD_MESSAGES_DEFAULT;
-    }
-
-    // If $messages_unread_cutoff lower than 0 then unread
-    // functionality is disabled and we return false.
+    // If unread message support is disabled we return false.
 
     if ($messages_unread_cutoff == UNREAD_MESSAGES_DISABLED) return false;
 
-    // If $messages_unread_cutoff is the default then we return 0
+    // If unread message support isn't disabled we should check that
+    // It is a valid value and return it or return the default of one year.
 
-    if ($messages_unread_cutoff == UNREAD_MESSAGES_DEFAULT) return 0;
-
-    // Failing the above we return the value saved in the database.
-
-    return is_numeric($messages_unread_cutoff) ? $messages_unread_cutoff : 0;
+    return in_array($messages_unread_cutoff, $unread_cutoff_periods) ? $messages_unread_cutoff : YEAR_IN_SECONDS;
 }
 
 function forum_load_start_page()

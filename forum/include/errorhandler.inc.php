@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.104 2007-12-08 17:38:27 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.105 2007-12-13 20:14:51 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -32,13 +32,18 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
     exit;
 }
 
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "form.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "header.inc.php");
-include_once(BH_INCLUDE_PATH. "install.inc.php");
-include_once(BH_INCLUDE_PATH. "messages.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
+// If the config file exists include it.
+
+if (file_exists(BH_INCLUDE_PATH. 'config.inc.php')) {
+    include_once(BH_INCLUDE_PATH. "config.inc.php");
+}
+
+// We need the constants for the Beehive version, but we only
+// include it if the file exists.
+
+if (file_exists(BH_INCLUDE_PATH. 'constants.inc.php')) {
+    include_once(BH_INCLUDE_PATH. "constants.inc.php");
+}
 
 // Define PHP 5.0's new E_STRICT constant here if it's not defined.
 // This will be meaningless to PHP versions below 5.0 but it saves
@@ -101,14 +106,6 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
 
     if (($errno & E_STRICT) > 0) return;
 
-    // No REQUEST_URI in IIS.
-
-    $request_uri = "{$_SERVER['PHP_SELF']}?";
-
-    $request_array = array_merge($_GET, array('retry_error' => 'true'));
-
-    parse_array($request_array, "&amp;", $request_uri);
-
     // Now we can carry on with any other errors.
 
     if (error_reporting()) {
@@ -117,6 +114,12 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
 
         if (($errno == ER_NO_SUCH_TABLE || $errno == ER_WRONG_COLUMN_NAME) && !defined('BEEHIVE_INSTALL_NOWARN')) {
             install_incomplete();
+        }
+
+        // Check for file include errors
+
+        if ((preg_match('/include|include_once/', $errstr) > 0) && !defined('BEEHIVE_INSTALL_NOWARN')) {
+            install_missing_files();
         }
 
         // Array to hold the error message strings.
@@ -289,7 +292,7 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
         echo "<h1>Error</h1>\n";
         echo "<br />\n";
         echo "<div align=\"center\">\n";
-        echo "<form name=\"f_error\" method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
+        echo "<form name=\"f_error\" method=\"post\" action=\"\" target=\"_self\">\n";
         echo "  ", form_input_hidden_array(_stripslashes($_POST)), "\n";
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
         echo "    <tr>\n";

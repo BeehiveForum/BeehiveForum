@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.60 2007-11-18 15:28:18 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.61 2007-12-13 20:14:51 decoyduck Exp $ */
 
 // German language file
 
@@ -786,11 +786,11 @@ $lang['allowguestvotesinpolls'] = "Erlaube Gaesten in Abstimmungen zu waehlen";
 $lang['unreadmessagescutoff'] = "Ungelesene Nachrichten abgeschnitten";
 $lang['unreadcutoffseconds'] = "Sekunden";
 $lang['disableunreadmessages'] = "Ungelesene Nachrichten deaktiviert";
-$lang['nocutoffdefault'] = "Kein Abschneiden (Standard)";
-$lang['1month'] = "1 Monat";
-$lang['6months'] = "6 Monate";
-$lang['1year'] = "1 Jahr";
-$lang['customsetbelow'] = "Eigene Einstellungen (einzustellen nachfolgend)";
+$lang['thirtynumberdays'] = "30 Tagen";
+$lang['sixtynumberdays'] = "60 Tagen";
+$lang['ninetynumberdays'] = "90 Tagen";
+$lang['hundredeightynumberdays'] = "180 Tagen";
+$lang['onenumberyear'] = "1 Jahr";
 $lang['searchoptions'] = "Optionen suchen";
 $lang['searchfrequency'] = "Haeufigkeit suchen";
 $lang['sessions'] = "Sitzungen";
@@ -864,7 +864,6 @@ $lang['forum_settings_help_44'] = "<b>Benutze Text Captcha</b> zeigt dem neuen B
 $lang['forum_settings_help_45'] = "<b>Text Captcha Verzeichnis</b> Definiert den Ordner in dem die Bilder und Schriften für Text-Captcha abgelegt werden. Dieser Ordner muss Schreibrechte haben. Nachdem Text-Captcha angeschaltet wurde muessen einige True-Type-Fonts in das fonts-Unterverzeichnis des Text-Captcha-Ordners kopiert werden sonst uebergeht die Registrierung Text-Captcha.";
 $lang['forum_settings_help_46'] = "<b>Text Captcha Schluessel</b> Erlaubt Aenderungen des Schluessel der zur Generierung des Text-Captcha-Codes im Bild verwendet wird. Je einzigartiger der schluessel desto schwerer wird es eine Automatisierung zur Entschluesselung zu entwickeln \"guess\"  ";
 $lang['forum_settings_help_47'] = "<b>Post Bearbeitung Grace Periode</b> zur Definition einer Zeitspanne in Minuten in denen Benutzer ihre Posts bearbeiten ohne dass ein 'EDITED BY' Text erscheint in deren Posts. 0 heisst der 'EDITED BY' Text erscheint immer.";
-$lang['forum_settings_help_48'] = "<b>Ungelesene Nachrichten abschneiden</b> definiert wie lange ungelesene Nachrichten gehalten werden. Man kann von verschiedenen voreingestellten Werten auswaehlen oder eigene Schnittzeiten in Sekunden eingeben. Eintraege die frueher geaendert wurden als die definierte Zeitspanne werden dann abgeschnitten und automatisch als gelesen gekennzeichnet.";
 $lang['forum_settings_help_49'] = "Auswahl von <b>Ungelesene Nachrichten deaktivieren</b> wird der Ungelesene-Nachrichten-Support vollstaendig und alle relevanten Optionen des Diskussionstyps aus der Drop-Down-Liste der Eintraege entfernt.";
 $lang['forum_settings_help_50'] = "Ihr Beehive Forum wird nicht automatisch die ungelesenen Nachrichten Ihrer Datenbank abschneiden. Sie muessen dies in den Abschneide-Optionen explizit auswaehlen.";
 $lang['forum_settings_help_51'] = "Du kannst eine vorhergehende Genehmigung für alle Benutzerrechte anfordern, bevor sie genutzt werden koennen, indem Du diese Option aktivierst. Ohne Aktivierung kann ein Benutzer keinen Bereich der Beehive-Forumsinstallation einschliesslich individueller Foren nutzen, PM-Eingang und Mein-Forum-Bereiche.";

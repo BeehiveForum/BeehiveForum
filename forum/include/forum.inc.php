@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.279 2007-12-12 22:28:23 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.280 2007-12-13 17:10:58 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -796,7 +796,7 @@ function forum_get_unread_cutoff()
     $messages_unread_cutoff_custom = forum_get_setting('messages_unread_cutoff_custom', false, 0);
 
     // If $messages_unread_cutoff lower than -1 then we should return
-    // $messages_unread_cutoff_custom instead or default (UNREAD_MESSAGES_DISABLED)
+    // $messages_unread_cutoff_custom instead or default (UNREAD_MESSAGES_DEFAULT)
     // if $messages_unread_cutoff_custom is zero.
 
     if ($messages_unread_cutoff == UNREAD_MESSAGES_CUSTOM) {
@@ -805,7 +805,7 @@ function forum_get_unread_cutoff()
             return $messages_unread_cutoff_custom;
         }
 
-        return UNREAD_MESSAGES_DISABLED;
+        return UNREAD_MESSAGES_DEFAULT;
     }
 
     // If $messages_unread_cutoff lower than 0 then unread
@@ -856,7 +856,7 @@ function forum_process_unread_cutoff($forum_settings)
     }
 
     // If $messages_unread_cutoff lower than -1 then we should return
-    // $messages_unread_cutoff_custom instead or default (UNREAD_MESSAGES_DISABLED)
+    // $messages_unread_cutoff_custom instead or default (UNREAD_MESSAGES_DEFAULT)
     // if $messages_unread_cutoff_custom is zero.
 
     if ($messages_unread_cutoff == UNREAD_MESSAGES_CUSTOM) {
@@ -865,7 +865,7 @@ function forum_process_unread_cutoff($forum_settings)
             return $messages_unread_cutoff_custom;
         }
 
-        return UNREAD_MESSAGES_DISABLED;
+        return UNREAD_MESSAGES_DEFAULT;
     }
 
     // If $messages_unread_cutoff lower than 0 then unread

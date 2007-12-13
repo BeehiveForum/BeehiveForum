@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: constants.inc.php,v 1.125 2007-12-12 22:28:23 decoyduck Exp $ */
+/* $Id: constants.inc.php,v 1.126 2007-12-13 20:14:51 decoyduck Exp $ */
 
 /**
 * Constants used throughout Beehive.
@@ -43,16 +43,16 @@ define('DAY_IN_SECONDS', 86400);
 define('HOUR_IN_SECONDS', 3600);
 define('MINUTE_IN_SECONDS', 60);
 
-// Average constants for unread cut off.
+// Constants for unread cut off.
 
-define('AVG_SIX_MONTHS_IN_SECONDS', 15768000);
-define('AVG_MONTH_IN_SECONDS', 2628000);
+define('THIRTY_DAYS_IN_SECONDS', 2592000);
+define('SIXTY_DAYS_IN_SECONDS', 5184000);
+define('NINETY_DAYS_IN_SECONDS', 7776000);
+define('HUNDRED_EIGHTY_DAYS_IN_SECONDS', 15552000);
 
 // Other constants for unread cut off.
 
-define('UNREAD_MESSAGES_CUSTOM', -2);
 define('UNREAD_MESSAGES_DISABLED', -1);
-define('UNREAD_MESSAGES_DEFAULT', 0);
 
 // Constants for database stuff
 

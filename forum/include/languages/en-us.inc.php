@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en-us.inc.php,v 1.34 2007-12-02 11:45:18 decoyduck Exp $ */
+/* $Id: en-us.inc.php,v 1.35 2007-12-13 20:14:51 decoyduck Exp $ */
 
 // American English language file
 
@@ -786,11 +786,11 @@ $lang['allowguestvotesinpolls'] = "Allow Guests to vote in polls";
 $lang['unreadmessagescutoff'] = "Unread messages cut-off";
 $lang['unreadcutoffseconds'] = "seconds";
 $lang['disableunreadmessages'] = "Disable unread messages";
-$lang['nocutoffdefault'] = "No cut-off (default)";
-$lang['1month'] = "1 month";
-$lang['6months'] = "6 months";
-$lang['1year'] = "1 year";
-$lang['customsetbelow'] = "Custom value (set below)";
+$lang['thirtynumberdays'] = "30 Days";
+$lang['sixtynumberdays'] = "60 Days";
+$lang['ninetynumberdays'] = "90 Days";
+$lang['hundredeightynumberdays'] = "180 Days";
+$lang['onenumberyear'] = "1 year";
 $lang['searchoptions'] = "Search Options";
 $lang['searchfrequency'] = "Search Frequency";
 $lang['sessions'] = "Sessions";
@@ -864,7 +864,7 @@ $lang['forum_settings_help_44'] = "<b>Use text-captcha</b> presents the new user
 $lang['forum_settings_help_45'] = "<b>Text-captcha directory</b> specifies the location that Beehive will store it's text-captcha images and fonts in. This directory must be writable by the web server / PHP process and must be accessible via HTTP. After you have enabled text-captcha you must upload some true type fonts into the fonts sub-directory of your main text-captcha directory otherwise Beehive will skip the text-captcha during user registration.";
 $lang['forum_settings_help_46'] = "<b>Text Captcha key</b> allows you to change the key used by Beehive for generating the text captcha code that appears in the image. The more unique you make the key the harder it will be for automated processes to \"guess\"the code.";
 $lang['forum_settings_help_47'] = "<b>Post Edit Grace Period</b> allows you to define a period in minutes where users may edit posts without the 'EDITED BY' text appearing on their posts. If set to 0 the 'EDITED BY' text will always appear.";
-$lang['forum_settings_help_48'] = "<b>Unread messages cut-off</b> specifies how long unread messages are retained. You may choose from various preset values or enter your own cut-off period in seconds. Threads modified earlier than the defined cut-off period will automatically appear as read.";
+$lang['forum_settings_help_48'] = "<b>Unread messages cut-off</b> specifies how long messages remain unread. Threads modified no later than the period selected will automatically appear as read.";
 $lang['forum_settings_help_49'] = "Choosing <b>Disable unread messages</b> will completely remove unread messages support and remove the relevant options from the discussion type drop down on the thread list.";
 $lang['forum_settings_help_50'] = "<b>Require user approval by admin</b> allows you to restrict access by new users until they have been approved by a moderator or admin. Without approval a user cannot access any area of the Beehive Forum installation including individual forums, PM inbox and My Forums sections.";
 $lang['forum_settings_help_51'] = "Use <b>Closed Message</b>, <b>Restricted Message</b> and <b>Password Protected Message</b> to customise the message displayed when users access your forum in the various states.";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.89 2007-12-12 20:50:28 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.90 2007-12-13 20:14:50 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -154,13 +154,7 @@ if (isset($_POST['submit'])) {
     if (isset($_POST['messages_unread_cutoff']) && is_numeric($_POST['messages_unread_cutoff'])) {
         $new_forum_settings['messages_unread_cutoff'] = $_POST['messages_unread_cutoff'];
     }else {
-        $new_forum_settings['messages_unread_cutoff'] = 0;
-    }
-
-    if (isset($_POST['messages_unread_cutoff_custom']) && is_numeric($_POST['messages_unread_cutoff_custom'])) {
-        $new_forum_settings['messages_unread_cutoff_custom'] = $_POST['messages_unread_cutoff_custom'];
-    }else {
-        $new_forum_settings['messages_unread_cutoff_custom'] = '';
+        $new_forum_settings['messages_unread_cutoff'] = YEAR_IN_SECONDS;
     }
 
     if (isset($_POST['search_min_frequency']) && is_numeric($_POST['search_min_frequency'])) {
@@ -422,12 +416,12 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     html_display_success_msg($lang['preferencesupdated'], '550', 'center');
 }
 
-$unread_cutoff_periods = array(UNREAD_MESSAGES_DISABLED  => $lang['disableunreadmessages'],
-                               UNREAD_MESSAGES_DEFAULT   => $lang['nocutoffdefault'],
-                               AVG_MONTH_IN_SECONDS      => $lang['1month'],
-                               AVG_SIX_MONTHS_IN_SECONDS => $lang['6months'],
-                               YEAR_IN_SECONDS           => $lang['1year'],
-                               UNREAD_MESSAGES_CUSTOM    => $lang['customsetbelow']);
+$unread_cutoff_periods = array(UNREAD_MESSAGES_DISABLED       => $lang['disableunreadmessages'],
+                               THIRTY_DAYS_IN_SECONDS         => $lang['thirtynumberdays'],
+                               SIXTY_DAYS_IN_SECONDS          => $lang['sixtynumberdays'],
+                               NINETY_DAYS_IN_SECONDS         => $lang['ninetynumberdays'],
+                               HUNDRED_EIGHTY_DAYS_IN_SECONDS => $lang['hundredeightynumberdays'],
+                               YEAR_IN_SECONDS                => $lang['onenumberyear']);
 
 echo "<br />\n";
 echo "<div align=\"center\">\n";
@@ -500,11 +494,7 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"270\">{$lang['unreadmessagescutoff']}:</td>\n";
-echo "                        <td align=\"left\">", form_dropdown_array("messages_unread_cutoff", $unread_cutoff_periods, (isset($forum_global_settings['messages_unread_cutoff'])) ? $forum_global_settings['messages_unread_cutoff'] : 0), "&nbsp;</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"270\">&nbsp;</td>\n";
-echo "                        <td align=\"left\">", form_input_text("messages_unread_cutoff_custom", (isset($forum_global_settings['messages_unread_cutoff_custom'])) ? _htmlentities($forum_global_settings['messages_unread_cutoff_custom']) : "", 15, 10), "&nbsp;{$lang['unreadcutoffseconds']}&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_dropdown_array("messages_unread_cutoff", $unread_cutoff_periods, (isset($forum_global_settings['messages_unread_cutoff'])) ? $forum_global_settings['messages_unread_cutoff'] : YEAR_IN_SECONDS), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">\n";

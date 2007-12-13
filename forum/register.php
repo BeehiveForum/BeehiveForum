@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.169 2007-11-06 21:05:24 decoyduck Exp $ */
+/* $Id: register.php,v 1.170 2007-12-13 21:34:32 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -145,6 +145,24 @@ $text_captcha = new captcha(6, 15, 25, 9, 30);
 $error_msg_array = array();
 
 // Check to see if Forum Rules are enabled.
+
+if (isset($_GET['reload_captcha'])) {
+
+    if ($text_captcha->generate_keys() && $text_captcha->make_image()) {
+
+        // Outputting XML
+
+        header('Content-Type: text/xml', true);
+
+        echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+        echo "<captcha>\n";
+        echo "  <image>", $text_captcha->get_image_filename(), "</image>\n";
+        echo "  <chars>", $text_captcha->get_num_chars(), "</chars>\n";
+        echo "  <key>", $text_captcha->get_public_key(), "</key>\n";
+        echo "</captcha>\n";
+        exit;
+    }
+}
 
 if (forum_get_setting('forum_rules_enabled', 'Y', true)) {
 
@@ -537,7 +555,8 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
 
-    echo "<br />\n";
+    html_display_warning_msg($lang['moreoptionsavailable'], '600', 'center');
+
     echo "<div align=\"center\">\n";
     echo "<form name=\"register\" action=\"", get_request_uri(), "\" method=\"post\">\n";
     echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
@@ -782,13 +801,20 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
             echo "                <tr>\n";
             echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['textcaptchaconfirmation']}</td>\n";
             echo "                </tr>\n";
+            echo "              </table>\n";
+            echo "              <table class=\"posthead\" width=\"100%\">\n";
+            echo "                <tr>\n";
+            echo "                  <td align=\"center\">\n";
+            echo "                    <table class=\"posthead\" width=\"95%\">\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\" valign=\"top\">{$lang['textcaptchaexplain']}</td>\n";
-            echo "                        <td align=\"left\"><img src=\"", $text_captcha->get_image_filename(), "\" alt=\"{$lang['textcaptchaimgtip']}\" title=\"{$lang['textcaptchaimgtip']}\" /></td>\n";
+            echo "                        <td align=\"left\" valign=\"top\"><img src=\"", $text_captcha->get_image_filename(), "\" alt=\"{$lang['textcaptchaimgtip']}\" title=\"{$lang['textcaptchaimgtip']}\" id=\"captcha_img\" /></td>\n";
+            echo "                        <td align=\"left\" valign=\"top\"><a href=\"Javascript:void(0)\" onclick=\"return captcha_reload()\" /><img src=\"", style_image('reload.png'), "\" border=\"0\" /></a></td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\">&nbsp;</td>\n";
             echo "                        <td align=\"left\">", form_input_text("private_key", "", $text_captcha->get_num_chars(), $text_captcha->get_num_chars(), "", "text_captcha_input"), form_input_hidden("public_key", _htmlentities($text_captcha->get_public_key())), "</td>\n";
+            echo "                        <td align=\"left\">&nbsp;</td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
@@ -802,24 +828,12 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
             echo "        </table>\n";
             echo "      </td>\n";
             echo "    </tr>\n";
-            echo "    <tr>\n";
-            echo "      <td align=\"center\">&nbsp;</td>\n";
-            echo "    </tr>\n";
-            echo "    <tr>\n";
-            echo "      <td align=\"center\">{$lang['moreoptionsavailable']}</td>\n";
-            echo "    </tr>\n";
             echo "  </table>\n";
         }
     }
 
     echo "  <br />\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"center\">{$lang['moreoptionsavailable']}</td>\n";
-    echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\">&nbsp;</td>\n";
-    echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td align=\"center\">", form_submit('register', $lang['register']), "&nbsp;", form_submit('cancel', $lang['cancel']), "</td>\n";
     echo "    </tr>\n";

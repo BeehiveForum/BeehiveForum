@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_wordfilter.php,v 1.79 2007-10-12 23:28:12 decoyduck Exp $ */
+/* $Id: edit_wordfilter.php,v 1.80 2007-12-15 21:19:31 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -193,6 +193,11 @@ if (isset($_POST['delete'])) {
 
 }elseif (isset($_POST['addfilter_submit'])) {
 
+    if (user_get_word_filter_count() > 19) {
+        $valid = false;
+        $error_msg_array[] = $lang['wordfilterisfull'];
+    }
+
     if (isset($_POST['add_new_filter_name']) && strlen(trim(_stripslashes($_POST['add_new_filter_name'])))) {
        $add_new_filter_name = trim(_stripslashes($_POST['add_new_filter_name']));
     }else {
@@ -314,7 +319,12 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "<h1>{$lang['editwordfilter']}</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+
         html_display_error_array($error_msg_array, '600', 'left');
+
+    }elseif (user_get_word_filter_count() > 19) {
+
+        html_display_error_msg($lang['wordfilterisfull'], '600', 'left');
     }
 
     echo "<br />\n";
@@ -373,22 +383,9 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "      <td colspan=\"2\" align=\"center\">", form_submit("addfilter_submit", $lang['add']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
-    echo "  <br />\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"center\">\n";
-    echo "        <table width=\"500\">\n";
-    echo "          <tr>\n";
-    echo "            <td>\n";
-    echo "              <p>{$lang['word_filter_help_1']}</p>\n";
-    echo "              <p>{$lang['word_filter_help_2']}</p>\n";
-    echo "              <p>{$lang['word_filter_help_3']}</p>\n";
-    echo "            </td>\n";
-    echo "          </tr>\n";
-    echo "        </table>\n";
-    echo "      </td>\n";
-    echo "    </tr>\n";
-    echo "  </table>\n";
+
+    html_display_warning_msg(sprintf('%s<p>%s</p>%s', $lang['word_filter_help_1'], $lang['word_filter_help_2'], $lang['word_filter_help_3']), '600', 'left');
+
     echo "</form>\n";
 
     html_draw_bottom();
@@ -484,22 +481,9 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "      <td colspan=\"2\" align=\"center\">", form_submit("editfilter_submit", $lang['save']), "&nbsp;", form_submit("delete", $lang['delete']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
-    echo "  <br />\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"center\">\n";
-    echo "        <table width=\"500\">\n";
-    echo "          <tr>\n";
-    echo "            <td>\n";
-    echo "              <p>{$lang['word_filter_help_1']}</p>\n";
-    echo "              <p>{$lang['word_filter_help_2']}</p>\n";
-    echo "              <p>{$lang['word_filter_help_3']}</p>\n";
-    echo "            </td>\n";
-    echo "          </tr>\n";
-    echo "        </table>\n";
-    echo "      </td>\n";
-    echo "    </tr>\n";
-    echo "  </table>\n";
+
+    html_display_warning_msg(sprintf('%s<p>%s</p>%s', $lang['word_filter_help_1'], $lang['word_filter_help_2'], $lang['word_filter_help_3']), '600', 'left');
+
     echo "</form>\n";
 
     html_draw_bottom();

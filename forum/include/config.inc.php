@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: config.inc.php,v 1.145 2007-10-31 13:53:30 decoyduck Exp $ */
+/* $Id: config.inc.php,v 1.146 2007-12-15 21:19:54 decoyduck Exp $ */
 
 // MAIN CONFIGURATION FILE
 
@@ -65,7 +65,7 @@ $show_friendly_errors = true;
 // Error Reporting Email -----------------------------------------------
 
 $error_report_email_addr_to = '';
-$error_report_email_addr_from = 'no-reply@beehiveforum.net';
+$error_report_email_addr_from = 'no-reply@abeehiveforum.net';
 
 // In addition to the error message displayed to end users Beehive can
 // also send error reports to an email address. To enable this

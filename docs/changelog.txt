@@ -1,105 +1,93 @@
-Project Beehive Forum Change Log (Generated: Sat, 08 Dec 2007 17:41:08)
+Project Beehive Forum Change Log (Generated: Sat, 15 Dec 2007 18:52:47)
 
 Author: decoyduck
-Date: Sat, 08 Dec 2007 17:38:27
+Date: Thu, 13 Dec 2007 21:34:32
 -----------------------
-Fixed: Installer wasn't working correctly without BEEHIVE_INSTALL_NOWARN
-set.
+Added: Reload button for text captcha to get a new image if the user can't
+read it.
 
-Date: Sat, 08 Dec 2007 14:58:53
+Date: Thu, 13 Dec 2007 20:14:50
 -----------------------
-Fixed: Closed another exploit that could allow directory traversal.
+Changed: Unread cut-off settings simplified by adding more choice to the
+drop down and removing the custom field.
+Changed: Error Handler no longer uses functions in other scripts which
+means it can show more error messages.
+Changed: New check in Error Handler for missing include files shows a
+message about incorrect installation.
+Changed: Updated dependencies in all files.
 
-Date: Sat, 08 Dec 2007 09:22:37
+Date: Thu, 13 Dec 2007 17:10:58
 -----------------------
-Changed: Added caching back to threads_rss.php
+Changed: If a custom unread cutoff has ben specified but is invalid we now
+fall back to default behaviour.
+Changed: Removed legacy thread unread functions which are no longer user
+by Beehive.
 
-Date: Fri, 07 Dec 2007 23:49:12
+Date: Wed, 12 Dec 2007 22:28:23
 -----------------------
-Changed: message_split_fiddle renamed to message_apply_formatting.
+Changed: Switched back to older unread message query which is faster and
+doesn't use the POST table.
+Changed: UI changes to My Forums page when showing the search results.
 
-Date: Fri, 07 Dec 2007 23:46:28
+Date: Wed, 12 Dec 2007 20:50:28
 -----------------------
-Fixed: message_split_fiddle would get stuck in a loop if it was fed broken
-HTML.
+Changed: Global Forum Settings now allows you to clear the unread cutoff
+custom field and no longer resets to zero.
+Changed: Version changed to 0.8.2 pending release of next point-release.
+Changed: Implemented some extra checks to ensure the unread cutoff value
+is valid before using it in queries.
+Fixed: Return value on the mark as read function was incorrect, was
+returning an empty array instead of boolean.
 
-Date: Fri, 07 Dec 2007 22:51:22
+Date: Tue, 11 Dec 2007 18:13:24
 -----------------------
-Fixed: Wrong constant for splitting include_dir
+Changed: Replaced integer values with named constants in
+forum_get_unread_cutoff() function.
+Changed: Changed html_get_forum_uri() so it removes the trailing slash
+from the generated URL.
 
-Date: Fri, 07 Dec 2007 21:58:38
+Date: Mon, 10 Dec 2007 22:50:54
 -----------------------
-Changed: Replaced built-in HTTP cache with PEAR Cache_Lite support.
-Dynamically enables support if Cache_Lite is found to be installed.
+Fixed: Ignored signature which contains HTML breaks when posting and
+previewing message.
+Changed: Removed code to control hiding signature and emoticons from
+ledit.php as the controls aren't present.
 
-Date: Thu, 06 Dec 2007 14:00:26
+Date: Mon, 10 Dec 2007 22:40:52
 -----------------------
-Changed: Removed trigger_error argument from db connection files.
+Fixed: Can't login to Lite Mode with Guest account disabled.
 
-Date: Wed, 05 Dec 2007 21:47:52
+Date: Mon, 10 Dec 2007 21:37:28
 -----------------------
-Fixed: SQL_MODE not available in MySQL versions older than 4.1
+Fixed: Setting a custom unread cut-off for unread messages wasn't
+possible.
 
-Date: Wed, 05 Dec 2007 19:56:16
+Date: Mon, 10 Dec 2007 20:45:31
 -----------------------
-Fixed: bh_cvs_log_parse wasn't recognising multiline comments.
-Changed: bh_cvs_log_parse now adds a header with the generated date and
-time.
-Changed: bh_cvs_log_parse now only makes one connection to the CVS server
-to retrieve all the log data.
+Fixed: Re: vs. RE: in PM messages.
 
-Date: Wed, 05 Dec 2007 19:08:20
+Date: Mon, 10 Dec 2007 20:44:32
 -----------------------
-Fixed: Some user preferences (Timezone, Emoticons, Forum Style) were being
-incorrectly over-ridden by the forum settings
-Fixed: It wasn't possible to change any user preferences while email
-account restriction was enabled.
-Fixed: An exploit involving display_emoticons.php could allow inclusion of
-files outside of Beehive.
-Fixed: header_redirect does need load_language_file() (duh!)
+Fixed: User's could move threads between folders that they didn't own if
+the post edit timeout was a non-zero value.
+Fixed: Reply to a message as a PM where the thread title was greater than
+64 characters would cut off the thread index on the end of the PM subject.
 
-Date: Tue, 04 Dec 2007 23:43:36
+Date: Mon, 10 Dec 2007 19:58:48
 -----------------------
-Fixed: bh_cvs_log_parse.php was missing some log entries.
-Fixed: ldisplay.php was not reporting itself as being part of Beehive
-Light Mode.
-Changed: Installer now uses the full error handler so users who cannot set
-up Beehive can report the error message encountered.
+Fixed: Post Page Preferences were messed up.
 
-Date: Tue, 04 Dec 2007 20:33:21
+Date: Sun, 09 Dec 2007 21:42:35
 -----------------------
-Changed: Activated upgrade script in installer.
-Changed: Updated version number to 0.8.1.
+Fixed: Navigation strip at bottom of message pane would sometimes start
+message numbers from 0.
 
-Date: Tue, 04 Dec 2007 20:27:25
+Date: Sun, 09 Dec 2007 18:31:37
 -----------------------
-Updated: Replaced 0.8 upgrade scripts with new 0.8.1 scritps.
-Added: Upgrade script to go from 0.8 to 0.8.1
+Fixed: Using the search popup on fields which supported multiple entries
+separated by semi-colon duplicated the entries selected.
 
-Date: Mon, 03 Dec 2007 18:38:48
+Date: Sun, 09 Dec 2007 18:04:31
 -----------------------
-Changed: Disabled and removed caching functions as they were causing
-problems with the unread cut-off functionality.
-
-Date: Sun, 02 Dec 2007 11:45:18
------------------------
-Added: English American (en-us) updated and re-added.
-
-Date: Sat, 01 Dec 2007 20:44:16
------------------------
-Fixed: Page caching was causing user confusion when voting in polls.
-
-Date: Sat, 01 Dec 2007 17:16:21
------------------------
-Fixed: Layout issues with tabular graph.
-
-Date: Sat, 01 Dec 2007 16:53:20
------------------------
-Fixed: Undefined index errors when previewing a poll or previewing an edit
-of an existing poll.
-
-Date: Sat, 01 Dec 2007 12:20:19
------------------------
-Fixed: Post Record Stats (Most Number of Posts in 60 minutes was ... ) not
-displaying in stats.
+Changed: Increased the maximum length of the username field in search.php
 

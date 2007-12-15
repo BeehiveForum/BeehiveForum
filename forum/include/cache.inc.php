@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: cache.inc.php,v 1.2 2007-12-07 22:51:22 decoyduck Exp $ */
+/* $Id: cache.inc.php,v 1.3 2007-12-15 21:19:54 decoyduck Exp $ */
 
 /**
 * cache.inc.php - cache functions
@@ -41,6 +41,11 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
     header("Location: ../index.php");
     exit;
 }
+
+// Include files we need.
+
+include_once(BH_INCLUDE_PATH. "forum.inc.php");
+include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 /**
 * Check for PEAR Cache_Lite Package

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.105 2007-12-13 20:14:51 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.106 2007-12-15 21:19:54 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -38,12 +38,14 @@ if (file_exists(BH_INCLUDE_PATH. 'config.inc.php')) {
     include_once(BH_INCLUDE_PATH. "config.inc.php");
 }
 
-// We need the constants for the Beehive version, but we only
-// include it if the file exists.
+// Other include files we need.
 
-if (file_exists(BH_INCLUDE_PATH. 'constants.inc.php')) {
-    include_once(BH_INCLUDE_PATH. "constants.inc.php");
-}
+include_once(BH_INCLUDE_PATH. "constants.inc.php");
+include_once(BH_INCLUDE_PATH. "form.inc.php");
+include_once(BH_INCLUDE_PATH. "format.inc.php");
+include_once(BH_INCLUDE_PATH. "header.inc.php");
+include_once(BH_INCLUDE_PATH. "install.inc.php");
+include_once(BH_INCLUDE_PATH. "messages.inc.php");
 
 // Define PHP 5.0's new E_STRICT constant here if it's not defined.
 // This will be meaningless to PHP versions below 5.0 but it saves

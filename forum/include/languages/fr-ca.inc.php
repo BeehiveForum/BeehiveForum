@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.88 2007-12-13 20:14:51 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.89 2007-12-15 21:19:54 decoyduck Exp $ */
 
 // French Canadian language file
 
@@ -390,6 +390,7 @@ $lang['notlogged'] = "Non journalisé";
 $lang['addwordfilter'] = "Ajouter filtre de mots";
 $lang['addnewwordfilter'] = "Ajouter nouveau filtre de mots";
 $lang['wordfilterupdated'] = "Mise à jour du filtre de mots";
+$lang['wordfilterisfull'] = "Impossible d'ajouter d'autres filtres de mots. Supprimer certains filtres inutilisés or modifier les filtres existants en premier lieu.";
 $lang['filtername'] = "Nom du filtre";
 $lang['filtertype'] = "Type de filtre";
 $lang['filterenabled'] = "Filtre activé";

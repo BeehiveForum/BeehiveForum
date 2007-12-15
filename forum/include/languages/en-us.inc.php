@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en-us.inc.php,v 1.35 2007-12-13 20:14:51 decoyduck Exp $ */
+/* $Id: en-us.inc.php,v 1.36 2007-12-15 21:19:54 decoyduck Exp $ */
 
 // American English language file
 
@@ -390,6 +390,7 @@ $lang['notlogged'] = "Not Logged";
 $lang['addwordfilter'] = "Add word filter";
 $lang['addnewwordfilter'] = "Add New Word Filter";
 $lang['wordfilterupdated'] = "Word Filter updated";
+$lang['wordfilterisfull'] = "You cannot add any more word filters. Remove some unused ones or edit the existing ones first.";
 $lang['filtername'] = "Filter Name";
 $lang['filtertype'] = "Filter Type";
 $lang['filterenabled'] = "Filter Enabled";

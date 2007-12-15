@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: word_filter.inc.php,v 1.45 2007-12-05 19:08:21 decoyduck Exp $ */
+/* $Id: word_filter.inc.php,v 1.46 2007-12-15 21:19:54 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -61,7 +61,9 @@ function word_filter_get($uid, &$word_filter_array)
     $sql = "SELECT FID, MATCH_TEXT, REPLACE_TEXT, FILTER_TYPE ";
     $sql.= "FROM {$table_data['PREFIX']}WORD_FILTER ";
     $sql.= "WHERE UID = '$uid' AND FILTER_ENABLED = 1 ";
-    $sql.= "ORDER BY FID LIMIT 0, 20";
+    $sql.= "ORDER BY FID ";
+
+    if ($uid <> 0) $sql.= "LIMIT 0, 20";
 
     if (!$result = db_query($sql, $db_word_filter_get)) return false;
 

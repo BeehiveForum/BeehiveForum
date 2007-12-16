@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.283 2007-12-16 17:54:32 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.284 2007-12-16 19:09:06 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -888,7 +888,7 @@ function forum_update_unread_data($unread_cutoff_stamp)
             $sql = "INSERT INTO {$table_data['PREFIX']}USER_THREAD (UID, TID, LAST_READ, LAST_READ_AT) ";
             $sql.= "SELECT USER.UID, {$table_data['PREFIX']}THREAD.TID, {$table_data['PREFIX']}THREAD.LENGTH, ";
             $sql.= "NOW() FROM {$table_data['PREFIX']}THREAD, USER ";
-            $sql.= "WHERE {$table_data['PREFIX']}THREAD.MODIFIED > FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp) ";
+            $sql.= "WHERE {$table_data['PREFIX']}THREAD.MODIFIED >= FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp) ";
             $sql.= "AND {$table_data['PREFIX']}THREAD.MODIFIED < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $previous_unread_cutoff_stamp) ";
             $sql.= "ON DUPLICATE KEY UPDATE LAST_READ = VALUES(LAST_READ), LAST_READ_AT = VALUES(LAST_READ_AT)";
 
@@ -899,7 +899,7 @@ function forum_update_unread_data($unread_cutoff_stamp)
             $sql = "INSERT INTO {$table_data['PREFIX']}USER_THREAD (UID, TID, LAST_READ, LAST_READ_AT) ";
             $sql.= "SELECT USER.UID, {$table_data['PREFIX']}THREAD.TID, {$table_data['PREFIX']}THREAD.LENGTH, ";
             $sql.= "NOW() FROM {$table_data['PREFIX']}THREAD, USER ";
-            $sql.= "WHERE {$table_data['PREFIX']}THREAD.MODIFIED > FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp) ";
+            $sql.= "WHERE {$table_data['PREFIX']}THREAD.MODIFIED >= FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp) ";
             $sql.= "ON DUPLICATE KEY UPDATE LAST_READ = VALUES(LAST_READ), LAST_READ_AT = VALUES(LAST_READ_AT)";
 
             if (!$result = db_query($sql, $db_forum_update_unread_data)) return false;

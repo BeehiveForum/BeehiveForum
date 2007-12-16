@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.239 2007-12-03 18:38:48 decoyduck Exp $ */
+/* $Id: edit.php,v 1.240 2007-12-16 17:54:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -234,8 +234,8 @@ $fix_html = true;
 
 // Pre-set the content and signature vars
 
-//$t_content = "";
-//$t_sig = "";
+$t_content = "";
+$t_sig = "";
 
 if (isset($_POST['t_post_emots'])) {
 

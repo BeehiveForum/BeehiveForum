@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.282 2007-12-15 23:06:15 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.283 2007-12-16 17:54:32 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -846,6 +846,73 @@ function forum_process_unread_cutoff($forum_settings)
     // It is a valid value and return it or return the default of one year.
 
     return in_array($messages_unread_cutoff, $unread_cutoff_periods) ? $messages_unread_cutoff : YEAR_IN_SECONDS;
+}
+
+function forum_update_unread_data($unread_cutoff_stamp)
+{
+    if (!$db_forum_update_unread_data = db_connect()) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    if (!is_numeric($unread_cutoff_stamp)) return false;
+
+    $previous_unread_cutoff_stamp = forum_get_unread_cutoff();
+
+    if ($unread_cutoff_stamp > 0) {
+
+        $sql = "INSERT INTO {$table_data['PREFIX']}THREAD_STATS (TID, UNREAD_PID, UNREAD_CREATED) ";
+        $sql.= "SELECT POST.TID, MAX(POST.PID), MAX(POST.CREATED) FROM {$table_data['PREFIX']}POST POST ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD_STATS THREAD_STATS ON (THREAD_STATS.TID = POST.TID) ";
+        $sql.= "WHERE POST.CREATED < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp) ";
+        $sql.= "AND (THREAD_STATS.UNREAD_PID < POST.PID OR THREAD_STATS.UNREAD_PID IS NULL) ";
+        $sql.= "GROUP BY POST.TID ON DUPLICATE KEY UPDATE UNREAD_PID = VALUES(UNREAD_PID), ";
+        $sql.= "UNREAD_CREATED = VALUES(UNREAD_CREATED)";
+
+        if (!$result = db_query($sql, $db_forum_update_unread_data)) return false;
+
+        $sql = "DELETE QUICK FROM {$table_data['PREFIX']}USER_THREAD ";
+        $sql.= "USING {$table_data['PREFIX']}USER_THREAD ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD ";
+        $sql.= "ON ({$table_data['PREFIX']}USER_THREAD.TID = ";
+        $sql.= "{$table_data['PREFIX']}THREAD.TID) ";
+        $sql.= "WHERE {$table_data['PREFIX']}THREAD.MODIFIED IS NOT NULL ";
+        $sql.= "AND {$table_data['PREFIX']}THREAD.MODIFIED < ";
+        $sql.= "FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp) ";
+        $sql.= "AND ({$table_data['PREFIX']}USER_THREAD.INTEREST IS NULL ";
+        $sql.= "OR {$table_data['PREFIX']}USER_THREAD.INTEREST = 0) ";
+
+        if (!$result = db_query($sql, $db_forum_update_unread_data)) return false;
+
+        if (($previous_unread_cutoff_stamp !== false) && $unread_cutoff_stamp > $previous_unread_cutoff_stamp) {
+
+            $sql = "INSERT INTO {$table_data['PREFIX']}USER_THREAD (UID, TID, LAST_READ, LAST_READ_AT) ";
+            $sql.= "SELECT USER.UID, {$table_data['PREFIX']}THREAD.TID, {$table_data['PREFIX']}THREAD.LENGTH, ";
+            $sql.= "NOW() FROM {$table_data['PREFIX']}THREAD, USER ";
+            $sql.= "WHERE {$table_data['PREFIX']}THREAD.MODIFIED > FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp) ";
+            $sql.= "AND {$table_data['PREFIX']}THREAD.MODIFIED < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $previous_unread_cutoff_stamp) ";
+            $sql.= "ON DUPLICATE KEY UPDATE LAST_READ = VALUES(LAST_READ), LAST_READ_AT = VALUES(LAST_READ_AT)";
+
+            if (!$result = db_query($sql, $db_forum_update_unread_data)) return false;
+
+        }elseif ($previous_unread_cutoff_stamp === false) {
+
+            $sql = "INSERT INTO {$table_data['PREFIX']}USER_THREAD (UID, TID, LAST_READ, LAST_READ_AT) ";
+            $sql.= "SELECT USER.UID, {$table_data['PREFIX']}THREAD.TID, {$table_data['PREFIX']}THREAD.LENGTH, ";
+            $sql.= "NOW() FROM {$table_data['PREFIX']}THREAD, USER ";
+            $sql.= "WHERE {$table_data['PREFIX']}THREAD.MODIFIED > FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp) ";
+            $sql.= "ON DUPLICATE KEY UPDATE LAST_READ = VALUES(LAST_READ), LAST_READ_AT = VALUES(LAST_READ_AT)";
+
+            if (!$result = db_query($sql, $db_forum_update_unread_data)) return false;
+        }
+
+    }else {
+
+        $sql = "TRUNCATE {$table_data['PREFIX']}USER_THREAD";
+
+        if (!$result = db_query($sql, $db_forum_update_unread_data)) return false;
+    }
+
+    return true;
 }
 
 function forum_load_start_page()

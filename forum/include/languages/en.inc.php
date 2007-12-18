@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.498 2007-12-15 21:19:54 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.499 2007-12-18 16:44:45 decoyduck Exp $ */
 
 // British English language file
 
@@ -792,6 +792,7 @@ $lang['sixtynumberdays'] = "60 Days";
 $lang['ninetynumberdays'] = "90 Days";
 $lang['hundredeightynumberdays'] = "180 Days";
 $lang['onenumberyear'] = "1 year";
+$lang['unreadcutoffwarning'] = "Changing the unread cut-off period may take several minutes to complete. For this reason it is recommended that you do not change this setting very often. You should also try to avoid changing this setting while users are accessing your forum.";
 $lang['searchoptions'] = "Search Options";
 $lang['searchfrequency'] = "Search Frequency";
 $lang['sessions'] = "Sessions";

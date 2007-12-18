@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.92 2007-12-16 17:54:32 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.93 2007-12-18 16:44:45 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -116,9 +116,11 @@ $text_captcha = new captcha(6, 15, 25, 9, 30);
 
 // Submit code.
 
-if (isset($_POST['submit'])) {
+if (isset($_POST['submit']) || isset($_POST['confirm_unread_cutoff']) || isset($_POST['cancel_unread_cutoff'])) {
 
     $valid = true;
+
+    if (isset($_POST['cancel_unread_cutoff'])) unset($_POST['messages_unread_cutoff']);
 
     if (isset($_POST['forum_name']) && strlen(trim(_stripslashes($_POST['forum_name']))) > 0) {
         $new_forum_settings['forum_name'] = trim(_stripslashes($_POST['forum_name']));
@@ -154,7 +156,7 @@ if (isset($_POST['submit'])) {
     if (isset($_POST['messages_unread_cutoff']) && is_numeric($_POST['messages_unread_cutoff'])) {
         $new_forum_settings['messages_unread_cutoff'] = $_POST['messages_unread_cutoff'];
     }else {
-        $new_forum_settings['messages_unread_cutoff'] = YEAR_IN_SECONDS;
+        $new_forum_settings['messages_unread_cutoff'] = forum_get_setting('messages_unread_cutoff', false, YEAR_IN_SECONDS);
     }
 
     if (isset($_POST['search_min_frequency']) && is_numeric($_POST['search_min_frequency'])) {
@@ -375,9 +377,70 @@ if (isset($_POST['submit'])) {
 
     if ($valid) {
 
+        $unread_cutoff_stamp = $new_forum_settings['messages_unread_cutoff'];
+
+        $previous_unread_cutoff_stamp = forum_get_unread_cutoff();
+
+        if (!isset($_POST['confirm_unread_cutoff'])) {
+
+            if (($unread_cutoff_stamp > 0) && ($previous_unread_cutoff_stamp !== false) && ($unread_cutoff_stamp != $previous_unread_cutoff_stamp)) {
+
+                html_draw_top();
+
+                echo "<h1>{$lang['admin']} &raquo; {$lang['globalforumsettings']}</h1>\n";
+                echo "<br />\n";
+                echo "<div align=\"center\">\n";
+                echo "<form name=\"prefsform\" action=\"admin_default_forum_settings.php\" method=\"post\" target=\"_self\">\n";
+                echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+                echo "  ", form_input_hidden_array(_stripslashes($_POST), array('webtag')), "\n";
+                echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
+                echo "    <tr>\n";
+                echo "      <td align=\"left\">\n";
+                echo "        <table class=\"box\" width=\"100%\">\n";
+                echo "          <tr>\n";
+                echo "            <td align=\"left\" class=\"posthead\">\n";
+                echo "              <table class=\"posthead\" width=\"100%\">\n";
+                echo "                <tr>\n";
+                echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['warning_caps']}</td>\n";
+                echo "                </tr>\n";
+                echo "                <tr>\n";
+                echo "                  <td align=\"center\">\n";
+                echo "                    <table class=\"posthead\" width=\"95%\">\n";
+                echo "                      <tr>\n";
+                echo "                        <td>{$lang['unreadcutoffwarning']}</td>\n";
+                echo "                      </tr>\n";
+                echo "                      <tr>\n";
+                echo "                        <td>&nbsp;</td>\n";
+                echo "                      </tr>\n";
+                echo "                    </table>\n";
+                echo "                  </td>\n";
+                echo "                </tr>\n";
+                echo "              </table>\n";
+                echo "            </td>\n";
+                echo "          </tr>\n";
+                echo "        </table>\n";
+                echo "      </td>\n";
+                echo "    </tr>\n";
+                echo "    <tr>\n";
+                echo "      <td align=\"left\">&nbsp;</td>\n";
+                echo "    </tr>\n";
+                echo "    <tr>\n";
+                echo "      <td align=\"center\">", form_submit("confirm_unread_cutoff", $lang['continue']), "&nbsp;", form_submit("cancel_unread_cutoff", $lang['cancel']), "</td>\n";
+                echo "    </tr>\n";
+                echo "  </table>\n";
+                echo "</form>\n";
+                echo "</div>\n";
+
+                html_draw_bottom();
+                exit;
+            }
+        }
+
         if (forum_save_default_settings($new_forum_settings)) {
 
-            forum_update_unread_data($new_forum_settings['messages_unread_cutoff']);
+            if (isset($_POST['confirm_unread_cutoff'])) {
+                forum_update_unread_data($unread_cutoff_stamp, $previous_unread_cutoff_stamp);
+            }
 
             admin_add_log_entry(EDIT_FORUM_SETTINGS, $new_forum_settings['forum_name']);
             header_redirect("./admin_default_forum_settings.php?webtag=$webtag&updated=true", $lang['forumsettingsupdated']);
@@ -397,17 +460,6 @@ if (isset($_POST['submit'])) {
 html_draw_top("emoticons.js", "htmltools.js");
 
 echo "<h1>{$lang['admin']} &raquo; {$lang['globalforumsettings']}</h1>\n";
-echo "<br />\n";
-echo "<div align=\"center\">\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
-echo "    <tr>\n";
-echo "      <td align=\"left\">{$lang['settingsaffectallforumswarning']}</td>\n";
-echo "    </tr>\n";
-echo "    <tr>\n";
-echo "      <td align=\"left\">&nbsp;</td>\n";
-echo "    </tr>\n";
-echo "  </table>\n";
-echo "</div>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -416,6 +468,10 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 }else if (isset($_GET['updated'])) {
 
     html_display_success_msg($lang['preferencesupdated'], '550', 'center');
+
+}else {
+
+    html_display_warning_msg($lang['settingsaffectallforumswarning'], '550', 'center');
 }
 
 $unread_cutoff_periods = array(UNREAD_MESSAGES_DISABLED       => $lang['disableunreadmessages'],

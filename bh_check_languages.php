@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_check_languages.php,v 1.33 2007-12-02 11:45:18 decoyduck Exp $ */
+/* $Id: bh_check_languages.php,v 1.34 2007-12-18 16:44:45 decoyduck Exp $ */
 
 // Compare two language files.
 
@@ -31,36 +31,65 @@ function load_language_file($filename)
     return $lang;
 }
 
-// Makes lang data human readable.
-
-function parse_lang_data($key, $data, $prefix)
+function compare_languages($master_lang, $slave_lang, $show_ut, $compare_method, $prefix, &$results_array)
 {
-    if (is_array($data)) {
+    if (!is_array($results_array)) $results_array = array();
 
-        foreach($data as $array_key => $array_data) {
+    if (strlen(trim($compare_method)) > 1) return false;
 
-            if (is_string($key)) {
-                return parse_lang_data($array_key, $array_data, "{$prefix}['$key']");
+    if (is_array($master_lang)) {
+
+        foreach ($master_lang as $master_lang_key => $master_lang_value) {
+
+            if (is_array($master_lang_value) && is_array($slave_lang) && isset($slave_lang[$master_lang_key])) {
+
+                if (is_string($master_lang_key)) {
+
+                    compare_languages($master_lang_value, $slave_lang[$master_lang_key], $show_ut, $compare_method, "{$prefix}['$master_lang_key']", $results_array);
+
+                }else {
+
+                    compare_languages($master_lang_value, $slave_lang[$master_lang_key], $show_ut, $compare_method, "{$prefix}[$master_lang_key]", $results_array);
+                }
+
             }else {
-                return parse_lang_data($array_key, $array_data, "{$prefix}[$key]");
-            }
-        }
 
-    }else {
+                if (!is_array($master_lang_value)) {
 
-        if (!preg_match("/^_/", $key)) {
+                    if (!isset($slave_lang[$master_lang_key])) {
 
-            $data = str_replace("\n", "\\n", $data);
+                        if (preg_match("/\+|\-/", $compare_method) > 0) {
 
-            if (is_string($key)) {
-                return "{$prefix}['$key'] = \"$data\";";
-            }else {
-                return "{$prefix}[$key] = \"$data\";";
+                            if (is_string($master_lang_key)) {
+
+                                $results_array[] = "{$prefix}['$master_lang_key'] = \"{$master_lang_value}\";";
+
+                            }else {
+
+                                $results_array[] = "{$prefix}[$master_lang_key] = \"{$master_lang_value}\";";
+                            }
+                        }
+
+                    }else if (($slave_lang[$master_lang_key] == $master_lang_value) && $show_ut == true) {
+
+                        if ((preg_match("/^_/", $master_lang_key) < 1) && (preg_match("/=/", $compare_method) > 0)) {
+
+                            if (is_string($master_lang_key)) {
+
+                                $results_array[] = "{$prefix}['$master_lang_key'] = \"{$master_lang_value}\";";
+
+                            }else {
+
+                                $results_array[] = "{$prefix}[$master_lang_key] = \"{$master_lang_value}\";";
+                            }
+                        }
+                    }
+                }
             }
         }
     }
 
-    return false;
+    return true;
 }
 
 // Master Language File.
@@ -78,69 +107,64 @@ foreach ($slave_langs as $lang_name => $slave_lang) {
 
     if (isset($slave_lang['lang']) && is_array($slave_lang['lang'])) {
 
+        $missing_key_results_array = array();
+        $equal_value_results_array = array();
+        $removed_key_results_array = array();
+
         echo $lang_name, "\n", str_repeat("=", strlen($lang_name)), "\n\n";
 
-        $strings = $slave_lang['lang'];
+        if (compare_languages($master_lang, $slave_lang['lang'], $slave_lang['showut'], '+', '$lang', $missing_key_results_array)) {
 
-        $error_array = array();
+            if (sizeof($missing_key_results_array) > 0) {
 
-        foreach ($master_lang as $key => $value) {
+                foreach ($missing_key_results_array as $result_str) {
 
-            if (!isset($strings[$key])) {
-
-                if ($error = parse_lang_data($key, $value, '+$lang')) {
-
-                    $error_array['slave_unset'][] = $error;
-                }
-
-            }elseif (($strings[$key] == $value) && ($slave_lang['showut'] === true)) {
-
-                if ($error = parse_lang_data($key, $value, '=$lang')) {
-
-                    $error_array['untranslated'][] = $error;
+                    echo "+$result_str\n";
                 }
             }
-        }
-
-        foreach ($strings as $key => $value) {
-
-            if (!isset($master_lang[$key])) {
-
-                if ($error = parse_lang_data($key, $value, '-$lang')) {
-
-                    $error_array['master_unset'][] = $error;
-                }
-            }
-        }
-
-        if (sizeof($error_array) > 0) {
-
-            if (isset($error_array['slave_unset']) && sizeof($error_array['slave_unset']) > 0) {
-
-                foreach($error_array['slave_unset'] as $slave_unset) {
-                    echo $slave_unset, "\n";
-                }
-            }
-
-            if (isset($error_array['untranslated']) && sizeof($error_array['untranslated']) > 0) {
-
-                foreach($error_array['untranslated'] as $untranslated) {
-                    echo $untranslated, "\n";
-                }
-            }
-
-            if (isset($error_array['master_unset']) && sizeof($error_array['master_unset']) > 0) {
-
-                foreach($error_array['master_unset'] as $master_unset) {
-                    echo $master_unset, "\n";
-                }
-            }
-
-            echo "\n\n";
 
         }else {
 
+            echo "Failed to do missing key comparison for language $lang_name\n\n";
+        }
+
+        if (compare_languages($master_lang, $slave_lang['lang'], $slave_lang['showut'], '=', '$lang', $equal_value_results_array)) {
+
+            if (sizeof($equal_value_results_array) > 0) {
+
+                foreach ($equal_value_results_array as $result_str) {
+
+                    echo "=$result_str\n";
+                }
+            }
+
+        }else {
+
+            echo "Failed to do value comparison for language $lang_name\n\n";
+        }
+
+        if (compare_languages($slave_lang['lang'], $master_lang, false, '-', '$lang', $removed_key_results_array)) {
+
+            if (sizeof($removed_key_results_array) > 0) {
+
+                foreach ($removed_key_results_array as $result_str) {
+
+                    echo "-$result_str\n";
+                }
+            }
+
+        }else {
+
+            echo "Failed to do removed key comparison for language $lang_name\n\n";
+        }
+
+        if (sizeof($missing_key_results_array) < 1 && sizeof($equal_value_results_array) < 1 && sizeof($removed_key_results_array) < 1) {
+
             echo "No Errors Found!\n\n";
+
+        }else {
+
+            echo "\n\n";
         }
     }
 }

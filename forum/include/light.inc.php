@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.165 2007-12-07 23:49:12 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.166 2007-12-19 22:16:54 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -635,56 +635,6 @@ function light_form_submit($name = "submit", $value = "Submit", $custom_html = "
     return "<input type=\"submit\" name=\"$name\" value=\"$value\" $custom_html />";
 }
 
-function light_poll_confirm_close($tid)
-{
-    $lang = load_language_file();
-
-    if (!is_numeric($tid)) return;
-
-    if (!$t_fid = thread_get_folder($tid, 1)) {
-
-        echo "<h1>{$lang['error']}</h1>\n";
-        echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
-        return;
-    }
-
-    if(bh_session_get_value('UID') != $preview_message['FROM_UID'] && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
-
-        light_edit_refuse();
-        return;
-    }
-
-    $preview_message = messages_get($tid, 1, 1);
-
-    if($preview_message['TO_UID'] == 0) {
-
-        $preview_message['TLOGON'] = $lang['allcaps'];
-        $preview_message['TNICK'] = $lang['allcaps'];
-
-    }else {
-
-        $preview_tuser = user_get($preview_message['TO_UID']);
-        $preview_message['TLOGON'] = $preview_tuser['LOGON'];
-        $preview_message['TNICK'] = $preview_tuser['NICKNAME'];
-    }
-
-    $preview_fuser = user_get($preview_message['FROM_UID']);
-    $preview_message['FLOGON'] = $preview_fuser['LOGON'];
-    $preview_message['FNICK'] = $preview_fuser['NICKNAME'];
-
-    echo "<h1>{$lang['pollconfirmclose']}</h1>\n";
-
-    light_poll_display($tid, $preview_message, 0, $thread_data['FID'], 0, false);
-
-    echo "<p><form name=\"f_delete\" action=\"{$_SERVER['PHP_SELF']}\" method=\"post\" target=\"_self\">";
-    echo form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-    echo form_input_hidden("tid", _htmlentities($tid));
-    echo form_input_hidden("confirm_pollclose", "Y");
-    echo light_form_submit("pollclose", $lang['endpoll']);
-    echo "&nbsp;".light_form_submit("cancel", $lang['cancel']);
-    echo "</form>\n";
-}
-
 function light_messages_top($msg, $thread_title, $interest_level = THREAD_NOINTEREST, $sticky = "N", $closed = false, $locked = false)
 {
     $lang = load_language_file();
@@ -1247,11 +1197,9 @@ function light_html_guest_error ()
     $webtag = get_webtag($webtag_search);
 
     light_html_draw_top();
+    light_html_display_error_msg($lang['guesterror']);
 
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<h2>{$lang['guesterror']}</h2>";
     echo "<br />\n";
-
     echo form_quick_button("./llogout.php", $lang['loginnow'], false, $frame_top_target);
 
     light_html_draw_bottom();
@@ -1357,7 +1305,7 @@ function light_html_message_type_error()
     $lang = load_language_file();
 
     light_html_draw_top();
-    echo "<h1>{$lang['cannotpostthisthreadtype']}</h1>";
+    light_html_display_error_msg($lang['cannotpostthisthreadtype']);
     light_html_draw_bottom();
 }
 
@@ -1435,8 +1383,7 @@ function light_edit_refuse()
 {
     $lang = load_language_file();
 
-    echo "<h1>{$lang['error']}</h1>";
-    echo "<h2>{$lang['nopermissiontoedit']}</h2>";
+    light_html_display_error_msg($lang['nopermissiontoedit']);
 }
 
 function light_html_display_msg($header_text, $string_msg, $href = false, $method = 'get', $button_array = false, $var_array = false, $target = "_self")
@@ -1491,7 +1438,7 @@ function light_html_display_error_array($error_list_array)
 
     if (!is_array($error_list_array)) $error_msg_array = array($error_msg_array);
 
-    echo "<h2><img src=\"", style_image('error.png'), "\" width=\"15\" height=\"15\" alt=\"{$lang['error']}\" title=\"{$lang['error']}\" />&nbsp;{$lang['thefollowingerrorswereencountered']}:</h2>\n";
+    echo "<h2><img src=\"", style_image('error.png'), "\" width=\"15\" height=\"15\" alt=\"{$lang['error']}\" title=\"{$lang['error']}\" />&nbsp;{$lang['thefollowingerrorswereencountered']}</h2>\n";
     echo "<ul>\n";
     echo "  <li>", implode("</li>\n  <li>", $error_list_array), "</li>\n";
     echo "</ul>\n";

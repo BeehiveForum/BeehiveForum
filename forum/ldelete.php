@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ldelete.php,v 1.13 2007-12-03 18:38:49 decoyduck Exp $ */
+/* $Id: ldelete.php,v 1.14 2007-12-19 22:16:54 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -142,8 +142,7 @@ if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
     if (!$t_fid = thread_get_folder($tid, $pid)) {
 
         light_html_draw_top();
-        echo "<h1>{$lang['error']}</h1>\n";
-        echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
+        light_html_display_error_msg($lang['threadcouldnotbefound']);
         light_html_draw_bottom();
         exit;
     }
@@ -157,8 +156,7 @@ if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
     if (!$t_fid = thread_get_folder($tid, $pid)) {
 
         light_html_draw_top();
-        echo "<h1>{$lang['error']}</h1>\n";
-        echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
+        light_html_display_error_msg($lang['threadcouldnotbefound']);
         light_html_draw_bottom();
         exit;
     }
@@ -166,8 +164,7 @@ if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
 }else {
 
     light_html_draw_top();
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<h2>{$lang['nomessagespecifiedfordel']}</h2>";
+    light_html_display_error_msg($lang['nomessagespecifiedfordel']);
     light_html_draw_bottom();
     exit;
 }
@@ -194,8 +191,7 @@ if (bh_session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 if (!bh_session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
 
     light_html_draw_top();
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<h2>{$lang['cannotdeletepostsinthisfolder']}</h2>\n";
+    light_html_display_error_msg($lang['cannotdeletepostsinthisfolder']);
     light_html_draw_bottom();
     exit;
 }
@@ -203,8 +199,7 @@ if (!bh_session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
 if (!$threaddata = thread_get($tid)) {
 
     light_html_draw_top();
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<h2>{$lang['threadcouldnotbefound']}</h2>\n";
+    light_html_display_error_msg($lang['threadcouldnotbefound']);
     light_html_draw_bottom();
     exit;
 }
@@ -234,8 +229,7 @@ if (isset($tid) && isset($pid) && is_numeric($tid) && is_numeric($pid)) {
     }else {
 
         light_html_draw_top();
-        echo "<h1>{$lang['error']}</h1>\n";
-        echo "<h2>", sprintf($lang['messagewasnotfound'], $msg), "</h2>\n";
+        light_html_display_error_msg(sprintf($lang['messagewasnotfound'], $msg));
         light_html_draw_bottom();
         exit;
     }

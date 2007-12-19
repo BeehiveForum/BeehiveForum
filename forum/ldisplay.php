@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ldisplay.php,v 1.27 2007-12-10 22:40:52 decoyduck Exp $ */
+/* $Id: ldisplay.php,v 1.28 2007-12-19 22:16:54 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -133,8 +133,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 }else if (!$msg = messages_get_most_recent($uid)) {
 
     light_html_draw_top();
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<h2>{$lang['nomessages']}</h2>";
+    light_html_display_error_msg($lang['nomessages']);
     light_html_draw_bottom();
     exit;
 }
@@ -148,8 +147,7 @@ list($tid, $pid) = explode('.', $msg);
 if (!$message = messages_get($tid, $pid, 1)) {
 
    light_html_draw_top();
-   echo "<h1>{$lang['error']}</h1>\n";
-   echo "<h2>{$lang['postdoesnotexist']}</h2>\n";
+   light_html_display_error_msg($lang['postdoesnotexist']);
    light_html_draw_bottom();
    exit;
 }
@@ -157,8 +155,7 @@ if (!$message = messages_get($tid, $pid, 1)) {
 if (!$thread_data = thread_get($tid)) {
 
     light_html_draw_top();
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<h2>{$lang['threadcouldnotbefound']}</h2>\n";
+    light_html_display_error_msg($lang['threadcouldnotbefound']);
     light_html_draw_bottom();
     exit;
 }

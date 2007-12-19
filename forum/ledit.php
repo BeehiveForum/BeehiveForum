@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ledit.php,v 1.23 2007-12-10 22:50:54 decoyduck Exp $ */
+/* $Id: ledit.php,v 1.24 2007-12-19 22:16:54 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -135,8 +135,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     if (!$t_fid = thread_get_folder($tid, $pid)) {
 
         light_html_draw_top();
-        echo "<h1>{$lang['error']}</h1>\n";
-        echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
+        light_html_display_error_msg($lang['threadcouldnotbefound']);
         light_html_draw_bottom();
         exit;
     }
@@ -149,8 +148,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     if (!$t_fid = thread_get_folder($tid, $pid)) {
 
         light_html_draw_top();
-        echo "<h1>{$lang['error']}</h1>\n";
-        echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
+        light_html_display_error_msg($lang['threadcouldnotbefound']);
         light_html_draw_bottom();
         exit;
     }
@@ -159,8 +157,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 if (!isset($tid) || !isset($pid) || !is_numeric($tid) || !is_numeric($pid)) {
 
     light_html_draw_top();
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<h2>{$lang['nomessagespecifiedforedit']}</h2>\n";
+    light_html_display_error_msg($lang['nomessagespecifiedforedit']);
     light_html_draw_bottom();
     exit;
 }
@@ -168,8 +165,7 @@ if (!isset($tid) || !isset($pid) || !is_numeric($tid) || !is_numeric($pid)) {
 if (thread_is_poll($tid) && $pid == 1) {
 
     light_html_draw_top();
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<h2>{$lang['cannoteditpollsinlightmode']}</h2>\n";
+    light_html_display_error_msg($lang['cannoteditpollsinlightmode']);
     light_html_draw_bottom();
     exit;
 }
@@ -196,8 +192,7 @@ if (bh_session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 if (!bh_session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
 
     light_html_draw_top();
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<h2>{$lang['cannoteditpostsinthisfolder']}</h2>\n";
+    light_html_display_error_msg($lang['cannoteditpostsinthisfolder']);
     light_html_draw_bottom();
     exit;
 }
@@ -205,8 +200,7 @@ if (!bh_session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
 if (!$threaddata = thread_get($tid)) {
 
     light_html_draw_top();
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<h2>{$lang['threadcouldnotbefound']}</h2>\n";
+    light_html_display_error_msg($lang['threadcouldnotbefound']);
     light_html_draw_bottom();
     exit;
 }
@@ -380,7 +374,13 @@ if (isset($_POST['t_sig']) && strlen(trim(_stripslashes($_POST['t_sig']))) > 0) 
 
 if (isset($_POST['preview'])) {
 
-    $preview_message = messages_get($tid, $pid, 1);
+    if (!$preview_message = messages_get($tid, $pid, 1)) {
+
+        light_html_draw_top();
+        light_html_display_error_msg($lang['postdoesnotexist']);
+        light_html_draw_bottom();
+        exit;
+    }
 
     if (isset($_POST['t_to_uid'])) {
 
@@ -444,7 +444,13 @@ if (isset($_POST['preview'])) {
 
 }else if (isset($_POST['submit'])) {
 
-    $editmessage = messages_get($tid, $pid, 1);
+    if (!$editmessage = messages_get($tid, $pid, 1)) {
+
+        light_html_draw_top();
+        light_html_display_error_msg($lang['postdoesnotexist']);
+        light_html_draw_bottom();
+        exit;
+    }
 
     if (isset($_POST['t_to_uid'])) {
         $to_uid = $_POST['t_to_uid'];
@@ -516,7 +522,13 @@ if (isset($_POST['preview'])) {
 
 }else {
 
-    $editmessage = messages_get($tid, $pid, 1);
+    if (!$editmessage = messages_get($tid, $pid, 1)) {
+
+        light_html_draw_top();
+        light_html_display_error_msg($lang['postdoesnotexist']);
+        light_html_draw_bottom();
+        exit;
+    }
 
     if (count($editmessage) > 0) {
 

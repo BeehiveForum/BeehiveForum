@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.240 2007-12-16 17:54:32 decoyduck Exp $ */
+/* $Id: edit.php,v 1.241 2007-12-19 22:16:54 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -388,7 +388,13 @@ if (isset($_POST['t_sig']) && strlen(trim(_stripslashes($_POST['t_sig']))) > 0) 
 
 if (isset($_POST['preview'])) {
 
-    $preview_message = messages_get($tid, $pid, 1);
+    if (!$preview_message = messages_get($tid, $pid, 1)) {
+
+        html_draw_top();
+        html_display_error_msg($lang['postdoesnotexist']);
+        html_draw_bottom();
+        exit;
+    }
 
     if (isset($_POST['t_to_uid'])) {
 
@@ -452,7 +458,13 @@ if (isset($_POST['preview'])) {
 
 }else if (isset($_POST['submit'])) {
 
-    $edit_message = messages_get($tid, $pid, 1);
+    if (!$edit_message = messages_get($tid, $pid, 1)) {
+
+        html_draw_top();
+        html_display_error_msg($lang['postdoesnotexist']);
+        html_draw_bottom();
+        exit;
+    }
 
     $post_edit_time = forum_get_setting('post_edit_time', false, 0);
 
@@ -532,7 +544,13 @@ if (isset($_POST['preview'])) {
 
 }else if (isset($_POST['emots_toggle_x']) || isset($_POST['sig_toggle_x'])) {
 
-    $preview_message = messages_get($tid, $pid, 1);
+    if (!$preview_message = messages_get($tid, $pid, 1)) {
+
+        html_draw_top();
+        html_display_error_msg($lang['postdoesnotexist']);
+        html_draw_bottom();
+        exit;
+    }
 
     if (isset($_POST['t_to_uid'])) {
         $to_uid = $_POST['t_to_uid'];
@@ -568,7 +586,13 @@ if (isset($_POST['preview'])) {
 
 }else {
 
-    $edit_message = messages_get($tid, $pid, 1);
+    if (!$edit_message = messages_get($tid, $pid, 1)) {
+
+        html_draw_top();
+        html_display_error_msg($lang['postdoesnotexist']);
+        html_draw_bottom();
+        exit;
+    }
 
     $post_edit_time = forum_get_setting('post_edit_time', false, 0);
 

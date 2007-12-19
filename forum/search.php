@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.203 2007-12-09 18:31:37 decoyduck Exp $ */
+/* $Id: search.php,v 1.204 2007-12-19 22:16:54 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -438,39 +438,41 @@ if ((isset($_POST) && sizeof($_POST) > 0) || isset($_GET['search_string']) || is
 
         foreach ($search_results_array['result_array'] as $search_result) {
 
-            $message = messages_get($search_result['TID'], $search_result['PID'], 1);
-            $message['CONTENT'] = message_get_content($search_result['TID'], $search_result['PID']);
+            if ($message = messages_get($search_result['TID'], $search_result['PID'], 1)) {
 
-            if ($threaddata = thread_get($search_result['TID'])) {
+                $message['CONTENT'] = message_get_content($search_result['TID'], $search_result['PID']);
 
-                $message['TITLE']   = trim(thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE']));
-                $message['CONTENT'] = trim(strip_tags(message_get_content($search_result['TID'], $search_result['PID'])));
+                if ($threaddata = thread_get($search_result['TID'])) {
 
-                // Limit thread title to 20 characters.
+                    $message['TITLE']   = trim(thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE']));
+                    $message['CONTENT'] = trim(strip_tags(message_get_content($search_result['TID'], $search_result['PID'])));
 
-                if (strlen($message['TITLE']) > 20) {
-                    $message['TITLE'] = word_filter_add_ob_tags(substr(_htmlentities($message['TITLE']), 0, 20)). "&hellip;";
-                }else {
-                    $message['TITLE'] = word_filter_add_ob_tags(_htmlentities($message['TITLE']));
-                }
+                    // Limit thread title to 20 characters.
 
-                // Limit displayed post content to 35 characters
+                    if (strlen($message['TITLE']) > 20) {
+                        $message['TITLE'] = word_filter_add_ob_tags(substr(_htmlentities($message['TITLE']), 0, 20)). "&hellip;";
+                    }else {
+                        $message['TITLE'] = word_filter_add_ob_tags(_htmlentities($message['TITLE']));
+                    }
 
-                if (strlen($message['CONTENT']) > 35) {
-                    $message['CONTENT'] = word_filter_add_ob_tags(substr(_htmlentities($message['CONTENT']), 0, 35)). "&hellip;";
-                }else {
-                    $message['CONTENT'] = word_filter_add_ob_tags(_htmlentities($message['CONTENT']));
-                }
+                    // Limit displayed post content to 35 characters
 
-                if ((thread_is_poll($search_result['TID']) && $search_result['PID'] == 1) || strlen($message['CONTENT']) < 1) {
+                    if (strlen($message['CONTENT']) > 35) {
+                        $message['CONTENT'] = word_filter_add_ob_tags(substr(_htmlentities($message['CONTENT']), 0, 35)). "&hellip;";
+                    }else {
+                        $message['CONTENT'] = word_filter_add_ob_tags(_htmlentities($message['CONTENT']));
+                    }
 
-                    echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;hightlight=yes\" target=\"", html_get_frame_name('right'), "\"><b>{$message['TITLE']}</b></a><br />";
-                    echo "<span class=\"smalltext\"><b>{$lang['from']}:</b> ", word_filter_add_ob_tags(format_user_name($search_result['FROM_LOGON'], $search_result['FROM_NICKNAME'])), ", ", format_time($search_result['CREATED'], 1), "</span></p></li>\n";
+                    if ((thread_is_poll($search_result['TID']) && $search_result['PID'] == 1) || strlen($message['CONTENT']) < 1) {
 
-                }else {
+                        echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;hightlight=yes\" target=\"", html_get_frame_name('right'), "\"><b>{$message['TITLE']}</b></a><br />";
+                        echo "<span class=\"smalltext\"><b>{$lang['from']}:</b> ", word_filter_add_ob_tags(format_user_name($search_result['FROM_LOGON'], $search_result['FROM_NICKNAME'])), ", ", format_time($search_result['CREATED'], 1), "</span></p></li>\n";
 
-                    echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;highlight=yes\" target=\"", html_get_frame_name('right'), "\"><b>{$message['TITLE']}</b></a><br />";
-                    echo "{$message['CONTENT']}<br /><span class=\"smalltext\"><b>{$lang['from']}:</b> ", word_filter_add_ob_tags(format_user_name($search_result['FROM_LOGON'], $search_result['FROM_NICKNAME'])), ", ", format_time($search_result['CREATED'], 1), "</span></p></li>\n";
+                    }else {
+
+                        echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;highlight=yes\" target=\"", html_get_frame_name('right'), "\"><b>{$message['TITLE']}</b></a><br />";
+                        echo "{$message['CONTENT']}<br /><span class=\"smalltext\"><b>{$lang['from']}:</b> ", word_filter_add_ob_tags(format_user_name($search_result['FROM_LOGON'], $search_result['FROM_NICKNAME'])), ", ", format_time($search_result['CREATED'], 1), "</span></p></li>\n";
+                    }
                 }
             }
         }

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.329 2007-12-10 22:50:54 decoyduck Exp $ */
+/* $Id: post.php,v 1.330 2007-12-19 22:16:54 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -652,8 +652,13 @@ if ($allow_html == false) {
 
 if (!$newthread) {
 
-    $reply_message = messages_get($reply_to_tid, $reply_to_pid);
-    $reply_message['CONTENT'] = message_get_content($reply_to_tid, $reply_to_pid);
+    if (!$reply_message = messages_get($reply_to_tid, $reply_to_pid)) {
+
+        html_draw_top();
+        html_error_msg($lang['postdoesnotexist']);
+        html_draw_bottom();
+        exit;
+    }
 
     if (!$threaddata = thread_get($reply_to_tid)) {
 
@@ -662,6 +667,8 @@ if (!$newthread) {
         html_draw_bottom();
         exit;
     }
+
+    $reply_message['CONTENT'] = message_get_content($reply_to_tid, $reply_to_pid);
 
     if (((perm_get_user_permissions($reply_message['FROM_UID']) & USER_PERM_WORMED) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) || ((!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") && $threaddata['POLL_FLAG'] != 'Y' && $reply_to_pid != 0)) {
 

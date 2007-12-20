@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.270 2007-12-13 21:34:32 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.271 2007-12-20 11:18:31 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -844,14 +844,14 @@ function html_draw_top()
                     echo "            }else if (pm_unread_count > 0) {\n\n";
                     echo "               pm_message_count_obj.innerHTML = '[' + pm_unread_count + ' {$lang['unread']}]';\n";
                     echo "            }\n";
-                    echo "        }\n\n";
-                    echo "        var message_array = response_xml.getElementsByTagName('notification')[0];\n\n";
-                    echo "        if (typeof(message_array) == 'object') {\n\n";
-                    echo "            var message_display_text = message_array.childNodes[0].nodeValue;\n\n";
-                    echo "            if (message_display_text.length > 0) {\n\n";
-                    echo "                if (window.confirm(message_display_text)) {\n\n";
-                    echo "                    top.frames['", html_get_frame_name('main'), "'].location.replace('pm.php?webtag=$webtag');\n";
-                    echo "                }\n";
+                    echo "        }\n";
+                    echo "    }\n\n";
+                    echo "    var message_array = response_xml.getElementsByTagName('notification')[0];\n\n";
+                    echo "    if (typeof(message_array) == 'object') {\n\n";
+                    echo "        var message_display_text = message_array.childNodes[0].nodeValue;\n\n";
+                    echo "        if (message_display_text.length > 0) {\n\n";
+                    echo "            if (window.confirm(message_display_text)) {\n\n";
+                    echo "                top.frames['", html_get_frame_name('main'), "'].location.replace('pm.php?webtag=$webtag');\n";
                     echo "            }\n";
                     echo "        }\n";
                     echo "    }\n\n";

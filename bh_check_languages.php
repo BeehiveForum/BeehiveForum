@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_check_languages.php,v 1.34 2007-12-18 16:44:45 decoyduck Exp $ */
+/* $Id: bh_check_languages.php,v 1.35 2007-12-22 18:33:45 decoyduck Exp $ */
 
 // Compare two language files.
 
@@ -41,47 +41,51 @@ function compare_languages($master_lang, $slave_lang, $show_ut, $compare_method,
 
         foreach ($master_lang as $master_lang_key => $master_lang_value) {
 
-            if (is_array($master_lang_value) && is_array($slave_lang) && isset($slave_lang[$master_lang_key])) {
+            if (is_array($master_lang_value)) {
 
-                if (is_string($master_lang_key)) {
+                if (is_array($slave_lang) && isset($slave_lang[$master_lang_key])) {
 
-                    compare_languages($master_lang_value, $slave_lang[$master_lang_key], $show_ut, $compare_method, "{$prefix}['$master_lang_key']", $results_array);
+                    if (is_string($master_lang_key)) {
+
+                        compare_languages($master_lang_value, $slave_lang[$master_lang_key], $show_ut, $compare_method, "{$prefix}['$master_lang_key']", $results_array);
+
+                    }else {
+
+                        compare_languages($master_lang_value, $slave_lang[$master_lang_key], $show_ut, $compare_method, "{$prefix}[$master_lang_key]", $results_array);
+                    }
 
                 }else {
 
-                    compare_languages($master_lang_value, $slave_lang[$master_lang_key], $show_ut, $compare_method, "{$prefix}[$master_lang_key]", $results_array);
+                    compare_languages($master_lang_value, array(), $show_ut, $compare_method, "{$prefix}['$master_lang_key']", $results_array);
                 }
 
             }else {
 
-                if (!is_array($master_lang_value)) {
+                if (!is_array($slave_lang) || !isset($slave_lang[$master_lang_key])) {
 
-                    if (!isset($slave_lang[$master_lang_key])) {
+                    if (preg_match("/\+|\-/", $compare_method) > 0) {
 
-                        if (preg_match("/\+|\-/", $compare_method) > 0) {
+                        if (is_string($master_lang_key)) {
 
-                            if (is_string($master_lang_key)) {
+                            $results_array[] = "{$prefix}['$master_lang_key'] = \"{$master_lang_value}\";";
 
-                                $results_array[] = "{$prefix}['$master_lang_key'] = \"{$master_lang_value}\";";
+                        }else {
 
-                            }else {
-
-                                $results_array[] = "{$prefix}[$master_lang_key] = \"{$master_lang_value}\";";
-                            }
+                            $results_array[] = "{$prefix}[$master_lang_key] = \"{$master_lang_value}\";";
                         }
+                    }
 
-                    }else if (($slave_lang[$master_lang_key] == $master_lang_value) && $show_ut == true) {
+                }else if (($slave_lang[$master_lang_key] == $master_lang_value) && $show_ut == true) {
 
-                        if ((preg_match("/^_/", $master_lang_key) < 1) && (preg_match("/=/", $compare_method) > 0)) {
+                    if ((preg_match("/^_/", $master_lang_key) < 1) && (preg_match("/=/", $compare_method) > 0)) {
 
-                            if (is_string($master_lang_key)) {
+                        if (is_string($master_lang_key)) {
 
-                                $results_array[] = "{$prefix}['$master_lang_key'] = \"{$master_lang_value}\";";
+                            $results_array[] = "{$prefix}['$master_lang_key'] = \"{$master_lang_value}\";";
 
-                            }else {
+                        }else {
 
-                                $results_array[] = "{$prefix}[$master_lang_key] = \"{$master_lang_value}\";";
-                            }
+                            $results_array[] = "{$prefix}[$master_lang_key] = \"{$master_lang_value}\";";
                         }
                     }
                 }

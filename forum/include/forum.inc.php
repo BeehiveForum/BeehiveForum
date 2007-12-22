@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.285 2007-12-18 16:44:45 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.286 2007-12-22 11:27:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -848,7 +848,7 @@ function forum_process_unread_cutoff($forum_settings)
     return in_array($messages_unread_cutoff, $unread_cutoff_periods) ? $messages_unread_cutoff : YEAR_IN_SECONDS;
 }
 
-function forum_update_unread_data($unread_cutoff_stamp, $previous_unread_cutoff_stamp)
+function forum_update_unread_data($unread_cutoff_stamp)
 {
     if (!$db_forum_update_unread_data = db_connect()) return false;
 
@@ -856,60 +856,36 @@ function forum_update_unread_data($unread_cutoff_stamp, $previous_unread_cutoff_
 
     if (!is_numeric($unread_cutoff_stamp)) return false;
 
-    if (!is_numeric($previous_unread_cutoff_stamp)) return false;
-
     if ($unread_cutoff_stamp > 0) {
 
-        $sql = "INSERT INTO {$table_data['PREFIX']}THREAD_STATS (TID, UNREAD_PID, UNREAD_CREATED) ";
-        $sql.= "SELECT POST.TID, MAX(POST.PID), MAX(POST.CREATED) FROM {$table_data['PREFIX']}POST POST ";
-        $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD_STATS THREAD_STATS ON (THREAD_STATS.TID = POST.TID) ";
-        $sql.= "WHERE POST.CREATED < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp) ";
-        $sql.= "AND (THREAD_STATS.UNREAD_PID < POST.PID OR THREAD_STATS.UNREAD_PID IS NULL) ";
-        $sql.= "GROUP BY POST.TID ON DUPLICATE KEY UPDATE UNREAD_PID = VALUES(UNREAD_PID), ";
-        $sql.= "UNREAD_CREATED = VALUES(UNREAD_CREATED)";
+        if ($forum_prefix_array = forum_get_all_prefixes()) {
 
-        if (!$result = db_query($sql, $db_forum_update_unread_data)) return false;
+            foreach($forum_prefix_array as $forum_prefix) {
 
-        $sql = "DELETE QUICK FROM {$table_data['PREFIX']}USER_THREAD ";
-        $sql.= "USING {$table_data['PREFIX']}USER_THREAD ";
-        $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD ";
-        $sql.= "ON ({$table_data['PREFIX']}USER_THREAD.TID = ";
-        $sql.= "{$table_data['PREFIX']}THREAD.TID) ";
-        $sql.= "WHERE {$table_data['PREFIX']}THREAD.MODIFIED IS NOT NULL ";
-        $sql.= "AND {$table_data['PREFIX']}THREAD.MODIFIED < ";
-        $sql.= "FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp) ";
-        $sql.= "AND ({$table_data['PREFIX']}USER_THREAD.INTEREST IS NULL ";
-        $sql.= "OR {$table_data['PREFIX']}USER_THREAD.INTEREST = 0) ";
+                $sql = "INSERT INTO {$forum_prefix}THREAD_STATS (TID, UNREAD_PID, UNREAD_CREATED) ";
+                $sql.= "SELECT POST.TID, MAX(POST.PID), MAX(POST.CREATED) FROM {$forum_prefix}POST POST ";
+                $sql.= "LEFT JOIN {$forum_prefix}THREAD_STATS THREAD_STATS ON (THREAD_STATS.TID = POST.TID) ";
+                $sql.= "WHERE POST.CREATED < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp) ";
+                $sql.= "AND (THREAD_STATS.UNREAD_PID < POST.PID OR THREAD_STATS.UNREAD_PID IS NULL) ";
+                $sql.= "GROUP BY POST.TID ON DUPLICATE KEY UPDATE UNREAD_PID = VALUES(UNREAD_PID), ";
+                $sql.= "UNREAD_CREATED = VALUES(UNREAD_CREATED)";
 
-        if (!$result = db_query($sql, $db_forum_update_unread_data)) return false;
+                if (!$result = db_query($sql, $db_forum_update_unread_data)) return false;
 
-        if (($previous_unread_cutoff_stamp !== false) && $unread_cutoff_stamp > $previous_unread_cutoff_stamp) {
+                $sql = "DELETE QUICK FROM {$forum_prefix}USER_THREAD ";
+                $sql.= "USING {$forum_prefix}USER_THREAD ";
+                $sql.= "LEFT JOIN {$forum_prefix}THREAD ";
+                $sql.= "ON ({$forum_prefix}USER_THREAD.TID = ";
+                $sql.= "{$forum_prefix}THREAD.TID) ";
+                $sql.= "WHERE {$forum_prefix}THREAD.MODIFIED IS NOT NULL ";
+                $sql.= "AND {$forum_prefix}THREAD.MODIFIED < ";
+                $sql.= "FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp) ";
+                $sql.= "AND ({$forum_prefix}USER_THREAD.INTEREST IS NULL ";
+                $sql.= "OR {$forum_prefix}USER_THREAD.INTEREST = 0) ";
 
-            $sql = "INSERT INTO {$table_data['PREFIX']}USER_THREAD (UID, TID, LAST_READ, LAST_READ_AT) ";
-            $sql.= "SELECT USER.UID, {$table_data['PREFIX']}THREAD.TID, {$table_data['PREFIX']}THREAD.LENGTH, ";
-            $sql.= "NOW() FROM {$table_data['PREFIX']}THREAD, USER ";
-            $sql.= "WHERE {$table_data['PREFIX']}THREAD.MODIFIED >= FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp) ";
-            $sql.= "AND {$table_data['PREFIX']}THREAD.MODIFIED < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $previous_unread_cutoff_stamp) ";
-            $sql.= "ON DUPLICATE KEY UPDATE LAST_READ = VALUES(LAST_READ), LAST_READ_AT = VALUES(LAST_READ_AT)";
-
-            if (!$result = db_query($sql, $db_forum_update_unread_data)) return false;
-
-        }elseif ($previous_unread_cutoff_stamp === false) {
-
-            $sql = "INSERT INTO {$table_data['PREFIX']}USER_THREAD (UID, TID, LAST_READ, LAST_READ_AT) ";
-            $sql.= "SELECT USER.UID, {$table_data['PREFIX']}THREAD.TID, {$table_data['PREFIX']}THREAD.LENGTH, ";
-            $sql.= "NOW() FROM {$table_data['PREFIX']}THREAD, USER ";
-            $sql.= "WHERE {$table_data['PREFIX']}THREAD.MODIFIED >= FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp) ";
-            $sql.= "ON DUPLICATE KEY UPDATE LAST_READ = VALUES(LAST_READ), LAST_READ_AT = VALUES(LAST_READ_AT)";
-
-            if (!$result = db_query($sql, $db_forum_update_unread_data)) return false;
+                if (!$result = db_query($sql, $db_forum_update_unread_data)) return false;
+            }
         }
-
-    }else {
-
-        $sql = "TRUNCATE {$table_data['PREFIX']}USER_THREAD";
-
-        if (!$result = db_query($sql, $db_forum_update_unread_data)) return false;
     }
 
     return true;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.93 2007-12-18 16:44:45 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.94 2007-12-22 11:27:35 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -406,8 +406,19 @@ if (isset($_POST['submit']) || isset($_POST['confirm_unread_cutoff']) || isset($
                 echo "                <tr>\n";
                 echo "                  <td align=\"center\">\n";
                 echo "                    <table class=\"posthead\" width=\"95%\">\n";
+
+                if ($unread_cutoff_stamp > $previous_unread_cutoff_stamp) {
+
+                    echo "                      <tr>\n";
+                    echo "                        <td>{$lang['unreadcutoffincreasewarning']}</td>\n";
+                    echo "                      </tr>\n";
+                    echo "                      <tr>\n";
+                    echo "                        <td>&nbsp;</td>\n";
+                    echo "                      </tr>\n";
+                }
+
                 echo "                      <tr>\n";
-                echo "                        <td>{$lang['unreadcutoffwarning']}</td>\n";
+                echo "                        <td>{$lang['unreadcutoffchangewarning']}</td>\n";
                 echo "                      </tr>\n";
                 echo "                      <tr>\n";
                 echo "                        <td>&nbsp;</td>\n";
@@ -438,9 +449,7 @@ if (isset($_POST['submit']) || isset($_POST['confirm_unread_cutoff']) || isset($
 
         if (forum_save_default_settings($new_forum_settings)) {
 
-            if (isset($_POST['confirm_unread_cutoff'])) {
-                forum_update_unread_data($unread_cutoff_stamp, $previous_unread_cutoff_stamp);
-            }
+            if (isset($_POST['confirm_unread_cutoff'])) forum_update_unread_data($unread_cutoff_stamp);
 
             admin_add_log_entry(EDIT_FORUM_SETTINGS, $new_forum_settings['forum_name']);
             header_redirect("./admin_default_forum_settings.php?webtag=$webtag&updated=true", $lang['forumsettingsupdated']);

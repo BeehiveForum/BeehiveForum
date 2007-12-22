@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.94 2007-12-22 11:27:35 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.95 2007-12-22 11:39:44 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -423,6 +423,12 @@ if (isset($_POST['submit']) || isset($_POST['confirm_unread_cutoff']) || isset($
                 echo "                      <tr>\n";
                 echo "                        <td>&nbsp;</td>\n";
                 echo "                      </tr>\n";
+                echo "                      <tr>\n";
+                echo "                        <td>{$lang['confirmunreadcutoff']}</td>\n";
+                echo "                      </tr>\n";
+                echo "                      <tr>\n";
+                echo "                        <td>&nbsp;</td>\n";
+                echo "                      </tr>\n";
                 echo "                    </table>\n";
                 echo "                  </td>\n";
                 echo "                </tr>\n";
@@ -436,11 +442,13 @@ if (isset($_POST['submit']) || isset($_POST['confirm_unread_cutoff']) || isset($
                 echo "      <td align=\"left\">&nbsp;</td>\n";
                 echo "    </tr>\n";
                 echo "    <tr>\n";
-                echo "      <td align=\"center\">", form_submit("confirm_unread_cutoff", $lang['continue']), "&nbsp;", form_submit("cancel_unread_cutoff", $lang['cancel']), "</td>\n";
+                echo "      <td align=\"center\">", form_submit("confirm_unread_cutoff", $lang['yes']), "&nbsp;", form_submit("cancel_unread_cutoff", $lang['no']), "</td>\n";
                 echo "    </tr>\n";
                 echo "  </table>\n";
                 echo "</form>\n";
                 echo "</div>\n";
+
+                html_display_warning_msg($lang['otherchangeswillstillbeapplied'], '550', 'center');
 
                 html_draw_bottom();
                 exit;
@@ -567,6 +575,10 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_48']}</p>\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_49']}</p>\n";
+
+html_display_warning_msg($lang['unreadcutoffincreasewarning'], '95%', 'center');
+html_display_warning_msg($lang['unreadcutoffchangewarning'], '95%', 'center');
+
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";

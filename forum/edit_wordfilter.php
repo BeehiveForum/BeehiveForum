@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_wordfilter.php,v 1.80 2007-12-15 21:19:31 decoyduck Exp $ */
+/* $Id: edit_wordfilter.php,v 1.81 2007-12-23 20:53:10 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -194,54 +194,57 @@ if (isset($_POST['delete'])) {
 }elseif (isset($_POST['addfilter_submit'])) {
 
     if (user_get_word_filter_count() > 19) {
+
         $valid = false;
         $error_msg_array[] = $lang['wordfilterisfull'];
-    }
 
-    if (isset($_POST['add_new_filter_name']) && strlen(trim(_stripslashes($_POST['add_new_filter_name'])))) {
-       $add_new_filter_name = trim(_stripslashes($_POST['add_new_filter_name']));
     }else {
-       $valid = false;
-       $error_msg_array[] = $lang['mustspecifyfiltername'];
-    }
 
-    if (isset($_POST['add_new_match_text']) && strlen(trim(_stripslashes($_POST['add_new_match_text'])))) {
-       $add_new_match_text = trim(_stripslashes($_POST['add_new_match_text']));
-    }else {
-       $valid = false;
-       $error_msg_array[] = $lang['mustspecifymatchedtext'];
-    }
-
-    if (isset($_POST['add_new_filter_option']) && is_numeric($_POST['add_new_filter_option'])) {
-       $add_new_filter_option = $_POST['add_new_filter_option'];
-    }else {
-       $valid = false;
-       $error_msg_array[] = $lang['mustspecifyfilteroption'];
-    }
-
-    if (isset($_POST['add_new_filter_enabled']) && is_numeric($_POST['add_new_filter_enabled'])) {
-        $add_new_filter_enabled = $_POST['add_new_filter_enabled'];
-    }else {
-        $add_new_filter_enabled = WORD_FILTER_DISABLED;
-    }
-
-    if (isset($_POST['add_new_replace_text']) && strlen(trim(_stripslashes($_POST['add_new_replace_text'])))) {
-       $add_new_replace_text = trim(_stripslashes($_POST['add_new_replace_text']));
-    }else {
-       $add_new_replace_text = "";
-    }
-
-    if ($valid) {
-
-        if ($add_new_filter_option == WORD_FILTER_TYPE_PREG && preg_match("/e[^\/]*$/i", $add_new_match_text)) {
-            $add_new_match_text = preg_replace_callback("/\/[^\/]*$/i", "word_filter_apply_limit_preg", $add_new_match_text);
+        if (isset($_POST['add_new_filter_name']) && strlen(trim(_stripslashes($_POST['add_new_filter_name'])))) {
+           $add_new_filter_name = trim(_stripslashes($_POST['add_new_filter_name']));
+        }else {
+           $valid = false;
+           $error_msg_array[] = $lang['mustspecifyfiltername'];
         }
 
-        if (user_add_word_filter($add_new_filter_name, $add_new_match_text, $add_new_replace_text, $add_new_filter_option, $add_new_filter_enabled)) {
+        if (isset($_POST['add_new_match_text']) && strlen(trim(_stripslashes($_POST['add_new_match_text'])))) {
+           $add_new_match_text = trim(_stripslashes($_POST['add_new_match_text']));
+        }else {
+           $valid = false;
+           $error_msg_array[] = $lang['mustspecifymatchedtext'];
+        }
 
-            $redirect = "./edit_wordfilter.php?webtag=$webtag&updated=true";
-            header_redirect($redirect, $lang['wordfilterupdated']);
-            exit;
+        if (isset($_POST['add_new_filter_option']) && is_numeric($_POST['add_new_filter_option'])) {
+           $add_new_filter_option = $_POST['add_new_filter_option'];
+        }else {
+           $valid = false;
+           $error_msg_array[] = $lang['mustspecifyfilteroption'];
+        }
+
+        if (isset($_POST['add_new_filter_enabled']) && is_numeric($_POST['add_new_filter_enabled'])) {
+            $add_new_filter_enabled = $_POST['add_new_filter_enabled'];
+        }else {
+            $add_new_filter_enabled = WORD_FILTER_DISABLED;
+        }
+
+        if (isset($_POST['add_new_replace_text']) && strlen(trim(_stripslashes($_POST['add_new_replace_text'])))) {
+           $add_new_replace_text = trim(_stripslashes($_POST['add_new_replace_text']));
+        }else {
+           $add_new_replace_text = "";
+        }
+
+        if ($valid) {
+
+            if ($add_new_filter_option == WORD_FILTER_TYPE_PREG && preg_match("/e[^\/]*$/i", $add_new_match_text)) {
+                $add_new_match_text = preg_replace_callback("/\/[^\/]*$/i", "word_filter_apply_limit_preg", $add_new_match_text);
+            }
+
+            if (user_add_word_filter($add_new_filter_name, $add_new_match_text, $add_new_replace_text, $add_new_filter_option, $add_new_filter_enabled)) {
+
+                $redirect = "./edit_wordfilter.php?webtag=$webtag&updated=true";
+                header_redirect($redirect, $lang['wordfilterupdated']);
+                exit;
+            }
         }
     }
 

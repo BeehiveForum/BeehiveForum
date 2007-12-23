@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.152 2007-12-05 19:08:21 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.153 2007-12-23 20:53:10 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -576,6 +576,20 @@ function html_entity_to_decimal($string)
 function strip_paragraphs($string)
 {
     return preg_replace(array("/<p[^>]*>/iU", "/<\/p[^>]*>\n/iU", "/<\/p[^>]*>/iU", "/<br\s*?\/?>/i"), array("", "\n"), $string);
+}
+
+/**
+* Replace accented characters
+*
+* Replaces accented characters with their non accented equivalents.
+*
+* @return string
+* @param string $string - string to convert.
+*/
+
+function strip_accents($string)
+{
+    return _htmlentities_decode(preg_replace('/&([a-zA-Z])(uml|acute|grave|circ|tilde|cedil|ring);/', '$1', _htmlentities($string)));
 }
 
 /**

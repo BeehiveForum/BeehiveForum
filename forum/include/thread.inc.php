@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.134 2007-10-24 19:57:09 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.135 2007-12-23 21:07:14 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1180,7 +1180,7 @@ function thread_split_get_replies($tid, $pid)
         $post_data_array[$new_post_pid] = $post_data;
         $post_data_array[$new_post_pid]['REPLY_TO_PID'] = 0;
 
-        thread_split_recursive($tid, $pid, &$post_data_array, &$dest_pid_array, &$new_post_pid);
+        thread_split_recursive($tid, $pid, $post_data_array, $dest_pid_array, $new_post_pid);
     }
 
     return (sizeof($post_data_array) > 0) ? $post_data_array : false;

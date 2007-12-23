@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_wordfilter.php,v 1.105 2007-10-11 13:01:13 decoyduck Exp $ */
+/* $Id: admin_wordfilter.php,v 1.106 2007-12-23 20:53:10 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -369,17 +369,10 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "      <td colspan=\"2\" align=\"center\">", form_submit("addfilter_submit", $lang['add']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
-    echo "  <br />\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"450\">\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\">\n";
-    echo "        <p>{$lang['word_filter_help_1']}</p>\n";
-    echo "        <p>{$lang['word_filter_help_2']}</p>\n";
-    echo "        <p>{$lang['word_filter_help_3']}</p>\n";
-    echo "      </td>\n";
-    echo "    </tr>\n";
-    echo "  </table>\n";
     echo "</form>\n";
+
+    html_display_warning_msg(sprintf('%s<p>%s</p>%s', $lang['word_filter_help_1'], $lang['word_filter_help_2'], $lang['word_filter_help_3']), '450', 'center');
+
     echo "</div>\n";
 
     html_draw_bottom();
@@ -476,17 +469,10 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "      <td colspan=\"2\" align=\"center\">", form_submit("editfilter_submit", $lang['save']), "&nbsp;", form_submit("delete", $lang['delete']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
-    echo "  <br />\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"450\">\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\">\n";
-    echo "        <p>{$lang['word_filter_help_1']}</p>\n";
-    echo "        <p>{$lang['word_filter_help_2']}</p>\n";
-    echo "        <p>{$lang['word_filter_help_3']}</p>\n";
-    echo "      </td>\n";
-    echo "    </tr>\n";
-    echo "  </table>\n";
     echo "</form>\n";
+
+    html_display_warning_msg(sprintf('%s<p>%s</p>%s', $lang['word_filter_help_1'], $lang['word_filter_help_2'], $lang['word_filter_help_3']), '450', 'center');
+
     echo "</div>\n";
 
     html_draw_bottom();

@@ -21,10 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_wordfilter.php,v 1.81 2007-12-23 20:53:10 decoyduck Exp $ */
+/* $Id: edit_wordfilter.php,v 1.82 2007-12-26 13:19:33 decoyduck Exp $ */
 
 // Constant to define where the include files are
-define("BH_INCLUDE_PATH", "./include/");
+define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
@@ -70,7 +70,7 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 if (!$user_sess = bh_session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     $webtag = get_webtag($webtag_search);
-    header_redirect("./logon.php?webtag=$webtag&final_uri=$request_uri");
+    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
@@ -85,7 +85,7 @@ if (bh_session_user_banned()) {
 
 if (!$webtag = get_webtag($webtag_search)) {
     $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
+    header_redirect("forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
 // Load language file
@@ -96,7 +96,7 @@ $lang = load_language_file();
 
 if (!forum_check_access_level()) {
     $request_uri = rawurlencode(get_request_uri());
-    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
+    header_redirect("forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
 if (user_is_guest()) {
@@ -154,7 +154,7 @@ if (isset($_POST['delete'])) {
 
         if ($valid) {
 
-            $redirect = "./edit_wordfilter.php?webtag=$webtag&updated=true";
+            $redirect = "edit_wordfilter.php?webtag=$webtag&updated=true";
             header_redirect($redirect, $lang['wordfilterupdated']);
             exit;
         }
@@ -182,7 +182,7 @@ if (isset($_POST['delete'])) {
 
     if (user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
 
-        header_redirect("./edit_wordfilter.php?webtag=$webtag&updated=true", $lang['preferencesupdated']);
+        header_redirect("edit_wordfilter.php?webtag=$webtag&updated=true", $lang['preferencesupdated']);
         exit;
 
     }else {
@@ -241,7 +241,7 @@ if (isset($_POST['delete'])) {
 
             if (user_add_word_filter($add_new_filter_name, $add_new_match_text, $add_new_replace_text, $add_new_filter_option, $add_new_filter_enabled)) {
 
-                $redirect = "./edit_wordfilter.php?webtag=$webtag&updated=true";
+                $redirect = "edit_wordfilter.php?webtag=$webtag&updated=true";
                 header_redirect($redirect, $lang['wordfilterupdated']);
                 exit;
             }
@@ -298,7 +298,7 @@ if (isset($_POST['delete'])) {
 
         if (user_update_word_filter($filter_id, $filter_name, $match_text, $replace_text, $filter_option, $filter_enabled)) {
 
-            $redirect = "./edit_wordfilter.php?webtag=$webtag&updated=true";
+            $redirect = "edit_wordfilter.php?webtag=$webtag&updated=true";
             header_redirect($redirect, $lang['wordfilterupdated']);
             exit;
 
@@ -310,7 +310,7 @@ if (isset($_POST['delete'])) {
 
 }elseif (isset($_POST['addfilter'])) {
 
-    $redirect = "./edit_wordfilter.php?webtag=$webtag&addfilter=true";
+    $redirect = "edit_wordfilter.php?webtag=$webtag&addfilter=true";
     header_redirect($redirect);
     exit;
 }

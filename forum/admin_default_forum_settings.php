@@ -21,10 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.95 2007-12-22 11:39:44 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.96 2007-12-26 13:19:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
-define("BH_INCLUDE_PATH", "./include/");
+define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
@@ -75,7 +75,7 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 if (!$user_sess = bh_session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     $webtag = get_webtag($webtag_search);
-    header_redirect("./logon.php?webtag=$webtag&final_uri=$request_uri");
+    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
@@ -460,7 +460,7 @@ if (isset($_POST['submit']) || isset($_POST['confirm_unread_cutoff']) || isset($
             if (isset($_POST['confirm_unread_cutoff'])) forum_update_unread_data($unread_cutoff_stamp);
 
             admin_add_log_entry(EDIT_FORUM_SETTINGS, $new_forum_settings['forum_name']);
-            header_redirect("./admin_default_forum_settings.php?webtag=$webtag&updated=true", $lang['forumsettingsupdated']);
+            header_redirect("admin_default_forum_settings.php?webtag=$webtag&updated=true", $lang['forumsettingsupdated']);
 
         }else {
 

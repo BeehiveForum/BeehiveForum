@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: geshi.inc.php,v 1.10 2007-10-11 13:01:19 decoyduck Exp $ */
+/* $Id: geshi.inc.php,v 1.11 2007-12-26 13:19:35 decoyduck Exp $ */
 
 // GeSHi is a generic syntax highlighter under the General Public License
 // http://qbnz.com/highlighter/
@@ -46,9 +46,9 @@ function geshi_error_handler () {
     return;
 }
 
-if (file_exists("./geshi/geshi.php")) {
+if (file_exists("geshi/geshi.php")) {
 
-    include_once("./geshi/geshi.php");
+    include_once("geshi/geshi.php");
 
 }else {
 

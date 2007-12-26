@@ -21,10 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.177 2007-10-11 13:01:15 decoyduck Exp $ */
+/* $Id: logon.php,v 1.178 2007-12-26 13:19:34 decoyduck Exp $ */
 
 // Constant to define where the include files are
-define("BH_INCLUDE_PATH", "./include/");
+define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
@@ -72,15 +72,15 @@ if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri'])))
 
 }elseif (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
-    $final_uri = "./discussion.php?webtag=$webtag&amp;msg=". $_GET['msg'];
+    $final_uri = "discussion.php?webtag=$webtag&amp;msg=". $_GET['msg'];
 
 }elseif (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
 
-    $final_uri = "./discussion.php?webtag=$webtag&amp;folder=". $_GET['folder'];
+    $final_uri = "discussion.php?webtag=$webtag&amp;folder=". $_GET['folder'];
 
 }elseif (isset($_GET['pmid']) && is_numeric($_GET['pmid'])) {
 
-    $final_uri = "./pm.php?webtag=$webtag&amp;mid=". $_GET['pmid'];
+    $final_uri = "pm.php?webtag=$webtag&amp;mid=". $_GET['pmid'];
 }
 
 // If the final_uri contains logout.php then unset it.
@@ -124,11 +124,11 @@ if (isset($_GET['deletecookie']) && $_GET['deletecookie'] == 'yes') {
     if (isset($final_uri)) {
 
         $final_uri = rawurlencode($final_uri);
-        header_redirect("./index.php?webtag=$webtag&final_uri=$final_uri", $lang['cookiessuccessfullydeleted']);
+        header_redirect("index.php?webtag=$webtag&final_uri=$final_uri", $lang['cookiessuccessfullydeleted']);
 
     }else {
 
-        header_redirect("./index.php?webtag=$webtag", $lang['cookiessuccessfullydeleted']);
+        header_redirect("index.php?webtag=$webtag", $lang['cookiessuccessfullydeleted']);
     }
 
 }elseif (isset($_POST['logon']) || isset($_POST['guest_logon'])) {
@@ -138,11 +138,11 @@ if (isset($_GET['deletecookie']) && $_GET['deletecookie'] == 'yes') {
         if (isset($final_uri)) {
 
             $final_uri = rawurlencode($final_uri);
-            header_redirect("./index.php?webtag=$webtag&final_uri=$final_uri", $lang['loggedinsuccessfully']);
+            header_redirect("index.php?webtag=$webtag&final_uri=$final_uri", $lang['loggedinsuccessfully']);
 
         }else {
 
-            header_redirect("./index.php?webtag=$webtag", $lang['loggedinsuccessfully']);
+            header_redirect("index.php?webtag=$webtag", $lang['loggedinsuccessfully']);
         }
 
     }else {
@@ -152,11 +152,11 @@ if (isset($_GET['deletecookie']) && $_GET['deletecookie'] == 'yes') {
         if (isset($final_uri)) {
 
             $final_uri = rawurlencode($final_uri);
-            header_redirect("./index.php?webtag=$webtag&final_uri=$final_uri", $lang['usernameorpasswdnotvalid']);
+            header_redirect("index.php?webtag=$webtag&final_uri=$final_uri", $lang['usernameorpasswdnotvalid']);
 
         }else {
 
-            header_redirect("./index.php?webtag=$webtag", $lang['usernameorpasswdnotvalid']);
+            header_redirect("index.php?webtag=$webtag", $lang['usernameorpasswdnotvalid']);
         }
     }
 
@@ -165,11 +165,11 @@ if (isset($_GET['deletecookie']) && $_GET['deletecookie'] == 'yes') {
     if (isset($final_uri)) {
 
         $final_uri = rawurlencode($final_uri);
-        header_redirect("./index.php?webtag=$webtag&other_logon=true&final_uri=$final_uri");
+        header_redirect("index.php?webtag=$webtag&other_logon=true&final_uri=$final_uri");
 
     }else {
 
-        header_redirect("./index.php?webtag=$webtag&other_logon=true");
+        header_redirect("index.php?webtag=$webtag&other_logon=true");
     }
 }
 

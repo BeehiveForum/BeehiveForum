@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: emoticons.inc.php,v 1.68 2007-12-08 14:58:53 decoyduck Exp $ */
+/* $Id: emoticons.inc.php,v 1.69 2007-12-26 13:19:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -226,9 +226,9 @@ function emoticons_get_available($include_text_none = true)
 
                      if ($include_text_none === true) {
 
-                         if (@file_exists("./emoticons/$file/desc.txt")) {
+                         if (@file_exists("emoticons/$file/desc.txt")) {
 
-                             $pack_name = implode("", file("./emoticons/$file/desc.txt"));
+                             $pack_name = implode("", file("emoticons/$file/desc.txt"));
                              $emoticon_sets_txtnon[$file] = _htmlentities($pack_name);
 
                          }else {
@@ -237,11 +237,11 @@ function emoticons_get_available($include_text_none = true)
                          }
                      }
 
-                 }else if (@file_exists("./emoticons/$file/style.css")) {
+                 }else if (@file_exists("emoticons/$file/style.css")) {
 
-                     if (@file_exists("./emoticons/$file/desc.txt")) {
+                     if (@file_exists("emoticons/$file/desc.txt")) {
 
-                         $pack_name = implode("", file("./emoticons/$file/desc.txt"));
+                         $pack_name = implode("", file("emoticons/$file/desc.txt"));
                          $emoticon_sets_normal[$file] = _htmlentities($pack_name);
 
                      }else {
@@ -272,7 +272,7 @@ function sort_by_length_callback($a, $b)
 function emoticons_set_exists($emoticon_set)
 {
     $emoticon_set = basename($emoticon_set);
-    return (@file_exists("./emoticons/$emoticon_set/style.css") || $emoticon_set == "text" || $emoticon_set == "none");
+    return (@file_exists("emoticons/$emoticon_set/style.css") || $emoticon_set == "text" || $emoticon_set == "none");
 }
 
 function emoticons_preview($emoticon_set, $width = 190, $height = 100, $num = 35)

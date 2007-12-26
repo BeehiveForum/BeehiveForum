@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.166 2007-12-19 22:16:54 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.167 2007-12-26 13:19:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -82,7 +82,7 @@ function light_html_draw_top($title = false)
         echo "<link rel=\"stylesheet\" href=\"$stylesheet\" type=\"text/css\" />\n";
     }
 
-    echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"./js/general.js\"></script>\n";
+    echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"js/general.js\"></script>\n";
 
     $message_display_pages = array('admin_post_approve.php', 'create_poll.php',
                                    'delete.php', 'display.php', 'edit.php',
@@ -94,8 +94,8 @@ function light_html_draw_top($title = false)
 
         if (bh_session_get_value('USE_MOVER_SPOILER') == "Y") {
 
-            echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"./js/general.js\"></script>\n";
-            echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"./js/spoiler.js\"></script>\n";
+            echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"js/general.js\"></script>\n";
+            echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"js/spoiler.js\"></script>\n";
             echo "</head>\n";
             echo "<body onload=\"spoilerInitialise()\">\n";
 
@@ -550,7 +550,7 @@ function light_draw_my_forums()
 
             foreach ($forums_array['forums_array'] as $forum) {
 
-                echo "<h2><a href=\"./lthread_list.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></h2>\n";
+                echo "<h2><a href=\"lthread_list.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></h2>\n";
 
                 if (isset($forum['UNREAD_TO_ME']) && $forum['UNREAD_TO_ME'] > 0) {
 
@@ -598,7 +598,7 @@ function light_draw_my_forums()
 
             foreach ($forums_array['forums_array'] as $forum) {
 
-                echo "<h2><a href=\"./lthread_list.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></h2>\n";
+                echo "<h2><a href=\"lthread_list.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></h2>\n";
                 echo "<p>{$forum['MESSAGES']} {$lang['messages']}</p>\n";
             }
 
@@ -1200,7 +1200,7 @@ function light_html_guest_error ()
     light_html_display_error_msg($lang['guesterror']);
 
     echo "<br />\n";
-    echo form_quick_button("./llogout.php", $lang['loginnow'], false, $frame_top_target);
+    echo form_quick_button("llogout.php", $lang['loginnow'], false, $frame_top_target);
 
     light_html_draw_bottom();
 }

@@ -21,10 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.99 2007-12-10 20:44:32 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.100 2007-12-26 13:19:34 decoyduck Exp $ */
 
 // Constant to define where the include files are
-define("BH_INCLUDE_PATH", "./include/");
+define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
@@ -78,7 +78,7 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 if (!$user_sess = bh_session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     $webtag = get_webtag($webtag_search);
-    header_redirect("./logon.php?webtag=$webtag&final_uri=$request_uri");
+    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
@@ -101,7 +101,7 @@ if (!bh_session_user_approved()) {
 
 if (!$webtag = get_webtag($webtag_search)) {
     $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
+    header_redirect("forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
 // Load language file
@@ -112,7 +112,7 @@ $lang = load_language_file();
 
 if (!forum_check_access_level()) {
     $request_uri = rawurlencode(get_request_uri());
-    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
+    header_redirect("forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
 // Guests can't use this
@@ -175,7 +175,7 @@ $error_msg_array = array();
 
 if (isset($_POST['back'])) {
 
-    header_redirect("./messages.php?webtag=$webtag&msg=$msg");
+    header_redirect("messages.php?webtag=$webtag&msg=$msg");
     exit;
 }
 
@@ -187,7 +187,7 @@ if (isset($_GET['markasread']) && is_numeric($_GET['markasread'])) {
 
     if (messages_set_read($tid, $mark_as_read, $uid, $thread_data['MODIFIED'])) {
 
-        header_redirect("./messages.php?webtag=$webtag&msg=$msg&markasread=1");
+        header_redirect("messages.php?webtag=$webtag&msg=$msg&markasread=1");
         exit;
     }
 
@@ -197,7 +197,7 @@ if (isset($_GET['markasread']) && is_numeric($_GET['markasread'])) {
 
     if (thread_set_interest($tid, $thread_interest)) {
 
-        header_redirect("./messages.php?webtag=$webtag&msg=$msg&setinterest=1");
+        header_redirect("messages.php?webtag=$webtag&msg=$msg&setinterest=1");
         exit;
     }
 }

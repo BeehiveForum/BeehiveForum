@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.505 2007-12-09 21:42:35 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.506 2007-12-26 13:19:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1376,7 +1376,7 @@ function messages_interest_form($tid,$pid)
     echo "              <tr>\n";
     echo "                <td align=\"center\">\n";
 
-    echo "<form name=\"rate_interest\" target=\"_self\" action=\"./thread_options.php?webtag=$webtag&amp;msg=$tid.$pid\" method=\"post\">\n";
+    echo "<form name=\"rate_interest\" target=\"_self\" action=\"thread_options.php?webtag=$webtag&amp;msg=$tid.$pid\" method=\"post\">\n";
     echo form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "{$lang['ratemyinterest']}: \n";
     echo form_radio_array("setinterest", array(-1 => "{$lang['ignore']} ", 0 => "{$lang['normal']} ", 1 => "{$lang['interested']} ", 2 => "{$lang['subscribe']} "), _htmlentities($interest));

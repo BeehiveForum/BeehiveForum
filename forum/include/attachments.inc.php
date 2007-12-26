@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.141 2007-12-03 18:38:49 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.142 2007-12-26 13:19:35 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -731,7 +731,7 @@ function get_message_link($aid, $get_pm_link = true)
     if (db_num_rows($result) > 0) {
 
         list($forum_webtag, $tid, $pid) = db_fetch_array($result, DB_RESULT_NUM);
-        return "./messages.php?webtag=$forum_webtag&amp;msg=$tid.$pid";
+        return "messages.php?webtag=$forum_webtag&amp;msg=$tid.$pid";
 
     }else if ($get_pm_link) {
 
@@ -742,7 +742,7 @@ function get_message_link($aid, $get_pm_link = true)
         if (db_num_rows($result) > 0) {
 
             list($mid) = db_fetch_array($result, DB_RESULT_NUM);
-            return "./pm.php?webtag=$webtag&amp;mid=$mid";
+            return "pm.php?webtag=$webtag&amp;mid=$mid";
         }
     }
 

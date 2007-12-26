@@ -21,10 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.php,v 1.101 2007-10-11 13:01:06 decoyduck Exp $ */
+/* $Id: admin.php,v 1.102 2007-12-26 13:19:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
-define("BH_INCLUDE_PATH", "./include/");
+define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
@@ -69,7 +69,7 @@ header_no_cache();
 if (!$user_sess = bh_session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     $webtag = get_webtag($webtag_search);
-    header_redirect("./logon.php?webtag=$webtag&final_uri=$request_uri");
+    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
@@ -108,7 +108,7 @@ if (isset($_GET['page']) && strlen(trim(_stripslashes($_GET['page']))) > 0) {
         html_draw_top('body_tag=false', 'frames=true');
 
         echo "<frameset cols=\"250,*\" framespacing=\"0\" border=\"4\">\n";
-        echo "  <frame src=\"./admin_menu.php?webtag=$webtag\" name=\"", html_get_frame_name('left'), "\" frameborder=\"0\" />\n";
+        echo "  <frame src=\"admin_menu.php?webtag=$webtag\" name=\"", html_get_frame_name('left'), "\" frameborder=\"0\" />\n";
         echo "  <frame src=\"$requested_page\" name=\"", html_get_frame_name('right'), "\" frameborder=\"0\" />\n";
         echo "</frameset>\n";
 
@@ -120,8 +120,8 @@ if (isset($_GET['page']) && strlen(trim(_stripslashes($_GET['page']))) > 0) {
 html_draw_top('body_tag=false', 'frames=true');
 
 echo "<frameset cols=\"250,*\" framespacing=\"0\" border=\"4\">\n";
-echo "  <frame src=\"./admin_menu.php?webtag=$webtag\" name=\"", html_get_frame_name('left'), "\" frameborder=\"0\" />\n";
-echo "  <frame src=\"./admin_main.php?webtag=$webtag\" name=\"", html_get_frame_name('right'), "\" frameborder=\"0\" />\n";
+echo "  <frame src=\"admin_menu.php?webtag=$webtag\" name=\"", html_get_frame_name('left'), "\" frameborder=\"0\" />\n";
+echo "  <frame src=\"admin_main.php?webtag=$webtag\" name=\"", html_get_frame_name('right'), "\" frameborder=\"0\" />\n";
 echo "</frameset>\n";
 
 html_draw_bottom(false);

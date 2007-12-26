@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: make_style.inc.php,v 1.16 2007-10-11 13:01:19 decoyduck Exp $ */
+/* $Id: make_style.inc.php,v 1.17 2007-12-26 13:19:35 decoyduck Exp $ */
 
 /**
 * make_style.inc.php - attachment upload handling
@@ -68,7 +68,7 @@ function forum_save_style($stylename, $styledesc, $stylesheet, &$error)
 
     clearstatcache();
 
-    if (!@file_exists("./forums/$webtag/styles/$stylename/style.css")) {
+    if (!@file_exists("forums/$webtag/styles/$stylename/style.css")) {
 
         // Check that the directory structure exists
 
@@ -79,14 +79,14 @@ function forum_save_style($stylename, $styledesc, $stylesheet, &$error)
 
         // Save the style desc.txt file
 
-        if ($fp = @fopen("./forums/$webtag/styles/$stylename/desc.txt", "w")) {
+        if ($fp = @fopen("forums/$webtag/styles/$stylename/desc.txt", "w")) {
 
             fwrite($fp, $styledesc);
             fclose($fp);
 
             // Save the style.css file
 
-            if ($fp = @fopen("./forums/$webtag/styles/$stylename/style.css", "w")) {
+            if ($fp = @fopen("forums/$webtag/styles/$stylename/style.css", "w")) {
 
                 fwrite($fp, $stylesheet);
                 fclose($fp);

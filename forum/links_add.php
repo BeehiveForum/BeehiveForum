@@ -21,10 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_add.php,v 1.91 2007-10-11 13:01:15 decoyduck Exp $ */
+/* $Id: links_add.php,v 1.92 2007-12-26 13:19:34 decoyduck Exp $ */
 
 // Constant to define where the include files are
-define("BH_INCLUDE_PATH", "./include/");
+define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
@@ -68,7 +68,7 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 if (!$user_sess = bh_session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     $webtag = get_webtag($webtag_search);
-    header_redirect("./logon.php?webtag=$webtag&final_uri=$request_uri");
+    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
@@ -91,7 +91,7 @@ if (!bh_session_user_approved()) {
 
 if (!$webtag = get_webtag($webtag_search)) {
     $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
+    header_redirect("forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
 // Load language file
@@ -102,7 +102,7 @@ $lang = load_language_file();
 
 if (!forum_check_access_level()) {
     $request_uri = rawurlencode(get_request_uri());
-    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
+    header_redirect("forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
 if (!forum_get_setting('show_links', 'Y')) {
@@ -131,7 +131,7 @@ $error_msg_array = array();
 
 if (isset($_POST['cancel'])) {
 
-    header_redirect("./links.php?webtag=$webtag&fid={$_POST['fid']}");
+    header_redirect("links.php?webtag=$webtag&fid={$_POST['fid']}");
     exit;
 }
 
@@ -230,7 +230,7 @@ if (isset($_POST['submit']) && $mode == LINKS_ADD_LINK) {
 
         if (links_add($uri, $name, $description, $fid, $uid)) {
 
-            header_redirect("./links.php?webtag=$webtag&fid=$fid&link_added=$name");
+            header_redirect("links.php?webtag=$webtag&fid=$fid&link_added=$name");
             exit;
 
         }else {
@@ -270,7 +270,7 @@ if (isset($_POST['submit']) && $mode == LINKS_ADD_LINK) {
 
         if (links_add_folder($fid, $name, true)) {
 
-            header_redirect("./links.php?webtag=$webtag&fid=$fid&folder_added=$name");
+            header_redirect("links.php?webtag=$webtag&fid=$fid&folder_added=$name");
             exit;
 
         }else {

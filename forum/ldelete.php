@@ -21,10 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ldelete.php,v 1.14 2007-12-19 22:16:54 decoyduck Exp $ */
+/* $Id: ldelete.php,v 1.15 2007-12-26 13:19:34 decoyduck Exp $ */
 
 // Constant to define where the include files are
-define("BH_INCLUDE_PATH", "./include/");
+define("BH_INCLUDE_PATH", "include/");
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -80,7 +80,7 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 if (!$user_sess = bh_session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     $webtag = get_webtag($webtag_search);
-    header_redirect("./logon.php?webtag=$webtag&final_uri=$request_uri");
+    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
@@ -103,7 +103,7 @@ if (!bh_session_user_approved()) {
 
 if (!$webtag = get_webtag($webtag_search)) {
     $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
+    header_redirect("forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
 // Load language file
@@ -114,7 +114,7 @@ $lang = load_language_file();
 
 if (!forum_check_access_level()) {
     $request_uri = rawurlencode(get_request_uri());
-    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
+    header_redirect("forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
 if (user_is_guest()) {
@@ -171,7 +171,7 @@ if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
 
 if (isset($_POST['cancel'])) {
 
-    $uri = "./lmessages.php?webtag=$webtag";
+    $uri = "lmessages.php?webtag=$webtag";
 
     if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
         $uri.= "&msg={$_GET['msg']}";
@@ -251,7 +251,7 @@ if (isset($_POST['submit']) && is_numeric($tid) && is_numeric($pid)) {
             $msg = "$tid.$pid";
         }
 
-        header_redirect("./lmessages.php?webtag=$webtag&msg=$msg");
+        header_redirect("lmessages.php?webtag=$webtag&msg=$msg");
         exit;
 
     }else {

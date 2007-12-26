@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: banned.inc.php,v 1.29 2007-10-11 13:01:17 decoyduck Exp $ */
+/* $Id: banned.inc.php,v 1.30 2007-12-26 17:44:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -107,11 +107,7 @@ function ban_check($user_sess, $user_is_guest = false)
 
         if ($ban_count > 0) {
 
-            if (!strstr(php_sapi_name(), 'cgi')) {
-                header("HTTP/1.0 500 Internal Server Error");
-            }
-
-            echo "<h1>HTTP/1.0 500 Internal Server Error</h1>";
+            header_server_error();
             exit;
         }
     }

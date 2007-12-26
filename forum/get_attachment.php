@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: get_attachment.php,v 1.29 2007-12-26 13:19:33 decoyduck Exp $ */
+/* $Id: get_attachment.php,v 1.30 2007-12-26 17:44:35 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -209,7 +209,7 @@ if (isset($hash) && is_md5($hash)) {
                 // we need to modify the HTTP Response header
                 // which is not permitted under PHP CGI Mode.
 
-                if (!strstr(php_sapi_name(), 'cgi')) {
+                if (preg_match('/cgi/', php_sapi_name()) < 1) {
 
                     // Etag Header for cache control
                     $local_etag  = md5(gmdate("D, d M Y H:i:s", filemtime($filepath)). " GMT");

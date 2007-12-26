@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: header.inc.php,v 1.34 2007-12-13 20:14:51 decoyduck Exp $ */
+/* $Id: header.inc.php,v 1.35 2007-12-26 17:44:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -111,6 +111,29 @@ function header_redirect($uri, $reason = false)
 }
 
 /**
+* Send Server Error
+*
+* Sends Server Error (HTTP/1.0 500) error to client and ends execution.
+*
+* @return none - Functions exits code execution.
+* @param void
+*/
+
+function header_server_error()
+{
+    if (preg_match('/cgi/', php_sapi_name())) {
+
+        header('Status: 500 Internal Server Error');
+        exit;
+
+    }else {
+
+        header("HTTP/1.0 500 Internal Server Error");
+        exit;
+    }
+}
+
+/**
 * Check cache header.
 *
 * Checks appropriate HTTP headers for cache hits. Prevents client
@@ -122,7 +145,7 @@ function header_redirect($uri, $reason = false)
 
 function header_check_cache($seconds = 300)
 {
-    if (strstr(php_sapi_name(), 'cgi')) return false;
+    if (preg_match('/cgi/', php_sapi_name()) > 0) return false;
 
     if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') return false;
 

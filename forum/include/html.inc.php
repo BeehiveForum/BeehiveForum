@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.272 2007-12-26 13:19:35 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.273 2007-12-26 17:44:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -40,6 +40,7 @@ include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "form.inc.php");
 include_once(BH_INCLUDE_PATH. "format.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
+include_once(BH_INCLUDE_PATH. "header.inc.php");
 include_once(BH_INCLUDE_PATH. "htmltools.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "logon.inc.php");
@@ -258,16 +259,7 @@ function html_display_success_msg_js($string_msg, $width = '600', $align = 'cent
 
 function html_user_banned()
 {
-    if (!strstr(php_sapi_name(), 'cgi')) {
-
-        header("HTTP/1.0 500 Internal Server Error");
-        exit;
-    }
-
-    html_draw_top("robots=noindex,nofollow");
-    html_error_msg($lang['error'], 'HTTP/1.0 500 Internal Server Error');
-    html_draw_bottom();
-    exit;
+    header_server_error();
 }
 
 function html_user_require_approval()

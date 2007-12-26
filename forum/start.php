@@ -21,10 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start.php,v 1.77 2007-10-11 13:01:16 decoyduck Exp $ */
+/* $Id: start.php,v 1.78 2007-12-26 13:19:34 decoyduck Exp $ */
 
 // Constant to define where the include files are
-define("BH_INCLUDE_PATH", "./include/");
+define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
@@ -67,7 +67,7 @@ header_no_cache();
 if (!$user_sess = bh_session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     $webtag = get_webtag($webtag_search);
-    header_redirect("./logon.php?webtag=$webtag&final_uri=$request_uri");
+    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
@@ -90,7 +90,7 @@ if (!bh_session_user_approved()) {
 
 if (!$webtag = get_webtag($webtag_search)) {
     $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
+    header_redirect("forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
 // Load language file
@@ -101,7 +101,7 @@ $lang = load_language_file();
 
 if (!forum_check_access_level()) {
     $request_uri = rawurlencode(get_request_uri());
-    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
+    header_redirect("forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
 html_draw_top('body_tag=false', 'frames=true');
@@ -110,20 +110,20 @@ echo "<frameset cols=\"280,*\" framespacing=\"0\" border=\"4\">\n";
 
 if (isset($_GET['left']) && $_GET['left'] == "threadlist") {
 
-    echo "<frame src=\"./thread_list.php?webtag=$webtag\" name=\"", html_get_frame_name('left'), "\" frameborder=\"0\" />\n";
+    echo "<frame src=\"thread_list.php?webtag=$webtag\" name=\"", html_get_frame_name('left'), "\" frameborder=\"0\" />\n";
 
 }else {
 
-    echo "<frame src=\"./start_left.php?webtag=$webtag\" name=\"", html_get_frame_name('left'), "\" frameborder=\"0\" />\n";
+    echo "<frame src=\"start_left.php?webtag=$webtag\" name=\"", html_get_frame_name('left'), "\" frameborder=\"0\" />\n";
 }
 
 if (isset($_GET['show']) && $_GET['show'] == "visitors") {
 
-    echo "<frame src=\"./visitor_log.php?webtag=$webtag\" name=\"", html_get_frame_name('right'), "\" frameborder=\"0\" />\n";
+    echo "<frame src=\"visitor_log.php?webtag=$webtag\" name=\"", html_get_frame_name('right'), "\" frameborder=\"0\" />\n";
 
 }else {
 
-    echo "<frame src=\"./start_main.php?webtag=$webtag\" name=\"", html_get_frame_name('right'), "\" frameborder=\"0\" />\n";
+    echo "<frame src=\"start_main.php?webtag=$webtag\" name=\"", html_get_frame_name('right'), "\" frameborder=\"0\" />\n";
 }
 
 echo "</frameset>\n";

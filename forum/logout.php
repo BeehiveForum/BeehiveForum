@@ -21,10 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logout.php,v 1.95 2007-10-11 13:01:15 decoyduck Exp $ */
+/* $Id: logout.php,v 1.96 2007-12-26 13:19:34 decoyduck Exp $ */
 
 // Constant to define where the include files are
-define("BH_INCLUDE_PATH", "./include/");
+define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
@@ -86,7 +86,7 @@ if (user_is_guest()) {
 
     bh_session_remove_cookies();
     bh_setcookie("bh_logon", "1");
-    header_redirect("./index.php?webtag=$webtag$final_uri");
+    header_redirect("index.php?webtag=$webtag$final_uri");
     exit;
 }
 
@@ -105,7 +105,7 @@ if (isset($_POST['submit'])) {
     bh_session_end();
     bh_setcookie("bh_logon", "1");
 
-    header_redirect("./index.php?webtag=$webtag", $lang['youhaveloggedout']);
+    header_redirect("index.php?webtag=$webtag", $lang['youhaveloggedout']);
 }
 
 html_draw_top();
@@ -114,7 +114,7 @@ $user = user_get(bh_session_get_value('UID'));
 
 echo "<br />\n";
 echo "<div align=\"center\">\n";
-echo "<form name=\"logon\" action=\"./logout.php\" method=\"post\" target=\"", html_get_top_frame_name(), "\">\n";
+echo "<form name=\"logon\" action=\"logout.php\" method=\"post\" target=\"", html_get_top_frame_name(), "\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"300\">\n";
 echo "    <tr>\n";

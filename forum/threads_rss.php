@@ -21,10 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads_rss.php,v 1.53 2007-12-08 09:22:37 decoyduck Exp $ */
+/* $Id: threads_rss.php,v 1.54 2007-12-26 13:19:35 decoyduck Exp $ */
 
 // Constant to define where the include files are
-define("BH_INCLUDE_PATH", "./include/");
+define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");

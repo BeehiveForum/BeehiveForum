@@ -21,10 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.115 2007-10-11 13:01:15 decoyduck Exp $ */
+/* $Id: pm_edit.php,v 1.116 2007-12-26 13:19:34 decoyduck Exp $ */
 
 // Constant to define where the include files are
-define("BH_INCLUDE_PATH", "./include/");
+define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
@@ -74,7 +74,7 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 if (!$user_sess = bh_session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     $webtag = get_webtag($webtag_search);
-    header_redirect("./logon.php?webtag=$webtag&final_uri=$request_uri");
+    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
@@ -157,7 +157,7 @@ pm_save_attachment_id($mid, $aid);
 // User clicked cancel
 
 if (isset($_POST['cancel'])) {
-    header_redirect("./pm.php?webtag=$webtag&mid=$mid");
+    header_redirect("pm.php?webtag=$webtag&mid=$mid");
 }
 
 $valid = true;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lang.inc.php,v 1.34 2007-10-11 13:01:19 decoyduck Exp $ */
+/* $Id: lang.inc.php,v 1.35 2007-12-26 13:19:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -65,7 +65,7 @@ function load_language_file()
 
         if ($pref_language = bh_session_get_value("LANGUAGE")) {
 
-            if (@file_exists("./include/languages/{$pref_language}.inc.php")) {
+            if (@file_exists("include/languages/{$pref_language}.inc.php")) {
 
                 include(BH_INCLUDE_PATH. "languages/{$pref_language}.inc.php");
                 return $lang;
@@ -112,7 +112,7 @@ function load_language_file()
 
             if ($langs_array[$key] == "*") $langs_array[$key] = $default_language;
 
-            if (@file_exists("./include/languages/{$langs_array[$key]}.inc.php")) {
+            if (@file_exists("include/languages/{$langs_array[$key]}.inc.php")) {
 
                 include(BH_INCLUDE_PATH. "languages/{$langs_array[$key]}.inc.php");
                 return $lang;
@@ -133,7 +133,7 @@ function lang_get_available($inc_browser_negotiation = true)
 
     $available_langs = ($inc_browser_negotiation) ? array('' => $lang['browsernegotiation']) : array();
 
-    if (@$dir = opendir("./include/languages")) {
+    if (@$dir = opendir("include/languages")) {
 
         while ($file = readdir($dir)) {
 

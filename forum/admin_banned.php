@@ -21,10 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_banned.php,v 1.68 2007-10-24 19:57:08 decoyduck Exp $ */
+/* $Id: admin_banned.php,v 1.69 2007-12-26 13:19:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
-define("BH_INCLUDE_PATH", "./include/");
+define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
@@ -79,7 +79,7 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 if (!$user_sess = bh_session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     $webtag = get_webtag($webtag_search);
-    header_redirect("./logon.php?webtag=$webtag&final_uri=$request_uri");
+    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
@@ -94,7 +94,7 @@ if (bh_session_user_banned()) {
 
 if (!$webtag = get_webtag($webtag_search)) {
     $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
+    header_redirect("forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
 // Load language file
@@ -421,7 +421,7 @@ if (isset($_POST['add']) || isset($_POST['check'])) {
 
 }elseif (isset($_POST['addban'])) {
 
-    $redirect = "./admin_banned.php?webtag=$webtag&addban=true";
+    $redirect = "admin_banned.php?webtag=$webtag&addban=true";
     header_redirect($redirect);
     exit;
 }

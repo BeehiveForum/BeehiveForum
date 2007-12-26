@@ -21,10 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit_users.php,v 1.56 2007-10-25 15:02:25 decoyduck Exp $ */
+/* $Id: admin_user_groups_edit_users.php,v 1.57 2007-12-26 13:19:33 decoyduck Exp $ */
 
 // Constant to define where the include files are
-define("BH_INCLUDE_PATH", "./include/");
+define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
@@ -78,7 +78,7 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 if (!$user_sess = bh_session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     $webtag = get_webtag($webtag_search);
-    header_redirect("./logon.php?webtag=$webtag&final_uri=$request_uri");
+    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
@@ -93,7 +93,7 @@ if (bh_session_user_banned()) {
 
 if (!$webtag = get_webtag($webtag_search)) {
     $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
+    header_redirect("forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
 // Load language file
@@ -124,7 +124,7 @@ if (isset($_POST['ret']) && strlen(trim(_stripslashes($_POST['ret']))) > 0) {
 
 if (isset($ret) && strlen(trim($ret)) > 0) {
 
-    $available_pages = array('admin_user_groups_edit.php', 'admin_users_groups.php');
+    $available_pages = array('admin_user_groups_edit.php', 'admin_users_groups.php', 'admin_user.php');
     $available_pages_preg = implode("|^", array_map('preg_quote_callback', $available_pages));
 
     if (preg_match("/^$available_pages_preg/", basename($ret)) < 1) {
@@ -334,6 +334,7 @@ if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
     echo "  ", form_input_hidden("usersearch", _htmlentities($usersearch)), "\n";
     echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
     echo "  ", form_input_hidden("search_page", _htmlentities($search_page)), "\n";
+    echo "  ", form_input_hidden("ret", _htmlentities($ret)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"650\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\" class=\"posthead\">\n";
@@ -398,6 +399,7 @@ echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden('gid', _htmlentities($gid)), "\n";
 echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
 echo "  ", form_input_hidden("search_page", _htmlentities($search_page)), "\n";
+echo "  ", form_input_hidden("ret", _htmlentities($ret)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"650\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\" class=\"posthead\">\n";

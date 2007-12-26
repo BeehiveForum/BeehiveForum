@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: htmltools.inc.php,v 1.59 2007-11-18 13:55:19 decoyduck Exp $ */
+/* $Id: htmltools.inc.php,v 1.60 2007-12-26 13:19:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -48,14 +48,14 @@ function TinyMCE() {
     $webtag = get_webtag($webtag_search);
 
     $str = "<!-- tinyMCE -->\n";
-    $str.= "<script language=\"javascript\" type=\"text/javascript\" src=\"./tiny_mce/tiny_mce.js\"></script>\n";
+    $str.= "<script language=\"javascript\" type=\"text/javascript\" src=\"tiny_mce/tiny_mce.js\"></script>\n";
     $str.= "<script language=\"javascript\" type=\"text/javascript\">\n";
     $str.= "tinyMCE.init({\n";
 
     $str.= "    mode : \"specific_textareas\",\n";
 
     if ($pref_language = bh_session_get_value("LANGUAGE")) {
-        if (@file_exists("./tiny_mce/langs/{$pref_language}.js")) {
+        if (@file_exists("tiny_mce/langs/{$pref_language}.js")) {
                 $str.= "    language : \"{$pref_language}\",\n";
         }
     }
@@ -155,7 +155,7 @@ class TextAreaHTML {
 
     function TextAreaHTML ($form) {
         $this->form = $form;
-        if (@file_exists("./tiny_mce/tiny_mce.js")) {
+        if (@file_exists("tiny_mce/tiny_mce.js")) {
             $page_prefs = bh_session_get_post_page_prefs();
             if ($page_prefs & POST_TINYMCE_DISPLAY) {
                 $this->tinymce = true;

@@ -23,10 +23,10 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.330 2007-12-19 22:16:54 decoyduck Exp $ */
+/* $Id: post.php,v 1.331 2007-12-26 13:19:34 decoyduck Exp $ */
 
 // Constant to define where the include files are
-define("BH_INCLUDE_PATH", "./include/");
+define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
@@ -80,7 +80,7 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 if (!$user_sess = bh_session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     $webtag = get_webtag($webtag_search);
-    header_redirect("./logon.php?webtag=$webtag&final_uri=$request_uri");
+    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
@@ -103,7 +103,7 @@ if (!bh_session_user_approved()) {
 
 if (!$webtag = get_webtag($webtag_search)) {
     $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
+    header_redirect("forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
 // Load language file
@@ -114,7 +114,7 @@ $lang = load_language_file();
 
 if (!forum_check_access_level()) {
     $request_uri = rawurlencode(get_request_uri());
-    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
+    header_redirect("forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
 if (user_is_guest()) {
@@ -130,7 +130,7 @@ if (!folder_get_by_type_allowed(FOLDER_ALLOW_NORMAL_THREAD)) {
 
 if (isset($_POST['cancel'])) {
 
-    $uri = "./discussion.php?webtag=$webtag";
+    $uri = "discussion.php?webtag=$webtag";
 
     if (isset($_POST['t_tid']) && is_numeric($_POST['t_tid']) && isset($_POST['t_rpid']) && is_numeric($_POST['t_rpid']) ) {
         $uri.= "&msg={$_POST['t_tid']}.{$_POST['t_rpid']}";
@@ -776,14 +776,14 @@ if ($valid && isset($_POST['submit'])) {
 
             if ($newthread && $t_tid > 0) {
 
-                $uri = "./discussion.php?webtag=$webtag&msg=$t_tid.1";
+                $uri = "discussion.php?webtag=$webtag&msg=$t_tid.1";
 
             }else {
 
                 if ($t_tid > 0 && $t_rpid > 0) {
-                    $uri = "./discussion.php?webtag=$webtag&msg=$t_tid.$t_rpid";
+                    $uri = "discussion.php?webtag=$webtag&msg=$t_tid.$t_rpid";
                 }else{
-                    $uri = "./discussion.php?webtag=$webtag";
+                    $uri = "discussion.php?webtag=$webtag";
                 }
             }
 

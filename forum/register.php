@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.170 2007-12-13 21:34:32 decoyduck Exp $ */
+/* $Id: register.php,v 1.171 2007-12-26 13:19:34 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -31,7 +31,7 @@ USA
 */
 
 // Constant to define where the include files are
-define("BH_INCLUDE_PATH", "./include/");
+define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");

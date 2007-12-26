@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.129 2007-10-11 13:01:18 decoyduck Exp $ */
+/* $Id: fixhtml.inc.php,v 1.130 2007-12-26 13:19:35 decoyduck Exp $ */
 
 /** A range of functions for filtering/cleaning posted HTML
 *
@@ -77,7 +77,7 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
     $fix_html_quote_text = 'quote:';
     $fix_html_spoiler_text = 'spoiler:';
 
-    $geshi_path = "./geshi/geshi";
+    $geshi_path = "geshi/geshi";
 
     $code_highlighter = new GeSHi("", "", $geshi_path);
 

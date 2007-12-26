@@ -21,10 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.192 2007-12-10 20:45:31 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.193 2007-12-26 13:19:34 decoyduck Exp $ */
 
 // Constant to define where the include files are
-define("BH_INCLUDE_PATH", "./include/");
+define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
@@ -76,7 +76,7 @@ include_once(BH_INCLUDE_PATH. "thread.inc.php");
 if (!$user_sess = bh_session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     $webtag = get_webtag($webtag_search);
-    header_redirect("./logon.php?webtag=$webtag&final_uri=$request_uri");
+    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
@@ -219,11 +219,11 @@ if (isset($_GET['folder'])) {
 if (isset($_POST['cancel'])) {
 
     if (isset($t_rmid) && $t_rmid > 0) {
-        $uri = "./pm.php?webtag=$webtag&mid=$t_rmid";
+        $uri = "pm.php?webtag=$webtag&mid=$t_rmid";
     }elseif (isset($t_fwd) && $t_fwd > 0) {
-        $uri = "./pm.php?webtag=$webtag&mid=$t_fwd";
+        $uri = "pm.php?webtag=$webtag&mid=$t_fwd";
     }else {
-        $uri = "./pm.php?webtag=$webtag";
+        $uri = "pm.php?webtag=$webtag";
     }
 
     header_redirect($uri);
@@ -720,9 +720,9 @@ if ($valid && isset($_POST['submit'])) {
     if ($valid) {
 
         if (isset($mid)) {
-            $uri = "./pm.php?webtag=$webtag&mid=$mid&message_sent=true";
+            $uri = "pm.php?webtag=$webtag&mid=$mid&message_sent=true";
         }else {
-            $uri = "./pm.php?webtag=$webtag&message_sent=true";
+            $uri = "pm.php?webtag=$webtag&message_sent=true";
         }
 
         header_redirect($uri);

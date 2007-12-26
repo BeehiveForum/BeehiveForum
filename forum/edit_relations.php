@@ -21,10 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_relations.php,v 1.80 2007-10-12 23:28:12 decoyduck Exp $ */
+/* $Id: edit_relations.php,v 1.81 2007-12-26 13:19:33 decoyduck Exp $ */
 
 // Constant to define where the include files are
-define("BH_INCLUDE_PATH", "./include/");
+define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
@@ -71,7 +71,7 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 if (!$user_sess = bh_session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     $webtag = get_webtag($webtag_search);
-    header_redirect("./logon.php?webtag=$webtag&final_uri=$request_uri");
+    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
@@ -94,7 +94,7 @@ if (!bh_session_user_approved()) {
 
 if (!$webtag = get_webtag($webtag_search)) {
     $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
+    header_redirect("forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
 // Load language file
@@ -105,7 +105,7 @@ $lang = load_language_file();
 
 if (!forum_check_access_level()) {
     $request_uri = rawurlencode(get_request_uri());
-    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
+    header_redirect("forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
 if (user_is_guest()) {
@@ -180,7 +180,7 @@ if (isset($_POST['delete'])) {
 
         if ($valid) {
 
-            $redirect = "./edit_relations.php?webtag=$webtag&relupdated=true";
+            $redirect = "edit_relations.php?webtag=$webtag&relupdated=true";
             header_redirect($redirect, $lang['relationshipsupdated']);
             exit;
         }

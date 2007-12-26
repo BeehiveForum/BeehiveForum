@@ -21,10 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_items.php,v 1.119 2007-11-06 21:05:24 decoyduck Exp $ */
+/* $Id: admin_prof_items.php,v 1.120 2007-12-26 13:19:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
-define("BH_INCLUDE_PATH", "./include/");
+define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
@@ -71,7 +71,7 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 if (!$user_sess = bh_session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     $webtag = get_webtag($webtag_search);
-    header_redirect("./logon.php?webtag=$webtag&final_uri=$request_uri");
+    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
@@ -86,7 +86,7 @@ if (bh_session_user_banned()) {
 
 if (!$webtag = get_webtag($webtag_search)) {
     $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
+    header_redirect("forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
 // Load language file
@@ -191,12 +191,12 @@ if (isset($_POST['back'])) {
 
     if (isset($viewitems)) {
 
-        $redirect = "./admin_prof_sect.php?webtag=$webtag&page=$sect_page";
+        $redirect = "admin_prof_sect.php?webtag=$webtag&page=$sect_page";
         header_redirect($redirect);
 
     }else {
 
-        $redirect = "./admin_prof_sect.php?webtag=$webtag&psid=$psid&page=$sect_page";
+        $redirect = "admin_prof_sect.php?webtag=$webtag&psid=$psid&page=$sect_page";
         header_redirect($redirect);
     }
 }
@@ -400,7 +400,7 @@ if (isset($_POST['additemsubmit'])) {
 
 }elseif (isset($_POST['additem'])) {
 
-    $redirect = "./admin_prof_items.php?webtag=$webtag&psid=$psid&additem=true&sect_page=$sect_page";
+    $redirect = "admin_prof_items.php?webtag=$webtag&psid=$psid&additem=true&sect_page=$sect_page";
     header_redirect($redirect);
     exit;
 }

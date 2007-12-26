@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.271 2007-12-20 11:18:31 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.272 2007-12-26 13:19:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -705,7 +705,7 @@ function html_draw_top()
     }
 
     if ($meta_refresh_delay && $meta_refresh_url) {
-        echo "<meta http-equiv=\"refresh\" content=\"{$meta_refresh_delay}; url=./{$meta_refresh_url}\" />\n";
+        echo "<meta http-equiv=\"refresh\" content=\"{$meta_refresh_delay}; url={$meta_refresh_url}\" />\n";
     }
 
     if (basename($_SERVER['PHP_SELF']) == "index.php") {
@@ -754,11 +754,11 @@ function html_draw_top()
     echo "</script>\n";
 
     if ($modified_time = @filemtime("js/general.js")) {
-        echo sprintf("<script language=\"Javascript\" type=\"text/javascript\" src=\"./js/general.js?%s\"></script>\n", date('YmdHis', $modified_time));
+        echo sprintf("<script language=\"Javascript\" type=\"text/javascript\" src=\"js/general.js?%s\"></script>\n", date('YmdHis', $modified_time));
     }
 
     if ($modified_time = @filemtime("js/xml_http.js")) {
-        echo sprintf("<script language=\"Javascript\" type=\"text/javascript\" src=\"./js/xml_http.js?%s\"></script>\n", date('YmdHis', $modified_time));
+        echo sprintf("<script language=\"Javascript\" type=\"text/javascript\" src=\"js/xml_http.js?%s\"></script>\n", date('YmdHis', $modified_time));
     }
 
     // Font size (not for Guests)
@@ -904,7 +904,7 @@ function html_draw_top()
 
                     if ($modified_time = @filemtime("js/spoiler.js")) {
 
-                        echo sprintf("<script language=\"Javascript\" type=\"text/javascript\" src=\"./js/spoiler.js?%s\"></script>\n", date('YmdHis', $modified_time));
+                        echo sprintf("<script language=\"Javascript\" type=\"text/javascript\" src=\"js/spoiler.js?%s\"></script>\n", date('YmdHis', $modified_time));
                         if (!in_array("spoilerInitialise", $onload_array)) $onload_array[] = "spoilerInitialise()";
                     }
                 }
@@ -1042,7 +1042,7 @@ function html_draw_top()
                 echo "                longest_thread_tid = longest_thread_xml.getElementsByTagName('tid')[0].childNodes[0].nodeValue;\n";
                 echo "                longest_thread_title = longest_thread_xml.getElementsByTagName('title')[0].childNodes[0].nodeValue;\n";
                 echo "                longest_thread_length = longest_thread_xml.getElementsByTagName('length')[0].childNodes[0].nodeValue;\n\n";
-                echo "                longest_thread_link = sprintf('<a href=\"./index.php?webtag=$webtag&amp;msg=%s.1\">%s</a>', longest_thread_tid, longest_thread_title);\n";
+                echo "                longest_thread_link = sprintf('<a href=\"index.php?webtag=$webtag&amp;msg=%s.1\">%s</a>', longest_thread_tid, longest_thread_title);\n";
                 echo "                longest_thread_post_count = (longest_thread_length != 1) ? sprintf(lang['numpostscreated'], longest_thread_length) : lang['onepostcreated'];\n\n";
                 echo "                longest_thread_text = sprintf(lang['longestthreadisthreadnamewithnumposts'], longest_thread_link, longest_thread_post_count);\n\n";
                 echo "                thread_stats_obj.innerHTML+= longest_thread_text;\n";

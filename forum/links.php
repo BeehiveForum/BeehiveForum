@@ -21,10 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.php,v 1.106 2007-10-25 13:48:51 decoyduck Exp $ */
+/* $Id: links.php,v 1.107 2007-12-26 13:19:34 decoyduck Exp $ */
 
 // Constant to define where the include files are
-define("BH_INCLUDE_PATH", "./include/");
+define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
@@ -69,7 +69,7 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 if (!$user_sess = bh_session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     $webtag = get_webtag($webtag_search);
-    header_redirect("./logon.php?webtag=$webtag&final_uri=$request_uri");
+    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
@@ -92,7 +92,7 @@ if (!bh_session_user_approved()) {
 
 if (!$webtag = get_webtag($webtag_search)) {
     $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
+    header_redirect("forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
 // Load language file
@@ -104,7 +104,7 @@ $lang = load_language_file();
 if (!forum_check_access_level()) {
 
     $request_uri = rawurlencode(get_request_uri());
-    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
+    header_redirect("forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
 if (!forum_get_setting('show_links', 'Y')) {
@@ -128,7 +128,7 @@ if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
 }else {
 
     links_create_top_folder($lang['toplevel']);
-    header_redirect("./links.php?fid=1");
+    header_redirect("links.php?fid=1");
 }
 
 if (isset($_GET['action'])) {
@@ -143,7 +143,7 @@ if (isset($_GET['action'])) {
             $fid = 1;
         }
 
-        header_redirect("./links.php?fid=$fid");
+        header_redirect("links.php?fid=$fid");
 
     }elseif (bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0) && $_GET['action'] == "foldershow") {
 
@@ -155,7 +155,7 @@ if (isset($_GET['action'])) {
             $fid = 1;
         }
 
-        header_redirect("./links.php?fid=$fid");
+        header_redirect("links.php?fid=$fid");
 
     }elseif (bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0) && $_GET['action'] == "folderdel") {
 
@@ -168,7 +168,7 @@ if (isset($_GET['action'])) {
             $fid = 1;
         }
 
-        header_redirect("./links.php?fid=$fid");
+        header_redirect("links.php?fid=$fid");
 
     }elseif ($_GET['action'] == "go") {
 

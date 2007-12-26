@@ -21,10 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_password.php,v 1.19 2007-10-11 13:01:14 decoyduck Exp $ */
+/* $Id: forum_password.php,v 1.20 2007-12-26 13:19:33 decoyduck Exp $ */
 
 // Constant to define where the include files are
-define("BH_INCLUDE_PATH", "./include/");
+define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
@@ -55,7 +55,7 @@ if (!$user_sess = bh_session_check()) {
 
     $request_uri = rawurlencode(get_request_uri());
     $webtag = get_webtag($webtag_search);
-    header_redirect("./logon.php?webtag=$webtag&final_uri=$request_uri");
+    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
@@ -94,7 +94,7 @@ if (isset($_GET['webtag'])) {
 
 if (isset($_POST['cancel'])) {
 
-    $redirect_uri = "./index.php?final_uri=forums.php%3Fwebtag%3D$webtag";
+    $redirect_uri = "index.php?final_uri=forums.php%3Fwebtag%3D$webtag";
     header_redirect($redirect_uri);
 }
 

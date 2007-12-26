@@ -21,10 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.126 2007-10-12 23:28:12 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.127 2007-12-26 13:19:33 decoyduck Exp $ */
 
 // Constant to define where the include files are
-define("BH_INCLUDE_PATH", "./include/");
+define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
@@ -71,7 +71,7 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 if (!$user_sess = bh_session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     $webtag = get_webtag($webtag_search);
-    header_redirect("./logon.php?webtag=$webtag&final_uri=$request_uri");
+    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
@@ -94,7 +94,7 @@ if (!bh_session_user_approved()) {
 
 if (!$webtag = get_webtag($webtag_search)) {
     $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
+    header_redirect("forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
 // Load language file
@@ -105,7 +105,7 @@ $lang = load_language_file();
 
 if (!forum_check_access_level()) {
     $request_uri = rawurlencode(get_request_uri());
-    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
+    header_redirect("forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
 // Guests can't access this page.
@@ -423,7 +423,7 @@ if (isset($_POST['submit'])) {
 
     if (user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
 
-        header_redirect("./forum_options.php?webtag=$webtag&updated=true", $lang['preferencesupdated']);
+        header_redirect("forum_options.php?webtag=$webtag&updated=true", $lang['preferencesupdated']);
         exit;
 
     }else {
@@ -709,7 +709,7 @@ echo "                <tr>\n";
 echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_radio("toolbar_toggle", "1", $lang['displaysimpletoolbar'], $user_prefs['POST_PAGE'] & POST_TOOLBAR_DISPLAY), "</td>\n";
 echo "                </tr>\n";
 
-if (@file_exists("./tiny_mce/tiny_mce.js")) {
+if (@file_exists("tiny_mce/tiny_mce.js")) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_radio("toolbar_toggle", "2", $lang['displaytinymcetoolbar'], $user_prefs['POST_PAGE'] & POST_TINYMCE_DISPLAY), "</td>\n";

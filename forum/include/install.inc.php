@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.65 2007-12-13 20:14:51 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.66 2007-12-26 13:19:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -72,8 +72,8 @@ function check_install()
             echo "<head>\n";
             echo "<title>Beehive Forum ", BEEHIVE_VERSION, " - Installation</title>\n";
             echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
-            echo "<link rel=\"icon\" href=\"./images/favicon.ico\" type=\"image/ico\">\n";
-            echo "<link rel=\"stylesheet\" href=\"./styles/style.css\" type=\"text/css\" />\n";
+            echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\">\n";
+            echo "<link rel=\"stylesheet\" href=\"styles/style.css\" type=\"text/css\" />\n";
             echo "</head>\n";
             echo "<h1>Beehive Forum Installation Error</h1>\n";
             echo "<br />\n";
@@ -107,7 +107,7 @@ function check_install()
             echo "      </td>\n";
             echo "    </tr>\n";
             echo "  </table>\n";
-            echo "  <form method=\"get\" action=\"./index.php\">\n";
+            echo "  <form method=\"get\" action=\"index.php\">\n";
             echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
             echo "      <tr>\n";
             echo "        <td align=\"left\" width=\"500\">&nbsp;</td>\n";
@@ -126,7 +126,7 @@ function check_install()
         return;
     }
 
-    header_redirect("./install.php");
+    header_redirect("install.php");
 }
 
 function install_remove_files()
@@ -170,8 +170,8 @@ function install_incomplete()
     echo "<head>\n";
     echo "<title>Beehive Forum ", BEEHIVE_VERSION, " - Installation</title>\n";
     echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
-    echo "<link rel=\"icon\" href=\"./images/favicon.ico\" type=\"image/ico\">\n";
-    echo "<link rel=\"stylesheet\" href=\"./styles/style.css\" type=\"text/css\" />\n";
+    echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\">\n";
+    echo "<link rel=\"stylesheet\" href=\"styles/style.css\" type=\"text/css\" />\n";
     echo "</head>\n";
     echo "<h1>Beehive Forum Installation Error</h1>\n";
     echo "<br />\n";
@@ -205,7 +205,7 @@ function install_incomplete()
     echo "      </td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
-    echo "  <form method=\"get\" action=\"./install.php\" target=\"", html_get_top_frame_name(), "\">\n";
+    echo "  <form method=\"get\" action=\"install.php\" target=\"", html_get_top_frame_name(), "\">\n";
     echo "    <input type=\"hidden\" name=\"force_install\" value=\"yes\" />\n";
     echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "      <tr>\n";
@@ -232,8 +232,8 @@ function install_missing_files()
     echo "<head>\n";
     echo "<title>Beehive Forum ", BEEHIVE_VERSION, " - Installation</title>\n";
     echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
-    echo "<link rel=\"icon\" href=\"./images/favicon.ico\" type=\"image/ico\">\n";
-    echo "<link rel=\"stylesheet\" href=\"./styles/style.css\" type=\"text/css\" />\n";
+    echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\">\n";
+    echo "<link rel=\"stylesheet\" href=\"styles/style.css\" type=\"text/css\" />\n";
     echo "</head>\n";
     echo "<h1>Beehive Forum Installation Error</h1>\n";
     echo "<br />\n";
@@ -285,8 +285,8 @@ function install_check_mysql_version()
             echo "<head>\n";
             echo "<title>Beehive Forum ", BEEHIVE_VERSION, " - Installation</title>\n";
             echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
-            echo "<link rel=\"icon\" href=\"./images/favicon.ico\" type=\"image/ico\">\n";
-            echo "<link rel=\"stylesheet\" href=\"./styles/style.css\" type=\"text/css\" />\n";
+            echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\">\n";
+            echo "<link rel=\"stylesheet\" href=\"styles/style.css\" type=\"text/css\" />\n";
             echo "</head>\n";
             echo "<h1>Beehive Forum Minimum Requirements Error</h1>\n";
             echo "<br />\n";
@@ -338,8 +338,8 @@ function install_check_php_version()
         echo "<head>\n";
         echo "<title>Beehive Forum ", BEEHIVE_VERSION, " - Installation</title>\n";
         echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
-        echo "<link rel=\"icon\" href=\"./images/favicon.ico\" type=\"image/ico\">\n";
-        echo "<link rel=\"stylesheet\" href=\"./styles/style.css\" type=\"text/css\" />\n";
+        echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\">\n";
+        echo "<link rel=\"stylesheet\" href=\"styles/style.css\" type=\"text/css\" />\n";
         echo "</head>\n";
         echo "<h1>Beehive Forum Minimum Requirements Error</h1>\n";
         echo "<br />\n";

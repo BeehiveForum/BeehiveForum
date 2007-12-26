@@ -21,10 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.84 2007-12-08 17:38:27 decoyduck Exp $ */
+/* $Id: install.php,v 1.85 2007-12-26 13:19:34 decoyduck Exp $ */
 
 // Constant to define where the include files are
-define("BH_INCLUDE_PATH", "./include/");
+define("BH_INCLUDE_PATH", "include/");
 
 // Installer Detection
 define("BEEHIVEMODE_INSTALL", true);
@@ -195,33 +195,33 @@ if (isset($_POST['install_method'])) {
 
             // Check the install method
 
-            if (($install_method == 5) && (@file_exists('./install/upgrade-08-to-081.php'))) {
+            if (($install_method == 5) && (@file_exists('install/upgrade-08-to-081.php'))) {
 
-                include_once("./install/upgrade-08-to-081.php");
+                include_once("install/upgrade-08-to-081.php");
 
-            }elseif (($install_method == 4) && (@file_exists('./install/upgrade-07x-to-081.php'))) {
+            }elseif (($install_method == 4) && (@file_exists('install/upgrade-07x-to-081.php'))) {
 
-                include_once("./install/upgrade-07x-to-081.php");
+                include_once("install/upgrade-07x-to-081.php");
 
-            }elseif (($install_method == 3) && (@file_exists('./install/upgrade-06x-to-081.php'))) {
+            }elseif (($install_method == 3) && (@file_exists('install/upgrade-06x-to-081.php'))) {
 
-                include_once("./install/upgrade-06x-to-081.php");
+                include_once("install/upgrade-06x-to-081.php");
 
-            }elseif (($install_method == 1) && (@file_exists('./install/new-install.php'))) {
+            }elseif (($install_method == 1) && (@file_exists('install/new-install.php'))) {
 
                 $remove_conflicts = true;
-                include_once("./install/new-install.php");
+                include_once("install/new-install.php");
 
-            }elseif (($install_method == 0) && (@file_exists('./install/new-install.php'))) {
+            }elseif (($install_method == 0) && (@file_exists('install/new-install.php'))) {
 
-                include_once("./install/new-install.php");
+                include_once("install/new-install.php");
             }
 
             if ($valid) {
 
                 $config_file = "";
 
-                if (@$fp = fopen('./install/config.inc.php', 'r')) {
+                if (@$fp = fopen('install/config.inc.php', 'r')) {
 
                     while (!feof($fp)) {
 
@@ -258,8 +258,8 @@ if (isset($_POST['install_method'])) {
                     echo "<head>\n";
                     echo "<title>Beehive Forum ", BEEHIVE_VERSION, " Installation</title>\n";
                     echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
-                    echo "<link rel=\"icon\" href=\"./images/favicon.ico\" type=\"image/ico\" />\n";
-                    echo "<link rel=\"stylesheet\" href=\"./styles/style.css\" type=\"text/css\" />\n";
+                    echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\" />\n";
+                    echo "<link rel=\"stylesheet\" href=\"styles/style.css\" type=\"text/css\" />\n";
                     echo "</head>\n";
                     echo "<h1>Beehive Forum ", BEEHIVE_VERSION, " Installation</h1>\n";
                     echo "<br />\n";
@@ -400,7 +400,7 @@ if (isset($_POST['install_method'])) {
 
     $config_file = "";
 
-    if (@$fp = fopen('./install/config.inc.php', 'r')) {
+    if (@$fp = fopen('install/config.inc.php', 'r')) {
 
         while (!feof($fp)) {
 
@@ -457,8 +457,8 @@ if (isset($_POST['install_method'])) {
             echo "<head>\n";
             echo "<title>Beehive Forum ", BEEHIVE_VERSION, " - Installation</title>\n";
             echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
-            echo "<link rel=\"icon\" href=\"./images/favicon.ico\" type=\"image/ico\" />\n";
-            echo "<link rel=\"stylesheet\" href=\"./styles/style.css\" type=\"text/css\" />\n";
+            echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\" />\n";
+            echo "<link rel=\"stylesheet\" href=\"styles/style.css\" type=\"text/css\" />\n";
             echo "</head>\n";
             echo "<h1>Beehive Forum ", BEEHIVE_VERSION, " Installation</h1>\n";
             echo "<br />\n";
@@ -519,7 +519,7 @@ if (isset($_POST['install_method'])) {
             echo "      </td>\n";
             echo "    </tr>\n";
             echo "  </table>\n";
-            echo "  <form method=\"post\" action=\"./install.php\">\n";
+            echo "  <form method=\"post\" action=\"install.php\">\n";
             echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
             echo "      <tr>\n";
             echo "        <td align=\"left\" width=\"500\">&nbsp;</td>\n";
@@ -548,10 +548,10 @@ echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" d
 echo "<head>\n";
 echo "<title>Beehive Forum ", BEEHIVE_VERSION, " - Installation</title>\n";
 echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
-echo "<link rel=\"icon\" href=\"./images/favicon.ico\" type=\"image/ico\" />\n";
-echo "<link rel=\"stylesheet\" href=\"./styles/style.css\" type=\"text/css\" />\n";
-echo "<script language=\"javascript\" type=\"text/javascript\" src=\"./js/general.js\"></script>\n";
-echo "<script language=\"javascript\" type=\"text/javascript\" src=\"./js/install.js\"></script>\n";
+echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\" />\n";
+echo "<link rel=\"stylesheet\" href=\"styles/style.css\" type=\"text/css\" />\n";
+echo "<script language=\"javascript\" type=\"text/javascript\" src=\"js/general.js\"></script>\n";
+echo "<script language=\"javascript\" type=\"text/javascript\" src=\"js/install.js\"></script>\n";
 echo "</head>\n";
 echo "<body>\n";
 echo "<form id=\"install_form\" method=\"post\" action=\"install.php\">\n";
@@ -571,7 +571,7 @@ if (isset($error_array) && sizeof($error_array) > 0) {
     echo "      <td align=\"left\" colspan=\"2\"><hr /></td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"left\"><img src=\"./images/warning.png\" alt=\"Warning\" title=\"Warning\" /></td>\n";
+    echo "      <td align=\"left\"><img src=\"images/warning.png\" alt=\"Warning\" title=\"Warning\" /></td>\n";
     echo "      <td align=\"left\"><h2>The following errors need correcting before you continue</h2></td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
@@ -594,7 +594,7 @@ echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table cellpadding=\"2\" cellspacing=\"0\" class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" nowrap=\"nowrap\" class=\"subhead\">Basic Configuration</td>\n";
-echo "                  <td nowrap=\"nowrap\" class=\"subhead\" align=\"right\"><a href=\"javascript:void(0)\" onclick=\"return showInstallHelp(0)\" tabindex=\"15\"><img src=\"./images/help.png\" border=\"0\" alt=\"Help!\" title=\"Help!\" /></a></td>\n";
+echo "                  <td nowrap=\"nowrap\" class=\"subhead\" align=\"right\"><a href=\"javascript:void(0)\" onclick=\"return showInstallHelp(0)\" tabindex=\"15\"><img src=\"images/help.png\" border=\"0\" alt=\"Help!\" title=\"Help!\" /></a></td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\" colspan=\"2\">\n";
@@ -640,7 +640,7 @@ echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table cellpadding=\"2\" cellspacing=\"0\" class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" nowrap=\"nowrap\" class=\"subhead\">MySQL Database Configuration</td>\n";
-echo "                  <td nowrap=\"nowrap\" class=\"subhead\" align=\"right\"><a href=\"javascript:void(0)\" onclick=\"return showInstallHelp(1)\" tabindex=\"16\"><img src=\"./images/help.png\" border=\"0\" alt=\"Help!\" title=\"Help!\" /></a></td>\n";
+echo "                  <td nowrap=\"nowrap\" class=\"subhead\" align=\"right\"><a href=\"javascript:void(0)\" onclick=\"return showInstallHelp(1)\" tabindex=\"16\"><img src=\"images/help.png\" border=\"0\" alt=\"Help!\" title=\"Help!\" /></a></td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\" colspan=\"2\">\n";
@@ -688,7 +688,7 @@ echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table cellpadding=\"2\" cellspacing=\"0\" class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" nowrap=\"nowrap\" class=\"subhead\">Admin Account (New installations only)</td>\n";
-echo "                  <td nowrap=\"nowrap\" class=\"subhead\" align=\"right\"><a href=\"javascript:void(0)\" onclick=\"return showInstallHelp(2)\" tabindex=\"17\"><img src=\"./images/help.png\" border=\"0\" alt=\"Help!\" title=\"Help!\" /></a></td>\n";
+echo "                  <td nowrap=\"nowrap\" class=\"subhead\" align=\"right\"><a href=\"javascript:void(0)\" onclick=\"return showInstallHelp(2)\" tabindex=\"17\"><img src=\"images/help.png\" border=\"0\" alt=\"Help!\" title=\"Help!\" /></a></td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\" colspan=\"2\">\n";
@@ -732,7 +732,7 @@ echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table cellpadding=\"2\" cellspacing=\"0\" class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" nowrap=\"nowrap\" class=\"subhead\">Advanced Options</td>\n";
-echo "                  <td nowrap=\"nowrap\" class=\"subhead\" align=\"right\"><a href=\"javascript:void(0)\" onclick=\"return showInstallHelp(3)\" tabindex=\"18\"><img src=\"./images/help.png\" border=\"0\" alt=\"Help!\" title=\"Help!\" /></a></td>\n";
+echo "                  <td nowrap=\"nowrap\" class=\"subhead\" align=\"right\"><a href=\"javascript:void(0)\" onclick=\"return showInstallHelp(3)\" tabindex=\"18\"><img src=\"images/help.png\" border=\"0\" alt=\"Help!\" title=\"Help!\" /></a></td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\" colspan=\"2\">\n";

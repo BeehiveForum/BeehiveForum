@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: styles.inc.php,v 1.15 2007-10-11 13:01:20 decoyduck Exp $ */
+/* $Id: styles.inc.php,v 1.16 2007-12-26 13:19:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -45,17 +45,17 @@ function styles_get_available($inc_global_only = false)
     $available_global_styles = array();
     $available_forum_styles  = array();
 
-    if (@$dir = opendir("./styles")) {
+    if (@$dir = opendir("styles")) {
 
         while (($file = readdir($dir)) !== false) {
 
             if (@is_dir("styles/$file") && $file != '.' && $file != '..') {
 
-                if (@file_exists("./styles/$file/style.css")) {
+                if (@file_exists("styles/$file/style.css")) {
 
-                    if (@file_exists("./styles/$file/desc.txt")) {
+                    if (@file_exists("styles/$file/desc.txt")) {
 
-                        $global_style_name = implode("", file("./styles/$file/desc.txt"));
+                        $global_style_name = implode("", file("styles/$file/desc.txt"));
                         $available_global_styles[$file] = _htmlentities($global_style_name);
 
                     }else {
@@ -71,17 +71,17 @@ function styles_get_available($inc_global_only = false)
 
     if ($inc_global_only === true) {
 
-        if (@$dir = opendir("./forums/$webtag/styles")) {
+        if (@$dir = opendir("forums/$webtag/styles")) {
 
             while (($file = readdir($dir)) !== false) {
 
-                if (@is_dir("./forums/$webtag/styles/$file") && $file != '.' && $file != '..') {
+                if (@is_dir("forums/$webtag/styles/$file") && $file != '.' && $file != '..') {
 
-                    if (@file_exists("./forums/$webtag/styles/$file/style.css")) {
+                    if (@file_exists("forums/$webtag/styles/$file/style.css")) {
 
-                        if (@file_exists("./forums/$webtag/styles/$file/desc.txt")) {
+                        if (@file_exists("forums/$webtag/styles/$file/desc.txt")) {
 
-                            $local_style_name = implode("", file("./forums/$webtag/styles/$file/desc.txt"));
+                            $local_style_name = implode("", file("forums/$webtag/styles/$file/desc.txt"));
                             $available_forum_styles[$file] = _htmlentities($local_style_name);
 
                         }else {
@@ -121,11 +121,11 @@ function style_exists ($style)
 {
     $webtag = get_webtag($webtag_search);
 
-    if (@file_exists("./styles/$style/style.css")) {
+    if (@file_exists("styles/$style/style.css")) {
         return true;
     }
 
-    if (@file_exists("./forums/$webtag/styles/$style/style.css")) {
+    if (@file_exists("forums/$webtag/styles/$style/style.css")) {
         return true;
     }
 

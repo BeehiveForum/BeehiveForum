@@ -21,10 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogon.php,v 1.62 2007-10-11 13:01:15 decoyduck Exp $ */
+/* $Id: llogon.php,v 1.63 2007-12-26 13:19:34 decoyduck Exp $ */
 
 // Constant to define where the include files are
-define("BH_INCLUDE_PATH", "./include/");
+define("BH_INCLUDE_PATH", "include/");
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -101,7 +101,7 @@ if (isset($_POST['user_logon']) && isset($_POST['user_password'])) {
 
     if (logon_perform(true)) {
 
-        header_redirect("./lthread_list.php?webtag=$webtag", $lang['loggedinsuccessfully']);
+        header_redirect("lthread_list.php?webtag=$webtag", $lang['loggedinsuccessfully']);
 
     }else {
 

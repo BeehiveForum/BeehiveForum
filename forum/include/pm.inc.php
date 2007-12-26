@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.233 2007-12-07 23:49:12 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.234 2007-12-26 13:19:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -2234,7 +2234,7 @@ function pm_export_html_top($mid)
         $html.= sprintf("<title>{$lang['pmmessagenumber']}</title>\n", $mid);
     }
 
-    if (@file_exists("./styles/style.css")) {
+    if (@file_exists("styles/style.css")) {
         $html.= "<link rel=\"stylesheet\" href=\"styles/style.css\" type=\"text/css\" />\n";
     }
 
@@ -2312,16 +2312,16 @@ function pm_export($folder)
 
             if ($pm_export_style == "Y") {
 
-                if (@file_exists("./styles/style.css")) {
+                if (@file_exists("styles/style.css")) {
 
-                    $stylesheet_content = implode("", file("./styles/style.css"));
+                    $stylesheet_content = implode("", file("styles/style.css"));
                     $zip_file->add_file($stylesheet_content, "styles/style.css");
                 }
             }
 
-            if (@file_exists("./js/openprofile.js")) {
+            if (@file_exists("js/openprofile.js")) {
 
-                $javascript_content = implode("", file("./js/openprofile.js"));
+                $javascript_content = implode("", file("js/openprofile.js"));
                 $zip_file->add_file($javascript_content, "js/openprofile.js");
             }
 

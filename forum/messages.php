@@ -21,14 +21,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.250 2007-12-03 18:38:49 decoyduck Exp $ */
+/* $Id: messages.php,v 1.251 2007-12-26 13:19:34 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
 */
 
 // Constant to define where the include files are
-define("BH_INCLUDE_PATH", "./include/");
+define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
@@ -79,7 +79,7 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 if (!$user_sess = bh_session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     $webtag = get_webtag($webtag_search);
-    header_redirect("./logon.php?webtag=$webtag&final_uri=$request_uri");
+    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
@@ -102,7 +102,7 @@ if (!bh_session_user_approved()) {
 
 if (!$webtag = get_webtag($webtag_search)) {
     $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
+    header_redirect("forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
 // Load language file
@@ -113,7 +113,7 @@ $lang = load_language_file();
 
 if (!forum_check_access_level()) {
     $request_uri = rawurlencode(get_request_uri());
-    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
+    header_redirect("forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
 // User UID for fetching recent message
@@ -541,7 +541,7 @@ echo "    <td width=\"33%\" align=\"right\">";
 if ($last_pid < $thread_data['LENGTH']) {
 
     $npid = $last_pid + 1;
-    echo form_quick_button("./messages.php", "{$lang['keepreading']}  &raquo;", array('msg' => "$tid.$npid"));
+    echo form_quick_button("messages.php", "{$lang['keepreading']}  &raquo;", array('msg' => "$tid.$npid"));
 
 }else {
 

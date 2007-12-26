@@ -21,10 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogout.php,v 1.51 2007-10-11 13:01:15 decoyduck Exp $ */
+/* $Id: llogout.php,v 1.52 2007-12-26 13:19:34 decoyduck Exp $ */
 
 // Constant to define where the include files are
-define("BH_INCLUDE_PATH", "./include/");
+define("BH_INCLUDE_PATH", "include/");
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -84,7 +84,7 @@ if (user_is_guest()) {
 
     bh_session_remove_cookies();
     bh_setcookie("bh_logon", "1");
-    header_redirect("./llogon.php?webtag=$webtag");
+    header_redirect("llogon.php?webtag=$webtag");
 }
 
 // Where are we going after we've logged off?
@@ -92,7 +92,7 @@ if (user_is_guest()) {
 if (isset($_POST['submit'])) {
 
     bh_session_end();
-    header_redirect("./llogon.php?webtag=$webtag", $lang['youhaveloggedout']);
+    header_redirect("llogon.php?webtag=$webtag", $lang['youhaveloggedout']);
 }
 
 light_html_draw_top();

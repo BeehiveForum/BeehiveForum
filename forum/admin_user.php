@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.227 2007-10-12 23:28:12 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.228 2007-12-26 13:19:33 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -30,7 +30,7 @@ USA
 */
 
 // Constant to define where the include files are
-define("BH_INCLUDE_PATH", "./include/");
+define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
 include_once(BH_INCLUDE_PATH. "server.inc.php");
@@ -88,7 +88,7 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 if (!$user_sess = bh_session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     $webtag = get_webtag($webtag_search);
-    header_redirect("./logon.php?webtag=$webtag&final_uri=$request_uri");
+    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.
@@ -132,11 +132,11 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 }
 
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
-    $ret = "./messages.php?webtag=$webtag&msg={$_GET['msg']}";
+    $ret = "messages.php?webtag=$webtag&msg={$_GET['msg']}";
 }elseif (isset($_POST['ret']) && strlen(trim(_stripslashes($_POST['ret']))) > 0) {
     $ret = rawurldecode(trim(_stripslashes($_POST['ret'])));
 }else {
-    $ret = "./admin_users.php?webtag=$webtag";
+    $ret = "admin_users.php?webtag=$webtag";
 }
 
 // validate the return to page
@@ -147,7 +147,7 @@ if (isset($ret) && strlen(trim($ret)) > 0) {
     $available_files_preg = implode("|^", array_map('preg_quote_callback', $available_files));
 
     if (preg_match("/^$available_files_preg/", basename($ret)) < 1) {
-        $ret = "./admin_users.php?webtag=$webtag";
+        $ret = "admin_users.php?webtag=$webtag";
     }
 }
 
@@ -158,7 +158,12 @@ if (isset($_POST['cancel'])) {
 if (isset($_POST['edit_users']) && is_array($_POST['edit_users'])) {
 
     list($gid) = array_keys($_POST['edit_users']);
-    header_redirect("./admin_user_groups_edit_users.php?webtag=$webtag&gid=$gid");
+
+    $redirect_uri = "admin_user_groups_edit_users.php?webtag=$webtag&gid=$gid";
+    $redirect_uri.= "&ret=admin_user.php%3Fwebtag%3D$webtag%26uid=$uid%26ret%3D";
+    $redirect_uri.= rawurlencode($ret);
+
+    header_redirect($redirect_uri);
 }
 
 // Array to hold error messages

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.162 2007-12-26 13:19:33 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.163 2007-12-26 17:44:35 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -144,6 +144,9 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
     $page = 1;
 }
 
+$start = floor($page - 1) * 10;
+if ($start < 0) $start = 0;
+
 if (isset($_GET['usersearch']) && strlen(trim(_stripslashes($_GET['usersearch']))) > 0) {
     $usersearch = trim(_stripslashes($_GET['usersearch']));
 }elseif (isset($_POST['usersearch']) && strlen(trim(_stripslashes($_POST['usersearch']))) > 0) {
@@ -245,6 +248,12 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
     }
 }
 
+if (isset($usersearch) && strlen($usersearch) > 0) {
+    $admin_user_array = admin_user_search($usersearch, $sort_by, $sort_dir, $filter, $start);
+}else {
+    $admin_user_array = admin_user_get_all($sort_by, $sort_dir, $filter, $start);
+}
+
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
     html_display_error_array($error_msg_array, '86%', 'center');
@@ -256,6 +265,17 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 }elseif (isset($_GET['approved'])) {
 
     html_display_success_msg($lang['successfullyapprovedselectedusers'], '86%', 'center');
+
+}elseif (sizeof($admin_user_array['user_array']) < 1) {
+
+    if (isset($usersearch) && strlen($usersearch) > 0) {
+
+        html_display_error_msg($lang['yoursearchdidnotreturnanymatches'], '86%', 'center');
+
+    }else {
+
+        html_display_error_msg($lang['nouseraccountsmatchingfilter'], '86%', 'center');
+    }
 
 }else {
 
@@ -320,15 +340,6 @@ if ($sort_by == 'REFERER' && $sort_dir == 'ASC') {
 echo "                   <td class=\"subhead\" align=\"left\">{$lang['active']}</td>\n";
 echo "                 </tr>\n";
 
-$start = floor($page - 1) * 10;
-if ($start < 0) $start = 0;
-
-if (isset($usersearch) && strlen($usersearch) > 0) {
-    $admin_user_array = admin_user_search($usersearch, $sort_by, $sort_dir, $filter, $start);
-}else {
-    $admin_user_array = admin_user_get_all($sort_by, $sort_dir, $filter, $start);
-}
-
 if (sizeof($admin_user_array['user_array']) > 0) {
 
     foreach ($admin_user_array['user_array'] as $user) {
@@ -377,23 +388,6 @@ if (sizeof($admin_user_array['user_array']) > 0) {
             echo "                   <td class=\"posthead\" align=\"left\">&nbsp;{$lang['no']}</td>\n";
         }
 
-        echo "                 </tr>\n";
-    }
-
-}else {
-
-    if (isset($usersearch) && strlen($usersearch) > 0) {
-
-        echo "                 <tr>\n";
-        echo "                   <td class=\"posthead\" colspan=\"5\" align=\"left\">&nbsp;{$lang['yoursearchdidnotreturnanymatches']}</td>\n";
-        echo "                 </tr>\n";
-
-    }else {
-
-        // Shouldn't happen ever, after all how did you get here if there are no user accounts?
-
-        echo "                 <tr>\n";
-        echo "                   <td class=\"posthead\" colspan=\"5\" align=\"left\">&nbsp;{$lang['nouseraccountsmatchingfilter']}</td>\n";
         echo "                 </tr>\n";
     }
 }

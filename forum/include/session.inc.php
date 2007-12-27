@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.333 2007-12-26 13:19:35 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.334 2007-12-27 19:10:20 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -76,7 +76,7 @@ include_once(BH_INCLUDE_PATH. "visitor_log.inc.php");
 * @param string $use_sess_hash     - Specify MD5 hash to use for session rather than user's cookie.
 */
 
-function bh_session_check($show_session_fail = true, $use_sess_hash = false)
+function bh_session_check($show_session_fail = true)
 {
     if (!$db_bh_session_check = db_connect()) return false;
 
@@ -92,14 +92,9 @@ function bh_session_check($show_session_fail = true, $use_sess_hash = false)
 
     $active_sess_cutoff = intval(forum_get_setting('active_sess_cutoff', false, 900));
 
-    // Check to see if we've been given a MD5 hash to use instead of the cookie.
+    // Check to see if we have a session cookie.
 
-    if (!is_bool($use_sess_hash) && is_md5($use_sess_hash)) {
-
-        $user_hash = $use_sess_hash;
-
-    }elseif (isset($_COOKIE['bh_sess_hash']) && is_md5($_COOKIE['bh_sess_hash'])) {
-
+    if (isset($_COOKIE['bh_sess_hash']) && is_md5($_COOKIE['bh_sess_hash'])) {
         $user_hash = $_COOKIE['bh_sess_hash'];
     }
 
@@ -137,9 +132,7 @@ function bh_session_check($show_session_fail = true, $use_sess_hash = false)
 
             // If the session belongs to a guest pass control to bh_guest_session_init();
 
-            if ($user_sess['UID'] == 0) {
-                return bh_guest_session_init($user_hash);
-            }
+            if ($user_sess['UID'] == 0) return bh_guest_session_init();
 
             // check to see if the user's credentials match the
             // ban data set up on this forum.
@@ -305,7 +298,7 @@ function bh_session_expired()
     exit;
 }
 
-function bh_guest_session_init($use_sess_hash = false, $update_visitor_log = true)
+function bh_guest_session_init($update_visitor_log = true)
 {
     if (!$db_bh_guest_session_init = db_connect()) return false;
 
@@ -317,14 +310,11 @@ function bh_guest_session_init($use_sess_hash = false, $update_visitor_log = tru
 
     $active_sess_cutoff = intval(forum_get_setting('active_sess_cutoff', false, 900));
 
-    // Check to see if we've been given a MD5 hash to use instead of the cookie.
+    // Check to see if we have a session cookie.
 
-    if (!is_bool($use_sess_hash) && is_md5($use_sess_hash)) {
-
-        $user_hash = $use_sess_hash;
-
+    if (isset($_COOKIE['bh_sess_hash']) && is_md5($_COOKIE['bh_sess_hash'])) {
+        $user_hash = $_COOKIE['bh_sess_hash'];
     }else {
-
         $user_hash = md5($ipaddress);
     }
 
@@ -343,7 +333,7 @@ function bh_guest_session_init($use_sess_hash = false, $update_visitor_log = tru
             $forum_fid = 0;
         }
 
-        $sql = "SELECT HASH, UID, UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, ";
+        $sql = "SELECT HASH, 0 AS UID, UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, ";
         $sql.= "UNIX_TIMESTAMP(NOW()) AS SERVER_TIME, FID, IPADDRESS, ";
         $sql.= "'GUEST' AS LOGON, MD5('GUEST') AS PASSWD, REFERER ";
         $sql.= "FROM SESSIONS WHERE HASH = '$user_hash' ";

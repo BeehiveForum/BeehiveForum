@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads_rss.php,v 1.54 2007-12-26 13:19:35 decoyduck Exp $ */
+/* $Id: threads_rss.php,v 1.55 2007-12-27 19:10:20 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -62,93 +62,40 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "threads.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
-$webtag = get_webtag($webtag_search);
-
 // Get the forum location accounting for forward slashes, multiple slashes, etc.
 
 $forum_location = html_get_forum_uri();
 
-// Get the Forum Name and the current date.
+// Get the Forum Name
 
 $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
 
+// Current date
+
 $build_date = gmdate("D, d M Y H:i:s");
 
-$user_hash = false;
-
-// Retrieve existing cookie data if any and try
-// and log in the last used user account.
-
-if (logon_get_cookies($username_array, $password_array, $passhash_array)) {
-
-    if (isset($username_array[0]) && strlen(trim($username_array[0])) > 0) {
-
-        if (isset($passhash_array[0]) && is_md5($passhash_array[0])) {
-
-            $username = strtoupper($username_array[0]);
-            $passhash = $passhash_array[0];
-
-            if ($uid = user_logon($username, $passhash)) {
-
-                $user_hash = bh_session_init($uid, false, true);
-            }
-        }
-    }
-}
-
-// If logon failed or there was no saved user credentials
-// we need to try and logon as a guest. If the guest account
-// is disabled we'll show a HTTP 500 error message.
-
-if (!$user_sess = bh_session_check(false, $user_hash)) {
-
-    if (!$user_sess = bh_guest_session_init(false, false)) {
-
-        html_user_banned();
-        exit;
-    }
-}
-
-// Check to see if the user is banned.
-
-if (bh_session_user_banned()) {
-
-    html_user_banned();
-    exit;
-}
-
-// Check to see if the user has been approved.
-
-if (!bh_session_user_approved()) {
-
-    html_user_banned();
-    exit;
-}
-
-// Enable caching on RSS Feed
-
-header_check_cache();
-
-// Default values (limit 20, all folders, sort by modified)
-
-$limit = 20;
-$fid_list = false;
-$sort_created = false;
-
 // Check to see if the user wants a custom number of threads.
-// Maximum to display is 20. Minimum is 1.
+// Maximum to display is 20. Minimum is 1. Default is 20.
 
 if (isset($_GET['limit']) && is_numeric($_GET['limit'])) {
 
-    $limit = $_GET['limit'];
+    if ($_GET['limit'] > 20) {
 
-    if ($limit > 20) $limit = 20;
-    if ($limit < 1)  $limit = 1;
+        $limit = 20;
+
+    }else if ($_GET['limit'] < 1) {
+
+        $limit = 1;
+
+    }else {
+
+        $limit = $_GET['limit'];
+    }
+
+}else {
+
+    $limit = 20;
 }
-
-// By default we show all folders.
-
-$folder_list_array = array();
 
 // Check to see if the user wants a specified list of folders
 // or the default to show all folders.
@@ -164,7 +111,15 @@ if (isset($_GET['fid']) && strlen(trim(stripslashes($_GET['fid']))) > 0) {
     }elseif (is_numeric($_GET['fid'])) {
 
         $folder_list_array = array($_GET['fid']);
+
+    }else {
+
+        $folder_list_array = array();
     }
+
+}else {
+
+    $folder_list_array = array();
 }
 
 // Check to see if the user wants threads ordered by created
@@ -173,9 +128,68 @@ if (isset($_GET['fid']) && strlen(trim(stripslashes($_GET['fid']))) > 0) {
 // in the order they were created and is more useful as a
 // RSS news feed within your forum.
 
-if (isset($_GET['sort_created'])) {
-    $sort_created = true;
+if (isset($_GET['sort_created']) && $_GET['sort_created'] == 'Y') {
+    $sort_created = 'Y';
+}else {
+    $sort_created = 'N';
 }
+
+// Check we have a webtag
+
+if (!$webtag = get_webtag($webtag_search)) {
+    header_server_error();
+}
+
+// Check we're logged in correctly
+
+if (!$user_sess = bh_session_check(false)) {
+
+    // Retrieve existing cookie data if any and try
+    // and log in the last used user account.
+
+    if (logon_get_cookies($username_array, $password_array, $passhash_array)) {
+
+        if (isset($username_array[0]) && strlen(trim($username_array[0])) > 0) {
+
+            if (isset($passhash_array[0]) && is_md5($passhash_array[0])) {
+
+                $username = strtoupper($username_array[0]);
+                $passhash = $passhash_array[0];
+
+                if ($uid = user_logon($username, $passhash)) {
+
+                    bh_session_init($uid);
+                    header_redirect("threads_rss.php?webtag=$webtag&fid=$fid&limit=$limit&sort_created=$sort_created");
+                    exit;
+
+                }else {
+
+                    header_server_error();
+                }
+            }
+        }
+    }
+}
+
+// Check to see if the user is banned.
+
+if (bh_session_user_banned()) {
+
+    html_user_banned();
+    exit;
+}
+
+// Check to see if the user has been approved.
+
+if (!bh_session_user_approved()) {
+
+    html_user_require_approval();
+    exit;
+}
+
+// Enable caching on RSS Feed
+
+header_check_cache();
 
 // echo out the rss feed
 
@@ -192,7 +206,7 @@ echo "<generator>$forum_name / www.beehiveforum.net</generator>\n";
 
 // Get the 20 most recent threads
 
-if ($threads_array = threads_get_most_recent($limit, $folder_list_array, $sort_created)) {
+if ($threads_array = threads_get_most_recent($limit, $folder_list_array, ($sort_created == 'Y'))) {
 
     foreach ($threads_array as $thread) {
 

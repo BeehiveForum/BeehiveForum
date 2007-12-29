@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.331 2007-12-26 13:19:34 decoyduck Exp $ */
+/* $Id: post.php,v 1.332 2007-12-29 22:26:33 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -750,7 +750,7 @@ if ($valid && isset($_POST['submit'])) {
                 if (!(perm_get_user_permissions($uid) & USER_PERM_WORMED)) {
 
                     email_sendnotification($_POST['t_to_uid'], $uid, $t_tid, $new_pid);
-                    email_sendsubscription($_POST['t_to_uid'], $uid, $t_tid, $new_pid);
+                    email_sendsubscription($_POST['t_to_uid'], $uid, $t_tid, $new_pid, $threaddata['MODIFIED']);
                 }
 
                 post_save_attachment_id($t_tid, $new_pid, $aid);

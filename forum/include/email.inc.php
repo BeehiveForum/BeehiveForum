@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.123 2007-12-26 13:19:35 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.124 2007-12-29 22:26:33 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -129,7 +129,7 @@ function email_sendnotification($tuid, $fuid, $tid, $pid)
     return false;
 }
 
-function email_sendsubscription($tuid, $fuid, $tid, $pid)
+function email_sendsubscription($tuid, $fuid, $tid, $pid, $modified)
 {
     if (!check_mail_variables()) return false;
 
@@ -137,6 +137,7 @@ function email_sendsubscription($tuid, $fuid, $tid, $pid)
     if (!is_numeric($fuid)) return false;
     if (!is_numeric($tid)) return false;
     if (!is_numeric($pid)) return false;
+    if (!is_numeric($modified)) return false;
 
     if (!$db_email_sendsubscription = db_connect()) return false;
 
@@ -148,12 +149,15 @@ function email_sendsubscription($tuid, $fuid, $tid, $pid)
 
     if ($from_user = user_get($fuid)) {
 
-        $sql = "SELECT USER_THREAD.UID, USER.LOGON, USER.NICKNAME, USER.EMAIL ";
+        $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER.EMAIL ";
         $sql.= "FROM {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
         $sql.= "LEFT JOIN USER USER ON (USER.UID = USER_THREAD.UID) ";
-        $sql.= "WHERE USER_THREAD.TID = '$tid' AND USER_THREAD.INTEREST = 2 ";
+        $sql.= "WHERE USER_THREAD.TID = '$tid' AND USER.UID IS NOT NULL ";
+        $sql.= "AND UNIX_TIMESTAMP(USER_THREAD.LAST_READ_AT) > $modified ";
+        $sql.= "AND USER_THREAD.LAST_READ_AT IS NOT NULL ";
         $sql.= "AND USER_THREAD.UID NOT IN ($fuid, $tuid) ";
-        $sql.= "AND USER.UID IS NOT NULL";
+        $sql.= "AND USER_THREAD.INTEREST = 2 ";
+        $sql.= "GROUP BY USER.UID";
 
         if (!$result = db_query($sql, $db_email_sendsubscription)) return false;
 
@@ -673,7 +677,10 @@ function check_mail_variables()
 {
     if (server_os_mswin()) {
 
-        if (!(bool)@ini_get('sendmail_from') || !(bool)ini_get('SMTP')) return false;
+        echo ini_get('sendmail_from'), "\n";
+        echo ini_get('SMTP'), "\n";
+
+        if (!(bool)ini_get('sendmail_from') || !(bool)ini_get('SMTP')) return false;
 
     }else {
 

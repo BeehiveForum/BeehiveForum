@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.334 2007-12-27 19:10:20 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.335 2007-12-29 17:49:16 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -73,7 +73,6 @@ include_once(BH_INCLUDE_PATH. "visitor_log.inc.php");
 *
 * @return mixed - array on success, false on fail
 * @param string $show_session_fail - Disable the default behaviour of showing the session expired page.
-* @param string $use_sess_hash     - Specify MD5 hash to use for session rather than user's cookie.
 */
 
 function bh_session_check($show_session_fail = true)
@@ -119,8 +118,7 @@ function bh_session_check($show_session_fail = true)
         $sql.= "UNIX_TIMESTAMP(USER.APPROVED) AS APPROVED, USER.LOGON, ";
         $sql.= "USER.NICKNAME, USER.EMAIL,USER.PASSWD FROM SESSIONS SESSIONS ";
         $sql.= "LEFT JOIN USER ON (USER.UID = SESSIONS.UID) ";
-        $sql.= "WHERE (USER.UID IS NOT NULL OR SESSIONS.UID = '0') ";
-        $sql.= "AND SESSIONS.HASH = '$user_hash'";
+        $sql.= "WHERE SESSIONS.HASH = '$user_hash'";
 
         if (!$result = db_query($sql, $db_bh_session_check)) return false;
 

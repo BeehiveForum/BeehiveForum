@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.501 2007-12-22 11:39:44 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.502 2007-12-30 14:25:39 decoyduck Exp $ */
 
 // British English language file
 
@@ -385,6 +385,8 @@ $lang['unknownuseraccount'] = "Unknown user account";
 $lang['unknownfolder'] = "Unknown folder";
 $lang['ip'] = "IP";
 $lang['lastipaddress'] = "Last IP Address";
+$lang['hostname'] = "Hostname";
+$lang['unknownhostname'] = "Unknown Hostname";
 $lang['logged'] = "Logged";
 $lang['notlogged'] = "Not Logged";
 $lang['addwordfilter'] = "Add word filter";

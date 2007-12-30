@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.266 2007-12-22 11:39:44 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.267 2007-12-30 22:38:16 decoyduck Exp $ */
 
 // British English language file
 
@@ -979,7 +979,7 @@ $lang['pwchangeemail'] = "heLLo %s,\n\n+h1s 4 n0T1f1Cat10n em4il tO 1nf0rm j00 T
 
 // Email confirmation notification -------------------------------------
 
-$lang['emailconfirmationrequired'] = "em@1L C0nphirm@+10n REqUIrEd phor %s";
+$lang['emailconfirmationrequiredsubject'] = "em@1L C0nphirm@+10n REqUIrEd phor %s";
 $lang['confirmemail'] = "hELlo %s,\n\nYOU rEC3N+ly Cr3at3d @ n3W U\$er acC0Unt 0N %s.\nbEphore J00 CaN star+ po5+1N9 WE n3ED +0 confIRM y0uR 3m@il 4DDrEss. DOn'+ woRry THI5 i\$ qUitE E45Y. @lL j00 ne3D +0 D0 1s Click tH3 liNk 8El0W (0r Copy 4nD p@s+e 1+ in+0 Y0UR 8r0W53r):\n\n%s\n\nonC3 C0nphirm4+10n i\$ complet3 j00 m4y lo9in AnD Start p05+1n9 1Mmed14T3LY.\n\n1f j00 did NOt cre4+e 4 User 4Cc0unt on %s please aCCep+ 0ur 4pologies 4nd pH0rwARD +h1s 3m@1l tO %s 5o +hat TEH \$0Urc3 0Ph iT m4y Be 1nVEs+ig4Ted.";
 $lang['confirmchangedemail'] = "hElL0 %s,\n\nY0u r3c3NTLy Ch@n93d Y0ur em41l 0n %s.\n83f0re j00 CAN starT po\$+1n9 ag4in W3 ne3d +0 C0NPH1rm yoUr nEw em4IL 4DDRE5\$. don't w0rRy th1S i\$ QU1+e 3asy. @ll J00 nE3D t0 Do 1\$ cliCk +he L1Nk 83l0W (0R C0pY 4ND past3 i+ in+0 y0Ur Br0w\$eR):\n\n%s\n\noNCE conPH1rm@tIon i\$ compl3t3 j00 m4y C0n+1nu3 to U\$3 The f0rum AS norM4L.\n\nif J00 W3R3 no+ 3Xp3Ctin9 +h1s 3M@1l Phrom %s pLE4\$E @cc3Pt ouR 4pologies 4ND f0rw4RD +h15 3M41L t0 %s s0 tH@+ +he SourCe 0f It m4y be 1nVEst1gaT3D.";
 

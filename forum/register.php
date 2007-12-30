@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.171 2007-12-26 13:19:34 decoyduck Exp $ */
+/* $Id: register.php,v 1.172 2007-12-30 22:38:18 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -59,6 +59,7 @@ $forum_settings = forum_get_settings();
 
 $forum_global_settings = forum_get_global_settings();
 
+include_once(BH_INCLUDE_PATH. "admin.inc.php");
 include_once(BH_INCLUDE_PATH. "banned.inc.php");
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "email.inc.php");
@@ -507,6 +508,12 @@ if (isset($_POST['register'])) {
             // Check to see if the user is going somewhere after they have registered.
 
             $final_uri = (isset($final_uri)) ? rawurlencode($final_uri) : '';
+
+            // If User Confirmation is enabled send the forum owner email and PM notifications.
+
+            if (forum_get_setting('require_user_approval', 'Y')) {
+                admin_send_new_user_notification();
+            }
 
             // Display final success / confirmation page.
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.502 2007-12-30 14:25:39 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.503 2007-12-30 22:38:16 decoyduck Exp $ */
 
 // British English language file
 
@@ -981,14 +981,23 @@ $lang['pwchangeemail'] = "Hello %s,\n\nThis a notification email to inform you t
 
 // Email confirmation notification -------------------------------------
 
-$lang['emailconfirmationrequired'] = "Email confirmation required for %s";
+$lang['emailconfirmationrequiredsubject'] = "Email confirmation required for %s";
 $lang['confirmemail'] = "Hello %s,\n\nYou recently created a new user account on %s.\nBefore you can start posting we need to confirm your email address. Don't worry this is quite easy. All you need to do is click the link below (or copy and paste it into your browser):\n\n%s\n\nOnce confirmation is complete you may login and start posting immediately.\n\nIf you did not create a user account on %s please accept our apologies and forward this email to %s so that the source of it may be investigated.";
 $lang['confirmchangedemail'] = "Hello %s,\n\nYou recently changed your email on %s.\nBefore you can start posting again we need to confirm your new email address. Don't worry this is quite easy. All you need to do is click the link below (or copy and paste it into your browser):\n\n%s\n\nOnce confirmation is complete you may continue to use the forum as normal.\n\nIf you were not expecting this email from %s please accept our apologies and forward this email to %s so that the source of it may be investigated.";
-
 
 // Forgotten password notification -------------------------------------
 
 $lang['forgotpwemail'] = "Hello %s,\n\nYou requested this e-mail from %s because you have forgotten your password.\n\nClick the link below (or copy and paste it into your browser) to reset your password:\n\n%s";
+
+// Admin New User notification -----------------------------------------
+
+$lang['newuserregistrationsubject'] = "New User Account Notification for %s";
+$lang['newuserregistrationemail'] = "Hello %s,\n\nA new user account has been created on %s.\n\nAs you are an Administrator of this forum you are required to approve this user account before it can be used by it's owner.\n\nTo approve this account please visit the Admin Users section and change the filter type to \"Users Awaiting Approval\" or click the link below:\n\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: Other Administrators on this forum will also receive this notification and may have already acted upon this request.";
+
+// Admin Post Approval notification -----------------------------------------
+
+$lang['newpostapprovalsubject'] = "Post Approval Notification for %s";
+$lang['newpostapprovalemail'] = "Hello %s,\n\nA new post has been created on %s.\n\nAs you are an Administrator of this forum you are required to approve this post before it can be read by other users.\n\nYou can approve this post and any others pending approval by visiting the Admin Post Approval section of your forum or by clicking the link below:\n\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: Other Administrators on this forum will also receive this notification and may have already acted upon this request.";
 
 // Forgotten password form.
 

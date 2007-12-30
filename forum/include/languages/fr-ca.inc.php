@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.89 2007-12-15 21:19:54 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.90 2007-12-30 22:38:16 decoyduck Exp $ */
 
 // French Canadian language file
 
@@ -974,7 +974,7 @@ $lang['pwchangeemail'] = "Salut %s.\n\nCeci est un courriel de confirmation pour
 
 // Email confirmation notification -------------------------------------
 
-$lang['emailconfirmationrequired'] = "Confirmation par courriel requis";
+$lang['emailconfirmationrequiredsubject'] = "Confirmation par courriel requis";
 $lang['confirmemail'] = "Salut %s.\n\nVous avez récemment créé un nouveau compte d'utilisateur sur %s\nAvant que vous puissiez commencer à poster, nous devons confirmer votre adresse courriel. Ne vous inquiètez pas, ceci est très facile. Vous n'avez qu'à cliquer le lien ci-dessous (ou le copier et coller dans votre navigateur web):\n\n%s\n\nUne fois la confirmation faite, vous pourriez immédiatement ouvrir une session et commencer à poster.\n\nSi vous n'avez pas créer un compte d'utilisateur sur %s veuillez accepter nos excuses et tranférer ce courriel à %s pour nous permettre d'enquêter sur la source.";
 $lang['confirmchangedemail'] = "Bonjour %s,\n\nVous avez récemment changé votre adresse courriel le %s.\nAvant que vous puissez recommencer à poster, nous devons confirmer votre nouvelle adresse courriel. Ne vous inquiétez pas, ceci est très simple. Tout ce que vous devez faire est de cliquer le hyperlien ci-dessous (ou le copier et le coller dans votre navigateur Web):\n\n%s\n\nUne fois la confirmation faite vous pouvez continuer à utiliser le forum comme avant.\n\nSi vous vous n'attendiez pas à recevoir ce courriel de %s veuillez accepter nos excuses et faire suivre ce courriel à %s afin que nous puissions en déterminer la source.";
 

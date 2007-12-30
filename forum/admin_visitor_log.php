@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_visitor_log.php,v 1.24 2007-12-26 13:19:33 decoyduck Exp $ */
+/* $Id: admin_visitor_log.php,v 1.25 2007-12-30 14:25:39 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -173,9 +173,28 @@ if (sizeof($admin_visitor_log_array['user_array']) > 0) {
         }
 
         if (isset($visitor['IPADDRESS']) && $visitor['IPADDRESS'] > 0) {
-            echo "                   <td class=\"postbody\" align=\"left\" width=\"150\">{$visitor['IPADDRESS']}</td>\n";
+
+            if (($hostname = gethostbyaddr($visitor['IPADDRESS'])) !== $visitor['IPADDRESS']) {
+
+                $ip_address_display = sprintf("<span title=\"%s: %s\">%s</span>", $lang['hostname'], $hostname, $visitor['IPADDRESS']);
+
+            }else {
+
+                $ip_address_display = sprintf("<span title=\"%s\">%s</span>", $lang['unknownhostname'], $visitor['IPADDRESS']);
+            }
+
+            if (ip_is_banned($visitor['IPADDRESS'])) {
+
+                echo "                   <td class=\"postbody\" align=\"left\" width=\"200\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_ipaddress={$visitor['IPADDRESS']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">$ip_address_display</a>&nbsp;({$lang['banned']})&nbsp;</td>\n";
+
+            }else {
+
+                echo "                   <td class=\"postbody\" align=\"left\" width=\"200\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$visitor['IPADDRESS']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">$ip_address_display</a>&nbsp;</td>\n";
+            }
+
         }else {
-            echo "                   <td class=\"postbody\" align=\"left\" width=\"150\">{$lang['unknown']}</td>\n";
+
+            echo "                   <td class=\"postbody\" align=\"left\" width=\"200\">{$lang['unknown']}</td>\n";
         }
 
         if (isset($visitor['REFERER']) && strlen(trim($visitor['REFERER'])) > 0) {

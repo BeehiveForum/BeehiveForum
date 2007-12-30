@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.143 2007-12-03 18:38:49 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.144 2007-12-30 22:38:16 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -1567,6 +1567,54 @@ function admin_prepare_affected_sessions($affected_session)
     }
 
     return $affected_session_text ;
+}
+
+function admin_send_new_user_notification()
+{
+    if (!$db_admin_send_new_user_notification = db_connect()) return false;
+
+    $user_perm_forum_tools = USER_PERM_FORUM_TOOLS;
+
+    $sql = "SELECT DISTINCT USER.UID FROM USER LEFT JOIN GROUP_USERS ";
+    $sql.= "ON (GROUP_USERS.UID = USER.UID) LEFT JOIN GROUP_PERMS ";
+    $sql.= "ON (GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FORUM = 0) ";
+    $sql.= "WHERE (GROUP_PERMS.PERM & $user_perm_forum_tools) > 0 ";
+
+    if (!$result = db_query($sql, $db_admin_send_new_user_notification)) return false;
+
+    while (list($admin_uid) = db_fetch_array($result, DB_RESULT_NUM)) {
+
+        if (!email_send_new_user_notification($admin_uid)) {
+
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function admin_send_post_approval_notification()
+{
+    if (!$db_admin_send_post_approval_notification = db_connect()) return false;
+
+    $user_perm_forum_tools = USER_PERM_FORUM_TOOLS;
+
+    $sql = "SELECT DISTINCT USER.UID FROM USER LEFT JOIN GROUP_USERS ";
+    $sql.= "ON (GROUP_USERS.UID = USER.UID) LEFT JOIN GROUP_PERMS ";
+    $sql.= "ON (GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FORUM = 0) ";
+    $sql.= "WHERE (GROUP_PERMS.PERM & $user_perm_forum_tools) > 0 ";
+
+    if (!$result = db_query($sql, $db_admin_send_post_approval_notification)) return false;
+
+    while (list($admin_uid) = db_fetch_array($result, DB_RESULT_NUM)) {
+
+        if (!email_send_post_approval_notification($admin_uid)) {
+
+            return false;
+        }
+    }
+
+    return true;
 }
 
 ?>

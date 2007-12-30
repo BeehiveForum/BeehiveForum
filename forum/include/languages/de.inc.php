@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.62 2007-12-15 21:19:54 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.63 2007-12-30 22:38:16 decoyduck Exp $ */
 
 // German language file
 
@@ -974,7 +974,7 @@ $lang['pwchangeemail'] = "Hallo %s,\n\nDiese Mitteilungsmail moechte Dich darueb
 
 // Email confirmation notification -------------------------------------
 
-$lang['emailconfirmationrequired'] = "Email-Bestaetigung erforderlich";
+$lang['emailconfirmationrequiredsubject'] = "Email-Bestaetigung erforderlich";
 $lang['confirmemail'] = "Hallo %s,\n\nDu hast kuerzlich ein neues Benutzerkonto angelegt auf %s\nBevor Du anfangen kannst eigene Posts zu erstellen benoetigen wir die Bestaetigung Deiner eMail-Adresse. Keine Angst, das ist ganz einfach. Du musst nur auf den Link unten klicken (oder kopier ihn und fueg ihn in deinem Browser ein):\n\n%s\n\nWenn die Bestaetigung durchgegangen ist kannst Du Dich sofort anmelden und posten. Wenn Du kein Konto angelegt hast auf dann entschuldige diesen Fehler und leite diese Mail weiter an %s so dass der Ursprung dieser Mail ermittelt werden kann.";
 $lang['confirmchangedemail'] = "Hallo %s,\n\nSie haben kuerzlich Ihre email geaendert in %s.\nBevor Sie wieder posten koennen benoetigen wir eine Bestaetigung Ihrer neuen eMail-Adresse. Keine Sorge, das ist ganz einfach. Alles was Sie tun muessen ist auf den Link unten zu klicken (oder mit Kopieren und Einfuegen in Ihren Browser):\n\n%s\n\nIst die Bestaetigung erfolgt koennen Sie das Forum ganz normal weiternutzen.\n\nFalls Sie diese eMail unerwartet erhalten haben %s akzeptieren Sie bitte unsere Entschuldigung und senden Sie eine eMail an %s damit die Ursache nachverfolgt werden kann.";
 

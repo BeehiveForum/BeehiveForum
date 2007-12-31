@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.145 2007-12-31 21:08:37 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.146 2007-12-31 21:12:08 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -1602,14 +1602,19 @@ function admin_send_post_approval_notification($fid)
 
     if (!is_numeric($fid)) return false;
 
+    if (!$table_data = get_table_prefix()) return false;
+
+    $forum_fid = $table_data['FID'];
+
     $user_perm_folder_moderate = USER_PERM_FOLDER_MODERATE;
 
     $notification_success = true;
 
-    $sql = "SELECT DISTINCT USER.UID FROM USER LEFT JOIN GROUP_USERS ";
-    $sql.= "ON (GROUP_USERS.UID = USER.UID) LEFT JOIN GROUP_PERMS ";
-    $sql.= "ON (GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FORUM = 0) ";
-    $sql.= "WHERE (GROUP_PERMS.PERM & $user_perm_forum_tools) > 0 ";
+    $sql = "SELECT DISTINCT USER.UID FROM USER ";
+    $sql.= "LEFT JOIN GROUP_USERS ON (GROUP_USERS.UID = USER.UID) ";
+    $sql.= "LEFT JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID) ";
+    $sql.= "WHERE (GROUP_PERMS.PERM & $user_perm_folder_moderate) > 0 ";
+    $sql.= "AND GROUP_PERMS.FORUM IN (0, $forum_fid)) ";
     $sql.= "AND GROUP_PERMS.FID IN (0, $fid)";
 
     if (!$result = db_query($sql, $db_admin_send_post_approval_notification)) return false;

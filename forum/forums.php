@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forums.php,v 1.86 2007-12-26 13:19:33 decoyduck Exp $ */
+/* $Id: forums.php,v 1.87 2007-12-31 18:44:52 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -135,7 +135,7 @@ if (isset($_POST['webtag_search']) && strlen(trim(_stripslashes($_POST['webtag_s
     $webtag_search = trim(_stripslashes($_GET['webtag_search']));
 }
 
-if (isset($_POST['clear_search']) || isset($_GET['clear_search'])) {
+if (isset($_POST['clear_search'])) {
     $webtag_search = "";
 }
 
@@ -162,35 +162,37 @@ if (isset($_POST['change_view'])) {
         }
     }
 
-}elseif (isset($_POST['view_type']) && is_numeric($_POST['view_type'])) {
+}elseif (!isset($_POST['search'])) {
 
-    if (!user_is_guest()) {
+    if (isset($_POST['view_type']) && is_numeric($_POST['view_type'])) {
 
-        $webtag_search = "";
+        if (!user_is_guest()) {
 
-        $view_type = $_POST['view_type'];
+            $webtag_search = "";
 
-        if (!in_array($view_type, $available_forum_views)) {
+            $view_type = $_POST['view_type'];
 
-            $view_type = FORUMS_SHOW_FAVS;
+            if (!in_array($view_type, $available_forum_views)) {
+
+                $view_type = FORUMS_SHOW_FAVS;
+            }
         }
-    }
 
-}elseif (isset($_GET['view_type']) && is_numeric($_GET['view_type'])) {
+    }elseif (isset($_GET['view_type']) && is_numeric($_GET['view_type'])) {
 
-    if (!user_is_guest()) {
+        if (!user_is_guest()) {
 
-        $webtag_search = "";
+            $webtag_search = "";
 
-        $view_type = $_GET['view_type'];
+            $view_type = $_GET['view_type'];
 
-        if (!in_array($view_type, $available_forum_views)) {
+            if (!in_array($view_type, $available_forum_views)) {
 
-            $view_type = FORUMS_SHOW_FAVS;
+                $view_type = FORUMS_SHOW_FAVS;
+            }
         }
     }
 }
-
 
 // Page numbers
 
@@ -244,6 +246,7 @@ if (isset($_POST['add_fav']) && is_array($_POST['add_fav'])) {
 
     if (user_set_forum_interest($forum_fid_add_fav, FORUM_FAVOURITE)) {
 
+        $webtag_search = rawurlencode($webtag_search);
         header_redirect("forums.php?view_type=$view_type&main_page=$main_page&search_page=$search_page&webtag_search=$webtag_search&added=true");
         exit;
 
@@ -265,6 +268,7 @@ if (isset($_POST['add_fav']) && is_array($_POST['add_fav'])) {
 
     if (user_set_forum_interest($forum_fid_rev_fav, FORUM_NOINTEREST)) {
 
+        $webtag_search = rawurlencode($webtag_search);
         header_redirect("forums.php?view_type=$view_type&main_page=$main_page&search_page=$search_page&webtag_search=$webtag_search&removed=true");
         exit;
 
@@ -286,6 +290,7 @@ if (isset($_POST['add_fav']) && is_array($_POST['add_fav'])) {
 
     if (user_set_forum_interest($forum_fid_ignore, FORUM_IGNORED)) {
 
+        $webtag_search = rawurlencode($webtag_search);
         header_redirect("forums.php?view_type=$view_type&main_page=$main_page&search_page=$search_page&webtag_search=$webtag_search&ignored=true");
         exit;
 
@@ -307,6 +312,7 @@ if (isset($_POST['add_fav']) && is_array($_POST['add_fav'])) {
 
     if (user_set_forum_interest($forum_fid_unignore, FORUM_NOINTEREST)) {
 
+        $webtag_search = rawurlencode($webtag_search);
         header_redirect("forums.php?view_type=$view_type&main_page=$main_page&search_page=$search_page&webtag_search=$webtag_search&unignored=true");
         exit;
 
@@ -348,6 +354,7 @@ if (!user_is_guest()) {
         echo "                <tr>\n";
         echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
         echo "                  <td align=\"left\" class=\"subhead\">{$lang['forumname']}</td>\n";
+        echo "                  <td align=\"left\" class=\"subhead\">{$lang['forumdesc']}</td>\n";
         echo "                  <td align=\"left\" class=\"subhead\">{$lang['unreadmessages']}</td>\n";
         echo "                  <td align=\"left\" class=\"subhead\">{$lang['lastvisited']}</td>\n";
         echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
@@ -361,27 +368,36 @@ if (!user_is_guest()) {
 
                 if ((isset($forum['INTEREST']) && $forum['INTEREST'] == FORUM_FAVOURITE) || user_is_guest()) {
 
-                    echo "                  <td align=\"center\" width=\"1%\">", form_submit_image('forum_rem_fav.png', "rem_fav[{$forum['FID']}]", "{$lang['removefromfavourites']}", "title=\"{$lang['removefromfavourites']}\""), "</td>\n";
+                    echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('forum_rem_fav.png', "rem_fav[{$forum['FID']}]", "{$lang['removefromfavourites']}", "title=\"{$lang['removefromfavourites']}\""), "</td>\n";
 
                 }else {
 
-                    echo "                  <td align=\"center\" width=\"1%\">", form_submit_image('forum_add_fav.png', "add_fav[{$forum['FID']}]", "{$lang['addtofavourites']}", "title=\"{$lang['addtofavourites']}\""), "</td>\n";
+                    echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('forum_add_fav.png', "add_fav[{$forum['FID']}]", "{$lang['addtofavourites']}", "title=\"{$lang['addtofavourites']}\""), "</td>\n";
                 }
 
                 if (isset($final_uri) && strlen($final_uri) > 0) {
 
                     if (strstr($final_uri, '?')) {
 
-                        echo "                  <td align=\"left\" valign=\"top\" width=\"30%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=", rawurlencode($final_uri), "%26webtag%3D{$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></td>\n";
+                        echo "                  <td align=\"left\" valign=\"top\" width=\"250\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=", rawurlencode($final_uri), "%26webtag%3D{$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></td>\n";
 
                     }else {
 
-                        echo "                  <td align=\"left\" valign=\"top\" width=\"30%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=", rawurlencode($final_uri), "%3Fwebtag%3D{$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></td>\n";
+                        echo "                  <td align=\"left\" valign=\"top\" width=\"250\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=", rawurlencode($final_uri), "%3Fwebtag%3D{$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></td>\n";
                     }
 
                 }else {
 
-                    echo "                  <td align=\"left\" valign=\"top\" width=\"30%\"><a href=\"index.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></td>\n";
+                    echo "                  <td align=\"left\" valign=\"top\" width=\"250\"><a href=\"index.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></td>\n";
+                }
+
+                if (isset($forum['FORUM_DESC']) && strlen(trim($forum['FORUM_DESC'])) > 0) {
+
+                    echo "                  <td align=\"left\" valign=\"top\" width=\"30%\">{$forum['FORUM_DESC']}</td>\n";
+
+                }else {
+
+                    echo "                  <td align=\"left\" valign=\"top\" width=\"30%\">&nbsp;</td>\n";
                 }
 
                 if (isset($forum['UNREAD_TO_ME']) && $forum['UNREAD_TO_ME'] > 0) {
@@ -412,11 +428,11 @@ if (!user_is_guest()) {
 
                 if (isset($forum['INTEREST']) && $forum['INTEREST'] > -1) {
 
-                    echo "                  <td align=\"center\" width=\"1%\">", form_submit_image('forum_hide.png', "ignore_forum[{$forum['FID']}]", "{$lang['ignoreforum']}", "title=\"{$lang['ignoreforum']}\""), "</td>\n";
+                    echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('forum_hide.png', "ignore_forum[{$forum['FID']}]", "{$lang['ignoreforum']}", "title=\"{$lang['ignoreforum']}\""), "</td>\n";
 
                 }else {
 
-                    echo "                  <td align=\"center\" width=\"1%\">", form_submit_image('forum_show.png', "unignore_forum[{$forum['FID']}]", "{$lang['unignoreforum']}", "title=\"{$lang['unignoreforum']}\""), "</td>\n";
+                    echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('forum_show.png', "unignore_forum[{$forum['FID']}]", "{$lang['unignoreforum']}", "title=\"{$lang['unignoreforum']}\""), "</td>\n";
                 }
 
                 echo "                </tr>\n";
@@ -505,6 +521,7 @@ if (!user_is_guest()) {
         echo "                <tr>\n";
         echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
         echo "                  <td align=\"left\" class=\"subhead\">{$lang['forumname']}</td>\n";
+        echo "                  <td align=\"left\" class=\"subhead\">{$lang['forumdesc']}</td>\n";
         echo "                  <td align=\"left\" class=\"subhead\">{$lang['unreadmessages']}</td>\n";
         echo "                  <td align=\"left\" class=\"subhead\">{$lang['lastvisited']}</td>\n";
         echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
@@ -518,27 +535,36 @@ if (!user_is_guest()) {
 
                 if (isset($forum['INTEREST']) && $forum['INTEREST'] == FORUM_FAVOURITE) {
 
-                    echo "                  <td align=\"center\" width=\"1%\">", form_submit_image('forum_rem_fav.png', "rem_fav[{$forum['FID']}]", "{$lang['removefromfavourites']}", "title=\"{$lang['removefromfavourites']}\""), "</td>\n";
+                    echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('forum_rem_fav.png', "rem_fav[{$forum['FID']}]", "{$lang['removefromfavourites']}", "title=\"{$lang['removefromfavourites']}\""), "</td>\n";
 
                 }else {
 
-                    echo "                  <td align=\"center\" width=\"1%\">", form_submit_image('forum_add_fav.png', "add_fav[{$forum['FID']}]", "{$lang['addtofavourites']}", "title=\"{$lang['addtofavourites']}\""), "</td>\n";
+                    echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('forum_add_fav.png', "add_fav[{$forum['FID']}]", "{$lang['addtofavourites']}", "title=\"{$lang['addtofavourites']}\""), "</td>\n";
                 }
 
                 if (isset($final_uri) && strlen($final_uri) > 0) {
 
                     if (strstr($final_uri, '?')) {
 
-                        echo "                  <td align=\"left\" valign=\"top\" width=\"30%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=", rawurlencode($final_uri), "%26webtag%3D{$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></td>\n";
+                        echo "                  <td align=\"left\" valign=\"top\" valign=\"top\" width=\"250\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=", rawurlencode($final_uri), "%26webtag%3D{$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></td>\n";
 
                     }else {
 
-                        echo "                  <td align=\"left\" valign=\"top\" width=\"30%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=", rawurlencode($final_uri), "%3Fwebtag%3D{$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></td>\n";
+                        echo "                  <td align=\"left\" valign=\"top\" valign=\"top\" width=\"250\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=", rawurlencode($final_uri), "%3Fwebtag%3D{$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></td>\n";
                     }
 
                 }else {
 
-                    echo "                  <td align=\"left\" valign=\"top\" width=\"30%\"><a href=\"index.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></td>\n";
+                    echo "                  <td align=\"left\" valign=\"top\" valign=\"top\" width=\"250\"><a href=\"index.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></td>\n";
+                }
+
+                if (isset($forum['FORUM_DESC']) && strlen(trim($forum['FORUM_DESC'])) > 0) {
+
+                    echo "                  <td align=\"left\" valign=\"top\" width=\"30%\">{$forum['FORUM_DESC']}</td>\n";
+
+                }else {
+
+                    echo "                  <td align=\"left\" valign=\"top\" width=\"30%\">&nbsp;</td>\n";
                 }
 
                 if (isset($forum['UNREAD_TO_ME']) && $forum['UNREAD_TO_ME'] > 0) {
@@ -572,11 +598,11 @@ if (!user_is_guest()) {
 
                 if (isset($forum['INTEREST']) && $forum['INTEREST'] > -1) {
 
-                    echo "                  <td align=\"center\" width=\"1%\">", form_submit_image('forum_hide.png', "ignore_forum[{$forum['FID']}]", "{$lang['ignoreforum']}", "title=\"{$lang['ignoreforum']}\""), "</td>\n";
+                    echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('forum_hide.png', "ignore_forum[{$forum['FID']}]", "{$lang['ignoreforum']}", "title=\"{$lang['ignoreforum']}\""), "</td>\n";
 
                 }else {
 
-                    echo "                  <td align=\"center\" width=\"1%\">", form_submit_image('forum_show.png', "unignore_forum[{$forum['FID']}]", "{$lang['unignoreforum']}", "title=\"{$lang['unignoreforum']}\""), "</td>\n";
+                    echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('forum_show.png', "unignore_forum[{$forum['FID']}]", "{$lang['unignoreforum']}", "title=\"{$lang['unignoreforum']}\""), "</td>\n";
                 }
 
                 echo "                </tr>\n";
@@ -635,7 +661,7 @@ if (!user_is_guest()) {
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td class=\"posthead\" align=\"left\">{$lang['forumname']}: ", form_input_text('webtag_search', (isset($webtag_search) ? _htmlentities($webtag_search) : ''), 30, 64), " ", form_submit('search', $lang['search']), " ", form_submit('clear_search', $lang['clear']), "\n";
+    echo "                        <td class=\"posthead\" align=\"left\">{$lang['forumname']}: ", form_input_text("webtag_search", (isset($webtag_search) ? _htmlentities($webtag_search) : ""), 30, 64), " ", form_submit('search', $lang['search']), " ", form_submit('clear_search', $lang['clear']), "\n";
     echo "                      </tr>\n";
     echo "                    </table>\n";
     echo "                  </td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.229 2007-12-30 14:25:39 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.230 2007-12-31 15:48:54 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -441,8 +441,8 @@ if (isset($_POST['action_submit'])) {
 
                 }else {
 
-                    $valid = false;
                     $error_msg_array[] = $lang['failedtoresetuserpostcount'];
+                    $valid = false;
                 }
 
             }else {
@@ -459,8 +459,8 @@ if (isset($_POST['action_submit'])) {
 
                         }else {
 
-                            $valid = false;
                             $error_msg_array[] = $lang['failedtochangeuserpostcount'];
+                            $valid = false;
                         }
                     }
                 }
@@ -486,8 +486,15 @@ if (isset($_POST['action_submit'])) {
 
         if ($user_perms <> $new_user_perms) {
 
-            perm_update_user_permissions($uid, $new_user_perms);
-            $user_perms = perm_get_forum_user_permissions($uid);
+            if (perm_update_user_permissions($uid, $new_user_perms)) {
+
+                $user_perms = perm_get_forum_user_permissions($uid);
+
+            }else {
+
+                $error_msg_array[] = $lang['failedtoupdateuserstatus'];
+                $valid = false;
+            }
         }
     }
 
@@ -520,8 +527,8 @@ if (isset($_POST['action_submit'])) {
 
             if (!($new_global_user_perms & USER_PERM_FORUM_TOOLS)) {
 
-                 $valid = false;
                  $error_msg_array[] = $lang['adminforumtoolsusercounterror'];
+                 $valid = false;
             }
         }
 
@@ -529,15 +536,22 @@ if (isset($_POST['action_submit'])) {
 
             if (!($new_global_user_perms & USER_PERM_ADMIN_TOOLS)) {
 
-                $valid = false;
                 $error_msg_array[] = $lang['adminforumtoolsusercounterror'];
+                $valid = false;
             }
         }
 
         if ($valid && ($new_global_user_perms <> $global_user_perm)) {
 
-            perm_update_global_perms($uid, $new_global_user_perms);
-            $global_user_perm = perm_get_global_user_permissions($uid);
+            if (perm_update_global_perms($uid, $new_global_user_perms)) {
+
+                $global_user_perm = perm_get_global_user_permissions($uid);
+
+            }else {
+
+                $error_msg_array[] = $lang['failedtoupdateglobaluserpermissions'];
+                $valid = false;
+            }
         }
     }
 
@@ -571,7 +585,11 @@ if (isset($_POST['action_submit'])) {
 
                 if ($new_user_perms <> $folder_array[$fid]['STATUS']) {
 
-                    perm_update_user_folder_perms($uid, $fid, $new_user_perms);
+                    if (!perm_update_user_folder_perms($uid, $fid, $new_user_perms)) {
+
+                        $error_msg_array[] = $lang['failedtoupdatefolderaccesssettings'];
+                        $valid = false;
+                    }
                 }
             }
         }
@@ -579,8 +597,17 @@ if (isset($_POST['action_submit'])) {
         // Confirmation email
 
         if (isset($_POST['t_confirm_email']) && $_POST['t_confirm_email'] == 'resend') {
-            email_send_user_confirmation($uid);
+
+            if (!email_send_user_confirmation($uid)) {
+
+                $error_msg_array[] = $lang['failedtosresendemailconfirmation'];
+                $valid = false;
+            }
         }
+    }
+
+    if ($valid) {
+        $success_html = $lang['updatessavedsuccessfully'];
     }
 }
 

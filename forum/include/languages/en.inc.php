@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.503 2007-12-30 22:38:16 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.504 2007-12-31 15:48:54 decoyduck Exp $ */
 
 // British English language file
 
@@ -366,6 +366,9 @@ $lang['userdeletewarning'] = "Are you sure you want to delete the selected user 
 $lang['usersuccessfullydeleted'] = "User Successfully Deleted";
 $lang['failedtodeleteuser'] = "Failed To Delete User";
 $lang['forgottenpassworddesc'] = "If this user has forgotten their password you can reset it for them here.";
+$lang['failedtoupdateuserstatus'] = "Failed to update user status";
+$lang['failedtoupdateglobaluserpermissions'] = "Failed to update global user permissions";
+$lang['failedtoupdatefolderaccesssettings'] = "Failed to update folder access settings";
 $lang['manageusersexp'] = "This list shows a selection of users who have logged on to your forum, sorted by %s. To alter a user's permissions click their name.";
 $lang['userfilter'] = "User filter";
 $lang['onlineusers'] = "Online users";
@@ -485,6 +488,7 @@ $lang['emailconfirmationrequired'] = "Email confirmation required";
 $lang['userisbannedfromallforums'] = "User is banned from <b>all forums</b>";
 $lang['cancelemailconfirmation'] = "Cancel email confirmation and allow user to start posting";
 $lang['resendconfirmationemail'] = "Resend confirmation email to user";
+$lang['failedtosresendemailconfirmation'] = "Failed to resend Email confirmation to user.";
 $lang['donothing'] = "Do nothing";
 $lang['usercanaccessadmintools'] = "User has access to forum admin tools";
 $lang['usercanaccessadmintoolsonallforums'] = "User has access to admin tools <b>on all forums</b>";

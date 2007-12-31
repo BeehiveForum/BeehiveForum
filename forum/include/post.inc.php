@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.175 2007-12-30 22:38:16 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.176 2007-12-31 21:08:37 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -103,7 +103,7 @@ function post_create($fid, $tid, $reply_pid, $by_uid, $fuid, $tuid, $content, $h
             // If post approval is required send the notification to admins.
 
             if (perm_check_folder_permissions($fid, USER_PERM_POST_APPROVAL, $fuid) && !perm_is_moderator($fid, $fuid)) {
-                admin_send_post_approval_notification();
+                admin_send_post_approval_notification($fid);
             }
 
             // Update the user's post count.

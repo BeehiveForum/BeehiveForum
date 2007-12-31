@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.164 2007-12-31 15:48:54 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.165 2007-12-31 21:08:37 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -54,6 +54,7 @@ $forum_global_settings = forum_get_global_settings();
 
 include_once(BH_INCLUDE_PATH. "admin.inc.php");
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
+include_once(BH_INCLUDE_PATH. "email.inc.php");
 include_once(BH_INCLUDE_PATH. "form.inc.php");
 include_once(BH_INCLUDE_PATH. "format.inc.php");
 include_once(BH_INCLUDE_PATH. "header.inc.php");
@@ -259,6 +260,8 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
                     if ($valid && $user_logon = user_get_logon($user_uid)) {
 
                         if (admin_approve_user($user_uid)) {
+
+                            email_send_user_approved_notification($user_uid);
 
                             admin_add_log_entry(APPROVED_USER, $user_logon);
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.96 2007-12-26 13:19:32 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.97 2007-12-31 19:12:44 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -809,6 +809,12 @@ echo "  <br />\n";
 
 $forum_rules = new TextAreaHTML("prefsform");
 
+$forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
+
+$cancel_link = "<a href=\"index.php?webtag=$webtag\" target=\"$frame_top_target\">{$lang['cancellinktext']}</a>";
+
+$default_forum_rules = sprintf($lang['forumrulesmessage'], $forum_name, $cancel_link);
+
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -826,7 +832,7 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\">", $forum_rules->toolbar(true), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", $forum_rules->textarea("forum_rules_message", (isset($forum_settings['forum_rules_message']) ? _htmlentities($forum_settings['forum_rules_message']) : ''), 10, 80, "virtual"), "</td>\n";
+echo "                        <td align=\"left\">", $forum_rules->textarea("forum_rules_message", (isset($forum_settings['forum_rules_message']) ? _htmlentities($forum_settings['forum_rules_message']) : _htmlentities($default_forum_rules)), 10, 80, "virtual"), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">", $forum_rules->js(false), "</td>\n";

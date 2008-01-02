@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_post_approve.php,v 1.56 2007-12-26 13:19:32 decoyduck Exp $ */
+/* $Id: admin_post_approve.php,v 1.57 2008-01-02 12:45:34 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -104,15 +104,16 @@ $lang = load_language_file();
 
 $error_msg_array = array();
 
-// Returning to the approval queue?
+// Page number
 
-if (isset($_POST['return_queue']) && $_POST['return_queue'] == 'Y') {
-    $return_queue = "Y";
-}elseif (isset($_GET['return_queue']) && $_GET['return_queue'] == 'Y') {
-    $return_queue = "Y";
+if (isset($_GET['page']) && is_numeric($_GET['page'])) {
+    $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
 }else {
-    $return_queue = "N";
+    $page = 1;
 }
+
+$start = floor($page - 1) * 10;
+if ($start < 0) $start = 0;
 
 // Check POST and GET for message ID and check it is valid.
 
@@ -125,7 +126,7 @@ if (isset($_POST['msg'])) {
     }else {
 
         html_draw_top();
-        html_error_msg($lang['nomessagespecifiedforedit'], 'admin_post_approve.php', 'post', array('cancel' => $lang['cancel']), array('return_queue' => $return_queue));
+        html_error_msg($lang['nomessagespecifiedforedit'], 'admin_post_approve.php', 'post', array('cancel' => $lang['cancel']), array('ret' => $ret), '_self', 'center');
         html_draw_bottom();
         exit;
     }
@@ -139,34 +140,36 @@ if (isset($_POST['msg'])) {
     }else {
 
         html_draw_top();
-        html_error_msg($lang['nomessagespecifiedforedit'], 'admin_post_approve.php', 'post', array('cancel' => $lang['cancel']), array('return_queue' => $return_queue));
+        html_error_msg($lang['nomessagespecifiedforedit'], 'admin_post_approve.php', 'post', array('cancel' => $lang['cancel']), array('ret' => $ret), '_self', 'center');
         html_draw_bottom();
         exit;
     }
 }
 
-if (isset($_GET['page']) && is_numeric($_GET['page'])) {
-    $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
+// Are we returning somewhere?
+
+if (isset($_POST['ret']) && strlen(trim(_stripslashes($_POST['ret']))) > 0) {
+    $ret = trim(_stripslashes($_POST['ret']));
+}elseif (isset($_GET['ret']) && strlen(trim(_stripslashes($_GET['ret']))) > 0) {
+    $ret = trim(_stripslashes($_GET['ret']));
 }else {
-    $page = 1;
+    $ret = "admin_post_approve.php?webtag=$webtag";
 }
 
-$start = floor($page - 1) * 10;
-if ($start < 0) $start = 0;
+// validate the return to page
 
-// User clicked cancel
+if (isset($ret) && strlen(trim($ret)) > 0) {
+
+    $available_files = array('admin_post_approve.php', 'messages.php');
+    $available_files_preg = implode("|^", array_map('preg_quote_callback', $available_files));
+
+    if (preg_match("/^$available_files_preg/", basename($ret)) < 1) {
+        $ret = "admin_post_approve.php?webtag=$webtag";
+    }
+}
 
 if (isset($_POST['cancel'])) {
-
-    if ($return_queue == "Y") {
-
-        header_redirect("admin_post_approve.php?webtag=$webtag");
-
-    }else {
-
-        $uri = "discussion.php?webtag=$webtag&msg=$msg";
-        header_redirect($uri);
-    }
+    header_redirect($ret);
 }
 
 if (isset($msg) && validate_msg($msg)) {
@@ -178,7 +181,7 @@ if (isset($msg) && validate_msg($msg)) {
     if (!$t_fid = thread_get_folder($tid, $pid)) {
 
         html_draw_top();
-        html_error_msg($lang['threadcouldnotbefound'], 'admin_post_approve.php', 'post', array('cancel' => $lang['cancel']), array('return_queue' => $return_queue));
+        html_error_msg($lang['threadcouldnotbefound'], 'admin_post_approve.php', 'post', array('cancel' => $lang['cancel']), array('ret' => $ret), '_self', 'center');
         html_draw_bottom();
         exit;
     }
@@ -186,7 +189,7 @@ if (isset($msg) && validate_msg($msg)) {
     if (!bh_session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
 
         html_draw_top();
-        html_error_msg($lang['cannoteditpostsinthisfolder'], 'admin_post_approve.php', 'post', array('cancel' => $lang['cancel']), array('return_queue' => $return_queue));
+        html_error_msg($lang['cannoteditpostsinthisfolder'], 'admin_post_approve.php', 'post', array('cancel' => $lang['cancel']), array('ret' => $ret), '_self', 'center');
         html_draw_bottom();
         exit;
     }
@@ -194,7 +197,7 @@ if (isset($msg) && validate_msg($msg)) {
     if (!bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
         html_draw_top();
-        html_error_msg($lang['cannoteditpostsinthisfolder'], 'admin_post_approve.php', 'post', array('cancel' => $lang['cancel']), array('return_queue' => $return_queue));
+        html_error_msg($lang['cannoteditpostsinthisfolder'], 'admin_post_approve.php', 'post', array('cancel' => $lang['cancel']), array('ret' => $ret), '_self', 'center');
         html_draw_bottom();
         exit;
     }
@@ -202,7 +205,7 @@ if (isset($msg) && validate_msg($msg)) {
     if (!$threaddata = thread_get($tid)) {
 
         html_draw_top();
-        html_error_msg($lang['threadcouldnotbefound'], 'admin_post_approve.php', 'post', array('cancel' => $lang['cancel']), array('return_queue' => $return_queue));
+        html_error_msg($lang['threadcouldnotbefound'], 'admin_post_approve.php', 'post', array('cancel' => $lang['cancel']), array('ret' => $ret), '_self', 'center');
         html_draw_bottom();
         exit;
     }
@@ -212,7 +215,7 @@ if (isset($msg) && validate_msg($msg)) {
         if (!isset($preview_message['APPROVED']) || $preview_message['APPROVED'] > 0) {
 
             html_draw_top();
-            html_error_msg($lang['postdoesnotrequireapproval'], 'admin_post_approve.php', 'post', array('cancel' => $lang['cancel']), array('return_queue' => $return_queue));
+            html_error_msg($lang['postdoesnotrequireapproval'], 'admin_post_approve.php', 'post', array('cancel' => $lang['cancel']), array('ret' => $ret), '_self', 'center');
             html_draw_bottom();
             exit;
         }
@@ -239,11 +242,10 @@ if (isset($msg) && validate_msg($msg)) {
                     $msg = "$tid.$pid";
                 }
 
-                $ret = ($return_queue == 'Y') ? 'admin_post_approve.php' : 'discussion.php';
-
                 html_draw_top();
-                html_display_msg($lang['approvepost'], $lang['postapprovedsuccessfully'], $ret, 'get', array('back' => $lang['back']), array('msg' => $msg));
+                html_display_msg($lang['approvepost'], $lang['postapprovedsuccessfully'], $ret, 'get', array('back' => $lang['back']), array('msg' => $msg), false, '_self', 'center');
                 html_draw_bottom();
+                exit;
 
             }else {
 
@@ -251,7 +253,7 @@ if (isset($msg) && validate_msg($msg)) {
             }
         }
 
-        html_draw_top("post.js", "poll.js", "resize_width=720");
+        html_draw_top("post.js", "poll.js", "resize_width=720", "openprofile.js");
 
         echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['approvepost']}</h1>\n";
 
@@ -279,10 +281,11 @@ if (isset($msg) && validate_msg($msg)) {
         }
 
         echo "<br />\n";
+        echo "<div align=\"center\">\n";
         echo "<form name=\"f_delete\" action=\"admin_post_approve.php\" method=\"post\" target=\"_self\">\n";
         echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
         echo "  ", form_input_hidden('msg', _htmlentities($msg)), "\n";
-        echo "  ", form_input_hidden("return_queue", _htmlentities($return_queue)), "\n";
+        echo "  ", form_input_hidden("ret", _htmlentities($ret)), "\n";
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\">\n";
@@ -324,13 +327,14 @@ if (isset($msg) && validate_msg($msg)) {
         echo "    </tr>\n";
         echo "  </table>\n";
         echo "</form>\n";
+        echo "</div>\n";
 
         html_draw_bottom();
 
     }else {
 
         html_draw_top();
-        html_error_msg($lang['postdoesnotexist'], 'admin_post_approve.php', 'post', array('cancel' => $lang['cancel']), array('return_queue' => $return_queue));
+        html_error_msg($lang['postdoesnotexist'], 'admin_post_approve.php', 'post', array('cancel' => $lang['cancel']), array('ret' => $ret), '_self', 'center');
         html_draw_bottom();
         exit;
     }
@@ -345,7 +349,7 @@ if (isset($msg) && validate_msg($msg)) {
         exit;
     }
 
-    html_draw_top();
+    html_draw_top('openprofile.js');
 
     $post_approval_array = admin_get_post_approval_queue($start);
 
@@ -365,9 +369,11 @@ if (isset($msg) && validate_msg($msg)) {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                 <tr>\n";
-    echo "                   <td class=\"subhead\" align=\"left\" width=\"420\">{$lang['threadtitle']}</td>\n";
-    echo "                   <td class=\"subhead\" align=\"left\" width=\"200\">{$lang['messagenumber']}</td>\n";
-    echo "                   <td class=\"subhead\" align=\"left\" width=\"100\">&nbsp;</td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\" width=\"20\">&nbsp;</td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\" width=\"250\">{$lang['threadtitle']}</td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\" width=\"150\">{$lang['folder']}</td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\" width=\"150\">{$lang['user']}</td>\n";
+    echo "                   <td class=\"subhead\" align=\"center\" width=\"150\">{$lang['datetime']}</td>\n";
     echo "                 </tr>\n";
 
     if (sizeof($post_approval_array['post_array']) > 0) {
@@ -375,9 +381,11 @@ if (isset($msg) && validate_msg($msg)) {
         foreach($post_approval_array['post_array'] as $post_approval_entry) {
 
             echo "                 <tr>\n";
-            echo "                   <td align=\"left\">", word_filter_add_ob_tags(_htmlentities(thread_format_prefix($post_approval_entry['PREFIX'], $post_approval_entry['TITLE']))), "</td>\n";
-            echo "                   <td align=\"left\">{$post_approval_entry['MSG']}</td>\n";
-            echo "                   <td align=\"left\">", form_quick_button("admin_post_approve.php", $lang['approve'], array('msg' => $post_approval_entry['MSG'], 'return_queue' => "Y")), "</td>\n";
+            echo "                   <td align=\"left\" width=\"20\">&nbsp;</td>\n";
+            echo "                   <td align=\"left\"><a href=\"admin_post_approve.php?webtag=$webtag&msg={$post_approval_entry['MSG']}\" target=\"_self\">", word_filter_add_ob_tags(_htmlentities(thread_format_prefix($post_approval_entry['PREFIX'], $post_approval_entry['TITLE']))), "</a></td>\n";
+            echo "                   <td align=\"left\">{$post_approval_entry['FOLDER_TITLE']}</td>\n";
+            echo "                   <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$post_approval_entry['UID']}\" target=\"_blank\" onclick=\"return openProfile({$post_approval_entry['UID']}, '$webtag')\">", word_filter_add_ob_tags(format_user_name($post_approval_entry['LOGON'], $post_approval_entry['NICKNAME'])) . "</a></td>\n";
+            echo "                   <td align=\"center\">", format_time($post_approval_entry['CREATED']), "</td>\n";
             echo "                 </tr>\n";
         }
     }
@@ -395,7 +403,7 @@ if (isset($msg) && validate_msg($msg)) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td class=\"postbody\" align=\"center\">", page_links("admin_post_approve.php?webtag=$webtag&return_queue=$return_queue", $start, $post_approval_array['post_count'], 10), "</td>\n";
+    echo "      <td class=\"postbody\" align=\"center\">", page_links("admin_post_approve.php?webtag=$webtag&ret=$ret", $start, $post_approval_array['post_count'], 10), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</div>\n";

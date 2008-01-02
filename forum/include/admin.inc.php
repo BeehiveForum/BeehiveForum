@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.146 2007-12-31 21:12:08 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.147 2008-01-02 12:45:34 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -932,11 +932,13 @@ function admin_get_post_approval_queue($offset = 0)
 
     $post_approval_array = array();
 
-    $sql = "SELECT SQL_CALC_FOUND_ROWS THREAD.TITLE, POST.TID, POST.PID, FOLDER.PREFIX ";
-    $sql.= "FROM {$table_data['PREFIX']}POST POST ";
+    $sql = "SELECT SQL_CALC_FOUND_ROWS THREAD.TITLE, FOLDER.TITLE AS FOLDER_TITLE, FOLDER.PREFIX, ";
+    $sql.= "USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(POST.CREATED) AS CREATED, ";
+    $sql.= "CONCAT(POST.TID, '.', POST.PID) AS MSG FROM {$table_data['PREFIX']}POST POST ";
+    $sql.= "LEFT JOIN USER USER ON (USER.UID = POST.FROM_UID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ON (THREAD.TID = POST.TID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}FOLDER FOLDER ON (FOLDER.FID = THREAD.FID) ";
-    $sql.= "WHERE POST.APPROVED = '0' AND THREAD.FID IN ($fidlist) ";
+    $sql.= "WHERE UNIX_TIMESTAMP(POST.APPROVED) = '0' AND THREAD.FID IN ($fidlist) ";
     $sql.= "LIMIT $offset, 10";
 
     if (!$result = db_query($sql, $db_admin_get_post_approval_queue)) return false;
@@ -953,13 +955,7 @@ function admin_get_post_approval_queue($offset = 0)
 
         while ($post_array = db_fetch_array($result)) {
 
-            if (isset($post_array['TID']) && isset($post_array['PID'])) {
-
-                if (validate_msg("{$post_array['TID']}.{$post_array['PID']}")) {
-
-                    $post_approval_array[] = $post_array;
-                }
-            }
+            $post_approval_array[] = $post_array;
         }
 
     }else if ($post_count > 0) {
@@ -1614,7 +1610,7 @@ function admin_send_post_approval_notification($fid)
     $sql.= "LEFT JOIN GROUP_USERS ON (GROUP_USERS.UID = USER.UID) ";
     $sql.= "LEFT JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID) ";
     $sql.= "WHERE (GROUP_PERMS.PERM & $user_perm_folder_moderate) > 0 ";
-    $sql.= "AND GROUP_PERMS.FORUM IN (0, $forum_fid)) ";
+    $sql.= "AND GROUP_PERMS.FORUM IN (0, $forum_fid) ";
     $sql.= "AND GROUP_PERMS.FID IN (0, $fid)";
 
     if (!$result = db_query($sql, $db_admin_send_post_approval_notification)) return false;

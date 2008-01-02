@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.120 2007-10-24 19:57:09 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.121 2008-01-02 12:45:34 decoyduck Exp $ */
 
 /**
 * Functions relating to permissions
@@ -640,6 +640,8 @@ function perm_update_global_perms($uid, $perm)
             if (!$result = db_query($sql, $db_perm_add_global_perms)) return false;
         }
 
+        return true;
+
     }else {
 
         $sql = "INSERT INTO GROUPS (FORUM, AUTO_GROUP) VALUES (0, 1)";
@@ -661,6 +663,8 @@ function perm_update_global_perms($uid, $perm)
             return $new_gid;
         }
     }
+
+    return false;
 }
 
 function perm_get_group_permissions($gid)
@@ -1289,6 +1293,8 @@ function perm_display_list($perms)
 {
     $perms_array = array();
 
+    $lang = load_language_file();
+
     if ($perms & USER_PERM_BANNED)           $perms_array[] = "B";
     if ($perms & USER_PERM_WORMED)           $perms_array[] = "W";
     if ($perms & USER_PERM_POST_READ)        $perms_array[] = "R";
@@ -1311,7 +1317,7 @@ function perm_display_list($perms)
 
     }else {
 
-        echo "[none]";
+        echo $lang['none'];
     }
 }
 

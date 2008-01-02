@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.507 2007-12-30 14:25:39 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.508 2008-01-02 12:45:34 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1080,8 +1080,8 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
                     if (forum_get_setting('require_post_approval', 'Y') && isset($message['APPROVED']) && $message['APPROVED'] == 0) {
 
                         echo "                                          <tr>\n";
-                        echo "                                            <td align=\"left\"><a href=\"admin_post_approve.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_parent\" title=\"{$lang['approvepost']}\"><img src=\"", style_image('approved.png'), "\" border=\"0\" alt=\"{$lang['approvepost']}\" title=\"{$lang['approvepost']}\" /></a></td>\n";
-                        echo "                                            <td align=\"left\" nowrap=\"nowrap\"><a href=\"admin_post_approve.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_parent\" title=\"{$lang['approvepost']}\">{$lang['approvepost']}</a></td>\n";
+                        echo "                                            <td align=\"left\"><a href=\"admin_post_approve.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}&ret=messages.php%3Fwebtag%3D$webtag%26msg%3D$tid.{$message['PID']}\" target=\"_self\" title=\"{$lang['approvepost']}\"><img src=\"", style_image('approved.png'), "\" border=\"0\" alt=\"{$lang['approvepost']}\" title=\"{$lang['approvepost']}\" /></a></td>\n";
+                        echo "                                            <td align=\"left\" nowrap=\"nowrap\"><a href=\"admin_post_approve.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}&ret=messages.php%3Fwebtag%3D$webtag%26msg%3D$tid.{$message['PID']}\" target=\"_self\" title=\"{$lang['approvepost']}\">{$lang['approvepost']}</a></td>\n";
                         echo "                                          </tr>\n";
                     }
                 }

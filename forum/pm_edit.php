@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.116 2007-12-26 13:19:34 decoyduck Exp $ */
+/* $Id: pm_edit.php,v 1.117 2008-01-03 19:42:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -493,6 +493,7 @@ echo "                        <td align=\"left\">";
 echo "                         <h2>{$lang['message']}</h2>\n";
 
 $tools = new TextAreaHTML("f_post");
+echo $tools->preload();
 
 $t_content = ($fix_html ? $post->getTidyContent() : $post->getOriginalContent());
 

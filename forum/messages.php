@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.251 2007-12-26 13:19:34 decoyduck Exp $ */
+/* $Id: messages.php,v 1.252 2008-01-03 19:42:43 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -365,12 +365,20 @@ if ($thread_data['POLL_FLAG'] == 'Y' && $messages[0]['PID'] != 1) {
 echo "  </tr>\n";
 echo "</table>\n";
 
-if (isset($_GET['markasread'])) {
-    html_display_success_msg($lang['threareadstatusupdated'], '96%', 'center');
+if (isset($_GET['markasread']) && is_numeric($_GET['markasread'])) {
+    if ($_GET['markasread'] > 0) {
+        html_display_success_msg($lang['threareadstatusupdated'], '96%', 'center');
+    }else {
+        html_display_error_msg($lang['failedtoupdatethreadreadstatus'], '96%', 'center');
+    }
 }
 
 if (isset($_GET['setinterest'])) {
-    html_display_success_msg($lang['interestupdated'], '96%', 'center');
+    if ($_GET['setinterest'] > 0) {
+        html_display_success_msg($lang['interestupdated'], '96%', 'center');
+    }else {
+        html_display_error_msg($lang['failedtoupdatethreadinterest'], '96%', 'center');
+    }
 }
 
 if (isset($_GET['relupdated'])) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.218 2007-12-26 13:19:33 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.219 2008-01-03 19:42:43 decoyduck Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -1190,6 +1190,7 @@ echo "                        <td align=\"left\">{$lang['polladditionalmessageex
 echo "                      </tr>\n";
 
 $tools = new TextAreaHTML("f_poll");
+echo $tools->preload();
 
 $t_message_text = $post->getTidyContent();
 

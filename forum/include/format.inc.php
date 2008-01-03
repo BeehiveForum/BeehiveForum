@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.153 2007-12-23 20:53:10 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.154 2008-01-03 19:42:43 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -630,6 +630,23 @@ function range_keys($low, $high)
     $array_range = array_flip(range($low, $high));
     array_walk($array_range, create_function('&$item, $key', '$item = $key;'));
     return $array_range;
+}
+
+/**
+* Check variable is within range
+*
+* Check that passed variable is within range of $low and $high.
+*
+* @return Boolean
+* @param mixed $var - Variable to test
+* @param mixed $low - Low number
+* @param mixed $high - High number
+* @param integer $step - Optional step.
+*/
+
+function in_range($var, $low, $high, $step = 1)
+{
+   return in_array($var, range($low, $high, $step));
 }
 
 /**

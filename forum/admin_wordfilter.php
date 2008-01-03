@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_wordfilter.php,v 1.107 2007-12-26 13:19:33 decoyduck Exp $ */
+/* $Id: admin_wordfilter.php,v 1.108 2008-01-03 19:42:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -163,10 +163,10 @@ if (isset($_POST['delete'])) {
 
     $new_forum_settings = forum_get_settings();
 
-    if (isset($_POST['admin_force_word_filter']) && $_POST['admin_force_word_filter'] == "Y") {
-        $new_forum_settings['admin_force_word_filter'] = "Y";
+    if (isset($_POST['force_word_filter']) && $_POST['force_word_filter'] == "Y") {
+        $new_forum_settings['force_word_filter'] = "Y";
     }else {
-        $new_forum_settings['admin_force_word_filter'] = "N";
+        $new_forum_settings['force_word_filter'] = "N";
     }
 
     if (forum_save_settings($new_forum_settings)) {
@@ -566,7 +566,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "                  <td align=\"center\">\n";
     echo "                    <table width=\"95%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", form_checkbox("admin_force_word_filter", "Y", $lang['forceadminwordfilter'], forum_get_setting("admin_force_word_filter", "Y")), "</td>\n";
+    echo "                        <td align=\"left\">", form_checkbox("force_word_filter", "Y", $lang['forceadminwordfilter'], forum_get_setting("force_word_filter", "Y")), "</td>\n";
     echo "                      </tr>\n";
     echo "                    </table>\n";
     echo "                  </td>\n";

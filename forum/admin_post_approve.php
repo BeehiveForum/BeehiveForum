@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_post_approve.php,v 1.57 2008-01-02 12:45:34 decoyduck Exp $ */
+/* $Id: admin_post_approve.php,v 1.58 2008-01-03 19:42:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -243,7 +243,7 @@ if (isset($msg) && validate_msg($msg)) {
                 }
 
                 html_draw_top();
-                html_display_msg($lang['approvepost'], $lang['postapprovedsuccessfully'], $ret, 'get', array('back' => $lang['back']), array('msg' => $msg), false, '_self', 'center');
+                html_display_msg($lang['approvepost'], $lang['postapprovedsuccessfully'], $ret, 'get', array('back' => $lang['back']), array('msg' => $msg), '_self', 'center');
                 html_draw_bottom();
                 exit;
 
@@ -373,7 +373,7 @@ if (isset($msg) && validate_msg($msg)) {
     echo "                   <td class=\"subhead\" align=\"left\" width=\"250\">{$lang['threadtitle']}</td>\n";
     echo "                   <td class=\"subhead\" align=\"left\" width=\"150\">{$lang['folder']}</td>\n";
     echo "                   <td class=\"subhead\" align=\"left\" width=\"150\">{$lang['user']}</td>\n";
-    echo "                   <td class=\"subhead\" align=\"center\" width=\"150\">{$lang['datetime']}</td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\" width=\"150\">{$lang['datetime']}</td>\n";
     echo "                 </tr>\n";
 
     if (sizeof($post_approval_array['post_array']) > 0) {
@@ -385,7 +385,7 @@ if (isset($msg) && validate_msg($msg)) {
             echo "                   <td align=\"left\"><a href=\"admin_post_approve.php?webtag=$webtag&msg={$post_approval_entry['MSG']}\" target=\"_self\">", word_filter_add_ob_tags(_htmlentities(thread_format_prefix($post_approval_entry['PREFIX'], $post_approval_entry['TITLE']))), "</a></td>\n";
             echo "                   <td align=\"left\">{$post_approval_entry['FOLDER_TITLE']}</td>\n";
             echo "                   <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$post_approval_entry['UID']}\" target=\"_blank\" onclick=\"return openProfile({$post_approval_entry['UID']}, '$webtag')\">", word_filter_add_ob_tags(format_user_name($post_approval_entry['LOGON'], $post_approval_entry['NICKNAME'])) . "</a></td>\n";
-            echo "                   <td align=\"center\">", format_time($post_approval_entry['CREATED']), "</td>\n";
+            echo "                   <td align=\"left\">", format_time($post_approval_entry['CREATED']), "</td>\n";
             echo "                 </tr>\n";
         }
     }

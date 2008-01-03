@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.90 2007-12-30 22:38:16 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.91 2008-01-03 19:42:43 decoyduck Exp $ */
 
 // French Canadian language file
 
@@ -1204,7 +1204,7 @@ $lang['messageawaitingapprovalbymoderator'] = "Message %s.%s en attente d'approb
 $lang['postapprovedsuccessfully'] = "Approbation de message réussie";
 $lang['postapprovalfailed'] = "L'approbation du message a échoué.";
 $lang['postdoesnotrequireapproval'] = "Approbation du message non requis";
-$lang['approvepost'] = "Approuver message pour affichage";
+$lang['approvepost'] = "Approuver Message";
 $lang['approvedbyuser'] = "APPROUVÉ: %s par %s";
 $lang['makesticky'] = "Rendre collant";
 $lang['messagecountdisplay'] = "%s de %s";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: word_filter.inc.php,v 1.46 2007-12-15 21:19:54 decoyduck Exp $ */
+/* $Id: word_filter.inc.php,v 1.47 2008-01-03 19:42:43 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -93,7 +93,7 @@ function word_filter_get_by_sess_uid()
 
     $word_filter_array = array();
 
-    if (bh_session_get_value('USE_ADMIN_FILTER') == 'Y' || forum_get_setting('admin_force_word_filter', 'Y', false)) {
+    if (bh_session_get_value('USE_ADMIN_FILTER') == 'Y' || forum_get_setting('force_word_filter', 'Y', false)) {
 
         if (!word_filter_get(0, $word_filter_array)) {
 
@@ -134,7 +134,7 @@ function word_filter_get_by_uid($uid)
 
         if ($user_prefs = user_get_prefs($uid)) {
 
-            if ((isset($user_prefs['USE_ADMIN_FILTER']) && $user_prefs['USE_ADMIN_FILTER'] == 'Y') || forum_get_setting('admin_force_word_filter', 'Y', false)) {
+            if ((isset($user_prefs['USE_ADMIN_FILTER']) && $user_prefs['USE_ADMIN_FILTER'] == 'Y') || forum_get_setting('force_word_filter', 'Y', false)) {
 
                 if (!word_filter_get(0, $word_filter_array)) {
 

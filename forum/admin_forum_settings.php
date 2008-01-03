@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.130 2007-12-26 13:19:32 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.131 2008-01-03 19:42:43 decoyduck Exp $ */
 
 /**
 * Displays and handles the Forum Settings page
@@ -366,7 +366,7 @@ if (isset($_POST['changepermissions'])) {
 
 // Start Output Here
 
-html_draw_top("emoticons.js", "htmltools.js");
+html_draw_top("onunload=clearFocus()", "emoticons.js", "htmltools.js");
 
 echo "<h1>{$lang['admin']} &raquo; {$lang['forumsettings']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), "</h1>\n";
 
@@ -578,8 +578,13 @@ if (!isset($forum_settings['access_level']) || $forum_settings['access_level'] >
 }
 
 $closed_message = new TextAreaHTML("prefsform");
+echo $closed_message->preload();
+
 $restricted_message = new TextAreaHTML("prefsform");
+echo $restricted_message->preload();
+
 $password_protected_message = new TextAreaHTML("prefsform");
+echo $password_protected_message->preload();
 
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
 echo "    <tr>\n";

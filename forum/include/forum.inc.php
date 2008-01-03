@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.287 2007-12-26 13:19:35 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.288 2008-01-03 19:42:43 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -650,13 +650,12 @@ function forum_check_setting_name($setting_name)
     $valid_forum_settings = array('allow_polls', 'allow_post_editing', 'allow_search_spidering',
                                   'closed_message', 'default_emoticons', 'default_language',
                                   'default_style', 'enable_wiki_integration', 'enable_wiki_quick_links',
-                                  'forum_desc', 'forum_dl_saving', 'forum_email',
-                                  'forum_keywords', 'forum_name', 'forum_timezone',
-                                  'guest_account_enabled', 'guest_show_recent', 'maximum_post_length',
-                                  'minimum_post_frequency', 'password_protected_message', 'poll_allow_guests',
-                                  'post_edit_grace_period', 'post_edit_time', 'require_post_approval',
-                                  'restricted_message', 'show_links', 'show_stats',
-                                  'wiki_integration_uri');
+                                  'force_word_filter', 'forum_desc', 'forum_dl_saving', 'forum_email',
+                                  'forum_keywords', 'forum_name', 'forum_timezone', 'guest_account_enabled',
+                                  'guest_show_recent', 'maximum_post_length', 'minimum_post_frequency',
+                                  'password_protected_message', 'poll_allow_guests', 'post_edit_grace_period',
+                                  'post_edit_time', 'require_post_approval', 'restricted_message', 'show_links',
+                                  'show_stats', 'wiki_integration_uri');
 
     return in_array($setting_name, $valid_forum_settings);
 }

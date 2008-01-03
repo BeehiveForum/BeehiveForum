@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.100 2007-12-26 13:19:34 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.101 2008-01-03 19:42:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -183,15 +183,21 @@ if (isset($_POST['back'])) {
 
 if (isset($_GET['markasread']) && is_numeric($_GET['markasread'])) {
 
-    $mark_as_read = $_GET['markasread'];
+    if (in_range($_GET['markasread'], 0, $thread_data['LENGTH'])) {
 
-    if (messages_set_read($tid, $mark_as_read, $uid, $thread_data['MODIFIED'])) {
+        $mark_as_read = $_GET['markasread'];
 
-        header_redirect("messages.php?webtag=$webtag&msg=$msg&markasread=1");
-        exit;
+        if (messages_set_read($tid, $mark_as_read, $uid, $thread_data['MODIFIED'])) {
+
+            header_redirect("messages.php?webtag=$webtag&msg=$msg&markasread=1");
+            exit;
+        }
     }
 
-}else if (isset($_POST['setinterest']) && is_numeric($_POST['setinterest'])) {
+    header_redirect("messages.php?webtag=$webtag&msg=$msg&markasread=0");
+    exit;
+
+}elseif (isset($_POST['setinterest']) && is_numeric($_POST['setinterest'])) {
 
     $thread_interest = $_POST['setinterest'];
 
@@ -200,6 +206,9 @@ if (isset($_GET['markasread']) && is_numeric($_GET['markasread'])) {
         header_redirect("messages.php?webtag=$webtag&msg=$msg&setinterest=1");
         exit;
     }
+
+    header_redirect("messages.php?webtag=$webtag&msg=$msg&setinterest=0");
+    exit;
 }
 
 // Submit Code
@@ -210,9 +219,17 @@ if (isset($_POST['submit'])) {
 
     if (isset($_POST['markasread']) && is_numeric($_POST['markasread'])) {
 
-        $mark_as_read = $_POST['markasread'];
+        if (in_range($_POST['markasread'], 0, $thread_data['LENGTH'])) {
 
-        if (!messages_set_read($tid, $mark_as_read, $uid, $thread_data['MODIFIED'])) {
+            $thread_data['LAST_READ'] = $_POST['markasread'];
+
+            if (!messages_set_read($tid, $thread_data['LAST_READ'], $uid, $thread_data['MODIFIED'])) {
+
+                $error_msg_array[] = $lang['failedtoupdatethreadreadstatus'];
+                $valid = false;
+            }
+
+        }else {
 
             $error_msg_array[] = $lang['failedtoupdatethreadreadstatus'];
             $valid = false;
@@ -221,7 +238,7 @@ if (isset($_POST['submit'])) {
 
     if (isset($_POST['interest']) && is_numeric($_POST['interest'])) {
 
-        $thread_interest = $_POST['interest'];
+        $thread_data['INTEREST'] = $_POST['interest'];
 
         if (!thread_set_interest($tid, $thread_data['INTEREST'])) {
 
@@ -512,12 +529,12 @@ if (isset($_POST['submit'])) {
                 }
             }
         }
+    }
 
-        if ($valid) {
+    if ($valid) {
 
-            header_redirect("thread_options.php?webtag=$webtag&msg=$msg&updated=true");
-            exit;
-        }
+        header_redirect("thread_options.php?webtag=$webtag&msg=$msg&updated=true");
+        exit;
     }
 }
 

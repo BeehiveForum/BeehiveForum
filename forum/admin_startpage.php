@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_startpage.php,v 1.98 2007-12-26 13:19:32 decoyduck Exp $ */
+/* $Id: admin_startpage.php,v 1.99 2008-01-03 19:42:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -147,7 +147,7 @@ if (isset($_POST['submit'])) {
     }
 }
 
-html_draw_top("dictionary.js", "htmltools.js");
+html_draw_top("onunload=clearFocus()", "dictionary.js", "htmltools.js");
 
 echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['editstartpage']}</h1>\n";
 
@@ -162,6 +162,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 }
 
 $tools = new TextAreaHTML("startpage");
+echo $tools->preload();
 
 echo "<br />\n";
 echo "<div align=\"center\">\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.505 2007-12-31 21:08:37 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.506 2008-01-03 19:42:43 decoyduck Exp $ */
 
 // British English language file
 
@@ -1229,7 +1229,7 @@ $lang['messageawaitingapprovalbymoderator'] = "Message %s.%s is awaiting approva
 $lang['postapprovedsuccessfully'] = "Post approved successfully";
 $lang['postapprovalfailed'] = "Post approval failed.";
 $lang['postdoesnotrequireapproval'] = "Post does not require approval";
-$lang['approvepost'] = "Approve post for display";
+$lang['approvepost'] = "Approve Post";
 $lang['approvedbyuser'] = "APPROVED: %s by %s";
 $lang['makesticky'] = "Make sticky";
 $lang['messagecountdisplay'] = "%s of %s";

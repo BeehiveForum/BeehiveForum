@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.63 2007-12-30 22:38:16 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.64 2008-01-03 19:42:43 decoyduck Exp $ */
 
 // German language file
 
@@ -1204,7 +1204,7 @@ $lang['messageawaitingapprovalbymoderator'] = "Nachricht %s.%s wartet auf Aktivi
 $lang['postapprovedsuccessfully'] = "Post erfolgreich aktiviert";
 $lang['postapprovalfailed'] = "Post-Genehmigung fehlgeschlagen.";
 $lang['postdoesnotrequireapproval'] = "Post benoetigt keine Genehmigung";
-$lang['approvepost'] = "Stimme Post zur Anzeige zu";
+$lang['approvepost'] = "Stimme Post";
 $lang['approvedbyuser'] = "Anerkannt: %s durch %s";
 $lang['makesticky'] = "Erstelle Sticker";
 $lang['messagecountdisplay'] = "%s von %s";

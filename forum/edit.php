@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.242 2007-12-26 13:19:33 decoyduck Exp $ */
+/* $Id: edit.php,v 1.243 2008-01-03 19:42:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -674,7 +674,6 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 
 $tools = new TextAreaHTML("f_edit");
-
 echo $tools->preload();
 
 if ($valid && isset($_POST['preview'])) {

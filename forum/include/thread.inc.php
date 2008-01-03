@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.135 2007-12-23 21:07:14 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.136 2008-01-03 19:42:43 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -337,6 +337,11 @@ function thread_set_interest($tid, $interest)
 
     if (!is_numeric($tid)) return false;
     if (!is_numeric($interest)) return false;
+
+    $thread_interest_array = array(THREAD_IGNORED, THREAD_NOINTEREST,
+                                   THREAD_INTERESTED, THREAD_SUBSCRIBED);
+
+    if (!in_array($interest, $thread_interest_array)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 

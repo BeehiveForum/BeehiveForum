@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: header.inc.php,v 1.35 2007-12-26 17:44:35 decoyduck Exp $ */
+/* $Id: header.inc.php,v 1.36 2008-01-04 20:29:44 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -178,6 +178,26 @@ function header_check_cache($seconds = 300)
     header("Expires: $local_cache_expires", true);
     header("Last-Modified: $local_last_modified", true);
     header('Cache-Control: private, must-revalidate', true);
+}
+
+function header_check_etag($local_etag)
+{
+    if (preg_match('/cgi/', php_sapi_name()) > 0) return false;
+
+    if (isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
+        $remote_etag = substr(_stripslashes($_SERVER['HTTP_IF_NONE_MATCH']), 1, -1);
+    }else {
+        $remote_etag = false;
+    }
+
+    if (strcmp($remote_etag, $local_etag) == "0") {
+
+        header("Etag: \"$local_etag\"", true);
+        header("HTTP/1.1 304 Not Modified");
+        exit;
+    }
+
+    header("Etag: \"$local_etag\"", true);
 }
 
 ?>

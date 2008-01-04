@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: font_size.php,v 1.20 2007-12-26 13:19:33 decoyduck Exp $ */
+/* $Id: font_size.php,v 1.21 2008-01-04 20:29:44 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -100,94 +100,116 @@ if (!forum_check_access_level()) {
     header_redirect("forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
+// User's UID
+
+$uid = bh_session_get_value('UID');
+
+// User's MD5 Session Hash
+
+$sess_hash = bh_session_get_value('HASH');
+
+// User's font size.
+
+$font_size = bh_session_get_value('FONT_SIZE');
+
+// Output in text/css.
+
 header("Content-Type: text/css");
 
-$fontsize = bh_session_get_value('FONT_SIZE');
+// Generate etag for cache control
 
-if ($fontsize <> 10) {
+$local_etag = md5(sprintf("%s-%s-%s", $sess_hash, $font_size, $uid));
 
-    if ($fontsize < 5) $fontsize = 5;
-    if ($fontsize > 15) $fontsize = 15;
+// Check the cache
 
-    echo "body                       { font-size: ", $fontsize, "pt; }\n";
-    echo ".navpage                   { font-size: ", $fontsize * 0.9, "pt }\n";
-    echo "p                          { font-size: ", $fontsize, "pt; }\n";
-    echo "h1                         { font-size: ", $fontsize, "pt; }\n";
-    echo "h2                         { font-size: ", $fontsize, "pt; }\n";
-    echo ".smalltext                 { font-size: ", floor($fontsize * 0.9), "pt; }\n";
-    echo ".thread_list_mode          { font-size: ", $fontsize, "pt; }\n";
-    echo ".threads                   { font-size: ", $fontsize, "pt; }\n";
-    echo ".threads_left              { font-size: ", $fontsize, "pt; }\n";
-    echo ".threads_right             { font-size: ", $fontsize, "pt; }\n";
-    echo ".threads_top_left          { font-size: ", $fontsize, "pt; }\n";
-    echo ".threads_top_right         { font-size: ", $fontsize, "pt; }\n";
-    echo ".threads_bottom_left       { font-size: ", $fontsize, "pt; }\n";
-    echo ".threads_bottom_right      { font-size: ", $fontsize, "pt; }\n";
-    echo ".threads_left_right        { font-size: ", $fontsize, "pt; }\n";
-    echo ".threads_left_right_bottom { font-size: ", $fontsize, "pt; }\n";
-    echo ".threads_top_left_bottom   { font-size: ", $fontsize, "pt; }\n";
-    echo ".threads_top_right_bottom  { font-size: ", $fontsize, "pt; }\n";
-    echo ".folderinfo                { font-size: ", floor($fontsize * 0.9), "pt; }\n";
-    echo ".folderpostnew             { font-size: ", floor($fontsize * 0.9), "pt; }\n";
-    echo ".threadname                { font-size: ", $fontsize, "pt; }\n";
-    echo ".threadtime                { font-size: ", floor($fontsize * 0.9), "pt; }\n";
-    echo ".threadxnewofy             { font-size: ", floor($fontsize * 0.9), "pt; }\n";
-    echo ".foldername                { font-size: ", $fontsize, "pt; }\n";
-    echo ".posthead                  { font-size: ", $fontsize, "pt; }\n";
-    echo ".pmheadl                   { font-size: ", $fontsize, "pt; }\n";
-    echo ".pmheadr                   { font-size: ", $fontsize, "pt; }\n";
-    echo ".postbody                  { font-size: ", $fontsize, "pt; }\n";
-    echo ".postinfo                  { font-size: ", $fontsize, "pt; }\n";
-    echo ".posttofromlabel           { font-size: ", $fontsize, "pt; }\n";
-    echo ".posttofrom                { font-size: ", $fontsize, "pt; }\n";
-    echo ".postresponse              { font-size: ", $fontsize, "pt; }\n";
-    echo ".messagefoot               { font-size: ", $fontsize, "pt; }\n";
-    echo ".dictionary_button         { font-size: ", floor($fontsize * 0.9), "pt; }\n";
-    echo ".button                    { font-size: ", floor($fontsize * 0.9), "pt; }\n";
-    echo ".button_disabled           { font-size: ", floor($fontsize * 0.9), "pt; }\n";
-    echo ".smallbutton               { font-size: ", floor($fontsize * 0.9), "pt; }\n";
-    echo ".subhead                   { font-size: ", $fontsize, "pt; }\n";
-    echo ".bhinputtext               { font-size: ", floor($fontsize * 1.2), "pt; }\n";
-    echo ".bhtextarea                { font-size: ", floor($fontsize * 1.2), "pt; }\n";
-    echo ".bhselect                  { font-size: ", floor($fontsize * 0.9), "pt; }\n";
-    echo ".bhinputcheckbox           { font-size: ", floor($fontsize * 0.9), "pt; }\n";
-    echo ".bhinputradio              { font-size: ", floor($fontsize * 0.9), "pt; }\n";
-    echo ".install_dropdown          { font-size: ", floor($fontsize * 0.9), "pt; }\n";
-    echo ".logon_dropdown            { font-size: ", floor($fontsize * 0.9), "pt; }\n";
-    echo ".register_dropdown         { font-size: ", floor($fontsize * 0.9), "pt; }\n";
-    echo ".search_dropdown           { font-size: ", floor($fontsize * 0.9), "pt; }\n";
-    echo ".banned_dropdown           { font-size: ", floor($fontsize * 0.9), "pt; }\n";
-    echo ".links_dropdown            { font-size: ", floor($fontsize * 0.9), "pt; }\n";
-    echo ".admin_startpage_textarea  { font-size: ", floor($fontsize * 0.9), "pt; }\n";
-    echo ".dictionary_word_display   { font-size: ", floor($fontsize * 0.9), "pt; }\n";
-    echo ".dictionary_best_selection { font-size: ", floor($fontsize * 0.9), "pt; }\n";
-    echo ".dictionary_change_to      { font-size: ", floor($fontsize * 0.9), "pt; }\n";
-    echo ".post_folder_dropdown      { font-size: ", floor($fontsize * 0.9), "pt; }\n";
-    echo ".thread_title              { font-size: ", floor($fontsize * 0.9), "pt; }\n";
-    echo ".post_to_others            { font-size: ", floor($fontsize * 0.9), "pt; }\n";
-    echo ".post_content              { font-size: ", floor($fontsize * 0.9), "pt; }\n";
-    echo ".signature_content         { font-size: ", floor($fontsize * 0.9), "pt; }\n";
-    echo ".to_uid_dropdown           { font-size: ", floor($fontsize * 0.9), "pt; }\n";
-    echo ".recipient_dropdown        { font-size: ", floor($fontsize * 0.9), "pt; }\n";
-    echo ".recipient_list            { font-size: ", floor($fontsize * 0.9), "pt; }\n";
-    echo ".recent_user_dropdown      { font-size: ", floor($fontsize * 0.9), "pt; }\n";
-    echo ".user_in_thread_dropdown   { font-size: ", floor($fontsize * 0.9), "pt; }\n";
-    echo ".highlight                 { font-size: ", $fontsize, "pt; }\n";
-    echo ".quotetext                 { font-size: ", floor($fontsize * 0.9), "pt; }\n";
-    echo ".spellcheckbodytext        { font-size: ", $fontsize, "pt; }\n";
-    echo ".activeusers               { font-size: ", floor($fontsize * 0.9), "pt; }\n";
-    echo ".adminipdisplay            { font-size: ", floor($fontsize * 0.9), "pt; }\n";
-    echo ".pmnewcount                { font-size: ", floor($fontsize * 0.9), "pt; }\n";
-    echo ".pmbar_text                { font-size: ", floor($fontsize * 0.9), "pt; }\n";
-    echo ".pagenum_text              { font-size: ", floor($fontsize * 0.9), "pt; }\n";
-    echo ".admin_settings_text       { font-size: ", floor($fontsize * 0.9), "pt; }\n";
-    echo ".navpage                   { font-size: ", $fontsize * 0.9, "pt }\n";
-    echo ".navpage                   { font-size: ", $fontsize * 0.9, "pt }\n";
-    echo ".subhead_sort_asc          { font-size: ", $fontsize, "pt; }\n";
-    echo ".subhead_sort_desc         { font-size: ", $fontsize, "pt; }\n";
-    echo ".error_msg                 { font-size: ", $fontsize * 0.9, "pt }\n";
-    echo ".success_msg               { font-size: ", $fontsize * 0.9, "pt }\n";
-    echo ".warning_msg               { font-size: ", $fontsize * 0.9, "pt }\n";
+header_check_etag($local_etag);
+
+// Check the user's font size.
+
+if (!is_bool($font_size) && is_numeric($font_size) && $font_size != 10) {
+
+    if ($font_size < 5) $font_size = 5;
+    if ($font_size > 15) $font_size = 15;
+
+    echo "body                       { font-size: ", $font_size, "pt; }\n";
+    echo ".navpage                   { font-size: ", floor($font_size * 0.9), "pt }\n";
+    echo "p                          { font-size: ", $font_size, "pt; }\n";
+    echo "h1                         { font-size: ", $font_size, "pt; }\n";
+    echo "h2                         { font-size: ", $font_size, "pt; }\n";
+    echo ".smalltext                 { font-size: ", floor($font_size * 0.9), "pt; }\n";
+    echo ".thread_list_mode          { font-size: ", $font_size, "pt; }\n";
+    echo ".threads                   { font-size: ", $font_size, "pt; }\n";
+    echo ".threads_left              { font-size: ", $font_size, "pt; }\n";
+    echo ".threads_right             { font-size: ", $font_size, "pt; }\n";
+    echo ".threads_top_left          { font-size: ", $font_size, "pt; }\n";
+    echo ".threads_top_right         { font-size: ", $font_size, "pt; }\n";
+    echo ".threads_bottom_left       { font-size: ", $font_size, "pt; }\n";
+    echo ".threads_bottom_right      { font-size: ", $font_size, "pt; }\n";
+    echo ".threads_left_right        { font-size: ", $font_size, "pt; }\n";
+    echo ".threads_left_right_bottom { font-size: ", $font_size, "pt; }\n";
+    echo ".threads_top_left_bottom   { font-size: ", $font_size, "pt; }\n";
+    echo ".threads_top_right_bottom  { font-size: ", $font_size, "pt; }\n";
+    echo ".folderinfo                { font-size: ", floor($font_size * 0.9), "pt; }\n";
+    echo ".folderpostnew             { font-size: ", floor($font_size * 0.9), "pt; }\n";
+    echo ".threadname                { font-size: ", $font_size, "pt; }\n";
+    echo ".threadtime                { font-size: ", floor($font_size * 0.9), "pt; }\n";
+    echo ".threadxnewofy             { font-size: ", floor($font_size * 0.9), "pt; }\n";
+    echo ".foldername                { font-size: ", $font_size, "pt; }\n";
+    echo ".posthead                  { font-size: ", $font_size, "pt; }\n";
+    echo ".pmheadl                   { font-size: ", $font_size, "pt; }\n";
+    echo ".pmheadr                   { font-size: ", $font_size, "pt; }\n";
+    echo ".postbody                  { font-size: ", $font_size, "pt; }\n";
+    echo ".postinfo                  { font-size: ", $font_size, "pt; }\n";
+    echo ".posttofromlabel           { font-size: ", $font_size, "pt; }\n";
+    echo ".posttofrom                { font-size: ", $font_size, "pt; }\n";
+    echo ".postresponse              { font-size: ", $font_size, "pt; }\n";
+    echo ".messagefoot               { font-size: ", $font_size, "pt; }\n";
+    echo ".dictionary_button         { font-size: ", floor($font_size * 0.9), "pt; }\n";
+    echo ".button                    { font-size: ", floor($font_size * 0.9), "pt; }\n";
+    echo ".button_disabled           { font-size: ", floor($font_size * 0.9), "pt; }\n";
+    echo ".smallbutton               { font-size: ", floor($font_size * 0.9), "pt; }\n";
+    echo ".subhead                   { font-size: ", $font_size, "pt; }\n";
+    echo ".bhinputtext               { font-size: ", floor($font_size * 1.2), "pt; }\n";
+    echo ".bhtextarea                { font-size: ", floor($font_size * 1.2), "pt; }\n";
+    echo ".bhselect                  { font-size: ", floor($font_size * 0.9), "pt; }\n";
+    echo ".bhinputcheckbox           { font-size: ", floor($font_size * 0.9), "pt; }\n";
+    echo ".bhinputradio              { font-size: ", floor($font_size * 0.9), "pt; }\n";
+    echo ".install_dropdown          { font-size: ", floor($font_size * 0.9), "pt; }\n";
+    echo ".logon_dropdown            { font-size: ", floor($font_size * 0.9), "pt; }\n";
+    echo ".register_dropdown         { font-size: ", floor($font_size * 0.9), "pt; }\n";
+    echo ".search_dropdown           { font-size: ", floor($font_size * 0.9), "pt; }\n";
+    echo ".banned_dropdown           { font-size: ", floor($font_size * 0.9), "pt; }\n";
+    echo ".links_dropdown            { font-size: ", floor($font_size * 0.9), "pt; }\n";
+    echo ".admin_startpage_textarea  { font-size: ", floor($font_size * 0.9), "pt; }\n";
+    echo ".dictionary_word_display   { font-size: ", floor($font_size * 0.9), "pt; }\n";
+    echo ".dictionary_best_selection { font-size: ", floor($font_size * 0.9), "pt; }\n";
+    echo ".dictionary_change_to      { font-size: ", floor($font_size * 0.9), "pt; }\n";
+    echo ".post_folder_dropdown      { font-size: ", floor($font_size * 0.9), "pt; }\n";
+    echo ".thread_title              { font-size: ", floor($font_size * 0.9), "pt; }\n";
+    echo ".post_to_others            { font-size: ", floor($font_size * 0.9), "pt; }\n";
+    echo ".post_content              { font-size: ", floor($font_size * 0.9), "pt; }\n";
+    echo ".signature_content         { font-size: ", floor($font_size * 0.9), "pt; }\n";
+    echo ".to_uid_dropdown           { font-size: ", floor($font_size * 0.9), "pt; }\n";
+    echo ".recipient_dropdown        { font-size: ", floor($font_size * 0.9), "pt; }\n";
+    echo ".recipient_list            { font-size: ", floor($font_size * 0.9), "pt; }\n";
+    echo ".recent_user_dropdown      { font-size: ", floor($font_size * 0.9), "pt; }\n";
+    echo ".user_in_thread_dropdown   { font-size: ", floor($font_size * 0.9), "pt; }\n";
+    echo ".highlight                 { font-size: ", $font_size, "pt; }\n";
+    echo ".quotetext                 { font-size: ", floor($font_size * 0.9), "pt; }\n";
+    echo ".spellcheckbodytext        { font-size: ", $font_size, "pt; }\n";
+    echo ".activeusers               { font-size: ", floor($font_size * 0.9), "pt; }\n";
+    echo ".adminipdisplay            { font-size: ", floor($font_size * 0.9), "pt; }\n";
+    echo ".pmnewcount                { font-size: ", floor($font_size * 0.9), "pt; }\n";
+    echo ".pmbar_text                { font-size: ", floor($font_size * 0.9), "pt; }\n";
+    echo ".pagenum_text              { font-size: ", floor($font_size * 0.9), "pt; }\n";
+    echo ".admin_settings_text       { font-size: ", floor($font_size * 0.9), "pt; }\n";
+    echo ".navpage                   { font-size: ", $font_size * 0.9, "pt }\n";
+    echo ".navpage                   { font-size: ", $font_size * 0.9, "pt }\n";
+    echo ".subhead_sort_asc          { font-size: ", $font_size, "pt; }\n";
+    echo ".subhead_sort_desc         { font-size: ", $font_size, "pt; }\n";
+    echo ".error_msg                 { font-size: ", $font_size * 0.9, "pt }\n";
+    echo ".success_msg               { font-size: ", $font_size * 0.9, "pt }\n";
+    echo ".warning_msg               { font-size: ", $font_size * 0.9, "pt }\n";
 }
 
 ?>

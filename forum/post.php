@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.332 2007-12-29 22:26:33 decoyduck Exp $ */
+/* $Id: post.php,v 1.333 2008-01-06 20:59:29 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -162,7 +162,7 @@ $uid = bh_session_get_value('UID');
 
 $valid = true;
 
-$newthread = false;
+$new_thread = false;
 
 $fix_html = true;
 
@@ -200,7 +200,7 @@ if (isset($_POST['to_radio'])) {
 
 if (isset($_POST['t_newthread']) && (isset($_POST['submit']) || isset($_POST['preview']))) {
 
-    $newthread = true;
+    $new_thread = true;
 
     if (isset($_POST['t_threadtitle']) && strlen(trim(_stripslashes($_POST['t_threadtitle']))) > 0) {
         $t_threadtitle = trim(_stripslashes($_POST['t_threadtitle']));
@@ -555,7 +555,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
         }
     }
 
-    $newthread = false;
+    $new_thread = false;
 
 }elseif (isset($_POST['t_tid']) && is_numeric($_POST['t_tid']) && isset($_POST['t_rpid']) && is_numeric($_POST['t_rpid'])) {
 
@@ -590,11 +590,11 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
         $valid = false;
     }
 
-    $newthread = false;
+    $new_thread = false;
 
 }else{
 
-    $newthread = true;
+    $new_thread = true;
 
     if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
         $t_fid = $_GET['fid'];
@@ -650,7 +650,7 @@ if ($allow_html == false) {
     $t_sig = $sig->getContent();
 }
 
-if (!$newthread) {
+if (!$new_thread) {
 
     if (!$reply_message = messages_get($reply_to_tid, $reply_to_pid)) {
 
@@ -660,7 +660,7 @@ if (!$newthread) {
         exit;
     }
 
-    if (!$threaddata = thread_get($reply_to_tid)) {
+    if (!$thread_data = thread_get($reply_to_tid)) {
 
         html_draw_top();
         html_error_msg($lang['threadcouldnotbefound'], 'discussion.php', 'get', array('back' => $lang['back']), array('msg' => "$reply_to_tid.$reply_to_pid"));
@@ -670,7 +670,7 @@ if (!$newthread) {
 
     $reply_message['CONTENT'] = message_get_content($reply_to_tid, $reply_to_pid);
 
-    if (((perm_get_user_permissions($reply_message['FROM_UID']) & USER_PERM_WORMED) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) || ((!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") && $threaddata['POLL_FLAG'] != 'Y' && $reply_to_pid != 0)) {
+    if (((perm_get_user_permissions($reply_message['FROM_UID']) & USER_PERM_WORMED) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) || ((!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") && $thread_data['POLL_FLAG'] != 'Y' && $reply_to_pid != 0)) {
 
         html_draw_top();
         html_error_msg($lang['messagehasbeendeleted'], 'discussion.php', 'get', array('back' => $lang['back']), array('msg' => "$reply_to_tid.$reply_to_pid"));
@@ -685,7 +685,7 @@ if ($valid && isset($_POST['submit'])) {
 
         if (check_ddkey($t_dedupe)) {
 
-            if ($newthread) {
+            if ($new_thread) {
 
                 if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
@@ -706,7 +706,7 @@ if ($valid && isset($_POST['submit'])) {
                 $t_tid = $_POST['t_tid'];
                 $t_rpid = $_POST['t_rpid'];
 
-                if (isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 && (!bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid))) {
+                if (isset($thread_data['CLOSED']) && $thread_data['CLOSED'] > 0 && (!bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid))) {
 
                     html_draw_top();
                     html_error_msg($lang['threadisclosedforposting'], 'discussion.php', 'post', array('back' => $lang['back']), array('msg' => "$t_tid.$t_rpid"));
@@ -739,10 +739,10 @@ if ($valid && isset($_POST['submit'])) {
                     $t_content.= "\n<div class=\"sig\">$t_sig</div>";
                 }
 
-                if ($newthread) {
+                if ($new_thread) {
                     $new_pid = post_create($t_fid, $t_tid, $t_rpid, $uid, $uid, $_POST['t_to_uid'], $t_content);
                 }else {
-                    $new_pid = post_create($t_fid, $t_tid, $t_rpid, $threaddata['BY_UID'], $uid, $_POST['t_to_uid'], $t_content);
+                    $new_pid = post_create($t_fid, $t_tid, $t_rpid, $thread_data['BY_UID'], $uid, $_POST['t_to_uid'], $t_content);
                 }
 
                 if ($high_interest == "Y") thread_set_high_interest($t_tid);
@@ -750,7 +750,10 @@ if ($valid && isset($_POST['submit'])) {
                 if (!(perm_get_user_permissions($uid) & USER_PERM_WORMED)) {
 
                     email_sendnotification($_POST['t_to_uid'], $uid, $t_tid, $new_pid);
-                    email_sendsubscription($_POST['t_to_uid'], $uid, $t_tid, $new_pid, $threaddata['MODIFIED']);
+
+                    if (isset($thread_data['MODIFIED']) && $thread_data['MODIFIED'] > 0) {
+                        email_sendsubscription($_POST['t_to_uid'], $uid, $t_tid, $new_pid, $thread_data['MODIFIED']);
+                    }
                 }
 
                 post_save_attachment_id($t_tid, $new_pid, $aid);
@@ -760,7 +763,7 @@ if ($valid && isset($_POST['submit'])) {
 
             $new_pid = 0;
 
-            if ($newthread) {
+            if ($new_thread) {
 
                 $t_tid  = 0;
                 $t_rpid = 0;
@@ -774,7 +777,7 @@ if ($valid && isset($_POST['submit'])) {
 
         if ($new_pid > -1) {
 
-            if ($newthread && $t_tid > 0) {
+            if ($new_thread && $t_tid > 0) {
 
                 $uri = "discussion.php?webtag=$webtag&msg=$t_tid.1";
 
@@ -805,7 +808,7 @@ if (!isset($t_fid)) {
     $t_fid = 1;
 }
 
-if ($newthread && !$folder_dropdown = folder_draw_dropdown($t_fid, "t_fid", "", FOLDER_ALLOW_NORMAL_THREAD, "", "post_folder_dropdown")) {
+if ($new_thread && !$folder_dropdown = folder_draw_dropdown($t_fid, "t_fid", "", FOLDER_ALLOW_NORMAL_THREAD, "", "post_folder_dropdown")) {
 
     html_draw_top();
     html_error_msg($lang['cannotcreatenewthreads']);
@@ -813,7 +816,7 @@ if ($newthread && !$folder_dropdown = folder_draw_dropdown($t_fid, "t_fid", "", 
     exit;
 }
 
-if (isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+if (isset($thread_data['CLOSED']) && $thread_data['CLOSED'] > 0 && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
     html_draw_top();
     html_error_msg($lang['threadisclosedforposting']);
@@ -829,7 +832,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     html_display_error_array($error_msg_array, '720', 'left');
 }
 
-if (!$newthread && isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 && bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+if (!$new_thread && isset($thread_data['CLOSED']) && $thread_data['CLOSED'] > 0 && bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
     html_display_warning_msg($lang['moderatorthreadclosed'], '720', 'left');
 }
 
@@ -890,7 +893,7 @@ if ($valid && isset($_POST['preview'])) {
     echo "            </table>\n";
 }
 
-if (!$newthread) {
+if (!$new_thread) {
 
     if (!isset($_POST['t_to_uid'])) {
         $t_to_uid = message_get_user($reply_to_tid, $reply_to_pid);
@@ -903,7 +906,7 @@ if (!isset($t_threadtitle)) $t_threadtitle = "";
 
 echo "            <table class=\"posthead\" width=\"720\">\n";
 
-if ($newthread) {
+if ($new_thread) {
 
     echo "              <tr>\n";
     echo "                <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['createnewthread']}</td>\n";
@@ -920,7 +923,7 @@ echo "              <tr>\n";
 echo "                <td align=\"left\" valign=\"top\" width=\"210\">\n";
 echo "                  <table class=\"posthead\" width=\"210\" cellpadding=\"0\">\n";
 
-if ($newthread) {
+if ($new_thread) {
 
     echo "                    <tr>\n";
     echo "                      <td align=\"left\"><h2>{$lang['folder']}</h2></td>\n";
@@ -941,13 +944,13 @@ if ($newthread) {
     echo "                      <td align=\"left\"><h2>{$lang['folder']}</h2></td>\n";
     echo "                    </tr>\n";
     echo "                    <tr>\n";
-    echo "                      <td align=\"left\">", word_filter_add_ob_tags(_htmlentities($threaddata['FOLDER_TITLE'])), "</td>\n";
+    echo "                      <td align=\"left\">", word_filter_add_ob_tags(_htmlentities($thread_data['FOLDER_TITLE'])), "</td>\n";
     echo "                    </tr>\n";
     echo "                    <tr>\n";
     echo "                      <td align=\"left\"><h2>{$lang['threadtitle']}</h2></td>\n";
     echo "                    </tr>\n";
     echo "                    <tr>\n";
-    echo "                      <td align=\"left\">", word_filter_add_ob_tags(_htmlentities(thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE']))), form_input_hidden("t_tid", _htmlentities($reply_to_tid)), form_input_hidden("t_rpid", _htmlentities($reply_to_pid)), "</td>\n";
+    echo "                      <td align=\"left\">", word_filter_add_ob_tags(_htmlentities(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']))), form_input_hidden("t_tid", _htmlentities($reply_to_tid)), form_input_hidden("t_rpid", _htmlentities($reply_to_pid)), "</td>\n";
     echo "                    </tr>\n";
 }
 
@@ -955,7 +958,7 @@ echo "                    <tr>\n";
 echo "                      <td align=\"left\"><h2>{$lang['to']}</h2></td>\n";
 echo "                    </tr>\n";
 
-if (!$newthread) {
+if (!$new_thread) {
 
     echo "                    <tr>\n";
     echo "                      <td align=\"left\">", form_radio("to_radio", "in_thread", $lang['usersinthread'], true), "</td>\n";
@@ -966,16 +969,16 @@ if (!$newthread) {
 }
 
 echo "                    <tr>\n";
-echo "                      <td align=\"left\">", form_radio("to_radio", "recent", $lang['recentvisitors'], $newthread ? true : false), "</td>\n";
+echo "                      <td align=\"left\">", form_radio("to_radio", "recent", $lang['recentvisitors'], $new_thread ? true : false), "</td>\n";
 echo "                    </tr>\n";
 echo "                    <tr>\n";
-echo "                      <td align=\"left\">", post_draw_to_dropdown_recent($newthread && isset($t_to_uid) ? $t_to_uid : ($newthread ? -1 : 0)), "</td>\n";
+echo "                      <td align=\"left\">", post_draw_to_dropdown_recent($new_thread && isset($t_to_uid) ? $t_to_uid : ($new_thread ? -1 : 0)), "</td>\n";
 echo "                    </tr>\n";
 echo "                    <tr>\n";
 echo "                      <td align=\"left\">", form_radio("to_radio", "others", $lang['others']), "</td>\n";
 echo "                    </tr>\n";
 echo "                    <tr>\n";
-echo "                      <td align=\"left\" nowrap=\"nowrap\"><div class=\"bhinputsearch\">", form_input_text("t_to_uid_others", "", 0, 0, "onclick=\"checkToRadio(". ($newthread ? 1 : 2). ")\"", "post_to_others"), "<a href=\"search_popup.php?webtag=$webtag&amp;type=1&amp;obj_name=t_to_uid_others\" onclick=\"return openLogonSearch('$webtag', 't_to_uid_others');\"><img src=\"", style_image('search_button.png'), "\" alt=\"{$lang['search']}\" title=\"{$lang['search']}\" border=\"0\" class=\"search_button\" /></a></div></td>\n";
+echo "                      <td align=\"left\" nowrap=\"nowrap\"><div class=\"bhinputsearch\">", form_input_text("t_to_uid_others", "", 0, 0, "onclick=\"checkToRadio(". ($new_thread ? 1 : 2). ")\"", "post_to_others"), "<a href=\"search_popup.php?webtag=$webtag&amp;type=1&amp;obj_name=t_to_uid_others\" onclick=\"return openLogonSearch('$webtag', 't_to_uid_others');\"><img src=\"", style_image('search_button.png'), "\" alt=\"{$lang['search']}\" title=\"{$lang['search']}\" border=\"0\" class=\"search_button\" /></a></div></td>\n";
 echo "                    </tr>\n";
 echo "                    <tr>\n";
 echo "                      <td align=\"left\"><h2>{$lang['messageoptions']}</h2></td>\n";
@@ -1002,10 +1005,10 @@ if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
     echo "                      <td align=\"left\"><h2>{$lang['admin']}</h2></td>\n";
     echo "                    </tr>\n";
     echo "                    <tr>\n";
-    echo "                      <td align=\"left\">", form_checkbox("t_closed", "Y", $lang['closeforposting'], isset($t_closed) ? $t_closed == 'Y' : isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 ? true : false), "</td>\n";
+    echo "                      <td align=\"left\">", form_checkbox("t_closed", "Y", $lang['closeforposting'], isset($t_closed) ? $t_closed == 'Y' : isset($thread_data['CLOSED']) && $thread_data['CLOSED'] > 0 ? true : false), "</td>\n";
     echo "                    </tr>\n";
     echo "                    <tr>\n";
-    echo "                      <td align=\"left\">", form_checkbox("t_sticky", "Y", $lang['makesticky'], isset($t_sticky) ? $t_sticky == 'Y' : isset($threaddata['STICKY']) && $threaddata['STICKY'] == "Y" ? true : false), "</td>\n";
+    echo "                      <td align=\"left\">", form_checkbox("t_sticky", "Y", $lang['makesticky'], isset($t_sticky) ? $t_sticky == 'Y' : isset($thread_data['STICKY']) && $thread_data['STICKY'] == "Y" ? true : false), "</td>\n";
     echo "                    </tr>\n";
 }
 
@@ -1120,7 +1123,7 @@ echo form_submit("submit", $lang['post'], "tabindex=\"2\" onclick=\"return autoC
 echo "&nbsp;".form_submit("preview", $lang['preview'], "tabindex=\"3\" onclick=\"clearFocus()\"");
 echo "&nbsp;".form_submit("cancel", $lang['cancel'], "tabindex=\"4\" onclick=\"closeAttachWin(); clearFocus()\"");
 
-if (forum_get_setting('attachments_enabled', 'Y') && (bh_session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid) || $newthread)) {
+if (forum_get_setting('attachments_enabled', 'Y') && (bh_session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid) || $new_thread)) {
 
     echo "&nbsp;".form_button("attachments", $lang['attachments'], "tabindex=\"5\" onclick=\"launchAttachWin('{$aid}', '$webtag')\"");
     echo form_input_hidden("aid", _htmlentities($aid));
@@ -1168,7 +1171,7 @@ echo "            </table>\n";
 
 echo $tools->js();
 
-if (!$newthread && $reply_to_pid > 0) {
+if (!$new_thread && $reply_to_pid > 0) {
 
     echo "            <table class=\"posthead\" width=\"720\">\n";
     echo "              <tr>\n";
@@ -1176,16 +1179,16 @@ if (!$newthread && $reply_to_pid > 0) {
     echo "              </tr>\n";
 
 
-    if (($threaddata['POLL_FLAG'] == 'Y') && ($reply_message['PID'] == 1)) {
+    if (($thread_data['POLL_FLAG'] == 'Y') && ($reply_message['PID'] == 1)) {
 
         echo "              <tr>\n";
-        echo "                <td align=\"left\">", poll_display($reply_to_tid, $threaddata['LENGTH'], $reply_to_pid, $threaddata['FID'], false, false, false, true, $show_sigs, true), "</td>\n";
+        echo "                <td align=\"left\">", poll_display($reply_to_tid, $thread_data['LENGTH'], $reply_to_pid, $thread_data['FID'], false, false, false, true, $show_sigs, true), "</td>\n";
         echo "              </tr>\n";
 
     }else {
 
         echo "              <tr>\n";
-        echo "                <td align=\"left\">", message_display($reply_to_tid, $reply_message, $threaddata['LENGTH'], $reply_to_pid, $threaddata['FID'], true, false, false, false, $show_sigs, true), "</td>\n";
+        echo "                <td align=\"left\">", message_display($reply_to_tid, $reply_message, $thread_data['LENGTH'], $reply_to_pid, $thread_data['FID'], true, false, false, false, $show_sigs, true), "</td>\n";
         echo "              </tr>\n";
     }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_update_language.php,v 1.9 2007-05-06 17:24:56 decoyduck Exp $ */
+/* $Id: bh_update_language.php,v 1.10 2008-01-06 20:59:28 decoyduck Exp $ */
 
 // Constant to define where the include files are
 
@@ -34,9 +34,9 @@ include_once(BH_INCLUDE_PATH. "format.inc.php");
 if (isset($_SERVER['argv'][1]) && strlen(trim(_stripslashes($_SERVER['argv'][1]))) > 0) {
 
     $target_language_file = trim(_stripslashes($_SERVER['argv'][1]));
-    
+
     if (!$lang_fix = file(BH_INCLUDE_PATH. "/languages/$target_language_file")) {
-        
+
         echo "Failed to load language file ($target_language_file). Check working directory and filename\n";
         exit;
     }
@@ -81,11 +81,14 @@ if (file_exists(BH_INCLUDE_PATH. "languages/en.inc.php")) {
 
                 $preg_lang_add_match = preg_quote("\$lang{$lang_matches[1]}", "/");
 
-                if (preg_match("/^$preg_lang_add_match(.+)/i", $lang_add_line, $lang_add_matches)) {
+                if (preg_match("/^$preg_lang_add_match\s?=\s?\"(.+)\";/i", $lang_add_line, $lang_add_matches)) {
 
-                    echo "\$lang{$lang_matches[1]}{$lang_add_matches[1]}\n";
-                    $line_matched = true;
-                    break;
+                    if (isset($lang_add_matches[1]) && strlen(trim($lang_add_matches[1])) > 0) {
+
+                        echo "\$lang{$lang_matches[1]} =\"", addslashes($lang_add_matches[1]), "\";\n";
+                        $line_matched = true;
+                        break;
+                    }
                 }
             }
 
@@ -97,11 +100,14 @@ if (file_exists(BH_INCLUDE_PATH. "languages/en.inc.php")) {
 
                     $preg_lang_fix_match = preg_quote("\$lang{$lang_matches[1]}", "/");
 
-                    if (preg_match("/^$preg_lang_fix_match(.+)/i", $lang_fix_line, $lang_fix_matches)) {
+                    if (preg_match("/^$preg_lang_add_match\s?=\s?\"(.+)\";/i", $lang_fix_line, $lang_fix_matches)) {
 
-                        echo "\$lang{$lang_matches[1]}{$lang_fix_matches[1]}\n";
-                        $line_matched = true;
-                        break;
+                        if (isset($lang_add_matches[1]) && strlen(trim($lang_add_matches[1])) > 0) {
+
+                            echo "\$lang{$lang_matches[1]} =\"", addslashes($lang_fix_matches[1]), "\";\n";
+                            $line_matched = true;
+                            break;
+                        }
                     }
                 }
             }
@@ -113,7 +119,7 @@ if (file_exists(BH_INCLUDE_PATH. "languages/en.inc.php")) {
             $line_matched = true;
         }
     }
-    
+
 }else {
 
     echo "Failed to load English language file (en.inc.php). Check working directory and filename";

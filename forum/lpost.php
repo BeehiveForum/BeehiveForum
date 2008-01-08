@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.118 2007-12-29 22:26:33 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.119 2008-01-08 18:33:40 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -160,11 +160,11 @@ $uid = bh_session_get_value('UID');
 
 $valid = true;
 
-$newthread = false;
+$new_thread = false;
 
 if (isset($_POST['t_newthread'])) {
 
-    $newthread = true;
+    $new_thread = true;
 
     if (isset($_POST['t_threadtitle']) && strlen(trim(_stripslashes($_POST['t_threadtitle']))) > 0) {
 
@@ -301,7 +301,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     $replyto = $_GET['replyto'];
     list($reply_to_tid, $reply_to_pid) = explode(".", $replyto);
-    $newthread = false;
+    $new_thread = false;
 
     if (!$t_fid = thread_get_folder($reply_to_tid, $reply_to_pid)) {
 
@@ -329,7 +329,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     $reply_to_tid = $_POST['t_tid'];
     $reply_to_pid = $_POST['t_rpid'];
-    $newthread = false;
+    $new_thread = false;
 
     if (!$t_fid = thread_get_folder($reply_to_tid, $reply_to_pid)) {
 
@@ -355,7 +355,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
 }else {
 
-    $newthread = true;
+    $new_thread = true;
 
     if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
 
@@ -414,7 +414,7 @@ if ($allow_html == false) {
     $t_sig = $sig->getContent();
 }
 
-if (!$newthread) {
+if (!$new_thread) {
 
     if (!$reply_message = messages_get($reply_to_tid, $reply_to_pid)) {
 
@@ -424,7 +424,7 @@ if (!$newthread) {
         exit;
     }
 
-    if (!$threaddata = thread_get($reply_to_tid)) {
+    if (!$thread_data = thread_get($reply_to_tid)) {
 
         light_html_draw_top();
         light_html_display_error_msg($lang['threadcouldnotbefound']);
@@ -434,7 +434,7 @@ if (!$newthread) {
 
     $reply_message['CONTENT'] = message_get_content($reply_to_tid, $reply_to_pid);
 
-    if (((perm_get_user_permissions($reply_message['FROM_UID']) & USER_PERM_WORMED) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) || ((!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") && $threaddata['POLL_FLAG'] != 'Y' && $reply_to_pid != 0)) {
+    if (((perm_get_user_permissions($reply_message['FROM_UID']) & USER_PERM_WORMED) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) || ((!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") && $thread_data['POLL_FLAG'] != 'Y' && $reply_to_pid != 0)) {
 
         $error_msg_array[] = $lang['messagehasbeendeleted'];
         $valid = false;
@@ -455,7 +455,7 @@ if ($valid && isset($_POST['submit'])) {
 
         if (check_ddkey($t_dedupe)) {
 
-            if ($newthread) {
+            if ($new_thread) {
 
                 $t_tid = post_create_thread($t_fid, $uid, $t_threadtitle);
                 $t_rpid = 0;
@@ -474,13 +474,13 @@ if ($valid && isset($_POST['submit'])) {
 
                 }
 
-                if ($newthread) {
+                if ($new_thread) {
 
                     $new_pid = post_create($t_fid, $t_tid, $t_rpid, $uid, $uid, $_POST['t_to_uid'], $t_content);
 
                 }else {
 
-                    $new_pid = post_create($t_fid, $t_tid, $t_rpid, $threaddata['BY_UID'], $uid, $_POST['t_to_uid'], $t_content);
+                    $new_pid = post_create($t_fid, $t_tid, $t_rpid, $thread_data['BY_UID'], $uid, $_POST['t_to_uid'], $t_content);
                 }
 
                 if ($high_interest == "Y") thread_set_high_interest($t_tid);
@@ -488,7 +488,10 @@ if ($valid && isset($_POST['submit'])) {
                 if (!(perm_get_user_permissions($uid) & USER_PERM_WORMED)) {
 
                     email_sendnotification($_POST['t_to_uid'], $uid, $t_tid, $new_pid);
-                    email_sendsubscription($_POST['t_to_uid'], $uid, $t_tid, $new_pid, $threaddata['MODIFIED']);
+
+                    if (isset($thread_data['MODIFIED']) && $thread_data['MODIFIED'] > 0) {
+                        email_sendsubscription($_POST['t_to_uid'], $uid, $t_tid, $new_pid, $thread_data['MODIFIED']);
+                    }
                 }
             }
 
@@ -496,7 +499,7 @@ if ($valid && isset($_POST['submit'])) {
 
             $new_pid = 0;
 
-            if ($newthread) {
+            if ($new_thread) {
 
                 $t_tid = 0;
                 $t_rpid = 0;
@@ -572,7 +575,7 @@ if ($valid && isset($_POST['preview'])) {
     echo "<br />\n";
 }
 
-if (!$newthread) {
+if (!$new_thread) {
 
     if (!isset($_POST['t_to_uid'])) {
         $t_to_uid = message_get_user($reply_to_tid,$reply_to_pid);
@@ -580,7 +583,7 @@ if (!$newthread) {
         $t_to_uid = $_POST['t_to_uid'];
     }
 
-    if (isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0) {
+    if (isset($thread_data['CLOSED']) && $thread_data['CLOSED'] > 0) {
 
         if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
@@ -602,7 +605,7 @@ if (!isset($t_threadtitle)) {
     $t_threadtitle = "";
 }
 
-if ($newthread) {
+if ($new_thread) {
 
     echo "<h1>{$lang['createnewthread']}</h1>\n";
     echo "<p>{$lang['selectfolder']}: ";
@@ -623,7 +626,7 @@ if ($newthread) {
 
     $reply_message['CONTENT'] = message_get_content($reply_to_tid, $reply_to_pid);
 
-    if ((!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") && $threaddata['POLL_FLAG'] != 'Y' && $reply_to_pid != 0) {
+    if ((!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") && $thread_data['POLL_FLAG'] != 'Y' && $reply_to_pid != 0) {
 
         light_html_display_error_msg($lang['messagehasbeendeleted']);
         light_html_draw_bottom();
@@ -670,17 +673,17 @@ echo "</p>";
 
 echo "</form>\n";
 
-if (!$newthread && $reply_to_pid > 0) {
+if (!$new_thread && $reply_to_pid > 0) {
 
     echo "<p>{$lang['inreplyto']}:</p>\n";
 
-    if (($threaddata['POLL_FLAG'] == 'Y') && ($reply_message['PID'] == 1)) {
+    if (($thread_data['POLL_FLAG'] == 'Y') && ($reply_message['PID'] == 1)) {
 
-        light_poll_display($reply_to_tid, $threaddata['LENGTH'], $reply_to_pid, $threaddata['FID'], false, false, false, true, false, true);
+        light_poll_display($reply_to_tid, $thread_data['LENGTH'], $reply_to_pid, $thread_data['FID'], false, false, false, true, false, true);
 
     }else {
 
-        light_message_display($reply_to_tid, $reply_message, $threaddata['LENGTH'], $reply_to_pid, $threaddata['FID'], true, false, false, false, false, true);
+        light_message_display($reply_to_tid, $reply_message, $thread_data['LENGTH'], $reply_to_pid, $thread_data['FID'], true, false, false, false, false, true);
     }
 }
 

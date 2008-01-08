@@ -1,6 +1,175 @@
-Project Beehive Forum Change Log (Generated: Sat, 15 Dec 2007 18:52:47)
+Project Beehive Forum Change Log (Generated: Mon, 07 Jan 2008 20:42:16)
 
 Author: decoyduck
+Date: Sun, 06 Jan 2008 20:59:28
+-----------------------
+Fixed: Undefined variable $threaddata in post.php when creating a new
+thread.
+Fixed: bh_update_language.php wasn't doing addslashes on strings.
+Changed: Updated language files.
+
+Date: Fri, 04 Jan 2008 20:29:44
+-----------------------
+Changed: Custom font size script output is now cached by the client's
+browser to save a tiny bit of bandwidth.
+
+Date: Thu, 03 Jan 2008 19:42:43
+-----------------------
+Fixed: Incorrect initialisation of HTML toolbar / TinyMCE on some pages.
+Fixed: Couldn't force the word filter to be enabled.
+Fixed: It was possible to set a thread interest out of the bounds of set
+by Beehive (integer value lower than -1 and higher than 3)
+Fixed: Setting thread interest via Thread Options wasn't holding.
+Added: Error message display when interest or read message number couldn't
+be changed.
+
+Date: Wed, 02 Jan 2008 12:45:34
+-----------------------
+Fixed: Global folder moderation permissions were not being correctly
+checked for admin_post_approve.php etc.
+Fixed: Changing user's global permissions caused an error to be
+incorrectly displayed if the user previously had no previous permissions.
+Changed: Made the admin_post_approve.php work a lot better.
+
+Date: Mon, 31 Dec 2007 21:12:08
+-----------------------
+Fixed: Post approval notifications were being sent to all moderators on
+global scale regardless of forum.
+
+Date: Mon, 31 Dec 2007 21:08:37
+-----------------------
+Added: Email notification is sent to user when their account has been
+approved by an admin.
+Fixed: Post Approval notifications were not being sent to folder
+moderators.
+
+Date: Mon, 31 Dec 2007 19:12:44
+-----------------------
+Changed: Made the Forum Rules box in Global Forum Settings use the default
+rules text if none have been defined.
+
+Date: Mon, 31 Dec 2007 18:44:52
+-----------------------
+Fixed: Search box on My Forums page was broken.
+Changed: Re-added the forum description to My Forums page.
+
+Date: Mon, 31 Dec 2007 15:48:54
+-----------------------
+Fixed: Changing the filter type on admin_users.php didn't preserve the
+column sorting.
+Fixed: Kicking or Approving a user didn't preserve the filter type on
+admin_users.php.
+Added: Success and Error messages added to admin_user.php
+
+Date: Sun, 30 Dec 2007 22:38:16
+-----------------------
+Fixed: bh_check_languages.php had problems where language strings
+contained new-lines or tab characters.
+Fixed: Duplicate language string keys causing problems for email approval
+output in browser.
+Added: Email notification for Admins when a new user account is created
+and user approval is active.
+Added: Email notification for Admins when a new post is created and post
+approval is active in a folder.
+
+Date: Sun, 30 Dec 2007 14:25:39
+-----------------------
+Added: Hostname tooltip added to all relevant displays of the user's IP
+Address.
+
+Date: Sat, 29 Dec 2007 22:26:33
+-----------------------
+Changed: Email subscriptions are only sent once per thread per user visit
+to cut down on the number of notifications sent to each user.
+
+Date: Thu, 27 Dec 2007 19:10:20
+-----------------------
+Changed: Simplified bh_session_check and bh_guest_session_init functions
+to no longer pass hash as function arguments.
+
+Date: Wed, 26 Dec 2007 17:44:35
+-----------------------
+Changed: More authentic HTTP/1.0 500 status messages when dealing with PHP
+CGI mode.
+
+Date: Wed, 26 Dec 2007 13:19:32
+-----------------------
+Fixed: ./file causes problems for some weirdly configured Apache set ups.
+Fixed: back button on admin_user_groups_edit_users.php always took you
+back to admin_user_groups.php and not the previous page.
+
+Date: Sun, 23 Dec 2007 21:07:13
+-----------------------
+Fixed: Call-time pass-by-reference error in thread.inc.php when getting
+list of replies for a thread split.
+Fixed: Error handler trigger self-error due to back trace data not
+containing all the required information.
+
+Date: Sun, 23 Dec 2007 20:53:10
+-----------------------
+Fixed: Missing HTML warning messages in admin_wordfilter.php
+Fixed: When the user has filled their maximum word filter quota the error
+message still complained about not filling in match text etc.
+
+Date: Sat, 22 Dec 2007 18:33:45
+-----------------------
+Fixed: bh_check_languages.php was still missing some array elements.
+
+Date: Sat, 22 Dec 2007 11:39:44
+-----------------------
+Changed: Warning message on unread cut-off setting changed.
+
+Date: Sat, 22 Dec 2007 11:27:35
+-----------------------
+Changed: Removed the code to perform catch up on the unread threads
+because it simply takes too long. Replaced it with a suitable warning to
+notify forum operates if they select to change the option.
+
+Date: Thu, 20 Dec 2007 11:18:31
+-----------------------
+Fixed: PM Notification popup only worked correctly when triggered by the
+thread list.
+
+Date: Wed, 19 Dec 2007 22:16:54
+-----------------------
+Fixed: Better checks added to return results for messages_get() for
+trapping stale cache errors and deleted posts.
+Changed: Light mode now uses light_html_display_error_msg a lot more
+rather than each script displaying it's own <h1>{$lang['error']}</h1> etc.
+
+Date: Tue, 18 Dec 2007 16:44:45
+-----------------------
+Fixed: bh_check_languages wasn't working correctly on multi-dimensional
+arrays
+Added: Warning message added when changing the urnead cut-off.
+
+Date: Sun, 16 Dec 2007 19:09:06
+-----------------------
+Changed: Function forum_update_unread_data() changed so threads modified
+on or after rather than just after the cut-off are marked as read.
+
+Date: Sun, 16 Dec 2007 17:54:32
+-----------------------
+Added: When changing the unread cutoff Beehive now instantly corrects the
+unread data for all users.
+Fixed: Undefined variables $t_content and $t_sig in edit.php when trying
+to edit a post to delete all content.
+Fixed: Undefined variable $option_count when creating a tabular poll.
+
+Date: Sat, 15 Dec 2007 23:06:15
+-----------------------
+Fixed: Admin Global Forum Settings was incorrectly displaying the selected
+unread thread cut-off
+Fixed: Function forum_process_unread_cutoff() could end up causing an
+undefined CONSTANT error.
+Changed: Updated x-hacker language file.
+
+Date: Sat, 15 Dec 2007 21:19:31
+-----------------------
+Fixed: Code for restricting user's word filter had been removed since
+0.7.1. Reimplemented.
+Changed: Applied filter count limit to user account only.
+
 Date: Thu, 13 Dec 2007 21:34:32
 -----------------------
 Added: Reload button for text captcha to get a new image if the user can't
@@ -90,4 +259,17 @@ separated by semi-colon duplicated the entries selected.
 Date: Sun, 09 Dec 2007 18:04:31
 -----------------------
 Changed: Increased the maximum length of the username field in search.php
+
+Date: Sat, 08 Dec 2007 17:38:27
+-----------------------
+Fixed: Installer wasn't working correctly without BEEHIVE_INSTALL_NOWARN
+set.
+
+Date: Sat, 08 Dec 2007 14:58:53
+-----------------------
+Fixed: Closed another exploit that could allow directory traversal.
+
+Date: Sat, 08 Dec 2007 09:22:37
+-----------------------
+Changed: Added caching back to threads_rss.php
 

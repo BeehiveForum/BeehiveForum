@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.142 2007-12-26 13:19:35 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.143 2008-01-11 21:27:26 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -806,15 +806,18 @@ function get_attachment_by_hash($hash)
 
     if (db_num_rows($result) > 0) {
 
-        $attachment_array = db_fetch_array($result);
+        $attachment_data = db_fetch_array($result);
 
-        return array("filename"  => rawurldecode($attachment_array['FILENAME']),
-                     "filedate"  => filemtime("$attachment_dir/{$attachment_array['HASH']}"),
-                     "filesize"  => filesize("$attachment_dir/{$attachment_array['HASH']}"),
-                     "aid"       => $attachment_array['AID'],
-                     "hash"      => $attachment_array['HASH'],
-                     "mimetype"  => $attachment_array['MIMETYPE'],
-                     "downloads" => $attachment_array['DOWNLOADS']);
+        if (@file_exists("$attachment_dir/{$attachment_data['HASH']}")) {
+
+            return array("filename"  => rawurldecode($attachment_data['FILENAME']),
+                         "filedate"  => filemtime("$attachment_dir/{$attachment_data['HASH']}"),
+                         "filesize"  => filesize("$attachment_dir/{$attachment_data['HASH']}"),
+                         "aid"       => $attachment_data['AID'],
+                         "hash"      => $attachment_data['HASH'],
+                         "mimetype"  => $attachment_data['MIMETYPE'],
+                         "downloads" => $attachment_data['DOWNLOADS']);
+        }
     }
 
     return false;

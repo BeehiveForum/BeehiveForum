@@ -21,7 +21,17 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ip.inc.php,v 1.33 2007-10-11 13:01:19 decoyduck Exp $ */
+/* $Id: ip.inc.php,v 1.34 2008-01-11 21:27:26 decoyduck Exp $ */
+
+/**
+* ip.inc.php - IP Address related functions
+*
+* Contains functions for fetching and checking IP addresses.
+*/
+
+/**
+*
+*/
 
 // We shouldn't be accessing this file directly.
 
@@ -31,6 +41,15 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
     header("Location: ../index.php");
     exit;
 }
+
+/**
+* Get Client IP
+*
+* Gets the Client's IP Address. Checks for various proxy HTTP headers for client IP.
+*
+* @return mixed - Client's IP Address or false on failure.
+* @param void
+*/
 
 function get_ip_address()
 {
@@ -89,6 +108,25 @@ function get_ip_address()
     // IP Address detection of proxy or client not possible.
 
     return false;
+}
+
+/**
+* Check IP Address
+*
+* Checks the IP Address to make sure it is correctly formatted. Supports IPV4 addresses only.
+*
+* @return boolean
+* @param string $ip - IP Address to check.
+*/
+
+function check_ip_address($ip)
+{
+    $ip_check_preg = "/^([0-9]{1,2}|[01][0-9]{2}|2[0-4][0-9]|25[0-5])\.";
+    $ip_check_preg.= "([0-9]{1,2}|[01][0-9]{2}|2[0-4][0-9]|25[0-5])\.";
+    $ip_check_preg.= "([0-9]{1,2}|[01][0-9]{2}|2[0-4][0-9]|25[0-5])\.";
+    $ip_check_preg.= "([0-9]{1,2}|[01][0-9]{2}|2[0-4][0-9]|25[0-5])$/";
+
+    return (preg_match($ip_check_preg, $ip) > 0);
 }
 
 ?>

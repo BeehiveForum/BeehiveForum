@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.508 2008-01-02 12:45:34 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.509 2008-01-11 21:27:26 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1088,7 +1088,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
                 if (isset($message['IPADDRESS']) && strlen($message['IPADDRESS']) > 0) {
 
-                    if (($hostname = gethostbyaddr($message['IPADDRESS'])) !== $message['IPADDRESS']) {
+                    if ((check_ip_address($message['IPADDRESS'])) && ($hostname = gethostbyaddr($message['IPADDRESS']))) {
 
                         $ip_address_display = sprintf("<span title=\"%s: %s\">%s</span>", $lang['hostname'], $hostname, $message['IPADDRESS']);
 
@@ -1124,7 +1124,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
                 if (isset($message['IPADDRESS']) && strlen($message['IPADDRESS']) > 0) {
 
-                    if (($hostname = gethostbyaddr($message['IPADDRESS'])) !== $message['IPADDRESS']) {
+                    if ((check_ip_address($message['IPADDRESS'])) && ($hostname = gethostbyaddr($message['IPADDRESS']))) {
 
                         $ip_address_display = sprintf("<span title=\"%s: %s\">%s</span>", $lang['hostname'], $hostname, $message['IPADDRESS']);
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_visitor_log.php,v 1.25 2007-12-30 14:25:39 decoyduck Exp $ */
+/* $Id: admin_visitor_log.php,v 1.26 2008-01-11 21:27:26 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -174,7 +174,7 @@ if (sizeof($admin_visitor_log_array['user_array']) > 0) {
 
         if (isset($visitor['IPADDRESS']) && $visitor['IPADDRESS'] > 0) {
 
-            if (($hostname = gethostbyaddr($visitor['IPADDRESS'])) !== $visitor['IPADDRESS']) {
+            if ((check_ip_address($visitor['IPADDRESS'])) && ($hostname = gethostbyaddr($visitor['IPADDRESS']))) {
 
                 $ip_address_display = sprintf("<span title=\"%s: %s\">%s</span>", $lang['hostname'], $hostname, $visitor['IPADDRESS']);
 
@@ -187,9 +187,13 @@ if (sizeof($admin_visitor_log_array['user_array']) > 0) {
 
                 echo "                   <td class=\"postbody\" align=\"left\" width=\"200\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_ipaddress={$visitor['IPADDRESS']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">$ip_address_display</a>&nbsp;({$lang['banned']})&nbsp;</td>\n";
 
-            }else {
+            }else if (strlen(trim($visitor['IPADDRESS'])) > 0) {
 
                 echo "                   <td class=\"postbody\" align=\"left\" width=\"200\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$visitor['IPADDRESS']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">$ip_address_display</a>&nbsp;</td>\n";
+
+            }else {
+
+                echo "                   <td class=\"postbody\" align=\"left\" width=\"200\">{$lang['unknown']}&nbsp;</td>\n";
             }
 
         }else {

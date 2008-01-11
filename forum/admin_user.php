@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.230 2007-12-31 15:48:54 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.231 2008-01-11 21:27:26 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -905,7 +905,7 @@ if (isset($_GET['action']) && strlen(trim(_stripslashes($_GET['action']))) > 0) 
                 echo "                                      <td align=\"left\" width=\"150\"><a href=\"admin_user.php?webtag=$webtag&amp;uid={$user_alias['UID']}\">", word_filter_add_ob_tags(_htmlentities($user_alias['LOGON'])), "</a></td>\n";
                 echo "                                      <td align=\"left\" width=\"150\">", word_filter_add_ob_tags(_htmlentities($user_alias['NICKNAME'])), "</td>\n";
 
-                if (($hostname = gethostbyaddr($user_alias['IPADDRESS'])) !== $user_alias['IPADDRESS']) {
+                if ((check_ip_address($user_alias['IPADDRESS'])) && ($hostname = gethostbyaddr($user_alias['IPADDRESS']))) {
 
                     $ip_address_display = sprintf("<span title=\"%s: %s\">%s</span>", $lang['hostname'], $hostname, $user_alias['IPADDRESS']);
 
@@ -1193,22 +1193,26 @@ if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
         echo "                      <tr>\n";
         echo "                        <td align=\"left\" width=\"150\">{$lang['lastipaddress']}:</td>\n";
 
-        if (($hostname = gethostbyaddr($user['IPADDRESS'])) !== $user['IPADDRESS']) {
+        if ((check_ip_address($user['IPADDRESS'])) && ($hostname = gethostbyaddr($user['IPADDRESS']))) {
 
             $ip_address_display = sprintf("<span title=\"%s: %s\">%s</span>", $lang['hostname'], $hostname, $user['IPADDRESS']);
 
         }else {
 
-            $ip_address_display = sprintf("<span title=\"%s\">%s</span>", $lang['unknownhostname'], $user['IPADDRESS']);
+            $ip_address_display = sprintf("<span title=\"%s\">%s</span>", $lang['unknownhostname'], $lang['unknown']);
         }
 
         if (ip_is_banned($user['IPADDRESS'])) {
 
             echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_ipaddress={$user['IPADDRESS']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">$ip_address_display</a> ({$lang['banned']})</td>\n";
 
-        }else {
+        }else if (strlen(trim($user['IPADDRESS'])) > 0) {
 
             echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$user['IPADDRESS']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">$ip_address_display</a></td>\n";
+
+        }else {
+
+            echo "                        <td align=\"left\">{$lang['unknown']}</td>\n";
         }
 
         echo "                      </tr>\n";
@@ -1251,7 +1255,7 @@ if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
     echo "                  <td align=\"center\">\n";
     echo "                    <table width=\"90%\" class=\"posthead\">\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"center\">", form_dropdown_array('action', $admin_options_dropdown, false, false, 'admin_options_dropdown'), "&nbsp", form_submit('action_submit', $lang['goexcmark']), "</td>\n";
+    echo "                        <td align=\"center\">", form_dropdown_array('action', $admin_options_dropdown, false, false, 'admin_options_dropdown'), "&nbsp;", form_submit('action_submit', $lang['goexcmark']), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";

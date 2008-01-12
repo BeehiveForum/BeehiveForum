@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: htmltools.inc.php,v 1.60 2007-12-26 13:19:35 decoyduck Exp $ */
+/* $Id: htmltools.inc.php,v 1.61 2008-01-12 01:38:28 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -53,6 +53,7 @@ function TinyMCE() {
     $str.= "tinyMCE.init({\n";
 
     $str.= "    mode : \"specific_textareas\",\n";
+    $str.= "    width: \"100%\",\n";
 
     if ($pref_language = bh_session_get_value("LANGUAGE")) {
         if (@file_exists("tiny_mce/langs/{$pref_language}.js")) {
@@ -66,7 +67,7 @@ function TinyMCE() {
 
 //  $str.= "    auto_focus : \"mce_editor_0\",\n";
 
-    $str.= "    oninit : \"mceOnInit()\",\n";
+    $str.= "    oninit : \"mceOnInit\",\n";
 
     $str.= "    plugins : \"beehive,searchreplace,table\",\n";
 
@@ -79,8 +80,9 @@ function TinyMCE() {
 
         // separator,rowseparator,spacer
     $str.= "    theme_advanced_buttons1 : \"bold,italic,underline,strikethrough,separator,justifyleft,justifycenter,justifyright,separator,formatselect,fontselect,fontsizeselect\",\n";
-    $str.= "    theme_advanced_buttons2 : \"undo,redo,separator,cleanup,help,code,separator,visualaid,separator,tablecontrols,separator,search,replace,bhspellcheck\",\n";
-    $str.= "    theme_advanced_buttons3 : \"removeformat,forecolor,backcolor,separator,sub,sup,separator,bullist,numlist,separator,outdent,indent,separator,link,unlink,separator,image,separator,charmap,hr,separator,bhquote,bhcode,bhspoiler,separator,bhnoemots\",\n";
+    $str.= "    theme_advanced_buttons2 : \"undo,redo,separator,cleanup,help,code,separator,visualaid,separator,tablecontrols\",\n";
+    $str.= "    theme_advanced_buttons3 : \"search,replace,separator,removeformat,forecolor,backcolor,separator,sub,sup,separator,bullist,numlist,separator,outdent,indent,separator,link,unlink,separator,image,separator,charmap,separator,bhspellcheck\",\n";
+    $str.= "    theme_advanced_buttons4 : \"bhquote,bhcode,bhspoiler,separator,bhnoemots\",\n";
 
     $str.= "    extended_valid_elements : \"marquee,span[class|align|title],div[class|align|id],font[face|size|color|style]\",\n";
 

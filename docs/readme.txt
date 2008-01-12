@@ -431,22 +431,18 @@ Note: GeSHi is not created by the Beehive Forum developers.
 1.3.6 TinyMCE
 =============
 
-Beehive Forum has a simple HTML toolbar built in, but also allows the use of the open-
-source WYSIWYG TinyMCE toolbar (http://tinymce.moxiecode.com/) by Moxiecode Systems. 
-To include TinyMCE in your Beehive Forum install download the latest version (tested with 
-v1.43). Within the compressed source there should be a directory:
-  tinymce/jscripts/tiny_mce/
-Simply copy everything from that tiny_mce directory into a subdirectory 'tiny_mce' in
-your main forum folder (if your forum was at www.site.com/forum/, upload it to 
-www.site.com/forum/tiny_mce/). 
+Beehive Forum has a simple HTML toolbar built in, but also allows the use of the 
+open-source WYSIWYG TinyMCE version 2.03 or later by Moxiecode Systems. You can
+downloaded TinyMCE from http://tinymce.moxiecode.com/
 
-There is a Beehive Forum plugin for TinyMCE which should have already been in your forum's 
-tiny_mce directory, under the subdirectory plugins/beehive. If this is not the case 
-copy the directory tiny_mce/plugins/beehive from a fresh download of Beehive Forum to your 
-forum.
+To install TinyMCE in to your Beehive Forum simply copy everything from the 
+tinymce/jscripts/tiny_mce directory into a subdirectory named 'tiny_mce' in your
+main forum folder.
 
-To change any TinyMCE settings edit the file include/htmltools.inc.php, looking for 
-the function TinyMCE().
+There is a Beehive Forum plugin for TinyMCE which should have already been in your
+forum's tiny_mce directory, under the subdirectory plugins/beehive. If this is not
+the case copy the directory tiny_mce/plugins/beehive from a fresh download of
+Beehive Forum to your forum.
 
 Note: TinyMCE is not created by the Beehive Forum developers.
 

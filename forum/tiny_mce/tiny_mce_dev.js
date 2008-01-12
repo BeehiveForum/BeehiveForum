@@ -1,5 +1,5 @@
 /**
- * $Id: tiny_mce_dev.js,v 1.1 2008-01-12 01:38:28 decoyduck Exp $
+ * $Id: tiny_mce_dev.js,v 1.2 2008-01-12 20:00:35 decoyduck Exp $
  *
  * @author Moxiecode
  * @copyright Copyright © 2004-2007, Moxiecode Systems AB, All rights reserved.

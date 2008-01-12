@@ -1,5 +1,5 @@
 /**
- * $Id: mcwindows.js,v 1.1 2008-01-12 01:38:30 decoyduck Exp $
+ * $Id: mcwindows.js,v 1.2 2008-01-12 20:00:35 decoyduck Exp $
  *
  * Moxiecode DHTML Windows script.
  *

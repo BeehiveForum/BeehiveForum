@@ -1,5 +1,5 @@
  /**
- * $Id: editor_plugin_src.js,v 1.1 2008-01-12 01:38:35 decoyduck Exp $
+ * $Id: editor_plugin_src.js,v 1.2 2008-01-12 20:00:35 decoyduck Exp $
  *
  * @author Moxiecode - based on work by Andrew Tetlaw
  * @copyright Copyright © 2004-2007, Moxiecode Systems AB, All rights reserved.

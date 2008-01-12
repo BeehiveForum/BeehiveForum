@@ -1,5 +1,5 @@
 /**
- * $Id: validate.js,v 1.1 2008-01-12 01:38:35 decoyduck Exp $
+ * $Id: validate.js,v 1.2 2008-01-12 20:00:36 decoyduck Exp $
  *
  * Various form validation methods.
  *

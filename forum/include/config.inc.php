@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: config.inc.php,v 1.146 2007-12-15 21:19:54 decoyduck Exp $ */
+/* $Id: config.inc.php,v 1.147 2008-01-12 22:09:29 decoyduck Exp $ */
 
 // MAIN CONFIGURATION FILE
 
@@ -61,6 +61,19 @@ $show_friendly_errors = true;
 //       disabling this option.
 //
 // ---------------------------------------------------------------------
+
+// Error Reporting Verbose Mode ----------------------------------------
+
+$error_report_verbose = true;
+
+// The Beehive Forum Error Handler can be configured to gather verbose
+// details about any errors that occur, include HTTP Request and Cookie
+// vars.
+//
+// WARNING: Verbose error reporting data may include user and system
+//          credentials which may be used to compromise your server.
+//          It is recommended that only enable verbose error reporting
+//          on closed systems.
 
 // Error Reporting Email -----------------------------------------------
 

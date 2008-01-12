@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: config.inc.php,v 1.11 2007-10-31 13:53:30 decoyduck Exp $ */
+/* $Id: config.inc.php,v 1.12 2008-01-12 22:09:29 decoyduck Exp $ */
 
 // MAIN CONFIGURATION FILE
 
@@ -60,10 +60,23 @@ $show_friendly_errors = true;
 //
 // ---------------------------------------------------------------------
 
+// Error Reporting Verbose Mode ----------------------------------------
+
+$error_report_verbose = false;
+
+// The Beehive Forum Error Handler can be configured to gather verbose
+// details about any errors that occur, include HTTP Request and Cookie
+// vars.
+//
+// WARNING: Verbose error reporting data may include user and system
+//          credentials which may be used to compromise your server.
+//          It is recommended that only enable verbose error reporting
+//          on closed systems.
+
 // Error Reporting Email -----------------------------------------------
 
 $error_report_email_addr_to = '';
-$error_report_email_addr_from = 'no-reply@beehiveforum.net';
+$error_report_email_addr_from = 'no-reply@abeehiveforum.net';
 
 // In addition to the error message displayed to end users Beehive can
 // also send error reports to an email address. To enable this

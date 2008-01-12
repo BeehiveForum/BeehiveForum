@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.107 2007-12-23 21:07:13 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.108 2008-01-12 22:09:29 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -86,6 +86,12 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
         $show_friendly_errors = true;
     }else {
         $show_friendly_errors = false;
+    }
+
+    if (isset($GLOBALS['error_report_verbose']) && $GLOBALS['error_report_verbose'] == true) {
+        $error_report_verbose = true;
+    }else {
+        $error_report_verbose = false;
     }
 
     if (isset($GLOBALS['error_report_email_addr_to']) && strlen(trim(_stripslashes($GLOBALS['error_report_email_addr_to']))) > 0) {
@@ -157,11 +163,27 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
                 break;
         }
 
+        // Add the file and line number to the error message array
+
+        if (strlen(trim(basename($errfile))) > 0) {
+
+            $error_msg_array[] = "<b>Error Message:</b>";
+            $error_msg_array[] = sprintf("Error in line $errline of file %s", basename($errfile));
+        }
+
+        // Separator
+
+        $error_msg_array[] = "<hr />\n";
+
+        // Debug backtrace data.
+
         if ($debug_backtrace_array = debug_backtrace()) {
 
             $debug_backtrace_array = array_reverse($debug_backtrace_array);
 
-            $error_msg_array[] = "<b>Backtrace Result</b>";
+            $debug_backtrace_processed = false;
+
+            $error_msg_array[] = "<b>Backtrace Result:</b>";
 
             foreach ($debug_backtrace_array as $debug_backtrace) {
 
@@ -170,6 +192,8 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
                 if (!in_array($debug_backtrace['function'], array('bh_error_handler', 'trigger_error', 'db_trigger_error'))) {
 
                     if (isset($debug_backtrace['file']) && isset($debug_backtrace['line']) && isset($debug_backtrace['args'])) {
+
+                        $debug_backtrace_processed = true;
 
                         if (sizeof($debug_backtrace['args']) > 0) {
 
@@ -188,12 +212,10 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
                     }
                 }
             }
-        }
 
-        // Add the file and line number to the error message array
-
-        if (strlen(trim(basename($errfile))) > 0) {
-            $error_msg_array[] = sprintf("Error in line $errline of file %s", basename($errfile));
+            if ($debug_backtrace_processed == false) {
+                $error_msg_array[] = "<i>(none)</i>";
+            }
         }
 
         // Get the Beehive Forum Version
@@ -231,14 +253,88 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
         // Format the version info into a string.
 
         if (isset($version_strings) && sizeof($version_strings) > 0) {
+
+            $error_msg_array[] = "<b>Version Strings:</b>";
             $error_msg_array[] = implode(", ", $version_strings);
+        }
+
+        // Verbose Error Data.
+
+        if (isset($error_report_verbose) && $error_report_verbose == true) {
+
+            // HTTP Request that caused the error
+
+            $error_msg_array[] = "<b>HTTP Request:</b>";
+
+            // The requested file name.
+
+            $error_msg_array[] =  $_SERVER['PHP_SELF'];
+
+            // Get the HTTP Query Values ($_GET)
+
+            $error_msg_array[] = "<b>\$_GET:</b>";
+
+            if (isset($_GET) && sizeof($_GET) > 0) {
+
+                $request_vars_processed = false;
+
+                flatten_array($_GET, $request_keys_array, $request_values_array);
+
+                foreach ($request_keys_array as $key => $request_key_name) {
+
+                    if (!isset($request_values_array[$key])) $request_values_array[$key] = "";
+                    $error_msg_array[] = "$request_key_name = {$request_values_array[$key]}";
+                }
+
+            }else {
+
+                $error_msg_array[] = "<i>(none)</i>\n";
+            }
+
+            // Get the HTTP Query Values ($_POST)
+
+            $error_msg_array[] = "<b>\$_POST:</b>";
+
+            if (isset($_POST) && sizeof($_POST) > 0) {
+
+                flatten_array($_POST, $request_keys_array, $request_values_array);
+
+                foreach ($request_keys_array as $key => $request_key_name) {
+
+                    if (!isset($request_values_array[$key])) $request_values_array[$key] = "";
+                    $error_msg_array[] = "$request_key_name = {$request_values_array[$key]}";
+                }
+
+            }else {
+
+                $error_msg_array[] = "<i>(none)</i>\n";
+            }
+
+            // Get the HTTP Query Values ($_POST)
+
+            $error_msg_array[] = "<b>\$_COOKIE:</b>";
+
+            if (isset($_COOKIE) && sizeof($_COOKIE) > 0) {
+
+                flatten_array($_COOKIE, $request_keys_array, $request_values_array);
+
+                foreach ($request_keys_array as $key => $request_key_name) {
+
+                    if (!isset($request_values_array[$key])) $request_values_array[$key] = "";
+                    $error_msg_array[] = "$request_key_name = {$request_values_array[$key]}";
+                }
+
+            }else {
+
+                $error_msg_array[] = "<i>(none)</i>\n";
+            }
         }
 
         // Check to see if we need to send the error report by email
 
         if (strlen($error_report_email_addr_to) > 0) {
 
-            $error_log_email_message = strip_tags(implode("\n", $error_msg_array));
+            $error_log_email_message = strip_tags(implode("\n\n", $error_msg_array));
 
             $headers = "Return-path: $error_report_email_addr_from\n";
             $headers.= "From: \"Beehive Forum Error Report\" <$error_report_email_addr_from>\n";
@@ -402,12 +498,29 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
             echo "                            <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" class=\"warning_msg\">\n";
             echo "                              <tr>\n";
             echo "                                <td valign=\"top\" width=\"25\" class=\"warning_msg_icon\"><img src=\"images/warning.png\" width=\"15\" height=\"15\" alt=\"Warning\" title=\"Warning\" /></td>\n";
-            echo "                                <td valign=\"top\" class=\"warning_msg_text\">When reporting a bug in Project Beehive or when requesting support please include the details below</td>\n";
+            echo "                                <td valign=\"top\" class=\"warning_msg_text\">When reporting a bug in Project Beehive or when requesting support please include the details below.</td>\n";
             echo "                              </tr>\n";
             echo "                            </table>\n";
             echo "                          </div>\n";
             echo "                        </td>\n";
             echo "                      </tr>\n";
+
+            if (isset($error_report_verbose) && $error_report_verbose == true) {
+
+                echo "                      <tr>\n";
+                echo "                        <td align=\"left\">\n";
+                echo "                          <div align=\"center\">\n";
+                echo "                            <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" class=\"warning_msg\">\n";
+                echo "                              <tr>\n";
+                echo "                                <td valign=\"top\" width=\"25\" class=\"warning_msg_icon\"><img src=\"images/warning.png\" width=\"15\" height=\"15\" alt=\"Warning\" title=\"Warning\" /></td>\n";
+                echo "                                <td valign=\"top\" class=\"warning_msg_text\">Please note that there may be sensitive information such as passwords displayed here.</td>\n";
+                echo "                              </tr>\n";
+                echo "                            </table>\n";
+                echo "                          </div>\n";
+                echo "                        </td>\n";
+                echo "                      </tr>\n";
+            }
+
             echo "                      <tr>\n";
             echo "                        <td>\n";
             echo "                          <div class=\"error_handler_details\"><p>", implode("</p>\n<p>", $error_msg_array), "</p></div>\n";

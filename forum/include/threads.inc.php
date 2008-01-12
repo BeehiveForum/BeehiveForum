@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.304 2007-12-13 17:10:59 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.305 2008-01-12 22:18:12 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1318,7 +1318,11 @@ function threads_get_most_recent($limit = 10, $folder_list_array = array(), $cre
             if (!isset($thread['INTEREST'])) $thread['INTEREST'] = 0;
             if (!isset($thread['UNREAD_CUTOFF'])) $thread['UNREAD_CUTOFF'] = time() - $unread_cutoff_stamp;
 
-            if (!isset($thread['LAST_READ']) || is_null($thread['LAST_READ'])) {
+            if (user_is_guest()) {
+
+                $thread['LAST_READ'] = 0;
+
+            }else if (!isset($thread['LAST_READ']) || is_null($thread['LAST_READ'])) {
 
                 $thread['LAST_READ'] = 0;
 
@@ -1405,7 +1409,11 @@ function threads_process_list($result)
             // not set we check to see how old the thread is before
             // we mark it as unread.
 
-            if (!isset($thread['LAST_READ']) || !is_numeric($thread['LAST_READ'])) {
+            if (user_is_guest()) {
+
+                $thread['LAST_READ'] = 0;
+
+            }elseif (!isset($thread['LAST_READ']) || !is_numeric($thread['LAST_READ'])) {
 
                 $thread['LAST_READ'] = 0;
 

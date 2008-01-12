@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.509 2008-01-11 21:27:26 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.510 2008-01-12 22:18:12 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1670,7 +1670,11 @@ function messages_get_most_recent($uid, $fid = false)
 
         $message_data = db_fetch_array($result);
 
-        if (!isset($message_data['LAST_READ']) || !is_numeric($message_data['LAST_READ'])) {
+        if (user_is_guest()) {
+
+           return "{$message_data['TID']}.1";
+
+        }else if (!isset($message_data['LAST_READ']) || !is_numeric($message_data['LAST_READ'])) {
 
             if (isset($message_data['MODIFIED']) && $message_data['MODIFIED'] < $message_data['UNREAD_CUTOFF']) {
 

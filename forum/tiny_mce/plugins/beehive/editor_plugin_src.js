@@ -2,7 +2,7 @@ tinyMCE.importPluginLanguagePack('beehive', 'en');
 
 function TinyMCE_beehive_getControlHTML(control_name)
 {
-    if (tinyMCE.majorVersion == '2' && tinyMCE.minorVersion >= '0.3') {
+    if (parseInt(tinyMCE.majorVersion) == 2 && parseFloat(tinyMCE.minorVersion) >= 0.3) {
 
         switch (control_name) {
 
@@ -29,7 +29,7 @@ function TinyMCE_beehive_getControlHTML(control_name)
 
 function TinyMCE_beehive_execCommand(editor_id, element, command, user_interface, value)
 {
-    if (tinyMCE.majorVersion == '2' && tinyMCE.minorVersion >= '0.3') {
+    if (parseInt(tinyMCE.majorVersion) == 2 && parseFloat(tinyMCE.minorVersion) >= 0.3) {
 
         switch (command) {
 
@@ -57,7 +57,7 @@ function TinyMCE_beehive_execCommand(editor_id, element, command, user_interface
                 
                 if (tinyMCE.getContent(editor_id).length > 0) {
                 
-                    window.open('dictionary.php?webtag=' + webtag + '&obj_id=' + tinyMCE.instances[editor_id].formTargetElementId, 'spellcheck','width=450, height=550, scrollbars=1');
+                    window.open('dictionary.php?webtag=' + webtag + '&obj_id=' + tinyMCE.instances[editor_id].formTargetElementId, 'spellcheck','width=450, height=550, resizable=yes, scrollbars=yes');
                     return true;
                 }
 

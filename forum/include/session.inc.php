@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.336 2008-01-02 12:45:34 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.337 2008-01-17 14:44:35 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -344,7 +344,9 @@ function bh_guest_session_init($update_visitor_log = true)
 
             // Add user perms
 
-            $user_sess['PERMS'] = bh_session_get_perm_array(0);
+            if ($user_perms = bh_session_get_perm_array($user_sess['UID'])) {
+                $user_sess['PERMS'] = $user_perms;
+            }
 
             // A unique MD5 has for some purposes (word filter, etc)
 
@@ -397,8 +399,15 @@ function bh_guest_session_init($update_visitor_log = true)
                                'FID'         => $forum_fid,
                                'IPADDRESS'   => $ipaddress,
                                'REFERER'     => $http_referer,
-                               'PERMS'       => bh_session_get_perm_array(0),
                                'RAND_HASH'   => md5(uniqid(mt_rand())));
+
+            // Add user perms
+
+            if ($user_perms = bh_session_get_perm_array($user_sess['UID'])) {
+                $user_sess['PERMS'] = $user_perms;
+            }
+
+            // HTTP Referer.
 
             $http_referer = db_escape_string($http_referer);
 
@@ -953,59 +962,52 @@ function bh_session_get_perm_array($uid)
 
     if (!is_numeric($uid)) return false;
 
-    static $user_perm_array = false;
+    $user_perm_array = array();
 
-    if (!is_array($user_perm_array) || sizeof($user_perm_array) < 1) {
+    if ($table_data = get_table_prefix()) {
+        $forum_fid = $table_data['FID'];
+    }else {
+        $forum_fid = 0;
+    }
 
-        if ($table_data = get_table_prefix()) {
-            $forum_fid = $table_data['FID'];
-        }else {
-            $forum_fid = 0;
-        }
+    $sql = "SELECT GROUP_PERMS.GID, GROUP_PERMS.FORUM, GROUP_PERMS.FID, ";
+    $sql.= "BIT_OR(GROUP_PERMS.PERM) AS PERM, COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT ";
+    $sql.= "FROM GROUP_USERS LEFT JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID ";
+    $sql.= "AND GROUP_PERMS.FORUM IN (0, $forum_fid)) WHERE GROUP_USERS.UID = '$uid' ";
+    $sql.= "GROUP BY GROUP_PERMS.FORUM, GROUP_PERMS.FID";
 
-        $sql = "SELECT GROUP_PERMS.GID, GROUP_PERMS.FORUM, GROUP_PERMS.FID, ";
-        $sql.= "BIT_OR(GROUP_PERMS.PERM) AS PERM, COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT ";
-        $sql.= "FROM GROUP_USERS LEFT JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID ";
-        $sql.= "AND GROUP_PERMS.FORUM IN (0, $forum_fid)) WHERE GROUP_USERS.UID = '$uid' ";
-        $sql.= "GROUP BY GROUP_PERMS.FORUM, GROUP_PERMS.FID";
+    if (!$result = db_query($sql, $db_bh_session_get_perm_array)) return false;
 
-        if (!$result = db_query($sql, $db_bh_session_get_perm_array)) return false;
+    if (db_num_rows($result) > 0) {
 
-        if (db_num_rows($result) > 0) {
+        while ($permission_data = db_fetch_array($result)) {
 
-            if (!is_array($user_perm_array)) $user_perm_array = array();
+            if ($permission_data['USER_PERM_COUNT'] > 0) {
 
-            while ($permission_data = db_fetch_array($result)) {
-
-                if ($permission_data['USER_PERM_COUNT'] > 0) {
-
-                    $user_perm_array[$permission_data['FORUM']][$uid][$permission_data['FID']] = $permission_data['PERM'];
-                }
-            }
-        }
-
-        $sql = "SELECT FORUM, FID, BIT_OR(PERM) AS PERM FROM GROUP_PERMS ";
-        $sql.= "WHERE GID = 0 GROUP BY FORUM, FID";
-
-        if (!$result = db_query($sql, $db_bh_session_get_perm_array)) return false;
-
-        if (db_num_rows($result) > 0) {
-
-            if (!is_array($user_perm_array)) $user_perm_array = array();
-
-            while ($permission_data = db_fetch_array($result)) {
-
-                if (!isset($user_perm_array[$permission_data['FORUM']][$uid][$permission_data['FID']])) {
-
-                    $user_perm_array[$permission_data['FORUM']][$uid][$permission_data['FID']] = $permission_data['PERM'];
-                }
-
-                $user_perm_array[$permission_data['FORUM']][0][$permission_data['FID']] = $permission_data['PERM'];
+                $user_perm_array[$permission_data['FORUM']][$uid][$permission_data['FID']] = $permission_data['PERM'];
             }
         }
     }
 
-    return is_array($user_perm_array) && sizeof($user_perm_array) > 0 ? $user_perm_array : false;
+    $sql = "SELECT FORUM, FID, BIT_OR(PERM) AS PERM FROM GROUP_PERMS ";
+    $sql.= "WHERE GID = 0 GROUP BY FORUM, FID";
+
+    if (!$result = db_query($sql, $db_bh_session_get_perm_array)) return false;
+
+    if (db_num_rows($result) > 0) {
+
+        while ($permission_data = db_fetch_array($result)) {
+
+            if (!isset($user_perm_array[$permission_data['FORUM']][$uid][$permission_data['FID']])) {
+
+                $user_perm_array[$permission_data['FORUM']][$uid][$permission_data['FID']] = $permission_data['PERM'];
+            }
+
+            $user_perm_array[$permission_data['FORUM']][0][$permission_data['FID']] = $permission_data['PERM'];
+        }
+    }
+
+    return sizeof($user_perm_array) > 0 ? $user_perm_array : false;
 }
 
 /**

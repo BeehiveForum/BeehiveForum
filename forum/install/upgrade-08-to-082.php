@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-08-to-081.php,v 1.1 2007-12-04 20:27:25 decoyduck Exp $ */
+/* $Id: upgrade-08-to-082.php,v 1.1 2008-01-19 12:31:41 decoyduck Exp $ */
 
 @set_time_limit(0);
 

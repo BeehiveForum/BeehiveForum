@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-07x-to-081.php,v 1.1 2007-12-04 20:27:25 decoyduck Exp $ */
+/* $Id: upgrade-07x-to-082.php,v 1.1 2008-01-19 12:31:41 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-07x-to-072.php") {
 

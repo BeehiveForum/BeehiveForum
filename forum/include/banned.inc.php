@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: banned.inc.php,v 1.31 2008-01-21 12:53:39 decoyduck Exp $ */
+/* $Id: banned.inc.php,v 1.32 2008-01-21 13:18:31 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -114,7 +114,7 @@ function ban_check($user_sess, $user_is_guest = false)
 
     if (strlen(trim($ban_check_where_query)) > 0 && strlen(trim($ban_check_select_list)) > 0) {
 
-        $sql = "SELECT BANTYPE, BANDATA, $ban_check_select_list ";
+        $sql = "SELECT ID, BANTYPE, BANDATA, $ban_check_select_list ";
         $sql.= "FROM {$table_data['PREFIX']}BANNED WHERE $ban_check_where_query";
 
         if (!$result = db_query($sql, $db_ban_check)) return false;
@@ -128,6 +128,10 @@ function ban_check($user_sess, $user_is_guest = false)
                     $ban_check_type = $ban_check_result_array['BANTYPE'];
 
                     if ($ban_check_data = ban_check_process_data($ban_check_result_array)) {
+
+                        if ($user_is_guest === false) {
+                            array_push($ban_check_data, $user_sess['UID'], $user_sess['LOGON']);
+                        }
 
                         admin_add_log_entry($admin_log_types_array[$ban_check_type], $ban_check_data);
                     }
@@ -144,40 +148,40 @@ function ban_check($user_sess, $user_is_guest = false)
     return true;
 }
 
-function ban_check_process_data($ban_check_array)
+function ban_check_process_data($ban_result)
 {
-    if (!is_array($ban_check_array)) return false;
+    if (!is_array($ban_result)) return false;
 
-    if (!isset($ban_check_array['BANTYPE'])) return false;
-    if (!isset($ban_check_array['BANDATA'])) return false;
+    if (!isset($ban_result['BANTYPE'])) return false;
+    if (!isset($ban_result['BANDATA'])) return false;
 
-    if (!is_numeric($ban_check_array['BANTYPE'])) return false;
+    if (!is_numeric($ban_result['BANTYPE'])) return false;
 
-    switch ($ban_check_array['BANTYPE']) {
+    switch ($ban_result['BANTYPE']) {
 
         case BAN_TYPE_IP:
 
-            return (isset($ban_check_array['IPADDRESS'])) ? array($ban_check_array['IPADDRESS'], $ban_check_array['BANDATA']) : false;
+            return (isset($ban_result['IPADDRESS'])) ? array($ban_result['ID'], $ban_result['IPADDRESS'], $ban_result['BANDATA']) : false;
             break;
 
         case BAN_TYPE_LOGON:
 
-            return (isset($ban_check_array['LOGON'])) ? array($ban_check_array['LOGON'], $ban_check_array['BANDATA']) : false;
+            return (isset($ban_result['LOGON'])) ? array($ban_result['ID'], $ban_result['LOGON'], $ban_result['BANDATA']) : false;
             break;
 
         case BAN_TYPE_NICK:
 
-            return (isset($ban_check_array['NICKNAME'])) ? array($ban_check_array['NICKNAME'], $ban_check_array['BANDATA']) : false;
+            return (isset($ban_result['NICKNAME'])) ? array($ban_result['ID'], $ban_result['NICKNAME'], $ban_result['BANDATA']) : false;
             break;
 
         case BAN_TYPE_EMAIL:
 
-            return (isset($ban_check_array['EMAIL'])) ? array($ban_check_array['EMAIL'], $ban_check_array['BANDATA']) : false;
+            return (isset($ban_result['EMAIL'])) ? array($ban_result['ID'], $ban_result['EMAIL'], $ban_result['BANDATA']) : false;
             break;
 
         case BAN_TYPE_REF:
 
-            return (isset($ban_check_array['REFERER'])) ? array($ban_check_array['REFERER'], $ban_check_array['BANDATA']) : false;
+            return (isset($ban_result['REFERER'])) ? array($ban_result['ID'], $ban_result['REFERER'], $ban_result['BANDATA']) : false;
             break;
     }
 

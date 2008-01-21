@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.507 2008-01-21 12:53:39 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.508 2008-01-21 13:18:31 decoyduck Exp $ */
 
 // British English language file
 
@@ -706,11 +706,11 @@ $lang['forumautoprunesessions'] = "Forum Auto Update: Sessions Pruned";
 $lang['forumautocleanthreadunread'] = "Forum Auto Update: Thread Unread Data Cleaned";
 $lang['forumautocleancaptcha'] = "Forum Auto Update: Text-Captcha Images Cleaned";
 
-$lang['ipaddressbanhit'] = "IP Address ban result. Ban data '%s' matched '%s'";
-$lang['logonbanhit'] = "Logon ban result. Ban data '%s' matched '%s'";
-$lang['nicknamebanhit'] = "Nickname ban result. Ban data '%s' matched '%s'";
-$lang['emailbanhit'] = "Email ban result. Ban data '%s' matched '%s'";
-$lang['refererbanhit'] = "HTTP Referer ban result. Ban data '%s' matched '%s'";
+$lang['ipaddressbanhit'] = "User '%s' is banned. IP Address '%s' matched ban data '%s'";
+$lang['logonbanhit'] = "User '%s' is banned. Logon '%s' matched ban data '%s'";
+$lang['nicknamebanhit'] = "User '%s' is banned. Nickname '%s' matched ban data '%s'";
+$lang['emailbanhit'] = "User '%s' is banned. Email Address '%s' matched ban data '%s'";
+$lang['refererbanhit'] = "User '%s' is banned. HTTP Referer '%s' matched ban data '%s'";
 
 $lang['adminlogempty'] = "Admin Log is empty";
 

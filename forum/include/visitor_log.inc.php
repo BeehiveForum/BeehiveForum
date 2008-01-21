@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.inc.php,v 1.24 2007-10-26 20:53:22 decoyduck Exp $ */
+/* $Id: visitor_log.inc.php,v 1.25 2008-01-21 12:53:39 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -306,7 +306,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
         if (is_numeric($column)) {
 
             $profile_entry_sql = "USER_PROFILE_{$column}.ENTRY AS ENTRY_{$column} ";
-            $profile_entry_array[] = $profile_entry_sql;
+            $profile_entry_array[$column] = $profile_entry_sql;
 
             $profile_item_type_sql = "PROFILE_ITEM_{$column}.TYPE AS PROFILE_ITEM_TYPE_{$column} ";
             $profile_item_type_array[] = $profile_item_type_sql;
@@ -386,11 +386,13 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
     $where_query_array = array();
     $having_query_array = array();
 
-    $where_count_array = array();
-
     // Where clause for UNION with VISITOR_LOG.
 
     $where_visitor_array = array("VISITOR_LOG.UID = '0'");
+
+    // Null column filtering for Guests
+
+    $having_visitor_array = array();
 
     // Filter by user name / search engine bot name
 
@@ -402,7 +404,6 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
         $user_search_sql.= "USER.NICKNAME LIKE '$user_search%')";
 
         $where_query_array[] = $user_search_sql;
-        $where_count_array[] = $user_search_sql;
 
         if ($hide_guests === false) {
 
@@ -416,7 +417,6 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
     if ($hide_guests === true) {
 
         $where_query_array[] = "(USER.UID IS NOT NULL AND USER.UID > 0) ";
-        $where_count_array[] = "(USER.UID IS NOT NULL AND USER.UID > 0) ";
     }
 
     // Hide empty or NULL values
@@ -428,12 +428,12 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
             if (is_numeric($column)) {
 
                 $having_query_array[] = "(ENTRY_{$column} IS NOT NULL AND LENGTH(ENTRY_{$column}) > 0) ";
-                $where_count_array[]  = "(USER_PROFILE_{$column}.ENTRY IS NOT NULL AND LENGTH(USER_PROFILE_{$column}.ENTRY) > 0)";
+                $having_visitor_array[] = "(ENTRY_{$column} IS NOT NULL AND LENGTH(ENTRY_{$column}) > 0) ";
 
             }else {
 
                 $having_query_array[] = $column_null_filter_having_array[$column];
-                $where_count_array[]  = $column_null_filter_where_array[$column];
+                $having_visitor_array[] = $column_null_filter_having_array[$column];
             }
         }
     }
@@ -452,18 +452,18 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
         $where_sql = "";
     }
 
-    // Count queries NULL column filtering
-
-    if (sizeof($where_count_array) > 0) {
-        $where_count_sql = sprintf("WHERE %s", implode(" AND ", $where_count_array));
-    }else {
-        $where_count_sql = "";
-    }
+    // Guest NULL column filtering
 
     if (sizeof($where_visitor_array) > 0) {
         $where_visitor_sql = sprintf("WHERE %s", implode(" AND ", $where_visitor_array));
     }else {
         $where_visitor_sql = "";
+    }
+
+    if (sizeof($having_visitor_array) > 0) {
+        $having_visitor_sql = sprintf("HAVING %s", implode(" AND ", $having_visitor_array));
+    }else {
+        $having_visitor_sql = "";
     }
 
     // Sort direction specified?
@@ -496,7 +496,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
 
         if (sizeof($profile_entry_array) > 0) {
 
-            $profile_item_columns = implode(', ', array_map('visitor_log_prof_item_column', $profile_entry_array));
+            $profile_item_columns = implode(', ', array_map('visitor_log_prof_item_column', array_keys($profile_entry_array)));
 
             $sql = implode(",", $query_array_merge). "$from_sql $join_sql $where_sql $having_sql ";
             $sql.= "UNION SELECT VISITOR_LOG.UID, '' AS LOGON, '' AS NICKNAME, ";
@@ -509,7 +509,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
             $sql.= "SEARCH_ENGINE_BOTS.SID, SEARCH_ENGINE_BOTS.NAME, SEARCH_ENGINE_BOTS.URL, ";
             $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_VISIT FROM VISITOR_LOG ";
             $sql.= "LEFT JOIN SEARCH_ENGINE_BOTS ON (SEARCH_ENGINE_BOTS.SID = VISITOR_LOG.SID) ";
-            $sql.= "$where_visitor_sql $order_sql $limit_sql";
+            $sql.= "$where_visitor_sql $having_visitor_sql $order_sql $limit_sql";
 
         }else {
 
@@ -524,7 +524,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
             $sql.= "SEARCH_ENGINE_BOTS.SID, SEARCH_ENGINE_BOTS.NAME, SEARCH_ENGINE_BOTS.URL, ";
             $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_VISIT FROM VISITOR_LOG ";
             $sql.= "LEFT JOIN SEARCH_ENGINE_BOTS ON (SEARCH_ENGINE_BOTS.SID = VISITOR_LOG.SID) ";
-            $sql.= "$where_visitor_sql $order_sql $limit_sql";
+            $sql.= "$where_visitor_sql $having_visitor_sql $order_sql $limit_sql";
         }
     }
 
@@ -624,11 +624,8 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
                  'user_array' => $user_array);
 }
 
-function visitor_log_prof_item_column()
+function visitor_log_prof_item_column($column)
 {
-    static $column = 0;
-    $column++;
-
     $profile_column_sql = "'' AS ENTRY_{$column}, ";
     $profile_column_sql.= "0 AS PROFILE_ITEM_TYPE_{$column}, ";
     $profile_column_sql.= "'' AS PROFILE_ITEM_OPTIONS_{$column} ";

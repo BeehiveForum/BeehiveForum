@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.128 2007-12-26 13:19:33 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.129 2008-01-21 12:53:39 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -173,7 +173,12 @@ $admin_log_type_array = array(ALL_LOG_ENTIES => 'All Log Entries',
                               FORUM_AUTO_PRUNE_SESSIONS => 'Forum Auto Session Pruning',
                               FORUM_AUTO_CLEAN_THREAD_UNREAD => 'Forum Auto Thread Unread Data Updates',
                               FORUM_AUTO_CLEAN_CAPTCHA => 'Forum Auto Text Captcha Clean-Ups',
-                              UPDATE_USER_GROUP => 'User Group Changes');
+                              UPDATE_USER_GROUP => 'User Group Changes',
+                              BAN_HIT_TYPE_IP => 'IP Address Ban Check Results',
+                              BAN_HIT_TYPE_LOGON => 'Logon Ban Check Results',
+                              BAN_HIT_TYPE_NICK => 'Nickname Ban Check Results',
+                              BAN_HIT_TYPE_EMAIL => 'Email Ban Check Results',
+                              BAN_HIT_TYPE_REF => 'HTTP Referer Ban Check Results');
 
 // Column sorting stuff
 
@@ -705,9 +710,39 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
                 $action_text = $lang['forumautocleancaptcha'];
                 break;
 
+            case BAN_HIT_TYPE_IP:
+
+                $auto_update = true;
+                $action_text = sprintf($lang['ipaddressbanhit'], $entry_array[1], $entry_array[0]);
+                break;
+
+            case BAN_HIT_TYPE_LOGON:
+
+                $auto_update = true;
+                $action_text = sprintf($lang['logonbanhit'], $entry_array[1], $entry_array[0]);
+                break;
+
+            case BAN_HIT_TYPE_NICK:
+
+                $auto_update = true;
+                $action_text = sprintf($lang['nicknamebanhit'], $entry_array[1], $entry_array[0]);
+                break;
+
+            case BAN_HIT_TYPE_EMAIL:
+
+                $auto_update = true;
+                $action_text = sprintf($lang['emailbanhit'], $entry_array[1], $entry_array[0]);
+                break;
+
+            case BAN_HIT_TYPE_REF:
+
+                $auto_update = true;
+                $action_text = sprintf($lang['refererbanhit'], $entry_array[1], $entry_array[0]);
+                break;
+
             default:
 
-                $action_text = "{$lang['unknown']} &raquo; {$admin_log_entry['ACTION']}";
+                $action_text = "{$lang['unknown']} &raquo; {$admin_log_entry['ACTION']} &raquo; ";
                 $action_text.= implode(", ", $entry_array);
                 break;
         }

@@ -1,6 +1,66 @@
-Project Beehive Forum Change Log (Generated: Mon, 07 Jan 2008 20:42:16)
+Project Beehive Forum Change Log (Generated: Sat, 19 Jan 2008 12:32:38)
 
 Author: decoyduck
+Date: Sat, 19 Jan 2008 12:31:41
+-----------------------
+Changed: Installer now refers to 0.8.2. Removed 0.8.1 upgrade files and
+replaced with 0.8.2
+
+Date: Thu, 17 Jan 2008 14:44:35
+-----------------------
+Changed: Removed caching of session permissions.
+Changed: Return result of bh_session_get_perms() is tested before being
+added to session data.
+
+Date: Sun, 13 Jan 2008 18:28:18
+-----------------------
+Fixed: TinyMCE Version check failure in some browsers
+Fixed: Dictionary window wasn't resizable using TinyMCE.
+
+Date: Sat, 12 Jan 2008 22:18:12
+-----------------------
+Fixed: Unread Cutoff was affecting Guests.
+
+Date: Sat, 12 Jan 2008 22:09:29
+-----------------------
+Added: Verbose Error Reporting added which includes POST, GET and COOKIE
+data in the error reports.
+
+Date: Sat, 12 Jan 2008 20:30:06
+-----------------------
+Added: Missing files from TinyMCE 2.1.3
+Fixed: Beehive TinyMCE plugin now checks the version of TinyMCE before
+enabling it's functionality.
+
+Date: Sat, 12 Jan 2008 20:00:34
+-----------------------
+Added: Missing files from TinyMCE 2.1.3
+
+Date: Sat, 12 Jan 2008 01:38:28
+-----------------------
+Changed: Upgraded TinyMCE to latest available version and fixed a few bugs
+in Beehive's implementation.
+
+Date: Fri, 11 Jan 2008 23:20:06
+-----------------------
+Changed: Added tiny_mce folder to .cvsignore file.
+
+Date: Fri, 11 Jan 2008 23:17:19
+-----------------------
+Changed: Removed TinyMCE From CVS.
+
+Date: Fri, 11 Jan 2008 21:27:26
+-----------------------
+Fixed: Error occured when invalid IP was passed through gethostbyaddr()
+function.
+Fixed: Function get_attachment_by_hash() wasn't checking to see if the
+attachment existed before using filemtime()
+
+Date: Tue, 08 Jan 2008 18:33:40
+-----------------------
+Fixed: Undefined variable lpost.php when creating a new thread.
+Changed: Updated changelog.txt
+
 Date: Sun, 06 Jan 2008 20:59:28
 -----------------------
 Fixed: Undefined variable $threaddata in post.php when creating a new
@@ -259,17 +319,4 @@ separated by semi-colon duplicated the entries selected.
 Date: Sun, 09 Dec 2007 18:04:31
 -----------------------
 Changed: Increased the maximum length of the username field in search.php
-
-Date: Sat, 08 Dec 2007 17:38:27
------------------------
-Fixed: Installer wasn't working correctly without BEEHIVE_INSTALL_NOWARN
-set.
-
-Date: Sat, 08 Dec 2007 14:58:53
------------------------
-Fixed: Closed another exploit that could allow directory traversal.
-
-Date: Sat, 08 Dec 2007 09:22:37
------------------------
-Changed: Added caching back to threads_rss.php
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.108 2008-01-12 22:09:29 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.109 2008-01-21 12:53:39 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -69,7 +69,7 @@ function bh_error_handler_process_args($func_args_array)
 
     foreach ($func_args_array as $func_arg) {
         if (is_array($func_arg) && sizeof($func_arg) > 0) {
-            $arguments_string.= sprintf("Array(%s)", bh_error_handler_process_args($func_arg));
+            $arguments_array[] = sprintf("Array(%s)", bh_error_handler_process_args($func_arg));
         }else {
             $arguments_array[] = is_array($func_arg) ? 'Array(void)' : "'$func_arg'";
         }

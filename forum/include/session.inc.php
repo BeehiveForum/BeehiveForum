@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.337 2008-01-17 14:44:35 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.338 2008-01-25 00:47:40 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -414,7 +414,9 @@ function bh_guest_session_init($update_visitor_log = true)
             // Start a session for the new guest user
 
             $sql = "INSERT INTO SESSIONS (HASH, UID, FID, IPADDRESS, TIME, REFERER) ";
-            $sql.= "VALUES ('$user_hash', 0, $forum_fid, '$ipaddress', NOW(), '$http_referer')";
+            $sql.= "VALUES ('$user_hash', 0, $forum_fid, '$ipaddress', NOW(), '$http_referer') ";
+            $sql.= "ON DUPLICATE KEY UPDATE FID = VALUES(FID), TIME = VALUES(TIME), ";
+            $sql.= "IPADDRESS = VALUES(IPADDRESS), REFERER = VALUES(REFERER)";
 
             if (!$result = db_query($sql, $db_bh_guest_session_init)) return false;
 
@@ -860,8 +862,9 @@ function bh_session_init($uid, $update_visitor_log = true, $skip_cookie = false)
         $http_referer = db_escape_string($http_referer);
 
         $sql = "INSERT INTO SESSIONS (HASH, UID, FID, IPADDRESS, TIME, REFERER) ";
-        $sql.= "VALUES ('$user_hash', '$uid', '$forum_fid', ";
-        $sql.= "'$ipaddress', NOW(), '$http_referer')";
+        $sql.= "VALUES ('$user_hash', '$uid', '$forum_fid', '$ipaddress', NOW(), '$http_referer') ";
+        $sql.= "ON DUPLICATE KEY UPDATE FID = VALUES(FID), TIME = VALUES(TIME), ";
+        $sql.= "IPADDRESS = VALUES(IPADDRESS), REFERER = VALUES(REFERER)";
 
         if (!$result = db_query($sql, $db_bh_session_init)) return false;
     }

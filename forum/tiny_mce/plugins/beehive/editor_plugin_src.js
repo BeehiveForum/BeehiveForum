@@ -10,7 +10,7 @@ function TinyMCE_beehive_getControlHTML(control_name)
                 return '<a id="{$editor_id}_bhquote" href="javascript:tinyMCE.execInstanceCommand(\'{$editor_id}\',\'bhquote\');" onclick="tinyMCE.execInstanceCommand(\'{$editor_id}\',\'bhquote\',false);return false;" onmousedown="return false;" class="mceButtonNormal" target="_self"><img src="{$pluginurl}/images/quote.gif" alt="{$lang_bh_quote_desc}" title="{$lang_bh_quote_desc}"></a>';
 
             case 'bhcode':
-                return '<a id="{$editor_id}_bhcode" href="javascript:tinyMCE.execInstanceCommand(\'{$editor_id}\',\'bhcode\');" onclick="tinyMCE.execInstanceCommand(\'{$editor_id}\',\'bhcode\',false);return false;" onmousedown="return false;" class="mceButtonNormal" target="_self"><img src="{$pluginurl}/images/code.gif" alt="{$lang_bh_code_desc}" title="{$lang_bh_quote_desc}"></a>';
+                return '<a id="{$editor_id}_bhcode" href="javascript:tinyMCE.execInstanceCommand(\'{$editor_id}\',\'bhcode\');" onclick="tinyMCE.execInstanceCommand(\'{$editor_id}\',\'bhcode\',false);return false;" onmousedown="return false;" class="mceButtonNormal" target="_self"><img src="{$pluginurl}/images/code.gif" alt="{$lang_bh_code_desc}" title="{$lang_bh_code_desc}"></a>';
 
             case 'bhspoiler':
                 return '<a id="{$editor_id}_bhspoiler" href="javascript:tinyMCE.execInstanceCommand(\'{$editor_id}\',\'bhspoiler\');" onclick="tinyMCE.execInstanceCommand(\'{$editor_id}\',\'bhspoiler\',false);return false;" onmousedown="return false;" class="mceButtonNormal" target="_self"><img src="{$pluginurl}/images/spoiler.gif" alt="{$lang_bh_spoiler_desc}" title="{$lang_bh_spoiler_desc}"></a>';

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.333 2008-01-06 20:59:29 decoyduck Exp $ */
+/* $Id: post.php,v 1.334 2008-01-25 00:47:40 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -532,9 +532,9 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
                     $t_quoted_post = "<div class=\"quotetext\" id=\"quote\">";
                     $t_quoted_post.= "<b>quote: </b>";
-                    $t_quoted_post.= format_user_name($pm_data['FLOGON'], $pm_data['FNICK']);
+                    $t_quoted_post.= format_user_name($message_array['FLOGON'], $message_array['FNICK']);
                     $t_quoted_post.= "</div><div class=\"quote\">";
-                    $t_quoted_post.= trim(strip_tags(strip_paragraphs($pm_data['CONTENT'])));
+                    $t_quoted_post.= trim(strip_tags(strip_paragraphs($message_content)));
                     $t_quoted_post.= "</div><p>&nbsp;</p>";
 
                 }else {

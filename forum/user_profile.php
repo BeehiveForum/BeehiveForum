@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.138 2007-12-26 13:19:35 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.139 2008-01-27 15:00:16 decoyduck Exp $ */
 
 /**
 * Displays user profiles
@@ -304,7 +304,7 @@ echo "<a href=\"email.php?webtag=$webtag&amp;uid=$uid\" target=\"_blank\" onclic
 
 if ($uid <> bh_session_get_value('UID')) {
 
-    echo "<a href=\"user_rel.php?webtag=$webtag&amp;uid=$uid&amp;ret=user_profile.php%3Fwebtag%3D$webtag%26uid=$uid\" target=\"_self\"><img src=\"", style_image('enemy.png'), "\" alt=\"{$lang['relationship']}\" title=\"{$lang['relationship']}\" border=\"0\" /></a>&nbsp;";
+    echo "<a href=\"user_rel.php?webtag=$webtag&amp;uid=$uid&amp;ret=user_profile.php%3Fwebtag%3D$webtag%26uid%3D$uid\" target=\"_self\"><img src=\"", style_image('enemy.png'), "\" alt=\"{$lang['relationship']}\" title=\"{$lang['relationship']}\" border=\"0\" /></a>&nbsp;";
     echo "<a href=\"search.php?webtag=$webtag&amp;logon=$logon\" target=\"_blank\" onclick=\"return findUserPosts('$logon', '$webtag');\"><img src=\"", style_image('search.png'), "\" alt=\"", sprintf($lang['findpostsmadebyuser'], $logon), "\" title=\"", sprintf($lang['findpostsmadebyuser'], $logon), "\" border=\"0\" /></a>&nbsp;";
 
 }else {

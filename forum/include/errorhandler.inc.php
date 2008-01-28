@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.110 2008-01-28 19:44:39 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.111 2008-01-28 20:48:36 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -291,7 +291,8 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
 
             if (isset($_GET) && sizeof($_GET) > 0) {
 
-                $request_vars_processed = false;
+                $request_keys_array = array();
+                $request_values_array = array();
 
                 flatten_array($_GET, $request_keys_array, $request_values_array);
 
@@ -312,6 +313,9 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
 
             if (isset($_POST) && sizeof($_POST) > 0) {
 
+                $request_keys_array = array();
+                $request_values_array = array();
+
                 flatten_array($_POST, $request_keys_array, $request_values_array);
 
                 foreach ($request_keys_array as $key => $request_key_name) {
@@ -330,6 +334,9 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
             $error_msg_array[] = "<b>\$_COOKIE:</b>";
 
             if (isset($_COOKIE) && sizeof($_COOKIE) > 0) {
+
+                $request_keys_array = array();
+                $request_values_array = array();
 
                 flatten_array($_COOKIE, $request_keys_array, $request_values_array);
 

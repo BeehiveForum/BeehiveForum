@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.109 2008-01-21 12:53:39 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.110 2008-01-28 19:44:39 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -68,10 +68,25 @@ function bh_error_handler_process_args($func_args_array)
     $arguments_array = array();
 
     foreach ($func_args_array as $func_arg) {
-        if (is_array($func_arg) && sizeof($func_arg) > 0) {
-            $arguments_array[] = sprintf("Array(%s)", bh_error_handler_process_args($func_arg));
+
+        if (is_array($func_arg)) {
+
+            if (sizeof($func_arg) > 0) {
+
+                $arguments_array[] = sprintf("Array(%s)", bh_error_handler_process_args($func_arg));
+
+            }else {
+
+                $arguments_array[] = is_array($func_arg) ? 'Array(void)' : "'$func_arg'";
+            }
+
+        }else if (is_object($func_arg)) {
+
+            $arguments_array[] = sprintf("class: %s", get_class($func_arg));
+
         }else {
-            $arguments_array[] = is_array($func_arg) ? 'Array(void)' : "'$func_arg'";
+
+            $arguments_array[] = "'$func_arg'";
         }
     }
 
@@ -556,6 +571,6 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
     }
 }
 
-set_error_handler("bh_error_handler");
+//set_error_handler("bh_error_handler");
 
 ?>

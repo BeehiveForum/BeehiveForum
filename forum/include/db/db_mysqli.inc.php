@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db_mysqli.inc.php,v 1.42 2008-01-28 19:57:24 decoyduck Exp $ */
+/* $Id: db_mysqli.inc.php,v 1.43 2008-01-28 20:22:00 decoyduck Exp $ */
 
 function db_get_connection_vars(&$db_server, &$db_username, &$db_password, &$db_database)
 {
@@ -226,14 +226,15 @@ function db_fetch_mysql_version(&$mysql_version)
 
 function db_escape_string($str)
 {
-    if (function_exists('mysqli_real_escape_string')) {
-        if ($db_escape_string = db_connect()) {
-            return @mysqli_real_escape_string($str, db_escape_string);
-        }
-    }
+    if ($db_escape_string = db_connect()) {
 
-    if (function_exists('mysqli_escape_string')) {
-        return @mysqli_escape_string($str);
+        if (function_exists('mysqli_real_escape_string')) {
+            return @mysqli_real_escape_string($db_escape_string, $str);
+        }
+
+        if (function_exists('mysqli_escape_string')) {
+            return @mysqli_escape_string($db_escape_string, $str);
+        }
     }
 
     return addslashes($str);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db_mysql.inc.php,v 1.44 2008-01-28 21:20:22 decoyduck Exp $ */
+/* $Id: db_mysql.inc.php,v 1.45 2008-01-28 21:38:18 decoyduck Exp $ */
 
 function db_get_connection_vars(&$db_server, &$db_username, &$db_password, &$db_database)
 {
@@ -81,16 +81,16 @@ function db_enable_compat_mode($connection_id)
     return true;
 }
 
-function db_query($sql, $connection_id)
+function db_query($sql, $connection_id, $trigger_error = true)
 {
     if ($result = @mysql_query($sql, $connection_id)) {
         return $result;
     }
 
-    db_trigger_error($sql, $connection_id);
+    if ($trigger_error === true) db_trigger_error($sql, $connection_id);
 }
 
-function db_unbuffered_query($sql, $connection_id)
+function db_unbuffered_query($sql, $connection_id, $trigger_error = true)
 {
     if (function_exists("mysql_unbuffered_query")) {
 
@@ -98,7 +98,7 @@ function db_unbuffered_query($sql, $connection_id)
             return $result;
         }
 
-        db_trigger_error($sql, $connection_id);
+        if ($trigger_error === true) db_trigger_error($sql, $connection_id);
     }
 
     return db_query($sql, $connection_id);
@@ -153,10 +153,13 @@ function db_trigger_error($sql, $connection_id)
 {
     if (error_reporting()) {
 
-        $errno  = db_errno($connection_id);
-        $errstr = db_error($connection_id);
+        if (!$result = db_query($sql, $connection_id, false)) {
 
-        bh_error_handler($errno, "<p>$errstr</p>\n<p>$sql</p>");
+            $errno  = db_errno($connection_id);
+            $errstr = db_error($connection_id);
+
+            bh_error_handler($errno, "<p>$errstr</p>\n<p>$sql</p>");
+        }
     }
 }
 

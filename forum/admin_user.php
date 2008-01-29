@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.231 2008-01-11 21:27:26 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.232 2008-01-29 11:03:24 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -409,7 +409,7 @@ if (isset($_POST['action_submit'])) {
                     $valid = false;
                 }
 
-                if (forum_get_setting('require_unique_email', 'Y') && !email_is_unique($t_email)) {
+                if (forum_get_setting('require_unique_email', 'Y') && !email_is_unique($t_email, $uid)) {
 
                     $error_msg_array[] = $lang['emailaddressalreadyinuse'];
                     $valid = false;

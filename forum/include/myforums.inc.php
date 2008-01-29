@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.77 2007-12-12 22:28:23 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.78 2008-01-29 17:51:30 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -85,6 +85,14 @@ function get_forum_list($offset)
                     $forum_data[strtoupper($key)] = $value;
                 }
             }
+
+            // Check the forum name is set. If it isn't set it to 'A Beehive Forum'
+
+            if (!isset($forum_data['FORUM_NAME']) || strlen(trim($forum_data['FORUM_NAME'])) < 1) {
+                $forum_data['FORUM_NAME'] = "A Beehive Forum";
+            }
+
+            // Check the forum description variable is set.
 
             if (!isset($forum_data['FORUM_DESC'])) {
                 $forum_data['FORUM_DESC'] = "";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display_emoticons.php,v 1.54 2007-12-26 13:19:33 decoyduck Exp $ */
+/* $Id: display_emoticons.php,v 1.55 2008-01-31 19:15:33 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -234,7 +234,7 @@ if (@$fp = fopen("emoticons/$emoticon_path/style.css", "r")) {
 
     foreach($emots_array as $emot) {
 
-        echo "                          <tr onclick=\"insertEmoticon(' ", rawurlencode(str_replace("'", "\\'", $emot['matches'][0])), " ');\">\n";
+        echo "                          <tr onclick=\"insertEmoticon(' ", html_js_safe_str($emot['matches'][0]), " ');\">\n";
         echo "                            <td align=\"left\" width=\"100\"><img src=\"emoticons/$emoticon_path/{$emot['img']}\" alt=\"{$emot['text']}\" title=\"{$emot['text']}\" /></td>\n";
         echo "                            <td align=\"left\">";
 

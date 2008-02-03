@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: rss_feed.inc.php,v 1.51 2008-02-03 09:45:42 decoyduck Exp $ */
+/* $Id: rss_feed.inc.php,v 1.52 2008-02-03 17:19:12 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -227,13 +227,15 @@ function rss_thread_exist($rss_id, $link)
 
     $link = db_escape_string($link);
 
-    $sql = "SELECT RSSID, NAME, UID, FID, URL, PREFIX, FREQUENCY, ";
-    $sql.= "LAST_RUN FROM {$table_data['PREFIX']}RSS_HISTORY ";
+    $sql = "SELECT COUNT(RSSID) RSS_THREAD_COUNT ";
+    $sql.= "FROM {$table_data['PREFIX']}RSS_HISTORY ";
     $sql.= "WHERE RSSID = '$rss_id' AND LINK = '$link'";
 
     if (!$result = db_query($sql, $db_rss_thread_exist)) return false;
 
-    return (db_num_rows($result) > 0);
+    list($rss_thread_count) = db_fetch_array($result, DB_RESULT_NUM);
+
+    return ($rss_thread_count > 0);
 }
 
 function rss_create_history($rss_id, $link)
@@ -293,20 +295,23 @@ function rss_check_feeds()
 
                     if (strlen($rss_item->description) > 1) {
 
-                        $rss_content = _htmlentities_decode($rss_item->description);
-                        $rss_content = new MessageText(true, $rss_content);
+                        $rss_item_description = _htmlentities_decode($rss_item->description);
 
-                        $content = $rss_content->getContent();
-                        $content = fix_html("<quote source=\"$rss_quote_source\" url=\"{$rss_item->link}\">$content</quote>");
+                        $rss_item_post = new MessageText(true, $rss_item_description);
+                        $rss_item_post->setHTML(POST_HTML_AUTO);
+
+                        $rss_content = $rss_item_post->getContent();
+
+                        $rss_content = fix_html("<quote source=\"$rss_quote_source\" url=\"{$rss_item->link}\">$rss_content</quote>");
 
                     }else {
 
-                        $content = fix_html("<p>$rss_quote_source</p>\n<p><a href=\"{$rss_item->link}\" target=\"_blank\">{$lang['rssclicktoreadarticle']}</a></p>");
+                        $rss_content = fix_html("<p>$rss_quote_source</p>\n<p><a href=\"{$rss_item->link}\" target=\"_blank\">{$lang['rssclicktoreadarticle']}</a></p>");
                     }
 
                     $tid = post_create_thread($rss_feed['FID'], $rss_feed['UID'], $rss_title);
 
-                    post_create($rss_feed['FID'], $tid, 0, $rss_feed['UID'], $rss_feed['UID'], 0, $content, true);
+                    post_create($rss_feed['FID'], $tid, 0, $rss_feed['UID'], $rss_feed['UID'], 0, $rss_content, true);
 
                     rss_create_history($rss_feed['RSSID'], $rss_item->link);
                 }

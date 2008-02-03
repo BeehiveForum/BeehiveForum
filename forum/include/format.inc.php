@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.154 2008-01-03 19:42:43 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.155 2008-02-03 17:19:12 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -641,12 +641,11 @@ function range_keys($low, $high)
 * @param mixed $var - Variable to test
 * @param mixed $low - Low number
 * @param mixed $high - High number
-* @param integer $step - Optional step.
 */
 
-function in_range($var, $low, $high, $step = 1)
+function in_range($var, $low, $high)
 {
-   return in_array($var, range($low, $high, $step));
+   return in_array($var, range($low, $high));
 }
 
 /**

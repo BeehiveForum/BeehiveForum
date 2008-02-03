@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.234 2007-12-26 13:19:35 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.235 2008-02-03 23:59:06 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -981,18 +981,18 @@ function pm_user_get_friends()
 *
 * @return mixed - false on failure, message subject as string on success
 * @param integer $mid - Message ID.
-* @param integer $tuid - Recepient UID.
+* @param integer $to_uid - Recepient UID.
 */
 
-function pm_get_subject($mid, $tuid)
+function pm_get_subject($mid, $to_uid)
 {
     if (!$db_pm_get_subject = db_connect()) return false;
 
     if (!is_numeric($mid)) return false;
-    if (!is_numeric($tuid)) return false;
+    if (!is_numeric($to_uid)) return false;
 
     $sql = "SELECT PM.SUBJECT FROM PM PM ";
-    $sql.= "WHERE MID = '$mid' AND TO_UID = '$tuid'";
+    $sql.= "WHERE MID = '$mid' AND TO_UID = '$to_uid'";
 
     if (!$result = db_query($sql, $db_pm_get_subject)) return false;
 
@@ -1035,7 +1035,7 @@ function pm_message_get($mid)
     // Fetch the single message as specified by the MID
 
     $sql = "SELECT PM.MID, PM.TYPE, PM.FROM_UID, PM.TO_UID, PM.SUBJECT, ";
-    $sql.= "PM.RECIPIENTS, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, ";
+    $sql.= "PM.RECIPIENTS, PM.REPLY_TO_MID, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, ";
     $sql.= "FUSER.LOGON AS FLOGON, TUSER.LOGON AS TLOGON, FUSER.NICKNAME AS FNICK, ";
     $sql.= "TUSER.NICKNAME AS TNICK FROM PM PM ";
     $sql.= "LEFT JOIN USER FUSER ON (PM.FROM_UID = FUSER.UID) ";
@@ -1211,8 +1211,24 @@ function pm_display($pm_message_array, $folder, $preview = false, $export_html =
     echo "                <tr>\n";
     echo "                  <td align=\"left\">\n";
     echo "                    <table width=\"100%\">\n";
-    echo "                      <tr align=\"right\">\n";
-    echo "                        <td align=\"left\" colspan=\"3\">&nbsp;</td>\n";
+    echo "                      <tr>\n";
+    echo "                        <td colspan=\"3\" align=\"right\"><span class=\"postnumber\">";
+
+    if (isset($pm_message_array['REPLY_TO_MID']) && is_numeric($pm_message_array['REPLY_TO_MID']) && $pm_message_array['REPLY_TO_MID'] > 0) {
+
+        if ($preview) {
+
+            echo "{$lang['inreplyto']}: <a href=\"pm.php?webtag=$webtag&amp;mid={$pm_message_array['REPLY_TO_MID']}\"";
+            echo "target=\"_blank\">#{$pm_message_array['REPLY_TO_MID']}</a>";
+
+        }else {
+
+            echo "{$lang['inreplyto']}: <a href=\"pm_messages.php?webtag=$webtag&amp;mid={$pm_message_array['REPLY_TO_MID']}\"";
+            echo "target=\"_self\">#{$pm_message_array['REPLY_TO_MID']}</a>";
+        }
+    }
+
+    echo "&nbsp;</span></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td class=\"postbody\" align=\"left\">{$pm_message_array['CONTENT']}</td>\n";
@@ -1408,21 +1424,25 @@ function pm_save_attachment_id($mid, $aid)
 * Sends a message with specified sender, recipient, subject and content
 *
 * @return mixed - false on failure, integer Message ID on success
-* @param integer $tuid - Sender UID
-* @param integer $fuid - Recipient UID
+* @param integer $reply_mid - Reply To MID
+* @param integer $to_uid - Sender UID
+* @param integer $from_uid - Recipient UID
 * @param string $subject - Subject string
 * @param string $content - Content string
 * @param string $aid - Attachment Unique ID (MD5 hash)
 */
 
-function pm_send_message($tuid, $fuid, $subject, $content, $aid)
+function pm_send_message($reply_mid, $to_uid, $from_uid, $subject, $content, $aid)
 {
     if (!$db_pm_send_message = db_connect()) return false;
 
-    if (!is_numeric($tuid)) return false;
-    if (!is_numeric($fuid)) return false;
+    if (!is_numeric($reply_mid)) return false;
+    if (!is_numeric($to_uid)) return false;
+    if (!is_numeric($from_uid)) return false;
 
     if (!is_md5($aid)) return false;
+
+    // Escape the subject and content for insertion into database.
 
     $subject_escaped = db_escape_string($subject);
     $content_escaped = db_escape_string($content);
@@ -1433,8 +1453,8 @@ function pm_send_message($tuid, $fuid, $subject, $content, $aid)
 
     // Insert the main PM Data into the database
 
-    $sql = "INSERT INTO PM (TYPE, TO_UID, FROM_UID, SUBJECT, RECIPIENTS, CREATED, NOTIFIED) ";
-    $sql.= "VALUES ('$pm_outbox', '$tuid', '$fuid', '$subject_escaped', '', NOW(), 0)";
+    $sql = "INSERT INTO PM (TYPE, REPLY_TO_MID, TO_UID, FROM_UID, SUBJECT, RECIPIENTS, CREATED, NOTIFIED) ";
+    $sql.= "VALUES ('$pm_outbox', '$reply_mid', '$to_uid', '$from_uid', '$subject_escaped', '', NOW(), 0)";
 
     if ($result = db_query($sql, $db_pm_send_message)) {
 
@@ -1449,11 +1469,11 @@ function pm_send_message($tuid, $fuid, $subject, $content, $aid)
 
         // Check to see if we should be adding a 'Sent Item'
 
-        $user_prefs = user_get_prefs($fuid);
+        $user_prefs = user_get_prefs($from_uid);
 
         if (isset($user_prefs['PM_SAVE_SENT_ITEM']) && $user_prefs['PM_SAVE_SENT_ITEM'] == 'Y') {
 
-            if (!pm_add_sent_item($new_mid, $tuid, $fuid, $subject, $content, $aid)) return false;
+            if (!pm_add_sent_item($new_mid, $to_uid, $from_uid, $subject, $content, $aid)) return false;
         }
 
         // Save the attachment ID.
@@ -1473,22 +1493,24 @@ function pm_send_message($tuid, $fuid, $subject, $content, $aid)
 * Called by pm_send_message() function if the sender has sent items enabled.
 *
 * @return mixed - false on failure, integer Message ID on success
-* @param integer $tuid - Sender UID
-* @param integer $fuid - Recipient UID
+* @param integer $to_uid - Sender UID
+* @param integer $from_uid - Recipient UID
 * @param string $subject - Subject string
 * @param string $content - Content string
 * @param string $aid - Attachment Unique ID (MD5 hash)
 */
 
-function pm_add_sent_item($smid, $tuid, $fuid, $subject, $content, $aid)
+function pm_add_sent_item($sent_item_mid, $to_uid, $from_uid, $subject, $content, $aid)
 {
     if (!$db_pm_add_sent_item = db_connect()) return false;
 
-    if (!is_numeric($smid)) return false;
-    if (!is_numeric($tuid)) return false;
-    if (!is_numeric($fuid)) return false;
+    if (!is_numeric($sent_item_mid)) return false;
+    if (!is_numeric($to_uid)) return false;
+    if (!is_numeric($from_uid)) return false;
 
     if (!is_md5($aid)) return false;
+
+    // Escape the subject and content for insertion into database.
 
     $subject_escaped = db_escape_string($subject);
     $content_escaped = db_escape_string($content);
@@ -1500,7 +1522,7 @@ function pm_add_sent_item($smid, $tuid, $fuid, $subject, $content, $aid)
     // Insert the main PM Data into the database
 
     $sql = "INSERT INTO PM (TYPE, TO_UID, FROM_UID, SUBJECT, RECIPIENTS, CREATED, NOTIFIED, SMID) ";
-    $sql.= "VALUES ('$pm_sent', '$tuid', '$fuid', '$subject_escaped', '', NOW(), 1, '$smid')";
+    $sql.= "VALUES ('$pm_sent', '$to_uid', '$from_uid', '$subject_escaped', '', NOW(), 1, '$sent_item_mid')";
 
     if ($result = db_query($sql, $db_pm_add_sent_item)) {
 
@@ -1532,17 +1554,18 @@ function pm_add_sent_item($smid, $tuid, $fuid, $subject, $content, $aid)
 * @param integer $mid - Message ID to edit
 * @param string $subject - New subject for message
 * @param string $content - New content for message
-* @param integer $tuid - Recipient UID
+* @param integer $to_uid - Recipient UID
 * @param string - $recipient_list - List of recipient logons.
 */
 
-function pm_save_message($subject, $content, $tuid, $recipient_list)
+function pm_save_message($reply_mid, $subject, $content, $to_uid, $recipient_list)
 {
     if (!$db_pm_save_message = db_connect()) return false;
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    if (!is_numeric($tuid)) return false;
+    if (!is_numeric($reply_mid)) return false;
+    if (!is_numeric($to_uid)) return false;
 
     $subject = db_escape_string($subject);
     $recipient_list = db_escape_string($recipient_list);
@@ -1554,8 +1577,8 @@ function pm_save_message($subject, $content, $tuid, $recipient_list)
 
         // Insert the main PM Data into the database
 
-        $sql = "INSERT INTO PM (TYPE, TO_UID, FROM_UID, SUBJECT, RECIPIENTS, ";
-        $sql.= "CREATED, NOTIFIED) VALUES ('$pm_saved_draft', '$tuid', '$uid', ";
+        $sql = "INSERT INTO PM (TYPE, REPLY_TO_MID, TO_UID, FROM_UID, SUBJECT, RECIPIENTS, ";
+        $sql.= "CREATED, NOTIFIED) VALUES ('$pm_saved_draft', '$reply_mid', '$to_uid', '$uid', ";
         $sql.= "'$subject', '$recipient_list', NOW(), 0)";
 
         if ($result = db_query($sql, $db_pm_save_message)) {
@@ -1585,16 +1608,16 @@ function pm_save_message($subject, $content, $tuid, $recipient_list)
 * @param integer $mid - Message ID to edit
 * @param string $subject - New subject for message
 * @param string $content - New content for message
-* @param integer $tuid - Recipient UID
+* @param integer $to_uid - Recipient UID
 * @param string - $recipient_list - List of recipient logons.
 */
 
-function pm_update_saved_message($mid, $subject, $content, $tuid, $recipient_list)
+function pm_update_saved_message($mid, $subject, $content, $to_uid, $recipient_list)
 {
     if (!$db_pm_edit_messages = db_connect()) return false;
 
     if (!is_numeric($mid)) return false;
-    if (!is_numeric($tuid)) return false;
+    if (!is_numeric($to_uid)) return false;
 
     $subject = db_escape_string($subject);
     $content = db_escape_string($content);
@@ -1603,7 +1626,7 @@ function pm_update_saved_message($mid, $subject, $content, $tuid, $recipient_lis
 
     // Update the subject text
 
-    $sql = "UPDATE LOW_PRIORITY PM SET SUBJECT = '$subject', TO_UID = '$tuid', ";
+    $sql = "UPDATE LOW_PRIORITY PM SET SUBJECT = '$subject', TO_UID = '$to_uid', ";
     $sql.= "RECIPIENTS = '$recipient_list' WHERE MID = '$mid'";
 
     if (!$result_subject = db_query($sql, $db_pm_edit_messages)) return false;
@@ -1676,16 +1699,16 @@ function pm_update_sent_item($mid, $subject, $content)
 
     // Fetch the SMID.
 
-    list($smid) = db_fetch_array($result, DB_RESULT_NUM);
+    list($sent_item_mid) = db_fetch_array($result, DB_RESULT_NUM);
 
     // Update the sent items subject text
 
-    $sql = "UPDATE LOW_PRIORITY PM SET SUBJECT = '$subject' WHERE MID = '$smid'";
+    $sql = "UPDATE LOW_PRIORITY PM SET SUBJECT = '$subject' WHERE MID = '$sent_item_mid'";
     if (!$result_subject = db_query($sql, $db_pm_edit_messages)) return false;
 
     // Update the sent item content
 
-    $sql = "UPDATE LOW_PRIORITY PM_CONTENT SET CONTENT = '$content' WHERE MID = '$smid'";
+    $sql = "UPDATE LOW_PRIORITY PM_CONTENT SET CONTENT = '$content' WHERE MID = '$sent_item_mid'";
     if (!$result_content = db_query($sql, $db_pm_edit_messages)) return false;
 
     return true;

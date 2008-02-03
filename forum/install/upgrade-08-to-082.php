@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-08-to-082.php,v 1.1 2008-01-19 12:31:41 decoyduck Exp $ */
+/* $Id: upgrade-08-to-082.php,v 1.2 2008-02-03 23:59:06 decoyduck Exp $ */
 
 @set_time_limit(0);
 
@@ -72,6 +72,14 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql.= "THREAD.STICKY_UNTIL, THREAD.ADMIN_LOCK FROM {$forum_webtag}_THREAD THREAD ";
     $sql.= "LEFT JOIN {$forum_webtag}_POST POST ON (POST.TID = THREAD.TID) GROUP BY THREAD.TID ";
     $sql.= "ON DUPLICATE KEY UPDATE MODIFIED = VALUES(MODIFIED)";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE PM ADD REPLY_TO_MID MEDIUMINT(8) NOT NULL DEFAULT '0' AFTER MID";
 
     if (!$result = @db_query($sql, $db_install)) {
 

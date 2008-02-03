@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.194 2008-01-03 19:42:43 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.195 2008-02-03 23:59:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -127,44 +127,35 @@ $page_prefs = bh_session_get_post_page_prefs();
 
 pm_user_prune_folders();
 
-// By default we won't be forwarding or editing a message.
+// Reply MID needs to be zero by default for REPLY_TO_MID column
 
-$forward_msg = false;
-$edit_msg = false;
+$t_reply_mid = 0;
 
 // Get the Message ID (MID) if any.
 
 if (isset($_GET['replyto']) && is_numeric($_GET['replyto'])) {
 
-    $t_rmid = $_GET['replyto'];
+    $t_reply_mid = $_GET['replyto'];
 
 }elseif (isset($_POST['replyto']) && is_numeric($_POST['replyto'])) {
 
-    $t_rmid = $_POST['replyto'];
+    $t_reply_mid = $_POST['replyto'];
 
 }elseif (isset($_GET['fwdmsg']) && is_numeric($_GET['fwdmsg'])) {
 
-    $t_rmid = $_GET['fwdmsg'];
-    $forward_msg = true;
+    $t_forward_mid = $_GET['fwdmsg'];
 
 }elseif (isset($_POST['fwdmsg']) && is_numeric($_POST['fwdmsg'])) {
 
-    $t_rmid = $_POST['fwdmsg'];
-    $forward_msg = true;
+    $t_forward_mid = $_POST['fwdmsg'];
 
 }elseif (isset($_GET['editmsg']) && is_numeric($_GET['editmsg'])) {
 
-    $t_rmid = $_GET['editmsg'];
-    $edit_msg = true;
+    $t_edit_mid = $_GET['editmsg'];
 
 }elseif (isset($_POST['editmsg']) && is_numeric($_POST['editmsg'])) {
 
-    $t_rmid = $_POST['editmsg'];
-    $edit_msg = true;
-
-}else {
-
-    $t_rmid = 0;
+    $t_edit_mid = $_POST['editmsg'];
 }
 
 // Get the tid.pid if any.
@@ -218,11 +209,20 @@ if (isset($_GET['folder'])) {
 
 if (isset($_POST['cancel'])) {
 
-    if (isset($t_rmid) && $t_rmid > 0) {
-        $uri = "pm.php?webtag=$webtag&mid=$t_rmid";
-    }elseif (isset($t_fwd) && $t_fwd > 0) {
-        $uri = "pm.php?webtag=$webtag&mid=$t_fwd";
+    if (isset($t_reply_mid) && is_numeric($t_reply_mid)  && $t_reply_mid > 0) {
+
+        $uri = "pm.php?webtag=$webtag&mid=$t_reply_mid";
+
+    }elseif (isset($t_forward_mid) && is_numeric($t_forward_mid)  && $t_forward_mid > 0) {
+
+        $uri = "pm.php?webtag=$webtag&mid=$t_forward_mid";
+
+    }elseif (isset($t_edit_mid) && is_numeric($t_edit_mid) && $t_edit_mid > 0) {
+
+        $uri = "pm.php?webtag=$webtag&mid=$t_edit_mid";
+
     }else {
+
         $uri = "pm.php?webtag=$webtag";
     }
 
@@ -544,98 +544,136 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
         $t_recipient_list = "";
     }
 
-}else if (isset($t_rmid) && $t_rmid > 0) {
+}else if (isset($t_reply_mid) && is_numeric($t_reply_mid) && $t_reply_mid > 0) {
 
-    if (!$forward_msg && !$edit_msg) {
+    if (!$t_recipient_list = pm_get_user($t_reply_mid)) $t_recipient_list = "";
 
-        if (!$t_recipient_list = pm_get_user($t_rmid)) {
+    if ($pm_data = pm_message_get($t_reply_mid)) {
 
-            $t_recipient_list = "";
-        }
-    }
+        $pm_data['CONTENT'] = pm_get_content($t_reply_mid);
 
-    if ($pm_data = pm_message_get($t_rmid)) {
+        $t_subject = preg_replace('/^(RE:)?/i', 'RE:', $pm_data['SUBJECT']);
 
-        $pm_data['CONTENT'] = pm_get_content($t_rmid);
+        if (bh_session_get_value('PM_INCLUDE_REPLY') == 'Y') {
 
-        if ($forward_msg) {
+            if ($page_prefs & POST_TINYMCE_DISPLAY) {
 
-            $t_subject = preg_replace('/^FWD:/i', '', $pm_data['SUBJECT']);
-            $t_subject = "FWD:$t_subject";
+                $t_content = "<div class=\"quotetext\" id=\"quote\">";
+                $t_content.= "<b>quote: </b>";
+                $t_content.= format_user_name($pm_data['FLOGON'], $pm_data['FNICK']);
+                $t_content.= "</div><div class=\"quote\">";
+                $t_content.= trim(strip_tags(strip_paragraphs($pm_data['CONTENT'])));
+                $t_content.= "</div><p>&nbsp;</p>";
 
-        }elseif (!$edit_msg) {
+            }else {
 
-            $t_subject = preg_replace('/^RE:/i', '', $pm_data['SUBJECT']);
-            $t_subject = "RE:$t_subject";
+                $t_content = "<quote source=\"";
+                $t_content.= format_user_name($pm_data['FLOGON'], $pm_data['FNICK']);
+                $t_content.= "\" url=\"\">";
+                $t_content.= trim(strip_tags(strip_paragraphs($pm_data['CONTENT'])));
+                $t_content.= "</quote>\n\n";
+            }
 
-        }else {
+            // Set the HTML mode to 'with automatic line breaks' so
+            // the quote is handled correctly when the user previews
+            // the message.
 
-            $t_subject = $pm_data['SUBJECT'];
-        }
-
-        if ($edit_msg) {
-
-            $parsed_message = new MessageTextParse($pm_data['CONTENT'], $emots_enabled, $links_enabled);
-
-            $emots_enabled = $parsed_message->getEmoticons();
-            $links_enabled = $parsed_message->getLinks();
-
-            $t_content = $parsed_message->getMessage();
-            $post_html = $parsed_message->getMessageHTML();
-
-            $post = new MessageText($post_html, $t_content, $emots_enabled, $links_enabled);
-
-            $post->diff = false;
+            $post = new MessageText(POST_HTML_AUTO, $t_content, $emots_enabled, $links_enabled);
 
             $t_content = $post->getContent();
 
-            $t_subject = $pm_data['SUBJECT'];
+            $post_html = POST_HTML_AUTO;
+        }
 
-            $t_to_uid = $pm_data['TO_UID'];
+    }else {
 
-            $t_recipient_list = $pm_data['RECIPIENTS'];
+        html_draw_top();
+        pm_error_refuse();
+        html_draw_bottom();
+        exit;
+    }
 
-            if (strlen($t_recipient_list) > 0) {
-                $to_radio = POST_RADIO_OTHERS;
-            }elseif ($t_to_uid > 0) {
-                $to_radio = POST_RADIO_FRIENDS;
-            }
+}else if (isset($t_forward_mid) && is_numeric($t_forward_mid) && $t_forward_mid > 0) {
 
-            $aid = $pm_data['AID'];
+    if ($pm_data = pm_message_get($t_forward_mid)) {
+
+        $pm_data['CONTENT'] = pm_get_content($t_forward_mid);
+
+        $t_subject = preg_replace('/^(FWD:)?/i', 'FWD:', $pm_data['SUBJECT']);
+
+        if ($page_prefs & POST_TINYMCE_DISPLAY) {
+
+            $t_content = "<div class=\"quotetext\" id=\"quote\">";
+            $t_content.= "<b>quote: </b>";
+            $t_content.= format_user_name($pm_data['FLOGON'], $pm_data['FNICK']);
+            $t_content.= "</div><div class=\"quote\">";
+            $t_content.= trim(strip_tags(strip_paragraphs($pm_data['CONTENT'])));
+            $t_content.= "</div><p>&nbsp;</p>";
 
         }else {
 
-            if ($forward_msg || bh_session_get_value('PM_INCLUDE_REPLY') == 'Y') {
-
-                if ($page_prefs & POST_TINYMCE_DISPLAY) {
-
-                    $t_content = "<div class=\"quotetext\" id=\"quote\">";
-                    $t_content.= "<b>quote: </b>";
-                    $t_content.= format_user_name($pm_data['FLOGON'], $pm_data['FNICK']);
-                    $t_content.= "</div><div class=\"quote\">";
-                    $t_content.= trim(strip_tags(strip_paragraphs($pm_data['CONTENT'])));
-                    $t_content.= "</div><p>&nbsp;</p>";
-
-                }else {
-
-                    $t_content = "<quote source=\"";
-                    $t_content.= format_user_name($pm_data['FLOGON'], $pm_data['FNICK']);
-                    $t_content.= "\" url=\"\">";
-                    $t_content.= trim(strip_tags(strip_paragraphs($pm_data['CONTENT'])));
-                    $t_content.= "</quote>\n\n";
-                }
-
-                // Set the HTML mode to 'with automatic line breaks' so
-                // the quote is handled correctly when the user previews
-                // the message.
-
-                $post = new MessageText(POST_HTML_AUTO, $t_content, $emots_enabled, $links_enabled);
-
-                $t_content = $post->getContent();
-
-                $post_html = POST_HTML_AUTO;
-            }
+            $t_content = "<quote source=\"";
+            $t_content.= format_user_name($pm_data['FLOGON'], $pm_data['FNICK']);
+            $t_content.= "\" url=\"\">";
+            $t_content.= trim(strip_tags(strip_paragraphs($pm_data['CONTENT'])));
+            $t_content.= "</quote>\n\n";
         }
+
+        // Set the HTML mode to 'with automatic line breaks' so
+        // the quote is handled correctly when the user previews
+        // the message.
+
+        $post = new MessageText(POST_HTML_AUTO, $t_content, $emots_enabled, $links_enabled);
+
+        $t_content = $post->getContent();
+
+        $post_html = POST_HTML_AUTO;
+
+    }else {
+
+        html_draw_top();
+        pm_error_refuse();
+        html_draw_bottom();
+        exit;
+    }
+
+}else if (isset($t_edit_mid) && is_numeric($t_edit_mid) && $t_edit_mid > 0) {
+
+    if ($pm_data = pm_message_get($t_edit_mid)) {
+
+        $pm_data['CONTENT'] = pm_get_content($t_edit_mid);
+
+        $t_subject = $pm_data['SUBJECT'];
+
+        $t_reply_mid = $pm_data['REPLY_TO_MID'];
+
+        $parsed_message = new MessageTextParse($pm_data['CONTENT'], $emots_enabled, $links_enabled);
+
+        $emots_enabled = $parsed_message->getEmoticons();
+        $links_enabled = $parsed_message->getLinks();
+
+        $t_content = $parsed_message->getMessage();
+        $post_html = $parsed_message->getMessageHTML();
+
+        $post = new MessageText($post_html, $t_content, $emots_enabled, $links_enabled);
+
+        $post->diff = false;
+
+        $t_content = $post->getContent();
+
+        $t_subject = $pm_data['SUBJECT'];
+
+        $t_to_uid = $pm_data['TO_UID'];
+
+        $t_recipient_list = $pm_data['RECIPIENTS'];
+
+        if (strlen($t_recipient_list) > 0) {
+            $to_radio = POST_RADIO_OTHERS;
+        }elseif ($t_to_uid > 0) {
+            $to_radio = POST_RADIO_FRIENDS;
+        }
+
+        $aid = $pm_data['AID'];
 
     }else {
 
@@ -678,7 +716,7 @@ if ($valid && isset($_POST['submit'])) {
 
         if (isset($to_radio) && $to_radio == POST_RADIO_FRIENDS) {
 
-            if ($new_mid = pm_send_message($t_to_uid, $uid, $t_subject, $t_content, $aid)) {
+            if ($new_mid = pm_send_message($t_reply_mid, $t_to_uid, $uid, $t_subject, $t_content, $aid)) {
 
                 email_send_pm_notification($t_to_uid, $new_mid, $uid);
 
@@ -688,17 +726,15 @@ if ($valid && isset($_POST['submit'])) {
                 $valid = false;
             }
 
-            if (isset($_POST['editmsg']) && is_numeric($_POST['editmsg'])) {
-
-                $saved_mid = $_POST['editmsg'];
-                pm_delete_message($saved_mid);
+            if (isset($t_edit_mid) && is_numeric($t_edit_mid)) {
+                pm_delete_message($t_edit_mid);
             }
 
         }else {
 
             foreach ($t_new_recipient_array['TO_UID'] as $t_to_uid) {
 
-                if ($new_mid = pm_send_message($t_to_uid, $uid, $t_subject, $t_content, $aid)) {
+                if ($new_mid = pm_send_message($t_reply_mid, $t_to_uid, $uid, $t_subject, $t_content, $aid)) {
 
                     email_send_pm_notification($t_to_uid, $new_mid, $uid);
 
@@ -709,10 +745,8 @@ if ($valid && isset($_POST['submit'])) {
                 }
             }
 
-            if (isset($_POST['editmsg']) && is_numeric($_POST['editmsg'])) {
-
-                $saved_mid = $_POST['editmsg'];
-                pm_delete_message($saved_mid);
+            if (isset($t_edit_mid) && is_numeric($t_edit_mid)) {
+                pm_delete_message($t_edit_mid);
             }
         }
     }
@@ -727,18 +761,15 @@ if ($valid && isset($_POST['submit'])) {
 
         header_redirect($uri);
     }
-}
 
-if ($valid && isset($_POST['save'])) {
+}else if ($valid && isset($_POST['save'])) {
 
-    if (isset($_POST['editmsg']) && is_numeric($_POST['editmsg'])) {
+    if (isset($t_edit_mid) && is_numeric($t_edit_mid)) {
 
-        $t_mid = $_POST['editmsg'];
-
-        if (pm_update_saved_message($t_mid, $t_subject, $t_content, $t_to_uid, $t_recipient_list)) {
+        if (pm_update_saved_message($t_edit_mid, $t_subject, $t_content, $t_to_uid, $t_recipient_list)) {
 
             html_draw_top();
-            html_display_msg($lang['messagesaved'], $lang['messagewassuccessfullysavedtodraftsfolder'], 'pm.php', 'get', array('continue' => $lang['continue']), array('mid' => $t_mid, 'folder' => PM_FOLDER_DRAFTS));
+            html_display_msg($lang['messagesaved'], $lang['messagewassuccessfullysavedtodraftsfolder'], 'pm.php', 'get', array('continue' => $lang['continue']), array('mid' => $t_edit_mid, 'folder' => PM_FOLDER_DRAFTS));
             html_draw_bottom();
             exit;
 
@@ -750,7 +781,7 @@ if ($valid && isset($_POST['save'])) {
 
     }else {
 
-        if ($saved_mid = pm_save_message($t_subject, $t_content, $t_to_uid, $t_recipient_list)) {
+        if ($saved_mid = pm_save_message($t_reply_mid, $t_subject, $t_content, $t_to_uid, $t_recipient_list)) {
 
             pm_save_attachment_id($saved_mid, $aid);
 
@@ -1046,15 +1077,20 @@ echo "              </table>\n";
 
 echo $tools->js();
 
-if (isset($t_rmid) && $forward_msg === false && $edit_msg == false) {
-    echo form_input_hidden("replyto", _htmlentities($t_rmid)), "\n";
-}elseif (isset($t_rmid) && $forward_msg === false && $edit_msg == true) {
-    echo form_input_hidden("editmsg", _htmlentities($t_rmid)), "\n";
-}elseif (isset($t_rmid) && $forward_msg === true && $edit_msg == false) {
-    echo form_input_hidden("fwdmsg", _htmlentities($t_rmid)), "\n";
+if (isset($t_reply_mid) && is_numeric($t_reply_mid) && $t_reply_mid > 0) {
+
+    echo form_input_hidden("replyto", _htmlentities($t_reply_mid)), "\n";
+
+}elseif (isset($t_forward_mid) && is_numeric($t_forward_mid) && $t_forward_mid > 0) {
+
+    echo form_input_hidden("fwdmsg", _htmlentities($t_forward_mid)), "\n";
+
+}elseif (isset($t_edit_mid) && is_numeric($t_edit_mid) && $t_edit_mid > 0) {
+
+    echo form_input_hidden("editmsg", _htmlentities($t_edit_mid)), "\n";
 }
 
-if (isset($pm_data) && is_array($pm_data) && $forward_msg == false && $edit_msg == false) {
+if (isset($pm_data) && is_array($pm_data) && isset($t_reply_mid) && is_numeric($t_reply_mid) && $t_reply_mid > 0) {
 
     echo "              <table class=\"posthead\" width=\"720\">\n";
     echo "                <tr>\n";

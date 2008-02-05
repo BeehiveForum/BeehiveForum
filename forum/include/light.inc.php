@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.167 2007-12-26 13:19:35 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.168 2008-02-05 19:14:06 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -52,15 +52,30 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "user_rel.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
-function light_html_draw_top($title = false)
+function light_html_draw_top()
 {
     $lang = load_language_file();
 
+    $arg_array = func_get_args();
+
+    $robots = "index,follow";
+
     if (defined('BEEHIVE_LIGHT_INCLUDE')) return false;
 
-    if (!isset($title) || !$title) {
-        $title = forum_get_setting('forum_name', false, 'A Beehive Forum');
+    foreach($arg_array as $key => $func_args) {
+
+        if (preg_match("/^title=([^$]+)$/i", $func_args, $func_matches) > 0) {
+            if (!isset($title)) $title = $func_matches[1];
+            unset($arg_array[$key]);
+        }
+
+        if (preg_match("/^robots=([^$]+)$/i", $func_args, $func_matches) > 0) {
+            $robots = $func_matches[1];
+            unset($arg_array[$key]);
+        }
     }
+
+    if (!isset($title)) $title = forum_get_setting('forum_name', false, 'A Beehive Forum');
 
     $forum_keywords = html_get_forum_keywords();
     $forum_description = html_get_forum_description();
@@ -73,10 +88,17 @@ function light_html_draw_top($title = false)
     echo "<title>$title</title>\n";
     echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n";
     echo "<meta name=\"generator\" content=\"Beehive Forum ", BEEHIVE_VERSION, "\" />\n";
-    echo "<meta name=\"reply-to\" content=\"$forum_email\" />\n";
     echo "<meta name=\"keywords\" content=\"$forum_keywords\" />\n";
     echo "<meta name=\"description\" content=\"$forum_description\" />\n";
 
+    if (forum_get_setting('allow_search_spidering', 'N')) {
+
+        echo "<meta name=\"robots\" content=\"noindex,nofollow\" />\n";
+
+    }elseif (strlen(trim($robots)) > 0) {
+
+        echo "<meta name=\"robots\" content=\"$robots\" />\n";
+    }
 
     if ($stylesheet = html_get_style_sheet()) {
         echo "<link rel=\"stylesheet\" href=\"$stylesheet\" type=\"text/css\" />\n";
@@ -1196,7 +1218,7 @@ function light_html_guest_error ()
 
     $webtag = get_webtag($webtag_search);
 
-    light_html_draw_top();
+    light_html_draw_top("robots=noindex,nofollow");
     light_html_display_error_msg($lang['guesterror']);
 
     echo "<br />\n";
@@ -1304,7 +1326,7 @@ function light_html_message_type_error()
 {
     $lang = load_language_file();
 
-    light_html_draw_top();
+    light_html_draw_top("robots=noindex,nofollow");
     light_html_display_error_msg($lang['cannotpostthisthreadtype']);
     light_html_draw_bottom();
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.php,v 1.107 2007-12-26 13:19:34 decoyduck Exp $ */
+/* $Id: links.php,v 1.108 2008-02-05 19:14:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -201,7 +201,7 @@ $start = floor($page - 1) * 20;
 
 if ($start < 0) $start = 0;
 
-html_draw_top("robots=noindex,nofollow");
+html_draw_top();
 
 echo "<h1>{$lang['links']}</h1>\n";
 

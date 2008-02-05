@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.php,v 1.119 2007-12-26 13:19:35 decoyduck Exp $ */
+/* $Id: visitor_log.php,v 1.120 2008-02-05 19:14:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -298,7 +298,7 @@ if (isset($_POST['clear_search'])) {
     $user_search = "";
 }
 
-html_draw_top("robots=noindex,nofollow", "openprofile.js");
+html_draw_top("openprofile.js");
 
 echo "<h1>{$lang['userprofile']}</h1>\n";
 

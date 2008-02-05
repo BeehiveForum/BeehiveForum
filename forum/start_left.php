@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.155 2007-12-26 13:19:34 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.156 2008-02-05 19:14:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -112,7 +112,7 @@ if (!forum_check_access_level()) {
     header_redirect("forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
-html_draw_top("openprofile.js", "poll.js", "robots=noindex,follow");
+html_draw_top("openprofile.js", "poll.js");
 
 echo "  <h1>{$lang['start']}</h1>\n";
 echo "  <br />\n";

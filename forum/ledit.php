@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ledit.php,v 1.25 2007-12-26 13:19:34 decoyduck Exp $ */
+/* $Id: ledit.php,v 1.26 2008-02-05 19:14:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -134,7 +134,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     if (!$t_fid = thread_get_folder($tid, $pid)) {
 
-        light_html_draw_top();
+        light_html_draw_top("robots=noindex,nofollow");
         light_html_display_error_msg($lang['threadcouldnotbefound']);
         light_html_draw_bottom();
         exit;
@@ -147,7 +147,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     if (!$t_fid = thread_get_folder($tid, $pid)) {
 
-        light_html_draw_top();
+        light_html_draw_top("robots=noindex,nofollow");
         light_html_display_error_msg($lang['threadcouldnotbefound']);
         light_html_draw_bottom();
         exit;
@@ -156,7 +156,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
 if (!isset($tid) || !isset($pid) || !is_numeric($tid) || !is_numeric($pid)) {
 
-    light_html_draw_top();
+    light_html_draw_top("robots=noindex,nofollow");
     light_html_display_error_msg($lang['nomessagespecifiedforedit']);
     light_html_draw_bottom();
     exit;
@@ -164,7 +164,7 @@ if (!isset($tid) || !isset($pid) || !is_numeric($tid) || !is_numeric($pid)) {
 
 if (thread_is_poll($tid) && $pid == 1) {
 
-    light_html_draw_top();
+    light_html_draw_top("robots=noindex,nofollow");
     light_html_display_error_msg($lang['cannoteditpollsinlightmode']);
     light_html_draw_bottom();
     exit;
@@ -191,7 +191,7 @@ if (bh_session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 
 if (!bh_session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
 
-    light_html_draw_top();
+    light_html_draw_top("robots=noindex,nofollow");
     light_html_display_error_msg($lang['cannoteditpostsinthisfolder']);
     light_html_draw_bottom();
     exit;
@@ -199,7 +199,7 @@ if (!bh_session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
 
 if (!$threaddata = thread_get($tid)) {
 
-    light_html_draw_top();
+    light_html_draw_top("robots=noindex,nofollow");
     light_html_display_error_msg($lang['threadcouldnotbefound']);
     light_html_draw_bottom();
     exit;
@@ -218,7 +218,7 @@ $valid = true;
 
 $fix_html = true;
 
-light_html_draw_top();
+light_html_draw_top("robots=noindex,nofollow");
 
 $t_content = "";
 $t_sig = "";
@@ -376,7 +376,7 @@ if (isset($_POST['preview'])) {
 
     if (!$preview_message = messages_get($tid, $pid, 1)) {
 
-        light_html_draw_top();
+        light_html_draw_top("robots=noindex,nofollow");
         light_html_display_error_msg($lang['postdoesnotexist']);
         light_html_draw_bottom();
         exit;
@@ -446,7 +446,7 @@ if (isset($_POST['preview'])) {
 
     if (!$editmessage = messages_get($tid, $pid, 1)) {
 
-        light_html_draw_top();
+        light_html_draw_top("robots=noindex,nofollow");
         light_html_display_error_msg($lang['postdoesnotexist']);
         light_html_draw_bottom();
         exit;
@@ -481,9 +481,8 @@ if (isset($_POST['preview'])) {
         || (perm_get_user_permissions(bh_session_get_value('UID')) & USER_PERM_PILLORIED)
         || (((time() - $editmessage['CREATED']) >= (intval(forum_get_setting('post_edit_time', false, 0)) * MINUTE_IN_SECONDS)) && intval(forum_get_setting('post_edit_time', false, 0)) != 0)) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
-        echo sprintf("<h1>{$lang['editmessage']}</h1>\n", $edit_msg);
-        echo "<h2>{$lang['nopermissiontoedit']}</h2>\n";
-
+        light_html_draw_top("robots=noindex,nofollow");
+        light_html_display_error_msg(sprintf("<h1>{$lang['nopermissiontoedit']}</h1>\n", $edit_msg));
         light_html_draw_bottom();
         exit;
     }
@@ -524,7 +523,7 @@ if (isset($_POST['preview'])) {
 
     if (!$editmessage = messages_get($tid, $pid, 1)) {
 
-        light_html_draw_top();
+        light_html_draw_top("robots=noindex,nofollow");
         light_html_display_error_msg($lang['postdoesnotexist']);
         light_html_draw_bottom();
         exit;
@@ -539,9 +538,8 @@ if (isset($_POST['preview'])) {
                 || (perm_get_user_permissions(bh_session_get_value('UID')) & USER_PERM_PILLORIED)
                 || (((time() - $editmessage['CREATED']) >= (intval(forum_get_setting('post_edit_time', false, 0)) * MINUTE_IN_SECONDS)) && intval(forum_get_setting('post_edit_time', false, 0)) != 0)) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
-                echo sprintf("<h1>{$lang['editmessage']}</h1>\n", $edit_msg);
-                echo "<h2>{$lang['nopermissiontoedit']}</h2>\n";
-
+                light_html_draw_top("robots=noindex,nofollow");
+                light_html_display_error_msg(sprintf("<h1>{$lang['nopermissiontoedit']}</h1>\n", $edit_msg));
                 light_html_draw_bottom();
                 exit;
             }

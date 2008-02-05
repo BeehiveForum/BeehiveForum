@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.205 2007-12-26 13:19:34 decoyduck Exp $ */
+/* $Id: search.php,v 1.206 2008-02-05 19:14:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -422,7 +422,7 @@ if ((isset($_POST) && sizeof($_POST) > 0) || isset($_GET['search_string']) || is
 
     if ($search_results_array = search_fetch_results($offset, $sort_by, $sort_dir)) {
 
-        html_draw_top("search.js", "robots=noindex,nofollow");
+        html_draw_top("search.js");
 
         thread_list_draw_top(SEARCH_RESULTS);
 
@@ -505,7 +505,7 @@ if ((isset($_POST) && sizeof($_POST) > 0) || isset($_GET['search_string']) || is
 
     }else {
 
-        html_draw_top("search.js", "robots=noindex,nofollow");
+        html_draw_top("search.js");
 
         thread_list_draw_top(SEARCH_RESULTS);
 
@@ -550,7 +550,7 @@ if ((isset($_POST) && sizeof($_POST) > 0) || isset($_GET['search_string']) || is
     exit;
 }
 
-html_draw_top("search.js", "robots=noindex,nofollow");
+html_draw_top("search.js");
 
 echo "<h1>{$lang['searchmessages']}</h1>\n";
 

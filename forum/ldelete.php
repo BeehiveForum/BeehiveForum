@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ldelete.php,v 1.15 2007-12-26 13:19:34 decoyduck Exp $ */
+/* $Id: ldelete.php,v 1.16 2008-02-05 19:14:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -141,7 +141,7 @@ if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
 
     if (!$t_fid = thread_get_folder($tid, $pid)) {
 
-        light_html_draw_top();
+        light_html_draw_top("robots=noindex,nofollow");
         light_html_display_error_msg($lang['threadcouldnotbefound']);
         light_html_draw_bottom();
         exit;
@@ -155,7 +155,7 @@ if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
 
     if (!$t_fid = thread_get_folder($tid, $pid)) {
 
-        light_html_draw_top();
+        light_html_draw_top("robots=noindex,nofollow");
         light_html_display_error_msg($lang['threadcouldnotbefound']);
         light_html_draw_bottom();
         exit;
@@ -163,7 +163,7 @@ if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
 
 }else {
 
-    light_html_draw_top();
+    light_html_draw_top("robots=noindex,nofollow");
     light_html_display_error_msg($lang['nomessagespecifiedfordel']);
     light_html_draw_bottom();
     exit;
@@ -190,7 +190,7 @@ if (bh_session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 
 if (!bh_session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
 
-    light_html_draw_top();
+    light_html_draw_top("robots=noindex,nofollow");
     light_html_display_error_msg($lang['cannotdeletepostsinthisfolder']);
     light_html_draw_bottom();
     exit;
@@ -198,7 +198,7 @@ if (!bh_session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
 
 if (!$threaddata = thread_get($tid)) {
 
-    light_html_draw_top();
+    light_html_draw_top("robots=noindex,nofollow");
     light_html_display_error_msg($lang['threadcouldnotbefound']);
     light_html_draw_bottom();
     exit;
@@ -212,7 +212,7 @@ if (isset($tid) && isset($pid) && is_numeric($tid) && is_numeric($pid)) {
 
         if ((strlen(trim($preview_message['CONTENT'])) == 0) && !thread_is_poll($tid)) {
 
-            light_html_draw_top();
+            light_html_draw_top("robots=noindex,nofollow");
             light_edit_refuse();
             light_html_draw_bottom();
             exit;
@@ -220,7 +220,7 @@ if (isset($tid) && isset($pid) && is_numeric($tid) && is_numeric($pid)) {
 
         if ((bh_session_get_value('UID') != $preview_message['FROM_UID'] || bh_session_check_perm(USER_PERM_PILLORIED, 0)) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
-            light_html_draw_top();
+            light_html_draw_top("robots=noindex,nofollow");
             light_edit_refuse();
             light_html_draw_bottom();
             exit;
@@ -228,7 +228,7 @@ if (isset($tid) && isset($pid) && is_numeric($tid) && is_numeric($pid)) {
 
     }else {
 
-        light_html_draw_top();
+        light_html_draw_top("robots=noindex,nofollow");
         light_html_display_error_msg(sprintf($lang['messagewasnotfound'], $msg));
         light_html_draw_bottom();
         exit;
@@ -260,7 +260,7 @@ if (isset($_POST['submit']) && is_numeric($tid) && is_numeric($pid)) {
     }
 }
 
-light_html_draw_top();
+light_html_draw_top("robots=noindex,nofollow");
 
 echo "<h1>{$lang['deletemessage']} {$tid}.{$pid}</h1>\n";
 echo "<br />\n";

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: admin_post_stats.php,v 1.40 2007-12-26 13:19:32 decoyduck Exp $ */
+/* $Id: admin_post_stats.php,v 1.41 2008-02-05 19:14:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -190,7 +190,7 @@ if (isset($_POST['update'])) {
     $user_stats_array = get_post_tallys($stats_start, $stats_end);
 }
 
-html_draw_top("robots=noindex,nofollow");
+html_draw_top();
 
 echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; ", sprintf($lang['postingstatsforperiod'], date("d/m/Y", $stats_start), date("d/m/Y", $stats_end)), "</h1>\n";
 

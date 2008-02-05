@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.119 2008-01-08 18:33:40 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.120 2008-02-05 19:14:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -305,7 +305,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     if (!$t_fid = thread_get_folder($reply_to_tid, $reply_to_pid)) {
 
-        light_html_draw_top();
+        light_html_draw_top("robots=noindex,nofollow");
         light_html_display_error_msg($lang['threadcouldnotbefound']);
         light_html_draw_bottom();
         exit;
@@ -319,7 +319,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     if (!bh_session_check_perm(USER_PERM_POST_CREATE | USER_PERM_POST_READ, $t_fid)) {
 
-        light_html_draw_top();
+        light_html_draw_top("robots=noindex,nofollow");
         light_html_display_error_msg($lang['cannotcreatepostinfolder']);
         light_html_draw_bottom();
         exit;
@@ -333,7 +333,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     if (!$t_fid = thread_get_folder($reply_to_tid, $reply_to_pid)) {
 
-        light_html_draw_top();
+        light_html_draw_top("robots=noindex,nofollow");
         light_html_display_error_msg($lang['threadcouldnotbefound']);
         light_html_draw_bottom();
         exit;
@@ -347,7 +347,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     if (!bh_session_check_perm(USER_PERM_POST_CREATE | USER_PERM_POST_READ, $t_fid)) {
 
-        light_html_draw_top();
+        light_html_draw_top("robots=noindex,nofollow");
         light_html_display_error_msg($lang['cannotcreatepostinfolder']);
         light_html_draw_bottom();
         exit;
@@ -384,7 +384,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     if (isset($t_fid) && !bh_session_check_perm(USER_PERM_THREAD_CREATE | USER_PERM_POST_READ, $t_fid)) {
 
-        light_html_draw_top();
+        light_html_draw_top("robots=noindex,nofollow");
         light_html_display_error_msg($lang['cannotcreatethreadinfolder']);
         light_html_draw_bottom();
         exit;
@@ -418,7 +418,7 @@ if (!$new_thread) {
 
     if (!$reply_message = messages_get($reply_to_tid, $reply_to_pid)) {
 
-        light_html_draw_top();
+        light_html_draw_top("robots=noindex,nofollow");
         light_html_display_error_msg($lang['postdoesnotexist']);
         light_html_draw_bottom();
         exit;
@@ -426,7 +426,7 @@ if (!$new_thread) {
 
     if (!$thread_data = thread_get($reply_to_tid)) {
 
-        light_html_draw_top();
+        light_html_draw_top("robots=noindex,nofollow");
         light_html_display_error_msg($lang['threadcouldnotbefound']);
         light_html_draw_bottom();
         exit;
@@ -534,7 +534,7 @@ if ($valid && isset($_POST['submit'])) {
     }
 }
 
-light_html_draw_top();
+light_html_draw_top("robots=noindex,nofollow");
 
 if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
     $aid = $_POST['aid'];

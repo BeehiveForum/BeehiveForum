@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ldisplay.php,v 1.29 2007-12-26 13:19:34 decoyduck Exp $ */
+/* $Id: ldisplay.php,v 1.30 2008-02-05 19:14:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -132,7 +132,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
 }else if (!$msg = messages_get_most_recent($uid)) {
 
-    light_html_draw_top();
+    light_html_draw_top("robots=noindex,nofollow");
     light_html_display_error_msg($lang['nomessages']);
     light_html_draw_bottom();
     exit;
@@ -146,7 +146,7 @@ list($tid, $pid) = explode('.', $msg);
 
 if (!$message = messages_get($tid, $pid, 1)) {
 
-   light_html_draw_top();
+   light_html_draw_top("robots=noindex,nofollow");
    light_html_display_error_msg($lang['postdoesnotexist']);
    light_html_draw_bottom();
    exit;
@@ -154,7 +154,7 @@ if (!$message = messages_get($tid, $pid, 1)) {
 
 if (!$thread_data = thread_get($tid)) {
 
-    light_html_draw_top();
+    light_html_draw_top("robots=noindex,nofollow");
     light_html_display_error_msg($lang['threadcouldnotbefound']);
     light_html_draw_bottom();
     exit;
@@ -166,7 +166,7 @@ $folder_title = _htmlentities($thread_data['FOLDER_TITLE']);
 
 $thread_title = _htmlentities(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']));
 
-light_html_draw_top("$forum_name > $thread_title");
+light_html_draw_top("title=$forum_name > $thread_title");
 
 light_messages_top($msg, $thread_title, $thread_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK']);
 

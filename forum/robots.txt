@@ -21,6 +21,7 @@
 
 User-agent: *
 Disallow: /forum/admin.php
+Disallow: /forum/admin.php
 Disallow: /forum/admin_banned.php
 Disallow: /forum/admin_default_forum_settings.php
 Disallow: /forum/admin_folders.php
@@ -47,6 +48,7 @@ Disallow: /forum/admin_user_groups_add.php
 Disallow: /forum/admin_user_groups_edit.php
 Disallow: /forum/admin_user_groups_edit_users.php
 Disallow: /forum/admin_viewlog.php
+Disallow: /forum/admin_visitor_log.php
 Disallow: /forum/admin_wordfilter.php
 Disallow: /forum/attachments.php
 Disallow: /forum/change_pw.php
@@ -55,6 +57,7 @@ Disallow: /forum/create_poll.php
 Disallow: /forum/delete.php
 Disallow: /forum/dictionary.php
 Disallow: /forum/discussion.php
+Disallow: /forum/display.php
 Disallow: /forum/display_emoticons.php
 Disallow: /forum/edit.php
 Disallow: /forum/edit_attachments.php
@@ -65,6 +68,7 @@ Disallow: /forum/edit_prefs.php
 Disallow: /forum/edit_profile.php
 Disallow: /forum/edit_relations.php
 Disallow: /forum/edit_signature.php
+Disallow: /forum/edit_subscriptions.php
 Disallow: /forum/edit_wordfilter.php
 Disallow: /forum/email.php
 Disallow: /forum/font_size.php
@@ -74,9 +78,13 @@ Disallow: /forum/forum_options.php
 Disallow: /forum/forum_password.php
 Disallow: /forum/get_attachment.php
 Disallow: /forum/install.php
+Disallow: /forum/ldelete.php
+Disallow: /forum/ledit.php
+Disallow: /forum/lforums.php
 Disallow: /forum/links.php
 Disallow: /forum/links_add.php
 Disallow: /forum/links_detail.php
+Disallow: /forum/links_folder_edit.php
 Disallow: /forum/llogon.php
 Disallow: /forum/llogout.php
 Disallow: /forum/logon.php
@@ -87,13 +95,16 @@ Disallow: /forum/mods_list.php
 Disallow: /forum/nav.php
 Disallow: /forum/pm.php
 Disallow: /forum/pm_edit.php
+Disallow: /forum/pm_folders.php
+Disallow: /forum/pm_messages.php
+Disallow: /forum/pm_options.php
 Disallow: /forum/pm_write.php
 Disallow: /forum/poll_results.php
 Disallow: /forum/post.php
 Disallow: /forum/register.php
 Disallow: /forum/search.php
 Disallow: /forum/search_index.php
-Disallow: /forum/set_relation.php
+Disallow: /forum/search_popup.php
 Disallow: /forum/start.php
 Disallow: /forum/start_left.php
 Disallow: /forum/start_main.php

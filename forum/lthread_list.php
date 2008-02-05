@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lthread_list.php,v 1.93 2007-12-26 13:19:34 decoyduck Exp $ */
+/* $Id: lthread_list.php,v 1.94 2008-02-05 19:14:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -262,7 +262,7 @@ if (user_is_guest()) {
 
             unset($_GET['mark_read_submit'], $_GET['mark_read_confirm']);
 
-            light_html_draw_top();
+            light_html_draw_top("robots=noindex,nofollow");
             light_html_display_msg($lang['confirm'], $lang['confirmmarkasread'], 'lthread_list.php', 'get', array('mark_read_submit' => $lang['confirm'], 'cancel' => $lang['cancel']), array_merge($_GET, array('mark_read_confirm' => 'Y')));
             light_html_draw_bottom();
             exit;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.101 2008-01-03 19:42:43 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.102 2008-02-05 19:14:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -540,7 +540,7 @@ if (isset($_POST['submit'])) {
 
 if ($thread_data['LENGTH'] > 0) {
 
-    html_draw_top("basetarget=_blank", "robots=noindex,nofollow", 'thread_options.js');
+    html_draw_top("basetarget=_blank", "thread_options.js");
 
     echo "<h1>{$lang['threadoptions']} &raquo; <a href=\"messages.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\">#{$tid} ", word_filter_add_ob_tags(_htmlentities(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']))), "</a></h1>\n";
 
@@ -1022,7 +1022,7 @@ if ($thread_data['LENGTH'] > 0) {
 
 }elseif ($thread_length = thread_can_be_undeleted($tid)) {
 
-    html_draw_top("basetarget=_blank", "robots=noindex,nofollow", 'thread_options.js');
+    html_draw_top("basetarget=_blank", "thread_options.js");
 
     echo "<h1>{$lang['threadoptions']}: <a href=\"messages.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\">#{$tid} ", word_filter_add_ob_tags(_htmlentities(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']))), "</a></h1>\n";
     echo "<br />\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.131 2008-01-03 19:42:43 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.132 2008-02-12 22:52:52 decoyduck Exp $ */
 
 /**
 * Displays and handles the Forum Settings page
@@ -184,9 +184,9 @@ if (isset($_POST['changepermissions'])) {
         $new_forum_settings['forum_keywords'] = "";
     }
 
-    if (isset($_POST['default_style']) && in_array($_POST['default_style'], array_keys($available_styles))) {
+    if (isset($_POST['default_style']) && style_exists(trim(_stripslashes($_POST['default_style'])))) {
 
-        $new_forum_settings['default_style'] = $_POST['default_style'];
+        $new_forum_settings['default_style'] = trim(_stripslashes($_POST['default_style']));
 
     }else {
 
@@ -417,7 +417,7 @@ echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['defaultstyle']}:</td>\n";
-echo "                        <td align=\"left\">", form_dropdown_array("default_style", _htmlentities($available_styles), (isset($forum_settings['default_style']) && in_array($forum_settings['default_style'], array_keys($available_styles)) ? $forum_settings['default_style'] : 'default')), "</td>\n";
+echo "                        <td align=\"left\">", form_dropdown_array("default_style", _htmlentities($available_styles), (isset($forum_settings['default_style']) && style_exists($forum_settings['default_style']) ? _htmlentities($forum_settings['default_style']) : 'default')), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['defaultemoticons']} [<a href=\"display_emoticons.php?webtag=$webtag\" target=\"_blank\" onclick=\"return openEmoticons('','$webtag')\">{$lang['preview']}</a>]:</td>\n";

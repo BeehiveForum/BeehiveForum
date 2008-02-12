@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.127 2007-12-26 13:19:33 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.128 2008-02-12 22:52:52 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -335,10 +335,13 @@ if (isset($_POST['submit'])) {
         $user_prefs_global['FONT_SIZE'] = false;
     }
 
-    if (isset($_POST['style'])) {
+    if (isset($_POST['style']) && style_exists(trim(_stripslashes($_POST['style'])))) {
+
         $user_prefs['STYLE'] = trim(_stripslashes($_POST['style']));
         $user_prefs_global['STYLE'] = false;
+
     }else {
+
         $user_prefs['STYLE'] = forum_get_setting('default_style', false, 'default');
         $user_prefs_global['STYLE'] = false;
     }
@@ -667,7 +670,7 @@ if (sizeof($available_styles) > 1) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\">{$lang['forumstyle']}:</td>\n";
-    echo "                  <td align=\"left\">", form_dropdown_array("style", $available_styles, (isset($user_prefs['STYLE']) && in_array($user_prefs['STYLE'], array_keys($available_styles))) ? $user_prefs['STYLE'] : forum_get_setting('default_style', false, 'default')), "</td>\n";
+    echo "                  <td align=\"left\">", form_dropdown_array("style", _htmlentities($available_styles), (isset($user_prefs['STYLE']) && style_exists($user_prefs['STYLE'])) ? _htmlentities($user_prefs['STYLE']) : _htmlentities(forum_get_setting('default_style', false, 'default'))), "</td>\n";
     echo "                </tr>\n";
 }
 
@@ -675,7 +678,7 @@ if (sizeof($available_emoticons) > 1) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\">{$lang['forumemoticons']} [<a href=\"display_emoticons.php?webtag=$webtag\" target=\"_blank\" onclick=\"return openEmoticons('', '$webtag')\">{$lang['preview']}</a>]:</td>\n";
-    echo "                  <td align=\"left\">", form_dropdown_array("emoticons", $available_emoticons, (isset($user_prefs['EMOTICONS']) && in_array($user_prefs['EMOTICONS'], array_keys($available_emoticons))) ? $user_prefs['EMOTICONS'] : forum_get_setting('default_emoticons', false, 'default')), "</td>\n";
+    echo "                  <td align=\"left\">", form_dropdown_array("emoticons", _htmlentities($available_emoticons), (isset($user_prefs['EMOTICONS']) && in_array($user_prefs['EMOTICONS'], array_keys($available_emoticons))) ? _htmlentities($user_prefs['EMOTICONS']) : _htmlentities(forum_get_setting('default_emoticons', false, 'default'))), "</td>\n";
     echo "                </tr>\n";
 }
 

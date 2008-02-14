@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: styles.inc.php,v 1.17 2008-02-12 22:52:52 decoyduck Exp $ */
+/* $Id: styles.inc.php,v 1.18 2008-02-14 23:00:44 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -114,17 +114,19 @@ function styles_get_available()
     }
 }
 
-function style_exists($style)
+function style_exists($style_path)
 {
+    if (!is_string($style_path)) return false;
+
     $webtag = get_webtag($webtag_search);
 
-    $style = basename($style);
+    $style_path = basename($style);
 
-    if (@file_exists("styles/$style/style.css")) {
+    if (@file_exists("styles/$style_path/style.css")) {
         return true;
     }
 
-    if (@file_exists("forums/$webtag/styles/$style/style.css")) {
+    if (@file_exists("forums/$webtag/styles/$style_path/style.css")) {
         return true;
     }
 

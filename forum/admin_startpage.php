@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_startpage.php,v 1.99 2008-01-03 19:42:43 decoyduck Exp $ */
+/* $Id: admin_startpage.php,v 1.100 2008-02-14 23:00:44 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -116,22 +116,23 @@ $allowed_file_exts = "*.". implode(", *.", $allowed_file_exts_array);
 $forum_path = dirname($_SERVER['PHP_SELF']);
 $forum_path.= "/forums/$webtag/";
 
-// Submit code
+// Check to see if we're submitting new page or retrieving the old one.
 
-if (isset($_POST['submit'])) {
-
-    if (isset($_POST['t_content']) && strlen(trim(_stripslashes($_POST['t_content']))) > 0) {
-        $t_content = trim(_stripslashes($_POST['t_content']));
-    }else {
-        $t_content = "";
-    }
+if (isset($_POST['t_content']) && strlen(trim(_stripslashes($_POST['t_content']))) > 0) {
+    $t_content = trim(_stripslashes($_POST['t_content']));
+}else {
+    $t_content = forum_load_start_page();
 }
 
-if (!isset($t_content)) $t_content = forum_load_start_page();
+// Create a new instance of the Beehive editor.
 
 $start_page = new MessageText(POST_HTML_ENABLED, $t_content, true, true);
 
+// Get the clean content.
+
 $t_content = $start_page->getContent();
+
+// Submit code.
 
 if (isset($_POST['submit'])) {
 
@@ -145,6 +146,16 @@ if (isset($_POST['submit'])) {
 
         $error_msg_array[] = sprintf($lang['startpageerror'], $forum_path);
     }
+
+}else if (isset($_POST['download'])) {
+
+    $content_length = strlen($t_content);
+
+    header("Content-Type: application/x-ms-download", true);
+    header("Content-Length: $content_length", true);
+    header("Content-disposition: attachment; filename=\"start_main.php\"", true);
+    echo $t_content;
+    exit;
 }
 
 html_draw_top("onunload=clearFocus()", "dictionary.js", "htmltools.js");
@@ -205,7 +216,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "</td>\n";
+echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "&nbsp;", form_submit("download", $lang['download']), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

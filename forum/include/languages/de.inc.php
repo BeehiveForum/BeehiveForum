@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.64 2008-01-03 19:42:43 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.65 2008-02-14 23:00:44 decoyduck Exp $ */
 
 // German language file
 
@@ -290,9 +290,7 @@ $lang['forumsettings'] = "Foreneinstellungen";
 $lang['globalforumsettings'] = "Allgemeine Foreneinstellungen";
 $lang['settingsaffectallforumswarning'] = "<b>Note:</b> Diese Einstellungen beziehen sich auf ALLE Foren. Einstellungen in den individuellen Einstellungen der Foren haben Vorrang gegenueber den Einstellungen hier.";
 $lang['startpage'] = "Startseite";
-$lang['startpageerror'] = "Ihre Startseite konnte nicht auf dem Server gespeichert werden. Zugriff wurde verweigert. Um die Startseite zu aendern auf Download klicken um die Datei zu speichern. Diese Datei kann dann auf den Server hochgeladen werden in %s ordner, falls noch nicht vorhanden, muss der Ordner noch erstellt werden. Bitte beachten dass manche Browser den Dateinamen waehrend des Downloads aendern!.  Wenn die Datei hochgeladne wird bitte beachten dass die Datei start_main.php heisst, ansonsten wird Ihre Startseite unveraendert bleiben.";
 $lang['failedtoopenmasterstylesheet'] = "Dein Forenstil konnte nicht gespeichert werden da der Masterstil nicht geladen werden konnte. Um den Stil als Master-Stil zu speichern muss (make_style.css) im Styles-Verzeichnis Ihrer BeehiveForeninstallation gefunden werden.";
-$lang['makestyleerror'] = "Dein Forenstil konnte nicht gespeichert werden. Zugriff wurde verweigert. Um den Forenstil zu speichern auf Download klicken und auf Deiner Festplatte speichern. Dann die Datei auf den Server hochladen in %s ordner, Falls nicht vorhanden Ordner noch erstellen. Beim Hochladen muss die Datei style.css heissen, ansonsten wird der Stil nicht geaendert.";
 $lang['forumstyle'] = "Forenstil";
 $lang['wordfilter'] = "Wortfilter";
 $lang['forumlinks'] = "Forum Links";

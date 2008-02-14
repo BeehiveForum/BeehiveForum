@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en-us.inc.php,v 1.41 2008-01-06 20:59:28 decoyduck Exp $ */
+/* $Id: en-us.inc.php,v 1.42 2008-02-14 23:00:44 decoyduck Exp $ */
 
 // British English language file
 
@@ -292,7 +292,7 @@ $lang['settingsaffectallforumswarning'] = "<b>Note:</b> These settings affect al
 $lang['startpage'] = "Start Page";
 $lang['startpageerror'] = "Your start page could not be saved locally to the server because permission was denied.</p><p>To change your start page please click the download button below which will prompt you to save the file to your hard drive. You can then upload this file to your server into the following folder, if necessary creating the folder structure in the process.</p><p><b>%s</b></p><p>Please note that some browsers may change the name of the file upon download.  When uploading the file please make sure that it is named start_main.php otherwise your start page will appear unchanged.";
 $lang['failedtoopenmasterstylesheet'] = "Your forum style could not be saved because the master style sheet could not be loaded. To save your style the master style sheet (make_style.css) must be located in the styles directory of your Beehive Forum installation.";
-$lang['makestyleerror'] = "Your forum style could not be saved locally to the server because permission was denied. To save your forum style please click the download button below which will prompt you to save the file to your hard drive. You can then upload this file to your server into %s folder, if necessary creating the folder structure in the process. You should note that some browsers may change the name of the file upon download. When uploading the file please make sure that it is named style.css otherwise the forum style will be unusable.";
+$lang['makestyleerror'] = "Your forum style could not be saved locally to the server because permission was denied.</p><p>To save your forum style please click the download button below which will prompt you to save the file to your hard drive. You can then upload this file to your server into the following folder, if necessary creating the folder structure in the process.</p><p><b>%s</b></p><p>Please note that some browsers may change the name of the file upon download. When uploading the file please make sure that it is named style.css otherwise the forum style will be unavailable.";
 $lang['forumstyle'] = "Forum Style";
 $lang['wordfilter'] = "Word Filter";
 $lang['forumlinks'] = "Forum Links";

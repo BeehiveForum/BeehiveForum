@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.114 2007-12-26 13:19:32 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.115 2008-02-14 23:00:44 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -180,7 +180,7 @@ if (isset($_POST['submit'])) {
                 html_draw_top();
 
                 $forum_path = dirname($_SERVER['PHP_SELF']);
-                $forum_path.= "/forums/$webtag/styles/";
+                $forum_path.= "/forums/$webtag/styles/$stylename";
 
                 echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['createforumstyle']}</h1>\n";
                 echo "<br />\n";
@@ -203,7 +203,7 @@ if (isset($_POST['submit'])) {
                 echo "                  <td align=\"left\" class=\"subhead\">{$lang['createforumstyle']}</td>\n";
                 echo "                </tr>\n";
                 echo "                <tr>\n";
-                echo "                  <td align=\"left\">", sprintf($lang['makestyleerror'], $style_path), "</td>\n";
+                echo "                  <td align=\"left\">", sprintf($lang['makestyleerror'], $forum_path), "</td>\n";
                 echo "                </tr>\n";
                 echo "                <tr>\n";
                 echo "                  <td align=\"left\">&nbsp;</td>\n";

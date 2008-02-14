@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.143 2008-01-11 21:27:26 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.144 2008-02-14 23:00:44 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -100,7 +100,10 @@ function attachments_check_dir()
 
         // Check to make sure the $attachment_dir exists and is writable.
 
-        if (!@is_dir($attachment_dir)) @mkdir($attachment_dir, 0755);
+        create_path_recursive($attachment_dir, 0755);
+
+        // Check that the directory is writable.
+
         if (@is_writable($attachment_dir)) return $attachment_dir;
     }
 

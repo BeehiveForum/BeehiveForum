@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.289 2008-01-29 17:51:30 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.290 2008-02-14 23:00:44 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -898,52 +898,22 @@ function forum_load_start_page()
 
     if (@file_exists("forums/$webtag/start_main.php")) {
 
-        $filesize = filesize("forums/$webtag/start_main.php");
+        if ($content = @file_get_contents("forums/$webtag/start_main.php")) {
 
-        if ($filesize > 0 && @$fp = fopen("forums/$webtag/start_main.php", "r")) {
-
-            $content = fread($fp, $filesize);
-            fclose($fp);
-            return $content;
+            return strlen($content) > 0 ? $content : false;
         }
     }
 
     return false;
 }
 
-function forum_start_page_get_html($content)
-{
-    ob_start();
-
-    html_draw_top();
-    echo $content;
-    html_draw_bottom();
-
-    $content = ob_get_contents();
-
-    ob_end_clean();
-
-    return word_filter_rem_ob_tags($content);
-}
-
 function forum_save_start_page($content)
 {
     $webtag = get_webtag($webtag_search);
 
-    if (@!is_dir("forums")) @mkdir("forums", 0755);
-    if (@!is_dir("forums/$webtag")) @mkdir("forums/$webtag", 0755);
+    create_path_recursive("forums/$webtag", 0755);
 
-    $content = forum_start_page_get_html($content);
-
-    if (@$fp = fopen("forums/$webtag/start_main.php", "w")) {
-
-        fwrite($fp, $content);
-        fclose($fp);
-
-        return true;
-    }
-
-    return false;
+    return @file_put_contents("forums/$webtag/start_main.php", $content);
 }
 
 function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access, &$error_str)

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: make_style.inc.php,v 1.17 2007-12-26 13:19:35 decoyduck Exp $ */
+/* $Id: make_style.inc.php,v 1.18 2008-02-14 23:00:44 decoyduck Exp $ */
 
 /**
 * make_style.inc.php - attachment upload handling
@@ -45,6 +45,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "admin.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
+include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 /**
 * Saves the forum style
@@ -52,46 +53,33 @@ include_once(BH_INCLUDE_PATH. "forum.inc.php");
 * Saves the named forum style to the server.
 *
 * @return bool
-* @param string $stylename - name of the style to use as the filename
-* @param array $styledesc - description of the style to place in desc.txt
+* @param string $style_name - name of the style to use as the folder name
+* @param string $style_desc - description of the style to write to desc.txt
+* @param string $content - CSS style sheet contents to write to style.css
+* @param integer $error - By-Reference error message.
 */
 
-function forum_save_style($stylename, $styledesc, $stylesheet, &$error)
+function forum_save_style($style_name, $style_desc, $content, &$error)
 {
     $webtag = get_webtag($webtag_search);
 
     // Check for invalid filename
 
-    if (preg_match("/^[a-z0-9_]+$/i", $webtag) < 1) return false;
+    if (preg_match("/^[a-z0-9_]+$/i", $style_name) < 1) return false;
 
     // Check to see if the style name is already in use.
 
-    clearstatcache();
-
-    if (!@file_exists("forums/$webtag/styles/$stylename/style.css")) {
+    if (!@file_exists("forums/$webtag/styles/$style_name/style.css")) {
 
         // Check that the directory structure exists
 
-        if (@!is_dir("forums")) @mkdir("forums", 0755);
-        if (@!is_dir("forums/$webtag")) @mkdir("forums/$webtag", 0755);
-        if (@!is_dir("forums/$webtag/styles")) @mkdir("forums/$webtag/styles", 0755);
-        if (@!is_dir("forums/$webtag/styles/$stylename")) @mkdir("forums/$webtag/styles/$stylename", 0755);
+        create_path_recursive("forums/$webtag/styles/$style_name", 0755);
 
         // Save the style desc.txt file
 
-        if ($fp = @fopen("forums/$webtag/styles/$stylename/desc.txt", "w")) {
+        if (@file_put_contents("forums/$webtag/styles/$style_name/desc.txt", $style_desc)) {
 
-            fwrite($fp, $styledesc);
-            fclose($fp);
-
-            // Save the style.css file
-
-            if ($fp = @fopen("forums/$webtag/styles/$stylename/style.css", "w")) {
-
-                fwrite($fp, $stylesheet);
-                fclose($fp);
-
-                admin_add_log_entry(CREATED_NEW_STYLE, $stylename);
+            if (@file_put_contents("forums/$webtag/styles/$style_name/style.css", $content)) {
 
                 return true;
             }
@@ -130,8 +118,8 @@ function hexToDec ($rgb)
 
 function changeColour ($r, $g, $b, $variance, $mode, $steps)
 {
-
     if (mt_rand(0, 20) == 1 and $mode == "rand") {
+
         $r1 = $r;
         $g1 = $g;
         $b1 = $b;
@@ -145,7 +133,7 @@ function changeColour ($r, $g, $b, $variance, $mode, $steps)
 
     if ($mode == "rand") {
         $newr = $r + ((mt_rand(0, $variance * 2) + $variance) * $plus_minus[rand(0, 1)]);
-    } else {
+    }else {
         $rarr = ((255-$r) / $steps) + (((255 - $r) / $steps) * (3 / 5));
         if ($rarr < 1) $rarr = 1;
         $newr = $r + mt_rand(0, $rarr);

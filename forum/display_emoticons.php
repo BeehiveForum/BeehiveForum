@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display_emoticons.php,v 1.55 2008-01-31 19:15:33 decoyduck Exp $ */
+/* $Id: display_emoticons.php,v 1.56 2008-02-14 23:00:44 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -209,26 +209,24 @@ if (isset($emoticon) && count($emoticon) > 0) {
 echo "                      <td align=\"left\">\n";
 echo "                        <table class=\"posthead\" width=\"300\">\n";
 
-if (@$fp = fopen("emoticons/$emoticon_path/style.css", "r")) {
+if ($style_content = @file_get_contents("emoticons/$emoticon_path/style.css")) {
 
-    $style = fread($fp, filesize("emoticons/$emoticon_path/style.css"));
+    preg_match_all("/\.e_([\w_]+) \{.*\n[^\}]*background-image\s*:\s*url\s*\([\"\']([^\"\']*)[\"\']\)[^\}]*\}/i", $style_content, $style_matches);
 
-    preg_match_all("/\.e_([\w_]+) \{.*\n[^\}]*background-image\s*:\s*url\s*\([\"\']([^\"\']*)[\"\']\)[^\}]*\}/i", $style, $matches);
+    for ($i = 0; $i < count($style_matches[1]); $i++) {
 
-    for ($i = 0; $i < count($matches[1]); $i++) {
-
-        if (isset($emoticon_text[$matches[1][$i]])) {
+        if (isset($emoticon_text[$style_matches[1][$i]])) {
 
             $string_matches = array();
 
-            for ($j = 0; $j < count($emoticon_text[$matches[1][$i]]); $j++) {
+            for ($j = 0; $j < count($emoticon_text[$style_matches[1][$i]]); $j++) {
 
-                $string_matches[] = $emoticon_text[$matches[1][$i]][$j];
+                $string_matches[] = $emoticon_text[$style_matches[1][$i]][$j];
             }
 
             $emots_array[] = array('matches' => $string_matches,
-                                   'text'    => $matches[1][$i],
-                                   'img'     => $matches[2][$i]);
+                                   'text'    => $style_matches[1][$i],
+                                   'img'     => $style_matches[2][$i]);
         }
     }
 
@@ -239,7 +237,6 @@ if (@$fp = fopen("emoticons/$emoticon_path/style.css", "r")) {
         echo "                            <td align=\"left\">";
 
         foreach ($emot['matches'] as $emot_match) {
-
             echo _htmlentities($emot_match), " &nbsp; ";
         }
 

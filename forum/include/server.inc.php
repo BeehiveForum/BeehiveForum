@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: server.inc.php,v 1.19 2007-10-11 13:01:20 decoyduck Exp $ */
+/* $Id: server.inc.php,v 1.20 2008-02-14 23:00:44 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -35,6 +35,8 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 if (@file_exists(BH_INCLUDE_PATH. "config.inc.php")) {
     include_once(BH_INCLUDE_PATH. "config.inc.php");
 }
+
+include_once(BH_INCLUDE_PATH. "compat.inc.php");
 
 /**
 * Detects server OS
@@ -286,6 +288,36 @@ function get_available_popup_files_preg()
                                '^email\.php', '^mods_list\.php',
                                '^poll_results\.php', '^search_popup\.php',
                                '^search\.php.+show_stop_words=true', '^user_profile\.php'));
+}
+
+/**
+* Create a directory structure from a path.
+*
+* Checks for the existance of a directory structure and creates the path
+* if it doesn't exist.
+*
+* @return boolean
+* @param string $path - Path to create
+* @param integer $mode - Mode (chmod) of the directory.
+*/
+
+function create_path_recursive($path_name, $mode)
+{
+    if (!is_string($path_name)) return false;
+
+    $path_name = preg_replace('/\\\/', '/', $path_name);
+
+    $path_array = explode('/', $path_name);
+
+    $check_path = '.';
+
+    foreach ($path_array as $path_part) {
+
+        $check_path.= DIRECTORY_SEPARATOR. $path_part;
+        if (!is_dir($check_path) && !@mkdir($check_path, $mode)) return false;
+    }
+
+    return true;
 }
 
 // Executed by every script that includes server.inc.php.

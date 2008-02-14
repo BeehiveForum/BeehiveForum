@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: emoticons.inc.php,v 1.69 2007-12-26 13:19:35 decoyduck Exp $ */
+/* $Id: emoticons.inc.php,v 1.70 2008-02-14 23:00:44 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -313,26 +313,23 @@ function emoticons_preview($emoticon_set, $width = 190, $height = 100, $num = 35
             }
         }
 
-        if (@$fp = fopen("emoticons/$emoticon_set/style.css", "r")) {
+        if ($style_contents = @file_get_contents("emoticons/$emoticon_set/style.css")) {
 
-            $style = fread($fp, filesize("emoticons/$emoticon_set/style.css"));
+            preg_match_all("/\.e_([\w_]+) \{[^\}]*background-image\s*:\s*url\s*\([\"\']\.?\/?([^\"\']*)[\"\']\)[^\}]*\}/i", $style_contents, $style_matches);
 
-            preg_match_all("/\.e_([\w_]+) \{[^\}]*background-image\s*:\s*url\s*\([\"\']\.?\/?([^\"\']*)[\"\']\)[^\}]*\}/i", $style, $matches);
+            for ($i = 0; $i < count($style_matches[1]); $i++) {
 
-            for ($i = 0; $i < count($matches[1]); $i++) {
-
-                if (isset($emoticon_text[$matches[1][$i]])) {
+                if (isset($emoticon_text[$style_matches[1][$i]])) {
 
                     $string_matches = array();
 
-                    for ($j = 0; $j < count($emoticon_text[$matches[1][$i]]); $j++) {
-
-                        $string_matches[] = $emoticon_text[$matches[1][$i]][$j];
+                    for ($j = 0; $j < count($emoticon_text[$style_matches[1][$i]]); $j++) {
+                        $string_matches[] = $emoticon_text[$style_matches[1][$i]][$j];
                     }
 
                     $emoticons_array[] = array('matches' => $string_matches,
-                                               'text'    => $matches[1][$i],
-                                               'img'     => $matches[2][$i]);
+                                               'text'    => $style_matches[1][$i],
+                                               'img'     => $style_matches[2][$i]);
                 }
             }
         }

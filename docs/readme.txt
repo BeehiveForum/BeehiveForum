@@ -102,76 +102,75 @@ important. At all times please ensure that you retain the directory structure
 of the archive. If everything has been extracted correctly you should be
 presented with a directory that looks a bit like this:
 
+|- docs
+|  |- schema.sql
+|  |- upgrade-01-to-02.sql
+|  |- ...
+|
 |- forum
-|  |- docs
-|  |  |- schema.sql
-|  |  |- upgrade-01-to-02.sql
+|  |- attachments
 |  |  |- ...
 |  |
-|  |- forum
-|  |  |- attachments
-|  |  |  |- ...
+|  |- emoticons
+|  |  |- default
+|  |  |  |- images
+|  |  |  |  |- alien.png
+|  |  |  |  |- ...
+|  |  |  |
+|  |  |  |- definitions.php
+|  |  |  |- desc.txt
+|  |  |  |- style.css
 |  |  |
-|  |  |- emoticons
-|  |  |  |- default
+|  |  |- none
+|  |  |  |- desc.txt
+|  |  |  |- style.css
+|  |  |
+|  |  |- text
+|  |  |  |- desc.txt
+|  |  |
+|  |  |- README
+|  |
+|  |- forums
+|  |  
+|  |- images
+|  |  |- admin_locked.png
+|  |  |- admintool.png
+|  |  |- ...
+|  |
+|  |- include
+|  |  |- admin.inc.php
+|  |  |- attachments.inc.php
+|  |  |- ...
+|  |
+|  |- install
+|  |  |- config.inc.php
+|  |  |- new-install.php
+|  |  |- ...
+|  |
+|  |- js
+|  |  |- edit.js
+|  |  |- htmltools.js
+|  |  |- ...
+|  |
+|  |- styles
+|  |  |- default
+|  |  |  |- images
+|  |  |  |  |- admintool.png
+|  |  |  |  |- attach.png
+|  |  |  |  |- ...
+|  |  |  |
+|  |  |  |- style.css
+|  |  |  |- top.html
+|  |
+|  |- tiny_mce
+|  |  |- plugins
+|  |  |  |- beehive
 |  |  |  |  |- images
-|  |  |  |  |  |- alien.png
+|  |  |  |  |  |- code.gif
+|  |  |  |  |  |- noemots.gif
 |  |  |  |  |  |- ...
-|  |  |  |  |
-|  |  |  |  |- definitions.php
-|  |  |  |  |- desc.txt
-|  |  |  |  |- style.css
-|  |  |  |
-|  |  |  |- none
-|  |  |  |  |- desc.txt
-|  |  |  |  |- style.css
-|  |  |  |
-|  |  |  |- text
-|  |  |  |  |- desc.txt
-|  |  |  |
-|  |  |  |- README
-|  |  |
-|  |  |- forums
-|  |  |  
-|  |  |- images
-|  |  |  |- admin_locked.png
-|  |  |  |- admintool.png
-|  |  |  |- ...
-|  |  |
-|  |  |- include
-|  |  |  |- admin.inc.php
-|  |  |  |- attachments.inc.php
-|  |  |  |- ...
-|  |  |
-|  |  |- install
-|  |  |  |- config.inc.php
-|  |  |  |- new-install.php
-|  |  |  |- ...
-|  |  |
-|  |  |- js
-|  |  |  |- edit.js
-|  |  |  |- htmltools.js
-|  |  |  |- ...
-|  |  |
-|  |  |- styles
-|  |  |  |- default
-|  |  |  |  |- images
-|  |  |  |  |  |- admintool.png
-|  |  |  |  |  |- attach.png
-|  |  |  |  |  |- ...
-|  |  |  |  |
-|  |  |  |  |- style.css
-|  |  |  |  |- top.html
-|  |  |
-|  |  |- tiny_mce
-|  |  |  |- plugins
-|  |  |  |  |- beehive
-|  |  |  |  |  |- images
-|  |  |  |  |  |  |- code.gif
-|  |  |  |  |  |  |- noemots.gif
-|  |  |  |  |  |  |- ...
-|  |  |  |  |  |-langs
-|  |  |  |  |  |  |- en.js
+|  |  |  |  |-langs
+|  |  |  |  |  |- en.js
 
 
 As you can see the main distribution contains a docs and forum folder. The main

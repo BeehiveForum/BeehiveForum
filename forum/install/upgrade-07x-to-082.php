@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-07x-to-082.php,v 1.3 2008-02-14 23:00:44 decoyduck Exp $ */
+/* $Id: upgrade-07x-to-082.php,v 1.4 2008-02-16 14:16:33 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-07x-to-072.php") {
 
@@ -98,7 +98,7 @@ foreach ($remove_tables as $remove_table) {
 // Check that we have no global tables which conflict
 // with those we're about to create or remove.
 
-$global_tables = array('PM_SEARCH_RESULTS', 'TIMEZONES');
+$global_tables = array('USER_HISTORY', 'PM_SEARCH_RESULTS', 'TIMEZONES');
 
 if (isset($remove_conflicts) && $remove_conflicts === true) {
 
@@ -117,7 +117,7 @@ if (isset($remove_conflicts) && $remove_conflicts === true) {
 // Check that we have no per-forum tables which conflict
 // with those we're about to create.
 
-$forum_tables  = array(); //'WORD_FILTER');
+$forum_tables  = array('WORD_FILTER');
 
 if (isset($remove_conflicts) && $remove_conflicts === true) {
 
@@ -405,14 +405,8 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
             if (!$result = @db_query($sql, $db_install)) {
 
-                $sql = "UPDATE FORUM_SETTINGS SET SVALUE = '$forum_links_top_link' ";
-                $sql.= "WHERE FID = '$forum_fid' AND SNAME = 'forum_links_top_link'";
-
-                if (!$result = @db_query($sql, $db_install)) {
-
-                    $valid = false;
-                    return;
-                }
+                $valid = false;
+                return;
             }
 
             // Delete the old record from the FORUM_LINKS table.
@@ -517,7 +511,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     // New Word Filter table format to allow switching on
     // and off individual filters.
 
-    /*$sql = "CREATE TABLE {$forum_webtag}_WORD_FILTER (";
+    $sql = "CREATE TABLE {$forum_webtag}_WORD_FILTER (";
     $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
     $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
     $sql.= "  FILTER_NAME VARCHAR(255) NOT NULL,";
@@ -575,7 +569,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
         $valid = false;
         return;
-    } */
+    }
 }
 
 // Having the SESSIONS table as type HEAP is known to cause problems
@@ -607,7 +601,7 @@ if (!$result = @db_query($sql, $db_install)) {
 // New USER_HISTORY table for tracking user logon, nickname
 // and email address changes
 
-/*$sql = "CREATE TABLE USER_HISTORY (";
+$sql = "CREATE TABLE USER_HISTORY (";
 $sql.= "  HID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
 $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
 $sql.= "  LOGON VARCHAR(32) NULL,";
@@ -621,7 +615,7 @@ if (!$result = @db_query($sql, $db_install)) {
 
     $valid = false;
     return;
-}*/
+}
 
 // As of Beehive Forum 0.8 you can keep your per-forum tables
 // and global tables in seperate databases. In order to track

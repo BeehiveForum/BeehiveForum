@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: compat.inc.php,v 1.1 2008-02-14 23:02:47 decoyduck Exp $ */
+/* $Id: compat.inc.php,v 1.2 2008-02-16 14:16:33 decoyduck Exp $ */
 
 /**
 * compat.inc.php - Compatibility functions
@@ -48,7 +48,7 @@ if (!function_exists('file_put_contents')) {
 
         if (($fp = @fopen($file, $mode)) !== false) {
 
-            if (is_array($content)) $content = implode($content);
+            if (is_array($content)) $content = implode('', $content);
 
             $bytes = fwrite($fp, $content);
 

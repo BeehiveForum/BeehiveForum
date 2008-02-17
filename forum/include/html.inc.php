@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.274 2008-02-05 19:14:06 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.275 2008-02-17 09:58:28 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -979,7 +979,7 @@ function html_draw_top()
                 echo "                var active_guest_count = active_users_xml.getElementsByTagName('guests')[0].childNodes[0].nodeValue;\n";
                 echo "                var active_nuser_count = active_users_xml.getElementsByTagName('visible')[0].childNodes[0].nodeValue;\n";
                 echo "                var active_auser_count = active_users_xml.getElementsByTagName('anonymous')[0].childNodes[0].nodeValue;\n\n";
-                echo "                var visitor_log_link = sprintf('[ <a href=\"start.php?webtag=$webtag&amp;show=visitors\" target=\"%s\">%s</a> ]', '", html_get_frame_name('main'), "', lang['viewcompletelist']);\n\n";
+                echo "                var visitor_log_link = sprintf('[ <a href=\"start.php?webtag=$webtag&amp;show=visitors\" target=\"%s\">%s<\/a> ]', '", html_get_frame_name('main'), "', lang['viewcompletelist']);\n\n";
                 echo "                var active_users_array = new Array();\n\n";
                 echo "                active_users_array[0] = (active_guest_count != 1) ? sprintf(lang['numactiveguests'], active_guest_count) : lang['oneactiveguest'];\n";
                 echo "                active_users_array[1] = (active_nuser_count != 1) ? sprintf(lang['numactivemembers'], active_nuser_count) : lang['oneactivemember'];\n";
@@ -1004,16 +1004,16 @@ function html_draw_top()
                 echo "                            active_user_anonymous = active_user_array_xml[i].getElementsByTagName('anonymous')[0].childNodes[0].nodeValue;\n\n";
                 echo "                            if (active_user_uid == $uid) {\n\n";
                 echo "                                if (active_user_anonymous > $js_user_anon_disabled) {\n\n";
-                echo "                                    active_user_text = sprintf('<span class=\"user_stats_curuser\" title=\"%s\">%s</span>', lang['youinvisible'], active_user_display);\n\n";
+                echo "                                    active_user_text = sprintf('<span class=\"user_stats_curuser\" title=\"%s\">%s<\/span>', lang['youinvisible'], active_user_display);\n\n";
                 echo "                                }else {\n\n";
-                echo "                                    active_user_text = sprintf('<span class=\"user_stats_curuser\" title=\"%s\">%s</span>', lang['younormal'], active_user_display);\n";
+                echo "                                    active_user_text = sprintf('<span class=\"user_stats_curuser\" title=\"%s\">%s<\/span>', lang['younormal'], active_user_display);\n";
                 echo "                                }\n\n";
                 echo "                            }else if (active_user_relationship & $js_user_friend) {\n\n";
-                echo "                                active_user_text = sprintf('<span class=\"user_stats_friend\" title=\"%s\">%s</span>', lang['friend'], active_user_display);\n\n";
+                echo "                                active_user_text = sprintf('<span class=\"user_stats_friend\" title=\"%s\">%s<\/span>', lang['friend'], active_user_display);\n\n";
                 echo "                            }else {\n\n";
-                echo "                                active_user_text = sprintf('<span class=\"user_stats_normal\">%s</span>', active_user_display);\n";
+                echo "                                active_user_text = sprintf('<span class=\"user_stats_normal\">%s<\/span>', active_user_display);\n";
                 echo "                            }\n\n";
-                echo "                            active_user_link = sprintf('<a href=\"user_profile.php?webtag=$webtag&uid=%s\" onclick=\"return openProfile(%s, \'$webtag\')\">%s</a>', active_user_uid, active_user_uid, active_user_text);\n";
+                echo "                            active_user_link = sprintf('<a href=\"user_profile.php?webtag=$webtag&uid=%s\" onclick=\"return openProfile(%s, \'$webtag\')\">%s<\/a>', active_user_uid, active_user_uid, active_user_text);\n";
                 echo "                            active_user_list_array[count] = active_user_link; count++\n";
                 echo "                        }\n";
                 echo "                        active_user_list_obj.innerHTML = active_user_list_array.join(', ');\n";
@@ -1034,7 +1034,7 @@ function html_draw_top()
                 echo "                longest_thread_tid = longest_thread_xml.getElementsByTagName('tid')[0].childNodes[0].nodeValue;\n";
                 echo "                longest_thread_title = longest_thread_xml.getElementsByTagName('title')[0].childNodes[0].nodeValue;\n";
                 echo "                longest_thread_length = longest_thread_xml.getElementsByTagName('length')[0].childNodes[0].nodeValue;\n\n";
-                echo "                longest_thread_link = sprintf('<a href=\"index.php?webtag=$webtag&amp;msg=%s.1\">%s</a>', longest_thread_tid, longest_thread_title);\n";
+                echo "                longest_thread_link = sprintf('<a href=\"index.php?webtag=$webtag&amp;msg=%s.1\">%s<\/a>', longest_thread_tid, longest_thread_title);\n";
                 echo "                longest_thread_post_count = (longest_thread_length != 1) ? sprintf(lang['numpostscreated'], longest_thread_length) : lang['onepostcreated'];\n\n";
                 echo "                longest_thread_text = sprintf(lang['longestthreadisthreadnamewithnumposts'], longest_thread_link, longest_thread_post_count);\n\n";
                 echo "                thread_stats_obj.innerHTML+= longest_thread_text;\n";
@@ -1068,7 +1068,7 @@ function html_draw_top()
                 echo "                    if (typeof(user_newest_xml) == 'object') {\n\n";
                 echo "                        user_newest_uid = user_newest_xml.getElementsByTagName('uid')[0].childNodes[0].nodeValue;\n";
                 echo "                        user_newest_display = user_newest_xml.getElementsByTagName('display')[0].childNodes[0].nodeValue;\n\n";
-                echo "                        user_newest_profile_link = sprintf('<a href=\"user_profile.php?webtag=$webtag&amp;uid=%s\" target=\"_blank\" onclick=\"return openProfile(%s, \'$webtag\')\">%s</a>', user_newest_uid, user_newest_uid, user_newest_display);\n\n";
+                echo "                        user_newest_profile_link = sprintf('<a href=\"user_profile.php?webtag=$webtag&amp;uid=%s\" target=\"_blank\" onclick=\"return openProfile(%s, \'$webtag\')\">%s<\/a>', user_newest_uid, user_newest_uid, user_newest_display);\n\n";
                 echo "                        user_stats_text = sprintf(lang['wehavenumregisteredmembersandthenewestmemberismembername'] + '<br />', user_count, user_newest_profile_link);\n\n";
                 echo "                    }else {\n\n";
                 echo "                        user_stats_text = sprintf(lang['wehavenumregisteredmember'] + '<br />', user_count);\n";

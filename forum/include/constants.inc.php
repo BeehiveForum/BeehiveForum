@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: constants.inc.php,v 1.128 2008-01-21 12:53:39 decoyduck Exp $ */
+/* $Id: constants.inc.php,v 1.129 2008-02-17 17:14:27 decoyduck Exp $ */
 
 /**
 * Constants used throughout Beehive.
@@ -415,6 +415,7 @@ define('BAN_HIT_TYPE_LOGON', 74);
 define('BAN_HIT_TYPE_NICK', 75);
 define('BAN_HIT_TYPE_EMAIL', 76);
 define('BAN_HIT_TYPE_REF', 77);
+define('USER_PERMS_CHANGED', 78);
 
 // Link viewmode constants
 

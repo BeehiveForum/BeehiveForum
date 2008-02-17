@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.232 2008-01-29 11:03:24 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.233 2008-02-17 17:14:27 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -487,6 +487,8 @@ if (isset($_POST['action_submit'])) {
         if ($user_perms <> $new_user_perms) {
 
             if (perm_update_user_permissions($uid, $new_user_perms)) {
+
+                admin_add_log_entry(USER_PERMS_CHANGED, array($user['LOGON'], $new_user_perms, $user_perms));
 
                 $user_perms = perm_get_forum_user_permissions($uid);
 

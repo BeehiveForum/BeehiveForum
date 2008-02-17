@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.130 2008-01-21 13:18:31 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.131 2008-02-17 17:14:27 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -102,83 +102,83 @@ if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
 // Types of admin log entries
 
-$admin_log_type_array = array(ALL_LOG_ENTIES => 'All Log Entries',
-                              CHANGE_USER_STATUS => 'User Status Changes',
-                              CHANGE_FORUM_ACCESS => 'Forum Access Changes',
-                              DELETE_ALL_USER_POSTS => 'User Mass Post Deletion',
-                              BANNED_IPADDRESS => 'IP Address Ban Additions',
-                              UNBANNED_IPADDRESS => 'IP Address Ban Deletions',
-                              EDIT_THREAD_OPTIONS => 'Thread Title Edits',
-                              MOVED_THREADS => 'Mass Thread Moves',
-                              CREATE_FOLDER => 'Folder Creations',
-                              DELETE_FOLDER => 'Folder Deletions',
-                              CHANGE_PROFILE_SECT => 'Profile Section Changes',
-                              ADDED_PROFILE_SECT => 'Profile Section Additions',
-                              DELETE_PROFILE_SECT => 'Profile Section Deletions',
-                              CHANGE_PROFILE_ITEM => 'Profile Item Changes',
-                              ADDED_PROFILE_ITEM => 'Profile Item Additions',
-                              DELETE_PROFILE_ITEM => 'Profile Item Deletions',
-                              EDITED_START_PAGE => 'Start Page Changes',
-                              CREATED_NEW_STYLE => 'Forum Style Creations',
-                              MOVED_THREAD => 'Thread Moves',
-                              CLOSED_THREAD => 'Thread Closures',
-                              OPENED_THREAD => 'Thread Openings',
-                              RENAME_THREAD => 'Thread Renames',
-                              DELETE_POST => 'Post Deletions',
-                              EDIT_POST => 'Post Edits',
-                              EDIT_WORD_FILTER => 'Word Filter Edits',
-                              CREATE_THREAD_STICKY => 'Thread Sticky Creations',
-                              REMOVE_THREAD_STICKY => 'Thread Sticky Deletions',
-                              END_USER_SESSION => 'User Session Deletions',
-                              EDIT_FORUM_SETTINGS => 'Forum Settings Edits',
-                              LOCKED_THREAD => 'Thread Locks',
-                              UNLOCKED_THREAD => 'Thread Unlocks',
-                              DELETE_USER_THREAD_POSTS => 'User Mass Post Deletions in a Thread',
-                              DELETE_THREAD => 'Thread Deletions',
-                              DELETE_ATTACHMENT => 'Attachment Deletions',
-                              EDIT_FORUM_LINKS => 'Forum Link Edits',
-                              APPROVED_POST => 'Post Approvals',
-                              CREATE_USER_GROUP => 'User Group Creations',
-                              DELETE_USER_GROUP => 'User Group Deletions',
-                              ADD_USER_TO_GROUP => 'User Group User Addition',
-                              REMOVE_USER_FROM_GROUP => 'User Group User Removal',
-                              CHANGE_USER_PASSWD => 'User Password Change',
-                              UPDATE_USER_GROUP => 'User Group Changes',
-                              ADD_BANNED_IP => 'IP Address Ban Additions',
-                              REMOVE_BANNED_IP => 'IP Address Ban Deletions',
-                              ADD_BANNED_LOGON => 'Logon Ban Additions',
-                              REMOVE_BANNED_LOGON => 'Logon Ban Deletions',
-                              ADD_BANNED_NICKNAME => 'Nickname Ban Additions',
-                              REMOVE_BANNED_NICKNAME => 'Nickname Ban Additions',
-                              ADD_BANNED_EMAIL => 'E-Mail Ban Additions',
-                              REMOVE_BANNED_EMAIL => 'E-Mail Ban Deletions',
-                              ADDED_RSS_FEED => 'RSS Feed Additions',
-                              EDITED_RSS_FEED => 'RSS Feed Changes',
-                              UNDELETE_THREAD => 'Thread Undeletions',
-                              ADD_BANNED_REFERER => 'HTTP Referer Ban Additions',
-                              REMOVE_BANNED_REFERER => 'HTTP Referer Ban Deletions',
-                              DELETED_RSS_FEED => 'RSS Feed Deletions',
-                              UPDATED_BAN => 'Ban Changes',
-                              THREAD_SPLIT => 'Thread Splits',
-                              THREAD_MERGE => 'Thread Merges',
-                              APPROVED_USER => 'User Approvals',
-                              ADD_FORUM_LINKS => 'Forum Link Additions',
-                              DELETE_FORUM_LINKS => 'Forum Link Deletions',
-                              EDIT_TOP_LINK_CAPTION => 'Forum Link Top Caption Changes',
-                              EDIT_FOLDER => 'Folder Edits',
-                              DELETE_USER => 'User Deletions',
-                              DELETE_USER_DATA => 'User Data Deletions',
-                              FORUM_AUTO_UPDATE_STATS => 'Forum Stats Auto Updates',
-                              FORUM_AUTO_PRUNE_PM => 'Forum Auto PM Pruning',
-                              FORUM_AUTO_PRUNE_SESSIONS => 'Forum Auto Session Pruning',
-                              FORUM_AUTO_CLEAN_THREAD_UNREAD => 'Forum Auto Thread Unread Data Updates',
-                              FORUM_AUTO_CLEAN_CAPTCHA => 'Forum Auto Text Captcha Clean-Ups',
-                              UPDATE_USER_GROUP => 'User Group Changes',
-                              BAN_HIT_TYPE_IP => 'IP Address Ban Check Results',
-                              BAN_HIT_TYPE_LOGON => 'Logon Ban Check Results',
-                              BAN_HIT_TYPE_NICK => 'Nickname Ban Check Results',
-                              BAN_HIT_TYPE_EMAIL => 'Email Ban Check Results',
-                              BAN_HIT_TYPE_REF => 'HTTP Referer Ban Check Results');
+$admin_log_type_array = array(ALL_LOG_ENTIES => $lang['alllogentries'],
+                              CHANGE_USER_STATUS => $lang['userstatuschanges'],
+                              CHANGE_FORUM_ACCESS => $lang['forumaccesschanges'],
+                              DELETE_ALL_USER_POSTS => $lang['usermasspostdeletion'],
+                              BANNED_IPADDRESS => $lang['ipaddressbanadditions'],
+                              UNBANNED_IPADDRESS => $lang['ipaddressbandeletions'],
+                              EDIT_THREAD_OPTIONS => $lang['threadtitleedits'],
+                              MOVED_THREADS => $lang['massthreadmoves'],
+                              CREATE_FOLDER => $lang['foldercreations'],
+                              DELETE_FOLDER => $lang['folderdeletions'],
+                              CHANGE_PROFILE_SECT => $lang['profilesectionchanges'],
+                              ADDED_PROFILE_SECT => $lang['profilesectionadditions'],
+                              DELETE_PROFILE_SECT => $lang['profilesectiondeletions'],
+                              CHANGE_PROFILE_ITEM => $lang['profileitemchanges'],
+                              ADDED_PROFILE_ITEM => $lang['profileitemadditions'],
+                              DELETE_PROFILE_ITEM => $lang['profileitemdeletions'],
+                              EDITED_START_PAGE => $lang['startpagechanges'],
+                              CREATED_NEW_STYLE => $lang['forumstylecreations'],
+                              MOVED_THREAD => $lang['threadmoves'],
+                              CLOSED_THREAD => $lang['threadclosures'],
+                              OPENED_THREAD => $lang['threadopenings'],
+                              RENAME_THREAD => $lang['threadrenames'],
+                              DELETE_POST => $lang['postdeletions'],
+                              EDIT_POST => $lang['postedits'],
+                              EDIT_WORD_FILTER => $lang['wordfilteredits'],
+                              CREATE_THREAD_STICKY => $lang['threadstickycreations'],
+                              REMOVE_THREAD_STICKY => $lang['threadstickydeletions'],
+                              END_USER_SESSION => $lang['usersessiondeletions'],
+                              EDIT_FORUM_SETTINGS => $lang['forumsettingsedits'],
+                              LOCKED_THREAD => $lang['threadlocks'],
+                              UNLOCKED_THREAD => $lang['threadunlocks'],
+                              DELETE_USER_THREAD_POSTS => $lang['usermasspostdeletionsinathread'],
+                              DELETE_THREAD => $lang['threaddeletions'],
+                              DELETE_ATTACHMENT => $lang['attachmentdeletions'],
+                              EDIT_FORUM_LINKS => $lang['forumlinkedits'],
+                              APPROVED_POST => $lang['postapprovals'],
+                              CREATE_USER_GROUP => $lang['usergroupcreations'],
+                              DELETE_USER_GROUP => $lang['usergroupdeletions'],
+                              ADD_USER_TO_GROUP => $lang['usergroupuseraddition'],
+                              REMOVE_USER_FROM_GROUP => $lang['usergroupuserremoval'],
+                              CHANGE_USER_PASSWD => $lang['userpasswordchange'],
+                              UPDATE_USER_GROUP => $lang['usergroupchanges'],
+                              ADD_BANNED_IP => $lang['ipaddressbanadditions'],
+                              REMOVE_BANNED_IP => $lang['ipaddressbandeletions'],
+                              ADD_BANNED_LOGON => $lang['logonbanadditions'],
+                              REMOVE_BANNED_LOGON => $lang['logonbandeletions'],
+                              ADD_BANNED_NICKNAME => $lang['nicknamebanadditions'],
+                              REMOVE_BANNED_NICKNAME => $lang['nicknamebanadditions'],
+                              ADD_BANNED_EMAIL => $lang['e-mailbanadditions'],
+                              REMOVE_BANNED_EMAIL => $lang['e-mailbandeletions'],
+                              ADDED_RSS_FEED => $lang['rssfeedadditions'],
+                              EDITED_RSS_FEED => $lang['rssfeedchanges'],
+                              UNDELETE_THREAD => $lang['threadundeletions'],
+                              ADD_BANNED_REFERER => $lang['httprefererbanadditions'],
+                              REMOVE_BANNED_REFERER => $lang['httprefererbandeletions'],
+                              DELETED_RSS_FEED => $lang['rssfeeddeletions'],
+                              UPDATED_BAN => $lang['banchanges'],
+                              THREAD_SPLIT => $lang['threadsplits'],
+                              THREAD_MERGE => $lang['threadmerges'],
+                              APPROVED_USER => $lang['userapprovals'],
+                              ADD_FORUM_LINKS => $lang['forumlinkadditions'],
+                              DELETE_FORUM_LINKS => $lang['forumlinkdeletions'],
+                              EDIT_TOP_LINK_CAPTION => $lang['forumlinktopcaptionchanges'],
+                              EDIT_FOLDER => $lang['folderedits'],
+                              DELETE_USER => $lang['userdeletions'],
+                              DELETE_USER_DATA => $lang['userdatadeletions'],
+                              FORUM_AUTO_UPDATE_STATS => $lang['forumstatsautoupdates'],
+                              FORUM_AUTO_PRUNE_PM => $lang['forumautopmpruning'],
+                              FORUM_AUTO_PRUNE_SESSIONS => $lang['forumautosessionpruning'],
+                              FORUM_AUTO_CLEAN_THREAD_UNREAD => $lang['forumautothreadunreaddataupdates'],
+                              FORUM_AUTO_CLEAN_CAPTCHA => $lang['forumautotextcaptchaclean-ups'],
+                              UPDATE_USER_GROUP => $lang['usergroupchanges'],
+                              BAN_HIT_TYPE_IP => $lang['ipaddressbancheckresults'],
+                              BAN_HIT_TYPE_LOGON => $lang['logonbancheckresults'],
+                              BAN_HIT_TYPE_NICK => $lang['nicknamebancheckresults'],
+                              BAN_HIT_TYPE_EMAIL => $lang['emailbancheckresults'],
+                              BAN_HIT_TYPE_REF => $lang['httprefererbancheckresults']);
 
 // Column sorting stuff
 
@@ -759,6 +759,32 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
                 $action_text = sprintf($lang['refererbanhit'], $admin_user_link, $entry_array[1], $admin_banned_link);
                 break;
+
+            case USER_PERMS_CHANGED:
+
+                $user_perm_diff = ((double)$entry_array[1] ^ (double)$entry_array[2]);
+
+                $changed_perms_list = array();
+
+                if (($user_perm_diff & USER_PERM_BANNED)) $changed_perms_list[] = $lang['userpermbanned'];
+                if (($user_perm_diff & USER_PERM_WORMED)) $changed_perms_list[] = $lang['userpermwormed'];
+                if (($user_perm_diff & USER_PERM_FOLDER_MODERATE)) $changed_perms_list[] = $lang['userpermfoldermoderate'];
+                if (($user_perm_diff & USER_PERM_ADMIN_TOOLS)) $changed_perms_list[] = $lang['userpermadmintools'];
+                if (($user_perm_diff & USER_PERM_FORUM_TOOLS)) $changed_perms_list[] = $lang['userpermforumtools'];
+                if (($user_perm_diff & USER_PERM_LINKS_MODERATE)) $changed_perms_list[] = $lang['userpermlinksmod'];
+                if (($user_perm_diff & USER_PERM_CAN_IGNORE_ADMIN)) $changed_perms_list[] = $lang['userpermignoreadmin'];
+                if (($user_perm_diff & USER_PERM_PILLORIED)) $changed_perms_list[] = $lang['userpermpilloried'];
+
+                if ($entry_array[1] > $entry_array[2]) {
+
+                    $action_text = sprintf("Changed perms for user '%s'. Enabled: %s", $entry_array[0], implode(', ', $changed_perms_list));
+                    break;
+
+                }else {
+
+                    $action_text = sprintf("Changed perms for user '%s'. Disabled: %s", $entry_array[0], implode(', ', $changed_perms_list));
+                    break;
+                }
 
             default:
 

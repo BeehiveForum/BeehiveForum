@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.92 2007-11-20 21:12:09 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.93 2008-02-17 09:58:29 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -102,15 +102,15 @@ function stats_output_xml()
     echo "  <users>\n";
 
     if ($user_count = user_count()) {
-        echo sprintf("    <count>%s</count>\n", number_format($user_count, 0, ",", ","));
+        echo sprintf("    <count>%s</count>\n", html_entity_to_decimal(number_format($user_count, 0, ",", ",")));
     }
 
     if ($user_stats = get_active_users()) {
 
         echo "    <active>\n";
-        echo "      <guests>{$user_stats['GUESTS']}</guests>\n";
-        echo "      <visible>{$user_stats['NUSERS']}</visible>\n";
-        echo "      <anonymous>{$user_stats['AUSERS']}</anonymous>\n";
+        echo "      <guests>", html_entity_to_decimal($user_stats['GUESTS']), "</guests>\n";
+        echo "      <visible>", html_entity_to_decimal($user_stats['NUSERS']), "</visible>\n";
+        echo "      <anonymous>", html_entity_to_decimal($user_stats['AUSERS']), "</anonymous>\n";
 
         if (isset($user_stats['USERS']) && sizeof($user_stats['USERS']) > 0) {
 
@@ -121,10 +121,10 @@ function stats_output_xml()
                 $active_user['DISPLAY'] = word_filter_add_ob_tags(_htmlentities(format_user_name($active_user['LOGON'], $active_user['NICKNAME'])));
 
                 echo "      <user>\n";
-                echo "        <uid>{$active_user['UID']}</uid>\n";
-                echo "        <display>{$active_user['DISPLAY']}</display>\n";
-                echo "        <relationship>{$active_user['RELATIONSHIP']}</relationship>\n";
-                echo "        <anonymous>{$active_user['ANON_LOGON']}</anonymous>\n";
+                echo "        <uid>", html_entity_to_decimal($active_user['UID']), "</uid>\n";
+                echo "        <display>", html_entity_to_decimal($active_user['DISPLAY']), "</display>\n";
+                echo "        <relationship>", html_entity_to_decimal($active_user['RELATIONSHIP']), "</relationship>\n";
+                echo "        <anonymous>", html_entity_to_decimal($active_user['ANON_LOGON']), "</anonymous>\n";
                 echo "      </user>\n";
             }
 
@@ -139,8 +139,8 @@ function stats_output_xml()
         $newest_user['DISPLAY'] = word_filter_add_ob_tags(_htmlentities(format_user_name($newest_user['LOGON'], $newest_user['NICKNAME'])));
 
         echo "    <newest>\n";
-        echo "      <uid>{$newest_user['UID']}</uid>\n";
-        echo "      <display>{$newest_user['DISPLAY']}</display>\n";
+        echo "      <uid>", html_entity_to_decimal($newest_user['UID']), "</uid>\n";
+        echo "      <display>", html_entity_to_decimal($newest_user['DISPLAY']), "</display>\n";
         echo "    </newest>\n";
     }
 
@@ -150,8 +150,8 @@ function stats_output_xml()
         $most_users_date =  format_time($most_users['MOST_USERS_DATE'], 1);
 
         echo "    <record>\n";
-        echo "      <count>$most_users_count</count>\n";
-        echo "      <date>$most_users_date</date>\n";
+        echo "      <count>", html_entity_to_decimal($most_users_count), "</count>\n";
+        echo "      <date>", html_entity_to_decimal($most_users_date), "</date>\n";
         echo "    </record>\n";
     }
 
@@ -159,7 +159,7 @@ function stats_output_xml()
     echo "  <threads>\n";
 
     if ($thread_count = get_thread_count()) {
-        echo sprintf("    <count>%s</count>\n", number_format($thread_count, 0, ",", ","));
+        echo sprintf("    <count>%s</count>\n", html_entity_to_decimal(number_format($thread_count, 0, ",", ",")));
     }
 
     if ($longest_thread = get_longest_thread()) {
@@ -168,9 +168,9 @@ function stats_output_xml()
         $longest_thread_post_count = number_format($longest_thread['LENGTH'], 0, ",", ",");
 
         echo "    <longest>\n";
-        echo "      <tid>{$longest_thread['TID']}</tid>\n";
-        echo "      <title>$longest_thread_title</title>\n";
-        echo "      <length>$longest_thread_post_count</length>\n";
+        echo "      <tid>", html_entity_to_decimal($longest_thread['TID']), "</tid>\n";
+        echo "      <title>", html_entity_to_decimal($longest_thread_title), "</title>\n";
+        echo "      <length>", html_entity_to_decimal($longest_thread_post_count), "</length>\n";
         echo "    </longest>\n";
     }
 
@@ -178,7 +178,7 @@ function stats_output_xml()
     echo "  <posts>\n";
 
     if ($post_count = get_post_count()) {
-        echo sprintf("    <count>%s</count>\n", number_format($post_count, 0, ",", ","));
+        echo sprintf("    <count>%s</count>\n", html_entity_to_decimal(number_format($post_count, 0, ",", ",")));
     }
 
     $recent_post_count = get_recent_post_count();
@@ -194,8 +194,8 @@ function stats_output_xml()
         $most_posts_count = number_format($most_posts['MOST_POSTS_COUNT'], 0, ",", ",");
 
         echo "      <record>\n";
-        echo "        <count>$most_posts_count</count>\n";
-        echo "        <date>$most_posts_date</date>\n";
+        echo "        <count>", html_entity_to_decimal($most_posts_count), "</count>\n";
+        echo "        <date>", html_entity_to_decimal($most_posts_date), "</date>\n";
         echo "      </record>\n";
     }
 

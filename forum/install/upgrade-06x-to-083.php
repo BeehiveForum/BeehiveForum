@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06x-to-082.php,v 1.2 2008-02-03 23:59:06 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-083.php,v 1.1 2008-02-19 14:29:24 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-06x-to-072.php") {
 
@@ -34,9 +34,6 @@ if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-06
 if (!isset($_SERVER['SCRIPT_FILENAME'])) {
     $_SERVER['SCRIPT_FILENAME'] = $_SERVER['SCRIPT_NAME'];
 }
-
-$dictionary_file = preg_replace('/\\\/', '/', dirname($_SERVER['SCRIPT_FILENAME']));
-$dictionary_file.= "/install/english.dic";
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
@@ -172,8 +169,6 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 // Start by creating and updating the per-forum tables.
 
 foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
-
-    // Added In reply to: link to PM messages.
 
     $sql = "ALTER TABLE PM ADD REPLY_TO_MID MEDIUMINT(8) NOT NULL DEFAULT '0' AFTER MID";
 

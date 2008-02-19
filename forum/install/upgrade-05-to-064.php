@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-064.php,v 1.28 2007-10-11 13:01:23 decoyduck Exp $ */
+/* $Id: upgrade-05-to-064.php,v 1.29 2008-02-19 14:29:24 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-05-to-064.php") {
 
@@ -34,9 +34,6 @@ if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-05
 if (!isset($_SERVER['SCRIPT_FILENAME'])) {
     $_SERVER['SCRIPT_FILENAME'] = $_SERVER['SCRIPT_NAME'];
 }
-
-$dictionary_file = preg_replace('/\\\/', '/', dirname($_SERVER['SCRIPT_FILENAME']));
-$dictionary_file.= "/install/english.dic";
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");

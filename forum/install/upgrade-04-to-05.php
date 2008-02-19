@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-04-to-05.php,v 1.51 2007-10-11 13:01:23 decoyduck Exp $ */
+/* $Id: upgrade-04-to-05.php,v 1.52 2008-02-19 14:29:24 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-04-to-05.php") {
 
@@ -1395,28 +1395,34 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
                     while (!feof($fp)) {
 
-                        $word = fgets($fp, 100);
+                        $dictionary_line = fgets($fp, 100);
 
-                        list($word, $metaphone) = explode("\t", $word);
+                        @list($str_word, $str_meta) = explode("\t", $dictionary_line);
 
-                        $metaphone = db_escape_string(trim($metaphone));
-                        $word = db_escape_string(trim($word));
+                        if (isset($str_word) && strlen(trim($str_word)) > 0 && isset($str_meta) && strlen(trim($str_meta)) > 0) {
 
-                        $sql = "INSERT INTO DICTIONARY (WORD, SOUND, UID) ";
-                        $sql.= "VALUES ('$word', '$metaphone', 0)";
+                            $str_meta = db_escape_string(trim($str_meta));
+                            $str_word = db_escape_string(trim($str_word));
 
-                        if (!$result = db_query($sql, $db_install)) {
+                            $sql = "INSERT INTO DICTIONARY (WORD, SOUND, UID) ";
+                            $sql.= "VALUES ('$str_word', '$str_meta', 0)";
 
-                            $valid = false;
-                            return;
-                        }
+                            if (!$result = db_query($sql, $db_install)) {
 
-                        $word_count++;
+                                $valid = false;
+                                return;
+                            }
 
-                        if ($word_count == 500) {
+                            $word_count++;
 
-                            $word_count = 0;
-                            install_flush_buffer();
+                            if ($word_count == 500) {
+
+                                $word_count = 0;
+                                install_flush_buffer();
+                            }
+
+                            unset($str_word);
+                            unset($str_meta);
                         }
                     }
 

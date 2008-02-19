@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.157 2007-11-15 22:34:16 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.158 2008-02-19 14:29:24 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
 
@@ -1375,28 +1375,34 @@ if (!isset($skip_dictionary) || $skip_dictionary === false) {
 
             while (!feof($fp)) {
 
-                $word = fgets($fp, 100);
+                $dictionary_line = fgets($fp, 100);
 
-                list($word, $metaphone) = explode("\t", $word);
+                @list($str_word, $str_meta) = explode("\t", $dictionary_line);
 
-                $metaphone = db_escape_string(trim($metaphone));
-                $word = db_escape_string(trim($word));
+                if (isset($str_word) && strlen(trim($str_word)) > 0 && isset($str_meta) && strlen(trim($str_meta)) > 0) {
 
-                $sql = "INSERT INTO DICTIONARY (WORD, SOUND, UID) ";
-                $sql.= "VALUES ('$word', '$metaphone', 0)";
+                    $str_meta = db_escape_string(trim($str_meta));
+                    $str_word = db_escape_string(trim($str_word));
 
-                if (!$result = db_query($sql, $db_install)) {
+                    $sql = "INSERT INTO DICTIONARY (WORD, SOUND, UID) ";
+                    $sql.= "VALUES ('$str_word', '$str_meta', 0)";
 
-                    $valid = false;
-                    return;
-                }
+                    if (!$result = db_query($sql, $db_install)) {
 
-                $word_count++;
+                        $valid = false;
+                        return;
+                    }
 
-                if ($word_count == 500) {
+                    $word_count++;
 
-                    $word_count = 0;
-                    install_flush_buffer();
+                    if ($word_count == 500) {
+
+                        $word_count = 0;
+                        install_flush_buffer();
+                    }
+
+                    unset($str_word);
+                    unset($str_meta);
                 }
             }
 

@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.js,v 1.11 2007-10-27 19:57:21 decoyduck Exp $ */
+/* $Id: install.js,v 1.12 2008-02-19 14:39:14 decoyduck Exp $ */
 
 function confirmInstall(button)
 {
@@ -31,14 +31,23 @@ function confirmInstall(button)
         var confirm_text = '';
 
         if (install_type.selectedIndex == 2) {
-            confirm_text = 'Are you sure you want to perform a reinstall? Any existing BeehiveForum tables and their data will be permenantly lost!\n\n';
-            confirm_text+= 'If you haven\'t performed a backup of your database and files now would be a good time to do it! Don\'t say we didn\'t warn you!';
+
+            confirm_text = 'Are you sure you want to perform a reinstall? Any existing BeehiveForum tables and their data will be permanently lost!\n\n';
+            confirm_text+= 'Please perform a backup of your database and files before proceeding.';
+
         }else if (install_type.selectedIndex == 3) {
+
             confirm_text = 'Are you sure you want to perform a reconnect? Any customised values in your config.inc.php file will be lost!\n\n';
-            confirm_text+= 'If you haven\'t performed a backup of your database and files now would be a good time to do it! Don\'t say we didn\'t warn you!';
+            confirm_text+= 'Please perform a backup of your database and files before proceeding.';
+
         }else if (install_type.selectedIndex > 3) {
-            confirm_text = 'Are you sure you want to perform an upgrade? If you have selected the wrong upgrade method your forum may become unusable!\n\n';
-            confirm_text+= 'If you haven\'t performed a backup of your database and files now would be a good time to do it! Don\'t say we didn\'t warn you!';
+
+            confirm_text = 'Are you sure you want to perform an upgrade?\n\n';
+            confirm_text+= 'Please make sure you have selected the correct upgrade path. The upgrade scripts are very\n';
+            confirm_text+= 'primitive and will not check the currently installed version before upgrading. If you have\n';
+            confirm_text+= 'selected the wrong upgrade path your forum will become unusable and you will have to\n';
+            confirm_text+= 'restore from backup before you can start the upgrade again.\n\n';
+            confirm_text+= 'Please perform a backup of your database and files before proceeding.';
         }
 
         if (confirm_text.length > 0) {
@@ -47,7 +56,10 @@ function confirmInstall(button)
 
                 disableButton(button);
                 install_form.submit();
+		return true;
             }
+
+	    return false;
         }
     }
 }
@@ -60,7 +72,7 @@ function showInstallHelp(topic)
 
       topic_text = 'For new installations please select \'New Install\' from the drop down and enter a webtag.\n\n';
       topic_text+= 'Your webtag can be anything you want as long as it only contains the characters A-Z, 0-9 and underscore. If you enter any other characters an error will occur.\n\n';
-      topic_text+= 'For reinstalls enter a webtag as above. Any existing BeehiveForum tables will be automatically removed and all data within them will be permenantly lost.\n\n';
+      topic_text+= 'For reinstalls enter a webtag as above. Any existing BeehiveForum tables will be automatically removed and all data within them will be permanently lost.\n\n';
       topic_text+= 'For reconnects the database setup is skipped and the installation simply rewrites your config.inc.php file. Use this if for example you\'re moving hosts. The webtag field is ignored.\n\n';
       topic_text+= 'For upgrades please select the correct upgrade process. The webtag field is ignored.';
 
@@ -68,7 +80,7 @@ function showInstallHelp(topic)
 
       topic_text = 'These are the MySQL database details required by to install and run your BeehiveForum.\n\n';
       topic_text+= 'Hostname: The address of the MySQL server. This may be an IP or a DNS for example 127.0.0.1 or localhost or mysql.myhosting.com\n\n';
-      topic_text+= 'Database name: The name of the database you want your BeehiveForum to use. The database must already exist and you must have at least SELECT, INSERT, UPDATE, CREATE, ALTER, INDEX and DROP privilleges on the database for the installation and your BeehiveForum to work correctly.\n\n';
+      topic_text+= 'Database name: The name of the database you want your BeehiveForum to use. The database must already exist and you must have at least SELECT, INSERT, UPDATE, CREATE, ALTER, INDEX and DROP privileges on the database for the installation and your BeehiveForum to work correctly.\n\n';
       topic_text+= 'Username: The username needed to connect to the MySQL server.\n';
       topic_text+= 'Password: The password needed to connect to the MySQL server.\n\n';
       topic_text+= 'If you do not know what these settings are please contact your hosting provider.';
@@ -81,8 +93,8 @@ function showInstallHelp(topic)
 
       topic_text = 'USE THESE OPTIONS WITH EXTREME CAUTION!\n\n';
       topic_text+= 'These options are recommended for advanced users only. There use can have a detrimental effect on the functionality of your BeehiveForum AND other software you may have installed.\n\n';
-      topic_text+= '\'Automatically remove tables\' permenantly removes tables would have conflicted with those used by BeehiveForum. If other tables exist which conflict with those used by the BeehiveForum software then enabling this option may cause any other scripts or software which rely on them to fail.\n\n';
-      topic_text+= '\Skip dictionary setup\' will force the installation to skip the process which populates the dictionary table. If you have problems with the installation not completeling for example blank pages after clicking submit or PHP error messages try enabling this option.\n\n';
+      topic_text+= '\'Automatically remove tables\' permanently removes tables would have conflicted with those used by BeehiveForum. If other tables exist which conflict with those used by the BeehiveForum software then enabling this option may cause any other scripts or software which rely on them to fail.\n\n';
+      topic_text+= '\Skip dictionary setup\' will force the installation to skip the process which populates the dictionary table. If you have problems with the installation not completing for example blank pages after clicking submit or PHP error messages try enabling this option.\n\n';
       topic_text+= 'HINT: Enabling FILE permission on the MySQL database server for the user account used for your BeehiveForum will allow the installer to populate the dictionary much quicker. If you can\'t grant this permission yourself please contact your server administrator to arrange this for you.';
       
     }

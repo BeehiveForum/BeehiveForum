@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.131 2008-02-17 17:14:27 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.132 2008-02-22 20:56:30 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -777,12 +777,12 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
                 if ($entry_array[1] > $entry_array[2]) {
 
-                    $action_text = sprintf("Changed perms for user '%s'. Enabled: %s", $entry_array[0], implode(', ', $changed_perms_list));
+                    $action_text = sprintf($lang['userpermenabled'], $entry_array[0], implode(', ', $changed_perms_list));
                     break;
 
                 }else {
 
-                    $action_text = sprintf("Changed perms for user '%s'. Disabled: %s", $entry_array[0], implode(', ', $changed_perms_list));
+                    $action_text = sprintf($lang['userpermdisabled'], $entry_array[0], implode(', ', $changed_perms_list));
                     break;
                 }
 

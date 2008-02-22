@@ -1066,6 +1066,10 @@ a {
     width: 180px;
 }
 
+.text_captcha_reload {
+    cursor: pointer;
+}
+
 .user_stats_curuser {
     font-weight: bold;
 }

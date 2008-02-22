@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.92 2008-02-14 23:00:44 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.93 2008-02-22 20:56:30 decoyduck Exp $ */
 
 // French Canadian language file
 
@@ -121,7 +121,6 @@ $lang['thread'] = "fil de discussion";
 $lang['threads'] = "fils de discussion";
 $lang['threadlist'] = "Fil de discussion";
 $lang['message'] = "Message";
-$lang['messagenumber'] = "Numéro de message";
 $lang['from'] = "De";
 $lang['to'] = "À";
 $lang['all_caps'] = "TOUS";
@@ -783,7 +782,6 @@ $lang['enablelinkssection'] = "Activer section des Liens";
 $lang['allowcreationofpolls'] = "Permettre création de scrutins";
 $lang['allowguestvotesinpolls'] = "Permettre invités de voter dans les scrutins";
 $lang['unreadmessagescutoff'] = "Période limite pour messages non-lus";
-$lang['unreadcutoffseconds'] = "secondes";
 $lang['disableunreadmessages'] = "Désactiver messages non-lus";
 $lang['thirtynumberdays'] = "30 jours";
 $lang['sixtynumberdays'] = "60 jours";

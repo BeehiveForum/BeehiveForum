@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en-us.inc.php,v 1.42 2008-02-14 23:00:44 decoyduck Exp $ */
+/* $Id: en-us.inc.php,v 1.43 2008-02-22 20:56:30 decoyduck Exp $ */
 
 // British English language file
 
@@ -121,7 +121,6 @@ $lang['thread'] = "thread";
 $lang['threads'] = "threads";
 $lang['threadlist'] = "Thread List";
 $lang['message'] = "Message";
-$lang['messagenumber'] = "Message Number";
 $lang['from'] = "From";
 $lang['to'] = "To";
 $lang['all_caps'] = "ALL";
@@ -706,9 +705,105 @@ $lang['forumautoprunesessions'] = "Forum Auto Update: Sessions Pruned";
 $lang['forumautocleanthreadunread'] = "Forum Auto Update: Thread Unread Data Cleaned";
 $lang['forumautocleancaptcha'] = "Forum Auto Update: Text-Captcha Images Cleaned";
 
+$lang['ipaddressbanhit'] = "User '%s' is banned. IP Address '%s' matched ban data '%s'";
+$lang['logonbanhit'] = "User '%s' is banned. Logon '%s' matched ban data '%s'";
+$lang['nicknamebanhit'] = "User '%s' is banned. Nickname '%s' matched ban data '%s'";
+$lang['emailbanhit'] = "User '%s' is banned. Email Address '%s' matched ban data '%s'";
+$lang['refererbanhit'] = "User '%s' is banned. HTTP Referer '%s' matched ban data '%s'";
+
+$lang['userpermenabled'] = "Enabled perms for user '%s': %s";
+$lang['userpermdisabled'] = "Disabled perms for user '%s': %s";
+
+$lang['userpermbanned'] = "Banned";
+$lang['userpermwormed'] = "Wormed";
+$lang['userpermfoldermoderate'] = "Folder Moderator";
+$lang['userpermadmintools'] = "Admin Tools";
+$lang['userpermforumtools'] = "Forum Tools";
+$lang['userpermlinksmod'] = "Links Moderator";
+$lang['userpermignoreadmin'] = "Ignore Admin";
+$lang['userpermpilloried'] = "Pilloried";
+
 $lang['adminlogempty'] = "Admin Log is empty";
 
 $lang['youmustspecifyanactiontypetoremove'] = "You must specify an action type to remove";
+
+$lang['alllogentries'] = "All Log Entries";
+$lang['userstatuschanges'] = "User Status Changes";
+$lang['forumaccesschanges'] = "Forum Access Changes";
+$lang['usermasspostdeletion'] = "User Mass Post Deletion";
+$lang['ipaddressbanadditions'] = "IP Address Ban Additions";
+$lang['ipaddressbandeletions'] = "IP Address Ban Deletions";
+$lang['threadtitleedits'] = "Thread Title Edits";
+$lang['massthreadmoves'] = "Mass Thread Moves";
+$lang['foldercreations'] = "Folder Creations";
+$lang['folderdeletions'] = "Folder Deletions";
+$lang['profilesectionchanges'] = "Profile Section Changes";
+$lang['profilesectionadditions'] = "Profile Section Additions";
+$lang['profilesectiondeletions'] = "Profile Section Deletions";
+$lang['profileitemchanges'] = "Profile Item Changes";
+$lang['profileitemadditions'] = "Profile Item Additions";
+$lang['profileitemdeletions'] = "Profile Item Deletions";
+$lang['startpagechanges'] = "Start Page Changes";
+$lang['forumstylecreations'] = "Forum Style Creations";
+$lang['threadmoves'] = "Thread Moves";
+$lang['threadclosures'] = "Thread Closures";
+$lang['threadopenings'] = "Thread Openings";
+$lang['threadrenames'] = "Thread Renames";
+$lang['postdeletions'] = "Post Deletions";
+$lang['postedits'] = "Post Edits";
+$lang['wordfilteredits'] = "Word Filter Edits";
+$lang['threadstickycreations'] = "Thread Sticky Creations";
+$lang['threadstickydeletions'] = "Thread Sticky Deletions";
+$lang['usersessiondeletions'] = "User Session Deletions";
+$lang['forumsettingsedits'] = "Forum Settings Edits";
+$lang['threadlocks'] = "Thread Locks";
+$lang['threadunlocks'] = "Thread Unlocks";
+$lang['usermasspostdeletionsinathread'] = "User Mass Post Deletions in a Thread";
+$lang['threaddeletions'] = "Thread Deletions";
+$lang['attachmentdeletions'] = "Attachment Deletions";
+$lang['forumlinkedits'] = "Forum Link Edits";
+$lang['postapprovals'] = "Post Approvals";
+$lang['usergroupcreations'] = "User Group Creations";
+$lang['usergroupdeletions'] = "User Group Deletions";
+$lang['usergroupuseraddition'] = "User Group User Addition";
+$lang['usergroupuserremoval'] = "User Group User Removal";
+$lang['userpasswordchange'] = "User Password Change";
+$lang['usergroupchanges'] = "User Group Changes";
+$lang['ipaddressbanadditions'] = "IP Address Ban Additions";
+$lang['ipaddressbandeletions'] = "IP Address Ban Deletions";
+$lang['logonbanadditions'] = "Logon Ban Additions";
+$lang['logonbandeletions'] = "Logon Ban Deletions";
+$lang['nicknamebanadditions'] = "Nickname Ban Additions";
+$lang['nicknamebanadditions'] = "Nickname Ban Additions";
+$lang['e-mailbanadditions'] = "E-Mail Ban Additions";
+$lang['e-mailbandeletions'] = "E-Mail Ban Deletions";
+$lang['rssfeedadditions'] = "RSS Feed Additions";
+$lang['rssfeedchanges'] = "RSS Feed Changes";
+$lang['threadundeletions'] = "Thread Undeletions";
+$lang['httprefererbanadditions'] = "HTTP Referer Ban Additions";
+$lang['httprefererbandeletions'] = "HTTP Referer Ban Deletions";
+$lang['rssfeeddeletions'] = "RSS Feed Deletions";
+$lang['banchanges'] = "Ban Changes";
+$lang['threadsplits'] = "Thread Splits";
+$lang['threadmerges'] = "Thread Merges";
+$lang['userapprovals'] = "User Approvals";
+$lang['forumlinkadditions'] = "Forum Link Additions";
+$lang['forumlinkdeletions'] = "Forum Link Deletions";
+$lang['forumlinktopcaptionchanges'] = "Forum Link Top Caption Changes";
+$lang['folderedits'] = "Folder Edits";
+$lang['userdeletions'] = "User Deletions";
+$lang['userdatadeletions'] = "User Data Deletions";
+$lang['forumstatsautoupdates'] = "Forum Stats Auto Updates";
+$lang['forumautopmpruning'] = "Forum Auto PM Pruning";
+$lang['forumautosessionpruning'] = "Forum Auto Session Pruning";
+$lang['forumautothreadunreaddataupdates'] = "Forum Auto Thread Unread Data Updates";
+$lang['forumautotextcaptchaclean-ups'] = "Forum Auto Text Captcha Clean-Ups";
+$lang['usergroupchanges'] = "User Group Changes";
+$lang['ipaddressbancheckresults'] = "IP Address Ban Check Results";
+$lang['logonbancheckresults'] = "Logon Ban Check Results";
+$lang['nicknamebancheckresults'] = "Nickname Ban Check Results";
+$lang['emailbancheckresults'] = "Email Ban Check Results";
+$lang['httprefererbancheckresults'] = "HTTP Referer Ban Check Results";
 
 $lang['removeentriesrelatingtoaction'] = "Remove Entries Relating to Action";
 $lang['removeentriesolderthandays'] = "Remove Entries Older Than (Days)";
@@ -791,7 +886,6 @@ $lang['enablelinkssection'] = "Enable Links section";
 $lang['allowcreationofpolls'] = "Allow creation of polls";
 $lang['allowguestvotesinpolls'] = "Allow Guests to vote in polls";
 $lang['unreadmessagescutoff'] = "Unread messages cut-off";
-$lang['unreadcutoffseconds'] = "seconds";
 $lang['disableunreadmessages'] = "Disable unread messages";
 $lang['thirtynumberdays'] = "30 Days";
 $lang['sixtynumberdays'] = "60 Days";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.290 2008-02-14 23:00:44 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.291 2008-02-22 20:56:30 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -45,6 +45,7 @@ include_once(BH_INCLUDE_PATH. "install.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "perm.inc.php");
 include_once(BH_INCLUDE_PATH. "pm.inc.php");
+include_once(BH_INCLUDE_PATH. "server.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "stats.inc.php");
 include_once(BH_INCLUDE_PATH. "text_captcha.inc.php");

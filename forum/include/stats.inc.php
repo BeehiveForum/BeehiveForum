@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.93 2008-02-17 09:58:29 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.94 2008-02-22 20:56:30 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -118,11 +118,11 @@ function stats_output_xml()
 
             foreach ($user_stats['USERS'] as $active_user) {
 
-                $active_user['DISPLAY'] = word_filter_add_ob_tags(_htmlentities(format_user_name($active_user['LOGON'], $active_user['NICKNAME'])));
+                $active_user['DISPLAY'] = _htmlentities(format_user_name($active_user['LOGON'], $active_user['NICKNAME']));
 
                 echo "      <user>\n";
                 echo "        <uid>", html_entity_to_decimal($active_user['UID']), "</uid>\n";
-                echo "        <display>", html_entity_to_decimal($active_user['DISPLAY']), "</display>\n";
+                echo "        <display>", word_filter_add_ob_tags(html_entity_to_decimal($active_user['DISPLAY'])), "</display>\n";
                 echo "        <relationship>", html_entity_to_decimal($active_user['RELATIONSHIP']), "</relationship>\n";
                 echo "        <anonymous>", html_entity_to_decimal($active_user['ANON_LOGON']), "</anonymous>\n";
                 echo "      </user>\n";
@@ -136,11 +136,11 @@ function stats_output_xml()
 
     if ($newest_user = get_newest_user()) {
 
-        $newest_user['DISPLAY'] = word_filter_add_ob_tags(_htmlentities(format_user_name($newest_user['LOGON'], $newest_user['NICKNAME'])));
+        $newest_user['DISPLAY'] = _htmlentities(format_user_name($newest_user['LOGON'], $newest_user['NICKNAME']));
 
         echo "    <newest>\n";
         echo "      <uid>", html_entity_to_decimal($newest_user['UID']), "</uid>\n";
-        echo "      <display>", html_entity_to_decimal($newest_user['DISPLAY']), "</display>\n";
+        echo "      <display>", word_filter_add_ob_tags(html_entity_to_decimal($newest_user['DISPLAY'])), "</display>\n";
         echo "    </newest>\n";
     }
 
@@ -164,12 +164,12 @@ function stats_output_xml()
 
     if ($longest_thread = get_longest_thread()) {
 
-        $longest_thread_title = word_filter_add_ob_tags(_htmlentities(thread_format_prefix($longest_thread['PREFIX'], $longest_thread['TITLE'])));
+        $longest_thread_title = _htmlentities(thread_format_prefix($longest_thread['PREFIX'], $longest_thread['TITLE']));
         $longest_thread_post_count = number_format($longest_thread['LENGTH'], 0, ",", ",");
 
         echo "    <longest>\n";
         echo "      <tid>", html_entity_to_decimal($longest_thread['TID']), "</tid>\n";
-        echo "      <title>", html_entity_to_decimal($longest_thread_title), "</title>\n";
+        echo "      <title>", word_filter_add_ob_tags(html_entity_to_decimal($longest_thread_title)), "</title>\n";
         echo "      <length>", html_entity_to_decimal($longest_thread_post_count), "</length>\n";
         echo "    </longest>\n";
     }

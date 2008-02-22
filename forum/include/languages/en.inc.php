@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.510 2008-02-17 17:14:27 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.511 2008-02-22 20:56:30 decoyduck Exp $ */
 
 // British English language file
 
@@ -121,7 +121,6 @@ $lang['thread'] = "thread";
 $lang['threads'] = "threads";
 $lang['threadlist'] = "Thread List";
 $lang['message'] = "Message";
-$lang['messagenumber'] = "Message Number";
 $lang['from'] = "From";
 $lang['to'] = "To";
 $lang['all_caps'] = "ALL";
@@ -712,8 +711,8 @@ $lang['nicknamebanhit'] = "User '%s' is banned. Nickname '%s' matched ban data '
 $lang['emailbanhit'] = "User '%s' is banned. Email Address '%s' matched ban data '%s'";
 $lang['refererbanhit'] = "User '%s' is banned. HTTP Referer '%s' matched ban data '%s'";
 
-$lang['userpermenabled'] = "Enabled perms for user '%s': %s";
-$lang['userpermdisabled'] = "Disabled perms for user '%s': %s";
+$lang['userpermenabled'] = "Changed perms for user '%s'. Enabled: %s";
+$lang['userpermdisabled'] = "Changed perms for user '%s'. Disabled: %s";
 
 $lang['userpermbanned'] = "Banned";
 $lang['userpermwormed'] = "Wormed";
@@ -887,7 +886,6 @@ $lang['enablelinkssection'] = "Enable Links section";
 $lang['allowcreationofpolls'] = "Allow creation of polls";
 $lang['allowguestvotesinpolls'] = "Allow Guests to vote in polls";
 $lang['unreadmessagescutoff'] = "Unread messages cut-off";
-$lang['unreadcutoffseconds'] = "seconds";
 $lang['disableunreadmessages'] = "Disable unread messages";
 $lang['thirtynumberdays'] = "30 Days";
 $lang['sixtynumberdays'] = "60 Days";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.65 2008-02-14 23:00:44 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.66 2008-02-22 20:56:30 decoyduck Exp $ */
 
 // German language file
 
@@ -63,18 +63,18 @@ $lang['month_short'][12] = "Dez";
 // Various date and time formats as used by Beehive Forum. All times are
 // expressed as 24 hour time format.
 
-$lang['daymonthyear'] = "%s %s %s";
-$lang['monthyear'] = "%s %s";
-$lang['daymonthyearhourminute'] = "%s %s %s %s:%s";
-$lang['daymonthhourminute'] = "%s %s %s:%s";
-$lang['daymonth'] = "%s %s";
-$lang['hourminute'] = "%s:%s";
+$lang['daymonthyear'] = "%s %s %s";                  // 1 Jan 2005
+$lang['monthyear'] = "%s %s";                        // Jan 2005
+$lang['daymonthyearhourminute'] = "%s %s %s %s:%s";  // 1 Jan 2005 12:00
+$lang['daymonthhourminute'] = "%s %s %s:%s";         // 1 Jan 12:00
+$lang['daymonth'] = "%s %s";                         // 1 Jan
+$lang['hourminute'] = "%s:%s";                       // 12:00
 
 // Periods -------------------------------------------------------------
 
 // Various time periods as used by Beehive Forum.
 
-$lang['date_periods']['year'] = "%s Jahr";
+$lang['date_periods']['year']   = "%s Jahr";
 $lang['date_periods']['month']  = "%s month";
 $lang['date_periods']['week']   = "%s week";
 $lang['date_periods']['day']    = "%s day";
@@ -84,7 +84,7 @@ $lang['date_periods']['second'] = "%s second";
 
 // As above but plurals (2 years vs. 1 year, etc.)
 
-$lang['date_periods_plural']['year'] = "%s Jahre";
+$lang['date_periods_plural']['year']   = "%s Jahre";
 $lang['date_periods_plural']['month']  = "%s months";
 $lang['date_periods_plural']['week']   = "%s weeks";
 $lang['date_periods_plural']['day']    = "%s days";
@@ -94,7 +94,7 @@ $lang['date_periods_plural']['second'] = "%s seconds";
 
 // Short hand periods (example: 1y, 2m, 3w, 4d, 5hr, 6min, 7sec)
 
-$lang['date_periods_short']['year'] = "%sJ";
+$lang['date_periods_short']['year']   = "%sJ";    // 1y
 $lang['date_periods_short']['month']  = "%sm";    // 2m
 $lang['date_periods_short']['week']   = "%sw";    // 3w
 $lang['date_periods_short']['day']    = "%sd";    // 4d
@@ -121,7 +121,6 @@ $lang['thread'] = "Eintrag";
 $lang['threads'] = "Eintraege";
 $lang['threadlist'] = "Eintragsliste";
 $lang['message'] = "Nachricht";
-$lang['messagenumber'] = "Nachricht Nummer";
 $lang['from'] = "Von";
 $lang['to'] = "An";
 $lang['all_caps'] = "ALLE";
@@ -783,7 +782,6 @@ $lang['enablelinkssection'] = "Linksbereich aktivieren";
 $lang['allowcreationofpolls'] = "Abstimmungserstellung erlauben";
 $lang['allowguestvotesinpolls'] = "Erlaube Gaesten in Abstimmungen zu waehlen";
 $lang['unreadmessagescutoff'] = "Ungelesene Nachrichten abgeschnitten";
-$lang['unreadcutoffseconds'] = "Sekunden";
 $lang['disableunreadmessages'] = "Ungelesene Nachrichten deaktiviert";
 $lang['thirtynumberdays'] = "30 Tagen";
 $lang['sixtynumberdays'] = "60 Tagen";

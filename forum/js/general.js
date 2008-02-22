@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: general.js,v 1.37 2007-12-09 18:31:37 decoyduck Exp $ */
+/* $Id: general.js,v 1.38 2008-02-22 20:56:31 decoyduck Exp $ */
 
 // sprintf function based on code available at http://jan.moesen.nu
 
@@ -419,7 +419,7 @@ function sprintf()
             numSubstitutions++;
             
             if (numSubstitutions >= arguments.length) {
-                alert('Error: Not enough function arguments!');
+                alert('Error: Not enough function arguments for:\n\n' + str);
             }
 
             var param = arguments[numSubstitutions];
@@ -486,7 +486,7 @@ function sprintf()
             }
         }
         
-        str = leftpart + subst + rightPart;
+        str = leftpart + subst.replace('%', '&#037;') + rightPart;
     }
     
     return str;

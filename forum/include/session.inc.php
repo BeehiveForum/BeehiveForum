@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.338 2008-01-25 00:47:40 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.339 2008-02-22 21:26:51 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -875,7 +875,7 @@ function bh_session_init($uid, $update_visitor_log = true, $skip_cookie = false)
         forum_update_last_visit($uid);
     }
 
-    if ($skip_cookie === false) bh_setcookie('bh_sess_hash', $user_hash);
+    if ($skip_cookie === false) bh_setcookie("bh_sess_hash", $user_hash);
 
     return $user_hash;
 }
@@ -896,12 +896,12 @@ function bh_session_remove_cookies()
 
     // Unset the session cookies.
 
-    bh_setcookie('bh_sess_hash', '', time() - YEAR_IN_SECONDS);
-    bh_setcookie('bh_logon', '', time() - YEAR_IN_SECONDS);
+    bh_setcookie("bh_sess_hash", "", time() - YEAR_IN_SECONDS);
+    bh_setcookie("bh_logon", "", time() - YEAR_IN_SECONDS);
 
     // Unset the forum password cookie if any.
 
-    bh_setcookie("bh_{$webtag}_sesshash", '', time() - YEAR_IN_SECONDS);
+    bh_setcookie("bh_{$webtag}_sesshash", "", time() - YEAR_IN_SECONDS);
 }
 
 /**

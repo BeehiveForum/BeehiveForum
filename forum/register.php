@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.173 2008-02-12 22:52:52 decoyduck Exp $ */
+/* $Id: register.php,v 1.174 2008-02-22 21:26:52 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -189,7 +189,7 @@ if (forum_get_setting('forum_rules_enabled', 'Y', true)) {
 
 if (isset($_POST['cancel'])) {
 
-    bh_setcookie('bh_logon', 1);
+    bh_setcookie("bh_logon", "1");
     header_redirect("logon.php?webtag=$webtag");
     exit;
 }

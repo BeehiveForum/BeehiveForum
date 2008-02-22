@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.156 2007-12-26 13:19:33 decoyduck Exp $ */
+/* $Id: index.php,v 1.157 2008-02-22 21:26:52 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -110,7 +110,7 @@ $top_html = html_get_top_page();
 
 // Clear the logon cookie
 
-bh_setcookie("bh_logon", "1", time() - YEAR_IN_SECONDS);
+bh_setcookie("bh_logon", "", time() - YEAR_IN_SECONDS);
 
 // Are we being redirected somewhere?
 

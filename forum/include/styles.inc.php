@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: styles.inc.php,v 1.18 2008-02-14 23:00:44 decoyduck Exp $ */
+/* $Id: styles.inc.php,v 1.19 2008-02-23 09:32:50 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -120,7 +120,7 @@ function style_exists($style_path)
 
     $webtag = get_webtag($webtag_search);
 
-    $style_path = basename($style);
+    $style_path = basename($style_path);
 
     if (@file_exists("styles/$style_path/style.css")) {
         return true;

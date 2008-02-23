@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.511 2008-02-17 09:58:29 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.512 2008-02-23 11:43:56 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1088,15 +1088,6 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
                 if (isset($message['IPADDRESS']) && strlen($message['IPADDRESS']) > 0) {
 
-                    if ((check_ip_address($message['IPADDRESS'])) && ($hostname = gethostbyaddr($message['IPADDRESS']))) {
-
-                        $ip_address_display = sprintf("<span title=\"%s: %s\">%s</span>", $lang['hostname'], $hostname, $message['IPADDRESS']);
-
-                    }else {
-
-                        $ip_address_display = sprintf("<span title=\"%s\">%s</span>", $lang['unknownhostname'], $message['IPADDRESS']);
-                    }
-
                     if (ip_is_banned($message['IPADDRESS'])) {
 
                         echo "                                          <tr>\n";
@@ -1108,7 +1099,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
                         echo "                                          <tr>\n";
                         echo "                                            <td align=\"left\"><span class=\"adminipdisplay\"><b>{$lang['ip']}</b></span></td>\n";
-                        echo "                                            <td align=\"left\" nowrap=\"nowrap\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$message['IPADDRESS']}&amp;msg=$tid.{$message['PID']}\" target=\"_self\">$ip_address_display</a></td>\n";
+                        echo "                                            <td align=\"left\" nowrap=\"nowrap\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$message['IPADDRESS']}&amp;msg=$tid.{$message['PID']}\" target=\"_self\">{$message['IPADDRESS']}</a></td>\n";
                         echo "                                          </tr>";
                     }
 
@@ -1124,20 +1115,11 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
                 if (isset($message['IPADDRESS']) && strlen($message['IPADDRESS']) > 0) {
 
-                    if ((check_ip_address($message['IPADDRESS'])) && ($hostname = gethostbyaddr($message['IPADDRESS']))) {
-
-                        $ip_address_display = sprintf("<span title=\"%s: %s\">%s</span>", $lang['hostname'], $hostname, $message['IPADDRESS']);
-
-                    }else {
-
-                        $ip_address_display = sprintf("<span title=\"%s\">%s</span>", $lang['unknownhostname'], $message['IPADDRESS']);
-                    }
-
                     if ($uid == $message['FROM_UID']) {
 
                         echo "                                          <tr>\n";
                         echo "                                            <td align=\"left\"><span class=\"adminipdisplay\"><b>{$lang['ip']}</b></span></td>\n";
-                        echo "                                            <td align=\"left\" nowrap=\"nowrap\">$ip_address_display</td>\n";
+                        echo "                                            <td align=\"left\" nowrap=\"nowrap\">{$message['IPADDRESS']}</td>\n";
                         echo "                                          </tr>";
 
                     }else {

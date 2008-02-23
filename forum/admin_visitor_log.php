@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_visitor_log.php,v 1.26 2008-01-11 21:27:26 decoyduck Exp $ */
+/* $Id: admin_visitor_log.php,v 1.27 2008-02-23 11:43:56 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -172,28 +172,15 @@ if (sizeof($admin_visitor_log_array['user_array']) > 0) {
             echo "                   <td class=\"postbody\" align=\"left\" width=\"100\">{$lang['unknown']}</td>\n";
         }
 
-        if (isset($visitor['IPADDRESS']) && $visitor['IPADDRESS'] > 0) {
-
-            if ((check_ip_address($visitor['IPADDRESS'])) && ($hostname = gethostbyaddr($visitor['IPADDRESS']))) {
-
-                $ip_address_display = sprintf("<span title=\"%s: %s\">%s</span>", $lang['hostname'], $hostname, $visitor['IPADDRESS']);
-
-            }else {
-
-                $ip_address_display = sprintf("<span title=\"%s\">%s</span>", $lang['unknownhostname'], $visitor['IPADDRESS']);
-            }
+        if (isset($visitor['IPADDRESS']) && strlen($visitor['IPADDRESS']) > 0) {
 
             if (ip_is_banned($visitor['IPADDRESS'])) {
 
-                echo "                   <td class=\"postbody\" align=\"left\" width=\"200\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_ipaddress={$visitor['IPADDRESS']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">$ip_address_display</a>&nbsp;({$lang['banned']})&nbsp;</td>\n";
-
-            }else if (strlen(trim($visitor['IPADDRESS'])) > 0) {
-
-                echo "                   <td class=\"postbody\" align=\"left\" width=\"200\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$visitor['IPADDRESS']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">$ip_address_display</a>&nbsp;</td>\n";
+                echo "                   <td class=\"postbody\" align=\"left\" width=\"200\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_ipaddress={$visitor['IPADDRESS']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$visitor['IPADDRESS']}</a>&nbsp;({$lang['banned']})&nbsp;</td>\n";
 
             }else {
 
-                echo "                   <td class=\"postbody\" align=\"left\" width=\"200\">{$lang['unknown']}&nbsp;</td>\n";
+                echo "                   <td class=\"postbody\" align=\"left\" width=\"200\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$visitor['IPADDRESS']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$visitor['IPADDRESS']}</a>&nbsp;</td>\n";
             }
 
         }else {

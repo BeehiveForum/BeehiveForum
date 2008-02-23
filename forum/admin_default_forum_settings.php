@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.99 2008-01-03 19:42:43 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.100 2008-02-23 09:41:55 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -856,7 +856,7 @@ if ($tool_type <> POST_TOOLBAR_DISABLED) {
 }
 
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", $forum_rules->textarea("forum_rules_message", (isset($forum_settings['forum_rules_message']) && strlen(trim($forum_settings['forum_rules_message'])) > 0) ? _htmlentities($forum_settings['forum_rules_message']) : _htmlentities($default_forum_rules), 10, 80, "virtual"), "</td>\n";
+echo "                        <td align=\"left\">", $forum_rules->textarea("forum_rules_message", (isset($forum_global_settings['forum_rules_message']) && strlen(trim($forum_global_settings['forum_rules_message'])) > 0) ? _htmlentities($forum_global_settings['forum_rules_message']) : _htmlentities($default_forum_rules), 10, 80, "virtual"), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">", $forum_rules->js(false), "</td>\n";

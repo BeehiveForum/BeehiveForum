@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-07x-to-083.php,v 1.1 2008-02-19 14:29:24 decoyduck Exp $ */
+/* $Id: upgrade-07x-to-083.php,v 1.2 2008-02-23 09:39:39 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-07x-to-072.php") {
 
@@ -170,7 +170,30 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
 foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
+    // New column for "In Reply to" link in PMs.
+
     $sql = "ALTER TABLE PM ADD REPLY_TO_MID MEDIUMINT(8) NOT NULL DEFAULT '0' AFTER MID";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // Remove the index on SVALUE before we convert it to TEXT
+
+    $sql = "ALTER TABLE FORUM_SETTINGS DROP INDEX SVALUE";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // Convert the SVALUE column to TEXT. This allows it to become big enough
+    // to hold things like the forum rules message.
+
+    $sql = "ALTER TABLE FORUM_SETTINGS CHANGE SVALUE SVALUE TEXT NOT NULL";
 
     if (!$result = @db_query($sql, $db_install)) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.php,v 1.108 2008-02-05 19:14:06 decoyduck Exp $ */
+/* $Id: links.php,v 1.109 2008-02-24 17:25:23 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -400,6 +400,10 @@ if ($viewmode == LINKS_VIEW_HIERARCHICAL) {
     $links = links_get_all(bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0), $sort_by, $sort_dir, $start);
 }
 
+if (sizeof($links['links_array']) < 1) {
+    html_display_warning_msg($lang['nolinksinfolder'], '65%', 'center');
+}
+
 echo "<div align=\"center\">\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"65%\">\n";
 echo "    <tr>\n";
@@ -455,12 +459,6 @@ if (sizeof($links['links_array']) > 0 ) {
 
         echo "                </tr>\n";
     }
-
-}else {
-
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" colspan=\"5\" class=\"postbody\">{$lang['nolinksinfolder']}</td>\n";
-    echo "                </tr>\n";
 }
 
 echo "                <tr>\n";

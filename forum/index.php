@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.158 2008-02-24 12:21:00 decoyduck Exp $ */
+/* $Id: index.php,v 1.159 2008-02-24 12:32:30 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -132,7 +132,7 @@ if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri'])))
 
         $final_uri = href_cleanup_query_keys($final_uri);
 
-        if (preg_match("/^change_pw.php|^register.php/", $final_uri) > 0) {
+        if (preg_match("/^change_pw.php|^register.php|^confirm_email.php/", $final_uri) > 0) {
 
             $skip_logon_page = true;
 

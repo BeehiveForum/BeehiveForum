@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.126 2007-12-31 21:08:37 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.127 2008-02-24 12:21:00 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -586,7 +586,7 @@ function email_send_new_user_notification($tuid)
 
         // Generate the confirmation link.
 
-        $admin_users_link = html_get_forum_uri("/admin.php?webtag=$webtag&page=admin_users.php%3Fwebtag%3D$webtag%26filter=4");
+        $admin_users_link = html_get_forum_uri("/index.php?webtag=DEFAULT&final_uri=%2Fadmin.php%3Fwebtag%3D$webtag%26page%3Dadmin_users.php%253Fwebtag%253D$webtag%2526filter%3D4");
 
         // Generate the message body.
 

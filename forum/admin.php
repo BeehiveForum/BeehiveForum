@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.php,v 1.102 2007-12-26 13:19:32 decoyduck Exp $ */
+/* $Id: admin.php,v 1.103 2008-02-24 12:20:59 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -106,6 +106,8 @@ if (isset($_GET['page']) && strlen(trim(_stripslashes($_GET['page']))) > 0) {
     if (preg_match("/^$available_pages_preg/", basename($requested_page)) > 0) {
 
         html_draw_top('body_tag=false', 'frames=true');
+
+        $requested_page = href_cleanup_query_keys($requested_page);
 
         echo "<frameset cols=\"250,*\" framespacing=\"0\" border=\"4\">\n";
         echo "  <frame src=\"admin_menu.php?webtag=$webtag\" name=\"", html_get_frame_name('left'), "\" frameborder=\"0\" />\n";

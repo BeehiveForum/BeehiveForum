@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: header.inc.php,v 1.36 2008-01-04 20:29:44 decoyduck Exp $ */
+/* $Id: header.inc.php,v 1.37 2008-02-24 12:21:00 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -151,6 +151,8 @@ function header_check_cache($seconds = 300)
 
     if (!is_numeric($seconds)) return false;
 
+    if (defined('BEEHIVE_INSTALL_NOWARN')) return false;
+
     // Generate our last-modified and expires date stamps
 
     $local_last_modified = gmdate("D, d M Y H:i:s", time()). " GMT";
@@ -178,6 +180,8 @@ function header_check_cache($seconds = 300)
     header("Expires: $local_cache_expires", true);
     header("Last-Modified: $local_last_modified", true);
     header('Cache-Control: private, must-revalidate', true);
+
+    return true;
 }
 
 function header_check_etag($local_etag)

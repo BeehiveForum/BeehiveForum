@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.100 2008-02-23 09:41:55 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.101 2008-02-25 22:22:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -120,6 +120,22 @@ $text_captcha_dir_created = false;
 
 $text_captcha = new captcha(6, 15, 25, 9, 30);
 
+
+// Array of valid periods for the unread cutoff
+
+$unread_cutoff_periods = array(UNREAD_MESSAGES_DISABLED       => $lang['disableunreadmessages'],
+                               THIRTY_DAYS_IN_SECONDS         => $lang['thirtynumberdays'],
+                               SIXTY_DAYS_IN_SECONDS          => $lang['sixtynumberdays'],
+                               NINETY_DAYS_IN_SECONDS         => $lang['ninetynumberdays'],
+                               HUNDRED_EIGHTY_DAYS_IN_SECONDS => $lang['hundredeightynumberdays'],
+                               YEAR_IN_SECONDS                => $lang['onenumberyear']);
+
+// Array of valid periods for the sitemap frequency
+
+$sitemap_freq_periods = array(HOUR_IN_SECONDS => $lang['onceanhour'],
+                              DAY_IN_SECONDS  => $lang['onceaday'],
+                              WEEK_IN_SECONDS => $lang['onceaweek']);
+
 // Submit code.
 
 if (isset($_POST['submit']) || isset($_POST['confirm_unread_cutoff']) || isset($_POST['cancel_unread_cutoff'])) {
@@ -159,7 +175,7 @@ if (isset($_POST['submit']) || isset($_POST['confirm_unread_cutoff']) || isset($
         $new_forum_settings['forum_keywords'] = "";
     }
 
-    if (isset($_POST['messages_unread_cutoff']) && is_numeric($_POST['messages_unread_cutoff'])) {
+    if (isset($_POST['messages_unread_cutoff']) && in_array($_POST['messages_unread_cutoff'], array_keys($unread_cutoff_periods))) {
         $new_forum_settings['messages_unread_cutoff'] = $_POST['messages_unread_cutoff'];
     }else {
         $new_forum_settings['messages_unread_cutoff'] = forum_get_setting('messages_unread_cutoff', false, YEAR_IN_SECONDS);
@@ -315,6 +331,24 @@ if (isset($_POST['submit']) || isset($_POST['confirm_unread_cutoff']) || isset($
         $new_forum_settings['allow_search_spidering'] = "Y";
     }else {
         $new_forum_settings['allow_search_spidering'] = "N";
+    }
+
+    if (isset($_POST['sitemap_enabled']) && $_POST['sitemap_enabled'] == "Y") {
+        $new_forum_settings['sitemap_enabled'] = "Y";
+    }else {
+        $new_forum_settings['sitemap_enabled'] = "N";
+    }
+
+    if (isset($_POST['sitemap_freq']) && in_array($_POST['sitemap_freq'], array_keys($sitemap_freq_periods))) {
+        $new_forum_settings['sitemap_freq'] = $_POST['sitemap_freq'];
+    }else {
+        $new_forum_settings['sitemap_freq'] = DAY_IN_SECONDS;
+    }
+
+    if (isset($_POST['sitemap_path']) && strlen(trim(_stripslashes($_POST['sitemap_path']))) > 0) {
+        $new_forum_settings['sitemap_path'] = trim(_stripslashes($_POST['sitemap_path']));
+    }else {
+        $new_forum_settings['sitemap_path'] = (isset($_SERVER['DOCUMENT_ROOT']) ? sprintf('%s/sitemap.xml', rtrim($_SERVER['DOCUMENT_ROOT'], '/')) : '');
     }
 
     if (isset($_POST['allow_username_changes']) && $_POST['allow_username_changes'] == "Y") {
@@ -496,13 +530,6 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
     html_display_warning_msg($lang['settingsaffectallforumswarning'], '550', 'center');
 }
-
-$unread_cutoff_periods = array(UNREAD_MESSAGES_DISABLED       => $lang['disableunreadmessages'],
-                               THIRTY_DAYS_IN_SECONDS         => $lang['thirtynumberdays'],
-                               SIXTY_DAYS_IN_SECONDS          => $lang['sixtynumberdays'],
-                               NINETY_DAYS_IN_SECONDS         => $lang['ninetynumberdays'],
-                               HUNDRED_EIGHTY_DAYS_IN_SECONDS => $lang['hundredeightynumberdays'],
-                               YEAR_IN_SECONDS                => $lang['onenumberyear']);
 
 echo "<br />\n";
 echo "<div align=\"center\">\n";
@@ -943,8 +970,33 @@ echo "                        <td align=\"left\" width=\"270\">{$lang['allowsear
 echo "                        <td align=\"left\">", form_radio("allow_search_spidering", "Y", $lang['yes'], (isset($forum_global_settings['allow_search_spidering']) && $forum_global_settings['allow_search_spidering'] == 'Y')), "&nbsp;", form_radio("allow_search_spidering", "N", $lang['no'], (isset($forum_global_settings['allow_search_spidering']) && $forum_global_settings['allow_search_spidering'] == 'N') || !isset($forum_global_settings['allow_search_spidering'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"270\">{$lang['sitemapenabled']}:</td>\n";
+echo "                        <td align=\"left\">", form_radio("sitemap_enabled", "Y", $lang['yes'], (isset($forum_global_settings['sitemap_enabled']) && $forum_global_settings['sitemap_enabled'] == 'Y')), "&nbsp;", form_radio("sitemap_enabled", "N", $lang['no'], (isset($forum_global_settings['sitemap_enabled']) && $forum_global_settings['sitemap_enabled'] == 'N') || !isset($forum_global_settings['sitemap_enabled'])), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"270\">{$lang['sitemapupdatefrequency']}:</td>\n";
+echo "                        <td align=\"left\">", form_dropdown_array("sitemap_freq", $sitemap_freq_periods, (isset($forum_global_settings['sitemap_freq']) && in_array($forum_global_settings['sitemap_freq'], array_keys($sitemap_freq_periods))) ? $forum_global_settings['sitemap_freq'] : DAY_IN_SECONDS), "&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"220\" valign=\"top\">{$lang['sitemaplocation']}:</td>\n";
+echo "                        <td align=\"left\">", form_input_text("sitemap_path", (isset($forum_global_settings['sitemap_path']) ? _htmlentities($forum_global_settings['sitemap_path']) : (isset($_SERVER['DOCUMENT_ROOT']) ? sprintf('%s/sitemap.xml', rtrim($_SERVER['DOCUMENT_ROOT'], '/')) : '')), 32, 255), "&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_28']}</p>\n";
+echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_58']}</p>\n";
+
+html_display_warning_msg($lang['forum_settings_help_59'], '95%', 'center');
+
+if (isset($forum_global_settings['sitemap_enabled']) && $forum_global_settings['sitemap_enabled'] == "Y") {
+
+    if (!sitemap_check_dir()) {
+
+        html_display_error_msg($lang['sitemappathnotwritable'], '95%', 'center');
+
+    }
+}
+
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
@@ -1054,7 +1106,7 @@ if (isset($forum_global_settings['attachments_enabled']) && $forum_global_settin
         echo "                      <tr>\n";
         echo "                        <td colspan=\"2\">\n";
 
-        html_display_warning_msg($lang['attachmentdirnotwritable'], '95%', 'center');
+        html_display_error_msg($lang['attachmentdirnotwritable'], '95%', 'center');
 
         echo "                        </td>\n";
         echo "                      </tr>\n";

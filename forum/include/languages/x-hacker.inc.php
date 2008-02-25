@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.269 2008-02-22 20:56:30 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.270 2008-02-25 22:22:49 decoyduck Exp $ */
 
 // British English language file
 
@@ -1996,6 +1996,7 @@ $lang['onceanhour'] = "oNC3 @n h0uR";
 $lang['every6hours'] = "ev3ry 6 h0URs";
 $lang['every12hours'] = "eVERy 12 HoURS";
 $lang['onceaday'] = "oNcE 4 d@y";
+$lang['onceaweek'] = "ONc3 4 W3ek";
 $lang['rssfeeds'] = "r\$S fE3dS";
 $lang['feedname'] = "f33D N@m3";
 $lang['feedfoldername'] = "fE3D pHoLdER N4M3";

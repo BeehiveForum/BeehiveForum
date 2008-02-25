@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_rss_feeds.php,v 1.52 2007-12-26 13:19:32 decoyduck Exp $ */
+/* $Id: admin_rss_feeds.php,v 1.53 2008-02-25 22:22:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -117,7 +117,8 @@ $update_frequencies_array = array(RSS_FEED_UPDATE_NEVER        => $lang['never']
                                   RSS_FEED_UPDATE_ONE_HOUR     => $lang['onceanhour'],
                                   RSS_FEED_UPDATE_SIX_HOURS    => $lang['every6hours'],
                                   RSS_FEED_UPDATE_TWELVE_HOURS => $lang['every12hours'],
-                                  RSS_FEED_UPDATE_ONCE_A_DAY   => $lang['onceaday']);
+                                  RSS_FEED_UPDATE_ONCE_A_DAY   => $lang['onceaday'],
+                                  RSS_FEED_UPDATE_ONCE_A_WEEK  => $lang['onceaweek']);
 
 $start = floor($page - 1) * 10;
 if ($start < 0) $start = 0;

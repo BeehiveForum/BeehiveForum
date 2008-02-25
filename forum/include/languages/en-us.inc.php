@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en-us.inc.php,v 1.43 2008-02-22 20:56:30 decoyduck Exp $ */
+/* $Id: en-us.inc.php,v 1.44 2008-02-25 22:22:49 decoyduck Exp $ */
 
 // British English language file
 
@@ -1996,6 +1996,7 @@ $lang['onceanhour'] = "Once an hour";
 $lang['every6hours'] = "Every 6 hours";
 $lang['every12hours'] = "Every 12 hours";
 $lang['onceaday'] = "Once a day";
+$lang['onceaweek'] = "Once a Week";
 $lang['rssfeeds'] = "RSS Feeds";
 $lang['feedname'] = "Feed Name";
 $lang['feedfoldername'] = "Feed Folder Name";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.155 2008-02-03 17:19:12 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.156 2008-02-25 09:55:23 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -330,7 +330,7 @@ function timestamp_to_date($timestamp)
 }
 
 /**
-* UTF-8 enforced htmlentities
+* UTF-8 and ENT_COMPAT enforced htmlentities
 *
 * Ensures use of UTF-8 and ENT_COMPAT settings for htmlentities.
 *
@@ -353,35 +353,26 @@ function _htmlentities($var)
 }
 
 /**
-* HTML_ENTITIES and ENT_QUOTES enforced htmlentities_decode
+* UTF-8 and ENT_COMPAT enforced html_entity_decode
 *
-* Ensures use of HTML_ENTITIES and ENT_QUOTES settings for htmlentities_decode.
+* Ensures use of UTF-8 and ENT_COMPAT settings for html_entity_decode.
 *
 * @return string
 * @param string $text - String to encode.
 */
 
-function _htmlentities_decode($text)
+function _htmlentities_decode($var)
 {
-    $trans_tbl = get_html_translation_table(HTML_ENTITIES, ENT_QUOTES);
-    $trans_tbl = array_flip($trans_tbl);
+    if (is_array($var)) {
 
-    $trans_tbl['&apos;'] = '\'';
-    $trans_tbl['&#039;'] = '\'';
+        return array_map('_htmlentities_decode', $var);
 
-    $trans_tbl['&lsquo;'] = "'";
-    $trans_tbl['&rsquo;'] = "'";
-    $trans_tbl['&ldquo;'] = '"';
-    $trans_tbl['&rdquo;'] = '"';
-    $trans_tbl['&mdash;'] = '-';
+    }else {
 
-    unset($trans_tbl['&#39;']);
+        return html_entity_decode($var, ENT_COMPAT, 'UTF-8');
+    }
 
-    $ret = strtr($text, $trans_tbl);
-    $ret = html_entity_to_decimal($ret, true);
-
-    $ret = preg_replace('/&#(\d+);/me', "chr(\\1)", $ret);
-    return preg_replace('/&#x([a-f0-9]+);/mei', "chr(0x\\1)", $ret);
+    return $var;
 }
 
 /**

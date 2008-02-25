@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.206 2008-02-05 19:14:06 decoyduck Exp $ */
+/* $Id: search.php,v 1.207 2008-02-25 09:55:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -458,9 +458,9 @@ if ((isset($_POST) && sizeof($_POST) > 0) || isset($_GET['search_string']) || is
                     // Limit displayed post content to 35 characters
 
                     if (strlen($message['CONTENT']) > 35) {
-                        $message['CONTENT'] = word_filter_add_ob_tags(substr(_htmlentities($message['CONTENT']), 0, 35)). "&hellip;";
+                        $message['CONTENT'] = word_filter_add_ob_tags(substr($message['CONTENT'], 0, 35)). "&hellip;";
                     }else {
-                        $message['CONTENT'] = word_filter_add_ob_tags(_htmlentities($message['CONTENT']));
+                        $message['CONTENT'] = word_filter_add_ob_tags($message['CONTENT']);
                     }
 
                     if ((thread_is_poll($search_result['TID']) && $search_result['PID'] == 1) || strlen($message['CONTENT']) < 1) {

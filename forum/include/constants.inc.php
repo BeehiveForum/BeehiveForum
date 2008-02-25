@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: constants.inc.php,v 1.129 2008-02-17 17:14:27 decoyduck Exp $ */
+/* $Id: constants.inc.php,v 1.130 2008-02-25 22:22:49 decoyduck Exp $ */
 
 /**
 * Constants used throughout Beehive.
@@ -39,6 +39,7 @@ define('BEEHIVE_VERSION', "0.8.2-CVS");
 // Constants for date / time.
 
 define('YEAR_IN_SECONDS', 31536000);
+define('WEEK_IN_SECONDS', 604800);
 define('DAY_IN_SECONDS', 86400);
 define('HOUR_IN_SECONDS', 3600);
 define('MINUTE_IN_SECONDS', 60);
@@ -410,11 +411,12 @@ define('FORUM_AUTO_PRUNE_PM', 69);
 define('FORUM_AUTO_PRUNE_SESSIONS', 70);
 define('FORUM_AUTO_CLEAN_THREAD_UNREAD', 71);
 define('FORUM_AUTO_CLEAN_CAPTCHA', 72);
-define('BAN_HIT_TYPE_IP', 73);
-define('BAN_HIT_TYPE_LOGON', 74);
-define('BAN_HIT_TYPE_NICK', 75);
-define('BAN_HIT_TYPE_EMAIL', 76);
-define('BAN_HIT_TYPE_REF', 77);
+define('FORUM_AUTO_SITEMAP_UPDATED', 73);
+define('BAN_HIT_TYPE_IP', 74);
+define('BAN_HIT_TYPE_LOGON', 75);
+define('BAN_HIT_TYPE_NICK', 76);
+define('BAN_HIT_TYPE_EMAIL', 77);
+define('BAN_HIT_TYPE_REF', 78);
 define('USER_PERMS_CHANGED', 78);
 
 // Link viewmode constants
@@ -582,5 +584,6 @@ define('RSS_FEED_UPDATE_ONE_HOUR', 60);
 define('RSS_FEED_UPDATE_SIX_HOURS', 360);
 define('RSS_FEED_UPDATE_TWELVE_HOURS', 720);
 define('RSS_FEED_UPDATE_ONCE_A_DAY', 1440);
+define('RSS_FEED_UPDATE_ONCE_A_WEEK', 10080);
 
 ?>

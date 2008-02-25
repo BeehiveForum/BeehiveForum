@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.511 2008-02-22 20:56:30 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.512 2008-02-25 22:22:49 decoyduck Exp $ */
 
 // British English language file
 
@@ -534,6 +534,10 @@ $lang['toplinkcaption'] = "Top link caption";
 $lang['allowguestaccess'] = "Allow Guest Access";
 $lang['searchenginespidering'] = "Search Engine Spidering";
 $lang['allowsearchenginespidering'] = "Allow Search Engine Spidering";
+$lang['sitemapenabled'] = "Enable Sitemap";
+$lang['sitemapupdatefrequency'] = "Sitemap Update Frequency";
+$lang['sitemaplocation'] = "Sitemap Location";
+$lang['sitemappathnotwritable'] = "Sitemap path must be writable by the web server / PHP process!";
 $lang['newuserregistrations'] = "New User Registrations";
 $lang['preventduplicateemailaddresses'] = "Prevent duplicate email addresses";
 $lang['allownewuserregistrations'] = "Allow new user registrations";
@@ -949,7 +953,7 @@ $lang['forum_settings_help_24'] = "<b>Attachment Dir</b> is the location Beehive
 $lang['forum_settings_help_25'] = "<b>Attachment Space Per User</b> is the maximum amount of disk space a user has for attachments. Once this space is used up the user cannot upload any more attachments. By default this is 1MB of space.";
 $lang['forum_settings_help_26'] = "<b>Allow embedding of attachments in messages / signatures</b> allows users to embed attachments in posts. Enabling this option while useful can increase your bandwidth usage drastically under certain configurations of PHP. If you have limited bandwidth it is recommended that you disable this option.";
 $lang['forum_settings_help_27'] = "<b>Use Alternative attachment method</b> Forces Beehive to use an alternative retrieval method for attachments. If you receive 404 error messages when trying to download attachments from messages try enabling this option.";
-$lang['forum_settings_help_28'] = "This setting allows your forum to be spidered by search engines like Google, AltaVista and Yahoo. If you switch this option off your forum will not be included in these search engines results.";
+$lang['forum_settings_help_28'] = "These settings allows your forum to be spidered by search engines like Google, AltaVista and Yahoo. If you switch this option off your forum will not be included in these search engines results.";
 $lang['forum_settings_help_29'] = "<b>Allow new user registrations</b> allows or disallows the creation of new user accounts. Setting the option to no completely disables the registration form.";
 $lang['forum_settings_help_30'] = "<b>Enable WikiWiki Integration</b> provides WikiWord support in your Forum posts. A WikiWord is made up of two or more concatenated words with uppercase letters (often referred to as CamelCase). If you write a word this way it will automatically be changed into a hyperlink pointing to your chosen WikiWiki.";
 $lang['forum_settings_help_31'] = "<b>Enable WikiWiki Quick Links</b> enables the use of msg:1.1 and User:Logon style extended WikiLinks which create hyperlinks to the specified message / user profile of the specified user.";
@@ -979,6 +983,8 @@ $lang['forum_settings_help_54'] = "Use <b>Forum Rules</b> to enter an Acceptable
 $lang['forum_settings_help_55'] = "You can use HTML in your forum rules. Hyperlinks and email addresses will also be automatically converted to links. To use the default Beehive Forum AUP clear the field.";
 $lang['forum_settings_help_56'] = "Use <b>No-Reply Email</b> to specify an email address that does not exist or will not be monitored for replies. This email address will be used in the headers for all emails sent from your forum including but not limited to Post and PM notifications, user emails and password reminders.";
 $lang['forum_settings_help_57'] = "It is recommended that you use an email address that does not exist to help cut down on spam that may be directed at your main forum email address";
+$lang['forum_settings_help_58'] = "In addition to simple spidering, Beehive can also generate a sitemap for the forum to make it easier for search engines to find and index the messages posted by your users.";
+$lang['forum_settings_help_59'] = "Depending on server performance and the number of forums and threads your Beehive installation contains, generating a sitemap may take several minutes to complete. For this reason it is recommended that you try to avoid having the sitemap generation take place while your forums are busy.";
 
 // Attachments (attachments.php, get_attachment.php) ---------------------------------------
 
@@ -1996,6 +2002,7 @@ $lang['onceanhour'] = "Once an hour";
 $lang['every6hours'] = "Every 6 hours";
 $lang['every12hours'] = "Every 12 hours";
 $lang['onceaday'] = "Once a day";
+$lang['onceaweek'] = "Once a Week";
 $lang['rssfeeds'] = "RSS Feeds";
 $lang['feedname'] = "Feed Name";
 $lang['feedfoldername'] = "Feed Folder Name";

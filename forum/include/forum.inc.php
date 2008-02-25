@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.292 2008-02-25 09:55:24 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.293 2008-02-25 22:22:49 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -47,6 +47,7 @@ include_once(BH_INCLUDE_PATH. "perm.inc.php");
 include_once(BH_INCLUDE_PATH. "pm.inc.php");
 include_once(BH_INCLUDE_PATH. "server.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
+include_once(BH_INCLUDE_PATH. "sitemap.inc.php");
 include_once(BH_INCLUDE_PATH. "stats.inc.php");
 include_once(BH_INCLUDE_PATH. "text_captcha.inc.php");
 include_once(BH_INCLUDE_PATH. "threads.inc.php");
@@ -675,8 +676,9 @@ function forum_check_global_setting_name($setting_name)
                                          'new_user_email_notify', 'new_user_mark_as_of_int', 'new_user_pm_notify_email',
                                          'pm_allow_attachments', 'pm_auto_prune', 'pm_max_user_messages',
                                          'require_email_confirmation', 'require_unique_email', 'require_user_approval',
-                                         'search_min_frequency', 'session_cutoff', 'showpopuponnewpm', 'show_pms',
-                                         'text_captcha_dir', 'text_captcha_enabled', 'text_captcha_key');
+                                         'search_min_frequency', 'session_cutoff', 'sitemap_enabled', 'sitemap_path',
+                                         'sitemap_freq', 'showpopuponnewpm', 'show_pms', 'text_captcha_dir',
+                                         'text_captcha_enabled', 'text_captcha_key');
 
     return in_array($setting_name, $valid_global_forum_settings);
 }
@@ -2572,7 +2574,8 @@ function forum_perform_self_clean()
                                               'pm_system_prune_folders',
                                               'bh_remove_stale_sessions',
                                               'thread_auto_prune_unread_data',
-                                              'captcha_clean_up');
+                                              'captcha_clean_up',
+                                              'sitemap_create_file');
 
     $forum_self_clean_prob = intval(forum_get_setting('forum_self_clean_prob', false, 1000));
 

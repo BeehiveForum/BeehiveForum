@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.293 2008-02-25 22:22:49 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.294 2008-02-26 15:33:20 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -2577,10 +2577,10 @@ function forum_perform_self_clean()
                                               'captcha_clean_up',
                                               'sitemap_create_file');
 
-    $forum_self_clean_prob = intval(forum_get_setting('forum_self_clean_prob', false, 1000));
+    $forum_self_clean_prob = intval(forum_get_setting('forum_self_clean_prob', false, 100));
 
     if ($forum_self_clean_prob < 1) $forum_self_clean_prob = 1;
-    if ($forum_self_clean_prob > 1000) $forum_self_clean_prob = 1000;
+    if ($forum_self_clean_prob > 1000) $forum_self_clean_prob = 100;
 
     if (($mt_result = mt_rand(1, $forum_self_clean_prob)) == 1) {
 

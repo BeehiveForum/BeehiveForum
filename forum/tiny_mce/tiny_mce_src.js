@@ -201,7 +201,7 @@ TinyMCE_Engine.prototype = {
 		this._def("strict_loading_mode", document.contentType == 'application/xhtml+xml');
 		this._def("hidden_tab_class", '');
 		this._def("display_tab_class", '');
-		this._def("gecko_spellcheck", false);
+		this._def("gecko_spellcheck", true);
 		this._def("hide_selects_on_submit", true);
 		this._def("forced_root_block", false);
 		this._def("remove_trailing_nbsp", false);

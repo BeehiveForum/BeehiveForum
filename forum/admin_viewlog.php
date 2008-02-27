@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.132 2008-02-22 20:56:30 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.133 2008-02-27 19:09:19 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -714,8 +714,8 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
                 $auto_update = true;
 
-                $admin_banned_link = sprintf("<a href=\"admin_banned.php?webtag=$webtag&amp;ban_id=%s\" target=\"_blank\">%s</a>", $entry_array[0], $entry_array[2]);
-                $admin_user_link = (isset($entry_array[2])) ? sprintf("<a href=\"admin_user.php?webtag=$webtag&amp;uid=%s\" target=\"_blank\">%s</a>", $entry_array[3], $entry_array[4]) : $lang['guest'];
+                $admin_banned_link = sprintf("<a href=\"admin_banned.php?webtag=$webtag&amp;ban_id=%s\" target=\"_blank\">%s</a>", $entry_array[0], $entry_array[1]);
+                $admin_user_link = (isset($entry_array[3])) ? sprintf("<a href=\"admin_user.php?webtag=$webtag&amp;uid=%s\" target=\"_blank\">%s</a>", $entry_array[3], $entry_array[4]) : $lang['guest'];
 
                 $action_text = sprintf($lang['ipaddressbanhit'], $admin_user_link, $entry_array[1], $admin_banned_link);
                 break;
@@ -724,8 +724,8 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
                 $auto_update = true;
 
-                $admin_banned_link = sprintf("<a href=\"admin_banned.php?webtag=$webtag&amp;ban_id=%s\" target=\"_blank\">%s</a>", $entry_array[0], $entry_array[2]);
-                $admin_user_link = (isset($entry_array[2])) ? sprintf("<a href=\"admin_user.php?webtag=$webtag&amp;uid=%s\" target=\"_blank\">%s</a>", $entry_array[3], $entry_array[4]) : $lang['guest'];
+                $admin_banned_link = sprintf("<a href=\"admin_banned.php?webtag=$webtag&amp;ban_id=%s\" target=\"_blank\">%s</a>", $entry_array[0], $entry_array[1]);
+                $admin_user_link = (isset($entry_array[3])) ? sprintf("<a href=\"admin_user.php?webtag=$webtag&amp;uid=%s\" target=\"_blank\">%s</a>", $entry_array[3], $entry_array[4]) : $lang['guest'];
 
                 $action_text = sprintf($lang['logonbanhit'], $admin_user_link, $entry_array[1], $admin_banned_link);
                 break;
@@ -734,8 +734,8 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
                 $auto_update = true;
 
-                $admin_banned_link = sprintf("<a href=\"admin_banned.php?webtag=$webtag&amp;ban_id=%s\" target=\"_blank\">%s</a>", $entry_array[0], $entry_array[2]);
-                $admin_user_link = (isset($entry_array[2])) ? sprintf("<a href=\"admin_user.php?webtag=$webtag&amp;uid=%s\" target=\"_blank\">%s</a>", $entry_array[3], $entry_array[4]) : $lang['guest'];
+                $admin_banned_link = sprintf("<a href=\"admin_banned.php?webtag=$webtag&amp;ban_id=%s\" target=\"_blank\">%s</a>", $entry_array[0], $entry_array[1]);
+                $admin_user_link = (isset($entry_array[3])) ? sprintf("<a href=\"admin_user.php?webtag=$webtag&amp;uid=%s\" target=\"_blank\">%s</a>", $entry_array[3], $entry_array[4]) : $lang['guest'];
 
                 $action_text = sprintf($lang['nicknamebanhit'], $admin_user_link, $entry_array[1], $admin_banned_link);
                 break;
@@ -744,8 +744,8 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
                 $auto_update = true;
 
-                $admin_banned_link = sprintf("<a href=\"admin_banned.php?webtag=$webtag&amp;ban_id=%s\" target=\"_blank\">%s</a>", $entry_array[0], $entry_array[2]);
-                $admin_user_link = (isset($entry_array[2])) ? sprintf("<a href=\"admin_user.php?webtag=$webtag&amp;uid=%s\" target=\"_blank\">%s</a>", $entry_array[3], $entry_array[4]) : $lang['guest'];
+                $admin_banned_link = sprintf("<a href=\"admin_banned.php?webtag=$webtag&amp;ban_id=%s\" target=\"_blank\">%s</a>", $entry_array[0], $entry_array[1]);
+                $admin_user_link = (isset($entry_array[3])) ? sprintf("<a href=\"admin_user.php?webtag=$webtag&amp;uid=%s\" target=\"_blank\">%s</a>", $entry_array[3], $entry_array[4]) : $lang['guest'];
 
                 $action_text = sprintf($lang['emailbanhit'], $admin_user_link, $entry_array[1], $admin_banned_link);
                 break;
@@ -754,8 +754,8 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
                 $auto_update = true;
 
-                $admin_banned_link = sprintf("<a href=\"admin_banned.php?webtag=$webtag&amp;ban_id=%s\" target=\"_blank\">%s</a>", $entry_array[0], $entry_array[2]);
-                $admin_user_link = (isset($entry_array[2])) ? sprintf("<a href=\"admin_user.php?webtag=$webtag&amp;uid=%s\" target=\"_blank\">%s</a>", $entry_array[3], $entry_array[4]) : $lang['guest'];
+                $admin_banned_link = sprintf("<a href=\"admin_banned.php?webtag=$webtag&amp;ban_id=%s\" target=\"_blank\">%s</a>", $entry_array[0], $entry_array[1]);
+                $admin_user_link = (isset($entry_array[3])) ? sprintf("<a href=\"admin_user.php?webtag=$webtag&amp;uid=%s\" target=\"_blank\">%s</a>", $entry_array[3], $entry_array[4]) : $lang['guest'];
 
                 $action_text = sprintf($lang['refererbanhit'], $admin_user_link, $entry_array[1], $admin_banned_link);
                 break;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.128 2008-02-24 12:26:25 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.129 2008-02-27 21:10:12 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -588,7 +588,7 @@ function email_send_new_user_notification($tuid)
 
         // Generate the confirmation link.
 
-        $admin_users_link = rawurlencode("/admin.php?webtag=$webtag&page=admin_users.php%3Fwebtag%3D$webtag%26filter%3D4");
+        $admin_users_link = rawurlencode("/admin_users.php?webtag=$webtag&filter=4");
         $admin_users_link = html_get_forum_uri("/index.php?webtag=DEFAULT&final_uri=$admin_users_link");
 
         // Generate the message body.
@@ -708,7 +708,7 @@ function email_send_post_approval_notification($tuid)
 
         // Generate the confirmation link.
 
-        $admin_post_approval_link = rawurlencode("/admin.php?webtag=$webtag&page=admin_post_approve.php%3Fwebtag%3D$webtag");
+        $admin_post_approval_link = rawurlencode("/admin_post_approve.php?webtag=$webtag");
         $admin_post_approval_link = html_get_forum_uri("/index.php?webtag=DEFAULT&final_uri=$admin_post_approval_link");
 
         // Generate the message body.

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.112 2008-02-23 09:33:30 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.113 2008-02-27 19:09:19 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -287,69 +287,9 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
 
             // Get the HTTP Query Values ($_GET)
 
-            $error_msg_array[] = "<b>\$_GET:</b>";
+            $error_msg_array[] = "<b>Variables:</b>";
 
-            if (isset($_GET) && sizeof($_GET) > 0) {
-
-                $request_keys_array = array();
-                $request_values_array = array();
-
-                flatten_array($_GET, $request_keys_array, $request_values_array);
-
-                foreach ($request_keys_array as $key => $request_key_name) {
-
-                    if (!isset($request_values_array[$key])) $request_values_array[$key] = "";
-                    $error_msg_array[] = "$request_key_name = {$request_values_array[$key]}";
-                }
-
-            }else {
-
-                $error_msg_array[] = "<i>(none)</i>\n";
-            }
-
-            // Get the HTTP Query Values ($_POST)
-
-            $error_msg_array[] = "<b>\$_POST:</b>";
-
-            if (isset($_POST) && sizeof($_POST) > 0) {
-
-                $request_keys_array = array();
-                $request_values_array = array();
-
-                flatten_array($_POST, $request_keys_array, $request_values_array);
-
-                foreach ($request_keys_array as $key => $request_key_name) {
-
-                    if (!isset($request_values_array[$key])) $request_values_array[$key] = "";
-                    $error_msg_array[] = "$request_key_name = {$request_values_array[$key]}";
-                }
-
-            }else {
-
-                $error_msg_array[] = "<i>(none)</i>\n";
-            }
-
-            // Get the HTTP Query Values ($_POST)
-
-            $error_msg_array[] = "<b>\$_COOKIE:</b>";
-
-            if (isset($_COOKIE) && sizeof($_COOKIE) > 0) {
-
-                $request_keys_array = array();
-                $request_values_array = array();
-
-                flatten_array($_COOKIE, $request_keys_array, $request_values_array);
-
-                foreach ($request_keys_array as $key => $request_key_name) {
-
-                    if (!isset($request_values_array[$key])) $request_values_array[$key] = "";
-                    $error_msg_array[] = "$request_key_name = {$request_values_array[$key]}";
-                }
-
-            }else {
-
-                $error_msg_array[] = "<i>(none)</i>\n";
-            }
+            $error_msg_array[] = print_r(get_defined_vars(), true);
         }
 
         // Check to see if we need to send the error report by email

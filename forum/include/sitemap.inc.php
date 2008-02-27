@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: sitemap.inc.php,v 1.2 2008-02-25 22:53:58 decoyduck Exp $ */
+/* $Id: sitemap.inc.php,v 1.3 2008-02-27 19:09:19 decoyduck Exp $ */
 
 /**
 * sitemap.inc.php - sitemap functions
@@ -173,7 +173,7 @@ function sitemap_create_file()
     // Sitemap URL entry
 
     $sitemap_url_entry = "  <url>\n";
-    $sitemap_url_entry.= "    <loc>%s/lmessages.php?webtag=$webtag&amp;msg=%s.1</loc>\n";
+    $sitemap_url_entry.= "    <loc>%s/lmessages.php?webtag=%s&amp;msg=%s.1</loc>\n";
     $sitemap_url_entry.= "    <lastmod>%s</lastmod>\n";
     $sitemap_url_entry.= "    <changefreq>%s</changefreq>\n";
     $sitemap_url_entry.= "  </url>\n";
@@ -247,7 +247,7 @@ function sitemap_create_file()
                         $change_frequency = "daily";
                     }
 
-                    $sitemap_url_entry = sprintf($sitemap_url_entry, $forum_location, $thread_tid, $thread_last_modified, $change_frequency);
+                    $sitemap_url_entry = sprintf($sitemap_url_entry, $forum_location, $webtag, $thread_tid, $thread_last_modified, $change_frequency);
 
                     if (!@file_put_contents($sitemap_path, $sitemap_url_entry, FILE_APPEND)) return false;
                 }

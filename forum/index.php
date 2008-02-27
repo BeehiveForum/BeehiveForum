@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.159 2008-02-24 12:32:30 decoyduck Exp $ */
+/* $Id: index.php,v 1.160 2008-02-27 21:10:11 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -130,10 +130,9 @@ if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri'])))
 
         $final_uri = basename(trim(_stripslashes($_GET['final_uri'])));
 
-        $final_uri = href_cleanup_query_keys($final_uri);
-
         if (preg_match("/^change_pw.php|^register.php|^confirm_email.php/", $final_uri) > 0) {
 
+            $final_uri = href_cleanup_query_keys($final_uri);
             $skip_logon_page = true;
 
         }else if (preg_match("/^$popup_files_preg/", $final_uri) > 0) {
@@ -143,13 +142,13 @@ if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri'])))
 
         }else if (preg_match("/^admin_[^\.]+\.php/", $final_uri) > 0) {
 
-            $final_uri = rawurlencode($final_uri);
-            $final_uri = "admin.php?webtag=$webtag&page=$final_uri";
+            $final_uri = rawurlencode(href_cleanup_query_keys($final_uri, false, '&'));
+            $final_uri = "admin.php?webtag=$webtag&amp;page=$final_uri";
 
         }else if (preg_match("/^$my_controls_preg/", $final_uri) > 0) {
 
-            $final_uri = rawurlencode($final_uri);
-            $final_uri = "user.php?webtag=$webtag&page=$final_uri";
+            $final_uri = rawurlencode(href_cleanup_query_keys($final_uri, false, '&'));
+            $final_uri = "user.php?webtag=$webtag&amp;page=$final_uri";
         }
     }
 }
@@ -208,7 +207,7 @@ if ($skip_logon_page === true) {
                 }elseif ($start_page == START_PAGE_INBOX) {
                     $final_uri = "pm.php?webtag=$webtag";
                 }elseif ($start_page == START_PAGE_THREAD_LIST) {
-                    $final_uri = "start.php?webtag=$webtag&left=threadlist";
+                    $final_uri = "start.php?webtag=$webtag&amp;left=threadlist";
                 }else {
                     $final_uri = "start.php?webtag=$webtag";
                 }

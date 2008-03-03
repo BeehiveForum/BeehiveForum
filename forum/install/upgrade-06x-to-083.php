@@ -21,18 +21,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06x-to-083.php,v 1.2 2008-02-23 09:39:39 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-083.php,v 1.3 2008-03-03 22:23:05 decoyduck Exp $ */
 
-if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-06x-to-072.php") {
+if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-06x-to-083.php") {
 
     header("Request-URI: ../install.php");
     header("Content-Location: ../install.php");
     header("Location: ../install.php");
     exit;
-}
-
-if (!isset($_SERVER['SCRIPT_FILENAME'])) {
-    $_SERVER['SCRIPT_FILENAME'] = $_SERVER['SCRIPT_NAME'];
 }
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");

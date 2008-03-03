@@ -21,9 +21,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.159 2008-02-25 09:55:24 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.160 2008-03-03 22:23:05 decoyduck Exp $ */
 
-if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
+if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'new-install.php') {
 
     header("Request-URI: ../install.php");
     header("Content-Location: ../install.php");
@@ -1361,53 +1361,56 @@ if (!isset($skip_dictionary) || $skip_dictionary === false) {
 
     $word_count = 0;
 
-    $sql = "LOAD DATA INFILE '$dictionary_file' INTO TABLE DICTIONARY ";
-    $sql.= "FIELDS TERMINATED BY '\\t' LINES TERMINATED BY '\\n' ";
-    $sql.= "(WORD, SOUND)";
+    if (file_exists($dictionary_file) && md5_file($dictionary_file) == 'dba69ce94c552ce1cdc6436068c12d07') {
 
-    if (!$result = @db_query($sql, $db_install)) {
+        $sql = "LOAD DATA INFILE '$dictionary_file' INTO TABLE DICTIONARY ";
+        $sql.= "FIELDS TERMINATED BY '\\t' LINES TERMINATED BY '\\n' ";
+        $sql.= "(WORD, SOUND)";
 
-        // We're running in CGI mode or we failed to perform LOAD DATA
-        // INFILE. Possible reasons including MySQL not being able to
-        // find the file or permission denied. To continue we now
-        // process the dictionary script using PHP.
+        if (!$result = @db_query($sql, $db_install)) {
 
-        if ($fp = @fopen($dictionary_file, 'r')) {
+            // We're running in CGI mode or we failed to perform LOAD DATA
+            // INFILE. Possible reasons including MySQL not being able to
+            // find the file or permission denied. To continue we now
+            // process the dictionary script using PHP.
 
-            while (!feof($fp)) {
+            if ($fp = @fopen($dictionary_file, 'r')) {
 
-                $dictionary_line = fgets($fp, 100);
+                while (!feof($fp)) {
 
-                @list($str_word, $str_meta) = explode("\t", $dictionary_line);
+                    $dictionary_line = fgets($fp, 100);
 
-                if (isset($str_word) && strlen(trim($str_word)) > 0 && isset($str_meta) && strlen(trim($str_meta)) > 0) {
+                    @list($str_word, $str_meta) = explode("\t", $dictionary_line);
 
-                    $str_meta = db_escape_string(trim($str_meta));
-                    $str_word = db_escape_string(trim($str_word));
+                    if (isset($str_word) && strlen(trim($str_word)) > 0 && isset($str_meta) && strlen(trim($str_meta)) > 0) {
 
-                    $sql = "INSERT INTO DICTIONARY (WORD, SOUND, UID) ";
-                    $sql.= "VALUES ('$str_word', '$str_meta', 0)";
+                        $str_meta = db_escape_string(trim($str_meta));
+                        $str_word = db_escape_string(trim($str_word));
 
-                    if (!$result = db_query($sql, $db_install)) {
+                        $sql = "INSERT INTO DICTIONARY (WORD, SOUND, UID) ";
+                        $sql.= "VALUES ('$str_word', '$str_meta', 0)";
 
-                        $valid = false;
-                        return;
+                        if (!$result = db_query($sql, $db_install)) {
+
+                            $valid = false;
+                            return;
+                        }
+
+                        $word_count++;
+
+                        if ($word_count == 500) {
+
+                            $word_count = 0;
+                            install_flush_buffer();
+                        }
+
+                        unset($str_word);
+                        unset($str_meta);
                     }
-
-                    $word_count++;
-
-                    if ($word_count == 500) {
-
-                        $word_count = 0;
-                        install_flush_buffer();
-                    }
-
-                    unset($str_word);
-                    unset($str_meta);
                 }
-            }
 
-            fclose($fp);
+                fclose($fp);
+            }
         }
     }
 }

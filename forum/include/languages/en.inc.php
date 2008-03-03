@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.512 2008-02-25 22:22:49 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.513 2008-03-03 15:03:20 decoyduck Exp $ */
 
 // British English language file
 
@@ -708,6 +708,7 @@ $lang['forumautoprunepm'] = "Forum Auto Update: PM Folders Pruned";
 $lang['forumautoprunesessions'] = "Forum Auto Update: Sessions Pruned";
 $lang['forumautocleanthreadunread'] = "Forum Auto Update: Thread Unread Data Cleaned";
 $lang['forumautocleancaptcha'] = "Forum Auto Update: Text-Captcha Images Cleaned";
+$lang['forumautositemapupdated'] = "Forum Auto Update: Sitemap Updated";
 
 $lang['ipaddressbanhit'] = "User '%s' is banned. IP Address '%s' matched ban data '%s'";
 $lang['logonbanhit'] = "User '%s' is banned. Logon '%s' matched ban data '%s'";

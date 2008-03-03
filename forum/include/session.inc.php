@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.339 2008-02-22 21:26:51 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.340 2008-03-03 15:03:20 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -182,11 +182,11 @@ function bh_session_check($show_session_fail = true)
 
                     if (!$result = db_query($sql, $db_bh_session_check)) return false;
                 }
-
-                // Forum self-preservation
-
-                forum_perform_self_clean();
             }
+
+            // Forum self-preservation
+
+            forum_perform_maintenance();
 
             // Return session data
 
@@ -434,10 +434,7 @@ function bh_guest_session_init($update_visitor_log = true)
 
         // Forum self-preservation
 
-        if (($user_sess['SERVER_TIME'] - $user_sess['TIME']) > $active_sess_cutoff) {
-
-            forum_perform_self_clean();
-        }
+        forum_perform_maintenance();
 
         return $user_sess;
     }
@@ -1179,7 +1176,7 @@ function bh_session_get_folders_by_perm($perm, $forum_fid = false)
         $forum_fid = $table_data['FID'];
     }
 
-    $user_sess = $GLOBALS['user_sess'];
+    $user_sess = (isset($GLOBALS['user_sess'])) ? $GLOBALS['user_sess'] : false;
 
     $folder_fid_array = array();
 

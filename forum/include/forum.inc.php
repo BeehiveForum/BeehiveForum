@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.294 2008-02-26 15:33:20 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.295 2008-03-03 15:03:20 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -569,6 +569,41 @@ function forum_get_settings_by_fid($fid, $include_global_settings = true)
     return $forum_settings_array;
 }
 
+function forum_save_setting($forum_fid, $sname, $svalue)
+{
+    if (!is_numeric($forum_fid)) return false;
+
+    if (!$db_forum_save_setting = db_connect()) return false;
+
+    $sname = db_escape_string($sname);
+    $svalue = db_escape_string($svalue);
+
+    if (forum_check_setting_name($sname) || forum_check_global_setting_name($sname)) {
+
+        $sql = "SELECT SVALUE FROM FORUM_SETTINGS WHERE FID = '$forum_fid' ";
+        $sql.= "AND SNAME = '$sname'";
+
+        if (!$result = db_query($sql, $db_forum_save_setting)) return false;
+
+        if (db_num_rows($result) > 0) {
+
+            $sql = "UPDATE LOW_PRIORITY FORUM_SETTINGS SET SVALUE = '$svalue' WHERE FID = '$forum_fid' ";
+            $sql.= "AND SNAME = '$sname'";
+
+            if (!$result = db_query($sql, $db_forum_save_setting)) return false;
+
+        }else {
+
+            $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
+            $sql.= "VALUES ($forum_fid, '$sname', '$svalue')";
+
+            if (!$result = db_query($sql, $db_forum_save_setting)) return false;
+        }
+    }
+
+    return true;
+}
+
 function forum_save_settings($forum_settings_array)
 {
     if (!is_array($forum_settings_array)) return false;
@@ -671,14 +706,17 @@ function forum_check_global_setting_name($setting_name)
                                          'attachments_max_user_space', 'attachment_allow_guests', 'attachment_dir',
                                          'attachment_use_old_method', 'forum_desc', 'forum_email',
                                          'forum_keywords', 'forum_name', 'forum_noreply_email',
-                                         'forum_rules_enabled', 'forum_rules_message', 'guest_account_enabled',
+                                         'forum_rules_enabled', 'forum_rules_message', 'forum_maintenance_function',
+                                         'forum_maintenance_schedule', 'update_stats_last_run', 'pm_system_prune_folders_last_run',
+                                         'bh_remove_stale_sessions_last_run', 'thread_auto_prune_unread_data_last_run',
+                                         'captcha_clean_up_last_run', 'sitemap_create_file_last_run', 'guest_account_enabled',
                                          'guest_show_recent', 'messages_unread_cutoff', 'messages_unread_cutoff_custom',
                                          'new_user_email_notify', 'new_user_mark_as_of_int', 'new_user_pm_notify_email',
-                                         'pm_allow_attachments', 'pm_auto_prune', 'pm_max_user_messages',
-                                         'require_email_confirmation', 'require_unique_email', 'require_user_approval',
-                                         'search_min_frequency', 'session_cutoff', 'sitemap_enabled', 'sitemap_path',
-                                         'sitemap_freq', 'showpopuponnewpm', 'show_pms', 'text_captcha_dir',
-                                         'text_captcha_enabled', 'text_captcha_key');
+                                         'pm_allow_attachments', 'pm_auto_prune', 'pm_max_user_messages', 'require_email_confirmation',
+                                         'require_unique_email', 'require_user_approval', 'search_min_frequency',
+                                         'session_cutoff', 'sitemap_enabled', 'sitemap_path', 'sitemap_freq',
+                                         'showpopuponnewpm', 'show_pms', 'text_captcha_dir', 'text_captcha_enabled',
+                                         'text_captcha_key');
 
     return in_array($setting_name, $valid_global_forum_settings);
 }
@@ -2565,31 +2603,113 @@ function forums_get_available_count()
     return false;
 }
 
-// Forum self-preservation functions. Randomly picks a function to
-// run which helps preserve functionality of Beehive.
-
-function forum_perform_self_clean()
+function forum_get_maintenance_schedule(&$maintenance_hour, &$maintenance_minute)
 {
-    $forum_self_clean_functions_array = array('update_stats',
-                                              'pm_system_prune_folders',
-                                              'bh_remove_stale_sessions',
-                                              'thread_auto_prune_unread_data',
-                                              'captcha_clean_up',
-                                              'sitemap_create_file');
+    $forum_maintenance_schedule = forum_get_setting('forum_maintenance_schedule', false, '02:00');
 
-    $forum_self_clean_prob = intval(forum_get_setting('forum_self_clean_prob', false, 100));
+    if (preg_match("/^([0-9]{2}):([0-9]{2})$/", $forum_maintenance_schedule, $matches_array) > 0) {
 
-    if ($forum_self_clean_prob < 1) $forum_self_clean_prob = 1;
-    if ($forum_self_clean_prob > 1000) $forum_self_clean_prob = 100;
+        list(,$maintenance_hour, $maintenance_minute) = $matches_array;
 
-    if (($mt_result = mt_rand(1, $forum_self_clean_prob)) == 1) {
+    }else {
 
-        $forum_self_clean_function = mt_rand(0, sizeof($forum_self_clean_functions_array) - 1);
+        $maintenance_hour = 2;
+        $maintenance_minute = 0;
+    }
 
-        if (isset($forum_self_clean_functions_array[$forum_self_clean_function])
-          && function_exists($forum_self_clean_functions_array[$forum_self_clean_function])) {
+    return true;
+}
 
-            return $forum_self_clean_functions_array[$forum_self_clean_function]();
+function forum_self_clean_check_xml()
+{
+    if (isset($_SERVER['PHP_SELF']) && strlen(trim(_stripslashes($_SERVER['PHP_SELF']))) > 0) {
+
+        $script_filename = basename(trim(_stripslashes($_SERVER['PHP_SELF'])));
+
+        if (in_array($script_filename, array('pm.php', 'user_stats.php'))) {
+
+            if (isset($_GET['check_messages']) || isset($_GET['get_stats'])) return false;
+        }
+    }
+
+    return true;
+}
+
+// Forum self-preservation functions.
+
+function forum_perform_maintenance()
+{
+    // Array of functions that we run one at a time.
+
+    $forum_maintenance_functions_array = array('update_stats',
+                                               'pm_system_prune_folders',
+                                               'bh_remove_stale_sessions',
+                                               'thread_auto_prune_unread_data',
+                                               'captcha_clean_up',
+                                               'sitemap_create_file');
+
+    // XML requests shouldn't trigger forum self clean
+
+    if (!forum_self_clean_check_xml()) return false;
+
+    // Get the scheduled forum maintenence start hour and minute.
+
+    forum_get_maintenance_schedule($maintenance_hour, $maintenance_minute);
+
+    // Fetch index of the last function we ran.
+
+    $forum_maintenance_function = forum_get_setting('forum_maintenance_function', false, 0);
+
+    // Check that it's a valid function. If it's not we
+    // reset back to the first function in the list.
+
+    if (!isset($forum_maintenance_functions_array[$forum_maintenance_function])) {
+        $forum_maintenance_function = 0;
+    }
+
+    // Generate the variable name for the function's last run date.
+
+    $forum_maintenance_date_var = sprintf("%s_last_run", $forum_maintenance_functions_array[$forum_maintenance_function]);
+
+    // Get the functions last run time from the database.
+
+    $forum_maintenance_last_run = forum_get_setting($forum_maintenance_date_var, false, 0);
+
+    // If the function hasn't been run in the last 24 hours we should run it.
+
+    if ((mktime() - $forum_maintenance_last_run) > DAY_IN_SECONDS) {
+
+        // Check that the scheduled start time has passed.
+
+        if (mktime() > mktime($maintenance_hour, $maintenance_minute)) {
+
+            // Execute the function if it exists.
+
+            if (function_exists($forum_maintenance_functions_array[$forum_maintenance_function])) {
+                $forum_maintenance_functions_array[$forum_maintenance_function]();
+            }
+
+            // Update the forum_maintenance_function variable.
+
+            $forum_maintenance_function++;
+
+            // Check that it's a valid function. If it's not we
+            // reset back to the first function in the list.
+
+            if (!isset($forum_maintenance_functions_array[$forum_maintenance_function])) {
+                $forum_maintenance_function = 0;
+            }
+
+            // An array of forum settings we need to update.
+
+            $forum_settings_array = array('forum_maintenance_function' => $forum_maintenance_function,
+                                          $forum_maintenance_date_var  => mktime());
+
+            // Save the settings to the database.
+
+            forum_save_default_settings($forum_settings_array);
+
+            return true;
         }
     }
 

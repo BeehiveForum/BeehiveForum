@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.134 2008-02-27 21:10:11 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.135 2008-03-03 15:03:20 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -708,6 +708,12 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
                 $auto_update = true;
                 $action_text = $lang['forumautocleancaptcha'];
+                break;
+
+            case FORUM_AUTO_SITEMAP_UPDATED:
+
+                $auto_update = true;
+                $action_text = $lang['forumautositemapupdated'];
                 break;
 
             case BAN_HIT_TYPE_IP:

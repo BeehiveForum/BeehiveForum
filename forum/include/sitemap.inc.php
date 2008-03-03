@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: sitemap.inc.php,v 1.3 2008-02-27 19:09:19 decoyduck Exp $ */
+/* $Id: sitemap.inc.php,v 1.4 2008-03-03 15:03:20 decoyduck Exp $ */
 
 /**
 * sitemap.inc.php - sitemap functions
@@ -102,17 +102,19 @@ function sitemap_forum_get_threads($forum_fid)
 
     $threads_array = array();
 
-    // Get the folders the user can see.
+    // Constant for Guest access.
 
-    $folders = folder_get_available_by_forum($forum_fid);
+    $user_perm_guest_access = USER_PERM_GUEST_ACCESS;
 
     // Get the table prefix from the forum fid
 
     if ($table_data = forum_get_table_prefix($forum_fid)) {
 
-        $sql = "SELECT TID, UNIX_TIMESTAMP(MODIFIED) AS MODIFIED ";
-        $sql.= "FROM {$table_data['PREFIX']}THREAD ";
-        $sql.= "WHERE FID IN ($folders)";
+        $sql = "SELECT THREAD.TID, UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED ";
+        $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD LEFT JOIN GROUP_PERMS ";
+        $sql.= "ON (GROUP_PERMS.FID = THREAD.FID) ";
+        $sql.= "WHERE GROUP_PERMS.PERM & $user_perm_guest_access > 0 ";
+        $sql.= "AND GROUP_PERMS.GID = '0'";
 
         if (!$result = db_query($sql, $db_sitemap_forum_get_threads)) return false;
 
@@ -202,13 +204,13 @@ function sitemap_create_file()
 
     $sitemap_freq = forum_get_setting('sitemap_freq', false, DAY_IN_SECONDS);
 
+    // Check that the file is older than the update frequency.
+
+    if (file_exists($sitemap_path) && (mktime() - filemtime($sitemap_path) < $sitemap_freq)) return false;
+
     // Check the sitemap files already exists and if not create it.
 
     if (!@file_exists($sitemap_path)) file_put_contents($sitemap_path, '');
-
-    // Check that the file is older than the update frequency.
-
-    if (@(filemtime($sitemap_path) - mktime()) < $sitemap_freq) return false;
 
     // Check that it is writable.
 

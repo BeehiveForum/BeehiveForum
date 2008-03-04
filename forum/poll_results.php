@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll_results.php,v 1.28 2007-12-26 13:19:34 decoyduck Exp $ */
+/* $Id: poll_results.php,v 1.29 2008-03-04 00:13:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -172,6 +172,7 @@ if ($polldata['VOTETYPE'] == POLL_VOTE_PUBLIC && $polldata['POLLTYPE'] <> POLL_T
     echo "    </td>\n";
     echo "  </tr>\n";
     echo "</table>\n";
+    echo "<br />\n";
     echo "</div>\n";
 }
 
@@ -189,7 +190,9 @@ if ($polldata['SHOWRESULTS'] == POLL_SHOW_RESULTS || bh_session_get_value('UID')
     if ($polldata['VOTETYPE'] == POLL_VOTE_PUBLIC && $polldata['CHANGEVOTE'] < POLL_VOTE_MULTI && $polldata['POLLTYPE'] <> POLL_TABLE_GRAPH) {
 
         echo "        <tr>\n";
-        echo "          <td align=\"left\" colspan=\"2\">", poll_public_ballot($tid, $view_style), "</td>\n";
+        echo "          <td align=\"left\" colspan=\"2\">\n";
+        echo poll_public_ballot($tid, $view_style);
+        echo "          </td>\n";
         echo "        </tr>\n";
 
     }else {
@@ -197,19 +200,25 @@ if ($polldata['SHOWRESULTS'] == POLL_SHOW_RESULTS || bh_session_get_value('UID')
         if ($polldata['POLLTYPE'] == POLL_HORIZONTAL_GRAPH) {
 
             echo "        <tr>\n";
-            echo "          <td align=\"left\">", poll_horizontal_graph($tid), "</td>\n";
+            echo "          <td align=\"left\">\n";
+            echo poll_horizontal_graph($tid);
+            echo "          </td>\n";
             echo "        </tr>\n";
 
         }elseif ($polldata['POLLTYPE'] == POLL_TABLE_GRAPH) {
 
             echo "        <tr>\n";
-            echo "          <td align=\"left\">", poll_table_graph($tid), "</td>\n";
+            echo "          <td align=\"left\">";
+            echo poll_table_graph($tid);
+            echo "          </td>\n";
             echo "        </tr>\n";
 
         }else {
 
             echo "        <tr>\n";
-            echo "          <td align=\"left\">", poll_vertical_graph($tid), "</td>\n";
+            echo "          <td align=\"left\">\n";
+            echo poll_vertical_graph($tid);
+            echo "          </td>\n";
             echo "        </tr>\n";
         }
     }

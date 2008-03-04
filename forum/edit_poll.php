@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.158 2007-12-26 13:19:33 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.159 2008-03-04 00:13:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -780,9 +780,9 @@ echo "                    <table class=\"posthead\" width=\"210\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">\n";
 echo "                          <h2>{$lang['threadtitle']}</h2>\n";
-echo "                          ", form_input_text('t_threadtitle', isset($t_threadtitle) ? _htmlentities($t_threadtitle) : _htmlentities($threaddata['TITLE']), 30, 64), "\n";
+echo "                          ", form_input_text('t_threadtitle', isset($t_threadtitle) ? _htmlentities($t_threadtitle) : _htmlentities($threaddata['TITLE']), 30, 64, false, "thread_title"), "\n";
 echo "                          <h2>{$lang['pollquestion']}</h2>\n";
-echo "                          ", form_input_text('question', isset($t_question) ? _htmlentities($t_question) : _htmlentities($poll_data['QUESTION']), 30, 64), "\n";
+echo "                          ", form_input_text('question', isset($t_question) ? _htmlentities($t_question) : _htmlentities($poll_data['QUESTION']), 30, 64, false, "thread_title"), "\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";

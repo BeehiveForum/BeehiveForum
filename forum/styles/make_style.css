@@ -911,6 +911,11 @@ a {
     width: 168px;
 }
 
+.bhlogonother {
+    font-style: italic;
+    padding-left: 5px;
+}
+
 .bhlogonseparator {
    max-width: 100%;
    width: 350px;

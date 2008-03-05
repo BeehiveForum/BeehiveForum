@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.271 2008-03-05 13:55:40 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.272 2008-03-05 22:49:10 decoyduck Exp $ */
 
 // British English language file
 
@@ -1213,7 +1213,7 @@ $lang['lightHTMLversion'] = "ligHT hTML VerS1ON";
 $lang['youhaveloggedout'] = "j00 H4Ve L099ED 0U+.";
 $lang['currentlyloggedinas'] = "j00 4RE CURR3NTly L09GED 1N 4S %s";
 $lang['logonbutton'] = "logON";
-$lang['anotheruser'] = "aNo+hEr UsER";
+$lang['otherdotdotdot'] = "Other...";
 $lang['yoursessionhasexpired'] = "yoUr s35S1oN h@5 EXpiRED. J00 WIlL N33D to L09IN 494IN +O c0Nt1nU3.";
 
 // My Forums (forums.php) ---------------------------------------------------------

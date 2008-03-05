@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en-us.inc.php,v 1.45 2008-03-05 13:55:40 decoyduck Exp $ */
+/* $Id: en-us.inc.php,v 1.46 2008-03-05 22:49:10 decoyduck Exp $ */
 
 // British English language file
 
@@ -1206,7 +1206,7 @@ $lang['lightHTMLversion'] = "Light HTML version";
 $lang['youhaveloggedout'] = "You have logged out.";
 $lang['currentlyloggedinas'] = "You are currently logged in as %s";
 $lang['logonbutton'] = "Logon";
-$lang['anotheruser'] = "Another User";
+$lang['otherdotdotdot'] = "Other...";
 $lang['yoursessionhasexpired'] = "Your session has expired. You will need to login again to continue.";
 
 // My Forums (forums.php) ---------------------------------------------------------

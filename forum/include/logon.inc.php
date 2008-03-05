@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.75 2008-03-05 21:10:31 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.76 2008-03-05 22:49:11 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -371,7 +371,7 @@ function logon_draw_form($session_expired = false)
         $username_dropdown_array = array_flip(_htmlentities($username_array));
         array_walk($username_dropdown_array, create_function('&$item, $key', '$item = $key;'));
 
-        $username_dropdown_other = array(0 => array('name' => 'Other...', 'class' => 'bhlogonother'));
+        $username_dropdown_other = array(0 => array('name' => $lang['otherdotdotdot'], 'class' => 'bhlogonother'));
         $username_dropdown_array = array_merge($username_dropdown_array, $username_dropdown_other);
 
         reset($username_array);
@@ -434,7 +434,7 @@ function logon_draw_form($session_expired = false)
 
             echo "                      <tr>\n";
             echo "                        <td align=\"right\">{$lang['username']}:</td>\n";
-            echo "                        <td align=\"left\">", form_input_text("user_logon", "", 24, 15, "autocomplete=\"off\""), "</td>\n";
+            echo "                        <td align=\"left\">", form_input_text("user_logon", "", 24, 15, "onchange=\"clearPassword()\" autocomplete=\"off\""), "</td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"right\">{$lang['passwd']}:</td>\n";
@@ -445,7 +445,7 @@ function logon_draw_form($session_expired = false)
 
             echo "                      <tr>\n";
             echo "                        <td align=\"right\">{$lang['username']}:</td>\n";
-            echo "                        <td align=\"left\">", form_input_text("user_logon", (isset($username_array[0]) ? _htmlentities($username_array[0]) : ""), 24, 32, "autocomplete=\"off\""), "</td>\n";
+            echo "                        <td align=\"left\">", form_input_text("user_logon", (isset($username_array[0]) ? _htmlentities($username_array[0]) : ""), 24, 32, "onchange=\"clearPassword()\" autocomplete=\"off\""), "</td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"right\">{$lang['passwd']}:</td>\n";

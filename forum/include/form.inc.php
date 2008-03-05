@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.107 2007-10-11 13:01:18 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.108 2008-03-05 13:55:40 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -176,11 +176,11 @@ function form_dropdown_array($name, $options_array, $default = false, $custom_ht
 
         foreach ($options_array as $option_key => $option_text) {
 
-            if (is_array($option_text)) {
+            if (is_array($option_text) && sizeof($option_text) > 0) {
 
                 $html.= form_dropdown_objgroup_array($option_key, $option_text, $default, $custom_html, $group_class);
 
-            }else {
+            }else if (!is_array($option_text)) {
 
                 $selected = (strtolower($option_key) == strtolower($default)) ? " selected=\"selected\"" : "";
                 $html.= "<option value=\"{$option_key}\"$selected>$option_text</option>";

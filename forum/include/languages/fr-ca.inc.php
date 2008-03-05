@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.94 2008-02-25 22:22:49 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.95 2008-03-05 13:55:40 decoyduck Exp $ */
 
 // French Canadian language file
 
@@ -1083,7 +1083,6 @@ $lang['lightHTMLversion'] = "Version HTML légèr";
 $lang['youhaveloggedout'] = "Vous avez fermé votre session.";
 $lang['currentlyloggedinas'] = "Vous êtes en session actuelle sous le nom d'utilisateur %s";
 $lang['logonbutton'] = "Ouvrir session";
-$lang['otherbutton'] = "Autre";
 $lang['yoursessionhasexpired'] = "Votre session s'est terminée. Vous devez ouvrir une nouvelle session pour continuer.";
 
 // My Forums (forums.php) ---------------------------------------------------------

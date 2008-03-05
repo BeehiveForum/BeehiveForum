@@ -540,7 +540,7 @@ a {
 }
 
 .bhinputtext, .bhtextarea, .bhselect, .install_dropdown,
-.logon_dropdown, .register_dropdown, .search_dropdown,
+.bhinputlogon, .register_dropdown, .search_dropdown,
 .banned_dropdown, .links_dropdown, .timezone_dropdown,
 .admin_startpage_textarea, .dictionary_word_display,
 .dictionary_best_selection, .dictionary_change_to,
@@ -799,11 +799,11 @@ a {
     padding: 2px;
 }
 
-.logon_dropdown {
-    width: 96px;
+.bhinputlogon {
+    width: 168px;
 }
 
-.logon_separator {
+.bhlogonseparator {
    max-width: 100%;
    width: 350px;
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.108 2008-03-05 13:55:40 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.109 2008-03-05 21:10:31 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -47,18 +47,15 @@ function form_field($name, $value = false, $width = false, $maxchars = false, $t
 
     $html = "<input type=\"$type\" name=\"$name\" id=\"$id\" class=\"$class\" value=\"$value\" ";
 
-    if ($custom_html) {
-        $custom_html = trim($custom_html);
-        $html.= "$custom_html ";
+    if (strlen(trim($custom_html)) > 0) {
+        $html.= sprintf("%s ", trim($custom_html));
     }
 
-    if ($width) {
-        $width = (int)trim($width);
+    if (is_numeric($width)) {
         $html.= "size=\"$width\" ";
     }
 
-    if ($maxchars) {
-        $maxchars = (int)trim($maxchars);
+    if (is_numeric($maxchars)) {
         $html.= "maxlength=\"$maxchars\" ";
     }
 
@@ -135,18 +132,15 @@ function form_textarea($name, $value, $rows, $cols, $wrap = "virtual", $custom_h
 
     $html = "<textarea name=\"$name\" id=\"$id\" class=\"$class\" ";
 
-    if ($custom_html) {
-        $custom_html = trim($custom_html);
-        $html.= "$custom_html ";
+    if (strlen(trim($custom_html)) > 0) {
+        $html.= sprintf("%s ", trim($custom_html));
     }
 
-    if ($rows) {
-        $rows = (int)trim($rows);
+    if (is_numeric($rows)) {
         $html.= "rows=\"$rows\" ";
     }
 
-    if ($cols) {
-        $cols = (int)trim($cols);
+    if (is_numeric($cols)) {
         $html.= "cols=\"$cols\" ";
     }
 
@@ -164,10 +158,8 @@ function form_dropdown_array($name, $options_array, $default = false, $custom_ht
 
     $html = "<select name=\"$name\" id=\"$id\" class=\"$class\" ";
 
-    if ($custom_html) {
-
-        $custom_html = trim($custom_html);
-        $html.= " $custom_html";
+    if (strlen(trim($custom_html)) > 0) {
+        $html.= sprintf("%s ", trim($custom_html));
     }
 
     $html.= ">";
@@ -176,44 +168,70 @@ function form_dropdown_array($name, $options_array, $default = false, $custom_ht
 
         foreach ($options_array as $option_key => $option_text) {
 
-            if (is_array($option_text) && sizeof($option_text) > 0) {
+            if (is_array($option_text) && isset($option_text['subitems']) && sizeof($option_text['subitems']) > 0) {
 
-                $html.= form_dropdown_objgroup_array($option_key, $option_text, $default, $custom_html, $group_class);
+                $html.= form_dropdown_objgroup_array($option_key, $option_text['subitems'], $default, $group_class);
 
-            }else if (!is_array($option_text)) {
+            }elseif (is_array($option_text) && isset($option_text['name']) && strlen(trim($option_text['name'])) > 0) {
+
+                $option_text_name = trim($option_text['name']);
+
+                if (isset($option_text['class']) && strlen(trim($option_text['class'])) > 0) {
+                    $option_text_class = trim($option_text['class']);
+                }else {
+                    $option_text_class = '';
+                }
 
                 $selected = (strtolower($option_key) == strtolower($default)) ? " selected=\"selected\"" : "";
-                $html.= "<option value=\"{$option_key}\"$selected>$option_text</option>";
+                $html.= "  <option value=\"{$option_key}\" class=\"$option_text_class\"$selected>$option_text_name</option>\n";
+
+            }elseif (!is_array($option_text)) {
+
+                $selected = (strtolower($option_key) == strtolower($default)) ? " selected=\"selected\"" : "";
+                $html.= "  <option value=\"{$option_key}\"$selected>$option_text</option>\n";
             }
         }
     }
 
-    $html.= "</select>";
+    $html.= "</select>\n";
     return $html;
 }
 
 // Creates a optgroup to be used in a dropdown.
 
-function form_dropdown_objgroup_array($name, $options_array, $default = false, $custom_html = false, $class = "bhselectoptgroup")
+function form_dropdown_objgroup_array($name, $options_array, $default = false, $class = "bhselectoptgroup")
 {
     if (is_array($options_array)) {
 
-        $html = "<optgroup label=\"$name\" class=\"$class\">";
+        $html = "<optgroup label=\"$name\" class=\"$class\">\n";
 
         foreach ($options_array as $option_key => $option_text) {
 
-            if (is_array($option_text)) {
+            if (is_array($option_text) && isset($option_text['subitems']) && sizeof($option_text['subitems']) > 0) {
 
-                $html.= form_dropdown_objgroup_array($option_key, $option_text, $default, $custom_html, $class);
+                $html.= form_dropdown_objgroup_array($option_key, $option_text['subitems'], $default, $class);
 
-            }else {
+            }elseif (is_array($option_text) && isset($option_text['name']) && strlen(trim($option_text['name'])) > 0) {
+
+                $option_text_name = trim($option_text['name']);
+
+                if (isset($option_text['class']) && strlen(trim($option_text['class'])) > 0) {
+                    $option_text_class = trim($option_text['class']);
+                }else {
+                    $option_text_class = '';
+                }
 
                 $selected = (strtolower($option_key) == strtolower($default)) ? " selected=\"selected\"" : "";
-                $html.= "<option value=\"$option_key\"$selected>$option_text</option>";
+                $html.= "  <option value=\"{$option_key}\" class=\"$option_text_class\"$selected>$option_text_name</option>\n";
+
+            }elseif (!is_array($option_text)) {
+
+                $selected = (strtolower($option_key) == strtolower($default)) ? " selected=\"selected\"" : "";
+                $html.= "  <option value=\"{$option_key}\"$selected>$option_text</option>\n";
             }
         }
 
-        $html.= "</optgroup>";
+        $html.= "</optgroup>\n";
         return $html;
     }
 }
@@ -227,11 +245,12 @@ function form_checkbox($name, $value, $text, $checked = false, $custom_html = fa
     $html = "<span class=\"$class\">";
     $html.= "<input type=\"checkbox\" name=\"$name\" id=\"$id\" value=\"$value\"";
 
-    if ($checked) $html.= " checked=\"checked\"";
+    if (is_bool($checked) && $checked === true) {
+        $html.= " checked=\"checked\"";
+    }
 
-    if ($custom_html) {
-        $custom_html = trim($custom_html);
-        $html.= " $custom_html ";
+    if (strlen(trim($custom_html)) > 0) {
+        $html.= sprintf("%s ", trim($custom_html));
     }
 
     $html.= "/>";
@@ -273,11 +292,12 @@ function form_radio($name, $value, $text, $checked = false, $custom_html = false
     $html = "<span class=\"$class\">";
     $html.= "<input type=\"radio\" name=\"$name\" id=\"$id\" value=\"$value\"";
 
-    if ($checked) $html.= " checked=\"checked\"";
+    if (is_bool($checked) && $checked === true) {
+        $html.= " checked=\"checked\"";
+    }
 
-    if ($custom_html) {
-        $custom_html = trim($custom_html);
-        $html.= " $custom_html ";
+    if (strlen(trim($custom_html)) > 0) {
+        $html.= sprintf("%s ", trim($custom_html));
     }
 
     $html.= "/>";
@@ -335,9 +355,8 @@ function form_submit($name = "submit", $value = "Submit", $custom_html = false, 
 
     $html = "<input type=\"submit\" name=\"$name\" id=\"$id\" value=\"$value\" class=\"$class\" ";
 
-    if ($custom_html) {
-        $custom_html = trim($custom_html);
-        $html.= "$custom_html ";
+    if (strlen(trim($custom_html)) > 0) {
+        $html.= sprintf("%s ", trim($custom_html));
     }
 
     $html.= "/>";
@@ -353,13 +372,12 @@ function form_submit_image($image, $name = "submit", $value = "Submit", $custom_
     $html = "<input name=\"$name\" value=\"$value\" id=\"$id\" ";
     $html.= "type=\"image\" src=\"". style_image($image). "\" ";
 
-    if ($class) {
-        $html.= "class=\"$class\" ";
+    if (strlen(trim($class)) > 0) {
+        $html.= sprintf("class=\"%s\" ", trim($class));
     }
 
-    if ($custom_html) {
-        $custom_html = trim($custom_html);
-        $html.= "$custom_html ";
+    if (strlen(trim($custom_html)) > 0) {
+        $html.= sprintf("%s ", trim($custom_html));
     }
 
     $html.= "/>";
@@ -374,9 +392,8 @@ function form_reset($name = "reset", $value = "Reset", $custom_html = false, $cl
 
     $html = "<input type=\"reset\" name=\"$name\" id=\"$id\" value=\"$value\" class=\"$class\" ";
 
-    if ($custom_html) {
-        $custom_html = trim($custom_html);
-        $html.= "$custom_html ";
+    if (strlen(trim($custom_html)) > 0) {
+        $html.= sprintf("%s ", trim($custom_html));
     }
 
     $html.= "/>";
@@ -391,9 +408,8 @@ function form_button($name, $value, $custom_html, $class="button")
 
     $html = "<input type=\"button\" name=\"$name\" id=\"$id\" value=\"$value\" class=\"$class\" ";
 
-    if ($custom_html) {
-        $custom_html = trim($custom_html);
-        $html.= "$custom_html ";
+    if (strlen(trim($custom_html)) > 0) {
+        $html.= sprintf("%s ", trim($custom_html));
     }
 
     $html.= "/>";

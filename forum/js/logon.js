@@ -19,25 +19,54 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.js,v 1.4 2007-10-16 17:09:23 decoyduck Exp $ */
+/* $Id: logon.js,v 1.5 2008-03-05 21:10:31 decoyduck Exp $ */
 
-function changePassword() {
+function changePassword(webtag)
+{
+    var logon_array_obj = getObjsByName('logonarray')[0];
 
-    var i = document.logonform.logonarray.selectedIndex;
+    if (typeof logon_array_obj == 'object') {
+        
+	var selected_logon = logon_array_obj.selectedIndex;
+	
+	if ((logon_array_obj.length - 1) == selected_logon) {
 
-    var password = eval("document.logonform.user_password"+ i +".value");
-    var passhash = eval("document.logonform.user_passhash"+ i +".value");
+	    self.location.href = 'logon.php?webtag=' + webtag + '&other_logon=true';
+	    return;
+	
+	}else {
+
+            var user_logon_obj = getObjsByName('user_logon')[0];
+
+	    var user_password_obj = getObjsByName('user_password')[0];
+	    var user_passhash_obj = getObjsByName('user_passhash')[0];
     
-    document.logonform.user_logon.value = document.logonform.logonarray.options[i].value;
-    
-    if (/^[A-Fa-f0-9]{32}$/.test(passhash) == true) {
-        document.logonform.user_password.value = password;
-        document.logonform.user_passhash.value = passhash;
-        document.logonform.remember_user.checked = true;
-    }else {
-        document.logonform.user_password.value = '';
-        document.logonform.user_passhash.value = '';
-        document.logonform.remember_user.checked = false;
+            var password_selection_obj = getObjsByName('user_password' + selected_logon)[0];       
+            var passhash_selection_obj = getObjsByName('user_passhash' + selected_logon)[0];
+
+	    var remember_password_obj = getObjsByName('remember_user')[0];
+
+            if ((typeof user_logon_obj == 'object') && (typeof user_password_obj == 'object') && (typeof user_passhash_obj == 'object')) {
+
+	        if ((typeof password_selection_obj == 'object') && (typeof passhash_selection_obj == 'object') && (typeof remember_password_obj == 'object')) {
+
+                    user_logon_obj.value = logon_array_obj.options[selected_logon].value;
+   
+                    if (/^[A-Fa-f0-9]{32}$/.test(passhash_selection_obj.value) == true) {
+
+                        user_password_obj.value = password_selection_obj.value;
+    		        user_passhash_obj.value = passhash_selection_obj.value;
+		        remember_password_obj.checked = true;
+
+		    }else {
+
+                        user_password_obj.value = '';
+		        user_passhash_obj.value = '';
+		        remember_password_obj.checked = false;
+		    }
+		}
+	    }
+	}
     }
 }
 

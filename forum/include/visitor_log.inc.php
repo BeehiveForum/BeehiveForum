@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.inc.php,v 1.25 2008-01-21 12:53:39 decoyduck Exp $ */
+/* $Id: visitor_log.inc.php,v 1.26 2008-03-05 21:10:31 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -172,7 +172,7 @@ function visitor_log_get_profile_items(&$profile_header_array, &$profile_dropdow
 
     // Add the pre-defined profile options to the top of the list
 
-    $profile_dropdown_array[$lang['userdetails']] = $profile_header_array;
+    $profile_dropdown_array[$lang['userdetails']]['subitems'] = $profile_header_array;
 
     // Query the database to get the profile items
 
@@ -191,7 +191,7 @@ function visitor_log_get_profile_items(&$profile_header_array, &$profile_dropdow
         while ($profile_item = db_fetch_array($result)) {
 
             $profile_header_array[$profile_item['PIID']] = _htmlentities($profile_item['ITEM_NAME']);
-            $profile_dropdown_array[$profile_item['SECTION_NAME']][$profile_item['PIID']] = _htmlentities($profile_item['ITEM_NAME']);
+            $profile_dropdown_array[$profile_item['SECTION_NAME']]['subitems'][$profile_item['PIID']] = _htmlentities($profile_item['ITEM_NAME']);
         }
     }
 

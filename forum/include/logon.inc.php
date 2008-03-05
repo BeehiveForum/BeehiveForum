@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.73 2008-03-04 00:13:18 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.74 2008-03-05 13:55:40 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -312,10 +312,6 @@ function logon_draw_form($session_expired = false)
 
     $other_logon = (isset($_GET['other_logon']) || isset($_POST['other_logon'])) ? true : false;
 
-    // Frame target for when we're showing an expired session.
-
-
-
     // Check for previously failed logon.
 
     if (isset($_COOKIE['bh_logon_failed']) && !$session_expired) {
@@ -381,7 +377,7 @@ function logon_draw_form($session_expired = false)
 
         $current_logon = key($username_array);
 
-        echo form_dropdown_array("logonarray", $username_dropdown_array, "", "onchange=\"changePassword()\" autocomplete=\"off\"", "logon_dropdown");
+        echo form_dropdown_array("logonarray", $username_dropdown_array, "", "onchange=\"changePassword()\" autocomplete=\"off\"", "bhinputlogon");
         echo form_input_hidden("user_logon", _htmlentities($username_array[$current_logon]));
 
         foreach($username_array as $key => $logon) {
@@ -406,7 +402,7 @@ function logon_draw_form($session_expired = false)
             }
         }
 
-        echo "            ", form_submit('other_logon', $lang['otherbutton']), "</td>\n";
+
         echo "                      </tr>\n";
         echo "                      <tr>\n";
         echo "                        <td align=\"right\">{$lang['passwd']}:</td>\n";
@@ -474,6 +470,14 @@ function logon_draw_form($session_expired = false)
     echo "  </table>\n";
     echo "</form>\n";
 
+    if ((sizeof($username_array) > 1) && $other_logon === false) {
+
+        echo "<form name=\"guest\" action=\"logon.php?webtag=$webtag\" method=\"post\" target=\"", html_get_top_frame_name(), "\">\n";
+        echo "  <p class=\"smalltext\">", sprintf($lang['enterasa'], form_submit('other_logon', $lang['anotheruser'])), "</p>\n";
+        echo "  <hr class=\"bhlogonseparator\" />\n";
+        echo "</form>\n";
+    }
+
     if (user_guest_enabled()) {
 
         echo "<form name=\"guest\" action=\"logon.php?webtag=$webtag\" method=\"post\" target=\"", html_get_top_frame_name(), "\">\n";
@@ -488,22 +492,26 @@ function logon_draw_form($session_expired = false)
         $register_link = rawurlencode("register.php?webtag=$webtag&final_uri=$final_uri");
         $forgot_pw_link = rawurlencode("forgot_pw.php?webtag=$webtag&final_uri=$final_uri");
 
-        echo "<p class=\"smalltext\">", sprintf($lang['donthaveanaccount'], "<a href=\"index.php?webtag=$webtag&amp;final_uri=$register_link\" target=\"". html_get_top_frame_name(). "\">{$lang['registernow']}</a>"), "</p>\n";
-        echo "<hr class=\"logon_separator\" />\n";
+        echo "<form name=\"guest\" action=\"register.php?webtag=$webtag&amp;final_uri=$final_uri\" method=\"get\" target=\"_self\">\n";
+        echo "  <p class=\"smalltext\">", sprintf($lang['donthaveanaccount'], form_submit('register', $lang['registernow'])), "</p>\n";
+        echo "</form>\n";
+        echo "<hr class=\"bhlogonseparator\" />\n";
         echo "<h2>{$lang['problemsloggingon']}</h2>\n";
         echo "<p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes&amp;final_uri=$final_uri\" target=\"", html_get_top_frame_name(), "\">{$lang['deletecookies']}</a></p>\n";
         echo "<p class=\"smalltext\"><a href=\"index.php?webtag=$webtag&amp;final_uri=$forgot_pw_link\" target=\"", html_get_top_frame_name(), "\">{$lang['forgottenpasswd']}</a></p>\n";
 
     }else {
 
-        echo "<p class=\"smalltext\">", sprintf($lang['donthaveanaccount'], "<a href=\"index.php?webtag=$webtag&amp;final_uri=register.php%3Fwebtag%3D$webtag\" target=\"". html_get_top_frame_name(). "\">{$lang['registernow']}</a>"), "</p>\n";
-        echo "<hr class=\"logon_separator\" />\n";
+        echo "<form name=\"guest\" action=\"register.php?webtag=$webtag\" method=\"get\" target=\"_self\">\n";
+        echo "  <p class=\"smalltext\">", sprintf($lang['donthaveanaccount'], form_submit('register', $lang['registernow'])), "</p>\n";
+        echo "</form>\n";
+        echo "<hr class=\"bhlogonseparator\" />\n";
         echo "<h2>{$lang['problemsloggingon']}</h2>\n";
         echo "<p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes\" target=\"", html_get_top_frame_name(), "\">{$lang['deletecookies']}</a></p>\n";
         echo "<p class=\"smalltext\"><a href=\"index.php?webtag=$webtag&amp;final_uri=forgot_pw.php%3Fwebtag%3D$webtag\" target=\"", html_get_top_frame_name(), "\">{$lang['forgottenpasswd']}</a></p>\n";
     }
 
-    echo "<hr class=\"logon_separator\" />\n";
+    echo "<hr class=\"bhlogonseparator\" />\n";
     echo "<h2>{$lang['usingaPDA']}</h2>\n";
     echo "<p class=\"smalltext\"><a href=\"index.php?webtag=$webtag&amp;noframes\" target=\"", html_get_top_frame_name(), "\">{$lang['lightHTMLversion']}</a></p>\n";
 }
@@ -523,7 +531,7 @@ function logon_unset_post_data()
     }
 
     unset($_POST['user_logon'], $_POST['user_password'], $_POST['user_passhash'], $_POST['other_logon']);
-    unset($_POST['remember_user'], $_POST['logon'], $_POST['logonarray'], $_POST['webtag']);
+    unset($_POST['remember_user'], $_POST['logon'], $_POST['logonarray'], $_POST['webtag'], $_POST['register']);
 }
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.67 2008-02-25 22:22:49 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.68 2008-03-05 13:55:40 decoyduck Exp $ */
 
 // German language file
 
@@ -1073,7 +1073,7 @@ $lang['rememberpasswds'] = "Passworterinnerung";
 $lang['rememberpassword'] = "Passworterinnerung";
 $lang['enterasa'] = "Eingeben als ein %s";
 $lang['donthaveanaccount'] = "Noch keinen Benutzer angelegt? %s";
-$lang['registernow'] = "Jetzt anlegen.";
+$lang['registernow'] = "Jetzt anlegen";
 $lang['problemsloggingon'] = "Probleme beim anmelden?";
 $lang['deletecookies'] = "Cookies loeschen";
 $lang['cookiessuccessfullydeleted'] = "Cookies erfolgreich geloescht";
@@ -1083,7 +1083,6 @@ $lang['lightHTMLversion'] = "Light HTML Version";
 $lang['youhaveloggedout'] = "Du bist abgemeldet.";
 $lang['currentlyloggedinas'] = "Du bist im Moment angemeldet als %s";
 $lang['logonbutton'] = "Anmelden";
-$lang['otherbutton'] = "Andere";
 $lang['yoursessionhasexpired'] = "Ihre Sitzung ist abgelaufen. Sie muessen sich wieder anmelden um fortzufahren.";
 
 // My Forums (forums.php) ---------------------------------------------------------

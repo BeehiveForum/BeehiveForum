@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.129 2008-02-27 21:10:12 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.130 2008-03-06 16:46:49 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -255,7 +255,7 @@ function email_send_pm_notification($tuid, $mid, $fuid)
 
             // Does the recipient want to receive email notifcations?
 
-            if (isset($to_user_prefs['EMAIL_NOTIFY']) && $to_user_prefs['PM_NOTIFY_EMAIL'] == 'Y') {
+            if (isset($to_user_prefs['PM_NOTIFY_EMAIL']) && $to_user_prefs['PM_NOTIFY_EMAIL'] == 'Y') {
 
                 if (!$pm_subject = pm_get_subject($mid, $tuid)) return false;
 

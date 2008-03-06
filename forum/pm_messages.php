@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_messages.php,v 1.37 2007-12-26 13:19:34 decoyduck Exp $ */
+/* $Id: pm_messages.php,v 1.38 2008-03-06 16:46:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -412,6 +412,19 @@ if ($current_folder == PM_FOLDER_INBOX) {
 
 echo "<h1>{$pm_header_array[$current_folder]}</h1>\n";
 
+echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
+echo "<!--\n\n";
+echo "function reloadPMFolderView()\n";
+echo "{\n";
+echo "    if (top.document.body.rows) {\n";
+echo "        top.frames['", html_get_frame_name('main'), "'].frames['", html_get_frame_name('pm_folders'), "'].location.reload();\n";
+echo "    }else if (top.document.body.cols) {\n";
+echo "        top.frames['", html_get_frame_name('pm_folders'), "'].location.reload();\n";
+echo "    }\n\n";
+echo "}\n";
+echo "-->\n";
+echo "</script>\n\n";
+
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
     html_display_error_array($error_msg_array, '96%', 'center');
@@ -419,14 +432,17 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 }else if (isset($_GET['message_sent'])) {
 
     html_display_success_msg($lang['msgsentsuccessfully'], '96%', 'center');
+    echo "<script language=\"Javascript\" type=\"text/javascript\">reloadPMFolderView()</script>\n";
 
 }else if (isset($_GET['deleted'])) {
 
     html_display_success_msg($lang['successfullydeletedselectedmessages'], '96%', 'center');
+    echo "<script language=\"Javascript\" type=\"text/javascript\">reloadPMFolderView()</script>\n";
 
 }else if (isset($_GET['archived'])) {
 
     html_display_success_msg($lang['successfullyarchivedselectedmessages'], '96%', 'center');
+    echo "<script language=\"Javascript\" type=\"text/javascript\">reloadPMFolderView()</script>\n";
 
 }else if (isset($_GET['search_no_results'])) {
 

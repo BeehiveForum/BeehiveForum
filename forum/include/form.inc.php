@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.109 2008-03-05 21:10:31 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.110 2008-03-06 16:46:49 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -55,7 +55,7 @@ function form_field($name, $value = false, $width = false, $maxchars = false, $t
         $html.= "size=\"$width\" ";
     }
 
-    if (is_numeric($maxchars)) {
+    if (is_numeric($maxchars) && $maxchars > 0) {
         $html.= "maxlength=\"$maxchars\" ";
     }
 

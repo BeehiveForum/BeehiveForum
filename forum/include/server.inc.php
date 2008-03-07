@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: server.inc.php,v 1.20 2008-02-14 23:00:44 decoyduck Exp $ */
+/* $Id: server.inc.php,v 1.21 2008-03-07 23:19:22 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -343,5 +343,9 @@ foreach ($_REQUEST as $request_key => $request_value) {
         eval("unset(\${$request_key});");
     }
 }
+
+// Hack for Forum Maintenance Functions
+
+header('Connection: close', true);
 
 ?>

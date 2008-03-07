@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_cvs_log_parse.php,v 1.12 2007-12-05 19:56:16 decoyduck Exp $ */
+/* $Id: bh_cvs_log_parse.php,v 1.13 2008-03-07 23:19:21 decoyduck Exp $ */
 
 /**
 * bh_cvs_log_parse.php
@@ -199,6 +199,10 @@ function cvs_mysql_output_log($log_filename)
 
             file_put_contents($log_filename, wordwrap($cvs_log_entry, 75), FILE_APPEND);
         }
+
+    }else {
+
+        echo "Table BEEHIVE_CVS_LOG is empty. No Changelog generated.\n";
     }
 
     return true;
@@ -249,15 +253,33 @@ if (isset($_SERVER['argv'][1]) && preg_match("/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/", $
         echo "Error while preparing MySQL Database table";
         exit;
     }
-}
 
-// Check to see if we have an optional log filename. If none
-// We use changelog.txt.
-
-if (isset($_SERVER['argv'][1]) && strlen(trim($_SERVER['argv'][1])) > 0) {
+}else if (isset($_SERVER['argv'][1]) && strlen(trim($_SERVER['argv'][1])) > 0) {
 
     $output_log_filename = trim($_SERVER['argv'][1]);
     cvs_mysql_output_log($output_log_filename);
+
+}else {
+
+    echo "Generate changelog.txt from CVS comments\n\n";
+    echo "Usage: php-bin bh_cvs_log_parse.php [YYYY-MM-DD] [FILE]\n\n";
+    echo "Examples:\n";
+    echo "  php-bin bh_cvs_log_parse.php 2007-01-01\n";
+    echo "  php-bin bh_cvs_log_parse.php 2007-01-01 changelog.txt\n";
+    echo "  php-bin bh_cvs_log_parse.php changelog.txt\n\n";
+    echo "[FILE] specifies the output filename for the changelog.\n\n";
+    echo "[YYYY-MM-DD] specifies the date the changelog should start from\n\n";
+    echo "Both arguments can be combined or used separatly to achieve\n";
+    echo "different results.\n\n";
+    echo "Specifying the date on it's own will save the results from the\n";
+    echo "CVS comments to a MySQL database named BEEHIVE_CVS_LOG using the\n";
+    echo "connection details from your Beehive Forum config.inc.php\n\n";
+    echo "Specifying only the output filename will take any saved results\n";
+    echo "in the BEEHIVE_CVS_LOG table and generate a changelog from them.\n\n";
+    echo "Using them together will both save the results to the BEEHIVE_CVS_LOG\n";
+    echo "table and generate the specified changelog.\n\n";
+    echo "Subsequent runs using the date argument will truncate the database\n";
+    echo "table before generating the changelog.\n";
 }
 
 ?>

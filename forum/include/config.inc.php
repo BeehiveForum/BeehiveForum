@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: config.inc.php,v 1.147 2008-01-12 22:09:29 decoyduck Exp $ */
+/* $Id: config.inc.php,v 1.148 2008-03-07 23:19:22 decoyduck Exp $ */
 
 // MAIN CONFIGURATION FILE
 
@@ -74,6 +74,8 @@ $error_report_verbose = true;
 //          credentials which may be used to compromise your server.
 //          It is recommended that only enable verbose error reporting
 //          on closed systems.
+
+// ---------------------------------------------------------------------
 
 // Error Reporting Email -----------------------------------------------
 

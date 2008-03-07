@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.295 2008-03-03 15:03:20 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.296 2008-03-07 23:19:22 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -2637,7 +2637,7 @@ function forum_self_clean_check_xml()
 
 // Forum self-preservation functions.
 
-function forum_perform_maintenance()
+function forum_check_maintenance()
 {
     // Array of functions that we run one at a time.
 
@@ -2660,8 +2660,11 @@ function forum_perform_maintenance()
 
     $forum_maintenance_function = forum_get_setting('forum_maintenance_function', false, 0);
 
-    // Check that it's a valid function. If it's not we
-    // reset back to the first function in the list.
+    // Increment the $forum_maintenance_function variable
+
+    $forum_maintenance_function++;
+
+    // Check that the $forum_maintenance_function points to a valid function.
 
     if (!isset($forum_maintenance_functions_array[$forum_maintenance_function])) {
         $forum_maintenance_function = 0;
@@ -2675,6 +2678,15 @@ function forum_perform_maintenance()
 
     $forum_maintenance_last_run = forum_get_setting($forum_maintenance_date_var, false, 0);
 
+    // An array of forum settings we need to update.
+
+    $forum_settings_array = array('forum_maintenance_function' => $forum_maintenance_function,
+                                  $forum_maintenance_date_var  => mktime());
+
+    // Save the settings to the database.
+
+    forum_save_default_settings($forum_settings_array);
+
     // If the function hasn't been run in the last 24 hours we should run it.
 
     if ((mktime() - $forum_maintenance_last_run) > DAY_IN_SECONDS) {
@@ -2683,37 +2695,39 @@ function forum_perform_maintenance()
 
         if (mktime() > mktime($maintenance_hour, $maintenance_minute)) {
 
-            // Execute the function if it exists.
+           // Check the function actually exists before we try and execute it.
 
             if (function_exists($forum_maintenance_functions_array[$forum_maintenance_function])) {
-                $forum_maintenance_functions_array[$forum_maintenance_function]();
+
+                // Prevent the HTTP request from being aborted if the user presses stop or reloads the page.
+
+                ignore_user_abort(true);
+
+                // Register a shutdown function so PHP executes our function when everything is finished.
+
+                register_shutdown_function('forum_perform_maintenance', $forum_maintenance_functions_array[$forum_maintenance_function]);
             }
-
-            // Update the forum_maintenance_function variable.
-
-            $forum_maintenance_function++;
-
-            // Check that it's a valid function. If it's not we
-            // reset back to the first function in the list.
-
-            if (!isset($forum_maintenance_functions_array[$forum_maintenance_function])) {
-                $forum_maintenance_function = 0;
-            }
-
-            // An array of forum settings we need to update.
-
-            $forum_settings_array = array('forum_maintenance_function' => $forum_maintenance_function,
-                                          $forum_maintenance_date_var  => mktime());
-
-            // Save the settings to the database.
-
-            forum_save_default_settings($forum_settings_array);
 
             return true;
         }
     }
 
     return false;
+}
+
+function forum_perform_maintenance($function)
+{
+    // Flushes the buffer to the client.
+
+    if (function_exists('ob_end_flush')) {
+        while (@ob_end_flush());
+    }
+
+    // Execute our maintenance function.
+
+    if (function_exists($function)) {
+        $function();
+    }
 }
 
 ?>

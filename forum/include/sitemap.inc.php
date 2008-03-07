@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: sitemap.inc.php,v 1.5 2008-03-05 13:55:40 decoyduck Exp $ */
+/* $Id: sitemap.inc.php,v 1.6 2008-03-07 23:19:22 decoyduck Exp $ */
 
 /**
 * sitemap.inc.php - sitemap functions
@@ -119,7 +119,7 @@ function sitemap_forum_get_threads($forum_fid)
         $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD LEFT JOIN GROUP_PERMS ";
         $sql.= "ON (GROUP_PERMS.FID = THREAD.FID) ";
         $sql.= "WHERE GROUP_PERMS.PERM & $user_perm_guest_access > 0 ";
-        $sql.= "AND GROUP_PERMS.GID = '0'";
+        $sql.= "AND GROUP_PERMS.GID = '0' ORDER BY THREAD.TID";
 
         if (!$result = db_query($sql, $db_sitemap_forum_get_threads)) return false;
 
@@ -172,6 +172,10 @@ function sitemap_check_dir()
 
 function sitemap_create_file()
 {
+    // This can take a long time so we'll stop PHP timing out.
+
+    @set_time_limit(0);
+
     // Header for the sitemap file
 
     $sitemap_header = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
@@ -215,58 +219,67 @@ function sitemap_create_file()
 
     // Check the sitemap files already exists and if not create it.
 
-    if (!@file_exists($sitemap_path)) file_put_contents($sitemap_path, '');
+    if (!@file_exists($sitemap_path)) @file_put_contents($sitemap_path, '');
 
     // Check that it is writable.
 
     if (!@is_writable($sitemap_path)) return false;
 
-    // Write the sitemap header to the file.
+    // Open the file for writing.
 
-    if (!@file_put_contents($sitemap_path, $sitemap_header)) return false;
+    if (@$fp = fopen($sitemap_path, 'w')) {
 
-    // Fetch the data from the database, process it and add it to the sitemap.
+        // Write the header to the file
 
-    if ($available_forums_array = sitemap_get_available_forums()) {
+        fwrite($fp, $sitemap_header);
 
-        foreach ($available_forums_array as $forum_fid => $webtag) {
+        // Fetch the data from the database, process it and add it to the sitemap.
 
-            if ($threads_array = sitemap_forum_get_threads($forum_fid)) {
+        if ($available_forums_array = sitemap_get_available_forums()) {
 
-                foreach ($threads_array as $thread_tid => $thread_modified) {
+            foreach ($available_forums_array as $forum_fid => $webtag) {
 
-                    $thread_last_modified = date("Y-m-d", $thread_modified);
+                // If the thread data is successful start writing it to the file.
 
-                    if ($thread_modified < mktime() - (90 * DAY_IN_SECONDS)) {
+                if ($threads_array = sitemap_forum_get_threads($forum_fid)) {
 
-                        $change_frequency = "yearly";
+                    foreach ($threads_array as $thread_tid => $thread_modified) {
 
-                    }else if ($thread_modified < mktime() - (30 * DAY_IN_SECONDS)) {
+                        $thread_last_modified = date("Y-m-d", $thread_modified);
 
-                        $change_frequency = "monthly";
+                        if ($thread_modified < mktime() - (90 * DAY_IN_SECONDS)) {
 
-                    }else if ($thread_modified < mktime() - (4 * DAY_IN_SECONDS)) {
+                            $change_frequency = "yearly";
 
-                        $change_frequency = "weekly";
+                        }else if ($thread_modified < mktime() - (30 * DAY_IN_SECONDS)) {
 
-                    }else {
+                            $change_frequency = "monthly";
 
-                        $change_frequency = "daily";
+                        }else if ($thread_modified < mktime() - (4 * DAY_IN_SECONDS)) {
+
+                            $change_frequency = "weekly";
+
+                        }else {
+
+                            $change_frequency = "daily";
+                        }
+
+                        fwrite($fp, sprintf($sitemap_url_entry, $forum_location, $webtag, $thread_tid, $thread_last_modified, $change_frequency));
                     }
-
-                    $sitemap_url_entry = sprintf($sitemap_url_entry, $forum_location, $webtag, $thread_tid, $thread_last_modified, $change_frequency);
-
-                    if (!@file_put_contents($sitemap_path, $sitemap_url_entry, FILE_APPEND)) return false;
                 }
             }
         }
+
+        fwrite($fp, $sitemap_footer);
+
+        fclose($fp);
+
+        admin_add_log_entry(FORUM_AUTO_SITEMAP_UPDATED);
+
+        return true;
     }
 
-    if (!@file_put_contents($sitemap_path, $sitemap_footer, FILE_APPEND)) return false;
-
-    admin_add_log_entry(FORUM_AUTO_SITEMAP_UPDATED);
-
-    return true;
+    return false;
 }
 
 ?>

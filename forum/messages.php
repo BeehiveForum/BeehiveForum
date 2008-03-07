@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.253 2008-02-05 19:14:06 decoyduck Exp $ */
+/* $Id: messages.php,v 1.254 2008-03-07 23:19:21 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -340,7 +340,7 @@ if (sizeof($highlight_array) > 0) {
 echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" border=\"0\">\n";
 echo "  <tr>\n";
-echo "    <td align=\"left\">", messages_top($folder_title, $thread_title, $thread_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK'], ($thread_data['LENGTH'] < 1)), "</td>\n";
+echo "    <td align=\"left\">", messages_top($tid, $pid, $thread_data['FID'], $folder_title, $thread_title, $thread_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK'], ($thread_data['LENGTH'] < 1)), "</td>\n";
 
 if ($thread_data['POLL_FLAG'] == 'Y' && $messages[0]['PID'] != 1) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.254 2008-03-07 23:19:21 decoyduck Exp $ */
+/* $Id: messages.php,v 1.255 2008-03-08 22:53:46 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -249,6 +249,7 @@ echo "function togglePostQuoting(post_id)\n";
 echo "{\n";
 echo "    var form_obj = getObjsByName('quote_list')[0];\n";
 echo "    var post_img = getObjsByName('p' + post_id)[0];\n\n";
+echo "    var post_quotelink = getObjsByName('q' + post_id)[0];\n\n";
 echo "    if ((typeof form_obj == 'object') && (typeof post_img == 'object')) {\n\n";
 echo "        if (form_obj.value.length > 0) {\n\n";
 echo "            var quote_list = form_obj.value.split(',');\n\n";
@@ -257,14 +258,17 @@ echo "                if (quote_list[check_post_id] == post_id) {\n\n";
 echo "                    quote_list.splice(check_post_id, 1);\n";
 echo "                    form_obj.value = quote_list.join(',');\n";
 echo "                    post_img.src = '", style_image('quote_disabled.png'), "';\n";
+echo "                    post_quotelink.innerHTML = '{$lang['quote']}';\n";
 echo "                    return false;\n";
 echo "                }\n";
 echo "            }\n\n";
 echo "            quote_list.push(post_id);\n";
 echo "            post_img.src = '", style_image('quote_enabled.png'), "';\n";
+echo "            post_quotelink.innerHTML = '{$lang['unquote']}';\n";
 echo "            form_obj.value = quote_list.join(',');\n\n";
 echo "        }else {\n\n";
 echo "            post_img.src = '", style_image('quote_enabled.png'), "';\n";
+echo "            post_quotelink.innerHTML = '{$lang['unquote']}';\n";
 echo "            form_obj.value = post_id;\n";
 echo "        }\n";
 echo "    }\n";

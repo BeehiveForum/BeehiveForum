@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.515 2008-03-07 23:19:22 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.516 2008-03-08 13:19:16 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -535,7 +535,7 @@ function messages_top($tid, $pid, $folder_fid, $folder_title, $thread_title, $in
 
     echo "<p><img src=\"", style_image('folder.png'). "\" alt=\"{$lang['folder']}\" title=\"{$lang['folder']}\" />&nbsp;";
     echo "<a href=\"index.php?webtag=$webtag&amp;folder=$folder_fid\" target=\"$frame_top_target\">", word_filter_add_ob_tags($folder_title), "</a> ";
-    echo "&raquo; <a href=\"index.php?webtag=$webtag&amp;msg=$tid.$pid\" target=\"$frame_top_target\">", word_filter_add_ob_tags($thread_title), "</a>";
+    echo "&raquo; <a href=\"index.php?webtag=$webtag&amp;msg=$tid.$pid\" target=\"$frame_top_target\" title=\"{$lang['viewinframeset']}\">", word_filter_add_ob_tags($thread_title), "</a>";
 
     if ($closed) echo "&nbsp;<img src=\"", style_image('thread_closed.png'), "\" alt=\"{$lang['closed']}\" title=\"{$lang['closed']}\" />\n";
     if ($interest_level == THREAD_INTERESTED) echo "&nbsp;<img src=\"", style_image('high_interest.png'), "\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" />";

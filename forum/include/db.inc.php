@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db.inc.php,v 1.76 2007-10-11 13:01:17 decoyduck Exp $ */
+/* $Id: db.inc.php,v 1.77 2008-03-08 14:07:27 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -75,7 +75,7 @@ if (isset($db_extension)) {
 }
 
 if (!function_exists('db_connect')) {
-    trigger_error("<p>Could not load mysql or mysqli extension.</p>", E_USER_ERROR);
+    trigger_error("Could not load mysql or mysqli extension.", E_USER_ERROR);
 }
 
 ?>

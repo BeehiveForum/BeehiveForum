@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.113 2008-02-27 19:09:19 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.114 2008-03-08 14:07:27 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -135,14 +135,22 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
 
         // Check for an installation error.
 
-        if (($errno == ER_NO_SUCH_TABLE || $errno == ER_WRONG_COLUMN_NAME) && !defined('BEEHIVE_INSTALL_NOWARN')) {
-            install_incomplete();
+        if (($errno == ER_NO_SUCH_TABLE || $errno == ER_WRONG_COLUMN_NAME)) {
+
+            if (!defined('BEEHIVE_INSTALL_NOWARN') && function_exists('install_incomplete')) {
+
+                install_incomplete();
+            }
         }
 
         // Check for file include errors
 
-        if ((preg_match('/include|include_once/', $errstr) > 0) && !defined('BEEHIVE_INSTALL_NOWARN')) {
-            install_missing_files();
+        if ((preg_match('/include|include_once/', $errstr) > 0)) {
+
+            if (!defined('BEEHIVE_INSTALL_NOWARN') && function_exists('install_missing_files')) {
+
+                install_missing_files();
+            }
         }
 
         // Array to hold the error message strings.
@@ -159,22 +167,22 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
 
             case E_USER_ERROR:
 
-                $error_msg_array[] = "<b>E_USER_ERROR</b> [$errno] $errstr";
+                $error_msg_array[] = "<p><b>E_USER_ERROR</b> [$errno] $errstr</p>";
                 break;
 
             case E_USER_WARNING:
 
-                $error_msg_array[] = "<b>E_USER_WARNING</b> [$errno] $errstr";
+                $error_msg_array[] = "<p><b>E_USER_WARNING</b> [$errno] $errstr</p>";
                 break;
 
             case E_USER_NOTICE:
 
-                $error_msg_array[] = "<b>E_USER_NOTICE</b> [$errno] $errstr";
+                $error_msg_array[] = "<p><b>E_USER_NOTICE</b> [$errno] $errstr</p>";
                 break;
 
             default:
 
-                $error_msg_array[] = "<b>Unknown error</b> [$errno] $errstr";
+                $error_msg_array[] = "<p><b>Unknown error</b> [$errno] $errstr</p>";
                 break;
         }
 
@@ -182,8 +190,8 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
 
         if (strlen(trim(basename($errfile))) > 0) {
 
-            $error_msg_array[] = "<b>Error Message:</b>";
-            $error_msg_array[] = sprintf("Error in line $errline of file %s", basename($errfile));
+            $error_msg_array[] = "<p><b>Error Message:</b></p>";
+            $error_msg_array[] = sprintf("<p>Error in line $errline of file %s</p>", basename($errfile));
         }
 
         // Separator
@@ -198,7 +206,7 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
 
             $debug_backtrace_processed = false;
 
-            $error_msg_array[] = "<b>Backtrace Result:</b>";
+            $error_msg_array[] = "<p><b>Backtrace Result:</b></p>";
 
             foreach ($debug_backtrace_array as $debug_backtrace) {
 
@@ -215,21 +223,21 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
                             $debug_backtrace_file_line = sprintf("%s:%s", _htmlentities(basename($debug_backtrace['file'])), _htmlentities($debug_backtrace['line']));
                             $debug_backtrace_func_args = sprintf("%s(<i>%s</i>)", _htmlentities($debug_backtrace['function']), _htmlentities(bh_error_handler_process_args($debug_backtrace['args'])));
 
-                            $error_msg_array[] = sprintf("%s:%s", $debug_backtrace_file_line, $debug_backtrace_func_args);
+                            $error_msg_array[] = sprintf("<p>%s:%s</p>", $debug_backtrace_file_line, $debug_backtrace_func_args);
 
                         }else {
 
                             $debug_backtrace_file_line = sprintf("%s:%s", _htmlentities(basename($debug_backtrace['file'])), _htmlentities($debug_backtrace['line']));
                             $debug_backtrace_func_args = sprintf("%s(<i>void</i>)", _htmlentities($debug_backtrace['function']));
 
-                            $error_msg_array[] = sprintf("%s:%s", $debug_backtrace_file_line, $debug_backtrace_func_args);
+                            $error_msg_array[] = sprintf("<p>%s:%s</p>", $debug_backtrace_file_line, $debug_backtrace_func_args);
                         }
                     }
                 }
             }
 
             if ($debug_backtrace_processed == false) {
-                $error_msg_array[] = "<i>(none)</i>";
+                $error_msg_array[] = "<p><i>(none)</i></p>";
             }
         }
 
@@ -259,7 +267,7 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
 
         // Get MySQL version if available.
 
-        if (db_fetch_mysql_version($mysql_version)) {
+        if (function_exists('db_fetch_mysql_version') && db_fetch_mysql_version($mysql_version)) {
             $version_strings[] = "MySQL/$mysql_version";
         }else {
             $version_strings[] = "MySQL Version Unknown";
@@ -269,8 +277,8 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
 
         if (isset($version_strings) && sizeof($version_strings) > 0) {
 
-            $error_msg_array[] = "<b>Version Strings:</b>";
-            $error_msg_array[] = implode(", ", $version_strings);
+            $error_msg_array[] = "<p><b>Version Strings:</b></p>";
+            $error_msg_array[] = sprintf("<p>%s</p>", implode(", ", $version_strings));
         }
 
         // Verbose Error Data.
@@ -279,17 +287,55 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
 
             // HTTP Request that caused the error
 
-            $error_msg_array[] = "<b>HTTP Request:</b>";
+            $error_msg_array[] = "<p><b>HTTP Request:</b></p>";
 
             // The requested file name.
 
             $error_msg_array[] =  $_SERVER['PHP_SELF'];
 
-            // Get the HTTP Query Values ($_GET)
+            // Output the URL Query variables.
 
-            $error_msg_array[] = "<b>Variables:</b>";
+            if (isset($_GET) && sizeof($_GET) > 0) {
 
-            $error_msg_array[] = print_r(get_defined_vars(), true);
+                $error_msg_array[] = "<p><b>\$_GET:</b></p>";
+
+                $get_vars = htmlentities(print_r($_GET, true));
+
+                $error_msg_array[] = sprintf("<pre>%s</pre>\n", $get_vars);
+            }
+
+            // Output any Post Data
+
+            if (isset($_POST) && sizeof($_POST) > 0) {
+
+                $error_msg_array[] = "<p><b>\$_POST:</b></p>";
+
+                $post_vars = htmlentities(print_r($_POST, true));
+
+                $error_msg_array[] = sprintf("<pre>%s</pre>\n", $post_vars);
+            }
+
+            // Output environment variables.
+
+            if (isset($_ENV) && sizeof($_ENV) > 0) {
+
+                $error_msg_array[] = "<p><b>\$_ENV:</b></p>";
+
+                $environment_vars = htmlentities(print_r($_ENV, true));
+
+                $error_msg_array[] = sprintf("<pre>%s</pre>\n", $environment_vars);
+            }
+
+            // Output Server variables.
+
+            if (isset($_SERVER) && sizeof($_SERVER) > 0) {
+
+                $error_msg_array[] = "<p><b>\$_SERVER:</b></p>";
+
+                $server_vars = htmlentities(print_r($_SERVER, true));
+
+                $error_msg_array[] = sprintf("<pre>%s</pre>\n", $server_vars);
+            }
         }
 
         // Check to see if we need to send the error report by email
@@ -324,7 +370,7 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
             echo "<p>Details of the error have been saved to the default error log.</p>\n";
 
             if (defined('BEEHIVE_INSTALL_NOWARN') || defined('BEEHIVEMODE_INSTALL')) {
-                echo "<p>", implode("</p>\n<p>", $error_msg_array), "</p>\n";
+                echo implode("\n", $error_msg_array);
             }
 
             exit;
@@ -387,7 +433,7 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
         echo "    </tr>\n";
         echo "  </table>\n";
 
-        if (isset($_GET['retry_error']) && isset($_POST['t_content']) && strlen(trim(_stripslashes($_POST['t_content']))) > 0) {
+        if (isset($_GET['retry_error']) && isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
 
             echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
             echo "    <tr>\n";
@@ -409,10 +455,10 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
             echo "                        <td align=\"left\">&nbsp;</td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
-            echo "                        <td align=\"left\"><textarea class=\"bhtextarea\" rows=\"15\" name=\"t_content\" cols=\"85\">", _htmlentities(_stripslashes($_POST['t_content'])), "</textarea></td>\n";
+            echo "                        <td align=\"left\"><textarea class=\"bhtextarea\" rows=\"15\" name=\"t_content\" cols=\"85\">", htmlentities(stripslashes($_POST['t_content'])), "</textarea></td>\n";
             echo "                      </tr>\n";
 
-            if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
+            if (isset($_GET['replyto'])) {
 
                 echo "                      <tr>\n";
                 echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -421,9 +467,8 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
                 echo "                        <td align=\"left\" class=\"postbody\">Reply Message Number:</td>\n";
                 echo "                      </tr>\n";
                 echo "                      <tr>\n";
-                echo "                        <td align=\"left\"><input class=\"bhinputtext\" type=\"text\" name=\"t_request_url\" value=\"{$_GET['replyto']}\"></td>\n";
+                echo "                        <td align=\"left\"><input class=\"bhinputtext\" type=\"text\" name=\"t_request_url\" value=\"", htmlentities(stripslashes($_GET['replyto'])), "\"></td>\n";
                 echo "                      </tr>\n";
-
             }
 
             echo "                    </table>\n";
@@ -485,7 +530,7 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
 
             echo "                      <tr>\n";
             echo "                        <td>\n";
-            echo "                          <div class=\"error_handler_details\"><p>", implode("</p>\n<p>", $error_msg_array), "</p></div>\n";
+            echo "                          <div class=\"error_handler_details\">", implode("\n", $error_msg_array), "</div>\n";
             echo "                        </td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";

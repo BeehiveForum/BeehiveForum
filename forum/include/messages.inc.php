@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.516 2008-03-08 13:19:16 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.517 2008-03-08 22:53:46 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -997,7 +997,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
                     echo "&nbsp;<a href=\"post.php?webtag=$webtag&amp;replyto=$tid.{$message['PID']}\" target=\"_parent\" onclick=\"return checkPostQuoting('$tid.{$message['PID']}')\">{$lang['reply']}</a>";
 
                     echo "&nbsp;&nbsp;<img src=\"", style_image('quote_disabled.png'), "\" border=\"0\" alt=\"{$lang['quote']}\" title=\"{$lang['quote']}\" name=\"p{$message['PID']}\" />";
-                    echo "&nbsp;<a href=\"post.php?webtag=$webtag&amp;replyto=$tid.{$message['PID']}&amp;quote_list={$message['PID']}\" target=\"_parent\" title=\"{$lang['quote']}\" onclick=\"return togglePostQuoting({$message['PID']})\">{$lang['quote']}</a>";
+                    echo "&nbsp;<a href=\"post.php?webtag=$webtag&amp;replyto=$tid.{$message['PID']}&amp;quote_list={$message['PID']}\" target=\"_parent\" title=\"{$lang['quote']}\" name=\"q{$message['PID']}\" onclick=\"return togglePostQuoting({$message['PID']})\">{$lang['quote']}</a>";
 
                     $post_edit_time = forum_get_setting('post_edit_time', false, 0);
 

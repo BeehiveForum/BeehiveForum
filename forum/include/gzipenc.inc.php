@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gzipenc.inc.php,v 1.54 2008-03-09 12:36:48 decoyduck Exp $ */
+/* $Id: gzipenc.inc.php,v 1.55 2008-03-09 13:50:49 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -167,5 +167,9 @@ ob_implicit_flush(0);
 // Enable the GZIP output handler
 
 ob_start("bh_gzhandler");
+
+// Enable the word filter
+
+ob_start("word_filter_obstart");
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.296 2008-03-07 23:19:22 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.297 2008-03-09 12:36:48 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -2678,15 +2678,6 @@ function forum_check_maintenance()
 
     $forum_maintenance_last_run = forum_get_setting($forum_maintenance_date_var, false, 0);
 
-    // An array of forum settings we need to update.
-
-    $forum_settings_array = array('forum_maintenance_function' => $forum_maintenance_function,
-                                  $forum_maintenance_date_var  => mktime());
-
-    // Save the settings to the database.
-
-    forum_save_default_settings($forum_settings_array);
-
     // If the function hasn't been run in the last 24 hours we should run it.
 
     if ((mktime() - $forum_maintenance_last_run) > DAY_IN_SECONDS) {
@@ -2706,6 +2697,16 @@ function forum_check_maintenance()
                 // Register a shutdown function so PHP executes our function when everything is finished.
 
                 register_shutdown_function('forum_perform_maintenance', $forum_maintenance_functions_array[$forum_maintenance_function]);
+
+                // Update the last run forum_maintenance_function forum setting
+                // And the time it was last run.
+
+                $forum_settings_array = array('forum_maintenance_function' => $forum_maintenance_function,
+                                              $forum_maintenance_date_var  => mktime());
+
+                // Save the settings to the database.
+
+                forum_save_default_settings($forum_settings_array);
             }
 
             return true;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: htmltools.inc.php,v 1.62 2008-03-11 22:26:28 decoyduck Exp $ */
+/* $Id: htmltools.inc.php,v 1.63 2008-03-11 22:31:33 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -61,11 +61,13 @@ function TinyMCE() {
         }
     }
 
+    $str.= "    inline_styles : false,\n";
+
+    $str.= "    convert_fonts_to_spans : false,\n";
+
     $str.= "    directionality : \"{$lang['_textdir']}\",\n";
 
     $str.= "    content_css : \"tiny_mce/plugins/beehive/tiny_mce_style.css\",\n";
-
-//  $str.= "    auto_focus : \"mce_editor_0\",\n";
 
     $str.= "    oninit : \"mceOnInit\",\n";
 
@@ -76,9 +78,7 @@ function TinyMCE() {
     $str.= "    theme : \"advanced\",\n";
     $str.= "    theme_advanced_toolbar_location : \"top\",\n";
     $str.= "    theme_advanced_toolbar_align : \"left\",\n";
-//  $str.= "    theme_advanced_path_location : \"bottom\",\n";
 
-        // separator,rowseparator,spacer
     $str.= "    theme_advanced_buttons1 : \"bold,italic,underline,strikethrough,separator,justifyleft,justifycenter,justifyright,separator,formatselect,fontselect,fontsizeselect\",\n";
     $str.= "    theme_advanced_buttons2 : \"undo,redo,separator,cleanup,help,code,separator,visualaid,separator,tablecontrols\",\n";
     $str.= "    theme_advanced_buttons3 : \"search,replace,separator,removeformat,forecolor,backcolor,separator,sub,sup,separator,bullist,numlist,separator,outdent,indent,separator,link,unlink,separator,image,separator,charmap,separator,bhspellcheck\",\n";

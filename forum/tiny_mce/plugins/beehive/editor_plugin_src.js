@@ -2,7 +2,7 @@ tinyMCE.importPluginLanguagePack('beehive', 'en');
 
 function TinyMCE_beehive_getControlHTML(control_name)
 {
-    if (parseInt(tinyMCE.majorVersion) >= 2 && parseFloat(tinyMCE.minorVersion) >= 0.3) {
+    if (parseInt(tinyMCE.majorVersion) == 2 && parseFloat(tinyMCE.minorVersion) >= 0.3) {
 
         switch (control_name) {
 
@@ -29,7 +29,7 @@ function TinyMCE_beehive_getControlHTML(control_name)
 
 function TinyMCE_beehive_execCommand(editor_id, element, command, user_interface, value)
 {
-    if (parseInt(tinyMCE.majorVersion) >= 2 && parseFloat(tinyMCE.minorVersion) >= 0.3) {
+    if (parseInt(tinyMCE.majorVersion) == 2 && parseFloat(tinyMCE.minorVersion) >= 0.3) {
 
         switch (command) {
 

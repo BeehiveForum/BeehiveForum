@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: htmltools.inc.php,v 1.63 2008-03-11 22:31:33 decoyduck Exp $ */
+/* $Id: htmltools.inc.php,v 1.64 2008-03-11 22:47:33 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -71,7 +71,7 @@ function TinyMCE() {
 
     $str.= "    oninit : \"mceOnInit\",\n";
 
-    $str.= "    plugins : \"compat2x,beehive,searchreplace,table\",\n";
+    $str.= "    plugins : \"beehive,searchreplace,table\",\n";
 
     $str.= "    force_br_newlines : true,\n";
 
@@ -82,7 +82,7 @@ function TinyMCE() {
     $str.= "    theme_advanced_buttons1 : \"bold,italic,underline,strikethrough,separator,justifyleft,justifycenter,justifyright,separator,formatselect,fontselect,fontsizeselect\",\n";
     $str.= "    theme_advanced_buttons2 : \"undo,redo,separator,cleanup,help,code,separator,visualaid,separator,tablecontrols\",\n";
     $str.= "    theme_advanced_buttons3 : \"search,replace,separator,removeformat,forecolor,backcolor,separator,sub,sup,separator,bullist,numlist,separator,outdent,indent,separator,link,unlink,separator,image,separator,charmap,separator,bhspellcheck\",\n";
-    $str.= "    theme_advanced_buttons4 : \"bhquote,bhcode,bhspoiler,separator,bhnoemots\",\n";
+    $str.= "    theme_advanced_buttons4 : \"bhquote,bhcode,bhspoiler,bhnoemots\",\n";
 
     $str.= "    extended_valid_elements : \"marquee,span[class|align|title],div[class|align|id],font[face|size|color|style]\",\n";
 

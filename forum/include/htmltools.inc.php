@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: htmltools.inc.php,v 1.61 2008-01-12 01:38:28 decoyduck Exp $ */
+/* $Id: htmltools.inc.php,v 1.62 2008-03-11 22:26:28 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -69,7 +69,7 @@ function TinyMCE() {
 
     $str.= "    oninit : \"mceOnInit\",\n";
 
-    $str.= "    plugins : \"beehive,searchreplace,table\",\n";
+    $str.= "    plugins : \"compat2x,beehive,searchreplace,table\",\n";
 
     $str.= "    force_br_newlines : true,\n";
 

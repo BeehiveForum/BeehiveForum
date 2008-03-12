@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.275 2008-02-17 09:58:28 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.276 2008-03-12 14:40:29 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -791,10 +791,16 @@ function html_draw_top()
 
                 // Pages we don't want the popup to appear on
 
-                $pm_popup_disabled_pages = array('attachments.php', 'dictionary.php', 'display_emoticons.php',
-                                                 'email.php', 'mods_list.php', 'nav.php', 'pm.php', 'pm_edit.php',
-                                                 'pm_folders.php', 'pm_messages.php', 'pm_options.php',
-                                                 'poll_results.php', 'search_popup.php', 'user_profile.php');
+                $pm_popup_disabled_pages = array('admin.php', 'attachments.php', 'change_pw.php',
+                                                 'confirm_email.php', 'dictionary.php', 'discussion.php',
+                                                 'display_emoticons.php', 'edit_attachments.php', 'email.php',
+                                                 'font_size.php', 'forgot_pw.php', 'get_attachment.php',
+                                                 'index.php', 'mods_list.php', 'nav.php',
+                                                 'pm.php', 'pm_edit.php', 'pm_folders.php',
+                                                 'pm_messages.php', 'pm_options.php', 'poll_results.php',
+                                                 'start.php', 'search_popup.php', 'threads_rss.php',
+                                                 'user.php', 'user_folder.php', 'user_font.php',
+                                                 'user_profile.php', 'user_stats.php');
 
                 // Check that we're not on one of the pages.
 

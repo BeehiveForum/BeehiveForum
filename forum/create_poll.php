@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.220 2008-03-04 00:13:17 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.221 2008-03-12 00:27:00 decoyduck Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -541,8 +541,6 @@ if (isset($_POST['cancel'])) {
         $error_msg_array[] = $lang['failedtoupdateuserdetails'];
         $valid = false;
     }
-
-    $fix_html = false;
 
 }elseif (isset($_POST['change_count'])) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.196 2008-02-25 09:55:24 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.197 2008-03-12 00:27:00 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -284,8 +284,6 @@ if (isset($_POST['emots_toggle_x']) || isset($_POST['emots_toggle_y'])) {
         $error_msg_array[] = $lang['failedtoupdateuserdetails'];
         $valid = false;
     }
-
-    $fix_html = false;
 }
 
 // Some Options.
@@ -355,9 +353,9 @@ if (isset($_POST['t_post_html'])) {
     $links_enabled = ($page_prefs & POST_AUTO_LINKS);
 }
 
-// Intialise an empty message
+if (!isset($t_content)) $t_content = "";
 
-$post = new MessageText(POST_HTML_AUTO, '', $emots_enabled, $links_enabled);
+$post = new MessageText($post_html, $t_content, $emots_enabled, $links_enabled);
 
 $t_content = $post->getContent();
 

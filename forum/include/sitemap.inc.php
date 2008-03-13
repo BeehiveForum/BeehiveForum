@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: sitemap.inc.php,v 1.7 2008-03-13 23:44:56 decoyduck Exp $ */
+/* $Id: sitemap.inc.php,v 1.8 2008-03-13 23:47:13 decoyduck Exp $ */
 
 /**
 * sitemap.inc.php - sitemap functions
@@ -263,7 +263,7 @@ function sitemap_create_file()
 
     // Open the index file for writing.
 
-    if ($fp_index = fopen("{$sitemap_path}/sitemap.xml", 'w')) {
+    if (@$fp_index = fopen("{$sitemap_path}/sitemap.xml", 'w')) {
 
         // Write the sitemap index header to the index file
 
@@ -271,7 +271,7 @@ function sitemap_create_file()
 
         // Open the sitemap file for writing.
 
-        if ($fp = fopen("{$sitemap_path}/sitemap{$sitemap_file_count}.xml", 'w')) {
+        if (@$fp = fopen("{$sitemap_path}/sitemap{$sitemap_file_count}.xml", 'w')) {
 
             // Write the header to the file
 
@@ -343,7 +343,7 @@ function sitemap_create_file()
 
                                 // Try and open the file. If we fail write the footer to the index file, close and return false.
 
-                                if (!$fp = fopen("{$sitemap_path}/sitemap{$sitemap_file_count}.xml", 'w')) {
+                                if (!@$fp = fopen("{$sitemap_path}/sitemap{$sitemap_file_count}.xml", 'w')) {
 
                                     fwrite($fp_index, $sitemap_index_footer);
 

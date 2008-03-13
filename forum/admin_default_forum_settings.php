@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.101 2008-02-25 22:22:49 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.102 2008-03-13 23:44:56 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -107,6 +107,10 @@ if (!(bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0))) {
     html_draw_bottom();
     exit;
 }
+
+// Location of the forum for various URLs
+
+$forum_location = html_get_forum_uri();
 
 // Array to hold error messages
 
@@ -348,7 +352,7 @@ if (isset($_POST['submit']) || isset($_POST['confirm_unread_cutoff']) || isset($
     if (isset($_POST['sitemap_path']) && strlen(trim(_stripslashes($_POST['sitemap_path']))) > 0) {
         $new_forum_settings['sitemap_path'] = trim(_stripslashes($_POST['sitemap_path']));
     }else {
-        $new_forum_settings['sitemap_path'] = (isset($_SERVER['DOCUMENT_ROOT']) ? sprintf('%s/sitemap.xml', rtrim($_SERVER['DOCUMENT_ROOT'], '/')) : '');
+        $new_forum_settings['sitemap_path'] = (isset($_SERVER['DOCUMENT_ROOT']) ? rtrim($_SERVER['DOCUMENT_ROOT'], '/') : '');
     }
 
     if (isset($_POST['allow_username_changes']) && $_POST['allow_username_changes'] == "Y") {
@@ -979,14 +983,12 @@ echo "                        <td align=\"left\">", form_dropdown_array("sitemap
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\" valign=\"top\">{$lang['sitemaplocation']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("sitemap_path", (isset($forum_global_settings['sitemap_path']) ? _htmlentities($forum_global_settings['sitemap_path']) : (isset($_SERVER['DOCUMENT_ROOT']) ? sprintf('%s/sitemap.xml', rtrim($_SERVER['DOCUMENT_ROOT'], '/')) : '')), 32, 255), "&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_input_text("sitemap_path", (isset($forum_global_settings['sitemap_path']) ? _htmlentities($forum_global_settings['sitemap_path']) : 'sitemaps'), 32, 255), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_28']}</p>\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_58']}</p>\n";
-
-html_display_warning_msg($lang['forum_settings_help_59'], '95%', 'center');
 
 if (isset($forum_global_settings['sitemap_enabled']) && $forum_global_settings['sitemap_enabled'] == "Y") {
 
@@ -996,6 +998,9 @@ if (isset($forum_global_settings['sitemap_enabled']) && $forum_global_settings['
 
     }
 }
+
+html_display_warning_msg($lang['forum_settings_help_59'], '95%', 'center');
+html_display_warning_msg($lang['forum_settings_help_60'], '95%', 'center');
 
 echo "                        </td>\n";
 echo "                      </tr>\n";

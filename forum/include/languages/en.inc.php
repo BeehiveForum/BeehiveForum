@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.517 2008-03-08 22:53:46 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.518 2008-03-13 23:44:56 decoyduck Exp $ */
 
 // British English language file
 
@@ -537,7 +537,7 @@ $lang['allowsearchenginespidering'] = "Allow Search Engine Spidering";
 $lang['sitemapenabled'] = "Enable Sitemap";
 $lang['sitemapupdatefrequency'] = "Sitemap Update Frequency";
 $lang['sitemaplocation'] = "Sitemap Location";
-$lang['sitemappathnotwritable'] = "Sitemap path must be writable by the web server / PHP process!";
+$lang['sitemappathnotwritable'] = "Sitemap directory must be writable by the web server / PHP process!";
 $lang['newuserregistrations'] = "New User Registrations";
 $lang['preventduplicateemailaddresses'] = "Prevent duplicate email addresses";
 $lang['allownewuserregistrations'] = "Allow new user registrations";
@@ -985,7 +985,8 @@ $lang['forum_settings_help_55'] = "You can use HTML in your forum rules. Hyperli
 $lang['forum_settings_help_56'] = "Use <b>No-Reply Email</b> to specify an email address that does not exist or will not be monitored for replies. This email address will be used in the headers for all emails sent from your forum including but not limited to Post and PM notifications, user emails and password reminders.";
 $lang['forum_settings_help_57'] = "It is recommended that you use an email address that does not exist to help cut down on spam that may be directed at your main forum email address";
 $lang['forum_settings_help_58'] = "In addition to simple spidering, Beehive can also generate a sitemap for the forum to make it easier for search engines to find and index the messages posted by your users.";
-$lang['forum_settings_help_59'] = "Depending on server performance and the number of forums and threads your Beehive installation contains, generating a sitemap may take several minutes to complete. For this reason it is recommended that you try to avoid having the sitemap generation take place while your forums are busy.";
+$lang['forum_settings_help_59'] = "<b>Sitemap Location</b> specifies the location that Beehive will store it's sitemap files in. This directory must be writable by the web server / PHP process and must be accessible via HTTP. The URL to the sitemap index (<i><b>Sitemap Location</b>/sitemap.xml</i>) must be added to your robots.txt manually for search engines to be able to find and retrieve the files.";
+$lang['forum_settings_help_60'] = "Depending on server performance and the number of forums and threads your Beehive installation contains, generating a sitemap may take several minutes to complete. For this reason it is recommended that you try to avoid having the sitemap generation take place while your forums are busy.";
 
 // Attachments (attachments.php, get_attachment.php) ---------------------------------------
 

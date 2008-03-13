@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: sitemap.inc.php,v 1.8 2008-03-13 23:47:13 decoyduck Exp $ */
+/* $Id: sitemap.inc.php,v 1.9 2008-03-13 23:52:35 decoyduck Exp $ */
 
 /**
 * sitemap.inc.php - sitemap functions
@@ -204,7 +204,7 @@ function sitemap_create_file()
     // Sitemap URL entry
 
     $sitemap_url_entry = "  <url>\n";
-    $sitemap_url_entry.= "    <loc>%s/%s/lmessages.php?webtag=%s&amp;msg=%s.1</loc>\n";
+    $sitemap_url_entry.= "    <loc>%s/lmessages.php?webtag=%s&amp;msg=%s.1</loc>\n";
     $sitemap_url_entry.= "    <lastmod>%s</lastmod>\n";
     $sitemap_url_entry.= "    <changefreq>%s</changefreq>\n";
     $sitemap_url_entry.= "  </url>\n";
@@ -310,7 +310,7 @@ function sitemap_create_file()
 
                             // Generate the sitemap entry and write it to the file.
 
-                            $sitemap_entry = sprintf($sitemap_url_entry, $forum_location, $sitemap_url_path, $webtag, $thread_tid, $thread_last_modified, $change_frequency);
+                            $sitemap_entry = sprintf($sitemap_url_entry, $forum_location, $webtag, $thread_tid, $thread_last_modified, $change_frequency);
 
                             // If the sitemap file is going to be larger than the 10MB max file size
                             // We need to close the current file and open the next in sequence.

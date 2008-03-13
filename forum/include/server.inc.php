@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: server.inc.php,v 1.22 2008-03-09 12:36:48 decoyduck Exp $ */
+/* $Id: server.inc.php,v 1.23 2008-03-13 23:44:56 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -297,27 +297,30 @@ function get_available_popup_files_preg()
 * if it doesn't exist.
 *
 * @return boolean
-* @param string $path - Path to create
+* @param string $pathname - Path to create
 * @param integer $mode - Mode (chmod) of the directory.
 */
 
-function create_path_recursive($path_name, $mode)
+function create_path_recursive($pathname, $mode)
 {
-    if (!is_string($path_name)) return false;
+    is_dir(dirname($pathname)) || mkdir_recursive(dirname($pathname), $mode);
+    return is_dir($pathname) || @mkdir($pathname, $mode);
+}
 
-    $path_name = preg_replace('/\\\/', '/', $path_name);
+/**
+* Prepares a path for use in a URL.
+*
+* Prepare a path for use in a URL. Converts backslashes to forward slashes
+* and removes trailing slash. Doesn't valid the path.
+*
+* @return boolean
+* @param string $pathname - Path to prepare.
+*/
 
-    $path_array = explode('/', $path_name);
-
-    $check_path = '.';
-
-    foreach ($path_array as $path_part) {
-
-        $check_path.= DIRECTORY_SEPARATOR. $path_part;
-        if (!is_dir($check_path) && !@mkdir($check_path, $mode)) return false;
-    }
-
-    return true;
+function prepare_path_for_url($pathname)
+{
+    $pathname = preg_replace('/\\\/', '/', $pathname);
+    return rtrim($pathname, '/');
 }
 
 // Executed by every script that includes server.inc.php.

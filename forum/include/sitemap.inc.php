@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: sitemap.inc.php,v 1.6 2008-03-07 23:19:22 decoyduck Exp $ */
+/* $Id: sitemap.inc.php,v 1.7 2008-03-13 23:44:56 decoyduck Exp $ */
 
 /**
 * sitemap.inc.php - sitemap functions
@@ -56,8 +56,8 @@ include_once(BH_INCLUDE_PATH. "compat.inc.php");
 *
 * Gets available forums for use in sitemap. Password protected and restricted forums are excluded.
 *
-* @return mixed
-* @param void
+* return mixed
+* param void
 */
 
 function sitemap_get_available_forums()
@@ -91,8 +91,8 @@ function sitemap_get_available_forums()
 *
 * Gets all threads accessible to Guests.
 *
-* @return mixed
-* @param string $webtag - Forum Webtag to fetch the threads for.
+* return mixed
+* param string $webtag - Forum Webtag to fetch the threads for.
 */
 
 function sitemap_forum_get_threads($forum_fid)
@@ -141,21 +141,25 @@ function sitemap_forum_get_threads($forum_fid)
 *
 * Checks that the sitemap file exists and is writable by PHP
 *
-* @return boolean
-* @param void
+* return boolean
+* param void
 */
 
 function sitemap_check_dir()
 {
     if ($sitemap_path = forum_get_setting('sitemap_path')) {
 
-        // If the file doesn't exist try and create it.
+        // Check to make sure the $sitemap_path exists and is writable.
 
-        if (!@file_exists($sitemap_path)) @file_put_contents($sitemap_path, '');
+        create_path_recursive($sitemap_path, 0755);
 
-        // Check that the directory is writable.
+        // Check that it actually is a directory.
 
-        if (@is_writable($sitemap_path)) return $sitemap_path;
+        if (!is_dir($sitemap_path)) return false;
+
+        // Check that the main index file is writable.
+
+        if (is_writable("$sitemap_path/sitemap.xml")) return $sitemap_path;
     }
 
     return false;
@@ -166,15 +170,31 @@ function sitemap_check_dir()
 *
 * Generates the sitemap file!
 *
-* @return boolean
-* @param void
+* return boolean
+* param void
 */
 
 function sitemap_create_file()
 {
     // This can take a long time so we'll stop PHP timing out.
 
-    @set_time_limit(0);
+    set_time_limit(0);
+
+    // Header for the sitemap index file
+
+    $sitemap_index_header = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+    $sitemap_index_header.= "<sitemapindex xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n";
+
+    // Sitemap index entry
+
+    $sitemap_index_entry = "  <sitemap>\n";
+    $sitemap_index_entry.= "    <loc>%s/%s/sitemap%s.xml</loc>\n";
+    $sitemap_index_entry.= "    <lastmod>%s</lastmod>\n";
+    $sitemap_index_entry.= "  </sitemap>\n";
+
+    // Sitemap index footer.
+
+    $sitemap_index_footer = "</sitemapindex>";
 
     // Header for the sitemap file
 
@@ -184,7 +204,7 @@ function sitemap_create_file()
     // Sitemap URL entry
 
     $sitemap_url_entry = "  <url>\n";
-    $sitemap_url_entry.= "    <loc>%s/lmessages.php?webtag=%s&amp;msg=%s.1</loc>\n";
+    $sitemap_url_entry.= "    <loc>%s/%s/lmessages.php?webtag=%s&amp;msg=%s.1</loc>\n";
     $sitemap_url_entry.= "    <lastmod>%s</lastmod>\n";
     $sitemap_url_entry.= "    <changefreq>%s</changefreq>\n";
     $sitemap_url_entry.= "  </url>\n";
@@ -192,6 +212,14 @@ function sitemap_create_file()
     // Footer for the sitemap file.
 
     $sitemap_footer = "</urlset>";
+
+    // Sitemap file count
+
+    $sitemap_file_count = 1;
+
+    // Check the sitemap path
+
+    sitemap_check_dir();
 
     // Forum URL
 
@@ -209,75 +237,163 @@ function sitemap_create_file()
 
     if (!$sitemap_path = forum_get_setting('sitemap_path')) return false;
 
+    // Guestimate a URL path from the file system path.
+
+    $sitemap_url_path = prepare_path_for_url($sitemap_path);
+
+    // Make sure it's really a directory
+
+    if (!is_dir($sitemap_path)) return false;
+
+    // Check that it the directory is writable.
+
+    if (!is_writable($sitemap_path)) return false;
+
     // Get the sitemap update frequencey (default: 24 hours)
 
     $sitemap_freq = forum_get_setting('sitemap_freq', false, DAY_IN_SECONDS);
 
     // Check that the file is older than the update frequency.
 
-    if (file_exists($sitemap_path) && (mktime() - filemtime($sitemap_path) < $sitemap_freq)) return false;
+    if (file_exists("$sitemap_path/sitemap.xml") && (mktime() - filemtime("$sitemap_path/sitemap.xml") < $sitemap_freq)) return false;
 
-    // Check the sitemap files already exists and if not create it.
+    // Number of bytes written to file
 
-    if (!@file_exists($sitemap_path)) @file_put_contents($sitemap_path, '');
+    $bytes_written = 0;
 
-    // Check that it is writable.
+    // Open the index file for writing.
 
-    if (!@is_writable($sitemap_path)) return false;
+    if ($fp_index = fopen("{$sitemap_path}/sitemap.xml", 'w')) {
 
-    // Open the file for writing.
+        // Write the sitemap index header to the index file
 
-    if (@$fp = fopen($sitemap_path, 'w')) {
+        fwrite($fp_index, $sitemap_index_header);
 
-        // Write the header to the file
+        // Open the sitemap file for writing.
 
-        fwrite($fp, $sitemap_header);
+        if ($fp = fopen("{$sitemap_path}/sitemap{$sitemap_file_count}.xml", 'w')) {
 
-        // Fetch the data from the database, process it and add it to the sitemap.
+            // Write the header to the file
 
-        if ($available_forums_array = sitemap_get_available_forums()) {
+            $bytes_written+= fwrite($fp, $sitemap_header);
 
-            foreach ($available_forums_array as $forum_fid => $webtag) {
+            // Fetch the data from the database, process it and add it to the sitemap.
 
-                // If the thread data is successful start writing it to the file.
+            if ($available_forums_array = sitemap_get_available_forums()) {
 
-                if ($threads_array = sitemap_forum_get_threads($forum_fid)) {
+                foreach ($available_forums_array as $forum_fid => $webtag) {
 
-                    foreach ($threads_array as $thread_tid => $thread_modified) {
+                    // If the thread data is successful start writing it to the file.
 
-                        $thread_last_modified = date("Y-m-d", $thread_modified);
+                    if ($threads_array = sitemap_forum_get_threads($forum_fid)) {
 
-                        if ($thread_modified < mktime() - (90 * DAY_IN_SECONDS)) {
+                        foreach ($threads_array as $thread_tid => $thread_modified) {
 
-                            $change_frequency = "yearly";
+                            $thread_last_modified = date("Y-m-d", $thread_modified);
 
-                        }else if ($thread_modified < mktime() - (30 * DAY_IN_SECONDS)) {
+                            if ($thread_modified < mktime() - (90 * DAY_IN_SECONDS)) {
 
-                            $change_frequency = "monthly";
+                                $change_frequency = "yearly";
 
-                        }else if ($thread_modified < mktime() - (4 * DAY_IN_SECONDS)) {
+                            }else if ($thread_modified < mktime() - (30 * DAY_IN_SECONDS)) {
 
-                            $change_frequency = "weekly";
+                                $change_frequency = "monthly";
 
-                        }else {
+                            }else if ($thread_modified < mktime() - (4 * DAY_IN_SECONDS)) {
 
-                            $change_frequency = "daily";
+                                $change_frequency = "weekly";
+
+                            }else {
+
+                                $change_frequency = "daily";
+                            }
+
+                            // Generate the sitemap entry and write it to the file.
+
+                            $sitemap_entry = sprintf($sitemap_url_entry, $forum_location, $sitemap_url_path, $webtag, $thread_tid, $thread_last_modified, $change_frequency);
+
+                            // If the sitemap file is going to be larger than the 10MB max file size
+                            // We need to close the current file and open the next in sequence.
+
+                            if ($bytes_written + ((strlen($sitemap_entry) + strlen($sitemap_footer)) * 2) >= 10485760) {
+
+                                // Write the footer to the file
+
+                                fwrite($fp, $sitemap_footer);
+
+                                // Close the file
+
+                                fclose($fp);
+
+                                // Generate an index entry
+
+                                $sitemap_index = sprintf($sitemap_index_entry, $forum_location, $sitemap_url_path, $sitemap_file_count, date('Y-m-d'));
+
+                                // Write that to the index file.
+
+                                fwrite($fp_index, $sitemap_index);
+
+                                // Next sitemap file.
+
+                                $sitemap_file_count++;
+
+                                // Reset the written byte count
+
+                                $bytes_written = 0;
+
+                                // Try and open the file. If we fail write the footer to the index file, close and return false.
+
+                                if (!$fp = fopen("{$sitemap_path}/sitemap{$sitemap_file_count}.xml", 'w')) {
+
+                                    fwrite($fp_index, $sitemap_index_footer);
+
+                                    fclose($fp_index);
+
+                                    return false;
+                                }
+                            }
+
+                            $bytes_written+= fwrite($fp, $sitemap_entry);
                         }
-
-                        fwrite($fp, sprintf($sitemap_url_entry, $forum_location, $webtag, $thread_tid, $thread_last_modified, $change_frequency));
                     }
                 }
             }
+
+            // Write the footer to the file
+
+            fwrite($fp, $sitemap_footer);
+
+            // Close the file
+
+            fclose($fp);
         }
 
-        fwrite($fp, $sitemap_footer);
+        // Generate an index entry
 
-        fclose($fp);
+        $sitemap_index = sprintf($sitemap_index_entry, $forum_location, $sitemap_url_path, $sitemap_file_count, date('Y-m-d'));
+
+        // Write that to the index file.
+
+        fwrite($fp_index, $sitemap_index);
+
+        // Write the footer
+
+        fwrite($fp_index, $sitemap_index_footer);
+
+        // Close the file.
+
+        fclose($fp_index);
+
+        // Log what we've done.
 
         admin_add_log_entry(FORUM_AUTO_SITEMAP_UPDATED);
 
+        // Hurrah!
+
         return true;
     }
+
+    // If we got this far something went wrong.
 
     return false;
 }

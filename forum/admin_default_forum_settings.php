@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.102 2008-03-13 23:44:56 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.103 2008-03-15 00:10:19 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -365,6 +365,12 @@ if (isset($_POST['submit']) || isset($_POST['confirm_unread_cutoff']) || isset($
         $new_forum_settings['require_user_approval'] = "Y";
     }else {
         $new_forum_settings['require_user_approval'] = "N";
+    }
+
+    if (isset($_POST['send_new_user_email']) && $_POST['send_new_user_email'] == "Y") {
+        $new_forum_settings['send_new_user_email'] = "Y";
+    }else {
+        $new_forum_settings['send_new_user_email'] = "N";
     }
 
     if (isset($_POST['guest_account_enabled']) && $_POST['guest_account_enabled'] == "Y") {
@@ -730,6 +736,14 @@ echo "                        <td align=\"left\" width=\"270\">{$lang['requirefo
 echo "                        <td align=\"left\">", form_radio("forum_rules_enabled", "Y", $lang['yes'] , ((isset($forum_global_settings['forum_rules_enabled']) && $forum_global_settings['forum_rules_enabled'] == 'Y') || !isset($forum_global_settings['forum_rules_enabled']))), "&nbsp;", form_radio("forum_rules_enabled", "N", $lang['no'] , (isset($forum_global_settings['forum_rules_enabled']) && $forum_global_settings['forum_rules_enabled'] == 'N')), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"220\">{$lang['requireuserapproval']}:</td>\n";
+echo "                        <td align=\"left\">", form_radio("require_user_approval", "Y", $lang['yes'], (isset($forum_global_settings['require_user_approval']) && $forum_global_settings['require_user_approval'] == "Y")), "&nbsp;", form_radio("require_user_approval", "N", $lang['no'], (isset($forum_global_settings['require_user_approval']) && $forum_global_settings['require_user_approval'] == "N") || !isset($forum_global_settings['require_user_approval'])), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"270\">{$lang['sendnewuseremailnotifications']}:</td>\n";
+echo "                        <td align=\"left\">", form_radio("send_new_user_email", "Y", $lang['yes'] , (isset($forum_global_settings['send_new_user_email']) && $forum_global_settings['send_new_user_email'] == 'Y')), "&nbsp;", form_radio("send_new_user_email", "N", $lang['no'] , (isset($forum_global_settings['send_new_user_email']) && ($forum_global_settings['send_new_user_email'] == 'N') || !isset($forum_global_settings['send_new_user_email']))), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"250\">{$lang['usetextcaptcha']}:</td>\n";
 echo "                        <td align=\"left\">", form_radio("text_captcha_enabled", "Y", $lang['yes'], (isset($forum_global_settings['text_captcha_enabled']) && $forum_global_settings['text_captcha_enabled'] == 'Y')), "&nbsp;", form_radio("text_captcha_enabled", "N", $lang['no'], (isset($forum_global_settings['text_captcha_enabled']) && $forum_global_settings['text_captcha_enabled'] == 'N') || !isset($forum_global_settings['text_captcha_enabled'])), "</td>\n";
 echo "                      </tr>\n";
@@ -782,6 +796,8 @@ echo "                        <td align=\"left\" colspan=\"2\">\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_29']}</p>\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_42']}</p>\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_43']}</p>\n";
+echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_50']}</p>\n";
+echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_61']}</p>\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_44']}</p>\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_45']}</p>\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_46']}</p>\n";
@@ -1033,10 +1049,6 @@ echo "                        <td align=\"left\" width=\"220\">{$lang['allowuser
 echo "                        <td align=\"left\">", form_radio("allow_username_changes", "Y", $lang['yes'], (isset($forum_global_settings['allow_username_changes']) && $forum_global_settings['allow_username_changes'] == "Y")), "&nbsp;", form_radio("allow_username_changes", "N", $lang['no'], (isset($forum_global_settings['allow_username_changes']) && $forum_global_settings['allow_username_changes'] == "N") || !isset($forum_global_settings['allow_username_changes'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"220\">{$lang['requireuserapproval']}:</td>\n";
-echo "                        <td align=\"left\">", form_radio("require_user_approval", "Y", $lang['yes'], (isset($forum_global_settings['require_user_approval']) && $forum_global_settings['require_user_approval'] == "Y")), "&nbsp;", form_radio("require_user_approval", "N", $lang['no'], (isset($forum_global_settings['require_user_approval']) && $forum_global_settings['require_user_approval'] == "N") || !isset($forum_global_settings['require_user_approval'])), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"270\">{$lang['enableguestaccount']}:</td>\n";
 echo "                        <td align=\"left\">", form_radio("guest_account_enabled", "Y", $lang['yes'], (isset($forum_global_settings['guest_account_enabled']) && $forum_global_settings['guest_account_enabled'] == 'Y') || !isset($forum_global_settings['guest_account_enabled'])), "&nbsp;", form_radio("guest_account_enabled", "N", $lang['no'], (isset($forum_global_settings['guest_account_enabled']) && $forum_global_settings['guest_account_enabled'] == 'N')), "</td>\n";
 echo "                      </tr>\n";
@@ -1047,7 +1059,6 @@ echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_53']}</p>\n";
-echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_50']}</p>\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_21']}</p>\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_22']}</p>\n";
 echo "                        </td>\n";

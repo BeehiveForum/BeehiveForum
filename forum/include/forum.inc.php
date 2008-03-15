@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.297 2008-03-09 12:36:48 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.298 2008-03-15 00:10:19 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -714,9 +714,9 @@ function forum_check_global_setting_name($setting_name)
                                          'new_user_email_notify', 'new_user_mark_as_of_int', 'new_user_pm_notify_email',
                                          'pm_allow_attachments', 'pm_auto_prune', 'pm_max_user_messages', 'require_email_confirmation',
                                          'require_unique_email', 'require_user_approval', 'search_min_frequency',
-                                         'session_cutoff', 'sitemap_enabled', 'sitemap_path', 'sitemap_freq',
-                                         'showpopuponnewpm', 'show_pms', 'text_captcha_dir', 'text_captcha_enabled',
-                                         'text_captcha_key');
+                                         'send_new_user_email', 'session_cutoff', 'sitemap_enabled', 'sitemap_path',
+                                         'sitemap_freq', 'showpopuponnewpm', 'show_pms', 'text_captcha_dir',
+                                         'text_captcha_enabled', 'text_captcha_key');
 
     return in_array($setting_name, $valid_global_forum_settings);
 }

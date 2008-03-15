@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.518 2008-03-13 23:44:56 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.519 2008-03-15 00:10:19 decoyduck Exp $ */
 
 // British English language file
 
@@ -923,6 +923,7 @@ $lang['userandguestaccesssettings'] = "User and guest access settings";
 $lang['allowuserstochangeusername'] = "Allow users to change username";
 $lang['requireuserapproval'] = "Require user approval by admin";
 $lang['requireforumrulesagreement'] = "Require user to agree to forum rules";
+$lang['sendnewuseremailnotifications'] = "Send notification to global forum owner";
 $lang['enableattachments'] = "Enable Attachments";
 $lang['attachmentdir'] = "Attachment Dir";
 $lang['userattachmentspace'] = "Attachment space per user";
@@ -987,6 +988,7 @@ $lang['forum_settings_help_57'] = "It is recommended that you use an email addre
 $lang['forum_settings_help_58'] = "In addition to simple spidering, Beehive can also generate a sitemap for the forum to make it easier for search engines to find and index the messages posted by your users.";
 $lang['forum_settings_help_59'] = "<b>Sitemap Location</b> specifies the location that Beehive will store it's sitemap files in. This directory must be writable by the web server / PHP process and must be accessible via HTTP. The URL to the sitemap index (<i><b>Sitemap Location</b>/sitemap.xml</i>) must be added to your robots.txt manually for search engines to be able to find and retrieve the files.";
 $lang['forum_settings_help_60'] = "Depending on server performance and the number of forums and threads your Beehive installation contains, generating a sitemap may take several minutes to complete. For this reason it is recommended that you try to avoid having the sitemap generation take place while your forums are busy.";
+$lang['forum_settings_help_61'] = "<b>Send email nofitication to global admin</b> when enabled will send an email to the global forum owners when a new user account is created.";
 
 // Attachments (attachments.php, get_attachment.php) ---------------------------------------
 
@@ -1095,10 +1097,15 @@ $lang['confirmchangedemail'] = "Hello %s,\n\nYou recently changed your email on 
 
 $lang['forgotpwemail'] = "Hello %s,\n\nYou requested this e-mail from %s because you have forgotten your password.\n\nClick the link below (or copy and paste it into your browser) to reset your password:\n\n%s";
 
+// Admin New User Approval notification -----------------------------------------
+
+$lang['newuserapprovalsubject'] = "New User Approval Notification for %s";
+$lang['newuserapprovalemail'] = "Hello %s,\n\nA new user account has been created on %s.\n\nAs you are an Administrator of this forum you are required to approve this user account before it can be used by it's owner.\n\nTo approve this account please visit the Admin Users section and change the filter type to \"Users Awaiting Approval\" or click the link below:\n\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: Other Administrators on this forum will also receive this notification and may have already acted upon this request.";
+
 // Admin New User notification -----------------------------------------
 
 $lang['newuserregistrationsubject'] = "New User Account Notification for %s";
-$lang['newuserregistrationemail'] = "Hello %s,\n\nA new user account has been created on %s.\n\nAs you are an Administrator of this forum you are required to approve this user account before it can be used by it's owner.\n\nTo approve this account please visit the Admin Users section and change the filter type to \"Users Awaiting Approval\" or click the link below:\n\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: Other Administrators on this forum will also receive this notification and may have already acted upon this request.";
+$lang['newuserregistrationemail'] = "Hello %s,\n\nA new user account has been created on %s.\n\nTo view this user account please visit the Admin Users section and click on the new user or click the link below:\n\n%s";
 
 // User Approved notification ------------------------------------------
 

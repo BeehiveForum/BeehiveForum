@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en-us.inc.php,v 1.46 2008-03-05 22:49:10 decoyduck Exp $ */
+/* $Id: en-us.inc.php,v 1.47 2008-03-15 00:10:19 decoyduck Exp $ */
 
 // British English language file
 
@@ -1089,8 +1089,8 @@ $lang['forgotpwemail'] = "Hello %s,\n\nYou requested this e-mail from %s because
 
 // Admin New User notification -----------------------------------------
 
-$lang['newuserregistrationsubject'] ="New User Account Notification for %s";
-$lang['newuserregistrationemail'] ="Hello %s,\\n\\nA new user account has been created on %s.\\n\\nAs you are an Administrator of this forum you are required to approve this user account before it can be used by it\'s owner.\\n\\nTo approve this account please visit the Admin Users section and change the filter type to \"Users Awaiting Approval\" or click the link below:\\n\\n%s\\n\\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\\n\\nNote: Other Administrators on this forum will also receive this notification and may have already acted upon this request.";
+$lang['newuserapprovalsubject'] ="New User Account Notification for %s";
+$lang['newuserapprovalemail'] ="Hello %s,\\n\\nA new user account has been created on %s.\\n\\nAs you are an Administrator of this forum you are required to approve this user account before it can be used by it\'s owner.\\n\\nTo approve this account please visit the Admin Users section and change the filter type to \"Users Awaiting Approval\" or click the link below:\\n\\n%s\\n\\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\\n\\nNote: Other Administrators on this forum will also receive this notification and may have already acted upon this request.";
 
 // User Approved notification ------------------------------------------
 

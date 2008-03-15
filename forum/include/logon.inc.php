@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.76 2008-03-05 22:49:11 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.77 2008-03-15 15:37:03 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -338,10 +338,10 @@ function logon_draw_form($session_expired = false)
 
     // Check for any post data that we need to include in the form.
 
-    if (isset($_POST) && is_array($_POST) && sizeof($_POST) > 0) {
+    logon_unset_post_data();
 
-        $ignore_keys = array('user_logon', 'user_password', 'user_passhash', 'remember_user', 'webtag');
-        echo form_input_hidden_array(_stripslashes($_POST), $ignore_keys);
+    if (isset($_POST) && is_array($_POST) && sizeof($_POST) > 0) {
+        echo form_input_hidden_array(_stripslashes($_POST));
     }
 
     echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";

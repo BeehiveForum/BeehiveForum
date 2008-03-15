@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.115 2008-03-12 12:56:02 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.116 2008-03-15 15:37:03 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -382,10 +382,6 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
         while (@ob_end_clean());
         ob_start("bh_gzhandler");
         ob_implicit_flush(0);
-
-        // Prevent caching of error handler
-
-        header_no_cache();
 
         // Full mode error message display with Retry button.
 

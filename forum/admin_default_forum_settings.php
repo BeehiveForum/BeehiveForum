@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.103 2008-03-15 00:10:19 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.104 2008-03-15 15:37:03 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -442,7 +442,7 @@ if (isset($_POST['submit']) || isset($_POST['confirm_unread_cutoff']) || isset($
                 echo "<div align=\"center\">\n";
                 echo "<form name=\"prefsform\" action=\"admin_default_forum_settings.php\" method=\"post\" target=\"_self\">\n";
                 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-                echo "  ", form_input_hidden_array(_stripslashes($_POST), array('webtag')), "\n";
+                echo "  ", form_input_hidden_array(_stripslashes($_POST)), "\n";
                 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
                 echo "    <tr>\n";
                 echo "      <td align=\"left\">\n";

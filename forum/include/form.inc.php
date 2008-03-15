@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.111 2008-03-12 00:27:00 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.112 2008-03-15 15:37:03 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -99,10 +99,9 @@ function form_input_hidden($name, $value = false, $custom_html = false)
 }
 
 
-function form_input_hidden_array($array, $ignore_keys = array())
+function form_input_hidden_array($array)
 {
     if (!is_array($array)) return false;
-    if (!is_array($ignore_keys)) return false;
 
     $array_keys = array();
     $array_values = array();

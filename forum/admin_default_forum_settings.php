@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.104 2008-03-15 15:37:03 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.105 2008-03-16 16:57:05 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -136,8 +136,7 @@ $unread_cutoff_periods = array(UNREAD_MESSAGES_DISABLED       => $lang['disableu
 
 // Array of valid periods for the sitemap frequency
 
-$sitemap_freq_periods = array(HOUR_IN_SECONDS => $lang['onceanhour'],
-                              DAY_IN_SECONDS  => $lang['onceaday'],
+$sitemap_freq_periods = array(DAY_IN_SECONDS  => $lang['onceaday'],
                               WEEK_IN_SECONDS => $lang['onceaweek']);
 
 // Submit code.

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.300 2008-03-16 12:01:09 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.301 2008-03-16 16:52:37 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -974,7 +974,7 @@ function forum_save_start_page($content)
 {
     $webtag = get_webtag($webtag_search);
 
-    create_path_recursive("forums/$webtag", 0755);
+    mkdir_recursive("forums/$webtag", 0755);
 
     return @file_put_contents("forums/$webtag/start_main.php", $content);
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: sitemap.inc.php,v 1.10 2008-03-15 00:10:19 decoyduck Exp $ */
+/* $Id: sitemap.inc.php,v 1.11 2008-03-16 16:52:37 decoyduck Exp $ */
 
 /**
 * sitemap.inc.php - sitemap functions
@@ -151,7 +151,7 @@ function sitemap_check_dir()
 
         // Check to make sure the $sitemap_path exists and is writable.
 
-        create_path_recursive($sitemap_path, 0755);
+        mkdir_recursive($sitemap_path, 0755);
 
         // Check that it actually is a directory.
 

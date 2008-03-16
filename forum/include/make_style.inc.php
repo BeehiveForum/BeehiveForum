@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: make_style.inc.php,v 1.18 2008-02-14 23:00:44 decoyduck Exp $ */
+/* $Id: make_style.inc.php,v 1.19 2008-03-16 16:40:33 decoyduck Exp $ */
 
 /**
 * make_style.inc.php - attachment upload handling
@@ -73,7 +73,7 @@ function forum_save_style($style_name, $style_desc, $content, &$error)
 
         // Check that the directory structure exists
 
-        create_path_recursive("forums/$webtag/styles/$style_name", 0755);
+        mkdir_recursive("forums/$webtag/styles/$style_name", 0755);
 
         // Save the style desc.txt file
 

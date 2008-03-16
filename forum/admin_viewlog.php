@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.135 2008-03-03 15:03:20 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.136 2008-03-16 16:40:33 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -328,7 +328,7 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
         $auto_update = false;
 
         echo "                  <tr>\n";
-        echo "                    <td align=\"left\" valign=\"top\">", format_time($admin_log_entry['CREATED']), "</td>\n";
+        echo "                    <td align=\"left\" valign=\"top\"><span title=\"", format_time($admin_log_entry['CREATED'], true), "\">", format_time($admin_log_entry['CREATED']), "</td>\n";
 
         $entry_array = _htmlentities(explode("\x00", $admin_log_entry['ENTRY']));
 

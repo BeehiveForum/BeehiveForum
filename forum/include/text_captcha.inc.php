@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: text_captcha.inc.php,v 1.23 2008-02-14 23:00:44 decoyduck Exp $ */
+/* $Id: text_captcha.inc.php,v 1.24 2008-03-16 16:40:33 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -281,8 +281,8 @@ class captcha {
     {
         if ($text_captcha_dir = forum_get_setting('text_captcha_dir')) {
 
-            create_path_recursive("$text_captcha_dir/fonts", 0755);
-            create_path_recursive("$text_captcha_dir/images", 0755);
+            mkdir_recursive("$text_captcha_dir/fonts", 0755);
+            mkdir_recursive("$text_captcha_dir/images", 0755);
 
             if (@is_dir("$text_captcha_dir/fonts") && @is_dir("$text_captcha_dir/images")) {
 

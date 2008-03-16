@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.299 2008-03-15 09:57:00 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.300 2008-03-16 12:01:09 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -2670,6 +2670,10 @@ function forum_check_maintenance()
                                                'captcha_clean_up',
                                                'sitemap_create_file');
 
+    // Array to hold the forum settings we need to update.
+
+    $new_forum_settings = array();
+
     // XML requests shouldn't trigger forum self clean
 
     if (!forum_self_clean_check_xml()) return false;
@@ -2708,7 +2712,7 @@ function forum_check_maintenance()
 
         if (mktime() > mktime($maintenance_hour, $maintenance_minute)) {
 
-           // Check the function actually exists before we try and execute it.
+            // Check the function actually exists before we try and execute it.
 
             if (function_exists($forum_maintenance_functions_array[$forum_maintenance_function])) {
 
@@ -2720,22 +2724,22 @@ function forum_check_maintenance()
 
                 register_shutdown_function('forum_perform_maintenance', $forum_maintenance_functions_array[$forum_maintenance_function]);
 
-                // Update the last run forum_maintenance_function forum setting
-                // And the time it was last run.
+                // Update the time the function was last set to run
 
-                $forum_settings_array = array('forum_maintenance_function' => $forum_maintenance_function,
-                                              $forum_maintenance_date_var  => mktime());
-
-                // Save the settings to the database.
-
-                forum_save_default_settings($forum_settings_array);
+                $new_forum_settings[$forum_maintenance_date_var] = mktime();
             }
-
-            return true;
         }
     }
 
-    return false;
+    // Update the last run forum_maintenance_function forum setting
+
+    $new_forum_settings['forum_maintenance_function'] = $forum_maintenance_function;
+
+    // Save the settings to the database.
+
+    forum_save_default_settings($new_forum_settings);
+
+    return true;
 }
 
 function forum_perform_maintenance($function)

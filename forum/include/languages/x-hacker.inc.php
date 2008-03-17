@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.272 2008-03-05 22:49:10 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.273 2008-03-17 14:09:36 decoyduck Exp $ */
 
 // British English language file
 
@@ -545,7 +545,7 @@ $lang['requireemailconfirmation'] = "r3qu1r3 3M41L cONPhiRm@TiON";
 $lang['usetextcaptcha'] = "u53 t3x+-C4ptcHA";
 $lang['textcaptchadir'] = "t3x+-c4p+CH@ DIr3C+0Ry";
 $lang['textcaptchakey'] = "tex+-c@P+Ch4 Key";
-$lang['textcaptchafonterror'] = "t3X+-C4ptCh@ HAS b33N d1s4BL3D @u+0MATicaLLY 8eC4US3 THEr3 4r3 NO tRUE tyPE Ph0N+S 4V@Il4BLe pHOR I+ +o US3. pL3ASE UPLO4D sOM3 +RUe TyPE f0NTs To <b>%s</b> 0N y0UR s3rV3R.";
+$lang['textcaptchafonterror'] = "t3X+-C4ptCh@ HAS b33N d1s4BL3D @u+0MATicaLLY 8eC4US3 THEr3 4r3 NO tRUE tyPE Ph0N+S 4V@Il4BLe pHOR I+ +o US3. pL3ASE UPLO4D sOM3 +RUe TyPE f0NTs To <b>text_captcha/fonts</b> 0N y0UR s3rV3R.";
 $lang['textcaptchadirerror'] = "texT-c4p+cH4 H4\$ bE3N dIS48LeD 8ec4USE THe T3X+_C@p+ChA D1R3C+0RY @Nd I+'\$ \$U8-DiR3C+oRI3S 4r3 n0+ wR1+48L3 8Y TeH WeB S3RV3r / pHP PROc3s5.";
 $lang['textcaptchagderror'] = "tEX+-C4P+Ch4 H@5 B3EN D1S@8L3D 83C4U\$3 YOUR \$3RVEr'S Php \$3+UP doES Not ProViDE \$UPPOr+ FOr Gd iM4Ge M4N1Pul@TION @ND / Or Ttf PH0Nt SUPp0r+. 80TH @rE R3QUirED PhoR +3XT-c4P+ch4 SUpPOrt.";
 $lang['textcaptchadirblank'] = "text-C4ptch4 d1R3C+0rY 1S 8L4nK!";

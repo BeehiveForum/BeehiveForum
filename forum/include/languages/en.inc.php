@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.519 2008-03-15 00:10:19 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.520 2008-03-17 13:40:34 decoyduck Exp $ */
 
 // British English language file
 
@@ -973,7 +973,7 @@ $lang['forum_settings_help_42'] = "<b>Prevent use of duplicate email addresses</
 $lang['forum_settings_help_43'] = "<b>Require email confirmation</b> when enabled will send an email to each new user with a link that can be used to confirm their email address. Until they confirm their email address they will not be able to post unless their user permissions are changed manually by an admin.";
 $lang['forum_settings_help_44'] = "<b>Use text-captcha</b> presents the new user with a mangled image which they must copy a number from into a text field on the registration form. Use this option to prevent automated sign-up via scripts.";
 $lang['forum_settings_help_45'] = "<b>Text-captcha directory</b> specifies the location that Beehive will store it's text-captcha images and fonts in. This directory must be writable by the web server / PHP process and must be accessible via HTTP. After you have enabled text-captcha you must upload some true type fonts into the fonts sub-directory of your main text-captcha directory otherwise Beehive will skip the text-captcha during user registration.";
-$lang['forum_settings_help_46'] = "<b>Text Captcha key</b> allows you to change the key used by Beehive for generating the text captcha code that appears in the image. The more unique you make the key the harder it will be for automated processes to \"guess\"the code.";
+$lang['forum_settings_help_46'] = "<b>Text Captcha key</b> allows you to change the key used by Beehive for generating the text captcha code that appears in the image. The more unique you make the key the harder it will be for automated processes to \"guess\" the code.";
 $lang['forum_settings_help_47'] = "<b>Post Edit Grace Period</b> allows you to define a period in minutes where users may edit posts without the 'EDITED BY' text appearing on their posts. If set to 0 the 'EDITED BY' text will always appear.";
 $lang['forum_settings_help_48'] = "<b>Unread messages cut-off</b> specifies how long messages remain unread. Threads modified no later than the period selected will automatically appear as read.";
 $lang['forum_settings_help_49'] = "Choosing <b>Disable unread messages</b> will completely remove unread messages support and remove the relevant options from the discussion type drop down on the thread list.";
@@ -986,7 +986,7 @@ $lang['forum_settings_help_55'] = "You can use HTML in your forum rules. Hyperli
 $lang['forum_settings_help_56'] = "Use <b>No-Reply Email</b> to specify an email address that does not exist or will not be monitored for replies. This email address will be used in the headers for all emails sent from your forum including but not limited to Post and PM notifications, user emails and password reminders.";
 $lang['forum_settings_help_57'] = "It is recommended that you use an email address that does not exist to help cut down on spam that may be directed at your main forum email address";
 $lang['forum_settings_help_58'] = "In addition to simple spidering, Beehive can also generate a sitemap for the forum to make it easier for search engines to find and index the messages posted by your users.";
-$lang['forum_settings_help_59'] = "<b>Sitemap Location</b> specifies the location that Beehive will store it's sitemap files in. This directory must be writable by the web server / PHP process and must be accessible via HTTP. The URL to the sitemap index (<i><b>Sitemap Location</b>/sitemap.xml</i>) must be added to your robots.txt manually for search engines to be able to find and retrieve the files.";
+$lang['forum_settings_help_59'] = "Sitemaps are automatically saved to the sitemaps sub-directory of your Beehive Forum installation. If this directory doesn't exist you must create it and ensure that it is writable by the server / PHP process. To allow search engines to find your sitemap you must add the URL to your robots.txt.";
 $lang['forum_settings_help_60'] = "Depending on server performance and the number of forums and threads your Beehive installation contains, generating a sitemap may take several minutes to complete. For this reason it is recommended that you try to avoid having the sitemap generation take place while your forums are busy.";
 $lang['forum_settings_help_61'] = "<b>Send email nofitication to global admin</b> when enabled will send an email to the global forum owners when a new user account is created.";
 

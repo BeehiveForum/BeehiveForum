@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.105 2008-03-16 16:57:05 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.106 2008-03-17 13:40:34 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -346,12 +346,6 @@ if (isset($_POST['submit']) || isset($_POST['confirm_unread_cutoff']) || isset($
         $new_forum_settings['sitemap_freq'] = $_POST['sitemap_freq'];
     }else {
         $new_forum_settings['sitemap_freq'] = DAY_IN_SECONDS;
-    }
-
-    if (isset($_POST['sitemap_path']) && strlen(trim(_stripslashes($_POST['sitemap_path']))) > 0) {
-        $new_forum_settings['sitemap_path'] = trim(_stripslashes($_POST['sitemap_path']));
-    }else {
-        $new_forum_settings['sitemap_path'] = (isset($_SERVER['DOCUMENT_ROOT']) ? rtrim($_SERVER['DOCUMENT_ROOT'], '/') : '');
     }
 
     if (isset($_POST['allow_username_changes']) && $_POST['allow_username_changes'] == "Y") {
@@ -997,17 +991,13 @@ echo "                        <td align=\"left\" width=\"270\">{$lang['sitemapup
 echo "                        <td align=\"left\">", form_dropdown_array("sitemap_freq", $sitemap_freq_periods, (isset($forum_global_settings['sitemap_freq']) && in_array($forum_global_settings['sitemap_freq'], array_keys($sitemap_freq_periods))) ? $forum_global_settings['sitemap_freq'] : DAY_IN_SECONDS), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"220\" valign=\"top\">{$lang['sitemaplocation']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("sitemap_path", (isset($forum_global_settings['sitemap_path']) ? _htmlentities($forum_global_settings['sitemap_path']) : 'sitemaps'), 32, 255), "&nbsp;</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_28']}</p>\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_58']}</p>\n";
 
 if (isset($forum_global_settings['sitemap_enabled']) && $forum_global_settings['sitemap_enabled'] == "Y") {
 
-    if (!sitemap_check_dir()) {
+    if (!sitemap_get_dir()) {
 
         html_display_error_msg($lang['sitemappathnotwritable'], '95%', 'center');
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: sitemap.inc.php,v 1.11 2008-03-16 16:52:37 decoyduck Exp $ */
+/* $Id: sitemap.inc.php,v 1.12 2008-03-17 13:40:34 decoyduck Exp $ */
 
 /**
 * sitemap.inc.php - sitemap functions
@@ -137,30 +137,41 @@ function sitemap_forum_get_threads($forum_fid)
 }
 
 /**
-* Check Sitemap path
+* Get sitemap path
 *
-* Checks that the sitemap file exists and is writable by PHP
+* Finds the sitemap path and checks that the sitemap file
+* exists and is writable by PHP
 *
 * return boolean
 * param void
 */
 
-function sitemap_check_dir()
+function sitemap_get_dir()
 {
-    if ($sitemap_path = forum_get_setting('sitemap_path')) {
+    // PHP's register_shutdown_function changes the current working
+    // directory on some web servers to the ServerRoot. To get the
+    // forum directory we need get the parent directory of the
+    // current file (sitemap.inc.php).
 
-        // Check to make sure the $sitemap_path exists and is writable.
+    $forum_directory = rtrim(dirname(dirname(__FILE__)), DIRECTORY_SEPARATOR);
 
-        mkdir_recursive($sitemap_path, 0755);
+    // Once we have the forum directory we can find our sitemaps directory.
 
-        // Check that it actually is a directory.
+    $sitemap_path = $forum_directory. DIRECTORY_SEPARATOR. 'sitemaps';
 
-        if (!is_dir($sitemap_path)) return false;
+    // Check to make sure the $sitemap_path exists and is writable.
 
-        // Check that the main index file is writable.
+    mkdir_recursive($sitemap_path, 0755);
 
-        if (is_writable($sitemap_path)) return $sitemap_path;
-    }
+    // Check that it actually is a directory.
+
+    if (!is_dir($sitemap_path)) return false;
+
+    // Check that the main index file is writable.
+
+    if (is_writable($sitemap_path)) return $sitemap_path;
+
+    // If the write check failed return false;
 
     return false;
 }
@@ -188,7 +199,7 @@ function sitemap_create_file()
     // Sitemap index entry
 
     $sitemap_index_entry = "  <sitemap>\n";
-    $sitemap_index_entry.= "    <loc>%s/%s/sitemap%s.xml</loc>\n";
+    $sitemap_index_entry.= "    <loc>%s/sitemaps/sitemap%s.xml</loc>\n";
     $sitemap_index_entry.= "    <lastmod>%s</lastmod>\n";
     $sitemap_index_entry.= "  </sitemap>\n";
 
@@ -217,10 +228,6 @@ function sitemap_create_file()
 
     $sitemap_file_count = 1;
 
-    // Check the sitemap path
-
-    sitemap_check_dir();
-
     // Forum URL
 
     $forum_location = html_get_forum_uri();
@@ -235,27 +242,27 @@ function sitemap_create_file()
 
     // Fetch the sitemap path.
 
-    if (!$sitemap_path = forum_get_setting('sitemap_path')) return false;
+    if (!$sitemap_path = sitemap_get_dir()) return false;
 
-    // Guestimate a URL path from the file system path.
-
-    $sitemap_url_path = prepare_path_for_url($sitemap_path);
-
-    // Make sure it's really a directory
-
-    if (!is_dir($sitemap_path)) return false;
-
-    // Check that it the directory is writable.
-
-    if (!is_writable($sitemap_path)) return false;
+    sitemap_error($sitemap_path);
 
     // Get the sitemap update frequencey (default: 24 hours)
 
     $sitemap_freq = forum_get_setting('sitemap_freq', false, DAY_IN_SECONDS);
 
+    // Clear the stat cache so we don't get any stale results.
+
+    clearstatcache();
+
     // Check that the file is older than the update frequency.
 
-    if (file_exists("$sitemap_path/sitemap.xml") && (mktime() - filemtime("$sitemap_path/sitemap.xml") < $sitemap_freq)) return false;
+    if (@file_exists("$sitemap_path/sitemap.xml")) {
+
+        if (@$file_modified = filemtime("$sitemap_path/sitemap.xml")) {
+
+            if ((mktime() - $file_modified) < $sitemap_freq) return false;
+        }
+    }
 
     // Number of bytes written to file
 
@@ -327,7 +334,7 @@ function sitemap_create_file()
 
                                 // Generate an index entry
 
-                                $sitemap_index = sprintf($sitemap_index_entry, $forum_location, $sitemap_url_path, $sitemap_file_count, date('Y-m-d'));
+                                $sitemap_index = sprintf($sitemap_index_entry, $forum_location, $sitemap_file_count, date('Y-m-d'));
 
                                 // Write that to the index file.
 
@@ -370,7 +377,7 @@ function sitemap_create_file()
 
         // Generate an index entry
 
-        $sitemap_index = sprintf($sitemap_index_entry, $forum_location, $sitemap_url_path, $sitemap_file_count, date('Y-m-d'));
+        $sitemap_index = sprintf($sitemap_index_entry, $forum_location, $sitemap_file_count, date('Y-m-d'));
 
         // Write that to the index file.
 

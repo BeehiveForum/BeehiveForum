@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_cvs_log_parse.php,v 1.13 2008-03-07 23:19:21 decoyduck Exp $ */
+/* $Id: bh_cvs_log_parse.php,v 1.14 2008-03-17 12:18:01 decoyduck Exp $ */
 
 /**
 * bh_cvs_log_parse.php
@@ -92,7 +92,7 @@ function get_cvs_log_data($date)
 * @param string $log_file - Path and filename of cvs log output.
 */
 
-function cvs_mysql_prepare_table()
+function cvs_mysql_prepare_table($truncate_table = true)
 {
     if (!$db_cvs_mysql_prepare_table = db_connect()) return false;
 
@@ -105,9 +105,11 @@ function cvs_mysql_prepare_table()
 
     if (!$result = db_query($sql, $db_cvs_mysql_prepare_table)) return false;
 
-    $sql = "TRUNCATE TABLE BEEHIVE_CVS_LOG";
+    if ($truncate_table == true) {
 
-    if (!$result = db_query($sql, $db_cvs_mysql_prepare_table)) return false;
+        $sql = "TRUNCATE TABLE BEEHIVE_CVS_LOG";
+        if (!$result = db_query($sql, $db_cvs_mysql_prepare_table)) return false;
+    }
 
     return true;
 }
@@ -257,7 +259,10 @@ if (isset($_SERVER['argv'][1]) && preg_match("/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/", $
 }else if (isset($_SERVER['argv'][1]) && strlen(trim($_SERVER['argv'][1])) > 0) {
 
     $output_log_filename = trim($_SERVER['argv'][1]);
-    cvs_mysql_output_log($output_log_filename);
+
+    if (cvs_mysql_prepare_table(false)) {
+        cvs_mysql_output_log($output_log_filename);
+    }
 
 }else {
 

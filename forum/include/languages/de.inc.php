@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.69 2008-03-17 14:09:36 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.70 2008-03-17 14:12:14 decoyduck Exp $ */
 
 // German language file
 
@@ -858,8 +858,6 @@ $lang['forum_settings_help_41'] = "Die oben genannten Optionen aendern die Einst
 $lang['forum_settings_help_42'] = "<b>Verhindere Benutzung doppelter e-Mailadressen</b> laesst bei Benutzerregistrierungen keine gleichen eMail-Adressen zu.";
 $lang['forum_settings_help_43'] = "<b>Benoetigt eMail-Bestaetigung</b> wenn aktiv wird eine email an jeden neuen Benutzer gesendet mit einem Link der zur Bestaetigung der eMail-Adresse notwendig ist. Bis zur Bestaetigung ist der Anwender nicht in der Lage zu posten ausser wenn der Admin die Berechtigungen manuell vorher freigibt.";
 $lang['forum_settings_help_44'] = "<b>Benutze Text Captcha</b> zeigt dem neuen Benutzer ein Bild von dem die Nummer in ein Textfeld der Registrierung eingetragen werden muss. Benutz diese Option um automatisierte Registrierungen durchzufuehren.";
-$lang['forum_settings_help_45'] = "<b>Text Captcha Verzeichnis</b> Definiert den Ordner in dem die Bilder und Schriften für Text-Captcha abgelegt werden. Dieser Ordner muss Schreibrechte haben. Nachdem Text-Captcha angeschaltet wurde muessen einige True-Type-Fonts in das fonts-Unterverzeichnis des Text-Captcha-Ordners kopiert werden sonst uebergeht die Registrierung Text-Captcha.";
-$lang['forum_settings_help_46'] = "<b>Text Captcha Schluessel</b> Erlaubt Aenderungen des Schluessel der zur Generierung des Text-Captcha-Codes im Bild verwendet wird. Je einzigartiger der schluessel desto schwerer wird es eine Automatisierung zur Entschluesselung zu entwickeln \"guess\"  ";
 $lang['forum_settings_help_47'] = "<b>Post Bearbeitung Grace Periode</b> zur Definition einer Zeitspanne in Minuten in denen Benutzer ihre Posts bearbeiten ohne dass ein 'EDITED BY' Text erscheint in deren Posts. 0 heisst der 'EDITED BY' Text erscheint immer.";
 $lang['forum_settings_help_49'] = "Auswahl von <b>Ungelesene Nachrichten deaktivieren</b> wird der Ungelesene-Nachrichten-Support vollstaendig und alle relevanten Optionen des Diskussionstyps aus der Drop-Down-Liste der Eintraege entfernt.";
 $lang['forum_settings_help_50'] = "Ihr Beehive Forum wird nicht automatisch die ungelesenen Nachrichten Ihrer Datenbank abschneiden. Sie muessen dies in den Abschneide-Optionen explizit auswaehlen.";

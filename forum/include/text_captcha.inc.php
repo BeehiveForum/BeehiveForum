@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: text_captcha.inc.php,v 1.24 2008-03-16 16:40:33 decoyduck Exp $ */
+/* $Id: text_captcha.inc.php,v 1.25 2008-03-17 14:09:36 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -88,7 +88,7 @@ class captcha {
 
         $this->max_rotation = $max_rotation;
 
-        $this->key = md5(forum_get_setting('text_captcha_key', false, md5(uniqid(mt_rand()))));
+        $this->key = forum_get_setting('text_captcha_key', false, '');
 
         $this->image_x = ($num_chars + 1) * (int)(($this->max_char_size + $this->min_char_size) / 1.5);
         $this->image_y = (int)(2.4 * $this->max_char_size);
@@ -139,7 +139,7 @@ class captcha {
             return false;
         }
 
-        return "{$this->text_captcha_dir}/images/{$this->public_key}.jpg";
+        return "text_captcha/images/{$this->public_key}.jpg";
     }
 
 
@@ -279,18 +279,18 @@ class captcha {
 
     function check_working_dir()
     {
-        if ($text_captcha_dir = forum_get_setting('text_captcha_dir')) {
+        $forum_directory = rtrim(dirname(dirname(__FILE__)), DIRECTORY_SEPARATOR);
+        $text_captcha_dir = $forum_directory. DIRECTORY_SEPARATOR. 'text_captcha';
 
-            mkdir_recursive("$text_captcha_dir/fonts", 0755);
-            mkdir_recursive("$text_captcha_dir/images", 0755);
+        mkdir_recursive("$text_captcha_dir/fonts", 0755);
+        mkdir_recursive("$text_captcha_dir/images", 0755);
 
-            if (@is_dir("$text_captcha_dir/fonts") && @is_dir("$text_captcha_dir/images")) {
+        if (@is_dir("$text_captcha_dir/fonts") && @is_dir("$text_captcha_dir/images")) {
 
-                if (is_writable("$text_captcha_dir/images")) {
+            if (is_writable("$text_captcha_dir/images")) {
 
-                    $this->text_captcha_dir = $text_captcha_dir;
-                    return true;
-                }
+                $this->text_captcha_dir = $text_captcha_dir;
+                return true;
             }
         }
 
@@ -401,29 +401,30 @@ function captcha_clean_up()
 {
     $unlink_count = 0;
 
-    if ($text_captcha_dir = forum_get_setting('text_captcha_dir')) {
+    $forum_directory = rtrim(dirname(dirname(__FILE__)), DIRECTORY_SEPARATOR);
 
-        if (@$dir = opendir("$text_captcha_dir/images/")) {
+    $text_captcha_dir = $forum_directory. DIRECTORY_SEPARATOR. 'text_captcha';
 
-            while ((($file = @readdir($dir)) !== false) && $unlink_count < 10) {
+    if (@$dir = opendir($text_captcha_dir. DIRECTORY_SEPARATOR. "images")) {
 
-                $unlink_count++;
+        while ((($file = @readdir($dir)) !== false) && $unlink_count < 10) {
 
-                $captcha_image_file = "$text_captcha_dir/images/$file";
+            $unlink_count++;
 
-                if ($file != "." && $file != ".." && !is_dir($captcha_image_file)) {
+            $captcha_image_file = "$text_captcha_dir/images/$file";
 
-                    if (filemtime($captcha_image_file) < (time() - DAY_IN_SECONDS)) {
+            if ($file != "." && $file != ".." && !is_dir($captcha_image_file)) {
 
-                        @unlink($captcha_image_file);
-                    }
+                if (filemtime($captcha_image_file) < (time() - DAY_IN_SECONDS)) {
+
+                    @unlink($captcha_image_file);
                 }
             }
-
-            admin_add_log_entry(FORUM_AUTO_CLEAN_CAPTCHA);
-
-            return true;
         }
+
+        admin_add_log_entry(FORUM_AUTO_CLEAN_CAPTCHA);
+
+        return true;
     }
 
     return false;

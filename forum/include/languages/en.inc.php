@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.520 2008-03-17 13:40:34 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.521 2008-03-17 14:09:36 decoyduck Exp $ */
 
 // British English language file
 
@@ -545,7 +545,7 @@ $lang['requireemailconfirmation'] = "Require email confirmation";
 $lang['usetextcaptcha'] = "Use text-captcha";
 $lang['textcaptchadir'] = "Text-captcha directory";
 $lang['textcaptchakey'] = "Text-captcha key";
-$lang['textcaptchafonterror'] = "Text-captcha has been disabled automatically because there are no true type fonts available for it to use. Please upload some true type fonts to <b>%s</b> on your server.";
+$lang['textcaptchafonterror'] = "Text-captcha has been disabled automatically because there are no true type fonts available for it to use. Please upload some true type fonts to <b>text_captcha/fonts</b> on your server.";
 $lang['textcaptchadirerror'] = "Text-captcha has been disabled because the text_captcha directory and it's sub-directories are not writable by the web server / PHP process.";
 $lang['textcaptchagderror'] = "Text-captcha has been disabled because your server's PHP setup does not provide support for GD Image manipulation and / or TTF font support. Both are required for text-captcha support.";
 $lang['textcaptchadirblank'] = "Text-captcha directory is blank!";
@@ -987,7 +987,7 @@ $lang['forum_settings_help_56'] = "Use <b>No-Reply Email</b> to specify an email
 $lang['forum_settings_help_57'] = "It is recommended that you use an email address that does not exist to help cut down on spam that may be directed at your main forum email address";
 $lang['forum_settings_help_58'] = "In addition to simple spidering, Beehive can also generate a sitemap for the forum to make it easier for search engines to find and index the messages posted by your users.";
 $lang['forum_settings_help_59'] = "Sitemaps are automatically saved to the sitemaps sub-directory of your Beehive Forum installation. If this directory doesn't exist you must create it and ensure that it is writable by the server / PHP process. To allow search engines to find your sitemap you must add the URL to your robots.txt.";
-$lang['forum_settings_help_60'] = "Depending on server performance and the number of forums and threads your Beehive installation contains, generating a sitemap may take several minutes to complete. For this reason it is recommended that you try to avoid having the sitemap generation take place while your forums are busy.";
+$lang['forum_settings_help_60'] = "Depending on server performance and the number of forums and threads your Beehive installation contains, generating a sitemap may take several minutes to complete. If performance of your server is adversly affected it is recommend you disable generation of the sitemap.";
 $lang['forum_settings_help_61'] = "<b>Send email nofitication to global admin</b> when enabled will send an email to the global forum owners when a new user account is created.";
 
 // Attachments (attachments.php, get_attachment.php) ---------------------------------------

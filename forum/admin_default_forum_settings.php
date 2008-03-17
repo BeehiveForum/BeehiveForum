@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.106 2008-03-17 13:40:34 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.107 2008-03-17 14:09:36 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -247,22 +247,6 @@ if (isset($_POST['submit']) || isset($_POST['confirm_unread_cutoff']) || isset($
         $new_forum_settings['text_captcha_enabled'] = "Y";
     }else {
         $new_forum_settings['text_captcha_enabled'] = "N";
-    }
-
-    if (isset($_POST['text_captcha_dir']) && strlen(trim(_stripslashes($_POST['text_captcha_dir']))) > 0) {
-
-        $new_forum_settings['text_captcha_dir'] = trim(_stripslashes($_POST['text_captcha_dir']));
-
-    }else if (strtoupper($new_forum_settings['text_captcha_enabled']) == "Y") {
-
-        $error_msg_array[] = $lang['textcaptchadirblank'];
-        $valid = false;
-    }
-
-    if (isset($_POST['text_captcha_key']) && strlen(trim(_stripslashes($_POST['text_captcha_key']))) > 0) {
-        $new_forum_settings['text_captcha_key'] = trim(_stripslashes($_POST['text_captcha_key']));
-    }else {
-        $new_forum_settings['text_captcha_key'] = "";
     }
 
     if (isset($_POST['new_user_email_notify']) && $_POST['new_user_email_notify'] == "Y") {
@@ -741,14 +725,6 @@ echo "                        <td align=\"left\" width=\"250\">{$lang['usetextca
 echo "                        <td align=\"left\">", form_radio("text_captcha_enabled", "Y", $lang['yes'], (isset($forum_global_settings['text_captcha_enabled']) && $forum_global_settings['text_captcha_enabled'] == 'Y')), "&nbsp;", form_radio("text_captcha_enabled", "N", $lang['no'], (isset($forum_global_settings['text_captcha_enabled']) && $forum_global_settings['text_captcha_enabled'] == 'N') || !isset($forum_global_settings['text_captcha_enabled'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"270\">{$lang['textcaptchadir']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("text_captcha_dir", (isset($forum_global_settings['text_captcha_dir'])) ? _htmlentities($forum_global_settings['text_captcha_dir']) : "text_captcha", 35, 255), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"270\">{$lang['textcaptchakey']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text("text_captcha_key", (isset($forum_global_settings['text_captcha_key'])) ? _htmlentities($forum_global_settings['text_captcha_key']) : md5(uniqid(mt_rand())), 35, 255), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">\n";
 
 if (isset($forum_global_settings['text_captcha_enabled']) && $forum_global_settings['text_captcha_enabled'] == "Y") {
@@ -761,11 +737,7 @@ if (isset($forum_global_settings['text_captcha_enabled']) && $forum_global_setti
 
                 case TEXT_CAPTCHA_NO_FONTS:
 
-                    $text_captcha_dir = dirname($_SERVER['PHP_SELF']). "/";
-                    $text_captcha_dir.= forum_get_setting('text_captcha_dir', false, 'text_captcha');
-                    $text_captcha_dir.= "/fonts/";
-
-                    html_display_error_msg(sprintf($lang['textcaptchafonterror'], _htmlentities($text_captcha_dir)), '95%', 'center');
+                    html_display_error_msg($lang['textcaptchafonterror'], '95%', 'center');
                     break;
 
                 case TEXT_CAPTCHA_DIR_ERROR:

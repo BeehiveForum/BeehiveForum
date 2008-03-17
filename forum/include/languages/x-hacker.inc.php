@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.273 2008-03-17 14:09:36 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.274 2008-03-17 14:12:14 decoyduck Exp $ */
 
 // British English language file
 
@@ -971,8 +971,6 @@ $lang['forum_settings_help_41'] = "t3H a8ov3 0P+1ON\$ CH@NG3 +H3 DEF4uL+ V@luE5 
 $lang['forum_settings_help_42'] = "<b>pREV3N+ U\$e 0ph DUPL1c@Te EM@iL @DDRE\$sEs</b> F0Rc3s 833H1V3 TO ch3CK +3H uS3R 4CCOUN+\$ 4G@INS+ +eH EMAIl 4DDR3sS teh USer 1s RegiSTer1N9 W1+h @ND pR0MP+S +H3m +0 USe @No+H3R 1PH It I\$ ALREaDy 1n u5e.";
 $lang['forum_settings_help_43'] = "<b>r3QU1RE 3M@Il CoNPhIRM4+1oN</b> wheN 3N@8LED w1LL 5END aN 3MAIl To 3@Ch N3W U\$Er WITH 4 LINK thA+ C4n b3 U\$3d +O C0NF1RM th31R 3m41L 4DdRe5s. UN+1L +H3Y coNf1rm +H3Ir 3M41L aDDREss +h3Y wilL NOT 83 4BLE +0 P0\$+ uNL3s\$ +h3IR U\$3R PERM1S\$1ons 4R3 cH4N9ED maNU4Lly 8Y 4n 4DM1n.";
 $lang['forum_settings_help_44'] = "<b>uS3 T3XT-cAPtCH@</b> PREseN+s +EH neW us3R W1+h 4 M4N9LEd IM@9e WHICh They MusT c0py 4 NUMb3r FR0M 1N+0 4 +3x+ PHIElD ON THE ReG1sTR4TI0N FORm. USE Th1\$ 0ptIon +O pREVenT @UTom4TED \$I9N-UP V14 sCriPTs.";
-$lang['forum_settings_help_45'] = "<b>t3XT-CAp+CH@ DirECtoRY</b> \$P3CIFIES +H3 L0C4+1oN THAT 83eH1VE wILl \$T0R3 1t'5 Tex+-CaP+CHa Im@gE\$ 4Nd PHON+s 1N. +hiS D1REcTOry Mu\$T 8e Wr1+aBl3 8Y +HE W38 SerV3R / PhP PrOCE\$s 4Nd Must B3 4CC3S\$1Bl3 V1@ HttP. Af+3R J00 H4VE 3N48Led Tex+-c@ptCH@ J00 MUS+ UPlo4d \$oMe +RUE typE ph0NTS In+o the f0N+S SUb-DIreC+ORy 0F y0uR M@in +3x+-C@PTch4 DIREctORY 0+HErWIS3 B33H1V3 W1LL \$K1p +he +3xT-c4P+CH@ DUr1NG usER r39ISTR@+1ON.";
-$lang['forum_settings_help_46'] = "<b>Text Captcha key</b> allows you to change the key used by Beehive for generating the text captcha code that appears in the image. The more unique you make the key the harder it will be for automated processes to \"guess\"tHe coDE.";
 $lang['forum_settings_help_47'] = "<b>p0\$+ Ed1T 9R4c3 PERIOD</b> 4LLOWS j00 TO DePHIn3 a p3rI0D In Minu+3s wHERE us3RS m4Y Ed1+ pO\$+s Wi+H0UT +3H '3DI+ed By' +EXT @PP3@RiN9 0N +H31R POST\$. If S3+ TO 0 tH3 'EDI+3D 8Y' t3XT WilL 4Lw4Y\$ 4Pp34R.";
 $lang['forum_settings_help_48'] = "<b>uNRE4d m3\$s49E\$ CU+-0PHPh</b> \$P3C1PH1E\$ H0w L0n9 ME\$S49E\$ REM41N UNre4D. THR3@DS M0dIFieD N0 LA+ER th4n +HE p3rI0D Sel3C+3D WIlL auTOM4+1calLY APPE4r 4\$ R34d.";
 $lang['forum_settings_help_49'] = "chO051NG <b>d1S@bl3 uNRe4D MESS@GeS</b> w1Ll CoMPLe+3LY reMOvE UNre4D M3\$\$@9es \$Upp0Rt 4ND REMOvE The R3L3V@nT 0PT1oNS PHrom tH3 DI\$CUSS10n +Yp3 dROP d0Wn 0N t3H tHReAD L1ST.";

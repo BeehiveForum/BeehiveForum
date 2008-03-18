@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_prefs.php,v 1.87 2008-03-18 16:03:17 decoyduck Exp $ */
+/* $Id: edit_prefs.php,v 1.88 2008-03-18 17:57:35 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -201,45 +201,48 @@ if (isset($_POST['submit'])) {
 
     // Required Fields
 
-    if (isset($_POST['logon']) && strlen(trim(_stripslashes($_POST['logon']))) > 0) {
+    if (forum_get_setting('allow_username_changes', 'Y')) {
 
-        $user_info_new['LOGON'] = trim(_stripslashes($_POST['logon']));
+        if (isset($_POST['logon']) && strlen(trim(_stripslashes($_POST['logon']))) > 0) {
 
-        if (!preg_match("/^[a-z0-9_-]+$/i", $user_info_new['LOGON'])) {
+            $user_info_new['LOGON'] = trim(_stripslashes($_POST['logon']));
 
-            $error_msg_array[] = $lang['usernameinvalidchars'];
+            if (!preg_match("/^[a-z0-9_-]+$/i", $user_info_new['LOGON'])) {
+
+                $error_msg_array[] = $lang['usernameinvalidchars'];
+                $valid = false;
+            }
+
+            if (strlen($user_info_new['LOGON']) < 2) {
+
+                $error_msg_array[] = $lang['usernametooshort'];
+                $valid = false;
+            }
+
+            if (strlen($user_info_new['LOGON']) > 15) {
+
+                $error_msg_array[] = $lang['usernametoolong'];
+                $valid = false;
+            }
+
+            if (logon_is_banned($user_info_new['LOGON'])) {
+
+
+                $error_msg_array[] = $lang['logonnotpermitted'];
+                $valid = false;
+            }
+
+            if (user_exists($user_info_new['LOGON'], $uid)) {
+
+                $error_msg_array[] = $lang['usernameexists'];
+                $valid = false;
+            }
+
+        }else {
+
+            $error_msg_array[] = $lang['usernamerequired'];
             $valid = false;
         }
-
-        if (strlen($user_info_new['LOGON']) < 2) {
-
-            $error_msg_array[] = $lang['usernametooshort'];
-            $valid = false;
-        }
-
-        if (strlen($user_info_new['LOGON']) > 15) {
-
-            $error_msg_array[] = $lang['usernametoolong'];
-            $valid = false;
-        }
-
-        if (logon_is_banned($user_info_new['LOGON'])) {
-
-
-            $error_msg_array[] = $lang['logonnotpermitted'];
-            $valid = false;
-        }
-
-        if (user_exists($user_info_new['LOGON'], $uid)) {
-
-            $error_msg_array[] = $lang['usernameexists'];
-            $valid = false;
-        }
-
-    }else if (forum_get_setting('allow_username_changes', 'Y')) {
-
-        $error_msg_array[] = $lang['usernamerequired'];
-        $valid = false;
     }
 
     if (isset($_POST['nickname']) && strlen(trim(_stripslashes($_POST['nickname']))) > 0) {
@@ -518,23 +521,26 @@ if (isset($_POST['submit'])) {
                 // their email address we need to get them to confirm the
                 // change by sending them another email.
 
-                if (forum_get_setting('require_email_confirmation', 'Y') && ($user_info_new['EMAIL'] != $user_info['EMAIL'])) {
+                if ($admin_edit === false) {
 
-                    if (email_send_changed_email_confirmation($uid)) {
+                    if (forum_get_setting('require_email_confirmation', 'Y') && ($user_info_new['EMAIL'] != $user_info['EMAIL'])) {
 
-                        perm_user_apply_email_confirmation($uid);
+                        if (email_send_changed_email_confirmation($uid)) {
 
-                        html_draw_top();
-                        html_display_msg($lang['emailaddresschanged'], $lang['newconfirmationemailsuccess'], 'index.php', 'get', array('continue' => $lang['continue']), false, '_top');
-                        html_draw_bottom();
-                        exit;
+                            perm_user_apply_email_confirmation($uid);
 
-                    }else {
+                            html_draw_top();
+                            html_display_msg($lang['emailaddresschanged'], $lang['newconfirmationemailsuccess'], 'index.php', 'get', array('continue' => $lang['continue']), false, '_top');
+                            html_draw_bottom();
+                            exit;
 
-                        html_draw_top();
-                        html_display_msg($lang['emailaddresschanged'], $lang['newconfirmationemailfailure'], 'index.php', 'get', array('continue' => $lang['continue']), false, '_top');
-                        html_draw_bottom();
-                        exit;
+                        }else {
+
+                            html_draw_top();
+                            html_display_msg($lang['emailaddresschanged'], $lang['newconfirmationemailfailure'], 'index.php', 'get', array('continue' => $lang['continue']), false, '_top');
+                            html_draw_bottom();
+                            exit;
+                        }
                     }
                 }
 
@@ -631,11 +637,11 @@ if ($admin_edit === true) {
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-    html_display_error_array($error_msg_array, '600', 'left');
+    html_display_error_array($error_msg_array, '600', ($admin_edit) ? 'center' : 'left');
 
 }else if (isset($_GET['updated'])) {
 
-    html_display_success_msg($lang['preferencesupdated'], '600', 'left');
+    html_display_success_msg($lang['preferencesupdated'], ($admin_edit) ? 'center' : 'left');
 }
 
 if ($admin_edit === true) echo "<div align=\"center\">\n";

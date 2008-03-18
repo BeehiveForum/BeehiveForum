@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: timezone.inc.php,v 1.8 2007-11-04 15:09:24 decoyduck Exp $ */
+/* $Id: timezone.inc.php,v 1.9 2008-03-18 22:32:16 decoyduck Exp $ */
 
 /**
 * timezone.inc.php - International Timezones with DST support
@@ -252,24 +252,24 @@ function timestamp_is_dst($timezoneid, $gmt_offset)
 
         case 65:    /*    Adelaide */
         case 68:    /*    Canberra, Melbourne, Sydney */
-            if (afterLastDayInMonth($cur_year, $cur_year, 10, "Sun", $gmt_offset) &&
-            beforeLastDayInMonth($cur_year, $cur_year + 1, 3, "Sun", $gmt_offset))
+            if (beforeFirstDayInMonth($cur_year, $cur_year, 4, "Sun", $gmt_offset) ||
+            afterFirstDayInMonth($cur_year, $cur_year, 10, "Sun", $gmt_offset))
                 return true;
             else
                 return false;
             break;
 
         case 70:    /*    Hobart */
-            if (afterFirstDayInMonth($cur_year, $cur_year, 10, "Sun", $gmt_offset) &&
-            beforeLastDayInMonth($cur_year, $cur_year + 1, 3, "Sun", $gmt_offset))
+            if (beforeFirstDayInMonth($cur_year, $cur_year, 4, "Sun", $gmt_offset) ||
+            afterFirstDayInMonth($cur_year, $cur_year, 10, "Sun", $gmt_offset))
                 return true;
             else
                 return false;
             break;
 
         case 73:    /*    Auckland, Wellington */
-            if (afterFirstDayInMonth($cur_year, $cur_year, 10, "Sun", $gmt_offset) &&
-            beforeThirdDayInMonth($cur_year, $cur_year + 1, 3, "Sun", $gmt_offset))
+            if (beforeFirstDayInMonth($cur_year, $cur_year, 4, "Sun", $gmt_offset) ||
+            afterLastDayInMonth($cur_year, $cur_year, 9, "Sun", $gmt_offset))
                 return true;
             else
                 return false;

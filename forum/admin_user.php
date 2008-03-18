@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.233 2008-02-17 17:14:27 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.234 2008-03-18 16:03:17 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -196,7 +196,12 @@ if (isset($_POST['action_submit'])) {
 
         $post_action = trim(_stripslashes($_POST['action']));
 
-        if ($post_action == 'edit_signature') {
+        if ($post_action == 'edit_details') {
+
+            header_redirect("edit_prefs.php?webtag=$webtag&profileuid=$uid");
+            exit;
+
+        }elseif ($post_action == 'edit_signature') {
 
             header_redirect("edit_signature.php?webtag=$webtag&siguid=$uid");
             exit;
@@ -1235,7 +1240,8 @@ if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
     echo "  </table>\n";
     echo "  <br />\n";
 
-    $admin_options_dropdown = array('edit_signature' => $lang['editsignature'],
+    $admin_options_dropdown = array('edit_details'   => $lang['edituserdetails'],
+                                    'edit_signature' => $lang['editsignature'],
                                     'edit_profile'   => $lang['editprofile'],
                                     'reset_passwd'   => $lang['resetpassword'],
                                     'view_history'   => $lang['viewuserhistory'],

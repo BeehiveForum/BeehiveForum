@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_profile.php,v 1.86 2007-12-26 13:19:33 decoyduck Exp $ */
+/* $Id: edit_profile.php,v 1.87 2008-03-18 16:03:17 decoyduck Exp $ */
 
 /**
 * Displays the edit profile page, and processes sumbissions
@@ -245,7 +245,7 @@ if ($profile_items_array = profile_get_user_values($uid)) {
     if ($admin_edit === true) {
 
         $user = user_get($uid);
-        echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
+        echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['editprofile']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
 
     }else {
 

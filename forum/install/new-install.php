@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.161 2008-03-17 14:09:37 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.162 2008-03-18 01:10:42 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'new-install.php') {
 
@@ -1358,9 +1358,7 @@ if (!$result = @db_query($sql, $db_install)) {
 
 if (!isset($skip_dictionary) || $skip_dictionary === false) {
 
-    $word_count = 0;
-
-    if (file_exists($dictionary_file) && md5_file($dictionary_file) == 'dba69ce94c552ce1cdc6436068c12d07') {
+    if (file_exists($dictionary_file)) {
 
         $sql = "LOAD DATA INFILE '$dictionary_file' INTO TABLE DICTIONARY ";
         $sql.= "FIELDS TERMINATED BY '\\t' LINES TERMINATED BY '\\n' ";
@@ -1377,34 +1375,30 @@ if (!isset($skip_dictionary) || $skip_dictionary === false) {
 
                 while (!feof($fp)) {
 
+                    install_prevent_client_timeout();
+
                     $dictionary_line = fgets($fp, 100);
 
-                    @list($str_word, $str_meta) = explode("\t", $dictionary_line);
+                    if (preg_match("/^([^\s]+)[^\S]+([^$]+)$/i", trim($dictionary_line), $dictionary_word_array) > 0) {
 
-                    if (isset($str_word) && strlen(trim($str_word)) > 0 && isset($str_meta) && strlen(trim($str_meta)) > 0) {
+                        array_shift($dictionary_word_array);
 
-                        $str_meta = db_escape_string(trim($str_meta));
-                        $str_word = db_escape_string(trim($str_word));
+                        list($str_word, $str_meta) = $dictionary_word_array;
 
-                        $sql = "INSERT INTO DICTIONARY (WORD, SOUND, UID) ";
-                        $sql.= "VALUES ('$str_word', '$str_meta', 0)";
+                        if (isset($str_word) && strlen(trim($str_word)) > 0 && isset($str_meta) && strlen(trim($str_meta)) > 0) {
 
-                        if (!$result = db_query($sql, $db_install)) {
+                            $str_meta = db_escape_string($str_meta);
+                            $str_word = db_escape_string($str_word);
 
-                            $valid = false;
-                            return;
+                            $sql = "INSERT INTO DICTIONARY (WORD, SOUND, UID) ";
+                            $sql.= "VALUES ('$str_word', '$str_meta', 0)";
+
+                            if (!$result = db_query($sql, $db_install)) {
+
+                                $valid = false;
+                                return;
+                            }
                         }
-
-                        $word_count++;
-
-                        if ($word_count == 500) {
-
-                            $word_count = 0;
-                            install_flush_buffer();
-                        }
-
-                        unset($str_word);
-                        unset($str_meta);
                     }
                 }
 

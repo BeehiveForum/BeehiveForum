@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.66 2007-12-26 13:19:35 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.67 2008-03-18 01:10:41 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -527,15 +527,25 @@ function install_msie_buffer_fix()
     }
 }
 
-function install_flush_buffer()
+function install_prevent_client_timeout()
 {
-    echo "<!-- bh_install_buffer //-->\n";
+    static $buffer_line_count = 0;
 
-    if (function_exists('ob_flush')) {
-         if (ob_get_contents()) ob_flush();
+    if ($buffer_line_count < 500) {
+
+        $buffer_line_count++;
+        echo "<!-- bh_install_buffer //-->\n";
+
+    }else {
+
+        $buffer_line_count = 0;
+
+        if (function_exists('ob_flush')) {
+            if (ob_get_contents()) ob_flush();
+        }
+
+        flush();
     }
-
-    flush();
 }
 
 ?>

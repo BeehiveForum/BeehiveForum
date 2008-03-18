@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_banned.php,v 1.69 2007-12-26 13:19:32 decoyduck Exp $ */
+/* $Id: admin_banned.php,v 1.70 2008-03-18 16:27:57 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -248,6 +248,20 @@ if (isset($_GET['ban_ipaddress']) && strlen(trim(_stripslashes($_GET['ban_ipaddr
     $unban_ipaddress = trim(_stripslashes($_GET['unban_ipaddress']));
 
     if (!$remove_ban_id = check_ban_data(BAN_TYPE_IP, $unban_ipaddress)) {
+        unset($remove_ban_id);
+    }
+}
+
+if (isset($_GET['ban_email']) && strlen(trim(_stripslashes($_GET['ban_email'])))) {
+
+    $add_new_ban_type = BAN_TYPE_EMAIL;
+    $add_new_ban_data = trim(_stripslashes($_GET['ban_email']));
+
+}elseif (isset($_GET['unban_email']) && strlen(trim(_stripslashes($_GET['unban_email'])))) {
+
+    $unban_email = trim(_stripslashes($_GET['unban_email']));
+
+    if (!$remove_ban_id = check_ban_data(BAN_TYPE_EMAIL, $unban_email)) {
         unset($remove_ban_id);
     }
 }

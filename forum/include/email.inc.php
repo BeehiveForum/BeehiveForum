@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.131 2008-03-15 00:10:19 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.132 2008-03-18 16:27:57 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -43,6 +43,11 @@ include_once(BH_INCLUDE_PATH. "thread.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "user_rel.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
+
+function email_address_valid($email)
+{
+    return ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $email);
+}
 
 function email_sendnotification($tuid, $fuid, $tid, $pid)
 {
@@ -69,7 +74,7 @@ function email_sendnotification($tuid, $fuid, $tid, $pid)
 
             // Validate the email address before we continue.
 
-            if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $to_user['EMAIL'])) return false;
+            if (!email_address_valid($to_user['EMAIL'])) return false;
 
             // Does the recipient want to receive email notifcations?
 
@@ -171,7 +176,7 @@ function email_sendsubscription($tuid, $fuid, $tid, $pid, $modified)
 
                 // Validate the email address before we continue.
 
-                if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $to_user['EMAIL'])) return false;
+                if (!email_address_valid($to_user['EMAIL'])) return false;
 
                 if (!$thread = thread_get($tid)) return false;
 
@@ -251,7 +256,7 @@ function email_send_pm_notification($tuid, $mid, $fuid)
 
             // Validate the email address before we continue.
 
-            if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $to_user['EMAIL'])) return false;
+            if (!email_address_valid($to_user['EMAIL'])) return false;
 
             // Does the recipient want to receive email notifcations?
 
@@ -324,7 +329,7 @@ function email_send_pw_reminder($logon)
 
         // Validate the email address before we continue.
 
-        if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $to_user['EMAIL'])) return false;
+        if (!email_address_valid($to_user['EMAIL'])) return false;
 
         if (isset($to_user['UID']) && isset($to_user['EMAIL']) && isset($to_user['PASSWD'])) {
 
@@ -389,7 +394,7 @@ function email_send_new_pw_notification($tuid, $fuid, $new_password)
 
         // Validate the email address before we continue.
 
-        if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $to_user['EMAIL'])) return false;
+        if (!email_address_valid($to_user['EMAIL'])) return false;
 
         // Get the right language for the email
 
@@ -446,7 +451,7 @@ function email_send_user_confirmation($tuid)
 
         // Validate the email address before we continue.
 
-        if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $to_user['EMAIL'])) return false;
+        if (!email_address_valid($to_user['EMAIL'])) return false;
 
         // Get the right language for the email
 
@@ -508,7 +513,7 @@ function email_send_changed_email_confirmation($tuid)
 
         // Validate the email address before we continue.
 
-        if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $to_user['EMAIL'])) return false;
+        if (!email_address_valid($to_user['EMAIL'])) return false;
 
         // Get the right language for the email
 
@@ -570,7 +575,7 @@ function email_send_user_approval_notification($tuid)
 
         // Validate the email address before we continue.
 
-        if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $to_user['EMAIL'])) return false;
+        if (!email_address_valid($to_user['EMAIL'])) return false;
 
         // Get the right language for the email
 
@@ -631,7 +636,7 @@ function email_send_new_user_notification($tuid, $new_user_uid)
 
         // Validate the email address before we continue.
 
-        if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $to_user['EMAIL'])) return false;
+        if (!email_address_valid($to_user['EMAIL'])) return false;
 
         // Get the right language for the email
 
@@ -691,7 +696,7 @@ function email_send_user_approved_notification($tuid)
 
         // Validate the email address before we continue.
 
-        if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $to_user['EMAIL'])) return false;
+        if (!email_address_valid($to_user['EMAIL'])) return false;
 
         // Get the right language for the email
 
@@ -751,7 +756,7 @@ function email_send_post_approval_notification($tuid)
 
         // Validate the email address before we continue.
 
-        if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $to_user['EMAIL'])) return false;
+        if (!email_address_valid($to_user['EMAIL'])) return false;
 
         // Get the right language for the email
 
@@ -812,7 +817,7 @@ function email_send_message_to_user($tuid, $fuid, $subject, $message)
 
         // Validate the email address before we continue.
 
-        if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $to_user['EMAIL'])) return false;
+        if (!email_address_valid($to_user['EMAIL'])) return false;
 
         // Get the right language for the email
 

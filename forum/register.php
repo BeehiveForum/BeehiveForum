@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.175 2008-03-15 00:10:19 decoyduck Exp $ */
+/* $Id: register.php,v 1.176 2008-03-18 16:27:57 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -300,7 +300,7 @@ if (isset($_POST['register'])) {
 
         $email = trim(_stripslashes($_POST['email']));
 
-        if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $email)) {
+        if (!email_address_valid($email)) {
 
             $error_msg_array[] = $lang['invalidemailaddressformat'];
             $valid = false;
@@ -558,7 +558,7 @@ if (isset($_POST['register'])) {
     }
 }
 
-html_draw_top();
+html_draw_top('emoticons.js');
 
 echo "<h1>{$lang['userregistration']}</h1>\n";
 
@@ -778,7 +778,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
     echo "                        <td align=\"left\">", form_dropdown_array("style", _htmlentities($available_styles), (isset($new_user_prefs['STYLE']) && style_exists($new_user_prefs['STYLE'])) ? _htmlentities($new_user_prefs['STYLE']) : _htmlentities(forum_get_setting('default_style', false, 'default')), "", "register_dropdown"), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" class=\"posthead\">{$lang['forumemoticons']}:</td>\n";
+    echo "                        <td align=\"left\" class=\"posthead\">{$lang['forumemoticons']} [<a href=\"display_emoticons.php?webtag=$webtag\" target=\"_blank\" onclick=\"return openEmoticons('','$webtag')\">{$lang['preview']}</a>]:</td>\n";
     echo "                        <td align=\"left\">", form_dropdown_array("emoticons", _htmlentities($available_emoticons), (isset($new_user_prefs['EMOTICONS']) && in_array($new_user_prefs['EMOTICONS'], array_keys($available_emoticons))) ? _htmlentities($new_user_prefs['EMOTICONS']) : _htmlentities(forum_get_setting('default_emoticons', false, 'default')), "", "register_dropdown"), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";

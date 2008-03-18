@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.234 2008-03-18 16:03:17 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.235 2008-03-18 16:27:57 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -435,45 +435,44 @@ if (isset($_POST['action_submit'])) {
                 $user['POST_COUNT'] = user_get_post_count($uid);
             }
         }
+    }
 
-        if ($table_data = get_table_prefix()) {
+    if ($table_data = get_table_prefix()) {
 
-            if (isset($_POST['t_reset_post_count']) && $_POST['t_reset_post_count'] == "Y") {
+        // Check post count is being changed or reset.
 
-                if (user_reset_post_count($uid)) {
+        if (isset($_POST['t_reset_post_count']) && $_POST['t_reset_post_count'] == "Y") {
 
-                    $user['POST_COUNT'] = user_get_post_count($uid);
+            if (user_reset_post_count($uid)) {
 
-                }else {
-
-                    $error_msg_array[] = $lang['failedtoresetuserpostcount'];
-                    $valid = false;
-                }
+                $user['POST_COUNT'] = user_get_post_count($uid);
 
             }else {
 
-                if (isset($_POST['t_post_count']) && is_numeric($_POST['t_post_count'])) {
+                $error_msg_array[] = $lang['failedtoresetuserpostcount'];
+                $valid = false;
+            }
 
-                    $user_post_count = $_POST['t_post_count'];
+        }else {
 
-                    if ($user_post_count <> $user['POST_COUNT']) {
+            if (isset($_POST['t_post_count']) && is_numeric($_POST['t_post_count'])) {
 
-                        if (user_update_post_count($uid, $user_post_count)) {
+                $user_post_count = $_POST['t_post_count'];
 
-                            $user['POST_COUNT'] = $user_post_count;
+                if ($user_post_count <> $user['POST_COUNT']) {
 
-                        }else {
+                    if (user_update_post_count($uid, $user_post_count)) {
 
-                            $error_msg_array[] = $lang['failedtochangeuserpostcount'];
-                            $valid = false;
-                        }
+                        $user['POST_COUNT'] = $user_post_count;
+
+                    }else {
+
+                        $error_msg_array[] = $lang['failedtochangeuserpostcount'];
+                        $valid = false;
                     }
                 }
             }
         }
-    }
-
-    if ($table_data = get_table_prefix()) {
 
         // Local user permissions
 
@@ -1145,23 +1144,39 @@ if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
     echo "                    <table width=\"90%\" class=\"posthead\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\">{$lang['username']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("t_logon", (isset($_POST['t_logon'])) ? _htmlentities($_POST['t_logon']) : _htmlentities($user['LOGON']), 45, 15), "</td>\n";
+    echo "                        <td align=\"left\">{$user['LOGON']}</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\">{$lang['nickname']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("t_nickname", (isset($_POST['t_nickname'])) ? _htmlentities($_POST['t_nickname']) : _htmlentities($user['NICKNAME']), 45, 32), "</td>\n";
-    echo "                      </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"150\">{$lang['emailaddress']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("t_email", (isset($_POST['t_email'])) ? _htmlentities($_POST['t_email']) : _htmlentities($user['EMAIL']), 45, 80), "</td>\n";
+    echo "                        <td align=\"left\">{$user['NICKNAME']}</td>\n";
     echo "                      </tr>\n";
 
-    if ($table_data = get_table_prefix()) {
+    if (email_address_valid($user['EMAIL'])) {
+
+        if (email_is_banned($user['REFERER'])) {
+
+            echo "                      <tr>\n";
+            echo "                        <td align=\"left\" width=\"150\">{$lang['emailaddress']}:</td>\n";
+            echo "                        <td align=\"left\"><a href=\"admin_banned.php?unban_email=", rawurlencode($user['EMAIL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['EMAIL']}\">{$user['EMAIL']}</a>&nbsp;<a href=\"mailto:{$user['EMAIL']}\"><img src=\"", style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"{$lang['externallink']}\" title=\"{$lang['externallink']}\" /></a> ({$lang['banned']})</td>\n";
+            echo "                      </tr>\n";
+
+        }else {
+
+            echo "                      <tr>\n";
+            echo "                        <td align=\"left\" width=\"150\">{$lang['emailaddress']}:</td>\n";
+            echo "                        <td align=\"left\"><a href=\"admin_banned.php?ban_email=", rawurlencode($user['EMAIL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['EMAIL']}\">{$user['EMAIL']}</a>&nbsp;<a href=\"mailto:{$user['EMAIL']}\"><img src=\"", style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"{$lang['externallink']}\" title=\"{$lang['externallink']}\" /></a></td>\n";
+            echo "                      </tr>\n";
+        }
+
+    }else {
 
         echo "                      <tr>\n";
-        echo "                        <td align=\"left\" width=\"150\">{$lang['postcount']}:</td>\n";
-        echo "                        <td align=\"left\">", form_input_text("t_post_count", (isset($_POST['t_post_count'])) ? _htmlentities($_POST['t_post_count']) : _htmlentities($user['POST_COUNT']), 10), "&nbsp;", form_checkbox("t_reset_post_count", "Y", $lang['resetpostcount'], false), "</td>\n";
+        echo "                        <td align=\"left\" width=\"150\">{$lang['emailaddress']}:</td>\n";
+        echo "                        <td align=\"left\">{$user['EMAIL']}</td>\n";
         echo "                      </tr>\n";
+    }
+
+    if ($table_data = get_table_prefix()) {
 
         if (isset($user['REFERER']) && strlen(trim($user['REFERER'])) > 0) {
 
@@ -1178,14 +1193,14 @@ if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
 
                 echo "                      <tr>\n";
                 echo "                        <td align=\"left\" width=\"150\">{$lang['signupreferer']}</td>\n";
-                echo "                        <td align=\"left\"><a href=\"admin_banned.php?unban_referer=", rawurlencode($user['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['REFERER_FULL']}\">{$user['REFERER']}</a> ({$lang['banned']})</td>\n";
+                echo "                        <td align=\"left\"><a href=\"admin_banned.php?unban_referer=", rawurlencode($user['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['REFERER_FULL']}\">{$user['REFERER']}</a>&nbsp;<a href=\"{$user['REFERER_FULL']}\" target=\"_blank\"><img src=\"", style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"{$lang['externallink']}\" title=\"{$lang['externallink']}\" /></a> ({$lang['banned']})</td>\n";
                 echo "                      </tr>\n";
 
             }else {
 
                 echo "                      <tr>\n";
                 echo "                        <td align=\"left\" width=\"150\">{$lang['signupreferer']}</td>\n";
-                echo "                        <td align=\"left\"><a href=\"admin_banned.php?ban_referer=", rawurlencode($user['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['REFERER_FULL']}\">{$user['REFERER']}</a></td>\n";
+                echo "                        <td align=\"left\"><a href=\"admin_banned.php?ban_referer=", rawurlencode($user['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['REFERER_FULL']}\">{$user['REFERER']}</a>&nbsp;<a href=\"{$user['REFERER_FULL']}\" target=\"_blank\"><img src=\"", style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"{$lang['externallink']}\" title=\"{$lang['externallink']}\" /></a></td>\n";
                 echo "                      </tr>\n";
             }
 
@@ -1283,6 +1298,37 @@ if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
 
 if ($table_data = get_table_prefix()) {
 
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td align=\"left\" class=\"posthead\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"1\">{$lang['postcount']}</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"center\">\n";
+    echo "                    <table width=\"90%\" class=\"posthead\">\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" width=\"150\">{$lang['postcount']}:</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("t_post_count", (isset($_POST['t_post_count'])) ? _htmlentities($_POST['t_post_count']) : _htmlentities($user['POST_COUNT']), 10), "&nbsp;", form_checkbox("t_reset_post_count", "Y", $lang['resetpostcount'], false), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                    </table>\n";
+    echo "                  </td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\">&nbsp;</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "  <br />\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";

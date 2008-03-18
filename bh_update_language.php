@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_update_language.php,v 1.10 2008-01-06 20:59:28 decoyduck Exp $ */
+/* $Id: bh_update_language.php,v 1.11 2008-03-18 10:27:37 decoyduck Exp $ */
 
 // Constant to define where the include files are
 
@@ -100,7 +100,7 @@ if (file_exists(BH_INCLUDE_PATH. "languages/en.inc.php")) {
 
                     $preg_lang_fix_match = preg_quote("\$lang{$lang_matches[1]}", "/");
 
-                    if (preg_match("/^$preg_lang_add_match\s?=\s?\"(.+)\";/i", $lang_fix_line, $lang_fix_matches)) {
+                    if (preg_match("/^$preg_lang_fix_match\s?=\s?\"(.+)\";/i", $lang_fix_line, $lang_fix_matches)) {
 
                         if (isset($lang_add_matches[1]) && strlen(trim($lang_add_matches[1])) > 0) {
 

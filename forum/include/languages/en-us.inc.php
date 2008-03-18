@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en-us.inc.php,v 1.49 2008-03-17 14:12:14 decoyduck Exp $ */
+/* $Id: en-us.inc.php,v 1.50 2008-03-18 10:18:48 decoyduck Exp $ */
 
 // British English language file
 
@@ -1085,17 +1085,17 @@ $lang['forgotpwemail'] = "Hello %s,\n\nYou requested this e-mail from %s because
 // Admin New User notification -----------------------------------------
 
 $lang['newuserapprovalsubject'] ="New User Account Notification for %s";
-$lang['newuserapprovalemail'] ="Hello %s,\\n\\nA new user account has been created on %s.\\n\\nAs you are an Administrator of this forum you are required to approve this user account before it can be used by it\'s owner.\\n\\nTo approve this account please visit the Admin Users section and change the filter type to \"Users Awaiting Approval\" or click the link below:\\n\\n%s\\n\\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\\n\\nNote: Other Administrators on this forum will also receive this notification and may have already acted upon this request.";
+$lang['newuserapprovalemail'] ="Hello %s,\n\nA new user account has been created on %s.\n\nAs you are an Administrator of this forum you are required to approve this user account before it can be used by it\'s owner.\n\nTo approve this account please visit the Admin Users section and change the filter type to \"Users Awaiting Approval\" or click the link below:\n\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: Other Administrators on this forum will also receive this notification and may have already acted upon this request.";
 
 // User Approved notification ------------------------------------------
 
 $lang['useraccountapprovedsubject'] ="User approval notification for %s";
-$lang['useraccountapprovedemail'] ="Hello %s,\\n\\nYour user account at %s has been approved. You can login and start posting immediatly by clicking the link below:\\n\\n%s\\n\\nIf you were not expecting this email from %s please accept our apologies and forward this email to %s so that the source of it may be investigated.";
+$lang['useraccountapprovedemail'] ="Hello %s,\n\nYour user account at %s has been approved. You can login and start posting immediatly by clicking the link below:\n\n%s\n\nIf you were not expecting this email from %s please accept our apologies and forward this email to %s so that the source of it may be investigated.";
 
 // Admin Post Approval notification -----------------------------------------
 
 $lang['newpostapprovalsubject'] ="Post Approval Notification for %s";
-$lang['newpostapprovalemail'] ="Hello %s,\\n\\nA new post has been created on %s.\\n\\nAs you are a Moderator on this forum you are required to approve this post before it can be read by other users.\\n\\nYou can approve this post and any others pending approval by visiting the Admin Post Approval section of your forum or by clicking the link below:\\n\\n%s\\n\\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\\n\\nNote: Other Administrators on this forum will also receive this notification and may have already acted upon this request.";
+$lang['newpostapprovalemail'] ="Hello %s,\n\nA new post has been created on %s.\n\nAs you are a Moderator on this forum you are required to approve this post before it can be read by other users.\n\nYou can approve this post and any others pending approval by visiting the Admin Post Approval section of your forum or by clicking the link below:\n\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: Other Administrators on this forum will also receive this notification and may have already acted upon this request.";
 
 // Forgotten password form.
 

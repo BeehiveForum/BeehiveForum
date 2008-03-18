@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_prefs.php,v 1.86 2007-12-26 13:19:33 decoyduck Exp $ */
+/* $Id: edit_prefs.php,v 1.87 2008-03-18 16:03:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -115,8 +115,63 @@ if (user_is_guest()) {
     exit;
 }
 
-// User's UID
-$uid = bh_session_get_value('UID');
+$admin_edit = false;
+
+if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
+
+    if (isset($_GET['profileuid'])) {
+
+        if (is_numeric($_GET['profileuid'])) {
+
+            $uid = $_GET['profileuid'];
+            $admin_edit = true;
+
+        }else {
+
+            html_draw_top();
+            html_error_msg($lang['nouserspecified']);
+            html_draw_bottom();
+            exit;
+        }
+
+    }elseif (isset($_POST['profileuid'])) {
+
+        if (is_numeric($_POST['profileuid'])) {
+
+            $uid = $_POST['profileuid'];
+            $admin_edit = true;
+
+        }else {
+
+            html_draw_top();
+            html_error_msg($lang['nouserspecified']);
+            html_draw_bottom();
+            exit;
+        }
+
+    }else {
+
+        $uid = bh_session_get_value('UID');
+    }
+
+    if (isset($_POST['cancel'])) {
+
+        header_redirect("admin_user.php?webtag=$webtag&uid=$uid");
+        exit;
+    }
+
+}else {
+
+    $uid = bh_session_get_value('UID');
+}
+
+if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) && ($uid != bh_session_get_value('UID'))) {
+
+    html_draw_top();
+    html_error_msg($lang['accessdeniedexp']);
+    html_draw_bottom();
+    exit;
+}
 
 // Get User Prefs
 $user_prefs = user_get_prefs($uid);
@@ -498,8 +553,16 @@ if (isset($_POST['submit'])) {
 
                 // Force redirect to prevent refreshing the page prompting to user to resubmit form data.
 
-                header_redirect("edit_prefs.php?webtag=$webtag&updated=true", $lang['preferencesupdated']);
-                exit;
+                if ($admin_edit === true) {
+
+                    header_redirect("admin_user.php?webtag=$webtag&uid=$uid&profile_updated=true", $lang['profileupdated']);
+                    exit;
+
+                }else {
+
+                    header_redirect("edit_prefs.php?webtag=$webtag&updated=true", $lang['preferencesupdated']);
+                    exit;
+                }
 
             }else {
 
@@ -556,7 +619,15 @@ $image_attachments_array = user_prefs_prep_attachments($image_attachments_array)
 
 html_draw_top('attachments.js');
 
-echo "<h1>{$lang['userdetails']}</h1>\n";
+if ($admin_edit === true) {
+
+    $user = user_get($uid);
+    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['userdetails']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
+
+}else {
+
+    echo "<h1>{$lang['userdetails']}</h1>\n";
+}
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -567,10 +638,15 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     html_display_success_msg($lang['preferencesupdated'], '600', 'left');
 }
 
+if ($admin_edit === true) echo "<div align=\"center\">\n";
+
 echo "<br />\n";
 echo "<form name=\"prefs\" action=\"edit_prefs.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden('aid', _htmlentities($aid)), "\n";
+
+if ($admin_edit === true) echo "  ", form_input_hidden('profileuid', _htmlentities($uid)), "\n";
+
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -756,7 +832,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 
-if (forum_get_setting('attachments_enabled', 'Y')) {
+if (forum_get_setting('attachments_enabled', 'Y') && $admin_edit === false) {
 
     echo "    <tr>\n";
     echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "&nbsp;", form_button("attachments", $lang['uploadnewattachment'], "onclick=\"launchAttachWin('{$aid}', '$webtag')\""), "</td>\n";
@@ -771,6 +847,8 @@ if (forum_get_setting('attachments_enabled', 'Y')) {
 
 echo "  </table>\n";
 echo "</form>\n";
+
+if ($admin_edit === true) echo "</div>\n";
 
 html_draw_bottom();
 

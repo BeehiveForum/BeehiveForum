@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en-us.inc.php,v 1.50 2008-03-18 10:18:48 decoyduck Exp $ */
+/* $Id: en-us.inc.php,v 1.51 2008-03-18 17:57:35 decoyduck Exp $ */
 
 // British English language file
 
@@ -1667,7 +1667,7 @@ $lang['profileinformationoptional'] = "Profile Information (Optional)";
 $lang['preferencesoptional'] = "Preferences (Optional)";
 $lang['register'] = "Register";
 $lang['rememberpasswd'] = "Remember password";
-$lang['birthdayrequired'] = "Your date of birth is required or is invalid";
+$lang['birthdayrequired'] = "Date of birth is required or is invalid";
 $lang['alwaysnotifymeofrepliestome'] = "Notify on reply to me";
 $lang['notifyonnewprivatemessage'] = "Notify on new Private Message";
 $lang['popuponnewprivatemessage'] = "Pop up on new Private Message";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.525 2008-03-18 17:57:35 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.526 2008-03-19 17:59:22 decoyduck Exp $ */
 
 // British English language file
 
@@ -1291,6 +1291,8 @@ $lang['emailconfirmationfailedtosend'] = "Confirmation email failed to send. Ple
 $lang['emailconfirmationsent'] = "Confirmation email has been resent.";
 $lang['resendconfirmation'] = "Resend Confirmation";
 $lang['userapprovalrequiredbeforeaccess'] = "Your user account needs to be approved by a forum admin before you can access the requested forum.";
+$lang['reviewthread'] = "Review Thread";
+$lang['reviewthreadinnewwindow'] = "Review entire thread in new window";
 
 // Message display (messages.php & messages.inc.php) --------------------------------------
 

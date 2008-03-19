@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.335 2008-03-12 00:27:00 decoyduck Exp $ */
+/* $Id: post.php,v 1.336 2008-03-19 17:59:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -1191,7 +1191,7 @@ if (!$new_thread && $reply_to_pid > 0) {
     }
 
     echo "              <tr>\n";
-    echo "                <td align=\"left\">&nbsp;</td>\n";
+    echo "                <td align=\"center\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"index.php?webtag=$webtag&msg={$thread_data['TID']}.1\" target=\"_blank\" title=\"{$lang['reviewthreadinnewwindow']}\">{$lang['reviewthread']}</a></td>\n";
     echo "              </tr>\n";
     echo "            </table>\n";
 }

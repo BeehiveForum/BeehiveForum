@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.527 2008-03-20 18:46:06 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.528 2008-03-20 21:30:00 decoyduck Exp $ */
 
 // British English language file
 
@@ -537,7 +537,6 @@ $lang['searchenginespidering'] = "Search Engine Spidering";
 $lang['allowsearchenginespidering'] = "Allow Search Engine Spidering";
 $lang['sitemapenabled'] = "Enable Sitemap";
 $lang['sitemapupdatefrequency'] = "Sitemap Update Frequency";
-$lang['sitemaplocation'] = "Sitemap Location";
 $lang['sitemappathnotwritable'] = "Sitemap directory must be writable by the web server / PHP process!";
 $lang['newuserregistrations'] = "New User Registrations";
 $lang['preventduplicateemailaddresses'] = "Prevent duplicate email addresses";
@@ -702,11 +701,7 @@ $lang['mergedthreadintonewthread'] = "Merged threads '%s' and '%s' into new thre
 $lang['approveduser'] = "Approved user '%s'";
 
 $lang['forumautoupdatestats'] = "Forum Auto Update: Stats Updated";
-$lang['forumautoprunepm'] = "Forum Auto Update: PM Folders Pruned";
-$lang['forumautoprunesessions'] = "Forum Auto Update: Sessions Pruned";
 $lang['forumautocleanthreadunread'] = "Forum Auto Update: Thread Unread Data Cleaned";
-$lang['forumautocleancaptcha'] = "Forum Auto Update: Text-Captcha Images Cleaned";
-$lang['forumautositemapupdated'] = "Forum Auto Update: Sitemap Updated";
 
 $lang['ipaddressbanhit'] = "User '%s' is banned. IP Address '%s' matched ban data '%s'";
 $lang['logonbanhit'] = "User '%s' is banned. Logon '%s' matched ban data '%s'";
@@ -797,11 +792,7 @@ $lang['folderedits'] = "Folder Edits";
 $lang['userdeletions'] = "User Deletions";
 $lang['userdatadeletions'] = "User Data Deletions";
 $lang['forumstatsautoupdates'] = "Forum Stats Auto Updates";
-$lang['forumautopmpruning'] = "Forum Auto PM Pruning";
-$lang['forumautosessionpruning'] = "Forum Auto Session Pruning";
 $lang['forumautothreadunreaddataupdates'] = "Forum Auto Thread Unread Data Updates";
-$lang['forumautotextcaptchacleanups'] = "Forum Auto Text Captcha Clean-Ups";
-$lang['forumautositemapupdates'] = "Forum Auto Sitemap Updates";
 $lang['usergroupchanges'] = "User Group Changes";
 $lang['ipaddressbancheckresults'] = "IP Address Ban Check Results";
 $lang['logonbancheckresults'] = "Logon Ban Check Results";

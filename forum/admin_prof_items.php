@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_items.php,v 1.120 2007-12-26 13:19:32 decoyduck Exp $ */
+/* $Id: admin_prof_items.php,v 1.121 2008-03-20 21:29:59 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -140,6 +140,15 @@ if (isset($_GET['psid']) && is_numeric($_GET['psid'])) {
 
 $error_msg_array = array();
 
+// Array of valid profile item types
+
+$profile_item_valid_types = array(PROFILE_ITEM_LARGE_TEXT,
+                                  PROFILE_ITEM_MEDIUM_TEXT,
+                                  PROFILE_ITEM_SMALL_TEXT,
+                                  PROFILE_ITEM_MULTI_TEXT,
+                                  PROFILE_ITEM_RADIO,
+                                  PROFILE_ITEM_DROPDOWN,
+                                  PROFILE_ITEM_HYPERLINK);
 // View type
 
 if (isset($_GET['viewitems'])) {
@@ -215,7 +224,7 @@ if (isset($_POST['additemsubmit'])) {
         $valid = false;
     }
 
-    if (isset($_POST['t_type_new']) && is_numeric($_POST['t_type_new'])) {
+    if (isset($_POST['t_type_new']) && in_array($_POST['t_type_new'], $profile_item_valid_types)) {
 
         $t_type_new = $_POST['t_type_new'];
 
@@ -311,7 +320,7 @@ if (isset($_POST['additemsubmit'])) {
         $valid = false;
     }
 
-    if (isset($_POST['t_type_new']) && is_numeric($_POST['t_type_new'])) {
+    if (isset($_POST['t_type_new']) && in_array($_POST['t_type_new'], $profile_item_valid_types)) {
 
         $t_type_new = $_POST['t_type_new'];
 

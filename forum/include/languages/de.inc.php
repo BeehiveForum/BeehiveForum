@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.73 2008-03-20 18:46:05 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.74 2008-03-20 21:30:00 decoyduck Exp $ */
 
 // German language file
 
@@ -689,10 +689,7 @@ $lang['mergedthreadintonewthread'] = "Gemischte Eintraege '%s' und '%s' in neuen
 $lang['approveduser'] = "Anerkannter Benutzer '%s'";
 
 $lang['forumautoupdatestats'] = "Forum Auto Update: Statistiken aktualisiert";
-$lang['forumautoprunepm'] = "Forum Auto Update: PM Ordner bereinigt";
-$lang['forumautoprunesessions'] = "Forum Auto Update: Sitzungen bereinigt";
 $lang['forumautocleanthreadunread'] = "Forum Auto Update: ungelesene Eintragsdaten bereinigt";
-$lang['forumautocleancaptcha'] = "Forum Auto Update: Text-Captcha Bilder bereinigt";
 
 $lang['adminlogempty'] = "Admin Log ist leer";
 

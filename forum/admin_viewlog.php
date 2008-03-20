@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.137 2008-03-20 18:48:09 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.138 2008-03-20 21:29:59 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -169,11 +169,7 @@ $admin_log_type_array = array(ALL_LOG_ENTIES => $lang['alllogentries'],
                               DELETE_USER => $lang['userdeletions'],
                               DELETE_USER_DATA => $lang['userdatadeletions'],
                               FORUM_AUTO_UPDATE_STATS => $lang['forumstatsautoupdates'],
-                              FORUM_AUTO_PRUNE_PM => $lang['forumautopmpruning'],
-                              FORUM_AUTO_PRUNE_SESSIONS => $lang['forumautosessionpruning'],
-                              FORUM_AUTO_CLEAN_THREAD_UNREAD => $lang['forumautothreadunreaddataupdates'],
-                              FORUM_AUTO_CLEAN_CAPTCHA => $lang['forumautotextcaptchacleanups'],
-                              FORUM_AUTO_SITEMAP_UPDATED => $lang['forumautositemapupdates'],
+                              FORUM_AUTO_UPDATE_THREAD_UNREAD => $lang['forumautothreadunreaddataupdates'],
                               UPDATE_USER_GROUP => $lang['usergroupchanges'],
                               BAN_HIT_TYPE_IP => $lang['ipaddressbancheckresults'],
                               BAN_HIT_TYPE_LOGON => $lang['logonbancheckresults'],
@@ -687,34 +683,10 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
                 $action_text = $lang['forumautoupdatestats'];
                 break;
 
-            case FORUM_AUTO_PRUNE_PM:
-
-                $auto_update = true;
-                $action_text = $lang['forumautoprunepm'];
-                break;
-
-            case FORUM_AUTO_PRUNE_SESSIONS:
-
-                $auto_update = true;
-                $action_text = $lang['forumautoprunesessions'];
-                break;
-
-            case FORUM_AUTO_CLEAN_THREAD_UNREAD:
+            case FORUM_AUTO_UPDATE_THREAD_UNREAD:
 
                 $auto_update = true;
                 $action_text = $lang['forumautocleanthreadunread'];
-                break;
-
-            case FORUM_AUTO_CLEAN_CAPTCHA:
-
-                $auto_update = true;
-                $action_text = $lang['forumautocleancaptcha'];
-                break;
-
-            case FORUM_AUTO_SITEMAP_UPDATED:
-
-                $auto_update = true;
-                $action_text = $lang['forumautositemapupdated'];
                 break;
 
             case BAN_HIT_TYPE_IP:

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en-us.inc.php,v 1.51 2008-03-18 17:57:35 decoyduck Exp $ */
+/* $Id: en-us.inc.php,v 1.52 2008-03-20 18:46:06 decoyduck Exp $ */
 
 // British English language file
 
@@ -289,7 +289,7 @@ $lang['forumsettings'] = "Forum Settings";
 $lang['globalforumsettings'] = "Global Forum Settings";
 $lang['settingsaffectallforumswarning'] = "<b>Note:</b> These settings affect all forums. Where the setting is duplicated on the individual Forum's settings page that will take precedence over the settings you change here.";
 $lang['startpage'] = "Start Page";
-$lang['startpageerror'] = "Your start page could not be saved locally to the server because permission was denied.</p><p>To change your start page please click the download button below which will prompt you to save the file to your hard drive. You can then upload this file to your server into the following folder, if necessary creating the folder structure in the process.</p><p><b>%s</b></p><p>Please note that some browsers may change the name of the file upon download.  When uploading the file please make sure that it is named start_main.php otherwise your start page will appear unchanged.";
+$lang['startpageerror'] = "Your start page could not be saved locally to the server because permission was denied.</p><p>To change your start page please click the download button below which will prompt you to save the file to your hard drive. You can then upload this file to your server into the following folder, if necessary creating the folder structure in the process.</p><p><b>%s</b></p><p>Please note that some browsers may change the name of the file upon download. When uploading the file please make sure that it is named start_main.php otherwise your start page will appear unchanged.";
 $lang['failedtoopenmasterstylesheet'] = "Your forum style could not be saved because the master style sheet could not be loaded. To save your style the master style sheet (make_style.css) must be located in the styles directory of your Beehive Forum installation.";
 $lang['makestyleerror'] = "Your forum style could not be saved locally to the server because permission was denied.</p><p>To save your forum style please click the download button below which will prompt you to save the file to your hard drive. You can then upload this file to your server into the following folder, if necessary creating the folder structure in the process.</p><p><b>%s</b></p><p>Please note that some browsers may change the name of the file upon download. When uploading the file please make sure that it is named style.css otherwise the forum style will be unavailable.";
 $lang['forumstyle'] = "Forum Style";
@@ -339,6 +339,7 @@ $lang['manageuser'] = "Manage User";
 $lang['manageusers'] = "Manage Users";
 $lang['userstatusforforum'] = "User Status for %s";
 $lang['userdetails'] = "User Details";
+$lang['edituserdetails'] ="Edit User Details";
 $lang['warning_caps'] = "WARNING";
 $lang['userdeleteallpostswarning'] = "Are you sure you want to delete all of the selected user's posts? Once the posts are deleted they cannot be retrieved and will be lost forever.";
 $lang['postssuccessfullydeleted'] = "Posts were successfully deleted.";
@@ -365,9 +366,9 @@ $lang['userdeletewarning'] = "Are you sure you want to delete the selected user 
 $lang['usersuccessfullydeleted'] = "User Successfully Deleted";
 $lang['failedtodeleteuser'] = "Failed To Delete User";
 $lang['forgottenpassworddesc'] = "If this user has forgotten their password you can reset it for them here.";
-$lang['failedtoupdateuserstatus'] ="Failed to update user status";
-$lang['failedtoupdateglobaluserpermissions'] ="Failed to update global user permissions";
-$lang['failedtoupdatefolderaccesssettings'] ="Failed to update folder access settings";
+$lang['failedtoupdateuserstatus'] = "Failed to update user status";
+$lang['failedtoupdateglobaluserpermissions'] = "Failed to update global user permissions";
+$lang['failedtoupdatefolderaccesssettings'] = "Failed to update folder access settings";
 $lang['manageusersexp'] = "This list shows a selection of users who have logged on to your forum, sorted by %s. To alter a user's permissions click their name.";
 $lang['userfilter'] = "User filter";
 $lang['onlineusers'] = "Online users";
@@ -387,8 +388,8 @@ $lang['unknownuseraccount'] = "Unknown user account";
 $lang['unknownfolder'] = "Unknown folder";
 $lang['ip'] = "IP";
 $lang['lastipaddress'] = "Last IP Address";
-$lang['hostname'] ="Hostname";
-$lang['unknownhostname'] ="Unknown Hostname";
+$lang['hostname'] = "Hostname";
+$lang['unknownhostname'] = "Unknown Hostname";
 $lang['logged'] = "Logged";
 $lang['notlogged'] = "Not Logged";
 $lang['addwordfilter'] = "Add word filter";
@@ -487,7 +488,7 @@ $lang['emailconfirmationrequired'] = "Email confirmation required";
 $lang['userisbannedfromallforums'] = "User is banned from <b>all forums</b>";
 $lang['cancelemailconfirmation'] = "Cancel email confirmation and allow user to start posting";
 $lang['resendconfirmationemail'] = "Resend confirmation email to user";
-$lang['failedtosresendemailconfirmation'] ="Failed to resend Email confirmation to user.";
+$lang['failedtosresendemailconfirmation'] = "Failed to resend Email confirmation to user.";
 $lang['donothing'] = "Do nothing";
 $lang['usercanaccessadmintools'] = "User has access to forum admin tools";
 $lang['usercanaccessadmintoolsonallforums'] = "User has access to admin tools <b>on all forums</b>";
@@ -534,6 +535,10 @@ $lang['toplinkcaption'] = "Top link caption";
 $lang['allowguestaccess'] = "Allow Guest Access";
 $lang['searchenginespidering'] = "Search Engine Spidering";
 $lang['allowsearchenginespidering'] = "Allow Search Engine Spidering";
+$lang['sitemapenabled'] ="Enable Sitemap";
+$lang['sitemapupdatefrequency'] ="Sitemap Update Frequency";
+$lang['sitemaplocation'] ="Sitemap Location";
+$lang['sitemappathnotwritable'] ="Sitemap directory must be writable by the web server / PHP process!";
 $lang['newuserregistrations'] = "New User Registrations";
 $lang['preventduplicateemailaddresses'] = "Prevent duplicate email addresses";
 $lang['allownewuserregistrations'] = "Allow new user registrations";
@@ -701,6 +706,7 @@ $lang['forumautoprunepm'] = "Forum Auto Update: PM Folders Pruned";
 $lang['forumautoprunesessions'] = "Forum Auto Update: Sessions Pruned";
 $lang['forumautocleanthreadunread'] = "Forum Auto Update: Thread Unread Data Cleaned";
 $lang['forumautocleancaptcha'] = "Forum Auto Update: Text-Captcha Images Cleaned";
+$lang['forumautositemapupdated'] ="Forum Auto Update: Sitemap Updated";
 
 $lang['ipaddressbanhit'] = "User '%s' is banned. IP Address '%s' matched ban data '%s'";
 $lang['logonbanhit'] = "User '%s' is banned. Logon '%s' matched ban data '%s'";
@@ -708,8 +714,8 @@ $lang['nicknamebanhit'] = "User '%s' is banned. Nickname '%s' matched ban data '
 $lang['emailbanhit'] = "User '%s' is banned. Email Address '%s' matched ban data '%s'";
 $lang['refererbanhit'] = "User '%s' is banned. HTTP Referer '%s' matched ban data '%s'";
 
-$lang['userpermenabled'] = "Enabled perms for user '%s': %s";
-$lang['userpermdisabled'] = "Disabled perms for user '%s': %s";
+$lang['userpermenabled'] = "Changed perms for user '%s'. Enabled: %s";
+$lang['userpermdisabled'] = "Changed perms for user '%s'. Disabled: %s";
 
 $lang['userpermbanned'] = "Banned";
 $lang['userpermwormed'] = "Wormed";
@@ -794,7 +800,8 @@ $lang['forumstatsautoupdates'] = "Forum Stats Auto Updates";
 $lang['forumautopmpruning'] = "Forum Auto PM Pruning";
 $lang['forumautosessionpruning'] = "Forum Auto Session Pruning";
 $lang['forumautothreadunreaddataupdates'] = "Forum Auto Thread Unread Data Updates";
-$lang['forumautotextcaptchaclean-ups'] = "Forum Auto Text Captcha Clean-Ups";
+$lang['forumautotextcaptchacleanups'] = "Forum Auto Text Captcha Clean-Ups";
+$lang['forumautositemapupdates'] ="Forum Auto Sitemap Updates";
 $lang['usergroupchanges'] = "User Group Changes";
 $lang['ipaddressbancheckresults'] = "IP Address Ban Check Results";
 $lang['logonbancheckresults'] = "Logon Ban Check Results";
@@ -915,6 +922,7 @@ $lang['userandguestaccesssettings'] = "User and guest access settings";
 $lang['allowuserstochangeusername'] = "Allow users to change username";
 $lang['requireuserapproval'] = "Require user approval by admin";
 $lang['requireforumrulesagreement'] = "Require user to agree to forum rules";
+$lang['sendnewuseremailnotifications'] ="Send notification to global forum owner";
 $lang['enableattachments'] = "Enable Attachments";
 $lang['attachmentdir'] = "Attachment Dir";
 $lang['userattachmentspace'] = "Attachment space per user";
@@ -946,7 +954,7 @@ $lang['forum_settings_help_24'] = "<b>Attachment Dir</b> is the location Beehive
 $lang['forum_settings_help_25'] = "<b>Attachment Space Per User</b> is the maximum amount of disk space a user has for attachments. Once this space is used up the user cannot upload any more attachments. By default this is 1MB of space.";
 $lang['forum_settings_help_26'] = "<b>Allow embedding of attachments in messages / signatures</b> allows users to embed attachments in posts. Enabling this option while useful can increase your bandwidth usage drastically under certain configurations of PHP. If you have limited bandwidth it is recommended that you disable this option.";
 $lang['forum_settings_help_27'] = "<b>Use Alternative attachment method</b> Forces Beehive to use an alternative retrieval method for attachments. If you receive 404 error messages when trying to download attachments from messages try enabling this option.";
-$lang['forum_settings_help_28'] = "This setting allows your forum to be spidered by search engines like Google, AltaVista and Yahoo. If you switch this option off your forum will not be included in these search engines results.";
+$lang['forum_settings_help_28'] = "These settings allows your forum to be spidered by search engines like Google, AltaVista and Yahoo. If you switch this option off your forum will not be included in these search engines results.";
 $lang['forum_settings_help_29'] = "<b>Allow new user registrations</b> allows or disallows the creation of new user accounts. Setting the option to no completely disables the registration form.";
 $lang['forum_settings_help_30'] = "<b>Enable WikiWiki Integration</b> provides WikiWord support in your Forum posts. A WikiWord is made up of two or more concatenated words with uppercase letters (often referred to as CamelCase). If you write a word this way it will automatically be changed into a hyperlink pointing to your chosen WikiWiki.";
 $lang['forum_settings_help_31'] = "<b>Enable WikiWiki Quick Links</b> enables the use of msg:1.1 and User:Logon style extended WikiLinks which create hyperlinks to the specified message / user profile of the specified user.";
@@ -974,6 +982,10 @@ $lang['forum_settings_help_54'] = "Use <b>Forum Rules</b> to enter an Acceptable
 $lang['forum_settings_help_55'] = "You can use HTML in your forum rules. Hyperlinks and email addresses will also be automatically converted to links. To use the default Beehive Forum AUP clear the field.";
 $lang['forum_settings_help_56'] = "Use <b>No-Reply Email</b> to specify an email address that does not exist or will not be monitored for replies. This email address will be used in the headers for all emails sent from your forum including but not limited to Post and PM notifications, user emails and password reminders.";
 $lang['forum_settings_help_57'] = "It is recommended that you use an email address that does not exist to help cut down on spam that may be directed at your main forum email address";
+$lang['forum_settings_help_58'] ="In addition to simple spidering, Beehive can also generate a sitemap for the forum to make it easier for search engines to find and index the messages posted by your users.";
+$lang['forum_settings_help_59'] ="Sitemaps are automatically saved to the sitemaps sub-directory of your Beehive Forum installation. If this directory doesn\'t exist you must create it and ensure that it is writable by the server / PHP process. To allow search engines to find your sitemap you must add the URL to your robots.txt.";
+$lang['forum_settings_help_60'] ="Depending on server performance and the number of forums and threads your Beehive installation contains, generating a sitemap may take several minutes to complete. If performance of your server is adversly affected it is recommend you disable generation of the sitemap.";
+$lang['forum_settings_help_61'] ="<b>Send email nofitication to global admin</b> when enabled will send an email to the global forum owners when a new user account is created.";
 
 // Attachments (attachments.php, get_attachment.php) ---------------------------------------
 
@@ -1082,20 +1094,25 @@ $lang['confirmchangedemail'] = "Hello %s,\n\nYou recently changed your email on 
 
 $lang['forgotpwemail'] = "Hello %s,\n\nYou requested this e-mail from %s because you have forgotten your password.\n\nClick the link below (or copy and paste it into your browser) to reset your password:\n\n%s";
 
+// Admin New User Approval notification -----------------------------------------
+
+$lang['newuserapprovalsubject'] = "New User Approval Notification for %s";
+$lang['newuserapprovalemail'] = "Hello %s,\n\nA new user account has been created on %s.\n\nAs you are an Administrator of this forum you are required to approve this user account before it can be used by it's owner.\n\nTo approve this account please visit the Admin Users section and change the filter type to \"Users Awaiting Approval\" or click the link below:\n\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: Other Administrators on this forum will also receive this notification and may have already acted upon this request.";
+
 // Admin New User notification -----------------------------------------
 
-$lang['newuserapprovalsubject'] ="New User Account Notification for %s";
-$lang['newuserapprovalemail'] ="Hello %s,\n\nA new user account has been created on %s.\n\nAs you are an Administrator of this forum you are required to approve this user account before it can be used by it\'s owner.\n\nTo approve this account please visit the Admin Users section and change the filter type to \"Users Awaiting Approval\" or click the link below:\n\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: Other Administrators on this forum will also receive this notification and may have already acted upon this request.";
+$lang['newuserregistrationsubject'] ="New User Account Notification for %s";
+$lang['newuserregistrationemail'] ="Hello %s,\\n\\nA new user account has been created on %s.\\n\\nTo view this user account please visit the Admin Users section and click on the new user or click the link below:\\n\\n%s";
 
 // User Approved notification ------------------------------------------
 
-$lang['useraccountapprovedsubject'] ="User approval notification for %s";
-$lang['useraccountapprovedemail'] ="Hello %s,\n\nYour user account at %s has been approved. You can login and start posting immediatly by clicking the link below:\n\n%s\n\nIf you were not expecting this email from %s please accept our apologies and forward this email to %s so that the source of it may be investigated.";
+$lang['useraccountapprovedsubject'] = "User approval notification for %s";
+$lang['useraccountapprovedemail'] = "Hello %s,\n\nYour user account at %s has been approved. You can login and start posting immediatly by clicking the link below:\n\n%s\n\nIf you were not expecting this email from %s please accept our apologies and forward this email to %s so that the source of it may be investigated.";
 
 // Admin Post Approval notification -----------------------------------------
 
-$lang['newpostapprovalsubject'] ="Post Approval Notification for %s";
-$lang['newpostapprovalemail'] ="Hello %s,\n\nA new post has been created on %s.\n\nAs you are a Moderator on this forum you are required to approve this post before it can be read by other users.\n\nYou can approve this post and any others pending approval by visiting the Admin Post Approval section of your forum or by clicking the link below:\n\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: Other Administrators on this forum will also receive this notification and may have already acted upon this request.";
+$lang['newpostapprovalsubject'] = "Post Approval Notification for %s";
+$lang['newpostapprovalemail'] = "Hello %s,\n\nA new post has been created on %s.\n\nAs you are a Moderator on this forum you are required to approve this post before it can be read by other users.\n\nYou can approve this post and any others pending approval by visiting the Admin Post Approval section of your forum or by clicking the link below:\n\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: Other Administrators on this forum will also receive this notification and may have already acted upon this request.";
 
 // Forgotten password form.
 
@@ -1119,6 +1136,7 @@ $lang['toplevel'] = "Top Level";
 $lang['maynotaccessthissection'] = "You may not access this section.";
 $lang['toplevel'] = "Top Level";
 $lang['links'] = "Links";
+$lang['externallink'] ="External Link";
 $lang['viewmode'] = "View Mode";
 $lang['hierarchical'] = "Hierarchical";
 $lang['list'] = "List";
@@ -1274,6 +1292,8 @@ $lang['emailconfirmationfailedtosend'] = "Confirmation email failed to send. Ple
 $lang['emailconfirmationsent'] = "Confirmation email has been resent.";
 $lang['resendconfirmation'] = "Resend Confirmation";
 $lang['userapprovalrequiredbeforeaccess'] = "Your user account needs to be approved by a forum admin before you can access the requested forum.";
+$lang['reviewthread'] ="Review Thread";
+$lang['reviewthreadinnewwindow'] ="Review entire thread in new window";
 
 // Message display (messages.php & messages.inc.php) --------------------------------------
 
@@ -1328,6 +1348,7 @@ $lang['linktothispost'] = "Link to this post";
 $lang['imageresized'] = "This image has been resized (original size %1\$sx%2\$s). To view the full-size image click here.";
 $lang['messagedeletedbyuser'] = "Message %s.%s deleted %s by %s";
 $lang['messagedeleted'] = "Message %s.%s was deleted";
+$lang['viewinframeset'] ="View in Frameset";
 
 // Moderators list (mods_list.php) -------------------------------------
 
@@ -1864,6 +1885,7 @@ $lang['list'] = "List";
 $lang['indenttext'] = "Indent text";
 $lang['code'] = "Code";
 $lang['quote'] = "Quote";
+$lang['unquote'] ="Unquote";
 $lang['spoiler'] = "Spoiler";
 $lang['horizontalrule'] = "Horizontal rule";
 $lang['image'] = "Image";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.275 2008-03-20 18:46:06 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.276 2008-03-20 21:30:00 decoyduck Exp $ */
 
 // British English language file
 
@@ -537,7 +537,6 @@ $lang['searchenginespidering'] = "s3@RcH Eng1N3 \$PidEr1ng";
 $lang['allowsearchenginespidering'] = "all0W SE4RCh 3NGInE \$PiD3rIn9";
 $lang['sitemapenabled'] = "en4Bl3 51T3m@P";
 $lang['sitemapupdatefrequency'] = "sITEm@p UpD4T3 fReqU3nCy";
-$lang['sitemaplocation'] = "s1tEM@p l0C4+1On";
 $lang['sitemappathnotwritable'] = "s1+Em4P DiR3CtoRy mU5+ Be wr1T@8L3 by +3h WeB serV3R / PhP pR0cES\$!";
 $lang['newuserregistrations'] = "new U\$3R REg1\$+RAtiONs";
 $lang['preventduplicateemailaddresses'] = "pR3v3N+ DupLIc4+e eM41l 4dDr355E\$";
@@ -702,11 +701,7 @@ $lang['mergedthreadintonewthread'] = "m3r9Ed +hR34D5 '%s' @nD '%s' 1N+o new ThR3
 $lang['approveduser'] = "aPPr0VEd USeR '%s'";
 
 $lang['forumautoupdatestats'] = "f0rum 4U+0 UpD4T3: S+a+\$ UPd@+Ed";
-$lang['forumautoprunepm'] = "f0rUM 4Uto UpD4+3: Pm pHOLdERs pRUN3d";
-$lang['forumautoprunesessions'] = "forUm @uTO uPD4TE: Se5510nS pRuN3D";
 $lang['forumautocleanthreadunread'] = "fORuM auTo UPd4+e: +hRe4D uNr34D D4+4 CLe4N3d";
-$lang['forumautocleancaptcha'] = "forUM 4UTO Upd@T3: +3x+-C@pTCh@ 1M@9e5 cL34N3d";
-$lang['forumautositemapupdated'] = "f0rUM @U+0 Upd@T3: S1+Em4P uPd@t3D";
 
 $lang['ipaddressbanhit'] = "u5eR '%s' iS B4Nn3D. iP 4ddRe\$5 '%s' m4TcH3d B4n d4T4 '%s'";
 $lang['logonbanhit'] = "uSER '%s' I\$ 84Nn3D. lOg0N '%s' M4+ChED 84N d4Ta '%s'";
@@ -797,11 +792,7 @@ $lang['folderedits'] = "f0LDeR edI+\$";
 $lang['userdeletions'] = "u5eR d3L3+1ONs";
 $lang['userdatadeletions'] = "useR d4T4 D3l3TI0nS";
 $lang['forumstatsautoupdates'] = "foruM s+@Ts 4U+0 UPd4+E5";
-$lang['forumautopmpruning'] = "f0rUM @u+0 pm pRUn1Ng";
-$lang['forumautosessionpruning'] = "forUm @uTO Se\$S1ON PrUn1NG";
 $lang['forumautothreadunreaddataupdates'] = "f0rUm @UTO ThRe@D UnRE4D d4+@ uPD@TeS";
-$lang['forumautotextcaptchacleanups'] = "forUM @uTo T3X+ C@P+ChA clEaN-up5";
-$lang['forumautositemapupdates'] = "f0ruM 4u+O S1TEm@P UPd4T3S";
 $lang['usergroupchanges'] = "u5eR GroUp cH@n9ES";
 $lang['ipaddressbancheckresults'] = "ip @DdRe\$5 B4n Ch3Ck rESul+S";
 $lang['logonbancheckresults'] = "l090N BaN cH3cK re\$UlTs";

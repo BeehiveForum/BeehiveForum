@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: constants.inc.php,v 1.130 2008-02-25 22:22:49 decoyduck Exp $ */
+/* $Id: constants.inc.php,v 1.131 2008-03-20 21:30:00 decoyduck Exp $ */
 
 /**
 * Constants used throughout Beehive.
@@ -119,18 +119,6 @@ define('USER_PERM_EMAIL_CONFIRM', 65536);
 define('USER_PERM_CAN_IGNORE_ADMIN', 131072);
 define('USER_PERM_PILLORIED', 262144);
 
-// OLD VALUES - PRE-BH-0.5 - DO NOT USE!
-
-define('USER_PERM_SPLAT',1);
-define('USER_PERM_WASP',2);
-define('USER_PERM_WORM',4);
-define('USER_PERM_WORKER',8);
-define('USER_PERM_SOLDIER',16);
-define('USER_PERM_QUEEN',32);
-
-define('PERM_CHECK_WORKER', USER_PERM_WORKER|USER_PERM_SOLDIER|USER_PERM_QUEEN);
-define('PERM_CHECK_SOLDIER', USER_PERM_SOLDIER|USER_PERM_QUEEN);
-
 // MySQL error codes
 
 define('ER_NO_SUCH_TABLE', 1146);
@@ -162,10 +150,6 @@ define('USER_DOB_DISPLAY_BOTH', 3);
 define('USER_ANON_DISABLED', 0);
 define('USER_ANON_ENABLED', 1);
 define('USER_ANON_FRIENDS_ONLY', 2);
-
-// Constants for error handler
-
-define('BH_DB_CONNECT_ERROR', 32767);
 
 // Constants for Search Dialog Errors
 
@@ -218,7 +202,6 @@ define('THREAD_SUBSCRIBED', 2);
 
 // Thread Admin Constants
 
-define('THREAD_ADMIN_LOCK_DISABLED', 0);
 define('THREAD_ADMIN_LOCK_ENABLED', 1);
 
 // Forum Interest Constants
@@ -241,7 +224,6 @@ define('FORUM_PASSWD_PROTECTED', 2);
 
 // Forum User access constants
 
-define('FORUM_USER_DENIED', 0);
 define('FORUM_USER_ALLOWED', 1);
 
 // Poll closting constants
@@ -407,17 +389,13 @@ define('EDIT_FOLDER', 65);
 define('DELETE_USER', 66);
 define('DELETE_USER_DATA', 67);
 define('FORUM_AUTO_UPDATE_STATS', 68);
-define('FORUM_AUTO_PRUNE_PM', 69);
-define('FORUM_AUTO_PRUNE_SESSIONS', 70);
-define('FORUM_AUTO_CLEAN_THREAD_UNREAD', 71);
-define('FORUM_AUTO_CLEAN_CAPTCHA', 72);
-define('FORUM_AUTO_SITEMAP_UPDATED', 73);
-define('BAN_HIT_TYPE_IP', 74);
-define('BAN_HIT_TYPE_LOGON', 75);
-define('BAN_HIT_TYPE_NICK', 76);
-define('BAN_HIT_TYPE_EMAIL', 77);
-define('BAN_HIT_TYPE_REF', 78);
-define('USER_PERMS_CHANGED', 78);
+define('FORUM_AUTO_UPDATE_THREAD_UNREAD', 69);
+define('BAN_HIT_TYPE_IP', 70);
+define('BAN_HIT_TYPE_LOGON', 71);
+define('BAN_HIT_TYPE_NICK', 72);
+define('BAN_HIT_TYPE_EMAIL', 73);
+define('BAN_HIT_TYPE_REF', 74);
+define('USER_PERMS_CHANGED', 75);
 
 // Link viewmode constants
 
@@ -557,9 +535,6 @@ define('WORD_FILTER_TYPE_PREG', 2);
 
 define('WORD_FILTER_DISABLED', 0);
 define('WORD_FILTER_ENABLED', 1);
-
-define('WORD_FILTER_MATCH_SIMPLE', 0);
-define('WORD_FILTER_MATCH_STRICT', 1);
 
 // Start Page
 

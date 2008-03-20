@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: text_captcha.inc.php,v 1.25 2008-03-17 14:09:36 decoyduck Exp $ */
+/* $Id: text_captcha.inc.php,v 1.26 2008-03-20 18:48:09 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -421,8 +421,6 @@ function captcha_clean_up()
                 }
             }
         }
-
-        admin_add_log_entry(FORUM_AUTO_CLEAN_CAPTCHA);
 
         return true;
     }

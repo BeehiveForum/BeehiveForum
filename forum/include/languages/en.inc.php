@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.526 2008-03-19 17:59:22 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.527 2008-03-20 18:46:06 decoyduck Exp $ */
 
 // British English language file
 
@@ -800,7 +800,8 @@ $lang['forumstatsautoupdates'] = "Forum Stats Auto Updates";
 $lang['forumautopmpruning'] = "Forum Auto PM Pruning";
 $lang['forumautosessionpruning'] = "Forum Auto Session Pruning";
 $lang['forumautothreadunreaddataupdates'] = "Forum Auto Thread Unread Data Updates";
-$lang['forumautotextcaptchaclean-ups'] = "Forum Auto Text Captcha Clean-Ups";
+$lang['forumautotextcaptchacleanups'] = "Forum Auto Text Captcha Clean-Ups";
+$lang['forumautositemapupdates'] = "Forum Auto Sitemap Updates";
 $lang['usergroupchanges'] = "User Group Changes";
 $lang['ipaddressbancheckresults'] = "IP Address Ban Check Results";
 $lang['logonbancheckresults'] = "Logon Ban Check Results";

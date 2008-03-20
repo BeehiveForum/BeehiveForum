@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.72 2008-03-18 17:57:35 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.73 2008-03-20 18:46:05 decoyduck Exp $ */
 
 // German language file
 
@@ -531,12 +531,9 @@ $lang['preventduplicateemailaddresses'] = "Verhindere doppelte eMail-Adressen";
 $lang['allownewuserregistrations'] = "Erlaube neue Benutzerregistrierungen";
 $lang['requireemailconfirmation'] = "Email-Bestaetigung notwendig";
 $lang['usetextcaptcha'] = "Benutze Text Captcha";
-$lang['textcaptchadir'] = "Text captcha Verzeichnis";
-$lang['textcaptchakey'] = "Text captcha Schluessel";
 $lang['textcaptchafonterror'] = "Text Captcha wurde automatisch deaktiviert da keine True-Type-Fonts vorhanden sind. Bitte lade einige TTFonts <b>text_captcha/fonts</b> auf deinen Server.";
 $lang['textcaptchadirerror'] = "Text Captcha wurde deaktiviert da das text_captcha Verzeichnis und seine Unterverzeichnisse keine Schreibrechte haben auf diesem Webserver / PHP Prozess.";
 $lang['textcaptchagderror'] = "Text Captcha wurde deaktiviert da deines Server's PHP setup keine GD-Imagebearbeitung zulaesst und / oder TTF fonts fehlen. Beides ist notwendig fuer text captcha support.";
-$lang['textcaptchadirblank'] = "Text captcha Verzeichnis ist leer!";
 $lang['newuserpreferences'] = "Neue Benutzerpraeferenz";
 $lang['sendemailnotificationonreply'] = "Emailmitteilung ueber Antwort von Benutzer";
 $lang['sendemailnotificationonpm'] = "Emailmitteilung ueber PM von Benutzer";

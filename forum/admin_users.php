@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.165 2007-12-31 21:08:37 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.166 2008-03-20 18:48:09 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -220,11 +220,7 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
                 if ($valid && $user_logon = user_get_logon($user_uid)) {
 
-                    if (admin_session_end($user_uid)) {
-
-                        admin_add_log_entry(END_USER_SESSION, $user_logon);
-
-                    }else {
+                    if (!admin_session_end($user_uid)) {
 
                         $error_msg_array[] = sprintf($lang['failedtoendsessionforuser'], $user_logon);
                         $valid = false;
@@ -262,8 +258,6 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
                         if (admin_approve_user($user_uid)) {
 
                             email_send_user_approved_notification($user_uid);
-
-                            admin_add_log_entry(APPROVED_USER, $user_logon);
 
                         }else {
 

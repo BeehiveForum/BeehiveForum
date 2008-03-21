@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.177 2008-02-22 20:56:30 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.178 2008-03-21 16:15:57 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -49,7 +49,7 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 function post_create($fid, $tid, $reply_pid, $by_uid, $fuid, $tuid, $content, $hide_ipaddress = false)
 {
-    if (!$db_post_create = db_connect()) return false;
+    if (!$db_post_create = db_connect()) return -1;
 
     $post_content = db_escape_string($content);
 
@@ -57,7 +57,7 @@ function post_create($fid, $tid, $reply_pid, $by_uid, $fuid, $tuid, $content, $h
     // set to true. Useful for automated functionality like the RSS Feeder.
 
     if ($hide_ipaddress === false) {
-        if (!$ipaddress = get_ip_address()) return false;
+        if (!$ipaddress = get_ip_address()) return -1;
     }else {
         $ipaddress = "";
     }

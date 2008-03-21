@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.js,v 1.42 2007-11-18 13:55:19 decoyduck Exp $ */
+/* $Id: post.js,v 1.43 2008-03-21 16:15:57 decoyduck Exp $ */
 
 var search_logon = false;
 var menu_timeout = 0;
@@ -211,5 +211,29 @@ function openPostOptions(post_id)
 
             delayMenuClickHandler();
         }
+    }
+}
+
+function toggleQuickReply()
+{
+    var quick_reply_container = getObjById('quick_reply_container');
+    
+    var quick_reply_content = getObjsByName('t_content')[0];
+
+    var quick_reply_post_button = getObjsByName('submit')[0];
+
+    if (typeof(quick_reply_container) == 'object' && typeof(quick_reply_content) == 'object' && typeof(quick_reply_post_button) == 'object') {
+
+	if (quick_reply_container.className == 'quick_reply_container_closed') {
+
+	    quick_reply_container.className = 'quick_reply_container_opened';
+	    
+	    quick_reply_content.focus();
+	    quick_reply_post_button.scrollIntoView(false);
+
+	}else {
+
+	    quick_reply_container.className = 'quick_reply_container_closed';
+	}
     }
 }

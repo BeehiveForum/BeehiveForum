@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.255 2008-03-08 22:53:46 decoyduck Exp $ */
+/* $Id: messages.php,v 1.256 2008-03-21 16:15:57 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -526,46 +526,89 @@ echo "  </tr>\n";
 echo "  <tr valign=\"top\">\n";
 
 if (($thread_data['CLOSED'] == 0 && bh_session_check_perm(USER_PERM_POST_CREATE, $thread_data['FID'])) || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $thread_data['FID'])) {
-    echo "    <td width=\"33%\" align=\"left\"><p><img src=\"". style_image('reply_all.png') ."\" alt=\"{$lang['replyall']}\" title=\"{$lang['replyall']}\" border=\"0\" /> <a href=\"post.php?webtag=$webtag&amp;replyto=$tid.0\" target=\"_parent\" onclick=\"return checkPostQuoting('$tid.0')\"><b>{$lang['replyall']}</b></a></p></td>\n";
+    echo "    <td width=\"33%\" align=\"left\" nowrap=\"nowrap\"><img src=\"". style_image('reply_all.png') ."\" alt=\"{$lang['replyall']}\" title=\"{$lang['replyall']}\" border=\"0\" /> <a href=\"post.php?webtag=$webtag&amp;replyto=$tid.0\" target=\"_parent\" onclick=\"return checkPostQuoting('$tid.0')\"><b>{$lang['replyall']}</b></a></td>\n";
 } else {
     echo "    <td width=\"33%\" align=\"left\">&nbsp;</td>\n";
 }
 
-echo "    <td width=\"33%\" align=\"center\"><p>";
-
 if (!user_is_guest()) {
 
     if ($thread_data['LENGTH'] > 0) {
-        echo "<img src=\"". style_image('thread_options.png') ."\" alt=\"{$lang['editthreadoptions']}\" title=\"{$lang['editthreadoptions']}\" border=\"0\" /> <a href=\"thread_options.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\"><b>{$lang['editthreadoptions']}</b></a>";
+        echo "    <td width=\"33%\" align=\"center\" nowrap=\"nowrap\"><img src=\"". style_image('thread_options.png') ."\" alt=\"{$lang['editthreadoptions']}\" title=\"{$lang['editthreadoptions']}\" border=\"0\" /> <a href=\"thread_options.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\"><b>{$lang['editthreadoptions']}</b></a></td>\n";
     }else {
-        echo "<img src=\"". style_image('thread_options.png') ."\" alt=\"{$lang['undeletethread']}\" title=\"{$lang['undeletethread']}\" border=\"0\" /> <a href=\"thread_options.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\"><b>{$lang['undeletethread']}</b></a>";
+        echo "    <td width=\"33%\" align=\"center\" nowrap=\"nowrap\"><img src=\"". style_image('thread_options.png') ."\" alt=\"{$lang['undeletethread']}\" title=\"{$lang['undeletethread']}\" border=\"0\" /> <a href=\"thread_options.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\"><b>{$lang['undeletethread']}</b></a></td>\n";
     }
 
 }else {
 
-    echo "&nbsp;";
+    echo "    <td width=\"33%\" align=\"center\">&nbsp;</td>\n";
 }
-
-echo "</p></td>\n";
-
-echo "    <td width=\"33%\" align=\"right\">";
 
 if ($last_pid < $thread_data['LENGTH']) {
 
     $npid = $last_pid + 1;
-    echo form_quick_button("messages.php", "{$lang['keepreading']}  &raquo;", array('msg' => "$tid.$npid"));
+    echo "    <td width=\"33%\" align=\"right\" nowrap=\"nowrap\">", form_quick_button("messages.php", "{$lang['keepreading']}  &raquo;", array('msg' => "$tid.$npid")), "</td>\n";
 
 }else {
 
-    echo "&nbsp;";
+    echo "    <td width=\"33%\" align=\"center\">&nbsp;</td>\n";
 }
 
-echo "    </td>\n";
+echo "  </tr>\n";
+echo "  <tr>\n";
+echo "    <td colspan=\"3\" align=\"center\"><img src=\"". style_image('reply_all.png') ."\" alt=\"{$lang['quickreply']}\" title=\"{$lang['quickreply']}\" border=\"0\" /> <a href=\"javascript:void(0)\" target=\"_self\" onclick=\"toggleQuickReply()\"><b>{$lang['quickreply']}</b></a></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
 echo "    <td align=\"left\" colspan=\"3\">&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
+echo "<div id=\"quick_reply_container\" class=\"quick_reply_container_closed\">\n";
+echo "<form name=\"f_post\" action=\"post.php\" method=\"post\" target=\"_parent\">\n";
+echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+echo "  ", form_input_hidden('t_tid', _htmlentities($tid)), "\n";
+echo "  ", form_input_hidden('t_rpid', '0'), "\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\">\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\" class=\"subhead\">{$lang['quickreply']}</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td align=\"center\">\n";
+echo "                    <table class=\"posthead\" width=\"95%\">\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"center\">", form_textarea('t_content', '', 7, 75), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">&nbsp;</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td align=\"center\">", form_submit("submit", $lang['post']), "&nbsp;", form_submit("more", $lang['more']), "&nbsp;", form_button("cancel", $lang['cancel'], "onclick=\"toggleQuickReply()\""), "</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">&nbsp;</td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "</form>\n";
+echo "</div>\n";
 echo "</div>\n";
 
 messages_start_panel();

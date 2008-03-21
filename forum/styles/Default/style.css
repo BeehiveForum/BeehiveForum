@@ -1221,6 +1221,14 @@ a {
     padding: 5px 10px 10px 5px;
 }
 
+.quick_reply_container_closed {
+    display: none;
+}
+
+.quick_reply_container_opened {
+    display: block;
+}
+
 .admin_options_dropdown {
     width: 300px;
 }

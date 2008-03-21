@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.336 2008-03-19 17:59:22 decoyduck Exp $ */
+/* $Id: post.php,v 1.337 2008-03-21 16:15:57 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -166,37 +166,7 @@ $new_thread = false;
 
 $fix_html = true;
 
-$t_to_uid_others = "";
-
-if (isset($_POST['to_radio'])) {
-
-    $to_radio = $_POST['to_radio'];
-
-    if ($to_radio == "others") {
-
-        $t_to_uid_others = $_POST['t_to_uid_others'];
-
-        if ($to_user = user_get_uid($t_to_uid_others)) {
-
-            $_POST['t_to_uid'] = $to_user['UID'];
-            $t_to_uid = $to_user['UID'];
-
-        }else{
-
-            $error_msg_array[] = $lang['invalidusername'];
-            $valid = false;
-        }
-    }else if ($to_radio == "in_thread") {
-
-        $t_to_uid = $_POST['t_to_uid_in_thread'];
-        $_POST['t_to_uid'] = $t_to_uid;
-
-    }else {
-
-        $t_to_uid = $_POST['t_to_uid_recent'];
-        $_POST['t_to_uid'] = $t_to_uid;
-    }
-}
+$t_to_uid = 0;
 
 if (isset($_POST['t_newthread']) && (isset($_POST['submit']) || isset($_POST['preview']))) {
 
@@ -409,6 +379,13 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
     }
 }
 
+if (isset($_POST['more'])) {
+
+    if (isset($_POST['t_content']) && strlen(trim(_stripslashes($_POST['t_content']))) > 0) {
+        $t_content = trim(_stripslashes($_POST['t_content']));
+    }
+}
+
 if (isset($_POST['emots_toggle_x']) || isset($_POST['sig_toggle_x'])) {
 
     if (isset($_POST['t_newthread'])) {
@@ -484,8 +461,7 @@ if (strlen($t_sig) >= 65535) {
 
 if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
-    $replyto = $_GET['replyto'];
-    list($reply_to_tid, $reply_to_pid) = explode(".", $replyto);
+    list($reply_to_tid, $reply_to_pid) = explode(".", $_GET['replyto']);
 
     if (!$t_fid = thread_get_folder($reply_to_tid, $reply_to_pid)) {
 
@@ -558,6 +534,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 }elseif (isset($_POST['t_tid']) && is_numeric($_POST['t_tid']) && isset($_POST['t_rpid']) && is_numeric($_POST['t_rpid'])) {
 
     $reply_to_tid = $_POST['t_tid'];
+
     $reply_to_pid = $_POST['t_rpid'];
 
     if (!$t_fid = thread_get_folder($reply_to_tid, $reply_to_pid)) {
@@ -622,6 +599,57 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
         $error_msg_array[] = $lang['cannotattachfilesinfolder'];
         $valid = false;
+    }
+}
+
+if (isset($_POST['to_radio']) && strlen(trim(_stripslashes($_POST['to_radio']))) > 0) {
+    $to_radio = trim(_stripslashes($_POST['to_radio']));
+}else {
+    $to_radio = '';
+}
+
+if (isset($_POST['t_to_uid_others']) && strlen(trim(_stripslashes($_POST['t_to_uid_others']))) > 0) {
+    $t_to_uid_others = trim(_stripslashes($_POST['t_to_uid_others']));
+}else {
+    $t_to_uid_others = '';
+}
+
+if (isset($_POST['t_to_uid_in_thread']) && strlen(trim(_stripslashes($_POST['t_to_uid_in_thread']))) > 0) {
+    $t_to_uid_in_thread = trim(_stripslashes($_POST['t_to_uid_in_thread']));
+}else {
+    $t_to_uid_in_thread = '';
+}
+
+if (isset($_POST['t_to_uid_recent']) && strlen(trim(_stripslashes($_POST['t_to_uid_recent']))) > 0) {
+    $t_to_uid_recent = trim(_stripslashes($_POST['t_to_uid_recent']));
+}else {
+    $t_to_uid_recent = '';
+}
+
+if ($to_radio == 'others') {
+
+    if ($to_user = user_get_uid($t_to_uid_others)) {
+
+        $t_to_uid = $to_user['UID'];
+
+    }else{
+
+        $error_msg_array[] = $lang['invalidusername'];
+        $valid = false;
+    }
+
+}else if ($to_radio == 'in_thread') {
+
+    $t_to_uid = $t_to_uid_in_thread;
+
+}else if ($to_radio == 'recent') {
+
+    $t_to_uid = $t_to_uid_recent;
+
+}else if (isset($reply_to_tid) && isset($reply_to_pid)) {
+
+    if (!$t_to_uid = message_get_user($reply_to_tid, $reply_to_pid)) {
+        $t_to_uid = 0;
     }
 }
 
@@ -738,23 +766,26 @@ if ($valid && isset($_POST['submit'])) {
                 }
 
                 if ($new_thread) {
-                    $new_pid = post_create($t_fid, $t_tid, $t_rpid, $uid, $uid, $_POST['t_to_uid'], $t_content);
+                    $new_pid = post_create($t_fid, $t_tid, $t_rpid, $uid, $uid, $t_to_uid, $t_content);
                 }else {
-                    $new_pid = post_create($t_fid, $t_tid, $t_rpid, $thread_data['BY_UID'], $uid, $_POST['t_to_uid'], $t_content);
+                    $new_pid = post_create($t_fid, $t_tid, $t_rpid, $thread_data['BY_UID'], $uid, $t_to_uid, $t_content);
                 }
 
-                if ($high_interest == "Y") thread_set_high_interest($t_tid);
+                if ($new_pid > -1) {
 
-                if (!(perm_get_user_permissions($uid) & USER_PERM_WORMED)) {
+                    if ($high_interest == "Y") thread_set_high_interest($t_tid);
 
-                    email_sendnotification($_POST['t_to_uid'], $uid, $t_tid, $new_pid);
+                    if (!(perm_get_user_permissions($uid) & USER_PERM_WORMED)) {
 
-                    if (isset($thread_data['MODIFIED']) && $thread_data['MODIFIED'] > 0) {
-                        email_sendsubscription($_POST['t_to_uid'], $uid, $t_tid, $new_pid, $thread_data['MODIFIED']);
+                        email_sendnotification($t_to_uid, $uid, $t_tid, $new_pid);
+
+                        if (isset($thread_data['MODIFIED']) && $thread_data['MODIFIED'] > 0) {
+                            email_sendsubscription($t_to_uid, $uid, $t_tid, $new_pid, $thread_data['MODIFIED']);
+                        }
                     }
-                }
 
-                post_save_attachment_id($t_tid, $new_pid, $aid);
+                    post_save_attachment_id($t_tid, $new_pid, $aid);
+                }
             }
 
         }else {
@@ -845,6 +876,7 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 
 $tools = new TextAreaHTML("f_post");
+
 echo $tools->preload();
 
 if ($valid && isset($_POST['preview'])) {
@@ -854,14 +886,14 @@ if ($valid && isset($_POST['preview'])) {
     echo "                <td align=\"left\" class=\"subhead\">{$lang['messagepreview']}</td>\n";
     echo "              </tr>\n";
 
-    if ($_POST['t_to_uid'] == 0) {
+    if ($t_to_uid == 0) {
 
         $preview_message['TLOGON'] = $lang['allcaps'];
         $preview_message['TNICK'] = $lang['allcaps'];
 
-    }else{
+    }else if ($t_to_uid > 0) {
 
-        $preview_tuser = user_get($_POST['t_to_uid']);
+        $preview_tuser = user_get($t_to_uid);
         $preview_message['TLOGON'] = $preview_tuser['LOGON'];
         $preview_message['TNICK'] = $preview_tuser['NICKNAME'];
         $preview_message['TO_UID'] = $preview_tuser['UID'];
@@ -889,15 +921,6 @@ if ($valid && isset($_POST['preview'])) {
     echo "                <td align=\"left\">&nbsp;</td>\n";
     echo "              </tr>\n";
     echo "            </table>\n";
-}
-
-if (!$new_thread) {
-
-    if (!isset($_POST['t_to_uid'])) {
-        $t_to_uid = message_get_user($reply_to_tid, $reply_to_pid);
-    }else {
-        $t_to_uid = $_POST['t_to_uid'];
-    }
 }
 
 if (!isset($t_threadtitle)) $t_threadtitle = "";
@@ -970,7 +993,7 @@ echo "                    <tr>\n";
 echo "                      <td align=\"left\">", form_radio("to_radio", "recent", $lang['recentvisitors'], $new_thread ? true : false), "</td>\n";
 echo "                    </tr>\n";
 echo "                    <tr>\n";
-echo "                      <td align=\"left\">", post_draw_to_dropdown_recent($new_thread && isset($t_to_uid) ? $t_to_uid : ($new_thread ? -1 : 0)), "</td>\n";
+echo "                      <td align=\"left\">", post_draw_to_dropdown_recent($new_thread ? $t_to_uid : 0), "</td>\n";
 echo "                    </tr>\n";
 echo "                    <tr>\n";
 echo "                      <td align=\"left\">", form_radio("to_radio", "others", $lang['others']), "</td>\n";
@@ -1048,9 +1071,6 @@ echo "                <td align=\"left\" valign=\"top\" width=\"500\">\n";
 echo "                  <table class=\"posthead\" width=\"500\">\n";
 echo "                    <tr>\n";
 echo "                      <td align=\"left\">\n";
-
-if (!isset($t_to_uid)) $t_to_uid = -1;
-
 echo "                        <h2>{$lang['message']}</h2>\n";
 
 $t_content = ($fix_html ? $post->getTidyContent() : $post->getOriginalContent());

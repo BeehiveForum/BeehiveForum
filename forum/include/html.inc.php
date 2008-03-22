@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.276 2008-03-12 14:40:29 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.277 2008-03-22 15:11:07 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -731,7 +731,7 @@ function html_draw_top()
 
     if ($base_target) echo "<base target=\"$base_target\" />\n";
 
-    // Dynamic Frame names.
+    // Dynamic Frame names, forum webtag and language string initialisation happens here.
 
     echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
     echo "<!--\n\n";
@@ -742,6 +742,9 @@ function html_draw_top()
     echo "var bh_frame_right = '", html_get_frame_name('right'), "'\n";
     echo "var bh_frame_pm_folders = '", html_get_frame_name('pm_folders'), "'\n";
     echo "var bh_frame_pm_messages = '", html_get_frame_name('pm_messages'), "'\n\n";
+    echo "var webtag = '$webtag';\n";
+    echo "var user_uid = ", bh_session_get_value('UID'), ";\n";
+    echo "var lang = new Object();\n\n";
     echo "//-->\n";
     echo "</script>\n";
 
@@ -806,60 +809,20 @@ function html_draw_top()
 
                 if ((!in_array(basename($_SERVER['PHP_SELF']), $pm_popup_disabled_pages))) {
 
-                    echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
-                    echo "<!--\n\n";
-                    echo "var pm_timeout;\n";
-                    echo "var pm_notification = new xml_http_request();\n\n";
-                    echo "function pm_notification_initialise()\n";
-                    echo "{\n";
-                    echo "    pm_timeout = setTimeout('pm_notification_check_messages()', 1000);\n";
-                    echo "    return true;\n";
-                    echo "}\n\n";
-                    echo "function pm_notification_check_messages()\n";
-                    echo "{\n";
-                    echo "    clearTimeout(pm_timeout);\n\n";
-                    echo "    pm_notification.set_handler(pm_notification_handler);\n";
-                    echo "    pm_notification.get_url('pm.php?webtag=$webtag&check_messages=true');\n";
-                    echo "}\n\n";
-                    echo "function pm_notification_abort()\n";
-                    echo "{\n";
-                    echo "    pm_notification.abort();\n";
-                    echo "    pm_notification.close();\n";
-                    echo "    delete pm_notification;\n";
-                    echo "}\n\n";
-                    echo "function pm_notification_handler()\n";
-                    echo "{\n";
-                    echo "    var response_xml = pm_notification.get_response_xml();\n\n";
-                    echo "    var pm_message_count_obj = getObjById('pm_message_count');\n\n";
-                    echo "    if (typeof(pm_message_count_obj) == 'object' && pm_message_count_obj.getElementsByTagName) {\n\n";
-                    echo "        var pm_unread_element = response_xml.getElementsByTagName('unread')[0];\n";
-                    echo "        var pm_new_element = response_xml.getElementsByTagName('new')[0];\n\n";
-                    echo "        if (typeof(pm_unread_element) == 'object' && typeof(pm_new_element) == 'object') {\n\n";
-                    echo "            var pm_unread_count = pm_unread_element.childNodes[0].nodeValue;\n";
-                    echo "            var pm_new_count = pm_new_element.childNodes[0].nodeValue;\n\n";
-                    echo "            if (pm_new_count > 0) {\n\n";
-                    echo "               pm_message_count_obj.innerHTML = '[' + pm_new_count + ' {$lang['new']}]';\n\n";
-                    echo "            }else if (pm_unread_count > 0) {\n\n";
-                    echo "               pm_message_count_obj.innerHTML = '[' + pm_unread_count + ' {$lang['unread']}]';\n";
-                    echo "            }\n";
-                    echo "        }\n";
-                    echo "    }\n\n";
-                    echo "    var message_array = response_xml.getElementsByTagName('notification')[0];\n\n";
-                    echo "    if (typeof(message_array) == 'object') {\n\n";
-                    echo "        var message_display_text = message_array.childNodes[0].nodeValue;\n\n";
-                    echo "        if (message_display_text.length > 0) {\n\n";
-                    echo "            if (window.confirm(message_display_text)) {\n\n";
-                    echo "                top.frames['", html_get_frame_name('main'), "'].location.replace('pm.php?webtag=$webtag');\n";
-                    echo "            }\n";
-                    echo "        }\n";
-                    echo "    }\n\n";
-                    echo "    return true;\n";
-                    echo "}\n\n";
-                    echo "//-->\n";
-                    echo "</script>\n";
+                    if ($modified_time = @filemtime("js/pm.js")) {
 
-                    if (!in_array("pm_notification_initialise()", $onload_array)) $onload_array[] = "pm_notification_initialise()";
-                    if (!in_array("pm_notification_abort()", $onunload_array)) $onunload_array[] = "pm_notification_abort()";
+                        echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
+                        echo "<!--\n\n";
+                        echo "lang['new'] = '", html_js_safe_str($lang['new']), "';\n";
+                        echo "lang['unread'] = '", html_js_safe_str($lang['unread']), "';\n\n";
+                        echo "//-->\n";
+                        echo "</script>\n";
+
+                        echo sprintf("<script language=\"Javascript\" type=\"text/javascript\" src=\"js/pm.js?%s\"></script>\n", date('YmdHis', $modified_time));
+
+                        if (!in_array("pm_notification_initialise()", $onload_array)) $onload_array[] = "pm_notification_initialise()";
+                        if (!in_array("pm_notification_abort()", $onunload_array)) $onunload_array[] = "pm_notification_abort()";
+                    }
                 }
             }
 
@@ -917,186 +880,45 @@ function html_draw_top()
 
             if ((bh_session_get_value('SHOW_STATS') == 'Y') || user_is_guest()) {
 
-                $uid = bh_session_get_value('UID');
+                if ($modified_time = @filemtime("js/stats.js")) {
 
-                $js_user_anon_disabled = USER_ANON_DISABLED;
-                $js_user_friend = USER_FRIEND;
+                    echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
+                    echo "<!--\n\n";
+                    echo "lang['numactiveguests'] = '", html_js_safe_str($lang['numactiveguests']), "';\n";
+                    echo "lang['oneactiveguest'] = '", html_js_safe_str($lang['oneactiveguest']), "';\n";
+                    echo "lang['numactivemembers'] = '", html_js_safe_str($lang['numactivemembers']), "';\n";
+                    echo "lang['oneactivemember'] = '", html_js_safe_str($lang['oneactivemember']), "';\n";
+                    echo "lang['numactiveanonymousmembers'] = '", html_js_safe_str($lang['numactiveanonymousmembers']), "';\n";
+                    echo "lang['oneactiveanonymousmember'] = '", html_js_safe_str($lang['oneactiveanonymousmember']), "';\n";
+                    echo "lang['usersactiveinthepasttimeperiod'] = '", html_js_safe_str($lang['usersactiveinthepasttimeperiod']), "';\n";
+                    echo "lang['youinvisible'] = '", html_js_safe_str($lang['youinvisible']), "';\n";
+                    echo "lang['younormal'] = '", html_js_safe_str($lang['younormal']), "';\n";
+                    echo "lang['friend'] = '", html_js_safe_str($lang['friend']), "';\n";
+                    echo "lang['numthreadscreated'] = '", html_js_safe_str($lang['numthreadscreated']), "';\n";
+                    echo "lang['onethreadcreated'] = '", html_js_safe_str($lang['onethreadcreated']), "';\n";
+                    echo "lang['numpostscreated'] = '", html_js_safe_str($lang['numpostscreated']), "';\n";
+                    echo "lang['onepostcreated'] = '", html_js_safe_str($lang['onepostcreated']), "';\n";
+                    echo "lang['ourmembershavemadeatotalofnumthreadsandnumposts'] = '", html_js_safe_str($lang['ourmembershavemadeatotalofnumthreadsandnumposts']), "';\n";
+                    echo "lang['longestthreadisthreadnamewithnumposts'] = '", html_js_safe_str($lang['longestthreadisthreadnamewithnumposts']), "';\n";
+                    echo "lang['therehavebeenxpostsmadeinthelastsixtyminutes'] = '", html_js_safe_str($lang['therehavebeenxpostsmadeinthelastsixtyminutes']), "';\n";
+                    echo "lang['therehasbeenonepostmadeinthelastsxityminutes'] = '", html_js_safe_str($lang['therehasbeenonepostmadeinthelastsxityminutes']), "';\n";
+                    echo "lang['mostpostsevermadeinasinglesixtyminuteperiodwasnumposts'] = '", html_js_safe_str($lang['mostpostsevermadeinasinglesixtyminuteperiodwasnumposts']), "';\n";
+                    echo "lang['wehavenumregisteredmembersandthenewestmemberismembername'] = '", html_js_safe_str($lang['wehavenumregisteredmembersandthenewestmemberismembername']), "';\n";
+                    echo "lang['wehavenumregisteredmember'] = '", html_js_safe_str($lang['wehavenumregisteredmember']), "';\n";
+                    echo "lang['wehaveoneregisteredmember'] = '", html_js_safe_str($lang['wehaveoneregisteredmember']), "';\n";
+                    echo "lang['mostuserseveronlinewasnumondate'] = '", html_js_safe_str($lang['mostuserseveronlinewasnumondate']), "';\n";
+                    echo "lang['viewcompletelist'] = '", html_js_safe_str($lang['viewcompletelist']), "';\n\n";
+                    echo "var user_anon_disabled = ", USER_ANON_DISABLED, ";\n";
+                    echo "var user_friend = ", USER_FRIEND, ";\n";
+                    echo "var active_sess_cutoff = '", html_js_safe_str(format_time_display(forum_get_setting('active_sess_cutoff', false, 900), false)), "';\n";
+                    echo "//-->\n";
+                    echo "</script>\n";
 
-                echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
-                echo "<!--\n\n";
-                echo "var stats_timeout;\n";
-                echo "var stats_data = new xml_http_request();\n\n";
-                echo "var lang = new Object();\n";
-                echo "lang['numactiveguests'] = '", html_js_safe_str($lang['numactiveguests']), "';\n";
-                echo "lang['oneactiveguest'] = '", html_js_safe_str($lang['oneactiveguest']), "';\n";
-                echo "lang['numactivemembers'] = '", html_js_safe_str($lang['numactivemembers']), "';\n";
-                echo "lang['oneactivemember'] = '", html_js_safe_str($lang['oneactivemember']), "';\n";
-                echo "lang['numactiveanonymousmembers'] = '", html_js_safe_str($lang['numactiveanonymousmembers']), "';\n";
-                echo "lang['oneactiveanonymousmember'] = '", html_js_safe_str($lang['oneactiveanonymousmember']), "';\n";
-                echo "lang['usersactiveinthepasttimeperiod'] = '", html_js_safe_str($lang['usersactiveinthepasttimeperiod']), "';\n";
-                echo "lang['youinvisible'] = '", html_js_safe_str($lang['youinvisible']), "';\n";
-                echo "lang['younormal'] = '", html_js_safe_str($lang['younormal']), "';\n";
-                echo "lang['friend'] = '", html_js_safe_str($lang['friend']), "';\n";
-                echo "lang['numthreadscreated'] = '", html_js_safe_str($lang['numthreadscreated']), "';\n";
-                echo "lang['onethreadcreated'] = '", html_js_safe_str($lang['onethreadcreated']), "';\n";
-                echo "lang['numpostscreated'] = '", html_js_safe_str($lang['numpostscreated']), "';\n";
-                echo "lang['onepostcreated'] = '", html_js_safe_str($lang['onepostcreated']), "';\n";
-                echo "lang['ourmembershavemadeatotalofnumthreadsandnumposts'] = '", html_js_safe_str($lang['ourmembershavemadeatotalofnumthreadsandnumposts']), "';\n";
-                echo "lang['longestthreadisthreadnamewithnumposts'] = '", html_js_safe_str($lang['longestthreadisthreadnamewithnumposts']), "';\n";
-                echo "lang['therehavebeenxpostsmadeinthelastsixtyminutes'] = '", html_js_safe_str($lang['therehavebeenxpostsmadeinthelastsixtyminutes']), "';\n";
-                echo "lang['therehasbeenonepostmadeinthelastsxityminutes'] = '", html_js_safe_str($lang['therehasbeenonepostmadeinthelastsxityminutes']), "';\n";
-                echo "lang['mostpostsevermadeinasinglesixtyminuteperiodwasnumposts'] = '", html_js_safe_str($lang['mostpostsevermadeinasinglesixtyminuteperiodwasnumposts']), "';\n";
-                echo "lang['wehavenumregisteredmembersandthenewestmemberismembername'] = '", html_js_safe_str($lang['wehavenumregisteredmembersandthenewestmemberismembername']), "';\n";
-                echo "lang['wehavenumregisteredmember'] = '", html_js_safe_str($lang['wehavenumregisteredmember']), "';\n";
-                echo "lang['wehaveoneregisteredmember'] = '", html_js_safe_str($lang['wehaveoneregisteredmember']), "';\n";
-                echo "lang['mostuserseveronlinewasnumondate'] = '", html_js_safe_str($lang['mostuserseveronlinewasnumondate']), "';\n";
-                echo "lang['viewcompletelist'] = '", html_js_safe_str($lang['viewcompletelist']), "';\n\n";
-                echo "function stats_display_initialise()\n";
-                echo "{\n";
-                echo "    var forum_stats_obj = getObjById('forum_stats');\n\n";
-                echo "    if (typeof(forum_stats_obj) == 'object') {\n\n";
-                echo "        stats_timeout = setTimeout('stats_display_get_data()', 1000);\n";
-                echo "        return true;\n";
-                echo "    }\n";
-                echo "}\n\n";
-                echo "function stats_display_get_data()\n";
-                echo "{\n";
-                echo "    clearTimeout(stats_timeout);\n\n";
-                echo "    stats_data.set_handler(stats_display_handler);\n";
-                echo "    stats_data.get_url('user_stats.php?webtag=$webtag&get_stats=true');\n";
-                echo "}\n\n";
-                echo "function stats_display_abort()\n";
-                echo "{\n";
-                echo "    stats_data.abort();\n";
-                echo "    stats_data.close();\n";
-                echo "    delete stats_data;\n";
-                echo "}\n\n";
-                echo "function stats_display_handler()\n";
-                echo "{\n";
-                echo "    var response_xml = stats_data.get_response_xml();\n\n";
-                echo "    if (typeof(response_xml) == 'object') {\n\n";
-                echo "        var user_stats_xml = response_xml.getElementsByTagName('users')[0];\n\n";
-                echo "        var thread_stats_xml = response_xml.getElementsByTagName('threads')[0];\n\n";
-                echo "        var post_stats_xml = response_xml.getElementsByTagName('posts')[0];\n\n";
-                echo "        active_user_counts_obj = document.getElementById('active_user_counts');\n\n";
-                echo "        if (typeof(active_user_counts_obj) == 'object') {\n\n";
-                echo "            if (typeof(user_stats_xml) == 'object') {\n\n";
-                echo "                var active_users_xml = user_stats_xml.getElementsByTagName('active')[0];\n\n";
-                echo "                var active_guest_count = active_users_xml.getElementsByTagName('guests')[0].childNodes[0].nodeValue;\n";
-                echo "                var active_nuser_count = active_users_xml.getElementsByTagName('visible')[0].childNodes[0].nodeValue;\n";
-                echo "                var active_auser_count = active_users_xml.getElementsByTagName('anonymous')[0].childNodes[0].nodeValue;\n\n";
-                echo "                var visitor_log_link = sprintf('[ <a href=\"start.php?webtag=$webtag&amp;show=visitors\" target=\"%s\">%s<\/a> ]', '", html_get_frame_name('main'), "', lang['viewcompletelist']);\n\n";
-                echo "                var active_users_array = new Array();\n\n";
-                echo "                active_users_array[0] = (active_guest_count != 1) ? sprintf(lang['numactiveguests'], active_guest_count) : lang['oneactiveguest'];\n";
-                echo "                active_users_array[1] = (active_nuser_count != 1) ? sprintf(lang['numactivemembers'], active_nuser_count) : lang['oneactivemember'];\n";
-                echo "                active_users_array[2] = (active_auser_count != 1) ? sprintf(lang['numactiveanonymousmembers'], active_auser_count) : lang['oneactiveanonymousmember'];\n\n";
-                echo "                var active_user_text = sprintf(lang['usersactiveinthepasttimeperiod'], active_users_array.join(', '), '", format_time_display(forum_get_setting('active_sess_cutoff', false, 900), false), "', visitor_log_link);\n\n";
-                echo "                active_user_counts_obj.innerHTML = active_user_text;\n";
-                echo "            }\n\n";
-                echo "        }\n\n";
-                echo "        active_user_list_obj = document.getElementById('active_user_list');\n\n";
-                echo "        if (typeof(active_user_list_obj) == 'object') {\n\n";
-                echo "            if (typeof(user_stats_xml) == 'object') {\n\n";
-                echo "                active_users_xml = user_stats_xml.getElementsByTagName('active')[0];\n\n";
-                echo "                active_user_list_xml = active_users_xml.getElementsByTagName('list')[0];\n\n";
-                echo "                if (typeof(active_user_list_xml) == 'object') {\n\n";
-                echo "                    var active_user_list_array = new Array(); var count = 0;\n\n";
-                echo "                    active_user_array_xml = active_user_list_xml.getElementsByTagName('user');\n\n";
-                echo "                    if (typeof(active_user_array_xml) == 'object') {\n\n";
-                echo "                        for (var i = 0; i < active_user_array_xml.length; i++) {\n\n";
-                echo "                            active_user_uid  = active_user_array_xml[i].getElementsByTagName('uid')[0].childNodes[0].nodeValue;\n";
-                echo "                            active_user_display = active_user_array_xml[i].getElementsByTagName('display')[0].childNodes[0].nodeValue;\n";
-                echo "                            active_user_relationship = active_user_array_xml[i].getElementsByTagName('relationship')[0].childNodes[0].nodeValue;\n";
-                echo "                            active_user_anonymous = active_user_array_xml[i].getElementsByTagName('anonymous')[0].childNodes[0].nodeValue;\n\n";
-                echo "                            if (active_user_uid == $uid) {\n\n";
-                echo "                                if (active_user_anonymous > $js_user_anon_disabled) {\n\n";
-                echo "                                    active_user_text = sprintf('<span class=\"user_stats_curuser\" title=\"%s\">%s<\/span>', lang['youinvisible'], active_user_display);\n\n";
-                echo "                                }else {\n\n";
-                echo "                                    active_user_text = sprintf('<span class=\"user_stats_curuser\" title=\"%s\">%s<\/span>', lang['younormal'], active_user_display);\n";
-                echo "                                }\n\n";
-                echo "                            }else if (active_user_relationship & $js_user_friend) {\n\n";
-                echo "                                active_user_text = sprintf('<span class=\"user_stats_friend\" title=\"%s\">%s<\/span>', lang['friend'], active_user_display);\n\n";
-                echo "                            }else {\n\n";
-                echo "                                active_user_text = sprintf('<span class=\"user_stats_normal\">%s<\/span>', active_user_display);\n";
-                echo "                            }\n\n";
-                echo "                            active_user_link = sprintf('<a href=\"user_profile.php?webtag=$webtag&uid=%s\" onclick=\"return openProfile(%s, \'$webtag\')\">%s<\/a>', active_user_uid, active_user_uid, active_user_text);\n";
-                echo "                            active_user_list_array[count] = active_user_link; count++\n";
-                echo "                        }\n";
-                echo "                        active_user_list_obj.innerHTML = active_user_list_array.join(', ');\n";
-                echo "                    }\n";
-                echo "                }\n";
-                echo "            }\n";
-                echo "        }\n\n";
-                echo "        thread_stats_obj = document.getElementById('thread_stats');\n\n";
-                echo "        if (typeof(thread_stats_obj) == 'object') {\n\n";
-                echo "            if (typeof(thread_stats_xml) == 'object') {\n\n";
-                echo "                num_threads = thread_stats_xml.getElementsByTagName('count')[0].childNodes[0].nodeValue;\n";
-                echo "                num_posts = post_stats_xml.getElementsByTagName('count')[0].childNodes[0].nodeValue;\n\n";
-                echo "                num_threads_display = (num_threads != 1) ? sprintf(lang['numthreadscreated'], num_threads) : lang['onethreadcreated'];\n";
-                echo "                num_posts_display = (num_posts != 1) ? sprintf(lang['numpostscreated'], num_posts) : lang['onepostcreated'];\n\n";
-                echo "                thread_post_stats_text = sprintf(lang['ourmembershavemadeatotalofnumthreadsandnumposts'] + '<br />', num_threads_display, num_posts_display);\n\n";
-                echo "                thread_stats_obj.innerHTML = thread_post_stats_text;\n\n";
-                echo "                longest_thread_xml = thread_stats_xml.getElementsByTagName('longest')[0];\n\n";
-                echo "                longest_thread_tid = longest_thread_xml.getElementsByTagName('tid')[0].childNodes[0].nodeValue;\n";
-                echo "                longest_thread_title = longest_thread_xml.getElementsByTagName('title')[0].childNodes[0].nodeValue;\n";
-                echo "                longest_thread_length = longest_thread_xml.getElementsByTagName('length')[0].childNodes[0].nodeValue;\n\n";
-                echo "                longest_thread_link = sprintf('<a href=\"index.php?webtag=$webtag&amp;msg=%s.1\">%s<\/a>', longest_thread_tid, longest_thread_title);\n";
-                echo "                longest_thread_post_count = (longest_thread_length != 1) ? sprintf(lang['numpostscreated'], longest_thread_length) : lang['onepostcreated'];\n\n";
-                echo "                longest_thread_text = sprintf(lang['longestthreadisthreadnamewithnumposts'], longest_thread_link, longest_thread_post_count);\n\n";
-                echo "                thread_stats_obj.innerHTML+= longest_thread_text;\n";
-                echo "            }\n";
-                echo "        }\n\n";
-                echo "        post_stats_obj = document.getElementById('post_stats');\n\n";
-                echo "        if (typeof(post_stats_obj) == 'object') {\n\n";
-                echo "            if (typeof(post_stats_xml) == 'object') {\n\n";
-                echo "                num_posts = post_stats_xml.getElementsByTagName('count')[0].childNodes[0].nodeValue;\n\n";
-                echo "                post_stats_recent = post_stats_xml.getElementsByTagName('recent')[0];\n";
-                echo "                post_stats_record = post_stats_recent.getElementsByTagName('record')[0];\n\n";
-                echo "                if (typeof(post_stats_recent) == 'object') {\n\n";
-                echo "                    post_stats_recent_count = post_stats_recent.getElementsByTagName('count')[0].childNodes[0].nodeValue;\n";
-                echo "                    post_stats_recent_text = (post_stats_recent_count != 1) ? sprintf(lang['therehavebeenxpostsmadeinthelastsixtyminutes'] + '<br />', post_stats_recent_count) : lang['therehasbeenonepostmadeinthelastsxityminutes'];\n\n";
-                echo "                    post_stats_obj.innerHTML = post_stats_recent_text;\n\n";
-                echo "                    if (typeof(post_stats_record) == 'object') {\n\n";
-                echo "                        post_stats_record_count = post_stats_record.getElementsByTagName('count')[0].childNodes[0].nodeValue;\n";
-                echo "                        post_stats_record_date = post_stats_record.getElementsByTagName('date')[0].childNodes[0].nodeValue;\n\n";
-                echo "                        post_stats_record_text = sprintf(lang['mostpostsevermadeinasinglesixtyminuteperiodwasnumposts'], post_stats_record_count, post_stats_record_date);\n\n";
-                echo "                        post_stats_obj.innerHTML+= post_stats_record_text;\n";
-                echo "                    }\n\n";
-                echo "                }\n";
-                echo "            }\n";
-                echo "        }\n\n";
-                echo "        user_stats_obj = document.getElementById('user_stats');\n\n";
-                echo "        if (typeof(user_stats_obj) == 'object') {\n\n";
-                echo "            if (typeof(user_stats_xml) == 'object') {\n\n";
-                echo "                user_count = user_stats_xml.getElementsByTagName('count')[0].childNodes[0].nodeValue;\n\n";
-                echo "                if (user_count != 1) {\n\n";
-                echo "                    user_newest_xml = user_stats_xml.getElementsByTagName('newest')[0];\n\n";
-                echo "                    if (typeof(user_newest_xml) == 'object') {\n\n";
-                echo "                        user_newest_uid = user_newest_xml.getElementsByTagName('uid')[0].childNodes[0].nodeValue;\n";
-                echo "                        user_newest_display = user_newest_xml.getElementsByTagName('display')[0].childNodes[0].nodeValue;\n\n";
-                echo "                        user_newest_profile_link = sprintf('<a href=\"user_profile.php?webtag=$webtag&amp;uid=%s\" target=\"_blank\" onclick=\"return openProfile(%s, \'$webtag\')\">%s<\/a>', user_newest_uid, user_newest_uid, user_newest_display);\n\n";
-                echo "                        user_stats_text = sprintf(lang['wehavenumregisteredmembersandthenewestmemberismembername'] + '<br />', user_count, user_newest_profile_link);\n\n";
-                echo "                    }else {\n\n";
-                echo "                        user_stats_text = sprintf(lang['wehavenumregisteredmember'] + '<br />', user_count);\n";
-                echo "                    }\n\n";
-                echo "                }else {\n\n";
-                echo "                    user_stats_text = lang['wehaveoneregisteredmember'] + '<br />';\n";
-                echo "                }\n\n";
-                echo "                user_stats_obj.innerHTML = user_stats_text;\n\n";
-                echo "                user_stats_record = user_stats_xml.getElementsByTagName('record')[0];\n";
-                echo "                user_stats_record_count = user_stats_record.getElementsByTagName('count')[0].childNodes[0].nodeValue;\n";
-                echo "                user_stats_record_date = user_stats_record.getElementsByTagName('date')[0].childNodes[0].nodeValue;\n\n";
-                echo "                user_stats_record_text = sprintf(lang['mostuserseveronlinewasnumondate'], user_stats_record_count, user_stats_record_date);\n\n";
-                echo "                user_stats_obj.innerHTML+= user_stats_record_text;\n";
-                echo "            }\n";
-                echo "        }\n";
-                echo "    }\n";
-                echo "}\n";
-                echo "//-->\n";
-                echo "</script>\n";
+                    echo sprintf("<script language=\"Javascript\" type=\"text/javascript\" src=\"js/stats.js?%s\"></script>\n", date('YmdHis', $modified_time));
 
-                if (!in_array("stats_display_initialise()", $onload_array)) $onload_array[] = "stats_display_initialise()";
-                if (!in_array("stats_display_abort()", $onunload_array)) $onunload_array[] = "stats_display_abort()";
+                    if (!in_array("stats_display_initialise()", $onload_array)) $onload_array[] = "stats_display_initialise()";
+                    if (!in_array("stats_display_abort()", $onunload_array)) $onunload_array[] = "stats_display_abort()";
+                }
             }
         }
 

@@ -19,9 +19,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.js,v 1.19 2007-12-09 18:31:37 decoyduck Exp $ */
+/* $Id: pm.js,v 1.20 2008-03-22 15:11:07 decoyduck Exp $ */
 
 var pm_logon_search = false;
+
+var pm_timeout;
+
+var pm_notification = new xml_http_request();
 
 function pmToggleAll()
 {
@@ -94,4 +98,64 @@ function checkToRadio(num)
     if (typeof to_radio_obj[num] == 'object') {
         to_radio_obj[num].checked = true;
     }
+}
+
+function pm_notification_initialise()
+{
+    pm_timeout = setTimeout('pm_notification_check_messages()', 1000);
+    return true;
+}
+
+function pm_notification_check_messages()
+{
+    clearTimeout(pm_timeout);
+    pm_notification.set_handler(pm_notification_handler);
+    pm_notification.get_url('pm.php?webtag=' + webtag + '&check_messages=true');
+}
+
+function pm_notification_abort()
+{
+    pm_notification.abort();
+    pm_notification.close();
+    delete pm_notification;
+}
+
+function pm_notification_handler()
+{
+    var response_xml = pm_notification.get_response_xml();
+    var pm_message_count_obj = getObjById('pm_message_count');
+
+    if (typeof(pm_message_count_obj) == 'object' && pm_message_count_obj.getElementsByTagName) {
+
+        var pm_unread_element = response_xml.getElementsByTagName('unread')[0];
+        var pm_new_element = response_xml.getElementsByTagName('new')[0];
+
+        if (typeof(pm_unread_element) == 'object' && typeof(pm_new_element) == 'object') {
+
+            var pm_unread_count = pm_unread_element.childNodes[0].nodeValue;
+            var pm_new_count = pm_new_element.childNodes[0].nodeValue;
+
+            if (pm_new_count > 0) {
+               pm_message_count_obj.innerHTML = '[' + pm_new_count + ' ' + lang['new'] + ']';
+            }else if (pm_unread_count > 0) {
+               pm_message_count_obj.innerHTML = '[' + pm_unread_count + ' ' + lang['unread'] + ']';
+            }
+        }
+    }
+
+    var message_array = response_xml.getElementsByTagName('notification')[0];
+
+    if (typeof(message_array) == 'object') {
+
+        var message_display_text = message_array.childNodes[0].nodeValue;
+
+        if (message_display_text.length > 0) {
+
+            if (window.confirm(message_display_text)) {
+
+                top.frames[bh_frame_main].location.replace('pm.php?webtag=' + webtag);
+            }
+        }
+    }
+    return true;
 }

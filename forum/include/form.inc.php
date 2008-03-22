@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.112 2008-03-15 15:37:03 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.113 2008-03-22 15:11:07 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -114,7 +114,7 @@ function form_input_hidden_array($array)
 
         if (($key_name != 'webtag') && isset($array_values[$key])) {
 
-            $result_var.= form_input_hidden(_htmlentities($key_name), _htmlentities($array_values[$key])). "\n";
+            $result_var.= form_input_hidden(_htmlentities($key_name), _htmlentities($array_values[$key]));
         }
     }
 
@@ -182,17 +182,17 @@ function form_dropdown_array($name, $options_array, $default = false, $custom_ht
                 }
 
                 $selected = (strtolower($option_key) == strtolower($default)) ? " selected=\"selected\"" : "";
-                $html.= "  <option value=\"{$option_key}\" class=\"$option_text_class\"$selected>$option_text_name</option>\n";
+                $html.= "  <option value=\"{$option_key}\" class=\"$option_text_class\"$selected>$option_text_name</option>";
 
             }elseif (!is_array($option_text)) {
 
                 $selected = (strtolower($option_key) == strtolower($default)) ? " selected=\"selected\"" : "";
-                $html.= "  <option value=\"{$option_key}\"$selected>$option_text</option>\n";
+                $html.= "  <option value=\"{$option_key}\"$selected>$option_text</option>";
             }
         }
     }
 
-    $html.= "</select>\n";
+    $html.= "</select>";
     return $html;
 }
 
@@ -202,7 +202,7 @@ function form_dropdown_objgroup_array($name, $options_array, $default = false, $
 {
     if (is_array($options_array)) {
 
-        $html = "<optgroup label=\"$name\" class=\"$class\">\n";
+        $html = "<optgroup label=\"$name\" class=\"$class\">";
 
         foreach ($options_array as $option_key => $option_text) {
 
@@ -221,16 +221,16 @@ function form_dropdown_objgroup_array($name, $options_array, $default = false, $
                 }
 
                 $selected = (strtolower($option_key) == strtolower($default)) ? " selected=\"selected\"" : "";
-                $html.= "  <option value=\"{$option_key}\" class=\"$option_text_class\"$selected>$option_text_name</option>\n";
+                $html.= "  <option value=\"{$option_key}\" class=\"$option_text_class\"$selected>$option_text_name</option>";
 
             }elseif (!is_array($option_text)) {
 
                 $selected = (strtolower($option_key) == strtolower($default)) ? " selected=\"selected\"" : "";
-                $html.= "  <option value=\"{$option_key}\"$selected>$option_text</option>\n";
+                $html.= "  <option value=\"{$option_key}\"$selected>$option_text</option>";
             }
         }
 
-        $html.= "</optgroup>\n";
+        $html.= "</optgroup>";
         return $html;
     }
 }

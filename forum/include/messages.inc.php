@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.517 2008-03-08 22:53:46 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.518 2008-03-22 15:11:07 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -612,7 +612,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
         $message['CONTENT'] = preg_replace("/<embed[^>]*src=\"([^\"]*)\"[^>]*>/i", "[object: <a href=\"\\1\">\\1</a>]", $message['CONTENT']);
     }
 
-    $message['CONTENT'] = "<div class=\"pear_cache_lite\">{$message['CONTENT']}</div>\n";
+    $message['CONTENT'] = "<div class=\"pear_cache_lite\">{$message['CONTENT']}</div>";
 
     $message['CONTENT'] = message_apply_formatting($message['CONTENT'], true, (($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) || !$show_sigs));
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.178 2008-03-21 16:15:57 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.179 2008-03-22 15:11:07 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -225,7 +225,7 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
 {
     $lang = load_language_file();
 
-    $html = "<select name=\"t_to_uid\">\n";
+    $html = "<select name=\"t_to_uid\">";
     if (!$db_post_draw_to_dropdown = db_connect()) return false;
 
     if (!is_numeric($default_uid)) $default_uid = 0;
@@ -256,13 +256,13 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
                 }
 
                 $fmt_username = word_filter_add_ob_tags(_htmlentities(format_user_name($top_user['LOGON'], $top_user['NICKNAME'])));
-                $html.= "<option value=\"$default_uid\" selected=\"selected\">$fmt_username</option>\n";
+                $html.= "<option value=\"$default_uid\" selected=\"selected\">$fmt_username</option>";
             }
         }
     }
 
     if ($show_all) {
-        $html .= "<option value=\"0\">{$lang['allcaps']}</option>\n";
+        $html .= "<option value=\"0\">{$lang['allcaps']}</option>";
     }
 
     $sql = "SELECT VISITOR_LOG.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
@@ -287,7 +287,7 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
             }
 
             $fmt_username = word_filter_add_ob_tags(_htmlentities(format_user_name($user_data['LOGON'], $user_data['NICKNAME'])));
-            $html .= "<option value=\"{$user_data['UID']}\">$fmt_username</option>\n";
+            $html .= "<option value=\"{$user_data['UID']}\">$fmt_username</option>";
         }
     }
 
@@ -299,7 +299,7 @@ function post_draw_to_dropdown_recent($default_uid, $show_all = true)
 {
     $lang = load_language_file();
 
-    $html = "<select name=\"t_to_uid_recent\" class=\"recent_user_dropdown\" onclick=\"checkToRadio(". ($default_uid == 0 ? 1 : 0).")\">\n";
+    $html = "<select name=\"t_to_uid_recent\" class=\"recent_user_dropdown\" onclick=\"checkToRadio(". ($default_uid == 0 ? 1 : 0).")\">";
     if (!$db_post_draw_to_dropdown = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
@@ -329,13 +329,13 @@ function post_draw_to_dropdown_recent($default_uid, $show_all = true)
                 }
 
                 $fmt_username = word_filter_add_ob_tags(_htmlentities(format_user_name($top_user['LOGON'], $top_user['NICKNAME'])));
-                $html.= "<option value=\"$default_uid\" selected=\"selected\">$fmt_username</option>\n";
+                $html.= "<option value=\"$default_uid\" selected=\"selected\">$fmt_username</option>";
             }
         }
     }
 
     if ($show_all) {
-        $html .= "<option value=\"0\">{$lang['allcaps']}</option>\n";
+        $html .= "<option value=\"0\">{$lang['allcaps']}</option>";
     }
 
     $sql = "SELECT VISITOR_LOG.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
@@ -360,7 +360,7 @@ function post_draw_to_dropdown_recent($default_uid, $show_all = true)
             }
 
             $fmt_username = word_filter_add_ob_tags(_htmlentities(format_user_name($user_data['LOGON'], $user_data['NICKNAME'])));
-            $html .= "<option value=\"{$user_data['UID']}\">$fmt_username</option>\n";
+            $html .= "<option value=\"{$user_data['UID']}\">$fmt_username</option>";
         }
     }
 
@@ -372,7 +372,7 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $
 {
     $lang = load_language_file();
 
-    $html = "<select name=\"t_to_uid_in_thread\" class=\"user_in_thread_dropdown\" $custom_html>\n";
+    $html = "<select name=\"t_to_uid_in_thread\" class=\"user_in_thread_dropdown\" $custom_html>";
     if (!$db_post_draw_to_dropdown = db_connect()) return false;
 
     if (!is_numeric($tid)) return false;
@@ -402,21 +402,21 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $
                 }
 
                 $fmt_username = word_filter_add_ob_tags(_htmlentities(format_user_name($top_user['LOGON'], $top_user['NICKNAME'])));
-                $html.= "<option value=\"$default_uid\" selected=\"selected\">$fmt_username</option>\n";
+                $html.= "<option value=\"$default_uid\" selected=\"selected\">$fmt_username</option>";
             }
         }
     }
 
     if ($show_all) {
 
-        $html.= "<option value=\"0\">{$lang['allcaps']}</option>\n";
+        $html.= "<option value=\"0\">{$lang['allcaps']}</option>";
 
     }else if ($inc_blank) {
 
         if (isset($default_uid) && $default_uid != 0) {
-            $html.= "<option value=\"0\">&nbsp;</option>\n";
+            $html.= "<option value=\"0\">&nbsp;</option>";
         }else {
-            $html.= "<option value=\"0\" selected=\"selected\">&nbsp;</option>\n";
+            $html.= "<option value=\"0\" selected=\"selected\">&nbsp;</option>";
         }
     }
 
@@ -441,7 +441,7 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $
             }
 
             $fmt_username = word_filter_add_ob_tags(_htmlentities(format_user_name($user_data['LOGON'], $user_data['NICKNAME'])));
-            $html .= "<option value=\"{$user_data['UID']}\">$fmt_username</option>\n";
+            $html .= "<option value=\"{$user_data['UID']}\">$fmt_username</option>";
         }
     }
 

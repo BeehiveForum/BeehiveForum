@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_set_passwd.php,v 1.27 2007-12-26 13:19:32 decoyduck Exp $ */
+/* $Id: admin_forum_set_passwd.php,v 1.28 2008-03-23 18:54:57 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -145,7 +145,7 @@ if (!$fid = forum_get_setting('fid')) {
     exit;
 }
 
-if (isset($_POST['submit'])) {
+if (isset($_POST['save'])) {
 
     $valid = true;
 
@@ -254,7 +254,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "&nbsp;", form_submit("back", $lang['back']), "</td>\n";
+echo "      <td align=\"center\">", form_submit("save", $lang['save']), "&nbsp;", form_submit("back", $lang['back']), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

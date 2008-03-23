@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.338 2008-03-22 15:11:08 decoyduck Exp $ */
+/* $Id: post.php,v 1.339 2008-03-23 18:54:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -168,7 +168,7 @@ $fix_html = true;
 
 $t_to_uid = 0;
 
-if (isset($_POST['t_newthread']) && (isset($_POST['submit']) || isset($_POST['preview']))) {
+if (isset($_POST['t_newthread']) && (isset($_POST['post']) || isset($_POST['preview']))) {
 
     $new_thread = true;
 
@@ -346,7 +346,7 @@ if (isset($_POST['t_dedupe']) && is_numeric($_POST['t_dedupe'])) {
 
 if (!isset($sig_html)) $sig_html = 0;
 
-if (isset($_POST['submit']) || isset($_POST['preview'])) {
+if (isset($_POST['post']) || isset($_POST['preview'])) {
 
     $t_closed = isset($_POST['t_closed']) && $_POST['t_closed'] == 'Y' ? true : false;
     $t_sticky = isset($_POST['t_sticky']) && $_POST['t_sticky'] == 'Y' ? 'Y' : 'N';
@@ -705,7 +705,7 @@ if (!$new_thread) {
     }
 }
 
-if ($valid && isset($_POST['submit'])) {
+if ($valid && isset($_POST['post'])) {
 
     if (check_post_frequency()) {
 
@@ -1088,7 +1088,7 @@ if ($page_prefs & POST_TOOLBAR_DISPLAY) {
 }
 
 if ($allow_html == true && $tool_type <> POST_TOOLBAR_DISABLED) {
-    echo $tools->toolbar(false, form_submit("submit", $lang['post'], "onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\""));
+    echo $tools->toolbar(false, form_submit("post", $lang['post'], "onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\""));
 }else {
     $tools->setTinyMCE(false);
 }
@@ -1141,7 +1141,7 @@ if ($tools->getTinyMCE()) {
     echo "  <br /><br />\n";
 }
 
-echo form_submit("submit", $lang['post'], "tabindex=\"2\" onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\"");
+echo form_submit("post", $lang['post'], "tabindex=\"2\" onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\"");
 echo "  &nbsp;".form_submit("preview", $lang['preview'], "tabindex=\"3\" onclick=\"clearFocus()\"");
 echo "  &nbsp;".form_submit("cancel", $lang['cancel'], "tabindex=\"4\" onclick=\"closeAttachWin(); clearFocus()\"");
 
@@ -1232,12 +1232,16 @@ echo "        </table>\n";
 echo "      </td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
-echo "  <br />\n";
-echo "  <table  width=\"720\">\n";
-echo "    <tr>\n";
-echo "      <td align=\"center\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"index.php?webtag=$webtag&amp;msg={$thread_data['TID']}.1\" target=\"_blank\" title=\"{$lang['reviewthreadinnewwindow']}\">{$lang['reviewthread']}</a></td>\n";
-echo "    </tr>\n";
-echo "  </table>\n";
+
+if (!$new_thread) {
+
+    echo "  <br />\n";
+    echo "  <table  width=\"720\">\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"center\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"index.php?webtag=$webtag&amp;msg={$thread_data['TID']}.1\" target=\"_blank\" title=\"{$lang['reviewthreadinnewwindow']}\">{$lang['reviewthread']}</a></td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+}
 
 echo $tools->js();
 

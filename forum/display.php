@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display.php,v 1.91 2008-03-07 23:19:21 decoyduck Exp $ */
+/* $Id: display.php,v 1.92 2008-03-23 18:54:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -217,9 +217,9 @@ echo "        ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
 echo "        ", form_input_hidden("msg", _htmlentities("$tid.$pid")), "\n";
 
 if (isset($_GET['print_msg']) && is_numeric($_GET['print_msg'])) {
-    echo "        ", form_submit("submit", $lang['back']), "&nbsp;", form_button("print", $lang['print'], "onclick=\"self.print()\""), "\n";
+    echo "        ", form_submit("back", $lang['back']), "&nbsp;", form_button("print", $lang['print'], "onclick=\"self.print()\""), "\n";
 }else {
-    echo "        ", form_submit("submit", $lang['back']), "\n";
+    echo "        ", form_submit("back", $lang['back']), "\n";
 }
 
 echo "      </form>\n";

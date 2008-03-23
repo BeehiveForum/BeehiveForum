@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: delete.php,v 1.130 2007-12-26 13:19:33 decoyduck Exp $ */
+/* $Id: delete.php,v 1.131 2008-03-23 18:54:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -225,7 +225,7 @@ if (isset($tid) && isset($pid) && is_numeric($tid) && is_numeric($pid)) {
     }
 }
 
-if (isset($_POST['submit']) && is_numeric($tid) && is_numeric($pid)) {
+if (isset($_POST['delete']) && is_numeric($tid) && is_numeric($pid)) {
 
     if (post_delete($tid, $pid)) {
 
@@ -318,7 +318,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("submit", $lang['delete']), "&nbsp;".form_submit("cancel", $lang['cancel']), "</td>\n";
+echo "      <td align=\"center\">", form_submit("delete", $lang['delete']), "&nbsp;".form_submit("cancel", $lang['cancel']), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

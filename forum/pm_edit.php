@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.117 2008-01-03 19:42:43 decoyduck Exp $ */
+/* $Id: pm_edit.php,v 1.118 2008-03-23 18:54:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -238,7 +238,7 @@ if (isset($_POST['t_post_html'])) {
 
 $post = new MessageText($post_html, "", $emots_enabled, $links_enabled);
 
-if (isset($_POST['submit']) || isset($_POST['preview'])) {
+if (isset($_POST['apply']) || isset($_POST['preview'])) {
 
     if (isset($_POST['t_subject']) && strlen(trim(_stripslashes($_POST['t_subject']))) > 0) {
 
@@ -291,7 +291,7 @@ if ($valid && isset($_POST['preview'])) {
         exit;
     }
 
-}else if ($valid && isset($_POST['submit'])) {
+}else if ($valid && isset($_POST['apply'])) {
 
     if ($pm_message_array = pm_message_get($mid)) {
 
@@ -506,7 +506,7 @@ if ($page_prefs & POST_TOOLBAR_DISPLAY) {
 }
 
 if ($allow_html == true && $tool_type <> POST_TOOLBAR_DISABLED) {
-    echo $tools->toolbar(false, form_submit('submit', $lang['apply'], "onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\""));
+    echo $tools->toolbar(false, form_submit('apply', $lang['apply'], "onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\""));
 
 } else {
     $tools->setTinyMCE(false);
@@ -560,7 +560,7 @@ if ($allow_html == true) {
 
 echo "              <br />\n";
 
-echo form_submit('submit', $lang['apply'], "tabindex=\"2\" onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\"");
+echo form_submit('apply', $lang['apply'], "tabindex=\"2\" onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\"");
 echo "              &nbsp;".form_submit('preview', $lang['preview'], 'tabindex="3" onclick="clearFocus()"');
 echo "              &nbsp;".form_submit('cancel', $lang['cancel'], 'tabindex="4" onclick="closeAttachWin(); clearFocus()"');
 

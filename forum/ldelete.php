@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ldelete.php,v 1.16 2008-02-05 19:14:06 decoyduck Exp $ */
+/* $Id: ldelete.php,v 1.17 2008-03-23 18:54:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -235,7 +235,7 @@ if (isset($tid) && isset($pid) && is_numeric($tid) && is_numeric($pid)) {
     }
 }
 
-if (isset($_POST['submit']) && is_numeric($tid) && is_numeric($pid)) {
+if (isset($_POST['delete']) && is_numeric($tid) && is_numeric($pid)) {
 
     if (post_delete($tid, $pid)) {
 
@@ -301,7 +301,7 @@ if (thread_is_poll($tid) && $pid == 1) {
     light_message_display($tid, $preview_message, $threaddata['LENGTH'], $pid, $threaddata['FID'], true, false, false, false, $show_sigs, true);
 }
 
-echo "<p>", light_form_submit("submit", $lang['delete']), "&nbsp;", light_form_submit("cancel", $lang['cancel']), "</p>\n";
+echo "<p>", light_form_submit("delete", $lang['delete']), "&nbsp;", light_form_submit("cancel", $lang['cancel']), "</p>\n";
 
 echo "<h6>&copy; ", date('Y'), " <a href=\"http://www.beehiveforum.net/\" target=\"_blank\">Project Beehive Forum</a></h6>\n";
 

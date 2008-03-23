@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit_users.php,v 1.57 2007-12-26 13:19:33 decoyduck Exp $ */
+/* $Id: admin_user_groups_edit_users.php,v 1.58 2008-03-23 18:54:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -415,7 +415,7 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td class=\"posthead\" align=\"left\">\n";
-echo "                          {$lang['username']}: ", form_input_text("usersearch", isset($usersearch) ? _htmlentities($usersearch) : "", 30, 64), " ", form_submit('submit', $lang['search']), "\n";
+echo "                          {$lang['username']}: ", form_input_text("usersearch", isset($usersearch) ? _htmlentities($usersearch) : "", 30, 64), " ", form_submit('search', $lang['search']), "\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";

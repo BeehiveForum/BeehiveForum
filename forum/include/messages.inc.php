@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.518 2008-03-22 15:11:07 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.519 2008-03-23 18:54:58 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -986,7 +986,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
             echo "            <table width=\"100%\" class=\"postresponse\" cellspacing=\"1\" cellpadding=\"0\">\n";
             echo "              <tr>\n";
-            echo "                <td width=\"25%\">&nbsp;</td>\n";
+            echo "                <td width=\"25%\" align=\"left\">&nbsp;</td>\n";
             echo "                <td width=\"50%\" nowrap=\"nowrap\">";
 
             if ($msg_count > 0) {
@@ -1041,6 +1041,12 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
             echo "                                    <tr>\n";
             echo "                                      <td align=\"center\">\n";
             echo "                                        <table width=\"95%\" class=\"post_options_menu\">\n";
+            echo "                                          <tr>\n";
+            echo "                                            <td align=\"left\"><a href=\"Javascript:void(0)\" onclick=\"toggleQuickReply({$message['PID']})\" target=\"_self\"><img src=\"", style_image('quickreply.png'), "\" border=\"0\" alt=\"{$lang['quickreply']}\" title=\"{$lang['quickreply']}\" /></a></td>\n";
+            echo "                                            <td align=\"left\" nowrap=\"nowrap\"><a href=\"Javascript:void(0)\" onclick=\"toggleQuickReply({$message['PID']})\" target=\"_self\">{$lang['quickreply']}</a></td>\n";
+            echo "                                          </tr>\n";
+
+
 
             if (($uid == $message['FROM_UID'] && bh_session_check_perm(USER_PERM_POST_DELETE, $folder_fid) && !(perm_get_user_permissions($uid) & USER_PERM_PILLORIED)) || $perm_is_moderator) {
 
@@ -1176,6 +1182,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     echo "      </td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
+    echo "  <div id=\"quick_reply_{$message['PID']}\"></div>\n";
     echo "</div>\n";
 }
 
@@ -1387,7 +1394,7 @@ function messages_interest_form($tid,$pid)
     echo "{$lang['ratemyinterest']}: \n";
     echo form_radio_array("setinterest", array(-1 => "{$lang['ignore']} ", 0 => "{$lang['normal']} ", 1 => "{$lang['interested']} ", 2 => "{$lang['subscribe']} "), _htmlentities($interest));
     echo form_input_hidden("tid", _htmlentities($tid));
-    echo form_submit("submit", $lang['apply']);
+    echo form_submit("apply", $lang['apply']);
     echo "\n";
     echo "</form>\n";
 

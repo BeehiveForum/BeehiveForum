@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.103 2008-03-20 21:30:00 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.104 2008-03-23 18:54:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -217,7 +217,7 @@ if (isset($_GET['markasread']) && is_numeric($_GET['markasread'])) {
 
 // Submit Code
 
-if (isset($_POST['submit'])) {
+if (isset($_POST['save'])) {
 
     $valid = true;
 
@@ -1016,7 +1016,7 @@ if ($thread_data['LENGTH'] > 0) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("submit", $lang['save']), " &nbsp;", form_submit("back", $lang['back']), "</td>\n";
+    echo "      <td align=\"center\">", form_submit("save", $lang['save']), " &nbsp;", form_submit("back", $lang['back']), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "  </form>\n";
@@ -1073,7 +1073,7 @@ if ($thread_data['LENGTH'] > 0) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "</td>\n";
+    echo "      <td align=\"center\">", form_submit("save", $lang['save']), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "  </form>\n";

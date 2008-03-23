@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.159 2008-03-04 00:13:17 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.160 2008-03-23 18:54:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -232,7 +232,7 @@ if (isset($_POST['cancel'])) {
     $uri = "discussion.php?webtag=$webtag&msg=$edit_msg";
     header_redirect($uri);
 
-}elseif (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_POST['submit'])) {
+}elseif (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_POST['apply'])) {
 
     if (isset($_POST['t_post_html']) && $_POST['t_post_html'] == 'Y') {
         $t_post_html = 'Y';
@@ -591,7 +591,7 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
 
     $poll_data['AID'] = $aid;
 
-}elseif ($valid && isset($_POST['submit'])) {
+}elseif ($valid && isset($_POST['apply'])) {
 
     // Work out when the poll will close.
 
@@ -1092,7 +1092,7 @@ echo "                        <td align=\"left\">&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 
-echo form_submit("submit", $lang['apply']), "&nbsp;", form_submit("preview_poll", $lang['preview']), "&nbsp;", form_submit("preview_form", $lang['previewvotingform']), "&nbsp;", form_submit("cancel", $lang['cancel']);
+echo form_submit("apply", $lang['apply']), "&nbsp;", form_submit("preview_poll", $lang['preview']), "&nbsp;", form_submit("preview_form", $lang['previewvotingform']), "&nbsp;", form_submit("cancel", $lang['cancel']);
 
 if (forum_get_setting('attachments_enabled', 'Y') && bh_session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
 

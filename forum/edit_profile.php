@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_profile.php,v 1.87 2008-03-18 16:03:17 decoyduck Exp $ */
+/* $Id: edit_profile.php,v 1.88 2008-03-23 18:54:58 decoyduck Exp $ */
 
 /**
 * Displays the edit profile page, and processes sumbissions
@@ -186,7 +186,7 @@ $error_msg_array = array();
 
 // Do updates
 
-if (isset($_POST['submit'])) {
+if (isset($_POST['save'])) {
 
     $valid = true;
 
@@ -388,13 +388,13 @@ if ($profile_items_array = profile_get_user_values($uid)) {
     if ($admin_edit === true) {
 
         echo "          <tr>\n";
-        echo "            <td align=\"center\">", form_submit("submit", $lang['save']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+        echo "            <td align=\"center\">", form_submit("save", $lang['save']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
         echo "          </tr>\n";
 
     }else {
 
         echo "          <tr>\n";
-        echo "            <td align=\"center\">", form_submit("submit", $lang['save']), "</td>\n";
+        echo "            <td align=\"center\">", form_submit("save", $lang['save']), "</td>\n";
         echo "          </tr>\n";
     }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.128 2008-02-12 22:52:52 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.129 2008-03-23 18:54:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -138,7 +138,7 @@ $available_timezones = get_available_timezones();
 
 // Submit code starts here.
 
-if (isset($_POST['submit'])) {
+if (isset($_POST['save'])) {
 
     $user_prefs = array();
     $user_prefs_global = array();
@@ -765,7 +765,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "</td>\n";
+echo "      <td align=\"center\">", form_submit("save", $lang['save']), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

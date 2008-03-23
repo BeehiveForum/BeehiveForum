@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.324 2008-02-25 09:58:22 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.325 2008-03-23 18:54:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -945,7 +945,7 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
 }
 
 echo "        ", form_input_text("search_string", "", 20). "\n";
-echo "        ", form_submit("submit", $lang['find']). "\n";
+echo "        ", form_submit("search", $lang['find']). "\n";
 echo "      </form>\n";
 echo "    </td>\n";
 echo "  </tr>\n";

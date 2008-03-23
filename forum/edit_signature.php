@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_signature.php,v 1.104 2008-01-03 19:42:43 decoyduck Exp $ */
+/* $Id: edit_signature.php,v 1.105 2008-03-23 18:54:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -178,7 +178,7 @@ $valid = true;
 
 $error_msg_array = array();
 
-if (isset($_POST['submit']) || isset($_POST['preview'])) {
+if (isset($_POST['save']) || isset($_POST['preview'])) {
 
     if (isset($_POST['sig_content']) && strlen(trim(_stripslashes($_POST['sig_content']))) > 0) {
         $t_sig_content = trim(_stripslashes($_POST['sig_content']));
@@ -209,7 +209,7 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
     }
 }
 
-if (isset($_POST['submit'])) {
+if (isset($_POST['save'])) {
 
     if ($valid) {
 
@@ -432,13 +432,13 @@ echo "    </tr>\n";
 if ($admin_edit === true) {
 
     echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "&nbsp;", form_submit("preview", $lang['preview']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+    echo "      <td align=\"center\">", form_submit("save", $lang['save']), "&nbsp;", form_submit("preview", $lang['preview']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
     echo "    </tr>\n";
 
 }else {
 
     echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "&nbsp;", form_submit("preview", $lang['preview']), "</td>\n";
+    echo "      <td align=\"center\">", form_submit("save", $lang['save']), "&nbsp;", form_submit("preview", $lang['preview']), "</td>\n";
     echo "    </tr>\n";
 }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.221 2008-03-12 00:27:00 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.222 2008-03-23 18:54:58 decoyduck Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -308,7 +308,7 @@ if (isset($_POST['cancel'])) {
     $uri = "discussion.php?webtag=$webtag";
     header_redirect($uri);
 
-}elseif (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_POST['submit'])) {
+}elseif (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_POST['post'])) {
 
     $valid = true;
 
@@ -666,7 +666,7 @@ if (isset($_POST['t_dedupe']) && is_numeric($_POST['t_dedupe'])) {
     $t_dedupe = mktime();
 }
 
-if ($valid && isset($_POST['submit'])) {
+if ($valid && isset($_POST['post'])) {
 
     if (check_post_frequency()) {
 
@@ -1293,7 +1293,7 @@ echo "          </tr>\n";
 echo "          <tr>\n";
 echo "            <td align=\"left\">";
 
-echo form_submit("submit", $lang['post'], "onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\""), "&nbsp;", form_submit("preview_poll", $lang['preview']), "&nbsp;", form_submit("preview_form", $lang['previewvotingform']), "&nbsp;", form_submit("cancel", $lang['cancel']);
+echo form_submit("post", $lang['post'], "onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\""), "&nbsp;", form_submit("preview_poll", $lang['preview']), "&nbsp;", form_submit("preview_form", $lang['previewvotingform']), "&nbsp;", form_submit("cancel", $lang['cancel']);
 
 if (forum_get_setting('attachments_enabled', 'Y')) {
 

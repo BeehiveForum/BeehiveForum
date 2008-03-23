@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.php,v 1.88 2007-12-26 13:19:33 decoyduck Exp $ */
+/* $Id: email.php,v 1.89 2008-03-23 18:54:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -150,7 +150,7 @@ $uid = bh_session_get_value('UID');
 $to_user = user_get($to_uid);
 $from_user = user_get($uid);
 
-if (isset($_POST['submit'])) {
+if (isset($_POST['send'])) {
 
     $valid = true;
 
@@ -259,7 +259,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("submit", $lang['send']), "&nbsp;", form_submit("close", $lang['cancel']), "</td>\n";
+echo "      <td align=\"center\">", form_submit("send", $lang['send']), "&nbsp;", form_submit("close", $lang['cancel']), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.257 2008-03-22 15:11:07 decoyduck Exp $ */
+/* $Id: messages.php,v 1.258 2008-03-23 18:54:58 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -234,7 +234,7 @@ $folder_title = _htmlentities($thread_data['FOLDER_TITLE']);
 
 $thread_title = _htmlentities(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']));
 
-html_draw_top("title=$forum_name > $thread_title", "openprofile.js", "post.js", "poll.js", "basetarget=_blank", "onload=initialisePostQuoting()");
+html_draw_top("title=$forum_name > $thread_title", "openprofile.js", "post.js", "poll.js", "basetarget=_blank", "onload=initialisePostQuoting()", "onload=registerQuickReplyHotKey()");
 
 echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
 echo "<!--\n\n";
@@ -471,6 +471,62 @@ echo "  ", form_input_hidden('quote_list', ''), "\n";
 echo "  ", form_input_hidden('replyto', ''), "\n";
 echo "</form>\n";
 
+echo "<div id=\"quick_reply_container\" class=\"quick_reply_container_closed\">\n";
+echo "<br />\n";
+echo "<form id=\"quick_reply_form\" action=\"post.php\" method=\"post\" target=\"_parent\">\n";
+echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+echo "  ", form_input_hidden('t_tid', _htmlentities($tid)), "\n";
+echo "  ", form_input_hidden('t_rpid', '0'), "\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\">\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\" class=\"subhead\">\n";
+echo "                    <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\">{$lang['quickreply']}</td>\n";
+echo "                        <td align=\"right\">#$tid.<span id=\"quick_reply_header\"></span>&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td align=\"center\">\n";
+echo "                    <table class=\"posthead\" width=\"95%\">\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"center\">", form_textarea('t_content', '', 7, 75), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">&nbsp;</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td align=\"center\">", form_submit("post", $lang['post']), "&nbsp;", form_submit("more", $lang['more']), "&nbsp;", form_button("cancel", $lang['cancel'], "onclick=\"hideQuickReply()\""), "</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">&nbsp;</td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "</form>\n";
+echo "</div>\n";
+
 if ($msg_count > 0) {
 
     $first_msg = $messages[0]['PID'];
@@ -555,72 +611,10 @@ if ($last_pid < $thread_data['LENGTH']) {
 }
 
 echo "  </tr>\n";
-
-if (!user_is_guest()) {
-
-    echo "  <tr>\n";
-    echo "    <td colspan=\"3\" align=\"center\"><img src=\"". style_image('star.png') ."\" alt=\"{$lang['quickreply']}\" title=\"{$lang['quickreply']}\" border=\"0\" /> <a href=\"javascript:void(0)\" target=\"_self\" onclick=\"toggleQuickReply()\"><b>{$lang['quickreply']}</b></a></td>\n";
-    echo "  </tr>\n";
-    echo "  <tr>\n";
-    echo "    <td align=\"left\" colspan=\"3\">&nbsp;</td>\n";
-    echo "  </tr>\n";
-    echo "</table>\n";
-    echo "<div id=\"quick_reply_container\" class=\"quick_reply_container_closed\">\n";
-    echo "<form name=\"f_post\" action=\"post.php\" method=\"post\" target=\"_parent\">\n";
-    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-    echo "  ", form_input_hidden('t_tid', _htmlentities($tid)), "\n";
-    echo "  ", form_input_hidden('t_rpid', '0'), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\">\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\">\n";
-    echo "        <table class=\"box\" width=\"100%\">\n";
-    echo "          <tr>\n";
-    echo "            <td align=\"left\" class=\"posthead\">\n";
-    echo "              <table class=\"posthead\" width=\"100%\">\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\">{$lang['quickreply']}</td>\n";
-    echo "                </tr>\n";
-    echo "              </table>\n";
-    echo "              <table class=\"posthead\" width=\"100%\">\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"center\">\n";
-    echo "                    <table class=\"posthead\" width=\"95%\">\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"center\">", form_textarea('t_content', '', 7, 75), "</td>\n";
-    echo "                      </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
-    echo "                      </tr>\n";
-    echo "                    </table>\n";
-    echo "                  </td>\n";
-    echo "                </tr>\n";
-    echo "              </table>\n";
-    echo "            </td>\n";
-    echo "          </tr>\n";
-    echo "        </table>\n";
-    echo "      </td>\n";
-    echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\">&nbsp;</td>\n";
-    echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("submit", $lang['post']), "&nbsp;", form_submit("more", $lang['more']), "&nbsp;", form_button("cancel", $lang['cancel'], "onclick=\"toggleQuickReply()\""), "</td>\n";
-    echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\">&nbsp;</td>\n";
-    echo "    </tr>\n";
-    echo "  </table>\n";
-    echo "</form>\n";
-    echo "</div>\n";
-
-}else {
-
-    echo "  <tr>\n";
-    echo "    <td align=\"left\" colspan=\"3\">&nbsp;</td>\n";
-    echo "  </tr>\n";
-    echo "</table>\n";
-}
-
+echo "  <tr>\n";
+echo "    <td align=\"left\" colspan=\"3\">&nbsp;</td>\n";
+echo "  </tr>\n";
+echo "</table>\n";
 echo "</div>\n";
 
 messages_start_panel();

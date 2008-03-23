@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.105 2008-01-27 15:00:16 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.106 2008-03-23 18:54:58 decoyduck Exp $ */
 
 /**
 * Displays and handles the User Relationship page
@@ -202,7 +202,7 @@ $error_msg_array = array();
 
 // Form submt code
 
-if (isset($_POST['submit'])) {
+if (isset($_POST['save'])) {
 
     $peer_user_status = (double) (isset($_POST['peer_user_status'])) ? $_POST['peer_user_status'] : 0;
     $peer_sig_display = (double) (isset($_POST['peer_sig_display'])) ? $_POST['peer_sig_display'] : 0;
@@ -485,7 +485,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\"><p>", form_submit("submit", $lang['save']), "&nbsp;", form_submit("preview_signature", $lang['previewsignature']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</p></td>\n";
+echo "      <td align=\"center\"><p>", form_submit("save", $lang['save']), "&nbsp;", form_submit("preview_signature", $lang['previewsignature']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</p></td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

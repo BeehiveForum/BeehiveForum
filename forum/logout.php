@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logout.php,v 1.97 2008-02-27 19:09:19 decoyduck Exp $ */
+/* $Id: logout.php,v 1.98 2008-03-23 18:54:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -100,7 +100,7 @@ if (isset($_GET['check_cookie'])) {
 
 // Where are we going after we've logged off?
 
-if (isset($_POST['submit'])) {
+if (isset($_POST['logout'])) {
 
     bh_session_end();
     bh_setcookie("bh_logon", "1");
@@ -138,7 +138,7 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"center\">", form_submit("submit", $lang['logout']), "</td>\n";
+echo "                        <td align=\"center\">", form_submit("logout", $lang['logout']), "</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_edit.php,v 1.66 2007-12-26 13:19:32 decoyduck Exp $ */
+/* $Id: admin_folder_edit.php,v 1.67 2008-03-23 18:54:57 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -139,7 +139,7 @@ if (!folder_is_valid($fid)) {
     exit;
 }
 
-if (isset($_POST['submit'])) {
+if (isset($_POST['save'])) {
 
     $valid = true;
 
@@ -488,7 +488,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "&nbsp;", form_submit("delete", $lang['delete']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+echo "      <td align=\"center\">", form_submit("save", $lang['save']), "&nbsp;", form_submit("delete", $lang['delete']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "  </form>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.115 2008-02-14 23:00:44 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.116 2008-03-23 18:54:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -105,7 +105,7 @@ $error_msg_array = array();
 
 // Save the style
 
-if (isset($_POST['submit'])) {
+if (isset($_POST['save'])) {
 
     $valid = true;
 
@@ -323,11 +323,11 @@ echo "            <td align=\"left\" colspan=\"2\" class=\"posthead\">\n";
 echo "              <table width=\"100%\">\n";
 echo "                <tr>\n";
 
-if (isset($_POST['submit'])) {
+if (isset($_POST['save'])) {
 
-    $elements = $_POST['elements'];
+    $elements = (isset($_POST['elements']) && is_array($_POST['elements'])) ? $_POST['elements'] : $elements;
 
-    foreach ($_POST['elements'] as $key => $value) {
+    foreach ($elements as $key => $value) {
 
         echo "                  <td width=\"50\" class=\"posthead\" style=\"background-color: #", $value, "\" align=\"center\">\n";
         echo "                    <a href=\"admin_make_style.php?webtag=$webtag&amp;seed=", $value, "&amp;mode=", $mode, "\" style=\"color: #", contrastFont($value), "\">", strtoupper($value), "</a>\n";
@@ -409,7 +409,7 @@ echo "                <tr>\n";
 echo "                  <td class=\"posthead\" align=\"left\">\n";
 echo "                    <form action=\"admin_make_style.php\" method=\"get\">\n";
 echo "                      ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
-echo "                      ", form_input_text("seed", _htmlentities(strtoupper($seed)), 15, 6), "&nbsp;", form_submit('submit', $lang['go']), "\n";
+echo "                      ", form_input_text("seed", _htmlentities(strtoupper($seed)), 15, 6), "&nbsp;", form_submit('go', $lang['go']), "\n";
 echo "                    </form>\n";
 echo "                  </td>\n";
 echo "                </tr>\n";
@@ -432,7 +432,7 @@ echo "                          <td align=\"left\">", form_input_text("stylename
 echo "                        </tr>\n";
 echo "                        <tr>\n";
 echo "                          <td align=\"left\" class=\"posthead\">{$lang['styledesc']}:</td>\n";
-echo "                          <td align=\"left\">", form_input_text("styledesc", isset($_POST['styledesc']) ? _htmlentities(_stripslashes($_POST['styledesc'])) : '', 35, 20), "&nbsp;", form_submit('submit', $lang['save']), "</td>\n";
+echo "                          <td align=\"left\">", form_input_text("styledesc", isset($_POST['styledesc']) ? _htmlentities(_stripslashes($_POST['styledesc'])) : '', 35, 20), "&nbsp;", form_submit('save', $lang['save']), "</td>\n";
 echo "                        </tr>\n";
 echo "                      </table>\n";
 echo "                    </form>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogout.php,v 1.53 2008-02-05 19:14:06 decoyduck Exp $ */
+/* $Id: llogout.php,v 1.54 2008-03-23 18:54:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -89,7 +89,7 @@ if (user_is_guest()) {
 
 // Where are we going after we've logged off?
 
-if (isset($_POST['submit'])) {
+if (isset($_POST['logout'])) {
 
     bh_session_end();
     header_redirect("llogon.php?webtag=$webtag", $lang['youhaveloggedout']);
@@ -102,7 +102,7 @@ $user = user_get(bh_session_get_value('UID'));
 echo "<form name=\"logon\" action=\"llogout.php\" method=\"post\" target=\"", html_get_top_frame_name(), "\">\n";
 echo form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "<p>", sprintf($lang['currentlyloggedinas'], word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME'])))), "</p>\n";
-echo "<p>", light_form_submit("submit", $lang['logout']), "</p>\n";
+echo "<p>", light_form_submit("logout", $lang['logout']), "</p>\n";
 echo "</form>\n";
 
 echo "<h6>&copy; ", date('Y'), " <a href=\"http://www.beehiveforum.net/\" target=\"_blank\">Project Beehive Forum</a></h6>\n";

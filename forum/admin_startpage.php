@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_startpage.php,v 1.100 2008-02-14 23:00:44 decoyduck Exp $ */
+/* $Id: admin_startpage.php,v 1.101 2008-03-23 18:54:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -134,7 +134,7 @@ $t_content = $start_page->getContent();
 
 // Submit code.
 
-if (isset($_POST['submit'])) {
+if (isset($_POST['save'])) {
 
     if (forum_save_start_page($t_content)) {
 
@@ -195,7 +195,7 @@ echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", $tools->toolbar(true, form_submit('submit', $lang['save'])), "</td>\n";
+echo "                        <td align=\"left\">", $tools->toolbar(true, form_submit('save', $lang['save'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">", $tools->textarea("t_content", _htmlentities($t_content), 20, 85, "virtual", "", "admin_startpage_textarea"), "</td>\n";
@@ -216,7 +216,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "&nbsp;", form_submit("download", $lang['download']), "</td>\n";
+echo "      <td align=\"center\">", form_submit("save", $lang['save']), "&nbsp;", form_submit("download", $lang['download']), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

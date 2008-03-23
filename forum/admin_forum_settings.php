@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.132 2008-02-12 22:52:52 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.133 2008-03-23 18:54:57 decoyduck Exp $ */
 
 /**
 * Displays and handles the Forum Settings page
@@ -154,7 +154,7 @@ if (isset($_POST['changepermissions'])) {
     header_redirect($redirect_uri);
     exit;
 
-}elseif (isset($_POST['submit'])) {
+}elseif (isset($_POST['save'])) {
 
     $valid = true;
 
@@ -920,7 +920,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "</td>\n";
+echo "      <td align=\"center\">", form_submit("save", $lang['save']), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

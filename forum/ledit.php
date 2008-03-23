@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ledit.php,v 1.27 2008-03-12 00:27:00 decoyduck Exp $ */
+/* $Id: ledit.php,v 1.28 2008-03-23 18:54:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -437,7 +437,7 @@ if (isset($_POST['preview'])) {
         $preview_message['AID'] = $aid;
     }
 
-}else if (isset($_POST['submit'])) {
+}else if (isset($_POST['apply'])) {
 
     if (!$editmessage = messages_get($tid, $pid, 1)) {
 
@@ -613,7 +613,7 @@ if ($allow_html == true) {
     echo form_input_hidden("t_post_html", "disabled");
 }
 
-echo "<p>", light_form_submit("submit", $lang['apply']), "&nbsp;", light_form_submit("preview", $lang['preview']), "&nbsp;", light_form_submit("cancel", $lang['cancel']);
+echo "<p>", light_form_submit("apply", $lang['apply']), "&nbsp;", light_form_submit("preview", $lang['preview']), "&nbsp;", light_form_submit("cancel", $lang['cancel']);
 echo "</p>";
 
 echo "</form>\n";

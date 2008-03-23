@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.109 2008-03-20 18:48:09 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.110 2008-03-23 18:54:57 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -141,7 +141,7 @@ $sitemap_freq_periods = array(DAY_IN_SECONDS  => $lang['onceaday'],
 
 // Submit code.
 
-if (isset($_POST['submit']) || isset($_POST['confirm_unread_cutoff']) || isset($_POST['cancel_unread_cutoff'])) {
+if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_POST['cancel_unread_cutoff'])) {
 
     $valid = true;
 
@@ -1109,7 +1109,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "</td>\n";
+echo "      <td align=\"center\">", form_submit("save", $lang['save']), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

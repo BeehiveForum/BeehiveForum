@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.197 2008-03-12 00:27:00 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.198 2008-03-23 18:54:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -361,7 +361,7 @@ $t_content = $post->getContent();
 
 // Submit handling code
 
-if (isset($_POST['submit']) || isset($_POST['preview'])) {
+if (isset($_POST['send']) || isset($_POST['preview'])) {
 
     // User clicked the send or preview button - check the data that was submitted
 
@@ -723,7 +723,7 @@ if (isset($_POST['t_dedupe']) && is_numeric($_POST['t_dedupe'])) {
 
 // Send the PM
 
-if ($valid && isset($_POST['submit'])) {
+if ($valid && isset($_POST['send'])) {
 
     if (check_ddkey($t_dedupe)) {
 
@@ -1015,7 +1015,7 @@ if ($page_prefs & POST_TOOLBAR_DISPLAY) {
 }
 
 if ($allow_html == true && $tool_type <> POST_TOOLBAR_DISABLED) {
-    echo $tools->toolbar(false, form_submit('submit', $lang['send'], "onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\""));
+    echo $tools->toolbar(false, form_submit('send', $lang['send'], "onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\""));
 } else {
     $tools->setTinyMCE(false);
 }
@@ -1067,7 +1067,7 @@ if ($allow_html == true) {
 
 echo "              <br />\n";
 
-echo "&nbsp;", form_submit('submit', $lang['send'], "tabindex=\"2\" target=\"_blank\" onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\"");
+echo "&nbsp;", form_submit('send', $lang['send'], "tabindex=\"2\" target=\"_blank\" onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\"");
 echo "&nbsp;", form_submit('save', $lang['save'], 'tabindex="3" onclick="clearFocus()"');
 echo "&nbsp;", form_submit('preview', $lang['preview'], 'tabindex="4" onclick="clearFocus()"');
 echo "&nbsp;", form_submit('cancel', $lang['cancel'], 'tabindex="5" onclick="closeAttachWin(); clearFocus()"');

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.304 2008-03-20 21:30:00 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.305 2008-03-23 18:54:58 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -381,7 +381,7 @@ function forum_check_password($forum_fid)
         echo "        <td align=\"left\">&nbsp;</td>\n";
         echo "      </tr>\n";
         echo "      <tr>\n";
-        echo "        <td align=\"center\">", form_submit("submit", $lang['logon']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+        echo "        <td align=\"center\">", form_submit("logon", $lang['logon']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
         echo "      </tr>\n";
 
         if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {

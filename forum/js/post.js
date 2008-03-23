@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.js,v 1.43 2008-03-21 16:15:57 decoyduck Exp $ */
+/* $Id: post.js,v 1.44 2008-03-23 18:54:58 decoyduck Exp $ */
 
 var search_logon = false;
 var menu_timeout = 0;
@@ -214,26 +214,99 @@ function openPostOptions(post_id)
     }
 }
 
-function toggleQuickReply()
+function toggleQuickReply(message_id)
 {
     var quick_reply_container = getObjById('quick_reply_container');
-    
+
+    var quick_reply_position = getObjById('quick_reply_' + message_id);
+
+    if (typeof(quick_reply_container) == 'object' && typeof(quick_reply_position) == 'object') {
+
+	if (quick_reply_container.parentNode.id != quick_reply_position.id) {
+  		
+            quick_reply_position.appendChild(quick_reply_container);
+
+	    showQuickReply(message_id);
+	    
+	}else {
+	
+	    if (quick_reply_container.className == 'quick_reply_container_closed') {
+	
+	        showQuickReply(message_id);
+	    
+	    }else {
+	 
+	        hideQuickReply();
+	    }
+	}
+    }
+}
+
+function showQuickReply(message_id)
+{
+    var quick_reply_container = getObjById('quick_reply_container');
+
+    var quick_reply_header = getObjById('quick_reply_header');
+
     var quick_reply_content = getObjsByName('t_content')[0];
 
-    var quick_reply_post_button = getObjsByName('submit')[0];
+    var quick_reply_pid = getObjsByName('t_rpid')[0];
 
-    if (typeof(quick_reply_container) == 'object' && typeof(quick_reply_content) == 'object' && typeof(quick_reply_post_button) == 'object') {
+    var quick_reply_post_button = getObjsByName('post')[0];
 
-	if (quick_reply_container.className == 'quick_reply_container_closed') {
+    if (typeof(quick_reply_container) == 'object' && typeof(quick_reply_pid) == 'object') {
 
-	    quick_reply_container.className = 'quick_reply_container_opened';
-	    
+        if (typeof(quick_reply_content) == 'object' && typeof(quick_reply_post_button) == 'object') {
+       
+            quick_reply_header.innerHTML = message_id;
+            
+            quick_reply_container.className = 'quick_reply_container_opened';
+
+            quick_reply_pid.value = message_id;
+		    
 	    quick_reply_content.focus();
-	    quick_reply_post_button.scrollIntoView(false);
-
-	}else {
-
-	    quick_reply_container.className = 'quick_reply_container_closed';
+            quick_reply_post_button.scrollIntoView(false);
 	}
+    }
+}
+
+function hideQuickReply()
+{
+    var quick_reply_container = getObjById('quick_reply_container');
+
+    if (typeof(quick_reply_container) == 'object') {
+
+	if (quick_reply_container.className == 'quick_reply_container_opened') {
+
+	   quick_reply_container.className = 'quick_reply_container_closed';
+	}
+    }
+}
+
+function checkKeyPress(evt)
+{
+    var key = (evt.which || evt.charCode || evt.keyCode);
+  
+    if (!evt || !evt.ctrlKey) return true;
+  
+    if (key == 13) {
+
+        var quick_reply_post_button = getObjsByName('post')[0];
+
+        if (typeof(quick_reply_post_button) == 'object') {
+
+            quick_reply_post_button.click();
+        }      
+    }
+}
+
+function registerQuickReplyHotKey()
+{
+    var quick_reply_content = getObjsByName('t_content')[0];
+
+    if (document.all) {
+        quick_reply_content.attachEvent('onkeydown',function(evt) { checkKeyPress(evt) });
+    }else {
+        quick_reply_content.addEventListener('keydown', checkKeyPress, true);
     }
 }

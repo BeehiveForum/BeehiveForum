@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.166 2008-03-20 18:48:09 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.167 2008-03-23 18:54:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -456,11 +456,11 @@ echo "      <td class=\"postbody\" align=\"center\">", page_links("admin_users.p
 
 if (forum_get_setting('require_user_approval', 'Y') && (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0))) {
 
-    echo "      <td align=\"right\" width=\"40%\" class=\"postbody\">{$lang['userfilter']}: ", form_dropdown_array("filter", array($lang['all'], $lang['onlineusers'], $lang['offlineusers'], $lang['bannedusers'], $lang['usersawaitingapproval']), $filter), "&nbsp;", form_submit("submit_filter", $lang['go']), "</td>\n";
+    echo "      <td align=\"right\" width=\"40%\" class=\"postbody\">{$lang['userfilter']}: ", form_dropdown_array("filter", array($lang['all'], $lang['onlineusers'], $lang['offlineusers'], $lang['bannedusers'], $lang['usersawaitingapproval']), $filter), "&nbsp;", form_submit("go", $lang['go']), "</td>\n";
 
 }else {
 
-    echo "      <td align=\"right\" width=\"40%\" class=\"postbody\">{$lang['userfilter']}: ", form_dropdown_array("filter", array($lang['all'], $lang['onlineusers'], $lang['offlineusers'], $lang['bannedusers']), $filter), "&nbsp;", form_submit("submit_filter", $lang['go']), "</td>\n";
+    echo "      <td align=\"right\" width=\"40%\" class=\"postbody\">{$lang['userfilter']}: ", form_dropdown_array("filter", array($lang['all'], $lang['onlineusers'], $lang['offlineusers'], $lang['bannedusers']), $filter), "&nbsp;", form_submit("go", $lang['go']), "</td>\n";
 }
 
 echo "    </tr>\n";
@@ -491,7 +491,7 @@ echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td class=\"posthead\" align=\"left\">{$lang['username']}: ", form_input_text('user_search', _htmlentities($user_search), 30, 64), " ", form_submit('submit', $lang['search']), " ", form_submit('reset', $lang['clear']), "</td>\n";
+echo "                        <td class=\"posthead\" align=\"left\">{$lang['username']}: ", form_input_text('user_search', _htmlentities($user_search), 30, 64), " ", form_submit('search', $lang['search']), " ", form_submit('reset', $lang['clear']), "</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";

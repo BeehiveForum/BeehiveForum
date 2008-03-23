@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.120 2008-02-05 19:14:06 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.121 2008-03-23 18:54:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -449,7 +449,7 @@ if (isset($_POST['t_dedupe']) && is_numeric($_POST['t_dedupe'])) {
     $t_dedupe = mktime();
 }
 
-if ($valid && isset($_POST['submit'])) {
+if ($valid && isset($_POST['post'])) {
 
     if (check_post_frequency()) {
 
@@ -668,7 +668,7 @@ if ($allow_html == true) {
     echo form_input_hidden("t_post_html", "disabled");
 }
 
-echo "<p>", light_form_submit("submit",$lang['post']), "&nbsp;", light_form_submit("preview",$lang['preview']), "&nbsp;", light_form_submit("cancel", $lang['cancel']);
+echo "<p>", light_form_submit("post", $lang['post']), "&nbsp;", light_form_submit("preview", $lang['preview']), "&nbsp;", light_form_submit("cancel", $lang['cancel']);
 echo "</p>";
 
 echo "</form>\n";

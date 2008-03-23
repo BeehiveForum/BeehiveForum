@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit.php,v 1.60 2007-12-26 13:19:33 decoyduck Exp $ */
+/* $Id: admin_user_groups_edit.php,v 1.61 2008-03-23 18:54:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -146,7 +146,7 @@ $group_permissions = perm_get_group_permissions($gid);
 
 // Do updates
 
-if (isset($_POST['submit'])) {
+if (isset($_POST['save'])) {
 
     $valid = true;
 
@@ -445,7 +445,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "&nbsp;", form_submit("addusers", $lang['addremoveusers']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+echo "      <td align=\"center\">", form_submit("save", $lang['save']), "&nbsp;", form_submit("addusers", $lang['addremoveusers']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

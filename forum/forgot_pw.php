@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forgot_pw.php,v 1.55 2007-12-26 13:19:33 decoyduck Exp $ */
+/* $Id: forgot_pw.php,v 1.56 2008-03-23 18:54:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -74,7 +74,7 @@ $webtag = get_webtag($webtag_search);
 
 $error_msg_array = array();
 
-if (isset($_POST['submit'])) {
+if (isset($_POST['request'])) {
 
     if (isset($_POST['logon'])) {
 
@@ -144,7 +144,7 @@ echo "      <tr>\n";
 echo "        <td align=\"left\">&nbsp;</td>\n";
 echo "      </tr>\n";
 echo "      <tr>\n";
-echo "        <td align=\"center\">", form_submit('submit', $lang['request']), "</td>\n";
+echo "        <td align=\"center\">", form_submit('request', $lang['request']), "</td>\n";
 echo "      </tr>\n";
 echo "    </table>\n";
 echo "  </form>\n";

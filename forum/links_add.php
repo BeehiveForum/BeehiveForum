@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_add.php,v 1.92 2007-12-26 13:19:34 decoyduck Exp $ */
+/* $Id: links_add.php,v 1.93 2008-03-23 18:54:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -178,7 +178,7 @@ if (isset($_GET['mode'])) {
 
 // Submit code for adding a link.
 
-if (isset($_POST['submit']) && $mode == LINKS_ADD_LINK) {
+if (isset($_POST['add']) && $mode == LINKS_ADD_LINK) {
 
     $valid = true;
 
@@ -240,7 +240,7 @@ if (isset($_POST['submit']) && $mode == LINKS_ADD_LINK) {
         }
     }
 
-}else if (isset($_POST['submit']) && $mode == LINKS_ADD_FOLDER) {
+}else if (isset($_POST['add']) && $mode == LINKS_ADD_FOLDER) {
 
     $valid = true;
 
@@ -356,7 +356,7 @@ if ($mode == LINKS_ADD_LINK) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("submit", $lang['add']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+    echo "      <td align=\"center\">", form_submit("add", $lang['add']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</form>\n";
@@ -412,7 +412,7 @@ if ($mode == LINKS_ADD_LINK) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("submit", $lang['add']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+    echo "      <td align=\"center\">", form_submit("add", $lang['add']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</form>\n";

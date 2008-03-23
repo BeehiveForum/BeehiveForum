@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_email.php,v 1.78 2007-12-26 13:19:33 decoyduck Exp $ */
+/* $Id: edit_email.php,v 1.79 2008-03-23 18:54:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -118,7 +118,7 @@ $error_msg_array = array();
 
 // Submit code
 
-if (isset($_POST['submit'])) {
+if (isset($_POST['save'])) {
 
     $user_prefs = array();
     $user_prefs_global = array();
@@ -377,7 +377,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "</td>\n";
+echo "      <td align=\"center\">", form_submit("save", $lang['save']), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

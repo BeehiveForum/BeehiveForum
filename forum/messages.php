@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.258 2008-03-23 18:54:58 decoyduck Exp $ */
+/* $Id: messages.php,v 1.259 2008-03-23 19:46:47 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -480,6 +480,7 @@ echo "  ", form_input_hidden('t_rpid', '0'), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
+echo "        ", html_display_warning_msg($lang['pressctrlentertoquicklysubmityourpost'], '100%', 'center');
 echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
@@ -519,9 +520,6 @@ echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td align=\"center\">", form_submit("post", $lang['post']), "&nbsp;", form_submit("more", $lang['more']), "&nbsp;", form_button("cancel", $lang['cancel'], "onclick=\"hideQuickReply()\""), "</td>\n";
-echo "    </tr>\n";
-echo "    <tr>\n";
-echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

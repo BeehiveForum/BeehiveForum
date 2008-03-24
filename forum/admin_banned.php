@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_banned.php,v 1.70 2008-03-18 16:27:57 decoyduck Exp $ */
+/* $Id: admin_banned.php,v 1.71 2008-03-24 23:32:15 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");

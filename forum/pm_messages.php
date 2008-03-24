@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_messages.php,v 1.38 2008-03-06 16:46:49 decoyduck Exp $ */
+/* $Id: pm_messages.php,v 1.39 2008-03-24 23:32:15 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");

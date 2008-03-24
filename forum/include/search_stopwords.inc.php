@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search_stopwords.inc.php,v 1.4 2007-10-11 13:01:20 decoyduck Exp $ */
+/* $Id: search_stopwords.inc.php,v 1.5 2008-03-24 23:32:16 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 

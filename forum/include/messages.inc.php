@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.519 2008-03-23 18:54:58 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.520 2008-03-24 17:52:28 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1182,7 +1182,11 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     echo "      </td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
-    echo "  <div id=\"quick_reply_{$message['PID']}\"></div>\n";
+
+    if ($in_list && isset($message['PID'])) {
+        echo "  <div id=\"quick_reply_{$message['PID']}\"></div>\n";
+    }
+
     echo "</div>\n";
 }
 

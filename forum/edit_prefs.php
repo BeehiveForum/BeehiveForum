@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_prefs.php,v 1.89 2008-03-23 18:54:58 decoyduck Exp $ */
+/* $Id: edit_prefs.php,v 1.90 2008-03-25 21:16:25 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -54,6 +54,7 @@ $forum_global_settings = forum_get_global_settings();
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
 include_once(BH_INCLUDE_PATH. "banned.inc.php");
+include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "email.inc.php");
 include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
 include_once(BH_INCLUDE_PATH. "form.inc.php");
@@ -66,6 +67,7 @@ include_once(BH_INCLUDE_PATH. "perm.inc.php");
 include_once(BH_INCLUDE_PATH. "post.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
+include_once(BH_INCLUDE_PATH. "wordfilter.inc.php");
 
 // Check we're logged in correctly
 

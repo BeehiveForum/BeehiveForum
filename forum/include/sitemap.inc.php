@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: sitemap.inc.php,v 1.14 2008-03-20 18:48:09 decoyduck Exp $ */
+/* $Id: sitemap.inc.php,v 1.15 2008-03-25 21:16:25 decoyduck Exp $ */
 
 /**
 * sitemap.inc.php - sitemap functions
@@ -49,7 +49,7 @@ include_once(BH_INCLUDE_PATH. "db.inc.php");
 include_once(BH_INCLUDE_PATH. "folder.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "compat.inc.php");
+include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 /**
 * Get Available Forums

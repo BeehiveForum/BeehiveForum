@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.js,v 1.2 2008-03-22 16:01:13 decoyduck Exp $ */
+/* $Id: stats.js,v 1.3 2008-03-26 11:48:59 decoyduck Exp $ */
 
 var stats_timeout;
 
@@ -75,7 +75,7 @@ function stats_display_handler()
                 var active_nuser_count = active_users_xml.getElementsByTagName('visible')[0].childNodes[0].nodeValue;
                 var active_auser_count = active_users_xml.getElementsByTagName('anonymous')[0].childNodes[0].nodeValue;
 
-                var visitor_log_link = sprintf('[ <a href="start.php?webtag=' + webtag + '&amp;show=visitors" target="%s">%s<\/a> ]', '", bh_frame_main, "', lang['viewcompletelist']);
+                var visitor_log_link = sprintf('[ <a href="start.php?webtag=' + webtag + '&amp;show=visitors" target="%s">%s<\/a> ]', bh_frame_main, lang['viewcompletelist']);
 
                 var active_users_array = new Array();
 

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.339 2008-03-23 18:54:58 decoyduck Exp $ */
+/* $Id: post.php,v 1.340 2008-03-26 21:24:31 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -531,11 +531,10 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     $new_thread = false;
 
-}elseif (isset($_POST['t_tid']) && is_numeric($_POST['t_tid']) && isset($_POST['t_rpid']) && is_numeric($_POST['t_rpid'])) {
+}elseif (isset($_POST['t_tid']) && isset($_POST['t_rpid'])) {
 
-    $reply_to_tid = $_POST['t_tid'];
-
-    $reply_to_pid = $_POST['t_rpid'];
+    $reply_to_tid = (is_numeric($_POST['t_tid']) ? $_POST['t_tid'] : 0);
+    $reply_to_pid = (is_numeric($_POST['t_rpid']) ? $_POST['t_rpid'] : 0);
 
     if (!$t_fid = thread_get_folder($reply_to_tid, $reply_to_pid)) {
 
@@ -729,8 +728,8 @@ if ($valid && isset($_POST['post'])) {
 
             }else{
 
-                $t_tid = $_POST['t_tid'];
-                $t_rpid = $_POST['t_rpid'];
+                $t_tid  = (isset($_POST['t_tid']) && is_numeric($_POST['t_tid'])) ? $_POST['t_tid'] : 0;
+                $t_rpid = (isset($_POST['t_rpid']) && is_numeric($_POST['t_rpid'])) ? $_POST['t_rpid'] : 0;
 
                 if (isset($thread_data['CLOSED']) && $thread_data['CLOSED'] > 0 && (!bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid))) {
 
@@ -792,16 +791,8 @@ if ($valid && isset($_POST['post'])) {
 
             $new_pid = 0;
 
-            if ($new_thread) {
-
-                $t_tid  = 0;
-                $t_rpid = 0;
-
-            }else {
-
-                $t_tid  = (isset($_POST['t_tid'])) ? $_POST['t_tid'] : 0;
-                $t_rpid = (isset($_POST['t_rpid'])) ? $_POST['t_rpid'] : 0;
-            }
+            $t_tid  = (isset($_POST['t_tid']) && is_numeric($_POST['t_tid'])) ? $_POST['t_tid'] : 0;
+            $t_rpid = (isset($_POST['t_rpid']) && is_numeric($_POST['t_rpid'])) ? $_POST['t_rpid'] : 0;
         }
 
         if ($new_pid > -1) {

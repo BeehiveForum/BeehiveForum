@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: general.js,v 1.38 2008-02-22 20:56:31 decoyduck Exp $ */
+/* $Id: general.js,v 1.39 2008-03-26 21:24:31 decoyduck Exp $ */
 
 // sprintf function based on code available at http://jan.moesen.nu
 
@@ -391,6 +391,18 @@ Array.prototype.unique = function(b)
     }
     
     return a;
+}
+
+String.prototype.trim = function() {
+	return this.replace(/^\s+|\s+$/g,"");
+}
+
+String.prototype.ltrim = function() {
+	return this.replace(/^\s+/,"");
+}
+
+String.prototype.rtrim = function() {
+	return this.replace(/\s+$/,"");
 }
 
 function sprintf()

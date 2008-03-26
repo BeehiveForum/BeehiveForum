@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.261 2008-03-26 16:24:33 decoyduck Exp $ */
+/* $Id: messages.php,v 1.262 2008-03-26 21:24:31 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -519,7 +519,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("post", $lang['post']), "&nbsp;", form_submit("more", $lang['more']), "&nbsp;", form_button("cancel", $lang['cancel'], "onclick=\"hideQuickReply()\""), "</td>\n";
+echo "      <td align=\"center\">", form_submit("post", $lang['post'], "onclick=\"return validateQuickReply()\""), "&nbsp;", form_submit("more", $lang['more']), "&nbsp;", form_button("cancel", $lang['cancel'], "onclick=\"hideQuickReply()\""), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";
@@ -620,12 +620,12 @@ echo "  </tr>\n";
 if (!user_is_guest()) {
 
     echo "  <tr>\n";
-    echo "    <td colspan=\"3\" align=\"center\"><img src=\"". style_image('star.png') ."\" alt=\"{$lang['quickreplyall']}\" title=\"{$lang['quickreplyall']}\" border=\"0\" /> <a href=\"javascript:void(0)\" target=\"_self\" onclick=\"toggleQuickReply($tid, 'all')\"><b>{$lang['quickreplyall']}</b></a></td>\n";
+    echo "    <td colspan=\"3\" align=\"center\"><img src=\"". style_image('star.png') ."\" alt=\"{$lang['quickreplyall']}\" title=\"{$lang['quickreplyall']}\" border=\"0\" /> <a href=\"javascript:void(0)\" target=\"_self\" onclick=\"toggleQuickReply($tid, 0)\"><b>{$lang['quickreplyall']}</b></a></td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td colspan=\"3\">\n";
     echo "      <div align=\"center\">\n";
-    echo "        <div id=\"quick_reply_all\"></div>\n";
+    echo "        <div id=\"quick_reply_0\"></div>\n";
     echo "      </div>\n";
     echo "    </td>\n";
     echo "  </tr>\n";

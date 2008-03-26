@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.js,v 1.44 2008-03-23 18:54:58 decoyduck Exp $ */
+/* $Id: post.js,v 1.45 2008-03-26 16:24:33 decoyduck Exp $ */
 
 var search_logon = false;
 var menu_timeout = 0;
@@ -214,7 +214,7 @@ function openPostOptions(post_id)
     }
 }
 
-function toggleQuickReply(message_id)
+function toggleQuickReply(tid, message_id)
 {
     var quick_reply_container = getObjById('quick_reply_container');
 
@@ -226,13 +226,13 @@ function toggleQuickReply(message_id)
   		
             quick_reply_position.appendChild(quick_reply_container);
 
-	    showQuickReply(message_id);
+	    showQuickReply(tid, message_id);
 	    
 	}else {
 	
 	    if (quick_reply_container.className == 'quick_reply_container_closed') {
 	
-	        showQuickReply(message_id);
+	        showQuickReply(tid, message_id);
 	    
 	    }else {
 	 
@@ -242,7 +242,7 @@ function toggleQuickReply(message_id)
     }
 }
 
-function showQuickReply(message_id)
+function showQuickReply(tid, message_id)
 {
     var quick_reply_container = getObjById('quick_reply_container');
 
@@ -257,14 +257,27 @@ function showQuickReply(message_id)
     if (typeof(quick_reply_container) == 'object' && typeof(quick_reply_pid) == 'object') {
 
         if (typeof(quick_reply_content) == 'object' && typeof(quick_reply_post_button) == 'object') {
-       
-            quick_reply_header.innerHTML = message_id;
+            
+            if (typeof(quick_reply_header) == 'object') {
+            
+                if (parseInt(message_id) > 0 && parseInt(tid) > 0) {
+
+                    quick_reply_header.innerHTML = '#' + parseInt(tid) + '.' + parseInt(message_id);
+
+	        }else {
+
+	            quick_reply_header.innerHTML = '';
+		}
+	    }
             
             quick_reply_container.className = 'quick_reply_container_opened';
 
             quick_reply_pid.value = message_id;
+
+	    quick_reply_content.value = '';
 		    
 	    quick_reply_content.focus();
+
             quick_reply_post_button.scrollIntoView(false);
 	}
     }

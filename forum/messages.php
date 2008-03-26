@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.260 2008-03-24 23:32:15 decoyduck Exp $ */
+/* $Id: messages.php,v 1.261 2008-03-26 16:24:33 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -490,7 +490,7 @@ echo "                  <td align=\"left\" class=\"subhead\">\n";
 echo "                    <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">{$lang['quickreply']}</td>\n";
-echo "                        <td align=\"right\">#$tid.<span id=\"quick_reply_header\"></span>&nbsp;</td>\n";
+echo "                        <td align=\"right\"><span id=\"quick_reply_header\"></span>&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
@@ -577,19 +577,25 @@ echo "<table width=\"96%\" border=\"0\">\n";
 echo "  <tr>\n";
 echo "    <td align=\"left\" colspan=\"3\">&nbsp;</td>\n";
 echo "  </tr>\n";
-echo "  <tr valign=\"top\">\n";
+echo "  <tr>\n";
 
 if (($thread_data['CLOSED'] == 0 && bh_session_check_perm(USER_PERM_POST_CREATE, $thread_data['FID'])) || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $thread_data['FID'])) {
+
     echo "    <td width=\"33%\" align=\"left\" nowrap=\"nowrap\"><img src=\"". style_image('reply_all.png') ."\" alt=\"{$lang['replyall']}\" title=\"{$lang['replyall']}\" border=\"0\" /> <a href=\"post.php?webtag=$webtag&amp;replyto=$tid.0\" target=\"_parent\" onclick=\"return checkPostQuoting('$tid.0')\"><b>{$lang['replyall']}</b></a></td>\n";
-} else {
+
+}else {
+
     echo "    <td width=\"33%\" align=\"left\">&nbsp;</td>\n";
 }
 
 if (!user_is_guest()) {
 
     if ($thread_data['LENGTH'] > 0) {
+
         echo "    <td width=\"33%\" align=\"center\" nowrap=\"nowrap\"><img src=\"". style_image('thread_options.png') ."\" alt=\"{$lang['editthreadoptions']}\" title=\"{$lang['editthreadoptions']}\" border=\"0\" /> <a href=\"thread_options.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\"><b>{$lang['editthreadoptions']}</b></a></td>\n";
+
     }else {
+
         echo "    <td width=\"33%\" align=\"center\" nowrap=\"nowrap\"><img src=\"". style_image('thread_options.png') ."\" alt=\"{$lang['undeletethread']}\" title=\"{$lang['undeletethread']}\" border=\"0\" /> <a href=\"thread_options.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\"><b>{$lang['undeletethread']}</b></a></td>\n";
     }
 
@@ -600,8 +606,9 @@ if (!user_is_guest()) {
 
 if ($last_pid < $thread_data['LENGTH']) {
 
-    $npid = $last_pid + 1;
-    echo "    <td width=\"33%\" align=\"right\" nowrap=\"nowrap\">", form_quick_button("messages.php", "{$lang['keepreading']}  &raquo;", array('msg' => "$tid.$npid")), "</td>\n";
+    $next_pid = $last_pid + 1;
+
+    echo "    <td width=\"33%\" align=\"right\" nowrap=\"nowrap\">", form_quick_button("messages.php", "{$lang['keepreading']}  &raquo;", array('msg' => "$tid.$next_pid")), "</td>\n";
 
 }else {
 
@@ -609,6 +616,21 @@ if ($last_pid < $thread_data['LENGTH']) {
 }
 
 echo "  </tr>\n";
+
+if (!user_is_guest()) {
+
+    echo "  <tr>\n";
+    echo "    <td colspan=\"3\" align=\"center\"><img src=\"". style_image('star.png') ."\" alt=\"{$lang['quickreplyall']}\" title=\"{$lang['quickreplyall']}\" border=\"0\" /> <a href=\"javascript:void(0)\" target=\"_self\" onclick=\"toggleQuickReply($tid, 'all')\"><b>{$lang['quickreplyall']}</b></a></td>\n";
+    echo "  </tr>\n";
+    echo "  <tr>\n";
+    echo "    <td colspan=\"3\">\n";
+    echo "      <div align=\"center\">\n";
+    echo "        <div id=\"quick_reply_all\"></div>\n";
+    echo "      </div>\n";
+    echo "    </td>\n";
+    echo "  </tr>\n";
+}
+
 echo "  <tr>\n";
 echo "    <td align=\"left\" colspan=\"3\">&nbsp;</td>\n";
 echo "  </tr>\n";

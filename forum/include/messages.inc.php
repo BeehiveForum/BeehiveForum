@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.521 2008-03-24 23:32:16 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.522 2008-03-26 16:24:33 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1042,8 +1042,8 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
             echo "                                      <td align=\"center\">\n";
             echo "                                        <table width=\"95%\" class=\"post_options_menu\">\n";
             echo "                                          <tr>\n";
-            echo "                                            <td align=\"left\"><a href=\"Javascript:void(0)\" onclick=\"toggleQuickReply({$message['PID']})\" target=\"_self\"><img src=\"", style_image('quickreply.png'), "\" border=\"0\" alt=\"{$lang['quickreply']}\" title=\"{$lang['quickreply']}\" /></a></td>\n";
-            echo "                                            <td align=\"left\" nowrap=\"nowrap\"><a href=\"Javascript:void(0)\" onclick=\"toggleQuickReply({$message['PID']})\" target=\"_self\">{$lang['quickreply']}</a></td>\n";
+            echo "                                            <td align=\"left\"><a href=\"Javascript:void(0)\" onclick=\"toggleQuickReply($tid, {$message['PID']})\" target=\"_self\"><img src=\"", style_image('quickreply.png'), "\" border=\"0\" alt=\"{$lang['quickreply']}\" title=\"{$lang['quickreply']}\" /></a></td>\n";
+            echo "                                            <td align=\"left\" nowrap=\"nowrap\"><a href=\"Javascript:void(0)\" onclick=\"toggleQuickReply($tid, {$message['PID']})\" target=\"_self\">{$lang['quickreply']}</a></td>\n";
             echo "                                          </tr>\n";
 
 

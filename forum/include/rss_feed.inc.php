@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: rss_feed.inc.php,v 1.52 2008-02-03 17:19:12 decoyduck Exp $ */
+/* $Id: rss_feed.inc.php,v 1.53 2008-03-27 21:50:27 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -227,7 +227,7 @@ function rss_thread_exist($rss_id, $link)
 
     $link = db_escape_string($link);
 
-    $sql = "SELECT COUNT(RSSID) RSS_THREAD_COUNT ";
+    $sql = "SELECT COUNT(RSSID) AS RSS_THREAD_COUNT ";
     $sql.= "FROM {$table_data['PREFIX']}RSS_HISTORY ";
     $sql.= "WHERE RSSID = '$rss_id' AND LINK = '$link'";
 

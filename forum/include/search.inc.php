@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.199 2007-10-24 19:57:09 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.200 2008-03-27 21:50:27 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -728,13 +728,15 @@ function search_date_range($from, $to)
     return $range;
 }
 
-function folder_search_dropdown()
+function folder_search_dropdown($selected_folder)
 {
     $lang = load_language_file();
 
     if (!$db_folder_search_dropdown = db_connect()) return false;
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
+
+    if (!is_numeric($selected_folder)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -772,7 +774,7 @@ function folder_search_dropdown()
         if (sizeof($available_folders) > 0) {
 
             $available_folders = array($lang['all_caps']) + $available_folders;
-            return form_dropdown_array("fid", $available_folders, 0, false, "search_dropdown");
+            return form_dropdown_array("fid", $available_folders, $selected_folder, false, "search_dropdown");
         }
     }
 }

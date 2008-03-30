@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.131 2008-03-30 00:01:32 benlumley Exp $ */
+/* $Id: forum_options.php,v 1.132 2008-03-30 01:14:40 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -633,6 +633,7 @@ echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all)
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("reply_quick", "Y", $lang['postdefaultquick'], (isset($user_prefs['REPLY_QUICK']) && $user_prefs['REPLY_QUICK'] == "Y")), "</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("reply_quick_global", "Y", '', (isset($user_prefs['REPLY_QUICK_GLOBAL']) ? $user_prefs['REPLY_QUICK_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("reply_quick_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";

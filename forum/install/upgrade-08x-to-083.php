@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-08x-to-083.php,v 1.4 2008-03-30 00:01:34 benlumley Exp $ */
+/* $Id: upgrade-08x-to-083.php,v 1.5 2008-03-30 01:14:40 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'upgrade-08x-to-083.php') {
 
@@ -78,40 +78,9 @@ if (db_num_rows($result) > 0) {
 
 foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
-    // New column for "In Reply to" link in PMs.
-
-    $sql = "ALTER TABLE PM ADD REPLY_TO_MID MEDIUMINT(8) NOT NULL DEFAULT '0' AFTER MID";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-
-    // Remove the index on SVALUE before we convert it to TEXT
-
-    $sql = "ALTER TABLE FORUM_SETTINGS DROP INDEX SVALUE";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-
-    // Convert the SVALUE column to TEXT. This allows it to become big enough
-    // to hold things like the forum rules message.
-
-    $sql = "ALTER TABLE FORUM_SETTINGS CHANGE SVALUE SVALUE TEXT NOT NULL";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-
     // Add field for reply_quick
 
-    $sql = "ALTER TABLE `USER_PREFS` ADD `REPLY_QUICK` CHAR( 1 ) NOT NULL DEFAULT 'N';";
+    $sql = "ALTER TABLE {$forum_webtag}_USER_PREFS ADD REPLY_QUICK CHAR(1) NOT NULL DEFAULT 'N'";
 
     if (!$result = @db_query($sql, $db_install)) {
 
@@ -134,6 +103,48 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         $valid = false;
         return;
     }
+}
+
+// We got this far, that means we can now update the global forum tables.
+// Starting with a new column for "In Reply to" link in PMs.
+
+$sql = "ALTER TABLE PM ADD REPLY_TO_MID MEDIUMINT(8) NOT NULL DEFAULT '0' AFTER MID";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// Add field for reply_quick
+
+$sql = "ALTER TABLE USER_PREFS ADD REPLY_QUICK CHAR(1) NOT NULL DEFAULT 'N'";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// Remove the index on SVALUE before we convert it to TEXT
+
+$sql = "ALTER TABLE FORUM_SETTINGS DROP INDEX SVALUE";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// Convert the SVALUE column to TEXT. This allows it to become big enough
+// to hold things like the forum rules message.
+
+$sql = "ALTER TABLE FORUM_SETTINGS CHANGE SVALUE SVALUE TEXT NOT NULL";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
 }
 
 ?>

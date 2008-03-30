@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.162 2008-03-18 01:10:42 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.163 2008-03-30 01:14:40 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'new-install.php') {
 
@@ -524,6 +524,7 @@ $sql.= "  ENABLE_WIKI_WORDS CHAR(1) NOT NULL DEFAULT 'Y', ";
 $sql.= "  USE_MOVER_SPOILER CHAR(1) NOT NULL DEFAULT 'N', ";
 $sql.= "  USE_LIGHT_MODE_SPOILER CHAR(1) NOT NULL DEFAULT 'N', ";
 $sql.= "  USE_OVERFLOW_RESIZE CHAR(1) NOT NULL DEFAULT 'Y', ";
+$sql.= "  REPLY_QUICK CHAR(1) NOT NULL DEFAULT 'N', ";
 $sql.= "  PRIMARY KEY (UID)";
 $sql.= ") TYPE=MYISAM";
 
@@ -973,6 +974,7 @@ $sql.= "  ENABLE_WIKI_WORDS CHAR(1) NOT NULL DEFAULT 'Y', ";
 $sql.= "  USE_MOVER_SPOILER CHAR(1) NOT NULL DEFAULT 'N', ";
 $sql.= "  USE_LIGHT_MODE_SPOILER CHAR(1) NOT NULL DEFAULT 'N', ";
 $sql.= "  USE_OVERFLOW_RESIZE CHAR(1) NOT NULL DEFAULT 'Y', ";
+$sql.= "  REPLY_QUICK CHAR(1) NOT NULL DEFAULT 'N', ";
 $sql.= "  PRIMARY KEY (UID), ";
 $sql.= "  KEY DOB (DOB), ";
 $sql.= "  KEY DOB_DISPLAY (DOB_DISPLAY)";

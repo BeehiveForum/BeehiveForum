@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-08x-to-083.php,v 1.3 2008-03-03 22:23:05 decoyduck Exp $ */
+/* $Id: upgrade-08x-to-083.php,v 1.4 2008-03-30 00:01:34 benlumley Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'upgrade-08x-to-083.php') {
 
@@ -102,6 +102,16 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     // to hold things like the forum rules message.
 
     $sql = "ALTER TABLE FORUM_SETTINGS CHANGE SVALUE SVALUE TEXT NOT NULL";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // Add field for reply_quick
+
+    $sql = "ALTER TABLE `USER_PREFS` ADD `REPLY_QUICK` CHAR( 1 ) NOT NULL DEFAULT 'N';";
 
     if (!$result = @db_query($sql, $db_install)) {
 

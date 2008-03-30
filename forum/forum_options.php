@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.130 2008-03-24 23:32:15 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.131 2008-03-30 00:01:32 benlumley Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -286,6 +286,12 @@ if (isset($_POST['save'])) {
     }else {
         $user_prefs_global['USE_OVERFLOW_RESIZE'] = false;
     }
+    
+    if (isset($_POST['reply_quick']) && ($_POST['reply_quick'] == "Y")) {
+        $user_prefs['REPLY_QUICK'] = 'Y';
+    }else {
+        $user_prefs['REPLY_QUICK'] = 'N';
+    }
 
     if (isset($_POST['enable_wiki_words']) && $_POST['enable_wiki_words'] == "Y") {
         $user_prefs['ENABLE_WIKI_WORDS'] = "Y";
@@ -401,7 +407,7 @@ if (isset($_POST['save'])) {
     if (isset($_POST['post_links']) && $_POST['post_links'] == "Y") {
         $user_prefs['POST_PAGE'] |= POST_AUTO_LINKS;
     }
-
+    
     if (isset($_POST['post_html'])) {
 
         if ($_POST['post_html'] == POST_HTML_DISABLED) {
@@ -583,7 +589,7 @@ if ($show_set_all) {
 }
 
 echo "                <tr>\n";
-echo "                  <td align=\"left\" rowspan=\"11\" width=\"1%\">&nbsp;</td>\n";
+echo "                  <td align=\"left\" rowspan=\"12\" width=\"1%\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("view_sigs", "N", $lang['globallyignoresigs'], (isset($user_prefs['VIEW_SIGS']) && $user_prefs['VIEW_SIGS'] == "N") ? true : false), "</td>\n";
@@ -624,6 +630,9 @@ echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("use_overflow_resize", "Y", $lang['resizeimagesandreflowpage'], (isset($user_prefs['USE_OVERFLOW_RESIZE']) && $user_prefs['USE_OVERFLOW_RESIZE'] == "Y")), "</td>\n";
 echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("use_overflow_resize_global", "Y", '', (isset($user_prefs['USE_OVERFLOW_RESIZE_GLOBAL']) ? $user_prefs['USE_OVERFLOW_RESIZE_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("use_overflow_resize_global", 'Y'), "&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("reply_quick", "Y", $lang['postdefaultquick'], (isset($user_prefs['REPLY_QUICK']) && $user_prefs['REPLY_QUICK'] == "Y")), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";

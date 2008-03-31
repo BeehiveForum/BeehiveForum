@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.523 2008-03-30 00:01:32 benlumley Exp $ */
+/* $Id: messages.inc.php,v 1.524 2008-03-31 15:34:44 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -996,14 +996,18 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
             if ($msg_count > 0) {
 
                 if ((!$closed && bh_session_check_perm(USER_PERM_POST_CREATE, $folder_fid)) || $perm_is_moderator) {
-					
-					if ($quick_reply=='Y') {
-		            	echo "<img src=\"", style_image('quickreply.png'), "\" border=\"0\" alt=\"{$lang['quickreply']}\" title=\"{$lang['quickreply']}\" />\n";
-            			echo "<a href=\"Javascript:void(0)\" onclick=\"toggleQuickReply($tid, {$message['PID']})\" target=\"_self\">{$lang['quickreply']}</a>\n";
-					} else {
-                    	echo "<img src=\"", style_image('post.png'), "\" border=\"0\" alt=\"{$lang['reply']}\" title=\"{$lang['reply']}\" />";
-                    	echo "&nbsp;<a href=\"post.php?webtag=$webtag&amp;replyto=$tid.{$message['PID']}\" target=\"_parent\" onclick=\"return checkPostQuoting('$tid.{$message['PID']}')\">{$lang['reply']}</a>";
-					}
+
+                    if ($quick_reply=='Y') {
+
+                        echo "<img src=\"", style_image('quickreply.png'), "\" border=\"0\" alt=\"{$lang['quickreply']}\" title=\"{$lang['quickreply']}\" />\n";
+                        echo "<a href=\"Javascript:void(0)\" onclick=\"toggleQuickReply($tid, {$message['PID']})\" target=\"_self\">{$lang['quickreply']}</a>\n";
+
+                    }else {
+
+                        echo "<img src=\"", style_image('post.png'), "\" border=\"0\" alt=\"{$lang['reply']}\" title=\"{$lang['reply']}\" />";
+                        echo "&nbsp;<a href=\"post.php?webtag=$webtag&amp;replyto=$tid.{$message['PID']}\" target=\"_parent\" onclick=\"return checkPostQuoting('$tid.{$message['PID']}')\">{$lang['reply']}</a>";
+                    }
+
                     echo "&nbsp;&nbsp;<img src=\"", style_image('quote_disabled.png'), "\" border=\"0\" alt=\"{$lang['quote']}\" title=\"{$lang['quote']}\" name=\"p{$message['PID']}\" />";
                     echo "&nbsp;<a href=\"post.php?webtag=$webtag&amp;replyto=$tid.{$message['PID']}&amp;quote_list={$message['PID']}\" target=\"_parent\" title=\"{$lang['quote']}\" name=\"q{$message['PID']}\" onclick=\"return togglePostQuoting({$message['PID']})\">{$lang['quote']}</a>";
 
@@ -1050,16 +1054,19 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
             echo "                                      <td align=\"center\">\n";
             echo "                                        <table width=\"95%\" class=\"post_options_menu\">\n";
             echo "                                          <tr>\n";
+
             if ($quick_reply=='N') {
-	            echo "                                            <td align=\"left\"><a href=\"Javascript:void(0)\" onclick=\"toggleQuickReply($tid, {$message['PID']})\" target=\"_self\"><img src=\"", style_image('quickreply.png'), "\" border=\"0\" alt=\"{$lang['quickreply']}\" title=\"{$lang['quickreply']}\" /></a></td>\n";
-    	        echo "                                            <td align=\"left\" nowrap=\"nowrap\"><a href=\"Javascript:void(0)\" onclick=\"toggleQuickReply($tid, {$message['PID']})\" target=\"_self\">{$lang['quickreply']}</a></td>\n";
-			} else {
-        	    echo "                                            <td align=\"left\"><img src=\"", style_image('post.png'), "\" border=\"0\" alt=\"{$lang['reply']}\" title=\"{$lang['reply']}\" /></td>\n";
-           		echo "                                            <td align=\"left\" nowrap=\"nowrap\"><a href=\"post.php?webtag=$webtag&amp;replyto=$tid.{$message['PID']}\" target=\"_parent\" onclick=\"return checkPostQuoting('$tid.{$message['PID']}')\">{$lang['reply']}</a></td>\n";
+
+                echo "                                            <td align=\"left\"><a href=\"Javascript:void(0)\" onclick=\"toggleQuickReply($tid, {$message['PID']})\" target=\"_self\"><img src=\"", style_image('quickreply.png'), "\" border=\"0\" alt=\"{$lang['quickreply']}\" title=\"{$lang['quickreply']}\" /></a></td>\n";
+                echo "                                            <td align=\"left\" nowrap=\"nowrap\"><a href=\"Javascript:void(0)\" onclick=\"toggleQuickReply($tid, {$message['PID']})\" target=\"_self\">{$lang['quickreply']}</a></td>\n";
+
+            }else {
+
+                echo "                                            <td align=\"left\"><img src=\"", style_image('post.png'), "\" border=\"0\" alt=\"{$lang['reply']}\" title=\"{$lang['reply']}\" /></td>\n";
+                echo "                                            <td align=\"left\" nowrap=\"nowrap\"><a href=\"post.php?webtag=$webtag&amp;replyto=$tid.{$message['PID']}\" target=\"_parent\" onclick=\"return checkPostQuoting('$tid.{$message['PID']}')\">{$lang['reply']}</a></td>\n";
             }
+
             echo "                                          </tr>\n";
-
-
 
             if (($uid == $message['FROM_UID'] && bh_session_check_perm(USER_PERM_POST_DELETE, $folder_fid) && !(perm_get_user_permissions($uid) & USER_PERM_PILLORIED)) || $perm_is_moderator) {
 

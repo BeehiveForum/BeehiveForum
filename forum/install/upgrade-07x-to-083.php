@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-07x-to-083.php,v 1.4 2008-03-24 23:32:21 decoyduck Exp $ */
+/* $Id: upgrade-07x-to-083.php,v 1.5 2008-03-31 15:34:44 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-07x-to-083.php") {
 
@@ -165,37 +165,6 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 // Start by creating and updating the per-forum tables.
 
 foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
-
-    // New column for "In Reply to" link in PMs.
-
-    $sql = "ALTER TABLE PM ADD REPLY_TO_MID MEDIUMINT(8) NOT NULL DEFAULT '0' AFTER MID";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-
-    // Remove the index on SVALUE before we convert it to TEXT
-
-    $sql = "ALTER TABLE FORUM_SETTINGS DROP INDEX SVALUE";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-
-    // Convert the SVALUE column to TEXT. This allows it to become big enough
-    // to hold things like the forum rules message.
-
-    $sql = "ALTER TABLE FORUM_SETTINGS CHANGE SVALUE SVALUE TEXT NOT NULL";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
 
     // Profile Items have changed to make them easier to understand
 
@@ -584,6 +553,37 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         $valid = false;
         return;
     }
+}
+
+// New column for "In Reply to" link in PMs.
+
+$sql = "ALTER TABLE PM ADD REPLY_TO_MID MEDIUMINT(8) NOT NULL DEFAULT '0' AFTER MID";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// Remove the index on SVALUE before we convert it to TEXT
+
+$sql = "ALTER TABLE FORUM_SETTINGS DROP INDEX SVALUE";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// Convert the SVALUE column to TEXT. This allows it to become big enough
+// to hold things like the forum rules message.
+
+$sql = "ALTER TABLE FORUM_SETTINGS CHANGE SVALUE SVALUE TEXT NOT NULL";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
 }
 
 // Having the SESSIONS table as type HEAP is known to cause problems

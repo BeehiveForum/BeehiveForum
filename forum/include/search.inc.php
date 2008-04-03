@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.200 2008-03-27 21:50:27 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.201 2008-04-03 14:23:40 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -59,7 +59,7 @@ function search_execute($search_arguments, &$error)
     if (!isset($search_arguments['fid']) || !is_numeric($search_arguments['fid'])) $search_arguments['fid'] = 0;
     if (!isset($search_arguments['include']) || !is_numeric($search_arguments['include'])) $search_arguments['include'] = 2;
     if (!isset($search_arguments['username']) || strlen(trim($search_arguments['username'])) < 1) $search_arguments['username'] = "";
-    if (!isset($search_arguments['user_include']) || !is_numeric($search_arguments['user_include'])) $search_arguments['user_include'] = 1;
+    if (!isset($search_arguments['user_include']) || !is_numeric($search_arguments['user_include'])) $search_arguments['user_include'] = 0;
     if (!isset($search_arguments['sort_by']) || !is_numeric($search_arguments['sort_by'])) $search_arguments['sort_by'] = 1;
     if (!isset($search_arguments['sort_dir']) || !is_numeric($search_arguments['sort_dir'])) $search_arguments['sort_dir'] = 1;
 
@@ -104,6 +104,10 @@ function search_execute($search_arguments, &$error)
     }else{
         $where_sql = "WHERE THREAD.FID IN ($folders) ";
     }
+
+    // Can't search for deleted threads.
+
+    $where_sql.= "AND THREAD.DELETED = 'N' ";
 
     // Where query needs to limit the search results to the user specified date range.
 
@@ -152,18 +156,13 @@ function search_execute($search_arguments, &$error)
 
             if ($user_uid = user_get_uid(trim($username))) {
 
-                if ($search_arguments['user_include'] == SEARCH_USER_FROM) {
+                if ($search_arguments['user_include'] == SEARCH_FILTER_USER_THREADS) {
+
+                    $where_sql.= "AND THREAD.BY_UID = '{$user_uid['UID']}' AND POST.PID = 1 ";
+
+                }elseif ($search_arguments['user_include'] == SEARCH_FILTER_USER_POSTS) {
 
                     $where_sql.= "AND POST.FROM_UID = '{$user_uid['UID']}' ";
-
-                }elseif ($search_arguments['user_include'] == SEARCH_USER_TO) {
-
-                    $where_sql.= "AND POST.TO_UID = '{$user_uid['UID']}' ";
-
-                }elseif ($search_arguments['user_include'] == SEARCH_USER_BOTH) {
-
-                    $where_sql.= "AND (POST.FROM_UID = '{$user_uid['UID']}' ";
-                    $where_sql.= "OR POST.TO_UID = '{$user_uid['UID']}') ";
                 }
 
             }else {

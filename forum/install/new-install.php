@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.163 2008-03-30 01:14:40 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.164 2008-04-03 14:23:43 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'new-install.php') {
 
@@ -407,6 +407,7 @@ $sql.= "  CLOSED DATETIME DEFAULT NULL, ";
 $sql.= "  STICKY CHAR(1) DEFAULT NULL, ";
 $sql.= "  STICKY_UNTIL DATETIME DEFAULT NULL, ";
 $sql.= "  ADMIN_LOCK DATETIME DEFAULT NULL, ";
+$sql.= "  DELETED CHAR(1) NOT NULL DEFAULT 'N', ";
 $sql.= "  PRIMARY KEY (TID), ";
 $sql.= "  KEY BY_UID (BY_UID), ";
 $sql.= "  KEY STICKY (STICKY, MODIFIED), ";

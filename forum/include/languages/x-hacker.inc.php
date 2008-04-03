@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.277 2008-03-24 23:32:17 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.278 2008-04-03 14:23:41 decoyduck Exp $ */
 
 // British English language file
 
@@ -1944,7 +1944,6 @@ $lang['deletethread'] = "dEL3Te ThR3@D";
 $lang['permenantlydelete'] = "pErManeN+LY DeLe+E";
 $lang['movetodeleteditems'] = "m0v3 tO D3L3TEd +hR3adS";
 $lang['undeletethread'] = "uND3LE+3 tHr34D";
-$lang['threaddeletedpermenantly'] = "tHr3@D d3Le+ed pErM@n3N+Ly. c4Nn0T uNd3L3+3.";
 $lang['markasunread'] = "m4Rk @\$ UnRe4D";
 $lang['makethreadsticky'] = "m4K3 +HrE4d \$+1Cky";
 $lang['threareadstatusupdated'] = "tHRe4D re4D \$T4+U\$ upD@TeD SuCcEssPhUlLY";

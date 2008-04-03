@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-08x-to-083.php,v 1.5 2008-03-30 01:14:40 decoyduck Exp $ */
+/* $Id: upgrade-08x-to-083.php,v 1.6 2008-04-03 14:23:44 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'upgrade-08x-to-083.php') {
 
@@ -77,6 +77,40 @@ if (db_num_rows($result) > 0) {
 // Start by creating and updating the per-forum tables.
 
 foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
+
+    // Better support for deleted threads.
+
+    $sql = "ALTER TABLE {$forum_webtag}_THREAD ADD DELETED CHAR(1) NOT NULL DEFAULT 'N'";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // Update existing deleted threads
+
+    $sql = "UPDATE {$forum_webtag}_THREAD SET DELETED = 'Y' WHERE LENGTH = 0";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // Reset the lengths on the deleted threads.
+
+    $sql = "INSERT INTO {$forum_webtag}_THREAD (TID, LENGTH) ";
+    $sql.= "SELECT THREAD.TID, MAX(POST.PID) FROM {$forum_webtag}_THREAD THREAD ";
+    $sql.= "LEFT JOIN {$forum_webtag}_POST POST ON (POST.TID = THREAD.TID) ";
+    $sql.= "WHERE THREAD.LENGTH = 0 GROUP BY THREAD.TID ";
+    $sql.= "ON DUPLICATE KEY UPDATE LENGTH = VALUES(LENGTH)";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
 
     // Add field for reply_quick
 

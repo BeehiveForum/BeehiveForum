@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.534 2008-03-30 00:01:32 benlumley Exp $ */
+/* $Id: en.inc.php,v 1.535 2008-04-03 14:23:40 decoyduck Exp $ */
 
 // British English language file
 
@@ -1772,8 +1772,7 @@ $lang['sortdir'] = "Sort dir";
 $lang['sortresults'] = "Sort Results";
 $lang['groupbythread'] = "Group by thread";
 $lang['postsfromuser'] = "Posts from user";
-$lang['poststouser'] = "Posts to user";
-$lang['poststoandfromuser'] = "Posts to and from user";
+$lang['threadsstartedbyuser'] = "Threads started by user";
 $lang['searchfrequencyerror'] = "You can only search once every %s seconds. Please try again later.";
 $lang['searchsuccessfullycompleted'] = "Search successfully completed. %s";
 $lang['clickheretoviewresults'] = "Click here to view results.";
@@ -1949,7 +1948,6 @@ $lang['deletethread'] = "Delete Thread";
 $lang['permenantlydelete'] = "Permanently Delete";
 $lang['movetodeleteditems'] = "Move to Deleted Threads";
 $lang['undeletethread'] = "Undelete Thread";
-$lang['threaddeletedpermenantly'] = "Thread deleted permanently. Cannot undelete.";
 $lang['markasunread'] = "Mark as unread";
 $lang['makethreadsticky'] = "Make Thread Sticky";
 $lang['threareadstatusupdated'] = "Thread Read Status Updated Successfully";

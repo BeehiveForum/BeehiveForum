@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.104 2008-03-23 18:54:58 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.105 2008-04-03 14:23:44 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -518,6 +518,8 @@ if (isset($_POST['save'])) {
 
         if (isset($_POST['undelthread']) && $_POST['undelthread'] == "Y") {
 
+            print_r($_POST); exit;
+
             if (isset($_POST['undelthread_con']) && $_POST['undelthread_con'] == "Y") {
 
                 if (thread_undelete($tid)) {
@@ -542,7 +544,7 @@ if (isset($_POST['save'])) {
     }
 }
 
-if ($thread_data['LENGTH'] > 0) {
+if ($thread_data['DELETED'] == 'N') {
 
     html_draw_top("basetarget=_blank", "thread_options.js");
 
@@ -1024,13 +1026,22 @@ if ($thread_data['LENGTH'] > 0) {
 
     html_draw_bottom();
 
-}elseif ($thread_length = thread_can_be_undeleted($tid)) {
+}else if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
 
     html_draw_top("basetarget=_blank", "thread_options.js");
 
     echo "<h1>{$lang['threadoptions']}: <a href=\"messages.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\">#{$tid} ", word_filter_add_ob_tags(_htmlentities(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']))), "</a></h1>\n";
-    echo "<br />\n";
 
+    if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+
+        html_display_error_array($error_msg_array, '500', 'center');
+
+    }else if (isset($_GET['updated'])) {
+
+        html_display_success_msg($lang['updatessavedsuccessfully'], '500', 'center');
+    }
+
+    echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "  <form name=\"thread_options\" action=\"thread_options.php\" method=\"post\" target=\"_self\">\n";
     echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
@@ -1084,8 +1095,9 @@ if ($thread_data['LENGTH'] > 0) {
 }else {
 
     html_draw_top();
-    html_error_msg($lang['threaddeletedpermenantly']);
+    html_error_msg($lang['cannoteditpostsinthisfolder']);
     html_draw_bottom();
+    exit;
 }
 
 ?>

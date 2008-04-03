@@ -21,39 +21,39 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en-us.inc.php,v 1.55 2008-04-03 14:23:40 decoyduck Exp $ */
+/* $Id: en-us.inc.php,v 1.56 2008-04-03 20:40:35 decoyduck Exp $ */
 
-// British English language file
+// US English language file
 
 // Language character set and text direction options -------------------
 
-$lang['_isocode'] = "en";
+$lang['_isocode'] = "en-us";
 $lang['_textdir'] = "ltr";
 
 // Months --------------------------------------------------------------
 
-$lang['month'][1]  = "January";
-$lang['month'][2]  = "February";
-$lang['month'][3]  = "March";
-$lang['month'][4]  = "April";
-$lang['month'][5]  = "May";
-$lang['month'][6]  = "June";
-$lang['month'][7]  = "July";
-$lang['month'][8]  = "August";
-$lang['month'][9]  = "September";
+$lang['month'][1] = "January";
+$lang['month'][2] = "February";
+$lang['month'][3] = "March";
+$lang['month'][4] = "April";
+$lang['month'][5] = "May";
+$lang['month'][6] = "June";
+$lang['month'][7] = "July";
+$lang['month'][8] = "August";
+$lang['month'][9] = "September";
 $lang['month'][10] = "October";
 $lang['month'][11] = "November";
 $lang['month'][12] = "December";
 
-$lang['month_short'][1]  = "Jan";
-$lang['month_short'][2]  = "Feb";
-$lang['month_short'][3]  = "Mar";
-$lang['month_short'][4]  = "Apr";
-$lang['month_short'][5]  = "May";
-$lang['month_short'][6]  = "Jun";
-$lang['month_short'][7]  = "Jul";
-$lang['month_short'][8]  = "Aug";
-$lang['month_short'][9]  = "Sep";
+$lang['month_short'][1] = "Jan";
+$lang['month_short'][2] = "Feb";
+$lang['month_short'][3] = "Mar";
+$lang['month_short'][4] = "Apr";
+$lang['month_short'][5] = "May";
+$lang['month_short'][6] = "Jun";
+$lang['month_short'][7] = "Jul";
+$lang['month_short'][8] = "Aug";
+$lang['month_short'][9] = "Sep";
 $lang['month_short'][10] = "Oct";
 $lang['month_short'][11] = "Nov";
 $lang['month_short'][12] = "Dec";
@@ -63,44 +63,44 @@ $lang['month_short'][12] = "Dec";
 // Various date and time formats as used by Beehive Forum. All times are
 // expressed as 24 hour time format.
 
-$lang['daymonthyear'] = "%s %s %s";                  // 1 Jan 2005
-$lang['monthyear'] = "%s %s";                        // Jan 2005
-$lang['daymonthyearhourminute'] = "%s %s %s %s:%s";  // 1 Jan 2005 12:00
-$lang['daymonthhourminute'] = "%s %s %s:%s";         // 1 Jan 12:00
-$lang['daymonth'] = "%s %s";                         // 1 Jan
-$lang['hourminute'] = "%s:%s";                       // 12:00
+$lang['daymonthyear'] = "%s %s %s";
+$lang['monthyear'] = "%s %s";
+$lang['daymonthyearhourminute'] = "%s %s %s %s:%s";
+$lang['daymonthhourminute'] = "%s %s %s:%s";
+$lang['daymonth'] = "%s %s";
+$lang['hourminute'] = "%s:%s";
 
 // Periods -------------------------------------------------------------
 
 // Various time periods as used by Beehive Forum.
 
-$lang['date_periods']['year']   = "%s year";
-$lang['date_periods']['month']  = "%s month";
-$lang['date_periods']['week']   = "%s week";
-$lang['date_periods']['day']    = "%s day";
-$lang['date_periods']['hour']   = "%s hour";
+$lang['date_periods']['year'] = "%s year";
+$lang['date_periods']['month'] = "%s month";
+$lang['date_periods']['week'] = "%s week";
+$lang['date_periods']['day'] = "%s day";
+$lang['date_periods']['hour'] = "%s hour";
 $lang['date_periods']['minute'] = "%s minute";
 $lang['date_periods']['second'] = "%s second";
 
 // As above but plurals (2 years vs. 1 year, etc.)
 
-$lang['date_periods_plural']['year']   = "%s years";
-$lang['date_periods_plural']['month']  = "%s months";
-$lang['date_periods_plural']['week']   = "%s weeks";
-$lang['date_periods_plural']['day']    = "%s days";
-$lang['date_periods_plural']['hour']   = "%s hours";
+$lang['date_periods_plural']['year'] = "%s years";
+$lang['date_periods_plural']['month'] = "%s months";
+$lang['date_periods_plural']['week'] = "%s weeks";
+$lang['date_periods_plural']['day'] = "%s days";
+$lang['date_periods_plural']['hour'] = "%s hours";
 $lang['date_periods_plural']['minute'] = "%s minutes";
 $lang['date_periods_plural']['second'] = "%s seconds";
 
 // Short hand periods (example: 1y, 2m, 3w, 4d, 5hr, 6min, 7sec)
 
-$lang['date_periods_short']['year']   = "%sy";    // 1y
-$lang['date_periods_short']['month']  = "%sm";    // 2m
-$lang['date_periods_short']['week']   = "%sw";    // 3w
-$lang['date_periods_short']['day']    = "%sd";    // 4d
-$lang['date_periods_short']['hour']   = "%shr";   // 5hr
-$lang['date_periods_short']['minute'] = "%smin";  // 6min
-$lang['date_periods_short']['second'] = "%ssec";  // 7sec
+$lang['date_periods_short']['year'] = "%sy";
+$lang['date_periods_short']['month'] = "%sm";
+$lang['date_periods_short']['week'] = "%sw";
+$lang['date_periods_short']['day'] = "%sd";
+$lang['date_periods_short']['hour'] = "%shr";
+$lang['date_periods_short']['minute'] = "%smin";
+$lang['date_periods_short']['second'] = "%ssec";
 
 // Common words --------------------------------------------------------
 
@@ -128,6 +128,8 @@ $lang['of'] = "of";
 $lang['reply'] = "Reply";
 $lang['forward'] = "Forward";
 $lang['replyall'] = "Reply to All";
+$lang['quickreply'] = "Quick Reply";
+$lang['quickreplyall'] = "Quick Reply to All";
 $lang['pm_reply'] = "Reply as PM";
 $lang['delete'] = "Delete";
 $lang['deleted'] = "Deleted";
@@ -158,6 +160,7 @@ $lang['more'] = "More";
 $lang['recentvisitors'] = "Recent Visitors";
 $lang['username'] = "Username";
 $lang['clear'] = "Clear";
+$lang['reset'] = "Reset";
 $lang['action'] = "Action";
 $lang['unknown'] = "Unknown";
 $lang['none'] = "none";
@@ -339,7 +342,7 @@ $lang['manageuser'] = "Manage User";
 $lang['manageusers'] = "Manage Users";
 $lang['userstatusforforum'] = "User Status for %s";
 $lang['userdetails'] = "User Details";
-$lang['edituserdetails'] ="Edit User Details";
+$lang['edituserdetails'] = "Edit User Details";
 $lang['warning_caps'] = "WARNING";
 $lang['userdeleteallpostswarning'] = "Are you sure you want to delete all of the selected user's posts? Once the posts are deleted they cannot be retrieved and will be lost forever.";
 $lang['postssuccessfullydeleted'] = "Posts were successfully deleted.";
@@ -507,8 +510,8 @@ $lang['readposts'] = "Read Posts";
 $lang['replytothreads'] = "Reply to threads";
 $lang['createnewthreads'] = "Create new threads";
 $lang['editposts'] = "Edit posts";
-$lang['deleteposts'] = "Delete posts";
-$lang['postssuccessfullydeleted'] = "Posts Successfully Deleted";
+$lang['deleteposts'] = "Delete Posts";
+$lang['postssuccessfullydeleted'] = "Posts were successfully deleted.";
 $lang['failedtodeleteusersposts'] = "Failed To Delete User's Posts";
 $lang['uploadattachments'] = "Upload attachments";
 $lang['moderatefolder'] = "Moderate folder";
@@ -535,9 +538,9 @@ $lang['toplinkcaption'] = "Top link caption";
 $lang['allowguestaccess'] = "Allow Guest Access";
 $lang['searchenginespidering'] = "Search Engine Spidering";
 $lang['allowsearchenginespidering'] = "Allow Search Engine Spidering";
-$lang['sitemapenabled'] ="Enable Sitemap";
-$lang['sitemapupdatefrequency'] ="Sitemap Update Frequency";
-$lang['sitemappathnotwritable'] ="Sitemap directory must be writable by the web server / PHP process!";
+$lang['sitemapenabled'] = "Enable Sitemap";
+$lang['sitemapupdatefrequency'] = "Sitemap Update Frequency";
+$lang['sitemappathnotwritable'] = "Sitemap directory must be writable by the web server / PHP process!";
 $lang['newuserregistrations'] = "New User Registrations";
 $lang['preventduplicateemailaddresses'] = "Prevent duplicate email addresses";
 $lang['allownewuserregistrations'] = "Allow new user registrations";
@@ -913,7 +916,7 @@ $lang['userandguestaccesssettings'] = "User and guest access settings";
 $lang['allowuserstochangeusername'] = "Allow users to change username";
 $lang['requireuserapproval'] = "Require user approval by admin";
 $lang['requireforumrulesagreement'] = "Require user to agree to forum rules";
-$lang['sendnewuseremailnotifications'] ="Send notification to global forum owner";
+$lang['sendnewuseremailnotifications'] = "Send notification to global forum owner";
 $lang['enableattachments'] = "Enable Attachments";
 $lang['attachmentdir'] = "Attachment Dir";
 $lang['userattachmentspace'] = "Attachment space per user";
@@ -973,10 +976,10 @@ $lang['forum_settings_help_54'] = "Use <b>Forum Rules</b> to enter an Acceptable
 $lang['forum_settings_help_55'] = "You can use HTML in your forum rules. Hyperlinks and email addresses will also be automatically converted to links. To use the default Beehive Forum AUP clear the field.";
 $lang['forum_settings_help_56'] = "Use <b>No-Reply Email</b> to specify an email address that does not exist or will not be monitored for replies. This email address will be used in the headers for all emails sent from your forum including but not limited to Post and PM notifications, user emails and password reminders.";
 $lang['forum_settings_help_57'] = "It is recommended that you use an email address that does not exist to help cut down on spam that may be directed at your main forum email address";
-$lang['forum_settings_help_58'] ="In addition to simple spidering, Beehive can also generate a sitemap for the forum to make it easier for search engines to find and index the messages posted by your users.";
-$lang['forum_settings_help_59'] ="Sitemaps are automatically saved to the sitemaps sub-directory of your Beehive Forum installation. If this directory doesn\'t exist you must create it and ensure that it is writable by the server / PHP process. To allow search engines to find your sitemap you must add the URL to your robots.txt.";
-$lang['forum_settings_help_60'] ="Depending on server performance and the number of forums and threads your Beehive installation contains, generating a sitemap may take several minutes to complete. If performance of your server is adversly affected it is recommend you disable generation of the sitemap.";
-$lang['forum_settings_help_61'] ="<b>Send email nofitication to global admin</b> when enabled will send an email to the global forum owners when a new user account is created.";
+$lang['forum_settings_help_58'] = "In addition to simple spidering, Beehive can also generate a sitemap for the forum to make it easier for search engines to find and index the messages posted by your users.";
+$lang['forum_settings_help_59'] = "Sitemaps are automatically saved to the sitemaps sub-directory of your Beehive Forum installation. If this directory doesn\'t exist you must create it and ensure that it is writable by the server / PHP process. To allow search engines to find your sitemap you must add the URL to your robots.txt.";
+$lang['forum_settings_help_60'] = "Depending on server performance and the number of forums and threads your Beehive installation contains, generating a sitemap may take several minutes to complete. If performance of your server is adversly affected it is recommend you disable generation of the sitemap.";
+$lang['forum_settings_help_61'] = "<b>Send email nofitication to global admin</b> when enabled will send an email to the global forum owners when a new user account is created.";
 
 // Attachments (attachments.php, get_attachment.php) ---------------------------------------
 
@@ -1092,8 +1095,8 @@ $lang['newuserapprovalemail'] = "Hello %s,\n\nA new user account has been create
 
 // Admin New User notification -----------------------------------------
 
-$lang['newuserregistrationsubject'] ="New User Account Notification for %s";
-$lang['newuserregistrationemail'] ="Hello %s,\\n\\nA new user account has been created on %s.\\n\\nTo view this user account please visit the Admin Users section and click on the new user or click the link below:\\n\\n%s";
+$lang['newuserregistrationsubject'] = "New User Account Notification for %s";
+$lang['newuserregistrationemail'] = "Hello %s,\\n\\nA new user account has been created on %s.\\n\\nTo view this user account please visit the Admin Users section and click on the new user or click the link below:\\n\\n%s";
 
 // User Approved notification ------------------------------------------
 
@@ -1127,7 +1130,7 @@ $lang['toplevel'] = "Top Level";
 $lang['maynotaccessthissection'] = "You may not access this section.";
 $lang['toplevel'] = "Top Level";
 $lang['links'] = "Links";
-$lang['externallink'] ="External Link";
+$lang['externallink'] = "External Link";
 $lang['viewmode'] = "View Mode";
 $lang['hierarchical'] = "Hierarchical";
 $lang['list'] = "List";
@@ -1153,7 +1156,7 @@ $lang['failedtoaddfolder'] = "Failed to add folder";
 $lang['addlink'] = "Add a link";
 $lang['addinglinkin'] = "Adding link in";
 $lang['addressurluri'] = "Address";
-$lang['addnewfolder'] = "Add a new folder";
+$lang['addnewfolder'] = "Add New Folder";
 $lang['addnewfolderunder'] = "Adding new folder under";
 $lang['editfolder'] = "Edit Folder";
 $lang['editingfolder'] = "Editing folder";
@@ -1182,7 +1185,7 @@ $lang['modtools'] = "Moderation Tools";
 $lang['editname'] = "Edit name";
 $lang['editaddress'] = "Edit address";
 $lang['editdescription'] = "Edit description";
-$lang['moveto'] = "Move to";
+$lang['moveto'] = "Move To";
 $lang['linkdetails'] = "Link Details";
 $lang['addcomment'] = "Add Comment";
 $lang['voterecorded'] = "Your vote has been recorded";
@@ -1204,7 +1207,7 @@ $lang['registernow'] = "Register now";
 $lang['problemsloggingon'] = "Problems logging on?";
 $lang['deletecookies'] = "Delete Cookies";
 $lang['cookiessuccessfullydeleted'] = "Cookies successfully deleted";
-$lang['forgottenpasswd'] = "Forgotten your password?";
+$lang['forgottenpasswd'] = "Forgot password";
 $lang['usingaPDA'] = "Using a PDA?";
 $lang['lightHTMLversion'] = "Light HTML version";
 $lang['youhaveloggedout'] = "You have logged out.";
@@ -1283,8 +1286,8 @@ $lang['emailconfirmationfailedtosend'] = "Confirmation email failed to send. Ple
 $lang['emailconfirmationsent'] = "Confirmation email has been resent.";
 $lang['resendconfirmation'] = "Resend Confirmation";
 $lang['userapprovalrequiredbeforeaccess'] = "Your user account needs to be approved by a forum admin before you can access the requested forum.";
-$lang['reviewthread'] ="Review Thread";
-$lang['reviewthreadinnewwindow'] ="Review entire thread in new window";
+$lang['reviewthread'] = "Review Thread";
+$lang['reviewthreadinnewwindow'] = "Review entire thread in new window";
 
 // Message display (messages.php & messages.inc.php) --------------------------------------
 
@@ -1339,7 +1342,8 @@ $lang['linktothispost'] = "Link to this post";
 $lang['imageresized'] = "This image has been resized (original size %1\$sx%2\$s). To view the full-size image click here.";
 $lang['messagedeletedbyuser'] = "Message %s.%s deleted %s by %s";
 $lang['messagedeleted'] = "Message %s.%s was deleted";
-$lang['viewinframeset'] ="View in Frameset";
+$lang['viewinframeset'] = "View in Frameset";
+$lang['pressctrlentertoquicklysubmityourpost'] = "Press Ctrl+Enter to quickly submit your post";
 
 // Moderators list (mods_list.php) -------------------------------------
 
@@ -1430,7 +1434,7 @@ $lang['userexp_6'] = "<b>Forum Options</b> lets you change how the forum looks a
 $lang['userexp_7'] = "<b>Attachments</b> allows you to edit/delete your attachments.";
 $lang['userexp_8'] = "<b>Signature</b> lets you edit your signature.";
 $lang['userexp_9'] = "<b>Relationships</b> lets you manage your relationship with other users on the forum.";
-$lang['userexp_9'] = "<b>Word Filter</b> lets you edit your personal word filter.";
+$lang['userexp_9'] = "<b>Relationships</b> lets you manage your relationship with other users on the forum.";
 $lang['userexp_10'] = "<b>Thread Subscriptions</b> allows you to manage your thread subscriptions.";
 $lang['userdetails'] = "User Details";
 $lang['userprofile'] = "User Profile";
@@ -1443,7 +1447,7 @@ $lang['changepassword'] = "Change Password";
 $lang['currentpasswd'] = "Current Password";
 $lang['newpasswd'] = "New Password";
 $lang['confirmpasswd'] = "Confirm Password";
-$lang['passwdsdonotmatch'] = "Passwords do not match!";
+$lang['passwdsdonotmatch'] = "Passwords do not match.";
 $lang['nicknamerequired'] = "Nickname is required!";
 $lang['emailaddressrequired'] = "Email address is required!";
 $lang['logonnotpermitted'] = "Logon not permitted. Choose another!";
@@ -1492,9 +1496,9 @@ $lang['allowemails'] = "Allow other users to send me emails via my profile";
 $lang['timezonefromGMT'] = "Time zone";
 $lang['postsperpage'] = "Posts per page";
 $lang['fontsize'] = "Font size";
-$lang['forumstyle'] = "Forum style";
+$lang['forumstyle'] = "Forum Style";
 $lang['forumemoticons'] = "Forum emoticons";
-$lang['startpage'] = "Start page";
+$lang['startpage'] = "Start Page";
 $lang['signaturecontainshtmlcode'] = "Signature contains HTML code";
 $lang['savesignatureforuseonallforums'] = "Save signature for use on all forums";
 $lang['preferredlang'] = "Preferred language";
@@ -1533,6 +1537,7 @@ $lang['automaticallyparseurlsbydefault'] = "Automatically parse URLs in messages
 $lang['postinplaintextbydefault'] = "Post in plain text by default";
 $lang['postinhtmlwithautolinebreaksbydefault'] = "Post in HTML with auto-line-breaks by default";
 $lang['postinhtmlbydefault'] = "Post in HTML by default";
+$lang['postdefaultquick'] = "Use quick reply by default. (Full reply in menu)";
 $lang['privatemessageoptions'] = "Private Message Options";
 $lang['privatemessageexportoptions'] = "Private Message Export Options";
 $lang['savepminsentitems'] = "Save a copy of each PM I send in my Sent Items folder";
@@ -1557,7 +1562,7 @@ $lang['mustprovidepollguestvotetype'] = "You must specify if guests should be al
 $lang['mustprovidepolloptiontype'] = "You must provide a poll option type";
 $lang['mustprovidepollchangevotetype'] = "You must provide a poll change vote type";
 $lang['pollquestioncontainsinvalidhtml'] = "One or more of your Poll Questions contains invalid HTML.";
-$lang['pleaseselectfolder'] = "Please select a folder";
+$lang['pleaseselectfolder'] = "Please select a folder!";
 $lang['mustspecifyvalues1and2'] = "You must specify values for answers 1 and 2";
 $lang['tablepollmusthave2groups'] = "Tabular format polls must have precisely two voting groups";
 $lang['nomultivotetabulars'] = "Tabular format polls cannot be multi-vote";
@@ -1663,9 +1668,9 @@ $lang['passwordinvalidchars'] = "Password can only contain a-z, 0-9, _ - charact
 $lang['passwdtooshort'] = "Password must be a minimum of 6 characters long";
 $lang['passwdrequired'] = "A password is required";
 $lang['confirmationpasswdrequired'] = "A confirmation password is required";
-$lang['nicknamerequired'] = "A nickname is required";
+$lang['nicknamerequired'] = "Nickname is required!";
 $lang['emailrequired'] = "An email address is required";
-$lang['passwdsdonotmatch'] = "Passwords do not match";
+$lang['passwdsdonotmatch'] = "Passwords do not match.";
 $lang['usernamesameaspasswd'] = "Username and password must be different";
 $lang['usernameexists'] = "Sorry, a user with that name already exists";
 $lang['successfullycreateduseraccount'] = "Successfully created user account";
@@ -1757,7 +1762,7 @@ $lang['beginningoftime'] = "Beginning of time";
 $lang['now'] = "Now";
 $lang['lastpostdate'] = "Last post date";
 $lang['numberofreplies'] = "Number of replies";
-$lang['foldername'] = "Folder name";
+$lang['foldername'] = "Folder Name";
 $lang['authorname'] = "Author name";
 $lang['decendingorder'] = "Newest first";
 $lang['ascendingorder'] = "Oldest first";
@@ -1767,8 +1772,7 @@ $lang['sortdir'] = "Sort dir";
 $lang['sortresults'] = "Sort Results";
 $lang['groupbythread'] = "Group by thread";
 $lang['postsfromuser'] = "Posts from user";
-$lang['poststouser'] = "Posts to user";
-$lang['poststoandfromuser'] = "Posts to and from user";
+$lang['threadsstartedbyuser'] = "Threads started by user";
 $lang['searchfrequencyerror'] = "You can only search once every %s seconds. Please try again later.";
 $lang['searchsuccessfullycompleted'] = "Search successfully completed. %s";
 $lang['clickheretoviewresults'] = "Click here to view results.";
@@ -1876,7 +1880,7 @@ $lang['list'] = "List";
 $lang['indenttext'] = "Indent text";
 $lang['code'] = "Code";
 $lang['quote'] = "Quote";
-$lang['unquote'] ="Unquote";
+$lang['unquote'] = "Unquote";
 $lang['spoiler'] = "Spoiler";
 $lang['horizontalrule'] = "Horizontal rule";
 $lang['image'] = "Image";
@@ -1969,7 +1973,7 @@ $lang['restartspellcheck'] = "Restart";
 $lang['cancelchanges'] = "Cancel Changes";
 $lang['initialisingdotdotdot'] = "Initialising...";
 $lang['spellcheckcomplete'] = "Spell check is complete. To restart spell check click restart button below.";
-$lang['spellcheck'] = "Spell check";
+$lang['spellcheck'] = "Spell Check";
 $lang['noformobj'] = "No form object specified for return text";
 $lang['bodytext'] = "Body Text";
 $lang['ignore'] = "Ignore";

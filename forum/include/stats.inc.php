@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.94 2008-02-22 20:56:30 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.95 2008-04-03 14:23:40 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -412,7 +412,8 @@ function get_longest_thread()
     $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}FOLDER FOLDER ";
     $sql.= "ON (FOLDER.FID = THREAD.FID) ";
-    $sql.= "WHERE THREAD.LENGTH = '$highest_thread_count'";
+    $sql.= "WHERE THREAD.LENGTH = '$highest_thread_count' ";
+    $sql.= "AND THREAD.DELETED = 'N' ";
     $sql.= "LIMIT 0, 1";
 
     if (!$result = db_query($sql, $db_get_longest_thread)) return false;

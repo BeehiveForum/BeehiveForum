@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.102 2008-03-24 23:32:16 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.103 2008-04-03 14:23:41 decoyduck Exp $ */
 
 // French Canadian language file
 
@@ -1803,7 +1803,6 @@ $lang['deletethread'] = "Supprimer le fil de discussion";
 $lang['permenantlydelete'] = "Permenantly Delete";
 $lang['movetodeleteditems'] = "Déplacez vers Fils de discussion supprimés";
 $lang['undeletethread'] = "Annuler suppression du fils de discussion";
-$lang['threaddeletedpermenantly'] = "Fils de discussion supprimer en permanence. Impossible d'annuler la suppression.";
 $lang['markasunread'] = "Marquer comme non-lu";
 $lang['makethreadsticky'] = "Rendre le fil de discussion collant";
 $lang['threareadstatusupdated'] = "Mise à jour du statut de lecture du fil de discussion réussie";

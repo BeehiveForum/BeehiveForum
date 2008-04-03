@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.524 2008-03-31 15:34:44 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.525 2008-04-03 14:23:40 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1680,8 +1680,7 @@ function messages_get_most_recent($uid, $fid = false)
 
     $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
-    $sql.= "AND THREAD.LENGTH > 0 ORDER BY THREAD.MODIFIED DESC ";
-    $sql.= "LIMIT 0, 1";
+    $sql.= "AND THREAD.DELETED = 'N' ORDER BY THREAD.MODIFIED DESC LIMIT 0, 1";
 
     if (!$result = db_query($sql, $db_messages_get_most_recent)) return false;
 

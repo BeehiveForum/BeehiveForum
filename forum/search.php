@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.210 2008-03-31 15:34:44 decoyduck Exp $ */
+/* $Id: search.php,v 1.211 2008-04-03 14:23:44 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -653,15 +653,11 @@ echo "                        <td align=\"left\" nowrap=\"nowrap\"><div class=\"
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";
-echo "                        <td align=\"left\">", form_radio("user_include", SEARCH_USER_FROM, $lang['postsfromuser'], ((isset($search_arguments['user_include']) && $search_arguments['user_include'] == SEARCH_USER_FROM) || !isset($search_arguments['user_include']))), "&nbsp;", "</td>\n";
+echo "                        <td align=\"left\">", form_radio("user_include", SEARCH_FILTER_USER_POSTS, $lang['postsfromuser'], ((isset($search_arguments['user_include']) && $search_arguments['user_include'] == SEARCH_FILTER_USER_POSTS) || (!isset($search_arguments['user_include'])))), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";
-echo "                        <td align=\"left\">", form_radio("user_include", SEARCH_USER_TO, $lang['poststouser'], (isset($search_arguments['user_include']) && $search_arguments['user_include'] == SEARCH_USER_TO)), "&nbsp;", "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\">&nbsp;</td>\n";
-echo "                        <td align=\"left\">", form_radio("user_include", SEARCH_USER_BOTH, $lang['poststoandfromuser'], (isset($search_arguments['user_include']) && $search_arguments['user_include'] == SEARCH_USER_BOTH)), "&nbsp;", "</td>\n";
+echo "                        <td align=\"left\">", form_radio("user_include", SEARCH_FILTER_USER_THREADS, $lang['threadsstartedbyuser'], (isset($search_arguments['user_include']) && $search_arguments['user_include'] == SEARCH_FILTER_USER_THREADS)), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
@@ -716,7 +712,7 @@ echo "                        <td align=\"left\">", form_dropdown_array("sort_di
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['groupbythread']}:</td>\n";
-echo "                        <td align=\"left\">", form_radio("group_by_thread", SEARCH_GROUP_THREADS, $lang['yes'], (isset($search_arguments['group_by_thread']) && $search_arguments['group_by_thread'] == SEARCH_GROUP_THREADS)), "&nbsp;", form_radio("group_by_thread", SEARCH_GROUP_NONE, $lang['no'], (isset($search_arguments['user_include']) && $search_arguments['user_include'] == SEARCH_GROUP_NONE)), "&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_radio("group_by_thread", SEARCH_GROUP_THREADS, $lang['yes'], (isset($search_arguments['group_by_thread']) && $search_arguments['group_by_thread'] == SEARCH_GROUP_THREADS)), "&nbsp;", form_radio("group_by_thread", SEARCH_GROUP_NONE, $lang['no'], ((isset($search_arguments['group_by_thread']) && $search_arguments['group_by_thread'] == SEARCH_GROUP_NONE) || (!isset($search_arguments['group_by_thread'])))), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";

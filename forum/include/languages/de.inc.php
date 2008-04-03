@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.75 2008-03-24 23:32:16 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.76 2008-04-03 14:23:40 decoyduck Exp $ */
 
 // German language file
 
@@ -1803,7 +1803,6 @@ $lang['deletethread'] = "Loesche Eintrag";
 $lang['permenantlydelete'] = "Permenantly Delete";
 $lang['movetodeleteditems'] = "Verschieben zu den geloeschten Eintraegen";
 $lang['undeletethread'] = "Ungeloeschte Eintraege";
-$lang['threaddeletedpermenantly'] = "Eintrag endgueltig geloescht. Keine Wiederherstellung moeglich.";
 $lang['markasunread'] = "Als Ungelesen markieren";
 $lang['makethreadsticky'] = "Eintrag festhalten";
 $lang['threareadstatusupdated'] = "Eintragslesestatus erfolgreich geaendert";

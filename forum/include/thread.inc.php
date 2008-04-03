@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.137 2008-01-12 22:18:12 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.138 2008-04-03 14:23:40 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -78,7 +78,7 @@ function thread_get($tid, $inc_deleted = false)
 
     $unread_cutoff_stamp = forum_get_unread_cutoff();
 
-    $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.BY_UID, THREAD.TITLE, ";
+    $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.BY_UID, THREAD.TITLE, THREAD.DELETED, ";
     $sql.= "THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.STICKY, THREAD_STATS.VIEWCOUNT, ";
     $sql.= "UNIX_TIMESTAMP(THREAD.STICKY_UNTIL) AS STICKY_UNTIL, FOLDER.PREFIX, ";
     $sql.= "UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, THREAD.CLOSED, ";
@@ -101,7 +101,7 @@ function thread_get($tid, $inc_deleted = false)
     $sql.= "WHERE THREAD.TID = '$tid' ";
     $sql.= "AND THREAD.FID IN ($fidlist) ";
 
-    if ($inc_deleted === false) $sql.= "AND THREAD.LENGTH > 0 ";
+    if ($inc_deleted === false) $sql.= "AND THREAD.DELETED = 'N' ";
 
     if (!$result = db_query($sql, $db_thread_get)) return false;
 
@@ -139,6 +139,10 @@ function thread_get($tid, $inc_deleted = false)
 
         if (!isset($thread_data['CLOSED'])) {
             $thread_data['CLOSED'] = 0;
+        }
+
+        if (!isset($thread_data['DELETED'])) {
+            $thread_data['DELETED'] = 'N';
         }
 
         if (isset($thread_data['LOGON']) && isset($thread_data['PEER_NICKNAME'])) {
@@ -557,7 +561,7 @@ function thread_delete($tid, $delete_type)
 
     }else {
 
-        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}THREAD SET LENGTH = 0 WHERE TID = '$tid'";
+        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}THREAD SET DELETED = 'Y' WHERE TID = '$tid'";
 
         if (!$result = db_query($sql, $db_thread_delete)) return false;
     }
@@ -573,10 +577,10 @@ function thread_undelete($tid)
 
     if (!is_numeric($tid)) return false;
 
-    if (!$thread_length = thread_can_be_undeleted($tid)) return false;
+    if (!thread_can_be_undeleted($tid)) return false;
 
     $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}THREAD ";
-    $sql.= "SET LENGTH = '$thread_length' WHERE TID = '$tid'";
+    $sql.= "SET DELETED = 'N' WHERE TID = '$tid'";
 
     if (!$result = db_query($sql, $db_thread_undelete)) return false;
 
@@ -1347,7 +1351,7 @@ function thread_can_be_undeleted($tid)
 
     list($length) = db_fetch_array($result, DB_RESULT_NUM);
 
-    return $length;
+    return ($length > 0);
 }
 
 function thread_search($thread_search, $offset = 0)

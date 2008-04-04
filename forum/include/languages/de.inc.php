@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.77 2008-04-03 20:40:35 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.78 2008-04-04 21:42:08 decoyduck Exp $ */
 
 // German language file
 
@@ -129,6 +129,7 @@ $lang['reply'] = "Antwort";
 $lang['forward'] = "Vorwaerts";
 $lang['replyall'] = "Antwort an alle";
 $lang['quickreply'] = "Schnellantwort";
+$lang['quickreplyall'] = "Schnellantwort an alle";
 $lang['pm_reply'] = "Antwort als PM";
 $lang['delete'] = "Loeschen";
 $lang['deleted'] = "Geloescht";
@@ -159,6 +160,7 @@ $lang['more'] = "Mehr";
 $lang['recentvisitors'] = "Neue Besucher";
 $lang['username'] = "Benutzername";
 $lang['clear'] = "Loeschen";
+$lang['reset'] = "Zuruecksetzen";
 $lang['action'] = "Aktion";
 $lang['unknown'] = "Unbekannt";
 $lang['none'] = "keine";
@@ -714,7 +716,7 @@ $lang['userpermenabled'] = "Rechte fuer Benutzer '%s' geaendert. Aktiviert: %s";
 $lang['userpermdisabled'] = "Rechte fuer Benutzer '%s' geaendert. Deaktiviert: %s";
 
 $lang['userpermbanned'] = "Gebannt";
-$lang['userpermwormed'] = "Wormed";
+$lang['userpermwormed'] = "unsichtbar (Posts fuer andere Benutzer nicht sichtbar)";
 $lang['userpermfoldermoderate'] = "Ordner-Moderator";
 $lang['userpermadmintools'] = "Admin Tools";
 $lang['userpermforumtools'] = "Forum Tools";
@@ -1535,6 +1537,7 @@ $lang['automaticallyparseurlsbydefault'] = "Automatisch URLs analysieren standar
 $lang['postinplaintextbydefault'] = "Poste standardmaessig in einfachem Text";
 $lang['postinhtmlwithautolinebreaksbydefault'] = "Poste standardmaessig in HTML mit Auto-Zeilenumbruch";
 $lang['postinhtmlbydefault'] = "Poste standardmaessig in HTML";
+$lang['postdefaultquick'] = "Nutze Schnellantwort als Standard. (Ausfuehrliche Antwort im Menue)";
 $lang['privatemessageoptions'] = "Private Nachrichtenoptionen";
 $lang['privatemessageexportoptions'] = "Private Nachrichten Export-Optionen";
 $lang['savepminsentitems'] = "Speichere eine Kopie jeder PM die ich sende im Gesendete Nachrichten-Ordner";
@@ -1739,14 +1742,14 @@ $lang['found'] = "Gefunden";
 $lang['matches'] = "Treffer";
 $lang['prevpage'] = "Vorherige Seite";
 $lang['findmore'] = "Mehr finden";
-$lang['searchmessages'] = "Such in Nachrichten";
+$lang['searchmessages'] = "Suche in Nachrichten";
 $lang['searchdiscussions'] = "Such in Diskussionen";
 $lang['find'] = "Finde";
 $lang['additionalcriteria'] = "Zusaetzliche Kriterien";
 $lang['searchbyuser'] = "Suche ueber Benutzer (optional)";
 $lang['folderbrackets_s'] = "Ordner";
 $lang['postedfrom'] = "Geschrieben von";
-$lang['postedto'] = "Geschrieben an";
+$lang['postedto'] = "Geschrieben bis";
 $lang['today'] = "Heute";
 $lang['yesterday'] = "Gestern";
 $lang['daybeforeyesterday'] = "Vorgestern";
@@ -1769,6 +1772,7 @@ $lang['sortdir'] = "Sortierverzeichnis";
 $lang['sortresults'] = "Sortierergebnisse";
 $lang['groupbythread'] = "Gruppieren nach Eintrag";
 $lang['postsfromuser'] = "Posts von Benutzer";
+$lang['threadsstartedbyuser'] = "Eintraege gestartet nach Benutzer";
 $lang['searchfrequencyerror'] = "Du kannst nur einmal jede %s Sekunden suchen. Bitte versuch es spaeter nochmal.";
 $lang['searchsuccessfullycompleted'] = "Sucher fertiggestellt. %s";
 $lang['clickheretoviewresults'] = "Hier klicken fuer Ergebnisse.";

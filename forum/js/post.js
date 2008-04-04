@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.js,v 1.46 2008-03-26 21:24:31 decoyduck Exp $ */
+/* $Id: post.js,v 1.47 2008-04-04 21:42:08 decoyduck Exp $ */
 
 var search_logon = false;
 var menu_timeout = 0;
@@ -298,19 +298,17 @@ function hideQuickReply()
 
 function checkKeyPress(evt)
 {
-    var key = (evt.which || evt.charCode || evt.keyCode);
+    var key = (evt.which || evt.keyCode);
   
-    if (!evt || !evt.ctrlKey) return true;
-  
-    if (key == 13) {
+    if ((evt.ctrlKey) && ((key & 13) > 0)) {
 
-        var quick_reply_form = getObjById('quick_reply_form');
+        var quick_reply_post_button = getObjsByName('post')[0];
 
-        if (typeof(quick_reply_form) == 'object') {
+        if (typeof(quick_reply_post_button) == 'object') {
 
 	    if (validateQuickReply()) {
 	    
-	        quick_reply_form.submit();
+	        quick_reply_post_button.click();
 	    }
 	}   
     }
@@ -332,8 +330,8 @@ function registerQuickReplyHotKey()
     var quick_reply_content = getObjsByName('t_content')[0];
 
     if (document.all) {
-        quick_reply_content.attachEvent('onkeydown',function(evt) { checkKeyPress(evt) });
+        quick_reply_content.attachEvent('onkeypress',function(evt) { checkKeyPress(evt) });
     }else {
-        quick_reply_content.addEventListener('keydown', checkKeyPress, true);
+        quick_reply_content.addEventListener('keypress', checkKeyPress, true);
     }
 }

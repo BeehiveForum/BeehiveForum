@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.171 2008-03-24 23:32:16 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.172 2008-04-05 15:44:32 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -377,7 +377,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
 
         if (isset($folder_info[$folder_number]) && is_array($folder_info[$folder_number])) {
 
-            echo "<h3><a href=\"lthread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$folder_number\">". word_filter_add_ob_tags($folder_info[$folder_number]['TITLE']) . "</a></h3>";
+            echo "<h3><a href=\"lthread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$folder_number\">", word_filter_add_ob_tags(_htmlentities($folder_info[$folder_number]['TITLE'])), "</a></h3>";
 
             if ((!$folder_info[$folder_number]['INTEREST']) || ($mode == UNREAD_DISCUSSIONS_TO_ME) || (isset($selected_folder) && $selected_folder == $folder_number)) {
 

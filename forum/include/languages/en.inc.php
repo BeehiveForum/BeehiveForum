@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.536 2008-04-03 20:40:35 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.537 2008-04-09 14:32:43 decoyduck Exp $ */
 
 // British English language file
 
@@ -712,8 +712,8 @@ $lang['nicknamebanhit'] = "User '%s' is banned. Nickname '%s' matched ban data '
 $lang['emailbanhit'] = "User '%s' is banned. Email Address '%s' matched ban data '%s'";
 $lang['refererbanhit'] = "User '%s' is banned. HTTP Referer '%s' matched ban data '%s'";
 
-$lang['userpermenabled'] = "Changed perms for user '%s'. Enabled: %s";
-$lang['userpermdisabled'] = "Changed perms for user '%s'. Disabled: %s";
+$lang['modifiedpermsforuser'] = "Modified perms for user '%s'";
+$lang['modifiedfolderpermsforuser'] = "Modified folder perms for user '%s'";
 
 $lang['userpermbanned'] = "Banned";
 $lang['userpermwormed'] = "Wormed";

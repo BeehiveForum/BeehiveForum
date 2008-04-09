@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.305 2008-03-23 18:54:58 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.306 2008-04-09 14:32:43 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1484,6 +1484,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  STICKY CHAR(1) DEFAULT NULL,";
         $sql.= "  STICKY_UNTIL DATETIME DEFAULT NULL,";
         $sql.= "  ADMIN_LOCK DATETIME DEFAULT NULL,";
+        $sql.= "  DELETED CHAR(1) NOT NULL DEFAULT 'N', ";
         $sql.= "  PRIMARY KEY  (TID),";
         $sql.= "  KEY BY_UID (BY_UID),";
         $sql.= "  KEY STICKY (STICKY, MODIFIED), ";
@@ -1627,6 +1628,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  USE_MOVER_SPOILER CHAR(1) DEFAULT 'N', ";
         $sql.= "  USE_LIGHT_MODE_SPOILER CHAR(1) DEFAULT 'N', ";
         $sql.= "  USE_OVERFLOW_RESIZE CHAR(1) DEFAULT 'Y', ";
+        $sql.= "  REPLY_QUICK CHAR(1) NOT NULL DEFAULT 'N', ";
         $sql.= "  PRIMARY KEY  (UID)";
         $sql.= ") TYPE=MYISAM";
 
@@ -1818,11 +1820,11 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             return false;
         }
 
-        // Create Welcome thread and post.
+        // Create 'Welcome' Thread
 
         $sql = "INSERT INTO {$database_name}.{$webtag}_THREAD ";
         $sql.= "(FID, BY_UID, TITLE, LENGTH, POLL_FLAG, CREATED, MODIFIED, CLOSED, STICKY, STICKY_UNTIL, ADMIN_LOCK) ";
-        $sql.= "VALUES (1, 1, 'Welcome', 1, 'N', NOW(), NOW(), NULL, 'N', NULL, NULL)";
+        $sql.= "VALUES (1, '$owner_uid', 'Welcome', 1, 'N', NOW(), NOW(), NULL, 'N', NULL, NULL)";
 
         if (!$result = @db_query($sql, $db_forum_create)) {
 
@@ -1830,24 +1832,45 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             return false;
         }
 
-        $sql = "INSERT INTO {$database_name}.{$webtag}_POST ";
-        $sql.= "(TID, REPLY_TO_PID, FROM_UID, TO_UID, VIEWED, CREATED, STATUS, APPROVED, ";
-        $sql.= "APPROVED_BY, EDITED, EDITED_BY, IPADDRESS) VALUES (1, 0, 1, 0, NULL, NOW(), ";
-        $sql.= "0, NOW(), 1, NULL, 0, '')";
+        // Get the Thread ID. It should be 1, but just in case.
 
-        if (!$result = @db_query($sql, $db_forum_create)) {
+        if (!$new_tid = db_insert_id($db_forum_create)) {
 
             forum_delete($forum_fid);
-            return false;;
+            return false;
         }
 
-        $sql = "INSERT INTO {$database_name}.{$webtag}_POST_CONTENT (TID, PID, CONTENT) ";
-        $sql.= "VALUES (1, 1, 'Welcome to your new Beehive Forum')";
+        // Create the first post in the thread. Make it appear to be from
+        // the Owner UID.
+
+        $sql = "INSERT INTO {$database_name}.{$webtag}_POST ";
+        $sql.= "(TID, REPLY_TO_PID, FROM_UID, TO_UID, VIEWED, CREATED, STATUS, APPROVED, ";
+        $sql.= "APPROVED_BY, EDITED, EDITED_BY, IPADDRESS) VALUES ('$new_tid', 0, '$owner_uid', 0, NULL, NOW(), ";
+        $sql.= "0, NOW(), '$owner_uid', NULL, 0, '')";
 
         if (!$result = @db_query($sql, $db_forum_create)) {
 
             forum_delete($forum_fid);
-            return false;;
+            return false;
+        }
+
+        // Get the Post ID. Again should be 1, but trying to be tidy here.
+
+        if (!$new_pid = db_insert_id($db_forum_create)) {
+
+            forum_delete($forum_fid);
+            return false;
+        }
+
+        // First Post content.
+
+        $sql = "INSERT INTO {$database_name}.{$webtag}_POST_CONTENT (TID, PID, CONTENT) ";
+        $sql.= "VALUES ('$new_tid', '$new_pid', 'Welcome to your new Beehive Forum')";
+
+        if (!$result = @db_query($sql, $db_forum_create)) {
+
+            forum_delete($forum_fid);
+            return false;
         }
 
         // Create Top Level Links Folder

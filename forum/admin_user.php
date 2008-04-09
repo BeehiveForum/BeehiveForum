@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.236 2008-03-20 18:48:09 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.237 2008-04-09 14:32:43 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -344,98 +344,6 @@ if (isset($_POST['action_submit'])) {
 
     $valid = true;
 
-    if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
-
-        if (isset($_POST['t_logon']) && strlen(trim(_stripslashes($_POST['t_logon']))) > 0) {
-
-            $t_logon = strtoupper(trim(_stripslashes($_POST['t_logon'])));
-
-            if (!preg_match("/^[a-z0-9_-]+$/i", $t_logon)) {
-
-                $error_msg_array[] = $lang['usernameinvalidchars'];
-                $valid = false;
-            }
-
-            if (strlen($t_logon) < 2) {
-
-                $error_msg_array[] = $lang['usernametooshort'];
-                $valid = false;
-            }
-
-            if (strlen($t_logon) > 15) {
-
-                $error_msg_array[] = $lang['usernametoolong'];
-                $valid = false;
-            }
-
-            if (logon_is_banned($t_logon)) {
-
-                $error_msg_array[] = $lang['logonnotpermitted'];
-                $valid = false;
-            }
-
-        }else {
-
-            $error_msg_array[] = $lang['usernamerequired'];
-            $valid = false;
-        }
-
-        if (isset($_POST['t_nickname']) && strlen(trim(_stripslashes($_POST['t_nickname']))) > 0) {
-
-            $t_nickname = trim(_stripslashes($_POST['t_nickname']));
-
-            if (nickname_is_banned($t_nickname)) {
-
-                $error_msg_array[] = $lang['nicknamenotpermitted'];
-                $valid = false;
-            }
-
-        }else {
-
-            $error_msg_array[] = $lang['nicknamerequired'];
-            $valid = false;
-        }
-
-        if (isset($_POST['t_email']) && strlen(trim(_stripslashes($_POST['t_email']))) > 0) {
-
-            $t_email = trim(_stripslashes($_POST['t_email']));
-
-            if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $t_email)) {
-
-                $error_msg_array[] = $lang['invalidemailaddressformat'];
-                $valid = false;
-
-            }else {
-
-                if (email_is_banned($t_email)) {
-
-                    $error_msg_array[] = $lang['emailaddressnotpermitted'];
-                    $valid = false;
-                }
-
-                if (forum_get_setting('require_unique_email', 'Y') && !email_is_unique($t_email, $uid)) {
-
-                    $error_msg_array[] = $lang['emailaddressalreadyinuse'];
-                    $valid = false;
-                }
-            }
-
-        }else {
-
-            $error_msg_array[] = $lang['emailaddressrequired'];
-            $valid = false;
-        }
-
-        if ($valid) {
-
-            if (user_update($uid, $t_logon, $t_nickname, $t_email)) {
-
-                $user = user_get($uid);
-                $user['POST_COUNT'] = user_get_post_count($uid);
-            }
-        }
-    }
-
     if ($table_data = get_table_prefix()) {
 
         // Check post count is being changed or reset.
@@ -491,7 +399,7 @@ if (isset($_POST['action_submit'])) {
 
             if (perm_update_user_permissions($uid, $new_user_perms)) {
 
-                admin_add_log_entry(USER_PERMS_CHANGED, array($user['LOGON'], $new_user_perms, $user_perms));
+                admin_add_log_entry(USER_PERMS_CHANGED, $user['LOGON']);
 
                 $user_perms = perm_get_forum_user_permissions($uid);
 
@@ -596,6 +504,11 @@ if (isset($_POST['action_submit'])) {
                         $valid = false;
                     }
                 }
+            }
+
+            if ($valid) {
+
+                admin_add_log_entry(USER_FOLDER_PERMS_CHANGED, $user['LOGON']);
             }
         }
 

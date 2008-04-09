@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_signature.php,v 1.105 2008-03-23 18:54:58 decoyduck Exp $ */
+/* $Id: edit_signature.php,v 1.106 2008-04-09 14:32:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -200,7 +200,7 @@ if (isset($_POST['save']) || isset($_POST['preview'])) {
 
     if ($t_sig_html == "Y") $t_sig_content = fix_html($t_sig_content);
 
-    if ($admin_edit === false) $t_sig_global = 'N';
+    if ($admin_edit === true) $t_sig_global = 'N';
 
     if (attachment_embed_check($t_sig_content) && $t_sig_html == "Y") {
 
@@ -215,7 +215,7 @@ if (isset($_POST['save'])) {
 
         // Update USER_SIG
 
-        if (user_update_sig($uid, $t_sig_content, $t_sig_html, $t_sig_global =='Y')) {
+        if (user_update_sig($uid, $t_sig_content, $t_sig_html, ($t_sig_global == 'Y'))) {
 
             if ($admin_edit === true) {
 

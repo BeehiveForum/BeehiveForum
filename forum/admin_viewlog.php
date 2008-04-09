@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.139 2008-03-24 23:32:15 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.140 2008-04-09 14:32:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -801,29 +801,13 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
             case USER_PERMS_CHANGED:
 
-                $user_perm_diff = ((double)$entry_array[1] ^ (double)$entry_array[2]);
+                $action_text = sprintf($lang['modifiedpermsforuser'], $entry_array[0]);
+                break;
 
-                $changed_perms_list = array();
+            case USER_FOLDER_PERMS_CHANGED:
 
-                if (($user_perm_diff & USER_PERM_BANNED)) $changed_perms_list[] = $lang['userpermbanned'];
-                if (($user_perm_diff & USER_PERM_WORMED)) $changed_perms_list[] = $lang['userpermwormed'];
-                if (($user_perm_diff & USER_PERM_FOLDER_MODERATE)) $changed_perms_list[] = $lang['userpermfoldermoderate'];
-                if (($user_perm_diff & USER_PERM_ADMIN_TOOLS)) $changed_perms_list[] = $lang['userpermadmintools'];
-                if (($user_perm_diff & USER_PERM_FORUM_TOOLS)) $changed_perms_list[] = $lang['userpermforumtools'];
-                if (($user_perm_diff & USER_PERM_LINKS_MODERATE)) $changed_perms_list[] = $lang['userpermlinksmod'];
-                if (($user_perm_diff & USER_PERM_CAN_IGNORE_ADMIN)) $changed_perms_list[] = $lang['userpermignoreadmin'];
-                if (($user_perm_diff & USER_PERM_PILLORIED)) $changed_perms_list[] = $lang['userpermpilloried'];
-
-                if ($entry_array[1] > $entry_array[2]) {
-
-                    $action_text = sprintf($lang['userpermenabled'], $entry_array[0], implode(', ', $changed_perms_list));
-                    break;
-
-                }else {
-
-                    $action_text = sprintf($lang['userpermdisabled'], $entry_array[0], implode(', ', $changed_perms_list));
-                    break;
-                }
+                $action_text = sprintf($lang['modifiedfolderpermsforuser'], $entry_array[0]);
+                break;
 
             default:
 

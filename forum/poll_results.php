@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll_results.php,v 1.29 2008-03-04 00:13:17 decoyduck Exp $ */
+/* $Id: poll_results.php,v 1.30 2008-04-10 21:16:04 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -137,9 +137,21 @@ if (isset($_GET['tid']) && is_numeric($_GET['tid'])) {
     exit;
 }
 
-$polldata = poll_get($tid);
+if (!$thread_data = thread_get($tid, bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
-$view_style = POLL_VIEW_TYPE_OPTION;
+    html_draw_top();
+    html_error_msg($lang['threadcouldnotbefound']);
+    html_draw_bottom();
+    exit;
+}
+
+if (!$poll_data = poll_get($tid)) {
+
+    html_draw_top();
+    html_error_msg($lang['threadcouldnotbefound']);
+    html_draw_bottom();
+    exit;
+}
 
 if (isset($_GET['view_style']) && is_numeric($_GET['view_style'])) {
 
@@ -150,77 +162,72 @@ if (isset($_GET['view_style']) && is_numeric($_GET['view_style'])) {
     }elseif ($_GET['view_style'] == POLL_VIEW_TYPE_USER) {
 
         $view_style = POLL_VIEW_TYPE_USER;
-    }
-}
-
-html_draw_top("openprofile.js", 'pm_popup_disabled');
-
-echo "<h1>{$lang['pollresults']}</h1>\n";
-echo "<br />\n";
-
-if ($polldata['VOTETYPE'] == POLL_VOTE_PUBLIC && $polldata['POLLTYPE'] <> POLL_TABLE_GRAPH) {
-
-    echo "<div align=\"center\">\n";
-    echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"475\">\n";
-    echo "  <tr>\n";
-    echo "    <td align=\"center\" class=\"postbody\">\n";
-    echo "      <form name=\"f_mode\" method=\"get\" action=\"poll_results.php\">\n";
-    echo "        ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
-    echo "        ", form_input_hidden("tid", _htmlentities($tid)), "\n";
-    echo "        View Style: ", form_dropdown_array("view_style", array($lang['viewbypolloption'], $lang['viewbyuser']), $view_style, "onchange=\"submit()\""), "&nbsp;", form_submit('go', $lang['goexcmark']), "\n";
-    echo "      </form>\n";
-    echo "    </td>\n";
-    echo "  </tr>\n";
-    echo "</table>\n";
-    echo "<br />\n";
-    echo "</div>\n";
-}
-
-echo "<div align=\"center\">\n";
-echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" width=\"475\">\n";
-echo "  <tr>\n";
-echo "    <td align=\"center\">\n";
-echo "      <table width=\"95%\">\n";
-echo "        <tr>\n";
-echo "          <td align=\"left\"><h2>". thread_get_title($tid). "</h2></td>\n";
-echo "        </tr>\n";
-
-if ($polldata['SHOWRESULTS'] == POLL_SHOW_RESULTS || bh_session_get_value('UID') == $polldata['FROM_UID'] || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid) || ($polldata['CLOSES'] > 0 && $polldata['CLOSES'] < mktime())) {
-
-    if ($polldata['VOTETYPE'] == POLL_VOTE_PUBLIC && $polldata['CHANGEVOTE'] < POLL_VOTE_MULTI && $polldata['POLLTYPE'] <> POLL_TABLE_GRAPH) {
-
-        echo "        <tr>\n";
-        echo "          <td align=\"left\" colspan=\"2\">\n";
-        echo poll_public_ballot($tid, $view_style);
-        echo "          </td>\n";
-        echo "        </tr>\n";
 
     }else {
 
-        if ($polldata['POLLTYPE'] == POLL_HORIZONTAL_GRAPH) {
+        $view_style = POLL_VIEW_TYPE_OPTION;
+    }
 
-            echo "        <tr>\n";
-            echo "          <td align=\"left\">\n";
+}else {
+
+    $view_style = POLL_VIEW_TYPE_OPTION;
+}
+
+$forum_name   = forum_get_setting('forum_name', false, 'A Beehive Forum');
+
+$folder_title = _htmlentities($thread_data['FOLDER_TITLE']);
+
+$thread_title = _htmlentities(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']));
+
+html_draw_top("title=$forum_name > $thread_title > {$poll_data['QUESTION']}", "openprofile.js", 'pm_popup_disabled');
+
+echo "<div align=\"center\">\n";
+echo "<table width=\"580\" border=\"0\">\n";
+echo "  <tr>\n";
+echo "    <td align=\"left\">", messages_top($tid, 1, $thread_data['FID'], $folder_title, "$thread_title &raquo; {$poll_data['QUESTION']}", false, false, false, false, false, false), "</td>\n";
+echo "  </tr>\n";
+echo "</table>\n";
+echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"580\">\n";
+echo "  <tr>\n";
+echo "    <td align=\"left\">\n";
+
+if ($poll_data['SHOWRESULTS'] == POLL_SHOW_RESULTS || bh_session_get_value('UID') == $poll_data['FROM_UID'] || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid) || ($poll_data['CLOSES'] > 0 && $poll_data['CLOSES'] < mktime())) {
+
+    if ($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC && $poll_data['CHANGEVOTE'] < POLL_VOTE_MULTI && $poll_data['POLLTYPE'] <> POLL_TABLE_GRAPH) {
+
+        echo poll_public_ballot($tid, $view_style);
+
+    }else {
+
+        echo "      <table class=\"box\" width=\"100%\">\n";
+        echo "        <tr>\n";
+        echo "          <td align=\"left\" class=\"posthead\">\n";
+        echo "            <table width=\"100%\">\n";
+        echo "              <tr>\n";
+        echo "                <td align=\"left\" class=\"subhead\">", word_filter_add_ob_tags(_htmlentities($poll_data['QUESTION'])), "</td>\n";
+        echo "              </tr>\n";
+        echo "              <tr>\n";
+        echo "                <td align=\"left\">\n";
+
+        if ($poll_data['POLLTYPE'] == POLL_HORIZONTAL_GRAPH) {
+
             echo poll_horizontal_graph($tid);
-            echo "          </td>\n";
-            echo "        </tr>\n";
 
-        }elseif ($polldata['POLLTYPE'] == POLL_TABLE_GRAPH) {
+        }elseif ($poll_data['POLLTYPE'] == POLL_TABLE_GRAPH) {
 
-            echo "        <tr>\n";
-            echo "          <td align=\"left\">";
             echo poll_table_graph($tid);
-            echo "          </td>\n";
-            echo "        </tr>\n";
 
         }else {
 
-            echo "        <tr>\n";
-            echo "          <td align=\"left\">\n";
             echo poll_vertical_graph($tid);
-            echo "          </td>\n";
-            echo "        </tr>\n";
         }
+
+        echo "                </td>\n";
+        echo "              </tr>\n";
+        echo "            </table>\n";
+        echo "          </td>\n";
+        echo "        </tr>\n";
+        echo "      </table>\n";
     }
 
 }else {
@@ -238,11 +245,29 @@ if ($polldata['SHOWRESULTS'] == POLL_SHOW_RESULTS || bh_session_get_value('UID')
     }
 }
 
-echo "      </table>\n";
 echo "    </td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 echo "<br />\n";
+
+if ($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC && $poll_data['POLLTYPE'] <> POLL_TABLE_GRAPH) {
+
+    echo "<div align=\"center\">\n";
+    echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"475\">\n";
+    echo "  <tr>\n";
+    echo "    <td align=\"center\" class=\"postbody\">\n";
+    echo "      <form name=\"f_mode\" method=\"get\" action=\"poll_results.php\">\n";
+    echo "        ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
+    echo "        ", form_input_hidden("tid", _htmlentities($tid)), "\n";
+    echo "        View Style: ", form_dropdown_array("view_style", array($lang['viewbypolloption'], $lang['viewbyuser']), $view_style, "onchange=\"submit()\""), "&nbsp;", form_submit('go', $lang['goexcmark']), "\n";
+    echo "      </form>\n";
+    echo "    </td>\n";
+    echo "  </tr>\n";
+    echo "</table>\n";
+    echo "<br />\n";
+    echo "</div>\n";
+}
+
 echo "<form method=\"post\" action=\"poll_results.php\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ". form_submit('close', $lang['close']). "\n";

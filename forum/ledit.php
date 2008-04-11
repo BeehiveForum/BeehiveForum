@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ledit.php,v 1.28 2008-03-23 18:54:58 decoyduck Exp $ */
+/* $Id: ledit.php,v 1.29 2008-04-11 20:09:46 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -471,10 +471,7 @@ if (isset($_POST['preview'])) {
         $valid = false;
     }
 
-    if (((forum_get_setting('allow_post_editing', 'N'))
-        || ((bh_session_get_value('UID') != $editmessage['FROM_UID']) && !(perm_get_user_permissions($editmessage['FROM_UID']) & USER_PERM_PILLORIED))
-        || (perm_get_user_permissions(bh_session_get_value('UID')) & USER_PERM_PILLORIED)
-        || (((time() - $editmessage['CREATED']) >= (intval(forum_get_setting('post_edit_time', false, 0)) * MINUTE_IN_SECONDS)) && intval(forum_get_setting('post_edit_time', false, 0)) != 0)) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+    if (((forum_get_setting('allow_post_editing', 'N')) || ((bh_session_get_value('UID') != $editmessage['FROM_UID']) && !(perm_get_user_permissions($editmessage['FROM_UID']) & USER_PERM_PILLORIED)) || (bh_session_check_perm(USER_PERM_PILLORIED, 0)) || (((time() - $editmessage['CREATED']) >= (intval(forum_get_setting('post_edit_time', false, 0)) * MINUTE_IN_SECONDS)) && intval(forum_get_setting('post_edit_time', false, 0)) != 0)) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
         light_html_draw_top("robots=noindex,nofollow");
         light_html_display_error_msg(sprintf("<h1>{$lang['nopermissiontoedit']}</h1>\n", $edit_msg));
@@ -528,10 +525,7 @@ if (isset($_POST['preview'])) {
 
         if ($editmessage['CONTENT'] = message_get_content($tid, $pid)) {
 
-            if (((forum_get_setting('allow_post_editing', 'N'))
-                || ((bh_session_get_value('UID') != $editmessage['FROM_UID']) && !(perm_get_user_permissions($editmessage['FROM_UID']) & USER_PERM_PILLORIED))
-                || (perm_get_user_permissions(bh_session_get_value('UID')) & USER_PERM_PILLORIED)
-                || (((time() - $editmessage['CREATED']) >= (intval(forum_get_setting('post_edit_time', false, 0)) * MINUTE_IN_SECONDS)) && intval(forum_get_setting('post_edit_time', false, 0)) != 0)) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+            if (((forum_get_setting('allow_post_editing', 'N')) || ((bh_session_get_value('UID') != $editmessage['FROM_UID']) && !(perm_get_user_permissions($editmessage['FROM_UID']) & USER_PERM_PILLORIED)) || (bh_session_check_perm(USER_PERM_PILLORIED, 0)) || (((time() - $editmessage['CREATED']) >= (intval(forum_get_setting('post_edit_time', false, 0)) * MINUTE_IN_SECONDS)) && intval(forum_get_setting('post_edit_time', false, 0)) != 0)) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
                 light_html_draw_top("robots=noindex,nofollow");
                 light_html_display_error_msg(sprintf("<h1>{$lang['nopermissiontoedit']}</h1>\n", $edit_msg));

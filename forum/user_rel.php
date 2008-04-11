@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.106 2008-03-23 18:54:58 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.107 2008-04-11 20:09:47 decoyduck Exp $ */
 
 /**
 * Displays and handles the User Relationship page
@@ -191,9 +191,8 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
     exit;
 }
 
-// Fetch the perms of the peer and the session user.
+// Fetch the perms of the peer
 
-$user_perms = perm_get_user_permissions($uid);
 $peer_perms = perm_get_user_permissions($peer_uid);
 
 // Array to hold error messages.
@@ -378,7 +377,7 @@ echo "                        <td align=\"left\" width=\"150\">", form_radio('pe
 echo "                        <td align=\"left\" width=\"400\">: {$lang['normal_exp']}</td>\n";
 echo "                      </tr>\n";
 
-if ((($peer_perms & USER_PERM_FOLDER_MODERATE) && ($user_perms & USER_PERM_CAN_IGNORE_ADMIN)) || !($peer_perms & USER_PERM_FOLDER_MODERATE)) {
+if ((($peer_perms & USER_PERM_FOLDER_MODERATE) && (bh_session_check_perm(USER_PERM_CAN_IGNORE_ADMIN, 0))) || !($peer_perms & USER_PERM_FOLDER_MODERATE)) {
 
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\">", form_radio('peer_user_status', USER_IGNORED, $lang['ignored'], $peer_relationship & USER_IGNORED ? true : false), "</td>\n";

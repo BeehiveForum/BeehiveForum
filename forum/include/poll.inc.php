@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.222 2008-04-10 21:16:04 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.223 2008-04-12 21:24:09 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -344,26 +344,67 @@ function poll_get_user_votes($tid, $view_style)
     if (!$db_poll_get_user_vote_hashes = db_connect()) return false;
 
     if (!is_numeric($tid)) return false;
+
     if (!is_numeric($view_style)) $view_style = POLL_VIEW_TYPE_OPTION;
+
+    if (($uid = bh_session_get_value('UID')) === false) return false;
+
+    $lang = load_language_file();
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT UP.UID, UP.OPTION_ID, UNIX_TIMESTAMP(UP.TSTAMP) AS TSTAMP ";
-    $sql.= "FROM {$table_data['PREFIX']}USER_POLL_VOTES UP ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}POLL POLL ON (UP.TID = POLL.TID) ";
-    $sql.= "WHERE UP.TID = '$tid' AND POLL.VOTETYPE = 1 ";
-    $sql.= "AND UP.UID > 0";
+    $sql = "SELECT USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
+    $sql.= "USER_POLL_VOTES.UID, USER_POLL_VOTES.OPTION_ID, POLL_VOTES.OPTION_NAME ";
+    $sql.= "FROM {$table_data['PREFIX']}USER_POLL_VOTES USER_POLL_VOTES ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}POLL POLL ON (USER_POLL_VOTES.TID = POLL.TID) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}POLL_VOTES POLL_VOTES ";
+    $sql.= "ON (POLL_VOTES.OPTION_ID = USER_POLL_VOTES.OPTION_ID ";
+    $sql.= "AND POLL_VOTES.TID = POLL.TID) ";
+    $sql.= "LEFT JOIN USER USER ON (USER.UID = USER_POLL_VOTES.UID) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
+    $sql.= "WHERE USER_POLL_VOTES.TID = '$tid' AND POLL.VOTETYPE = 1 ";
 
     if (!$result = db_query($sql, $db_poll_get_user_vote_hashes)) return false;
 
     $poll_get_user_votes = array();
 
-    while($poll_data = db_fetch_array($result)) {
+    while ($user_poll_votes_array = db_fetch_array($result)) {
+
+        if ($user_poll_votes_array['UID'] == 0) {
+
+            $user_poll_votes_array['LOGON']    = $lang['guest'];
+            $user_poll_votes_array['NICKNAME'] = $lang['guest'];
+        }
+
+        if (!isset($user_poll_votes_array['LOGON'])) $user_poll_votes_array['LOGON'] = $lang['unknownuser'];
+        if (!isset($user_poll_votes_array['NICKNAME'])) $user_poll_votes_array['NICKNAME'] = "";
+
+        if (isset($user_poll_votes_array['LOGON']) && isset($user_poll_votes_array['PEER_NICKNAME'])) {
+            if (!is_null($user_poll_votes_array['PEER_NICKNAME']) && strlen($user_poll_votes_array['PEER_NICKNAME']) > 0) {
+                $user_poll_votes_array['NICKNAME'] = $user_poll_votes_array['PEER_NICKNAME'];
+            }
+        }
 
         if ($view_style == POLL_VIEW_TYPE_OPTION) {
-            $poll_get_user_votes[$poll_data['OPTION_ID']][] = $poll_data['UID'];
+
+            $poll_get_user_votes[$user_poll_votes_array['OPTION_ID']][] = $user_poll_votes_array;
+
         }else {
-            $poll_get_user_votes[$poll_data['UID']][] = $poll_data['OPTION_ID'];
+
+            $user_poll_vote_option_name = $user_poll_votes_array['OPTION_NAME'];
+
+            unset($user_poll_votes_array['OPTION_NAME']);
+
+            if (!isset($poll_get_user_votes[$user_poll_votes_array['UID']])) {
+
+                $poll_get_user_votes[$user_poll_votes_array['UID']] = $user_poll_votes_array;
+                $poll_get_user_votes[$user_poll_votes_array['UID']]['OPTION_NAMES'] = array($user_poll_vote_option_name);
+
+            }else {
+
+                $poll_get_user_votes[$user_poll_votes_array['UID']]['OPTION_NAMES'][] = $user_poll_vote_option_name;
+            }
         }
     }
 
@@ -1798,7 +1839,10 @@ function poll_public_ballot($tid, $view_style)
 
         array_multisort($poll_results['GROUP_ID'], SORT_NUMERIC, SORT_ASC, $poll_results['OPTION_ID'], $poll_results['OPTION_NAME'], $poll_results['VOTES']);
 
-        $poll_display = "";
+        $poll_display = "      <table class=\"box\" width=\"100%\">\n";
+        $poll_display.= "        <tr>\n";
+        $poll_display.= "          <td align=\"left\" class=\"posthead\">\n";
+        $poll_display.= "            <table width=\"100%\" class=\"posthead\">\n";
 
         foreach($poll_results['OPTION_ID'] as $option_key => $poll_results_option_id) {
 
@@ -1806,10 +1850,18 @@ function poll_public_ballot($tid, $view_style)
 
             if (isset($poll_results['OPTION_NAME'][$option_key]) && strlen($poll_results['OPTION_NAME'][$option_key]) > 0) {
 
-                $poll_display.= "      <table class=\"box\" width=\"100%\">\n";
-                $poll_display.= "        <tr>\n";
-                $poll_display.= "          <td align=\"left\" class=\"posthead\">\n";
-                $poll_display.= "            <table width=\"100%\" class=\"posthead\">\n";
+                if ($poll_previous_group <> $poll_results['GROUP_ID'][$option_key]) {
+
+                    $poll_display.= "            </table>\n";
+                    $poll_display.= "          </td>\n";
+                    $poll_display.= "        </tr>\n";
+                    $poll_display.= "      </table>\n";
+                    $poll_display.= "      <br />\n";
+                    $poll_display.= "      <table class=\"box\" width=\"100%\">\n";
+                    $poll_display.= "        <tr>\n";
+                    $poll_display.= "          <td align=\"left\" class=\"posthead\">\n";
+                    $poll_display.= "            <table width=\"100%\" class=\"posthead\">\n";
+                }
 
                 if ($poll_results['VOTES'][$option_key] > 0) {
 
@@ -1820,7 +1872,7 @@ function poll_public_ballot($tid, $view_style)
                     }
 
                     $poll_display.= "              <tr>\n";
-                    $poll_display.= "                <td align=\"left\" colspan=\"2\" class=\"subhead\">\n";
+                    $poll_display.= "                <td align=\"left\" class=\"subhead\">\n";
                     $poll_display.= "                  <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
                     $poll_display.= "                    <tr>\n";
                     $poll_display.= "                      <td align=\"left\">{$poll_results['OPTION_NAME'][$option_key]}</td>\n";
@@ -1832,27 +1884,27 @@ function poll_public_ballot($tid, $view_style)
 
                     if (isset($user_poll_votes[$poll_results['OPTION_ID'][$option_key]]) && is_array($user_poll_votes[$poll_results['OPTION_ID'][$option_key]])) {
 
-                        for ($j = 0; $j < sizeof($user_poll_votes[$poll_results['OPTION_ID'][$option_key]]); $j++) {
+                        $user_poll_votes_list = implode(', ', array_map('poll_public_ballot_user_callback', $user_poll_votes[$poll_results['OPTION_ID'][$option_key]]));
 
-                            if ($user = user_get($user_poll_votes[$poll_results['OPTION_ID'][$option_key]][$j])) {
-
-                                $poll_display.= "              <tr>\n";
-                                $poll_display.= "                <td align=\"left\" width=\"280\" class=\"postbody\">&nbsp;</td>\n";
-                                $poll_display.= "                <td align=\"left\" width=\"280\" class=\"postbody\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$user['UID']}\" target=\"_blank\" onclick=\"return openProfile({$user['UID']}, '$webtag')\">". word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))). "</a></td>\n";
-                                $poll_display.= "              </tr>\n";
-                            }
-                        }
+                        $poll_display.= "              <tr>\n";
+                        $poll_display.= "                <td align=\"center\">\n";
+                        $poll_display.= "                  <table cellpadding=\"0\" cellspacing=\"0\" width=\"95%\">\n";
+                        $poll_display.= "                    <tr>\n";
+                        $poll_display.= "                      <td align=\"left\">$user_poll_votes_list</td>\n";
+                        $poll_display.= "                    </tr>\n";
+                        $poll_display.= "                  </table>\n";
+                        $poll_display.= "                </td>\n";
+                        $poll_display.= "              </tr>\n";
                     }
 
                     $poll_display.= "              <tr>\n";
-                    $poll_display.= "                <td align=\"left\" width=\"280\" class=\"postbody\">&nbsp;</td>\n";
-                    $poll_display.= "                <td align=\"left\" width=\"280\" class=\"postbody\">&nbsp;</td>\n";
+                    $poll_display.= "                <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
                     $poll_display.= "              </tr>\n";
 
                 }else {
 
                     $poll_display.= "              <tr>\n";
-                    $poll_display.= "                <td align=\"left\" colspan=\"2\" class=\"subhead\">\n";
+                    $poll_display.= "                <td align=\"left\" class=\"subhead\">\n";
                     $poll_display.= "                  <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
                     $poll_display.= "                    <tr>\n";
                     $poll_display.= "                      <td align=\"left\">{$poll_results['OPTION_NAME'][$option_key]}</td>\n";
@@ -1862,58 +1914,78 @@ function poll_public_ballot($tid, $view_style)
                     $poll_display.= "                </td>\n";
                     $poll_display.= "              </tr>\n";
                     $poll_display.= "              <tr>\n";
-                    $poll_display.= "                <td align=\"left\" width=\"280\" class=\"postbody\">&nbsp;</td>\n";
-                    $poll_display.= "                <td align=\"left\" width=\"280\" class=\"postbody\">&nbsp;</td>\n";
+                    $poll_display.= "                <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
                     $poll_display.= "              </tr>\n";
                 }
-
-                $poll_display.= "            </table>\n";
-                $poll_display.= "          </td>\n";
-                $poll_display.= "        </tr>\n";
-                $poll_display.= "      </table>\n";
-                $poll_display.= "      <br />\n";
             }
 
             $poll_previous_group = $poll_results['GROUP_ID'][$option_key];
         }
 
+        $poll_display.= "            </table>\n";
+        $poll_display.= "          </td>\n";
+        $poll_display.= "        </tr>\n";
+        $poll_display.= "      </table>\n";
+        $poll_display.= "      <br />\n";
+
     }else {
 
         $poll_display = "";
 
-        foreach ($user_poll_votes as $uid => $option_id_array) {
+        foreach ($user_poll_votes as $uid => $user_data_array) {
 
-            if ($user = user_get($uid)) {
+            if (isset($user_data_array['OPTION_NAMES']) && is_array($user_data_array['OPTION_NAMES'])) {
+
+                $user_profile_link = poll_public_ballot_user_callback($user_data_array);
+
+                $user_poll_votes_list = implode(', ', $user_data_array['OPTION_NAMES']);
 
                 $poll_display.= "      <table class=\"box\" width=\"100%\">\n";
                 $poll_display.= "        <tr>\n";
                 $poll_display.= "          <td align=\"left\" class=\"posthead\">\n";
                 $poll_display.= "            <table width=\"100%\" class=\"posthead\">\n";
                 $poll_display.= "              <tr>\n";
-                $poll_display.= "                <td align=\"left\" width=\"280\" class=\"subhead\" colspan=\"2\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$user['UID']}\" target=\"_blank\" onclick=\"return openProfile({$user['UID']}, '$webtag')\">". word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))). "</a></td>\n";
+                $poll_display.= "                <td align=\"left\" class=\"subhead\" colspan=\"2\">$user_profile_link</td>\n";
                 $poll_display.= "              </tr>\n";
-
-                foreach ($option_id_array as $option_key => $option_id) {
-
-                    $poll_display.= "              <tr>\n";
-                    $poll_display.= "                <td align=\"left\" width=\"280\" class=\"postbody\">&nbsp;</td>\n";
-                    $poll_display.= "                <td align=\"left\" width=\"280\" class=\"postbody\">". ($poll_results['OPTION_NAME'][$option_id_array[$option_key] - 1]). "</td>\n";
-                    $poll_display.= "              </tr>\n";
-                }
-
                 $poll_display.= "              <tr>\n";
-                $poll_display.= "                <td align=\"left\" width=\"280\" class=\"postbody\">&nbsp;</td>\n";
-                $poll_display.= "                <td align=\"left\" width=\"280\" class=\"postbody\">&nbsp;</td>\n";
+                $poll_display.= "                <td align=\"center\">\n";
+                $poll_display.= "                  <table cellpadding=\"0\" cellspacing=\"0\" width=\"95%\">\n";
+                $poll_display.= "                    <tr>\n";
+                $poll_display.= "                      <td align=\"left\">$user_poll_votes_list</td>\n";
+                $poll_display.= "                    </tr>\n";
+                $poll_display.= "                  </table>\n";
+                $poll_display.= "                </td>\n";
+                $poll_display.= "              </tr>\n";
+                $poll_display.= "              <tr>\n";
+                $poll_display.= "                <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
                 $poll_display.= "              </tr>\n";
                 $poll_display.= "            </table>\n";
                 $poll_display.= "          </td>\n";
                 $poll_display.= "        </tr>\n";
                 $poll_display.= "      </table>\n";
+                $poll_display.= "      <br />\n";
             }
         }
     }
 
     return $poll_display;
+}
+
+function poll_public_ballot_user_callback($user_data)
+{
+    $webtag = get_webtag($webtag_search);
+
+    if (isset($user_data['UID']) && $user_data['UID'] > 0) {
+
+        $user_profile_link_html = "<a href=\"user_profile.php?webtag=$webtag&amp;uid=%1\$s\" target=\"_blank\" ";
+        $user_profile_link_html.= "onclick=\"return openProfile('%1\$s', '%1\$3')\">%2\$s</a>";
+
+        return sprintf($user_profile_link_html, $user_data['UID'], format_user_name($user_data['LOGON'], $user_data['NICKNAME']), $webtag);
+
+    }else {
+
+        return $user_data['LOGON'];
+    }
 }
 
 function poll_confirm_close($tid)

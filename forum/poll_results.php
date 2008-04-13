@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll_results.php,v 1.30 2008-04-10 21:16:04 decoyduck Exp $ */
+/* $Id: poll_results.php,v 1.31 2008-04-13 19:51:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -105,6 +105,17 @@ if (!forum_check_access_level()) {
     header_redirect("forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
+if (isset($_GET['page']) && is_numeric($_GET['page'])) {
+    $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
+}else if (isset($_POST['page']) && is_numeric($_POST['page'])) {
+    $page = ($_POST['page'] > 0) ? $_POST['page'] : 1;
+}else {
+    $page = 1;
+}
+
+$start = floor($page - 1) * 5;
+if ($start < 0) $start = 0;
+
 if (isset($_POST['close'])) {
 
     html_draw_top('pm_popup_disabled');
@@ -173,6 +184,8 @@ if (isset($_GET['view_style']) && is_numeric($_GET['view_style'])) {
     $view_style = POLL_VIEW_TYPE_OPTION;
 }
 
+$poll_user_count = 0;
+
 $forum_name   = forum_get_setting('forum_name', false, 'A Beehive Forum');
 
 $folder_title = _htmlentities($thread_data['FOLDER_TITLE']);
@@ -195,7 +208,7 @@ if ($poll_data['SHOWRESULTS'] == POLL_SHOW_RESULTS || bh_session_get_value('UID'
 
     if ($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC && $poll_data['CHANGEVOTE'] < POLL_VOTE_MULTI && $poll_data['POLLTYPE'] <> POLL_TABLE_GRAPH) {
 
-        echo poll_public_ballot($tid, $view_style);
+        echo poll_public_ballot($tid, $view_style, $start, $poll_user_count);
 
     }else {
 
@@ -248,11 +261,19 @@ if ($poll_data['SHOWRESULTS'] == POLL_SHOW_RESULTS || bh_session_get_value('UID'
 echo "    </td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
-echo "<br />\n";
 
 if ($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC && $poll_data['POLLTYPE'] <> POLL_TABLE_GRAPH) {
 
-    echo "<div align=\"center\">\n";
+    if ($view_style == POLL_VIEW_TYPE_USER) {
+
+        echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"475\">\n";
+        echo "  <tr>\n";
+        echo "    <td class=\"postbody\" align=\"center\">", page_links("poll_results.php?webtag=$webtag&tid=$tid&view_style=$view_style", $start, $poll_user_count, 5), "</td>\n";
+        echo "  </tr>\n";
+        echo "</table>\n";
+        echo "<br />\n";
+    }
+
     echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"475\">\n";
     echo "  <tr>\n";
     echo "    <td align=\"center\" class=\"postbody\">\n";
@@ -264,10 +285,9 @@ if ($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC && $poll_data['POLLTYPE'] <> POLL
     echo "    </td>\n";
     echo "  </tr>\n";
     echo "</table>\n";
-    echo "<br />\n";
-    echo "</div>\n";
 }
 
+echo "<br />\n";
 echo "<form method=\"post\" action=\"poll_results.php\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ". form_submit('close', $lang['close']). "\n";

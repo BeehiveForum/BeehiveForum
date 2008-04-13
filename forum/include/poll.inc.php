@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.224 2008-04-13 19:51:24 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.225 2008-04-13 20:02:33 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -376,12 +376,12 @@ function poll_get_user_votes($tid, $view_style, $offset, &$poll_user_count)
 
         $sql = "SELECT SQL_CALC_FOUND_ROWS USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
         $sql.= "USER_POLL_VOTES.UID, GROUP_CONCAT(POLL_VOTES.OPTION_NAME SEPARATOR ', ') AS OPTION_NAMES ";
-        $sql.= "FROM beehiveforum.DEFAULT_USER_POLL_VOTES USER_POLL_VOTES ";
-        $sql.= "LEFT JOIN beehiveforum.DEFAULT_POLL POLL ON (USER_POLL_VOTES.TID = POLL.TID) ";
-        $sql.= "LEFT JOIN beehiveforum.DEFAULT_POLL_VOTES POLL_VOTES ";
+        $sql.= "FROM {$table_data['PREFIX']}USER_POLL_VOTES USER_POLL_VOTES ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}POLL POLL ON (USER_POLL_VOTES.TID = POLL.TID) ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}POLL_VOTES POLL_VOTES ";
         $sql.= "ON (POLL_VOTES.OPTION_ID = USER_POLL_VOTES.OPTION_ID AND POLL_VOTES.TID = POLL.TID) ";
         $sql.= "LEFT JOIN USER USER ON (USER.UID = USER_POLL_VOTES.UID) ";
-        $sql.= "LEFT JOIN beehiveforum.DEFAULT_USER_PEER USER_PEER ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
         $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '0') ";
         $sql.= "WHERE USER_POLL_VOTES.TID = '34190' AND POLL.VOTETYPE = 1 ";
         $sql.= "GROUP BY USER_POLL_VOTES.UID ";

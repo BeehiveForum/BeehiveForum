@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.223 2008-04-12 21:24:09 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.224 2008-04-13 19:51:24 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -339,11 +339,13 @@ function poll_get_total_votes($tid, &$total_votes, &$guest_votes)
     return true;
 }
 
-function poll_get_user_votes($tid, $view_style)
+function poll_get_user_votes($tid, $view_style, $offset, &$poll_user_count)
 {
-    if (!$db_poll_get_user_vote_hashes = db_connect()) return false;
+    if (!$poll_get_user_votes = db_connect()) return false;
 
     if (!is_numeric($tid)) return false;
+
+    if (!is_numeric($offset)) return false;
 
     if (!is_numeric($view_style)) $view_style = POLL_VIEW_TYPE_OPTION;
 
@@ -353,19 +355,48 @@ function poll_get_user_votes($tid, $view_style)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
-    $sql.= "USER_POLL_VOTES.UID, USER_POLL_VOTES.OPTION_ID, POLL_VOTES.OPTION_NAME ";
-    $sql.= "FROM {$table_data['PREFIX']}USER_POLL_VOTES USER_POLL_VOTES ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}POLL POLL ON (USER_POLL_VOTES.TID = POLL.TID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}POLL_VOTES POLL_VOTES ";
-    $sql.= "ON (POLL_VOTES.OPTION_ID = USER_POLL_VOTES.OPTION_ID ";
-    $sql.= "AND POLL_VOTES.TID = POLL.TID) ";
-    $sql.= "LEFT JOIN USER USER ON (USER.UID = USER_POLL_VOTES.UID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
-    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
-    $sql.= "WHERE USER_POLL_VOTES.TID = '$tid' AND POLL.VOTETYPE = 1 ";
+    if ($view_style == POLL_VIEW_TYPE_OPTION) {
 
-    if (!$result = db_query($sql, $db_poll_get_user_vote_hashes)) return false;
+        $sql = "SELECT USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
+        $sql.= "USER_POLL_VOTES.UID, USER_POLL_VOTES.OPTION_ID, POLL_VOTES.OPTION_NAME ";
+        $sql.= "FROM {$table_data['PREFIX']}USER_POLL_VOTES USER_POLL_VOTES ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}POLL_VOTES POLL_VOTES ";
+        $sql.= "ON (POLL_VOTES.OPTION_ID = USER_POLL_VOTES.OPTION_ID ";
+        $sql.= "AND POLL_VOTES.TID = USER_POLL_VOTES.TID) ";
+        $sql.= "LEFT JOIN USER USER ON (USER.UID = USER_POLL_VOTES.UID) ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+        $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
+        $sql.= "WHERE USER_POLL_VOTES.TID = '$tid'";
+
+        if (!$result = db_query($sql, $poll_get_user_votes)) return false;
+
+    }else {
+
+        // Get the results.
+
+        $sql = "SELECT SQL_CALC_FOUND_ROWS USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
+        $sql.= "USER_POLL_VOTES.UID, GROUP_CONCAT(POLL_VOTES.OPTION_NAME SEPARATOR ', ') AS OPTION_NAMES ";
+        $sql.= "FROM beehiveforum.DEFAULT_USER_POLL_VOTES USER_POLL_VOTES ";
+        $sql.= "LEFT JOIN beehiveforum.DEFAULT_POLL POLL ON (USER_POLL_VOTES.TID = POLL.TID) ";
+        $sql.= "LEFT JOIN beehiveforum.DEFAULT_POLL_VOTES POLL_VOTES ";
+        $sql.= "ON (POLL_VOTES.OPTION_ID = USER_POLL_VOTES.OPTION_ID AND POLL_VOTES.TID = POLL.TID) ";
+        $sql.= "LEFT JOIN USER USER ON (USER.UID = USER_POLL_VOTES.UID) ";
+        $sql.= "LEFT JOIN beehiveforum.DEFAULT_USER_PEER USER_PEER ";
+        $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '0') ";
+        $sql.= "WHERE USER_POLL_VOTES.TID = '34190' AND POLL.VOTETYPE = 1 ";
+        $sql.= "GROUP BY USER_POLL_VOTES.UID ";
+        $sql.= "LIMIT $offset, 5";
+
+        if (!$result = db_query($sql, $poll_get_user_votes)) return false;
+
+        // Fetch the number of total results
+
+        $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
+
+        if (!$result_count = db_query($sql, $poll_get_user_votes)) return false;
+
+        list($poll_user_count) = db_fetch_array($result_count, DB_RESULT_NUM);
+    }
 
     $poll_get_user_votes = array();
 
@@ -392,19 +423,7 @@ function poll_get_user_votes($tid, $view_style)
 
         }else {
 
-            $user_poll_vote_option_name = $user_poll_votes_array['OPTION_NAME'];
-
-            unset($user_poll_votes_array['OPTION_NAME']);
-
-            if (!isset($poll_get_user_votes[$user_poll_votes_array['UID']])) {
-
-                $poll_get_user_votes[$user_poll_votes_array['UID']] = $user_poll_votes_array;
-                $poll_get_user_votes[$user_poll_votes_array['UID']]['OPTION_NAMES'] = array($user_poll_vote_option_name);
-
-            }else {
-
-                $poll_get_user_votes[$user_poll_votes_array['UID']]['OPTION_NAMES'][] = $user_poll_vote_option_name;
-            }
+            $poll_get_user_votes[$user_poll_votes_array['UID']] = $user_poll_votes_array;
         }
     }
 
@@ -1801,7 +1820,7 @@ function poll_table_graph($tid)
     return $poll_display;
 }
 
-function poll_public_ballot($tid, $view_style)
+function poll_public_ballot($tid, $view_style, $offset, &$poll_user_count)
 {
     $lang = load_language_file();
 
@@ -1833,7 +1852,7 @@ function poll_public_ballot($tid, $view_style)
         $option_count++;
     }
 
-    $user_poll_votes = poll_get_user_votes($tid, $view_style);
+    if (!$user_poll_votes = poll_get_user_votes($tid, $view_style, $offset, $poll_user_count)) return false;
 
     if ($view_style == POLL_VIEW_TYPE_OPTION) {
 
@@ -1934,37 +1953,32 @@ function poll_public_ballot($tid, $view_style)
 
         foreach ($user_poll_votes as $uid => $user_data_array) {
 
-            if (isset($user_data_array['OPTION_NAMES']) && is_array($user_data_array['OPTION_NAMES'])) {
+            $user_profile_link = poll_public_ballot_user_callback($user_data_array);
 
-                $user_profile_link = poll_public_ballot_user_callback($user_data_array);
-
-                $user_poll_votes_list = implode(', ', $user_data_array['OPTION_NAMES']);
-
-                $poll_display.= "      <table class=\"box\" width=\"100%\">\n";
-                $poll_display.= "        <tr>\n";
-                $poll_display.= "          <td align=\"left\" class=\"posthead\">\n";
-                $poll_display.= "            <table width=\"100%\" class=\"posthead\">\n";
-                $poll_display.= "              <tr>\n";
-                $poll_display.= "                <td align=\"left\" class=\"subhead\" colspan=\"2\">$user_profile_link</td>\n";
-                $poll_display.= "              </tr>\n";
-                $poll_display.= "              <tr>\n";
-                $poll_display.= "                <td align=\"center\">\n";
-                $poll_display.= "                  <table cellpadding=\"0\" cellspacing=\"0\" width=\"95%\">\n";
-                $poll_display.= "                    <tr>\n";
-                $poll_display.= "                      <td align=\"left\">$user_poll_votes_list</td>\n";
-                $poll_display.= "                    </tr>\n";
-                $poll_display.= "                  </table>\n";
-                $poll_display.= "                </td>\n";
-                $poll_display.= "              </tr>\n";
-                $poll_display.= "              <tr>\n";
-                $poll_display.= "                <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
-                $poll_display.= "              </tr>\n";
-                $poll_display.= "            </table>\n";
-                $poll_display.= "          </td>\n";
-                $poll_display.= "        </tr>\n";
-                $poll_display.= "      </table>\n";
-                $poll_display.= "      <br />\n";
-            }
+            $poll_display.= "      <table class=\"box\" width=\"100%\">\n";
+            $poll_display.= "        <tr>\n";
+            $poll_display.= "          <td align=\"left\" class=\"posthead\">\n";
+            $poll_display.= "            <table width=\"100%\" class=\"posthead\">\n";
+            $poll_display.= "              <tr>\n";
+            $poll_display.= "                <td align=\"left\" class=\"subhead\" colspan=\"2\">$user_profile_link</td>\n";
+            $poll_display.= "              </tr>\n";
+            $poll_display.= "              <tr>\n";
+            $poll_display.= "                <td align=\"center\">\n";
+            $poll_display.= "                  <table cellpadding=\"0\" cellspacing=\"0\" width=\"95%\">\n";
+            $poll_display.= "                    <tr>\n";
+            $poll_display.= "                      <td align=\"left\">{$user_data_array['OPTION_NAMES']}</td>\n";
+            $poll_display.= "                    </tr>\n";
+            $poll_display.= "                  </table>\n";
+            $poll_display.= "                </td>\n";
+            $poll_display.= "              </tr>\n";
+            $poll_display.= "              <tr>\n";
+            $poll_display.= "                <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
+            $poll_display.= "              </tr>\n";
+            $poll_display.= "            </table>\n";
+            $poll_display.= "          </td>\n";
+            $poll_display.= "        </tr>\n";
+            $poll_display.= "      </table>\n";
+            $poll_display.= "      <br />\n";
         }
     }
 

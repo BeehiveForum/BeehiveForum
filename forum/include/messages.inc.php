@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.527 2008-04-11 20:09:47 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.528 2008-04-15 18:15:12 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1021,7 +1021,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
                     $post_edit_time = forum_get_setting('post_edit_time', false, 0);
 
-                    if (((!bh_session_check_perm(USER_PERM_PILLORIED, 0) || ($uid != $message['FROM_UID'] && $from_user_permissions & USER_PERM_PILLORIED) || ($uid == $message['FROM_UID'])) && bh_session_check_perm(USER_PERM_POST_EDIT, $folder_fid) && ($post_edit_time == 0 || (time() - $message['CREATED']) < ($post_edit_time * HOUR_IN_SECONDS)) && forum_get_setting('allow_post_editing', 'Y')) || $perm_is_moderator) {
+                    if ((!(bh_session_check_perm(USER_PERM_PILLORIED, 0)) && ((($uid != $message['FROM_UID']) && ($from_user_permissions & USER_PERM_PILLORIED)) || ($uid == $message['FROM_UID'])) && bh_session_check_perm(USER_PERM_POST_EDIT, $folder_fid) && ($post_edit_time == 0 || (time() - $message['CREATED']) < ($post_edit_time * HOUR_IN_SECONDS)) && forum_get_setting('allow_post_editing', 'Y')) || $perm_is_moderator) {
 
                         if ($is_poll && $message['PID'] == 1) {
 

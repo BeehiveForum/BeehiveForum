@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_messages.php,v 1.39 2008-03-24 23:32:15 decoyduck Exp $ */
+/* $Id: pm_messages.php,v 1.40 2008-04-16 17:50:53 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -432,7 +432,6 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 }else if (isset($_GET['message_sent'])) {
 
     html_display_success_msg($lang['msgsentsuccessfully'], '96%', 'center');
-    echo "<script language=\"Javascript\" type=\"text/javascript\">reloadPMFolderView()</script>\n";
 
 }else if (isset($_GET['deleted'])) {
 

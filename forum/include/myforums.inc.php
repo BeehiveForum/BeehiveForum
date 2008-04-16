@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.78 2008-01-29 17:51:30 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.79 2008-04-16 10:20:28 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -148,7 +148,7 @@ function get_my_forums($view_type, $offset)
         $sql.= "CONCAT(FORUMS.DATABASE_NAME, '.', FORUMS.WEBTAG, '_') AS PREFIX FROM FORUMS ";
         $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
         $sql.= "AND USER_FORUM.UID = '$uid') WHERE FORUMS.ACCESS_LEVEL > -1 ";
-        $sql.= "AND USER_FORUM.INTEREST > -1 ";
+        $sql.= "AND (USER_FORUM.INTEREST > -1 OR USER_FORUM.INTEREST IS NULL) ";
         $sql.= "ORDER BY FORUMS.FID LIMIT $offset, 10";
 
     }elseif ($view_type == FORUMS_SHOW_FAVS) {

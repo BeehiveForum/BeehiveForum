@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.528 2008-04-15 18:15:12 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.529 2008-04-16 12:39:41 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -927,8 +927,6 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
         echo "              </tr>\n";
 
         if (isset($message['EDITED']) && $message['EDITED'] > 0) {
-
-            $post_edit_grace_period = forum_get_setting('post_edit_grace_period', false, 0);
 
             if (($post_edit_grace_period == 0) || ($message['EDITED'] - $message['CREATED']) > ($post_edit_grace_period * MINUTE_IN_SECONDS)) {
 

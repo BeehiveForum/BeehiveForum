@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.306 2008-04-09 14:32:43 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.307 2008-04-16 10:06:59 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -984,12 +984,16 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
 
     $lang = load_language_file();
 
+    // If no owner UID specified or UID is 0 change it to current user.
+
+    if (($uid = bh_session_get_value('UID')) === false) return false;
+
     // Ensure the variables we've been given are valid
 
     if (!preg_match("/^[A-Z]{1}[A-Z0-9_]+$/", $webtag)) return false;
     if (!preg_match("/^[A-Z]{1}[A-Z0-9_]+$/i", $database_name)) return false;
 
-    if (!is_numeric($owner_uid)) $owner_uid = 0;
+    if (!is_numeric($owner_uid) || $owner_uid < 1) $owner_uid = $uid;
     if (!is_numeric($access)) $access = 0;
 
     // Only users with acces to the forum tools can create / delete forums.
@@ -1944,8 +1948,12 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
 
 function forum_update($fid, $forum_name, $owner_uid, $access_level)
 {
+    if (($uid = bh_session_get_value('UID')) === false) return false;
+
     if (!is_numeric($fid)) return false;
-    if (!is_numeric($owner_uid)) return false;
+
+    if (!is_numeric($owner_uid) || $owner_uid < 1) $owner_uid = $uid;
+
     if (!is_numeric($access_level)) return false;
 
     if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
@@ -2198,7 +2206,7 @@ function forum_get($fid)
             $forum_get_array = db_fetch_array($result);
             $forum_get_array['FORUM_SETTINGS'] = array();
 
-            if (isset($forum_get_array['OWNER_UID'])) {
+            if (isset($forum_get_array['OWNER_UID']) && $forum_get_array['OWNER_UID'] > 0) {
 
                 if ($forum_leader = user_get_logon($forum_get_array['OWNER_UID'])) {
 

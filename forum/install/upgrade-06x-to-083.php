@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06x-to-083.php,v 1.5 2008-04-03 14:23:44 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-083.php,v 1.6 2008-04-16 10:06:59 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-06x-to-083.php") {
 
@@ -804,6 +804,17 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         $valid = false;
         return;
     }
+}
+
+// Check for and fix a bug involving forum owner where Guests
+// can be granted access to admin section of a forum.
+
+$sql = "DELETE FROM GROUP_USERS WHERE UID = 0";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
 }
 
 // New column for "In Reply to" link in PMs.

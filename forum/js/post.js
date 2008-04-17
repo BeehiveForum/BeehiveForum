@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.js,v 1.47 2008-04-04 21:42:08 decoyduck Exp $ */
+/* $Id: post.js,v 1.48 2008-04-17 17:45:14 decoyduck Exp $ */
 
 var search_logon = false;
 var menu_timeout = 0;
@@ -300,7 +300,7 @@ function checkKeyPress(evt)
 {
     var key = (evt.which || evt.keyCode);
   
-    if ((evt.ctrlKey) && ((key & 13) > 0)) {
+    if ((evt.ctrlKey) && ((key & 13) == 13)) {
 
         var quick_reply_post_button = getObjsByName('post')[0];
 

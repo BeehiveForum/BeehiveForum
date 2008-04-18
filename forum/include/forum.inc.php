@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.307 2008-04-16 10:06:59 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.308 2008-04-18 19:24:40 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -999,8 +999,6 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
     // Only users with acces to the forum tools can create / delete forums.
 
     if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
-
-        if (($uid = bh_session_get_value('UID')) === false) return false;
 
         if (!$db_forum_create = db_connect()) return false;
 
@@ -1991,7 +1989,7 @@ function forum_apply_user_permissions($forum_fid, $uid)
     if (!$db_forum_apply_user_permissions = db_connect()) return false;
 
     if (!is_numeric($forum_fid)) return false;
-    if (!is_numeric($uid)) return false;
+    if (!is_numeric($owner_uid) || $owner_uid < 1) return false;
 
     $forum_user_perms = USER_PERM_ADMIN_TOOLS | USER_PERM_FOLDER_MODERATE;
 

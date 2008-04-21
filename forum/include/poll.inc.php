@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.225 2008-04-13 20:02:33 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.226 2008-04-21 21:35:59 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -705,11 +705,11 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
 
                 $user_poll_votes_display_array = array();
 
-                foreach ($user_poll_votes_display_array as $vote_key => $user_poll_vote) {
+                foreach ($user_poll_votes_array as $vote_key => $user_poll_vote) {
 
                     foreach ($poll_results['OPTION_ID'] as $group_key => $poll_results_group_id) {
 
-                        if ($user_poll_votes_display_array[$vote_key]['OPTION_ID'] == $poll_results['OPTION_ID'][$group_key]) {
+                        if ($user_poll_votes_array[$vote_key]['OPTION_ID'] == $poll_results_group_id) {
 
                             if ($poll_results['OPTION_NAME'][$group_key] == strip_tags($poll_results['OPTION_NAME'][$group_key])) {
 
@@ -717,7 +717,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
 
                             }else {
 
-                                $user_poll_votes_display_array[] = sprintf("Option %s", $user_poll_votes_display_array[$vote_key]['OPTION_ID']);
+                                $user_poll_votes_display_array[] = sprintf("%s: %s", $lang['options'], $user_poll_votes_display_array[$vote_key]['OPTION_ID']);
                             }
                         }
                     }
@@ -734,11 +734,11 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
 
                 $user_poll_votes_display_array = array();
 
-                foreach ($user_poll_votes_display_array as $vote_key => $user_poll_vote) {
+                foreach ($user_poll_votes_array as $vote_key => $user_poll_vote) {
 
                     foreach ($poll_results['OPTION_ID'] as $group_key => $poll_results_group_id) {
 
-                        if ($user_poll_votes_display_array[$vote_key]['OPTION_ID'] == $poll_results['OPTION_ID'][$group_key]) {
+                        if ($user_poll_votes_array[$vote_key]['OPTION_ID'] == $poll_results_group_id) {
 
                             if ($poll_results['OPTION_NAME'][$group_key] == strip_tags($poll_results['OPTION_NAME'][$group_key])) {
 
@@ -746,7 +746,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
 
                             }else {
 
-                                $user_poll_votes_display_array[] = sprintf("Option %s", $user_poll_votes_display_array[$vote_key]['OPTION_ID']);
+                                $user_poll_votes_display_array[] = sprintf("%s %s", $lang['options'], $user_poll_votes_display_array[$vote_key]['OPTION_ID']);
                             }
                         }
                     }

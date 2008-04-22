@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_prefs.php,v 1.91 2008-03-30 00:01:32 benlumley Exp $ */
+/* $Id: edit_prefs.php,v 1.92 2008-04-22 21:35:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -643,7 +643,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 }else if (isset($_GET['updated'])) {
 
-    html_display_success_msg($lang['preferencesupdated'], ($admin_edit) ? 'center' : 'left');
+    html_display_success_msg($lang['preferencesupdated'], '600', ($admin_edit) ? 'center' : 'left');
 }
 
 if ($admin_edit === true) echo "<div align=\"center\">\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.inc.php,v 1.26 2008-03-05 21:10:31 decoyduck Exp $ */
+/* $Id: visitor_log.inc.php,v 1.27 2008-04-22 15:28:12 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -354,7 +354,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
     // Join for user relationship
 
     $join_sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
-    $join_sql.= "ON (USER_PEER.UID = USER.UID AND USER_PEER.PEER_UID = '$uid') ";
+    $join_sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
 
     // Join for the search bot data
 
@@ -527,6 +527,8 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
             $sql.= "$where_visitor_sql $having_visitor_sql $order_sql $limit_sql";
         }
     }
+
+    echo $sql;
 
     if (!$result = db_query($sql, $db_visitor_log_browse_items)) return false;
 

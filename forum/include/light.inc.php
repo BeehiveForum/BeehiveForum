@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.175 2008-04-16 12:39:41 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.176 2008-04-22 15:41:06 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -691,7 +691,7 @@ function light_poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list 
 
     $poll_data      = poll_get($tid);
     $poll_results   = poll_get_votes($tid);
-    $user_poll_data = poll_get_user_vote($tid);
+    $user_poll_votes_array = poll_get_user_vote($tid);
 
     $totalvotes       = 0;
     $poll_group_count = 1;
@@ -703,7 +703,7 @@ function light_poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list 
 
     if ($in_list) {
 
-        if ((!is_array($user_poll_data) && bh_session_get_value('UID') > 0) && ($poll_data['CLOSES'] == 0 || $poll_data['CLOSES'] > mktime())) {
+        if ((!is_array($user_poll_votes_array) && bh_session_get_value('UID') > 0) && ($poll_data['CLOSES'] == 0 || $poll_data['CLOSES'] > mktime())) {
 
             for ($i = 0; $i < sizeof($poll_results['OPTION_ID']); $i++) {
 
@@ -806,56 +806,56 @@ function light_poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list 
 
             $poll_data['CONTENT'].= "<p>{$lang['pollhasended']}</p>\n";
 
-            if (is_array($user_poll_data)) {
+            if (is_array($user_poll_votes_array) && isset($user_poll_votes_array[0]['TSTAMP'])) {
 
-                $user_poll_votes_array= array();
+                $user_poll_votes_display_array = array();
 
-                for ($i = 0; $i < sizeof($user_poll_data); $i++) {
+                foreach ($user_poll_votes_array as $vote_key => $user_poll_vote) {
 
-                    for ($j = 0; $j < sizeof($poll_results['OPTION_ID']); $j++) {
+                    foreach ($poll_results['OPTION_ID'] as $group_key => $poll_results_group_id) {
 
-                        if ($user_poll_data[$i]['OPTION_ID'] == $poll_results['OPTION_ID'][$j]) {
+                        if ($user_poll_votes_array[$vote_key]['OPTION_ID'] == $poll_results_group_id) {
 
-                            if ($poll_results['OPTION_NAME'][$j] == strip_tags($poll_results['OPTION_NAME'][$j])) {
+                            if ($poll_results['OPTION_NAME'][$group_key] == strip_tags($poll_results['OPTION_NAME'][$group_key])) {
 
-                                $user_poll_votes_array[] = "'{$poll_results['OPTION_NAME'][$j]}'";
+                                $user_poll_votes_display_array[] = sprintf("'%s'", word_filter_add_ob_tags($poll_results['OPTION_NAME'][$group_key]));
 
                             }else {
 
-                                $user_poll_votes_array[] = "Option {$user_poll_data[$i]['OPTION_ID']}";
+                                $user_poll_votes_display_array[] = sprintf("%s: %s", $lang['options'], $user_poll_votes_display_array[$vote_key]['OPTION_ID']);
                             }
                         }
                     }
                 }
 
-                $poll_data['CONTENT'].= sprintf("<p>{$lang['youvotedforpolloptionsondate']}</p>", implode(' &amp; ', $user_poll_votes_array), format_time($user_poll_data[0]['TSTAMP'], true));
+                $poll_data['CONTENT'].= sprintf($lang['youvotedforpolloptionsondate'], implode(' &amp; ', $user_poll_votes_display_array), format_time($user_poll_votes_array[0]['TSTAMP'], true));
             }
 
         }else {
 
-            if (is_array($user_poll_data)) {
+            if (is_array($user_poll_votes_array) && isset($user_poll_votes_array[0]['TSTAMP'])) {
 
-                $user_poll_votes_array = array();
+                $user_poll_votes_display_array = array();
 
-                for ($i = 0; $i < sizeof($user_poll_data); $i++) {
+                foreach ($user_poll_votes_array as $vote_key => $user_poll_vote) {
 
-                    for ($j = 0; $j < sizeof($poll_results['OPTION_ID']); $j++) {
+                    foreach ($poll_results['OPTION_ID'] as $group_key => $poll_results_group_id) {
 
-                        if ($user_poll_data[$i]['OPTION_ID'] == $poll_results['OPTION_ID'][$j]) {
+                        if ($user_poll_votes_array[$vote_key]['OPTION_ID'] == $poll_results_group_id) {
 
-                            if ($poll_results['OPTION_NAME'][$j] == strip_tags($poll_results['OPTION_NAME'][$j])) {
+                            if ($poll_results['OPTION_NAME'][$group_key] == strip_tags($poll_results['OPTION_NAME'][$group_key])) {
 
-                                $user_poll_votes_array[] = "'{$poll_results['OPTION_NAME'][$j]}'";
+                                $user_poll_votes_display_array[] = sprintf("'%s'", word_filter_add_ob_tags($poll_results['OPTION_NAME'][$group_key]));
 
                             }else {
 
-                                $user_poll_votes_array[] = "Option {$user_poll_data[$i]['OPTION_ID']}";
+                                $user_poll_votes_display_array[] = sprintf("%s: %s", $lang['options'], $user_poll_votes_display_array[$vote_key]['OPTION_ID']);
                             }
                         }
                     }
                 }
 
-                $poll_data['CONTENT'].= sprintf("<p>{$lang['youvotedforpolloptionsondate']}</p>", implode(' &amp; ', $user_poll_votes_array), format_time($user_poll_data[0]['TSTAMP'], true));
+                $poll_data['CONTENT'].= sprintf($lang['youvotedforpolloptionsondate'], implode(' &amp; ', $user_poll_votes_display_array), format_time($user_poll_votes_array[0]['TSTAMP'], true));
 
             }elseif (bh_session_get_value('UID') > 0) {
 

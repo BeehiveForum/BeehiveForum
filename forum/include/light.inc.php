@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.176 2008-04-22 15:41:06 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.177 2008-04-23 21:03:15 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -965,11 +965,11 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
     if (isset($message['PID'])) {
 
-        echo "<p><b>{$lang['from']}: ", word_filter_add_ob_tags(format_user_name($message['FLOGON'], $message['FNICK'])), "</b> [<a href=\"lmessages.php?webtag=$webtag&amp;msg={$tid}.{$message['PID']}\">#{$message['PID']}</a>]<br />";
+        echo "<p><b>{$lang['from']}: ", word_filter_add_ob_tags(_htmlentities(format_user_name($message['FLOGON'], $message['FNICK']))), "</b> [<a href=\"lmessages.php?webtag=$webtag&amp;msg={$tid}.{$message['PID']}\">#{$message['PID']}</a>]<br />";
 
     }else {
 
-        echo "<p><b>{$lang['from']}: ", word_filter_add_ob_tags(format_user_name($message['FLOGON'], $message['FNICK'])), "</b><br />";;
+        echo "<p><b>{$lang['from']}: ", word_filter_add_ob_tags(_htmlentities(format_user_name($message['FLOGON'], $message['FNICK']))), "</b><br />";;
     }
 
     // If the user posting a poll is ignored, remove ignored status for this message only so the poll can be seen
@@ -1002,7 +1002,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
     if (($message['TLOGON'] != $lang['allcaps']) && $message['TO_UID'] != 0) {
 
-        echo "<b>{$lang['to']}: " . word_filter_add_ob_tags(format_user_name($message['TLOGON'], $message['TNICK']))."</b>";
+        echo "<b>{$lang['to']}: " . word_filter_add_ob_tags(_htmlentities(format_user_name($message['TLOGON'], $message['TNICK'])))."</b>";
 
         if (isset($message['REPLY_TO_PID']) && $message['REPLY_TO_PID'] > 0) echo " [<a href=\"lmessages.php?webtag=$webtag&amp;msg={$tid}.{$message['REPLY_TO_PID']}\">#{$message['REPLY_TO_PID']}</a>]";
 

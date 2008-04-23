@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.246 2008-04-11 20:09:46 decoyduck Exp $ */
+/* $Id: edit.php,v 1.247 2008-04-23 21:03:14 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -708,11 +708,11 @@ echo "                        <h2>{$lang['to']}</h2>\n";
 
 if ($preview_message['TLOGON'] != $lang['allcaps']) {
 
-    echo "                        <a href=\"user_profile.php?webtag=$webtag&amp;uid=$to_uid\" target=\"_blank\" onclick=\"return openProfile($to_uid, '$webtag')\">", word_filter_add_ob_tags(format_user_name($preview_message['TLOGON'], $preview_message['TNICK'])), "</a><br /><br />\n";
+    echo "                        <a href=\"user_profile.php?webtag=$webtag&amp;uid=$to_uid\" target=\"_blank\" onclick=\"return openProfile($to_uid, '$webtag')\">", word_filter_add_ob_tags(_htmlentities(format_user_name($preview_message['TLOGON'], $preview_message['TNICK']))), "</a><br /><br />\n";
 
 }else {
 
-    echo "                        ", word_filter_add_ob_tags(format_user_name($preview_message['TLOGON'], $preview_message['TNICK'])), "<br /><br />\n";
+    echo "                        ", word_filter_add_ob_tags(_htmlentities(format_user_name($preview_message['TLOGON'], $preview_message['TNICK']))), "<br /><br />\n";
 }
 
 echo "                        <h2>{$lang['messageoptions']}</h2>\n";

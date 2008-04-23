@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.341 2008-04-11 20:09:47 decoyduck Exp $ */
+/* $Id: post.php,v 1.342 2008-04-23 21:03:14 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -497,7 +497,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
             if ($message_array = messages_get($reply_to_tid, $quote_pid)) {
 
-                $message_author = format_user_name($message_array['FLOGON'], $message_array['FNICK']);
+                $message_author = _htmlentities(format_user_name($message_array['FLOGON'], $message_array['FNICK']));
 
                 $message_content = message_get_content($reply_to_tid, $quote_pid);
                 $message_content = message_apply_formatting($message_content, false, true);
@@ -505,9 +505,8 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
                 if ($page_prefs & POST_TINYMCE_DISPLAY) {
 
                     $t_quoted_post = "<div class=\"quotetext\" id=\"quote\">";
-                    $t_quoted_post.= "<b>quote: </b>";
-                    $t_quoted_post.= format_user_name($message_array['FLOGON'], $message_array['FNICK']);
-                    $t_quoted_post.= "</div><div class=\"quote\">";
+                    $t_quoted_post.= "<b>quote: </b>$message_author</div>";
+                    $t_quoted_post.= "<div class=\"quote\">";
                     $t_quoted_post.= trim(strip_tags(strip_paragraphs($message_content)));
                     $t_quoted_post.= "</div><p>&nbsp;</p>";
 

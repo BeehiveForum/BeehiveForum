@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_prefs.php,v 1.92 2008-04-22 21:35:49 decoyduck Exp $ */
+/* $Id: edit_prefs.php,v 1.93 2008-04-23 21:03:14 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -249,7 +249,7 @@ if (isset($_POST['save'])) {
 
     if (isset($_POST['nickname']) && strlen(trim(_stripslashes($_POST['nickname']))) > 0) {
 
-        $user_info_new['NICKNAME'] = trim(_stripslashes($_POST['nickname']));
+        $user_info_new['NICKNAME'] = strip_tags(trim(_stripslashes($_POST['nickname'])));
 
         if (nickname_is_banned($user_info_new['NICKNAME'])) {
 
@@ -267,7 +267,7 @@ if (isset($_POST['save'])) {
 
         $user_info_new['EMAIL'] = trim(_stripslashes($_POST['email']));
 
-        if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $user_info_new['EMAIL'])) {
+        if (!email_address_valid($user_info_new['EMAIL'])) {
 
             $error_msg_array[] = $lang['invalidemailaddressformat'];
             $valid = false;

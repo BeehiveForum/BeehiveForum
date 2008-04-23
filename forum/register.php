@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.176 2008-03-18 16:27:57 decoyduck Exp $ */
+/* $Id: register.php,v 1.177 2008-04-23 21:03:14 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -282,7 +282,7 @@ if (isset($_POST['register'])) {
 
     if (isset($_POST['nickname']) && strlen(trim(_stripslashes($_POST['nickname']))) > 0) {
 
-        $nickname = trim(_stripslashes($_POST['nickname']));
+        $nickname = strip_tags(trim(_stripslashes($_POST['nickname'])));
 
         if (nickname_is_banned($nickname)) {
 

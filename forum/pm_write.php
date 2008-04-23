@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.198 2008-03-23 18:54:58 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.199 2008-04-23 21:03:14 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -567,22 +567,21 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
         $t_subject = preg_replace('/^(RE:)?/i', 'RE:', $pm_data['SUBJECT']);
 
+        $message_author = _htmlentities(format_user_name($message_array['FLOGON'], $message_array['FNICK']));
+
         if (bh_session_get_value('PM_INCLUDE_REPLY') == 'Y') {
 
             if ($page_prefs & POST_TINYMCE_DISPLAY) {
 
                 $t_content = "<div class=\"quotetext\" id=\"quote\">";
-                $t_content.= "<b>quote: </b>";
-                $t_content.= format_user_name($pm_data['FLOGON'], $pm_data['FNICK']);
-                $t_content.= "</div><div class=\"quote\">";
+                $t_content.= "<b>quote: </b>$message_author</div>";
+                $t_content.= "<div class=\"quote\">";
                 $t_content.= trim(strip_tags(strip_paragraphs($pm_data['CONTENT'])));
                 $t_content.= "</div><p>&nbsp;</p>";
 
             }else {
 
-                $t_content = "<quote source=\"";
-                $t_content.= format_user_name($pm_data['FLOGON'], $pm_data['FNICK']);
-                $t_content.= "\" url=\"\">";
+                $t_content = "<quote source=\"$message_author\" url=\"\">";
                 $t_content.= trim(strip_tags(strip_paragraphs($pm_data['CONTENT'])));
                 $t_content.= "</quote>\n\n";
             }
@@ -614,20 +613,19 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
         $t_subject = preg_replace('/^(FWD:)?/i', 'FWD:', $pm_data['SUBJECT']);
 
+        $message_author = _htmlentities(format_user_name($message_array['FLOGON'], $message_array['FNICK']));
+
         if ($page_prefs & POST_TINYMCE_DISPLAY) {
 
             $t_content = "<div class=\"quotetext\" id=\"quote\">";
-            $t_content.= "<b>quote: </b>";
-            $t_content.= format_user_name($pm_data['FLOGON'], $pm_data['FNICK']);
-            $t_content.= "</div><div class=\"quote\">";
+            $t_content.= "<b>quote: </b>$message_author</div>";
+            $t_content.= "<div class=\"quote\">";
             $t_content.= trim(strip_tags(strip_paragraphs($pm_data['CONTENT'])));
             $t_content.= "</div><p>&nbsp;</p>";
 
         }else {
 
-            $t_content = "<quote source=\"";
-            $t_content.= format_user_name($pm_data['FLOGON'], $pm_data['FNICK']);
-            $t_content.= "\" url=\"\">";
+            $t_content = "<quote source=\"$message_author\" url=\"\">";
             $t_content.= trim(strip_tags(strip_paragraphs($pm_data['CONTENT'])));
             $t_content.= "</quote>\n\n";
         }

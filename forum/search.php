@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.211 2008-04-03 14:23:44 decoyduck Exp $ */
+/* $Id: search.php,v 1.212 2008-04-23 21:03:15 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -475,12 +475,12 @@ if ((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || i
                     if ((thread_is_poll($search_result['TID']) && $search_result['PID'] == 1) || strlen($message['CONTENT']) < 1) {
 
                         echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;hightlight=yes\" target=\"", html_get_frame_name('right'), "\"><b>{$message['TITLE']}</b></a><br />";
-                        echo "<span class=\"smalltext\"><b>{$lang['from']}:</b> ", word_filter_add_ob_tags(format_user_name($search_result['FROM_LOGON'], $search_result['FROM_NICKNAME'])), ", ", format_time($search_result['CREATED'], 1), "</span></p></li>\n";
+                        echo "<span class=\"smalltext\"><b>{$lang['from']}:</b> ", word_filter_add_ob_tags(_htmlentities(format_user_name($search_result['FROM_LOGON'], $search_result['FROM_NICKNAME']))), ", ", format_time($search_result['CREATED'], 1), "</span></p></li>\n";
 
                     }else {
 
                         echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;highlight=yes\" target=\"", html_get_frame_name('right'), "\"><b>{$message['TITLE']}</b></a><br />";
-                        echo "{$message['CONTENT']}<br /><span class=\"smalltext\"><b>{$lang['from']}:</b> ", word_filter_add_ob_tags(format_user_name($search_result['FROM_LOGON'], $search_result['FROM_NICKNAME'])), ", ", format_time($search_result['CREATED'], 1), "</span></p></li>\n";
+                        echo "{$message['CONTENT']}<br /><span class=\"smalltext\"><b>{$lang['from']}:</b> ", word_filter_add_ob_tags(_htmlentities(format_user_name($search_result['FROM_LOGON'], $search_result['FROM_NICKNAME']))), ", ", format_time($search_result['CREATED'], 1), "</span></p></li>\n";
                     }
                 }
             }

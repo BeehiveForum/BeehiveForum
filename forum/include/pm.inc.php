@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.236 2008-03-20 18:48:09 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.237 2008-04-23 21:03:15 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1137,12 +1137,12 @@ function pm_display($pm_message_array, $folder, $preview = false, $export_html =
         if ($export_html === true) {
 
             echo "                        <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['from']}:&nbsp;</span></td>\n";
-            echo "                        <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">", format_user_name($pm_message_array['FLOGON'], $pm_message_array['FNICK']), "</span></td>\n";
+            echo "                        <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">", word_filter_add_ob_tags(_htmlentities(format_user_name($pm_message_array['FLOGON'], $pm_message_array['FNICK']))), "</span></td>\n";
 
         }else {
 
             echo "                        <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['from']}:&nbsp;</span></td>\n";
-            echo "                        <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$pm_message_array['FROM_UID']}\" target=\"_blank\" onclick=\"return openProfile({$pm_message_array['FROM_UID']}, '$webtag')\">", word_filter_add_ob_tags(format_user_name($pm_message_array['FLOGON'], $pm_message_array['FNICK'])), "</a></span></td>\n";
+            echo "                        <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$pm_message_array['FROM_UID']}\" target=\"_blank\" onclick=\"return openProfile({$pm_message_array['FROM_UID']}, '$webtag')\">", word_filter_add_ob_tags(_htmlentities(format_user_name($pm_message_array['FLOGON'], $pm_message_array['FNICK']))), "</a></span></td>\n";
         }
 
     }else {
@@ -1169,11 +1169,11 @@ function pm_display($pm_message_array, $folder, $preview = false, $export_html =
 
                 if ($export_html === true) {
 
-                    echo "                          <span class=\"posttofrom\">", format_user_name($pm_message_array['TLOGON'][$key], $pm_message_array['TNICK'][$key]), "</span>&nbsp;";
+                    echo "                          <span class=\"posttofrom\">", word_filter_add_ob_tags(_htmlentities(format_user_name($pm_message_array['TLOGON'][$key], $pm_message_array['TNICK'][$key]))), "</span>&nbsp;";
 
                 }else {
 
-                    echo "                          <span class=\"posttofrom\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$pm_message_array['TO_UID']}\" target=\"_blank\" onclick=\"return openProfile({$pm_message_array['TO_UID'][$key]}, '$webtag')\">", word_filter_add_ob_tags(format_user_name($pm_message_array['TLOGON'][$key], $pm_message_array['TNICK'][$key])), "</a></span>&nbsp;";
+                    echo "                          <span class=\"posttofrom\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$pm_message_array['TO_UID']}\" target=\"_blank\" onclick=\"return openProfile({$pm_message_array['TO_UID'][$key]}, '$webtag')\">", word_filter_add_ob_tags(_htmlentities(format_user_name($pm_message_array['TLOGON'][$key], $pm_message_array['TNICK'][$key]))), "</a></span>&nbsp;";
                 }
             }
 
@@ -1184,12 +1184,12 @@ function pm_display($pm_message_array, $folder, $preview = false, $export_html =
             if ($export_html === true) {
 
                 echo "                        <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['to']}:&nbsp;</span></td>\n";
-                echo "                        <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofromlabel\">", format_user_name($pm_message_array['TLOGON'], $pm_message_array['TNICK']), "</span></td>\n";
+                echo "                        <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofromlabel\">", word_filter_add_ob_tags(_htmlentities(format_user_name($pm_message_array['TLOGON'], $pm_message_array['TNICK']))), "</span></td>\n";
 
             }else {
 
                 echo "                        <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['to']}:&nbsp;</span></td>\n";
-                echo "                        <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofromlabel\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$pm_message_array['TO_UID']}\" target=\"_blank\" onclick=\"return openProfile({$pm_message_array['TO_UID']}, '$webtag')\">", word_filter_add_ob_tags(format_user_name($pm_message_array['TLOGON'], $pm_message_array['TNICK'])), "</a></span></td>\n";
+                echo "                        <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofromlabel\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$pm_message_array['TO_UID']}\" target=\"_blank\" onclick=\"return openProfile({$pm_message_array['TO_UID']}, '$webtag')\">", word_filter_add_ob_tags(_htmlentities(format_user_name($pm_message_array['TLOGON'], $pm_message_array['TNICK']))), "</a></span></td>\n";
             }
         }
     }

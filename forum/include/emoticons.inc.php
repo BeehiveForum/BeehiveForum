@@ -21,7 +21,17 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: emoticons.inc.php,v 1.70 2008-02-14 23:00:44 decoyduck Exp $ */
+/* $Id: emoticons.inc.php,v 1.71 2008-04-24 20:49:44 decoyduck Exp $ */
+
+/**
+* emoticons.inc.php - emoticon functions
+*
+* Contains emoticon related functions.
+*/
+
+/**
+*
+*/
 
 // We shouldn't be accessing this file directly.
 
@@ -32,184 +42,239 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
     exit;
 }
 
-// Emoticon filter file
-
 include_once(BH_INCLUDE_PATH. "format.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 
-class Emoticons
+/**
+* Initialise emoticons.
+*
+* Initislises the user's emoticon pack by pre-loading the definitions into a static array.
+* If the user doesn't have an emoticon pack the forum default pack is used instead.
+*
+* @return mixed - Boolean false on failure, array on success.
+* @param void
+*/
+
+function emoticons_initialise()
 {
-    var $emoticons;
-    var $emoticons_text;
+    static $emoticons_array = false;
 
-    function Emoticons ()
-    {
-        if (!isset($this->emoticons) || !is_array($this->emoticons) || sizeof($this->emoticons) == 0) {
+    $webtag = get_webtag($webtag_search);
 
-            // Get the user's emoticon set from their sesion.
-            // Fall back to using the forum default or Beehive default.
+    if (!is_array($emoticons_array) || sizeof($emoticons_array) < 1) {
 
-            if (($user_emots = bh_session_get_value('EMOTICONS')) === false) {
-                $user_emots = forum_get_setting('default_emoticons', false, 'default');
-            }
+        // Get the user's emoticon set from their sesion.
+        // Fall back to using the forum default or Beehive default.
 
-            // Initialize the array incase it's not been done in
-            // the definitions.php file by the emoticon authors.
+        if (($user_emots = bh_session_get_value('EMOTICONS')) === false) {
+            $user_emots = forum_get_setting('default_emoticons', false, 'default');
+        }
 
-            $emoticon = array();
+        // Initialize the array incase it's not been done in
+        // the definitions.php file by the emoticon authors.
 
-            // If the user has emoticons set to none (hides them completely)
-            // we need to load *all* the emoticon definition files so we can
-            // strip them out.
-            //
-            // If the user has a set specified we load only that set.
+        $emoticon = array();
 
-            if ($user_emots == 'none') {
+        // If the user has emoticons set to none (hides them completely)
+        // we need to load *all* the emoticon definition files so we can
+        // strip them out.
+        //
+        // If the user has a set specified we load only that set.
 
-                if ($dir = @opendir('emoticons')) {
+        if ($user_emots == 'none') {
 
-                    while (($file = @readdir($dir)) !== false) {
+            if ($dir = @opendir('emoticons')) {
 
-                        if ($file != '.' && $file != '..' && is_dir("emoticons/$file")) {
+                while (($file = @readdir($dir)) !== false) {
 
-                            if (file_exists("emoticons/$file/definitions.php")) {
+                    if ($file != '.' && $file != '..' && is_dir("emoticons/$file")) {
 
-                                include("emoticons/$file/definitions.php");
-                            }
+                        if (file_exists("emoticons/$file/definitions.php")) {
+
+                            include("emoticons/$file/definitions.php");
                         }
                     }
                 }
+            }
 
-                if ($dir = @opendir("forums/$webtag/emoticons")) {
+            if ($dir = @opendir("forums/$webtag/emoticons")) {
 
-                    while (($file = @readdir($dir)) !== false) {
+                while (($file = @readdir($dir)) !== false) {
 
-                        if ($file != '.' && $file != '..' && @is_dir("emoticons/$file")) {
+                    if ($file != '.' && $file != '..' && @is_dir("emoticons/$file")) {
 
-                            if (file_exists("forums/$webtag/emoticons/$file/definitions.php")) {
+                        if (file_exists("forums/$webtag/emoticons/$file/definitions.php")) {
 
-                                include("forums/$webtag/emoticons/$file/definitions.php");
-                            }
+                            include("forums/$webtag/emoticons/$file/definitions.php");
                         }
                     }
                 }
-
-            }else {
-
-                if (@is_dir("emoticons/$user_emots") && file_exists("emoticons/$user_emots/definitions.php")) {
-                    include ("emoticons/$user_emots/definitions.php");
-                }
-
-                if (@is_dir("forums/$webtag/emoticons/$user_emots") && file_exists("forums/$webtag/emoticons/$user_emots/definitions.php")) {
-                    include ("forums/$webtag/emoticons/$user_emots/definitions.php");
-                }
             }
 
-            // Check that we have successfully loaded the emoticons.
-            // If we have we need to process them a bit, otherwise
-            // we bail out.
+        }else {
 
-            if (sizeof($emoticon) > 0) {
-
-                // Reverse the order of the keys and reset the
-                // internal pointer.
-
-                krsort($emoticon);
-                reset($emoticon);
-
-                // Set up our emoticon text array for display
-                // of the selection box on post.php etc.
-
-                $emoticon_text = array();
-
-                // Group similar named emoticons together
-
-                foreach ($emoticon as $key => $value) {
-                    $emoticon_text[$value][] = $key;
-                }
-
-                // Sort our array by key length so we don't have
-                // the match text for emoticons inadvertantly matching
-                // the wrong emoticon.
-
-                uksort($emoticon, 'sort_by_length_callback');
-
-                // Set our class vars for the convert function
-
-                $this->emoticons      = $emoticon;
-                $this->emoticons_text = $emoticon_text;
-
-            }else {
-
-                $this->emoticons = false;
+            if (@is_dir("emoticons/$user_emots") && file_exists("emoticons/$user_emots/definitions.php")) {
+                include ("emoticons/$user_emots/definitions.php");
             }
+
+            if (@is_dir("forums/$webtag/emoticons/$user_emots") && file_exists("forums/$webtag/emoticons/$user_emots/definitions.php")) {
+                include ("forums/$webtag/emoticons/$user_emots/definitions.php");
+            }
+        }
+
+        // Check that we have successfully loaded the emoticons.
+        // If we have we need to process them a bit, otherwise
+        // we bail out.
+
+        if (sizeof($emoticon) > 0) {
+
+            // Reverse the order of the keys and reset the
+            // internal pointer.
+
+            krsort($emoticon);
+            reset($emoticon);
+
+            // Set up our emoticon text array for display
+            // of the selection box on post.php etc.
+
+            $emoticon_text = array();
+
+            // Group similar named emoticons together
+
+            foreach ($emoticon as $key => $value) {
+                $emoticon_text[$value][] = $key;
+            }
+
+            // Sort our array by key length so we don't have
+            // the match text for emoticons inadvertantly matching
+            // the wrong emoticon.
+
+            uksort($emoticon, 'sort_by_length_callback');
+
+            // Set our vars for the convert function
+
+            $emoticons_array = $emoticon;
         }
     }
 
-    function convert ($content)
-    {
-        if (!isset($this->emoticons) || !is_array($this->emoticons) || sizeof($this->emoticons) == 0) return $content;
+    return $emoticons_array;
+}
 
-        // Check for emoticon problems in Safari/Konqueror and Gecko based browsers like FireFox and Mozilla Suite
+/**
+* Get Browser fix for emoticons.
+*
+* Different browsers require different "fixes" to display the emoticons correctly.
+* This function checks the User Agent string of the browser to check which is
+* being used by the user.
+*
+* @return string
+* @param void
+*/
 
-        $browser_fix = "</span>";
+function emoticons_get_browser_fix()
+{
+    $emoticons_browser_fix = "</span>";
 
-        if (isset($_SERVER['HTTP_USER_AGENT'])) {
+    if (isset($_SERVER['HTTP_USER_AGENT'])) {
 
-            if (stristr($_SERVER['HTTP_USER_AGENT'], "konqueror") || stristr($_SERVER['HTTP_USER_AGENT'], "safari") || stristr($_SERVER['HTTP_USER_AGENT'], "MSIE 7")) {
+        if (preg_match("/konqueror|safari|MSIE 7/", $_SERVER['HTTP_USER_AGENT']) > 0) {
 
-                $browser_fix = "&nbsp;</span>";
+            $emoticons_browser_fix = "&nbsp;</span>";
 
-            }else if (stristr($_SERVER['HTTP_USER_AGENT'], "gecko")) {
+        }else if (preg_match("/gecko/", $_SERVER['HTTP_USER_AGENT']) > 0) {
 
-                $browser_fix = "</span> ";
-            }
+            $emoticons_browser_fix = "</span> ";
         }
+    }
 
-        $front = "(?<=\s|^|>)";
-        $end = "(?=\s|$|<)";
+    return $emoticons_browser_fix;
+}
 
-        foreach ($this->emoticons as $key => $emoticon) {
+/**
+* Apply emoticons to content
+*
+* Applies the emoticons to the specified string. Automatically initialises the emoticons
+* if not already done by the script.
+*
+* @return string
+* @param string $content - string to convert
+*/
 
-            $key_encoded = _htmlentities($key);
+function emoticons_apply($content)
+{
+    // Try and initialise the emoticons.
 
-            if ($key != $key_encoded) {
+    if (!$emoticons_array = emoticons_initialise()) return $content;
 
-                $pattern_string = "$front". preg_quote($key_encoded, "/"). "$end";
-                $replace_string = "<span class=\"e_$emoticon\" title=\"$key_encoded\"><span class=\"e__\">$key_encoded</span>$browser_fix";
+    // Get the required browser fix for the client browser.
 
-                $pattern_array[] = $pattern_string;
-                $replace_array[$replace_string] = $key_encoded;
-            }
+    $emoticon_browser_fix = emoticons_get_browser_fix();
 
-            $pattern_string = "$front". preg_quote($key, "/"). "$end";
-            $replace_string = "<span class=\"e_$emoticon\" title=\"$key\"><span class=\"e__\">$key</span>$browser_fix";
+    // PREG match for emoticons.
+
+    $emoticon_preg_match = "(?<=\s|^|>)%s(?=\s|$|<)";
+
+    // HTML code for emoticons.
+
+    $emoticon_html_code = "<span class=\"e_%1\$s\" title=\"%2\$s\"><span class=\"e__\">%2\$s</span>%3\$s";
+
+    // Generate the HTML required for each emoticon.
+
+    foreach ($emoticons_array as $key => $emoticon) {
+
+        $key_encoded = _htmlentities($key);
+
+        if ($key != $key_encoded) {
+
+            $pattern_string = sprintf($emoticon_preg_match, preg_quote($key_encoded, "/"));
+            $replace_string = sprintf($emoticon_html_code, $emoticon, $key_encoded, $emoticon_browser_fix);
 
             $pattern_array[] = $pattern_string;
-            $replace_array[$replace_string] = $key;
+            $replace_array[$replace_string] = $key_encoded;
         }
 
-        $pattern_match = implode("|", $pattern_array);
+        $pattern_string = sprintf($emoticon_preg_match, preg_quote($key, "/"));
+        $replace_string = sprintf($emoticon_html_code, $emoticon, $key, $emoticon_browser_fix);
 
-        if ($content_array = preg_split("/($pattern_match)/", $content, 100, PREG_SPLIT_DELIM_CAPTURE)) {
-
-            foreach($content_array as $key => $value) {
-
-                if (($replace_string = array_search($value, $replace_array)) !== false) {
-
-                    $content_array[$key] = $replace_string;
-                }
-            }
-
-            $content = implode('', $content_array);
-        }
-
-        return $content;
+        $pattern_array[] = $pattern_string;
+        $replace_array[$replace_string] = $key;
     }
+
+    // Apply the emoticons to the content.
+
+    $pattern_match = implode("|", $pattern_array);
+
+    if ($content_array = preg_split("/($pattern_match)/", $content, 100, PREG_SPLIT_DELIM_CAPTURE)) {
+
+        foreach($content_array as $key => $value) {
+
+            if (($replace_string = array_search($value, $replace_array)) !== false) {
+
+                $content_array[$key] = $replace_string;
+            }
+        }
+
+        $content = implode('', $content_array);
+    }
+
+    // Return the content.
+
+    return $content;
 }
+
+/**
+* Get available emoticons.
+*
+* Retrieve a list of available emoticons on the Beehive installation.
+* Optionally choose to include or exclude the text only and 'none'
+* emoticon packs.
+*
+* @return array
+* @param boolean $include_text_none - Set to false to exclude the text only / none packs.
+*/
 
 function emoticons_get_available($include_text_none = true)
 {
@@ -263,17 +328,50 @@ function emoticons_get_available($include_text_none = true)
     return $available_sets;
 }
 
+/**
+* Emoticon Sort call back
+*
+* Call back function used to sort the emoticons into length. Prevents similar named
+* but shorter emoticons from converting the longer match text of other emoticons.
+* Used by uksort in emoticons_initialise function.
+*
+* @return boolean
+* @param string $a - String to compare
+* @param string $b - String to compare
+*/
+
 function sort_by_length_callback($a, $b)
 {
     if ($a == $b) return 0;
     return (strlen($a) > strlen($b) ? -1 : 1);
 }
 
+/**
+* Check emoticon set exists.
+*
+* Checks that the emoticon set's style.css actually exists on disk
+*
+* @return boolean
+* @param string $emoticon_set - Emoticon set to check
+*/
+
 function emoticons_set_exists($emoticon_set)
 {
     $emoticon_set = basename($emoticon_set);
     return (@file_exists("emoticons/$emoticon_set/style.css") || $emoticon_set == "text" || $emoticon_set == "none");
 }
+
+/**
+* Preview emoticon pack
+*
+* Generates HTML for empoticon pack preview with clickable icons to add emoticon to form field.
+*
+* @return string
+* @param string $emoticon_set - Emoticon set to preview
+* @param string $width - Width in pixels of preview box
+* @param string $height - Height in pixels of the preview box
+* @param string $num - Number of emoticons to show in preview.
+*/
 
 function emoticons_preview($emoticon_set, $width = 190, $height = 100, $num = 35)
 {

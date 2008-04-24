@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.530 2008-04-23 21:03:15 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.531 2008-04-24 20:49:44 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -504,8 +504,6 @@ function message_apply_formatting($message, $emoticons = true, $ignore_sig = fal
 
     if ($emoticons == true) {
 
-        $emots = new Emoticons();
-
         $message_parts = preg_split("/<\/?noemots>/", $message);
         $signature_parts = preg_split("/<\/?noemots>/", $signature);
 
@@ -515,7 +513,7 @@ function message_apply_formatting($message, $emoticons = true, $ignore_sig = fal
 
             if (!($i % 2)) {
 
-                $message_parts[$i] = $emots->convert($message_parts[$i]);
+                $message_parts[$i] = emoticons_apply($message_parts[$i]);
             }
         }
 
@@ -626,7 +624,9 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
     $message['CONTENT'] = "<div class=\"pear_cache_lite\">{$message['CONTENT']}</div>";
 
-    $message['CONTENT'] = message_apply_formatting($message['CONTENT'], true, (($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) || !$show_sigs));
+    if (!$is_poll || ($is_poll && isset($message['PID']) && $message['PID'] > 1)) {
+        $message['CONTENT'] = message_apply_formatting($message['CONTENT'], true, (($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) || !$show_sigs));
+    }
 
     // Check length of post to see if we should truncate it for display --------
 

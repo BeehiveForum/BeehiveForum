@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.199 2008-04-23 21:03:14 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.200 2008-04-25 17:55:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -567,7 +567,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
         $t_subject = preg_replace('/^(RE:)?/i', 'RE:', $pm_data['SUBJECT']);
 
-        $message_author = _htmlentities(format_user_name($message_array['FLOGON'], $message_array['FNICK']));
+        $message_author = _htmlentities(format_user_name($pm_data['FLOGON'], $pm_data['FNICK']));
 
         if (bh_session_get_value('PM_INCLUDE_REPLY') == 'Y') {
 
@@ -613,7 +613,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
         $t_subject = preg_replace('/^(FWD:)?/i', 'FWD:', $pm_data['SUBJECT']);
 
-        $message_author = _htmlentities(format_user_name($message_array['FLOGON'], $message_array['FNICK']));
+        $message_author = _htmlentities(format_user_name($pm_data['FLOGON'], $pm_data['FNICK']));
 
         if ($page_prefs & POST_TINYMCE_DISPLAY) {
 

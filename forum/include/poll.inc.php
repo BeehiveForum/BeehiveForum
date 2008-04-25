@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.227 2008-04-23 21:03:16 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.228 2008-04-25 17:55:49 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -383,7 +383,7 @@ function poll_get_user_votes($tid, $view_style, $offset, &$poll_user_count)
         $sql.= "LEFT JOIN USER USER ON (USER.UID = USER_POLL_VOTES.UID) ";
         $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
         $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '0') ";
-        $sql.= "WHERE USER_POLL_VOTES.TID = '34190' AND POLL.VOTETYPE = 1 ";
+        $sql.= "WHERE USER_POLL_VOTES.TID = '$tid' AND POLL.VOTETYPE = 1 ";
         $sql.= "GROUP BY USER_POLL_VOTES.UID ";
         $sql.= "LIMIT $offset, 5";
 

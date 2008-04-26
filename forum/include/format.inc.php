@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.159 2008-04-26 20:29:41 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.160 2008-04-26 20:30:52 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -54,9 +54,9 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 * @param string $nickname - User Nickname
 */
 
-function format_user_name($logon, $nickname, $strip_tags = true)
+function format_user_name($logon, $nickname)
 {
-    if (strlen($nickname) > 0) {
+    if (strlen(trim($nickname)) > 0) {
 
         if (strtoupper(strip_tags($logon)) == strtoupper(strip_tags($nickname))) {
 

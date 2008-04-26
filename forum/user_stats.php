@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_stats.php,v 1.56 2007-12-26 13:19:35 decoyduck Exp $ */
+/* $Id: user_stats.php,v 1.57 2008-04-26 18:01:50 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -108,41 +108,51 @@ if (!forum_check_access_level()) {
     header_redirect("forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
-if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
-    $msg = $_GET['msg'];
-}else {
-    $msg = messages_get_most_recent($uid);
-}
+// Check if we're fetching the stats.
 
-if (isset($_GET['show_stats']) && !user_is_guest()) {
-
-    if ($_GET['show_stats'] == "Y") {
-        $user_prefs['SHOW_STATS'] = "Y";
-        $user_prefs_global['SHOW_STATS'] = false;
-    }else {
-        $user_prefs['SHOW_STATS'] = "N";
-        $user_prefs_global['SHOW_STATS'] = false;
-    }
-
-    if (user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
-
-        header_redirect("messages.php?webtag=$webtag&msg=$msg&setstats=1", $lang['statsdisplaychanged']);
-
-    }else {
-
-        html_draw_top();
-        html_error_msg($lang['failedtoupdateuserdetails'], 'messages.php', 'get', array('back' => $lang['back']), array('msg' => $msg, 'setstats' => 1));
-        html_draw_bottom();
-    }
-
-}else if (isset($_GET['get_stats'])) {
+if (isset($_GET['get_stats'])) {
 
     stats_output_xml();
     exit;
 
 }else {
 
-    header_redirect("messages.php?webtag=$webtag&msg=$msg");
+    if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+        $msg = $_GET['msg'];
+    }else {
+        $msg = messages_get_most_recent($uid);
+    }
+
+    if ($_GET['show_stats'] == "Y") {
+
+        $user_prefs['SHOW_STATS'] = "Y";
+        $user_prefs_global['SHOW_STATS'] = false;
+
+    }else {
+
+        $user_prefs['SHOW_STATS'] = "N";
+        $user_prefs_global['SHOW_STATS'] = false;
+    }
+
+    if (isset($_GET['show_stats']) && !user_is_guest()) {
+
+        if (user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
+
+            header_redirect("messages.php?webtag=$webtag&msg=$msg&setstats=1", $lang['statsdisplaychanged']);
+            exit;
+
+        }else {
+
+            html_draw_top();
+            html_error_msg($lang['failedtoupdateuserdetails'], 'messages.php', 'get', array('back' => $lang['back']), array('msg' => $msg, 'setstats' => 1));
+            html_draw_bottom();
+        }
+
+    }else {
+
+        header_redirect("messages.php?webtag=$webtag&msg=$msg");
+        exit;
+    }
 }
 
 ?>

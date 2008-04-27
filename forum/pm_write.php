@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.200 2008-04-25 17:55:49 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.201 2008-04-27 14:46:33 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -504,8 +504,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
     }else {
 
-        $error_msg_array[] = $lang['entersubjectformessage'];
-        $valid = false;
+        $t_subject = "";
     }
 
     if (isset($_POST['t_content']) && strlen(trim(_stripslashes($_POST['t_content']))) > 0) {
@@ -518,8 +517,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
     }else {
 
-        $error_msg_array[] = $lang['entercontentformessage'];
-        $valid = false;
+        $t_content = "";
     }
 
     if (isset($_POST['to_radio']) && is_numeric($_POST['to_radio'])) {
@@ -771,6 +769,7 @@ if ($valid && isset($_POST['send'])) {
         }
 
         header_redirect($uri);
+        exit;
     }
 
 }else if ($valid && isset($_POST['save'])) {
@@ -779,9 +778,7 @@ if ($valid && isset($_POST['send'])) {
 
         if (pm_update_saved_message($t_edit_mid, $t_subject, $t_content, $t_to_uid, $t_recipient_list)) {
 
-            html_draw_top();
-            html_display_msg($lang['messagesaved'], $lang['messagewassuccessfullysavedtodraftsfolder'], 'pm.php', 'get', array('continue' => $lang['continue']), array('mid' => $t_edit_mid, 'folder' => PM_FOLDER_DRAFTS));
-            html_draw_bottom();
+            header_redirect("pm.php?webtag=$webtag&mid=$t_edit_mid&message_saved=true");
             exit;
 
         }else {
@@ -796,9 +793,7 @@ if ($valid && isset($_POST['send'])) {
 
             pm_save_attachment_id($saved_mid, $aid);
 
-            html_draw_top();
-            html_display_msg($lang['messagesaved'], $lang['messagewassuccessfullysavedtodraftsfolder'], 'pm.php', 'get', array('continue' => $lang['continue']), array('mid' => $saved_mid, 'folder' => PM_FOLDER_DRAFTS));
-            html_draw_bottom();
+            header_redirect("pm.php?webtag=$webtag&mid=$saved_mid&message_saved=true");
             exit;
 
         }else {

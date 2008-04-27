@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.237 2008-04-09 14:32:43 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.238 2008-04-27 11:20:45 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -1056,11 +1056,11 @@ if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
     echo "                    <table width=\"90%\" class=\"posthead\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\">{$lang['username']}:</td>\n";
-    echo "                        <td align=\"left\">{$user['LOGON']}</td>\n";
+    echo "                        <td align=\"left\">", _htmlentities($user['LOGON']), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\">{$lang['nickname']}:</td>\n";
-    echo "                        <td align=\"left\">{$user['NICKNAME']}</td>\n";
+    echo "                        <td align=\"left\">", _htmlentities($user['NICKNAME']), "</td>\n";
     echo "                      </tr>\n";
 
     if (email_address_valid($user['EMAIL'])) {

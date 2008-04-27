@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.537 2008-04-09 14:32:43 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.538 2008-04-27 12:55:11 decoyduck Exp $ */
 
 // British English language file
 
@@ -1021,7 +1021,7 @@ $lang['invaliduserkeyprovided'] = "Invalid user key provided. Check email for co
 
 $lang['nomessagespecifiedfordel'] = "No message specified for deletion";
 $lang['deletemessage'] = "Delete Message";
-$lang['postdelsuccessfully'] = "Post deleted successfully";
+$lang['successfullydeletedpost'] = "Successfully deleted post %s";
 $lang['errordelpost'] = "Error deleting post";
 $lang['cannotdeletepostsinthisfolder'] = "You cannot delete posts in this folder";
 
@@ -1030,7 +1030,7 @@ $lang['cannotdeletepostsinthisfolder'] = "You cannot delete posts in this folder
 $lang['nomessagespecifiedforedit'] = "No message specified for editing";
 $lang['cannoteditpollsinlightmode'] = "Cannot edit polls in Light mode";
 $lang['editedbyuser'] = "EDITED: %s by %s";
-$lang['editappliedtomessage'] = "Edit Applied to Message";
+$lang['successfullyeditedpost'] = "Successfully edited post %s";
 $lang['errorupdatingpost'] = "Error updating post";
 $lang['editmessage'] = "Edit message %s";
 $lang['editpollwarning'] = "<b>Note</b>: Editing certain aspects of a poll will void all the current votes and allow people to vote again.";
@@ -1329,7 +1329,7 @@ $lang['closeforposting'] = "Close for posting";
 $lang['until'] = "Until 00:00 UTC";
 $lang['approvalrequired'] = "Approval Required";
 $lang['messageawaitingapprovalbymoderator'] = "Message %s.%s is awaiting approval by a moderator";
-$lang['postapprovedsuccessfully'] = "Post approved successfully";
+$lang['successfullyapprovedpost'] = "Successfully approved post %s";
 $lang['postapprovalfailed'] = "Post approval failed.";
 $lang['postdoesnotrequireapproval'] = "Post does not require approval";
 $lang['approvepost'] = "Approve Post";

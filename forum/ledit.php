@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ledit.php,v 1.29 2008-04-11 20:09:46 decoyduck Exp $ */
+/* $Id: ledit.php,v 1.30 2008-04-27 12:55:11 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -130,6 +130,7 @@ if (user_is_guest()) {
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     $edit_msg = $_GET['msg'];
+
     list($tid, $pid) = explode('.', $_GET['msg']);
 
     if (!$t_fid = thread_get_folder($tid, $pid)) {
@@ -143,6 +144,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 }elseif (isset($_POST['t_msg']) && validate_msg($_POST['t_msg'])) {
 
     $edit_msg = $_POST['t_msg'];
+
     list($tid, $pid) = explode('.', $_POST['t_msg']);
 
     if (!$t_fid = thread_get_folder($tid, $pid)) {
@@ -152,9 +154,8 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
         light_html_draw_bottom();
         exit;
     }
-}
 
-if (!isset($tid) || !isset($pid) || !is_numeric($tid) || !is_numeric($pid)) {
+}else {
 
     light_html_draw_top("robots=noindex,nofollow");
     light_html_display_error_msg($lang['nomessagespecifiedforedit']);
@@ -172,15 +173,8 @@ if (thread_is_poll($tid) && $pid == 1) {
 
 if (isset($_POST['cancel'])) {
 
-    $uri = "lmessages.php?webtag=$webtag";
-
-    if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
-        $uri.= "&msg={$_GET['msg']}";
-    }elseif (isset($_POST['t_msg']) && validate_msg($_POST['t_msg'])) {
-        $uri.= "&msg={$_POST['t_msg']}";
-    }
-
-    header_redirect($uri);
+    header_redirect("lmessages.php?webtag=$webtag&msg=$msg");
+    exit;
 }
 
 if (bh_session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {

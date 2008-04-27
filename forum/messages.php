@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.263 2008-04-03 14:23:44 decoyduck Exp $ */
+/* $Id: messages.php,v 1.264 2008-04-27 12:55:11 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -386,11 +386,28 @@ if (isset($_GET['setinterest'])) {
 }
 
 if (isset($_GET['relupdated'])) {
-    html_display_success_msg($lang['relationshipsupdated'], '96%', 'center');
-}
 
-if (isset($_GET['setstats'])) {
+    html_display_success_msg($lang['relationshipsupdated'], '96%', 'center');
+
+}else if (isset($_GET['setstats'])) {
+
     html_display_success_msg($lang['statsdisplaychanged'], '96%', 'center');
+
+}else if (isset($_GET['edit_success']) && validate_msg($_GET['edit_success'])) {
+
+    html_display_success_msg(sprintf($lang['successfullyeditedpost'], $_GET['edit_success']), '96%', 'center');
+
+}else if (isset($_GET['delete_success']) && validate_msg($_GET['delete_success'])) {
+
+    html_display_success_msg(sprintf($lang['successfullydeletedpost'], $_GET['delete_success']), '96%', 'center');
+
+}elseif (isset($_GET['delete_success']) && validate_msg($_GET['delete_success'])) {
+
+    html_display_success_msg(sprintf($lang['successfullydeletedpost'], $_GET['delete_success']), '96%', 'center');
+
+}else if (isset($_GET['post_approve_success']) && validate_msg($_GET['post_approve_success'])) {
+
+    html_display_success_msg(sprintf($lang['successfullyapprovedpost'], $_GET['post_approve_success']), '96%', 'center');
 }
 
 if (isset($_GET['font_resize'])) {

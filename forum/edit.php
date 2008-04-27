@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.247 2008-04-23 21:03:14 decoyduck Exp $ */
+/* $Id: edit.php,v 1.248 2008-04-27 12:55:11 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -128,6 +128,7 @@ if (user_is_guest()) {
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     $edit_msg = $_GET['msg'];
+
     list($tid, $pid) = explode('.', $_GET['msg']);
 
     if (!$t_fid = thread_get_folder($tid, $pid)) {
@@ -138,10 +139,11 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
         exit;
     }
 
-}elseif (isset($_POST['t_msg']) && validate_msg($_POST['t_msg'])) {
+}elseif (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
 
-    $edit_msg = $_POST['t_msg'];
-    list($tid, $pid) = explode('.', $_POST['t_msg']);
+    $edit_msg = $_POST['msg'];
+
+    list($tid, $pid) = explode('.', $_POST['msg']);
 
     if (!$t_fid = thread_get_folder($tid, $pid)) {
 
@@ -150,40 +152,25 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
         html_draw_bottom();
         exit;
     }
-}
 
-if (!isset($tid) || !isset($pid) || !is_numeric($tid) || !is_numeric($pid)) {
+}else {
 
     html_draw_top();
-    html_error_msg($lang['threadcouldnotbefound'], 'discussion.php', 'get', array('back' => $lang['back']));
+    html_error_msg($lang['nomessagespecifiedforedit'], 'discussion.php', 'get', array('back' => $lang['back']));
     html_draw_bottom();
     exit;
 }
 
 if (thread_is_poll($tid) && $pid == 1) {
 
-    $uri = "edit_poll.php?webtag=$webtag";
-
-    if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
-        $uri.= "&msg=". $_GET['msg'];
-    }elseif (isset($_POST['t_msg']) && validate_msg($_POST['t_msg'])) {
-        $uri.= "&msg=". $_POST['t_msg'];
-    }
-
-    header_redirect($uri);
+    header_redirect("edit_poll.php?webtag=$webtag&msg=$msg");
+    exit;
 }
 
 if (isset($_POST['cancel'])) {
 
-    $uri = "discussion.php?webtag=$webtag";
-
-    if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
-        $uri.= "&msg=". $_GET['msg'];
-    }elseif (isset($_POST['t_msg']) && validate_msg($_POST['t_msg'])) {
-        $uri.= "&msg=". $_POST['t_msg'];
-    }
-
-    header_redirect($uri);
+    header_redirect("discussion.php?webtag=$webtag&msg=$msg");
+    exit;
 }
 
 if (bh_session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
@@ -531,9 +518,7 @@ if (isset($_POST['preview'])) {
                 admin_add_log_entry(EDIT_POST, array($t_fid, $tid, $pid));
             }
 
-            html_draw_top();
-            html_display_msg(sprintf($lang['editmessage'], _htmlentities($edit_msg)), $lang['editappliedtomessage'], 'discussion.php', 'get', array('back' => $lang['continue']), array('msg' => $edit_msg));
-            html_draw_bottom();
+            header_redirect("discussion.php?webtag=$webtag&msg=$edit_msg&edit_success=$edit_msg");
             exit;
 
         }else{
@@ -663,7 +648,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 echo "<br />\n";
 echo "<form name=\"f_edit\" action=\"edit.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-echo "  ", form_input_hidden("t_msg", _htmlentities($edit_msg));
+echo "  ", form_input_hidden("msg", _htmlentities($edit_msg));
 echo "  ", form_input_hidden("t_to_uid", _htmlentities($to_uid));
 echo "  ", form_input_hidden("t_from_uid", _htmlentities($from_uid));
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.237 2008-04-23 21:03:15 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.238 2008-04-27 14:46:33 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1179,7 +1179,7 @@ function pm_display($pm_message_array, $folder, $preview = false, $export_html =
 
             echo "                        </td>\n";
 
-        }else {
+        }else if (isset($message['TO_UID']) && is_numeric($message['TO_UID'])) {
 
             if ($export_html === true) {
 
@@ -1191,6 +1191,11 @@ function pm_display($pm_message_array, $folder, $preview = false, $export_html =
                 echo "                        <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['to']}:&nbsp;</span></td>\n";
                 echo "                        <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofromlabel\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$pm_message_array['TO_UID']}\" target=\"_blank\" onclick=\"return openProfile({$pm_message_array['TO_UID']}, '$webtag')\">", word_filter_add_ob_tags(_htmlentities(format_user_name($pm_message_array['TLOGON'], $pm_message_array['TNICK']))), "</a></span></td>\n";
             }
+
+        }else {
+
+            echo "                        <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['to']}:&nbsp;</span></td>\n";
+            echo "                  <td align=\"left\" class=\"postbody\"><i>{$lang['norecipients']}</i></td>\n";
         }
     }
 
@@ -1202,8 +1207,25 @@ function pm_display($pm_message_array, $folder, $preview = false, $export_html =
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['subject']}:&nbsp;</span></td>\n";
-    echo "                        <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">", word_filter_add_ob_tags(_htmlentities($pm_message_array['SUBJECT'])), "</span></td>\n";
-    echo "                        <td align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\">", format_time($pm_message_array['CREATED']), "&nbsp;</span></td>\n";
+
+    if (strlen(trim($pm_message_array['SUBJECT'])) > 0) {
+
+        echo "                        <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">", word_filter_add_ob_tags(_htmlentities($pm_message_array['SUBJECT'])), "</span></td>\n";
+
+    }else {
+
+        echo "                        <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\"><i>{$lang['nosubject']}</i></span></td>\n";
+    }
+
+    if ($pm_message_array['TYPE'] & PM_SAVED_DRAFT) {
+
+        echo "                        <td align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\"><i>{$lang['notsent']}</i>&nbsp;</span></td>\n";
+
+    }else {
+
+        echo "                        <td align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\">", format_time($pm_message_array['CREATED']), "&nbsp;</span></td>\n";
+    }
+
     echo "                      </tr>\n";
     echo "                    </table>\n";
     echo "                  </td>\n";

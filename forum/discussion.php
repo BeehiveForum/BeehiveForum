@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: discussion.php,v 1.110 2008-04-05 15:44:32 decoyduck Exp $ */
+/* $Id: discussion.php,v 1.111 2008-04-27 12:55:11 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -137,10 +137,27 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
 
     html_draw_top('body_tag=false', 'frames=true');
 
-    echo "<frameset cols=\"280,*\" framespacing=\"4\" border=\"4\">\n";
-    echo "  <frame src=\"thread_list.php?webtag=$webtag&amp;msg={$_GET['msg']}\" name=\"", html_get_frame_name('left'), "\" frameborder=\"0\" />\n";
-    echo "  <frame src=\"messages.php?webtag=$webtag&amp;msg={$_GET['msg']}\" name=\"", html_get_frame_name('right'), "\" frameborder=\"0\" />\n";
-    echo "</frameset>\n";
+    if (isset($_GET['edit_success']) && validate_msg($_GET['edit_success'])) {
+
+        echo "<frameset cols=\"280,*\" framespacing=\"4\" border=\"4\">\n";
+        echo "  <frame src=\"thread_list.php?webtag=$webtag&amp;msg={$_GET['msg']}\" name=\"", html_get_frame_name('left'), "\" frameborder=\"0\" />\n";
+        echo "  <frame src=\"messages.php?webtag=$webtag&amp;msg={$_GET['msg']}&amp;edit_success={$_GET['edit_success']}\" name=\"", html_get_frame_name('right'), "\" frameborder=\"0\" />\n";
+        echo "</frameset>\n";
+
+    }else if (isset($_GET['delete_success']) && validate_msg($_GET['delete_success'])) {
+
+        echo "<frameset cols=\"280,*\" framespacing=\"4\" border=\"4\">\n";
+        echo "  <frame src=\"thread_list.php?webtag=$webtag&amp;msg={$_GET['msg']}\" name=\"", html_get_frame_name('left'), "\" frameborder=\"0\" />\n";
+        echo "  <frame src=\"messages.php?webtag=$webtag&amp;msg={$_GET['msg']}&amp;delete_success={$_GET['delete_success']}\" name=\"", html_get_frame_name('right'), "\" frameborder=\"0\" />\n";
+        echo "</frameset>\n";
+
+    }else {
+
+        echo "<frameset cols=\"280,*\" framespacing=\"4\" border=\"4\">\n";
+        echo "  <frame src=\"thread_list.php?webtag=$webtag&amp;msg={$_GET['msg']}\" name=\"", html_get_frame_name('left'), "\" frameborder=\"0\" />\n";
+        echo "  <frame src=\"messages.php?webtag=$webtag&amp;msg={$_GET['msg']}\" name=\"", html_get_frame_name('right'), "\" frameborder=\"0\" />\n";
+        echo "</frameset>\n";
+    }
 
     html_draw_bottom(false);
 

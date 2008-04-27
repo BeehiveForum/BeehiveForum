@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: delete.php,v 1.131 2008-03-23 18:54:58 decoyduck Exp $ */
+/* $Id: delete.php,v 1.132 2008-04-27 12:55:11 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -136,6 +136,7 @@ $valid = true;
 if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
 
     $msg = $_POST['msg'];
+
     list($tid, $pid) = explode(".", $msg);
 
     if (!$t_fid = thread_get_folder($tid, $pid)) {
@@ -149,6 +150,7 @@ if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
 }elseif (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     $msg = $_GET['msg'];
+
     list($tid, $pid) = explode(".", $msg);
 
     if (!$t_fid = thread_get_folder($tid, $pid)) {
@@ -168,8 +170,9 @@ if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
 }
 
 if (isset($_POST['cancel'])) {
-    $uri = "discussion.php?webtag=$webtag&msg=". $msg;
-    header_redirect($uri);
+
+    header_redirect("discussion.php?webtag=$webtag&msg=$msg");
+    exit;
 }
 
 if (bh_session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
@@ -237,13 +240,9 @@ if (isset($_POST['delete']) && is_numeric($tid) && is_numeric($pid)) {
 
         if ($threaddata['LENGTH'] == 1) {
             $msg = messages_get_most_recent(bh_session_get_value('UID'));
-        }else {
-            $msg = "$tid.$pid";
         }
 
-        html_draw_top();
-        html_display_msg($lang['deletemessage'], $lang['postdelsuccessfully'], 'discussion.php', 'get', array('back' => $lang['back']), array('msg' => "$msg"));
-        html_draw_bottom();
+        header_redirect("discussion.php?webtag=$webtag&msg=$msg&delete_success=$tid.$pid");
         exit;
 
     }else {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_post_approve.php,v 1.59 2008-04-23 21:03:14 decoyduck Exp $ */
+/* $Id: admin_post_approve.php,v 1.60 2008-04-27 12:55:11 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -236,16 +236,18 @@ if (isset($msg) && validate_msg($msg)) {
 
                 admin_add_log_entry(APPROVED_POST, array($t_fid, $tid, $pid));
 
-                if ($threaddata['LENGTH'] == 1) {
-                    $msg = messages_get_most_recent(bh_session_get_value('UID'));
-                }else {
-                    $msg = "$tid.$pid";
-                }
+                if (preg_match("/^messages.php/", basename($ret)) > 0) {
 
-                html_draw_top();
-                html_display_msg($lang['approvepost'], $lang['postapprovedsuccessfully'], $ret, 'get', array('back' => $lang['back']), array('msg' => $msg), '_self', 'center');
-                html_draw_bottom();
-                exit;
+                    header_redirect("messages.php?webtag=$webtag&msg=$msg&post_approve_success=$msg");
+                    exit;
+
+                }else {
+
+                    html_draw_top();
+                    html_display_msg($lang['approvepost'], sprintf($lang['successfullyapprovedpost'], $msg), $ret, 'get', array('back' => $lang['back']), array('msg' => $msg), '_self', 'center');
+                    html_draw_bottom();
+                    exit;
+                }
 
             }else {
 

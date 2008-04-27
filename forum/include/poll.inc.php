@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.228 2008-04-25 17:55:49 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.229 2008-04-27 21:35:46 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -724,7 +724,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                 }
 
                 $poll_data['CONTENT'].= "                          <tr>\n";
-                $poll_data['CONTENT'].= "                            <td align=\"left\" colspan=\"2\" class=\"postbody\">". sprintf($lang['youvotedforpolloptionsondate'], implode(' &amp; ', $user_poll_votes_display_array), format_time($user_poll_votes_array[0]['TSTAMP'], true)). "</td>\n";
+                $poll_data['CONTENT'].= "                            <td align=\"left\" colspan=\"2\" class=\"postbody\">". sprintf($lang['youvotedforpolloptionsondate'], implode(' &amp; ', $user_poll_votes_display_array), format_date($user_poll_votes_array[0]['TSTAMP'], true)). "</td>\n";
                 $poll_data['CONTENT'].= "                          </tr>\n";
             }
 
@@ -753,7 +753,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                 }
 
                 $poll_data['CONTENT'].= "                          <tr>\n";
-                $poll_data['CONTENT'].= "                            <td align=\"left\" colspan=\"2\" class=\"postbody\">". sprintf($lang['youvotedforpolloptionsondate'], implode(' &amp; ', $user_poll_votes_display_array), format_time($user_poll_votes_array[0]['TSTAMP'], true)). "</td>\n";
+                $poll_data['CONTENT'].= "                            <td align=\"left\" colspan=\"2\" class=\"postbody\">". sprintf($lang['youvotedforpolloptionsondate'], implode(' &amp; ', $user_poll_votes_display_array), format_date($user_poll_votes_array[0]['TSTAMP'], true)). "</td>\n";
                 $poll_data['CONTENT'].= "                          </tr>\n";
                 $poll_data['CONTENT'].= "                          <tr>\n";
                 $poll_data['CONTENT'].= "                            <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";

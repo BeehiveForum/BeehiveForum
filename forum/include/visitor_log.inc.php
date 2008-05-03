@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.inc.php,v 1.28 2008-04-22 15:28:57 decoyduck Exp $ */
+/* $Id: visitor_log.inc.php,v 1.29 2008-05-03 17:28:58 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -318,7 +318,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
 
     // From portion which selects users and guests from the VISITOR_LOG table.
 
-    $from_sql = "FROM USER LEFT JOIN VISITOR_LOG ON (VISITOR_LOG.UID = USER.UID) ";
+    $from_sql = "FROM USER LEFT JOIN VISITOR_LOG ON (VISITOR_LOG.UID = USER.UID AND VISITOR_LOG.FORUM = '$forum_fid') ";
 
     // Join to get the user's DOB.
 
@@ -501,7 +501,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
             $sql = implode(",", $query_array_merge). "$from_sql $join_sql $where_sql $having_sql ";
             $sql.= "UNION SELECT VISITOR_LOG.UID, '' AS LOGON, '' AS NICKNAME, ";
             $sql.= "NULL AS RELATIONSHIP, '' AS PEER_NICKNAME, 0 AS POST_COUNT, ";
-            $sql.= "NULL AS DOB, NULL AS AGE, $timezone_id as TIMEZONE, ";
+            $sql.= "NULL AS DOB, NULL AS AGE, $timezone_id AS TIMEZONE, ";
             $sql.= "UNIX_TIMESTAMP(NOW()) AS LOCAL_TIME, NULL AS REGISTERED, ";
             $sql.= "NULL AS USER_TIME_BEST, NULL AS USER_TIME_TOTAL, ";
             $sql.= "'' AS AVATAR_URL_FORUM, '' AS AVATAR_AID_FORUM, ";
@@ -516,7 +516,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
             $sql = implode(",", $query_array_merge). "$from_sql $join_sql $where_sql $having_sql ";
             $sql.= "UNION SELECT VISITOR_LOG.UID, '' AS LOGON, '' AS NICKNAME, ";
             $sql.= "NULL AS RELATIONSHIP, '' AS PEER_NICKNAME, 0 AS POST_COUNT, ";
-            $sql.= "NULL AS DOB, NULL AS AGE, $timezone_id as TIMEZONE, ";
+            $sql.= "NULL AS DOB, NULL AS AGE, $timezone_id AS TIMEZONE, ";
             $sql.= "UNIX_TIMESTAMP(NOW()) AS LOCAL_TIME, NULL AS REGISTERED, ";
             $sql.= "NULL AS USER_TIME_BEST, NULL AS USER_TIME_TOTAL, ";
             $sql.= "'' AS AVATAR_URL_FORUM, '' AS AVATAR_AID_FORUM, ";
@@ -527,6 +527,8 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
             $sql.= "$where_visitor_sql $having_visitor_sql $order_sql $limit_sql";
         }
     }
+
+    echo $sql;
 
     if (!$result = db_query($sql, $db_visitor_log_browse_items)) return false;
 

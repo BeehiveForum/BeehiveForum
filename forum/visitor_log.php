@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.php,v 1.120 2008-02-05 19:14:06 decoyduck Exp $ */
+/* $Id: visitor_log.php,v 1.121 2008-05-09 06:53:30 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -257,12 +257,19 @@ if (isset($_POST['hide_empty']) && $_POST['hide_empty'] == 'Y') {
     $hide_empty = 'N';
 }
 
-if (isset($_POST['hide_guests']) && $_POST['hide_guests'] == 'Y') {
-    $hide_guests = 'Y';
-}elseif (isset($_GET['hide_guests']) && $_GET['hide_guests'] == 'Y') {
-    $hide_guests = 'Y';
+if (forum_get_setting('guest_show_recent', 'Y')) {
+
+    if (isset($_POST['hide_guests']) && $_POST['hide_guests'] == 'Y') {
+        $hide_guests = 'Y';
+    }elseif (isset($_GET['hide_guests']) && $_GET['hide_guests'] == 'Y') {
+        $hide_guests = 'Y';
+    }else {
+        $hide_guests = 'N';
+    }
+
 }else {
-    $hide_guests = 'N';
+
+    $hide_guests = 'Y';
 }
 
 // Sort direction
@@ -494,9 +501,14 @@ echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">", form_checkbox("hide_empty", "Y", $lang['hiderowswithemptyornullvalues'], $hide_empty == 'Y'), "</td>\n";
 echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" colspan=\"2\">", form_checkbox("hide_guests", "Y", $lang['showregisteredusersonly'], $hide_guests == 'Y'), "</td>\n";
-echo "                      </tr>\n";
+
+if (forum_get_setting('guest_show_recent', 'Y')) {
+
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" colspan=\"2\">", form_checkbox("hide_guests", "Y", $lang['showregisteredusersonly'], $hide_guests == 'Y'), "</td>\n";
+    echo "                      </tr>\n";
+}
+
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";
 echo "                      </tr>\n";

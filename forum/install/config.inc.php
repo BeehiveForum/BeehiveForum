@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: config.inc.php,v 1.12 2008-01-12 22:09:29 decoyduck Exp $ */
+/* $Id: config.inc.php,v 1.13 2008-05-09 06:53:30 decoyduck Exp $ */
 
 // MAIN CONFIGURATION FILE
 
@@ -62,7 +62,7 @@ $show_friendly_errors = true;
 
 // Error Reporting Verbose Mode ----------------------------------------
 
-$error_report_verbose = false;
+$error_report_verbose = {error_report_verbose};
 
 // The Beehive Forum Error Handler can be configured to gather verbose
 // details about any errors that occur, include HTTP Request and Cookie
@@ -75,7 +75,7 @@ $error_report_verbose = false;
 
 // Error Reporting Email -----------------------------------------------
 
-$error_report_email_addr_to = '';
+$error_report_email_addr_to = '{error_report_email_addr_to}';
 $error_report_email_addr_from = 'no-reply@abeehiveforum.net';
 
 // In addition to the error message displayed to end users Beehive can

@@ -1,5 +1,5 @@
 /*======================================================================
-Copyright Project BeehiveForum 2002
+Copyright Project Beehive Forum 2002
 
 This file is part of BeehiveForum.
 
@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: xml_http.js,v 1.6 2007-11-19 18:40:10 decoyduck Exp $ */
+/* $Id: xml_http.js,v 1.7 2008-05-09 06:53:30 decoyduck Exp $ */
 
 function xml_http_request()
 {

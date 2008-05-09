@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.88 2008-03-18 01:10:41 decoyduck Exp $ */
+/* $Id: install.php,v 1.89 2008-05-09 06:53:30 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -148,13 +148,15 @@ if (isset($_POST['install_method'])) {
         if (isset($_POST['admin_cpassword']) && strlen(trim(_stripslashes($_POST['admin_cpassword']))) > 0) {
             $admin_cpassword = trim(_stripslashes($_POST['admin_cpassword']));
         }else {
-            $admin_cpassword = "";
+            $error_array[] = "You must confirm the password for your administrator account.\n";
+            $valid = false;
         }
 
         if (isset($_POST['admin_email']) && strlen(trim(_stripslashes($_POST['admin_email']))) > 0) {
             $admin_email = trim(_stripslashes($_POST['admin_email']));
         }else {
-            $admin_email = "";
+            $error_array[] = "You must supply an email address for your administrator account.\n";
+            $valid = false;
         }
     }
 
@@ -168,6 +170,12 @@ if (isset($_POST['install_method'])) {
         $skip_dictionary = true;
     }else {
         $skip_dictionary = false;
+    }
+
+    if (isset($_POST['enable_error_reports']) && $_POST['enable_error_reports'] == 'Y') {
+        $enable_error_reports = true;
+    }else {
+        $enable_error_reports = false;
     }
 
     if ($valid) {
@@ -236,6 +244,15 @@ if (isset($_POST['install_method'])) {
                     $config_file = str_replace('{db_username}', $db_username, $config_file);
                     $config_file = str_replace('{db_password}', $db_password, $config_file);
                     $config_file = str_replace('{db_database}', $db_database, $config_file);
+
+                    // Error reporting
+
+                    $error_report_verbose = ($enable_error_reports) ? 'true' : 'false';
+
+                    $config_file = str_replace('{error_report_verbose}', $error_report_verbose, $config_file);
+                    $config_file = str_replace('{error_report_email_addr_to}', $admin_email, $config_file);
+
+                    // Check to see if running in developer mode.
 
                     if (!defined('BEEHIVE_INSTALL_NOWARN')) {
 
@@ -743,7 +760,10 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\" class=\"postbody\"><span class=\"bhinputcheckbox\"><input type=\"checkbox\" name=\"remove_conflicts\" id=\"remove_conflicts\" value=\"Y\" tabindex=\"12\" /><label for=\"remove_conflicts\">Automatically remove tables that conflict with Beehive Forum's own.</label></span></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" class=\"postbody\"><span class=\"bhinputcheckbox\"><input type=\"checkbox\" name=\"skip_dictionary\" id=\"skip_dictionary\" value=\"Y\" tabindex=\"13\" /><label for=\"skip_dictionary\">Skip dictionary setup (recommended only if install fails to complete).</label></span></td>\n";
+echo "                        <td align=\"left\" class=\"postbody\"><span class=\"bhinputcheckbox\"><input type=\"checkbox\" name=\"skip_dictionary\" id=\"skip_dictionary\" value=\"Y\" tabindex=\"13\" /><label for=\"skip_dictionary\">Skip dictionary setup. Recommended only if install fails to complete.</label></span></td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" class=\"postbody\"><span class=\"bhinputcheckbox\"><input type=\"checkbox\" name=\"enable_error_reports\" id=\"enable_error_reports\" value=\"Y\" tabindex=\"14\" checked=\"checked\" /><label for=\"enable_error_reports\">Enable error reports by email to Admin Email Address.</label></span></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" class=\"postbody\" colspan=\"2\">&nbsp;</td>\n";
@@ -767,7 +787,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\"><input type=\"submit\" name=\"install\" value=\"Install\" class=\"button\" onclick=\"return confirmInstall(this);\" tabindex=\"14\" /></td>\n";
+echo "      <td align=\"center\"><input type=\"submit\" name=\"install\" value=\"Install\" class=\"button\" onclick=\"return confirmInstall(this);\" tabindex=\"15\" /></td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</div>\n";

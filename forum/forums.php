@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forums.php,v 1.88 2008-04-16 10:06:59 decoyduck Exp $ */
+/* $Id: forums.php,v 1.89 2008-05-09 06:53:30 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -198,10 +198,10 @@ if (isset($_POST['change_view'])) {
 
 if (isset($_GET['main_page']) && is_numeric($_GET['main_page'])) {
     $main_page = $_GET['main_page'];
-    $start_main = floor($main_page - 1) * 20;
+    $start_main = floor($main_page - 1) * 10;
 }else if (isset($_POST['main_page']) && is_numeric($_POST['main_page'])) {
     $main_page = $_POST['main_page'];
-    $start_main = floor($main_page - 1) * 20;
+    $start_main = floor($main_page - 1) * 10;
 }else {
     $main_page = 1;
     $start_main = 0;
@@ -209,10 +209,10 @@ if (isset($_GET['main_page']) && is_numeric($_GET['main_page'])) {
 
 if (isset($_GET['search_page']) && is_numeric($_GET['search_page'])) {
     $search_page = $_GET['search_page'];
-    $start_search = floor($search_page - 1) * 20;
+    $start_search = floor($search_page - 1) * 10;
 }else if (isset($_POST['search_page']) && is_numeric($_POST['search_page'])) {
     $search_page = $_POST['search_page'];
-    $start_search = floor($search_page - 1) * 20;
+    $start_search = floor($search_page - 1) * 10;
 }else {
     $search_page = 1;
     $start_search = 0;
@@ -546,21 +546,23 @@ if (!user_is_guest()) {
 
                     if (strstr($final_uri, '?')) {
 
-                        echo "                  <td align=\"left\" valign=\"top\" valign=\"top\" width=\"250\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=", rawurlencode($final_uri), "%26webtag%3D{$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></td>\n";
+                        echo "                  <td align=\"left\" valign=\"top\" width=\"250\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=", rawurlencode($final_uri), "%26webtag%3D{$forum['WEBTAG']}\">", word_filter_add_ob_tags($forum['FORUM_NAME']), "</a></td>\n";
 
                     }else {
 
-                        echo "                  <td align=\"left\" valign=\"top\" valign=\"top\" width=\"250\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=", rawurlencode($final_uri), "%3Fwebtag%3D{$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></td>\n";
+                        echo "                  <td align=\"left\" valign=\"top\" width=\"250\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=", rawurlencode($final_uri), "%3Fwebtag%3D{$forum['WEBTAG']}\">", word_filter_add_ob_tags($forum['FORUM_NAME']), "</a></td>\n";
                     }
 
                 }else {
 
-                    echo "                  <td align=\"left\" valign=\"top\" valign=\"top\" width=\"250\"><a href=\"index.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></td>\n";
+                    echo "                  <td align=\"left\" valign=\"top\" width=\"250\"><a href=\"index.php?webtag={$forum['WEBTAG']}\">", word_filter_add_ob_tags($forum['FORUM_NAME']), "</a></td>\n";
                 }
 
                 if (isset($forum['FORUM_DESC']) && strlen(trim($forum['FORUM_DESC'])) > 0) {
 
-                    echo "                  <td align=\"left\" valign=\"top\" width=\"30%\">{$forum['FORUM_DESC']}</td>\n";
+                    $forum_desc_short = (strlen(trim($forum['FORUM_DESC'])) > 0) ? substr($forum['FORUM_DESC'], 0, 47). "&hellip;" : "";
+
+                    echo "                  <td align=\"left\" valign=\"top\" width=\"30%\" nowrap=\"nowrap\"><div title=\"", word_filter_add_ob_tags($forum['FORUM_DESC']), "\">", word_filter_add_ob_tags($forum_desc_short), "</div></td>\n";
 
                 }else {
 
@@ -661,7 +663,7 @@ if (!user_is_guest()) {
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td class=\"posthead\" align=\"left\">{$lang['forumname']}: ", form_input_text("webtag_search", (isset($webtag_search) ? _htmlentities($webtag_search) : ""), 30, 64), " ", form_submit('search', $lang['search']), " ", form_submit('clear_search', $lang['clear']), "\n";
+    echo "                        <td class=\"posthead\" align=\"left\">{$lang['forumname']}: ", form_input_text("webtag_search", (isset($webtag_search) ? _htmlentities($webtag_search) : ""), 30, 64), " ", form_submit('search', $lang['search']), " ", form_submit('clear_search', $lang['clear']), "</td>\n";
     echo "                      </tr>\n";
     echo "                    </table>\n";
     echo "                  </td>\n";

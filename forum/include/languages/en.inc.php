@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.539 2008-04-27 14:46:33 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.540 2008-05-09 18:18:57 decoyduck Exp $ */
 
 // British English language file
 
@@ -1540,7 +1540,7 @@ $lang['automaticallyparseurlsbydefault'] = "Automatically parse URLs in messages
 $lang['postinplaintextbydefault'] = "Post in plain text by default";
 $lang['postinhtmlwithautolinebreaksbydefault'] = "Post in HTML with auto-line-breaks by default";
 $lang['postinhtmlbydefault'] = "Post in HTML by default";
-$lang['postdefaultquick'] = "Use quick reply by default. (Full reply in menu)";
+$lang['postdefaultquick'] = "Use Quick Reply by default. (Full reply in menu)";
 $lang['privatemessageoptions'] = "Private Message Options";
 $lang['privatemessageexportoptions'] = "Private Message Export Options";
 $lang['savepminsentitems'] = "Save a copy of each PM I send in my Sent Items folder";

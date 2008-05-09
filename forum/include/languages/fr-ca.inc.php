@@ -21,39 +21,39 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.103 2008-04-03 14:23:41 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.104 2008-05-09 18:18:57 decoyduck Exp $ */
 
 // French Canadian language file
 
 // Language character set and text direction options -------------------
 
-$lang['_isocode'] = "fr-ca";    // ISO-639 language code
-$lang['_textdir'] = "ltr";      // ltr or rtl; left to right or vice versa
+$lang['_isocode'] = "fr-ca";
+$lang['_textdir'] = "ltr";
 
 // Months --------------------------------------------------------------
 
-$lang['month'][1]  = "Janvier";
-$lang['month'][2]  = "Février";
-$lang['month'][3]  = "Mars";
-$lang['month'][4]  = "Avril";
-$lang['month'][5]  = "Mai";
-$lang['month'][6]  = "Juin";
-$lang['month'][7]  = "Juillet";
-$lang['month'][8]  = "Août";
-$lang['month'][9]  = "Septembre";
+$lang['month'][1] = "Janvier";
+$lang['month'][2] = "Février";
+$lang['month'][3] = "Mars";
+$lang['month'][4] = "Avril";
+$lang['month'][5] = "Mai";
+$lang['month'][6] = "Juin";
+$lang['month'][7] = "Juillet";
+$lang['month'][8] = "Août";
+$lang['month'][9] = "Septembre";
 $lang['month'][10] = "Octobre";
 $lang['month'][11] = "Novembre";
 $lang['month'][12] = "Décembre";
 
-$lang['month_short'][1]  = "jan";
-$lang['month_short'][2]  = "fév";
-$lang['month_short'][3]  = "mars";
-$lang['month_short'][4]  = "avr";
-$lang['month_short'][5]  = "mai";
-$lang['month_short'][6]  = "juin";
-$lang['month_short'][7]  = "juil";
-$lang['month_short'][8]  = "août";
-$lang['month_short'][9]  = "sep";
+$lang['month_short'][1] = "jan";
+$lang['month_short'][2] = "fév";
+$lang['month_short'][3] = "mars";
+$lang['month_short'][4] = "avr";
+$lang['month_short'][5] = "mai";
+$lang['month_short'][6] = "juin";
+$lang['month_short'][7] = "juil";
+$lang['month_short'][8] = "août";
+$lang['month_short'][9] = "sep";
 $lang['month_short'][10] = "oct";
 $lang['month_short'][11] = "nov";
 $lang['month_short'][12] = "déc";
@@ -65,42 +65,42 @@ $lang['month_short'][12] = "déc";
 
 $lang['daymonthyear'] = "%s %s %s";
 $lang['monthyear'] = "%s %s";
-$lang['daymonthyearhourminute'] = "%s %s %s %sh%s"; // e.g. 1 Jan 2005 12:00
-$lang['daymonthhourminute'] = "%s %s %sh%s";        // e.g. 1 Jan 18:30
+$lang['daymonthyearhourminute'] = "%s %s %s %sh%s";
+$lang['daymonthhourminute'] = "%s %s %sh%s";
 $lang['daymonth'] = "%s %s";
-$lang['hourminute'] = "%sh%s";                      // e.g. 12:00
+$lang['hourminute'] = "%sh%s";
 
 // Periods -------------------------------------------------------------
 
 // Various time periods as used by Beehive Forum.
 
 $lang['date_periods']['year'] = "%s année";
-$lang['date_periods']['month']  = "%s month";
-$lang['date_periods']['week']   = "%s week";
-$lang['date_periods']['day']    = "%s day";
-$lang['date_periods']['hour']   = "%s hour";
+$lang['date_periods']['month'] = "%s mois";
+$lang['date_periods']['week'] = "%s semaine";
+$lang['date_periods']['day'] = "%s jour";
+$lang['date_periods']['hour'] = "%s heure";
 $lang['date_periods']['minute'] = "%s minute";
-$lang['date_periods']['second'] = "%s second";
+$lang['date_periods']['second'] = "%s seconde";
 
 // As above but plurals (2 years vs. 1 year, etc.)
 
 $lang['date_periods_plural']['year'] = "%s années";
-$lang['date_periods_plural']['month']  = "%s months";
-$lang['date_periods_plural']['week']   = "%s weeks";
-$lang['date_periods_plural']['day']    = "%s days";
-$lang['date_periods_plural']['hour']   = "%s hours";
+$lang['date_periods_plural']['month'] = "%s mois";
+$lang['date_periods_plural']['week'] = "%s semaines";
+$lang['date_periods_plural']['day'] = "%s jours";
+$lang['date_periods_plural']['hour'] = "%s heures";
 $lang['date_periods_plural']['minute'] = "%s minutes";
-$lang['date_periods_plural']['second'] = "%s seconds";
+$lang['date_periods_plural']['second'] = "%s secondes";
 
 // Short hand periods (example: 1y, 2m, 3w, 4d, 5hr, 6min, 7sec)
 
 $lang['date_periods_short']['year'] = "%sa";
-$lang['date_periods_short']['month']  = "%sm";    // 2m
-$lang['date_periods_short']['week']   = "%sw";    // 3w
-$lang['date_periods_short']['day']    = "%sd";    // 4d
-$lang['date_periods_short']['hour']   = "%shr";   // 5hr
-$lang['date_periods_short']['minute'] = "%smin";  // 6min
-$lang['date_periods_short']['second'] = "%ssec";  // 7sec
+$lang['date_periods_short']['month'] = "%sm";
+$lang['date_periods_short']['week'] = "%ss";
+$lang['date_periods_short']['day'] = "%sj";
+$lang['date_periods_short']['hour'] = "%sh";
+$lang['date_periods_short']['minute'] = "%smin";
+$lang['date_periods_short']['second'] = "%ssec";
 
 // Common words --------------------------------------------------------
 
@@ -289,7 +289,9 @@ $lang['forumsettings'] = "Options de forum";
 $lang['globalforumsettings'] = "Options de forum globales";
 $lang['settingsaffectallforumswarning'] = "<b>Note:</b> Ces options affectent tous les forums. En cas de duplication d'un ou plusieurs option sur la page d'options d'un forum individuel, ces options prendront précédence sur les options que vous changez ici.";
 $lang['startpage'] = "Page de démarrage";
+$lang['startpageerror'] = "Votre page d'accueil n'a pas pu être sauvegardée locallement sur le serveur faute de permissions.</p><p>Pour modifier votre page d'accueil, veuillez cliquer le bouton de téléchargement ci-dessous et sauvegarder le fichier à votre disque dur. Vous pouvez par la suite téléverser ce fichier à votre serveur au dossier suivant, créant la structure du dossier en même temps si nécessaire.</p><p><b>%s</b></p><p>Veuillez noter que certains navigateurs internet modifieront le nom du fichier lors du téléchargement. Lorsque vous téléversez le fichier, veuillez faire certain qu'il est nommé start_main.php autrement vos modifications ne paraîtront pas.";
 $lang['failedtoopenmasterstylesheet'] = "Votre style de forum n'a pas pu être enregistré parce que la feuille de style maîtresse n'a pas pu être chargée. Pour enregistrer votre style, la feuille de style maîtresse (make_style.css) doit être située dans le répertoire styles de votre installation Beehive Forum.";
+$lang['makestyleerror'] = "Votre style de forum n'a pas pu être sauvegardé locallement sur le serveur faute de permissions.</p><p>Pour sauvegarder votre style de forum, veuillez cliquer le bouton de téléchargement ci-dessous et sauvegarder le fichier à votre disque dur. Vous pouvez par la suite téléverser ce fichier à votre serveur au dossier suivant, créant la structure du dossier en même temps si nécessaire.</p><p><b>%s</b></p><p>Veuillez noter que certains navigateurs internet modifieront le nom du fichier lors du téléchargement. Lorsque vous téléversez le fichier, veuillez faire certain qu'il est nommé style.css sinon le style de forum sera non-disponible.";
 $lang['forumstyle'] = "Style du forum";
 $lang['wordfilter'] = "Filtre des mots";
 $lang['forumlinks'] = "Liens de forum";
@@ -337,6 +339,7 @@ $lang['manageuser'] = "Gérer l'utilisateur";
 $lang['manageusers'] = "Gérer les utilisateurs";
 $lang['userstatusforforum'] = "État d'utilisateur pour %s";
 $lang['userdetails'] = "Détails d'utilisateur";
+$lang['edituserdetails'] = "Modifiez détails de l'utilisateur";
 $lang['warning_caps'] = "MISE EN GARDE";
 $lang['userdeleteallpostswarning'] = "Êtes-vous certain de vouloir supprimer tous les messages de l'utilisateur sélectionné? Une fois supprimés, les messages ne peuvent être récupérés et seront perdus pour toujours.";
 $lang['postssuccessfullydeleted'] = "Suppression de messages réussie.";
@@ -363,6 +366,9 @@ $lang['userdeletewarning'] = "Êtes-vous certain de vouloir supprimer le compte 
 $lang['usersuccessfullydeleted'] = "Utilisateur supprimé avec succès";
 $lang['failedtodeleteuser'] = "La suppression de l'utilisateur a échoué";
 $lang['forgottenpassworddesc'] = "Si cet utilisateur a oublié leur mot de passe, vous pouvez le réinitialiser ici.";
+$lang['failedtoupdateuserstatus'] = "Mise à jour du statut de l'utilisateur non réussie";
+$lang['failedtoupdateglobaluserpermissions'] = "Mise à jour des permissions d'utilisateur globales a échoué";
+$lang['failedtoupdatefolderaccesssettings'] = "Mise à jour des options d'accès aux dossiers a échoué";
 $lang['manageusersexp'] = "Cette liste démontre une sélection d'utilisateurs qui ont ouvert une session sur votre forum, triée par %s. Pour modifier les droits d'accès d'un utilisateur, cliquer sur leur nom.";
 $lang['userfilter'] = "Filtre des usagers";
 $lang['onlineusers'] = "Usagers en ligne";
@@ -382,6 +388,8 @@ $lang['unknownuseraccount'] = "Compte d'utilisateur inconnu";
 $lang['unknownfolder'] = "Dossier inconnu";
 $lang['ip'] = "adresse IP";
 $lang['lastipaddress'] = "Dernière adresse IP";
+$lang['hostname'] = "Adresse internet";
+$lang['unknownhostname'] = "Adresse internet inconnue";
 $lang['logged'] = "Journalisé";
 $lang['notlogged'] = "Non journalisé";
 $lang['addwordfilter'] = "Ajouter filtre de mots";
@@ -480,6 +488,7 @@ $lang['emailconfirmationrequired'] = "Confirmation par courriel requis";
 $lang['userisbannedfromallforums'] = "Usager est banni de <b>tous les forums</b>";
 $lang['cancelemailconfirmation'] = "Annuler confirmation par courriel et permettre l'utilisateur de poster";
 $lang['resendconfirmationemail'] = "Renvoyer confirmation par courriel à l'utilisateur";
+$lang['failedtosresendemailconfirmation'] = "Le renvoi du courriel de confirmation à l'utilisateur a échoué.";
 $lang['donothing'] = "Ne faites rien";
 $lang['usercanaccessadmintools'] = "L'utilisateur a accès aux outils admin du forum";
 $lang['usercanaccessadmintoolsonallforums'] = "L'utilisatieur a accès aux outils admin <b>sur tous les forums</b>";
@@ -526,6 +535,9 @@ $lang['toplinkcaption'] = "Légende du lien de premier niveau";
 $lang['allowguestaccess'] = "Permettre l'accès aux visiteurs";
 $lang['searchenginespidering'] = "Balayage par moteurs de recherche";
 $lang['allowsearchenginespidering'] = "Permettre le balayage par moteurs de recherche";
+$lang['sitemapenabled'] = "Activer plan de site";
+$lang['sitemapupdatefrequency'] = "Fréquence de la mise à jour du plan de site";
+$lang['sitemappathnotwritable'] = "Le répertoire du plan de site doit être modifiable par le serveur / processus PHP!";
 $lang['newuserregistrations'] = "Enregistrement de nouveaux utilisateurs";
 $lang['preventduplicateemailaddresses'] = "Empêcher adresses courriel en double";
 $lang['allownewuserregistrations'] = "Permettre l'enregistrement de nouveaux utilisateurs";
@@ -691,9 +703,100 @@ $lang['approveduser'] = "Usager approuvé '%s'";
 $lang['forumautoupdatestats'] = "Mise à jour du forum automatique: statistiques mises à jour";
 $lang['forumautocleanthreadunread'] = "Mise à jour du forum automatique: Données fils de discussion non-lus nettoyées";
 
+$lang['ipaddressbanhit'] = "Utilisateur '%s' est banni. L'adresse IP '%s' conforme au données de bannissement '%s'";
+$lang['logonbanhit'] = "Utilisateur '%s' est banni. Le nom d'utilisateur '%s' conforme aux données de bannissement '%s'";
+$lang['nicknamebanhit'] = "Utiliateur '%s' est banni. Le pseudonyme '%s' conforme aux données de bannissement '%s'";
+$lang['emailbanhit'] = "Utilisateur '%s' est banni. L'adresse courriel '%s' conforme aux données de bannissement '%s'";
+$lang['refererbanhit'] = "Utilisateur '%s' est banni. Le référent HTTP '%s' conforme aux données de bannissement '%s'";
+
+
+$lang['userpermbanned'] = "Banni";
+$lang['userpermwormed'] = "Parasité";
+$lang['userpermfoldermoderate'] = "Modérateur de dossier";
+$lang['userpermadmintools'] = "Outils d'admin";
+$lang['userpermforumtools'] = "Outils de forum";
+$lang['userpermlinksmod'] = "Modérateur d'hyperliens";
+$lang['userpermignoreadmin'] = "Ignorez admin";
+$lang['userpermpilloried'] = "Cloué au pilori";
+
 $lang['adminlogempty'] = "Fiche journalier admin est vide";
 
 $lang['youmustspecifyanactiontypetoremove'] = "Vous devez indiquer un type d'action à suprimer";
+
+$lang['alllogentries'] = "Tous les entrées du fichier journal";
+$lang['userstatuschanges'] = "Modifications au statut d'utilisateur";
+$lang['forumaccesschanges'] = "Changements d'accès au forum";
+$lang['usermasspostdeletion'] = "Supression en masse des messages d'utilisateur";
+$lang['ipaddressbanadditions'] = "Ajouts de bannissement par adresse IP";
+$lang['ipaddressbandeletions'] = "Suppression de bannissement par adresse IP";
+$lang['threadtitleedits'] = "MOdifications de titre de fils de discussion";
+$lang['massthreadmoves'] = "Déplacement en masse de fils de discussion";
+$lang['foldercreations'] = "Création de dossiers";
+$lang['folderdeletions'] = "Supression de dossiers";
+$lang['profilesectionchanges'] = "Modifications à la section Profiles";
+$lang['profilesectionadditions'] = "Ajouts à la section Profiles";
+$lang['profilesectiondeletions'] = "Supressions de la section Profiles";
+$lang['profileitemchanges'] = "Items de la section Profiles modifiés";
+$lang['profileitemadditions'] = "Items de profile ajoutés";
+$lang['profileitemdeletions'] = "Items de profile supprimés";
+$lang['startpagechanges'] = "Modifications de la page d'accueil";
+$lang['forumstylecreations'] = "Styles de forum créés";
+$lang['threadmoves'] = "Déplacements de fils de discussion";
+$lang['threadclosures'] = "Fermetures de fils de discussion";
+$lang['threadopenings'] = "Ouvertures de fils de discussion";
+$lang['threadrenames'] = "Fils de discussion renommés";
+$lang['postdeletions'] = "Messages supprimés";
+$lang['postedits'] = "Messages modifiés";
+$lang['wordfilteredits'] = "MOdifications au filtre des mots";
+$lang['threadstickycreations'] = "Créations de fils de discussion collants";
+$lang['threadstickydeletions'] = "Fils de discussions collants supprimés";
+$lang['usersessiondeletions'] = "Sessions d'utilisateur supprimés";
+$lang['forumsettingsedits'] = "Modifications au options du forum";
+$lang['threadlocks'] = "Fils de discussion verrouillés";
+$lang['threadunlocks'] = "Fils de discussion dévérouillés";
+$lang['usermasspostdeletionsinathread'] = "Suppression en masse de messages d'utilisateur dans un fils de discussion";
+$lang['threaddeletions'] = "Suppressions de fils de discussion";
+$lang['attachmentdeletions'] = "Suppressions de fichiers joint";
+$lang['forumlinkedits'] = "Modifications aux hyperliens du forum";
+$lang['postapprovals'] = "Approbations de messages";
+$lang['usergroupcreations'] = "Groupes d'utilisateurs créés";
+$lang['usergroupdeletions'] = "Groupes d'utilisateurs supprimés";
+$lang['usergroupuseraddition'] = "Ajout d'utilisateur à un groupe d'utilisateurs";
+$lang['usergroupuserremoval'] = "Enlèvements d'utilisateur d'un groupe d'utilisateurs";
+$lang['userpasswordchange'] = "Changement de mot de pass d'utilisateur";
+$lang['usergroupchanges'] = "Modifications au group d'utilisateurs";
+$lang['ipaddressbanadditions'] = "Ajouts de bannissement par adresse IP";
+$lang['ipaddressbandeletions'] = "Suppression de bannissement par adresse IP";
+$lang['logonbanadditions'] = "Ajouts de bannissements par nom d'utilisateur";
+$lang['logonbandeletions'] = "Suppressions de bannissements par nom d'utilisateur";
+$lang['nicknamebanadditions'] = "Ajouts de bannissements par pseudonyme";
+$lang['nicknamebanadditions'] = "Ajouts de bannissements par pseudonyme";
+$lang['e-mailbanadditions'] = "Ajouts de bannissements par courriel";
+$lang['e-mailbandeletions'] = "Suppressions de bannissements par courriel";
+$lang['rssfeedadditions'] = "Ajouts de sources de données RSS";
+$lang['rssfeedchanges'] = "Modifications aux sources de données RSS";
+$lang['threadundeletions'] = "Annulage de suppressions de fils de discussion";
+$lang['httprefererbanadditions'] = "Ajouts de bannissement par référent HTTP";
+$lang['httprefererbandeletions'] = "Suppressions de bannissement par référent HTTP";
+$lang['rssfeeddeletions'] = "Suppressions de source de données RSS";
+$lang['banchanges'] = "Modifications de bannissement";
+$lang['threadsplits'] = "Divisions de fils de discussion";
+$lang['threadmerges'] = "Fusionnements de fils de discussions";
+$lang['userapprovals'] = "Approbations d'utilisateurs";
+$lang['forumlinkadditions'] = "Ajouts de hyperliens du forum";
+$lang['forumlinkdeletions'] = "Supression de hyperliens du forum";
+$lang['forumlinktopcaptionchanges'] = "Modifications du titre de départ des liens du forum";
+$lang['folderedits'] = "Modifications des dossiers";
+$lang['userdeletions'] = "Suppressions d'utilisateurs";
+$lang['userdatadeletions'] = "Suppressions de données d'utilisateur";
+$lang['forumstatsautoupdates'] = "Mises à jour automatiques des statistiques du forum";
+$lang['forumautothreadunreaddataupdates'] = "Mises à jour automatique pour le forum des données de fils de discussions non-lus";
+$lang['usergroupchanges'] = "Modifications au group d'utilisateurs";
+$lang['ipaddressbancheckresults'] = "Résultats de la vérification des bannissements par adresse IP";
+$lang['logonbancheckresults'] = "Résultats de la vérification des bannissements par nom d'utilisateur";
+$lang['nicknamebancheckresults'] = "Résultats de la vérification des bannissements par pseudonyme";
+$lang['emailbancheckresults'] = "Résultats de la vérification des bannissements par courriel";
+$lang['httprefererbancheckresults'] = "Résultats de la vérification des bannissements par référent HTTP";
 
 $lang['removeentriesrelatingtoaction'] = "Supprimer les entrées afférent à l'action";
 $lang['removeentriesolderthandays'] = "Supprimer entrées datant de plus de (jours)";
@@ -782,6 +885,10 @@ $lang['sixtynumberdays'] = "60 jours";
 $lang['ninetynumberdays'] = "90 jours";
 $lang['hundredeightynumberdays'] = "180 jours";
 $lang['onenumberyear'] = "1 années";
+$lang['unreadcutoffchangewarning'] = "Dépendant de la performance de votre serveur et du nombre de fils de discussion que contiennent vos forums, la modification du point de troncage pour messages non-lus pourra prendre plusieurs minutes à compléter. Pour cette raison, it est fortement recommendé de ne pas effectuer ce changement lorsque vos forums sont très actifs.";
+$lang['unreadcutoffincreasewarning'] = "L'augmentation du point de troncage des messages non-lus aura l'effet pour tous les utilisateurs de faire paraître comme non-lus tous les fils de discussion plus vieux que le point de troncage actuel.";
+$lang['confirmunreadcutoff'] = "Êtes-vous certain de vouloir changer le point de troncage pour messages non-lus?";
+$lang['otherchangeswillstillbeapplied'] = "Cliquant le 'Non' annulera seulement les changements au modifications au troncage de messages non-lus. Toutes autre modifications que vous avez effectuées seront sauvegardées.";
 $lang['searchoptions'] = "Options de recherche";
 $lang['searchfrequency'] = "Fréquence de recherche";
 $lang['sessions'] = "Sessions";
@@ -804,6 +911,7 @@ $lang['userandguestaccesssettings'] = "Options d'accès pour usagers et invités
 $lang['allowuserstochangeusername'] = "Permettre aux usagers de changer leur nom d'usager";
 $lang['requireuserapproval'] = "Exiger approbation de l'usager par un administrateur";
 $lang['requireforumrulesagreement'] = "Exigez que l'utilisateur accepte les règles du forum";
+$lang['sendnewuseremailnotifications'] = "Envoyez notification au propriétaire global du forum";
 $lang['enableattachments'] = "Activer fichiers joints";
 $lang['attachmentdir'] = "Rep de fichiers joints";
 $lang['userattachmentspace'] = "Espace pour fichiers joints par utilisateur";
@@ -853,6 +961,7 @@ $lang['forum_settings_help_42'] = "<b>Empêcher l'usage en double d'adresses cou
 $lang['forum_settings_help_43'] = "<b>Exiger confirmation par courriel</b> si activé, envoyera à chaque nouveau utilisateur un courriel contenant un hyperlien qui peut être utilisé pour confirmer leur adresse courriel. Ils ne pourront pas poster tant qu'ils n'auront pas confirmer leur adresse courriel, à moins que leurs privilèges sont changés manuellement par un admin.";
 $lang['forum_settings_help_44'] = "<b>Utiliser le Captcha de texte</b> presente le nouveau utilisateur avec une image floue duquel il doit copier un numéro dans le champ de texte dans le formulaire d'enregistrement. Utiliser cette option afin d'empécher les enregistrements via scripts.";
 $lang['forum_settings_help_47'] = "<b>Période de délai de grâce pour modification de poste</b> vous permet de définir une période en minutes durant laquelle les utilisateurs peuvent modifier leurs messages sans que le texte 'MODIFIÉ PAR' apparait dans le message. Si régler à 0 le texte 'MODIFIÉ PAR' va toujours paraître.";
+$lang['forum_settings_help_48'] = "<b>Point de troncage pour messages non-lus</b> indique pour combien de temps les messages demeurent non-lus. Les fils de discussion modifiés pas plus tard que la période sélectionnée apparaîtront automatiquement comme lus.";
 $lang['forum_settings_help_49'] = "La sélection de <b>Désactiver messages non-lus</b> enlèvera complètement tout support pour messages non-lus et enlèvera aussi les options reliées du menu déroulant vertical de types de discussions sur la liste des fils de discussions.";
 $lang['forum_settings_help_50'] = "Vous pouvez exiger l'approbation de tout nouveau compte d'usager avant qu'il soit utilisé en activant cette fonction. Sans approbation, un usager ne peut accéder à aucune section de l'installation du forum Beehive, y inclut les forums individuels, la boîte de réception MP et sections Mes Forums.";
 $lang['forum_settings_help_51'] = "Utilisez <b>Message de fermeture</b>, <b>Message d'accès restreint</b> et <b>Message de protégé par mot de passe</b> pour personnaliser le message affiché lorsque les usagers accèdent au forum dans ses états variés.";
@@ -862,6 +971,10 @@ $lang['forum_settings_help_54'] = "Use <b>Forum Rules</b> to enter an Accetable 
 $lang['forum_settings_help_55'] = "Vous pouvez utiliser le language HTML dans vos règles du forum. Les hyperliens et les adresses courriels seront automatiquement convertis en hyperliens. Pour utiliser la politque d'utilisation Beehive par défaut, libérez le champ.";
 $lang['forum_settings_help_56'] = "Utilisez <b>Courriel No-Reply</b> pour indiquer une adresse courriel qui n'existe pas ou qui ne sera pas vérifié pour des réponses. Cette adresse courriel sera utilisée dans les entêtes de tous les courriels envoyés de votre forum incluant mais non limité aux notifications de messages et de MP, courriels d'utilisateurs et rappels de mot de passe.";
 $lang['forum_settings_help_57'] = "Il est fortement recommandé d'utiliser une adresse courriel fictive afin de limiter le nombre de pourriels qui pourraient être dirigé vers l'adresse courriel principale de votre forum";
+$lang['forum_settings_help_58'] = "En plus de la simple indexation, Beehive peut aussi générer un plan de site pour le forum pour faciliter l'indexage par les moteurs de recherche des messages postés par vos utilisateurs.";
+$lang['forum_settings_help_59'] = "Les plans de site sont automatiquement sauvegardés dans le sous-répertoire plans de site de votre installation Beehive. Si ce sous-répertoire n'existe pas, vous devez le créér et vous assurer qu'il est modifiable par le serveur / processus PHP. Pour permettre aux moteurs de recherche de trouver votre plan de site vous devez ajouter l'adresse URL à votre robots.txt.";
+$lang['forum_settings_help_60'] = "Dépendant de la performance de votre serveur et du nombre de forums et de fils de discussion que contient votre installation Beehive, la génération d'un plan de site peut prendre plusieurs minutes à compléter. Si la performance de votre serveur est lésé, il est recommendé de désactiver la génération du plan de site.";
+$lang['forum_settings_help_61'] = "<b>Envoyer notification par courriel à l'admin global</b> quand activé, transmettra un courriel à tous les propriétaires du forum lorqu'un nouveau compte d'utilisateur est créé.";
 
 // Attachments (attachments.php, get_attachment.php) ---------------------------------------
 
@@ -903,7 +1016,6 @@ $lang['invaliduserkeyprovided'] = "Indicatif d'utilisateur invalide fournit. Vé
 
 $lang['nomessagespecifiedfordel'] = "Aucun message indiqué pour suppression";
 $lang['deletemessage'] = "Supprimer Message";
-$lang['postdelsuccessfully'] = "Suppression de message réussie";
 $lang['errordelpost'] = "Erreur rencontrée en supprimant le message";
 $lang['cannotdeletepostsinthisfolder'] = "Vous ne pouvez pas supprimer vos messages dans ce dossier";
 
@@ -912,7 +1024,6 @@ $lang['cannotdeletepostsinthisfolder'] = "Vous ne pouvez pas supprimer vos messa
 $lang['nomessagespecifiedforedit'] = "Aucun message d'indiqué pour révision";
 $lang['cannoteditpollsinlightmode'] = "Impossible de modifier les scrutins en mode léger";
 $lang['editedbyuser'] = "MODIFIÉ: %s par %s";
-$lang['editappliedtomessage'] = "Révision appliquée au message";
 $lang['errorupdatingpost'] = "Erreur rencontrée durant la mise à jour du message";
 $lang['editmessage'] = "Réviser le message %s";
 $lang['editpollwarning'] = "<b>Note</b>: La révision de certains aspects d'un scrutin annulera tous les votes déjà enregistrés et permettra aux utilisateurs de voter de nouveau.";
@@ -953,7 +1064,7 @@ $lang['subnotification'] = "Salut %s.\n\n%s a posté un message dans un fil de d
 // PM notification -----------------------------------------------------
 
 $lang['pmnotification_subject'] = "Confirmation de MP de %s";
-$lang['pmnotification']  = "Salut %s.\n\n%s vous a posté un MP sur %s\n\nLe sujet est: %s\n\nPour lire ce message, allez à:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: Si vous désirez ne plus recevoir de confirmations par courriel de nouveau MP messages postés à votre attention, allez à: %s cliquer sur Mes Contrôles, ensuite Courriel et Confidentialité, déselectionner le MP Case à cocher Confirmation et appuyer Soumettre.";
+$lang['pmnotification'] = "Salut %s.\n\n%s vous a posté un MP sur %s\n\nLe sujet est: %s\n\nPour lire ce message, allez à:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: Si vous désirez ne plus recevoir de confirmations par courriel de nouveau MP messages postés à votre attention, allez à: %s cliquer sur Mes Contrôles, ensuite Courriel et Confidentialité, déselectionner le MP Case à cocher Confirmation et appuyer Soumettre.";
 
 // Password change notification ----------------------------------------
 
@@ -966,10 +1077,29 @@ $lang['emailconfirmationrequiredsubject'] = "Confirmation par courriel requis";
 $lang['confirmemail'] = "Salut %s.\n\nVous avez récemment créé un nouveau compte d'utilisateur sur %s\nAvant que vous puissiez commencer à poster, nous devons confirmer votre adresse courriel. Ne vous inquiètez pas, ceci est très facile. Vous n'avez qu'à cliquer le lien ci-dessous (ou le copier et coller dans votre navigateur web):\n\n%s\n\nUne fois la confirmation faite, vous pourriez immédiatement ouvrir une session et commencer à poster.\n\nSi vous n'avez pas créer un compte d'utilisateur sur %s veuillez accepter nos excuses et tranférer ce courriel à %s pour nous permettre d'enquêter sur la source.";
 $lang['confirmchangedemail'] = "Bonjour %s,\n\nVous avez récemment changé votre adresse courriel le %s.\nAvant que vous puissez recommencer à poster, nous devons confirmer votre nouvelle adresse courriel. Ne vous inquiétez pas, ceci est très simple. Tout ce que vous devez faire est de cliquer le hyperlien ci-dessous (ou le copier et le coller dans votre navigateur Web):\n\n%s\n\nUne fois la confirmation faite vous pouvez continuer à utiliser le forum comme avant.\n\nSi vous vous n'attendiez pas à recevoir ce courriel de %s veuillez accepter nos excuses et faire suivre ce courriel à %s afin que nous puissions en déterminer la source.";
 
-
 // Forgotten password notification -------------------------------------
 
 $lang['forgotpwemail'] = "Salut %s.\n\nVous avez demandé ce courriel de %s parce que vous avez oublié votre mot de passe.\n\nCliquer le lien ci-dessous (ou le copier et coller dans votre navigateur web) pour réinitialiser votre mot de passe:\n\n%s";
+
+// Admin New User Approval notification -----------------------------------------
+
+$lang['newuserapprovalsubject'] = "Notification d'approbation de nouveau utilisateur pour %s";
+$lang['newuserapprovalemail'] = "Bonjour %s,\n\nUn nouveau compte d'utilisateur a été créé sur %s.\n\nComme vous êtes un administrateur de ce forum, vous devez approuver ce compte d'utilisateur avant qu'il peut être utilisé par son propriétaire.\n\nPour approuver ce compte, veuillez visiter la section Admin Utilisateurs et changer le type de filtre à \"Utilisateurs en attente d'approbation\" ou cliquer l'hyperlien ci-dessous: \n\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: Les autres modérateurs de ce forum recevront aussi cette notification et auront peut-être déjà agis sur cette demande.";
+
+// Admin New User notification -----------------------------------------
+
+$lang['newuserregistrationsubject'] = "Notification de nouveau compte d'utilisateur pour %s";
+$lang['newuserregistrationemail'] = "Bonjour %s,\n\nUn nouveau compte d'utilisateur a été créé sur %s.\n\nPour visualiser ce compte d'utilisateur, veuillez visiter la section Admin Utilisateurs et cliquer sur le nouveau compte, ou cliquer l'hyperlien ci-desssous:\n\n%s";
+
+// User Approved notification ------------------------------------------
+
+$lang['useraccountapprovedsubject'] = "Notification d'approbation d'utilisateur pour %s";
+$lang['useraccountapprovedemail'] = "Bonjour %s,\n\nVotre compte d'utilisateur pour %s a été approuvé. Vous pouvez ouvrir une session et commencer à poster immédiatement en cliquant l'hyperlien ci-dessous:\n\n%s\n\nSi vous n'étiez pas en attente de ce courriel de %s, veuillez accepter nos excuses et transférer ce courriel à %s pour que nous puissions enquêter sur la source.";
+
+// Admin Post Approval notification -----------------------------------------
+
+$lang['newpostapprovalsubject'] = "Notification d'approbation de message pour %s";
+$lang['newpostapprovalemail'] = "Bonjour %s,\n\nUn nouveau message a été créé sur %s.\n\nComme vous êtes un modérateur sur ce forum, vous devez approuver ce message avant qu'il soit lu par les autres usagers.\n\nVous pouvez approuver ce message et tout autre messages en attente d'approbation en visitant la section Approbation de message par Admin de votre forum ou en cliquant le lien ci-dessous:\n\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: Les autres modérateurs de ce forum recevront aussi cette notification et auront peut-être déjà agis sur cette demande.";
 
 // Forgotten password form.
 
@@ -993,6 +1123,7 @@ $lang['toplevel'] = "Niveau supérieur";
 $lang['maynotaccessthissection'] = "Vous ne pouvez pas accéder à cette section.";
 $lang['toplevel'] = "Niveau supérieur";
 $lang['links'] = "Liens";
+$lang['externallink'] = "Hyperlien externe";
 $lang['viewmode'] = "Mode de vue";
 $lang['hierarchical'] = "Hiérarchique";
 $lang['list'] = "Liste";
@@ -1075,6 +1206,7 @@ $lang['lightHTMLversion'] = "Version HTML légèr";
 $lang['youhaveloggedout'] = "Vous avez fermé votre session.";
 $lang['currentlyloggedinas'] = "Vous êtes en session actuelle sous le nom d'utilisateur %s";
 $lang['logonbutton'] = "Ouvrir session";
+$lang['otherdotdotdot'] = "Autre...";
 $lang['yoursessionhasexpired'] = "Votre session s'est terminée. Vous devez ouvrir une nouvelle session pour continuer.";
 
 // My Forums (forums.php) ---------------------------------------------------------
@@ -1147,6 +1279,8 @@ $lang['emailconfirmationfailedtosend'] = "L'envoi du courriel de confirmation a 
 $lang['emailconfirmationsent'] = "Courriel de confirmation envoyé de nouveau.";
 $lang['resendconfirmation'] = "Renvoyer confirmation";
 $lang['userapprovalrequiredbeforeaccess'] = "Votre compte d'usager doit être approuvé par un administrateur du forum avant que vous pouvez accéder au forum demandé.";
+$lang['reviewthread'] = "Revisez le fils de discussion";
+$lang['reviewthreadinnewwindow'] = "Revisez le fils de discussion au complet dans une nouvelle fenêtre";
 
 // Message display (messages.php & messages.inc.php) --------------------------------------
 
@@ -1188,7 +1322,6 @@ $lang['closeforposting'] = "Fermer aux contributions";
 $lang['until'] = "Jusqu'à 00:00 UTC";
 $lang['approvalrequired'] = "Approbation requise";
 $lang['messageawaitingapprovalbymoderator'] = "Message %s.%s en attente d'approbation par un modérateur";
-$lang['postapprovedsuccessfully'] = "Approbation de message réussie";
 $lang['postapprovalfailed'] = "L'approbation du message a échoué.";
 $lang['postdoesnotrequireapproval'] = "Approbation du message non requis";
 $lang['approvepost'] = "Approuver Message";
@@ -1201,6 +1334,7 @@ $lang['linktothispost'] = "Hyperlier à ce message";
 $lang['imageresized'] = "Cet image a été redimensionné (taille originale %1\$sx%2\$s). Pour voir l'image à l'échelle, cliquez ici.";
 $lang['messagedeletedbyuser'] = "Message %s.%s supprimé %s par %s";
 $lang['messagedeleted'] = "Message %s.%s a été supprimé";
+$lang['viewinframeset'] = "Visualisez dans l'ensemble de cadres";
 
 // Moderators list (mods_list.php) -------------------------------------
 
@@ -1540,6 +1674,7 @@ $lang['profileinformationoptional'] = "Information de profile (Optionnelle)";
 $lang['preferencesoptional'] = "Préférences (Optionnelle)";
 $lang['register'] = "Enregistrer";
 $lang['rememberpasswd'] = "Se souvenir du mot de passe";
+$lang['birthdayrequired'] = "Date de naissance requis ou est invalide";
 $lang['alwaysnotifymeofrepliestome'] = "M'aviser lors de réponse à mes messages";
 $lang['notifyonnewprivatemessage'] = "M'aviser lors de nouveaux Messages Privés";
 $lang['popuponnewprivatemessage'] = "Fenêtre contextuelle lors de nouveau Messages Privés";
@@ -1627,8 +1762,6 @@ $lang['sortdir'] = "Assortir dir";
 $lang['sortresults'] = "Assortir les résultats";
 $lang['groupbythread'] = "Grouper par fil de discussion";
 $lang['postsfromuser'] = "Messages de cet utilisateur";
-$lang['poststouser'] = "Messages à cet utilisateur";
-$lang['poststoandfromuser'] = "Messages à et de cet utilisateur";
 $lang['searchfrequencyerror'] = "Vous pouvez chercher seulement une fois tous les %s secondes. Veuillez essayer de nouveau plus tard.";
 $lang['searchsuccessfullycompleted'] = "Recherche complétée avec succès. %s";
 $lang['clickheretoviewresults'] = "Cliquez ici pour voir les résultats.";
@@ -1736,6 +1869,7 @@ $lang['list'] = "Liste";
 $lang['indenttext'] = "Indenter texte";
 $lang['code'] = "Code";
 $lang['quote'] = "Citer";
+$lang['unquote'] = "Ne pas citer";
 $lang['spoiler'] = "Gâcheur";
 $lang['horizontalrule'] = "Règle horizontale";
 $lang['image'] = "Image";
@@ -1862,7 +1996,7 @@ $lang['onceanhour'] = "Une fois par heure";
 $lang['every6hours'] = "Toutes les 6 heures";
 $lang['every12hours'] = "Toutes les 12 heures";
 $lang['onceaday'] = "Une fois par jour";
-$lang['onceaweek'] = "Once a Week";
+$lang['onceaweek'] = "Une fois par semaine";
 $lang['rssfeeds'] = "Sources de données RSS";
 $lang['feedname'] = "Nom de la source de donnée";
 $lang['feedfoldername'] = "Nom du fichier pour les souces de données";

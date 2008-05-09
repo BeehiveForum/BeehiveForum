@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads_rss.php,v 1.56 2008-02-25 09:55:24 decoyduck Exp $ */
+/* $Id: threads_rss.php,v 1.57 2008-05-09 06:53:30 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -202,7 +202,7 @@ echo "<title>{$forum_name}</title>\n";
 echo "<link>{$forum_location}/</link>\n";
 echo "<description>{$forum_name} - {$forum_location}/</description>\n";
 echo "<lastBuildDate>{$build_date} UT</lastBuildDate>\n";
-echo "<generator>$forum_name / www.beehiveforum.net</generator>\n";
+echo "<generator>Project Beehive Forum - www.beehiveforum.net</generator>\n";
 
 // Get the 20 most recent threads
 

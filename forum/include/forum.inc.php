@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.309 2008-05-09 06:53:30 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.310 2008-05-10 18:42:52 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -712,9 +712,9 @@ function forum_check_global_setting_name($setting_name)
                                          'captcha_clean_up_last_run', 'sitemap_create_file_last_run', 'guest_account_enabled',
                                          'guest_show_recent', 'messages_unread_cutoff', 'messages_unread_cutoff_custom',
                                          'new_user_email_notify', 'new_user_mark_as_of_int', 'new_user_pm_notify_email',
-                                         'pm_allow_attachments', 'pm_auto_prune', 'pm_max_user_messages', 'require_email_confirmation',
-                                         'require_unique_email', 'require_user_approval', 'search_min_frequency',
-                                         'send_new_user_email', 'session_cutoff', 'sitemap_enabled',
+                                         'new_user_pm_notify', 'pm_allow_attachments', 'pm_auto_prune', 'pm_max_user_messages',
+                                         'require_email_confirmation', 'require_unique_email', 'require_user_approval',
+                                         'search_min_frequency', 'send_new_user_email', 'session_cutoff', 'sitemap_enabled',
                                          'sitemap_freq', 'showpopuponnewpm', 'show_pms', 'text_captcha_enabled');
 
     return in_array($setting_name, $valid_global_forum_settings);

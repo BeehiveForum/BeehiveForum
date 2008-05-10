@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.111 2008-03-24 23:32:15 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.112 2008-05-10 18:42:52 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -261,10 +261,10 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
         $new_forum_settings['new_user_pm_notify_email'] = "N";
     }
 
-    if (isset($_POST['showpopuponnewpm']) && $_POST['showpopuponnewpm'] == "Y") {
-        $new_forum_settings['showpopuponnewpm'] = "Y";
+    if (isset($_POST['new_user_pm_notify']) && $_POST['new_user_pm_notify'] == "Y") {
+        $new_forum_settings['new_user_pm_notify'] = "Y";
     }else {
-        $new_forum_settings['showpopuponnewpm'] = "N";
+        $new_forum_settings['new_user_pm_notify'] = "N";
     }
 
     if (isset($_POST['new_user_mark_as_of_int']) && $_POST['new_user_mark_as_of_int'] == "Y") {

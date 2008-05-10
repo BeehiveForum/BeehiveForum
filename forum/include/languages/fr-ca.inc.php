@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.104 2008-05-09 18:18:57 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.105 2008-05-10 18:42:52 decoyduck Exp $ */
 
 // French Canadian language file
 
@@ -128,6 +128,8 @@ $lang['of'] = "de";
 $lang['reply'] = "Répondre";
 $lang['forward'] = "Faire suivre";
 $lang['replyall'] = "Répondre à tous";
+$lang['quickreply'] = "Réponse rapide";
+$lang['quickreplyall'] = "Réponse rapide à tous";
 $lang['pm_reply'] = "Répondre en MP";
 $lang['delete'] = "supprimer";
 $lang['deleted'] = "supprimé";
@@ -158,6 +160,7 @@ $lang['more'] = "Plus";
 $lang['recentvisitors'] = "Dernières visites";
 $lang['username'] = "nom d'utilisateur";
 $lang['clear'] = "Effacer";
+$lang['reset'] = "Réinitialisé";
 $lang['action'] = "Action";
 $lang['unknown'] = "Inconnu";
 $lang['none'] = "aucun";
@@ -709,6 +712,8 @@ $lang['nicknamebanhit'] = "Utiliateur '%s' est banni. Le pseudonyme '%s' conform
 $lang['emailbanhit'] = "Utilisateur '%s' est banni. L'adresse courriel '%s' conforme aux données de bannissement '%s'";
 $lang['refererbanhit'] = "Utilisateur '%s' est banni. Le référent HTTP '%s' conforme aux données de bannissement '%s'";
 
+$lang['modifiedpermsforuser'] = "Modifié perms pour utilisateur '%s'";
+$lang['modifiedfolderpermsforuser'] = "Modifié perms de dossier pour utilisateur '%s'";
 
 $lang['userpermbanned'] = "Banni";
 $lang['userpermwormed'] = "Parasité";
@@ -1016,6 +1021,7 @@ $lang['invaliduserkeyprovided'] = "Indicatif d'utilisateur invalide fournit. Vé
 
 $lang['nomessagespecifiedfordel'] = "Aucun message indiqué pour suppression";
 $lang['deletemessage'] = "Supprimer Message";
+$lang['successfullydeletedpost'] = "Suppression du message %s réussie";
 $lang['errordelpost'] = "Erreur rencontrée en supprimant le message";
 $lang['cannotdeletepostsinthisfolder'] = "Vous ne pouvez pas supprimer vos messages dans ce dossier";
 
@@ -1024,6 +1030,7 @@ $lang['cannotdeletepostsinthisfolder'] = "Vous ne pouvez pas supprimer vos messa
 $lang['nomessagespecifiedforedit'] = "Aucun message d'indiqué pour révision";
 $lang['cannoteditpollsinlightmode'] = "Impossible de modifier les scrutins en mode léger";
 $lang['editedbyuser'] = "MODIFIÉ: %s par %s";
+$lang['successfullyeditedpost'] = "Modification du message %s réussie";
 $lang['errorupdatingpost'] = "Erreur rencontrée durant la mise à jour du message";
 $lang['editmessage'] = "Réviser le message %s";
 $lang['editpollwarning'] = "<b>Note</b>: La révision de certains aspects d'un scrutin annulera tous les votes déjà enregistrés et permettra aux utilisateurs de voter de nouveau.";
@@ -1322,6 +1329,7 @@ $lang['closeforposting'] = "Fermer aux contributions";
 $lang['until'] = "Jusqu'à 00:00 UTC";
 $lang['approvalrequired'] = "Approbation requise";
 $lang['messageawaitingapprovalbymoderator'] = "Message %s.%s en attente d'approbation par un modérateur";
+$lang['successfullyapprovedpost'] = "Approbation du message %s réussie";
 $lang['postapprovalfailed'] = "L'approbation du message a échoué.";
 $lang['postdoesnotrequireapproval'] = "Approbation du message non requis";
 $lang['approvepost'] = "Approuver Message";
@@ -1335,6 +1343,7 @@ $lang['imageresized'] = "Cet image a été redimensionné (taille originale %1\$
 $lang['messagedeletedbyuser'] = "Message %s.%s supprimé %s par %s";
 $lang['messagedeleted'] = "Message %s.%s a été supprimé";
 $lang['viewinframeset'] = "Visualisez dans l'ensemble de cadres";
+$lang['pressctrlentertoquicklysubmityourpost'] = "Appuyez Ctrl+Entrée pour soumettre votre message rapidement";
 
 // Moderators list (mods_list.php) -------------------------------------
 
@@ -1369,7 +1378,10 @@ $lang['mustspecifyrecipient'] = "Vous devez spécifier aumoins un destinataire."
 $lang['usernotfound'] = "Utilisateur %s non retrouvé";
 $lang['sendnewpm'] = "Envoyer nouveau MP";
 $lang['savemessage'] = "Enregistrer message";
+$lang['nosubject'] = "Aucun sujet";
+$lang['norecipients'] = "Aucun destinataire";
 $lang['timesent'] = "Heure d'envoi";
+$lang['notsent'] = "Pas envoyé";
 $lang['errorcreatingpm'] = "Erreur en créant MP! SVP essayer de nouveau dans quelques minutes";
 $lang['writepm'] = "Rédiger message";
 $lang['editpm'] = "Réviser message";
@@ -1528,6 +1540,7 @@ $lang['automaticallyparseurlsbydefault'] = "Transformer automatiquement les adre
 $lang['postinplaintextbydefault'] = "Poster en texte en clair par défaut";
 $lang['postinhtmlwithautolinebreaksbydefault'] = "Poster en HTML avec coupures de lignes automatiques par défaut";
 $lang['postinhtmlbydefault'] = "Poster en HTML par défaut";
+$lang['postdefaultquick'] = "Utiliser réponse rapide par défault. (Réponse complète dans le menu)";
 $lang['privatemessageoptions'] = "Options de message privé";
 $lang['privatemessageexportoptions'] = "Options d'exportation de message privé";
 $lang['savepminsentitems'] = "Enregistrer une copie de chaque MP que j'envois dans mon dossier d'Items envoyés";
@@ -1762,6 +1775,7 @@ $lang['sortdir'] = "Assortir dir";
 $lang['sortresults'] = "Assortir les résultats";
 $lang['groupbythread'] = "Grouper par fil de discussion";
 $lang['postsfromuser'] = "Messages de cet utilisateur";
+$lang['threadsstartedbyuser'] = "Fils de discussion commencés par l'utilisateur";
 $lang['searchfrequencyerror'] = "Vous pouvez chercher seulement une fois tous les %s secondes. Veuillez essayer de nouveau plus tard.";
 $lang['searchsuccessfullycompleted'] = "Recherche complétée avec succès. %s";
 $lang['clickheretoviewresults'] = "Cliquez ici pour voir les résultats.";

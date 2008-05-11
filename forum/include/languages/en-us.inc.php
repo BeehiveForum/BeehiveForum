@@ -21,9 +21,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en-us.inc.php,v 1.57 2008-05-09 18:18:57 decoyduck Exp $ */
+/* $Id: en-us.inc.php,v 1.58 2008-05-11 13:01:09 decoyduck Exp $ */
 
-// US English language file
+// American English language file
 
 // Language character set and text direction options -------------------
 
@@ -712,8 +712,8 @@ $lang['nicknamebanhit'] = "User '%s' is banned. Nickname '%s' matched ban data '
 $lang['emailbanhit'] = "User '%s' is banned. Email Address '%s' matched ban data '%s'";
 $lang['refererbanhit'] = "User '%s' is banned. HTTP Referer '%s' matched ban data '%s'";
 
-$lang['userpermenabled'] = "Changed perms for user '%s'. Enabled: %s";
-$lang['userpermdisabled'] = "Changed perms for user '%s'. Disabled: %s";
+$lang['modifiedpermsforuser'] = "Modified perms for user '%s'";
+$lang['modifiedfolderpermsforuser'] = "Modified folder perms for user '%s'";
 
 $lang['userpermbanned'] = "Banned";
 $lang['userpermwormed'] = "Wormed";
@@ -1021,7 +1021,7 @@ $lang['invaliduserkeyprovided'] = "Invalid user key provided. Check email for co
 
 $lang['nomessagespecifiedfordel'] = "No message specified for deletion";
 $lang['deletemessage'] = "Delete Message";
-$lang['postdelsuccessfully'] = "Post deleted successfully";
+$lang['successfullydeletedpost'] = "Successfully deleted post %s";
 $lang['errordelpost'] = "Error deleting post";
 $lang['cannotdeletepostsinthisfolder'] = "You cannot delete posts in this folder";
 
@@ -1030,7 +1030,7 @@ $lang['cannotdeletepostsinthisfolder'] = "You cannot delete posts in this folder
 $lang['nomessagespecifiedforedit'] = "No message specified for editing";
 $lang['cannoteditpollsinlightmode'] = "Cannot edit polls in Light mode";
 $lang['editedbyuser'] = "EDITED: %s by %s";
-$lang['editappliedtomessage'] = "Edit Applied to Message";
+$lang['successfullyeditedpost'] = "Successfully edited post %s";
 $lang['errorupdatingpost'] = "Error updating post";
 $lang['editmessage'] = "Edit message %s";
 $lang['editpollwarning'] = "<b>Note</b>: Editing certain aspects of a poll will void all the current votes and allow people to vote again.";
@@ -1329,7 +1329,7 @@ $lang['closeforposting'] = "Close for posting";
 $lang['until'] = "Until 00:00 UTC";
 $lang['approvalrequired'] = "Approval Required";
 $lang['messageawaitingapprovalbymoderator'] = "Message %s.%s is awaiting approval by a moderator";
-$lang['postapprovedsuccessfully'] = "Post approved successfully";
+$lang['successfullyapprovedpost'] = "Successfully approved post %s";
 $lang['postapprovalfailed'] = "Post approval failed.";
 $lang['postdoesnotrequireapproval'] = "Post does not require approval";
 $lang['approvepost'] = "Approve Post";
@@ -1378,7 +1378,10 @@ $lang['mustspecifyrecipient'] = "You must specify at least one recipient.";
 $lang['usernotfound'] = "User %s not found";
 $lang['sendnewpm'] = "Send New PM";
 $lang['savemessage'] = "Save Message";
+$lang['nosubject'] = "No Subject";
+$lang['norecipients'] = "No Recipients";
 $lang['timesent'] = "Time Sent";
+$lang['notsent'] = "Not Sent";
 $lang['errorcreatingpm'] = "Error creating PM! Please try again in a few minutes";
 $lang['writepm'] = "Write Message";
 $lang['editpm'] = "Edit Message";

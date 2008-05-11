@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.79 2008-04-09 14:32:43 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.80 2008-05-11 13:01:09 decoyduck Exp $ */
 
 // German language file
 
@@ -1020,7 +1020,6 @@ $lang['invaliduserkeyprovided'] = "Ungueltiger Benutzerschluessel. eMail-Eingang
 
 $lang['nomessagespecifiedfordel'] = "Keine Nachricht fuer Loeschung definiert";
 $lang['deletemessage'] = "Nachricht loeschen";
-$lang['postdelsuccessfully'] = "Post erfolgreich geloescht";
 $lang['errordelpost'] = "Fehler beim Loeschen des Posts";
 $lang['cannotdeletepostsinthisfolder'] = "Du kannst keine Posts in diesem Ordner loeschen";
 
@@ -1029,7 +1028,6 @@ $lang['cannotdeletepostsinthisfolder'] = "Du kannst keine Posts in diesem Ordner
 $lang['nomessagespecifiedforedit'] = "Keine Nachricht fuer Editierung definiert";
 $lang['cannoteditpollsinlightmode'] = "Kann Abstimmungen im Light-Modus nicht bearbeiten";
 $lang['editedbyuser'] = "Geaendert: %s von %s";
-$lang['editappliedtomessage'] = "Editierung fuer diese Nachricht angewendet";
 $lang['errorupdatingpost'] = "Fehler bei Aenderung des Posts";
 $lang['editmessage'] = "Editiere Nachricht %s";
 $lang['editpollwarning'] = "<b>Merke</b>: Editierung einiger Punkte einer Abstimmung fuehrt dazu dass alle Benutzer erneut abstimmen koennen.";
@@ -1328,7 +1326,6 @@ $lang['closeforposting'] = "Geschlossen. Kein Posten mehr moeglich";
 $lang['until'] = "Bis 00:00 UTC";
 $lang['approvalrequired'] = "Aktivierung notwendig";
 $lang['messageawaitingapprovalbymoderator'] = "Nachricht %s.%s wartet auf Aktivierung eines Moderators";
-$lang['postapprovedsuccessfully'] = "Post erfolgreich aktiviert";
 $lang['postapprovalfailed'] = "Post-Genehmigung fehlgeschlagen.";
 $lang['postdoesnotrequireapproval'] = "Post benoetigt keine Genehmigung";
 $lang['approvepost'] = "Stimme Post";

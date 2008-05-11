@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.328 2008-05-09 06:53:30 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.329 2008-05-11 09:31:04 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -162,9 +162,6 @@ if (user_is_guest()) {
     $uid = bh_session_get_value('UID');
 
     $threads_any_unread = threads_any_unread();
-
-    echo (isset($_GET['mode'])) ? sprintf("%s<br />\n", $_GET['mode']) : "\$_GET['mode'] not set<br />\n";
-    echo (isset($_COOKIE["bh_{$webtag}_thread_mode"])) ? sprintf("%s<br />\n", $_COOKIE["bh_{$webtag}_thread_mode"]) : "\$_COOKIE[\"bh_{$webtag}_thread_mode\"] not set<br />\n";
 
     if (isset($_GET['mode']) && is_numeric($_GET['mode'])) {
 

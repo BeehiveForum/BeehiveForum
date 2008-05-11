@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-08x-to-083.php,v 1.7 2008-04-16 10:06:59 decoyduck Exp $ */
+/* $Id: upgrade-08x-to-083.php,v 1.8 2008-05-11 16:43:54 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'upgrade-08x-to-083.php') {
 
@@ -112,6 +112,17 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         return;
     }
 
+    // Delete any remaining 0 length threads from the THREADS table so they
+    // don't appear in the thread list.
+
+    $sql = "DELETE FROM {$forum_webtag}_THREAD WHERE LENGTH = 0";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
     // Add field for reply_quick
 
     $sql = "ALTER TABLE {$forum_webtag}_USER_PREFS ADD REPLY_QUICK CHAR(1) NOT NULL DEFAULT 'N'";
@@ -122,7 +133,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         return;
     }
 
-    // Sort out the THREAD MODIFIED columns being wronh due to a bug in 0.8 and 0.8.1.
+    // Sort out the THREAD MODIFIED columns being wrong due to a bug in 0.8 and 0.8.1.
 
     $sql = "INSERT INTO {$forum_webtag}_THREAD (TID, FID, BY_UID, TITLE, LENGTH, ";
     $sql.= "POLL_FLAG, CREATED, MODIFIED, CLOSED, STICKY, STICKY_UNTIL, ADMIN_LOCK) ";

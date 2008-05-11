@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-07x-to-083.php,v 1.7 2008-04-16 10:06:59 decoyduck Exp $ */
+/* $Id: upgrade-07x-to-083.php,v 1.8 2008-05-11 16:43:54 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-07x-to-083.php") {
 
@@ -193,6 +193,17 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql.= "LEFT JOIN {$forum_webtag}_POST POST ON (POST.TID = THREAD.TID) ";
     $sql.= "WHERE THREAD.LENGTH = 0 GROUP BY THREAD.TID ";
     $sql.= "ON DUPLICATE KEY UPDATE LENGTH = VALUES(LENGTH)";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // Delete any remaining 0 length threads from the THREADS table so they
+    // don't appear in the thread list.
+
+    $sql = "DELETE FROM {$forum_webtag}_THREAD WHERE LENGTH = 0";
 
     if (!$result = @db_query($sql, $db_install)) {
 

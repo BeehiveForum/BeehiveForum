@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: emoticons.inc.php,v 1.71 2008-04-24 20:49:44 decoyduck Exp $ */
+/* $Id: emoticons.inc.php,v 1.72 2008-05-11 09:31:04 decoyduck Exp $ */
 
 /**
 * emoticons.inc.php - emoticon functions
@@ -180,11 +180,11 @@ function emoticons_get_browser_fix()
 
     if (isset($_SERVER['HTTP_USER_AGENT'])) {
 
-        if (preg_match("/konqueror|safari|MSIE 7/", $_SERVER['HTTP_USER_AGENT']) > 0) {
+        if (preg_match("/konqueror|safari|msie 7/i", $_SERVER['HTTP_USER_AGENT']) > 0) {
 
             $emoticons_browser_fix = "&nbsp;</span>";
 
-        }else if (preg_match("/gecko/", $_SERVER['HTTP_USER_AGENT']) > 0) {
+        }else if (preg_match("/gecko/i", $_SERVER['HTTP_USER_AGENT']) > 0) {
 
             $emoticons_browser_fix = "</span> ";
         }

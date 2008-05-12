@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forums.php,v 1.90 2008-05-10 20:42:41 decoyduck Exp $ */
+/* $Id: forums.php,v 1.91 2008-05-12 19:41:00 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -561,7 +561,7 @@ if (!user_is_guest()) {
 
                 if (isset($forum['FORUM_DESC']) && strlen(trim($forum['FORUM_DESC'])) > 0) {
 
-                    $forum_desc_short = (strlen(trim($forum['FORUM_DESC'])) > 0) ? substr($forum['FORUM_DESC'], 0, 47). "&hellip;" : "";
+                    $forum_desc_short = (strlen(trim($forum['FORUM_DESC'])) > 50) ? substr($forum['FORUM_DESC'], 0, 47). "&hellip;" : $forum['FORUM_DESC'];
 
                     echo "                  <td align=\"left\" valign=\"top\" width=\"30%\" nowrap=\"nowrap\"><div title=\"", word_filter_add_ob_tags($forum['FORUM_DESC']), "\">", word_filter_add_ob_tags($forum_desc_short), "</div></td>\n";
 

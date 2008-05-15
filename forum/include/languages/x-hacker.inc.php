@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.280 2008-05-11 13:01:09 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.281 2008-05-15 21:55:26 decoyduck Exp $ */
 
 // British English language file
 
@@ -1081,8 +1081,8 @@ $lang['pwchangeemail'] = "h3LlO %s,\n\n+H15 4 N0tiPHiC4TIOn 3MAIl +O iNfORM j00 
 // Email confirmation notification -------------------------------------
 
 $lang['emailconfirmationrequiredsubject'] = "eM4IL C0Nfirm@+iON R3QU1ReD f0r %s";
-$lang['confirmemail'] = "helLO %s,\n\nyOu ReCeNTLy cr3@T3D a nEW U\$Er 4Cc0uN+ On %s.\n8EPH0re J00 c4N 5+@Rt P05+1N9 We NeEd T0 cONphIrM yOUR EM41l 4DdRES5. don'T woRRY +H1\$ 1s Qu1+E EAsy. 4ll J00 N3Ed +o Do I\$ cl1Ck TEh lINk 83l0W (oR COpy anD p4S+3 1T Int0 Y0Ur 8ROW\$Er):\n\n%s\n\n0NC3 c0NFirM4T10N I\$ c0mpl3TE J00 M4y L0gIN @ND \$t4RT POs+IN9 IMM3D1AT3Ly.\n\nipH j00 d1d N0+ CR34t3 A U53r 4CCOunt 0N %s PLE@\$e @cC3pT 0uR 4P0L091eS @Nd PHORw4Rd +HIS 3M4iL T0 %s \$0 THa+ TEH sOURce OpH 1+ M4Y b3 1NV3s+19A+3d.";
-$lang['confirmchangedemail'] = "hEllo %s,\n\nyoU REcEnTLy chaN93d yOUr 3m41L On %s.\n8EphOr3 J00 C4N s+@Rt P0sTIN9 4941N W3 NEEd +O c0nfiRM Y0UR nEw 3MAil @DDrE\$\$. d0n'+ wORrY +H1S i5 QuI+e E45Y. ALL J00 N3ED +O do 15 Cl1Ck +eH lINK B3L0w (0R c0pY AND P4\$tE 1+ 1n+0 YOuR bROw\$ER):\n\n%s\n\nonCe C0nFirM4T1On is c0mple+3 J00 M@Y C0n+1nU3 T0 US3 +he PH0RuM 4\$ N0rM4l.\n\n1F j00 w3Re N0+ Exp3C+INg TH1S eMa1l Phr0M %s PLe@sE aCc3p+ ouR 4P0L09ie\$ @Nd pH0RWARd +H15 3m41L t0 %s \$0 Th4+ T3h 5ouRcE OF It m@y 83 1nvEs+1g@tEd.";
+$lang['confirmemail'] = "helLO %s,\n\nyOu ReCeNTLy cr3@T3D a nEW U\$Er 4Cc0uN+ On %s.\n\n8EPH0re J00 c4N 5+@Rt P05+1N9 We NeEd T0 cONphIrM yOUR EM41l 4DdRES5. don'T woRRY +H1\$ 1s Qu1+E EAsy. 4ll J00 N3Ed +o Do I\$ cl1Ck TEh lINk 83l0W (oR COpy anD p4S+3 1T Int0 Y0Ur 8ROW\$Er):\n\n%s\n\n0NC3 c0NFirM4T10N I\$ c0mpl3TE J00 M4y L0gIN @ND \$t4RT POs+IN9 IMM3D1AT3Ly.\n\nipH j00 d1d N0+ CR34t3 A U53r 4CCOunt 0N %s PLE@\$e @cC3pT 0uR 4P0L091eS @Nd PHORw4Rd +HIS 3M4iL T0 %s \$0 THa+ TEH sOURce OpH 1+ M4Y b3 1NV3s+19A+3d.";
+$lang['confirmchangedemail'] = "hEllo %s,\n\nyoU REcEnTLy chaN93d yOUr 3m41L On %s.\n\n8EphOr3 J00 C4N s+@Rt P0sTIN9 4941N W3 NEEd +O c0nfiRM Y0UR nEw 3MAil @DDrE\$\$. d0n'+ wORrY +H1S i5 QuI+e E45Y. ALL J00 N3ED +O do 15 Cl1Ck +eH lINK B3L0w (0R c0pY AND P4\$tE 1+ 1n+0 YOuR bROw\$ER):\n\n%s\n\nonCe C0nFirM4T1On is c0mple+3 J00 M@Y C0n+1nU3 T0 US3 +he PH0RuM 4\$ N0rM4l.\n\n1F j00 w3Re N0+ Exp3C+INg TH1S eMa1l Phr0M %s PLe@sE aCc3p+ ouR 4P0L09ie\$ @Nd pH0RWARd +H15 3m41L t0 %s \$0 Th4+ T3h 5ouRcE OF It m@y 83 1nvEs+1g@tEd.";
 
 // Forgotten password notification -------------------------------------
 
@@ -1677,7 +1677,7 @@ $lang['passwdsdonotmatch'] = "p4s\$w0RDs do noT M4Tch";
 $lang['usernamesameaspasswd'] = "usERN@ME 4nD p45sw0rD MUsT 83 d1fPh3r3nT";
 $lang['usernameexists'] = "sorrY, 4 U\$3R wItH +h4T N4M3 4LR34Dy 3xIS+s";
 $lang['successfullycreateduseraccount'] = "sUCcEsspHuLlY CRE@T3D UseR acCOUNT";
-$lang['useraccountcreatedconfirmfailed'] = "your Us3r 4CC0UN+ H@S b3en CR34+3D 8Ut +hE r3qUir3D C0NFIrM@tiON 3Ma1L WA\$ n0T \$enT. Pl34sE C0NT@C+ tH3 phOruM oWn3r t0 r3ct1FY +HI5. 1N tH1s mE@nTIMe PLeA\$3 CLiCK TEh C0NTinU3 8UttoN +O lOgiN iN.";
+$lang['useraccountcreatedconfirmfailed'] = "your Us3r 4CC0UN+ H@S b3en CR34+3D 8Ut +hE r3qUir3D C0NFIrM@tiON 3Ma1L WA\$ n0T \$enT. Pl34sE C0NT@C+ tH3 phOruM oWn3r t0 r3ct1FY +HI5. 1N tH1s mE@nTIMe PLeA\$3 CLiCK TEh C0NTinU3 8UttoN +O lOgiN.";
 $lang['useraccountcreatedconfirmsuccess'] = "y0UR Us3R @Cc0uN+ h@S B3EN cr34+ED 8UT b3phoR3 J00 C@N \$+@Rt PosTinG j00 mU\$+ cONf1rM y0uR 3m41L 4Ddr35\$. pLe453 cH3CK YOUr Em4il FoR @ LINk th4+ WilL 4Ll0W J00 +0 c0nfIrm Y0UR 4DdRE\$s.";
 $lang['useraccountcreated'] = "yoUr UsER 4CCoUnt h45 B3En Cr3@T3D \$UCc35SpHuLLY! cLIck TH3 cON+1NuE butT0N B3LOW T0 Lo9in";
 $lang['errorcreatinguserrecord'] = "eRR0r CR3@TIN9 U5Er Rec0rd";

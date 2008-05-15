@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.310 2008-05-10 18:42:52 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.311 2008-05-15 21:55:26 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -431,7 +431,10 @@ function forum_get_settings()
 
             while ($forum_data = db_fetch_array($result)) {
 
-                $forum_settings_array[$forum_data['SNAME']] = $forum_data['SVALUE'];
+                if (forum_check_setting_name($forum_data['SNAME'])) {
+
+                    $forum_settings_array[$forum_data['SNAME']] = $forum_data['SVALUE'];
+                }
             }
         }
 
@@ -490,7 +493,10 @@ function forum_get_global_settings()
 
             while ($forum_data = db_fetch_array($result)) {
 
-                $forum_global_settings_array[$forum_data['SNAME']] = $forum_data['SVALUE'];
+                if (forum_check_global_setting_name($forum_data['SNAME'])) {
+
+                    $forum_global_settings_array[$forum_data['SNAME']] = $forum_data['SVALUE'];
+                }
             }
         }
 
@@ -541,7 +547,10 @@ function forum_get_settings_by_fid($fid, $include_global_settings = true)
 
     while ($forum_data = db_fetch_array($result)) {
 
-        $forum_settings_array[$forum_data['SNAME']] = $forum_data['SVALUE'];
+        if (forum_check_setting_name($forum_data['SNAME'])) {
+
+            $forum_settings_array[$forum_data['SNAME']] = $forum_data['SVALUE'];
+        }
     }
 
     $sql = "SELECT FORUM_SETTINGS.SVALUE AS TIMEZONE, TIMEZONES.GMT_OFFSET, ";

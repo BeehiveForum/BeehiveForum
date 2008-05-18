@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.inc.php,v 1.47 2007-11-18 15:28:17 decoyduck Exp $ */
+/* $Id: dictionary.inc.php,v 1.48 2008-05-18 13:23:34 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -304,7 +304,7 @@ class dictionary {
 
                 while($spelling_data = db_fetch_array($result)) {
 
-                    $this->suggestions_array[] = $spelling_data['WORD'];
+                    $this->suggestions_array[$spelling_data['WORD']] = $spelling_data['WORD'];
                 }
 
             }else {
@@ -343,29 +343,23 @@ class dictionary {
 
     function find_next_word()
     {
-        $this->current_word++;
-        $this->offset_match = 0;
+        while ($this->current_word < sizeof($this->content_array)) {
 
-        if ($this->current_word > (sizeof($this->content_array) - 1)) {
+            $this->current_word++;
+            $this->offset_match = 0;
 
-            $this->check_complete = true;
-            return;
+            if (($this->word_is_valid()) && (!$this->word_is_ignored())) {
 
-        }else {
+                $this->word_get_suggestions();
 
-            $this->word_get_suggestions();
-
-            if ($this->word_suggestion_result == DICTIONARY_EXACT) {
-
-                $this->find_next_word();
-                return;
-            }
-
-            if (!$this->word_is_valid() || $this->word_is_ignored()) {
-
-                $this->find_next_word();
+                if ($this->word_suggestion_result == DICTIONARY_SUGGEST) {
+                    return;
+                }
             }
         }
+
+        $this->check_complete = true;
+        return;
     }
 }
 

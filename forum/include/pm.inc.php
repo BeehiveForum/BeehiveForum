@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.238 2008-04-27 14:46:33 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.239 2008-05-19 17:22:19 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1217,7 +1217,7 @@ function pm_display($pm_message_array, $folder, $preview = false, $export_html =
         echo "                        <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\"><i>{$lang['nosubject']}</i></span></td>\n";
     }
 
-    if ($pm_message_array['TYPE'] & PM_SAVED_DRAFT) {
+    if (isset($pm_message_array['TYPE']) && ($pm_message_array['TYPE'] & PM_SAVED_DRAFT) > 0) {
 
         echo "                        <td align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\"><i>{$lang['notsent']}</i>&nbsp;</span></td>\n";
 

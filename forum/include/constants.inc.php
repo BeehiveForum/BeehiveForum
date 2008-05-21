@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: constants.inc.php,v 1.134 2008-04-09 14:32:43 decoyduck Exp $ */
+/* $Id: constants.inc.php,v 1.135 2008-05-21 22:34:08 decoyduck Exp $ */
 
 /**
 * Constants used throughout Beehive.
@@ -560,5 +560,12 @@ define('RSS_FEED_UPDATE_SIX_HOURS', 360);
 define('RSS_FEED_UPDATE_TWELVE_HOURS', 720);
 define('RSS_FEED_UPDATE_ONCE_A_DAY', 1440);
 define('RSS_FEED_UPDATE_ONCE_A_WEEK', 10080);
+
+// Logon Form Constants
+
+define('LOGON_FORM_DEFAULT', 0);
+define('LOGON_FORM_HIDE_TICKBOX', 1);
+define('LOGON_FORM_SESSION_EXPIRED', 2);
+define('LOGON_FORM_HIDE_LINKS', 4);
 
 ?>

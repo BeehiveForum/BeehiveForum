@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_email.php,v 1.79 2008-03-23 18:54:58 decoyduck Exp $ */
+/* $Id: edit_email.php,v 1.80 2008-05-21 22:34:08 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -250,7 +250,7 @@ if ($show_set_all) {
 }else {
 
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['emailsettings']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">{$lang['emailsettings']}</td>\n";
     echo "                </tr>\n";
 }
 
@@ -305,19 +305,19 @@ echo "                <tr>\n";
 echo "                  <td align=\"left\" rowspan=\"6\" width=\"1%\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_radio("dob_display", 0, $lang['donotshowmyageordobtoothers'], ((isset($user_prefs['DOB_DISPLAY']) && $user_prefs['DOB_DISPLAY'] == USER_DOB_DISPLAY_NONE) || !isset($user_prefs['DOB_DISPLAY'])) ? true : false), "</td>\n";
+echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_radio("dob_display", 0, $lang['donotshowmyageordobtoothers'], ((isset($user_prefs['DOB_DISPLAY']) && $user_prefs['DOB_DISPLAY'] == USER_DOB_DISPLAY_NONE) || !isset($user_prefs['DOB_DISPLAY']))), "</td>\n";
 echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("dob_display_global", "Y", '', (isset($user_prefs['DOB_DISPLAY_GLOBAL']) ? $user_prefs['DOB_DISPLAY_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("dob_display_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_radio("dob_display", 1, $lang['showonlymyagetoothers'], (isset($user_prefs['DOB_DISPLAY']) && $user_prefs['DOB_DISPLAY'] == USER_DOB_DISPLAY_AGE) ? true : false), "</td>\n";
+echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_radio("dob_display", 1, $lang['showonlymyagetoothers'], (isset($user_prefs['DOB_DISPLAY']) && $user_prefs['DOB_DISPLAY'] == USER_DOB_DISPLAY_AGE)), "</td>\n";
 echo "                  <td align=\"left\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_radio("dob_display", 3, $lang['showonlymydayandmonthofbirthytoothers'], (isset($user_prefs['DOB_DISPLAY']) && $user_prefs['DOB_DISPLAY'] == USER_DOB_DISPLAY_BOTH) ? true : false), "</td>\n";
+echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_radio("dob_display", 3, $lang['showonlymydayandmonthofbirthytoothers'], (isset($user_prefs['DOB_DISPLAY']) && $user_prefs['DOB_DISPLAY'] == USER_DOB_DISPLAY_DATE)), "</td>\n";
 echo "                  <td align=\"left\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_radio("dob_display", 2, $lang['showmyageanddobtoothers'], (isset($user_prefs['DOB_DISPLAY']) && $user_prefs['DOB_DISPLAY'] == USER_DOB_DISPLAY_DATE) ? true : false), "</td>\n";
+echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_radio("dob_display", 2, $lang['showmyageanddobtoothers'], (isset($user_prefs['DOB_DISPLAY']) && $user_prefs['DOB_DISPLAY'] == USER_DOB_DISPLAY_BOTH)), "</td>\n";
 echo "                  <td align=\"left\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.160 2008-03-23 18:54:58 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.161 2008-05-21 17:19:55 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -122,7 +122,8 @@ if (forum_get_setting('allow_polls', 'N')) {
 
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
-    list($edit_msg) = explode(' ', rawurldecode($_GET['msg']));
+    $edit_msg = $_GET['msg'];
+
     list($tid, $pid) = explode('.', $edit_msg);
 
     if (!$t_fid = thread_get_folder($tid, $pid)) {
@@ -135,7 +136,8 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
 }elseif (isset($_POST['t_msg']) && validate_msg($_POST['t_msg'])) {
 
-    list($edit_msg) = explode(' ', rawurldecode($_POST['t_msg']));
+    $edit_msg = $_POST['msg'];
+
     list($tid, $pid) = explode('.', $_POST['t_msg']);
 
     if (!$t_fid = thread_get_folder($tid, $pid)) {
@@ -201,6 +203,12 @@ if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
     $aid = md5(uniqid(mt_rand()));
 }
 
+if (isset($_POST['cancel'])) {
+
+    $uri = "discussion.php?webtag=$webtag&msg=$edit_msg";
+    header_redirect($uri);
+}
+
 post_save_attachment_id($tid, $pid, $aid);
 
 if (bh_session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
@@ -227,12 +235,7 @@ if (!$threaddata = thread_get($tid)) {
 
 $allow_html = true;
 
-if (isset($_POST['cancel'])) {
-
-    $uri = "discussion.php?webtag=$webtag&msg=$edit_msg";
-    header_redirect($uri);
-
-}elseif (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_POST['apply'])) {
+if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_POST['apply'])) {
 
     if (isset($_POST['t_post_html']) && $_POST['t_post_html'] == 'Y') {
         $t_post_html = 'Y';

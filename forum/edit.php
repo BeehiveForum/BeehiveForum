@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.248 2008-04-27 12:55:11 decoyduck Exp $ */
+/* $Id: edit.php,v 1.249 2008-05-21 17:19:55 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -163,13 +163,13 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
 if (thread_is_poll($tid) && $pid == 1) {
 
-    header_redirect("edit_poll.php?webtag=$webtag&msg=$msg");
+    header_redirect("edit_poll.php?webtag=$webtag&msg=$edit_msg");
     exit;
 }
 
 if (isset($_POST['cancel'])) {
 
-    header_redirect("discussion.php?webtag=$webtag&msg=$msg");
+    header_redirect("discussion.php?webtag=$webtag&msg=$edit_msg");
     exit;
 }
 

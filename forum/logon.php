@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.179 2008-05-09 06:53:30 decoyduck Exp $ */
+/* $Id: logon.php,v 1.180 2008-05-21 22:34:08 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -181,7 +181,7 @@ html_draw_top('logon.js');
 
 echo "<div align=\"center\">\n";
 
-logon_draw_form();
+logon_draw_form(LOGON_FORM_DEFAULT);
 
 echo "</div>\n";
 

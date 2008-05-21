@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.77 2008-03-15 15:37:03 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.78 2008-05-21 22:34:09 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -217,7 +217,7 @@ function logon_update_cookies($logon, $password, $passhash, $save_password)
     }
 }
 
-function logon_perform($logon_main)
+function logon_perform()
 {
     $lang = load_language_file();
 
@@ -292,13 +292,19 @@ function logon_perform($logon_main)
     return false;
 }
 
-function logon_draw_form($session_expired = false)
+function logon_draw_form($logon_options)
 {
     $frame_top_target = html_get_top_frame_name();
 
     $lang = load_language_file();
 
     $webtag = get_webtag($webtag_search);
+
+    // Make sure logon form argument is valid.
+
+    if (!is_numeric($logon_options)) $logon_options = LOGON_FORM_DEFAULT;
+
+    // Clean the logon cookie so we don't bounce to the logon screen.
 
     bh_setcookie("bh_logon", "1", time() - YEAR_IN_SECONDS);
 
@@ -314,7 +320,7 @@ function logon_draw_form($session_expired = false)
 
     // Check for previously failed logon.
 
-    if (isset($_COOKIE['bh_logon_failed']) && !$session_expired) {
+    if (isset($_COOKIE['bh_logon_failed']) && !($logon_options & LOGON_FORM_SESSION_EXPIRED)) {
 
         bh_setcookie("bh_logon_failed", "1", time() - YEAR_IN_SECONDS);
         html_display_error_msg($lang['usernameorpasswdnotvalid'], '500', 'center');
@@ -454,10 +460,14 @@ function logon_draw_form($session_expired = false)
         }
     }
 
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\">&nbsp;</td>\n";
-    echo "                        <td align=\"left\">", form_checkbox("remember_user", "Y", $lang['rememberpasswds'], (isset($password_array[0]) && isset($passhash_array[0]) && $other_logon === false), "autocomplete=\"off\""), "</td>\n";
-    echo "                      </tr>\n";
+    if (!($logon_options & LOGON_FORM_HIDE_TICKBOX)) {
+
+        echo "                      <tr>\n";
+        echo "                        <td align=\"left\">&nbsp;</td>\n";
+        echo "                        <td align=\"left\">", form_checkbox("remember_user", "Y", $lang['rememberpasswds'], (isset($password_array[0]) && isset($passhash_array[0]) && $other_logon === false), "autocomplete=\"off\""), "</td>\n";
+        echo "                      </tr>\n";
+    }
+
     echo "                      <tr>\n";
     echo "                        <td align=\"center\" colspan=\"2\">", form_submit('logon', $lang['logonbutton']), "</td>\n";
     echo "                      </tr>\n";
@@ -473,38 +483,41 @@ function logon_draw_form($session_expired = false)
     echo "  </table>\n";
     echo "</form>\n";
 
-    if (user_guest_enabled()) {
+    if (!($logon_options & LOGON_FORM_HIDE_LINKS)) {
 
-        echo "<form name=\"guest\" action=\"logon.php?webtag=$webtag\" method=\"post\" target=\"", html_get_top_frame_name(), "\">\n";
-        echo "  <p class=\"smalltext\">", sprintf($lang['enterasa'], form_submit('guest_logon', $lang['guest'])), "</p>\n";
-        echo "</form>\n";
-    }
+        if (user_guest_enabled()) {
 
-    if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri']))) > 0) {
+            echo "<form name=\"guest\" action=\"logon.php?webtag=$webtag\" method=\"post\" target=\"", html_get_top_frame_name(), "\">\n";
+            echo "  <p class=\"smalltext\">", sprintf($lang['enterasa'], form_submit('guest_logon', $lang['guest'])), "</p>\n";
+            echo "</form>\n";
+        }
 
-        $final_uri = rawurlencode(trim(_stripslashes($_GET['final_uri'])));
+        if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri']))) > 0) {
 
-        $register_link = rawurlencode("register.php?webtag=$webtag&final_uri=$final_uri");
-        $forgot_pw_link = rawurlencode("forgot_pw.php?webtag=$webtag&final_uri=$final_uri");
+            $final_uri = rawurlencode(trim(_stripslashes($_GET['final_uri'])));
 
-        echo "<p class=\"smalltext\">", sprintf($lang['donthaveanaccount'], "<a href=\"index.php?webtag=$webtag&amp;final_uri=$register_link\" target=\"". html_get_top_frame_name(). "\">{$lang['registernow']}</a>"), "</p>\n";
+            $register_link = rawurlencode("register.php?webtag=$webtag&final_uri=$final_uri");
+            $forgot_pw_link = rawurlencode("forgot_pw.php?webtag=$webtag&final_uri=$final_uri");
+
+            echo "<p class=\"smalltext\">", sprintf($lang['donthaveanaccount'], "<a href=\"index.php?webtag=$webtag&amp;final_uri=$register_link\" target=\"". html_get_top_frame_name(). "\">{$lang['registernow']}</a>"), "</p>\n";
+            echo "<hr class=\"bhlogonseparator\" />\n";
+            echo "<h2>{$lang['problemsloggingon']}</h2>\n";
+            echo "<p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes&amp;final_uri=$final_uri\" target=\"", html_get_top_frame_name(), "\">{$lang['deletecookies']}</a></p>\n";
+            echo "<p class=\"smalltext\"><a href=\"index.php?webtag=$webtag&amp;final_uri=$forgot_pw_link\" target=\"", html_get_top_frame_name(), "\">{$lang['forgottenpasswd']}</a></p>\n";
+
+        }else {
+
+            echo "<p class=\"smalltext\">", sprintf($lang['donthaveanaccount'], "<a href=\"index.php?webtag=$webtag&amp;final_uri=register.php%3Fwebtag%3D$webtag\" target=\"". html_get_top_frame_name(). "\">{$lang['registernow']}</a>"), "</p>\n";
+            echo "<hr class=\"bhlogonseparator\" />\n";
+            echo "<h2>{$lang['problemsloggingon']}</h2>\n";
+            echo "<p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes\" target=\"", html_get_top_frame_name(), "\">{$lang['deletecookies']}</a></p>\n";
+            echo "<p class=\"smalltext\"><a href=\"index.php?webtag=$webtag&amp;final_uri=forgot_pw.php%3Fwebtag%3D$webtag\" target=\"", html_get_top_frame_name(), "\">{$lang['forgottenpasswd']}</a></p>\n";
+        }
+
         echo "<hr class=\"bhlogonseparator\" />\n";
-        echo "<h2>{$lang['problemsloggingon']}</h2>\n";
-        echo "<p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes&amp;final_uri=$final_uri\" target=\"", html_get_top_frame_name(), "\">{$lang['deletecookies']}</a></p>\n";
-        echo "<p class=\"smalltext\"><a href=\"index.php?webtag=$webtag&amp;final_uri=$forgot_pw_link\" target=\"", html_get_top_frame_name(), "\">{$lang['forgottenpasswd']}</a></p>\n";
-
-    }else {
-
-        echo "<p class=\"smalltext\">", sprintf($lang['donthaveanaccount'], "<a href=\"index.php?webtag=$webtag&amp;final_uri=register.php%3Fwebtag%3D$webtag\" target=\"". html_get_top_frame_name(). "\">{$lang['registernow']}</a>"), "</p>\n";
-        echo "<hr class=\"bhlogonseparator\" />\n";
-        echo "<h2>{$lang['problemsloggingon']}</h2>\n";
-        echo "<p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes\" target=\"", html_get_top_frame_name(), "\">{$lang['deletecookies']}</a></p>\n";
-        echo "<p class=\"smalltext\"><a href=\"index.php?webtag=$webtag&amp;final_uri=forgot_pw.php%3Fwebtag%3D$webtag\" target=\"", html_get_top_frame_name(), "\">{$lang['forgottenpasswd']}</a></p>\n";
+        echo "<h2>{$lang['usingaPDA']}</h2>\n";
+        echo "<p class=\"smalltext\"><a href=\"index.php?webtag=$webtag&amp;noframes\" target=\"", html_get_top_frame_name(), "\">{$lang['lightHTMLversion']}</a></p>\n";
     }
-
-    echo "<hr class=\"bhlogonseparator\" />\n";
-    echo "<h2>{$lang['usingaPDA']}</h2>\n";
-    echo "<p class=\"smalltext\"><a href=\"index.php?webtag=$webtag&amp;noframes\" target=\"", html_get_top_frame_name(), "\">{$lang['lightHTMLversion']}</a></p>\n";
 }
 
 function logon_unset_post_data()

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.82 2007-10-21 19:45:00 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.83 2008-05-22 20:00:26 decoyduck Exp $ */
 
 /**
 * Functions relating to users interacting with profiles
@@ -43,6 +43,7 @@ include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "format.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
+include_once(BH_INCLUDE_PATH. "perm.inc.php");
 include_once(BH_INCLUDE_PATH. "profile.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "timezone.inc.php");
@@ -105,7 +106,7 @@ function user_get_profile($uid)
 
     $session_stamp = time() - intval(forum_get_setting('active_sess_cutoff', false, 900));
 
-    $sql = "SELECT USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
     $sql.= "UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT) AS LAST_VISIT, ";
     $sql.= "UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, ";
     $sql.= "USER_PREFS_FORUM.ANON_LOGON AS FORUM_ANON_LOGON, ";
@@ -227,9 +228,27 @@ function user_get_profile($uid)
             $user_profile['STATUS'] = $lang['unknown'];
         }
 
-        $user_profile['POST_COUNT'] = user_get_post_count($uid);
+        if ($user_post_count = user_get_post_count($uid)) {
+            $user_profile['POST_COUNT'] = $user_post_count;
+        }
 
-        $user_profile['LOCAL_TIME'] = user_format_local_time($user_prefs);
+        if ($user_local_time = user_format_local_time($user_prefs)) {
+            $user_profile['LOCAL_TIME'] = $user_local_time;
+        }
+
+        if (!$user_groups_array = perm_user_get_group_names($uid)) {
+            $user_groups_array = array();
+        }
+
+        if (perm_has_admin_access($uid)) {
+            $user_groups_array[] = $lang['forumleader'];
+        }
+
+        if (perm_is_moderator($uid)) {
+            $user_groups_array[] = $lang['userpermfoldermoderate'];
+        }
+
+        $user_profile['USER_GROUPS'] = implode(', ', $user_groups_array);
 
         return $user_profile;
     }

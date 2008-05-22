@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.139 2008-01-27 15:00:16 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.140 2008-05-22 20:00:26 decoyduck Exp $ */
 
 /**
 * Displays user profiles
@@ -201,8 +201,24 @@ if (isset($user_profile['RELATIONSHIP']) && ($user_profile['RELATIONSHIP'] & USE
 }
 
 echo "                      </tr>\n";
+
+if (isset($user_profile['USER_GROUPS']) && sizeof($user_profile['USER_GROUPS']) > 0) {
+
+    $user_groups_list = (strlen(trim($user_profile['USER_GROUPS'])) > 50) ? substr($user_profile['USER_GROUPS'], 0, 47). "&hellip;" : $user_profile['USER_GROUPS'];
+
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" class=\"subhead\"><div title=\"{$lang['groups']}: ", word_filter_add_ob_tags($user_profile['USER_GROUPS']), "\"><span class=\"smalltext\">{$lang['groups']}: ", word_filter_add_ob_tags($user_groups_list), "</span></div></td>\n";
+    echo "                      </tr>\n";
+}
+
+echo "                      <tr>\n";
+echo "                        <td class=\"subhead\" align=\"left\"><span class=\"smalltext\">{$lang['posts']}: {$user_profile['POST_COUNT']}</span></td>\n";
+echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td  class=\"subhead\" align=\"left\"><span class=\"smalltext\">{$lang['registered']}: {$user_profile['REGISTERED']}</span></td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td class=\"subhead\" align=\"left\"><span class=\"smalltext\">{$lang['memberno']}: #{$user_profile['UID']}</span></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" class=\"subhead\"><span class=\"smalltext\">{$lang['lastvisit']}: {$user_profile['LAST_LOGON']}</span></td>\n";
@@ -236,9 +252,6 @@ echo "                        <td class=\"subhead\" align=\"left\"><span class=\
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td class=\"subhead\" align=\"left\"><span class=\"smalltext\">{$lang['userstatus']}: {$user_profile['STATUS']}</span></td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td class=\"subhead\" align=\"left\"><span class=\"smalltext\">{$lang['posts']}: {$user_profile['POST_COUNT']}</span></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td class=\"subhead\" align=\"left\">&nbsp;</td>\n";

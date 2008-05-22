@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.179 2008-03-22 15:11:07 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.180 2008-05-22 20:00:26 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -72,7 +72,7 @@ function post_create($fid, $tid, $reply_pid, $by_uid, $fuid, $tuid, $content, $h
     // Check that the post needs approval. If the user is a moderator
     // their posts are self-approved.
 
-    if (perm_check_folder_permissions($fid, USER_PERM_POST_APPROVAL, $fuid) && !perm_is_moderator($fid, $fuid)) {
+    if (perm_check_folder_permissions($fid, USER_PERM_POST_APPROVAL, $fuid) && !perm_is_moderator($fuid, $fid)) {
 
         $sql = "INSERT INTO {$table_data['PREFIX']}POST ";
         $sql.= "(TID, REPLY_TO_PID, FROM_UID, TO_UID, CREATED, APPROVED, IPADDRESS) ";
@@ -103,7 +103,7 @@ function post_create($fid, $tid, $reply_pid, $by_uid, $fuid, $tuid, $content, $h
 
             // If post approval is required send the notification to admins.
 
-            if (perm_check_folder_permissions($fid, USER_PERM_POST_APPROVAL, $fuid) && !perm_is_moderator($fid, $fuid)) {
+            if (perm_check_folder_permissions($fid, USER_PERM_POST_APPROVAL, $fuid) && !perm_is_moderator($fuid, $fid)) {
                 admin_send_post_approval_notification($fid);
             }
 

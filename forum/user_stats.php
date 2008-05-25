@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_stats.php,v 1.57 2008-04-26 18:01:50 decoyduck Exp $ */
+/* $Id: user_stats.php,v 1.58 2008-05-25 08:10:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -123,7 +123,7 @@ if (isset($_GET['get_stats'])) {
         $msg = messages_get_most_recent($uid);
     }
 
-    if ($_GET['show_stats'] == "Y") {
+    if (isset($_GET['show_stats']) && $_GET['show_stats'] == "Y") {
 
         $user_prefs['SHOW_STATS'] = "Y";
         $user_prefs_global['SHOW_STATS'] = false;
@@ -134,7 +134,7 @@ if (isset($_GET['get_stats'])) {
         $user_prefs_global['SHOW_STATS'] = false;
     }
 
-    if (isset($_GET['show_stats']) && !user_is_guest()) {
+    if (!user_is_guest()) {
 
         if (user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
 

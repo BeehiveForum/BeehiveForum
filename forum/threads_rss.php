@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads_rss.php,v 1.57 2008-05-09 06:53:30 decoyduck Exp $ */
+/* $Id: threads_rss.php,v 1.58 2008-05-26 10:54:21 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -196,7 +196,7 @@ header_check_cache();
 header('Content-type: text/xml; charset=UTF-8');
 
 echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-echo "<rss xmlns:dc=\"http://purl.org/dc/elements/1.1/\" version=\"2.0\">\n";
+echo "<rss xmlns:dc=\"http://purl.org/dc/elements/1.1/\" version=\"2.0\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n";
 echo "<channel>\n";
 echo "<title>{$forum_name}</title>\n";
 echo "<link>{$forum_location}/</link>\n";
@@ -276,6 +276,7 @@ if ($threads_array = threads_get_most_recent($limit, $folder_list_array, ($sort_
     }
 }
 
+echo "<atom:link href=\"{$forum_location}/threads_rss.php?webtag=$webtag\" rel=\"self\" type=\"application/rss+xml\" />\n";
 echo "</channel>\n";
 echo "</rss>\n";
 

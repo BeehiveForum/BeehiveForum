@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: discussion.php,v 1.112 2008-05-09 06:53:30 decoyduck Exp $ */
+/* $Id: discussion.php,v 1.113 2008-05-27 18:28:54 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -173,10 +173,20 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
 
     html_draw_top('body_tag=false', 'frames=true');
 
-    echo "<frameset cols=\"280,*\" framespacing=\"4\" border=\"4\">\n";
-    echo "  <frame src=\"thread_list.php?webtag=$webtag\" name=\"", html_get_frame_name('left'), "\" frameborder=\"0\" />\n";
-    echo "  <frame src=\"search.php?webtag=$webtag\" name=\"", html_get_frame_name('right'), "\" frameborder=\"0\" />\n";
-    echo "</frameset>\n";
+    if (isset($_GET['search_error']) && is_numeric($_GET['search_error'])) {
+
+        echo "<frameset cols=\"280,*\" framespacing=\"4\" border=\"4\">\n";
+        echo "  <frame src=\"thread_list.php?webtag=$webtag\" name=\"", html_get_frame_name('left'), "\" frameborder=\"0\" />\n";
+        echo "  <frame src=\"search.php?webtag=$webtag&amp;search_error={$_GET['search_error']}\" name=\"", html_get_frame_name('right'), "\" frameborder=\"0\" />\n";
+        echo "</frameset>\n";
+
+    }else {
+
+        echo "<frameset cols=\"280,*\" framespacing=\"4\" border=\"4\">\n";
+        echo "  <frame src=\"thread_list.php?webtag=$webtag\" name=\"", html_get_frame_name('left'), "\" frameborder=\"0\" />\n";
+        echo "  <frame src=\"search.php?webtag=$webtag\" name=\"", html_get_frame_name('right'), "\" frameborder=\"0\" />\n";
+        echo "</frameset>\n";
+    }
 
     html_draw_bottom(false);
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.213 2008-05-26 18:44:20 decoyduck Exp $ */
+/* $Id: search.php,v 1.214 2008-05-27 18:28:54 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -297,7 +297,7 @@ if (isset($_GET['show_stop_words'])) {
 
 search_get_word_lengths($min_length, $max_length);
 
-if ((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || isset($_GET['search_string']) || isset($_GET['logon'])) {
+if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || isset($_GET['search_string']) || isset($_GET['logon'])) && !isset($_GET['search_error'])) {
 
     $offset = 0;
 
@@ -371,6 +371,15 @@ if ((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || i
             exit;
         }
 
+    }else if (isset($_GET['search_string']) || isset($_GET['logon'])) {
+
+        $redirect_uri = "index.php?webtag=$webtag&final_uri=.%2Fdiscussion.php";
+        $redirect_uri.= "%3Fwebtag%3D$webtag%26amp%3Bright%3Dsearch";
+        $redirect_uri.= "%26amp%3Bsearch_error%3D$error";
+
+        header_redirect($redirect_uri);
+        exit;
+
     }else {
 
         switch ($error) {
@@ -419,9 +428,7 @@ if ((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || i
             case SEARCH_FREQUENCY_TOO_GREAT:
 
                 $search_frequency = forum_get_setting('search_min_frequency', false, 0);
-
                 $error_msg_array[] = sprintf($lang['searchfrequencyerror'], $search_frequency);
-
                 break;
         }
     }
@@ -590,6 +597,35 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     echo "}\n\n";
     echo "-->\n";
     echo "</script>\n\n";
+
+}elseif (isset($_GET['search_error']) && is_numeric($_GET['search_error'])) {
+
+    $search_error = $_GET['search_error'];
+
+    switch ($search_error) {
+
+        case SEARCH_NO_MATCHES:
+
+            html_display_warning_msg($lang['searchreturnednoresults'], '600', 'center');
+            break;
+
+        case SEARCH_USER_NOT_FOUND:
+
+            html_display_error_msg($lang['usernamenotfound'], '600', 'center');
+            break;
+
+        case SEARCH_NO_KEYWORDS:
+
+            $mysql_stop_word_link = "<a href=\"search.php?webtag=$webtag&amp;show_stop_words=true\" target=\"_blank\" onclick=\"return displayMysqlStopwords('$webtag', '')\">{$lang['mysqlstopwordlist']}</a>";
+            html_display_error_msg(sprintf($lang['notexttosearchfor'], $min_length, $max_length, $mysql_stop_word_link));
+            break;
+
+        case SEARCH_FREQUENCY_TOO_GREAT:
+
+            $search_frequency = forum_get_setting('search_min_frequency', false, 0);
+            html_display_error_msg(sprintf($lang['searchfrequencyerror'], $search_frequency));
+            break;
+    }
 
 }elseif (isset($search_no_matches) && $search_no_matches == true) {
 

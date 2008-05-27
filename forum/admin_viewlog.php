@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.140 2008-04-09 14:32:43 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.141 2008-05-27 21:55:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -868,7 +868,7 @@ echo "                        <td align=\"left\">", form_dropdown_array('remove_
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"250\" nowrap=\"nowrap\">{$lang['removeentriesolderthandays']}:</td>\n";
-echo "                        <td align=\"left\">", form_input_text('remove_days', '7', 15, 4), "</td>\n";
+echo "                        <td align=\"left\">", form_input_text('remove_days', '30', 15, 4), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -886,7 +886,7 @@ echo "    <tr>\n";
 echo "      <td>&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td colspan=\"2\" align=\"center\">", form_submit("prune_log", $lang['prune_log']), "</td>\n";
+echo "      <td colspan=\"2\" align=\"center\">", form_submit("prune_log", $lang['prunelog']), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "  </form>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.541 2008-05-15 21:55:26 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.542 2008-05-27 21:55:32 decoyduck Exp $ */
 
 // British English language file
 
@@ -809,7 +809,10 @@ $lang['removeentriesolderthandays'] = "Remove Entries Older Than (Days)";
 $lang['successfullyprunedadminlog'] = "Successfully Pruned Admin Log";
 $lang['failedtopruneadminlog'] = "Failed To Prune Admin Log";
 
-$lang['prune_log'] = "Prune Log";
+$lang['successfullyprunedvisitorlog'] = "Successfully Pruned Visitor Log";
+$lang['failedtoprunevisitorlog'] = "Failed To Prune Visitor Log";
+
+$lang['prunelog'] = "Prune Log";
 
 // Admin Forms (admin_forums.php) ------------------------------------------------
 

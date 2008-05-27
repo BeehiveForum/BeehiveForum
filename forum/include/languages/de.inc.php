@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.81 2008-05-15 21:55:26 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.82 2008-05-27 21:55:32 decoyduck Exp $ */
 
 // German language file
 
@@ -808,7 +808,10 @@ $lang['removeentriesolderthandays'] = "Eintraege loeschen die aelter sind als (T
 $lang['successfullyprunedadminlog'] = "Admin-Log erfolgreich bereinigt";
 $lang['failedtopruneadminlog'] = "Fehler beim Bereinigen des Admin-Logs";
 
-$lang['prune_log'] = "Log-Bereinigung";
+$lang['successfullyprunedvisitorlog'] = "Besucher-Log erfolgreich bereinigt";
+$lang['failedtoprunevisitorlog'] = "Fehler beim Bereinigen des Besucher-Logs";
+
+$lang['prunelog'] = "Log-Bereinigung";
 
 // Admin Forms (admin_forums.php) ------------------------------------------------
 

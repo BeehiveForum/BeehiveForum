@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.149 2008-03-20 18:48:09 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.150 2008-05-27 21:55:32 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -1075,17 +1075,22 @@ function admin_get_visitor_log($offset)
 * @param void
 */
 
-function admin_clear_visitor_log()
+function admin_prune_visitor_log($remove_days)
 {
-    if (!$db_admin_clear_visitor_log = db_connect()) return false;
+    if (!$db_admin_prune_visitor_log = db_connect()) return false;
+
+    if (!is_numeric($remove_days)) return false;
+
+    $remove_days_seconds = $remove_days * DAY_IN_SECONDS;
 
     if (!$table_data = get_table_prefix()) return false;
 
     $forum_fid = $table_data['FID'];
 
-    $sql = "DELETE QUICK FROM VISITOR_LOG WHERE FORUM = '$forum_fid'";
+    $sql = "DELETE QUICK FROM VISITOR_LOG WHERE FORUM = '$forum_fid' ";
+    $sql.= "AND UNIX_TIMESTAMP(LAST_LOGON) < UNIX_TIMESTAMP(NOW()) - $remove_days_seconds ";
 
-    if (!$result = db_query($sql, $db_admin_clear_visitor_log)) return false;
+    if (!$result = db_query($sql, $db_admin_prune_visitor_log)) return false;
 
     return true;
 }

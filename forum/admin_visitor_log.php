@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_visitor_log.php,v 1.28 2008-03-24 23:32:15 decoyduck Exp $ */
+/* $Id: admin_visitor_log.php,v 1.29 2008-05-27 21:55:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -117,8 +117,33 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
 $start = floor($page - 1) * 10;
 if ($start < 0) $start = 0;
 
-if (isset($_POST['clear'])) {
-    admin_clear_visitor_log();
+// Array to hold our error messages
+
+$error_msg_array = array();
+
+if (isset($_POST['prune_log'])) {
+
+    $valid = true;
+
+    if (isset($_POST['remove_days']) && is_numeric($_POST['remove_days'])) {
+        $remove_days = $_POST['remove_days'];
+    }else {
+        $remove_days = 0;
+    }
+
+    if ($valid) {
+
+        if (admin_prune_visitor_log($remove_days)) {
+
+            header_redirect("admin_visitor_log.php?webtag=$webtag&pruned=true");
+            exit;
+
+        }else {
+
+            $error_msg_array[] = $lang['failedtoprunevisitorlog'];
+            $valid = false;
+        }
+    }
 }
 
 html_draw_top('openprofile.js');
@@ -127,13 +152,22 @@ $admin_visitor_log_array = admin_get_visitor_log($start, 10);
 
 echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['visitorlog']}</h1>\n";
 
-if (sizeof($admin_visitor_log_array['user_array']) < 1) {
-    html_display_warning_msg($lang['novisitorslogged'], '85%', 'center');
+if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+
+    html_display_error_array($error_msg_array, '75%', 'center');
+
+}else if (isset($_GET['pruned'])) {
+
+    html_display_success_msg($lang['successfullyprunedvisitorlog'], '75%', 'center');
+
+}else if (sizeof($admin_visitor_log_array['user_array']) < 1) {
+
+    html_display_warning_msg($lang['novisitorslogged'], '75%', 'center');
 }
 
 echo "<br />\n";
 echo "<div align=\"center\">\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"85%\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"75%\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
@@ -232,20 +266,46 @@ echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
-
-if (sizeof($admin_visitor_log_array['user_array']) > 0) {
-
-    echo "    <tr>\n";
-    echo "      <td align=\"center\">\n";
-    echo "        <form name=\"f_post\" action=\"admin_visitor_log.php?webtag=$webtag\" method=\"post\" target=\"_self\">\n";
-    echo "          ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
-    echo "          ", form_submit('clear', $lang['clearvisitorlog']), "\n";
-    echo "        </form>\n";
-    echo "      </td>";
-    echo "    </tr>\n";
-}
-
 echo "  </table>\n";
+echo "  <form action=\"admin_visitor_log.php\" method=\"post\" target=\"_self\">\n";
+echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"75%\">\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\" class=\"subhead\">{$lang['options']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"center\">\n";
+echo "                    <table class=\"posthead\" width=\"95%\">\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"250\" nowrap=\"nowrap\">{$lang['removeentriesolderthandays']}:</td>\n";
+echo "                        <td align=\"left\">", form_input_text('remove_days', '30', 15, 4), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td>&nbsp;</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td colspan=\"2\" align=\"center\">", form_submit("prune_log", $lang['prunelog']), "</td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "  </form>\n";
 echo "</div>\n";
 
 html_draw_bottom();

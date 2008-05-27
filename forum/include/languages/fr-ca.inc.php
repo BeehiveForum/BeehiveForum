@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.106 2008-05-15 21:55:26 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.107 2008-05-27 21:55:32 decoyduck Exp $ */
 
 // French Canadian language file
 
@@ -809,7 +809,10 @@ $lang['removeentriesolderthandays'] = "Supprimer entrées datant de plus de (jou
 $lang['successfullyprunedadminlog'] = "Élaguement du journal admin réussi";
 $lang['failedtopruneadminlog'] = "L'élaguement du journal admin a échoué";
 
-$lang['prune_log'] = "Élaguez le journal";
+$lang['successfullyprunedvisitorlog'] = "Élaguement du journal visiteurs réussi";
+$lang['failedtoprunevisitorlog'] = "L'élaguement du journal visiteurs a échoué";
+
+$lang['prunelog'] = "Élaguez le journal";
 
 // Admin Forms (admin_forums.php) ------------------------------------------------
 

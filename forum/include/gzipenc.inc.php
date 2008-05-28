@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gzipenc.inc.php,v 1.55 2008-03-09 13:50:49 decoyduck Exp $ */
+/* $Id: gzipenc.inc.php,v 1.56 2008-05-28 21:06:19 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -151,18 +151,13 @@ function bh_gzhandler($contents)
     return $contents;
 }
 
-// This is required to make the forum
-// Maintenance functions run correctly.
-
-header('Connection: close', true);
-
 // Clear any existing output buffers.
 
 @ob_end_clean();
 
-// Turn off implicit flush (flush after every output)
+// This is required to make the forum Maintenance functions run correctly.
 
-ob_implicit_flush(0);
+header('Connection: close', true);
 
 // Enable the GZIP output handler
 

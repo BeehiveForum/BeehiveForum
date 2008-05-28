@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.312 2008-05-27 20:21:41 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.313 2008-05-28 21:06:19 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -2775,17 +2775,11 @@ function forum_check_maintenance()
 
 function forum_perform_maintenance($function)
 {
-    // Get the length of the page content sent to the client
+    // Flushes the buffer to the client.
 
-    $content_length = ob_get_length();
-
-    // Send it as a HTTP header
-
-    header("Content-Length: $content_length");
-
-    // Flush the buffer.
-
-    while (@ob_end_flush());
+    if (function_exists('ob_end_flush')) {
+        while (@ob_end_flush());
+    }
 
     // Execute our maintenance function.
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.239 2008-05-19 17:22:19 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.240 2008-05-30 12:38:02 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1035,8 +1035,8 @@ function pm_message_get($mid)
     // Fetch the single message as specified by the MID
 
     $sql = "SELECT PM.MID, PM.TYPE, PM.FROM_UID, PM.TO_UID, PM.SUBJECT, ";
-    $sql.= "PM.RECIPIENTS, PM.REPLY_TO_MID, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, ";
-    $sql.= "FUSER.LOGON AS FLOGON, TUSER.LOGON AS TLOGON, FUSER.NICKNAME AS FNICK, ";
+    $sql.= "PM.RECIPIENTS, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, FUSER.LOGON AS FLOGON, ";
+    $sql.= "TUSER.LOGON AS TLOGON, FUSER.NICKNAME AS FNICK, ";
     $sql.= "TUSER.NICKNAME AS TNICK FROM PM PM ";
     $sql.= "LEFT JOIN USER FUSER ON (PM.FROM_UID = FUSER.UID) ";
     $sql.= "LEFT JOIN USER TUSER ON (PM.TO_UID = TUSER.UID) ";
@@ -1179,7 +1179,7 @@ function pm_display($pm_message_array, $folder, $preview = false, $export_html =
 
             echo "                        </td>\n";
 
-        }else if (isset($message['TO_UID']) && is_numeric($message['TO_UID'])) {
+        }else if (isset($pm_message_array['TO_UID']) && is_numeric($pm_message_array['TO_UID'])) {
 
             if ($export_html === true) {
 
@@ -1234,23 +1234,7 @@ function pm_display($pm_message_array, $folder, $preview = false, $export_html =
     echo "                  <td align=\"left\">\n";
     echo "                    <table width=\"100%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td colspan=\"3\" align=\"right\"><span class=\"postnumber\">";
-
-    if (isset($pm_message_array['REPLY_TO_MID']) && is_numeric($pm_message_array['REPLY_TO_MID']) && $pm_message_array['REPLY_TO_MID'] > 0) {
-
-        if ($preview) {
-
-            echo "{$lang['inreplyto']}: <a href=\"pm.php?webtag=$webtag&amp;mid={$pm_message_array['REPLY_TO_MID']}\"";
-            echo "target=\"_blank\">#{$pm_message_array['REPLY_TO_MID']}</a>";
-
-        }else {
-
-            echo "{$lang['inreplyto']}: <a href=\"pm_messages.php?webtag=$webtag&amp;mid={$pm_message_array['REPLY_TO_MID']}\"";
-            echo "target=\"_self\">#{$pm_message_array['REPLY_TO_MID']}</a>";
-        }
-    }
-
-    echo "&nbsp;</span></td>\n";
+    echo "                        <td colspan=\"3\" align=\"left\">&nbsp;</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td class=\"postbody\" align=\"left\">{$pm_message_array['CONTENT']}</td>\n";
@@ -1446,7 +1430,6 @@ function pm_save_attachment_id($mid, $aid)
 * Sends a message with specified sender, recipient, subject and content
 *
 * @return mixed - false on failure, integer Message ID on success
-* @param integer $reply_mid - Reply To MID
 * @param integer $to_uid - Sender UID
 * @param integer $from_uid - Recipient UID
 * @param string $subject - Subject string
@@ -1454,11 +1437,10 @@ function pm_save_attachment_id($mid, $aid)
 * @param string $aid - Attachment Unique ID (MD5 hash)
 */
 
-function pm_send_message($reply_mid, $to_uid, $from_uid, $subject, $content, $aid)
+function pm_send_message($to_uid, $from_uid, $subject, $content, $aid)
 {
     if (!$db_pm_send_message = db_connect()) return false;
 
-    if (!is_numeric($reply_mid)) return false;
     if (!is_numeric($to_uid)) return false;
     if (!is_numeric($from_uid)) return false;
 
@@ -1475,8 +1457,8 @@ function pm_send_message($reply_mid, $to_uid, $from_uid, $subject, $content, $ai
 
     // Insert the main PM Data into the database
 
-    $sql = "INSERT INTO PM (TYPE, REPLY_TO_MID, TO_UID, FROM_UID, SUBJECT, RECIPIENTS, CREATED, NOTIFIED) ";
-    $sql.= "VALUES ('$pm_outbox', '$reply_mid', '$to_uid', '$from_uid', '$subject_escaped', '', NOW(), 0)";
+    $sql = "INSERT INTO PM (TYPE, TO_UID, FROM_UID, SUBJECT, RECIPIENTS, CREATED, NOTIFIED) ";
+    $sql.= "VALUES ('$pm_outbox', '$to_uid', '$from_uid', '$subject_escaped', '', NOW(), 0)";
 
     if ($result = db_query($sql, $db_pm_send_message)) {
 
@@ -1580,13 +1562,12 @@ function pm_add_sent_item($sent_item_mid, $to_uid, $from_uid, $subject, $content
 * @param string - $recipient_list - List of recipient logons.
 */
 
-function pm_save_message($reply_mid, $subject, $content, $to_uid, $recipient_list)
+function pm_save_message($subject, $content, $to_uid, $recipient_list)
 {
     if (!$db_pm_save_message = db_connect()) return false;
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    if (!is_numeric($reply_mid)) return false;
     if (!is_numeric($to_uid)) return false;
 
     $subject = db_escape_string($subject);
@@ -1599,9 +1580,9 @@ function pm_save_message($reply_mid, $subject, $content, $to_uid, $recipient_lis
 
         // Insert the main PM Data into the database
 
-        $sql = "INSERT INTO PM (TYPE, REPLY_TO_MID, TO_UID, FROM_UID, SUBJECT, RECIPIENTS, ";
-        $sql.= "CREATED, NOTIFIED) VALUES ('$pm_saved_draft', '$reply_mid', '$to_uid', '$uid', ";
-        $sql.= "'$subject', '$recipient_list', NOW(), 0)";
+        $sql = "INSERT INTO PM (TYPE, TO_UID, FROM_UID, SUBJECT, RECIPIENTS, ";
+        $sql.= "CREATED, NOTIFIED) VALUES ('$pm_saved_draft', '$to_uid', '$uid', '$subject', ";
+        $sql.= "'$recipient_list', NOW(), 0)";
 
         if ($result = db_query($sql, $db_pm_save_message)) {
 

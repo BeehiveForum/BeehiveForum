@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.165 2008-05-15 21:55:28 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.166 2008-05-30 12:38:03 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'new-install.php') {
 
@@ -708,7 +708,6 @@ if (!$result = @db_query($sql, $db_install)) {
 
 $sql = "CREATE TABLE PM (";
 $sql.= "  MID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, ";
-$sql.= "  REPLY_TO_MID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  TYPE TINYINT(3) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  TO_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  FROM_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";

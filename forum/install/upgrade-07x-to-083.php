@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-07x-to-083.php,v 1.8 2008-05-11 16:43:54 decoyduck Exp $ */
+/* $Id: upgrade-07x-to-083.php,v 1.9 2008-05-30 12:38:03 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-07x-to-083.php") {
 
@@ -614,16 +614,6 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 // can be granted access to admin section of a forum.
 
 $sql = "DELETE FROM GROUP_USERS WHERE UID = 0";
-
-if (!$result = @db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-// New column for "In Reply to" link in PMs.
-
-$sql = "ALTER TABLE PM ADD REPLY_TO_MID MEDIUMINT(8) NOT NULL DEFAULT '0' AFTER MID";
 
 if (!$result = @db_query($sql, $db_install)) {
 

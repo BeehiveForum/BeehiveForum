@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.85 2008-05-25 23:35:40 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.86 2008-05-30 21:00:18 decoyduck Exp $ */
 
 /**
 * Functions relating to users interacting with profiles
@@ -101,6 +101,8 @@ function user_get_profile($uid)
     if (!$table_data = get_table_prefix()) return false;
 
     $forum_fid = $table_data['FID'];
+
+    $user_groups_array = array();
 
     $user_prefs = user_get_prefs($uid);
 
@@ -238,20 +240,19 @@ function user_get_profile($uid)
             $user_profile['LOCAL_TIME'] = $user_local_time;
         }
 
-        if (!$user_groups_array = perm_user_get_group_names($uid)) {
-            $user_groups_array = array();
-        }
+        if (user_is_banned($uid)) {
 
-        if (perm_has_admin_access($uid)) {
-            $user_groups_array[] = $lang['forumleader'];
-        }
+            $user_profile['USER_GROUPS'] = $lang['banned'];
 
-        if (perm_is_moderator($uid)) {
-            $user_groups_array[] = $lang['userpermfoldermoderate'];
-        }
+        }else {
 
-        if (sizeof($user_groups_array) > 0) {
-            $user_profile['USER_GROUPS'] = implode(', ', $user_groups_array);
+            perm_user_get_group_names($uid, $user_groups_array);
+
+            if (sizeof($user_groups_array) > 0) {
+                $user_profile['USER_GROUPS'] = implode(', ', $user_groups_array);
+            }else {
+                $user_profile['USER_GROUPS'] = $lang['registered'];
+            }
         }
 
         return $user_profile;

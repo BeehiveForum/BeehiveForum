@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.123 2008-05-22 20:00:26 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.124 2008-05-30 21:00:18 decoyduck Exp $ */
 
 /**
 * Functions relating to permissions
@@ -349,15 +349,19 @@ function perm_user_get_groups($uid)
     return false;
 }
 
-function perm_user_get_group_names($uid)
+function perm_user_get_group_names($uid, &$user_groups_array)
 {
     if (!$db_perm_user_get_group_names = db_connect()) return false;
+
+    $lang = load_language_file();
 
     if (!is_numeric($uid)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
     $forum_fid = $table_data['FID'];
+
+    if (!is_array($user_groups_array)) $user_groups_array = array();
 
     $sql = "SELECT GROUPS.GID, GROUPS.GROUP_NAME FROM GROUPS GROUPS ";
     $sql.= "LEFT JOIN GROUP_USERS GROUP_USER_COUNT ON (GROUP_USER_COUNT.GID = GROUPS.GID) ";
@@ -369,17 +373,16 @@ function perm_user_get_group_names($uid)
 
     if (db_num_rows($result) > 0) {
 
-        $user_groups_array = array();
-
         while ($perm_data = db_fetch_array($result)) {
 
             $user_groups_array[$perm_data['GID']] = $perm_data['GROUP_NAME'];
         }
-
-        return $user_groups_array;
     }
 
-    return false;
+    if (perm_has_admin_access($uid)) $user_groups_array[] = $lang['forumleader'];
+    if (perm_is_moderator($uid)) $user_groups_array[] = $lang['userpermfoldermoderate'];
+
+    return sizeof($user_groups_array) > 0;
 }
 
 function perm_add_group($group_name, $group_desc, $perm)

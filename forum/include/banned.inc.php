@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: banned.inc.php,v 1.33 2008-02-22 20:56:30 decoyduck Exp $ */
+/* $Id: banned.inc.php,v 1.34 2008-05-30 21:00:06 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -454,6 +454,40 @@ function check_affected_sessions($ban_type, $ban_data)
     }
 
     return (sizeof($affected_sessions) > 0) ? $affected_sessions : false;
+}
+
+function user_is_banned($uid)
+{
+    if (!$db_user_is_banned = db_connect()) return false;
+
+    $lang = load_language_file();
+
+    if (!is_numeric($uid)) return false;
+
+    $ban_type_ip    = BAN_TYPE_IP;
+    $ban_type_logon = BAN_TYPE_LOGON;
+    $ban_type_nick  = BAN_TYPE_NICK;
+    $ban_type_email = BAN_TYPE_EMAIL;
+    $ban_type_ref   = BAN_TYPE_REF;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $sql = "SELECT COUNT(BANNED.ID) AS BAN_COUNT FROM {$table_data['PREFIX']}BANNED BANNED, ";
+    $sql.= "USER USER LEFT JOIN SESSIONS SESSIONS ON (USER.UID = SESSIONS.UID) ";
+    $sql.= "WHERE (SESSIONS.IPADDRESS LIKE BANNED.BANDATA AND BANNED.BANTYPE = '$ban_type_ip') ";
+    $sql.= "OR (SESSIONS.REFERER LIKE BANNED.BANDATA AND BANNED.BANTYPE = '$ban_type_ref') ";
+    $sql.= "OR ((USER.IPADDRESS LIKE BANNED.BANDATA AND BANNED.BANTYPE = '$ban_type_ip') ";
+    $sql.= "OR (USER.LOGON LIKE BANNED.BANDATA AND BANNED.BANTYPE = '$ban_type_logon') ";
+    $sql.= "OR (USER.NICKNAME LIKE BANNED.BANDATA AND BANNED.BANTYPE = '$ban_type_nick') ";
+    $sql.= "OR (USER.EMAIL LIKE BANNED.BANDATA AND BANNED.BANTYPE = '$ban_type_email') ";
+    $sql.= "OR (USER.REFERER LIKE BANNED.BANDATA AND BANNED.BANTYPE = '$ban_type_ref')) ";
+    $sql.= "AND USER.UID = '$uid'";
+
+    if (!$result = db_query($sql, $db_user_is_banned)) return false;
+
+    list($ban_count) = db_fetch_array($result, DB_RESULT_NUM);
+
+    return $ban_count > 0;
 }
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.202 2008-04-27 16:23:12 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.203 2008-05-30 12:38:03 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -126,10 +126,6 @@ $page_prefs = bh_session_get_post_page_prefs();
 // Prune old messages for the current user
 
 pm_user_prune_folders();
-
-// Reply MID needs to be zero by default for REPLY_TO_MID column
-
-$t_reply_mid = 0;
 
 // Get the Message ID (MID) if any.
 
@@ -654,8 +650,6 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
         $t_subject = $pm_data['SUBJECT'];
 
-        $t_reply_mid = $pm_data['REPLY_TO_MID'];
-
         $parsed_message = new MessageTextParse($pm_data['CONTENT'], $emots_enabled, $links_enabled);
 
         $emots_enabled = $parsed_message->getEmoticons();
@@ -725,7 +719,7 @@ if ($valid && isset($_POST['send'])) {
 
         if (isset($to_radio) && $to_radio == POST_RADIO_FRIENDS) {
 
-            if ($new_mid = pm_send_message($t_reply_mid, $t_to_uid, $uid, $t_subject, $t_content, $aid)) {
+            if ($new_mid = pm_send_message($t_to_uid, $uid, $t_subject, $t_content, $aid)) {
 
                 email_send_pm_notification($t_to_uid, $new_mid, $uid);
 
@@ -743,7 +737,7 @@ if ($valid && isset($_POST['send'])) {
 
             foreach ($t_new_recipient_array['TO_UID'] as $t_to_uid) {
 
-                if ($new_mid = pm_send_message($t_reply_mid, $t_to_uid, $uid, $t_subject, $t_content, $aid)) {
+                if ($new_mid = pm_send_message($t_to_uid, $uid, $t_subject, $t_content, $aid)) {
 
                     email_send_pm_notification($t_to_uid, $new_mid, $uid);
 
@@ -762,13 +756,7 @@ if ($valid && isset($_POST['send'])) {
 
     if ($valid) {
 
-        if (isset($mid)) {
-            $uri = "pm.php?webtag=$webtag&mid=$mid&message_sent=true";
-        }else {
-            $uri = "pm.php?webtag=$webtag&message_sent=true";
-        }
-
-        header_redirect($uri);
+        header_redirect("pm.php?webtag=$webtag&message_sent=true");
         exit;
     }
 
@@ -789,7 +777,7 @@ if ($valid && isset($_POST['send'])) {
 
     }else {
 
-        if ($saved_mid = pm_save_message($t_reply_mid, $t_subject, $t_content, $t_to_uid, $t_recipient_list)) {
+        if ($saved_mid = pm_save_message($t_subject, $t_content, $t_to_uid, $t_recipient_list)) {
 
             pm_save_attachment_id($saved_mid, $aid);
 

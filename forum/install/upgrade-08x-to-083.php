@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-08x-to-083.php,v 1.8 2008-05-11 16:43:54 decoyduck Exp $ */
+/* $Id: upgrade-08x-to-083.php,v 1.9 2008-05-30 12:38:03 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'upgrade-08x-to-083.php') {
 
@@ -162,15 +162,6 @@ if (!$result = @db_query($sql, $db_install)) {
 }
 
 // We got this far, that means we can now update the global forum tables.
-// Starting with a new column for "In Reply to" link in PMs.
-
-$sql = "ALTER TABLE PM ADD REPLY_TO_MID MEDIUMINT(8) NOT NULL DEFAULT '0' AFTER MID";
-
-if (!$result = @db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
 
 // Add field for reply_quick
 

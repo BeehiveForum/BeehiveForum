@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.281 2008-05-15 21:55:26 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.282 2008-06-01 15:24:15 decoyduck Exp $ */
 
 // British English language file
 
@@ -241,7 +241,8 @@ $lang['open'] = "oPEN";
 $lang['restricted'] = "re5+R1Ct3d";
 $lang['forumiscurrentlyclosed'] = "%s 1\$ cURr3ntLY CLo5Ed";
 $lang['youdonothaveaccesstoforum'] = "j00 Do n0+ h4v3 aCc35\$ tO %s";
-$lang['toapplyforaccessplease'] = "tO 4pPLY F0R 4Cce\$s PlEAs3 C0NT@c+ tEh f0rUm OWNeR.";
+$lang['toapplyforaccessplease'] = "tO 4pPLY F0R 4Cce\$s PlEAs3 C0NT@c+ tEh %s.";
+$lang['forumowner'] = "f0rUm OWNeR";
 $lang['adminforumclosedtip'] = "iph j00 W@n+ tO CH4n9E \$0M3 \$3T+IN95 0N y0UR PHorUM cl1CK tH3 4Dm1N l1nK iN +He N@V1G4+10n B4R A8OVe.";
 $lang['newfolder'] = "new F0LD3R";
 $lang['nofoldersfound'] = "nO EX1S+1N9 F0LdERs FoUNd. T0 aDd A pHOLd3R CL1CK +3h '4Dd NEw' bUTt0n 83l0w.";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.82 2008-05-27 21:55:32 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.83 2008-06-01 15:24:15 decoyduck Exp $ */
 
 // German language file
 
@@ -241,7 +241,8 @@ $lang['open'] = "Geoeffnet";
 $lang['restricted'] = "Eingeschraenkt";
 $lang['forumiscurrentlyclosed'] = "%s ist momentan geschlossen";
 $lang['youdonothaveaccesstoforum'] = "Sie haben keinen Zugriff auf %s";
-$lang['toapplyforaccessplease'] = "Um Zugriff zu erhalten bitte den Admin kontaktieren.";
+$lang['toapplyforaccessplease'] = "Um Zugriff zu erhalten bitte den %s.";
+$lang['forumowner'] = "Admin kontaktieren";
 $lang['adminforumclosedtip'] = "Wenn Du einige Einstellungen aendern willst klicke auf den Admin-Link.";
 $lang['newfolder'] = "Neuer Ordner";
 $lang['nofoldersfound'] = "Keine bestehenden Ordner gefunden. Um einen Ordner hinzuzufuegen auf 'Neu hinzufuegen' klicken.";

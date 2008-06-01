@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.313 2008-05-28 21:06:19 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.314 2008-06-01 15:24:15 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -238,8 +238,18 @@ function forum_restricted_message()
 
     }else {
 
-        html_display_error_msg(sprintf($lang['youdonothaveaccesstoforum'], _htmlentities($forum_name)), '600', 'center');
-        html_display_warning_msg($lang['toapplyforaccessplease'], '600', 'center');
+        if ($forum_owner_uid = forum_get_setting('owner_uid')) {
+
+            $forum_owner_link = sprintf("<a href=\"pm.php?webtag=$webtag&uid=$forum_owner_uid\">%s</a>", $lang['forumowner']);
+
+            html_display_error_msg(sprintf($lang['youdonothaveaccesstoforum'], _htmlentities($forum_name)), '600', 'center');
+
+            html_display_warning_msg(sprintf($lang['toapplyforaccessplease'], $forum_owner_link), '600', 'center');
+
+        }else {
+
+            html_display_error_msg(sprintf($lang['youdonothaveaccesstoforum'], _htmlentities($forum_name)), '600', 'center');
+        }
     }
 
     if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
@@ -440,7 +450,7 @@ function forum_get_settings()
 
         // Get the forum timezone, GMT offset and DST offset.
 
-        $sql = "SELECT FORUM_SETTINGS.SVALUE, TIMEZONES.GMT_OFFSET, ";
+        $sql = "SELECT FORUM_SETTINGS.SVALUE AS TIMEZONE, TIMEZONES.GMT_OFFSET, ";
         $sql.= "TIMEZONES.DST_OFFSET FROM FORUM_SETTINGS FORUM_SETTINGS ";
         $sql.= "LEFT JOIN TIMEZONES ON (TIMEZONES.TZID = FORUM_SETTINGS.SVALUE) ";
         $sql.= "WHERE FORUM_SETTINGS.SNAME = 'forum_timezone' ";
@@ -448,28 +458,23 @@ function forum_get_settings()
 
         if (!$result = db_query($sql, $db_forum_get_settings)) return false;
 
-        if (db_num_rows($result) > 0) {
+        list($forum_timezone, $gmt_offset, $dst_offset) = db_fetch_array($result, DB_RESULT_NUM);
 
-            if (!is_array($forum_settings_array)) $forum_settings_array = array();
+        $forum_settings_array['forum_timezone'] = $forum_timezone;
+        $forum_settings_array['forum_gmt_offset'] = $gmt_offset;
+        $forum_settings_array['forum_dst_offset'] = $dst_offset;
 
-            while ($forum_timezone_data = db_fetch_array($result)) {
+        // Get the WEBTAG, ACCESS_LEVEL and OWNER_UID
 
-                $forum_settings_array['forum_timezone'] = $forum_timezone_data['SVALUE'];
-                $forum_settings_array['forum_gmt_offset'] = $forum_timezone_data['GMT_OFFSET'];
-                $forum_settings_array['forum_dst_offset'] = $forum_timezone_data['DST_OFFSET'];
-            }
-        }
-
-        // Get the WEBTAG and ACCESS_LEVEL
-
-        $sql = "SELECT WEBTAG, ACCESS_LEVEL FROM FORUMS WHERE FID = '$forum_fid'";
+        $sql = "SELECT WEBTAG, ACCESS_LEVEL, OWNER_UID FROM FORUMS WHERE FID = '$forum_fid'";
 
         if (!$result = db_query($sql, $db_forum_get_settings)) return false;
 
-        list($webtag, $access_level) = db_fetch_array($result, DB_RESULT_NUM);
+        list($webtag, $access_level, $owner_uid) = db_fetch_array($result, DB_RESULT_NUM);
 
         $forum_settings_array['webtag'] = $webtag;
         $forum_settings_array['access_level'] = $access_level;
+        $forum_settings_array['owner_uid'] = $owner_uid;
     }
 
     return $forum_settings_array;
@@ -500,7 +505,9 @@ function forum_get_global_settings()
             }
         }
 
-        $sql = "SELECT FORUM_SETTINGS.SVALUE, TIMEZONES.GMT_OFFSET, ";
+        // Get the forum timezone, GMT offset and DST offset.
+
+        $sql = "SELECT FORUM_SETTINGS.SVALUE AS TIMEZONE, TIMEZONES.GMT_OFFSET, ";
         $sql.= "TIMEZONES.DST_OFFSET FROM FORUM_SETTINGS FORUM_SETTINGS ";
         $sql.= "LEFT JOIN TIMEZONES ON (TIMEZONES.TZID = FORUM_SETTINGS.SVALUE) ";
         $sql.= "WHERE FORUM_SETTINGS.SNAME = 'forum_timezone' ";
@@ -508,17 +515,11 @@ function forum_get_global_settings()
 
         if (!$result = db_query($sql, $db_forum_get_global_settings)) return false;
 
-        if (db_num_rows($result) > 0) {
+        list($forum_timezone, $gmt_offset, $dst_offset) = db_fetch_array($result, DB_RESULT_NUM);
 
-            if (!is_array($forum_global_settings_array)) $forum_global_settings_array = array();
-
-            while ($forum_timezone_data = db_fetch_array($result)) {
-
-                $forum_global_settings_array['forum_timezone'] = $forum_timezone_data['SVALUE'];
-                $forum_global_settings_array['forum_gmt_offset'] = $forum_timezone_data['GMT_OFFSET'];
-                $forum_global_settings_array['forum_dst_offset'] = $forum_timezone_data['DST_OFFSET'];
-            }
-        }
+        $forum_settings_array['forum_timezone'] = $forum_timezone;
+        $forum_settings_array['forum_gmt_offset'] = $gmt_offset;
+        $forum_settings_array['forum_dst_offset'] = $dst_offset;
     }
 
     return $forum_global_settings_array;
@@ -553,27 +554,21 @@ function forum_get_settings_by_fid($fid, $include_global_settings = true)
         }
     }
 
+    // Get the forum timezone, GMT offset and DST offset.
+
     $sql = "SELECT FORUM_SETTINGS.SVALUE AS TIMEZONE, TIMEZONES.GMT_OFFSET, ";
     $sql.= "TIMEZONES.DST_OFFSET FROM FORUM_SETTINGS FORUM_SETTINGS ";
     $sql.= "LEFT JOIN TIMEZONES ON (TIMEZONES.TZID = FORUM_SETTINGS.SVALUE) ";
     $sql.= "WHERE FORUM_SETTINGS.SNAME = 'forum_timezone' ";
-    $sql.= "AND FID = '$fid'";
+    $sql.= "AND FORUM_SETTINGS.FID = '$fid'";
 
     if (!$result = db_query($sql, $db_forum_get_settings_by_fid)) return false;
 
-    list($timezone, $gmt_offset, $dst_offset) = db_fetch_array($result, DB_RESULT_NUM);
+    list($forum_timezone, $gmt_offset, $dst_offset) = db_fetch_array($result, DB_RESULT_NUM);
 
-    $forum_settings_array['forum_timezone'] = $timezone;
+    $forum_settings_array['forum_timezone'] = $forum_timezone;
     $forum_settings_array['forum_gmt_offset'] = $gmt_offset;
     $forum_settings_array['forum_dst_offset'] = $dst_offset;
-
-    if ($include_global_settings === true) {
-
-        if ($forum_global_settings = forum_get_global_settings()) {
-
-            return array_merge($forum_global_settings, $forum_settings_array);
-        }
-    }
 
     return $forum_settings_array;
 }

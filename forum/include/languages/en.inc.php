@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.543 2008-06-01 15:24:15 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.544 2008-06-03 19:52:33 decoyduck Exp $ */
 
 // British English language file
 
@@ -1660,6 +1660,8 @@ $lang['birthday'] = "Birthday";
 $lang['registered'] = "Registered";
 $lang['findpostsmadebyuser'] = "Find Posts made by %s";
 $lang['findpostsmadebyme'] = "Find Posts made by me";
+$lang['findthreadsstartedbyuser'] = "Find Threads started by %s";
+$lang['findthreadsstartedbyme'] = "Find Threads started by me";
 $lang['profilenotavailable'] = "Profile Not Available.";
 $lang['userprofileempty'] = "This user has not filled in their profile or it is set to private.";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.214 2008-05-27 18:28:54 decoyduck Exp $ */
+/* $Id: search.php,v 1.215 2008-06-03 19:52:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -328,7 +328,12 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
     }
 
     if (isset($_POST['user_include']) && is_numeric($_POST['user_include'])) {
+
         $search_arguments['user_include'] = $_POST['user_include'];
+
+    }elseif (isset($_GET['user_include']) && is_numeric($_GET['user_include'])) {
+
+        $search_arguments['user_include'] = $_GET['user_include'];
     }
 
     if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {

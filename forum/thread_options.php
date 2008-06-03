@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.105 2008-04-03 14:23:44 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.106 2008-06-03 19:52:33 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -517,8 +517,6 @@ if (isset($_POST['save'])) {
         }
 
         if (isset($_POST['undelthread']) && $_POST['undelthread'] == "Y") {
-
-            print_r($_POST); exit;
 
             if (isset($_POST['undelthread_con']) && $_POST['undelthread_con'] == "Y") {
 

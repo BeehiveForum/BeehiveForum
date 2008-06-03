@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: font_size.php,v 1.21 2008-01-04 20:29:44 decoyduck Exp $ */
+/* $Id: font_size.php,v 1.22 2008-06-03 19:52:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -175,7 +175,7 @@ if (!is_bool($font_size) && is_numeric($font_size) && $font_size != 10) {
     echo ".bhinputcheckbox           { font-size: ", floor($font_size * 0.9), "pt; }\n";
     echo ".bhinputradio              { font-size: ", floor($font_size * 0.9), "pt; }\n";
     echo ".install_dropdown          { font-size: ", floor($font_size * 0.9), "pt; }\n";
-    echo ".logon_dropdown            { font-size: ", floor($font_size * 0.9), "pt; }\n";
+    echo ".bhinputlogon              { font-size: ", floor($font_size * 0.9), "pt; }\n";
     echo ".register_dropdown         { font-size: ", floor($font_size * 0.9), "pt; }\n";
     echo ".search_dropdown           { font-size: ", floor($font_size * 0.9), "pt; }\n";
     echo ".banned_dropdown           { font-size: ", floor($font_size * 0.9), "pt; }\n";

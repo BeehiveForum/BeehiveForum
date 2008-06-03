@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.js,v 1.49 2008-05-09 06:53:30 decoyduck Exp $ */
+/* $Id: post.js,v 1.50 2008-06-03 19:52:33 decoyduck Exp $ */
 
 var search_logon = false;
 var menu_timeout = 0;
@@ -72,55 +72,12 @@ function returnSearchResult(obj_name, content)
     return false;
 }
 
-function findPosX(obj)
+function delayPostMenuClickHandler()
 {
-    var curleft = 0;
-
-    if (obj.offsetParent) {
-        
-        while(1) {
-
-            curleft += obj.offsetLeft;
-
-            if(!obj.offsetParent) break;
-            obj = obj.offsetParent;
-        }
-
-    }else if(obj.x) {
-
-        curleft += obj.x;
-    }
-    
-    return curleft;
+    menu_timeout = setTimeout('attachPostMenuClickHandler()', 100);
 }
 
-function findPosY(obj)
-{
-    var curtop = 0;
-
-    if (obj.offsetParent) {
-        
-        while(1) {
-
-            curtop += obj.offsetTop;
-            if(!obj.offsetParent) break;
-            obj = obj.offsetParent;
-        }
-
-    } else if(obj.y) {
-        
-        curtop += obj.y;
-    }
-
-    return curtop;
-}
-
-function delayMenuClickHandler()
-{
-    menu_timeout = setTimeout('attachMenuClickHandler()', 100);
-}
-
-function attachMenuClickHandler()
+function attachPostMenuClickHandler()
 {
     clearTimeout(menu_timeout);
     
@@ -131,7 +88,7 @@ function attachMenuClickHandler()
     }
 }
 
-function cancelMenuClickHandler()
+function cancelPostMenuClickHandler()
 {
     if (document.all) {    
         document.detachEvent('onclick', closePostOptions);
@@ -153,7 +110,7 @@ function closePostOptions()
         }
     }
 
-    cancelMenuClickHandler();
+    cancelPostMenuClickHandler();
 }
 
 function openPostOptions(post_id)
@@ -209,7 +166,7 @@ function openPostOptions(post_id)
             post_options_container_obj.style.left = container_left + 'px';
             post_options_container_obj.style.top = container_top + 'px';
 
-            delayMenuClickHandler();
+            delayPostMenuClickHandler();
         }
     }
 }

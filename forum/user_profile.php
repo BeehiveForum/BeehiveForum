@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.140 2008-05-22 20:00:26 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.141 2008-06-03 19:52:33 decoyduck Exp $ */
 
 /**
 * Displays user profiles
@@ -254,7 +254,79 @@ echo "                      <tr>\n";
 echo "                        <td class=\"subhead\" align=\"left\"><span class=\"smalltext\">{$lang['userstatus']}: {$user_profile['STATUS']}</span></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td class=\"subhead\" align=\"left\">&nbsp;</td>\n";
+echo "                        <td class=\"subhead\" align=\"left\">\n";
+echo "                          <a href=\"javascript:void(0)\" onclick=\"openProfileOptions()\" target=\"_self\" id=\"profile_options\">{$lang['more']}&nbsp;<img src=\"", style_image('post_options.png'), "\" width=\"17\" height=\"16\" class=\"post_options\" alt=\"{$lang['options']}\" title=\"{$lang['options']}\" border=\"0\" /></a>\n";
+echo "                          <div class=\"profile_options_container_closed\" id=\"profile_options_container\">\n";
+echo "                            <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
+echo "                              <tr>\n";
+echo "                                <td align=\"left\" colspan=\"3\">\n";
+echo "                                  <table class=\"box\" width=\"100%\">\n";
+echo "                                    <tr>\n";
+echo "                                      <td align=\"left\" class=\"posthead\">\n";
+echo "                                        <table class=\"posthead\" width=\"100%\">\n";
+echo "                                          <tr>\n";
+echo "                                            <td class=\"subhead\" colspan=\"2\">{$lang['options']}</td>\n";
+echo "                                          </tr>\n";
+echo "                                          <tr>\n";
+echo "                                            <td align=\"center\">\n";
+echo "                                              <table width=\"95%\" class=\"profile_options_menu\">\n";
+
+if (isset($user_profile['HOMEPAGE_URL'])) {
+
+    echo "                                                <tr>\n";
+    echo "                                                  <td align=\"left\"><a href=\"{$user_profile['HOMEPAGE_URL']}\" target=\"_blank\" title=\"{$lang['visithomepage']}\"><img src=\"", style_image('home.png'), "\" border=\"0\" alt=\"{$lang['visithomepage']}\" title=\"{$lang['visithomepage']}\" /></a></td>\n";
+    echo "                                                  <td align=\"left\" nowrap=\"nowrap\"><a href=\"{$user_profile['HOMEPAGE_URL']}\" target=\"_blank\" title=\"{$lang['visithomepage']}\">{$lang['visithomepage']}</a></td>\n";
+    echo "                                                </tr>\n";
+}
+
+echo "                                                <tr>\n";
+echo "                                                  <td align=\"left\"><a href=\"index.php?webtag=$webtag&amp;final_uri=pm_write.php%3Fwebtag%3D$webtag%26uid=$uid\" target=\"_blank\" title=\"{$lang['sendpm']}\"><img src=\"", style_image('pmunread.png'), "\" border=\"0\" alt=\"{$lang['sendpm']}\" title=\"{$lang['sendpm']}\" /></a></td>\n";
+echo "                                                  <td align=\"left\" nowrap=\"nowrap\"><a href=\"index.php?webtag=$webtag&amp;final_uri=pm_write.php%3Fwebtag%3D$webtag%26uid=$uid\" target=\"_blank\" title=\"{$lang['sendpm']}\">{$lang['sendpm']}</a></td>\n";
+echo "                                                </tr>\n";
+echo "                                                <tr>\n";
+echo "                                                  <td align=\"left\"><a href=\"email.php?webtag=$webtag&amp;uid=$uid\" target=\"_blank\" title=\"{$lang['sendemail']}\"><img src=\"", style_image('email.png'), "\" border=\"0\" alt=\"{$lang['sendemail']}\" title=\"{$lang['sendemail']}\" /></a></td>\n";
+echo "                                                  <td align=\"left\" nowrap=\"nowrap\"><a href=\"email.php?webtag=$webtag&amp;uid=$uid\" target=\"_blank\" title=\"{$lang['sendemail']}\">{$lang['sendemail']}</a></td>\n";
+echo "                                                </tr>\n";
+
+if ($uid <> bh_session_get_value('UID')) {
+
+    echo "                                                <tr>\n";
+    echo "                                                  <td align=\"left\"><a href=\"user_rel.php?webtag=$webtag&amp;uid=$uid&amp;ret=user_profile.php%3Fwebtag%3D$webtag%26uid%3D$uid\" target=\"_self\" title=\"{$lang['relationship']}\"><img src=\"", style_image('enemy.png'), "\" border=\"0\" alt=\"{$lang['relationship']}\" title=\"{$lang['relationship']}\" /></a></td>\n";
+    echo "                                                  <td align=\"left\" nowrap=\"nowrap\"><a href=\"user_rel.php?webtag=$webtag&amp;uid=$uid&amp;ret=user_profile.php%3Fwebtag%3D$webtag%26uid%3D$uid\" target=\"_self\" title=\"{$lang['relationship']}\">{$lang['relationship']}</a></td>\n";
+    echo "                                                </tr>\n";
+    echo "                                                <tr>\n";
+    echo "                                                  <td align=\"left\"><a href=\"search.php?webtag=$webtag&amp;logon=$logon&amp;user_include=1\" target=\"_blank\" title=\"", sprintf($lang['findthreadsstartedbyuser'], $logon), "\" onclick=\"return findUserThreads('$logon', '$webtag');\"><img src=\"", style_image('search.png'), "\" border=\"0\" alt=\"", sprintf($lang['findthreadsstartedbyuser'], $logon), "\" title=\"", sprintf($lang['findpostsmadebyuser'], $logon), "\" /></a></td>\n";
+    echo "                                                  <td align=\"left\" nowrap=\"nowrap\"><a href=\"search.php?webtag=$webtag&amp;logon=$logon&amp;user_include=1\" target=\"_blank\" title=\"", sprintf($lang['findthreadsstartedbyuser'], $logon), "\" onclick=\"return findUserThreads('$logon', '$webtag');\">", sprintf($lang['findthreadsstartedbyuser'], $logon), "</a></td>\n";
+    echo "                                                </tr>\n";
+    echo "                                                <tr>\n";
+    echo "                                                  <td align=\"left\"><a href=\"search.php?webtag=$webtag&amp;logon=$logon\" target=\"_blank\" title=\"", sprintf($lang['findpostsmadebyuser'], $logon), "\" onclick=\"return findUserPosts('$logon', '$webtag');\"><img src=\"", style_image('search.png'), "\" border=\"0\" alt=\"", sprintf($lang['findpostsmadebyuser'], $logon), "\" title=\"", sprintf($lang['findpostsmadebyuser'], $logon), "\" /></a></td>\n";
+    echo "                                                  <td align=\"left\" nowrap=\"nowrap\"><a href=\"search.php?webtag=$webtag&amp;logon=$logon\" target=\"_blank\" title=\"", sprintf($lang['findpostsmadebyuser'], $logon), "\" onclick=\"return findUserPosts('$logon', '$webtag');\">", sprintf($lang['findpostsmadebyuser'], $logon), "</a></td>\n";
+    echo "                                                </tr>\n";
+
+}else {
+
+    echo "                                                <tr>\n";
+    echo "                                                  <td align=\"left\"><a href=\"search.php?webtag=$webtag&amp;logon=$logon&amp;user_include=1\" target=\"_blank\" title=\"{$lang['findthreadsstartedbyme']}\" onclick=\"return findUserThreads('$logon', '$webtag');\"><img src=\"", style_image('search.png'), "\" border=\"0\" alt=\"{$lang['findthreadsstartedbyme']}\" title=\"{$lang['findthreadsstartedbyme']}\" /></a></td>\n";
+    echo "                                                  <td align=\"left\" nowrap=\"nowrap\"><a href=\"search.php?webtag=$webtag&amp;logon=$logon&amp;user_include=1\" target=\"_blank\" title=\"{$lang['findthreadsstartedbyme']}\" onclick=\"return findUserThreads('$logon', '$webtag');\">{$lang['findthreadsstartedbyme']}</a></td>\n";
+    echo "                                                </tr>\n";
+    echo "                                                <tr>\n";
+    echo "                                                  <td align=\"left\"><a href=\"search.php?webtag=$webtag&amp;logon=$logon\" target=\"_blank\" title=\"{$lang['findpostsmadebyme']}\" onclick=\"return findUserPosts('$logon', '$webtag');\"><img src=\"", style_image('search.png'), "\" border=\"0\" alt=\"{$lang['findpostsmadebyme']}\" title=\"{$lang['findpostsmadebyme']}\" /></a></td>\n";
+    echo "                                                  <td align=\"left\" nowrap=\"nowrap\"><a href=\"search.php?webtag=$webtag&amp;logon=$logon\" target=\"_blank\" title=\"{$lang['sendemail']}\" onclick=\"return findUserPosts('$logon', '$webtag');\">{$lang['findpostsmadebyme']}</a></td>\n";
+    echo "                                                </tr>\n";
+}
+
+echo "                                              </table>\n";
+echo "                                            </td>\n";
+echo "                                          </tr>\n";
+echo "                                        </table>\n";
+echo "                                      </td>\n";
+echo "                                    </tr>\n";
+echo "                                  </table>\n";
+echo "                                </td>\n";
+echo "                              </tr>\n";
+echo "                            </table>\n";
+echo "                          </div>\n";
+echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
@@ -271,9 +343,7 @@ if (isset($user_profile['PIC_URL'])) {
     echo "                        </td>\n";
     echo "                      </tr>\n";
 
-}elseif (isset($user_profile['PIC_AID'])) {
-
-    $attachment = get_attachment_by_hash($user_profile['PIC_AID']);
+}elseif (isset($user_profile['PIC_AID']) && ($attachment = get_attachment_by_hash($user_profile['PIC_AID']))) {
 
     if ($profile_picture_href = attachment_make_link($attachment, false, false, false, false)) {
 
@@ -303,30 +373,6 @@ if (isset($user_profile['PIC_URL'])) {
     echo "                      </tr>\n";
 }
 
-echo "                      <tr>\n";
-echo "                        <td align=\"center\" class=\"subhead\">\n";
-
-
-if (isset($user_profile['HOMEPAGE_URL'])) {
-
-    echo "<a href=\"{$user_profile['HOMEPAGE_URL']}\" target=\"_blank\"><img src=\"", style_image('home.png'), "\" alt=\"{$lang['visithomepage']}\" title=\"{$lang['visithomepage']}\" border=\"0\" /></a>&nbsp;";
-}
-
-echo "<a href=\"index.php?webtag=$webtag&amp;final_uri=pm_write.php%3Fwebtag%3D$webtag%26uid=$uid\" target=\"_blank\"><img src=\"", style_image('pmread.png'), "\" alt=\"{$lang['sendpm']}\" title=\"{$lang['sendpm']}\" border=\"0\" /></a>&nbsp;";
-echo "<a href=\"email.php?webtag=$webtag&amp;uid=$uid\" target=\"_blank\" onclick=\"return openEmailWindow('$uid', '$webtag');\"><img src=\"", style_image('email.png'), "\" alt=\"{$lang['sendemail']}\" title=\"{$lang['sendemail']}\" border=\"0\" /></a>&nbsp;";
-
-if ($uid <> bh_session_get_value('UID')) {
-
-    echo "<a href=\"user_rel.php?webtag=$webtag&amp;uid=$uid&amp;ret=user_profile.php%3Fwebtag%3D$webtag%26uid%3D$uid\" target=\"_self\"><img src=\"", style_image('enemy.png'), "\" alt=\"{$lang['relationship']}\" title=\"{$lang['relationship']}\" border=\"0\" /></a>&nbsp;";
-    echo "<a href=\"search.php?webtag=$webtag&amp;logon=$logon\" target=\"_blank\" onclick=\"return findUserPosts('$logon', '$webtag');\"><img src=\"", style_image('search.png'), "\" alt=\"", sprintf($lang['findpostsmadebyuser'], $logon), "\" title=\"", sprintf($lang['findpostsmadebyuser'], $logon), "\" border=\"0\" /></a>&nbsp;";
-
-}else {
-
-    echo "<a href=\"search.php?webtag=$webtag&amp;logon=$logon\" target=\"_blank\" onclick=\"return findUserPosts('$logon', '$webtag');\"><img src=\"", style_image('search.png'), "\" alt=\"{$lang['findpostsmadebyme']}\" title=\"{$lang['findpostsmadebyme']}\" border=\"0\" /></a>&nbsp;";
-}
-
-echo "                        </td>\n";
-echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
 echo "                </tr>\n";

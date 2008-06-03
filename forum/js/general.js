@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: general.js,v 1.40 2008-05-09 06:53:30 decoyduck Exp $ */
+/* $Id: general.js,v 1.41 2008-06-03 19:52:33 decoyduck Exp $ */
 
 // sprintf function based on code available at http://jan.moesen.nu
 
@@ -86,6 +86,49 @@ function getObjsByName(obj_name)
     
     if (obj != null) return obj;
     return false;
+}
+
+function findPosX(obj)
+{
+    var curleft = 0;
+
+    if (obj.offsetParent) {
+        
+        while(1) {
+
+            curleft += obj.offsetLeft;
+
+            if(!obj.offsetParent) break;
+            obj = obj.offsetParent;
+        }
+
+    }else if(obj.x) {
+
+        curleft += obj.x;
+    }
+    
+    return curleft;
+}
+
+function findPosY(obj)
+{
+    var curtop = 0;
+
+    if (obj.offsetParent) {
+        
+        while(1) {
+
+            curtop += obj.offsetTop;
+            if(!obj.offsetParent) break;
+            obj = obj.offsetParent;
+        }
+
+    } else if(obj.y) {
+        
+        curtop += obj.y;
+    }
+
+    return curtop;
 }
 
 function getImageMaxWidth()

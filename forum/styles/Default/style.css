@@ -849,7 +849,7 @@ a {
 }
 
 .bhinputlogon {
-    width: 168px;
+    width: 165px;
 }
 
 .bhlogonother {
@@ -1148,6 +1148,28 @@ a {
 .profile_item_overflow {
     overflow: hidden;
     height: 1.2em;
+}
+
+.profile_options {
+    cursor: pointer;
+}
+
+.profile_options_container_closed {
+    position: absolute;
+    text-align: left;
+    display: none;
+    overflow: scroll;
+}
+
+.profile_options_container_opened {
+    position: absolute;
+    text-align: left;
+    display: block;
+    overflow: scroll;
+}
+
+.profile_options_menu {
+    padding: 5px 10px 10px 5px;
 }
 
 .image_resize_text {

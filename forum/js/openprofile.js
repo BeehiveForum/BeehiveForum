@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: openprofile.js,v 1.19 2008-05-09 06:53:30 decoyduck Exp $ */
+/* $Id: openprofile.js,v 1.20 2008-06-03 19:52:33 decoyduck Exp $ */
 
 var edit_attachments = false;
 var email_window = false;
@@ -57,6 +57,16 @@ function findUserPosts(logon, webtag)
     }
 }
 
+function findUserThreads(logon, webtag)
+{
+    if (window.opener) {
+
+        window.opener.top.document.location.href = 'search.php?webtag=' + webtag + '&logon=' + logon + '&user_include=1';
+        document.location.href = 'user_profile.php?close_window';
+        return false;
+    }
+}
+
 function openEmailWindow(uid, webtag)
 {
     if (typeof email_window == 'object' && !email_window.closed) {
@@ -66,4 +76,102 @@ function openEmailWindow(uid, webtag)
     }
 
     return false;
+}
+
+function delayProfileMenuClickHandler()
+{
+    menu_timeout = setTimeout('attachProfileMenuClickHandler()', 100);
+}
+
+function attachProfileMenuClickHandler()
+{
+    clearTimeout(menu_timeout);
+    
+    if (document.all) {
+        document.attachEvent('onclick', closeProfileOptions);
+    }else {
+        document.addEventListener('click', closeProfileOptions, true);
+    }
+}
+
+function cancelProfileMenuClickHandler()
+{
+    if (document.all) {    
+        document.detachEvent('onclick', closeProfileOptions);
+    }else {
+        document.removeEventListener('click', closeProfileOptions, false);
+    }
+}
+
+function closeProfileOptions()
+{
+    var div_tags  = document.getElementsByTagName('div');
+    var div_count = div_tags.length;
+
+    for (var i = 0; i < div_count; i++)  {
+
+        if (div_tags[i].className == 'profile_options_container_opened') {                    
+
+            div_tags[i].className = 'profile_options_container_closed';
+        }
+    }
+
+    cancelProfileMenuClickHandler();
+}
+
+function openProfileOptions()
+{
+    var IE = (document.all ? true : false);
+
+    closeProfileOptions();
+    
+    var profile_options_obj = getObjById('profile_options');
+    var profile_options_container_obj = getObjById('profile_options_container');
+
+    if (typeof profile_options_obj == 'object' && typeof profile_options_container_obj == 'object') {
+
+        if (profile_options_container_obj.className == 'profile_options_container_closed') {
+
+            profile_options_container_obj.style.left = '100px';
+
+            profile_options_container_obj.className = 'profile_options_container_opened';
+
+            profile_options_container_obj.style.width = '0px';
+            profile_options_container_obj.style.height = '0px';
+
+            if (IE) {
+
+                var scroll_width = parseInt(profile_options_container_obj.scrollWidth);
+
+                while (parseInt(profile_options_container_obj.scrollWidth) > scroll_width) {
+                    scroll_width = parseInt(profile_options_container_obj.scrollWidth);
+                }
+
+                var scroll_height = parseInt(profile_options_container_obj.scrollHeight);
+
+                while (parseInt(profile_options_container_obj.scrollHeight) > scroll_height) {
+                    scroll_height = parseInt(profile_options_container_obj.scrollHeight);
+                }
+
+            }else {
+
+                var scroll_width = profile_options_container_obj.scrollWidth;
+                var scroll_height = profile_options_container_obj.scrollHeight;            
+            }
+
+            profile_options_container_obj.style.width = scroll_width + 'px';
+            profile_options_container_obj.style.height = scroll_height + 'px';
+            profile_options_container_obj.style.overflow = 'hidden';
+
+            var container_left = findPosX(profile_options_obj);
+            var container_top = findPosY(profile_options_obj);
+
+            container_top  = profile_options_obj.height + container_top;
+
+            profile_options_container_obj.style.left = container_left + 'px';
+            profile_options_container_obj.style.top = container_top + 'px';
+
+            delayProfileMenuClickHandler();
+        }
+    }
 }

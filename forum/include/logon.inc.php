@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.78 2008-05-21 22:34:09 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.79 2008-06-03 19:52:33 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -411,7 +411,7 @@ function logon_draw_form($logon_options)
             }
         }
 
-
+        echo "                        </td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
         echo "                        <td align=\"right\">{$lang['passwd']}:</td>\n";
@@ -420,16 +420,16 @@ function logon_draw_form($logon_options)
 
             if (isset($passhash_array[$current_logon]) && is_md5($passhash_array[$current_logon])) {
 
-                echo "                        <td align=\"left\">", form_input_password("user_password", _htmlentities($password_array[$current_logon]), 24, false, "autocomplete=\"off\""), form_input_hidden("user_passhash", _htmlentities($passhash_array[$current_logon])), "</td>\n";
+                echo "                        <td align=\"left\">", form_input_password("user_password", _htmlentities($password_array[$current_logon]), 24, false, "autocomplete=\"off\"", "bhinputlogon"), form_input_hidden("user_passhash", _htmlentities($passhash_array[$current_logon])), "</td>\n";
 
             }else {
 
-                echo "                        <td align=\"left\">", form_input_password("user_password", "", 24, false, "autocomplete=\"off\""), form_input_hidden("user_passhash", ""), "</td>\n";
+                echo "                        <td align=\"left\">", form_input_password("user_password", "", 24, false, "autocomplete=\"off\"", "bhinputlogon"), form_input_hidden("user_passhash", ""), "</td>\n";
             }
 
         }else {
 
-            echo "                        <td align=\"left\">", form_input_password("user_password", "", 24, false, "autocomplete=\"off\""), form_input_hidden("user_passhash", ""), "</td>\n";
+            echo "                        <td align=\"left\">", form_input_password("user_password", "", 24, false, "autocomplete=\"off\"", "bhinputlogon"), form_input_hidden("user_passhash", ""), "</td>\n";
         }
 
         echo "                      </tr>\n";
@@ -440,7 +440,7 @@ function logon_draw_form($logon_options)
 
             echo "                      <tr>\n";
             echo "                        <td align=\"right\">{$lang['username']}:</td>\n";
-            echo "                        <td align=\"left\">", form_input_text("user_logon", "", 24, 15, "onchange=\"clearPassword()\" autocomplete=\"off\""), "</td>\n";
+            echo "                        <td align=\"left\">", form_input_text("user_logon", "", 24, 15, "onchange=\"clearPassword()\" autocomplete=\"off\"", "bhinputlogon"), "</td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"right\">{$lang['passwd']}:</td>\n";
@@ -451,11 +451,11 @@ function logon_draw_form($logon_options)
 
             echo "                      <tr>\n";
             echo "                        <td align=\"right\">{$lang['username']}:</td>\n";
-            echo "                        <td align=\"left\">", form_input_text("user_logon", (isset($username_array[0]) ? _htmlentities($username_array[0]) : ""), 24, 32, "onchange=\"clearPassword()\" autocomplete=\"off\""), "</td>\n";
+            echo "                        <td align=\"left\">", form_input_text("user_logon", (isset($username_array[0]) ? _htmlentities($username_array[0]) : ""), 24, 32, "onchange=\"clearPassword()\" autocomplete=\"off\"", "bhinputlogon"), "</td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"right\">{$lang['passwd']}:</td>\n";
-            echo "                        <td align=\"left\">", form_input_password("user_password", (isset($password_array[0]) ? _htmlentities($password_array[0]) : ""), 24, 32, "autocomplete=\"off\""), form_input_hidden("user_passhash", (isset($passhash_array[0]) ? _htmlentities($passhash_array[0]) : "")), "</td>\n";
+            echo "                        <td align=\"left\">", form_input_password("user_password", (isset($password_array[0]) ? _htmlentities($password_array[0]) : ""), 24, 32, "autocomplete=\"off\"", "bhinputlogon"), form_input_hidden("user_passhash", (isset($passhash_array[0]) ? _htmlentities($passhash_array[0]) : "")), "</td>\n";
             echo "                      </tr>\n";
         }
     }

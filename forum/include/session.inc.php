@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.347 2008-05-21 22:34:09 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.348 2008-06-03 19:52:33 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -988,7 +988,7 @@ function bh_session_get_perm_array($uid)
     }
 
     $sql = "SELECT FORUM, FID, BIT_OR(PERM) AS PERM FROM GROUP_PERMS ";
-    $sql.= "WHERE GID = 0 GROUP BY FORUM, FID";
+    $sql.= "WHERE GID = 0 AND FORUM IN (0, $forum_fid) GROUP BY FORUM, FID";
 
     if (!$result = db_query($sql, $db_bh_session_get_perm_array)) return false;
 

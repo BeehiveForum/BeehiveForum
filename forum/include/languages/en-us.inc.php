@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en-us.inc.php,v 1.61 2008-06-01 15:24:15 decoyduck Exp $ */
+/* $Id: en-us.inc.php,v 1.62 2008-06-05 19:59:15 decoyduck Exp $ */
 
 // American English language file
 
@@ -605,7 +605,6 @@ $lang['approveselected'] = "Approve selected";
 $lang['failedtoapproveuser'] = "Failed to approve user %s";
 $lang['kickselected'] = "Kick selected";
 $lang['visitorlog'] = "Visitor Log";
-$lang['clearvisitorlog'] = "Clear Visitor Log";
 $lang['novisitorslogged'] = "No Visitors Logged";
 $lang['addselectedusers'] = "Add Selected Users";
 $lang['removeselectedusers'] = "Remove Selected Users";
@@ -716,14 +715,7 @@ $lang['refererbanhit'] = "User '%s' is banned. HTTP Referer '%s' matched ban dat
 $lang['modifiedpermsforuser'] = "Modified perms for user '%s'";
 $lang['modifiedfolderpermsforuser'] = "Modified folder perms for user '%s'";
 
-$lang['userpermbanned'] = "Banned";
-$lang['userpermwormed'] = "Wormed";
 $lang['userpermfoldermoderate'] = "Folder Moderator";
-$lang['userpermadmintools'] = "Admin Tools";
-$lang['userpermforumtools'] = "Forum Tools";
-$lang['userpermlinksmod'] = "Links Moderator";
-$lang['userpermignoreadmin'] = "Ignore Admin";
-$lang['userpermpilloried'] = "Pilloried";
 
 $lang['adminlogempty'] = "Admin Log is empty";
 
@@ -1413,7 +1405,6 @@ $lang['readmessage'] = "Read Message";
 $lang['pmshavebeendisabled'] = "Personal Messages have been disabled by the forum owner.";
 $lang['adduserstofriendslist'] = "Add users to your friends list to have them appear in a drop down on the PM Write Message Page.";
 
-$lang['messagesaved'] = "Message Saved";
 $lang['messagewassuccessfullysavedtodraftsfolder'] = "Message was successfully saved to 'Drafts' folder";
 $lang['couldnotsavemessage'] = "Could not save message. Make sure you have enough available free space.";
 $lang['pmtooltipxmessages'] = "%s messages";

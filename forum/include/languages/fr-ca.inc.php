@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.108 2008-06-01 15:24:15 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.109 2008-06-05 19:59:15 decoyduck Exp $ */
 
 // French Canadian language file
 
@@ -605,7 +605,6 @@ $lang['approveselected'] = "Approuver sélectionné(s)";
 $lang['failedtoapproveuser'] = "L'approbation de l'utilisateur %s a échoué";
 $lang['kickselected'] = "Éjecter sélectionné";
 $lang['visitorlog'] = "Feuille de contrôle des visiteurs";
-$lang['clearvisitorlog'] = "Vider le journal des visiteurs";
 $lang['novisitorslogged'] = "Aucun visiteur journalisé";
 $lang['addselectedusers'] = "Ajouter usagers sélectionnés";
 $lang['removeselectedusers'] = "Enlever usagers sélectionnés";
@@ -716,14 +715,7 @@ $lang['refererbanhit'] = "Utilisateur '%s' est banni. Le référent HTTP '%s' co
 $lang['modifiedpermsforuser'] = "Modifié perms pour utilisateur '%s'";
 $lang['modifiedfolderpermsforuser'] = "Modifié perms de dossier pour utilisateur '%s'";
 
-$lang['userpermbanned'] = "Banni";
-$lang['userpermwormed'] = "Parasité";
 $lang['userpermfoldermoderate'] = "Modérateur de dossier";
-$lang['userpermadmintools'] = "Outils d'admin";
-$lang['userpermforumtools'] = "Outils de forum";
-$lang['userpermlinksmod'] = "Modérateur d'hyperliens";
-$lang['userpermignoreadmin'] = "Ignorez admin";
-$lang['userpermpilloried'] = "Cloué au pilori";
 
 $lang['adminlogempty'] = "Fiche journalier admin est vide";
 
@@ -1413,7 +1405,6 @@ $lang['readmessage'] = "Lire message";
 $lang['pmshavebeendisabled'] = "Les messages personnels ont été désactivés par le propriétaire du forum.";
 $lang['adduserstofriendslist'] = "Si vous ajoutez des utilisateurs à votre liste d'ami(e)s, ils apparaîtront dans la liste déroulante verticalement de la page Rédiger Message PM.";
 
-$lang['messagesaved'] = "Message sauvegardé";
 $lang['messagewassuccessfullysavedtodraftsfolder'] = "Le sauvegardage du message au fichier 'Brouillons' a réussi";
 $lang['couldnotsavemessage'] = "Le sauvegardage du message a échoué. Assurez-vous d'avoir suffisament d'espace libre.";
 $lang['pmtooltipxmessages'] = "%s messages";

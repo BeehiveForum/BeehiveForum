@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_check_php_version.php,v 1.8 2008-05-12 19:41:00 decoyduck Exp $ */
+/* $Id: bh_check_php_version.php,v 1.9 2008-06-05 19:59:15 decoyduck Exp $ */
 
 // Requires PHP PEAR to be installed and PHP_CompatInfo Class.
 // See: http://www.laurent-laville.org/index.php?module=pear&desc=pci
@@ -44,12 +44,11 @@ echo "Please wait checking Minimum PHP Version...\n\n";
 
 // Check the version
 
-$pci = new PHP_CompatInfo();
+$pci = new PHP_CompatInfo('null');
 $res = $pci->parseFolder('forum', $options);
 
 // Output the results.
 
 echo sprintf("PHP Minimum Version = %s\nExtensions required : %s\n\n", $res['version'], implode(", ", $res['extensions']));
-echo sprintf("DEBUG Output:\n\n%s", print_r($res, true));
 
 ?>

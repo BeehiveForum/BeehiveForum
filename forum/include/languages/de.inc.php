@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.83 2008-06-01 15:24:15 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.84 2008-06-05 19:59:15 decoyduck Exp $ */
 
 // German language file
 
@@ -605,7 +605,6 @@ $lang['approveselected'] = "Zustimmung ausgewaehlt";
 $lang['failedtoapproveuser'] = "Fehler beim Zulassen des Benutzers %s";
 $lang['kickselected'] = "Kick (kurzfristiger Rauswurf) ausgewaehlt";
 $lang['visitorlog'] = "Benutzer Log";
-$lang['clearvisitorlog'] = "Besucher-Log loeschen";
 $lang['novisitorslogged'] = "Kein Besucher protokolliert";
 $lang['addselectedusers'] = "Ausgewaehlte Benutzer hinzufuegen";
 $lang['removeselectedusers'] = "Ausgewaehlte Benutzer loeschen";
@@ -715,14 +714,7 @@ $lang['refererbanhit'] = "Benutzer '%s' ist gebannt. HTTP-Verweis'%s' gefunden i
 
 $lang['modifiedpermsforuser'] = "Rechte fuer Benutzer '%s' geaendert";
 
-$lang['userpermbanned'] = "Gebannt";
-$lang['userpermwormed'] = "unsichtbar (Posts fuer andere Benutzer nicht sichtbar)";
 $lang['userpermfoldermoderate'] = "Ordner-Moderator";
-$lang['userpermadmintools'] = "Admin Tools";
-$lang['userpermforumtools'] = "Forum Tools";
-$lang['userpermlinksmod'] = "Links Moderator";
-$lang['userpermignoreadmin'] = "Admin ignorieren";
-$lang['userpermpilloried'] = "Angeprangert";
 
 $lang['adminlogempty'] = "Admin Log ist leer";
 
@@ -1406,7 +1398,6 @@ $lang['readmessage'] = "Gelesene Nachricht";
 $lang['pmshavebeendisabled'] = "Persoenlichen Nachrichten (Personal Messages = PMs) wurden deaktiviert vom Admin.";
 $lang['adduserstofriendslist'] = "Benutzer zu Deiner Freundesliste hinzufuegen um Sie immer im Drop-Down-Feld deiner PM-Seite zu haben.";
 
-$lang['messagesaved'] = "Nachricht gespeichert";
 $lang['messagewassuccessfullysavedtodraftsfolder'] = "Nachricht im 'Entwuerfe'-Ordner gespeichert";
 $lang['couldnotsavemessage'] = "Nachricht konnte nicht gespeichert werden. Bitte sicherstellen dass genuegend Speicherplatz vorhanden ist.";
 $lang['pmtooltipxmessages'] = "%s Nachrichten";

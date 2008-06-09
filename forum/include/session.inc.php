@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.348 2008-06-03 19:52:33 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.349 2008-06-09 20:33:17 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -982,7 +982,7 @@ function bh_session_get_perm_array($uid)
 
             if ($permission_data['USER_PERM_COUNT'] > 0) {
 
-                $user_perm_array[$permission_data['FORUM']][$uid][$permission_data['FID']] = $permission_data['PERM'];
+                $user_perm_array[$permission_data['FORUM']][$permission_data['FID']] = $permission_data['PERM'];
             }
         }
     }
@@ -996,12 +996,10 @@ function bh_session_get_perm_array($uid)
 
         while ($permission_data = db_fetch_array($result)) {
 
-            if (!isset($user_perm_array[$permission_data['FORUM']][$uid][$permission_data['FID']])) {
+            if (!isset($user_perm_array[$permission_data['FORUM']][$permission_data['FID']])) {
 
-                $user_perm_array[$permission_data['FORUM']][$uid][$permission_data['FID']] = $permission_data['PERM'];
+                $user_perm_array[$permission_data['FORUM']][$permission_data['FID']] = $permission_data['PERM'];
             }
-
-            $user_perm_array[$permission_data['FORUM']][0][$permission_data['FID']] = $permission_data['PERM'];
         }
     }
 
@@ -1039,22 +1037,22 @@ function bh_session_check_perm($perm, $folder_fid)
 
     if (user_is_guest()) {
 
-        if (isset($user_sess['PERMS'][$forum_fid][0][$folder_fid])) {
-            $user_perm_test = $user_perm_test | $user_sess['PERMS'][$forum_fid][0][$folder_fid];
+        if (isset($user_sess['PERMS'][$forum_fid][$folder_fid])) {
+            $user_perm_test = $user_perm_test | $user_sess['PERMS'][$forum_fid][$folder_fid];
         }
 
     }else {
 
-        if (isset($user_sess['PERMS'][$forum_fid][$uid][0])) {
-            $user_perm_test = $user_perm_test | $user_sess['PERMS'][$forum_fid][$uid][$folder_fid];
+        if (isset($user_sess['PERMS'][$forum_fid][0])) {
+            $user_perm_test = $user_perm_test | $user_sess['PERMS'][$forum_fid][0];
         }
 
-        if (isset($user_sess['PERMS'][$forum_fid][$uid][$folder_fid])) {
-            $user_perm_test = $user_perm_test | $user_sess['PERMS'][$forum_fid][$uid][$folder_fid];
+        if (isset($user_sess['PERMS'][$forum_fid][$folder_fid])) {
+            $user_perm_test = $user_perm_test | $user_sess['PERMS'][$forum_fid][$folder_fid];
         }
 
-        if (isset($user_sess['PERMS'][0][$uid][0])) {
-            $user_perm_test = $user_perm_test | $user_sess['PERMS'][0][$uid][0];
+        if (isset($user_sess['PERMS'][0][0])) {
+            $user_perm_test = $user_perm_test | $user_sess['PERMS'][0][0];
         }
     }
 
@@ -1088,18 +1086,18 @@ function bh_session_get_perm($folder_fid)
 
     if (user_is_guest()) {
 
-        if (isset($user_sess['PERMS'][$forum_fid][0][$folder_fid])) {
-            $user_perm_test = $user_perm_test | $user_sess['PERMS'][$forum_fid][0][$folder_fid];
+        if (isset($user_sess['PERMS'][$forum_fid][$folder_fid])) {
+            $user_perm_test = $user_perm_test | $user_sess['PERMS'][$forum_fid][$folder_fid];
         }
 
     }else {
 
-        if (isset($user_sess['PERMS'][$forum_fid][$uid][$folder_fid])) {
-            $user_perm_test = $user_perm_test | $user_sess['PERMS'][$forum_fid][$uid][$folder_fid];
+        if (isset($user_sess['PERMS'][$forum_fid][$folder_fid])) {
+            $user_perm_test = $user_perm_test | $user_sess['PERMS'][$forum_fid][$folder_fid];
         }
 
-        if (isset($user_sess['PERMS'][0][$uid][$folder_fid])) {
-            $user_perm_test = $user_perm_test | $user_sess['PERMS'][0][$uid][$folder_fid];
+        if (isset($user_sess['PERMS'][0][$folder_fid])) {
+            $user_perm_test = $user_perm_test | $user_sess['PERMS'][0][$folder_fid];
         }
     }
 
@@ -1182,8 +1180,8 @@ function bh_session_get_folders_by_perm($perm, $forum_fid = false)
 
     // Global Permissions.
 
-    if (isset($user_sess['PERMS'][$forum_fid][$uid][0])) {
-        $global_user_perms = $user_sess['PERMS'][$forum_fid][$uid][0];
+    if (isset($user_sess['PERMS'][$forum_fid][0])) {
+        $global_user_perms = $user_sess['PERMS'][$forum_fid][0];
     }else {
         $global_user_perms = 0;
     }
@@ -1191,24 +1189,14 @@ function bh_session_get_folders_by_perm($perm, $forum_fid = false)
     // Test each folder against the provided perm at both the folder
     // user and global user permission levels.
 
-    if (isset($user_sess['PERMS'][$forum_fid][$uid]) && is_array($user_sess['PERMS'][$forum_fid][$uid])) {
+    if (isset($user_sess['PERMS'][$forum_fid]) && is_array($user_sess['PERMS'][$forum_fid])) {
 
-        foreach($user_sess['PERMS'][$forum_fid][$uid] as $folder_fid => $folder_perm) {
+        foreach($user_sess['PERMS'][$forum_fid] as $folder_fid => $folder_perm) {
 
             if (($folder_perm & $perm) == $perm || ($global_user_perms & $perm) == $perm) {
 
                 $folder_fid_array[$folder_fid] = $folder_fid;
             }
-        }
-    }
-
-    // Folder level permissions.
-
-    if (isset($user_sess['PERMS'][$forum_fid][0]) && is_array($user_sess['PERMS'][$forum_fid][0])) {
-
-        foreach($user_sess['PERMS'][$forum_fid][0] as $folder_fid => $folder_perm) {
-
-            if (($folder_perm & $perm) == $perm) $folder_fid_array[$folder_fid] = $folder_fid;
         }
     }
 

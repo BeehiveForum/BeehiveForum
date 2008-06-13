@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.545 2008-06-05 19:59:15 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.546 2008-06-13 11:59:23 decoyduck Exp $ */
 
 // British English language file
 
@@ -360,6 +360,7 @@ $lang['successfullycleareduserhistory'] = "Successfully cleared user history";
 $lang['failedtoclearuserhistory'] = "Failed to clear user history";
 $lang['successfullychangedpassword'] = "Successfully Changed Password";
 $lang['failedtochangepasswd'] = "Failed To Change Password";
+$lang['approveuser'] = "Approve User";
 $lang['viewuserhistory'] = "View User History";
 $lang['viewuseraliases'] = "View User Aliases";
 $lang['searchreturnednoresults'] = "Search Returned No Results";
@@ -439,6 +440,7 @@ $lang['editedwordfilter'] = "Edited Word Filter";
 $lang['editedforumsettings'] = "Edited Forum Settings";
 $lang['successfullyendedusersessionsforselectedusers'] = "Successfully ended sessions for selected users";
 $lang['failedtoendsessionforuser'] = "Failed to end session for user %s";
+$lang['successfullyapproveduser'] = "Successfully approved user";
 $lang['successfullyapprovedselectedusers'] = "Successfully approved selected users";
 $lang['matchedtext'] = "Matched Text";
 $lang['replacementtext'] = "Replacement Text";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.238 2008-04-27 11:20:45 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.239 2008-06-13 11:59:23 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -235,6 +235,27 @@ if (isset($_POST['action_submit'])) {
 
             header_redirect("admin_user.php?webtag=$webtag&uid=$uid&action=delete_posts");
             exit;
+
+        }elseif ($post_action == 'approve_user') {
+
+            if (forum_get_setting('require_user_approval', 'Y')) {
+
+                if ($user_logon = user_get_logon($uid)) {
+
+                    if (admin_approve_user($uid)) {
+
+                        email_send_user_approved_notification($uid);
+
+                        header_redirect("admin_user.php?webtag=$webtag&uid=$uid&approved=true");
+                        exit;
+
+                    }else {
+
+                        $error_msg_array[] = sprintf($lang['failedtoapproveuser'], $user_logon);
+                        $valid = false;
+                    }
+                }
+            }
         }
     }
 
@@ -1007,7 +1028,7 @@ if (isset($_GET['action']) && strlen(trim(_stripslashes($_GET['action']))) > 0) 
     }
 }
 
-html_draw_top('admin.js');
+html_draw_top('admin.js', 'openprofile.js');
 
 if ($table_data = get_table_prefix()) {
     echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
@@ -1030,6 +1051,10 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 }else if (isset($_GET['signature_updated'])) {
 
     html_display_success_msg($lang['signatureupdated'], '600', 'center');
+
+}elseif (isset($_GET['approved'])) {
+
+    html_display_success_msg($lang['successfullyapproveduser'], '600', 'center');
 }
 
 echo "<br />\n";
@@ -1056,7 +1081,7 @@ if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
     echo "                    <table width=\"90%\" class=\"posthead\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\">{$lang['username']}:</td>\n";
-    echo "                        <td align=\"left\">", _htmlentities($user['LOGON']), "</td>\n";
+    echo "                        <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid=$uid\" target=\"_blank\" onclick=\"return openProfile($uid, '$webtag')\">", _htmlentities($user['LOGON']), "</a></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\">{$lang['nickname']}:</td>\n";
@@ -1167,14 +1192,29 @@ if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
     echo "  </table>\n";
     echo "  <br />\n";
 
-    $admin_options_dropdown = array('edit_details'   => $lang['edituserdetails'],
-                                    'edit_signature' => $lang['editsignature'],
-                                    'edit_profile'   => $lang['editprofile'],
-                                    'reset_passwd'   => $lang['resetpassword'],
-                                    'view_history'   => $lang['viewuserhistory'],
-                                    'user_aliases'   => $lang['viewuseraliases'],
-                                    'delete_user'    => $lang['deleteuser'],
-                                    'delete_posts'   => $lang['deleteposts']);
+    if (forum_get_setting('require_user_approval', 'Y')) {
+
+        $admin_options_dropdown = array('approve_user'   => $lang['approveuser'],
+                                        'edit_details'   => $lang['edituserdetails'],
+                                        'edit_signature' => $lang['editsignature'],
+                                        'edit_profile'   => $lang['editprofile'],
+                                        'reset_passwd'   => $lang['resetpassword'],
+                                        'view_history'   => $lang['viewuserhistory'],
+                                        'user_aliases'   => $lang['viewuseraliases'],
+                                        'delete_user'    => $lang['deleteuser'],
+                                        'delete_posts'   => $lang['deleteposts']);
+
+    }else {
+
+        $admin_options_dropdown = array('edit_details'   => $lang['edituserdetails'],
+                                        'edit_signature' => $lang['editsignature'],
+                                        'edit_profile'   => $lang['editprofile'],
+                                        'reset_passwd'   => $lang['resetpassword'],
+                                        'view_history'   => $lang['viewuserhistory'],
+                                        'user_aliases'   => $lang['viewuseraliases'],
+                                        'delete_user'    => $lang['deleteuser'],
+                                        'delete_posts'   => $lang['deleteposts']);
+    }
 
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";

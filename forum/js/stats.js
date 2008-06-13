@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.js,v 1.4 2008-05-09 06:53:30 decoyduck Exp $ */
+/* $Id: stats.js,v 1.5 2008-06-13 19:53:31 decoyduck Exp $ */
 
 var stats_timeout;
 
@@ -31,7 +31,7 @@ function stats_display_initialise()
 
     if (typeof(forum_stats_obj) == 'object') {
 
-        stats_timeout = setTimeout('stats_display_get_data()', 1000);
+        stats_timeout = setTimeout('stats_display_get_data()', 2000);
         return true;
     }
 }
@@ -189,7 +189,7 @@ function stats_display_handler()
                 if (typeof(post_stats_recent) == 'object') {
 
                     post_stats_recent_count = post_stats_recent.getElementsByTagName('count')[0].childNodes[0].nodeValue;
-                    post_stats_recent_text = (post_stats_recent_count != 1) ? sprintf(lang['therehavebeenxpostsmadeinthelastsixtyminutes'] + '<br />', post_stats_recent_count) : lang['therehasbeenonepostmadeinthelastsxityminutes'];
+                    post_stats_recent_text = (post_stats_recent_count != 1) ? sprintf(lang['therehavebeenxpostsmadeinthelastsixtyminutes'] + '<br />', post_stats_recent_count) : lang['therehasbeenonepostmadeinthelastsxityminutes'] + '<br />';
 
                     post_stats_obj.innerHTML = post_stats_recent_text;
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.239 2008-06-13 11:59:23 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.240 2008-06-13 12:16:32 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -1192,7 +1192,7 @@ if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
     echo "  </table>\n";
     echo "  <br />\n";
 
-    if (forum_get_setting('require_user_approval', 'Y')) {
+    if (forum_get_setting('require_user_approval', 'Y') && !admin_user_approved($uid)) {
 
         $admin_options_dropdown = array('approve_user'   => $lang['approveuser'],
                                         'edit_details'   => $lang['edituserdetails'],

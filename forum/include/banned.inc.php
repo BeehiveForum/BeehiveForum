@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: banned.inc.php,v 1.34 2008-05-30 21:00:06 decoyduck Exp $ */
+/* $Id: banned.inc.php,v 1.35 2008-06-13 19:00:51 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -474,9 +474,9 @@ function user_is_banned($uid)
 
     $sql = "SELECT COUNT(BANNED.ID) AS BAN_COUNT FROM {$table_data['PREFIX']}BANNED BANNED, ";
     $sql.= "USER USER LEFT JOIN SESSIONS SESSIONS ON (USER.UID = SESSIONS.UID) ";
-    $sql.= "WHERE (SESSIONS.IPADDRESS LIKE BANNED.BANDATA AND BANNED.BANTYPE = '$ban_type_ip') ";
+    $sql.= "WHERE ((SESSIONS.IPADDRESS LIKE BANNED.BANDATA AND BANNED.BANTYPE = '$ban_type_ip') ";
     $sql.= "OR (SESSIONS.REFERER LIKE BANNED.BANDATA AND BANNED.BANTYPE = '$ban_type_ref') ";
-    $sql.= "OR ((USER.IPADDRESS LIKE BANNED.BANDATA AND BANNED.BANTYPE = '$ban_type_ip') ";
+    $sql.= "OR (USER.IPADDRESS LIKE BANNED.BANDATA AND BANNED.BANTYPE = '$ban_type_ip') ";
     $sql.= "OR (USER.LOGON LIKE BANNED.BANDATA AND BANNED.BANTYPE = '$ban_type_logon') ";
     $sql.= "OR (USER.NICKNAME LIKE BANNED.BANDATA AND BANNED.BANTYPE = '$ban_type_nick') ";
     $sql.= "OR (USER.EMAIL LIKE BANNED.BANDATA AND BANNED.BANTYPE = '$ban_type_email') ";

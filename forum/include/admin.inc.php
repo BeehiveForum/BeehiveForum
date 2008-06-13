@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.150 2008-05-27 21:55:32 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.151 2008-06-13 12:16:32 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -907,6 +907,30 @@ function admin_get_ban($ban_id)
     }
 
     return false;
+}
+
+/**
+* Check user is approved
+*
+* Check that specified user is approved.
+*
+* @return boolean
+* @param integer $uid - User UID
+*/
+
+function admin_user_approved($uid)
+{
+    if (!$db_admin_user_approved = db_connect()) return false;
+
+    if (!is_numeric($uid)) return false;
+
+    $sql = "SELECT COUNT(UID) FROM USER WHERE APPROVED IS NOT NULL AND UID = '$uid'";
+
+    if (!$result = db_query($sql, $db_admin_user_approved)) return false;
+
+    list($user_approved_count) = db_fetch_array($result, DB_RESULT_NUM);
+
+    return $user_approved_count > 0;
 }
 
 /**

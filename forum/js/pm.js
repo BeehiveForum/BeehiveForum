@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.js,v 1.21 2008-05-09 06:53:30 decoyduck Exp $ */
+/* $Id: pm.js,v 1.22 2008-06-13 19:53:31 decoyduck Exp $ */
 
 var pm_logon_search = false;
 
@@ -102,7 +102,7 @@ function checkToRadio(num)
 
 function pm_notification_initialise()
 {
-    pm_timeout = setTimeout('pm_notification_check_messages()', 1000);
+    pm_timeout = setTimeout('pm_notification_check_messages()', 2000);
     return true;
 }
 

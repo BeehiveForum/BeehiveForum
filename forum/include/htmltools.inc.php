@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: htmltools.inc.php,v 1.65 2008-03-24 23:32:16 decoyduck Exp $ */
+/* $Id: htmltools.inc.php,v 1.66 2008-06-13 17:57:43 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -270,6 +270,32 @@ class TextAreaHTML {
         $str.= "        <option value=\"#00FFFF\" style=\"color: #00FFFF;\">{$lang['lightblue']}</option>\n";
         $str.= "    </select>\n";
         $str.= "    $custom_html\n";
+        $str.= "</div>\n";
+
+        return $str;
+    }
+
+    // --------------------------------------------------------------------------
+    // Returns the HTML for the reduced functionality toolbar used in Quick Reply
+    // --------------------------------------------------------------------------
+
+    function toolbar_reduced ($emoticons = true) {
+
+        $lang = load_language_file();
+
+        $webtag = get_webtag($webtag_search);
+
+        $this->tbs++;
+
+        $str = "<div id=\"bh_tb{$this->tbs}\" class=\"tools\" style=\"background-image: url('images/html_toolbar_reduced.png');\">\n";
+        $str.= $this->bh_tb_img($lang['bold'], "add_tag('b');");
+        $str.= $this->bh_tb_img($lang['italic'], "add_tag('i');");
+        $str.= $this->bh_tb_img($lang['underline'], "add_tag('u');");
+
+        if ($emoticons == true) {
+            $str.= $this->bh_tb_img($lang['emoticons'], "openEmoticons('user','$webtag');", "emoticons_button.png");
+        }
+
         $str.= "</div>\n";
 
         return $str;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.264 2008-04-27 12:55:11 decoyduck Exp $ */
+/* $Id: messages.php,v 1.265 2008-06-13 17:57:43 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -234,7 +234,7 @@ $folder_title = _htmlentities($thread_data['FOLDER_TITLE']);
 
 $thread_title = _htmlentities(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']));
 
-html_draw_top("title=$forum_name > $thread_title", "openprofile.js", "post.js", "poll.js", "basetarget=_blank", "onload=initialisePostQuoting()", "onload=registerQuickReplyHotKey()");
+html_draw_top("onunload=clearFocus()", "title=$forum_name > $thread_title", "openprofile.js", "post.js", "poll.js", "htmltools.js", "basetarget=_blank", "onload=initialisePostQuoting()", "onload=registerQuickReplyHotKey()");
 
 echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
 echo "<!--\n\n";
@@ -304,6 +304,8 @@ if (isset($thread_data['STICKY']) && isset($thread_data['STICKY_UNTIL'])) {
 $foldertitle = folder_get_title($thread_data['FID']);
 
 $show_sigs = (bh_session_get_value('VIEW_SIGS') == 'N') ? false : true;
+
+$page_prefs = bh_session_get_post_page_prefs();
 
 $msg_count = count($messages);
 
@@ -490,10 +492,15 @@ echo "</form>\n";
 
 echo "<div id=\"quick_reply_container\" class=\"quick_reply_container_closed\">\n";
 echo "<br />\n";
-echo "<form id=\"quick_reply_form\" action=\"post.php\" method=\"post\" target=\"_parent\">\n";
+echo "<form name=\"quick_reply_form\" action=\"post.php\" method=\"post\" target=\"_parent\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden('t_tid', _htmlentities($tid)), "\n";
 echo "  ", form_input_hidden('t_rpid', '0'), "\n";
+
+$quick_reply_tools = new TextAreaHTML('quick_reply_form');
+
+echo $quick_reply_tools->preload();
+
 echo "  <table cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -517,8 +524,16 @@ echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
+
+if (($page_prefs & POST_TOOLBAR_DISPLAY) && ($page_prefs & POST_AUTOHTML_DEFAULT)) {
+
+    echo "                      <tr>\n";
+    echo "                        <td align=\"center\">", $quick_reply_tools->toolbar_reduced($page_prefs & POST_EMOTICONS_DISPLAY), "</td>\n";
+    echo "                      </tr>\n";
+}
+
 echo "                      <tr>\n";
-echo "                        <td align=\"center\">", form_textarea('t_content', '', 7, 75), "</td>\n";
+echo "                        <td align=\"center\">", $quick_reply_tools->textarea("t_content", "", 7, 75), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
@@ -540,6 +555,9 @@ echo "      <td align=\"center\">", form_submit("post", $lang['post'], "onclick=
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";
+
+echo $quick_reply_tools->js();
+
 echo "</div>\n";
 
 if ($msg_count > 0) {

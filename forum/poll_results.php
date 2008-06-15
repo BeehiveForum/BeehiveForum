@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll_results.php,v 1.32 2008-05-10 20:42:41 decoyduck Exp $ */
+/* $Id: poll_results.php,v 1.33 2008-06-15 21:42:09 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -196,10 +196,14 @@ $thread_title = _htmlentities(thread_format_prefix($thread_data['PREFIX'], $thre
 
 html_draw_top("title=$forum_name > $thread_title > {$poll_data['QUESTION']}", "openprofile.js", 'pm_popup_disabled');
 
+if (!stristr($thread_title, $poll_data['QUESTION']) > 0) {
+    $thread_title.= " &raquo; {$poll_data['QUESTION']}";
+}
+
 echo "<div align=\"center\">\n";
 echo "<table width=\"580\" border=\"0\">\n";
 echo "  <tr>\n";
-echo "    <td align=\"left\">", messages_top($tid, 1, $thread_data['FID'], $folder_title, "$thread_title &raquo; {$poll_data['QUESTION']}", false, false, false, false, false, false), "</td>\n";
+echo "    <td align=\"left\">", messages_top($tid, 1, $thread_data['FID'], $folder_title, $thread_title, false, false, false, false, false, false), "</td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"580\">\n";

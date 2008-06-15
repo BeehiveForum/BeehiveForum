@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.229 2008-04-27 21:35:46 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.230 2008-06-15 21:42:09 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -1859,9 +1859,6 @@ function poll_public_ballot($tid, $view_style, $offset, &$poll_user_count)
         array_multisort($poll_results['GROUP_ID'], SORT_NUMERIC, SORT_ASC, $poll_results['OPTION_ID'], $poll_results['OPTION_NAME'], $poll_results['VOTES']);
 
         $poll_display = "      <table class=\"box\" width=\"100%\">\n";
-        $poll_display.= "        <tr>\n";
-        $poll_display.= "          <td align=\"left\" class=\"posthead\">\n";
-        $poll_display.= "            <table width=\"100%\" class=\"posthead\">\n";
 
         foreach($poll_results['OPTION_ID'] as $option_key => $poll_results_option_id) {
 
@@ -1871,15 +1868,9 @@ function poll_public_ballot($tid, $view_style, $offset, &$poll_user_count)
 
                 if ($poll_previous_group <> $poll_results['GROUP_ID'][$option_key]) {
 
-                    $poll_display.= "            </table>\n";
-                    $poll_display.= "          </td>\n";
-                    $poll_display.= "        </tr>\n";
                     $poll_display.= "      </table>\n";
                     $poll_display.= "      <br />\n";
                     $poll_display.= "      <table class=\"box\" width=\"100%\">\n";
-                    $poll_display.= "        <tr>\n";
-                    $poll_display.= "          <td align=\"left\" class=\"posthead\">\n";
-                    $poll_display.= "            <table width=\"100%\" class=\"posthead\">\n";
                 }
 
                 if ($poll_results['VOTES'][$option_key] > 0) {
@@ -1890,12 +1881,15 @@ function poll_public_ballot($tid, $view_style, $offset, &$poll_user_count)
                         $vote_percent = 0;
                     }
 
+                    $poll_display.= "        <tr>\n";
+                    $poll_display.= "          <td align=\"left\" class=\"posthead\">\n";
+                    $poll_display.= "            <table width=\"100%\">\n";
                     $poll_display.= "              <tr>\n";
                     $poll_display.= "                <td align=\"left\" class=\"subhead\">\n";
                     $poll_display.= "                  <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
                     $poll_display.= "                    <tr>\n";
-                    $poll_display.= "                      <td align=\"left\">{$poll_results['OPTION_NAME'][$option_key]}</td>\n";
-                    $poll_display.= "                      <td align=\"right\">{$poll_results['VOTES'][$option_key]} {$lang['votes']} ({$vote_percent}%)&nbsp;</td>\n";
+                    $poll_display.= "                      <td align=\"left\" class=\"subhead\">{$poll_results['OPTION_NAME'][$option_key]}</td>\n";
+                    $poll_display.= "                      <td align=\"right\" class=\"subhead\">{$poll_results['VOTES'][$option_key]} {$lang['votes']} ({$vote_percent}%)&nbsp;</td>\n";
                     $poll_display.= "                    </tr>\n";
                     $poll_display.= "                  </table>\n";
                     $poll_display.= "                </td>\n";
@@ -1919,15 +1913,21 @@ function poll_public_ballot($tid, $view_style, $offset, &$poll_user_count)
                     $poll_display.= "              <tr>\n";
                     $poll_display.= "                <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
                     $poll_display.= "              </tr>\n";
+                    $poll_display.= "            </table>\n";
+                    $poll_display.= "          </td>\n";
+                    $poll_display.= "        </tr>\n";
 
                 }else {
 
+                    $poll_display.= "        <tr>\n";
+                    $poll_display.= "          <td align=\"left\" class=\"posthead\">\n";
+                    $poll_display.= "            <table width=\"100%\">\n";
                     $poll_display.= "              <tr>\n";
                     $poll_display.= "                <td align=\"left\" class=\"subhead\">\n";
                     $poll_display.= "                  <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
                     $poll_display.= "                    <tr>\n";
-                    $poll_display.= "                      <td align=\"left\">{$poll_results['OPTION_NAME'][$option_key]}</td>\n";
-                    $poll_display.= "                      <td align=\"right\">0 {$lang['votes']} (0%)&nbsp;</td>\n";
+                    $poll_display.= "                      <td align=\"left\" class=\"subhead\">{$poll_results['OPTION_NAME'][$option_key]}</td>\n";
+                    $poll_display.= "                      <td align=\"right\" class=\"subhead\">0 {$lang['votes']} (0%)&nbsp;</td>\n";
                     $poll_display.= "                    </tr>\n";
                     $poll_display.= "                  </table>\n";
                     $poll_display.= "                </td>\n";
@@ -1935,15 +1935,15 @@ function poll_public_ballot($tid, $view_style, $offset, &$poll_user_count)
                     $poll_display.= "              <tr>\n";
                     $poll_display.= "                <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
                     $poll_display.= "              </tr>\n";
+                    $poll_display.= "            </table>\n";
+                    $poll_display.= "          </td>\n";
+                    $poll_display.= "        </tr>\n";
                 }
             }
 
             $poll_previous_group = $poll_results['GROUP_ID'][$option_key];
         }
 
-        $poll_display.= "            </table>\n";
-        $poll_display.= "          </td>\n";
-        $poll_display.= "        </tr>\n";
         $poll_display.= "      </table>\n";
         $poll_display.= "      <br />\n";
 

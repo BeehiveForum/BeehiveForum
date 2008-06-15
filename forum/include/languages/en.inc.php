@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.546 2008-06-13 11:59:23 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.547 2008-06-15 18:26:21 decoyduck Exp $ */
 
 // British English language file
 
@@ -550,7 +550,7 @@ $lang['allownewuserregistrations'] = "Allow new user registrations";
 $lang['requireemailconfirmation'] = "Require email confirmation";
 $lang['usetextcaptcha'] = "Use text-captcha";
 $lang['textcaptchafonterror'] = "Text-captcha has been disabled automatically because there are no true type fonts available for it to use. Please upload some true type fonts to <b>text_captcha/fonts</b> on your server.";
-$lang['textcaptchadirerror'] = "Text-captcha has been disabled because the text_captcha directory and it's sub-directories are not writable by the web server / PHP process.";
+$lang['textcaptchadirerror'] = "Text-captcha has been disabled because the text_captcha directory and sub-directories are not writable by the web server / PHP process.";
 $lang['textcaptchagderror'] = "Text-captcha has been disabled because your server's PHP setup does not provide support for GD Image manipulation and / or TTF font support. Both are required for text-captcha support.";
 $lang['newuserpreferences'] = "New User Preferences";
 $lang['sendemailnotificationonreply'] = "Email notification on reply to user";
@@ -594,7 +594,7 @@ $lang['successfullyaddedban'] = "Successfully added ban";
 $lang['successfullyupdatedban'] = "Successfully updated ban";
 $lang['noexistingbandata'] = "There is no existing ban data. To add a ban click the 'Add New' button below.";
 $lang['youcanusethepercentwildcard'] = "You can use the percent (%) wildcard symbol in any of your ban lists to obtain partial matches, i.e. '192.168.0.%' would ban all IP Addresses in the range 192.168.0.1 through 192.168.0.254";
-$lang['cannotusewildcardonown'] = "You cannot add % as a wildcard match on it's own!";
+$lang['cannotusewildcardonown'] = "You cannot add % as a wildcard match on its own!";
 $lang['requirepostapproval'] = "Require Post Approval";
 $lang['adminforumtoolsusercounterror'] = "There must be at least 1 user with admin tools and forum tools access on all forums!";
 $lang['postcount'] = "Post Count";
@@ -821,7 +821,7 @@ $lang['successfullycreatednewforum'] = "Successfully created new forum";
 $lang['selectedwebtagisalreadyinuse'] = "The selected webtag is already in use. Please choose another.";
 $lang['selecteddatabasecontainsconflictingtables'] = "The selected database contains conflicting tables. Conflicting table names are:";
 $lang['forumdeleteconfirmation'] = "Are you sure you want to delete all of the selected forums?";
-$lang['forumdeletewarning'] = "Please note that you cannot recover deleted forums. Once deleted a forum and all of it's associated data is permanently removed from the database. If you do not wish to delete the selected forums please click cancel.";
+$lang['forumdeletewarning'] = "Please note that you cannot recover deleted forums. Once deleted a forum and all of the associated data is permanently removed from the database. If you do not wish to delete the selected forums please click cancel.";
 $lang['successfullyremovedselectedforums'] = "Successfully deleted selected forums";
 $lang['failedtodeleteforum'] = "Failed to deleted forum: '%s'";
 $lang['addforum'] = "Add Forum";
@@ -940,9 +940,9 @@ $lang['forum_settings_help_18'] = "Personal Messages are invaluable as a way of 
 $lang['forum_settings_help_19'] = "Personal Messages can also contain attachments which can be useful for exchanging files between users.";
 $lang['forum_settings_help_20'] = "<b>Note:</b> The space allocation for PM attachments is taken from each users' main attachment allocation and is not in addition to.";
 $lang['forum_settings_help_21'] = "<b>Enable Guest Account</b> allows visitors to browse your forum and read posts without registering a user account. A user account is still required if they wish to post or change user preferences.";
-$lang['forum_settings_help_22'] = "<b>List Guests in Visitor Log</b> allows you to specify whether or not unregistered users are listed on the Visitor Log along side registered users.";
+$lang['forum_settings_help_22'] = "<b>List Guests in Visitor Log</b> allows you to specify whether or not unregistered users are listed on the Visitor Log alongside registered users.";
 $lang['forum_settings_help_23'] = "Beehive allows attachments to be uploaded to messages when posted. If you have limited web space you may which to disable attachments by clearing the box above.";
-$lang['forum_settings_help_24'] = "<b>Attachment Dir</b> is the location Beehive should store it's attachments in. This directory must exist on your web space and must be writable by the web server / PHP process otherwise uploads will fail.";
+$lang['forum_settings_help_24'] = "<b>Attachment Dir</b> is the location Beehive should store attachments in. This directory must exist on your web space and must be writable by the web server / PHP process otherwise uploads will fail.";
 $lang['forum_settings_help_25'] = "<b>Attachment Space Per User</b> is the maximum amount of disk space a user has for attachments. Once this space is used up the user cannot upload any more attachments. By default this is 1MB of space.";
 $lang['forum_settings_help_26'] = "<b>Allow embedding of attachments in messages / signatures</b> allows users to embed attachments in posts. Enabling this option while useful can increase your bandwidth usage drastically under certain configurations of PHP. If you have limited bandwidth it is recommended that you disable this option.";
 $lang['forum_settings_help_27'] = "<b>Use Alternative attachment method</b> Forces Beehive to use an alternative retrieval method for attachments. If you receive 404 error messages when trying to download attachments from messages try enabling this option.";
@@ -976,8 +976,8 @@ $lang['forum_settings_help_56'] = "Use <b>No-Reply Email</b> to specify an email
 $lang['forum_settings_help_57'] = "It is recommended that you use an email address that does not exist to help cut down on spam that may be directed at your main forum email address";
 $lang['forum_settings_help_58'] = "In addition to simple spidering, Beehive can also generate a sitemap for the forum to make it easier for search engines to find and index the messages posted by your users.";
 $lang['forum_settings_help_59'] = "Sitemaps are automatically saved to the sitemaps sub-directory of your Beehive Forum installation. If this directory doesn't exist you must create it and ensure that it is writable by the server / PHP process. To allow search engines to find your sitemap you must add the URL to your robots.txt.";
-$lang['forum_settings_help_60'] = "Depending on server performance and the number of forums and threads your Beehive installation contains, generating a sitemap may take several minutes to complete. If performance of your server is adversly affected it is recommend you disable generation of the sitemap.";
-$lang['forum_settings_help_61'] = "<b>Send email nofitication to global admin</b> when enabled will send an email to the global forum owners when a new user account is created.";
+$lang['forum_settings_help_60'] = "Depending on server performance and the number of forums and threads your Beehive installation contains, generating a sitemap may take several minutes to complete. If performance of your server is adversely affected it is recommend you disable generation of the sitemap.";
+$lang['forum_settings_help_61'] = "<b>Send email notification to global admin</b> when enabled will send an email to the global forum owners when a new user account is created.";
 
 // Attachments (attachments.php, get_attachment.php) ---------------------------------------
 
@@ -1089,7 +1089,7 @@ $lang['forgotpwemail'] = "Hello %s,\n\nYou requested this e-mail from %s because
 // Admin New User Approval notification -----------------------------------------
 
 $lang['newuserapprovalsubject'] = "New User Approval Notification for %s";
-$lang['newuserapprovalemail'] = "Hello %s,\n\nA new user account has been created on %s.\n\nAs you are an Administrator of this forum you are required to approve this user account before it can be used by it's owner.\n\nTo approve this account please visit the Admin Users section and change the filter type to \"Users Awaiting Approval\" or click the link below:\n\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: Other Administrators on this forum will also receive this notification and may have already acted upon this request.";
+$lang['newuserapprovalemail'] = "Hello %s,\n\nA new user account has been created on %s.\n\nAs you are an Administrator of this forum you are required to approve this user account before it can be used by it's owner.\n\nTo approve this account please visit the Admin Users section and change the filter type to \"Users Awaiting Approval\"or click the link below:\n\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: Other Administrators on this forum will also receive this notification and may have already acted upon this request.";
 
 // Admin New User notification -----------------------------------------
 

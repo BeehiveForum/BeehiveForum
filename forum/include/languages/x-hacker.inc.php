@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.284 2008-06-15 18:26:21 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.285 2008-06-16 12:34:03 decoyduck Exp $ */
 
 // British English language file
 
@@ -425,9 +425,7 @@ $lang['failedtoaddpermissionsforuser'] = "f@1LEd tO 4Dd PERm1s51ONS pHOR u\$ER '
 $lang['failedtoremovepermissionsfromuser'] = "f@1LED TO r3m0vE p3RM1\$s1oN\$ pHR0M uS3R '%s'";
 $lang['searchforuser'] = "sE4rCH pH0R us3R";
 $lang['browsernegotiation'] = "brOws3R ne90T14T3D";
-$lang['largetextfield'] = "l@rG3 +ext FIELd";
-$lang['mediumtextfield'] = "m3d1UM T3xt pHIeLD";
-$lang['smalltextfield'] = "sM4lL Tex+ FiElD";
+$lang['textfield'] = "+ext FIELd";
 $lang['multilinetextfield'] = "mUlT1-LiN3 TexT Ph1elD";
 $lang['radiobuttons'] = "r4d10 8U+toNS";
 $lang['dropdownlist'] = "dROP DOWn Lis+";

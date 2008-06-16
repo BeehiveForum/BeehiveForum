@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_items.php,v 1.122 2008-03-24 23:32:15 decoyduck Exp $ */
+/* $Id: admin_prof_items.php,v 1.123 2008-06-16 12:34:02 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -460,7 +460,7 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\">{$lang['type']}:</td>\n";
-    echo "                        <td align=\"left\">", form_dropdown_array("t_type_new", array($lang['largetextfield'], $lang['mediumtextfield'], $lang['smalltextfield'], $lang['multilinetextfield'], $lang['radiobuttons'], $lang['dropdownlist'], $lang['clickablehyperlink'])), "</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("t_type_new", array($lang['textfield'], $lang['multilinetextfield'], $lang['radiobuttons'], $lang['dropdownlist'], $lang['clickablehyperlink'])), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\">{$lang['itemname']}:</td>\n";
@@ -559,7 +559,7 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\">{$lang['type']}:</td>\n";
-    echo "                        <td align=\"left\">", form_dropdown_array("t_type_new", array($lang['largetextfield'], $lang['mediumtextfield'], $lang['smalltextfield'], $lang['multilinetextfield'], $lang['radiobuttons'], $lang['dropdownlist'], $lang['clickablehyperlink']), (isset($_POST['t_type_new']) && is_numeric($_POST['t_type_new']) ? $_POST['t_type_new'] : $profile_item['TYPE'])), "</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("t_type_new", array($lang['textfield'], $lang['multilinetextfield'], $lang['radiobuttons'], $lang['dropdownlist'], $lang['clickablehyperlink']), (isset($_POST['t_type_new']) && is_numeric($_POST['t_type_new']) ? $_POST['t_type_new'] : $profile_item['TYPE'])), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\">{$lang['sectionname']}:</td>\n";
@@ -604,9 +604,7 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
 
 }else {
 
-    $item_types_array = array($lang['largetextfield'], $lang['mediumtextfield'],
-                              $lang['smalltextfield'], $lang['multilinetextfield'],
-                              $lang['radiobuttons'], $lang['dropdownlist'], $lang['clickablehyperlink']);
+    $item_types_array = array($lang['textfield'], $lang['multilinetextfield'], $lang['radiobuttons'], $lang['dropdownlist'], $lang['clickablehyperlink']);
 
     html_draw_top();
 

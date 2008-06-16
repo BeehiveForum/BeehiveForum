@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.84 2008-06-05 19:59:15 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.85 2008-06-16 10:13:41 decoyduck Exp $ */
 
 // German language file
 
@@ -360,6 +360,7 @@ $lang['successfullycleareduserhistory'] = "Benutzerhistorie erfolgreich geloesch
 $lang['failedtoclearuserhistory'] = "Fehler beim Loeschen der Benutzerhistorie";
 $lang['successfullychangedpassword'] = "Passwort erfolgreich geaendert";
 $lang['failedtochangepasswd'] = "Fehler beim Aendern des Passworts";
+$lang['approveuser'] = "Benutzer freigeben";
 $lang['viewuserhistory'] = "Benutzerhistorie anzeigen";
 $lang['viewuseraliases'] = "Benutzeraliase anzeigen";
 $lang['searchreturnednoresults'] = "Suche fand keine Ergebnisse";
@@ -439,6 +440,7 @@ $lang['editedwordfilter'] = "Editierter Wortfilter";
 $lang['editedforumsettings'] = "Editierte Foreneinstellungen";
 $lang['successfullyendedusersessionsforselectedusers'] = "Sitzung erfolgreich beendet fuer Benutzer";
 $lang['failedtoendsessionforuser'] = "Sitzung des Benutzers %s konnte nicht beendet werden";
+$lang['successfullyapproveduser'] = "Benutzer erfolgreich freigegeben";
 $lang['successfullyapprovedselectedusers'] = "Ausgewaehlte Benutzer erfolgreich geprueft";
 $lang['matchedtext'] = "Gefundener Text";
 $lang['replacementtext'] = "Ersetzter Text";
@@ -713,6 +715,7 @@ $lang['emailbanhit'] = "Benutzer '%s' ist gebannt. Email-Addresse '%s' gefunden 
 $lang['refererbanhit'] = "Benutzer '%s' ist gebannt. HTTP-Verweis'%s' gefunden in Banndatensatz '%s'";
 
 $lang['modifiedpermsforuser'] = "Rechte fuer Benutzer '%s' geaendert";
+$lang['modifiedfolderpermsforuser'] = "Geaenderte Ordnerberechtigungen fuer Benutzer '%s'";
 
 $lang['userpermfoldermoderate'] = "Ordner-Moderator";
 
@@ -1016,6 +1019,7 @@ $lang['invaliduserkeyprovided'] = "Ungueltiger Benutzerschluessel. eMail-Eingang
 
 $lang['nomessagespecifiedfordel'] = "Keine Nachricht fuer Loeschung definiert";
 $lang['deletemessage'] = "Nachricht loeschen";
+$lang['successfullydeletedpost'] = "Erfolgreich geloeschter Eintrag %s";
 $lang['errordelpost'] = "Fehler beim Loeschen des Posts";
 $lang['cannotdeletepostsinthisfolder'] = "Du kannst keine Posts in diesem Ordner loeschen";
 
@@ -1024,6 +1028,7 @@ $lang['cannotdeletepostsinthisfolder'] = "Du kannst keine Posts in diesem Ordner
 $lang['nomessagespecifiedforedit'] = "Keine Nachricht fuer Editierung definiert";
 $lang['cannoteditpollsinlightmode'] = "Kann Abstimmungen im Light-Modus nicht bearbeiten";
 $lang['editedbyuser'] = "Geaendert: %s von %s";
+$lang['successfullyeditedpost'] = "Erfolgreich geaenderter Eintrag %s";
 $lang['errorupdatingpost'] = "Fehler bei Aenderung des Posts";
 $lang['editmessage'] = "Editiere Nachricht %s";
 $lang['editpollwarning'] = "<b>Merke</b>: Editierung einiger Punkte einer Abstimmung fuehrt dazu dass alle Benutzer erneut abstimmen koennen.";
@@ -1322,6 +1327,7 @@ $lang['closeforposting'] = "Geschlossen. Kein Posten mehr moeglich";
 $lang['until'] = "Bis 00:00 UTC";
 $lang['approvalrequired'] = "Aktivierung notwendig";
 $lang['messageawaitingapprovalbymoderator'] = "Nachricht %s.%s wartet auf Aktivierung eines Moderators";
+$lang['successfullyapprovedpost'] = "Erfolgreich freigegebener Eintrag %s";
 $lang['postapprovalfailed'] = "Post-Genehmigung fehlgeschlagen.";
 $lang['postdoesnotrequireapproval'] = "Post benoetigt keine Genehmigung";
 $lang['approvepost'] = "Stimme Post";
@@ -1370,7 +1376,10 @@ $lang['mustspecifyrecipient'] = "Mindestens ein Empfaenger muss eingetragen sein
 $lang['usernotfound'] = "Benutzer %s nicht gefunden.";
 $lang['sendnewpm'] = "Neue Nachricht senden";
 $lang['savemessage'] = "Nachricht speichern";
+$lang['nosubject'] = "Keine Auswahl";
+$lang['norecipients'] = "Keine Empfaenger";
 $lang['timesent'] = "Uhrzeit gesendet";
+$lang['notsent'] = "Nicht gesendet";
 $lang['errorcreatingpm'] = "Fehler beim Erstellen der Nachricht! Bitte in ein paar Minuten ncohmal probieren";
 $lang['writepm'] = "Nachricht schreiben";
 $lang['editpm'] = "Nachricht anzeigen";
@@ -1644,6 +1653,8 @@ $lang['birthday'] = "Geburtstag";
 $lang['registered'] = "Registriert";
 $lang['findpostsmadebyuser'] = "Finde Eintrage von %s";
 $lang['findpostsmadebyme'] = "Finde Eintraege von mir";
+$lang['findthreadsstartedbyuser'] = "Suche Eintraege von %s gestartet";
+$lang['findthreadsstartedbyme'] = "Suche von mir gestartete Eintraege";
 $lang['profilenotavailable'] = "Profil nicht verfuegbar.";
 $lang['userprofileempty'] = "Benutzer hat kein Profil oder ist auf Privat gestellt.";
 

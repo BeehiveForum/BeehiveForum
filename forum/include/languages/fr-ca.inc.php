@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.109 2008-06-05 19:59:15 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.110 2008-06-16 10:13:41 decoyduck Exp $ */
 
 // French Canadian language file
 
@@ -360,6 +360,7 @@ $lang['successfullycleareduserhistory'] = "Effaçage de l'historique de l'utilis
 $lang['failedtoclearuserhistory'] = "L'effaçage de l'historique de l'utilisateur a échoué";
 $lang['successfullychangedpassword'] = "Changement du mot de passe réussi";
 $lang['failedtochangepasswd'] = "Le changement du mot de passe a échoué";
+$lang['approveuser'] = "Approuver l'utilisateur";
 $lang['viewuserhistory'] = "Voir historique de l'utilisateur";
 $lang['viewuseraliases'] = "Voir pseudonymes de l'utilisateur";
 $lang['searchreturnednoresults'] = "La recherche n'a pas retourné de résultats";
@@ -439,6 +440,7 @@ $lang['editedwordfilter'] = "Filtre de mots modifié";
 $lang['editedforumsettings'] = "Options de forum modifiés";
 $lang['successfullyendedusersessionsforselectedusers'] = "Terminaison de session réussie pour l'utilisateur";
 $lang['failedtoendsessionforuser'] = "Terminaison de session pour utilisateur '%s' a échoué";
+$lang['successfullyapproveduser'] = "Approbation de l'utilisateur réussi";
 $lang['successfullyapprovedselectedusers'] = "Approbation des utilisateurs sélectionnés réussie";
 $lang['matchedtext'] = "Texte correspondant";
 $lang['replacementtext'] = "Texte de remplacement";
@@ -1651,6 +1653,8 @@ $lang['birthday'] = "Anniversaire";
 $lang['registered'] = "Enregistré";
 $lang['findpostsmadebyuser'] = "Trouvez messages fait par %s";
 $lang['findpostsmadebyme'] = "Trouvez messages fait par moi";
+$lang['findthreadsstartedbyuser'] = "Trouver fils de discussion commencés par %s";
+$lang['findthreadsstartedbyme'] = "Trouver fils de discussion que j'ai commencé";
 $lang['profilenotavailable'] = "Profile non disponible.";
 $lang['userprofileempty'] = "Cet utilisateur n'a pas complété leur profile ou leur profile est indiqué privé.";
 

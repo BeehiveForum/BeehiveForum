@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en-us.inc.php,v 1.63 2008-06-15 18:26:21 decoyduck Exp $ */
+/* $Id: en-us.inc.php,v 1.64 2008-06-16 12:34:03 decoyduck Exp $ */
 
 // American English language file
 
@@ -425,9 +425,7 @@ $lang['failedtoaddpermissionsforuser'] = "Failed to add permissions for user '%s
 $lang['failedtoremovepermissionsfromuser'] = "Failed to remove permissions from user '%s'";
 $lang['searchforuser'] = "Search For User";
 $lang['browsernegotiation'] = "Browser negotiated";
-$lang['largetextfield'] = "Large Text Field";
-$lang['mediumtextfield'] = "Medium Text Field";
-$lang['smalltextfield'] = "Small Text Field";
+$lang['largetextfield'] = "Text Field";
 $lang['multilinetextfield'] = "Multi-line Text Field";
 $lang['radiobuttons'] = "Radio Buttons";
 $lang['dropdownlist'] = "Drop Down List";

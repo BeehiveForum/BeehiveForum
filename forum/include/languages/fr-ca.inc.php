@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.110 2008-06-16 10:13:41 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.111 2008-06-16 12:34:03 decoyduck Exp $ */
 
 // French Canadian language file
 
@@ -425,9 +425,7 @@ $lang['failedtoaddpermissionsforuser'] = "L'ajout des permissions pour utilisate
 $lang['failedtoremovepermissionsfromuser'] = "L'enlèvement des permissions pour utilisateur '%s' a échoué";
 $lang['searchforuser'] = "Chercher pour utilisateur";
 $lang['browsernegotiation'] = "Négocié par navigateur web";
-$lang['largetextfield'] = "Gros champ de texte";
-$lang['mediumtextfield'] = "Champ de texte moyen";
-$lang['smalltextfield'] = "Petit champ de texte";
+$lang['textfield'] = "Champ de texte";
 $lang['multilinetextfield'] = "Champ de texte multiligne";
 $lang['radiobuttons'] = "Cases d'option";
 $lang['dropdownlist'] = "Liste déroulante verticalement";

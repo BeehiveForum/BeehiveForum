@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.97 2008-06-17 16:08:01 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.98 2008-06-17 21:26:14 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -88,6 +88,10 @@ function stats_output_xml()
     // Outputting XML
 
     header('Content-Type: text/xml', true);
+
+    // Check HTTP cache headers
+
+    header_check_cache();
 
     // Number of active users
 

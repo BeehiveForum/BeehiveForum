@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-08x-to-083.php,v 1.9 2008-05-30 12:38:03 decoyduck Exp $ */
+/* $Id: upgrade-08x-to-083.php,v 1.10 2008-06-17 21:26:14 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'upgrade-08x-to-083.php') {
 
@@ -77,6 +77,16 @@ if (db_num_rows($result) > 0) {
 // Start by creating and updating the per-forum tables.
 
 foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
+
+    // Removed unused entries from Admin Log.
+
+    $sql = "DELETE FROM {$forum_webtag}_ADMIN_LOG WHERE ACTION IN (6, 61, 68, 69)";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
 
     // Better support for deleted threads.
 

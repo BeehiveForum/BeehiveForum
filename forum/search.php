@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.215 2008-06-03 19:52:32 decoyduck Exp $ */
+/* $Id: search.php,v 1.216 2008-06-17 21:26:14 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -261,7 +261,7 @@ if (isset($_GET['show_stop_words'])) {
             echo "                      <tr>\n";
         }
 
-        if (preg_match("/^$highlight_keywords_preg$/i", $mysql_fulltext_stopwords[$i]) > 0) {
+        if (isset($highlight_keywords_preg) && preg_match("/^$highlight_keywords_preg$/i", $mysql_fulltext_stopwords[$i]) > 0) {
 
             echo "                        <td align=\"left\" class=\"postbody\"><span class=\"search_keyword_highlight\">{$mysql_fulltext_stopwords[$i]}</span></td>\n";
 

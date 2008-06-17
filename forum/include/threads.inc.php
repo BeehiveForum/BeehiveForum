@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.309 2008-05-02 20:25:09 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.310 2008-06-17 16:08:01 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1820,8 +1820,6 @@ function thread_auto_prune_unread_data()
         $sql.= "OR {$table_data['PREFIX']}USER_THREAD.INTEREST = 0) ";
 
         if (!$result = db_query($sql, $db_thread_prune_unread_data)) return false;
-
-        admin_add_log_entry(FORUM_AUTO_UPDATE_THREAD_UNREAD);
     }
 
     return true;

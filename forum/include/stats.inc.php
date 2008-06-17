@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.96 2008-06-05 19:59:16 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.97 2008-06-17 16:08:01 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -43,14 +43,14 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
-function update_stats()
+function update_stats($num_sessions, $num_recent_posts)
 {
     if (!$db_update_stats = db_connect()) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!is_numeric($num_sessions)) return false;
+    if (!is_numeric($num_recent_posts)) return false;
 
-    $num_sessions = get_num_sessions();
-    $num_recent_posts = get_recent_post_count();
+    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT ID FROM {$table_data['PREFIX']}STATS ";
     $sql.= "ORDER BY ID DESC LIMIT 0, 1";
@@ -80,8 +80,6 @@ function update_stats()
         if (!$result = db_query($sql, $db_update_stats)) return false;
     }
 
-    admin_add_log_entry(FORUM_AUTO_UPDATE_STATS);
-
     return true;
 }
 
@@ -90,6 +88,18 @@ function stats_output_xml()
     // Outputting XML
 
     header('Content-Type: text/xml', true);
+
+    // Number of active users
+
+    $num_sessions = get_num_sessions();
+
+    // Number of recent posts.
+
+    $num_recent_posts = get_recent_post_count();
+
+    // Update the stats records.
+
+    update_stats($num_sessions, $num_recent_posts);
 
     // Output the XML document.
 
@@ -177,9 +187,7 @@ function stats_output_xml()
         echo sprintf("    <count>%s</count>\n", html_entity_to_decimal(number_format($post_count, 0, ",", ",")));
     }
 
-    $recent_post_count = get_recent_post_count();
-
-    $recent_post_count = number_format($recent_post_count, 0, ",", ",");
+    $recent_post_count = number_format($num_recent_posts, 0, ",", ",");
 
     echo "    <recent>\n";
     echo sprintf("    <count>%s</count>\n", number_format($recent_post_count, 0, ",", ","));
@@ -198,6 +206,8 @@ function stats_output_xml()
     echo "    </recent>\n";
     echo "  </posts>\n";
     echo "</stats>\n";
+
+
     exit;
 }
 

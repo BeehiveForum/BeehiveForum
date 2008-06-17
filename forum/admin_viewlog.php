@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.141 2008-05-27 21:55:32 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.142 2008-06-17 16:08:01 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -161,15 +161,12 @@ $admin_log_type_array = array(ALL_LOG_ENTIES => $lang['alllogentries'],
                               UPDATED_BAN => $lang['banchanges'],
                               THREAD_SPLIT => $lang['threadsplits'],
                               THREAD_MERGE => $lang['threadmerges'],
-                              APPROVED_USER => $lang['userapprovals'],
                               ADD_FORUM_LINKS => $lang['forumlinkadditions'],
                               DELETE_FORUM_LINKS => $lang['forumlinkdeletions'],
                               EDIT_TOP_LINK_CAPTION => $lang['forumlinktopcaptionchanges'],
                               EDIT_FOLDER => $lang['folderedits'],
                               DELETE_USER => $lang['userdeletions'],
                               DELETE_USER_DATA => $lang['userdatadeletions'],
-                              FORUM_AUTO_UPDATE_STATS => $lang['forumstatsautoupdates'],
-                              FORUM_AUTO_UPDATE_THREAD_UNREAD => $lang['forumautothreadunreaddataupdates'],
                               UPDATE_USER_GROUP => $lang['usergroupchanges'],
                               BAN_HIT_TYPE_IP => $lang['ipaddressbancheckresults'],
                               BAN_HIT_TYPE_LOGON => $lang['logonbancheckresults'],
@@ -670,23 +667,6 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
                 $threadc_link = sprintf("<a href=\"index.php?webtag=$webtag&amp;msg=%s.1\" target=\"_blank\">%s</a>", $entry_array[4], $entry_array[5]);
 
                 $action_text = sprintf($lang['mergedthreadintonewthread'], $threada_link, $threadb_link, $threadc_link);
-                break;
-
-            case APPROVED_USER:
-
-                $action_text = sprintf($lang['approveduser'], $entry_array[0]);
-                break;
-
-            case FORUM_AUTO_UPDATE_STATS:
-
-                $auto_update = true;
-                $action_text = $lang['forumautoupdatestats'];
-                break;
-
-            case FORUM_AUTO_UPDATE_THREAD_UNREAD:
-
-                $auto_update = true;
-                $action_text = $lang['forumautocleanthreadunread'];
                 break;
 
             case BAN_HIT_TYPE_IP:

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.314 2008-06-01 15:24:15 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.315 2008-06-17 16:08:01 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -711,7 +711,7 @@ function forum_check_global_setting_name($setting_name)
                                          'attachment_use_old_method', 'forum_desc', 'forum_email',
                                          'forum_keywords', 'forum_name', 'forum_noreply_email',
                                          'forum_rules_enabled', 'forum_rules_message', 'forum_maintenance_function',
-                                         'forum_maintenance_schedule', 'update_stats_last_run', 'pm_system_prune_folders_last_run',
+                                         'forum_maintenance_schedule', 'pm_system_prune_folders_last_run',
                                          'bh_remove_stale_sessions_last_run', 'thread_auto_prune_unread_data_last_run',
                                          'captcha_clean_up_last_run', 'sitemap_create_file_last_run', 'guest_account_enabled',
                                          'guest_show_recent', 'messages_unread_cutoff', 'messages_unread_cutoff_custom',
@@ -2689,8 +2689,7 @@ function forum_check_maintenance()
 {
     // Array of functions that we run one at a time.
 
-    $forum_maintenance_functions_array = array('update_stats',
-                                               'pm_system_prune_folders',
+    $forum_maintenance_functions_array = array('pm_system_prune_folders',
                                                'bh_remove_stale_sessions',
                                                'thread_auto_prune_unread_data',
                                                'captcha_clean_up',

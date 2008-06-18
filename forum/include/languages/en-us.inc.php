@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en-us.inc.php,v 1.64 2008-06-16 12:34:03 decoyduck Exp $ */
+/* $Id: en-us.inc.php,v 1.65 2008-06-18 20:27:03 decoyduck Exp $ */
 
 // American English language file
 
@@ -272,12 +272,12 @@ $lang['stylenofilename'] = "You did not enter a filename to save the style with.
 $lang['stylenodatasubmitted'] = "Could not read forum style data.";
 $lang['styleexp'] = "Use this page to help create a randomly generated style for your forum.";
 $lang['stylecontrols'] = "Controls";
-$lang['stylecolourexp'] = "Click on a colour to make a new style sheet based on that colour. Current base colour is first in list.";
+$lang['stylecolourexp'] = "Click on a color to make a new style sheet based on that color. Current base color is first in list.";
 $lang['standardstyle'] = "Standard Style";
 $lang['rotelementstyle'] = "Rotated Element Style";
 $lang['randstyle'] = "Random Style";
-$lang['thiscolour'] = "This Colour";
-$lang['enterhexcolour'] = "or enter a hex colour to base a new style sheet on";
+$lang['thiscolour'] = "This color";
+$lang['enterhexcolour'] = "or enter a hex color to base a new style sheet on";
 $lang['savestyle'] = "Save this style";
 $lang['styledesc'] = "Style Description";
 $lang['stylefilenamemayonlycontain'] = "Style filename may only contain lowercase letters (a-z), numbers (0-9) and underscore.";
@@ -1097,7 +1097,7 @@ $lang['newuserregistrationemail'] = "Hello %s,\\n\\nA new user account has been 
 // User Approved notification ------------------------------------------
 
 $lang['useraccountapprovedsubject'] = "User approval notification for %s";
-$lang['useraccountapprovedemail'] = "Hello %s,\n\nYour user account at %s has been approved. You can login and start posting immediatly by clicking the link below:\n\n%s\n\nIf you were not expecting this email from %s please accept our apologies and forward this email to %s so that the source of it may be investigated.";
+$lang['useraccountapprovedemail'] = "Hello %s,\n\nYour user account at %s has been approved. You can login and start posting immediately by clicking the link below:\n\n%s\n\nIf you were not expecting this email from %s please accept our apologies and forward this email to %s so that the source of it may be investigated.";
 
 // Admin Post Approval notification -----------------------------------------
 
@@ -1216,7 +1216,7 @@ $lang['yoursessionhasexpired'] = "Your session has expired. You will need to log
 
 $lang['myforums'] = "My Forums";
 $lang['allavailableforums'] = "All Available Forums";
-$lang['favouriteforums'] = "Favourite Forums";
+$lang['favouriteforums'] = "Favorite Forums";
 $lang['ignoredforums'] = "Ignored Forums";
 $lang['ignoreforum'] = "Ignore forum";
 $lang['unignoreforum'] = "Unignore forum";
@@ -1225,12 +1225,12 @@ $lang['forumunreadmessages'] = "%s Unread Messages";
 $lang['forummessages'] = "%s Messages";
 $lang['forumunreadtome'] = "%s Unread &quot;To: Me&quot;";
 $lang['forumnounreadmessages'] = "No Unread Messages";
-$lang['removefromfavourites'] = "Remove From Favourites";
-$lang['addtofavourites'] = "Add To Favourites";
+$lang['removefromfavourites'] = "Remove From Favorites";
+$lang['addtofavourites'] = "Add To Favorites";
 $lang['availableforums'] = "Available Forums";
 $lang['noforumsofselectedtype'] = "There are no forums of the selected type available. Please select a different type.";
-$lang['successfullyaddedforumtofavourites'] = "Successfully added forum to Favourites.";
-$lang['successfullyremovedforumfromfavourites'] = "Successfully removed forum from Favourites.";
+$lang['successfullyaddedforumtofavourites'] = "Successfully added forum to Favorites.";
+$lang['successfullyremovedforumfromfavourites'] = "Successfully removed forum from Favorites.";
 $lang['successfullyignoredforum'] = "Successfully ignored forum.";
 $lang['successfullyunignoredforum'] = "Successfully unignored forum.";
 $lang['failedtoupdateforuminterestlevel'] = "Failed to update forum interest level";
@@ -1508,7 +1508,7 @@ $lang['listmeontheactiveusersdisplay'] = "List me on the active users display";
 $lang['browseanonymously'] = "Browse forum anonymously";
 $lang['allowfriendstoseemeasonline'] = "Browse anonymously, but allow friends to see me as online";
 $lang['revealspoileronmouseover'] = "Reveal spoilers on mouse over";
-$lang['showspoilersinlightmode'] = "Always show spoilers in light mode (uses lighter font colour)";
+$lang['showspoilersinlightmode'] = "Always show spoilers in light mode (uses lighter font color)";
 $lang['resizeimagesandreflowpage'] = "Resize images and reflow page to prevent horizontal scrolling.";
 $lang['showforumstats'] = "Show forum stats at bottom of message pane";
 $lang['usewordfilter'] = "Enable word filter.";
@@ -1888,7 +1888,7 @@ $lang['hyperlink'] = "Hyperlink";
 $lang['noemoticons'] = "Disable emoticons";
 $lang['fontface'] = "Font Face";
 $lang['size'] = "Size";
-$lang['colour'] = "Colour";
+$lang['colour'] = "color";
 $lang['red'] = "Red";
 $lang['orange'] = "Orange";
 $lang['yellow'] = "Yellow";

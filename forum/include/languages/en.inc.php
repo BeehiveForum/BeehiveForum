@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.548 2008-06-16 12:34:03 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.549 2008-06-18 20:27:03 decoyduck Exp $ */
 
 // British English language file
 
@@ -1097,7 +1097,7 @@ $lang['newuserregistrationemail'] = "Hello %s,\n\nA new user account has been cr
 // User Approved notification ------------------------------------------
 
 $lang['useraccountapprovedsubject'] = "User approval notification for %s";
-$lang['useraccountapprovedemail'] = "Hello %s,\n\nYour user account at %s has been approved. You can login and start posting immediatly by clicking the link below:\n\n%s\n\nIf you were not expecting this email from %s please accept our apologies and forward this email to %s so that the source of it may be investigated.";
+$lang['useraccountapprovedemail'] = "Hello %s,\n\nYour user account at %s has been approved. You can login and start posting immediately by clicking the link below:\n\n%s\n\nIf you were not expecting this email from %s please accept our apologies and forward this email to %s so that the source of it may be investigated.";
 
 // Admin Post Approval notification -----------------------------------------
 

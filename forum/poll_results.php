@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll_results.php,v 1.33 2008-06-15 21:42:09 decoyduck Exp $ */
+/* $Id: poll_results.php,v 1.34 2008-06-19 15:56:52 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -196,10 +196,6 @@ $thread_title = _htmlentities(thread_format_prefix($thread_data['PREFIX'], $thre
 
 html_draw_top("title=$forum_name > $thread_title > {$poll_data['QUESTION']}", "openprofile.js", 'pm_popup_disabled');
 
-if (!stristr($thread_title, $poll_data['QUESTION']) > 0) {
-    $thread_title.= " &raquo; {$poll_data['QUESTION']}";
-}
-
 echo "<div align=\"center\">\n";
 echo "<table width=\"580\" border=\"0\">\n";
 echo "  <tr>\n";
@@ -222,9 +218,14 @@ if ($poll_data['SHOWRESULTS'] == POLL_SHOW_RESULTS || bh_session_get_value('UID'
         echo "        <tr>\n";
         echo "          <td align=\"left\" class=\"posthead\">\n";
         echo "            <table width=\"100%\">\n";
-        echo "              <tr>\n";
-        echo "                <td align=\"left\" class=\"subhead\">", word_filter_add_ob_tags(_htmlentities($poll_data['QUESTION'])), "</td>\n";
-        echo "              </tr>\n";
+
+        if (strlen(trim($poll_data['QUESTION'])) > 0 && strcasecmp($thread_title, $poll_data['QUESTION']) <> 0) {
+
+            echo "              <tr>\n";
+            echo "                <td align=\"left\" class=\"subhead\">", word_filter_add_ob_tags(_htmlentities($poll_data['QUESTION'])), "</td>\n";
+            echo "              </tr>\n";
+        }
+
         echo "              <tr>\n";
         echo "                <td align=\"left\">\n";
 

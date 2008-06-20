@@ -46,6 +46,8 @@ in release.txt.
     1.4.5   Upgrading from 0.2 to 0.3
     1.4.6   Upgrading from 0.1 / 0.1.1 to 0.2
     1.4.7   Upgrading from 0.1 or 0.2 to 0.4
+  1.5    Beehive Forum Error Reporter
+    1.5.1   Enabling Error Reporter after upgrading
 
 2.    Known Issues
 
@@ -456,8 +458,7 @@ before starting the upgrade process.
 As with all software installations or upgrades it is highly recommended that
 you perform a backup of your existing web space and database before upgrading
 your Beehive Forum. Failure to do so could result in lost data. You have been
-warned. Don't make us say we told you if things go wrong and you haven't
-backed up.
+warned. Don't make us say we told you so.
 
 
 1.4.1 Upgrading your Beehive Forum installation
@@ -591,6 +592,77 @@ upgrade-03-to-04.sql.
 
 This will bring the database up to 0.4 compatibility, and from there you can use the 
 upgrade script built into the newer releases of Beehive to bring you bang up to date.
+
+
+1.5 Beehive Forum Error Reporter
+================================
+
+Beehive Forum includes a comprehensive error reporter which can be used to help
+diagnose faults and find bugs in the software. This error reporting is indispensable
+for helping develop the project and should be used at all times when reporting
+problems you have with the software.
+
+In older releases was enabled by default and set to output error messages to all
+clients but with the release of Beehive Forum 0.8 it was decided the error reporter
+should at least be partially silenced and the error reports instead sent to the system
+error log (Apache error_log or similar). This was primarily done to reduce the security
+risk associated with potentially sensitive data being released to end users.
+
+Because not everyone has access to their server's error log (shared hosting, etc.) 
+we have also implement error reporting by email. With this option you can continue to
+receive detailed error messages from your Beehive Forum installation without the risk
+associated with such information being available to all users. It also means you can continue
+to report bugs back to the development team and get help diagnosing faults.
+
+Due to the nature of the Beehive Forum the error reporter can only be enabled automatically 
+if you're performing a new installation. To do this you simply need to tick the relevant
+box under Advanced Options in the installer. The changes will be automatically made
+to your config.inc.php for you and you are then good to go.
+
+To enable the error reporter for upgrades please follow the instructions below.
+
+
+1.5.1 Enabling Error Reporter after upgrading
+=============================================
+
+This process applies to Beehive Forum 0.8 and newer only. Please note that older versions
+of the software already have the error reporter enabled by default.
+
+To enable error reporting after upgrading you will need to manually edit the config.inc.php
+file generated during the installation process of your Beehive Forum. You will find this file
+within the include folder on your web space. Please do not use the config.inc.php file from
+the distribution archive. This is a template file used by the installer and will not work
+without further changes.
+
+To start download the config.inc.php using FTP and save it somewhere on your PC. A good place
+if any is your desktop. Make a copy of the file just in case something goes wrong and then 
+open the config.inc.php you've download using a text editor. Windows users are recommended to
+use Notepad. Please do not use Microsoft Wordpad or Microsoft Word or any other word processor
+as these may cause problems with the format of the file. *nux users, we're sure you'll do just
+fine with vi or vim or even gedit.
+
+To actually enable the error handler you need to change two variables. The first variable to be
+changed is named $error_report_verbose and should be changed from false to true. Second is the
+error_report_email_addr_to variable. This is where you should enter your email address. Once
+changed the variables should look a bit like this:
+
+
+    $error_report_verbose = true;
+    $error_report_email_addr_to = 'youremail@address.com';
+
+
+Once you've made the changes save the file. If given the choice save the file as UTF-8 encoded
+with PC / Windows line endings. This will make the file more portable and easier to edit later.
+
+Finally upload the modified config.inc.php making sure to replace the existing copy and check
+that your Beehive Forum continues to function. If it does, sit back and wait to see if you
+receive any error reports. If you don't it's quite possible you're not actually getting any
+errors which is a good thing, but if you suspect you should be check that the email address
+is correct.
+
+If you can't get the error reporting to function or if you break your Beehive Forum you can
+simply restore the copy you made earlier or try again. If you continue to have problems please
+seek assistance at Teh Forum, a link for which you find below in the Support section.
 
 
 2 Known Issues

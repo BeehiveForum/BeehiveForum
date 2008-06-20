@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.67 2008-03-18 01:10:41 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.68 2008-06-20 13:45:45 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -531,12 +531,13 @@ function install_prevent_client_timeout()
 {
     static $buffer_line_count = 0;
 
-    if ($buffer_line_count < 500) {
+    if ($buffer_line_count < 1000) {
 
         $buffer_line_count++;
-        echo "<!-- bh_install_buffer //-->\n";
 
     }else {
+
+        echo "<!-- bh_install_buffer //-->\n";
 
         $buffer_line_count = 0;
 

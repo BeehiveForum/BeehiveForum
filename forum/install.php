@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.89 2008-05-09 06:53:30 decoyduck Exp $ */
+/* $Id: install.php,v 1.90 2008-06-20 13:45:45 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -245,12 +245,13 @@ if (isset($_POST['install_method'])) {
                     $config_file = str_replace('{db_password}', $db_password, $config_file);
                     $config_file = str_replace('{db_database}', $db_database, $config_file);
 
-                    // Error reporting
+                    // Error reporting verbose mode
 
-                    $error_report_verbose = ($enable_error_reports) ? 'true' : 'false';
+                    $config_file = str_replace('{error_report_verbose}', ($enable_error_reports) ? 'true' : 'false', $config_file);
 
-                    $config_file = str_replace('{error_report_verbose}', $error_report_verbose, $config_file);
-                    $config_file = str_replace('{error_report_email_addr_to}', $admin_email, $config_file);
+                    // Error reporting to email address.
+
+                    $config_file = str_replace('{error_report_email_addr_to}', (isset($admin_email) ? $admin_email : ''), $config_file);
 
                     // Check to see if running in developer mode.
 

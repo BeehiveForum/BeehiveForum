@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.90 2008-06-20 13:45:45 decoyduck Exp $ */
+/* $Id: install.php,v 1.91 2008-06-20 14:33:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -707,7 +707,7 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table cellpadding=\"2\" cellspacing=\"0\" class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" nowrap=\"nowrap\" class=\"subhead\">Admin Account (New installations only)</td>\n";
+echo "                  <td align=\"left\" nowrap=\"nowrap\" class=\"subhead\">Admin Account (New installs only)</td>\n";
 echo "                  <td nowrap=\"nowrap\" class=\"subhead\" align=\"right\"><a href=\"javascript:void(0)\" onclick=\"return showInstallHelp(2)\" tabindex=\"17\"><img src=\"images/help.png\" border=\"0\" alt=\"Help!\" title=\"Help!\" /></a></td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
@@ -764,7 +764,7 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\" class=\"postbody\"><span class=\"bhinputcheckbox\"><input type=\"checkbox\" name=\"skip_dictionary\" id=\"skip_dictionary\" value=\"Y\" tabindex=\"13\" /><label for=\"skip_dictionary\">Skip dictionary setup. Recommended only if install fails to complete.</label></span></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" class=\"postbody\"><span class=\"bhinputcheckbox\"><input type=\"checkbox\" name=\"enable_error_reports\" id=\"enable_error_reports\" value=\"Y\" tabindex=\"14\" checked=\"checked\" /><label for=\"enable_error_reports\">Enable error reports by email to Admin Email Address.</label></span></td>\n";
+echo "                        <td align=\"left\" class=\"postbody\"><span class=\"bhinputcheckbox\"><input type=\"checkbox\" name=\"enable_error_reports\" id=\"enable_error_reports\" value=\"Y\" tabindex=\"14\" /><label for=\"enable_error_reports\">Enable error reports by email to Admin Email Address.  (New installs only)</label></span></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" class=\"postbody\" colspan=\"2\">&nbsp;</td>\n";

@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.js,v 1.13 2008-05-09 06:53:30 decoyduck Exp $ */
+/* $Id: install.js,v 1.14 2008-06-20 14:33:06 decoyduck Exp $ */
 
 function confirmInstall(button)
 {
@@ -50,17 +50,13 @@ function confirmInstall(button)
             confirm_text+= 'Please perform a backup of your database and files before proceeding.';
         }
 
-        if (confirm_text.length > 0) {
+        if ((confirm_text.length > 0) && !window.confirm(confirm_text)) return false;
 
-            if (window.confirm(confirm_text)) {
+        disableButton(button);
 
-                disableButton(button);
-                install_form.submit();
-		return true;
-            }
+        install_form.submit();
 
-	    return false;
-        }
+        return true;
     }
 }
 
@@ -96,7 +92,7 @@ function showInstallHelp(topic)
       topic_text+= '\'Automatically remove tables\' permanently removes tables would have conflicted with those used by Beehive Forum. If other tables exist which conflict with those used by the Beehive Forum software then enabling this option may cause any other scripts or software which rely on them to fail.\n\n';
       topic_text+= '\'Skip dictionary setup\' will force the installation to skip the process which populates the dictionary table. If you have problems with the installation not completing for example blank pages after clicking submit or PHP error messages try enabling this option.\n\n';
       topic_text+= 'HINT: Enabling FILE permission on the MySQL database server for the user account used for your Beehive Forum will allow the installer to populate the dictionary much quicker. If you can\'t grant this permission yourself please contact your server administrator to arrange this for you.\n\n';
-      topic_text+= '\'Enable error reports\' enables verbose error reporting for your Beehive Forum and sends these reports to the Admin User\'s Email Address. These error reports can be useful for helping to diagnose problems and find bugs that you can submit back to Project Beehive Forum. To disable the error reporting by email untick the box.\n\n';      
+      topic_text+= '\'Enable error reports\' enables verbose error reporting for your Beehive Forum and sends these reports to the Admin User\'s Email Address. These error reports can be useful for helping to diagnose problems and find bugs that you can submit back to Project Beehive Forum. This option is only available when performing a new installation. To enable post-install please see readme.txt for instructions.\n\n';
     }
 
     if (topic_text.length > 0) {

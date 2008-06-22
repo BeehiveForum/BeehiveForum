@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.315 2008-06-17 16:08:01 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.316 2008-06-22 22:11:16 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -2267,8 +2267,8 @@ function forum_get_permissions($fid, $offset = 0)
 
     }else if ($perms_user_count > 0) {
 
-        $offset = floor(($group_user_count - 1) / 10) * 10;
-        return perm_group_get_users($gid, $offset);
+        $offset = floor(($perms_user_count - 1) / 10) * 10;
+        return forum_get_permissions($fid, $offset);
     }
 
     return array('user_count' => $perms_user_count,

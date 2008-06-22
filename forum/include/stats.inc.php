@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.98 2008-06-17 21:26:14 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.99 2008-06-22 22:11:16 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -572,6 +572,154 @@ function get_post_tallys($start_stamp, $end_stamp)
     }
 
     return $post_tallys;
+}
+
+function get_number_of_folders()
+{
+    if (!$db_get_number_of_folders = db_connect()) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $sql = "SELECT COUNT(FID) AS FOLDER_COUNT FROM {$table_data['PREFIX']}FOLDER";
+
+    if (!$result = db_query($sql, $db_get_number_of_folders)) return false;
+
+    list($folder_count) = db_fetch_array($result, DB_RESULT_NUM);
+
+    return $folder_count;
+}
+
+function get_folders_by_popularity()
+{
+    if (!$db_get_number_of_folders = db_connect()) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $folder_popularity_array = array();
+
+    $sql = "SELECT FOLDER.FID, FOLDER.TITLE, COUNT(POST.PID) AS POST_COUNT ";
+    $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ON (THREAD.FID = FOLDER.FID) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}POST POST ON (POST.TID = THREAD.TID) ";
+    $sql.= "GROUP BY FOLDER.FID ORDER BY POST_COUNT DESC";
+
+    if (!$result = db_query($sql, $db_get_number_of_folders)) return false;
+
+    if (db_num_rows($result) > 0) {
+
+        while ($folder_data = db_fetch_array($result)) {
+
+            $folder_popularity_array[$folder_data['FID']] = $folder_data;
+        }
+    }
+
+    return (sizeof($folder_popularity_array) > 0) ? $folder_popularity_array : false;
+}
+
+function get_most_read_threads($offset)
+{
+    if (!$db_get_most_read_threads = db_connect()) return false;
+
+    if (!is_numeric($offset)) $offset = 0;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $thread_array = array();
+
+    $sql = "SELECT SQL_CALC_FOUND_ROWS THREAD.TID, THREAD.TITLE ";
+    $sql.= "FROM {$table_data['PREFIX']}THREAD_STATS THREAD_STATS ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ";
+    $sql.= "ON (THREAD.TID = THREAD_STATS.TID) ";
+    $sql.= "ORDER BY THREAD_STATS.VIEWCOUNT DESC ";
+    $sql.= "LIMIT $offset, 20";
+
+    if (!$result = db_query($sql, $db_get_most_read_threads)) return false;
+
+    // Fetch the number of total results
+
+    $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
+
+    if (!$result_count = db_query($sql, $db_get_most_read_threads)) return false;
+
+    list($thread_count) = db_fetch_array($result_count, DB_RESULT_NUM);
+
+    if (db_num_rows($result) > 0) {
+
+        while ($thread_data = db_fetch_array($result)) {
+
+            $thread_array[$thread_data['TID']] = $thread_data;
+        }
+
+    }else if ($thread_count > 0) {
+
+        $offset = floor(($thread_count - 1) / 20) * 20;
+        return get_most_read_threads($offset);
+    }
+
+    return array('thread_count' => $thread_count,
+                 'thread_array' => $thread_array);
+}
+
+function get_thread_subscription_count()
+{
+    if (!$db_get_thread_subscription_count = db_connect()) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $sql = "SELECT COUNT(TID) AS SUBSCRIPTION_COUNT FROM {$table_data['PREFIX']}USER_THREAD WHERE INTEREST = 2";
+
+    if (!$result = db_query($sql, $db_get_number_of_folders)) return false;
+
+    list($subscription_count) = db_fetch_array($result, DB_RESULT_NUM);
+
+    return $subscription_count;
+}
+
+function get_most_subscribed_threads($offset)
+{
+    if (!$db_get_most_subscribed_threads = db_connect()) return false;
+
+    if (!is_numeric($offset)) $offset = 0;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $thread_array = array();
+
+    $sql = "SELECT SQL_CALC_FOUND_ROWS THREAD.TID, THREAD.TITLE, ";
+    $sql.= "COUNT(USER_THREAD.INTEREST) AS SUBSCRIBERS ";
+    $sql.= "FROM {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ";
+    $sql.= "ON (THREAD.TID = USER_THREAD.TID) ";
+    $sql.= "WHERE USER_THREAD.INTEREST = 2 ";
+    $sql.= "GROUP BY USER_THREAD.TID ";
+    $sql.= "ORDER BY SUBSCRIBERS DESC ";
+    $sql.= "LIMIT $offset, 20";
+
+    if (!$result = db_query($sql, $db_get_most_subscribed_threads)) return false;
+
+    // Fetch the number of total results
+
+    $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
+
+    if (!$result_count = db_query($sql, $db_get_most_subscribed_threads)) return false;
+
+    list($thread_count) = db_fetch_array($result_count, DB_RESULT_NUM);
+
+    if (db_num_rows($result) > 0) {
+
+        while ($thread_data = db_fetch_array($result)) {
+
+            $thread_array[$thread_data['TID']] = $thread_data;
+        }
+
+    }else if ($thread_count > 0) {
+
+        $offset = floor(($thread_count - 1) / 20) * 20;
+        return get_most_subscribed_threads($offset);
+    }
+
+    return array('thread_count' => $thread_count,
+                 'thread_array' => $thread_array);
 }
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.549 2008-06-18 20:27:03 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.550 2008-06-25 19:48:39 decoyduck Exp $ */
 
 // British English language file
 
@@ -1903,9 +1903,11 @@ $lang['pink'] = "Pink";
 $lang['lightgreen'] = "Light green";
 $lang['lightblue'] = "Light blue";
 
-// Forum Stats (messages.inc.php - messages_forum_stats()) -------------
+// Forum Stats --------------------------------
 
 $lang['forumstats'] = "Forum Stats";
+$lang['userstats'] = "User Stats";
+
 $lang['usersactiveinthepasttimeperiod'] = "%s active in the past %s. %s";
 
 $lang['numactiveguests'] = "<b>%s</b> guests";
@@ -1933,6 +1935,28 @@ $lang['wehavenumregisteredmember'] = "We have %s registered members.";
 $lang['wehaveoneregisteredmember'] = "We have one registered member.";
 $lang['mostuserseveronlinewasnumondate'] = "Most users ever online was <b>%s</b> on %s.";
 $lang['statsdisplaychanged'] = "Stats Display Changed";
+
+$lang['viewfulllist'] = "View Full List";
+
+$lang['numberoffolders'] = "Number of folders";
+$lang['folderwithmostthreads'] = "Folder with most threads";
+$lang['folderwithmostposts'] = "Folder with most posts ";
+$lang['totalnumberofthreads'] = "Total number of threads";
+$lang['longestthread'] = "Longest thread";
+$lang['mostreadthread'] = "Most read thread";
+$lang['threadviews'] = "Views";
+$lang['averagethreadcountperfolder'] = "Average thread count per folder";
+$lang['totalnumberofthreadsubscriptions'] = "Total number of thread subscriptions";
+$lang['mostpopularthreadbysubscription'] = "Most popular thread by subscription";
+$lang['totalnumberofposts'] = "Total number of posts";
+$lang['numberofpostsmadeinlastsixtyminutes'] = "Number of posts made in last 60 minutes";
+$lang['mostpostsmadeinasinglesixtyminuteperiod'] = "Most posts made in a single 60 minute period";
+$lang['averagepostsperuser'] = "Average posts per user";
+$lang['topposter'] = "Top poster";
+$lang['totalnumberofpolls'] = "Total number of polls";
+$lang['totalnumberofpolloptions'] = "Total number of poll options";
+$lang['averagevotesperpoll'] = "Averge votes per poll";
+$lang['totalnumberofpollvotes'] = "Total number of poll votes";
 
 // Thread Options (thread_options.php) ---------------------------------
 

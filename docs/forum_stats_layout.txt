@@ -1,68 +1,66 @@
 [[Forum Stats]]
 
-[Forum Stats]
+[----FORUM STATS----]
 
 Number of folders  - get_number_of_folders()
-Most popular folder [link] - Link to admin_forum_stats?view=folder_popularity / get_folders_by_popularity()
+Most popular folder [link] - Link to admin_forum_stats?view=folder_popularity - stats_get_folders_by_popularity($offset)
+
 Number of threads - get_thread_count()
 Longest thread - get_longest_thread()
-Most read threads [link] - Link to admin_forum_stats.php?view=thread_reads / get_most_read_threads($offset)
+Most read threads [link] - Link to admin_forum_stats.php?view=thread_reads - get_most_read_threads($offset)
 Average threads per user - get_thread_count() / user_count()
+
+Total number of thread subscriptions - get_thread_subscription_count()
+Most popular thread by subscription [link] - Link to admin_forum_stats.php?view=thread_subscriptions / get_most_subscribed_threads($offset)
+
 Number of posts - get_post_count()
 Number of posts made in last 60 minutes - get_recent_post_count()
 Most posts made in a single 60 minute period - get_most_posts()
 Average posts per user - get_post_count() / user_count()
-Total number of thread subscriptions - get_thread_subscription_count()
-Most popular thread by subscription [link] - Link to admin_forum_stats.php?view=thread_subscriptions / get_most_subscribed_threads($offset)
-
-[Top 20 posters]
-
 Top 20 posters [link] - Link to admin_post_stats.php
 
-[Personal Messages]
+Number of polls - get_poll_count()
+Total number of poll options - get_poll_option_count()
+Total number of votes cast - get_poll_vote_count()
+Averge votes per poll - get_poll_vote_count() / get_poll_count()
 
-Total number personal messages stored per folder plus total
-Average personal messages per user
+Number of attachments - get_attachment_count()
+Average number of attachments per post - get_attachment_count() / get_post_count()
+Most downloaded attachment - get_most_downloaded_attachment()
+
+Most popular forum style - get_most_popular_forum_style()
+Most popular forum language - get_most_popular_language()
+Most popular timezone - get_most_popular_timezone()
+
+
+[----USER STATS----]
+
 
 [Users]
 
-Number of user accounts
-Current active users (inc. anonymous)
-Most users ever online
-Current active guests
-Most guests ever online
-Most active user
-Longest user session
-Number of registered users
-Newest user
-Inactive users (0 posts)
-Active users (> 0 posts)
-Number of users visited (today, this week, ... )
-Average age
-Most popular birth month and year
-Number of users with / without profile
-Number of users with / without signature
-Total number of user releationships
-Average number of relationships per user
-Number of users using / not using a word filter
-Average number of word filter entries per user
+Number of users - user_count()
+Newest user - get_newest_user()
 
-[Polls]
+Current active registered users  - get_num_active_registered_users()
+Current active guests - get_num_active_guests()
 
-Number of polls
-Total number of poll options
-Total number of votes cast
-Averge votes per poll
+Most users ever online - get_most_users()
+Most active user - get_most_active_user()
 
-[Attachments]
+Active users (> 0 posts) - get_active_user_count()
+Inactive users (0 posts) - get_inactive_user_count()
 
-Number of attachments
-Average number of attachments per post
-Largest attachment size
+Number of users visited - get_visitor_counts()
 
+Average age - get_average_age()
+Most popular birth month and year - get_most_popular_birthday()
 
-[Other]
+Number of users with / without profile - get_num_users_without_profile()
+Number of users with / without signature - get_num_users_with_profile()
 
-Most popular forum style
-Most popular forum language
-Most popular timezone
+Total number of user releationships - get_num_relationships()
+Average number of relationships per user - get_num_relationships() / user_count()
+
+Number of users using a word filter - get_num_users_with_word_filter()
+Number of users not using a word filter - get_num_users_without_word_filter()
+Average number of word filter entries per user - get_num_users_with_word_filter() / user_count()

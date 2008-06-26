@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.100 2008-06-25 19:48:39 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.101 2008-06-26 21:36:52 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -237,7 +237,7 @@ function stats_get_active_session_count()
     return $user_count;
 }
 
-function stats_get_registered_user_count()
+function stats_get_active_registered_user_count()
 {
     if (!$db_stats_get_registered_user_count = db_connect()) return false;
 
@@ -472,6 +472,21 @@ function stats_get_longest_thread()
     }
 
     return false;
+}
+
+function stats_get_user_count()
+{
+   if (!$db_stats_get_user_count = db_connect()) return false;
+
+   if (!$table_data = get_table_prefix()) return false;
+
+   $sql = "SELECT COUNT(UID) AS COUNT FROM USER";
+
+   if (!$result = db_query($sql, $db_stats_get_user_count)) return false;
+
+   list($user_count) = db_fetch_array($result, DB_RESULT_NUM);
+
+   return $user_count;
 }
 
 function stats_get_most_users()
@@ -957,8 +972,9 @@ function stats_get_attachment_count()
 
     $forum_fid = $table_data['FID'];
 
-    $sql = "SELECT COUNT(*) AS ATTACHMENT_COUNT FROM {$table_data['PREFIX']}POST_ATTACHMENT_IDS PAI ";
-    $sql.= "LEFT JOIN POST_ATTACHMENT_FILES PAF ON (PAF.AID = PAI.AID) WHERE PAI.FID = '$forum_fid'";
+    $sql = "SELECT COUNT(*) AS ATTACHMENT_COUNT FROM POST_ATTACHMENT_IDS PAI ";
+    $sql.= "LEFT JOIN POST_ATTACHMENT_FILES PAF ON (PAF.AID = PAI.AID) ";
+    $sql.= "WHERE PAI.FID = '$forum_fid'";
 
     if (!$result = db_query($sql, $db_stats_get_attachment_count)) return false;
 
@@ -977,12 +993,12 @@ function stats_get_most_downloaded_attachment()
 
     $forum_fid = $table_data['FID'];
 
-    $sql = "SELECT PAI.TID, PAI.PID, PAF.FILENAME, PAF.HASH, PAF.DOWNLOADS ";
-    $sql.= "FROM {$table_data['PREFIX']}POST_ATTACHMENT_IDS PAI ";
+    $sql = "SELECT PAI.TID, PAI.PID, PAF.FILENAME, PAF.HASH, ";
+    $sql.= "PAF.DOWNLOADS FROM POST_ATTACHMENT_IDS PAI ";
     $sql.= "LEFT JOIN POST_ATTACHMENT_FILES PAF ON (PAF.AID = PAI.AID) ";
     $sql.= "WHERE PAI.FID = '$forum_fid' ";
     $sql.= "ORDER BY PAF.DOWNLOADS DESC ";
-    $sql.= "LIMIT $offset, 1";
+    $sql.= "LIMIT 0, 1";
 
     if (!$result = db_unbuffered_query($sql, $db_stats_get_most_downloaded_attachment)) return false;
 
@@ -1036,7 +1052,7 @@ function stats_get_most_popular_forum_style()
 
     }else {
 
-        if (strlen(trim($style_name_forum)) > 0) {
+        if (strlen(trim($style_name_global)) > 0) {
 
             return array('STYLE' => $style_name_global,
                          'USER_COUNT' => $user_count_forum);
@@ -1044,6 +1060,58 @@ function stats_get_most_popular_forum_style()
         }else {
 
             return array('STYLE' => $forum_default_style,
+                         'USER_COUNT' => $user_count_forum);
+        }
+    }
+}
+
+function stats_get_most_popular_emoticon_pack()
+{
+    if (!$db_stats_get_most_popular_emoticon_pack = db_connect()) return false;
+
+    $lang = load_language_file();
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $forum_default_emoticon_pack = forum_get_setting('default_emoticons', false, 'default');
+
+    $sql = "SELECT EMOTICONS, COUNT(*) AS COUNT FROM USER_PREFS ";
+    $sql.= "GROUP BY EMOTICONS ORDER BY COUNT DESC LIMIT 0,1";
+
+    if (!$result = db_query($sql, $db_stats_get_most_popular_emoticon_pack)) return false;
+
+    list($emoticon_pack_global, $user_count_global) = db_fetch_array($result, DB_RESULT_NUM);
+
+    $sql = "SELECT EMOTICONS, COUNT(*) AS COUNT FROM {$table_data['PREFIX']}USER_PREFS ";
+    $sql.= "GROUP BY EMOTICONS ORDER BY COUNT DESC LIMIT 0,1";
+
+    if (!$result = db_query($sql, $db_stats_get_most_popular_emoticon_pack)) return false;
+
+    list($emoticon_pack_forum, $user_count_forum) = db_fetch_array($result, DB_RESULT_NUM);
+
+    if ($user_count_forum > $user_count_global) {
+
+        if (strlen(trim($emoticon_pack_forum)) > 0) {
+
+            return array('EMOTICONS'  => $emoticon_pack_forum,
+                         'USER_COUNT' => $user_count_forum);
+
+        }else {
+
+            return array('EMOTICONS'  => $forum_default_emoticon_pack,
+                         'USER_COUNT' => $user_count_forum);
+        }
+
+    }else {
+
+        if (strlen(trim($emoticon_pack_global)) > 0) {
+
+            return array('EMOTICONS'  => $emoticon_pack_global,
+                         'USER_COUNT' => $user_count_forum);
+
+        }else {
+
+            return array('EMOTICONS'  => $forum_default_emoticon_pack,
                          'USER_COUNT' => $user_count_forum);
         }
     }
@@ -1105,17 +1173,23 @@ function stats_get_most_popular_timezone()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $forum_default_language = forum_get_setting('default_language', false, 'en');
+    $forum_default_timezone = forum_get_setting('forum_timezone', false, '27');
 
     $sql = "SELECT TIMEZONE, COUNT(*) AS COUNT FROM USER_PREFS ";
     $sql.= "GROUP BY TIMEZONE ORDER BY COUNT DESC LIMIT 0,1";
 
     if (!$result = db_query($sql, $db_stats_get_most_popular_timezone)) return false;
 
-    list($timezone_id, $user_count) = db_fetch_array($result, DB_RESULT_NUM);
+    if (db_num_rows($result) > 0) {
 
-    return array('TIMEZONE'   => timezone_id_to_string($timezone_id),
-                 'USER_COUNT' => $user_count);
+        list($timezone_id, $user_count) = db_fetch_array($result, DB_RESULT_NUM);
+
+        return array('TIMEZONE'   => timezone_id_to_string($timezone_id),
+                     'USER_COUNT' => $user_count);
+    }
+
+    return array('TIMEZONE'   => timezone_id_to_string($forum_default_timezone),
+                 'USER_COUNT' => stats_get_user_count());
 }
 
 function stats_get_most_active_user()
@@ -1128,6 +1202,7 @@ function stats_get_most_active_user()
     $sql.= "UNIX_TIMESTAMP(USER_TRACK.USER_TIME_TOTAL) AS TOTAL_TIME ";
     $sql.= "FROM {$table_data['PREFIX']}USER_TRACK USER_TRACK ";
     $sql.= "LEFT JOIN USER ON (USER.UID = USER_TRACK.UID) ";
+    $sql.= "WHERE USER_TRACK.USER_TIME_TOTAL IS NOT NULL ";
     $sql.= "ORDER BY TOTAL_TIME DESC ";
     $sql.= "LIMIT 0, 1";
 
@@ -1187,7 +1262,7 @@ function stats_get_visitor_counts()
     $sql.= "WHERE DAY(NOW()) = DAY(LAST_LOGON) AND MONTH(NOW()) = MONTH(LAST_LOGON) ";
     $sql.= "AND YEAR(NOW()) = YEAR(LAST_LOGON) AND FORUM = '$forum_fid'";
 
-    if (!$result = db_query($sql, $db_stats_get_active_user_count)) return false;
+    if (!$result = db_query($sql, $db_stats_get_visitor_counts)) return false;
 
     list($visitors_today) = db_fetch_array($result, DB_RESULT_NUM);
 
@@ -1195,7 +1270,7 @@ function stats_get_visitor_counts()
     $sql.= "WHERE WEEK(NOW()) = WEEK(LAST_LOGON) AND YEAR(NOW()) = YEAR(LAST_LOGON) ";
     $sql.= "AND FORUM = '$forum_fid'";
 
-    if (!$result = db_query($sql, $db_stats_get_active_user_count)) return false;
+    if (!$result = db_query($sql, $db_stats_get_visitor_counts)) return false;
 
     list($visitors_this_week) = db_fetch_array($result, DB_RESULT_NUM);
 
@@ -1203,14 +1278,14 @@ function stats_get_visitor_counts()
     $sql.= "WHERE MONTH(NOW()) = MONTH(LAST_LOGON) AND YEAR(NOW()) = YEAR(LAST_LOGON) ";
     $sql.= "AND FORUM = '$forum_fid'";
 
-    if (!$result = db_query($sql, $db_stats_get_active_user_count)) return false;
+    if (!$result = db_query($sql, $db_stats_get_visitor_counts)) return false;
 
     list($visitors_this_month) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT COUNT(UID) AS VISITOR_COUNT FROM VISITOR_LOG ";
     $sql.= "WHERE YEAR(NOW()) = YEAR(LAST_LOGON) AND FORUM = '$forum_fid'";
 
-    if (!$result = db_query($sql, $db_stats_get_active_user_count)) return false;
+    if (!$result = db_query($sql, $db_stats_get_visitor_counts)) return false;
 
     list($visitors_this_year) = db_fetch_array($result, DB_RESULT_NUM);
 
@@ -1232,7 +1307,7 @@ function stats_get_average_age()
 
     list($average_age) = db_fetch_array($result, DB_RESULT_NUM);
 
-    return $average_age;
+    return is_numeric($average_age) ? $average_age : false;
 }
 
 function stats_get_most_popular_birthday()
@@ -1275,6 +1350,38 @@ function stats_get_users_with_profile_count()
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT COUNT(DISTINCT UID) AS USER_COUNT FROM {$table_data['PREFIX']}USER_PROFILE";
+
+    if (!$result = db_query($sql, $db_stats_get_users_with_profile_count)) return false;
+
+    list($user_count) = db_fetch_array($result, DB_RESULT_NUM);
+
+    return $user_count;
+}
+
+function stats_get_users_without_signature_count()
+{
+    if (!$db_stats_get_users_without_profile_count = db_connect()) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $sql = "SELECT COUNT(USER.UID) AS USER_COUNT FROM USER ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_SIG USER_SIG ON (USER_SIG.UID = USER.UID) ";
+    $sql.= "WHERE USER_SIG.CONTENT IS NULL";
+
+    if (!$result = db_query($sql, $db_stats_get_users_without_profile_count)) return false;
+
+    list($user_count) = db_fetch_array($result, DB_RESULT_NUM);
+
+    return $user_count;
+}
+
+function stats_get_users_with_signature_count()
+{
+    if (!$db_stats_get_users_with_profile_count = db_connect()) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $sql = "SELECT COUNT(DISTINCT UID) AS USER_COUNT FROM {$table_data['PREFIX']}USER_SIG";
 
     if (!$result = db_query($sql, $db_stats_get_users_with_profile_count)) return false;
 

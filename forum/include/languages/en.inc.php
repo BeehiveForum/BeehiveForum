@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.550 2008-06-25 19:48:39 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.551 2008-06-26 21:36:52 decoyduck Exp $ */
 
 // British English language file
 
@@ -1938,6 +1938,19 @@ $lang['statsdisplaychanged'] = "Stats Display Changed";
 
 $lang['viewfulllist'] = "View Full List";
 
+$lang['folderstats'] = "Folder Stats";
+$lang['threadstats'] = "Thread Stats";
+$lang['poststats'] = "Post Stats";
+$lang['pollstats'] = "Poll Stats";
+$lang['attachmentsstats'] = "Attachments Stats";
+$lang['userpreferencesstats'] = "User Preferences Stats";
+$lang['sessionstats'] = "Session Stats";
+$lang['profilestats'] = "Profile Stats";
+$lang['signaturestats'] = "Signature Stats";
+$lang['ageandbirthdaystats'] = "Age and Birthday Stats";
+$lang['relationshipstats'] = "Relationship Stats";
+$lang['wordfilterstats'] = "Word Filter Stats";
+
 $lang['numberoffolders'] = "Number of folders";
 $lang['folderwithmostthreads'] = "Folder with most threads";
 $lang['folderwithmostposts'] = "Folder with most posts ";
@@ -1950,13 +1963,28 @@ $lang['totalnumberofthreadsubscriptions'] = "Total number of thread subscription
 $lang['mostpopularthreadbysubscription'] = "Most popular thread by subscription";
 $lang['totalnumberofposts'] = "Total number of posts";
 $lang['numberofpostsmadeinlastsixtyminutes'] = "Number of posts made in last 60 minutes";
-$lang['mostpostsmadeinasinglesixtyminuteperiod'] = "Most posts made in a single 60 minute period";
+$lang['mostpostsmadeinasinglesixtyminuteperiod'] = "Most posts made in one 60 minute period";
 $lang['averagepostsperuser'] = "Average posts per user";
 $lang['topposter'] = "Top poster";
 $lang['totalnumberofpolls'] = "Total number of polls";
 $lang['totalnumberofpolloptions'] = "Total number of poll options";
 $lang['averagevotesperpoll'] = "Averge votes per poll";
 $lang['totalnumberofpollvotes'] = "Total number of poll votes";
+$lang['totalnumberofattachments'] = "Total number of attachments";
+$lang['averagenumberofattachmentsperpost'] = "Average number of attachments per post";
+$lang['mostdownloadedattachment'] = "Most downloaded attachment";
+$lang['mostusedforumstyle'] = "Most used forum style";
+$lang['mostusedlanguuagefile'] = "Most used language file";
+$lang['mostusedtimezone'] = "Most used Timezone";
+$lang['mostusedemoticonpack'] = "Most used Emoticon pack";
+
+$lang['numberofusers'] = "Number of users";
+$lang['newestuser'] = "Newest User";
+$lang['numberofcontributingusers'] = "Number of contributing users";
+$lang['numberofnoncontributingusers'] = "Number of non-contributing users";
+
+$lang['visitorcountdetails'] = "%s today, %s this week, %s this month, %s this year";
+$lang['mostuserseveronlinedetail'] = "%s on %s";
 
 // Thread Options (thread_options.php) ---------------------------------
 

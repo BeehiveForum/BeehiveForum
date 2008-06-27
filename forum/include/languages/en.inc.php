@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.551 2008-06-26 21:36:52 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.552 2008-06-27 19:53:31 decoyduck Exp $ */
 
 // British English language file
 
@@ -1936,7 +1936,7 @@ $lang['wehaveoneregisteredmember'] = "We have one registered member.";
 $lang['mostuserseveronlinewasnumondate'] = "Most users ever online was <b>%s</b> on %s.";
 $lang['statsdisplaychanged'] = "Stats Display Changed";
 
-$lang['viewfulllist'] = "View Full List";
+$lang['viewtop20'] = "View Top 20";
 
 $lang['folderstats'] = "Folder Stats";
 $lang['threadstats'] = "Thread Stats";
@@ -1944,6 +1944,7 @@ $lang['poststats'] = "Post Stats";
 $lang['pollstats'] = "Poll Stats";
 $lang['attachmentsstats'] = "Attachments Stats";
 $lang['userpreferencesstats'] = "User Preferences Stats";
+$lang['visitorstats'] = "Visitor Stats";
 $lang['sessionstats'] = "Session Stats";
 $lang['profilestats'] = "Profile Stats";
 $lang['signaturestats'] = "Signature Stats";
@@ -1971,7 +1972,7 @@ $lang['totalnumberofpolloptions'] = "Total number of poll options";
 $lang['averagevotesperpoll'] = "Averge votes per poll";
 $lang['totalnumberofpollvotes'] = "Total number of poll votes";
 $lang['totalnumberofattachments'] = "Total number of attachments";
-$lang['averagenumberofattachmentsperpost'] = "Average number of attachments per post";
+$lang['averagenumberofattachmentsperpost'] = "Average attachment count per post";
 $lang['mostdownloadedattachment'] = "Most downloaded attachment";
 $lang['mostusedforumstyle'] = "Most used forum style";
 $lang['mostusedlanguuagefile'] = "Most used language file";
@@ -1982,8 +1983,33 @@ $lang['numberofusers'] = "Number of users";
 $lang['newestuser'] = "Newest User";
 $lang['numberofcontributingusers'] = "Number of contributing users";
 $lang['numberofnoncontributingusers'] = "Number of non-contributing users";
+$lang['subscribers'] = "Subscribers";
 
-$lang['visitorcountdetails'] = "%s today, %s this week, %s this month, %s this year";
+$lang['numberofvisitorstoday'] = "Number of visitors today";
+$lang['numberofvisitorsthisweek'] = "Number of visitors this week";
+$lang['numberofvisitorsthismonth'] = "Number of visitors this month";
+$lang['numberofvisitorsthisyear'] = "Number of visitors this year";
+
+$lang['totalnumberofactiveusers'] = "Total number of active users";
+$lang['numberofactiveregisteredusers'] = "Number of active registered users";
+$lang['numberofactiveguests'] = "Number of active guests";
+$lang['mostuserseveronline'] = "Most users ever online";
+$lang['mostactiveuser'] = "Most active user";
+$lang['numberofuserswithprofile'] = "Number of users with profile";
+$lang['numberofuserswithoutprofile'] = "Number of users without profile";
+$lang['numberofuserswithsignature'] = "Number of users with signature";
+$lang['numberofuserswithoutsignature'] = "Number of users without signature";
+$lang['averageage'] = "Average age";
+$lang['mostpopularbirthday'] = "Most popular birthday";
+$lang['nobirthdaydataavailable'] = "No Birthday Data Available";
+$lang['numberofusersusingwordfilter'] = "Number of users using word filter";
+$lang['numberofuserreleationships'] = "Number of user releationships";
+$lang['averageage'] = "Average age";
+$lang['averagerelationshipsperuser'] = "Average relationships per user";
+
+$lang['numberofusersnotusingwordfilter'] = "Number of users not using word filter";
+$lang['averagewordfilterentriesperuser'] = "Average word filter entries per user";
+
 $lang['mostuserseveronlinedetail'] = "%s on %s";
 
 // Thread Options (thread_options.php) ---------------------------------

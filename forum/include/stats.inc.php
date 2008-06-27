@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.101 2008-06-26 21:36:52 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.102 2008-06-27 19:53:31 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -714,49 +714,6 @@ function stats_get_folder_with_most_posts()
     return false;
 }
 
-function stats_get_folders_by_popularity($offset)
-{
-    if (!$db_stats_get_folders_by_popularity = db_connect()) return false;
-
-    if (!is_numeric($offset)) $offset = 0;
-
-    if (!$table_data = get_table_prefix()) return false;
-
-    $folder_array = array();
-
-    $sql = "SELECT SQL_CALC_FOUND_ROWS FOLDER.FID, FOLDER.TITLE, ";
-    $sql.= "COUNT(POST.PID) AS POST_COUNT FROM {$table_data['PREFIX']}FOLDER FOLDER ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ON (THREAD.FID = FOLDER.FID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}POST POST ON (POST.TID = THREAD.TID) ";
-    $sql.= "GROUP BY FOLDER.FID ORDER BY POST_COUNT DESC";
-
-    if (!$result = db_query($sql, $db_stats_get_folders_by_popularity)) return false;
-
-    // Fetch the number of total results
-
-    $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
-
-    if (!$result_count = db_query($sql, $db_stats_get_folders_by_popularity)) return false;
-
-    list($folder_count) = db_fetch_array($result_count, DB_RESULT_NUM);
-
-    if (db_num_rows($result) > 0) {
-
-        while ($folder_data = db_fetch_array($result)) {
-
-            $folder_array[$folder_data['FID']] = $folder_data;
-        }
-
-    }else if ($thread_count > 0) {
-
-        $offset = floor(($thread_count - 1) / 20) * 20;
-        return stats_get_folders_by_popularity($offset);
-    }
-
-    return array('folder_count' => $folder_count,
-                 'folder_array' => $folder_array);
-}
-
 function stats_get_most_read_thread()
 {
     if (!$db_stats_get_most_read_threads = db_connect()) return false;
@@ -784,50 +741,6 @@ function stats_get_most_read_thread()
     }
 
     return false;
-}
-
-function stats_get_most_read_threads($offset)
-{
-    if (!$db_stats_get_most_read_threads = db_connect()) return false;
-
-    if (!is_numeric($offset)) $offset = 0;
-
-    if (!$table_data = get_table_prefix()) return false;
-
-    $thread_array = array();
-
-    $sql = "SELECT SQL_CALC_FOUND_ROWS THREAD.TID, THREAD.TITLE ";
-    $sql.= "FROM {$table_data['PREFIX']}THREAD_STATS THREAD_STATS ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ";
-    $sql.= "ON (THREAD.TID = THREAD_STATS.TID) ";
-    $sql.= "ORDER BY THREAD_STATS.VIEWCOUNT DESC ";
-    $sql.= "LIMIT $offset, 20";
-
-    if (!$result = db_query($sql, $db_stats_get_most_read_threads)) return false;
-
-    // Fetch the number of total results
-
-    $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
-
-    if (!$result_count = db_query($sql, $db_stats_get_most_read_threads)) return false;
-
-    list($thread_count) = db_fetch_array($result_count, DB_RESULT_NUM);
-
-    if (db_num_rows($result) > 0) {
-
-        while ($thread_data = db_fetch_array($result)) {
-
-            $thread_array[$thread_data['TID']] = $thread_data;
-        }
-
-    }else if ($thread_count > 0) {
-
-        $offset = floor(($thread_count - 1) / 20) * 20;
-        return stats_get_most_read_threads($offset);
-    }
-
-    return array('thread_count' => $thread_count,
-                 'thread_array' => $thread_array);
 }
 
 function stats_get_thread_subscription_count()
@@ -870,53 +783,6 @@ function stats_get_most_subscribed_thread()
     }
 
     return false;
-}
-
-function stats_get_most_subscribed_threads($offset)
-{
-    if (!$db_stats_get_most_subscribed_threads = db_connect()) return false;
-
-    if (!is_numeric($offset)) $offset = 0;
-
-    if (!$table_data = get_table_prefix()) return false;
-
-    $thread_array = array();
-
-    $sql = "SELECT SQL_CALC_FOUND_ROWS THREAD.TID, THREAD.TITLE, ";
-    $sql.= "COUNT(USER_THREAD.INTEREST) AS SUBSCRIBERS ";
-    $sql.= "FROM {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ";
-    $sql.= "ON (THREAD.TID = USER_THREAD.TID) ";
-    $sql.= "WHERE USER_THREAD.INTEREST = 2 ";
-    $sql.= "GROUP BY USER_THREAD.TID ";
-    $sql.= "ORDER BY SUBSCRIBERS DESC ";
-    $sql.= "LIMIT $offset, 20";
-
-    if (!$result = db_query($sql, $db_stats_get_most_subscribed_threads)) return false;
-
-    // Fetch the number of total results
-
-    $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
-
-    if (!$result_count = db_query($sql, $db_stats_get_most_subscribed_threads)) return false;
-
-    list($thread_count) = db_fetch_array($result_count, DB_RESULT_NUM);
-
-    if (db_num_rows($result) > 0) {
-
-        while ($thread_data = db_fetch_array($result)) {
-
-            $thread_array[$thread_data['TID']] = $thread_data;
-        }
-
-    }else if ($thread_count > 0) {
-
-        $offset = floor(($thread_count - 1) / 20) * 20;
-        return stats_get_most_subscribed_threads($offset);
-    }
-
-    return array('thread_count' => $thread_count,
-                 'thread_array' => $thread_array);
 }
 
 function stats_get_poll_count()
@@ -974,7 +840,7 @@ function stats_get_attachment_count()
 
     $sql = "SELECT COUNT(*) AS ATTACHMENT_COUNT FROM POST_ATTACHMENT_IDS PAI ";
     $sql.= "LEFT JOIN POST_ATTACHMENT_FILES PAF ON (PAF.AID = PAI.AID) ";
-    $sql.= "WHERE PAI.FID = '$forum_fid'";
+    $sql.= "WHERE PAI.FID = '$forum_fid' AND PAF.FILENAME IS NOT NULL";
 
     if (!$result = db_query($sql, $db_stats_get_attachment_count)) return false;
 
@@ -1314,7 +1180,7 @@ function stats_get_most_popular_birthday()
 {
     if (!$db_stats_get_most_popular_birthday = db_connect()) return false;
 
-    $sql = "SELECT DAY(DOB) AS DOB_DAY, MONTH(DOB) AS DOB_MONTH, ";
+    $sql = "SELECT DATE_FORMAT(DOB, '0000-%m-%d') AS DOB, ";
     $sql.= "COUNT(*) AS DOB_COUNT FROM USER_PREFS WHERE DOB > 0 ";
     $sql.= "GROUP BY DOB ORDER BY DOB_COUNT DESC LIMIT 0, 1";
 
@@ -1412,8 +1278,7 @@ function stats_get_users_without_word_filter_count()
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT COUNT(USER.UID) AS USER_COUNT FROM USER ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}WORD_FILTER WORD_FILTER ";
-    $sql.= "ON (WORD_FILTER.UID = USER.UID) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}WORD_FILTER WORD_FILTER ON (WORD_FILTER.UID = USER.UID) ";
     $sql.= "WHERE WORD_FILTER.MATCH_TEXT IS NULL";
 
     if (!$result = db_query($sql, $db_stats_get_users_without_word_filter_count)) return false;
@@ -1429,7 +1294,9 @@ function stats_get_users_with_word_filter_count()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT COUNT(DISTINCT UID) AS USER_COUNT FROM {$table_data['PREFIX']}WORD_FILTER";
+    $sql = "SELECT COUNT(DISTINCT UID) AS USER_COUNT ";
+    $sql.= "FROM {$table_data['PREFIX']}WORD_FILTER ";
+    $sql.= "WHERE UID > 0";
 
     if (!$result = db_query($sql, $db_stats_get_users_with_word_filter_count)) return false;
 

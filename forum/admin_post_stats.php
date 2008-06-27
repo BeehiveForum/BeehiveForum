@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: admin_post_stats.php,v 1.41 2008-02-05 19:14:06 decoyduck Exp $ */
+/* $Id: admin_post_stats.php,v 1.42 2008-06-27 19:53:31 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -173,7 +173,7 @@ if (isset($_POST['update'])) {
         }else {
 
             $num_days = ((($stats_end - $stats_start) / 60) / 60) / 24;
-            $user_stats_array = get_post_tallys($stats_start, $stats_end);
+            $user_stats_array = stats_get_post_tallys($stats_start, $stats_end);
         }
     }
 
@@ -187,7 +187,7 @@ if (isset($_POST['update'])) {
 
     $num_days = ((($stats_end - $stats_start) / 60) / 60) / 24;
 
-    $user_stats_array = get_post_tallys($stats_start, $stats_end);
+    $user_stats_array = stats_get_post_tallys($stats_start, $stats_end);
 }
 
 html_draw_top();

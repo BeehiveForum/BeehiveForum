@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_menu.php,v 1.95 2007-12-26 13:19:32 decoyduck Exp $ */
+/* $Id: admin_menu.php,v 1.96 2008-06-27 20:06:11 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -131,6 +131,9 @@ if ($table_data = get_table_prefix()) {
         echo "  </tr>\n";
         echo "  <tr>\n";
         echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_wordfilter.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">{$lang['wordfilter']}</a></td>\n";
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_forum_stats.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">{$lang['forumstats']}</a></td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
         echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_post_stats.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">{$lang['postingstats']}</a></td>\n";

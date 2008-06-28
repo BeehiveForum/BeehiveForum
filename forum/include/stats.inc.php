@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.103 2008-06-27 20:06:11 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.104 2008-06-28 18:52:52 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -601,7 +601,7 @@ function stats_get_post_tallys($start_stamp, $end_stamp)
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
     $sql.= "WHERE POST.CREATED >= FROM_UNIXTIME($start_stamp) ";
     $sql.= "AND POST.CREATED <= FROM_UNIXTIME($end_stamp) ";
-    $sql.= "GROUP BY USER.UID ORDER BY POST_COUNT DESC ";
+    $sql.= "GROUP BY POST.FROM_UID ORDER BY POST_COUNT DESC ";
     $sql.= "LIMIT 0, 20";
 
     if (!$result = db_query($sql, $db_stats_get_post_tallys)) return false;
@@ -635,7 +635,7 @@ function stats_get_top_poster()
     $sql = "SELECT POST.FROM_UID AS UID, USER.LOGON, USER.NICKNAME, ";
     $sql.= "COUNT(POST.PID) AS POST_COUNT FROM {$table_data['PREFIX']}POST POST ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = POST.FROM_UID) ";
-    $sql.= "GROUP BY USER.UID ORDER BY POST_COUNT DESC ";
+    $sql.= "GROUP BY POST.FROM_UID ORDER BY POST_COUNT DESC ";
     $sql.= "LIMIT 0, 1";
 
     if (!$result = db_query($sql, $db_stats_get_top_poster)) return false;
@@ -855,16 +855,15 @@ function stats_get_most_downloaded_attachment()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    if (!$attachment_dir = forum_get_setting('attachment_dir')) return 0;
+    if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
 
     $forum_fid = $table_data['FID'];
 
-    $sql = "SELECT PAI.TID, PAI.PID, PAF.FILENAME, PAF.HASH, ";
-    $sql.= "PAF.DOWNLOADS FROM POST_ATTACHMENT_IDS PAI ";
-    $sql.= "LEFT JOIN POST_ATTACHMENT_FILES PAF ON (PAF.AID = PAI.AID) ";
+    $sql = "SELECT PAI.TID, PAI.PID, PAF.AID, PAF.HASH, PAF.FILENAME, ";
+    $sql.= "PAF.MIMETYPE, PAF.DOWNLOADS FROM POST_ATTACHMENT_FILES PAF ";
+    $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
     $sql.= "WHERE PAI.FID = '$forum_fid' ";
     $sql.= "ORDER BY PAF.DOWNLOADS DESC ";
-    $sql.= "LIMIT 0, 1";
 
     if (!$result = db_unbuffered_query($sql, $db_stats_get_most_downloaded_attachment)) return false;
 
@@ -872,7 +871,31 @@ function stats_get_most_downloaded_attachment()
 
         if (@file_exists("$attachment_dir/{$attachment_data['HASH']}")) {
 
-            return $attachment_data;
+            if (@file_exists("$attachment_dir/{$attachment_data['HASH']}.thumb")) {
+
+                $filesize = filesize("$attachment_dir/{$attachment_data['HASH']}");
+                $filesize+= filesize("$attachment_dir/{$attachment_data['HASH']}.thumb");
+
+                return array("msg"       => sprintf("%s.%s", $attachment_data['TID'], $attachment_data['PID']),
+                             "filename"  => rawurldecode($attachment_data['FILENAME']),
+                             "filedate"  => filemtime("$attachment_dir/{$attachment_data['HASH']}"),
+                             "filesize"  => $filesize,
+                             "aid"       => $attachment_data['AID'],
+                             "hash"      => $attachment_data['HASH'],
+                             "mimetype"  => $attachment_data['MIMETYPE'],
+                             "downloads" => $attachment_data['DOWNLOADS']);
+
+            }else {
+
+                return array("msg"       => sprintf("%s.%s", $attachment_data['TID'], $attachment_data['PID']),
+                             "filename"  => rawurldecode($attachment_data['FILENAME']),
+                             "filedate"  => filemtime("$attachment_dir/{$attachment_data['HASH']}"),
+                             "filesize"  => filesize("$attachment_dir/{$attachment_data['HASH']}"),
+                             "aid"       => $attachment_data['AID'],
+                             "hash"      => $attachment_data['HASH'],
+                             "mimetype"  => $attachment_data['MIMETYPE'],
+                             "downloads" => $attachment_data['DOWNLOADS']);
+            }
         }
     }
 

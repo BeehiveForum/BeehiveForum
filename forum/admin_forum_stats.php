@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: admin_forum_stats.php,v 1.3 2008-06-27 19:53:31 decoyduck Exp $ */
+/* $Id: admin_forum_stats.php,v 1.4 2008-06-28 18:52:52 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -134,7 +134,7 @@ if (($folder_count = stats_get_folder_count()) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['numberoffolders']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\">$folder_count</td>\n";
+    echo "                  <td align=\"left\">", number_format($folder_count, 0, '.', ','), "</td>\n";
     echo "                </tr>\n";
 }
 
@@ -142,7 +142,7 @@ if (($folder_most_threads = stats_get_folder_with_most_threads()) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['folderwithmostthreads']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\"><a href=\"index.php?webtag=$webtag&amp;final_uri=discussion.php%3Fwebtag%3D$webtag%26folder={$folder_most_threads['FID']}\">", _htmlentities($folder_most_threads['TITLE']), "</a> ({$folder_most_threads['THREAD_COUNT']} {$lang['threads']})</td>\n";
+    echo "                  <td align=\"left\"><a href=\"index.php?webtag=$webtag&amp;final_uri=discussion.php%3Fwebtag%3D$webtag%26folder={$folder_most_threads['FID']}\">", _htmlentities($folder_most_threads['TITLE']), "</a> (", number_format($folder_most_threads['THREAD_COUNT'], 0, '.', ','), " {$lang['threads']})</td>\n";
     echo "                </tr>\n";
 }
 
@@ -150,7 +150,7 @@ if (($folder_most_posts = stats_get_folder_with_most_posts()) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['folderwithmostposts']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\"><a href=\"index.php?webtag=$webtag&amp;final_uri=discussion.php%3Fwebtag%3D$webtag%26folder={$folder_most_posts['FID']}\">", _htmlentities($folder_most_posts['TITLE']), "</a> ({$folder_most_posts['POST_COUNT']} {$lang['posts']})</td>\n";
+    echo "                  <td align=\"left\"><a href=\"index.php?webtag=$webtag&amp;final_uri=discussion.php%3Fwebtag%3D$webtag%26folder={$folder_most_posts['FID']}\">", _htmlentities($folder_most_posts['TITLE']), "</a> (", number_format($folder_most_posts['POST_COUNT'], 0, '.', ','), " {$lang['posts']})</td>\n";
     echo "                </tr>\n";
 }
 
@@ -183,7 +183,7 @@ if (($thread_count = stats_get_thread_count()) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['totalnumberofthreads']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\">$thread_count</td>\n";
+    echo "                  <td align=\"left\">", number_format($thread_count, 0, '.', ','), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['averagethreadcountperfolder']}:&nbsp;</td>\n";
@@ -195,7 +195,7 @@ if (($longest_thread = stats_get_longest_thread()) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['longestthread']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\"><a href=\"index.php?webtag=$webtag&amp;final_uri=discussion.php%3Fwebtag%3D$webtag%26msg={$longest_thread['TID']}.1\">", _htmlentities(thread_format_prefix($longest_thread['PREFIX'], $longest_thread['TITLE'])), "</a> ({$longest_thread['LENGTH']} {$lang['posts']})</td>\n";
+    echo "                  <td align=\"left\"><a href=\"index.php?webtag=$webtag&amp;final_uri=discussion.php%3Fwebtag%3D$webtag%26msg={$longest_thread['TID']}.1\">", _htmlentities(thread_format_prefix($longest_thread['PREFIX'], $longest_thread['TITLE'])), "</a> (", number_format($longest_thread['LENGTH'], 0, '.', ','), " {$lang['posts']})</td>\n";
     echo "                </tr>\n";
 }
 
@@ -203,7 +203,7 @@ if (($most_read_thread = stats_get_most_read_thread()) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['mostreadthread']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\"><a href=\"index.php?webtag=$webtag&amp;final_uri=discussion.php%3Fwebtag%3D$webtag%26msg={$most_read_thread['TID']}.1\">", _htmlentities(thread_format_prefix($most_read_thread['PREFIX'], $most_read_thread['TITLE'])), "</a> ({$most_read_thread['VIEWCOUNT']} {$lang['threadviews']})</td>\n";
+    echo "                  <td align=\"left\"><a href=\"index.php?webtag=$webtag&amp;final_uri=discussion.php%3Fwebtag%3D$webtag%26msg={$most_read_thread['TID']}.1\">", _htmlentities(thread_format_prefix($most_read_thread['PREFIX'], $most_read_thread['TITLE'])), "</a> (", number_format($most_read_thread['VIEWCOUNT'], 0, '.', ','), " {$lang['threadviews']})</td>\n";
     echo "                </tr>\n";
 }
 
@@ -211,7 +211,7 @@ if (($thread_subscription_count = stats_get_thread_subscription_count()) !== fal
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['totalnumberofthreadsubscriptions']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\">$thread_subscription_count</td>\n";
+    echo "                  <td align=\"left\">", number_format($thread_subscription_count, 0, '.', ','), "</td>\n";
     echo "                </tr>\n";
 }
 
@@ -219,7 +219,7 @@ if (($most_subscribed_thread = stats_get_most_subscribed_thread()) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['mostpopularthreadbysubscription']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\"><a href=\"index.php?webtag=$webtag&amp;final_uri=discussion.php%3Fwebtag%3D$webtag%26msg={$most_subscribed_thread['TID']}.1\">", _htmlentities(thread_format_prefix($most_subscribed_thread['PREFIX'], $most_subscribed_thread['TITLE'])), "</a> ({$most_subscribed_thread['SUBSCRIBERS']} {$lang['subscribers']})</td>\n";
+    echo "                  <td align=\"left\"><a href=\"index.php?webtag=$webtag&amp;final_uri=discussion.php%3Fwebtag%3D$webtag%26msg={$most_subscribed_thread['TID']}.1\">", _htmlentities(thread_format_prefix($most_subscribed_thread['PREFIX'], $most_subscribed_thread['TITLE'])), "</a> (", number_format($most_subscribed_thread['SUBSCRIBERS'], 0, '.', ','), " {$lang['subscribers']})</td>\n";
     echo "                </tr>\n";
 
 }else {
@@ -259,7 +259,7 @@ if (($total_post_count = stats_get_post_count()) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['totalnumberofposts']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\">$total_post_count</td>\n";
+    echo "                  <td align=\"left\">", number_format($total_post_count, 0, '.', ','), "</td>\n";
     echo "                </tr>\n";
 }
 
@@ -267,7 +267,7 @@ if (($recent_post_count = stats_get_recent_post_count()) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['numberofpostsmadeinlastsixtyminutes']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\">$recent_post_count</td>\n";
+    echo "                  <td align=\"left\">", number_format($recent_post_count, 0, '.', ','), "</td>\n";
     echo "                </tr>\n";
 }
 
@@ -275,7 +275,7 @@ if (($most_posts_count = stats_get_most_posts()) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['mostpostsmadeinasinglesixtyminuteperiod']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\">$recent_post_count</td>\n";
+    echo "                  <td align=\"left\">", number_format($recent_post_count, 0, '.', ','), "</td>\n";
     echo "                </tr>\n";
 }
 
@@ -288,7 +288,7 @@ if (($top_poster = stats_get_top_poster()) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['topposter']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$top_poster['UID']}\" target=\"_blank\" onclick=\"return openProfile({$top_poster['UID']}, '$webtag')\">", word_filter_add_ob_tags(_htmlentities(format_user_name($top_poster['LOGON'], $top_poster['NICKNAME']))), "</a> ({$top_poster['POST_COUNT']} {$lang['posts']}) [<a href=\"admin_post_stats.php?webtag=$webtag\">{$lang['viewtop20']}</a>]</td>\n";
+    echo "                  <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$top_poster['UID']}\" target=\"_blank\" onclick=\"return openProfile({$top_poster['UID']}, '$webtag')\">", word_filter_add_ob_tags(_htmlentities(format_user_name($top_poster['LOGON'], $top_poster['NICKNAME']))), "</a> (", number_format($top_poster['POST_COUNT'], 0, '.', ','), " {$lang['posts']}) [<a href=\"admin_post_stats.php?webtag=$webtag\">{$lang['viewtop20']}</a>]</td>\n";
     echo "                </tr>\n";
 }
 
@@ -321,7 +321,7 @@ if (($poll_count = stats_get_poll_count()) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['totalnumberofpolls']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\">$poll_count</td>\n";
+    echo "                  <td align=\"left\">", number_format($poll_count, 0, '.', ','), "</td>\n";
     echo "                </tr>\n";
 }
 
@@ -329,7 +329,7 @@ if (($poll_option_count = stats_get_poll_option_count()) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['totalnumberofpolloptions']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\">$poll_option_count</td>\n";
+    echo "                  <td align=\"left\">", number_format($poll_option_count, 0, '.', ','), "</td>\n";
     echo "                </tr>\n";
 }
 
@@ -337,7 +337,7 @@ if (($poll_vote_count = stats_get_poll_vote_count()) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['totalnumberofpollvotes']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\">$poll_vote_count</td>\n";
+    echo "                  <td align=\"left\">", number_format($poll_vote_count, 0, '.', ','), "</td>\n";
     echo "                </tr>\n";
 }
 
@@ -374,7 +374,7 @@ if (($attachment_count = stats_get_attachment_count()) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['totalnumberofattachments']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\">$attachment_count</td>\n";
+    echo "                  <td align=\"left\">", number_format($attachment_count, 0, '.', ','), "</td>\n";
     echo "                </tr>\n";
 }
 
@@ -383,11 +383,11 @@ echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lan
 echo "                  <td align=\"left\">", (($attachment_count > 0) && ($total_post_count > 0)) ? number_format($attachment_count / $total_post_count, 2, ".", ",") : 0, "</td>\n";
 echo "                </tr>\n";
 
-if (($most_downloaded_attachment = stats_get_most_downloaded_attachment()) !== false) {
+if ((($most_downloaded_attachment = stats_get_most_downloaded_attachment()) !== false) && ($attachment_href = attachment_make_link($most_downloaded_attachment, false))) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['mostdownloadedattachment']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\">", attachment_make_link($attachment), "</td>\n";
+    echo "                  <td align=\"left\">$attachment_href (Msg: <a href=\"index.php?webtag=$webtag&amp;msg={$most_downloaded_attachment['msg']}\">{$most_downloaded_attachment['msg']}</a>)</td>\n";
     echo "                </tr>\n";
 
 }else {
@@ -427,7 +427,7 @@ if (($most_popular_forum_style = stats_get_most_popular_forum_style()) !== false
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['mostusedforumstyle']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\">{$most_popular_forum_style['STYLE']} ({$most_popular_forum_style['USER_COUNT']} {$lang['users']})</td>\n";
+    echo "                  <td align=\"left\">{$most_popular_forum_style['STYLE']} (", number_format($most_popular_forum_style['USER_COUNT'], 0, '.', ','), " {$lang['users']})</td>\n";
     echo "                </tr>\n";
 }
 
@@ -435,7 +435,7 @@ if (($most_popular_language = stats_get_most_popular_language()) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['mostusedlanguuagefile']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\">{$most_popular_language['LANG']} ({$most_popular_language['USER_COUNT']} {$lang['users']})</td>\n";
+    echo "                  <td align=\"left\">{$most_popular_language['LANG']} (", number_format($most_popular_language['USER_COUNT'], 0, '.', ','), " {$lang['users']})</td>\n";
     echo "                </tr>\n";
 }
 
@@ -443,7 +443,7 @@ if (($most_popular_timezone = stats_get_most_popular_timezone()) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['mostusedtimezone']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\">{$most_popular_timezone['TIMEZONE']} ({$most_popular_timezone['USER_COUNT']} {$lang['users']})</td>\n";
+    echo "                  <td align=\"left\">{$most_popular_timezone['TIMEZONE']} (", number_format($most_popular_timezone['USER_COUNT'], 0, '.', ','), " {$lang['users']})</td>\n";
     echo "                </tr>\n";
 
 }else {
@@ -458,7 +458,7 @@ if (($most_popular_emoticon_pack = stats_get_most_popular_emoticon_pack()) !== f
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['mostusedemoticonpack']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\">{$most_popular_emoticon_pack['EMOTICONS']} ({$most_popular_emoticon_pack['USER_COUNT']} {$lang['users']})</td>\n";
+    echo "                  <td align=\"left\">{$most_popular_emoticon_pack['EMOTICONS']} (", number_format($most_popular_emoticon_pack['USER_COUNT'], 0, '.', ','), " {$lang['users']})</td>\n";
     echo "                </tr>\n";
 
 }else {
@@ -495,14 +495,14 @@ echo "                  <td align=\"left\" rowspan=\"19\" width=\"1%\">&nbsp;</t
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['numberofusers']}:&nbsp;</td>\n";
-echo "                  <td align=\"left\">$user_count</td>\n";
+echo "                  <td align=\"left\">", number_format($user_count, 0, '.', ','), "</td>\n";
 echo "                </tr>\n";
 
 if (($contributing_user_count = stats_get_active_user_count()) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['numberofcontributingusers']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\">$contributing_user_count</td>\n";
+    echo "                  <td align=\"left\">", number_format($contributing_user_count, 0, '.', ','), "</td>\n";
     echo "                </tr>\n";
 }
 
@@ -510,7 +510,7 @@ if (($noncontributing_user_count = stats_get_inactive_user_count()) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['numberofnoncontributingusers']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\">$noncontributing_user_count</td>\n";
+    echo "                  <td align=\"left\">", number_format($noncontributing_user_count, 0, '.', ','), "</td>\n";
     echo "                </tr>\n";
 }
 
@@ -551,20 +551,33 @@ if (($visitor_count = stats_get_visitor_counts()) !== false) {
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['numberofvisitorstoday']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\">{$visitor_count['DAY']}</td>\n";
+    echo "                  <td align=\"left\">", number_format($visitor_count['DAY'], 0, '.', ','), "</td>\n";
     echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['numberofvisitorsthisweek']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\">{$visitor_count['WEEK']}</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['numberofvisitorsthismonth']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\">{$visitor_count['MONTH']}</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['numberofvisitorsthisyear']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\">{$visitor_count['YEAR']}</td>\n";
-    echo "                </tr>\n";
+
+    if ($visitor_count['WEEK'] > $visitor_count['DAY']) {
+
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['numberofvisitorsthisweek']}:&nbsp;</td>\n";
+        echo "                  <td align=\"left\">", number_format($visitor_count['WEEK'], 0, '.', ','), "</td>\n";
+        echo "                </tr>\n";
+
+        if ($visitor_count['MONTH'] > $visitor_count['WEEK']) {
+
+            echo "                <tr>\n";
+            echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['numberofvisitorsthismonth']}:&nbsp;</td>\n";
+            echo "                  <td align=\"left\">", number_format($visitor_count['MONTH'], 0, '.', ','), "</td>\n";
+            echo "                </tr>\n";
+
+            if ($visitor_count['YEAR'] > $visitor_count['MONTH']) {
+
+                echo "                <tr>\n";
+                echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['numberofvisitorsthisyear']}:&nbsp;</td>\n";
+                echo "                  <td align=\"left\">", number_format($visitor_count['YEAR'], 0, '.', ','), "</td>\n";
+                echo "                </tr>\n";
+            }
+        }
+    }
+
     echo "                <tr>\n";
     echo "                  <td align=\"left\" colspan=\"3\">&nbsp;</td>\n";
     echo "                </tr>\n";
@@ -596,7 +609,7 @@ if (($active_user_count = stats_get_active_session_count()) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['totalnumberofactiveusers']}&nbsp;</td>\n";
-    echo "                  <td align=\"left\">$active_user_count</td>\n";
+    echo "                  <td align=\"left\">", number_format($active_user_count, 0, '.', ','), "</td>\n";
     echo "                </tr>\n";
 }
 
@@ -604,7 +617,7 @@ if (($active_registered_user_count = stats_get_active_registered_user_count()) !
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['numberofactiveregisteredusers']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\">$active_registered_user_count</td>\n";
+    echo "                  <td align=\"left\">", number_format($active_registered_user_count, 0, '.', ','), "</td>\n";
     echo "                </tr>\n";
 }
 
@@ -612,7 +625,7 @@ if (($active_guest_count = stats_get_active_guest_count()) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['numberofactiveguests']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\">$active_guest_count</td>\n";
+    echo "                  <td align=\"left\">", number_format($active_guest_count, 0, '.', ','), "</td>\n";
     echo "                </tr>\n";
 }
 
@@ -620,7 +633,7 @@ if (($most_users = stats_get_most_users()) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['mostuserseveronline']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\">", sprintf($lang['mostuserseveronlinedetail'], $most_users['MOST_USERS_COUNT'], format_time($most_users['MOST_USERS_DATE'], 1)), "</td>\n";
+    echo "                  <td align=\"left\">", sprintf($lang['mostuserseveronlinedetail'], number_format($most_users['MOST_USERS_COUNT'], 0, '.', ','), format_time($most_users['MOST_USERS_DATE'], 1)), "</td>\n";
     echo "                </tr>\n";
 }
 
@@ -661,7 +674,7 @@ if (($user_profile_count = stats_get_users_with_profile_count()) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['numberofuserswithprofile']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\">$user_profile_count</td>\n";
+    echo "                  <td align=\"left\">", number_format($user_profile_count, 0, '.', ','), "</td>\n";
     echo "                </tr>\n";
 }
 
@@ -669,7 +682,7 @@ if (($user_no_profile_count = stats_get_users_without_profile_count()) !== false
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['numberofuserswithoutprofile']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\">$user_no_profile_count</td>\n";
+    echo "                  <td align=\"left\">", number_format($user_no_profile_count, 0, '.', ','), "</td>\n";
     echo "                </tr>\n";
 }
 
@@ -702,7 +715,7 @@ if (($user_signature_count = stats_get_users_with_signature_count()) !== false) 
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['numberofuserswithsignature']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\">$user_signature_count</td>\n";
+    echo "                  <td align=\"left\">", number_format($user_signature_count, 0, '.', ','), "</td>\n";
     echo "                </tr>\n";
 }
 
@@ -710,7 +723,7 @@ if (($user_no_signature_count = stats_get_users_without_signature_count()) !== f
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['numberofuserswithoutsignature']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\">$user_no_signature_count</td>\n";
+    echo "                  <td align=\"left\">", number_format($user_no_signature_count, 0, '.', ','), "</td>\n";
     echo "                </tr>\n";
 }
 
@@ -743,7 +756,7 @@ if (($average_age = stats_get_average_age()) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['averageage']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\">$average_age</td>\n";
+    echo "                  <td align=\"left\">", number_format($average_age, 2, '.', ','), "</td>\n";
     echo "                </tr>\n";
 
 }else {
@@ -758,7 +771,7 @@ if (($most_popular_birthday = stats_get_most_popular_birthday()) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['mostpopularbirthday']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\">", format_birthday($most_popular_birthday['DOB']), " ({$most_popular_birthday['DOB_COUNT']} {$lang['users']})</td>\n";
+    echo "                  <td align=\"left\">", format_birthday($most_popular_birthday['DOB']), " (", number_format($most_popular_birthday['DOB_COUNT'], 0, '.', ','), " {$lang['users']})</td>\n";
     echo "                </tr>\n";
 
 }else {
@@ -798,14 +811,14 @@ if (($relationship_count = stats_get_relationships_count()) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['numberofuserreleationships']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\">$relationship_count</td>\n";
+    echo "                  <td align=\"left\">", number_format($relationship_count, 0, '.', ','), "</td>\n";
     echo "                </tr>\n";
 
 }else {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['averageage']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\">Unknown.</td>\n";
+    echo "                  <td align=\"left\">{$lang['unknown']}</td>\n";
     echo "                </tr>\n";
 }
 
@@ -842,7 +855,7 @@ if (($users_with_word_filter = stats_get_users_with_word_filter_count()) !== fal
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['numberofusersusingwordfilter']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\">$users_with_word_filter</td>\n";
+    echo "                  <td align=\"left\">", number_format($users_with_word_filter, 0, '.', ','), "</td>\n";
     echo "                </tr>\n";
 }
 
@@ -850,7 +863,7 @@ if (($users_without_word_filter = stats_get_users_without_word_filter_count()) !
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['numberofusersnotusingwordfilter']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\">$users_without_word_filter</td>\n";
+    echo "                  <td align=\"left\">", number_format($users_without_word_filter, 0, '.', ','), "</td>\n";
     echo "                </tr>\n";
 }
 

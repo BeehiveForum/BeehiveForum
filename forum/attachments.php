@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.152 2008-03-31 21:06:24 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.153 2008-06-28 18:52:52 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -303,7 +303,7 @@ if (isset($_POST['upload'])) {
 
                 foreach($attachments_array as $attachment) {
 
-                    echo "                                ", attachment_make_link($attachment, false, false), "\n";
+                    echo "                                ", attachment_make_link($attachment, false, false), "<br />\n";
                     echo "                                ", form_input_hidden("delete_attachment_confirm[{$attachment['hash']}]", "Y"), "\n";
                 }
             }
@@ -312,7 +312,7 @@ if (isset($_POST['upload'])) {
 
                 foreach($image_attachments_array as $key => $attachment) {
 
-                    echo "                                ", attachment_make_link($attachment, false, false), "\n";
+                    echo "                                ", attachment_make_link($attachment, false, false), "<br />\n";
                     echo "                                ", form_input_hidden("delete_attachment_confirm[{$attachment['hash']}]", "Y"), "\n";
                 }
             }

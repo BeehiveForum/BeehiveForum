@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.145 2008-03-16 16:40:33 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.146 2008-06-28 18:52:52 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -896,7 +896,6 @@ function attachment_make_link($attachment, $show_thumbs = true, $limit_filename 
     if (!isset($attachment['aid'])) return false;
     if (!isset($attachment['hash'])) return false;
     if (!isset($attachment['filename'])) return false;
-    if (!isset($attachment['filesize'])) return false;
     if (!isset($attachment['downloads'])) return false;
 
     if (!is_md5($attachment['aid'])) return false;
@@ -946,7 +945,10 @@ function attachment_make_link($attachment, $show_thumbs = true, $limit_filename 
             $attachment['filename'].= "&hellip;";
         }
 
-        $title_array[] = "{$lang['size']}: ". format_file_size($attachment['filesize']);
+        if (isset($attachment['filesize']) && is_numeric($attachment['filesize'])) {
+
+            $title_array[] = "{$lang['size']}: ". format_file_size($attachment['filesize']);
+        }
 
         if ($attachment['downloads'] == 1) {
 
@@ -987,11 +989,11 @@ function attachment_make_link($attachment, $show_thumbs = true, $limit_filename 
 
         $attachment_link = "<img src=\"";
         $attachment_link.= style_image('attach.png');
-        $attachment_link.= "\" width=\"14\" height=\"14\" border=\"0\"";
+        $attachment_link.= "\" width=\"14\" height=\"14\" border=\"0\" ";
         $attachment_link.= "alt=\"{$lang['attachment']}\" ";
         $attachment_link.= "title=\"{$lang['attachment']}\" />";
         $attachment_link.= "<a href=\"$attachment_href\" title=\"$title\" ";
-        $attachment_link.= "target=\"_blank\">{$attachment['filename']}</a><br />\n";
+        $attachment_link.= "target=\"_blank\">{$attachment['filename']}</a>\n";
 
         return $attachment_link;
     }

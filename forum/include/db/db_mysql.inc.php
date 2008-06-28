@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db_mysql.inc.php,v 1.47 2008-06-28 18:52:52 decoyduck Exp $ */
+/* $Id: db_mysql.inc.php,v 1.48 2008-06-28 18:53:42 decoyduck Exp $ */
 
 function db_get_connection_vars(&$db_server, &$db_username, &$db_password, &$db_database)
 {
@@ -83,14 +83,7 @@ function db_enable_compat_mode($connection_id)
 
 function db_query($sql, $connection_id, $trigger_error = true)
 {
-    $start_time = microtime_float();
-
     if ($result = @mysql_query($sql, $connection_id)) {
-
-        $total_time = microtime_float() - $start_time;
-
-        file_put_contents('db.log', "$total_time\t$sql\n", FILE_APPEND);
-
         return $result;
     }
 

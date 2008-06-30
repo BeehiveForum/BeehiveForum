@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.241 2008-06-28 18:52:52 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.242 2008-06-30 19:46:06 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1269,7 +1269,7 @@ function pm_display($pm_message_array, $folder, $preview = false, $export_html =
 
                 foreach($image_attachments_array as $key => $attachment) {
 
-                    echo "                              ", attachment_make_link($attachment, true, false, $export_html), "<br />\n";
+                    echo "                              ", attachment_make_link($attachment, true, false, $export_html), "\n";
                 }
 
                 echo "                              </p>\n";

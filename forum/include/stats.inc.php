@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.104 2008-06-28 18:52:52 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.105 2008-06-30 19:46:07 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1326,6 +1326,20 @@ function stats_get_users_with_word_filter_count()
     list($user_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     return $user_count;
+}
+
+function stats_get_mysql_week(&$week_start, &$week_end)
+{
+    if (!$stats_get_mysql_week = db_connect()) return false;
+
+    $sql = "SELECT UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL(DAYOFWEEK(CURDATE()) - 1) DAY)) AS WEEK_START, ";
+    $sql.= "UNIX_TIMESTAMP(DATE_ADD(CURDATE(), INTERVAL(7 - DAYOFWEEK(CURDATE())) DAY)) AS WEEK_END";
+
+    if (!$result = db_query($sql, $stats_get_mysql_week)) return false;
+
+    list($week_start, $week_end) = db_fetch_array($result, DB_RESULT_NUM);
+
+    return true;
 }
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.146 2008-06-28 18:52:52 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.147 2008-06-30 19:46:06 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -971,15 +971,15 @@ function attachment_make_link($attachment, $show_thumbs = true, $limit_filename 
                 while ($thumbnail_width > $thumbnail_max_size || $thumbnail_height > $thumbnail_max_size) {
 
                     $thumbnail_width--;
-                    $thumbnail_height = $thumbnail_width * ($image_info[1] / $image_info[0]);
+                    $thumbnail_height = floor($thumbnail_width * ($image_info[1] / $image_info[0]));
                 }
 
                 $title = implode(", ", $title_array);
 
-                $attachment_link = "<div class=\"attachment_thumb\"><a href=\"$attachment_href\" title=\"$title\" ";
+                $attachment_link = "<span class=\"attachment_thumb\"><a href=\"$attachment_href\" title=\"$title\" ";
                 $attachment_link.= "target=\"_blank\"><img src=\"$attachment_href&amp;thumb=1\"";
                 $attachment_link.= "border=\"0\" width=\"$thumbnail_width\" height=\"$thumbnail_height\"";
-                $attachment_link.= "alt=\"$title\" title=\"$title\" /></a></div>";
+                $attachment_link.= "alt=\"$title\" title=\"$title\" /></a></span>";
 
                 return $attachment_link;
             }

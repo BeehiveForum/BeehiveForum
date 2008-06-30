@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.532 2008-06-28 18:52:52 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.533 2008-06-30 19:46:06 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -979,7 +979,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
                     foreach($image_attachments_array as $key => $attachment) {
 
-                        echo "                  ", attachment_make_link($attachment), "<br />\n";
+                        echo "                  ", attachment_make_link($attachment), "\n";
                     }
 
                     echo "                  </p>\n";

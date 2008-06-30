@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: admin_forum_stats.php,v 1.4 2008-06-28 18:52:52 decoyduck Exp $ */
+/* $Id: admin_forum_stats.php,v 1.5 2008-06-30 19:46:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -533,7 +533,7 @@ echo "      </td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 
-if (($visitor_count = stats_get_visitor_counts()) !== false) {
+if ((($visitor_count = stats_get_visitor_counts()) !== false) && stats_get_mysql_week($week_start, $week_end)) {
 
     echo "  <br />\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"750\">\n";
@@ -557,25 +557,25 @@ if (($visitor_count = stats_get_visitor_counts()) !== false) {
     if ($visitor_count['WEEK'] > $visitor_count['DAY']) {
 
         echo "                <tr>\n";
-        echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['numberofvisitorsthisweek']}:&nbsp;</td>\n";
+        echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">", sprintf($lang['numberofvisitorsthisweek'], format_date($week_start), format_date($week_end)), ":&nbsp;</td>\n";
         echo "                  <td align=\"left\">", number_format($visitor_count['WEEK'], 0, '.', ','), "</td>\n";
         echo "                </tr>\n";
+    }
 
-        if ($visitor_count['MONTH'] > $visitor_count['WEEK']) {
+    if ($visitor_count['MONTH'] > $visitor_count['WEEK']) {
 
-            echo "                <tr>\n";
-            echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['numberofvisitorsthismonth']}:&nbsp;</td>\n";
-            echo "                  <td align=\"left\">", number_format($visitor_count['MONTH'], 0, '.', ','), "</td>\n";
-            echo "                </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['numberofvisitorsthismonth']}:&nbsp;</td>\n";
+        echo "                  <td align=\"left\">", number_format($visitor_count['MONTH'], 0, '.', ','), "</td>\n";
+        echo "                </tr>\n";
+    }
 
-            if ($visitor_count['YEAR'] > $visitor_count['MONTH']) {
+    if ($visitor_count['YEAR'] > $visitor_count['MONTH']) {
 
-                echo "                <tr>\n";
-                echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['numberofvisitorsthisyear']}:&nbsp;</td>\n";
-                echo "                  <td align=\"left\">", number_format($visitor_count['YEAR'], 0, '.', ','), "</td>\n";
-                echo "                </tr>\n";
-            }
-        }
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['numberofvisitorsthisyear']}:&nbsp;</td>\n";
+        echo "                  <td align=\"left\">", number_format($visitor_count['YEAR'], 0, '.', ','), "</td>\n";
+        echo "                </tr>\n";
     }
 
     echo "                <tr>\n";

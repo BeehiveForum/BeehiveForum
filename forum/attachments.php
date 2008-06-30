@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.153 2008-06-28 18:52:52 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.154 2008-06-30 19:46:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -158,6 +158,9 @@ $uid = bh_session_get_value('UID');
 // Get user's free attachment space.
 
 $users_free_space = get_free_attachment_space($uid);
+
+// Accumlative attachment file size.
+
 $total_attachment_size = 0;
 
 // Check that $attachment_dir does not have a slash on the end of it.
@@ -193,7 +196,7 @@ if (isset($_POST['upload'])) {
                     $tempfile = $_FILES['userfile']['tmp_name'][$i];
                     $filetype = $_FILES['userfile']['type'][$i];
 
-                    if ($users_free_space < $filesize) {
+                    if (($users_free_space > 0) && ($users_free_space < $filesize)) {
 
                         $upload_failure[] = $filename;
 
@@ -215,7 +218,9 @@ if (isset($_POST['upload'])) {
 
                             attachment_create_thumb($filepath);
 
-                            $users_free_space -= $filesize;
+                            if ($users_free_space > 0) {
+                                $users_free_space -= $filesize;
+                            }
 
                             if (strlen($filename) > 32) {
 
@@ -645,13 +650,18 @@ echo "                  <td align=\"left\" valign=\"top\" class=\"postbody\">&nb
 echo "                  <td align=\"right\" valign=\"top\" class=\"postbody\">", format_file_size($total_attachment_size), "</td>\n";
 echo "                  <td align=\"left\" width=\"25\">&nbsp;</td>\n";
 echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\" width=\"25\">&nbsp;</td>\n";
-echo "                  <td align=\"left\" valign=\"top\" class=\"postbody\">{$lang['freespace']}:</td>\n";
-echo "                  <td align=\"left\" valign=\"top\" class=\"postbody\">&nbsp;</td>\n";
-echo "                  <td align=\"right\" valign=\"top\" class=\"postbody\">", format_file_size(get_free_attachment_space($uid)), "</td>\n";
-echo "                  <td align=\"left\" width=\"25\">&nbsp;</td>\n";
-echo "                </tr>\n";
+
+if ($users_free_space > 0) {
+
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" width=\"25\">&nbsp;</td>\n";
+    echo "                  <td align=\"left\" valign=\"top\" class=\"postbody\">{$lang['freespace']}:</td>\n";
+    echo "                  <td align=\"left\" valign=\"top\" class=\"postbody\">&nbsp;</td>\n";
+    echo "                  <td align=\"right\" valign=\"top\" class=\"postbody\">", format_file_size($free_attachment_space), "</td>\n";
+    echo "                  <td align=\"left\" width=\"25\">&nbsp;</td>\n";
+    echo "                </tr>\n";
+}
+
 echo "                <tr>\n";
 echo "                  <td align=\"left\" colspan=\"5\">&nbsp;</td>\n";
 echo "                </tr>\n";

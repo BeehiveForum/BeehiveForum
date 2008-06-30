@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.552 2008-06-27 19:53:31 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.553 2008-06-30 19:46:07 decoyduck Exp $ */
 
 // British English language file
 
@@ -1986,7 +1986,7 @@ $lang['numberofnoncontributingusers'] = "Number of non-contributing users";
 $lang['subscribers'] = "Subscribers";
 
 $lang['numberofvisitorstoday'] = "Number of visitors today";
-$lang['numberofvisitorsthisweek'] = "Number of visitors this week";
+$lang['numberofvisitorsthisweek'] = "Number of visitors this week (period: %s to %s)";
 $lang['numberofvisitorsthismonth'] = "Number of visitors this month";
 $lang['numberofvisitorsthisyear'] = "Number of visitors this year";
 

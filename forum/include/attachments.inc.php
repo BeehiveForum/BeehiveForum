@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.147 2008-06-30 19:46:06 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.148 2008-06-30 19:50:20 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -585,20 +585,24 @@ function get_free_attachment_space($uid)
 
     $max_attachment_space = forum_get_setting('attachments_max_user_space', false, 1048576);
 
-    $sql = "SELECT HASH FROM POST_ATTACHMENT_FILES WHERE UID = '$uid'";
+    if ($max_attachment_space > 0) {
 
-    if (!$result = db_query($sql, $db_get_free_attachment_space)) return false;
+        $sql = "SELECT HASH FROM POST_ATTACHMENT_FILES WHERE UID = '$uid'";
 
-    while($attachment_data = db_fetch_array($result)) {
+        if (!$result = db_query($sql, $db_get_free_attachment_space)) return false;
 
-        if (@file_exists("$attachment_dir/{$attachment_data['HASH']}")) {
+        while($attachment_data = db_fetch_array($result)) {
 
-            $used_attachment_space += filesize("$attachment_dir/{$attachment_data['HASH']}");
+            if (@file_exists("$attachment_dir/{$attachment_data['HASH']}")) {
+
+                $used_attachment_space += filesize("$attachment_dir/{$attachment_data['HASH']}");
+            }
         }
+
+        return (($max_attachment_space - $used_attachment_space) < 0) ? 0 : ($max_attachment_space - $used_attachment_space);
     }
 
-    if (($max_attachment_space - $used_attachment_space) < 0) return 0;
-    return $max_attachment_space - $used_attachment_space;
+    return 0;
 }
 
 /**

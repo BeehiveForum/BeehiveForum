@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: admin_forum_stats.php,v 1.5 2008-06-30 19:46:06 decoyduck Exp $ */
+/* $Id: admin_forum_stats.php,v 1.6 2008-07-01 20:22:00 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -275,7 +275,7 @@ if (($most_posts_count = stats_get_most_posts()) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['mostpostsmadeinasinglesixtyminuteperiod']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\">", number_format($recent_post_count, 0, '.', ','), "</td>\n";
+    echo "                  <td align=\"left\">", number_format($most_posts_count, 0, '.', ','), "</td>\n";
     echo "                </tr>\n";
 }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: cache.inc.php,v 1.4 2008-07-01 18:34:29 decoyduck Exp $ */
+/* $Id: cache.inc.php,v 1.5 2008-07-01 18:36:01 decoyduck Exp $ */
 
 /**
 * cache.inc.php - cache functions
@@ -97,7 +97,7 @@ function cache_check($cache_id)
 
             if (method_exists($message_cache, 'setLifeTime')) {
 
-                $message_cache->setLifeTime(WEEK_IN_SECONDS);
+                $message_cache->setLifeTime(HOUR_IN_SECONDS);
                 $message_cache->clean(false, 'old');
             }
 

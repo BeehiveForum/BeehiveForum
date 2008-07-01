@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.316 2008-06-22 22:11:16 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.317 2008-07-01 18:34:29 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -714,11 +714,12 @@ function forum_check_global_setting_name($setting_name)
                                          'forum_maintenance_schedule', 'pm_system_prune_folders_last_run',
                                          'bh_remove_stale_sessions_last_run', 'thread_auto_prune_unread_data_last_run',
                                          'captcha_clean_up_last_run', 'sitemap_create_file_last_run', 'guest_account_enabled',
-                                         'guest_show_recent', 'messages_unread_cutoff', 'messages_unread_cutoff_custom',
-                                         'new_user_email_notify', 'new_user_mark_as_of_int', 'new_user_pm_notify_email',
-                                         'new_user_pm_notify', 'pm_allow_attachments', 'pm_auto_prune', 'pm_max_user_messages',
-                                         'require_email_confirmation', 'require_unique_email', 'require_user_approval',
-                                         'search_min_frequency', 'send_new_user_email', 'session_cutoff', 'sitemap_enabled',
+                                         'guest_show_recent', 'message_cache_enabled', 'messages_unread_cutoff',
+                                         'messages_unread_cutoff_custom', 'new_user_email_notify', 'new_user_mark_as_of_int',
+                                         'new_user_pm_notify_email', 'new_user_pm_notify', 'pm_allow_attachments',
+                                         'pm_auto_prune', 'pm_max_user_messages', 'require_email_confirmation',
+                                         'require_unique_email', 'require_user_approval', 'search_min_frequency',
+                                         'send_new_user_email', 'session_cutoff', 'sitemap_enabled',
                                          'sitemap_freq', 'showpopuponnewpm', 'show_pms', 'text_captcha_enabled');
 
     return in_array($setting_name, $valid_global_forum_settings);

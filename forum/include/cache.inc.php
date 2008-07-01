@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: cache.inc.php,v 1.3 2007-12-15 21:19:54 decoyduck Exp $ */
+/* $Id: cache.inc.php,v 1.4 2008-07-01 18:34:29 decoyduck Exp $ */
 
 /**
 * cache.inc.php - cache functions
@@ -44,6 +44,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 
 // Include files we need.
 
+include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "server.inc.php");
 
@@ -59,6 +60,8 @@ include_once(BH_INCLUDE_PATH. "server.inc.php");
 function cache_enabled()
 {
     $include_path_array = explode(PATH_SEPARATOR, ini_get('include_path'));
+
+    if (forum_get_setting('message_cache_enabled', 'N')) return false;
 
     foreach ($include_path_array as $include_path_dir) {
 
@@ -91,6 +94,12 @@ function cache_check($cache_id)
             $cache_options = array('cacheDir' => forum_get_setting('cache_dir', false, system_get_temp_dir()));
 
             $message_cache = new Cache_Lite($cache_options);
+
+            if (method_exists($message_cache, 'setLifeTime')) {
+
+                $message_cache->setLifeTime(WEEK_IN_SECONDS);
+                $message_cache->clean(false, 'old');
+            }
 
             if (method_exists($message_cache, 'get')) {
 
@@ -127,6 +136,12 @@ function cache_save($cache_id, $content)
             $cache_options = array('cacheDir' => forum_get_setting('cache_dir', false, system_get_temp_dir()));
 
             $message_cache = new Cache_Lite($cache_options);
+
+            if (method_exists($message_cache, 'setLifeTime')) {
+
+                $message_cache->setLifeTime(WEEK_IN_SECONDS);
+                $message_cache->clean(false, 'old');
+            }
 
             if (method_exists($message_cache, 'save')) {
 

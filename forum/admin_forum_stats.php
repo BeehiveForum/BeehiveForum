@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: admin_forum_stats.php,v 1.6 2008-07-01 20:22:00 decoyduck Exp $ */
+/* $Id: admin_forum_stats.php,v 1.7 2008-07-03 14:28:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -435,7 +435,7 @@ if (($most_popular_language = stats_get_most_popular_language()) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['mostusedlanguuagefile']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\">{$most_popular_language['LANG']} (", number_format($most_popular_language['USER_COUNT'], 0, '.', ','), " {$lang['users']})</td>\n";
+    echo "                  <td align=\"left\">{$most_popular_language['LANGUAGE']} (", number_format($most_popular_language['USER_COUNT'], 0, '.', ','), " {$lang['users']})</td>\n";
     echo "                </tr>\n";
 }
 
@@ -443,7 +443,7 @@ if (($most_popular_timezone = stats_get_most_popular_timezone()) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\" width=\"375\">{$lang['mostusedtimezone']}:&nbsp;</td>\n";
-    echo "                  <td align=\"left\">{$most_popular_timezone['TIMEZONE']} (", number_format($most_popular_timezone['USER_COUNT'], 0, '.', ','), " {$lang['users']})</td>\n";
+    echo "                  <td align=\"left\">", timezone_id_to_string($most_popular_timezone['TIMEZONE']), " (", number_format($most_popular_timezone['USER_COUNT'], 0, '.', ','), " {$lang['users']})</td>\n";
     echo "                </tr>\n";
 
 }else {

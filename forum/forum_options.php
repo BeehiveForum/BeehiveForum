@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.132 2008-03-30 01:14:40 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.133 2008-07-03 10:32:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -286,7 +286,7 @@ if (isset($_POST['save'])) {
     }else {
         $user_prefs_global['USE_OVERFLOW_RESIZE'] = false;
     }
-    
+
     if (isset($_POST['reply_quick']) && ($_POST['reply_quick'] == "Y")) {
         $user_prefs['REPLY_QUICK'] = 'Y';
     }else {
@@ -407,7 +407,7 @@ if (isset($_POST['save'])) {
     if (isset($_POST['post_links']) && $_POST['post_links'] == "Y") {
         $user_prefs['POST_PAGE'] |= POST_AUTO_LINKS;
     }
-    
+
     if (isset($_POST['post_html'])) {
 
         if ($_POST['post_html'] == POST_HTML_DISABLED) {
@@ -447,11 +447,6 @@ if (!isset($uid)) $uid = bh_session_get_value('UID');
 // Get User Prefs
 
 $user_prefs = user_get_prefs($uid);
-
-// Get the available forum styles and emoticons
-
-$available_styles = styles_get_available();
-$available_emoticons = emoticons_get_available();
 
 // Set the default POST_PAGE options if none set
 

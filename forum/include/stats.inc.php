@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.105 2008-06-30 19:46:07 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.106 2008-07-03 14:28:50 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -906,104 +906,42 @@ function stats_get_most_popular_forum_style()
 {
     if (!$db_stats_get_most_popular_forum_style = db_connect()) return false;
 
-    $lang = load_language_file();
-
     if (!$table_data = get_table_prefix()) return false;
 
-    $forum_default_style = forum_get_setting('default_style', false, $lang['none']);
-
-    $sql = "SELECT STYLE, COUNT(*) AS COUNT FROM USER_PREFS ";
-    $sql.= "GROUP BY STYLE ORDER BY COUNT DESC LIMIT 0,1";
-
-    if (!$result = db_query($sql, $db_stats_get_most_popular_forum_style)) return false;
-
-    list($style_name_global, $user_count_global) = db_fetch_array($result, DB_RESULT_NUM);
-
-    $sql = "SELECT STYLE, COUNT(*) AS COUNT FROM {$table_data['PREFIX']}USER_PREFS ";
-    $sql.= "GROUP BY STYLE ORDER BY COUNT DESC LIMIT 0,1";
+    $sql = "SELECT STYLE, COUNT(*) AS USER_COUNT FROM {$table_data['PREFIX']}USER_PREFS GROUP BY STYLE ";
+    $sql.= "UNION SELECT STYLE, COUNT(*) AS USER_COUNT FROM USER_PREFS GROUP BY STYLE ";
+    $sql.= "ORDER BY USER_COUNT DESC LIMIT 0,1";
 
     if (!$result = db_query($sql, $db_stats_get_most_popular_forum_style)) return false;
 
-    list($style_name_forum, $user_count_forum) = db_fetch_array($result, DB_RESULT_NUM);
+    if (db_num_rows($result) > 0) {
 
-    if ($user_count_forum > $user_count_global) {
-
-        if (strlen(trim($style_name_forum)) > 0) {
-
-            return array('STYLE' => $style_name_forum,
-                         'USER_COUNT' => $user_count_forum);
-
-        }else {
-
-            return array('STYLE' => $forum_default_style,
-                         'USER_COUNT' => $user_count_forum);
-        }
-
-    }else {
-
-        if (strlen(trim($style_name_global)) > 0) {
-
-            return array('STYLE' => $style_name_global,
-                         'USER_COUNT' => $user_count_forum);
-
-        }else {
-
-            return array('STYLE' => $forum_default_style,
-                         'USER_COUNT' => $user_count_forum);
-        }
+        $style_data = db_fetch_array($result);
+        return $style_data;
     }
+
+    return false;
 }
 
 function stats_get_most_popular_emoticon_pack()
 {
     if (!$db_stats_get_most_popular_emoticon_pack = db_connect()) return false;
 
-    $lang = load_language_file();
-
     if (!$table_data = get_table_prefix()) return false;
 
-    $forum_default_emoticon_pack = forum_get_setting('default_emoticons', false, 'default');
-
-    $sql = "SELECT EMOTICONS, COUNT(*) AS COUNT FROM USER_PREFS ";
-    $sql.= "GROUP BY EMOTICONS ORDER BY COUNT DESC LIMIT 0,1";
-
-    if (!$result = db_query($sql, $db_stats_get_most_popular_emoticon_pack)) return false;
-
-    list($emoticon_pack_global, $user_count_global) = db_fetch_array($result, DB_RESULT_NUM);
-
-    $sql = "SELECT EMOTICONS, COUNT(*) AS COUNT FROM {$table_data['PREFIX']}USER_PREFS ";
-    $sql.= "GROUP BY EMOTICONS ORDER BY COUNT DESC LIMIT 0,1";
+    $sql = "SELECT EMOTICONS, COUNT(*) AS USER_COUNT FROM {$table_data['PREFIX']}USER_PREFS GROUP BY EMOTICONS ";
+    $sql.= "UNION SELECT EMOTICONS, COUNT(*) AS USER_COUNT FROM USER_PREFS GROUP BY EMOTICONS ";
+    $sql.= "ORDER BY USER_COUNT DESC LIMIT 0, 1";
 
     if (!$result = db_query($sql, $db_stats_get_most_popular_emoticon_pack)) return false;
 
-    list($emoticon_pack_forum, $user_count_forum) = db_fetch_array($result, DB_RESULT_NUM);
+    if (db_num_rows($result) > 0) {
 
-    if ($user_count_forum > $user_count_global) {
-
-        if (strlen(trim($emoticon_pack_forum)) > 0) {
-
-            return array('EMOTICONS'  => $emoticon_pack_forum,
-                         'USER_COUNT' => $user_count_forum);
-
-        }else {
-
-            return array('EMOTICONS'  => $forum_default_emoticon_pack,
-                         'USER_COUNT' => $user_count_forum);
-        }
-
-    }else {
-
-        if (strlen(trim($emoticon_pack_global)) > 0) {
-
-            return array('EMOTICONS'  => $emoticon_pack_global,
-                         'USER_COUNT' => $user_count_forum);
-
-        }else {
-
-            return array('EMOTICONS'  => $forum_default_emoticon_pack,
-                         'USER_COUNT' => $user_count_forum);
-        }
+        $emoticon_data = db_fetch_array($result);
+        return $emoticon_data;
     }
+
+    return false;
 }
 
 function stats_get_most_popular_language()
@@ -1012,48 +950,19 @@ function stats_get_most_popular_language()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $forum_default_language = forum_get_setting('default_language', false, 'en');
-
-    $sql = "SELECT LANGUAGE, COUNT(*) AS COUNT FROM USER_PREFS ";
-    $sql.= "GROUP BY LANGUAGE ORDER BY COUNT DESC LIMIT 0,1";
-
-    if (!$result = db_query($sql, $db_stats_get_most_popular_language)) return false;
-
-    list($language_name_global, $user_count_global) = db_fetch_array($result, DB_RESULT_NUM);
-
-    $sql = "SELECT LANGUAGE, COUNT(*) AS COUNT FROM {$table_data['PREFIX']}USER_PREFS ";
-    $sql.= "GROUP BY LANGUAGE ORDER BY COUNT DESC LIMIT 0,1";
+    $sql = "SELECT LANGUAGE, COUNT(*) AS USER_COUNT FROM {$table_data['PREFIX']}USER_PREFS GROUP BY LANGUAGE ";
+    $sql.= "UNION SELECT LANGUAGE, COUNT(*) AS USER_COUNT FROM USER_PREFS GROUP BY LANGUAGE ";
+    $sql.= "ORDER BY USER_COUNT DESC LIMIT 0, 1";
 
     if (!$result = db_query($sql, $db_stats_get_most_popular_language)) return false;
 
-    list($language_name_forum, $user_count_forum) = db_fetch_array($result, DB_RESULT_NUM);
+    if (db_num_rows($result) > 0) {
 
-    if ($user_count_forum > $user_count_global) {
-
-        if (strlen(trim($language_name_forum)) > 0) {
-
-            return array('LANG' => $language_name_forum,
-                         'USER_COUNT' => $user_count_forum);
-
-        }else {
-
-            return array('LANG' => $forum_default_language,
-                         'USER_COUNT' => $user_count_forum);
-        }
-
-    }else {
-
-        if (strlen(trim($language_name_forum)) > 0) {
-
-            return array('LANG' => $language_name_global,
-                         'USER_COUNT' => $user_count_forum);
-
-        }else {
-
-            return array('LANG' => $forum_default_language,
-                         'USER_COUNT' => $user_count_forum);
-        }
+        $language_data = db_fetch_array($result);
+        return $language_data;
     }
+
+    return false;
 }
 
 function stats_get_most_popular_timezone()
@@ -1064,21 +973,18 @@ function stats_get_most_popular_timezone()
 
     $forum_default_timezone = forum_get_setting('forum_timezone', false, '27');
 
-    $sql = "SELECT TIMEZONE, COUNT(*) AS COUNT FROM USER_PREFS ";
-    $sql.= "GROUP BY TIMEZONE ORDER BY COUNT DESC LIMIT 0,1";
+    $sql = "SELECT TIMEZONE, COUNT(*) AS USER_COUNT FROM USER_PREFS ";
+    $sql.= "GROUP BY TIMEZONE ORDER BY USER_COUNT DESC LIMIT 0,1";
 
     if (!$result = db_query($sql, $db_stats_get_most_popular_timezone)) return false;
 
     if (db_num_rows($result) > 0) {
 
-        list($timezone_id, $user_count) = db_fetch_array($result, DB_RESULT_NUM);
-
-        return array('TIMEZONE'   => timezone_id_to_string($timezone_id),
-                     'USER_COUNT' => $user_count);
+        $timezone_data = db_fetch_array($result);
+        return $timezone_data;
     }
 
-    return array('TIMEZONE'   => timezone_id_to_string($forum_default_timezone),
-                 'USER_COUNT' => stats_get_user_count());
+    return false;
 }
 
 function stats_get_most_active_user()

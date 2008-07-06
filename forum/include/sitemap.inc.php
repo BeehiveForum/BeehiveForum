@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: sitemap.inc.php,v 1.15 2008-03-25 21:16:25 decoyduck Exp $ */
+/* $Id: sitemap.inc.php,v 1.16 2008-07-06 18:27:00 decoyduck Exp $ */
 
 /**
 * sitemap.inc.php - sitemap functions
@@ -158,6 +158,10 @@ function sitemap_get_dir()
     // Once we have the forum directory we can find our sitemaps directory.
 
     $sitemap_path = $forum_directory. DIRECTORY_SEPARATOR. 'sitemaps';
+
+    // Disable sitemap for get_attachment.php as that can cause problems.
+
+    if (strstr($_SERVER['PHP_SELF'], 'get_attachment.php')) return false;
 
     // Check to make sure the $sitemap_path exists and is writable.
 

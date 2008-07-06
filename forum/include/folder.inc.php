@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.142 2007-10-24 19:57:08 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.143 2008-07-06 18:27:00 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -498,11 +498,15 @@ function folder_get($fid)
 
     $forum_fid = $table_data['FID'];
 
+    if (($uid = bh_session_get_value('UID')) === false) return false;
+
     $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, FOLDER.POSITION, ";
-    $sql.= "FOLDER.PREFIX, FOLDER.ALLOWED_TYPES, GROUP_PERMS.PERM ";
+    $sql.= "FOLDER.PREFIX, FOLDER.ALLOWED_TYPES, GROUP_PERMS.PERM, USER_FOLDER.INTEREST ";
     $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
     $sql.= "LEFT JOIN GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.FID = FOLDER.FID ";
     $sql.= "AND GROUP_PERMS.GID = 0 AND GROUP_PERMS.FORUM IN (0, $forum_fid)) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_FOLDER USER_FOLDER ";
+    $sql.= "ON (USER_FOLDER.FID = FOLDER.FID AND USER_FOLDER.UID = '$uid') ";
     $sql.= "WHERE FOLDER.FID = '$fid' GROUP BY FOLDER.FID, FOLDER.TITLE";
 
     if (!$result = db_query($sql, $db_folder_get)) return false;

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.122 2008-04-11 20:09:46 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.123 2008-07-06 18:27:01 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -158,6 +158,8 @@ $page_prefs = bh_session_get_post_page_prefs();
 
 $uid = bh_session_get_value('UID');
 
+// Assume everything is A-OK!
+
 $valid = true;
 
 $new_thread = false;
@@ -221,6 +223,23 @@ if (isset($_POST['t_newthread'])) {
     }else {
 
         $valid = false;
+    }
+}
+
+if (isset($_POST['t_to_uid']) && is_numeric($_POST['t_to_uid'])) {
+
+    $t_to_uid = $_POST['t_to_uid'];
+
+}else {
+
+    $t_to_uid = 0;
+
+    if (isset($reply_to_tid) && isset($reply_to_pid)) {
+
+        if (!$t_to_uid = message_get_user($reply_to_tid, $reply_to_pid)) {
+
+            $t_to_uid = 0;
+        }
     }
 }
 
@@ -299,9 +318,36 @@ $t_sig = $sig->getContent();
 
 if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
-    $replyto = $_GET['replyto'];
-    list($reply_to_tid, $reply_to_pid) = explode(".", $replyto);
+    list($reply_to_tid, $reply_to_pid) = explode(".", $_GET['replyto']);
+
+    if (!$t_fid = thread_get_folder($reply_to_tid, $reply_to_pid)) {
+
+        html_draw_top();
+        html_error_msg($lang['threadcouldnotbefound']);
+        html_draw_bottom();
+        exit;
+    }
+
+    if (bh_session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
+
+        html_email_confirmation_error();
+        exit;
+    }
+
+    if (!bh_session_check_perm(USER_PERM_POST_CREATE, $t_fid)) {
+
+        html_draw_top();
+        html_error_msg($lang['cannotcreatepostinfolder']);
+        html_draw_bottom();
+        exit;
+    }
+
     $new_thread = false;
+
+}elseif (isset($_POST['t_tid']) && isset($_POST['t_rpid'])) {
+
+    $reply_to_tid = (is_numeric($_POST['t_tid']) ? $_POST['t_tid'] : 0);
+    $reply_to_pid = (is_numeric($_POST['t_rpid']) ? $_POST['t_rpid'] : 0);
 
     if (!$t_fid = thread_get_folder($reply_to_tid, $reply_to_pid)) {
 
@@ -325,49 +371,16 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
         exit;
     }
 
-}elseif (isset($_POST['t_tid'])) {
-
-    $reply_to_tid = $_POST['t_tid'];
-    $reply_to_pid = $_POST['t_rpid'];
     $new_thread = false;
-
-    if (!$t_fid = thread_get_folder($reply_to_tid, $reply_to_pid)) {
-
-        light_html_draw_top("robots=noindex,nofollow");
-        light_html_display_error_msg($lang['threadcouldnotbefound']);
-        light_html_draw_bottom();
-        exit;
-    }
-
-    if (bh_session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
-
-        html_email_confirmation_error();
-        exit;
-    }
-
-    if (!bh_session_check_perm(USER_PERM_POST_CREATE | USER_PERM_POST_READ, $t_fid)) {
-
-        light_html_draw_top("robots=noindex,nofollow");
-        light_html_display_error_msg($lang['cannotcreatepostinfolder']);
-        light_html_draw_bottom();
-        exit;
-    }
 
 }else {
 
     $new_thread = true;
 
     if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
-
         $t_fid = $_GET['fid'];
-
     }elseif (isset($_POST['t_fid']) && is_numeric($_POST['t_fid'])) {
-
         $t_fid = $_POST['t_fid'];
-
-    }else {
-
-        $t_fid = 1;
     }
 
     if (isset($t_fid) && !folder_is_valid($t_fid)) {
@@ -470,27 +483,36 @@ if ($valid && isset($_POST['post'])) {
             if ($t_tid > 0) {
 
                 if ($allow_sig == true && strlen(trim($t_sig)) > 0) {
-                    $t_content.= "\n<div class=\"sig\">".$t_sig."</div>";
-
+                    $t_content.= "\n<div class=\"sig\">$t_sig</div>";
                 }
 
                 if ($new_thread) {
 
-                    $new_pid = post_create($t_fid, $t_tid, $t_rpid, $uid, $uid, $_POST['t_to_uid'], $t_content);
+                    $new_pid = post_create($t_fid, $t_tid, $t_rpid, $uid, $uid, $t_to_uid, $t_content);
 
                 }else {
 
-                    $new_pid = post_create($t_fid, $t_tid, $t_rpid, $thread_data['BY_UID'], $uid, $_POST['t_to_uid'], $t_content);
+                    $new_pid = post_create($t_fid, $t_tid, $t_rpid, $thread_data['BY_UID'], $uid, $t_to_uid, $t_content);
                 }
 
-                if ($high_interest == "Y") thread_set_high_interest($t_tid);
+                if ($new_pid > -1) {
 
-                if (!bh_session_check_perm(USER_PERM_WORMED, 0)) {
+                    $user_rel = user_get_relationship($t_to_uid, $uid);
 
-                    email_sendnotification($_POST['t_to_uid'], $uid, $t_tid, $new_pid);
+                    if ($high_interest == "Y") thread_set_high_interest($t_tid);
 
-                    if (isset($thread_data['MODIFIED']) && $thread_data['MODIFIED'] > 0) {
-                        email_sendsubscription($_POST['t_to_uid'], $uid, $t_tid, $new_pid, $thread_data['MODIFIED']);
+                    if (!bh_session_check_perm(USER_PERM_WORMED, 0) && !($user_rel & USER_IGNORED_COMPLETELY)) {
+
+                        $exclude_user_array = array($t_to_uid, $uid);
+
+                        email_sendnotification($t_to_uid, $uid, $t_tid, $new_pid);
+
+                        email_send_folder_subscription($t_to_uid, $uid, $t_fid, $t_tid, $new_pid, $exclude_user_array);
+
+                        if (isset($thread_data['MODIFIED']) && $thread_data['MODIFIED'] > 0) {
+
+                            email_send_thread_subscription($t_to_uid, $uid, $t_tid, $new_pid, $thread_data['MODIFIED'], $exclude_user_array);
+                        }
                     }
                 }
             }
@@ -546,14 +568,14 @@ if ($valid && isset($_POST['preview'])) {
 
     echo "<h1>{$lang['messagepreview']}</h1>";
 
-    if ($_POST['t_to_uid'] == 0) {
+    if ($t_to_uid == 0) {
 
         $preview_message['TLOGON'] = $lang['allcaps'];
         $preview_message['TNICK'] = $lang['allcaps'];
 
     }else {
 
-        $preview_tuser = user_get($_POST['t_to_uid']);
+        $preview_tuser = user_get($t_to_uid);
         $preview_message['TLOGON'] = $preview_tuser['LOGON'];
         $preview_message['TNICK'] = $preview_tuser['NICKNAME'];
         $preview_message['TO_UID'] = $preview_tuser['UID'];
@@ -577,12 +599,6 @@ if ($valid && isset($_POST['preview'])) {
 
 if (!$new_thread) {
 
-    if (!isset($_POST['t_to_uid'])) {
-        $t_to_uid = message_get_user($reply_to_tid,$reply_to_pid);
-    }else {
-        $t_to_uid = $_POST['t_to_uid'];
-    }
-
     if (isset($thread_data['CLOSED']) && $thread_data['CLOSED'] > 0) {
 
         if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
@@ -603,6 +619,10 @@ echo form_input_hidden('t_dedupe', _htmlentities($t_dedupe));
 
 if (!isset($t_threadtitle)) {
     $t_threadtitle = "";
+}
+
+if (!isset($t_fid)) {
+    $t_fid = 1;
 }
 
 if ($new_thread) {
@@ -643,8 +663,6 @@ if ($new_thread) {
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     light_html_display_error_array($error_msg_array);
 }
-
-if (!isset($t_to_uid)) $t_to_uid = -1;
 
 echo "<p>{$lang['to']}: ", post_draw_to_dropdown($t_to_uid), "</p>\n";
 echo "<p>", light_form_textarea("t_content", $post->getTidyContent(), 15, 60), "</p>\n";

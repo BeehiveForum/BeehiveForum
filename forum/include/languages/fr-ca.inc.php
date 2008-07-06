@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.111 2008-06-16 12:34:03 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.112 2008-07-06 18:27:00 decoyduck Exp $ */
 
 // French Canadian language file
 
@@ -1061,8 +1061,8 @@ $lang['msgnotificationemail'] = "Salut %s.\n\n%s a posté un message à votre at
 
 // Thread Subscription notification ------------------------------------
 
-$lang['subnotification_subject'] = "Confirmation d'abonnement de %s";
-$lang['subnotification'] = "Salut %s.\n\n%s a posté un message dans un fil de discussion auquel vous vous êtes abonné sur %s\n\nLe sujet est: %s\n\nPour lire ce message et les autres dans le même fil de discussion, allez à:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: Si vous désirez ne plus recevoir de confirmations de message par courriel de nouveau messages dans ce fil de discussion, allez à: %s et ajuster votre Niveau d'intérêt au bas de la page.";
+$lang['threadsubnotification_subject'] = "Confirmation d'abonnement de %s";
+$lang['threadsubnotification'] = "Salut %s.\n\n%s a posté un message dans un fil de discussion auquel vous vous êtes abonné sur %s\n\nLe sujet est: %s\n\nPour lire ce message et les autres dans le même fil de discussion, allez à:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: Si vous désirez ne plus recevoir de confirmations de message par courriel de nouveau messages dans ce fil de discussion, allez à: %s et ajuster votre Niveau d'intérêt au bas de la page.";
 
 // PM notification -----------------------------------------------------
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.86 2008-06-16 12:34:02 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.87 2008-07-06 18:27:00 decoyduck Exp $ */
 
 // German language file
 
@@ -1061,8 +1061,8 @@ $lang['msgnotificationemail'] = "Hallo %s,\n\n%s schickte ein nachricht an dich 
 
 // Thread Subscription notification ------------------------------------
 
-$lang['subnotification_subject'] = "Subskription Mitteilung von %s";
-$lang['subnotification'] = "Hallo %s,\n\n%s schickte eine Nachricht in einem Eintrag den Du aktiviert hast %s\n\nBetreff: %s\n\nUm diese und andere betreffende Nachrichten zu lesen, gehe zu:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nMerke: Wenn Du keine weiteren eMail-Mitteilungen bei neuen eintraegen in diesem Bereich wuenschst, gehe zu: %s und aendere den Interesse-Level am Fuss der Seite.";
+$lang['threadsubnotification_subject'] = "Subskription Mitteilung von %s";
+$lang['threadsubnotification'] = "Hallo %s,\n\n%s schickte eine Nachricht in einem Eintrag den Du aktiviert hast %s\n\nBetreff: %s\n\nUm diese und andere betreffende Nachrichten zu lesen, gehe zu:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nMerke: Wenn Du keine weiteren eMail-Mitteilungen bei neuen eintraegen in diesem Bereich wuenschst, gehe zu: %s und aendere den Interesse-Level am Fuss der Seite.";
 
 // PM notification -----------------------------------------------------
 

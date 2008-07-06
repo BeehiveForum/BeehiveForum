@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.553 2008-06-30 19:46:07 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.554 2008-07-06 18:27:00 decoyduck Exp $ */
 
 // British English language file
 
@@ -116,6 +116,7 @@ $lang['style'] = "Style";
 $lang['go'] = "Go";
 $lang['folder'] = "Folder";
 $lang['ignoredfolder'] = "Ignored Folder";
+$lang['subscribedfolder'] = "Subscribed Folder";
 $lang['folders'] = "Folders";
 $lang['thread'] = "thread";
 $lang['threads'] = "threads";
@@ -1061,8 +1062,13 @@ $lang['msgnotificationemail'] = "Hello %s,\n\n%s posted a message to you on %s.\
 
 // Thread Subscription notification ------------------------------------
 
-$lang['subnotification_subject'] = "Subscription Notification from %s";
-$lang['subnotification'] = "Hello %s,\n\n%s posted a message in a thread you have subscribed to on %s.\n\nThe subject is: %s.\n\nTo read that message and others in the same discussion, go to:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: If you do not wish to receive email notifications of new messages in this thread, go to: %s and adjust your Interest level at the bottom of the page.";
+$lang['threadsubnotification_subject'] = "Subscription Notification from %s";
+$lang['threadsubnotification'] = "Hello %s,\n\n%s posted a message in a thread you are subscribed to on %s.\n\nThe subject is: %s.\n\nTo read that message and others in the same discussion, go to:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: If you do not wish to receive email notifications of new messages in this thread, go to: %s and adjust your Interest level at the bottom of the page.";
+
+// Folder Subscription notification ------------------------------------
+
+$lang['foldersubnotification_subject'] = "Subscription Notification from %s";
+$lang['foldersubnotification'] = "Hello %s,\n\n%s posted a message in a folder you are subscribed to on %s.\n\nThe subject is: %s.\n\nTo read that message and others in the same discussion, go to:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: If you do not wish to receive email notifications of new messages in this thread, go to: %s and adjust your Interest level by clicking on the folder's icon at the top of page.";
 
 // PM notification -----------------------------------------------------
 
@@ -2040,6 +2046,12 @@ $lang['failedtoupdatethreadlockstatus'] = "Failed to update thread lock status";
 $lang['failedtodeletepostsbyuser'] = "Failed to delete posts by selected user";
 $lang['failedtodeletethread'] = "Failed to delete thread.";
 $lang['failedtoundeletethread'] = "Failed to un-delete thread";
+
+// Folder Options (folder_options.php) ---------------------------------
+
+$lang['folderoptions'] = "Folder Options";
+$lang['foldercouldnotbefound'] = "The requested folder could not be found or access was denied.";
+$lang['failedtoupdatefolderinterest'] = "Failed to update folder interest";
 
 // Dictionary (dictionary.php) -----------------------------------------
 

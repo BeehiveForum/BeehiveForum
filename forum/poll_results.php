@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll_results.php,v 1.34 2008-06-19 15:56:52 decoyduck Exp $ */
+/* $Id: poll_results.php,v 1.35 2008-07-06 20:32:29 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -199,7 +199,7 @@ html_draw_top("title=$forum_name > $thread_title > {$poll_data['QUESTION']}", "o
 echo "<div align=\"center\">\n";
 echo "<table width=\"580\" border=\"0\">\n";
 echo "  <tr>\n";
-echo "    <td align=\"left\">", messages_top($tid, 1, $thread_data['FID'], $folder_title, $thread_title, false, false, false, false, false, false), "</td>\n";
+echo "    <td align=\"left\">", messages_top($tid, 1, $thread_data['FID'], $folder_title, $thread_title, THREAD_NOINTEREST, FOLDER_NOINTEREST, false, false, false, false, false), "</td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"580\">\n";

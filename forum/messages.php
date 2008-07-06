@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.266 2008-06-15 18:26:24 decoyduck Exp $ */
+/* $Id: messages.php,v 1.267 2008-07-06 20:32:28 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -197,6 +197,7 @@ if (isset($_POST['pollsubmit'])) {
     if (isset($_POST['tid']) && is_numeric($_POST['tid'])) {
 
         $tid = $_POST['tid'];
+
         poll_delete_vote($tid);
     }
 }
@@ -225,6 +226,14 @@ if (!$thread_data = thread_get($tid, bh_session_check_perm(USER_PERM_ADMIN_TOOLS
 
     html_draw_top();
     html_error_msg($lang['threadcouldnotbefound']);
+    html_draw_bottom();
+    exit;
+}
+
+if (!$folder_data = folder_get($thread_data['FID'])) {
+
+    html_draw_top();
+    html_error_msg($lang['foldercouldnotbefound']);
     html_draw_bottom();
     exit;
 }
@@ -302,8 +311,6 @@ if (isset($thread_data['STICKY']) && isset($thread_data['STICKY_UNTIL'])) {
     }
 }
 
-$foldertitle = folder_get_title($thread_data['FID']);
-
 $show_sigs = (bh_session_get_value('VIEW_SIGS') == 'N') ? false : true;
 
 $page_prefs = bh_session_get_post_page_prefs();
@@ -347,7 +354,7 @@ if (sizeof($highlight_array) > 0) {
 echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" border=\"0\">\n";
 echo "  <tr>\n";
-echo "    <td align=\"left\">", messages_top($tid, $pid, $thread_data['FID'], $folder_title, $thread_title, $thread_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK'], ($thread_data['DELETED'] == 'Y')), "</td>\n";
+echo "    <td align=\"left\">", messages_top($tid, $pid, $thread_data['FID'], $folder_title, $thread_title, $thread_data['INTEREST'], $folder_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK'], ($thread_data['DELETED'] == 'Y')), "</td>\n";
 
 if ($thread_data['POLL_FLAG'] == 'Y' && $messages[0]['PID'] != 1) {
 

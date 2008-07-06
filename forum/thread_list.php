@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.330 2008-07-06 18:27:02 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.331 2008-07-06 20:32:29 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -526,11 +526,11 @@ foreach ($folder_order as $folder_number) {
         echo "          <td align=\"left\" class=\"foldername\">\n";
 
         if ($folder_info[$folder_number]['INTEREST'] == FOLDER_SUBSCRIBED) {
-            echo "            <a href=\"folder_options.php?webtag=$webtag&amp;fid=$folder_number\" target=\"". html_get_frame_name('right'). "\"><img src=\"".style_image('folder_subscribed.png')."\" alt=\"{$lang['folder']}\" title=\"{$lang['subscribedfolder']}\" border=\"0\" /></a>\n";
+            echo "            <a href=\"folder_options.php?webtag=$webtag&amp;fid=$folder_number\" target=\"". html_get_frame_name('right'). "\"><img src=\"".style_image('folder_subscribed.png')."\" alt=\"{$lang['subscribedfolder']}\" title=\"{$lang['subscribedfolder']}\" border=\"0\" /></a>\n";
         }else if ($folder_info[$folder_number]['INTEREST'] == FOLDER_IGNORED) {
-            echo "            <a href=\"folder_options.php?webtag=$webtag&amp;fid=$folder_number\" target=\"". html_get_frame_name('right'). "\"><img src=\"".style_image('folder_ignored.png')."\" alt=\"{$lang['folder']}\" title=\"{$lang['ignoredfolder']}\" border=\"0\" /></a>\n";
+            echo "            <a href=\"folder_options.php?webtag=$webtag&amp;fid=$folder_number\" target=\"". html_get_frame_name('right'). "\"><img src=\"".style_image('folder_ignored.png')."\" alt=\"{$lang['ignoredfolder']}\" title=\"{$lang['ignoredfolder']}\" border=\"0\" /></a>\n";
         }else {
-            echo "            <a href=\"folder_options.php?webtag=$webtag&amp;fid=$folder_number\" target=\"". html_get_frame_name('right'). "\"><img src=\"".style_image('folder.png')."\" alt=\"{$lang['ignoredfolder']}\" title=\"{$lang['ignoredfolder']}\" border=\"0\" /></a>\n";
+            echo "            <a href=\"folder_options.php?webtag=$webtag&amp;fid=$folder_number\" target=\"". html_get_frame_name('right'). "\"><img src=\"".style_image('folder.png')."\" alt=\"{$lang['folder']}\" title=\"{$lang['folder']}\" border=\"0\" /></a>\n";
         }
 
         echo "            <a href=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$folder_number\" title=\"", word_filter_add_ob_tags(_htmlentities($folder_info[$folder_number]['DESCRIPTION'])), "\">", word_filter_add_ob_tags(_htmlentities($folder_info[$folder_number]['TITLE'])), "</a>\n";

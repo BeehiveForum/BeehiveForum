@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.534 2008-07-06 18:27:00 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.535 2008-07-06 20:32:29 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -523,7 +523,7 @@ function message_apply_formatting($message, $emoticons = true, $ignore_sig = fal
     return preg_replace("/<\/?noemots>|<\/?nowiki>/", "", $message);
 }
 
-function messages_top($tid, $pid, $folder_fid, $folder_title, $thread_title, $interest_level = THREAD_NOINTEREST, $sticky = "N", $closed = false, $locked = false, $deleted = false, $frame_links = true)
+function messages_top($tid, $pid, $folder_fid, $folder_title, $thread_title, $thread_interest_level = THREAD_NOINTEREST, $folder_interest_level = FOLDER_NOINTEREST, $sticky = "N", $closed = false, $locked = false, $deleted = false, $frame_links = true)
 {
     $lang = load_language_file();
 
@@ -531,12 +531,12 @@ function messages_top($tid, $pid, $folder_fid, $folder_title, $thread_title, $in
 
     $frame_top_target = html_get_top_frame_name();
 
-    if ($interest_level == FOLDER_SUBSCRIBED) {
-        echo "<p><a href=\"folder_options.php?webtag=$webtag&amp;fid=$folder_fid\" target=\"_self\"><img src=\"".style_image('folder_subscribed.png')."\" alt=\"{$lang['folder']}\" title=\"{$lang['subscribedfolder']}\" border=\"0\" /></a>&nbsp;";
-    }else if ($interest_level == FOLDER_IGNORED) {
-        echo "<p><a href=\"folder_options.php?webtag=$webtag&amp;fid=$folder_fid\" target=\"_self\"><img src=\"".style_image('folder_ignored.png')."\" alt=\"{$lang['folder']}\" title=\"{$lang['ignoredfolder']}\" border=\"0\" /></a>&nbsp;";
+    if ($folder_interest_level == FOLDER_SUBSCRIBED) {
+        echo "<p><a href=\"folder_options.php?webtag=$webtag&amp;fid=$folder_fid\" target=\"_self\"><img src=\"".style_image('folder_subscribed.png')."\" alt=\"{$lang['subscribedfolder']}\" title=\"{$lang['subscribedfolder']}\" border=\"0\" /></a>&nbsp;";
+    }else if ($folder_interest_level == FOLDER_IGNORED) {
+        echo "<p><a href=\"folder_options.php?webtag=$webtag&amp;fid=$folder_fid\" target=\"_self\"><img src=\"".style_image('folder_ignored.png')."\" alt=\"{$lang['ignoredfolder']}\" title=\"{$lang['ignoredfolder']}\" border=\"0\" /></a>&nbsp;";
     }else {
-        echo "<p><a href=\"folder_options.php?webtag=$webtag&amp;fid=$folder_fid\" target=\"_self\"><img src=\"".style_image('folder.png')."\" alt=\"{$lang['ignoredfolder']}\" title=\"{$lang['ignoredfolder']}\" border=\"0\" /></a>&nbsp;";
+        echo "<p><a href=\"folder_options.php?webtag=$webtag&amp;fid=$folder_fid\" target=\"_self\"><img src=\"".style_image('folder.png')."\" alt=\"{$lang['folder']}\" title=\"{$lang['folder']}\" border=\"0\" /></a>&nbsp;";
     }
 
     if ($frame_links) {
@@ -550,8 +550,8 @@ function messages_top($tid, $pid, $folder_fid, $folder_title, $thread_title, $in
     }
 
     if ($closed) echo "&nbsp;<img src=\"", style_image('thread_closed.png'), "\" alt=\"{$lang['closed']}\" title=\"{$lang['closed']}\" />\n";
-    if ($interest_level == THREAD_INTERESTED) echo "&nbsp;<img src=\"", style_image('high_interest.png'), "\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" />";
-    if ($interest_level == THREAD_SUBSCRIBED) echo "&nbsp;<img src=\"", style_image('subscribe.png'), "\" alt=\"{$lang['subscribed']}\" title=\"{$lang['subscribed']}\" />";
+    if ($thread_interest_level == THREAD_INTERESTED) echo "&nbsp;<img src=\"", style_image('high_interest.png'), "\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" />";
+    if ($thread_interest_level == THREAD_SUBSCRIBED) echo "&nbsp;<img src=\"", style_image('subscribe.png'), "\" alt=\"{$lang['subscribed']}\" title=\"{$lang['subscribed']}\" />";
     if ($sticky == "Y") echo "&nbsp;<img src=\"", style_image('sticky.png'), "\" alt=\"{$lang['sticky']}\" title=\"{$lang['sticky']}\" />";
     if ($locked) echo "&nbsp;<img src=\"", style_image('admin_locked.png'), "\" alt=\"{$lang['locked']}\" title=\"{$lang['locked']}\" />\n";
     if ($deleted) echo "&nbsp;<img src=\"", style_image('delete.png'), "\" alt=\"{$lang['deleted']}\" title=\"{$lang['deleted']}\" />\n";

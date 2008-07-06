@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.533 2008-06-30 19:46:06 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.534 2008-07-06 18:27:00 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -531,7 +531,13 @@ function messages_top($tid, $pid, $folder_fid, $folder_title, $thread_title, $in
 
     $frame_top_target = html_get_top_frame_name();
 
-    echo "<p><img src=\"", style_image('folder.png'). "\" alt=\"{$lang['folder']}\" title=\"{$lang['folder']}\" />&nbsp;";
+    if ($interest_level == FOLDER_SUBSCRIBED) {
+        echo "<p><a href=\"folder_options.php?webtag=$webtag&amp;fid=$folder_fid\" target=\"_self\"><img src=\"".style_image('folder_subscribed.png')."\" alt=\"{$lang['folder']}\" title=\"{$lang['subscribedfolder']}\" border=\"0\" /></a>&nbsp;";
+    }else if ($interest_level == FOLDER_IGNORED) {
+        echo "<p><a href=\"folder_options.php?webtag=$webtag&amp;fid=$folder_fid\" target=\"_self\"><img src=\"".style_image('folder_ignored.png')."\" alt=\"{$lang['folder']}\" title=\"{$lang['ignoredfolder']}\" border=\"0\" /></a>&nbsp;";
+    }else {
+        echo "<p><a href=\"folder_options.php?webtag=$webtag&amp;fid=$folder_fid\" target=\"_self\"><img src=\"".style_image('folder.png')."\" alt=\"{$lang['ignoredfolder']}\" title=\"{$lang['ignoredfolder']}\" border=\"0\" /></a>&nbsp;";
+    }
 
     if ($frame_links) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.285 2008-06-16 12:34:03 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.286 2008-07-06 18:27:00 decoyduck Exp $ */
 
 // British English language file
 
@@ -1061,8 +1061,8 @@ $lang['msgnotificationemail'] = "h3ll0 %s,\n\n%s POsTEd 4 ME\$S49E +0 J00 On %s.
 
 // Thread Subscription notification ------------------------------------
 
-$lang['subnotification_subject'] = "suB\$CRIp+1on NO+iFIc4tI0N pHROm %s";
-$lang['subnotification'] = "hElL0 %s,\n\n%s P0s+3d 4 mESSaGE IN 4 tHR3@d J00 H4Ve \$U8\$crIb3d t0 0N %s.\n\n+h3 SUbjEc+ IS: %s.\n\nt0 re4D +h4t M3S\$@93 4ND 0THerS iN +3H S@m3 D1ScuSS1ON, 9O T0:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nn0+E: IF J00 do N0T W1\$h +O rECe1v3 eMAil no+IpHIc@TI0N\$ Of new MESs49eS 1N th1s tHR3AD, 90 To: %s @ND ADJusT y0ur iNTeR3ST lEVEl @+ +3H B0++0M 0F +h3 P@ge.";
+$lang['threadsubnotification_subject'] = "suB\$CRIp+1on NO+iFIc4tI0N pHROm %s";
+$lang['threadsubnotification'] = "hElL0 %s,\n\n%s P0s+3d 4 mESSaGE IN 4 tHR3@d J00 H4Ve \$U8\$crIb3d t0 0N %s.\n\n+h3 SUbjEc+ IS: %s.\n\nt0 re4D +h4t M3S\$@93 4ND 0THerS iN +3H S@m3 D1ScuSS1ON, 9O T0:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nn0+E: IF J00 do N0T W1\$h +O rECe1v3 eMAil no+IpHIc@TI0N\$ Of new MESs49eS 1N th1s tHR3AD, 90 To: %s @ND ADJusT y0ur iNTeR3ST lEVEl @+ +3H B0++0M 0F +h3 P@ge.";
 
 // PM notification -----------------------------------------------------
 

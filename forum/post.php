@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.342 2008-04-23 21:03:14 decoyduck Exp $ */
+/* $Id: post.php,v 1.343 2008-07-06 18:27:02 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -123,6 +123,7 @@ if (user_is_guest()) {
 }
 
 // Check that there are some available folders for this thread type
+
 if (!folder_get_by_type_allowed(FOLDER_ALLOW_NORMAL_THREAD)) {
     html_message_type_error();
     exit;
@@ -139,11 +140,6 @@ if (isset($_POST['cancel'])) {
     }
 
     header_redirect($uri);
-}
-
-// for "REPLY ALL" form button on messages.php
-if (isset($_POST['replyto'])) {
-    $_GET['replyto'] = $_POST['replyto'];
 }
 
 // Check if the user is viewing signatures.
@@ -606,22 +602,22 @@ if (isset($_POST['to_radio']) && strlen(trim(_stripslashes($_POST['to_radio'])))
     $to_radio = '';
 }
 
-if (isset($_POST['t_to_uid_others']) && strlen(trim(_stripslashes($_POST['t_to_uid_others']))) > 0) {
-    $t_to_uid_others = trim(_stripslashes($_POST['t_to_uid_others']));
-}else {
-    $t_to_uid_others = '';
-}
-
-if (isset($_POST['t_to_uid_in_thread']) && strlen(trim(_stripslashes($_POST['t_to_uid_in_thread']))) > 0) {
-    $t_to_uid_in_thread = trim(_stripslashes($_POST['t_to_uid_in_thread']));
+if (isset($_POST['t_to_uid_in_thread']) && is_numeric($_POST['t_to_uid_in_thread'])) {
+    $t_to_uid_in_thread = $_POST['t_to_uid_in_thread'];
 }else {
     $t_to_uid_in_thread = '';
 }
 
-if (isset($_POST['t_to_uid_recent']) && strlen(trim(_stripslashes($_POST['t_to_uid_recent']))) > 0) {
-    $t_to_uid_recent = trim(_stripslashes($_POST['t_to_uid_recent']));
+if (isset($_POST['t_to_uid_recent']) && is_numeric($_POST['t_to_uid_recent'])) {
+    $t_to_uid_recent = $_POST['t_to_uid_recent'];
 }else {
     $t_to_uid_recent = '';
+}
+
+if (isset($_POST['t_to_uid_others']) && strlen(trim(_stripslashes($_POST['t_to_uid_others']))) > 0) {
+    $t_to_uid_others = trim(_stripslashes($_POST['t_to_uid_others']));
+}else {
+    $t_to_uid_others = '';
 }
 
 if ($to_radio == 'others') {
@@ -771,14 +767,21 @@ if ($valid && isset($_POST['post'])) {
 
                 if ($new_pid > -1) {
 
+                    $user_rel = user_get_relationship($t_to_uid, $uid);
+
                     if ($high_interest == "Y") thread_set_high_interest($t_tid);
 
-                    if (!bh_session_check_perm(USER_PERM_WORMED, 0)) {
+                    if (!bh_session_check_perm(USER_PERM_WORMED, 0) && !($user_rel & USER_IGNORED_COMPLETELY)) {
+
+                        $exclude_user_array = array($t_to_uid, $uid);
 
                         email_sendnotification($t_to_uid, $uid, $t_tid, $new_pid);
 
+                        email_send_folder_subscription($t_to_uid, $uid, $t_fid, $t_tid, $new_pid, $exclude_user_array);
+
                         if (isset($thread_data['MODIFIED']) && $thread_data['MODIFIED'] > 0) {
-                            email_sendsubscription($t_to_uid, $uid, $t_tid, $new_pid, $thread_data['MODIFIED']);
+
+                            email_send_thread_subscription($t_tid, $new_pid, $thread_data['MODIFIED'], $exclude_user_array);
                         }
                     }
 

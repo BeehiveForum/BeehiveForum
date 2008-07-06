@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.132 2008-03-18 16:27:57 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.133 2008-07-06 18:27:00 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -57,8 +57,6 @@ function email_sendnotification($tuid, $fuid, $tid, $pid)
     if (!is_numeric($fuid)) return false;
     if (!is_numeric($tid)) return false;
     if (!is_numeric($pid)) return false;
-
-    $forum_settings = forum_get_settings();
 
     $webtag = get_webtag($webtag_search);
 
@@ -134,102 +132,202 @@ function email_sendnotification($tuid, $fuid, $tid, $pid)
     return false;
 }
 
-function email_sendsubscription($tuid, $fuid, $tid, $pid, $modified)
+function email_send_thread_subscription($tuid, $fuid, $tid, $pid, $modified, &$exclude_user_array)
 {
-    if (!check_mail_variables()) return false;
+    if (!$db_email_send_thread_subscription = db_connect()) return false;
+
+    if (!is_numeric($tid)) return false;
+    if (!is_numeric($pid)) return false;
 
     if (!is_numeric($tuid)) return false;
     if (!is_numeric($fuid)) return false;
-    if (!is_numeric($tid)) return false;
-    if (!is_numeric($pid)) return false;
+
     if (!is_numeric($modified)) return false;
 
-    if (!$db_email_sendsubscription = db_connect()) return false;
+    if (!check_mail_variables()) return false;
+
+    if (!$from_user = user_get($fuid)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $forum_settings = forum_get_settings();
+    $forum_fid = $table_data['FID'];
 
     $webtag = get_webtag($webtag_search);
 
-    if ($from_user = user_get($fuid)) {
+    $exclude_user_list = implode(",", preg_grep("/^[0-9]+$/", $exclude_user_array));
 
-        $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER.EMAIL ";
-        $sql.= "FROM {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
-        $sql.= "LEFT JOIN USER USER ON (USER.UID = USER_THREAD.UID) ";
-        $sql.= "WHERE USER_THREAD.TID = '$tid' AND USER.UID IS NOT NULL ";
-        $sql.= "AND UNIX_TIMESTAMP(USER_THREAD.LAST_READ_AT) > $modified ";
-        $sql.= "AND USER_THREAD.LAST_READ_AT IS NOT NULL ";
-        $sql.= "AND USER_THREAD.UID NOT IN ($fuid, $tuid) ";
-        $sql.= "AND USER_THREAD.INTEREST = 2 ";
-        $sql.= "GROUP BY USER.UID";
+    $sql = "SELECT USER_THREAD.UID, USER.LOGON, USER.NICKNAME, USER.EMAIL ";
+    $sql.= "FROM {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
+    $sql.= "LEFT JOIN USER ON (USER.UID = USER_THREAD.UID) ";
+    $sql.= "LEFT JOIN USER_FORUM ON (USER_FORUM.UID = USER_THREAD.UID ";
+    $sql.= "AND USER_FORUM.FID = '$forum_fid') WHERE USER_THREAD.TID = '$tid' ";
+    $sql.= "AND UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT) > $modified ";
+    $sql.= "AND USER_THREAD.UID NOT IN ($tuid, $fuid, $exclude_user_list) ";
+    $sql.= "AND USER_THREAD.INTEREST = 2";
 
-        if (!$result = db_query($sql, $db_email_sendsubscription)) return false;
+    if (!$result = db_query($sql, $db_email_send_thread_subscription)) return false;
 
-        if (db_num_rows($result) > 0) {
+    if (db_num_rows($result) > 0) {
 
-            while ($to_user = db_fetch_array($result)) {
+        while ($to_user = db_fetch_array($result)) {
 
-                $user_rel = user_get_relationship($to_user['UID'], $from_user['UID']);
+            $user_rel = user_get_relationship($to_user['UID'], $from_user['UID']);
 
-                if ($user_rel & USER_IGNORED_COMPLETELY) return false;
+            if ($user_rel & USER_IGNORED_COMPLETELY) return false;
 
-                // Validate the email address before we continue.
+            // Validate the email address before we continue.
 
-                if (!email_address_valid($to_user['EMAIL'])) return false;
+            if (!email_address_valid($to_user['EMAIL'])) return false;
 
-                if (!$thread = thread_get($tid)) return false;
+            if (!$thread = thread_get($tid)) return false;
 
-                // Get the right language for the email
+            // Get the right language for the email
 
-                $lang = email_get_language($tuid);
+            $lang = email_get_language($tuid);
 
-                // Get the forum reply-to email address
+            // Get the forum reply-to email address
 
-                $forum_email = forum_get_setting('forum_noreply_email', false, 'noreply@abeehiveforum.net');
+            $forum_email = forum_get_setting('forum_noreply_email', false, 'noreply@abeehiveforum.net');
 
-                // Get the required variables (forum name, subject, recipient, etc.) and
-                // pass them all through the recipient's word filter.
+            // Get the required variables (forum name, subject, recipient, etc.) and
+            // pass them all through the recipient's word filter.
 
-                $forum_name     = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid);
-                $subject        = word_filter_apply(sprintf($lang['subnotification_subject'], $forum_name), $tuid);
-                $recipient      = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid);
-                $message_author = word_filter_apply(format_user_name($from_user['LOGON'], $from_user['NICKNAME']), $tuid);
-                $thread_title   = word_filter_apply(thread_format_prefix($thread['PREFIX'], $thread['TITLE']), $tuid);
+            $forum_name     = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid);
+            $subject        = word_filter_apply(sprintf($lang['subnotification_subject'], $forum_name), $tuid);
+            $recipient      = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid);
+            $message_author = word_filter_apply(format_user_name($from_user['LOGON'], $from_user['NICKNAME']), $tuid);
+            $thread_title   = word_filter_apply(thread_format_prefix($thread['PREFIX'], $thread['TITLE']), $tuid);
 
-                // Generate link to the forum itself
+            // Generate link to the forum itself
 
-                $forum_link = html_get_forum_uri();
+            $forum_link = html_get_forum_uri("/index.php?webtag=$webtag&msg=$tid.$pid");
 
-                // Generate the message link.
+            // Generate the message link.
 
-                $message_link = html_get_forum_uri("/index.php?webtag=$webtag&msg=$tid.$pid");
+            $message_link = html_get_forum_uri("/index.php?webtag=$webtag&msg=$tid.$pid");
 
-                // Generate the message body.
+            // Generate the message body.
 
-                $message = wordwrap(sprintf($lang['subnotification'], $recipient, $message_author, $forum_name, $thread_title, $message_link, $forum_link));
+            $message = wordwrap(sprintf($lang['subnotification'], $recipient, $message_author, $forum_name, $thread_title, $message_link, $forum_link));
 
-                // Email Headers (inc. PHP version and Beehive version)
+            // Email Headers (inc. PHP version and Beehive version)
 
-                $header = "Return-path: $forum_email\n";
-                $header.= "From: \"$forum_name\" <$forum_email>\n";
-                $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";
-                $header.= "Content-type: text/plain; charset=UTF-8\n";
-                $header.= "X-Mailer: PHP/". phpversion(). "\n";
-                $header.= "X-Beehive-Forum: Beehive Forum ". BEEHIVE_VERSION;
+            $header = "Return-path: $forum_email\n";
+            $header.= "From: \"$forum_name\" <$forum_email>\n";
+            $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";
+            $header.= "Content-type: text/plain; charset=UTF-8\n";
+            $header.= "X-Mailer: PHP/". phpversion(). "\n";
+            $header.= "X-Beehive-Forum: Beehive Forum ". BEEHIVE_VERSION;
 
-                // SF.net Bug #1040563:
-                // -------------------
-                // RFC2822 compliancy requires that the RCPT TO portion of the
-                // email headers only contain the email address in < >
-                // i.e. <someuser@abeehiveforum.net>
+            // SF.net Bug #1040563:
+            // -------------------
+            // RFC2822 compliancy requires that the RCPT TO portion of the
+            // email headers only contain the email address in < >
+            // i.e. <someuser@abeehiveforum.net>
 
-                if (@mail($to_user['EMAIL'], $subject, $message, $header)) return true;
-            }
+            if (!@mail($to_user['EMAIL'], $subject, $message, $header)) return false;
         }
     }
 
-    return false;
+    return true;
+}
+
+function email_send_folder_subscription($tuid, $fuid, $fid, $tid, $pid, &$exclude_user_array)
+{
+    if (!$db_email_send_folder_subscription = db_connect()) return false;
+
+    if (!is_numeric($tuid)) return false;
+    if (!is_numeric($fuid)) return false;
+
+    if (!is_numeric($fid)) return false;
+
+    if (!is_numeric($tid)) return false;
+    if (!is_numeric($pid)) return false;
+
+    if (!check_mail_variables()) return false;
+
+    if (!$from_user = user_get($fuid)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $forum_fid = $table_data['FID'];
+
+    $webtag = get_webtag($webtag_search);
+
+    $exclude_user_list = implode(",", preg_grep("/^[0-9]+$/", $exclude_user_array));
+
+    $sql = "SELECT USER_FOLDER.UID, USER.LOGON, USER.NICKNAME, USER.EMAIL ";
+    $sql.= "FROM {$table_data['PREFIX']}USER_FOLDER USER_FOLDER ";
+    $sql.= "LEFT JOIN USER ON (USER.UID = USER_FOLDER.UID) ";
+    $sql.= "WHERE USER_FOLDER.FID = '$fid'  AND USER_FOLDER.INTEREST = 1 ";
+    $sql.= "AND USER_FOLDER.UID NOT IN ($exclude_user_list)";
+
+    if (!$result = db_query($sql, $db_email_send_folder_subscription)) return false;
+
+    if (db_num_rows($result) > 0) {
+
+        while ($to_user = db_fetch_array($result)) {
+
+            // Validate the email address before we continue.
+
+            if (!email_address_valid($to_user['EMAIL'])) return false;
+
+            if (!$thread = thread_get($tid)) return false;
+
+            // Get the right language for the email
+
+            $lang = email_get_language($tuid);
+
+            // Get the forum reply-to email address
+
+            $forum_email = forum_get_setting('forum_noreply_email', false, 'noreply@abeehiveforum.net');
+
+            // Get the required variables (forum name, subject, recipient, etc.) and
+            // pass them all through the recipient's word filter.
+
+            $forum_name     = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid);
+            $subject        = word_filter_apply(sprintf($lang['foldersubnotification_subject'], $forum_name), $tuid);
+            $recipient      = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid);
+            $message_author = word_filter_apply(format_user_name($from_user['LOGON'], $from_user['NICKNAME']), $tuid);
+            $thread_title   = word_filter_apply(thread_format_prefix($thread['PREFIX'], $thread['TITLE']), $tuid);
+
+            // Generate link to the forum itself
+
+            $forum_link = html_get_forum_uri("/index.php?webtag=$webtag&fid=$fid");
+
+            // Generate the message link.
+
+            $message_link = html_get_forum_uri("/index.php?webtag=$webtag&msg=$tid.$pid");
+
+            // Generate the message body.
+
+            $message = wordwrap(sprintf($lang['foldersubnotification'], $recipient, $message_author, $forum_name, $thread_title, $message_link, $forum_link));
+
+            // Email Headers (inc. PHP version and Beehive version)
+
+            $header = "Return-path: $forum_email\n";
+            $header.= "From: \"$forum_name\" <$forum_email>\n";
+            $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";
+            $header.= "Content-type: text/plain; charset=UTF-8\n";
+            $header.= "X-Mailer: PHP/". phpversion(). "\n";
+            $header.= "X-Beehive-Forum: Beehive Forum ". BEEHIVE_VERSION;
+
+            // SF.net Bug #1040563:
+            // -------------------
+            // RFC2822 compliancy requires that the RCPT TO portion of the
+            // email headers only contain the email address in < >
+            // i.e. <someuser@abeehiveforum.net>
+
+            if (!@mail($to_user['EMAIL'], $subject, $message, $header)) return false;
+
+            // Add the recipient's UID to the exclude user list so they
+            // don't also receive a thread subscription notification.
+
+            if (!in_array($to_user['UID'], $exclude_user_array)) $exclude_user_array[] = $to_user['UID'];
+        }
+    }
+
+    return true;
 }
 
 function email_send_pm_notification($tuid, $mid, $fuid)
@@ -239,8 +337,6 @@ function email_send_pm_notification($tuid, $mid, $fuid)
     if (!is_numeric($tuid)) return false;
     if (!is_numeric($mid)) return false;
     if (!is_numeric($fuid)) return false;
-
-    $forum_settings = forum_get_settings();
 
     $webtag = get_webtag($webtag_search);
 
@@ -322,7 +418,6 @@ function email_send_pw_reminder($logon)
 {
     if (!check_mail_variables()) return false;
 
-    $forum_settings = forum_get_settings();
     $webtag = get_webtag($webtag_search);
 
     if ($to_user = user_get_uid($logon)) {
@@ -386,8 +481,6 @@ function email_send_new_pw_notification($tuid, $fuid, $new_password)
     if (!is_numeric($tuid)) return false;
     if (!is_numeric($fuid)) return false;
 
-    $forum_settings = forum_get_settings();
-
     $webtag = get_webtag($webtag_search);
 
     if (($to_user = user_get($tuid)) && ($from_user = user_get($fuid))) {
@@ -442,8 +535,6 @@ function email_send_user_confirmation($tuid)
     if (!check_mail_variables()) return false;
 
     if (!is_numeric($tuid)) return false;
-
-    $forum_settings = forum_get_settings();
 
     $webtag = get_webtag($webtag_search);
 
@@ -505,8 +596,6 @@ function email_send_changed_email_confirmation($tuid)
 
     if (!is_numeric($tuid)) return false;
 
-    $forum_settings = forum_get_settings();
-
     $webtag = get_webtag($webtag_search);
 
     if ($to_user = user_get($tuid)) {
@@ -567,8 +656,6 @@ function email_send_user_approval_notification($tuid)
 
     if (!is_numeric($tuid)) return false;
 
-    $forum_settings = forum_get_settings();
-
     $webtag = get_webtag($webtag_search);
 
     if ($to_user = user_get($tuid)) {
@@ -628,8 +715,6 @@ function email_send_new_user_notification($tuid, $new_user_uid)
     if (!is_numeric($tuid)) return false;
     if (!is_numeric($new_user_uid)) return false;
 
-    $forum_settings = forum_get_settings();
-
     $webtag = get_webtag($webtag_search);
 
     if ($to_user = user_get($tuid)) {
@@ -687,8 +772,6 @@ function email_send_user_approved_notification($tuid)
     if (!check_mail_variables()) return false;
 
     if (!is_numeric($tuid)) return false;
-
-    $forum_settings = forum_get_settings();
 
     $webtag = get_webtag($webtag_search);
 
@@ -748,8 +831,6 @@ function email_send_post_approval_notification($tuid)
 
     if (!is_numeric($tuid)) return false;
 
-    $forum_settings = forum_get_settings();
-
     $webtag = get_webtag($webtag_search);
 
     if ($to_user = user_get($tuid)) {
@@ -808,8 +889,6 @@ function email_send_message_to_user($tuid, $fuid, $subject, $message)
 
     if (!is_numeric($tuid)) return false;
     if (!is_numeric($fuid)) return false;
-
-    $forum_settings = forum_get_settings();
 
     $webtag = get_webtag($webtag_search);
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.178 2008-04-27 21:35:46 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.179 2008-07-08 19:33:19 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -265,13 +265,21 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
     // Now, the actual bit that displays the threads...
 
     // Get folder FIDs and titles
-    $folder_info = threads_get_folders();
-    if (!$folder_info) die ("<p>{$lang['couldnotretrievefolderinformation']}</p>");
+
+    if (!$folder_info = threads_get_folders()) {
+
+        light_html_draw_top("robots=noindex,nofollow");
+        light_html_display_error_msg($lang['couldnotretrievefolderinformation']);
+        light_html_draw_bottom();
+        exit;
+    }
 
     // Get total number of messages for each folder
+
     $folder_msgs = threads_get_folder_msgs();
 
     // Check to see if $folder_order is an array, and define it as one if not
+
     if (!is_array($folder_order)) $folder_order = array();
 
     // Sort the folders and threads correctly as per the URL query for the TID

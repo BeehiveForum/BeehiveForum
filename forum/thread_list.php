@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.331 2008-07-06 20:32:29 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.332 2008-07-08 19:33:19 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -401,10 +401,18 @@ if (!$folder_info = threads_get_folders()) {
 }
 
 // Get total number of messages for each folder
+
 $folder_msgs = threads_get_folder_msgs();
 
-// Check to see if $folder_order is an array, and define it as one if not
-if (!is_array($folder_order)) $folder_order = array();
+// Check to see if $folder_order is an array.
+// If it's not an array we need to populate it
+// with the keys from $folder_info to get a list
+// of folders in the user's interest order.
+
+if (!is_array($folder_order)) {
+
+    $folder_order = array_keys($folder_info);
+}
 
 // Sort the folders and threads correctly as per the URL query for the TID
 

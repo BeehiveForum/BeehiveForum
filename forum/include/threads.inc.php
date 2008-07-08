@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.310 2008-06-17 16:08:01 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.311 2008-07-08 19:33:19 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -63,7 +63,7 @@ function threads_get_folders()
     $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_FOLDER USER_FOLDER ";
     $sql.= "ON (USER_FOLDER.FID = FOLDER.FID AND USER_FOLDER.UID = '$uid') ";
-    $sql.= "ORDER BY FOLDER.FID, USER_FOLDER.INTEREST DESC";
+    $sql.= "ORDER BY USER_FOLDER.INTEREST DESC, FOLDER.POSITION";
 
     if (!$result = db_query($sql, $db_threads_get_folders)) return false;
 

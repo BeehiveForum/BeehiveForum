@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.143 2008-07-06 18:27:00 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.144 2008-07-08 19:33:19 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -57,7 +57,7 @@ function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $al
 
     $sql = "SELECT FID, TITLE, DESCRIPTION FROM {$table_data['PREFIX']}FOLDER ";
     $sql.= "WHERE ALLOWED_TYPES & $allowed_types > 0 OR ALLOWED_TYPES IS NULL ";
-    $sql.= "ORDER BY FID ";
+    $sql.= "ORDER BY POSITION ";
 
     if (!$result = db_query($sql, $db_folder_draw_dropdown)) return false;
 
@@ -102,7 +102,8 @@ function folder_draw_dropdown_all($default_fid, $field_name="t_fid", $suffix="",
 
     $available_folders = array();
 
-    $sql = "SELECT FID, TITLE, DESCRIPTION FROM {$table_data['PREFIX']}FOLDER";
+    $sql = "SELECT FID, TITLE, DESCRIPTION FROM {$table_data['PREFIX']}FOLDER ";
+    $sql.= "ORDER BY POSITION";
 
     if (!$result = db_query($sql, $db_folder_draw_dropdown)) return false;
 
@@ -543,8 +544,7 @@ function folder_is_accessible($fid)
 {
     if (!is_numeric($fid)) return false;
 
-    $access_allowed = USER_PERM_POST_READ;
-    return bh_session_check_perm($access_allowed, $fid);
+    return bh_session_check_perm(USER_PERM_POST_READ, $fid);
 }
 
 function user_set_folder_interest($fid, $interest)

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.133 2008-07-03 10:32:12 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.134 2008-07-09 19:32:51 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -119,10 +119,6 @@ if (user_is_guest()) {
 // Array to hold error messages.
 
 $error_msg_array = array();
-
-// Get an array of available forum styles.
-
-$available_styles = styles_get_available();
 
 // Get an array of available emoticon sets
 
@@ -671,7 +667,7 @@ echo "                  <td align=\"left\">", form_dropdown_array("font_size", a
 echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("font_size_global", "Y", '', (isset($user_prefs['FONT_SIZE_GLOBAL']) ? $user_prefs['FONT_SIZE_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("font_size_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 
-if (sizeof($available_styles) > 1) {
+if ($available_styles = styles_get_available()) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\">{$lang['forumstyle']}:</td>\n";

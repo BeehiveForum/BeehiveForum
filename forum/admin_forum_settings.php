@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.133 2008-03-23 18:54:57 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.134 2008-07-09 19:32:51 decoyduck Exp $ */
 
 /**
 * Displays and handles the Forum Settings page
@@ -119,10 +119,6 @@ if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 // Array to hold error messages.
 
 $error_msg_array = array();
-
-// Get an array of available forum styles.
-
-$available_styles = styles_get_available();
 
 // Get an array of available emoticon sets
 
@@ -415,10 +411,15 @@ echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
 echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"220\">{$lang['defaultstyle']}:</td>\n";
-echo "                        <td align=\"left\">", form_dropdown_array("default_style", _htmlentities($available_styles), (isset($forum_settings['default_style']) && style_exists($forum_settings['default_style']) ? _htmlentities($forum_settings['default_style']) : 'default')), "</td>\n";
-echo "                      </tr>\n";
+
+if ($available_styles = styles_get_available()) {
+
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" width=\"220\">{$lang['defaultstyle']}:</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("default_style", _htmlentities($available_styles), (isset($forum_settings['default_style']) && style_exists($forum_settings['default_style']) ? _htmlentities($forum_settings['default_style']) : 'default')), "</td>\n";
+    echo "                      </tr>\n";
+}
+
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['defaultemoticons']} [<a href=\"display_emoticons.php?webtag=$webtag\" target=\"_blank\" onclick=\"return openEmoticons('','$webtag')\">{$lang['preview']}</a>]:</td>\n";
 echo "                        <td align=\"left\">", form_dropdown_array("default_emoticons", _htmlentities($available_emoticons), (isset($forum_settings['default_emoticons']) && in_array($forum_settings['default_emoticons'], array_keys($available_emoticons)) ? $forum_settings['default_emoticons'] : 'none')), "</td>\n";

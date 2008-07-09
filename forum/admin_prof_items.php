@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_items.php,v 1.123 2008-06-16 12:34:02 decoyduck Exp $ */
+/* $Id: admin_prof_items.php,v 1.124 2008-07-09 18:01:35 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -149,6 +149,14 @@ $profile_item_valid_types = array(PROFILE_ITEM_LARGE_TEXT,
                                   PROFILE_ITEM_RADIO,
                                   PROFILE_ITEM_DROPDOWN,
                                   PROFILE_ITEM_HYPERLINK);
+
+// Array of profile item type descriptions.
+
+$item_types_array = array(PROFILE_ITEM_LARGE_TEXT => $lang['textfield'],
+                          PROFILE_ITEM_MULTI_TEXT => $lang['multilinetextfield'],
+                          PROFILE_ITEM_RADIO      => $lang['radiobuttons'],
+                          PROFILE_ITEM_DROPDOWN   => $lang['dropdownlist'],
+                          PROFILE_ITEM_HYPERLINK  => $lang['clickablehyperlink']);
 // View type
 
 if (isset($_GET['viewitems'])) {
@@ -460,7 +468,7 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\">{$lang['type']}:</td>\n";
-    echo "                        <td align=\"left\">", form_dropdown_array("t_type_new", array($lang['textfield'], $lang['multilinetextfield'], $lang['radiobuttons'], $lang['dropdownlist'], $lang['clickablehyperlink'])), "</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("t_type_new", $item_types_array), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\">{$lang['itemname']}:</td>\n";
@@ -559,7 +567,7 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\">{$lang['type']}:</td>\n";
-    echo "                        <td align=\"left\">", form_dropdown_array("t_type_new", array($lang['textfield'], $lang['multilinetextfield'], $lang['radiobuttons'], $lang['dropdownlist'], $lang['clickablehyperlink']), (isset($_POST['t_type_new']) && is_numeric($_POST['t_type_new']) ? $_POST['t_type_new'] : $profile_item['TYPE'])), "</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("t_type_new", $item_types_array, (isset($_POST['t_type_new']) && is_numeric($_POST['t_type_new']) ? $_POST['t_type_new'] : $profile_item['TYPE'])), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\">{$lang['sectionname']}:</td>\n";
@@ -603,8 +611,6 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
     html_draw_bottom();
 
 }else {
-
-    $item_types_array = array($lang['textfield'], $lang['multilinetextfield'], $lang['radiobuttons'], $lang['dropdownlist'], $lang['clickablehyperlink']);
 
     html_draw_top();
 
@@ -686,7 +692,15 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
                 echo "                  <td valign=\"top\" align=\"left\"><a href=\"admin_prof_items.php?webtag=$webtag&amp;psid=$psid&amp;piid={$profile_item['PIID']}&amp;sect_page=$sect_page\">", word_filter_add_ob_tags(_htmlentities($profile_item['NAME'])), "</a></td>\n";
             }
 
-            echo "                  <td valign=\"top\" align=\"left\">{$item_types_array[$profile_item['TYPE']]}</td>\n";
+            if (isset($item_types_array[$profile_item['TYPE']])) {
+
+                echo "                  <td valign=\"top\" align=\"left\">{$item_types_array[$profile_item['TYPE']]}</td>\n";
+
+            }else {
+
+                echo "                  <td valign=\"top\" align=\"left\">{$lang['textfield']}</td>\n";
+            }
+
             echo "                </tr>\n";
         }
     }

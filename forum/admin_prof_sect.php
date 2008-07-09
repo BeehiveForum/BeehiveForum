@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_sect.php,v 1.109 2008-03-24 23:32:15 decoyduck Exp $ */
+/* $Id: admin_prof_sect.php,v 1.110 2008-07-09 18:01:35 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -450,7 +450,7 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
                 echo "                  <td valign=\"top\" align=\"left\" width=\"450\"><a href=\"admin_prof_sect.php?webtag=$webtag&amp;page=$page&amp;psid={$profile_section['PSID']}\">", word_filter_add_ob_tags(_htmlentities($profile_section['NAME'])), "</a></td>\n";
             }
 
-            echo "                  <td valign=\"top\" align=\"center\"><a href=\"admin_prof_items.php?webtag=$webtag&amp;psid={$profile_section['PSID']}&amp;sect_page=$page&amp;viewitems=yes\">", _htmlentities($profile_section['ITEM_COUNT']), "</a></td>\n";
+            echo "                  <td valign=\"top\" align=\"center\" width=\"100\"><a href=\"admin_prof_items.php?webtag=$webtag&amp;psid={$profile_section['PSID']}&amp;sect_page=$page&amp;viewitems=yes\">", _htmlentities($profile_section['ITEM_COUNT']), "</a></td>\n";
             echo "                </tr>\n";
         }
     }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: server.inc.php,v 1.25 2008-07-09 19:32:51 decoyduck Exp $ */
+/* $Id: server.inc.php,v 1.26 2008-07-09 19:35:27 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -316,34 +316,28 @@ function mkdir_recursive($pathname, $mode)
 * @param string $pathname - Path to create
 */
 
-function rmdir_recursive($pathname)
+function rmdir_recursive($path)
 {
-    $pathname = rtrim($pathname, '/');
+    $path = rtrim($path, '/');
 
-    if (is_dir($pathname)) {
+    if (@$dir = opendir($path)) {
 
-        foreach (glob("$pathname/*") as $obj) {
+        while(($file = readdir($dir)) !== false) {
 
-            if (is_dir($obj) && !is_link($obj)) {
+            if (is_file("$path/$file") && !is_link("$path/$file")) {
 
-                rmdir_recursive($obj);
+                unlink("$path/$file");
 
-            }else {
+            }elseif (is_dir("$path/$file") && $file != '.' && $file != '..') {
 
-                if (is_writable($obj)) {
-
-                    unlink($obj);
-                }
+                rmdir_recursive("$path/$file");
             }
         }
+
+        closedir($dir);
     }
 
-    if (is_writable($obj)) {
-
-        return rmdir($pathname);
-    }
-
-    return false;
+    @rmdir($path);
 }
 
 /**

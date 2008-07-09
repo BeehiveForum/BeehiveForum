@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.68 2008-06-20 13:45:45 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.69 2008-07-09 19:35:27 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -136,28 +136,6 @@ function install_remove_files()
     rmdir_recursive('install');
 
     if (@file_exists('install.php')) return @unlink('install.php');
-}
-
-function rmdir_recursive($path)
-{
-   if (@$dir = opendir($path)) {
-
-       while(($file = readdir($dir)) !== false) {
-
-           if (is_file("$path/$file") && !is_link("$path/$file")) {
-
-               unlink("$path/$file");
-
-           }elseif (is_dir("$path/$file") && $file != '.' && $file != '..') {
-
-               rmdir_recursive("$path/$file");
-           }
-       }
-
-       closedir($dir);
-   }
-
-   @rmdir($path);
 }
 
 function install_incomplete()

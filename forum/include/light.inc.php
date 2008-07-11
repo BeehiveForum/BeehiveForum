@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.179 2008-07-08 19:33:19 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.180 2008-07-11 21:31:02 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -73,6 +73,11 @@ function light_html_draw_top()
             $robots = $func_matches[1];
             unset($arg_array[$key]);
         }
+
+        if (preg_match("/^link=([^:]+):([^$]+)$/i", $func_args, $func_matches) > 0) {
+            $link_array[] = array('rel' => $func_matches[1], 'href' => $func_matches[2]);
+            unset($arg_array[$key]);
+        }
     }
 
     if (!isset($title)) $title = forum_get_setting('forum_name', false, 'A Beehive Forum');
@@ -102,6 +107,17 @@ function light_html_draw_top()
 
     if ($stylesheet = html_get_style_sheet()) {
         echo "<link rel=\"stylesheet\" href=\"$stylesheet\" type=\"text/css\" />\n";
+    }
+
+    if (isset($link_array) && is_array($link_array)) {
+
+        foreach ($link_array as $link) {
+
+            if (isset($link['rel']) && isset($link['href'])) {
+
+                echo "<link rel=\"{$link['rel']}\" href=\"{$link['href']}\" />\n";
+            }
+        }
     }
 
     echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"js/general.js\"></script>\n";

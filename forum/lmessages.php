@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lmessages.php,v 1.98 2008-03-24 23:32:15 decoyduck Exp $ */
+/* $Id: lmessages.php,v 1.99 2008-07-11 21:31:02 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -189,13 +189,43 @@ if (!$thread_data = thread_get($tid, bh_session_check_perm(USER_PERM_ADMIN_TOOLS
     exit;
 }
 
+if (!$folder_data = folder_get($thread_data['FID'])) {
+
+    html_draw_top();
+    html_error_msg($lang['foldercouldnotbefound']);
+    html_draw_bottom();
+    exit;
+}
+
+// Previous and Next page links
+
+$prev_page = ($pid - $posts_per_page > 0) ? $pid - $posts_per_page : 1;
+
+$next_page = ($pid + $posts_per_page < $thread_data['LENGTH']) ? $pid + $posts_per_page : $thread_data['LENGTH'];
+
+// SEF links.
+
+$contents_href = "lthread_list.php?webtag=$webtag";
+
+$first_page_href = "lmessages.php?webtag=$webtag&amp;msg=$tid.1";
+
+$last_page_href  = "lmessages.php?webtag=$webtag&amp;msg=$tid.{$thread_data['LENGTH']}";
+
+$parent_href = "lthread_list.php?webtag=DEFAULT&amp;folder={$folder_data['FID']}";
+
+$next_page_href = "lmessages.php?webtag=$webtag&amp;msg=$tid.$next_page";
+
+$prev_page_href = "lmessages.php?webtag=$webtag&amp;msg=$tid.$prev_page";
+
+// Forum name, folder title and thread title.
+
 $forum_name   = forum_get_setting('forum_name', false, 'A Beehive Forum');
 
 $folder_title = _htmlentities($thread_data['FOLDER_TITLE']);
 
 $thread_title = _htmlentities(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']));
 
-light_html_draw_top("title=$forum_name > $thread_title");
+light_html_draw_top("title=$forum_name > $thread_title", "link=contents:$contents_href", "link=first:$first_page_href", "link=previous:$prev_page_href", "link=next:$next_page_href", "link=last:$last_page_href", "link=up:$parent_href");
 
 $foldertitle = folder_get_title($thread_data['FID']);
 

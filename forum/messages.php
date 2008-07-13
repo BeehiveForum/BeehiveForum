@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.267 2008-07-06 20:32:28 decoyduck Exp $ */
+/* $Id: messages.php,v 1.268 2008-07-13 10:01:41 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -244,7 +244,7 @@ $folder_title = _htmlentities($thread_data['FOLDER_TITLE']);
 
 $thread_title = _htmlentities(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']));
 
-html_draw_top("onunload=clearFocus()", "title=$forum_name > $thread_title", "openprofile.js", "post.js", "poll.js", "htmltools.js", "basetarget=_blank", "onload=initialisePostQuoting()", "onload=registerQuickReplyHotKey()");
+html_draw_top("onunload=clearFocus()", "title=$forum_name > $thread_title", "openprofile.js", "post.js", "poll.js", "htmltools.js", "folder_options.js", "basetarget=_blank", "onload=initialisePostQuoting()", "onload=registerQuickReplyHotKey()");
 
 echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
 echo "<!--\n\n";

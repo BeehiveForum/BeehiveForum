@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll_results.php,v 1.35 2008-07-06 20:32:29 decoyduck Exp $ */
+/* $Id: poll_results.php,v 1.36 2008-07-13 10:01:41 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -194,7 +194,7 @@ $folder_title = _htmlentities($thread_data['FOLDER_TITLE']);
 
 $thread_title = _htmlentities(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']));
 
-html_draw_top("title=$forum_name > $thread_title > {$poll_data['QUESTION']}", "openprofile.js", 'pm_popup_disabled');
+html_draw_top("title=$forum_name > $thread_title > {$poll_data['QUESTION']}", "openprofile.js", "folder_options.js", 'pm_popup_disabled');
 
 echo "<div align=\"center\">\n";
 echo "<table width=\"580\" border=\"0\">\n";

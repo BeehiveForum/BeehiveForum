@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display.php,v 1.93 2008-07-06 20:32:28 decoyduck Exp $ */
+/* $Id: display.php,v 1.94 2008-07-13 10:01:41 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -146,7 +146,7 @@ $folder_title = _htmlentities($thread_data['FOLDER_TITLE']);
 
 $thread_title = _htmlentities(thread_format_prefix($thread_data['PREFIX'], $thread_data['TITLE']));
 
-html_draw_top("title=$forum_name > $thread_title", "openprofile.js", "post.js", "poll.js", "basetarget=_blank");
+html_draw_top("title=$forum_name > $thread_title", "openprofile.js", "post.js", "poll.js", "folder_options.js", "basetarget=_blank");
 
 if (isset($thread_data['STICKY']) && isset($thread_data['STICKY_UNTIL'])) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder_options.php,v 1.1 2008-07-06 18:27:02 decoyduck Exp $ */
+/* $Id: folder_options.php,v 1.2 2008-07-13 09:58:19 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -169,6 +169,20 @@ if (!folder_is_accessible($fid)) {
 
 $error_msg_array = array();
 
+// Close button clicked.
+
+if (isset($_POST['close'])) {
+
+    html_draw_top('pm_popup_disabled');
+
+    echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
+    echo "  window.close();\n";
+    echo "</script>\n";
+
+    html_draw_bottom();
+    exit;
+}
+
 // Code for handling functionality from messages.php
 
 if (isset($_GET['markasread']) && is_numeric($_GET['markasread'])) {
@@ -304,7 +318,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("save", $lang['save']), "</td>\n";
+echo "      <td align=\"center\">", form_submit("save", $lang['save']), "&nbsp;", form_submit("close", $lang['close']). "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "  </form>\n";

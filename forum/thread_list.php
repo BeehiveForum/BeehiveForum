@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.332 2008-07-08 19:33:19 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.333 2008-07-13 09:58:19 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -290,7 +290,7 @@ if (isset($_GET['start_from']) && is_numeric($_GET['start_from'])) {
 
 // Output XHTML header
 
-html_draw_top("modslist.js", "poll.js", "thread_options.js");
+html_draw_top("modslist.js", "poll.js", "thread_options.js", "folder_options.js");
 
 echo "<script language=\"javascript\" type=\"text/javascript\">\n";
 echo "<!--\n\n";
@@ -534,11 +534,11 @@ foreach ($folder_order as $folder_number) {
         echo "          <td align=\"left\" class=\"foldername\">\n";
 
         if ($folder_info[$folder_number]['INTEREST'] == FOLDER_SUBSCRIBED) {
-            echo "            <a href=\"folder_options.php?webtag=$webtag&amp;fid=$folder_number\" target=\"". html_get_frame_name('right'). "\"><img src=\"".style_image('folder_subscribed.png')."\" alt=\"{$lang['subscribedfolder']}\" title=\"{$lang['subscribedfolder']}\" border=\"0\" /></a>\n";
+            echo "            <a href=\"folder_options.php?webtag=$webtag&amp;fid=$folder_number\" target=\"_blank\" onclick=\"return openFolderOptions($folder_number, '$webtag')\"><img src=\"".style_image('folder_subscribed.png')."\" alt=\"{$lang['subscribedfolder']}\" title=\"{$lang['subscribedfolder']}\" border=\"0\" /></a>\n";
         }else if ($folder_info[$folder_number]['INTEREST'] == FOLDER_IGNORED) {
-            echo "            <a href=\"folder_options.php?webtag=$webtag&amp;fid=$folder_number\" target=\"". html_get_frame_name('right'). "\"><img src=\"".style_image('folder_ignored.png')."\" alt=\"{$lang['ignoredfolder']}\" title=\"{$lang['ignoredfolder']}\" border=\"0\" /></a>\n";
+            echo "            <a href=\"folder_options.php?webtag=$webtag&amp;fid=$folder_number\" target=\"_blank\" onclick=\"return openFolderOptions($folder_number, '$webtag')\"><img src=\"".style_image('folder_ignored.png')."\" alt=\"{$lang['ignoredfolder']}\" title=\"{$lang['ignoredfolder']}\" border=\"0\" /></a>\n";
         }else {
-            echo "            <a href=\"folder_options.php?webtag=$webtag&amp;fid=$folder_number\" target=\"". html_get_frame_name('right'). "\"><img src=\"".style_image('folder.png')."\" alt=\"{$lang['folder']}\" title=\"{$lang['folder']}\" border=\"0\" /></a>\n";
+            echo "            <a href=\"folder_options.php?webtag=$webtag&amp;fid=$folder_number\" target=\"_blank\" onclick=\"return openFolderOptions($folder_number, '$webtag')\"><img src=\"".style_image('folder.png')."\" alt=\"{$lang['folder']}\" title=\"{$lang['folder']}\" border=\"0\" /></a>\n";
         }
 
         echo "            <a href=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$folder_number\" title=\"", word_filter_add_ob_tags(_htmlentities($folder_info[$folder_number]['DESCRIPTION'])), "\">", word_filter_add_ob_tags(_htmlentities($folder_info[$folder_number]['TITLE'])), "</a>\n";

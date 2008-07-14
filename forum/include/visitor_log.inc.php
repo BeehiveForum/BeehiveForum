@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.inc.php,v 1.30 2008-05-03 17:29:28 decoyduck Exp $ */
+/* $Id: visitor_log.inc.php,v 1.31 2008-07-14 12:53:11 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -263,7 +263,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
                                             'USER_TIME_BEST'  => '(USER_TRACK.USER_TIME_BEST IS NOT NULL AND UNIX_TIMESTAMP(USER_TRACK.USER_TIME_BEST) > 0)',
                                             'USER_TIME_TOTAL' => '(USER_TRACK.USER_TIME_TOTAL IS NOT NULL AND UNIX_TIMESTAMP(USER_TRACK.USER_TIME_TOTAL) > 0)',
                                             'DOB'             => '(USER_PREFS_DOB.DOB_DISPLAY > 1 AND UNIX_TIMESTAMP(USER_PREFS_DOB.DOB) > 0)',
-                                            'AGE'             => '((USER_PREFS_DOB.DOB_DISPLAY = 1 OR USER_PREFS_DOB.DOB_DISPLAY = 2) AND UNIX_TIMESTAMP(USER_PREFS_DOB.DOB) > 0)',
+                                            'AGE'             => '((USER_PREFS_DOB.DOB_DISPLAY = 1 OR USER_PREFS_DOB.DOB_DISPLAY = 3) AND UNIX_TIMESTAMP(USER_PREFS_DOB.DOB) > 0)',
                                             'TIMEZONE'        => '(TIMEZONES.TZID IS NOT NULL AND LENGTH(TIMEZONES.TZID) > 0)');
 
     // Main query.
@@ -329,7 +329,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
 
     $join_sql.= "LEFT JOIN USER_PREFS USER_PREFS_AGE ";
     $join_sql.= "ON (USER_PREFS_AGE.UID = USER.UID AND (USER_PREFS_DOB.DOB_DISPLAY = 1 ";
-    $join_sql.= "OR USER_PREFS_DOB.DOB_DISPLAY = 2) AND USER_PREFS_DOB.DOB > 0) ";
+    $join_sql.= "OR USER_PREFS_DOB.DOB_DISPLAY = 3) AND USER_PREFS_DOB.DOB > 0) ";
 
     // Joins to check the ANON_LOGON setting.
 

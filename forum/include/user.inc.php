@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.349 2008-04-09 14:32:43 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.350 2008-07-14 12:53:11 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -971,8 +971,8 @@ function user_get_forthcoming_birthdays()
     $sql.= "ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
-    $sql.= "WHERE USER_PREFS.DOB > 0 AND (USER_PREFS.DOB_DISPLAY = 2 ";
-    $sql.= "OR USER_PREFS_GLOBAL.DOB_DISPLAY = 2) ";
+    $sql.= "WHERE USER_PREFS.DOB > 0 AND (USER_PREFS.DOB_DISPLAY > 1 ";
+    $sql.= "OR USER_PREFS_GLOBAL.DOB_DISPLAY > 1) ";
     $sql.= "AND ((MONTH(USER_PREFS.DOB) = MONTH(NOW()) ";
     $sql.= "AND DAYOFMONTH(USER_PREFS.DOB) >= DAYOFMONTH(NOW())) ";
     $sql.= "OR MONTH(USER_PREFS.DOB) > MONTH(NOW())) ";

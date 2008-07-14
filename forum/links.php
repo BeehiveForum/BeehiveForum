@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.php,v 1.111 2008-07-09 18:01:35 decoyduck Exp $ */
+/* $Id: links.php,v 1.112 2008-07-14 18:14:10 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -128,7 +128,7 @@ if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
 }else {
 
     links_create_top_folder($lang['toplevel']);
-    header_redirect("links.php?fid=1");
+    header_redirect("links.php?webtag=$webtag&fid=1");
 }
 
 if (isset($_GET['action'])) {
@@ -143,7 +143,7 @@ if (isset($_GET['action'])) {
             $fid = 1;
         }
 
-        header_redirect("links.php?fid=$fid");
+        header_redirect("links.php?webtag=$webtag&fid=$fid");
 
     }elseif (bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0) && $_GET['action'] == "foldershow") {
 
@@ -155,7 +155,7 @@ if (isset($_GET['action'])) {
             $fid = 1;
         }
 
-        header_redirect("links.php?fid=$fid");
+        header_redirect("links.php?webtag=$webtag&fid=$fid");
 
     }elseif (bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0) && $_GET['action'] == "folderdel") {
 
@@ -168,7 +168,7 @@ if (isset($_GET['action'])) {
             $fid = 1;
         }
 
-        header_redirect("links.php?fid=$fid");
+        header_redirect("links.php?webtag=$webtag&fid=$fid");
 
     }elseif ($_GET['action'] == "go") {
 

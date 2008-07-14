@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit.php,v 1.61 2008-03-23 18:54:58 decoyduck Exp $ */
+/* $Id: admin_user_groups_edit.php,v 1.62 2008-07-14 18:14:10 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -364,7 +364,7 @@ if ($folder_array = perm_group_get_folders($gid)) {
             echo "                                  ", form_input_hidden("t_update_perms_array[]", _htmlentities($folder['FID'])), "\n";
             echo "                                  <table class=\"posthead\" width=\"100%\">\n";
             echo "                                    <tr>\n";
-            echo "                                      <td align=\"left\" rowspan=\"5\" width=\"100\" valign=\"top\"><a href=\"admin_folder_edit.php?fid=$fid\" target=\"_self\">", word_filter_add_ob_tags(_htmlentities($folder['TITLE'])), "</a></td>\n";
+            echo "                                      <td align=\"left\" rowspan=\"5\" width=\"100\" valign=\"top\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;fid=$fid\" target=\"_self\">", word_filter_add_ob_tags(_htmlentities($folder['TITLE'])), "</a></td>\n";
             echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_read[$fid]", USER_PERM_POST_READ, $lang['readposts'], $folder['STATUS'] & USER_PERM_POST_READ), "</td>\n";
             echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_create[$fid]", USER_PERM_POST_CREATE, $lang['replytothreads'], $folder['STATUS'] & USER_PERM_POST_CREATE), "</td>\n";
             echo "                                    </tr>\n";
@@ -394,7 +394,7 @@ if ($folder_array = perm_group_get_folders($gid)) {
             echo "                                  ", form_input_hidden("t_update_perms_array[]", _htmlentities($folder['FID'])), "\n";
             echo "                                  <table class=\"posthead\" width=\"100%\">\n";
             echo "                                    <tr>\n";
-            echo "                                      <td align=\"left\" rowspan=\"5\" width=\"100\" valign=\"top\"><a href=\"admin_folder_edit.php?fid={$folder['FID']}\" target=\"_self\">", word_filter_add_ob_tags(_htmlentities($folder['TITLE'])), "</a></td>\n";
+            echo "                                      <td align=\"left\" rowspan=\"5\" width=\"100\" valign=\"top\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;fid={$folder['FID']}\" target=\"_self\">", word_filter_add_ob_tags(_htmlentities($folder['TITLE'])), "</a></td>\n";
             echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_read[{$folder['FID']}]", USER_PERM_POST_READ, $lang['readposts'], false), "</td>\n";
             echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_create[{$folder['FID']}]", USER_PERM_POST_CREATE, $lang['replytothreads'], false), "</td>\n";
             echo "                                    </tr>\n";

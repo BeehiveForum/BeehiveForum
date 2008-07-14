@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forums.php,v 1.91 2008-05-12 19:41:00 decoyduck Exp $ */
+/* $Id: forums.php,v 1.92 2008-07-14 18:14:10 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -248,7 +248,7 @@ if (isset($_POST['add_fav']) && is_array($_POST['add_fav'])) {
     if (user_set_forum_interest($forum_fid_add_fav, FORUM_FAVOURITE)) {
 
         $webtag_search = rawurlencode($webtag_search);
-        header_redirect("forums.php?view_type=$view_type&main_page=$main_page&search_page=$search_page&webtag_search=$webtag_search&added=true");
+        header_redirect("forums.php?webtag=$webtag&view_type=$view_type&main_page=$main_page&search_page=$search_page&webtag_search=$webtag_search&added=true");
         exit;
 
     }else {
@@ -270,7 +270,7 @@ if (isset($_POST['add_fav']) && is_array($_POST['add_fav'])) {
     if (user_set_forum_interest($forum_fid_rev_fav, FORUM_NOINTEREST)) {
 
         $webtag_search = rawurlencode($webtag_search);
-        header_redirect("forums.php?view_type=$view_type&main_page=$main_page&search_page=$search_page&webtag_search=$webtag_search&removed=true");
+        header_redirect("forums.php?webtag=$webtag&view_type=$view_type&main_page=$main_page&search_page=$search_page&webtag_search=$webtag_search&removed=true");
         exit;
 
     }else {
@@ -292,7 +292,7 @@ if (isset($_POST['add_fav']) && is_array($_POST['add_fav'])) {
     if (user_set_forum_interest($forum_fid_ignore, FORUM_IGNORED)) {
 
         $webtag_search = rawurlencode($webtag_search);
-        header_redirect("forums.php?view_type=$view_type&main_page=$main_page&search_page=$search_page&webtag_search=$webtag_search&ignored=true");
+        header_redirect("forums.php?webtag=$webtag&view_type=$view_type&main_page=$main_page&search_page=$search_page&webtag_search=$webtag_search&ignored=true");
         exit;
 
     }else {
@@ -314,7 +314,7 @@ if (isset($_POST['add_fav']) && is_array($_POST['add_fav'])) {
     if (user_set_forum_interest($forum_fid_unignore, FORUM_NOINTEREST)) {
 
         $webtag_search = rawurlencode($webtag_search);
-        header_redirect("forums.php?view_type=$view_type&main_page=$main_page&search_page=$search_page&webtag_search=$webtag_search&unignored=true");
+        header_redirect("forums.php?webtag=$webtag&view_type=$view_type&main_page=$main_page&search_page=$search_page&webtag_search=$webtag_search&unignored=true");
         exit;
 
     }else {

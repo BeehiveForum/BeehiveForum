@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.168 2008-05-21 17:19:55 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.169 2008-07-14 18:14:10 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -407,9 +407,9 @@ if (sizeof($admin_user_array['user_array']) > 0) {
             }
 
             if (referer_is_banned($user['REFERER'])) {
-                echo "                   <td class=\"posthead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?unban_referer=", rawurlencode($user['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['REFERER_FULL']}\">{$user['REFERER']}</a>&nbsp;<a href=\"{$user['REFERER_FULL']}\"><img src=\"", style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"{$lang['externallink']}\" title=\"{$lang['externallink']}\" /></a> ({$lang['banned']})</td>\n";
+                echo "                   <td class=\"posthead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;unban_referer=", rawurlencode($user['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['REFERER_FULL']}\">{$user['REFERER']}</a>&nbsp;<a href=\"{$user['REFERER_FULL']}\"><img src=\"", style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"{$lang['externallink']}\" title=\"{$lang['externallink']}\" /></a> ({$lang['banned']})</td>\n";
             }else {
-                echo "                   <td class=\"posthead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?ban_referer=", rawurlencode($user['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['REFERER_FULL']}\">{$user['REFERER']}</a>&nbsp;<a href=\"{$user['REFERER_FULL']}\"><img src=\"", style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"{$lang['externallink']}\" title=\"{$lang['externallink']}\" /></a></td>\n";
+                echo "                   <td class=\"posthead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;ban_referer=", rawurlencode($user['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['REFERER_FULL']}\">{$user['REFERER']}</a>&nbsp;<a href=\"{$user['REFERER_FULL']}\"><img src=\"", style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"{$lang['externallink']}\" title=\"{$lang['externallink']}\" /></a></td>\n";
             }
 
         }else {

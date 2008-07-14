@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.240 2008-06-13 12:16:32 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.241 2008-07-14 18:14:10 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -1094,14 +1094,14 @@ if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
 
             echo "                      <tr>\n";
             echo "                        <td align=\"left\" width=\"150\">{$lang['emailaddress']}:</td>\n";
-            echo "                        <td align=\"left\"><a href=\"admin_banned.php?unban_email=", rawurlencode($user['EMAIL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['EMAIL']}\">{$user['EMAIL']}</a>&nbsp;<a href=\"mailto:{$user['EMAIL']}\"><img src=\"", style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"{$lang['externallink']}\" title=\"{$lang['externallink']}\" /></a> ({$lang['banned']})</td>\n";
+            echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_email=", rawurlencode($user['EMAIL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['EMAIL']}\">{$user['EMAIL']}</a>&nbsp;<a href=\"mailto:{$user['EMAIL']}\"><img src=\"", style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"{$lang['externallink']}\" title=\"{$lang['externallink']}\" /></a> ({$lang['banned']})</td>\n";
             echo "                      </tr>\n";
 
         }else {
 
             echo "                      <tr>\n";
             echo "                        <td align=\"left\" width=\"150\">{$lang['emailaddress']}:</td>\n";
-            echo "                        <td align=\"left\"><a href=\"admin_banned.php?ban_email=", rawurlencode($user['EMAIL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['EMAIL']}\">{$user['EMAIL']}</a>&nbsp;<a href=\"mailto:{$user['EMAIL']}\"><img src=\"", style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"{$lang['externallink']}\" title=\"{$lang['externallink']}\" /></a></td>\n";
+            echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_email=", rawurlencode($user['EMAIL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['EMAIL']}\">{$user['EMAIL']}</a>&nbsp;<a href=\"mailto:{$user['EMAIL']}\"><img src=\"", style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"{$lang['externallink']}\" title=\"{$lang['externallink']}\" /></a></td>\n";
             echo "                      </tr>\n";
         }
 
@@ -1130,14 +1130,14 @@ if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
 
                 echo "                      <tr>\n";
                 echo "                        <td align=\"left\" width=\"150\">{$lang['signupreferer']}</td>\n";
-                echo "                        <td align=\"left\"><a href=\"admin_banned.php?unban_referer=", rawurlencode($user['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['REFERER_FULL']}\">{$user['REFERER']}</a>&nbsp;<a href=\"{$user['REFERER_FULL']}\" target=\"_blank\"><img src=\"", style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"{$lang['externallink']}\" title=\"{$lang['externallink']}\" /></a> ({$lang['banned']})</td>\n";
+                echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_referer=", rawurlencode($user['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['REFERER_FULL']}\">{$user['REFERER']}</a>&nbsp;<a href=\"{$user['REFERER_FULL']}\" target=\"_blank\"><img src=\"", style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"{$lang['externallink']}\" title=\"{$lang['externallink']}\" /></a> ({$lang['banned']})</td>\n";
                 echo "                      </tr>\n";
 
             }else {
 
                 echo "                      <tr>\n";
                 echo "                        <td align=\"left\" width=\"150\">{$lang['signupreferer']}</td>\n";
-                echo "                        <td align=\"left\"><a href=\"admin_banned.php?ban_referer=", rawurlencode($user['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['REFERER_FULL']}\">{$user['REFERER']}</a>&nbsp;<a href=\"{$user['REFERER_FULL']}\" target=\"_blank\"><img src=\"", style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"{$lang['externallink']}\" title=\"{$lang['externallink']}\" /></a></td>\n";
+                echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_referer=", rawurlencode($user['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['REFERER_FULL']}\">{$user['REFERER']}</a>&nbsp;<a href=\"{$user['REFERER_FULL']}\" target=\"_blank\"><img src=\"", style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"{$lang['externallink']}\" title=\"{$lang['externallink']}\" /></a></td>\n";
                 echo "                      </tr>\n";
             }
 
@@ -1462,7 +1462,7 @@ if ($folder_array = perm_user_get_folders($uid)) {
         echo "                                  ", form_input_hidden("t_update_perms_array[]", _htmlentities($folder['FID'])), "\n";
         echo "                                  <table class=\"posthead\" width=\"100%\">\n";
         echo "                                    <tr>\n";
-        echo "                                      <td align=\"left\" rowspan=\"5\" width=\"100\" valign=\"top\"><a href=\"admin_folder_edit.php?fid={$folder['FID']}\" target=\"_self\">", word_filter_add_ob_tags(_htmlentities($folder['TITLE'])), "</a></td>\n";
+        echo "                                      <td align=\"left\" rowspan=\"5\" width=\"100\" valign=\"top\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;fid={$folder['FID']}\" target=\"_self\">", word_filter_add_ob_tags(_htmlentities($folder['TITLE'])), "</a></td>\n";
         echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_read[{$folder['FID']}]", USER_PERM_POST_READ, $lang['readposts'], $folder['STATUS'] & USER_PERM_POST_READ), "</td>\n";
         echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_create[{$folder['FID']}]", USER_PERM_POST_CREATE, $lang['replytothreads'], $folder['STATUS'] & USER_PERM_POST_CREATE), "</td>\n";
         echo "                                    </tr>\n";
@@ -1556,7 +1556,7 @@ if ($table_data = get_table_prefix()) {
 
             echo "                                <table class=\"posthead\" width=\"100%\">\n";
             echo "                                  <tr>\n";
-            echo "                                    <td align=\"left\" valign=\"top\" width=\"200\">&nbsp;<a href=\"admin_user_groups_edit.php?gid={$user_group['GID']}\" target=\"_self\">{$user_group['GROUP_NAME']}</a></td>\n";
+            echo "                                    <td align=\"left\" valign=\"top\" width=\"200\">&nbsp;<a href=\"admin_user_groups_edit.php?webtag=$webtag&amp;gid={$user_group['GID']}\" target=\"_self\">{$user_group['GROUP_NAME']}</a></td>\n";
             echo "                                    <td valign=\"top\" align=\"center\" width=\"50\">{$user_group['USER_COUNT']}</td>\n";
             echo "                                    <td valign=\"top\" align=\"right\">", form_submit("edit_users[{$user_group['GID']}]", $lang['addremoveusers']), "&nbsp;</td>\n";
             echo "                                  </tr>\n";

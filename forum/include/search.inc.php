@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.201 2008-04-03 14:23:40 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.202 2008-07-14 18:14:10 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -836,7 +836,7 @@ function search_output_opensearch_xml()
     echo "<ShortName>$title</ShortName>\n";
     echo "<Description>$title</Description>\n";
     echo "<Image height=\"16\" width=\"16\" type=\"image/x-icon\">$forum_path/forums/$webtag/favicon.ico</Image>\n";
-    echo "<Url type=\"text/html\" method=\"get\" template=\"$forum_path/search.php?search_string={searchTerms}\"/>\n";
+    echo "<Url type=\"text/html\" method=\"get\" template=\"$forum_path/search.php?webtag=$webtag&amp;search_string={searchTerms}\"/>\n";
     echo "</OpenSearchDescription>\n";
 }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.536 2008-07-13 09:58:19 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.537 2008-07-14 18:14:10 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -484,7 +484,7 @@ function message_apply_formatting($message, $emoticons = true, $ignore_sig = fal
 
                             if (defined('BEEHIVEMODE_LIGHT')) {
 
-                                $html_parts[$j] = preg_replace("/\b(msg:([0-9]{1,}\.[0-9]{1,}))\b/i", "<a href=\"lmessages.php?msg=\\2\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
+                                $html_parts[$j] = preg_replace("/\b(msg:([0-9]{1,}\.[0-9]{1,}))\b/i", "<a href=\"lmessages.php?webtag=$webtag&amp;msg=\\2\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
 
                             }else {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.311 2008-07-08 19:33:19 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.312 2008-07-14 18:05:18 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1858,7 +1858,6 @@ function threads_get_user_subscriptions($interest_type = THREAD_NOINTEREST, $off
         $sql.= "ON (FOLDER.FID = THREAD.FID) ";
         $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
         $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
-        $sql.= "WHERE USER_THREAD.INTEREST <> 0 ";
         $sql.= "ORDER BY THREAD.MODIFIED DESC ";
         $sql.= "LIMIT $offset, 20";
     }

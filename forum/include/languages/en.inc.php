@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.554 2008-07-06 18:27:00 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.555 2008-07-14 18:05:18 decoyduck Exp $ */
 
 // British English language file
 
@@ -1257,6 +1257,7 @@ $lang['errorcreatingpost'] = "Error creating post! Please try again in a few min
 $lang['createnewthread'] = "Create new thread";
 $lang['postreply'] = "Post Reply";
 $lang['threadtitle'] = "Thread title";
+$lang['foldertitle'] = "Folder title";
 $lang['messagehasbeendeleted'] = "Message not found. Check that it hasn't been deleted.";
 $lang['messagenotfoundinselectedfolder'] = "Message not found in selected folder. Check that it hasn't been moved or deleted.";
 $lang['cannotpostthisthreadtypeinfolder'] = "You cannot post this thread type in that folder!";
@@ -2188,6 +2189,17 @@ $lang['ignoredthreads'] = "Ignored Threads";
 $lang['highinterestthreads'] = "High Interest Threads";
 $lang['subscribedthreads'] = "Subscribed Threads";
 $lang['currentinterest'] = "Current Interest";
+
+// Folder subscriptions
+
+$lang['foldersubscriptions'] = "Folder Subscriptions";
+$lang['couldnotupdateinterestonfolder'] = "Could not update interest on folder '%s'";
+$lang['folderinterestsupdatedsuccessfully'] = "Folder interests updated successfully";
+$lang['nofoldersubscriptions'] = "You are not subscribed to any folders.";
+$lang['resetselected'] = "Reset Selected";
+$lang['allfoldertypes'] = "All Folder Types";
+$lang['ignoredfolders'] = "Ignored Folders";
+$lang['subscribedfolders'] = "Subscribed Folders";
 
 // Browseable user profiles
 

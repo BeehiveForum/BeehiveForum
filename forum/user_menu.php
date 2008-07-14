@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_menu.php,v 1.52 2007-12-26 13:19:35 decoyduck Exp $ */
+/* $Id: user_menu.php,v 1.53 2008-07-14 18:05:18 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -148,6 +148,9 @@ echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.
 echo "  </tr>\n";
 echo "  <tr>\n";
 echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"edit_subscriptions.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">{$lang['threadsubscriptions']}</a></td>\n";
+echo "  </tr>\n";
+echo "  <tr>\n";
+echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"folder_subscriptions.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">{$lang['foldersubscriptions']}</a></td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 

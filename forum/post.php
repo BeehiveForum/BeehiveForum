@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.343 2008-07-06 18:27:02 decoyduck Exp $ */
+/* $Id: post.php,v 1.344 2008-07-14 16:26:59 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -781,7 +781,7 @@ if ($valid && isset($_POST['post'])) {
 
                         if (isset($thread_data['MODIFIED']) && $thread_data['MODIFIED'] > 0) {
 
-                            email_send_thread_subscription($t_tid, $new_pid, $thread_data['MODIFIED'], $exclude_user_array);
+                            email_send_thread_subscription($t_to_uid, $uid, $t_tid, $new_pid, $thread_data['MODIFIED'], $exclude_user_array);
                         }
                     }
 

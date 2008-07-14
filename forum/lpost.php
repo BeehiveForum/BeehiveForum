@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.123 2008-07-06 18:27:01 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.124 2008-07-14 22:03:09 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -226,23 +226,6 @@ if (isset($_POST['t_newthread'])) {
     }
 }
 
-if (isset($_POST['t_to_uid']) && is_numeric($_POST['t_to_uid'])) {
-
-    $t_to_uid = $_POST['t_to_uid'];
-
-}else {
-
-    $t_to_uid = 0;
-
-    if (isset($reply_to_tid) && isset($reply_to_pid)) {
-
-        if (!$t_to_uid = message_get_user($reply_to_tid, $reply_to_pid)) {
-
-            $t_to_uid = 0;
-        }
-    }
-}
-
 if (($high_interest = bh_session_get_value('MARK_AS_OF_INT')) === false) {
     $high_interest = "N";
 }
@@ -401,6 +384,23 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
         light_html_display_error_msg($lang['cannotcreatethreadinfolder']);
         light_html_draw_bottom();
         exit;
+    }
+}
+
+if (isset($_POST['t_to_uid']) && is_numeric($_POST['t_to_uid'])) {
+
+    $t_to_uid = $_POST['t_to_uid'];
+
+}else {
+
+    $t_to_uid = 0;
+
+    if (isset($reply_to_tid) && isset($reply_to_pid)) {
+
+        if (!$t_to_uid = message_get_user($reply_to_tid, $reply_to_pid)) {
+
+            $t_to_uid = 0;
+        }
     }
 }
 

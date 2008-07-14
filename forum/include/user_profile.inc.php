@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.86 2008-05-30 21:00:18 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.87 2008-07-14 12:46:04 decoyduck Exp $ */
 
 /**
 * Functions relating to users interacting with profiles
@@ -169,16 +169,21 @@ function user_get_profile($uid)
             $user_profile['USER_TIME_TOTAL'] = $lang['unknown'];
         }
 
-        if (isset($user_prefs['DOB_DISPLAY']) && $user_prefs['DOB_DISPLAY'] == USER_DOB_DISPLAY_DATE && !empty($user_prefs['DOB']) && $user_prefs['DOB'] != "0000-00-00") {
-            $user_profile['DOB'] = format_birthday($user_prefs['DOB']);
-        }
+        if (isset($user_prefs['DOB_DISPLAY']) && !empty($user_prefs['DOB']) && $user_prefs['DOB'] != "0000-00-00") {
 
-        if (isset($user_prefs['DOB_DISPLAY']) && $user_prefs['DOB_DISPLAY'] == USER_DOB_DISPLAY_BOTH && !empty($user_prefs['DOB']) && $user_prefs['DOB'] != "0000-00-00") {
-            $user_profile['DOB'] = format_birthday($user_prefs['DOB']);
-        }
+            if ($user_prefs['DOB_DISPLAY'] == USER_DOB_DISPLAY_BOTH) {
 
-        if (isset($user_prefs['DOB_DISPLAY']) && $user_prefs['DOB_DISPLAY'] > USER_DOB_DISPLAY_NONE && $user_prefs['DOB_DISPLAY'] < USER_DOB_DISPLAY_BOTH && !empty($user_prefs['DOB']) && $user_prefs['DOB'] != "0000-00-00") {
-            $user_profile['AGE'] = format_age($user_prefs['DOB']);
+                $user_profile['DOB'] = format_birthday($user_prefs['DOB']);
+                $user_profile['AGE'] = format_age($user_prefs['DOB']);
+
+            }else if ($user_prefs['DOB_DISPLAY'] == USER_DOB_DISPLAY_DATE) {
+
+                $user_profile['DOB'] = format_birthday($user_prefs['DOB']);
+
+            }else if ($user_prefs['DOB_DISPLAY'] == USER_DOB_DISPLAY_AGE) {
+
+                $user_profile['AGE'] = format_age($user_prefs['DOB']);
+            }
         }
 
         if (isset($user_prefs['PIC_URL']) && strlen($user_prefs['PIC_URL']) > 0) {

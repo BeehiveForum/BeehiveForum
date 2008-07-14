@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.144 2008-07-08 19:33:19 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.145 2008-07-14 18:05:18 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -765,6 +765,146 @@ function folder_positions_update()
             if (!$result_update = db_query($sql, $db_folder_positions_update)) return false;
         }
     }
+}
+
+function folders_get_user_subscriptions($interest_type = FOLDER_NOINTEREST, $offset = 0)
+{
+    if (!$db_folders_get_user_subscriptions = db_connect()) return false;
+
+    if (!is_numeric($offset)) $offset = 0;
+    if (!is_numeric($interest_type)) $interest_type = FOLDER_NOINTEREST;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $folder_subscriptions_array = array();
+
+    // Get the folders the user can see.
+
+    $folders = folder_get_available();
+
+    // User UID
+
+    $uid = bh_session_get_value('UID');
+
+    if ($interest_type <> FOLDER_NOINTEREST) {
+
+        $sql = "SELECT SQL_CALC_FOUND_ROWS FOLDER.FID, FOLDER.TITLE, ";
+        $sql.= "USER_FOLDER.INTEREST FROM {$table_data['PREFIX']}FOLDER FOLDER ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_FOLDER USER_FOLDER ";
+        $sql.= "ON (USER_FOLDER.FID = FOLDER.FID AND USER_FOLDER.UID = '$uid') ";
+        $sql.= "WHERE USER_FOLDER.INTEREST = '$interest_type' ";
+        $sql.= "AND FOLDER.FID IN ($folders) ";
+        $sql.= "ORDER BY FOLDER.POSITION DESC ";
+        $sql.= "LIMIT $offset, 20";
+
+    }else {
+
+        $sql = "SELECT SQL_CALC_FOUND_ROWS FOLDER.FID, FOLDER.TITLE, ";
+        $sql.= "USER_FOLDER.INTEREST FROM {$table_data['PREFIX']}FOLDER FOLDER ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_FOLDER USER_FOLDER ";
+        $sql.= "ON (USER_FOLDER.FID = FOLDER.FID AND USER_FOLDER.UID = '$uid') ";
+        $sql.= "WHERE FOLDER.FID IN ($folders) ";
+        $sql.= "ORDER BY FOLDER.POSITION DESC ";
+        $sql.= "LIMIT $offset, 20";
+    }
+
+    if (!$result = db_query($sql, $db_folders_get_user_subscriptions)) return false;
+
+    // Fetch the number of total results
+
+    $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
+
+    if (!$result_count = db_query($sql, $db_folders_get_user_subscriptions)) return false;
+
+    list($folder_subscriptions_count) = db_fetch_array($result_count, DB_RESULT_NUM);
+
+    if (db_num_rows($result) > 0) {
+
+        while ($folder_data_array = db_fetch_array($result)) {
+
+            $folder_subscriptions_array[] = $folder_data_array;
+        }
+
+    }else if ($folder_subscriptions_count > 0) {
+
+        $offset = floor(($folder_subscriptions_count - 1) / 20) * 20;
+        return folders_get_user_subscriptions($interest_type, $offset);
+    }
+
+    return array('folder_count' => $folder_subscriptions_count,
+                 'folder_array' => $folder_subscriptions_array);
+}
+
+function folders_search_user_subscriptions($folder_search, $interest_type = FOLDER_NOINTEREST, $offset = 0)
+{
+    if (!$db_folders_search_user_subscriptions = db_connect()) return false;
+
+    if (!is_numeric($offset)) $offset = 0;
+    if (!is_numeric($interest_type)) $interest_type = FOLDER_NOINTEREST;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $folder_search = db_escape_string($folder_search);
+
+    $folder_subscriptions_array = array();
+
+    // Get the folders the user can see.
+
+    $folders = folder_get_available();
+
+    // User UID
+
+    $uid = bh_session_get_value('UID');
+
+    if ($interest_type <> FOLDER_NOINTEREST) {
+
+        $sql = "SELECT SQL_CALC_FOUND_ROWS FOLDER.FID, FOLDER.TITLE, ";
+        $sql.= "USER_FOLDER.INTEREST FROM {$table_data['PREFIX']}FOLDER FOLDER ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_FOLDER USER_FOLDER ";
+        $sql.= "ON (USER_FOLDER.FID = FOLDER.FID AND USER_FOLDER.UID = '$uid') ";
+        $sql.= "WHERE USER_FOLDER.INTEREST = '$interest_type' ";
+        $sql.= "AND FOLDER.TITLE LIKE '$folder_search%' ";
+        $sql.= "AND FOLDER.FID IN ($folders) ";
+        $sql.= "ORDER BY FOLDER.POSITION DESC ";
+        $sql.= "LIMIT $offset, 20";
+
+    }else {
+
+        $sql = "SELECT SQL_CALC_FOUND_ROWS FOLDER.FID, FOLDER.TITLE, ";
+        $sql.= "USER_FOLDER.INTEREST FROM {$table_data['PREFIX']}FOLDER FOLDER ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_FOLDER USER_FOLDER ";
+        $sql.= "ON (USER_FOLDER.FID = FOLDER.FID AND USER_FOLDER.UID = '$uid') ";
+        $sql.= "WHERE FOLDER.FID IN ($folders) ";
+        $sql.= "AND FOLDER.TITLE LIKE '$folder_search%' ";
+        $sql.= "ORDER BY FOLDER.POSITION DESC ";
+        $sql.= "LIMIT $offset, 20";
+    }
+
+    if (!$result = db_query($sql, $db_folders_search_user_subscriptions)) return false;
+
+    // Fetch the number of total results
+
+    $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
+
+    if (!$result_count = db_query($sql, $db_folders_search_user_subscriptions)) return false;
+
+    list($folder_subscriptions_count) = db_fetch_array($result_count, DB_RESULT_NUM);
+
+    if (db_num_rows($result) > 0) {
+
+        while ($folder_data_array = db_fetch_array($result)) {
+
+            $folder_subscriptions_array[] = $folder_data_array;
+        }
+
+    }else if ($folder_subscriptions_count > 0) {
+
+        $offset = floor(($folder_subscriptions_count - 1) / 20) * 20;
+        return folders_search_user_subscriptions($folder_search, $interest_type, $offset);
+    }
+
+    return array('folder_count' => $folder_subscriptions_count,
+                 'folder_array' => $folder_subscriptions_array);
 }
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_subscriptions.php,v 1.33 2008-07-14 18:05:18 decoyduck Exp $ */
+/* $Id: folder_subscriptions.php,v 1.1 2008-07-14 18:05:18 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -62,8 +62,7 @@ include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "logon.inc.php");
 include_once(BH_INCLUDE_PATH. "post.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
-include_once(BH_INCLUDE_PATH. "thread.inc.php");
-include_once(BH_INCLUDE_PATH. "threads.inc.php");
+include_once(BH_INCLUDE_PATH. "folder.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "user_rel.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
@@ -128,14 +127,14 @@ if (isset($_POST['save'])) {
 
     if (isset($_POST['set_interest']) && is_array($_POST['set_interest'])) {
 
-        foreach ($_POST['set_interest'] as $thread) {
+        foreach ($_POST['set_interest'] as $folder) {
 
-            if ($valid && is_numeric($thread)) {
+            if ($valid && is_numeric($folder)) {
 
-                if (!thread_set_interest($thread, 0)) {
+                if (!user_set_folder_interest($folder, 0)) {
 
-                    $thread_title = thread_get_title($thread);
-                    $error_msg_array[] = sprintf("{$lang['couldnotupdateinterestonthread']}", $thread_title);
+                    $folder_title = folder_get_title($folder);
+                    $error_msg_array[] = sprintf("{$lang['couldnotupdateinterestonfolder']}", $folder_title);
                     $valid = false;
                 }
             }
@@ -143,7 +142,7 @@ if (isset($_POST['save'])) {
 
         if ($valid) {
 
-            header_redirect("edit_subscriptions.php?webtag=$webtag&updated=true");
+            header_redirect("folder_subscriptions.php?webtag=$webtag&updated=true");
             exit;
         }
     }
@@ -175,14 +174,14 @@ if (isset($_GET['search_page']) && is_numeric($_GET['search_page'])) {
     $start_search = 0;
 }
 
-// Thread search keywords.
+// Folder search keywords.
 
-if (isset($_GET['threadsearch']) && strlen(trim(_stripslashes($_GET['threadsearch']))) > 0) {
-    $threadsearch = trim(_stripslashes($_GET['threadsearch']));
-}else if (isset($_POST['threadsearch']) && strlen(trim(_stripslashes($_POST['threadsearch']))) > 0) {
-    $threadsearch = trim(_stripslashes($_POST['threadsearch']));
+if (isset($_GET['foldersearch']) && strlen(trim(_stripslashes($_GET['foldersearch']))) > 0) {
+    $foldersearch = trim(_stripslashes($_GET['foldersearch']));
+}else if (isset($_POST['foldersearch']) && strlen(trim(_stripslashes($_POST['foldersearch']))) > 0) {
+    $foldersearch = trim(_stripslashes($_POST['foldersearch']));
 }else {
-    $threadsearch = "";
+    $foldersearch = "";
 }
 
 // View filter
@@ -192,13 +191,13 @@ if (isset($_GET['view_filter']) && is_numeric($_GET['view_filter'])) {
 }else if (isset($_POST['view_filter']) && is_numeric($_POST['view_filter'])) {
     $view_filter = $_POST['view_filter'];
 }else {
-    $view_filter = THREAD_NOINTEREST;
+    $view_filter = FOLDER_NOINTEREST;
 }
 
 // Clear search?
 
 if (isset($_POST['clear'])) {
-    $threadsearch = "";
+    $foldersearch = "";
 }
 
 // User UID
@@ -207,25 +206,23 @@ $uid = bh_session_get_value('UID');
 
 // Save button text and header text change depending on view selected.
 
-$header_text_array = array(THREAD_NOINTEREST => $lang['allthreadtypes'], THREAD_IGNORED => $lang['ignoredthreads'],
-                           THREAD_INTERESTED => $lang['highinterestthreads'], THREAD_SUBSCRIBED => $lang['subscribedthreads']);
+$header_text_array = array(FOLDER_NOINTEREST => $lang['allfoldertypes'], FOLDER_IGNORED => $lang['ignoredfolders'], FOLDER_SUBSCRIBED => $lang['subscribedfolders']);
 
-$interest_level_array = array(THREAD_IGNORED => $lang['ignored'], THREAD_NOINTEREST => $lang['normal'],
-                              THREAD_INTERESTED  => $lang['interested'], THREAD_SUBSCRIBED => $lang['subscribe']);
+$interest_level_array = array(FOLDER_IGNORED => $lang['ignored'], FOLDER_NOINTEREST => $lang['normal'], FOLDER_SUBSCRIBED => $lang['subscribe']);
 
 // Check if we're searching or displaying the existing subscriptions.
 
-if (isset($threadsearch) && strlen(trim($threadsearch)) > 0) {
-    $thread_subscriptions = threads_search_user_subscriptions($threadsearch, $view_filter, $start_search);
+if (isset($foldersearch) && strlen(trim($foldersearch)) > 0) {
+    $folder_subscriptions = folders_search_user_subscriptions($foldersearch, $view_filter, $start_search);
 }else {
-    $thread_subscriptions = threads_get_user_subscriptions($view_filter, $start_main);
+    $folder_subscriptions = folders_get_user_subscriptions($view_filter, $start_main);
 }
 
 // Start output here
 
-html_draw_top('edit_subscriptions.js');
+html_draw_top('folder_subscriptions.js');
 
-echo "<h1>{$lang['threadsubscriptions']} &raquo; {$header_text_array[$view_filter]}</h1>\n";
+echo "<h1>{$lang['foldersubscriptions']} &raquo; {$header_text_array[$view_filter]}</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -233,26 +230,26 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 }else if (isset($_GET['updated'])) {
 
-    html_display_success_msg($lang['threadinterestsupdatedsuccessfully'], '600', 'left');
+    html_display_success_msg($lang['folderinterestsupdatedsuccessfully'], '600', 'left');
 
-}else if (sizeof($thread_subscriptions['thread_array']) < 1) {
+}else if (sizeof($folder_subscriptions['folder_array']) < 1) {
 
-    if (isset($threadsearch) && strlen(trim($threadsearch)) > 0) {
+    if (isset($foldersearch) && strlen(trim($foldersearch)) > 0) {
 
         html_display_warning_msg($lang['searchreturnednoresults'], '600', 'left');
 
     }else {
 
-        html_display_warning_msg($lang['nothreadsubscriptions'], '600', 'left');
+        html_display_warning_msg($lang['nofoldersubscriptions'], '600', 'left');
     }
 }
 
 echo "<br />\n";
-echo "<form name=\"subscriptions\" action=\"edit_subscriptions.php\" method=\"post\" target=\"_self\">\n";
+echo "<form name=\"subscriptions\" action=\"folder_subscriptions.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
 echo "  ", form_input_hidden("search_page", _htmlentities($search_page)), "\n";
-echo "  ", form_input_hidden("threadsearch", _htmlentities($threadsearch)), "\n";
+echo "  ", form_input_hidden("foldersearch", _htmlentities($foldersearch)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\" colspan=\"3\">\n";
@@ -261,24 +258,24 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 
-if (sizeof($thread_subscriptions['thread_array']) > 0) {
+if (sizeof($folder_subscriptions['folder_array']) > 0) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"center\" class=\"subhead_checkbox\" width=\"1%\">", form_checkbox("toggle_all", "toggle_all", "", false, "onclick=\"subscriptionsToggleAll();\""), "</td>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" width=\"450\">{$lang['threadtitle']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" width=\"450\">{$lang['foldertitle']}</td>\n";
     echo "                  <td align=\"center\" class=\"subhead\" width=\"150\">{$lang['currentinterest']}</td>\n";
     echo "                </tr>\n";
 
-    foreach ($thread_subscriptions['thread_array'] as $thread) {
+    foreach ($folder_subscriptions['folder_array'] as $folder) {
 
         echo "                <tr>\n";
-        echo "                  <td align=\"center\" nowrap=\"nowrap\">", form_checkbox('set_interest[]', $thread['TID'], ''), "</td>\n";
-        echo "                  <td align=\"left\"><a href=\"index.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"_blank\">", word_filter_add_ob_tags(_htmlentities(thread_format_prefix($thread['PREFIX'], $thread['TITLE']))), "</a></td>\n";
+        echo "                  <td align=\"center\" nowrap=\"nowrap\">", form_checkbox('set_interest[]', $folder['FID'], ''), "</td>\n";
+        echo "                  <td align=\"left\"><a href=\"index.php?webtag=$webtag&amp;folder={$folder['FID']}\" target=\"_blank\">", word_filter_add_ob_tags(_htmlentities($folder['TITLE'])), "</a></td>\n";
 
-        if (isset($interest_level_array[$thread['INTEREST']])) {
-            echo "                  <td align=\"center\">{$interest_level_array[$thread['INTEREST']]}</td>\n";
+        if (isset($interest_level_array[$folder['INTEREST']])) {
+            echo "                  <td align=\"center\">{$interest_level_array[$folder['INTEREST']]}</td>\n";
         }else {
-            echo "                  <td align=\"center\">{$lang['none']}</td>\n";
+            echo "                  <td align=\"center\">{$lang['normal']}</td>\n";
         }
 
         echo "                </tr>\n";
@@ -288,7 +285,7 @@ if (sizeof($thread_subscriptions['thread_array']) > 0) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" class=\"subhead\" width=\"20\">&nbsp;</td>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" width=\"450\">{$lang['threadtitle']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" width=\"450\">{$lang['foldertitle']}</td>\n";
     echo "                  <td align=\"center\" class=\"subhead\" width=\"150\">{$lang['currentinterest']}</td>\n";
     echo "                </tr>\n";
 }
@@ -307,11 +304,11 @@ echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\" width=\"33%\">&nbsp;</td>\n";
-echo "      <td class=\"postbody\" align=\"center\">", page_links("edit_subscriptions.php?webtag=$webtag&threadsearch=$threadsearch&search_page=$search_page&view_filter=$view_filter", $start_main, $thread_subscriptions['thread_count'], 20, "main_page"), "</td>\n";
-echo "      <td align=\"right\" width=\"33%\">{$lang['view']}:&nbsp;", form_dropdown_array('view_filter', array(THREAD_NOINTEREST => $lang['all'], THREAD_IGNORED => $lang['ignored'], THREAD_INTERESTED => $lang['interested'], THREAD_SUBSCRIBED => $lang['subscribed']), $view_filter), "&nbsp;", form_submit("view_submit", $lang['goexcmark']), "</td>\n";
+echo "      <td class=\"postbody\" align=\"center\">", page_links("folder_subscriptions.php?webtag=$webtag&foldersearch=$foldersearch&search_page=$search_page&view_filter=$view_filter", $start_main, $folder_subscriptions['folder_count'], 20, "main_page"), "</td>\n";
+echo "      <td align=\"right\" width=\"33%\">{$lang['view']}:&nbsp;", form_dropdown_array('view_filter', array(FOLDER_NOINTEREST => $lang['all'], FOLDER_IGNORED => $lang['ignored'], FOLDER_SUBSCRIBED => $lang['subscribed']), $view_filter), "&nbsp;", form_submit("view_submit", $lang['goexcmark']), "</td>\n";
 echo "    </tr>\n";
 
-if (sizeof($thread_subscriptions['thread_array']) > 0) {
+if (sizeof($folder_subscriptions['folder_array']) > 0) {
 
     echo "    <tr>\n";
     echo "      <td align=\"left\">&nbsp;</td>\n";
@@ -324,7 +321,7 @@ if (sizeof($thread_subscriptions['thread_array']) > 0) {
 echo "  </table>\n";
 echo "</form>\n";
 echo "<br />\n";
-echo "<form method=\"post\" action=\"edit_subscriptions.php\" target=\"_self\">\n";
+echo "<form method=\"post\" action=\"folder_subscriptions.php\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
 echo "  ", form_input_hidden("search_page", _htmlentities($search_page)), "\n";
@@ -346,7 +343,7 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td class=\"posthead\" align=\"left\">\n";
-echo "                          {$lang['threadtitle']}: ", form_input_text("threadsearch", isset($threadsearch) ? _htmlentities($threadsearch) : "", 30, 64), " ", form_submit('search', $lang['search']), "&nbsp;", form_submit('clear', $lang['clear']), "\n";
+echo "                          {$lang['foldertitle']}: ", form_input_text("foldersearch", isset($foldersearch) ? _htmlentities($foldersearch) : "", 30, 64), " ", form_submit('search', $lang['search']), "&nbsp;", form_submit('clear', $lang['clear']), "\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";

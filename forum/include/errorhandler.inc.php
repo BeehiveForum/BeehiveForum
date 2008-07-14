@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.116 2008-03-15 15:37:03 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.117 2008-07-14 12:30:21 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -133,26 +133,6 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
     // Now we can carry on with any other errors.
 
     if (error_reporting()) {
-
-        // Check for an installation error.
-
-        if (($errno == ER_NO_SUCH_TABLE || $errno == ER_WRONG_COLUMN_NAME)) {
-
-            if (!defined('BEEHIVE_INSTALL_NOWARN') && function_exists('install_incomplete')) {
-
-                install_incomplete();
-            }
-        }
-
-        // Check for file include errors
-
-        if ((preg_match('/include|include_once/', $errstr) > 0)) {
-
-            if (!defined('BEEHIVE_INSTALL_NOWARN') && function_exists('install_missing_files')) {
-
-                install_missing_files();
-            }
-        }
 
         // Array to hold the error message strings.
 
@@ -362,6 +342,26 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
         // Add the error to the log.
 
         @error_log($error_log_message);
+
+        // Check for an installation error.
+
+        if (($errno == ER_NO_SUCH_TABLE || $errno == ER_WRONG_COLUMN_NAME)) {
+
+            if (!defined('BEEHIVE_INSTALL_NOWARN') && function_exists('install_incomplete')) {
+
+                install_incomplete();
+            }
+        }
+
+        // Check for file include errors
+
+        if ((preg_match('/include|include_once/', $errstr) > 0)) {
+
+            if (!defined('BEEHIVE_INSTALL_NOWARN') && function_exists('install_missing_files')) {
+
+                install_missing_files();
+            }
+        }
 
         // Light mode / basic error message display.
 

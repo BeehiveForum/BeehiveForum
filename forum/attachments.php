@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.154 2008-06-30 19:46:06 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.155 2008-07-15 17:33:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -155,6 +155,10 @@ if (user_is_guest()) {
 
 $uid = bh_session_get_value('UID');
 
+// Maximum attachment space
+
+$max_attachment_space = forum_get_setting('attachments_max_user_space', false, 1048576);
+
 // Get user's free attachment space.
 
 $users_free_space = get_free_attachment_space($uid);
@@ -196,7 +200,7 @@ if (isset($_POST['upload'])) {
                     $tempfile = $_FILES['userfile']['tmp_name'][$i];
                     $filetype = $_FILES['userfile']['type'][$i];
 
-                    if (($users_free_space > 0) && ($users_free_space < $filesize)) {
+                    if (($max_attachment_space > 0) && ($users_free_space < $filesize)) {
 
                         $upload_failure[] = $filename;
 
@@ -222,19 +226,11 @@ if (isset($_POST['upload'])) {
                                 $users_free_space -= $filesize;
                             }
 
-                            if (strlen($filename) > 32) {
-
-                                $upload_success[] = substr($filename, 0, 32). "&hellip;";
-
-                            }else {
-
-                                $upload_success[] = $filename;
-                            }
+                            $upload_success[] = $filename;
 
                         }else {
 
                             if (@file_exists($tempfile)) {
-
                                 unlink($tempfile);
                             }
 
@@ -651,13 +647,13 @@ echo "                  <td align=\"right\" valign=\"top\" class=\"postbody\">",
 echo "                  <td align=\"left\" width=\"25\">&nbsp;</td>\n";
 echo "                </tr>\n";
 
-if ($users_free_space > 0) {
+if (($max_attachment_space > 0)) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" width=\"25\">&nbsp;</td>\n";
     echo "                  <td align=\"left\" valign=\"top\" class=\"postbody\">{$lang['freespace']}:</td>\n";
     echo "                  <td align=\"left\" valign=\"top\" class=\"postbody\">&nbsp;</td>\n";
-    echo "                  <td align=\"right\" valign=\"top\" class=\"postbody\">", format_file_size($free_attachment_space), "</td>\n";
+    echo "                  <td align=\"right\" valign=\"top\" class=\"postbody\">", format_file_size($users_free_space), "</td>\n";
     echo "                  <td align=\"left\" width=\"25\">&nbsp;</td>\n";
     echo "                </tr>\n";
 }

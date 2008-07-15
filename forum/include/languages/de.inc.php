@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.87 2008-07-06 18:27:00 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.88 2008-07-15 17:33:17 decoyduck Exp $ */
 
 // German language file
 
@@ -984,7 +984,6 @@ $lang['upload'] = "Hochlanden";
 $lang['uploadnewattachment'] = "Neuer Dateianhang hochladen";
 $lang['waitdotdot'] = "warten..";
 $lang['successfullyuploaded'] = "Erfolgreich hochgeladen: %s";
-$lang['failedtoupload'] = "Fehler beim Hochladen: %s";
 $lang['complete'] = "Fertig";
 $lang['uploadattachment'] = "Dateianhang fuer eine Nachricht hochladen";
 $lang['enterfilenamestoupload'] = "Dateinamen zum Hochladen eingeben";

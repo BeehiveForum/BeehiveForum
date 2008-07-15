@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.112 2008-07-06 18:27:00 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.113 2008-07-15 17:33:17 decoyduck Exp $ */
 
 // French Canadian language file
 
@@ -984,7 +984,6 @@ $lang['upload'] = "Téléverser";
 $lang['uploadnewattachment'] = "Téléverser nouveau fichier joint";
 $lang['waitdotdot'] = "patienter..";
 $lang['successfullyuploaded'] = "Téléversement réussi: %s";
-$lang['failedtoupload'] = "Téléversement échoué: %s";
 $lang['complete'] = "Compléter";
 $lang['uploadattachment'] = "Téléverser un fichier pour joindre au message";
 $lang['enterfilenamestoupload'] = "Entrer nom(s) de fichier(s) à téléverser";

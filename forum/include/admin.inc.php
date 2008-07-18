@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.151 2008-06-13 12:16:32 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.152 2008-07-18 22:05:33 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -1625,8 +1625,6 @@ function admin_send_new_user_notification($new_user_uid)
 
     $user_perm_forum_tools = USER_PERM_FORUM_TOOLS;
 
-    $notification_success = true;
-
     $sql = "SELECT DISTINCT USER.UID FROM USER LEFT JOIN GROUP_USERS ";
     $sql.= "ON (GROUP_USERS.UID = USER.UID) LEFT JOIN GROUP_PERMS ";
     $sql.= "ON (GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FORUM = 0) ";
@@ -1636,13 +1634,10 @@ function admin_send_new_user_notification($new_user_uid)
 
     while (list($admin_uid) = db_fetch_array($result, DB_RESULT_NUM)) {
 
-        if (!email_send_new_user_notification($admin_uid, $new_user_uid)) {
-
-            $notification_success = false;
-        }
+        if (!email_send_new_user_notification($admin_uid, $new_user_uid)) return false;
     }
 
-    return $notification_success;
+    return true;
 }
 
 function admin_send_post_approval_notification($fid)

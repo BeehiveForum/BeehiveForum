@@ -598,26 +598,27 @@ upgrade script built into the newer releases of Beehive to bring you bang up to 
 ================================
 
 Beehive Forum includes a comprehensive error reporter which can be used to help
-diagnose faults and find bugs in the software. This error reporting is indispensable
-for helping develop the project and should be used at all times when reporting
+diagnose faults and find bugs in the software. This error reporter is indispensable
+in helping to develop the project and should be used at all times when reporting
 problems you have with the software.
 
-In older releases was enabled by default and set to output error messages to all
-clients but with the release of Beehive Forum 0.8 it was decided the error reporter
-should at least be partially silenced and the error reports instead sent to the system
-error log (Apache error_log or similar). This was primarily done to reduce the security
-risk associated with potentially sensitive data being released to end users.
+In older releases the error reporter was enabled by default and set to output error
+messages to all users but with the release of Beehive Forum 0.8 it was decided the
+error reporter should at least be partially silenced and the error reports instead
+sent to the system error log (Apache error_log or similar). This was primarily done
+to reduce the security risk associated with potentially sensitive data being
+released to end users.
 
 Because not everyone has access to their server's error log (shared hosting, etc.) 
 we have also implement error reporting by email. With this option you can continue to
-receive detailed error messages from your Beehive Forum installation without the risk
-associated with such information being available to all users. It also means you can continue
-to report bugs back to the development team and get help diagnosing faults.
+receive detailed error messages from your Beehive Forum installation with none of the 
+associated risks. It also means you can continue to report bugs back to the development
+team and get help diagnosing faults.
 
 Due to the nature of the Beehive Forum the error reporter can only be enabled automatically 
-if you're performing a new installation. To do this you simply need to tick the relevant
-box under Advanced Options in the installer. The changes will be automatically made
-to your config.inc.php for you and you are then good to go.
+if you're performing a new installation. To do this you simply tick the relevant box under
+Advanced Options in the installer. The changes will be automatically made to your 
+config.inc.php for you and you are then good to go.
 
 To enable the error reporter for upgrades please follow the instructions below.
 
@@ -634,16 +635,16 @@ within the include folder on your web space. Please do not use the config.inc.ph
 the distribution archive. This is a template file used by the installer and will not work
 without further changes.
 
-To start download the config.inc.php using FTP and save it somewhere on your PC. A good place
-if any is your desktop. Make a copy of the file just in case something goes wrong and then 
-open the config.inc.php you've download using a text editor. Windows users are recommended to
-use Notepad. Please do not use Microsoft Wordpad or Microsoft Word or any other word processor
-as these may cause problems with the format of the file. *nux users, we're sure you'll do just
-fine with vi or vim or even gedit.
+To begin, download the config.inc.php using FTP and save it somewhere on your PC. As good place
+as any is your desktop. Once you have it downloaded make a copy of the file just in case 
+something goes wrong and then open it using a text editor. Windows users are recommended to
+use Notepad. Please do not use Microsoft Wordpad or Microsoft Word, or any other word processor
+for that matter, unless you know what you're doing, as these may cause problems with the format
+of the file. *nux users, we're sure you'll do just fine with vi or vim or even gedit.
 
 To actually enable the error handler you need to change two variables. The first variable to be
 changed is named $error_report_verbose and should be changed from false to true. Second is the
-error_report_email_addr_to variable. This is where you should enter your email address. Once
+$error_report_email_addr_to variable. This is where you should enter your email address. Once
 changed the variables should look a bit like this:
 
 
@@ -661,8 +662,9 @@ errors which is a good thing, but if you suspect you should be check that the em
 is correct.
 
 If you can't get the error reporting to function or if you break your Beehive Forum you can
-simply restore the copy you made earlier or try again. If you continue to have problems please
-seek assistance at Teh Forum, a link for which you find below in the Support section.
+simply restore the copy of config.inc.php you made earlier or try again. If you continue to
+have problems please seek assistance at Teh Forum, a link for which you find below in the
+Support section.
 
 
 2 Known Issues

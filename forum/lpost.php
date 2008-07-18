@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.124 2008-07-14 22:03:09 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.125 2008-07-18 22:28:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -505,14 +505,13 @@ if ($valid && isset($_POST['post'])) {
 
                         $exclude_user_array = array($t_to_uid, $uid);
 
+                        $thread_modified = (isset($thread_data['MODIFIED']) && is_numeric($thread_data['MODIFIED'])) ? $thread_data['MODIFIED'] : 0;
+
                         email_sendnotification($t_to_uid, $uid, $t_tid, $new_pid);
 
-                        email_send_folder_subscription($t_to_uid, $uid, $t_fid, $t_tid, $new_pid, $exclude_user_array);
+                        email_send_folder_subscription($t_to_uid, $uid, $t_fid, $t_tid, $new_pid, $thread_modified, $exclude_user_array);
 
-                        if (isset($thread_data['MODIFIED']) && $thread_data['MODIFIED'] > 0) {
-
-                            email_send_thread_subscription($t_to_uid, $uid, $t_tid, $new_pid, $thread_data['MODIFIED'], $exclude_user_array);
-                        }
+                        email_send_thread_subscription($t_to_uid, $uid, $t_tid, $new_pid, $thread_modified, $exclude_user_array);
                     }
                 }
             }

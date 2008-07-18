@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_startpage.php,v 1.101 2008-03-23 18:54:58 decoyduck Exp $ */
+/* $Id: admin_startpage.php,v 1.102 2008-07-18 22:05:33 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -106,15 +106,14 @@ if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
 $error_msg_array = array();
 
-// List of allowed extensions.
-
-$allowed_file_exts_array = array('html', 'htm');
-$allowed_file_exts = "*.". implode(", *.", $allowed_file_exts_array);
-
 // Path to the Forum folder for saving start page.
 
 $forum_path = dirname($_SERVER['PHP_SELF']);
 $forum_path.= "/forums/$webtag/";
+
+// Make sure the directory structure exists
+
+mkdir_recursive("forums/$webtag", 0755);
 
 // Check to see if we're submitting new page or retrieving the old one.
 
@@ -147,6 +146,35 @@ if (isset($_POST['save'])) {
         $error_msg_array[] = sprintf($lang['startpageerror'], $forum_path);
     }
 
+}elseif (isset($_POST['upload'])) {
+
+    if (isset($_FILES['cssfile']['tmp_name']) && strlen(trim($_FILES['cssfile']['tmp_name'])) > 0) {
+
+        if (isset($_FILES['cssfile']['error']) && $_FILES['cssfile']['error'] > 0) {
+
+            html_draw_top();
+            html_error_msg(sprintf($lang['uploadfailed'], $forum_path), 'admin_startpage.php', 'post', array('back' => $lang['back']));
+            html_draw_bottom();
+            exit;
+
+        }else if (isset($_FILES['cssfile']['type']) && trim(_stripslashes($_FILES['cssfile']['type'])) == 'text/css') {
+
+            $path_parts = pathinfo($_FILES['cssfile']['name']);
+
+            if ((isset($path_parts['extension']) && $path_parts['extension'] == 'css')) {
+
+                if (@move_uploaded_file($_FILES['cssfile']['tmp_name'], "forums/$webtag/start_main.css")) {
+
+                    admin_add_log_entry(EDITED_START_PAGE);
+                    header_redirect("admin_startpage.php?webtag=$webtag&uploaded=true");
+                    exit;
+                }
+            }
+        }
+
+        $error_msg_array[] = $lang['invalidfiletypeerror'];
+    }
+
 }else if (isset($_POST['download'])) {
 
     $content_length = strlen($t_content);
@@ -170,6 +198,11 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
     $start_page_link = sprintf("<a href=\"start_main.php?webtag=$webtag\" target=\"_blank\">%s</a>", $lang['viewupdatedstartpage']);
     html_display_success_msg(sprintf($lang['startpageupdated'], $start_page_link), '600', 'center');
+
+}elseif (isset($_GET['uploaded'])) {
+
+    $start_page_link = sprintf("<a href=\"start_main.php?webtag=$webtag\" target=\"_blank\">%s</a>", $lang['viewupdatedstartpage']);
+    html_display_success_msg(sprintf($lang['cssfileuploaded'], $start_page_link), '600', 'center');
 }
 
 $tools = new TextAreaHTML("startpage");
@@ -217,6 +250,44 @@ echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td align=\"center\">", form_submit("save", $lang['save']), "&nbsp;", form_submit("download", $lang['download']), "</td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "  <br />\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\" class=\"subhead\">{$lang['uploadcssfile']}</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td align=\"center\">\n";
+echo "                    <table class=\"posthead\" width=\"95%\">\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\">{$lang['filename']}: ", form_input_file("cssfile", "", 45, 0), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">&nbsp;</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td align=\"center\">", form_submit("upload", $lang['upload']), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

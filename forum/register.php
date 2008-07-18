@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.178 2008-07-09 19:32:51 decoyduck Exp $ */
+/* $Id: register.php,v 1.179 2008-07-18 22:05:33 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -515,7 +515,7 @@ if (isset($_POST['register'])) {
             // If New User Notification is enabled send the forum owners an email.
 
             if (forum_get_setting('send_new_user_email', 'Y')) {
-                admin_send_new_user_notification();
+                admin_send_new_user_notification($new_uid);
             }
 
             // Display final success / confirmation page.

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.133 2008-07-06 18:27:00 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.134 2008-07-18 22:28:06 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -144,6 +144,8 @@ function email_send_thread_subscription($tuid, $fuid, $tid, $pid, $modified, &$e
 
     if (!is_numeric($modified)) return false;
 
+    if (!is_array($exclude_user_array)) $exclude_user_array = array();
+
     if (!check_mail_variables()) return false;
 
     if (!$from_user = user_get($fuid)) return false;
@@ -232,7 +234,7 @@ function email_send_thread_subscription($tuid, $fuid, $tid, $pid, $modified, &$e
     return true;
 }
 
-function email_send_folder_subscription($tuid, $fuid, $fid, $tid, $pid, &$exclude_user_array)
+function email_send_folder_subscription($tuid, $fuid, $fid, $tid, $pid, $modified, &$exclude_user_array)
 {
     if (!$db_email_send_folder_subscription = db_connect()) return false;
 
@@ -243,6 +245,10 @@ function email_send_folder_subscription($tuid, $fuid, $fid, $tid, $pid, &$exclud
 
     if (!is_numeric($tid)) return false;
     if (!is_numeric($pid)) return false;
+
+    if (!is_numeric($modified)) return false;
+
+    if (!is_array($exclude_user_array)) $exclude_user_array = array();
 
     if (!check_mail_variables()) return false;
 
@@ -259,8 +265,10 @@ function email_send_folder_subscription($tuid, $fuid, $fid, $tid, $pid, &$exclud
     $sql = "SELECT USER_FOLDER.UID, USER.LOGON, USER.NICKNAME, USER.EMAIL ";
     $sql.= "FROM {$table_data['PREFIX']}USER_FOLDER USER_FOLDER ";
     $sql.= "LEFT JOIN USER ON (USER.UID = USER_FOLDER.UID) ";
-    $sql.= "WHERE USER_FOLDER.FID = '$fid'  AND USER_FOLDER.INTEREST = 1 ";
-    $sql.= "AND USER_FOLDER.UID NOT IN ($exclude_user_list)";
+    $sql.= "LEFT JOIN USER_FORUM ON (USER_FORUM.UID = USER_FOLDER.UID ";
+    $sql.= "AND USER_FORUM.FID = '$forum_fid') WHERE USER_FOLDER.FID = '$fid' ";
+    $sql.= "AND UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT) > $modified ";
+    $sql.= "AND USER_FOLDER.INTEREST = 1 AND USER_FOLDER.UID NOT IN ($exclude_user_list)";
 
     if (!$result = db_query($sql, $db_email_send_folder_subscription)) return false;
 

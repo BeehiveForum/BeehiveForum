@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.557 2008-07-18 22:05:33 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.558 2008-07-19 14:46:16 decoyduck Exp $ */
 
 // British English language file
 
@@ -2186,6 +2186,8 @@ $lang['threadsubscriptions'] = "Thread Subscriptions";
 $lang['couldnotupdateinterestonthread'] = "Could not update interest on thread '%s'";
 $lang['threadinterestsupdatedsuccessfully'] = "Thread interests updated successfully";
 $lang['nothreadsubscriptions'] = "You are not subscribed to any threads.";
+$lang['nothreadsignored'] = "You are not ignoring any threads.";
+$lang['nothreadsonhighinterest'] = "You have no high interest threads.";
 $lang['resetselected'] = "Reset Selected";
 $lang['allthreadtypes'] = "All Thread Types";
 $lang['ignoredthreads'] = "Ignored Threads";
@@ -2199,6 +2201,7 @@ $lang['foldersubscriptions'] = "Folder Subscriptions";
 $lang['couldnotupdateinterestonfolder'] = "Could not update interest on folder '%s'";
 $lang['folderinterestsupdatedsuccessfully'] = "Folder interests updated successfully";
 $lang['nofoldersubscriptions'] = "You are not subscribed to any folders.";
+$lang['nofoldersignored'] = "You are not ignoring any folders.";
 $lang['resetselected'] = "Reset Selected";
 $lang['allfoldertypes'] = "All Folder Types";
 $lang['ignoredfolders'] = "Ignored Folders";

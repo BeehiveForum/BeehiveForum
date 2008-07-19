@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder_subscriptions.php,v 1.1 2008-07-14 18:05:18 decoyduck Exp $ */
+/* $Id: folder_subscriptions.php,v 1.2 2008-07-19 14:46:16 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -176,12 +176,12 @@ if (isset($_GET['search_page']) && is_numeric($_GET['search_page'])) {
 
 // Folder search keywords.
 
-if (isset($_GET['foldersearch']) && strlen(trim(_stripslashes($_GET['foldersearch']))) > 0) {
-    $foldersearch = trim(_stripslashes($_GET['foldersearch']));
-}else if (isset($_POST['foldersearch']) && strlen(trim(_stripslashes($_POST['foldersearch']))) > 0) {
-    $foldersearch = trim(_stripslashes($_POST['foldersearch']));
+if (isset($_GET['folder_search']) && strlen(trim(_stripslashes($_GET['folder_search']))) > 0) {
+    $folder_search = trim(_stripslashes($_GET['folder_search']));
+}else if (isset($_POST['folder_search']) && strlen(trim(_stripslashes($_POST['folder_search']))) > 0) {
+    $folder_search = trim(_stripslashes($_POST['folder_search']));
 }else {
-    $foldersearch = "";
+    $folder_search = "";
 }
 
 // View filter
@@ -191,13 +191,13 @@ if (isset($_GET['view_filter']) && is_numeric($_GET['view_filter'])) {
 }else if (isset($_POST['view_filter']) && is_numeric($_POST['view_filter'])) {
     $view_filter = $_POST['view_filter'];
 }else {
-    $view_filter = FOLDER_NOINTEREST;
+    $view_filter = FOLDER_SUBSCRIBED;
 }
 
 // Clear search?
 
 if (isset($_POST['clear'])) {
-    $foldersearch = "";
+    $folder_search = "";
 }
 
 // User UID
@@ -206,14 +206,14 @@ $uid = bh_session_get_value('UID');
 
 // Save button text and header text change depending on view selected.
 
-$header_text_array = array(FOLDER_NOINTEREST => $lang['allfoldertypes'], FOLDER_IGNORED => $lang['ignoredfolders'], FOLDER_SUBSCRIBED => $lang['subscribedfolders']);
+$header_text_array = array(FOLDER_IGNORED => $lang['ignoredfolders'], FOLDER_SUBSCRIBED => $lang['subscribedfolders']);
 
-$interest_level_array = array(FOLDER_IGNORED => $lang['ignored'], FOLDER_NOINTEREST => $lang['normal'], FOLDER_SUBSCRIBED => $lang['subscribe']);
+$interest_level_array = array(FOLDER_IGNORED => $lang['ignored'], FOLDER_SUBSCRIBED => $lang['subscribed']);
 
 // Check if we're searching or displaying the existing subscriptions.
 
-if (isset($foldersearch) && strlen(trim($foldersearch)) > 0) {
-    $folder_subscriptions = folders_search_user_subscriptions($foldersearch, $view_filter, $start_search);
+if (isset($folder_search) && strlen(trim($folder_search)) > 0) {
+    $folder_subscriptions = folders_search_user_subscriptions($folder_search, $view_filter, $start_search);
 }else {
     $folder_subscriptions = folders_get_user_subscriptions($view_filter, $start_main);
 }
@@ -234,9 +234,13 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 }else if (sizeof($folder_subscriptions['folder_array']) < 1) {
 
-    if (isset($foldersearch) && strlen(trim($foldersearch)) > 0) {
+    if (isset($folder_search) && strlen(trim($folder_search)) > 0) {
 
         html_display_warning_msg($lang['searchreturnednoresults'], '600', 'left');
+
+    }else if ($view_filter == FOLDER_IGNORED) {
+
+        html_display_warning_msg($lang['nofoldersignored'], '600', 'left');
 
     }else {
 
@@ -249,7 +253,7 @@ echo "<form name=\"subscriptions\" action=\"folder_subscriptions.php\" method=\"
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
 echo "  ", form_input_hidden("search_page", _htmlentities($search_page)), "\n";
-echo "  ", form_input_hidden("foldersearch", _htmlentities($foldersearch)), "\n";
+echo "  ", form_input_hidden("folder_search", _htmlentities($folder_search)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\" colspan=\"3\">\n";
@@ -304,8 +308,8 @@ echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\" width=\"33%\">&nbsp;</td>\n";
-echo "      <td class=\"postbody\" align=\"center\">", page_links("folder_subscriptions.php?webtag=$webtag&foldersearch=$foldersearch&search_page=$search_page&view_filter=$view_filter", $start_main, $folder_subscriptions['folder_count'], 20, "main_page"), "</td>\n";
-echo "      <td align=\"right\" width=\"33%\">{$lang['view']}:&nbsp;", form_dropdown_array('view_filter', array(FOLDER_NOINTEREST => $lang['all'], FOLDER_IGNORED => $lang['ignored'], FOLDER_SUBSCRIBED => $lang['subscribed']), $view_filter), "&nbsp;", form_submit("view_submit", $lang['goexcmark']), "</td>\n";
+echo "      <td class=\"postbody\" align=\"center\">", page_links("folder_subscriptions.php?webtag=$webtag&folder_search=$folder_search&search_page=$search_page&view_filter=$view_filter", $start_main, $folder_subscriptions['folder_count'], 20, "main_page"), "</td>\n";
+echo "      <td align=\"right\" width=\"33%\">{$lang['view']}:&nbsp;", form_dropdown_array('view_filter', array(FOLDER_IGNORED => $lang['ignored'], FOLDER_SUBSCRIBED => $lang['subscribed']), $view_filter), "&nbsp;", form_submit("view_submit", $lang['goexcmark']), "</td>\n";
 echo "    </tr>\n";
 
 if (sizeof($folder_subscriptions['folder_array']) > 0) {
@@ -343,7 +347,7 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td class=\"posthead\" align=\"left\">\n";
-echo "                          {$lang['foldertitle']}: ", form_input_text("foldersearch", isset($foldersearch) ? _htmlentities($foldersearch) : "", 30, 64), " ", form_submit('search', $lang['search']), "&nbsp;", form_submit('clear', $lang['clear']), "\n";
+echo "                          {$lang['foldertitle']}: ", form_input_text("folder_search", isset($folder_search) ? _htmlentities($folder_search) : "", 30, 64), " ", form_submit('search', $lang['search']), "&nbsp;", form_submit('clear', $lang['clear']), "\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";

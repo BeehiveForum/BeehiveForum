@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: server.inc.php,v 1.26 2008-07-09 19:35:27 decoyduck Exp $ */
+/* $Id: server.inc.php,v 1.27 2008-07-19 20:27:11 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -180,51 +180,54 @@ function get_available_files()
                  'admin_folder_add.php', 'admin_folder_edit.php',
                  'admin_forums.php', 'admin_forum_access.php',
                  'admin_forum_links.php', 'admin_forum_settings.php',
-                 'admin_forum_set_passwd.php', 'admin_main.php',
-                 'admin_make_style.php', 'admin_menu.php',
-                 'admin_post_approve.php', 'admin_post_stats.php',
-                 'admin_prof_items.php', 'admin_prof_sect.php',
-                 'admin_rss_feeds.php', 'admin_startpage.php',
-                 'admin_user.php', 'admin_users.php',
-                 'admin_user_groups.php', 'admin_user_groups_add.php',
-                 'admin_user_groups_edit.php', 'admin_user_groups_edit_users.php',
-                 'admin_viewlog.php', 'admin_visitor_log.php',
-                 'admin_wordfilter.php', 'attachments.php',
-                 'change_pw.php', 'confirm_email.php',
-                 'create_poll.php', 'delete.php',
-                 'dictionary.php', 'discussion.php',
-                 'display.php', 'display_emoticons.php',
-                 'edit.php', 'edit_attachments.php',
-                 'edit_email.php', 'edit_password.php',
-                 'edit_poll.php', 'edit_prefs.php',
-                 'edit_profile.php', 'edit_relations.php',
-                 'edit_signature.php', 'edit_subscriptions.php',
-                 'edit_wordfilter.php', 'email.php',
-                 'font_size.php', 'forgot_pw.php',
-                 'forums.php', 'forum_options.php',
-                 'forum_password.php', 'get_attachment.php',
-                 'index.php', 'ldelete.php',
-                 'ldisplay.php', 'ledit.php',
-                 'lforums.php', 'links.php',
-                 'links_add.php', 'links_detail.php',
+                 'admin_forum_set_passwd.php', 'admin_forum_stats.php',
+                 'admin_main.php', 'admin_make_style.php',
+                 'admin_menu.php', 'admin_post_approve.php',
+                 'admin_post_stats.php', 'admin_prof_items.php',
+                 'admin_prof_sect.php', 'admin_rss_feeds.php',
+                 'admin_startpage.php', 'admin_user.php',
+                 'admin_users.php', 'admin_user_groups.php',
+                 'admin_user_groups_add.php', 'admin_user_groups_edit.php',
+                 'admin_user_groups_edit_users.php', 'admin_viewlog.php',
+                 'admin_visitor_log.php', 'admin_wordfilter.php',
+                 'attachments.php', 'change_pw.php',
+                 'confirm_email.php', 'create_poll.php',
+                 'delete.php', 'dictionary.php',
+                 'discussion.php', 'display.php',
+                 'display_emoticons.php', 'edit.php',
+                 'edit_attachments.php', 'edit_email.php',
+                 'edit_password.php', 'edit_poll.php',
+                 'edit_prefs.php', 'edit_profile.php',
+                 'edit_relations.php', 'edit_signature.php',
+                 'edit_subscriptions.php', 'edit_wordfilter.php',
+                 'email.php', 'folder_options.php',
+                 'folder_subscriptions.php', 'font_size.php',
+                 'forgot_pw.php', 'forums.php',
+                 'forum_options.php', 'forum_password.php',
+                 'get_attachment.php', 'index.php',
+                 'ldelete.php', 'ldisplay.php',
+                 'ledit.php', 'lforums.php',
+                 'links.php', 'links_add.php',
+                 'links_detail.php', 'links_folder_edit.php',
                  'llogon.php', 'llogout.php',
                  'lmessages.php', 'logon.php',
                  'logout.php', 'lpost.php',
                  'lthread_list.php', 'messages.php',
                  'mods_list.php', 'nav.php',
                  'pm.php', 'pm_edit.php',
-                 'pm_write.php', 'poll_results.php',
-                 'post.php', 'register.php',
-                 'search.php', 'search_index.php',
-                 'search_popup.php', 'set_relation.php',
+                 'pm_folders.php', 'pm_messages.php',
+                 'pm_options.php', 'pm_write.php',
+                 'poll_results.php', 'post.php',
+                 'register.php', 'search.php',
+                 'search_index.php', 'search_popup.php',
                  'start.php', 'start_left.php',
-                 'start_main.php', 'start_main_sf.php',
-                 'threads_rss.php', 'thread_list.php',
-                 'thread_options.php', 'user.php',
-                 'user_folder.php', 'user_font.php',
-                 'user_main.php', 'user_menu.php',
-                 'user_profile.php', 'user_rel.php',
-                 'user_stats.php', 'visitor_log.php');
+                 'start_main.php', 'threads_rss.php',
+                 'thread_list.php', 'thread_options.php',
+                 'user.php', 'user_folder.php',
+                 'user_font.php', 'user_main.php',
+                 'user_menu.php', 'user_profile.php',
+                 'user_rel.php', 'user_stats.php',
+                 'visitor_log.php');
 }
 
 /**
@@ -243,16 +246,16 @@ function get_available_admin_files()
                  'admin_folder_add.php', 'admin_folder_edit.php',
                  'admin_forums.php', 'admin_forum_access.php',
                  'admin_forum_links.php', 'admin_forum_settings.php',
-                 'admin_forum_set_passwd.php', 'admin_main.php',
-                 'admin_make_style.php', 'admin_menu.php',
-                 'admin_post_approve.php', 'admin_post_stats.php',
-                 'admin_prof_items.php', 'admin_prof_sect.php',
-                 'admin_rss_feeds.php', 'admin_startpage.php',
-                 'admin_user.php', 'admin_users.php',
-                 'admin_user_groups.php', 'admin_user_groups_add.php',
-                 'admin_user_groups_edit.php', 'admin_user_groups_edit_users.php',
-                 'admin_viewlog.php', 'admin_visitor_log.php',
-                 'admin_wordfilter.php');
+                 'admin_forum_set_passwd.php', 'admin_forum_stats.php',
+                 'admin_main.php', 'admin_make_style.php',
+                 'admin_menu.php', 'admin_post_approve.php',
+                 'admin_post_stats.php', 'admin_prof_items.php',
+                 'admin_prof_sect.php', 'admin_rss_feeds.php',
+                 'admin_startpage.php', 'admin_user.php',
+                 'admin_users.php', 'admin_user_groups.php',
+                 'admin_user_groups_add.php', 'admin_user_groups_edit.php',
+                 'admin_user_groups_edit_users.php', 'admin_viewlog.php',
+                 'admin_visitor_log.php', 'admin_wordfilter.php');
 }
 
 /**
@@ -267,13 +270,13 @@ function get_available_admin_files()
 function get_available_user_control_files()
 {
     return array('edit_prefs.php', 'edit_profile.php', 'edit_password.php',
-                 'edit_email.php', 'forum_options.php', 'pm_options.php',
-                 'edit_attachments.php', 'edit_signature.php', 'edit_relations.php',
-                 'edit_wordfilter.php', 'edit_subscriptions.php');
+                 'edit_email.php', 'edit_attachments.php', 'edit_signature.php',
+                 'edit_relations.php', 'edit_wordfilter.php', 'edit_subscriptions.php',
+                 'folder_subscriptions.php', 'forum_options.php', 'pm_options.php');
 }
 
 /**
-* Fetch a list of files accessible from 'My Controls' section.
+* Fetch a list of files accessed via a Javascript popup.
 *
 * Returns a regular expression to match Beehive's available popups URLs.
 *
@@ -281,13 +284,12 @@ function get_available_user_control_files()
 * @param void
 */
 
-function get_available_popup_files_preg()
+function get_available_js_popup_files()
 {
-    return implode("|^", array('^attachments\.php', '^dictionary\.php',
-                               '^display_emoticons\.php', '^edit_attachments\.php.+popup=1',
-                               '^email\.php', '^mods_list\.php',
-                               '^poll_results\.php', '^search_popup\.php',
-                               '^search\.php.+show_stop_words=true', '^user_profile\.php'));
+    return array('attachments.php', 'dictionary.php', 'display_emoticons.php',
+                 'edit_attachments.php', 'email.php', 'folder_options.php',
+                 'mods_list.php', 'poll_results.php', 'search_popup.php',
+                 'search.php', 'user_profile.php');
 }
 
 /**

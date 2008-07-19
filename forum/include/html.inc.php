@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.278 2008-03-24 23:32:16 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.279 2008-07-19 20:27:11 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -50,15 +50,37 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 function html_guest_error()
 {
-     $frame_top_target = html_get_top_frame_name();
+    $frame_top_target = html_get_top_frame_name();
 
-     $lang = load_language_file();
+    $lang = load_language_file();
 
-     $final_uri = basename(get_request_uri());
+    $final_uri = basename(get_request_uri());
 
-     html_draw_top("robots=noindex,nofollow");
-     html_error_msg($lang['guesterror'], 'logout.php', 'get', array('submit' => $lang['loginnow']), array('final_uri' => $final_uri), $frame_top_target);
-     html_draw_bottom();
+    $popup_files_pregs = implode("|^", array_map('preg_quote_callback', get_available_js_popup_files()));
+
+    if (preg_match("/^$popup_files_pregs/", $final_uri) > 0) {
+
+        if (isset($_POST['close_popup'])) {
+
+            html_draw_top('pm_popup_disabled', 'robots=noindex,nofollow');
+            echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
+            echo "  window.close();\n";
+            echo "</script>\n";
+
+            html_draw_bottom();
+            exit;
+        }
+
+        html_draw_top('pm_popup_disabled', 'robots=noindex,nofollow');
+        html_error_msg($lang['guesterror'], $final_uri, 'post', array('close_popup' => $lang['close']));
+        html_draw_bottom();
+
+    }else {
+
+        html_draw_top('pm_popup_disabled', 'robots=noindex,nofollow');
+        html_error_msg($lang['guesterror'], 'logout.php', 'get', array('submit' => $lang['loginnow']), array('final_uri' => $final_uri), $frame_top_target);
+        html_draw_bottom();
+    }
 }
 
 function html_error_msg($error_msg, $href = false, $method = 'get', $button_array = false, $var_array = false, $target = "_self", $align = "left")

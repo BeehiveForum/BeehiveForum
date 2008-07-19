@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_subscriptions.php,v 1.33 2008-07-14 18:05:18 decoyduck Exp $ */
+/* $Id: edit_subscriptions.php,v 1.34 2008-07-19 14:46:16 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -177,12 +177,12 @@ if (isset($_GET['search_page']) && is_numeric($_GET['search_page'])) {
 
 // Thread search keywords.
 
-if (isset($_GET['threadsearch']) && strlen(trim(_stripslashes($_GET['threadsearch']))) > 0) {
-    $threadsearch = trim(_stripslashes($_GET['threadsearch']));
-}else if (isset($_POST['threadsearch']) && strlen(trim(_stripslashes($_POST['threadsearch']))) > 0) {
-    $threadsearch = trim(_stripslashes($_POST['threadsearch']));
+if (isset($_GET['thread_search']) && strlen(trim(_stripslashes($_GET['thread_search']))) > 0) {
+    $thread_search = trim(_stripslashes($_GET['thread_search']));
+}else if (isset($_POST['thread_search']) && strlen(trim(_stripslashes($_POST['thread_search']))) > 0) {
+    $thread_search = trim(_stripslashes($_POST['thread_search']));
 }else {
-    $threadsearch = "";
+    $thread_search = "";
 }
 
 // View filter
@@ -192,13 +192,13 @@ if (isset($_GET['view_filter']) && is_numeric($_GET['view_filter'])) {
 }else if (isset($_POST['view_filter']) && is_numeric($_POST['view_filter'])) {
     $view_filter = $_POST['view_filter'];
 }else {
-    $view_filter = THREAD_NOINTEREST;
+    $view_filter = THREAD_INTERESTED;
 }
 
 // Clear search?
 
 if (isset($_POST['clear'])) {
-    $threadsearch = "";
+    $thread_search = "";
 }
 
 // User UID
@@ -207,16 +207,14 @@ $uid = bh_session_get_value('UID');
 
 // Save button text and header text change depending on view selected.
 
-$header_text_array = array(THREAD_NOINTEREST => $lang['allthreadtypes'], THREAD_IGNORED => $lang['ignoredthreads'],
-                           THREAD_INTERESTED => $lang['highinterestthreads'], THREAD_SUBSCRIBED => $lang['subscribedthreads']);
+$header_text_array = array(THREAD_IGNORED => $lang['ignoredthreads'], THREAD_INTERESTED => $lang['highinterestthreads'], THREAD_SUBSCRIBED => $lang['subscribedthreads']);
 
-$interest_level_array = array(THREAD_IGNORED => $lang['ignored'], THREAD_NOINTEREST => $lang['normal'],
-                              THREAD_INTERESTED  => $lang['interested'], THREAD_SUBSCRIBED => $lang['subscribe']);
+$interest_level_array = array(THREAD_IGNORED => $lang['ignored'], THREAD_INTERESTED  => $lang['interested'], THREAD_SUBSCRIBED => $lang['subscribe']);
 
 // Check if we're searching or displaying the existing subscriptions.
 
-if (isset($threadsearch) && strlen(trim($threadsearch)) > 0) {
-    $thread_subscriptions = threads_search_user_subscriptions($threadsearch, $view_filter, $start_search);
+if (isset($thread_search) && strlen(trim($thread_search)) > 0) {
+    $thread_subscriptions = threads_search_user_subscriptions($thread_search, $view_filter, $start_search);
 }else {
     $thread_subscriptions = threads_get_user_subscriptions($view_filter, $start_main);
 }
@@ -237,9 +235,17 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 }else if (sizeof($thread_subscriptions['thread_array']) < 1) {
 
-    if (isset($threadsearch) && strlen(trim($threadsearch)) > 0) {
+    if (isset($thread_search) && strlen(trim($thread_search)) > 0) {
 
         html_display_warning_msg($lang['searchreturnednoresults'], '600', 'left');
+
+    }else if ($view_filter == THREAD_IGNORED) {
+
+        html_display_warning_msg($lang['nothreadsignored'], '600', 'left');
+
+    }else if ($view_filter == THREAD_INTERESTED) {
+
+        html_display_warning_msg($lang['nothreadsonhighinterest'], '600', 'left');
 
     }else {
 
@@ -252,7 +258,7 @@ echo "<form name=\"subscriptions\" action=\"edit_subscriptions.php\" method=\"po
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
 echo "  ", form_input_hidden("search_page", _htmlentities($search_page)), "\n";
-echo "  ", form_input_hidden("threadsearch", _htmlentities($threadsearch)), "\n";
+echo "  ", form_input_hidden("thread_search", _htmlentities($thread_search)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\" colspan=\"3\">\n";
@@ -307,8 +313,8 @@ echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\" width=\"33%\">&nbsp;</td>\n";
-echo "      <td class=\"postbody\" align=\"center\">", page_links("edit_subscriptions.php?webtag=$webtag&threadsearch=$threadsearch&search_page=$search_page&view_filter=$view_filter", $start_main, $thread_subscriptions['thread_count'], 20, "main_page"), "</td>\n";
-echo "      <td align=\"right\" width=\"33%\">{$lang['view']}:&nbsp;", form_dropdown_array('view_filter', array(THREAD_NOINTEREST => $lang['all'], THREAD_IGNORED => $lang['ignored'], THREAD_INTERESTED => $lang['interested'], THREAD_SUBSCRIBED => $lang['subscribed']), $view_filter), "&nbsp;", form_submit("view_submit", $lang['goexcmark']), "</td>\n";
+echo "      <td class=\"postbody\" align=\"center\">", page_links("edit_subscriptions.php?webtag=$webtag&thread_search=$thread_search&search_page=$search_page&view_filter=$view_filter", $start_main, $thread_subscriptions['thread_count'], 20, "main_page"), "</td>\n";
+echo "      <td align=\"right\" width=\"33%\">{$lang['view']}:&nbsp;", form_dropdown_array('view_filter', array(THREAD_IGNORED => $lang['ignored'], THREAD_INTERESTED => $lang['interested'], THREAD_SUBSCRIBED => $lang['subscribed']), $view_filter), "&nbsp;", form_submit("view_submit", $lang['goexcmark']), "</td>\n";
 echo "    </tr>\n";
 
 if (sizeof($thread_subscriptions['thread_array']) > 0) {
@@ -346,7 +352,7 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td class=\"posthead\" align=\"left\">\n";
-echo "                          {$lang['threadtitle']}: ", form_input_text("threadsearch", isset($threadsearch) ? _htmlentities($threadsearch) : "", 30, 64), " ", form_submit('search', $lang['search']), "&nbsp;", form_submit('clear', $lang['clear']), "\n";
+echo "                          {$lang['threadtitle']}: ", form_input_text("thread_search", isset($thread_search) ? _htmlentities($thread_search) : "", 30, 64), " ", form_submit('search', $lang['search']), "&nbsp;", form_submit('clear', $lang['clear']), "\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";

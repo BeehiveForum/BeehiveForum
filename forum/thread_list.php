@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.334 2008-07-14 18:14:10 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.335 2008-07-21 15:11:39 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -294,14 +294,6 @@ html_draw_top("modslist.js", "poll.js", "thread_options.js", "folder_options.js"
 
 echo "<script language=\"javascript\" type=\"text/javascript\">\n";
 echo "<!--\n\n";
-echo "function confirmFolderIgnore()\n";
-echo "{\n";
-echo "    return window.confirm('", html_js_safe_str($lang['ignorefolderconfirm']), "');\n";
-echo "}\n\n";
-echo "function confirmFolderUnignore()\n";
-echo "{\n";
-echo "    return window.confirm('", html_js_safe_str($lang['unignorefolderconfirm']), "');\n";
-echo "}\n\n";
 echo "function confirmMarkAsRead()\n";
 echo "{\n";
 echo "    var mark_read_type = getObjsByName('mark_read_type')[0];\n";
@@ -409,10 +401,7 @@ $folder_msgs = threads_get_folder_msgs();
 // with the keys from $folder_info to get a list
 // of folders in the user's interest order.
 
-if (!is_array($folder_order)) {
-
-    $folder_order = array_keys($folder_info);
-}
+if (!is_array($folder_order)) $folder_order = array_keys($folder_info);
 
 // Sort the folders and threads correctly as per the URL query for the TID
 
@@ -554,7 +543,7 @@ foreach ($folder_order as $folder_number) {
         echo "  </tr>\n";
         echo "</table>\n";
 
-        if ((user_is_guest()) || ($folder_info[$folder_number]['INTEREST'] != -1) || ($mode == UNREAD_DISCUSSIONS_TO_ME) || (isset($selected_folder) && $selected_folder == $folder_number)) {
+        if ((user_is_guest()) || ($folder_info[$folder_number]['INTEREST'] > FOLDER_IGNORED) || ($mode == UNREAD_DISCUSSIONS_TO_ME) || (isset($selected_folder) && $selected_folder == $folder_number)) {
 
             echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
             echo "  <tr>\n";
@@ -871,7 +860,7 @@ echo "    <td align=\"left\">&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 
-if (bh_session_get_value('UID') != 0) {
+if (!user_is_guest()) {
 
     echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\">\n";
     echo "  <tr>\n";

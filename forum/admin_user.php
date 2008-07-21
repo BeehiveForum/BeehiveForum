@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.241 2008-07-14 18:14:10 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.242 2008-07-21 20:59:41 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -551,8 +551,12 @@ if (isset($_POST['action_submit'])) {
 }
 
 if (isset($_GET['action']) && strlen(trim(_stripslashes($_GET['action']))) > 0) {
-
     $action = trim(_stripslashes($_GET['action']));
+}elseif (isset($_POST['action']) && strlen(trim(_stripslashes($_POST['action']))) > 0) {
+    $action = trim(_stripslashes($_POST['action']));
+}
+
+if (isset($action) && strlen(trim($action)) > 0) {
 
     if ($action == 'reset_passwd') {
 
@@ -787,7 +791,28 @@ if (isset($_GET['action']) && strlen(trim(_stripslashes($_GET['action']))) > 0) 
 
         html_draw_top('admin.js');
 
-        $user_alias_array = admin_get_user_aliases($user['UID']);
+        $user_alias_view = USER_ALIAS_IPADDRESS;
+
+        if (isset($_POST['user_alias_view'])) {
+
+            if ($_POST['user_alias_view'] == USER_ALIAS_IPADDRESS) {
+
+                $user_alias_view = USER_ALIAS_IPADDRESS;
+
+            }else if ($_POST['user_alias_view'] == USER_ALIAS_EMAIL) {
+
+                $user_alias_view = USER_ALIAS_EMAIL;
+            }
+        }
+
+        if ($user_alias_view == USER_ALIAS_IPADDRESS) {
+
+            $user_alias_array = admin_get_user_ip_matches($user['UID']);
+
+        }else {
+
+            $user_alias_array = admin_get_user_email_matches($user['UID']);
+        }
 
         if ($table_data = get_table_prefix()) {
             echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
@@ -831,7 +856,7 @@ if (isset($_GET['action']) && strlen(trim(_stripslashes($_GET['action']))) > 0) 
             echo "                            <tr>\n";
             echo "                              <td align=\"left\" class=\"subhead\" width=\"150\">{$lang['logon']}</td>\n";
             echo "                              <td align=\"left\" class=\"subhead\" width=\"150\">{$lang['nickname']}</td>\n";
-            echo "                              <td align=\"left\" class=\"subhead\">{$lang['ip']}</td>\n";
+            echo "                              <td align=\"left\" class=\"subhead\">", ($user_alias_view == USER_ALIAS_IPADDRESS) ? $lang['ip'] : $lang['email'], "</td>\n";
             echo "                            </tr>\n";
             echo "                            <tr>\n";
             echo "                              <td align=\"left\" colspan=\"3\">\n";
@@ -844,22 +869,36 @@ if (isset($_GET['action']) && strlen(trim(_stripslashes($_GET['action']))) > 0) 
                 echo "                                      <td align=\"left\" width=\"150\"><a href=\"admin_user.php?webtag=$webtag&amp;uid={$user_alias['UID']}\">", word_filter_add_ob_tags(_htmlentities($user_alias['LOGON'])), "</a></td>\n";
                 echo "                                      <td align=\"left\" width=\"150\">", word_filter_add_ob_tags(_htmlentities($user_alias['NICKNAME'])), "</td>\n";
 
-                if ((check_ip_address($user_alias['IPADDRESS'])) && ($hostname = gethostbyaddr($user_alias['IPADDRESS']))) {
+                if ($user_alias_view == USER_ALIAS_IPADDRESS) {
 
-                    $ip_address_display = sprintf("<span title=\"%s: %s\">%s</span>", $lang['hostname'], $hostname, $user_alias['IPADDRESS']);
+                    if ((check_ip_address($user_alias['IPADDRESS'])) && ($hostname = gethostbyaddr($user_alias['IPADDRESS']))) {
+
+                        $ip_address_display = sprintf("<span title=\"%s: %s\">%s</span>", $lang['hostname'], $hostname, $user_alias['IPADDRESS']);
+
+                    }else {
+
+                        $ip_address_display = sprintf("<span title=\"%s\">%s</span>", $lang['unknownhostname'], $user_alias['IPADDRESS']);
+                    }
+
+                    if (ip_is_banned($user_alias['IPADDRESS'])) {
+
+                        echo "                                      <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_ipaddress={$user_alias['IPADDRESS']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">$ip_address_display</a>&nbsp;({$lang['banned']})&nbsp;</td>\n";
+
+                    }else {
+
+                        echo "                                      <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$user_alias['IPADDRESS']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">$ip_address_display</a>&nbsp;</td>\n";
+                    }
 
                 }else {
 
-                    $ip_address_display = sprintf("<span title=\"%s\">%s</span>", $lang['unknownhostname'], $user_alias['IPADDRESS']);
-                }
+                    if (email_is_banned($user_alias['EMAIL'])) {
 
-                if (ip_is_banned($user_alias['IPADDRESS'])) {
+                        echo "                                      <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_email={$user_alias['EMAIL']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$user_alias['EMAIL']}</a>&nbsp;({$lang['banned']})&nbsp;</td>\n";
 
-                    echo "                                      <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_ipaddress={$user_alias['IPADDRESS']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">$ip_address_display</a>&nbsp;({$lang['banned']})&nbsp;</td>\n";
+                    }else {
 
-                }else {
-
-                    echo "                                      <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$user_alias['IPADDRESS']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">$ip_address_display</a>&nbsp;</td>\n";
+                        echo "                                      <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_email={$user_alias['EMAIL']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$user_alias['EMAIL']}</a>&nbsp;</td>\n";
+                    }
                 }
 
                 echo "                                    </tr>\n";
@@ -889,8 +928,42 @@ if (isset($_GET['action']) && strlen(trim(_stripslashes($_GET['action']))) > 0) 
         echo "    <tr>\n";
         echo "      <td align=\"left\">&nbsp;</td>\n";
         echo "    </tr>\n";
+        echo "  </table>\n";
+        echo "  <br />\n";
+        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
         echo "    <tr>\n";
-        echo "      <td align=\"center\">", form_submit("cancel", $lang['back']), "</td>\n";
+        echo "      <td align=\"left\">\n";
+        echo "        <table class=\"box\" width=\"100%\">\n";
+        echo "          <tr>\n";
+        echo "            <td align=\"left\" class=\"posthead\">\n";
+        echo "              <table class=\"posthead\" width=\"100%\">\n";
+        echo "                <tr>\n";
+        echo "                  <td class=\"subhead\" align=\"left\">{$lang['options']}</td>\n";
+        echo "                </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"center\">\n";
+        echo "                    <table width=\"95%\">\n";
+        echo "                      <tr>\n";
+        echo "                        <td align=\"left\" width=\"75\">{$lang['view']}:</td>\n";
+        echo "                        <td align=\"left\">", form_dropdown_array("user_alias_view", array($lang['ipaddressmatches'], $lang['emailaddressmatches']), $user_alias_view), "</td>\n";
+        echo "                      </tr>\n";
+        echo "                    </table>\n";
+        echo "                  </td>\n";
+        echo "                </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\">&nbsp;</td>\n";
+        echo "                </tr>\n";
+        echo "              </table>\n";
+        echo "            </td>\n";
+        echo "          </tr>\n";
+        echo "        </table>\n";
+        echo "      </td>\n";
+        echo "    </tr>\n";
+        echo "    <tr>\n";
+        echo "      <td align=\"left\">&nbsp;</td>\n";
+        echo "    </tr>\n";
+        echo "    <tr>\n";
+        echo "      <td align=\"center\">", form_submit("user_alias_submit", $lang['update']), "&nbsp;", form_submit("cancel", $lang['back']), "</td>\n";
         echo "    </tr>\n";
         echo "  </table>\n";
         echo "</form>\n";

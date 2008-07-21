@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.180 2008-07-11 21:31:02 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.181 2008-07-21 15:11:39 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -211,68 +211,71 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
 
     // The tricky bit - displaying the right threads for whatever mode is selected
 
-    if (isset($folder) && $folder !== false) {
+    if (isset($folder) && is_numeric($folder) && $folder > 0) {
         list($thread_info, $folder_order) = threads_get_folder($uid, $folder, $start_from);
-    } else {
+    }else {
         switch ($mode) {
-            case 0: // All discussions
+            case ALL_DISCUSSIONS:
                 list($thread_info, $folder_order) = threads_get_all($uid, $start_from);
                 break;
-            case 1; // Unread discussions
+            case UNREAD_DISCUSSIONS:
                 list($thread_info, $folder_order) = threads_get_unread($uid);
                 break;
-            case 2; // Unread discussions To: Me
+            case UNREAD_DISCUSSIONS_TO_ME:
                 list($thread_info, $folder_order) = threads_get_unread_to_me($uid);
                 break;
-            case 3; // Today's discussions
+            case TODAYS_DISCUSSIONS:
                 list($thread_info, $folder_order) = threads_get_by_days($uid, 1);
                 break;
-            case 4: // Unread today
+            case UNREAD_TODAY:
                 list($thread_info, $folder_order) = threads_get_unread_by_days($uid);
                 break;
-            case 5; // 2 days back
+            case TWO_DAYS_BACK:
                 list($thread_info, $folder_order) = threads_get_by_days($uid, 2);
                 break;
-            case 6; // 7 days back
+            case SEVEN_DAYS_BACK:
                 list($thread_info, $folder_order) = threads_get_by_days($uid, 7);
                 break;
-            case 7; // High interest
+            case HIGH_INTEREST:
                 list($thread_info, $folder_order) = threads_get_by_interest($uid, 1);
                 break;
-            case 8; // Unread high interest
+            case UNREAD_HIGH_INTEREST:
                 list($thread_info, $folder_order) = threads_get_unread_by_interest($uid, 1);
                 break;
-            case 9; // Recently seen
+            case RECENTLY_SEEN:
                 list($thread_info, $folder_order) = threads_get_recently_viewed($uid);
                 break;
-            case 10; // Ignored
+            case IGNORED:
                 list($thread_info, $folder_order) = threads_get_by_interest($uid, -1);
                 break;
-            case 11; // By Ignored Users
+            case BY_IGNORED_USERS:
                 list($thread_info, $folder_order) = threads_get_by_relationship($uid, USER_IGNORED_COMPLETELY);
                 break;
-            case 12; // Subscribed to
+            case SUBSCRIBED_TO:
                 list($thread_info, $folder_order) = threads_get_by_interest($uid, 2);
                 break;
-            case 13: // Started by friend
+            case STARTED_BY_FRIEND:
                 list($thread_info, $folder_order) = threads_get_by_relationship($uid, USER_FRIEND);
                 break;
-            case 14: // Unread started by friend
+            case UNREAD_STARTED_BY_FRIEND:
                 list($thread_info, $folder_order) = threads_get_unread_by_relationship($uid, USER_FRIEND);
                 break;
-            case 15: // Started by me
+            case STARTED_BY_ME:
                 list($thread_info, $folder_order) = threads_get_started_by_me($uid);
                 break;
-            case 16: // Polls
+            case POLLS:
                 list($thread_info, $folder_order) = threads_get_polls($uid);
                 break;
-            case 17: // Sticky threads
+            case STICKY_THREADS:
                 list($thread_info, $folder_order) = threads_get_sticky($uid);
                 break;
-            case 18: // Most unread posts
+            case MOST_UNREAD_POSTS:
                 list($thread_info, $folder_order) = threads_get_longest_unread($uid);
                 break;
-            default: // Default to all threads
+            case DELETED_THREADS:
+                list($thread_info, $folder_order) = threads_get_deleted($uid);
+                break;
+            default:
                 list($thread_info, $folder_order) = threads_get_all($uid, $start_from);
                 break;
         }
@@ -296,7 +299,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
 
     // Check to see if $folder_order is an array, and define it as one if not
 
-    if (!is_array($folder_order)) $folder_order = array();
+    if (!is_array($folder_order)) $folder_order = array_keys($folder_info);
 
     // Sort the folders and threads correctly as per the URL query for the TID
 
@@ -310,25 +313,17 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
 
             if (!isset($thread['RELATIONSHIP'])) $thread['RELATIONSHIP'] = 0;
 
-            if ($thread['TID'] == $tid) {
-
-                if (in_array($thread['FID'], $folder_order)) {
-                    array_splice($folder_order, array_search($thread['FID'], $folder_order), 1);
-                }
-
-                array_unshift($folder_order, $thread['FID']);
-
-                if (!is_array($thread_info)) $thread_info = array();
-
-                foreach ($thread_info as $key => $thread_data) {
-                    if ($thread_data['TID'] == $tid) {
-                        unset($thread_info[$key]);
-                        break;
-                    }
-                }
-
-                array_unshift($thread_info, $thread);
+            if (in_array($thread['FID'], $folder_order)) {
+                array_splice($folder_order, array_search($thread['FID'], $folder_order), 1);
             }
+
+            array_unshift($folder_order, $thread['FID']);
+
+            if (!is_array($thread_info)) $thread_info = array();
+
+            if (isset($thread_info[$tid])) unset($thread_info[$tid]);
+
+            array_unshift($thread_info, $thread);
         }
     }
 
@@ -342,7 +337,6 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
             list($tid, $pid) = explode('.', $_GET['msg']);
 
             if ($thread = thread_get($tid)) {
-
                 $selected_folder = $thread['FID'];
             }
 
@@ -403,7 +397,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
 
             echo "<h3><a href=\"lthread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$folder_number\">", word_filter_add_ob_tags(_htmlentities($folder_info[$folder_number]['TITLE'])), "</a></h3>";
 
-            if ((!$folder_info[$folder_number]['INTEREST']) || ($mode == UNREAD_DISCUSSIONS_TO_ME) || (isset($selected_folder) && $selected_folder == $folder_number)) {
+            if ((user_is_guest()) || ($folder_info[$folder_number]['INTEREST'] > FOLDER_IGNORED) || ($mode == UNREAD_DISCUSSIONS_TO_ME) || (isset($selected_folder) && $selected_folder == $folder_number)) {
 
                 if (is_array($thread_info)) {
 
@@ -534,7 +528,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
         }
     }
 
-    if ($uid != 0) {
+    if (!user_is_guest()) {
 
         echo "  <h5>{$lang['markasread']}</h5>\n";
         echo "    <form name=\"f_mark\" method=\"get\" action=\"lthread_list.php\">\n";

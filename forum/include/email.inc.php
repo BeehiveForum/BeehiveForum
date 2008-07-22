@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.134 2008-07-18 22:28:06 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.135 2008-07-22 17:40:30 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -195,7 +195,7 @@ function email_send_thread_subscription($tuid, $fuid, $tid, $pid, $modified, &$e
             // pass them all through the recipient's word filter.
 
             $forum_name     = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid);
-            $subject        = word_filter_apply(sprintf($lang['subnotification_subject'], $forum_name), $tuid);
+            $subject        = word_filter_apply(sprintf($lang['threadsubnotification_subject'], $forum_name), $tuid);
             $recipient      = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid);
             $message_author = word_filter_apply(format_user_name($from_user['LOGON'], $from_user['NICKNAME']), $tuid);
             $thread_title   = word_filter_apply(thread_format_prefix($thread['PREFIX'], $thread['TITLE']), $tuid);

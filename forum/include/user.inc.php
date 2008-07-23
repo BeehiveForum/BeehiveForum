@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.351 2008-07-21 20:59:42 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.352 2008-07-23 19:11:47 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -394,7 +394,7 @@ function user_get($uid)
     return false;
 }
 
-function user_get_password($uid, $passwd_hash)
+function user_get_by_password($uid, $passwd_hash)
 {
     if (!$db_user_get = db_connect()) return false;
 
@@ -474,6 +474,48 @@ function user_get_email($uid)
 
         list($email) = db_fetch_array($result, DB_RESULT_NUM);
         return $email;
+    }
+
+    return false;
+}
+
+function user_get_referer($uid)
+{
+    if (!$db_user_get_referer = db_connect()) return false;
+
+    if (!is_numeric($uid)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $sql = "SELECT REFERER FROM USER WHERE UID = '$uid'";
+
+    if (!$result = db_query($sql, $db_user_get_referer)) return false;
+
+    if (db_num_rows($result) > 0) {
+
+        list($referer) = db_fetch_array($result, DB_RESULT_NUM);
+        return $referer;
+    }
+
+    return false;
+}
+
+function user_get_passwd($uid)
+{
+    if (!$db_user_get_passwd = db_connect()) return false;
+
+    if (!is_numeric($uid)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $sql = "SELECT PASSWD FROM USER WHERE UID = '$uid'";
+
+    if (!$result = db_query($sql, $db_user_get_passwd)) return false;
+
+    if (db_num_rows($result) > 0) {
+
+        list($passwd) = db_fetch_array($result, DB_RESULT_NUM);
+        return $passwd;
     }
 
     return false;

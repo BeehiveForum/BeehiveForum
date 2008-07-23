@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.242 2008-06-30 19:46:06 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.243 2008-07-23 19:57:12 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1160,24 +1160,14 @@ function pm_display($pm_message_array, $folder, $preview = false, $export_html =
             echo "                        <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['to']}:&nbsp;</span></td>\n";
             echo "                        <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">", word_filter_add_ob_tags(implode('; ', $recipient_array)), "</span></td>\n";
 
-        }elseif (is_array($pm_message_array['TO_UID'])) {
+        }elseif (is_array($pm_message_array['TLOGON'])) {
+
+            $recipient_array = array_unique($pm_message_array['TLOGON']);
+
+            if ($export_html === false) $recipient_array = array_map('user_profile_popup_callback', $recipient_array);
 
             echo "                        <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['to']}:&nbsp;</span></td>\n";
-            echo "                        <td nowrap=\"nowrap\" width=\"98%\" align=\"left\">\n";
-
-            foreach ($pm_message_array['TO_UID'] as $key => $to_uid) {
-
-                if ($export_html === true) {
-
-                    echo "                          <span class=\"posttofrom\">", word_filter_add_ob_tags(_htmlentities(format_user_name($pm_message_array['TLOGON'][$key], $pm_message_array['TNICK'][$key]))), "</span>&nbsp;";
-
-                }else {
-
-                    echo "                          <span class=\"posttofrom\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$pm_message_array['TO_UID']}\" target=\"_blank\" onclick=\"return openProfile({$pm_message_array['TO_UID'][$key]}, '$webtag')\">", word_filter_add_ob_tags(_htmlentities(format_user_name($pm_message_array['TLOGON'][$key], $pm_message_array['TNICK'][$key]))), "</a></span>&nbsp;";
-                }
-            }
-
-            echo "                        </td>\n";
+            echo "                        <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">", word_filter_add_ob_tags(implode('; ', $recipient_array)), "</span></td>\n";
 
         }else if (isset($pm_message_array['TO_UID']) && is_numeric($pm_message_array['TO_UID'])) {
 
@@ -1195,7 +1185,7 @@ function pm_display($pm_message_array, $folder, $preview = false, $export_html =
         }else {
 
             echo "                        <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['to']}:&nbsp;</span></td>\n";
-            echo "                  <td align=\"left\" class=\"postbody\"><i>{$lang['norecipients']}</i></td>\n";
+            echo "                        <td align=\"left\" class=\"postbody\"><i>{$lang['norecipients']}</i></td>\n";
         }
     }
 

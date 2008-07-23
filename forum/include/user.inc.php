@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.352 2008-07-23 19:11:47 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.353 2008-07-23 19:57:12 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1082,7 +1082,7 @@ function user_search($user_search, $offset = 0, $exclude_uid = 0)
 
     $uid = bh_session_get_value('UID');
 
-    $user_search_array = explode(";", $user_search);
+    $user_search_array = preg_split("/[;|,]/", $user_search);
     $user_search_array = array_map('user_search_array_clean', $user_search_array);
 
     $user_search_logon = implode("%' OR LOGON LIKE '", $user_search_array);

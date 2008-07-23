@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.135 2008-07-22 17:40:30 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.136 2008-07-23 21:43:08 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -210,7 +210,7 @@ function email_send_thread_subscription($tuid, $fuid, $tid, $pid, $modified, &$e
 
             // Generate the message body.
 
-            $message = wordwrap(sprintf($lang['subnotification'], $recipient, $message_author, $forum_name, $thread_title, $message_link, $forum_link));
+            $message = wordwrap(sprintf($lang['threadsubnotification'], $recipient, $message_author, $forum_name, $thread_title, $message_link, $forum_link));
 
             // Email Headers (inc. PHP version and Beehive version)
 

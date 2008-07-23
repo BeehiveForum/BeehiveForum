@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.242 2008-07-21 20:59:41 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.243 2008-07-23 19:11:47 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -793,25 +793,37 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
         $user_alias_view = USER_ALIAS_IPADDRESS;
 
-        if (isset($_POST['user_alias_view'])) {
+        $user_alias_array = array();
 
-            if ($_POST['user_alias_view'] == USER_ALIAS_IPADDRESS) {
+        $user_alias_view_types_array = array(USER_ALIAS_IPADDRESS => $lang['ipaddressmatches'],
+                                             USER_ALIAS_EMAIL     => $lang['emailaddressmatches'],
+                                             USER_ALIAS_PASSWD    => $lang['passwdmatches'],
+                                             USER_ALIAS_REFERER   => $lang['httpreferermatches']);
 
-                $user_alias_view = USER_ALIAS_IPADDRESS;
+        $user_alias_column_header = array(USER_ALIAS_IPADDRESS => $lang['ip'],
+                                          USER_ALIAS_EMAIL     => $lang['email'],
+                                          USER_ALIAS_PASSWD    => $lang['passwd'],
+                                          USER_ALIAS_REFERER   => $lang['referer']);
 
-            }else if ($_POST['user_alias_view'] == USER_ALIAS_EMAIL) {
-
-                $user_alias_view = USER_ALIAS_EMAIL;
-            }
+        if (isset($_POST['user_alias_view']) && in_array($_POST['user_alias_view'], array_keys($user_alias_view_types_array))) {
+            $user_alias_view = $_POST['user_alias_view'];
         }
 
         if ($user_alias_view == USER_ALIAS_IPADDRESS) {
 
             $user_alias_array = admin_get_user_ip_matches($user['UID']);
 
-        }else {
+        }else if ($user_alias_view == USER_ALIAS_EMAIL) {
 
             $user_alias_array = admin_get_user_email_matches($user['UID']);
+
+        }else if ($user_alias_view == USER_ALIAS_PASSWD) {
+
+            $user_alias_array = admin_get_user_passwd_matches($user['UID']);
+
+        }else if ($user_alias_view == USER_ALIAS_REFERER) {
+
+            $user_alias_array = admin_get_user_referer_matches($user['UID']);
         }
 
         if ($table_data = get_table_prefix()) {
@@ -854,20 +866,18 @@ if (isset($action) && strlen(trim($action)) > 0) {
             echo "                        <td align=\"left\">\n";
             echo "                          <table class=\"posthead\" width=\"100%\">\n";
             echo "                            <tr>\n";
+            echo "                              <td align=\"left\" class=\"subhead\" width=\"20\">&nbsp;</td>\n";
             echo "                              <td align=\"left\" class=\"subhead\" width=\"150\">{$lang['logon']}</td>\n";
             echo "                              <td align=\"left\" class=\"subhead\" width=\"150\">{$lang['nickname']}</td>\n";
-            echo "                              <td align=\"left\" class=\"subhead\">", ($user_alias_view == USER_ALIAS_IPADDRESS) ? $lang['ip'] : $lang['email'], "</td>\n";
+            echo "                              <td align=\"left\" class=\"subhead\">{$user_alias_column_header[$user_alias_view]}</td>\n";
             echo "                            </tr>\n";
-            echo "                            <tr>\n";
-            echo "                              <td align=\"left\" colspan=\"3\">\n";
-            echo "                                <div class=\"admin_folder_perms\">\n";
 
             foreach ($user_alias_array as $user_alias) {
 
-                echo "                                  <table class=\"posthead\" width=\"100%\">\n";
-                echo "                                    <tr>\n";
-                echo "                                      <td align=\"left\" width=\"150\"><a href=\"admin_user.php?webtag=$webtag&amp;uid={$user_alias['UID']}\">", word_filter_add_ob_tags(_htmlentities($user_alias['LOGON'])), "</a></td>\n";
-                echo "                                      <td align=\"left\" width=\"150\">", word_filter_add_ob_tags(_htmlentities($user_alias['NICKNAME'])), "</td>\n";
+                echo "                            <tr>\n";
+                echo "                              <td align=\"left\" width=\"20\">&nbsp;</td>\n";
+                echo "                              <td align=\"left\" width=\"150\"><a href=\"admin_user.php?webtag=$webtag&amp;uid={$user_alias['UID']}\">", word_filter_add_ob_tags(_htmlentities($user_alias['LOGON'])), "</a></td>\n";
+                echo "                              <td align=\"left\" width=\"150\">", word_filter_add_ob_tags(_htmlentities($user_alias['NICKNAME'])), "</td>\n";
 
                 if ($user_alias_view == USER_ALIAS_IPADDRESS) {
 
@@ -882,31 +892,54 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
                     if (ip_is_banned($user_alias['IPADDRESS'])) {
 
-                        echo "                                      <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_ipaddress={$user_alias['IPADDRESS']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">$ip_address_display</a>&nbsp;({$lang['banned']})&nbsp;</td>\n";
+                        echo "                              <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_ipaddress={$user_alias['IPADDRESS']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">$ip_address_display</a>&nbsp;({$lang['banned']})&nbsp;</td>\n";
 
                     }else {
 
-                        echo "                                      <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$user_alias['IPADDRESS']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">$ip_address_display</a>&nbsp;</td>\n";
+                        echo "                              <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$user_alias['IPADDRESS']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">$ip_address_display</a>&nbsp;</td>\n";
                     }
 
-                }else {
+                }else if ($user_alias_view == USER_ALIAS_EMAIL) {
 
                     if (email_is_banned($user_alias['EMAIL'])) {
 
-                        echo "                                      <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_email={$user_alias['EMAIL']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$user_alias['EMAIL']}</a>&nbsp;({$lang['banned']})&nbsp;</td>\n";
+                        echo "                              <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_email={$user_alias['EMAIL']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$user_alias['EMAIL']}</a>&nbsp;<a href=\"mailto:{$user['EMAIL']}\"><img src=\"", style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"{$lang['externallink']}\" title=\"{$lang['externallink']}\" /></a>&nbsp;({$lang['banned']})&nbsp;</td>\n";
 
                     }else {
 
-                        echo "                                      <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_email={$user_alias['EMAIL']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$user_alias['EMAIL']}</a>&nbsp;</td>\n";
+                        echo "                              <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_email={$user_alias['EMAIL']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$user_alias['EMAIL']}</a>&nbsp;<a href=\"mailto:{$user['EMAIL']}\"><img src=\"", style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"{$lang['externallink']}\" title=\"{$lang['externallink']}\" /></a>&nbsp;</td>\n";
+                    }
+
+                }else if ($user_alias_view == USER_ALIAS_PASSWD) {
+
+                    echo "                              <td align=\"left\">{$lang['yes']}</td>\n";
+
+                }else if ($user_alias_view == USER_ALIAS_REFERER) {
+
+                    $user_alias['REFERER_FULL'] = $user_alias['REFERER'];
+
+                    if (!$user_alias['REFERER'] = split_url($user_alias['REFERER'])) {
+                        if (strlen($user_alias['REFERER_FULL']) > 25) {
+                            $user_alias['REFERER'] = substr($user_alias['REFERER_FULL'], 0, 25);
+                            $user_alias['REFERER'].= "&hellip;";
+                        }
+                    }
+
+                    if (referer_is_banned($user_alias['REFERER'])) {
+
+                        echo "                              <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_referer=", rawurlencode($user_alias['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$user_alias['REFERER']}</a>&nbsp;<a href=\"{$user_alias['REFERER_FULL']}\"><img src=\"", style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"{$lang['externallink']}\" title=\"{$lang['externallink']}\" /></a>&nbsp;({$lang['banned']})&nbsp;</td>\n";
+
+                    }else {
+
+                        echo "                              <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_referer=", rawurlencode($user_alias['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$user_alias['REFERER']}</a>&nbsp;<a href=\"{$user_alias['REFERER_FULL']}\"><img src=\"", style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"{$lang['externallink']}\" title=\"{$lang['externallink']}\" /></a>&nbsp;</td>\n";
                     }
                 }
 
-                echo "                                    </tr>\n";
-                echo "                                  </table>\n";
+                echo "                            </tr>\n";
             }
 
-            echo "                                </div>\n";
-            echo "                              </td>\n";
+            echo "                            <tr>\n";
+            echo "                              <td align=\"left\">&nbsp;</td>\n";
             echo "                            </tr>\n";
             echo "                          </table>\n";
             echo "                        </td>\n";
@@ -945,7 +978,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
         echo "                    <table width=\"95%\">\n";
         echo "                      <tr>\n";
         echo "                        <td align=\"left\" width=\"75\">{$lang['view']}:</td>\n";
-        echo "                        <td align=\"left\">", form_dropdown_array("user_alias_view", array($lang['ipaddressmatches'], $lang['emailaddressmatches']), $user_alias_view), "</td>\n";
+        echo "                        <td align=\"left\">", form_dropdown_array("user_alias_view", $user_alias_view_types_array, $user_alias_view), "</td>\n";
         echo "                      </tr>\n";
         echo "                    </table>\n";
         echo "                  </td>\n";

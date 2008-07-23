@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.153 2008-07-21 20:59:41 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.154 2008-07-23 19:11:47 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -1173,7 +1173,7 @@ function admin_get_user_ip_matches($uid)
 
     // Search the POST table for any matches - limit 10 matches
 
-    $user_ip_address_list = implode("' OR POST.IPADDRESS = '", $user_ip_address_array);
+    $user_ip_address_list = implode("', '", $user_ip_address_array);
 
     if (strlen($user_ip_address_list) > 0) {
 
@@ -1183,8 +1183,12 @@ function admin_get_user_ip_matches($uid)
         $sql.= "LEFT JOIN USER USER ON (POST.FROM_UID = USER.UID) ";
         $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
         $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$sess_uid') ";
-        $sql.= "WHERE (POST.IPADDRESS = '$user_ip_address_list') ";
-        $sql.= "AND POST.FROM_UID <> $uid LIMIT 0, 10";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}RSS_FEEDS RSS_FEEDS ";
+        $sql.= "ON (RSS_FEEDS.UID = USER.UID) WHERE POST.FROM_UID <> $uid ";
+        $sql.= "AND ((POST.IPADDRESS IN ('$user_ip_address_list')) ";
+        $sql.= "OR (USER.IPADDRESS IN ('$user_ip_address_list'))) ";
+        $sql.= "AND RSS_FEEDS.UID IS NOT NULL ";
+        $sql.= "LIMIT 0, 10";
 
         if (!$result = db_query($sql, $db_admin_get_user_ip_matches)) return false;
 
@@ -1258,6 +1262,109 @@ function admin_get_user_email_matches($uid)
     }
 
     return $user_email_aliases_array;
+}
+
+function admin_get_user_referer_matches($uid)
+{
+    if (!$db_admin_get_user_referer_matches = db_connect()) return false;
+
+    $lang = load_language_file();
+
+    if (!is_numeric($uid)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    // Initialise array
+
+    $user_referer_aliases_array = array();
+
+    // Session UID
+
+    $sess_uid = bh_session_get_value('UID');
+
+    // Get the user's email address
+
+    $user_http_referer = user_get_referer($uid);
+
+    $sql = "SELECT DISTINCT USER.UID, USER.LOGON, USER.NICKNAME, ";
+    $sql.= "USER_PEER.PEER_NICKNAME, USER.REFERER FROM USER ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$sess_uid') ";
+    $sql.= "WHERE (USER.REFERER = '$user_http_referer') ";
+    $sql.= "AND LENGTH(USER.REFERER) > 0 ";
+    $sql.= "AND USER.UID <> $uid LIMIT 0, 10";
+
+    if (!$result = db_query($sql, $db_admin_get_user_referer_matches)) return false;
+
+    if (db_num_rows($result) > 0) {
+
+        while($user_aliases = db_fetch_array($result)) {
+
+            if (isset($user_aliases['LOGON']) && isset($user_aliases['PEER_NICKNAME'])) {
+                if (!is_null($user_aliases['PEER_NICKNAME']) && strlen($user_aliases['PEER_NICKNAME']) > 0) {
+                    $user_aliases['NICKNAME'] = $user_aliases['PEER_NICKNAME'];
+                }
+            }
+
+            if (!isset($user_aliases['LOGON'])) $user_aliases['LOGON'] = $lang['unknownuser'];
+            if (!isset($user_aliases['NICKNAME'])) $user_aliases['NICKNAME'] = "";
+
+            $user_referer_aliases_array[$user_aliases['UID']] = $user_aliases;
+        }
+    }
+
+    return $user_referer_aliases_array;
+}
+
+function admin_get_user_passwd_matches($uid)
+{
+    if (!$db_admin_get_user_passwd_matches = db_connect()) return false;
+
+    $lang = load_language_file();
+
+    if (!is_numeric($uid)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    // Initialise array
+
+    $user_passwd_aliases_array = array();
+
+    // Session UID
+
+    $sess_uid = bh_session_get_value('UID');
+
+    // Get the user's email address
+
+    $user_passwd = user_get_passwd($uid);
+
+    $sql = "SELECT DISTINCT USER.UID, USER.LOGON, USER.NICKNAME, ";
+    $sql.= "USER_PEER.PEER_NICKNAME, USER.PASSWD FROM USER ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$sess_uid') ";
+    $sql.= "WHERE (USER.PASSWD = '$user_passwd') ";
+    $sql.= "AND USER.UID <> $uid LIMIT 0, 10";
+
+    if (!$result = db_query($sql, $db_admin_get_user_passwd_matches)) return false;
+
+    if (db_num_rows($result) > 0) {
+
+        while($user_aliases = db_fetch_array($result)) {
+
+            if (isset($user_aliases['LOGON']) && isset($user_aliases['PEER_NICKNAME'])) {
+                if (!is_null($user_aliases['PEER_NICKNAME']) && strlen($user_aliases['PEER_NICKNAME']) > 0) {
+                    $user_aliases['NICKNAME'] = $user_aliases['PEER_NICKNAME'];
+                }
+            }
+
+            if (!isset($user_aliases['LOGON'])) $user_aliases['LOGON'] = $lang['unknownuser'];
+            if (!isset($user_aliases['NICKNAME'])) $user_aliases['NICKNAME'] = "";
+
+            $user_passwd_aliases_array[$user_aliases['UID']] = $user_aliases;
+        }
+    }
+
+    return $user_passwd_aliases_array;
 }
 
 function admin_get_user_history($uid)

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_startpage.php,v 1.102 2008-07-18 22:05:33 decoyduck Exp $ */
+/* $Id: admin_startpage.php,v 1.103 2008-07-23 21:43:08 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -143,7 +143,10 @@ if (isset($_POST['save'])) {
 
     }else {
 
-        $error_msg_array[] = sprintf($lang['startpageerror'], $forum_path);
+        html_draw_top();
+        html_error_msg(sprintf($lang['startpageerror'], $forum_path), 'admin_startpage.php', 'post', array('download' => $lang['download'], 'back' => $lang['back']), array('t_content' => $t_content), false, 'center');
+        html_draw_bottom();
+        exit;
     }
 
 }elseif (isset($_POST['upload'])) {
@@ -153,7 +156,7 @@ if (isset($_POST['save'])) {
         if (isset($_FILES['cssfile']['error']) && $_FILES['cssfile']['error'] > 0) {
 
             html_draw_top();
-            html_error_msg(sprintf($lang['uploadfailed'], $forum_path), 'admin_startpage.php', 'post', array('back' => $lang['back']));
+            html_error_msg(sprintf($lang['uploadcssfilefailed'], $forum_path), 'admin_startpage.php', 'post', array('back' => $lang['back']), false, false, 'center');
             html_draw_bottom();
             exit;
 
@@ -167,6 +170,13 @@ if (isset($_POST['save'])) {
 
                     admin_add_log_entry(EDITED_START_PAGE);
                     header_redirect("admin_startpage.php?webtag=$webtag&uploaded=true");
+                    exit;
+
+                }else {
+
+                    html_draw_top();
+                    html_error_msg(sprintf($lang['uploadcssfilefailed'], $forum_path), 'admin_startpage.php', 'post', array('back' => $lang['back']), false, false, 'center');
+                    html_draw_bottom();
                     exit;
                 }
             }

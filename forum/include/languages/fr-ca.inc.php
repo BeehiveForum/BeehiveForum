@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.114 2008-07-24 12:43:24 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.115 2008-07-24 19:01:43 decoyduck Exp $ */
 
 // French Canadian language file
 
@@ -116,6 +116,7 @@ $lang['style'] = "Style";
 $lang['go'] = "Allez-y";
 $lang['folder'] = "Dossier";
 $lang['ignoredfolder'] = "Dossier ignoré";
+$lang['subscribedfolder'] = "Dossier abonné";
 $lang['folders'] = "Dossiers";
 $lang['thread'] = "fil de discussion";
 $lang['threads'] = "fils de discussion";
@@ -294,6 +295,8 @@ $lang['globalforumsettings'] = "Options de forum globales";
 $lang['settingsaffectallforumswarning'] = "<b>Note:</b> Ces options affectent tous les forums. En cas de duplication d'un ou plusieurs option sur la page d'options d'un forum individuel, ces options prendront précédence sur les options que vous changez ici.";
 $lang['startpage'] = "Page de démarrage";
 $lang['startpageerror'] = "Votre page d'accueil n'a pas pu être sauvegardée locallement sur le serveur faute de permissions.</p><p>Pour modifier votre page d'accueil, veuillez cliquer le bouton de téléchargement ci-dessous et sauvegarder le fichier à votre disque dur. Vous pouvez par la suite téléverser ce fichier à votre serveur au dossier suivant, créant la structure du dossier en même temps si nécessaire.</p><p><b>%s</b></p><p>Veuillez noter que certains navigateurs internet modifieront le nom du fichier lors du téléchargement. Lorsque vous téléversez le fichier, veuillez faire certain qu'il est nommé start_main.php autrement vos modifications ne paraîtront pas.";
+$lang['uploadcssfile'] = "Télécharger la feuille de style CSS";
+$lang['invalidfiletypeerror'] = "Type de fichier invalide, vous pouvez seulement téléchargez des fichiers de feuilles de style CSS";
 $lang['failedtoopenmasterstylesheet'] = "Votre style de forum n'a pas pu être enregistré parce que la feuille de style maîtresse n'a pas pu être chargée. Pour enregistrer votre style, la feuille de style maîtresse (make_style.css) doit être située dans le répertoire styles de votre installation Beehive Forum.";
 $lang['makestyleerror'] = "Votre style de forum n'a pas pu être sauvegardé locallement sur le serveur faute de permissions.</p><p>Pour sauvegarder votre style de forum, veuillez cliquer le bouton de téléchargement ci-dessous et sauvegarder le fichier à votre disque dur. Vous pouvez par la suite téléverser ce fichier à votre serveur au dossier suivant, créant la structure du dossier en même temps si nécessaire.</p><p><b>%s</b></p><p>Veuillez noter que certains navigateurs internet modifieront le nom du fichier lors du téléchargement. Lorsque vous téléversez le fichier, veuillez faire certain qu'il est nommé style.css sinon le style de forum sera non-disponible.";
 $lang['forumstyle'] = "Style du forum";
@@ -336,6 +339,7 @@ $lang['youmustincludeprofileentryinhyperlinks'] = "Vous devez inclure <i>[Donné
 $lang['failedtocreatenewprofileitem'] = "La création d'un nouvel item de profile a échouée";
 $lang['failedtoupdateprofileitem'] = "La mise à jour de l'item de profile a échouée";
 $lang['startpageupdated'] = "Page de démarrage mise à jour. %s";
+$lang['cssfileuploaded'] = "Feuille de style CSS téléchargée. %s";
 $lang['viewupdatedstartpage'] = "Visualiser la page de démarrage mise à jour";
 $lang['editstartpage'] = "Modifier la page de démarrage";
 $lang['nouserspecified'] = "Aucun utilisateur de spécifié";
@@ -349,6 +353,10 @@ $lang['userdeleteallpostswarning'] = "Êtes-vous certain de vouloir supprimer to
 $lang['postssuccessfullydeleted'] = "Suppression de messages réussie.";
 $lang['folderaccess'] = "Accès aux dossiers";
 $lang['possiblealiases'] = "Pseudonymes possibles";
+$lang['ipaddressmatches'] = "Adresses IP appariées";
+$lang['emailaddressmatches'] = "Adresses courriel appariées";
+$lang['passwdmatches'] = "Mots de passe apparés";
+$lang['httpreferermatches'] = "Référents HTTP appariés";
 $lang['userhistory'] = "Historique de l'usager";
 $lang['nohistory'] = "Aucun rapport d'historique sauvegarder";
 $lang['userhistorychanges'] = "Changements";
@@ -976,6 +984,7 @@ $lang['upload'] = "Téléverser";
 $lang['uploadnewattachment'] = "Téléverser nouveau fichier joint";
 $lang['waitdotdot'] = "patienter..";
 $lang['successfullyuploaded'] = "Téléversement réussi: %s";
+$lang['failedtoupload'] = "Téléchargement non réussi: %s. Vérifiez votre montant d'espace libre pour pièces jointes!";
 $lang['complete'] = "Compléter";
 $lang['uploadattachment'] = "Téléverser un fichier pour joindre au message";
 $lang['enterfilenamestoupload'] = "Entrer nom(s) de fichier(s) à téléverser";
@@ -1054,6 +1063,11 @@ $lang['msgnotificationemail'] = "Salut %s.\n\n%s a posté un message à votre at
 
 $lang['threadsubnotification_subject'] = "Confirmation d'abonnement de %s";
 $lang['threadsubnotification'] = "Salut %s.\n\n%s a posté un message dans un fil de discussion auquel vous vous êtes abonné sur %s\n\nLe sujet est: %s\n\nPour lire ce message et les autres dans le même fil de discussion, allez à:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: Si vous désirez ne plus recevoir de confirmations de message par courriel de nouveau messages dans ce fil de discussion, allez à: %s et ajuster votre Niveau d'intérêt au bas de la page.";
+
+// Folder Subscription notification ------------------------------------
+
+$lang['foldersubnotification_subject'] = "Notification d'abonnement de %s";
+$lang['foldersubnotification'] = "Bonjour %s,\n\n%s a posté un message dans un dossier auquel vous êtes abonné sur %s.\n\nLe sujet est: %s.\n\nPour lire ce message et les autres dans la même discussion, allez voir:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: Si vous ne désiré pas recevoir des notifications par courriel de nouveaux messages dans ce fil de discussion, allez voir: %s et changer votre niveau d'intérêt en cliquant l'icône du dossier au haut de la page.";
 
 // PM notification -----------------------------------------------------
 
@@ -1242,6 +1256,7 @@ $lang['errorcreatingpost'] = "Erreur en créant le message! SVP essayer de nouve
 $lang['createnewthread'] = "Créer un nouveau fil de discussion";
 $lang['postreply'] = "Afficher la réponse";
 $lang['threadtitle'] = "Titre du fil de discussion";
+$lang['foldertitle'] = "Titre du dossier";
 $lang['messagehasbeendeleted'] = "Message a été supprimé.";
 $lang['messagenotfoundinselectedfolder'] = "Message non retrouvé dans le fichier sélectionné. Vérifiez qu'il n'a pas été déplacé ou supprimé.";
 $lang['cannotpostthisthreadtypeinfolder'] = "Vous ne pouvez pas poster ce type de fil de discussion dans ce dossier!";
@@ -1890,9 +1905,11 @@ $lang['pink'] = "Rose";
 $lang['lightgreen'] = "Vert pâle";
 $lang['lightblue'] = "Bleu pâle";
 
-// Forum Stats (messages.inc.php - messages_forum_stats()) -------------
+// Forum Stats --------------------------------
 
 $lang['forumstats'] = "Statistiques du forum";
+$lang['userstats'] = "Statistiques des utilisateurs";
+
 $lang['usersactiveinthepasttimeperiod'] = "%s actifs durant les dernières %s. %s";
 
 $lang['numactiveguests'] = "<b>%s</b> invités";
@@ -1920,6 +1937,82 @@ $lang['wehavenumregisteredmember'] = "Nous avons %s membres enregistrés.";
 $lang['wehaveoneregisteredmember'] = "Nous avons un membre enregistré.";
 $lang['mostuserseveronlinewasnumondate'] = "Le plus grand nombre d'utilisateurs en ligne à la fois était <b>%s</b> le %s.";
 $lang['statsdisplaychanged'] = "Stats affichage changé";
+
+$lang['viewtop20'] = "Voir les 20 plus populaires";
+
+$lang['folderstats'] = "Statistiques de dossiers";
+$lang['threadstats'] = "Statistiques de fils de discussion";
+$lang['poststats'] = "Statistiques de messages";
+$lang['pollstats'] = "Statistiques de scrutins";
+$lang['attachmentsstats'] = "Statistiques de pièces jointe";
+$lang['userpreferencesstats'] = "Statistiques des péférences d'utilisateurs";
+$lang['visitorstats'] = "Statistiques des visiteurs";
+$lang['sessionstats'] = "Statistiques de sessions";
+$lang['profilestats'] = "Statistiques de profils";
+$lang['signaturestats'] = "Statistiques de signatures";
+$lang['ageandbirthdaystats'] = "Statistiques d'âge et dates de naissance";
+$lang['relationshipstats'] = "Statistiques des relations";
+$lang['wordfilterstats'] = "Statistiques du filtre des mots";
+
+$lang['numberoffolders'] = "Nombre de dossiers";
+$lang['folderwithmostthreads'] = "Dossier avec le plus grand nombre de fils de discussion";
+$lang['folderwithmostposts'] = "Dossier avec le plus grand nombre de messages";
+$lang['totalnumberofthreads'] = "Nombre totale de fils de discussion";
+$lang['longestthread'] = "Fil de discussion le plus long";
+$lang['mostreadthread'] = "Fil de discussion le plus lu";
+$lang['threadviews'] = "Visualisations";
+$lang['averagethreadcountperfolder'] = "Moyenne de fils de discussion par dossier";
+$lang['totalnumberofthreadsubscriptions'] = "Nombre total d'abonnements de fils de discussion";
+$lang['mostpopularthreadbysubscription'] = "Fil de discussion le plus populaire par abonnements";
+$lang['totalnumberofposts'] = "Nombre totale de messages";
+$lang['numberofpostsmadeinlastsixtyminutes'] = "Nombre de messages publiés dans les dernières 60 minutes";
+$lang['mostpostsmadeinasinglesixtyminuteperiod'] = "Plus grand nombre de messages publiés dans une période de 60 minutes";
+$lang['averagepostsperuser'] = "Moyenne de messages par utilisateur";
+$lang['topposter'] = "Utilisateur le plus prolifique";
+$lang['totalnumberofpolls'] = "Nombre totale de scrutins";
+$lang['totalnumberofpolloptions'] = "Nombre totale d'options de scrutin";
+$lang['averagevotesperpoll'] = "Moyenne de votes par scrutin";
+$lang['totalnumberofpollvotes'] = "Nombre totale de votes dans les scrutins";
+$lang['totalnumberofattachments'] = "Nombre total de pièces jointe";
+$lang['averagenumberofattachmentsperpost'] = "Moyenne de pièces jointe par message";
+$lang['mostdownloadedattachment'] = "Pièce jointe la plus téléversée";
+$lang['mostusedforumstyle'] = "Style de forum le plus utilisé";
+$lang['mostusedlanguuagefile'] = "Fichier de langue le plus utilisé";
+$lang['mostusedtimezone'] = "Fuseau horaire le plus utilisé";
+$lang['mostusedemoticonpack'] = "Ensemble de binettes le plus utilisé";
+
+$lang['numberofusers'] = "Nombre d'utilisateurs";
+$lang['newestuser'] = "L'utilisateur le plus récent";
+$lang['numberofcontributingusers'] = "Nombre d'utilisateurs qui contribuent";
+$lang['numberofnoncontributingusers'] = "Nombre d'utilisateurs qui ne contribuent pas";
+$lang['subscribers'] = "Abonnés";
+
+$lang['numberofvisitorstoday'] = "Nombre de visiteurs aujourd'hui";
+$lang['numberofvisitorsthisweek'] = "Nombre de visiteurs cette semaine (période: %s à %s)";
+$lang['numberofvisitorsthismonth'] = "Nombre de visiteurs ce mois";
+$lang['numberofvisitorsthisyear'] = "Nombre de visiteurs cette année";
+
+$lang['totalnumberofactiveusers'] = "Nombre totale d'utilisateurs actifs";
+$lang['numberofactiveregisteredusers'] = "Nombre d'utilisateurs enregistrés actifs";
+$lang['numberofactiveguests'] = "Nombre de visiteurs actifs";
+$lang['mostuserseveronline'] = "Plus grand nombre jamais d'utilisateurs en ligne à la fois";
+$lang['mostactiveuser'] = "Utilisateur le plus actif";
+$lang['numberofuserswithprofile'] = "Nombre d'utilisateurs avec profil";
+$lang['numberofuserswithoutprofile'] = "Nombre d'utilisateur sans profil";
+$lang['numberofuserswithsignature'] = "Nombre d'utilisateurs avec signatures";
+$lang['numberofuserswithoutsignature'] = "Nombre d'utilisateurs sans signature";
+$lang['averageage'] = "Moyenne d'âge";
+$lang['mostpopularbirthday'] = "Date de naissance la plus populaire";
+$lang['nobirthdaydataavailable'] = "Aucune donnée de date de naissance disponible";
+$lang['numberofusersusingwordfilter'] = "Nombre d'utilisateurs utilisant le filtre des mots";
+$lang['numberofuserreleationships'] = "Nombre de relations d'utilisateurs";
+$lang['averageage'] = "Moyenne d'âge";
+$lang['averagerelationshipsperuser'] = "Moyenne de relations par utilisateur";
+
+$lang['numberofusersnotusingwordfilter'] = "Nombre d'utilisateurs qui n'utilisent pas le filtre des mots";
+$lang['averagewordfilterentriesperuser'] = "Moyenne d'entrées dans le filtre des mots par utilisateur";
+
+$lang['mostuserseveronlinedetail'] = "%s on %s";
 
 // Thread Options (thread_options.php) ---------------------------------
 
@@ -1949,6 +2042,12 @@ $lang['failedtoupdatethreadlockstatus'] = "La mise à jour du statut vérrouill�
 $lang['failedtodeletepostsbyuser'] = "La suppression des messages de l'utilisateur sélectionné a échoué";
 $lang['failedtodeletethread'] = "La suppression du fil de discussion a échoué.";
 $lang['failedtoundeletethread'] = "L'annulation de la suppression du fil de discussion a échoué";
+
+// Folder Options (folder_options.php) ---------------------------------
+
+$lang['folderoptions'] = "Options de dossier";
+$lang['foldercouldnotbefound'] = "Le dossier demandé n'a pas pu être trouvé ou l'accés est interdit.";
+$lang['failedtoupdatefolderinterest'] = "Mise à jour du niveau d'intérêt du dossier a échoué";
 
 // Dictionary (dictionary.php) -----------------------------------------
 
@@ -2079,11 +2178,24 @@ $lang['threadsubscriptions'] = "Abonnement de fils de discussion";
 $lang['couldnotupdateinterestonthread'] = "L'intérêt du fil de discussion '%s' n'a pas pu être mise à jour";
 $lang['threadinterestsupdatedsuccessfully'] = "Mise à jour du statut de l'intérêt du fil de discussion réussie";
 $lang['nothreadsubscriptions'] = "Vous n'êtes pas abonné à aucun fil de discussion.";
+$lang['nothreadsignored'] = "Vous ignorez aucun fil de discussion.";
+$lang['nothreadsonhighinterest'] = "Vous n'avez aucun fil de discussion d'intérêt élevé.";
 $lang['resetselected'] = "Réinitialiser sélectionné";
 $lang['ignoredthreads'] = "Fils de discussion ignorés";
 $lang['highinterestthreads'] = "Fils de discussion à intérêt élevé";
 $lang['subscribedthreads'] = "Fils de discussion abonnés";
 $lang['currentinterest'] = "Intérêt actuel";
+
+// Folder subscriptions
+
+$lang['foldersubscriptions'] = "Abonnements de dossiers";
+$lang['couldnotupdateinterestonfolder'] = "Mise à jour du niveau d'intérêt du dossier '%s' a échoué";
+$lang['folderinterestsupdatedsuccessfully'] = "Mise à jour des niveaux d'intérêt de dossiers réussie";
+$lang['nofoldersubscriptions'] = "Vous n'êtes pas abonné à aucun dossier.";
+$lang['nofoldersignored'] = "Vous ignorez aucun dossier.";
+$lang['resetselected'] = "Réinitialiser sélectionné";
+$lang['ignoredfolders'] = "Dossiers ignorés";
+$lang['subscribedfolders'] = "Dossiers abonnés";
 
 // Browseable user profiles
 

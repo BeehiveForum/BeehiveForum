@@ -1,322 +1,303 @@
-Project Beehive Forum Change Log (Generated: Sat, 19 Jan 2008 12:32:38)
+Project Beehive Forum Change Log (Generated: Thu, 24 Jul 2008 12:55:08)
 
 Author: decoyduck
-Date: Sat, 19 Jan 2008 12:31:41
+Date: Thu, 24 Jul 2008 11:48:58
 -----------------------
-Changed: Installer now refers to 0.8.2. Removed 0.8.1 upgrade files and
-replaced with 0.8.2
+Changed: Replaced 0.8.3 upgrade scripts with those required for 0.8.4
 
-Date: Thu, 17 Jan 2008 14:44:35
+Date: Thu, 24 Jul 2008 11:43:24
 -----------------------
-Changed: Removed caching of session permissions.
-Changed: Return result of bh_session_get_perms() is tested before being
-added to session data.
+Changed: Updated language files for preperation of new release version.
 
-Date: Sun, 13 Jan 2008 18:28:18
+Date: Wed, 23 Jul 2008 20:43:08
 -----------------------
-Fixed: TinyMCE Version check failure in some browsers
-Fixed: Dictionary window wasn't resizable using TinyMCE.
+Fixed: Undefined index subnotification in email.inc.php
+Fixed: Undefined index uploadfailed in admin_startpage.php when CSS style
+sheet failed to upload.
+Changed: Error messages when unable to save start page / upload CSS
+changed to full page html_display_error
 
-Date: Sat, 12 Jan 2008 22:18:12
+Date: Wed, 23 Jul 2008 18:57:12
 -----------------------
-Fixed: Unread Cutoff was affecting Guests.
+Fixed: uid=Array() in PM preview with multiple recipients.
+Fixed: Search Popup allowed multiple matches for thread search
+Fixed: Search Popup only allowed separation with semi-colon, while
+pm_write.php allowed semi-colon or comma.
 
-Date: Sat, 12 Jan 2008 22:09:29
+Date: Wed, 23 Jul 2008 18:11:47
 -----------------------
-Added: Verbose Error Reporting added which includes POST, GET and COOKIE
-data in the error reports.
+Added: HTTP Referer and Password match checking to User Alias page.
+Added: External links added to more Admin User parts.
+Fixed: Missing dependencies on admin_forum_stats.php, lpost.php, post.php,
+html.inc.php and install.inc.php
+Changed: user_get_password() function changed to user_get_by_password()
 
-Date: Sat, 12 Jan 2008 20:30:06
+Date: Tue, 22 Jul 2008 16:40:30
 -----------------------
-Added: Missing files from TinyMCE 2.1.3
-Fixed: Beehive TinyMCE plugin now checks the version of TinyMCE before
-enabling it's functionality.
+Fixed: Undefined index subnotification_subject in email.inc.php
 
-Date: Sat, 12 Jan 2008 20:00:34
+Date: Mon, 21 Jul 2008 19:59:41
 -----------------------
-Added: Missing files from TinyMCE 2.1.3
+Added: User Email Address Aliases to View User Aliases display.
 
-Date: Sat, 12 Jan 2008 01:38:28
+Date: Mon, 21 Jul 2008 14:11:39
 -----------------------
-Changed: Upgraded TinyMCE to latest available version and fixed a few bugs
-in Beehive's implementation.
+Fixed: Broken layout of Light mode thread list when folders had an
+interest.
+Changed: Code from Thread List mirrored into Light mode thread list to get
+same performance and functionality.
 
-Date: Fri, 11 Jan 2008 23:20:06
+Date: Sat, 19 Jul 2008 19:27:11
 -----------------------
-Changed: Added tiny_mce folder to .cvsignore file.
+Changed: Redirecting popups that require login function was broken.
+Changed it to add a close button to close the popup.
+Fixed: Files missing from get_available_files() and
+get_available_admin_files()
 
-Date: Fri, 11 Jan 2008 23:17:19
+Date: Sat, 19 Jul 2008 13:46:16
 -----------------------
-Changed: Removed TinyMCE From CVS.
+Changed: Removed 'All' from Thread Subscriptions and Folder Subscriptions.
+Changed: Wording for "You have no thread subscriptions" and "You have no
+folder subscriptions" changes based on view.
 
-Date: Fri, 11 Jan 2008 21:27:26
+Date: Fri, 18 Jul 2008 21:28:06
 -----------------------
-Fixed: Error occured when invalid IP was passed through gethostbyaddr()
-function.
-Fixed: Function get_attachment_by_hash() wasn't checking to see if the
-attachment existed before using filemtime()
+Changed: Folder Subscription email only sends one email per visit same as
+the thread subscription does.
 
-Date: Tue, 08 Jan 2008 18:33:40
+Date: Fri, 18 Jul 2008 21:05:33
 -----------------------
-Fixed: Undefined variable lpost.php when creating a new thread.
-Changed: Updated changelog.txt
+Changed: Reworded some of the error reporter instructions.
+Fixed: New User Registrations with admin email notification enabled
+generated an error.
+Added: Ability to upload start_main.css (style sheet) using
+admin_startpage.php.
 
-Date: Sun, 06 Jan 2008 20:59:28
+Date: Tue, 15 Jul 2008 16:33:17
 -----------------------
-Fixed: Undefined variable $threaddata in post.php when creating a new
-thread.
-Fixed: bh_update_language.php wasn't doing addslashes on strings.
-Changed: Updated language files.
+Fixed: Undefined variable in attachments.php
+Fixed: It was possible to upload attachments even when you had used all
+your quota.
 
-Date: Fri, 04 Jan 2008 20:29:44
+Date: Mon, 14 Jul 2008 21:03:09
 -----------------------
-Changed: Custom font size script output is now cached by the client's
-browser to save a tiny bit of bandwidth.
+Fixed: To user drop down always defaulting to 'All' even with replyto URL
+query.
 
-Date: Thu, 03 Jan 2008 19:42:43
+Date: Mon, 14 Jul 2008 17:14:10
 -----------------------
-Fixed: Incorrect initialisation of HTML toolbar / TinyMCE on some pages.
-Fixed: Couldn't force the word filter to be enabled.
-Fixed: It was possible to set a thread interest out of the bounds of set
-by Beehive (integer value lower than -1 and higher than 3)
-Fixed: Setting thread interest via Thread Options wasn't holding.
-Added: Error message display when interest or read message number couldn't
-be changed.
+Fixed: Lots of missing webtags in files made it impossible to do some
+features on certain forums when there is a default forum set.
 
-Date: Wed, 02 Jan 2008 12:45:34
+Date: Mon, 14 Jul 2008 17:05:18
 -----------------------
-Fixed: Global folder moderation permissions were not being correctly
-checked for admin_post_approve.php etc.
-Fixed: Changing user's global permissions caused an error to be
-incorrectly displayed if the user previously had no previous permissions.
-Changed: Made the admin_post_approve.php work a lot better.
+Added: Folder Subscriptions area to My Controls which functions the same
+as Thread Subscriptions
+Fixed: Constants not being used in edit_subscriptions.php
+Fixed: Missing webtag in edit_subscriptions.php for thread links.
 
-Date: Mon, 31 Dec 2007 21:12:08
+Date: Mon, 14 Jul 2008 15:26:59
 -----------------------
-Fixed: Post approval notifications were being sent to all moderators on
-global scale regardless of forum.
+Fixed: Incorrect number of arguments for email_send_thread_subscription()
+function call in post.php
 
-Date: Mon, 31 Dec 2007 21:08:37
+Date: Mon, 14 Jul 2008 12:07:15
 -----------------------
-Added: Email notification is sent to user when their account has been
-approved by an admin.
-Fixed: Post Approval notifications were not being sent to folder
-moderators.
+Fixed: Removing all columns from Visitor Log and adding a new column
+always added Last Visit as well.
 
-Date: Mon, 31 Dec 2007 19:12:44
+Date: Mon, 14 Jul 2008 11:53:11
 -----------------------
-Changed: Made the Forum Rules box in Global Forum Settings use the default
-rules text if none have been defined.
+Fixed: Recent Birthdays and Visitor Log weren't listing users who set BH
+to show their DOB and AGE, only DOB.
 
-Date: Mon, 31 Dec 2007 18:44:52
+Date: Mon, 14 Jul 2008 11:46:04
 -----------------------
-Fixed: Search box on My Forums page was broken.
-Changed: Re-added the forum description to My Forums page.
+Fixed: Radio buttons for DOB display were broken again and user profile
+was displaying wrong data (Possible Regression?)
 
-Date: Mon, 31 Dec 2007 15:48:54
+Date: Mon, 14 Jul 2008 11:30:21
 -----------------------
-Fixed: Changing the filter type on admin_users.php didn't preserve the
-column sorting.
-Fixed: Kicking or Approving a user didn't preserve the filter type on
-admin_users.php.
-Added: Success and Error messages added to admin_user.php
+Changed: Error handler changed to allow email reports for errors such as
+missing files or incomplete installation.
 
-Date: Sun, 30 Dec 2007 22:38:16
+Date: Sun, 13 Jul 2008 09:01:41
 -----------------------
-Fixed: bh_check_languages.php had problems where language strings
-contained new-lines or tab characters.
-Fixed: Duplicate language string keys causing problems for email approval
-output in browser.
-Added: Email notification for Admins when a new user account is created
-and user approval is active.
-Added: Email notification for Admins when a new post is created and post
-approval is active in a folder.
+Fixed: Missing JS include file in scripts that call messages_top().
+Added: Include file for folder options popup (folder_options.js)
 
-Date: Sun, 30 Dec 2007 14:25:39
+Date: Sun, 13 Jul 2008 08:58:19
 -----------------------
-Added: Hostname tooltip added to all relevant displays of the user's IP
-Address.
+Changed: Folder Options changed to a popup window so as to not break the
+thread / messages navigation.
 
-Date: Sat, 29 Dec 2007 22:26:33
+Date: Fri, 11 Jul 2008 20:31:02
 -----------------------
-Changed: Email subscriptions are only sent once per thread per user visit
-to cut down on the number of notifications sent to each user.
+Added: SEF links added to header of Light mode. Includes contents, next,
+prev, up, first and last links.
 
-Date: Thu, 27 Dec 2007 19:10:20
+Date: Wed, 09 Jul 2008 18:35:27
 -----------------------
-Changed: Simplified bh_session_check and bh_guest_session_init functions
-to no longer pass hash as function arguments.
+Changed: Moved rmdir_recursive function from install.inc.php to
+server.inc.php
 
-Date: Wed, 26 Dec 2007 17:44:35
+Date: Wed, 09 Jul 2008 18:32:51
 -----------------------
-Changed: More authentic HTTP/1.0 500 status messages when dealing with PHP
-CGI mode.
+Changed: Styles must now have a unique filename globally and in the
+per-forum styles folder
+Changed: Forum drop down box now prefers per-forum styles over global
+styles.
+Added: New subscribed folder icons for Teh Forum and Default themes.
 
-Date: Wed, 26 Dec 2007 13:19:32
+Date: Wed, 09 Jul 2008 17:01:35
 -----------------------
-Fixed: ./file causes problems for some weirdly configured Apache set ups.
-Fixed: back button on admin_user_groups_edit_users.php always took you
-back to admin_user_groups.php and not the previous page.
+Changed: Folder warning message in links.php now uses
+html_display_warning_msg() function.
+Fixed: Drop Down List appearing as a multi-line text field in Profile.
 
-Date: Sun, 23 Dec 2007 21:07:13
+Date: Tue, 08 Jul 2008 18:33:19
 -----------------------
-Fixed: Call-time pass-by-reference error in thread.inc.php when getting
-list of replies for a thread split.
-Fixed: Error handler trigger self-error due to back trace data not
-containing all the required information.
+Changed: Folders now appear in order of the user's interest when no
+threads are visible.
+Changed: Folder drop downs now list folders in the same order they appear
+in the thread list when no threads visible / admin folders list.
+Changed: Made the error message about no available folders in Light mode
+more friendly (no longer causes HTML error)
 
-Date: Sun, 23 Dec 2007 20:53:10
+Date: Tue, 08 Jul 2008 17:09:02
 -----------------------
-Fixed: Missing HTML warning messages in admin_wordfilter.php
-Fixed: When the user has filled their maximum word filter quota the error
-message still complained about not filling in match text etc.
+Changed: Reduced the size of index.php by removing duplicate lines for
+navigation bar display.
 
-Date: Sat, 22 Dec 2007 18:33:45
+Date: Sun, 06 Jul 2008 19:32:28
 -----------------------
-Fixed: bh_check_languages.php was still missing some array elements.
+Fixed: Folder icon display was incorrectly using thread interest level
+instead of folder interest.
+Fixed: Incorrect tooltips for ignored folders / normal interest folders.
 
-Date: Sat, 22 Dec 2007 11:39:44
+Date: Sun, 06 Jul 2008 17:27:01
 -----------------------
-Changed: Warning message on unread cut-off setting changed.
+Added: Folder subscription functionality
+Added: Copied tehforum style into the default webtag folder for the demo
+set up.
 
-Date: Sat, 22 Dec 2007 11:27:35
+Date: Thu, 03 Jul 2008 13:28:49
 -----------------------
-Changed: Removed the code to perform catch up on the unread threads
-because it simply takes too long. Replaced it with a suitable warning to
-notify forum operates if they select to change the option.
+Changed: Queries to gather forum style, emoticon packs and timezones
+changed to be more accurate.
+Changed: Moved some of the processing for the timezone stats into
+admin_forum_stats.php
 
-Date: Thu, 20 Dec 2007 11:18:31
+Date: Thu, 03 Jul 2008 09:32:12
 -----------------------
-Fixed: PM Notification popup only worked correctly when triggered by the
-thread list.
+Fixed: Forum style not selectable if there are global and per-forum styles
+in use.
+Changed: Removed duplicate call to styles_get_available() and
+emoticons_get_available() in forum_options.php
 
-Date: Wed, 19 Dec 2007 22:16:54
+Date: Tue, 01 Jul 2008 19:22:00
 -----------------------
-Fixed: Better checks added to return results for messages_get() for
-trapping stale cache errors and deleted posts.
-Changed: Light mode now uses light_html_display_error_msg a lot more
-rather than each script displaying it's own <h1>{$lang['error']}</h1> etc.
+Fixed: Most Posts Stats display was showing recent posts.
 
-Date: Tue, 18 Dec 2007 16:44:45
+Date: Tue, 01 Jul 2008 17:36:01
 -----------------------
-Fixed: bh_check_languages wasn't working correctly on multi-dimensional
-arrays
-Added: Warning message added when changing the urnead cut-off.
+Changed: Message cache is now 1 hour maximum. Auto-pruning enabled.
 
-Date: Sun, 16 Dec 2007 19:09:06
+Date: Tue, 01 Jul 2008 17:34:29
 -----------------------
-Changed: Function forum_update_unread_data() changed so threads modified
-on or after rather than just after the cut-off are marked as read.
+Added: Hidden (expert) setting to enable / disable Cache_Lite
+functionality. Changed default configuration to disabled.
 
-Date: Sun, 16 Dec 2007 17:54:32
+Date: Mon, 30 Jun 2008 18:50:20
 -----------------------
-Added: When changing the unread cutoff Beehive now instantly corrects the
-unread data for all users.
-Fixed: Undefined variables $t_content and $t_sig in edit.php when trying
-to edit a post to delete all content.
-Fixed: Undefined variable $option_count when creating a tabular poll.
+Added: Allow unlimited attachment space by setting max space to 0.
 
-Date: Sat, 15 Dec 2007 23:06:15
+Date: Mon, 30 Jun 2008 18:46:06
 -----------------------
-Fixed: Admin Global Forum Settings was incorrectly displaying the selected
-unread thread cut-off
-Fixed: Function forum_process_unread_cutoff() could end up causing an
-undefined CONSTANT error.
-Changed: Updated x-hacker language file.
+Fixed: HTML errors in image attachment thumbnails: invalid height
+attribute and <div> element not allowed.
+Fixed: Layout issues with image attachments in post and preview displays.
+Fixed: Visitor counts for periods not showing correctly even if different
+to previous period.
 
-Date: Sat, 15 Dec 2007 21:19:31
+Date: Sat, 28 Jun 2008 17:53:42
 -----------------------
-Fixed: Code for restricting user's word filter had been removed since
-0.7.1. Reimplemented.
-Changed: Applied filter count limit to user account only.
+Changed: Removed debugging code form db_query function.
 
-Date: Thu, 13 Dec 2007 21:34:32
+Date: Sat, 28 Jun 2008 17:52:52
 -----------------------
-Added: Reload button for text captcha to get a new image if the user can't
-read it.
+Changed: Few tweaks to Forum Stats layout.
+Changed: Made the filesize index in attachment_make_link function
+optional.
+Changed: Removed trailing <br /> from attachment_make_link output and made
+scripts display it instead.
 
-Date: Thu, 13 Dec 2007 20:14:50
+Date: Fri, 27 Jun 2008 19:06:11
 -----------------------
-Changed: Unread cut-off settings simplified by adding more choice to the
-drop down and removing the custom field.
-Changed: Error Handler no longer uses functions in other scripts which
-means it can show more error messages.
-Changed: New check in Error Handler for missing include files shows a
-message about incorrect installation.
-Changed: Updated dependencies in all files.
+Changed: Finished Forum Stats
+Added: Link to Forum Stats from admin_menu.php
 
-Date: Thu, 13 Dec 2007 17:10:58
+Date: Fri, 27 Jun 2008 18:53:31
 -----------------------
-Changed: If a custom unread cutoff has ben specified but is invalid we now
-fall back to default behaviour.
-Changed: Removed legacy thread unread functions which are no longer user
-by Beehive.
+Changed: Completed Forum Stats page. Not yet linked to.
 
-Date: Wed, 12 Dec 2007 22:28:23
+Date: Thu, 26 Jun 2008 20:36:51
 -----------------------
-Changed: Switched back to older unread message query which is faster and
-doesn't use the POST table.
-Changed: UI changes to My Forums page when showing the search results.
+Fixed: User Session times were never updated if you only ever had one
+forum set up or the user only visited one forum.
+Changed: More added to Forum Stats functionality. Language file updates
+still required and links to relevant extended lists.
 
-Date: Wed, 12 Dec 2007 20:50:28
+Date: Wed, 25 Jun 2008 18:48:39
 -----------------------
-Changed: Global Forum Settings now allows you to clear the unread cutoff
-custom field and no longer resets to zero.
-Changed: Version changed to 0.8.2 pending release of next point-release.
-Changed: Implemented some extra checks to ensure the unread cutoff value
-is valid before using it in queries.
-Fixed: Return value on the mark as read function was incorrect, was
-returning an empty array instead of boolean.
+Added: Forum Stats page unfinished work in progress.
 
-Date: Tue, 11 Dec 2007 18:13:24
+Date: Sun, 22 Jun 2008 21:11:16
 -----------------------
-Changed: Replaced integer values with named constants in
-forum_get_unread_cutoff() function.
-Changed: Changed html_get_forum_uri() so it removes the trailing slash
-from the generated URL.
+Fixed: Wrong function being called by forum_get_permissions() when trying
+to automatically move back a page.
+Added: A few functions for the upcoming new forum stats pages.
 
-Date: Mon, 10 Dec 2007 22:50:54
+Date: Fri, 20 Jun 2008 13:33:06
 -----------------------
-Fixed: Ignored signature which contains HTML breaks when posting and
-previewing message.
-Changed: Removed code to control hiding signature and emoticons from
-ledit.php as the controls aren't present.
+Changed: Changed the error reporter option in the installer so it will
+only work for new installs
+Changed: Added documentation on how to enable the error reporter after
+upgrading.
 
-Date: Mon, 10 Dec 2007 22:40:52
+Date: Fri, 20 Jun 2008 12:45:45
 -----------------------
-Fixed: Can't login to Lite Mode with Guest account disabled.
+Changed: Now on 0.8.3-CVS.
+Changed: install_prevent_client_timeout() now only clears every 1000th
+call outputs fewer HTML comment lines.
+Fixed: Error occurs during install if you enable the error reporting via
+email option when upgrading.
 
-Date: Mon, 10 Dec 2007 21:37:28
+Date: Thu, 19 Jun 2008 14:56:52
 -----------------------
-Fixed: Setting a custom unread cut-off for unread messages wasn't
-possible.
+Fixed: Unknown error [2] stristr() [function.stristr]: Empty delimiter in
+poll_results.php
+Fixed: Layout issues on poll_results.php when poll question was empty.
 
-Date: Mon, 10 Dec 2007 20:45:31
+Date: Wed, 18 Jun 2008 20:08:32
 -----------------------
-Fixed: Re: vs. RE: in PM messages.
+Changed: Capitalisation on 'Color' in en-us language pack
 
-Date: Mon, 10 Dec 2007 20:44:32
+Date: Wed, 18 Jun 2008 19:27:03
 -----------------------
-Fixed: User's could move threads between folders that they didn't own if
-the post edit timeout was a non-zero value.
-Fixed: Reply to a message as a PM where the thread title was greater than
-64 characters would cut off the thread index on the end of the PM subject.
+Changed: Amercan English Language pack updated with correct spellings for
+Colour and Favourite.
+Changed: Spelling mistakes in English GB language pack.
 
-Date: Mon, 10 Dec 2007 19:58:48
+Date: Tue, 17 Jun 2008 20:26:14
 -----------------------
-Fixed: Post Page Preferences were messed up.
+Changed: Reimplemented HTTP caching for stats.
+Changed: Installer scripts changed to remove data we no longer log.
+Fixed: Undefined variable in search.php when trying to view stop word list
+without highlighted words
 
-Date: Sun, 09 Dec 2007 21:42:35
+Date: Tue, 17 Jun 2008 15:08:01
 -----------------------
-Fixed: Navigation strip at bottom of message pane would sometimes start
-message numbers from 0.
-
-Date: Sun, 09 Dec 2007 18:31:37
------------------------
-Fixed: Using the search popup on fields which supported multiple entries
-separated by semi-colon duplicated the entries selected.
-
-Date: Sun, 09 Dec 2007 18:04:31
------------------------
-Changed: Increased the maximum length of the username field in search.php
+Fixed: Post and user session stats weren't updating correctly.
+Changed: Removed automatic update admin log entries.
 

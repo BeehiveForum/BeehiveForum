@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.113 2008-07-15 17:33:17 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.114 2008-07-24 12:43:24 decoyduck Exp $ */
 
 // French Canadian language file
 
@@ -701,11 +701,6 @@ $lang['updatedban'] = "Mise-à-jour du bannissement '%s'. '%s' à '%s', '%s' à 
 $lang['splitthreadatpostintonewthread'] = "Disperser le fils de discussion '%s' au message %s  en un nouvel fils de discussion '%s'";
 $lang['mergedthreadintonewthread'] = "Fils de discussion '%s' et '%s' fusionnés en un nouvel fils de discussion '%s'";
 
-$lang['approveduser'] = "Usager approuvé '%s'";
-
-$lang['forumautoupdatestats'] = "Mise à jour du forum automatique: statistiques mises à jour";
-$lang['forumautocleanthreadunread'] = "Mise à jour du forum automatique: Données fils de discussion non-lus nettoyées";
-
 $lang['ipaddressbanhit'] = "Utilisateur '%s' est banni. L'adresse IP '%s' conforme au données de bannissement '%s'";
 $lang['logonbanhit'] = "Utilisateur '%s' est banni. Le nom d'utilisateur '%s' conforme aux données de bannissement '%s'";
 $lang['nicknamebanhit'] = "Utiliateur '%s' est banni. Le pseudonyme '%s' conforme aux données de bannissement '%s'";
@@ -780,15 +775,12 @@ $lang['rssfeeddeletions'] = "Suppressions de source de données RSS";
 $lang['banchanges'] = "Modifications de bannissement";
 $lang['threadsplits'] = "Divisions de fils de discussion";
 $lang['threadmerges'] = "Fusionnements de fils de discussions";
-$lang['userapprovals'] = "Approbations d'utilisateurs";
 $lang['forumlinkadditions'] = "Ajouts de hyperliens du forum";
 $lang['forumlinkdeletions'] = "Supression de hyperliens du forum";
 $lang['forumlinktopcaptionchanges'] = "Modifications du titre de départ des liens du forum";
 $lang['folderedits'] = "Modifications des dossiers";
 $lang['userdeletions'] = "Suppressions d'utilisateurs";
 $lang['userdatadeletions'] = "Suppressions de données d'utilisateur";
-$lang['forumstatsautoupdates'] = "Mises à jour automatiques des statistiques du forum";
-$lang['forumautothreadunreaddataupdates'] = "Mises à jour automatique pour le forum des données de fils de discussions non-lus";
 $lang['usergroupchanges'] = "Modifications au group d'utilisateurs";
 $lang['ipaddressbancheckresults'] = "Résultats de la vérification des bannissements par adresse IP";
 $lang['logonbancheckresults'] = "Résultats de la vérification des bannissements par nom d'utilisateur";
@@ -1843,16 +1835,12 @@ $lang['unreadthread'] = "Fil de discussion non-lu";
 $lang['readthread'] = "Lire fil de discussion";
 $lang['unreadmessages'] = "Messages non-lus";
 $lang['subscribed'] = "Abonné";
-$lang['ignorethisfolder'] = "Ignorer ce dossier";
-$lang['stopignoringthisfolder'] = "Cesser d'ignorer ce dossier";
 $lang['stickythreads'] = "Fils de discussion collants";
 $lang['mostunreadposts'] = "Plus de messages non-lus";
 $lang['onenew'] = "%d nouveau";
 $lang['manynew'] = "%d nouveaux";
 $lang['onenewoflength'] = "%d nouveau de %d";
 $lang['manynewoflength'] = "%d nouveaux de %d";
-$lang['ignorefolderconfirm'] = "Êtes-vous certain de vouloir ignorer ce dossier?";
-$lang['unignorefolderconfirm'] = "Êtes-vous certain de vouloir cesser d'ignorer ce dossier?";
 $lang['confirmmarkasread'] = "Êtes-vous certain de vouloir marquer les fils de discussion sélectionnés comme lus?";
 $lang['successfullymarkreadselectedthreads'] = "Fils de discussion marqués comme lu avec succès";
 $lang['failedtomarkselectedthreadsasread'] = "Fils de discussion marqués come lu a échoué";
@@ -2092,7 +2080,6 @@ $lang['couldnotupdateinterestonthread'] = "L'intérêt du fil de discussion '%s'
 $lang['threadinterestsupdatedsuccessfully'] = "Mise à jour du statut de l'intérêt du fil de discussion réussie";
 $lang['nothreadsubscriptions'] = "Vous n'êtes pas abonné à aucun fil de discussion.";
 $lang['resetselected'] = "Réinitialiser sélectionné";
-$lang['allthreadtypes'] = "Tous les types de fils de discussion";
 $lang['ignoredthreads'] = "Fils de discussion ignorés";
 $lang['highinterestthreads'] = "Fils de discussion à intérêt élevé";
 $lang['subscribedthreads'] = "Fils de discussion abonnés";

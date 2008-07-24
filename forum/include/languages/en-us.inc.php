@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en-us.inc.php,v 1.68 2008-07-15 17:33:17 decoyduck Exp $ */
+/* $Id: en-us.inc.php,v 1.69 2008-07-24 12:43:24 decoyduck Exp $ */
 
 // American English language file
 
@@ -116,6 +116,7 @@ $lang['style'] = "Style";
 $lang['go'] = "Go";
 $lang['folder'] = "Folder";
 $lang['ignoredfolder'] = "Ignored Folder";
+$lang['subscribedfolder'] = "Subscribed Folder";
 $lang['folders'] = "Folders";
 $lang['thread'] = "thread";
 $lang['threads'] = "threads";
@@ -294,6 +295,9 @@ $lang['globalforumsettings'] = "Global Forum Settings";
 $lang['settingsaffectallforumswarning'] = "<b>Note:</b> These settings affect all forums. Where the setting is duplicated on the individual Forum's settings page that will take precedence over the settings you change here.";
 $lang['startpage'] = "Start Page";
 $lang['startpageerror'] = "Your start page could not be saved locally to the server because permission was denied.</p><p>To change your start page please click the download button below which will prompt you to save the file to your hard drive. You can then upload this file to your server into the following folder, if necessary creating the folder structure in the process.</p><p><b>%s</b></p><p>Please note that some browsers may change the name of the file upon download. When uploading the file please make sure that it is named start_main.php otherwise your start page will appear unchanged.";
+$lang['uploadcssfile'] = "Upload CSS style sheet";
+$lang['uploadcssfilefailed'] = "Your CSS style sheet could not be uploaded to the server because permission was denied.</p><p>To change your start page CSS style sheet please ensure the following folders exist and are writable: </p><p><b>%s</b></p>";
+$lang['invalidfiletypeerror'] = "Invalid file type, you can only upload CSS style sheet files";
 $lang['failedtoopenmasterstylesheet'] = "Your forum style could not be saved because the master style sheet could not be loaded. To save your style the master style sheet (make_style.css) must be located in the styles directory of your Beehive Forum installation.";
 $lang['makestyleerror'] = "Your forum style could not be saved locally to the server because permission was denied.</p><p>To save your forum style please click the download button below which will prompt you to save the file to your hard drive. You can then upload this file to your server into the following folder, if necessary creating the folder structure in the process.</p><p><b>%s</b></p><p>Please note that some browsers may change the name of the file upon download. When uploading the file please make sure that it is named style.css otherwise the forum style will be unavailable.";
 $lang['forumstyle'] = "Forum Style";
@@ -336,6 +340,7 @@ $lang['youmustincludeprofileentryinhyperlinks'] = "You must include <i>%s</i> in
 $lang['failedtocreatenewprofileitem'] = "Failed to create new profile item";
 $lang['failedtoupdateprofileitem'] = "Failed to update profile item";
 $lang['startpageupdated'] = "Start Page updated. %s";
+$lang['cssfileuploaded'] = "CSS style sheet uploaded. %s";
 $lang['viewupdatedstartpage'] = "View updated Start Page";
 $lang['editstartpage'] = "Edit Start Page";
 $lang['nouserspecified'] = "No user specified.";
@@ -349,6 +354,10 @@ $lang['userdeleteallpostswarning'] = "Are you sure you want to delete all of the
 $lang['postssuccessfullydeleted'] = "Posts were successfully deleted.";
 $lang['folderaccess'] = "Folder Access";
 $lang['possiblealiases'] = "Possible Aliases";
+$lang['ipaddressmatches'] = "IP Address Matches";
+$lang['emailaddressmatches'] = "Email Address Matches";
+$lang['passwdmatches'] = "Password Matches";
+$lang['httpreferermatches'] = "HTTP Referer Matches";
 $lang['userhistory'] = "User History";
 $lang['nohistory'] = "No History Records Saved";
 $lang['userhistorychanges'] = "Changes";
@@ -425,7 +434,7 @@ $lang['failedtoaddpermissionsforuser'] = "Failed to add permissions for user '%s
 $lang['failedtoremovepermissionsfromuser'] = "Failed to remove permissions from user '%s'";
 $lang['searchforuser'] = "Search For User";
 $lang['browsernegotiation'] = "Browser negotiated";
-$lang['largetextfield'] = "Text Field";
+$lang['textfield'] = "Text Field";
 $lang['multilinetextfield'] = "Multi-line Text Field";
 $lang['radiobuttons'] = "Radio Buttons";
 $lang['dropdownlist'] = "Drop Down List";
@@ -701,11 +710,6 @@ $lang['updatedban'] = "Updated ban '%s'. Changed type from '%s' to '%s', Changed
 $lang['splitthreadatpostintonewthread'] = "Split thread '%s' at post %s  into new thread '%s'";
 $lang['mergedthreadintonewthread'] = "Merged threads '%s' and '%s' into new thread '%s'";
 
-$lang['approveduser'] = "Approved user '%s'";
-
-$lang['forumautoupdatestats'] = "Forum Auto Update: Stats Updated";
-$lang['forumautocleanthreadunread'] = "Forum Auto Update: Thread Unread Data Cleaned";
-
 $lang['ipaddressbanhit'] = "User '%s' is banned. IP Address '%s' matched ban data '%s'";
 $lang['logonbanhit'] = "User '%s' is banned. Logon '%s' matched ban data '%s'";
 $lang['nicknamebanhit'] = "User '%s' is banned. Nickname '%s' matched ban data '%s'";
@@ -780,15 +784,12 @@ $lang['rssfeeddeletions'] = "RSS Feed Deletions";
 $lang['banchanges'] = "Ban Changes";
 $lang['threadsplits'] = "Thread Splits";
 $lang['threadmerges'] = "Thread Merges";
-$lang['userapprovals'] = "User Approvals";
 $lang['forumlinkadditions'] = "Forum Link Additions";
 $lang['forumlinkdeletions'] = "Forum Link Deletions";
 $lang['forumlinktopcaptionchanges'] = "Forum Link Top Caption Changes";
 $lang['folderedits'] = "Folder Edits";
 $lang['userdeletions'] = "User Deletions";
 $lang['userdatadeletions'] = "User Data Deletions";
-$lang['forumstatsautoupdates'] = "Forum Stats Auto Updates";
-$lang['forumautothreadunreaddataupdates'] = "Forum Auto Thread Unread Data Updates";
 $lang['usergroupchanges'] = "User Group Changes";
 $lang['ipaddressbancheckresults'] = "IP Address Ban Check Results";
 $lang['logonbancheckresults'] = "Logon Ban Check Results";
@@ -1064,6 +1065,11 @@ $lang['msgnotificationemail'] = "Hello %s,\n\n%s posted a message to you on %s.\
 $lang['threadsubnotification_subject'] = "Subscription Notification from %s";
 $lang['threadsubnotification'] = "Hello %s,\n\n%s posted a message in a thread you have subscribed to on %s.\n\nThe subject is: %s.\n\nTo read that message and others in the same discussion, go to:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: If you do not wish to receive email notifications of new messages in this thread, go to: %s and adjust your Interest level at the bottom of the page.";
 
+// Folder Subscription notification ------------------------------------
+
+$lang['foldersubnotification_subject'] = "Subscription Notification from %s";
+$lang['foldersubnotification'] = "Hello %s,\n\n%s posted a message in a folder you are subscribed to on %s.\n\nThe subject is: %s.\n\nTo read that message and others in the same discussion, go to:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: If you do not wish to receive email notifications of new messages in this thread, go to: %s and adjust your Interest level by clicking on the folder's icon at the top of page.";
+
 // PM notification -----------------------------------------------------
 
 $lang['pmnotification_subject'] = "PM Notification from %s";
@@ -1251,6 +1257,7 @@ $lang['errorcreatingpost'] = "Error creating post! Please try again in a few min
 $lang['createnewthread'] = "Create new thread";
 $lang['postreply'] = "Post Reply";
 $lang['threadtitle'] = "Thread title";
+$lang['foldertitle'] = "Folder title";
 $lang['messagehasbeendeleted'] = "Message not found. Check that it hasn't been deleted.";
 $lang['messagenotfoundinselectedfolder'] = "Message not found in selected folder. Check that it hasn't been moved or deleted.";
 $lang['cannotpostthisthreadtypeinfolder'] = "You cannot post this thread type in that folder!";
@@ -1844,16 +1851,12 @@ $lang['unreadthread'] = "Unread Thread";
 $lang['readthread'] = "Read Thread";
 $lang['unreadmessages'] = "Unread Messages";
 $lang['subscribed'] = "Subscribed";
-$lang['ignorethisfolder'] = "Ignore This Folder";
-$lang['stopignoringthisfolder'] = "Stop Ignoring This Folder";
 $lang['stickythreads'] = "Sticky Threads";
 $lang['mostunreadposts'] = "Most unread posts";
 $lang['onenew'] = "%d new";
 $lang['manynew'] = "%d new";
 $lang['onenewoflength'] = "%d new of %d";
 $lang['manynewoflength'] = "%d new of %d";
-$lang['ignorefolderconfirm'] = "Are you sure you want to ignore this folder?";
-$lang['unignorefolderconfirm'] = "Are you sure you want to stop ignoring this folder?";
 $lang['confirmmarkasread'] = "Are you sure you want to mark the selected threads as read?";
 $lang['successfullymarkreadselectedthreads'] = "Successfully marked selected threads as read";
 $lang['failedtomarkselectedthreadsasread'] = "Failed to mark selected threads as read";
@@ -1903,9 +1906,11 @@ $lang['pink'] = "Pink";
 $lang['lightgreen'] = "Light green";
 $lang['lightblue'] = "Light blue";
 
-// Forum Stats (messages.inc.php - messages_forum_stats()) -------------
+// Forum Stats --------------------------------
 
 $lang['forumstats'] = "Forum Stats";
+$lang['userstats'] = "User Stats";
+
 $lang['usersactiveinthepasttimeperiod'] = "%s active in the past %s. %s";
 
 $lang['numactiveguests'] = "<b>%s</b> guests";
@@ -1933,6 +1938,82 @@ $lang['wehavenumregisteredmember'] = "We have %s registered members.";
 $lang['wehaveoneregisteredmember'] = "We have one registered member.";
 $lang['mostuserseveronlinewasnumondate'] = "Most users ever online was <b>%s</b> on %s.";
 $lang['statsdisplaychanged'] = "Stats Display Changed";
+
+$lang['viewtop20'] = "View Top 20";
+
+$lang['folderstats'] = "Folder Stats";
+$lang['threadstats'] = "Thread Stats";
+$lang['poststats'] = "Post Stats";
+$lang['pollstats'] = "Poll Stats";
+$lang['attachmentsstats'] = "Attachments Stats";
+$lang['userpreferencesstats'] = "User Preferences Stats";
+$lang['visitorstats'] = "Visitor Stats";
+$lang['sessionstats'] = "Session Stats";
+$lang['profilestats'] = "Profile Stats";
+$lang['signaturestats'] = "Signature Stats";
+$lang['ageandbirthdaystats'] = "Age and Birthday Stats";
+$lang['relationshipstats'] = "Relationship Stats";
+$lang['wordfilterstats'] = "Word Filter Stats";
+
+$lang['numberoffolders'] = "Number of folders";
+$lang['folderwithmostthreads'] = "Folder with most threads";
+$lang['folderwithmostposts'] = "Folder with most posts ";
+$lang['totalnumberofthreads'] = "Total number of threads";
+$lang['longestthread'] = "Longest thread";
+$lang['mostreadthread'] = "Most read thread";
+$lang['threadviews'] = "Views";
+$lang['averagethreadcountperfolder'] = "Average thread count per folder";
+$lang['totalnumberofthreadsubscriptions'] = "Total number of thread subscriptions";
+$lang['mostpopularthreadbysubscription'] = "Most popular thread by subscription";
+$lang['totalnumberofposts'] = "Total number of posts";
+$lang['numberofpostsmadeinlastsixtyminutes'] = "Number of posts made in last 60 minutes";
+$lang['mostpostsmadeinasinglesixtyminuteperiod'] = "Most posts made in one 60 minute period";
+$lang['averagepostsperuser'] = "Average posts per user";
+$lang['topposter'] = "Top poster";
+$lang['totalnumberofpolls'] = "Total number of polls";
+$lang['totalnumberofpolloptions'] = "Total number of poll options";
+$lang['averagevotesperpoll'] = "Averge votes per poll";
+$lang['totalnumberofpollvotes'] = "Total number of poll votes";
+$lang['totalnumberofattachments'] = "Total number of attachments";
+$lang['averagenumberofattachmentsperpost'] = "Average attachment count per post";
+$lang['mostdownloadedattachment'] = "Most downloaded attachment";
+$lang['mostusedforumstyle'] = "Most used forum style";
+$lang['mostusedlanguuagefile'] = "Most used language file";
+$lang['mostusedtimezone'] = "Most used Timezone";
+$lang['mostusedemoticonpack'] = "Most used Emoticon pack";
+
+$lang['numberofusers'] = "Number of users";
+$lang['newestuser'] = "Newest User";
+$lang['numberofcontributingusers'] = "Number of contributing users";
+$lang['numberofnoncontributingusers'] = "Number of non-contributing users";
+$lang['subscribers'] = "Subscribers";
+
+$lang['numberofvisitorstoday'] = "Number of visitors today";
+$lang['numberofvisitorsthisweek'] = "Number of visitors this week (period: %s to %s)";
+$lang['numberofvisitorsthismonth'] = "Number of visitors this month";
+$lang['numberofvisitorsthisyear'] = "Number of visitors this year";
+
+$lang['totalnumberofactiveusers'] = "Total number of active users";
+$lang['numberofactiveregisteredusers'] = "Number of active registered users";
+$lang['numberofactiveguests'] = "Number of active guests";
+$lang['mostuserseveronline'] = "Most users ever online";
+$lang['mostactiveuser'] = "Most active user";
+$lang['numberofuserswithprofile'] = "Number of users with profile";
+$lang['numberofuserswithoutprofile'] = "Number of users without profile";
+$lang['numberofuserswithsignature'] = "Number of users with signature";
+$lang['numberofuserswithoutsignature'] = "Number of users without signature";
+$lang['averageage'] = "Average age";
+$lang['mostpopularbirthday'] = "Most popular birthday";
+$lang['nobirthdaydataavailable'] = "No Birthday Data Available";
+$lang['numberofusersusingwordfilter'] = "Number of users using word filter";
+$lang['numberofuserreleationships'] = "Number of user releationships";
+$lang['averageage'] = "Average age";
+$lang['averagerelationshipsperuser'] = "Average relationships per user";
+
+$lang['numberofusersnotusingwordfilter'] = "Number of users not using word filter";
+$lang['averagewordfilterentriesperuser'] = "Average word filter entries per user";
+
+$lang['mostuserseveronlinedetail'] = "%s on %s";
 
 // Thread Options (thread_options.php) ---------------------------------
 
@@ -1962,6 +2043,12 @@ $lang['failedtoupdatethreadlockstatus'] = "Failed to update thread lock status";
 $lang['failedtodeletepostsbyuser'] = "Failed to delete posts by selected user";
 $lang['failedtodeletethread'] = "Failed to delete thread.";
 $lang['failedtoundeletethread'] = "Failed to un-delete thread";
+
+// Folder Options (folder_options.php) ---------------------------------
+
+$lang['folderoptions'] = "Folder Options";
+$lang['foldercouldnotbefound'] = "The requested folder could not be found or access was denied.";
+$lang['failedtoupdatefolderinterest'] = "Failed to update folder interest";
 
 // Dictionary (dictionary.php) -----------------------------------------
 
@@ -2092,12 +2179,24 @@ $lang['threadsubscriptions'] = "Thread Subscriptions";
 $lang['couldnotupdateinterestonthread'] = "Could not update interest on thread '%s'";
 $lang['threadinterestsupdatedsuccessfully'] = "Thread interests updated successfully";
 $lang['nothreadsubscriptions'] = "You are not subscribed to any threads.";
+$lang['nothreadsignored'] = "You are not ignoring any threads.";
+$lang['nothreadsonhighinterest'] = "You have no high interest threads.";
 $lang['resetselected'] = "Reset Selected";
-$lang['allthreadtypes'] = "All Thread Types";
 $lang['ignoredthreads'] = "Ignored Threads";
 $lang['highinterestthreads'] = "High Interest Threads";
 $lang['subscribedthreads'] = "Subscribed Threads";
 $lang['currentinterest'] = "Current Interest";
+
+// Folder subscriptions
+
+$lang['foldersubscriptions'] = "Folder Subscriptions";
+$lang['couldnotupdateinterestonfolder'] = "Could not update interest on folder '%s'";
+$lang['folderinterestsupdatedsuccessfully'] = "Folder interests updated successfully";
+$lang['nofoldersubscriptions'] = "You are not subscribed to any folders.";
+$lang['nofoldersignored'] = "You are not ignoring any folders.";
+$lang['resetselected'] = "Reset Selected";
+$lang['ignoredfolders'] = "Ignored Folders";
+$lang['subscribedfolders'] = "Subscribed Folders";
 
 // Browseable user profiles
 

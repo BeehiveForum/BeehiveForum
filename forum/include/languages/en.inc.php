@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.560 2008-07-23 19:11:47 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.561 2008-07-24 12:43:24 decoyduck Exp $ */
 
 // British English language file
 
@@ -296,6 +296,7 @@ $lang['settingsaffectallforumswarning'] = "<b>Note:</b> These settings affect al
 $lang['startpage'] = "Start Page";
 $lang['startpageerror'] = "Your start page could not be saved locally to the server because permission was denied.</p><p>To change your start page please click the download button below which will prompt you to save the file to your hard drive. You can then upload this file to your server into the following folder, if necessary creating the folder structure in the process.</p><p><b>%s</b></p><p>Please note that some browsers may change the name of the file upon download. When uploading the file please make sure that it is named start_main.php otherwise your start page will appear unchanged.";
 $lang['uploadcssfile'] = "Upload CSS style sheet";
+$lang['uploadcssfilefailed'] = "Your CSS style sheet could not be uploaded to the server because permission was denied.</p><p>To change your start page CSS style sheet please ensure the following folders exist and are writable: </p><p><b>%s</b></p>";
 $lang['invalidfiletypeerror'] = "Invalid file type, you can only upload CSS style sheet files";
 $lang['failedtoopenmasterstylesheet'] = "Your forum style could not be saved because the master style sheet could not be loaded. To save your style the master style sheet (make_style.css) must be located in the styles directory of your Beehive Forum installation.";
 $lang['makestyleerror'] = "Your forum style could not be saved locally to the server because permission was denied.</p><p>To save your forum style please click the download button below which will prompt you to save the file to your hard drive. You can then upload this file to your server into the following folder, if necessary creating the folder structure in the process.</p><p><b>%s</b></p><p>Please note that some browsers may change the name of the file upon download. When uploading the file please make sure that it is named style.css otherwise the forum style will be unavailable.";
@@ -709,11 +710,6 @@ $lang['updatedban'] = "Updated ban '%s'. Changed type from '%s' to '%s', Changed
 $lang['splitthreadatpostintonewthread'] = "Split thread '%s' at post %s  into new thread '%s'";
 $lang['mergedthreadintonewthread'] = "Merged threads '%s' and '%s' into new thread '%s'";
 
-$lang['approveduser'] = "Approved user '%s'";
-
-$lang['forumautoupdatestats'] = "Forum Auto Update: Stats Updated";
-$lang['forumautocleanthreadunread'] = "Forum Auto Update: Thread Unread Data Cleaned";
-
 $lang['ipaddressbanhit'] = "User '%s' is banned. IP Address '%s' matched ban data '%s'";
 $lang['logonbanhit'] = "User '%s' is banned. Logon '%s' matched ban data '%s'";
 $lang['nicknamebanhit'] = "User '%s' is banned. Nickname '%s' matched ban data '%s'";
@@ -788,15 +784,12 @@ $lang['rssfeeddeletions'] = "RSS Feed Deletions";
 $lang['banchanges'] = "Ban Changes";
 $lang['threadsplits'] = "Thread Splits";
 $lang['threadmerges'] = "Thread Merges";
-$lang['userapprovals'] = "User Approvals";
 $lang['forumlinkadditions'] = "Forum Link Additions";
 $lang['forumlinkdeletions'] = "Forum Link Deletions";
 $lang['forumlinktopcaptionchanges'] = "Forum Link Top Caption Changes";
 $lang['folderedits'] = "Folder Edits";
 $lang['userdeletions'] = "User Deletions";
 $lang['userdatadeletions'] = "User Data Deletions";
-$lang['forumstatsautoupdates'] = "Forum Stats Auto Updates";
-$lang['forumautothreadunreaddataupdates'] = "Forum Auto Thread Unread Data Updates";
 $lang['usergroupchanges'] = "User Group Changes";
 $lang['ipaddressbancheckresults'] = "IP Address Ban Check Results";
 $lang['logonbancheckresults'] = "Logon Ban Check Results";
@@ -1858,16 +1851,12 @@ $lang['unreadthread'] = "Unread Thread";
 $lang['readthread'] = "Read Thread";
 $lang['unreadmessages'] = "Unread Messages";
 $lang['subscribed'] = "Subscribed";
-$lang['ignorethisfolder'] = "Ignore This Folder";
-$lang['stopignoringthisfolder'] = "Stop Ignoring This Folder";
 $lang['stickythreads'] = "Sticky Threads";
 $lang['mostunreadposts'] = "Most unread posts";
 $lang['onenew'] = "%d new";
 $lang['manynew'] = "%d new";
 $lang['onenewoflength'] = "%d new of %d";
 $lang['manynewoflength'] = "%d new of %d";
-$lang['ignorefolderconfirm'] = "Are you sure you want to ignore this folder?";
-$lang['unignorefolderconfirm'] = "Are you sure you want to stop ignoring this folder?";
 $lang['confirmmarkasread'] = "Are you sure you want to mark the selected threads as read?";
 $lang['successfullymarkreadselectedthreads'] = "Successfully marked selected threads as read";
 $lang['failedtomarkselectedthreadsasread'] = "Failed to mark selected threads as read";
@@ -2193,7 +2182,6 @@ $lang['nothreadsubscriptions'] = "You are not subscribed to any threads.";
 $lang['nothreadsignored'] = "You are not ignoring any threads.";
 $lang['nothreadsonhighinterest'] = "You have no high interest threads.";
 $lang['resetselected'] = "Reset Selected";
-$lang['allthreadtypes'] = "All Thread Types";
 $lang['ignoredthreads'] = "Ignored Threads";
 $lang['highinterestthreads'] = "High Interest Threads";
 $lang['subscribedthreads'] = "Subscribed Threads";
@@ -2207,7 +2195,6 @@ $lang['folderinterestsupdatedsuccessfully'] = "Folder interests updated successf
 $lang['nofoldersubscriptions'] = "You are not subscribed to any folders.";
 $lang['nofoldersignored'] = "You are not ignoring any folders.";
 $lang['resetselected'] = "Reset Selected";
-$lang['allfoldertypes'] = "All Folder Types";
 $lang['ignoredfolders'] = "Ignored Folders";
 $lang['subscribedfolders'] = "Subscribed Folders";
 

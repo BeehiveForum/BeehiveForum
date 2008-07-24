@@ -10,4 +10,5 @@ rel0-51       0.5 re-release (oops!)
 rel0-61       0.6.1 release
 rel0-7        0.7 release
 rel0-8        0.8 release
+rel0-81       0.8.1 release
 rel0-84       0.8.4 release

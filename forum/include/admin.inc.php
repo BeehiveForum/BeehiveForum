@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.154 2008-07-23 19:11:47 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.155 2008-07-24 21:16:11 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -1178,8 +1178,8 @@ function admin_get_user_ip_matches($uid)
     if (strlen($user_ip_address_list) > 0) {
 
         $sql = "SELECT DISTINCT POST.FROM_UID AS UID, USER.LOGON, ";
-        $sql.= "USER.NICKNAME, USER_PEER.PEER_NICKNAME, POST.IPADDRESS ";
-        $sql.= "FROM {$table_data['PREFIX']}POST POST ";
+        $sql.= "USER.NICKNAME, USER_PEER.PEER_NICKNAME, USER.IPADDRESS, ";
+        $sql.= "POST.IPADDRESS AS POST_IPADDRESS FROM {$table_data['PREFIX']}POST POST ";
         $sql.= "LEFT JOIN USER USER ON (POST.FROM_UID = USER.UID) ";
         $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
         $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$sess_uid') ";
@@ -1187,7 +1187,7 @@ function admin_get_user_ip_matches($uid)
         $sql.= "ON (RSS_FEEDS.UID = USER.UID) WHERE POST.FROM_UID <> $uid ";
         $sql.= "AND ((POST.IPADDRESS IN ('$user_ip_address_list')) ";
         $sql.= "OR (USER.IPADDRESS IN ('$user_ip_address_list'))) ";
-        $sql.= "AND RSS_FEEDS.UID IS NOT NULL ";
+        $sql.= "AND RSS_FEEDS.UID IS NULL ";
         $sql.= "LIMIT 0, 10";
 
         if (!$result = db_query($sql, $db_admin_get_user_ip_matches)) return false;
@@ -1195,6 +1195,8 @@ function admin_get_user_ip_matches($uid)
         if (db_num_rows($result) > 0) {
 
             while($user_aliases = db_fetch_array($result)) {
+
+                $user_aliases['IPADDRESS'] = (strstr($user_aliases['IPADDRESS'], $ipaddress) > 0) ? $user_aliases['IPADDRESS'] : $user_aliases['POST_IPADDRESS'];
 
                 if (isset($user_aliases['LOGON']) && isset($user_aliases['PEER_NICKNAME'])) {
                     if (!is_null($user_aliases['PEER_NICKNAME']) && strlen($user_aliases['PEER_NICKNAME']) > 0) {

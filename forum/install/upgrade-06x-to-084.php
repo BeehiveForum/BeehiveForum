@@ -21,9 +21,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-07x-to-083.php,v 1.10 2008-06-17 21:26:14 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-084.php,v 1.1 2008-07-24 12:48:58 decoyduck Exp $ */
 
-if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-07x-to-083.php") {
+if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-06x-to-083.php") {
 
     header("Request-URI: ../install.php");
     header("Content-Location: ../install.php");
@@ -33,7 +33,6 @@ if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-07
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
 include_once(BH_INCLUDE_PATH. "install.inc.php");
 
 @set_time_limit(0);
@@ -73,9 +72,10 @@ if (db_num_rows($result) > 0) {
     }
 }
 
-// Remove deprecated tables.
+// Remove the old SEARCH_* tables as we don't need them
+// anymore as Beehive uses MySQL FULLTEXT searches.
 
-$remove_tables = array();
+$remove_tables = array('SEARCH_KEYWORDS', 'SEARCH_MATCH', 'SEARCH_POSTS', 'SEARCH_RESULTS');
 
 foreach ($remove_tables as $remove_table) {
 
@@ -91,7 +91,7 @@ foreach ($remove_tables as $remove_table) {
 // Check that we have no global tables which conflict
 // with those we're about to create or remove.
 
-$global_tables = array('USER_HISTORY', 'PM_SEARCH_RESULTS', 'TIMEZONES');
+$global_tables = array('USER_HISTORY', 'SEARCH_ENGINE_BOTS', 'SEARCH_RESULTS', 'PM_SEARCH_RESULTS', 'TIMEZONES');
 
 if (isset($remove_conflicts) && $remove_conflicts === true) {
 
@@ -110,7 +110,7 @@ if (isset($remove_conflicts) && $remove_conflicts === true) {
 // Check that we have no per-forum tables which conflict
 // with those we're about to create.
 
-$forum_tables  = array('WORD_FILTER');
+$forum_tables  = array('THREAD_STATS', 'USER_TRACK', 'THREAD_TRACK');
 
 if (isset($remove_conflicts) && $remove_conflicts === true) {
 
@@ -241,11 +241,21 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         return;
     }
 
-    // Fix the invalid primary key on THREAD_TRACK table which
-    // causes an error when splitting a thread that has been split once already.
+    // New BANNED table format for new 0.7 admin_banned.php
 
-    $sql = "ALTER TABLE {$forum_webtag}_THREAD_TRACK DROP PRIMARY KEY, ";
-    $sql.= "ADD PRIMARY KEY (TID, NEW_TID)";
+    $banned_new = preg_replace("/[^a-z]/", "", md5(uniqid(mt_rand())));
+
+    while (install_get_table_conflicts(false, false, array($banned_new))) {
+        $banned_new = preg_replace("/[^a-z]/", "", md5(uniqid(mt_rand())));
+    }
+
+    $sql = "CREATE TABLE {$forum_webtag}_{$banned_new} (";
+    $sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+    $sql.= "  BANTYPE TINYINT(4) NOT NULL DEFAULT '0',";
+    $sql.= "  BANDATA VARCHAR(255) NOT NULL DEFAULT '',";
+    $sql.= "  COMMENT VARCHAR(255) NOT NULL DEFAULT '',";
+    $sql.= "  PRIMARY KEY  (ID)";
+    $sql.= ") TYPE=MYISAM";
 
     if (!$result = @db_query($sql, $db_install)) {
 
@@ -253,11 +263,38 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         return;
     }
 
-    // Performance boost for admin_user.php when looking up
-    // a user's last few IP addresses to match against other users.
+    // Incase we're running this script again we need to check
+    // to see if the existing BANNED table is in the new format.
 
-    $sql = "ALTER TABLE {$forum_webtag}_POST DROP INDEX IPADDRESS, ";
-    $sql.= "ADD INDEX IPADDRESS (IPADDRESS, FROM_UID)";
+    $sql = "INSERT INTO {$forum_webtag}_{$banned_new} (BANTYPE, BANDATA) ";
+    $sql.= "SELECT BANTYPE, BANDATA FROM {$forum_webtag}_BANNED";
+
+    if (!$result = @@db_query($sql, $db_install)) {
+
+        // If the above query failed then it's likely that we have the old
+        // BANNED table format in which case we're going to try and
+        // convert the old data to the new format.
+
+        $ban_types = array('1' => 'IPADDRESS', '2' => 'LOGON',
+                           '3' => 'NICKNAME',  '4' => 'EMAIL');
+
+        foreach($ban_types as $ban_type => $old_column_name) {
+
+            $sql = "INSERT INTO {$forum_webtag}_{$banned_new} (BANTYPE, BANDATA) ";
+            $sql.= "SELECT $ban_type, $old_column_name FROM {$forum_webtag}_BANNED ";
+            $sql.= "WHERE $old_column_name IS NOT NULL";
+
+            if (!$result = @db_query($sql, $db_install)) {
+
+                $valid = false;
+                return;
+            }
+        }
+    }
+
+    // Removed the old BANNED table
+
+    $sql = "DROP TABLE IF EXISTS {$forum_webtag}_BANNED";
 
     if (!$result = @db_query($sql, $db_install)) {
 
@@ -265,21 +302,9 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         return;
     }
 
-    // New User preference for mouseover spoiler reveal
+    // Rename our new BANNED table
 
-    $sql = "ALTER TABLE {$forum_webtag}_USER_PREFS ADD ";
-    $sql.= "USE_MOVER_SPOILER CHAR(1) NOT NULL DEFAULT 'N'";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-
-    // New User preference for light mode spoiler support
-
-    $sql = "ALTER TABLE {$forum_webtag}_USER_PREFS ADD ";
-    $sql.= "USE_LIGHT_MODE_SPOILER CHAR(1) NOT NULL DEFAULT 'N'";
+    $sql = "ALTER TABLE {$forum_webtag}_{$banned_new} RENAME {$forum_webtag}_BANNED";
 
     if (!$result = @db_query($sql, $db_install)) {
 
@@ -287,21 +312,18 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         return;
     }
 
-    // New User preference for image resize and page reflow.
+    // New table to track thread view counts. This is in a
+    // seperate table so that messages.php can update it quicker
+    // than it can by hitting THREAD which causes locks on the
+    // tables.
 
-    $sql = "ALTER TABLE {$forum_webtag}_USER_PREFS ADD ";
-    $sql.= "USE_OVERFLOW_RESIZE CHAR(1) NOT NULL DEFAULT 'Y'";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-
-    // Fixed a bug where the anon logon wasn't working.
-
-    $sql = "ALTER TABLE {$forum_webtag}_USER_PREFS CHANGE ";
-    $sql.= "ANON_LOGON ANON_LOGON CHAR(1) NOT NULL DEFAULT '0'";
+    $sql = "CREATE TABLE {$forum_webtag}_THREAD_STATS (";
+    $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+    $sql.= "  VIEWCOUNT MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+    $sql.= "  UNREAD_PID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+    $sql.= "  UNREAD_CREATED DATETIME DEFAULT NULL,";
+    $sql.= "  PRIMARY KEY  (TID)";
+    $sql.= ") TYPE=MYISAM";
 
     if (!$result = @db_query($sql, $db_install)) {
 
@@ -309,8 +331,15 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         return;
     }
 
-    $sql = "UPDATE {$forum_webtag}_USER_PREFS SET ANON_LOGON = 0 ";
-    $sql.= "WHERE ANON_LOGON = 'N'";
+    // Thread view count calculation. Not precise but the best we
+    // can manage.
+
+    $sql = "INSERT INTO {$forum_webtag}_THREAD_STATS (TID, VIEWCOUNT) ";
+    $sql.= "SELECT THREAD.TID, COUNT(USER_THREAD.UID) ";
+    $sql.= "FROM {$forum_webtag}_THREAD THREAD ";
+    $sql.= "LEFT JOIN {$forum_webtag}_USER_THREAD USER_THREAD ";
+    $sql.= "ON (USER_THREAD.TID = THREAD.TID) ";
+    $sql.= "GROUP BY THREAD.TID";
 
     if (!$result = @db_query($sql, $db_install)) {
 
@@ -318,8 +347,22 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         return;
     }
 
-    $sql = "UPDATE {$forum_webtag}_USER_PREFS SET ANON_LOGON = 1 ";
-    $sql.= "WHERE ANON_LOGON = 'Y'";
+    // Counter-change to older 0.6 builds. USER_TRACK is now
+    // a per-forum table so we can use it to store user's
+    // post counts for each forum they visit.
+
+    $sql = "CREATE TABLE {$forum_webtag}_USER_TRACK (";
+    $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+    $sql.= "  DDKEY DATETIME DEFAULT NULL,";
+    $sql.= "  LAST_POST DATETIME DEFAULT NULL,";
+    $sql.= "  LAST_SEARCH DATETIME DEFAULT NULL,";
+    $sql.= "  LAST_SEARCH_KEYWORDS TEXT DEFAULT NULL,";
+    $sql.= "  POST_COUNT MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+    $sql.= "  USER_TIME_BEST DATETIME DEFAULT NULL, ";
+    $sql.= "  USER_TIME_TOTAL DATETIME DEFAULT NULL, ";
+    $sql.= "  USER_TIME_UPDATED DATETIME DEFAULT NULL, ";
+    $sql.= "  PRIMARY KEY (UID)";
+    $sql.= ") TYPE=MYISAM";
 
     if (!$result = @db_query($sql, $db_install)) {
 
@@ -327,8 +370,9 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         return;
     }
 
-    $sql = "ALTER TABLE {$forum_webtag}_USER_PREFS ADD ";
-    $sql.= "PIC_AID CHAR(32) NOT NULL DEFAULT ''";
+    // Remove the old global USER_TRACK table if it exists,
+
+    $sql = "DROP TABLE IF EXISTS USER_TRACK";
 
     if (!$result = @db_query($sql, $db_install)) {
 
@@ -336,8 +380,16 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         return;
     }
 
-    $sql = "ALTER TABLE {$forum_webtag}_USER_PREFS ADD ";
-    $sql.= "AVATAR_URL VARCHAR(255) NOT NULL DEFAULT ''";
+    // Table to store tracking information for thread splits
+    // and merges and post moves etc.
+
+    $sql = "CREATE TABLE {$forum_webtag}_THREAD_TRACK (";
+    $sql.= "  TID MEDIUMINT(8) NOT NULL DEFAULT '0',";
+    $sql.= "  NEW_TID MEDIUMINT(8) NOT NULL DEFAULT '0',";
+    $sql.= "  CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
+    $sql.= "  TRACK_TYPE TINYINT(4) NOT NULL DEFAULT '0',";
+    $sql.= "  PRIMARY KEY  (TID, NEW_TID)";
+    $sql.= ") TYPE=MYISAM";
 
     if (!$result = @db_query($sql, $db_install)) {
 
@@ -345,27 +397,8 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         return;
     }
 
-    $sql = "ALTER TABLE {$forum_webtag}_USER_PREFS ADD ";
-    $sql.= "AVATAR_AID CHAR(32) NOT NULL DEFAULT ''";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-
-    // Index on APPROVED column to help speed up display of
-    // Post Approval Queue in Admin.
-
-    $sql = "ALTER TABLE {$forum_webtag}_POST ADD INDEX APPROVED (APPROVED)";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-
-    // New USER_POLL_VOTES table format to allow guests to vote in polls
+    // Table structure for USER_POLL_VOTES has changed to make
+    // lookups use the TID primary key and allow guests to vote.
 
     $upv_new = preg_replace("/[^a-z]/", "", md5(uniqid(mt_rand())));
 
@@ -389,10 +422,8 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         return;
     }
 
-    // Copy the existing data into the new table.
-
     $sql = "INSERT IGNORE INTO {$forum_webtag}_{$upv_new} (TID, UID, OPTION_ID, TSTAMP) ";
-    $sql.= "SELECT TID, UID, OPTION_ID, TSTAMP FROM {$forum_webtag}_USER_POLL_VOTES ";
+    $sql.= "SELECT TID, UID, OPTION_ID, TSTAMP FROM {$forum_webtag}_USER_POLL_VOTES";
 
     if (!$result = @db_query($sql, $db_install)) {
 
@@ -400,17 +431,13 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         return;
     }
 
-    // Removed the old USER_POLL_VOTES table
-
-    $sql = "DROP TABLE {$forum_webtag}_USER_POLL_VOTES";
+    $sql = "DROP TABLE IF EXISTS {$forum_webtag}_USER_POLL_VOTES";
 
     if (!$result = @db_query($sql, $db_install)) {
 
         $valid = false;
         return;
     }
-
-    // Rename our new USER_POLL_VOTES table
 
     $sql = "ALTER TABLE {$forum_webtag}_{$upv_new} RENAME {$forum_webtag}_USER_POLL_VOTES";
 
@@ -423,6 +450,62 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     // Flag to allow guest votes configurable at poll level
 
     $sql = "ALTER TABLE {$forum_webtag}_POLL ADD ALLOWGUESTS TINYINT(1) NOT NULL DEFAULT '0'";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // New User preference for mouseover spoiler reveal
+
+    $sql = "ALTER TABLE {$forum_webtag}_USER_PREFS ADD USE_MOVER_SPOILER CHAR(1) NOT NULL DEFAULT 'N'";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // New User preference for light mode spoiler support
+
+    $sql = "ALTER TABLE {$forum_webtag}_USER_PREFS ADD USE_LIGHT_MODE_SPOILER CHAR(1) NOT NULL DEFAULT 'N'";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // New User preference for image resize and page reflow.
+
+    $sql = "ALTER TABLE {$forum_webtag}_USER_PREFS ADD USE_OVERFLOW_RESIZE CHAR(1) NOT NULL DEFAULT 'Y'";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // New Profile and Avatar picture support (as attachment or URL)
+
+    $sql = "ALTER TABLE {$forum_webtag}_USER_PREFS ADD PIC_AID CHAR(32) NOT NULL DEFAULT ''";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE {$forum_webtag}_USER_PREFS ADD AVATAR_URL VARCHAR(255) NOT NULL DEFAULT ''";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE {$forum_webtag}_USER_PREFS ADD AVATAR_AID CHAR(32) NOT NULL DEFAULT ''";
 
     if (!$result = @db_query($sql, $db_install)) {
 
@@ -470,16 +553,6 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
                 return;
             }
         }
-    }
-
-    // Index on THREAD.TITLE for searches
-
-    $sql = "ALTER TABLE {$forum_webtag}_THREAD ADD INDEX TITLE (TITLE)";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
     }
 
     // New thread title prefix for folders
@@ -551,6 +624,140 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         }
 
     }else {
+
+        $valid = false;
+        return;
+    }
+
+    // User's can now give each other nicknames without them knowing about it.
+
+    $sql = "ALTER TABLE {$forum_webtag}_USER_PEER ADD PEER_NICKNAME VARCHAR(32)";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // Add columns for tracking where a post has been moved to.
+    // We leave the old data as it is for future thread
+    // and post copy feature.
+
+    $sql = "ALTER TABLE {$forum_webtag}_POST ADD MOVED_TID MEDIUMINT(8) UNSIGNED, ";
+    $sql.= "ADD MOVED_PID MEDIUMINT(8) UNSIGNED";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // Performance boost for admin_user.php when looking up
+    // a user's last few IP addresses to match against other users.
+
+    $sql = "ALTER TABLE {$forum_webtag}_POST DROP INDEX IPADDRESS, ";
+    $sql.= "ADD INDEX IPADDRESS (IPADDRESS, FROM_UID)";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // Index on APPROVED column to help speed up display of
+    // Post Approval Queue in Admin.
+
+    $sql = "ALTER TABLE {$forum_webtag}_POST ADD INDEX APPROVED (APPROVED)";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE {$forum_webtag}_POST_CONTENT ADD FULLTEXT (CONTENT)";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // Relationships have changed somewhat. Older Beehive versions kept the old
+    // relationship data but this now display incorrectly in the Edit Relationships
+    // page so we need to remove it.
+
+    $sql = "DELETE FROM {$forum_webtag}_USER_PEER WHERE RELATIONSHIP = 0";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // Data type was too small on LINKS_FOLDERS.
+
+    $sql = "ALTER TABLE {$forum_webtag}_LINKS_FOLDERS CHANGE ";
+    $sql.= "PARENT_FID PARENT_FID SMALLINT(5) UNSIGNED NULL";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // Indexes on USER_THREAD to make email notification queries run quicker
+
+    install_remove_table_keys("{$forum_webtag}_USER_THREAD");
+
+    $sql = "ALTER TABLE {$forum_webtag}_USER_THREAD ADD INDEX TID (TID)";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE {$forum_webtag}_USER_THREAD ADD INDEX LAST_READ (LAST_READ)";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // Indexes on THREAD table to prevent thread list requiring creating of
+    // temporary tables.
+
+    install_remove_table_keys("{$forum_webtag}_THREAD");
+
+    $sql = "ALTER TABLE {$forum_webtag}_THREAD ADD INDEX TITLE (TITLE)";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE {$forum_webtag}_THREAD ADD INDEX BY_UID (BY_UID)";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE {$forum_webtag}_THREAD ADD INDEX STICKY (STICKY, MODIFIED)";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE {$forum_webtag}_THREAD ADD INDEX LENGTH (LENGTH)";
+
+    if (!$result = @db_query($sql, $db_install)) {
 
         $valid = false;
         return;
@@ -675,9 +882,6 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
-// If we got this far we managed to complete the per-forum table
-// upgrades without incident so we can now do the global tables.
-
 // New USER_HISTORY table for tracking user logon, nickname
 // and email address changes
 
@@ -711,6 +915,7 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
+
 // Set all the current forums to use the database name defined
 // in the config.inc.php / install form for this installation.
 
@@ -734,10 +939,7 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
-// New User preference for mouseover spoiler reveal
-
-$sql = "ALTER TABLE USER_PREFS ADD USE_MOVER_SPOILER ";
-$sql.= "CHAR(1) NOT NULL DEFAULT 'N'";
+$sql = "ALTER TABLE USER ADD REGISTERED DATETIME DEFAULT NULL";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -745,10 +947,7 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
-// New User preference for light mode spoiler support
-
-$sql = "ALTER TABLE USER_PREFS ADD USE_LIGHT_MODE_SPOILER ";
-$sql.= "CHAR(1) NOT NULL DEFAULT 'N'";
+$sql = "ALTER TABLE USER ADD IPADDRESS VARCHAR(15) DEFAULT NULL";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -756,10 +955,7 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
-// New User preference for image resize and page reflow.
-
-$sql = "ALTER TABLE USER_PREFS ADD USE_OVERFLOW_RESIZE ";
-$sql.= "CHAR(1) NOT NULL DEFAULT 'Y'";
+$sql = "ALTER TABLE USER ADD REFERER VARCHAR(255) DEFAULT NULL";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -767,10 +963,7 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
-// Fixed a bug where the anon logon wasn't working.
-
-$sql = "ALTER TABLE USER_PREFS CHANGE  ANON_LOGON ";
-$sql.= "ANON_LOGON CHAR(1) NOT NULL DEFAULT '0'";
+$sql = "ALTER TABLE SESSIONS ADD REFERER VARCHAR(255) DEFAULT NULL";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -778,8 +971,9 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "UPDATE USER_PREFS SET ANON_LOGON = 0 ";
-$sql.= "WHERE ANON_LOGON = 'N'";
+install_remove_table_keys("USER");
+
+$sql = "ALTER TABLE USER ADD INDEX LOGON (LOGON)";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -787,8 +981,7 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "UPDATE USER_PREFS SET ANON_LOGON = 1 ";
-$sql.= "WHERE ANON_LOGON = 'Y'";
+$sql = "ALTER TABLE USER ADD INDEX NICKNAME (NICKNAME)";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -796,7 +989,24 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "ALTER TABLE USER_PREFS ADD PIC_AID CHAR(32) NOT NULL DEFAULT ''";
+// Table structure for POST_ATTACHMENT_FILES has changed.
+
+$paf_new = preg_replace("/[^a-z]/", "", md5(uniqid(mt_rand())));
+
+while (install_get_table_conflicts(false, false, array($paf_new))) {
+    $paf_new = preg_replace("/[^a-z]/", "", md5(uniqid(mt_rand())));
+}
+
+$sql = "CREATE TABLE $paf_new (";
+$sql.= "  AID VARCHAR(32) NOT NULL DEFAULT '',";
+$sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+$sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  FILENAME VARCHAR(255) NOT NULL DEFAULT '',";
+$sql.= "  MIMETYPE VARCHAR(255) NOT NULL DEFAULT '',";
+$sql.= "  HASH VARCHAR(32) NOT NULL DEFAULT '',";
+$sql.= "  DOWNLOADS MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  PRIMARY KEY (AID, ID)";
+$sql.= ") TYPE=MYISAM";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -804,7 +1014,9 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "ALTER TABLE USER_PREFS ADD AVATAR_URL VARCHAR(255) NOT NULL DEFAULT ''";
+$sql = "INSERT INTO $paf_new (AID, UID, FILENAME, MIMETYPE, HASH, DOWNLOADS) ";
+$sql.= "SELECT AID, UID, FILENAME, MIMETYPE, HASH, DOWNLOADS FROM ";
+$sql.= "POST_ATTACHMENT_FILES";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -812,7 +1024,7 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "ALTER TABLE USER_PREFS ADD AVATAR_AID CHAR(32) NOT NULL DEFAULT ''";
+$sql = "DROP TABLE IF EXISTS POST_ATTACHMENT_FILES";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -820,9 +1032,7 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
-// Referer tracking for visitors.
-
-$sql = "ALTER TABLE VISITOR_LOG ADD REFERER VARCHAR(255) DEFAULT NULL";
+$sql = "ALTER TABLE $paf_new RENAME POST_ATTACHMENT_FILES";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -830,21 +1040,18 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
-// IP Address tracking for Visitor Log
+// New table for our search engine bot data. This is designed
+// to be added to later.
 
-$sql = " ALTER TABLE VISITOR_LOG ADD IPADDRESS VARCHAR(15) DEFAULT NULL";
-
-if (!$result = @db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-// Reindex POST_ATTACHMENT_IDS table to make queries quicker
-
-install_remove_table_keys("POST_ATTACHMENT_IDS");
-
-$sql = "ALTER TABLE POST_ATTACHMENT_IDS ADD INDEX AID (AID)";
+$sql = "CREATE TABLE SEARCH_ENGINE_BOTS (";
+$sql.= "  SID MEDIUMINT(8) NOT NULL AUTO_INCREMENT,";
+$sql.= "  NAME VARCHAR(32) DEFAULT NULL,";
+$sql.= "  URL VARCHAR(255) DEFAULT NULL,";
+$sql.= "  AGENT_MATCH VARCHAR(32) DEFAULT NULL,";
+$sql.= "  PRIMARY KEY  (SID),";
+$sql.= "  KEY NAME (NAME),";
+$sql.= "  KEY AGENT_MATCH (AGENT_MATCH)";
+$sql.= ") TYPE=MYISAM";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -852,9 +1059,57 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
-// New more reliable functionality for PM sent items.
+// A not too comprehensive list of search engine bots and patterns
+// to match their USER_AGENT strings as taken from the appropriate
+// wikipedia page.
 
-$sql = "ALTER TABLE PM ADD SMID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0'";
+$bots_array = array('ia_archiver'      => array('NAME' => 'Alexa', 'URL' => 'http://www.alexa.com/'),
+                    'Ask Jeeves/Teoma' => array('NAME' => 'Ask.com', 'URL' => 'http://www.ask.com/'),
+                    'Baiduspider'      => array('NAME' => 'Baidu', 'URL' => 'http://www.baidu.com/'),
+                    'GameSpyHTTP'      => array('NAME' => 'GameSpy', 'URL' => 'http://www.gamespy.com/'),
+                    'Gigabot'          => array('NAME' => 'Gigablast', 'URL' => 'http://www.gigablast.com/'),
+                    'Googlebot'        => array('NAME' => 'Google', 'URL' => 'http://www.google.com/'),
+                    'Googlebot-Image'  => array('NAME' => 'Google Images', 'URL' => 'http://images.google.com/'),
+                    'Slurp/si'         => array('NAME' => 'Inktomi', 'URL' => 'http://searchmarketing.yahoo.com/'),
+                    'msnbot'           => array('NAME' => 'MSN Search', 'URL' => 'http://search.msn.com/'),
+                    'Scooter'          => array('NAME' => 'Altavista', 'URL' => 'http://www.altavista.com/'),
+                    'Yahoo! Slurp;'    => array('NAME' => 'Yahoo!', 'URL' => 'http://www.yahoo.com/'),
+                    'Yahoo-MMCrawler'  => array('NAME' => 'Yahoo!', 'URL' => 'http://www.yahoo.com/'));
+
+foreach ($bots_array as $agent => $details) {
+
+    $agent = db_escape_string($agent);
+    $name  = db_escape_string($details['NAME']);
+    $url   = db_escape_string($details['URL']);
+
+    $sql = "INSERT INTO SEARCH_ENGINE_BOTS (NAME, URL, AGENT_MATCH) ";
+    $sql.= "VALUES ('$name', '$url', '%$agent%')";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+}
+
+// Beehive is back to use MySQL FULLTEXT searching (hooray) but we
+// speed up the search by piling the results found into a table
+// and letting the user browse from there.
+
+$sql = "CREATE TABLE SEARCH_RESULTS (";
+$sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  BY_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  FROM_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  TO_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
+$sql.= "  LENGTH MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  RELEVANCE FLOAT UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  PRIMARY KEY  (UID,FORUM,TID,PID)";
+$sql.= ") TYPE=MYISAM";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -882,11 +1137,117 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
-// Reindex PM_ATTACHMENT_IDS table to make queries quicker
+// PM Export options - PM_EXPORT_TYPE stores export file type (HTML, XML, Plaintext)
 
-install_remove_table_keys("PM_ATTACHMENT_IDS");
+$sql = "ALTER TABLE USER_PREFS ADD PM_EXPORT_TYPE CHAR(1) DEFAULT '0' NOT NULL AFTER PM_AUTO_PRUNE";
 
-$sql = "ALTER TABLE PM_ATTACHMENT_IDS ADD INDEX AID (AID)";
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// PM Export options - PM_EXPORT_FILE stores file method (single file, multiple files)
+
+$sql = "ALTER TABLE USER_PREFS ADD PM_EXPORT_FILE CHAR(1) DEFAULT '0' NOT NULL AFTER PM_EXPORT_TYPE";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// PM Export options - PM_EXPORT_ATTACHMENTS sets exporting of attachments
+
+$sql = "ALTER TABLE USER_PREFS ADD PM_EXPORT_ATTACHMENTS CHAR(1) DEFAULT 'N' NOT NULL AFTER PM_EXPORT_FILE";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// PM Export options - PM_EXPORT_STYLE sets exporting of style sheet.
+
+$sql = "ALTER TABLE USER_PREFS ADD PM_EXPORT_STYLE CHAR(1) DEFAULT 'N' NOT NULL AFTER PM_EXPORT_ATTACHMENTS";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// PM Export options - PM_EXPORT_WORDFILTER sets application of word filter.
+
+$sql = "ALTER TABLE USER_PREFS ADD PM_EXPORT_WORDFILTER CHAR(1) DEFAULT 'N' NOT NULL AFTER PM_EXPORT_STYLE";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// New User preference for mouseover spoiler reveal
+
+$sql = "ALTER TABLE USER_PREFS ADD USE_MOVER_SPOILER CHAR(1) NOT NULL DEFAULT 'N'";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// New User preference for light mode spoiler support
+
+$sql = "ALTER TABLE USER_PREFS ADD USE_LIGHT_MODE_SPOILER CHAR(1) NOT NULL DEFAULT 'N'";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// New User preference for image resize and page reflow.
+
+$sql = "ALTER TABLE USER_PREFS ADD USE_OVERFLOW_RESIZE CHAR(1) NOT NULL DEFAULT 'Y'";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// New Profile and Avatar picture support (as attachment or URL)
+
+$sql = "ALTER TABLE USER_PREFS ADD PIC_AID CHAR(32) NOT NULL DEFAULT ''";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE USER_PREFS ADD AVATAR_URL VARCHAR(255) NOT NULL DEFAULT ''";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE USER_PREFS ADD AVATAR_AID CHAR(32) NOT NULL DEFAULT ''";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// Reindex POST_ATTACHMENT_IDS table to make queries quicker
+
+install_remove_table_keys("POST_ATTACHMENT_IDS");
+
+$sql = "ALTER TABLE POST_ATTACHMENT_IDS ADD INDEX AID (AID)";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -900,6 +1261,16 @@ if (!$result = @db_query($sql, $db_install)) {
 install_remove_table_keys("PM");
 
 $sql = "ALTER TABLE PM ADD RECIPIENTS VARCHAR(255) NOT NULL DEFAULT '' AFTER SUBJECT";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// New more reliable functionality for PM sent items.
+
+$sql = "ALTER TABLE PM ADD SMID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0'";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -969,57 +1340,6 @@ if ($result = @db_query($sql, $db_install)) {
     }
 
 }else {
-
-    $valid = false;
-    return;
-}
-
-// Indexes on USER.LOGON and USER.NICKNAME for searches.
-
-install_remove_table_keys("USER");
-
-$sql = "ALTER TABLE USER ADD INDEX LOGON (LOGON)";
-
-if (!$result = @db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "ALTER TABLE USER ADD INDEX NICKNAME (NICKNAME)";
-
-if (!$result = @db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-// Indexes on SEB.NAME and SEB.AGENT_MATCH for searches.
-
-install_remove_table_keys("SEARCH_ENGINE_BOTS");
-
-$sql = "ALTER TABLE SEARCH_ENGINE_BOTS ADD INDEX NAME (NAME)";
-
-if (!$result = @db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "ALTER TABLE SEARCH_ENGINE_BOTS ADD INDEX AGENT_MATCH (AGENT_MATCH)";
-
-if (!$result = @db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-// New column to allow sorting results by thread length.
-
-$sql = "ALTER TABLE SEARCH_RESULTS ADD LENGTH MEDIUMINT(8) ";
-$sql.= "UNSIGNED NOT NULL AFTER CREATED";
-
-if (!$result = @db_query($sql, $db_install)) {
 
     $valid = false;
     return;
@@ -1171,8 +1491,8 @@ if (!$result = @db_query($sql, $db_install)) {
 
 // Copy the data from the old VISITOR_LOG into our new table.
 
-$sql = "INSERT INTO $visitor_log_new (UID, FORUM, LAST_LOGON, IPADDRESS, REFERER, SID) ";
-$sql.= "SELECT UID, FORUM, LAST_LOGON, IPADDRESS, REFERER, SID FROM VISITOR_LOG ";
+$sql = "INSERT INTO $visitor_log_new (UID, FORUM, LAST_LOGON) ";
+$sql.= "SELECT UID, FORUM, LAST_LOGON FROM VISITOR_LOG ";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -1198,6 +1518,82 @@ if (!$result = @db_query($sql, $db_install)) {
 
     $valid = false;
     return;
+}
+
+// The dictionary has been optimised a bit by making sure the
+// data held in the table is lower-case.
+
+$sql = "SHOW TABLES LIKE 'DICTIONARY'";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// Dictionary has been updated to be less resource intensive
+// and more precise by moving a lot of the processing to PHP
+// and away from MySQL.
+
+if (db_num_rows($result) > 0) {
+
+    // Generate a unique random table name and keep
+    // doing so until we have one that doesn't exist.
+
+    $dictionary_new = preg_replace("/[^a-z]/", "", md5(uniqid(mt_rand())));
+
+    while (install_get_table_conflicts(false, false, array($dictionary_new))) {
+        $dictionary_new = preg_replace("/[^a-z]/", "", md5(uniqid(mt_rand())));
+    }
+
+    // Create our new table.
+
+    $sql = "CREATE TABLE $dictionary_new (";
+    $sql.= "  WORD VARCHAR(64) NOT NULL DEFAULT '',";
+    $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+    $sql.= "  SOUND VARCHAR(64) NOT NULL DEFAULT '',";
+    $sql.= "  PRIMARY KEY  (WORD, UID),";
+    $sql.= "  KEY SOUND (SOUND)";
+    $sql.= ") TYPE=MYISAM";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // Move the data from the old DICTIONARY table
+    // into our new one and remove duplicates and
+    // lower-case and trim the words and sounds.
+
+    $sql = "INSERT IGNORE INTO $dictionary_new (WORD, SOUND, UID) ";
+    $sql.= "SELECT LOWER(TRIM(WORD)), TRIM(SOUND), UID FROM DICTIONARY";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // Remove the old table.
+
+    $sql = "DROP TABLE IF EXISTS DICTIONARY";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // Rename our new table to DICTIONARY.
+
+    $sql = "ALTER TABLE $dictionary_new RENAME DICTIONARY";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
 }
 
 ?>

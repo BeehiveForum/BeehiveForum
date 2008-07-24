@@ -1,5 +1,38 @@
 Beehive Forum Release Notes
 
+What's new in 0.8.4 (Released 25th July 2008)
+===================
+
+- Beehive Forum 0.8.4 is primarily intended to fix bugs
+  found since the release of Beehive Forum 0.8.3. New
+  features for this release include Admin Forum Stats,
+  Start Page CSS style sheet uploader and Folder Subscriptions.
+
+- For comprehensive list of changes please see the change log.
+
+What's new in 0.8.3 (Released 16th June 2008)
+===================
+
+- Beehive Forum 0.8.3 is primarily intended to fix bugs
+  found since the release of Beehive Forum 0.8.2. New
+  features for this release include Quick Reply, User
+  Group display in profile pop-up and reduced memory
+  foot print for user session data.
+
+- For comprehensive list of changes please see the change log.
+
+What's new in 0.8.2 (Released 19th January 2008)
+=================
+
+- Beehive Forum 0.8.2 fixes several bugs found since the
+  release of Beehive Forum 0.8.1. Upgrading to 
+  Beehive Forum 0.8.2 is possible from 0.6.x, 0.7.x 
+  and 0.8.x and should be performed using the installer
+  as normal.
+
+- For detailed changes please see the change log
+
+
 What's new in 0.8 (Released 4th November 2007)
 =================
 

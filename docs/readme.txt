@@ -2,7 +2,7 @@ Beehive Forum Readme
 
 http://www.beehiveforum.net/
 
-Version 0.8 / 28th November 2007
+Version 0.8.4 / 25th July 2008
 
 A list of changes since previous Beehive Forum versions can be found
 in release.txt.

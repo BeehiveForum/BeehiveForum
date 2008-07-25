@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.244 2008-07-25 14:52:43 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.245 2008-07-25 20:30:29 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -92,7 +92,9 @@ function pm_mark_as_read($mid)
     $sql = "UPDATE LOW_PRIORITY PM SET TYPE = '$pm_read', NOTIFIED = 1 ";
     $sql.= "WHERE MID = '$mid' AND TO_UID = '$uid'";
 
-    if (!$result = db_query($sql, $db_pm_mark_as_read)) return false;
+    if (!db_query($sql, $db_pm_mark_as_read)) return false;
+    
+    return true;
 }
 
 /**
@@ -186,7 +188,7 @@ function pm_get_inbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
 
     if (db_num_rows($result) > 0) {
 
-        while ($pm_data = db_fetch_array($result, DB_RESULT_ASSOC)) {
+        while (($pm_data = db_fetch_array($result, DB_RESULT_ASSOC))) {
 
             if (isset($pm_data['FLOGON']) && isset($pm_data['PFNICK'])) {
                 if (!is_null($pm_data['PFNICK']) && strlen($pm_data['PFNICK']) > 0) {
@@ -281,7 +283,7 @@ function pm_get_outbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
 
     if (db_num_rows($result) > 0) {
 
-        while ($pm_data = db_fetch_array($result, DB_RESULT_ASSOC)) {
+        while (($pm_data = db_fetch_array($result, DB_RESULT_ASSOC))) {
 
             if (isset($pm_data['FLOGON']) && isset($pm_data['PFNICK'])) {
                 if (!is_null($pm_data['PFNICK']) && strlen($pm_data['PFNICK']) > 0) {
@@ -376,7 +378,7 @@ function pm_get_sent($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
 
     if (db_num_rows($result) > 0) {
 
-        while ($pm_data = db_fetch_array($result, DB_RESULT_ASSOC)) {
+        while (($pm_data = db_fetch_array($result, DB_RESULT_ASSOC))) {
 
             if (isset($pm_data['FLOGON']) && isset($pm_data['PFNICK'])) {
                 if (!is_null($pm_data['PFNICK']) && strlen($pm_data['PFNICK']) > 0) {
@@ -473,7 +475,7 @@ function pm_get_saved_items($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = 
 
     if (db_num_rows($result) > 0) {
 
-        while ($pm_data = db_fetch_array($result, DB_RESULT_ASSOC)) {
+        while (($pm_data = db_fetch_array($result, DB_RESULT_ASSOC))) {
 
             if (isset($pm_data['FLOGON']) && isset($pm_data['PFNICK'])) {
                 if (!is_null($pm_data['PFNICK']) && strlen($pm_data['PFNICK']) > 0) {
@@ -568,7 +570,7 @@ function pm_get_drafts($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
 
     if (db_num_rows($result) > 0) {
 
-        while ($pm_data = db_fetch_array($result, DB_RESULT_ASSOC)) {
+        while (($pm_data = db_fetch_array($result, DB_RESULT_ASSOC))) {
 
             if (isset($pm_data['FLOGON']) && isset($pm_data['PFNICK'])) {
                 if (!is_null($pm_data['PFNICK']) && strlen($pm_data['PFNICK']) > 0) {
@@ -621,7 +623,7 @@ function pm_search_execute($search_string, &$error)
 
     $sql = "DELETE QUICK FROM PM_SEARCH_RESULTS WHERE UID = '$uid'";
 
-    if (!$result = db_query($sql, $db_pm_search_execute)) return false;
+    if (!db_query($sql, $db_pm_search_execute)) return false;
 
     if (!check_search_frequency() && !defined('BEEHIVE_INSTALL_NOWARN')) {
 
@@ -662,21 +664,16 @@ function pm_search_execute($search_string, &$error)
         $sql.= "OR (MATCH(PM.SUBJECT) AGAINST('$search_string_checked' IN BOOLEAN MODE))) ";
         $sql.= "ORDER BY CREATED LIMIT $limit";
 
-        if (!$result = db_query($sql, $db_pm_search_execute)) return false;
+        if (!db_query($sql, $db_pm_search_execute)) return false;
 
         if (db_affected_rows($db_pm_search_execute) > 0) return true;
 
         $error = SEARCH_NO_MATCHES;
 
         return false;
-
-    }else {
-
-        $error = SEARCH_NO_KEYWORDS;
-        return false;
     }
 
-    $error = SEARCH_NO_MATCHES;
+    $error = SEARCH_NO_KEYWORDS;
     return false;
 }
 
@@ -731,7 +728,7 @@ function pm_fetch_search_results ($sort_by = 'CREATED', $sort_dir = 'DESC', $off
 
     if (db_num_rows($result) > 0) {
 
-        while ($pm_data = db_fetch_array($result, DB_RESULT_ASSOC)) {
+        while (($pm_data = db_fetch_array($result, DB_RESULT_ASSOC))) {
 
             if (isset($pm_data['FLOGON']) && isset($pm_data['PFNICK'])) {
                 if (!is_null($pm_data['PFNICK']) && strlen($pm_data['PFNICK']) > 0) {
@@ -805,7 +802,7 @@ function pm_get_folder_message_counts()
 
     if (!$result = db_query($sql, $db_pm_get_folder_message_counts)) return false;
 
-    while ($pm_data_array = db_fetch_array($result)) {
+    while (($pm_data_array = db_fetch_array($result))) {
 
         if ($pm_data_array['TYPE'] & PM_INBOX_ITEMS) {
 
@@ -951,7 +948,7 @@ function pm_user_get_friends()
 
     if (db_num_rows($result) > 0) {
 
-        while ($user_data = db_fetch_array($result)) {
+        while (($user_data = db_fetch_array($result))) {
 
             if (isset($user_data['LOGON'])) {
 
@@ -1018,8 +1015,6 @@ function pm_get_subject($mid, $to_uid)
 function pm_message_get($mid)
 {
     if (!$db_pm_message_get = db_connect()) return false;
-
-    $lang = load_language_file();
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
@@ -1114,10 +1109,13 @@ function pm_get_content($mid)
 function pm_display($pm_message_array, $folder, $preview = false, $export_html = false)
 {
     $lang = load_language_file();
+    
+    $webtag_search = false;
+    
+    $attachments_array = array();
+    $image_attachments_array = array();
 
     $webtag = get_webtag($webtag_search);
-
-    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     echo "<div align=\"center\">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
@@ -1257,7 +1255,7 @@ function pm_display($pm_message_array, $folder, $preview = false, $export_html =
 
                 echo "                              <p><b>{$lang['imageattachments']}:</b><br />\n";
 
-                foreach($image_attachments_array as $key => $attachment) {
+                foreach ($image_attachments_array as $attachment) {
 
                     echo "                              ", attachment_make_link($attachment, true, false, $export_html), "\n";
                 }
@@ -1450,7 +1448,7 @@ function pm_send_message($to_uid, $from_uid, $subject, $content, $aid)
     $sql = "INSERT INTO PM (TYPE, TO_UID, FROM_UID, SUBJECT, RECIPIENTS, CREATED, NOTIFIED) ";
     $sql.= "VALUES ('$pm_outbox', '$to_uid', '$from_uid', '$subject_escaped', '', NOW(), 0)";
 
-    if (($result = db_query($sql, $db_pm_send_message))) {
+    if (db_query($sql, $db_pm_send_message)) {
 
         $new_mid = db_insert_id($db_pm_send_message);
 
@@ -1459,7 +1457,7 @@ function pm_send_message($to_uid, $from_uid, $subject, $content, $aid)
         $sql = "INSERT INTO PM_CONTENT (MID, CONTENT) ";
         $sql.= "VALUES ('$new_mid', '$content_escaped')";
 
-        if (!$result = db_query($sql, $db_pm_send_message)) return false;
+        if (!db_query($sql, $db_pm_send_message)) return false;
 
         // Check to see if we should be adding a 'Sent Item'
 
@@ -1518,7 +1516,7 @@ function pm_add_sent_item($sent_item_mid, $to_uid, $from_uid, $subject, $content
     $sql = "INSERT INTO PM (TYPE, TO_UID, FROM_UID, SUBJECT, RECIPIENTS, CREATED, NOTIFIED, SMID) ";
     $sql.= "VALUES ('$pm_sent', '$to_uid', '$from_uid', '$subject_escaped', '', NOW(), 1, '$sent_item_mid')";
 
-    if (($result = db_query($sql, $db_pm_add_sent_item))) {
+    if (db_query($sql, $db_pm_add_sent_item)) {
 
         $new_mid = db_insert_id($db_pm_add_sent_item);
 
@@ -1527,7 +1525,7 @@ function pm_add_sent_item($sent_item_mid, $to_uid, $from_uid, $subject, $content
         $sql = "INSERT INTO PM_CONTENT (MID, CONTENT) ";
         $sql.= "VALUES ('$new_mid', '$content_escaped')";
 
-        if (!$result = db_query($sql, $db_pm_add_sent_item)) return false;
+        if (!db_query($sql, $db_pm_add_sent_item)) return false;
 
         // Save the attachment ID.
 
@@ -1574,7 +1572,7 @@ function pm_save_message($subject, $content, $to_uid, $recipient_list)
         $sql.= "CREATED, NOTIFIED) VALUES ('$pm_saved_draft', '$to_uid', '$uid', '$subject', ";
         $sql.= "'$recipient_list', NOW(), 0)";
 
-        if (($result = db_query($sql, $db_pm_save_message))) {
+        if (db_query($sql, $db_pm_save_message)) {
 
             $new_mid = db_insert_id($db_pm_save_message);
 
@@ -1583,7 +1581,7 @@ function pm_save_message($subject, $content, $to_uid, $recipient_list)
             $sql = "INSERT INTO PM_CONTENT (MID, CONTENT) ";
             $sql.= "VALUES ('$new_mid', '$content')";
 
-            if (!$result = db_query($sql, $db_pm_save_message)) return false;
+            if (!db_query($sql, $db_pm_save_message)) return false;
 
             return  $new_mid;
         }
@@ -1622,12 +1620,12 @@ function pm_update_saved_message($mid, $subject, $content, $to_uid, $recipient_l
     $sql = "UPDATE LOW_PRIORITY PM SET SUBJECT = '$subject', TO_UID = '$to_uid', ";
     $sql.= "RECIPIENTS = '$recipient_list' WHERE MID = '$mid'";
 
-    if (!$result_subject = db_query($sql, $db_pm_edit_messages)) return false;
+    if (!db_query($sql, $db_pm_edit_messages)) return false;
 
     // Update the content
 
     $sql = "UPDATE LOW_PRIORITY PM_CONTENT SET CONTENT = '$content' WHERE MID = '$mid'";
-    if (!$result_content = db_query($sql, $db_pm_edit_messages)) return false;
+    if (!db_query($sql, $db_pm_edit_messages)) return false;
 
     return true;
 }
@@ -1655,12 +1653,12 @@ function pm_edit_message($mid, $subject, $content)
     // Update the subject text
 
     $sql = "UPDATE LOW_PRIORITY PM SET SUBJECT = '$subject_escaped' WHERE MID = '$mid'";
-    if (!$result_subject = db_query($sql, $db_pm_edit_messages)) return false;
+    if (!db_query($sql, $db_pm_edit_messages)) return false;
 
     // Update the content
 
     $sql = "UPDATE LOW_PRIORITY PM_CONTENT SET CONTENT = '$content_escaped' WHERE MID = '$mid'";
-    if (!$result_content = db_query($sql, $db_pm_edit_messages)) return false;
+    if (!db_query($sql, $db_pm_edit_messages)) return false;
 
     return pm_update_sent_item($mid, $subject, $content);
 }
@@ -1697,12 +1695,12 @@ function pm_update_sent_item($mid, $subject, $content)
     // Update the sent items subject text
 
     $sql = "UPDATE LOW_PRIORITY PM SET SUBJECT = '$subject' WHERE MID = '$sent_item_mid'";
-    if (!$result_subject = db_query($sql, $db_pm_edit_messages)) return false;
+    if (!db_query($sql, $db_pm_edit_messages)) return false;
 
     // Update the sent item content
 
     $sql = "UPDATE LOW_PRIORITY PM_CONTENT SET CONTENT = '$content' WHERE MID = '$sent_item_mid'";
-    if (!$result_content = db_query($sql, $db_pm_edit_messages)) return false;
+    if (!db_query($sql, $db_pm_edit_messages)) return false;
 
     return true;
 }
@@ -1721,8 +1719,6 @@ function pm_delete_message($mid)
     if (!$db_delete_pm = db_connect()) return false;
 
     if (!is_numeric($mid)) return false;
-
-    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     // Get the PM data incase the sendee hasn't got a copy of it
     // in his Sent Items folder.
@@ -1785,7 +1781,7 @@ function pm_archive_message($mid)
     $sql.= "WHERE MID = '$mid' AND (TYPE & $pm_inbox_items > 0) ";
     $sql.= "AND TO_UID = '$uid'";
 
-    if (!$result = db_query($sql, $db_pm_archive_message)) return false;
+    if (!db_query($sql, $db_pm_archive_message)) return false;
 
     // Archive any PM that are in the User's Sent Items
 
@@ -1793,7 +1789,7 @@ function pm_archive_message($mid)
     $sql.= "WHERE MID = '$mid' AND (TYPE & $pm_sent_items > 0) ";
     $sql.= "AND SMID = 0 AND FROM_UID = '$uid'";
 
-    if (!$result = db_query($sql, $db_pm_archive_message)) return false;
+    if (!db_query($sql, $db_pm_archive_message)) return false;
 
     return true;
 }
@@ -1829,7 +1825,7 @@ function pm_get_new_messages($limit)
 
         $pm_new_message_array = array();
 
-        while ($pm_data = db_fetch_array($result)) {
+        while (($pm_data = db_fetch_array($result))) {
 
             $pm_new_message_array[$pm_data['MID']] = $pm_data;
         }
@@ -2066,7 +2062,7 @@ function pm_user_prune_folders($uid = false)
         $sql.= "OR ((TYPE & $pm_sent_items > 0) AND FROM_UID = '$uid')) ";
         $sql.= "AND CREATED < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $pm_prune_length)";
 
-        if (!$result = db_query($sql, $db_pm_prune_folders)) return false;
+        if (!db_query($sql, $db_pm_prune_folders)) return false;
     }
 
     return true;
@@ -2097,7 +2093,7 @@ function pm_system_prune_folders()
         $sql = "DELETE LOW_PRIORITY FROM PM WHERE ((TYPE & $pm_read > 0) OR (TYPE & $pm_sent_items > 0)) ";
         $sql.= "AND CREATED < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $pm_prune_length)";
 
-        if (!$result = db_query($sql, $db_pm_prune_folders)) return false;
+        if (!db_query($sql, $db_pm_prune_folders)) return false;
 
         return true;
     }
@@ -2154,10 +2150,12 @@ function pms_have_attachments(&$pm_array, $mid_array)
 
     if (!$result = db_query($sql, $db_thread_has_attachments)) return false;
 
-    while ($pm_attachment_data = db_fetch_array($result)) {
+    while (($pm_attachment_data = db_fetch_array($result))) {
 
         $pm_array[$pm_attachment_data['MID']]['AID'] = $pm_attachment_data['AID'];
     }
+    
+    return true;
 }
 
 /**
@@ -2269,8 +2267,6 @@ function pm_export_html_top($mid)
 
 function pm_export_html_bottom()
 {
-    $lang = load_language_file();
-
     $html = "</body>\n";
     $html.= "</html>\n";
 
@@ -2315,7 +2311,6 @@ function pm_export($folder)
     }
 
     $pm_export_type = bh_session_get_value('PM_EXPORT_TYPE');
-    $pm_export_attachments = bh_session_get_value('PM_EXPORT_ATTACHMENTS');
     $pm_export_style = bh_session_get_value('PM_EXPORT_STYLE');
 
     $zip_file = new zip_file();
@@ -2388,8 +2383,10 @@ function pm_export_html($folder, &$zip_file)
 
             $pm_message['FOLDER'] = $folder;
             $pm_message['CONTENT'] = pm_get_content($pm_message['MID']);
-
-            $pm_message = array_map('pm_export_word_filter_apply', $pm_message);
+            
+            if ($pm_export_wordfilter == 'Y') {
+            	$pm_message = array_map('pm_export_word_filter_apply', $pm_message);
+            }            
 
             $pm_display.= pm_display_html_export($pm_message, $folder);
 
@@ -2406,7 +2403,7 @@ function pm_export_html($folder, &$zip_file)
                 $pm_display = pm_export_html_top(false);
             }
 
-            if (isset($pm_message['AID'])) {
+            if (isset($pm_message['AID']) && $pm_export_attachments == 'Y') {
                 pm_export_attachments($pm_message['AID'], $pm_message['FROM_UID'], $zip_file);
             }
         }
@@ -2458,7 +2455,9 @@ function pm_export_xml($folder, &$zip_file)
             $pm_message['FOLDER'] = $folder;
             $pm_message['CONTENT'] = pm_get_content($pm_message['MID']);
 
-            $pm_message = array_map('pm_export_word_filter_apply', $pm_message);
+            if ($pm_export_wordfilter == 'Y') {
+            	$pm_message = array_map('pm_export_word_filter_apply', $pm_message);
+            }
 
             $pm_display.= "      <message>\n";
 
@@ -2485,7 +2484,7 @@ function pm_export_xml($folder, &$zip_file)
                 $pm_display.= "    <messages>\n";
             }
 
-            if (isset($pm_message['AID'])) {
+            if (isset($pm_message['AID']) && $pm_export_attachments == 'Y') {
                 pm_export_attachments($pm_message['AID'], $pm_message['FROM_UID'], $zip_file);
             }
         }
@@ -2533,7 +2532,9 @@ function pm_export_plaintext($folder, &$zip_file)
             $pm_message['FOLDER'] = $folder;
             $pm_message['CONTENT'] = pm_get_content($pm_message['MID']);
 
-            $pm_message = array_map('pm_export_word_filter_apply', $pm_message);
+            if ($pm_export_wordfilter == 'Y') {
+            	$pm_message = array_map('pm_export_word_filter_apply', $pm_message);
+            }
 
             foreach($pm_message as $key => $value) {
 
@@ -2550,7 +2551,7 @@ function pm_export_plaintext($folder, &$zip_file)
                 $pm_display = "";
             }
 
-            if (isset($pm_message['AID'])) {
+            if (isset($pm_message['AID']) && $pm_export_attachments == 'Y') {
                 pm_export_attachments($pm_message['AID'], $pm_message['FROM_UID'], $zip_file);
             }
         }
@@ -2601,6 +2602,9 @@ function pm_export_attachments($aid, $from_uid, &$zip_file)
     if (!is_object($zip_file)) return false;
 
     $attachments_added_success = false;
+    
+    $attachments_array = array();
+    $image_attachments_array = array();
 
     if (($attachment_dir = attachments_check_dir())) {
 
@@ -2621,7 +2625,7 @@ function pm_export_attachments($aid, $from_uid, &$zip_file)
 
             if (is_array($image_attachments_array) && sizeof($image_attachments_array) > 0) {
 
-                foreach($image_attachments_array as $key => $attachment) {
+                foreach ($image_attachments_array as $attachment) {
 
                     if (@file_exists("$attachment_dir/{$attachment['hash']}")) {
 

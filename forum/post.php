@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.347 2008-07-25 14:52:48 decoyduck Exp $ */
+/* $Id: post.php,v 1.348 2008-07-25 16:47:28 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -303,6 +303,9 @@ if (isset($_POST['t_post_html'])) {
         $high_interest = "N";
     }
 }
+
+$t_sig = "";
+$t_sig_html = 'N';
 
 if (isset($_POST['t_sig_html'])) {
 
@@ -951,7 +954,7 @@ if ($new_thread) {
     echo "                        <td align=\"left\"><h2>{$lang['folder']}</h2></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">$folder_dropdown</h2></td>\n";
+    echo "                        <td align=\"left\">$folder_dropdown</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\"><h2>{$lang['threadtitle']}</h2></td>\n";
@@ -1062,10 +1065,10 @@ if (strlen($emot_prev) > 0) {
 
     echo "                            </tr>\n";
     echo "                          </table>\n";
+    echo "                        </td>\n";
+    echo "                      </tr>\n";    
 }
 
-echo "                        </td>\n";
-echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
 echo "                  <td align=\"left\" valign=\"top\" width=\"500\">\n";

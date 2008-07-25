@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_post_approve.php,v 1.61 2008-07-25 14:52:48 decoyduck Exp $ */
+/* $Id: admin_post_approve.php,v 1.62 2008-07-25 16:47:28 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -119,6 +119,28 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
 $start = floor($page - 1) * 10;
 if ($start < 0) $start = 0;
 
+// Are we returning somewhere?
+
+if (isset($_POST['ret']) && strlen(trim(_stripslashes($_POST['ret']))) > 0) {
+    $ret = trim(_stripslashes($_POST['ret']));
+}elseif (isset($_GET['ret']) && strlen(trim(_stripslashes($_GET['ret']))) > 0) {
+    $ret = trim(_stripslashes($_GET['ret']));
+}else {
+    $ret = "admin_post_approve.php?webtag=$webtag";
+}
+
+// validate the return to page
+
+if (isset($ret) && strlen(trim($ret)) > 0) {
+
+    $available_files = array('admin_post_approve.php', 'messages.php');
+    $available_files_preg = implode("|^", array_map('preg_quote_callback', $available_files));
+
+    if (preg_match("/^$available_files_preg/", basename($ret)) < 1) {
+        $ret = "admin_post_approve.php?webtag=$webtag";
+    }
+}
+
 // Check POST and GET for message ID and check it is valid.
 
 if (isset($_POST['msg'])) {
@@ -147,28 +169,6 @@ if (isset($_POST['msg'])) {
         html_error_msg($lang['nomessagespecifiedforedit'], 'admin_post_approve.php', 'post', array('cancel' => $lang['cancel']), array('ret' => $ret), '_self', 'center');
         html_draw_bottom();
         exit;
-    }
-}
-
-// Are we returning somewhere?
-
-if (isset($_POST['ret']) && strlen(trim(_stripslashes($_POST['ret']))) > 0) {
-    $ret = trim(_stripslashes($_POST['ret']));
-}elseif (isset($_GET['ret']) && strlen(trim(_stripslashes($_GET['ret']))) > 0) {
-    $ret = trim(_stripslashes($_GET['ret']));
-}else {
-    $ret = "admin_post_approve.php?webtag=$webtag";
-}
-
-// validate the return to page
-
-if (isset($ret) && strlen(trim($ret)) > 0) {
-
-    $available_files = array('admin_post_approve.php', 'messages.php');
-    $available_files_preg = implode("|^", array_map('preg_quote_callback', $available_files));
-
-    if (preg_match("/^$available_files_preg/", basename($ret)) < 1) {
-        $ret = "admin_post_approve.php?webtag=$webtag";
     }
 }
 

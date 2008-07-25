@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.139 2008-07-25 14:52:42 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.140 2008-07-25 16:47:28 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -515,19 +515,13 @@ function thread_delete_by_user($tid, $uid)
     if (!is_numeric($tid)) return false;
     if (!is_numeric($uid)) return false;
 
-    $sql = "SELECT TID, PID FROM {$table_data['PREFIX']}POST ";
-    $sql.= "WHERE FROM_UID = '$uid' AND TID = '$tid'";
+    $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}POST POST, ";
+    $sql.= "{$table_data['PREFIX']}POST_CONTENT POST_CONTENT ";
+    $sql.= "SET POST_CONTENT.CONTENT = NULL WHERE POST_CONTENT.TID = '$tid' ";
+    $sql.= "AND POST.TID = POST_CONTENT.TID AND POST.PID = POST_CONTENT.PID ";
+    $sql.= "AND POST.FROM_UID = '$uid'";
 
-    if (!$result = db_query($sql, $db_thread_delete_by_user)) return false;
-
-    while ($thread_data = db_fetch_array($result)) {
-
-        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}POST_CONTENT ";
-        $sql.= "SET CONTENT = NULL WHERE TID = '{$thread_data['TID']}' ";
-        $sql.= "AND PID = '{$thread_data['PID']}'";
-
-        if (!$result = db_query($sql, $db_thread_delete_by_user)) return false;
-    }
+    if (!db_query($sql, $db_thread_delete_by_user)) return false;
 
     return true;
 }

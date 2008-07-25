@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.107 2008-07-25 14:52:48 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.108 2008-07-25 16:47:28 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -170,6 +170,10 @@ if (!$thread_data = thread_get($tid, true)) {
     html_draw_bottom();
     exit;
 }
+
+// Variable to hold any error messages from merge_thread / split_thread
+
+$error_str = "";
 
 // Array to hold error messages
 
@@ -480,22 +484,21 @@ if (isset($_POST['save'])) {
         }
 
         if (isset($_POST['t_to_uid_in_thread']) && is_numeric($_POST['t_to_uid_in_thread']) && isset($_POST['deluser_con']) && $_POST['deluser_con'] == "Y") {
+       	
+        	$del_user_uid = $_POST['t_to_uid_in_thread'];
+        	
+            if (($user_logon = user_get_logon($del_user_uid))) {
 
-            if ($del_uid = $_POST['t_to_uid_in_thread']) {
+                if (thread_delete_by_user($tid, $del_user_uid)) {
 
-                if (($user_logon = user_get_logon($del_uid['UID']))) {
+                    post_add_edit_text($tid, 1);
 
-                    if (thread_delete_by_user($tid, $del_uid['UID'])) {
+                    admin_add_log_entry(DELETE_USER_THREAD_POSTS, array($tid, $thread_data['TITLE'], $user_logon));
 
-                        post_add_edit_text($tid, 1);
+                }else {
 
-                        admin_add_log_entry(DELETE_USER_THREAD_POSTS, array($tid, $thread_data['TITLE'], $user_logon));
-
-                    }else {
-
-                        $error_msg_array[] = sprintf($lang['failedtodeletepostsbyuser'], $user_logon);
-                        $valid = false;
-                    }
+                    $error_msg_array[] = sprintf($lang['failedtodeletepostsbyuser'], $user_logon);
+                    $valid = false;
                 }
             }
         }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forums.php,v 1.82 2008-07-25 14:52:56 decoyduck Exp $ */
+/* $Id: admin_forums.php,v 1.83 2008-07-25 16:47:28 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -70,6 +70,10 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 // Intitalise a few variables
 
 $webtag_search = false;
+
+// String to hold error message returned by forum_create();
+
+$error_str = "";
 
 // Check we're logged in correctly
 

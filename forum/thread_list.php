@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.336 2008-07-25 14:52:49 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.337 2008-07-25 16:47:28 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -71,6 +71,10 @@ include_once(BH_INCLUDE_PATH. "lang.inc.php");
 // Intitalise a few variables
 
 $webtag_search = false;
+
+// Array to hold our visible threads
+
+$visible_threads_array = array();
 
 // Check we're logged in correctly
 
@@ -513,6 +517,10 @@ if (($start_from != 0 && $mode == ALL_DISCUSSIONS && !isset($folder))) {
     echo "</table>\n";
 }
 
+// Marker for the selected thread
+
+$first_thread = false;
+
 // Iterate through the information we've just got and display it in the right order
 
 foreach ($folder_order as $folder_number) {
@@ -600,8 +608,7 @@ foreach ($folder_order as $folder_number) {
 
 
                     foreach($thread_info as $thread) {
-
-                        if (!isset($visible_threads_array) || !is_array($visible_threads_array)) $visible_threads_array = array();
+ 
                         if (!in_array($thread['TID'], $visible_threads_array)) $visible_threads_array[] = $thread['TID'];
 
                         if ($thread['FID'] == $folder_number) {
@@ -628,7 +635,7 @@ foreach ($folder_order as $folder_number) {
 
                                 $latest_post = 1;
 
-                                if (!isset($first_thread) && isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+                                if (!is_numeric($first_thread) && isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
                                     $first_thread = $thread['TID'];
                                     echo "<img src=\"", style_image('current_thread.png'), "\" name=\"t{$thread['TID']}\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
@@ -657,7 +664,7 @@ foreach ($folder_order as $folder_number) {
 
                                 $latest_post = $thread['LAST_READ'] + 1;
 
-                                if (!isset($first_thread) && isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+                                if (!is_numeric($first_thread) && isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
                                     $first_thread = $thread['TID'];
                                     echo "<img src=\"", style_image('current_thread.png'), "\" name=\"t{$thread['TID']}\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
@@ -682,7 +689,7 @@ foreach ($folder_order as $folder_number) {
 
                                 $latest_post = 1;
 
-                                if (!isset($first_thread) && isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+                                if (!is_numeric($first_thread) && isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
                                     $first_thread = $thread['TID'];
                                     echo "<img src=\"", style_image('current_thread.png'), "\" name=\"t{$thread['TID']}\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
@@ -705,7 +712,7 @@ foreach ($folder_order as $folder_number) {
 
                             if (isset($thread['INTEREST']) && $thread['INTEREST'] == THREAD_INTERESTED) echo "<img src=\"".style_image('high_interest.png')."\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" /> ";
                             if (isset($thread['INTEREST']) && $thread['INTEREST'] == THREAD_SUBSCRIBED) echo "<img src=\"".style_image('subscribe.png')."\" alt=\"{$lang['subscribed']}\" title=\"{$lang['subscribed']}\" /> ";
-                            if (isset($thread['POLL_FLAG']) && $thread['POLL_FLAG'] == 'Y') echo "<a href=\"poll_results.php?webtag=$webtag&tid={$thread['TID']}\" target=\"_blank\" onclick=\"return openPollResults('{$thread['TID']}', '$webtag')\"><img src=\"", style_image('poll.png'), "\" border=\"0\" alt=\"{$lang['thisisapoll']}\" title=\"{$lang['thisisapoll']}\" /></a> ";
+                            if (isset($thread['POLL_FLAG']) && $thread['POLL_FLAG'] == 'Y') echo "<a href=\"poll_results.php?webtag=$webtag&amp;tid={$thread['TID']}\" target=\"_blank\" onclick=\"return openPollResults('{$thread['TID']}', '$webtag')\"><img src=\"", style_image('poll.png'), "\" border=\"0\" alt=\"{$lang['thisisapoll']}\" title=\"{$lang['thisisapoll']}\" /></a> ";
                             if (isset($thread['STICKY']) && $thread['STICKY'] == 'Y') echo "<img src=\"".style_image('sticky.png')."\" alt=\"{$lang['sticky']}\" title=\"{$lang['sticky']}\" /> ";
                             if (isset($thread['RELATIONSHIP']) && $thread['RELATIONSHIP'] & USER_FRIEND) echo "<img src=\"" . style_image('friend.png') . "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" /> ";
                             if (isset($thread['TRACK_TYPE']) && $thread['TRACK_TYPE'] == THREAD_TYPE_SPLIT) echo "<img src=\"" . style_image('split_thread.png') . "\" alt=\"{$lang['threadhasbeensplit']}\" title=\"{$lang['threadhasbeensplit']}\" /> ";
@@ -950,7 +957,7 @@ echo "</table>\n";
 echo "<script language=\"JavaScript\" type=\"text/javascript\">\n";
 echo "<!--\n";
 
-if (isset($first_thread)) {
+if (is_numeric($first_thread)) {
     echo "current_thread = $first_thread;\n";
 }else {
     echo "current_thread = 0;\n";

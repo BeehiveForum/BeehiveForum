@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db_mysql.inc.php,v 1.49 2008-07-25 14:52:56 decoyduck Exp $ */
+/* $Id: db_mysql.inc.php,v 1.50 2008-07-25 16:47:28 decoyduck Exp $ */
 
 function db_get_connection_vars(&$db_server, &$db_username, &$db_password, &$db_database)
 {
@@ -59,23 +59,27 @@ function db_connect($trigger_error = true)
 function db_enable_compat_mode($connection_id)
 {
     $mysql_big_selects = isset($GLOBALS['mysql_big_selects']) ? $GLOBALS['mysql_big_selects'] : false;
+    
+    $mysql_version = 0;
 
     if (db_fetch_mysql_version($mysql_version)) {
 
         if ($mysql_version >= 40100) {
 
             $sql = "SET SESSION SQL_MODE = ''";
-            if (!$result = db_query($sql, $connection_id)) return false;
+            if (!db_query($sql, $connection_id)) return false;
         }
     }
 
     if (isset($mysql_big_selects) && $mysql_big_selects === true) {
 
         $sql = "SET SESSION SQL_BIG_SELECTS = 1";
-        if (!$result = db_query($sql, $connection_id)) return false;
+
+        if (!db_query($sql, $connection_id)) return false;
 
         $sql = "SET SESSION SQL_MAX_JOIN_SIZE = DEFAULT";
-        if (!$result = db_query($sql, $connection_id)) return false;
+
+        if (!db_query($sql, $connection_id)) return false;
     }
 
     return true;
@@ -87,7 +91,11 @@ function db_query($sql, $connection_id, $trigger_error = true)
         return $result;
     }
 
-    if ($trigger_error === true) db_trigger_error($sql, $connection_id);
+    if ($trigger_error === true) {
+    	db_trigger_error($sql, $connection_id);
+    }
+    
+    return false;
 }
 
 function db_unbuffered_query($sql, $connection_id, $trigger_error = true)
@@ -153,7 +161,7 @@ function db_trigger_error($sql, $connection_id)
 {
     if (error_reporting()) {
 
-        if (!$result = db_query($sql, $connection_id, false)) {
+        if (!db_query($sql, $connection_id, false)) {
 
             $errno  = db_errno($connection_id);
             $errstr = db_error($connection_id);

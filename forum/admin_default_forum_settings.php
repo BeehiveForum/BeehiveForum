@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.113 2008-07-25 14:52:47 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.114 2008-07-25 16:47:28 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -119,6 +119,10 @@ $forum_location = html_get_forum_uri();
 // Array to hold error messages
 
 $error_msg_array = array();
+
+// Frame target for Default Forum Rules
+
+$frame_top_target = html_get_top_frame_name();
 
 // Variable to track creation of text-captcha directories.
 
@@ -827,6 +831,7 @@ echo "  </table>\n";
 echo "  <br />\n";
 
 $forum_rules = new TextAreaHTML("prefsform");
+
 echo $forum_rules->preload();
 
 $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');

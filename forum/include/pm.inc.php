@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.245 2008-07-25 20:30:29 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.246 2008-07-25 20:35:16 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -2326,12 +2326,6 @@ function pm_export($folder)
                     $stylesheet_content = implode("", file("styles/style.css"));
                     $zip_file->add_file($stylesheet_content, "styles/style.css");
                 }
-            }
-
-            if (@file_exists("js/openprofile.js")) {
-
-                $javascript_content = implode("", file("js/openprofile.js"));
-                $zip_file->add_file($javascript_content, "js/openprofile.js");
             }
 
             pm_export_html($folder, $zip_file);

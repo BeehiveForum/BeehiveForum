@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: emoticons.inc.php,v 1.74 2008-07-25 14:52:44 decoyduck Exp $ */
+/* $Id: emoticons.inc.php,v 1.75 2008-07-25 20:14:41 decoyduck Exp $ */
 
 /**
 * emoticons.inc.php - emoticon functions
@@ -62,6 +62,8 @@ function emoticons_initialise()
 {
     static $emoticons_array = false;
 
+    $webtag_search = false;
+    
     $webtag = get_webtag($webtag_search);
 
     if (!is_array($emoticons_array) || sizeof($emoticons_array) < 1) {
@@ -215,7 +217,7 @@ function emoticons_apply($content)
 
     // PREG match for emoticons.
 
-    $emoticon_preg_match = "(?<=\s|^|>)%s(?=\s|$|<)";
+    $emoticon_preg_match = '(?<=\s|^|>)%s(?=\s|$|<)';
 
     // HTML code for emoticons.
 
@@ -281,7 +283,7 @@ function emoticons_get_available($include_text_none = true)
     $emoticon_sets_normal = array();
     $emoticon_sets_txtnon = array();
 
-    if (@$dir = opendir('emoticons')) {
+    if ((@$dir = opendir('emoticons'))) {
 
         while ((@$file = readdir($dir)) !== false) {
 
@@ -376,6 +378,8 @@ function emoticons_set_exists($emoticon_set)
 function emoticons_preview($emoticon_set, $width = 190, $height = 100, $num = 35)
 {
     $lang = load_language_file();
+    
+    $webtag_search = false;
 
     $webtag = get_webtag($webtag_search);
 
@@ -413,7 +417,9 @@ function emoticons_preview($emoticon_set, $width = 190, $height = 100, $num = 35
 
         if (($style_contents = @file_get_contents("emoticons/$emoticon_set/style.css"))) {
 
-            preg_match_all("/\.e_([\w_]+) \{[^\}]*background-image\s*:\s*url\s*\([\"\']\.?\/?([^\"\']*)[\"\']\)[^\}]*\}/i", $style_contents, $style_matches);
+            $style_matches = array();
+        	
+        	preg_match_all('/\.e_([\w_]+) \{[^\}]*background-image\s*:\s*url\s*\(["\']\.?\/?([^"\']*)["\']\)[^\}]*\}/i', $style_contents, $style_matches);
 
             for ($i = 0; $i < count($style_matches[1]); $i++) {
 
@@ -440,8 +446,7 @@ function emoticons_preview($emoticon_set, $width = 190, $height = 100, $num = 35
 
             $emot_tooltip_matches = array();
 
-            foreach ($emoticons_array[$i]['matches'] as $key => $emot_match) {
-
+            foreach ($emoticons_array[$i]['matches'] as $emot_match) {
                 $emot_tooltip_matches[] = _htmlentities($emot_match);
             }
 

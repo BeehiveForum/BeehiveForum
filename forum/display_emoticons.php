@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display_emoticons.php,v 1.57 2008-07-25 14:52:48 decoyduck Exp $ */
+/* $Id: display_emoticons.php,v 1.58 2008-07-25 20:14:41 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -148,9 +148,7 @@ echo "                    <tr>\n";
 
 $emoticon_sets_array = emoticons_get_available(false);
 
-$emoticon_sets_array_keys = array_keys($emoticon_sets_array);
-
-if (($user_emoticon_pack != "user" && !in_array($user_emoticon_pack, $emoticon_sets_array_keys))) {
+if ($user_emoticon_pack != "user" && !(in_array($user_emoticon_pack, array_keys($emoticon_sets_array)))) {
     $user_emoticon_pack = forum_get_setting('default_emoticons', false, 'default');
 }
 
@@ -181,24 +179,26 @@ if ($user_emoticon_pack == "user") {
     }
 }
 
-if (in_array($user_emoticon_pack, $emoticon_sets_array_keys)) {
+$emoticon = array();
+
+if (in_array($user_emoticon_pack, array_keys($emoticon_sets_array))) {
 
     $emoticon_path = basename($user_emoticon_pack);
+    
+    if (file_exists("emoticons/$emoticon_path/definitions.php")) {
+        include ("emoticons/$emoticon_path/definitions.php");
+    }    
 
-}else if (in_array($emot_forum, $emoticon_sets_array_keys)) {
+}else if (sizeof($emoticon_sets_array) > 0) {
 
-    $emoticon_path = basename($emot_forum);
-
-}else if (isset($emoticon_sets_array_keys[0])) {
-
-    $emoticon_path = basename($emoticon_sets_array_keys[0]);
+    $emoticon_path = basename(array_shift($emoticon_sets_array));
+    
+    if (file_exists("emoticons/$emoticon_path/definitions.php")) {
+        include ("emoticons/$emoticon_path/definitions.php");
+    }    
 }
 
-if (file_exists("emoticons/$emoticon_path/definitions.php")) {
-    include ("emoticons/$emoticon_path/definitions.php");
-}
-
-if (isset($emoticon) && count($emoticon) > 0) {
+if (sizeof($emoticon) > 0) {
 
     krsort($emoticon);
     reset($emoticon);
@@ -215,7 +215,9 @@ echo "                        <table class=\"posthead\" width=\"300\">\n";
 
 if (($style_content = @file_get_contents("emoticons/$emoticon_path/style.css"))) {
 
-    preg_match_all("/\.e_([\w_]+) \{.*\n[^\}]*background-image\s*:\s*url\s*\([\"\']([^\"\']*)[\"\']\)[^\}]*\}/i", $style_content, $style_matches);
+    $style_matches = array();
+	
+	preg_match_all('/\.e_([\w_]+) \{.*\n[^\}]*background-image\s*:\s*url\s*\(["\']([^"\']*)["\']\)[^\}]*\}/i', $style_content, $style_matches);
 
     for ($i = 0; $i < count($style_matches[1]); $i++) {
 

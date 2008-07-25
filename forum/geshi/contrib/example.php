@@ -6,7 +6,7 @@
  * and the language files in subdirectory "../geshi/")
  * 
  * @author  Nigel McNie
- * @version $Id: example.php,v 1.2 2005-10-28 17:37:16 decoyduck Exp $
+ * @version $Id: example.php,v 1.3 2008-07-25 20:14:41 decoyduck Exp $
  */
 
 // Rudimentary checking of where GeSHi is. In a default install it will be in ../, but
@@ -159,11 +159,11 @@ if ( isset($_POST['submit']) )
 	echo '<hr />';
 }
 ?>
-<form action="example.php" method="post">
 <h3>Source to highlight</h3>
-<textarea rows="10" cols="60" name="source"></textarea>
+<form action="example.php" method="post">
+<p><textarea rows="10" cols="60" name="source"></textarea></p>
 <h3>Choose a language</h3>
-<select name="language">
+<p><select name="language">
 <?php
 if (!($dir = @opendir(dirname(__FILE__) . '/geshi'))) {
     if (!($dir = @opendir(dirname(__FILE__) . '/../geshi'))) {
@@ -171,7 +171,7 @@ if (!($dir = @opendir(dirname(__FILE__) . '/geshi'))) {
     }
 }
 $languages = array();
-while ( $file = readdir($dir) )
+while (( $file = readdir($dir)) )
 {
 	if ( $file == '..' || $file == '.' || !stristr($file, '.') || $file == 'css-gen.cfg' ) continue;
 	$lang = substr($file, 0,  strpos($file, '.'));
@@ -184,10 +184,10 @@ foreach ($languages as $lang) {
 }
 
 ?>
-</select><br />
-<input type="submit" name="submit" value="Highlight Source">
+</select>
+<input type="submit" name="submit" value="Highlight Source" /></p>
 </form>
 <div id="footer">GeSHi &copy; Nigel McNie, 2004, released under the GNU GPL<br />
-For a better demonstration, check out the <a href="http://qbnz.com/highlighter/demo.php">online demo</a>
+For a better demonstration, check out the <a href="http://qbnz.com/highlighter/demo.php">online demo</a></div>
 </body>
 </html>

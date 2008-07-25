@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_items.php,v 1.125 2008-07-25 14:52:48 decoyduck Exp $ */
+/* $Id: admin_prof_items.php,v 1.126 2008-07-25 20:14:41 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -274,7 +274,7 @@ if (isset($_POST['additemsubmit'])) {
                 $error_msg_array[] = $lang['profileitemhyperlinkformatinvalid'];
             }
 
-            if (preg_match("/\[ProfileEntry\]/i", $t_options_new) < 1) {
+            if (preg_match('/\[ProfileEntry\]/i', $t_options_new) < 1) {
 
                 $error_msg_array[] = sprintf($lang['youmustincludeprofileentryinhyperlinks'], '[ProfileEntry]');
                 $valid = false;
@@ -370,7 +370,7 @@ if (isset($_POST['additemsubmit'])) {
                 $error_msg_array[] = $lang['profileitemhyperlinkformatinvalid'];
             }
 
-            if (preg_match("/\[ProfileEntry\]/i", $t_options_new) < 1) {
+            if (preg_match('/\[ProfileEntry\]/i', $t_options_new) < 1) {
 
                 $error_msg_array[] = sprintf($lang['youmustincludeprofileentryinhyperlinks'], '[ProfileEntry]');
                 $valid = false;

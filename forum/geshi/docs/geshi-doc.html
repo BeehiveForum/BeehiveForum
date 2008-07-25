@@ -160,43 +160,48 @@ everything related to it (including this documentation) a breeze.</p>
 <h2 id="contents">Contents</h2>
 
 <ul>
-	<li><a href="#introduction">1. Introduction</a></li>
+	<li><a href="#introduction">1. Introduction</a>
 	<ul>
 		<li><a href="#features">1.1 Features</a></li>
 		<li><a href="#about-geshi">1.2 About GeSHi</a></li>
 		<li><a href="#credits">1.3 Credits</a></li>
 		<li><a href="#feedback">1.4 Feedback</a></li>
 	</ul>
+	</li>
 
-	<li><a href="#the-basics">2. The Basics</a></li>
+	<li><a href="#the-basics">2. The Basics</a>
 	<ul>
 		<li><a href="#getting-geshi">2.1 Getting GeSHi</a></li>
-		<li><a href="#installing-geshi">2.2 Installing GeSHi</a></li>
+		<li><a href="#installing-geshi">2.2 Installing GeSHi</a>
 		<ul>
 			<li><a href="#requirements">2.2.1 Requirements</a></li>
 			<li><a href="#extracting-geshi">2.2.2 Extracting GeSHi</a></li>
 			<li><a href="#installation">2.2.3 Installation</a></li>
 		</ul>
+		</li>
 		<li><a href="#basic-usage">2.3 Basic Usage</a></li>
 	</ul>
+	</li>
 
-	<li><a href="#advanced-features">3. Advanced Features</a></li>
+	<li><a href="#advanced-features">3. Advanced Features</a>
 	<ul>
 		<li><a href="#the-code-container">3.1 The Code Container</a></li>
-		<li><a href="#line-numbers">3.2 Line Numbers</a></li>
+		<li><a href="#line-numbers">3.2 Line Numbers</a>
 		<ul>
 			<li><a href="#enabling-line-numbers">3.2.1 Enabling Line Numbers</a></li>
 			<li><a href="#styling-line-numbers">3.2.2 Styling Line Numbers</a></li>
 			<li><a href="#starting-line-numbers">3.2.3 Choosing a Start Number</a></li>
 		</ul>
-		<li><a href="#using-css-classes">3.3 Using <acronym>CSS</acronym> Classes</a></li>
+		</li>
+		<li><a href="#using-css-classes">3.3 Using <acronym>CSS</acronym> Classes</a>
 		<ul>
 			<li><a href="#enabling-css-classes">3.3.1 Enabling CSS Classes</a></li>
 			<li><a href="#setting-css-class-id">3.3.2 Setting the CSS Class/ID</a></li>
 			<li><a href="#getting-stylesheet">3.3.3 Getting the Stylesheet</a></li>
 			<li><a href="#using-an-external-stylesheet">3.3.4 Using an External Stylesheet</a></li>
 		</ul>
-		<li><a href="#changing-styles">3.4 Changing Styles</a></li>
+		</li>
+		<li><a href="#changing-styles">3.4 Changing Styles</a>
 		<ul>
 			<li><a href="#the-overall-styles">3.4.1 The Overall Styles</a></li>
 			<li><a href="#line-number-styles">3.4.2 Line Number Styles</a></li>
@@ -204,12 +209,14 @@ everything related to it (including this documentation) a breeze.</p>
 			<li><a href="#setting-comment-styles">3.4.4 Setting Comment Styles</a></li>
 			<li><a href="#setting-other-styles">3.4.5 Setting Other Styles</a></li>
 		</ul>
-		<li><a href="#case-caps">3.5 Case Sensitivity and Auto Casing</a></li>
+		</li>
+		<li><a href="#case-caps">3.5 Case Sensitivity and Auto Casing</a>
 		<ul>
 			<li><a href="#auto-caps-nocaps">3.5.1 Auto Caps/Nocaps</a></li>
 			<li><a href="#setting-case-sensitivity">3.5.2 Setting Case Sensitivity</a></li>
 		</ul>
-		<li><a href="#changing-config">3.6 Changing the Source/Language/Path/Charset</a></li>
+		</li>
+		<li><a href="#changing-config">3.6 Changing the Source/Language/Path/Charset</a>
 		<ul>
 			<li><a href="#changing-the-source">3.6.1 Changing the Source Code</a></li>
 			<li><a href="#changing-the-language">3.6.2 Changing the Language</a></li>
@@ -217,18 +224,20 @@ everything related to it (including this documentation) a breeze.</p>
 			<li><a href="#changing-the-charset">3.6.4 Changing the Character Set</a></li>
 			<li><a href="#changing-using-load-from-file">3.6.5 Using <tt>load_from_file</tt> to change the language and source code</a></li>
 		</ul>
+		</li>
 		<li><a href="#error-handling">3.7 Error Handling</a></li>
 		<li><a href="#disabling-lexics">3.8 Disabling Styling of Some Lexics</a></li>
 		<li><a href="#setting-tab-width">3.9 Setting the Tab Width</a></li>
 		<li><a href="#using-strict-mode">3.10 Using Strict Mode</a></li>
-		<li><a href="#adding-removing-keywords">3.11 Adding/Removing Keywords</a></li>
+		<li><a href="#adding-removing-keywords">3.11 Adding/Removing Keywords</a>
 		<ul>
 			<li><a href="#adding-a-keyword">3.11.1 Adding a Keyword</a></li>
 			<li><a href="#removing-a-keyword">3.11.2 Removing a Keyword</a></li>
 			<li><a href="#adding-a-keyword-group">3.11.3 Adding a Keyword Group</a></li>
 			<li><a href="#removing-a-keyword-group">3.11.4 Removing a Keyword Group</a></li>
 		</ul>
-		<li><a href="#headers-and-footers">3.12 Headers and Footers for your code</a></li>
+		</li>
+		<li><a href="#headers-and-footers">3.12 Headers and Footers for your code</a>
 		<ul>
 			<li><a href="#keyword-substitution">3.12.1 Keyword Substitution</a></li>
 			<li><a href="#setting-header-content">3.12.2 Setting Header Content</a></li>
@@ -236,33 +245,38 @@ everything related to it (including this documentation) a breeze.</p>
 			<li><a href="#styling-header-content">3.12.4 Styling Header Content</a></li>
 			<li><a href="#styling-footer-content">3.12.5 Styling Footer Content</a></li>
 		</ul>
-		<li><a href="#keyword-urls">3.13 Keyword URLs</a></li>
+		</li>
+		<li><a href="#keyword-urls">3.13 Keyword URLs</a>
 		<ul>
 			<li><a href="#setting-a-url">3.13.1 Setting a URL for a Keyword Group</a></li>
 			<li><a href="#disabling-urls">3.13.2 Disabling URLs for a Keyword Group</a></li>
 			<li><a href="#styling-links">3.13.3 Styling Links</a></li>
 			<li><a href="#using-targets">3.13.4 Setting the Link Target</a></li>
 		</ul>
-		<li><a href="#using-contextual-importance">3.14 Using Contextual Importance</a></li>
+		</li>
+		<li><a href="#using-contextual-importance">3.14 Using Contextual Importance</a>
 		<ul>
 			<li><a href="#context-important-markers">3.14.1 Context-important markers</a></li>
 			<li><a href="#styles-for-context-important-blocks">3.14.2 Styles for context-important blocks</a></li>
 			<li><a href="#disabling-contextual-importance">3.14.3 Disabling contextual importance</a></li>
 		</ul>
-		<li><a href="#highlighting-special-lines-extra">3.15 Highlighting Special Lines &quot;Extra&quot;</a></li>
+		</li>
+		<li><a href="#highlighting-special-lines-extra">3.15 Highlighting Special Lines &quot;Extra&quot;</a>
 		<ul>
 			<li><a href="#specifying-lines-to-highlight-extra">Specifying the Lines to Highlight Extra</a></li>
 			<li><a href="#styles-for-highlighted-lines">Styles for the Highlighted Lines</a></li>
 		</ul>
+		</li>
 		<li><a href="#adding-ids-to-each-line">3.16 Adding IDs to Each Line</a></li>
 		<li><a href="#getting-the-time-of-styling">3.17 Getting the Time of Styling</a></li>
 	</ul>
+	</li>
 
-	<li><a href="#language-files">4 Language Files</a></li>
+	<li><a href="#language-files">4 Language Files</a>
 	<ul>
 		<li><a href="#language-file-example">4.1 An Example Language File</a></li>
 		<li><a href="#language-file-conventions">4.2 Language File Conventions</a></li>
-		<li><a href="#language-file-sections">4.3 Language File Sections</a></li>
+		<li><a href="#language-file-sections">4.3 Language File Sections</a>
 		<ul>
 			<li><a href="#language-file-header">4.3.1 The Header</a></li>
 			<li><a href="#language-file-start-indices">4.3.2 The First Indices</a></li>
@@ -275,7 +289,9 @@ everything related to it (including this documentation) a breeze.</p>
 			<li><a href="#language-file-strict-mode">4.3.9 Contextual Highlighting and Strict Mode</a></li>
 			<li><a href="#language-file-tidying-up">4.3.10 Tidying Up</a></li>
 		</ul>
+		</li>
 	</ul>
+	</li>
 
 	<li><a href="#method-constant-reference">5 Method/Constant Reference</a></li>
 </ul>
@@ -290,7 +306,7 @@ highlight it! GeSHi is extremely customisable - the same source can be highlight
 multiple times in multiple ways - the same source even with a different language.
 GeSHi outputs <acronym>XHTML</acronym> strict compliant code<sup><a href="#xhtml-strict-note">*</a></sup>, and can
 make use of <acronym>CSS</acronym> to save on the amount of output. And what is the cost for all of this? You need
-<a href="http://www.php.net/">PHP</a>. That's all!
+<a href="http://www.php.net/">PHP</a>. That's all!</p>
 
 <p style="font-size: x-small;"><a name="xhtml-strict-note" id="xhtml-strict-note"></a>Most of the time. Some languages do not output XHTML strict code,
 and using line numbers with the PRE header is not legal either. These problems will be fixed in 1.2.</p>
@@ -424,7 +440,7 @@ probably want <tt>.zip</tt>.</p>
 	<li>Open a shell</li>
 	<li><kbd>cd</kbd> to the directory where the archive lies</li>
 	<li>Type <kbd>tar -xzvf [filename]</kbd>  where <tt>[filename]</tt> is the name of the archive (typically <tt>GeSHi-1.X.X.tar.gz</tt>)</li>
-	<li>GeSHi will be extracted to its own directory</tt>
+	<li>GeSHi will be extracted to its own directory</li>
 </ol>
 
 <p>To extract GeSHi in Windows (<tt>.zip</tt>):</p>
@@ -472,7 +488,7 @@ these directories from any live site they are on.</p></div>
 
 <p>Use of GeSHi is very easy. Here's a simple example:</p>
 
-<code><span style="color: #808080; font-style: italic;">//</span><br />
+<p><code><span style="color: #808080; font-style: italic;">//</span><br />
 <span style="color: #808080; font-style: italic;">// Include the GeSHi library</span><br />
 
 <span style="color: #808080; font-style: italic;">//</span><br />
@@ -503,20 +519,19 @@ for ( $i = 1; $i &lt; $foo; $i++ )<br />
 <span style="color: #808080; font-style: italic;">// And echo the result!</span><br />
 <span style="color: #808080; font-style: italic;">//</span><br />
 <a href="http://www.php.net/echo"><span style="color: #000066;">echo</span></a> <span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">parse_code</span><span style="color: #66cc66;">&#40;</span><span style="color: #66cc66;">&#41;</span>;
-</code>
+</code></p>
 
 <p>As you can see, there's only three really important lines:</p>
 
-<code><span style="color: #b1b100;">include_once</span><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'geshi.php'</span><span style="color: #66cc66;">&#41;</span>;</code>
+<p><code><span style="color: #b1b100;">include_once</span><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'geshi.php'</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <p>This line includes the GeSHi class for use</p>
 
-<code><span style="color: #0000ff;">$geshi</span> = <span style="color: #000000; font-weight: bold;">new</span> GeSHi<span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$source</span>, <span style="color: #0000ff;">$language</span><span style="color: #66cc66;">&#41;</span>;</code>
+<p><code><span style="color: #0000ff;">$geshi</span> = <span style="color: #000000; font-weight: bold;">new</span> GeSHi<span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$source</span>, <span style="color: #0000ff;">$language</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
-<p>This line creates a new GeSHi object, holding the source and the language
-you want to use for highlighting.</p>
+<p>This line creates a new GeSHi object, holding the source and the language you want to use for highlighting.</p>
 
-<code><a href="http://www.php.net/echo"><span style="color: #000066;">echo</span></a> <span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">parse_code</span><span style="color: #66cc66;">&#40;</span><span style="color: #66cc66;">&#41;</span>;</code>
+<p><code><a href="http://www.php.net/echo"><span style="color: #000066;">echo</span></a> <span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">parse_code</span><span style="color: #66cc66;">&#40;</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <p>This line spits out the result :)</p>
 
@@ -528,7 +543,7 @@ This behaves exactly as the php function <code>highlight_string</code> behaves -
 it the language you want to use to highlight and the path to the language files as well as the source.
 Here are some examples:</p>
 
-<code><span style="color: #808080; font-style: italic;">// Simply echo the highlighted code</span><br />
+<p><code><span style="color: #808080; font-style: italic;">// Simply echo the highlighted code</span><br />
 geshi_highlight<span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$source</span>, <span style="color: #ff0000;">'php'</span>, <span style="color: #0000ff;">$path</span><span style="color: #66cc66;">&#41;</span>;<br />
 
 <br />
@@ -551,7 +566,7 @@ geshi_highlight<span style="color: #66cc66;">&#40;</span><span style="color: #00
 <span style="color: #66cc66;">&#123;</span><br />
 &nbsp; &nbsp; &nbsp; &nbsp; <span style="color: #808080; font-style: italic;">// All OK :)</span><br />
 <span style="color: #66cc66;">&#125;</span>
-</code>
+</code></p>
 
 <p>However, these are really simple examples and doesn't even begin to cover all
 the advanced features of GeSHi. If you want to learn more, continue on to
@@ -602,11 +617,11 @@ anything at all.</p>
 
 <p>To change/set the header to use, you call the <strong><tt>set_header_type()</tt></strong> method:</p>
 
-<code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_header_type</span><span style="color: #66cc66;">&#40;</span>GESHI_HEADER_DIV<span style="color: #66cc66;">&#41;</span>;<br />
+<p><code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_header_type</span><span style="color: #66cc66;">&#40;</span>GESHI_HEADER_DIV<span style="color: #66cc66;">&#41;</span>;<br />
 <span style="color: #808080; font-style: italic;">// or...</span><br />
 <span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_header_type</span><span style="color: #66cc66;">&#40;</span>GESHI_HEADER_PRE<span style="color: #66cc66;">&#41;</span>;
 <span style="color: #808080; font-style: italic;">// or...</span><br />
-<span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_header_type</span><span style="color: #66cc66;">&#40;</span>GESHI_HEADER_NONE<span style="color: #66cc66;">&#41;</span>;</code>
+<span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_header_type</span><span style="color: #66cc66;">&#40;</span>GESHI_HEADER_NONE<span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <p>Those are the only three arguments you should pass to set_header_type. Passing anything
 else may cause inconsistencies in what is used as the Code Container (although it
@@ -634,7 +649,7 @@ line numbers feature.</p>
 
 <p>To highlight a source with line numbers, you call the <strong><tt>enable_line_numbers()</tt></strong> method:</p>
 
-<code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">enable_line_numbers</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$flag</span><span style="color: #66cc66;">&#41;</span>;</code>
+<p><code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">enable_line_numbers</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$flag</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <p>Where $flag is one of the following:</p>
 
@@ -648,7 +663,7 @@ line numbers feature.</p>
 to all of them. Fancy line numbers means that you can specify a different style
 for each n<sup>th</sup> line number. You change the value of n (default 5):</p>
 
-<code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">enable_line_numbers</span><span style="color: #66cc66;">&#40;</span>GESHI_FANCY_LINE_NUMBERS, <span style="color: #cc66cc;">37</span><span style="color: #66cc66;">&#41;</span>;</code>
+<p><code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">enable_line_numbers</span><span style="color: #66cc66;">&#40;</span>GESHI_FANCY_LINE_NUMBERS, <span style="color: #cc66cc;">37</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <p>The second parameter is not used in any other mode. Setting it to 0 is the same as
 simply using normal line numbers. Setting it to 1 applies the fancy style to every
@@ -672,22 +687,22 @@ involved. So think carefully about these things before you enable line numbers.<
 
 <p>Styles are set for line numbers using the <strong><tt>set_line_style()</tt></strong> method:</p>
 
-<code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_line_style</span><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'background: #fcfcfc;'</span><span style="color: #66cc66;">&#41;</span>;</code>
+<p><code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_line_style</span><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'background: #fcfcfc;'</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <p>If you're using Fancy Line Numbers mode, you pass a second string for the style
 of the n<sup>th</sup> line number:</p>
 
-<code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_line_style</span><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'background: #fcfcfc;'</span>, <span style="color: #ff0000;">'background: #f0f0f0;'</span><span style="color: #66cc66;">&#41;</span>;</code>
+<p><code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_line_style</span><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'background: #fcfcfc;'</span>, <span style="color: #ff0000;">'background: #f0f0f0;'</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <p>The second style will have no effect if you're not using Fancy Line Numbers mode.</p>
 
 <p>By default, the styles you pass overwrite the current styles. Add a boolean "true"
 after the styles you specify to combine them with the current styles:</p>
 
-<code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_line_style</span><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'background: red;'</span>, <span style="color: #000000; font-weight: bold;">true</span><span style="color: #66cc66;">&#41;</span>;<br />
+<p><code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_line_style</span><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'background: red;'</span>, <span style="color: #000000; font-weight: bold;">true</span><span style="color: #66cc66;">&#41;</span>;<br />
 
 <span style="color: #808080; font-style: italic;">// or, for fancy line numbers</span><br />
-<span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_line_style</span><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'background: red;'</span>, <span style="color: #ff0000;">'background: blue;'</span>, <span style="color: #000000; font-weight: bold;">true</span><span style="color: #66cc66;">&#41;</span>;</code>
+<span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_line_style</span><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'background: red;'</span>, <span style="color: #ff0000;">'background: blue;'</span>, <span style="color: #000000; font-weight: bold;">true</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <div class="caution"><div class="caution-header">Caution:</div><p>When you set line number styles, the code will inherit those styles! This
 is the main issue to come out of the 1.0.2 release. If you want your code to be styled in a predictable
@@ -723,7 +738,7 @@ is useful if you're highlighting code from a file from around a certain line num
 guide to those who will view the code. You set the line numbers by calling the <strong><tt>start_line_numbers_at()</tt></strong>
 method:</p>
 
-<code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">start_line_numbers_at</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$number</span><span style="color: #66cc66;">&#41;</span>;</code>
+<p><code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">start_line_numbers_at</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$number</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <p><var>$number</var> must be a positive integer (or zero). If it is not, GeSHi will convert it anyway.</p>
 
@@ -751,11 +766,11 @@ highlighted code if you need without worrying about stylesheets. However, if you
 a bit more organised about it, you should use the classes ;). To turn the use of
 classes on, you call the <strong><tt>enable_classes()</tt></strong> method:</p>
 
-<code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">enable_classes</span><span style="color: #66cc66;">&#40;</span><span style="color: #66cc66;">&#41;</span>;</code>
+<p><code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">enable_classes</span><span style="color: #66cc66;">&#40;</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <p>If you want to turn classes OFF for some reason later:</p>
 
-<code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">enable_classes</span><span style="color: #66cc66;">&#40;</span><span style="font-weight: bold;">false</span><span style="color: #66cc66;">&#41;</span>;
+<p><code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">enable_classes</span><span style="color: #66cc66;">&#40;</span><span style="font-weight: bold;">false</span><span style="color: #66cc66;">&#41;</span></code></p>
 
 <p>If classes are enabled when <strong><tt>parse_code()</tt></strong> is called, then the resultant source will
 use CSS classes in the output, otherwise it will in-line the styles. The advantages
@@ -776,8 +791,8 @@ may result in unexpected behaviour.</p></div>
 that allows you to use the same stylesheet for many different snippets of code.
 You call <strong><tt>set_overall_class()</tt></strong> and <strong><tt>set_overall_id</tt></strong> to accomplish this:</p>
 
-<code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_overall_class</span><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'mycode'</span><span style="color: #66cc66;">&#41;</span>;<br />
-<span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_overall_id</span><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'dk48ck'</span><span style="color: #66cc66;">&#41;</span>;</code>
+<p><code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_overall_class</span><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'mycode'</span><span style="color: #66cc66;">&#41;</span>;<br />
+<span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_overall_id</span><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'dk48ck'</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <p>The default classname is the name of the language being used. This means you can use
 just the one stylesheet for all sources that use the same language, and incidentally
@@ -794,7 +809,7 @@ different way (see the section below on gettting the stylesheet for your code fo
 <p>The other half of using CSS classes is getting the stylesheet for use with the classes.
 GeSHi makes it very easy to get a stylesheet for your code, with one easy method call:</p>
 
-<code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">enable_classes</span><span style="color: #66cc66;">&#40;</span><span style="color: #66cc66;">&#41;</span>;<br />
+<p><code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">enable_classes</span><span style="color: #66cc66;">&#40;</span><span style="color: #66cc66;">&#41;</span>;<br />
 
 <br />
 <span style="color: #808080; font-style: italic;">// Here we have code that will spit out a header for</span><br />
@@ -815,7 +830,7 @@ GeSHi makes it very easy to get a stylesheet for your code, with one easy method
 <br />
 <a href="http://www.php.net/echo"><span style="color: #000066;">echo</span></a> <span style="color: #ff0000;">'--&gt;<br />
 &lt;/style&gt;&lt;/head&gt;<br />
-&lt;body&gt;'</span>; </code>
+&lt;body&gt;'</span>; </code></p>
 
 <p>The <strong><tt>get_stylesheet()</tt></strong> method gets the stylesheet for your code in one easy call. All you
 need to do is output it in the correct place. As you can also see, you don't even have
@@ -831,7 +846,7 @@ the stylesheet for many blocks of code, some with line numbers, others with some
 enabled where this source has it disabled. Or perhaps you're building an external stylesheet
 and want all lexics included. So to get around this problem, you do this:</p>
 
-<code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">get_stylesheet</span><span style="color: #66cc66;">&#40;</span><span style="color: #000000; font-weight: bold;">false</span><span style="color: #66cc66;">&#41;</span>;</code>
+<p><code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">get_stylesheet</span><span style="color: #66cc66;">&#40;</span><span style="color: #000000; font-weight: bold;">false</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <p>This turns economy mode off, and all of the stylesheet will be outputted regardless.</p>
 
@@ -840,7 +855,7 @@ you don't mind if they're highlighted the same way (in fact, that's exactly what
 but in one of them you'd like the source to be highlighted differently. Here's how you
 can do that:</p>
 
-<code><span style="color: #808080; font-style: italic;">// assume path is the default &quot;geshi/&quot; relative to the current directory</span><br />
+<p><code><span style="color: #808080; font-style: italic;">// assume path is the default &quot;geshi/&quot; relative to the current directory</span><br />
 
 <span style="color: #0000ff;">$geshi1</span> = <span style="color: #000000; font-weight: bold;">new</span> GeSHi<span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$source1</span>, <span style="color: #0000ff;">$lang</span><span style="color: #66cc66;">&#41;</span>;<br />
 <span style="color: #0000ff;">$geshi2</span> = <span style="color: #000000; font-weight: bold;">new</span> GeSHi<span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$source2</span>, <span style="color: #0000ff;">$lang</span><span style="color: #66cc66;">&#41;</span>;<br />
@@ -888,7 +903,7 @@ can do that:</p>
 <a href="http://www.php.net/echo"><span style="color: #000066;">echo</span></a> <span style="color: #0000ff;">$geshi3</span>-&gt;<span style="color: #006600;">parse_code</span><span style="color: #66cc66;">&#40;</span><span style="color: #66cc66;">&#41;</span>;<br />
 
 <br />
-<a href="http://www.php.net/echo"><span style="color: #000066;">echo</span></a> <span style="color: #ff0000;">'&lt;/body&gt;&lt;/html&gt;'</span>;</code>
+<a href="http://www.php.net/echo"><span style="color: #000066;">echo</span></a> <span style="color: #ff0000;">'&lt;/body&gt;&lt;/html&gt;'</span>;</code></p>
 
 <p>Before version 1.0.2, you needed to set the class of the code you wanted to be
 unique to the empty string. This limitation has been removed in version 1.0.2 - if
@@ -901,9 +916,9 @@ you set the ID of a block of code, all styling will be done based on that ID alo
 some source. However there are some drawbacks with this. To use an external stylesheet,
 it's up to you to link it in to your document, normally with the following HTML:</p>
 
-<code><span style="color: #009900;"><span style="color: #000000; font-weight: bold;">&lt;html&gt;</span></span><br />
+<p><code><span style="color: #009900;"><span style="color: #000000; font-weight: bold;">&lt;html&gt;</span></span><br />
 <span style="color: #009900;"><span style="color: #000000; font-weight: bold;">&lt;head&gt;</span></span><br />
-<span style="color: #009900;"><span style="color: #000000; font-weight: bold;">&lt;link</span> <span style="color: #000066;">rel</span>=<span style="color: #ff0000;">"stylesheet"</span> <span style="color: #000066;">type</span>=<span style="color: #ff0000;">"text/css"</span> <span style="color: #000066;">href</span>=<span style="color: #ff0000;">"url_to_stylesheet.css"</span> /<span style="color: #000000; font-weight: bold;">&gt;</span></span></code>
+<span style="color: #009900;"><span style="color: #000000; font-weight: bold;">&lt;link</span> <span style="color: #000066;">rel</span>=<span style="color: #ff0000;">"stylesheet"</span> <span style="color: #000066;">type</span>=<span style="color: #ff0000;">"text/css"</span> <span style="color: #000066;">href</span>=<span style="color: #ff0000;">"url_to_stylesheet.css"</span> /<span style="color: #000000; font-weight: bold;">&gt;</span></span></code></p>
 
 <p>In your external stylesheet you put CSS declarations for your code. Then just make sure
 you're using the correct class (use <strong><tt>set_overall_class()</tt></strong> to ensure this) and this should
@@ -942,12 +957,12 @@ so you know what you can do with them. Checkout the homepage of CSS at <a href="
 <p>The code outputted by GeSHi is either in a <tt>&lt;div&gt;</tt> or a <tt>&lt;pre&gt;</tt> (see the section entitled
 &quot;The Code Container&quot;), and this can be styled.</p>
 
-<code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_overall_style</span><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'... styles ...'</span><span style="color: #66cc66;">&#41;</span>;</code>
+<p><code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_overall_style</span><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'... styles ...'</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <p>Where styles is a string containing valid CSS declarations. By default, these styles
 overwrite the current styles, but you can change this by adding a second parameter:</p>
 
-<code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_overall_style</span><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'color: blue;'</span>, <span style="font-weight: bold; color: #000;">true</span><span style="color: #66cc66;">&#41;</span>;</code>
+<p><code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_overall_style</span><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'color: blue;'</span>, <span style="font-weight: bold; color: #000;">true</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <p>The default styles &quot;shine through&quot; wherever anything isn't highlighted. Also, you can
 apply more advanced styles, like position: (fixed|relative) etc, because a <tt>&lt;div&gt;</tt>/<tt>&lt;pre&gt;</tt>
@@ -968,7 +983,7 @@ the fancy line numbers to be different from that of the normal line numbers.</p>
 
 <p>Line number styles are set by using the method <strong><tt>set_line_style</tt></strong>:</p>
 
-<code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_line_style</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$style1</span>, <span style="color: #0000ff;">$style2</span><span style="color: #66cc66;">&#41;</span>;</code>
+<p><code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_line_style</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$style1</span>, <span style="color: #0000ff;">$style2</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <p><var>$style1</var> is the style of the line numbers by default, and <var>$style2</var> is the style of the
 fancy line numbers.</p>
@@ -988,11 +1003,11 @@ explained in the section above: <a href="#styling-line-numbers">Styling Line Num
 styles and the styles you want to achieve</em>. For example, in GeSHi prior to 1.0.2 you may
 have done this to style line numbers:</p>
 
-<code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_line_style</span><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'color: red; font-weight: bold;'</span>, <span style="color: #ff0000;">'color: green; font-weight: bold'</span><span style="color: #66cc66;">&#41;</span>;</code>
+<p><code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_line_style</span><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'color: red; font-weight: bold;'</span>, <span style="color: #ff0000;">'color: green; font-weight: bold'</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <p>Now you instead can do this:</p>
 
-<code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_line_style</span><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'color: red; font-weight: bold;'</span>, <span style="color: #ff0000;">'color: green;'</span><span style="color: #66cc66;">&#41;</span>;</code>
+<p><code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_line_style</span><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'color: red; font-weight: bold;'</span>, <span style="color: #ff0000;">'color: green;'</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <p>The <tt>font-weight: bold;</tt> will automatically carry through to the fancy styles. This is
 actually a small saving in code - but the difference may be confusing for anyone using 1.0.1 at first.</p></div>
@@ -1011,7 +1026,7 @@ you want. Having a familiarity with a language file is definately a plus for usi
 
 <p>To change the styles for a keyword set, call the set_keyword_group_style() method:</p>
 
-<code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_keyword_group_style</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$group</span>, <span style="color: #0000ff;">$styles</span><span style="color: #66cc66;">&#41;</span>;</code>
+<p><code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_keyword_group_style</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$group</span>, <span style="color: #0000ff;">$styles</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <p>Where <var>$group</var> is the group to change the styles for and <var>$styles</var> is a string containing
 the styles to apply to that group.</p>
@@ -1019,25 +1034,25 @@ the styles to apply to that group.</p>
 <p>By default, the styles you pass overwrite the current styles. Add a boolean "true"
 after the styles you specify to combine them with the current styles:</p>
 
-<code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_keyword_group_style</span><span style="color: #66cc66;">&#40;</span><span style="color: #cc66cc;">3</span>, <span style="color: #ff0000;">'color: white;'</span>, <span style="color: #000000; font-weight: bold;">true</span><span style="color: #66cc66;">&#41;</span>;</code>
+<p><code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_keyword_group_style</span><span style="color: #66cc66;">&#40;</span><span style="color: #cc66cc;">3</span>, <span style="color: #ff0000;">'color: white;'</span>, <span style="color: #000000; font-weight: bold;">true</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <h5 id="setting-comment-styles">3.4.4: Setting Comment Styles</h5>
 <div class="nav"><a href="#top">Top</a> | <a href="#contents">Contents</a> | <a href="#setting-other-styles">Next</a> | <a href="#setting-keyword-styles">Previous</a></div>
 
 <p>To change the styles for a comment group, call the <strong><tt>set_comments_style()</tt></strong> method:</p>
 
-<code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_comments_style</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$group</span>, <span style="color: #0000ff;">$styles</span><span style="color: #66cc66;">&#41;</span>;</code>
+<p><code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_comments_style</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$group</span>, <span style="color: #0000ff;">$styles</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <p>Where <var>$group</var> is either a number corresponding to a single-line comment, or the string
 <span style="color: #f00;"><tt>'MULTI'</tt></span> to specify multiline comments:</p>
 
-<code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_comments_style</span><span style="color: #66cc66;">&#40;</span><span style="color: #cc66cc;">1</span>, <span style="color: #ff0000;">'font-style: italic;'</span><span style="color: #66cc66;">&#41;</span>;<br />
-<span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_comments_style</span><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'MULTI'</span>, <span style="color: #ff0000;">'display: hidden;'</span><span style="color: #66cc66;">&#41;</span>;</code>
+<p><code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_comments_style</span><span style="color: #66cc66;">&#40;</span><span style="color: #cc66cc;">1</span>, <span style="color: #ff0000;">'font-style: italic;'</span><span style="color: #66cc66;">&#41;</span>;<br />
+<span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_comments_style</span><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'MULTI'</span>, <span style="color: #ff0000;">'display: hidden;'</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <p>By default, the styles you pass overwrite the current styles. Add a boolean "true"
 after the styles you specify to combine them with the current styles:</p>
 
-<code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_comments_style</span><span style="color: #66cc66;">&#40;</span><span style="color: #cc66cc;">1</span>, <span style="color: #ff0000;">'font-weight: 100;'</span>, <span style="color: #000000; font-weight: bold;">true</span><span style="color: #66cc66;">&#41;</span>;</code>
+<p><code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_comments_style</span><span style="color: #66cc66;">&#40;</span><span style="color: #cc66cc;">1</span>, <span style="color: #ff0000;">'font-weight: 100;'</span>, <span style="color: #000000; font-weight: bold;">true</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <h5 id="setting-other-styles">3.4.5: Setting Other Styles</h5>
 <div class="nav"><a href="#top">Top</a> | <a href="#contents">Contents</a> | <a href="#auto-caps-nocaps">Next</a> | <a href="#setting-comment-styles">Previous</a></div>
@@ -1046,24 +1061,24 @@ after the styles you specify to combine them with the current styles:</p>
 comments. Strings, Numbers, Methods and Brackets among other things can all also be
 highlighted. Here are the related methods:</p>
 
-<code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_escape_characters_style</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$styles</span><span style="color: #66cc66;">&#91;</span>, <span style="color: #0000ff;">$preserve_defaults</span><span style="color: #66cc66;">&#93;</span><span style="color: #66cc66;">&#41;</span>;<br />
+<p><code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_escape_characters_style</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$styles</span><span style="color: #66cc66;">&#91;</span>, <span style="color: #0000ff;">$preserve_defaults</span><span style="color: #66cc66;">&#93;</span><span style="color: #66cc66;">&#41;</span>;<br />
 <span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_symbols_style</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$styles</span><span style="color: #66cc66;">&#91;</span>, <span style="color: #0000ff;">$preserve_defaults</span><span style="color: #66cc66;">&#93;</span><span style="color: #66cc66;">&#41;</span>;<br />
 
 <span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_strings_style</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$styles</span><span style="color: #66cc66;">&#91;</span>, <span style="color: #0000ff;">$preserve_defaults</span><span style="color: #66cc66;">&#93;</span><span style="color: #66cc66;">&#41;</span>;<br />
 <span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_numbers_style</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$styles</span><span style="color: #66cc66;">&#91;</span>, <span style="color: #0000ff;">$preserve_defaults</span><span style="color: #66cc66;">&#93;</span><span style="color: #66cc66;">&#41;</span>;<br />
-<span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_methods_style</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$key</span>, <span style="color: #0000ff;">$styles</span>, <span style="color: #66cc66;">&#91;</span>, <span style="color: #0000ff;">$preserve_defaults</span><span style="color: #66cc66;">&#93;</span><span style="color: #66cc66;">&#41;</span>;</code>
+<span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_methods_style</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$key</span>, <span style="color: #0000ff;">$styles</span>, <span style="color: #66cc66;">&#91;</span>, <span style="color: #0000ff;">$preserve_defaults</span><span style="color: #66cc66;">&#93;</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <p><var>$styles</var> is a string containing valid stylesheet declarations, while <var>$preserve_defaults</var>
 should be set to true if you want your styles to be merged with the previous styles. In the case of <strong><tt>set_methods_style</tt></strong>,
 you should select a group to set the styles of, check the language files for the number used for each &quot;object splitter&quot;.</p>
 
-<h4 id="case-caps">3.5: Case Sensitivity and Auto Casing</h3>
+<h4 id="case-caps">3.5: Case Sensitivity and Auto Casing</h4>
 <div class="nav"><a href="#top">Top</a> | <a href="#contents">Contents</a> | <a href="#auto-caps-nocaps">Next</a> | <a href="#setting-other-styles">Previous</a></div>
 
 <p>Controlling the case of the outputted source is an easy job with GeSHi. You can control which keywords are converted in case, and also control whether
 keywords are checked in a case sensitive manner.</p>
 
-<h5 id="auto-caps-nocaps">3.5.1: Auto-Caps/Nocaps</h4>
+<h5 id="auto-caps-nocaps">3.5.1: Auto-Caps/Nocaps</h5>
 <div class="nav"><a href="#top">Top</a> | <a href="#contents">Contents</a> | <a href="#setting-case-sensitivity">Next</a> | <a href="#case-caps">Previous</a></div>
 
 <p>Auto-Caps/Nocaps is a nifty little feature that capitalises or lowercases automatically
@@ -1073,7 +1088,7 @@ for readability.</p>
 
 <p>To change what case lexics are rendered in, you call the <strong><tt>set_case_keywords()</tt></strong> method:</p>
 
-<code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_case_keywords</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$caps_modifier</span><span style="color: #66cc66;">&#41;</span>;</code>
+<p><code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_case_keywords</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$caps_modifier</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <p>The valid values to pass to this method are:</p>
 
@@ -1089,24 +1104,24 @@ array will be modified using this option! This is one small area of inflexibilit
 <p>I suspect this will only be used to specify <tt>GESHI_CAPS_NO_CHANGE</tt> to turn off autocaps
 for languages like SQL and BASIC variants, like so:</p>
 
-<code><span style="color: #0000ff;">$geshi</span> = <span style="color: #000000; font-weight: bold;">new</span> GeSHi<span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$source</span>, <span style="color: #ff0000;">'sql'</span><span style="color: #66cc66;">&#41;</span>;<br />
-<span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_case_keywords</span><span style="color: #66cc66;">&#40;</span>GESHI_CAPS_NO_CHANGE<span style="color: #66cc66;">&#41;</span>; <span style="color: #808080; font-style: italic;">// don't want keywords capatalised </span></code>
+<p><code><span style="color: #0000ff;">$geshi</span> = <span style="color: #000000; font-weight: bold;">new</span> GeSHi<span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$source</span>, <span style="color: #ff0000;">'sql'</span><span style="color: #66cc66;">&#41;</span>;<br />
+<span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_case_keywords</span><span style="color: #66cc66;">&#40;</span>GESHI_CAPS_NO_CHANGE<span style="color: #66cc66;">&#41;</span>; <span style="color: #808080; font-style: italic;">// don't want keywords capatalised </span></code></p>
 
 <p>All the same, it can be used for some interesting effects:</p>
 
-<code><span style="color: #0000ff;">$geshi</span> = <span style="color: #000000; font-weight: bold;">new</span> GeSHi<span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$source</span>, <span style="color: #ff0000;">'java'</span><span style="color: #66cc66;">&#41;</span>;<br />
+<p><code><span style="color: #0000ff;">$geshi</span> = <span style="color: #000000; font-weight: bold;">new</span> GeSHi<span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$source</span>, <span style="color: #ff0000;">'java'</span><span style="color: #66cc66;">&#41;</span>;<br />
 <span style="color: #808080; font-style: italic;">// Anyone who's used java knows how picky it is about CapitalLetters...</span><br />
 <span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_case_keywords</span><span style="color: #66cc66;">&#40;</span>GESHI_CAPS_LOWER<span style="color: #66cc66;">&#41;</span>;<br />
-<span style="color: #808080; font-style: italic;">// No *way* the source will look right now ;) </span></code>
+<span style="color: #808080; font-style: italic;">// No *way* the source will look right now ;) </span></code></p>
 
-<h5 id="setting-case-sensitivity">3.5.2: Setting Case Sensitivity</h4>
+<h5 id="setting-case-sensitivity">3.5.2: Setting Case Sensitivity</h5>
 <div class="nav"><a href="#top">Top</a> | <a href="#contents">Contents</a> | <a href="#changing-config">Next</a> | <a href="#auto-caps-nocaps">Previous</a></div>
 
 <p>Some languages, like PHP, don't mind what case function names and keywords are in, while others, like Java, depend
 on such pickiness to maintain their bad reputations ;). In any event, you can use the <strong><tt>set_case_sensitivity</tt></strong>
 to change the case sensitiveness of a particular keyword group from the default:</p>
 
-<code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_case_sensitivity</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$key</span>, <span style="color: #0000ff;">$sensitivity</span><span style="color: #66cc66;">&#41;</span>;</code>
+<p><code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_case_sensitivity</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$key</span>, <span style="color: #0000ff;">$sensitivity</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <p>Where <var>$key</var> is the key of the group for which you wish to change case sensitivness for (see the language file for that language), and
 <var>$sensitivity</var> is a boolean value - <strong>true</strong> if the keyword is case sensitive, and <strong>false</strong> if not.</p>
@@ -1123,11 +1138,11 @@ a GeSHi object? Well, that's where these methods come in.</p>
 
 <p>To change the source code, you call the <strong><tt>set_source()</tt></strong> method:</p>
 
-<code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_source</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$newsource</span><span style="color: #66cc66;">&#41;</span>;</code>
+<p><code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_source</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$newsource</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <p>Example:</p>
 
-<code><span style="color: #0000ff;">$geshi</span> = <span style="color: #000000; font-weight: bold;">new</span> GeSHi<span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$source1</span>, <span style="color: #ff0000;">'php'</span><span style="color: #66cc66;">&#41;</span>;<br />
+<p><code><span style="color: #0000ff;">$geshi</span> = <span style="color: #000000; font-weight: bold;">new</span> GeSHi<span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$source1</span>, <span style="color: #ff0000;">'php'</span><span style="color: #66cc66;">&#41;</span>;<br />
 
 <br />
 <span style="color: #808080; font-style: italic;">// Method calls to specify various options...</span><br />
@@ -1136,7 +1151,7 @@ a GeSHi object? Well, that's where these methods come in.</p>
 <br />
 <span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_source</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$source2</span><span style="color: #66cc66;">&#41;</span>;<br />
 
-<span style="color: #0000ff;">$code2</span> = <span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">parse_code</span><span style="color: #66cc66;">&#40;</span><span style="color: #66cc66;">&#41;</span>;</code>
+<span style="color: #0000ff;">$code2</span> = <span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">parse_code</span><span style="color: #66cc66;">&#40;</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <h5 id="changing-the-language">3.6.2: Changing the Language</h5>
 <div class="nav"><a href="#top">Top</a> | <a href="#contents">Contents</a> | <a href="#changing-the-path">Next</a> | <a href="#changing-the-source">Previous</a></div>
@@ -1144,11 +1159,11 @@ a GeSHi object? Well, that's where these methods come in.</p>
 <p>What happens if you want to change the language used for highlighting? Just call
 <strong><tt>set_language()</tt></strong>:</p>
 
-<code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_language</span><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'newlanguage'</span><span style="color: #66cc66;">&#41;</span>;</code>
+<p><code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_language</span><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'newlanguage'</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <p>Example:</p>
 
-<code><span style="color: #0000ff;">$geshi</span> = <span style="color: #000000; font-weight: bold;">new</span> GeSHi<span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$source</span>, <span style="color: #ff0000;">'php'</span><span style="color: #66cc66;">&#41;</span>;<br />
+<p><code><span style="color: #0000ff;">$geshi</span> = <span style="color: #000000; font-weight: bold;">new</span> GeSHi<span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$source</span>, <span style="color: #ff0000;">'php'</span><span style="color: #66cc66;">&#41;</span>;<br />
 
 <br />
 <span style="color: #0000ff;">$code</span> = <span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">parse_code</span><span style="color: #66cc66;">&#40;</span><span style="color: #66cc66;">&#41;</span>;<br />
@@ -1158,7 +1173,7 @@ a GeSHi object? Well, that's where these methods come in.</p>
 
 <span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_language</span><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'html4strict'</span><span style="color: #66cc66;">&#41;</span>;<br />
 <span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">enable_classes</span><span style="color: #66cc66;">&#40;</span><span style="color: #000000; font-weight: bold;">false</span><span style="color: #66cc66;">&#41;</span>;<br />
-<a href="http://www.php.net/echo"><span style="color: #000066;">echo</span></a> <span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">parse_code</span><span style="color: #66cc66;">&#40;</span><span style="color: #66cc66;">&#41;</span>;</code>
+<a href="http://www.php.net/echo"><span style="color: #000066;">echo</span></a> <span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">parse_code</span><span style="color: #66cc66;">&#40;</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <div class="note"><div class="note-header">Note:</div><p>Names are case-insensitive - they will be converted to lower case to match a language
 file however. So if you're making a language file, remember it should have a name in lower case.</p></div>
@@ -1181,7 +1196,7 @@ lower-case, with either alphanumeric characters, dashes or underscores in their 
 directory from the current language file location? You call the <strong><tt>set_language_path()</tt></strong>
 method:</p>
 
-<code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_language_path</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$newpath</span><span style="color: #66cc66;">&#41;</span>;</code>
+<p><code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_language_path</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$newpath</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <p>It doesn't matter whether the path has a trailing slash after it or not - only that
 it points to a valid folder. If it doesn't, that's your tough luck ;)</p>
@@ -1192,7 +1207,7 @@ it points to a valid folder. If it doesn't, that's your tough luck ;)</p>
 <p>As of version 1.0.3, you can use the method <strong><tt>set_encoding</tt></strong> to specify the character set that your
 source is in. Valid names are those names that are valid for the PHP function <tt><a href="http://www.php.net/htmlentities">htmlentities()</a></tt>:</p>
 
-<code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_encoding</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$encoding</span><span style="color: #66cc66;">&#41;</span>;</code>
+<p><code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_encoding</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$encoding</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <p>There is a table of valid strings for <var>$encoding</var> at the php.net manual linked to above. If you do not specify an encoding, or specify an
 invalid encoding, the character set used is ISO-8859-1.</p>
@@ -1203,14 +1218,14 @@ invalid encoding, the character set used is ISO-8859-1.</p>
 <p>As of GeSHi 1.0.5, you can use the method <strong><tt>load_from_file</tt></strong> to load the source code and language from a file. Simply pass
 this method a file name and it will attempt to load the source and set the language.</p>
 
-<code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">load_from_file</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$file_name</span>, <span style="color: #0000ff;">$lookup</span><span style="color: #66cc66;">&#41;</span>;</code>
+<p><code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">load_from_file</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$file_name</span>, <span style="color: #0000ff;">$lookup</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <p><var>$file_name</var> is the file name to use, and <var>$lookup</var> is an optional parameter that contains a lookup array to use for
 deciding which language to choose. You can use this to override GeSHi's default lookup array, which may not contain the extension of the file
 you're after, or perhaps does have your extension but under a different language. The lookup array is of the form:</p>
 
 <pre>array(
-	 *   'lang_name' => array('extension', 'extension', ...),
+	 *   'lang_name' =&gt; array('extension', 'extension', ...),
 	 *   'lang_name' ...
 	 * );</pre>
 
@@ -1226,7 +1241,7 @@ you get may be confusing. You may check your code over and over, and never find 
 out if GeSHi itself found anything wrong with what you tried to do. After highlighting, you can call the <strong><tt>error()</tt></strong>
 method:</p>
 
-<code><span style="color: #0000ff;">$geshi</span> = <span style="color: #000000; font-weight: bold;">new</span> GeSHi<span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'hi'</span>, <span style="color: #ff0000;">'thisLangIsNotSupported'</span><span style="color: #66cc66;">&#41;</span>;<br />
+<p><code><span style="color: #0000ff;">$geshi</span> = <span style="color: #000000; font-weight: bold;">new</span> GeSHi<span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'hi'</span>, <span style="color: #ff0000;">'thisLangIsNotSupported'</span><span style="color: #66cc66;">&#41;</span>;<br />
 
 <br />
 <a href="http://www.php.net/echo"><span style="color: #000066;">echo</span></a> <span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">error</span><span style="color: #66cc66;">&#40;</span><span style="color: #66cc66;">&#41;</span>;&nbsp; <span style="color: #808080; font-style: italic;">// echoes error message</span><br />
@@ -1234,14 +1249,14 @@ method:</p>
 <span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_source</span><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">''</span><span style="color: #66cc66;">&#41;</span>;<br />
 
 <br />
-<a href="http://www.php.net/echo"><span style="color: #000066;">echo</span></a> <span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">error</span><span style="color: #66cc66;">&#40;</span><span style="color: #66cc66;">&#41;</span>;</code>
+<a href="http://www.php.net/echo"><span style="color: #000066;">echo</span></a> <span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">error</span><span style="color: #66cc66;">&#40;</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 <p>The error message you will get for the first call of error will look like this:</p>
 
-<blockquote>GeSHi Error: GeSHi could not find the language thisLangIsNotSupported (using path geshi/) (code 2)</blockquote>
+<blockquote><p>GeSHi Error: GeSHi could not find the language thisLangIsNotSupported (using path geshi/) (code 2)</p></blockquote>
 
 <p>And for the second error you will get:</p>
 
-<blockquote>GeSHi Error: No source code inputted (code 1)</blockquote>
+<blockquote><p>GeSHi Error: No source code inputted (code 1)</p></blockquote>
 
 <p>The error outputted will be the last error GeSHi came across, just like how <tt>mysql_error()</tt> works.</p>
 
@@ -1266,7 +1281,7 @@ speed increases by disabling some of the highlighting options. This is done by u
 	<li><strong><tt>set_regexps_highlighting(<var>$regexp</var>, <var>$flag</var>):</tt></strong> Sets whether a particular
 	<var>$regexp</var> is to be highlighted or not. Consult the necessary language file(s) to see what <var>$regexp</var>
 	should be for each regexp (typically a positive integer, or the string 'MULTI' for multiline comments. <var>$flag</var> is
-	<strong>false</strong> if you want to disable highlighting of this group, and <Strong>true</strong> if you want to re-enable
+	<strong>false</strong> if you want to disable highlighting of this group, and <strong>true</strong> if you want to re-enable
 	highlighting of this group.</li>
 	<li>The following methods:
 	<ul>
@@ -1292,7 +1307,7 @@ tabs will be replaced with the specified number of spaces.</p>
 
 <p>To change the tab width, you call the <strong><tt>set_tab_width()</tt></strong> method:</p>
 
-<code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_tab_width</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$width</span><span style="color: #66cc66;">&#41;</span>;</code>
+<p><code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_tab_width</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$width</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <p>Where <var>$width</var> is the width in spaces that you'd like tabs to be.</p>
 
@@ -1303,24 +1318,24 @@ tabs will be replaced with the specified number of spaces.</p>
 this will have used a PHP file. And you know that PHP code is only executed if it's within delimiters like &lt;?php and ?&gt; (there
 are others of course...). So what happens if you do the following in a php file?</p>
 
-<code>&lt;img src=&quot;&lt;?php echo rand(1, 100) ?&gt;&quot; /&gt;</code>
+<p><code>&lt;img src=&quot;&lt;?php echo rand(1, 100) ?&gt;&quot; /&gt;</code></p>
 
 <p>Well normally using GeSHi with PHP, or using a bad highlighter, you'll end up with this:</p>
 
-<code>&lt;img src=<span style="color: #ff0000;">"&lt;?php echo rand(1, 100) ?&gt;"</span> /&gt;</code>
+<p><code>&lt;img src=<span style="color: #ff0000;">"&lt;?php echo rand(1, 100) ?&gt;"</span> /&gt;</code></p>
 
 <p>What a mess! Especially if you're being slack about where you're putting your quotes, you could end up with the rest of your
 file as bright red. Fortunately, you can tell GeSHi to be &quot;strict&quot; about just when it highlights and when it does not,
 using the <strong><tt>enable_strict_mode</tt></strong> method:</p>
 
-<code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">enable_strict_mode</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$mode</span><span style="color: #66cc66;">&#41;</span>;</code>
+<p><code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">enable_strict_mode</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$mode</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <p>Where <var>$mode</var> is <strong>true</strong> or not specified to enable strict mode, or <strong>false</strong> to disable strict mode
 if you've already turned it and don't want it now.</p>
 
 <p>Here's the result: much better!</p>
 
-<code>&lt;img src=&quot;<span style="color: #000000; font-weight: bold;">&lt;?php</span> <a href="http://www.php.net/echo"><span style="color: #000066;">echo</span></a> <a href="http://www.php.net/rand"><span style="color: #000066;">rand</span></a><span style="color: #66cc66;">&#40;</span><span style="color: #cc66cc;">1</span>, <span style="color: #cc66cc;">100</span><span style="color: #66cc66;">&#41;</span> <span style="color: #000000; font-weight: bold;">?&gt;</span>&quot; /&gt;</code>
+<p><code>&lt;img src=&quot;<span style="color: #000000; font-weight: bold;">&lt;?php</span> <a href="http://www.php.net/echo"><span style="color: #000066;">echo</span></a> <a href="http://www.php.net/rand"><span style="color: #000066;">rand</span></a><span style="color: #66cc66;">&#40;</span><span style="color: #cc66cc;">1</span>, <span style="color: #cc66cc;">100</span><span style="color: #66cc66;">&#41;</span> <span style="color: #000000; font-weight: bold;">?&gt;</span>&quot; /&gt;</code></p>
 
 <h4 id="adding-removing-keywords">3.11: Adding/Removing Keywords</h4>
 <div class="nav"><a href="#top">Top</a> | <a href="#contents">Contents</a> | <a href="#adding-a-keyword">Next</a> | <a href="#using-strict-mode">Previous</a></div>
@@ -1336,7 +1351,7 @@ of speed? GeSHi can handle all of this!</p>
 
 <p>If you want to add a keyword to an existing keyword group, you use the <strong><tt>add_keyword</tt></strong> method:</p>
 
-<code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">add_keyword</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$key</span>, <span style="color: #0000ff;">$word</span><span style="color: #66cc66;">&#41;</span>;</code>
+<p><code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">add_keyword</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$key</span>, <span style="color: #0000ff;">$word</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <p>Where <var>$key</var> is the index of the group of keywords you want to add this keyword to, and <var>$word</var> is the word to add.</p>
 
@@ -1344,7 +1359,7 @@ of speed? GeSHi can handle all of this!</p>
 
 <div class="note"><div class="note-header">Note:</div><p>Keywords should contain at least two alphabetical characters (lower or upper case letters
 only). This is to enable GeSHi to work much faster by not bothering to try to detect keywords in parts of your source where there is no alphabetical
-characters.</div>
+characters.</p></div>
 
 <h5 id="removing-a-keyword">3.11.2: Removing a Keyword</h5>
 <div class="nav"><a href="#top">Top</a> | <a href="#contents">Contents</a> | <a href="#adding-a-keyword-group">Next</a> | <a href="#adding-a-keyword">Previous</a></div>
@@ -1352,7 +1367,7 @@ characters.</div>
 <p>Perhaps you want to remove a keyword from an existing group. Maybe you don't use it and want to save yourself some time. Whatever the
 reason, you can remove it using the <strong><tt>remove_keyword</tt></strong> method:</p>
 
-<code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">remove_keyword</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$key</span>, <span style="color: #0000ff;">$word</span><span style="color: #66cc66;">&#41;</span>;</code>
+<p><code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">remove_keyword</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$key</span>, <span style="color: #0000ff;">$word</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <p>Where <var>$key</var> is the index of the gropu of keywords that you want to remove this keyword from, and <var>$word</var> is the word to remove.</p>
 
@@ -1370,14 +1385,14 @@ and classes are user defined or inbuilt. Furthermore, you could set the URL for 
 
 <p>You add a keyword group by using the <strong><tt>add_keyword_group</tt></strong> method:</p>
 
-<code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">add_keyword_group</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$key</span>, <span style="color: #0000ff;">$styles</span>, <span style="color: #0000ff;">$case_sensitive</span>, <span style="color: #0000ff;">$words</span><span style="color: #66cc66;">&#41;</span>;</code>
+<p><code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">add_keyword_group</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$key</span>, <span style="color: #0000ff;">$styles</span>, <span style="color: #0000ff;">$case_sensitive</span>, <span style="color: #0000ff;">$words</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <p>Where <var>$key</var> is the key that you want to use to refer to this group, <var>$styles</var> is the styles that you want to
 use to style this group, <var>$case_sensitive</var> is <strong>true</strong> or <strong>false</strong> depending on whether you want
 this group of keywords to be case sensitive or not and <var>$words</var> is an array of words (or a string) of which words to add
 to this group. For example:</p>
 
-<code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">add_keyword_group</span><span style="color: #66cc66;">&#40;</span><span style="color: #cc66cc;">10</span>, <span style="color: #ff0000;">'color: #600000;'</span>, <span style="color: #000000; font-weight: bold;">false</span>, <a href="http://www.php.net/array"><span style="color: #000066;">array</span></a><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'myfunc_1'</span>, <span style="color: #ff0000;">'myfunc_2'</span>, <span style="color: #ff0000;">'myfunc_3'</span><span style="color: #66cc66;">&#41;</span><span style="color: #66cc66;">&#41;</span>;</code>
+<p><code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">add_keyword_group</span><span style="color: #66cc66;">&#40;</span><span style="color: #cc66cc;">10</span>, <span style="color: #ff0000;">'color: #600000;'</span>, <span style="color: #000000; font-weight: bold;">false</span>, <a href="http://www.php.net/array"><span style="color: #000066;">array</span></a><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">'myfunc_1'</span>, <span style="color: #ff0000;">'myfunc_2'</span>, <span style="color: #ff0000;">'myfunc_3'</span><span style="color: #66cc66;">&#41;</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <p>Adds a keyword group referenced by index 10, of which all keywords in the group will be <span style="color: #600000;">dark red</span>,
 each keyword can be in any case and which contains the keywords &quot;myfunc_1&quot;, &quot;myfunc_2&quot; and &quot;myfunc_3&quot;.</p>
@@ -1386,7 +1401,7 @@ each keyword can be in any case and which contains the keywords &quot;myfunc_1&q
 
 <div class="caution"><div class="caution-header">Caution:</div><p>If you specify a <var>$key</var> for which there is already a keyword
 group, the old keyword group will be overwritten! Most language files don't use numbers larger than 5, so I recommend you play it
-safe and use a number like 10 or 42.</div>
+safe and use a number like 10 or 42.</p></div>
 
 <h5 id="removing-a-keyword-group">3.11.4: Removing a Keyword Group</h5>
 <div class="nav"><a href="#top">Top</a> | <a href="#contents">Contents</a> | <a href="#headers-and-footers">Next</a> | <a href="#adding-a-keyword-group">Previous</a></div>
@@ -1395,7 +1410,7 @@ safe and use a number like 10 or 42.</div>
 keyword checking for its existance, saving much time. You removing a keyword group by using the <strong><tt>remove_keyword_group</tt></strong>
 method:</p>
 
-<code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">remove_keyword_group</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$key</span><span style="color: #66cc66;">&#41;</span>;</code>
+<p><code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">remove_keyword_group</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$key</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <p>Where <var>$key</var> is the key of the group you wish to remove. This implies knowleged of the language file.</p>
 
@@ -1427,7 +1442,7 @@ the method <strong><tt>set_overall_style</tt></strong>, and should contain the s
 You may use any HTML you like, and format it as an HTML document. You should use valid HTML - convert to entities
 any quotemarks or angle brackets you want displayed. You set the header content using the method <strong><tt>set_header_content</tt></strong>:</p>
 
-<code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_header_content</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$content</span><span style="color: #66cc66;">&#41;</span>;</code>
+<p><code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_header_content</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$content</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <p>Where <var>$content</var> is the HTML you want to use for the header.</p>
 
@@ -1439,7 +1454,7 @@ the method <strong><tt>set_overall_style</tt></strong>, and should contain the s
 You may use any HTML you like, and format it as an HTML document. You should use valid HTML - convert to entities
 any quotemarks or angle brackets you want displayed. You set the footer content using the method <strong><tt>set_footer_content</tt></strong>:</p>
 
-<code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_footer_content</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$content</span><span style="color: #66cc66;">&#41;</span>;</code>
+<p><code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_footer_content</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$content</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <p>Where <var>$content</var> is the HTML you want to use for the footer.</p>
 
@@ -1448,7 +1463,7 @@ any quotemarks or angle brackets you want displayed. You set the footer content 
 
 <p>You can apply styles to the header content you have set with the <strong><tt>set_header_content_style</tt></strong>:</p>
 
-<code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_header_content_style</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$styles</span><span style="color: #66cc66;">&#41;</span>;</code>
+<p><code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_header_content_style</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$styles</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <p>Where <var>$styles</var> is the stylesheet declarations you want to use to style the header content.</p>
 
@@ -1457,7 +1472,7 @@ any quotemarks or angle brackets you want displayed. You set the footer content 
 
 <p>You can apply styles to the footer content you have set with the <strong><tt>set_footer_content_style</tt></strong>:</p>
 
-<code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_footer_content_style</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$styles</span><span style="color: #66cc66;">&#41;</span>;</code>
+<p><code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_footer_content_style</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$styles</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <p>Where <var>$styles</var> is the stylesheet declarations you want to use to style the footer content.</p>
 
@@ -1474,7 +1489,7 @@ documentation.</p>
 
 <p>To set the URL to be used for a keyword group, you use the <strong><tt>set_url_for_keyword_group</tt></strong> method:</p>
 
-<code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_url_for_keyword_group</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$group</span>, <span style="color: #0000ff;">$url</span><span style="color: #66cc66;">&#41;</span>;</code>
+<p><code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_url_for_keyword_group</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$group</span>, <span style="color: #0000ff;">$url</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <p>Where <var>$group</var> is the keyword group you want to assign the URL for, and <var>$url</var> is the URL for this
 group of keywords.</p>
@@ -1493,7 +1508,7 @@ the GeSHi website in the future.</p>
 <p>It's easy to disable a URL for a keyword group: Simply use the method <strong><tt>set_url_for_keyword_group</tt></strong> to pass an empty string
 as the URL:</p>
 
-<code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_url_for_keyword_group</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$group</span>, <span style="color: #ff0000;">''</span><span style="color: #66cc66;">&#41;</span>;</code>
+<p><code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_url_for_keyword_group</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$group</span>, <span style="color: #ff0000;">''</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <h5 id="styling-links">3.13.3: Styling Links</h5>
 <div class="nav"><a href="#top">Top</a> | <a href="#contents">Contents</a> | <a href="#using-targets">Next</a> | <a href="#disabling-urls">Previous</a></div>
@@ -1501,7 +1516,7 @@ as the URL:</p>
 <p>You can also style the function links. You can style their default status, hovered, active and visited status.
 All of this is controlled by one method, <strong><tt>set_link_styles</tt></strong>:</p>
 
-<code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_link_styles</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$mode</span>, <span style="color: #0000ff;">$styles</span><span style="color: #66cc66;">&#41;</span>;</code>
+<p><code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_link_styles</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$mode</span>, <span style="color: #0000ff;">$styles</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <p>Where <var>$mode</var> is one of four values:</p>
 
@@ -1520,7 +1535,7 @@ All of this is controlled by one method, <strong><tt>set_link_styles</tt></stron
 
 <p>Perhaps you want to set the target of link attributes, so the manual pages open in a new window? Use the <strong><tt>set_link_target</tt></strong> method:</p>
 
-<code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_link_target</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$target</span>, <span style="color: #0000ff;">$styles</span><span style="color: #66cc66;">&#41;</span>;</code>
+<p><code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_link_target</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$target</span>, <span style="color: #0000ff;">$styles</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <p>Where <var>$target</var> is any valid (X)HTML target value - <tt>_blank</tt> or <tt>_top</tt> for example.</p>
 
@@ -1529,7 +1544,7 @@ All of this is controlled by one method, <strong><tt>set_link_styles</tt></stron
 
 <p>Perhaps there's a section of code that is really worth noting for your viewers. A line in an algorithm or keyword that
 is so important that you'd rather that they not miss it. Well, you can use special delimiters in your code to set parts
-that should explicitly be highlighted with a lot more emphasis that the surrounding code.
+that should explicitly be highlighted with a lot more emphasis that the surrounding code.</p>
 
 <h5 id="context-important-markers">3.14.1: Context-Important Markers</h5>
 <div class="nav"><a href="#top">Top</a> | <a href="#contents">Contents</a> | <a href="#styles-for-context-important-blocks">Next</a> | <a href="#using-contextual-important">Previous</a></div>
@@ -1539,7 +1554,7 @@ and <strong><tt>&lt;END GeSHi&gt;</tt></strong>. These delimiters will not be in
 these delimiters will be highlighted with the &quot;important code styles&quot; <strong>instead</strong> of being highlighted
 normally. Here is an example:</p>
 
-<code><span style="color: #808080; font-style: italic;">//</span><br />
+<p><code><span style="color: #808080; font-style: italic;">//</span><br />
 <span style="color: #808080; font-style: italic;">// Some source with an important part. This could be from a DB query...</span><br />
 <span style="color: #808080; font-style: italic;">//</span><br />
 <span style="color: #0000ff;">$source</span> = <span style="color: #ff0000;">'public int[][] product ( n, m )<br />
@@ -1564,11 +1579,11 @@ normally. Here is an example:</p>
 <span style="color: #0000ff;">$geshi</span> = <span style="color: #000000; font-weight: bold;">new</span> GeSHi<span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$source</span>, <span style="color: #ff0000;">'java'</span><span style="color: #66cc66;">&#41;</span>;<br />
 
 <br />
-<a href="http://www.php.net/echo"><span style="color: #000066;">echo</span></a> <span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">parse_code</span><span style="color: #66cc66;">&#40;</span><span style="color: #66cc66;">&#41;</span>;</code>
+<a href="http://www.php.net/echo"><span style="color: #000066;">echo</span></a> <span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">parse_code</span><span style="color: #66cc66;">&#40;</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <p>And this produces:</p>
 
-<code><span style="color: #000000; font-weight: bold;">public</span> <span style="color: #993333;">int</span><span style="color: #66cc66;">&#91;</span><span style="color: #66cc66;">&#93;</span><span style="color: #66cc66;">&#91;</span><span style="color: #66cc66;">&#93;</span> product <span style="color: #66cc66;">&#40;</span> n, m <span style="color: #66cc66;">&#41;</span><br />
+<p><code><span style="color: #000000; font-weight: bold;">public</span> <span style="color: #993333;">int</span><span style="color: #66cc66;">&#91;</span><span style="color: #66cc66;">&#93;</span><span style="color: #66cc66;">&#91;</span><span style="color: #66cc66;">&#93;</span> product <span style="color: #66cc66;">&#40;</span> n, m <span style="color: #66cc66;">&#41;</span><br />
 <span style="color: #66cc66;">&#123;</span><br />
 
 &nbsp; <span style="color: #993333;">int</span> <span style="color: #66cc66;">&#91;</span><span style="color: #66cc66;">&#93;</span><span style="color: #66cc66;">&#91;</span><span style="color: #66cc66;">&#93;</span> ans = <span style="color: #000000; font-weight: bold;">new</span> <span style="color: #993333;">int</span><span style="color: #66cc66;">&#91;</span>n<span style="color: #66cc66;">&#93;</span><span style="color: #66cc66;">&#91;</span>m<span style="color: #66cc66;">&#93;</span>;<br />
@@ -1582,17 +1597,17 @@ normally. Here is an example:</p>
 &nbsp;</span>&nbsp; &nbsp;<span style="color: #66cc66;">&#125;</span><br />
 &nbsp; <span style="color: #66cc66;">&#125;</span><br />
 &nbsp; <span style="color: #000000; font-weight: bold;">return</span> ans;<br />
-<span style="color: #66cc66;">&#125;</span></code>
+<span style="color: #66cc66;">&#125;</span></code></p>
 
 <p>As you can see, it's very easy to see the line highlighted. However, no styling occurs in the important parts (for
 example the brackets in the above example aren't a different colour).</p>
 
 <div class="note"><div class="note-header">Note:</div><p>To change the delimiters, you'll have to go into the GeSHi
-source code and modify the appropriate constants, found near the top of the file <tt>geshi.php</tt></div>
+source code and modify the appropriate constants, found near the top of the file <tt>geshi.php</tt></p></div>
 
 <div class="caution"><div class="caution-header">Caution:</div><p>This is BUGGY! It should work just fine for the most
 part, but if you have strings in your source code with &lt;BEGIN GeSHi&gt; or &lt;END GeSHi&gt; in them, this may
-not work as expected.</div>
+not work as expected.</p></div>
 
 <h5 id="styles-for-context-important-blocks">3.14.2: Styles for Context-Important Blocks</h5>
 <div class="nav"><a href="#top">Top</a> | <a href="#contents">Contents</a> | <a href="#disabling-contextual-importance">Next</a> | <a href="#context-important-markers">Previous</a></div>
@@ -1600,7 +1615,7 @@ not work as expected.</div>
 <p>Of course, you're not chained to the bright-red-bold style that is the default. You can set the style of important
 blocks using the <strong><tt>set_important_styles</tt></strong> method:</p>
 
-<code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_important_styles</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$styles</span><span style="color: #66cc66;">&#41;</span>;</code>
+<p><code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_important_styles</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$styles</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <p>Where <var>$styles</var> is the stylesheet declarations to apply to context-important blocks.</p>
 
@@ -1610,7 +1625,7 @@ blocks using the <strong><tt>set_important_styles</tt></strong> method:</p>
 <p>By default, contextual importance is enabled. However, it can be disabled (and re-enabled) by using the
 <strong><tt>enable_important_blocks</tt></strong> method:</p>
 
-<code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">enable_important_blocks</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$flag</span><span style="color: #66cc66;">&#41;</span>;</code>
+<p><code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">enable_important_blocks</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$flag</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <p>Where <var>$flag</var> is <strong>true</strong> to enable contextual importance, and <strong>false</strong> to disable it. If
 contextual importance is disabled, any &lt;BEGIN GeSHi&gt; or &lt;END GeSHi&gt; markers will simply be displayed as part
@@ -1628,7 +1643,7 @@ way of making important lines stand out.</p>
 
 <p>To specify which lines to highlight extra, you past an array containing the line numbers to <strong><tt>highlight_lines_extra</tt></strong>:</p>
 
-<code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">highlight_lines_extra</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$array</span><span style="color: #66cc66;">&#41;</span>;</code>
+<p><code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">highlight_lines_extra</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$array</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <p>The array could be in the form <tt>array(2, 3, 4, 7, 12, 344, 4242)</tt>, made from a DB query, generated from looking
 through the source for certain important things and working out what line those things are... however you get the line numbers,
@@ -1636,7 +1651,7 @@ the array should simply be an array of integers.</p>
 
 <p>Here's an example, using the same source as before:</p>
 
-<code><span style="color: #808080; font-style: italic;">//</span><br />
+<p><code><span style="color: #808080; font-style: italic;">//</span><br />
 <span style="color: #808080; font-style: italic;">// Here we go again! This time we'll simply highlight the 8th line</span><br />
 <span style="color: #808080; font-style: italic;">//</span><br />
 <span style="color: #0000ff;">$source</span> = <span style="color: #ff0000;">'public int[][] product ( n, m )<br />
@@ -1661,11 +1676,11 @@ the array should simply be an array of integers.</p>
 <span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">highlight_lines_extra</span><span style="color: #66cc66;">&#40;</span><a href="http://www.php.net/array"><span style="color: #000060;">array</span></a><span style="color: #66cc66;">&#40;</span><span style="color: #8866ff;">8<span style="color: #66cc66;">&#41;</span></span><span style="color: #66cc66;">&#41;</span>;
 
 <br />
-<a href="http://www.php.net/echo"><span style="color: #000066;">echo</span></a> <span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">parse_code</span><span style="color: #66cc66;">&#40;</span><span style="color: #66cc66;">&#41;</span>;</code>
+<a href="http://www.php.net/echo"><span style="color: #000066;">echo</span></a> <span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">parse_code</span><span style="color: #66cc66;">&#40;</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <p>Which produces:</p>
 
-<code><span style="color: #000000; font-weight: bold;">public</span> <span style="color: #993333;">int</span><span style="color: #66cc66;">&#91;</span><span style="color: #66cc66;">&#93;</span><span style="color: #66cc66;">&#91;</span><span style="color: #66cc66;">&#93;</span> product <span style="color: #66cc66;">&#40;</span> n, m <span style="color: #66cc66;">&#41;</span><br />
+<p><code><span style="color: #000000; font-weight: bold;">public</span> <span style="color: #993333;">int</span><span style="color: #66cc66;">&#91;</span><span style="color: #66cc66;">&#93;</span><span style="color: #66cc66;">&#91;</span><span style="color: #66cc66;">&#93;</span> product <span style="color: #66cc66;">&#40;</span> n, m <span style="color: #66cc66;">&#41;</span><br />
 <span style="color: #66cc66;">&#123;</span><br />
 
 &nbsp; <span style="color: #993333;">int</span> <span style="color: #66cc66;">&#91;</span><span style="color: #66cc66;">&#93;</span><span style="color: #66cc66;">&#91;</span><span style="color: #66cc66;">&#93;</span> ans = <span style="color: #000000; font-weight: bold;">new</span> <span style="color: #993333;">int</span><span style="color: #66cc66;">&#91;</span>n<span style="color: #66cc66;">&#93;</span><span style="color: #66cc66;">&#91;</span>m<span style="color: #66cc66;">&#93;</span>;<br />
@@ -1675,17 +1690,17 @@ the array should simply be an array of integers.</p>
 &nbsp; &nbsp; <span style="color: #b1b100;">for</span> <span style="color: #66cc66;">&#40;</span> <span style="color: #993333;">int</span> j = <span style="color: #cc66cc;">0</span>; i &lt; m; j++ <span style="color: #66cc66;">&#41;</span><br />
 &nbsp; &nbsp; <span style="color: #66cc66;">&#123;</span><br />
 
-<div style="color: #cc0; background-color: #ffc;">&nbsp; &nbsp; &nbsp; ans<span style="color: #66cc66;">&#91;</span>i<span style="color: #66cc66;">&#93;</span><span style="color: #66cc66;">&#91;</span>j<span style="color: #66cc66;">&#93;</span> = i * j;<br /></div>
+<span style="color: #cc0; background-color: #ffc;">&nbsp; &nbsp; &nbsp; ans<span style="color: #66cc66;">&#91;</span>i<span style="color: #66cc66;">&#93;</span><span style="color: #66cc66;">&#91;</span>j<span style="color: #66cc66;">&#93;</span> = i * j;<br /></span>
 &nbsp; &nbsp; <span style="color: #66cc66;">&#125;</span><br />
 &nbsp; <span style="color: #66cc66;">&#125;</span><br />
 &nbsp; <span style="color: #000000; font-weight: bold;">return</span> ans;<br />
 
-<span style="color: #66cc66;">&#125;</span></code>
+<span style="color: #66cc66;">&#125;</span></code></p>
 
 <p>What's more, as you can see the code on a highlighted line is still actually highlighted itself. </p>
 
 <div class="note"><div class="note-header">Note:</div><p>As you can see, this is a little buggy, but that is because of HTML laws
-(code elements should not contain div elements). This works just fine if you use line numbers.</div>
+(code elements should not contain div elements). This works just fine if you use line numbers.</p></div>
 
 <h5 id="styles-for-highlighted-lines">3.15.2: Styles for the Highlighted Lines</h5>
 <div class="nav"><a href="#top">Top</a> | <a href="#contents">Contents</a> | <a href="#adding-ids-to-each-line">Next</a> | <a href="#specifying-lines-to-highlight-extra">Previous</a></div>
@@ -1693,7 +1708,7 @@ the array should simply be an array of integers.</p>
 <p>Again as with contextual importance, you're not chained to the yellow theme that is the default. You can use the
 <strong><tt>set_highlight_lines_extra_style</tt></strong> method:</p>
 
-<code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_highlight_lines_extra_style</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$styles</span><span style="color: #66cc66;">&#41;</span>;</code>
+<p><code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_highlight_lines_extra_style</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$styles</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <p>Where <var>$styles</var> is the stylesheet declarations that you want to apply to highlighted lines.</p>
 
@@ -1704,7 +1719,7 @@ the array should simply be an array of integers.</p>
 javascript, or perhaps just by plain CSS (though if you want to access lines by CSS you should use the method in the
 previous section). To enable IDs you call the <strong><tt>enable_ids</tt></strong> method:</p>
 
-<code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">enable_ids</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$flag</span><span style="color: #66cc66;">&#41;</span>;</code>
+<p><code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">enable_ids</span><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$flag</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 <p>Where <var>$flag</var> is <strong>true</strong> or not present to enable IDs, and <strong>false</strong> to disable them
 again if you need.</p>
@@ -1720,7 +1735,7 @@ one block of code on any one page.</p>
 <p>Once you've called <tt>parse_code</tt>, you can get the time it took to run the highlighting by calling the
 <strong><tt>get_time</tt></strong> method:</p>
 
-<code><span style="color: #0000ff;">$geshi</span> = <span style="color: #000000; font-weight: bold;">new</span> GeSHi<span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$source</span>, <span style="color: #0000ff;">$language</span>, <span style="color: #0000ff;">$path</span><span style="color: #66cc66;">&#41;</span>;<br />
+<p><code><span style="color: #0000ff;">$geshi</span> = <span style="color: #000000; font-weight: bold;">new</span> GeSHi<span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$source</span>, <span style="color: #0000ff;">$language</span>, <span style="color: #0000ff;">$path</span><span style="color: #66cc66;">&#41;</span>;<br />
 
 <br />
 <span style="color: #0000ff;">$code</span> = <a href="http://www.php.net/addslashes"><span style="color: #000066;">addslashes</span></a><span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">parse_code</span><span style="color: #66cc66;">&#40;</span><span style="color: #66cc66;">&#41;</span><span style="color: #66cc66;">&#41;</span>;<br />
@@ -1728,10 +1743,10 @@ one block of code on any one page.</p>
 
 <br />
 <span style="color: #808080; font-style: italic;">// do something with it</span><br />
-<a href="http://www.php.net/mysql_query"><span style="color: #000066;">mysql_query</span></a><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">"INSERT INTO code VALUES ('$code', '$time')"</span><span style="color: #66cc66;">&#41;</span>;</code>
+<a href="http://www.php.net/mysql_query"><span style="color: #000066;">mysql_query</span></a><span style="color: #66cc66;">&#40;</span><span style="color: #ff0000;">"INSERT INTO code VALUES ('$code', '$time')"</span><span style="color: #66cc66;">&#41;</span>;</code></p>
 
 
-<h3 id="language-files">4: Language Files</a></h3>
+<h3 id="language-files">4: Language Files</h3>
 <div class="nav"><a href="#top">Top</a> | <a href="#contents">Contents</a> | <a href="#language-file-example">Next</a> | <a href="#">Previous</a></div>
 
 <p>So now you know what features GeSHi offers, and perhaps you've even meddled with the source. Or perhaps
@@ -2133,9 +2148,9 @@ result.</p>
  * Author: &lt;name&gt; (&lt;e-mail address&gt;)
  * Copyright: (c) 2004 &lt;name&gt; (&lt;website URL&gt;)
  * Release Version: 1.0.0
- * CVS Revision Version: $Revision: 1.2 $
+ * CVS Revision Version: $Revision: 1.3 $
  * Date Started: &lt;date started&gt;
- * Last Modified: $Date: 2005-10-28 17:37:16 $
+ * Last Modified: $Date: 2008-07-25 20:14:41 $
  *
  * &lt;name-of-language&gt; language file for GeSHi.
  *
@@ -2199,7 +2214,7 @@ else *must* remain the same!</strong></p>
 	it with the date of the GeSHi release that it is first added to.</li>
 </ul>
 
-<p>Everything should remain the same, including <tt>$Revision: 1.2 $</tt> and <tt>$Date: 2005-10-28 17:37:16 $</tt> (I know these may
+<p>Everything should remain the same, including <tt>$Revision: 1.3 $</tt> and <tt>$Date: 2008-07-25 20:14:41 $</tt> (I know these may
 look funny but they have their purpose for those of you who don't know about CVS).</p>
 
 <p><strong>Also:</strong> I'm not sure about the copyright on a new language file. I'm not a lawyer, could
@@ -2211,12 +2226,12 @@ or joint with me (if included in a GeSHi release)?</p>
 
 <p>Here is an example from the php language file of the first indices:</p>
 
-<pre>	'LANG_NAME' => 'PHP',
-	'COMMENT_SINGLE' => array(1 => '//', 2 => '#'),
-	'COMMENT_MULTI' => array('/*' => '*/'),
-	'CASE_KEYWORDS' => GESHI_CAPS_NO_CHANGE,
-	'QUOTEMARKS' => array("'", '"'),
-	'ESCAPE_CHAR' => '\\',</pre>
+<pre>	'LANG_NAME' =&gt; 'PHP',
+	'COMMENT_SINGLE' =&gt; array(1 =&gt; '//', 2 =&gt; '#'),
+	'COMMENT_MULTI' =&gt; array('/*' =&gt; '*/'),
+	'CASE_KEYWORDS' =&gt; GESHI_CAPS_NO_CHANGE,
+	'QUOTEMARKS' =&gt; array("'", '"'),
+	'ESCAPE_CHAR' =&gt; '\\',</pre>
 
 <p>The first indices are the first few lines of a language file before the KEYWORDS index. These indices specify:</p>
 
@@ -2225,13 +2240,13 @@ or joint with me (if included in a GeSHi release)?</p>
 	name (e.g. HTML 4 (transitional) instead of html4trans)</li>
 	<li><strong>'COMMENT_SINGLE':</strong> An array of single-line comments in your language, indexed by integers
 	starting from 1. A single line comment is a comment that starts at the marker and goes until the end of the line.
-	These comments may be any length > 0, and since they can be styled individually, can be used for other things than
+	These comments may be any length &gt; 0, and since they can be styled individually, can be used for other things than
 	comments (for example the Java language file defines "import" as a single line comment). If you are making
 	a language that uses a ' (apostrophe) as a comment (or in the comment marker somewhere), use double quotes. e.g.:
 	"'"</li>
-	<li><strong>'COMMENT_MULTI':</strong> Used to specify multiline comments, an array in the form 'OPEN' => 'CLOSE'.
+	<li><strong>'COMMENT_MULTI':</strong> Used to specify multiline comments, an array in the form 'OPEN' =&gt; 'CLOSE'.
 	Unfortunately, all of these comments you add here will be styled the same way (an area of improvement for GeSHi 1.2.X).
-	These comment markers may be any length > 0.</li>
+	These comment markers may be any length &gt; 0.</li>
 	<li><strong>'CASE_KEYWORDS':</strong> Used to set whether the case of keywords should be changed automatically
 	as they are found. For example, in an SQL or BASIC dialect you may want all keywords to be upper case. The accepted
 	values for this are:
@@ -2240,6 +2255,7 @@ or joint with me (if included in a GeSHi release)?</p>
 		<li><tt>GESHI_CAPS_LOWER</tt>: Convert the case of all keywords to lower case.</li>
 		<li><tt>GESHI_CAPS_NO_CHANGE</tt>: Don't change the case of any keyword.</li>
 	</ul>
+	</li>
 	<li><strong>'QUOTEMARKS':</strong> Specifies the characters that mark the beginning and end of a string. This is
 	another example where if your language includes the ' string delimiter you should use double quotes around it.</li>
 	<li><strong>'ESCAPE_CHAR':</strong> Specifies the escape character used in all strings. If your language does not
@@ -2256,13 +2272,13 @@ inbuilt functions, data types, predefined constants etc etc.</p>
 
 <p>Here's a (shortened) example from the php language file:</p>
 
-<pre>	'KEYWORDS' => array(
-		1 => array(
+<pre>	'KEYWORDS' =&gt; array(
+		1 =&gt; array(
 			'include', 'require', 'include_once', 'require_once',
 			'for', 'foreach', 'as', 'if', 'elseif', 'else', 'while', 'do', 'endwhile', 'endif', 'switch', 'case', 'endswitch',
 			'return', 'break'
 			),
-		2 => array(
+		2 =&gt; array(
 			'null', '__LINE__', '__FILE__',
 			'false', '&lt;?php', '?&gt;', '&lt;?',
 			'&lt;script language=', '&lt;/script&gt;',
@@ -2276,7 +2292,7 @@ inbuilt functions, data types, predefined constants etc etc.</p>
 			'E_CORE_ERROR', 'E_CORE_WARNING', 'E_COMPILE_ERROR', 'E_COMPILE_WARNING', 'E_USER_ERROR',
 			'E_USER_WARNING', 'E_USER_NOTICE', 'E_ALL'
 			),
-		3 => array(
+		3 =&gt; array(
 			'zlib_get_coding_type','zend_version','zend_logo_guid','yp_order','yp_next',
 			'yp_match','yp_master','yp_get_default_domain','yp_first','yp_errno','yp_err_string',
 			'yp_cat','yp_all','xml_set_unparsed_entity_decl_handler','xml_set_start_namespace_decl_handler','xml_set_processing_instruction_handler','xml_set_object',
@@ -2323,14 +2339,14 @@ section: here you can set which keyword groups are case sensitive.</p>
 
 <p>Here's an example:</p>
 
-<pre>	'SYMBOLS' => array(
-		'(', ')', '[', ']', '{', '}', '!', '@', '%', '&', '*', '|', '/', '<', '>'
+<pre>	'SYMBOLS' =&gt; array(
+		'(', ')', '[', ']', '{', '}', '!', '@', '%', '&amp;', '*', '|', '/', '&lt;', '&gt;'
 		),
-	'CASE_SENSITIVE' => array(
-		GESHI_COMMENTS => false,
-		1 => false,
-		2 => false,
-		3 => false,
+	'CASE_SENSITIVE' =&gt; array(
+		GESHI_COMMENTS =&gt; false,
+		1 =&gt; false,
+		2 =&gt; false,
+		3 =&gt; false,
 		),</pre>
 
 <ul>
@@ -2351,43 +2367,43 @@ language file.</p>
 
 <p>Here's an example:</p>
 
-<pre>	'STYLES' => array(
-		'KEYWORDS' => array(
-			1 => 'color: #b1b100;',
-			2 => 'color: #000000; font-weight: bold;',
-			3 => 'color: #000066;'
+<pre>	'STYLES' =&gt; array(
+		'KEYWORDS' =&gt; array(
+			1 =&gt; 'color: #b1b100;',
+			2 =&gt; 'color: #000000; font-weight: bold;',
+			3 =&gt; 'color: #000066;'
 			),
-		'COMMENTS' => array(
-			1 => 'color: #808080; font-style: italic;',
-			2 => 'color: #808080; font-style: italic;',
-			'MULTI' => 'color: #808080; font-style: italic;'
+		'COMMENTS' =&gt; array(
+			1 =&gt; 'color: #808080; font-style: italic;',
+			2 =&gt; 'color: #808080; font-style: italic;',
+			'MULTI' =&gt; 'color: #808080; font-style: italic;'
 			),
-		'ESCAPE_CHAR' => array(
-			0 => 'color: #000099; font-weight: bold;'
+		'ESCAPE_CHAR' =&gt; array(
+			0 =&gt; 'color: #000099; font-weight: bold;'
 			),
-		'BRACKETS' => array(
-			0 => 'color: #66cc66;'
+		'BRACKETS' =&gt; array(
+			0 =&gt; 'color: #66cc66;'
 			),
-		'STRINGS' => array(
-			0 => 'color: #ff0000;'
+		'STRINGS' =&gt; array(
+			0 =&gt; 'color: #ff0000;'
 			),
-		'NUMBERS' => array(
-			0 => 'color: #cc66cc;'
+		'NUMBERS' =&gt; array(
+			0 =&gt; 'color: #cc66cc;'
 			),
-		'METHODS' => array(
-			0 => 'color: #006600;'
+		'METHODS' =&gt; array(
+			0 =&gt; 'color: #006600;'
 			),
-		'SYMBOLS' => array(
-			0 => 'color: #66cc66;'
+		'SYMBOLS' =&gt; array(
+			0 =&gt; 'color: #66cc66;'
 			),
-		'REGEXPS' => array(
-			0 => 'color: #0000ff;'
+		'REGEXPS' =&gt; array(
+			0 =&gt; 'color: #0000ff;'
 			),
-		'SCRIPT' => array(
-			0 => '',
-			1 => '',
-			2 => '',
-			3 => ''
+		'SCRIPT' =&gt; array(
+			0 =&gt; '',
+			1 =&gt; '',
+			2 =&gt; '',
+			3 =&gt; ''
 			)
 		),</pre>
 
@@ -2418,11 +2434,11 @@ online manual entries.</p>
 
 <p>Here is an example:</p>
 
-<pre>	'URLS' => array(
-		1 => '',
-		2 => '',
-		3 => 'http://www.php.net/{FNAME}',
-		4 => ''
+<pre>	'URLS' =&gt; array(
+		1 =&gt; '',
+		2 =&gt; '',
+		3 =&gt; 'http://www.php.net/{FNAME}',
+		4 =&gt; ''
 		),</pre>
 
 <p>The indices of this array correspond to the keyword groups you specified in the keywords section. The string <tt>{FNAME}</tt>
@@ -2440,8 +2456,8 @@ tell it to do so and what the &quot;splitter&quot; is between object/method etc.
 
 <p>Here's an example:</p>
 
-<pre>	'OOLANG' => true,
-	'OBJECT_SPLITTER' => '-&gt;',</pre>
+<pre>	'OOLANG' =&gt; true,
+	'OBJECT_SPLITTER' =&gt; '-&gt;',</pre>
 
 <p>If your language has object orientation, the value of <tt>'OOLANG'</tt> is true, otherwise it is false. If it is
 object orientated, in the <tt>'OBJECT_SPLITTER'</tt> value you put the <tt>htmlentities()</tt> version of the &quot;splitter&quot;
@@ -2461,21 +2477,21 @@ only part of those things. This is particularly useful for languages like XML.</
 
 <p>Here is an example (this time the PHP file merged with the XML file):</p>
 
-<pre>		0 => array(
-			GESHI_SEARCH => '(((xml:)?[a-z\-]+))(=)',
-			GESHI_REPLACE => '\\1',
-			GESHI_MODIFIERS => '',
-			GESHI_BEFORE => '',
-			GESHI_AFTER => '\\4'
+<pre>		0 =&gt; array(
+			GESHI_SEARCH =&gt; '(((xml:)?[a-z\-]+))(=)',
+			GESHI_REPLACE =&gt; '\\1',
+			GESHI_MODIFIERS =&gt; '',
+			GESHI_BEFORE =&gt; '',
+			GESHI_AFTER =&gt; '\\4'
 			),
-		1 => array(
-			GESHI_SEARCH => '(&lt;/?[a-z0-9]*(&gt;)?)',
-			GESHI_REPLACE => '\\1',
-			GESHI_MODIFIERS => '',
-			GESHI_BEFORE => '',
-			GESHI_AFTER => ''
+		1 =&gt; array(
+			GESHI_SEARCH =&gt; '(&lt;/?[a-z0-9]*(&gt;)?)',
+			GESHI_REPLACE =&gt; '\\1',
+			GESHI_MODIFIERS =&gt; '',
+			GESHI_BEFORE =&gt; '',
+			GESHI_AFTER =&gt; ''
 			),
-		2 => "[\\$]{1,2}[a-zA-Z_][a-zA-Z0-9_]*"</pre>
+		2 =&gt; "[\\$]{1,2}[a-zA-Z_][a-zA-Z0-9_]*"</pre>
 
 <p>As you can see there are two formats. One is the &quot;simple&quot; format used in GeSHi &lt; 1.0.2, and the other
 is a more advanced syntax. Firstly, the simple syntax:</p>
@@ -2526,22 +2542,22 @@ then you're an android ;). Here's a better example:</p>
 <p>Let's say that I'm making a language, and variables in this language always start with a dollar sign ($), are always
 written in lowercase letters and always end with an ampersand (&amp;). eg:</p>
 
-<code>$foo& = 'bar'</code>
+<p><code>$foo&amp; = 'bar'</code></p>
 
 <p>I want to highlight <em>only the text between the $ and the &amp;</em>. How do I do that? With simple regular
 expressions I can't, but with advanced, it's relatively easy:</p>
 
-<pre>		1 => array(
-			GESHI_SEARCH => '(\$)([a-z]+)(&amp;)',   // search for a dollar sign, then one or more of the characters a-z, then an ampersand
-			GESHI_REPLACE => '\\2',                  // we wanna highlight the characters, which are in the second bracketed group
-			GESHI_MODIFIERS => '',                   // no modifiers, since we're not matching the &quot;anything&quot; regex
-			GESHI_BEFORE => '\\1',                   // before the highlighted characters should be the first bracketed group (always a dollar sign in this example)
-			GESHI_AFTER => '\\3'                     // after the highlighted characters should be the third bracketed group (always an ampersand in this example)
+<pre>		1 =&gt; array(
+			GESHI_SEARCH =&gt; '(\$)([a-z]+)(&amp;)',   // search for a dollar sign, then one or more of the characters a-z, then an ampersand
+			GESHI_REPLACE =&gt; '\\2',                  // we wanna highlight the characters, which are in the second bracketed group
+			GESHI_MODIFIERS =&gt; '',                   // no modifiers, since we're not matching the &quot;anything&quot; regex
+			GESHI_BEFORE =&gt; '\\1',                   // before the highlighted characters should be the first bracketed group (always a dollar sign in this example)
+			GESHI_AFTER =&gt; '\\3'                     // after the highlighted characters should be the third bracketed group (always an ampersand in this example)
 			),</pre>
 
-<p>So if someone tried to highlight using my language, all cases of $foo& would turn into:</p>
+<p>So if someone tried to highlight using my language, all cases of $foo&amp; would turn into:</p>
 
-<code>$&lt;span style=&quot;color: blue;&quot;&gt;foo&lt;/span&gt;&amp;</code>
+<p><code>$&lt;span style=&quot;color: blue;&quot;&gt;foo&lt;/span&gt;&amp;</code></p>
 
 <p>(which would of course be viewed in a browser to get something like <tt>$<span style="color: blue;">foo</span>&amp;</tt>)</p>
 
@@ -2555,26 +2571,26 @@ case? You do it with &quot;Strict Blocks&quot;.</p>
 
 <p>Here is an example:</p>
 
-<pre>	'STRICT_MODE_APPLIES' => GESHI_MAYBE,
-	'SCRIPT_DELIMITERS' => array(
-		0 => array(
+<pre>	'STRICT_MODE_APPLIES' =&gt; GESHI_MAYBE,
+	'SCRIPT_DELIMITERS' =&gt; array(
+		0 =&gt; array(
 			'&lt;?php' =&gt; '?&gt;'
 			),
-		1 => array(
+		1 =&gt; array(
 			'&lt;?' =&gt; '?&gt;'
 			),
-		2 => array(
+		2 =&gt; array(
 			'&lt;%' =&gt; '%&gt;'
 			),
-		3 => array(
+		3 =&gt; array(
 			'&lt;script language="php"&gt;' =&gt; '&lt;/script&gt;'
 			)
 		),
-	'HIGHLIGHT_STRICT_BLOCK' => array(
-		0 => true,
-		1 => true,
-		2 => true,
-		3 => true
+	'HIGHLIGHT_STRICT_BLOCK' =&gt; array(
+		0 =&gt; true,
+		1 =&gt; true,
+		2 =&gt; true,
+		3 =&gt; true
 		)</pre>
 
 <p>What is strict mode? Strict mode says that highlighting only occurs inside the blocks you specify. You can see from
@@ -2593,10 +2609,11 @@ Here are some points about strict highlighting:</p>
 		things outside the strict block markers. If strict mode is on the nothing outside strict block markers will
 		be highlighted.</li>
 	</ul>
+	</li>
 	<li><strong>SCRIPT_DELIMITERS:</strong> This is an array of script delimiters, in the format of the above. The indices are
 	use in the 'SCRIPT' part of the styles section for highlighting everything in a strict block in a certain way. For example,
 	you could set up your language file to make the background yellow of any code inside a strict block this way. The delimiters
-	are in the form 'OPEN' => 'CLOSE'. Delimiters can be of any length > 0. Delimiters are <em>not</em> formatted as if they
+	are in the form 'OPEN' =&gt; 'CLOSE'. Delimiters can be of any length &gt; 0. Delimiters are <em>not</em> formatted as if they
 	were run through <tt>htmlentities()</tt>!</li>
 	<li><strong>'HIGHLIGHT_STRICT_BLOCK':</strong> specifies whether any highlighting should go on inside each block. Most
 	of the time this should be true, but for example, in the XML language file highlighting is turned off for blocks beginning
@@ -2614,10 +2631,10 @@ Here are some points about strict highlighting:</p>
 
 <pre>);
 
-?></pre>
+?&gt;</pre>
 
 
-<h3 id="method-constant-reference">5: Method/Constant Reference</a></h3>
+<h3 id="method-constant-reference">5: Method/Constant Reference</h3>
 <div class="nav"><a href="#top">Top</a> | <a href="#contents">Contents</a> | <a>Next</a> | <a href="#language-file-tidying-up">Previous</a></div>
 
 <p>Sorry, there isn't one yet ;). I discovered phpdoc most of the way through 1.0.2 (as well as completing my first

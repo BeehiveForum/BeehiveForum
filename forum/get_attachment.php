@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: get_attachment.php,v 1.30 2007-12-26 17:44:35 decoyduck Exp $ */
+/* $Id: get_attachment.php,v 1.31 2008-07-25 14:52:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -60,6 +60,10 @@ include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "logon.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
+
+// Intitalise a few variables
+
+$webtag_search = false;
 
 // Check we're logged in correctly
 
@@ -170,7 +174,7 @@ if (isset($hash) && is_md5($hash)) {
 
     if (!user_is_guest() || forum_get_setting('attachment_allow_guests', 'Y')) {
 
-        if ($attachment_details = get_attachment_by_hash($hash)) {
+        if (($attachment_details = get_attachment_by_hash($hash))) {
 
             // If we're requesting the thumbnail then we need to append
             //.thumb to the filepath. If we're getting the full image we

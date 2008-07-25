@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.537 2008-07-14 18:14:10 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.538 2008-07-25 14:52:45 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -137,7 +137,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
     }else {
 
-        if ($messages = db_fetch_array($result)) {
+        if (($messages = db_fetch_array($result))) {
 
             if (!isset($messages['VIEWED'])) $messages['VIEWED'] = 0;
 
@@ -183,7 +183,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
 function message_get_content($tid, $pid)
 {
-    if ($message_content = cache_check("$tid.$pid")) {
+    if (($message_content = cache_check("$tid.$pid"))) {
         return $message_content;
     }
 
@@ -783,7 +783,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
     // If the user posting a poll is ignored, remove ignored status for this message only so the poll can be seen
 
-    if ($is_poll && isset($message['PID']) && $message['PID'] == 1 && ($message['FROM_RELATIONSHIP'] & USER_IGNORED)) {
+    if (($is_poll && isset($message['PID']) && $message['PID'] == 1 && ($message['FROM_RELATIONSHIP'] & USER_IGNORED))) {
 
         $message['FROM_RELATIONSHIP'] -= USER_IGNORED;
         $temp_ignore = true;
@@ -936,7 +936,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
             if (($post_edit_grace_period == 0) || ($message['EDITED'] - $message['CREATED']) > ($post_edit_grace_period * MINUTE_IN_SECONDS)) {
 
-                if ($edit_user = user_get_logon($message['EDITED_BY'])) {
+                if (($edit_user = user_get_logon($message['EDITED_BY']))) {
 
                     echo "              <tr>\n";
                     echo "                <td class=\"postbody\" align=\"left\"><p class=\"edit_text\">", sprintf($lang['editedbyuser'], format_time($message['EDITED'], 1), $edit_user), "</p></td>\n";
@@ -949,7 +949,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
             if (isset($message['APPROVED_BY']) && $message['APPROVED_BY'] > 0 && $message['APPROVED_BY'] != $message['FROM_UID']) {
 
-                if ($approved_user = user_get_logon($message['APPROVED_BY'])) {
+                if (($approved_user = user_get_logon($message['APPROVED_BY']))) {
 
                     echo "              <tr>\n";
                     echo "                <td class=\"postbody\" align=\"left\"><p class=\"approved_text\">", sprintf($lang['approvedbyuser'], format_time($message['APPROVED'], 1), $approved_user), "</p></td>\n";
@@ -1238,7 +1238,7 @@ function message_display_deleted($tid, $pid, $message)
 
     if (isset($message['EDITED']) && $message['EDITED'] > 0) {
 
-        if ($edit_user = user_get_logon($message['EDITED_BY'])) {
+        if (($edit_user = user_get_logon($message['EDITED_BY']))) {
 
             $message_delete_time = format_time($message['EDITED'], 1);
             echo "                <td align=\"left\">", sprintf($lang['messagedeletedbyuser'], $tid, $pid, $message_delete_time, $edit_user), "</td>\n";
@@ -1544,7 +1544,7 @@ function messages_update_read($tid, $pid, $last_read, $length, $modified)
 
     if (!user_is_guest()) {
 
-        if ($last_read < $length && $unread_cutoff_stamp !== false && (($modified > $unread_cutoff_stamp) || $unread_cutoff_stamp = 0)) {
+        if (($last_read < $length && $unread_cutoff_stamp !== false && (($modified > $unread_cutoff_stamp) || $unread_cutoff_stamp = 0))) {
 
             $sql = "SELECT COUNT(TID) AS THREAD_COUNT FROM {$table_data['PREFIX']}USER_THREAD ";
             $sql.= "WHERE UID = '$uid' AND TID = '$tid'";
@@ -1619,7 +1619,7 @@ function messages_set_read($tid, $pid, $uid, $modified)
 
     if ($uid > 0) {
 
-        if ($unread_cutoff_stamp !== false && (($modified > $unread_cutoff_stamp) || $unread_cutoff_stamp = 0)) {
+        if (($unread_cutoff_stamp !== false && (($modified > $unread_cutoff_stamp) || $unread_cutoff_stamp = 0))) {
 
             $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_THREAD ";
             $sql.= "SET LAST_READ = '$pid', LAST_READ_AT = NULL ";

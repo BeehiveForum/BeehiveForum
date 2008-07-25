@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.138 2008-04-03 14:23:40 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.139 2008-07-25 14:52:42 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -680,7 +680,7 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
                 }
             }
 
-            if ($new_thread = thread_get($post_data_array[1]['TID'])) {
+            if (($new_thread = thread_get($post_data_array[1]['TID']))) {
 
                 $required_thread_keys_array = array('FID', 'BY_UID', 'TITLE');
 
@@ -727,7 +727,7 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
                         $sql.= "'{$post_data['APPROVED_BY']}', '{$post_data['EDITED']}', ";
                         $sql.= "'{$post_data['EDITED_BY']}', '{$post_data['IPADDRESS']}')";
 
-                        if ($result_insert = db_query($sql, $db_thread_merge)) {
+                        if (($result_insert = db_query($sql, $db_thread_merge))) {
 
                             $new_pid = db_insert_id($db_thread_merge);
 
@@ -915,7 +915,7 @@ function thread_merge_get($tida, $tidb)
 
     $post_data_array = array();
 
-    if ($threaddata = thread_get($tida)) {
+    if (($threaddata = thread_get($tida))) {
 
         $sql = "SELECT POST.TID, POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, ";
         $sql.= "POST.TO_UID, POST.CREATED, POST.APPROVED, POST.APPROVED_BY, ";
@@ -987,7 +987,7 @@ function thread_split($tid, $spid, $split_type, &$error_str)
 
     $forum_fid = $table_data['FID'];
 
-    if ($thread_data = thread_get($tid)) {
+    if (($thread_data = thread_get($tid))) {
 
         $required_thread_keys_array = array('FID', 'BY_UID', 'TITLE');
 
@@ -1063,7 +1063,7 @@ function thread_split($tid, $spid, $split_type, &$error_str)
                     $sql.= "'{$post_data['APPROVED_BY']}', '{$post_data['EDITED']}', ";
                     $sql.= "'{$post_data['EDITED_BY']}', '{$post_data['IPADDRESS']}')";
 
-                    if ($result_insert = db_query($sql, $db_thread_split)) {
+                    if (($result_insert = db_query($sql, $db_thread_split))) {
 
                         $new_pid = db_insert_id($db_thread_split);
 
@@ -1184,7 +1184,7 @@ function thread_split_get_replies($tid, $pid)
 
     if (!$result = db_query($sql, $db_thread_split_get)) return false;
 
-    if ($post_data = db_fetch_array($result, DB_RESULT_ASSOC)) {
+    if (($post_data = db_fetch_array($result, DB_RESULT_ASSOC))) {
 
         $new_post_pid = 1;
 

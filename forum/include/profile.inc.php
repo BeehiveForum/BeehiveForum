@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.92 2007-10-21 18:08:48 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.93 2008-07-25 14:52:44 decoyduck Exp $ */
 
 /**
 * Functions relating to profiles
@@ -84,7 +84,7 @@ function profile_section_create($name)
     $sql = "INSERT INTO {$table_data['PREFIX']}PROFILE_SECTION (NAME, POSITION) ";
     $sql.= "VALUES ('$name', '$new_position')";
 
-    if ($result = db_query($sql, $db_profile_section_create)) {
+    if (($result = db_query($sql, $db_profile_section_create))) {
 
         $new_psid = db_insert_id($db_profile_section_create);
         return $new_psid;
@@ -305,7 +305,7 @@ function profile_item_create($psid, $name, $type, $options)
     $sql = "INSERT INTO {$table_data['PREFIX']}PROFILE_ITEM (PSID, NAME, TYPE, OPTIONS, POSITION) ";
     $sql.= "VALUES ('$psid', '$name', '$type', '$options', '$new_position')";
 
-    if ($result = db_query($sql, $db_profile_item_create)) {
+    if (($result = db_query($sql, $db_profile_item_create))) {
 
         $new_piid = db_insert_id($db_profile_item_create);
         return $new_piid;

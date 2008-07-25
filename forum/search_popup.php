@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: search_popup.php,v 1.29 2008-07-23 19:57:12 decoyduck Exp $ */
+/* $Id: search_popup.php,v 1.30 2008-07-25 14:52:54 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -65,6 +65,10 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "thread.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
+
+// Intitalise a few variables
+
+$webtag_search = false;
 
 // Check we're logged in correctly
 
@@ -307,7 +311,7 @@ if ($valid) {
 
     }elseif ($type == SEARCH_POPUP_TYPE_THREAD) {
 
-        if ($thread_data = thread_get($search_query)) {
+        if (($thread_data = thread_get($search_query))) {
 
             $search_query = $thread_data['TITLE'];
             $search_results_array = thread_search($search_query, $start);

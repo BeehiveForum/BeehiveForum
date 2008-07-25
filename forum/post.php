@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.346 2008-07-23 19:11:47 decoyduck Exp $ */
+/* $Id: post.php,v 1.347 2008-07-25 14:52:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -75,6 +75,10 @@ include_once(BH_INCLUDE_PATH. "thread.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "user_rel.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
+
+// Intitalise a few variables
+
+$webtag_search = false;
 
 // Check we're logged in correctly
 
@@ -492,7 +496,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
         foreach($quote_list as $quote_pid) {
 
-            if ($message_array = messages_get($reply_to_tid, $quote_pid)) {
+            if (($message_array = messages_get($reply_to_tid, $quote_pid))) {
 
                 $message_author = _htmlentities(format_user_name($message_array['FLOGON'], $message_array['FNICK']));
 
@@ -623,7 +627,7 @@ if (isset($_POST['t_to_uid_others']) && strlen(trim(_stripslashes($_POST['t_to_u
 
 if ($to_radio == 'others') {
 
-    if ($to_user = user_get_uid($t_to_uid_others)) {
+    if (($to_user = user_get_uid($t_to_uid_others))) {
 
         $t_to_uid = $to_user['UID'];
 
@@ -756,7 +760,7 @@ if ($valid && isset($_POST['post'])) {
 
             if ($t_tid > 0) {
 
-                if ($allow_sig == true && strlen(trim($t_sig)) > 0) {
+                if (($allow_sig == true && strlen(trim($t_sig)) > 0)) {
                     $t_content.= "\n<div class=\"sig\">$t_sig</div>";
                 }
 
@@ -830,7 +834,7 @@ if (!isset($t_fid)) {
     $t_fid = 1;
 }
 
-if ($new_thread && !$folder_dropdown = folder_draw_dropdown($t_fid, "t_fid", "", FOLDER_ALLOW_NORMAL_THREAD, "", "post_folder_dropdown")) {
+if (($new_thread && !$folder_dropdown = folder_draw_dropdown($t_fid, "t_fid", "", FOLDER_ALLOW_NORMAL_THREAD, "", "post_folder_dropdown"))) {
 
     html_draw_top();
     html_error_msg($lang['cannotcreatenewthreads']);
@@ -900,7 +904,7 @@ if ($valid && isset($_POST['preview'])) {
 
     $preview_message['CONTENT'] = $post->getContent();
 
-    if ($allow_sig == true && strlen(trim($t_sig)) > 0) {
+    if (($allow_sig == true && strlen(trim($t_sig)) > 0)) {
         $preview_message['CONTENT'] = $preview_message['CONTENT']. "<div class=\"sig\">". $t_sig. "</div>";
     }
 

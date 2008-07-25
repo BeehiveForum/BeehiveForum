@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lang.inc.php,v 1.35 2007-12-26 13:19:35 decoyduck Exp $ */
+/* $Id: lang.inc.php,v 1.36 2008-07-25 14:52:44 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -63,7 +63,7 @@ function load_language_file()
          // if the user has expressed a preference for language,
          // ignore what the browser wants and use that if available
 
-        if ($pref_language = bh_session_get_value("LANGUAGE")) {
+        if (($pref_language = bh_session_get_value("LANGUAGE"))) {
 
             if (@file_exists("include/languages/{$pref_language}.inc.php")) {
 

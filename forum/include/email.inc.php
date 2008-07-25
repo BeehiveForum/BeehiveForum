@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.136 2008-07-23 21:43:08 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.137 2008-07-25 14:52:42 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -62,7 +62,7 @@ function email_sendnotification($tuid, $fuid, $tid, $pid)
 
     if (($to_user = user_get($tuid)) && ($from_user = user_get($fuid))) {
 
-        if ($to_user_prefs = user_get_prefs($tuid)) {
+        if (($to_user_prefs = user_get_prefs($tuid))) {
 
             $user_rel = user_get_relationship($to_user['UID'], $from_user['UID']);
 
@@ -350,7 +350,7 @@ function email_send_pm_notification($tuid, $mid, $fuid)
 
     if (($to_user = user_get($tuid)) && ($from_user = user_get($fuid))) {
 
-        if ($to_user_prefs = user_get_prefs($tuid)) {
+        if (($to_user_prefs = user_get_prefs($tuid))) {
 
             $user_rel = user_get_relationship($to_user['UID'], $from_user['UID']);
 
@@ -428,7 +428,7 @@ function email_send_pw_reminder($logon)
 
     $webtag = get_webtag($webtag_search);
 
-    if ($to_user = user_get_uid($logon)) {
+    if (($to_user = user_get_uid($logon))) {
 
         // Validate the email address before we continue.
 
@@ -546,7 +546,7 @@ function email_send_user_confirmation($tuid)
 
     $webtag = get_webtag($webtag_search);
 
-    if ($to_user = user_get($tuid)) {
+    if (($to_user = user_get($tuid))) {
 
         // Validate the email address before we continue.
 
@@ -606,7 +606,7 @@ function email_send_changed_email_confirmation($tuid)
 
     $webtag = get_webtag($webtag_search);
 
-    if ($to_user = user_get($tuid)) {
+    if (($to_user = user_get($tuid))) {
 
         // Validate the email address before we continue.
 
@@ -666,7 +666,7 @@ function email_send_user_approval_notification($tuid)
 
     $webtag = get_webtag($webtag_search);
 
-    if ($to_user = user_get($tuid)) {
+    if (($to_user = user_get($tuid))) {
 
         // Validate the email address before we continue.
 
@@ -725,7 +725,7 @@ function email_send_new_user_notification($tuid, $new_user_uid)
 
     $webtag = get_webtag($webtag_search);
 
-    if ($to_user = user_get($tuid)) {
+    if (($to_user = user_get($tuid))) {
 
         // Validate the email address before we continue.
 
@@ -783,7 +783,7 @@ function email_send_user_approved_notification($tuid)
 
     $webtag = get_webtag($webtag_search);
 
-    if ($to_user = user_get($tuid)) {
+    if (($to_user = user_get($tuid))) {
 
         // Validate the email address before we continue.
 
@@ -841,7 +841,7 @@ function email_send_post_approval_notification($tuid)
 
     $webtag = get_webtag($webtag_search);
 
-    if ($to_user = user_get($tuid)) {
+    if (($to_user = user_get($tuid))) {
 
         // Validate the email address before we continue.
 
@@ -972,7 +972,7 @@ function email_get_language($to_uid)
      // if the user has expressed a preference for language, use it
      // if available otherwise use the default language.
 
-    if ($user_prefs = user_get_prefs($to_uid)) {
+    if (($user_prefs = user_get_prefs($to_uid))) {
 
         if (isset($user_prefs['LANGUAGE']) && @file_exists("include/languages/{$user_prefs['LANGUAGE']}.inc.php")) {
 

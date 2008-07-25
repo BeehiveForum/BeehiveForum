@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lthread_list.php,v 1.95 2008-03-24 23:32:15 decoyduck Exp $ */
+/* $Id: lthread_list.php,v 1.96 2008-07-25 14:52:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -67,6 +67,10 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "thread.inc.php");
 include_once(BH_INCLUDE_PATH. "threads.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
+
+// Intitalise a few variables
+
+$webtag_search = false;
 
 // Check we're logged in correctly
 
@@ -244,7 +248,7 @@ if (user_is_guest()) {
                     $valid = false;
                 }
 
-            }elseif ($_GET['mark_read_type'] == THREAD_MARK_READ_FOLDER && isset($folder) && is_numeric($folder)) {
+            }elseif (($_GET['mark_read_type'] == THREAD_MARK_READ_FOLDER && isset($folder) && is_numeric($folder))) {
 
                 if (threads_mark_folder_read($folder)) {
 

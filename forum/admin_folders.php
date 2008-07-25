@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folders.php,v 1.140 2008-03-24 23:32:15 decoyduck Exp $ */
+/* $Id: admin_folders.php,v 1.141 2008-07-25 14:52:56 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -66,6 +66,10 @@ include_once(BH_INCLUDE_PATH. "perm.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "stats.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
+
+// Intitalise a few variables
+
+$webtag_search = false;
 
 // Check we're logged in correctly
 
@@ -127,7 +131,7 @@ if (isset($_POST['delete'])) {
 
         foreach($_POST['t_delete'] as $fid => $delete_folder) {
 
-            if ($valid && $delete_folder == "Y" && $folder_data = folder_get($fid)) {
+            if (($valid && $delete_folder == "Y" && $folder_data = folder_get($fid))) {
 
                 if ($folder_data['THREAD_COUNT'] < 1) {
 

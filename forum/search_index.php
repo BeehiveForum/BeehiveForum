@@ -40,11 +40,6 @@ USA
 
 // php /home/account_name/public_html/forum/search_index.php WEBTAG
 
-// Constant to define where the include files are
-define("BH_INCLUDE_PATH", "include/");
-
-include_once(BH_INCLUDE_PATH. "search.inc.php");
-
 echo "Search Indexing is no longer required by Beehive Forum 0.6.2 and higher";
 
 ?>

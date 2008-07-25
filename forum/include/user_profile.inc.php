@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.87 2008-07-14 12:46:04 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.88 2008-07-25 14:52:44 decoyduck Exp $ */
 
 /**
 * Functions relating to users interacting with profiles
@@ -145,7 +145,7 @@ function user_get_profile($uid)
             $anon_logon = USER_ANON_DISABLED;
         }
 
-        if ($anon_logon == USER_ANON_DISABLED && isset($user_profile['LAST_VISIT']) && $user_profile['LAST_VISIT'] > 0) {
+        if (($anon_logon == USER_ANON_DISABLED && isset($user_profile['LAST_VISIT']) && $user_profile['LAST_VISIT'] > 0)) {
             $user_profile['LAST_LOGON'] = format_time($user_profile['LAST_VISIT']);
         }else {
             $user_profile['LAST_LOGON'] = $lang['unknown'];
@@ -235,13 +235,13 @@ function user_get_profile($uid)
             $user_profile['STATUS'] = $lang['unknown'];
         }
 
-        if ($user_post_count = user_get_post_count($uid)) {
+        if (($user_post_count = user_get_post_count($uid))) {
             $user_profile['POST_COUNT'] = $user_post_count;
         }else {
             $user_profile['POST_COUNT'] = 0;
         }
 
-        if ($user_local_time = user_format_local_time($user_prefs)) {
+        if (($user_local_time = user_format_local_time($user_prefs))) {
             $user_profile['LOCAL_TIME'] = $user_local_time;
         }
 
@@ -294,7 +294,7 @@ function user_format_local_time(&$user_prefs_array)
         $dl_saving = forum_get_setting('forum_dl_saving', false, 'N');
     }
 
-    if ($dl_saving == "Y" && timestamp_is_dst($timezone_id, $gmt_offset)) {
+    if (($dl_saving == "Y" && timestamp_is_dst($timezone_id, $gmt_offset))) {
         $local_time = time() + ($gmt_offset * HOUR_IN_SECONDS) + ($dst_offset * HOUR_IN_SECONDS);
     }else {
         $local_time = time() + ($gmt_offset * HOUR_IN_SECONDS);

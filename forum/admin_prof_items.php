@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_items.php,v 1.124 2008-07-09 18:01:35 decoyduck Exp $ */
+/* $Id: admin_prof_items.php,v 1.125 2008-07-25 14:52:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -65,6 +65,10 @@ include_once(BH_INCLUDE_PATH. "perm.inc.php");
 include_once(BH_INCLUDE_PATH. "profile.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
+
+// Intitalise a few variables
+
+$webtag_search = false;
 
 // Check we're logged in correctly
 
@@ -173,9 +177,9 @@ if (isset($_POST['delete'])) {
 
         foreach($_POST['delete_item'] as $piid => $delete_item) {
 
-            if ($valid && $delete_item == "Y" && $profile_item_name = profile_item_get_name($piid)) {
+            if (($valid && $delete_item == "Y" && $profile_item_name = profile_item_get_name($piid))) {
 
-                if ($section_name = profile_section_get_name($_POST['psid'])) {
+                if (($section_name = profile_section_get_name($_POST['psid']))) {
 
                     if (profile_item_delete($piid)) {
 
@@ -289,7 +293,7 @@ if (isset($_POST['additemsubmit'])) {
 
     if ($valid) {
 
-        if ($new_piid = profile_item_create($psid, $t_new_name, $t_type_new, $t_options_new)) {
+        if (($new_piid = profile_item_create($psid, $t_new_name, $t_type_new, $t_options_new))) {
 
             $t_section_name = profile_section_get_name($psid);
 

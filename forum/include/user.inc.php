@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.353 2008-07-23 19:57:12 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.354 2008-07-25 14:52:43 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -88,7 +88,7 @@ function user_create($logon, $password, $nickname, $email)
     $email     = db_escape_string($email);
     $md5pass   = md5($password);
 
-    if ($http_referer = bh_session_get_value('REFERER')) {
+    if (($http_referer = bh_session_get_value('REFERER'))) {
         $http_referer = db_escape_string($http_referer);
     }else {
         $http_referer = "";
@@ -101,7 +101,7 @@ function user_create($logon, $password, $nickname, $email)
     $sql.= "'$md5pass', '$nickname', '$email', NOW(), ";
     $sql.= "'$http_referer', '$ipaddress')";
 
-    if ($result = db_query($sql, $db_user_create)) {
+    if (($result = db_query($sql, $db_user_create))) {
 
         $new_uid = db_insert_id($db_user_create);
         return $new_uid;
@@ -623,7 +623,7 @@ function user_get_prefs($uid)
 
     // 3. The user's per-forum prefs, in {webtag}_USER_PREFS (not all prefs are set here e.g. name):
 
-    if ($table_data = get_table_prefix()) {
+    if (($table_data = get_table_prefix())) {
 
         $sql = "SELECT HOMEPAGE_URL, PIC_URL, PIC_AID, AVATAR_URL, AVATAR_AID, EMAIL_NOTIFY, ";
         $sql.= "MARK_AS_OF_INT, POSTS_PER_PAGE, FONT_SIZE, STYLE, VIEW_SIGS, START_PAGE, ";
@@ -1685,7 +1685,7 @@ function user_prefs_prep_attachments($image_attachments_array)
 
     foreach ($image_attachments_array as $hash => $attachment_details) {
 
-        if ($image_info = getimagesize("$attachment_dir/$hash")) {
+        if (($image_info = getimagesize("$attachment_dir/$hash"))) {
 
             $dimensions_text = "{$lang['dimensions']}: {$image_info[0]}x{$image_info[1]}px";
             $attachments_array_prepared[$hash] = "{$attachment_details['filename']}, $dimensions_text";

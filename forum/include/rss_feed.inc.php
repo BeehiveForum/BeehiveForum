@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: rss_feed.inc.php,v 1.54 2008-04-09 21:28:22 decoyduck Exp $ */
+/* $Id: rss_feed.inc.php,v 1.55 2008-07-25 14:52:44 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -62,7 +62,7 @@ function rss_read_stream($filename)
     // Try and use PHP's own fopen wrapper to save us
     // having to do our own HTTP connection.
 
-    if ($rss_data = @file($filename)) {
+    if (($rss_data = @file($filename))) {
         if (is_array($rss_data)) return implode(' ', $rss_data);
     }
 
@@ -94,7 +94,7 @@ function rss_read_stream($filename)
 
     // We can't do much without socket functions
 
-    if ($fp = @fsockopen($url_array['host'], $url_array['port'], $errno, $errstr, 30)) {
+    if (($fp = @fsockopen($url_array['host'], $url_array['port'], $errno, $errstr, 30))) {
 
         @socket_set_timeout($fp, 2);
         @socket_set_blocking($fp, false);
@@ -115,7 +115,7 @@ function rss_read_stream($filename)
 
         // Split the header from the data (seperated by \r\n\r\n)
 
-        if ($data_array = preg_split("/\r\n\r\n/", $reply_data, 2)) {
+        if (($data_array = preg_split("/\r\n\r\n/", $reply_data, 2))) {
 
             return $data_array[1];
         }
@@ -262,9 +262,9 @@ function rss_check_feeds()
 
     $item_count = 0;
 
-    if ($rss_feed = rss_fetch_feed()) {
+    if (($rss_feed = rss_fetch_feed())) {
 
-        if ($rss_data = rss_read_database($rss_feed['URL'])) {
+        if (($rss_data = rss_read_database($rss_feed['URL']))) {
 
             foreach($rss_data as $rss_item) {
 

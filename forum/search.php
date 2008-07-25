@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.216 2008-06-17 21:26:14 decoyduck Exp $ */
+/* $Id: search.php,v 1.217 2008-07-25 14:52:56 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -70,6 +70,10 @@ include_once(BH_INCLUDE_PATH. "thread.inc.php");
 include_once(BH_INCLUDE_PATH. "threads.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
+
+// Intitalise a few variables
+
+$webtag_search = false;
 
 // Check we're logged in correctly
 
@@ -360,7 +364,7 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
         $search_arguments['group_by_thread'] = $_POST['group_by_thread'];
     }
 
-    if ($search_success = search_execute($search_arguments, $error)) {
+    if (($search_success = search_execute($search_arguments, $error))) {
 
         if (isset($_GET['search_string']) || isset($_GET['logon'])) {
 
@@ -442,7 +446,7 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
 
     $offset = $_GET['offset'];
 
-    if ($search_results_array = search_fetch_results($offset, $sort_by, $sort_dir)) {
+    if (($search_results_array = search_fetch_results($offset, $sort_by, $sort_dir))) {
 
         html_draw_top("search.js");
 
@@ -460,11 +464,11 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
 
         foreach ($search_results_array['result_array'] as $search_result) {
 
-            if ($message = messages_get($search_result['TID'], $search_result['PID'], 1)) {
+            if (($message = messages_get($search_result['TID'], $search_result['PID'], 1))) {
 
                 $message['CONTENT'] = message_get_content($search_result['TID'], $search_result['PID']);
 
-                if ($threaddata = thread_get($search_result['TID'])) {
+                if (($threaddata = thread_get($search_result['TID']))) {
 
                     $message['TITLE']   = trim(thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE']));
                     $message['CONTENT'] = trim(strip_tags(message_get_content($search_result['TID'], $search_result['PID'])));

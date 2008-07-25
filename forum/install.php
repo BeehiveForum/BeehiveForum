@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.92 2008-07-24 12:57:07 decoyduck Exp $ */
+/* $Id: install.php,v 1.93 2008-07-25 14:52:46 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -180,7 +180,7 @@ if (isset($_POST['install_method'])) {
 
     if ($valid) {
 
-        if ($install_method == 0 && ($admin_password != $admin_cpassword)) {
+        if (($install_method == 0 && ($admin_password != $admin_cpassword))) {
 
             $error_array[] = "Administrator account passwords do not match.\n";
             $valid = false;
@@ -195,7 +195,7 @@ if (isset($_POST['install_method'])) {
 
     if ($valid) {
 
-        if ($db_install = db_connect(false)) {
+        if (($db_install = db_connect(false))) {
 
             // Check the MySQL version
 

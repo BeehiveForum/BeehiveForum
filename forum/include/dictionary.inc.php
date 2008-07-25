@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.inc.php,v 1.48 2008-05-18 13:23:34 decoyduck Exp $ */
+/* $Id: dictionary.inc.php,v 1.49 2008-07-25 14:52:44 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -290,7 +290,7 @@ class dictionary {
 
         // Metaphone match (English pronounciation match)
 
-        if ($metaphone = $this->word_get_metaphone()) {
+        if (($metaphone = $this->word_get_metaphone())) {
 
             $metaphone = db_escape_string($metaphone);
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.120 2008-05-10 20:42:41 decoyduck Exp $ */
+/* $Id: pm_edit.php,v 1.121 2008-07-25 14:52:53 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -69,6 +69,10 @@ include_once(BH_INCLUDE_PATH. "post.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
+
+// Intitalise a few variables
+
+$webtag_search = false;
 
 // Check we're logged in correctly
 
@@ -277,7 +281,7 @@ if ($valid && isset($_POST['preview'])) {
 
     $edit_html = ($_POST['t_post_html'] == "Y");
 
-    if ($pm_message_array = pm_message_get($mid)) {
+    if (($pm_message_array = pm_message_get($mid))) {
 
         $pm_message_array['CONTENT'] = $t_content;
 
@@ -294,7 +298,7 @@ if ($valid && isset($_POST['preview'])) {
 
 }else if ($valid && isset($_POST['apply'])) {
 
-    if ($pm_message_array = pm_message_get($mid)) {
+    if (($pm_message_array = pm_message_get($mid))) {
 
         pm_save_attachment_id($mid, $aid);
 
@@ -357,7 +361,7 @@ if ($valid && isset($_POST['preview'])) {
 
 }else {
 
-    if ($pm_message_array = pm_message_get($mid)) {
+    if (($pm_message_array = pm_message_get($mid))) {
 
         if ($pm_message_array['TYPE'] != PM_OUTBOX) {
 

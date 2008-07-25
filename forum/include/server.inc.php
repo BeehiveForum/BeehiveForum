@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: server.inc.php,v 1.27 2008-07-19 20:27:11 decoyduck Exp $ */
+/* $Id: server.inc.php,v 1.28 2008-07-25 14:52:42 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -140,7 +140,7 @@ function system_get_temp_dir()
 
         return '/tmp/';
 
-    }elseif ($temp_file = tempnam(md5(uniqid(mt_rand())), '')) {
+    }elseif (($temp_file = tempnam(md5(uniqid(mt_rand())), ''))) {
 
         unlink($temp_file);
         return realpath(dirname($temp_file));

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: htmltools.inc.php,v 1.66 2008-06-13 17:57:43 decoyduck Exp $ */
+/* $Id: htmltools.inc.php,v 1.67 2008-07-25 14:52:44 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -55,7 +55,7 @@ function TinyMCE() {
     $str.= "    mode : \"specific_textareas\",\n";
     $str.= "    width: \"100%\",\n";
 
-    if ($pref_language = bh_session_get_value("LANGUAGE")) {
+    if (($pref_language = bh_session_get_value("LANGUAGE"))) {
         if (@file_exists("tiny_mce/langs/{$pref_language}.js")) {
                 $str.= "    language : \"{$pref_language}\",\n";
         }

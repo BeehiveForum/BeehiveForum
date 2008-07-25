@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start.php,v 1.79 2008-04-05 15:44:32 decoyduck Exp $ */
+/* $Id: start.php,v 1.80 2008-07-25 14:52:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -61,6 +61,10 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 // Don't cache this page - fixes problems with Opera.
 
 header_no_cache();
+
+// Intitalise a few variables
+
+$webtag_search = false;
 
 // Check we're logged in correctly
 

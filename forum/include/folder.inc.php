@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.145 2008-07-14 18:05:18 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.146 2008-07-25 14:52:43 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -293,13 +293,13 @@ function folder_get_available()
 {
     if (user_is_guest()) {
 
-        if ($folder_list = bh_session_get_folders_by_perm(USER_PERM_GUEST_ACCESS)) {
+        if (($folder_list = bh_session_get_folders_by_perm(USER_PERM_GUEST_ACCESS))) {
             return implode(',', preg_grep('/[0-9]+/', $folder_list));
         }
 
     }else {
 
-        if ($folder_list = bh_session_get_folders_by_perm(USER_PERM_POST_READ)) {
+        if (($folder_list = bh_session_get_folders_by_perm(USER_PERM_POST_READ))) {
             return implode(',', preg_grep('/[0-9]+/', $folder_list));
         }
     }
@@ -311,13 +311,13 @@ function folder_get_available_by_forum($forum_fid)
 {
     if (user_is_guest()) {
 
-        if ($folder_list = bh_session_get_folders_by_perm(USER_PERM_GUEST_ACCESS, $forum_fid)) {
+        if (($folder_list = bh_session_get_folders_by_perm(USER_PERM_GUEST_ACCESS, $forum_fid))) {
             return implode(',', preg_grep('/[0-9]+/', $folder_list));
         }
 
     }else {
 
-        if ($folder_list = bh_session_get_folders_by_perm(USER_PERM_POST_READ, $forum_fid)) {
+        if (($folder_list = bh_session_get_folders_by_perm(USER_PERM_POST_READ, $forum_fid))) {
             return implode(',', preg_grep('/[0-9]+/', $folder_list));
         }
     }
@@ -329,13 +329,13 @@ function folder_get_available_array()
 {
     if (user_is_guest()) {
 
-        if ($folder_list = bh_session_get_folders_by_perm(USER_PERM_GUEST_ACCESS)) {
+        if (($folder_list = bh_session_get_folders_by_perm(USER_PERM_GUEST_ACCESS))) {
             return preg_grep('/[0-9]+/', $folder_list);
         }
 
     }else {
 
-        if ($folder_list = bh_session_get_folders_by_perm(USER_PERM_POST_READ)) {
+        if (($folder_list = bh_session_get_folders_by_perm(USER_PERM_POST_READ))) {
             return preg_grep('/[0-9]+/', $folder_list);
         }
     }
@@ -347,13 +347,13 @@ function folder_get_available_array_by_forum($forum_fid)
 {
     if (user_is_guest()) {
 
-        if ($folder_list = bh_session_get_folders_by_perm(USER_PERM_GUEST_ACCESS, $forum_fid)) {
+        if (($folder_list = bh_session_get_folders_by_perm(USER_PERM_GUEST_ACCESS, $forum_fid))) {
             return preg_grep('/[0-9]+/', $folder_list);
         }
 
     }else {
 
-        if ($folder_list = bh_session_get_folders_by_perm(USER_PERM_POST_READ, $forum_fid)) {
+        if (($folder_list = bh_session_get_folders_by_perm(USER_PERM_POST_READ, $forum_fid))) {
             return preg_grep('/[0-9]+/', $folder_list);
         }
     }

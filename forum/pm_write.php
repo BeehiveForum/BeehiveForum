@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.203 2008-05-30 12:38:03 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.204 2008-07-25 14:52:54 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -70,6 +70,10 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "messages.inc.php");
 include_once(BH_INCLUDE_PATH. "thread.inc.php");
+
+// Intitalise a few variables
+
+$webtag_search = false;
 
 // Check we're logged in correctly
 
@@ -162,7 +166,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     if (is_numeric($tid) && is_numeric($pid)) {
 
-        if ($threaddata = thread_get($tid)) {
+        if (($threaddata = thread_get($tid))) {
 
             $thread_title = thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE']);
             $thread_index = "[$tid.$pid]";
@@ -405,7 +409,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
     if (isset($t_reply_mid) && is_numeric($t_reply_mid) && $t_reply_mid > 0) {
 
-        if ($pm_data = pm_message_get($t_reply_mid)) {
+        if (($pm_data = pm_message_get($t_reply_mid))) {
 
             $pm_data['CONTENT'] = pm_get_content($t_reply_mid);
 
@@ -430,7 +434,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
             $to_logon = trim($t_recipient);
 
-            if ($to_user = user_get_uid($to_logon)) {
+            if (($to_user = user_get_uid($to_logon))) {
 
                 $peer_relationship = user_get_peer_relationship($to_user['UID'], $uid);
 
@@ -555,7 +559,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
     if (!$t_recipient_list = pm_get_user($t_reply_mid)) $t_recipient_list = "";
 
-    if ($pm_data = pm_message_get($t_reply_mid)) {
+    if (($pm_data = pm_message_get($t_reply_mid))) {
 
         $pm_data['CONTENT'] = pm_get_content($t_reply_mid);
 
@@ -601,7 +605,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
 }else if (isset($t_forward_mid) && is_numeric($t_forward_mid) && $t_forward_mid > 0) {
 
-    if ($pm_data = pm_message_get($t_forward_mid)) {
+    if (($pm_data = pm_message_get($t_forward_mid))) {
 
         $pm_data['CONTENT'] = pm_get_content($t_forward_mid);
 
@@ -644,7 +648,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
 }else if (isset($t_edit_mid) && is_numeric($t_edit_mid) && $t_edit_mid > 0) {
 
-    if ($pm_data = pm_message_get($t_edit_mid)) {
+    if (($pm_data = pm_message_get($t_edit_mid))) {
 
         $pm_data['CONTENT'] = pm_get_content($t_edit_mid);
 
@@ -719,7 +723,7 @@ if ($valid && isset($_POST['send'])) {
 
         if (isset($to_radio) && $to_radio == POST_RADIO_FRIENDS) {
 
-            if ($new_mid = pm_send_message($t_to_uid, $uid, $t_subject, $t_content, $aid)) {
+            if (($new_mid = pm_send_message($t_to_uid, $uid, $t_subject, $t_content, $aid))) {
 
                 email_send_pm_notification($t_to_uid, $new_mid, $uid);
 
@@ -737,7 +741,7 @@ if ($valid && isset($_POST['send'])) {
 
             foreach ($t_new_recipient_array['TO_UID'] as $t_to_uid) {
 
-                if ($new_mid = pm_send_message($t_to_uid, $uid, $t_subject, $t_content, $aid)) {
+                if (($new_mid = pm_send_message($t_to_uid, $uid, $t_subject, $t_content, $aid))) {
 
                     email_send_pm_notification($t_to_uid, $new_mid, $uid);
 
@@ -777,7 +781,7 @@ if ($valid && isset($_POST['send'])) {
 
     }else {
 
-        if ($saved_mid = pm_save_message($t_subject, $t_content, $t_to_uid, $t_recipient_list)) {
+        if (($saved_mid = pm_save_message($t_subject, $t_content, $t_to_uid, $t_recipient_list))) {
 
             pm_save_attachment_id($saved_mid, $aid);
 
@@ -876,7 +880,7 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\"><h2>{$lang['to']}</h2></td>\n";
 echo "                      </tr>\n";
 
-if ($friends_array = pm_user_get_friends()) {
+if (($friends_array = pm_user_get_friends())) {
 
     if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 

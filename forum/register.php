@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.179 2008-07-18 22:05:33 decoyduck Exp $ */
+/* $Id: register.php,v 1.180 2008-07-25 14:52:46 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -78,6 +78,10 @@ include_once(BH_INCLUDE_PATH. "styles.inc.php");
 include_once(BH_INCLUDE_PATH. "text_captcha.inc.php");
 include_once(BH_INCLUDE_PATH. "timezone.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
+
+// Intitalise a few variables
+
+$webtag_search = false;
 
 // Where are we going after we've logged on?
 
@@ -478,7 +482,7 @@ if (isset($_POST['register'])) {
 
     if ($valid) {
 
-        if ($new_uid = user_create($logon, $password, $nickname, $email)) {
+        if (($new_uid = user_create($logon, $password, $nickname, $email))) {
 
             // Save the new user preferences and signature
 
@@ -771,7 +775,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
 
-    if ($available_styles = styles_get_available()) {
+    if (($available_styles = styles_get_available())) {
 
         echo "                      <tr>\n";
         echo "                        <td align=\"left\" class=\"posthead\">{$lang['style']}:</td>\n";

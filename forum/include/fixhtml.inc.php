@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.130 2007-12-26 13:19:35 decoyduck Exp $ */
+/* $Id: fixhtml.inc.php,v 1.131 2008-07-25 14:52:44 decoyduck Exp $ */
 
 /** A range of functions for filtering/cleaning posted HTML
 *
@@ -657,7 +657,7 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
                         $tag_quote = true;
                     }
 
-                    if ($tag == 'div class="spoiler"' || (substr($tag, 0, 3) == 'div' && $spoiler > 0)) {
+                    if (($tag == 'div class="spoiler"' || (substr($tag, 0, 3) == 'div' && $spoiler > 0))) {
                         $spoiler++;
                     } else if ($spoiler > 0 && $tag == '/div') {
                         $spoiler--;
@@ -1620,7 +1620,7 @@ function add_paragraphs ($html, $base = true, $br_only = true)
                 }
             }
 
-            if ($p_open == true && !preg_match("/<\/p>$/i", $tmp[$j]) && strlen(trim($tmp[$j])) > 0) {
+            if (($p_open == true && !preg_match("/<\/p>$/i", $tmp[$j]) && strlen(trim($tmp[$j])) > 0)) {
 
                 $tmp[$j].= "</p>";
             }
@@ -1634,7 +1634,7 @@ function add_paragraphs ($html, $base = true, $br_only = true)
 
                 preg_match("/^<(\w+)(\b[^<>]*)>/i", $html_a[$i+1], $tag);
 
-                if ($tags_nest[$tag[1]][1] != true && strlen(trim($html_a[$i])) > 0) {
+                if (($tags_nest[$tag[1]][1] != true && strlen(trim($html_a[$i])) > 0)) {
 
                     $html_a[$i].= "\n\n";
                 }

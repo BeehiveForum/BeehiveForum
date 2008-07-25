@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-08x-to-084.php,v 1.1 2008-07-24 12:48:58 decoyduck Exp $ */
+/* $Id: upgrade-08x-to-084.php,v 1.2 2008-07-25 14:52:56 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'upgrade-08x-to-083.php') {
 
@@ -58,7 +58,7 @@ if (db_num_rows($result) > 0) {
 
     $sql = "SELECT FID, WEBTAG FROM FORUMS";
 
-    if ($result = @db_query($sql, $db_install)) {
+    if (($result = @db_query($sql, $db_install))) {
 
         while ($forum_data = @db_fetch_array($result)) {
 

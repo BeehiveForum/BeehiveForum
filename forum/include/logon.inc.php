@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.79 2008-06-03 19:52:33 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.80 2008-07-25 14:52:42 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -270,7 +270,7 @@ function logon_perform()
         // Try and login the user. If we're successful we need to
         // update their cookies.
 
-        if ($luid = user_logon($logon, $passhash)) {
+        if (($luid = user_logon($logon, $passhash))) {
 
             // Remove any previously set cookies
 

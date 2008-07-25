@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db_mysqli.inc.php,v 1.45 2008-01-28 21:40:27 decoyduck Exp $ */
+/* $Id: db_mysqli.inc.php,v 1.46 2008-07-25 14:52:56 decoyduck Exp $ */
 
 function db_get_connection_vars(&$db_server, &$db_username, &$db_password, &$db_database)
 {
@@ -39,7 +39,7 @@ function db_connect($trigger_error = true)
 
     if (!$connection_id) {
 
-        if ($connection_id = @mysqli_connect($db_server, $db_username, $db_password)) {
+        if (($connection_id = @mysqli_connect($db_server, $db_username, $db_password))) {
 
             if (@mysqli_select_db($connection_id, $db_database)) {
 
@@ -83,7 +83,7 @@ function db_enable_compat_mode($connection_id)
 
 function db_query($sql, $connection_id, $trigger_error = true)
 {
-    if ($result = @mysqli_query($connection_id, $sql)) {
+    if (($result = @mysqli_query($connection_id, $sql))) {
         return $result;
     }
 
@@ -106,7 +106,7 @@ function db_data_seek($result, $offset)
 
 function db_num_rows($result)
 {
-    if ($num_rows = mysqli_num_rows($result)) {
+    if (($num_rows = mysqli_num_rows($result))) {
         return $num_rows;
     }
 
@@ -115,7 +115,7 @@ function db_num_rows($result)
 
 function db_affected_rows($connection_id)
 {
-    if ($affected_rows = @mysqli_affected_rows($connection_id)) {
+    if (($affected_rows = @mysqli_affected_rows($connection_id))) {
         return $affected_rows;
     }
 
@@ -124,7 +124,7 @@ function db_affected_rows($connection_id)
 
 function db_fetch_array($result, $result_type = DB_RESULT_BOTH)
 {
-    if ($result_array = @mysqli_fetch_array($result, $result_type)) {
+    if (($result_array = @mysqli_fetch_array($result, $result_type))) {
         return $result_array;
     }
 
@@ -133,7 +133,7 @@ function db_fetch_array($result, $result_type = DB_RESULT_BOTH)
 
 function db_insert_id($connection_id)
 {
-    if ($insert_id = @mysqli_insert_id($connection_id)) {
+    if (($insert_id = @mysqli_insert_id($connection_id))) {
         return $insert_id;
     }
 
@@ -158,13 +158,13 @@ function db_error($connection_id = false)
 {
     if ($connection_id !== false) {
 
-        if ($errstr = @mysqli_error($connection_id)) {
+        if (($errstr = @mysqli_error($connection_id))) {
             return $errstr;
         }
 
     }else {
 
-        if ($errstr = @mysqli_error()) {
+        if (($errstr = @mysqli_error())) {
             return $errstr;
         }
     }
@@ -176,13 +176,13 @@ function db_errno($connection_id = false)
 {
     if ($connection_id !== false) {
 
-        if ($errno = @mysqli_errno($connection_id)) {
+        if (($errno = @mysqli_errno($connection_id))) {
             return $errno;
         }
 
     }else {
 
-        if ($errno = @mysqli_errno()) {
+        if (($errno = @mysqli_errno())) {
             return $errno;
         }
     }
@@ -192,7 +192,7 @@ function db_errno($connection_id = false)
 
 function db_fetch_mysql_version(&$mysql_version)
 {
-    if ($db_fetch_mysql_version = db_connect(false)) {
+    if (($db_fetch_mysql_version = db_connect(false))) {
 
         $sql = "SELECT VERSION() AS version";
         $result = db_query($sql, $db_fetch_mysql_version);
@@ -229,7 +229,7 @@ function db_fetch_mysql_version(&$mysql_version)
 
 function db_escape_string($str)
 {
-    if ($db_escape_string = db_connect()) {
+    if (($db_escape_string = db_connect())) {
 
         if (function_exists('mysqli_real_escape_string')) {
             return @mysqli_real_escape_string($db_escape_string, $str);

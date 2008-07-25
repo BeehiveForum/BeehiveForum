@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit.php,v 1.62 2008-07-14 18:14:10 decoyduck Exp $ */
+/* $Id: admin_user_groups_edit.php,v 1.63 2008-07-25 14:52:47 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -72,6 +72,10 @@ include_once(BH_INCLUDE_PATH. "post.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
+
+// Intitalise a few variables
+
+$webtag_search = false;
 
 // Check we're logged in correctly
 
@@ -331,7 +335,7 @@ echo "          </tr>\n";
 echo "        </table>\n";
 echo "        <br />\n";
 
-if ($folder_array = perm_group_get_folders($gid)) {
+if (($folder_array = perm_group_get_folders($gid))) {
 
     echo "        <table class=\"box\" width=\"100%\">\n";
     echo "          <tr>\n";

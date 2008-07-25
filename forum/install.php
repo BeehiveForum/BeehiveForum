@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.93 2008-07-25 14:52:46 decoyduck Exp $ */
+/* $Id: install.php,v 1.94 2008-07-25 18:12:55 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -229,7 +229,7 @@ if (isset($_POST['install_method'])) {
 
                 $config_file = "";
 
-                if (@$fp = fopen('install/config.inc.php', 'r')) {
+                if ((@$fp = fopen('install/config.inc.php', 'r'))) {
 
                     while (!feof($fp)) {
 
@@ -257,7 +257,7 @@ if (isset($_POST['install_method'])) {
 
                     if (!defined('BEEHIVE_INSTALL_NOWARN')) {
 
-                        if (@$fp = fopen(BH_INCLUDE_PATH. "config.inc.php", "w")) {
+                        if ((@$fp = fopen(BH_INCLUDE_PATH. "config.inc.php", "w"))) {
 
                             fwrite($fp, $config_file);
                             fclose($fp);
@@ -403,7 +403,7 @@ if (isset($_POST['install_method'])) {
 
                 if (($errno = db_errno($db_install)) > 0) {
 
-                    $error_array[] = "<h2>Could not complete installation. Error was: ". db_error($db_install). " $sql</h2>\n";
+                    $error_array[] = sprintf("<h2>Could not complete installation. Error was: %s</h2>\n", db_error($db_install));
                     $valid = false;
                 }
             }
@@ -419,7 +419,7 @@ if (isset($_POST['install_method'])) {
 
     $config_file = "";
 
-    if (@$fp = fopen('install/config.inc.php', 'r')) {
+    if ((@$fp = fopen('install/config.inc.php', 'r'))) {
 
         while (!feof($fp)) {
 

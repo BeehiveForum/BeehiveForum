@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ledit.php,v 1.31 2008-07-25 14:52:47 decoyduck Exp $ */
+/* $Id: ledit.php,v 1.32 2008-07-25 18:12:55 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -177,7 +177,7 @@ if (thread_is_poll($tid) && $pid == 1) {
 
 if (isset($_POST['cancel'])) {
 
-    header_redirect("lmessages.php?webtag=$webtag&msg=$msg");
+    header_redirect("lmessages.php?webtag=$webtag&msg=$edit_msg");
     exit;
 }
 

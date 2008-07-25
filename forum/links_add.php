@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_add.php,v 1.94 2008-07-25 14:52:48 decoyduck Exp $ */
+/* $Id: links_add.php,v 1.95 2008-07-25 18:12:55 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -151,7 +151,7 @@ if (isset($_GET['mode'])) {
 
         $mode = LINKS_ADD_LINK;
 
-    }elseif ($_GET['mode'] = LINKS_ADD_FOLDER) {
+    }elseif ($_GET['mode'] == LINKS_ADD_FOLDER) {
 
         $mode = LINKS_ADD_FOLDER;
 
@@ -166,7 +166,7 @@ if (isset($_GET['mode'])) {
 
         $mode = LINKS_ADD_LINK;
 
-    }elseif ($_POST['mode'] = LINKS_ADD_FOLDER) {
+    }elseif ($_POST['mode'] == LINKS_ADD_FOLDER) {
 
         $mode = LINKS_ADD_FOLDER;
 

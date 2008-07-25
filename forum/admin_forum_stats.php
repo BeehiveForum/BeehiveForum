@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: admin_forum_stats.php,v 1.9 2008-07-25 14:52:54 decoyduck Exp $ */
+/* $Id: admin_forum_stats.php,v 1.10 2008-07-25 16:47:28 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -74,6 +74,9 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 // Intitalise a few variables
 
 $webtag_search = false;
+
+$week_start = 0;
+$week_end = 0;
 
 // Check we're logged in correctly
 

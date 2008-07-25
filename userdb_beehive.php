@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: userdb_beehive.php,v 1.6 2007-04-21 21:33:40 decoyduck Exp $ */
+/* $Id: userdb_beehive.php,v 1.7 2008-07-25 16:47:28 decoyduck Exp $ */
 
 // Constant to define where the Beehive Forum include files are
 
@@ -47,7 +47,7 @@ $ewiki_plugins["auth_userdb"][] = "ewiki_auth_userdb_beehive";
 
 function ewiki_auth_query_beehive(&$data, $force_query = false)
 {
-    global $ewiki_errmsg, $ewiki_id, $ewiki_action;
+    global $ewiki_errmsg;
 
     $t_success = false;
 

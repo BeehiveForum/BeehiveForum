@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.php,v 1.123 2008-07-25 14:52:54 decoyduck Exp $ */
+/* $Id: visitor_log.php,v 1.124 2008-07-25 16:47:28 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -69,6 +69,12 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 // Intitalise a few variables
 
 $webtag_search = false;
+
+// Arrays to hold the Profile Headers and Drop Down
+// items returned from visitor_log_get_profile_items()
+
+$profile_dropdown_array = array();
+$profile_header_array = array();
 
 // Check we're logged in correctly
 

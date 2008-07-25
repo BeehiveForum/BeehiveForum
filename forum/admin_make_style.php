@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.118 2008-07-25 14:52:48 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.119 2008-07-25 16:47:27 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -67,6 +67,10 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 // Intitalise a few variables
 
 $webtag_search = false;
+
+// Variable to hold any errors returned by forum_save_style()
+
+$error_var = STYLE_NO_ERROR;
 
 // Check we're logged in correctly
 
@@ -172,9 +176,9 @@ if (isset($_POST['save'])) {
 
     if ($valid) {
 
-        if (!forum_save_style($stylename, $styledesc, $stylesheet, $error_code)) {
+        if (!forum_save_style($stylename, $styledesc, $stylesheet, $error_var)) {
 
-            if ($error_code == STYLE_ALREADY_EXISTS) {
+            if ($error_var == STYLE_ALREADY_EXISTS) {
 
                 $valid = false;
                 $error_msg_array[] = $lang['stylealreadyexists'];

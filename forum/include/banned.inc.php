@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: banned.inc.php,v 1.35 2008-06-13 19:00:51 decoyduck Exp $ */
+/* $Id: banned.inc.php,v 1.36 2008-07-25 14:52:44 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -68,7 +68,7 @@ function ban_check($user_sess, $user_is_guest = false)
     $ban_check_select_array = array();
     $ban_check_where_array  = array();
 
-    if ($ipaddress = get_ip_address()) {
+    if (($ipaddress = get_ip_address())) {
 
         $ipaddress = db_escape_string($ipaddress);
 
@@ -129,7 +129,7 @@ function ban_check($user_sess, $user_is_guest = false)
 
                     $ban_check_type = $ban_check_result_array['BANTYPE'];
 
-                    if ($ban_check_data = ban_check_process_data($ban_check_result_array)) {
+                    if (($ban_check_data = ban_check_process_data($ban_check_result_array))) {
 
                         if ($user_is_guest === false) {
                             array_push($ban_check_data, $user_sess['UID'], $user_sess['LOGON']);

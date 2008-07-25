@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_main.php,v 1.69 2007-12-26 13:19:32 decoyduck Exp $ */
+/* $Id: admin_main.php,v 1.70 2008-07-25 14:52:54 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -59,6 +59,10 @@ include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "logon.inc.php");
 include_once(BH_INCLUDE_PATH. "perm.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
+
+// Intitalise a few variables
+
+$webtag_search = false;
 
 // Check we're logged in correctly
 

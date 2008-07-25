@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_links.inc.php,v 1.41 2007-10-24 19:57:08 decoyduck Exp $ */
+/* $Id: forum_links.inc.php,v 1.42 2008-07-25 14:52:42 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -160,7 +160,7 @@ function forum_links_fix_url($uri)
 
 function forum_links_draw_dropdown()
 {
-    if ($forum_links_array = forum_links_get_links(false)) {
+    if (($forum_links_array = forum_links_get_links(false))) {
 
         $html = form_dropdown_array('forum_links', $forum_links_array, false, "onchange=\"openForumLink(this)\"", "forumlinks");
         return $html;

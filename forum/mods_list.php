@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: mods_list.php,v 1.31 2007-12-26 13:19:34 decoyduck Exp $ */
+/* $Id: mods_list.php,v 1.32 2008-07-25 14:52:49 decoyduck Exp $ */
 
 /**
 * Displays list of moderators for a folder
@@ -67,6 +67,10 @@ include_once(BH_INCLUDE_PATH. "mods_list.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "threads.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
+
+// Intitalise a few variables
+
+$webtag_search = false;
 
 // Check we're logged in correctly
 
@@ -159,7 +163,7 @@ echo "                        <td align=\"left\">\n";
 echo "                          <h2>{$lang['forumleaders']}</h2>\n";
 echo "                          <ul>\n";
 
-if ($forum_mods_array = mods_list_get_mods(0)) {
+if (($forum_mods_array = mods_list_get_mods(0))) {
 
     foreach ($forum_mods_array as $forum_mod) {
 
@@ -176,7 +180,7 @@ echo "                          </ul>\n";
 echo "                          <h2>{$lang['foldermods']}</h2>";
 echo "                          <ul>\n";
 
-if ($folder_mods_array = mods_list_get_mods($fid)) {
+if (($folder_mods_array = mods_list_get_mods($fid))) {
 
     foreach ($folder_mods_array as $folder_mod) {
 

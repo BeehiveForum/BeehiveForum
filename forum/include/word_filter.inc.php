@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: word_filter.inc.php,v 1.49 2008-03-09 13:50:49 decoyduck Exp $ */
+/* $Id: word_filter.inc.php,v 1.50 2008-07-25 14:52:44 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -132,7 +132,7 @@ function word_filter_get_by_uid($uid)
 
         $last_user_uid = $uid;
 
-        if ($user_prefs = user_get_prefs($uid)) {
+        if (($user_prefs = user_get_prefs($uid))) {
 
             if ((isset($user_prefs['USE_ADMIN_FILTER']) && $user_prefs['USE_ADMIN_FILTER'] == 'Y') || forum_get_setting('force_word_filter', 'Y', false)) {
 
@@ -274,7 +274,7 @@ function word_filter_obstart($content)
 
     $rand_hash = preg_replace("/[^a-z]/i", "", $rand_hash);
 
-    if ($user_wordfilter = word_filter_get_by_sess_uid()) {
+    if (($user_wordfilter = word_filter_get_by_sess_uid())) {
 
         $pattern_array = $user_wordfilter['pattern_array'];
         $replace_array = $user_wordfilter['replace_array'];
@@ -312,7 +312,7 @@ function word_filter_apply($content, $uid)
 {
     if (!is_numeric($uid)) return $content;
 
-    if ($user_wordfilter = word_filter_get_by_uid($uid)) {
+    if (($user_wordfilter = word_filter_get_by_uid($uid))) {
 
         $pattern_array = $user_wordfilter['pattern_array'];
         $replace_array = $user_wordfilter['replace_array'];

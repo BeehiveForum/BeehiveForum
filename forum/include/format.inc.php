@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.161 2008-04-27 21:35:46 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.162 2008-07-25 14:52:42 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -139,7 +139,7 @@ function format_time($time, $verbose = false)
 
     // Amend times for daylight saving if necessary
 
-    if ($dl_saving == "Y" && timestamp_is_dst($timezone_id, $gmt_offset)) {
+    if (($dl_saving == "Y" && timestamp_is_dst($timezone_id, $gmt_offset))) {
 
         $local_time = $local_time + ($dst_offset * HOUR_IN_SECONDS);
         $local_time_now = $local_time_now + ($dst_offset * HOUR_IN_SECONDS);
@@ -154,7 +154,7 @@ function format_time($time, $verbose = false)
 
     $month_str = $lang['month_short'][$month];
 
-    if ($year != gmdate("Y", $local_time_now)) {
+    if (($year != gmdate("Y", $local_time_now))) {
 
         if ($verbose) {
             $fmt = sprintf($lang['daymonthyear'], $day, $month_str, $year); // j M Y
@@ -166,7 +166,7 @@ function format_time($time, $verbose = false)
 
         if ($verbose) {
 
-            if ($year != gmdate("Y", $local_time_now)) {
+            if (($year != gmdate("Y", $local_time_now))) {
                 $fmt = sprintf($lang['daymonthyearhourminute'], $day, $month_str, $year, $hour, $min); // j M Y H:i
             }else {
                 $fmt = sprintf($lang['daymonthhourminute'], $day, $month_str, $hour, $min); // j M H:i
@@ -221,7 +221,7 @@ function format_date($time)
 
     // Amend times for daylight saving if necessary
 
-    if ($dl_saving == "Y" && timestamp_is_dst($timezone_id, $gmt_offset)) {
+    if (($dl_saving == "Y" && timestamp_is_dst($timezone_id, $gmt_offset))) {
 
         $local_time = $local_time + ($dst_offset * HOUR_IN_SECONDS);
         $local_time_now = $local_time_now + ($dst_offset * HOUR_IN_SECONDS);
@@ -236,7 +236,7 @@ function format_date($time)
 
     $month_str = $lang['month_short'][$month];
 
-    if ($year != gmdate("Y", $local_time_now)) {
+    if (($year != gmdate("Y", $local_time_now))) {
 
         $fmt = sprintf($lang['daymonthyear'], $day, $month_str, $year); // j M Y
 
@@ -708,7 +708,7 @@ function get_local_time()
         $dl_saving = forum_get_setting('forum_dl_saving', false, 'N');
     }
 
-    if ($dl_saving == "Y" && timestamp_is_dst($timezone_id, $gmt_offset)) {
+    if (($dl_saving == "Y" && timestamp_is_dst($timezone_id, $gmt_offset))) {
         $local_time = time() + ($gmt_offset * HOUR_IN_SECONDS) + ($dst_offset * HOUR_IN_SECONDS);
     }else {
         $local_time = time() + ($gmt_offset * HOUR_IN_SECONDS);
@@ -783,7 +783,7 @@ function format_birthday($date) // $date is a MySQL-type DATE field (YYYY-MM-DD)
 
 function split_url($url, $inc_path = false, $inc_query = false, $inc_fragment = false)
 {
-    if ($url_parts = @parse_url($url)) {
+    if (($url_parts = @parse_url($url))) {
 
         if (!isset($url_parts['scheme'])) return false;
         if (!isset($url_parts['host'])) return false;

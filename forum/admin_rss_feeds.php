@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_rss_feeds.php,v 1.54 2008-03-24 23:32:15 decoyduck Exp $ */
+/* $Id: admin_rss_feeds.php,v 1.55 2008-07-25 14:52:45 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -68,6 +68,10 @@ include_once(BH_INCLUDE_PATH. "rss_feed.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
+
+// Intitalise a few variables
+
+$webtag_search = false;
 
 // Check we're logged in correctly
 
@@ -143,7 +147,7 @@ if (isset($_POST['delete'])) {
 
         foreach($_POST['t_delete'] as $feed_id => $delete_feed) {
 
-            if ($valid && $delete_feed == "Y" && $rss_feed = rss_get_feed($feed_id)) {
+            if (($valid && $delete_feed == "Y" && $rss_feed = rss_get_feed($feed_id))) {
 
                 if (rss_remove_feed($feed_id)) {
 
@@ -184,7 +188,7 @@ if (isset($_POST['delete'])) {
 
     if ($valid) {
 
-        if ($rss_items = rss_read_database($t_url)) {
+        if (($rss_items = rss_read_database($t_url))) {
 
             if (is_array($rss_items) && sizeof($rss_items) > 0) {
 
@@ -218,7 +222,7 @@ if (isset($_POST['delete'])) {
 
         $t_user_new = trim(_stripslashes($_POST['t_user_new']));
 
-        if ($t_user_array = user_get_uid($t_user_new)) {
+        if (($t_user_array = user_get_uid($t_user_new))) {
 
             $t_user_uid = $t_user_array['UID'];
 
@@ -401,9 +405,9 @@ if (isset($_POST['delete'])) {
             $t_old_frequency = "";
         }
 
-        if ($valid && (($t_new_name != $t_old_name) || ($t_new_user != $t_old_user) || ($t_new_fid != $t_old_fid) || ($t_new_url != $t_old_url) || ($t_new_prefix != $t_old_prefix) || ($t_new_frequency != $t_old_frequency))) {
+        if (($valid && (($t_new_name != $t_old_name) || ($t_new_user != $t_old_user) || ($t_new_fid != $t_old_fid) || ($t_new_url != $t_old_url) || ($t_new_prefix != $t_old_prefix) || ($t_new_frequency != $t_old_frequency)))) {
 
-            if ($t_user_array = user_get_uid($t_new_user)) {
+            if (($t_user_array = user_get_uid($t_new_user))) {
 
                 $t_new_uid = $t_user_array['UID'];
 

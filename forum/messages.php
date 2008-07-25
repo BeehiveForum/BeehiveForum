@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.268 2008-07-13 10:01:41 decoyduck Exp $ */
+/* $Id: messages.php,v 1.269 2008-07-25 14:52:45 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -74,6 +74,10 @@ include_once(BH_INCLUDE_PATH. "search.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "thread.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
+
+// Intitalise a few variables
+
+$webtag_search = false;
 
 // Check we're logged in correctly
 
@@ -202,7 +206,7 @@ if (isset($_POST['pollsubmit'])) {
     }
 }
 
-if ($posts_per_page = bh_session_get_value('POSTS_PER_PAGE')) {
+if (($posts_per_page = bh_session_get_value('POSTS_PER_PAGE'))) {
 
     if ($posts_per_page < 10) $posts_per_page = 10;
     if ($posts_per_page > 30) $posts_per_page = 30;
@@ -304,7 +308,7 @@ echo "</script>\n";
 
 if (isset($thread_data['STICKY']) && isset($thread_data['STICKY_UNTIL'])) {
 
-    if ($thread_data['STICKY'] == "Y" && $thread_data['STICKY_UNTIL'] != 0 && time() > $thread_data['STICKY_UNTIL']) {
+    if (($thread_data['STICKY'] == "Y" && $thread_data['STICKY_UNTIL'] != 0 && time() > $thread_data['STICKY_UNTIL'])) {
 
         thread_set_sticky($tid, false);
         $thread_data['STICKY'] == "N";
@@ -358,7 +362,7 @@ echo "    <td align=\"left\">", messages_top($tid, $pid, $thread_data['FID'], $f
 
 if ($thread_data['POLL_FLAG'] == 'Y' && $messages[0]['PID'] != 1) {
 
-    if ($userpollvote = poll_get_user_vote($tid)) {
+    if (($userpollvote = poll_get_user_vote($tid))) {
 
         for ($i = 0; $i < sizeof($userpollvote); $i++) {
             $userpollvotes_array[] = $userpollvote[$i]['OPTION_ID'];
@@ -436,7 +440,7 @@ if (isset($_GET['font_resize'])) {
     echo "</script>\n\n";
 }
 
-if ($tracking_data_array = thread_get_tracking_data($tid)) {
+if (($tracking_data_array = thread_get_tracking_data($tid))) {
 
     echo "<table class=\"thread_track_notice\" width=\"96%\">\n";
 

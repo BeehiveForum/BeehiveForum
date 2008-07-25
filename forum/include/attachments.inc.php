@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.148 2008-06-30 19:50:20 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.149 2008-07-25 14:52:44 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -92,7 +92,7 @@ function attachments_get_upload_tmp_dir()
 
 function attachments_check_dir()
 {
-    if ($attachment_dir = forum_get_setting('attachment_dir')) {
+    if (($attachment_dir = forum_get_setting('attachment_dir'))) {
 
         // Check that the temporary upload directory is writable
 
@@ -1079,7 +1079,7 @@ function attachment_create_thumb($filepath, $max_width = 150, $max_height = 150)
 
     if (file_exists($filepath) && @$image_info = getimagesize($filepath)) {
 
-        if ($attachment_gd_info = get_gd_info()) {
+        if (($attachment_gd_info = get_gd_info())) {
 
             // Check 1: Does GD support reading and writing our image type?
 

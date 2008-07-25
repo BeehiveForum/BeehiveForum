@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.243 2008-07-23 19:11:47 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.244 2008-07-25 14:52:47 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -82,6 +82,10 @@ include_once(BH_INCLUDE_PATH. "stats.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "user_profile.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
+
+// Intitalise a few variables
+
+$webtag_search = false;
 
 // Check we're logged in correctly
 
@@ -240,7 +244,7 @@ if (isset($_POST['action_submit'])) {
 
             if (forum_get_setting('require_user_approval', 'Y')) {
 
-                if ($user_logon = user_get_logon($uid)) {
+                if (($user_logon = user_get_logon($uid))) {
 
                     if (admin_approve_user($uid)) {
 
@@ -296,7 +300,7 @@ if (isset($_POST['action_submit'])) {
 
         $t_new_password = trim(_stripslashes($_POST['t_new_password']));
 
-        if ($user_logon = user_get_logon($uid) && $fuid = bh_session_get_value('UID')) {
+        if (($user_logon = user_get_logon($uid) && $fuid = bh_session_get_value('UID'))) {
 
             if (user_change_password($uid, $t_new_password)) {
 
@@ -365,7 +369,7 @@ if (isset($_POST['action_submit'])) {
 
     $valid = true;
 
-    if ($table_data = get_table_prefix()) {
+    if (($table_data = get_table_prefix())) {
 
         // Check post count is being changed or reset.
 
@@ -491,7 +495,7 @@ if (isset($_POST['action_submit'])) {
 
     // Local folder permissions
 
-    if ($table_data = get_table_prefix()) {
+    if (($table_data = get_table_prefix())) {
 
         if (isset($_POST['t_update_perms_array']) && is_array($_POST['t_update_perms_array'])) {
 
@@ -570,7 +574,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
         html_draw_top('admin.js');
 
-        if ($table_data = get_table_prefix()) {
+        if (($table_data = get_table_prefix())) {
             echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
         }else {
             echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
@@ -640,7 +644,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
         $user_history_array = admin_get_user_history($user['UID']);
 
-        if ($table_data = get_table_prefix()) {
+        if (($table_data = get_table_prefix())) {
             echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
         }else {
             echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
@@ -826,7 +830,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
             $user_alias_array = admin_get_user_referer_matches($user['UID']);
         }
 
-        if ($table_data = get_table_prefix()) {
+        if (($table_data = get_table_prefix())) {
             echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
         }else {
             echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
@@ -1017,7 +1021,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
         html_draw_top('admin.js');
 
-        if ($table_data = get_table_prefix()) {
+        if (($table_data = get_table_prefix())) {
             echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
         }else {
             echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
@@ -1078,7 +1082,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
         html_draw_top('admin.js');
 
-        if ($table_data = get_table_prefix()) {
+        if (($table_data = get_table_prefix())) {
             echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
         }else {
             echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
@@ -1136,7 +1140,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
 html_draw_top('admin.js', 'openprofile.js');
 
-if ($table_data = get_table_prefix()) {
+if (($table_data = get_table_prefix())) {
     echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
 }else {
     echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
@@ -1219,7 +1223,7 @@ if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
         echo "                      </tr>\n";
     }
 
-    if ($table_data = get_table_prefix()) {
+    if (($table_data = get_table_prefix())) {
 
         if (isset($user['REFERER']) && strlen(trim($user['REFERER'])) > 0) {
 
@@ -1354,7 +1358,7 @@ if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
     echo "  <br />\n";
 }
 
-if ($table_data = get_table_prefix()) {
+if (($table_data = get_table_prefix())) {
 
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";
@@ -1534,7 +1538,7 @@ if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
     }
 }
 
-if ($folder_array = perm_user_get_folders($uid)) {
+if (($folder_array = perm_user_get_folders($uid))) {
 
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";
@@ -1620,7 +1624,7 @@ if ($folder_array = perm_user_get_folders($uid)) {
     echo "  <br />\n";
 }
 
-if ($table_data = get_table_prefix()) {
+if (($table_data = get_table_prefix())) {
 
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";
@@ -1633,7 +1637,7 @@ if ($table_data = get_table_prefix()) {
     echo "                  <td align=\"left\" class=\"subhead\" colspan=\"1\">{$lang['usergroups']}</td>\n";
     echo "                </tr>\n";
 
-    if ($user_groups_array = perm_user_get_groups($uid)) {
+    if (($user_groups_array = perm_user_get_groups($uid))) {
 
         echo "                <tr>\n";
         echo "                  <td align=\"center\">\n";

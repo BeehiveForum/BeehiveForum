@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.180 2008-05-22 20:00:26 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.181 2008-07-25 14:52:45 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -85,7 +85,7 @@ function post_create($fid, $tid, $reply_pid, $by_uid, $fuid, $tuid, $content, $h
         $sql.= "VALUES ($tid, $reply_pid, $fuid, $tuid, NOW(), NOW(), $fuid, '$ipaddress')";
     }
 
-    if ($result = db_query($sql, $db_post_create)) {
+    if (($result = db_query($sql, $db_post_create))) {
 
         $new_pid = db_insert_id($db_post_create);
 
@@ -95,7 +95,7 @@ function post_create($fid, $tid, $reply_pid, $by_uid, $fuid, $tuid, $content, $h
         $sql = "INSERT INTO {$table_data['PREFIX']}POST_CONTENT (TID, PID, CONTENT) ";
         $sql.= "VALUES ('$tid', '$new_pid', '$post_content')";
 
-        if ($result = db_query($sql, $db_post_create)) {
+        if (($result = db_query($sql, $db_post_create))) {
 
             // Update the thread length so it matches the number of posts
 
@@ -109,7 +109,7 @@ function post_create($fid, $tid, $reply_pid, $by_uid, $fuid, $tuid, $content, $h
 
             // Update the user's post count.
 
-            if ($post_count = user_get_post_count($fuid)) {
+            if (($post_count = user_get_post_count($fuid))) {
 
                 $post_count++;
                 user_update_post_count($fuid, $post_count);
@@ -247,7 +247,7 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
 
         if (db_num_rows($result) > 0) {
 
-            if ($top_user = db_fetch_array($result)) {
+            if (($top_user = db_fetch_array($result))) {
 
                 if (isset($top_user['PEER_NICKNAME'])) {
                     if (!is_null($top_user['PEER_NICKNAME']) && strlen($top_user['PEER_NICKNAME']) > 0) {
@@ -320,7 +320,7 @@ function post_draw_to_dropdown_recent($default_uid, $show_all = true)
 
         if (db_num_rows($result) > 0) {
 
-            if ($top_user = db_fetch_array($result)) {
+            if (($top_user = db_fetch_array($result))) {
 
                 if (isset($top_user['PEER_NICKNAME'])) {
                     if (!is_null($top_user['PEER_NICKNAME']) && strlen($top_user['PEER_NICKNAME']) > 0) {
@@ -393,7 +393,7 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $
 
         if (db_num_rows($result) > 0) {
 
-            if ($top_user = db_fetch_array($result)) {
+            if (($top_user = db_fetch_array($result))) {
 
                 if (isset($top_user['PEER_NICKNAME'])) {
                     if (!is_null($top_user['PEER_NICKNAME']) && strlen($top_user['PEER_NICKNAME']) > 0) {

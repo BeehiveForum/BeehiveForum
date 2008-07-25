@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.126 2008-07-23 19:11:47 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.127 2008-07-25 14:52:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -75,6 +75,10 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "thread.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "user_rel.inc.php");
+
+// Intitalise a few variables
+
+$webtag_search = false;
 
 // Check we're logged in correctly
 
@@ -483,7 +487,7 @@ if ($valid && isset($_POST['post'])) {
 
             if ($t_tid > 0) {
 
-                if ($allow_sig == true && strlen(trim($t_sig)) > 0) {
+                if (($allow_sig == true && strlen(trim($t_sig)) > 0)) {
                     $t_content.= "\n<div class=\"sig\">$t_sig</div>";
                 }
 
@@ -588,7 +592,7 @@ if ($valid && isset($_POST['preview'])) {
 
     $preview_message['CONTENT'] = $t_content;
 
-    if ($allow_sig == true && strlen(trim($t_sig)) > 0) {
+    if (($allow_sig == true && strlen(trim($t_sig)) > 0)) {
         $preview_message['CONTENT'] = $preview_message['CONTENT']. "<div class=\"sig\">". $t_sig. "</div>";
     }
 

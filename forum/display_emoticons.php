@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display_emoticons.php,v 1.56 2008-02-14 23:00:44 decoyduck Exp $ */
+/* $Id: display_emoticons.php,v 1.57 2008-07-25 14:52:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -61,6 +61,10 @@ include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "logon.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
+
+// Intitalise a few variables
+
+$webtag_search = false;
 
 // Check we're logged in correctly
 
@@ -146,7 +150,7 @@ $emoticon_sets_array = emoticons_get_available(false);
 
 $emoticon_sets_array_keys = array_keys($emoticon_sets_array);
 
-if ($user_emoticon_pack != "user" && !in_array($user_emoticon_pack, $emoticon_sets_array_keys)) {
+if (($user_emoticon_pack != "user" && !in_array($user_emoticon_pack, $emoticon_sets_array_keys))) {
     $user_emoticon_pack = forum_get_setting('default_emoticons', false, 'default');
 }
 
@@ -209,7 +213,7 @@ if (isset($emoticon) && count($emoticon) > 0) {
 echo "                      <td align=\"left\">\n";
 echo "                        <table class=\"posthead\" width=\"300\">\n";
 
-if ($style_content = @file_get_contents("emoticons/$emoticon_path/style.css")) {
+if (($style_content = @file_get_contents("emoticons/$emoticon_path/style.css"))) {
 
     preg_match_all("/\.e_([\w_]+) \{.*\n[^\}]*background-image\s*:\s*url\s*\([\"\']([^\"\']*)[\"\']\)[^\}]*\}/i", $style_content, $style_matches);
 

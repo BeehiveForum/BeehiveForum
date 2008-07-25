@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.124 2008-05-30 21:00:18 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.125 2008-07-25 14:52:43 decoyduck Exp $ */
 
 /**
 * Functions relating to permissions
@@ -55,13 +55,13 @@ function perm_is_moderator($uid, $folder_fid = 0)
     if (!is_numeric($uid)) return false;
     if (!is_numeric($folder_fid)) return false;
 
-    if ($table_data = get_table_prefix()) {
+    if (($table_data = get_table_prefix())) {
         $forum_fid = $table_data['FID'];
     }else {
         $forum_fid = 0;
     }
 
-    if ($uid == bh_session_get_value('UID')) {
+    if (($uid == bh_session_get_value('UID'))) {
         return bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid);
     }
 
@@ -94,13 +94,13 @@ function perm_has_admin_access($uid)
 
     if (!is_numeric($uid)) return false;
 
-    if ($table_data = get_table_prefix()) {
+    if (($table_data = get_table_prefix())) {
         $forum_fid = $table_data['FID'];
     }else {
         $forum_fid = 0;
     }
 
-    if ($uid == bh_session_get_value('UID')) {
+    if (($uid == bh_session_get_value('UID'))) {
         return bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0);
     }
 
@@ -123,7 +123,7 @@ function perm_has_global_admin_access($uid)
 
     if (!is_numeric($uid)) return false;
 
-    if ($uid == bh_session_get_value('UID')) {
+    if (($uid == bh_session_get_value('UID'))) {
         return bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0);
     }
 
@@ -146,7 +146,7 @@ function perm_has_forumtools_access($uid)
 
     if (!is_numeric($uid)) return false;
 
-    if ($uid == bh_session_get_value('UID')) {
+    if (($uid == bh_session_get_value('UID'))) {
         return bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0);
     }
 
@@ -169,13 +169,13 @@ function perm_is_links_moderator($uid)
 
     if (!is_numeric($uid)) return false;
 
-    if ($table_data = get_table_prefix()) {
+    if (($table_data = get_table_prefix())) {
         $forum_fid = $table_data['FID'];
     }else {
         $forum_fid = 0;
     }
 
-    if ($uid == bh_session_get_value('UID')) {
+    if (($uid == bh_session_get_value('UID'))) {
         return bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0);
     }
 
@@ -204,7 +204,7 @@ function perm_check_folder_permissions($fid, $access_level, $uid)
 
     $forum_fid = $table_data['FID'];
 
-    if ($uid == bh_session_get_value('UID')) {
+    if (($uid == bh_session_get_value('UID'))) {
         return bh_session_check_perm($access_level, $fid);
     }
 
@@ -245,7 +245,7 @@ function perm_check_global_permissions($access_level, $uid)
     if (!is_numeric($access_level)) return false;
     if (!is_numeric($uid)) return false;
 
-    if ($uid == bh_session_get_value('UID')) {
+    if (($uid == bh_session_get_value('UID'))) {
         return bh_session_check_perm($access_level, 0);
     }
 
@@ -401,7 +401,7 @@ function perm_add_group($group_name, $group_desc, $perm)
     $sql = "INSERT INTO GROUPS (FORUM, GROUP_NAME, GROUP_DESC, AUTO_GROUP) ";
     $sql.= "VALUES ('$forum_fid', '$group_name', '$group_desc', 0)";
 
-    if ($result = db_query($sql, $db_perm_add_group)) {
+    if (($result = db_query($sql, $db_perm_add_group))) {
 
         $new_gid = db_insert_id($db_perm_add_group);
 
@@ -664,7 +664,7 @@ function perm_update_global_perms($uid, $perm)
     if (!is_numeric($uid)) return false;
     if (!is_numeric($perm)) return false;
 
-    if ($gid = perm_get_global_user_gid($uid)) {
+    if (($gid = perm_get_global_user_gid($uid))) {
 
         $sql = "SELECT GID FROM GROUP_PERMS WHERE GID = '$gid' ";
         $sql.= "AND FORUM = 0 AND FID = 0 LIMIT 0, 1";
@@ -692,7 +692,7 @@ function perm_update_global_perms($uid, $perm)
 
         $sql = "INSERT INTO GROUPS (FORUM, AUTO_GROUP) VALUES (0, 1)";
 
-        if ($result = db_query($sql, $db_perm_add_global_perms)) {
+        if (($result = db_query($sql, $db_perm_add_global_perms))) {
 
             $new_gid = db_insert_id($db_perm_add_global_perms);
 
@@ -855,7 +855,7 @@ function perm_get_user_permissions($uid)
 
     if (!is_numeric($uid)) return 0;
 
-    if ($table_data = get_table_prefix()) {
+    if (($table_data = get_table_prefix())) {
         $forum_fid = $table_data['FID'];
     }else {
         $forum_fid = 0;
@@ -1025,7 +1025,7 @@ function perm_update_user_folder_perms($uid, $fid, $perm)
 
     $forum_fid = $table_data['FID'];
 
-    if ($gid = perm_get_user_gid($uid)) {
+    if (($gid = perm_get_user_gid($uid))) {
 
         $sql = "SELECT GID FROM GROUP_PERMS WHERE GID = '$gid' ";
         $sql.= "AND FORUM = '$forum_fid' AND FID = '$fid' LIMIT 0, 1";
@@ -1101,7 +1101,7 @@ function perm_update_user_permissions($uid, $perm)
 
     $forum_fid = $table_data['FID'];
 
-    if ($gid = perm_get_user_gid($uid)) {
+    if (($gid = perm_get_user_gid($uid))) {
 
         $sql = "SELECT GID FROM GROUP_PERMS WHERE GID = '$gid' ";
         $sql.= "AND FORUM = '$forum_fid' AND FID = 0 LIMIT 0, 1";
@@ -1129,7 +1129,7 @@ function perm_update_user_permissions($uid, $perm)
 
         $sql = "INSERT INTO GROUPS (FORUM, AUTO_GROUP) VALUES ($forum_fid, 1)";
 
-        if ($result = db_query($sql, $db_perm_update_user_permissions)) {
+        if (($result = db_query($sql, $db_perm_update_user_permissions))) {
 
             $new_gid = db_insert_id($db_perm_update_user_permissions);
 
@@ -1277,7 +1277,7 @@ function perm_user_apply_email_confirmation($uid)
 
     $perm = USER_PERM_EMAIL_CONFIRM;
 
-    if ($gid = perm_get_global_user_gid($uid)) {
+    if (($gid = perm_get_global_user_gid($uid))) {
 
         $sql = "UPDATE LOW_PRIORITY GROUP_PERMS SET PERM = PERM | $perm ";
         $sql.= "WHERE GID = '$gid'";
@@ -1288,7 +1288,7 @@ function perm_user_apply_email_confirmation($uid)
 
         $sql = "INSERT INTO GROUPS (FORUM, AUTO_GROUP) VALUES (0, 1)";
 
-        if ($result = db_query($sql, $db_perm_user_apply_email_confirmation)) {
+        if (($result = db_query($sql, $db_perm_user_apply_email_confirmation))) {
 
             $new_gid = db_insert_id($db_perm_user_apply_email_confirmation);
 
@@ -1315,7 +1315,7 @@ function perm_user_cancel_email_confirmation($uid)
 
     if (!is_numeric($uid)) return false;
 
-    if ($gid = perm_get_global_user_gid($uid)) {
+    if (($gid = perm_get_global_user_gid($uid))) {
 
         $sql = "SELECT PERM FROM GROUP_PERMS WHERE GID = '$gid'";
 

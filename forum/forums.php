@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forums.php,v 1.92 2008-07-14 18:14:10 decoyduck Exp $ */
+/* $Id: forums.php,v 1.93 2008-07-25 14:52:54 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -63,6 +63,10 @@ include_once(BH_INCLUDE_PATH. "myforums.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
+
+// Intitalise a few variables
+
+$webtag_search = false;
 
 // Load the user session
 
@@ -222,13 +226,22 @@ if (isset($_GET['search_page']) && is_numeric($_GET['search_page'])) {
 // Are we being redirected somewhere?
 
 if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri']))) > 0) {
+    $final_uri = basename(trim(_stripslashes($_GET['final_uri'])));
+}else if (isset($_POST['final_uri']) && strlen(trim(_stripslashes($_POST['final_uri']))) > 0) {
+    $final_uri = basename(trim(_stripslashes($_POST['final_uri'])));
+}else {
+    $final_uri = "";
+}
+
+// Validate the final URI
+
+if (isset($final_uri) && strlen($final_uri) > 0) {
 
     $available_files = get_available_files();
     $available_files_preg = implode("|^", array_map('preg_quote_callback', $available_files));
 
-    if (preg_match("/^$available_files_preg/", basename(trim(_stripslashes($_GET['final_uri'])))) > 0) {
+    if (preg_match("/^$available_files_preg/", $final_uri) > 0) {
 
-        $final_uri = basename(trim(_stripslashes($_GET['final_uri'])));
         $final_uri = href_cleanup_query_keys($final_uri, 'webtag');
     }
 }
@@ -248,7 +261,7 @@ if (isset($_POST['add_fav']) && is_array($_POST['add_fav'])) {
     if (user_set_forum_interest($forum_fid_add_fav, FORUM_FAVOURITE)) {
 
         $webtag_search = rawurlencode($webtag_search);
-        header_redirect("forums.php?webtag=$webtag&view_type=$view_type&main_page=$main_page&search_page=$search_page&webtag_search=$webtag_search&added=true");
+        header_redirect("forums.php?webtag=$webtag&final_uri=$final_uri&view_type=$view_type&main_page=$main_page&search_page=$search_page&webtag_search=$webtag_search&added=true");
         exit;
 
     }else {
@@ -270,7 +283,7 @@ if (isset($_POST['add_fav']) && is_array($_POST['add_fav'])) {
     if (user_set_forum_interest($forum_fid_rev_fav, FORUM_NOINTEREST)) {
 
         $webtag_search = rawurlencode($webtag_search);
-        header_redirect("forums.php?webtag=$webtag&view_type=$view_type&main_page=$main_page&search_page=$search_page&webtag_search=$webtag_search&removed=true");
+        header_redirect("forums.php?webtag=$webtag&final_uri=$final_uri&view_type=$view_type&main_page=$main_page&search_page=$search_page&webtag_search=$webtag_search&removed=true");
         exit;
 
     }else {
@@ -292,7 +305,7 @@ if (isset($_POST['add_fav']) && is_array($_POST['add_fav'])) {
     if (user_set_forum_interest($forum_fid_ignore, FORUM_IGNORED)) {
 
         $webtag_search = rawurlencode($webtag_search);
-        header_redirect("forums.php?webtag=$webtag&view_type=$view_type&main_page=$main_page&search_page=$search_page&webtag_search=$webtag_search&ignored=true");
+        header_redirect("forums.php?webtag=$webtag&final_uri=$final_uri&view_type=$view_type&main_page=$main_page&search_page=$search_page&webtag_search=$webtag_search&ignored=true");
         exit;
 
     }else {
@@ -314,7 +327,7 @@ if (isset($_POST['add_fav']) && is_array($_POST['add_fav'])) {
     if (user_set_forum_interest($forum_fid_unignore, FORUM_NOINTEREST)) {
 
         $webtag_search = rawurlencode($webtag_search);
-        header_redirect("forums.php?webtag=$webtag&view_type=$view_type&main_page=$main_page&search_page=$search_page&webtag_search=$webtag_search&unignored=true");
+        header_redirect("forums.php?webtag=$webtag&final_uri=$final_uri&view_type=$view_type&main_page=$main_page&search_page=$search_page&webtag_search=$webtag_search&unignored=true");
         exit;
 
     }else {
@@ -345,6 +358,7 @@ if (!user_is_guest()) {
         echo "  ", form_input_hidden("search_page", _htmlentities($search_page)), "\n";
         echo "  ", form_input_hidden("webtag_search", _htmlentities($webtag_search)), "\n";
         echo "  ", form_input_hidden("view_type", _htmlentities($view_type)), "\n";
+        echo "  ", form_input_hidden("final_uri", _htmlentities($final_uri)), "\n";
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"70%\">\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\">\n";
@@ -512,6 +526,7 @@ if (!user_is_guest()) {
         echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
         echo "  ", form_input_hidden("search_page", _htmlentities($search_page)), "\n";
         echo "  ", form_input_hidden("webtag_search", _htmlentities($webtag_search)), "\n";
+        echo "  ", form_input_hidden("final_uri", _htmlentities($final_uri)), "\n";
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"70%\">\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\">\n";
@@ -650,6 +665,7 @@ if (!user_is_guest()) {
     echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
     echo "  ", form_input_hidden("search_page", _htmlentities($search_page)), "\n";
     echo "  ", form_input_hidden("view_type", _htmlentities($view_type)), "\n";
+    echo "  ", form_input_hidden("final_uri", _htmlentities($final_uri)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"70%\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
@@ -698,6 +714,7 @@ if (!user_is_guest()) {
     echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
     echo "  ", form_input_hidden("search_page", _htmlentities($search_page)), "\n";
     echo "  ", form_input_hidden("webtag_search", _htmlentities($webtag_search)), "\n";
+    echo "  ", form_input_hidden("final_uri", _htmlentities($final_uri)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"70%\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";

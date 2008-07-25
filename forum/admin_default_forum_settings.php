@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.112 2008-05-10 18:42:52 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.113 2008-07-25 14:52:47 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -69,6 +69,10 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "styles.inc.php");
 include_once(BH_INCLUDE_PATH. "text_captcha.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
+
+// Intitalise a few variables
+
+$webtag_search = false;
 
 // Check we're logged in correctly
 
@@ -730,7 +734,7 @@ if (isset($forum_global_settings['text_captcha_enabled']) && $forum_global_setti
 
     if (!$text_captcha->generate_keys() || !$text_captcha->make_image()) {
 
-        if ($errno = $text_captcha->get_error()) {
+        if (($errno = $text_captcha->get_error())) {
 
             switch ($errno) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_detail.php,v 1.101 2008-04-20 19:54:37 decoyduck Exp $ */
+/* $Id: links_detail.php,v 1.102 2008-07-25 14:52:54 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -63,6 +63,10 @@ include_once(BH_INCLUDE_PATH. "logon.inc.php");
 include_once(BH_INCLUDE_PATH. "perm.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
+
+// Intitalise a few variables
+
+$webtag_search = false;
 
 // Check we're logged in correctly
 
@@ -422,7 +426,7 @@ if (!user_is_guest()) {
     echo "<br />\n";
 }
 
-if ($comments_array = links_get_comments($lid)) {
+if (($comments_array = links_get_comments($lid))) {
 
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";

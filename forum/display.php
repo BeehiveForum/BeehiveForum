@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display.php,v 1.94 2008-07-13 10:01:41 decoyduck Exp $ */
+/* $Id: display.php,v 1.95 2008-07-25 14:52:54 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -65,6 +65,10 @@ include_once(BH_INCLUDE_PATH. "messages.inc.php");
 include_once(BH_INCLUDE_PATH. "poll.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "thread.inc.php");
+
+// Intitalise a few variables
+
+$webtag_search = false;
 
 // Check we're logged in correctly
 
@@ -150,7 +154,7 @@ html_draw_top("title=$forum_name > $thread_title", "openprofile.js", "post.js", 
 
 if (isset($thread_data['STICKY']) && isset($thread_data['STICKY_UNTIL'])) {
 
-    if ($thread_data['STICKY'] == "Y" && $thread_data['STICKY_UNTIL'] != 0 && time() > $thread_data['STICKY_UNTIL']) {
+    if (($thread_data['STICKY'] == "Y" && $thread_data['STICKY_UNTIL'] != 0 && time() > $thread_data['STICKY_UNTIL'])) {
 
         thread_set_sticky($tid, false);
         $thread_data['STICKY'] == "N";
@@ -166,7 +170,7 @@ echo "    <td align=\"left\">", messages_top($tid, $pid, $folder_title, $thread_
 
 if ($thread_data['POLL_FLAG'] == 'Y' && $message['PID'] != 1) {
 
-    if ($userpollvote = poll_get_user_vote($tid)) {
+    if (($userpollvote = poll_get_user_vote($tid))) {
 
         if ($userpollvote ^ POLL_VOTE_MULTI) {
 

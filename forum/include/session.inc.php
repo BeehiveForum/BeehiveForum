@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.350 2008-06-26 21:36:52 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.351 2008-07-25 14:52:44 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -99,7 +99,7 @@ function bh_session_check($show_session_fail = true)
 
     // Check for a webtag and get the forum FID.
 
-    if ($table_data = get_table_prefix()) {
+    if (($table_data = get_table_prefix())) {
         $forum_fid = $table_data['FID'];
     }else {
         $forum_fid = 0;
@@ -139,13 +139,13 @@ function bh_session_check($show_session_fail = true)
 
             // Add preference settings
 
-            if ($user_prefs = user_get_prefs($user_sess['UID'])) {
+            if (($user_prefs = user_get_prefs($user_sess['UID']))) {
                 $user_sess = array_merge($user_sess, $user_prefs);
             }
 
             // Add user perms
 
-            if ($user_perms = bh_session_get_perm_array($user_sess['UID'])) {
+            if (($user_perms = bh_session_get_perm_array($user_sess['UID']))) {
                 $user_sess['PERMS'] = $user_perms;
             }
 
@@ -327,7 +327,7 @@ function bh_guest_session_init($update_visitor_log = true)
         // will be out if there is more than one guest coming
         // from a single IP address.
 
-        if ($table_data = get_table_prefix()) {
+        if (($table_data = get_table_prefix())) {
             $forum_fid = $table_data['FID'];
         }else {
             $forum_fid = 0;
@@ -346,7 +346,7 @@ function bh_guest_session_init($update_visitor_log = true)
 
             // Add user perms
 
-            if ($user_perms = bh_session_get_perm_array($user_sess['UID'])) {
+            if (($user_perms = bh_session_get_perm_array($user_sess['UID']))) {
                 $user_sess['PERMS'] = $user_perms;
             }
 
@@ -405,7 +405,7 @@ function bh_guest_session_init($update_visitor_log = true)
 
             // Add user perms
 
-            if ($user_perms = bh_session_get_perm_array($user_sess['UID'])) {
+            if (($user_perms = bh_session_get_perm_array($user_sess['UID']))) {
                 $user_sess['PERMS'] = $user_perms;
             }
 
@@ -500,7 +500,7 @@ function bh_remove_stale_sessions()
 {
     if (!$db_bh_remove_stale_sessions = db_connect()) return false;
 
-    if ($session_cutoff = forum_get_setting('session_cutoff', false, 86400)) {
+    if (($session_cutoff = forum_get_setting('session_cutoff', false, 86400))) {
 
         $sql = "DELETE QUICK FROM SESSIONS WHERE UID = 0 AND ";
         $sql.= "TIME < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $session_cutoff) ";
@@ -824,7 +824,7 @@ function bh_session_init($uid, $update_visitor_log = true, $skip_cookie = false)
 
     if (!$ipaddress = get_ip_address()) return false;
 
-    if ($table_data = get_table_prefix()) {
+    if (($table_data = get_table_prefix())) {
         $forum_fid = $table_data['FID'];
     }else {
         $forum_fid = 0;
@@ -964,7 +964,7 @@ function bh_session_get_perm_array($uid)
 
     $user_perm_array = array();
 
-    if ($table_data = get_table_prefix()) {
+    if (($table_data = get_table_prefix())) {
         $forum_fid = $table_data['FID'];
     }else {
         $forum_fid = 0;

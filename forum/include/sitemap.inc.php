@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: sitemap.inc.php,v 1.16 2008-07-06 18:27:00 decoyduck Exp $ */
+/* $Id: sitemap.inc.php,v 1.17 2008-07-25 14:52:44 decoyduck Exp $ */
 
 /**
 * sitemap.inc.php - sitemap functions
@@ -113,7 +113,7 @@ function sitemap_forum_get_threads($forum_fid)
 
     // Get the table prefix from the forum fid
 
-    if ($table_data = forum_get_table_prefix($forum_fid)) {
+    if (($table_data = forum_get_table_prefix($forum_fid))) {
 
         $sql = "SELECT THREAD.TID, UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED ";
         $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD LEFT JOIN GROUP_PERMS ";
@@ -288,13 +288,13 @@ function sitemap_create_file()
 
             // Fetch the data from the database, process it and add it to the sitemap.
 
-            if ($available_forums_array = sitemap_get_available_forums()) {
+            if (($available_forums_array = sitemap_get_available_forums())) {
 
                 foreach ($available_forums_array as $forum_fid => $webtag) {
 
                     // If the thread data is successful start writing it to the file.
 
-                    if ($threads_array = sitemap_forum_get_threads($forum_fid)) {
+                    if (($threads_array = sitemap_forum_get_threads($forum_fid))) {
 
                         foreach ($threads_array as $thread_tid => $thread_modified) {
 

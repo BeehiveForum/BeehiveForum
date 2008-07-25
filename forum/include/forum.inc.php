@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.317 2008-07-01 18:34:29 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.318 2008-07-25 14:52:44 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -66,33 +66,31 @@ function get_forum_data()
         $webtag = trim(_stripslashes($_GET['webtag']));
     }elseif (isset($_POST['webtag']) && strlen(trim(_stripslashes($_POST['webtag']))) > 0) {
         $webtag = trim(_stripslashes($_POST['webtag']));
-    }elseif (isset($_SERVER['argv'][1]) && strlen(trim(_stripslashes($_SERVER['argv'][1]))) > 0) {
-        $webtag = trim(_stripslashes($_SERVER['argv'][1]));
     }
 
     if (!is_array($forum_data) || !isset($forum_data['WEBTAG']) || !isset($forum_data['PREFIX'])) {
 
-        if (isset($webtag) && preg_match("/^[A-Z0-9_]+$/", $webtag) > 0) {
+        if (isset($webtag) && strlen(trim($webtag)) > 0) {
 
-            // Check #1: See if the webtag specified in GET/POST
-            // actually exists.
+            if (preg_match("/^[A-Z0-9_]+$/", $webtag) > 0) {
 
-            $webtag = db_escape_string($webtag);
+                // Check #1: See if the webtag specified in GET/POST
+                // actually exists.
 
-            $sql = "SELECT FORUMS.FID, FORUMS.WEBTAG, FORUMS.ACCESS_LEVEL, ";
-            $sql.= "CONCAT(FORUMS.DATABASE_NAME, '.', FORUMS.WEBTAG, '_') AS PREFIX ";
-            $sql.= "FROM FORUMS WHERE WEBTAG = '$webtag'";
+                $webtag = db_escape_string($webtag);
 
-            if ($result = db_query($sql, $db_get_forum_data)) {
+                $sql = "SELECT FORUMS.FID, FORUMS.WEBTAG, FORUMS.ACCESS_LEVEL, ";
+                $sql.= "CONCAT(FORUMS.DATABASE_NAME, '.', FORUMS.WEBTAG, '_') AS PREFIX ";
+                $sql.= "FROM FORUMS WHERE WEBTAG = '$webtag'";
 
-                if (db_num_rows($result) > 0) {
+                if (($result = db_query($sql, $db_get_forum_data))) {
 
-                    $forum_data = db_fetch_array($result);
+                    if (db_num_rows($result) > 0) {
 
-                    if (!isset($forum_data['ACCESS_LEVEL'])) $forum_data['ACCESS_LEVEL'] = 0;
-                    if (!isset($forum_data['ALLOWED'])) $forum_data['ALLOWED'] = 0;
+                        $forum_data = db_fetch_array($result);
 
-                    return $forum_data;
+                        if (!isset($forum_data['ACCESS_LEVEL'])) $forum_data['ACCESS_LEVEL'] = 0;
+                    }
                 }
             }
 
@@ -107,14 +105,13 @@ function get_forum_data()
             $sql.= "CONCAT(FORUMS.DATABASE_NAME, '.', FORUMS.WEBTAG, '_') AS PREFIX ";
             $sql.= "FROM FORUMS WHERE DEFAULT_FORUM = 1";
 
-            if ($result = db_query($sql, $db_get_forum_data)) {
+            if (($result = db_query($sql, $db_get_forum_data))) {
 
                 if (db_num_rows($result) > 0) {
 
                     $forum_data = db_fetch_array($result);
 
                     if (!isset($forum_data['ACCESS_LEVEL'])) $forum_data['ACCESS_LEVEL'] = 0;
-                    if (!isset($forum_data['ALLOWED'])) $forum_data['ALLOWED'] = 0;
                 }
             }
         }
@@ -204,7 +201,7 @@ function forum_closed_message()
 
     echo "<h1>{$lang['closed']}</h1>\n";
 
-    if ($closed_message = forum_get_setting('closed_message', false)) {
+    if (($closed_message = forum_get_setting('closed_message', false))) {
 
         html_display_error_msg(fix_html($closed_message), '600', 'center');
 
@@ -232,13 +229,13 @@ function forum_restricted_message()
 
     echo "<h1>{$lang['restricted']}</h1>\n";
 
-    if ($restricted_message = forum_get_setting('restricted_message', false)) {
+    if (($restricted_message = forum_get_setting('restricted_message', false))) {
 
         html_display_error_msg(fix_html($restricted_message), '600', 'center');
 
     }else {
 
-        if ($forum_owner_uid = forum_get_setting('owner_uid')) {
+        if (($forum_owner_uid = forum_get_setting('owner_uid'))) {
 
             $forum_owner_link = sprintf("<a href=\"pm.php?webtag=$webtag&uid=$forum_owner_uid\">%s</a>", $lang['forumowner']);
 
@@ -315,7 +312,7 @@ function forum_check_password($forum_fid)
 
     if (!is_numeric($forum_fid)) return false;
 
-    if ($forum_passhash = forum_get_password($forum_fid)) {
+    if (($forum_passhash = forum_get_password($forum_fid))) {
 
         forum_get_saved_password($password, $passhash, $sesshash);
 
@@ -343,7 +340,7 @@ function forum_check_password($forum_fid)
         echo "    ", form_input_hidden('final_uri', _htmlentities(get_request_uri())), "\n";
         echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
 
-        if ($password_protected_message = forum_get_setting('password_protected_message', false)) {
+        if (($password_protected_message = forum_get_setting('password_protected_message', false))) {
 
             echo "      <tr>\n";
             echo "        <td align=\"left\">", fix_html($password_protected_message), "</td>\n";
@@ -920,7 +917,7 @@ function forum_update_unread_data($unread_cutoff_stamp)
 
     if ($unread_cutoff_stamp > 0) {
 
-        if ($forum_prefix_array = forum_get_all_prefixes()) {
+        if (($forum_prefix_array = forum_get_all_prefixes())) {
 
             foreach($forum_prefix_array as $forum_prefix) {
 
@@ -959,7 +956,7 @@ function forum_load_start_page()
 
     if (@file_exists("forums/$webtag/start_main.php")) {
 
-        if ($content = @file_get_contents("forums/$webtag/start_main.php")) {
+        if (($content = @file_get_contents("forums/$webtag/start_main.php"))) {
 
             return strlen($content) > 0 ? $content : false;
         }
@@ -1015,7 +1012,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
 
         // Check for any conflicting tables.
 
-        if ($conflicting_tables_array = install_get_table_conflicts($webtag, true, false)) {
+        if (($conflicting_tables_array = install_get_table_conflicts($webtag, true, false))) {
 
             $error_str = $lang['selecteddatabasecontainsconflictingtables'];
             $error_str.= sprintf("<p>%s</p>\n", implode(", ", $conflicting_tables_array));
@@ -2205,7 +2202,7 @@ function forum_get($fid)
 
             if (isset($forum_get_array['OWNER_UID']) && $forum_get_array['OWNER_UID'] > 0) {
 
-                if ($forum_leader = user_get_logon($forum_get_array['OWNER_UID'])) {
+                if (($forum_leader = user_get_logon($forum_get_array['OWNER_UID']))) {
 
                     $forum_get_array['FORUM_SETTINGS']['forum_leader'] = $forum_leader;
                 }

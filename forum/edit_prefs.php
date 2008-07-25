@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_prefs.php,v 1.94 2008-05-03 17:28:58 decoyduck Exp $ */
+/* $Id: edit_prefs.php,v 1.95 2008-07-25 14:52:46 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -68,6 +68,10 @@ include_once(BH_INCLUDE_PATH. "post.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
+
+// Intitalise a few variables
+
+$webtag_search = false;
 
 // Check we're logged in correctly
 
@@ -388,9 +392,9 @@ if (isset($_POST['save'])) {
                 $error_msg_array[] = $lang['profilepictureconflict'];
                 $valid = false;
 
-            }elseif ($attachment_dir = attachments_check_dir()) {
+            }elseif (($attachment_dir = attachments_check_dir())) {
 
-                if ($attachment_details = get_attachment_by_hash($user_prefs['PIC_AID'])) {
+                if (($attachment_details = get_attachment_by_hash($user_prefs['PIC_AID']))) {
 
                     $path_parts = pathinfo($attachment_details['filename']);
 
@@ -467,9 +471,9 @@ if (isset($_POST['save'])) {
                 $error_msg_array[] = $lang['avatarpictureconflict'];
                 $valid = false;
 
-            }elseif ($attachment_dir = attachments_check_dir()) {
+            }elseif (($attachment_dir = attachments_check_dir())) {
 
-                if ($attachment_details = get_attachment_by_hash($user_prefs['AVATAR_AID'])) {
+                if (($attachment_details = get_attachment_by_hash($user_prefs['AVATAR_AID']))) {
 
                     $path_parts = pathinfo($attachment_details['filename']);
 

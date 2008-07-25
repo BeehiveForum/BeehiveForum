@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_add.php,v 1.50 2008-03-23 18:54:57 decoyduck Exp $ */
+/* $Id: admin_folder_add.php,v 1.51 2008-07-25 14:52:53 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -64,6 +64,10 @@ include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "logon.inc.php");
 include_once(BH_INCLUDE_PATH. "perm.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
+
+// Intitalise a few variables
+
+$webtag_search = false;
 
 // Check we're logged in correctly
 
@@ -162,7 +166,7 @@ if (isset($_POST['add'])) {
 
     if ($valid) {
 
-        if ($new_fid = folder_create($t_name, $t_description, $t_prefix, $t_allowed_types, $t_permissions)) {
+        if (($new_fid = folder_create($t_name, $t_description, $t_prefix, $t_allowed_types, $t_permissions))) {
 
             admin_add_log_entry(CREATE_FOLDER, $t_name);
             header_redirect("admin_folders.php?webtag=$webtag&added=true&page=$page");

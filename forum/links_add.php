@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_add.php,v 1.93 2008-03-23 18:54:58 decoyduck Exp $ */
+/* $Id: links_add.php,v 1.94 2008-07-25 14:52:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -62,6 +62,10 @@ include_once(BH_INCLUDE_PATH. "links.inc.php");
 include_once(BH_INCLUDE_PATH. "logon.inc.php");
 include_once(BH_INCLUDE_PATH. "perm.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
+
+// Intitalise a few variables
+
+$webtag_search = false;
 
 // Check we're logged in correctly
 
@@ -284,7 +288,7 @@ if (isset($_POST['add']) && $mode == LINKS_ADD_LINK) {
 
     $fid = $_GET['fid'];
 
-    if ($_GET['mode'] == 'link' && !in_array($fid, array_keys($folders))) {
+    if (($_GET['mode'] == 'link' && !in_array($fid, array_keys($folders)))) {
 
         html_draw_top();
         html_error_msg($lang['mustspecifyvalidfolder']);

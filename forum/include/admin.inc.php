@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.155 2008-07-24 21:16:11 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.156 2008-07-25 14:52:43 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -417,7 +417,7 @@ function admin_user_search($user_search, $sort_by = 'LAST_VISIT', $sort_dir = 'D
     if (!is_numeric($offset)) $offset = 0;
     if (!is_numeric($filter)) $filter = ADMIN_USER_FILTER_NONE;
 
-    if ($table_data = get_table_prefix()) {
+    if (($table_data = get_table_prefix())) {
         $forum_fid = $table_data['FID'];
     }else {
         $forum_fid = 0;
@@ -540,7 +540,7 @@ function admin_user_get_all($sort_by = 'LAST_VISIT', $sort_dir = 'ASC', $filter 
     if (!is_numeric($offset)) $offset = 0;
     if (!is_numeric($filter)) $filter = ADMIN_USER_FILTER_NONE;
 
-    if ($table_data = get_table_prefix()) {
+    if (($table_data = get_table_prefix())) {
         $forum_fid = $table_data['FID'];
     }else {
         $forum_fid = 0;
@@ -773,7 +773,7 @@ function admin_get_forum_list($offset)
 
         while($forum_data = db_fetch_array($result)) {
 
-            if ($post_count = admin_forum_get_post_count($forum_data['FID'])) {
+            if (($post_count = admin_forum_get_post_count($forum_data['FID']))) {
                 $forum_data['MESSAGES'] = $post_count;
             }
 
@@ -805,7 +805,7 @@ function admin_forum_get_post_count($fid)
 
     if (!is_numeric($fid)) return false;
 
-    if ($table_data = forum_get_table_prefix($fid)) {
+    if (($table_data = forum_get_table_prefix($fid))) {
 
         $sql = "SELECT COUNT(PID) FROM {$table_data['PREFIX']}POST";
 
@@ -950,7 +950,7 @@ function admin_get_post_approval_queue($offset = 0)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    if ($folder_list = bh_session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE)) {
+    if (($folder_list = bh_session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE))) {
         $fidlist = implode(',', $folder_list);
     }
 
@@ -1167,7 +1167,7 @@ function admin_get_user_ip_matches($uid)
         }
     }
 
-    if ($ipaddress = user_get_last_ip_address($uid)) {
+    if (($ipaddress = user_get_last_ip_address($uid))) {
         $user_ip_address_array[] = $ipaddress;
     }
 
@@ -1481,7 +1481,7 @@ function admin_delete_user($uid, $delete_content = false)
 
     // Before we delete we verify the user account exists.
 
-    if ($user_logon = user_get_logon($uid)) {
+    if (($user_logon = user_get_logon($uid))) {
 
         // Check to see if we're also deleting the user's content.
 
@@ -1489,7 +1489,7 @@ function admin_delete_user($uid, $delete_content = false)
 
             // Get a list of available forums
 
-            if ($forum_prefix_array = forum_get_all_prefixes()) {
+            if (($forum_prefix_array = forum_get_all_prefixes())) {
 
                 // Loop through all forums and delete all the user data from every forum.
 
@@ -1705,9 +1705,9 @@ function admin_delete_users_posts($uid)
 
     if (!is_numeric($uid)) return false;
 
-    if ($user_logon = user_get_logon($uid)) {
+    if (($user_logon = user_get_logon($uid))) {
 
-        if ($user_post_array = get_user_posts($uid)) {
+        if (($user_post_array = get_user_posts($uid))) {
 
             $valid = true;
 

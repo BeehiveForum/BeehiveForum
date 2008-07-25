@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_profile.php,v 1.90 2008-07-18 22:05:33 decoyduck Exp $ */
+/* $Id: edit_profile.php,v 1.91 2008-07-25 14:52:49 decoyduck Exp $ */
 
 /**
 * Displays the edit profile page, and processes sumbissions
@@ -73,6 +73,10 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "user_profile.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
+
+// Intitalise a few variables
+
+$webtag_search = false;
 
 // Check we're logged in correctly
 
@@ -238,7 +242,7 @@ if (isset($_POST['save'])) {
     }
 }
 
-if ($profile_items_array = profile_get_user_values($uid)) {
+if (($profile_items_array = profile_get_user_values($uid))) {
 
     html_draw_top();
 

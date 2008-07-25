@@ -1,4 +1,4 @@
-<?php
+t<?php
 
 /*======================================================================
 Copyright Project Beehive Forum 2002
@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_post_approve.php,v 1.60 2008-04-27 12:55:11 decoyduck Exp $ */
+/* $Id: admin_post_approve.php,v 1.61 2008-07-25 14:52:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -71,6 +71,10 @@ include_once(BH_INCLUDE_PATH. "thread.inc.php");
 include_once(BH_INCLUDE_PATH. "threads.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
+
+// Intitalise a few variables
+
+$webtag_search = false;
 
 // Check we're logged in correctly
 
@@ -210,7 +214,7 @@ if (isset($msg) && validate_msg($msg)) {
         exit;
     }
 
-    if ($preview_message = messages_get($tid, $pid, 1)) {
+    if (($preview_message = messages_get($tid, $pid, 1))) {
 
         if (!isset($preview_message['APPROVED']) || $preview_message['APPROVED'] > 0) {
 

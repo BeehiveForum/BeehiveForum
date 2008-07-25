@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.335 2008-07-21 15:11:39 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.336 2008-07-25 14:52:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -67,6 +67,10 @@ include_once(BH_INCLUDE_PATH. "thread.inc.php");
 include_once(BH_INCLUDE_PATH. "threads.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
+
+// Intitalise a few variables
+
+$webtag_search = false;
 
 // Check we're logged in correctly
 
@@ -256,7 +260,7 @@ if (user_is_guest()) {
                     $valid = false;
                 }
 
-            }elseif ($_GET['mark_read_type'] == THREAD_MARK_READ_FOLDER && isset($folder) && is_numeric($folder)) {
+            }elseif (($_GET['mark_read_type'] == THREAD_MARK_READ_FOLDER && isset($folder) && is_numeric($folder))) {
 
                 if (threads_mark_folder_read($folder)) {
 
@@ -411,7 +415,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     list($tid, $pid) = explode('.', $_GET['msg']);
 
-    if ($thread = thread_get($tid)) {
+    if (($thread = thread_get($tid))) {
 
         if (!isset($thread['RELATIONSHIP'])) $thread['RELATIONSHIP'] = 0;
 
@@ -438,7 +442,7 @@ if (bh_session_get_value('UID') > 0) {
 
         list($tid, $pid) = explode('.', $_GET['msg']);
 
-        if ($thread = thread_get($tid)) {
+        if (($thread = thread_get($tid))) {
             $selected_folder = $thread['FID'];
         }
 
@@ -454,7 +458,7 @@ if (bh_session_get_value('UID') > 0) {
     $ignored_folders = array();
 
     while (list($fid, $folder_data) = each($folder_info)) {
-        if ($folder_data['INTEREST'] == FOLDER_NOINTEREST || (isset($selected_folder) && $selected_folder == $fid)) {
+        if (($folder_data['INTEREST'] == FOLDER_NOINTEREST || (isset($selected_folder) && $selected_folder == $fid))) {
             if ((!in_array($fid, $folder_order)) && (!in_array($fid, $ignored_folders))) $folder_order[] = $fid;
         }else {
             if ((!in_array($fid, $folder_order)) && (!in_array($fid, $ignored_folders))) $ignored_folders[] = $fid;
@@ -497,7 +501,7 @@ if (!$thread_info) {
     echo "<br />\n";
 }
 
-if ($start_from != 0 && $mode == ALL_DISCUSSIONS && !isset($folder)) {
+if (($start_from != 0 && $mode == ALL_DISCUSSIONS && !isset($folder))) {
 
     echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
     echo "  <tr>\n";
@@ -584,7 +588,7 @@ foreach ($folder_order as $folder_number) {
                     echo "</td>\n";
                     echo "              </tr>\n";
 
-                    if ($start_from != 0 && isset($folder) && $folder_number == $folder) {
+                    if (($start_from != 0 && isset($folder) && $folder_number == $folder)) {
 
                         echo "              <tr>\n";
                         echo "                <td align=\"left\" class=\"threads_left_right\" colspan=\"2\"><a href=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$folder&amp;start_from=", ($start_from - 50), "\" class=\"folderinfo\" title=\"{$lang['showprev50threads']}\">{$lang['prev50threads']}</a></td>\n";
@@ -822,7 +826,7 @@ foreach ($folder_order as $folder_number) {
 
 echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\">\n";
 
-if ($mode == ALL_DISCUSSIONS && !isset($folder)) {
+if (($mode == ALL_DISCUSSIONS && !isset($folder))) {
 
     $total_threads = 0;
 

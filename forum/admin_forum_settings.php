@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.134 2008-07-09 19:32:51 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.135 2008-07-25 14:52:54 decoyduck Exp $ */
 
 /**
 * Displays and handles the Forum Settings page
@@ -78,6 +78,10 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "styles.inc.php");
 include_once(BH_INCLUDE_PATH. "timezone.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
+
+// Intitalise a few variables
+
+$webtag_search = false;
 
 // Check we're logged in correctly
 
@@ -412,7 +416,7 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
 echo "                      </tr>\n";
 
-if ($available_styles = styles_get_available()) {
+if (($available_styles = styles_get_available())) {
 
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"220\">{$lang['defaultstyle']}:</td>\n";

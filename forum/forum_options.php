@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.134 2008-07-09 19:32:51 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.135 2008-07-25 14:52:54 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -65,6 +65,10 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "styles.inc.php");
 include_once(BH_INCLUDE_PATH. "timezone.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
+
+// Intitalise a few variables
+
+$webtag_search = false;
 
 // Check we're logged in correctly
 
@@ -667,7 +671,7 @@ echo "                  <td align=\"left\">", form_dropdown_array("font_size", a
 echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("font_size_global", "Y", '', (isset($user_prefs['FONT_SIZE_GLOBAL']) ? $user_prefs['FONT_SIZE_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("font_size_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 
-if ($available_styles = styles_get_available()) {
+if (($available_styles = styles_get_available())) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\">{$lang['forumstyle']}:</td>\n";

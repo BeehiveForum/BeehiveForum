@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.222 2008-03-23 18:54:58 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.223 2008-07-25 14:52:46 decoyduck Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -77,6 +77,10 @@ include_once(BH_INCLUDE_PATH. "post.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "thread.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
+
+// Intitalise a few variables
+
+$webtag_search = false;
 
 // Check we're logged in correctly
 
@@ -366,14 +370,14 @@ if (isset($_POST['cancel'])) {
 
         $t_answers_array = array_filter(_stripslashes($_POST['answers']), "strlen");
 
-        if ($allow_html == true && isset($t_post_html) && $t_post_html == 'Y') {
+        if (($allow_html == true && isset($t_post_html) && $t_post_html == 'Y')) {
 
             foreach($t_answers_array as $key => $t_poll_answer) {
 
                 $t_poll_check_html = new MessageText(POST_HTML_ENABLED, $t_poll_answer);
                 $t_answers_array[$key] = $t_poll_check_html->getContent();
 
-                if ($valid == true && strlen(trim($t_answers_array[$key])) < 1) {
+                if (($valid == true && strlen(trim($t_answers_array[$key])) < 1)) {
 
                     $t_answers_array[$key] = $t_poll_check_html->getOriginalContent();
                     $error_msg_array[] = $lang['pollquestioncontainsinvalidhtml'];
@@ -470,7 +474,7 @@ if (isset($_POST['cancel'])) {
         $t_close_poll = false;
     }
 
-    if ($valid && $t_poll_type == POLL_TABLE_GRAPH && sizeof(array_unique($t_answer_groups)) <> 2) {
+    if (($valid && $t_poll_type == POLL_TABLE_GRAPH && sizeof(array_unique($t_answer_groups)) <> 2)) {
 
         $error_msg_array[] = $lang['tablepollmusthave2groups'];
         $valid = false;
@@ -695,7 +699,7 @@ if ($valid && isset($_POST['post'])) {
                 $t_poll_closes = false;
             }
 
-            if ($allow_html == false || !isset($t_post_html) || $t_post_html == 'N') {
+            if (($allow_html == false || !isset($t_post_html) || $t_post_html == 'N')) {
                 $t_answers_array = _htmlentities($t_answers_array);
             }
 
@@ -714,7 +718,7 @@ if ($valid && isset($_POST['post'])) {
 
             if (strlen($t_message_text) > 0) {
 
-                if ($allow_sig == true && strlen(trim($t_sig)) > 0) {
+                if (($allow_sig == true && strlen(trim($t_sig)) > 0)) {
                     $t_message_text.= "\n<div class=\"sig\">$t_sig</div>";
                 }
 
@@ -810,7 +814,7 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
     // Poll answers and groups. If HTML is disabled we need to pass
     // the answers through _htmlentities.
 
-    if ($allow_html == false || !isset($t_post_html) || $t_post_html == 'N') {
+    if (($allow_html == false || !isset($t_post_html) || $t_post_html == 'N')) {
         $poll_preview_answers_array = _htmlentities($t_answers_array);
     }else {
         $poll_preview_answers_array = $t_answers_array;
@@ -893,7 +897,7 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
 
         $polldata['CONTENT'] = $t_message_text;
 
-        if ($allow_sig == true && strlen(trim($t_sig)) > 0) {
+        if (($allow_sig == true && strlen(trim($t_sig)) > 0)) {
 
             $polldata['CONTENT'].= "<div class=\"sig\">". $t_sig. "</div>";
         }

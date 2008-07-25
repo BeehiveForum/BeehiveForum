@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.202 2008-07-14 18:14:10 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.203 2008-07-25 14:52:42 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -154,7 +154,7 @@ function search_execute($search_arguments, &$error)
 
         foreach($search_arguments['username_array'] as $username) {
 
-            if ($user_uid = user_get_uid(trim($username))) {
+            if (($user_uid = user_get_uid(trim($username)))) {
 
                 if ($search_arguments['user_include'] == SEARCH_FILTER_USER_THREADS) {
 

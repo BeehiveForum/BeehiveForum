@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.164 2008-07-19 20:27:11 decoyduck Exp $ */
+/* $Id: index.php,v 1.165 2008-07-25 14:52:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -62,6 +62,10 @@ include_once(BH_INCLUDE_PATH. "light.inc.php");
 include_once(BH_INCLUDE_PATH. "logon.inc.php");
 include_once(BH_INCLUDE_PATH. "messages.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
+
+// Intitalise a few variables
+
+$webtag_search = false;
 
 // Don't cache this page - fixes problems with Opera.
 
@@ -166,11 +170,11 @@ if ($skip_logon_page === true) {
 
     html_draw_top('body_tag=false', 'frames=true', 'robots=index,follow');
 
-    echo "<frameset rows=\"60,$navsize,*\" framespacing=\"0\" border=\"0\">\n";
-    echo "<frame src=\"$top_html\" name=\"", html_get_frame_name('ftop'), "\" frameborder=\"0\" scrolling=\"no\" noresize=\"noresize\" />\n";
-    echo "<frame src=\"nav.php?webtag=$webtag\" name=\"", html_get_frame_name('fnav'), "\" frameborder=\"0\" scrolling=\"no\" noresize=\"noresize\" />\n";
-
     if ($webtag) {
+
+        echo "<frameset rows=\"60,$navsize,*\" framespacing=\"0\" border=\"0\">\n";
+        echo "<frame src=\"$top_html\" name=\"", html_get_frame_name('ftop'), "\" frameborder=\"0\" scrolling=\"no\" noresize=\"noresize\" />\n";
+        echo "<frame src=\"nav.php?webtag=$webtag\" name=\"", html_get_frame_name('fnav'), "\" frameborder=\"0\" scrolling=\"no\" noresize=\"noresize\" />\n";
 
         if (isset($final_uri) && strlen($final_uri) > 0) {
 
@@ -190,7 +194,7 @@ if ($skip_logon_page === true) {
 
         }else {
 
-            if ($start_page = bh_session_get_value('START_PAGE')) {
+            if (($start_page = bh_session_get_value('START_PAGE'))) {
 
                 if ($start_page == START_PAGE_MESSAGES) {
                     $final_uri = "discussion.php?webtag=$webtag";
@@ -211,6 +215,9 @@ if ($skip_logon_page === true) {
         }
 
     }else {
+
+        echo "<frameset rows=\"60,*\" framespacing=\"0\" border=\"0\">\n";
+        echo "<frame src=\"$top_html\" name=\"", html_get_frame_name('ftop'), "\" frameborder=\"0\" scrolling=\"no\" noresize=\"noresize\" />\n";
 
         if (isset($final_uri) && strlen($final_uri) > 0) {
 

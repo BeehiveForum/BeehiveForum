@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_wordfilter.php,v 1.108 2008-01-03 19:42:43 decoyduck Exp $ */
+/* $Id: admin_wordfilter.php,v 1.109 2008-07-25 14:52:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -64,6 +64,10 @@ include_once(BH_INCLUDE_PATH. "logon.inc.php");
 include_once(BH_INCLUDE_PATH. "perm.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
+
+// Intitalise a few variables
+
+$webtag_search = false;
 
 // Check we're logged in correctly
 
@@ -217,7 +221,7 @@ if (isset($_POST['delete'])) {
 
     if ($valid) {
 
-        if ($add_new_filter_option == WORD_FILTER_TYPE_PREG && preg_match("/e[^\/]*$/i", $add_new_match_text)) {
+        if (($add_new_filter_option == WORD_FILTER_TYPE_PREG && preg_match("/e[^\/]*$/i", $add_new_match_text))) {
             $add_new_match_text = preg_replace_callback("/\/[^\/]*$/i", "word_filter_apply_limit_preg", $add_new_match_text);
         }
 
@@ -276,7 +280,7 @@ if (isset($_POST['delete'])) {
 
     if ($valid) {
 
-        if ($filter_option == WORD_FILTER_TYPE_PREG && preg_match("/e[^\/]*$/i", $match_text)) {
+        if (($filter_option == WORD_FILTER_TYPE_PREG && preg_match("/e[^\/]*$/i", $match_text))) {
             $match_text = preg_replace_callback("/\/[^\/]*$/i", "word_filter_apply_limit_preg", $match_text);
         }
 

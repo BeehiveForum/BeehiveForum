@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_banned.php,v 1.71 2008-03-24 23:32:15 decoyduck Exp $ */
+/* $Id: admin_banned.php,v 1.72 2008-07-25 14:52:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -73,6 +73,10 @@ include_once(BH_INCLUDE_PATH. "post.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
+
+// Intitalise a few variables
+
+$webtag_search = false;
 
 // Check we're logged in correctly
 
@@ -214,7 +218,7 @@ if (isset($_POST['delete'])) {
 
         foreach($_POST['delete_ban'] as $ban_id => $delete_ban) {
 
-            if ($valid == true && $delete_ban == "Y" && $ban_data_array = admin_get_ban($ban_id)) {
+            if (($valid == true && $delete_ban == "Y" && $ban_data_array = admin_get_ban($ban_id))) {
 
                 if (remove_ban_data_by_id($ban_id)) {
 
@@ -275,7 +279,7 @@ if (isset($_GET['ban_referer']) && strlen(trim(_stripslashes($_GET['ban_referer'
 
     $unban_referer = trim(_stripslashes($_GET['unban_referer']));
 
-    if ($remove_ban_id = check_ban_data(BAN_TYPE_REF, $unban_referer)) {
+    if (($remove_ban_id = check_ban_data(BAN_TYPE_REF, $unban_referer))) {
         unset($remove_ban_id);
     }
 }
@@ -456,7 +460,7 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
 
     if (isset($add_new_ban_type) && isset($add_new_ban_data)) {
 
-        if ($affected_sessions_array = check_affected_sessions($add_new_ban_type, $add_new_ban_data)) {
+        if (($affected_sessions_array = check_affected_sessions($add_new_ban_type, $add_new_ban_data))) {
 
             $affected_sessions_text = implode('</li><li>', array_map('admin_prepare_affected_sessions', $affected_sessions_array));
             $affected_sessions_text = sprintf("{$lang['affectsessionwarnadd']}<ul><li>%s</li></ul>", $affected_sessions_text);
@@ -582,7 +586,7 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
             $ban_data_array['COMMENT'] = trim(_stripslashes($_POST['bancomment']));
         }
 
-        if ($affected_sessions_array = check_affected_sessions($ban_data_array['BANTYPE'], $ban_data_array['BANDATA'])) {
+        if (($affected_sessions_array = check_affected_sessions($ban_data_array['BANTYPE'], $ban_data_array['BANDATA']))) {
 
             $affected_sessions_text = implode('</li><li>', array_map('admin_prepare_affected_sessions', $affected_sessions_array));
             $affected_sessions_text = sprintf("{$lang['affectsessionwarnadd']}<ul><li>%s</li></ul>", $affected_sessions_text);

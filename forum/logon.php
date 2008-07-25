@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.181 2008-07-25 14:52:53 decoyduck Exp $ */
+/* $Id: logon.php,v 1.182 2008-07-25 18:12:55 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -68,30 +68,11 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 $webtag_search = false;
 
-// Retrieve the final_uri request
+// Arrays to hold the logon data
 
-if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri']))) > 0) {
-
-    $final_uri = basename(trim(_stripslashes($_GET['final_uri'])));;
-
-}elseif (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
-
-    $final_uri = "discussion.php?webtag=$webtag&amp;msg=". $_GET['msg'];
-
-}elseif (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
-
-    $final_uri = "discussion.php?webtag=$webtag&amp;folder=". $_GET['folder'];
-
-}elseif (isset($_GET['pmid']) && is_numeric($_GET['pmid'])) {
-
-    $final_uri = "pm.php?webtag=$webtag&amp;mid=". $_GET['pmid'];
-}
-
-// If the final_uri contains logout.php then unset it.
-
-if (isset($final_uri) && strstr($final_uri, 'logout.php')) {
-    unset($final_uri);
-}
+$username_array = array();
+$password_array = array();
+$passhash_array = array();
 
 // Don't cache this page - fixes problems with Opera.
 
@@ -116,6 +97,31 @@ $lang = load_language_file();
 // Fetch the forum webtag
 
 $webtag = get_webtag($webtag_search);
+
+// Retrieve the final_uri request
+
+if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri']))) > 0) {
+
+    $final_uri = basename(trim(_stripslashes($_GET['final_uri'])));;
+
+}elseif (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+
+    $final_uri = "discussion.php?webtag=$webtag&amp;msg=". $_GET['msg'];
+
+}elseif (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
+
+    $final_uri = "discussion.php?webtag=$webtag&amp;folder=". $_GET['folder'];
+
+}elseif (isset($_GET['pmid']) && is_numeric($_GET['pmid'])) {
+
+    $final_uri = "pm.php?webtag=$webtag&amp;mid=". $_GET['pmid'];
+}
+
+// If the final_uri contains logout.php then unset it.
+
+if (isset($final_uri) && strstr($final_uri, 'logout.php')) {
+    unset($final_uri);
+}
 
 // Retrieve existing cookie data if any
 

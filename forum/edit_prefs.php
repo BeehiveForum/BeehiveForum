@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_prefs.php,v 1.95 2008-07-25 14:52:46 decoyduck Exp $ */
+/* $Id: edit_prefs.php,v 1.96 2008-07-25 20:14:41 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -72,6 +72,11 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 // Intitalise a few variables
 
 $webtag_search = false;
+
+// Arrays to hold our attachments
+
+$attachments_array = array();
+$image_attachments_array = array();
 
 // Check we're logged in correctly
 
@@ -400,7 +405,7 @@ if (isset($_POST['save'])) {
 
                     if (isset($path_parts['extension']) && in_array($path_parts['extension'], $allowed_image_types_array)) {
 
-                        if ($image_info = getimagesize("$attachment_dir/{$user_prefs['PIC_AID']}")) {
+                        if (($image_info = getimagesize("$attachment_dir/{$user_prefs['PIC_AID']}"))) {
 
                             if (($image_info[0] > 95) || ($image_info[1] > 95)) {
 
@@ -479,7 +484,7 @@ if (isset($_POST['save'])) {
 
                     if (isset($path_parts['extension']) && in_array($path_parts['extension'], $allowed_image_types_array)) {
 
-                        if ($image_info = getimagesize("$attachment_dir/{$user_prefs['AVATAR_AID']}")) {
+                        if (($image_info = getimagesize("$attachment_dir/{$user_prefs['AVATAR_AID']}"))) {
 
                             if (($image_info[0] > 95) || ($image_info[1] > 95)) {
 
@@ -592,7 +597,7 @@ if (isset($_POST['save'])) {
 
 // Split the DOB into usable variables.
 
-if (isset($user_prefs['DOB']) && preg_match("/\d{4,}-\d{2,}-\d{2,}/", $user_prefs['DOB'])) {
+if (isset($user_prefs['DOB']) && preg_match('/\d{4,}-\d{2,}-\d{2,}/', $user_prefs['DOB'])) {
 
     if (!isset($dob['YEAR']) || !isset($dob['MONTH']) || !isset($dob['DAY'])) {
 

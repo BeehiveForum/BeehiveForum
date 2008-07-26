@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: get_attachment.php,v 1.31 2008-07-25 14:52:48 decoyduck Exp $ */
+/* $Id: get_attachment.php,v 1.32 2008-07-26 20:59:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -154,7 +154,9 @@ if (isset($_GET['hash']) && is_md5($_GET['hash'])) {
 
     if (strstr($_SERVER['PHP_SELF'], 'get_attachment.php')) {
 
-        if (preg_match("/\/get_attachment.php\/([A-Fa-f0-9]{32})\/(.*)$/", $_SERVER['PHP_SELF'], $attachment_data) > 0) {
+        $attachment_data = array();
+    	
+    	if (preg_match('/\/get_attachment.php\/([A-Fa-f0-9]{32})\/(.*)$/', $_SERVER['PHP_SELF'], $attachment_data) > 0) {
 
             $hash = $attachment_data[1];
             $redirect_error_message = true;
@@ -162,7 +164,9 @@ if (isset($_GET['hash']) && is_md5($_GET['hash'])) {
 
     }else {
 
-        if (preg_match("/\/([A-Fa-f0-9]{32})\/(.*)$/", $_SERVER['PHP_SELF'], $attachment_data) > 0) {
+        $attachment_data = array();
+    	
+    	if (preg_match('/\/([A-Fa-f0-9]{32})\/(.*)$/', $_SERVER['PHP_SELF'], $attachment_data) > 0) {
 
             $hash = $attachment_data[1];
             $redirect_error_message = true;
@@ -253,7 +257,7 @@ if (isset($hash) && is_md5($hash)) {
 
 if ($redirect_error_message) {
 
-    $forum_path = preg_replace("/\/get_attachment.php\/[a-f0-9]{32}/i", "", html_get_forum_uri());
+    $forum_path = preg_replace('/\/get_attachment\.php\/[a-f0-9]{32}/i', '', html_get_forum_uri());
     $redirect_uri = "$forum_path/get_attachment.php?webtag=$webtag&hash=$hash";
     header_redirect($redirect_uri);
 

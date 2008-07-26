@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.165 2008-07-25 14:52:48 decoyduck Exp $ */
+/* $Id: index.php,v 1.166 2008-07-26 20:59:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -137,7 +137,7 @@ if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri'])))
             $final_uri = href_cleanup_query_keys($final_uri);
             $skip_logon_page = true;
 
-        }else if (preg_match("/^admin_[^\.]+\.php/", $final_uri) > 0) {
+        }else if (preg_match('/^admin_[^\.]+\.php/', $final_uri) > 0) {
 
             $final_uri = rawurlencode(href_cleanup_query_keys($final_uri, false, '&'));
             $final_uri = "admin.php?webtag=$webtag&amp;page=$final_uri";

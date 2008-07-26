@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder_options.php,v 1.3 2008-07-25 14:52:48 decoyduck Exp $ */
+/* $Id: folder_options.php,v 1.4 2008-07-26 20:59:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -187,62 +187,11 @@ if (isset($_POST['close'])) {
     exit;
 }
 
-// Code for handling functionality from messages.php
-
-if (isset($_GET['markasread']) && is_numeric($_GET['markasread'])) {
-
-    if (in_range($_GET['markasread'], 0, $thread_data['LENGTH'])) {
-
-        $mark_as_read = $_GET['markasread'];
-
-        if (messages_set_read($tid, $mark_as_read, $uid, $thread_data['MODIFIED'])) {
-
-            header_redirect("messages.php?webtag=$webtag&msg=$msg&markasread=1");
-            exit;
-        }
-    }
-
-    header_redirect("messages.php?webtag=$webtag&msg=$msg&markasread=0");
-    exit;
-
-}elseif (isset($_POST['setinterest']) && is_numeric($_POST['setinterest'])) {
-
-    $thread_interest = $_POST['setinterest'];
-
-    if (thread_set_interest($tid, $thread_interest)) {
-
-        header_redirect("messages.php?webtag=$webtag&msg=$msg&setinterest=1");
-        exit;
-    }
-
-    header_redirect("messages.php?webtag=$webtag&msg=$msg&setinterest=0");
-    exit;
-}
-
 // Submit Code
 
 if (isset($_POST['save'])) {
 
     $valid = true;
-
-    if (isset($_POST['markasread']) && is_numeric($_POST['markasread'])) {
-
-        if (in_range($_POST['markasread'], 0, $thread_data['LENGTH'])) {
-
-            $thread_data['LAST_READ'] = $_POST['markasread'];
-
-            if (!messages_set_read($tid, $thread_data['LAST_READ'], $uid, $thread_data['MODIFIED'])) {
-
-                $error_msg_array[] = $lang['failedtoupdatethreadreadstatus'];
-                $valid = false;
-            }
-
-        }else {
-
-            $error_msg_array[] = $lang['failedtoupdatethreadreadstatus'];
-            $valid = false;
-        }
-    }
 
     if (isset($_POST['interest']) && is_numeric($_POST['interest'])) {
 

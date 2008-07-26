@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en-us.inc.php,v 1.69 2008-07-24 12:43:24 decoyduck Exp $ */
+/* $Id: en-us.inc.php,v 1.70 2008-07-26 20:59:22 decoyduck Exp $ */
 
 // American English language file
 
@@ -974,7 +974,7 @@ $lang['forum_settings_help_55'] = "You can use HTML in your forum rules. Hyperli
 $lang['forum_settings_help_56'] = "Use <b>No-Reply Email</b> to specify an email address that does not exist or will not be monitored for replies. This email address will be used in the headers for all emails sent from your forum including but not limited to Post and PM notifications, user emails and password reminders.";
 $lang['forum_settings_help_57'] = "It is recommended that you use an email address that does not exist to help cut down on spam that may be directed at your main forum email address";
 $lang['forum_settings_help_58'] = "In addition to simple spidering, Beehive can also generate a sitemap for the forum to make it easier for search engines to find and index the messages posted by your users.";
-$lang['forum_settings_help_59'] = "Sitemaps are automatically saved to the sitemaps sub-directory of your Beehive Forum installation. If this directory doesn\'t exist you must create it and ensure that it is writable by the server / PHP process. To allow search engines to find your sitemap you must add the URL to your robots.txt.";
+$lang['forum_settings_help_59'] = "Sitemaps are automatically saved to the sitemaps sub-directory of your Beehive Forum installation. If this directory doesn't exist you must create it and ensure that it is writable by the server / PHP process. To allow search engines to find your sitemap you must add the URL to your robots.txt.";
 $lang['forum_settings_help_60'] = "Depending on server performance and the number of forums and threads your Beehive installation contains, generating a sitemap may take several minutes to complete. If performance of your server is adversly affected it is recommend you disable generation of the sitemap.";
 $lang['forum_settings_help_61'] = "<b>Send email nofitication to global admin</b> when enabled will send an email to the global forum owners when a new user account is created.";
 

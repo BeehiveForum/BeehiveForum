@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_add.php,v 1.95 2008-07-25 18:12:55 decoyduck Exp $ */
+/* $Id: links_add.php,v 1.96 2008-07-26 20:59:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -192,7 +192,7 @@ if (isset($_POST['add']) && $mode == LINKS_ADD_LINK) {
         $fid = 1;
     }
 
-    if (isset($_POST['uri']) && preg_match("/\b([a-z]+:\/\/([-\w]{2,}\.)*[-\w]{2,}(:\d+)?(([^\s;,.?\"'[\]() {}<>]|\S[^\s;,.?\"'[\]() {}<>])*)?)/i", trim(_stripslashes($_POST['uri'])))) {
+    if (isset($_POST['uri']) && preg_match('/\b([a-z]+:\/\/([-\w]{2,}\.)*[-\w]{2,}(:\d+)?(([^\s;,.?"\'[\]() {}<>]|\S[^\s;,.?"\'[\]() {}<>])*)?)/i', trim(_stripslashes($_POST['uri'])))) {
 
         $uri = trim(_stripslashes($_POST['uri']));
 

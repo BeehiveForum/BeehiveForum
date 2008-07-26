@@ -21,13 +21,17 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_check_styles.php,v 1.9 2007-03-31 21:54:58 decoyduck Exp $ */
+/* $Id: bh_check_styles.php,v 1.10 2008-07-26 20:59:22 decoyduck Exp $ */
 
-function item_preg_callback(&$item, $key, $delimiter) {
-    $item = preg_quote($item, $delimiter);
+function item_preg_callback(&$item, $key, $delimiter)
+{
+    $key = $key;
+	$item = preg_quote($item, $delimiter);
 }
 
-function item_trim_callback(&$item, $key) {
+function item_trim_callback(&$item, $key)
+{
+	$key = $key;
     $item = trim($item);
 }
 
@@ -38,36 +42,38 @@ $style_errors = array();
 if (file_exists("$styles_dir/default/style.css")) {
 
     // Default theme
+    
+	$matches_array = array();
 
     $default_style_file = file_get_contents("$styles_dir/default/style.css");
-    preg_match_all("/([^\{]+)(\{[^\}]+\})/i", $default_style_file, $matches_array);
+    preg_match_all('/([^\{]+)(\{[^\}]+\})/i', $default_style_file, $matches_array);
     array_walk($matches_array[1], 'item_trim_callback');
     $default_style_array = $matches_array[1];
 
     // make_style.css
 
     $default_style_file = file_get_contents("$styles_dir/make_style.css");
-    preg_match_all("/([^\{]+){[^\}]+}/i", $default_style_file, $matches_array);
+    preg_match_all('/([^\{]+){[^\}]+}/i', $default_style_file, $matches_array);
     array_walk($matches_array[1], 'item_trim_callback');
     $style_file_array['make_style.css'] = $matches_array[1];
 
     // main style.css (when no DEFAULT)
 
     $default_style_file = file_get_contents("$styles_dir/style.css");
-    preg_match_all("/([^\{]+){[^\}]+}/i", $default_style_file, $matches_array);
+    preg_match_all('/([^\{]+){[^\}]+}/i', $default_style_file, $matches_array);
     array_walk($matches_array[1], 'item_trim_callback');
     $style_file_array['style.css'] = $matches_array[1];
 
     if (is_dir($styles_dir)) {
 
-        if ($dir = opendir($styles_dir)) {
+        if (($dir = opendir($styles_dir))) {
 
             while (($file = readdir($dir)) !== false) {
 
                 if ($file != "." && $file != ".." && file_exists("$styles_dir/$file/style.css")) {
 
                     $style_file = file_get_contents("$styles_dir/$file/style.css");
-                    preg_match_all("/([^\{]+){[^\}]+}/i", $style_file, $matches_array);
+                    preg_match_all('/([^\{]+){[^\}]+}/i', $style_file, $matches_array);
                     array_walk($matches_array[1], 'item_trim_callback');
                     $style_file_array[$file] = $matches_array[1];
                 }

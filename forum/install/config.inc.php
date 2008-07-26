@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: config.inc.php,v 1.13 2008-05-09 06:53:30 decoyduck Exp $ */
+/* $Id: config.inc.php,v 1.14 2008-07-26 21:12:42 decoyduck Exp $ */
 
 // MAIN CONFIGURATION FILE
 
@@ -31,6 +31,7 @@ $db_server   = "{db_server}";    // The address of your MySQL server
 $db_username = "{db_username}";  // Your MySQL username
 $db_password = "{db_password}";  // Your MySQL password
 $db_database = "{db_database}";  // The name of your MySQL database
+$db_extension = "";              // Extension to use. Leave blank to auto select
 
 // ---------------------------------------------------------------------
 
@@ -62,7 +63,7 @@ $show_friendly_errors = true;
 
 // Error Reporting Verbose Mode ----------------------------------------
 
-$error_report_verbose = {error_report_verbose};
+$error_report_verbose = '{error_report_verbose}';
 
 // The Beehive Forum Error Handler can be configured to gather verbose
 // details about any errors that occur, include HTTP Request and Cookie

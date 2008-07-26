@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.94 2008-07-25 18:12:55 decoyduck Exp $ */
+/* $Id: install.php,v 1.95 2008-07-26 21:12:44 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -247,7 +247,7 @@ if (isset($_POST['install_method'])) {
 
                     // Error reporting verbose mode
 
-                    $config_file = str_replace('{error_report_verbose}', ($enable_error_reports) ? 'true' : 'false', $config_file);
+                    $config_file = str_replace("'{error_report_verbose}'", ($enable_error_reports) ? 'true' : 'false', $config_file);
 
                     // Error reporting to email address.
 

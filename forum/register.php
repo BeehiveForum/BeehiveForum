@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.180 2008-07-25 14:52:46 decoyduck Exp $ */
+/* $Id: register.php,v 1.181 2008-07-27 10:53:32 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -81,8 +81,6 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 // Intitalise a few variables
 
-$webtag_search = false;
-
 // Where are we going after we've logged on?
 
 if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri']))) > 0) {
@@ -113,7 +111,7 @@ $lang = load_language_file();
 
 // Make sure we have a webtag
 
-$webtag = get_webtag($webtag_search);
+$webtag = get_webtag();
 
 // check to see if user registration is available
 

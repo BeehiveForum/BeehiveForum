@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: make_style.inc.php,v 1.21 2008-07-09 19:32:51 decoyduck Exp $ */
+/* $Id: make_style.inc.php,v 1.22 2008-07-27 10:53:35 decoyduck Exp $ */
 
 /**
 * make_style.inc.php - attachment upload handling
@@ -61,7 +61,7 @@ include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 function forum_save_style($style_name, $style_desc, $content, &$error)
 {
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     // Check for invalid filename
 

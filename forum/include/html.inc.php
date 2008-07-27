@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.281 2008-07-25 14:52:45 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.282 2008-07-27 10:53:34 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -92,7 +92,7 @@ function html_error_msg($error_msg, $href = false, $method = 'get', $button_arra
 
 function html_display_msg($header_text, $string_msg, $href = false, $method = 'get', $button_array = false, $var_array = false, $target = "_self", $align = "left")
 {
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     $lang = load_language_file();
 
@@ -298,7 +298,7 @@ function html_email_confirmation_error()
 {
     $lang = load_language_file();
 
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
@@ -320,7 +320,7 @@ function html_message_type_error()
 
 function html_get_top_page()
 {
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     $forum_settings = forum_get_settings();
 
@@ -353,7 +353,7 @@ function html_get_top_page()
 
 function html_get_style_sheet()
 {
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     $forum_settings = forum_get_settings();
 
@@ -418,7 +418,7 @@ function html_get_style_sheet()
 
 function html_get_emoticon_style_sheet()
 {
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     $forum_settings = forum_get_settings();
 
@@ -450,7 +450,7 @@ function html_get_emoticon_style_sheet()
 
 function html_get_forum_keywords()
 {
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     $forum_settings = forum_get_settings();
 
@@ -464,7 +464,7 @@ function html_get_forum_keywords()
 
 function html_get_forum_description()
 {
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     $forum_settings = forum_get_settings();
 
@@ -478,7 +478,7 @@ function html_get_forum_description()
 
 function html_get_forum_email()
 {
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     $forum_settings = forum_get_settings();
 
@@ -498,7 +498,7 @@ function html_get_frame_name($basename)
 
     // If webtag available add that to the hash.
 
-    if (($webtag = get_webtag($webtag_search))) {
+    if (($webtag = get_webtag())) {
 
         $frame_md5_hash = md5(sprintf('%s-%s-%s', $forum_uri, $webtag, $basename));
         return sprintf('bh_frame_%s', preg_replace('/[^a-z]+/i', '', $frame_md5_hash));
@@ -599,7 +599,7 @@ function html_draw_top()
 
     $forum_settings = forum_get_settings();
 
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     $forum_path = defined('BH_FORUM_PATH') ? BH_FORUM_PATH : '.';
 
@@ -1070,7 +1070,7 @@ function html_js_safe_str($str)
 
 function style_image($img)
 {
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     $forum_settings = forum_get_settings();
 
@@ -1213,7 +1213,7 @@ function href_cleanup_query_keys($uri, $remove_keys = false, $seperator = "&amp;
         $uri.= (isset($uri_array['query']))    ? "?{$uri_array['query']}"    : '';
         $uri.= (isset($uri_array['fragment'])) ? "#{$uri_array['fragment']}" : '';
 
-        $uri = preg_replace("/\?$|&$|&amp;$/", "", $uri);
+        $uri = preg_replace('/\?$|&$|&amp;$/', '', $uri);
     }
 
     return $uri;

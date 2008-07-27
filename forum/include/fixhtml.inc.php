@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.131 2008-07-25 14:52:44 decoyduck Exp $ */
+/* $Id: fixhtml.inc.php,v 1.132 2008-07-27 10:53:34 decoyduck Exp $ */
 
 /** A range of functions for filtering/cleaning posted HTML
 *
@@ -1695,11 +1695,11 @@ function make_links ($html)
     $html = " ".$html;
 
     // URL:
-    $html = preg_replace("/(\s|\()(\w+:\/\/([^:\s]+:?[^@\s]+@)?[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)/i", "$1<a href=\"$2\">$2</a>", $html);
-    $html = preg_replace("/(\s|\()(www\.[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)/i", "$1<a href=\"http://$2\">$2</a>", $html);
+    $html = preg_replace('/(\s|\()(\w+:\/\/([^:\s]+:?[^@\s]+@)?[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)/i', "$1<a href=\"$2\">$2</a>", $html);
+    $html = preg_replace('/(\s|\()(www\.[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)/i', "$1<a href=\"http://$2\">$2</a>", $html);
 
     // MAIL:
-    $html = preg_replace("/(\s|\()(mailto:)?([0-9a-z][_\.0-9a-z-]*@[0-9a-z][_\.0-9a-z-]*\.[a-z]{2,})/i", "$1<a href=\"mailto:$3\">$2$3</a>", $html);
+    $html = preg_replace('/(\s|\()(mailto:)?([0-9a-z][_\.0-9a-z-]*@[0-9a-z][_\.0-9a-z-]*\.[a-z]{2,})/i', "$1<a href=\"mailto:$3\">$2$3</a>", $html);
 
     // This one breaks PHP - causes a 30 second page timeout.
 

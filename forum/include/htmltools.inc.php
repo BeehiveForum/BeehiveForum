@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: htmltools.inc.php,v 1.67 2008-07-25 14:52:44 decoyduck Exp $ */
+/* $Id: htmltools.inc.php,v 1.68 2008-07-27 10:53:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -45,7 +45,7 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 function TinyMCE() {
 
     $lang = load_language_file();
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     $str = "<!-- tinyMCE -->\n";
     $str.= "<script language=\"javascript\" type=\"text/javascript\" src=\"tiny_mce/tiny_mce.js\"></script>\n";
@@ -201,7 +201,7 @@ class TextAreaHTML {
         $lang = load_language_file();
 
         $forum_settings = forum_get_settings();
-        $webtag = get_webtag($webtag_search);
+        $webtag = get_webtag();
 
         $this->tbs++;
 
@@ -283,7 +283,7 @@ class TextAreaHTML {
 
         $lang = load_language_file();
 
-        $webtag = get_webtag($webtag_search);
+        $webtag = get_webtag();
 
         $this->tbs++;
 

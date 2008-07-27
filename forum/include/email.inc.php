@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.137 2008-07-25 14:52:42 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.138 2008-07-27 10:53:34 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -46,7 +46,7 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 function email_address_valid($email)
 {
-    return ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $email);
+    return ereg('^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$', $email);
 }
 
 function email_sendnotification($tuid, $fuid, $tid, $pid)
@@ -58,7 +58,7 @@ function email_sendnotification($tuid, $fuid, $tid, $pid)
     if (!is_numeric($tid)) return false;
     if (!is_numeric($pid)) return false;
 
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     if (($to_user = user_get($tuid)) && ($from_user = user_get($fuid))) {
 
@@ -154,7 +154,7 @@ function email_send_thread_subscription($tuid, $fuid, $tid, $pid, $modified, &$e
 
     $forum_fid = $table_data['FID'];
 
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     $exclude_user_list = implode(",", preg_grep("/^[0-9]+$/", $exclude_user_array));
 
@@ -258,7 +258,7 @@ function email_send_folder_subscription($tuid, $fuid, $fid, $tid, $pid, $modifie
 
     $forum_fid = $table_data['FID'];
 
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     $exclude_user_list = implode(",", preg_grep("/^[0-9]+$/", $exclude_user_array));
 
@@ -346,7 +346,7 @@ function email_send_pm_notification($tuid, $mid, $fuid)
     if (!is_numeric($mid)) return false;
     if (!is_numeric($fuid)) return false;
 
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     if (($to_user = user_get($tuid)) && ($from_user = user_get($fuid))) {
 
@@ -426,7 +426,7 @@ function email_send_pw_reminder($logon)
 {
     if (!check_mail_variables()) return false;
 
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     if (($to_user = user_get_uid($logon))) {
 
@@ -489,7 +489,7 @@ function email_send_new_pw_notification($tuid, $fuid, $new_password)
     if (!is_numeric($tuid)) return false;
     if (!is_numeric($fuid)) return false;
 
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     if (($to_user = user_get($tuid)) && ($from_user = user_get($fuid))) {
 
@@ -544,7 +544,7 @@ function email_send_user_confirmation($tuid)
 
     if (!is_numeric($tuid)) return false;
 
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     if (($to_user = user_get($tuid))) {
 
@@ -604,7 +604,7 @@ function email_send_changed_email_confirmation($tuid)
 
     if (!is_numeric($tuid)) return false;
 
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     if (($to_user = user_get($tuid))) {
 
@@ -664,7 +664,7 @@ function email_send_user_approval_notification($tuid)
 
     if (!is_numeric($tuid)) return false;
 
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     if (($to_user = user_get($tuid))) {
 
@@ -723,7 +723,7 @@ function email_send_new_user_notification($tuid, $new_user_uid)
     if (!is_numeric($tuid)) return false;
     if (!is_numeric($new_user_uid)) return false;
 
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     if (($to_user = user_get($tuid))) {
 
@@ -781,7 +781,7 @@ function email_send_user_approved_notification($tuid)
 
     if (!is_numeric($tuid)) return false;
 
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     if (($to_user = user_get($tuid))) {
 
@@ -839,7 +839,7 @@ function email_send_post_approval_notification($tuid)
 
     if (!is_numeric($tuid)) return false;
 
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     if (($to_user = user_get($tuid))) {
 
@@ -898,7 +898,7 @@ function email_send_message_to_user($tuid, $fuid, $subject, $message)
     if (!is_numeric($tuid)) return false;
     if (!is_numeric($fuid)) return false;
 
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     if (($to_user = user_get($tuid)) && ($from_user = user_get($fuid))) {
 

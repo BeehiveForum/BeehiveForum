@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.182 2008-07-25 14:52:42 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.183 2008-07-27 10:53:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -159,7 +159,7 @@ function light_draw_logon_form()
 
     $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
 
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     bh_setcookie("bh_logon", "1", time() - YEAR_IN_SECONDS);
 
@@ -197,7 +197,7 @@ function light_draw_logon_form()
 
 function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start_from = 0)
 {
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     $lang = load_language_file();
 
@@ -565,7 +565,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
 
 function light_draw_my_forums()
 {
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     $lang = load_language_file();
 
@@ -679,7 +679,7 @@ function light_messages_top($msg, $thread_title, $interest_level = THREAD_NOINTE
 {
     $lang = load_language_file();
 
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     echo "<h1>Full Version: <a href=\"index.php?webtag=$webtag&amp;msg=$msg\">", word_filter_add_ob_tags($thread_title), "</a>";
 
@@ -701,7 +701,7 @@ function light_form_radio($name, $value, $text, $checked = false)
 
 function light_poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true, $closed = false, $limit_text = true, $is_poll = true, $show_sigs = false, $is_preview = false, $highlight = array())
 {
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     $lang = load_language_file();
 
@@ -901,7 +901,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
     $post_edit_time = forum_get_setting('post_edit_time', false, 0);
     $post_edit_grace_period = forum_get_setting('post_edit_grace_period', false, 0);
 
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
@@ -1175,7 +1175,7 @@ function light_messages_nav_strip($tid,$pid,$length,$ppp)
 {
     $lang = load_language_file();
 
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     // Less than 20 messages, no nav needed
     if ($pid == 1 && $length < $ppp) return;
@@ -1248,7 +1248,7 @@ function light_html_guest_error ()
 
     $lang = load_language_file();
 
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     light_html_draw_top("robots=noindex,nofollow");
     light_html_display_error_msg($lang['guesterror']);
@@ -1372,7 +1372,7 @@ function light_attachment_make_link($attachment)
     if (!isset($attachment['hash']) || !is_md5($attachment['hash'])) return false;
     if (!isset($attachment['filename'])) return false;
 
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     $href = "get_attachment.php?webtag=$webtag&amp;hash={$attachment['hash']}";
     $href.= "&amp;filename={$attachment['filename']}";
@@ -1408,7 +1408,7 @@ function light_threads_draw_discussions_dropdown($mode)
 
 function light_mode_check_noframes()
 {
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     if (isset($_GET['noframes'])) {
 
@@ -1442,7 +1442,7 @@ function light_edit_refuse()
 
 function light_html_display_msg($header_text, $string_msg, $href = false, $method = 'get', $button_array = false, $var_array = false, $target = "_self")
 {
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     $lang = load_language_file();
 

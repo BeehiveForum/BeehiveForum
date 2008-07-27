@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.149 2008-07-25 14:52:44 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.150 2008-07-27 10:53:34 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -727,7 +727,7 @@ function get_message_link($aid, $get_pm_link = true)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     $sql = "SELECT FORUMS.WEBTAG, PAI.TID, PAI.PID FROM POST_ATTACHMENT_IDS PAI ";
     $sql.= "LEFT JOIN FORUMS FORUMS ON (PAI.FID = FORUMS.FID) ";
@@ -905,7 +905,7 @@ function attachment_make_link($attachment, $show_thumbs = true, $limit_filename 
     if (!is_md5($attachment['aid'])) return false;
     if (!is_md5($attachment['hash'])) return false;
 
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     $lang = load_language_file();
 

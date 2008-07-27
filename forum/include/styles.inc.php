@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: styles.inc.php,v 1.21 2008-07-09 19:32:51 decoyduck Exp $ */
+/* $Id: styles.inc.php,v 1.22 2008-07-27 10:53:37 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -38,7 +38,7 @@ include_once(BH_INCLUDE_PATH. "lang.inc.php");
 
 function styles_get_available()
 {
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     $lang = load_language_file();
 
@@ -127,7 +127,7 @@ function style_exists($style_path)
 {
     if (!is_string($style_path)) return false;
 
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     $style_path = basename($style_path);
 

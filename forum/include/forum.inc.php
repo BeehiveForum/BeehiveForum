@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.318 2008-07-25 14:52:44 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.319 2008-07-27 10:53:34 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -94,8 +94,6 @@ function get_forum_data()
                 }
             }
 
-            return array('WEBTAG_SEARCH' => $webtag);
-
         }else {
 
             // Check #2: Try and select a default webtag from
@@ -120,16 +118,12 @@ function get_forum_data()
     return $forum_data;
 }
 
-function get_webtag(&$webtag_search)
+function get_webtag()
 {
     $forum_data = get_forum_data();
 
     if (is_array($forum_data) && isset($forum_data['WEBTAG'])) {
         return $forum_data['WEBTAG'];
-    }
-
-    if (is_array($forum_data) && isset($forum_data['WEBTAG_SEARCH'])) {
-        $webtag_search = $forum_data['WEBTAG_SEARCH'];
     }
 
     return false;
@@ -279,7 +273,7 @@ function forum_get_password($forum_fid)
 
 function forum_get_saved_password(&$password, &$passhash, &$sesshash)
 {
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     if (isset($_COOKIE["bh_{$webtag}_password"]) && strlen(_stripslashes($_COOKIE["bh_{$webtag}_password"])) > 0) {
         $password = _stripslashes($_COOKIE["bh_{$webtag}_password"]);
@@ -308,7 +302,7 @@ function forum_check_password($forum_fid)
 
     if (!$db_forum_check_password = db_connect()) return false;
 
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     if (!is_numeric($forum_fid)) return false;
 
@@ -952,7 +946,7 @@ function forum_update_unread_data($unread_cutoff_stamp)
 
 function forum_load_start_page()
 {
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     if (@file_exists("forums/$webtag/start_main.php")) {
 
@@ -967,7 +961,7 @@ function forum_load_start_page()
 
 function forum_save_start_page($content)
 {
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     mkdir_recursive("forums/$webtag", 0755);
 

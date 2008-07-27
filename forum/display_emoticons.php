@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display_emoticons.php,v 1.58 2008-07-25 20:14:41 decoyduck Exp $ */
+/* $Id: display_emoticons.php,v 1.59 2008-07-27 10:53:28 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -64,13 +64,11 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 // Intitalise a few variables
 
-$webtag_search = false;
-
 // Check we're logged in correctly
 
 if (!$user_sess = bh_session_check()) {
     $request_uri = rawurlencode(get_request_uri());
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
@@ -92,9 +90,9 @@ if (!bh_session_user_approved()) {
 
 // Check we have a webtag
 
-if (!$webtag = get_webtag($webtag_search)) {
+if (!$webtag = get_webtag()) {
     $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
+    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
 // Load language file
@@ -105,7 +103,7 @@ $lang = load_language_file();
 
 if (!forum_check_access_level()) {
     $request_uri = rawurlencode(get_request_uri());
-    header_redirect("forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
+    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
 if (isset($_GET['pack']) && strlen(trim(_stripslashes($_GET['pack']))) > 0) {
@@ -184,18 +182,18 @@ $emoticon = array();
 if (in_array($user_emoticon_pack, array_keys($emoticon_sets_array))) {
 
     $emoticon_path = basename($user_emoticon_pack);
-    
+
     if (file_exists("emoticons/$emoticon_path/definitions.php")) {
         include ("emoticons/$emoticon_path/definitions.php");
-    }    
+    }
 
 }else if (sizeof($emoticon_sets_array) > 0) {
 
     $emoticon_path = basename(array_shift($emoticon_sets_array));
-    
+
     if (file_exists("emoticons/$emoticon_path/definitions.php")) {
         include ("emoticons/$emoticon_path/definitions.php");
-    }    
+    }
 }
 
 if (sizeof($emoticon) > 0) {
@@ -216,8 +214,8 @@ echo "                        <table class=\"posthead\" width=\"300\">\n";
 if (($style_content = @file_get_contents("emoticons/$emoticon_path/style.css"))) {
 
     $style_matches = array();
-	
-	preg_match_all('/\.e_([\w_]+) \{.*\n[^\}]*background-image\s*:\s*url\s*\(["\']([^"\']*)["\']\)[^\}]*\}/i', $style_content, $style_matches);
+
+    preg_match_all('/\.e_([\w_]+) \{.*\n[^\}]*background-image\s*:\s*url\s*\(["\']([^"\']*)["\']\)[^\}]*\}/i', $style_content, $style_matches);
 
     for ($i = 0; $i < count($style_matches[1]); $i++) {
 

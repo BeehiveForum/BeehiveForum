@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.157 2008-07-25 16:47:28 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.158 2008-07-27 10:53:34 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -1725,9 +1725,7 @@ function admin_delete_users_posts($uid)
 
 function admin_prepare_affected_sessions($affected_session)
 {
-    $webtag_search = false;
-	
-	$webtag = get_webtag($webtag_search);
+        $webtag = get_webtag();
 
     if ($affected_session['UID'] > 0) {
 

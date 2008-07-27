@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.inc.php,v 1.81 2007-12-26 13:19:35 decoyduck Exp $ */
+/* $Id: links.inc.php,v 1.82 2008-07-27 10:53:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -239,7 +239,7 @@ function links_update_folder($fid, $name)
 
 function links_display_folder_path($fid, $folders, $links = true, $link_last_too = false, $link_base = false)
 {
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     if (!is_numeric($fid)) return false;
     if (!is_array($folders)) return false;

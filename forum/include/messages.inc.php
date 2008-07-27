@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.538 2008-07-25 14:52:45 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.539 2008-07-27 10:53:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -89,7 +89,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
         $messages = false;
 
-        while($message = db_fetch_array($result)) {
+        while (($message = db_fetch_array($result))) {
 
             $message['CONTENT'] = "";
 
@@ -228,7 +228,7 @@ function message_get_content($tid, $pid)
 */
 function message_apply_formatting($message, $emoticons = true, $ignore_sig = false)
 {
-    $webtag = get_webtag($webtag_search);
+        $webtag = get_webtag();
 
     $message_parts = preg_split('/(<[^<>]+>)/', $message, -1, PREG_SPLIT_DELIM_CAPTURE);
 
@@ -463,7 +463,7 @@ function message_apply_formatting($message, $emoticons = true, $ignore_sig = fal
             if (strlen($wiki_location) > 0) $wiki_location = str_replace("[WikiWord]", "\\1", $wiki_location);
         }
 
-        $message_parts = preg_split("/<\/?nowiki>/", $message);
+        $message_parts = preg_split('/<\/?nowiki>/', $message);
 
         for ($i = 0; $i < sizeof($message_parts); $i++) {
 
@@ -477,19 +477,19 @@ function message_apply_formatting($message, $emoticons = true, $ignore_sig = fal
 
                         if ($enable_wiki_words) {
 
-                            $html_parts[$j] = preg_replace("/\b(([A-Z][a-z]+){2,})\b/", "<a href=\"$wiki_location\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
+                            $html_parts[$j] = preg_replace('/\b(([A-Z][a-z]+){2,})\b/', "<a href=\"$wiki_location\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
                         }
 
                         if ($enable_wiki_links) {
 
                             if (defined('BEEHIVEMODE_LIGHT')) {
 
-                                $html_parts[$j] = preg_replace("/\b(msg:([0-9]{1,}\.[0-9]{1,}))\b/i", "<a href=\"lmessages.php?webtag=$webtag&amp;msg=\\2\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
+                                $html_parts[$j] = preg_replace('/\b(msg:([0-9]{1,}\.[0-9]{1,}))\b/i', "<a href=\"lmessages.php?webtag=$webtag&amp;msg=\\2\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
 
                             }else {
 
-                                $html_parts[$j] = preg_replace("/\b(msg:([0-9]{1,}\.[0-9]{1,}))\b/i", "<a href=\"index.php?webtag=$webtag&amp;msg=\\2\" target=\"_blank\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
-                                $html_parts[$j] = preg_replace("/\b(user:([a-z0-9_-]{2,15}))\b/i", "<a href=\"user_profile.php?webtag=$webtag&amp;logon=\\2\" target=\"_blank\" onclick=\"return openProfileByLogon('\\2', '$webtag')\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
+                                $html_parts[$j] = preg_replace('/\b(msg:([0-9]{1,}\.[0-9]{1,}))\b/i', "<a href=\"index.php?webtag=$webtag&amp;msg=\\2\" target=\"_blank\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
+                                $html_parts[$j] = preg_replace('/\b(user:([a-z0-9_-]{2,15}))\b/i', "<a href=\"user_profile.php?webtag=$webtag&amp;logon=\\2\" target=\"_blank\" onclick=\"return openProfileByLogon('\\2', '$webtag')\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
                             }
                         }
                     }
@@ -504,8 +504,8 @@ function message_apply_formatting($message, $emoticons = true, $ignore_sig = fal
 
     if ($emoticons == true) {
 
-        $message_parts = preg_split("/<\/?noemots>/", $message);
-        $signature_parts = preg_split("/<\/?noemots>/", $signature);
+        $message_parts = preg_split('/<\/?noemots>/', $message);
+        $signature_parts = preg_split('/<\/?noemots>/', $signature);
 
         $message_parts = array_merge($message_parts, $signature_parts);
 
@@ -520,14 +520,14 @@ function message_apply_formatting($message, $emoticons = true, $ignore_sig = fal
         $message = implode("", $message_parts);
     }
 
-    return preg_replace("/<\/?noemots>|<\/?nowiki>/", "", $message);
+    return preg_replace('/<\/?noemots>|<\/?nowiki>/', '', $message);
 }
 
 function messages_top($tid, $pid, $folder_fid, $folder_title, $thread_title, $thread_interest_level = THREAD_NOINTEREST, $folder_interest_level = FOLDER_NOINTEREST, $sticky = "N", $closed = false, $locked = false, $deleted = false, $frame_links = true)
 {
     $lang = load_language_file();
 
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     $frame_top_target = html_get_top_frame_name();
 
@@ -574,7 +574,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     $post_edit_time = forum_get_setting('post_edit_time', false, 0);
     $post_edit_grace_period = forum_get_setting('post_edit_grace_period', false, 0);
 
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
@@ -1316,7 +1316,7 @@ function messages_nav_strip($tid, $pid, $length, $ppp)
 {
     $lang = load_language_file();
 
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     // Less than 20 messages, no nav needed
 
@@ -1415,7 +1415,7 @@ function messages_interest_form($tid,$pid)
 {
     $lang = load_language_file();
 
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     $interest = thread_get_interest($tid);
     $chk = array("","","","");
@@ -1740,7 +1740,7 @@ function messages_fontsize_form($tid, $pid)
 {
     $lang = load_language_file();
 
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     $fontstrip = "{$lang['adjtextsize']}: ";
 
@@ -1796,7 +1796,7 @@ function messages_forum_stats($tid, $pid)
 {
     $lang = load_language_file();
 
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     $uid = bh_session_get_value("UID");
 

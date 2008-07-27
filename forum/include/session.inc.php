@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.351 2008-07-25 14:52:44 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.352 2008-07-27 10:53:36 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -82,10 +82,6 @@ function bh_session_check($show_session_fail = true)
     // Fetch the user's IP Address
 
     if (!$ipaddress = get_ip_address()) return false;
-
-    // Get the forum settings data.
-
-    $forum_settings = forum_get_settings();
 
     // Session cut off timestamp
 
@@ -205,7 +201,7 @@ function bh_session_check($show_session_fail = true)
 
 function bh_session_expired()
 {
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     $lang = load_language_file();
 
@@ -303,8 +299,6 @@ function bh_guest_session_init($update_visitor_log = true)
     if (!$db_bh_guest_session_init = db_connect()) return false;
 
     if (!$ipaddress = get_ip_address()) return false;
-
-    $forum_settings = forum_get_settings();
 
     // Session cut off timestamp
 
@@ -515,7 +509,7 @@ function bh_remove_stale_sessions()
 
         if (!$result = db_query($sql, $db_bh_remove_stale_sessions)) return false;
 
-        while ($session_data = db_fetch_array($result)) {
+        while (($session_data = db_fetch_array($result))) {
 
             bh_update_user_time($session_data['UID']);
             $expired_sessions_array[] = $session_data['HASH'];
@@ -528,11 +522,11 @@ function bh_remove_stale_sessions()
             $sql = "DELETE QUICK FROM SESSIONS WHERE HASH IN ('$expired_sessions') ";
             $sql.= "AND TIME < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $session_cutoff) ";
 
-            if (!$result = db_query($sql, $db_bh_remove_stale_sessions)) return false;
-
-            return true;
+            if (!db_query($sql, $db_bh_remove_stale_sessions)) return false;
         }
     }
+
+    return true;
 }
 
 // Updates the visitor log for the current user
@@ -581,7 +575,7 @@ function bh_update_visitor_log($uid, $forum_fid = false, $force_update = false)
             $sql.= "VALUES ('$forum_fid', '$uid', NOW(), '$ipaddress', '$http_referer')";
         }
 
-        if ($result = db_query($sql, $db_bh_update_visitor_log)) return true;
+        if (db_query($sql, $db_bh_update_visitor_log)) return true;
 
     }elseif (!user_cookies_set() || $force_update === true) {
 
@@ -617,7 +611,7 @@ function bh_update_visitor_log($uid, $forum_fid = false, $force_update = false)
                     $sql.= "VALUES ('$forum_fid', 0, NOW(), '$ipaddress', '$http_referer', '$search_id')";
                 }
 
-                if ($result = db_query($sql, $db_bh_update_visitor_log)) return true;
+                if (db_query($sql, $db_bh_update_visitor_log)) return true;
 
             }else {
 
@@ -625,7 +619,7 @@ function bh_update_visitor_log($uid, $forum_fid = false, $force_update = false)
                 $sql.= "VALUES ('$forum_fid', 0, NOW(), '$ipaddress', '$http_referer')";
             }
 
-            if ($result = db_query($sql, $db_bh_update_visitor_log)) return true;
+            if (db_query($sql, $db_bh_update_visitor_log)) return true;
         }
     }
 
@@ -838,7 +832,7 @@ function bh_session_init($uid, $update_visitor_log = true, $skip_cookie = false)
 
     $sql = "DELETE QUICK FROM SESSIONS WHERE HASH = '$user_hash'";
 
-    if (!$result = db_query($sql, $db_bh_session_init)) return false;
+    if (!db_query($sql, $db_bh_session_init)) return false;
 
     // Check for an existing user session.
 
@@ -889,7 +883,7 @@ function bh_session_init($uid, $update_visitor_log = true, $skip_cookie = false)
 
 function bh_session_remove_cookies()
 {
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     // Unset the session cookies.
 
@@ -938,10 +932,12 @@ function bh_session_end($remove_cookies = true)
 
         $sql = "DELETE QUICK FROM SESSIONS WHERE HASH = '$user_hash'";
 
-        if (!$result = db_query($sql, $db_bh_session_end)) return false;
+        if (!db_query($sql, $db_bh_session_end)) return false;
     }
 
     if ($remove_cookies === true) bh_session_remove_cookies();
+
+    return true;
 }
 
 /**
@@ -980,7 +976,7 @@ function bh_session_get_perm_array($uid)
 
     if (db_num_rows($result) > 0) {
 
-        while ($permission_data = db_fetch_array($result)) {
+        while (($permission_data = db_fetch_array($result))) {
 
             if ($permission_data['USER_PERM_COUNT'] > 0) {
 
@@ -996,7 +992,7 @@ function bh_session_get_perm_array($uid)
 
     if (db_num_rows($result) > 0) {
 
-        while ($permission_data = db_fetch_array($result)) {
+        while (($permission_data = db_fetch_array($result))) {
 
             if (!isset($user_perm_array[$permission_data['FORUM']][$permission_data['FID']])) {
 
@@ -1034,8 +1030,6 @@ function bh_session_check_perm($perm, $folder_fid)
     }
 
     $user_perm_test = 0;
-
-    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (user_is_guest()) {
 
@@ -1083,8 +1077,6 @@ function bh_session_get_perm($folder_fid)
     $forum_fid = $table_data['FID'];
 
     $user_perm_test = 0;
-
-    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (user_is_guest()) {
 
@@ -1139,8 +1131,6 @@ function bh_session_user_banned()
 
 function bh_session_user_approved()
 {
-    $forum_settings = forum_get_settings();
-
     if (user_is_guest()) return true;
     if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) return true;
 
@@ -1177,8 +1167,6 @@ function bh_session_get_folders_by_perm($perm, $forum_fid = false)
     $user_sess = (isset($GLOBALS['user_sess'])) ? $GLOBALS['user_sess'] : false;
 
     $folder_fid_array = array();
-
-    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     // Global Permissions.
 
@@ -1258,7 +1246,7 @@ function get_request_uri($include_webtag = true, $encoded_uri_query = true)
     if (!is_bool($include_webtag)) $include_webtag = true;
     if (!is_bool($encoded_uri_query)) $encoded_uri_query = true;
 
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     if ($encoded_uri_query) {
 
@@ -1289,13 +1277,13 @@ function get_request_uri($include_webtag = true, $encoded_uri_query = true)
 
     // Remove trailing question mark / & / &amp;
 
-    $request_uri = preg_replace("/\?$|&$|&amp;$/", "", $request_uri);
+    $request_uri = preg_replace('/\?$|&$|&amp;$/', '', $request_uri);
 
     // Fix the slashes for forum running from sub-domain.
     // Rather dirty hack this, but it's the only idea I've got.
     // Any suggestions are welcome on how to handle this better.
 
-    return preg_replace("/\/\/+/", "/", $request_uri);
+    return preg_replace('/\/+/', '/', $request_uri);
 }
 
 /**
@@ -1311,8 +1299,6 @@ function get_request_uri($include_webtag = true, $encoded_uri_query = true)
 
 function bh_session_get_post_page_prefs()
 {
-    $user_sess = (isset($GLOBALS['user_sess'])) ? $GLOBALS['user_sess'] : false;
-
     if (!$page_prefs = bh_session_get_value('POST_PAGE')) {
         $page_prefs = POST_TOOLBAR_DISPLAY | POST_EMOTICONS_DISPLAY | POST_TEXT_DEFAULT | POST_AUTO_LINKS | POST_SIGNATURE_DISPLAY;
     }
@@ -1323,8 +1309,6 @@ function bh_session_get_post_page_prefs()
 function bh_session_is_search_engine()
 {
     if (!$db_bh_session_is_search_engine = db_connect()) return false;
-
-    if (!$table_data = get_table_prefix()) return false;
 
     if (isset($_SERVER['HTTP_USER_AGENT']) && strlen(trim($_SERVER['HTTP_USER_AGENT'])) > 0) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.337 2008-07-25 16:47:28 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.338 2008-07-27 10:53:33 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -70,8 +70,6 @@ include_once(BH_INCLUDE_PATH. "lang.inc.php");
 
 // Intitalise a few variables
 
-$webtag_search = false;
-
 // Array to hold our visible threads
 
 $visible_threads_array = array();
@@ -80,7 +78,7 @@ $visible_threads_array = array();
 
 if (!$user_sess = bh_session_check()) {
     $request_uri = rawurlencode(get_request_uri());
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
@@ -102,9 +100,9 @@ if (!bh_session_user_approved()) {
 
 // Check we have a webtag
 
-if (!$webtag = get_webtag($webtag_search)) {
+if (!$webtag = get_webtag()) {
     $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
+    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
 // Load language file
@@ -123,7 +121,7 @@ $error_msg_array = array();
 
 if (!forum_check_access_level()) {
     $request_uri = rawurlencode(get_request_uri());
-    header_redirect("forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
+    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
 // Are we viewing a specific folder only?
@@ -608,7 +606,7 @@ foreach ($folder_order as $folder_number) {
 
 
                     foreach($thread_info as $thread) {
- 
+
                         if (!in_array($thread['TID'], $visible_threads_array)) $visible_threads_array[] = $thread['TID'];
 
                         if ($thread['FID'] == $folder_number) {

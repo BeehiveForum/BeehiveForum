@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.113 2008-03-22 15:11:07 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.114 2008-07-27 10:53:34 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -422,7 +422,7 @@ function form_button($name, $value, $custom_html, $class="button")
 
 function form_quick_button($href, $label, $var_array = false, $target = "_self")
 {
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     $html = "<form method=\"get\" action=\"$href\" target=\"$target\">";
     $html.= form_input_hidden("webtag", _htmlentities($webtag));

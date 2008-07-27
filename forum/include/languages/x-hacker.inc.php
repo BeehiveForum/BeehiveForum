@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.289 2008-07-26 21:12:42 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.290 2008-07-27 10:53:37 decoyduck Exp $ */
 
 // British English language file
 
@@ -814,6 +814,7 @@ $lang['noexistingforums'] = "no 3X1st1ng foRuMs ph0UND. +0 cR3@T3 a n3w F0RUm cl
 $lang['webtaginvalidchars'] = "we8+49 caN onLy C0nT4In upP3Rc@s3 4-z, 0-9 @nd Und3rsc0r3 ch4R4c+Ers";
 $lang['databasenameinvalidchars'] = "datAB@s3 N4M3 C4n oNlY c0nt41n @-Z, a-Z, 0-9 @nD unDersC0RE char@c+3Rs";
 $lang['invalidforumidorforumnotfound'] = "iNV4l1D forUm F1d 0r foRUM N0t f0unD";
+$lang['invalidforumwebtagorforumnotfound'] = "iNV4l1D forUm webtag 0r foRUM N0t f0unD";
 $lang['successfullyupdatedforum'] = "suCCeS5fUlly uPDA+ed ph0rum";
 $lang['failedtoupdateforum'] = "f41Led TO Upd@t3 f0rum: '%s'";
 $lang['successfullycreatednewforum'] = "suCc3\$sPhully CR34+ed N3W ph0rum";

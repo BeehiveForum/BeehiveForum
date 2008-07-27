@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.218 2008-07-25 16:47:28 decoyduck Exp $ */
+/* $Id: search.php,v 1.219 2008-07-27 10:53:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -73,13 +73,11 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 // Intitalise a few variables
 
-$webtag_search = false;
-
 // Check we're logged in correctly
 
 if (!$user_sess = bh_session_check()) {
     $request_uri = rawurlencode(get_request_uri());
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
@@ -101,9 +99,9 @@ if (!bh_session_user_approved()) {
 
 // Check we have a webtag
 
-if (!$webtag = get_webtag($webtag_search)) {
+if (!$webtag = get_webtag()) {
     $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
+    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
 // Load language file
@@ -114,7 +112,7 @@ $lang = load_language_file();
 
 if (!forum_check_access_level()) {
     $request_uri = rawurlencode(get_request_uri());
-    header_redirect("forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
+    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
 // Open Search support (FireFox 2.0, etc.)
@@ -233,7 +231,7 @@ if (isset($_GET['show_stop_words'])) {
     }
 
     $mysql_fulltext_stopwords = array();
-        
+
     include(BH_INCLUDE_PATH. "search_stopwords.inc.php");
 
     echo "<h1>{$lang['mysqlstopwordlist']}</h1>\n";
@@ -309,7 +307,7 @@ search_get_word_lengths($min_length, $max_length);
 if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || isset($_GET['search_string']) || isset($_GET['logon'])) && !isset($_GET['search_error'])) {
 
     $offset = 0;
-    
+
     $error = SEARCH_NO_ERROR;
 
     $search_arguments = array();

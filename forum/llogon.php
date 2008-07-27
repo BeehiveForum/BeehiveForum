@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogon.php,v 1.65 2008-07-25 14:52:46 decoyduck Exp $ */
+/* $Id: llogon.php,v 1.66 2008-07-27 10:53:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -69,8 +69,6 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 // Intitalise a few variables
 
-$webtag_search = false;
-
 // Initialise the user session
 
 $user_sess = bh_session_check(false);
@@ -97,7 +95,7 @@ $lang = load_language_file();
 
 // Check we have a webtag
 
-$webtag = get_webtag($webtag_search);
+$webtag = get_webtag();
 
 // Error messages string
 

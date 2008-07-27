@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.246 2008-07-25 20:35:16 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.247 2008-07-27 10:53:36 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -93,7 +93,7 @@ function pm_mark_as_read($mid)
     $sql.= "WHERE MID = '$mid' AND TO_UID = '$uid'";
 
     if (!db_query($sql, $db_pm_mark_as_read)) return false;
-    
+
     return true;
 }
 
@@ -1109,13 +1109,11 @@ function pm_get_content($mid)
 function pm_display($pm_message_array, $folder, $preview = false, $export_html = false)
 {
     $lang = load_language_file();
-    
-    $webtag_search = false;
-    
-    $attachments_array = array();
+
+        $attachments_array = array();
     $image_attachments_array = array();
 
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     echo "<div align=\"center\">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
@@ -2154,7 +2152,7 @@ function pms_have_attachments(&$pm_array, $mid_array)
 
         $pm_array[$pm_attachment_data['MID']]['AID'] = $pm_attachment_data['AID'];
     }
-    
+
     return true;
 }
 
@@ -2377,10 +2375,10 @@ function pm_export_html($folder, &$zip_file)
 
             $pm_message['FOLDER'] = $folder;
             $pm_message['CONTENT'] = pm_get_content($pm_message['MID']);
-            
+
             if ($pm_export_wordfilter == 'Y') {
-            	$pm_message = array_map('pm_export_word_filter_apply', $pm_message);
-            }            
+                $pm_message = array_map('pm_export_word_filter_apply', $pm_message);
+            }
 
             $pm_display.= pm_display_html_export($pm_message, $folder);
 
@@ -2450,7 +2448,7 @@ function pm_export_xml($folder, &$zip_file)
             $pm_message['CONTENT'] = pm_get_content($pm_message['MID']);
 
             if ($pm_export_wordfilter == 'Y') {
-            	$pm_message = array_map('pm_export_word_filter_apply', $pm_message);
+                $pm_message = array_map('pm_export_word_filter_apply', $pm_message);
             }
 
             $pm_display.= "      <message>\n";
@@ -2527,7 +2525,7 @@ function pm_export_plaintext($folder, &$zip_file)
             $pm_message['CONTENT'] = pm_get_content($pm_message['MID']);
 
             if ($pm_export_wordfilter == 'Y') {
-            	$pm_message = array_map('pm_export_word_filter_apply', $pm_message);
+                $pm_message = array_map('pm_export_word_filter_apply', $pm_message);
             }
 
             foreach($pm_message as $key => $value) {
@@ -2596,7 +2594,7 @@ function pm_export_attachments($aid, $from_uid, &$zip_file)
     if (!is_object($zip_file)) return false;
 
     $attachments_added_success = false;
-    
+
     $attachments_array = array();
     $image_attachments_array = array();
 

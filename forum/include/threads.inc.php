@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.312 2008-07-14 18:05:18 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.313 2008-07-27 10:53:37 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1656,7 +1656,7 @@ function thread_list_draw_top($mode)
 {
     $lang = load_language_file();
 
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     $unread_cutoff_stamp = forum_get_unread_cutoff();
 

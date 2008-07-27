@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.110 2008-07-25 16:47:28 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.111 2008-07-27 10:53:34 decoyduck Exp $ */
 
 /**
 * Displays and handles the User Relationship page
@@ -77,13 +77,11 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 // Intitalise a few variables
 
-$webtag_search = false;
-
 // Check we're logged in correctly
 
 if (!$user_sess = bh_session_check()) {
     $request_uri = rawurlencode(get_request_uri());
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
@@ -105,9 +103,9 @@ if (!bh_session_user_approved()) {
 
 // Check we have a webtag
 
-if (!$webtag = get_webtag($webtag_search)) {
+if (!$webtag = get_webtag()) {
     $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
+    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
 // Load language file
@@ -122,7 +120,7 @@ $uid = bh_session_get_value('UID');
 
 if (!forum_check_access_level()) {
     $request_uri = rawurlencode(get_request_uri());
-    header_redirect("forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
+    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
 if (user_is_guest()) {
@@ -259,8 +257,8 @@ if (isset($_POST['preview_signature'])) {
 
     $t_sig_content = '';
     $t_sig_html = 'N';
-	
-	if (user_get_sig($peer_uid, $t_sig_content, $t_sig_html)) {
+
+    if (user_get_sig($peer_uid, $t_sig_content, $t_sig_html)) {
 
         $preview_message['TLOGON'] = $lang['allcaps'];
         $preview_message['TNICK'] = $lang['allcaps'];

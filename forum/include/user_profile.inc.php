@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.88 2008-07-25 14:52:44 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.89 2008-07-27 10:53:37 decoyduck Exp $ */
 
 /**
 * Functions relating to users interacting with profiles
@@ -439,7 +439,7 @@ function user_get_post_count($uid)
 
 function user_profile_popup_callback($logon)
 {
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     $html = "<a href=\"user_profile.php?webtag=$webtag&amp;logon=$logon\" target=\"_blank\" ";
     $html.= "onclick=\"return openProfileByLogon('$logon', '$webtag')\">$logon</a>";

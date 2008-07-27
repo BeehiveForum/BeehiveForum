@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: change_pw.php,v 1.70 2008-07-25 14:52:54 decoyduck Exp $ */
+/* $Id: change_pw.php,v 1.71 2008-07-27 10:53:27 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -63,15 +63,13 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 // Intitalise a few variables
 
-$webtag_search = false;
-
 // Load language file
 
 $lang = load_language_file();
 
 // Check we have a webtag
 
-$webtag = get_webtag($webtag_search);
+$webtag = get_webtag();
 
 // Array to hold error messages
 

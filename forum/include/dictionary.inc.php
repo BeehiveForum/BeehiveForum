@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.inc.php,v 1.49 2008-07-25 14:52:44 decoyduck Exp $ */
+/* $Id: dictionary.inc.php,v 1.50 2008-07-27 10:53:34 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -76,11 +76,11 @@ class dictionary {
 
     function prepare_content($content)
     {
-        $word_match = "([0-9\w'-]+)|([0-9]+)|(<[^>]+>)|(&[^;]+;)|(\w+'+\w+)|";
-        $word_match.= "([\s+\.!\?,\[\]()\-+'\"=;&#0215;\$%\^&\*\/:{}]+)|";
-        $word_match.= "(\w+:\/\/([^:\s]+:?[^@\s]+@)?[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)|";
-        $word_match.= "(www\.[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)|";
-        $word_match.= "([0-9a-z][_\.0-9a-z-]*@[0-9a-z][_\.0-9a-z-]*\.[a-z]{2,})";
+        $word_match = '([0-9\w\'-]+)|([0-9]+)|(<[^>]+>)|(&[^;]+;)|(\w+\'+\w+)|';
+        $word_match.= '([\s+\.!\?,\[\]()\-+\'"=;&#0215;\$%\^&\*\/:{}]+)|';
+        $word_match.= '(\w+:\/\/([^:\s]+:?[^@\s]+@)?[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)|';
+        $word_match.= '(www\.[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)|';
+        $word_match.= '([0-9a-z][_\.0-9a-z-]*@[0-9a-z][_\.0-9a-z-]*\.[a-z]{2,})';
 
         $this->content_array = preg_split("/$word_match/i", $content, -1, PREG_SPLIT_DELIM_CAPTURE);
     }
@@ -229,10 +229,10 @@ class dictionary {
     {
         $current_word = $this->get_current_word();
 
-        $word_match = "([0-9]+)|(<[^>]+>)|(&[^;]+;)|";
-        $word_match.= "(\w+:\/\/([^:\s]+:?[^@\s]+@)?[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)|";
-        $word_match.= "(www\.[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)|";
-        $word_match.= "([0-9a-z][_\.0-9a-z-]*@[0-9a-z][_\.0-9a-z-]*\.[a-z]{2,})";
+        $word_match = '([0-9]+)|(<[^>]+>)|(&[^;]+;)|';
+        $word_match.= '(\w+:\/\/([^:\s]+:?[^@\s]+@)?[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)|';
+        $word_match.= '(www\.[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)|';
+        $word_match.= '([0-9a-z][_\.0-9a-z-]*@[0-9a-z][_\.0-9a-z-]*\.[a-z]{2,})';
 
         if (preg_match("/$word_match/i", $current_word) < 1) {
 
@@ -256,13 +256,13 @@ class dictionary {
     {
         if (!$db_dictionary_word_get_suggestions = db_connect()) return false;
 
-        if (!isset($this->content_array[$this->current_word])) return;
+        if (!isset($this->content_array[$this->current_word])) return true;
 
         // Fetch the current word
 
         $word = db_escape_string(strtolower($this->get_current_word()));
 
-        if (!$this->word_is_valid($word)) return;
+        if (!$this->word_is_valid($word)) return true;
 
         // The offset of the metaphone results
 
@@ -285,7 +285,7 @@ class dictionary {
         if (db_num_rows($result) > 0) {
 
             $this->word_suggestion_result = DICTIONARY_EXACT;
-            return;
+            return true;
         }
 
         // Metaphone match (English pronounciation match)
@@ -302,7 +302,7 @@ class dictionary {
 
             if (db_num_rows($result) > 0) {
 
-                while($spelling_data = db_fetch_array($result)) {
+                while (($spelling_data = db_fetch_array($result))) {
 
                     $this->suggestions_array[$spelling_data['WORD']] = $spelling_data['WORD'];
                 }
@@ -312,7 +312,7 @@ class dictionary {
                 if ($this->offset_match == 0) {
 
                     $this->word_suggestion_result = DICTIONARY_NOMATCH;
-                    return;
+                    return true;
                 }
 
                 $this->offset_match = 0;
@@ -322,11 +322,12 @@ class dictionary {
             if (sizeof($this->suggestions_array) > 0) {
 
                 $this->word_suggestion_result = DICTIONARY_SUGGEST;
-                return;
+                return true;
             }
         }
 
         $this->word_suggestion_result = DICTIONARY_NOMATCH;
+        return true;
     }
 
     function get_best_suggestion()

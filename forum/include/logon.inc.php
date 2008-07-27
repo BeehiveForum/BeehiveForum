@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.80 2008-07-25 14:52:42 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.81 2008-07-27 10:53:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -221,7 +221,7 @@ function logon_perform()
 {
     $lang = load_language_file();
 
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     // Check to see if the user is logging in as a guest or a normal user.
 
@@ -298,7 +298,7 @@ function logon_draw_form($logon_options)
 
     $lang = load_language_file();
 
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     // Make sure logon form argument is valid.
 

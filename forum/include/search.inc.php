@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.203 2008-07-25 14:52:42 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.204 2008-07-27 10:53:36 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -825,7 +825,7 @@ function check_search_frequency()
 
 function search_output_opensearch_xml()
 {
-    $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag();
 
     $forum_path = html_get_forum_uri();
 

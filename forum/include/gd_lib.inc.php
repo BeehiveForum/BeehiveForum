@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gd_lib.inc.php,v 1.4 2007-10-11 13:01:19 decoyduck Exp $ */
+/* $Id: gd_lib.inc.php,v 1.5 2008-07-27 10:53:34 decoyduck Exp $ */
 
 /**
 * gd_lib.inc.php - GD image library functions
@@ -54,7 +54,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 function get_gd_info()
 {
     $get_gd_info = array('GD Version'       => false, 'FreeType Support'   => 0,
-                         'FreeType Linkage' => "",    'T1Lib Support'      => 0,
+                         'FreeType Linkage' => '',    'T1Lib Support'      => 0,
                          'GIF Read Support' => 0,     'GIF Create Support' => 0,
                          'JPG Support'      => 0,     'PNG Support'        => 0,
                          'WBMP Support'     => 0,     'XBM Support'        => 0);
@@ -67,86 +67,86 @@ function get_gd_info()
 
     foreach (explode("\n", $php_info) as $line) {
 
-        if (strpos($line, "GD Version") !== false) {
-            $get_gd_info["GD Version"] = preg_replace("/[^0-9|\.]/", "", trim(str_replace("GD Version", "", strip_tags($line))));
+        if (strpos($line, 'GD Version') !== false) {
+            $get_gd_info['GD Version'] = preg_replace('/[^0-9|\.]/', '', trim(str_replace('GD Version', '', strip_tags($line))));
         }
 
-        if (strpos($line, "FreeType Support") !== false) {
-            $get_gd_info["FreeType Support"] = trim(str_replace("FreeType Support", "", strip_tags($line)));
+        if (strpos($line, 'FreeType Support') !== false) {
+            $get_gd_info['FreeType Support'] = trim(str_replace('FreeType Support', '', strip_tags($line)));
         }
 
-        if (strpos($line, "FreeType Linkage") !== false) {
-            $get_gd_info["FreeType Linkage"] = trim(str_replace("FreeType Linkage", "", strip_tags($line)));
+        if (strpos($line, 'FreeType Linkage') !== false) {
+            $get_gd_info['FreeType Linkage'] = trim(str_replace('FreeType Linkage', '', strip_tags($line)));
         }
 
-        if (strpos($line, "T1Lib Support") !== false) {
-            $get_gd_info["T1Lib Support"] = trim(str_replace("T1Lib Support", "", strip_tags($line)));
+        if (strpos($line, 'T1Lib Support') !== false) {
+            $get_gd_info['T1Lib Support'] = trim(str_replace('T1Lib Support', '', strip_tags($line)));
         }
 
-        if (strpos($line, "GIF Read Support") !== false) {
-            $get_gd_info["GIF Read Support"] = trim(str_replace("GIF Read Support", "", strip_tags($line)));
+        if (strpos($line, 'GIF Read Support') !== false) {
+            $get_gd_info['GIF Read Support'] = trim(str_replace('GIF Read Support', '', strip_tags($line)));
         }
 
-        if (strpos($line, "GIF Create Support") !== false) {
-            $get_gd_info["GIF Create Support"] = trim(str_replace("GIF Create Support", "", strip_tags($line)));
+        if (strpos($line, 'GIF Create Support') !== false) {
+            $get_gd_info['GIF Create Support'] = trim(str_replace('GIF Create Support', '', strip_tags($line)));
         }
 
-        if (strpos($line, "GIF Support") !== false) {
-            $gif_support = trim(str_replace("GIF Support", "", strip_tags($line)));
+        if (strpos($line, 'GIF Support') !== false) {
+            $gif_support = trim(str_replace('GIF Support', '', strip_tags($line)));
         }
 
-        if (strpos($line, "JPG Support") !== false) {
-            $get_gd_info["JPG Support"] = trim(str_replace("JPG Support", "", strip_tags($line)));
+        if (strpos($line, 'JPG Support') !== false) {
+            $get_gd_info['JPG Support'] = trim(str_replace('JPG Support', '', strip_tags($line)));
         }
 
-        if (strpos($line, "PNG Support") !== false) {
-            $get_gd_info["PNG Support"] = trim(str_replace("PNG Support", "", strip_tags($line)));
+        if (strpos($line, 'PNG Support') !== false) {
+            $get_gd_info['PNG Support'] = trim(str_replace('PNG Support', '', strip_tags($line)));
         }
 
-        if (strpos($line, "WBMP Support") !== false) {
-            $get_gd_info["WBMP Support"] = trim(str_replace("WBMP Support", "", strip_tags($line)));
+        if (strpos($line, 'WBMP Support') !== false) {
+            $get_gd_info['WBMP Support'] = trim(str_replace('WBMP Support', '', strip_tags($line)));
         }
 
-        if (strpos($line, "XBM Support") !== false) {
-            $get_gd_info["XBM Support"] = trim(str_replace("XBM Support", "", strip_tags($line)));
+        if (strpos($line, 'XBM Support') !== false) {
+            $get_gd_info['XBM Support'] = trim(str_replace('XBM Support', '', strip_tags($line)));
         }
     }
 
-    if ($gif_support === "enabled") {
-        $get_gd_info["GIF Read Support"]  = 1;
-        $get_gd_info["GIF Create Support"] = 1;
+    if ($gif_support === 'enabled') {
+        $get_gd_info['GIF Read Support']  = 1;
+        $get_gd_info['GIF Create Support'] = 1;
     }
 
-    if ($get_gd_info["FreeType Support"] === "enabled") {
-        $get_gd_info["FreeType Support"] = 1;
+    if ($get_gd_info['FreeType Support'] === 'enabled') {
+        $get_gd_info['FreeType Support'] = 1;
     }
 
-    if ($get_gd_info["T1Lib Support"] === "enabled") {
-        $get_gd_info["T1Lib Support"] = 1;
+    if ($get_gd_info['T1Lib Support'] === 'enabled') {
+        $get_gd_info['T1Lib Support'] = 1;
     }
 
-    if ($get_gd_info["GIF Read Support"] === "enabled") {
-        $get_gd_info["GIF Read Support"] = 1;
+    if ($get_gd_info['GIF Read Support'] === 'enabled') {
+        $get_gd_info['GIF Read Support'] = 1;
     }
 
-    if ($get_gd_info["GIF Create Support"] === "enabled") {
-        $get_gd_info["GIF Create Support"] = 1;
+    if ($get_gd_info['GIF Create Support'] === 'enabled') {
+        $get_gd_info['GIF Create Support'] = 1;
     }
 
-    if ($get_gd_info["JPG Support"] === "enabled") {
-        $get_gd_info["JPG Support"] = 1;
+    if ($get_gd_info['JPG Support'] === 'enabled') {
+        $get_gd_info['JPG Support'] = 1;
     }
 
-    if ($get_gd_info["PNG Support"] === "enabled") {
-        $get_gd_info["PNG Support"] = 1;
+    if ($get_gd_info['PNG Support'] === 'enabled') {
+        $get_gd_info['PNG Support'] = 1;
     }
 
-    if ($get_gd_info["WBMP Support"] === "enabled") {
-        $get_gd_info["WBMP Support"] = 1;
+    if ($get_gd_info['WBMP Support'] === 'enabled') {
+        $get_gd_info['WBMP Support'] = 1;
     }
 
-    if ($get_gd_info["XBM Support"] === "enabled") {
-        $get_gd_info["XBM Support"] = 1;
+    if ($get_gd_info['XBM Support'] === 'enabled') {
+        $get_gd_info['XBM Support'] = 1;
     }
 
    return $get_gd_info;

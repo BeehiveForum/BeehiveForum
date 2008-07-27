@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.79 2008-04-16 10:20:28 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.80 2008-07-27 15:23:26 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -45,8 +45,6 @@ function get_forum_list($offset)
     if (!$db_get_forum_list = db_connect()) return false;
 
     if (!is_numeric($offset)) return false;
-
-    $lang = load_language_file();
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
@@ -72,7 +70,7 @@ function get_forum_list($offset)
 
     if (db_num_rows($result_forums) > 0) {
 
-        while ($forum_data = db_fetch_array($result_forums)) {
+        while (($forum_data = db_fetch_array($result_forums))) {
 
             $forum_fid = $forum_data['FID'];
 
@@ -132,8 +130,6 @@ function get_my_forums($view_type, $offset)
     if (!is_numeric($view_type)) return false;
     if (!is_numeric($offset)) return false;
 
-    $lang = load_language_file();
-
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     // Array to hold our forums in.
@@ -182,7 +178,7 @@ function get_my_forums($view_type, $offset)
 
     if (db_num_rows($result_forums) > 0) {
 
-        while ($forum_data = db_fetch_array($result_forums, DB_RESULT_ASSOC)) {
+        while (($forum_data = db_fetch_array($result_forums, DB_RESULT_ASSOC))) {
 
             $forum_fid = $forum_data['FID'];
 
@@ -215,11 +211,6 @@ function get_my_forums($view_type, $offset)
             // Get available folders for queries below
 
             $folders = folder_get_available_by_forum($forum_fid);
-
-            // User relationship constants
-
-            $user_ignored = USER_IGNORED;
-            $user_ignored_completely = USER_IGNORED_COMPLETELY;
 
             // Get any unread messages
 

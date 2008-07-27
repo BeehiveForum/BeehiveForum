@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.120 2008-07-27 10:53:26 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.121 2008-07-27 15:23:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -290,10 +290,10 @@ if (isset($_GET['seed'])) {
     $blue = mt_rand(0, 255);
 }
 
-if (isset($_GET['mode']) && $_GET['mode'] == 'rand') {
-    $mode = 'rand';
+if (isset($_GET['mode']) && $_GET['mode'] == MAKE_STYLE_RAND) {
+    $mode = MAKE_STYLE_RAND;
 }else {
-    $mode = '';
+    $mode = MAKE_STYLE_NORM;
 }
 
 //Maximum variance for the colours
@@ -304,8 +304,8 @@ $max_var = 15;
 
 $elements = array ('navpage' => '', 'threads' => '', 'button' => '', 'subhead' => '', 'h1' => '', 'body' => '', 'box' => '');
 
-if (strlen($mode) > 0) {
-    uasort($elements, "rand_sort");
+if ($mode == MAKE_STYLE_RAND) {
+    uasort($elements, 'rand_sort');
 }
 
 $colour = decToHex($red, $green, $blue);
@@ -336,7 +336,7 @@ if (isset($_POST['save'])) {
     foreach ($elements as $key => $value) {
 
         echo "                  <td width=\"50\" class=\"posthead\" style=\"background-color: #", $value, "\" align=\"center\">\n";
-        echo "                    <a href=\"admin_make_style.php?webtag=$webtag&amp;seed=", $value, "&amp;mode=", $mode, "\" style=\"color: #", contrastFont($value), "\">", strtoupper($value), "</a>\n";
+        echo "                    <a href=\"admin_make_style.php?webtag=$webtag&amp;seed=$value&amp;mode=$mode\" style=\"color: #", contrastFont($value), "\">", strtoupper($value), "</a>\n";
         echo "                  </td>\n";
     }
 
@@ -345,7 +345,7 @@ if (isset($_POST['save'])) {
     foreach ($elements as $key => $value) {
 
         echo "                  <td width=\"50\" class=\"posthead\" style=\"background-color: #", $colour, "; color: #", contrastFont($colour), "\" align=\"center\">\n";
-        echo "                    <a href=\"admin_make_style.php?webtag=$webtag&amp;seed=", $colour, "&amp;mode=", $mode, "\" style=\"color: #", contrastFont($colour), "\">", strtoupper($colour), "</a>\n";
+        echo "                    <a href=\"admin_make_style.php?webtag=$webtag&amp;seed=$colour&amp;mode=$mode\" style=\"color: #", contrastFont($colour), "\">", strtoupper($colour), "</a>\n";
         echo "                  </td>\n";
 
         $elements[$key] = $colour;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.138 2008-07-27 10:53:34 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.139 2008-07-27 15:23:24 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -171,7 +171,7 @@ function email_send_thread_subscription($tuid, $fuid, $tid, $pid, $modified, &$e
 
     if (db_num_rows($result) > 0) {
 
-        while ($to_user = db_fetch_array($result)) {
+        while (($to_user = db_fetch_array($result))) {
 
             $user_rel = user_get_relationship($to_user['UID'], $from_user['UID']);
 
@@ -274,7 +274,7 @@ function email_send_folder_subscription($tuid, $fuid, $fid, $tid, $pid, $modifie
 
     if (db_num_rows($result) > 0) {
 
-        while ($to_user = db_fetch_array($result)) {
+        while (($to_user = db_fetch_array($result))) {
 
             // Validate the email address before we continue.
 
@@ -488,8 +488,6 @@ function email_send_new_pw_notification($tuid, $fuid, $new_password)
 
     if (!is_numeric($tuid)) return false;
     if (!is_numeric($fuid)) return false;
-
-    $webtag = get_webtag();
 
     if (($to_user = user_get($tuid)) && ($from_user = user_get($fuid))) {
 
@@ -898,8 +896,6 @@ function email_send_message_to_user($tuid, $fuid, $subject, $message)
     if (!is_numeric($tuid)) return false;
     if (!is_numeric($fuid)) return false;
 
-    $webtag = get_webtag();
-
     if (($to_user = user_get($tuid)) && ($from_user = user_get($fuid))) {
 
         // Validate the email address before we continue.
@@ -954,9 +950,9 @@ function email_send_message_to_user($tuid, $fuid, $subject, $message)
 
 function email_get_language($to_uid)
 {
-    // Start out by including the English language file. This will allow
-    // us to still use Beehive even if our language file isn't up to date
-    // correctly.
+    // Initialise the array to hold the language strings.
+    
+	$lang = array();
 
     // The English language file must exist even if we're not going to be
     // using it in our forum. If we can't find it we'll bail out here.

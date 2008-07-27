@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.inc.php,v 1.76 2008-04-03 14:23:40 decoyduck Exp $ */
+/* $Id: edit.inc.php,v 1.77 2008-07-27 15:23:24 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -83,7 +83,7 @@ function post_add_edit_text($tid, $pid)
     $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}POST SET EDITED = NOW(), EDITED_BY = '$edit_uid' ";
     $sql.= "WHERE TID = '$tid' AND PID = '$pid'";
 
-    if (!$result = db_query($sql, $db_post_add_edit_text)) return false;
+    if (!db_query($sql, $db_post_add_edit_text)) return false;
 
     return true;
 }
@@ -102,18 +102,18 @@ function post_delete($tid, $pid)
         $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}THREAD ";
         $sql.= "SET POLL_FLAG = 'N' WHERE TID = '$tid'";
 
-        if (!$result = db_query($sql, $db_post_delete)) return false;
+        if (!db_query($sql, $db_post_delete)) return false;
     }
 
     $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}THREAD SET DELETED = 'Y' ";
     $sql.= "WHERE TID = '$tid' AND LENGTH = 1";
 
-    if (!$result = db_query($sql, $db_post_delete)) return false;
+    if (!db_query($sql, $db_post_delete)) return false;
 
     $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}POST_CONTENT SET CONTENT = NULL ";
     $sql.= "WHERE TID = '$tid' AND PID = '$pid'";
 
-    if (!$result = db_query($sql, $db_post_delete)) return false;
+    if (!db_query($sql, $db_post_delete)) return false;
 
     cache_remove("$tid.$pid");
 

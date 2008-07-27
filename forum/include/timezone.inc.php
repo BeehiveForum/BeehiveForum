@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: timezone.inc.php,v 1.9 2008-03-18 22:32:16 decoyduck Exp $ */
+/* $Id: timezone.inc.php,v 1.10 2008-07-27 15:23:26 decoyduck Exp $ */
 
 /**
 * timezone.inc.php - International Timezones with DST support
@@ -190,7 +190,7 @@ function timestamp_is_dst($timezoneid, $gmt_offset)
             break;
 
         case 23:    /*    Mid-Atlantic */
-            if (afterLastDayInMonth($cur_year, $cur_year, 3, "Sun", $gmt_offset) &&
+            if (afterLastDayInMonth($cur_year, $cur_year, 3, "Sun") &&
             beforeLastDayInMonth($cur_year, $cur_year, 9, "Sun", $gmt_offset))
                 return true;
             else
@@ -215,7 +215,7 @@ function timestamp_is_dst($timezoneid, $gmt_offset)
         case 58:    /*    Irkutsk, Ulaan Bataar */
         case 64:    /*    Yakutsk, Sibiria */
         case 71:    /*    Vladivostok */
-            if (afterLastDayInMonth($cur_year, $cur_year, 3, "Sun", $gmt_offset) &&
+            if (afterLastDayInMonth($cur_year, $cur_year, 3, "Sun") &&
             beforeLastDayInMonth($cur_year, $cur_year, 10, "Sun", $gmt_offset))
                 return true;
             else
@@ -223,7 +223,7 @@ function timestamp_is_dst($timezoneid, $gmt_offset)
             break;
 
         case 35:    /*    Cairo, Egypt */
-            if (afterLastDayInMonth($cur_year, $cur_year, 4, "Fri", $gmt_offset) &&
+            if (afterLastDayInMonth($cur_year, $cur_year, 4, "Fri") &&
             beforeLastDayInMonth($cur_year, $cur_year, 9, "Thu", $gmt_offset))
                 return true;
             else
@@ -243,7 +243,7 @@ function timestamp_is_dst($timezoneid, $gmt_offset)
                         calendar.  There are tools for converting between
                         Gregorian and Persian calendars at www.farsiweb.info.
                         This may be added at a later date for better accuracy */
-            if (afterLastDayInMonth($cur_year, $cur_year, 3, "Sun", $gmt_offset) &&
+            if (afterLastDayInMonth($cur_year, $cur_year, 3, "Sun") &&
             beforeLastDayInMonth($cur_year, $cur_year, 9, "Sun", $gmt_offset))
                 return true;
             else
@@ -269,7 +269,7 @@ function timestamp_is_dst($timezoneid, $gmt_offset)
 
         case 73:    /*    Auckland, Wellington */
             if (beforeFirstDayInMonth($cur_year, $cur_year, 4, "Sun", $gmt_offset) ||
-            afterLastDayInMonth($cur_year, $cur_year, 9, "Sun", $gmt_offset))
+            afterLastDayInMonth($cur_year, $cur_year, 9, "Sun"))
                 return true;
             else
                 return false;
@@ -331,7 +331,7 @@ function beforeLastDayInMonth($curYear, $year, $month, $day, $gmt_offset)
     return false;
 }
 
-function afterLastDayInMonth($curYear, $year, $month, $day, $gmt_offset)
+function afterLastDayInMonth($curYear, $year, $month, $day)
 {
     $days_in_month = getDaysInMonth($month);
 
@@ -452,8 +452,6 @@ function beforeSecondDayInMonth($curYear, $year, $month, $day, $gmt_offset)
 
 function beforeFirstDayInMonth($curYear, $year, $month, $day, $gmt_offset)
 {
-    $count = 0;
-
     for ($i = 1; $i < 7; $i++) {
 
         if (date("D", mktime(0, 0, 0, $month, $i)) == $day) {

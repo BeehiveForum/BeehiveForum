@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_post_approve.php,v 1.63 2008-07-27 10:53:26 decoyduck Exp $ */
+/* $Id: admin_post_approve.php,v 1.64 2008-07-27 15:23:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -224,14 +224,6 @@ if (isset($msg) && validate_msg($msg)) {
 
         $preview_message['CONTENT'] = message_get_content($tid, $pid);
 
-        if ((strlen(trim($preview_message['CONTENT'])) == 0) && !thread_is_poll($tid)) {
-
-            html_draw_top();
-            edit_refuse($tid, $pid);
-            html_draw_bottom();
-            exit;
-        }
-
         if (isset($_POST['approve']) && is_numeric($tid) && is_numeric($pid)) {
 
             if (post_approve($tid, $pid)) {
@@ -246,7 +238,7 @@ if (isset($msg) && validate_msg($msg)) {
                 }else {
 
                     html_draw_top();
-                    html_display_msg($lang['approvepost'], sprintf($lang['successfullyapprovedpost'], $msg), $ret, 'get', array('back' => $lang['back']), array('msg' => $msg), '_self', 'center');
+                    html_display_msg($lang['approvepost'], sprintf($lang['successfullyapprovedpost'], $msg), $ret, 'get', array('back' => $lang['back']), false, '_self', 'center');
                     html_draw_bottom();
                     exit;
                 }

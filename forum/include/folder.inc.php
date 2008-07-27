@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.146 2008-07-25 14:52:43 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.147 2008-07-27 15:23:24 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -43,11 +43,7 @@ function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $al
 {
     if (!$db_folder_draw_dropdown = db_connect()) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
-
     if (!$table_data = get_table_prefix()) return "";
-
-    $forum_fid = $table_data['FID'];
 
     if (!is_numeric($allowed_types)) return "";
 
@@ -63,7 +59,7 @@ function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $al
 
     if (db_num_rows($result) > 0) {
 
-        while($folder_order = db_fetch_array($result)) {
+        while (($folder_order = db_fetch_array($result))) {
 
             if (user_is_guest()) {
 
@@ -94,11 +90,7 @@ function folder_draw_dropdown_all($default_fid, $field_name="t_fid", $suffix="",
 {
     if (!$db_folder_draw_dropdown = db_connect()) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
-
     if (!$table_data = get_table_prefix()) return "";
-
-    $forum_fid = $table_data['FID'];
 
     $available_folders = array();
 
@@ -109,7 +101,7 @@ function folder_draw_dropdown_all($default_fid, $field_name="t_fid", $suffix="",
 
     if (db_num_rows($result) > 0) {
 
-        while($folder_data = db_fetch_array($result)) {
+        while (($folder_data = db_fetch_array($result))) {
 
             $available_folders[$folder_data['FID']] = _htmlentities($folder_data['TITLE']);
         }
@@ -172,8 +164,6 @@ function folder_create($title, $description = "", $prefix = "", $allowed_types =
     $title = db_escape_string($title);
     $description = db_escape_string($description);
     $prefix = db_escape_string($prefix);
-
-    $new_pos = 0;
 
     if (!is_numeric($allowed_types)) $allowed_types = FOLDER_ALLOW_ALL_THREAD;
     if (!is_numeric($permissions)) $permissions = 0;
@@ -385,7 +375,7 @@ function folder_get_all()
 
         $folder_list = array();
 
-        while ($folder_data = db_fetch_array($result)) {
+        while (($folder_data = db_fetch_array($result))) {
             $folder_list[$folder_data['FID']] = $folder_data;
         }
 
@@ -430,7 +420,7 @@ function folder_get_all_by_page($offset)
 
     if (db_num_rows($result) > 0) {
 
-        while ($folder_data = db_fetch_array($result)) {
+        while (($folder_data = db_fetch_array($result))) {
 
             $folder_array[$folder_data['FID']] = $folder_data;
             $fid_array[] = $folder_data['FID'];
@@ -455,8 +445,6 @@ function folders_get_thread_counts(&$folder_array, $fid_array)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $forum_fid = $table_data['FID'];
-
     $fid_list = implode(",", preg_grep("/^[0-9]+$/", $fid_array));
 
     if (!$db_folder_get_thread_count = db_connect()) return false;
@@ -466,9 +454,11 @@ function folders_get_thread_counts(&$folder_array, $fid_array)
 
     if (!$result = db_query($sql, $db_folder_get_thread_count)) return false;
 
-    while ($folder_data = db_fetch_array($result)) {
+    while (($folder_data = db_fetch_array($result))) {
         $folder_array[$folder_data['FID']]['THREAD_COUNT'] = $folder_data['THREAD_COUNT'];
     }
+    
+    return true;
 }
 
 function folder_get_thread_count($fid)
@@ -612,8 +602,6 @@ function folder_get_by_type_allowed($allowed_types = FOLDER_ALLOW_ALL_THREAD)
 {
     if (!$db_folder_get_by_type_allowed = db_connect()) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
-
     if (!is_numeric($allowed_types)) $allowed_types = FOLDER_ALLOW_ALL_THREAD;
 
     if (!$table_data = get_table_prefix()) return false;
@@ -627,7 +615,7 @@ function folder_get_by_type_allowed($allowed_types = FOLDER_ALLOW_ALL_THREAD)
 
         $allowed_folders = array();
 
-        while($folder_data = db_fetch_array($result)) {
+        while (($folder_data = db_fetch_array($result))) {
             $allowed_folders[] = $folder_data['FID'];
         }
 
@@ -654,7 +642,7 @@ function folder_move_up($fid)
 
     if (!$result = db_query($sql, $db_folder_move_up)) return false;
 
-    while ($folder_data = db_fetch_array($result)) {
+    while (($folder_data = db_fetch_array($result))) {
 
         $folder_order[] = $folder_data['FID'];
         $folder_position[$folder_data['FID']] = $folder_data['POSITION'];
@@ -706,7 +694,7 @@ function folder_move_down($fid)
 
     if (!$result = db_query($sql, $db_folder_move_down)) return false;
 
-    while ($folder_data = db_fetch_array($result)) {
+    while (($folder_data = db_fetch_array($result))) {
 
         $folder_order[] = $folder_data['FID'];
         $folder_position[$folder_data['FID']] = $folder_data['POSITION'];
@@ -746,7 +734,7 @@ function folder_positions_update()
 
     if (!$db_folder_positions_update = db_connect()) return false;
 
-    if (!$table_data = get_table_prefix()) return;
+    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT FID FROM {$table_data['PREFIX']}FOLDER ";
     $sql.= "ORDER BY POSITION";
@@ -762,9 +750,11 @@ function folder_positions_update()
             $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}FOLDER ";
             $sql.= "SET POSITION = '$new_position' WHERE FID = '$fid'";
 
-            if (!$result_update = db_query($sql, $db_folder_positions_update)) return false;
+            if (!db_query($sql, $db_folder_positions_update)) return false;
         }
     }
+    
+    return true;
 }
 
 function folders_get_user_subscriptions($interest_type = FOLDER_NOINTEREST, $offset = 0)
@@ -820,7 +810,7 @@ function folders_get_user_subscriptions($interest_type = FOLDER_NOINTEREST, $off
 
     if (db_num_rows($result) > 0) {
 
-        while ($folder_data_array = db_fetch_array($result)) {
+        while (($folder_data_array = db_fetch_array($result))) {
 
             $folder_subscriptions_array[] = $folder_data_array;
         }
@@ -892,7 +882,7 @@ function folders_search_user_subscriptions($folder_search, $interest_type = FOLD
 
     if (db_num_rows($result) > 0) {
 
-        while ($folder_data_array = db_fetch_array($result)) {
+        while (($folder_data_array = db_fetch_array($result))) {
 
             $folder_subscriptions_array[] = $folder_data_array;
         }

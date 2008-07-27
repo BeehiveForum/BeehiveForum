@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.114 2008-07-27 10:53:34 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.115 2008-07-27 15:23:25 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -143,7 +143,7 @@ function form_textarea($name, $value, $rows, $cols, $wrap = "virtual", $custom_h
         $html.= "cols=\"$cols\" ";
     }
 
-    $html.= "dir=\"{$lang['_textdir']}\">$value</textarea>";
+    $html.= "dir=\"{$lang['_textdir']}\" wrap=\"$wrap\">$value</textarea>";
     return $html;
 }
 
@@ -151,8 +151,6 @@ function form_textarea($name, $value, $rows, $cols, $wrap = "virtual", $custom_h
 
 function form_dropdown_array($name, $options_array, $default = false, $custom_html = false, $class = "bhselect", $group_class = "bhselectoptgroup")
 {
-    $lang = load_language_file();
-
     $id = form_unique_id();
 
     $html = "<select name=\"$name\" id=\"$id\" class=\"$class\" ";
@@ -233,6 +231,8 @@ function form_dropdown_objgroup_array($name, $options_array, $default = false, $
         $html.= "</optgroup>";
         return $html;
     }
+    
+    return false;
 }
 
 // Creates a checkbox field

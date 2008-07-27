@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_check_dependencies.php,v 1.22 2008-07-26 20:59:22 decoyduck Exp $ */
+/* $Id: bh_check_dependencies.php,v 1.23 2008-07-27 18:26:08 decoyduck Exp $ */
 
 // Callback function to escape array of strings.
 
@@ -44,7 +44,7 @@ $include_files_constants_array = array();
 // List of exceptions that we should ignore
 
 $ignore_functions_array = array();
-$ignore_constants_array = array('BH_INCLUDE_PATH', 'BEEHIVE_INSTALL_NOWARN', 'E_STRICT', 'BEEHIVE_LIGHT_INCLUDE', 'BEEHIVEMODE_LIGHT', 'BEEHIVEMODE_INSTALL', 'FILE_APPEND');
+$ignore_constants_array = array('BH_INCLUDE_PATH', 'BEEHIVE_INSTALL_NOWARN', 'E_STRICT', 'BEEHIVE_LIGHT_INCLUDE', 'BEEHIVEMODE_LIGHT');
 
 // Path to source files.
 
@@ -54,7 +54,7 @@ echo "Getting list of functions...\n";
 
 foreach($source_files_dir_array as $include_file_dir) {
 
-    if (($dir = opendir($include_file_dir))) {
+    if ($dir = opendir($include_file_dir)) {
 
         while (($file = readdir($dir)) !== false) {
 
@@ -68,9 +68,7 @@ foreach($source_files_dir_array as $include_file_dir) {
                 $ignore_functions = implode("|", array_map('preg_quote_callback', $ignore_functions_array));
                 $ignore_constants = implode("|", array_map('preg_quote_callback', $ignore_constants_array));
 
-                $function_matches = array();
-
-                if (preg_match_all('/function\s([a-z1-9-_]+)[\s]?\(/i', $source_file_contents, $function_matches)) {
+                if (preg_match_all("/function\s([a-z1-9-_]+)[\s]?\(/i", $source_file_contents, $function_matches)) {
 
                     if (!isset($include_files_functions_array[$file])) {
 
@@ -98,9 +96,7 @@ foreach($source_files_dir_array as $include_file_dir) {
                     }
                 }
 
-                $constant_matches = array();
-
-                if (preg_match_all('/define[\s]?\(["|\']?([a-z1-9-_]+)/i', $source_file_contents, $constant_matches)) {
+                if (preg_match_all("/define[\s]?\([\"|']?([a-z1-9-_]+)/i", $source_file_contents, $constant_matches)) {
 
                     if (!isset($include_files_constants_array[$file])) {
 
@@ -155,10 +151,9 @@ foreach($source_files_array as $source_file) {
 
             if (preg_match("/$include_file_line_preg/", $source_file_contents) < 1) {
 
-                $function_names_preg = implode('\s?\(|[\s|\.|,]+', array_map('preg_quote_callback', $function_names_array));
-                $function_names_preg = sprintf('/[\s]\.|,]%s\s?\(/', $function_names_preg);
+                $function_names_preg = implode("\s?\(|[\s|\.|,]+", array_map('preg_quote_callback', $function_names_array));
 
-                if (preg_match($function_names_preg, $source_file_contents) > 0) {
+                if (preg_match("/[\s|\.|,]{$function_names_preg}\s?\(/", $source_file_contents) > 0) {
 
                     if (!isset($include_files_required_array[$include_file])) {
 
@@ -183,15 +178,14 @@ foreach($source_files_array as $source_file) {
             if (preg_match("/$include_file_line_preg/", $source_file_contents) < 1) {
 
                 $constant_names_preg = implode("|", array_map('preg_quote_callback', $constant_names_array));
-                $constant_names_preg = sprintf("/%s/", $constant_names_preg);
 
-                if (preg_match($constant_names_preg, $source_file_contents) > 0) {
+                if (preg_match("/{$constant_names_preg}/", $source_file_contents) > 0) {
 
                     if (!isset($include_files_required_array[$include_file])) {
 
                         $include_files_required_array[] = $include_file_line;
 
-                    }elseif (!in_array($include_file, $include_files_required_array)) {
+                    }elseif (!in_array($function_name, $include_files_required_array[$include_file])) {
 
                         $include_files_required_array[] = $include_file_line;
                     }

@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forums.php,v 1.94 2008-07-27 10:53:28 decoyduck Exp $ */
+/* $Id: forums.php,v 1.95 2008-07-27 18:26:10 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -63,8 +63,6 @@ include_once(BH_INCLUDE_PATH. "myforums.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
-
-// Intitalise a few variables
 
 // Load the user session
 
@@ -126,6 +124,81 @@ if (!forums_any_favourites() || user_is_guest()) {
     $view_type = FORUMS_SHOW_FAVS;
 }
 
+// Webtag search
+
+if (isset($_POST['webtag_search']) && strlen(trim(_stripslashes($_POST['webtag_search']))) > 0) {
+
+    $webtag_search = trim(_stripslashes($_POST['webtag_search']));
+    $search_page = 1; $start_search = 0;
+
+}elseif (isset($_GET['webtag_search']) && strlen(trim(_stripslashes($_GET['webtag_search']))) > 0) {
+
+    $webtag_search = trim(_stripslashes($_GET['webtag_search']));
+
+}else {
+
+    $webtag_search = "";
+}
+
+if (isset($_POST['clear_search'])) {
+    $webtag_search = "";
+}
+
+// Handle changing the view type. If a Guest tries to change
+// the view type we show them the Guest Error messages.
+
+if (isset($_POST['change_view'])) {
+
+    if (isset($_POST['view_type']) && is_numeric($_POST['view_type'])) {
+
+        $webtag_search = "";
+
+        $view_type = $_POST['view_type'];
+
+        if (user_is_guest() && $view_type != FORUMS_SHOW_ALL) {
+
+            html_guest_error();
+            exit;
+        }
+
+        if (!in_array($view_type, $available_forum_views)) {
+
+            $view_type = FORUMS_SHOW_FAVS;
+        }
+    }
+
+}elseif (!isset($_POST['search'])) {
+
+    if (isset($_POST['view_type']) && is_numeric($_POST['view_type'])) {
+
+        if (!user_is_guest()) {
+
+            $webtag_search = "";
+
+            $view_type = $_POST['view_type'];
+
+            if (!in_array($view_type, $available_forum_views)) {
+
+                $view_type = FORUMS_SHOW_FAVS;
+            }
+        }
+
+    }elseif (isset($_GET['view_type']) && is_numeric($_GET['view_type'])) {
+
+        if (!user_is_guest()) {
+
+            $webtag_search = "";
+
+            $view_type = $_GET['view_type'];
+
+            if (!in_array($view_type, $available_forum_views)) {
+
+                $view_type = FORUMS_SHOW_FAVS;
+            }
+        }
+    }
+}
+
 // Page numbers
 
 if (isset($_GET['main_page']) && is_numeric($_GET['main_page'])) {
@@ -150,93 +223,16 @@ if (isset($_GET['search_page']) && is_numeric($_GET['search_page'])) {
     $start_search = 0;
 }
 
-// Webtag search
-
-if (isset($_POST['search']) && strlen(trim(_stripslashes($_POST['search']))) > 0) {
-    $search = trim(_stripslashes($_POST['search']));
-    $search_page = 1; $start_search = 0;
-}else {
-    $search = "";
-}
-
-if (isset($_POST['clear_search'])) {
-    $search = '';
-}
-
-// Handle changing the view type. If a Guest tries to change
-// the view type we show them the Guest Error messages.
-
-if (isset($_POST['change_view'])) {
-
-    if (isset($_POST['view_type']) && is_numeric($_POST['view_type'])) {
-
-        $search = "";
-
-        $view_type = $_POST['view_type'];
-
-        if (user_is_guest() && $view_type != FORUMS_SHOW_ALL) {
-
-            html_guest_error();
-            exit;
-        }
-
-        if (!in_array($view_type, $available_forum_views)) {
-
-            $view_type = FORUMS_SHOW_FAVS;
-        }
-    }
-
-}elseif (!isset($_POST['search'])) {
-
-    if (isset($_POST['view_type']) && is_numeric($_POST['view_type'])) {
-
-        if (!user_is_guest()) {
-
-            $search = "";
-
-            $view_type = $_POST['view_type'];
-
-            if (!in_array($view_type, $available_forum_views)) {
-
-                $view_type = FORUMS_SHOW_FAVS;
-            }
-        }
-
-    }elseif (isset($_GET['view_type']) && is_numeric($_GET['view_type'])) {
-
-        if (!user_is_guest()) {
-
-            $search = "";
-
-            $view_type = $_GET['view_type'];
-
-            if (!in_array($view_type, $available_forum_views)) {
-
-                $view_type = FORUMS_SHOW_FAVS;
-            }
-        }
-    }
-}
-
 // Are we being redirected somewhere?
 
 if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri']))) > 0) {
-    $final_uri = basename(trim(_stripslashes($_GET['final_uri'])));
-}else if (isset($_POST['final_uri']) && strlen(trim(_stripslashes($_POST['final_uri']))) > 0) {
-    $final_uri = basename(trim(_stripslashes($_POST['final_uri'])));
-}else {
-    $final_uri = "";
-}
-
-// Validate the final URI
-
-if (isset($final_uri) && strlen($final_uri) > 0) {
 
     $available_files = get_available_files();
     $available_files_preg = implode("|^", array_map('preg_quote_callback', $available_files));
 
-    if (preg_match("/^$available_files_preg/", $final_uri) > 0) {
+    if (preg_match("/^$available_files_preg/", basename(trim(_stripslashes($_GET['final_uri'])))) > 0) {
 
+        $final_uri = basename(trim(_stripslashes($_GET['final_uri'])));
         $final_uri = href_cleanup_query_keys($final_uri, 'webtag');
     }
 }
@@ -255,8 +251,8 @@ if (isset($_POST['add_fav']) && is_array($_POST['add_fav'])) {
 
     if (user_set_forum_interest($forum_fid_add_fav, FORUM_FAVOURITE)) {
 
-        $search = rawurlencode($search);
-        header_redirect("forums.php?final_uri=$final_uri&view_type=$view_type&main_page=$main_page&search_page=$search_page&search=$search&added=true");
+        $webtag_search = rawurlencode($webtag_search);
+        header_redirect("forums.php?webtag=$webtag&final_uri=$final_uri&view_type=$view_type&main_page=$main_page&search_page=$search_page&webtag_error&added=true");
         exit;
 
     }else {
@@ -277,8 +273,8 @@ if (isset($_POST['add_fav']) && is_array($_POST['add_fav'])) {
 
     if (user_set_forum_interest($forum_fid_rev_fav, FORUM_NOINTEREST)) {
 
-        $search = rawurlencode($search);
-        header_redirect("forums.php?final_uri=$final_uri&view_type=$view_type&main_page=$main_page&search_page=$search_page&search=$search&removed=true");
+        $webtag_search = rawurlencode($webtag_search);
+        header_redirect("forums.php?webtag=$webtag&final_uri=$final_uri&view_type=$view_type&main_page=$main_page&search_page=$search_page&webtag_error&removed=true");
         exit;
 
     }else {
@@ -299,8 +295,8 @@ if (isset($_POST['add_fav']) && is_array($_POST['add_fav'])) {
 
     if (user_set_forum_interest($forum_fid_ignore, FORUM_IGNORED)) {
 
-        $search = rawurlencode($search);
-        header_redirect("forums.php?final_uri=$final_uri&view_type=$view_type&main_page=$main_page&search_page=$search_page&search=$search&ignored=true");
+        $webtag_search = rawurlencode($webtag_search);
+        header_redirect("forums.php?webtag=$webtag&final_uri=$final_uri&view_type=$view_type&main_page=$main_page&search_page=$search_page&webtag_error&ignored=true");
         exit;
 
     }else {
@@ -321,8 +317,8 @@ if (isset($_POST['add_fav']) && is_array($_POST['add_fav'])) {
 
     if (user_set_forum_interest($forum_fid_unignore, FORUM_NOINTEREST)) {
 
-        $search = rawurlencode($search);
-        header_redirect("forums.php?final_uri=$final_uri&view_type=$view_type&main_page=$main_page&search_page=$search_page&search=$search&unignored=true");
+        $webtag_search = rawurlencode($webtag_search);
+        header_redirect("forums.php?webtag=$webtag&final_uri=$final_uri&view_type=$view_type&main_page=$main_page&search_page=$search_page&webtag_error&unignored=true");
         exit;
 
     }else {
@@ -334,11 +330,11 @@ if (isset($_POST['add_fav']) && is_array($_POST['add_fav'])) {
 
 if (!user_is_guest()) {
 
-    if (isset($search) && strlen($search) > 0) {
+    if (isset($webtag_search) && strlen($webtag_search) > 0) {
 
         echo "<h1>{$lang['myforums']} &raquo; {$lang['searchresults']}</h1>\n";
 
-        $forums_array = forum_search($search, $start_search);
+        $forums_array = forum_search($webtag_search, $start_search);
 
         if (isset($forums_array['forums_array']) && sizeof($forums_array['forums_array']) < 1) {
             html_display_error_msg($lang['foundzeromatches'], '70%', 'center');
@@ -351,9 +347,8 @@ if (!user_is_guest()) {
         echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
         echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
         echo "  ", form_input_hidden("search_page", _htmlentities($search_page)), "\n";
-        echo "  ", form_input_hidden("search", _htmlentities($search)), "\n";
+        echo "  ", form_input_hidden("webtag_search", _htmlentities($webtag_search)), "\n";
         echo "  ", form_input_hidden("view_type", _htmlentities($view_type)), "\n";
-        echo "  ", form_input_hidden("final_uri", _htmlentities($final_uri)), "\n";
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"70%\">\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\">\n";
@@ -466,7 +461,7 @@ if (!user_is_guest()) {
         echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
         echo "          <tr>\n";
         echo "            <td align=\"left\" width=\"33%\">&nbsp;</td>\n";
-        echo "            <td class=\"postbody\" align=\"center\" width=\"33%\" nowrap=\"nowrap\">", page_links("forums.php?final_uri=$final_uri&view_type=$view_type&search=$search&main_page=$main_page&search_page=$search_page", $start_search, $forums_array['forums_count'], 10, 'search_page'), "</td>\n";
+        echo "            <td class=\"postbody\" align=\"center\" width=\"33%\" nowrap=\"nowrap\">", page_links("forums.php?webtag=$webtag&view_type=$view_type&webtag_error&main_page=$main_page&search_page=$search_page", $start_search, $forums_array['forums_count'], 10, 'search_page'), "</td>\n";
         echo "            <td align=\"right\" width=\"33%\" nowrap=\"nowrap\">{$lang['view']}:&nbsp;", form_dropdown_array('view_type', $forum_search_header_array, FORUMS_SHOW_SEARCH, "onchange=\"submit()\""), "&nbsp;", form_submit('change_view', $lang['go']), "</td>\n";
         echo "          </tr>\n";
         echo "        </table>\n";
@@ -488,7 +483,7 @@ if (!user_is_guest()) {
 
         if (isset($_GET['webtag_error'])) {
 
-            html_display_error_msg($lang['invalidforumwebtagorforumnotfound'], '70%', 'center');
+            html_display_error_msg($lang['invalidforumidorforumnotfound'], '70%', 'center');
 
         }else if (isset($_GET['added'])) {
 
@@ -524,8 +519,7 @@ if (!user_is_guest()) {
         echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
         echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
         echo "  ", form_input_hidden("search_page", _htmlentities($search_page)), "\n";
-        echo "  ", form_input_hidden("search", _htmlentities($search)), "\n";
-        echo "  ", form_input_hidden("final_uri", _htmlentities($final_uri)), "\n";
+        echo "  ", form_input_hidden("webtag_search", _htmlentities($webtag_search)), "\n";
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"70%\">\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\">\n";
@@ -643,7 +637,7 @@ if (!user_is_guest()) {
         echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
         echo "          <tr>\n";
         echo "            <td class=\"postbody\">&nbsp;</td>\n";
-        echo "            <td class=\"postbody\" align=\"center\" width=\"33%\" nowrap=\"nowrap\">", page_links("forums.php?final_uri=$final_uri&view_type=$view_type&search=$search&main_page=$main_page&search_page=$search_page", $start_main, $forums_array['forums_count'], 10, 'main_page'), "</td>\n";
+        echo "            <td class=\"postbody\" align=\"center\" width=\"33%\" nowrap=\"nowrap\">", page_links("forums.php?webtag=$webtag&view_type=$view_type&webtag_error&main_page=$main_page&search_page=$search_page", $start_main, $forums_array['forums_count'], 10, 'main_page'), "</td>\n";
         echo "            <td align=\"right\" width=\"33%\" nowrap=\"nowrap\">{$lang['view']}:&nbsp;", form_dropdown_array('view_type', $forum_header_array, $view_type, "onchange=\"submit()\""), "&nbsp;", form_submit('change_view', $lang['go']), "</td>\n";
         echo "          </tr>\n";
         echo "        </table>\n";
@@ -664,7 +658,6 @@ if (!user_is_guest()) {
     echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
     echo "  ", form_input_hidden("search_page", _htmlentities($search_page)), "\n";
     echo "  ", form_input_hidden("view_type", _htmlentities($view_type)), "\n";
-    echo "  ", form_input_hidden("final_uri", _htmlentities($final_uri)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"70%\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
@@ -679,7 +672,7 @@ if (!user_is_guest()) {
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td class=\"posthead\" align=\"left\">{$lang['forumname']}: ", form_input_text("search", (isset($search) ? _htmlentities($search) : ""), 30, 64), " ", form_submit('search', $lang['search']), " ", form_submit('clear_search', $lang['clear']), "</td>\n";
+    echo "                        <td class=\"posthead\" align=\"left\">{$lang['forumname']}: ", form_input_text("webtag_search", (isset($webtag_search) ? _htmlentities($webtag_search) : ""), 30, 64), " ", form_submit('search', $lang['search']), " ", form_submit('clear_search', $lang['clear']), "</td>\n";
     echo "                      </tr>\n";
     echo "                    </table>\n";
     echo "                  </td>\n";
@@ -712,8 +705,7 @@ if (!user_is_guest()) {
     echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
     echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
     echo "  ", form_input_hidden("search_page", _htmlentities($search_page)), "\n";
-    echo "  ", form_input_hidden("search", _htmlentities($search)), "\n";
-    echo "  ", form_input_hidden("final_uri", _htmlentities($final_uri)), "\n";
+    echo "  ", form_input_hidden("webtag_search", _htmlentities($webtag_search)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"70%\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
@@ -774,7 +766,7 @@ if (!user_is_guest()) {
     echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
     echo "          <tr>\n";
     echo "            <td class=\"postbody\">&nbsp;</td>\n";
-    echo "            <td class=\"postbody\" align=\"center\" width=\"33%\" nowrap=\"nowrap\">", page_links("forums.php?final_uri=$final_uri&view_type=$view_type&search=$search&main_page=$main_page&search_page=$search_page", $start_main, $forums_array['forums_count'], 10, 'main_page'), "</td>\n";
+    echo "            <td class=\"postbody\" align=\"center\" width=\"33%\" nowrap=\"nowrap\">", page_links("forums.php?webtag=$webtag&view_type=$view_type&webtag_error&main_page=$main_page&search_page=$search_page", $start_main, $forums_array['forums_count'], 10, 'main_page'), "</td>\n";
     echo "            <td align=\"right\" width=\"33%\" nowrap=\"nowrap\">{$lang['view']}:&nbsp;", form_dropdown_array('view_type', $forum_header_array, $view_type), "&nbsp;", form_submit('change_view', $lang['go']), "</td>\n";
     echo "          </tr>\n";
     echo "        </table>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads_rss.php,v 1.61 2008-07-27 10:53:33 decoyduck Exp $ */
+/* $Id: threads_rss.php,v 1.62 2008-07-27 18:26:11 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -134,14 +134,6 @@ if (isset($_GET['sort_created']) && $_GET['sort_created'] == 'Y') {
     $sort_created = 'N';
 }
 
-// Intitalise a few variables
-
-// Arrays to hold the logon data
-
-$username_array = array();
-$password_array = array();
-$passhash_array = array();
-
 // Check we have a webtag
 
 if (!$webtag = get_webtag()) {
@@ -164,7 +156,7 @@ if (!$user_sess = bh_session_check(false)) {
                 $username = strtoupper($username_array[0]);
                 $passhash = $passhash_array[0];
 
-                if (($uid = user_logon($username, $passhash))) {
+                if ($uid = user_logon($username, $passhash)) {
 
                     bh_session_init($uid);
                     header_redirect("threads_rss.php?webtag=$webtag&fid=$fid&limit=$limit&sort_created=$sort_created");
@@ -214,7 +206,7 @@ echo "<generator>Project Beehive Forum - www.beehiveforum.net</generator>\n";
 
 // Get the 20 most recent threads
 
-if (($threads_array = threads_get_most_recent($limit, $folder_list_array, ($sort_created == 'Y')))) {
+if ($threads_array = threads_get_most_recent($limit, $folder_list_array, ($sort_created == 'Y'))) {
 
     foreach ($threads_array as $thread) {
 

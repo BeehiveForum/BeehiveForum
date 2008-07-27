@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_find_undefined_language_strings.php,v 1.5 2008-07-26 20:59:22 decoyduck Exp $ */
+/* $Id: bh_find_undefined_language_strings.php,v 1.6 2008-07-27 18:26:08 decoyduck Exp $ */
 
 // Array of files to exclude from the matches
 
@@ -31,12 +31,7 @@ $exclude_files_array = array('de.inc.php', 'en.inc.php', 'fr-ca.inc.php', 'x-hac
 
 function load_language_file($filename)
 {
-    $lang = array();
-
-    $filename = preg_replace('/[^a-z0-9-_\.]/i', '', basename($filename));
-
-    include("forum/include/languages/$filename");
-
+    include("./forum/include/languages/$filename");
     return $lang;
 }
 
@@ -48,7 +43,7 @@ function get_file_list(&$file_list_array, $path, $extension)
 
     if (!is_array($file_list_array)) $file_list_array = array();
 
-    if (($dir_handle = opendir($path))) {
+    if ($dir_handle = opendir($path)) {
 
         while(($file_name = readdir($dir_handle)) !== false) {
 
@@ -65,8 +60,6 @@ function get_file_list(&$file_list_array, $path, $extension)
             }
         }
     }
-    
-    return sizeof($file_list_array) > 0;
 }
 
 // Get the file list
@@ -75,7 +68,7 @@ get_file_list($file_list, 'forum', '.php');
 
 // Load English language file
 
-if (($lang = load_language_file('en.inc.php'))) {
+if ($lang = load_language_file('en.inc.php')) {
 
     // Check through each file individually.
 
@@ -83,13 +76,11 @@ if (($lang = load_language_file('en.inc.php'))) {
 
         // Load File Contents
 
-        if ((@$php_file_contents = file_get_contents($php_file))) {
+        if (@$php_file_contents = file_get_contents($php_file)) {
 
             // Look for language string usage.
-            
-        	$lang_matches = array();
 
-            if (preg_match_all('/\\\$lang\[\'([^\']+)\'\]/i', $php_file_contents, $lang_matches) > 0) {
+            if (preg_match_all("/\\\$lang\['([^']+)'\]/i", $php_file_contents, $lang_matches) > 0) {
 
                 // Only want one of each found matches.
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.355 2008-07-27 10:53:37 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.356 2008-07-27 18:26:17 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -88,7 +88,7 @@ function user_create($logon, $password, $nickname, $email)
     $email     = db_escape_string($email);
     $md5pass   = md5($password);
 
-    if (($http_referer = bh_session_get_value('REFERER'))) {
+    if ($http_referer = bh_session_get_value('REFERER')) {
         $http_referer = db_escape_string($http_referer);
     }else {
         $http_referer = "";
@@ -101,7 +101,7 @@ function user_create($logon, $password, $nickname, $email)
     $sql.= "'$md5pass', '$nickname', '$email', NOW(), ";
     $sql.= "'$http_referer', '$ipaddress')";
 
-    if (($result = db_query($sql, $db_user_create))) {
+    if ($result = db_query($sql, $db_user_create)) {
 
         $new_uid = db_insert_id($db_user_create);
         return $new_uid;
@@ -623,7 +623,7 @@ function user_get_prefs($uid)
 
     // 3. The user's per-forum prefs, in {webtag}_USER_PREFS (not all prefs are set here e.g. name):
 
-    if (($table_data = get_table_prefix())) {
+    if ($table_data = get_table_prefix()) {
 
         $sql = "SELECT HOMEPAGE_URL, PIC_URL, PIC_AID, AVATAR_URL, AVATAR_AID, EMAIL_NOTIFY, ";
         $sql.= "MARK_AS_OF_INT, POSTS_PER_PAGE, FONT_SIZE, STYLE, VIEW_SIGS, START_PAGE, ";
@@ -906,7 +906,7 @@ function user_check_pref($name, $value)
     } elseif ($name ==  "DOB") {
         return preg_match("/^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$/", $value);
     } elseif ($name == "HOMEPAGE_URL" || $name == "PIC_URL" || $name == "AVATAR_URL") {
-        return (preg_match('/^http:\/\/[_\.0-9a-z\-~]*/i', $value) || $value == "");
+        return (preg_match("/^http:\/\/[_\.0-9a-z\-~]*/i", $value) || $value == "");
     } elseif ($name == "EMAIL_NOTIFY" || $name == "DL_SAVING" || $name == "MARK_AS_OF_INT" || $name == "VIEW_SIGS" || $name == "PM_NOTIFY" || $name == "PM_NOTIFY_EMAIL" || $name == "PM_INCLUDE_REPLY" || $name == "PM_SAVE_SENT_ITEM" || $name == "PM_EXPORT_ATTACHMENTS" || $name == "PM_EXPORT_STYLE" || $name == "PM_EXPORT_WORDFILTER" || $name == "IMAGES_TO_LINKS" || $name == "SHOW_STATS" || $name == "USE_WORD_FILTER" || $name == "USE_ADMIN_FILTER" || $name == "ALLOW_EMAIL" || $name == "ALLOW_PM" || $name == "ENABLE_WIKI_WORDS" || $name == "USE_MOVER_SPOILER" || $name == "USE_LIGHT_MODE_SPOILER" || $name == "USE_OVERFLOW_RESIZE" || $name == "REPLY_QUICK") {
         return ($value == "Y" || $value == "N") ? true : false;
     } elseif ($name == "PIC_AID" || $name == "AVATAR_AID") {
@@ -1685,7 +1685,7 @@ function user_prefs_prep_attachments($image_attachments_array)
 
     foreach ($image_attachments_array as $hash => $attachment_details) {
 
-        if (($image_info = getimagesize("$attachment_dir/$hash"))) {
+        if ($image_info = getimagesize("$attachment_dir/$hash")) {
 
             $dimensions_text = "{$lang['dimensions']}: {$image_info[0]}x{$image_info[1]}px";
             $attachments_array_prepared[$hash] = "{$attachment_details['filename']}, $dimensions_text";

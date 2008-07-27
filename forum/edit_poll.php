@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.163 2008-07-27 10:53:28 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.164 2008-07-27 18:26:09 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -68,8 +68,6 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "thread.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
-
-// Intitalise a few variables
 
 // Check we're logged in correctly
 
@@ -271,14 +269,14 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
 
         $poll_answers_valid = true;
 
-        if (($allow_html == true && isset($t_post_html) && $t_post_html == 'Y')) {
+        if ($allow_html == true && isset($t_post_html) && $t_post_html == 'Y') {
 
             foreach($t_answers_array as $key => $t_poll_answer) {
 
                 $t_poll_check_html = new MessageText(POST_HTML_ENABLED, $t_poll_answer);
                 $t_answers_array[$key] = $t_poll_check_html->getContent();
 
-                if (($poll_answers_valid == true && strlen(trim($t_answers_array[$key])) < 1)) {
+                if ($poll_answers_valid == true && strlen(trim($t_answers_array[$key])) < 1) {
 
                     $t_answers_array[$key] = $t_poll_check_html->getOriginalContent();
 
@@ -401,7 +399,7 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
         $valid = false;
     }
 
-    if (($valid && $t_poll_type == POLL_TABLE_GRAPH && sizeof(array_unique($t_answer_groups)) <> 2)) {
+    if ($valid && $t_poll_type == POLL_TABLE_GRAPH && sizeof(array_unique($t_answer_groups)) <> 2) {
 
         $error_msg_array[] = $lang['tablepollmusthave2groups'];
         $valid = false;
@@ -523,7 +521,7 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
     // Poll answers and groups. If HTML is disabled we need to pass
     // the answers through _htmlentities.
 
-    if (($allow_html == false || !isset($t_post_html) || $t_post_html == 'N')) {
+    if ($allow_html == false || !isset($t_post_html) || $t_post_html == 'N') {
         $poll_preview_answers_array = _htmlentities($t_answers_array);
     }else {
         $poll_preview_answers_array = $t_answers_array;
@@ -631,7 +629,7 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
 
     $t_answers_array_html = POST_HTML_DISABLED;
 
-    if (($allow_html == true && isset($t_post_html) && $t_post_html == 'Y')) {
+    if ($allow_html == true && isset($t_post_html) && $t_post_html == 'Y') {
         $t_answers_array_html = POST_HTML_ENABLED;
     }
 
@@ -664,7 +662,7 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
 
     $hard_edit = false;
 
-    if (($t_answers_array != $poll_results['OPTION_NAME'] || $t_answer_groups != $poll_results['GROUP_ID'] || ($poll_data['POLLTYPE'] <> POLL_TABLE_GRAPH && $t_poll_type == POLL_TABLE_GRAPH) || ($t_poll_vote_type == POLL_VOTE_PUBLIC && $poll_data['VOTETYPE'] == POLL_VOTE_ANON))) {
+    if ($t_answers_array != $poll_results['OPTION_NAME'] || $t_answer_groups != $poll_results['GROUP_ID'] || ($poll_data['POLLTYPE'] <> POLL_TABLE_GRAPH && $t_poll_type == POLL_TABLE_GRAPH) || ($t_poll_vote_type == POLL_VOTE_PUBLIC && $poll_data['VOTETYPE'] == POLL_VOTE_ANON)) {
 
         $hard_edit = true;
     }

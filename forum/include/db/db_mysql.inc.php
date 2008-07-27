@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db_mysql.inc.php,v 1.50 2008-07-25 16:47:28 decoyduck Exp $ */
+/* $Id: db_mysql.inc.php,v 1.51 2008-07-27 18:26:17 decoyduck Exp $ */
 
 function db_get_connection_vars(&$db_server, &$db_username, &$db_password, &$db_database)
 {
@@ -39,7 +39,7 @@ function db_connect($trigger_error = true)
 
     if (!$connection_id) {
 
-        if (($connection_id = @mysql_connect($db_server, $db_username, $db_password))) {
+        if ($connection_id = @mysql_connect($db_server, $db_username, $db_password)) {
 
             if (@mysql_select_db($db_database, $connection_id)) {
 
@@ -59,27 +59,23 @@ function db_connect($trigger_error = true)
 function db_enable_compat_mode($connection_id)
 {
     $mysql_big_selects = isset($GLOBALS['mysql_big_selects']) ? $GLOBALS['mysql_big_selects'] : false;
-    
-    $mysql_version = 0;
 
     if (db_fetch_mysql_version($mysql_version)) {
 
         if ($mysql_version >= 40100) {
 
             $sql = "SET SESSION SQL_MODE = ''";
-            if (!db_query($sql, $connection_id)) return false;
+            if (!$result = db_query($sql, $connection_id)) return false;
         }
     }
 
     if (isset($mysql_big_selects) && $mysql_big_selects === true) {
 
         $sql = "SET SESSION SQL_BIG_SELECTS = 1";
-
-        if (!db_query($sql, $connection_id)) return false;
+        if (!$result = db_query($sql, $connection_id)) return false;
 
         $sql = "SET SESSION SQL_MAX_JOIN_SIZE = DEFAULT";
-
-        if (!db_query($sql, $connection_id)) return false;
+        if (!$result = db_query($sql, $connection_id)) return false;
     }
 
     return true;
@@ -87,22 +83,18 @@ function db_enable_compat_mode($connection_id)
 
 function db_query($sql, $connection_id, $trigger_error = true)
 {
-    if (($result = @mysql_query($sql, $connection_id))) {
+    if ($result = @mysql_query($sql, $connection_id)) {
         return $result;
     }
 
-    if ($trigger_error === true) {
-    	db_trigger_error($sql, $connection_id);
-    }
-    
-    return false;
+    if ($trigger_error === true) db_trigger_error($sql, $connection_id);
 }
 
 function db_unbuffered_query($sql, $connection_id, $trigger_error = true)
 {
     if (function_exists("mysql_unbuffered_query")) {
 
-        if (($result = @mysql_unbuffered_query($sql, $connection_id))) {
+        if ($result = @mysql_unbuffered_query($sql, $connection_id)) {
             return $result;
         }
 
@@ -123,7 +115,7 @@ function db_data_seek($result, $offset)
 
 function db_num_rows($result)
 {
-    if (($num_rows = @mysql_num_rows($result))) {
+    if ($num_rows = @mysql_num_rows($result)) {
         return $num_rows;
     }
 
@@ -132,7 +124,7 @@ function db_num_rows($result)
 
 function db_affected_rows($connection_id)
 {
-    if (($affected_rows = @mysql_affected_rows($connection_id))) {
+    if ($affected_rows = @mysql_affected_rows($connection_id)) {
         return $affected_rows;
     }
 
@@ -141,7 +133,7 @@ function db_affected_rows($connection_id)
 
 function db_fetch_array($result, $result_type = DB_RESULT_BOTH)
 {
-    if (($result_array = @mysql_fetch_array($result, $result_type))) {
+    if ($result_array = @mysql_fetch_array($result, $result_type)) {
         return $result_array;
     }
 
@@ -150,7 +142,7 @@ function db_fetch_array($result, $result_type = DB_RESULT_BOTH)
 
 function db_insert_id($connection_id)
 {
-    if (($insert_id = @mysql_insert_id($connection_id))) {
+    if ($insert_id = @mysql_insert_id($connection_id)) {
         return $insert_id;
     }
 
@@ -161,7 +153,7 @@ function db_trigger_error($sql, $connection_id)
 {
     if (error_reporting()) {
 
-        if (!db_query($sql, $connection_id, false)) {
+        if (!$result = db_query($sql, $connection_id, false)) {
 
             $errno  = db_errno($connection_id);
             $errstr = db_error($connection_id);
@@ -175,13 +167,13 @@ function db_error($connection_id = false)
 {
     if ($connection_id !== false) {
 
-        if (($errstr = @mysql_error($connection_id))) {
+        if ($errstr = @mysql_error($connection_id)) {
             return $errstr;
         }
 
     }else {
 
-        if (($errstr = @mysql_error())) {
+        if ($errstr = @mysql_error()) {
             return $errstr;
         }
     }
@@ -193,13 +185,13 @@ function db_errno($connection_id = false)
 {
     if ($connection_id !== false) {
 
-        if (($errno = @mysql_errno($connection_id))) {
+        if ($errno = @mysql_errno($connection_id)) {
             return $errno;
         }
 
     }else {
 
-        if (($errno = @mysql_errno())) {
+        if ($errno = @mysql_errno()) {
             return $errno;
         }
     }
@@ -209,7 +201,7 @@ function db_errno($connection_id = false)
 
 function db_fetch_mysql_version(&$mysql_version)
 {
-    if (($db_fetch_mysql_version = db_connect(false))) {
+    if ($db_fetch_mysql_version = db_connect(false)) {
 
         $sql = "SELECT VERSION() AS version";
         $result = db_query($sql, $db_fetch_mysql_version);
@@ -247,7 +239,7 @@ function db_fetch_mysql_version(&$mysql_version)
 function db_escape_string($str)
 {
     if (function_exists('mysql_real_escape_string')) {
-        if (($db_escape_string = db_connect())) {
+        if ($db_escape_string = db_connect()) {
             return @mysql_real_escape_string($str, $db_escape_string);
         }
     }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.320 2008-07-27 15:23:25 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.321 2008-07-27 18:26:15 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -60,6 +60,8 @@ function get_forum_data()
 
     if (!$db_get_forum_data = db_connect()) return false;
 
+    if (($uid = bh_session_get_value('UID')) === false) return false;
+
     if (isset($_GET['webtag']) && strlen(trim(_stripslashes($_GET['webtag']))) > 0) {
         $webtag = trim(_stripslashes($_GET['webtag']));
     }elseif (isset($_POST['webtag']) && strlen(trim(_stripslashes($_POST['webtag']))) > 0) {
@@ -68,7 +70,7 @@ function get_forum_data()
 
     if (!is_array($forum_data) || !isset($forum_data['WEBTAG']) || !isset($forum_data['PREFIX'])) {
 
-        if (isset($webtag) && strlen(trim($webtag)) > 0) {
+        if (isset($webtag)) {
 
             if (preg_match("/^[A-Z0-9_]+$/", $webtag) > 0) {
 
@@ -81,7 +83,7 @@ function get_forum_data()
                 $sql.= "CONCAT(FORUMS.DATABASE_NAME, '.', FORUMS.WEBTAG, '_') AS PREFIX ";
                 $sql.= "FROM FORUMS WHERE WEBTAG = '$webtag'";
 
-                if (($result = db_query($sql, $db_get_forum_data))) {
+                if ($result = db_query($sql, $db_get_forum_data)) {
 
                     if (db_num_rows($result) > 0) {
 
@@ -101,7 +103,7 @@ function get_forum_data()
             $sql.= "CONCAT(FORUMS.DATABASE_NAME, '.', FORUMS.WEBTAG, '_') AS PREFIX ";
             $sql.= "FROM FORUMS WHERE DEFAULT_FORUM = 1";
 
-            if (($result = db_query($sql, $db_get_forum_data))) {
+            if ($result = db_query($sql, $db_get_forum_data)) {
 
                 if (db_num_rows($result) > 0) {
 
@@ -193,7 +195,7 @@ function forum_closed_message()
 
     echo "<h1>{$lang['closed']}</h1>\n";
 
-    if (($closed_message = forum_get_setting('closed_message', false))) {
+    if ($closed_message = forum_get_setting('closed_message', false)) {
 
         html_display_error_msg(fix_html($closed_message), '600', 'center');
 
@@ -218,18 +220,16 @@ function forum_restricted_message()
     html_draw_top();
 
     $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
-    
-    $webtag = get_webtag();
 
     echo "<h1>{$lang['restricted']}</h1>\n";
 
-    if (($restricted_message = forum_get_setting('restricted_message', false))) {
+    if ($restricted_message = forum_get_setting('restricted_message', false)) {
 
         html_display_error_msg(fix_html($restricted_message), '600', 'center');
 
     }else {
 
-        if (($forum_owner_uid = forum_get_setting('owner_uid'))) {
+        if ($forum_owner_uid = forum_get_setting('owner_uid')) {
 
             $forum_owner_link = sprintf("<a href=\"pm.php?webtag=$webtag&uid=$forum_owner_uid\">%s</a>", $lang['forumowner']);
 
@@ -298,11 +298,15 @@ function forum_get_saved_password(&$password, &$passhash, &$sesshash)
 
 function forum_check_password($forum_fid)
 {
+    $frame_top_target = html_get_top_frame_name();
+
+    if (!$db_forum_check_password = db_connect()) return false;
+
     $webtag = get_webtag();
 
     if (!is_numeric($forum_fid)) return false;
 
-    if (($forum_passhash = forum_get_password($forum_fid))) {
+    if ($forum_passhash = forum_get_password($forum_fid)) {
 
         forum_get_saved_password($password, $passhash, $sesshash);
 
@@ -330,7 +334,7 @@ function forum_check_password($forum_fid)
         echo "    ", form_input_hidden('final_uri', _htmlentities(get_request_uri())), "\n";
         echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
 
-        if (($password_protected_message = forum_get_setting('password_protected_message', false))) {
+        if ($password_protected_message = forum_get_setting('password_protected_message', false)) {
 
             echo "      <tr>\n";
             echo "        <td align=\"left\">", fix_html($password_protected_message), "</td>\n";
@@ -426,7 +430,7 @@ function forum_get_settings()
 
             if (!is_array($forum_settings_array)) $forum_settings_array = array();
 
-            while (($forum_data = db_fetch_array($result))) {
+            while ($forum_data = db_fetch_array($result)) {
 
                 if (forum_check_setting_name($forum_data['SNAME'])) {
 
@@ -483,7 +487,7 @@ function forum_get_global_settings()
 
             if (!is_array($forum_global_settings_array)) $forum_global_settings_array = array();
 
-            while (($forum_data = db_fetch_array($result))) {
+            while ($forum_data = db_fetch_array($result)) {
 
                 if (forum_check_global_setting_name($forum_data['SNAME'])) {
 
@@ -512,7 +516,7 @@ function forum_get_global_settings()
     return $forum_global_settings_array;
 }
 
-function forum_get_settings_by_fid($fid)
+function forum_get_settings_by_fid($fid, $include_global_settings = true)
 {
     if (!$db_forum_get_settings_by_fid = db_connect()) return false;
 
@@ -533,7 +537,7 @@ function forum_get_settings_by_fid($fid)
 
     if (!$result = db_query($sql, $db_forum_get_settings_by_fid)) return false;
 
-    while (($forum_data = db_fetch_array($result))) {
+    while ($forum_data = db_fetch_array($result)) {
 
         if (forum_check_setting_name($forum_data['SNAME'])) {
 
@@ -901,11 +905,13 @@ function forum_update_unread_data($unread_cutoff_stamp)
 {
     if (!$db_forum_update_unread_data = db_connect()) return false;
 
+    if (!$table_data = get_table_prefix()) return false;
+
     if (!is_numeric($unread_cutoff_stamp)) return false;
 
     if ($unread_cutoff_stamp > 0) {
 
-        if (($forum_prefix_array = forum_get_all_prefixes())) {
+        if ($forum_prefix_array = forum_get_all_prefixes()) {
 
             foreach($forum_prefix_array as $forum_prefix) {
 
@@ -917,7 +923,7 @@ function forum_update_unread_data($unread_cutoff_stamp)
                 $sql.= "GROUP BY POST.TID ON DUPLICATE KEY UPDATE UNREAD_PID = VALUES(UNREAD_PID), ";
                 $sql.= "UNREAD_CREATED = VALUES(UNREAD_CREATED)";
 
-                if (!db_query($sql, $db_forum_update_unread_data)) return false;
+                if (!$result = db_query($sql, $db_forum_update_unread_data)) return false;
 
                 $sql = "DELETE QUICK FROM {$forum_prefix}USER_THREAD ";
                 $sql.= "USING {$forum_prefix}USER_THREAD ";
@@ -930,7 +936,7 @@ function forum_update_unread_data($unread_cutoff_stamp)
                 $sql.= "AND ({$forum_prefix}USER_THREAD.INTEREST IS NULL ";
                 $sql.= "OR {$forum_prefix}USER_THREAD.INTEREST = 0) ";
 
-                if (!db_query($sql, $db_forum_update_unread_data)) return false;
+                if (!$result = db_query($sql, $db_forum_update_unread_data)) return false;
             }
         }
     }
@@ -944,7 +950,7 @@ function forum_load_start_page()
 
     if (@file_exists("forums/$webtag/start_main.php")) {
 
-        if (($content = @file_get_contents("forums/$webtag/start_main.php"))) {
+        if ($content = @file_get_contents("forums/$webtag/start_main.php")) {
 
             return strlen($content) > 0 ? $content : false;
         }
@@ -1000,7 +1006,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
 
         // Check for any conflicting tables.
 
-        if (($conflicting_tables_array = install_get_table_conflicts($webtag, true, false))) {
+        if ($conflicting_tables_array = install_get_table_conflicts($webtag, true, false)) {
 
             $error_str = $lang['selecteddatabasecontainsconflictingtables'];
             $error_str.= sprintf("<p>%s</p>\n", implode(", ", $conflicting_tables_array));
@@ -1027,7 +1033,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
                 db_trigger_error($sql, $db_forum_create);
             }
 
-            return false;
+            return;
         }
 
         $sql = "CREATE TABLE {$database_name}.{$webtag}_BANNED (";
@@ -1046,7 +1052,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
                 db_trigger_error($sql, $db_forum_create);
             }
 
-            return false;
+            return;
         }
 
         $sql = "CREATE TABLE {$database_name}.{$webtag}_FOLDER (";
@@ -1067,7 +1073,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
                 db_trigger_error($sql, $db_forum_create);
             }
 
-            return false;
+            return;
         }
 
         $sql = "CREATE TABLE {$database_name}.{$webtag}_FORUM_LINKS (";
@@ -1086,7 +1092,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
                 db_trigger_error($sql, $db_forum_create);
             }
 
-            return false;
+            return;
         }
 
         $sql = "CREATE TABLE {$database_name}.{$webtag}_LINKS (";
@@ -1110,7 +1116,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
                 db_trigger_error($sql, $db_forum_create);
             }
 
-            return false;
+            return;
         }
 
         $sql = "CREATE TABLE {$database_name}.{$webtag}_LINKS_COMMENT (";
@@ -1130,7 +1136,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
                 db_trigger_error($sql, $db_forum_create);
             }
 
-            return false;
+            return;
         }
 
         $sql = "CREATE TABLE {$database_name}.{$webtag}_LINKS_FOLDERS (";
@@ -1149,7 +1155,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
                 db_trigger_error($sql, $db_forum_create);
             }
 
-            return false;
+            return;
         }
 
         $sql = "CREATE TABLE {$database_name}.{$webtag}_LINKS_VOTE (";
@@ -1168,7 +1174,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
                 db_trigger_error($sql, $db_forum_create);
             }
 
-            return false;
+            return;
         }
 
         $sql = "CREATE TABLE {$database_name}.{$webtag}_POLL (";
@@ -1192,7 +1198,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
                 db_trigger_error($sql, $db_forum_create);
             }
 
-            return false;
+            return;
         }
 
         $sql = "CREATE TABLE {$database_name}.{$webtag}_POLL_VOTES (";
@@ -1211,7 +1217,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
                 db_trigger_error($sql, $db_forum_create);
             }
 
-            return false;
+            return;
         }
 
         $sql = "CREATE TABLE {$database_name}.{$webtag}_POST (";
@@ -1246,7 +1252,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
                 db_trigger_error($sql, $db_forum_create);
             }
 
-            return false;
+            return;
         }
 
         $sql = "CREATE TABLE {$database_name}.{$webtag}_POST_CONTENT (";
@@ -1265,7 +1271,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
                 db_trigger_error($sql, $db_forum_create);
             }
 
-            return false;
+            return;
         }
 
         $sql = "CREATE TABLE {$database_name}.{$webtag}_PROFILE_ITEM (";
@@ -1286,7 +1292,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
                 db_trigger_error($sql, $db_forum_create);
             }
 
-            return false;
+            return;
         }
 
         $sql = "INSERT INTO {$database_name}.{$webtag}_PROFILE_ITEM ";
@@ -1301,7 +1307,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
                 db_trigger_error($sql, $db_forum_create);
             }
 
-            return false;
+            return;
         }
 
         $sql = "INSERT INTO {$database_name}.{$webtag}_PROFILE_ITEM ";
@@ -1316,7 +1322,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
                 db_trigger_error($sql, $db_forum_create);
             }
 
-            return false;
+            return;
         }
 
         $sql = "INSERT INTO {$database_name}.{$webtag}_PROFILE_ITEM ";
@@ -1331,7 +1337,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
                 db_trigger_error($sql, $db_forum_create);
             }
 
-            return false;
+            return;
         }
 
         $sql = "INSERT INTO {$database_name}.{$webtag}_PROFILE_ITEM ";
@@ -1346,7 +1352,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
                 db_trigger_error($sql, $db_forum_create);
             }
 
-            return false;
+            return;
         }
 
         $sql = "INSERT INTO {$database_name}.{$webtag}_PROFILE_ITEM ";
@@ -1361,7 +1367,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
                 db_trigger_error($sql, $db_forum_create);
             }
 
-            return false;
+            return;
         }
 
         $sql = "CREATE TABLE {$database_name}.{$webtag}_PROFILE_SECTION (";
@@ -1379,7 +1385,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
                 db_trigger_error($sql, $db_forum_create);
             }
 
-            return false;
+            return;
         }
 
 
@@ -1394,7 +1400,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
                 db_trigger_error($sql, $db_forum_create);
             }
 
-            return false;
+            return;
         }
 
         $sql = "CREATE TABLE {$database_name}.{$webtag}_RSS_FEEDS (";
@@ -1417,7 +1423,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
                 db_trigger_error($sql, $db_forum_create);
             }
 
-            return false;
+            return;
         }
 
         $sql = "CREATE TABLE {$database_name}.{$webtag}_RSS_HISTORY (";
@@ -1434,7 +1440,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
                 db_trigger_error($sql, $db_forum_create);
             }
 
-            return false;
+            return;
         }
 
         $sql = "CREATE TABLE {$database_name}.{$webtag}_STATS (";
@@ -1454,7 +1460,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
                 db_trigger_error($sql, $db_forum_create);
             }
 
-            return false;
+            return;
         }
 
         $sql = "CREATE TABLE {$database_name}.{$webtag}_THREAD (";
@@ -1486,7 +1492,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
                 db_trigger_error($sql, $db_forum_create);
             }
 
-            return false;
+            return;
         }
 
         $sql = "CREATE TABLE {$database_name}.{$webtag}_THREAD_STATS (";
@@ -1505,7 +1511,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
                 db_trigger_error($sql, $db_forum_create);
             }
 
-            return false;
+            return;
         }
 
         $sql = "CREATE TABLE {$database_name}.{$webtag}_THREAD_TRACK (";
@@ -1524,7 +1530,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
                 db_trigger_error($sql, $db_forum_create);
             }
 
-            return false;
+            return;
         }
 
         $sql = "CREATE TABLE {$database_name}.{$webtag}_USER_FOLDER (";
@@ -1542,7 +1548,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
                 db_trigger_error($sql, $db_forum_create);
             }
 
-            return false;
+            return;
         }
 
         $sql = "CREATE TABLE {$database_name}.{$webtag}_USER_PEER (";
@@ -1561,7 +1567,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
                 db_trigger_error($sql, $db_forum_create);
             }
 
-            return false;
+            return;
         }
 
         $sql = "CREATE TABLE {$database_name}.{$webtag}_USER_POLL_VOTES (";
@@ -1582,7 +1588,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
                 db_trigger_error($sql, $db_forum_create);
             }
 
-            return false;
+            return;
         }
 
         $sql = "CREATE TABLE {$database_name}.{$webtag}_USER_PREFS (";
@@ -1626,7 +1632,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
                 db_trigger_error($sql, $db_forum_create);
             }
 
-            return false;
+            return;
         }
 
         $sql = "CREATE TABLE {$database_name}.{$webtag}_USER_PROFILE (";
@@ -1645,7 +1651,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
                 db_trigger_error($sql, $db_forum_create);
             }
 
-            return false;
+            return;
         }
 
         $sql = "CREATE TABLE {$database_name}.{$webtag}_USER_SIG (";
@@ -1663,7 +1669,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
                 db_trigger_error($sql, $db_forum_create);
             }
 
-            return false;
+            return;
         }
 
         $sql = "CREATE TABLE {$database_name}.{$webtag}_USER_THREAD (";
@@ -1685,7 +1691,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
                 db_trigger_error($sql, $db_forum_create);
             }
 
-            return false;
+            return;
         }
 
         $sql = "CREATE TABLE {$database_name}.{$webtag}_USER_TRACK (";
@@ -1709,7 +1715,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
                 db_trigger_error($sql, $db_forum_create);
             }
 
-            return false;
+            return;
         }
 
         $sql = "CREATE TABLE {$database_name}.{$webtag}_WORD_FILTER (";
@@ -1731,7 +1737,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
                 db_trigger_error($sql, $db_forum_create);
             }
 
-            return false;
+            return;
         }
 
         // Save Webtag, Database name and Access Level.
@@ -1973,26 +1979,25 @@ function forum_apply_user_permissions($forum_fid, $uid)
     if (!$db_forum_apply_user_permissions = db_connect()) return false;
 
     if (!is_numeric($forum_fid)) return false;
-
-    if (!is_numeric($uid) || $uid < 1) return false;
+    if (!is_numeric($owner_uid) || $owner_uid < 1) return false;
 
     $forum_user_perms = USER_PERM_ADMIN_TOOLS | USER_PERM_FOLDER_MODERATE;
 
     $sql = "INSERT INTO GROUPS (FORUM, GROUP_NAME, GROUP_DESC, AUTO_GROUP) ";
     $sql.= "VALUES ('$forum_fid', NULL, NULL, 1);";
 
-    if (!db_query($sql, $db_forum_apply_user_permissions)) return false;
+    if (!$result = db_query($sql, $db_forum_apply_user_permissions)) return false;
 
     $new_gid = db_insert_id($db_forum_apply_user_permissions);
 
     $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) ";
     $sql.= "VALUES ('$new_gid', '$forum_fid', 0, '$forum_user_perms');";
 
-    if (!db_query($sql, $db_forum_apply_user_permissions)) return false;
+    if (!$result = db_query($sql, $db_forum_apply_user_permissions)) return false;
 
     $sql = "INSERT INTO GROUP_USERS VALUES ($new_gid, $uid);";
 
-    if (!db_query($sql, $db_forum_apply_user_permissions)) return false;
+    if (!$result = db_query($sql, $db_forum_apply_user_permissions)) return false;
 
     return true;
 }
@@ -2015,54 +2020,54 @@ function forum_delete($fid)
 
             $sql = "DELETE QUICK FROM FORUMS WHERE FID = '$fid'";
 
-            if (!db_query($sql, $db_forum_delete)) return false;
+            if (!$result = db_query($sql, $db_forum_delete)) return false;
 
             $sql = "DELETE QUICK FROM FORUM_SETTINGS WHERE FID = '$fid'";
 
-            if (!db_query($sql, $db_forum_delete)) return false;
+            if (!$result = db_query($sql, $db_forum_delete)) return false;
 
             $sql = "DELETE QUICK FROM GROUP_PERMS WHERE FORUM = '$fid'";
 
-            if (!db_query($sql, $db_forum_delete)) return false;
+            if (!$result = db_query($sql, $db_forum_delete)) return false;
 
             $sql = "SELECT GID FROM GROUPS WHERE FORUM = '$fid'";
 
             if (!$result = db_query($sql, $db_forum_delete)) return false;
 
-            while (($user_perms = db_fetch_array($result))) {
+            while($user_perms = db_fetch_array($result)) {
 
                 $sql = "DELETE QUICK FROM GROUP_USERS WHERE GID = '{$user_perms['GID']}'";
 
-                if (!db_query($sql, $db_forum_delete)) return false;
+                if (!$result_remove = db_query($sql, $db_forum_delete)) return false;
             }
 
             $sql = "DELETE QUICK FROM GROUPS WHERE FORUM = '$fid'";
 
-            if (!db_query($sql, $db_forum_delete)) return false;
+            if (!$result = db_query($sql, $db_forum_delete)) return false;
 
             $sql = "DELETE QUICK FROM USER_FORUM WHERE FID = '$fid'";
 
-            if (!db_query($sql, $db_forum_delete)) return false;
+            if (!$result = db_query($sql, $db_forum_delete)) return false;
 
             $sql = "DELETE QUICK FROM VISITOR_LOG WHERE FORUM = '$fid'";
 
-            if (!db_query($sql, $db_forum_delete)) return false;
+            if (!$result = db_query($sql, $db_forum_delete)) return false;
 
             $sql = "DELETE QUICK FROM SEARCH_RESULTS WHERE FORUM = '$fid'";
 
-            if (!db_query($sql, $db_forum_delete)) return false;
+            if (!$result = db_query($sql, $db_forum_delete)) return false;
 
             $sql = "SELECT AID FROM POST_ATTACHMENT_IDS WHERE FID = '$fid'";
 
             if (!$result = db_query($sql, $db_forum_delete)) return false;
 
-            while (($attachment_data = db_fetch_array($result))) {
+            while ($attachment_data = db_fetch_array($result)) {
                 delete_attachment_by_aid($attachment_data['AID']);
             }
 
             $sql = "DELETE QUICK FROM POST_ATTACHMENT_IDS WHERE FID = '$fid'";
 
-            if (!db_query($sql, $db_forum_delete)) return false;
+            if (!$result = db_query($sql, $db_forum_delete)) return false;
 
             if (forum_delete_tables($webtag, $database_name)) return true;
         }
@@ -2100,7 +2105,7 @@ function forum_delete_tables($webtag, $database_name)
 
             $sql = "DROP TABLE IF EXISTS {$database_name}.{$webtag}_{$table_name}";
 
-            if (!db_query($sql, $db_forum_delete_tables)) return false;
+            if (!$result = db_query($sql, $db_forum_delete_tables)) return false;
         }
 
         return true;
@@ -2163,7 +2168,7 @@ function forum_update_password($fid, $password)
         $sql = "UPDATE LOW_PRIORITY FORUMS SET FORUM_PASSWD = '$password' ";
         $sql.= "WHERE FID = '$fid'";
 
-        if (!db_query($sql, $db_forum_update_password)) return false;
+        if (!$result = db_query($sql, $db_forum_update_password)) return false;
 
         return true;
     }
@@ -2191,7 +2196,7 @@ function forum_get($fid)
 
             if (isset($forum_get_array['OWNER_UID']) && $forum_get_array['OWNER_UID'] > 0) {
 
-                if (($forum_leader = user_get_logon($forum_get_array['OWNER_UID']))) {
+                if ($forum_leader = user_get_logon($forum_get_array['OWNER_UID'])) {
 
                     $forum_get_array['FORUM_SETTINGS']['forum_leader'] = $forum_leader;
                 }
@@ -2201,7 +2206,7 @@ function forum_get($fid)
 
             if (!$result = db_query($sql, $db_forum_get)) return false;
 
-            while (($forum_data = db_fetch_array($result))) {
+            while ($forum_data = db_fetch_array($result)) {
                 $forum_get_array['FORUM_SETTINGS'][$forum_data['SNAME']] = $forum_data['SVALUE'];
             }
 
@@ -2220,8 +2225,6 @@ function forum_get_permissions($fid, $offset = 0)
     if (!is_numeric($offset)) $offset = 0;
 
     $perms_user_array = array();
-    
-    $lang = load_language_file();
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS USER.UID, USER.LOGON, USER.NICKNAME FROM USER USER ";
     $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.UID = USER.UID) ";
@@ -2240,7 +2243,7 @@ function forum_get_permissions($fid, $offset = 0)
 
     if (db_num_rows($result) > 0) {
 
-        while (($user_data = db_fetch_array($result))) {
+        while ($user_data = db_fetch_array($result)) {
 
             if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
                 if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
@@ -2301,8 +2304,8 @@ function forum_get_post_count($webtag)
 
     if (db_num_rows($result_post_count) > 0) {
 
-        $forum_data = db_fetch_array($result_post_count);
-        return $forum_data['POST_COUNT'];
+        $$forum_data = db_fetch_array($result_post_count);
+        return $$forum_data['POST_COUNT'];
     }
 
     return 0;
@@ -2320,6 +2323,8 @@ function forum_search($forum_search, $offset)
     if (!is_numeric($offset)) return false;
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
+
+    $lang = load_language_file();
 
     // Array to hold our forums in.
 
@@ -2354,7 +2359,7 @@ function forum_search($forum_search, $offset)
 
         if (db_num_rows($result_forums) > 0) {
 
-            while (($forum_data = db_fetch_array($result_forums))) {
+            while ($forum_data = db_fetch_array($result_forums)) {
 
                 $forum_fid = $forum_data['FID'];
 
@@ -2387,6 +2392,11 @@ function forum_search($forum_search, $offset)
                 // Get available folders for queries below
 
                 $folders = folder_get_available_by_forum($forum_fid);
+
+                // User relationship constants
+
+                $user_ignored = USER_IGNORED;
+                $user_ignored_completely = USER_IGNORED_COMPLETELY;
 
                 // Get any unread messages
 
@@ -2496,7 +2506,7 @@ function forum_get_all_prefixes()
 
         $prefix_array = array();
 
-        while (($forum_data = db_fetch_array($result))) {
+        while ($forum_data = db_fetch_array($result)) {
             $prefix_array[$forum_data['FID']] = $forum_data['PREFIX'];
         }
 
@@ -2518,7 +2528,7 @@ function forum_get_all_webtags()
 
         $webtag_array = array();
 
-        while (($forum_data = db_fetch_array($result))) {
+        while ($forum_data = db_fetch_array($result)) {
             $webtag_array[$forum_data['FID']] = $forum_data['WEBTAG'];
         }
 
@@ -2540,7 +2550,7 @@ function forum_get_all_fids()
 
         $fids_array = array();
 
-        while (($forum_data = db_fetch_array($result))) {
+        while ($forum_data = db_fetch_array($result)) {
             $fids_array[] = $forum_data['FID'];
         }
 
@@ -2596,7 +2606,7 @@ function forums_get_available_dbs()
 
         $database_array = array();
 
-        while (($database = db_fetch_array($result))) {
+        while ($database = db_fetch_array($result)) {
 
             if (!stristr('information_schema', $database['Database'])) {
 
@@ -2637,9 +2647,7 @@ function forum_get_maintenance_schedule(&$maintenance_hour, &$maintenance_minute
 {
     $forum_maintenance_schedule = forum_get_setting('forum_maintenance_schedule', false, '02:00');
 
-    $matches_array = array();
-    
-    if (preg_match('/^([0-9]{2}):([0-9]{2})$/', $forum_maintenance_schedule, $matches_array) > 0) {
+    if (preg_match("/^([0-9]{2}):([0-9]{2})$/", $forum_maintenance_schedule, $matches_array) > 0) {
 
         list(,$maintenance_hour, $maintenance_minute) = $matches_array;
 

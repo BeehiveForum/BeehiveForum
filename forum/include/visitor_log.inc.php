@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.inc.php,v 1.32 2008-07-27 15:23:26 decoyduck Exp $ */
+/* $Id: visitor_log.inc.php,v 1.33 2008-07-27 18:26:17 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -109,7 +109,7 @@ function visitor_log_get_recent()
 
         $users_get_recent_array = array();
 
-        while (($visitor_array = db_fetch_array($result))) {
+        while ($visitor_array = db_fetch_array($result)) {
 
             if ($visitor_array['UID'] == 0) {
 
@@ -188,7 +188,7 @@ function visitor_log_get_profile_items(&$profile_header_array, &$profile_dropdow
 
     if (db_num_rows($result) > 0) {
 
-        while (($profile_item = db_fetch_array($result))) {
+        while ($profile_item = db_fetch_array($result)) {
 
             $profile_header_array[$profile_item['PIID']] = _htmlentities($profile_item['ITEM_NAME']);
             $profile_dropdown_array[$profile_item['SECTION_NAME']]['subitems'][$profile_item['PIID']] = _htmlentities($profile_item['ITEM_NAME']);
@@ -257,6 +257,15 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
                                              'AGE'             => '(AGE IS NOT NULL AND AGE > 0)',
                                              'TIMEZONE'        => '(TIMEZONE IS NOT NULL AND LENGTH(TIMEZONE) > 0)');
 
+    $column_null_filter_where_array = array('POST_COUNT'      => '(USER_TRACK.POST_COUNT IS NOT NULL AND USER_TRACK.POST_COUNT > 0)',
+                                            'LAST_VISIT'      => '(VISITOR_LOG_TIME.LAST_LOGON IS NOT NULL AND UNIX_TIMESTAMP(VISITOR_LOG_TIME.LAST_LOGON) > 0)',
+                                            'REGISTERED'      => '(USER.REGISTERED IS NOT NULL AND UNIX_TIMESTAMP(USER.REGISTERED) > 0)',
+                                            'USER_TIME_BEST'  => '(USER_TRACK.USER_TIME_BEST IS NOT NULL AND UNIX_TIMESTAMP(USER_TRACK.USER_TIME_BEST) > 0)',
+                                            'USER_TIME_TOTAL' => '(USER_TRACK.USER_TIME_TOTAL IS NOT NULL AND UNIX_TIMESTAMP(USER_TRACK.USER_TIME_TOTAL) > 0)',
+                                            'DOB'             => '(USER_PREFS_DOB.DOB_DISPLAY > 1 AND UNIX_TIMESTAMP(USER_PREFS_DOB.DOB) > 0)',
+                                            'AGE'             => '((USER_PREFS_DOB.DOB_DISPLAY = 1 OR USER_PREFS_DOB.DOB_DISPLAY = 3) AND UNIX_TIMESTAMP(USER_PREFS_DOB.DOB) > 0)',
+                                            'TIMEZONE'        => '(TIMEZONES.TZID IS NOT NULL AND LENGTH(TIMEZONES.TZID) > 0)');
+
     // Main query.
 
     $select_sql = "SELECT SQL_CALC_FOUND_ROWS USER.UID, USER.LOGON, USER.NICKNAME, ";
@@ -291,10 +300,8 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
     $profile_item_options_array = array();
 
     // Iterate through them.
-    
-    $profile_items_array_keys = array_keys($profile_items_array);
 
-    foreach($profile_items_array_keys as $column) {
+    foreach($profile_items_array as $column => $value) {
 
         if (is_numeric($column)) {
 
@@ -358,10 +365,8 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
     $join_sql.= "LEFT JOIN TIMEZONES ON (TIMEZONES.TZID = USER_PREFS_GLOBAL.TIMEZONE) ";
 
     // Joins on the selected numeric (PIID) profile items.
-    
-    $profile_items_array_keys = array_keys($profile_items_array);
 
-    foreach($profile_items_array_keys as $column) {
+    foreach($profile_items_array as $column => $value) {
 
         if (is_numeric($column)) {
 
@@ -418,9 +423,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
 
     if ($hide_empty === true) {
 
-        $profile_items_array_keys = array_keys($profile_items_array);
-    	
-    	foreach ($profile_items_array_keys as $column) {
+        foreach($profile_items_array as $column => $value) {
 
             if (is_numeric($column)) {
 
@@ -539,7 +542,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
 
     if (db_num_rows($result) > 0) {
 
-        while (($user_data = db_fetch_array($result, DB_RESULT_ASSOC))) {
+        while ($user_data = db_fetch_array($result, DB_RESULT_ASSOC)) {
 
             if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
                 if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
@@ -646,7 +649,7 @@ function visitor_log_clean_up()
     $sql.= "AND LAST_LOGON < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) ";
     $sql.= "- $visitor_cutoff_stamp)";
 
-    if (!db_query($sql, $db_visitor_log_clean_up)) return false;
+    if (!$result = db_query($sql, $db_visitor_log_clean_up)) return false;
 
     return true;
 }

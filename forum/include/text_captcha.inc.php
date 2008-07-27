@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: text_captcha.inc.php,v 1.28 2008-07-27 15:23:26 decoyduck Exp $ */
+/* $Id: text_captcha.inc.php,v 1.29 2008-07-27 18:26:17 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -180,7 +180,7 @@ class captcha {
             return false;
         }
 
-        if (($text_captcha_gd_info = get_gd_info())) {
+        if ($text_captcha_gd_info = get_gd_info()) {
 
             if ($text_captcha_gd_info['GD Version'] !== false && $text_captcha_gd_info['FreeType Support'] > 0) {
 
@@ -301,11 +301,11 @@ class captcha {
     {
         if (!$this->fonts_loaded) {
 
-            if ((@$dir = opendir("{$this->text_captcha_dir}/fonts"))) {
+            if (@$dir = opendir("{$this->text_captcha_dir}/fonts")) {
 
                 while (($file = readdir($dir)) !== false) {
 
-                    if (($file != ".." && $file != "." && !is_dir($file) && $this->is_font($file))) {
+                    if ($file != ".." && $file != "." && !is_dir($file) && $this->is_font($file)) {
 
                         $this->available_fonts[] = $file;
                         $this->fonts_loaded = true;
@@ -381,7 +381,7 @@ class captcha {
 
                 for($blue = 0; $blue <= 255; $blue += 51) {
 
-                    imagecolorallocate($image, $red, $green, $blue);
+                    $color = imagecolorallocate($image, $red, $green, $blue);
                 }
             }
         }
@@ -405,7 +405,7 @@ function captcha_clean_up()
 
     $text_captcha_dir = $forum_directory. DIRECTORY_SEPARATOR. 'text_captcha';
 
-    if ((@$dir = opendir($text_captcha_dir. DIRECTORY_SEPARATOR. "images"))) {
+    if (@$dir = opendir($text_captcha_dir. DIRECTORY_SEPARATOR. "images")) {
 
         while ((($file = @readdir($dir)) !== false) && $unlink_count < 10) {
 
@@ -413,7 +413,7 @@ function captcha_clean_up()
 
             $captcha_image_file = "$text_captcha_dir/images/$file";
 
-            if (($file != "." && $file != ".." && !is_dir($captcha_image_file))) {
+            if ($file != "." && $file != ".." && !is_dir($captcha_image_file)) {
 
                 if (filemtime($captcha_image_file) < (time() - DAY_IN_SECONDS)) {
 

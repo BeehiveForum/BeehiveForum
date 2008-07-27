@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll_results.php,v 1.38 2008-07-27 10:53:32 decoyduck Exp $ */
+/* $Id: poll_results.php,v 1.39 2008-07-27 18:26:11 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -64,8 +64,6 @@ include_once(BH_INCLUDE_PATH. "poll.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "thread.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
-
-// Intitalise a few variables
 
 // Check we're logged in correctly
 
@@ -208,7 +206,7 @@ echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"580\">\n";
 echo "  <tr>\n";
 echo "    <td align=\"left\">\n";
 
-if (($poll_data['SHOWRESULTS'] == POLL_SHOW_RESULTS || bh_session_get_value('UID') == $poll_data['FROM_UID'] || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid) || ($poll_data['CLOSES'] > 0 && $poll_data['CLOSES'] < mktime()))) {
+if ($poll_data['SHOWRESULTS'] == POLL_SHOW_RESULTS || bh_session_get_value('UID') == $poll_data['FROM_UID'] || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid) || ($poll_data['CLOSES'] > 0 && $poll_data['CLOSES'] < mktime())) {
 
     if ($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC && $poll_data['CHANGEVOTE'] < POLL_VOTE_MULTI && $poll_data['POLLTYPE'] <> POLL_TABLE_GRAPH) {
 

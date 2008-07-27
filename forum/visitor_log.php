@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.php,v 1.125 2008-07-27 10:53:34 decoyduck Exp $ */
+/* $Id: visitor_log.php,v 1.126 2008-07-27 18:26:11 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -65,14 +65,6 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "visitor_log.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
-
-// Intitalise a few variables
-
-// Arrays to hold the Profile Headers and Drop Down
-// items returned from visitor_log_get_profile_items()
-
-$profile_dropdown_array = array();
-$profile_header_array = array();
 
 // Check we're logged in correctly
 
@@ -391,7 +383,7 @@ if (sizeof($user_profile_array['user_array']) > 0) {
 
             $attachment = get_attachment_by_hash($user_array['AVATAR_AID']);
 
-            if (($profile_picture_href = attachment_make_link($attachment, false, false, false, false))) {
+            if ($profile_picture_href = attachment_make_link($attachment, false, false, false, false)) {
 
                 echo "                   <td class=\"postbody\" align=\"left\" valign=\"top\"><img src=\"$profile_picture_href\" alt=\"", word_filter_add_ob_tags(_htmlentities(format_user_name($user_array['LOGON'], $user_array['NICKNAME']))), "\" title=\"", word_filter_add_ob_tags(_htmlentities(format_user_name($user_array['LOGON'], $user_array['NICKNAME']))), "\" border=\"0\" width=\"15\" height=\"15\" /></td>\n";
 

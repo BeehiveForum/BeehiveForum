@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.338 2008-07-27 10:53:33 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.339 2008-07-27 18:26:11 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -67,12 +67,6 @@ include_once(BH_INCLUDE_PATH. "thread.inc.php");
 include_once(BH_INCLUDE_PATH. "threads.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
-
-// Intitalise a few variables
-
-// Array to hold our visible threads
-
-$visible_threads_array = array();
 
 // Check we're logged in correctly
 
@@ -262,7 +256,7 @@ if (user_is_guest()) {
                     $valid = false;
                 }
 
-            }elseif (($_GET['mark_read_type'] == THREAD_MARK_READ_FOLDER && isset($folder) && is_numeric($folder))) {
+            }elseif ($_GET['mark_read_type'] == THREAD_MARK_READ_FOLDER && isset($folder) && is_numeric($folder)) {
 
                 if (threads_mark_folder_read($folder)) {
 
@@ -417,7 +411,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     list($tid, $pid) = explode('.', $_GET['msg']);
 
-    if (($thread = thread_get($tid))) {
+    if ($thread = thread_get($tid)) {
 
         if (!isset($thread['RELATIONSHIP'])) $thread['RELATIONSHIP'] = 0;
 
@@ -444,7 +438,7 @@ if (bh_session_get_value('UID') > 0) {
 
         list($tid, $pid) = explode('.', $_GET['msg']);
 
-        if (($thread = thread_get($tid))) {
+        if ($thread = thread_get($tid)) {
             $selected_folder = $thread['FID'];
         }
 
@@ -460,7 +454,7 @@ if (bh_session_get_value('UID') > 0) {
     $ignored_folders = array();
 
     while (list($fid, $folder_data) = each($folder_info)) {
-        if (($folder_data['INTEREST'] == FOLDER_NOINTEREST || (isset($selected_folder) && $selected_folder == $fid))) {
+        if ($folder_data['INTEREST'] == FOLDER_NOINTEREST || (isset($selected_folder) && $selected_folder == $fid)) {
             if ((!in_array($fid, $folder_order)) && (!in_array($fid, $ignored_folders))) $folder_order[] = $fid;
         }else {
             if ((!in_array($fid, $folder_order)) && (!in_array($fid, $ignored_folders))) $ignored_folders[] = $fid;
@@ -503,7 +497,7 @@ if (!$thread_info) {
     echo "<br />\n";
 }
 
-if (($start_from != 0 && $mode == ALL_DISCUSSIONS && !isset($folder))) {
+if ($start_from != 0 && $mode == ALL_DISCUSSIONS && !isset($folder)) {
 
     echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
     echo "  <tr>\n";
@@ -514,10 +508,6 @@ if (($start_from != 0 && $mode == ALL_DISCUSSIONS && !isset($folder))) {
     echo "  </tr>\n";
     echo "</table>\n";
 }
-
-// Marker for the selected thread
-
-$first_thread = false;
 
 // Iterate through the information we've just got and display it in the right order
 
@@ -594,7 +584,7 @@ foreach ($folder_order as $folder_number) {
                     echo "</td>\n";
                     echo "              </tr>\n";
 
-                    if (($start_from != 0 && isset($folder) && $folder_number == $folder)) {
+                    if ($start_from != 0 && isset($folder) && $folder_number == $folder) {
 
                         echo "              <tr>\n";
                         echo "                <td align=\"left\" class=\"threads_left_right\" colspan=\"2\"><a href=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$folder&amp;start_from=", ($start_from - 50), "\" class=\"folderinfo\" title=\"{$lang['showprev50threads']}\">{$lang['prev50threads']}</a></td>\n";
@@ -607,6 +597,7 @@ foreach ($folder_order as $folder_number) {
 
                     foreach($thread_info as $thread) {
 
+                        if (!isset($visible_threads_array) || !is_array($visible_threads_array)) $visible_threads_array = array();
                         if (!in_array($thread['TID'], $visible_threads_array)) $visible_threads_array[] = $thread['TID'];
 
                         if ($thread['FID'] == $folder_number) {
@@ -633,7 +624,7 @@ foreach ($folder_order as $folder_number) {
 
                                 $latest_post = 1;
 
-                                if (!is_numeric($first_thread) && isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+                                if (!isset($first_thread) && isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
                                     $first_thread = $thread['TID'];
                                     echo "<img src=\"", style_image('current_thread.png'), "\" name=\"t{$thread['TID']}\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
@@ -662,7 +653,7 @@ foreach ($folder_order as $folder_number) {
 
                                 $latest_post = $thread['LAST_READ'] + 1;
 
-                                if (!is_numeric($first_thread) && isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+                                if (!isset($first_thread) && isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
                                     $first_thread = $thread['TID'];
                                     echo "<img src=\"", style_image('current_thread.png'), "\" name=\"t{$thread['TID']}\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
@@ -687,7 +678,7 @@ foreach ($folder_order as $folder_number) {
 
                                 $latest_post = 1;
 
-                                if (!is_numeric($first_thread) && isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+                                if (!isset($first_thread) && isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
                                     $first_thread = $thread['TID'];
                                     echo "<img src=\"", style_image('current_thread.png'), "\" name=\"t{$thread['TID']}\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
@@ -710,7 +701,7 @@ foreach ($folder_order as $folder_number) {
 
                             if (isset($thread['INTEREST']) && $thread['INTEREST'] == THREAD_INTERESTED) echo "<img src=\"".style_image('high_interest.png')."\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" /> ";
                             if (isset($thread['INTEREST']) && $thread['INTEREST'] == THREAD_SUBSCRIBED) echo "<img src=\"".style_image('subscribe.png')."\" alt=\"{$lang['subscribed']}\" title=\"{$lang['subscribed']}\" /> ";
-                            if (isset($thread['POLL_FLAG']) && $thread['POLL_FLAG'] == 'Y') echo "<a href=\"poll_results.php?webtag=$webtag&amp;tid={$thread['TID']}\" target=\"_blank\" onclick=\"return openPollResults('{$thread['TID']}', '$webtag')\"><img src=\"", style_image('poll.png'), "\" border=\"0\" alt=\"{$lang['thisisapoll']}\" title=\"{$lang['thisisapoll']}\" /></a> ";
+                            if (isset($thread['POLL_FLAG']) && $thread['POLL_FLAG'] == 'Y') echo "<a href=\"poll_results.php?webtag=$webtag&tid={$thread['TID']}\" target=\"_blank\" onclick=\"return openPollResults('{$thread['TID']}', '$webtag')\"><img src=\"", style_image('poll.png'), "\" border=\"0\" alt=\"{$lang['thisisapoll']}\" title=\"{$lang['thisisapoll']}\" /></a> ";
                             if (isset($thread['STICKY']) && $thread['STICKY'] == 'Y') echo "<img src=\"".style_image('sticky.png')."\" alt=\"{$lang['sticky']}\" title=\"{$lang['sticky']}\" /> ";
                             if (isset($thread['RELATIONSHIP']) && $thread['RELATIONSHIP'] & USER_FRIEND) echo "<img src=\"" . style_image('friend.png') . "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" /> ";
                             if (isset($thread['TRACK_TYPE']) && $thread['TRACK_TYPE'] == THREAD_TYPE_SPLIT) echo "<img src=\"" . style_image('split_thread.png') . "\" alt=\"{$lang['threadhasbeensplit']}\" title=\"{$lang['threadhasbeensplit']}\" /> ";
@@ -831,7 +822,7 @@ foreach ($folder_order as $folder_number) {
 
 echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\">\n";
 
-if (($mode == ALL_DISCUSSIONS && !isset($folder))) {
+if ($mode == ALL_DISCUSSIONS && !isset($folder)) {
 
     $total_threads = 0;
 
@@ -955,7 +946,7 @@ echo "</table>\n";
 echo "<script language=\"JavaScript\" type=\"text/javascript\">\n";
 echo "<!--\n";
 
-if (is_numeric($first_thread)) {
+if (isset($first_thread)) {
     echo "current_thread = $first_thread;\n";
 }else {
     echo "current_thread = 0;\n";

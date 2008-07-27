@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_edit.php,v 1.69 2008-07-27 10:53:25 decoyduck Exp $ */
+/* $Id: admin_folder_edit.php,v 1.70 2008-07-27 18:26:09 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -65,8 +65,6 @@ include_once(BH_INCLUDE_PATH. "logon.inc.php");
 include_once(BH_INCLUDE_PATH. "perm.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
-
-// Intitalise a few variables
 
 // Check we're logged in correctly
 
@@ -352,7 +350,7 @@ echo "          </tr>\n";
 echo "        </table>\n";
 echo "        <br />\n";
 
-if (($folder_dropdown = folder_draw_dropdown_all($folder_data['FID'], 'fid_move', "", "", "post_folder_dropdown"))) {
+if ($folder_dropdown = folder_draw_dropdown_all($folder_data['FID'], 'fid_move', "", "", "post_folder_dropdown")) {
 
     echo "        <table class=\"box\" width=\"100%\">\n";
     echo "          <tr>\n";

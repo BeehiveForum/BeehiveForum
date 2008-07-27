@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_update_language.php,v 1.13 2008-07-26 20:59:22 decoyduck Exp $ */
+/* $Id: bh_update_language.php,v 1.14 2008-07-27 18:26:08 decoyduck Exp $ */
 
 // Constant to define where the include files are
 
@@ -72,20 +72,16 @@ if (file_exists(BH_INCLUDE_PATH. "languages/en.inc.php")) {
         $lang_en_line = trim($lang_en_line);
 
         $line_matched = false;
-        
-        $lang_matches = array();
 
-        if (preg_match('/^\$lang((\[[^\]]+\])+)/i', $lang_en_line, $lang_matches)) {
+        if (preg_match("/^\\\$lang((\[[^\]]+\])+)/i", $lang_en_line, $lang_matches)) {
 
             foreach ($lang_add as $lang_add_line) {
 
                 $lang_add_line = trim($lang_add_line);
 
-                $preg_lang_add_match = sprintf('/^%s[^"]+"(.+)";/i', preg_quote("\$lang{$lang_matches[1]}", "/"));
-                
-                $lang_add_matches = array();
+                $preg_lang_add_match = preg_quote("\$lang{$lang_matches[1]}", "/");
 
-                if (preg_match($preg_lang_add_match, $lang_add_line, $lang_add_matches)) {
+                if (preg_match("/^{$preg_lang_add_match}[^\"]+\"(.+)\";/i", $lang_add_line, $lang_add_matches)) {
 
                     if (isset($lang_add_matches[1]) && strlen(trim($lang_add_matches[1])) > 0) {
 
@@ -102,11 +98,9 @@ if (file_exists(BH_INCLUDE_PATH. "languages/en.inc.php")) {
 
                     $lang_fix_line = trim($lang_fix_line);
 
-                    $preg_lang_fix_match = sprintf('/^%s[^"]+"(.+)";/i', preg_quote("\$lang{$lang_matches[1]}", "/"));
-                    
-                    $lang_fix_matches = array();
+                    $preg_lang_fix_match = preg_quote("\$lang{$lang_matches[1]}", "/");
 
-                    if (preg_match($preg_lang_fix_match, $lang_fix_line, $lang_fix_matches)) {
+                    if (preg_match("/^{$preg_lang_add_match}[^\"]+\"(.+)\";/i", $lang_fix_line, $lang_fix_matches)) {
 
                         if (isset($lang_fix_matches[1]) && strlen(trim($lang_fix_matches[1])) > 0) {
 

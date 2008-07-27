@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.350 2008-07-27 15:23:24 decoyduck Exp $ */
+/* $Id: post.php,v 1.351 2008-07-27 18:26:11 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -75,8 +75,6 @@ include_once(BH_INCLUDE_PATH. "thread.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "user_rel.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
-
-// Intitalise a few variables
 
 // Check we're logged in correctly
 
@@ -302,9 +300,6 @@ if (isset($_POST['t_post_html'])) {
     }
 }
 
-$t_sig = "";
-$t_sig_html = 'N';
-
 if (isset($_POST['t_sig_html'])) {
 
     $t_sig_html = $_POST['t_sig_html'];
@@ -497,7 +492,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
         foreach($quote_list as $quote_pid) {
 
-            if (($message_array = messages_get($reply_to_tid, $quote_pid))) {
+            if ($message_array = messages_get($reply_to_tid, $quote_pid)) {
 
                 $message_author = _htmlentities(format_user_name($message_array['FLOGON'], $message_array['FNICK']));
 
@@ -628,7 +623,7 @@ if (isset($_POST['t_to_uid_others']) && strlen(trim(_stripslashes($_POST['t_to_u
 
 if ($to_radio == 'others') {
 
-    if (($to_user = user_get_uid($t_to_uid_others))) {
+    if ($to_user = user_get_uid($t_to_uid_others)) {
 
         $t_to_uid = $to_user['UID'];
 
@@ -761,7 +756,7 @@ if ($valid && isset($_POST['post'])) {
 
             if ($t_tid > 0) {
 
-                if (($allow_sig == true && strlen(trim($t_sig)) > 0)) {
+                if ($allow_sig == true && strlen(trim($t_sig)) > 0) {
                     $t_content.= "\n<div class=\"sig\">$t_sig</div>";
                 }
 
@@ -835,7 +830,7 @@ if (!isset($t_fid)) {
     $t_fid = 1;
 }
 
-if (($new_thread && !$folder_dropdown = folder_draw_dropdown($t_fid, "t_fid", "", FOLDER_ALLOW_NORMAL_THREAD, "", "post_folder_dropdown"))) {
+if ($new_thread && !$folder_dropdown = folder_draw_dropdown($t_fid, "t_fid", "", FOLDER_ALLOW_NORMAL_THREAD, "", "post_folder_dropdown")) {
 
     html_draw_top();
     html_error_msg($lang['cannotcreatenewthreads']);
@@ -895,6 +890,7 @@ if ($valid && isset($_POST['preview'])) {
         $preview_message['TLOGON'] = $preview_tuser['LOGON'];
         $preview_message['TNICK'] = $preview_tuser['NICKNAME'];
         $preview_message['TO_UID'] = $preview_tuser['UID'];
+
     }
 
     $preview_tuser = user_get($uid);
@@ -904,7 +900,7 @@ if ($valid && isset($_POST['preview'])) {
 
     $preview_message['CONTENT'] = $post->getContent();
 
-    if (($allow_sig == true && strlen(trim($t_sig)) > 0)) {
+    if ($allow_sig == true && strlen(trim($t_sig)) > 0) {
         $preview_message['CONTENT'] = $preview_message['CONTENT']. "<div class=\"sig\">". $t_sig. "</div>";
     }
 
@@ -951,7 +947,7 @@ if ($new_thread) {
     echo "                        <td align=\"left\"><h2>{$lang['folder']}</h2></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">$folder_dropdown</td>\n";
+    echo "                        <td align=\"left\">$folder_dropdown</h2></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\"><h2>{$lang['threadtitle']}</h2></td>\n";
@@ -1062,10 +1058,10 @@ if (strlen($emot_prev) > 0) {
 
     echo "                            </tr>\n";
     echo "                          </table>\n";
-    echo "                        </td>\n";
-    echo "                      </tr>\n";
 }
 
+echo "                        </td>\n";
+echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
 echo "                  <td align=\"left\" valign=\"top\" width=\"500\">\n";
@@ -1201,7 +1197,7 @@ if (!$new_thread && $reply_to_pid > 0) {
         echo "                <tr>\n";
         echo "                  <td align=\"left\">\n";
 
-        echo  poll_display($reply_to_tid, $thread_data['LENGTH'], $reply_to_pid, $thread_data['FID'], false, false, false, true, $show_sigs, true);
+        poll_display($reply_to_tid, $thread_data['LENGTH'], $reply_to_pid, $thread_data['FID'], false, false, false, true, $show_sigs, true);
 
         echo "                  </td>\n";
         echo "                </tr>\n";

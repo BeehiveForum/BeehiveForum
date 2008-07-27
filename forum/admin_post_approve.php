@@ -1,4 +1,4 @@
-t<?php
+<?php
 
 /*======================================================================
 Copyright Project Beehive Forum 2002
@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_post_approve.php,v 1.64 2008-07-27 15:23:24 decoyduck Exp $ */
+/* $Id: admin_post_approve.php,v 1.65 2008-07-27 18:26:09 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -71,8 +71,6 @@ include_once(BH_INCLUDE_PATH. "thread.inc.php");
 include_once(BH_INCLUDE_PATH. "threads.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
-
-// Intitalise a few variables
 
 // Check we're logged in correctly
 
@@ -139,6 +137,10 @@ if (isset($ret) && strlen(trim($ret)) > 0) {
     }
 }
 
+if (isset($_POST['cancel'])) {
+    header_redirect($ret);
+}
+
 // Check POST and GET for message ID and check it is valid.
 
 if (isset($_POST['msg'])) {
@@ -168,10 +170,6 @@ if (isset($_POST['msg'])) {
         html_draw_bottom();
         exit;
     }
-}
-
-if (isset($_POST['cancel'])) {
-    header_redirect($ret);
 }
 
 if (isset($msg) && validate_msg($msg)) {
@@ -204,7 +202,7 @@ if (isset($msg) && validate_msg($msg)) {
         exit;
     }
 
-    if (!$threaddata = thread_get($tid)) {
+    if (!$thread_data = thread_get($tid)) {
 
         html_draw_top();
         html_error_msg($lang['threadcouldnotbefound'], 'admin_post_approve.php', 'post', array('cancel' => $lang['cancel']), array('ret' => $ret), '_self', 'center');
@@ -212,7 +210,7 @@ if (isset($msg) && validate_msg($msg)) {
         exit;
     }
 
-    if (($preview_message = messages_get($tid, $pid, 1))) {
+    if ($preview_message = messages_get($tid, $pid, 1)) {
 
         if (!isset($preview_message['APPROVED']) || $preview_message['APPROVED'] > 0) {
 
@@ -238,7 +236,7 @@ if (isset($msg) && validate_msg($msg)) {
                 }else {
 
                     html_draw_top();
-                    html_display_msg($lang['approvepost'], sprintf($lang['successfullyapprovedpost'], $msg), $ret, 'get', array('back' => $lang['back']), false, '_self', 'center');
+                    html_display_msg($lang['approvepost'], sprintf($lang['successfullyapprovedpost'], $msg), "admin_post_approve.php", 'get', array('back' => $lang['back']), array('ret' => $ret), '_self', 'center');
                     html_draw_bottom();
                     exit;
                 }
@@ -246,6 +244,38 @@ if (isset($msg) && validate_msg($msg)) {
             }else {
 
                 $error_msg_array[] = $lang['postapprovalfailed'];
+            }
+
+        }else if (isset($_POST['delete'])) {
+
+            if (post_delete($tid, $pid)) {
+
+                post_add_edit_text($tid, $pid);
+
+                if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid) && $preview_message['FROM_UID'] != bh_session_get_value('UID')) {
+                    admin_add_log_entry(DELETE_POST, array($t_fid, $tid, $pid));
+                }
+
+                if ($thread_data['LENGTH'] == 1) {
+                    $msg = messages_get_most_recent(bh_session_get_value('UID'));
+                }
+
+                if (preg_match("/^messages.php/", basename($ret)) > 0) {
+
+                    header_redirect("messages.php?webtag=$webtag&msg=$msg&delete_success=$tid.$pid");
+                    exit;
+
+                }else {
+
+                    html_draw_top();
+                    html_display_msg($lang['deleteposts'], sprintf($lang['successfullydeletedpost'], $msg), "admin_post_approve.php", 'get', array('back' => $lang['back']), array('ret' => $ret), '_self', 'center');
+                    html_draw_bottom();
+                    exit;
+                }
+
+            }else {
+
+                $error_msg_array[] = $lang['errordelpost'];
             }
         }
 
@@ -297,11 +327,11 @@ if (isset($msg) && validate_msg($msg)) {
 
         if (thread_is_poll($tid) && $pid == 1) {
 
-            poll_display($tid, $threaddata['LENGTH'], $pid, $threaddata['FID'], false, false, false, true, true, true);
+            poll_display($tid, $thread_data['LENGTH'], $pid, $thread_data['FID'], false, false, false, true, true, true);
 
         }else {
 
-            message_display($tid, $preview_message, $threaddata['LENGTH'], $pid, $threaddata['FID'], true, false, false, false, $show_sigs, true);
+            message_display($tid, $preview_message, $thread_data['LENGTH'], $pid, $thread_data['FID'], true, false, false, false, $show_sigs, true);
         }
 
         echo "                  </td>\n";
@@ -319,7 +349,7 @@ if (isset($msg) && validate_msg($msg)) {
         echo "      <td align=\"left\">&nbsp;</td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
-        echo "      <td align=\"center\">", form_submit("approve", $lang['approve']), "&nbsp;".form_submit("cancel", $lang['cancel']), "</td>\n";
+        echo "      <td align=\"center\">", form_submit("approve", $lang['approve']), "&nbsp;", form_submit("delete", $lang['delete']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
         echo "    </tr>\n";
         echo "  </table>\n";
         echo "</form>\n";

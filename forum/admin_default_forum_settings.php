@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.115 2008-07-27 10:53:25 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.116 2008-07-27 18:26:09 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -70,8 +70,6 @@ include_once(BH_INCLUDE_PATH. "styles.inc.php");
 include_once(BH_INCLUDE_PATH. "text_captcha.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
-// Intitalise a few variables
-
 // Check we're logged in correctly
 
 if (!$user_sess = bh_session_check()) {
@@ -117,10 +115,6 @@ $forum_location = html_get_forum_uri();
 // Array to hold error messages
 
 $error_msg_array = array();
-
-// Frame target for Default Forum Rules
-
-$frame_top_target = html_get_top_frame_name();
 
 // Variable to track creation of text-captcha directories.
 
@@ -736,7 +730,7 @@ if (isset($forum_global_settings['text_captcha_enabled']) && $forum_global_setti
 
     if (!$text_captcha->generate_keys() || !$text_captcha->make_image()) {
 
-        if (($errno = $text_captcha->get_error())) {
+        if ($errno = $text_captcha->get_error()) {
 
             switch ($errno) {
 
@@ -829,7 +823,6 @@ echo "  </table>\n";
 echo "  <br />\n";
 
 $forum_rules = new TextAreaHTML("prefsform");
-
 echo $forum_rules->preload();
 
 $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');

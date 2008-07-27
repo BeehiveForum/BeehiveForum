@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.129 2008-07-27 10:53:32 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.130 2008-07-27 18:26:11 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -75,8 +75,6 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "thread.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "user_rel.inc.php");
-
-// Intitalise a few variables
 
 // Check we're logged in correctly
 
@@ -289,9 +287,9 @@ if (isset($_POST['t_sig_html'])) {
     $fetched_sig = true;
 }
 
-$emots_enabled = !($page_prefs & POST_EMOTICONS_DISABLED);
-
 if (!isset($sig_html)) $sig_html = POST_HTML_DISABLED;
+
+if (!isset($emots_enabled)) $emots_enabled = !($page_prefs & POST_EMOTICONS_DISABLED);
 
 if (!isset($t_content)) $t_content = "";
 if (!isset($t_sig)) $t_sig = "";
@@ -485,7 +483,7 @@ if ($valid && isset($_POST['post'])) {
 
             if ($t_tid > 0) {
 
-                if (($allow_sig == true && strlen(trim($t_sig)) > 0)) {
+                if ($allow_sig == true && strlen(trim($t_sig)) > 0) {
                     $t_content.= "\n<div class=\"sig\">$t_sig</div>";
                 }
 
@@ -590,7 +588,7 @@ if ($valid && isset($_POST['preview'])) {
 
     $preview_message['CONTENT'] = $t_content;
 
-    if (($allow_sig == true && strlen(trim($t_sig)) > 0)) {
+    if ($allow_sig == true && strlen(trim($t_sig)) > 0) {
         $preview_message['CONTENT'] = $preview_message['CONTENT']. "<div class=\"sig\">". $t_sig. "</div>";
     }
 

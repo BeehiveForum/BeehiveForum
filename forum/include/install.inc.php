@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.71 2008-07-27 15:23:25 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.72 2008-07-27 18:26:15 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -132,19 +132,17 @@ function check_install()
 
 function install_remove_files()
 {
-    if (defined("BEEHIVE_INSTALL_NOWARN")) return false;
+    if (defined("BEEHIVE_INSTALL_NOWARN")) return;
 
     rmdir_recursive('install');
 
-    if (@file_exists('install.php')) {
-    	return @unlink('install.php');
-    }
-    
-    return true;
+    if (@file_exists('install.php')) return @unlink('install.php');
 }
 
 function install_incomplete()
 {
+    $frame_top_target = html_get_top_frame_name();
+
     echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
     echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"ltr\">\n";
@@ -205,6 +203,8 @@ function install_incomplete()
 
 function install_missing_files()
 {
+    $frame_top_target = html_get_top_frame_name();
+
     echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
     echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"ltr\">\n";
@@ -254,9 +254,7 @@ function install_missing_files()
 
 function install_check_mysql_version()
 {
-    $mysql_version = 0;
-	
-	if (db_fetch_mysql_version($mysql_version)) {
+    if (db_fetch_mysql_version($mysql_version)) {
 
         if ($mysql_version < 40116) {
 
@@ -373,7 +371,7 @@ function install_get_webtags()
 
         $forum_webtag_array = array();
 
-        while (($forum_webtags_data = db_fetch_array($result))) {
+        while ($forum_webtags_data = db_fetch_array($result)) {
             $forum_webtag_array[$forum_webtags_data['FID']] = $forum_webtags_data['WEBTAG'];
         }
 
@@ -477,21 +475,21 @@ function install_remove_table_keys($table_name)
 
     if ($table_name !== db_escape_string($table_name)) return false;
 
-    $table_index_array = array();
+    $table_index = array();
 
     $sql = "SHOW INDEX FROM $table_name";
 
     if (!$result = db_query($sql, $db_install_remove_table_keys)) return false;
 
-    while (($table_index_data = db_fetch_array($result))) {
+    while ($table_index_data = db_fetch_array($result)) {
 
         if (preg_match("/^PRIMARY$/", strtoupper($table_index_data['Key_name'])) < 1) {
 
-            $table_index_array[] = $table_index_data['Key_name'];
+            $table_index[$table_index_data['Key_name']] = $table_index_data['Column_name'];
         }
     }
 
-    foreach ($table_index_array as $key_name) {
+    foreach ($table_index as $key_name => $column_name) {
 
         $sql = "ALTER TABLE $table_name DROP INDEX $key_name";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.283 2008-07-27 15:23:25 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.284 2008-07-27 18:26:15 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -93,6 +93,8 @@ function html_error_msg($error_msg, $href = false, $method = 'get', $button_arra
 function html_display_msg($header_text, $string_msg, $href = false, $method = 'get', $button_array = false, $var_array = false, $target = "_self", $align = "left")
 {
     $webtag = get_webtag();
+
+    $lang = load_language_file();
 
     $available_methods = array('get', 'post');
     if (!in_array($method, $available_methods)) $method = 'get';
@@ -180,7 +182,7 @@ function html_display_error_array($error_list_array, $width = '600', $align = 'c
 
     if (!preg_match('/[0-9]+%?/', $width)) $width = '600';
 
-    $error_list_array = array_filter($error_list_array, 'is_string');
+    if (!is_array($error_list_array)) $error_msg_array = array($error_msg_array);
 
     $available_alignments = array('left', 'center', 'right');
     if (!in_array($align, $available_alignments)) $align = 'left';
@@ -221,8 +223,6 @@ function html_display_success_msg($string_msg, $width = '600', $align = 'center'
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</div>\n";
-    
-    return true;
 }
 
 function html_display_error_msg($string_msg, $width = '600', $align = 'center')
@@ -244,8 +244,6 @@ function html_display_error_msg($string_msg, $width = '600', $align = 'center')
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</div>\n";
-    
-    return true;
 }
 
 function html_display_warning_msg($string_msg, $width = '600', $align = 'center')
@@ -267,8 +265,6 @@ function html_display_warning_msg($string_msg, $width = '600', $align = 'center'
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</div>\n";
-    
-    return true;
 }
 
 function html_display_success_msg_js($string_msg, $width = '600', $align = 'center')
@@ -302,6 +298,8 @@ function html_email_confirmation_error()
 {
     $lang = load_language_file();
 
+    $webtag = get_webtag();
+
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $user_array = user_get($uid);
@@ -309,8 +307,6 @@ function html_email_confirmation_error()
     html_draw_top("robots=noindex,nofollow");
     html_error_msg($lang['emailconfirmationrequiredbeforepost'], 'confirm_email.php', 'get', array('resend' => $lang['resendconfirmation']), array('uid' => $user_array['UID'], 'resend' => 'Y'));
     html_draw_bottom();
-    
-    return true;
 }
 
 function html_message_type_error()
@@ -325,6 +321,8 @@ function html_message_type_error()
 function html_get_top_page()
 {
     $webtag = get_webtag();
+
+    $forum_settings = forum_get_settings();
 
     $forum_path = defined('BH_FORUM_PATH') ? BH_FORUM_PATH : '.';
 
@@ -357,6 +355,8 @@ function html_get_style_sheet()
 {
     $webtag = get_webtag();
 
+    $forum_settings = forum_get_settings();
+
     $forum_path = defined('BH_FORUM_PATH') ? BH_FORUM_PATH : '.';
 
     $script_filename = basename($_SERVER['PHP_SELF'], '.php');
@@ -369,28 +369,28 @@ function html_get_style_sheet()
 
         if (@is_dir("$forum_path/styles/$user_style") && @file_exists("$forum_path/styles/$user_style/$script_filename.css")) {
 
-            if (($modified_time = @filemtime("$forum_path/styles/$user_style/$script_filename.css"))) {
+            if ($modified_time = @filemtime("$forum_path/styles/$user_style/$script_filename.css")) {
                 return sprintf("$forum_path/styles/$user_style/$script_filename.css?%s", date('YmdHis', $modified_time));
             }
         }
 
         if (@is_dir("$forum_path/styles/$user_style") && @file_exists("$forum_path/styles/$user_style/style.css")) {
 
-            if (($modified_time = @filemtime("$forum_path/styles/$user_style/style.css"))) {
+            if ($modified_time = @filemtime("$forum_path/styles/$user_style/style.css")) {
                 return sprintf("$forum_path/styles/$user_style/style.css?%s", date('YmdHis', $modified_time));
             }
         }
 
         if (@is_dir("$forum_path/forums/$webtag/styles/$user_style") && @file_exists("$forum_path/forums/$webtag/styles/$user_style/$script_filename.css")) {
 
-            if (($modified_time = @filemtime("$forum_path/forums/$webtag/styles/$user_style/$script_filename.css"))) {
+            if ($modified_time = @filemtime("$forum_path/forums/$webtag/styles/$user_style/$script_filename.css")) {
                 return sprintf("$forum_path/forums/$webtag/styles/$user_style/$script_filename.css?%s", date('YmdHis', $modified_time));
             }
         }
 
         if (@is_dir("$forum_path/forums/$webtag/styles/$user_style") && @file_exists("$forum_path/forums/$webtag/styles/$user_style/style.css")) {
 
-            if (($modified_time = @filemtime("$forum_path/forums/$webtag/styles/$user_style/style.css"))) {
+            if ($modified_time = @filemtime("$forum_path/forums/$webtag/styles/$user_style/style.css")) {
                 return sprintf("$forum_path/forums/$webtag/styles/$user_style/style.css?%s", date('YmdHis', $modified_time));
             }
         }
@@ -400,7 +400,7 @@ function html_get_style_sheet()
 
         if (@is_dir("$forum_path/forums/$webtag") && @file_exists("$forum_path/forums/$webtag/style.css")) {
 
-            if (($modified_time = @filemtime("$forum_path/forums/$webtag/style.css"))) {
+            if ($modified_time = @filemtime("$forum_path/forums/$webtag/style.css")) {
                 return sprintf("$forum_path/forums/$webtag/style.css?%s", date('YmdHis', $modified_time));
             }
         }
@@ -408,7 +408,7 @@ function html_get_style_sheet()
 
     if (@is_dir("$forum_path/styles") && @file_exists("$forum_path/styles/style.css")) {
 
-        if (($modified_time = @filemtime("$forum_path/styles/style.css"))) {
+        if ($modified_time = @filemtime("$forum_path/styles/style.css")) {
             return sprintf("$forum_path/styles/style.css?%s", date('YmdHis', $modified_time));
         }
     }
@@ -420,6 +420,8 @@ function html_get_emoticon_style_sheet()
 {
     $webtag = get_webtag();
 
+    $forum_settings = forum_get_settings();
+
     $forum_path = defined('BH_FORUM_PATH') ? BH_FORUM_PATH : '.';
 
     if (($user_emots = bh_session_get_value('EMOTICONS')) === false) {
@@ -430,14 +432,14 @@ function html_get_emoticon_style_sheet()
 
         if (@is_dir("$forum_path/emoticons/$user_emots") && file_exists("$forum_path/emoticons/$user_emots/style.css")) {
 
-            if (($modified_time = @filemtime("$forum_path/emoticons/$user_emots/style.css"))) {
+            if ($modified_time = @filemtime("$forum_path/emoticons/$user_emots/style.css")) {
                 return sprintf("$forum_path/emoticons/$user_emots/style.css?%s", date('YmdHis', $modified_time));
             }
         }
 
         if (@is_dir("$forum_path/forums/$webtag/emoticons/$user_emots") && file_exists("$forum_path/forums/$webtag/emoticons/$user_emots/style.css")) {
 
-            if (($modified_time = @filemtime("$forum_path/forums/$webtag/emoticons/$user_emots/style.css"))) {
+            if ($modified_time = @filemtime("$forum_path/forums/$webtag/emoticons/$user_emots/style.css")) {
                 return sprintf("$forum_path/forums/$webtag/emoticons/$user_emots/style.css?%s", date('YmdHis', $modified_time));
             }
         }
@@ -448,7 +450,12 @@ function html_get_emoticon_style_sheet()
 
 function html_get_forum_keywords()
 {
-    if (($forum_keywords = forum_get_setting('forum_keywords'))) {
+    $webtag = get_webtag();
+
+    $forum_settings = forum_get_settings();
+
+    if ($forum_keywords = forum_get_setting('forum_keywords')) {
+
         return $forum_keywords;
     }
 
@@ -457,7 +464,12 @@ function html_get_forum_keywords()
 
 function html_get_forum_description()
 {
-    if (($forum_desc = forum_get_setting('forum_desc'))) {
+    $webtag = get_webtag();
+
+    $forum_settings = forum_get_settings();
+
+    if ($forum_desc = forum_get_setting('forum_desc')) {
+
         return $forum_desc;
     }
 
@@ -466,7 +478,12 @@ function html_get_forum_description()
 
 function html_get_forum_email()
 {
-    if (($forum_email = forum_get_setting('forum_email'))) {
+    $webtag = get_webtag();
+
+    $forum_settings = forum_get_settings();
+
+    if ($forum_email = forum_get_setting('forum_email')) {
+
         return $forum_email;
     }
 
@@ -481,7 +498,7 @@ function html_get_frame_name($basename)
 
     // If webtag available add that to the hash.
 
-    if (($webtag = get_webtag())) {
+    if ($webtag = get_webtag()) {
 
         $frame_md5_hash = md5(sprintf('%s-%s-%s', $forum_uri, $webtag, $basename));
         return sprintf('bh_frame_%s', preg_replace('/[^a-z]+/i', '', $frame_md5_hash));
@@ -578,17 +595,13 @@ function html_draw_top()
     $meta_refresh_delay = false;
     $meta_refresh_url = false;
 
-    $title = "";
-    $body_class = "";
-    $base_target = "";
-    
     $robots = "noindex,nofollow";
+
+    $forum_settings = forum_get_settings();
 
     $webtag = get_webtag();
 
     $forum_path = defined('BH_FORUM_PATH') ? BH_FORUM_PATH : '.';
-    
-    $func_matches = array();
 
     $include_body_tag = true;
     $frameset_dtd = false;
@@ -596,43 +609,43 @@ function html_draw_top()
 
     foreach($arg_array as $key => $func_args) {
 
-        if (preg_match('/^title=([^$]+)$/i', $func_args, $func_matches) > 0) {
-            if (strlen(trim($title)) < 1) $title = $func_matches[1];
+        if (preg_match("/^title=([^$]+)$/i", $func_args, $func_matches) > 0) {
+            if (!isset($title)) $title = $func_matches[1];
             unset($arg_array[$key]);
         }
 
-        if (preg_match('/^class=([^$]+)$/i', $func_args, $func_matches) > 0) {
-            if (strlen(trim($body_class)) < 1) $body_class = $func_matches[1];
+        if (preg_match("/^class=([^$]+)$/i", $func_args, $func_matches) > 0) {
+            if (!isset($body_class)) $body_class = $func_matches[1];
             unset($arg_array[$key]);
         }
 
-        if (preg_match('/^basetarget=([^$]+)$/i', $func_args, $func_matches) > 0) {
-            if (strlen(trim($base_target)) < 1) $base_target = $func_matches[1];
+        if (preg_match("/^basetarget=([^$]+)$/i", $func_args, $func_matches) > 0) {
+            if (!isset($base_target)) $base_target = $func_matches[1];
             unset($arg_array[$key]);
         }
 
-        if (preg_match('/^onload=([^$]+)$/i', $func_args, $func_matches) > 0) {
+        if (preg_match("/^onload=([^$]+)$/i", $func_args, $func_matches) > 0) {
             $onload_array[] = $func_matches[1];
             unset($arg_array[$key]);
         }
 
-        if (preg_match('/^onunload=([^$]+)$/i', $func_args, $func_matches) > 0) {
+        if (preg_match("/^onunload=([^$]+)$/i", $func_args, $func_matches) > 0) {
             $onunload_array[] = $func_matches[1];
             unset($arg_array[$key]);
         }
 
-        if (preg_match('/^stylesheet=([^:]+):([^$]+)$/i', $func_args, $func_matches) > 0) {
+        if (preg_match("/^stylesheet=([^:]+):([^$]+)$/i", $func_args, $func_matches) > 0) {
 
             $stylesheet_array[] = array('filename' => $func_matches[1], 'media' => $func_matches[2]);
             unset($arg_array[$key]);
 
-        }elseif (preg_match('/^stylesheet=([^$]+)$/i', $func_args, $func_matches) > 0) {
+        }elseif (preg_match("/^stylesheet=([^$]+)$/i", $func_args, $func_matches) > 0) {
 
             $stylesheet_array[] = array('filename' => $func_matches[1], 'media' => 'screen');
             unset($arg_array[$key]);
         }
-        
-        if (preg_match('/^refresh=([^:]+):([^$]+)$/i', $func_args, $func_matches) > 0) {
+
+        if (preg_match("/^refresh=([^:]+):([^$]+)$/i", $func_args, $func_matches) > 0) {
 
             if (isset($func_matches[1]) && is_numeric($func_matches[1])) {
 
@@ -678,8 +691,8 @@ function html_draw_top()
     if (!isset($resize_width)) $resize_width = 0;
 
     $forum_keywords = html_get_forum_keywords();
-
     $forum_description = html_get_forum_description();
+    $forum_email = html_get_forum_email();
 
     echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 
@@ -718,11 +731,11 @@ function html_draw_top()
         echo "<link rel=\"icon\" href=\"$forum_path/forums/$webtag/favicon.ico\" type=\"image/ico\" />\n";
     }
 
-    if (($stylesheet = html_get_style_sheet())) {
+    if ($stylesheet = html_get_style_sheet()) {
         echo "<link rel=\"stylesheet\" href=\"$stylesheet\" type=\"text/css\" media=\"screen\" />\n";
     }
 
-    if (($emoticon_style_sheet = html_get_emoticon_style_sheet())) {
+    if ($emoticon_style_sheet = html_get_emoticon_style_sheet()) {
         echo "<link rel=\"stylesheet\" href=\"$emoticon_style_sheet\" type=\"text/css\" />\n";
     }
 
@@ -758,11 +771,11 @@ function html_draw_top()
     echo "//-->\n";
     echo "</script>\n";
 
-    if (($modified_time = @filemtime("js/general.js"))) {
+    if ($modified_time = @filemtime("js/general.js")) {
         echo sprintf("<script language=\"Javascript\" type=\"text/javascript\" src=\"js/general.js?%s\"></script>\n", date('YmdHis', $modified_time));
     }
 
-    if (($modified_time = @filemtime("js/xml_http.js"))) {
+    if ($modified_time = @filemtime("js/xml_http.js")) {
         echo sprintf("<script language=\"Javascript\" type=\"text/javascript\" src=\"js/xml_http.js?%s\"></script>\n", date('YmdHis', $modified_time));
     }
 
@@ -819,7 +832,7 @@ function html_draw_top()
 
                 if ((!in_array(basename($_SERVER['PHP_SELF']), $pm_popup_disabled_pages))) {
 
-                    if (($modified_time = @filemtime("js/pm.js"))) {
+                    if ($modified_time = @filemtime("js/pm.js")) {
 
                         echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
                         echo "<!--\n\n";
@@ -873,7 +886,7 @@ function html_draw_top()
 
                 if (bh_session_get_value('USE_MOVER_SPOILER') == "Y") {
 
-                    if (($modified_time = @filemtime("js/spoiler.js"))) {
+                    if ($modified_time = @filemtime("js/spoiler.js")) {
 
                         echo sprintf("<script language=\"Javascript\" type=\"text/javascript\" src=\"js/spoiler.js?%s\"></script>\n", date('YmdHis', $modified_time));
                         if (!in_array("spoilerInitialise", $onload_array)) $onload_array[] = "spoilerInitialise()";
@@ -890,7 +903,7 @@ function html_draw_top()
 
             if ((bh_session_get_value('SHOW_STATS') == 'Y') || user_is_guest()) {
 
-                if (($modified_time = @filemtime("js/stats.js"))) {
+                if ($modified_time = @filemtime("js/stats.js")) {
 
                     echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
                     echo "<!--\n\n";
@@ -985,7 +998,7 @@ function html_draw_top()
 
     foreach($arg_array as $func_args) {
 
-        if (($func_args == "htmltools.js" && @file_exists("$forum_path/tiny_mce/tiny_mce.js"))) {
+        if ($func_args == "htmltools.js" && @file_exists("$forum_path/tiny_mce/tiny_mce.js")) {
 
             $page_prefs = bh_session_get_post_page_prefs();
 
@@ -995,14 +1008,14 @@ function html_draw_top()
 
             }else {
 
-                if (($modified_time = @filemtime("js/{$func_args}"))) {
+                if ($modified_time = @filemtime("js/{$func_args}")) {
                     echo sprintf("<script language=\"Javascript\" type=\"text/javascript\" src=\"$forum_path/js/{$func_args}?%s\"></script>\n", date('YmdHis', $modified_time));
                 }
             }
 
         }else if (@is_dir("$forum_path/js/") && @file_exists("$forum_path/js/$func_args")) {
 
-            if (($modified_time = @filemtime("js/{$func_args}"))) {
+            if ($modified_time = @filemtime("js/{$func_args}")) {
                 echo sprintf("<script language=\"Javascript\" type=\"text/javascript\" src=\"$forum_path/js/{$func_args}?%s\"></script>\n", date('YmdHis', $modified_time));
             }
         }
@@ -1059,6 +1072,8 @@ function style_image($img)
 {
     $webtag = get_webtag();
 
+    $forum_settings = forum_get_settings();
+
     $forum_path = defined('BH_FORUM_PATH') ? BH_FORUM_PATH : '.';
 
     if (($user_style = bh_session_get_value('STYLE')) === false) {
@@ -1086,19 +1101,19 @@ function bh_setcookie($name, $value, $expires = 0)
 
     if (strlen(trim($cookie_domain)) > 0 && !defined('BEEHIVEMODE_LIGHT')) {
 
-        $check_cookie_url = parse_url($cookie_domain);
-        
-        if (isset($check_cookie_url['hostname'])) {
-        	$cookie_domain = $check_cookie_url['hostname'];
-        }else {
-        	$cookie_domain = '';
-        }
-        
-        if (isset($check_cookie_url['path'])) {
-        	$cookie_path = sprintf('/%s/', trim($check_cookie_url['path'], '/'));
-        }else {
-        	$cookie_path = '';
-        }
+        $cookie_domain = preg_replace("/^[^:\s]+:\/\//", "", trim($cookie_domain));
+
+        $cookie_path = preg_replace("/\\\/", "/", $cookie_domain);
+        $cookie_path = explode('/', $cookie_domain);
+
+        $cookie_domain = $cookie_path[0]; unset($cookie_path[0]);
+
+        $cookie_path = implode('/', $cookie_path);
+
+        $cookie_path = preg_replace("/[\/]+$/", "", $cookie_path);
+        $cookie_path = preg_replace("/^[\/]+/", "", $cookie_path);
+
+        $cookie_path = preg_replace("/[\/]+/", "/", "/$cookie_path/");
 
         if (isset($_SERVER['HTTP_HOST']) && !strstr($_SERVER['HTTP_HOST'], 'localhost')) {
 
@@ -1114,13 +1129,7 @@ function bh_setcookie($name, $value, $expires = 0)
 
 function bh_remove_all_cookies()
 {
-    // Arrays to hold our cookie data
-    
-	$username_array = array();
-	$password_array = array();
-	$passhash_array = array();
-	
-	// Retrieve existing cookie data if any
+    // Retrieve existing cookie data if any
 
     logon_get_cookies($username_array, $password_array, $passhash_array);
 
@@ -1151,9 +1160,9 @@ function bh_remove_all_cookies()
     bh_setcookie("bh_light_remember_password", "", time() - YEAR_IN_SECONDS);
     bh_setcookie("bh_light_remember_passhash", "", time() - YEAR_IN_SECONDS);
 
-    if (($webtag_array = forum_get_all_webtags())) {
+    if ($webtag_array = forum_get_all_webtags()) {
 
-        foreach ($webtag_array as $forum_webtag) {
+        foreach ($webtag_array as $fid => $forum_webtag) {
 
             bh_setcookie("bh_{$forum_webtag}_thread_mode", "", time() - YEAR_IN_SECONDS);
             bh_setcookie("bh_{$forum_webtag}_password", "", time() - YEAR_IN_SECONDS);
@@ -1170,9 +1179,7 @@ function href_cleanup_query_keys($uri, $remove_keys = false, $seperator = "&amp;
 
     if (isset($uri_array['query'])) {
 
-        $uri_query_array = array();
-    	
-    	parse_str($uri_array['query'], $uri_query_array);
+        parse_str($uri_array['query'], $uri_query_array);
 
         $uri_query_keys = array();
         $uri_query_values = array();
@@ -1189,7 +1196,7 @@ function href_cleanup_query_keys($uri, $remove_keys = false, $seperator = "&amp;
                     $uri_query_values[$key] = "";
                 }
 
-                if (($remove_keys === false || (is_array($remove_keys) && !in_array($key_name, $remove_keys)) || $key_name != $remove_keys)) {
+                if ($remove_keys === false || (is_array($remove_keys) && !in_array($key_name, $remove_keys)) || $key_name != $remove_keys) {
 
                     $uri_query_values[$key] = urlencode($uri_query_values[$key]);
                     $new_uri_query_array[] = "$key_name={$uri_query_values[$key]}";
@@ -1206,7 +1213,7 @@ function href_cleanup_query_keys($uri, $remove_keys = false, $seperator = "&amp;
         $uri.= (isset($uri_array['query']))    ? "?{$uri_array['query']}"    : '';
         $uri.= (isset($uri_array['fragment'])) ? "#{$uri_array['fragment']}" : '';
 
-        $uri = preg_replace('/\?$|&$|&amp;$/', '', $uri);
+        $uri = preg_replace("/\?$|&$|&amp;$/", "", $uri);
     }
 
     return $uri;
@@ -1374,7 +1381,8 @@ function html_get_forum_uri($append_path = "")
     if (server_os_mswin()) {
 
         $uri_array['path'] = dirname("{$uri_array['path']}beehive");
-        $uri_array['path'] = str_replace('\\', '/', $uri_array['path']);
+        $uri_array['path'] = preg_replace("/\\\/", "/", $uri_array['path']);
+        $uri_array['path'] = preg_replace("/\/$/", "", $uri_array['path']);
 
     }else {
 

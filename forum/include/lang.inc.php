@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lang.inc.php,v 1.37 2008-07-27 15:23:25 decoyduck Exp $ */
+/* $Id: lang.inc.php,v 1.38 2008-07-27 18:26:15 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -63,7 +63,7 @@ function load_language_file()
          // if the user has expressed a preference for language,
          // ignore what the browser wants and use that if available
 
-        if (($pref_language = bh_session_get_value("LANGUAGE"))) {
+        if ($pref_language = bh_session_get_value("LANGUAGE")) {
 
             if (@file_exists("include/languages/{$pref_language}.inc.php")) {
 
@@ -82,7 +82,7 @@ function load_language_file()
 
         // split the provided Accept-Language string into individual languages
 
-        $langs_array = preg_split('/\s*,\s*/', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
+        $langs_array = preg_split("/\s*,\s*/", $_SERVER['HTTP_ACCEPT_LANGUAGE']);
 
          // work out what the q values associated with each language are
 
@@ -133,9 +133,9 @@ function lang_get_available($inc_browser_negotiation = true)
 
     $available_langs = ($inc_browser_negotiation) ? array('' => $lang['browsernegotiation']) : array();
 
-    if ((@$dir = opendir("include/languages"))) {
+    if (@$dir = opendir("include/languages")) {
 
-        while (($file = readdir($dir))) {
+        while ($file = readdir($dir)) {
 
             if (($pos = strpos($file, '.inc.php')) !== false) {
 

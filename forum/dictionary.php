@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.php,v 1.48 2008-07-27 10:53:28 decoyduck Exp $ */
+/* $Id: dictionary.php,v 1.49 2008-07-27 18:26:09 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -62,8 +62,6 @@ include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "logon.inc.php");
 include_once(BH_INCLUDE_PATH. "perm.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
-
-// Intitalise a few variables
 
 // Check we're logged in correctly
 
@@ -402,7 +400,7 @@ echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" width=\"270\">\n";
 
-if (($suggestions_array = $dictionary->get_suggestions_array())) {
+if ($suggestions_array = $dictionary->get_suggestions_array()) {
 
     echo "                    ", form_dropdown_array("suggestion", $suggestions_array, $dictionary->get_best_suggestion(), "size=\"10\" onchange=\"changeWord(this)\"", "dictionary_best_selection"), "\n";
 

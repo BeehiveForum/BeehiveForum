@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_find_deprecated_consts_and_langs.php,v 1.6 2008-07-26 20:59:22 decoyduck Exp $ */
+/* $Id: bh_find_deprecated_consts_and_langs.php,v 1.7 2008-07-27 18:26:08 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./forum/include/");
@@ -35,7 +35,7 @@ function get_files(&$files_array, $path, $ignore_files_array = array())
 
     if (!is_array($ignore_files_array)) $ignore_files_array = array();
 
-    if (($dir = opendir($path))) {
+    if ($dir = opendir($path)) {
 
         while (($file = readdir($dir)) !== false) {
 
@@ -57,9 +57,8 @@ function get_files(&$files_array, $path, $ignore_files_array = array())
         }
 
         closedir($dir);
+        return true;
     }
-    
-    return sizeof($files_array) > 0;
 }
 
 @set_time_limit(0);
@@ -80,7 +79,7 @@ if (get_files($files_array, "forum")) {
 
             foreach($files_array as $filename) {
 
-                if (($file_contents = file_get_contents($filename))) {
+                if ($file_contents = file_get_contents($filename)) {
 
                     echo "CHECKING: $filename\n";
 

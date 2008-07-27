@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.540 2008-07-27 15:23:25 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.541 2008-07-27 18:26:15 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -89,7 +89,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
         $messages = false;
 
-        while (($message = db_fetch_array($result))) {
+        while($message = db_fetch_array($result)) {
 
             $message['CONTENT'] = "";
 
@@ -137,7 +137,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
     }else {
 
-        if (($messages = db_fetch_array($result))) {
+        if ($messages = db_fetch_array($result)) {
 
             if (!isset($messages['VIEWED'])) $messages['VIEWED'] = 0;
 
@@ -183,7 +183,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
 function message_get_content($tid, $pid)
 {
-    if (($message_content = cache_check("$tid.$pid"))) {
+    if ($message_content = cache_check("$tid.$pid")) {
         return $message_content;
     }
 
@@ -228,7 +228,7 @@ function message_get_content($tid, $pid)
 */
 function message_apply_formatting($message, $emoticons = true, $ignore_sig = false)
 {
-        $webtag = get_webtag();
+    $webtag = get_webtag();
 
     $message_parts = preg_split('/(<[^<>]+>)/', $message, -1, PREG_SPLIT_DELIM_CAPTURE);
 
@@ -463,7 +463,7 @@ function message_apply_formatting($message, $emoticons = true, $ignore_sig = fal
             if (strlen($wiki_location) > 0) $wiki_location = str_replace("[WikiWord]", "\\1", $wiki_location);
         }
 
-        $message_parts = preg_split('/<\/?nowiki>/', $message);
+        $message_parts = preg_split("/<\/?nowiki>/", $message);
 
         for ($i = 0; $i < sizeof($message_parts); $i++) {
 
@@ -477,19 +477,19 @@ function message_apply_formatting($message, $emoticons = true, $ignore_sig = fal
 
                         if ($enable_wiki_words) {
 
-                            $html_parts[$j] = preg_replace('/\b(([A-Z][a-z]+){2,})\b/', "<a href=\"$wiki_location\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
+                            $html_parts[$j] = preg_replace("/\b(([A-Z][a-z]+){2,})\b/", "<a href=\"$wiki_location\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
                         }
 
                         if ($enable_wiki_links) {
 
                             if (defined('BEEHIVEMODE_LIGHT')) {
 
-                                $html_parts[$j] = preg_replace('/\b(msg:([0-9]{1,}\.[0-9]{1,}))\b/i', "<a href=\"lmessages.php?webtag=$webtag&amp;msg=\\2\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
+                                $html_parts[$j] = preg_replace("/\b(msg:([0-9]{1,}\.[0-9]{1,}))\b/i", "<a href=\"lmessages.php?webtag=$webtag&amp;msg=\\2\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
 
                             }else {
 
-                                $html_parts[$j] = preg_replace('/\b(msg:([0-9]{1,}\.[0-9]{1,}))\b/i', "<a href=\"index.php?webtag=$webtag&amp;msg=\\2\" target=\"_blank\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
-                                $html_parts[$j] = preg_replace('/\b(user:([a-z0-9_-]{2,15}))\b/i', "<a href=\"user_profile.php?webtag=$webtag&amp;logon=\\2\" target=\"_blank\" onclick=\"return openProfileByLogon('\\2', '$webtag')\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
+                                $html_parts[$j] = preg_replace("/\b(msg:([0-9]{1,}\.[0-9]{1,}))\b/i", "<a href=\"index.php?webtag=$webtag&amp;msg=\\2\" target=\"_blank\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
+                                $html_parts[$j] = preg_replace("/\b(user:([a-z0-9_-]{2,15}))\b/i", "<a href=\"user_profile.php?webtag=$webtag&amp;logon=\\2\" target=\"_blank\" onclick=\"return openProfileByLogon('\\2', '$webtag')\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
                             }
                         }
                     }
@@ -504,8 +504,8 @@ function message_apply_formatting($message, $emoticons = true, $ignore_sig = fal
 
     if ($emoticons == true) {
 
-        $message_parts = preg_split('/<\/?noemots>/', $message);
-        $signature_parts = preg_split('/<\/?noemots>/', $signature);
+        $message_parts = preg_split("/<\/?noemots>/", $message);
+        $signature_parts = preg_split("/<\/?noemots>/", $signature);
 
         $message_parts = array_merge($message_parts, $signature_parts);
 
@@ -520,7 +520,7 @@ function message_apply_formatting($message, $emoticons = true, $ignore_sig = fal
         $message = implode("", $message_parts);
     }
 
-    return preg_replace('/<\/?noemots>|<\/?nowiki>/', '', $message);
+    return preg_replace("/<\/?noemots>|<\/?nowiki>/", "", $message);
 }
 
 function messages_top($tid, $pid, $folder_fid, $folder_title, $thread_title, $thread_interest_level = THREAD_NOINTEREST, $folder_interest_level = FOLDER_NOINTEREST, $sticky = "N", $closed = false, $locked = false, $deleted = false, $frame_links = true)
@@ -573,9 +573,6 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
     $post_edit_time = forum_get_setting('post_edit_time', false, 0);
     $post_edit_grace_period = forum_get_setting('post_edit_grace_period', false, 0);
-    
-    $attachments_array = array();
-    $image_attachments_array = array();    
 
     $webtag = get_webtag();
 
@@ -592,7 +589,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     if (!isset($message['CONTENT']) || $message['CONTENT'] == "") {
 
         message_display_deleted($tid, isset($message['PID']) ? $message['PID'] : 0, $message);
-        return true;
+        return;
     }
 
     $from_user_permissions = perm_get_user_permissions($message['FROM_UID']);
@@ -602,7 +599,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
         if (($from_user_permissions & USER_PERM_WORMED) && !$perm_is_moderator) {
 
             message_display_deleted($tid, $message['PID'], $message);
-            return true;
+            return;
         }
     }
 
@@ -619,16 +616,16 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     if (($message['TO_RELATIONSHIP'] & USER_IGNORED_COMPLETELY) || ($message['FROM_RELATIONSHIP'] & USER_IGNORED_COMPLETELY)) {
 
         message_display_deleted($tid, $message['PID'], $message);
-        return true;
+        return;
     }
 
     // Add emoticons/WikiLinks and ignore signature ----------------------------
 
     if (bh_session_get_value('IMAGES_TO_LINKS') == 'Y') {
 
-        $message['CONTENT'] = preg_replace('/<a([^>]*)href="([^"]*)"([^\>]*)><img[^>]*src="([^"]*)"[^>]*><\/a>/i', "[img: <a\\1href=\"\\2\"\\3>\\4</a>]", $message['CONTENT']);
-        $message['CONTENT'] = preg_replace('/<img[^>]*src="([^"]*)"[^>]*>/i', "[img: <a href=\"\\1\">\\1</a>]", $message['CONTENT']);
-        $message['CONTENT'] = preg_replace('/<embed[^>]*src="([^"]*)"[^>]*>/i', "[object: <a href=\"\\1\">\\1</a>]", $message['CONTENT']);
+        $message['CONTENT'] = preg_replace("/<a([^>]*)href=\"([^\"]*)\"([^\>]*)><img[^>]*src=\"([^\"]*)\"[^>]*><\/a>/i", "[img: <a\\1href=\"\\2\"\\3>\\4</a>]", $message['CONTENT']);
+        $message['CONTENT'] = preg_replace("/<img[^>]*src=\"([^\"]*)\"[^>]*>/i", "[img: <a href=\"\\1\">\\1</a>]", $message['CONTENT']);
+        $message['CONTENT'] = preg_replace("/<embed[^>]*src=\"([^\"]*)\"[^>]*>/i", "[object: <a href=\"\\1\">\\1</a>]", $message['CONTENT']);
     }
 
     $message['CONTENT'] = "<div class=\"pear_cache_lite\">{$message['CONTENT']}</div>";
@@ -727,7 +724,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
         if (isset($message['APPROVED']) && $message['APPROVED'] == 0 && !$perm_is_moderator) {
 
             message_display_approval_req($tid, $message['PID']);
-            return true;
+            return;
         }
     }
 
@@ -746,7 +743,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
         echo "  </tr>\n";
         echo "</table>\n";
         echo "</div>\n";
-        return true;
+        return;
     }
 
     echo "<br />\n";
@@ -786,7 +783,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
     // If the user posting a poll is ignored, remove ignored status for this message only so the poll can be seen
 
-    if (($is_poll && isset($message['PID']) && $message['PID'] == 1 && ($message['FROM_RELATIONSHIP'] & USER_IGNORED))) {
+    if ($is_poll && isset($message['PID']) && $message['PID'] == 1 && ($message['FROM_RELATIONSHIP'] & USER_IGNORED)) {
 
         $message['FROM_RELATIONSHIP'] -= USER_IGNORED;
         $temp_ignore = true;
@@ -939,7 +936,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
             if (($post_edit_grace_period == 0) || ($message['EDITED'] - $message['CREATED']) > ($post_edit_grace_period * MINUTE_IN_SECONDS)) {
 
-                if (($edit_user = user_get_logon($message['EDITED_BY']))) {
+                if ($edit_user = user_get_logon($message['EDITED_BY'])) {
 
                     echo "              <tr>\n";
                     echo "                <td class=\"postbody\" align=\"left\"><p class=\"edit_text\">", sprintf($lang['editedbyuser'], format_time($message['EDITED'], 1), $edit_user), "</p></td>\n";
@@ -952,7 +949,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
             if (isset($message['APPROVED_BY']) && $message['APPROVED_BY'] > 0 && $message['APPROVED_BY'] != $message['FROM_UID']) {
 
-                if (($approved_user = user_get_logon($message['APPROVED_BY']))) {
+                if ($approved_user = user_get_logon($message['APPROVED_BY'])) {
 
                     echo "              <tr>\n";
                     echo "                <td class=\"postbody\" align=\"left\"><p class=\"approved_text\">", sprintf($lang['approvedbyuser'], format_time($message['APPROVED'], 1), $approved_user), "</p></td>\n";
@@ -964,7 +961,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
         if (($tid <> 0 && isset($message['PID'])) || isset($message['AID'])) {
 
             $aid = isset($message['AID']) ? $message['AID'] : get_attachment_id($tid, $message['PID']);
-            
+
             if (get_attachments($message['FROM_UID'], $aid, $attachments_array, $image_attachments_array)) {
 
                 echo "              <tr>\n";
@@ -1223,8 +1220,6 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     }
 
     echo "</div>\n";
-    
-    return true;
 }
 
 function message_display_deleted($tid, $pid, $message)
@@ -1243,7 +1238,7 @@ function message_display_deleted($tid, $pid, $message)
 
     if (isset($message['EDITED']) && $message['EDITED'] > 0) {
 
-        if (($edit_user = user_get_logon($message['EDITED_BY']))) {
+        if ($edit_user = user_get_logon($message['EDITED_BY'])) {
 
             $message_delete_time = format_time($message['EDITED'], 1);
             echo "                <td align=\"left\">", sprintf($lang['messagedeletedbyuser'], $tid, $pid, $message_delete_time, $edit_user), "</td>\n";
@@ -1326,7 +1321,7 @@ function messages_nav_strip($tid, $pid, $length, $ppp)
     // Less than 20 messages, no nav needed
 
     if ($pid < 2 && $length < $ppp){
-        return true;
+        return;
     }else if ($pid < 1) {
         $pid = 1;
     }
@@ -1404,8 +1399,6 @@ function messages_nav_strip($tid, $pid, $length, $ppp)
     echo "              </tr>\n";
     echo "            </table>\n";
     echo "            <br />\n";
-    
-    return true;
 }
 
 function mess_nav_range($from,$to)
@@ -1551,7 +1544,7 @@ function messages_update_read($tid, $pid, $last_read, $length, $modified)
 
     if (!user_is_guest()) {
 
-        if (($last_read < $length && $unread_cutoff_stamp !== false && (($modified > $unread_cutoff_stamp) || $unread_cutoff_stamp = 0))) {
+        if ($last_read < $length && $unread_cutoff_stamp !== false && (($modified > $unread_cutoff_stamp) || $unread_cutoff_stamp = 0)) {
 
             $sql = "SELECT COUNT(TID) AS THREAD_COUNT FROM {$table_data['PREFIX']}USER_THREAD ";
             $sql.= "WHERE UID = '$uid' AND TID = '$tid'";
@@ -1626,13 +1619,13 @@ function messages_set_read($tid, $pid, $uid, $modified)
 
     if ($uid > 0) {
 
-        if (($unread_cutoff_stamp !== false && (($modified > $unread_cutoff_stamp) || $unread_cutoff_stamp = 0))) {
+        if ($unread_cutoff_stamp !== false && (($modified > $unread_cutoff_stamp) || $unread_cutoff_stamp = 0)) {
 
             $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_THREAD ";
             $sql.= "SET LAST_READ = '$pid', LAST_READ_AT = NULL ";
             $sql.= "WHERE UID = '$uid' AND TID = '$tid'";
 
-            if (!db_query($sql, $db_message_set_read)) return false;
+            if (!$result = db_query($sql, $db_message_set_read)) return false;
 
             if (db_affected_rows($db_message_set_read) < 1) {
 
@@ -1640,7 +1633,7 @@ function messages_set_read($tid, $pid, $uid, $modified)
                 $sql.= "(UID, TID, LAST_READ, LAST_READ_AT) ";
                 $sql.= "VALUES ($uid, $tid, $pid, NULL)";
 
-                if (!db_query($sql, $db_message_set_read)) return false;
+                if (!$result = db_query($sql, $db_message_set_read)) return false;
             }
         }
     }
@@ -1650,7 +1643,7 @@ function messages_set_read($tid, $pid, $uid, $modified)
     $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}POST SET VIEWED = NULL ";
     $sql.= "WHERE TID = '$tid' AND PID >= '$pid' AND TO_UID = '$uid'";
 
-    if (!db_query($sql, $db_message_set_read)) return false;
+    if (!$result = db_query($sql, $db_message_set_read)) return false;
 
     return true;
 }
@@ -1796,7 +1789,7 @@ function messages_fontsize_form($tid, $pid)
 
 function validate_msg($msg)
 {
-    return preg_match('/^\d{1,}\.\d{1,}$/', rawurldecode($msg));
+    return preg_match("/^\d{1,}\.\d{1,}$/", rawurldecode($msg));
 }
 
 function messages_forum_stats($tid, $pid)
@@ -1804,6 +1797,8 @@ function messages_forum_stats($tid, $pid)
     $lang = load_language_file();
 
     $webtag = get_webtag();
+
+    $uid = bh_session_get_value("UID");
 
     if (forum_get_setting('show_stats', 'Y')) {
 

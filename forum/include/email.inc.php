@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.139 2008-07-27 15:23:24 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.140 2008-07-27 18:26:15 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -46,7 +46,7 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 function email_address_valid($email)
 {
-    return ereg('^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$', $email);
+    return ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $email);
 }
 
 function email_sendnotification($tuid, $fuid, $tid, $pid)
@@ -62,7 +62,7 @@ function email_sendnotification($tuid, $fuid, $tid, $pid)
 
     if (($to_user = user_get($tuid)) && ($from_user = user_get($fuid))) {
 
-        if (($to_user_prefs = user_get_prefs($tuid))) {
+        if ($to_user_prefs = user_get_prefs($tuid)) {
 
             $user_rel = user_get_relationship($to_user['UID'], $from_user['UID']);
 
@@ -171,7 +171,7 @@ function email_send_thread_subscription($tuid, $fuid, $tid, $pid, $modified, &$e
 
     if (db_num_rows($result) > 0) {
 
-        while (($to_user = db_fetch_array($result))) {
+        while ($to_user = db_fetch_array($result)) {
 
             $user_rel = user_get_relationship($to_user['UID'], $from_user['UID']);
 
@@ -274,7 +274,7 @@ function email_send_folder_subscription($tuid, $fuid, $fid, $tid, $pid, $modifie
 
     if (db_num_rows($result) > 0) {
 
-        while (($to_user = db_fetch_array($result))) {
+        while ($to_user = db_fetch_array($result)) {
 
             // Validate the email address before we continue.
 
@@ -350,7 +350,7 @@ function email_send_pm_notification($tuid, $mid, $fuid)
 
     if (($to_user = user_get($tuid)) && ($from_user = user_get($fuid))) {
 
-        if (($to_user_prefs = user_get_prefs($tuid))) {
+        if ($to_user_prefs = user_get_prefs($tuid)) {
 
             $user_rel = user_get_relationship($to_user['UID'], $from_user['UID']);
 
@@ -428,7 +428,7 @@ function email_send_pw_reminder($logon)
 
     $webtag = get_webtag();
 
-    if (($to_user = user_get_uid($logon))) {
+    if ($to_user = user_get_uid($logon)) {
 
         // Validate the email address before we continue.
 
@@ -489,6 +489,8 @@ function email_send_new_pw_notification($tuid, $fuid, $new_password)
     if (!is_numeric($tuid)) return false;
     if (!is_numeric($fuid)) return false;
 
+    $webtag = get_webtag();
+
     if (($to_user = user_get($tuid)) && ($from_user = user_get($fuid))) {
 
         // Validate the email address before we continue.
@@ -544,7 +546,7 @@ function email_send_user_confirmation($tuid)
 
     $webtag = get_webtag();
 
-    if (($to_user = user_get($tuid))) {
+    if ($to_user = user_get($tuid)) {
 
         // Validate the email address before we continue.
 
@@ -604,7 +606,7 @@ function email_send_changed_email_confirmation($tuid)
 
     $webtag = get_webtag();
 
-    if (($to_user = user_get($tuid))) {
+    if ($to_user = user_get($tuid)) {
 
         // Validate the email address before we continue.
 
@@ -664,7 +666,7 @@ function email_send_user_approval_notification($tuid)
 
     $webtag = get_webtag();
 
-    if (($to_user = user_get($tuid))) {
+    if ($to_user = user_get($tuid)) {
 
         // Validate the email address before we continue.
 
@@ -723,7 +725,7 @@ function email_send_new_user_notification($tuid, $new_user_uid)
 
     $webtag = get_webtag();
 
-    if (($to_user = user_get($tuid))) {
+    if ($to_user = user_get($tuid)) {
 
         // Validate the email address before we continue.
 
@@ -781,7 +783,7 @@ function email_send_user_approved_notification($tuid)
 
     $webtag = get_webtag();
 
-    if (($to_user = user_get($tuid))) {
+    if ($to_user = user_get($tuid)) {
 
         // Validate the email address before we continue.
 
@@ -839,7 +841,7 @@ function email_send_post_approval_notification($tuid)
 
     $webtag = get_webtag();
 
-    if (($to_user = user_get($tuid))) {
+    if ($to_user = user_get($tuid)) {
 
         // Validate the email address before we continue.
 
@@ -896,6 +898,8 @@ function email_send_message_to_user($tuid, $fuid, $subject, $message)
     if (!is_numeric($tuid)) return false;
     if (!is_numeric($fuid)) return false;
 
+    $webtag = get_webtag();
+
     if (($to_user = user_get($tuid)) && ($from_user = user_get($fuid))) {
 
         // Validate the email address before we continue.
@@ -950,9 +954,9 @@ function email_send_message_to_user($tuid, $fuid, $subject, $message)
 
 function email_get_language($to_uid)
 {
-    // Initialise the array to hold the language strings.
-    
-	$lang = array();
+    // Start out by including the English language file. This will allow
+    // us to still use Beehive even if our language file isn't up to date
+    // correctly.
 
     // The English language file must exist even if we're not going to be
     // using it in our forum. If we can't find it we'll bail out here.
@@ -968,7 +972,7 @@ function email_get_language($to_uid)
      // if the user has expressed a preference for language, use it
      // if available otherwise use the default language.
 
-    if (($user_prefs = user_get_prefs($to_uid))) {
+    if ($user_prefs = user_get_prefs($to_uid)) {
 
         if (isset($user_prefs['LANGUAGE']) && @file_exists("include/languages/{$user_prefs['LANGUAGE']}.inc.php")) {
 

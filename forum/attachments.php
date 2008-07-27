@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.158 2008-07-27 10:53:27 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.159 2008-07-27 18:26:09 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -62,13 +62,6 @@ include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "logon.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
-
-// Intitalise a few variables
-
-// Arrays to hold the results from get_attachments()
-
-$attachments_array = array();
-$image_attachments_array = array();
 
 // Check we're logged in correctly
 
@@ -485,7 +478,7 @@ if (get_attachments($uid, $aid, $attachments_array, $image_attachments_array)) {
 
         foreach ($attachments_array as $key => $attachment) {
 
-            if (($attachment_link = attachment_make_link($attachment, false))) {
+            if ($attachment_link = attachment_make_link($attachment, false)) {
 
                 echo "                <tr>\n";
                 echo "                  <td align=\"center\" width=\"1%\">", form_checkbox("delete_attachment[{$attachment['hash']}]", "Y", ""), "</td>\n";
@@ -503,7 +496,7 @@ if (get_attachments($uid, $aid, $attachments_array, $image_attachments_array)) {
 
         foreach ($image_attachments_array as $key => $attachment) {
 
-            if (($attachment_link = attachment_make_link($attachment, false))) {
+            if ($attachment_link = attachment_make_link($attachment, false)) {
 
                 echo "                <tr>\n";
                 echo "                  <td align=\"center\" width=\"1%\">", form_checkbox("delete_attachment[{$attachment['hash']}]", "Y", ""), "</td>\n";
@@ -559,7 +552,7 @@ if (get_all_attachments($uid, $aid, $attachments_array, $image_attachments_array
 
         foreach ($attachments_array as $key => $attachment) {
 
-            if (($attachment_link = attachment_make_link($attachment, false))) {
+            if ($attachment_link = attachment_make_link($attachment, false)) {
 
                 echo "                <tr>\n";
                 echo "                  <td align=\"center\" width=\"1%\">", form_checkbox("delete_other_attachment[{$attachment['hash']}]", "Y", ""), "</td>\n";
@@ -587,7 +580,7 @@ if (get_all_attachments($uid, $aid, $attachments_array, $image_attachments_array
 
         foreach ($image_attachments_array as $key => $attachment) {
 
-            if (($attachment_link = attachment_make_link($attachment, false))) {
+            if ($attachment_link = attachment_make_link($attachment, false)) {
 
                 echo "                <tr>\n";
                 echo "                  <td align=\"center\" width=\"1%\">", form_checkbox("delete_other_attachment[{$attachment['hash']}]", "Y", ""), "</td>\n";

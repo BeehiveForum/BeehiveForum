@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_folders.php,v 1.22 2008-07-27 10:53:32 decoyduck Exp $ */
+/* $Id: pm_folders.php,v 1.23 2008-07-27 18:26:11 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -67,8 +67,6 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 include_once(BH_INCLUDE_PATH. "zip_lib.inc.php");
 
-// Intitalise a few variables
-
 // Check we're logged in correctly
 
 if (!$user_sess = bh_session_check()) {
@@ -112,12 +110,6 @@ if (user_is_guest()) {
     html_guest_error();
     exit;
 }
-
-// Variables to hold our message counts
-
-$pm_new_count = 0;
-$pm_outbox_count = 0;
-$pm_unread_count = 0;
 
 // Check that PM system is enabled
 

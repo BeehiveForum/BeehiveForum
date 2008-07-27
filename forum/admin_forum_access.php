@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_access.php,v 1.65 2008-07-27 10:53:26 decoyduck Exp $ */
+/* $Id: admin_forum_access.php,v 1.66 2008-07-27 18:26:09 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -67,8 +67,6 @@ include_once(BH_INCLUDE_PATH. "post.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
-
-// Intitalise a few variables
 
 // Check we're logged in correctly
 
@@ -187,7 +185,7 @@ if (isset($_POST['add'])) {
 
         foreach ($_POST['add_user'] as $add_user_uid) {
 
-            if (($user_logon = user_get_logon($add_user_uid))) {
+            if ($user_logon = user_get_logon($add_user_uid)) {
 
                 $user_update_array = array($fid => 1);
 
@@ -222,7 +220,7 @@ if (isset($_POST['add'])) {
 
         foreach ($_POST['remove_user'] as $remove_user_uid) {
 
-            if (($user_logon = user_get_logon($remove_user_uid))) {
+            if ($user_logon = user_get_logon($remove_user_uid)) {
 
                 $user_update_array = array($fid => 0);
 

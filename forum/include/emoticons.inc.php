@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: emoticons.inc.php,v 1.76 2008-07-27 10:53:34 decoyduck Exp $ */
+/* $Id: emoticons.inc.php,v 1.77 2008-07-27 18:26:15 decoyduck Exp $ */
 
 /**
 * emoticons.inc.php - emoticon functions
@@ -62,7 +62,7 @@ function emoticons_initialise()
 {
     static $emoticons_array = false;
 
-        $webtag = get_webtag();
+    $webtag = get_webtag();
 
     if (!is_array($emoticons_array) || sizeof($emoticons_array) < 1) {
 
@@ -86,11 +86,11 @@ function emoticons_initialise()
 
         if ($user_emots == 'none') {
 
-            if (($dir = @opendir('emoticons'))) {
+            if ($dir = @opendir('emoticons')) {
 
                 while (($file = @readdir($dir)) !== false) {
 
-                    if (($file != '.' && $file != '..' && is_dir("emoticons/$file"))) {
+                    if ($file != '.' && $file != '..' && is_dir("emoticons/$file")) {
 
                         if (file_exists("emoticons/$file/definitions.php")) {
 
@@ -100,11 +100,11 @@ function emoticons_initialise()
                 }
             }
 
-            if (($dir = @opendir("forums/$webtag/emoticons"))) {
+            if ($dir = @opendir("forums/$webtag/emoticons")) {
 
                 while (($file = @readdir($dir)) !== false) {
 
-                    if (($file != '.' && $file != '..' && @is_dir("emoticons/$file"))) {
+                    if ($file != '.' && $file != '..' && @is_dir("emoticons/$file")) {
 
                         if (file_exists("forums/$webtag/emoticons/$file/definitions.php")) {
 
@@ -215,7 +215,7 @@ function emoticons_apply($content)
 
     // PREG match for emoticons.
 
-    $emoticon_preg_match = '(?<=\s|^|>)%s(?=\s|$|<)';
+    $emoticon_preg_match = "(?<=\s|^|>)%s(?=\s|$|<)";
 
     // HTML code for emoticons.
 
@@ -247,7 +247,7 @@ function emoticons_apply($content)
 
     $pattern_match = implode("|", $pattern_array);
 
-    if (($content_array = preg_split("/($pattern_match)/", $content, 100, PREG_SPLIT_DELIM_CAPTURE))) {
+    if ($content_array = preg_split("/($pattern_match)/", $content, 100, PREG_SPLIT_DELIM_CAPTURE)) {
 
         foreach($content_array as $key => $value) {
 
@@ -281,11 +281,11 @@ function emoticons_get_available($include_text_none = true)
     $emoticon_sets_normal = array();
     $emoticon_sets_txtnon = array();
 
-    if ((@$dir = opendir('emoticons'))) {
+    if (@$dir = opendir('emoticons')) {
 
         while ((@$file = readdir($dir)) !== false) {
 
-            if (($file != '.' && $file != '..' && @is_dir("emoticons/$file"))) {
+            if ($file != '.' && $file != '..' && @is_dir("emoticons/$file")) {
 
                  if (preg_match("/^none$|^text$/i", $file) > 0) {
 
@@ -377,7 +377,7 @@ function emoticons_preview($emoticon_set, $width = 190, $height = 100, $num = 35
 {
     $lang = load_language_file();
 
-        $webtag = get_webtag();
+    $webtag = get_webtag();
 
     $html = '';
 
@@ -411,11 +411,9 @@ function emoticons_preview($emoticon_set, $width = 190, $height = 100, $num = 35
             }
         }
 
-        if (($style_contents = @file_get_contents("emoticons/$emoticon_set/style.css"))) {
+        if ($style_contents = @file_get_contents("emoticons/$emoticon_set/style.css")) {
 
-            $style_matches = array();
-
-            preg_match_all('/\.e_([\w_]+) \{[^\}]*background-image\s*:\s*url\s*\(["\']\.?\/?([^"\']*)["\']\)[^\}]*\}/i', $style_contents, $style_matches);
+            preg_match_all("/\.e_([\w_]+) \{[^\}]*background-image\s*:\s*url\s*\([\"\']\.?\/?([^\"\']*)[\"\']\)[^\}]*\}/i", $style_contents, $style_matches);
 
             for ($i = 0; $i < count($style_matches[1]); $i++) {
 
@@ -442,7 +440,8 @@ function emoticons_preview($emoticon_set, $width = 190, $height = 100, $num = 35
 
             $emot_tooltip_matches = array();
 
-            foreach ($emoticons_array[$i]['matches'] as $emot_match) {
+            foreach ($emoticons_array[$i]['matches'] as $key => $emot_match) {
+
                 $emot_tooltip_matches[] = _htmlentities($emot_match);
             }
 

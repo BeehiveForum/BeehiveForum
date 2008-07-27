@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_prefs.php,v 1.97 2008-07-27 10:53:28 decoyduck Exp $ */
+/* $Id: edit_prefs.php,v 1.98 2008-07-27 18:26:09 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -68,13 +68,6 @@ include_once(BH_INCLUDE_PATH. "post.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
-
-// Intitalise a few variables
-
-// Arrays to hold our attachments
-
-$attachments_array = array();
-$image_attachments_array = array();
 
 // Check we're logged in correctly
 
@@ -395,15 +388,15 @@ if (isset($_POST['save'])) {
                 $error_msg_array[] = $lang['profilepictureconflict'];
                 $valid = false;
 
-            }elseif (($attachment_dir = attachments_check_dir())) {
+            }elseif ($attachment_dir = attachments_check_dir()) {
 
-                if (($attachment_details = get_attachment_by_hash($user_prefs['PIC_AID']))) {
+                if ($attachment_details = get_attachment_by_hash($user_prefs['PIC_AID'])) {
 
                     $path_parts = pathinfo($attachment_details['filename']);
 
                     if (isset($path_parts['extension']) && in_array($path_parts['extension'], $allowed_image_types_array)) {
 
-                        if (($image_info = getimagesize("$attachment_dir/{$user_prefs['PIC_AID']}"))) {
+                        if ($image_info = getimagesize("$attachment_dir/{$user_prefs['PIC_AID']}")) {
 
                             if (($image_info[0] > 95) || ($image_info[1] > 95)) {
 
@@ -474,15 +467,15 @@ if (isset($_POST['save'])) {
                 $error_msg_array[] = $lang['avatarpictureconflict'];
                 $valid = false;
 
-            }elseif (($attachment_dir = attachments_check_dir())) {
+            }elseif ($attachment_dir = attachments_check_dir()) {
 
-                if (($attachment_details = get_attachment_by_hash($user_prefs['AVATAR_AID']))) {
+                if ($attachment_details = get_attachment_by_hash($user_prefs['AVATAR_AID'])) {
 
                     $path_parts = pathinfo($attachment_details['filename']);
 
                     if (isset($path_parts['extension']) && in_array($path_parts['extension'], $allowed_image_types_array)) {
 
-                        if (($image_info = getimagesize("$attachment_dir/{$user_prefs['AVATAR_AID']}"))) {
+                        if ($image_info = getimagesize("$attachment_dir/{$user_prefs['AVATAR_AID']}")) {
 
                             if (($image_info[0] > 95) || ($image_info[1] > 95)) {
 
@@ -595,7 +588,7 @@ if (isset($_POST['save'])) {
 
 // Split the DOB into usable variables.
 
-if (isset($user_prefs['DOB']) && preg_match('/\d{4,}-\d{2,}-\d{2,}/', $user_prefs['DOB'])) {
+if (isset($user_prefs['DOB']) && preg_match("/\d{4,}-\d{2,}-\d{2,}/", $user_prefs['DOB'])) {
 
     if (!isset($dob['YEAR']) || !isset($dob['MONTH']) || !isset($dob['DAY'])) {
 

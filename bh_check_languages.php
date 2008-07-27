@@ -21,18 +21,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_check_languages.php,v 1.37 2008-07-26 20:59:22 decoyduck Exp $ */
+/* $Id: bh_check_languages.php,v 1.38 2008-07-27 18:26:08 decoyduck Exp $ */
 
 // Compare two language files.
 
 function load_language_file($filename)
 {
-    $lang = array();
-
-    $filename = preg_replace('/[^a-z0-9-_\.]/i', '', basename($filename));
-
-    include("forum/include/languages/$filename");
-
+    include("./forum/include/languages/$filename");
     return $lang;
 }
 
@@ -70,7 +65,7 @@ function compare_languages($master_lang, $slave_lang, $show_ut, $compare_method,
 
                     $master_lang_value = addcslashes($master_lang_value, "\n\t");
 
-                    if (preg_match('/\+|\-/', $compare_method) > 0) {
+                    if (preg_match("/\+|\-/", $compare_method) > 0) {
 
                         if (is_string($master_lang_key)) {
 

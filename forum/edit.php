@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.251 2008-07-27 10:53:28 decoyduck Exp $ */
+/* $Id: edit.php,v 1.252 2008-07-27 18:26:09 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -73,8 +73,6 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "thread.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
-
-// Intitalise a few variables
 
 // Check we're logged in correctly
 
@@ -421,7 +419,7 @@ if (isset($_POST['preview'])) {
 
         $preview_message['CONTENT'] = $t_content;
 
-        if (($allow_sig == true && isset($t_sig))) {
+        if ($allow_sig == true && isset($t_sig)) {
             $preview_message['CONTENT'].= "<div class=\"sig\">$t_sig</div>";
         }
 
@@ -497,11 +495,19 @@ if (isset($_POST['preview'])) {
         exit;
     }
 
+    if (forum_get_setting('require_post_approval', 'Y') && isset($edit_message['APPROVED']) && $edit_message['APPROVED'] == 0 && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+
+        html_draw_top();
+        html_error_msg($lang['nopermissiontoedit'], 'discussion.php', 'get', array('back' => $lang['back']), array('msg' => $edit_msg));
+        html_draw_bottom();
+        exit;
+    }
+
     $preview_message = $edit_message;
 
     if ($valid) {
 
-        if (($allow_sig == true && isset($t_sig))) {
+        if ($allow_sig == true && isset($t_sig)) {
 
             $t_content_new = $t_content."<div class=\"sig\">$t_sig</div>";
 
@@ -581,13 +587,22 @@ if (isset($_POST['preview'])) {
         exit;
     }
 
+
     $post_edit_time = forum_get_setting('post_edit_time', false, 0);
 
     if (count($edit_message) > 0) {
 
-        if (($edit_message['CONTENT'] = message_get_content($tid, $pid))) {
+        if ($edit_message['CONTENT'] = message_get_content($tid, $pid)) {
 
             if ((forum_get_setting('allow_post_editing', 'N') || (($uid != $edit_message['FROM_UID']) && !(perm_get_user_permissions($edit_message['FROM_UID']) & USER_PERM_PILLORIED)) || (bh_session_check_perm(USER_PERM_PILLORIED, 0)) || ($post_edit_time > 0 && (time() - $edit_message['CREATED']) >= ($post_edit_time * HOUR_IN_SECONDS))) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+
+                html_draw_top();
+                html_error_msg($lang['nopermissiontoedit'], 'discussion.php', 'get', array('back' => $lang['back']), array('msg' => $edit_msg));
+                html_draw_bottom();
+                exit;
+            }
+
+            if (forum_get_setting('require_post_approval', 'Y') && isset($edit_message['APPROVED']) && $edit_message['APPROVED'] == 0 && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
                 html_draw_top();
                 html_error_msg($lang['nopermissiontoedit'], 'discussion.php', 'get', array('back' => $lang['back']), array('msg' => $edit_msg));

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.95 2008-07-26 21:12:44 decoyduck Exp $ */
+/* $Id: install.php,v 1.96 2008-07-27 18:26:10 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -180,7 +180,7 @@ if (isset($_POST['install_method'])) {
 
     if ($valid) {
 
-        if (($install_method == 0 && ($admin_password != $admin_cpassword))) {
+        if ($install_method == 0 && ($admin_password != $admin_cpassword)) {
 
             $error_array[] = "Administrator account passwords do not match.\n";
             $valid = false;
@@ -195,7 +195,7 @@ if (isset($_POST['install_method'])) {
 
     if ($valid) {
 
-        if (($db_install = db_connect(false))) {
+        if ($db_install = db_connect(false)) {
 
             // Check the MySQL version
 
@@ -229,7 +229,7 @@ if (isset($_POST['install_method'])) {
 
                 $config_file = "";
 
-                if ((@$fp = fopen('install/config.inc.php', 'r'))) {
+                if (@$fp = fopen('install/config.inc.php', 'r')) {
 
                     while (!feof($fp)) {
 
@@ -247,7 +247,7 @@ if (isset($_POST['install_method'])) {
 
                     // Error reporting verbose mode
 
-                    $config_file = str_replace("'{error_report_verbose}'", ($enable_error_reports) ? 'true' : 'false', $config_file);
+                    $config_file = str_replace('\'{error_report_verbose}\'', ($enable_error_reports) ? 'true' : 'false', $config_file);
 
                     // Error reporting to email address.
 
@@ -257,7 +257,7 @@ if (isset($_POST['install_method'])) {
 
                     if (!defined('BEEHIVE_INSTALL_NOWARN')) {
 
-                        if ((@$fp = fopen(BH_INCLUDE_PATH. "config.inc.php", "w"))) {
+                        if (@$fp = fopen(BH_INCLUDE_PATH. "config.inc.php", "w")) {
 
                             fwrite($fp, $config_file);
                             fclose($fp);
@@ -403,7 +403,7 @@ if (isset($_POST['install_method'])) {
 
                 if (($errno = db_errno($db_install)) > 0) {
 
-                    $error_array[] = sprintf("<h2>Could not complete installation. Error was: %s</h2>\n", db_error($db_install));
+                    $error_array[] = "<h2>Could not complete installation. Error was: ". db_error($db_install). " $sql</h2>\n";
                     $valid = false;
                 }
             }
@@ -419,7 +419,7 @@ if (isset($_POST['install_method'])) {
 
     $config_file = "";
 
-    if ((@$fp = fopen('install/config.inc.php', 'r'))) {
+    if (@$fp = fopen('install/config.inc.php', 'r')) {
 
         while (!feof($fp)) {
 

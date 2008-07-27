@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.121 2008-07-27 15:23:24 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.122 2008-07-27 18:26:09 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -63,12 +63,6 @@ include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "logon.inc.php");
 include_once(BH_INCLUDE_PATH. "make_style.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
-
-// Intitalise a few variables
-
-// Variable to hold any errors returned by forum_save_style()
-
-$error_var = STYLE_NO_ERROR;
 
 // Check we're logged in correctly
 
@@ -174,9 +168,9 @@ if (isset($_POST['save'])) {
 
     if ($valid) {
 
-        if (!forum_save_style($stylename, $styledesc, $stylesheet, $error_var)) {
+        if (!forum_save_style($stylename, $styledesc, $stylesheet, $error_code)) {
 
-            if ($error_var == STYLE_ALREADY_EXISTS) {
+            if ($error_code == STYLE_ALREADY_EXISTS) {
 
                 $valid = false;
                 $error_msg_array[] = $lang['stylealreadyexists'];
@@ -290,10 +284,10 @@ if (isset($_GET['seed'])) {
     $blue = mt_rand(0, 255);
 }
 
-if (isset($_GET['mode']) && $_GET['mode'] == MAKE_STYLE_RAND) {
-    $mode = MAKE_STYLE_RAND;
+if (isset($_GET['mode']) && $_GET['mode'] == 'rand') {
+    $mode = 'rand';
 }else {
-    $mode = MAKE_STYLE_NORM;
+    $mode = '';
 }
 
 //Maximum variance for the colours
@@ -304,8 +298,8 @@ $max_var = 15;
 
 $elements = array ('navpage' => '', 'threads' => '', 'button' => '', 'subhead' => '', 'h1' => '', 'body' => '', 'box' => '');
 
-if ($mode == MAKE_STYLE_RAND) {
-    uasort($elements, 'rand_sort');
+if (strlen($mode) > 0) {
+    uasort($elements, "rand_sort");
 }
 
 $colour = decToHex($red, $green, $blue);
@@ -336,7 +330,7 @@ if (isset($_POST['save'])) {
     foreach ($elements as $key => $value) {
 
         echo "                  <td width=\"50\" class=\"posthead\" style=\"background-color: #", $value, "\" align=\"center\">\n";
-        echo "                    <a href=\"admin_make_style.php?webtag=$webtag&amp;seed=$value&amp;mode=$mode\" style=\"color: #", contrastFont($value), "\">", strtoupper($value), "</a>\n";
+        echo "                    <a href=\"admin_make_style.php?webtag=$webtag&amp;seed=", $value, "&amp;mode=", $mode, "\" style=\"color: #", contrastFont($value), "\">", strtoupper($value), "</a>\n";
         echo "                  </td>\n";
     }
 
@@ -345,7 +339,7 @@ if (isset($_POST['save'])) {
     foreach ($elements as $key => $value) {
 
         echo "                  <td width=\"50\" class=\"posthead\" style=\"background-color: #", $colour, "; color: #", contrastFont($colour), "\" align=\"center\">\n";
-        echo "                    <a href=\"admin_make_style.php?webtag=$webtag&amp;seed=$colour&amp;mode=$mode\" style=\"color: #", contrastFont($colour), "\">", strtoupper($colour), "</a>\n";
+        echo "                    <a href=\"admin_make_style.php?webtag=$webtag&amp;seed=", $colour, "&amp;mode=", $mode, "\" style=\"color: #", contrastFont($colour), "\">", strtoupper($colour), "</a>\n";
         echo "                  </td>\n";
 
         $elements[$key] = $colour;

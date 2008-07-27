@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: geshi.inc.php,v 1.12 2008-07-25 20:14:41 decoyduck Exp $ */
+/* $Id: geshi.inc.php,v 1.13 2008-07-27 18:26:15 decoyduck Exp $ */
 
 // GeSHi is a generic syntax highlighter under the General Public License
 // http://qbnz.com/highlighter/
@@ -56,9 +56,6 @@ if (file_exists("geshi/geshi.php")) {
 
         var $source;
         var $target;
-        
-        var $encoding;
-        var $lang;
 
         // these don't get used but need to be set because of a bug in GeSHi
         var $error = false;
@@ -70,7 +67,7 @@ if (file_exists("geshi/geshi.php")) {
         }
 
         function set_encoding($encoding) {
-            $this->encoding = $encoding;
+            return;
         }
 
         function set_link_target() {
@@ -82,7 +79,7 @@ if (file_exists("geshi/geshi.php")) {
         }
 
         function set_language($lang) {
-            $this->lang = $lang;
+            return;
         }
 
         function parse_code() {

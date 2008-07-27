@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_wordfilter.php,v 1.87 2008-07-27 10:53:28 decoyduck Exp $ */
+/* $Id: edit_wordfilter.php,v 1.88 2008-07-27 18:26:09 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -64,8 +64,6 @@ include_once(BH_INCLUDE_PATH. "logon.inc.php");
 include_once(BH_INCLUDE_PATH. "perm.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
-
-// Intitalise a few variables
 
 // Check we're logged in correctly
 
@@ -237,8 +235,8 @@ if (isset($_POST['delete'])) {
 
         if ($valid) {
 
-            if (($add_new_filter_option == WORD_FILTER_TYPE_PREG && preg_match('/e[^\/]*$/i', $add_new_match_text))) {
-                $add_new_match_text = preg_replace_callback('/\/[^\/]*$/i', 'word_filter_apply_limit_preg', $add_new_match_text);
+            if ($add_new_filter_option == WORD_FILTER_TYPE_PREG && preg_match("/e[^\/]*$/i", $add_new_match_text)) {
+                $add_new_match_text = preg_replace_callback("/\/[^\/]*$/i", "word_filter_apply_limit_preg", $add_new_match_text);
             }
 
             if (user_add_word_filter($add_new_filter_name, $add_new_match_text, $add_new_replace_text, $add_new_filter_option, $add_new_filter_enabled)) {
@@ -294,8 +292,8 @@ if (isset($_POST['delete'])) {
 
     if ($valid) {
 
-        if (($filter_option == WORD_FILTER_TYPE_PREG && preg_match('/e[^\/]*$/i', $match_text))) {
-            $match_text = preg_replace_callback('/\/[^\/]*$/i', 'word_filter_apply_limit_preg', $match_text);
+        if ($filter_option == WORD_FILTER_TYPE_PREG && preg_match("/e[^\/]*$/i", $match_text)) {
+            $match_text = preg_replace_callback("/\/[^\/]*$/i", "word_filter_apply_limit_preg", $match_text);
         }
 
         if (user_update_word_filter($filter_id, $filter_name, $match_text, $replace_text, $filter_option, $filter_enabled)) {

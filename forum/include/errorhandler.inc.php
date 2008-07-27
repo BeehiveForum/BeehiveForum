@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.119 2008-07-27 15:23:24 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.120 2008-07-27 18:26:15 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -181,7 +181,7 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
 
         // Debug backtrace data.
 
-        if (($debug_backtrace_array = debug_backtrace())) {
+        if ($debug_backtrace_array = debug_backtrace()) {
 
             $debug_backtrace_array = array_reverse($debug_backtrace_array);
 
@@ -230,7 +230,7 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
 
         // Get PHP Version
 
-        if (($php_version = phpversion())) {
+        if ($php_version = phpversion()) {
             $version_strings[] = "on PHP/$php_version";
         }
 
@@ -242,13 +242,11 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
 
         // Get PHP interface (CGI, APACHE, IIS, etc)
 
-        if (($php_sapi = php_sapi_name())) {
+        if ($php_sapi = php_sapi_name()) {
             $version_strings[] = strtoupper($php_sapi);
         }
 
         // Get MySQL version if available.
-        
-        $mysql_version = "MySQL/Unknown";
 
         if (function_exists('db_fetch_mysql_version') && db_fetch_mysql_version($mysql_version)) {
             $version_strings[] = "MySQL/$mysql_version";

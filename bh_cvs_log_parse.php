@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_cvs_log_parse.php,v 1.16 2008-07-26 20:59:22 decoyduck Exp $ */
+/* $Id: bh_cvs_log_parse.php,v 1.17 2008-07-27 18:26:08 decoyduck Exp $ */
 
 /**
 * bh_cvs_log_parse.php
@@ -66,7 +66,7 @@ include_once(BH_INCLUDE_PATH. "db.inc.php");
 
 function get_cvs_log_data($date)
 {
-    if (($log_handle = popen("cvs log -N -d \">$date\" * 2>&1", 'r'))) {
+    if ($log_handle = popen("cvs log -N -d \">$date\" * 2>&1", 'r')) {
 
         $log_contents = '';
 
@@ -103,12 +103,12 @@ function cvs_mysql_prepare_table($truncate_table = true)
     $sql.= "  COMMENTS TEXT NOT NULL";
     $sql.= ") TYPE = MYISAM";
 
-    if (!db_query($sql, $db_cvs_mysql_prepare_table)) return false;
+    if (!$result = db_query($sql, $db_cvs_mysql_prepare_table)) return false;
 
     if ($truncate_table == true) {
 
         $sql = "TRUNCATE TABLE BEEHIVE_CVS_LOG";
-        if (!db_query($sql, $db_cvs_mysql_prepare_table)) return false;
+        if (!$result = db_query($sql, $db_cvs_mysql_prepare_table)) return false;
     }
 
     return true;
@@ -132,11 +132,9 @@ function cvs_mysql_parse($cvs_log_contents)
 
     foreach ($cvs_log_array as $cvs_log_entry) {
 
-        $cvs_log_match_array = array();
-    	
-    	$description_match = '/date: ([0-9]{4})\/([0-9]{2})\/([0-9]{2}) ([0-9]{2}):([0-9]{2}):([0-9]{2});  ';
-        $description_match.= 'author: ([^;]+);  state: [^;]+;  lines: \+[0-9]+ \-[0-9]+\n';
-        $description_match.= '(.+)/s';
+        $description_match = "/date: ([0-9]{4})\/([0-9]{2})\/([0-9]{2}) ([0-9]{2}):([0-9]{2}):([0-9]{2});  ";
+        $description_match.= "author: ([^;]+);  state: [^;]+;  lines: \+[0-9]+ \-[0-9]+\n";
+        $description_match.= "(.+)/s";
 
         if (preg_match_all($description_match, trim($cvs_log_entry), $cvs_log_match_array, PREG_SET_ORDER) > 0) {
 
@@ -185,7 +183,7 @@ function cvs_mysql_output_log($log_filename)
 
         file_put_contents($log_filename, sprintf("Project Beehive Forum Change Log (Generated: %s)\n\n", gmdate('D, d M Y H:i:s')));
 
-        while (($cvs_log_entry_array = db_fetch_array($result, DB_RESULT_ASSOC))) {
+        while ($cvs_log_entry_array = db_fetch_array($result, DB_RESULT_ASSOC)) {
 
             $cvs_log_entry = '';
 
@@ -228,7 +226,7 @@ if (isset($_SERVER['argv'][1]) && preg_match("/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/", $
 
         echo "Fetching CVS Log Data...\n";
 
-        if (($cvs_log_contents = get_cvs_log_data($modified_date))) {
+        if ($cvs_log_contents = get_cvs_log_data($modified_date)) {
 
             echo "Parsing CVS Log Data...\n";
 
@@ -240,7 +238,7 @@ if (isset($_SERVER['argv'][1]) && preg_match("/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/", $
 
         }else {
 
-            echo "Error while fetching CVS log\n";
+            echo "Error while fetching CVS log for $cvs_dir\n";
             exit;
         }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: get_attachment.php,v 1.33 2008-07-27 10:53:28 decoyduck Exp $ */
+/* $Id: get_attachment.php,v 1.34 2008-07-27 18:26:10 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -60,8 +60,6 @@ include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "logon.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
-
-// Intitalise a few variables
 
 // Check we're logged in correctly
 
@@ -152,9 +150,7 @@ if (isset($_GET['hash']) && is_md5($_GET['hash'])) {
 
     if (strstr($_SERVER['PHP_SELF'], 'get_attachment.php')) {
 
-        $attachment_data = array();
-
-        if (preg_match('/\/get_attachment.php\/([A-Fa-f0-9]{32})\/(.*)$/', $_SERVER['PHP_SELF'], $attachment_data) > 0) {
+        if (preg_match("/\/get_attachment.php\/([A-Fa-f0-9]{32})\/(.*)$/", $_SERVER['PHP_SELF'], $attachment_data) > 0) {
 
             $hash = $attachment_data[1];
             $redirect_error_message = true;
@@ -162,9 +158,7 @@ if (isset($_GET['hash']) && is_md5($_GET['hash'])) {
 
     }else {
 
-        $attachment_data = array();
-
-        if (preg_match('/\/([A-Fa-f0-9]{32})\/(.*)$/', $_SERVER['PHP_SELF'], $attachment_data) > 0) {
+        if (preg_match("/\/([A-Fa-f0-9]{32})\/(.*)$/", $_SERVER['PHP_SELF'], $attachment_data) > 0) {
 
             $hash = $attachment_data[1];
             $redirect_error_message = true;
@@ -176,7 +170,7 @@ if (isset($hash) && is_md5($hash)) {
 
     if (!user_is_guest() || forum_get_setting('attachment_allow_guests', 'Y')) {
 
-        if (($attachment_details = get_attachment_by_hash($hash))) {
+        if ($attachment_details = get_attachment_by_hash($hash)) {
 
             // If we're requesting the thumbnail then we need to append
             //.thumb to the filepath. If we're getting the full image we
@@ -255,7 +249,7 @@ if (isset($hash) && is_md5($hash)) {
 
 if ($redirect_error_message) {
 
-    $forum_path = preg_replace('/\/get_attachment\.php\/[a-f0-9]{32}/i', '', html_get_forum_uri());
+    $forum_path = preg_replace("/\/get_attachment.php\/[a-f0-9]{32}/i", "", html_get_forum_uri());
     $redirect_uri = "$forum_path/get_attachment.php?webtag=$webtag&hash=$hash";
     header_redirect($redirect_uri);
 

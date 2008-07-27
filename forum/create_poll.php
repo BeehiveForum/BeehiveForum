@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.225 2008-07-27 10:53:27 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.226 2008-07-27 18:26:09 decoyduck Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -77,8 +77,6 @@ include_once(BH_INCLUDE_PATH. "post.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "thread.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
-
-// Intitalise a few variables
 
 // Check we're logged in correctly
 
@@ -368,14 +366,14 @@ if (isset($_POST['cancel'])) {
 
         $t_answers_array = array_filter(_stripslashes($_POST['answers']), "strlen");
 
-        if (($allow_html == true && isset($t_post_html) && $t_post_html == 'Y')) {
+        if ($allow_html == true && isset($t_post_html) && $t_post_html == 'Y') {
 
             foreach($t_answers_array as $key => $t_poll_answer) {
 
                 $t_poll_check_html = new MessageText(POST_HTML_ENABLED, $t_poll_answer);
                 $t_answers_array[$key] = $t_poll_check_html->getContent();
 
-                if (($valid == true && strlen(trim($t_answers_array[$key])) < 1)) {
+                if ($valid == true && strlen(trim($t_answers_array[$key])) < 1) {
 
                     $t_answers_array[$key] = $t_poll_check_html->getOriginalContent();
                     $error_msg_array[] = $lang['pollquestioncontainsinvalidhtml'];
@@ -472,7 +470,7 @@ if (isset($_POST['cancel'])) {
         $t_close_poll = false;
     }
 
-    if (($valid && $t_poll_type == POLL_TABLE_GRAPH && sizeof(array_unique($t_answer_groups)) <> 2)) {
+    if ($valid && $t_poll_type == POLL_TABLE_GRAPH && sizeof(array_unique($t_answer_groups)) <> 2) {
 
         $error_msg_array[] = $lang['tablepollmusthave2groups'];
         $valid = false;
@@ -697,7 +695,7 @@ if ($valid && isset($_POST['post'])) {
                 $t_poll_closes = false;
             }
 
-            if (($allow_html == false || !isset($t_post_html) || $t_post_html == 'N')) {
+            if ($allow_html == false || !isset($t_post_html) || $t_post_html == 'N') {
                 $t_answers_array = _htmlentities($t_answers_array);
             }
 
@@ -716,7 +714,7 @@ if ($valid && isset($_POST['post'])) {
 
             if (strlen($t_message_text) > 0) {
 
-                if (($allow_sig == true && strlen(trim($t_sig)) > 0)) {
+                if ($allow_sig == true && strlen(trim($t_sig)) > 0) {
                     $t_message_text.= "\n<div class=\"sig\">$t_sig</div>";
                 }
 
@@ -812,7 +810,7 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
     // Poll answers and groups. If HTML is disabled we need to pass
     // the answers through _htmlentities.
 
-    if (($allow_html == false || !isset($t_post_html) || $t_post_html == 'N')) {
+    if ($allow_html == false || !isset($t_post_html) || $t_post_html == 'N') {
         $poll_preview_answers_array = _htmlentities($t_answers_array);
     }else {
         $poll_preview_answers_array = $t_answers_array;
@@ -895,7 +893,7 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
 
         $polldata['CONTENT'] = $t_message_text;
 
-        if (($allow_sig == true && strlen(trim($t_sig)) > 0)) {
+        if ($allow_sig == true && strlen(trim($t_sig)) > 0) {
 
             $polldata['CONTENT'].= "<div class=\"sig\">". $t_sig. "</div>";
         }
@@ -919,87 +917,58 @@ echo "    <tr>\n";
 echo "      <td align=\"left\" valign=\"top\" width=\"210\">\n";
 echo "        <table class=\"posthead\" width=\"210\">\n";
 echo "          <tr>\n";
-echo "            <td align=\"left\"><h2>{$lang['folder']}</h2></td>\n";
-echo "          </tr>\n";
-echo "          <tr>\n";
-echo "            <td align=\"left\">$folder_dropdown</td>\n";
-echo "          </tr>\n";
-echo "          <tr>\n";
-echo "            <td align=\"left\"><h2>{$lang['threadtitle']}</h2></td>\n";
-echo "          </tr>\n";
-echo "          <tr>\n";
-echo "            <td align=\"left\">", form_input_text("t_question", isset($t_threadtitle) ? _htmlentities($t_threadtitle) : '', 30, 64, false, "thread_title"), "</td>\n";
-echo "          </tr>\n";
-echo "          <tr>\n";
-echo "            <td align=\"left\"><h2>{$lang['pollquestion']}</h2></td>\n";
-echo "          </tr>\n";
-echo "          <tr>\n";
-echo "            <td align=\"left\">", form_input_text("t_question", isset($t_question) ? _htmlentities($t_question) : '', 30, 64, false, "thread_title"), "</td>\n";
-echo "          </tr>\n";
-echo "          <tr>\n";
-echo "            <td align=\"left\"><h2>{$lang['messageoptions']}</h2></td>\n";
-echo "          </tr>\n";
-echo "          <tr>\n";
-echo "            <td align=\"left\">", form_checkbox("t_post_links", "enabled", $lang['automaticallyparseurls'], $links_enabled), "</td>\n";
-echo "          </tr>\n";
-echo "          <tr>\n";
-echo "            <td align=\"left\">", form_checkbox("t_check_spelling", "enabled", $lang['automaticallycheckspelling'], $spelling_enabled), "</td>\n";
-echo "          </tr>\n";
-echo "          <tr>\n";
-echo "            <td align=\"left\">", form_checkbox("t_post_emots", "disabled", $lang['disableemoticonsinmessage'], !$emots_enabled), "</td>\n";
-echo "          </tr>\n";
-echo "          <tr>\n";
-echo "            <td align=\"left\">", form_checkbox("t_post_interest", "Y", $lang['setthreadtohighinterest'], $high_interest == "Y"), "</td>\n";
-echo "          </tr>\n";
+echo "            <td align=\"left\">\n";
+echo "              <h2>{$lang['folder']}</h2>\n";
+echo "              ", $folder_dropdown, "\n";
+echo "              <h2>{$lang['threadtitle']}</h2>\n";
+echo "              ", form_input_text("t_threadtitle", isset($t_threadtitle) ? _htmlentities($t_threadtitle) : '', 30, 64, false, "thread_title"), "\n";
+echo "              <h2>{$lang['pollquestion']}</h2>\n";
+echo "              ", form_input_text('t_question', isset($t_question) ? _htmlentities($t_question) : '', 30, 64, false, "thread_title"), "\n";
+echo "              <h2>{$lang['messageoptions']}</h2>\n";
+echo "              ", form_checkbox("t_post_links", "enabled", $lang['automaticallyparseurls'], $links_enabled)."<br />\n";
+echo "              ", form_checkbox("t_check_spelling", "enabled", $lang['automaticallycheckspelling'], $spelling_enabled)."<br />\n";
+echo "              ", form_checkbox("t_post_emots", "disabled", $lang['disableemoticonsinmessage'], !$emots_enabled)."<br />\n";
+echo "              ", form_checkbox("t_post_interest", "Y", $lang['setthreadtohighinterest'], $high_interest == "Y")."<br />\n";
 
 if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
-    echo "          <tr>\n";
-    echo "            <td align=\"left\">&nbsp;</td>\n";
-    echo "          </tr>\n";
-    echo "          <tr>\n";
-    echo "            <td align=\"left\"><h2>{$lang['admin']}</h2></td>\n";
-    echo "          </tr>\n";
-    echo "          <tr>\n";
-    echo "            <td align=\"left\">", form_checkbox("t_closed", "Y", $lang['closeforposting'], isset($t_closed) ? $t_closed == 'Y' : false), "</td>\n";
-    echo "          </tr>\n";
-    echo "          <tr>\n";
-    echo "            <td align=\"left\">", form_checkbox("t_sticky", "Y", $lang['makesticky'], isset($t_sticky) ? $t_sticky == 'Y' : false), "</td>\n";
-    echo "          </tr>\n";
+    echo "              <br />\n";
+    echo "              <h2>{$lang['admin']}</h2>\n";
+    echo "              ", form_checkbox("t_closed", "Y", $lang['closeforposting'], isset($t_closed) ? $t_closed == 'Y' : isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 ? true : false), "<br />";
+    echo "              ", form_checkbox("t_sticky", "Y", $lang['makesticky'], isset($t_sticky) ? $t_sticky == 'Y' : isset($threaddata['STICKY']) && $threaddata['STICKY'] == "Y" ? true : false), "<br />\n";
+    echo "              ", form_input_hidden("old_t_closed", isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 ? "Y" : "N"), "\n";
+    echo "              ", form_input_hidden("old_t_sticky", isset($threaddata['STICKY']) && $threaddata['STICKY'] == "Y" ? "Y" : "N"), "\n";
 }
-
-echo "        </table>\n";
 
 $emot_user = bh_session_get_value('EMOTICONS');
 $emot_prev = emoticons_preview($emot_user);
 
 if (strlen($emot_prev) > 0) {
 
-    echo "        <br />\n";
-    echo "        <table width=\"190\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
-    echo "          <tr>\n";
-    echo "            <td align=\"left\" class=\"subhead\">{$lang['emoticons']}</td>\n";
+    echo "<br />\n";
+    echo "<table width=\"190\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
+    echo "  <tr>\n";
+    echo "    <td align=\"left\" class=\"subhead\">{$lang['emoticons']}</td>\n";
 
     if (($page_prefs & POST_EMOTICONS_DISPLAY) > 0) {
 
-        echo "            <td class=\"subhead\" align=\"right\">". form_submit_image('emots_hide.png', 'emots_toggle', 'hide'). "&nbsp;</td>\n";
-        echo "          </tr>\n";
-        echo "          <tr>\n";
-        echo "            <td align=\"left\" colspan=\"2\">{$emot_prev}</td>\n";
+        echo "    <td class=\"subhead\" align=\"right\">". form_submit_image('emots_hide.png', 'emots_toggle', 'hide'). "&nbsp;</td>\n";
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "    <td align=\"left\" colspan=\"2\">{$emot_prev}</td>\n";
 
     }else {
 
-        echo "            <td class=\"subhead\" align=\"right\">". form_submit_image('emots_show.png', 'emots_toggle', 'show'). "&nbsp;</td>\n";
+        echo "    <td class=\"subhead\" align=\"right\">". form_submit_image('emots_show.png', 'emots_toggle', 'show'). "&nbsp;</td>\n";
     }
 
-    echo "          </tr>\n";
-    echo "        </table>\n";
+    echo "  </tr>\n";
+    echo "</table>\n";
 }
 
-$tools = new TextAreaHTML("f_poll");
-
-echo $tools->preload();
-
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
 echo "      </td>\n";
 echo "      <td align=\"left\" valign=\"top\" width=\"530\">\n";
 echo "        <table class=\"posthead\" width=\"530\">\n";
@@ -1217,6 +1186,9 @@ echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">{$lang['polladditionalmessageexp']}</td>\n";
 echo "                      </tr>\n";
+
+$tools = new TextAreaHTML("f_poll");
+echo $tools->preload();
 
 $t_message_text = $post->getTidyContent();
 

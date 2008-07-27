@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lmessages.php,v 1.101 2008-07-27 10:53:32 decoyduck Exp $ */
+/* $Id: lmessages.php,v 1.102 2008-07-27 18:26:11 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -71,8 +71,6 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "thread.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
-
-// Intitalise a few variables
 
 // Check we're logged in correctly
 
@@ -165,7 +163,7 @@ if (isset($_POST['pollsubmit'])) {
 }
 
 
-if (($posts_per_page = bh_session_get_value('POSTS_PER_PAGE'))) {
+if ($posts_per_page = bh_session_get_value('POSTS_PER_PAGE')) {
 
     if ($posts_per_page < 10) $posts_per_page = 10;
     if ($posts_per_page > 30) $posts_per_page = 30;
@@ -235,7 +233,7 @@ $msg_count = count($messages);
 
 light_messages_top($msg, $thread_title, $thread_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK']);
 
-if (($tracking_data_array = thread_get_tracking_data($tid))) {
+if ($tracking_data_array = thread_get_tracking_data($tid)) {
 
     foreach ($tracking_data_array as $tracking_data) {
 

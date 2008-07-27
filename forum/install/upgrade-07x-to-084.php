@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-07x-to-084.php,v 1.2 2008-07-25 14:52:56 decoyduck Exp $ */
+/* $Id: upgrade-07x-to-084.php,v 1.3 2008-07-27 18:26:19 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-07x-to-083.php") {
 
@@ -58,7 +58,7 @@ if (db_num_rows($result) > 0) {
 
     $sql = "SELECT FID, WEBTAG FROM FORUMS";
 
-    if (($result = @db_query($sql, $db_install))) {
+    if ($result = @db_query($sql, $db_install)) {
 
         while ($forum_data = @db_fetch_array($result)) {
 
@@ -136,7 +136,7 @@ if (isset($remove_conflicts) && $remove_conflicts === true) {
 
 foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
-    if (($conflicting_tables = install_get_table_conflicts($forum_webtag, $forum_tables, $global_tables))) {
+    if ($conflicting_tables = install_get_table_conflicts($forum_webtag, $forum_tables, $global_tables)) {
 
         $error_str = "<h2>Selected database contains tables which conflict with Beehive Forum. ";
         $error_str.= "If this database contains an existing Beehive Forum installation please ";
@@ -437,7 +437,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql = "SELECT LID, TITLE FROM {$forum_webtag}_FORUM_LINKS ";
     $sql.= "ORDER BY POS ASC, LID ASC";
 
-    if (($result = @db_query($sql, $db_install))) {
+    if ($result = @db_query($sql, $db_install)) {
 
         if (db_num_rows($result) > 0) {
 
@@ -499,7 +499,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     $sql = "SELECT FID, TITLE, DESCRIPTION FROM {$forum_webtag}_FOLDER";
 
-    if (($result = @db_query($sql, $db_install))) {
+    if ($result = @db_query($sql, $db_install)) {
 
         while ($folder_data = db_fetch_array($result)) {
 
@@ -531,7 +531,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     $sql = "SELECT TID, TITLE FROM {$forum_webtag}_THREAD";
 
-    if (($result = @db_query($sql, $db_install))) {
+    if ($result = @db_query($sql, $db_install)) {
 
         while ($thread_data = db_fetch_array($result)) {
 
@@ -945,14 +945,14 @@ if (!$result = @db_query($sql, $db_install)) {
 
 $sql = "SELECT UID, LAST_LOGON FROM VISITOR_LOG WHERE UID > 0";
 
-if (($result = @db_query($sql, $db_install))) {
+if ($result = @db_query($sql, $db_install)) {
 
     while (list($uid, $last_logon) = db_fetch_array($result, DB_RESULT_NUM)) {
 
         $sql = "UPDATE USER_FORUM SET LAST_VISIT = '$last_logon' ";
         $sql.= "WHERE UID = '$uid'";
 
-        if (($result_update = @db_query($sql, $db_install))) {
+        if ($result_update = @db_query($sql, $db_install)) {
 
             if (db_affected_rows($db_install) < 1) {
 
@@ -1122,7 +1122,7 @@ foreach ($timezones_array as $tzid => $tz_data) {
     $sql.= "AND TIMEZONE.SVALUE = '{$tz_data[0]}' ";
     $sql.= "AND DL_SAVING.SVALUE = '$dl_saving'";
 
-    if (($result = @db_query($sql, $db_install))) {
+    if ($result = @db_query($sql, $db_install)) {
 
         while (list($forum_fid) = db_fetch_array($result, DB_RESULT_NUM)) {
 

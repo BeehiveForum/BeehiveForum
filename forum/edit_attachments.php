@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.128 2008-07-27 10:53:28 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.129 2008-07-27 18:26:09 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -62,13 +62,6 @@ include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "logon.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
-
-// Intitalise a few variables
-
-// Arrays to hold our attachments
-
-$attachments_array = array();
-$image_attachments_array = array();
 
 // Check we're logged in correctly
 
@@ -212,7 +205,7 @@ if (isset($_POST['delete_confirm'])) {
 
         foreach($_POST['delete_attachment_confirm'] as $hash => $del_attachment) {
 
-            if (($del_attachment == "Y" && get_attachment_by_hash($hash))) {
+            if ($del_attachment == "Y" && get_attachment_by_hash($hash)) {
 
                 delete_attachment($hash);
             }
@@ -225,7 +218,7 @@ if (isset($_POST['delete_confirm'])) {
 
         foreach($_POST['delete_attachment_confirm'] as $hash => $del_attachment) {
 
-            if (($del_attachment == "Y" && get_attachment_by_hash($hash))) {
+            if ($del_attachment == "Y" && get_attachment_by_hash($hash)) {
 
                 delete_attachment_thumbnail($hash);
             }
@@ -420,7 +413,7 @@ if ($attachment_result) {
 
         foreach ($attachments_array as $key => $attachment) {
 
-            if (($attachment_link = attachment_make_link($attachment, false, true))) {
+            if ($attachment_link = attachment_make_link($attachment, false, true)) {
 
                 echo "                <tr>\n";
                 echo "                  <td align=\"center\" width=\"1%\">", form_checkbox("delete_attachment[{$attachment['hash']}]", "Y", ""), "</td>\n";
@@ -448,7 +441,7 @@ if ($attachment_result) {
 
         foreach ($image_attachments_array as $key => $attachment) {
 
-            if (($attachment_link = attachment_make_link($attachment, false, true))) {
+            if ($attachment_link = attachment_make_link($attachment, false, true)) {
 
                 echo "                <tr>\n";
                 echo "                  <td align=\"center\" width=\"1%\">", form_checkbox("delete_attachment[{$attachment['hash']}]", "Y", ""), "</td>\n";
@@ -507,7 +500,7 @@ echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <br />\n";
 
-if (($uid == bh_session_get_value('UID') && is_md5($aid))) {
+if ($uid == bh_session_get_value('UID') && is_md5($aid)) {
 
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";
@@ -528,7 +521,7 @@ if (($uid == bh_session_get_value('UID') && is_md5($aid))) {
 
             foreach ($attachments_array as $key => $attachment) {
 
-                if (($attachment_link = attachment_make_link($attachment, false))) {
+                if ($attachment_link = attachment_make_link($attachment, false)) {
 
                     echo "                <tr>\n";
                     echo "                  <td align=\"center\" width=\"1%\">", form_checkbox("delete_other_attachment[{$attachment['hash']}]", "Y", ""), "</td>\n";
@@ -556,7 +549,7 @@ if (($uid == bh_session_get_value('UID') && is_md5($aid))) {
 
             foreach ($image_attachments_array as $key => $attachment) {
 
-                if (($attachment_link = attachment_make_link($attachment, false))) {
+                if ($attachment_link = attachment_make_link($attachment, false)) {
 
                     echo "                <tr>\n";
                     echo "                  <td align=\"center\" width=\"1%\">", form_checkbox("delete_other_attachment[{$attachment['hash']}]", "Y", ""), "</td>\n";
@@ -644,7 +637,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 
-if (($uid == bh_session_get_value('UID'))) {
+if ($uid == bh_session_get_value('UID')) {
 
     if (!is_md5($aid)) $aid = md5(uniqid(mt_rand()));
 

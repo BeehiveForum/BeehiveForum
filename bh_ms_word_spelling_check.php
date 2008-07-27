@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_ms_word_spelling_check.php,v 1.7 2008-07-26 20:59:22 decoyduck Exp $ */
+/* $Id: bh_ms_word_spelling_check.php,v 1.8 2008-07-27 18:26:08 decoyduck Exp $ */
 
 function word_spell_check($matches)
 {
@@ -70,9 +70,9 @@ $word_obj = new COM("word.application");
 
 // Load the language file.
 
-if (($langfile = file('./forum/include/languages/en.inc.php'))) {
+if ($langfile = file('./forum/include/languages/en.inc.php')) {
 
-    if (($fp = fopen('./forum/include/languages/en-new.inc.php', 'w'))) {
+    if ($fp = fopen('./forum/include/languages/en-new.inc.php', 'w')) {
 
         foreach($langfile as $line) {
 

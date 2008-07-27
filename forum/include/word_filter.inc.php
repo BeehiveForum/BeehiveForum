@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: word_filter.inc.php,v 1.51 2008-07-27 15:23:26 decoyduck Exp $ */
+/* $Id: word_filter.inc.php,v 1.52 2008-07-27 18:26:17 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -69,7 +69,7 @@ function word_filter_get($uid, &$word_filter_array)
 
     if (db_num_rows($result) > 0) {
 
-        while (($word_filter_data = db_fetch_array($result))) {
+        while ($word_filter_data = db_fetch_array($result)) {
 
             $word_filter_array[] = $word_filter_data;
         }
@@ -132,7 +132,7 @@ function word_filter_get_by_uid($uid)
 
         $last_user_uid = $uid;
 
-        if (($user_prefs = user_get_prefs($uid))) {
+        if ($user_prefs = user_get_prefs($uid)) {
 
             if ((isset($user_prefs['USE_ADMIN_FILTER']) && $user_prefs['USE_ADMIN_FILTER'] == 'Y') || forum_get_setting('force_word_filter', 'Y', false)) {
 
@@ -176,11 +176,11 @@ function word_filter_prepare($word_filter_array)
 
         if ($filter['FILTER_TYPE'] == WORD_FILTER_TYPE_WHOLE_WORD) {
 
-            $pattern_array[] = sprintf('/\b%s\b/i', preg_quote($filter['MATCH_TEXT'], "/"));
+            $pattern_array[] = "/\b". preg_quote($filter['MATCH_TEXT'], "/"). "\b/i";
 
         }elseif ($filter['FILTER_TYPE'] == WORD_FILTER_TYPE_PREG) {
 
-            if (!preg_match('/^\/(.*)[^\]\/[imsxeADSUXu]*$/i', $filter['MATCH_TEXT'])) {
+            if (!preg_match("/^\/(.*)[^\\]\/[imsxeADSUXu]*$/i", $filter['MATCH_TEXT'])) {
                 $filter['MATCH_TEXT'] = "/{$filter['MATCH_TEXT']}/i";
             }
 
@@ -188,7 +188,7 @@ function word_filter_prepare($word_filter_array)
 
         }else {
 
-            $pattern_array[] = sprintf('/%s/i', preg_quote($filter['MATCH_TEXT'], "/"));
+            $pattern_array[] = "/". preg_quote($filter['MATCH_TEXT'], "/"). "/i";
         }
 
         if (strlen(trim($filter['REPLACE_TEXT'])) > 0) {
@@ -250,9 +250,9 @@ function word_filter_rem_ob_tags($content)
         return $content;
     }
 
-    $rand_hash = preg_replace('/[^a-z]/i', '', $rand_hash);
+    $rand_hash = preg_replace("/[^a-z]/i", "", $rand_hash);
 
-    return preg_replace(sprintf('/<\/?%s>/', $rand_hash), '', $content);
+    return preg_replace("/<\/?$rand_hash>/", "", $content);
 }
 
 /**
@@ -274,18 +274,18 @@ function word_filter_obstart($content)
 
     $rand_hash = preg_replace("/[^a-z]/i", "", $rand_hash);
 
-    if (($user_wordfilter = word_filter_get_by_sess_uid())) {
+    if ($user_wordfilter = word_filter_get_by_sess_uid()) {
 
         $pattern_array = $user_wordfilter['pattern_array'];
         $replace_array = $user_wordfilter['replace_array'];
 
-        $content_array = preg_split(sprintf('/<\/?%s>/i', $rand_hash), $content);
+        $content_array = preg_split("/<\/?$rand_hash>/i", $content);
 
         for ($i = 0; $i < sizeof($content_array); $i++) {
 
             if ($i % 2) {
 
-                if ((@$new_content = preg_replace($pattern_array, $replace_array, $content_array[$i]))) {
+                if (@$new_content = preg_replace($pattern_array, $replace_array, $content_array[$i])) {
 
                     $content_array[$i] = $new_content;
                 }
@@ -312,12 +312,12 @@ function word_filter_apply($content, $uid)
 {
     if (!is_numeric($uid)) return $content;
 
-    if (($user_wordfilter = word_filter_get_by_uid($uid))) {
+    if ($user_wordfilter = word_filter_get_by_uid($uid)) {
 
         $pattern_array = $user_wordfilter['pattern_array'];
         $replace_array = $user_wordfilter['replace_array'];
 
-        if ((@$new_content = preg_replace($pattern_array, $replace_array, $content))) {
+        if (@$new_content = preg_replace($pattern_array, $replace_array, $content)) {
 
             return $new_content;
         }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.108 2008-07-27 15:23:26 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.109 2008-07-27 18:26:17 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -112,11 +112,11 @@ function stats_output_xml()
     echo "<stats>\n";
     echo "  <users>\n";
 
-    if (($user_count = user_count())) {
+    if ($user_count = user_count()) {
         echo sprintf("    <count>%s</count>\n", html_entity_to_decimal(number_format($user_count, 0, ",", ",")));
     }
 
-    if (($user_stats = stats_get_active_user_list())) {
+    if ($user_stats = stats_get_active_user_list()) {
 
         echo "    <active>\n";
         echo "      <guests>", html_entity_to_decimal($user_stats['GUESTS']), "</guests>\n";
@@ -145,7 +145,7 @@ function stats_output_xml()
         echo "    </active>\n";
     }
 
-    if (($newest_user = stats_get_newest_user())) {
+    if ($newest_user = stats_get_newest_user()) {
 
         $newest_user['DISPLAY'] = _htmlentities(format_user_name($newest_user['LOGON'], $newest_user['NICKNAME']));
 
@@ -155,7 +155,7 @@ function stats_output_xml()
         echo "    </newest>\n";
     }
 
-    if (($most_users = stats_get_most_users())) {
+    if ($most_users = stats_get_most_users()) {
 
         $most_users_count = number_format($most_users['MOST_USERS_COUNT'], 0, ",", ",");
         $most_users_date =  format_time($most_users['MOST_USERS_DATE'], 1);
@@ -169,11 +169,11 @@ function stats_output_xml()
     echo "  </users>\n";
     echo "  <threads>\n";
 
-    if (($thread_count = stats_get_thread_count())) {
+    if ($thread_count = stats_get_thread_count()) {
         echo sprintf("    <count>%s</count>\n", html_entity_to_decimal(number_format($thread_count, 0, ",", ",")));
     }
 
-    if (($longest_thread = stats_get_longest_thread())) {
+    if ($longest_thread = stats_get_longest_thread()) {
 
         $longest_thread_title = _htmlentities(thread_format_prefix($longest_thread['PREFIX'], $longest_thread['TITLE']));
         $longest_thread_post_count = number_format($longest_thread['LENGTH'], 0, ",", ",");
@@ -188,7 +188,7 @@ function stats_output_xml()
     echo "  </threads>\n";
     echo "  <posts>\n";
 
-    if (($post_count = stats_get_post_count())) {
+    if ($post_count = stats_get_post_count()) {
         echo sprintf("    <count>%s</count>\n", html_entity_to_decimal(number_format($post_count, 0, ",", ",")));
     }
 
@@ -197,7 +197,7 @@ function stats_output_xml()
     echo "    <recent>\n";
     echo sprintf("    <count>%s</count>\n", number_format($recent_post_count, 0, ",", ","));
 
-    if (($most_posts = stats_get_most_posts())) {
+    if ($most_posts = stats_get_most_posts()) {
 
         $most_posts_date = format_time($most_posts['MOST_POSTS_DATE'], 1);
         $most_posts_count = number_format($most_posts['MOST_POSTS_COUNT'], 0, ",", ",");
@@ -288,8 +288,6 @@ function stats_get_active_user_list()
 
     if (!$table_data = get_table_prefix()) return $stats;
 
-    $lang = load_language_file();
-    
     $forum_fid = $table_data['FID'];
 
     $session_stamp = time() - intval(forum_get_setting('active_sess_cutoff', false, 900));
@@ -324,7 +322,7 @@ function stats_get_active_user_list()
 
     if (!$result = db_query($sql, $db_stats_get_active_user_list)) return false;
 
-    while (($user_data = db_fetch_array($result))) {
+    while ($user_data = db_fetch_array($result)) {
 
         if (isset($user_data['ANON_LOGON']) && $user_data['ANON_LOGON'] > USER_ANON_DISABLED) {
             $anon_logon = $user_data['ANON_LOGON'];
@@ -361,7 +359,7 @@ function stats_get_active_user_list()
 
             unset($user_data);
 
-        }elseif (($anon_logon == USER_ANON_DISABLED || $user_data['UID'] == $uid || (($user_data['PEER_RELATIONSHIP'] & USER_FRIEND) > 0 && $anon_logon == USER_ANON_FRIENDS_ONLY))) {
+        }elseif ($anon_logon == USER_ANON_DISABLED || $user_data['UID'] == $uid || (($user_data['PEER_RELATIONSHIP'] & USER_FRIEND) > 0 && $anon_logon == USER_ANON_FRIENDS_ONLY)) {
 
             $stats['USERS'][$user_data['UID']] = array('UID'          => $user_data['UID'],
                                                        'LOGON'        => $user_data['LOGON'],
@@ -480,6 +478,8 @@ function stats_get_user_count()
 {
    if (!$db_stats_get_user_count = db_connect()) return false;
 
+   if (!$table_data = get_table_prefix()) return false;
+
    $sql = "SELECT COUNT(UID) AS COUNT FROM USER";
 
    if (!$result = db_query($sql, $db_stats_get_user_count)) return false;
@@ -534,8 +534,6 @@ function stats_get_newest_user()
     if (!$db_stats_get_newest_user = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
-    
-    $lang = load_language_file();
 
     $uid = bh_session_get_value('UID');
 
@@ -610,7 +608,7 @@ function stats_get_post_tallys($start_stamp, $end_stamp)
 
     if (db_num_rows($result) > 0) {
 
-        while (($user_stats = db_fetch_array($result))) {
+        while ($user_stats = db_fetch_array($result)) {
 
             if (isset($user_stats['LOGON']) && isset($user_stats['PEER_NICKNAME'])) {
                 if (!is_null($user_stats['PEER_NICKNAME']) && strlen($user_stats['PEER_NICKNAME']) > 0) {
@@ -722,6 +720,8 @@ function stats_get_most_read_thread()
 
     if (!$table_data = get_table_prefix()) return false;
 
+    $thread_array = array();
+
     $sql = "SELECT THREAD.TID, THREAD.TITLE, FOLDER.PREFIX, THREAD_STATS.VIEWCOUNT ";
     $sql.= "FROM {$table_data['PREFIX']}THREAD_STATS THREAD_STATS ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ";
@@ -763,6 +763,8 @@ function stats_get_most_subscribed_thread()
     if (!$db_stats_get_most_subscribed_threads = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
+
+    $thread_array = array();
 
     $sql = "SELECT THREAD.TID, THREAD.TITLE, COUNT(USER_THREAD.INTEREST) AS SUBSCRIBERS, ";
     $sql.= "FOLDER.PREFIX FROM {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
@@ -865,7 +867,7 @@ function stats_get_most_downloaded_attachment()
 
     if (!$result = db_unbuffered_query($sql, $db_stats_get_most_downloaded_attachment)) return false;
 
-    while (($attachment_data = db_fetch_array($result))) {
+    while ($attachment_data = db_fetch_array($result)) {
 
         if (@file_exists("$attachment_dir/{$attachment_data['HASH']}")) {
 
@@ -966,6 +968,10 @@ function stats_get_most_popular_language()
 function stats_get_most_popular_timezone()
 {
     if (!$db_stats_get_most_popular_timezone = db_connect()) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $forum_default_timezone = forum_get_setting('forum_timezone', false, '27');
 
     $sql = "SELECT TIMEZONE, COUNT(*) AS USER_COUNT FROM USER_PREFS ";
     $sql.= "GROUP BY TIMEZONE ORDER BY USER_COUNT DESC LIMIT 0,1";

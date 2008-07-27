@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_signature.php,v 1.109 2008-07-27 10:53:28 decoyduck Exp $ */
+/* $Id: edit_signature.php,v 1.110 2008-07-27 18:26:09 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -67,8 +67,6 @@ include_once(BH_INCLUDE_PATH. "post.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
-
-// Intitalise a few variables
 
 // Check we're logged in correctly
 
@@ -242,8 +240,6 @@ if (isset($_POST['save'])) {
 }
 
 // Get the User's Signature
-
-$user_sig = array();
 
 if (!user_get_sig($uid, $user_sig['SIG_CONTENT'], $user_sig['SIG_HTML'])) {
 

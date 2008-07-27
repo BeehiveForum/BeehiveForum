@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.132 2008-07-27 10:53:34 decoyduck Exp $ */
+/* $Id: fixhtml.inc.php,v 1.133 2008-07-27 18:26:15 decoyduck Exp $ */
 
 /** A range of functions for filtering/cleaning posted HTML
 *
@@ -657,7 +657,7 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
                         $tag_quote = true;
                     }
 
-                    if (($tag == 'div class="spoiler"' || (substr($tag, 0, 3) == 'div' && $spoiler > 0))) {
+                    if ($tag == 'div class="spoiler"' || (substr($tag, 0, 3) == 'div' && $spoiler > 0)) {
                         $spoiler++;
                     } else if ($spoiler > 0 && $tag == '/div') {
                         $spoiler--;
@@ -1620,7 +1620,7 @@ function add_paragraphs ($html, $base = true, $br_only = true)
                 }
             }
 
-            if (($p_open == true && !preg_match("/<\/p>$/i", $tmp[$j]) && strlen(trim($tmp[$j])) > 0)) {
+            if ($p_open == true && !preg_match("/<\/p>$/i", $tmp[$j]) && strlen(trim($tmp[$j])) > 0) {
 
                 $tmp[$j].= "</p>";
             }
@@ -1634,7 +1634,7 @@ function add_paragraphs ($html, $base = true, $br_only = true)
 
                 preg_match("/^<(\w+)(\b[^<>]*)>/i", $html_a[$i+1], $tag);
 
-                if (($tags_nest[$tag[1]][1] != true && strlen(trim($html_a[$i])) > 0)) {
+                if ($tags_nest[$tag[1]][1] != true && strlen(trim($html_a[$i])) > 0) {
 
                     $html_a[$i].= "\n\n";
                 }
@@ -1695,11 +1695,11 @@ function make_links ($html)
     $html = " ".$html;
 
     // URL:
-    $html = preg_replace('/(\s|\()(\w+:\/\/([^:\s]+:?[^@\s]+@)?[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)/i', "$1<a href=\"$2\">$2</a>", $html);
-    $html = preg_replace('/(\s|\()(www\.[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)/i', "$1<a href=\"http://$2\">$2</a>", $html);
+    $html = preg_replace("/(\s|\()(\w+:\/\/([^:\s]+:?[^@\s]+@)?[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)/i", "$1<a href=\"$2\">$2</a>", $html);
+    $html = preg_replace("/(\s|\()(www\.[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)/i", "$1<a href=\"http://$2\">$2</a>", $html);
 
     // MAIL:
-    $html = preg_replace('/(\s|\()(mailto:)?([0-9a-z][_\.0-9a-z-]*@[0-9a-z][_\.0-9a-z-]*\.[a-z]{2,})/i', "$1<a href=\"mailto:$3\">$2$3</a>", $html);
+    $html = preg_replace("/(\s|\()(mailto:)?([0-9a-z][_\.0-9a-z-]*@[0-9a-z][_\.0-9a-z-]*\.[a-z]{2,})/i", "$1<a href=\"mailto:$3\">$2$3</a>", $html);
 
     // This one breaks PHP - causes a 30 second page timeout.
 

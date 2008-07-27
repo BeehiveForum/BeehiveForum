@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.183 2008-07-27 10:53:32 decoyduck Exp $ */
+/* $Id: logon.php,v 1.184 2008-07-27 18:26:11 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -64,38 +64,6 @@ include_once(BH_INCLUDE_PATH. "messages.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
-// Intitalise a few variables
-
-// Arrays to hold the logon data
-
-$username_array = array();
-$password_array = array();
-$passhash_array = array();
-
-// Don't cache this page - fixes problems with Opera.
-
-header_no_cache();
-
-// Logon script doesn't redirect if the session isn't created
-
-$user_sess = bh_session_check(false);
-
-// Check to see if the user is banned.
-
-if (bh_session_user_banned()) {
-
-    html_user_banned();
-    exit;
-}
-
-// Load language file
-
-$lang = load_language_file();
-
-// Fetch the forum webtag
-
-$webtag = get_webtag();
-
 // Retrieve the final_uri request
 
 if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri']))) > 0) {
@@ -120,6 +88,30 @@ if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri'])))
 if (isset($final_uri) && strstr($final_uri, 'logout.php')) {
     unset($final_uri);
 }
+
+// Don't cache this page - fixes problems with Opera.
+
+header_no_cache();
+
+// Logon script doesn't redirect if the session isn't created
+
+$user_sess = bh_session_check(false);
+
+// Check to see if the user is banned.
+
+if (bh_session_user_banned()) {
+
+    html_user_banned();
+    exit;
+}
+
+// Load language file
+
+$lang = load_language_file();
+
+// Fetch the forum webtag
+
+$webtag = get_webtag();
 
 // Retrieve existing cookie data if any
 

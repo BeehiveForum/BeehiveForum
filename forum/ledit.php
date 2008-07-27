@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ledit.php,v 1.33 2008-07-27 10:53:32 decoyduck Exp $ */
+/* $Id: ledit.php,v 1.34 2008-07-27 18:26:10 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -75,8 +75,6 @@ include_once(BH_INCLUDE_PATH. "post.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "thread.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
-
-// Intitalise a few variables
 
 // Check we're logged in correctly
 
@@ -175,7 +173,7 @@ if (thread_is_poll($tid) && $pid == 1) {
 
 if (isset($_POST['cancel'])) {
 
-    header_redirect("lmessages.php?webtag=$webtag&msg=$edit_msg");
+    header_redirect("lmessages.php?webtag=$webtag&msg=$msg");
     exit;
 }
 
@@ -519,7 +517,7 @@ if (isset($_POST['preview'])) {
 
     if (count($editmessage) > 0) {
 
-        if (($editmessage['CONTENT'] = message_get_content($tid, $pid))) {
+        if ($editmessage['CONTENT'] = message_get_content($tid, $pid)) {
 
             if (((forum_get_setting('allow_post_editing', 'N')) || ((bh_session_get_value('UID') != $editmessage['FROM_UID']) && !(perm_get_user_permissions($editmessage['FROM_UID']) & USER_PERM_PILLORIED)) || (bh_session_check_perm(USER_PERM_PILLORIED, 0)) || (((time() - $editmessage['CREATED']) >= (intval(forum_get_setting('post_edit_time', false, 0)) * MINUTE_IN_SECONDS)) && intval(forum_get_setting('post_edit_time', false, 0)) != 0)) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 

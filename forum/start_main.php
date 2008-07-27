@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_main.php,v 1.60 2008-07-27 10:53:33 decoyduck Exp $ */
+/* $Id: start_main.php,v 1.61 2008-07-27 18:26:11 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -60,8 +60,6 @@ include_once(BH_INCLUDE_PATH. "logon.inc.php");
 include_once(BH_INCLUDE_PATH. "messages.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
-
-// Intitalise a few variables
 
 // Check we're logged in correctly
 
@@ -107,7 +105,7 @@ if (!forum_check_access_level()) {
 
 // Load the start page
 
-if (($start_page = forum_load_start_page())) {
+if ($start_page = forum_load_start_page()) {
 
     html_draw_top("stylesheet=forums/$webtag/start_main.css");
     echo message_apply_formatting($start_page);

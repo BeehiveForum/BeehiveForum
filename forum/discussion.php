@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: discussion.php,v 1.115 2008-07-27 10:53:28 decoyduck Exp $ */
+/* $Id: discussion.php,v 1.116 2008-07-27 18:26:09 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -66,8 +66,6 @@ include_once(BH_INCLUDE_PATH. "threads.inc.php");
 // Don't cache this page - fixes problems with Opera.
 
 header_no_cache();
-
-// Intitalise a few variables
 
 // Check we're logged in correctly
 
@@ -204,7 +202,7 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
 
     html_draw_top('body_tag=false', 'frames=true');
 
-    if (($search_msg = search_get_first_result_msg())) {
+    if ($search_msg = search_get_first_result_msg()) {
 
         echo "<frameset cols=\"280,*\" framespacing=\"4\" border=\"4\">\n";
         echo "  <frame src=\"search.php?webtag=$webtag&amp;offset=0\" name=\"", html_get_frame_name('left'), "\" frameborder=\"0\" />\n";

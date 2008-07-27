@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: delete.php,v 1.134 2008-07-27 10:53:28 decoyduck Exp $ */
+/* $Id: delete.php,v 1.135 2008-07-27 18:26:09 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -70,8 +70,6 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "thread.inc.php");
 include_once(BH_INCLUDE_PATH. "threads.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
-
-// Intitalise a few variables
 
 // Check we're logged in correctly
 
@@ -201,7 +199,7 @@ if (!$threaddata = thread_get($tid)) {
 
 if (isset($tid) && isset($pid) && is_numeric($tid) && is_numeric($pid)) {
 
-    if (($preview_message = messages_get($tid, $pid, 1))) {
+    if ($preview_message = messages_get($tid, $pid, 1)) {
 
         $preview_message['CONTENT'] = message_get_content($tid, $pid);
 
@@ -214,6 +212,14 @@ if (isset($tid) && isset($pid) && is_numeric($tid) && is_numeric($pid)) {
         }
 
         if ((bh_session_get_value('UID') != $preview_message['FROM_UID'] || bh_session_check_perm(USER_PERM_PILLORIED, 0)) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+
+            html_draw_top();
+            edit_refuse($tid, $pid);
+            html_draw_bottom();
+            exit;
+        }
+
+        if (forum_get_setting('require_post_approval', 'Y') && isset($preview_message['APPROVED']) && $preview_message['APPROVED'] == 0 && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
             html_draw_top();
             edit_refuse($tid, $pid);

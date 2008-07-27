@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.562 2008-07-27 10:53:37 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.563 2008-07-27 18:26:17 decoyduck Exp $ */
 
 // British English language file
 
@@ -814,7 +814,6 @@ $lang['noexistingforums'] = "No existing forums found. To create a new forum cli
 $lang['webtaginvalidchars'] = "Webtag can only contain uppercase A-Z, 0-9 and underscore characters";
 $lang['databasenameinvalidchars'] = "Database name can only contain a-z, A-Z, 0-9 and underscore characters";
 $lang['invalidforumidorforumnotfound'] = "Invalid forum FID or forum not found";
-$lang['invalidforumwebtagorforumnotfound'] = "Invalid forum webtag or forum not found";
 $lang['successfullyupdatedforum'] = "Successfully updated forum";
 $lang['failedtoupdateforum'] = "Failed to update forum: '%s'";
 $lang['successfullycreatednewforum'] = "Successfully created new forum";

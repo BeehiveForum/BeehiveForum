@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.167 2008-07-27 10:53:28 decoyduck Exp $ */
+/* $Id: index.php,v 1.168 2008-07-27 18:26:10 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -62,8 +62,6 @@ include_once(BH_INCLUDE_PATH. "light.inc.php");
 include_once(BH_INCLUDE_PATH. "logon.inc.php");
 include_once(BH_INCLUDE_PATH. "messages.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
-
-// Intitalise a few variables
 
 // Don't cache this page - fixes problems with Opera.
 
@@ -135,7 +133,7 @@ if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri'])))
             $final_uri = href_cleanup_query_keys($final_uri);
             $skip_logon_page = true;
 
-        }else if (preg_match('/^admin_[^\.]+\.php/', $final_uri) > 0) {
+        }else if (preg_match("/^admin_[^\.]+\.php/", $final_uri) > 0) {
 
             $final_uri = rawurlencode(href_cleanup_query_keys($final_uri, false, '&'));
             $final_uri = "admin.php?webtag=$webtag&amp;page=$final_uri";
@@ -192,7 +190,7 @@ if ($skip_logon_page === true) {
 
         }else {
 
-            if (($start_page = bh_session_get_value('START_PAGE'))) {
+            if ($start_page = bh_session_get_value('START_PAGE')) {
 
                 if ($start_page == START_PAGE_MESSAGES) {
                     $final_uri = "discussion.php?webtag=$webtag";

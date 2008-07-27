@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: confirm_email.php,v 1.23 2008-07-27 10:53:27 decoyduck Exp $ */
+/* $Id: confirm_email.php,v 1.24 2008-07-27 18:26:09 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -52,6 +52,14 @@ $forum_settings = forum_get_settings();
 
 $forum_global_settings = forum_get_global_settings();
 
+// Load language file
+
+$lang = load_language_file();
+
+// Check we have a webtag
+
+$webtag = get_webtag();
+
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
 include_once(BH_INCLUDE_PATH. "email.inc.php");
@@ -62,16 +70,6 @@ include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "logon.inc.php");
 include_once(BH_INCLUDE_PATH. "perm.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
-
-// Intitalise a few variables
-
-// Load language file
-
-$lang = load_language_file();
-
-// Check we have a webtag
-
-$webtag = get_webtag();
 
 if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
     $uid = $_GET['uid'];
@@ -109,7 +107,7 @@ if (!isset($uid) || !isset($key)) {
 
 $frame_top_target = html_get_top_frame_name();
 
-if (($user = user_get_by_password($uid, $key))) {
+if ($user = user_get_by_password($uid, $key)) {
 
     if (perm_user_cancel_email_confirmation($uid)) {
 

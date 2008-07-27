@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forums.php,v 1.84 2008-07-27 10:53:26 decoyduck Exp $ */
+/* $Id: admin_forums.php,v 1.85 2008-07-27 18:26:09 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -66,12 +66,6 @@ include_once(BH_INCLUDE_PATH. "myforums.inc.php");
 include_once(BH_INCLUDE_PATH. "perm.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
-
-// Intitalise a few variables
-
-// String to hold error message returned by forum_create();
-
-$error_str = "";
 
 // Check we're logged in correctly
 
@@ -212,7 +206,7 @@ if (isset($_POST['delete'])) {
 
         foreach($_POST['t_delete'] as $forum_fid => $delete_forum) {
 
-            if (($valid && $delete_forum == "Y" && $forum_name = forum_get_name($forum_fid))) {
+            if ($valid && $delete_forum == "Y" && $forum_name = forum_get_name($forum_fid)) {
 
                 if (!forum_delete($forum_fid)) {
 
@@ -264,7 +258,7 @@ if (isset($_POST['delete'])) {
 
         $t_owner = trim(_stripslashes($_POST['t_owner']));
 
-        if (($t_user_array = user_get_uid($t_owner))) {
+        if ($t_user_array = user_get_uid($t_owner)) {
 
             $t_owner_uid = $t_user_array['UID'];
 
@@ -311,7 +305,7 @@ if (isset($_POST['delete'])) {
 
     if ($valid) {
 
-        if (($new_fid = forum_create($t_webtag, $t_name, $t_owner_uid, $t_database, $t_access, $error_str))) {
+        if ($new_fid = forum_create($t_webtag, $t_name, $t_owner_uid, $t_database, $t_access, $error_str)) {
 
             if ($t_default == 1) forum_update_default($new_fid);
             header_redirect("admin_forums.php?webtag=$webtag&page=$page&added=true");
@@ -334,7 +328,7 @@ if (isset($_POST['delete'])) {
         $valid = false;
     }
 
-    if (($valid && $forum_data = forum_get($fid))) {
+    if ($valid && $forum_data = forum_get($fid)) {
 
         if (isset($_POST['t_name']) && strlen(trim(_stripslashes($_POST['t_name']))) > 0) {
             $t_name = trim(_stripslashes($_POST['t_name']));
@@ -347,7 +341,7 @@ if (isset($_POST['delete'])) {
 
             $t_owner = trim(_stripslashes($_POST['t_owner']));
 
-            if (($t_user_array = user_get_uid($t_owner))) {
+            if ($t_user_array = user_get_uid($t_owner)) {
 
                 $t_owner_uid = $t_user_array['UID'];
 
@@ -484,7 +478,7 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
     echo "                        <td align=\"left\">", form_dropdown_array("t_access", array('' => '&nbsp;', FORUM_CLOSED => $lang['closed'], FORUM_UNRESTRICTED => $lang['open'], FORUM_RESTRICTED => $lang['restricted'], FORUM_PASSWD_PROTECTED => $lang['passwordprotected']), (isset($_POST['t_access']) && is_numeric($_POST['t_access'])) ? $_POST['t_access'] : ''), "</td>\n";
     echo "                      </tr>\n";
 
-    if (($available_databases = forums_get_available_dbs())) {
+    if ($available_databases = forums_get_available_dbs()) {
 
         $available_databases = array_merge(array('&nbsp;'), $available_databases);
 

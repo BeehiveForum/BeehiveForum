@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.233 2008-07-27 10:53:36 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.234 2008-07-27 18:26:15 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -564,7 +564,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                     $poll_previous_group = $poll_results['GROUP_ID'][$key];
                 }
 
-                if (($key == sizeof($poll_results['OPTION_ID']) - 1)) {
+                if ($key == sizeof($poll_results['OPTION_ID']) - 1) {
 
                     if ($poll_data['OPTIONTYPE'] == POLL_OPTIONS_DROPDOWN && $poll_results['GROUP_SIZE'][$poll_results['GROUP_ID'][$key]] > 1) {
 
@@ -582,7 +582,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
 
         }else {
 
-            if (($poll_data['SHOWRESULTS'] == POLL_SHOW_RESULTS || ($poll_data['CLOSES'] > 0 && $poll_data['CLOSES'] < mktime()))) {
+            if ($poll_data['SHOWRESULTS'] == POLL_SHOW_RESULTS || ($poll_data['CLOSES'] > 0 && $poll_data['CLOSES'] < mktime())) {
 
                 if ($poll_data['POLLTYPE'] == POLL_HORIZONTAL_GRAPH) {
 
@@ -711,7 +711,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
 
                         if ($user_poll_votes_array[$vote_key]['OPTION_ID'] == $poll_results_group_id) {
 
-                            if (($poll_results['OPTION_NAME'][$group_key] == strip_tags($poll_results['OPTION_NAME'][$group_key]))) {
+                            if ($poll_results['OPTION_NAME'][$group_key] == strip_tags($poll_results['OPTION_NAME'][$group_key])) {
 
                                 $user_poll_votes_display_array[] = sprintf("'%s'", word_filter_add_ob_tags($poll_results['OPTION_NAME'][$group_key]));
 
@@ -740,7 +740,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
 
                         if ($user_poll_votes_array[$vote_key]['OPTION_ID'] == $poll_results_group_id) {
 
-                            if (($poll_results['OPTION_NAME'][$group_key] == strip_tags($poll_results['OPTION_NAME'][$group_key]))) {
+                            if ($poll_results['OPTION_NAME'][$group_key] == strip_tags($poll_results['OPTION_NAME'][$group_key])) {
 
                                 $user_poll_votes_display_array[] = sprintf("'%s'", word_filter_add_ob_tags($poll_results['OPTION_NAME'][$group_key]));
 
@@ -884,13 +884,13 @@ function poll_format_vote_counts($poll_data, $user_votes, $guest_votes)
         $guest_votes_display = sprintf($lang['xguestsvoted'], $guest_votes);
     }
 
-    if (($poll_data['CLOSES'] > 0 && $poll_data['CLOSES'] <= mktime())) {
+    if ($poll_data['CLOSES'] > 0 && $poll_data['CLOSES'] <= mktime()) {
         if ($user_votes > 0 || $guest_votes > 0) {
             $html.= sprintf("<b>{$lang['votedisplayclosedpoll']}</b>", $user_votes_display, $guest_votes_display);
         }else {
             $html.= $lang['nobodyvotedclosedpoll'];
         }
-    }elseif (($poll_data['CLOSES'] == 0 || ($poll_data['CLOSES'] > mktime()))) {
+    }elseif ($poll_data['CLOSES'] == 0 || ($poll_data['CLOSES'] > mktime())) {
         if ($user_votes > 0 || $guest_votes > 0) {
             $html.= sprintf("<b>{$lang['votedisplayopenpoll']}</b>", $user_votes_display, $guest_votes_display);
         }else {
@@ -1009,7 +1009,7 @@ function poll_preview_form($poll_results, $poll_data)
             $poll_previous_group = $poll_results['GROUP_ID'][$option_key];
         }
 
-        if (($option_key == sizeof($poll_results['OPTION_ID']) - 1)) {
+        if ($option_key == sizeof($poll_results['OPTION_ID']) - 1) {
 
             if ($poll_data['OPTIONTYPE'] == POLL_OPTIONS_DROPDOWN && $poll_results['GROUP_SIZE'][$poll_results['GROUP_ID'][$option_key]] > 1) {
 
@@ -1420,7 +1420,7 @@ function poll_preview_graph_table($poll_results)
                     $poll_display.= "                                  <th class=\"posthead\" align=\"center\" width=\"$col_width%\">". word_filter_add_ob_tags($poll_results['OPTION_NAME'][$group1_keys[$rows - 1]]). "</th>\n";
                 }
 
-            }else if (($cols == sizeof($group2) + 1)) {
+            }else if ($cols == sizeof($group2) + 1) {
 
                 if (($rows == 0) || ($rows == sizeof($group1) + 1)) {
 
@@ -1444,7 +1444,7 @@ function poll_preview_graph_table($poll_results)
 
                     $poll_display.= "                                  <th class=\"posthead\" align=\"center\" width=\"$col_width%\">". word_filter_add_ob_tags($poll_results['OPTION_NAME'][$group2_keys[$cols - 1]]). "</th>\n";
 
-                }else if (($rows == sizeof($group1) + 1)) {
+                }else if ($rows == sizeof($group1) + 1) {
 
                     if ($num_votes > 0) {
 
@@ -1762,7 +1762,7 @@ function poll_table_graph($tid)
                     $poll_display.= "                                  <th class=\"posthead\" align=\"center\" width=\"$col_width%\">". ($poll_results['OPTION_NAME'][$group1_keys[$rows - 1]]). "</th>\n";
                 }
 
-            }else if (($cols == sizeof($group2) + 1)) {
+            }else if ($cols == sizeof($group2) + 1) {
 
                 if (($rows == 0) || ($rows == sizeof($group1) + 1)) {
 
@@ -1786,7 +1786,7 @@ function poll_table_graph($tid)
 
                     $poll_display.= "                                  <th class=\"posthead\" align=\"center\" width=\"$col_width%\">". word_filter_add_ob_tags($poll_results['OPTION_NAME'][$group2_keys[$cols - 1]]). "</th>\n";
 
-                }else if (($rows == sizeof($group1) + 1)) {
+                }else if ($rows == sizeof($group1) + 1) {
 
                     if ($num_votes > 0) {
 

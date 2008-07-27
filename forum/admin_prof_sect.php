@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_sect.php,v 1.112 2008-07-27 10:53:26 decoyduck Exp $ */
+/* $Id: admin_prof_sect.php,v 1.113 2008-07-27 18:26:09 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -65,8 +65,6 @@ include_once(BH_INCLUDE_PATH. "perm.inc.php");
 include_once(BH_INCLUDE_PATH. "profile.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
-
-// Intitalise a few variables
 
 // Check we're logged in correctly
 
@@ -134,7 +132,7 @@ if (isset($_POST['delete_sections'])) {
 
         foreach($_POST['delete_section'] as $psid => $delete_section) {
 
-            if (($valid && $delete_section == "Y" && $profile_name = profile_section_get_name($psid))) {
+            if ($valid && $delete_section == "Y" && $profile_name = profile_section_get_name($psid)) {
 
                 if (profile_section_delete($psid)) {
 
@@ -168,7 +166,7 @@ if (isset($_POST['delete_sections'])) {
 
     if ($valid) {
 
-        if (($new_psid = profile_section_create($t_name_new))) {
+        if ($new_psid = profile_section_create($t_name_new)) {
 
             header_redirect("admin_prof_sect.php?webtag=$webtag&added=true");
             exit;

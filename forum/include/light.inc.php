@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.184 2008-07-27 15:23:25 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.185 2008-07-27 18:26:15 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -105,7 +105,7 @@ function light_html_draw_top()
         echo "<meta name=\"robots\" content=\"$robots\" />\n";
     }
 
-    if (($stylesheet = html_get_style_sheet())) {
+    if ($stylesheet = html_get_style_sheet()) {
         echo "<link rel=\"stylesheet\" href=\"$stylesheet\" type=\"text/css\" />\n";
     }
 
@@ -309,7 +309,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
 
         list($tid, $pid) = explode('.', $_GET['msg']);
 
-        if (($thread = thread_get($tid))) {
+        if ($thread = thread_get($tid)) {
 
             if (!isset($thread['RELATIONSHIP'])) $thread['RELATIONSHIP'] = 0;
 
@@ -336,7 +336,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
 
             list($tid, $pid) = explode('.', $_GET['msg']);
 
-            if (($thread = thread_get($tid))) {
+            if ($thread = thread_get($tid)) {
                 $selected_folder = $thread['FID'];
             }
 
@@ -352,7 +352,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
         $ignored_folders = array();
 
         while (list($fid, $folder_data) = each($folder_info)) {
-            if (($folder_data['INTEREST'] == FOLDER_NOINTEREST || (isset($selected_folder) && $selected_folder == $fid))) {
+            if ($folder_data['INTEREST'] == FOLDER_NOINTEREST || (isset($selected_folder) && $selected_folder == $fid)) {
                 if ((!in_array($fid, $folder_order)) && (!in_array($fid, $ignored_folders))) $folder_order[] = $fid;
             }else {
                 if ((!in_array($fid, $folder_order)) && (!in_array($fid, $ignored_folders))) $ignored_folders[] = $fid;
@@ -511,7 +511,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
         }
     }
 
-    if (($mode == ALL_DISCUSSIONS && !isset($folder))) {
+    if ($mode == ALL_DISCUSSIONS && !isset($folder)) {
 
         $total_threads = 0;
 
@@ -834,7 +834,7 @@ function light_poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list 
 
                         if ($user_poll_votes_array[$vote_key]['OPTION_ID'] == $poll_results_group_id) {
 
-                            if (($poll_results['OPTION_NAME'][$group_key] == strip_tags($poll_results['OPTION_NAME'][$group_key]))) {
+                            if ($poll_results['OPTION_NAME'][$group_key] == strip_tags($poll_results['OPTION_NAME'][$group_key])) {
 
                                 $user_poll_votes_display_array[] = sprintf("'%s'", word_filter_add_ob_tags($poll_results['OPTION_NAME'][$group_key]));
 
@@ -861,7 +861,7 @@ function light_poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list 
 
                         if ($user_poll_votes_array[$vote_key]['OPTION_ID'] == $poll_results_group_id) {
 
-                            if (($poll_results['OPTION_NAME'][$group_key] == strip_tags($poll_results['OPTION_NAME'][$group_key]))) {
+                            if ($poll_results['OPTION_NAME'][$group_key] == strip_tags($poll_results['OPTION_NAME'][$group_key])) {
 
                                 $user_poll_votes_display_array[] = sprintf("'%s'", word_filter_add_ob_tags($poll_results['OPTION_NAME'][$group_key]));
 
@@ -960,9 +960,9 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
     if (bh_session_get_value('IMAGES_TO_LINKS') == 'Y') {
 
-        $message['CONTENT'] = preg_replace('/<a([^>]*)href="([^"]*)"([^\>]*)><img[^>]*src="([^"]*)"[^>]*><\/a>/i', "[img: <a\\1href=\"\\2\"\\3>\\4</a>]", $message['CONTENT']);
-        $message['CONTENT'] = preg_replace('/<img[^>]*src="([^\"]*)"[^>]*>/i', "[img: <a href=\"\\1\">\\1</a>]", $message['CONTENT']);
-        $message['CONTENT'] = preg_replace('/<embed[^>]*src="([^"]*)"[^>]*>/i', "[object: <a href=\"\\1\">\\1</a>]", $message['CONTENT']);
+        $message['CONTENT'] = preg_replace("/<a([^>]*)href=\"([^\"]*)\"([^\>]*)><img[^>]*src=\"([^\"]*)\"[^>]*><\/a>/i", "[img: <a\\1href=\"\\2\"\\3>\\4</a>]", $message['CONTENT']);
+        $message['CONTENT'] = preg_replace("/<img[^>]*src=\"([^\"]*)\"[^>]*>/i", "[img: <a href=\"\\1\">\\1</a>]", $message['CONTENT']);
+        $message['CONTENT'] = preg_replace("/<embed[^>]*src=\"([^\"]*)\"[^>]*>/i", "[object: <a href=\"\\1\">\\1</a>]", $message['CONTENT']);
     }
 
     if ((strlen(strip_tags($message['CONTENT'])) > intval(forum_get_setting('maximum_post_length', false, 6226))) && $limit_text) {
@@ -992,7 +992,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
     // If the user posting a poll is ignored, remove ignored status for this message only so the poll can be seen
 
-    if (($is_poll && $message['PID'] == 1 && ($message['FROM_RELATIONSHIP'] & USER_IGNORED))) {
+    if ($is_poll && $message['PID'] == 1 && ($message['FROM_RELATIONSHIP'] & USER_IGNORED)) {
 
         $message['FROM_RELATIONSHIP'] -= USER_IGNORED;
         $temp_ignore = true;
@@ -1068,7 +1068,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
         if (($post_edit_grace_period == 0) || ($message['EDITED'] - $message['CREATED']) > ($post_edit_grace_period * MINUTE_IN_SECONDS)) {
 
-            if (($edit_user = user_get_logon($message['EDITED_BY']))) {
+            if ($edit_user = user_get_logon($message['EDITED_BY'])) {
 
                 echo "<p class=\"edit_text\">", sprintf($lang['editedbyuser'], format_time($message['EDITED'], 1), $edit_user), "</p>\n";
             }
@@ -1089,7 +1089,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
                 foreach($attachments_array as $attachment) {
 
-                    if (($attachment_link = light_attachment_make_link($attachment))) {
+                    if ($attachment_link = light_attachment_make_link($attachment)) {
 
                         echo $attachment_link, "<br />\n";
                     }
@@ -1104,7 +1104,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
                 foreach($image_attachments_array as $key => $attachment) {
 
-                    if (($attachment_link = light_attachment_make_link($attachment))) {
+                    if ($attachment_link = light_attachment_make_link($attachment)) {
 
                         echo $attachment_link, "&nbsp;\n";
                     }

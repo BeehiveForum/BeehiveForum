@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_items.php,v 1.127 2008-07-27 10:53:26 decoyduck Exp $ */
+/* $Id: admin_prof_items.php,v 1.128 2008-07-27 18:26:09 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -65,8 +65,6 @@ include_once(BH_INCLUDE_PATH. "perm.inc.php");
 include_once(BH_INCLUDE_PATH. "profile.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
-
-// Intitalise a few variables
 
 // Check we're logged in correctly
 
@@ -175,9 +173,9 @@ if (isset($_POST['delete'])) {
 
         foreach($_POST['delete_item'] as $piid => $delete_item) {
 
-            if (($valid && $delete_item == "Y" && $profile_item_name = profile_item_get_name($piid))) {
+            if ($valid && $delete_item == "Y" && $profile_item_name = profile_item_get_name($piid)) {
 
-                if (($section_name = profile_section_get_name($_POST['psid']))) {
+                if ($section_name = profile_section_get_name($_POST['psid'])) {
 
                     if (profile_item_delete($piid)) {
 
@@ -272,7 +270,7 @@ if (isset($_POST['additemsubmit'])) {
                 $error_msg_array[] = $lang['profileitemhyperlinkformatinvalid'];
             }
 
-            if (preg_match('/\[ProfileEntry\]/i', $t_options_new) < 1) {
+            if (preg_match("/\[ProfileEntry\]/i", $t_options_new) < 1) {
 
                 $error_msg_array[] = sprintf($lang['youmustincludeprofileentryinhyperlinks'], '[ProfileEntry]');
                 $valid = false;
@@ -291,7 +289,7 @@ if (isset($_POST['additemsubmit'])) {
 
     if ($valid) {
 
-        if (($new_piid = profile_item_create($psid, $t_new_name, $t_type_new, $t_options_new))) {
+        if ($new_piid = profile_item_create($psid, $t_new_name, $t_type_new, $t_options_new)) {
 
             $t_section_name = profile_section_get_name($psid);
 
@@ -368,7 +366,7 @@ if (isset($_POST['additemsubmit'])) {
                 $error_msg_array[] = $lang['profileitemhyperlinkformatinvalid'];
             }
 
-            if (preg_match('/\[ProfileEntry\]/i', $t_options_new) < 1) {
+            if (preg_match("/\[ProfileEntry\]/i", $t_options_new) < 1) {
 
                 $error_msg_array[] = sprintf($lang['youmustincludeprofileentryinhyperlinks'], '[ProfileEntry]');
                 $valid = false;

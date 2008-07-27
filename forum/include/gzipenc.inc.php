@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gzipenc.inc.php,v 1.57 2008-07-25 14:52:42 decoyduck Exp $ */
+/* $Id: gzipenc.inc.php,v 1.58 2008-07-27 18:26:15 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -90,7 +90,7 @@ function bh_gzhandler($contents)
     // check that the encoding is possible.
     // and fetch the client's encoding method.
 
-    if (($encoding = bh_check_gzip())) {
+    if ($encoding = bh_check_gzip()) {
 
         // Check that the gzcomprss function exists. The function
         // will not exist if PHP hasn't been compiled with ZLIB
@@ -101,7 +101,7 @@ function bh_gzhandler($contents)
             // Attempt compression of the content. If it fails we'll fall
             // back to sending the content uncompressed.
 
-            if (($gz_contents = gzcompress($contents, $gzip_compress_level))) {
+            if ($gz_contents = gzcompress($contents, $gzip_compress_level)) {
 
                 // Generate the error checking bits
 

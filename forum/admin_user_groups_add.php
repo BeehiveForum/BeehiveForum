@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_add.php,v 1.55 2008-07-27 10:53:26 decoyduck Exp $ */
+/* $Id: admin_user_groups_add.php,v 1.56 2008-07-27 18:26:09 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -72,8 +72,6 @@ include_once(BH_INCLUDE_PATH. "post.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
-
-// Intitalise a few variables
 
 // Check we're logged in correctly
 
@@ -159,7 +157,7 @@ if (isset($_POST['add_group']) || isset($_POST['add_users'])) {
 
     if ($valid) {
 
-        if (($new_gid = perm_add_group($t_name, $t_description, $new_group_perms))) {
+        if ($new_gid = perm_add_group($t_name, $t_description, $new_group_perms)) {
 
             if (isset($_POST['t_new_perms_array']) && is_array($_POST['t_new_perms_array'])) {
 
@@ -290,7 +288,7 @@ echo "          </tr>\n";
 echo "        </table>\n";
 echo "        <br />\n";
 
-if (($folder_array = folder_get_all())) {
+if ($folder_array = folder_get_all()) {
 
     echo "        <table class=\"box\" width=\"100%\">\n";
     echo "          <tr>\n";

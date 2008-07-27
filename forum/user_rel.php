@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.111 2008-07-27 10:53:34 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.112 2008-07-27 18:26:11 decoyduck Exp $ */
 
 /**
 * Displays and handles the User Relationship page
@@ -74,8 +74,6 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "user_rel.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
-
-// Intitalise a few variables
 
 // Check we're logged in correctly
 
@@ -254,9 +252,6 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 echo "<br />\n";
 
 if (isset($_POST['preview_signature'])) {
-
-    $t_sig_content = '';
-    $t_sig_html = 'N';
 
     if (user_get_sig($peer_uid, $t_sig_content, $t_sig_html)) {
 

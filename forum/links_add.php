@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_add.php,v 1.97 2008-07-27 10:53:32 decoyduck Exp $ */
+/* $Id: links_add.php,v 1.98 2008-07-27 18:26:10 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -62,8 +62,6 @@ include_once(BH_INCLUDE_PATH. "links.inc.php");
 include_once(BH_INCLUDE_PATH. "logon.inc.php");
 include_once(BH_INCLUDE_PATH. "perm.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
-
-// Intitalise a few variables
 
 // Check we're logged in correctly
 
@@ -190,7 +188,7 @@ if (isset($_POST['add']) && $mode == LINKS_ADD_LINK) {
         $fid = 1;
     }
 
-    if (isset($_POST['uri']) && preg_match('/\b([a-z]+:\/\/([-\w]{2,}\.)*[-\w]{2,}(:\d+)?(([^\s;,.?"\'[\]() {}<>]|\S[^\s;,.?"\'[\]() {}<>])*)?)/i', trim(_stripslashes($_POST['uri'])))) {
+    if (isset($_POST['uri']) && preg_match("/\b([a-z]+:\/\/([-\w]{2,}\.)*[-\w]{2,}(:\d+)?(([^\s;,.?\"'[\]() {}<>]|\S[^\s;,.?\"'[\]() {}<>])*)?)/i", trim(_stripslashes($_POST['uri'])))) {
 
         $uri = trim(_stripslashes($_POST['uri']));
 
@@ -286,7 +284,7 @@ if (isset($_POST['add']) && $mode == LINKS_ADD_LINK) {
 
     $fid = $_GET['fid'];
 
-    if (($_GET['mode'] == 'link' && !in_array($fid, array_keys($folders)))) {
+    if ($_GET['mode'] == 'link' && !in_array($fid, array_keys($folders))) {
 
         html_draw_top();
         html_error_msg($lang['mustspecifyvalidfolder']);

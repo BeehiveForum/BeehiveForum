@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_links.php,v 1.58 2008-07-27 10:53:26 decoyduck Exp $ */
+/* $Id: admin_forum_links.php,v 1.59 2008-07-27 18:26:09 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -67,8 +67,6 @@ include_once(BH_INCLUDE_PATH. "perm.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
-
-// Intitalise a few variables
 
 // Check we're logged in correctly
 
@@ -140,7 +138,7 @@ if (isset($_POST['delete'])) {
 
         foreach($_POST['t_delete'] as $lid => $delete_link) {
 
-            if (($valid && $delete_link == "Y" && $forum_link = forum_links_get_link($lid))) {
+            if ($valid && $delete_link == "Y" && $forum_link = forum_links_get_link($lid)) {
 
                 if (forum_links_delete($lid)) {
 
@@ -209,7 +207,7 @@ if (isset($_POST['delete'])) {
 
         $t_uri = trim(_stripslashes($_POST['t_uri']));
 
-        if (preg_match('/^[a-z0-9]+:\/\//i', $t_uri) < 1) {
+        if (preg_match("/^[a-z0-9]+:\/\//i", $t_uri) < 1) {
 
             $error_msg_array[] = $lang['alllinkurismuststartwithaschema'];
             $valid = false;
@@ -222,7 +220,7 @@ if (isset($_POST['delete'])) {
 
     if ($valid) {
 
-        if (($t_new_lid = forum_links_add_link($t_title, $t_uri))) {
+        if ($t_new_lid = forum_links_add_link($t_title, $t_uri)) {
 
             admin_add_log_entry(ADD_FORUM_LINKS, array($t_new_lid, $t_title));
             header_redirect("admin_forum_links.php?webtag=$webtag&page=$page&added=true");
@@ -253,7 +251,7 @@ if (isset($_POST['delete'])) {
 
             $t_uri = trim(_stripslashes($_POST['t_uri']));
 
-            if (preg_match('/^[a-z0-9]+:\/\//i', $t_uri) < 1) {
+            if (preg_match("/^[a-z0-9]+:\/\//i", $t_uri) < 1) {
 
                 $error_msg_array[] = $lang['alllinkurismuststartwithaschema'];
                 $valid = false;

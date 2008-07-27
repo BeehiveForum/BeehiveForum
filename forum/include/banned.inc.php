@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: banned.inc.php,v 1.37 2008-07-27 15:23:24 decoyduck Exp $ */
+/* $Id: banned.inc.php,v 1.38 2008-07-27 18:26:15 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -68,7 +68,7 @@ function ban_check($user_sess, $user_is_guest = false)
     $ban_check_select_array = array();
     $ban_check_where_array  = array();
 
-    if (($ipaddress = get_ip_address())) {
+    if ($ipaddress = get_ip_address()) {
 
         $ipaddress = db_escape_string($ipaddress);
 
@@ -123,13 +123,13 @@ function ban_check($user_sess, $user_is_guest = false)
 
         if (db_num_rows($result) > 0) {
 
-            while (($ban_check_result_array = db_fetch_array($result))) {
+            while ($ban_check_result_array = db_fetch_array($result)) {
 
                 if (isset($ban_check_result_array['BANTYPE']) && is_numeric($ban_check_result_array['BANTYPE'])) {
 
                     $ban_check_type = $ban_check_result_array['BANTYPE'];
 
-                    if (($ban_check_data = ban_check_process_data($ban_check_result_array))) {
+                    if ($ban_check_data = ban_check_process_data($ban_check_result_array)) {
 
                         if ($user_is_guest === false) {
                             array_push($ban_check_data, $user_sess['UID'], $user_sess['LOGON']);
@@ -306,7 +306,7 @@ function add_ban_data($type, $data, $comment)
     $sql = "INSERT INTO {$table_data['PREFIX']}BANNED (BANTYPE, BANDATA, COMMENT) ";
     $sql.= "VALUES ('$type', '$data', '$comment')";
 
-    if (!db_query($sql, $db_add_ban_data)) return false;
+    if (!$result = db_query($sql, $db_add_ban_data)) return false;
 
     return true;
 }
@@ -322,7 +322,7 @@ function remove_ban_data_by_id($ban_id)
     $sql = "DELETE QUICK FROM {$table_data['PREFIX']}BANNED ";
     $sql.= "WHERE ID = '$ban_id'";
 
-    if (!db_query($sql, $db_remove_ban_data)) return false;
+    if (!$result = db_query($sql, $db_remove_ban_data)) return false;
 
     return (db_affected_rows($db_remove_ban_data) > 0);
 }
@@ -346,7 +346,7 @@ function update_ban_data($ban_id, $type, $data, $comment)
     $sql.= "SET BANTYPE = '$type', BANDATA = '$data', ";
     $sql.= "COMMENT = '$comment' WHERE ID = '$ban_id'";
 
-    if (!db_query($sql, $db_remove_ban_data)) return false;
+    if (!$result = db_query($sql, $db_remove_ban_data)) return false;
 
     return true;
 }
@@ -425,7 +425,7 @@ function check_affected_sessions($ban_type, $ban_data)
 
     if (db_num_rows($result) > 0) {
 
-        while (($user_session = db_fetch_array($result))) {
+        while ($user_session = db_fetch_array($result)) {
 
             if (isset($user_session['LOGON']) && isset($user_session['PEER_NICKNAME'])) {
                 if (!is_null($user_session['PEER_NICKNAME']) && strlen($user_session['PEER_NICKNAME']) > 0) {
@@ -459,6 +459,8 @@ function check_affected_sessions($ban_type, $ban_data)
 function user_is_banned($uid)
 {
     if (!$db_user_is_banned = db_connect()) return false;
+
+    $lang = load_language_file();
 
     if (!is_numeric($uid)) return false;
 

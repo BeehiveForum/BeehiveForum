@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.169 2008-07-25 14:52:56 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.170 2008-07-27 15:23:26 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'new-install.php') {
 
@@ -1380,8 +1380,10 @@ if (!isset($skip_dictionary) || $skip_dictionary === false) {
                     install_prevent_client_timeout();
 
                     $dictionary_line = fgets($fp, 100);
+                    
+                    $dictionary_word_array = array();
 
-                    if (preg_match("/^([^\s]+)[^\S]+([^$]+)$/i", trim($dictionary_line), $dictionary_word_array) > 0) {
+                    if (preg_match('/^([^\s]+)[^\S]+([^$]+)$/i', trim($dictionary_line), $dictionary_word_array) > 0) {
 
                         array_shift($dictionary_word_array);
 
@@ -1395,7 +1397,7 @@ if (!isset($skip_dictionary) || $skip_dictionary === false) {
                             $sql = "INSERT INTO DICTIONARY (WORD, SOUND, UID) ";
                             $sql.= "VALUES ('$str_word', '$str_meta', 0)";
 
-                            if (!$result = db_query($sql, $db_install)) {
+                            if (!db_query($sql, $db_install)) {
 
                                 $valid = false;
                                 return;

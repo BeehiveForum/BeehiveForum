@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.539 2008-07-27 10:53:35 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.540 2008-07-27 15:23:25 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -573,6 +573,9 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
     $post_edit_time = forum_get_setting('post_edit_time', false, 0);
     $post_edit_grace_period = forum_get_setting('post_edit_grace_period', false, 0);
+    
+    $attachments_array = array();
+    $image_attachments_array = array();    
 
     $webtag = get_webtag();
 
@@ -589,7 +592,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     if (!isset($message['CONTENT']) || $message['CONTENT'] == "") {
 
         message_display_deleted($tid, isset($message['PID']) ? $message['PID'] : 0, $message);
-        return;
+        return true;
     }
 
     $from_user_permissions = perm_get_user_permissions($message['FROM_UID']);
@@ -599,7 +602,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
         if (($from_user_permissions & USER_PERM_WORMED) && !$perm_is_moderator) {
 
             message_display_deleted($tid, $message['PID'], $message);
-            return;
+            return true;
         }
     }
 
@@ -616,16 +619,16 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     if (($message['TO_RELATIONSHIP'] & USER_IGNORED_COMPLETELY) || ($message['FROM_RELATIONSHIP'] & USER_IGNORED_COMPLETELY)) {
 
         message_display_deleted($tid, $message['PID'], $message);
-        return;
+        return true;
     }
 
     // Add emoticons/WikiLinks and ignore signature ----------------------------
 
     if (bh_session_get_value('IMAGES_TO_LINKS') == 'Y') {
 
-        $message['CONTENT'] = preg_replace("/<a([^>]*)href=\"([^\"]*)\"([^\>]*)><img[^>]*src=\"([^\"]*)\"[^>]*><\/a>/i", "[img: <a\\1href=\"\\2\"\\3>\\4</a>]", $message['CONTENT']);
-        $message['CONTENT'] = preg_replace("/<img[^>]*src=\"([^\"]*)\"[^>]*>/i", "[img: <a href=\"\\1\">\\1</a>]", $message['CONTENT']);
-        $message['CONTENT'] = preg_replace("/<embed[^>]*src=\"([^\"]*)\"[^>]*>/i", "[object: <a href=\"\\1\">\\1</a>]", $message['CONTENT']);
+        $message['CONTENT'] = preg_replace('/<a([^>]*)href="([^"]*)"([^\>]*)><img[^>]*src="([^"]*)"[^>]*><\/a>/i', "[img: <a\\1href=\"\\2\"\\3>\\4</a>]", $message['CONTENT']);
+        $message['CONTENT'] = preg_replace('/<img[^>]*src="([^"]*)"[^>]*>/i', "[img: <a href=\"\\1\">\\1</a>]", $message['CONTENT']);
+        $message['CONTENT'] = preg_replace('/<embed[^>]*src="([^"]*)"[^>]*>/i', "[object: <a href=\"\\1\">\\1</a>]", $message['CONTENT']);
     }
 
     $message['CONTENT'] = "<div class=\"pear_cache_lite\">{$message['CONTENT']}</div>";
@@ -724,7 +727,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
         if (isset($message['APPROVED']) && $message['APPROVED'] == 0 && !$perm_is_moderator) {
 
             message_display_approval_req($tid, $message['PID']);
-            return;
+            return true;
         }
     }
 
@@ -743,7 +746,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
         echo "  </tr>\n";
         echo "</table>\n";
         echo "</div>\n";
-        return;
+        return true;
     }
 
     echo "<br />\n";
@@ -961,7 +964,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
         if (($tid <> 0 && isset($message['PID'])) || isset($message['AID'])) {
 
             $aid = isset($message['AID']) ? $message['AID'] : get_attachment_id($tid, $message['PID']);
-
+            
             if (get_attachments($message['FROM_UID'], $aid, $attachments_array, $image_attachments_array)) {
 
                 echo "              <tr>\n";
@@ -1220,6 +1223,8 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     }
 
     echo "</div>\n";
+    
+    return true;
 }
 
 function message_display_deleted($tid, $pid, $message)
@@ -1321,7 +1326,7 @@ function messages_nav_strip($tid, $pid, $length, $ppp)
     // Less than 20 messages, no nav needed
 
     if ($pid < 2 && $length < $ppp){
-        return;
+        return true;
     }else if ($pid < 1) {
         $pid = 1;
     }
@@ -1399,6 +1404,8 @@ function messages_nav_strip($tid, $pid, $length, $ppp)
     echo "              </tr>\n";
     echo "            </table>\n";
     echo "            <br />\n";
+    
+    return true;
 }
 
 function mess_nav_range($from,$to)
@@ -1625,7 +1632,7 @@ function messages_set_read($tid, $pid, $uid, $modified)
             $sql.= "SET LAST_READ = '$pid', LAST_READ_AT = NULL ";
             $sql.= "WHERE UID = '$uid' AND TID = '$tid'";
 
-            if (!$result = db_query($sql, $db_message_set_read)) return false;
+            if (!db_query($sql, $db_message_set_read)) return false;
 
             if (db_affected_rows($db_message_set_read) < 1) {
 
@@ -1633,7 +1640,7 @@ function messages_set_read($tid, $pid, $uid, $modified)
                 $sql.= "(UID, TID, LAST_READ, LAST_READ_AT) ";
                 $sql.= "VALUES ($uid, $tid, $pid, NULL)";
 
-                if (!$result = db_query($sql, $db_message_set_read)) return false;
+                if (!db_query($sql, $db_message_set_read)) return false;
             }
         }
     }
@@ -1643,7 +1650,7 @@ function messages_set_read($tid, $pid, $uid, $modified)
     $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}POST SET VIEWED = NULL ";
     $sql.= "WHERE TID = '$tid' AND PID >= '$pid' AND TO_UID = '$uid'";
 
-    if (!$result = db_query($sql, $db_message_set_read)) return false;
+    if (!db_query($sql, $db_message_set_read)) return false;
 
     return true;
 }
@@ -1789,7 +1796,7 @@ function messages_fontsize_form($tid, $pid)
 
 function validate_msg($msg)
 {
-    return preg_match("/^\d{1,}\.\d{1,}$/", rawurldecode($msg));
+    return preg_match('/^\d{1,}\.\d{1,}$/', rawurldecode($msg));
 }
 
 function messages_forum_stats($tid, $pid)
@@ -1797,8 +1804,6 @@ function messages_forum_stats($tid, $pid)
     $lang = load_language_file();
 
     $webtag = get_webtag();
-
-    $uid = bh_session_get_value("UID");
 
     if (forum_get_setting('show_stats', 'Y')) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.313 2008-07-27 10:53:37 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.314 2008-07-27 15:23:26 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -57,8 +57,6 @@ function threads_get_folders()
     if (!$table_data = get_table_prefix()) return false;
     if (!is_numeric($access_allowed)) return false;
 
-    $forum_fid = $table_data['FID'];
-
     $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, USER_FOLDER.INTEREST ";
     $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_FOLDER USER_FOLDER ";
@@ -71,7 +69,7 @@ function threads_get_folders()
 
         $folder_info = array();
 
-        while ($folder_data = db_fetch_array($result)) {
+        while (($folder_data = db_fetch_array($result))) {
 
             if (user_is_guest()) {
 
@@ -686,11 +684,6 @@ function threads_get_by_relationship($uid, $relationship = USER_FRIEND, $start =
 
     $folders = folder_get_available();
 
-    // Constants for user relationships
-
-    $user_ignored = USER_IGNORED;
-    $user_ignored_completely = USER_IGNORED_COMPLETELY;
-
     // Formulate query
 
     $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.DELETED, THREAD.LENGTH, ";
@@ -745,11 +738,6 @@ function threads_get_unread_by_relationship($uid, $relationship = USER_FRIEND) /
     // Get the folders the user can see.
 
     $folders = folder_get_available();
-
-    // Constants for user relationships
-
-    $user_ignored = USER_IGNORED;
-    $user_ignored_completely = USER_IGNORED_COMPLETELY;
 
     // Check to see if unread messages are disabled.
 
@@ -1309,7 +1297,7 @@ function threads_get_most_recent($limit = 10, $folder_list_array = array(), $cre
         $threads_get_array = array();
         $tid_array = array();
 
-        while ($thread = db_fetch_array($result)) {
+        while (($thread = db_fetch_array($result))) {
 
             if (isset($thread['LOGON']) && isset($thread['PEER_NICKNAME'])) {
                 if (!is_null($thread['PEER_NICKNAME']) && strlen($thread['PEER_NICKNAME']) > 0) {
@@ -1357,7 +1345,6 @@ function threads_process_list($result)
     // Default to returning no threads.
 
     $threads_array = 0;
-    $folder = 0;
     $folder_order = 0;
 
     // Language file
@@ -1380,13 +1367,12 @@ function threads_process_list($result)
         // that folder to be first in the list
 
         if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
-            $folder = $_GET['folder'];
             $folder_order = array($_GET['folder']);
         }
 
         // Loop through the results and construct an array to return
 
-        while ($thread = db_fetch_array($result, DB_RESULT_ASSOC)) {
+        while (($thread = db_fetch_array($result, DB_RESULT_ASSOC))) {
 
             if (!isset($thread['FOLDER_INTEREST']) || is_null($thread['FOLDER_INTEREST'])) $thread['FOLDER_INTEREST'] = 0;
             if (!isset($thread['RELATIONSHIP']) || is_null($thread['RELATIONSHIP'])) $thread['RELATIONSHIP'] = 0;
@@ -1466,7 +1452,7 @@ function threads_get_folder_msgs()
 
     if (!$result = db_query($sql, $db_threads_get_folder_msgs)) return false;
 
-    while($folder = db_fetch_array($result)){
+    while (($folder = db_fetch_array($result))) {
         $folder_msgs[$folder['FID']] = $folder['TOTAL'];
     }
 
@@ -1529,7 +1515,7 @@ function threads_mark_all_read()
     $sql.= "OR {$table_data['PREFIX']}USER_THREAD.LAST_READ IS NULL) ";
     $sql.= "ON DUPLICATE KEY UPDATE LAST_READ = VALUES(LAST_READ)";
 
-    if (!$result_threads = db_query($sql, $db_threads_mark_all_read)) return false;
+    if (!db_query($sql, $db_threads_mark_all_read)) return false;
 
     return true;
 }
@@ -1557,7 +1543,7 @@ function threads_mark_50_read()
     $sql.= "ORDER BY {$table_data['PREFIX']}THREAD.MODIFIED DESC LIMIT 0, 50 ";
     $sql.= "ON DUPLICATE KEY UPDATE LAST_READ = VALUES(LAST_READ)";
 
-    if (!$result_threads = db_query($sql, $db_threads_mark_50_read)) return false;
+    if (!db_query($sql, $db_threads_mark_50_read)) return false;
 
     return true;
 }
@@ -1586,7 +1572,7 @@ function threads_mark_folder_read($fid)
     $sql.= "OR {$table_data['PREFIX']}USER_THREAD.LAST_READ IS NULL) ";
     $sql.= "ON DUPLICATE KEY UPDATE LAST_READ = VALUES(LAST_READ)";
 
-    if (!$result_threads = db_query($sql, $db_threads_mark_folder_read)) return false;
+    if (!db_query($sql, $db_threads_mark_folder_read)) return false;
 
     return true;
 }
@@ -1618,7 +1604,7 @@ function threads_mark_read($tid_array)
     $sql.= "OR {$table_data['PREFIX']}USER_THREAD.LAST_READ IS NULL) ";
     $sql.= "ON DUPLICATE KEY UPDATE LAST_READ = VALUES(LAST_READ)";
 
-    if (!$result_threads = db_query($sql, $db_threads_mark_read)) return false;
+    if (!db_query($sql, $db_threads_mark_read)) return false;
 
     return true;
 }
@@ -1641,7 +1627,7 @@ function threads_get_unread_data(&$threads_array, $tid_array)
 
     if (db_num_rows($result) > 0) {
 
-        while ($thread_data = db_fetch_array($result)) {
+        while (($thread_data = db_fetch_array($result))) {
 
             $threads_array[$thread_data['TID']] = $thread_data;
         }
@@ -1730,7 +1716,7 @@ function thread_list_draw_top($mode)
                 // Remove unread thread options (same as above) plus the
                 // Admin Deleted Threads option.
 
-                unset($labels[1], $labels[4], $labels[8], $labels[14], $labels[18], $label[20]);
+                unset($labels[1], $labels[4], $labels[8], $labels[14], $labels[18], $labels[20]);
             }
 
         }
@@ -1764,10 +1750,12 @@ function threads_have_attachments(&$threads_array, $tid_array)
 
     if (!$result = db_query($sql, $db_thread_has_attachments)) return false;
 
-    while ($attachment_data = db_fetch_array($result)) {
+    while (($attachment_data = db_fetch_array($result))) {
 
         $threads_array[$attachment_data['TID']]['AID'] = $attachment_data['AID'];
     }
+    
+    return true;
 }
 
 function thread_has_attachments($tid)
@@ -1806,7 +1794,7 @@ function thread_auto_prune_unread_data()
         $sql.= "GROUP BY POST.TID ON DUPLICATE KEY UPDATE UNREAD_PID = VALUES(UNREAD_PID), ";
         $sql.= "UNREAD_CREATED = VALUES(UNREAD_CREATED)";
 
-        if (!$result = db_query($sql, $db_thread_prune_unread_data)) return false;
+        if (!db_query($sql, $db_thread_prune_unread_data)) return false;
 
         $sql = "DELETE QUICK FROM {$table_data['PREFIX']}USER_THREAD ";
         $sql.= "USING {$table_data['PREFIX']}USER_THREAD ";
@@ -1819,7 +1807,7 @@ function thread_auto_prune_unread_data()
         $sql.= "AND ({$table_data['PREFIX']}USER_THREAD.INTEREST IS NULL ";
         $sql.= "OR {$table_data['PREFIX']}USER_THREAD.INTEREST = 0) ";
 
-        if (!$result = db_query($sql, $db_thread_prune_unread_data)) return false;
+        if (!db_query($sql, $db_thread_prune_unread_data)) return false;
     }
 
     return true;
@@ -1874,7 +1862,7 @@ function threads_get_user_subscriptions($interest_type = THREAD_NOINTEREST, $off
 
     if (db_num_rows($result) > 0) {
 
-        while ($thread_data_array = db_fetch_array($result)) {
+        while (($thread_data_array = db_fetch_array($result))) {
 
             $thread_subscriptions_array[] = $thread_data_array;
         }
@@ -1943,7 +1931,7 @@ function threads_search_user_subscriptions($thread_search, $interest_type = THRE
 
     if (db_num_rows($result) > 0) {
 
-        while ($thread_data_array = db_fetch_array($result)) {
+        while (($thread_data_array = db_fetch_array($result))) {
 
             $thread_subscriptions_array[] = $thread_data_array;
         }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.204 2008-07-27 10:53:36 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.205 2008-07-27 15:23:26 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -80,7 +80,7 @@ function search_execute($search_arguments, &$error)
 
     $sql = "DELETE QUICK FROM SEARCH_RESULTS WHERE UID = '$uid'";
 
-    if (!$result = db_query($sql, $db_search_execute)) return false;
+    if (!db_query($sql, $db_search_execute)) return false;
 
     // Peer portion of the query for removing rows from ignored users - the same for all searches
 
@@ -290,7 +290,7 @@ function search_execute($search_arguments, &$error)
 
     // Execute the query
 
-    if (!$result = db_query($sql, $db_search_execute)) return false;
+    if (!db_query($sql, $db_search_execute)) return false;
 
     // Check the number of results
 
@@ -304,7 +304,11 @@ function search_execute($search_arguments, &$error)
 
 function search_strip_keywords($search_string, $strip_valid = false)
 {
-    // MySQL has a list of stop words for fulltext searches.
+    // Array to hold MySQL stop words
+    
+	$mysql_fulltext_stopwords = array();
+	
+	// MySQL has a list of stop words for fulltext searches.
     // We'll save ourselves some server time by checking
     // them first.
 
@@ -317,12 +321,15 @@ function search_strip_keywords($search_string, $strip_valid = false)
     // Split the search string into boolean parts and clean out
     // the empty array values.
 
-    $keyword_match = "([\+|-]?[\w']+)|([\+|-]?[\"][^\"]+[\"])";
+    $keyword_match = '([\+|-]?[\w\']+)|([\+|-]?["][^"]+["])';
 
     $keywords_array = preg_split("/$keyword_match/", $search_string, -1, PREG_SPLIT_DELIM_CAPTURE);
     $keywords_array = preg_grep("/^ {0,}$/", $keywords_array, PREG_GREP_INVERT);
 
     // Get the min and max word lengths that MySQL supports
+    
+    $min_length = 4;
+    $max_length = 84;
 
     search_get_word_lengths($min_length, $max_length);
 
@@ -335,22 +342,22 @@ function search_strip_keywords($search_string, $strip_valid = false)
     // Prepare the MySQL Full-Text stop word list
 
     array_walk($mysql_fulltext_stopwords, 'mysql_fulltext_callback', '/');
-    $mysql_fulltext_stopwords = implode('[\"]?$|^[\+|-]?[\"]?', $mysql_fulltext_stopwords);
+    $mysql_fulltext_stopwords = implode('["]?$|^[\+|-]?["]?', $mysql_fulltext_stopwords);
 
     // Filter the boolean parts through the MySQL Full-Text stop word list
     // and by checking individual words lengths.
 
     if ($strip_valid === true) {
 
-        $keywords_array_length = preg_grep("/^[\+|-]?[\"]?[\w\s']{{$min_length},{$max_length}}[\"]?$/i", $keywords_array, PREG_GREP_INVERT);
-        $keywords_array_swords = preg_grep("/^[\+|-]?[\"]?{$mysql_fulltext_stopwords}[\"]?$/i", $keywords_array);
+        $keywords_array_length = preg_grep(sprintf('/^[\+|-]?["]?[\w\s\']{%s,%s}["]?$/i', $min_length, $max_length), $keywords_array, PREG_GREP_INVERT);
+        $keywords_array_swords = preg_grep(sprintf('/^[\+|-]?["]?%s["]?$/i', $mysql_fulltext_stopwords), $keywords_array);
 
         $keywords_array = array_merge($keywords_array_length, $keywords_array_swords);
 
     }else {
 
-        $keywords_array = preg_grep("/^[\+|-]?[\"]?[\w\s']{{$min_length},{$max_length}}[\"]?$/i", $keywords_array);
-        $keywords_array = preg_grep("/^[\+|-]?[\"]?{$mysql_fulltext_stopwords}[\"]?$/i", $keywords_array, PREG_GREP_INVERT);
+        $keywords_array = preg_grep(sprintf('/^[\+|-]?["]?[\w\s\']{%s,%s}["]?$/i', $min_length, $max_length), $keywords_array);
+        $keywords_array = preg_grep(sprintf('/^[\+|-]?["]?%s["]?$/i', $mysql_fulltext_stopwords), $keywords_array, PREG_GREP_INVERT);
     }
 
     // Remove any duplicate words, reindex the array and finally
@@ -375,13 +382,16 @@ function search_strip_special_chars($keywords_array, $remove_non_matches = true)
 
     // Get the min and max word lengths that MySQL supports
 
+    $min_length = 4;
+    $max_length = 84;
+    
     search_get_word_lengths($min_length, $max_length);
 
     // Expression to match words prefixed with a hyphen (for do not match)
 
     if ($remove_non_matches === true) {
 
-        $boolean_non_match = "/^-[\"]?([\w\s']){{$min_length},{$max_length}}[\"]?$/";
+        $boolean_non_match = sprintf('/^-["]?([\w\s\']){%s, %s}["]?$/', $min_length, $max_length);
 
         $keywords_array = preg_grep($boolean_non_match, $keywords_array, PREG_GREP_INVERT);
         $keywords_array = preg_replace('/["|\+|\x00]+/', '', $keywords_array);
@@ -407,7 +417,7 @@ function search_get_word_lengths(&$min_length, &$max_length)
     $min_length = 4;
     $max_length = 84;
 
-    while ($mysql_variable_data = db_fetch_array($result)) {
+    while (($mysql_variable_data = db_fetch_array($result))) {
 
         if (isset($mysql_variable_data['Variable_name']) && isset($mysql_variable_data['Value'])) {
 
@@ -420,6 +430,8 @@ function search_get_word_lengths(&$min_length, &$max_length)
             }
         }
     }
+    
+    return true;
 }
 
 function search_save_keywords($keywords_array)
@@ -440,7 +452,7 @@ function search_save_keywords($keywords_array)
     $sql.= "SET LAST_SEARCH_KEYWORDS = '$keywords' ";
     $sql.= "WHERE UID = '$uid'";
 
-    if (!$result = db_query($sql, $db_search_save_keywords)) return false;
+    if (!db_query($sql, $db_search_save_keywords)) return false;
 
     return true;
 }
@@ -540,7 +552,7 @@ function search_fetch_results($offset, $sort_by, $sort_dir)
 
         $search_results_array = array();
 
-        while ($search_result = db_fetch_array($result)) {
+        while (($search_result = db_fetch_array($result))) {
 
             if (isset($search_result['FROM_LOGON']) && isset($search_result['PEER_NICKNAME'])) {
                 if (!is_null($search_result['PEER_NICKNAME']) && strlen($search_result['PEER_NICKNAME']) > 0) {
@@ -569,8 +581,6 @@ function search_fetch_results($offset, $sort_by, $sort_dir)
 function search_get_first_result_msg()
 {
     if (!$db_search_fetch_results = db_connect()) return false;
-
-    if (!$table_data = get_table_prefix()) return false;
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
@@ -733,13 +743,9 @@ function folder_search_dropdown($selected_folder)
 
     if (!$db_folder_search_dropdown = db_connect()) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
-
     if (!is_numeric($selected_folder)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
-
-    $forum_fid = $table_data['FID'];
 
     $available_folders = array();
 
@@ -752,7 +758,7 @@ function folder_search_dropdown($selected_folder)
 
     if (db_num_rows($result) > 0) {
 
-        while($folder_data = db_fetch_array($result)) {
+        while (($folder_data = db_fetch_array($result))) {
 
             if (user_is_guest()) {
 
@@ -776,6 +782,8 @@ function folder_search_dropdown($selected_folder)
             return form_dropdown_array("fid", $available_folders, $selected_folder, false, "search_dropdown");
         }
     }
+    
+    return false;
 }
 
 function check_search_frequency()

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: make_style.inc.php,v 1.22 2008-07-27 10:53:35 decoyduck Exp $ */
+/* $Id: make_style.inc.php,v 1.23 2008-07-27 15:23:25 decoyduck Exp $ */
 
 /**
 * make_style.inc.php - attachment upload handling
@@ -192,7 +192,7 @@ function changeColour ($r, $g, $b, $variance, $mode, $steps)
 
 // Random number shiznit
 
-function rand_sort($a, $b)
+function rand_sort()
 {
     return (mt_rand(0, 1));
 }

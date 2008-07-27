@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: sitemap.inc.php,v 1.17 2008-07-25 14:52:44 decoyduck Exp $ */
+/* $Id: sitemap.inc.php,v 1.18 2008-07-27 15:23:26 decoyduck Exp $ */
 
 /**
 * sitemap.inc.php - sitemap functions
@@ -76,7 +76,7 @@ function sitemap_get_available_forums()
 
     if (db_num_rows($result) > 0) {
 
-        while ($forum_data = db_fetch_array($result)) {
+        while (($forum_data = db_fetch_array($result))) {
             $forum_fids_array[$forum_data['FID']] = $forum_data['WEBTAG'];
         }
 
@@ -125,7 +125,7 @@ function sitemap_forum_get_threads($forum_fid)
 
         if (db_num_rows($result) > 0) {
 
-            while ($thread_data = db_fetch_array($result)) {
+            while (($thread_data = db_fetch_array($result))) {
                 $threads_array[$thread_data['TID']] = $thread_data['MODIFIED'];
             }
 
@@ -260,7 +260,7 @@ function sitemap_create_file()
 
     if (@file_exists("$sitemap_path/sitemap.xml")) {
 
-        if (@$file_modified = filemtime("$sitemap_path/sitemap.xml")) {
+        if ((@$file_modified = filemtime("$sitemap_path/sitemap.xml"))) {
 
             if ((mktime() - $file_modified) < $sitemap_freq) return false;
         }
@@ -272,7 +272,7 @@ function sitemap_create_file()
 
     // Open the index file for writing.
 
-    if (@$fp_index = fopen("{$sitemap_path}/sitemap.xml", 'w')) {
+    if ((@$fp_index = fopen("{$sitemap_path}/sitemap.xml", 'w'))) {
 
         // Write the sitemap index header to the index file
 
@@ -280,7 +280,7 @@ function sitemap_create_file()
 
         // Open the sitemap file for writing.
 
-        if (@$fp = fopen("{$sitemap_path}/sitemap{$sitemap_file_count}.xml", 'w')) {
+        if ((@$fp = fopen("{$sitemap_path}/sitemap{$sitemap_file_count}.xml", 'w'))) {
 
             // Write the header to the file
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: htmltools.inc.php,v 1.68 2008-07-27 10:53:35 decoyduck Exp $ */
+/* $Id: htmltools.inc.php,v 1.69 2008-07-27 15:23:25 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -196,14 +196,13 @@ class TextAreaHTML {
     // ----------------------------------------------------
     function toolbar ($emoticons = true, $custom_html = "") {
 
-        if ($this->tinymce || $this->tbs >= $this->allowed_toolbars) return;
+        if ($this->tinymce || $this->tbs >= $this->allowed_toolbars) return '';
 
         $lang = load_language_file();
 
-        $forum_settings = forum_get_settings();
         $webtag = get_webtag();
 
-        $this->tbs++;
+        $this->tbs = $this->tbs + 1;
 
         $str = "<div id=\"bh_tb{$this->tbs}\" class=\"tools\" style=\"background-image: url('images/html_toolbar.png');\">\n";
 
@@ -285,7 +284,7 @@ class TextAreaHTML {
 
         $webtag = get_webtag();
 
-        $this->tbs++;
+        $this->tbs = $this->tbs + 1;
 
         $str = "<div id=\"bh_tb{$this->tbs}\" class=\"tools\" style=\"background-image: url('images/html_toolbar_reduced.png');\">\n";
         $str.= $this->bh_tb_img($lang['bold'], "add_tag('b');");
@@ -319,7 +318,7 @@ class TextAreaHTML {
 
             if ($this->tbs < $this->allowed_toolbars) {
 
-                $this->tbs++;
+                $this->tbs = $this->tbs + 1;
 
                 if ($rows < 7) {
                     $rows = 7;
@@ -352,7 +351,7 @@ class TextAreaHTML {
 
     function preload () {
 
-        if ($this->tinymce) return;
+        if ($this->tinymce) return '';
 
         $str = "<script language=\"javascript\" type=\"text/javascript\">\n";
         $str.= "  <!--\n";
@@ -481,7 +480,7 @@ class TextAreaHTML {
 
     function assign_checkbox($a, $b = "") {
 
-        if ($this->tinymce) return;
+        if ($this->tinymce) return '';
 
         $str = "<script language=\"Javascript\" type=\"text/javascript\">\n";
         $str.= "  <!--\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.81 2008-07-27 10:53:35 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.82 2008-07-27 15:23:25 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -219,8 +219,6 @@ function logon_update_cookies($logon, $password, $passhash, $save_password)
 
 function logon_perform()
 {
-    $lang = load_language_file();
-
     $webtag = get_webtag();
 
     // Check to see if the user is logging in as a guest or a normal user.
@@ -294,8 +292,6 @@ function logon_perform()
 
 function logon_draw_form($logon_options)
 {
-    $frame_top_target = html_get_top_frame_name();
-
     $lang = load_language_file();
 
     $webtag = get_webtag();
@@ -388,8 +384,10 @@ function logon_draw_form($logon_options)
 
         echo form_dropdown_array("logonarray", $username_dropdown_array, "", "onchange=\"changePassword('$webtag')\" autocomplete=\"off\"", "bhinputlogon");
         echo form_input_hidden("user_logon", _htmlentities($username_array[$current_logon]));
+        
+        $username_array_keys = array_keys($username_array);
 
-        foreach($username_array as $key => $logon) {
+        foreach ($username_array_keys as $key) {
 
             if (isset($password_array[$key]) && strlen($password_array[$key]) > 0) {
 

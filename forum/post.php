@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.349 2008-07-27 10:53:32 decoyduck Exp $ */
+/* $Id: post.php,v 1.350 2008-07-27 15:23:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -895,7 +895,6 @@ if ($valid && isset($_POST['preview'])) {
         $preview_message['TLOGON'] = $preview_tuser['LOGON'];
         $preview_message['TNICK'] = $preview_tuser['NICKNAME'];
         $preview_message['TO_UID'] = $preview_tuser['UID'];
-
     }
 
     $preview_tuser = user_get($uid);
@@ -915,7 +914,7 @@ if ($valid && isset($_POST['preview'])) {
     echo "                <tr>\n";
     echo "                  <td align=\"left\">\n";
 
-    echo message_display(0, $preview_message, 0, 0, 0, true, false, false, false, $show_sigs, true);
+    message_display(0, $preview_message, 0, 0, 0, true, false, false, false, $show_sigs, true);
 
     echo "                  </td>\n";
     echo "                </tr>\n";
@@ -1212,7 +1211,7 @@ if (!$new_thread && $reply_to_pid > 0) {
         echo "                <tr>\n";
         echo "                  <td align=\"left\">\n";
 
-        echo message_display($reply_to_tid, $reply_message, $thread_data['LENGTH'], $reply_to_pid, $thread_data['FID'], true, false, false, false, $show_sigs, true);
+        message_display($reply_to_tid, $reply_message, $thread_data['LENGTH'], $reply_to_pid, $thread_data['FID'], true, false, false, false, $show_sigs, true);
 
         echo "                 </td>\n";
         echo "                </tr>\n";

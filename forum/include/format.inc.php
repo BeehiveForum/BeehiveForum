@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.162 2008-07-25 14:52:42 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.163 2008-07-27 15:23:25 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -147,8 +147,9 @@ function format_time($time, $verbose = false)
 
     // Get the numerical for the dates to convert
 
-    $date_string = gmdate("s i G j n Y", $local_time);
-    list($sec, $min, $hour, $day, $month, $year) = explode(" ", $date_string);
+    $date_string = gmdate("i G j n Y", $local_time);
+
+    list($min, $hour, $day, $month, $year) = explode(" ", $date_string);
 
     // We only ever use the month as a string
 
@@ -229,8 +230,9 @@ function format_date($time)
 
     // Get the numerical for the dates to convert
 
-    $date_string = gmdate("s i G j n Y", $local_time);
-    list($sec, $min, $hour, $day, $month, $year) = explode(" ", $date_string);
+    $date_string = gmdate("j n Y", $local_time);
+
+    list($day, $month, $year) = explode(" ", $date_string);
 
     // We only ever use the month as a string
 
@@ -344,8 +346,6 @@ function _htmlentities($var)
 
         return htmlentities($var, ENT_COMPAT, 'UTF-8');
     }
-
-    return $var;
 }
 
 /**
@@ -367,8 +367,6 @@ function _htmlentities_decode($var)
 
         return html_entity_decode($var, ENT_COMPAT, 'UTF-8');
     }
-
-    return $var;
 }
 
 /**
@@ -562,7 +560,7 @@ function html_entity_to_decimal($string)
 
 function strip_paragraphs($string)
 {
-    return preg_replace(array("/<p[^>]*>/iU", "/<\/p[^>]*>\n/iU", "/<\/p[^>]*>/iU", "/<br\s*?\/?>/i"), array("", "\n"), $string);
+    return preg_replace(array('/<p[^>]*>/iU', '/<\/p[^>]*>\n/iU', '/<\/p[^>]*>/iU', '/<br\s*?\/?>/i'), array('', "\n"), $string);
 }
 
 /**
@@ -728,7 +726,9 @@ function get_local_time()
 
 function format_age($dob)
 {
-    if (preg_match("/([0-9]{4})-([0-9]{2})-([0-9]{2})/", $dob, $matches_array)) {
+    $matches_array = array();
+	
+	if (preg_match("/([0-9]{4})-([0-9]{2})-([0-9]{2})/", $dob, $matches_array)) {
 
         list(, $birth_year, $birth_month, $birth_day) = $matches_array;
 
@@ -755,7 +755,9 @@ function format_age($dob)
 
 function format_birthday($date) // $date is a MySQL-type DATE field (YYYY-MM-DD)
 {
-    $lang = load_language_file();
+    $matches_array = array();
+	
+	$lang = load_language_file();
 
     if (preg_match("/[0-9]{4}-([0-9]{2})-([0-9]{2})/", $date, $matches_array)) {
 
@@ -858,25 +860,26 @@ function preg_quote_callback($str)
 }
 
 /**
-* Array of random numbers
+* Create an array of random numbers
 *
 * Generate an array of random numbers.
 *
 * @return array
-* @param integer $start_index - The first index of the returned array
-* @param integer $num - Number of elements to insert into array
-* @param integer $range_min - Starting range for random numbers
-* @param integer $range_max - Ending range for random numbers
+* @param integer $low - The first index of the returned array
+* @param integer $high - Number of elements to insert into array
+* @param integer $mt_range_min - Starting range for random numbers
+* @param integer $mt_range_max - Ending range for random numbers
 
 */
 
-function rand_array($start_index, $num, $range_min, $range_max)
+function rand_array($low, $high, $mt_range_min, $mt_range_max)
 {
-    $array_rand = array_fill($start_index, $num, 1);
-
-    foreach($array_rand as $key => $value) {
-        $array_rand[$key] = mt_rand($range_min, $range_max);
-    }
+    if (!is_numeric($low)) return false;
+    if (!is_numeric($high)) return false;
+    
+    $array_rand = array_fill($low, $high, 1);
+    
+    array_walk($array_rand, create_function('&$item', "\$item = mt_rand($mt_range_min, $mt_range_max);"));
 
     return $array_rand;
 }

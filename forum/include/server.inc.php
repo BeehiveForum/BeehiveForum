@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: server.inc.php,v 1.28 2008-07-25 14:52:42 decoyduck Exp $ */
+/* $Id: server.inc.php,v 1.29 2008-07-27 15:23:26 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -82,7 +82,7 @@ function server_get_cpu_load()
             $wmi = new COM('WinMgmts:\\\\.');
             $cpu_array = $wmi->InstancesOf('Win32_Processor');
 
-            while ($cpu = $cpu_array->Next()) {
+            while (($cpu = $cpu_array->Next())) {
 
                 $cpu_load += $cpu->LoadPercentage;
                 $cpu_count++;
@@ -90,7 +90,7 @@ function server_get_cpu_load()
 
             $cpu_load = round($cpu_load / $cpu_count, 2);
 
-            return "$cpuload%";
+            return "$cpu_load%";
         }
 
     }else {
@@ -322,7 +322,7 @@ function rmdir_recursive($path)
 {
     $path = rtrim($path, '/');
 
-    if (@$dir = opendir($path)) {
+    if ((@$dir = opendir($path))) {
 
         while(($file = readdir($dir)) !== false) {
 

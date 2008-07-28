@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_profile.php,v 1.93 2008-07-27 18:26:09 decoyduck Exp $ */
+/* $Id: edit_profile.php,v 1.94 2008-07-28 21:05:48 decoyduck Exp $ */
 
 /**
 * Displays the edit profile page, and processes sumbissions
@@ -204,7 +204,7 @@ if (isset($_POST['save'])) {
 
         if ($valid) {
 
-            foreach($t_entry_array as $piid => $profile_entry) {
+            foreach ($t_entry_array as $piid => $profile_entry) {
 
                 $profile_entry = trim(_stripslashes($profile_entry));
 
@@ -238,7 +238,7 @@ if (isset($_POST['save'])) {
     }
 }
 
-if ($profile_items_array = profile_get_user_values($uid)) {
+if (($profile_items_array = profile_get_user_values($uid))) {
 
     html_draw_top();
 
@@ -282,7 +282,7 @@ if ($profile_items_array = profile_get_user_values($uid)) {
 
     $last_psid = false;
 
-    foreach($profile_items_array as $profile_item) {
+    foreach ($profile_items_array as $profile_item) {
 
         if (!isset($profile_item['ENTRY'])) $profile_item['ENTRY'] = '';
 

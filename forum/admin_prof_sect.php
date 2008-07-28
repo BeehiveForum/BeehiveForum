@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_sect.php,v 1.113 2008-07-27 18:26:09 decoyduck Exp $ */
+/* $Id: admin_prof_sect.php,v 1.114 2008-07-28 21:05:47 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -130,7 +130,7 @@ if (isset($_POST['delete_sections'])) {
 
     if (isset($_POST['delete_section']) && is_array($_POST['delete_section'])) {
 
-        foreach($_POST['delete_section'] as $psid => $delete_section) {
+        foreach ($_POST['delete_section'] as $psid => $delete_section) {
 
             if ($valid && $delete_section == "Y" && $profile_name = profile_section_get_name($psid)) {
 
@@ -166,7 +166,7 @@ if (isset($_POST['delete_sections'])) {
 
     if ($valid) {
 
-        if ($new_psid = profile_section_create($t_name_new)) {
+        if (($new_psid = profile_section_create($t_name_new))) {
 
             header_redirect("admin_prof_sect.php?webtag=$webtag&added=true");
             exit;

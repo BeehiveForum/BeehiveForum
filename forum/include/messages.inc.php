@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.541 2008-07-27 18:26:15 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.542 2008-07-28 21:05:54 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -89,7 +89,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
         $messages = false;
 
-        while($message = db_fetch_array($result)) {
+        while (($message = db_fetch_array($result))) {
 
             $message['CONTENT'] = "";
 
@@ -137,7 +137,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
     }else {
 
-        if ($messages = db_fetch_array($result)) {
+        if (($messages = db_fetch_array($result))) {
 
             if (!isset($messages['VIEWED'])) $messages['VIEWED'] = 0;
 
@@ -183,7 +183,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
 function message_get_content($tid, $pid)
 {
-    if ($message_content = cache_check("$tid.$pid")) {
+    if (($message_content = cache_check("$tid.$pid"))) {
         return $message_content;
     }
 
@@ -793,7 +793,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
         echo "&nbsp;&nbsp;<img src=\"", style_image('friend.png'), "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" />";
 
-    }else if(($message['FROM_RELATIONSHIP'] & USER_IGNORED) || $temp_ignore) {
+    }else if (($message['FROM_RELATIONSHIP'] & USER_IGNORED) || $temp_ignore) {
 
         echo "&nbsp;&nbsp;<img src=\"", style_image('enemy.png'), "\" alt=\"{$lang['ignoreduser']}\" title=\"{$lang['ignoreduser']}\" />";
     }
@@ -832,7 +832,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
             echo "&nbsp;&nbsp;<img src=\"", style_image('friend.png'), "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" />";
 
-        }else if($message['TO_RELATIONSHIP'] & USER_IGNORED) {
+        }else if ($message['TO_RELATIONSHIP'] & USER_IGNORED) {
 
             echo "&nbsp;&nbsp;<img src=\"", style_image('enemy.png'), "\" alt=\"{$lang['ignoreduser']}\" title=\"{$lang['ignoreduser']}\" />";
         }
@@ -862,7 +862,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
         echo "<a href=\"user_rel.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.{$message['PID']}\" target=\"_self\">{$lang['stopignoringthisuser']}</a>&nbsp;&nbsp;&nbsp;";
         echo "<a href=\"display.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_self\">{$lang['viewmessage']}</a>";
 
-    }else if($in_list && $msg_count > 0) {
+    }else if ($in_list && $msg_count > 0) {
 
         if ($is_poll) {
 
@@ -936,7 +936,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
             if (($post_edit_grace_period == 0) || ($message['EDITED'] - $message['CREATED']) > ($post_edit_grace_period * MINUTE_IN_SECONDS)) {
 
-                if ($edit_user = user_get_logon($message['EDITED_BY'])) {
+                if (($edit_user = user_get_logon($message['EDITED_BY']))) {
 
                     echo "              <tr>\n";
                     echo "                <td class=\"postbody\" align=\"left\"><p class=\"edit_text\">", sprintf($lang['editedbyuser'], format_time($message['EDITED'], 1), $edit_user), "</p></td>\n";
@@ -949,7 +949,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
             if (isset($message['APPROVED_BY']) && $message['APPROVED_BY'] > 0 && $message['APPROVED_BY'] != $message['FROM_UID']) {
 
-                if ($approved_user = user_get_logon($message['APPROVED_BY'])) {
+                if (($approved_user = user_get_logon($message['APPROVED_BY']))) {
 
                     echo "              <tr>\n";
                     echo "                <td class=\"postbody\" align=\"left\"><p class=\"approved_text\">", sprintf($lang['approvedbyuser'], format_time($message['APPROVED'], 1), $approved_user), "</p></td>\n";
@@ -971,7 +971,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
                     echo "                  <p><b>{$lang['attachments']}:</b><br />\n";
 
-                    foreach($attachments_array as $attachment) {
+                    foreach ($attachments_array as $attachment) {
 
                         echo "                  ", attachment_make_link($attachment), "<br />\n";
                     }
@@ -983,7 +983,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
                     echo "                  <p><b>{$lang['imageattachments']}:</b><br />\n";
 
-                    foreach($image_attachments_array as $key => $attachment) {
+                    foreach ($image_attachments_array as $key => $attachment) {
 
                         echo "                  ", attachment_make_link($attachment), "\n";
                     }
@@ -1238,7 +1238,7 @@ function message_display_deleted($tid, $pid, $message)
 
     if (isset($message['EDITED']) && $message['EDITED'] > 0) {
 
-        if ($edit_user = user_get_logon($message['EDITED_BY'])) {
+        if (($edit_user = user_get_logon($message['EDITED_BY']))) {
 
             $message_delete_time = format_time($message['EDITED'], 1);
             echo "                <td align=\"left\">", sprintf($lang['messagedeletedbyuser'], $tid, $pid, $message_delete_time, $edit_user), "</td>\n";
@@ -1320,7 +1320,7 @@ function messages_nav_strip($tid, $pid, $length, $ppp)
 
     // Less than 20 messages, no nav needed
 
-    if ($pid < 2 && $length < $ppp){
+    if ($pid < 2 && $length < $ppp) {
         return;
     }else if ($pid < 1) {
         $pid = 1;
@@ -1334,7 +1334,7 @@ function messages_nav_strip($tid, $pid, $length, $ppp)
 
     // The first section, 1-x
     if ($spid > 1) {
-        if($pid > 1){
+        if ($pid > 1) {
             $navbits[0] = "<a href=\"messages.php?webtag=$webtag&amp;msg=$tid.1\" target=\"_self\">". mess_nav_range(1, $spid-1). "</a>";
         }else {
             $c = 0;
@@ -1346,8 +1346,8 @@ function messages_nav_strip($tid, $pid, $length, $ppp)
     }
 
     // The middle section(s)
-    while($spid + ($ppp - 1) < $length){
-        if($spid == $pid){
+    while ($spid + ($ppp - 1) < $length){
+        if ($spid == $pid) {
             $c = $i;
             $navbits[$i] = mess_nav_range($spid,$spid+($ppp - 1)); // Don't add <a> tag for current section
         }else {
@@ -1358,8 +1358,8 @@ function messages_nav_strip($tid, $pid, $length, $ppp)
     }
 
     // The final section, x-n
-    if($spid <= $length){
-        if($spid == $pid){
+    if ($spid <= $length) {
+        if ($spid == $pid) {
             $c = $i;
             $navbits[$i] = mess_nav_range($spid,$length); // Don't add <a> tag for current section
         }else {
@@ -1383,7 +1383,7 @@ function messages_nav_strip($tid, $pid, $length, $ppp)
 
             if ((abs($c - $i) < 4) || $i == 0 || $i == $max) {
                 $html .= "\n&nbsp;" . $navbits[$i];
-            }else if(abs($c - $i) == 4) {
+            }else if (abs($c - $i) == 4) {
                 $html .= "\n&nbsp;&hellip;";
             }
 
@@ -1403,7 +1403,7 @@ function messages_nav_strip($tid, $pid, $length, $ppp)
 
 function mess_nav_range($from,$to)
 {
-    if($from == $to){
+    if ($from == $to) {
         $range = sprintf("%d", $from);
     }else {
         $range = sprintf("%d-%d", $from, $to);

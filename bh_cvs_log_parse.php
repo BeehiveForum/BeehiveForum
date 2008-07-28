@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_cvs_log_parse.php,v 1.17 2008-07-27 18:26:08 decoyduck Exp $ */
+/* $Id: bh_cvs_log_parse.php,v 1.18 2008-07-28 21:05:47 decoyduck Exp $ */
 
 /**
 * bh_cvs_log_parse.php
@@ -66,11 +66,11 @@ include_once(BH_INCLUDE_PATH. "db.inc.php");
 
 function get_cvs_log_data($date)
 {
-    if ($log_handle = popen("cvs log -N -d \">$date\" * 2>&1", 'r')) {
+    if (($log_handle = popen("cvs log -N -d \">$date\" * 2>&1", 'r'))) {
 
         $log_contents = '';
 
-        while(!feof($log_handle)) {
+        while (!feof($log_handle)) {
             $log_contents.= fgets($log_handle);
         }
 
@@ -183,7 +183,7 @@ function cvs_mysql_output_log($log_filename)
 
         file_put_contents($log_filename, sprintf("Project Beehive Forum Change Log (Generated: %s)\n\n", gmdate('D, d M Y H:i:s')));
 
-        while ($cvs_log_entry_array = db_fetch_array($result, DB_RESULT_ASSOC)) {
+        while (($cvs_log_entry_array = db_fetch_array($result, DB_RESULT_ASSOC))) {
 
             $cvs_log_entry = '';
 
@@ -226,7 +226,7 @@ if (isset($_SERVER['argv'][1]) && preg_match("/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/", $
 
         echo "Fetching CVS Log Data...\n";
 
-        if ($cvs_log_contents = get_cvs_log_data($modified_date)) {
+        if (($cvs_log_contents = get_cvs_log_data($modified_date))) {
 
             echo "Parsing CVS Log Data...\n";
 

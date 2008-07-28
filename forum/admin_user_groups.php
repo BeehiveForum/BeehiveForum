@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups.php,v 1.52 2008-07-27 18:26:09 decoyduck Exp $ */
+/* $Id: admin_user_groups.php,v 1.53 2008-07-28 21:05:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -158,9 +158,9 @@ if (isset($_POST['delete'])) {
 
     if (isset($_POST['delete_group']) && is_array($_POST['delete_group'])) {
 
-        foreach($_POST['delete_group'] as $gid) {
+        foreach ($_POST['delete_group'] as $gid) {
 
-            if ($group_name = perm_get_group_name($gid)) {
+            if (($group_name = perm_get_group_name($gid))) {
 
                 if (perm_remove_group($gid)) {
 

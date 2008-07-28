@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lmessages.php,v 1.102 2008-07-27 18:26:11 decoyduck Exp $ */
+/* $Id: lmessages.php,v 1.103 2008-07-28 21:05:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -163,7 +163,7 @@ if (isset($_POST['pollsubmit'])) {
 }
 
 
-if ($posts_per_page = bh_session_get_value('POSTS_PER_PAGE')) {
+if (($posts_per_page = bh_session_get_value('POSTS_PER_PAGE'))) {
 
     if ($posts_per_page < 10) $posts_per_page = 10;
     if ($posts_per_page > 30) $posts_per_page = 30;
@@ -233,7 +233,7 @@ $msg_count = count($messages);
 
 light_messages_top($msg, $thread_title, $thread_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK']);
 
-if ($tracking_data_array = thread_get_tracking_data($tid)) {
+if (($tracking_data_array = thread_get_tracking_data($tid))) {
 
     foreach ($tracking_data_array as $tracking_data) {
 
@@ -280,7 +280,7 @@ if ($msg_count > 0) {
 
     $first_msg = $messages[0]['PID'];
 
-    foreach($messages as $message) {
+    foreach ($messages as $message) {
 
         if (isset($message['RELATIONSHIP'])) {
 
@@ -342,7 +342,7 @@ echo "<h6>&copy; ", date('Y'), " <a href=\"http://www.beehiveforum.net/\" target
 
 light_html_draw_bottom();
 
-if ($msg_count > 0 && !user_is_guest()) {
+if (($msg_count > 0 && !user_is_guest())) {
     messages_update_read($tid, $last_pid, $thread_data['LAST_READ'], $thread_data['LENGTH'], $thread_data['MODIFIED']);
 }
 

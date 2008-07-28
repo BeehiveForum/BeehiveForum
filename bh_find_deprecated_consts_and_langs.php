@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_find_deprecated_consts_and_langs.php,v 1.7 2008-07-27 18:26:08 decoyduck Exp $ */
+/* $Id: bh_find_deprecated_consts_and_langs.php,v 1.8 2008-07-28 21:05:47 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./forum/include/");
@@ -35,7 +35,7 @@ function get_files(&$files_array, $path, $ignore_files_array = array())
 
     if (!is_array($ignore_files_array)) $ignore_files_array = array();
 
-    if ($dir = opendir($path)) {
+    if (($dir = opendir($path))) {
 
         while (($file = readdir($dir)) !== false) {
 
@@ -77,13 +77,13 @@ if (get_files($files_array, "forum")) {
 
             echo "Please wait, checking files...\n\n";
 
-            foreach($files_array as $filename) {
+            foreach ($files_array as $filename) {
 
-                if ($file_contents = file_get_contents($filename)) {
+                if (($file_contents = file_get_contents($filename))) {
 
                     echo "CHECKING: $filename\n";
 
-                    foreach($unused_langs as $lang_key => $lang_value) {
+                    foreach ($unused_langs as $lang_key => $lang_value) {
 
                         if (stristr($file_contents, "\$lang['$lang_key']")) {
                             unset($unused_langs[$lang_key]);
@@ -92,7 +92,7 @@ if (get_files($files_array, "forum")) {
 
                     if (isset($unused_constants) && is_array($unused_constants)) {
 
-                        foreach($unused_constants as $const_key => $const_value) {
+                        foreach ($unused_constants as $const_key => $const_value) {
 
                             if (stristr($file_contents, $const_key)) {
                                 unset($unused_constants[$const_key]);
@@ -110,7 +110,7 @@ if (get_files($files_array, "forum")) {
 
                 echo "\nUnused language strings:\n\n";
 
-                foreach($unused_langs as $lang_key => $lang_value) {
+                foreach ($unused_langs as $lang_key => $lang_value) {
 
                     echo "\$lang['$lang_key'] = \"$lang_value\";\n";
                 }
@@ -124,7 +124,7 @@ if (get_files($files_array, "forum")) {
 
                 echo "\nUnused Constants:\n\n";
 
-                foreach($unused_constants as $const_key => $const_value) {
+                foreach ($unused_constants as $const_key => $const_value) {
 
                     echo "define(\"$const_key\", $const_value);\n";
                 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.145 2008-07-27 18:26:11 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.146 2008-07-28 21:05:52 decoyduck Exp $ */
 
 /**
 * Displays user profiles
@@ -143,7 +143,7 @@ if (isset($_GET['close_window'])) {
 
     $logon = trim(_stripslashes($_GET['logon']));
 
-    if ($user_array = user_get_uid($logon)) {
+    if (($user_array = user_get_uid($logon))) {
         $uid = $user_array['UID'];
     }
 }
@@ -345,7 +345,7 @@ if (isset($user_profile['PIC_URL'])) {
 
 }elseif (isset($user_profile['PIC_AID']) && ($attachment = get_attachment_by_hash($user_profile['PIC_AID']))) {
 
-    if ($profile_picture_href = attachment_make_link($attachment, false, false, false, false)) {
+    if (($profile_picture_href = attachment_make_link($attachment, false, false, false, false))) {
 
         echo "                            <tr>\n";
         echo "                              <td align=\"right\" class=\"subhead\">\n";
@@ -381,7 +381,7 @@ echo "                  </td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 
-if ($user_profile_array = user_get_profile_entries($uid)) {
+if (($user_profile_array = user_get_profile_entries($uid))) {
 
     foreach ($user_profile_array as $psid => $user_profile_item_array) {
 

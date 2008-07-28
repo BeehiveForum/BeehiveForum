@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.185 2008-07-27 18:26:15 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.186 2008-07-28 21:05:53 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -62,7 +62,7 @@ function light_html_draw_top()
 
     if (defined('BEEHIVE_LIGHT_INCLUDE')) return false;
 
-    foreach($arg_array as $key => $func_args) {
+    foreach ($arg_array as $key => $func_args) {
 
         if (preg_match("/^title=([^$]+)$/i", $func_args, $func_matches) > 0) {
             if (!isset($title)) $title = $func_matches[1];
@@ -105,7 +105,7 @@ function light_html_draw_top()
         echo "<meta name=\"robots\" content=\"$robots\" />\n";
     }
 
-    if ($stylesheet = html_get_style_sheet()) {
+    if (($stylesheet = html_get_style_sheet())) {
         echo "<link rel=\"stylesheet\" href=\"$stylesheet\" type=\"text/css\" />\n";
     }
 
@@ -309,7 +309,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
 
         list($tid, $pid) = explode('.', $_GET['msg']);
 
-        if ($thread = thread_get($tid)) {
+        if (($thread = thread_get($tid))) {
 
             if (!isset($thread['RELATIONSHIP'])) $thread['RELATIONSHIP'] = 0;
 
@@ -336,7 +336,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
 
             list($tid, $pid) = explode('.', $_GET['msg']);
 
-            if ($thread = thread_get($tid)) {
+            if (($thread = thread_get($tid))) {
                 $selected_folder = $thread['FID'];
             }
 
@@ -423,7 +423,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
                     $folder_list_start = false;
                     $folder_list_end   = false;
 
-                    foreach($thread_info as $key2 => $thread) {
+                    foreach ($thread_info as $key2 => $thread) {
 
                         if (!isset($visiblethreads) || !is_array($visiblethreads)) $visiblethreads = array();
                         if (!in_array($thread['TID'], $visiblethreads)) $visiblethreads[] = $thread['TID'];
@@ -657,9 +657,9 @@ function light_form_dropdown_array($name, $value, $label, $default = "")
 {
     $html = "<select name=\"$name\">";
 
-    for($i=0;$i<count($value);$i++){
+    for ($i=0;$i<count($value);$i++){
         $sel = ($value[$i] == $default) ? " selected=\"selected\"" : "";
-        if($label[$i]){
+        if ($label[$i]) {
             $html.= "<option value=\"{$value[$i]}\"$sel>{$label[$i]}</option>";
         } else {
             $html.= "<option$sel>{$value[$i]}</option>";
@@ -695,7 +695,7 @@ function light_messages_top($msg, $thread_title, $interest_level = THREAD_NOINTE
 function light_form_radio($name, $value, $text, $checked = false)
 {
     $html = "<input type=\"radio\" name=\"$name\" value=\"$value\"";
-    if($checked) $html .= " checked=\"checked\"";
+    if ($checked) $html .= " checked=\"checked\"";
     return $html . " />$text";
 }
 
@@ -922,12 +922,12 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
         }
     }
 
-    if(!isset($message['FROM_RELATIONSHIP'])) {
+    if (!isset($message['FROM_RELATIONSHIP'])) {
 
         $message['FROM_RELATIONSHIP'] = 0;
     }
 
-    if(!isset($message['TO_RELATIONSHIP'])) {
+    if (!isset($message['TO_RELATIONSHIP'])) {
 
         $message['TO_RELATIONSHIP'] = 0;
     }
@@ -998,9 +998,9 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
         $temp_ignore = true;
     }
 
-    if($message['FROM_RELATIONSHIP'] & USER_FRIEND) {
+    if ($message['FROM_RELATIONSHIP'] & USER_FRIEND) {
         echo "&nbsp;({$lang['friend']}) ";
-    }else if(($message['FROM_RELATIONSHIP'] & USER_IGNORED) || isset($temp_ignore)) {
+    }else if (($message['FROM_RELATIONSHIP'] & USER_IGNORED) || isset($temp_ignore)) {
         echo "&nbsp;({$lang['ignoreduser']}) ";
     }
 
@@ -1024,15 +1024,15 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
         if (isset($message['REPLY_TO_PID']) && $message['REPLY_TO_PID'] > 0) echo " [<a href=\"lmessages.php?webtag=$webtag&amp;msg={$tid}.{$message['REPLY_TO_PID']}\">#{$message['REPLY_TO_PID']}</a>]";
 
-        if($message['TO_RELATIONSHIP'] & USER_FRIEND) {
+        if ($message['TO_RELATIONSHIP'] & USER_FRIEND) {
             echo "&nbsp;({$lang['friend']})";
-        } else if($message['TO_RELATIONSHIP'] & USER_IGNORED) {
+        } else if ($message['TO_RELATIONSHIP'] & USER_IGNORED) {
             echo "&nbsp;({$lang['ignoreduser']})";
         }
 
         if (!$is_preview) {
 
-            if(isset($message['VIEWED']) && $message['VIEWED'] > 0) {
+            if (isset($message['VIEWED']) && $message['VIEWED'] > 0) {
                 echo "&nbsp;".format_time($message['VIEWED'], 1);
             } else {
                 echo "&nbsp;{$lang['unread']}";
@@ -1068,7 +1068,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
         if (($post_edit_grace_period == 0) || ($message['EDITED'] - $message['CREATED']) > ($post_edit_grace_period * MINUTE_IN_SECONDS)) {
 
-            if ($edit_user = user_get_logon($message['EDITED_BY'])) {
+            if (($edit_user = user_get_logon($message['EDITED_BY']))) {
 
                 echo "<p class=\"edit_text\">", sprintf($lang['editedbyuser'], format_time($message['EDITED'], 1), $edit_user), "</p>\n";
             }
@@ -1087,9 +1087,9 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
                 echo "<p><b>{$lang['attachments']}:</b><br />\n";
 
-                foreach($attachments_array as $attachment) {
+                foreach ($attachments_array as $attachment) {
 
-                    if ($attachment_link = light_attachment_make_link($attachment)) {
+                    if (($attachment_link = light_attachment_make_link($attachment))) {
 
                         echo $attachment_link, "<br />\n";
                     }
@@ -1102,9 +1102,9 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
                 echo "<p><b>{$lang['imageattachments']}:</b><br />\n";
 
-                foreach($image_attachments_array as $key => $attachment) {
+                foreach ($image_attachments_array as $key => $attachment) {
 
-                    if ($attachment_link = light_attachment_make_link($attachment)) {
+                    if (($attachment_link = light_attachment_make_link($attachment))) {
 
                         echo $attachment_link, "&nbsp;\n";
                     }
@@ -1184,8 +1184,8 @@ function light_messages_nav_strip($tid,$pid,$length,$ppp)
     $spid = $pid % $ppp;
 
     // The first section, 1-x
-    if($spid > 1){
-        if($pid > 1){
+    if ($spid > 1) {
+        if ($pid > 1) {
             $navbits[0] = "<a href=\"lmessages.php?webtag=$webtag&amp;msg=$tid.1\">" . mess_nav_range(1,$spid-1) . "</a>";
         } else {
             $c = 0;
@@ -1197,8 +1197,8 @@ function light_messages_nav_strip($tid,$pid,$length,$ppp)
     }
 
     // The middle section(s)
-    while($spid + ($ppp - 1) <= $length){
-        if($spid == $pid){
+    while ($spid + ($ppp - 1) <= $length){
+        if ($spid == $pid) {
             $c = $i;
             $navbits[$i] = mess_nav_range($spid,$spid+($ppp - 1)); // Don't add <a> tag for current section
         } else {
@@ -1209,8 +1209,8 @@ function light_messages_nav_strip($tid,$pid,$length,$ppp)
     }
 
     // The final section, x-n
-    if($spid <= $length){
-        if($spid == $pid){
+    if ($spid <= $length) {
+        if ($spid == $pid) {
             $c = $i;
             $navbits[$i] = mess_nav_range($spid,$length); // Don't add <a> tag for current section
         } else {
@@ -1229,9 +1229,9 @@ function light_messages_nav_strip($tid,$pid,$length,$ppp)
 
         if (isset($navbits[$i])) {
 
-            if((abs($c - $i) < 4) || $i == 0 || $i == $max){
+            if ((abs($c - $i) < 4) || $i == 0 || $i == $max){
                 $html .= "\n&nbsp;" . $navbits[$i];
-            } else if(abs($c - $i) == 4){
+            } else if (abs($c - $i) == 4){
                 $html .= "\n&nbsp;&hellip;";
             }
         }
@@ -1285,7 +1285,7 @@ function light_folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="
 
     if (db_num_rows($result) > 0) {
 
-        while($folder_data = db_fetch_array($result)) {
+        while (($folder_data = db_fetch_array($result))) {
 
             if (user_is_guest()) {
 
@@ -1318,8 +1318,8 @@ function light_form_textarea($name, $value = "", $rows = 0, $cols = 0)
 {
     $html = "<textarea name=\"$name\" ";
 
-    if($rows) $html.= " rows=\"$rows\"";
-    if($cols) $html.= " cols=\"$cols\"";
+    if ($rows) $html.= " rows=\"$rows\"";
+    if ($cols) $html.= " cols=\"$cols\"";
 
     $html .= ">$value</textarea>";
 
@@ -1329,7 +1329,7 @@ function light_form_textarea($name, $value = "", $rows = 0, $cols = 0)
 function light_form_checkbox($name, $value, $text, $checked = false)
 {
     $html = "<input type=\"checkbox\" name=\"$name\" value=\"$value\"";
-    if($checked) $html .= " checked=\"checked\"";
+    if ($checked) $html .= " checked=\"checked\"";
     return $html . " />$text";
 }
 
@@ -1338,8 +1338,8 @@ function light_form_field($name, $value = "", $width = 0, $maxlength = 0, $type 
     $html = "<input type=\"$type\" name=\"$name\"";
     $html.= " value=\"$value\"";
 
-    if($width) $html.= " size=\"$width\"";
-    if($maxlength) $html.= " maxlength=\"$maxlength\"";
+    if ($width) $html.= " size=\"$width\"";
+    if ($maxlength) $html.= " maxlength=\"$maxlength\"";
 
     return $html." />";
 }
@@ -1471,7 +1471,7 @@ function light_html_display_msg($header_text, $string_msg, $href = false, $metho
 
         if (is_array($button_array) && sizeof($button_array) > 0) {
 
-            foreach($button_array as $button_name => $button_label) {
+            foreach ($button_array as $button_name => $button_label) {
                 $button_html_array[] = light_form_submit(_htmlentities($button_name), _htmlentities($button_label));
             }
         }

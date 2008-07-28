@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_x-hacker_translate.php,v 1.19 2008-07-27 18:26:08 decoyduck Exp $ */
+/* $Id: bh_x-hacker_translate.php,v 1.20 2008-07-28 21:05:47 decoyduck Exp $ */
 
 // Creates an X-Hacker (L33t SpEak) language file from the en.inc.php
 // Derived from the L33t-5p34K G3n3r@t0r v3r510N 0.6 found at :
@@ -182,14 +182,14 @@ function translate($matches)
 
 // Start here
 
-if ($langfile = file('./forum/include/languages/en.inc.php')) {
+if (($langfile = file('./forum/include/languages/en.inc.php'))) {
 
-    if ($fp = fopen('./forum/include/languages/x-hacker.inc.php', 'w')) {
+    if (($fp = fopen('./forum/include/languages/x-hacker.inc.php', 'w'))) {
 
-        foreach($langfile as $line) {
+        foreach ($langfile as $line) {
 
             if (!preg_match('/^\$lang\[\'_/', $line)) {
-            
+
                 $translated_line = preg_replace_callback('/"([^"]+)";/', 'translate', $line);
                 fwrite($fp, $translated_line);
 

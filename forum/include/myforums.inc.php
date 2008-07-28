@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.81 2008-07-27 18:26:15 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.82 2008-07-28 21:05:55 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -72,13 +72,13 @@ function get_forum_list($offset)
 
     if (db_num_rows($result_forums) > 0) {
 
-        while ($forum_data = db_fetch_array($result_forums)) {
+        while (($forum_data = db_fetch_array($result_forums))) {
 
             $forum_fid = $forum_data['FID'];
 
             $forum_settings = forum_get_settings_by_fid($forum_fid);
 
-            foreach($forum_settings as $key => $value) {
+            foreach ($forum_settings as $key => $value) {
 
                 if (!isset($forum_data[strtoupper($key)])) {
 
@@ -182,13 +182,13 @@ function get_my_forums($view_type, $offset)
 
     if (db_num_rows($result_forums) > 0) {
 
-        while ($forum_data = db_fetch_array($result_forums, DB_RESULT_ASSOC)) {
+        while (($forum_data = db_fetch_array($result_forums, DB_RESULT_ASSOC))) {
 
             $forum_fid = $forum_data['FID'];
 
             $forum_settings = forum_get_settings_by_fid($forum_fid);
 
-            foreach($forum_settings as $key => $value) {
+            foreach ($forum_settings as $key => $value) {
 
                 if (!isset($forum_data[strtoupper($key)])) {
 

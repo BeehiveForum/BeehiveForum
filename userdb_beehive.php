@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: userdb_beehive.php,v 1.8 2008-07-27 18:26:08 decoyduck Exp $ */
+/* $Id: userdb_beehive.php,v 1.9 2008-07-28 21:05:47 decoyduck Exp $ */
 
 // Constant to define where the Beehive Forum include files are
 
@@ -68,7 +68,7 @@ function ewiki_auth_query_beehive(&$data, $force_query = false)
 
     if (isset($t_logon) && isset($t_passwd)) {
 
-        if ($t_success = ewiki_auth_user($t_logon, $t_passwd)) {
+        if (($t_success = ewiki_auth_user($t_logon, $t_passwd))) {
 
             setcookie("bh_ewiki_logon", base64_encode("$t_logon:$t_passwd"), 0);
         }
@@ -95,7 +95,7 @@ function ewiki_auth_query_beehive(&$data, $force_query = false)
 
         if (defined("EWIKI_AUTH_QUERY_SAFE")) {
 
-            foreach($_POST as $key => $value) {
+            foreach ($_POST as $key => $value) {
 
                 if ($key == "logon" || $key == "passwd") continue;
                 $ewiki_errmsg.= "<input type=\"hidden\" name=\"{$key}\" value=\"". preg_replace('/([^\w\d\260-\377])/e', '"&#".ord("$1").";"', $value). "\">\n";
@@ -111,7 +111,7 @@ function ewiki_auth_query_beehive(&$data, $force_query = false)
 function ewiki_auth_userdb_beehive($username, $password)
 {
     // Beehive include files that we need.
-    
+
     include_once(BH_INCLUDE_PATH. "db.inc.php");
     include_once(BH_INCLUDE_PATH. "logon.inc.php");
     include_once(BH_INCLUDE_PATH. "session.inc.php");
@@ -128,8 +128,8 @@ function ewiki_auth_userdb_beehive($username, $password)
     $passhash = md5($password);
 
     // Attempt user logon
-   
-    if ($uid = user_logon($username, $passhash)) {
+
+    if (($uid = user_logon($username, $passhash))) {
 
         if (bh_session_init($uid)) {
 

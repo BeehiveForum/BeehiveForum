@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.351 2008-07-27 18:26:11 decoyduck Exp $ */
+/* $Id: post.php,v 1.352 2008-07-28 21:05:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -490,9 +490,9 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
         $t_content_array = array();
 
-        foreach($quote_list as $quote_pid) {
+        foreach ($quote_list as $quote_pid) {
 
-            if ($message_array = messages_get($reply_to_tid, $quote_pid)) {
+            if (($message_array = messages_get($reply_to_tid, $quote_pid))) {
 
                 $message_author = _htmlentities(format_user_name($message_array['FLOGON'], $message_array['FNICK']));
 
@@ -623,7 +623,7 @@ if (isset($_POST['t_to_uid_others']) && strlen(trim(_stripslashes($_POST['t_to_u
 
 if ($to_radio == 'others') {
 
-    if ($to_user = user_get_uid($t_to_uid_others)) {
+    if (($to_user = user_get_uid($t_to_uid_others))) {
 
         $t_to_uid = $to_user['UID'];
 
@@ -830,7 +830,7 @@ if (!isset($t_fid)) {
     $t_fid = 1;
 }
 
-if ($new_thread && !$folder_dropdown = folder_draw_dropdown($t_fid, "t_fid", "", FOLDER_ALLOW_NORMAL_THREAD, "", "post_folder_dropdown")) {
+if (($new_thread && !$folder_dropdown = folder_draw_dropdown($t_fid, "t_fid", "", FOLDER_ALLOW_NORMAL_THREAD, "", "post_folder_dropdown"))) {
 
     html_draw_top();
     html_error_msg($lang['cannotcreatenewthreads']);
@@ -1092,7 +1092,7 @@ if ($post->isDiff() && $fix_html) {
 
     echo $tools->compare_original("t_content", $post->getOriginalContent());
 
-    if ($tools->getTinyMCE()) {
+    if (($tools->getTinyMCE())) {
         echo "  <br />\n";
     }else {
         echo "  <br /><br />\n";
@@ -1101,7 +1101,7 @@ if ($post->isDiff() && $fix_html) {
 
 if ($allow_html == true) {
 
-    if ($tools->getTinyMCE()) {
+    if (($tools->getTinyMCE())) {
 
         echo form_input_hidden("t_post_html", "enabled");
 
@@ -1128,7 +1128,7 @@ if ($allow_html == true) {
 
 // SUBMIT BUTTONS
 
-if ($tools->getTinyMCE()) {
+if (($tools->getTinyMCE())) {
     echo "  <br />\n";
 }else {
     echo "  <br /><br />\n";

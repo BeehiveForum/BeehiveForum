@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.172 2008-07-27 18:26:09 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.173 2008-07-28 21:05:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -198,7 +198,7 @@ if (isset($_GET['filter']) && is_numeric($_GET['filter'])) {
 
 html_draw_top("openprofile.js");
 
-if ($table_data = get_table_prefix()) {
+if (($table_data = get_table_prefix())) {
     echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageusers']}</h1>\n";
 }else {
     echo "<h1>{$lang['admin']} &raquo; {$lang['manageusers']}</h1>\n";
@@ -216,9 +216,9 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
             $kick_user_success_array = array();
 
-            foreach($kick_users as $user_uid) {
+            foreach ($kick_users as $user_uid) {
 
-                if ($valid && $user_logon = user_get_logon($user_uid)) {
+                if (($valid && $user_logon = user_get_logon($user_uid))) {
 
                     if (!admin_session_end($user_uid)) {
 
@@ -251,9 +251,9 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
                 $approved_user_success_array = array();
 
-                foreach($approve_users as $user_uid) {
+                foreach ($approve_users as $user_uid) {
 
-                    if ($valid && $user_logon = user_get_logon($user_uid)) {
+                    if (($valid && $user_logon = user_get_logon($user_uid))) {
 
                         if (admin_approve_user($user_uid)) {
 

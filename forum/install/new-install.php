@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.171 2008-07-27 18:26:19 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.172 2008-07-28 21:05:56 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'new-install.php') {
 
@@ -94,7 +94,7 @@ if (isset($remove_conflicts) && $remove_conflicts === true) {
         }
     }
 
-}elseif ($conflicting_tables = install_get_table_conflicts($forum_webtag, true, true)) {
+}elseif (($conflicting_tables = install_get_table_conflicts($forum_webtag, true, true))) {
 
     $error_str = "<h2>Selected database contains tables which conflict with Beehive Forum. ";
     $error_str.= "If this database contains an existing Beehive Forum installation please ";
@@ -1373,7 +1373,7 @@ if (!isset($skip_dictionary) || $skip_dictionary === false) {
             // find the file or permission denied. To continue we now
             // process the dictionary script using PHP.
 
-            if ($fp = @fopen($dictionary_file, 'r')) {
+            if (($fp = @fopen($dictionary_file, 'r'))) {
 
                 while (!feof($fp)) {
 

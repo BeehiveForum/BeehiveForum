@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.inc.php,v 1.52 2008-07-27 18:26:15 decoyduck Exp $ */
+/* $Id: dictionary.inc.php,v 1.53 2008-07-28 21:05:53 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -55,7 +55,8 @@ class dictionary {
     var $word_suggestion_count;
     var $word_suggestion_result;
 
-    function dictionary($content, $ignored_words, $current_word, $obj_id, $offset_match) {
+    function dictionary($content, $ignored_words, $current_word, $obj_id, $offset_match)
+    {
 
         $this->ignored_words_array = array();
         $this->suggestions_array = array();
@@ -152,7 +153,7 @@ class dictionary {
 
     function pretty_print_content()
     {
-        foreach($this->content_array as $key => $word) {
+        foreach ($this->content_array as $key => $word) {
 
             if ($key == $this->current_word) {
                 echo "<span class=\"highlight\" id=\"highlighted_word\">", nl2br(_htmlentities($word)), "</span>";
@@ -290,7 +291,7 @@ class dictionary {
 
         // Metaphone match (English pronounciation match)
 
-        if ($metaphone = $this->word_get_metaphone()) {
+        if (($metaphone = $this->word_get_metaphone())) {
 
             $metaphone = db_escape_string($metaphone);
 
@@ -302,7 +303,7 @@ class dictionary {
 
             if (db_num_rows($result) > 0) {
 
-                while($spelling_data = db_fetch_array($result)) {
+                while (($spelling_data = db_fetch_array($result))) {
 
                     $this->suggestions_array[$spelling_data['WORD']] = $spelling_data['WORD'];
                 }
@@ -343,9 +344,9 @@ class dictionary {
 
     function find_next_word()
     {
-        while ($this->current_word < sizeof($this->content_array)) {
+        while (($this->current_word < sizeof($this->content_array))) {
 
-            $this->current_word++;
+            $this->current_word = $this->current_word + 1;
             $this->offset_match = 0;
 
             if (($this->word_is_valid()) && (!$this->word_is_ignored())) {

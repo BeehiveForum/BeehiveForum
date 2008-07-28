@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.159 2008-07-27 18:26:11 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.160 2008-07-28 21:05:53 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -168,7 +168,7 @@ function admin_get_log_entries($offset, $sort_by = 'CREATED', $sort_dir = 'DESC'
 
     if (db_num_rows($result) > 0) {
 
-        while ($admin_log_entry = db_fetch_array($result)) {
+        while (($admin_log_entry = db_fetch_array($result))) {
 
             if (isset($admin_log_entry['LOGON']) && isset($admin_log_entry['PEER_NICKNAME'])) {
                 if (!is_null($admin_log_entry['PEER_NICKNAME']) && strlen($admin_log_entry['PEER_NICKNAME']) > 0) {
@@ -228,7 +228,7 @@ function admin_get_word_filter_list($offset)
 
     if (db_num_rows($result) > 0) {
 
-        while ($word_filter_data = db_fetch_array($result)) {
+        while (($word_filter_data = db_fetch_array($result))) {
 
             $word_filter_array[$word_filter_data['FID']] = $word_filter_data;
         }
@@ -417,7 +417,7 @@ function admin_user_search($user_search, $sort_by = 'LAST_VISIT', $sort_dir = 'D
     if (!is_numeric($offset)) $offset = 0;
     if (!is_numeric($filter)) $filter = ADMIN_USER_FILTER_NONE;
 
-    if ($table_data = get_table_prefix()) {
+    if (($table_data = get_table_prefix())) {
         $forum_fid = $table_data['FID'];
     }else {
         $forum_fid = 0;
@@ -500,7 +500,7 @@ function admin_user_search($user_search, $sort_by = 'LAST_VISIT', $sort_dir = 'D
 
     if (db_num_rows($result) > 0) {
 
-        while ($user_data = db_fetch_array($result)) {
+        while (($user_data = db_fetch_array($result))) {
 
             $user_get_all_array[$user_data['UID']] = $user_data;
         }
@@ -540,7 +540,7 @@ function admin_user_get_all($sort_by = 'LAST_VISIT', $sort_dir = 'ASC', $filter 
     if (!is_numeric($offset)) $offset = 0;
     if (!is_numeric($filter)) $filter = ADMIN_USER_FILTER_NONE;
 
-    if ($table_data = get_table_prefix()) {
+    if (($table_data = get_table_prefix())) {
         $forum_fid = $table_data['FID'];
     }else {
         $forum_fid = 0;
@@ -611,7 +611,7 @@ function admin_user_get_all($sort_by = 'LAST_VISIT', $sort_dir = 'ASC', $filter 
 
     if (db_num_rows($result) > 0) {
 
-        while ($user_data = db_fetch_array($result)) {
+        while (($user_data = db_fetch_array($result))) {
 
             $user_get_all_array[$user_data['UID']] = $user_data;
         }
@@ -699,7 +699,7 @@ function admin_get_users_attachments($uid, &$user_attachments, &$user_image_atta
 
     if (!$result = db_query($sql, $db_get_users_attachments)) return false;
 
-    while($attachment = db_fetch_array($result)) {
+    while (($attachment = db_fetch_array($result))) {
 
         if (@file_exists("$attachment_dir/{$attachment['HASH']}")) {
 
@@ -771,9 +771,9 @@ function admin_get_forum_list($offset)
 
     if (db_num_rows($result) > 0) {
 
-        while($forum_data = db_fetch_array($result)) {
+        while (($forum_data = db_fetch_array($result))) {
 
-            if ($post_count = admin_forum_get_post_count($forum_data['FID'])) {
+            if (($post_count = admin_forum_get_post_count($forum_data['FID']))) {
                 $forum_data['MESSAGES'] = $post_count;
             }
 
@@ -805,7 +805,7 @@ function admin_forum_get_post_count($fid)
 
     if (!is_numeric($fid)) return false;
 
-    if ($table_data = forum_get_table_prefix($fid)) {
+    if (($table_data = forum_get_table_prefix($fid))) {
 
         $sql = "SELECT COUNT(PID) FROM {$table_data['PREFIX']}POST";
 
@@ -863,7 +863,7 @@ function admin_get_ban_data($sort_by = "ID", $sort_dir = "ASC", $offset = 0)
 
     if (db_num_rows($result) > 0) {
 
-        while ($ban_data = db_fetch_array($result)) {
+        while (($ban_data = db_fetch_array($result))) {
 
             $ban_data_array[$ban_data['ID']] = $ban_data;
         }
@@ -950,7 +950,7 @@ function admin_get_post_approval_queue($offset = 0)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    if ($folder_list = bh_session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE)) {
+    if (($folder_list = bh_session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE))) {
         $fidlist = implode(',', $folder_list);
     }
 
@@ -977,7 +977,7 @@ function admin_get_post_approval_queue($offset = 0)
 
     if (db_num_rows($result) > 0) {
 
-        while ($post_array = db_fetch_array($result)) {
+        while (($post_array = db_fetch_array($result))) {
 
             $post_approval_array[] = $post_array;
         }
@@ -1045,7 +1045,7 @@ function admin_get_visitor_log($offset)
 
     if (db_num_rows($result) > 0) {
 
-        while ($visitor_array = db_fetch_array($result)) {
+        while (($visitor_array = db_fetch_array($result))) {
 
             if (isset($visitor_array['LOGON']) && isset($visitor_array['PEER_NICKNAME'])) {
                 if (!is_null($visitor_array['PEER_NICKNAME']) && strlen($visitor_array['PEER_NICKNAME']) > 0) {
@@ -1158,7 +1158,7 @@ function admin_get_user_ip_matches($uid)
 
     if (db_num_rows($result) > 0) {
 
-        while ($user_get_aliases_row = db_fetch_array($result)) {
+        while (($user_get_aliases_row = db_fetch_array($result))) {
 
             if (strlen(trim($user_get_aliases_row['IPADDRESS'])) > 0) {
 
@@ -1167,7 +1167,7 @@ function admin_get_user_ip_matches($uid)
         }
     }
 
-    if ($ipaddress = user_get_last_ip_address($uid)) {
+    if (($ipaddress = user_get_last_ip_address($uid))) {
         $user_ip_address_array[] = $ipaddress;
     }
 
@@ -1194,7 +1194,7 @@ function admin_get_user_ip_matches($uid)
 
         if (db_num_rows($result) > 0) {
 
-            while($user_aliases = db_fetch_array($result)) {
+            while (($user_aliases = db_fetch_array($result))) {
 
                 if (isset($user_aliases['LOGON']) && isset($user_aliases['PEER_NICKNAME'])) {
                     if (!is_null($user_aliases['PEER_NICKNAME']) && strlen($user_aliases['PEER_NICKNAME']) > 0) {
@@ -1246,7 +1246,7 @@ function admin_get_user_email_matches($uid)
 
     if (db_num_rows($result) > 0) {
 
-        while($user_aliases = db_fetch_array($result)) {
+        while (($user_aliases = db_fetch_array($result))) {
 
             if (isset($user_aliases['LOGON']) && isset($user_aliases['PEER_NICKNAME'])) {
                 if (!is_null($user_aliases['PEER_NICKNAME']) && strlen($user_aliases['PEER_NICKNAME']) > 0) {
@@ -1298,7 +1298,7 @@ function admin_get_user_referer_matches($uid)
 
     if (db_num_rows($result) > 0) {
 
-        while($user_aliases = db_fetch_array($result)) {
+        while (($user_aliases = db_fetch_array($result))) {
 
             if (isset($user_aliases['LOGON']) && isset($user_aliases['PEER_NICKNAME'])) {
                 if (!is_null($user_aliases['PEER_NICKNAME']) && strlen($user_aliases['PEER_NICKNAME']) > 0) {
@@ -1349,7 +1349,7 @@ function admin_get_user_passwd_matches($uid)
 
     if (db_num_rows($result) > 0) {
 
-        while($user_aliases = db_fetch_array($result)) {
+        while (($user_aliases = db_fetch_array($result))) {
 
             if (isset($user_aliases['LOGON']) && isset($user_aliases['PEER_NICKNAME'])) {
                 if (!is_null($user_aliases['PEER_NICKNAME']) && strlen($user_aliases['PEER_NICKNAME']) > 0) {
@@ -1397,7 +1397,7 @@ function admin_get_user_history($uid)
             $user_history_data_old = "";
             $user_history_data = "";
 
-            while ($user_history_row = db_fetch_array($result, DB_RESULT_NUM)) {
+            while (($user_history_row = db_fetch_array($result, DB_RESULT_NUM))) {
 
                 $user_history_data_array = array();
 
@@ -1479,7 +1479,7 @@ function admin_delete_user($uid, $delete_content = false)
 
     // Before we delete we verify the user account exists.
 
-    if ($user_logon = user_get_logon($uid)) {
+    if (($user_logon = user_get_logon($uid))) {
 
         // Check to see if we're also deleting the user's content.
 
@@ -1487,11 +1487,11 @@ function admin_delete_user($uid, $delete_content = false)
 
             // Get a list of available forums
 
-            if ($forum_prefix_array = forum_get_all_prefixes()) {
+            if (($forum_prefix_array = forum_get_all_prefixes())) {
 
                 // Loop through all forums and delete all the user data from every forum.
 
-                foreach($forum_prefix_array as $forum_prefix) {
+                foreach ($forum_prefix_array as $forum_prefix) {
 
                     // Delete log entries created by the user
 
@@ -1701,31 +1701,17 @@ function admin_delete_users_posts($uid)
 {
     if (!$db_admin_delete_users_posts = db_connect()) return false;
 
+    if (!$table_data = get_table_prefix()) return false;
+
     if (!is_numeric($uid)) return false;
 
-    if ($user_logon = user_get_logon($uid)) {
+    $sql = "INSERT INTO {$table_data['PREFIX']}POST_CONTENT (TID, PID, CONTENT) ";
+    $sql.= "SELECT TID, PID, NULL FROM {$table_data['PREFIX']}POST WHERE FROM_UID = '$uid' ";
+    $sql.= "ON DUPLICATE KEY UPDATE CONTENT = VALUES(CONTENT)";
 
-        if ($user_post_array = get_user_posts($uid)) {
+    if (!$result = db_query($sql, $db_admin_delete_users_posts)) return false;
 
-            $valid = true;
-
-            foreach ($user_post_array as $user_post) {
-
-                if (post_delete($user_post['TID'], $user_post['PID'])) {
-
-                    post_add_edit_text($tid, $pid);
-
-                }else {
-
-                    $valid = false;
-                }
-            }
-
-            return $valid;
-        }
-    }
-
-    return false;
+    return true;
 }
 
 function admin_prepare_affected_sessions($affected_session)

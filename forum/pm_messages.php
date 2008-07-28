@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_messages.php,v 1.46 2008-07-27 18:26:11 decoyduck Exp $ */
+/* $Id: pm_messages.php,v 1.47 2008-07-28 21:05:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -263,7 +263,7 @@ if (isset($_POST['deletemessages'])) {
 
     if (isset($_POST['process']) && is_array($_POST['process'])) {
 
-        foreach($_POST['process'] as $delete_mid) {
+        foreach ($_POST['process'] as $delete_mid) {
 
             if (!pm_delete_message($delete_mid)) {
 
@@ -288,7 +288,7 @@ if (isset($_POST['savemessages'])) {
 
     if (isset($_POST['process']) && is_array($_POST['process'])) {
 
-        foreach($_POST['process'] as $archive_mid) {
+        foreach ($_POST['process'] as $archive_mid) {
 
             if (!pm_archive_message($archive_mid)) {
 
@@ -544,7 +544,7 @@ echo "                </tr>\n";
 
 if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['message_array']) > 0) {
 
-    foreach($pm_messages_array['message_array'] as $message) {
+    foreach ($pm_messages_array['message_array'] as $message) {
 
         echo "                <tr>\n";
         echo "                  <td class=\"postbody\" align=\"center\" width=\"1%\">", form_checkbox('process[]', $message['MID'], ''), "</td>\n";

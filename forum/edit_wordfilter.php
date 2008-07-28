@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_wordfilter.php,v 1.88 2008-07-27 18:26:09 decoyduck Exp $ */
+/* $Id: edit_wordfilter.php,v 1.89 2008-07-28 21:05:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -140,7 +140,7 @@ if (isset($_POST['delete'])) {
 
     if (isset($_POST['delete_filters']) && is_array($_POST['delete_filters'])) {
 
-        foreach($_POST['delete_filters'] as $filter_id => $delete_filter) {
+        foreach ($_POST['delete_filters'] as $filter_id => $delete_filter) {
 
             if (($delete_filter == "Y")) {
 

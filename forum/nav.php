@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: nav.php,v 1.109 2008-07-27 18:26:11 decoyduck Exp $ */
+/* $Id: nav.php,v 1.110 2008-07-28 21:05:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -86,7 +86,7 @@ html_draw_top("class=navpage", "forumlinks.js");
 
 echo "<div class=\"navleft\">\n";
 
-if ($webtag = get_webtag()) {
+if (($webtag = get_webtag())) {
 
     echo "<a href=\"start.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">{$lang['start']}</a>&nbsp;|&nbsp;\n";
     echo "<a href=\"discussion.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">{$lang['messages']}</a>&nbsp;|&nbsp;\n";
@@ -101,7 +101,7 @@ if (forum_get_setting('show_pms', 'Y')) {
     echo "<a href=\"pm.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">{$lang['pminbox']}</a>&nbsp;|&nbsp;\n";
 }
 
-if ($webtag = get_webtag()) {
+if (($webtag = get_webtag())) {
     echo "<a href=\"user.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">{$lang['mycontrols']}</a>&nbsp;|&nbsp;\n";
 }
 

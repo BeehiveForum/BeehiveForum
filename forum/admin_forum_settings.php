@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.137 2008-07-27 18:26:09 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.138 2008-07-28 21:05:47 decoyduck Exp $ */
 
 /**
 * Displays and handles the Forum Settings page
@@ -412,7 +412,7 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
 echo "                      </tr>\n";
 
-if ($available_styles = styles_get_available()) {
+if (($available_styles = styles_get_available())) {
 
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"220\">{$lang['defaultstyle']}:</td>\n";

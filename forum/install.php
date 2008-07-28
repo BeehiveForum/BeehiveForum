@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.96 2008-07-27 18:26:10 decoyduck Exp $ */
+/* $Id: install.php,v 1.97 2008-07-28 21:05:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -195,7 +195,9 @@ if (isset($_POST['install_method'])) {
 
     if ($valid) {
 
-        if ($db_install = db_connect(false)) {
+        $sql = "";
+    	
+    	if (($db_install = db_connect(false))) {
 
             // Check the MySQL version
 
@@ -229,7 +231,7 @@ if (isset($_POST['install_method'])) {
 
                 $config_file = "";
 
-                if (@$fp = fopen('install/config.inc.php', 'r')) {
+                if ((@$fp = fopen('install/config.inc.php', 'r'))) {
 
                     while (!feof($fp)) {
 
@@ -257,7 +259,7 @@ if (isset($_POST['install_method'])) {
 
                     if (!defined('BEEHIVE_INSTALL_NOWARN')) {
 
-                        if (@$fp = fopen(BH_INCLUDE_PATH. "config.inc.php", "w")) {
+                        if ((@$fp = fopen(BH_INCLUDE_PATH. "config.inc.php", "w"))) {
 
                             fwrite($fp, $config_file);
                             fclose($fp);
@@ -419,7 +421,7 @@ if (isset($_POST['install_method'])) {
 
     $config_file = "";
 
-    if (@$fp = fopen('install/config.inc.php', 'r')) {
+    if ((@$fp = fopen('install/config.inc.php', 'r'))) {
 
         while (!feof($fp)) {
 

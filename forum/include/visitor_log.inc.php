@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.inc.php,v 1.33 2008-07-27 18:26:17 decoyduck Exp $ */
+/* $Id: visitor_log.inc.php,v 1.34 2008-07-28 21:05:56 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -109,7 +109,7 @@ function visitor_log_get_recent()
 
         $users_get_recent_array = array();
 
-        while ($visitor_array = db_fetch_array($result)) {
+        while (($visitor_array = db_fetch_array($result))) {
 
             if ($visitor_array['UID'] == 0) {
 
@@ -188,7 +188,7 @@ function visitor_log_get_profile_items(&$profile_header_array, &$profile_dropdow
 
     if (db_num_rows($result) > 0) {
 
-        while ($profile_item = db_fetch_array($result)) {
+        while (($profile_item = db_fetch_array($result))) {
 
             $profile_header_array[$profile_item['PIID']] = _htmlentities($profile_item['ITEM_NAME']);
             $profile_dropdown_array[$profile_item['SECTION_NAME']]['subitems'][$profile_item['PIID']] = _htmlentities($profile_item['ITEM_NAME']);
@@ -301,7 +301,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
 
     // Iterate through them.
 
-    foreach($profile_items_array as $column => $value) {
+    foreach ($profile_items_array as $column => $value) {
 
         if (is_numeric($column)) {
 
@@ -366,7 +366,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
 
     // Joins on the selected numeric (PIID) profile items.
 
-    foreach($profile_items_array as $column => $value) {
+    foreach ($profile_items_array as $column => $value) {
 
         if (is_numeric($column)) {
 
@@ -423,7 +423,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
 
     if ($hide_empty === true) {
 
-        foreach($profile_items_array as $column => $value) {
+        foreach ($profile_items_array as $column => $value) {
 
             if (is_numeric($column)) {
 
@@ -542,7 +542,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
 
     if (db_num_rows($result) > 0) {
 
-        while ($user_data = db_fetch_array($result, DB_RESULT_ASSOC)) {
+        while (($user_data = db_fetch_array($result, DB_RESULT_ASSOC))) {
 
             if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
                 if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {

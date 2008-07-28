@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.252 2008-07-27 18:26:09 decoyduck Exp $ */
+/* $Id: edit.php,v 1.253 2008-07-28 21:05:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -592,7 +592,7 @@ if (isset($_POST['preview'])) {
 
     if (count($edit_message) > 0) {
 
-        if ($edit_message['CONTENT'] = message_get_content($tid, $pid)) {
+        if (($edit_message['CONTENT'] = message_get_content($tid, $pid))) {
 
             if ((forum_get_setting('allow_post_editing', 'N') || (($uid != $edit_message['FROM_UID']) && !(perm_get_user_permissions($edit_message['FROM_UID']) & USER_PERM_PILLORIED)) || (bh_session_check_perm(USER_PERM_PILLORIED, 0)) || ($post_edit_time > 0 && (time() - $edit_message['CREATED']) >= ($post_edit_time * HOUR_IN_SECONDS))) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
@@ -779,7 +779,7 @@ if ($post->isDiff() && $fix_html) {
 
     echo $tools->compare_original("t_content", $post->getOriginalContent());
 
-    if ($tools->getTinyMCE()) {
+    if (($tools->getTinyMCE())) {
         echo "<br />\n";
     } else {
         echo "<br /><br />\n";
@@ -788,7 +788,7 @@ if ($post->isDiff() && $fix_html) {
 
 if ($allow_html == true) {
 
-    if ($tools->getTinyMCE()) {
+    if (($tools->getTinyMCE())) {
 
         echo form_input_hidden("t_post_html", "enabled");
 
@@ -813,7 +813,7 @@ if ($allow_html == true) {
     echo form_input_hidden("t_post_html", "disabled");
 }
 
-if ($tools->getTinyMCE()) {
+if (($tools->getTinyMCE())) {
     echo "<br />\n";
 } else {
     echo "<br /><br />\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.164 2008-07-27 18:26:09 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.165 2008-07-28 21:05:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -271,7 +271,7 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
 
         if ($allow_html == true && isset($t_post_html) && $t_post_html == 'Y') {
 
-            foreach($t_answers_array as $key => $t_poll_answer) {
+            foreach ($t_answers_array as $key => $t_poll_answer) {
 
                 $t_poll_check_html = new MessageText(POST_HTML_ENABLED, $t_poll_answer);
                 $t_answers_array[$key] = $t_poll_check_html->getContent();
@@ -299,7 +299,7 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
             $valid = false;
         }
 
-        foreach($t_answers_array as $t_poll_answer) {
+        foreach ($t_answers_array as $t_poll_answer) {
 
             if (attachment_embed_check($t_poll_answer) && $t_post_html == 'Y') {
 
@@ -633,7 +633,7 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
         $t_answers_array_html = POST_HTML_ENABLED;
     }
 
-    foreach($t_answers_array as $key => $poll_answer) {
+    foreach ($t_answers_array as $key => $poll_answer) {
 
         $answers[$key] = new MessageText($t_answers_array_html, $poll_answer);
         $t_answers_array[$key] = $answers[$key]->getContent();
@@ -717,7 +717,7 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
 
         $poll_data['CONTENT'].= "            <ul>\n";
 
-        foreach($poll_results['OPTION_NAME'] as $pollquestion) {
+        foreach ($poll_results['OPTION_NAME'] as $pollquestion) {
             $poll_data['CONTENT'].= "          <li>{$pollquestion}</li>\n";
         }
 

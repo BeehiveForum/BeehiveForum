@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: zip_lib.inc.php,v 1.4 2007-10-26 19:52:53 decoyduck Exp $ */
+/* $Id: zip_lib.inc.php,v 1.5 2008-07-28 21:05:56 decoyduck Exp $ */
 
 /**
 * zip_lib.inc.php - Zip Creation Class Library
@@ -63,7 +63,8 @@ class zip_file
     var $eof_ctrl_dir = "\x50\x4b\x05\x06\x00\x00\x00\x00";
     var $old_offset   = 0;
 
-    function unix2dostime($unixtime = 0) {
+    function unix2dostime($unixtime = 0)
+    {
 
         $timearray = (!is_numeric($unixtime) || $unixtime == 0) ? getdate() : getdate($unixtime);
 
@@ -81,7 +82,8 @@ class zip_file
                 ($timearray['hours'] << 11) | ($timearray['minutes'] << 5) | ($timearray['seconds'] >> 1);
     }
 
-    function add_file($data, $name, $time = 0) {
+    function add_file($data, $name, $time = 0)
+    {
 
         $name     = str_replace('\\', '/', $name);
 

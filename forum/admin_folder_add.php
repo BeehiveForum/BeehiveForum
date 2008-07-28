@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_add.php,v 1.53 2008-07-27 18:26:09 decoyduck Exp $ */
+/* $Id: admin_folder_add.php,v 1.54 2008-07-28 21:05:47 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -162,7 +162,7 @@ if (isset($_POST['add'])) {
 
     if ($valid) {
 
-        if ($new_fid = folder_create($t_name, $t_description, $t_prefix, $t_allowed_types, $t_permissions)) {
+        if (($new_fid = folder_create($t_name, $t_description, $t_prefix, $t_allowed_types, $t_permissions))) {
 
             admin_add_log_entry(CREATE_FOLDER, $t_name);
             header_redirect("admin_folders.php?webtag=$webtag&added=true&page=$page");

@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.133 2008-07-27 18:26:15 decoyduck Exp $ */
+/* $Id: fixhtml.inc.php,v 1.134 2008-07-28 21:05:53 decoyduck Exp $ */
 
 /** A range of functions for filtering/cleaning posted HTML
 *
@@ -471,7 +471,7 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
                         array_splice($html_parts, $i, 2);
                         $i-= 2;
 
-                    }else if(!in_array($tag, $single_tags)) {
+                    }else if (!in_array($tag, $single_tags)) {
 
                         if (in_array($tag, array_keys($nest))) {
 
@@ -563,7 +563,7 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
 
                             if ($opentags[$tag] > $opencount) {
 
-                                for($j = count($last_tag) - 2; $j >= 0; $j--) {
+                                for ($j = count($last_tag) - 2; $j >= 0; $j--) {
 
                                     if ($last_tag[$j] == $tag) {
 
@@ -604,7 +604,7 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
 
                     // make XHTML single tag
 
-                    }else if(substr($html_parts[$i], -2) != " /") {
+                    }else if (substr($html_parts[$i], -2) != " /") {
 
                         if (substr($html_parts[$i], -1) != "/") {
 
@@ -798,7 +798,7 @@ function clean_attributes ($tag)
 
     if (in_array($tag_name, $valid_tags)) {
 
-        for($i = 1; $i < count($split_tag); $i++) {
+        for ($i = 1; $i < count($split_tag); $i++) {
 
             $attrib = explode("=", $split_tag[$i]);
 
@@ -843,7 +843,7 @@ function clean_attributes ($tag)
 
     }else {
 
-        for($i = 1; $i < count($split_tag); $i++) {
+        for ($i = 1; $i < count($split_tag); $i++) {
 
             $attrib = explode("=", $split_tag[$i]);
 
@@ -1263,7 +1263,7 @@ function clean_styles ($style)
 
         // Loop through the remaining and filter the restricted values.
 
-        foreach($attribute_names_array as $key => $attribute) {
+        foreach ($attribute_names_array as $key => $attribute) {
 
             if (isset($attribute_values_array[$key]) && strlen($attribute_values_array[$key]) > 0) {
 

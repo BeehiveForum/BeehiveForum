@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.111 2008-07-27 18:26:11 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.112 2008-07-28 21:05:50 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -261,7 +261,7 @@ if (isset($_POST['save'])) {
 
             if ($t_rename !== trim($thread_data['TITLE'])) {
 
-                if (thread_change_title($fid, $tid, $t_rename)) {
+                if (thread_change_title($tid, $t_rename)) {
 
                     post_add_edit_text($tid, 1);
 
@@ -436,7 +436,7 @@ if (isset($_POST['save'])) {
 
                         if (validate_msg($merge_thread)) list($merge_thread,) = explode('.', $merge_thread);
 
-                        if ($merge_result = thread_merge($merge_thread, $tid, $merge_type, $error_str)) {
+                        if (($merge_result = thread_merge($merge_thread, $tid, $merge_type, $error_str))) {
 
                             post_add_edit_text($tid, 1);
 
@@ -459,7 +459,7 @@ if (isset($_POST['save'])) {
                         $split_start = $_POST['split_thread'];
                         $split_type  = $_POST['split_type'];
 
-                        if ($split_result = thread_split($tid, $split_start, $split_type, $error_str)) {
+                        if (($split_result = thread_split($tid, $split_start, $split_type, $error_str))) {
 
                             post_add_edit_text($tid, 1);
 
@@ -477,21 +477,19 @@ if (isset($_POST['save'])) {
 
         if (isset($_POST['t_to_uid_in_thread']) && is_numeric($_POST['t_to_uid_in_thread']) && isset($_POST['deluser_con']) && $_POST['deluser_con'] == "Y") {
 
-            if ($del_uid = $_POST['t_to_uid_in_thread']) {
+            $del_user_uid = $_POST['t_to_uid_in_thread'];
+            
+            if (($user_logon = user_get_logon($del_user_uid))) {
+        	
+                if (thread_delete_by_user($tid, $del_user_uid)) {
 
-                if ($user_logon = user_get_logon($del_uid['UID'])) {
+                    post_add_edit_text($tid, 1);
+                    admin_add_log_entry(DELETE_USER_THREAD_POSTS, array($tid, $thread_data['TITLE'], $user_logon));
 
-                    if (thread_delete_by_user($tid, $del_uid['UID'])) {
+                }else {
 
-                        post_add_edit_text($tid, 1);
-
-                        admin_add_log_entry(DELETE_USER_THREAD_POSTS, array($tid, $thread_data['TITLE'], $user_logon));
-
-                    }else {
-
-                        $error_msg_array[] = sprintf($lang['failedtodeletepostsbyuser'], $user_logon);
-                        $valid = false;
-                    }
+                    $error_msg_array[] = sprintf($lang['failedtodeletepostsbyuser'], $user_logon);
+                    $valid = false;
                 }
             }
         }

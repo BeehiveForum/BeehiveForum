@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: general.js,v 1.41 2008-06-03 19:52:33 decoyduck Exp $ */
+/* $Id: general.js,v 1.42 2008-07-28 21:05:58 decoyduck Exp $ */
 
 // sprintf function based on code available at http://jan.moesen.nu
 
@@ -94,15 +94,15 @@ function findPosX(obj)
 
     if (obj.offsetParent) {
         
-        while(1) {
+        while (1) {
 
             curleft += obj.offsetLeft;
 
-            if(!obj.offsetParent) break;
+            if (!obj.offsetParent) break;
             obj = obj.offsetParent;
         }
 
-    }else if(obj.x) {
+    }else if (obj.x) {
 
         curleft += obj.x;
     }
@@ -116,14 +116,14 @@ function findPosY(obj)
 
     if (obj.offsetParent) {
         
-        while(1) {
+        while (1) {
 
             curtop += obj.offsetTop;
-            if(!obj.offsetParent) break;
+            if (!obj.offsetParent) break;
             obj = obj.offsetParent;
         }
 
-    } else if(obj.y) {
+    } else if (obj.y) {
         
         curtop += obj.y;
     }

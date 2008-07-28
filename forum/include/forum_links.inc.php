@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_links.inc.php,v 1.44 2008-07-27 18:26:15 decoyduck Exp $ */
+/* $Id: forum_links.inc.php,v 1.45 2008-07-28 21:05:53 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -58,7 +58,7 @@ function forum_links_get_links()
 
         $links_array = array($forum_links_top_link);
 
-        while ($forum_links_data = db_fetch_array($result)) {
+        while (($forum_links_data = db_fetch_array($result))) {
 
             if (!isset($forum_links_data['TITLE']) || strlen(trim($forum_links_data['TITLE'])) < 1) {
                 $forum_links_data['TITLE'] = '-';
@@ -107,7 +107,7 @@ function forum_links_get_links_by_page($offset)
 
     if (db_num_rows($result) > 0) {
 
-        while ($forum_links_data = db_fetch_array($result)) {
+        while (($forum_links_data = db_fetch_array($result))) {
 
             if (!isset($forum_links_data['URI'])) $forum_links_data['URI'] = "";
             if (!isset($forum_links_data['TITLE'])) $forum_links_data['TITLE'] = "-";
@@ -135,7 +135,7 @@ function forum_links_fix_url($uri)
 
         $new_uri_query_array = array();
 
-        foreach($uri_query_array as $key => $value) {
+        foreach ($uri_query_array as $key => $value) {
 
             if (strlen($key) > 0 && strlen($value) > 0) {
 
@@ -160,7 +160,7 @@ function forum_links_fix_url($uri)
 
 function forum_links_draw_dropdown()
 {
-    if ($forum_links_array = forum_links_get_links(false)) {
+    if (($forum_links_array = forum_links_get_links(false))) {
 
         $html = form_dropdown_array('forum_links', $forum_links_array, false, "onchange=\"openForumLink(this)\"", "forumlinks");
         return $html;
@@ -267,7 +267,7 @@ function forum_links_move_up($lid)
 
     if (!$result = db_query($sql, $db_forum_links_move_up)) return false;
 
-    while ($forum_links_data = db_fetch_array($result)) {
+    while (($forum_links_data = db_fetch_array($result))) {
 
         $forum_links_order[] = $forum_links_data['LID'];
         $forum_links_position[$forum_links_data['LID']] = $forum_links_data['POS'];
@@ -316,7 +316,7 @@ function forum_links_move_down($lid)
 
     if (!$result = db_query($sql, $db_forum_links_move_down)) return false;
 
-    while ($forum_links_data = db_fetch_array($result)) {
+    while (($forum_links_data = db_fetch_array($result))) {
 
         $forum_links_order[] = $forum_links_data['LID'];
         $forum_links_position[$forum_links_data['LID']] = $forum_links_data['POS'];

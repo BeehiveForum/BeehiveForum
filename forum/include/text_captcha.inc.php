@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: text_captcha.inc.php,v 1.29 2008-07-27 18:26:17 decoyduck Exp $ */
+/* $Id: text_captcha.inc.php,v 1.30 2008-07-28 21:05:55 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -180,7 +180,7 @@ class captcha {
             return false;
         }
 
-        if ($text_captcha_gd_info = get_gd_info()) {
+        if (($text_captcha_gd_info = get_gd_info())) {
 
             if ($text_captcha_gd_info['GD Version'] !== false && $text_captcha_gd_info['FreeType Support'] > 0) {
 
@@ -214,21 +214,21 @@ class captcha {
                     }
                 }
 
-                for($i = 0; $i < $this->image_x; $i+= (int)($this->min_char_size / 1.5)) {
+                for ($i = 0; $i < $this->image_x; $i+= (int)($this->min_char_size / 1.5)) {
 
                     $this->random_color(160, 224);
                     $line_color = imagecolorclosest($image, $this->color_red, $this->color_green, $this->color_blue);
                     imageline($image, $i, 0, $i, $this->image_y, $line_color);
                 }
 
-                for($i = 0; $i < $this->image_y; $i+= (int)($this->min_char_size / 1.8)) {
+                for ($i = 0; $i < $this->image_y; $i+= (int)($this->min_char_size / 1.8)) {
 
                     $this->random_color(160, 224);
                     $line_color = imagecolorclosest($image, $this->color_red, $this->color_green, $this->color_blue);
                     imageline($image, 0, $i, $this->image_x, $i, $line_color);
                 }
 
-                for($i = 0, $text_x = intval(mt_rand($this->min_char_size,$this->max_char_size)); $i < $this->num_chars; $i++) {
+                for ($i = 0, $text_x = intval(mt_rand($this->min_char_size,$this->max_char_size)); $i < $this->num_chars; $i++) {
 
                     $text = strtoupper(substr($this->private_key, $i, 1));
 
@@ -301,7 +301,7 @@ class captcha {
     {
         if (!$this->fonts_loaded) {
 
-            if (@$dir = opendir("{$this->text_captcha_dir}/fonts")) {
+            if ((@$dir = opendir("{$this->text_captcha_dir}/fonts"))) {
 
                 while (($file = readdir($dir)) !== false) {
 
@@ -375,11 +375,11 @@ class captcha {
 
     function allocate_colours(&$image)
     {
-        for($red = 0; $red <= 255; $red += 51) {
+        for ($red = 0; $red <= 255; $red += 51) {
 
-            for($green = 0; $green <= 255; $green += 51) {
+            for ($green = 0; $green <= 255; $green += 51) {
 
-                for($blue = 0; $blue <= 255; $blue += 51) {
+                for ($blue = 0; $blue <= 255; $blue += 51) {
 
                     $color = imagecolorallocate($image, $red, $green, $blue);
                 }
@@ -405,7 +405,7 @@ function captcha_clean_up()
 
     $text_captcha_dir = $forum_directory. DIRECTORY_SEPARATOR. 'text_captcha';
 
-    if (@$dir = opendir($text_captcha_dir. DIRECTORY_SEPARATOR. "images")) {
+    if ((@$dir = opendir($text_captcha_dir. DIRECTORY_SEPARATOR. "images"))) {
 
         while ((($file = @readdir($dir)) !== false) && $unlink_count < 10) {
 
@@ -413,7 +413,7 @@ function captcha_clean_up()
 
             $captcha_image_file = "$text_captcha_dir/images/$file";
 
-            if ($file != "." && $file != ".." && !is_dir($captcha_image_file)) {
+            if (($file != "." && $file != ".." && !is_dir($captcha_image_file))) {
 
                 if (filemtime($captcha_image_file) < (time() - DAY_IN_SECONDS)) {
 

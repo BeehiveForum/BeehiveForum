@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.206 2008-07-27 18:26:17 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.207 2008-07-28 21:05:55 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -152,9 +152,9 @@ function search_execute($search_arguments, &$error)
 
         $search_arguments['username_array'] = explode(";", $search_arguments['username']);
 
-        foreach($search_arguments['username_array'] as $username) {
+        foreach ($search_arguments['username_array'] as $username) {
 
-            if ($user_uid = user_get_uid(trim($username))) {
+            if (($user_uid = user_get_uid(trim($username)))) {
 
                 if ($search_arguments['user_include'] == SEARCH_FILTER_USER_THREADS) {
 
@@ -407,7 +407,7 @@ function search_get_word_lengths(&$min_length, &$max_length)
     $min_length = 4;
     $max_length = 84;
 
-    while ($mysql_variable_data = db_fetch_array($result)) {
+    while (($mysql_variable_data = db_fetch_array($result))) {
 
         if (isset($mysql_variable_data['Variable_name']) && isset($mysql_variable_data['Value'])) {
 
@@ -540,7 +540,7 @@ function search_fetch_results($offset, $sort_by, $sort_dir)
 
         $search_results_array = array();
 
-        while ($search_result = db_fetch_array($result)) {
+        while (($search_result = db_fetch_array($result))) {
 
             if (isset($search_result['FROM_LOGON']) && isset($search_result['PEER_NICKNAME'])) {
                 if (!is_null($search_result['PEER_NICKNAME']) && strlen($search_result['PEER_NICKNAME']) > 0) {
@@ -752,7 +752,7 @@ function folder_search_dropdown($selected_folder)
 
     if (db_num_rows($result) > 0) {
 
-        while($folder_data = db_fetch_array($result)) {
+        while (($folder_data = db_fetch_array($result))) {
 
             if (user_is_guest()) {
 

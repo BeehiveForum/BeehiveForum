@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit_users.php,v 1.61 2008-07-27 18:26:09 decoyduck Exp $ */
+/* $Id: admin_user_groups_edit_users.php,v 1.62 2008-07-28 21:05:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -188,7 +188,7 @@ if (isset($_POST['add'])) {
 
     if (isset($_POST['add_user']) && is_array($_POST['add_user'])) {
 
-        foreach($_POST['add_user'] as $uid) {
+        foreach ($_POST['add_user'] as $uid) {
 
             if (!perm_user_in_group($uid, $gid)) {
 
@@ -207,7 +207,7 @@ if (isset($_POST['remove'])) {
 
     if (isset($_POST['remove_user']) && is_array($_POST['remove_user'])) {
 
-        foreach($_POST['remove_user'] as $uid) {
+        foreach ($_POST['remove_user'] as $uid) {
 
             if (perm_user_in_group($uid, $gid)) {
 
@@ -269,7 +269,7 @@ echo "                    <table class=\"posthead\" width=\"95%\">\n";
 
 if (sizeof($group_users_array['user_array']) > 0) {
 
-    foreach($group_users_array['user_array'] as $user) {
+    foreach ($group_users_array['user_array'] as $user) {
 
         echo "                      <tr>\n";
         echo "                        <td align=\"left\" width=\"1%\">", form_checkbox("remove_user[]", $user['UID'], "", false), "</td>\n";

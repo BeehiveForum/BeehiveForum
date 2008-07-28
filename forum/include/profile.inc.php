@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.94 2008-07-27 18:26:15 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.95 2008-07-28 21:05:55 decoyduck Exp $ */
 
 /**
 * Functions relating to profiles
@@ -84,7 +84,7 @@ function profile_section_create($name)
     $sql = "INSERT INTO {$table_data['PREFIX']}PROFILE_SECTION (NAME, POSITION) ";
     $sql.= "VALUES ('$name', '$new_position')";
 
-    if ($result = db_query($sql, $db_profile_section_create)) {
+    if (($result = db_query($sql, $db_profile_section_create))) {
 
         $new_psid = db_insert_id($db_profile_section_create);
         return $new_psid;
@@ -131,7 +131,7 @@ function profile_sections_get()
 
         $profile_sections_get = array();
 
-        while($profile_data = db_fetch_array($result)) {
+        while (($profile_data = db_fetch_array($result))) {
 
             $profile_sections_get[$profile_data['PSID']] = $profile_data;
         }
@@ -171,7 +171,7 @@ function profile_sections_get_by_page($offset)
 
     if (db_num_rows($result) > 0) {
 
-        while($profile_data = db_fetch_array($result)) {
+        while (($profile_data = db_fetch_array($result))) {
 
             $profile_sections_array[] = $profile_data;
         }
@@ -204,7 +204,7 @@ function profile_items_get($psid)
 
         $profile_items_get = array();
 
-        while($profile_data = db_fetch_array($result)) {
+        while (($profile_data = db_fetch_array($result))) {
 
             $profile_items_get[] = $profile_data;
         }
@@ -244,7 +244,7 @@ function profile_items_get_by_page($psid, $offset)
 
     if (db_num_rows($result) > 0) {
 
-        while($profile_item = db_fetch_array($result)) {
+        while (($profile_item = db_fetch_array($result))) {
 
             $profile_items_array[] = $profile_item;
         }
@@ -305,7 +305,7 @@ function profile_item_create($psid, $name, $type, $options)
     $sql = "INSERT INTO {$table_data['PREFIX']}PROFILE_ITEM (PSID, NAME, TYPE, OPTIONS, POSITION) ";
     $sql.= "VALUES ('$psid', '$name', '$type', '$options', '$new_position')";
 
-    if ($result = db_query($sql, $db_profile_item_create)) {
+    if (($result = db_query($sql, $db_profile_item_create))) {
 
         $new_piid = db_insert_id($db_profile_item_create);
         return $new_piid;
@@ -392,7 +392,7 @@ function profile_section_dropdown($default_psid, $field_name = 't_psid')
 
     if (db_num_rows($result) > 0) {
 
-        while ($profile_section_data = db_fetch_array($result)) {
+        while (($profile_section_data = db_fetch_array($result))) {
             $profile_sections_array[$profile_section_data['PSID']] = _htmlentities($profile_section_data['NAME']);
         }
 
@@ -444,7 +444,7 @@ function profile_get_user_values($uid)
 
         $profile_values_array = array();
 
-        while($profile_data = db_fetch_array($result)) {
+        while (($profile_data = db_fetch_array($result))) {
 
             $profile_values_array[] = $profile_data;
         }
@@ -474,7 +474,7 @@ function profile_section_move_up($psid)
 
     $profile_section_order = array();
 
-    while ($profile_data = db_fetch_array($result)) {
+    while (($profile_data = db_fetch_array($result))) {
 
         $profile_section_order[] = $profile_data['PSID'];
         $profile_section_position[$profile_data['PSID']] = $profile_data['POSITION'];
@@ -525,7 +525,7 @@ function profile_section_move_down($psid)
 
     $profile_section_order = array();
 
-    while ($profile_data = db_fetch_array($result)) {
+    while (($profile_data = db_fetch_array($result))) {
 
         $profile_section_order[] = $profile_data['PSID'];
         $profile_section_position[$profile_data['PSID']] = $profile_data['POSITION'];
@@ -580,7 +580,7 @@ function profile_item_move_up($psid, $piid)
 
     $profile_item_order = array();
 
-    while ($profile_data = db_fetch_array($result)) {
+    while (($profile_data = db_fetch_array($result))) {
 
         $profile_item_order[] = $profile_data['PIID'];
         $profile_item_position[$profile_data['PIID']] = $profile_data['POSITION'];
@@ -633,7 +633,7 @@ function profile_item_move_down($psid, $piid)
 
     $profile_item_order = array();
 
-    while ($profile_data = db_fetch_array($result)) {
+    while (($profile_data = db_fetch_array($result))) {
 
         $profile_item_order[] = $profile_data['PIID'];
         $profile_item_position[$profile_data['PIID']] = $profile_data['POSITION'];

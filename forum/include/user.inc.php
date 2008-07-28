@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.356 2008-07-27 18:26:17 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.357 2008-07-28 21:05:56 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -88,7 +88,7 @@ function user_create($logon, $password, $nickname, $email)
     $email     = db_escape_string($email);
     $md5pass   = md5($password);
 
-    if ($http_referer = bh_session_get_value('REFERER')) {
+    if (($http_referer = bh_session_get_value('REFERER'))) {
         $http_referer = db_escape_string($http_referer);
     }else {
         $http_referer = "";
@@ -101,7 +101,7 @@ function user_create($logon, $password, $nickname, $email)
     $sql.= "'$md5pass', '$nickname', '$email', NOW(), ";
     $sql.= "'$http_referer', '$ipaddress')";
 
-    if ($result = db_query($sql, $db_user_create)) {
+    if (($result = db_query($sql, $db_user_create))) {
 
         $new_uid = db_insert_id($db_user_create);
         return $new_uid;
@@ -623,7 +623,7 @@ function user_get_prefs($uid)
 
     // 3. The user's per-forum prefs, in {webtag}_USER_PREFS (not all prefs are set here e.g. name):
 
-    if ($table_data = get_table_prefix()) {
+    if (($table_data = get_table_prefix())) {
 
         $sql = "SELECT HOMEPAGE_URL, PIC_URL, PIC_AID, AVATAR_URL, AVATAR_AID, EMAIL_NOTIFY, ";
         $sql.= "MARK_AS_OF_INT, POSTS_PER_PAGE, FONT_SIZE, STYLE, VIEW_SIGS, START_PAGE, ";
@@ -763,7 +763,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
 
             $values_array = array();
 
-            foreach($global_prefs as $pref_name => $pref_setting) {
+            foreach ($global_prefs as $pref_name => $pref_setting) {
 
                  $pref_setting = db_escape_string($pref_setting);
                  $values_array[] = "$pref_name = '$pref_setting'";
@@ -787,7 +787,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
 
             $values_array = array();
 
-            foreach($global_prefs as $pref_name => $pref_setting) {
+            foreach ($global_prefs as $pref_name => $pref_setting) {
 
                  $pref_setting = db_escape_string($pref_setting);
                  $values_array[$pref_name] = "'$pref_setting'";
@@ -812,7 +812,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
 
         $values_array = array();
 
-        foreach($global_prefs as $pref_name => $pref_setting) {
+        foreach ($global_prefs as $pref_name => $pref_setting) {
             if (in_array($pref_name, $forum_pref_names)) {
                 $values_array[] = "$pref_name = ''";
             }
@@ -824,7 +824,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
 
             if (!$forum_prefix_array = forum_get_all_prefixes()) return false;
 
-            foreach($forum_prefix_array as $forum_prefix) {
+            foreach ($forum_prefix_array as $forum_prefix) {
 
                 $sql = "UPDATE LOW_PRIORITY {$forum_prefix}USER_PREFS SET $values WHERE UID = '$uid'";
 
@@ -848,7 +848,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
 
             $values_array = array();
 
-            foreach($forum_prefs as $pref_name => $pref_setting) {
+            foreach ($forum_prefs as $pref_name => $pref_setting) {
 
                 $pref_setting = db_escape_string($pref_setting);
                 $values_array[] = "$pref_name = '$pref_setting'";
@@ -872,7 +872,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
 
             $values_array = array();
 
-            foreach($forum_prefs as $pref_name => $pref_setting) {
+            foreach ($forum_prefs as $pref_name => $pref_setting) {
 
                  $pref_setting = db_escape_string($pref_setting);
                  $values_array[$pref_name] = "'$pref_setting'";
@@ -931,7 +931,7 @@ function user_update_sig($uid, $content, $html, $global_update = false)
 
         if (!$forum_prefix_array = forum_get_all_prefixes()) return false;
 
-        foreach($forum_prefix_array as $forum_prefix) {
+        foreach ($forum_prefix_array as $forum_prefix) {
 
             $sql = "SELECT UID FROM {$forum_prefix}USER_SIG ";
             $sql.= "WHERE UID = '$uid'";
@@ -1047,7 +1047,7 @@ function user_get_forthcoming_birthdays()
 
         $user_birthdays_array = array();
 
-        while ($user_birthday_data = db_fetch_array($result)) {
+        while (($user_birthday_data = db_fetch_array($result))) {
 
             if (isset($user_birthday_data['PEER_NICKNAME'])) {
                 if (!is_null($user_birthday_data['PEER_NICKNAME']) && strlen($user_birthday_data['PEER_NICKNAME']) > 0) {
@@ -1112,7 +1112,7 @@ function user_search($user_search, $offset = 0, $exclude_uid = 0)
 
     if (db_num_rows($result) > 0) {
 
-        while ($user_data = db_fetch_array($result)) {
+        while (($user_data = db_fetch_array($result))) {
 
             if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
                 if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
@@ -1155,7 +1155,7 @@ function user_get_ip_addresses($uid)
 
     if (db_num_rows($result) > 0) {
 
-        while($user_ip_addresses_row = db_fetch_array($result)) {
+        while (($user_ip_addresses_row = db_fetch_array($result))) {
 
             if (strlen($user_ip_addresses_row['IPADDRESS']) > 0) {
 
@@ -1194,7 +1194,7 @@ function user_get_friends($uid)
 
         $user_get_peers_array = array();
 
-        while ($user_data = db_fetch_array($result)) {
+        while (($user_data = db_fetch_array($result))) {
 
             if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
                 if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
@@ -1239,7 +1239,7 @@ function user_get_ignored($uid)
 
         $user_get_peers_array = array();
 
-        while ($user_data = db_fetch_array($result)) {
+        while (($user_data = db_fetch_array($result))) {
 
             if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
                 if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
@@ -1284,7 +1284,7 @@ function user_get_ignored_signatures($uid)
 
         $user_get_peers_array = array();
 
-        while ($user_data = db_fetch_array($result)) {
+        while (($user_data = db_fetch_array($result))) {
 
             if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
                 if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
@@ -1336,7 +1336,7 @@ function user_get_relationships($uid, $offset = 0)
 
     if (db_num_rows($result) > 0) {
 
-        while ($user_data = db_fetch_array($result)) {
+        while (($user_data = db_fetch_array($result))) {
 
             if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
                 if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
@@ -1447,7 +1447,7 @@ function user_search_relationships($user_search, $offset = 0, $exclude_uid = 0)
 
     if (db_num_rows($result) > 0) {
 
-        while ($user_data = db_fetch_array($result)) {
+        while (($user_data = db_fetch_array($result))) {
 
             if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
                 if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
@@ -1503,7 +1503,7 @@ function user_get_word_filter_list($offset)
 
     if (db_num_rows($result) > 0) {
 
-        while ($word_filter_data = db_fetch_array($result)) {
+        while (($word_filter_data = db_fetch_array($result))) {
 
             $word_filter_array[$word_filter_data['FID']] = $word_filter_data;
         }
@@ -1685,7 +1685,7 @@ function user_prefs_prep_attachments($image_attachments_array)
 
     foreach ($image_attachments_array as $hash => $attachment_details) {
 
-        if ($image_info = getimagesize("$attachment_dir/$hash")) {
+        if (($image_info = getimagesize("$attachment_dir/$hash"))) {
 
             $dimensions_text = "{$lang['dimensions']}: {$image_info[0]}x{$image_info[1]}px";
             $attachments_array_prepared[$hash] = "{$attachment_details['filename']}, $dimensions_text";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.321 2008-07-27 18:26:15 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.322 2008-07-28 21:05:53 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -83,7 +83,7 @@ function get_forum_data()
                 $sql.= "CONCAT(FORUMS.DATABASE_NAME, '.', FORUMS.WEBTAG, '_') AS PREFIX ";
                 $sql.= "FROM FORUMS WHERE WEBTAG = '$webtag'";
 
-                if ($result = db_query($sql, $db_get_forum_data)) {
+                if (($result = db_query($sql, $db_get_forum_data))) {
 
                     if (db_num_rows($result) > 0) {
 
@@ -103,7 +103,7 @@ function get_forum_data()
             $sql.= "CONCAT(FORUMS.DATABASE_NAME, '.', FORUMS.WEBTAG, '_') AS PREFIX ";
             $sql.= "FROM FORUMS WHERE DEFAULT_FORUM = 1";
 
-            if ($result = db_query($sql, $db_get_forum_data)) {
+            if (($result = db_query($sql, $db_get_forum_data))) {
 
                 if (db_num_rows($result) > 0) {
 
@@ -195,7 +195,7 @@ function forum_closed_message()
 
     echo "<h1>{$lang['closed']}</h1>\n";
 
-    if ($closed_message = forum_get_setting('closed_message', false)) {
+    if (($closed_message = forum_get_setting('closed_message', false))) {
 
         html_display_error_msg(fix_html($closed_message), '600', 'center');
 
@@ -223,13 +223,13 @@ function forum_restricted_message()
 
     echo "<h1>{$lang['restricted']}</h1>\n";
 
-    if ($restricted_message = forum_get_setting('restricted_message', false)) {
+    if (($restricted_message = forum_get_setting('restricted_message', false))) {
 
         html_display_error_msg(fix_html($restricted_message), '600', 'center');
 
     }else {
 
-        if ($forum_owner_uid = forum_get_setting('owner_uid')) {
+        if (($forum_owner_uid = forum_get_setting('owner_uid'))) {
 
             $forum_owner_link = sprintf("<a href=\"pm.php?webtag=$webtag&uid=$forum_owner_uid\">%s</a>", $lang['forumowner']);
 
@@ -306,7 +306,7 @@ function forum_check_password($forum_fid)
 
     if (!is_numeric($forum_fid)) return false;
 
-    if ($forum_passhash = forum_get_password($forum_fid)) {
+    if (($forum_passhash = forum_get_password($forum_fid))) {
 
         forum_get_saved_password($password, $passhash, $sesshash);
 
@@ -334,7 +334,7 @@ function forum_check_password($forum_fid)
         echo "    ", form_input_hidden('final_uri', _htmlentities(get_request_uri())), "\n";
         echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
 
-        if ($password_protected_message = forum_get_setting('password_protected_message', false)) {
+        if (($password_protected_message = forum_get_setting('password_protected_message', false))) {
 
             echo "      <tr>\n";
             echo "        <td align=\"left\">", fix_html($password_protected_message), "</td>\n";
@@ -430,7 +430,7 @@ function forum_get_settings()
 
             if (!is_array($forum_settings_array)) $forum_settings_array = array();
 
-            while ($forum_data = db_fetch_array($result)) {
+            while (($forum_data = db_fetch_array($result))) {
 
                 if (forum_check_setting_name($forum_data['SNAME'])) {
 
@@ -487,7 +487,7 @@ function forum_get_global_settings()
 
             if (!is_array($forum_global_settings_array)) $forum_global_settings_array = array();
 
-            while ($forum_data = db_fetch_array($result)) {
+            while (($forum_data = db_fetch_array($result))) {
 
                 if (forum_check_global_setting_name($forum_data['SNAME'])) {
 
@@ -537,7 +537,7 @@ function forum_get_settings_by_fid($fid, $include_global_settings = true)
 
     if (!$result = db_query($sql, $db_forum_get_settings_by_fid)) return false;
 
-    while ($forum_data = db_fetch_array($result)) {
+    while (($forum_data = db_fetch_array($result))) {
 
         if (forum_check_setting_name($forum_data['SNAME'])) {
 
@@ -911,9 +911,9 @@ function forum_update_unread_data($unread_cutoff_stamp)
 
     if ($unread_cutoff_stamp > 0) {
 
-        if ($forum_prefix_array = forum_get_all_prefixes()) {
+        if (($forum_prefix_array = forum_get_all_prefixes())) {
 
-            foreach($forum_prefix_array as $forum_prefix) {
+            foreach ($forum_prefix_array as $forum_prefix) {
 
                 $sql = "INSERT INTO {$forum_prefix}THREAD_STATS (TID, UNREAD_PID, UNREAD_CREATED) ";
                 $sql.= "SELECT POST.TID, MAX(POST.PID), MAX(POST.CREATED) FROM {$forum_prefix}POST POST ";
@@ -950,7 +950,7 @@ function forum_load_start_page()
 
     if (@file_exists("forums/$webtag/start_main.php")) {
 
-        if ($content = @file_get_contents("forums/$webtag/start_main.php")) {
+        if (($content = @file_get_contents("forums/$webtag/start_main.php"))) {
 
             return strlen($content) > 0 ? $content : false;
         }
@@ -1006,7 +1006,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
 
         // Check for any conflicting tables.
 
-        if ($conflicting_tables_array = install_get_table_conflicts($webtag, true, false)) {
+        if (($conflicting_tables_array = install_get_table_conflicts($webtag, true, false))) {
 
             $error_str = $lang['selecteddatabasecontainsconflictingtables'];
             $error_str.= sprintf("<p>%s</p>\n", implode(", ", $conflicting_tables_array));
@@ -2034,7 +2034,7 @@ function forum_delete($fid)
 
             if (!$result = db_query($sql, $db_forum_delete)) return false;
 
-            while($user_perms = db_fetch_array($result)) {
+            while (($user_perms = db_fetch_array($result))) {
 
                 $sql = "DELETE QUICK FROM GROUP_USERS WHERE GID = '{$user_perms['GID']}'";
 
@@ -2061,7 +2061,7 @@ function forum_delete($fid)
 
             if (!$result = db_query($sql, $db_forum_delete)) return false;
 
-            while ($attachment_data = db_fetch_array($result)) {
+            while (($attachment_data = db_fetch_array($result))) {
                 delete_attachment_by_aid($attachment_data['AID']);
             }
 
@@ -2196,7 +2196,7 @@ function forum_get($fid)
 
             if (isset($forum_get_array['OWNER_UID']) && $forum_get_array['OWNER_UID'] > 0) {
 
-                if ($forum_leader = user_get_logon($forum_get_array['OWNER_UID'])) {
+                if (($forum_leader = user_get_logon($forum_get_array['OWNER_UID']))) {
 
                     $forum_get_array['FORUM_SETTINGS']['forum_leader'] = $forum_leader;
                 }
@@ -2206,7 +2206,7 @@ function forum_get($fid)
 
             if (!$result = db_query($sql, $db_forum_get)) return false;
 
-            while ($forum_data = db_fetch_array($result)) {
+            while (($forum_data = db_fetch_array($result))) {
                 $forum_get_array['FORUM_SETTINGS'][$forum_data['SNAME']] = $forum_data['SVALUE'];
             }
 
@@ -2243,7 +2243,7 @@ function forum_get_permissions($fid, $offset = 0)
 
     if (db_num_rows($result) > 0) {
 
-        while ($user_data = db_fetch_array($result)) {
+        while (($user_data = db_fetch_array($result))) {
 
             if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
                 if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
@@ -2359,13 +2359,13 @@ function forum_search($forum_search, $offset)
 
         if (db_num_rows($result_forums) > 0) {
 
-            while ($forum_data = db_fetch_array($result_forums)) {
+            while (($forum_data = db_fetch_array($result_forums))) {
 
                 $forum_fid = $forum_data['FID'];
 
                 $forum_settings = forum_get_settings_by_fid($forum_fid);
 
-                foreach($forum_settings as $key => $value) {
+                foreach ($forum_settings as $key => $value) {
 
                     if (!isset($forum_data[strtoupper($key)])) {
 
@@ -2506,7 +2506,7 @@ function forum_get_all_prefixes()
 
         $prefix_array = array();
 
-        while ($forum_data = db_fetch_array($result)) {
+        while (($forum_data = db_fetch_array($result))) {
             $prefix_array[$forum_data['FID']] = $forum_data['PREFIX'];
         }
 
@@ -2528,7 +2528,7 @@ function forum_get_all_webtags()
 
         $webtag_array = array();
 
-        while ($forum_data = db_fetch_array($result)) {
+        while (($forum_data = db_fetch_array($result))) {
             $webtag_array[$forum_data['FID']] = $forum_data['WEBTAG'];
         }
 
@@ -2550,7 +2550,7 @@ function forum_get_all_fids()
 
         $fids_array = array();
 
-        while ($forum_data = db_fetch_array($result)) {
+        while (($forum_data = db_fetch_array($result))) {
             $fids_array[] = $forum_data['FID'];
         }
 
@@ -2606,7 +2606,7 @@ function forums_get_available_dbs()
 
         $database_array = array();
 
-        while ($database = db_fetch_array($result)) {
+        while (($database = db_fetch_array($result))) {
 
             if (!stristr('information_schema', $database['Database'])) {
 

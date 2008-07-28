@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_post_approve.php,v 1.65 2008-07-27 18:26:09 decoyduck Exp $ */
+/* $Id: admin_post_approve.php,v 1.66 2008-07-28 21:05:47 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -210,7 +210,7 @@ if (isset($msg) && validate_msg($msg)) {
         exit;
     }
 
-    if ($preview_message = messages_get($tid, $pid, 1)) {
+    if (($preview_message = messages_get($tid, $pid, 1))) {
 
         if (!isset($preview_message['APPROVED']) || $preview_message['APPROVED'] > 0) {
 
@@ -404,7 +404,7 @@ if (isset($msg) && validate_msg($msg)) {
 
     if (sizeof($post_approval_array['post_array']) > 0) {
 
-        foreach($post_approval_array['post_array'] as $post_approval_entry) {
+        foreach ($post_approval_array['post_array'] as $post_approval_entry) {
 
             echo "                 <tr>\n";
             echo "                   <td align=\"left\" width=\"20\">&nbsp;</td>\n";

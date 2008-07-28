@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.315 2008-07-27 18:26:17 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.316 2008-07-28 21:05:56 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -71,7 +71,7 @@ function threads_get_folders()
 
         $folder_info = array();
 
-        while ($folder_data = db_fetch_array($result)) {
+        while (($folder_data = db_fetch_array($result))) {
 
             if (user_is_guest()) {
 
@@ -1309,7 +1309,7 @@ function threads_get_most_recent($limit = 10, $folder_list_array = array(), $cre
         $threads_get_array = array();
         $tid_array = array();
 
-        while ($thread = db_fetch_array($result)) {
+        while (($thread = db_fetch_array($result))) {
 
             if (isset($thread['LOGON']) && isset($thread['PEER_NICKNAME'])) {
                 if (!is_null($thread['PEER_NICKNAME']) && strlen($thread['PEER_NICKNAME']) > 0) {
@@ -1386,7 +1386,7 @@ function threads_process_list($result)
 
         // Loop through the results and construct an array to return
 
-        while ($thread = db_fetch_array($result, DB_RESULT_ASSOC)) {
+        while (($thread = db_fetch_array($result, DB_RESULT_ASSOC))) {
 
             if (!isset($thread['FOLDER_INTEREST']) || is_null($thread['FOLDER_INTEREST'])) $thread['FOLDER_INTEREST'] = 0;
             if (!isset($thread['RELATIONSHIP']) || is_null($thread['RELATIONSHIP'])) $thread['RELATIONSHIP'] = 0;
@@ -1466,7 +1466,7 @@ function threads_get_folder_msgs()
 
     if (!$result = db_query($sql, $db_threads_get_folder_msgs)) return false;
 
-    while($folder = db_fetch_array($result)){
+    while (($folder = db_fetch_array($result))) {
         $folder_msgs[$folder['FID']] = $folder['TOTAL'];
     }
 
@@ -1641,7 +1641,7 @@ function threads_get_unread_data(&$threads_array, $tid_array)
 
     if (db_num_rows($result) > 0) {
 
-        while ($thread_data = db_fetch_array($result)) {
+        while (($thread_data = db_fetch_array($result))) {
 
             $threads_array[$thread_data['TID']] = $thread_data;
         }
@@ -1662,7 +1662,8 @@ function thread_list_draw_top($mode)
 
     echo "<script language=\"javascript\" type=\"text/javascript\">\n";
     echo "<!--\n\n";
-    echo "function change_current_thread (thread_id) {\n";
+    echo "function change_current_thread (thread_id)\n";
+    echo "{\n";
     echo "    if (current_thread > 0) {\n";
     echo "        document[\"t\" + current_thread].src = \"", style_image('bullet.png'), "\";\n";
     echo "    }\n";
@@ -1764,7 +1765,7 @@ function threads_have_attachments(&$threads_array, $tid_array)
 
     if (!$result = db_query($sql, $db_thread_has_attachments)) return false;
 
-    while ($attachment_data = db_fetch_array($result)) {
+    while (($attachment_data = db_fetch_array($result))) {
 
         $threads_array[$attachment_data['TID']]['AID'] = $attachment_data['AID'];
     }
@@ -1874,7 +1875,7 @@ function threads_get_user_subscriptions($interest_type = THREAD_NOINTEREST, $off
 
     if (db_num_rows($result) > 0) {
 
-        while ($thread_data_array = db_fetch_array($result)) {
+        while (($thread_data_array = db_fetch_array($result))) {
 
             $thread_subscriptions_array[] = $thread_data_array;
         }
@@ -1943,7 +1944,7 @@ function threads_search_user_subscriptions($thread_search, $interest_type = THRE
 
     if (db_num_rows($result) > 0) {
 
-        while ($thread_data_array = db_fetch_array($result)) {
+        while (($thread_data_array = db_fetch_array($result))) {
 
             $thread_subscriptions_array[] = $thread_data_array;
         }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.php,v 1.126 2008-07-27 18:26:11 decoyduck Exp $ */
+/* $Id: visitor_log.php,v 1.127 2008-07-28 21:05:53 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -132,7 +132,7 @@ if (isset($_POST['profile_selection'])) {
             $profile_selection = preg_grep('/^DOB$|^AGE$|^LAST_VISIT$/', $profile_selection);
         }
 
-        foreach($profile_selection as $profile_item_key) {
+        foreach ($profile_selection as $profile_item_key) {
 
             if (isset($profile_header_array[$profile_item_key])) {
 
@@ -151,7 +151,7 @@ if (isset($_POST['profile_selection'])) {
             $profile_selection = preg_grep('/^DOB$|^AGE$|^LAST_VISIT$/', $profile_selection);
         }
 
-        foreach($profile_selection as $profile_item_key) {
+        foreach ($profile_selection as $profile_item_key) {
 
             if (isset($profile_header_array[$profile_item_key])) {
 
@@ -383,7 +383,7 @@ if (sizeof($user_profile_array['user_array']) > 0) {
 
             $attachment = get_attachment_by_hash($user_array['AVATAR_AID']);
 
-            if ($profile_picture_href = attachment_make_link($attachment, false, false, false, false)) {
+            if (($profile_picture_href = attachment_make_link($attachment, false, false, false, false))) {
 
                 echo "                   <td class=\"postbody\" align=\"left\" valign=\"top\"><img src=\"$profile_picture_href\" alt=\"", word_filter_add_ob_tags(_htmlentities(format_user_name($user_array['LOGON'], $user_array['NICKNAME']))), "\" title=\"", word_filter_add_ob_tags(_htmlentities(format_user_name($user_array['LOGON'], $user_array['NICKNAME']))), "\" border=\"0\" width=\"15\" height=\"15\" /></td>\n";
 

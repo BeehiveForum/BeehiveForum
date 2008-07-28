@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: sitemap.inc.php,v 1.19 2008-07-27 18:26:17 decoyduck Exp $ */
+/* $Id: sitemap.inc.php,v 1.20 2008-07-28 21:05:55 decoyduck Exp $ */
 
 /**
 * sitemap.inc.php - sitemap functions
@@ -76,7 +76,7 @@ function sitemap_get_available_forums()
 
     if (db_num_rows($result) > 0) {
 
-        while ($forum_data = db_fetch_array($result)) {
+        while (($forum_data = db_fetch_array($result))) {
             $forum_fids_array[$forum_data['FID']] = $forum_data['WEBTAG'];
         }
 
@@ -113,7 +113,7 @@ function sitemap_forum_get_threads($forum_fid)
 
     // Get the table prefix from the forum fid
 
-    if ($table_data = forum_get_table_prefix($forum_fid)) {
+    if (($table_data = forum_get_table_prefix($forum_fid))) {
 
         $sql = "SELECT THREAD.TID, UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED ";
         $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD LEFT JOIN GROUP_PERMS ";
@@ -125,7 +125,7 @@ function sitemap_forum_get_threads($forum_fid)
 
         if (db_num_rows($result) > 0) {
 
-            while ($thread_data = db_fetch_array($result)) {
+            while (($thread_data = db_fetch_array($result))) {
                 $threads_array[$thread_data['TID']] = $thread_data['MODIFIED'];
             }
 
@@ -260,7 +260,7 @@ function sitemap_create_file()
 
     if (@file_exists("$sitemap_path/sitemap.xml")) {
 
-        if (@$file_modified = filemtime("$sitemap_path/sitemap.xml")) {
+        if ((@$file_modified = filemtime("$sitemap_path/sitemap.xml"))) {
 
             if ((mktime() - $file_modified) < $sitemap_freq) return false;
         }
@@ -272,7 +272,7 @@ function sitemap_create_file()
 
     // Open the index file for writing.
 
-    if (@$fp_index = fopen("{$sitemap_path}/sitemap.xml", 'w')) {
+    if ((@$fp_index = fopen("{$sitemap_path}/sitemap.xml", 'w'))) {
 
         // Write the sitemap index header to the index file
 
@@ -280,7 +280,7 @@ function sitemap_create_file()
 
         // Open the sitemap file for writing.
 
-        if (@$fp = fopen("{$sitemap_path}/sitemap{$sitemap_file_count}.xml", 'w')) {
+        if ((@$fp = fopen("{$sitemap_path}/sitemap{$sitemap_file_count}.xml", 'w'))) {
 
             // Write the header to the file
 
@@ -288,13 +288,13 @@ function sitemap_create_file()
 
             // Fetch the data from the database, process it and add it to the sitemap.
 
-            if ($available_forums_array = sitemap_get_available_forums()) {
+            if (($available_forums_array = sitemap_get_available_forums())) {
 
                 foreach ($available_forums_array as $forum_fid => $webtag) {
 
                     // If the thread data is successful start writing it to the file.
 
-                    if ($threads_array = sitemap_forum_get_threads($forum_fid)) {
+                    if (($threads_array = sitemap_forum_get_threads($forum_fid))) {
 
                         foreach ($threads_array as $thread_tid => $thread_modified) {
 

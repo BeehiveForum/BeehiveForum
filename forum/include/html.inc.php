@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.284 2008-07-27 18:26:15 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.285 2008-07-28 21:05:53 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -155,7 +155,7 @@ function html_display_msg($header_text, $string_msg, $href = false, $method = 'g
 
         if (is_array($button_array) && sizeof($button_array) > 0) {
 
-            foreach($button_array as $button_name => $button_label) {
+            foreach ($button_array as $button_name => $button_label) {
                 $button_html_array[] = form_submit(_htmlentities($button_name), _htmlentities($button_label));
             }
         }
@@ -369,28 +369,28 @@ function html_get_style_sheet()
 
         if (@is_dir("$forum_path/styles/$user_style") && @file_exists("$forum_path/styles/$user_style/$script_filename.css")) {
 
-            if ($modified_time = @filemtime("$forum_path/styles/$user_style/$script_filename.css")) {
+            if (($modified_time = @filemtime("$forum_path/styles/$user_style/$script_filename.css"))) {
                 return sprintf("$forum_path/styles/$user_style/$script_filename.css?%s", date('YmdHis', $modified_time));
             }
         }
 
         if (@is_dir("$forum_path/styles/$user_style") && @file_exists("$forum_path/styles/$user_style/style.css")) {
 
-            if ($modified_time = @filemtime("$forum_path/styles/$user_style/style.css")) {
+            if (($modified_time = @filemtime("$forum_path/styles/$user_style/style.css"))) {
                 return sprintf("$forum_path/styles/$user_style/style.css?%s", date('YmdHis', $modified_time));
             }
         }
 
         if (@is_dir("$forum_path/forums/$webtag/styles/$user_style") && @file_exists("$forum_path/forums/$webtag/styles/$user_style/$script_filename.css")) {
 
-            if ($modified_time = @filemtime("$forum_path/forums/$webtag/styles/$user_style/$script_filename.css")) {
+            if (($modified_time = @filemtime("$forum_path/forums/$webtag/styles/$user_style/$script_filename.css"))) {
                 return sprintf("$forum_path/forums/$webtag/styles/$user_style/$script_filename.css?%s", date('YmdHis', $modified_time));
             }
         }
 
         if (@is_dir("$forum_path/forums/$webtag/styles/$user_style") && @file_exists("$forum_path/forums/$webtag/styles/$user_style/style.css")) {
 
-            if ($modified_time = @filemtime("$forum_path/forums/$webtag/styles/$user_style/style.css")) {
+            if (($modified_time = @filemtime("$forum_path/forums/$webtag/styles/$user_style/style.css"))) {
                 return sprintf("$forum_path/forums/$webtag/styles/$user_style/style.css?%s", date('YmdHis', $modified_time));
             }
         }
@@ -400,7 +400,7 @@ function html_get_style_sheet()
 
         if (@is_dir("$forum_path/forums/$webtag") && @file_exists("$forum_path/forums/$webtag/style.css")) {
 
-            if ($modified_time = @filemtime("$forum_path/forums/$webtag/style.css")) {
+            if (($modified_time = @filemtime("$forum_path/forums/$webtag/style.css"))) {
                 return sprintf("$forum_path/forums/$webtag/style.css?%s", date('YmdHis', $modified_time));
             }
         }
@@ -408,7 +408,7 @@ function html_get_style_sheet()
 
     if (@is_dir("$forum_path/styles") && @file_exists("$forum_path/styles/style.css")) {
 
-        if ($modified_time = @filemtime("$forum_path/styles/style.css")) {
+        if (($modified_time = @filemtime("$forum_path/styles/style.css"))) {
             return sprintf("$forum_path/styles/style.css?%s", date('YmdHis', $modified_time));
         }
     }
@@ -432,14 +432,14 @@ function html_get_emoticon_style_sheet()
 
         if (@is_dir("$forum_path/emoticons/$user_emots") && file_exists("$forum_path/emoticons/$user_emots/style.css")) {
 
-            if ($modified_time = @filemtime("$forum_path/emoticons/$user_emots/style.css")) {
+            if (($modified_time = @filemtime("$forum_path/emoticons/$user_emots/style.css"))) {
                 return sprintf("$forum_path/emoticons/$user_emots/style.css?%s", date('YmdHis', $modified_time));
             }
         }
 
         if (@is_dir("$forum_path/forums/$webtag/emoticons/$user_emots") && file_exists("$forum_path/forums/$webtag/emoticons/$user_emots/style.css")) {
 
-            if ($modified_time = @filemtime("$forum_path/forums/$webtag/emoticons/$user_emots/style.css")) {
+            if (($modified_time = @filemtime("$forum_path/forums/$webtag/emoticons/$user_emots/style.css"))) {
                 return sprintf("$forum_path/forums/$webtag/emoticons/$user_emots/style.css?%s", date('YmdHis', $modified_time));
             }
         }
@@ -454,7 +454,7 @@ function html_get_forum_keywords()
 
     $forum_settings = forum_get_settings();
 
-    if ($forum_keywords = forum_get_setting('forum_keywords')) {
+    if (($forum_keywords = forum_get_setting('forum_keywords'))) {
 
         return $forum_keywords;
     }
@@ -468,7 +468,7 @@ function html_get_forum_description()
 
     $forum_settings = forum_get_settings();
 
-    if ($forum_desc = forum_get_setting('forum_desc')) {
+    if (($forum_desc = forum_get_setting('forum_desc'))) {
 
         return $forum_desc;
     }
@@ -482,7 +482,7 @@ function html_get_forum_email()
 
     $forum_settings = forum_get_settings();
 
-    if ($forum_email = forum_get_setting('forum_email')) {
+    if (($forum_email = forum_get_setting('forum_email'))) {
 
         return $forum_email;
     }
@@ -498,7 +498,7 @@ function html_get_frame_name($basename)
 
     // If webtag available add that to the hash.
 
-    if ($webtag = get_webtag()) {
+    if (($webtag = get_webtag())) {
 
         $frame_md5_hash = md5(sprintf('%s-%s-%s', $forum_uri, $webtag, $basename));
         return sprintf('bh_frame_%s', preg_replace('/[^a-z]+/i', '', $frame_md5_hash));
@@ -607,7 +607,7 @@ function html_draw_top()
     $frameset_dtd = false;
     $pm_popup_disabled = false;
 
-    foreach($arg_array as $key => $func_args) {
+    foreach ($arg_array as $key => $func_args) {
 
         if (preg_match("/^title=([^$]+)$/i", $func_args, $func_matches) > 0) {
             if (!isset($title)) $title = $func_matches[1];
@@ -731,17 +731,17 @@ function html_draw_top()
         echo "<link rel=\"icon\" href=\"$forum_path/forums/$webtag/favicon.ico\" type=\"image/ico\" />\n";
     }
 
-    if ($stylesheet = html_get_style_sheet()) {
+    if (($stylesheet = html_get_style_sheet())) {
         echo "<link rel=\"stylesheet\" href=\"$stylesheet\" type=\"text/css\" media=\"screen\" />\n";
     }
 
-    if ($emoticon_style_sheet = html_get_emoticon_style_sheet()) {
+    if (($emoticon_style_sheet = html_get_emoticon_style_sheet())) {
         echo "<link rel=\"stylesheet\" href=\"$emoticon_style_sheet\" type=\"text/css\" />\n";
     }
 
     if (isset($stylesheet_array) && is_array($stylesheet_array)) {
 
-        foreach($stylesheet_array as $stylesheet) {
+        foreach ($stylesheet_array as $stylesheet) {
 
             if (isset($stylesheet['filename']) && isset($stylesheet['filename'])) {
 
@@ -771,11 +771,11 @@ function html_draw_top()
     echo "//-->\n";
     echo "</script>\n";
 
-    if ($modified_time = @filemtime("js/general.js")) {
+    if (($modified_time = @filemtime("js/general.js"))) {
         echo sprintf("<script language=\"Javascript\" type=\"text/javascript\" src=\"js/general.js?%s\"></script>\n", date('YmdHis', $modified_time));
     }
 
-    if ($modified_time = @filemtime("js/xml_http.js")) {
+    if (($modified_time = @filemtime("js/xml_http.js"))) {
         echo sprintf("<script language=\"Javascript\" type=\"text/javascript\" src=\"js/xml_http.js?%s\"></script>\n", date('YmdHis', $modified_time));
     }
 
@@ -832,7 +832,7 @@ function html_draw_top()
 
                 if ((!in_array(basename($_SERVER['PHP_SELF']), $pm_popup_disabled_pages))) {
 
-                    if ($modified_time = @filemtime("js/pm.js")) {
+                    if (($modified_time = @filemtime("js/pm.js"))) {
 
                         echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
                         echo "<!--\n\n";
@@ -886,7 +886,7 @@ function html_draw_top()
 
                 if (bh_session_get_value('USE_MOVER_SPOILER') == "Y") {
 
-                    if ($modified_time = @filemtime("js/spoiler.js")) {
+                    if (($modified_time = @filemtime("js/spoiler.js"))) {
 
                         echo sprintf("<script language=\"Javascript\" type=\"text/javascript\" src=\"js/spoiler.js?%s\"></script>\n", date('YmdHis', $modified_time));
                         if (!in_array("spoilerInitialise", $onload_array)) $onload_array[] = "spoilerInitialise()";
@@ -903,7 +903,7 @@ function html_draw_top()
 
             if ((bh_session_get_value('SHOW_STATS') == 'Y') || user_is_guest()) {
 
-                if ($modified_time = @filemtime("js/stats.js")) {
+                if (($modified_time = @filemtime("js/stats.js"))) {
 
                     echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
                     echo "<!--\n\n";
@@ -996,7 +996,7 @@ function html_draw_top()
 
     reset($arg_array);
 
-    foreach($arg_array as $func_args) {
+    foreach ($arg_array as $func_args) {
 
         if ($func_args == "htmltools.js" && @file_exists("$forum_path/tiny_mce/tiny_mce.js")) {
 
@@ -1008,14 +1008,14 @@ function html_draw_top()
 
             }else {
 
-                if ($modified_time = @filemtime("js/{$func_args}")) {
+                if (($modified_time = @filemtime("js/{$func_args}"))) {
                     echo sprintf("<script language=\"Javascript\" type=\"text/javascript\" src=\"$forum_path/js/{$func_args}?%s\"></script>\n", date('YmdHis', $modified_time));
                 }
             }
 
         }else if (@is_dir("$forum_path/js/") && @file_exists("$forum_path/js/$func_args")) {
 
-            if ($modified_time = @filemtime("js/{$func_args}")) {
+            if (($modified_time = @filemtime("js/{$func_args}"))) {
                 echo sprintf("<script language=\"Javascript\" type=\"text/javascript\" src=\"$forum_path/js/{$func_args}?%s\"></script>\n", date('YmdHis', $modified_time));
             }
         }
@@ -1160,7 +1160,7 @@ function bh_remove_all_cookies()
     bh_setcookie("bh_light_remember_password", "", time() - YEAR_IN_SECONDS);
     bh_setcookie("bh_light_remember_passhash", "", time() - YEAR_IN_SECONDS);
 
-    if ($webtag_array = forum_get_all_webtags()) {
+    if (($webtag_array = forum_get_all_webtags())) {
 
         foreach ($webtag_array as $fid => $forum_webtag) {
 

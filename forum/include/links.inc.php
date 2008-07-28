@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.inc.php,v 1.84 2008-07-27 18:26:15 decoyduck Exp $ */
+/* $Id: links.inc.php,v 1.85 2008-07-28 21:05:53 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -91,7 +91,7 @@ function links_get_in_folder($fid, $invisible = false, $sort_by = "TITLE", $sort
 
     if (db_num_rows($result) > 0) {
 
-        while ($links_data = db_fetch_array($result)) {
+        while (($links_data = db_fetch_array($result))) {
 
             if (isset($links_data['LOGON']) && isset($links_data['PEER_NICKNAME'])) {
                 if (!is_null($links_data['PEER_NICKNAME']) && strlen($links_data['PEER_NICKNAME']) > 0) {
@@ -148,7 +148,7 @@ function links_folders_get($invisible = false)
 
         if (db_num_rows($result) > 0) {
 
-            while ($links_data = db_fetch_array($result)) {
+            while (($links_data = db_fetch_array($result))) {
 
                 $folders[$links_data['FID']] =  $links_data;
             }
@@ -263,7 +263,7 @@ function links_display_folder_path($fid, $folders, $links = true, $link_last_too
 
     if (is_array($tree_array) && sizeof($tree_array) > 0) {
 
-        while ($val = array_pop($tree_array)) {
+        while (($val = array_pop($tree_array))) {
 
             if (($val != $fid && $links) || $link_last_too) {
                 $html.= "&nbsp;&raquo;&nbsp;<a href=\"$link_base&amp;fid=$val\">". word_filter_add_ob_tags(_htmlentities($folders[$val]['NAME'])). "</a>";
@@ -416,7 +416,7 @@ function links_get_all($invisible = false, $sort_by = "TITLE", $sort_dir = "ASC"
 
     if (db_num_rows($result) > 0) {
 
-        while ($links_data = db_fetch_array($result)) {
+        while (($links_data = db_fetch_array($result))) {
 
             if (isset($links_data['LOGON']) && isset($links_data['PEER_NICKNAME'])) {
                 if (!is_null($links_data['PEER_NICKNAME']) && strlen($links_data['PEER_NICKNAME']) > 0) {
@@ -595,7 +595,7 @@ function links_get_comments($lid)
 
     if (db_num_rows($result) > 0) {
 
-        while ($link_comment_data = db_fetch_array($result)) {
+        while (($link_comment_data = db_fetch_array($result))) {
 
             if (isset($link_comment_data['LOGON']) && isset($link_comment_data['PEER_NICKNAME'])) {
                 if (!is_null($link_comment_data['PEER_NICKNAME']) && strlen($link_comment_data['PEER_NICKNAME']) > 0) {

@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: htmltools.js,v 1.30 2008-05-09 06:53:30 decoyduck Exp $ */
+/* $Id: htmltools.js,v 1.31 2008-07-28 21:05:58 decoyduck Exp $ */
 
 var selected_text = '';
 var active_field  = '';
@@ -704,7 +704,7 @@ function change_attribute(tag, a, v)
     tempstr = split_tag[0];
     var found = false;
 
-    for(i = 1; i < split_tag.length; i++) {
+    for (i = 1; i < split_tag.length; i++) {
 
         split_tag[i] = split_tag[i].split("=");
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.142 2008-07-27 18:26:17 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.143 2008-07-28 21:05:55 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -239,7 +239,7 @@ function thread_get_tracking_data($tid)
 
     if (db_num_rows($result) > 0) {
 
-        while ($tracking_data = db_fetch_array($result)) {
+        while (($tracking_data = db_fetch_array($result))) {
             $tracking_data_array[] = $tracking_data;
         }
     }
@@ -252,7 +252,7 @@ function thread_get_tracking_data($tid)
 
     if (db_num_rows($result) > 0) {
 
-        while ($tracking_data = db_fetch_array($result)) {
+        while (($tracking_data = db_fetch_array($result))) {
             $tracking_data_array[] = $tracking_data;
         }
     }
@@ -484,12 +484,12 @@ function thread_change_folder($tid, $new_fid)
 
     $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}THREAD SET FID = '$new_fid' WHERE TID = '$tid'";
 
-    if (!$result = db_query($sql, $db_thread_set_closed)) return false;
+    if (!db_query($sql, $db_thread_set_closed)) return false;
 
     return true;
 }
 
-function thread_change_title($fid, $tid, $new_title)
+function thread_change_title($tid, $new_title)
 {
     if (!$db_thread_change_title = db_connect()) return false;
 
@@ -501,7 +501,7 @@ function thread_change_title($fid, $tid, $new_title)
 
     $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}THREAD SET TITLE = '$new_title' WHERE TID = '$tid'";
 
-    if (!$result = db_query($sql, $db_thread_change_title)) return false;
+    if (!db_query($sql, $db_thread_change_title)) return false;
 
     return true;
 }
@@ -514,20 +514,13 @@ function thread_delete_by_user($tid, $uid)
 
     if (!is_numeric($tid)) return false;
     if (!is_numeric($uid)) return false;
+    
+    $sql = "INSERT INTO {$table_data['PREFIX']}POST_CONTENT (TID, PID, CONTENT) ";
+    $sql.= "SELECT TID, PID, NULL FROM {$table_data['PREFIX']}POST POST ";
+    $sql.= "WHERE POST.FROM_UID = '$uid' AND POST.TID = '$tid'";
+    $sql.= "ON DUPLICATE KEY UPDATE CONTENT = VALUES(CONTENT)";
 
-    $sql = "SELECT TID, PID FROM {$table_data['PREFIX']}POST ";
-    $sql.= "WHERE FROM_UID = '$uid' AND TID = '$tid'";
-
-    if (!$result = db_query($sql, $db_thread_delete_by_user)) return false;
-
-    while ($thread_data = db_fetch_array($result)) {
-
-        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}POST_CONTENT ";
-        $sql.= "SET CONTENT = NULL WHERE TID = '{$thread_data['TID']}' ";
-        $sql.= "AND PID = '{$thread_data['PID']}'";
-
-        if (!$result = db_query($sql, $db_thread_delete_by_user)) return false;
-    }
+    if (!db_query($sql, $db_thread_delete_by_user)) return false;
 
     return true;
 }
@@ -680,7 +673,7 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
                 }
             }
 
-            if ($new_thread = thread_get($post_data_array[1]['TID'])) {
+            if (($new_thread = thread_get($post_data_array[1]['TID']))) {
 
                 $required_thread_keys_array = array('FID', 'BY_UID', 'TITLE');
 
@@ -727,7 +720,7 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
                         $sql.= "'{$post_data['APPROVED_BY']}', '{$post_data['EDITED']}', ";
                         $sql.= "'{$post_data['EDITED_BY']}', '{$post_data['IPADDRESS']}')";
 
-                        if ($result_insert = db_query($sql, $db_thread_merge)) {
+                        if (($result_insert = db_query($sql, $db_thread_merge))) {
 
                             $new_pid = db_insert_id($db_thread_merge);
 
@@ -872,7 +865,7 @@ function thread_merge_get_by_created($dest_tid, $source_tid)
 
         $new_post_pid = 0;
 
-        while ($post_data = db_fetch_array($result, DB_RESULT_ASSOC)) {
+        while (($post_data = db_fetch_array($result, DB_RESULT_ASSOC))) {
 
             $new_post_pid++;
 
@@ -915,7 +908,7 @@ function thread_merge_get($tida, $tidb)
 
     $post_data_array = array();
 
-    if ($threaddata = thread_get($tida)) {
+    if (($threaddata = thread_get($tida))) {
 
         $sql = "SELECT POST.TID, POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, ";
         $sql.= "POST.TO_UID, POST.CREATED, POST.APPROVED, POST.APPROVED_BY, ";
@@ -935,7 +928,7 @@ function thread_merge_get($tida, $tidb)
 
             $new_post_pid = 0;
 
-            while ($post_data = db_fetch_array($result, DB_RESULT_ASSOC)) {
+            while (($post_data = db_fetch_array($result, DB_RESULT_ASSOC))) {
 
                 $new_post_pid++;
 
@@ -987,7 +980,7 @@ function thread_split($tid, $spid, $split_type, &$error_str)
 
     $forum_fid = $table_data['FID'];
 
-    if ($thread_data = thread_get($tid)) {
+    if (($thread_data = thread_get($tid))) {
 
         $required_thread_keys_array = array('FID', 'BY_UID', 'TITLE');
 
@@ -1063,7 +1056,7 @@ function thread_split($tid, $spid, $split_type, &$error_str)
                     $sql.= "'{$post_data['APPROVED_BY']}', '{$post_data['EDITED']}', ";
                     $sql.= "'{$post_data['EDITED_BY']}', '{$post_data['IPADDRESS']}')";
 
-                    if ($result_insert = db_query($sql, $db_thread_split)) {
+                    if (($result_insert = db_query($sql, $db_thread_split))) {
 
                         $new_pid = db_insert_id($db_thread_split);
 
@@ -1184,7 +1177,7 @@ function thread_split_get_replies($tid, $pid)
 
     if (!$result = db_query($sql, $db_thread_split_get)) return false;
 
-    if ($post_data = db_fetch_array($result, DB_RESULT_ASSOC)) {
+    if (($post_data = db_fetch_array($result, DB_RESULT_ASSOC))) {
 
         $new_post_pid = 1;
 
@@ -1229,7 +1222,7 @@ function thread_split_get_following($tid, $spid)
 
         $new_post_pid = 0;
 
-        while ($post_data = db_fetch_array($result, DB_RESULT_ASSOC)) {
+        while (($post_data = db_fetch_array($result, DB_RESULT_ASSOC))) {
 
             $new_post_pid++;
 
@@ -1282,7 +1275,7 @@ function thread_split_recursive($tid, $spid, &$post_data_array, &$dest_pid_array
 
     if (db_num_rows($result) > 0) {
 
-        while ($post_data = db_fetch_array($result, DB_RESULT_ASSOC)) {
+        while (($post_data = db_fetch_array($result, DB_RESULT_ASSOC))) {
 
             $new_post_pid++;
 
@@ -1325,7 +1318,7 @@ function thread_get_unmoved_posts($tid)
 
         $thread_unmoved_posts_array = array();
 
-        while ($thread_data = db_fetch_array($result)) {
+        while (($thread_data = db_fetch_array($result))) {
 
             $thread_unmoved_posts_array[$thread_data['PID']] = $thread_data['PID'];
         }
@@ -1388,7 +1381,7 @@ function thread_search($thread_search, $offset = 0)
 
     if (db_num_rows($result) > 0) {
 
-        while ($thread_data = db_fetch_array($result)) {
+        while (($thread_data = db_fetch_array($result))) {
 
             if (!isset($results_array[$thread_data['TID']])) {
 

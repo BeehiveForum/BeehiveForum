@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.159 2008-07-27 18:26:11 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.160 2008-07-28 21:05:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -137,7 +137,7 @@ if (is_array($folder_info) && sizeof($folder_info) > 0) {
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
 
-    if ($thread_array = threads_get_most_recent()) {
+    if (($thread_array = threads_get_most_recent())) {
 
         foreach ($thread_array as $thread) {
 
@@ -319,7 +319,7 @@ echo "                    <table class=\"posthead\" width=\"95%\">\n";
 
 // Get recent visitors
 
-if ($recent_visitors_array = visitor_log_get_recent()) {
+if (($recent_visitors_array = visitor_log_get_recent())) {
 
     echo "                      <tr>\n";
     echo "                        <td align=\"center\">\n";
@@ -337,7 +337,7 @@ if ($recent_visitors_array = visitor_log_get_recent()) {
 
             $attachment = get_attachment_by_hash($recent_visitor['AVATAR_AID']);
 
-            if ($profile_picture_href = attachment_make_link($attachment, false, false, false, false)) {
+            if (($profile_picture_href = attachment_make_link($attachment, false, false, false, false))) {
 
                 echo "                   <td valign=\"top\"  class=\"postbody\" align=\"left\" width=\"20\"><img src=\"$profile_picture_href\" alt=\"", word_filter_add_ob_tags(_htmlentities(format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']))), "\" title=\"", word_filter_add_ob_tags(_htmlentities(format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']))), "\" border=\"0\" width=\"15\" height=\"15\" /></td>\n";
 
@@ -408,7 +408,7 @@ echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <br />\n";
 
-if ($user_birthdays_array = user_get_forthcoming_birthdays()) {
+if (($user_birthdays_array = user_get_forthcoming_birthdays())) {
 
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"98%\">\n";
     echo "    <tr>\n";

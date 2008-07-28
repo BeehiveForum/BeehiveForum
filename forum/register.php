@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.182 2008-07-27 18:26:11 decoyduck Exp $ */
+/* $Id: register.php,v 1.183 2008-07-28 21:05:49 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -146,7 +146,7 @@ $error_msg_array = array();
 
 if (isset($_GET['reload_captcha'])) {
 
-    if ($text_captcha->generate_keys() && $text_captcha->make_image()) {
+    if (($text_captcha->generate_keys() && $text_captcha->make_image())) {
 
         // Outputting XML
 
@@ -478,7 +478,7 @@ if (isset($_POST['register'])) {
 
     if ($valid) {
 
-        if ($new_uid = user_create($logon, $password, $nickname, $email)) {
+        if (($new_uid = user_create($logon, $password, $nickname, $email))) {
 
             // Save the new user preferences and signature
 
@@ -771,7 +771,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
 
-    if ($available_styles = styles_get_available()) {
+    if (($available_styles = styles_get_available())) {
 
         echo "                      <tr>\n";
         echo "                        <td align=\"left\" class=\"posthead\">{$lang['style']}:</td>\n";
@@ -803,7 +803,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
 
     if (forum_get_setting('text_captcha_enabled', 'Y')) {
 
-        if ($text_captcha->generate_keys() && $text_captcha->make_image()) {
+        if (($text_captcha->generate_keys() && $text_captcha->make_image())) {
 
             echo "  <br />\n";
             echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";

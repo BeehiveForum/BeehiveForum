@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_links.php,v 1.59 2008-07-27 18:26:09 decoyduck Exp $ */
+/* $Id: admin_forum_links.php,v 1.60 2008-07-28 21:05:47 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -136,7 +136,7 @@ if (isset($_POST['delete'])) {
 
     if (isset($_POST['t_delete']) && is_array($_POST['t_delete'])) {
 
-        foreach($_POST['t_delete'] as $lid => $delete_link) {
+        foreach ($_POST['t_delete'] as $lid => $delete_link) {
 
             if ($valid && $delete_link == "Y" && $forum_link = forum_links_get_link($lid)) {
 
@@ -220,7 +220,7 @@ if (isset($_POST['delete'])) {
 
     if ($valid) {
 
-        if ($t_new_lid = forum_links_add_link($t_title, $t_uri)) {
+        if (($t_new_lid = forum_links_add_link($t_title, $t_uri))) {
 
             admin_add_log_entry(ADD_FORUM_LINKS, array($t_new_lid, $t_title));
             header_redirect("admin_forum_links.php?webtag=$webtag&page=$page&added=true");
@@ -530,7 +530,7 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
 
         $link_index = $start;
 
-        foreach($forum_links_array['forum_links_array'] as $key => $forum_link) {
+        foreach ($forum_links_array['forum_links_array'] as $key => $forum_link) {
 
             $link_index++;
 

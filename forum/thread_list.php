@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.339 2008-07-27 18:26:11 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.340 2008-07-28 21:05:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -411,7 +411,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     list($tid, $pid) = explode('.', $_GET['msg']);
 
-    if ($thread = thread_get($tid)) {
+    if (($thread = thread_get($tid))) {
 
         if (!isset($thread['RELATIONSHIP'])) $thread['RELATIONSHIP'] = 0;
 
@@ -438,7 +438,7 @@ if (bh_session_get_value('UID') > 0) {
 
         list($tid, $pid) = explode('.', $_GET['msg']);
 
-        if ($thread = thread_get($tid)) {
+        if (($thread = thread_get($tid))) {
             $selected_folder = $thread['FID'];
         }
 
@@ -497,7 +497,7 @@ if (!$thread_info) {
     echo "<br />\n";
 }
 
-if ($start_from != 0 && $mode == ALL_DISCUSSIONS && !isset($folder)) {
+if (($start_from != 0 && $mode == ALL_DISCUSSIONS && !isset($folder))) {
 
     echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
     echo "  <tr>\n";
@@ -595,7 +595,7 @@ foreach ($folder_order as $folder_number) {
                     echo "                <td align=\"left\" class=\"threads_left_right_bottom\" colspan=\"2\">\n";
 
 
-                    foreach($thread_info as $thread) {
+                    foreach ($thread_info as $thread) {
 
                         if (!isset($visible_threads_array) || !is_array($visible_threads_array)) $visible_threads_array = array();
                         if (!in_array($thread['TID'], $visible_threads_array)) $visible_threads_array[] = $thread['TID'];

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: banned.inc.php,v 1.38 2008-07-27 18:26:15 decoyduck Exp $ */
+/* $Id: banned.inc.php,v 1.39 2008-07-28 21:05:53 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -68,7 +68,7 @@ function ban_check($user_sess, $user_is_guest = false)
     $ban_check_select_array = array();
     $ban_check_where_array  = array();
 
-    if ($ipaddress = get_ip_address()) {
+    if (($ipaddress = get_ip_address())) {
 
         $ipaddress = db_escape_string($ipaddress);
 
@@ -123,13 +123,13 @@ function ban_check($user_sess, $user_is_guest = false)
 
         if (db_num_rows($result) > 0) {
 
-            while ($ban_check_result_array = db_fetch_array($result)) {
+            while (($ban_check_result_array = db_fetch_array($result))) {
 
                 if (isset($ban_check_result_array['BANTYPE']) && is_numeric($ban_check_result_array['BANTYPE'])) {
 
                     $ban_check_type = $ban_check_result_array['BANTYPE'];
 
-                    if ($ban_check_data = ban_check_process_data($ban_check_result_array)) {
+                    if (($ban_check_data = ban_check_process_data($ban_check_result_array))) {
 
                         if ($user_is_guest === false) {
                             array_push($ban_check_data, $user_sess['UID'], $user_sess['LOGON']);
@@ -425,7 +425,7 @@ function check_affected_sessions($ban_type, $ban_data)
 
     if (db_num_rows($result) > 0) {
 
-        while ($user_session = db_fetch_array($result)) {
+        while (($user_session = db_fetch_array($result))) {
 
             if (isset($user_session['LOGON']) && isset($user_session['PEER_NICKNAME'])) {
                 if (!is_null($user_session['PEER_NICKNAME']) && strlen($user_session['PEER_NICKNAME']) > 0) {

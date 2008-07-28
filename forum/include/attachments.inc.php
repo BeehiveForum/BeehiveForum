@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.152 2008-07-27 18:26:12 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.153 2008-07-28 21:05:53 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -92,7 +92,7 @@ function attachments_get_upload_tmp_dir()
 
 function attachments_check_dir()
 {
-    if ($attachment_dir = forum_get_setting('attachment_dir')) {
+    if (($attachment_dir = forum_get_setting('attachment_dir'))) {
 
         // Check that the temporary upload directory is writable
 
@@ -167,7 +167,7 @@ function get_attachments($uid, $aid, &$user_attachments, &$user_image_attachment
 
     if (!$result = db_query($sql, $db_get_attachments)) return false;
 
-    while($attachment = db_fetch_array($result)) {
+    while (($attachment = db_fetch_array($result))) {
 
         if (@file_exists("$attachment_dir/{$attachment['HASH']}")) {
 
@@ -237,7 +237,7 @@ function get_all_attachments($uid, $aid, &$user_attachments, &$user_image_attach
 
     if (!$result = db_query($sql, $db_get_all_attachments)) return false;
 
-    while($attachment = db_fetch_array($result)) {
+    while (($attachment = db_fetch_array($result))) {
 
         if (@file_exists("$attachment_dir/{$attachment['HASH']}")) {
 
@@ -322,7 +322,7 @@ function get_users_attachments($uid, &$user_attachments, &$user_image_attachment
 
     if (!$result = db_query($sql, $db_get_users_attachments)) return false;
 
-    while($attachment = db_fetch_array($result)) {
+    while (($attachment = db_fetch_array($result))) {
 
         if (@file_exists("$attachment_dir/{$attachment['HASH']}")) {
 
@@ -407,7 +407,7 @@ function delete_attachment_by_aid($aid)
     if (!$db_delete_attachment_by_aid = db_connect()) return false;
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
-    if(!$table_data = get_table_prefix()) return false;
+    if (!$table_data = get_table_prefix()) return false;
 
     $forum_settings = forum_get_settings();
 
@@ -421,7 +421,7 @@ function delete_attachment_by_aid($aid)
 
     if (!$result = db_query($sql, $db_delete_attachment_by_aid)) return false;
 
-    while ($attachment_data = db_fetch_array($result)) {
+    while (($attachment_data = db_fetch_array($result))) {
 
         delete_attachment($attachment_data['HASH']);
     }
@@ -591,7 +591,7 @@ function get_free_attachment_space($uid)
 
         if (!$result = db_query($sql, $db_get_free_attachment_space)) return false;
 
-        while($attachment_data = db_fetch_array($result)) {
+        while (($attachment_data = db_fetch_array($result))) {
 
             if (@file_exists("$attachment_dir/{$attachment_data['HASH']}")) {
 
@@ -965,7 +965,7 @@ function attachment_make_link($attachment, $show_thumbs = true, $limit_filename 
 
         if (file_exists("$attachment_dir/{$attachment['hash']}.thumb") && $show_thumbs) {
 
-            if (@$image_info = getimagesize("$attachment_dir/{$attachment['hash']}")) {
+            if ((@$image_info = getimagesize("$attachment_dir/{$attachment['hash']}"))) {
 
                 $title_array[] = "{$lang['dimensions']}: {$image_info[0]}x{$image_info[1]}px";
 
@@ -1031,7 +1031,7 @@ function attachment_thumb_transparency($im)
     $transparent = imagecolorallocatealpha($im, 255, 255, 255, 0);
 
     for ($x = 0; $x < $im_width; $x++) {
-        for($y = 0;$y < $im_height; $y++) {
+        for ($y = 0;$y < $im_height; $y++) {
             imagesetpixel($im, $x, $y, $transparent);
         }
     }
@@ -1079,7 +1079,7 @@ function attachment_create_thumb($filepath, $max_width = 150, $max_height = 150)
 
     if (file_exists($filepath) && @$image_info = getimagesize($filepath)) {
 
-        if ($attachment_gd_info = get_gd_info()) {
+        if (($attachment_gd_info = get_gd_info())) {
 
             // Check 1: Does GD support reading and writing our image type?
 
@@ -1099,7 +1099,7 @@ function attachment_create_thumb($filepath, $max_width = 150, $max_height = 150)
 
             // Got this far, lets try reading the image.
 
-            if (@$src = $required_read_functions[$image_info[2]]($filepath)) {
+            if ((@$src = $required_read_functions[$image_info[2]]($filepath))) {
 
                 $target_width  = $image_info[0];
                 $target_height = $image_info[1];

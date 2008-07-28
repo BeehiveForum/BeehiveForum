@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.123 2008-07-27 18:26:11 decoyduck Exp $ */
+/* $Id: pm_edit.php,v 1.124 2008-07-28 21:05:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -277,7 +277,7 @@ if ($valid && isset($_POST['preview'])) {
 
     $edit_html = ($_POST['t_post_html'] == "Y");
 
-    if ($pm_message_array = pm_message_get($mid)) {
+    if (($pm_message_array = pm_message_get($mid))) {
 
         $pm_message_array['CONTENT'] = $t_content;
 
@@ -294,7 +294,7 @@ if ($valid && isset($_POST['preview'])) {
 
 }else if ($valid && isset($_POST['apply'])) {
 
-    if ($pm_message_array = pm_message_get($mid)) {
+    if (($pm_message_array = pm_message_get($mid))) {
 
         pm_save_attachment_id($mid, $aid);
 
@@ -357,7 +357,7 @@ if ($valid && isset($_POST['preview'])) {
 
 }else {
 
-    if ($pm_message_array = pm_message_get($mid)) {
+    if (($pm_message_array = pm_message_get($mid))) {
 
         if ($pm_message_array['TYPE'] != PM_OUTBOX) {
 
@@ -532,7 +532,7 @@ echo "                        <td align=\"left\">\n";
 
 if ($allow_html == true) {
 
-    if ($tools->getTinyMCE()) {
+    if (($tools->getTinyMCE())) {
 
         echo form_input_hidden("t_post_html", "enabled");
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.182 2008-07-27 18:26:15 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.183 2008-07-28 21:05:55 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -85,7 +85,7 @@ function post_create($fid, $tid, $reply_pid, $by_uid, $fuid, $tuid, $content, $h
         $sql.= "VALUES ($tid, $reply_pid, $fuid, $tuid, NOW(), NOW(), $fuid, '$ipaddress')";
     }
 
-    if ($result = db_query($sql, $db_post_create)) {
+    if (($result = db_query($sql, $db_post_create))) {
 
         $new_pid = db_insert_id($db_post_create);
 
@@ -95,7 +95,7 @@ function post_create($fid, $tid, $reply_pid, $by_uid, $fuid, $tuid, $content, $h
         $sql = "INSERT INTO {$table_data['PREFIX']}POST_CONTENT (TID, PID, CONTENT) ";
         $sql.= "VALUES ('$tid', '$new_pid', '$post_content')";
 
-        if ($result = db_query($sql, $db_post_create)) {
+        if (($result = db_query($sql, $db_post_create))) {
 
             // Update the thread length so it matches the number of posts
 
@@ -109,7 +109,7 @@ function post_create($fid, $tid, $reply_pid, $by_uid, $fuid, $tuid, $content, $h
 
             // Update the user's post count.
 
-            if ($post_count = user_get_post_count($fuid)) {
+            if (($post_count = user_get_post_count($fuid))) {
 
                 $post_count++;
                 user_update_post_count($fuid, $post_count);
@@ -247,7 +247,7 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
 
         if (db_num_rows($result) > 0) {
 
-            if ($top_user = db_fetch_array($result)) {
+            if (($top_user = db_fetch_array($result))) {
 
                 if (isset($top_user['PEER_NICKNAME'])) {
                     if (!is_null($top_user['PEER_NICKNAME']) && strlen($top_user['PEER_NICKNAME']) > 0) {
@@ -276,7 +276,7 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
 
     if (!$result = db_query($sql, $db_post_draw_to_dropdown)) return false;
 
-    while ($user_data = db_fetch_array($result)) {
+    while (($user_data = db_fetch_array($result))) {
 
         if (isset($user_data['LOGON'])) {
 
@@ -320,7 +320,7 @@ function post_draw_to_dropdown_recent($default_uid, $show_all = true)
 
         if (db_num_rows($result) > 0) {
 
-            if ($top_user = db_fetch_array($result)) {
+            if (($top_user = db_fetch_array($result))) {
 
                 if (isset($top_user['PEER_NICKNAME'])) {
                     if (!is_null($top_user['PEER_NICKNAME']) && strlen($top_user['PEER_NICKNAME']) > 0) {
@@ -349,7 +349,7 @@ function post_draw_to_dropdown_recent($default_uid, $show_all = true)
 
     if (!$result = db_query($sql, $db_post_draw_to_dropdown)) return false;
 
-    while ($user_data = db_fetch_array($result)) {
+    while (($user_data = db_fetch_array($result))) {
 
         if (isset($user_data['LOGON'])) {
 
@@ -393,7 +393,7 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $
 
         if (db_num_rows($result) > 0) {
 
-            if ($top_user = db_fetch_array($result)) {
+            if (($top_user = db_fetch_array($result))) {
 
                 if (isset($top_user['PEER_NICKNAME'])) {
                     if (!is_null($top_user['PEER_NICKNAME']) && strlen($top_user['PEER_NICKNAME']) > 0) {
@@ -430,7 +430,7 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $
 
     if (!$result = db_query($sql, $db_post_draw_to_dropdown)) return false;
 
-    while ($user_data = db_fetch_array($result)) {
+    while (($user_data = db_fetch_array($result))) {
 
         if (isset($user_data['LOGON'])) {
 
@@ -465,7 +465,7 @@ function get_user_posts($uid)
 
         $user_post_array = array();
 
-        while ($post_data = db_fetch_array($result)) {
+        while (($post_data = db_fetch_array($result))) {
 
             $user_post_array[] = $post_data;
         }
@@ -609,29 +609,35 @@ class MessageText {
         }
     }
 
-    function getHTML () {
+    function getHTML ()
+    {
         return $this->html;
     }
 
-    function setEmoticons ($bool) {
+    function setEmoticons ($bool)
+    {
         $this->emoticons = ($bool == true) ? true : false;
         $this->setContent($this->getOriginalContent());
     }
 
-    function getEmoticons () {
+    function getEmoticons ()
+    {
         return $this->emoticons;
     }
 
-    function getLinks () {
+    function getLinks ()
+    {
         return $this->links;
     }
 
-    function setLinks ($bool) {
+    function setLinks ($bool)
+    {
         $this->links = ($bool == true) ? true : false;
         $this->setContent($this->getOriginalContent());
     }
 
-    function setContent ($text) {
+    function setContent ($text)
+    {
 
         $this->original_text = $text;
 
@@ -655,11 +661,13 @@ class MessageText {
         $this->text = $text;
     }
 
-    function getContent () {
+    function getContent ()
+    {
         return $this->text;
     }
 
-    function getTidyContent () {
+    function getTidyContent ()
+    {
         if ($this->html == POST_HTML_DISABLED) {
             return strip_tags($this->text);
         } else if ($this->html > POST_HTML_DISABLED) {
@@ -668,11 +676,13 @@ class MessageText {
         }
     }
 
-    function getOriginalContent () {
+    function getOriginalContent ()
+    {
         return $this->original_text;
     }
 
-    function isDiff () {
+    function isDiff ()
+    {
         return $this->diff;
     }
 }
@@ -685,7 +695,8 @@ class MessageTextParse {
     var $sig = "";
     var $original = "";
 
-    function MessageTextParse ($message, $emots_default = true, $links_enabled = true) {
+    function MessageTextParse ($message, $emots_default = true, $links_enabled = true)
+    {
 
         $this->original = $message;
 
@@ -748,27 +759,33 @@ class MessageTextParse {
         $this->links = $links;
     }
 
-    function getMessage () {
+    function getMessage ()
+    {
         return $this->message;
     }
 
-    function getSig () {
+    function getSig ()
+    {
         return $this->sig;
     }
 
-    function getMessageHTML () {
+    function getMessageHTML ()
+    {
         return $this->html;
     }
 
-    function getEmoticons () {
+    function getEmoticons ()
+    {
         return $this->emoticons;
     }
 
-    function getLinks () {
+    function getLinks ()
+    {
         return $this->links;
     }
 
-    function getOriginal () {
+    function getOriginal ()
+    {
         return $this->original;
     }
 }

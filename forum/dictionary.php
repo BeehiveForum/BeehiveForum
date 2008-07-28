@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.php,v 1.49 2008-07-27 18:26:09 decoyduck Exp $ */
+/* $Id: dictionary.php,v 1.50 2008-07-28 21:05:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -299,7 +299,7 @@ html_draw_top('dictionary.js', 'onload=showCurrentWord()', 'pm_popup_disabled');
 
 echo "<h1>{$lang['dictionary']}</h1>\n";
 
-if ($dictionary->is_check_complete()) {
+if (($dictionary->is_check_complete())) {
     html_display_success_msg($lang['spellcheckcomplete'], '400', 'left');
 }
 
@@ -400,11 +400,11 @@ echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" width=\"270\">\n";
 
-if ($suggestions_array = $dictionary->get_suggestions_array()) {
+if (($suggestions_array = $dictionary->get_suggestions_array())) {
 
     echo "                    ", form_dropdown_array("suggestion", $suggestions_array, $dictionary->get_best_suggestion(), "size=\"10\" onchange=\"changeWord(this)\"", "dictionary_best_selection"), "\n";
 
-}elseif ($dictionary->is_check_complete()) {
+}elseif (($dictionary->is_check_complete())) {
 
     echo "                    ", form_input_text("change_to", _htmlentities($dictionary->get_best_suggestion()), 32, false, "disabled=\"disabled\"", "dictionary_best_selection"), "\n";
 
@@ -428,7 +428,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 
-if ($dictionary->is_check_complete()) {
+if (($dictionary->is_check_complete())) {
 
     echo "    <tr>\n";
     echo "      <td align=\"center\">", form_submit('restart', $lang['restartspellcheck']), "&nbsp;", form_submit("close", $lang['close']), "&nbsp;", form_submit("cancel", $lang['cancelchanges']), "</td>\n";

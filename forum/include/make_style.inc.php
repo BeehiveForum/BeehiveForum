@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: make_style.inc.php,v 1.24 2008-07-27 18:26:15 decoyduck Exp $ */
+/* $Id: make_style.inc.php,v 1.25 2008-07-28 21:05:54 decoyduck Exp $ */
 
 /**
 * make_style.inc.php - attachment upload handling
@@ -201,7 +201,8 @@ function rand_sort($a, $b)
 // background colour and uses the data to chooses between white
 // or black for the font colour of the supplied.
 
-function contrastFont($hex) {
+function contrastFont($hex)
+{
 
     list ($r, $g, $b) = hexToDec($hex);
     $rgb = array((double)$r / 255, (double)$g / 255, (double)$b / 255);

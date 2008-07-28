@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display.php,v 1.98 2008-07-27 18:26:09 decoyduck Exp $ */
+/* $Id: display.php,v 1.99 2008-07-28 21:05:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -153,7 +153,7 @@ if (isset($thread_data['STICKY']) && isset($thread_data['STICKY_UNTIL'])) {
     if ($thread_data['STICKY'] == "Y" && $thread_data['STICKY_UNTIL'] != 0 && time() > $thread_data['STICKY_UNTIL']) {
 
         thread_set_sticky($tid, false);
-        $thread_data['STICKY'] == "N";
+        $thread_data['STICKY'] = "N";
     }
 }
 
@@ -166,7 +166,7 @@ echo "    <td align=\"left\">", messages_top($tid, $pid, $folder_title, $thread_
 
 if ($thread_data['POLL_FLAG'] == 'Y' && $message['PID'] != 1) {
 
-    if ($userpollvote = poll_get_user_vote($tid)) {
+    if (($userpollvote = poll_get_user_vote($tid))) {
 
         if ($userpollvote ^ POLL_VOTE_MULTI) {
 

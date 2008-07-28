@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_detail.php,v 1.105 2008-07-27 18:26:10 decoyduck Exp $ */
+/* $Id: links_detail.php,v 1.106 2008-07-28 21:05:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -422,7 +422,7 @@ if (!user_is_guest()) {
     echo "<br />\n";
 }
 
-if ($comments_array = links_get_comments($lid)) {
+if (($comments_array = links_get_comments($lid))) {
 
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
@@ -432,7 +432,7 @@ if ($comments_array = links_get_comments($lid)) {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
 
-    foreach($comments_array as $comment_id => $comment) {
+    foreach ($comments_array as $comment_id => $comment) {
 
         $profile_link = "<a href=\"user_profile.php?webtag=$webtag&amp;uid={$comment['UID']}\" target=\"_blank\" onclick=\"return openProfile({$comment['UID']}, '$webtag')\">";
         $profile_link.= word_filter_add_ob_tags(_htmlentities(format_user_name($comment['LOGON'], $comment['NICKNAME']))). "</a>";

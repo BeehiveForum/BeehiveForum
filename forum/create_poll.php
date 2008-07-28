@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.226 2008-07-27 18:26:09 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.227 2008-07-28 21:05:48 decoyduck Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -368,7 +368,7 @@ if (isset($_POST['cancel'])) {
 
         if ($allow_html == true && isset($t_post_html) && $t_post_html == 'Y') {
 
-            foreach($t_answers_array as $key => $t_poll_answer) {
+            foreach ($t_answers_array as $key => $t_poll_answer) {
 
                 $t_poll_check_html = new MessageText(POST_HTML_ENABLED, $t_poll_answer);
                 $t_answers_array[$key] = $t_poll_check_html->getContent();
@@ -394,7 +394,7 @@ if (isset($_POST['cancel'])) {
             $valid = false;
         }
 
-        foreach($t_answers_array as $t_poll_answer) {
+        foreach ($t_answers_array as $t_poll_answer) {
 
             if (attachment_embed_check($t_poll_answer) && $t_post_html == 'Y') {
 
@@ -570,7 +570,7 @@ if (isset($_POST['cancel'])) {
 
         $t_answers_array = array();
 
-        foreach($_POST['answers'] as $t_answer) {
+        foreach ($_POST['answers'] as $t_answer) {
 
             if (strlen(trim(_stripslashes($t_answer))) > 0) {
 
@@ -1223,7 +1223,7 @@ if ($post->isDiff() && $fix_html) {
 
 if ($allow_html == true) {
 
-    if ($tools->getTinyMCE()) {
+    if (($tools->getTinyMCE())) {
 
         echo form_input_hidden("t_post_html", "enabled");
 

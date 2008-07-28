@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_check_dependencies.php,v 1.23 2008-07-27 18:26:08 decoyduck Exp $ */
+/* $Id: bh_check_dependencies.php,v 1.24 2008-07-28 21:05:47 decoyduck Exp $ */
 
 // Callback function to escape array of strings.
 
@@ -52,9 +52,9 @@ $source_files_dir_array = array('forum', 'forum\include');
 
 echo "Getting list of functions...\n";
 
-foreach($source_files_dir_array as $include_file_dir) {
+foreach ($source_files_dir_array as $include_file_dir) {
 
-    if ($dir = opendir($include_file_dir)) {
+    if (($dir = opendir($include_file_dir))) {
 
         while (($file = readdir($dir)) !== false) {
 
@@ -134,7 +134,7 @@ foreach($source_files_dir_array as $include_file_dir) {
 
 echo "Processing files...\n\n";
 
-foreach($source_files_array as $source_file) {
+foreach ($source_files_array as $source_file) {
 
     $include_files_required_array = array();
 
@@ -142,7 +142,7 @@ foreach($source_files_array as $source_file) {
 
     echo "$source_file(1): \n", str_repeat("-", strlen($source_file) + 4), "\n";
 
-    foreach($include_files_functions_array as $include_file => $function_names_array) {
+    foreach ($include_files_functions_array as $include_file => $function_names_array) {
 
         if ($include_file !== basename($source_file)) {
 
@@ -168,7 +168,7 @@ foreach($source_files_array as $source_file) {
         }
     }
 
-    foreach($include_files_constants_array as $include_file => $constant_names_array) {
+    foreach ($include_files_constants_array as $include_file => $constant_names_array) {
 
         if ($include_file !== basename($source_file)) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_relations.php,v 1.85 2008-07-27 18:26:09 decoyduck Exp $ */
+/* $Id: edit_relations.php,v 1.86 2008-07-28 21:05:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -166,7 +166,7 @@ if (isset($_POST['delete'])) {
 
     if (isset($_POST['delete_relationships']) && is_array($_POST['delete_relationships'])) {
 
-        foreach($_POST['delete_relationships'] as $peer_uid => $delete_relationship) {
+        foreach ($_POST['delete_relationships'] as $peer_uid => $delete_relationship) {
 
             if (($delete_relationship == "Y")) {
 

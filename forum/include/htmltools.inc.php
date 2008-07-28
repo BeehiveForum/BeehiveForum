@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: htmltools.inc.php,v 1.70 2008-07-27 18:26:15 decoyduck Exp $ */
+/* $Id: htmltools.inc.php,v 1.71 2008-07-28 21:05:53 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -42,7 +42,8 @@ include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "post.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 
-function TinyMCE() {
+function TinyMCE()
+{
 
     $lang = load_language_file();
     $webtag = get_webtag();
@@ -55,7 +56,7 @@ function TinyMCE() {
     $str.= "    mode : \"specific_textareas\",\n";
     $str.= "    width: \"100%\",\n";
 
-    if ($pref_language = bh_session_get_value("LANGUAGE")) {
+    if (($pref_language = bh_session_get_value("LANGUAGE"))) {
         if (@file_exists("tiny_mce/langs/{$pref_language}.js")) {
                 $str.= "    language : \"{$pref_language}\",\n";
         }
@@ -95,7 +96,8 @@ function TinyMCE() {
 
     $str.= "    function clearFocus(){return;};\n\n";
 
-    $str.= "    function autoCheckSpell() {\n";
+    $str.= "    function autoCheckSpell()\n";
+    $str.= "    {\n";
     $str.= "        var form_obj;\n\n";
     $str.= "        if (document.getElementsByName) {\n";
     $str.= "            form_obj = document.getElementsByName('t_check_spelling')[0];\n";
@@ -114,7 +116,8 @@ function TinyMCE() {
     $str.= "        }\n";
     $str.= "    }\n\n";
 
-    $str.= "    function add_text(text) {\n";
+    $str.= "    function add_text(text)\n";
+    $str.= "    {\n";
     $str.= "        tinyMCE.execCommand('mceFocus', false, 'mce_editor_0');\n";
     $str.= "        tinyMCE.execCommand('mceInsertContent', false, text);\n";
     $str.= "    }\n";
@@ -155,7 +158,8 @@ class TextAreaHTML {
     var $tinymce = false;           // marker if the TinyMCE editor is being used
     var $allowed_toolbars = 1;      // number of allowed TinyMCE toolbars, default 1
 
-    function TextAreaHTML ($form) {
+    function TextAreaHTML ($form)
+    {
         $this->form = $form;
         if (@file_exists("tiny_mce/tiny_mce.js")) {
             $page_prefs = bh_session_get_post_page_prefs();
@@ -169,7 +173,8 @@ class TextAreaHTML {
     // Returns true if the TinyMCE editor is being used
     // ----------------------------------------------------
 
-    function getTinyMCE () {
+    function getTinyMCE ()
+    {
         return $this->tinymce;
     }
 
@@ -177,7 +182,8 @@ class TextAreaHTML {
     // Enables/disables the TinyMCE toolbar
     // ----------------------------------------------------
 
-    function setTinyMCE ($bool) {
+    function setTinyMCE ($bool)
+    {
         $this->tinymce = ($bool == true) ? true : false;
     }
 
@@ -185,7 +191,8 @@ class TextAreaHTML {
     // Sets the number of allowed HTML toolbars per page
     // ----------------------------------------------------
 
-    function setAllowedToolbars ($num) {
+    function setAllowedToolbars ($num)
+    {
         if (is_numeric($num)) {
             $this->allowed_toolbars = $num > 0 ? $num : 0;
         }
@@ -194,16 +201,16 @@ class TextAreaHTML {
     // ----------------------------------------------------
     // Returns the HTML for the toolbar
     // ----------------------------------------------------
-    function toolbar ($emoticons = true, $custom_html = "") {
+    function toolbar ($emoticons = true, $custom_html = "")
+    {
 
-        if ($this->tinymce || $this->tbs >= $this->allowed_toolbars) return;
+        if ($this->tinymce || $this->tbs >= $this->allowed_toolbars) return "";
 
         $lang = load_language_file();
 
-        $forum_settings = forum_get_settings();
         $webtag = get_webtag();
 
-        $this->tbs++;
+        $this->tbs = $this->tbs + 1;
 
         $str = "<div id=\"bh_tb{$this->tbs}\" class=\"tools\" style=\"background-image: url('images/html_toolbar.png');\">\n";
 
@@ -279,13 +286,14 @@ class TextAreaHTML {
     // Returns the HTML for the reduced functionality toolbar used in Quick Reply
     // --------------------------------------------------------------------------
 
-    function toolbar_reduced ($emoticons = true) {
+    function toolbar_reduced ($emoticons = true)
+    {
 
         $lang = load_language_file();
 
         $webtag = get_webtag();
 
-        $this->tbs++;
+        $this->tbs = $this->tbs + 1;
 
         $str = "<div id=\"bh_tb{$this->tbs}\" class=\"tools\" style=\"background-image: url('images/html_toolbar_reduced.png');\">\n";
         $str.= $this->bh_tb_img($lang['bold'], "add_tag('b');");
@@ -309,7 +317,8 @@ class TextAreaHTML {
     // Takes the same arguments as form_textarea in form.inc.php
     // ----------------------------------------------------
 
-    function textarea ($name, $value = false, $rows = false, $cols = false, $wrap = "virtual", $custom_html = "", $class = "bhinputtext") {
+    function textarea ($name, $value = false, $rows = false, $cols = false, $wrap = "virtual", $custom_html = "", $class = "bhinputtext")
+    {
 
         $this->tas[] = $name;
 
@@ -319,7 +328,7 @@ class TextAreaHTML {
 
             if ($this->tbs < $this->allowed_toolbars) {
 
-                $this->tbs++;
+                $this->tbs = $this->tbs + 1;
 
                 if ($rows < 7) {
                     $rows = 7;
@@ -350,9 +359,9 @@ class TextAreaHTML {
     // CALL THIS FUNCTION TOWARDS THE BEGINNING OF THE PAGE
     // ----------------------------------------------------
 
-    function preload () {
-
-        if ($this->tinymce) return;
+    function preload ()
+    {
+        if ($this->tinymce) return "";
 
         $str = "<script language=\"javascript\" type=\"text/javascript\">\n";
         $str.= "  <!--\n";
@@ -375,13 +384,15 @@ class TextAreaHTML {
     // YOUR TEXTAREAS/TOOLBARS
     // ----------------------------------------------------
 
-    function js ($focus = true) {
+    function js ($focus = true)
+    {
 
         $str = "<script language=\"javascript\" type=\"text/javascript\">\n";
         $str.= "  <!--\n";
 
         if ($this->tinymce) {
-            $str.= "    function mceOnInit() {\n";
+            $str.= "    function mceOnInit()\n";
+            $str.= "    {\n";
             if ($focus) {
                 $str.= "        tinyMCE.execCommand('mceFocus',false,'mce_editor_0');\n";
             }
@@ -390,14 +401,16 @@ class TextAreaHTML {
 
         } else {
 
-            $str.= "    function clearFocus() {\n";
+            $str.= "    function clearFocus()\n";
+            $str.= "    {\n";
 
             for ($i=0; $i<count($this->tas); $i++) {
                 $str.= "        document.{$this->form}.{$this->tas[$i]}.caretPos = \"\";\n";
             }
 
             $str.= "    }\n";
-            $str.= "    function activate_tools() {\n";
+            $str.= "    function activate_tools()\n";
+            $str.= "    {\n";
             $str.= "      for (var i=1; i<={$this->tbs}; i++) {\n";
             $str.= "          show_hide('bh_tb' + i, 'block');\n";
             $str.= "      }\n";
@@ -426,7 +439,8 @@ class TextAreaHTML {
     //        $text = 'original' code submitted to fixhtml
     // ----------------------------------------------------
 
-    function compare_original ($ta, $text) {
+    function compare_original ($ta, $text)
+    {
 
         $lang = load_language_file();
 
@@ -439,7 +453,8 @@ class TextAreaHTML {
 
         $str.= "<script language=\"Javascript\" type=\"text/javascript\">\n";
         $str.= "  <!--\n";
-        $str.= "    function co_{$ta}_show (type) {\n";
+        $str.= "    function co_{$ta}_show (type)\n";
+        $str.= "    {\n";
         $str.= "      if (type == \"correct\" && document.{$this->form}.co_{$ta}_current.value != \"correct\") {\n";
         if ($this->tinymce) {
             $str.= "        var temp = tinyMCE.getContent();\n";
@@ -479,18 +494,19 @@ class TextAreaHTML {
     //        $b - optional comparison checkbox/radio button
     // ----------------------------------------------------
 
-    function assign_checkbox($a, $b = "") {
-
-        if ($this->tinymce) return;
+    function assign_checkbox($a, $b = "")
+    {
+        if ($this->tinymce) return "";
 
         $str = "<script language=\"Javascript\" type=\"text/javascript\">\n";
         $str.= "  <!--\n";
-        $str.= "    function tools_feedback () {\n";
+        $str.= "    function tools_feedback ()\n";
+        $str.= "    {\n";
 
         if (strlen($b) > 0) {
-            $str.= "      if(document.{$this->form}.{$b}.checked == true) {\n";
+            $str.= "      if (document.{$this->form}.{$b}.checked == true) {\n";
         }else {
-            $str.= "      if(document.{$this->form}.{$a}.checked != true) {\n";
+            $str.= "      if (document.{$this->form}.{$a}.checked != true) {\n";
         }
 
         $str.= "        document.{$this->form}.{$a}.checked = true;\n";
@@ -509,7 +525,8 @@ class TextAreaHTML {
     // Internal function - returns HTML for toolbar image
     // ----------------------------------------------------
 
-    function bh_tb_img ($title, $on_click, $image_name = "blank.png") {
+    function bh_tb_img ($title, $on_click, $image_name = "blank.png")
+    {
         return "<img src=\"". style_image($image_name). "\" alt=\"{$title}\" onclick=\"{$on_click}\" title=\"{$title}\" class=\"tools_up\" onmouseover=\"m_ov(this);\" onmouseout=\"m_ou(this);\" onmousedown=\"m_d(this);\" onmouseup=\"m_u(this);\" />";
     }
 

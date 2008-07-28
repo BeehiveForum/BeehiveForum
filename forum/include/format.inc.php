@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.164 2008-07-27 18:26:15 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.165 2008-07-28 21:05:53 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -154,7 +154,7 @@ function format_time($time, $verbose = false)
 
     $month_str = $lang['month_short'][$month];
 
-    if ($year != gmdate("Y", $local_time_now)) {
+    if (($year != gmdate("Y", $local_time_now))) {
 
         if ($verbose) {
             $fmt = sprintf($lang['daymonthyear'], $day, $month_str, $year); // j M Y
@@ -166,7 +166,7 @@ function format_time($time, $verbose = false)
 
         if ($verbose) {
 
-            if ($year != gmdate("Y", $local_time_now)) {
+            if (($year != gmdate("Y", $local_time_now))) {
                 $fmt = sprintf($lang['daymonthyearhourminute'], $day, $month_str, $year, $hour, $min); // j M Y H:i
             }else {
                 $fmt = sprintf($lang['daymonthhourminute'], $day, $month_str, $hour, $min); // j M H:i
@@ -236,7 +236,7 @@ function format_date($time)
 
     $month_str = $lang['month_short'][$month];
 
-    if ($year != gmdate("Y", $local_time_now)) {
+    if (($year != gmdate("Y", $local_time_now))) {
 
         $fmt = sprintf($lang['daymonthyear'], $day, $month_str, $year); // j M Y
 
@@ -783,7 +783,7 @@ function format_birthday($date) // $date is a MySQL-type DATE field (YYYY-MM-DD)
 
 function split_url($url, $inc_path = false, $inc_query = false, $inc_fragment = false)
 {
-    if ($url_parts = @parse_url($url)) {
+    if (($url_parts = @parse_url($url))) {
 
         if (!isset($url_parts['scheme'])) return false;
         if (!isset($url_parts['host'])) return false;
@@ -814,7 +814,7 @@ function split_url($url, $inc_path = false, $inc_query = false, $inc_fragment = 
 
 function flatten_array($array, &$result_keys, &$result_values, $key_str = "")
 {
-    foreach($array as $key => $value) {
+    foreach ($array as $key => $value) {
 
         if (is_array($value)) {
 
@@ -874,7 +874,7 @@ function rand_array($start_index, $num, $range_min, $range_max)
 {
     $array_rand = array_fill($start_index, $num, 1);
 
-    foreach($array_rand as $key => $value) {
+    foreach ($array_rand as $key => $value) {
         $array_rand[$key] = mt_rand($range_min, $range_max);
     }
 

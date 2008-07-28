@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_prefs.php,v 1.98 2008-07-27 18:26:09 decoyduck Exp $ */
+/* $Id: edit_prefs.php,v 1.99 2008-07-28 21:05:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -388,15 +388,15 @@ if (isset($_POST['save'])) {
                 $error_msg_array[] = $lang['profilepictureconflict'];
                 $valid = false;
 
-            }elseif ($attachment_dir = attachments_check_dir()) {
+            }elseif (($attachment_dir = attachments_check_dir())) {
 
-                if ($attachment_details = get_attachment_by_hash($user_prefs['PIC_AID'])) {
+                if (($attachment_details = get_attachment_by_hash($user_prefs['PIC_AID']))) {
 
                     $path_parts = pathinfo($attachment_details['filename']);
 
                     if (isset($path_parts['extension']) && in_array($path_parts['extension'], $allowed_image_types_array)) {
 
-                        if ($image_info = getimagesize("$attachment_dir/{$user_prefs['PIC_AID']}")) {
+                        if (($image_info = getimagesize("$attachment_dir/{$user_prefs['PIC_AID']}"))) {
 
                             if (($image_info[0] > 95) || ($image_info[1] > 95)) {
 
@@ -467,15 +467,15 @@ if (isset($_POST['save'])) {
                 $error_msg_array[] = $lang['avatarpictureconflict'];
                 $valid = false;
 
-            }elseif ($attachment_dir = attachments_check_dir()) {
+            }elseif (($attachment_dir = attachments_check_dir())) {
 
-                if ($attachment_details = get_attachment_by_hash($user_prefs['AVATAR_AID'])) {
+                if (($attachment_details = get_attachment_by_hash($user_prefs['AVATAR_AID']))) {
 
                     $path_parts = pathinfo($attachment_details['filename']);
 
                     if (isset($path_parts['extension']) && in_array($path_parts['extension'], $allowed_image_types_array)) {
 
-                        if ($image_info = getimagesize("$attachment_dir/{$user_prefs['AVATAR_AID']}")) {
+                        if (($image_info = getimagesize("$attachment_dir/{$user_prefs['AVATAR_AID']}"))) {
 
                             if (($image_info[0] > 95) || ($image_info[1] > 95)) {
 

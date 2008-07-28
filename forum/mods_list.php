@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: mods_list.php,v 1.34 2008-07-27 18:26:11 decoyduck Exp $ */
+/* $Id: mods_list.php,v 1.35 2008-07-28 21:05:49 decoyduck Exp $ */
 
 /**
 * Displays list of moderators for a folder
@@ -159,7 +159,7 @@ echo "                        <td align=\"left\">\n";
 echo "                          <h2>{$lang['forumleaders']}</h2>\n";
 echo "                          <ul>\n";
 
-if ($forum_mods_array = mods_list_get_mods(0)) {
+if (($forum_mods_array = mods_list_get_mods(0))) {
 
     foreach ($forum_mods_array as $forum_mod) {
 
@@ -176,7 +176,7 @@ echo "                          </ul>\n";
 echo "                          <h2>{$lang['foldermods']}</h2>";
 echo "                          <ul>\n";
 
-if ($folder_mods_array = mods_list_get_mods($fid)) {
+if (($folder_mods_array = mods_list_get_mods($fid))) {
 
     foreach ($folder_mods_array as $folder_mod) {
 

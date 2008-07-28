@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: server.inc.php,v 1.30 2008-07-27 18:26:17 decoyduck Exp $ */
+/* $Id: server.inc.php,v 1.31 2008-07-28 21:05:55 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -82,7 +82,7 @@ function server_get_cpu_load()
             $wmi = new COM('WinMgmts:\\\\.');
             $cpu_array = $wmi->InstancesOf('Win32_Processor');
 
-            while ($cpu = $cpu_array->Next()) {
+            while (($cpu = $cpu_array->Next())) {
 
                 $cpu_load += $cpu->LoadPercentage;
                 $cpu_count++;
@@ -140,7 +140,7 @@ function system_get_temp_dir()
 
         return '/tmp/';
 
-    }elseif ($temp_file = tempnam(md5(uniqid(mt_rand())), '')) {
+    }elseif (($temp_file = tempnam(md5(uniqid(mt_rand())), ''))) {
 
         unlink($temp_file);
         return realpath(dirname($temp_file));
@@ -322,9 +322,9 @@ function rmdir_recursive($path)
 {
     $path = rtrim($path, '/');
 
-    if (@$dir = opendir($path)) {
+    if ((@$dir = opendir($path))) {
 
-        while(($file = readdir($dir)) !== false) {
+        while (($file = readdir($dir)) !== false) {
 
             if (is_file("$path/$file") && !is_link("$path/$file")) {
 
@@ -363,21 +363,21 @@ function prepare_path_for_url($pathname)
 
 foreach ($_GET as $get_key => $get_value) {
 
-    if (ereg('^([a-zA-Z]|_){1}([a-zA-Z0-9]|_)*$', $get_key)) {
+    if (ereg('^([a-zA-Z]|_) {1}([a-zA-Z0-9]|_)*$', $get_key)) {
         eval("unset(\${$get_key});");
     }
 }
 
 foreach ($_POST as $post_key => $post_value) {
 
-    if (ereg('^([a-zA-Z]|_){1}([a-zA-Z0-9]|_)*$', $post_key)) {
+    if (ereg('^([a-zA-Z]|_) {1}([a-zA-Z0-9]|_)*$', $post_key)) {
         eval("unset(\${$post_key});");
     }
 }
 
 foreach ($_REQUEST as $request_key => $request_value) {
 
-    if (ereg('^([a-zA-Z]|_){1}([a-zA-Z0-9]|_)*$', $request_key)) {
+    if (ereg('^([a-zA-Z]|_) {1}([a-zA-Z0-9]|_)*$', $request_key)) {
         eval("unset(\${$request_key});");
     }
 }

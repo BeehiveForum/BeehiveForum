@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: emoticons.inc.php,v 1.77 2008-07-27 18:26:15 decoyduck Exp $ */
+/* $Id: emoticons.inc.php,v 1.78 2008-07-28 21:05:53 decoyduck Exp $ */
 
 /**
 * emoticons.inc.php - emoticon functions
@@ -86,11 +86,11 @@ function emoticons_initialise()
 
         if ($user_emots == 'none') {
 
-            if ($dir = @opendir('emoticons')) {
+            if (($dir = @opendir('emoticons'))) {
 
                 while (($file = @readdir($dir)) !== false) {
 
-                    if ($file != '.' && $file != '..' && is_dir("emoticons/$file")) {
+                    if (($file != '.' && $file != '..' && is_dir("emoticons/$file"))) {
 
                         if (file_exists("emoticons/$file/definitions.php")) {
 
@@ -100,11 +100,11 @@ function emoticons_initialise()
                 }
             }
 
-            if ($dir = @opendir("forums/$webtag/emoticons")) {
+            if (($dir = @opendir("forums/$webtag/emoticons"))) {
 
                 while (($file = @readdir($dir)) !== false) {
 
-                    if ($file != '.' && $file != '..' && @is_dir("emoticons/$file")) {
+                    if (($file != '.' && $file != '..' && @is_dir("emoticons/$file"))) {
 
                         if (file_exists("forums/$webtag/emoticons/$file/definitions.php")) {
 
@@ -247,9 +247,9 @@ function emoticons_apply($content)
 
     $pattern_match = implode("|", $pattern_array);
 
-    if ($content_array = preg_split("/($pattern_match)/", $content, 100, PREG_SPLIT_DELIM_CAPTURE)) {
+    if (($content_array = preg_split("/($pattern_match)/", $content, 100, PREG_SPLIT_DELIM_CAPTURE))) {
 
-        foreach($content_array as $key => $value) {
+        foreach ($content_array as $key => $value) {
 
             if (($replace_string = array_search($value, $replace_array)) !== false) {
 
@@ -281,11 +281,11 @@ function emoticons_get_available($include_text_none = true)
     $emoticon_sets_normal = array();
     $emoticon_sets_txtnon = array();
 
-    if (@$dir = opendir('emoticons')) {
+    if ((@$dir = opendir('emoticons'))) {
 
         while ((@$file = readdir($dir)) !== false) {
 
-            if ($file != '.' && $file != '..' && @is_dir("emoticons/$file")) {
+            if (($file != '.' && $file != '..' && @is_dir("emoticons/$file"))) {
 
                  if (preg_match("/^none$|^text$/i", $file) > 0) {
 
@@ -411,7 +411,7 @@ function emoticons_preview($emoticon_set, $width = 190, $height = 100, $num = 35
             }
         }
 
-        if ($style_contents = @file_get_contents("emoticons/$emoticon_set/style.css")) {
+        if (($style_contents = @file_get_contents("emoticons/$emoticon_set/style.css"))) {
 
             preg_match_all("/\.e_([\w_]+) \{[^\}]*background-image\s*:\s*url\s*\([\"\']\.?\/?([^\"\']*)[\"\']\)[^\}]*\}/i", $style_contents, $style_matches);
 

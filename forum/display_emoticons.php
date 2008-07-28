@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display_emoticons.php,v 1.60 2008-07-27 18:26:09 decoyduck Exp $ */
+/* $Id: display_emoticons.php,v 1.61 2008-07-28 21:05:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -146,7 +146,7 @@ $emoticon_sets_array = emoticons_get_available(false);
 
 $emoticon_sets_array_keys = array_keys($emoticon_sets_array);
 
-if ($user_emoticon_pack != "user" && !in_array($user_emoticon_pack, $emoticon_sets_array_keys)) {
+if (($user_emoticon_pack != "user" && !in_array($user_emoticon_pack, $emoticon_sets_array_keys))) {
     $user_emoticon_pack = forum_get_setting('default_emoticons', false, 'default');
 }
 
@@ -209,7 +209,7 @@ if (isset($emoticon) && count($emoticon) > 0) {
 echo "                      <td align=\"left\">\n";
 echo "                        <table class=\"posthead\" width=\"300\">\n";
 
-if ($style_content = @file_get_contents("emoticons/$emoticon_path/style.css")) {
+if (($style_content = @file_get_contents("emoticons/$emoticon_path/style.css"))) {
 
     preg_match_all("/\.e_([\w_]+) \{.*\n[^\}]*background-image\s*:\s*url\s*\([\"\']([^\"\']*)[\"\']\)[^\}]*\}/i", $style_content, $style_matches);
 
@@ -230,7 +230,7 @@ if ($style_content = @file_get_contents("emoticons/$emoticon_path/style.css")) {
         }
     }
 
-    foreach($emots_array as $emot) {
+    foreach ($emots_array as $emot) {
 
         echo "                          <tr onclick=\"insertEmoticon(' ", html_js_safe_str($emot['matches'][0]), " ');\">\n";
         echo "                            <td align=\"left\" width=\"100\"><img src=\"emoticons/$emoticon_path/{$emot['img']}\" alt=\"{$emot['text']}\" title=\"{$emot['text']}\" /></td>\n";

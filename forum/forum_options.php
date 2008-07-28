@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.137 2008-07-27 18:26:09 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.138 2008-07-28 21:05:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -667,7 +667,7 @@ echo "                  <td align=\"left\">", form_dropdown_array("font_size", a
 echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("font_size_global", "Y", '', (isset($user_prefs['FONT_SIZE_GLOBAL']) ? $user_prefs['FONT_SIZE_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("font_size_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 
-if ($available_styles = styles_get_available()) {
+if (($available_styles = styles_get_available())) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" nowrap=\"nowrap\">{$lang['forumstyle']}:</td>\n";

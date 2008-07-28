@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.120 2008-07-27 18:26:15 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.121 2008-07-28 21:05:53 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -181,7 +181,7 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
 
         // Debug backtrace data.
 
-        if ($debug_backtrace_array = debug_backtrace()) {
+        if (($debug_backtrace_array = debug_backtrace())) {
 
             $debug_backtrace_array = array_reverse($debug_backtrace_array);
 
@@ -230,7 +230,7 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
 
         // Get PHP Version
 
-        if ($php_version = phpversion()) {
+        if (($php_version = phpversion())) {
             $version_strings[] = "on PHP/$php_version";
         }
 
@@ -242,7 +242,7 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
 
         // Get PHP interface (CGI, APACHE, IIS, etc)
 
-        if ($php_sapi = php_sapi_name()) {
+        if (($php_sapi = php_sapi_name())) {
             $version_strings[] = strtoupper($php_sapi);
         }
 

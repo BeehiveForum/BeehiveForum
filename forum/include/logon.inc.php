@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.83 2008-07-27 18:26:15 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.84 2008-07-28 21:05:53 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -270,7 +270,7 @@ function logon_perform()
         // Try and login the user. If we're successful we need to
         // update their cookies.
 
-        if ($luid = user_logon($logon, $passhash)) {
+        if (($luid = user_logon($logon, $passhash))) {
 
             // Remove any previously set cookies
 
@@ -389,7 +389,7 @@ function logon_draw_form($logon_options)
         echo form_dropdown_array("logonarray", $username_dropdown_array, "", "onchange=\"changePassword('$webtag')\" autocomplete=\"off\"", "bhinputlogon");
         echo form_input_hidden("user_logon", _htmlentities($username_array[$current_logon]));
 
-        foreach($username_array as $key => $logon) {
+        foreach ($username_array as $key => $logon) {
 
             if (isset($password_array[$key]) && strlen($password_array[$key]) > 0) {
 

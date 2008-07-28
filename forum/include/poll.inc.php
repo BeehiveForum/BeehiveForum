@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.234 2008-07-27 18:26:15 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.235 2008-07-28 21:05:55 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -292,7 +292,7 @@ function poll_get_votes($tid)
 
     $poll_results = array();
 
-    while($poll_data = db_fetch_array($result)) {
+    while (($poll_data = db_fetch_array($result))) {
 
         $poll_option_id_array[]    = $poll_data['OPTION_ID'];
         $poll_option_name_array[]  = $poll_data['OPTION_NAME'];
@@ -400,7 +400,7 @@ function poll_get_user_votes($tid, $view_style, $offset, &$poll_user_count)
 
     $poll_get_user_votes = array();
 
-    while ($user_poll_votes_array = db_fetch_array($result)) {
+    while (($user_poll_votes_array = db_fetch_array($result))) {
 
         if ($user_poll_votes_array['UID'] == 0) {
 
@@ -452,7 +452,7 @@ function poll_get_user_vote($tid)
 
         $user_poll_votes_array = array();
 
-        while($poll_data = db_fetch_array($result)) {
+        while (($poll_data = db_fetch_array($result))) {
 
             $user_poll_votes_array[] = $poll_data;
         }
@@ -884,7 +884,7 @@ function poll_format_vote_counts($poll_data, $user_votes, $guest_votes)
         $guest_votes_display = sprintf($lang['xguestsvoted'], $guest_votes);
     }
 
-    if ($poll_data['CLOSES'] > 0 && $poll_data['CLOSES'] <= mktime()) {
+    if (($poll_data['CLOSES'] > 0 && $poll_data['CLOSES'] <= mktime())) {
         if ($user_votes > 0 || $guest_votes > 0) {
             $html.= sprintf("<b>{$lang['votedisplayclosedpoll']}</b>", $user_votes_display, $guest_votes_display);
         }else {
@@ -943,7 +943,7 @@ function poll_preview_form($poll_results, $poll_data)
 
     poll_results_check_data($poll_results);
 
-    foreach($poll_results['GROUP_ID'] as $group_key => $poll_results_group_id) {
+    foreach ($poll_results['GROUP_ID'] as $group_key => $poll_results_group_id) {
 
         if (!isset($poll_results['GROUP_SIZE'][$poll_results['GROUP_ID'][$group_key]]))         {
             $poll_results['GROUP_SIZE'][$poll_results['GROUP_ID'][$group_key]] = 1;
@@ -1039,7 +1039,7 @@ function poll_preview_graph_horz($poll_results)
 
     poll_results_check_data($poll_results);
 
-    foreach($poll_results['OPTION_ID'] as $option_key => $poll_results_option_id) {
+    foreach ($poll_results['OPTION_ID'] as $option_key => $poll_results_option_id) {
 
         if (!isset($max_values[$poll_results['GROUP_ID'][$option_key]])) {
             $max_values[$poll_results['GROUP_ID'][$option_key]] = $poll_results['VOTES'][$option_key];
@@ -1059,7 +1059,7 @@ function poll_preview_graph_horz($poll_results)
     $poll_display = "                              <div align=\"center\">\n";
     $poll_display.= "                              <table width=\"100%\">\n";
 
-    foreach($poll_results['OPTION_ID'] as $option_key => $poll_results_option_id) {
+    foreach ($poll_results['OPTION_ID'] as $option_key => $poll_results_option_id) {
 
         if (!isset($poll_previous_group)) $poll_previous_group = $poll_results['GROUP_ID'][$option_key];
 
@@ -1123,7 +1123,7 @@ function poll_preview_graph_vert($poll_results)
 
     poll_results_check_data($poll_results);
 
-    foreach($poll_results['OPTION_ID'] as $option_key => $poll_results_option_id) {
+    foreach ($poll_results['OPTION_ID'] as $option_key => $poll_results_option_id) {
 
         if (!isset($max_values[$poll_results['GROUP_ID'][$option_key]])) {
             $max_values[$poll_results['GROUP_ID'][$option_key]] = $poll_results['VOTES'][$option_key];
@@ -1146,7 +1146,7 @@ function poll_preview_graph_vert($poll_results)
     $poll_display.= "                              <table width=\"560\" cellpadding=\"0\" cellspacing=\"0\">\n";
     $poll_display.= "                                <tr>\n";
 
-    foreach($poll_results['OPTION_ID'] as $option_key => $poll_results_option_id) {
+    foreach ($poll_results['OPTION_ID'] as $option_key => $poll_results_option_id) {
 
         if (!isset($poll_previous_group)) $poll_previous_group = $poll_results['GROUP_ID'][$option_key];
 
@@ -1183,7 +1183,7 @@ function poll_preview_graph_vert($poll_results)
 
     unset($poll_previous_group);
 
-    foreach($poll_results['OPTION_ID'] as $option_key => $poll_results_option_id) {
+    foreach ($poll_results['OPTION_ID'] as $option_key => $poll_results_option_id) {
 
         if (!isset($poll_previous_group)) $poll_previous_group = $poll_results['GROUP_ID'][$option_key];
 
@@ -1228,7 +1228,7 @@ function poll_horizontal_graph($tid)
 
     poll_results_check_data($poll_results);
 
-    foreach($poll_results['OPTION_ID'] as $option_key => $poll_results_option_id) {
+    foreach ($poll_results['OPTION_ID'] as $option_key => $poll_results_option_id) {
 
         if (!isset($max_values[$poll_results['GROUP_ID'][$option_key]])) {
             $max_values[$poll_results['GROUP_ID'][$option_key]] = $poll_results['VOTES'][$option_key];
@@ -1250,7 +1250,7 @@ function poll_horizontal_graph($tid)
     $poll_display = "                              <div align=\"center\">\n";
     $poll_display.= "                              <table width=\"100%\">\n";
 
-    foreach($poll_results['OPTION_ID'] as $option_key => $poll_results_option_id) {
+    foreach ($poll_results['OPTION_ID'] as $option_key => $poll_results_option_id) {
 
         if (!isset($poll_previous_group)) $poll_previous_group = $poll_results['GROUP_ID'][$option_key];
 
@@ -1322,7 +1322,7 @@ function poll_preview_graph_table($poll_results)
 
     poll_results_check_data($poll_results);
 
-    foreach($poll_results['OPTION_ID'] as $option_key => $poll_results_option_id) {
+    foreach ($poll_results['OPTION_ID'] as $option_key => $poll_results_option_id) {
 
         if (!isset($max_values[$poll_results['GROUP_ID'][$option_key]])) {
             $max_values[$poll_results['GROUP_ID'][$option_key]] = $poll_results['VOTES'][$option_key];
@@ -1496,7 +1496,7 @@ function poll_vertical_graph($tid)
 
     poll_results_check_data($poll_results);
 
-    foreach($poll_results['OPTION_ID'] as $option_key => $poll_results_option_id) {
+    foreach ($poll_results['OPTION_ID'] as $option_key => $poll_results_option_id) {
 
         if (!isset($max_values[$poll_results['GROUP_ID'][$option_key]])) {
             $max_values[$poll_results['GROUP_ID'][$option_key]] = $poll_results['VOTES'][$option_key];
@@ -1519,7 +1519,7 @@ function poll_vertical_graph($tid)
     $poll_display.= "                              <table width=\"560\" cellpadding=\"0\" cellspacing=\"0\">\n";
     $poll_display.= "                                <tr>\n";
 
-    foreach($poll_results['OPTION_ID'] as $option_key => $poll_results_option_id) {
+    foreach ($poll_results['OPTION_ID'] as $option_key => $poll_results_option_id) {
 
         if (!isset($poll_previous_group)) $poll_previous_group = $poll_results['GROUP_ID'][$option_key];
 
@@ -1560,7 +1560,7 @@ function poll_vertical_graph($tid)
 
     unset($poll_previous_group);
 
-    foreach($poll_results['OPTION_ID'] as $option_key => $poll_results_option_id) {
+    foreach ($poll_results['OPTION_ID'] as $option_key => $poll_results_option_id) {
 
         if (!isset($poll_previous_group)) $poll_previous_group = $poll_results['GROUP_ID'][$option_key];
 
@@ -1607,7 +1607,7 @@ function poll_get_table_votes($tid)
     $vote_uid    = array();
     $vote_option = array();
 
-    while($row_votes = db_fetch_array($result_votes)) {
+    while (($row_votes = db_fetch_array($result_votes))) {
 
         $vote_uid[]    = $row_votes['UID'];
         $vote_option[] = $row_votes['OPTION_ID'];
@@ -1638,7 +1638,7 @@ function poll_table_graph($tid)
 
     poll_results_check_data($poll_results);
 
-    foreach($poll_results['OPTION_ID'] as $option_key => $poll_results_option_id) {
+    foreach ($poll_results['OPTION_ID'] as $option_key => $poll_results_option_id) {
 
         if (!isset($max_values[$poll_results['GROUP_ID'][$option_key]])) {
             $max_values[$poll_results['GROUP_ID'][$option_key]] = $poll_results['VOTES'][$option_key];
@@ -1835,7 +1835,7 @@ function poll_public_ballot($tid, $view_style, $offset, &$poll_user_count)
 
     poll_results_check_data($poll_results);
 
-    foreach($poll_results['OPTION_ID'] as $option_key => $poll_results_option_id) {
+    foreach ($poll_results['OPTION_ID'] as $option_key => $poll_results_option_id) {
 
         if (!isset($max_values[$poll_results['GROUP_ID'][$option_key]])) {
             $max_values[$poll_results['GROUP_ID'][$option_key]] = $poll_results['VOTES'][$option_key];
@@ -1860,7 +1860,7 @@ function poll_public_ballot($tid, $view_style, $offset, &$poll_user_count)
 
         $poll_display = "      <table class=\"box\" width=\"100%\">\n";
 
-        foreach($poll_results['OPTION_ID'] as $option_key => $poll_results_option_id) {
+        foreach ($poll_results['OPTION_ID'] as $option_key => $poll_results_option_id) {
 
             if (!isset($poll_previous_group)) $poll_previous_group = $poll_results['GROUP_ID'][$option_key];
 

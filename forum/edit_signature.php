@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_signature.php,v 1.110 2008-07-27 18:26:09 decoyduck Exp $ */
+/* $Id: edit_signature.php,v 1.111 2008-07-28 21:05:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -460,7 +460,7 @@ echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 
-if ($tools->getTinyMCE()) {
+if (($tools->getTinyMCE())) {
 
     echo form_input_hidden("sig_html", "Y");
 

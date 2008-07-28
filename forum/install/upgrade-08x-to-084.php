@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-08x-to-084.php,v 1.3 2008-07-27 18:26:19 decoyduck Exp $ */
+/* $Id: upgrade-08x-to-084.php,v 1.4 2008-07-28 21:05:57 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'upgrade-08x-to-083.php') {
 
@@ -58,9 +58,9 @@ if (db_num_rows($result) > 0) {
 
     $sql = "SELECT FID, WEBTAG FROM FORUMS";
 
-    if ($result = @db_query($sql, $db_install)) {
+    if (($result = @db_query($sql, $db_install))) {
 
-        while ($forum_data = @db_fetch_array($result)) {
+        while (($forum_data = @db_fetch_array($result))) {
 
             $forum_webtag_array[$forum_data['FID']] = $forum_data['WEBTAG'];
         }
@@ -76,7 +76,7 @@ if (db_num_rows($result) > 0) {
 // We got this far then everything is okay for all forums.
 // Start by creating and updating the per-forum tables.
 
-foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
+foreach ($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     // Removed unused entries from Admin Log.
 

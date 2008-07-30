@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.340 2008-07-28 21:05:49 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.341 2008-07-30 17:41:40 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -509,6 +509,14 @@ if (($start_from != 0 && $mode == ALL_DISCUSSIONS && !isset($folder))) {
     echo "</table>\n";
 }
 
+// Array to track visible threads for mark as read
+
+$visible_threads_array = array();
+
+// Variable to track first thread
+
+$first_thread = false;
+
 // Iterate through the information we've just got and display it in the right order
 
 foreach ($folder_order as $folder_number) {
@@ -597,7 +605,6 @@ foreach ($folder_order as $folder_number) {
 
                     foreach ($thread_info as $thread) {
 
-                        if (!isset($visible_threads_array) || !is_array($visible_threads_array)) $visible_threads_array = array();
                         if (!in_array($thread['TID'], $visible_threads_array)) $visible_threads_array[] = $thread['TID'];
 
                         if ($thread['FID'] == $folder_number) {
@@ -624,7 +631,7 @@ foreach ($folder_order as $folder_number) {
 
                                 $latest_post = 1;
 
-                                if (!isset($first_thread) && isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+                                if (!is_numeric($first_thread) && isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
                                     $first_thread = $thread['TID'];
                                     echo "<img src=\"", style_image('current_thread.png'), "\" name=\"t{$thread['TID']}\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
@@ -653,7 +660,7 @@ foreach ($folder_order as $folder_number) {
 
                                 $latest_post = $thread['LAST_READ'] + 1;
 
-                                if (!isset($first_thread) && isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+                                if (!is_numeric($first_thread) && isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
                                     $first_thread = $thread['TID'];
                                     echo "<img src=\"", style_image('current_thread.png'), "\" name=\"t{$thread['TID']}\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
@@ -678,7 +685,7 @@ foreach ($folder_order as $folder_number) {
 
                                 $latest_post = 1;
 
-                                if (!isset($first_thread) && isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+                                if (!is_numeric($first_thread) && isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
                                     $first_thread = $thread['TID'];
                                     echo "<img src=\"", style_image('current_thread.png'), "\" name=\"t{$thread['TID']}\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
@@ -876,7 +883,7 @@ if (!user_is_guest()) {
     $labels = array($lang['alldiscussions'], $lang['next50discussions']);
     $selected_option = THREAD_MARK_READ_ALL;
 
-    if (isset($visible_threads_array) && is_array($visible_threads_array)) {
+    if (sizeof($visible_threads_array) > 0) {
 
         $labels[] = $lang['visiblediscussions'];
         $selected_option = THREAD_MARK_READ_VISIBLE;
@@ -946,7 +953,7 @@ echo "</table>\n";
 echo "<script language=\"JavaScript\" type=\"text/javascript\">\n";
 echo "<!--\n";
 
-if (isset($first_thread)) {
+if (is_numeric($first_thread)) {
     echo "current_thread = $first_thread;\n";
 }else {
     echo "current_thread = 0;\n";

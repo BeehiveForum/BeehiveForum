@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.160 2008-07-28 21:05:53 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.161 2008-07-30 17:41:40 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -81,7 +81,7 @@ function admin_add_log_entry($action, $data = "")
     $sql = "INSERT INTO {$table_data['PREFIX']}ADMIN_LOG (CREATED, UID, ACTION, ENTRY) ";
     $sql.= "VALUES (NOW(), '$uid', '$action', '$data')";
 
-    if (!$result = db_query($sql, $db_admin_add_log_entry)) return false;
+    if (!db_query($sql, $db_admin_add_log_entry)) return false;
 
     return true;
 }
@@ -111,7 +111,7 @@ function admin_prune_log($remove_type, $remove_days)
     $sql.= "WHERE UNIX_TIMESTAMP(CREATED) < UNIX_TIMESTAMP(NOW()) - $remove_days_seconds ";
     $sql.= "AND (ACTION = '$remove_type' OR '$remove_type' = 0)";
 
-    if (!$result = db_query($sql, $db_admin_clearlog)) return false;
+    if (!db_query($sql, $db_admin_clearlog)) return false;
 
     return true;
 }
@@ -295,7 +295,7 @@ function admin_delete_word_filter($filter_id)
     $sql = "DELETE QUICK FROM {$table_data['PREFIX']}WORD_FILTER ";
     $sql.= "WHERE UID = 0 AND FID = '$filter_id'";
 
-    if (!$result = db_query($sql, $db_user_delete_word_filter)) return false;
+    if (!db_query($sql, $db_user_delete_word_filter)) return false;
 
     return true;
 }
@@ -317,7 +317,7 @@ function admin_clear_word_filter()
 
     $sql = "DELETE QUICK FROM {$table_data['PREFIX']}WORD_FILTER WHERE UID = 0";
 
-    if (!$result = db_query($sql, $db_admin_clear_word_filter)) return false;
+    if (!db_query($sql, $db_admin_clear_word_filter)) return false;
 
     return true;
 }
@@ -350,7 +350,7 @@ function admin_add_word_filter($filter_name, $match_text, $replace_text, $filter
     $sql.= "(UID, FILTER_NAME, MATCH_TEXT, REPLACE_TEXT, FILTER_TYPE, FILTER_ENABLED) ";
     $sql.= "VALUES (0, '$filter_name', '$match_text', '$replace_text', '$filter_option', '$filter_enabled')";
 
-    if (!$result = db_query($sql, $db_admin_add_word_filter)) return false;
+    if (!db_query($sql, $db_admin_add_word_filter)) return false;
 
     return true;
 }
@@ -386,7 +386,7 @@ function admin_update_word_filter($filter_id, $filter_name, $match_text, $replac
     $sql.= "FILTER_TYPE = '$filter_option', FILTER_ENABLED = '$filter_enabled' ";
     $sql.= "WHERE UID = 0 AND FID = '$filter_id'";
 
-    if (!$result = db_query($sql, $db_admin_add_word_filter)) return false;
+    if (!db_query($sql, $db_admin_add_word_filter)) return false;
 
     return true;
 }
@@ -648,7 +648,7 @@ function admin_session_end($uid)
     $sql = "DELETE QUICK FROM SESSIONS WHERE UID = '$uid' ";
     $sql.= "AND FID = '$forum_fid'";
 
-    if (!$result = db_query($sql, $db_admin_session_end)) return false;
+    if (!db_query($sql, $db_admin_session_end)) return false;
 
     return true;
 }
@@ -672,8 +672,6 @@ function admin_get_users_attachments($uid, &$user_attachments, &$user_image_atta
     if (!is_numeric($uid)) return false;
 
     if (!is_array($hash_array)) $hash_array = false;
-
-    $forum_settings = forum_get_settings();
 
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
 
@@ -1114,7 +1112,7 @@ function admin_prune_visitor_log($remove_days)
     $sql = "DELETE QUICK FROM VISITOR_LOG WHERE FORUM = '$forum_fid' ";
     $sql.= "AND UNIX_TIMESTAMP(LAST_LOGON) < UNIX_TIMESTAMP(NOW()) - $remove_days_seconds ";
 
-    if (!$result = db_query($sql, $db_admin_prune_visitor_log)) return false;
+    if (!db_query($sql, $db_admin_prune_visitor_log)) return false;
 
     return true;
 }
@@ -1443,7 +1441,7 @@ function admin_clear_user_history($uid)
 
     $sql = "DELETE QUICK FROM USER_HISTORY WHERE UID = '$uid'";
 
-    if (!$result = db_query($sql, $db_admin_clear_user_history)) return false;
+    if (!db_query($sql, $db_admin_clear_user_history)) return false;
 
     return (db_affected_rows($db_admin_clear_user_history) > 0);
 }
@@ -1456,7 +1454,7 @@ function admin_approve_user($uid)
 
     $sql = "UPDATE LOW_PRIORITY USER SET APPROVED = NOW() WHERE UID = '$uid'";
 
-    if (!$result = db_query($sql, $db_admin_approve_user)) return false;
+    if (!db_query($sql, $db_admin_approve_user)) return false;
 
     return (db_affected_rows($db_admin_approve_user) > 0);
 }
@@ -1497,80 +1495,80 @@ function admin_delete_user($uid, $delete_content = false)
 
                     $sql = "DELETE QUICK FROM {$forum_prefix}ADMIN_LOG WHERE UID = '$uid'";
 
-                    if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+                    if (!db_query($sql, $db_admin_delete_user)) return false;
 
                     // Delete Links created by the user
 
                     $sql = "DELETE QUICK FROM {$forum_prefix}LINKS WHERE UID = '$uid'";
 
-                    if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+                    if (!db_query($sql, $db_admin_delete_user)) return false;
 
                     // Delete Link Votes made by the user
 
                     $sql = "DELETE QUICK FROM {$forum_prefix}LINKS_VOTE WHERE UID = '$uid'";
 
-                    if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+                    if (!db_query($sql, $db_admin_delete_user)) return false;
 
                     // Delete Link Comments made by the user
 
                     $sql = "DELETE QUICK FROM {$forum_prefix}LINKS_COMMENT WHERE UID = '$uid'";
 
-                    if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+                    if (!db_query($sql, $db_admin_delete_user)) return false;
 
                     // Delete Poll Votes made by the user
 
                     $sql = "DELETE QUICK FROM {$forum_prefix}USER_POLL_VOTES WHERE UID = '$uid'";
 
-                    if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+                    if (!db_query($sql, $db_admin_delete_user)) return false;
 
                     // Delete Relationship data for the user and relationships
                     // with this user made by other users.
 
                     $sql = "DELETE QUICK FROM {$forum_prefix}USER_PEER WHERE UID = '$uid' OR PEER_UID = '$uid'";
 
-                    if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+                    if (!db_query($sql, $db_admin_delete_user)) return false;
 
                     // Delete folder preferences set by the user
 
                     $sql = "DELETE QUICK FROM {$forum_prefix}USER_FOLDER WHERE UID = '$uid'";
 
-                    if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+                    if (!db_query($sql, $db_admin_delete_user)) return false;
 
                     // Delete User's Preferences
 
                     $sql = "DELETE QUICK FROM {$forum_prefix}USER_PREFS WHERE UID = '$uid'";
 
-                    if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+                    if (!db_query($sql, $db_admin_delete_user)) return false;
 
                     // Delete User's Profile.
 
                     $sql = "DELETE QUICK FROM {$forum_prefix}USER_PROFILE WHERE UID = '$uid'";
 
-                    if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+                    if (!db_query($sql, $db_admin_delete_user)) return false;
 
                     // Delete User's Signature
 
                     $sql = "DELETE QUICK FROM {$forum_prefix}USER_SIG WHERE UID = '$uid'";
 
-                    if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+                    if (!db_query($sql, $db_admin_delete_user)) return false;
 
                     // Delete User's Thread Read Data
 
                     $sql = "DELETE QUICK FROM {$forum_prefix}USER_THREAD WHERE UID = '$uid'";
 
-                    if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+                    if (!db_query($sql, $db_admin_delete_user)) return false;
 
                     // Delete User's Tracking data (Post Count, etc.)
 
                     $sql = "DELETE QUICK FROM {$forum_prefix}USER_TRACK WHERE UID = '$uid'";
 
-                    if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+                    if (!db_query($sql, $db_admin_delete_user)) return false;
 
                     // Delete Word Filter Entries made by user
 
                     $sql = "DELETE QUICK FROM {$forum_prefix}WORD_FILTER WHERE UID = '$uid'";
 
-                    if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+                    if (!db_query($sql, $db_admin_delete_user)) return false;
 
                     // Delete content of posts made by this user
 
@@ -1579,19 +1577,19 @@ function admin_delete_user($uid, $delete_content = false)
                     $sql.= "AND {$forum_prefix}POST.PID = {$forum_prefix}POST_CONTENT.PID) ";
                     $sql.= "WHERE {$forum_prefix}POST.FROM_UID = '$uid'";
 
-                    if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+                    if (!db_query($sql, $db_admin_delete_user)) return false;
 
                     // Delete the posts made by this user.
 
                     $sql = "DELETE QUICK FROM {$forum_prefix}POST WHERE FROM_UID = '$uid'";
 
-                    if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+                    if (!db_query($sql, $db_admin_delete_user)) return false;
 
                     // Delete Threads started by this user.
 
                     $sql = "DELETE QUICK FROM {$forum_prefix}THREAD WHERE BY_UID = '$uid'";
 
-                    if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+                    if (!db_query($sql, $db_admin_delete_user)) return false;
                 }
             }
 
@@ -1599,13 +1597,13 @@ function admin_delete_user($uid, $delete_content = false)
 
             $sql = "DELETE QUICK FROM DICTIONARY WHERE UID = '$uid'";
 
-            if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+            if (!db_query($sql, $db_admin_delete_user)) return false;
 
             // Delete User Group Entries related to this user.
 
             $sql = "DELETE QUICK FROM GROUP_USERS WHERE UID = '$uid'";
 
-            if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+            if (!db_query($sql, $db_admin_delete_user)) return false;
 
             // Delete User's PM Content
 
@@ -1618,7 +1616,7 @@ function admin_delete_user($uid, $delete_content = false)
             $sql.= "OR ((PM.TYPE & $pm_saved_in > 0) AND PM.TO_UID = '$uid') ";
             $sql.= "OR ((PM.TYPE & $pm_draft_items > 0) AND PM.FROM_UID = '$uid') ";
 
-            if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+            if (!db_query($sql, $db_admin_delete_user)) return false;
 
             // Delete User's PMs.
 
@@ -1630,55 +1628,55 @@ function admin_delete_user($uid, $delete_content = false)
             $sql.= "AND TO_UID = '$uid') OR ((TYPE & $pm_draft_items > 0) ";
             $sql.= "AND FROM_UID = '$uid') ";
 
-            if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+            if (!db_query($sql, $db_admin_delete_user)) return false;
 
             // Delete User's PM Search Results
 
             $sql = "DELETE QUICK FROM PM_SEARCH_RESULTS WHERE UID = '$uid'";
 
-            if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+            if (!db_query($sql, $db_admin_delete_user)) return false;
 
             // Delete User's Attachments (doesn't remove the physical files).
 
             $sql = "DELETE QUICK FROM POST_ATTACHMENT_FILES WHERE UID = '$uid'";
 
-            if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+            if (!db_query($sql, $db_admin_delete_user)) return false;
 
             // Delete User's Search Results.
 
             $sql = "DELETE QUICK FROM SEARCH_RESULTS WHERE UID = '$uid'";
 
-            if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+            if (!db_query($sql, $db_admin_delete_user)) return false;
 
             // Delete User's Sessions
 
             $sql = "DELETE QUICK FROM SESSIONS WHERE UID = '$uid'";
 
-            if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+            if (!db_query($sql, $db_admin_delete_user)) return false;
 
             // Delete User's Forum Preferences and Permissions
 
             $sql = "DELETE QUICK FROM USER_FORUM WHERE UID = '$uid'";
 
-            if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+            if (!db_query($sql, $db_admin_delete_user)) return false;
 
             // Delete User's History Data (Logon, Nickname, Email address changes)
 
             $sql = "DELETE QUICK FROM USER_HISTORY WHERE UID = '$uid'";
 
-            if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+            if (!db_query($sql, $db_admin_delete_user)) return false;
 
             // Delete User's Global Preferences
 
             $sql = "DELETE QUICK FROM USER_PREFS WHERE UID = '$uid'";
 
-            if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+            if (!db_query($sql, $db_admin_delete_user)) return false;
 
             // Delete User's Visitor Log Data
 
             $sql = "DELETE QUICK FROM VISITOR_LOG WHERE UID = '$uid'";
 
-            if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+            if (!db_query($sql, $db_admin_delete_user)) return false;
 
             // Add a log entry to show what we've done.
 
@@ -1689,7 +1687,7 @@ function admin_delete_user($uid, $delete_content = false)
 
         $sql = "DELETE QUICK FROM USER WHERE UID = '$uid'";
 
-        if (!$result = db_query($sql, $db_admin_delete_user)) return false;
+        if (!db_query($sql, $db_admin_delete_user)) return false;
 
         return true;
     }
@@ -1709,15 +1707,13 @@ function admin_delete_users_posts($uid)
     $sql.= "SELECT TID, PID, NULL FROM {$table_data['PREFIX']}POST WHERE FROM_UID = '$uid' ";
     $sql.= "ON DUPLICATE KEY UPDATE CONTENT = VALUES(CONTENT)";
 
-    if (!$result = db_query($sql, $db_admin_delete_users_posts)) return false;
+    if (!db_query($sql, $db_admin_delete_users_posts)) return false;
 
     return true;
 }
 
 function admin_prepare_affected_sessions($affected_session)
 {
-    $lang = load_language_file();
-
     $webtag = get_webtag();
 
     if ($affected_session['UID'] > 0) {

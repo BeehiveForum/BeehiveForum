@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ledit.php,v 1.36 2008-07-30 16:04:34 decoyduck Exp $ */
+/* $Id: ledit.php,v 1.37 2008-07-30 17:41:38 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -433,7 +433,7 @@ if (isset($_POST['preview'])) {
 
 }else if (isset($_POST['apply'])) {
 
-    if (!$editmessage = messages_get($tid, $pid, 1)) {
+    if (!$edit_message = messages_get($tid, $pid, 1)) {
 
         light_html_draw_top("robots=noindex,nofollow");
         light_html_display_error_msg($lang['postdoesnotexist']);
@@ -465,7 +465,7 @@ if (isset($_POST['preview'])) {
         $valid = false;
     }
 
-    if (((forum_get_setting('allow_post_editing', 'N')) || ((bh_session_get_value('UID') != $editmessage['FROM_UID']) && !(perm_get_user_permissions($editmessage['FROM_UID']) & USER_PERM_PILLORIED)) || (bh_session_check_perm(USER_PERM_PILLORIED, 0)) || (((time() - $editmessage['CREATED']) >= (intval(forum_get_setting('post_edit_time', false, 0)) * MINUTE_IN_SECONDS)) && intval(forum_get_setting('post_edit_time', false, 0)) != 0)) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+    if (((forum_get_setting('allow_post_editing', 'N')) || ((bh_session_get_value('UID') != $edit_message['FROM_UID']) && !(perm_get_user_permissions($edit_message['FROM_UID']) & USER_PERM_PILLORIED)) || (bh_session_check_perm(USER_PERM_PILLORIED, 0)) || (((time() - $edit_message['CREATED']) >= (intval(forum_get_setting('post_edit_time', false, 0)) * MINUTE_IN_SECONDS)) && intval(forum_get_setting('post_edit_time', false, 0)) != 0)) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
         light_html_draw_top("robots=noindex,nofollow");
         light_html_display_error_msg($lang['nopermissiontoedit']);
@@ -481,7 +481,7 @@ if (isset($_POST['preview'])) {
         exit;
     }    
 
-    $preview_message = $editmessage;
+    $preview_message = $edit_message;
 
     if ($valid) {
 
@@ -515,7 +515,7 @@ if (isset($_POST['preview'])) {
 
 }else {
 
-    if (!$editmessage = messages_get($tid, $pid, 1)) {
+    if (!$edit_message = messages_get($tid, $pid, 1)) {
 
         light_html_draw_top("robots=noindex,nofollow");
         light_html_display_error_msg($lang['postdoesnotexist']);
@@ -523,11 +523,11 @@ if (isset($_POST['preview'])) {
         exit;
     }
 
-    if (count($editmessage) > 0) {
+    if (count($edit_message) > 0) {
 
-        if (($editmessage['CONTENT'] = message_get_content($tid, $pid))) {
+        if (($edit_message['CONTENT'] = message_get_content($tid, $pid))) {
 
-            if (((forum_get_setting('allow_post_editing', 'N')) || ((bh_session_get_value('UID') != $editmessage['FROM_UID']) && !(perm_get_user_permissions($editmessage['FROM_UID']) & USER_PERM_PILLORIED)) || (bh_session_check_perm(USER_PERM_PILLORIED, 0)) || (((time() - $editmessage['CREATED']) >= (intval(forum_get_setting('post_edit_time', false, 0)) * MINUTE_IN_SECONDS)) && intval(forum_get_setting('post_edit_time', false, 0)) != 0)) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+            if (((forum_get_setting('allow_post_editing', 'N')) || ((bh_session_get_value('UID') != $edit_message['FROM_UID']) && !(perm_get_user_permissions($edit_message['FROM_UID']) & USER_PERM_PILLORIED)) || (bh_session_check_perm(USER_PERM_PILLORIED, 0)) || (((time() - $edit_message['CREATED']) >= (intval(forum_get_setting('post_edit_time', false, 0)) * MINUTE_IN_SECONDS)) && intval(forum_get_setting('post_edit_time', false, 0)) != 0)) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
                 light_html_draw_top("robots=noindex,nofollow");
                 light_html_display_error_msg($lang['nopermissiontoedit']);
@@ -543,12 +543,12 @@ if (isset($_POST['preview'])) {
                 exit;
             }            
 
-            $preview_message = $editmessage;
+            $preview_message = $edit_message;
 
-            $to_uid = $editmessage['TO_UID'];
-            $from_uid = $editmessage['FROM_UID'];
+            $to_uid = $edit_message['TO_UID'];
+            $from_uid = $edit_message['FROM_UID'];
 
-            $parsed_message = new MessageTextParse($editmessage['CONTENT'], $emots_enabled);
+            $parsed_message = new MessageTextParse($edit_message['CONTENT'], $emots_enabled);
 
             $emots_enabled = $parsed_message->getEmoticons();
             $links_enabled = $parsed_message->getLinks();

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.118 2008-07-30 16:04:34 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.119 2008-07-30 17:41:37 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -826,6 +826,8 @@ $forum_rules = new TextAreaHTML("prefsform");
 echo $forum_rules->preload();
 
 $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
+
+$frame_top_target = html_get_top_frame_name();
 
 $cancel_link = "<a href=\"index.php?webtag=$webtag\" target=\"$frame_top_target\">{$lang['cancellinktext']}</a>";
 

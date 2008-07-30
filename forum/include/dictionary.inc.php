@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.inc.php,v 1.53 2008-07-28 21:05:53 decoyduck Exp $ */
+/* $Id: dictionary.inc.php,v 1.54 2008-07-30 17:41:40 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -77,11 +77,11 @@ class dictionary {
 
     function prepare_content($content)
     {
-        $word_match = "([0-9\w'-]+)|([0-9]+)|(<[^>]+>)|(&[^;]+;)|(\w+'+\w+)|";
-        $word_match.= "([\s+\.!\?,\[\]()\-+'\"=;&#0215;\$%\^&\*\/:{}]+)|";
-        $word_match.= "(\w+:\/\/([^:\s]+:?[^@\s]+@)?[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)|";
-        $word_match.= "(www\.[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)|";
-        $word_match.= "([0-9a-z][_\.0-9a-z-]*@[0-9a-z][_\.0-9a-z-]*\.[a-z]{2,})";
+        $word_match = '([0-9\w\'-]+)|([0-9]+)|(<[^>]+>)|(&[^;]+;)|(\w+\'+\w+)|';
+        $word_match.= '([\s+\.!\?,\[\]()\-+\'"=;&#0215;\$%\^&\*\/:{}]+)|';
+        $word_match.= '(\w+:\/\/([^:\s]+:?[^@\s]+@)?[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)|';
+        $word_match.= '(www\.[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)|';
+        $word_match.= '([0-9a-z][_\.0-9a-z-]*@[0-9a-z][_\.0-9a-z-]*\.[a-z]{2,})';
 
         $this->content_array = preg_split("/$word_match/i", $content, -1, PREG_SPLIT_DELIM_CAPTURE);
     }
@@ -230,10 +230,10 @@ class dictionary {
     {
         $current_word = $this->get_current_word();
 
-        $word_match = "([0-9]+)|(<[^>]+>)|(&[^;]+;)|";
-        $word_match.= "(\w+:\/\/([^:\s]+:?[^@\s]+@)?[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)|";
-        $word_match.= "(www\.[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)|";
-        $word_match.= "([0-9a-z][_\.0-9a-z-]*@[0-9a-z][_\.0-9a-z-]*\.[a-z]{2,})";
+        $word_match = '([0-9]+)|(<[^>]+>)|(&[^;]+;)|';
+        $word_match.= '(\w+:\/\/([^:\s]+:?[^@\s]+@)?[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)|';
+        $word_match.= '(www\.[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)|';
+        $word_match.= '([0-9a-z][_\.0-9a-z-]*@[0-9a-z][_\.0-9a-z-]*\.[a-z]{2,})';
 
         if (preg_match("/$word_match/i", $current_word) < 1) {
 
@@ -255,7 +255,7 @@ class dictionary {
 
     function word_get_suggestions()
     {
-        if (!$db_dictionary_word_get_suggestions = db_connect()) return false;
+        if (!$db_dictionary_word_get_suggestions = db_connect()) return;
 
         if (!isset($this->content_array[$this->current_word])) return;
 
@@ -271,7 +271,7 @@ class dictionary {
 
         // The current user's UID
 
-        if (($uid = bh_session_get_value('UID')) === false) return false;
+        if (($uid = bh_session_get_value('UID')) === false) return;
 
         // Exact match
 
@@ -279,7 +279,7 @@ class dictionary {
         $sql.= "AND (UID = 0 OR UID = '$uid') ";
         $sql.= "LIMIT 0, 1";
 
-        if (!$result = db_query($sql, $db_dictionary_word_get_suggestions)) return false;
+        if (!$result = db_query($sql, $db_dictionary_word_get_suggestions)) return;
 
         // If we found an exact match then they spelt it right?
 
@@ -299,7 +299,7 @@ class dictionary {
             $sql.= "AND (UID = 0 OR UID = '$uid') ";
             $sql.= "ORDER BY WORD ASC LIMIT $offset, 10";
 
-            if (!$result = db_query($sql, $db_dictionary_word_get_suggestions)) return false;
+            if (!$result = db_query($sql, $db_dictionary_word_get_suggestions)) return;
 
             if (db_num_rows($result) > 0) {
 
@@ -317,7 +317,7 @@ class dictionary {
                 }
 
                 $this->offset_match = 0;
-                return $this->word_get_suggestions();
+                $this->word_get_suggestions();
             }
 
             if (sizeof($this->suggestions_array) > 0) {

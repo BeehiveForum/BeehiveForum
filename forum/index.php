@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.169 2008-07-28 21:05:49 decoyduck Exp $ */
+/* $Id: index.php,v 1.170 2008-07-30 17:41:38 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -120,6 +120,9 @@ if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri'])))
 
     $available_files = get_available_files();
     $available_files_preg = implode("|^", array_map('preg_quote_callback', $available_files));
+    
+    $available_admin_files = get_available_admin_files();
+    $available_admin_files_preg = implode("|^", array_map('preg_quote_callback', $available_admin_files));
 
     $my_controls_files = get_available_user_control_files();
     $my_controls_preg = implode("|^", array_map('preg_quote_callback', $my_controls_files));
@@ -133,7 +136,7 @@ if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri'])))
             $final_uri = href_cleanup_query_keys($final_uri);
             $skip_logon_page = true;
 
-        }else if (preg_match("/^admin_[^\.]+\.php/", $final_uri) > 0) {
+        }else if (preg_match("/^$available_admin_files/", $final_uri) > 0) {
 
             $final_uri = rawurlencode(href_cleanup_query_keys($final_uri, false, '&'));
             $final_uri = "admin.php?webtag=$webtag&amp;page=$final_uri";

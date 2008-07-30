@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: admin_forum_stats.php,v 1.12 2008-07-27 18:26:09 decoyduck Exp $ */
+/* $Id: admin_forum_stats.php,v 1.13 2008-07-30 17:41:38 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -534,6 +534,9 @@ echo "        </table>\n";
 echo "      </td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
+
+$week_start = 0;
+$week_end = 0;
 
 if ((($visitor_count = stats_get_visitor_counts()) !== false) && stats_get_mysql_week($week_start, $week_end)) {
 

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.131 2008-07-30 16:04:34 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.132 2008-07-30 17:41:39 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -289,7 +289,7 @@ if (isset($_POST['t_sig_html'])) {
 
 if (!isset($sig_html)) $sig_html = POST_HTML_DISABLED;
 
-if (!isset($emots_enabled)) $emots_enabled = !($page_prefs & POST_EMOTICONS_DISABLED);
+$emots_enabled = !($page_prefs & POST_EMOTICONS_DISABLED);
 
 if (!isset($t_content)) $t_content = "";
 if (!isset($t_sig)) $t_sig = "";

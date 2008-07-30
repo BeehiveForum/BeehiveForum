@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: banned.inc.php,v 1.39 2008-07-28 21:05:53 decoyduck Exp $ */
+/* $Id: banned.inc.php,v 1.40 2008-07-30 17:41:40 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -306,7 +306,7 @@ function add_ban_data($type, $data, $comment)
     $sql = "INSERT INTO {$table_data['PREFIX']}BANNED (BANTYPE, BANDATA, COMMENT) ";
     $sql.= "VALUES ('$type', '$data', '$comment')";
 
-    if (!$result = db_query($sql, $db_add_ban_data)) return false;
+    if (!db_query($sql, $db_add_ban_data)) return false;
 
     return true;
 }
@@ -322,7 +322,7 @@ function remove_ban_data_by_id($ban_id)
     $sql = "DELETE QUICK FROM {$table_data['PREFIX']}BANNED ";
     $sql.= "WHERE ID = '$ban_id'";
 
-    if (!$result = db_query($sql, $db_remove_ban_data)) return false;
+    if (!db_query($sql, $db_remove_ban_data)) return false;
 
     return (db_affected_rows($db_remove_ban_data) > 0);
 }
@@ -346,7 +346,7 @@ function update_ban_data($ban_id, $type, $data, $comment)
     $sql.= "SET BANTYPE = '$type', BANDATA = '$data', ";
     $sql.= "COMMENT = '$comment' WHERE ID = '$ban_id'";
 
-    if (!$result = db_query($sql, $db_remove_ban_data)) return false;
+    if (!db_query($sql, $db_remove_ban_data)) return false;
 
     return true;
 }
@@ -459,8 +459,6 @@ function check_affected_sessions($ban_type, $ban_data)
 function user_is_banned($uid)
 {
     if (!$db_user_is_banned = db_connect()) return false;
-
-    $lang = load_language_file();
 
     if (!is_numeric($uid)) return false;
 

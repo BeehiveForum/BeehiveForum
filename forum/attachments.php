@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.160 2008-07-28 21:05:48 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.161 2008-07-30 17:41:38 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -269,7 +269,10 @@ if (isset($_POST['upload'])) {
 
     if (is_array($hash_array) && sizeof($hash_array) > 0) {
 
-        if (get_attachments($uid, $aid, $attachments_array, $image_attachments_array, $hash_array)) {
+        $attachments_array = array();
+        $image_attachments_array = array();
+    	
+    	if (get_attachments($uid, $aid, $attachments_array, $image_attachments_array, $hash_array)) {
 
             html_draw_top('pm_popup_disabled');
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_password.php,v 1.69 2008-07-27 18:26:09 decoyduck Exp $ */
+/* $Id: edit_password.php,v 1.70 2008-07-30 17:41:38 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -114,6 +114,12 @@ if (user_is_guest()) {
 // Array to hold error messages
 
 $error_msg_array = array();
+
+// Arrays to hold our cookie data
+
+$username_array = array();
+$password_array = array();
+$passhash_array = array();
 
 // Submit code
 

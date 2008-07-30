@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display_emoticons.php,v 1.61 2008-07-28 21:05:48 decoyduck Exp $ */
+/* $Id: display_emoticons.php,v 1.62 2008-07-30 17:41:38 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -97,6 +97,10 @@ if (!$webtag = get_webtag()) {
 
 $lang = load_language_file();
 
+// Array to hold the emoticons
+
+$emoticon = array();
+
 // Check that we have access to this forum
 
 if (!forum_check_access_level()) {
@@ -104,27 +108,22 @@ if (!forum_check_access_level()) {
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
+// Check to see if user has requested a pack to view
+
 if (isset($_GET['pack']) && strlen(trim(_stripslashes($_GET['pack']))) > 0) {
     $user_emoticon_pack = $_GET['pack'];
-}else {
-    $user_emoticon_pack = '';
 }
 
-if (isset($_GET['mode']) && strlen(trim(_stripslashes($_GET['mode']))) > 0) {
-    $view_mode = $_GET['mode'];
-}else {
-    $view_mode = '';
-}
+// Get array of available emoticon sets
 
-if ($view_mode == "mini") {
-    echo emoticons_preview($user_emoticon_pack);
-    exit;
-}
+$emoticon_sets_array = emoticons_get_available(false);
+$emoticon_sets_array_keys = array_keys($emoticon_sets_array);
+
+// Output starts here
 
 html_draw_top("emoticons.js", 'pm_popup_disabled');
 
 echo "<h1>{$lang['emoticons']}</h1>\n";
-
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"450\">\n";
@@ -142,15 +141,7 @@ echo "                <td align=\"center\">\n";
 echo "                  <table class=\"posthead\" width=\"95%\">\n";
 echo "                    <tr>\n";
 
-$emoticon_sets_array = emoticons_get_available(false);
-
-$emoticon_sets_array_keys = array_keys($emoticon_sets_array);
-
-if (($user_emoticon_pack != "user" && !in_array($user_emoticon_pack, $emoticon_sets_array_keys))) {
-    $user_emoticon_pack = forum_get_setting('default_emoticons', false, 'default');
-}
-
-if ($user_emoticon_pack != "user") {
+if (isset($user_emoticon_pack)) {
 
     echo "                      <td align=\"left\" valign=\"top\" width=\"200\">\n";
 
@@ -167,9 +158,8 @@ if ($user_emoticon_pack != "user") {
     }
 
     echo "                      </td>\n";
-}
 
-if ($user_emoticon_pack == "user") {
+}else {
 
     if (($user_emoticon_pack = bh_session_get_value('EMOTICONS')) === false) {
 
@@ -180,21 +170,21 @@ if ($user_emoticon_pack == "user") {
 if (in_array($user_emoticon_pack, $emoticon_sets_array_keys)) {
 
     $emoticon_path = basename($user_emoticon_pack);
+    
+    if (file_exists("emoticons/$emoticon_path/definitions.php")) {
+        include ("emoticons/$emoticon_path/definitions.php");
+    }    
 
-}else if (in_array($emot_forum, $emoticon_sets_array_keys)) {
-
-    $emoticon_path = basename($emot_forum);
-
-}else if (isset($emoticon_sets_array_keys[0])) {
+}else if (isset($emoticon_sets_array[0])) {
 
     $emoticon_path = basename($emoticon_sets_array_keys[0]);
+    
+    if (file_exists("emoticons/$emoticon_path/definitions.php")) {
+        include ("emoticons/$emoticon_path/definitions.php");
+    }    
 }
 
-if (file_exists("emoticons/$emoticon_path/definitions.php")) {
-    include ("emoticons/$emoticon_path/definitions.php");
-}
-
-if (isset($emoticon) && count($emoticon) > 0) {
+if (sizeof($emoticon) > 0) {
 
     krsort($emoticon);
     reset($emoticon);
@@ -211,7 +201,9 @@ echo "                        <table class=\"posthead\" width=\"300\">\n";
 
 if (($style_content = @file_get_contents("emoticons/$emoticon_path/style.css"))) {
 
-    preg_match_all("/\.e_([\w_]+) \{.*\n[^\}]*background-image\s*:\s*url\s*\([\"\']([^\"\']*)[\"\']\)[^\}]*\}/i", $style_content, $style_matches);
+    $style_matches = array();
+	
+	preg_match_all('/\.e_([\w_]+) \{.*\n[^\}]*background-image\s*:\s*url\s*\(["\']([^"\']*)["\']\)[^\}]*\}/i', $style_content, $style_matches);
 
     for ($i = 0; $i < count($style_matches[1]); $i++) {
 

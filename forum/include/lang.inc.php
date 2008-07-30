@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lang.inc.php,v 1.39 2008-07-28 21:05:53 decoyduck Exp $ */
+/* $Id: lang.inc.php,v 1.40 2008-07-30 23:57:32 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -82,7 +82,7 @@ function load_language_file()
 
         // split the provided Accept-Language string into individual languages
 
-        $langs_array = preg_split("/\s*,\s*/", $_SERVER['HTTP_ACCEPT_LANGUAGE']);
+        $langs_array = preg_split('/\s*,\s*/', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
 
          // work out what the q values associated with each language are
 

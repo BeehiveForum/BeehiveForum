@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.286 2008-07-30 16:04:35 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.287 2008-07-30 22:39:24 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -93,8 +93,6 @@ function html_error_msg($error_msg, $href = false, $method = 'get', $button_arra
 function html_display_msg($header_text, $string_msg, $href = false, $method = 'get', $button_array = false, $var_array = false, $target = "_self", $align = "left")
 {
     $webtag = get_webtag();
-
-    $lang = load_language_file();
 
     if (!is_string($header_text)) return;
     if (!is_string($string_msg)) return;
@@ -325,8 +323,6 @@ function html_get_top_page()
 {
     $webtag = get_webtag();
 
-    $forum_settings = forum_get_settings();
-
     $forum_path = defined('BH_FORUM_PATH') ? BH_FORUM_PATH : '.';
 
     if (($user_style = bh_session_get_value('STYLE')) === false) {
@@ -357,8 +353,6 @@ function html_get_top_page()
 function html_get_style_sheet()
 {
     $webtag = get_webtag();
-
-    $forum_settings = forum_get_settings();
 
     $forum_path = defined('BH_FORUM_PATH') ? BH_FORUM_PATH : '.';
 
@@ -422,8 +416,6 @@ function html_get_style_sheet()
 function html_get_emoticon_style_sheet()
 {
     $webtag = get_webtag();
-
-    $forum_settings = forum_get_settings();
 
     $forum_path = defined('BH_FORUM_PATH') ? BH_FORUM_PATH : '.';
 
@@ -586,9 +578,11 @@ function html_draw_top()
     $meta_refresh_delay = false;
     $meta_refresh_url = false;
 
-    $robots = "noindex,nofollow";
+    $title = '';
+    $body_class = '';
+    $base_target = '';
 
-    $forum_settings = forum_get_settings();
+    $robots = 'noindex,nofollow';
 
     $webtag = get_webtag();
 
@@ -598,45 +592,47 @@ function html_draw_top()
     $frameset_dtd = false;
     $pm_popup_disabled = false;
 
+    $func_matches = array();
+
     foreach ($arg_array as $key => $func_args) {
 
-        if (preg_match("/^title=([^$]+)$/i", $func_args, $func_matches) > 0) {
-            if (!isset($title)) $title = $func_matches[1];
+        if (preg_match('/^title=([^$]+)$/i', $func_args, $func_matches) > 0) {
+            if (strlen(trim($title)) < 1) $title = $func_matches[1];
             unset($arg_array[$key]);
         }
 
-        if (preg_match("/^class=([^$]+)$/i", $func_args, $func_matches) > 0) {
-            if (!isset($body_class)) $body_class = $func_matches[1];
+        if (preg_match('/^class=([^$]+)$/i', $func_args, $func_matches) > 0) {
+            if (strlen(trim($body_class)) < 1) $body_class = $func_matches[1];
             unset($arg_array[$key]);
         }
 
-        if (preg_match("/^basetarget=([^$]+)$/i", $func_args, $func_matches) > 0) {
-            if (!isset($base_target)) $base_target = $func_matches[1];
+        if (preg_match('/^basetarget=([^$]+)$/i', $func_args, $func_matches) > 0) {
+            if (strlen(trim($base_target)) < 1) $base_target = $func_matches[1];
             unset($arg_array[$key]);
         }
 
-        if (preg_match("/^onload=([^$]+)$/i", $func_args, $func_matches) > 0) {
+        if (preg_match('/^onload=([^$]+)$/i', $func_args, $func_matches) > 0) {
             $onload_array[] = $func_matches[1];
             unset($arg_array[$key]);
         }
 
-        if (preg_match("/^onunload=([^$]+)$/i", $func_args, $func_matches) > 0) {
+        if (preg_match('/^onunload=([^$]+)$/i', $func_args, $func_matches) > 0) {
             $onunload_array[] = $func_matches[1];
             unset($arg_array[$key]);
         }
 
-        if (preg_match("/^stylesheet=([^:]+):([^$]+)$/i", $func_args, $func_matches) > 0) {
+        if (preg_match('/^stylesheet=([^:]+):([^$]+)$/i', $func_args, $func_matches) > 0) {
 
             $stylesheet_array[] = array('filename' => $func_matches[1], 'media' => $func_matches[2]);
             unset($arg_array[$key]);
 
-        }elseif (preg_match("/^stylesheet=([^$]+)$/i", $func_args, $func_matches) > 0) {
+        }elseif (preg_match('/^stylesheet=([^$]+)$/i', $func_args, $func_matches) > 0) {
 
             $stylesheet_array[] = array('filename' => $func_matches[1], 'media' => 'screen');
             unset($arg_array[$key]);
         }
 
-        if (preg_match("/^refresh=([^:]+):([^$]+)$/i", $func_args, $func_matches) > 0) {
+        if (preg_match('/^refresh=([^:]+):([^$]+)$/i', $func_args, $func_matches) > 0) {
 
             if (isset($func_matches[1]) && is_numeric($func_matches[1])) {
 
@@ -650,40 +646,40 @@ function html_draw_top()
             unset($arg_array[$key]);
         }
 
-        if (preg_match("/^robots=([^$]+)$/i", $func_args, $func_matches) > 0) {
+        if (preg_match('/^robots=([^$]+)$/i', $func_args, $func_matches) > 0) {
             $robots = $func_matches[1];
             unset($arg_array[$key]);
         }
 
-        if (preg_match("/^body_tag=([^$]+)$/i", $func_args, $func_matches) > 0) {
+        if (preg_match('/^body_tag=([^$]+)$/i', $func_args, $func_matches) > 0) {
             $include_body_tag = $func_matches[1];
             unset($arg_array[$key]);
         }
 
-        if (preg_match("/^frames=([^$]+)$/i", $func_args, $func_matches) > 0) {
+        if (preg_match('/^frames=([^$]+)$/i', $func_args, $func_matches) > 0) {
             $frameset_dtd = $func_matches[1];
             unset($arg_array[$key]);
         }
 
-        if (preg_match("/^resize_width=([^$]+)$/i", $func_args, $func_matches) > 0) {
+        if (preg_match('/^resize_width=([^$]+)$/i', $func_args, $func_matches) > 0) {
             $resize_width = $func_matches[1];
             unset($arg_array[$key]);
         }
 
-        if (preg_match("/^pm_popup_disabled$/i", $func_args, $func_matches) > 0) {
+        if (preg_match('/^pm_popup_disabled$/i', $func_args, $func_matches) > 0) {
             $pm_popup_disabled = true;
             unset($arg_array[$key]);
         }
     }
 
-    if (!isset($title)) $title = forum_get_setting('forum_name', false, 'A Beehive Forum');
-    if (!isset($body_class)) $body_class = false;
-    if (!isset($base_target)) $base_target = false;
+    if (strlen(trim($title)) < 1) $title = forum_get_setting('forum_name', false, 'A Beehive Forum');
+    if (strlen(trim($body_class)) < 1) $body_class = false;
+    if (strlen(trim($base_target)) < 1) $base_target = false;
+
     if (!isset($resize_width)) $resize_width = 0;
 
     $forum_keywords = html_get_forum_keywords();
     $forum_description = html_get_forum_description();
-    $forum_email = html_get_forum_email();
 
     echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 
@@ -1063,8 +1059,6 @@ function style_image($img)
 {
     $webtag = get_webtag();
 
-    $forum_settings = forum_get_settings();
-
     $forum_path = defined('BH_FORUM_PATH') ? BH_FORUM_PATH : '.';
 
     if (($user_style = bh_session_get_value('STYLE')) === false) {
@@ -1090,27 +1084,21 @@ function bh_setcookie($name, $value, $expires = 0)
 {
     $cookie_domain = (isset($GLOBALS['cookie_domain'])) ? $GLOBALS['cookie_domain'] : "";
 
-    if (strlen(trim($cookie_domain)) > 0 && !defined('BEEHIVEMODE_LIGHT')) {
+    if (!defined('BEEHIVEMODE_LIGHT')) {
 
-        $cookie_domain = preg_replace("/^[^:\s]+:\/\//", "", trim($cookie_domain));
+        $cookie_domain_array = @parse_url($cookie_domain);
 
-        $cookie_path = preg_replace("/\\\/", "/", $cookie_domain);
-        $cookie_path = explode('/', $cookie_domain);
+        if (isset($cookie_domain_array['host']) && isset($cookie_domain_array['path'])) {
 
-        $cookie_domain = $cookie_path[0]; unset($cookie_path[0]);
+            $cookie_domain = $cookie_domain_array['host'];
+            $cookie_path = sprintf('/%s/', trim($cookie_domain_array['path'], '/'));
 
-        $cookie_path = implode('/', $cookie_path);
+            if (isset($_SERVER['HTTP_HOST']) && !strstr($_SERVER['HTTP_HOST'], 'localhost')) {
 
-        $cookie_path = preg_replace("/[\/]+$/", "", $cookie_path);
-        $cookie_path = preg_replace("/^[\/]+/", "", $cookie_path);
+                if (strstr($_SERVER['HTTP_HOST'], $cookie_domain)) {
 
-        $cookie_path = preg_replace("/[\/]+/", "/", "/$cookie_path/");
-
-        if (isset($_SERVER['HTTP_HOST']) && !strstr($_SERVER['HTTP_HOST'], 'localhost')) {
-
-            if (strstr($_SERVER['HTTP_HOST'], $cookie_domain)) {
-
-                return setcookie($name, $value, $expires, $cookie_path, $cookie_domain, 0);
+                    return setcookie($name, $value, $expires, $cookie_path, $cookie_domain, 0);
+                }
             }
         }
     }
@@ -1120,6 +1108,12 @@ function bh_setcookie($name, $value, $expires = 0)
 
 function bh_remove_all_cookies()
 {
+    // Arrays to hold the cookie data
+
+    $username_array = array();
+    $password_array = array();
+    $passhash_array = array();
+
     // Retrieve existing cookie data if any
 
     logon_get_cookies($username_array, $password_array, $passhash_array);
@@ -1153,7 +1147,7 @@ function bh_remove_all_cookies()
 
     if (($webtag_array = forum_get_all_webtags())) {
 
-        foreach ($webtag_array as $fid => $forum_webtag) {
+        foreach ($webtag_array as $forum_webtag) {
 
             bh_setcookie("bh_{$forum_webtag}_thread_mode", "", time() - YEAR_IN_SECONDS);
             bh_setcookie("bh_{$forum_webtag}_password", "", time() - YEAR_IN_SECONDS);
@@ -1169,6 +1163,8 @@ function href_cleanup_query_keys($uri, $remove_keys = false, $seperator = "&amp;
     $uri_array = parse_url($uri);
 
     if (isset($uri_array['query'])) {
+
+        $uri_query_array = array();
 
         parse_str($uri_array['query'], $uri_query_array);
 
@@ -1204,7 +1200,9 @@ function href_cleanup_query_keys($uri, $remove_keys = false, $seperator = "&amp;
         $uri.= (isset($uri_array['query']))    ? "?{$uri_array['query']}"    : '';
         $uri.= (isset($uri_array['fragment'])) ? "#{$uri_array['fragment']}" : '';
 
-        $uri = preg_replace("/\?$|&$|&amp;$/", "", $uri);
+        $uri = rtrim($uri, '?');
+        $uri = rtrim($uri, '&');
+        $uri = rtrim($uri, '&amp;');
     }
 
     return $uri;
@@ -1371,9 +1369,8 @@ function html_get_forum_uri($append_path = "")
 
     if (server_os_mswin()) {
 
-        $uri_array['path'] = dirname("{$uri_array['path']}beehive");
-        $uri_array['path'] = preg_replace("/\\\/", "/", $uri_array['path']);
-        $uri_array['path'] = preg_replace("/\/$/", "", $uri_array['path']);
+        $uri_array['path'] = str_replace('\\', '/', dirname("{$uri_array['path']}beehive"));
+        $uri_array['path'] = rtrim($uri_array['path'], '/');
 
     }else {
 
@@ -1383,7 +1380,6 @@ function html_get_forum_uri($append_path = "")
     $uri_array['path'] = rtrim($uri_array['path'], '/');
 
     if (strlen(trim($append_path)) > 0) {
-
         $uri_array['path'].= $append_path;
     }
 

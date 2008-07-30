@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.84 2008-07-28 21:05:53 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.85 2008-07-30 22:39:24 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -219,8 +219,6 @@ function logon_update_cookies($logon, $password, $passhash, $save_password)
 
 function logon_perform()
 {
-    $lang = load_language_file();
-
     $webtag = get_webtag();
 
     // Check to see if the user is logging in as a guest or a normal user.
@@ -294,8 +292,6 @@ function logon_perform()
 
 function logon_draw_form($logon_options)
 {
-    $frame_top_target = html_get_top_frame_name();
-
     $lang = load_language_file();
 
     $webtag = get_webtag();
@@ -388,26 +384,28 @@ function logon_draw_form($logon_options)
 
         echo form_dropdown_array("logonarray", $username_dropdown_array, "", "onchange=\"changePassword('$webtag')\" autocomplete=\"off\"", "bhinputlogon");
         echo form_input_hidden("user_logon", _htmlentities($username_array[$current_logon]));
+        
+        $username_array_keys = array_keys($username_array);
 
-        foreach ($username_array as $key => $logon) {
+        foreach ($username_array_keys as $username_key) {
 
-            if (isset($password_array[$key]) && strlen($password_array[$key]) > 0) {
+            if (isset($password_array[$username_key]) && strlen($password_array[$username_key]) > 0) {
 
-                if (isset($passhash_array[$key]) && is_md5($passhash_array[$key])) {
+                if (isset($passhash_array[$username_key]) && is_md5($passhash_array[$username_key])) {
 
-                    echo form_input_hidden("user_password$key", _htmlentities($password_array[$key]));
-                    echo form_input_hidden("user_passhash$key", _htmlentities($passhash_array[$key]));
+                    echo form_input_hidden("user_password$username_key", _htmlentities($password_array[$username_key]));
+                    echo form_input_hidden("user_passhash$username_key", _htmlentities($passhash_array[$username_key]));
 
                 }else {
 
-                    echo form_input_hidden("user_password$key", "");
-                    echo form_input_hidden("user_passhash$key", "");
+                    echo form_input_hidden("user_password$username_key", "");
+                    echo form_input_hidden("user_passhash$username_key", "");
                 }
 
             }else {
 
-                echo form_input_hidden("user_password$key", "");
-                echo form_input_hidden("user_passhash$key", "");
+                echo form_input_hidden("user_password$username_key", "");
+                echo form_input_hidden("user_passhash$username_key", "");
             }
         }
 

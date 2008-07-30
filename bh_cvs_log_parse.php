@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_cvs_log_parse.php,v 1.18 2008-07-28 21:05:47 decoyduck Exp $ */
+/* $Id: bh_cvs_log_parse.php,v 1.19 2008-07-30 22:39:22 decoyduck Exp $ */
 
 /**
 * bh_cvs_log_parse.php
@@ -103,12 +103,12 @@ function cvs_mysql_prepare_table($truncate_table = true)
     $sql.= "  COMMENTS TEXT NOT NULL";
     $sql.= ") TYPE = MYISAM";
 
-    if (!$result = db_query($sql, $db_cvs_mysql_prepare_table)) return false;
+    if (!db_query($sql, $db_cvs_mysql_prepare_table)) return false;
 
     if ($truncate_table == true) {
 
         $sql = "TRUNCATE TABLE BEEHIVE_CVS_LOG";
-        if (!$result = db_query($sql, $db_cvs_mysql_prepare_table)) return false;
+        if (!db_query($sql, $db_cvs_mysql_prepare_table)) return false;
     }
 
     return true;
@@ -132,9 +132,11 @@ function cvs_mysql_parse($cvs_log_contents)
 
     foreach ($cvs_log_array as $cvs_log_entry) {
 
-        $description_match = "/date: ([0-9]{4})\/([0-9]{2})\/([0-9]{2}) ([0-9]{2}):([0-9]{2}):([0-9]{2});  ";
-        $description_match.= "author: ([^;]+);  state: [^;]+;  lines: \+[0-9]+ \-[0-9]+\n";
-        $description_match.= "(.+)/s";
+        $cvs_log_match_array = array();
+    	
+    	$description_match = '/date: ([0-9]{4})\/([0-9]{2})\/([0-9]{2}) ([0-9]{2}):([0-9]{2}):([0-9]{2});  ';
+        $description_match.= 'author: ([^;]+);  state: [^;]+;  lines: \+[0-9]+ \-[0-9]+\n';
+        $description_match.= '(.+)/s';
 
         if (preg_match_all($description_match, trim($cvs_log_entry), $cvs_log_match_array, PREG_SET_ORDER) > 0) {
 
@@ -218,7 +220,7 @@ function cvs_mysql_output_log($log_filename)
 // that it is in the valid format YYYY-MM-DD. If we don't
 // we use Beehive's birthday.
 
-if (isset($_SERVER['argv'][1]) && preg_match("/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/", $_SERVER['argv'][1]) > 0) {
+if (isset($_SERVER['argv'][1]) && preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $_SERVER['argv'][1]) > 0) {
 
     $modified_date = $_SERVER['argv'][1];
 
@@ -238,7 +240,7 @@ if (isset($_SERVER['argv'][1]) && preg_match("/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/", $
 
         }else {
 
-            echo "Error while fetching CVS log for $cvs_dir\n";
+            echo "Error while fetching CVS log\n";
             exit;
         }
 

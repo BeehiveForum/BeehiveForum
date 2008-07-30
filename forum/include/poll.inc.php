@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.236 2008-07-30 16:04:35 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.237 2008-07-30 22:39:24 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -86,7 +86,7 @@ function poll_create($tid, $poll_options, $poll_answer_groups, $poll_closes, $po
     $sql.= "VALUES ('$tid', $poll_closes, '$poll_change_vote', '$poll_type', '$poll_show_results', ";
     $sql.= "'$poll_vote_type', '$poll_option_type', '$poll_question', '$poll_allow_guests')";
 
-    if (!$result = db_query($sql, $db_poll_create)) return false;
+    if (!db_query($sql, $db_poll_create)) return false;
 
     foreach ($poll_options as $key => $poll_option) {
 
@@ -98,14 +98,14 @@ function poll_create($tid, $poll_options, $poll_answer_groups, $poll_closes, $po
             $sql = "INSERT INTO {$table_data['PREFIX']}POLL_VOTES (TID, OPTION_NAME, GROUP_ID) ";
             $sql.= "VALUES ('$tid', '$poll_option_name', '$poll_option_group')";
 
-            if (!$result = db_query($sql, $db_poll_create)) return false;
+            if (!db_query($sql, $db_poll_create)) return false;
         }
     }
 
     return true;
 }
 
-function poll_edit($fid, $tid, $thread_title, $poll_question, $poll_options, $poll_answer_groups, $poll_closes, $poll_change_vote, $poll_type, $poll_show_results, $poll_vote_type, $poll_option_type, $poll_allow_guests, $poll_delete_votes)
+function poll_edit($tid, $thread_title, $poll_question, $poll_options, $poll_answer_groups, $poll_closes, $poll_change_vote, $poll_type, $poll_show_results, $poll_vote_type, $poll_option_type, $poll_allow_guests, $poll_delete_votes)
 {
     if (!$db_poll_edit = db_connect()) return false;
 
@@ -127,18 +127,16 @@ function poll_edit($fid, $tid, $thread_title, $poll_question, $poll_options, $po
 
     if (!forum_get_setting('poll_allow_guests', false)) $poll_allow_guests = POLL_GUEST_DENIED;
 
-    $edit_uid = bh_session_get_value('UID');
-
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}THREAD SET TITLE = '$thread_title' WHERE TID = '$tid'";
 
-    if (!$result = db_query($sql, $db_poll_edit)) return false;
+    if (!db_query($sql, $db_poll_edit)) return false;
 
     if ($poll_delete_votes) {
 
         $sql = "DELETE QUICK FROM {$table_data['PREFIX']}USER_POLL_VOTES WHERE TID = '$tid'";
-        if (!$result = db_query($sql, $db_poll_edit)) return false;
+        if (!db_query($sql, $db_poll_edit)) return false;
     }
 
     if (is_numeric($poll_closes)) {
@@ -149,7 +147,7 @@ function poll_edit($fid, $tid, $thread_title, $poll_question, $poll_options, $po
         $sql.= "QUESTION = '$poll_question', ALLOWGUESTS = '$poll_allow_guests', ";
         $sql.= "CLOSES = FROM_UNIXTIME($poll_closes) WHERE TID = '$tid'";
 
-        if (!$result = db_query($sql, $db_poll_edit)) return false;
+        if (!db_query($sql, $db_poll_edit)) return false;
 
     }else {
 
@@ -159,12 +157,12 @@ function poll_edit($fid, $tid, $thread_title, $poll_question, $poll_options, $po
         $sql.= "QUESTION = '$poll_question', ALLOWGUESTS = '$poll_allow_guests' ";
         $sql.= "WHERE TID = '$tid'";
 
-        if (!$result = db_query($sql, $db_poll_edit)) return false;
+        if (!db_query($sql, $db_poll_edit)) return false;
     }
 
     $sql = "DELETE QUICK FROM {$table_data['PREFIX']}POLL_VOTES WHERE TID = '$tid'";
 
-    if (!$result = db_query($sql, $db_poll_edit)) return false;
+    if (!db_query($sql, $db_poll_edit)) return false;
 
     foreach ($poll_options as $key => $poll_option) {
 
@@ -176,7 +174,7 @@ function poll_edit($fid, $tid, $thread_title, $poll_question, $poll_options, $po
             $sql = "INSERT INTO {$table_data['PREFIX']}POLL_VOTES (TID, OPTION_NAME, GROUP_ID) ";
             $sql.= "VALUES ('$tid', '$option_name', '$option_group')";
 
-            if (!$result = db_query($sql, $db_poll_edit)) return false;
+            if (!db_query($sql, $db_poll_edit)) return false;
         }
     }
 
@@ -463,7 +461,7 @@ function poll_get_user_vote($tid)
     return false;
 }
 
-function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true, $closed = false, $limit_text = true, $is_poll = true, $show_sigs = true, $is_preview = false, $highlight = array())
+function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true, $closed = false, $limit_text = true, $show_sigs = true, $is_preview = false, $highlight = array())
 {
     $lang = load_language_file();
 
@@ -482,7 +480,6 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
     }
 
     $total_votes  = 0;
-    $option_count = 0;
 
     $request_uri = get_request_uri();
 
@@ -510,12 +507,16 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
             $poll_data['CONTENT'].= "                              <table width=\"100%\">\n";
 
             array_multisort($poll_results['GROUP_ID'], SORT_NUMERIC, SORT_ASC, $poll_results['OPTION_ID'], $poll_results['OPTION_NAME'], $poll_results['VOTES']);
+            
+            $poll_previous_group = false;
+            
+            $drop_down_data = array();
+            
+            $poll_results_option_id_keys = array_keys($poll_results['OPTION_ID']);
 
-            foreach ($poll_results['OPTION_ID'] as $key => $poll_results_option_id) {
+            foreach ($poll_results_option_id_keys as $key) {            
 
-                if (!isset($poll_previous_group)) {
-                    $poll_previous_group = $poll_results['GROUP_ID'][$key];
-                }
+                if (!is_numeric($poll_previous_group)) $poll_previous_group = $poll_results['GROUP_ID'][$key];
 
                 if (strlen(trim($poll_results['OPTION_NAME'][$key])) > 0) {
 
@@ -609,13 +610,15 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
 
             }else {
 
-                foreach ($poll_results['OPTION_ID'] as $key => $poll_results_option_id) {
+            	$poll_results_option_id_keys = array_keys($poll_results['OPTION_ID']);
 
-                    if (!isset($poll_previous_group)) $poll_previous_group = $poll_results['GROUP_ID'][$key];
+                foreach ($poll_results_option_id_keys as $option_key) {
 
-                    if (isset($poll_results['OPTION_NAME'][$key]) && strlen($poll_results['OPTION_NAME'][$key]) > 0) {
+                    if (!isset($poll_previous_group)) $poll_previous_group = $poll_results['GROUP_ID'][$option_key];
 
-                        if ($poll_results['GROUP_ID'][$key] <> $poll_previous_group) {
+                    if (isset($poll_results['OPTION_NAME'][$option_key]) && strlen($poll_results['OPTION_NAME'][$option_key]) > 0) {
+
+                        if ($poll_results['GROUP_ID'][$option_key] <> $poll_previous_group) {
 
                             $poll_data['CONTENT'].= "                          <tr>\n";
                             $poll_data['CONTENT'].= "                            <td align=\"left\" colspan=\"2\"><hr /></td>\n";
@@ -625,10 +628,10 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                         }
 
                         $poll_data['CONTENT'].= "                          <tr>\n";
-                        $poll_data['CONTENT'].= "                            <td align=\"left\" colspan=\"2\" class=\"postbody\">". word_filter_add_ob_tags($poll_results['OPTION_NAME'][$key]). "</td>\n";
+                        $poll_data['CONTENT'].= "                            <td align=\"left\" colspan=\"2\" class=\"postbody\">". word_filter_add_ob_tags($poll_results['OPTION_NAME'][$option_key]). "</td>\n";
                         $poll_data['CONTENT'].= "                          </tr>\n";
 
-                        $poll_previous_group = $poll_results['GROUP_ID'][$key];
+                        $poll_previous_group = $poll_results['GROUP_ID'][$option_key];
                     }
                 }
             }
@@ -640,11 +643,13 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
         $poll_data['CONTENT'].= "                            <td align=\"left\" colspan=\"2\" class=\"postbody\">\n";
         $poll_data['CONTENT'].= "                              <ul>\n";
 
-        foreach ($poll_results['OPTION_ID'] as $key => $poll_results_option_id) {
+        $poll_results_option_id_keys = array_keys($poll_results['OPTION_ID']);
 
-            if (strlen($poll_results['OPTION_NAME'][$key]) > 0) {
+        foreach ($poll_results_option_id_keys as $option_key) {
 
-                $poll_data['CONTENT'].= "                                <li>". word_filter_add_ob_tags($poll_results['OPTION_NAME'][$key]). "</li>\n";
+            if (strlen($poll_results['OPTION_NAME'][$option_key]) > 0) {
+
+                $poll_data['CONTENT'].= "                                <li>". word_filter_add_ob_tags($poll_results['OPTION_NAME'][$option_key]). "</li>\n";
             }
         }
 
@@ -658,11 +663,13 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
 
         $group_array = array();
 
-        foreach ($poll_results['OPTION_ID'] as $key => $poll_results_option_id) {
+        $poll_results_option_id_keys = array_keys($poll_results['OPTION_ID']);
 
-            if (!in_array($poll_results['GROUP_ID'][$key], $group_array)) {
+        foreach ($poll_results_option_id_keys as $option_key) {
 
-                $group_array[] = $poll_results['GROUP_ID'][$key];
+            if (!in_array($poll_results['GROUP_ID'][$option_key], $group_array)) {
+
+                $group_array[] = $poll_results['GROUP_ID'][$option_key];
             }
         }
 
@@ -905,49 +912,51 @@ function poll_format_vote_counts($poll_data, $user_votes, $guest_votes)
 
 function poll_results_check_data(&$poll_results_array)
 {
-    if (!isset($poll_results['OPTION_ID'])) {
-        $poll_results['OPTION_ID'] = array();
+    if (!isset($poll_results_array['OPTION_ID'])) {
+        $poll_results_array['OPTION_ID'] = array();
     }
 
-    if (!isset($poll_results['GROUP_ID'])) {
-        $poll_results['GROUP_ID'] = array();
+    if (!isset($poll_results_array['GROUP_ID'])) {
+        $poll_results_array['GROUP_ID'] = array();
     }
 
-    if (!isset($poll_results['OPTION_NAME'])) {
-        $poll_results['OPTION_NAME'] = array();
+    if (!isset($poll_results_array['OPTION_NAME'])) {
+        $poll_results_array['OPTION_NAME'] = array();
     }
 
-    if (!isset($poll_results['VOTES'])) {
-        $poll_results['VOTES'] = array();
+    if (!isset($poll_results_array['VOTES'])) {
+        $poll_results_array['VOTES'] = array();
     }
+    
+    $poll_results_option_id_keys = array_keys($poll_results_array['OPTION_ID']);
 
-    foreach ($poll_results['OPTION_ID'] as $key => $option_id) {
+    foreach ($poll_results_option_id_keys as $option_key) { 
 
-        if (!isset($poll_results['GROUP_ID'][$key])) {
-            $poll_results['GROUP_ID'][$key] = 1;
+        if (!isset($poll_results_array['GROUP_ID'][$option_key])) {
+            $poll_results_array['GROUP_ID'][$option_key] = 1;
         }
 
-        if (!isset($poll_results['GROUP_ID'][$key])) {
-            $poll_results['OPTION_NAME'][$key] = '';
+        if (!isset($poll_results_array['GROUP_ID'][$option_key])) {
+            $poll_results_array['OPTION_NAME'][$option_key] = '';
         }
 
-        if (!isset($poll_results['VOTES'][$key])) {
-            $poll_results['VOTES'][$key] = 0;
+        if (!isset($poll_results_array['VOTES'][$option_key])) {
+            $poll_results_array['VOTES'][$option_key] = 0;
         }
     }
 }
 
 function poll_preview_form($poll_results, $poll_data)
 {
-    $lang = load_language_file();
-
     $poll_group_count = 1;
 
     poll_results_check_data($poll_results);
+    
+    $poll_results_group_id_keys = array_keys($poll_results['GROUP_ID']);
 
-    foreach ($poll_results['GROUP_ID'] as $group_key => $poll_results_group_id) {
+    foreach ($poll_results_group_id_keys as $group_key) {
 
-        if (!isset($poll_results['GROUP_SIZE'][$poll_results['GROUP_ID'][$group_key]]))         {
+        if (!isset($poll_results['GROUP_SIZE'][$poll_results['GROUP_ID'][$group_key]])) {
             $poll_results['GROUP_SIZE'][$poll_results['GROUP_ID'][$group_key]] = 1;
         }else {
             $poll_results['GROUP_SIZE'][$poll_results['GROUP_ID'][$group_key]]++;
@@ -958,12 +967,16 @@ function poll_preview_form($poll_results, $poll_data)
 
     $poll_display = "                              <div align=\"center\">\n";
     $poll_display.= "                              <table width=\"100%\">\n";
+    
+    $drop_down_data = array();
+    
+    $poll_previous_group = false;
 
-    foreach ($poll_results['OPTION_ID'] as $option_key => $poll_results_option_id) {
+    $poll_results_option_id_keys = array_keys($poll_results['OPTION_ID']);
 
-        if (!isset($poll_previous_group)) {
-            $poll_previous_group = $poll_results['GROUP_ID'][$option_key];
-        }
+    foreach ($poll_results_option_id_keys as $option_key) {    
+
+        if (!numeric($poll_previous_group)) $poll_previous_group = $poll_results['GROUP_ID'][$option_key];
 
         if (strlen(trim($poll_results['OPTION_NAME'][$option_key])) > 0) {
 
@@ -1041,7 +1054,9 @@ function poll_preview_graph_horz($poll_results)
 
     poll_results_check_data($poll_results);
 
-    foreach ($poll_results['OPTION_ID'] as $option_key => $poll_results_option_id) {
+    $poll_results_option_id_keys = array_keys($poll_results['OPTION_ID']);
+
+    foreach ($poll_results_option_id_keys as $option_key) {    
 
         if (!isset($max_values[$poll_results['GROUP_ID'][$option_key]])) {
             $max_values[$poll_results['GROUP_ID'][$option_key]] = $poll_results['VOTES'][$option_key];
@@ -1060,10 +1075,14 @@ function poll_preview_graph_horz($poll_results)
 
     $poll_display = "                              <div align=\"center\">\n";
     $poll_display.= "                              <table width=\"100%\">\n";
+    
+    $poll_previous_group = false;
 
-    foreach ($poll_results['OPTION_ID'] as $option_key => $poll_results_option_id) {
+    $poll_results_option_id_keys = array_keys($poll_results['OPTION_ID']);
 
-        if (!isset($poll_previous_group)) $poll_previous_group = $poll_results['GROUP_ID'][$option_key];
+    foreach ($poll_results_option_id_keys as $option_key) {    
+
+        if (!numeric($poll_previous_group)) $poll_previous_group = $poll_results['GROUP_ID'][$option_key];
 
         if (isset($poll_results['OPTION_NAME'][$option_key]) && strlen($poll_results['OPTION_NAME'][$option_key]) > 0) {
 
@@ -1125,7 +1144,9 @@ function poll_preview_graph_vert($poll_results)
 
     poll_results_check_data($poll_results);
 
-    foreach ($poll_results['OPTION_ID'] as $option_key => $poll_results_option_id) {
+    $poll_results_option_id_keys = array_keys($poll_results['OPTION_ID']);
+
+    foreach ($poll_results_option_id_keys as $option_key) {    
 
         if (!isset($max_values[$poll_results['GROUP_ID'][$option_key]])) {
             $max_values[$poll_results['GROUP_ID'][$option_key]] = $poll_results['VOTES'][$option_key];
@@ -1148,9 +1169,13 @@ function poll_preview_graph_vert($poll_results)
     $poll_display.= "                              <table width=\"560\" cellpadding=\"0\" cellspacing=\"0\">\n";
     $poll_display.= "                                <tr>\n";
 
-    foreach ($poll_results['OPTION_ID'] as $option_key => $poll_results_option_id) {
+    $poll_previous_group = false;
+    
+    $poll_results_option_id_keys = array_keys($poll_results['OPTION_ID']);
 
-        if (!isset($poll_previous_group)) $poll_previous_group = $poll_results['GROUP_ID'][$option_key];
+    foreach ($poll_results_option_id_keys as $option_key) {
+    
+        if (!numeric($poll_previous_group)) $poll_previous_group = $poll_results['GROUP_ID'][$option_key];
 
         if (isset($poll_results['OPTION_NAME'][$option_key]) && strlen($poll_results['OPTION_NAME'][$option_key]) > 0) {
 
@@ -1185,7 +1210,9 @@ function poll_preview_graph_vert($poll_results)
 
     unset($poll_previous_group);
 
-    foreach ($poll_results['OPTION_ID'] as $option_key => $poll_results_option_id) {
+    $poll_results_option_id_keys = array_keys($poll_results['OPTION_ID']);
+
+    foreach ($poll_results_option_id_keys as $option_key) {    
 
         if (!isset($poll_previous_group)) $poll_previous_group = $poll_results['GROUP_ID'][$option_key];
 
@@ -1230,7 +1257,9 @@ function poll_horizontal_graph($tid)
 
     poll_results_check_data($poll_results);
 
-    foreach ($poll_results['OPTION_ID'] as $option_key => $poll_results_option_id) {
+    $poll_results_option_id_keys = array_keys($poll_results['OPTION_ID']);
+
+    foreach ($poll_results_option_id_keys as $option_key) {    
 
         if (!isset($max_values[$poll_results['GROUP_ID'][$option_key]])) {
             $max_values[$poll_results['GROUP_ID'][$option_key]] = $poll_results['VOTES'][$option_key];
@@ -1251,10 +1280,14 @@ function poll_horizontal_graph($tid)
 
     $poll_display = "                              <div align=\"center\">\n";
     $poll_display.= "                              <table width=\"100%\">\n";
+    
+    $poll_previous_group = false;
 
-    foreach ($poll_results['OPTION_ID'] as $option_key => $poll_results_option_id) {
+    $poll_results_option_id_keys = array_keys($poll_results['OPTION_ID']);
 
-        if (!isset($poll_previous_group)) $poll_previous_group = $poll_results['GROUP_ID'][$option_key];
+    foreach ($poll_results_option_id_keys as $option_key) {    
+
+        if (!numeric($poll_previous_group)) $poll_previous_group = $poll_results['GROUP_ID'][$option_key];
 
         if (isset($poll_results['OPTION_NAME'][$option_key]) && strlen($poll_results['OPTION_NAME'][$option_key]) > 0) {
 
@@ -1313,19 +1346,17 @@ function poll_horizontal_graph($tid)
 
 function poll_preview_graph_table($poll_results)
 {
-    $lang = load_language_file();
-
     $total_votes = array();
     $max_values  = array();
 
     $option_count = 0;
 
-    $bar_color = 1;
-
     poll_results_check_data($poll_results);
 
-    foreach ($poll_results['OPTION_ID'] as $option_key => $poll_results_option_id) {
+    $poll_results_option_id_keys = array_keys($poll_results['OPTION_ID']);
 
+    foreach ($poll_results_option_id_keys as $option_key) {
+    
         if (!isset($max_values[$poll_results['GROUP_ID'][$option_key]])) {
             $max_values[$poll_results['GROUP_ID'][$option_key]] = $poll_results['VOTES'][$option_key];
         }else {
@@ -1353,17 +1384,13 @@ function poll_preview_graph_table($poll_results)
     $group1 = array();
 
     for ($i = 0; $i < sizeof($group1_keys); $i++) {
-
         $group1[] = $poll_results['OPTION_ID'][$group1_keys[$i]];
-        $blank1[] = 0;
     }
 
     $group2 = array();
 
     for ($i = 0; $i < sizeof($group2_keys); $i++) {
-
         $group2[] = $poll_results['OPTION_ID'][$group2_keys[$i]];
-        $blank2[] = 0;
     }
 
     for ($rows = 0; $rows < sizeof($group1); $rows++) {
@@ -1498,7 +1525,9 @@ function poll_vertical_graph($tid)
 
     poll_results_check_data($poll_results);
 
-    foreach ($poll_results['OPTION_ID'] as $option_key => $poll_results_option_id) {
+    $poll_results_option_id_keys = array_keys($poll_results['OPTION_ID']);
+
+    foreach ($poll_results_option_id_keys as $option_key) {    
 
         if (!isset($max_values[$poll_results['GROUP_ID'][$option_key]])) {
             $max_values[$poll_results['GROUP_ID'][$option_key]] = $poll_results['VOTES'][$option_key];
@@ -1520,10 +1549,14 @@ function poll_vertical_graph($tid)
     $poll_display = "                              <div align=\"center\">\n";
     $poll_display.= "                              <table width=\"560\" cellpadding=\"0\" cellspacing=\"0\">\n";
     $poll_display.= "                                <tr>\n";
+    
+    $poll_previous_group = false;
 
-    foreach ($poll_results['OPTION_ID'] as $option_key => $poll_results_option_id) {
+    $poll_results_option_id_keys = array_keys($poll_results['OPTION_ID']);
 
-        if (!isset($poll_previous_group)) $poll_previous_group = $poll_results['GROUP_ID'][$option_key];
+    foreach ($poll_results_option_id_keys as $option_key) {    
+
+        if (!numeric($poll_previous_group)) $poll_previous_group = $poll_results['GROUP_ID'][$option_key];
 
         if (isset($poll_results['OPTION_NAME'][$option_key]) && strlen($poll_results['OPTION_NAME'][$option_key]) > 0) {
 
@@ -1562,7 +1595,9 @@ function poll_vertical_graph($tid)
 
     unset($poll_previous_group);
 
-    foreach ($poll_results['OPTION_ID'] as $option_key => $poll_results_option_id) {
+    $poll_results_option_id_keys = array_keys($poll_results['OPTION_ID']);
+
+    foreach ($poll_results_option_id_keys as $option_key) {    
 
         if (!isset($poll_previous_group)) $poll_previous_group = $poll_results['GROUP_ID'][$option_key];
 
@@ -1623,25 +1658,19 @@ function poll_get_table_votes($tid)
 
 function poll_table_graph($tid)
 {
-    $lang = load_language_file();
-
     $total_votes = array();
     $max_values  = array();
 
     $option_count = 0;
 
-    $bar_color = 1;
-
-    $poll_group_count = 1;
-
     $poll_results = poll_get_votes($tid);
 
     $poll_table_results = poll_get_table_votes($tid);
 
-    poll_results_check_data($poll_results);
+    $poll_results_option_id_keys = array_keys($poll_results['OPTION_ID']);
 
-    foreach ($poll_results['OPTION_ID'] as $option_key => $poll_results_option_id) {
-
+    foreach ($poll_results_option_id_keys as $option_key) {
+    
         if (!isset($max_values[$poll_results['GROUP_ID'][$option_key]])) {
             $max_values[$poll_results['GROUP_ID'][$option_key]] = $poll_results['VOTES'][$option_key];
         }else {
@@ -1685,12 +1714,12 @@ function poll_table_graph($tid)
             $table[$rows][$cols] = 0;
         }
     }
+    
+    $poll_previous_uid = false;
 
     for ($i = 0; $i < sizeof($poll_table_results['UID']); $i++) {
 
-        if (!isset($poll_previous_uid)) $poll_previous_uid =    - 1;
-
-        if ($poll_previous_uid != $poll_table_results['UID'][$i]) {
+        if (!is_numeric($poll_previous_uid) || ($poll_previous_uid != $poll_table_results['UID'][$i])) {
 
             $uid_keys = array_keys($poll_table_results['UID'], $poll_table_results['UID'][$i]);
 
@@ -1835,7 +1864,9 @@ function poll_public_ballot($tid, $view_style, $offset, &$poll_user_count)
 
     poll_results_check_data($poll_results);
 
-    foreach ($poll_results['OPTION_ID'] as $option_key => $poll_results_option_id) {
+    $poll_results_option_id_keys = array_keys($poll_results['OPTION_ID']);
+
+    foreach ($poll_results_option_id_keys as $option_key) {
 
         if (!isset($max_values[$poll_results['GROUP_ID'][$option_key]])) {
             $max_values[$poll_results['GROUP_ID'][$option_key]] = $poll_results['VOTES'][$option_key];
@@ -1859,10 +1890,14 @@ function poll_public_ballot($tid, $view_style, $offset, &$poll_user_count)
         array_multisort($poll_results['GROUP_ID'], SORT_NUMERIC, SORT_ASC, $poll_results['OPTION_ID'], $poll_results['OPTION_NAME'], $poll_results['VOTES']);
 
         $poll_display = "      <table class=\"box\" width=\"100%\">\n";
+        
+        $poll_previous_group = false;
+        
+        $poll_results_option_id_keys = array_keys($poll_results['OPTION_ID']);
 
-        foreach ($poll_results['OPTION_ID'] as $option_key => $poll_results_option_id) {
+        foreach ($poll_results_option_id_keys as $option_key) {
 
-            if (!isset($poll_previous_group)) $poll_previous_group = $poll_results['GROUP_ID'][$option_key];
+            if (!is_numeric($poll_previous_group)) $poll_previous_group = $poll_results['GROUP_ID'][$option_key];
 
             if (isset($poll_results['OPTION_NAME'][$option_key]) && strlen($poll_results['OPTION_NAME'][$option_key]) > 0) {
 
@@ -2081,9 +2116,11 @@ function poll_close($tid)
             $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}POLL SET ";
             $sql.= "CLOSES = FROM_UNIXTIME($timestamp) WHERE TID = '$tid'";
 
-            if (!$result = db_query($sql, $db_poll_close)) return false;
+            if (!db_query($sql, $db_poll_close)) return false;
         }
     }
+    
+    return true;
 }
 
 function poll_is_closed($tid)
@@ -2129,10 +2166,12 @@ function poll_vote($tid, $vote_array)
                 $sql = "INSERT INTO {$table_data['PREFIX']}USER_POLL_VOTES (TID, UID, OPTION_ID, TSTAMP) ";
                 $sql.= "VALUES ('$tid', '$uid', '$user_vote', NOW())";
 
-                if (!$result = db_query($sql, $db_poll_vote)) return false;
+                if (!db_query($sql, $db_poll_vote)) return false;
             }
         }
     }
+    
+    return true;
 }
 
 function poll_delete_vote($tid)
@@ -2148,7 +2187,9 @@ function poll_delete_vote($tid)
     $sql = "DELETE QUICK FROM {$table_data['PREFIX']}USER_POLL_VOTES ";
     $sql.= "WHERE TID = '$tid' AND UID = '$uid'";
 
-    if (!$result = db_query($sql, $db_poll_delete_vote)) return false;
+    if (!db_query($sql, $db_poll_delete_vote)) return false;
+    
+    return true;
 }
 
 function thread_is_poll($tid)

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.121 2008-07-28 21:05:53 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.122 2008-07-30 22:39:22 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -248,6 +248,8 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
 
         // Get MySQL version if available.
 
+        $mysql_version = "MySQL Version Unknown";
+        
         if (function_exists('db_fetch_mysql_version') && db_fetch_mysql_version($mysql_version)) {
             $version_strings[] = "MySQL/$mysql_version";
         }else {

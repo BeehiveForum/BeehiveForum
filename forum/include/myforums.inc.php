@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.83 2008-07-30 16:04:35 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.84 2008-07-30 22:39:24 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -45,8 +45,6 @@ function get_forum_list($offset)
     if (!$db_get_forum_list = db_connect()) return false;
 
     if (!is_numeric($offset)) return false;
-
-    $lang = load_language_file();
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
@@ -131,8 +129,6 @@ function get_my_forums($view_type, $offset)
 
     if (!is_numeric($view_type)) return false;
     if (!is_numeric($offset)) return false;
-
-    $lang = load_language_file();
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 

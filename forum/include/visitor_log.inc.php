@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.inc.php,v 1.35 2008-07-30 16:04:36 decoyduck Exp $ */
+/* $Id: visitor_log.inc.php,v 1.36 2008-07-30 22:39:24 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -256,15 +256,6 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
                                              'DOB'             => '(DOB IS NOT NULL)',
                                              'AGE'             => '(AGE IS NOT NULL AND AGE > 0)',
                                              'TIMEZONE'        => '(TIMEZONE IS NOT NULL AND LENGTH(TIMEZONE) > 0)');
-
-    $column_null_filter_where_array = array('POST_COUNT'      => '(USER_TRACK.POST_COUNT IS NOT NULL AND USER_TRACK.POST_COUNT > 0)',
-                                            'LAST_VISIT'      => '(VISITOR_LOG_TIME.LAST_LOGON IS NOT NULL AND UNIX_TIMESTAMP(VISITOR_LOG_TIME.LAST_LOGON) > 0)',
-                                            'REGISTERED'      => '(USER.REGISTERED IS NOT NULL AND UNIX_TIMESTAMP(USER.REGISTERED) > 0)',
-                                            'USER_TIME_BEST'  => '(USER_TRACK.USER_TIME_BEST IS NOT NULL AND UNIX_TIMESTAMP(USER_TRACK.USER_TIME_BEST) > 0)',
-                                            'USER_TIME_TOTAL' => '(USER_TRACK.USER_TIME_TOTAL IS NOT NULL AND UNIX_TIMESTAMP(USER_TRACK.USER_TIME_TOTAL) > 0)',
-                                            'DOB'             => '(USER_PREFS_DOB.DOB_DISPLAY > 1 AND UNIX_TIMESTAMP(USER_PREFS_DOB.DOB) > 0)',
-                                            'AGE'             => '((USER_PREFS_DOB.DOB_DISPLAY = 1 OR USER_PREFS_DOB.DOB_DISPLAY = 3) AND UNIX_TIMESTAMP(USER_PREFS_DOB.DOB) > 0)',
-                                            'TIMEZONE'        => '(TIMEZONES.TZID IS NOT NULL AND LENGTH(TIMEZONES.TZID) > 0)');
 
     // Main query.
 
@@ -655,7 +646,7 @@ function visitor_log_clean_up()
     $sql.= "AND LAST_LOGON < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) ";
     $sql.= "- $visitor_cutoff_stamp)";
 
-    if (!$result = db_query($sql, $db_visitor_log_clean_up)) return false;
+    if (!db_query($sql, $db_visitor_log_clean_up)) return false;
 
     return true;
 }

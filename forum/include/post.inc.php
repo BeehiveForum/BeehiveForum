@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.183 2008-07-28 21:05:55 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.184 2008-07-30 22:39:24 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -47,7 +47,7 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "user_profile.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
-function post_create($fid, $tid, $reply_pid, $by_uid, $fuid, $tuid, $content, $hide_ipaddress = false)
+function post_create($fid, $tid, $reply_pid, $fuid, $tuid, $content, $hide_ipaddress = false)
 {
     if (!$db_post_create = db_connect()) return -1;
 
@@ -85,7 +85,7 @@ function post_create($fid, $tid, $reply_pid, $by_uid, $fuid, $tuid, $content, $h
         $sql.= "VALUES ($tid, $reply_pid, $fuid, $tuid, NOW(), NOW(), $fuid, '$ipaddress')";
     }
 
-    if (($result = db_query($sql, $db_post_create))) {
+    if (db_query($sql, $db_post_create)) {
 
         $new_pid = db_insert_id($db_post_create);
 
@@ -95,7 +95,7 @@ function post_create($fid, $tid, $reply_pid, $by_uid, $fuid, $tuid, $content, $h
         $sql = "INSERT INTO {$table_data['PREFIX']}POST_CONTENT (TID, PID, CONTENT) ";
         $sql.= "VALUES ('$tid', '$new_pid', '$post_content')";
 
-        if (($result = db_query($sql, $db_post_create))) {
+        if (db_query($sql, $db_post_create)) {
 
             // Update the thread length so it matches the number of posts
 
@@ -136,7 +136,7 @@ function post_approve($tid, $pid)
     $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}POST SET APPROVED = NOW(), APPROVED_BY = '$approve_uid' ";
     $sql.= "WHERE TID = '$tid' AND PID = '$pid'";
 
-    if (!$result = db_query($sql, $db_post_approve)) return false;
+    if (!db_query($sql, $db_post_approve)) return false;
 
     return true;
 }
@@ -216,7 +216,7 @@ function post_update_thread_length($tid, $length)
     $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}THREAD ";
     $sql.= "SET LENGTH = '$length', MODIFIED = NOW() WHERE TID = '$tid'";
 
-    if (!$result = db_query($sql, $db_post_update_thread_length)) return false;
+    if (!db_query($sql, $db_post_update_thread_length)) return false;
 
     return true;
 }
@@ -649,7 +649,7 @@ class MessageText {
             $text = fix_html($text, $this->emoticons, $this->links);
 
             // <code></code> blocks are removed as the code highlighter often trips up this comparison
-            if (trim(preg_replace("/<code[^>]*>.*<\/code>/s", '', $o)) != trim(preg_replace("/<code[^>]*>.*<\/code>/s", '', tidy_html($text, ($this->html == POST_HTML_AUTO) ? true : false)))) {
+            if (trim(preg_replace('/<code[^>]*>.*<\/code>/s', '', $o)) != trim(preg_replace('/<code[^>]*>.*<\/code>/s', '', tidy_html($text, ($this->html == POST_HTML_AUTO) ? true : false)))) {
                 $this->diff = true;
             }
 
@@ -668,12 +668,13 @@ class MessageText {
 
     function getTidyContent ()
     {
-        if ($this->html == POST_HTML_DISABLED) {
-            return strip_tags($this->text);
-        } else if ($this->html > POST_HTML_DISABLED) {
+        if ($this->html > POST_HTML_DISABLED) {
+        	
             if ($this->tinymce) return _htmlentities(tidy_html($this->text, false, $this->links, true));
             return _htmlentities(tidy_html($this->text, ($this->html == POST_HTML_AUTO) ? true : false, $this->links));
         }
+        
+        return strip_tags($this->text);
     }
 
     function getOriginalContent ()
@@ -697,38 +698,34 @@ class MessageTextParse {
 
     function MessageTextParse ($message, $emots_default = true, $links_enabled = true)
     {
-
         $this->original = $message;
 
-        $message = explode('<div class="sig">', trim($message));
+        $message_parts = preg_split('/(<[^<>]+>)/', $message, -1, PREG_SPLIT_DELIM_CAPTURE);
 
-        if (count($message) > 1 && substr($message[count($message)-1], -6) == '</div>') {
+        $signature_parts = array();
 
-            $sig = '<div class="sig">' . array_pop($message);
+        if (($signature_offset = array_search("<div class=\"sig\">", $message_parts)) !== false) {
 
-            do {
-                if (count(explode('<div', $sig)) == count(explode('</div>', $sig))) break;
-                $sig = '<div class="sig">' . array_pop($message) . $sig;
-            } while (0);
+            while (sizeof($message_parts) > 0) {
 
-            $sig = preg_replace("/^<div class=\"sig\">(.*)<\/div>$/s", '$1', $sig);
-
-        } else {
-
-            $sig = "";
+                $signature_parts = array_merge($signature_parts, array_splice($message_parts, $signature_offset, 1));
+                if (count(explode('<div', implode('', $signature_parts))) == count(explode('</div>', implode('', $signature_parts)))) break;
+            }
         }
 
-        $message = implode('<div class="sig">', $message);
+        $signature = implode('', $signature_parts);
+
+        $message = implode('', $message_parts);
 
         $emoticons = $emots_default;
 
-        if (preg_match("/^<noemots>.*<\/noemots>$/s", $message) > 0) {
+        if (preg_match('/^<noemots>.*<\/noemots>$/s', $message) > 0) {
             $emoticons = false;
         }
 
         $html = POST_HTML_DISABLED;
 
-        $message_temp = preg_replace("/<a href=\"(http:\/\/)?([^\"]*)\">((http:\/\/)?\\2)<\/a>/", "\\3", $message);
+        $message_temp = preg_replace('/<a href="(http:\/\/)?([^"]*)">((http:\/\/)?\\2)<\/a>/', '\3', $message);
 
         if ($message_temp != $message) {
             $links = true;
@@ -743,17 +740,16 @@ class MessageTextParse {
             $html = POST_HTML_ENABLED;
 
             if (add_paragraphs($message) == $message) {
-
                 $html = POST_HTML_AUTO;
             }
 
-        } else {
+        }else {
 
             $message = _htmlentities_decode(strip_tags($message));
         }
 
         $this->message = $message;
-        $this->sig = $sig;
+        $this->sig = $signature;
         $this->emoticons = $emoticons;
         $this->html = $html;
         $this->links = $links;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: emoticons.inc.php,v 1.78 2008-07-28 21:05:53 decoyduck Exp $ */
+/* $Id: emoticons.inc.php,v 1.79 2008-07-30 22:39:22 decoyduck Exp $ */
 
 /**
 * emoticons.inc.php - emoticon functions
@@ -215,7 +215,7 @@ function emoticons_apply($content)
 
     // PREG match for emoticons.
 
-    $emoticon_preg_match = "(?<=\s|^|>)%s(?=\s|$|<)";
+    $emoticon_preg_match = '(?<=\s|^|>)%s(?=\s|$|<)';
 
     // HTML code for emoticons.
 
@@ -413,7 +413,9 @@ function emoticons_preview($emoticon_set, $width = 190, $height = 100, $num = 35
 
         if (($style_contents = @file_get_contents("emoticons/$emoticon_set/style.css"))) {
 
-            preg_match_all("/\.e_([\w_]+) \{[^\}]*background-image\s*:\s*url\s*\([\"\']\.?\/?([^\"\']*)[\"\']\)[^\}]*\}/i", $style_contents, $style_matches);
+            $style_matches = array();
+        	
+        	preg_match_all('/\.e_([\w_]+) \{[^\}]*background-image\s*:\s*url\s*\(["\']\.?\/?([^"\']*)["\']\)[^\}]*\}/i', $style_contents, $style_matches);
 
             for ($i = 0; $i < count($style_matches[1]); $i++) {
 
@@ -440,8 +442,7 @@ function emoticons_preview($emoticon_set, $width = 190, $height = 100, $num = 35
 
             $emot_tooltip_matches = array();
 
-            foreach ($emoticons_array[$i]['matches'] as $key => $emot_match) {
-
+            foreach ($emoticons_array[$i]['matches'] as $emot_match) {
                 $emot_tooltip_matches[] = _htmlentities($emot_match);
             }
 

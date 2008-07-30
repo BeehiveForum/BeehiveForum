@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.166 2008-07-30 16:04:35 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.167 2008-07-30 22:39:22 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -337,15 +337,10 @@ function timestamp_to_date($timestamp)
 function _htmlentities($var)
 {
     if (is_array($var)) {
-
         return array_map('_htmlentities', $var);
-
-    }else {
-
-        return htmlentities($var, ENT_COMPAT, 'UTF-8');
     }
 
-    return $var;
+    return htmlentities($var, ENT_COMPAT, 'UTF-8');
 }
 
 /**
@@ -360,15 +355,10 @@ function _htmlentities($var)
 function _htmlentities_decode($var)
 {
     if (is_array($var)) {
-
         return array_map('_htmlentities_decode', $var);
-
-    }else {
-
-        return html_entity_decode($var, ENT_COMPAT, 'UTF-8');
     }
 
-    return $var;
+    return html_entity_decode($var, ENT_COMPAT, 'UTF-8');
 }
 
 /**
@@ -562,7 +552,7 @@ function html_entity_to_decimal($string)
 
 function strip_paragraphs($string)
 {
-    return preg_replace(array("/<p[^>]*>/iU", "/<\/p[^>]*>\n/iU", "/<\/p[^>]*>/iU", "/<br\s*?\/?>/i"), array("", "\n"), $string);
+    return preg_replace(array('/<p[^>]*>/iU', '/<\/p[^>]*>\n/iU', '/<\/p[^>]*>/iU', '/<br\s*?\/?>/i'), array('', chr(10)), $string);
 }
 
 /**
@@ -728,7 +718,9 @@ function get_local_time()
 
 function format_age($dob)
 {
-    if (preg_match("/([0-9]{4})-([0-9]{2})-([0-9]{2})/", $dob, $matches_array)) {
+    $matches_array = array();
+	
+	if (preg_match('/([0-9]{4})-([0-9]{2})-([0-9]{2})/', $dob, $matches_array)) {
 
         list(, $birth_year, $birth_month, $birth_day) = $matches_array;
 
@@ -757,7 +749,9 @@ function format_birthday($date) // $date is a MySQL-type DATE field (YYYY-MM-DD)
 {
     $lang = load_language_file();
 
-    if (preg_match("/[0-9]{4}-([0-9]{2})-([0-9]{2})/", $date, $matches_array)) {
+    $matches_array = array();
+    
+    if (preg_match('/[0-9]{4}-([0-9]{2})-([0-9]{2})/', $date, $matches_array)) {
 
         list(, $month, $day) = $matches_array;
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.543 2008-07-30 16:04:35 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.544 2008-07-30 22:39:24 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -463,7 +463,7 @@ function message_apply_formatting($message, $emoticons = true, $ignore_sig = fal
             if (strlen($wiki_location) > 0) $wiki_location = str_replace("[WikiWord]", "\\1", $wiki_location);
         }
 
-        $message_parts = preg_split("/<\/?nowiki>/", $message);
+        $message_parts = preg_split('/<\/?nowiki>/', $message);
 
         for ($i = 0; $i < sizeof($message_parts); $i++) {
 
@@ -477,19 +477,19 @@ function message_apply_formatting($message, $emoticons = true, $ignore_sig = fal
 
                         if ($enable_wiki_words) {
 
-                            $html_parts[$j] = preg_replace("/\b(([A-Z][a-z]+){2,})\b/", "<a href=\"$wiki_location\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
+                            $html_parts[$j] = preg_replace('/\b(([A-Z][a-z]+){2,})\b/', "<a href=\"$wiki_location\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
                         }
 
                         if ($enable_wiki_links) {
 
                             if (defined('BEEHIVEMODE_LIGHT')) {
 
-                                $html_parts[$j] = preg_replace("/\b(msg:([0-9]{1,}\.[0-9]{1,}))\b/i", "<a href=\"lmessages.php?webtag=$webtag&amp;msg=\\2\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
+                                $html_parts[$j] = preg_replace('/\b(msg:([0-9]{1,}\.[0-9]{1,}))\b/i', "<a href=\"lmessages.php?webtag=$webtag&amp;msg=\\2\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
 
                             }else {
 
-                                $html_parts[$j] = preg_replace("/\b(msg:([0-9]{1,}\.[0-9]{1,}))\b/i", "<a href=\"index.php?webtag=$webtag&amp;msg=\\2\" target=\"_blank\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
-                                $html_parts[$j] = preg_replace("/\b(user:([a-z0-9_-]{2,15}))\b/i", "<a href=\"user_profile.php?webtag=$webtag&amp;logon=\\2\" target=\"_blank\" onclick=\"return openProfileByLogon('\\2', '$webtag')\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
+                                $html_parts[$j] = preg_replace('/\b(msg:([0-9]{1,}\.[0-9]{1,}))\b/i', "<a href=\"index.php?webtag=$webtag&amp;msg=\\2\" target=\"_blank\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
+                                $html_parts[$j] = preg_replace('/\b(user:([a-z0-9_-]{2,15}))\b/i', "<a href=\"user_profile.php?webtag=$webtag&amp;logon=\\2\" target=\"_blank\" onclick=\"return openProfileByLogon('\\2', '$webtag')\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
                             }
                         }
                     }
@@ -504,8 +504,8 @@ function message_apply_formatting($message, $emoticons = true, $ignore_sig = fal
 
     if ($emoticons == true) {
 
-        $message_parts = preg_split("/<\/?noemots>/", $message);
-        $signature_parts = preg_split("/<\/?noemots>/", $signature);
+        $message_parts = preg_split('/<\/?noemots>/', $message);
+        $signature_parts = preg_split('/<\/?noemots>/', $signature);
 
         $message_parts = array_merge($message_parts, $signature_parts);
 
@@ -520,7 +520,7 @@ function message_apply_formatting($message, $emoticons = true, $ignore_sig = fal
         $message = implode("", $message_parts);
     }
 
-    return preg_replace("/<\/?noemots>|<\/?nowiki>/", "", $message);
+    return preg_replace('/<\/?noemots>|<\/?nowiki>/', '', $message);
 }
 
 function messages_top($tid, $pid, $folder_fid, $folder_title, $thread_title, $thread_interest_level = THREAD_NOINTEREST, $folder_interest_level = FOLDER_NOINTEREST, $sticky = "N", $closed = false, $locked = false, $deleted = false, $frame_links = true)
@@ -576,7 +576,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
     $webtag = get_webtag();
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = bh_session_get_value('UID')) === false) return;
 
     if (($posts_per_page = bh_session_get_value('POST_PER_PAGE')) === false) {
         $posts_per_page = 20;
@@ -623,10 +623,10 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
     if (bh_session_get_value('IMAGES_TO_LINKS') == 'Y') {
 
-        $message['CONTENT'] = preg_replace("/<a([^>]*)href=\"([^\"]*)\"([^\>]*)><img[^>]*src=\"([^\"]*)\"[^>]*><\/a>/i", "[img: <a\\1href=\"\\2\"\\3>\\4</a>]", $message['CONTENT']);
-        $message['CONTENT'] = preg_replace("/<img[^>]*src=\"([^\"]*)\"[^>]*>/i", "[img: <a href=\"\\1\">\\1</a>]", $message['CONTENT']);
-        $message['CONTENT'] = preg_replace("/<embed[^>]*src=\"([^\"]*)\"[^>]*>/i", "[object: <a href=\"\\1\">\\1</a>]", $message['CONTENT']);
-    }
+        $message['CONTENT'] = preg_replace('/<a([^>]*)href="([^"]*)"([^\>]*)><img[^>]*src="([^"]*)"[^>]*><\/a>/i', '[img: <a\1href="\2"\3>\4</a>]', $message['CONTENT']);
+        $message['CONTENT'] = preg_replace('/<img[^>]*src="([^"]*)"[^>]*>/i', '[img: <a href="\1">\1</a>]', $message['CONTENT']);
+        $message['CONTENT'] = preg_replace('/<embed[^>]*src="([^"]*)"[^>]*>/i', '[object: <a href="\1">\1</a>]', $message['CONTENT']);
+    }    
 
     $message['CONTENT'] = "<div class=\"pear_cache_lite\">{$message['CONTENT']}</div>";
 
@@ -962,6 +962,9 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
             $aid = isset($message['AID']) ? $message['AID'] : get_attachment_id($tid, $message['PID']);
 
+            $attachments_array = array();
+            $image_attachments_array = array();
+            
             if (get_attachments($message['FROM_UID'], $aid, $attachments_array, $image_attachments_array)) {
 
                 echo "              <tr>\n";
@@ -1625,7 +1628,7 @@ function messages_set_read($tid, $pid, $uid, $modified)
             $sql.= "SET LAST_READ = '$pid', LAST_READ_AT = NULL ";
             $sql.= "WHERE UID = '$uid' AND TID = '$tid'";
 
-            if (!$result = db_query($sql, $db_message_set_read)) return false;
+            if (!db_query($sql, $db_message_set_read)) return false;
 
             if (db_affected_rows($db_message_set_read) < 1) {
 
@@ -1633,7 +1636,7 @@ function messages_set_read($tid, $pid, $uid, $modified)
                 $sql.= "(UID, TID, LAST_READ, LAST_READ_AT) ";
                 $sql.= "VALUES ($uid, $tid, $pid, NULL)";
 
-                if (!$result = db_query($sql, $db_message_set_read)) return false;
+                if (!db_query($sql, $db_message_set_read)) return false;
             }
         }
     }
@@ -1643,7 +1646,7 @@ function messages_set_read($tid, $pid, $uid, $modified)
     $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}POST SET VIEWED = NULL ";
     $sql.= "WHERE TID = '$tid' AND PID >= '$pid' AND TO_UID = '$uid'";
 
-    if (!$result = db_query($sql, $db_message_set_read)) return false;
+    if (!db_query($sql, $db_message_set_read)) return false;
 
     return true;
 }
@@ -1789,7 +1792,7 @@ function messages_fontsize_form($tid, $pid)
 
 function validate_msg($msg)
 {
-    return preg_match("/^\d{1,}\.\d{1,}$/", rawurldecode($msg));
+    return preg_match('/^\d{1,}\.\d{1,}$/', rawurldecode($msg));
 }
 
 function messages_forum_stats($tid, $pid)

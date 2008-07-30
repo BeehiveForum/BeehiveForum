@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.112 2008-07-28 21:05:50 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.113 2008-07-30 17:41:40 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -431,7 +431,9 @@ if (isset($_POST['save'])) {
 
                     if (isset($_POST['merge_type']) && is_numeric($_POST['merge_type']) && isset($_POST['merge_thread_con']) && $_POST['merge_thread_con'] == "Y") {
 
-                        $merge_thread = $_POST['merge_thread'];
+                        $error_str = '';
+                    	
+                    	$merge_thread = $_POST['merge_thread'];
                         $merge_type   = $_POST['merge_type'];
 
                         if (validate_msg($merge_thread)) list($merge_thread,) = explode('.', $merge_thread);
@@ -456,7 +458,9 @@ if (isset($_POST['save'])) {
 
                     if (isset($_POST['split_type']) && is_numeric($_POST['split_type']) && isset($_POST['split_thread_con']) && $_POST['split_thread_con'] == "Y") {
 
-                        $split_start = $_POST['split_thread'];
+                        $error_str = '';
+                    	
+                    	$split_start = $_POST['split_thread'];
                         $split_type  = $_POST['split_type'];
 
                         if (($split_result = thread_split($tid, $split_start, $split_type, $error_str))) {

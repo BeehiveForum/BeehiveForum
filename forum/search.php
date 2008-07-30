@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.221 2008-07-28 21:05:49 decoyduck Exp $ */
+/* $Id: search.php,v 1.222 2008-07-30 17:41:40 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -227,6 +227,8 @@ if (isset($_GET['show_stop_words'])) {
         array_walk($highlight_keywords_array, 'mysql_fulltext_callback', '/');
         $highlight_keywords_preg = implode('$|^', $highlight_keywords_array);
     }
+    
+    $mysql_fulltext_stopwords = array();
 
     include(BH_INCLUDE_PATH. "search_stopwords.inc.php");
 
@@ -295,6 +297,9 @@ if (isset($_GET['show_stop_words'])) {
     exit;
 }
 
+$min_length = 4;
+$max_length = 84;
+
 search_get_word_lengths($min_length, $max_length);
 
 if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || isset($_GET['search_string']) || isset($_GET['logon'])) && !isset($_GET['search_error'])) {
@@ -359,6 +364,8 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
     if (isset($_POST['group_by_thread']) && is_numeric($_POST['group_by_thread'])) {
         $search_arguments['group_by_thread'] = $_POST['group_by_thread'];
     }
+    
+    $error = SEARCH_NO_ERROR;
 
     if (($search_success = search_execute($search_arguments, $error))) {
 

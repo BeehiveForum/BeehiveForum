@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.184 2008-07-27 18:26:11 decoyduck Exp $ */
+/* $Id: logon.php,v 1.185 2008-07-30 17:41:39 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -64,6 +64,14 @@ include_once(BH_INCLUDE_PATH. "messages.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
+// Load language file
+
+$lang = load_language_file();
+
+// Fetch the forum webtag
+
+$webtag = get_webtag();
+
 // Retrieve the final_uri request
 
 if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri']))) > 0) {
@@ -105,13 +113,11 @@ if (bh_session_user_banned()) {
     exit;
 }
 
-// Load language file
+// Arrays to hold our cookie data
 
-$lang = load_language_file();
-
-// Fetch the forum webtag
-
-$webtag = get_webtag();
+$username_array = array();
+$password_array = array();
+$passhash_array = array();
 
 // Retrieve existing cookie data if any
 

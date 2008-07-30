@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_prefs.php,v 1.99 2008-07-28 21:05:48 decoyduck Exp $ */
+/* $Id: edit_prefs.php,v 1.100 2008-07-30 17:41:38 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -588,7 +588,7 @@ if (isset($_POST['save'])) {
 
 // Split the DOB into usable variables.
 
-if (isset($user_prefs['DOB']) && preg_match("/\d{4,}-\d{2,}-\d{2,}/", $user_prefs['DOB'])) {
+if (isset($user_prefs['DOB']) && preg_match('/\d{4,}-\d{2,}-\d{2,}/', $user_prefs['DOB'])) {
 
     if (!isset($dob['YEAR']) || !isset($dob['MONTH']) || !isset($dob['DAY'])) {
 
@@ -614,6 +614,11 @@ if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
 // Check to see if we should show the set for all forums checkboxes
 
 $show_set_all = (forums_get_available_count() > 1) ? true : false;
+
+// Arrays to hold our attachments
+
+$attachments_array = array();
+$image_attachments_array = array();
 
 // User's attachments for profile and avatar pictures
 

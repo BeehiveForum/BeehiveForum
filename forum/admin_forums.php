@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forums.php,v 1.86 2008-07-28 21:05:47 decoyduck Exp $ */
+/* $Id: admin_forums.php,v 1.87 2008-07-30 17:41:38 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -304,6 +304,8 @@ if (isset($_POST['delete'])) {
     }
 
     if ($valid) {
+    	
+    	$error_str = '';
 
         if (($new_fid = forum_create($t_webtag, $t_name, $t_owner_uid, $t_database, $t_access, $error_str))) {
 

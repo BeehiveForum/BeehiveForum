@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.353 2008-07-30 16:04:34 decoyduck Exp $ */
+/* $Id: post.php,v 1.354 2008-07-30 17:41:39 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -314,6 +314,9 @@ if (isset($_POST['t_sig_html'])) {
 
     // Fetch the current user's sig
 
+    $t_sig = '';
+    $t_sig_html = 'N';
+
     if (!user_get_sig($uid, $t_sig, $t_sig_html)) {
 
         $t_sig = '';
@@ -344,9 +347,6 @@ if (isset($_POST['t_dedupe']) && is_numeric($_POST['t_dedupe'])) {
 if (!isset($sig_html)) $sig_html = 0;
 
 if (isset($_POST['post']) || isset($_POST['preview'])) {
-
-    $t_closed = isset($_POST['t_closed']) && $_POST['t_closed'] == 'Y' ? true : false;
-    $t_sticky = isset($_POST['t_sticky']) && $_POST['t_sticky'] == 'Y' ? 'Y' : 'N';
 
     if (isset($_POST['t_content']) && strlen(trim(_stripslashes($_POST['t_content']))) > 0) {
 
@@ -708,12 +708,7 @@ if ($valid && isset($_POST['post'])) {
 
             if ($new_thread) {
 
-                if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
-
-                    $t_closed = isset($_POST['t_closed']) && $_POST['t_closed'] == 'Y' ? true : false;
-                    $t_sticky = isset($_POST['t_sticky']) && $_POST['t_sticky'] == 'Y' ? 'Y' : 'N';
-
-                }else {
+                if (!bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
                     $t_closed = false;
                     $t_sticky = "N";
@@ -736,9 +731,6 @@ if ($valid && isset($_POST['post'])) {
                 }
 
                 if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
-
-                    $t_closed = isset($_POST['t_closed']) && $_POST['t_closed'] == 'Y' ? true : false;
-                    $t_sticky = isset($_POST['t_sticky']) && $_POST['t_sticky'] == 'Y' ? 'Y' : 'N';
 
                     if (isset($t_closed) && $t_closed == "Y") {
                         thread_set_closed($t_tid, true);
@@ -947,7 +939,7 @@ if ($new_thread) {
     echo "                        <td align=\"left\"><h2>{$lang['folder']}</h2></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">$folder_dropdown</h2></td>\n";
+    echo "                        <td align=\"left\">$folder_dropdown</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\"><h2>{$lang['threadtitle']}</h2></td>\n";

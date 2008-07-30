@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.inc.php,v 1.79 2008-07-30 16:04:35 decoyduck Exp $ */
+/* $Id: edit.inc.php,v 1.80 2008-07-30 17:41:40 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -55,14 +55,14 @@ function post_update($fid, $tid, $pid, $content)
     $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}POST_CONTENT SET CONTENT = '$content' ";
     $sql.= "WHERE TID = '$tid' AND PID = '$pid' LIMIT 1";
 
-    if (!$result = db_query($sql, $db_post_update)) return false;
+    if (!db_query($sql, $db_post_update)) return false;
 
     if (bh_session_check_perm(USER_PERM_POST_APPROVAL, $fid) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
 
         $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}POST SET APPROVED = 0, APPROVED_BY = 0 ";
         $sql.= "WHERE TID = '$tid' AND PID = '$pid' LIMIT 1";
 
-        if (!$result = db_query($sql, $db_post_update)) return false;
+        if (!db_query($sql, $db_post_update)) return false;
     }
 
     cache_remove("$tid.$pid");
@@ -83,7 +83,7 @@ function post_add_edit_text($tid, $pid)
     $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}POST SET EDITED = NOW(), EDITED_BY = '$edit_uid' ";
     $sql.= "WHERE TID = '$tid' AND PID = '$pid'";
 
-    if (!$result = db_query($sql, $db_post_add_edit_text)) return false;
+    if (!db_query($sql, $db_post_add_edit_text)) return false;
 
     return true;
 }

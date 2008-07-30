@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_folders.php,v 1.23 2008-07-27 18:26:11 decoyduck Exp $ */
+/* $Id: pm_folders.php,v 1.24 2008-07-30 17:41:39 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -114,6 +114,12 @@ if (user_is_guest()) {
 // Check that PM system is enabled
 
 pm_enabled();
+
+// Variables to hold message counts
+
+$pm_new_count = 0;
+$pm_outbox_count = 0;
+$pm_unread_count = 0;
 
 // Check for new PMs
 

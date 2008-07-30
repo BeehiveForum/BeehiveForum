@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db.inc.php,v 1.79 2008-07-27 18:26:15 decoyduck Exp $ */
+/* $Id: db.inc.php,v 1.80 2008-07-30 17:41:40 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -32,6 +32,12 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
     exit;
 }
 
+// MySQL Extension to use. By default we auto-detect.
+
+$db_extension = '';
+
+// Include the configuration files
+
 if (@file_exists(BH_INCLUDE_PATH. "config.inc.php")) {
     include_once(BH_INCLUDE_PATH. "config.inc.php");
 }
@@ -40,7 +46,7 @@ include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 include_once(BH_INCLUDE_PATH. "server.inc.php");
 
-if (isset($db_extension)) {
+if (strlen(trim($db_extension)) > 0) {
 
     if ($db_extension == 'mysql') {
 

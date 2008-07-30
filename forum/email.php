@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.php,v 1.93 2008-07-27 18:26:09 decoyduck Exp $ */
+/* $Id: email.php,v 1.94 2008-07-30 17:41:38 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -179,8 +179,8 @@ if (isset($_POST['send'])) {
         $error_msg_array[] = sprintf($lang['userhasoptedoutofemail'], word_filter_add_ob_tags(_htmlentities(format_user_name($to_user['LOGON'], $to_user['NICKNAME']))));
         $valid = false;
     }
-
-    if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $to_user['EMAIL'])) {
+    
+    if (!email_address_valid($to_user['EMAIL'])) {
 
         $error_msg_array[] = sprintf($lang['userhasinvalidemailaddress'], word_filter_add_ob_tags(_htmlentities(format_user_name($to_user['LOGON'], $to_user['NICKNAME']))));
         $valid = false;

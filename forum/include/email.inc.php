@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.142 2008-07-30 16:04:35 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.143 2008-07-30 17:41:40 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -46,7 +46,7 @@ include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 function email_address_valid($email)
 {
-    return ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $email);
+    return ereg('^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$', $email);
 }
 
 function email_sendnotification($tuid, $fuid, $tid, $pid)
@@ -950,7 +950,11 @@ function email_send_message_to_user($tuid, $fuid, $subject, $message)
 
 function email_get_language($to_uid)
 {
-    // Start out by including the English language file. This will allow
+    // Array to hold our language strings
+    
+	$lang = array();
+	
+	// Start out by including the English language file. This will allow
     // us to still use Beehive even if our language file isn't up to date
     // correctly.
 

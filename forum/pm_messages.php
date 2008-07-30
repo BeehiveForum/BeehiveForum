@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_messages.php,v 1.47 2008-07-28 21:05:49 decoyduck Exp $ */
+/* $Id: pm_messages.php,v 1.48 2008-07-30 17:41:39 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -119,6 +119,12 @@ $error_msg_array = array();
 // Check that PM system is enabled
 
 pm_enabled();
+
+// Variables to hold message counts
+
+$pm_new_count = 0;
+$pm_outbox_count = 0;
+$pm_unread_count = 0;
 
 // Check for new PMs
 
@@ -322,6 +328,11 @@ if (isset($_POST['search'])) {
     }else {
         $search_string = '';
     }
+    
+    $min_length = 4;
+    $max_length = 84;
+    
+    $error = SEARCH_NO_ERROR;
 
     if (!pm_search_execute($search_string, $error)) {
 

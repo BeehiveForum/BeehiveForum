@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.122 2008-07-27 18:26:09 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.123 2008-07-30 17:41:38 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -168,7 +168,9 @@ if (isset($_POST['save'])) {
 
     if ($valid) {
 
-        if (!forum_save_style($stylename, $styledesc, $stylesheet, $error_code)) {
+        $error_code = STYLE_NO_ERROR;
+    	
+    	if (!forum_save_style($stylename, $styledesc, $stylesheet, $error_code)) {
 
             if ($error_code == STYLE_ALREADY_EXISTS) {
 
@@ -285,9 +287,9 @@ if (isset($_GET['seed'])) {
 }
 
 if (isset($_GET['mode']) && $_GET['mode'] == 'rand') {
-    $mode = 'rand';
+    $mode = STYLE_MODE_RANDOM;
 }else {
-    $mode = '';
+    $mode = STYLE_MODE_NONE;
 }
 
 //Maximum variance for the colours
@@ -298,8 +300,8 @@ $max_var = 15;
 
 $elements = array ('navpage' => '', 'threads' => '', 'button' => '', 'subhead' => '', 'h1' => '', 'body' => '', 'box' => '');
 
-if (strlen($mode) > 0) {
-    uasort($elements, "rand_sort");
+if ($mode == STYLE_MODE_RANDOM) {
+    uasort($elements, 'rand_sort');
 }
 
 $colour = decToHex($red, $green, $blue);

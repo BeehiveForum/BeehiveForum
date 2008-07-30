@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.130 2008-07-28 21:05:48 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.131 2008-07-30 17:41:38 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -97,6 +97,11 @@ if (!$webtag = get_webtag()) {
 // Load language file
 
 $lang = load_language_file();
+
+// Arrays to hold our attachments
+
+$attachments_array = array();
+$image_attachments_array = array();
 
 // Check that we have access to this forum
 

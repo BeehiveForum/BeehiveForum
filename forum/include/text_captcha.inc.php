@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: text_captcha.inc.php,v 1.30 2008-07-28 21:05:55 decoyduck Exp $ */
+/* $Id: text_captcha.inc.php,v 1.31 2008-07-30 17:41:41 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -381,7 +381,7 @@ class captcha {
 
                 for ($blue = 0; $blue <= 255; $blue += 51) {
 
-                    $color = imagecolorallocate($image, $red, $green, $blue);
+                    imagecolorallocate($image, $red, $green, $blue);
                 }
             }
         }

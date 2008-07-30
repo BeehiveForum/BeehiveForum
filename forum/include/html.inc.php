@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.285 2008-07-28 21:05:53 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.286 2008-07-30 16:04:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -96,6 +96,9 @@ function html_display_msg($header_text, $string_msg, $href = false, $method = 'g
 
     $lang = load_language_file();
 
+    if (!is_string($header_text)) return;
+    if (!is_string($string_msg)) return;
+
     $available_methods = array('get', 'post');
     if (!in_array($method, $available_methods)) $method = 'get';
 
@@ -105,7 +108,7 @@ function html_display_msg($header_text, $string_msg, $href = false, $method = 'g
     echo "<h1>$header_text</h1>\n";
     echo "<br />\n";
 
-    if (($href !== false) && strlen(trim($href)) > 0) {
+    if (is_string($href) && strlen(trim($href)) > 0) {
 
         echo "<form action=\"$href\" method=\"$method\" target=\"$target\">\n";
         echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
@@ -149,7 +152,7 @@ function html_display_msg($header_text, $string_msg, $href = false, $method = 'g
     echo "        <td align=\"left\">&nbsp;</td>\n";
     echo "      </tr>\n";
 
-    if (($href !== false) && strlen(trim($href)) > 0) {
+    if (is_string($href) && strlen(trim($href)) > 0) {
 
         $button_html_array = array();
 
@@ -171,7 +174,7 @@ function html_display_msg($header_text, $string_msg, $href = false, $method = 'g
     echo "    </table>\n";
     echo "  </div>\n";
 
-    if (($href !== false) && strlen(trim($href)) > 0) {
+    if (is_string($href) && strlen(trim($href)) > 0) {
         echo "</form>\n";
     }
 }
@@ -182,7 +185,9 @@ function html_display_error_array($error_list_array, $width = '600', $align = 'c
 
     if (!preg_match('/[0-9]+%?/', $width)) $width = '600';
 
-    if (!is_array($error_list_array)) $error_msg_array = array($error_msg_array);
+    $error_list_array = array_filter($error_list_array, 'is_string');
+
+    if (sizeof($error_list_array) < 1) return;
 
     $available_alignments = array('left', 'center', 'right');
     if (!in_array($align, $available_alignments)) $align = 'left';
@@ -210,7 +215,7 @@ function html_display_success_msg($string_msg, $width = '600', $align = 'center'
 
     if (!preg_match('/[0-9]+%?/', $width)) $width = '600';
 
-    if (!is_string($string_msg)) return false;
+    if (!is_string($string_msg)) return;
 
     $available_alignments = array('left', 'center', 'right');
     if (!in_array($align, $available_alignments)) $align = 'left';
@@ -231,7 +236,7 @@ function html_display_error_msg($string_msg, $width = '600', $align = 'center')
 
     if (!preg_match('/[0-9]+%?/', $width)) $width = '600';
 
-    if (!is_string($string_msg)) return false;
+    if (!is_string($string_msg)) return;
 
     $available_alignments = array('left', 'center', 'right');
     if (!in_array($align, $available_alignments)) $align = 'left';
@@ -252,7 +257,7 @@ function html_display_warning_msg($string_msg, $width = '600', $align = 'center'
 
     if (!preg_match('/[0-9]+%?/', $width)) $width = '600';
 
-    if (!is_string($string_msg)) return false;
+    if (!is_string($string_msg)) return;
 
     $available_alignments = array('left', 'center', 'right');
     if (!in_array($align, $available_alignments)) $align = 'left';
@@ -298,9 +303,7 @@ function html_email_confirmation_error()
 {
     $lang = load_language_file();
 
-    $webtag = get_webtag();
-
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = bh_session_get_value('UID')) === false) return;
 
     $user_array = user_get($uid);
 
@@ -450,10 +453,6 @@ function html_get_emoticon_style_sheet()
 
 function html_get_forum_keywords()
 {
-    $webtag = get_webtag();
-
-    $forum_settings = forum_get_settings();
-
     if (($forum_keywords = forum_get_setting('forum_keywords'))) {
 
         return $forum_keywords;
@@ -464,10 +463,6 @@ function html_get_forum_keywords()
 
 function html_get_forum_description()
 {
-    $webtag = get_webtag();
-
-    $forum_settings = forum_get_settings();
-
     if (($forum_desc = forum_get_setting('forum_desc'))) {
 
         return $forum_desc;
@@ -478,10 +473,6 @@ function html_get_forum_description()
 
 function html_get_forum_email()
 {
-    $webtag = get_webtag();
-
-    $forum_settings = forum_get_settings();
-
     if (($forum_email = forum_get_setting('forum_email'))) {
 
         return $forum_email;

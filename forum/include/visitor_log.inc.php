@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.inc.php,v 1.34 2008-07-28 21:05:56 decoyduck Exp $ */
+/* $Id: visitor_log.inc.php,v 1.35 2008-07-30 16:04:36 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -301,7 +301,9 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
 
     // Iterate through them.
 
-    foreach ($profile_items_array as $column => $value) {
+    $profile_items_array_keys = array_keys($profile_items_array);
+    	
+    foreach ($profile_items_array_keys as $column) {
 
         if (is_numeric($column)) {
 
@@ -366,7 +368,9 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
 
     // Joins on the selected numeric (PIID) profile items.
 
-    foreach ($profile_items_array as $column => $value) {
+    $profile_items_array_keys = array_keys($profile_items_array);
+    	
+    foreach ($profile_items_array_keys as $column) {
 
         if (is_numeric($column)) {
 
@@ -423,7 +427,9 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
 
     if ($hide_empty === true) {
 
-        foreach ($profile_items_array as $column => $value) {
+        $profile_items_array_keys = array_keys($profile_items_array);
+    	
+    	foreach ($profile_items_array_keys as $column) {
 
             if (is_numeric($column)) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.inc.php,v 1.85 2008-07-28 21:05:53 decoyduck Exp $ */
+/* $Id: links.inc.php,v 1.86 2008-07-30 16:04:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -617,7 +617,7 @@ function links_get_comments($lid)
 
 function links_folder_dropdown($default_fid, $folders)
 {
-    while (list($key, $val) = each($folders)) {
+    while (list($key) = each($folders)) {
 
         $labels[$key] = links_display_folder_path($key, $folders, false);
         if ($key == $default_fid) $default_value = $key;

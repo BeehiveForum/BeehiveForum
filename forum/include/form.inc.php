@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.117 2008-07-28 21:05:53 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.118 2008-07-30 16:04:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -123,7 +123,7 @@ function form_input_hidden_array($array)
 
 // Create a textarea input field
 
-function form_textarea($name, $value, $rows, $cols, $wrap = "virtual", $custom_html = false, $class = "bhtextarea")
+function form_textarea($name, $value, $rows, $cols, $custom_html = false, $class = "bhtextarea")
 {
     $lang = load_language_file();
 

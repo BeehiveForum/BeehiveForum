@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.249 2008-07-28 21:05:55 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.250 2008-07-30 16:04:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1117,8 +1117,6 @@ function pm_display($pm_message_array, $folder, $preview = false, $export_html =
 
     $webtag = get_webtag();
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
-
     echo "<div align=\"center\">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
     echo "    <tr>\n";
@@ -1721,8 +1719,6 @@ function pm_delete_message($mid)
     if (!$db_delete_pm = db_connect()) return false;
 
     if (!is_numeric($mid)) return false;
-
-    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     // Get the PM data incase the sendee hasn't got a copy of it
     // in his Sent Items folder.

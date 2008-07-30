@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.95 2008-07-28 21:05:55 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.96 2008-07-30 16:04:35 decoyduck Exp $ */
 
 /**
 * Functions relating to profiles
@@ -293,8 +293,6 @@ function profile_item_create($psid, $name, $type, $options)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $new_position = 1;
-
     $sql = "SELECT COALESCE(MAX(POSITION), 0) + 1 FROM {$table_data['PREFIX']}PROFILE_ITEM ";
     $sql.= "WHERE PSID = '$psid'";
 
@@ -345,18 +343,18 @@ function profile_section_delete($psid)
 
     $sql = "DELETE QUICK FROM {$table_data['PREFIX']}PROFILE_ITEM WHERE PSID = '$psid'";
 
-    if (!$result = db_query($sql, $db_profile_section_delete)) return false;
+    if (!db_query($sql, $db_profile_section_delete)) return false;
 
     $sql = "DELETE QUICK FROM {$table_data['PREFIX']}PROFILE_SECTION WHERE PSID = '$psid'";
 
-    if (!$result = db_query($sql, $db_profile_section_delete)) return false;
+    if (!db_query($sql, $db_profile_section_delete)) return false;
 
     $sql = "DELETE QUICK FROM {$table_data['PREFIX']}USER_PROFILE ";
     $sql.= "USING {$table_data['PREFIX']}USER_PROFILE LEFT JOIN {$table_data['PREFIX']}PROFILE_ITEM ";
     $sql.= "ON ({$table_data['PREFIX']}PROFILE_ITEM.PIID = {$table_data['PREFIX']}USER_PROFILE.PIID) ";
     $sql.= "WHERE {$table_data['PREFIX']}PROFILE_ITEM.PIID IS NULL";
 
-    if (!$result = db_query($sql, $db_profile_section_delete)) return false;
+    if (!db_query($sql, $db_profile_section_delete)) return false;
 
     return true;
 }
@@ -371,11 +369,11 @@ function profile_item_delete($piid)
 
     $sql = "DELETE QUICK FROM {$table_data['PREFIX']}USER_PROFILE WHERE PIID = '$piid'";
 
-    if (!$result = db_query($sql, $db_profile_item_delete)) return false;
+    if (!db_query($sql, $db_profile_item_delete)) return false;
 
     $sql = "DELETE QUICK FROM {$table_data['PREFIX']}PROFILE_ITEM WHERE PIID = '$piid'";
 
-    if (!$result = db_query($sql, $db_profile_item_delete)) return false;
+    if (!db_query($sql, $db_profile_item_delete)) return false;
 
     return true;
 }
@@ -674,7 +672,7 @@ function profile_sections_positions_update()
 
     if (!$db_profile_sections_positions_update = db_connect()) return false;
 
-    if (!$table_data = get_table_prefix()) return;
+    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT PSID FROM {$table_data['PREFIX']}PROFILE_SECTION ";
     $sql.= "ORDER BY POSITION";
@@ -690,9 +688,11 @@ function profile_sections_positions_update()
             $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}PROFILE_SECTION ";
             $sql.= "SET POSITION = '$new_position' WHERE PSID = '$psid'";
 
-            if (!$result_update = db_query($sql, $db_profile_sections_positions_update)) return false;
+            if (!db_query($sql, $db_profile_sections_positions_update)) return false;
         }
     }
+    
+    return true;
 }
 
 function profile_items_positions_update()
@@ -702,7 +702,7 @@ function profile_items_positions_update()
 
     if (!$db_profile_items_positions_update = db_connect()) return false;
 
-    if (!$table_data = get_table_prefix()) return;
+    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT PIID, PSID FROM {$table_data['PREFIX']}PROFILE_ITEM ";
     $sql.= "ORDER BY PSID, POSITION";
@@ -724,9 +724,11 @@ function profile_items_positions_update()
             $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}PROFILE_ITEM ";
             $sql.= "SET POSITION = '$new_position' WHERE PIID = '$piid'";
 
-            if (!$result_update = db_query($sql, $db_profile_items_positions_update)) return false;
+            if (!db_query($sql, $db_profile_items_positions_update)) return false;
         }
     }
+    
+    return true;
 }
 
 function profile_get_section($psid)
@@ -735,7 +737,7 @@ function profile_get_section($psid)
 
     if (!is_numeric($psid)) return false;
 
-    if (!$table_data = get_table_prefix()) return;
+    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT NAME FROM {$table_data['PREFIX']}PROFILE_SECTION ";
     $sql.= "WHERE PSID = '$psid'";

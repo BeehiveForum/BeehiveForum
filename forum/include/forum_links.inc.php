@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_links.inc.php,v 1.45 2008-07-28 21:05:53 decoyduck Exp $ */
+/* $Id: forum_links.inc.php,v 1.46 2008-07-30 16:04:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -131,7 +131,9 @@ function forum_links_fix_url($uri)
 
     if (isset($uri_array['query'])) {
 
-        parse_str($uri_array['query'], $uri_query_array);
+        $uri_query_array = array();
+    	
+    	parse_str($uri_array['query'], $uri_query_array);
 
         $new_uri_query_array = array();
 
@@ -179,7 +181,7 @@ function forum_links_delete($lid)
 
     $sql = "DELETE QUICK FROM {$table_data['PREFIX']}FORUM_LINKS WHERE LID = '$lid'";
 
-    if (!$result = db_query($sql, $db_forum_links_delete)) return false;
+    if (!db_query($sql, $db_forum_links_delete)) return false;
 
     return true;
 }
@@ -198,7 +200,7 @@ function forum_links_update_link($lid, $title, $uri = "")
     $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}FORUM_LINKS SET TITLE = '$title', ";
     $sql.= "URI = '$uri' WHERE LID = '$lid'";
 
-    if (!$result = db_query($sql, $db_forum_links_update)) return false;
+    if (!db_query($sql, $db_forum_links_update)) return false;
 
     return true;
 }
@@ -356,7 +358,7 @@ function forum_links_positions_update()
 
     if (!$db_forum_links_positions_update = db_connect()) return false;
 
-    if (!$table_data = get_table_prefix()) return;
+    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT LID FROM {$table_data['PREFIX']}FORUM_LINKS ";
     $sql.= "ORDER BY POS";
@@ -372,9 +374,11 @@ function forum_links_positions_update()
             $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}FORUM_LINKS ";
             $sql.= "SET POS = '$new_position' WHERE LID = '$lid'";
 
-            if (!$result_update = db_query($sql, $db_forum_links_positions_update)) return false;
+            if (!db_query($sql, $db_forum_links_positions_update)) return false;
         }
     }
+    
+    return true;
 }
 
 ?>

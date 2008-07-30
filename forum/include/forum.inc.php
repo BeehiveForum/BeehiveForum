@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.322 2008-07-28 21:05:53 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.323 2008-07-30 16:04:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -59,8 +59,6 @@ function get_forum_data()
     static $forum_data = false;
 
     if (!$db_get_forum_data = db_connect()) return false;
-
-    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (isset($_GET['webtag']) && strlen(trim(_stripslashes($_GET['webtag']))) > 0) {
         $webtag = trim(_stripslashes($_GET['webtag']));
@@ -904,8 +902,6 @@ function forum_process_unread_cutoff($forum_settings)
 function forum_update_unread_data($unread_cutoff_stamp)
 {
     if (!$db_forum_update_unread_data = db_connect()) return false;
-
-    if (!$table_data = get_table_prefix()) return false;
 
     if (!is_numeric($unread_cutoff_stamp)) return false;
 
@@ -2392,11 +2388,6 @@ function forum_search($forum_search, $offset)
                 // Get available folders for queries below
 
                 $folders = folder_get_available_by_forum($forum_fid);
-
-                // User relationship constants
-
-                $user_ignored = USER_IGNORED;
-                $user_ignored_completely = USER_IGNORED_COMPLETELY;
 
                 // Get any unread messages
 

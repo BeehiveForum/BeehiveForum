@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ldisplay.php,v 1.35 2008-07-27 18:26:10 decoyduck Exp $ */
+/* $Id: ldisplay.php,v 1.36 2008-07-30 16:04:34 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -177,7 +177,7 @@ if ($thread_data['POLL_FLAG'] == 'Y') {
 
     if ($message['PID'] == 1) {
 
-        light_poll_display($tid, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], true, $thread_data['CLOSED'], false, true, false, false);
+        light_poll_display($tid, $thread_data['LENGTH'], $thread_data['FID'], true, $thread_data['CLOSED'], false, false);      
         $last_pid = $message['PID'];
 
     }else {

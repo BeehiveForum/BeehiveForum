@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.354 2008-07-28 21:05:55 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.355 2008-07-30 16:04:35 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -82,10 +82,6 @@ function bh_session_check($show_session_fail = true)
     // Fetch the user's IP Address
 
     if (!$ipaddress = get_ip_address()) return false;
-
-    // Get the forum settings data.
-
-    $forum_settings = forum_get_settings();
 
     // Session cut off timestamp
 
@@ -303,8 +299,6 @@ function bh_guest_session_init($update_visitor_log = true)
     if (!$db_bh_guest_session_init = db_connect()) return false;
 
     if (!$ipaddress = get_ip_address()) return false;
-
-    $forum_settings = forum_get_settings();
 
     // Session cut off timestamp
 
@@ -533,6 +527,8 @@ function bh_remove_stale_sessions()
             return true;
         }
     }
+    
+    return true;
 }
 
 // Updates the visitor log for the current user
@@ -838,7 +834,7 @@ function bh_session_init($uid, $update_visitor_log = true, $skip_cookie = false)
 
     $sql = "DELETE QUICK FROM SESSIONS WHERE HASH = '$user_hash'";
 
-    if (!$result = db_query($sql, $db_bh_session_init)) return false;
+    if (!db_query($sql, $db_bh_session_init)) return false;
 
     // Check for an existing user session.
 
@@ -927,21 +923,25 @@ function bh_session_end($remove_cookies = true)
         $user_hash = md5($ipaddress);
     }
 
-    if (isset($user_hash)) {
+    if (isset($user_hash) && is_md5($user_hash)) {
 
         // If the user isn't a guest we should update how long
         // they have been actively logged in.
 
         if ($uid > 0) bh_update_user_time($uid);
 
+        // Delete the user's cookie
+        
+        if ($remove_cookies === true) bh_session_remove_cookies();
+        
         // Remove the user session.
 
         $sql = "DELETE QUICK FROM SESSIONS WHERE HASH = '$user_hash'";
 
-        if (!$result = db_query($sql, $db_bh_session_end)) return false;
+        if (!db_query($sql, $db_bh_session_end)) return false;
     }
-
-    if ($remove_cookies === true) bh_session_remove_cookies();
+    
+    return true;    
 }
 
 /**
@@ -1035,8 +1035,6 @@ function bh_session_check_perm($perm, $folder_fid)
 
     $user_perm_test = 0;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
-
     if (user_is_guest()) {
 
         if (isset($user_sess['PERMS'][$forum_fid][$folder_fid])) {
@@ -1083,8 +1081,6 @@ function bh_session_get_perm($folder_fid)
     $forum_fid = $table_data['FID'];
 
     $user_perm_test = 0;
-
-    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (user_is_guest()) {
 
@@ -1139,8 +1135,6 @@ function bh_session_user_banned()
 
 function bh_session_user_approved()
 {
-    $forum_settings = forum_get_settings();
-
     if (user_is_guest()) return true;
     if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) return true;
 
@@ -1177,8 +1171,6 @@ function bh_session_get_folders_by_perm($perm, $forum_fid = false)
     $user_sess = (isset($GLOBALS['user_sess'])) ? $GLOBALS['user_sess'] : false;
 
     $folder_fid_array = array();
-
-    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     // Global Permissions.
 
@@ -1288,14 +1280,16 @@ function get_request_uri($include_webtag = true, $encoded_uri_query = true)
     }
 
     // Remove trailing question mark / & / &amp;
-
-    $request_uri = preg_replace("/\?$|&$|&amp;$/", "", $request_uri);
+    
+    $request_uri = rtrim($request_uri, '?');
+    $request_uri = rtrim($request_uri, '&');
+    $request_uri = rtrim($request_uri, '&amp;');
 
     // Fix the slashes for forum running from sub-domain.
     // Rather dirty hack this, but it's the only idea I've got.
     // Any suggestions are welcome on how to handle this better.
 
-    return preg_replace("/\/\/+/", "/", $request_uri);
+    return preg_replace('/\/\/+/', '/', $request_uri);
 }
 
 /**
@@ -1311,8 +1305,6 @@ function get_request_uri($include_webtag = true, $encoded_uri_query = true)
 
 function bh_session_get_post_page_prefs()
 {
-    $user_sess = (isset($GLOBALS['user_sess'])) ? $GLOBALS['user_sess'] : false;
-
     if (!$page_prefs = bh_session_get_value('POST_PAGE')) {
         $page_prefs = POST_TOOLBAR_DISPLAY | POST_EMOTICONS_DISPLAY | POST_TEXT_DEFAULT | POST_AUTO_LINKS | POST_SIGNATURE_DISPLAY;
     }
@@ -1323,8 +1315,6 @@ function bh_session_get_post_page_prefs()
 function bh_session_is_search_engine()
 {
     if (!$db_bh_session_is_search_engine = db_connect()) return false;
-
-    if (!$table_data = get_table_prefix()) return false;
 
     if (isset($_SERVER['HTTP_USER_AGENT']) && strlen(trim($_SERVER['HTTP_USER_AGENT'])) > 0) {
 

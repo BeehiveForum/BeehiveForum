@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.165 2008-07-28 21:05:53 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.166 2008-07-30 16:04:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -147,8 +147,8 @@ function format_time($time, $verbose = false)
 
     // Get the numerical for the dates to convert
 
-    $date_string = gmdate("s i G j n Y", $local_time);
-    list($sec, $min, $hour, $day, $month, $year) = explode(" ", $date_string);
+    $date_string = gmdate("i G j n Y", $local_time);
+    list($min, $hour, $day, $month, $year) = explode(" ", $date_string);
 
     // We only ever use the month as a string
 
@@ -229,8 +229,8 @@ function format_date($time)
 
     // Get the numerical for the dates to convert
 
-    $date_string = gmdate("s i G j n Y", $local_time);
-    list($sec, $min, $hour, $day, $month, $year) = explode(" ", $date_string);
+    $date_string = gmdate("j n Y", $local_time);
+    list($day, $month, $year) = explode(" ", $date_string);
 
     // We only ever use the month as a string
 
@@ -872,11 +872,11 @@ function preg_quote_callback($str)
 
 function rand_array($start_index, $num, $range_min, $range_max)
 {
+    $mt_rand_call = sprintf('$item = mt_rand(%d, %d);', $range_min, $range_max);
+
     $array_rand = array_fill($start_index, $num, 1);
 
-    foreach ($array_rand as $key => $value) {
-        $array_rand[$key] = mt_rand($range_min, $range_max);
-    }
+    array_walk($array_rand, create_function('&$item', $mt_rand_call));
 
     return $array_rand;
 }

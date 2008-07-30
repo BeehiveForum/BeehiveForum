@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ldelete.php,v 1.21 2008-07-28 21:05:49 decoyduck Exp $ */
+/* $Id: ldelete.php,v 1.22 2008-07-30 16:04:34 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -204,38 +204,43 @@ if (!$threaddata = thread_get($tid)) {
     exit;
 }
 
-if (isset($tid) && isset($pid) && is_numeric($tid) && is_numeric($pid)) {
+if (($preview_message = messages_get($tid, $pid, 1))) {
 
-    if (($preview_message = messages_get($tid, $pid, 1))) {
+    $preview_message['CONTENT'] = message_get_content($tid, $pid);
 
-        $preview_message['CONTENT'] = message_get_content($tid, $pid);
-
-        if ((strlen(trim($preview_message['CONTENT'])) == 0) && !thread_is_poll($tid)) {
-
-            light_html_draw_top("robots=noindex,nofollow");
-            light_edit_refuse();
-            light_html_draw_bottom();
-            exit;
-        }
-
-        if ((bh_session_get_value('UID') != $preview_message['FROM_UID'] || bh_session_check_perm(USER_PERM_PILLORIED, 0)) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
-
-            light_html_draw_top("robots=noindex,nofollow");
-            light_edit_refuse();
-            light_html_draw_bottom();
-            exit;
-        }
-
-    }else {
+    if ((strlen(trim($preview_message['CONTENT'])) == 0) && !thread_is_poll($tid)) {
 
         light_html_draw_top("robots=noindex,nofollow");
-        light_html_display_error_msg(sprintf($lang['messagewasnotfound'], $msg));
+        light_edit_refuse();
         light_html_draw_bottom();
         exit;
     }
+
+    if ((bh_session_get_value('UID') != $preview_message['FROM_UID'] || bh_session_check_perm(USER_PERM_PILLORIED, 0)) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+
+        light_html_draw_top("robots=noindex,nofollow");
+        light_edit_refuse();
+        light_html_draw_bottom();
+        exit;
+    }
+    
+    if (forum_get_setting('require_post_approval', 'Y') && isset($preview_message['APPROVED']) && $preview_message['APPROVED'] == 0 && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+        
+    	light_html_draw_top("robots=noindex,nofollow");
+        light_edit_refuse();
+        light_html_draw_bottom();
+        exit;       	
+    }
+
+}else {
+
+    light_html_draw_top("robots=noindex,nofollow");
+    light_html_display_error_msg(sprintf($lang['messagewasnotfound'], $msg));
+    light_html_draw_bottom();
+    exit;
 }
 
-if (isset($_POST['delete']) && is_numeric($tid) && is_numeric($pid)) {
+if (isset($_POST['delete'])) {
 
     if (post_delete($tid, $pid)) {
 
@@ -294,14 +299,15 @@ echo "  ", form_input_hidden('msg', _htmlentities($msg)), "\n";
 
 if (thread_is_poll($tid) && $pid == 1) {
 
-    light_poll_display($tid, $threaddata['LENGTH'], $pid, $threaddata['FID'], false, false, false, true, true, true);
+    light_poll_display($tid, $threaddata['LENGTH'], $threaddata['FID'], false, false, false, true);
 
 }else {
 
-    light_message_display($tid, $preview_message, $threaddata['LENGTH'], $pid, $threaddata['FID'], true, false, false, false, $show_sigs, true);
+    light_message_display($tid, $preview_message, $threaddata['LENGTH'], $threaddata['FID'], false, false, false, false, true);
 }
 
 echo "<p>", light_form_submit("delete", $lang['delete']), "&nbsp;", light_form_submit("cancel", $lang['cancel']), "</p>\n";
+echo "</form>\n";
 
 echo "<h6>&copy; ", date('Y'), " <a href=\"http://www.beehiveforum.net/\" target=\"_blank\">Project Beehive Forum</a></h6>\n";
 

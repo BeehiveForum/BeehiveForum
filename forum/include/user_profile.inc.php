@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.92 2008-07-28 21:05:56 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.93 2008-07-30 16:04:36 decoyduck Exp $ */
 
 /**
 * Functions relating to users interacting with profiles
@@ -300,9 +300,9 @@ function user_format_local_time(&$user_prefs_array)
         $local_time = time() + ($gmt_offset * HOUR_IN_SECONDS);
     }
 
-    $date_string = gmdate("s i G j n Y", $local_time);
+    $date_string = gmdate("i G j n Y", $local_time);
 
-    list($sec, $min, $hour, $day, $month, $year) = explode(" ", $date_string);
+    list($min, $hour, $day, $month, $year) = explode(" ", $date_string);
 
     $month_str = $lang['month_short'][$month];
 

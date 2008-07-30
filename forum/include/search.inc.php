@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.207 2008-07-28 21:05:55 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.208 2008-07-30 16:04:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -570,8 +570,6 @@ function search_get_first_result_msg()
 {
     if (!$db_search_fetch_results = db_connect()) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
-
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $sql = "SELECT SEARCH_RESULTS.TID, SEARCH_RESULTS.PID FROM SEARCH_RESULTS ";
@@ -733,13 +731,9 @@ function folder_search_dropdown($selected_folder)
 
     if (!$db_folder_search_dropdown = db_connect()) return false;
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
-
     if (!is_numeric($selected_folder)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
-
-    $forum_fid = $table_data['FID'];
 
     $available_folders = array();
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: htmltools.inc.php,v 1.71 2008-07-28 21:05:53 decoyduck Exp $ */
+/* $Id: htmltools.inc.php,v 1.72 2008-07-30 16:04:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -317,7 +317,7 @@ class TextAreaHTML {
     // Takes the same arguments as form_textarea in form.inc.php
     // ----------------------------------------------------
 
-    function textarea ($name, $value = false, $rows = false, $cols = false, $wrap = "virtual", $custom_html = "", $class = "bhinputtext")
+    function textarea ($name, $value = false, $rows = false, $cols = false, $custom_html = "", $class = "bhinputtext")
     {
 
         $this->tas[] = $name;
@@ -346,7 +346,7 @@ class TextAreaHTML {
             $str = "<div style=\"display: none\">&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;</div>";
         }
 
-        $str.= form_textarea($name, $value, $rows, $cols, $wrap, $custom_html, $class);
+        $str.= form_textarea($name, $value, $rows, $cols, $custom_html, $class);
 
         return $str;
     }

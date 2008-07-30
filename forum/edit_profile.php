@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_profile.php,v 1.94 2008-07-28 21:05:48 decoyduck Exp $ */
+/* $Id: edit_profile.php,v 1.95 2008-07-30 16:04:34 decoyduck Exp $ */
 
 /**
 * Displays the edit profile page, and processes sumbissions
@@ -346,7 +346,7 @@ if (($profile_items_array = profile_get_user_values($uid))) {
 
         }elseif ($profile_item['TYPE'] == PROFILE_ITEM_MULTI_TEXT) {
 
-            echo "                        <td align=\"left\" valign=\"top\">", form_textarea("t_entry[{$profile_item['PIID']}]", (isset($t_entry_array[$profile_item['PIID']]) ? _htmlentities($t_entry_array[$profile_item['PIID']]) : _htmlentities($profile_item['ENTRY'])), false, false, 'virtual', false, 'bhinputprofileitem'), "</td>\n";
+            echo "                        <td align=\"left\" valign=\"top\">", form_textarea("t_entry[{$profile_item['PIID']}]", (isset($t_entry_array[$profile_item['PIID']]) ? _htmlentities($t_entry_array[$profile_item['PIID']]) : _htmlentities($profile_item['ENTRY'])), false, false, false, 'bhinputprofileitem'), "</td>\n";
 
             if ($admin_edit === false) {
                 echo "                        <td align=\"right\" valign=\"top\">", form_checkbox("t_entry_private[{$profile_item['PIID']}]", "Y", '', (isset($profile_item['PRIVACY']) && $profile_item['PRIVACY'] == PROFILE_ITEM_PRIVATE), "title=\"{$lang['friendsonly']}\""), "</td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lmessages.php,v 1.103 2008-07-28 21:05:49 decoyduck Exp $ */
+/* $Id: lmessages.php,v 1.104 2008-07-30 16:04:34 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -300,20 +300,19 @@ if ($msg_count > 0) {
 
             if ($message['PID'] == 1) {
 
-                light_poll_display($tid, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], true, $thread_data['CLOSED'], true);
+                light_poll_display($tid, $thread_data['LENGTH'], $thread_data['FID'], true, $thread_data['CLOSED'], true, false);               
                 $last_pid = $message['PID'];
 
             }else {
 
-                light_message_display($tid, $message, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], true, $thread_data['CLOSED'], true, true, false, false);
+                light_message_display($tid, $message, $thread_data['LENGTH'], $thread_data['FID'], true, $thread_data['CLOSED'], true, true, false);
                 $last_pid = $message['PID'];
             }
 
         }else {
 
-            light_message_display($tid, $message, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], true, $thread_data['CLOSED'], true, false, false, false);
+            light_message_display($tid, $message, $thread_data['LENGTH'], $thread_data['FID'], true, $thread_data['CLOSED'], true, false, false);
             $last_pid = $message['PID'];
-
         }
     }
 }

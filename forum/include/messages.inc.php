@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.542 2008-07-28 21:05:54 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.543 2008-07-30 16:04:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1797,8 +1797,6 @@ function messages_forum_stats($tid, $pid)
     $lang = load_language_file();
 
     $webtag = get_webtag();
-
-    $uid = bh_session_get_value("UID");
 
     if (forum_get_setting('show_stats', 'Y')) {
 

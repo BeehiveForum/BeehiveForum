@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.235 2008-07-28 21:05:55 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.236 2008-07-30 16:04:35 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -469,8 +469,6 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
 
     $webtag = get_webtag();
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
-
     $poll_data = poll_get($tid);
 
     $poll_results = poll_get_votes($tid);
@@ -703,9 +701,11 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
 
             if (is_array($user_poll_votes_array) && isset($user_poll_votes_array[0]['TSTAMP'])) {
 
-                $user_poll_votes_display_array = array();
+            	$user_poll_votes_array_keys = array_keys($user_poll_votes_array);
+            	
+            	$user_poll_votes_display_array = array();
 
-                foreach ($user_poll_votes_array as $vote_key => $user_poll_vote) {
+                foreach ($user_poll_votes_array_keys as $vote_key) {
 
                     foreach ($poll_results['OPTION_ID'] as $group_key => $poll_results_group_id) {
 
@@ -732,9 +732,11 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
 
             if (is_array($user_poll_votes_array) && isset($user_poll_votes_array[0]['TSTAMP'])) {
 
-                $user_poll_votes_display_array = array();
+            	$user_poll_votes_array_keys = array_keys($user_poll_votes_array);
+            	
+            	$user_poll_votes_display_array = array();
 
-                foreach ($user_poll_votes_array as $vote_key => $user_poll_vote) {
+                foreach ($user_poll_votes_array_keys as $vote_key) {
 
                     foreach ($poll_results['OPTION_ID'] as $group_key => $poll_results_group_id) {
 
@@ -1824,8 +1826,6 @@ function poll_public_ballot($tid, $view_style, $offset, &$poll_user_count)
 {
     $lang = load_language_file();
 
-    $webtag = get_webtag();
-
     $total_votes = array();
     $max_values  = array();
 
@@ -1951,7 +1951,7 @@ function poll_public_ballot($tid, $view_style, $offset, &$poll_user_count)
 
         $poll_display = "";
 
-        foreach ($user_poll_votes as $uid => $user_data_array) {
+        foreach ($user_poll_votes as $user_data_array) {
 
             $user_profile_link = poll_public_ballot_user_callback($user_data_array);
 

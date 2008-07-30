@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.130 2008-07-27 18:26:11 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.131 2008-07-30 16:04:34 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -140,7 +140,7 @@ if (!folder_get_by_type_allowed(FOLDER_ALLOW_NORMAL_THREAD)) {
 
 if (isset($_POST['cancel'])) {
 
-    $uri = "lthread_list.php?webtag=$webtag";
+    $uri = "lmessages.php?webtag=$webtag";
 
     if (isset($_POST['t_tid']) && isset($_POST['t_rpid'])) {
         $uri.= "&msg={$_POST['t_tid']}.{$_POST['t_rpid']}";
@@ -592,8 +592,8 @@ if ($valid && isset($_POST['preview'])) {
         $preview_message['CONTENT'] = $preview_message['CONTENT']. "<div class=\"sig\">". $t_sig. "</div>";
     }
 
-    light_message_display(0, $preview_message, 0, 0, 0, false, false, false, false, false, true);
-
+    light_message_display(0, $preview_message, 0, 0, false, false, false, false, true);
+   
     echo "<br />\n";
 }
 
@@ -697,11 +697,11 @@ if (!$new_thread && $reply_to_pid > 0) {
 
     if (($thread_data['POLL_FLAG'] == 'Y') && ($reply_message['PID'] == 1)) {
 
-        light_poll_display($reply_to_tid, $thread_data['LENGTH'], $reply_to_pid, $thread_data['FID'], false, false, false, true, false, true);
+        light_poll_display($reply_to_tid, $thread_data['LENGTH'], $thread_data['FID'], false, false, false, false);
 
     }else {
 
-        light_message_display($reply_to_tid, $reply_message, $thread_data['LENGTH'], $reply_to_pid, $thread_data['FID'], true, false, false, false, false, true);
+        light_message_display($reply_to_tid, $reply_message, $thread_data['LENGTH'], $thread_data['FID'], false, false, false, false, false);
     }
 }
 

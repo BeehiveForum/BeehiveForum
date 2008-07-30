@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.316 2008-07-28 21:05:56 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.317 2008-07-30 16:04:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -686,11 +686,6 @@ function threads_get_by_relationship($uid, $relationship = USER_FRIEND, $start =
 
     $folders = folder_get_available();
 
-    // Constants for user relationships
-
-    $user_ignored = USER_IGNORED;
-    $user_ignored_completely = USER_IGNORED_COMPLETELY;
-
     // Formulate query
 
     $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.DELETED, THREAD.LENGTH, ";
@@ -745,11 +740,6 @@ function threads_get_unread_by_relationship($uid, $relationship = USER_FRIEND) /
     // Get the folders the user can see.
 
     $folders = folder_get_available();
-
-    // Constants for user relationships
-
-    $user_ignored = USER_IGNORED;
-    $user_ignored_completely = USER_IGNORED_COMPLETELY;
 
     // Check to see if unread messages are disabled.
 

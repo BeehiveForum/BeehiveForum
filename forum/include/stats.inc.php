@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.110 2008-07-28 21:05:55 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.111 2008-07-30 16:04:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -282,6 +282,8 @@ function stats_get_active_guest_count()
 function stats_get_active_user_list()
 {
     if (!$db_stats_get_active_user_list = db_connect()) return false;
+    
+    $lang = load_language_file();
 
     $stats = array('GUESTS' => 0, 'NUSERS' => 0,
                    'AUSERS' => 0, 'USERS'  => array());
@@ -478,8 +480,6 @@ function stats_get_user_count()
 {
    if (!$db_stats_get_user_count = db_connect()) return false;
 
-   if (!$table_data = get_table_prefix()) return false;
-
    $sql = "SELECT COUNT(UID) AS COUNT FROM USER";
 
    if (!$result = db_query($sql, $db_stats_get_user_count)) return false;
@@ -534,6 +534,8 @@ function stats_get_newest_user()
     if (!$db_stats_get_newest_user = db_connect()) return false;
 
     if (!$table_data = get_table_prefix()) return false;
+    
+    $lang = load_language_file();
 
     $uid = bh_session_get_value('UID');
 
@@ -720,7 +722,7 @@ function stats_get_most_read_thread()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $thread_array = array();
+    $thread_data = array();
 
     $sql = "SELECT THREAD.TID, THREAD.TITLE, FOLDER.PREFIX, THREAD_STATS.VIEWCOUNT ";
     $sql.= "FROM {$table_data['PREFIX']}THREAD_STATS THREAD_STATS ";
@@ -764,7 +766,7 @@ function stats_get_most_subscribed_thread()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $thread_array = array();
+    $thread_data = array();
 
     $sql = "SELECT THREAD.TID, THREAD.TITLE, COUNT(USER_THREAD.INTEREST) AS SUBSCRIBERS, ";
     $sql.= "FOLDER.PREFIX FROM {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
@@ -968,10 +970,6 @@ function stats_get_most_popular_language()
 function stats_get_most_popular_timezone()
 {
     if (!$db_stats_get_most_popular_timezone = db_connect()) return false;
-
-    if (!$table_data = get_table_prefix()) return false;
-
-    $forum_default_timezone = forum_get_setting('forum_timezone', false, '27');
 
     $sql = "SELECT TIMEZONE, COUNT(*) AS USER_COUNT FROM USER_PREFS ";
     $sql.= "GROUP BY TIMEZONE ORDER BY USER_COUNT DESC LIMIT 0,1";

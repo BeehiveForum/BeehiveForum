@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: rss_feed.inc.php,v 1.58 2008-07-28 21:05:55 decoyduck Exp $ */
+/* $Id: rss_feed.inc.php,v 1.59 2008-07-30 22:39:24 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -93,6 +93,9 @@ function rss_read_stream($filename)
     if (!isset($url_array['path']) || empty($url_array['path'])) $url_array['path'] = "/";
 
     // We can't do much without socket functions
+    
+    $errno = 0;
+    $errstr = '';
 
     if (($fp = @fsockopen($url_array['host'], $url_array['port'], $errno, $errstr, 30))) {
 
@@ -133,6 +136,10 @@ function rss_read_database($filename)
    $rss_data = array();
 
    $parser = xml_parser_create();
+   
+   $values = array();
+
+   $tags = array();
 
    xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, 0);
    xml_parser_set_option($parser, XML_OPTION_SKIP_WHITE, 1);
@@ -251,7 +258,7 @@ function rss_create_history($rss_id, $link)
     $sql = "INSERT IGNORE INTO {$table_data['PREFIX']}RSS_HISTORY (RSSID, LINK) ";
     $sql.= "VALUES ($rss_id, '$link')";
 
-    if (!$result = db_query($sql, $db_rss_create_history)) return false;
+    if (!db_query($sql, $db_rss_create_history)) return false;
 
     return true;
 }
@@ -311,7 +318,7 @@ function rss_check_feeds()
 
                     $tid = post_create_thread($rss_feed['FID'], $rss_feed['UID'], $rss_title);
 
-                    post_create($rss_feed['FID'], $tid, 0, $rss_feed['UID'], $rss_feed['UID'], 0, $rss_content, true);
+                    post_create($rss_feed['FID'], $tid, 0, $rss_feed['UID'], 0, $rss_content, true);
 
                     rss_create_history($rss_feed['RSSID'], $rss_item->link);
                 }
@@ -402,7 +409,7 @@ function rss_add_feed($name, $uid, $fid, $url, $prefix, $frequency)
     $sql = "INSERT INTO {$table_data['PREFIX']}RSS_FEEDS (NAME, UID, FID, URL, PREFIX, FREQUENCY, LAST_RUN) ";
     $sql.= "VALUES ('$name', $uid, $fid, '$url', '$prefix', $frequency, FROM_UNIXTIME($last_run))";
 
-    if (!$result = db_query($sql, $db_rss_add_feed)) return false;
+    if (!db_query($sql, $db_rss_add_feed)) return false;
 
     return true;
 }
@@ -426,7 +433,7 @@ function rss_feed_update($rssid, $name, $uid, $fid, $url, $prefix, $frequency)
     $sql.= "FID = '$fid', URL = '$url', PREFIX = '$prefix', FREQUENCY = '$frequency' ";
     $sql.= "WHERE RSSID = '$rssid'";
 
-    if (!$result = db_query($sql, $db_rss_feed_update)) return false;
+    if (!db_query($sql, $db_rss_feed_update)) return false;
 
     return true;
 }
@@ -484,7 +491,7 @@ function rss_remove_feed($rssid)
 
     $sql = "DELETE QUICK FROM {$table_data['PREFIX']}RSS_FEEDS WHERE RSSID = '$rssid'";
 
-    if (!$result = db_query($sql, $db_rss_remove_feed)) return false;
+    if (!db_query($sql, $db_rss_remove_feed)) return false;
 
     return (db_affected_rows($db_rss_remove_feed) > 0);
 }

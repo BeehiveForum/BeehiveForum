@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.inc.php,v 1.86 2008-07-30 16:04:35 decoyduck Exp $ */
+/* $Id: links.inc.php,v 1.87 2008-07-30 22:39:24 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -179,7 +179,7 @@ function links_add($uri, $title, $description, $fid, $uid, $visible = true)
     $sql = "INSERT INTO {$table_data['PREFIX']}LINKS (URI, TITLE, DESCRIPTION, FID, UID, VISIBLE, CREATED) ";
     $sql.= "VALUES ('$uri', '$title', '$description', '$fid', '$uid', '$visible', NOW())";
 
-    if (!$result = db_query($sql, $db_links_add)) return false;
+    if (!db_query($sql, $db_links_add)) return false;
 
     return true;
 }
@@ -195,7 +195,7 @@ function links_create_top_folder($name)
     $sql = "INSERT INTO {$table_data['PREFIX']}LINKS_FOLDERS (FID, PARENT_FID, NAME, VISIBLE) ";
     $sql.= "VALUES (1, NULL, '$name', 'Y')";
 
-    if (!$result = db_query($sql, $db_links_create_top_folder)) return false;
+    if (!db_query($sql, $db_links_create_top_folder)) return false;
 
     return true;
 }
@@ -215,7 +215,7 @@ function links_add_folder($fid, $name, $visible = false)
     $sql = "INSERT INTO {$table_data['PREFIX']}LINKS_FOLDERS (FID, PARENT_FID, NAME, VISIBLE) ";
     $sql.= "VALUES (NULL, $fid, '$name', '$visible')";
 
-    if (!$result = db_query($sql, $db_links_add_folder)) return false;
+    if (!db_query($sql, $db_links_add_folder)) return false;
 
     return true;
 }
@@ -232,7 +232,7 @@ function links_update_folder($fid, $name)
 
     $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}LINKS_FOLDERS SET NAME = '$name' WHERE FID = '$fid'";
 
-    if (!$result = db_query($sql, $db_links_update_folder)) return false;
+    if (!db_query($sql, $db_links_update_folder)) return false;
 
     return (db_affected_rows($db_links_update_folder) > 0);
 }
@@ -302,7 +302,7 @@ function links_change_visibility($lid, $visible = true)
 
     $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}LINKS SET VISIBLE = '$visible' WHERE LID = '$lid'";
 
-    if (!$result = db_query($sql, $db_links_change_visibility)) return false;
+    if (!db_query($sql, $db_links_change_visibility)) return false;
 
     return true;
 }
@@ -317,14 +317,19 @@ function links_click($lid)
 
     $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}LINKS SET CLICKS = CLICKS + 1 WHERE LID = '$lid'";
 
-    if (!$result = db_query($sql, $db_links_click)) return false;
+    if (!db_query($sql, $db_links_click)) return false;
 
     $sql = "SELECT URI FROM {$table_data['PREFIX']}LINKS WHERE LID = '$lid'";
 
     if (!$result = db_query($sql, $db_links_click)) return false;
-
-    $uri = db_fetch_array($result);
-    header_redirect($uri['URI']);
+    
+    if (db_num_rows($result) > 0) {
+    	
+    	list($link_uri) = db_fetch_array($result, DB_RESULT_NUM);
+    	header_redirect($link_uri);
+    }
+    
+    return false;
 }
 
 function links_get_single($lid)
@@ -452,7 +457,7 @@ function links_folder_change_visibility($fid, $visible = true)
 
     $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}LINKS_FOLDERS SET VISIBLE = '$visible' WHERE FID = '$fid'";
 
-    if (!$result = db_query($sql, $db_links_folder_change_visibility)) return false;
+    if (!db_query($sql, $db_links_folder_change_visibility)) return false;
 
     return true;
 }
@@ -550,7 +555,7 @@ function links_clear_vote($lid, $uid)
     $sql = "DELETE QUICK FROM {$table_data['PREFIX']}LINKS_VOTE ";
     $sql.= "WHERE UID = '$uid' AND LID = '$lid'";
 
-    if (!$result = db_query($sql, $db_links_clear_vote)) return false;
+    if (!db_query($sql, $db_links_clear_vote)) return false;
 
     return (db_affected_rows($db_links_clear_vote) > 0);
 }
@@ -569,7 +574,7 @@ function links_add_comment($lid, $uid, $comment)
     $sql = "INSERT INTO {$table_data['PREFIX']}LINKS_COMMENT (LID, UID, COMMENT, CREATED) ";
     $sql.= "VALUES ('$lid', '$uid', '$comment', NOW())";
 
-    if (!$result = db_query($sql, $db_links_add_comment)) return false;
+    if (!db_query($sql, $db_links_add_comment)) return false;
 
     return true;
 }
@@ -651,15 +656,17 @@ function links_delete($lid)
 
     $sql = "DELETE QUICK FROM {$table_data['PREFIX']}LINKS WHERE LID = '$lid'";
 
-    if (!$result = db_query($sql, $db_links_delete)) return false;
+    if (!db_query($sql, $db_links_delete)) return false;
 
     $sql = "DELETE QUICK FROM {$table_data['PREFIX']}LINKS_COMMENT WHERE LID = '$lid'";
 
-    if (!$result = db_query($sql, $db_links_delete)) return false;
+    if (!db_query($sql, $db_links_delete)) return false;
 
     $sql = "DELETE QUICK FROM {$table_data['PREFIX']}LINKS_VOTE WHERE LID = '$lid'";
 
-    if (!$result = db_query($sql, $db_links_delete)) return false;
+    if (!db_query($sql, $db_links_delete)) return false;
+    
+    return true;
 }
 
 function links_update($lid, $fid, $title, $uri, $description)
@@ -679,7 +686,7 @@ function links_update($lid, $fid, $title, $uri, $description)
     $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}LINKS SET LID = '$lid', FID = '$fid', ";
     $sql.= "TITLE = '$title', URI = '$uri', DESCRIPTION = '$description' WHERE LID = '$lid'";
 
-    if (!$result = db_query($sql, $db_links_update)) return false;
+    if (!db_query($sql, $db_links_update)) return false;
 
     return true;
 }

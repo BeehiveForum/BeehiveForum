@@ -21,14 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: geshi.inc.php,v 1.14 2008-07-28 21:05:53 decoyduck Exp $ */
-
-// GeSHi is a generic syntax highlighter under the General Public License
-// http://qbnz.com/highlighter/
-// To include GeSHi syntax highlighting with your Beehive install simply
-// download the latest version of GeSHi (tested with 1.0.6) and upload it
-// to a subdirectory 'geshi' in your main forum folder (if your forum was
-// at www.site.com/forum/, upload to www.site.com/forum/geshi/).
+/* $Id: geshi.inc.php,v 1.15 2008-07-30 22:39:24 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -58,6 +51,9 @@ if (file_exists("geshi/geshi.php")) {
         var $source;
         var $target;
 
+        var $encoding;
+        var $lang;
+
         // these don't get used but need to be set because of a bug in GeSHi
         var $error = false;
         var $strict_mode = false;
@@ -70,7 +66,7 @@ if (file_exists("geshi/geshi.php")) {
 
         function set_encoding($encoding)
         {
-            return;
+            $this->encoding = $encoding;
         }
 
         function set_link_target()
@@ -85,7 +81,7 @@ if (file_exists("geshi/geshi.php")) {
 
         function set_language($lang)
         {
-            return;
+            $this->$lang = $lang;
         }
 
         function parse_code()

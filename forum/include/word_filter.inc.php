@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: word_filter.inc.php,v 1.53 2008-07-28 21:05:56 decoyduck Exp $ */
+/* $Id: word_filter.inc.php,v 1.54 2008-07-30 22:39:24 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -176,11 +176,11 @@ function word_filter_prepare($word_filter_array)
 
         if ($filter['FILTER_TYPE'] == WORD_FILTER_TYPE_WHOLE_WORD) {
 
-            $pattern_array[] = "/\b". preg_quote($filter['MATCH_TEXT'], "/"). "\b/i";
+            $pattern_array[] = sprintf('/\b%s\b/i', preg_quote($filter['MATCH_TEXT'], "/"));
 
         }elseif ($filter['FILTER_TYPE'] == WORD_FILTER_TYPE_PREG) {
 
-            if (!preg_match("/^\/(.*)[^\\]\/[imsxeADSUXu]*$/i", $filter['MATCH_TEXT'])) {
+            if (!preg_match('/^\/(.*)[^\]\/[imsxeADSUXu]*$/i', $filter['MATCH_TEXT'])) {
                 $filter['MATCH_TEXT'] = "/{$filter['MATCH_TEXT']}/i";
             }
 
@@ -252,7 +252,7 @@ function word_filter_rem_ob_tags($content)
 
     $rand_hash = preg_replace("/[^a-z]/i", "", $rand_hash);
 
-    return preg_replace("/<\/?$rand_hash>/", "", $content);
+    return preg_replace(sprintf('/<\/?%s>/', $rand_hash), "", $content);
 }
 
 /**
@@ -279,7 +279,7 @@ function word_filter_obstart($content)
         $pattern_array = $user_wordfilter['pattern_array'];
         $replace_array = $user_wordfilter['replace_array'];
 
-        $content_array = preg_split("/<\/?$rand_hash>/i", $content);
+        $content_array = preg_split(sprintf('/<\/?%s>/', $rand_hash), $content);
 
         for ($i = 0; $i < sizeof($content_array); $i++) {
 

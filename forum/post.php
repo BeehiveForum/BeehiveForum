@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.354 2008-07-30 17:41:39 decoyduck Exp $ */
+/* $Id: post.php,v 1.355 2008-07-30 22:39:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -752,11 +752,7 @@ if ($valid && isset($_POST['post'])) {
                     $t_content.= "\n<div class=\"sig\">$t_sig</div>";
                 }
 
-                if ($new_thread) {
-                    $new_pid = post_create($t_fid, $t_tid, $t_rpid, $uid, $uid, $t_to_uid, $t_content);
-                }else {
-                    $new_pid = post_create($t_fid, $t_tid, $t_rpid, $thread_data['BY_UID'], $uid, $t_to_uid, $t_content);
-                }
+                $new_pid = post_create($t_fid, $t_tid, $t_rpid, $uid, $t_to_uid, $t_content);
 
                 if ($new_pid > -1) {
 
@@ -1189,7 +1185,7 @@ if (!$new_thread && $reply_to_pid > 0) {
         echo "                <tr>\n";
         echo "                  <td align=\"left\">\n";
 
-        poll_display($reply_to_tid, $thread_data['LENGTH'], $reply_to_pid, $thread_data['FID'], false, false, false, true, $show_sigs, true);
+        poll_display($reply_to_tid, $thread_data['LENGTH'], $reply_to_pid, $thread_data['FID'], false, false, false, $show_sigs, true);
 
         echo "                  </td>\n";
         echo "                </tr>\n";

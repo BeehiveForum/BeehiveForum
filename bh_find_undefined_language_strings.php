@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_find_undefined_language_strings.php,v 1.7 2008-07-28 21:05:47 decoyduck Exp $ */
+/* $Id: bh_find_undefined_language_strings.php,v 1.8 2008-07-30 22:39:22 decoyduck Exp $ */
 
 // Array of files to exclude from the matches
 
@@ -31,7 +31,10 @@ $exclude_files_array = array('de.inc.php', 'en.inc.php', 'fr-ca.inc.php', 'x-hac
 
 function load_language_file($filename)
 {
-    include("./forum/include/languages/$filename");
+    $lang = array();
+	
+	include("./forum/include/languages/$filename");
+	
     return $lang;
 }
 
@@ -79,8 +82,10 @@ if (($lang = load_language_file('en.inc.php'))) {
         if ((@$php_file_contents = file_get_contents($php_file))) {
 
             // Look for language string usage.
+            
+        	$lang_matches = array();
 
-            if (preg_match_all("/\\\$lang\['([^']+)'\]/i", $php_file_contents, $lang_matches) > 0) {
+            if (preg_match_all('/\$lang\[\'([^\']+)\'\]/i', $php_file_contents, $lang_matches) > 0) {
 
                 // Only want one of each found matches.
 

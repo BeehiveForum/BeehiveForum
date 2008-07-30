@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.317 2008-07-30 16:04:35 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.318 2008-07-30 22:39:24 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -56,8 +56,6 @@ function threads_get_folders()
 
     if (!$table_data = get_table_prefix()) return false;
     if (!is_numeric($access_allowed)) return false;
-
-    $forum_fid = $table_data['FID'];
 
     $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, USER_FOLDER.INTEREST ";
     $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
@@ -1347,7 +1345,6 @@ function threads_process_list($result)
     // Default to returning no threads.
 
     $threads_array = 0;
-    $folder = 0;
     $folder_order = 0;
 
     // Language file
@@ -1370,7 +1367,6 @@ function threads_process_list($result)
         // that folder to be first in the list
 
         if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
-            $folder = $_GET['folder'];
             $folder_order = array($_GET['folder']);
         }
 
@@ -1519,7 +1515,7 @@ function threads_mark_all_read()
     $sql.= "OR {$table_data['PREFIX']}USER_THREAD.LAST_READ IS NULL) ";
     $sql.= "ON DUPLICATE KEY UPDATE LAST_READ = VALUES(LAST_READ)";
 
-    if (!$result_threads = db_query($sql, $db_threads_mark_all_read)) return false;
+    if (!db_query($sql, $db_threads_mark_all_read)) return false;
 
     return true;
 }
@@ -1547,7 +1543,7 @@ function threads_mark_50_read()
     $sql.= "ORDER BY {$table_data['PREFIX']}THREAD.MODIFIED DESC LIMIT 0, 50 ";
     $sql.= "ON DUPLICATE KEY UPDATE LAST_READ = VALUES(LAST_READ)";
 
-    if (!$result_threads = db_query($sql, $db_threads_mark_50_read)) return false;
+    if (!db_query($sql, $db_threads_mark_50_read)) return false;
 
     return true;
 }
@@ -1576,7 +1572,7 @@ function threads_mark_folder_read($fid)
     $sql.= "OR {$table_data['PREFIX']}USER_THREAD.LAST_READ IS NULL) ";
     $sql.= "ON DUPLICATE KEY UPDATE LAST_READ = VALUES(LAST_READ)";
 
-    if (!$result_threads = db_query($sql, $db_threads_mark_folder_read)) return false;
+    if (!db_query($sql, $db_threads_mark_folder_read)) return false;
 
     return true;
 }
@@ -1608,7 +1604,7 @@ function threads_mark_read($tid_array)
     $sql.= "OR {$table_data['PREFIX']}USER_THREAD.LAST_READ IS NULL) ";
     $sql.= "ON DUPLICATE KEY UPDATE LAST_READ = VALUES(LAST_READ)";
 
-    if (!$result_threads = db_query($sql, $db_threads_mark_read)) return false;
+    if (!db_query($sql, $db_threads_mark_read)) return false;
 
     return true;
 }
@@ -1721,7 +1717,7 @@ function thread_list_draw_top($mode)
                 // Remove unread thread options (same as above) plus the
                 // Admin Deleted Threads option.
 
-                unset($labels[1], $labels[4], $labels[8], $labels[14], $labels[18], $label[20]);
+                unset($labels[1], $labels[4], $labels[8], $labels[14], $labels[18], $labels[20]);
             }
 
         }
@@ -1756,9 +1752,10 @@ function threads_have_attachments(&$threads_array, $tid_array)
     if (!$result = db_query($sql, $db_thread_has_attachments)) return false;
 
     while (($attachment_data = db_fetch_array($result))) {
-
         $threads_array[$attachment_data['TID']]['AID'] = $attachment_data['AID'];
     }
+    
+    return true;
 }
 
 function thread_has_attachments($tid)
@@ -1797,7 +1794,7 @@ function thread_auto_prune_unread_data()
         $sql.= "GROUP BY POST.TID ON DUPLICATE KEY UPDATE UNREAD_PID = VALUES(UNREAD_PID), ";
         $sql.= "UNREAD_CREATED = VALUES(UNREAD_CREATED)";
 
-        if (!$result = db_query($sql, $db_thread_prune_unread_data)) return false;
+        if (!db_query($sql, $db_thread_prune_unread_data)) return false;
 
         $sql = "DELETE QUICK FROM {$table_data['PREFIX']}USER_THREAD ";
         $sql.= "USING {$table_data['PREFIX']}USER_THREAD ";
@@ -1810,7 +1807,7 @@ function thread_auto_prune_unread_data()
         $sql.= "AND ({$table_data['PREFIX']}USER_THREAD.INTEREST IS NULL ";
         $sql.= "OR {$table_data['PREFIX']}USER_THREAD.INTEREST = 0) ";
 
-        if (!$result = db_query($sql, $db_thread_prune_unread_data)) return false;
+        if (!db_query($sql, $db_thread_prune_unread_data)) return false;
     }
 
     return true;

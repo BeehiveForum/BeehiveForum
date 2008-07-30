@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_x-hacker_translate.php,v 1.20 2008-07-28 21:05:47 decoyduck Exp $ */
+/* $Id: bh_x-hacker_translate.php,v 1.21 2008-07-30 22:39:22 decoyduck Exp $ */
 
 // Creates an X-Hacker (L33t SpEak) language file from the en.inc.php
 // Derived from the L33t-5p34K G3n3r@t0r v3r510N 0.6 found at :
@@ -34,7 +34,7 @@ function htmlentities_decode($text)
     $trans_tbl = get_html_translation_table (HTML_ENTITIES);
     $trans_tbl = array_flip ($trans_tbl);
     $ret = strtr ($text, $trans_tbl);
-    return preg_replace('/&amp;#(\d+);/me', "chr('\\1')",$ret);
+    return preg_replace('/&amp;#(\d+);/me', 'chr(\1)', $ret);
 }
 
 function rn($r)
@@ -53,9 +53,9 @@ function translate($matches)
 
     // Initialize the variables we need.
 
-    $str_translated = "";
-    $str_new = "";
-    $str_out = "";
+    $str_translated = '';
+    $str_new = '';
+    $str_out = '';
 
     // Process Specific Words
 
@@ -69,20 +69,20 @@ function translate($matches)
 
                 $str_word = htmlentities_decode($str_words[$j]);
 
-                if ($str_word == "am" && isset($str_words[$i + 1]) && $str_words[$i + 1] == "good") {
-                    $str_word = "ownz0r";
+                if ($str_word == 'am' && isset($str_words[$i + 1]) && $str_words[$i + 1] == 'good') {
+                    $str_word = 'ownz0r';
                     $i++;
                 }
 
-                if ($str_word == "is" && isset($str_words[$i + 1]) && $str_words[$i + 1] == "good") {
-                    $str_word = "ownz0rz";
+                if ($str_word == 'is' && isset($str_words[$i + 1]) && $str_words[$i + 1] == 'good') {
+                    $str_word = 'ownz0rz';
                     $i++;
                 }
 
-                if ($str_word == "the" && rn(10) > 6) $str_word = "teh";
-                if ($str_word == "you") $str_word = "j00";
+                if ($str_word == 'the' && rn(10) > 6) $str_word = 'teh';
+                if ($str_word == 'you') $str_word = 'j00';
 
-                $str_translated = $str_translated. $str_word. " ";
+                $str_translated = $str_translated. $str_word. ' ';
             }
 
         }else {
@@ -104,33 +104,33 @@ function translate($matches)
 
                 $char = substr($string_parts[$i], $j, 1);
 
-                if (!(in_array($char, $sprintf_chars) && isset($string_parts[$i][$j - 1]) && $string_parts[$i][$j - 1] == "%") && (isset($string_parts[$i][$j - 1]) && $string_parts[$i][$j - 1] != "\\")) {
+                if (!(in_array($char, $sprintf_chars) && isset($string_parts[$i][$j - 1]) && $string_parts[$i][$j - 1] == '%') && (isset($string_parts[$i][$j - 1]) && $string_parts[$i][$j - 1] != '\\')) {
 
-                    if ($char == "a" && rn(10) > 7) $char = "@";
-                    if ($char == "a" && rn(10) > 2) $char = "4";
-                    if ($char == "b" && rn(10) > 5) $char = "8";
-                    if ($char == "d" && rn(10) > 10) $char = "|)";
-                    if ($char == "e" && rn(10) > 5) $char = "3";
-                    if ($char == "f" && rn(10) > 5) $char = "ph";
-                    if ($char == "g" && rn(10) > 5) $char = "9";
-                    if ($char == "h" && rn(10) > 10) $char = "|-|";
-                    if ($char == "i" && rn(10) > 5) $char = "1";
-                    if ($char == "k" && rn(10) > 10) $char = "|&gt;";
-                    if ($char == "m" && rn(10) > 10) $char = "|\/|";
-                    if ($char == "n" && rn(10) > 10) $char = "|\|";
-                    if ($char == "o" && rn(10) > 5) $char = "0";
+                    if ($char == 'a' && rn(10) > 7) $char = '@';
+                    if ($char == 'a' && rn(10) > 2) $char = '4';
+                    if ($char == 'b' && rn(10) > 5) $char = '8';
+                    if ($char == 'd' && rn(10) > 10) $char = '|)';
+                    if ($char == 'e' && rn(10) > 5) $char = '3';
+                    if ($char == 'f' && rn(10) > 5) $char = 'ph';
+                    if ($char == 'g' && rn(10) > 5) $char = '9';
+                    if ($char == 'h' && rn(10) > 10) $char = '|-|';
+                    if ($char == 'i' && rn(10) > 5) $char = '1';
+                    if ($char == 'k' && rn(10) > 10) $char = '|&gt;';
+                    if ($char == 'm' && rn(10) > 10) $char = '|\/|';
+                    if ($char == 'n' && rn(10) > 10) $char = '|\|';
+                    if ($char == 'o' && rn(10) > 5) $char = '0';
 
-                    if ($char == "q" && isset($string_parts[$i + 1]) && $string_parts[$i + 1] == "u") {
-                        $char = "kw";
+                    if ($char == 'q' && isset($string_parts[$i + 1]) && $string_parts[$i + 1] == 'u') {
+                        $char = 'kw';
                         $i++;
                     }
 
-                    if ($char == "s" && rn(10) > 7) $char = "\\$";
-                    if ($char == "s" && rn(10) > 7) $char = "5";
-                    if ($char == "t" && rn(10) > 5) $char = "+";
-                    if ($char == "v" && rn(10) > 10) $char = "\/";
-                    if ($char == "w" && rn(10) > 10) $char = "\/\/";
-                    if ($char == "x" && rn(10) > 10) $char = "&gt;&lt;";
+                    if ($char == 's' && rn(10) > 7) $char = '\$';
+                    if ($char == 's' && rn(10) > 7) $char = '5';
+                    if ($char == 't' && rn(10) > 5) $char = '+';
+                    if ($char == 'v' && rn(10) > 10) $char = '\/';
+                    if ($char == 'w' && rn(10) > 10) $char = '\/\/';
+                    if ($char == 'x' && rn(10) > 10) $char = '&gt;&lt;';
 
                     $str_new = $str_new. $char;
 
@@ -158,7 +158,7 @@ function translate($matches)
 
                 $char = substr($string_parts[$i], $j, 1);
 
-                if (!(in_array($char, $sprintf_chars) && isset($string_parts[$i][$j - 1]) && $string_parts[$i][$j - 1] == "%") && (isset($string_parts[$i][$j - 1]) && $string_parts[$i][$j - 1] != "\\")) {
+                if (!(in_array($char, $sprintf_chars) && isset($string_parts[$i][$j - 1]) && $string_parts[$i][$j - 1] == '%') && (isset($string_parts[$i][$j - 1]) && $string_parts[$i][$j - 1] != '\\')) {
 
                     if (rn(10) > 5) $char = strtoupper($char);
                     $str_out = $str_out. htmlentities($char);
@@ -177,7 +177,7 @@ function translate($matches)
     }
 
     $string_result = trim(str_replace(' <', '<', $str_out));
-    return "\"$string_result\";";
+    return sprintf('"%s";', $string_result);
 }
 
 // Start here
@@ -201,11 +201,11 @@ if (($langfile = file('./forum/include/languages/en.inc.php'))) {
 
         fclose($fp);
 
-        echo "Translation of en.inc.php into x-hacker.inc.php has completed successfully.\n";
+        echo 'Translation of en.inc.php into x-hacker.inc.php has completed successfully.';
 
     }else {
 
-        echo "Could not open x-hacker.inc.php for writing.\n";
+        echo 'Could not open x-hacker.inc.php for writing.';
     }
 
 }else {

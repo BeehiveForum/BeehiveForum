@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_check_dependencies.php,v 1.25 2008-07-30 22:39:22 decoyduck Exp $ */
+/* $Id: bh_check_dependencies.php,v 1.26 2008-07-30 23:57:32 decoyduck Exp $ */
 
 // Callback function to escape array of strings.
 
@@ -30,9 +30,7 @@ function preg_quote_callback($str)
     return preg_quote($str, "/");
 }
 
-// Path to include files.
-
-$include_files_dir = 'forum\include';
+// Array to hold source files
 
 $source_files_array = array();
 
@@ -67,7 +65,7 @@ foreach ($source_files_dir_array as $include_file_dir) {
 
                 $ignore_functions = implode("|", array_map('preg_quote_callback', $ignore_functions_array));
                 $ignore_constants = implode("|", array_map('preg_quote_callback', $ignore_constants_array));
-                
+
                 $function_matches = array();
 
                 if (preg_match_all('/function\s([a-z1-9-_]+)[\s]?\(/i', $source_file_contents, $function_matches)) {
@@ -99,7 +97,7 @@ foreach ($source_files_dir_array as $include_file_dir) {
                 }
 
                 $constant_matches = array();
-                
+
                 if (preg_match_all('/define[\s]?\(["|\']?([a-z1-9-_]+)/i', $source_file_contents, $constant_matches)) {
 
                     if (!isset($include_files_constants_array[$file])) {
@@ -154,17 +152,13 @@ foreach ($source_files_array as $source_file) {
             $include_file_line_preg = preg_quote($include_file_line, "/");
 
             if (preg_match("/$include_file_line_preg/", $source_file_contents) < 1) {
-            	
-            	$function_names_preg = implode('\s?\(|[\s|\.|,]+', array_map('preg_quote_callback', $function_names_array));
-            	$function_names_preg = sprintf('/[\s|\.|,]%s\s?\(/', $function_names_preg);
+
+                $function_names_preg = implode('\s?\(|[\s|\.|,]+', array_map('preg_quote_callback', $function_names_array));
+                $function_names_preg = sprintf('/[\s|\.|,]%s\s?\(/', $function_names_preg);
 
                 if (preg_match($function_names_preg, $source_file_contents) > 0) {
 
-                    if (!isset($include_files_required_array[$include_file])) {
-
-                        $include_files_required_array[] = $include_file_line;
-
-                    }elseif (!in_array($include_file, $include_files_required_array)) {
+                    if (!in_array($include_file, $include_files_required_array)) {
 
                         $include_files_required_array[] = $include_file_line;
                     }
@@ -186,11 +180,7 @@ foreach ($source_files_array as $source_file) {
 
                 if (preg_match("/{$constant_names_preg}/", $source_file_contents) > 0) {
 
-                    if (!isset($include_files_required_array[$include_file])) {
-
-                        $include_files_required_array[] = $include_file_line;
-                        
-                    }elseif (!in_array($include_file, $include_files_required_array)) {
+                    if (!in_array($include_file, $include_files_required_array)) {
 
                         $include_files_required_array[] = $include_file_line;
                     }

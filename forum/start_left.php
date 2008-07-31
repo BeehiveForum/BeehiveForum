@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.161 2008-07-31 16:44:47 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.162 2008-07-31 18:46:16 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -200,7 +200,7 @@ if (is_array($folder_info) && sizeof($folder_info) > 0) {
                     $number.= "1<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('main'). "\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
                 }
 
-                $latest_post = $thread['LENGTH'];
+                $latest_post = 1;
             }
 
             $thread_time = format_time($thread['MODIFIED']);

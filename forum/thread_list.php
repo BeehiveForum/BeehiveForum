@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.343 2008-07-31 16:44:47 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.344 2008-07-31 18:46:16 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -682,7 +682,7 @@ foreach ($folder_order as $folder_number) {
                                     $number.= "1<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('right'). "\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
                                 }
 
-                                $latest_post = $thread['LENGTH'];
+                                $latest_post = 1;
 
                                 if (!is_numeric($first_thread) && isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 

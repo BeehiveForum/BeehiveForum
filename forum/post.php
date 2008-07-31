@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.356 2008-07-31 23:35:29 decoyduck Exp $ */
+/* $Id: post.php,v 1.357 2008-07-31 23:51:38 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -708,7 +708,12 @@ if ($valid && isset($_POST['post'])) {
 
             if ($new_thread) {
 
-                if (!bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+                if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+
+                    $t_closed = isset($_POST['t_closed']) && $_POST['t_closed'] == 'Y' ? true : false;
+                    $t_sticky = isset($_POST['t_sticky']) && $_POST['t_sticky'] == 'Y' ? 'Y' : 'N';
+
+                }else {
 
                     $t_closed = false;
                     $t_sticky = "N";
@@ -731,6 +736,9 @@ if ($valid && isset($_POST['post'])) {
                 }
 
                 if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+
+                    $t_closed = isset($_POST['t_closed']) && $_POST['t_closed'] == 'Y' ? true : false;
+                    $t_sticky = isset($_POST['t_sticky']) && $_POST['t_sticky'] == 'Y' ? 'Y' : 'N';
 
                     if (isset($t_closed) && $t_closed == "Y") {
                         thread_set_closed($t_tid, true);

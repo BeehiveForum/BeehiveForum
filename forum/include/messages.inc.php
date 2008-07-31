@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.544 2008-07-30 22:39:24 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.545 2008-07-31 16:44:47 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -626,7 +626,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
         $message['CONTENT'] = preg_replace('/<a([^>]*)href="([^"]*)"([^\>]*)><img[^>]*src="([^"]*)"[^>]*><\/a>/i', '[img: <a\1href="\2"\3>\4</a>]', $message['CONTENT']);
         $message['CONTENT'] = preg_replace('/<img[^>]*src="([^"]*)"[^>]*>/i', '[img: <a href="\1">\1</a>]', $message['CONTENT']);
         $message['CONTENT'] = preg_replace('/<embed[^>]*src="([^"]*)"[^>]*>/i', '[object: <a href="\1">\1</a>]', $message['CONTENT']);
-    }    
+    }
 
     $message['CONTENT'] = "<div class=\"pear_cache_lite\">{$message['CONTENT']}</div>";
 
@@ -964,7 +964,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
             $attachments_array = array();
             $image_attachments_array = array();
-            
+
             if (get_attachments($message['FROM_UID'], $aid, $attachments_array, $image_attachments_array)) {
 
                 echo "              <tr>\n";
@@ -1665,37 +1665,55 @@ function messages_get_most_recent($uid, $fid = false)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $unread_cutoff_stamp = forum_get_unread_cutoff();
+    if (($unread_cutoff_stamp = forum_get_unread_cutoff()) === false) {
 
-    $sql = "SELECT THREAD.TID, UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, ";
-    $sql.= "THREAD.LENGTH, USER_THREAD.LAST_READ, THREAD_STATS.UNREAD_PID, ";
-    $sql.= "UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp AS UNREAD_CUTOFF, ";
-    $sql.= "USER_PEER.RELATIONSHIP FROM {$table_data['PREFIX']}THREAD THREAD ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ON ";
-    $sql.= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
-    $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_FOLDER USER_FOLDER ";
-    $sql.= "ON (USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD_STATS THREAD_STATS ";
-    $sql.= "ON (THREAD_STATS.TID = THREAD.TID) ";
-    $sql.= "WHERE THREAD.FID in ($fidlist) ";
-    $sql.= "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED_COMPLETELY. ") = 0 ";
-    $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
-    $sql.= "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED. ") = 0 ";
-    $sql.= "OR USER_PEER.RELATIONSHIP IS NULL OR THREAD.LENGTH > 1) ";
+        $sql = "SELECT THREAD.TID, UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, ";
+        $sql.= "THREAD.LENGTH, USER_THREAD.LAST_READ, USER_PEER.RELATIONSHIP ";
+        $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ON ";
+        $sql.= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
+        $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_FOLDER USER_FOLDER ";
+        $sql.= "ON (USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD_STATS THREAD_STATS ";
+        $sql.= "ON (THREAD_STATS.TID = THREAD.TID) ";
+        $sql.= "WHERE THREAD.FID in ($fidlist) ";
+        $sql.= "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED_COMPLETELY. ") = 0 ";
+        $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
+        $sql.= "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED. ") = 0 ";
+        $sql.= "OR USER_PEER.RELATIONSHIP IS NULL OR THREAD.LENGTH > 1) ";
+        $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
+        $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
+        $sql.= "AND THREAD.DELETED = 'N' ORDER BY THREAD.MODIFIED DESC LIMIT 0, 1";
 
-    if ($unread_cutoff_stamp !== false) {
+    }else {
 
+        $sql = "SELECT THREAD.TID, UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, ";
+        $sql.= "THREAD.LENGTH, USER_THREAD.LAST_READ, THREAD_STATS.UNREAD_PID, ";
+        $sql.= "UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp AS UNREAD_CUTOFF, ";
+        $sql.= "USER_PEER.RELATIONSHIP FROM {$table_data['PREFIX']}THREAD THREAD ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ON ";
+        $sql.= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
+        $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_FOLDER USER_FOLDER ";
+        $sql.= "ON (USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD_STATS THREAD_STATS ";
+        $sql.= "ON (THREAD_STATS.TID = THREAD.TID) ";
+        $sql.= "WHERE THREAD.FID in ($fidlist) ";
+        $sql.= "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED_COMPLETELY. ") = 0 ";
+        $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
+        $sql.= "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED. ") = 0 ";
+        $sql.= "OR USER_PEER.RELATIONSHIP IS NULL OR THREAD.LENGTH > 1) ";
         $sql.= "AND ((THREAD.LENGTH > USER_THREAD.LAST_READ ";
         $sql.= "AND (THREAD.MODIFIED > FROM_UNIXTIME('$unread_cutoff_stamp')) ";
         $sql.= "OR $unread_cutoff_stamp = 0) OR USER_THREAD.LAST_READ IS NULL ";
         $sql.= "OR USER_THREAD.LAST_READ = THREAD.LENGTH) ";
+        $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
+        $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
+        $sql.= "AND THREAD.DELETED = 'N' ORDER BY THREAD.MODIFIED DESC LIMIT 0, 1";
     }
-
-    $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
-    $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
-    $sql.= "AND THREAD.DELETED = 'N' ORDER BY THREAD.MODIFIED DESC LIMIT 0, 1";
 
     if (!$result = db_query($sql, $db_messages_get_most_recent)) return false;
 
@@ -1709,7 +1727,7 @@ function messages_get_most_recent($uid, $fid = false)
 
         }else if (!isset($message_data['LAST_READ']) || !is_numeric($message_data['LAST_READ'])) {
 
-            if (isset($message_data['MODIFIED']) && $message_data['MODIFIED'] < $message_data['UNREAD_CUTOFF']) {
+            if (isset($message_data['MODIFIED']) && isset($message_data['UNREAD_CUTOFF']) && $message_data['MODIFIED'] < $message_data['UNREAD_CUTOFF']) {
 
                 return "{$message_data['TID']}.{$message_data['LENGTH']}";
 

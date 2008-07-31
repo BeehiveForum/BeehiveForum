@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.319 2008-07-31 14:52:56 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.320 2008-07-31 16:44:47 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1236,8 +1236,6 @@ function threads_get_most_recent($limit = 10, $folder_list_array = array(), $cre
 
     // Thread cut off period for unread type messages
 
-    $unread_cutoff_stamp = forum_get_unread_cutoff();
-
     if (user_is_guest()) {
 
         $sql = "SELECT THREAD.TID, THREAD.TITLE, THREAD.STICKY, THREAD.DELETED, ";
@@ -1253,6 +1251,38 @@ function threads_get_most_recent($limit = 10, $folder_list_array = array(), $cre
         $sql.= "LEFT JOIN {$table_data['PREFIX']}FOLDER FOLDER ";
         $sql.= "ON (FOLDER.FID = THREAD.FID) ";
         $sql.= "WHERE THREAD.FID IN ($folders) AND THREAD.DELETED = 'N'  ";
+        $sql.= "ORDER BY $order_by ";
+        $sql.= "LIMIT 0, $limit";
+
+    }else if (($unread_cutoff_stamp = forum_get_unread_cutoff()) === false) {
+
+        $sql = "SELECT THREAD.TID, THREAD.TITLE, THREAD.STICKY, THREAD.DELETED, ";
+        $sql.= "THREAD.LENGTH, THREAD.POLL_FLAG, THREAD_STATS.VIEWCOUNT, ";
+        $sql.= "UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, USER_PEER.RELATIONSHIP, ";
+        $sql.= "USER_THREAD.INTEREST, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
+        $sql.= "FOLDER.PREFIX, USER.LOGON, THREAD_TRACK.TRACK_TYPE ";
+        $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD_TRACK THREAD_TRACK ";
+        $sql.= "ON (THREAD_TRACK.TID = THREAD.TID) ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD_STATS THREAD_STATS ";
+        $sql.= "ON (THREAD_STATS.TID = THREAD.TID) ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
+        $sql.= "ON (THREAD.TID = USER_THREAD.TID AND USER_THREAD.UID = '$uid') ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_FOLDER USER_FOLDER ";
+        $sql.= "ON (USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
+        $sql.= "LEFT JOIN USER USER ON (USER.UID = THREAD.BY_UID) ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+        $sql.= "ON (USER_PEER.PEER_UID = THREAD.BY_UID AND USER_PEER.UID = '$uid') ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}FOLDER FOLDER ";
+        $sql.= "ON (FOLDER.FID = THREAD.FID) ";
+        $sql.= "WHERE THREAD.FID IN ($folders) ";
+        $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0 ";
+        $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
+        $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 ";
+        $sql.= "OR USER_PEER.RELATIONSHIP IS NULL OR THREAD.LENGTH > 1) ";
+        $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
+        $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
+        $sql.= "AND THREAD.DELETED = 'N'  ";
         $sql.= "ORDER BY $order_by ";
         $sql.= "LIMIT 0, $limit";
 
@@ -1310,7 +1340,6 @@ function threads_get_most_recent($limit = 10, $folder_list_array = array(), $cre
 
             if (!isset($thread['RELATIONSHIP'])) $thread['RELATIONSHIP'] = 0;
             if (!isset($thread['INTEREST'])) $thread['INTEREST'] = 0;
-            if (!isset($thread['UNREAD_CUTOFF'])) $thread['UNREAD_CUTOFF'] = time() - $unread_cutoff_stamp;
 
             if (user_is_guest()) {
 
@@ -1320,7 +1349,7 @@ function threads_get_most_recent($limit = 10, $folder_list_array = array(), $cre
 
                 $thread['LAST_READ'] = 0;
 
-                if (isset($thread['MODIFIED']) && $thread['MODIFIED'] < $thread['UNREAD_CUTOFF']) {
+                if (isset($thread['MODIFIED']) && isset($thread['UNREAD_CUTOFF']) && $thread['MODIFIED'] < $thread['UNREAD_CUTOFF']) {
                     $thread['LAST_READ'] = $thread['LENGTH'];
                 }elseif (isset($thread['UNREAD_PID']) && !is_null($thread['UNREAD_PID']) && $thread['UNREAD_PID'] > 0) {
                     $thread['LAST_READ'] = $thread['UNREAD_PID'];
@@ -1351,10 +1380,6 @@ function threads_process_list($result)
 
     $lang = load_language_file();
 
-    // Thread cut off period for unread type messages
-
-    $unread_cutoff_stamp = forum_get_unread_cutoff();
-
     // Check that the set of threads returned is not empty
 
     if (db_num_rows($result) > 0) {
@@ -1379,7 +1404,6 @@ function threads_process_list($result)
             if (!isset($thread['INTEREST']) || is_null($thread['INTEREST'])) $thread['INTEREST'] = 0;
             if (!isset($thread['STICKY']) || is_null($thread['STICKY'])) $thread['STICKY'] = 0;
             if (!isset($thread['VIEWCOUNT']) || is_null($thread['VIEWCOUNT'])) $thread['VIEWCOUNT'] = 0;
-            if (!isset($thread['UNREAD_CUTOFF']) || is_null($thread['UNREAD_CUTOFF'])) $thread['UNREAD_CUTOFF'] = time() - $unread_cutoff_stamp;
             if (!isset($thread['PREFIX']) || is_null($thread['PREFIX'])) $thread['PREFIX'] = "";
             if (!isset($thread['TRACK_TYPE']) || is_null($thread['TRACK_TYPE'])) $thread['TRACK_TYPE'] = -1;
             if (!isset($thread['DELETED']) || is_null($thread['DELETED'])) $thread['DELETED'] = 'N';
@@ -1410,7 +1434,7 @@ function threads_process_list($result)
 
                 $thread['LAST_READ'] = 0;
 
-                if (isset($thread['MODIFIED']) && $thread['MODIFIED'] < $thread['UNREAD_CUTOFF']) {
+                if (isset($thread['MODIFIED']) && isset($thread['UNREAD_CUTOFF']) && $thread['MODIFIED'] < $thread['UNREAD_CUTOFF']) {
                     $thread['LAST_READ'] = $thread['LENGTH'];
                 }elseif (isset($thread['UNREAD_PID']) && !is_null($thread['UNREAD_PID']) && $thread['UNREAD_PID'] > 0) {
                     $thread['LAST_READ'] = $thread['UNREAD_PID'];

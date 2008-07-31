@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.189 2008-07-31 15:05:40 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.190 2008-07-31 16:44:47 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1291,25 +1291,25 @@ function light_folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="
 
     if (db_num_rows($result) > 0) {
 
-        while (($folder_data = db_fetch_array($result))) {
+        while (($folder_order = db_fetch_array($result))) {
 
             if (user_is_guest()) {
 
-                if (bh_session_check_perm(USER_PERM_GUEST_ACCESS, $folder_data['FID'])) {
+                if (bh_session_check_perm(USER_PERM_GUEST_ACCESS, $folder_order['FID'])) {
 
                     $available_folders[$folder_order['FID']] = _htmlentities($folder_order['TITLE']);
                 }
 
             }else {
 
-                if (bh_session_check_perm($access_allowed, $folder_data['FID'])) {
+                if (bh_session_check_perm($access_allowed, $folder_order['FID'])) {
 
                     $available_folders[$folder_order['FID']] = _htmlentities($folder_order['TITLE']);
                 }
             }
         }
 
-        if (sizeof($folders['FIDS']) > 0 && sizeof($folders['TITLES']) > 0) {
+        if (sizeof($available_folders) > 0) {
 
             return light_form_dropdown_array($field_name.$suffix, $available_folders, $default_fid);
         }

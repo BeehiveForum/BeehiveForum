@@ -4,15 +4,15 @@
  * ----------------
  * Author: Roberto Armellin (r.armellin@tin.it)
  * Copyright: (c) 2004 Roberto Armellin, Nigel McNie (http://qbnz.com/highlighter/)
- * Release Version: 1.0.7.4
- * CVS Revision Version: $Revision: 1.2 $
+ * Release Version: 1.0.7.22
  * Date Started: 2004/09/17
- * Last Modified: 2004/09/18
  *
  * Visual FoxPro language file for GeSHi.
  *
  * CHANGES
  * -------
+ * 2008/05/23 (1.0.7.22)
+ *  -  Removed tab as a symbol char
  * 2004/11/27 (1.0.1)
  *  -  Added support for multiple object splitters
  * 2004/10/27 (1.0.0)
@@ -42,7 +42,7 @@
  ************************************************************************************/
 
 $language_data = array (
-	'LANG_NAME' => 'VFP',
+	'LANG_NAME' => 'Visual Fox Pro',
 	'COMMENT_SINGLE' => array(1 => "//", 2 => "\n*"),
 	'COMMENT_MULTI' => array(),
 	'CASE_KEYWORDS' => GESHI_CAPS_NO_CHANGE,
@@ -385,7 +385,7 @@ $language_data = array (
 			'Relation','Session','Shape','Spinner','TextBox' ,'Toolbar'
 			),
 		),
-	'SYMBOLS' => array("!", "@", "$", "%", "(", ")", "-", "+", "=", "/", "{", "}", "[", "]", ":", ";", ",", "	", ".", "*", "&"),
+	'SYMBOLS' => array("!", "@", "$", "%", "(", ")", "-", "+", "=", "/", "{", "}", "[", "]", ":", ";", ",", ".", "*", "&"),
 	'CASE_SENSITIVE' => array(
 		GESHI_COMMENTS => true,
 		1 => false,
@@ -402,7 +402,7 @@ $language_data = array (
 			),
 		'COMMENTS' => array(
 			1 => 'color: green; font-style: italic;',
-			2 => 'color: green font-style: italic;',
+			2 => 'color: green; font-style: italic;',
 			'MULTI' => 'color: #808080; font-style: italic;'
 			),
 		'ESCAPE_CHAR' => array(

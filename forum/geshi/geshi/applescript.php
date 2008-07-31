@@ -4,19 +4,37 @@
  * --------
  * Author: Stephan Klimek (http://www.initware.org)
  * Copyright: Stephan Klimek (http://www.initware.org)
- * Release Version: 1.0.7.4
- * CVS Revision Version: $Revision: 1.1 $
+ * Release Version: 1.0.7.22
  * Date Started: 2005/07/20
- * Last Modified: $Date: 2005-10-28 17:37:16 $
  *
  * AppleScript language file for GeSHi.
  *
  * CHANGES
  * -------
+ * 2008/05/23 (1.0.7.22)
+ *  -  Added description of extra language features (SF#1970248)
  *
- * TODO 
+ * TODO
  * -------------------------
  * URL settings to references
+ *
+ **************************************************************************************
+ *
+ *     This file is part of GeSHi.
+ *
+ *   GeSHi is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 2 of the License, or
+ *   (at your option) any later version.
+ *
+ *   GeSHi is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with GeSHi; if not, write to the Free Software
+ *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  ************************************************************************************/
 
@@ -53,7 +71,7 @@ $language_data = array (
 			)
 		),
 	'SYMBOLS' => array(
-        ')','+','-','^','*','/','&','<','>=','<','<=','=','­'
+        ')','+','-','^','*','/','&','<','>=','<','<=','=','ï¿½'
 		),
 	'CASE_SENSITIVE' => array(
 		GESHI_COMMENTS => true,
@@ -105,7 +123,9 @@ $language_data = array (
 		1 => ',+-=&lt;&gt;/?^&amp;*'
 		),
 	'REGEXPS' => array(
+	    //Variables
 		0 => '[\\$%@]+[a-zA-Z_][a-zA-Z0-9_]*',
+		//File descriptors
 		4 => '&lt;[a-zA-Z_][a-zA-Z0-9_]*&gt;',
 		),
 	'STRICT_MODE_APPLIES' => GESHI_NEVER,

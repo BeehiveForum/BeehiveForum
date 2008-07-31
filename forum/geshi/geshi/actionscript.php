@@ -4,10 +4,8 @@
  * ----------------
  * Author: Steffen Krause (Steffen.krause@muse.de)
  * Copyright: (c) 2004 Steffen Krause, Nigel McNie (http://qbnz.com/highlighter)
- * Release Version: 1.0.7.4
- * CVS Revision Version: $Revision: 1.2 $
+ * Release Version: 1.0.7.22
  * Date Started: 2004/06/20
- * Last Modified: $Date: 2005-10-28 17:37:16 $
  *
  * Actionscript language file for GeSHi.
  *
@@ -42,7 +40,7 @@
  ************************************************************************************/
 
 $language_data = array (
-	'LANG_NAME' => 'Actionscript',
+	'LANG_NAME' => 'ActionScript',
 	'COMMENT_SINGLE' => array(1 => '//', 2 => '#'),
 	'COMMENT_MULTI' => array('/*' => '*/'),
 	'CASE_KEYWORDS' => GESHI_CAPS_NO_CHANGE,

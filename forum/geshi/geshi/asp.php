@@ -4,17 +4,17 @@
  * --------
  * Author: Amit Gupta (http://blog.igeek.info/)
  * Copyright: (c) 2004 Amit Gupta (http://blog.igeek.info/), Nigel McNie (http://qbnz.com/highlighter)
- * Release Version: 1.0.7.4
- * CVS Revision Version: $Revision: 1.2 $
+ * Release Version: 1.0.7.22
  * Date Started: 2004/08/13
- * Last Modified: $Date: 2005-10-28 17:37:16 $
  *
  * ASP language file for GeSHi.
  *
  * CHANGES
  * -------
+ * 2005/12/30 (1.0.3)
+ *   -  Strings only delimited by ", comments by '
  * 2004/11/27 (1.0.2)
- *  -  Added support for multiple object splitters
+ *   -  Added support for multiple object splitters
  * 2004/10/27 (1.0.1)
  *   -  Added support for URLs
  * 2004/08/13 (1.0.0)
@@ -48,9 +48,9 @@ $language_data = array (
 	'LANG_NAME' => 'ASP',
 	'COMMENT_SINGLE' => array(1 => "'", 2 => '//'),
 	'COMMENT_MULTI' => array('/*' => '*/'),
-	'CASE_KEYWORDS' => 0,
-	'QUOTEMARKS' => array("'", '"'),
-	'ESCAPE_CHAR' => '\\',
+	'CASE_KEYWORDS' => GESHI_CAPS_NO_CHANGE,
+	'QUOTEMARKS' => array('"'),
+	'ESCAPE_CHAR' => '',
 	'KEYWORDS' => array(
 		1 => array(
 			'include', 'file', 'Dim', 'Option', 'Explicit', 'Implicit', 'Set', 'Select', 'ReDim', 'Preserve',
@@ -76,6 +76,10 @@ $language_data = array (
 			'Year', 'MonthName', 'LCase', 'UCase', 'Abs', 'Array', 'As', 'LEN', 'MoveFirst', 'MoveLast', 'MovePrevious',
 			'MoveNext', 'LBound', 'UBound', 'Transfer', 'Open', 'Close', 'MapPath', 'FileExists', 'OpenTextFile', 'ReadAll'
 			)
+		),
+	'SYMBOLS' => array(
+		'(', ')', '[', ']', '!', '@', '%', '&', '*', '|', '/', '<', '>',
+        ';', ':', '?', '='
 		),
 	'CASE_SENSITIVE' => array(
 		GESHI_COMMENTS => false,

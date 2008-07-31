@@ -4,10 +4,8 @@
  * ----------
  * Author: Thomas Klingler (hotline@theratech.de) based on delphi.php from Járja Norbert (jnorbi@vipmail.hu)
  * Copyright: (c) 2004 Járja Norbert, Nigel McNie (http://qbnz.com/highlighter)
- * Release Version: 1.0.7.4
- * CVS Revision Version: $Revision: 1.1 $
+ * Release Version: 1.0.7.22
  * Date Started: 2005/07/29
- * Last Modified: $Date: 2005-10-28 17:37:16 $
  *
  * Inno Script language inkl. Delphi (Object Pascal) language file for GeSHi.
  *
@@ -59,7 +57,7 @@ $language_data = array (
 			'End', 'Except', 'File', 'Finally', 'For', 'Function', 'Goto', 'If', 'Implementation', 'In', 'Inherited', 'Interface',
 			'Is', 'Mod', 'Not', 'Object', 'Of', 'On', 'Or', 'Packed', 'Procedure', 'Property', 'Raise', 'Record',
 			'Repeat', 'Set', 'Shl', 'Shr', 'Then', 'ThreadVar', 'To', 'Try', 'Unit', 'Until', 'Uses', 'While', 'With', 'Xor',
-			
+
 			'HKCC','HKCR','HKCU','HKLM','HKU','alwaysoverwrite','alwaysskipifsameorolder','append',
 			'binary','classic','closeonexit','comparetimestamp','confirmoverwrite',
 			'createkeyifdoesntexist','createonlyiffileexists','createvalueifdoesntexist',
@@ -75,8 +73,6 @@ $language_data = array (
 			'uninsclearvalue','uninsdeleteentry','uninsdeletekey','uninsdeletekeyifempty',
 			'uninsdeletesection','uninsdeletesectionifempty','uninsdeletevalue',
 			'uninsneveruninstall','useapppaths','verysilent','waituntilidle'
-
-			
 			),
 		3 => array(
 			'Abs', 'Addr', 'AnsiCompareStr', 'AnsiCompareText', 'AnsiContainsStr', 'AnsiEndsStr', 'AnsiIndexStr', 'AnsiLeftStr',
@@ -105,7 +101,7 @@ $language_data = array (
 			'ProcessPath', 'Randomize', 'Read', 'ReadLn', 'ReallocMem', 'Rename', 'ReplaceDate', 'ReplaceTime',
 			'Reset', 'ReWrite', 'RmDir', 'RunError', 'Seek', 'SetLength', 'SetString', 'ShowMessage', 'ShowMessageFmt',
 			'ShowMessagePos', 'Str', 'Truncate', 'Val', 'Write', 'WriteLn',
-			
+
 			'AdminPrivilegesRequired','AfterInstall','AllowCancelDuringInstall','AllowNoIcons','AllowRootDirectory','AllowUNCPath','AlwaysRestart','AlwaysShowComponentsList','AlwaysShowDirOnReadyPage','AlwaysShowGroupOnReadyPage ','AlwaysUsePersonalGroup','AppComments','AppContact','AppCopyright','AppendDefaultDirName',
 			'AppendDefaultGroupName','AppId','AppModifyPath','AppMutex','AppName','AppPublisher',
 			'AppPublisherURL','AppReadmeFile','AppSupportURL','AppUpdatesURL','AppVerName','AppVersion',
@@ -136,8 +132,6 @@ $language_data = array (
 			'VersionInfoVersion','VersionInfoCompany','VersionInfoDescription','VersionInfoTextVersion',
 			'WindowResizable','WindowShowCaption','WindowStartMaximized',
 			'WindowVisible','WizardImageBackColor','WizardImageFile','WizardImageStretch','WizardSmallImageBackColor','WizardSmallImageFile','WizardStyle','WorkingDir'
-
-			
 			),
 		4 => array(
 			'AnsiChar', 'AnsiString', 'Boolean', 'Byte', 'Cardinal', 'Char', 'Comp', 'Currency', 'Double', 'Extended',
@@ -151,8 +145,7 @@ $language_data = array (
 		),
 	'SYMBOLS' => array(
 		'(', ')', '[', ']', '{', '}', '@', '%', '&', '*', '|', '/', '<', '>'
-		),	
-		
+		),
 	'CASE_SENSITIVE' => array(
 		GESHI_COMMENTS => true,
 		1 => false,

@@ -4,15 +4,16 @@
  * --------
  * Author: Alexander 'E-Razor' Krause (admin@erazor-zone.de)
  * Copyright: (c) 2005 Alexander Krause
- * Release Version: 1.0.7.4
- * CVS Revision Version: $Revision: 1.1 $
+ * Release Version: 1.0.7.22
  * Date Started: 2005/06/15
- * Last Modified: $Date: 2005-10-28 17:37:16 $
- * 
+ *
  * VHDL (VHSICADL, very high speed integrated circuit HDL) language file for GeSHi.
  *
  * CHANGES
  * -------
+ * 2008/05/23 (1.0.7.22)
+ *  -  Added description of extra language features (SF#1970248)
+ *  -  Optimized regexp group 0 somewhat
  * 2006/06/15 (1.0.0)
  *  -  First Release
  *
@@ -38,9 +39,9 @@
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  ************************************************************************************/
- 
+
 $language_data = array (
-    'LANG_NAME' => 'vhdl',
+    'LANG_NAME' => 'VHDL',
     'COMMENT_SINGLE' => array(1 => '--'),
     'COMMENT_MULTI' => array(),
     'CASE_KEYWORDS' => GESHI_CAPS_NO_CHANGE,
@@ -124,11 +125,12 @@ $language_data = array (
     'OBJECT_SPLITTERS' => array(
         ),
     'REGEXPS' => array(
-        0 => '(\b(0x)[0-9a-fA-F]{2,}[hH]?|\b(0x)?[0-9a-fA-F]{2,}[hH])|'.
-        '(\b[0-9]{1,}((\.){1}[0-9]{1,}){0,1}(E)[\-]{0,1}[0-9]{1,})|'.
-         '(\b(ns))|'.
-         "('[0-9a-zA-Z]+)",
-         1 => "\b(''[0-9]'')"
+        //Hex numbers and scientific notation for numbers
+        0 => '(\b0x[0-9a-fA-F]+|\b\d[0-9a-fA-F]+[hH])|'.
+            '(\b\d+?(\.\d+?)?E[+\-]?\d+)|(\bns)|'.
+            "('[0-9a-zA-Z]+)",
+        //Number characters?
+        1 => "\b(''\d'')"
         ),
     'STRICT_MODE_APPLIES' => GESHI_NEVER,
     'SCRIPT_DELIMITERS' => array(
@@ -136,5 +138,5 @@ $language_data = array (
     'HIGHLIGHT_STRICT_BLOCK' => array(
         )
 );
- 
+
 ?>

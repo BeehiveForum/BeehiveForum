@@ -4,10 +4,8 @@
  * ----------
  * Author: Flaie (fireflaie@gmail.com)
  * Copyright: (c) 2005 Flaie, Nigel McNie (http://qbnz.com/highlighter)
- * Release Version: 1.0.7.4
- * CVS Revision Version: $Revision: 1.1 $
+ * Release Version: 1.0.7.22
  * Date Started: 2005/08/27
- * Last Modified: $Date: 2005-10-28 17:37:16 $
  *
  * OCaml (Objective Caml) language file for GeSHi.
  *
@@ -47,7 +45,7 @@ $language_data = array (
 	'QUOTEMARKS' => array('"'),
 	'ESCAPE_CHAR' => "",
 	'KEYWORDS' => array(
-	   /* main OCaml keywords */
+        /* main OCaml keywords */
 		1 => array(
 			'and', 'As', 'asr', 'begin', 'Class', 'Closed', 'constraint', 'do', 'done', 'downto', 'else',
 			'end', 'exception', 'external', 'failwith', 'false', 'flush', 'for', 'fun', 'function', 'functor',
@@ -59,9 +57,9 @@ $language_data = array (
 		),
 	/* highlighting symbols is really important in OCaml */
 	'SYMBOLS' => array(
-			';', '!', ':', '.', '=', '%', '^', '*', '-', '/', '+', 
+			';', '!', ':', '.', '=', '%', '^', '*', '-', '/', '+',
 			'>', '<', '(', ')', '[', ']', '&', '|', '#', "'"
-			), 
+			),
 	'CASE_SENSITIVE' => array(
 		GESHI_COMMENTS => true,
 		1 => false,
@@ -89,7 +87,7 @@ $language_data = array (
 			),
 		'REGEXPS' => array(
 			),
-		'SYMBOLS' => array( 
+		'SYMBOLS' => array(
 			0 => 'color: #a52a2a;' /* maroon */
 			),
 		'SCRIPT' => array(

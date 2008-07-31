@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.209 2008-07-30 22:39:24 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.210 2008-07-31 16:48:18 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -305,10 +305,10 @@ function search_execute($search_arguments, &$error)
 function search_strip_keywords($search_string, $strip_valid = false)
 {
     // Array to hold our MySQL stop words
-    
-	$mysql_fulltext_stopwords = array();
-	
-	// MySQL has a list of stop words for fulltext searches.
+
+    $mysql_fulltext_stopwords = array();
+
+    // MySQL has a list of stop words for fulltext searches.
     // We'll save ourselves some server time by checking
     // them first.
 
@@ -327,7 +327,7 @@ function search_strip_keywords($search_string, $strip_valid = false)
     $keywords_array = preg_grep("/^ {0,}$/", $keywords_array, PREG_GREP_INVERT);
 
     // Get the min and max word lengths that MySQL supports
-    
+
     $min_length = 4;
     $max_length = 84;
 
@@ -357,7 +357,7 @@ function search_strip_keywords($search_string, $strip_valid = false)
     }else {
 
         $keywords_array = preg_grep(sprintf('/^[\+|-]?["]?[\w\s\']{%d,%d}["]?$/i', $min_length, $max_length), $keywords_array);
-        $keywords_array = preg_grep(sprintf('/^[\+|-]?["]?%s["]?$/i', $mysql_fulltext_stopwords), PREG_GREP_INVERT);
+        $keywords_array = preg_grep(sprintf('/^[\+|-]?["]?%s["]?$/i', $mysql_fulltext_stopwords), $keywords_array, PREG_GREP_INVERT);
     }
 
     // Remove any duplicate words, reindex the array and finally
@@ -381,7 +381,7 @@ function search_strip_special_chars($keywords_array, $remove_non_matches = true)
     if (!is_bool($remove_non_matches)) $remove_non_matches = true;
 
     // Get the min and max word lengths that MySQL supports
-    
+
     $min_length = 4;
     $max_length = 84;
 
@@ -430,7 +430,7 @@ function search_get_word_lengths(&$min_length, &$max_length)
             }
         }
     }
-    
+
     return false;
 }
 
@@ -782,7 +782,7 @@ function folder_search_dropdown($selected_folder)
             return form_dropdown_array("fid", $available_folders, $selected_folder, false, "search_dropdown");
         }
     }
-    
+
     return false;
 }
 
@@ -850,7 +850,7 @@ function search_output_opensearch_xml()
 
 function mysql_fulltext_callback(&$item, $key, $delimiter)
 {
-	if (isset($key)) $item = preg_quote($item, $delimiter);
+    if (isset($key)) $item = preg_quote($item, $delimiter);
 }
 
 ?>

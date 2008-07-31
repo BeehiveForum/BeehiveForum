@@ -4,10 +4,8 @@
  * ----------
  * Author: Roberto Rossi (rsoftware@altervista.org)
  * Copyright: (c) 2004 Roberto Rossi (http://rsoftware.altervista.org), Nigel McNie (http://qbnz.com/highlighter)
- * Release Version: 1.0.7.4
- * CVS Revision Version: $Revision: 1.2 $
+ * Release Version: 1.0.7.22
  * Date Started: 2004/08/30
- * Last Modified: $Date: 2005-10-28 17:37:16 $
  *
  * Python language file for GeSHi.
  *
@@ -48,7 +46,8 @@ $language_data = array (
 	'COMMENT_SINGLE' => array(1 => '#'),
 	'COMMENT_MULTI' => array(),
 	'CASE_KEYWORDS' => GESHI_CAPS_NO_CHANGE,
-	'QUOTEMARKS' => array('"', "'", '"""'),
+	//Longest quotemarks ALWAYS first
+	'QUOTEMARKS' => array('"""', '"', "'"),
 	'ESCAPE_CHAR' => '\\',
 	'KEYWORDS' => array(
 
@@ -67,13 +66,13 @@ $language_data = array (
 		** http://python.org/doc/current/lib/built-in-funcs.html
 		*/
 		2 => array(
-			'__import__', 'abs', 'basestring', 'bool', 'callable', 'chr', 'classmethod', 'cmp', 
-			'compile', 'complex', 'delattr', 'dict', 'dir', 'divmod', 'enumerate', 'eval', 'execfile', 
+			'__import__', 'abs', 'basestring', 'bool', 'callable', 'chr', 'classmethod', 'cmp',
+			'compile', 'complex', 'delattr', 'dict', 'dir', 'divmod', 'enumerate', 'eval', 'execfile',
 			'file', 'filter', 'float', 'frozenset', 'getattr', 'globals', 'hasattr', 'hash', 'help',
 			'hex', 'id', 'input', 'int', 'isinstance', 'issubclass', 'iter', 'len', 'list', 'locals',
 			'long', 'map', 'max', 'min', 'object', 'oct', 'open', 'ord', 'pow', 'property', 'range',
 			'raw_input', 'reduce', 'reload', 'repr', 'reversed', 'round', 'set', 'setattr', 'slice',
-			'sorted', 'staticmethod', 'str', 'sum', 'super', 'tuple', 'type', 'unichr', 'unicode', 
+			'sorted', 'staticmethod', 'str', 'sum', 'super', 'tuple', 'type', 'unichr', 'unicode',
 			'vars', 'xrange', 'zip',
 			// Built-in constants: http://python.org/doc/current/lib/node35.html
 			'False', 'True', 'None', 'NotImplemented', 'Ellipsis',
@@ -138,20 +137,20 @@ $language_data = array (
 			'__iter__', 'next',
 			// String types: http://python.org/doc/current/lib/string-methods.html
 			'capitalize', 'center', 'count', 'decode', 'encode', 'endswith', 'expandtabs',
-			'find', 'index', 'isalnum', 'isaplpha', 'isdigit', 'islower', 'isspace', 'istitle',
+			'find', 'index', 'isalnum', 'isalpha', 'isdigit', 'islower', 'isspace', 'istitle',
 			'isupper', 'join', 'ljust', 'lower', 'lstrip', 'replace', 'rfind', 'rindex', 'rjust',
 			'rsplit', 'rstrip', 'split', 'splitlines', 'startswith', 'strip', 'swapcase', 'title',
 			'translate', 'upper', 'zfill',
 			*/
 			// Basic customization: http://python.org/doc/current/ref/customization.html
-			'__new__', '__init__', '__del__', '__repr__', '__str__', 
+			'__new__', '__init__', '__del__', '__repr__', '__str__',
 			'__lt__', '__le__', '__eq__', '__ne__', '__gt__', '__ge__', '__cmp__', '__rcmp__',
 			'__hash__', '__nonzero__', '__unicode__', '__dict__',
 			// Attribute access: http://python.org/doc/current/ref/attribute-access.html
 			'__setattr__', '__delattr__', '__getattr__', '__getattribute__', '__get__', '__set__',
 			'__delete__', '__slots__',
 			// Class creation, callable objects
-			'__metaclass__', '__call__', 
+			'__metaclass__', '__call__',
 			// Container types: http://python.org/doc/current/ref/sequence-types.html
 			'__len__', '__getitem__', '__setitem__', '__delitem__', '__iter__', '__contains__',
 			'__getslice__', '__setslice__', '__delslice__',
@@ -172,7 +171,10 @@ $language_data = array (
 		),
 	'CASE_SENSITIVE' => array(
 		GESHI_COMMENTS => true,
-		1 => true
+		1 => true,
+        2 => true,
+        3 => true,
+        4 => true
 		),
 	'STYLES' => array(
 		'KEYWORDS' => array(

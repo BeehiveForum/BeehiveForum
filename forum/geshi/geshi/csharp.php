@@ -4,15 +4,17 @@
  * ----------
  * Author: Alan Juden (alan@judenware.org)
  * Copyright: (c) 2004 Alan Juden, Nigel McNie (http://qbnz.com/highlighter/)
- * Release Version: 1.0.7.4
- * CVS Revision Version: $Revision: 1.2 $
+ * Release Version: 1.0.7.22
  * Date Started: 2004/06/04
- * Last Modified: $Date: 2005-10-28 17:37:16 $
  *
  * C# language file for GeSHi.
  *
  * CHANGES
  * -------
+ * 2008/05/25 (1.0.7.22)
+ *   -  Added highlighting of using and namespace directives as non-OOP
+ * 2005/01/05 (1.0.1)
+ *  -  Used hardquote support for @"..." strings (Cliff Stanford)
  * 2004/11/27 (1.0.0)
  *  -  Initial release
  *
@@ -40,11 +42,17 @@
  ************************************************************************************/
 
  $language_data = array (
-	'LANG_NAME' => 'CSharp',
+	'LANG_NAME' => 'C#',
 	'COMMENT_SINGLE' => array(1 => '//', 2 => '#'),
 	'COMMENT_MULTI' => array('/*' => '*/'),
+	'COMMENT_REGEXP' => array(
+        //Using and Namespace directives (basic support)
+        //Please note that the alias syntax for using is not supported
+        3 => '/(?:(?<=using[\\n\\s])|(?<=namespace[\\n\\s]))[\\n\\s]*([a-zA-Z0-9_]+\\.)*[a-zA-Z0-9_]+[\n\s]*(?=[;=])/i'),
 	'CASE_KEYWORDS' => GESHI_CAPS_NO_CHANGE,
 	'QUOTEMARKS' => array("'", '"'),
+    'HARDQUOTE' => array('@"', '"'),
+    'HARDESCAPE' => array('""'),
 	'ESCAPE_CHAR' => '\\',
 	'KEYWORDS' => array(
 		1 => array(
@@ -158,8 +166,8 @@
 			),
 		),
 	'SYMBOLS' => array(
-		'+', '-', '*', '?', '=', '/', '%', '&', '>', '<', '^', '!', '|', ':',
-		'(', ')', '{', '}', '[', ']'
+		'+', '-', '*', '?', '=', '/', '%', '&', '>', '<', '^', '!', ':', ';',
+		'(', ')', '{', '}', '[', ']', '|'
 		),
 	'CASE_SENSITIVE' => array(
 		GESHI_COMMENTS => true,
@@ -180,6 +188,7 @@
 		'COMMENTS' => array(
 			1 => 'color: #008080; font-style: italic;',
 			2 => 'color: #008080;',
+			3 => 'color: #008080;',
 			'MULTI' => 'color: #008080; font-style: italic;'
 			),
 		'ESCAPE_CHAR' => array(
@@ -189,7 +198,7 @@
 			0 => 'color: #000000;'
 			),
 		'STRINGS' => array(
-			0 => 'color: #808080;'
+			0 => 'color: #666666;'
 			),
 		'NUMBERS' => array(
 			0 => 'color: #FF0000;'
@@ -223,7 +232,14 @@
 	'SCRIPT_DELIMITERS' => array(
 		),
 	'HIGHLIGHT_STRICT_BLOCK' => array(
-		)
+        ),
+    'TAB_WIDTH' => 4,
+	'PARSER_CONTROL' => array(
+        'KEYWORDS' => array(
+            'DISALLOWED_BEFORE' => "a-zA-Z0-9\$_\|\#>|^",
+            'DISALLOWED_AFTER' => "a-zA-Z0-9_<\|%\\-"
+        )
+	)
 );
 
 ?>

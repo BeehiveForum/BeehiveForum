@@ -4,10 +4,8 @@
  * -------
  * Author: Tux (tux@inmail.cz)
  * Copyright: (c) 2004 Tux (http://tux.a4.cz/), Nigel McNie (http://qbnz.com/highlighter)
- * Release Version: 1.0.7.4
- * CVS Revision Version: $Revision: 1.2 $
+ * Release Version: 1.0.7.22
  * Date Started: 2004/07/29
- * Last Modified: $Date: 2005-10-28 17:37:16 $
  *
  * Ada language file for GeSHi.
  * Words are from SciTe configuration file

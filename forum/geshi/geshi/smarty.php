@@ -4,10 +4,8 @@
  * ----------
  * Author: Alan Juden (alan@judenware.org)
  * Copyright: (c) 2004 Alan Juden, Nigel McNie (http://qbnz.com/highlighter/)
- * Release Version: 1.0.7.4
- * CVS Revision Version: $Revision: 1.2 $
+ * Release Version: 1.0.7.22
  * Date Started: 2004/07/10
- * Last Modified: $Date: 2005-10-28 17:37:16 $
  *
  * Smarty template language file for GeSHi.
  *
@@ -50,7 +48,7 @@ $language_data = array (
 		1 => array(
 			'$smarty', 'now', 'const', 'capture', 'config', 'section', 'foreach', 'template', 'version', 'ldelim', 'rdelim',
 			'config_load', 'foreachelse', 'include', 'include_php', 'insert', 'if', 'elseif', 'else', 'php',
-			'sectionelse', 'clear_all_cache', 'clear_cache', 'is_cached', 'from', 'item'
+			'sectionelse', 'clear_all_cache', 'clear_cache', 'is_cached',
 			),
 		2 => array(
 			'capitalize', 'count_characters', 'cat', 'count_paragraphs', 'count_sentences', 'count_words', 'date_format',
@@ -83,7 +81,7 @@ $language_data = array (
 			),
 		6 => array(
 			'name', 'assign', 'file', 'scope', 'global', 'key', 'once', 'script',
-			'loop', 'start', 'step', 'max', 'show', 'values', 'value'
+			'loop', 'start', 'step', 'max', 'show', 'values', 'value', 'from', 'item'
 			),
 		7 => array(
 			'eq', 'neq', 'ne', 'lte', 'gte', 'ge', 'le', 'not', 'mod'
@@ -134,6 +132,7 @@ $language_data = array (
 			0 => 'color: #D36900;'
 			),
 		'SCRIPT' => array(
+            0 => ''
 			),
 		'REGEXPS' => array(
 			)
@@ -161,7 +160,13 @@ $language_data = array (
 	),
 	'HIGHLIGHT_STRICT_BLOCK' => array(
 		0 => true
-		)
+	),
+	'PARSER_CONTROL' => array(
+        'KEYWORDS' => array(
+            'DISALLOWED_BEFORE' => "a-zA-Z0-9\$_\|\#;>|^",
+            'DISALLOWED_AFTER' => "a-zA-Z0-9_<\|%\\-&"
+        )
+    )
 );
 
 ?>

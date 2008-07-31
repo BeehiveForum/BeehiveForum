@@ -4,15 +4,15 @@
  * --------
  * Author: Roberto Rossi (rsoftware@altervista.org)
  * Copyright: (c) 2004 Roberto Rossi (http://rsoftware.altervista.org), Nigel McNie (http://qbnz.com/highlighter
- * Release Version: 1.0.7.4
- * CVS Revision Version: $Revision: 1.2 $
+ * Release Version: 1.0.7.22
  * Date Started: 2004/08/30
- * Last Modified: $Date: 2005-10-28 17:37:16 $
  *
  * Generic Lisp language file for GeSHi.
  *
  * CHANGES
  * -------
+ * 2005/12/9  (1.0.2)
+ *  -  Added support for :keywords and ::access (Denis Mashkevich)
  * 2004/11/27 (1.0.1)
  *  -  Added support for multiple object splitters
  * 2004/08/30 (1.0.0)
@@ -42,7 +42,7 @@
  ************************************************************************************/
 
 $language_data = array (
-	'LANG_NAME' => 'LISP',
+	'LANG_NAME' => 'Lisp',
 	'COMMENT_SINGLE' => array(1 => ';'),
 	'COMMENT_MULTI' => array(';|' => '|;'),
 	'CASE_KEYWORDS' => GESHI_CAPS_NO_CHANGE,
@@ -104,7 +104,8 @@ $language_data = array (
 			0 => 'color: #cc66cc;'
 			),
 		'METHODS' => array(
-			0 => 'color: #202020;'
+			0 => 'color: #555;',
+            1 => 'color: #555;'
 			),
 		'SYMBOLS' => array(
 			0 => 'color: #66cc66;'
@@ -116,8 +117,9 @@ $language_data = array (
 		),
 	'URLS' => array(
 		),
-	'OOLANG' => false,
+	'OOLANG' => true,
 	'OBJECT_SPLITTERS' => array(
+            '::', ':'
 		),
 	'REGEXPS' => array(
 		),

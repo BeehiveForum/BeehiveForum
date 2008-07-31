@@ -2,19 +2,19 @@
 /*************************************************************************************
  * html4strict.php
  * ---------------
- * Author: Nigel McNie (oracle.shinoda@gmail.com)
+ * Author: Nigel McNie (nigel@geshi.org)
  * Copyright: (c) 2004 Nigel McNie (http://qbnz.com/highlighter/)
- * Release Version: 1.0.7.4
- * CVS Revision Version: $Revision: 1.2 $
+ * Release Version: 1.0.7.22
  * Date Started: 2004/07/10
- * Last Modified: $Date: 2005-10-28 17:37:16 $
  *
  * HTML 4.01 strict language file for GeSHi.
  *
  * CHANGES
  * -------
+ * 2005/12/28 (1.0.4)
+ *   -  Removed escape character for strings
  * 2004/11/27 (1.0.3)
- *  -  Added support for multiple object splitters
+ *   -  Added support for multiple object splitters
  * 2004/10/27 (1.0.2)
  *   -  Added support for URLs
  * 2004/08/05 (1.0.1)
@@ -55,7 +55,7 @@ $language_data = array (
 	'COMMENT_MULTI' => array('<!--' => '-->'),
 	'CASE_KEYWORDS' => GESHI_CAPS_NO_CHANGE,
 	'QUOTEMARKS' => array("'", '"'),
-	'ESCAPE_CHAR' => '\\',
+	'ESCAPE_CHAR' => '',
 	'KEYWORDS' => array(
 		1 => array(
 			),
@@ -147,7 +147,7 @@ $language_data = array (
 
 			'&lt;ul&gt;', '&lt;u&gt;',
 			'&lt;ul', '&lt;u',
-			'&lt;/ul&gt;', '&lt;/ul&gt;',
+			'&lt;/ul&gt;', '&lt;/u&gt;',
 			'&lt;/ul', '&lt;/u',
 
 			'&lt;var&gt;',
@@ -248,7 +248,8 @@ $language_data = array (
 		0 => false,
 		1 => false,
 		2 => true
-		)
+        ),
+    'TAB_WIDTH' => 4
 );
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.190 2008-07-31 16:44:47 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.191 2008-07-31 17:17:14 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -86,7 +86,7 @@ function light_html_draw_top()
         }
     }
 
-    if (!isset($title)) $title = forum_get_setting('forum_name', false, 'A Beehive Forum');
+    if (if (strlen($title) < 1)) $title = forum_get_setting('forum_name', false, 'A Beehive Forum');
 
     $forum_keywords = html_get_forum_keywords();
     $forum_description = html_get_forum_description();

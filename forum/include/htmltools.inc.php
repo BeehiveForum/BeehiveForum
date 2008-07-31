@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: htmltools.inc.php,v 1.72 2008-07-30 16:04:35 decoyduck Exp $ */
+/* $Id: htmltools.inc.php,v 1.73 2008-07-31 23:35:29 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -44,53 +44,36 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 
 function TinyMCE()
 {
-
     $lang = load_language_file();
+
     $webtag = get_webtag();
 
     $str = "<!-- tinyMCE -->\n";
     $str.= "<script language=\"javascript\" type=\"text/javascript\" src=\"tiny_mce/tiny_mce.js\"></script>\n";
-    $str.= "<script language=\"javascript\" type=\"text/javascript\">\n";
-    $str.= "tinyMCE.init({\n";
-
-    $str.= "    mode : \"specific_textareas\",\n";
-    $str.= "    width: \"100%\",\n";
-
-    if (($pref_language = bh_session_get_value("LANGUAGE"))) {
-        if (@file_exists("tiny_mce/langs/{$pref_language}.js")) {
-                $str.= "    language : \"{$pref_language}\",\n";
-        }
-    }
-
-    $str.= "    inline_styles : false,\n";
-
-    $str.= "    convert_fonts_to_spans : false,\n";
-
-    $str.= "    directionality : \"{$lang['_textdir']}\",\n";
-
-    $str.= "    content_css : \"tiny_mce/plugins/beehive/tiny_mce_style.css\",\n";
-
-    $str.= "    oninit : \"mceOnInit\",\n";
-
-    $str.= "    plugins : \"beehive,searchreplace,table\",\n";
-
-    $str.= "    force_br_newlines : true,\n";
-
-    $str.= "    theme : \"advanced\",\n";
-    $str.= "    theme_advanced_toolbar_location : \"top\",\n";
-    $str.= "    theme_advanced_toolbar_align : \"left\",\n";
-
-    $str.= "    theme_advanced_buttons1 : \"bold,italic,underline,strikethrough,separator,justifyleft,justifycenter,justifyright,separator,formatselect,fontselect,fontsizeselect\",\n";
-    $str.= "    theme_advanced_buttons2 : \"undo,redo,separator,cleanup,help,code,separator,visualaid,separator,tablecontrols\",\n";
-    $str.= "    theme_advanced_buttons3 : \"search,replace,separator,removeformat,forecolor,backcolor,separator,sub,sup,separator,bullist,numlist,separator,outdent,indent,separator,link,unlink,separator,image,separator,charmap,separator,bhspellcheck\",\n";
-    $str.= "    theme_advanced_buttons4 : \"bhquote,bhcode,bhspoiler,bhnoemots\",\n";
-
-    $str.= "    extended_valid_elements : \"marquee,span[class|align|title],div[class|align|id],font[face|size|color|style]\",\n";
-
-    $str.= "    invalid_elements : \"!doctype|applet|body|base|button|fieldset|form|frame|frameset|head|html|iframe|input|label|legend|link|meta|noframes|noscript|object|optgroup|option|param|plaintext|script|select|style|textarea|title|xmp\"\n";
-
-    $str.= "   });\n\n";
-
+    $str.= "<script type=\"text/javascript\">\n";
+    $str.= "    tinyMCE.init({\n";
+    $str.= "        // General options\n";
+    $str.= "        mode : \"textareas\",\n";
+    $str.= "        editor_selector : /(post_content|edit_signature_content|admin_startpage_textarea)/,\n";
+    $str.= "        theme : \"advanced\",\n";
+    $str.= "        force_br_newlines : true,\n";
+    $str.= "        plugins : \"safari,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,beehive,\",\n\n";
+    $str.= "        // Theme options\n";
+    $str.= "        theme_advanced_buttons1 : \"bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,|,formatselect,fontselect,fontsizeselect\",\n";
+    $str.= "        theme_advanced_buttons2 : \"undo,redo,|,cleanup,help,code,|,visualaid,|,tablecontrols\",\n";
+    $str.= "        theme_advanced_buttons3 : \"search,replace,|,removeformat,forecolor,backcolor,|,sub,sup,|,bullist,numlist,|,outdent,indent,|,link,unlink,|,image,|,charmap,|,bhspellcheck\",\n";
+    $str.= "        theme_advanced_buttons4 : \"bhcode,bhspoiler,bhnoemots\",\n";
+    $str.= "        extended_valid_elements : \"marquee,span[class|align|title],div[class|align|id],font[face|size|color|style]\",\n";
+    $str.= "        invalid_elements : \"!doctype|applet|body|base|button|fieldset|form|frame|frameset|head|html|iframe|input|label|legend|link|meta|noframes|noscript|object|optgroup|option|param|plaintext|script|select|style|textarea|title|xmp\",\n";
+    $str.= "        theme_advanced_toolbar_location : \"top\",\n";
+    $str.= "        theme_advanced_toolbar_align : \"left\",\n";
+    $str.= "        content_css : \"tiny_mce/plugins/beehive/tiny_mce_style.css\",\n";
+    $str.= "        // Drop lists for link/image/media/template dialogs\n";
+    $str.= "        template_external_list_url : \"lists/template_list.js\",\n";
+    $str.= "        external_link_list_url : \"lists/link_list.js\",\n";
+    $str.= "        external_image_list_url : \"lists/image_list.js\",\n";
+    $str.= "        media_external_list_url : \"lists/media_list.js\",\n\n";
+    $str.= "    });\n";
     $str.= "    var webtag = \"$webtag\";\n";
     $str.= "    var auto_check_spell_started = false;\n\n";
 
@@ -123,6 +106,7 @@ function TinyMCE()
     $str.= "    }\n";
 
     $str.= "</script>\n";
+
     $str.= "<!-- /tinyMCE -->\n";
 
     return $str;
@@ -317,9 +301,8 @@ class TextAreaHTML {
     // Takes the same arguments as form_textarea in form.inc.php
     // ----------------------------------------------------
 
-    function textarea ($name, $value = false, $rows = false, $cols = false, $custom_html = "", $class = "bhinputtext")
+    function textarea ($name, $value = false, $rows = false, $cols = false, $custom_html = "", $class = "bhinputtext", $allow_tiny_mce = true)
     {
-
         $this->tas[] = $name;
 
         $str = '';
@@ -335,8 +318,10 @@ class TextAreaHTML {
                 }
 
                 $rows += 5;
-                $custom_html.= ' mce_editable="true"';
 
+                if ($allow_tiny_mce === true) {
+                    $custom_html.= ' mce_editable="true"';
+                }
             }
 
         }else {
@@ -386,25 +371,14 @@ class TextAreaHTML {
 
     function js ($focus = true)
     {
+        if (!$this->tinymce) {
 
-        $str = "<script language=\"javascript\" type=\"text/javascript\">\n";
-        $str.= "  <!--\n";
-
-        if ($this->tinymce) {
-            $str.= "    function mceOnInit()\n";
-            $str.= "    {\n";
-            if ($focus) {
-                $str.= "        tinyMCE.execCommand('mceFocus',false,'mce_editor_0');\n";
-            }
-            $str.= "        return;\n";
-            $str.= "    }\n";
-
-        } else {
-
+            $str = "<script language=\"javascript\" type=\"text/javascript\">\n";
+            $str.= "  <!--\n";
             $str.= "    function clearFocus()\n";
             $str.= "    {\n";
 
-            for ($i=0; $i<count($this->tas); $i++) {
+            for ($i = 0; $i < sizeof($this->tas); $i++) {
                 $str.= "        document.{$this->form}.{$this->tas[$i]}.caretPos = \"\";\n";
             }
 
@@ -422,12 +396,11 @@ class TextAreaHTML {
             $str.= "        active_text(document.{$this->form}.{$this->tas[0]});\n";
             $str.= "    }\n";
             $str.= "    activate_tools();\n";
+            $str.= "  //-->\n";
+            $str.= "</script>\n";
+
+            return $str;
         }
-
-        $str.= "  //-->\n";
-        $str.= "</script>\n";
-
-        return $str;
     }
 
     // ----------------------------------------------------

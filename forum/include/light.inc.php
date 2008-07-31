@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.188 2008-07-31 14:52:56 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.189 2008-07-31 15:05:40 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -560,7 +560,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
             $selected_option = THREAD_MARK_READ_FOLDER;
         }
 
-        echo light_form_dropdown_array("mark_read_type", range(0, sizeof($labels) -1), $labels, $selected_option). "\n";
+        echo light_form_dropdown_array("mark_read_type", $labels, $selected_option). "\n";
         echo light_form_submit("mark_read_submit", $lang['goexcmark'], "onclick=\"return confirmMarkAsRead()\""). "\n";
         echo "    </form>\n";
     }
@@ -653,23 +653,24 @@ function light_draw_my_forums()
     }
 }
 
-// create a <select> dropdown with values from array(s)
-function light_form_dropdown_array($name, $value, $label, $default = "")
+function light_form_dropdown_array($name, $options_array, $default = "")
 {
-    $html = "<select name=\"$name\">";
+    if (is_array($options_array) && sizeof($options_array) > 0) {
 
-    for ($i=0;$i<count($value);$i++){
-        $sel = ($value[$i] == $default) ? " selected=\"selected\"" : "";
-        if ($label[$i]) {
-            $html.= "<option value=\"{$value[$i]}\"$sel>{$label[$i]}</option>";
-        } else {
-            $html.= "<option$sel>{$value[$i]}</option>";
+        $html = "<select name=\"$name\">";
+
+        foreach ($options_array as $option_key => $option_text) {
+
+            $selected = (strtolower($option_key) == strtolower($default)) ? " selected=\"selected\"" : "";
+            $html.= "<option value=\"{$option_key}\"$selected>$option_text</option>";
         }
+
+        return $html."</select>";
     }
-    return $html."</select>";
+
+    return "";
 }
 
-// create a <input type="submit"> button
 function light_form_submit($name = "submit", $value = "Submit", $custom_html = "")
 {
     $custom_html = trim($custom_html);
@@ -1275,8 +1276,7 @@ function light_folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="
 
     if (!$table_data = get_table_prefix()) return "";
 
-    $folders['FIDS'] = array();
-    $folders['TITLES'] = array();
+    $available_folders = array();
 
     $allowed_types = FOLDER_ALLOW_NORMAL_THREAD;
     $access_allowed = USER_PERM_THREAD_CREATE;
@@ -1297,23 +1297,21 @@ function light_folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="
 
                 if (bh_session_check_perm(USER_PERM_GUEST_ACCESS, $folder_data['FID'])) {
 
-                    $folders['FIDS'][]   = $folder_data['FID'];
-                    $folders['TITLES'][] = _htmlentities($folder_data['TITLE']);
+                    $available_folders[$folder_order['FID']] = _htmlentities($folder_order['TITLE']);
                 }
 
             }else {
 
                 if (bh_session_check_perm($access_allowed, $folder_data['FID'])) {
 
-                    $folders['FIDS'][]   = $folder_data['FID'];
-                    $folders['TITLES'][] = _htmlentities($folder_data['TITLE']);
+                    $available_folders[$folder_order['FID']] = _htmlentities($folder_order['TITLE']);
                 }
             }
         }
 
         if (sizeof($folders['FIDS']) > 0 && sizeof($folders['TITLES']) > 0) {
 
-            return light_form_dropdown_array($field_name.$suffix, $folders['FIDS'], $folders['TITLES'], $default_fid);
+            return light_form_dropdown_array($field_name.$suffix, $available_folders, $default_fid);
         }
     }
 
@@ -1455,7 +1453,7 @@ function light_threads_draw_discussions_dropdown($mode)
         }
     }
 
-    return light_form_dropdown_array("mode", array_keys($available_views), $available_views, $mode, "onchange=\"submit()\"");
+    return light_form_dropdown_array("mode", $available_views, $mode);
 }
 
 function light_mode_check_noframes()

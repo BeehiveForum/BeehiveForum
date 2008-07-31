@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.139 2008-07-30 16:04:34 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.140 2008-07-31 23:35:29 decoyduck Exp $ */
 
 /**
 * Displays and handles the Forum Settings page
@@ -607,7 +607,7 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\">", $closed_message->toolbar(true), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", $closed_message->textarea("closed_message", (isset($forum_settings['closed_message']) ? _htmlentities($forum_settings['closed_message']) : ''), 7, 80), "</td>\n";
+echo "                        <td align=\"left\">", $closed_message->textarea("closed_message", (isset($forum_settings['closed_message']) ? _htmlentities($forum_settings['closed_message']) : ''), 7, 80, "", "admin_startpage_textarea"), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">", $closed_message->js(false), "</td>\n";
@@ -616,7 +616,7 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['forumrestrictedmessage']}:</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", $restricted_message->textarea("restricted_message", (isset($forum_settings['restricted_message']) ? _htmlentities($forum_settings['restricted_message']) : ''), 7, 80), "</td>\n";
+echo "                        <td align=\"left\">", $restricted_message->textarea("restricted_message", (isset($forum_settings['restricted_message']) ? _htmlentities($forum_settings['restricted_message']) : ''), 7, 80, "", "admin_startpage_textarea"), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">", $restricted_message->js(false), "</td>\n";
@@ -625,7 +625,7 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['forumpasswordprotectedmessage']}:</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", $password_protected_message->textarea("password_protected_message", (isset($forum_settings['password_protected_message']) ? _htmlentities($forum_settings['password_protected_message']) : ''), 7, 80), "</td>\n";
+echo "                        <td align=\"left\">", $password_protected_message->textarea("password_protected_message", (isset($forum_settings['password_protected_message']) ? _htmlentities($forum_settings['password_protected_message']) : ''), 7, 80, "", "admin_startpage_textarea"), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">", $password_protected_message->js(false), "</td>\n";

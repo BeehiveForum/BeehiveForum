@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.355 2008-07-30 22:39:22 decoyduck Exp $ */
+/* $Id: post.php,v 1.356 2008-07-31 23:35:29 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -1147,7 +1147,6 @@ if ($allow_sig == true) {
         echo "                            </tr>\n";
         echo "                            <tr>\n";
         echo "                              <td align=\"left\" colspan=\"2\">", $tools->textarea("t_sig", $t_sig, 5, 75, "tabindex=\"7\"", "signature_content"), form_input_hidden("t_sig_html", _htmlentities($sig->getHTML()) ? "Y" : "N"), "</td>\n";
-
 
         if ($sig->isDiff() && $fix_html && !$fetched_sig) {
             echo $tools->compare_original("t_sig", $sig->getOriginalContent());

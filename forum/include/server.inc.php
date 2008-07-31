@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: server.inc.php,v 1.33 2008-07-30 23:57:32 decoyduck Exp $ */
+/* $Id: server.inc.php,v 1.34 2008-07-31 12:45:05 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -299,26 +299,15 @@ function get_available_js_popup_files()
 * if it doesn't exist.
 *
 * @return boolean
-* @param string $pathname - Path to create
+* @param string $path_name - Path to create
 * @param integer $mode - Mode (chmod) of the directory.
 */
 
 function mkdir_recursive($path_name, $mode)
 {
-    $path_name_check = '';
-	
-	$path_name_array = explode(DIRECTORY_SEPARATOR, $path_name);
-       
-    foreach ($path_name_array as $path_name) {
-    	
-        $path_name_check.= DIRECTORY_SEPARATOR. $path_name;
-        
-        if (!is_dir($path_name_check) && !mkdir($path_name_check, $mode)) {
-       	
-            return false;
-        }
-    }
-    return true;
+    if (!is_dir(dirname($path_name))) mkdir_recursive(dirname($path_name), $mode);
+    if (!is_dir($path_name)) mkdir($path_name, $mode);
+    return is_dir($path_name);
 }
 
 /**

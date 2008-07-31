@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.318 2008-07-30 22:39:24 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.319 2008-07-31 14:52:56 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1676,29 +1676,37 @@ function thread_list_draw_top($mode)
     echo "  </tr>\n";
     echo "</table>\n";
     echo "<br />\n";
-    echo "<form name=\"f_mode\" method=\"get\" action=\"thread_list.php\">\n";
-    echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
-    echo "  <tr>\n";
-    echo "    <td align=\"left\" class=\"postbody\">";
-
-    echo "        ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
 
     if (user_is_guest()) {
 
-        $labels = array(ALL_DISCUSSIONS => $lang['alldiscussions'], TODAYS_DISCUSSIONS => $lang['todaysdiscussions'],
-                        TWO_DAYS_BACK => $lang['2daysback'], SEVEN_DAYS_BACK => $lang['7daysback']);
-
-        echo form_dropdown_array("mode", $labels, _htmlentities($mode), "onchange=\"submit()\"");
+        $available_views = array(ALL_DISCUSSIONS    => $lang['alldiscussions'],
+                                 TODAYS_DISCUSSIONS => $lang['todaysdiscussions'],
+                                 TWO_DAYS_BACK      => $lang['2daysback'],
+                                 SEVEN_DAYS_BACK    => $lang['7daysback']);
 
     }else {
 
-        $labels = array($lang['alldiscussions'], $lang['unreaddiscussions'], $lang['unreadtome'],
-                        $lang['todaysdiscussions'], $lang['unreadtoday'], $lang['2daysback'],
-                        $lang['7daysback'], $lang['highinterest'], $lang['unreadhighinterest'],
-                        $lang['iverecentlyseen'], $lang['iveignored'], $lang['byignoredusers'],
-                        $lang['ivesubscribedto'], $lang['startedbyfriend'], $lang['unreadstartedbyfriend'],
-                        $lang['startedbyme'], $lang['polls'], $lang['stickythreads'],
-                        $lang['mostunreadposts'], $lang['searchresults'], $lang['deletedthreads']);
+        $available_views = array(ALL_DISCUSSIONS          => $lang['alldiscussions'],
+                                 UNREAD_DISCUSSIONS       => $lang['unreaddiscussions'],
+                                 UNREAD_DISCUSSIONS_TO_ME => $lang['unreadtome'],
+                                 TODAYS_DISCUSSIONS       => $lang['todaysdiscussions'],
+                                 UNREAD_TODAY             => $lang['unreadtoday'],
+                                 TWO_DAYS_BACK            => $lang['2daysback'],
+                                 SEVEN_DAYS_BACK          => $lang['7daysback'],
+                                 HIGH_INTEREST            => $lang['highinterest'],
+                                 UNREAD_HIGH_INTEREST     => $lang['unreadhighinterest'],
+                                 RECENTLY_SEEN            => $lang['iverecentlyseen'],
+                                 IGNORED_THREADS          => $lang['iveignored'],
+                                 BY_IGNORED_USERS         => $lang['byignoredusers'],
+                                 SUBSCRIBED_TO            => $lang['ivesubscribedto'],
+                                 STARTED_BY_FRIEND        => $lang['startedbyfriend'],
+                                 UNREAD_STARTED_BY_FRIEND => $lang['unreadstartedbyfriend'],
+                                 STARTED_BY_ME            => $lang['startedbyme'],
+                                 POLL_THREADS             => $lang['polls'],
+                                 STICKY_THREADS           => $lang['stickythreads'],
+                                 MOST_UNREAD_POSTS        => $lang['mostunreadposts'],
+                                 SEARCH_RESULTS           => $lang['searchresults'],
+                                 DELETED_THREADS          => $lang['deletedthreads']);
 
         if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
@@ -1707,25 +1715,33 @@ function thread_list_draw_top($mode)
                 // Remove unread thread options (Unread Discussions, Unread Today,
                 // Unread High Interest, Unread Started By Friend, Most Unread Posts).
 
-                unset($labels[1], $labels[4], $labels[8], $labels[14], $labels[18]);
+                unset($available_views[UNREAD_DISCUSSIONS], $available_views[UNREAD_TODAY], $available_views[UNREAD_HIGH_INTEREST]);
+                unset($available_views[UNREAD_STARTED_BY_FRIEND], $available_views[MOST_UNREAD_POSTS]);
             }
 
         }else {
 
+            // Remove Admin Deleted Threads option.
+
+            unset($available_views[DELETED_THREADS]);
+
             if ($unread_cutoff_stamp === false) {
 
-                // Remove unread thread options (same as above) plus the
-                // Admin Deleted Threads option.
+                // Remove unread thread options (Unread Discussions, Unread Today,
+                // Unread High Interest, Unread Started By Friend, Most Unread Posts).
 
-                unset($labels[1], $labels[4], $labels[8], $labels[14], $labels[18], $labels[20]);
+                unset($available_views[UNREAD_DISCUSSIONS], $available_views[UNREAD_TODAY], $available_views[UNREAD_HIGH_INTEREST]);
+                unset($available_views[UNREAD_STARTED_BY_FRIEND], $available_views[MOST_UNREAD_POSTS]);
             }
 
         }
-
-        echo form_dropdown_array("mode", $labels, _htmlentities($mode), "onchange=\"submit()\"");
     }
 
-    echo "        ", form_submit("go",$lang['goexcmark']), "\n";
+    echo "<form name=\"f_mode\" method=\"get\" action=\"thread_list.php\">\n";
+    echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
+    echo "  <table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\" class=\"postbody\">", form_dropdown_array("mode", $available_views, _htmlentities($mode), "onchange=\"submit()\""), "&nbsp;", form_submit("go",$lang['goexcmark']), "</td>\n";
     echo "    </td>\n";
     echo "  </tr>\n";
     echo "</table>\n";
@@ -1754,7 +1770,7 @@ function threads_have_attachments(&$threads_array, $tid_array)
     while (($attachment_data = db_fetch_array($result))) {
         $threads_array[$attachment_data['TID']]['AID'] = $attachment_data['AID'];
     }
-    
+
     return true;
 }
 

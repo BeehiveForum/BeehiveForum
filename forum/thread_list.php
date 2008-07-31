@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.341 2008-07-30 17:41:40 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.342 2008-07-31 14:52:56 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -345,7 +345,7 @@ if (isset($folder) && is_numeric($folder) && $folder > 0) {
         case RECENTLY_SEEN:
             list($thread_info, $folder_order) = threads_get_recently_viewed($uid);
             break;
-        case IGNORED:
+        case IGNORED_THREADS:
             list($thread_info, $folder_order) = threads_get_by_interest($uid, -1);
             break;
         case BY_IGNORED_USERS:
@@ -363,7 +363,7 @@ if (isset($folder) && is_numeric($folder) && $folder > 0) {
         case STARTED_BY_ME:
             list($thread_info, $folder_order) = threads_get_started_by_me($uid);
             break;
-        case POLLS:
+        case POLL_THREADS:
             list($thread_info, $folder_order) = threads_get_polls($uid);
             break;
         case STICKY_THREADS:

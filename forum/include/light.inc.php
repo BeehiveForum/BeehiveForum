@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.187 2008-07-30 16:04:35 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.188 2008-07-31 14:52:56 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -59,11 +59,11 @@ function light_html_draw_top()
     $arg_array = func_get_args();
 
     $title = "";
-    
-    $robots = "index,follow";    
-    
+
+    $robots = "index,follow";
+
     $link_array = array();
-    
+
     $func_matches = array();
 
     if (defined('BEEHIVE_LIGHT_INCLUDE')) return;
@@ -203,9 +203,9 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
     $webtag = get_webtag();
 
     $lang = load_language_file();
-    
+
     $error_msg_array = array();
-    
+
     $visible_threads_array = array();
 
     if (($uid = bh_session_get_value('UID')) === false) return;
@@ -252,7 +252,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
             case RECENTLY_SEEN:
                 list($thread_info, $folder_order) = threads_get_recently_viewed($uid);
                 break;
-            case IGNORED:
+            case IGNORED_THREADS:
                 list($thread_info, $folder_order) = threads_get_by_interest($uid, -1);
                 break;
             case BY_IGNORED_USERS:
@@ -270,7 +270,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
             case STARTED_BY_ME:
                 list($thread_info, $folder_order) = threads_get_started_by_me($uid);
                 break;
-            case POLLS:
+            case POLL_THREADS:
                 list($thread_info, $folder_order) = threads_get_polls($uid);
                 break;
             case STICKY_THREADS:
@@ -707,29 +707,29 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
     $lang = load_language_file();
 
     $poll_data = poll_get($tid);
-    
+
     $poll_results = poll_get_votes($tid);
-    
+
     $user_poll_votes_array = poll_get_user_vote($tid);
 
     $total_votes = 0;
     $guest_votes = 0;
-    
+
     $poll_group_count = 1;
 
     $poll_data['CONTENT'] = "<h2>". thread_get_title($tid). "</h2>\n";
 
     if ($in_list) {
-    	
+
         $poll_data['CONTENT'].= "<form method=\"post\" action=\"{$_SERVER['PHP_SELF']}\" target=\"_self\">\n";
         $poll_data['CONTENT'].= form_input_hidden('webtag', _htmlentities($webtag)). "\n";
-        $poll_data['CONTENT'].= form_input_hidden('tid', _htmlentities($tid)). "\n";    	
+        $poll_data['CONTENT'].= form_input_hidden('tid', _htmlentities($tid)). "\n";
 
         if ((!is_array($user_poll_votes_array) && bh_session_get_value('UID') > 0) && ($poll_data['CLOSES'] == 0 || $poll_data['CLOSES'] > mktime())) {
 
             $poll_previous_group = false;
-        	
-        	for ($i = 0; $i < sizeof($poll_results['OPTION_ID']); $i++) {
+
+            for ($i = 0; $i < sizeof($poll_results['OPTION_ID']); $i++) {
 
                 if ($poll_previous_group === false) $poll_previous_group = $poll_results['GROUP_ID'][$i];
 
@@ -832,9 +832,9 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
 
             if (is_array($user_poll_votes_array) && isset($user_poll_votes_array[0]['TSTAMP'])) {
 
-            	$user_poll_votes_array_keys = array_keys($user_poll_votes_array);
-            	
-            	$user_poll_votes_display_array = array();
+                $user_poll_votes_array_keys = array_keys($user_poll_votes_array);
+
+                $user_poll_votes_display_array = array();
 
                 foreach ($user_poll_votes_array_keys as $vote_key) {
 
@@ -862,8 +862,8 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
             if (is_array($user_poll_votes_array) && isset($user_poll_votes_array[0]['TSTAMP'])) {
 
                 $user_poll_votes_array_keys = array_keys($user_poll_votes_array);
-            	
-            	$user_poll_votes_display_array = array();
+
+                $user_poll_votes_display_array = array();
 
                 foreach ($user_poll_votes_array_keys as $vote_key) {
 
@@ -890,7 +890,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
                 $poll_data['CONTENT'].= "<p>". light_form_submit('pollsubmit', $lang['vote']). "</p>\n";
             }
         }
-        
+
         $poll_data['CONTENT'].= "</form>\n";
     }
 
@@ -911,7 +911,7 @@ function light_message_display($tid, $message, $msg_count, $folder_fid, $in_list
     $post_edit_grace_period = forum_get_setting('post_edit_grace_period', false, 0);
 
     $webtag = get_webtag();
-    
+
     $attachments_array = array();
     $image_attachments_array = array();
 
@@ -1143,7 +1143,7 @@ function light_message_display($tid, $message, $msg_count, $folder_fid, $in_list
 
         if ((!(bh_session_check_perm(USER_PERM_PILLORIED, 0)) && ((($uid != $message['FROM_UID']) && ($from_user_permissions & USER_PERM_PILLORIED)) || ($uid == $message['FROM_UID'])) && bh_session_check_perm(USER_PERM_POST_EDIT, $folder_fid) && ($post_edit_time == 0 || (time() - $message['CREATED']) < ($post_edit_time * HOUR_IN_SECONDS)) && forum_get_setting('allow_post_editing', 'Y')) || $perm_is_moderator) {
 
-        	if (!$is_poll || ($is_poll && isset($message['PID']) && $message['PID'] > 1)) {
+            if (!$is_poll || ($is_poll && isset($message['PID']) && $message['PID'] > 1)) {
 
                 $links_array[] = "<a href=\"ledit.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\">{$lang['edit']}</a>";
             }
@@ -1393,21 +1393,69 @@ function light_threads_draw_discussions_dropdown($mode)
 {
     $lang = load_language_file();
 
+    $unread_cutoff_stamp = forum_get_unread_cutoff();
+
     if (user_is_guest()) {
 
-        $labels = array($lang['alldiscussions'], $lang['todaysdiscussions'], $lang['2daysback'], $lang['7daysback']);
-        return light_form_dropdown_array("mode", array(0, 3, 4, 5), $labels, $mode, "onchange=\"submit()\"");
+        $available_views = array(ALL_DISCUSSIONS    => $lang['alldiscussions'],
+                                 TODAYS_DISCUSSIONS => $lang['todaysdiscussions'],
+                                 TWO_DAYS_BACK      => $lang['2daysback'],
+                                 SEVEN_DAYS_BACK    => $lang['7daysback']);
 
     }else {
 
-        $labels = array($lang['alldiscussions'],$lang['unreaddiscussions'],$lang['unreadtome'],$lang['todaysdiscussions'],
-                        $lang['unreadtoday'],$lang['2daysback'],$lang['7daysback'],$lang['highinterest'],$lang['unreadhighinterest'],
-                        $lang['iverecentlyseen'],$lang['iveignored'],$lang['byignoredusers'],$lang['ivesubscribedto'],$lang['startedbyfriend'],
-                        $lang['unreadstartedbyfriend'],$lang['startedbyme'],$lang['polls'],$lang['stickythreads'],$lang['mostunreadposts']);
+        $available_views = array(ALL_DISCUSSIONS          => $lang['alldiscussions'],
+                                 UNREAD_DISCUSSIONS       => $lang['unreaddiscussions'],
+                                 UNREAD_DISCUSSIONS_TO_ME => $lang['unreadtome'],
+                                 TODAYS_DISCUSSIONS       => $lang['todaysdiscussions'],
+                                 UNREAD_TODAY             => $lang['unreadtoday'],
+                                 TWO_DAYS_BACK            => $lang['2daysback'],
+                                 SEVEN_DAYS_BACK          => $lang['7daysback'],
+                                 HIGH_INTEREST            => $lang['highinterest'],
+                                 UNREAD_HIGH_INTEREST     => $lang['unreadhighinterest'],
+                                 RECENTLY_SEEN            => $lang['iverecentlyseen'],
+                                 IGNORED_THREADS          => $lang['iveignored'],
+                                 BY_IGNORED_USERS         => $lang['byignoredusers'],
+                                 SUBSCRIBED_TO            => $lang['ivesubscribedto'],
+                                 STARTED_BY_FRIEND        => $lang['startedbyfriend'],
+                                 UNREAD_STARTED_BY_FRIEND => $lang['unreadstartedbyfriend'],
+                                 STARTED_BY_ME            => $lang['startedbyme'],
+                                 POLL_THREADS             => $lang['polls'],
+                                 STICKY_THREADS           => $lang['stickythreads'],
+                                 MOST_UNREAD_POSTS        => $lang['mostunreadposts'],
+                                 SEARCH_RESULTS           => $lang['searchresults'],
+                                 DELETED_THREADS          => $lang['deletedthreads']);
 
-        return light_form_dropdown_array("mode", range(0, 18), $labels, $mode, "onchange=\"submit()\"");
+        if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
+            if ($unread_cutoff_stamp === false) {
+
+                // Remove unread thread options (Unread Discussions, Unread Today,
+                // Unread High Interest, Unread Started By Friend, Most Unread Posts).
+
+                unset($available_views[UNREAD_DISCUSSIONS], $available_views[UNREAD_TODAY], $available_views[UNREAD_HIGH_INTEREST]);
+                unset($available_views[UNREAD_STARTED_BY_FRIEND], $available_views[MOST_UNREAD_POSTS]);
+            }
+
+        }else {
+
+            // Remove Admin Deleted Threads option.
+
+            unset($available_views[DELETED_THREADS]);
+
+            if ($unread_cutoff_stamp === false) {
+
+                // Remove unread thread options (Unread Discussions, Unread Today,
+                // Unread High Interest, Unread Started By Friend, Most Unread Posts).
+
+                unset($available_views[UNREAD_DISCUSSIONS], $available_views[UNREAD_TODAY], $available_views[UNREAD_HIGH_INTEREST]);
+                unset($available_views[UNREAD_STARTED_BY_FRIEND], $available_views[MOST_UNREAD_POSTS]);
+            }
+
+        }
     }
+
+    return light_form_dropdown_array("mode", array_keys($available_views), $available_views, $mode, "onchange=\"submit()\"");
 }
 
 function light_mode_check_noframes()
@@ -1447,7 +1495,7 @@ function light_edit_refuse()
 function light_html_display_msg($header_text, $string_msg, $href = false, $method = 'get', $button_array = false, $var_array = false, $target = "_self")
 {
     $webtag = get_webtag();
-    
+
     if (!is_string($header_text)) return;
     if (!is_string($string_msg)) return;
 

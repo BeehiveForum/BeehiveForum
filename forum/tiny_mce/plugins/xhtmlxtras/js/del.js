@@ -1,5 +1,5 @@
  /**
- * $Id: del.js,v 1.1 2008-08-01 00:06:10 decoyduck Exp $
+ * $Id: del.js,v 1.2 2008-08-01 00:09:58 decoyduck Exp $
  *
  * @author Moxiecode - based on work by Andrew Tetlaw
  * @copyright Copyright © 2004-2008, Moxiecode Systems AB, All rights reserved.

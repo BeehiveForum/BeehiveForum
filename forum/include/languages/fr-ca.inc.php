@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.117 2008-08-01 21:16:55 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.118 2008-08-01 21:18:08 decoyduck Exp $ */
 
 // French Canadian language file
 
@@ -1955,6 +1955,7 @@ $lang['relationshipstats'] = "Statistiques des relations";
 $lang['wordfilterstats'] = "Statistiques du filtre des mots";
 
 $lang['numberoffolders'] = "Nombre de dossiers";
+$lang['folderwithmostthreads'] = "Dossier avec le plus grand nombre de fils de discussion";
 $lang['folderwithmostposts'] = "Dossier avec le plus grand nombre de messages";
 $lang['totalnumberofthreads'] = "Nombre totale de fils de discussion";
 $lang['longestthread'] = "Fil de discussion le plus long";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: htmltools.inc.php,v 1.73 2008-07-31 23:35:29 decoyduck Exp $ */
+/* $Id: htmltools.inc.php,v 1.74 2008-08-01 21:06:31 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -145,9 +145,12 @@ class TextAreaHTML {
     function TextAreaHTML ($form)
     {
         $this->form = $form;
+
         if (@file_exists("tiny_mce/tiny_mce.js")) {
+
             $page_prefs = bh_session_get_post_page_prefs();
-            if ($page_prefs & POST_TINYMCE_DISPLAY) {
+
+            if (($page_prefs & POST_TINYMCE_DISPLAY) && !defined('BEEHIVEMODE_LIGHT')) {
                 $this->tinymce = true;
             }
         }

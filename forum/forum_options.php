@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.138 2008-07-28 21:05:48 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.139 2008-08-01 21:06:31 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -173,6 +173,18 @@ if (isset($_POST['save'])) {
         $user_prefs_global['VIEW_SIGS'] = ($_POST['view_sigs_global'] == "Y") ? true : false;
     } else {
         $user_prefs_global['VIEW_SIGS'] = false;
+    }
+
+    if (isset($_POST['threads_by_folder']) && $_POST['threads_by_folder'] == "N") {
+        $user_prefs['THREADS_BY_FOLDER'] = "N";
+    }else {
+        $user_prefs['THREADS_BY_FOLDER'] = "Y";
+    }
+
+    if (isset($_POST['threads_by_folder_global'])) {
+        $user_prefs_global['THREADS_BY_FOLDER'] = ($_POST['threads_by_folder_global'] == "Y") ? true : false;
+    } else {
+        $user_prefs_global['THREADS_BY_FOLDER'] = false;
     }
 
     if (isset($_POST['mark_as_of_int']) && $_POST['mark_as_of_int'] == "Y") {
@@ -580,7 +592,11 @@ if ($show_set_all) {
 }
 
 echo "                <tr>\n";
-echo "                  <td align=\"left\" rowspan=\"12\" width=\"1%\">&nbsp;</td>\n";
+echo "                  <td align=\"left\" rowspan=\"13\" width=\"1%\">&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("threads_by_folder", "Y", $lang['threadsorderbyfolder'], (isset($user_prefs['THREADS_BY_FOLDER']) && $user_prefs['THREADS_BY_FOLDER'] == "Y") ? true : false), "</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("threads_by_folder_global", "Y", '', (isset($user_prefs['THREADS_BY_FOLDER_GLOBAL']) ? $user_prefs['THREADS_BY_FOLDER_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("threads_by_folder_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("view_sigs", "N", $lang['globallyignoresigs'], (isset($user_prefs['VIEW_SIGS']) && $user_prefs['VIEW_SIGS'] == "N") ? true : false), "</td>\n";

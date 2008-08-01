@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-08x-to-084.php,v 1.4 2008-07-28 21:05:57 decoyduck Exp $ */
+/* $Id: upgrade-08x-to-084.php,v 1.5 2008-08-01 21:06:32 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'upgrade-08x-to-083.php') {
 
@@ -143,6 +143,16 @@ foreach ($forum_webtag_array as $forum_fid => $forum_webtag) {
         return;
     }
 
+    // New User preference for thread list folder order
+
+    $sql = "ALTER TABLE {$forum_webtag}_USER_PREFS ADD THREADS_BY_FOLDER CHAR(1) NOT NULL DEFAULT 'N'";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
     // Sort out the THREAD MODIFIED columns being wrong due to a bug in 0.8 and 0.8.1.
 
     $sql = "INSERT INTO {$forum_webtag}_THREAD (TID, FID, BY_UID, TITLE, LENGTH, ";
@@ -176,6 +186,16 @@ if (!$result = @db_query($sql, $db_install)) {
 // Add field for reply_quick
 
 $sql = "ALTER TABLE USER_PREFS ADD REPLY_QUICK CHAR(1) NOT NULL DEFAULT 'N'";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// New User preference for thread list folder order
+
+$sql = "ALTER TABLE USER_PREFS ADD THREADS_BY_FOLDER CHAR(1) NOT NULL DEFAULT 'N'";
 
 if (!$result = @db_query($sql, $db_install)) {
 

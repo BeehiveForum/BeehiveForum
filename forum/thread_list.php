@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.344 2008-07-31 18:46:16 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.345 2008-08-01 21:06:31 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -396,34 +396,40 @@ if (!$folder_info = threads_get_folders()) {
 
 $folder_msgs = threads_get_folder_msgs();
 
-// Check to see if $folder_order is an array.
-// If it's not an array we need to populate it
-// with the keys from $folder_info to get a list
-// of folders in the user's interest order.
+// Check that the folder order is a valid array.
+// While we're here we can also check to see how the user
+// has decided to display the thread list.
 
-if (!is_array($folder_order)) $folder_order = array_keys($folder_info);
+if (!is_array($folder_order) || (bh_session_get_value('THREADS_BY_FOLDER') == 'Y')) {
+    $folder_order = array_keys($folder_info);
+}
 
 // Sort the folders and threads correctly as per the URL query for the TID
 
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
-    $threadvisible = false;
+    list($selected_tid) = explode('.', $_GET['msg']);
 
-    list($tid, $pid) = explode('.', $_GET['msg']);
-
-    if (($thread = thread_get($tid))) {
+    if (($thread = thread_get($selected_tid))) {
 
         if (!isset($thread['RELATIONSHIP'])) $thread['RELATIONSHIP'] = 0;
 
-        if (in_array($thread['FID'], $folder_order)) {
-            array_splice($folder_order, array_search($thread['FID'], $folder_order), 1);
-        }
+        if (bh_session_get_value('THREADS_BY_FOLDER') == 'N') {
 
-        array_unshift($folder_order, $thread['FID']);
+            if (in_array($thread['FID'], $folder_order)) {
+                array_splice($folder_order, array_search($thread['FID'], $folder_order), 1);
+            }
+
+            array_unshift($folder_order, $thread['FID']);
+        }
 
         if (!is_array($thread_info)) $thread_info = array();
 
-        if (isset($thread_info[$tid])) unset($thread_info[$tid]);
+        if (isset($thread_info[$selected_tid])) {
+            unset($thread_info[$selected_tid]);
+        }else {
+            array_pop($thread_info);
+        }
 
         array_unshift($thread_info, $thread);
     }
@@ -436,9 +442,9 @@ if (bh_session_get_value('UID') > 0) {
 
     if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
-        list($tid, $pid) = explode('.', $_GET['msg']);
+        list($selected_tid) = explode('.', $_GET['msg']);
 
-        if (($thread = thread_get($tid))) {
+        if (($thread = thread_get($selected_tid))) {
             $selected_folder = $thread['FID'];
         }
 
@@ -630,7 +636,7 @@ foreach ($folder_order as $folder_number) {
 
                                 $latest_post = 1;
 
-                                if (!is_numeric($first_thread) && isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+                                if (!is_numeric($first_thread) && isset($selected_tid) && ($selected_tid == $thread['TID'])) {
 
                                     $first_thread = $thread['TID'];
                                     echo "<img src=\"", style_image('current_thread.png'), "\" name=\"t{$thread['TID']}\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
@@ -659,7 +665,7 @@ foreach ($folder_order as $folder_number) {
 
                                 $latest_post = $thread['LAST_READ'] + 1;
 
-                                if (!is_numeric($first_thread) && isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+                                if (!is_numeric($first_thread) && isset($selected_tid) && ($selected_tid == $thread['TID'])) {
 
                                     $first_thread = $thread['TID'];
                                     echo "<img src=\"", style_image('current_thread.png'), "\" name=\"t{$thread['TID']}\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
@@ -684,7 +690,7 @@ foreach ($folder_order as $folder_number) {
 
                                 $latest_post = 1;
 
-                                if (!is_numeric($first_thread) && isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+                                if (!is_numeric($first_thread) && isset($selected_tid) && ($selected_tid == $thread['TID'])) {
 
                                     $first_thread = $thread['TID'];
                                     echo "<img src=\"", style_image('current_thread.png'), "\" name=\"t{$thread['TID']}\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.358 2008-07-30 16:04:36 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.359 2008-08-01 21:06:31 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -569,7 +569,7 @@ function user_get_prefs($uid)
     if (!is_numeric($uid)) return false;
 
     // Arrays to hold the user preferences.
-    
+
     $global_prefs_array = array();
     $forum_prefs_array  = array();
 
@@ -579,17 +579,18 @@ function user_get_prefs($uid)
     $sql.= "USER_PREFS.HOMEPAGE_URL, USER_PREFS.PIC_URL, USER_PREFS.PIC_AID, ";
     $sql.= "USER_PREFS.AVATAR_URL, USER_PREFS.AVATAR_AID, USER_PREFS.EMAIL_NOTIFY, ";
     $sql.= "USER_PREFS.TIMEZONE, TIMEZONES.GMT_OFFSET, TIMEZONES.DST_OFFSET, ";
-    $sql.= "USER_PREFS.DL_SAVING, USER_PREFS.MARK_AS_OF_INT, USER_PREFS.POSTS_PER_PAGE, ";
-    $sql.= "USER_PREFS.FONT_SIZE, USER_PREFS.VIEW_SIGS, USER_PREFS.START_PAGE, ";
-    $sql.= "USER_PREFS.LANGUAGE, USER_PREFS.PM_NOTIFY, USER_PREFS.PM_NOTIFY_EMAIL, ";
-    $sql.= "USER_PREFS.PM_SAVE_SENT_ITEM, USER_PREFS.PM_INCLUDE_REPLY, ";
-    $sql.= "USER_PREFS.PM_AUTO_PRUNE, USER_PREFS.PM_EXPORT_TYPE, ";
-    $sql.= "USER_PREFS.PM_EXPORT_FILE, USER_PREFS.PM_EXPORT_ATTACHMENTS, ";
-    $sql.= "USER_PREFS.PM_EXPORT_STYLE, USER_PREFS.PM_EXPORT_WORDFILTER, ";
-    $sql.= "USER_PREFS.DOB_DISPLAY, USER_PREFS.ANON_LOGON, ";
-    $sql.= "USER_PREFS.SHOW_STATS, USER_PREFS.IMAGES_TO_LINKS, ";
-    $sql.= "USER_PREFS.USE_WORD_FILTER, USER_PREFS.USE_ADMIN_FILTER, ";
-    $sql.= "USER_PREFS.ALLOW_EMAIL, USER_PREFS.ALLOW_PM, USER_PREFS.POST_PAGE, ";
+    $sql.= "USER_PREFS.DL_SAVING, USER_PREFS.MARK_AS_OF_INT, USER_PREFS.THREADS_BY_FOLDER, ";
+    $sql.= "USER_PREFS.POSTS_PER_PAGE, USER_PREFS.FONT_SIZE, USER_PREFS.VIEW_SIGS, ";
+    $sql.= "USER_PREFS.START_PAGE, USER_PREFS.LANGUAGE, USER_PREFS.PM_NOTIFY, ";
+    $sql.= "USER_PREFS.PM_NOTIFY_EMAIL, USER_PREFS.PM_SAVE_SENT_ITEM, ";
+    $sql.= "USER_PREFS.PM_INCLUDE_REPLY, USER_PREFS.PM_AUTO_PRUNE, ";
+    $sql.= "USER_PREFS.PM_EXPORT_TYPE, USER_PREFS.PM_EXPORT_FILE, ";
+    $sql.= "USER_PREFS.PM_EXPORT_ATTACHMENTS, USER_PREFS.PM_EXPORT_STYLE, ";
+    $sql.= "USER_PREFS.PM_EXPORT_WORDFILTER, USER_PREFS.DOB_DISPLAY, ";
+    $sql.= "USER_PREFS.ANON_LOGON, USER_PREFS.SHOW_STATS, ";
+    $sql.= "USER_PREFS.IMAGES_TO_LINKS, USER_PREFS.USE_WORD_FILTER, ";
+    $sql.= "USER_PREFS.USE_ADMIN_FILTER, USER_PREFS.ALLOW_EMAIL, ";
+    $sql.= "USER_PREFS.ALLOW_PM, USER_PREFS.POST_PAGE, ";
     $sql.= "USER_PREFS.SHOW_THUMBS, USER_PREFS.USE_MOVER_SPOILER, ";
     $sql.= "USER_PREFS.USE_LIGHT_MODE_SPOILER, USER_PREFS.ENABLE_WIKI_WORDS, ";
     $sql.= "USER_PREFS.REPLY_QUICK, USER_PREFS.USE_OVERFLOW_RESIZE FROM USER_PREFS ";
@@ -597,7 +598,7 @@ function user_get_prefs($uid)
     $sql.= "WHERE UID = '$uid'";
 
     if (!$result = db_query($sql, $db_user_get_prefs)) return false;
-    
+
     if (db_num_rows($result) > 0) {
         $global_prefs_array = db_fetch_array($result, DB_RESULT_ASSOC);
     }
@@ -607,11 +608,11 @@ function user_get_prefs($uid)
     if (($table_data = get_table_prefix())) {
 
         $sql = "SELECT HOMEPAGE_URL, PIC_URL, PIC_AID, AVATAR_URL, AVATAR_AID, EMAIL_NOTIFY, ";
-        $sql.= "MARK_AS_OF_INT, POSTS_PER_PAGE, FONT_SIZE, STYLE, VIEW_SIGS, START_PAGE, ";
-        $sql.= "LANGUAGE, DOB_DISPLAY, ANON_LOGON, SHOW_STATS, IMAGES_TO_LINKS, USE_WORD_FILTER, ";
-        $sql.= "USE_ADMIN_FILTER, EMOTICONS, ALLOW_EMAIL, ALLOW_PM, SHOW_THUMBS, USE_MOVER_SPOILER, ";
-        $sql.= "USE_LIGHT_MODE_SPOILER, ENABLE_WIKI_WORDS, USE_OVERFLOW_RESIZE, REPLY_QUICK ";
-        $sql.= "FROM {$table_data['PREFIX']}USER_PREFS WHERE UID = '$uid'";
+        $sql.= "MARK_AS_OF_INT, THREADS_BY_FOLDER, POSTS_PER_PAGE, FONT_SIZE, STYLE, VIEW_SIGS, ";
+        $sql.= "START_PAGE, LANGUAGE, DOB_DISPLAY, ANON_LOGON, SHOW_STATS, IMAGES_TO_LINKS, ";
+        $sql.= "USE_WORD_FILTER, USE_ADMIN_FILTER, EMOTICONS, ALLOW_EMAIL, ALLOW_PM, SHOW_THUMBS, ";
+        $sql.= "USE_MOVER_SPOILER, USE_LIGHT_MODE_SPOILER, ENABLE_WIKI_WORDS, USE_OVERFLOW_RESIZE, ";
+        $sql.= "REPLY_QUICK FROM {$table_data['PREFIX']}USER_PREFS WHERE UID = '$uid'";
 
         if (!$result = db_query($sql, $db_user_get_prefs)) return false;
 
@@ -627,12 +628,12 @@ function user_get_prefs($uid)
     $forum_prefs_array = array_filter($forum_prefs_array, "strlen");
 
     // Get the array keys.
-    
+
     $global_prefs_array_keys = array_keys($global_prefs_array);
     $forum_prefs_array_keys = array_keys($forum_prefs_array);
-    
+
     // Add keys to indicate whether the preference is set globally or not
-    
+
     foreach ($forum_prefs_array_keys as $key) {
         $forum_prefs_array[$key. '_GLOBAL'] = false;
     }
@@ -648,20 +649,20 @@ function user_get_prefs($uid)
 
 function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = false)
 {
-    if (!$db_user_update_prefs = db_connect()) return false;	
+    if (!$db_user_update_prefs = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
 
     if (!is_array($prefs_array)) return false;
-    
+
     // Check that $prefs_global_setting_array is an array
-    
+
     if (!is_array($prefs_global_setting_array)) {
-    	$prefs_global_setting_array = array();
+        $prefs_global_setting_array = array();
     }
-    
+
     // Arrays to hold preferences
-    
+
     $global_prefs_array = array();
     $forum_prefs_array  = array();
 
@@ -670,11 +671,11 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
     $global_pref_names = array('FIRSTNAME', 'LASTNAME', 'DOB', 'HOMEPAGE_URL',
                                'PIC_URL', 'PIC_AID', 'AVATAR_URL', 'AVATAR_AID',
                                'EMAIL_NOTIFY', 'TIMEZONE', 'DL_SAVING',
-                               'MARK_AS_OF_INT', 'POSTS_PER_PAGE', 'FONT_SIZE',
-                               'VIEW_SIGS', 'START_PAGE', 'LANGUAGE', 'PM_NOTIFY',
-                               'PM_NOTIFY_EMAIL', 'PM_SAVE_SENT_ITEM', 'PM_INCLUDE_REPLY',
-                               'PM_AUTO_PRUNE', 'PM_EXPORT_FILE', 'PM_EXPORT_TYPE',
-                               'PM_EXPORT_ATTACHMENTS', 'PM_EXPORT_STYLE',
+                               'MARK_AS_OF_INT', 'THREADS_BY_FOLDER', 'POSTS_PER_PAGE',
+                               'FONT_SIZE', 'VIEW_SIGS', 'START_PAGE', 'LANGUAGE',
+                               'PM_NOTIFY', 'PM_NOTIFY_EMAIL', 'PM_SAVE_SENT_ITEM',
+                               'PM_INCLUDE_REPLY', 'PM_AUTO_PRUNE', 'PM_EXPORT_FILE',
+                               'PM_EXPORT_TYPE', 'PM_EXPORT_ATTACHMENTS', 'PM_EXPORT_STYLE',
                                'PM_EXPORT_WORDFILTER', 'DOB_DISPLAY', 'ANON_LOGON',
                                'SHOW_STATS', 'IMAGES_TO_LINKS', 'USE_WORD_FILTER',
                                'USE_ADMIN_FILTER',  'ALLOW_EMAIL', 'ALLOW_PM',
@@ -686,14 +687,14 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
 
     $forum_pref_names =  array('HOMEPAGE_URL', 'PIC_URL', 'PIC_AID', 'AVATAR_URL',
                                'AVATAR_AID', 'EMAIL_NOTIFY', 'MARK_AS_OF_INT',
-                               'POSTS_PER_PAGE', 'FONT_SIZE', 'STYLE', 'VIEW_SIGS',
-                               'START_PAGE', 'LANGUAGE', 'DOB_DISPLAY', 'ANON_LOGON',
-                               'SHOW_STATS', 'IMAGES_TO_LINKS', 'USE_WORD_FILTER',
-                               'USE_ADMIN_FILTER', 'EMOTICONS', 'ALLOW_EMAIL',
-                               'ALLOW_PM', 'SHOW_THUMBS', 'ENABLE_WIKI_WORDS',
-                               'USE_MOVER_SPOILER', 'USE_LIGHT_MODE_SPOILER',
-                               'USE_OVERFLOW_RESIZE', 'REPLY_QUICK');
-    
+                               'THREADS_BY_FOLDER', 'POSTS_PER_PAGE', 'FONT_SIZE',
+                               'STYLE', 'VIEW_SIGS', 'START_PAGE', 'LANGUAGE',
+                               'DOB_DISPLAY', 'ANON_LOGON', 'SHOW_STATS',
+                               'IMAGES_TO_LINKS', 'USE_WORD_FILTER', 'USE_ADMIN_FILTER',
+                               'EMOTICONS', 'ALLOW_EMAIL', 'ALLOW_PM',
+                               'SHOW_THUMBS', 'ENABLE_WIKI_WORDS', 'USE_MOVER_SPOILER',
+                               'USE_LIGHT_MODE_SPOILER', 'USE_OVERFLOW_RESIZE', 'REPLY_QUICK');
+
     // Loop through the passed preference names and check they're valid
     // and whether the value needs to go in the global or forum USER_PREFS table.
 
@@ -717,7 +718,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
             }
         }
     }
-    
+
     // Check to see we have some preferences to set globally.
 
     if (sizeof($global_prefs_array) > 0) {
@@ -848,7 +849,7 @@ function user_check_pref($name, $value)
         return preg_match("/^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$/", $value);
     } elseif ($name == "HOMEPAGE_URL" || $name == "PIC_URL" || $name == "AVATAR_URL") {
         return (preg_match('/^http:\/\/[_\.0-9a-z\-~]*/i', $value) || $value == "");
-    } elseif ($name == "EMAIL_NOTIFY" || $name == "DL_SAVING" || $name == "MARK_AS_OF_INT" || $name == "VIEW_SIGS" || $name == "PM_NOTIFY" || $name == "PM_NOTIFY_EMAIL" || $name == "PM_INCLUDE_REPLY" || $name == "PM_SAVE_SENT_ITEM" || $name == "PM_EXPORT_ATTACHMENTS" || $name == "PM_EXPORT_STYLE" || $name == "PM_EXPORT_WORDFILTER" || $name == "IMAGES_TO_LINKS" || $name == "SHOW_STATS" || $name == "USE_WORD_FILTER" || $name == "USE_ADMIN_FILTER" || $name == "ALLOW_EMAIL" || $name == "ALLOW_PM" || $name == "ENABLE_WIKI_WORDS" || $name == "USE_MOVER_SPOILER" || $name == "USE_LIGHT_MODE_SPOILER" || $name == "USE_OVERFLOW_RESIZE" || $name == "REPLY_QUICK") {
+    } elseif ($name == "EMAIL_NOTIFY" || $name == "DL_SAVING" || $name == "MARK_AS_OF_INT" || $name == "VIEW_SIGS" || $name == "PM_NOTIFY" || $name == "PM_NOTIFY_EMAIL" || $name == "PM_INCLUDE_REPLY" || $name == "PM_SAVE_SENT_ITEM" || $name == "PM_EXPORT_ATTACHMENTS" || $name == "PM_EXPORT_STYLE" || $name == "PM_EXPORT_WORDFILTER" || $name == "IMAGES_TO_LINKS" || $name == "SHOW_STATS" || $name == "USE_WORD_FILTER" || $name == "USE_ADMIN_FILTER" || $name == "ALLOW_EMAIL" || $name == "ALLOW_PM" || $name == "ENABLE_WIKI_WORDS" || $name == "USE_MOVER_SPOILER" || $name == "USE_LIGHT_MODE_SPOILER" || $name == "USE_OVERFLOW_RESIZE" || $name == "REPLY_QUICK" || $name == "THREADS_BY_FOLDER") {
         return ($value == "Y" || $value == "N") ? true : false;
     } elseif ($name == "PIC_AID" || $name == "AVATAR_AID") {
         return (is_md5($value) || $value == "");
@@ -1011,7 +1012,7 @@ function user_search($user_search, $offset = 0, $exclude_uid = 0)
     if (!is_numeric($exclude_uid)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
-    
+
     $lang = load_language_file();
 
     $user_array = array();
@@ -1110,7 +1111,7 @@ function user_get_friends($uid)
     if (!is_numeric($uid)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
-    
+
     $lang = load_language_file();
 
     $user_rel = USER_FRIEND;
@@ -1162,7 +1163,7 @@ function user_get_relationships($uid, $offset = 0)
     if (!is_numeric($offset)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
-    
+
     $lang = load_language_file();
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS USER.UID, USER.LOGON, USER.NICKNAME, ";
@@ -1264,7 +1265,7 @@ function user_search_relationships($user_search, $offset = 0, $exclude_uid = 0)
     if (!is_numeric($exclude_uid)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
-    
+
     $lang = load_language_file();
 
     $user_search_peers_array = array();
@@ -1520,28 +1521,28 @@ function user_is_active($uid)
 function user_allow_pm($uid)
 {
     if (!$db_user_allow_pm = db_connect()) return false;
-    
+
     if (!is_numeric($uid)) return false;
-    
+
     $sql = "SELECT COUNT(UID) FROM USER_PREFS ";
     $sql.= "WHERE UID = '$uid' AND ALLOW_PM = 'Y'";
-    
+
     if (!$result = db_query($sql, $db_user_allow_pm)) return false;
-    
+
     return (db_num_rows($result) > 0);
 }
 
 function user_allow_email($uid)
 {
     if (!$db_user_allow_email = db_connect()) return false;
-    
+
     if (!is_numeric($uid)) return false;
-    
+
     $sql = "SELECT COUNT(UID) FROM USER_PREFS ";
     $sql.= "WHERE UID = '$uid' AND ALLOW_EMAIL = 'Y'";
-    
+
     if (!$result = db_query($sql, $db_user_allow_email)) return false;
-    
+
     return (db_num_rows($result) > 0);
 }
 

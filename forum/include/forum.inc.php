@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.324 2008-07-30 22:39:23 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.325 2008-08-01 21:06:31 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -214,8 +214,8 @@ function forum_closed_message()
 function forum_restricted_message()
 {
     $webtag = get_webtag();
-	
-	$lang = load_language_file();
+
+    $lang = load_language_file();
 
     html_draw_top();
 
@@ -1594,6 +1594,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  AVATAR_AID CHAR(32) NOT NULL DEFAULT '',";
         $sql.= "  EMAIL_NOTIFY CHAR(1) NOT NULL DEFAULT 'Y',";
         $sql.= "  MARK_AS_OF_INT CHAR(1) NOT NULL DEFAULT 'Y',";
+        $sql.= "  THREADS_BY_FOLDER CHAR(1) NOT NULL DEFAULT 'N', ";
         $sql.= "  POSTS_PER_PAGE VARCHAR(3) NOT NULL DEFAULT '20',";
         $sql.= "  FONT_SIZE VARCHAR(2) NOT NULL DEFAULT '10',";
         $sql.= "  STYLE VARCHAR(255) NOT NULL DEFAULT '',";
@@ -1996,14 +1997,14 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
 function forum_update($fid, $forum_name, $owner_uid, $access_level)
 {
     if (!$db_forum_update = db_connect()) return false;
-    
+
     if (!is_numeric($fid)) return false;
 
     if (!is_numeric($owner_uid) || $owner_uid < 1) return false;
 
     if (!is_numeric($access_level)) return false;
-    
-    $forum_name = db_escape_string($forum_name);  
+
+    $forum_name = db_escape_string($forum_name);
 
     if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
 
@@ -2272,7 +2273,7 @@ function forum_get_permissions($fid, $offset = 0)
 
     if (!is_numeric($fid)) return false;
     if (!is_numeric($offset)) $offset = 0;
-    
+
     $lang = load_language_file();
 
     $perms_user_array = array();
@@ -2692,7 +2693,7 @@ function forum_get_maintenance_schedule(&$maintenance_hour, &$maintenance_minute
     $forum_maintenance_schedule = forum_get_setting('forum_maintenance_schedule', false, '02:00');
 
     $matches_array = array();
-    
+
     if (preg_match('/^([0-9]{2}):([0-9]{2})$/', $forum_maintenance_schedule, $matches_array) > 0) {
 
         list(,$maintenance_hour, $maintenance_minute) = $matches_array;

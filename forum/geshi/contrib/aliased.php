@@ -13,7 +13,7 @@
  * aliased.php/file.name.ext.
  *
  * @author  Ross Golder <ross@golder.org>
- * @version $Id: aliased.php,v 1.1 2008-07-31 23:51:38 decoyduck Exp $
+ * @version $Id: aliased.php,v 1.2 2008-08-01 00:07:25 decoyduck Exp $
  */
 
 // Your config here

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.192 2008-07-31 18:46:16 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.193 2008-08-01 21:06:31 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -304,9 +304,13 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
 
     $folder_msgs = threads_get_folder_msgs();
 
-    // Check to see if $folder_order is an array, and define it as one if not
+    // Check that the folder order is a valid array.
+    // While we're here we can also check to see how the user
+    // has decided to display the thread list.
 
-    if (!is_array($folder_order)) $folder_order = array_keys($folder_info);
+    if (!is_array($folder_order) || (bh_session_get_value('THREADS_BY_FOLDER') == 'Y')) {
+        $folder_order = array_keys($folder_info);
+    }
 
     // Sort the folders and threads correctly as per the URL query for the TID
 
@@ -318,15 +322,22 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
 
             if (!isset($thread['RELATIONSHIP'])) $thread['RELATIONSHIP'] = 0;
 
-            if (in_array($thread['FID'], $folder_order)) {
-                array_splice($folder_order, array_search($thread['FID'], $folder_order), 1);
-            }
+            if (bh_session_get_value('THREADS_BY_FOLDER') == 'N') {
 
-            array_unshift($folder_order, $thread['FID']);
+                if (in_array($thread['FID'], $folder_order)) {
+                    array_splice($folder_order, array_search($thread['FID'], $folder_order), 1);
+                }
+
+                array_unshift($folder_order, $thread['FID']);
+            }
 
             if (!is_array($thread_info)) $thread_info = array();
 
-            if (isset($thread_info[$tid])) unset($thread_info[$tid]);
+            if (isset($thread_info[$tid])) {
+                unset($thread_info[$tid]);
+            }else {
+                array_pop($thread_info);
+            }
 
             array_unshift($thread_info, $thread);
         }

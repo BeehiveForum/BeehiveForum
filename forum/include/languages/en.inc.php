@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.563 2008-07-27 18:26:17 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.564 2008-08-01 21:06:32 decoyduck Exp $ */
 
 // British English language file
 
@@ -1490,6 +1490,7 @@ $lang['notifyofnewpm'] = "Notify by popup of new PM messages to me";
 $lang['notifyofnewpmemail'] = "Notify by email of new PM messages to me";
 $lang['daylightsaving'] = "Adjust for daylight saving";
 $lang['autohighinterest'] = "Automatically mark threads I post in as High Interest";
+$lang['threadsorderbyfolder'] = "Order Thread List by folders instead of by threads";
 $lang['convertimagestolinks'] = "Automatically convert embedded images in posts into links";
 $lang['thumbnailsforimageattachments'] = "thumbnails for image attachments";
 $lang['smallsized'] = "Small Sized";

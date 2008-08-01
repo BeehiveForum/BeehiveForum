@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.97 2008-07-28 21:05:49 decoyduck Exp $ */
+/* $Id: install.php,v 1.98 2008-08-01 21:08:53 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -196,8 +196,8 @@ if (isset($_POST['install_method'])) {
     if ($valid) {
 
         $sql = "";
-    	
-    	if (($db_install = db_connect(false))) {
+
+        if (($db_install = db_connect(false))) {
 
             // Check the MySQL version
 
@@ -205,9 +205,14 @@ if (isset($_POST['install_method'])) {
 
             // Check the install method
 
-            if (($install_method == 5) && (@file_exists('install/upgrade-08x-to-084.php'))) {
+
+            if (($install_method == 6) && (@file_exists('install/upgrade-08x-to-084.php'))) {
 
                 include_once("install/upgrade-08x-to-084.php");
+
+            }elseif (($install_method == 5) && (@file_exists('install/upgrade-083-to-084.php'))) {
+
+                include_once("install/upgrade-083-to-084.php");
 
             }elseif (($install_method == 4) && (@file_exists('install/upgrade-07x-to-084.php'))) {
 
@@ -631,7 +636,8 @@ echo "                            <option value=\"1\" ", (isset($install_method)
 echo "                            <option value=\"2\" ", (isset($install_method) && $install_method == 2) ? "selected=\"selected\"" : "", ">Reconnect</option>\n";
 echo "                            <option value=\"3\" ", (isset($install_method) && $install_method == 3) ? "selected=\"selected\"" : "", ">Upgrade 0.6.x to 0.8.4</option>\n";
 echo "                            <option value=\"4\" ", (isset($install_method) && $install_method == 4) ? "selected=\"selected\"" : "", ">Upgrade 0.7.x to 0.8.4</option>\n";
-echo "                            <option value=\"5\" ", (isset($install_method) && $install_method == 5) ? "selected=\"selected\"" : "", ">Upgrade 0.8.x to 0.8.4</option>\n";
+echo "                            <option value=\"5\" ", (isset($install_method) && $install_method == 5) ? "selected=\"selected\"" : "", ">Upgrade 0.8.3 to 0.8.4</option>\n";
+echo "                            <option value=\"6\" ", (isset($install_method) && $install_method == 6) ? "selected=\"selected\"" : "", ">Upgrade 0.8, 0.8.1 or 0.8.2 to 0.8.4</option>\n";
 echo "                          </select>\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";

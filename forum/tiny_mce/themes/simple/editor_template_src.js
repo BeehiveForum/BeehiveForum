@@ -1,5 +1,5 @@
 /**
- * $Id: editor_template_src.js,v 1.5 2008-08-01 00:06:11 decoyduck Exp $
+ * $Id: editor_template_src.js,v 1.6 2008-08-01 00:09:58 decoyduck Exp $
  *
  * This file is meant to showcase how to create a simple theme. The advanced
  * theme is more suitable for production use.

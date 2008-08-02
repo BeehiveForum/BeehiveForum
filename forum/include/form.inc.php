@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.121 2008-08-02 14:12:48 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.122 2008-08-02 14:23:59 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -262,7 +262,7 @@ function form_checkbox($name, $value, $text, $checked = false, $custom_html = fa
 
     if (is_array($text) && sizeof($text) > 0) {
 
-        $html.= "<label for=\"$name\">";
+        $html.= "<label for=\"$id\">";
 
         foreach ($text as $text_part) {
 
@@ -272,7 +272,7 @@ function form_checkbox($name, $value, $text, $checked = false, $custom_html = fa
 
             }else {
 
-                $html.= "</label>$text_part<label for=\"$name\">";
+                $html.= "</label>$text_part<label for=\"$id\">";
             }
         }
 
@@ -280,7 +280,7 @@ function form_checkbox($name, $value, $text, $checked = false, $custom_html = fa
 
     }elseif (strlen(trim($text)) > 0) {
 
-        $html.= "<label for=\"$name\">$text</label>";
+        $html.= "<label for=\"$id\">$text</label>";
     }
 
     $html.= "</span>";
@@ -309,7 +309,7 @@ function form_radio($name, $value, $text, $checked = false, $custom_html = false
 
     if (is_array($text) && sizeof($text) > 0) {
 
-        $html.= "<label for=\"$name\">";
+        $html.= "<label for=\"$id\">";
 
         foreach ($text as $text_part) {
 
@@ -319,7 +319,7 @@ function form_radio($name, $value, $text, $checked = false, $custom_html = false
 
             }else {
 
-                $html.= "</label>$text_part<label for=\"$name\">";
+                $html.= "</label>$text_part<label for=\"$id\">";
             }
         }
 
@@ -327,7 +327,7 @@ function form_radio($name, $value, $text, $checked = false, $custom_html = false
 
     }elseif (strlen(trim($text)) > 0) {
 
-        $html.= "<label for=\"$name\">$text</label>";
+        $html.= "<label for=\"$id\">$text</label>";
     }
 
     $html.= "</span>";

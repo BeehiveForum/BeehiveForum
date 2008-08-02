@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.74 2008-07-30 22:39:24 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.75 2008-08-02 19:42:38 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -137,12 +137,12 @@ function install_remove_files()
     rmdir_recursive('install');
 
     if (@file_exists('install.php')) return @unlink('install.php');
-    
+
     return true;
 }
 
 function install_incomplete()
-{   
+{
     echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
     echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"ltr\">\n";
@@ -253,8 +253,8 @@ function install_missing_files()
 function install_check_mysql_version()
 {
     $mysql_version = 0;
-	
-	if (db_fetch_mysql_version($mysql_version)) {
+
+    if (db_fetch_mysql_version($mysql_version)) {
 
         if ($mysql_version < 40116) {
 
@@ -394,6 +394,34 @@ function install_table_exists($table_name)
     return (db_num_rows($result) > 0);
 }
 
+function install_column_exists($table_name, $column_name)
+{
+    if (!$db_install_column_exists = db_connect()) return false;
+
+    $table_name = db_escape_string($table_name);
+    $column_name = db_escape_string($column_name);
+
+    $sql = "SHOW COLUMNS FROM $table_name LIKE '$column_name' ";
+
+    if (!$result = db_query($sql, $db_install_column_exists)) return false;
+
+    return (db_num_rows($result) > 0);
+}
+
+function install_index_exists($table_name, $index_name)
+{
+    if (!$db_install_index_exists = db_connect()) return false;
+
+    $table_name = db_escape_string($table_name);
+    $index_name = db_escape_string($index_name);
+
+    $sql = "SHOW INDEXES FROM $table_name WHERE Column_Name LIKE '$index_name'";
+
+    if (!$result = db_query($sql, $db_install_index_exists)) return false;
+
+    return (db_num_rows($result) > 0);
+}
+
 function install_get_table_conflicts($webtag = false, $forum_tables = false, $global_tables = false)
 {
     if (!$db_install_get_table_conflicts = db_connect()) return false;
@@ -433,13 +461,8 @@ function install_get_table_conflicts($webtag = false, $forum_tables = false, $gl
 
             foreach ($forum_tables as $forum_table) {
 
-                $forum_table = db_escape_string($forum_table);
+                if (install_table_exists("{$webtag}_{$forum_table}")) {
 
-                $sql = "SHOW TABLES LIKE '{$webtag}_{$forum_table}' ";
-
-                if (!$result = db_query($sql, $db_install_get_table_conflicts)) return false;
-
-                if (db_num_rows($result) > 0) {
                     $conflicting_tables_array[] = "'{$webtag}_{$forum_table}'";
                 }
             }
@@ -450,13 +473,8 @@ function install_get_table_conflicts($webtag = false, $forum_tables = false, $gl
 
         foreach ($global_tables as $global_table) {
 
-            $global_table = db_escape_string($global_table);
+            if (install_table_exists($global_table)) {
 
-            $sql = "SHOW TABLES LIKE '$global_table' ";
-
-            if (!$result = db_query($sql, $db_install_get_table_conflicts)) return false;
-
-            if (db_num_rows($result) > 0) {
                 $conflicting_tables_array[] = "'{$global_table}'";
             }
         }

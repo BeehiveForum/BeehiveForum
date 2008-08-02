@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.174 2008-08-01 21:06:32 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.175 2008-08-02 19:44:43 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'new-install.php') {
 
@@ -943,7 +943,6 @@ $sql.= "  EMAIL_NOTIFY CHAR(1) NOT NULL DEFAULT 'Y', ";
 $sql.= "  TIMEZONE INT(11) NOT NULL DEFAULT '27', ";
 $sql.= "  DL_SAVING CHAR(1) NOT NULL DEFAULT 'N', ";
 $sql.= "  MARK_AS_OF_INT CHAR(1) NOT NULL DEFAULT 'Y', ";
-$sql.= "  THREADS_BY_FOLDER CHAR(1) NOT NULL DEFAULT 'N', ";
 $sql.= "  POSTS_PER_PAGE CHAR(3) NOT NULL DEFAULT '20', ";
 $sql.= "  FONT_SIZE CHAR(2) NOT NULL DEFAULT '10', ";
 $sql.= "  STYLE VARCHAR(255) NOT NULL DEFAULT '', ";
@@ -976,6 +975,7 @@ $sql.= "  USE_MOVER_SPOILER CHAR(1) NOT NULL DEFAULT 'N', ";
 $sql.= "  USE_LIGHT_MODE_SPOILER CHAR(1) NOT NULL DEFAULT 'N', ";
 $sql.= "  USE_OVERFLOW_RESIZE CHAR(1) NOT NULL DEFAULT 'Y', ";
 $sql.= "  REPLY_QUICK CHAR(1) NOT NULL DEFAULT 'N', ";
+$sql.= "  THREADS_BY_FOLDER CHAR(1) NOT NULL DEFAULT 'N', ";
 $sql.= "  PRIMARY KEY (UID), ";
 $sql.= "  KEY DOB (DOB), ";
 $sql.= "  KEY DOB_DISPLAY (DOB_DISPLAY)";

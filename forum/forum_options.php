@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.139 2008-08-01 21:06:31 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.140 2008-08-02 15:06:46 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -175,10 +175,10 @@ if (isset($_POST['save'])) {
         $user_prefs_global['VIEW_SIGS'] = false;
     }
 
-    if (isset($_POST['threads_by_folder']) && $_POST['threads_by_folder'] == "N") {
-        $user_prefs['THREADS_BY_FOLDER'] = "N";
-    }else {
+    if (isset($_POST['threads_by_folder']) && $_POST['threads_by_folder'] == "Y") {
         $user_prefs['THREADS_BY_FOLDER'] = "Y";
+    }else {
+        $user_prefs['THREADS_BY_FOLDER'] = "N";
     }
 
     if (isset($_POST['threads_by_folder_global'])) {

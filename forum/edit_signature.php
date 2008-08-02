@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_signature.php,v 1.113 2008-07-30 17:41:38 decoyduck Exp $ */
+/* $Id: edit_signature.php,v 1.114 2008-08-02 13:58:05 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -253,7 +253,7 @@ if (!user_get_sig($uid, $user_sig['SIG_CONTENT'], $user_sig['SIG_HTML'])) {
 
 // Start Output Here
 
-html_draw_top("basetarget=_blank", "onUnload=clearFocus()", "resize_width=600", "dictionary.js", "htmltools.js", "post.js", "poll.js");
+html_draw_top("basetarget=_blank", "onUnload=clearFocus()", "tinymce_auto_focus=sig_content", "resize_width=600", "dictionary.js", "htmltools.js", "post.js", "poll.js");
 
 if ($admin_edit === true) {
 
@@ -447,62 +447,63 @@ if ($admin_edit === true) {
 }
 
 echo "  </table>\n";
-echo "  <br />\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
-echo "    <tr>\n";
-echo "      <td align=\"left\">\n";
-echo "        <table class=\"box\" width=\"100%\">\n";
-echo "          <tr>\n";
-echo "            <td align=\"left\" class=\"posthead\">\n";
-echo "              <table class=\"posthead\" width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\">{$lang['options']}</td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "              <table class=\"posthead\" width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td align=\"center\">\n";
-echo "                    <table class=\"posthead\" width=\"95%\">\n";
 
-if (($tools->getTinyMCE())) {
+if ((!$tools->getTinyMCE())) {
 
-    echo form_input_hidden("sig_html", "Y");
-
-}else {
-
+    echo "  <br />\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td align=\"left\" class=\"posthead\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">{$lang['options']}</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"center\">\n";
+    echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">", form_checkbox("sig_html", "Y", $lang['signaturecontainshtmlcode'], $sig_html), "</td>\n";
     echo "                      </tr>\n";
-}
 
-echo $tools->assign_checkbox("sig_html");
+    echo $tools->assign_checkbox("sig_html");
 
-if ($show_set_all && $admin_edit === false) {
+    if ($show_set_all && $admin_edit === false) {
+
+        echo "                      <tr>\n";
+        echo "                        <td align=\"left\">", form_checkbox("sig_global", "Y", $lang['savesignatureforuseonallforums'], (isset($t_sig_global) && $t_sig_global == 'Y')), "</td>\n";
+        echo "                      </tr>\n";
+
+    }else {
+
+        echo "                      <tr>\n";
+        echo "                        <td align=\"left\">", form_input_hidden("sig_global", 'Y'), "</td>\n";
+        echo "                      </tr>\n";
+    }
 
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", form_checkbox("sig_global", "Y", $lang['savesignatureforuseonallforums'], (isset($t_sig_global) && $t_sig_global == 'Y')), "</td>\n";
+    echo "                        <td align=\"left\">&nbsp;</td>\n";
     echo "                      </tr>\n";
+    echo "                    </table>\n";
+    echo "                  </td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
 
 }else {
 
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", form_input_hidden("sig_global", 'Y'), "</td>\n";
-    echo "                      </tr>\n";
+    echo form_input_hidden("sig_html", "Y");
 }
 
-echo "                      <tr>\n";
-echo "                        <td align=\"left\">&nbsp;</td>\n";
-echo "                      </tr>\n";
-echo "                    </table>\n";
-echo "                  </td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "            </td>\n";
-echo "          </tr>\n";
-echo "        </table>\n";
-echo "      </td>\n";
-echo "    </tr>\n";
-echo "  </table>\n";
 echo "</form>\n";
 
 if ($admin_edit === true) echo "</div>\n";

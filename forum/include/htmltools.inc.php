@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: htmltools.inc.php,v 1.74 2008-08-01 21:06:31 decoyduck Exp $ */
+/* $Id: htmltools.inc.php,v 1.75 2008-08-02 13:58:06 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -42,10 +42,8 @@ include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "post.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 
-function TinyMCE()
+function TinyMCE($tinymce_auto_focus)
 {
-    $lang = load_language_file();
-
     $webtag = get_webtag();
 
     $str = "<!-- tinyMCE -->\n";
@@ -57,6 +55,9 @@ function TinyMCE()
     $str.= "        editor_selector : /(post_content|edit_signature_content|admin_startpage_textarea)/,\n";
     $str.= "        theme : \"advanced\",\n";
     $str.= "        force_br_newlines : true,\n";
+    $str.= "        forced_root_block : '',\n";
+    $str.= "        inline_styles : false,\n";
+    $str.= "        auto_focus : '$tinymce_auto_focus',\n";
     $str.= "        plugins : \"safari,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,beehive,\",\n\n";
     $str.= "        // Theme options\n";
     $str.= "        theme_advanced_buttons1 : \"bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,|,formatselect,fontselect,fontsizeselect\",\n";
@@ -91,7 +92,7 @@ function TinyMCE()
     $str.= "        }else {\n";
     $str.= "            return true;\n";
     $str.= "        }\n\n";
-    $str.= "        if (tinyMCE.getContent('mce_editor_0').length == 0) return true;\n\n";
+    $str.= "        if (tinyMCE.activeEditor.getContent('mce_editor_0').length == 0) return true;\n\n";
     $str.= "        if (form_obj.checked == true && !auto_check_spell_started) {\n";
     $str.= "            auto_check_spell_started = true;\n";
     $str.= "            window.open('dictionary.php?webtag=' + webtag + '&obj_id=mce_editor_0', 'spellcheck','width=450, height=550, scrollbars=1');\n";
@@ -372,38 +373,38 @@ class TextAreaHTML {
     // YOUR TEXTAREAS/TOOLBARS
     // ----------------------------------------------------
 
-    function js ($focus = true)
-    {
+    function js ($focus = true) {
+
+        $str = "<script language=\"javascript\" type=\"text/javascript\">\n";
+        $str.= "  <!--\n";
+
         if (!$this->tinymce) {
 
-            $str = "<script language=\"javascript\" type=\"text/javascript\">\n";
-            $str.= "  <!--\n";
-            $str.= "    function clearFocus()\n";
-            $str.= "    {\n";
+            $str.= "    function clearFocus() {\n";
 
-            for ($i = 0; $i < sizeof($this->tas); $i++) {
+            for ($i=0; $i<count($this->tas); $i++) {
                 $str.= "        document.{$this->form}.{$this->tas[$i]}.caretPos = \"\";\n";
             }
 
             $str.= "    }\n";
-            $str.= "    function activate_tools()\n";
-            $str.= "    {\n";
+            $str.= "    function activate_tools() {\n";
             $str.= "      for (var i=1; i<={$this->tbs}; i++) {\n";
             $str.= "          show_hide('bh_tb' + i, 'block');\n";
             $str.= "      }\n";
 
-            if ($focus != false) {
-                $str.= "      document.{$this->form}.". ($focus == true ? $this->tas[0] : $focus). ".focus();\n";
+            if ($focus !== false) {
+                $str.= "      document.{$this->form}.". ($focus === true ? $this->tas[0] : $focus). ".focus();\n";
             }
 
             $str.= "        active_text(document.{$this->form}.{$this->tas[0]});\n";
             $str.= "    }\n";
             $str.= "    activate_tools();\n";
-            $str.= "  //-->\n";
-            $str.= "</script>\n";
-
-            return $str;
         }
+
+        $str.= "  //-->\n";
+        $str.= "</script>\n";
+
+        return $str;
     }
 
     // ----------------------------------------------------
@@ -433,8 +434,8 @@ class TextAreaHTML {
         $str.= "    {\n";
         $str.= "      if (type == \"correct\" && document.{$this->form}.co_{$ta}_current.value != \"correct\") {\n";
         if ($this->tinymce) {
-            $str.= "        var temp = tinyMCE.getContent();\n";
-            $str.= "        tinyMCE.setContent(document.{$this->form}.co_{$ta}_old.value);\n";
+            $str.= "        var temp = tinyMCE.activeEditor.getContent();\n";
+            $str.= "        tinyMCE.activeEditor.setContent(document.{$this->form}.co_{$ta}_old.value);\n";
         } else {
             $str.= "        var temp = document.{$this->form}.{$ta}.value;\n";
             $str.= "        document.{$this->form}.{$ta}.value = document.{$this->form}.co_{$ta}_old.value;\n";
@@ -443,8 +444,8 @@ class TextAreaHTML {
         $str.= "        document.{$this->form}.co_{$ta}_current.value = \"correct\";\n";
         $str.= "      } else if (type == \"submit\" && document.{$this->form}.co_{$ta}_current.value != \"submit\") {\n";
         if ($this->tinymce) {
-            $str.= "        var temp = tinyMCE.getContent();\n";
-            $str.= "        tinyMCE.setContent(document.{$this->form}.co_{$ta}_old.value);\n";
+            $str.= "        var temp = tinyMCE.activeEditor.getContent();\n";
+            $str.= "        tinyMCE.activeEditor.setContent(document.{$this->form}.co_{$ta}_old.value);\n";
         } else {
             $str.= "        var temp = document.{$this->form}.{$ta}.value;\n";
             $str.= "        document.{$this->form}.{$ta}.value = document.{$this->form}.co_{$ta}_old.value;\n";

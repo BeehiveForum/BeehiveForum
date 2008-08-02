@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.287 2008-07-30 22:39:24 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.288 2008-08-02 13:58:06 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -582,6 +582,8 @@ function html_draw_top()
     $body_class = '';
     $base_target = '';
 
+    $tinymce_auto_focus = '';
+
     $robots = 'noindex,nofollow';
 
     $webtag = get_webtag();
@@ -618,6 +620,11 @@ function html_draw_top()
 
         if (preg_match('/^onunload=([^$]+)$/i', $func_args, $func_matches) > 0) {
             $onunload_array[] = $func_matches[1];
+            unset($arg_array[$key]);
+        }
+
+        if (preg_match('/^tinymce_auto_focus=([^$]+)$/i', $func_args, $func_matches) > 0) {
+            if (strlen(trim($tinymce_auto_focus)) < 1) $tinymce_auto_focus = $func_matches[1];
             unset($arg_array[$key]);
         }
 
@@ -991,7 +998,7 @@ function html_draw_top()
 
             if ($page_prefs & POST_TINYMCE_DISPLAY) {
 
-                echo TinyMCE();
+                echo TinyMCE($tinymce_auto_focus);
 
             }else {
 

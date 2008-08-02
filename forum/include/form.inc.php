@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.119 2008-07-30 22:39:22 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.120 2008-08-02 13:58:06 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -43,9 +43,7 @@ function form_field($name, $value = false, $width = false, $maxchars = false, $t
 {
     $lang = load_language_file();
 
-    $id = form_unique_id();
-
-    $html = "<input type=\"$type\" name=\"$name\" id=\"$id\" class=\"$class\" value=\"$value\" ";
+    $html = "<input type=\"$type\" name=\"$name\" id=\"$name\" class=\"$class\" value=\"$value\" ";
 
     if (strlen(trim($custom_html)) > 0) {
         $html.= sprintf("%s ", trim($custom_html));
@@ -61,13 +59,6 @@ function form_field($name, $value = false, $width = false, $maxchars = false, $t
 
     $html.= "dir=\"{$lang['_textdir']}\" />";
     return $html;
-}
-
-// Generate unique form id
-
-function form_unique_id()
-{
-    return preg_replace("/[^a-z]/", "", md5(uniqid(mt_rand())));
 }
 
 // Creates a text input field
@@ -127,9 +118,7 @@ function form_textarea($name, $value, $rows, $cols, $custom_html = false, $class
 {
     $lang = load_language_file();
 
-    $id = form_unique_id();
-
-    $html = "<textarea name=\"$name\" id=\"$id\" class=\"$class\" ";
+    $html = "<textarea name=\"$name\" id=\"$name\" class=\"$class\" ";
 
     if (strlen(trim($custom_html)) > 0) {
         $html.= sprintf("%s ", trim($custom_html));
@@ -151,9 +140,7 @@ function form_textarea($name, $value, $rows, $cols, $custom_html = false, $class
 
 function form_dropdown_array($name, $options_array, $default = false, $custom_html = false, $class = "bhselect", $group_class = "bhselectoptgroup")
 {
-    $id = form_unique_id();
-
-    $html = "<select name=\"$name\" id=\"$id\" class=\"$class\" ";
+    $html = "<select name=\"$name\" id=\"$name\" class=\"$class\" ";
 
     if (strlen(trim($custom_html)) > 0) {
         $html.= sprintf("%s ", trim($custom_html));
@@ -231,7 +218,7 @@ function form_dropdown_objgroup_array($name, $options_array, $default = false, $
         $html.= "</optgroup>";
         return $html;
     }
-    
+
     return '';
 }
 
@@ -239,10 +226,8 @@ function form_dropdown_objgroup_array($name, $options_array, $default = false, $
 
 function form_checkbox($name, $value, $text, $checked = false, $custom_html = false, $class = "bhinputcheckbox")
 {
-    $id = form_unique_id();
-
     $html = "<span class=\"$class\">";
-    $html.= "<input type=\"checkbox\" name=\"$name\" id=\"$id\" value=\"$value\"";
+    $html.= "<input type=\"checkbox\" name=\"$name\" id=\"$name\" value=\"$value\"";
 
     if ($checked) {
         $html.= " checked=\"checked\"";
@@ -256,7 +241,7 @@ function form_checkbox($name, $value, $text, $checked = false, $custom_html = fa
 
     if (is_array($text) && sizeof($text) > 0) {
 
-        $html.= "<label for=\"$id\">";
+        $html.= "<label for=\"$name\">";
 
         foreach ($text as $text_part) {
 
@@ -266,7 +251,7 @@ function form_checkbox($name, $value, $text, $checked = false, $custom_html = fa
 
             }else {
 
-                $html.= "</label>$text_part<label for=\"$id\">";
+                $html.= "</label>$text_part<label for=\"$name\">";
             }
         }
 
@@ -274,7 +259,7 @@ function form_checkbox($name, $value, $text, $checked = false, $custom_html = fa
 
     }elseif (strlen(trim($text)) > 0) {
 
-        $html.= "<label for=\"$id\">$text</label>";
+        $html.= "<label for=\"$name\">$text</label>";
     }
 
     $html.= "</span>";
@@ -286,10 +271,8 @@ function form_checkbox($name, $value, $text, $checked = false, $custom_html = fa
 
 function form_radio($name, $value, $text, $checked = false, $custom_html = false, $class = "bhinputradio")
 {
-    $id = form_unique_id();
-
     $html = "<span class=\"$class\">";
-    $html.= "<input type=\"radio\" name=\"$name\" id=\"$id\" value=\"$value\"";
+    $html.= "<input type=\"radio\" name=\"$name\" id=\"$name\" value=\"$value\"";
 
     if ($checked) {
         $html.= " checked=\"checked\"";
@@ -303,7 +286,7 @@ function form_radio($name, $value, $text, $checked = false, $custom_html = false
 
     if (is_array($text) && sizeof($text) > 0) {
 
-        $html.= "<label for=\"$id\">";
+        $html.= "<label for=\"$name\">";
 
         foreach ($text as $text_part) {
 
@@ -313,7 +296,7 @@ function form_radio($name, $value, $text, $checked = false, $custom_html = false
 
             }else {
 
-                $html.= "</label>$text_part<label for=\"$id\">";
+                $html.= "</label>$text_part<label for=\"$name\">";
             }
         }
 
@@ -321,7 +304,7 @@ function form_radio($name, $value, $text, $checked = false, $custom_html = false
 
     }elseif (strlen(trim($text)) > 0) {
 
-        $html.= "<label for=\"$id\">$text</label>";
+        $html.= "<label for=\"$name\">$text</label>";
     }
 
     $html.= "</span>";
@@ -350,9 +333,7 @@ function form_radio_array($name, $options_array, $checked = false, $custom_html 
 
 function form_submit($name = "submit", $value = "Submit", $custom_html = false, $class = "button")
 {
-    $id = form_unique_id();
-
-    $html = "<input type=\"submit\" name=\"$name\" id=\"$id\" value=\"$value\" class=\"$class\" ";
+    $html = "<input type=\"submit\" name=\"$name\" id=\"$name\" value=\"$value\" class=\"$class\" ";
 
     if (strlen(trim($custom_html)) > 0) {
         $html.= sprintf("%s ", trim($custom_html));
@@ -366,9 +347,7 @@ function form_submit($name = "submit", $value = "Submit", $custom_html = false, 
 
 function form_submit_image($image, $name = "submit", $value = "Submit", $custom_html = false, $class = false)
 {
-    $id = form_unique_id();
-
-    $html = "<input name=\"$name\" value=\"$value\" id=\"$id\" ";
+    $html = "<input name=\"$name\" value=\"$value\" id=\"$name\" ";
     $html.= "type=\"image\" src=\"". style_image($image). "\" ";
 
     if (strlen(trim($class)) > 0) {
@@ -387,9 +366,7 @@ function form_submit_image($image, $name = "submit", $value = "Submit", $custom_
 
 function form_reset($name = "reset", $value = "Reset", $custom_html = false, $class = "button")
 {
-    $id = form_unique_id();
-
-    $html = "<input type=\"reset\" name=\"$name\" id=\"$id\" value=\"$value\" class=\"$class\" ";
+    $html = "<input type=\"reset\" name=\"$name\" id=\"$name\" value=\"$value\" class=\"$class\" ";
 
     if (strlen(trim($custom_html)) > 0) {
         $html.= sprintf("%s ", trim($custom_html));
@@ -403,9 +380,7 @@ function form_reset($name = "reset", $value = "Reset", $custom_html = false, $cl
 
 function form_button($name, $value, $custom_html, $class="button")
 {
-    $id = form_unique_id();
-
-    $html = "<input type=\"button\" name=\"$name\" id=\"$id\" value=\"$value\" class=\"$class\" ";
+    $html = "<input type=\"button\" name=\"$name\" id=\"$name\" value=\"$value\" class=\"$class\" ";
 
     if (strlen(trim($custom_html)) > 0) {
         $html.= sprintf("%s ", trim($custom_html));

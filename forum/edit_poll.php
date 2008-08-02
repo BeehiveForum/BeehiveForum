@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.166 2008-07-30 22:39:22 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.167 2008-08-02 23:36:46 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -136,7 +136,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
 }elseif (isset($_POST['t_msg']) && validate_msg($_POST['t_msg'])) {
 
-    $edit_msg = $_POST['msg'];
+    $edit_msg = $_POST['t_msg'];
 
     list($tid, $pid) = explode('.', $_POST['t_msg']);
 

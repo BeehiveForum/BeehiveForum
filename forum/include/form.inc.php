@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.122 2008-08-02 14:23:59 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.123 2008-08-02 15:06:46 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -444,7 +444,7 @@ function form_quick_button($href, $label, $var_array = false, $target = "_self")
         }
     }
 
-    $html.= form_submit(form_unique_id(), $label);
+    $html.= form_submit(form_unique_id('submit'), $label);
     $html.= "</form>";
 
     return $html;

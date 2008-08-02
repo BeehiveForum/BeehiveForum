@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-08x-to-084.php,v 1.5 2008-08-01 21:06:32 decoyduck Exp $ */
+/* $Id: upgrade-08x-to-084.php,v 1.6 2008-08-02 19:42:38 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'upgrade-08x-to-083.php') {
 
@@ -88,14 +88,17 @@ foreach ($forum_webtag_array as $forum_fid => $forum_webtag) {
         return;
     }
 
-    // Better support for deleted threads.
+    if (!install_column_exists("{$forum_webtag}_THREAD", "DELETED")) {
 
-    $sql = "ALTER TABLE {$forum_webtag}_THREAD ADD DELETED CHAR(1) NOT NULL DEFAULT 'N'";
+        // Better support for deleted threads.
 
-    if (!$result = @db_query($sql, $db_install)) {
+        $sql = "ALTER TABLE {$forum_webtag}_THREAD ADD DELETED CHAR(1) NOT NULL DEFAULT 'N'";
 
-        $valid = false;
-        return;
+        if (!$result = @db_query($sql, $db_install)) {
+
+            $valid = false;
+            return;
+        }
     }
 
     // Update existing deleted threads
@@ -133,24 +136,30 @@ foreach ($forum_webtag_array as $forum_fid => $forum_webtag) {
         return;
     }
 
-    // Add field for reply_quick
+    if (!install_column_exists("{$forum_webtag}_USER_PREFS", "REPLY_QUICK")) {
 
-    $sql = "ALTER TABLE {$forum_webtag}_USER_PREFS ADD REPLY_QUICK CHAR(1) NOT NULL DEFAULT 'N'";
+        // Add field for reply_quick
 
-    if (!$result = @db_query($sql, $db_install)) {
+        $sql = "ALTER TABLE {$forum_webtag}_USER_PREFS ADD REPLY_QUICK CHAR(1) NOT NULL DEFAULT 'N'";
 
-        $valid = false;
-        return;
+        if (!$result = @db_query($sql, $db_install)) {
+
+            $valid = false;
+            return;
+        }
     }
 
-    // New User preference for thread list folder order
+    if (!install_column_exists("{$forum_webtag}_USER_PREFS", "THREADS_BY_FOLDER")) {
 
-    $sql = "ALTER TABLE {$forum_webtag}_USER_PREFS ADD THREADS_BY_FOLDER CHAR(1) NOT NULL DEFAULT 'N'";
+        // New User preference for thread list folder order
 
-    if (!$result = @db_query($sql, $db_install)) {
+        $sql = "ALTER TABLE {$forum_webtag}_USER_PREFS ADD THREADS_BY_FOLDER CHAR(1) NOT NULL DEFAULT 'N'";
 
-        $valid = false;
-        return;
+        if (!$result = @db_query($sql, $db_install)) {
+
+            $valid = false;
+            return;
+        }
     }
 
     // Sort out the THREAD MODIFIED columns being wrong due to a bug in 0.8 and 0.8.1.
@@ -170,6 +179,8 @@ foreach ($forum_webtag_array as $forum_fid => $forum_webtag) {
     }
 }
 
+// We got this far, that means we can now update the global forum tables.
+
 // Check for and fix a bug involving forum owner where Guests
 // can be granted access to admin section of a forum.
 
@@ -181,36 +192,43 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
-// We got this far, that means we can now update the global forum tables.
+if (!install_column_exists("USER_PREFS", "REPLY_QUICK")) {
 
-// Add field for reply_quick
+    // Add field for reply_quick
 
-$sql = "ALTER TABLE USER_PREFS ADD REPLY_QUICK CHAR(1) NOT NULL DEFAULT 'N'";
+    $sql = "ALTER TABLE USER_PREFS ADD REPLY_QUICK CHAR(1) NOT NULL DEFAULT 'N'";
 
-if (!$result = @db_query($sql, $db_install)) {
+    if (!$result = @db_query($sql, $db_install)) {
 
-    $valid = false;
-    return;
+        $valid = false;
+        return;
+    }
 }
 
-// New User preference for thread list folder order
+if (!install_column_exists("USER_PREFS", "THREADS_BY_FOLDER")) {
 
-$sql = "ALTER TABLE USER_PREFS ADD THREADS_BY_FOLDER CHAR(1) NOT NULL DEFAULT 'N'";
+    // New User preference for thread list folder order
 
-if (!$result = @db_query($sql, $db_install)) {
+    $sql = "ALTER TABLE USER_PREFS ADD THREADS_BY_FOLDER CHAR(1) NOT NULL DEFAULT 'N'";
 
-    $valid = false;
-    return;
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
 }
 
-// Remove the index on SVALUE before we convert it to TEXT
+if (install_index_exists('FORUM_SETTINGS', 'SVALUE')) {
 
-$sql = "ALTER TABLE FORUM_SETTINGS DROP INDEX SVALUE";
+    // Remove the index on SVALUE before we convert it to TEXT
 
-if (!$result = @db_query($sql, $db_install)) {
+    $sql = "ALTER TABLE FORUM_SETTINGS DROP INDEX SVALUE";
 
-    $valid = false;
-    return;
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
 }
 
 // Convert the SVALUE column to TEXT. This allows it to become big enough

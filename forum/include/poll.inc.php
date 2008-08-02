@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.238 2008-07-31 18:46:16 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.239 2008-08-02 23:36:46 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -525,7 +525,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                         if ($poll_data['OPTIONTYPE'] == POLL_OPTIONS_DROPDOWN && $poll_results['GROUP_SIZE'][$poll_results['GROUP_ID'][$key - 1]] > 1) {
 
                             $poll_data['CONTENT'].= "                                <tr>\n";
-                            $poll_data['CONTENT'].= "                                  <td align=\"left\" class=\"postbody\" valign=\"top\">". form_dropdown_array("pollvote[{$poll_results['GROUP_ID'][$key - 1]}]", _htmlentities($drop_down_data), false, false). "</td>\n";
+                            $poll_data['CONTENT'].= "                                  <td align=\"left\" class=\"postbody\" valign=\"top\">". form_dropdown_array("pollvote[{$poll_results['GROUP_ID'][$key - 1]}]", $drop_down_data, false, false). "</td>\n";
                             $poll_data['CONTENT'].= "                                </tr>\n";
 
                         }else {
@@ -544,7 +544,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
 
                         if ($poll_data['OPTIONTYPE'] == POLL_OPTIONS_DROPDOWN) {
 
-                            $drop_down_data[$poll_results['OPTION_ID'][$key]] = word_filter_add_ob_tags($poll_results['OPTION_NAME'][$key]);
+                            $drop_down_data[$poll_results['OPTION_ID'][$key]] = word_filter_add_ob_tags(_htmlentities($poll_results['OPTION_NAME'][$key]));
 
                         }else {
 
@@ -568,7 +568,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                     if ($poll_data['OPTIONTYPE'] == POLL_OPTIONS_DROPDOWN && $poll_results['GROUP_SIZE'][$poll_results['GROUP_ID'][$key]] > 1) {
 
                         $poll_data['CONTENT'].= "                                <tr>\n";
-                        $poll_data['CONTENT'].= "                                  <td align=\"left\" class=\"postbody\" valign=\"top\">". form_dropdown_array("pollvote[{$poll_results['GROUP_ID'][$key]}]", _htmlentities($drop_down_data), false, false). "</td>\n";
+                        $poll_data['CONTENT'].= "                                  <td align=\"left\" class=\"postbody\" valign=\"top\">". form_dropdown_array("pollvote[{$poll_results['GROUP_ID'][$key]}]", $drop_down_data, false, false). "</td>\n";
                         $poll_data['CONTENT'].= "                                </tr>\n";
 
                     }
@@ -986,7 +986,7 @@ function poll_preview_form($poll_results, $poll_data)
 
                     $poll_display.= "                      <tr>\n";
                     $poll_display.= "                        <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
-                    $poll_display.= "                        <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"20\">". form_dropdown_array("pollvote[{$poll_results['GROUP_ID'][$option_key - 1]}]", _htmlentities($drop_down_data), false, false). "</td>\n";
+                    $poll_display.= "                        <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"20\">". form_dropdown_array("pollvote[{$poll_results['GROUP_ID'][$option_key - 1]}]", $drop_down_data, false, false). "</td>\n";
                     $poll_display.= "                      </tr>\n";
 
                 }else {
@@ -1005,7 +1005,7 @@ function poll_preview_form($poll_results, $poll_data)
 
                 if ($poll_data['OPTIONTYPE'] == POLL_OPTIONS_DROPDOWN) {
 
-                    $drop_down_data[$poll_results['OPTION_ID'][$option_key]] = word_filter_add_ob_tags($poll_results['OPTION_NAME'][$option_key]);
+                    $drop_down_data[$poll_results['OPTION_ID'][$option_key]] = word_filter_add_ob_tags(_htmlentities($poll_results['OPTION_NAME'][$option_key]));
 
                 }else {
 
@@ -1030,7 +1030,7 @@ function poll_preview_form($poll_results, $poll_data)
 
                 $poll_display.= "                      <tr>\n";
                 $poll_display.= "                        <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
-                $poll_display.= "                        <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"20\">". form_dropdown_array("pollvote[{$poll_results['GROUP_ID'][$option_key]}]", _htmlentities($drop_down_data), false, false). "</td>\n";
+                $poll_display.= "                        <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"20\">". form_dropdown_array("pollvote[{$poll_results['GROUP_ID'][$option_key]}]", $drop_down_data, false, false). "</td>\n";
                 $poll_display.= "                      </tr>\n";
 
             }

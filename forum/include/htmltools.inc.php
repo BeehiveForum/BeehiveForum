@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: htmltools.inc.php,v 1.75 2008-08-02 13:58:06 decoyduck Exp $ */
+/* $Id: htmltools.inc.php,v 1.76 2008-08-02 14:12:48 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -49,6 +49,7 @@ function TinyMCE($tinymce_auto_focus)
     $str = "<!-- tinyMCE -->\n";
     $str.= "<script language=\"javascript\" type=\"text/javascript\" src=\"tiny_mce/tiny_mce.js\"></script>\n";
     $str.= "<script type=\"text/javascript\">\n";
+    $str.= "<!--\n";
     $str.= "    tinyMCE.init({\n";
     $str.= "        // General options\n";
     $str.= "        mode : \"textareas\",\n";
@@ -105,7 +106,7 @@ function TinyMCE($tinymce_auto_focus)
     $str.= "        tinyMCE.execCommand('mceFocus', false, 'mce_editor_0');\n";
     $str.= "        tinyMCE.execCommand('mceInsertContent', false, text);\n";
     $str.= "    }\n";
-
+    $str.= "//-->\n";
     $str.= "</script>\n";
 
     $str.= "<!-- /tinyMCE -->\n";

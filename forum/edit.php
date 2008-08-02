@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.254 2008-07-30 16:04:34 decoyduck Exp $ */
+/* $Id: edit.php,v 1.255 2008-08-02 13:58:05 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -654,7 +654,7 @@ if (isset($_POST['preview'])) {
     }
 }
 
-html_draw_top("onUnload=clearFocus()", "resize_width=720", "basetarget=_blank", "attachments.js", "edit.js", "openprofile.js", "dictionary.js", "htmltools.js", "emoticons.js", "post.js", "poll.js");
+html_draw_top("onUnload=clearFocus()", "resize_width=720", "basetarget=_blank", "tinymce_auto_focus=t_content", "attachments.js", "edit.js", "openprofile.js", "dictionary.js", "htmltools.js", "emoticons.js", "post.js", "poll.js");
 
 echo "<h1>", sprintf($lang['editmessage'], $edit_msg), "</h1>\n";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.89 2008-07-24 12:43:24 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.90 2008-08-03 15:45:58 decoyduck Exp $ */
 
 // German language file
 
@@ -887,7 +887,7 @@ $lang['ninetynumberdays'] = "90 Tagen";
 $lang['hundredeightynumberdays'] = "180 Tagen";
 $lang['onenumberyear'] = "1 Jahr";
 $lang['unreadcutoffchangewarning'] = "Abhaengig von der Serverleistung und der Anzahl der Eintraege Ihres Forums kann das Aendern der ungelesenen Abschnitte mehrere Minuten dauern. Daher ist es empfehlenswert Aenderungen dieser Einstellungen zu vermeiden waehrend Ihr Forum laeuft.";
-$lang['unreadcutoffincreasewarning'] = "Wachsen die ungelesenen Abschnitte werden Eintraege die aelter als die aktuellen Abschnitte sind ebenso ungelesen fuer die Benutzer erscheinen.";
+$lang['unreadcutoffincreasewarning'] = "Wachsen die ungelesenen Abschnitte werden Eintraege die aelter als die aktuellen Abschnitte sind ebenso gelesen fuer die Benutzer erscheinen.";
 $lang['confirmunreadcutoff'] = "Sind Sie sicher dass die ungelesenen Abschnitte geaendert werden sollen?";
 $lang['otherchangeswillstillbeapplied'] = " 'Nein' anklicken bricht die Aenderung der ungelesenen Abschnitte ab. Andere Aenderungen von Ihnen werden aber dennoch gespeichert.";
 $lang['searchoptions'] = "Optionen suchen";

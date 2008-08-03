@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_banned.php,v 1.75 2008-07-28 21:05:47 decoyduck Exp $ */
+/* $Id: admin_banned.php,v 1.76 2008-08-03 15:45:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -597,6 +597,10 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
     }else if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
         html_display_error_array($error_msg_array, '500', 'center');
+
+    }else {
+
+        html_display_warning_msg($lang['youcanusethepercentwildcard'], '420px', 'center');
     }
 
     echo "<br />\n";
@@ -650,14 +654,6 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td colspan=\"2\" align=\"center\">", form_submit("update", $lang['save']), "&nbsp;", form_submit("edit_check", $lang['checkban']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
-    echo "    </tr>\n";
-    echo "  </table>\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"420\">\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\">&nbsp;</td>\n";
-    echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\" class=\"postbody\">{$lang['youcanusethepercentwildcard']}</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</form>\n";

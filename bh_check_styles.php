@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_check_styles.php,v 1.13 2008-07-30 22:39:22 decoyduck Exp $ */
+/* $Id: bh_check_styles.php,v 1.14 2008-08-03 11:23:08 decoyduck Exp $ */
 
 function item_preg_callback(&$item, $key, $delimiter)
 {
@@ -39,7 +39,7 @@ $style_errors = array();
 
 $matches_array = array();
 
-if (file_exists("$styles_dir/default/style.css")) {
+if (@file_exists("$styles_dir/default/style.css")) {
 
     // Default theme
 
@@ -62,7 +62,7 @@ if (file_exists("$styles_dir/default/style.css")) {
     array_walk($matches_array[1], 'item_trim_callback');
     $style_file_array['style.css'] = $matches_array[1];
 
-    if (is_dir($styles_dir)) {
+    if (@is_dir($styles_dir)) {
 
         if (($dir = opendir($styles_dir))) {
 

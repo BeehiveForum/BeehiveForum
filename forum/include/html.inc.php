@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.288 2008-08-02 13:58:06 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.289 2008-08-03 11:23:08 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -721,7 +721,7 @@ function html_draw_top()
         echo "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"{$title} - {$lang['rssfeed']}\" href=\"$forum_path/threads_rss.php?webtag=$webtag\" />\n";
     }
 
-    if (file_exists("forums/$webtag/favicon.ico")) {
+    if (@file_exists("forums/$webtag/favicon.ico")) {
         echo "<link rel=\"icon\" href=\"$forum_path/forums/$webtag/favicon.ico\" type=\"image/ico\" />\n";
     }
 

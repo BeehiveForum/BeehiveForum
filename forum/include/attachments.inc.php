@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.154 2008-07-30 16:04:35 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.155 2008-08-03 11:23:08 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -68,13 +68,13 @@ include_once(BH_INCLUDE_PATH. "server.inc.php");
 function attachments_get_upload_tmp_dir()
 {
     if (($upload_tmp_dir = @ini_get('upload_tmp_dir')) !== false) {
-    	if (is_writable($upload_tmp_dir)) return $upload_tmp_dir;
+        if (is_writable($upload_tmp_dir)) return $upload_tmp_dir;
     }
-    
+
     if (($upload_tmp_dir = @system_get_temp_dir()) !== false) {
-    	if (is_writable($upload_tmp_dir)) return $upload_tmp_dir;
+        if (is_writable($upload_tmp_dir)) return $upload_tmp_dir;
     }
-    
+
     return false;
 }
 
@@ -403,9 +403,9 @@ function delete_attachment_by_aid($aid)
 
     while (($attachment_data = db_fetch_array($result))) {
 
-    	if (!delete_attachment($attachment_data['HASH'])) return false;
+        if (!delete_attachment($attachment_data['HASH'])) return false;
     }
-    
+
     return true;
 }
 
@@ -477,11 +477,11 @@ function delete_attachment($hash)
 
             @unlink("$attachment_dir/$hash");
             @unlink("$attachment_dir/$hash.thumb");
-            
+
             return true;
         }
     }
-    
+
     return false;
 }
 
@@ -542,7 +542,7 @@ function delete_attachment_thumbnail($hash)
             return true;
         }
     }
-    
+
     return false;
 }
 
@@ -931,7 +931,7 @@ function attachment_make_link($attachment, $show_thumbs = true, $limit_filename 
             $title_array[] = sprintf($lang['downloadedxtimes'], $attachment['downloads']);
         }
 
-        if (file_exists("$attachment_dir/{$attachment['hash']}.thumb") && $show_thumbs) {
+        if (@file_exists("$attachment_dir/{$attachment['hash']}.thumb") && $show_thumbs) {
 
             if ((@$image_info = getimagesize("$attachment_dir/{$attachment['hash']}"))) {
 
@@ -1045,7 +1045,7 @@ function attachment_create_thumb($filepath, $max_width = 150, $max_height = 150)
                                     2 => 'JPG Support',
                                     3 => 'PNG Support');
 
-    if (file_exists($filepath) && @$image_info = getimagesize($filepath)) {
+    if (@file_exists($filepath) && @$image_info = getimagesize($filepath)) {
 
         if (($attachment_gd_info = get_gd_info())) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.122 2008-07-30 22:39:22 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.123 2008-08-03 11:23:08 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -34,7 +34,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 
 // If the config file exists include it.
 
-if (file_exists(BH_INCLUDE_PATH. 'config.inc.php')) {
+if (@file_exists(BH_INCLUDE_PATH. 'config.inc.php')) {
     include_once(BH_INCLUDE_PATH. "config.inc.php");
 }
 
@@ -249,7 +249,7 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
         // Get MySQL version if available.
 
         $mysql_version = "MySQL Version Unknown";
-        
+
         if (function_exists('db_fetch_mysql_version') && db_fetch_mysql_version($mysql_version)) {
             $version_strings[] = "MySQL/$mysql_version";
         }else {

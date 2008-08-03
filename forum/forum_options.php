@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.140 2008-08-02 15:06:46 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.141 2008-08-03 23:49:09 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -595,7 +595,7 @@ echo "                <tr>\n";
 echo "                  <td align=\"left\" rowspan=\"13\" width=\"1%\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("threads_by_folder", "Y", $lang['threadsorderbyfolder'], (isset($user_prefs['THREADS_BY_FOLDER']) && $user_prefs['THREADS_BY_FOLDER'] == "Y") ? true : false), "</td>\n";
+echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("threads_by_folder", "Y", $lang['sortthreadlistbyfolders'], (isset($user_prefs['THREADS_BY_FOLDER']) && $user_prefs['THREADS_BY_FOLDER'] == "Y") ? true : false), "</td>\n";
 echo "                  <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("threads_by_folder_global", "Y", '', (isset($user_prefs['THREADS_BY_FOLDER_GLOBAL']) ? $user_prefs['THREADS_BY_FOLDER_GLOBAL'] : false), "title=\"{$lang['setforallforums']}\"") : form_input_hidden("threads_by_folder_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: server.inc.php,v 1.34 2008-07-31 12:45:05 decoyduck Exp $ */
+/* $Id: server.inc.php,v 1.35 2008-08-03 11:23:09 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -108,6 +108,20 @@ function server_get_cpu_load()
 }
 
 /**
+* Check directory exists and is writable
+*
+* Check that the specified directory exists and is writable by PHP.
+*
+* @return boolean
+* @param string $dir - Directory to check
+*/
+
+function system_check_dir($dir)
+{
+    return (@is_dir($dir) && @is_writable($dir));
+}
+
+/**
 * Fetch the system temp dir
 *
 * Fetches the system temp dir
@@ -122,25 +136,27 @@ function system_get_temp_dir()
 
     if (function_exists('sys_get_temp_dir')) {
 
-        return sys_get_temp_dir();
+        if (system_check_dir(sys_get_temp_dir())) {
+            return sys_get_temp_dir();
+        }
 
-    }elseif (isset($env_array['TEMP']) && is_dir($env_array['TEMP'])) {
+    }elseif (isset($env_array['TEMP']) && system_check_dir($env_array['TEMP'])) {
 
         return $env_array['TEMP'];
 
-    }elseif (isset($env_array['TMP']) && is_dir($env_array['TMP'])) {
+    }elseif (isset($env_array['TMP']) && system_check_dir($env_array['TMP'])) {
 
         return $env_array['TMP'];
 
-    }elseif (isset($env_array['TMPDIR']) && is_dir($env_array['TMPDIR'])) {
+    }elseif (isset($env_array['TMPDIR']) && system_check_dir($env_array['TMPDIR'])) {
 
         return $env_array['TMPDIR'];
 
-    }elseif (file_exists('/tmp/') && is_dir('/tmp/')) {
+    }elseif (@file_exists('/tmp/') && system_check_dir('/tmp/')) {
 
         return '/tmp/';
 
-    }elseif (($temp_file = tempnam(md5(uniqid(mt_rand())), ''))) {
+    }elseif (($temp_file = @tempnam(md5(uniqid(mt_rand())), ''))) {
 
         unlink($temp_file);
         return realpath(dirname($temp_file));
@@ -305,9 +321,9 @@ function get_available_js_popup_files()
 
 function mkdir_recursive($path_name, $mode)
 {
-    if (!is_dir(dirname($path_name))) mkdir_recursive(dirname($path_name), $mode);
-    if (!is_dir($path_name)) mkdir($path_name, $mode);
-    return is_dir($path_name);
+    if (!@is_dir(dirname($path_name))) mkdir_recursive(dirname($path_name), $mode);
+    if (!@is_dir($path_name)) @mkdir($path_name, $mode);
+    return @is_dir($path_name);
 }
 
 /**
@@ -327,11 +343,11 @@ function rmdir_recursive($path)
 
         while (($file = readdir($dir)) !== false) {
 
-            if (is_file("$path/$file") && !is_link("$path/$file")) {
+            if (@is_file("$path/$file") && !@is_link("$path/$file")) {
 
                 unlink("$path/$file");
 
-            }elseif (is_dir("$path/$file") && $file != '.' && $file != '..') {
+            }elseif (@is_dir("$path/$file") && $file != '.' && $file != '..') {
 
                 rmdir_recursive("$path/$file");
             }

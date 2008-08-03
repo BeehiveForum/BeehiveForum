@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: text_captcha.inc.php,v 1.31 2008-07-30 17:41:41 decoyduck Exp $ */
+/* $Id: text_captcha.inc.php,v 1.32 2008-08-03 11:23:09 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -305,7 +305,7 @@ class captcha {
 
                 while (($file = readdir($dir)) !== false) {
 
-                    if ($file != ".." && $file != "." && !is_dir($file) && $this->is_font($file)) {
+                    if ($file != ".." && $file != "." && !@is_dir($file) && $this->is_font($file)) {
 
                         $this->available_fonts[] = $file;
                         $this->fonts_loaded = true;
@@ -413,7 +413,7 @@ function captcha_clean_up()
 
             $captcha_image_file = "$text_captcha_dir/images/$file";
 
-            if (($file != "." && $file != ".." && !is_dir($captcha_image_file))) {
+            if (($file != "." && $file != ".." && !@is_dir($captcha_image_file))) {
 
                 if (filemtime($captcha_image_file) < (time() - DAY_IN_SECONDS)) {
 

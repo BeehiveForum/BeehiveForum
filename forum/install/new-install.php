@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.175 2008-08-02 19:44:43 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.176 2008-08-03 11:23:09 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'new-install.php') {
 
@@ -1362,7 +1362,7 @@ if (!$result = @db_query($sql, $db_install)) {
 
 if (!isset($skip_dictionary) || $skip_dictionary === false) {
 
-    if (file_exists($dictionary_file)) {
+    if (@file_exists($dictionary_file)) {
 
         $sql = "LOAD DATA INFILE '$dictionary_file' INTO TABLE DICTIONARY ";
         $sql.= "FIELDS TERMINATED BY '\\t' LINES TERMINATED BY '\\n' ";

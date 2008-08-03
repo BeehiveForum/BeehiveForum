@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: emoticons.inc.php,v 1.79 2008-07-30 22:39:22 decoyduck Exp $ */
+/* $Id: emoticons.inc.php,v 1.80 2008-08-03 11:23:08 decoyduck Exp $ */
 
 /**
 * emoticons.inc.php - emoticon functions
@@ -90,9 +90,9 @@ function emoticons_initialise()
 
                 while (($file = @readdir($dir)) !== false) {
 
-                    if (($file != '.' && $file != '..' && is_dir("emoticons/$file"))) {
+                    if (($file != '.' && $file != '..' && @is_dir("emoticons/$file"))) {
 
-                        if (file_exists("emoticons/$file/definitions.php")) {
+                        if (@file_exists("emoticons/$file/definitions.php")) {
 
                             include("emoticons/$file/definitions.php");
                         }
@@ -106,7 +106,7 @@ function emoticons_initialise()
 
                     if (($file != '.' && $file != '..' && @is_dir("emoticons/$file"))) {
 
-                        if (file_exists("forums/$webtag/emoticons/$file/definitions.php")) {
+                        if (@file_exists("forums/$webtag/emoticons/$file/definitions.php")) {
 
                             include("forums/$webtag/emoticons/$file/definitions.php");
                         }
@@ -414,8 +414,8 @@ function emoticons_preview($emoticon_set, $width = 190, $height = 100, $num = 35
         if (($style_contents = @file_get_contents("emoticons/$emoticon_set/style.css"))) {
 
             $style_matches = array();
-        	
-        	preg_match_all('/\.e_([\w_]+) \{[^\}]*background-image\s*:\s*url\s*\(["\']\.?\/?([^"\']*)["\']\)[^\}]*\}/i', $style_contents, $style_matches);
+
+            preg_match_all('/\.e_([\w_]+) \{[^\}]*background-image\s*:\s*url\s*\(["\']\.?\/?([^"\']*)["\']\)[^\}]*\}/i', $style_contents, $style_matches);
 
             for ($i = 0; $i < count($style_matches[1]); $i++) {
 

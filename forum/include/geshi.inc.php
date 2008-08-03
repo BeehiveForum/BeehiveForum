@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: geshi.inc.php,v 1.15 2008-07-30 22:39:24 decoyduck Exp $ */
+/* $Id: geshi.inc.php,v 1.16 2008-08-03 11:23:08 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -40,7 +40,7 @@ function geshi_error_handler ()
     return;
 }
 
-if (file_exists("geshi/geshi.php")) {
+if (@file_exists("geshi/geshi.php")) {
 
     include_once("geshi/geshi.php");
 

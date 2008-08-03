@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.274 2008-07-30 22:39:22 decoyduck Exp $ */
+/* $Id: messages.php,v 1.275 2008-08-03 13:18:53 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -509,7 +509,7 @@ $quick_reply_tools = new TextAreaHTML('quick_reply_form');
 
 echo $quick_reply_tools->preload();
 
-echo "  <table cellpadding=\"0\" cellspacing=\"0\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        ", html_display_warning_msg($lang['pressctrlentertoquicklysubmityourpost'], '100%', 'center');

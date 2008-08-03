@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.124 2008-08-02 23:36:46 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.125 2008-08-03 13:18:53 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -232,7 +232,7 @@ function form_unique_id($name)
 {
     static $form_name_array = array();
 
-    $name = preg_replace('/[^a-z0-9]+/i', '', $name);
+    $name = preg_replace('/[^a-z0-9_]+/i', '', $name);
 
     if (in_array($name, array_keys($form_name_array))) {
         $form_name_array[$name]++;

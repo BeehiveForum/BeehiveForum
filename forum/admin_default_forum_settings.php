@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.121 2008-08-02 13:58:05 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.122 2008-08-03 15:45:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -556,10 +556,8 @@ echo "                        <td align=\"left\">", form_input_text("forum_keywo
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td colspan=\"2\">\n";
-
-html_display_warning_msg($lang['forum_settings_help_56'], '95%', 'center');
-html_display_warning_msg($lang['forum_settings_help_57'], '95%', 'center');
-
+echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_56']}</p>\n";
+echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_57']}</p>\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
@@ -594,10 +592,8 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_48']}</p>\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_49']}</p>\n";
-
-html_display_warning_msg($lang['unreadcutoffincreasewarning'], '95%', 'center');
-html_display_warning_msg($lang['unreadcutoffchangewarning'], '95%', 'center');
-
+echo "                          <p class=\"smalltext\">{$lang['unreadcutoffincreasewarning']}</p>\n";
+echo "                          <p class=\"smalltext\">{$lang['unreadcutoffchangewarning']}</p>\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
@@ -975,9 +971,8 @@ if (isset($forum_global_settings['sitemap_enabled']) && $forum_global_settings['
     }
 }
 
-html_display_warning_msg($lang['forum_settings_help_59'], '95%', 'center');
-html_display_warning_msg($lang['forum_settings_help_60'], '95%', 'center');
-
+echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_59']}</p>\n";
+echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_60']}</p>\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";

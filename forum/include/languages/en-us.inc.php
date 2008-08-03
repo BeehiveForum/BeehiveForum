@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en-us.inc.php,v 1.72 2008-07-30 22:39:24 decoyduck Exp $ */
+/* $Id: en-us.inc.php,v 1.73 2008-08-03 15:45:58 decoyduck Exp $ */
 
 // American English language file
 
@@ -888,7 +888,7 @@ $lang['ninetynumberdays'] = "90 Days";
 $lang['hundredeightynumberdays'] = "180 Days";
 $lang['onenumberyear'] = "1 year";
 $lang['unreadcutoffchangewarning'] = "Depending on server performance and the number of threads your forums contain, changing the unread cut-off may take several minutes to complete. For this reason it is recommended that you avoid changing this setting while your forums are busy.";
-$lang['unreadcutoffincreasewarning'] = "Increasing the unread cut-off will result in threads older than the current cut-off appearing as unread for all users.";
+$lang['unreadcutoffincreasewarning'] = "Increasing the unread cut-off will result in threads older than the current cut-off appearing as read for all users.";
 $lang['confirmunreadcutoff'] = "Are you sure you want to change the unread cut-off?";
 $lang['otherchangeswillstillbeapplied'] = "Clicking 'No' will only cancel the unread cut-off changes. Other changes you've made will still be saved.";
 $lang['searchoptions'] = "Search Options";

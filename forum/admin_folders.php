@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folders.php,v 1.144 2008-07-28 21:05:47 decoyduck Exp $ */
+/* $Id: admin_folders.php,v 1.145 2008-08-03 15:45:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -217,6 +217,10 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 }else if (sizeof($folder_array['folder_array']) < 1) {
 
     html_display_warning_msg($lang['nofoldersfound'], '500', 'center');
+
+}else {
+
+    html_display_warning_msg($lang['folderdisplayorderthreadsbyfolderview'], '500', 'center');
 }
 
 echo "<br />\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.565 2008-08-03 15:45:58 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.566 2008-08-03 23:49:09 decoyduck Exp $ */
 
 // British English language file
 
@@ -467,7 +467,7 @@ $lang['addnewfolder'] = "Add New Folder";
 $lang['mustenterfoldername'] = "You must enter a folder name";
 $lang['nofolderidspecified'] = "No Folder ID specified";
 $lang['invalidfolderid'] = "Invalid Folder ID. Check that a folder with this ID exists!";
-$lang['folderdisplayorderthreadsbyfolderview'] = "Folder order only applies when user has enabled 'Order Thread List by folders' in Forum Options.";
+$lang['folderdisplayorderthreadsbyfolderview'] = "Folder order only applies when user has enabled 'Sort Thread List by folders' in Forum Options.";
 $lang['successfullyaddednewfolder'] = "Successfully added new folder";
 $lang['successfullyremovedselectedfolders'] = "Successfully removed selected folders";
 $lang['successfullyeditedfolder'] = "Successfully edited folder";
@@ -1491,7 +1491,7 @@ $lang['notifyofnewpm'] = "Notify by popup of new PM messages to me";
 $lang['notifyofnewpmemail'] = "Notify by email of new PM messages to me";
 $lang['daylightsaving'] = "Adjust for daylight saving";
 $lang['autohighinterest'] = "Automatically mark threads I post in as High Interest";
-$lang['threadsorderbyfolder'] = "Order Thread List by folders";
+$lang['sortthreadlistbyfolders'] = "Sort Thread List by folders";
 $lang['convertimagestolinks'] = "Automatically convert embedded images in posts into links";
 $lang['thumbnailsforimageattachments'] = "thumbnails for image attachments";
 $lang['smallsized'] = "Small Sized";

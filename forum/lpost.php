@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.133 2008-07-30 22:39:22 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.134 2008-08-03 21:36:46 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -586,7 +586,7 @@ if ($valid && isset($_POST['preview'])) {
     }
 
     light_message_display(0, $preview_message, 0, 0, false, false, false, false, true);
-   
+
     echo "<br />\n";
 }
 
@@ -658,10 +658,10 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 }
 
 echo "<p>{$lang['to']}: ", post_draw_to_dropdown($t_to_uid), "</p>\n";
-echo "<p>", light_form_textarea("t_content", $post->getTidyContent(), 15, 60), "</p>\n";
+echo "<p>", light_form_textarea("t_content", _htmlentities($post->getTidyContent()), 15, 60), "</p>\n";
 
 if ($allow_sig == true) {
-    echo "<p>{$lang['signature']}:<br />", light_form_textarea("t_sig", $sig->getTidyContent(), 5, 60), form_input_hidden("t_sig_html", _htmlentities($t_sig_html))."</p>\n";
+    echo "<p>{$lang['signature']}:<br />", light_form_textarea("t_sig", _htmlentities($sig->getTidyContent()), 5, 60), form_input_hidden("t_sig_html", _htmlentities($t_sig_html))."</p>\n";
 }
 
 if ($allow_html == true) {

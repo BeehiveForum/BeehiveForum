@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ledit.php,v 1.37 2008-07-30 17:41:38 decoyduck Exp $ */
+/* $Id: ledit.php,v 1.38 2008-08-03 21:36:46 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -472,14 +472,14 @@ if (isset($_POST['preview'])) {
         light_html_draw_bottom();
         exit;
     }
-    
+
     if (forum_get_setting('require_post_approval', 'Y') && isset($edit_message['APPROVED']) && $edit_message['APPROVED'] == 0 && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
         light_html_draw_top("robots=noindex,nofollow");
         light_html_display_error_msg($lang['nopermissiontoedit']);
         light_html_draw_bottom();
         exit;
-    }    
+    }
 
     $preview_message = $edit_message;
 
@@ -534,14 +534,14 @@ if (isset($_POST['preview'])) {
                 light_html_draw_bottom();
                 exit;
             }
-            
+
             if (forum_get_setting('require_post_approval', 'Y') && isset($edit_message['APPROVED']) && $edit_message['APPROVED'] == 0 && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
                 light_html_draw_top("robots=noindex,nofollow");
                 light_html_display_error_msg($lang['nopermissiontoedit']);
                 light_html_draw_bottom();
                 exit;
-            }            
+            }
 
             $preview_message = $edit_message;
 
@@ -596,10 +596,10 @@ if ($valid && isset($_POST['preview'])) {
     light_message_display($tid, $preview_message, $threaddata['LENGTH'], $threaddata['FID'], false, false, false, false, true);
 }
 
-echo "<p>", light_form_textarea("t_content", $post->getTidyContent(), 15, 60), "</p>\n";
+echo "<p>", light_form_textarea("t_content", _htmlentities($post->getTidyContent()), 15, 60), "</p>\n";
 
 if ($allow_sig == true) {
-    echo "<p>{$lang['signature']}:<br />", light_form_textarea("t_sig", $sig->getTidyContent(), 5, 60), form_input_hidden("t_sig_html", _htmlentities($sig->getHTML()))."</p>\n";
+    echo "<p>{$lang['signature']}:<br />", light_form_textarea("t_sig", _htmlentities($sig->getTidyContent()), 5, 60), form_input_hidden("t_sig_html", _htmlentities($sig->getHTML()))."</p>\n";
 }
 
 if ($allow_html == true) {

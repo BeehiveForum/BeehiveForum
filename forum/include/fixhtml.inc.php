@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.135 2008-07-30 23:12:23 decoyduck Exp $ */
+/* $Id: fixhtml.inc.php,v 1.136 2008-08-03 21:36:46 decoyduck Exp $ */
 
 /** A range of functions for filtering/cleaning posted HTML
 *
@@ -424,7 +424,7 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
                             // wrap white-text
 
                             $ta = array("/".$last_tag2, "");
-                            
+
                             $white_space_matches_array = array();
 
                             if (preg_match('/( )?\s+$/', $html_parts[$i-1], $white_space_matches_array) > 0) {
@@ -593,7 +593,7 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
                                 array_splice($html_parts, $i, 0, array("/".$tag, ""));
 
                                 $white_space_matches_array = array();
-                                
+
                                 if (preg_match('/( )?\s+$/', $html_parts[$i-1], $white_space_matches_array) > 0) {
 
                                     $html_parts[$i-1] = preg_replace('/( )?\s+$/', '$1', $html_parts[$i-1]);
@@ -1089,108 +1089,6 @@ function tidy_html_callback_2 ($matches)
     return "<pre class=\"code\">". strip_tags($matches[1]). "</pre>";
 }
 
-
-/**
-* TinyMCE's <quote> etc. tags are actually &lt;quote&gt; - this fixes that
-*
-* @return string
-* @param string $html HTML submitted from TinyMCE editor.
-*/
-function tidy_tinymce ($html)
-{
-    // make <code>..</code> tag, and html_entity_decode
-
-    $html = preg_replace_callback('/<div [^>]*?class="quotetext"[^>]*?>(.+?)<\/div>.*?<pre class="code">(.*?)<\/pre>/is', 'tidy_tinymce_code_callback', $html);
-
-    // make <noemots>..</noemots> tag
-
-    $html_left = "";
-    $html_right = $html;
-
-    while (($pos = strpos($html_right, "<span class=\"noemots\">")) > -1) {
-
-        $html_left.= substr($html_right, 0, $pos);
-
-        if (preg_match('/^<span class="noemots">.*<\/span>/is', substr($html_right, $pos)) > 0) {
-
-            $html_left.= "<noemots>";
-
-            $search = "class=\"noemots\"";
-
-            $j = strpos($html_right, $search);
-
-            $first = $j + strlen($search) + 1;
-
-            $open_num = 1;
-
-            while (1 != 2) {
-
-                $open = strpos($html_right, "<span", $j);
-                $close = strpos($html_right, "</span>", $j);
-
-                if (!is_integer($open)) {
-
-                    $open = $close+1;
-                }
-
-                if ($close < $open && $open_num == 1) {
-
-                    $j = $close;
-                    break;
-
-                }else if ($close < $open) {
-
-                    $open_num--;
-                    $open = $close;
-
-                }else {
-
-                    $open_num++;
-                }
-
-                $j = $open+1;
-            }
-
-            $html_left.= tidy_tinymce(substr($html_right, $first, $j-$first))."</noemots>";
-            $html_right = substr($html_right, $j + strlen("</span>"));
-
-        }else {
-
-            $html_left.= substr($html_right, $pos, 1);
-            $html_right = substr($html_right, $pos + 1);
-        }
-    }
-
-    $html = $html_left.$html_right;
-
-    return $html;
-}
-
-/**
-* Used by tidy_tinymce to convert <code> tags
-*
-* @return string
-* @param array $matches Array returned by preg_replace_callback
-*/
-function tidy_tinymce_code_callback ($matches)
-{
-    // the <code>*****</code> bit
-    $matches[2] = preg_replace("/<br( [^>]*)?>(\n)?/i", "\n", $matches[2]);
-    $matches[2] = preg_replace('/<p( [^>]*)?>/i', "", $matches[2]);
-    $matches[2] = preg_replace('/<\/p( [^>]*)?>/i', "\n\n", $matches[2]);
-
-    // the <code language="*****"> bit
-    $matches[1] = strip_tags($matches[1]);
-    $matches[1] = explode(" ", $matches[1]);
-    if (count($matches[1]) > 1) {
-        $lang = $matches[1][0];
-    } else {
-        $lang = "";
-    }
-
-    return "<code language=\"$lang\">". _htmlentities_decode(strip_tags(trim($matches[2]))) ."</code>";
-}
-
 /**
 * 'Cleans' inline styles
 *
@@ -1232,7 +1130,7 @@ function clean_styles ($style)
     $valid_attributes_preg = implode("$|^", array_map('preg_quote_callback', $valid_attributes_array));
 
     // Split the in-line style string into an array of attributes and values.
-    
+
     $matches_array = array();
 
     if (preg_match_all('/(([^:]+):([^;]+));?/m', trim($style), $matches_array) > 0) {
@@ -1284,8 +1182,8 @@ function clean_styles ($style)
 function clean_styles_restrict($value)
 {
     $matches = array();
-	
-	if (preg_match("/^([0-9]+)(.+)$/", trim($value), $matches) > 0) {
+
+    if (preg_match("/^([0-9]+)(.+)$/", trim($value), $matches) > 0) {
 
         if (isset($matches[2])) {
 

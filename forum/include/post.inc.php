@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.185 2008-08-01 21:06:31 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.186 2008-08-03 21:36:46 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -638,19 +638,29 @@ class MessageText {
 
     function setContent ($text)
     {
-
         $this->original_text = $text;
 
         if ($this->html == POST_HTML_DISABLED) {
+
             $text = make_html($text, false, $this->emoticons, $this->links);
-        } else if ($this->html > POST_HTML_DISABLED) {
-            if ($this->tinymce) $text = tidy_tinymce($text);
-            $o = $text;
+
+        }else if ($this->html > POST_HTML_DISABLED) {
+
             $text = fix_html($text, $this->emoticons, $this->links);
 
-            // <code></code> blocks are removed as the code highlighter often trips up this comparison
-            if (trim(preg_replace('/<code[^>]*>.*<\/code>/s', '', $o)) != trim(preg_replace('/<code[^>]*>.*<\/code>/s', '', tidy_html($text, ($this->html == POST_HTML_AUTO) ? true : false)))) {
-                $this->diff = true;
+            if ($this->tinymce) {
+
+                if (strcmp($text, $this->original_text) <> 0) {
+                    $this->diff = true;
+                }
+
+            }else {
+
+                $tidy_text = tidy_html($text, ($this->html == POST_HTML_AUTO) ? true : false);
+
+                if (trim(preg_replace('/<code[^>]*>.*<\/code>/s', '', $this->original_text)) != trim(preg_replace('/<code[^>]*>.*<\/code>/s', '', $tidy_text))) {
+                    $this->diff = true;
+                }
             }
 
             if ($this->html == POST_HTML_AUTO) {
@@ -670,8 +680,8 @@ class MessageText {
     {
         if ($this->html > POST_HTML_DISABLED) {
 
-            if ($this->tinymce) return _htmlentities(tidy_html($this->text, false, $this->links, true));
-            return _htmlentities(tidy_html($this->text, ($this->html == POST_HTML_AUTO) ? true : false, $this->links));
+            if ($this->tinymce) return tidy_html($this->text, false, $this->links, true);
+            return tidy_html($this->text, ($this->html == POST_HTML_AUTO) ? true : false, $this->links);
         }
 
         return strip_tags($this->text);

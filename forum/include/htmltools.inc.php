@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: htmltools.inc.php,v 1.76 2008-08-02 14:12:48 decoyduck Exp $ */
+/* $Id: htmltools.inc.php,v 1.77 2008-08-03 13:18:53 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -192,7 +192,6 @@ class TextAreaHTML {
     // ----------------------------------------------------
     function toolbar ($emoticons = true, $custom_html = "")
     {
-
         if ($this->tinymce || $this->tbs >= $this->allowed_toolbars) return "";
 
         $lang = load_language_file();
@@ -277,6 +276,7 @@ class TextAreaHTML {
 
     function toolbar_reduced ($emoticons = true)
     {
+        if ($this->tinymce || $this->tbs >= $this->allowed_toolbars) return "";
 
         $lang = load_language_file();
 

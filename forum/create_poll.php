@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.231 2008-07-31 23:35:29 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.232 2008-08-03 21:36:46 decoyduck Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -1215,7 +1215,7 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\">{$lang['polladditionalmessageexp']}</td>\n";
 echo "                      </tr>\n";
 
-$t_message_text = $post->getTidyContent();
+$t_message_text = ($fix_html ? $post->getTidyContent() : $post->getOriginalContent());
 
 $tool_type = POST_TOOLBAR_DISABLED;
 
@@ -1237,7 +1237,7 @@ if ($allow_html == true && $tool_type != 0) {
 }
 
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", $tools->textarea('t_message_text', $t_message_text, 20, 75, "tabindex=\"1\"", "post_content"), "</td>\n";
+echo "                        <td align=\"left\">", $tools->textarea('t_message_text', _htmlentities($t_message_text), 20, 75, "tabindex=\"1\"", "post_content"), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">\n";
@@ -1285,7 +1285,7 @@ if ($allow_sig == true) {
             echo "                <td class=\"subhead\" align=\"right\">", form_submit_image('sig_hide.png', 'sig_toggle', 'hide'), "&nbsp;</td>\n";
             echo "              </tr>\n";
             echo "              <tr>\n";
-            echo "                <td align=\"left\" colspan=\"2\">", $tools->textarea("t_sig", $t_sig, 5, 75, "tabindex=\"7\"", "signature_content"), "</td>\n";
+            echo "                <td align=\"left\" colspan=\"2\">", $tools->textarea("t_sig", _htmlentities($t_sig), 5, 75, "tabindex=\"7\"", "signature_content"), "</td>\n";
 
             if ($sig->isDiff() && $fix_html && !$fetched_sig) {
 

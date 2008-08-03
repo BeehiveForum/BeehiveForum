@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: htmltools.inc.php,v 1.77 2008-08-03 13:18:53 decoyduck Exp $ */
+/* $Id: htmltools.inc.php,v 1.78 2008-08-03 21:36:46 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -59,13 +59,12 @@ function TinyMCE($tinymce_auto_focus)
     $str.= "        forced_root_block : '',\n";
     $str.= "        inline_styles : false,\n";
     $str.= "        auto_focus : '$tinymce_auto_focus',\n";
-    $str.= "        plugins : \"safari,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,beehive,\",\n\n";
+    $str.= "        plugins : \"safari,table,advhr,advimage,advlink,inlinepopups,media,paste,directionality,noneditable,visualchars,beehive,\",\n\n";
     $str.= "        // Theme options\n";
     $str.= "        theme_advanced_buttons1 : \"bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,|,formatselect,fontselect,fontsizeselect\",\n";
-    $str.= "        theme_advanced_buttons2 : \"undo,redo,|,cleanup,help,code,|,visualaid,|,tablecontrols\",\n";
-    $str.= "        theme_advanced_buttons3 : \"search,replace,|,removeformat,forecolor,backcolor,|,sub,sup,|,bullist,numlist,|,outdent,indent,|,link,unlink,|,image,|,charmap,|,bhspellcheck\",\n";
-    $str.= "        theme_advanced_buttons4 : \"bhcode,bhspoiler,bhnoemots\",\n";
-    $str.= "        extended_valid_elements : \"marquee,span[class|align|title],div[class|align|id],font[face|size|color|style]\",\n";
+    $str.= "        theme_advanced_buttons2 : \"undo,redo,|,cleanup,code,removeformat,|,visualaid,|,tablecontrols\",\n";
+    $str.= "        theme_advanced_buttons3 : \"forecolor,backcolor,|,sub,sup,|,bullist,numlist,|,outdent,indent,|,link,unlink,|,image,|,bhquote,bhcode,bhspoiler,bhnoemots,bhspellcheck\",\n";
+    $str.= "        extended_valid_elements : \"b,marquee,span[class|align|title],div[class|align|id],font[face|size|color|style]\",\n";
     $str.= "        invalid_elements : \"!doctype|applet|body|base|button|fieldset|form|frame|frameset|head|html|iframe|input|label|legend|link|meta|noframes|noscript|object|optgroup|option|param|plaintext|script|select|style|textarea|title|xmp\",\n";
     $str.= "        theme_advanced_toolbar_location : \"top\",\n";
     $str.= "        theme_advanced_toolbar_align : \"left\",\n";

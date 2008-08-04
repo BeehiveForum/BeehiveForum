@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.85 2008-07-30 22:39:24 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.86 2008-08-04 20:20:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -228,6 +228,7 @@ function logon_perform()
         if (user_guest_enabled()) {
 
             bh_setcookie("bh_{$webtag}_thread_mode", "1", time() - YEAR_IN_SECONDS);
+            bh_setcookie("bh_{$webtag}_light_thread_mode", "1", time() - YEAR_IN_SECONDS);
             bh_setcookie("bh_logon", "1", time() - YEAR_IN_SECONDS);
             bh_session_init(0);
             return true;
@@ -273,6 +274,7 @@ function logon_perform()
             // Remove any previously set cookies
 
             bh_setcookie("bh_{$webtag}_thread_mode", "1", time() - YEAR_IN_SECONDS);
+            bh_setcookie("bh_{$webtag}_light_thread_mode", "1", time() - YEAR_IN_SECONDS);
             bh_setcookie("bh_logon", "1", time() - YEAR_IN_SECONDS);
 
             // Initialise a user session.
@@ -384,7 +386,7 @@ function logon_draw_form($logon_options)
 
         echo form_dropdown_array("logonarray", $username_dropdown_array, "", "onchange=\"changePassword('$webtag')\" autocomplete=\"off\"", "bhinputlogon");
         echo form_input_hidden("user_logon", _htmlentities($username_array[$current_logon]));
-        
+
         $username_array_keys = array_keys($username_array);
 
         foreach ($username_array_keys as $username_key) {

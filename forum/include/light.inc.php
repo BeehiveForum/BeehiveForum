@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.194 2008-08-04 20:20:35 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.195 2008-08-04 21:54:21 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -322,7 +322,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
 
             if (!isset($thread['RELATIONSHIP'])) $thread['RELATIONSHIP'] = 0;
 
-            if (bh_session_get_value('THREADS_BY_FOLDER') == 'N') {
+            if ((bh_session_get_value('THREADS_BY_FOLDER') == 'N') || user_is_guest()) {
 
                 if (in_array($thread['FID'], $folder_order)) {
                     array_splice($folder_order, array_search($thread['FID'], $folder_order), 1);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.346 2008-08-04 20:20:35 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.347 2008-08-04 20:27:54 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -177,21 +177,22 @@ if (user_is_guest()) {
 
     if (isset($mode) && is_numeric($mode)) {
 
-        bh_setcookie("bh_{$webtag}_thread_mode", $mode);
-
-        if ($mode == SEARCH_RESULTS) {
-
-            header_redirect("search.php?webtag=$webtag&offset=0");
-            exit;
-        }
+        bh_setcookie("bh_{$webtag}_light_thread_mode", $mode);
 
     }else {
 
-        if (isset($_COOKIE["bh_{$webtag}_thread_mode"]) && is_numeric($_COOKIE["bh_{$webtag}_thread_mode"])) {
-            $mode = $_COOKIE["bh_{$webtag}_thread_mode"];
-        }
+        if (isset($_COOKIE["bh_{$webtag}_light_thread_mode"]) && is_numeric($_COOKIE["bh_{$webtag}_light_thread_mode"])) {
 
-        $mode = ($threads_any_unread) ? UNREAD_DISCUSSIONS : ALL_DISCUSSIONS;
+            $mode = $_COOKIE["bh_{$webtag}_light_thread_mode"];
+
+            if ($mode == UNREAD_DISCUSSIONS && !$threads_any_unread) {
+                $mode = ALL_DISCUSSIONS;
+            }
+
+        }else {
+
+           $mode = ($threads_any_unread) ? UNREAD_DISCUSSIONS : ALL_DISCUSSIONS;
+        }
     }
 
     if (isset($_POST['mark_read_submit'])) {

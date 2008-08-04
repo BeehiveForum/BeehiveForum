@@ -6,5 +6,6 @@ tinyMCE.addI18n('en.beehive',{
     spellCheckDesc : "Check Spelling...",
     quoteText : 'quote:',
     codeText : 'code:',
+    codeLanguage : 'language',
     spoilerText : 'spoiler:'
 });

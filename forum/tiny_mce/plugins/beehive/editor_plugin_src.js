@@ -26,10 +26,10 @@
 		cm.setActive('bhspoiler', n.nodeName == 'DIV' && n.className == 'spoiler' && !n.name);
 		cm.setActive('bhnoemots', n.nodeName == 'SPAN' && n.className == 'noemots' && !n.name);
 
-		cm.setDisabled('bhquote', ed.selection.getContent().length == 0);
-		cm.setDisabled('bhcode', ed.selection.getContent().length == 0);
-		cm.setDisabled('bhspoiler', ed.selection.getContent().length == 0);
-		cm.setDisabled('bhnoemots', ed.selection.getContent().length == 0);
+		cm.setDisabled('bhquote', !(n.nodeName == 'DIV' && n.className == 'quote' && !n.name) && ed.selection.getContent().length == 0);
+		cm.setDisabled('bhcode', !(n.nodeName == 'PRE' && n.className == 'code' && !n.name) && ed.selection.getContent().length == 0);
+		cm.setDisabled('bhspoiler', !(n.nodeName == 'DIV' && n.className == 'spoiler' && !n.name) && ed.selection.getContent().length == 0);
+		cm.setDisabled('bhnoemots', !(n.nodeName == 'SPAN' && n.className == 'noemots' && !n.name) && ed.selection.getContent().length == 0);
             });
         },
 
@@ -59,7 +59,7 @@
                 var quoteText = dom.create('div', { id : 'quote', 'class' : 'quotetext' });
 	        var quoteMain = dom.create('div', { 'class' : 'quote' }, ed.selection.getContent());
 
-	        dom.add(quoteText, 'b', { 'class' : 'mceNonEditable' }, ed.getLang('beehive.quoteText'));
+	        dom.add(quoteText, 'b', {}, ed.getLang('beehive.quoteText'));
 
                 dom.add(beehivePluginContainer, quoteText);
 	        dom.add(beehivePluginContainer, quoteMain);
@@ -89,7 +89,7 @@
                 var codeText = dom.create('div', { id : 'code-tinymce', 'class' : 'quotetext' });    
                 var codeMain = dom.create('pre', { 'class' : 'code' }, ed.selection.getContent());
     	 
-                dom.add(codeText, 'b', { 'class' : 'mceNonEditable' }, ed.getLang('beehive.codeText'));
+                dom.add(codeText, 'b', {}, ed.getLang('beehive.codeText'));
 
                 dom.add(beehivePluginContainer, codeText);
 	        dom.add(beehivePluginContainer, codeMain);
@@ -119,7 +119,7 @@
                 var spoilerText = dom.create('div', { id : 'spoiler', 'class' : 'quotetext' });    
                 var spoilerMain = dom.create('div', { 'class' : 'spoiler' }, ed.selection.getContent());
     
-                dom.add(spoilerText, 'b', { 'class' : 'mceNonEditable' }, ed.getLang('beehive.spoilerText'));
+                dom.add(spoilerText, 'b', {}, ed.getLang('beehive.spoilerText'));
     
                 dom.add(beehivePluginContainer, spoilerText);
 	        dom.add(beehivePluginContainer, spoilerMain);

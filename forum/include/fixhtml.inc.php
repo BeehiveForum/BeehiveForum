@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.136 2008-08-03 21:36:46 decoyduck Exp $ */
+/* $Id: fixhtml.inc.php,v 1.137 2008-08-04 12:40:59 decoyduck Exp $ */
 
 /** A range of functions for filtering/cleaning posted HTML
 *
@@ -1086,7 +1086,7 @@ function tidy_html_callback ($matches)
 */
 function tidy_html_callback_2 ($matches)
 {
-    return "<pre class=\"code\">". strip_tags($matches[1]). "</pre>";
+    return "<pre class=\"code\">". strip_tags($matches[1], '<br>'). "</pre>";
 }
 
 /**

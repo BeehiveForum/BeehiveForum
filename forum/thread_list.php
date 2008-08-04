@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.345 2008-08-01 21:06:31 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.346 2008-08-04 20:20:35 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -123,38 +123,50 @@ if (!forum_check_access_level()) {
 if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
 
     $folder = $_GET['folder'];
-    $mode = ALL_DISCUSSIONS;
+    $mode = 0;
+
+}else if (isset($_POST['folder']) && is_numeric($_POST['folder'])) {
+
+    $folder = $_POST['folder'];
+    $mode = 0;
 
 }else {
 
     $folder = false;
 }
 
+// View offset.
+
+if (isset($_GET['start_from']) && is_numeric($_GET['start_from'])) {
+    $start_from = $_GET['start_from'];
+}else if (isset($_POST['start_from']) && is_numeric($_POST['start_from'])) {
+    $start_from = $_POST['start_from'];
+}else {
+    $start_from = 0;
+}
+
+// View mode
+
+if (isset($_GET['mode']) && is_numeric($_GET['mode'])) {
+    $mode = $_GET['mode'];
+}else if (isset($_POST['mode']) && is_numeric($_POST['mode'])) {
+    $mode = $_POST['mode'];
+}
+
 // Check that required variables are set
 
 if (user_is_guest()) {
 
-    $uid = 0; // default to UID 0 if no other UID specified
+    // default to UID 0 if no other UID specified
 
-    if (isset($_GET['mode']) && is_numeric($_GET['mode'])) {
+    $uid = 0;
 
-        // non-logged in users can only display "All" threads
-        // or those in the past x days, since the other options
-        // would be impossible
+    // non-logged in users can only display "All" threads
+    // or those in the past x days, since the other options
+    // would be impossible
 
-        if ($_GET['mode'] == ALL_DISCUSSIONS || $_GET['mode'] == TODAYS_DISCUSSIONS || $_GET['mode'] == TWO_DAYS_BACK || $_GET['mode'] == SEVEN_DAYS_BACK) {
-            $mode = $_GET['mode'];
-        }else {
-            $mode = ALL_DISCUSSIONS;
-        }
-
-    }else {
-
-        if (isset($_COOKIE["bh_{$webtag}_thread_mode"]) && is_numeric($_COOKIE["bh_{$webtag}_thread_mode"])) {
-            $mode = $_COOKIE["bh_{$webtag}_thread_mode"];
-        }else{
-            $mode = ALL_DISCUSSIONS;
-        }
+    if (!isset($mode) || ($mode != ALL_DISCUSSIONS && $mode != TODAYS_DISCUSSIONS && $mode != TWO_DAYS_BACK && $mode != SEVEN_DAYS_BACK)) {
+        $mode = ALL_DISCUSSIONS;
     }
 
 }else {
@@ -163,9 +175,7 @@ if (user_is_guest()) {
 
     $threads_any_unread = threads_any_unread();
 
-    if (isset($_GET['mode']) && is_numeric($_GET['mode'])) {
-
-        $mode = $_GET['mode'];
+    if (isset($mode) && is_numeric($mode)) {
 
         bh_setcookie("bh_{$webtag}_thread_mode", $mode);
 
@@ -178,43 +188,25 @@ if (user_is_guest()) {
     }else {
 
         if (isset($_COOKIE["bh_{$webtag}_thread_mode"]) && is_numeric($_COOKIE["bh_{$webtag}_thread_mode"])) {
-
             $mode = $_COOKIE["bh_{$webtag}_thread_mode"];
-
-            if ($mode == SEARCH_RESULTS) {
-
-                header_redirect("search.php?webtag=$webtag&offset=0");
-                exit;
-
-            }elseif ($mode == UNREAD_DISCUSSIONS && !$threads_any_unread) {
-
-                $mode = ALL_DISCUSSIONS;
-            }
-
-        }else {
-
-            if ($threads_any_unread) {
-
-                $mode = UNREAD_DISCUSSIONS;
-
-            }else {
-
-                $mode = ALL_DISCUSSIONS;
-            }
         }
+
+        $mode = ($threads_any_unread) ? UNREAD_DISCUSSIONS : ALL_DISCUSSIONS;
     }
 
-    if (isset($_GET['mark_read_submit'])) {
+    if (isset($_POST['mark_read_submit'])) {
 
-        if (isset($_GET['mark_read_confirm']) && $_GET['mark_read_confirm'] == 'Y') {
+        if (isset($_POST['mark_read_confirm']) && $_POST['mark_read_confirm'] == 'Y') {
 
-            if ($_GET['mark_read_type'] == THREAD_MARK_READ_VISIBLE) {
+            if ($_POST['mark_read_type'] == THREAD_MARK_READ_VISIBLE) {
 
-                if (isset($_GET['mark_read_threads_array']) && is_array($_GET['mark_read_threads_array'])) {
-
-                    $mark_read_threads_array = preg_grep("/^[0-9]+$/", $_GET['mark_read_threads_array']);
+                if (isset($_POST['mark_read_threads']) && strlen(trim(_stripslashes($_POST['mark_read_threads'])))) {
 
                     $thread_data = array();
+
+                    $mark_read_threads = trim(_stripslashes($_POST['mark_read_threads']));
+
+                    $mark_read_threads_array = preg_grep("/^[0-9]+$/", explode(',', $mark_read_threads));
 
                     threads_get_unread_data($thread_data, $mark_read_threads_array);
 
@@ -230,7 +222,7 @@ if (user_is_guest()) {
                     }
                 }
 
-            }elseif ($_GET['mark_read_type'] == THREAD_MARK_READ_ALL) {
+            }elseif ($_POST['mark_read_type'] == THREAD_MARK_READ_ALL) {
 
                 if (threads_mark_all_read()) {
 
@@ -243,7 +235,7 @@ if (user_is_guest()) {
                     $valid = false;
                 }
 
-            }elseif ($_GET['mark_read_type'] == THREAD_MARK_READ_FIFTY) {
+            }elseif ($_POST['mark_read_type'] == THREAD_MARK_READ_FIFTY) {
 
                 if (threads_mark_50_read()) {
 
@@ -256,7 +248,7 @@ if (user_is_guest()) {
                     $valid = false;
                 }
 
-            }elseif ($_GET['mark_read_type'] == THREAD_MARK_READ_FOLDER && isset($folder) && is_numeric($folder)) {
+            }elseif ($_POST['mark_read_type'] == THREAD_MARK_READ_FOLDER && isset($folder) && is_numeric($folder)) {
 
                 if (threads_mark_folder_read($folder)) {
 
@@ -272,20 +264,14 @@ if (user_is_guest()) {
 
         }else {
 
-            unset($_GET['mark_read_submit'], $_GET['mark_read_confirm']);
+            unset($_POST['mark_read_submit'], $_POST['mark_read_confirm']);
 
             html_draw_top();
-            html_display_msg($lang['confirm'], $lang['confirmmarkasread'], 'thread_list.php', 'get', array('mark_read_submit' => $lang['confirm'], 'cancel' => $lang['cancel']), array_merge($_GET, array('mark_read_confirm' => 'Y')));
+            html_display_msg($lang['confirm'], $lang['confirmmarkasread'], 'thread_list.php', 'post', array('mark_read_submit' => $lang['confirm'], 'cancel' => $lang['cancel']), array_merge($_POST, array('mark_read_confirm' => 'Y')));
             html_draw_bottom();
             exit;
         }
     }
-}
-
-if (isset($_GET['start_from']) && is_numeric($_GET['start_from'])) {
-    $start_from = $_GET['start_from'];
-}else {
-    $start_from = 0;
 }
 
 // Output XHTML header
@@ -883,6 +869,8 @@ if (!user_is_guest()) {
     echo "    <td align=\"left\" class=\"smalltext\">\n";
     echo "      <form name=\"f_mark\" method=\"get\" action=\"thread_list.php\">\n";
     echo "        ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+    echo "        ", form_input_hidden("mode", _htmlentities($mode)), "\n";
+    echo "        ", form_input_hidden("start_from", _htmlentities($start_from)), "\n";
     echo "        ", form_input_hidden('mark_read_confirm', 'N'), "\n";
 
     $labels = array($lang['alldiscussions'], $lang['next50discussions']);
@@ -893,9 +881,8 @@ if (!user_is_guest()) {
         $labels[] = $lang['visiblediscussions'];
         $selected_option = THREAD_MARK_READ_VISIBLE;
 
-        foreach ($visible_threads_array as $tid) {
-            echo "        ", form_input_hidden("mark_read_threads_array[]", _htmlentities($tid)), "\n";
-        }
+        $visible_threads = implode(',', preg_grep("/^[0-9]+$/", $visible_threads_array));
+        echo "        ", form_input_hidden("mark_read_threads", _htmlentities($visible_threads)), "\n";
     }
 
     if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {

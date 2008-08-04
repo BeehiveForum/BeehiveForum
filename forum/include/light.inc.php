@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.193 2008-08-01 21:06:31 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.194 2008-08-04 20:20:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -546,21 +546,22 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
     if (!user_is_guest()) {
 
         echo "  <h5>{$lang['markasread']}</h5>\n";
-        echo "    <form name=\"f_mark\" method=\"get\" action=\"lthread_list.php\">\n";
+        echo "    <form name=\"f_mark\" method=\"post\" action=\"lthread_list.php\">\n";
         echo "      ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
+        echo "      ", form_input_hidden("mode", _htmlentities($mode)), "\n";
+        echo "      ", form_input_hidden("start_from", _htmlentities($start_from)), "\n";
         echo "      ", form_input_hidden("mark_read_confirm", 'N'), "\n";
 
         $labels = array($lang['alldiscussions'], $lang['next50discussions']);
         $selected_option = THREAD_MARK_READ_ALL;
 
-        if (isset($visible_threads_array) && is_array($visible_threads_array)) {
+        if (sizeof($visible_threads_array) > 0) {
 
             $labels[] = $lang['visiblediscussions'];
             $selected_option = THREAD_MARK_READ_VISIBLE;
 
-            foreach ($visible_threads_array as $tid) {
-                echo "        ", form_input_hidden("mark_read_threads_array[]", _htmlentities($tid)), "\n";
-            }
+            $visible_threads = implode(',', preg_grep("/^[0-9]+$/", $visible_threads_array));
+            echo "        ", form_input_hidden("mark_read_threads", _htmlentities($visible_threads)), "\n";
         }
 
         if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
@@ -1432,7 +1433,6 @@ function light_threads_draw_discussions_dropdown($mode)
                                  POLL_THREADS             => $lang['polls'],
                                  STICKY_THREADS           => $lang['stickythreads'],
                                  MOST_UNREAD_POSTS        => $lang['mostunreadposts'],
-                                 SEARCH_RESULTS           => $lang['searchresults'],
                                  DELETED_THREADS          => $lang['deletedthreads']);
 
         if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {

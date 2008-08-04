@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.113 2008-07-30 17:41:40 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.114 2008-08-04 22:26:00 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -282,7 +282,7 @@ if (isset($_POST['save'])) {
 
             $t_move = $_POST['move'];
 
-            if (folder_is_valid($t_move) && bh_session_check_perm(USER_PERM_THREAD_CREATE, $t_move) && $t_move !== $thread_data['FID']) {
+            if (folder_is_valid($t_move) && $t_move !== $thread_data['FID'] && (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_move) || (bh_session_check_perm(USER_PERM_THREAD_CREATE, $t_move) && ($thread_data['FROM_UID'] == $uid) && ($thread_data['ADMIN_LOCK'] != THREAD_ADMIN_LOCK_ENABLED) && forum_get_setting('allow_post_editing', 'Y') && ((intval(forum_get_setting('post_edit_time', false, 0)) == 0) || ((time() - $thread_data['CREATED']) < (intval(forum_get_setting('post_edit_time', false, 0) * MINUTE_IN_SECONDS))))))) {
 
                 if (thread_change_folder($tid, $t_move)) {
 
@@ -432,21 +432,29 @@ if (isset($_POST['save'])) {
                     if (isset($_POST['merge_type']) && is_numeric($_POST['merge_type']) && isset($_POST['merge_thread_con']) && $_POST['merge_thread_con'] == "Y") {
 
                         $error_str = '';
-                    	
-                    	$merge_thread = $_POST['merge_thread'];
+
+                        $merge_thread = $_POST['merge_thread'];
                         $merge_type   = $_POST['merge_type'];
 
-                        if (validate_msg($merge_thread)) list($merge_thread,) = explode('.', $merge_thread);
+                        if (validate_msg($merge_thread)) list($merge_thread) = explode('.', $merge_thread);
 
-                        if (($merge_result = thread_merge($merge_thread, $tid, $merge_type, $error_str))) {
+                        if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $merge_thread)) {
 
-                            post_add_edit_text($tid, 1);
+                            if (($merge_result = thread_merge($merge_thread, $tid, $merge_type, $error_str))) {
 
-                            admin_add_log_entry(THREAD_MERGE, $merge_result);
+                                post_add_edit_text($tid, 1);
+
+                                admin_add_log_entry(THREAD_MERGE, $merge_result);
+
+                            }else {
+
+                                $error_msg_array[] = $error_str;
+                                $valid = false;
+                            }
 
                         }else {
 
-                            $error_msg_array[] = $error_str;
+                            $error_msg_array[] = $lang['nopermissiontomergethreads'];
                             $valid = false;
                         }
                     }
@@ -459,8 +467,8 @@ if (isset($_POST['save'])) {
                     if (isset($_POST['split_type']) && is_numeric($_POST['split_type']) && isset($_POST['split_thread_con']) && $_POST['split_thread_con'] == "Y") {
 
                         $error_str = '';
-                    	
-                    	$split_start = $_POST['split_thread'];
+
+                        $split_start = $_POST['split_thread'];
                         $split_type  = $_POST['split_type'];
 
                         if (($split_result = thread_split($tid, $split_start, $split_type, $error_str))) {
@@ -482,9 +490,9 @@ if (isset($_POST['save'])) {
         if (isset($_POST['t_to_uid_in_thread']) && is_numeric($_POST['t_to_uid_in_thread']) && isset($_POST['deluser_con']) && $_POST['deluser_con'] == "Y") {
 
             $del_user_uid = $_POST['t_to_uid_in_thread'];
-            
+
             if (($user_logon = user_get_logon($del_user_uid))) {
-        	
+
                 if (thread_delete_by_user($tid, $del_user_uid)) {
 
                     post_add_edit_text($tid, 1);
@@ -609,7 +617,7 @@ if ($thread_data['DELETED'] == 'N') {
     echo "          </tr>\n";
     echo "        </table>\n";
 
-     if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid) || (($thread_data['FROM_UID'] == $uid) && ($thread_data['ADMIN_LOCK'] != THREAD_ADMIN_LOCK_ENABLED) && forum_get_setting('allow_post_editing', 'Y') && ((intval(forum_get_setting('post_edit_time', false, 0)) == 0) || ((time() - $thread_data['CREATED']) < (intval(forum_get_setting('post_edit_time', false, 0) * MINUTE_IN_SECONDS)))))) {
+    if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid) || (($thread_data['FROM_UID'] == $uid) && ($thread_data['ADMIN_LOCK'] != THREAD_ADMIN_LOCK_ENABLED) && forum_get_setting('allow_post_editing', 'Y') && ((intval(forum_get_setting('post_edit_time', false, 0)) == 0) || ((time() - $thread_data['CREATED']) < (intval(forum_get_setting('post_edit_time', false, 0) * MINUTE_IN_SECONDS)))))) {
 
         if (!thread_is_poll($tid)) {
 

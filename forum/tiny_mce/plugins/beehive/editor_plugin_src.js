@@ -25,6 +25,11 @@
 		cm.setActive('bhcode', n.nodeName == 'PRE' && n.className == 'code' && !n.name);
 		cm.setActive('bhspoiler', n.nodeName == 'DIV' && n.className == 'spoiler' && !n.name);
 		cm.setActive('bhnoemots', n.nodeName == 'SPAN' && n.className == 'noemots' && !n.name);
+
+		cm.setDisabled('bhquote', ed.selection.getContent().length == 0);
+		cm.setDisabled('bhcode', ed.selection.getContent().length == 0);
+		cm.setDisabled('bhspoiler', ed.selection.getContent().length == 0);
+		cm.setDisabled('bhnoemots', ed.selection.getContent().length == 0);
             });
         },
 

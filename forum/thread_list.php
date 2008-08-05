@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.348 2008-08-04 21:54:21 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.349 2008-08-05 17:38:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -179,6 +179,12 @@ if (user_is_guest()) {
 
         bh_setcookie("bh_{$webtag}_light_thread_mode", $mode);
 
+        if ($mode == SEARCH_RESULTS) {
+
+            header_redirect("search.php?webtag=$webtag&offset=0");
+            exit;
+        }
+
     }else {
 
         if (isset($_COOKIE["bh_{$webtag}_light_thread_mode"]) && is_numeric($_COOKIE["bh_{$webtag}_light_thread_mode"])) {
@@ -192,6 +198,7 @@ if (user_is_guest()) {
         }else {
 
            $mode = ($threads_any_unread) ? UNREAD_DISCUSSIONS : ALL_DISCUSSIONS;
+           echo __LINE__;
         }
     }
 
@@ -472,7 +479,11 @@ thread_list_draw_top($mode);
 
 // If no threads are returned, say something to that effect
 
-if (!$thread_info) {
+if (isset($_GET['mark_read_success'])) {
+
+    html_display_success_msg($lang['successfullymarkreadselectedthreads'], '100%', 'left');
+
+}else if (!is_array($thread_info)) {
 
     $all_discussions_link = sprintf("<a href=\"thread_list.php?webtag=$webtag&amp;mode=0\">%s</a>", $lang['clickhere']);
     html_display_warning_msg(sprintf($lang['nomessagesinthiscategory'], $all_discussions_link), '100%', 'left');
@@ -480,10 +491,6 @@ if (!$thread_info) {
 }else if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
     html_display_error_array($error_msg_array, '100%', 'left');
-
-}else if (isset($_GET['mark_read_success'])) {
-
-    html_display_success_msg($lang['successfullymarkreadselectedthreads'], '100%', 'left');
 
 }else {
 
@@ -868,7 +875,7 @@ if (!user_is_guest()) {
     echo "  <tr>\n";
     echo "    <td align=\"left\">&nbsp;</td>\n";
     echo "    <td align=\"left\" class=\"smalltext\">\n";
-    echo "      <form name=\"f_mark\" method=\"get\" action=\"thread_list.php\">\n";
+    echo "      <form name=\"f_mark\" method=\"post\" action=\"thread_list.php\">\n";
     echo "        ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "        ", form_input_hidden("mode", _htmlentities($mode)), "\n";
     echo "        ", form_input_hidden("start_from", _htmlentities($start_from)), "\n";

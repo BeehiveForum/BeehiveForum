@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.292 2008-07-30 22:39:24 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.293 2008-08-05 17:38:49 decoyduck Exp $ */
 
 // British English language file
 
@@ -888,7 +888,6 @@ $lang['ninetynumberdays'] = "90 D@ys";
 $lang['hundredeightynumberdays'] = "180 DAYS";
 $lang['onenumberyear'] = "1 Y3@R";
 $lang['unreadcutoffchangewarning'] = "d3p3NDINg ON sERvER p3rFORM@nC3 @nd tEH nUM83R 0F +hR3AD5 Y0UR f0RUm\$ conT41N, ch4NGInG THe UNrEAD cuT-oFPh M@Y +4K3 5EV3R4L mINUte\$ +0 C0mPleT3. F0R +hiS REas0n 1+ I\$ R3C0mMEnD3D TH4+ J00 @voID CH@NGINg +H1\$ \$3+T1N9 WhIL3 YoUR foRUMs AR3 8USY.";
-$lang['unreadcutoffincreasewarning'] = "incREASIn9 TEH UNREad CU+-0fF W1LL reSULT 1n ThR34d\$ 0lDer Th4n +EH CURr3NT cuT-0FPH 4PPe4rIN9 @S uNr3@D pHOR 4LL us3RS.";
 $lang['confirmunreadcutoff'] = "ar3 j00 SUR3 j00 w4NT +O cH4N9E thE UnREAd cu+-0FF?";
 $lang['otherchangeswillstillbeapplied'] = "clIck1N9 'N0' W1LL 0NLy C4nCeL Th3 UNRead cUT-0FF cH4NGE\$. OTh3r Ch@Ng3s YOU'V3 M4D3 WIlL \$T1ll BE s4VED.";
 $lang['searchoptions'] = "searCH Opt10N\$";

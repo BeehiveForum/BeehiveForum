@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.349 2008-08-05 17:38:49 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.350 2008-08-05 17:57:02 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -198,7 +198,6 @@ if (user_is_guest()) {
         }else {
 
            $mode = ($threads_any_unread) ? UNREAD_DISCUSSIONS : ALL_DISCUSSIONS;
-           echo __LINE__;
         }
     }
 

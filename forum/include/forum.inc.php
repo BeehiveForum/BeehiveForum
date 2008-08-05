@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.326 2008-08-02 19:44:42 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.327 2008-08-05 17:38:49 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -909,16 +909,6 @@ function forum_update_unread_data($unread_cutoff_stamp)
 
             foreach ($forum_prefix_array as $forum_prefix) {
 
-                $sql = "INSERT INTO {$forum_prefix}THREAD_STATS (TID, UNREAD_PID, UNREAD_CREATED) ";
-                $sql.= "SELECT POST.TID, MAX(POST.PID), MAX(POST.CREATED) FROM {$forum_prefix}POST POST ";
-                $sql.= "LEFT JOIN {$forum_prefix}THREAD_STATS THREAD_STATS ON (THREAD_STATS.TID = POST.TID) ";
-                $sql.= "WHERE POST.CREATED < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp) ";
-                $sql.= "AND (THREAD_STATS.UNREAD_PID < POST.PID OR THREAD_STATS.UNREAD_PID IS NULL) ";
-                $sql.= "GROUP BY POST.TID ON DUPLICATE KEY UPDATE UNREAD_PID = VALUES(UNREAD_PID), ";
-                $sql.= "UNREAD_CREATED = VALUES(UNREAD_CREATED)";
-
-                if (!db_query($sql, $db_forum_update_unread_data)) return false;
-
                 $sql = "DELETE QUICK FROM {$forum_prefix}USER_THREAD ";
                 $sql.= "USING {$forum_prefix}USER_THREAD ";
                 $sql.= "LEFT JOIN {$forum_prefix}THREAD ";
@@ -1492,8 +1482,6 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql = "CREATE TABLE {$database_name}.{$webtag}_THREAD_STATS (";
         $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  VIEWCOUNT MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-        $sql.= "  UNREAD_PID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-        $sql.= "  UNREAD_CREATED DATETIME DEFAULT NULL,";
         $sql.= "  PRIMARY KEY  (TID)";
         $sql.= ") TYPE=MYISAM";
 

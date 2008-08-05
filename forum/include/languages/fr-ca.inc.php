@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.119 2008-08-03 15:45:58 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.120 2008-08-05 17:38:49 decoyduck Exp $ */
 
 // French Canadian language file
 
@@ -887,7 +887,6 @@ $lang['ninetynumberdays'] = "90 jours";
 $lang['hundredeightynumberdays'] = "180 jours";
 $lang['onenumberyear'] = "1 années";
 $lang['unreadcutoffchangewarning'] = "Dépendant de la performance de votre serveur et du nombre de fils de discussion que contiennent vos forums, la modification du point de troncage pour messages non-lus pourra prendre plusieurs minutes à compléter. Pour cette raison, it est fortement recommendé de ne pas effectuer ce changement lorsque vos forums sont très actifs.";
-$lang['unreadcutoffincreasewarning'] = "L'augmentation du point de troncage des messages non-lus aura l'effet pour tous les utilisateurs de faire paraître comme lire-lus tous les fils de discussion plus vieux que le point de troncage actuel.";
 $lang['confirmunreadcutoff'] = "Êtes-vous certain de vouloir changer le point de troncage pour messages non-lus?";
 $lang['otherchangeswillstillbeapplied'] = "Cliquant le 'Non' annulera seulement les changements au modifications au troncage de messages non-lus. Toutes autre modifications que vous avez effectuées seront sauvegardées.";
 $lang['searchoptions'] = "Options de recherche";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.122 2008-08-03 15:45:58 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.123 2008-08-05 17:38:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -592,8 +592,6 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_48']}</p>\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_49']}</p>\n";
-echo "                          <p class=\"smalltext\">{$lang['unreadcutoffincreasewarning']}</p>\n";
-echo "                          <p class=\"smalltext\">{$lang['unreadcutoffchangewarning']}</p>\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";

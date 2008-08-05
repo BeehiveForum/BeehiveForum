@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.195 2008-08-04 21:54:21 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.196 2008-08-05 17:38:49 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -389,7 +389,11 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
 
     // If no threads are returned, say something to that effect
 
-    if (!$thread_info) {
+    if (isset($_GET['mark_read_success'])) {
+
+        light_html_display_success_msg($lang['successfullymarkreadselectedthreads'], '100%', 'left');
+
+    }else if (!$thread_info) {
 
         $all_discussions_link = sprintf("<a href=\"thread_list.php?webtag=$webtag&amp;mode=0\">%s</a>", $lang['clickhere']);
         light_html_display_warning_msg(sprintf($lang['nomessagesinthiscategory'], $all_discussions_link));
@@ -397,10 +401,6 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
     }else if (sizeof($error_msg_array) > 0) {
 
         light_html_display_error_array($error_msg_array, '100%', 'left');
-
-    }else if (isset($_GET['mark_read_success'])) {
-
-        light_html_display_success_msg($lang['successfullymarkreadselectedthreads'], '100%', 'left');
     }
 
     if ($start_from != 0 && $mode == ALL_DISCUSSIONS && !isset($folder)) echo "<p><a href=\"lthread_list.php?webtag=$webtag&amp;mode=0&amp;start_from=".($start_from - 50)."\">{$lang['prev50threads']}</a></p>\n";

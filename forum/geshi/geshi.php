@@ -1508,6 +1508,7 @@ class GeSHi {
         // Firstly, if there is an error, we won't highlight
         if ($this->error) {
             $result = GeSHi::hsc($this->source);
+            $result = str_replace(array('<SEMI>', '<PIPE>'), array(';', '|'), $result);
             // Timing is irrelevant
             $this->set_time($start_time, $start_time);
             return $this->finalise($result);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en-us.inc.php,v 1.74 2008-08-05 17:38:49 decoyduck Exp $ */
+/* $Id: en-us.inc.php,v 1.75 2008-08-06 23:09:30 decoyduck Exp $ */
 
 // American English language file
 
@@ -467,6 +467,7 @@ $lang['addnewfolder'] = "Add New Folder";
 $lang['mustenterfoldername'] = "You must enter a folder name";
 $lang['nofolderidspecified'] = "No Folder ID specified";
 $lang['invalidfolderid'] = "Invalid Folder ID. Check that a folder with this ID exists!";
+$lang['folderdisplayorderthreadsbyfolderview'] = "Folder order only applies when user has enabled 'Sort Thread List by folders' in Forum Options.";
 $lang['successfullyaddednewfolder'] = "Successfully added new folder";
 $lang['successfullyremovedselectedfolders'] = "Successfully removed selected folders";
 $lang['successfullyeditedfolder'] = "Successfully edited folder";
@@ -888,7 +889,7 @@ $lang['ninetynumberdays'] = "90 Days";
 $lang['hundredeightynumberdays'] = "180 Days";
 $lang['onenumberyear'] = "1 year";
 $lang['unreadcutoffchangewarning'] = "Depending on server performance and the number of threads your forums contain, changing the unread cut-off may take several minutes to complete. For this reason it is recommended that you avoid changing this setting while your forums are busy.";
-$lang['unreadcutoffincreasewarning'] = "By increasing the unread cut-off any threads modified since the new cut-off, including those older than the previously applied cut-off, will appear as unread to all users!";
+$lang['unreadcutoffincreasewarning'] = "Increasing the unread cut-off will make threads marked as modified since and threads older than the previous cut-off appear as unread to all users";
 $lang['confirmunreadcutoff'] = "Are you sure you want to change the unread cut-off?";
 $lang['otherchangeswillstillbeapplied'] = "Clicking 'No' will only cancel the unread cut-off changes. Other changes you've made will still be saved.";
 $lang['searchoptions'] = "Search Options";
@@ -1490,6 +1491,7 @@ $lang['notifyofnewpm'] = "Notify by popup of new PM messages to me";
 $lang['notifyofnewpmemail'] = "Notify by email of new PM messages to me";
 $lang['daylightsaving'] = "Adjust for daylight saving";
 $lang['autohighinterest'] = "Automatically mark threads I post in as High Interest";
+$lang['sortthreadlistbyfolders'] = "Sort Thread List by folders";
 $lang['convertimagestolinks'] = "Automatically convert embedded images in posts into links";
 $lang['thumbnailsforimageattachments'] = "thumbnails for image attachments";
 $lang['smallsized'] = "Small Sized";
@@ -1847,7 +1849,6 @@ $lang['nextxthreads'] = "Next %s threads";
 $lang['threadstartedbytooltip'] = "Thread #%s Started by %s. Viewed %s";
 $lang['threadviewedonetime'] = "1 time";
 $lang['threadviewedtimes'] = "%d times";
-$lang['unreadthread'] = "Unread Thread";
 $lang['readthread'] = "Read Thread";
 $lang['unreadmessages'] = "Unread Messages";
 $lang['subscribed'] = "Subscribed";
@@ -2172,6 +2173,7 @@ $lang['couldnotretrievepostdatamerge'] = "Could not retrieve post data from one 
 $lang['couldnotretrievepostdatasplit'] = "Could not retrieve post data from source thread";
 $lang['failedtocreatenewthreadformerge'] = "Failed to create new thread for merge";
 $lang['failedtocreatenewthreadforsplit'] = "Failed to create new thread for split";
+$lang['nopermissiontomergethreads'] = "You are not permitted to merge the selected threads";
 
 // Thread subscriptions
 

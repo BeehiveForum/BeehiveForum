@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: htmltools.inc.php,v 1.79 2008-08-04 13:55:38 decoyduck Exp $ */
+/* $Id: htmltools.inc.php,v 1.80 2008-08-06 23:09:29 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -61,7 +61,7 @@ function TinyMCE($tinymce_auto_focus)
         $str.= "        forced_root_block : '',\n";
         $str.= "        inline_styles : false,\n";
         $str.= "        auto_focus : '$tinymce_auto_focus',\n";
-        $str.= "        plugins : \"safari,table,advhr,advimage,advlink,inlinepopups,media,paste,directionality,noneditable,visualchars,beehive,\",\n\n";
+        $str.= "        plugins : \"safari,table,inlinepopups,paste,beehive,\",\n\n";
         $str.= "        // Theme options\n";
         $str.= "        theme_advanced_buttons1 : \"bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,|,formatselect,fontselect,fontsizeselect\",\n";
         $str.= "        theme_advanced_buttons2 : \"undo,redo,|,cleanup,code,removeformat,|,visualaid,|,tablecontrols\",\n";

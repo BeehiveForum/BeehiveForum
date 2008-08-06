@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.120 2008-08-05 17:38:49 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.121 2008-08-06 23:09:30 decoyduck Exp $ */
 
 // French Canadian language file
 
@@ -296,6 +296,7 @@ $lang['settingsaffectallforumswarning'] = "<b>Note:</b> Ces options affectent to
 $lang['startpage'] = "Page de démarrage";
 $lang['startpageerror'] = "Votre page d'accueil n'a pas pu être sauvegardée locallement sur le serveur faute de permissions.</p><p>Pour modifier votre page d'accueil, veuillez cliquer le bouton de téléchargement ci-dessous et sauvegarder le fichier à votre disque dur. Vous pouvez par la suite téléverser ce fichier à votre serveur au dossier suivant, créant la structure du dossier en même temps si nécessaire.</p><p><b>%s</b></p><p>Veuillez noter que certains navigateurs internet modifieront le nom du fichier lors du téléchargement. Lorsque vous téléversez le fichier, veuillez faire certain qu'il est nommé start_main.php autrement vos modifications ne paraîtront pas.";
 $lang['uploadcssfile'] = "Télécharger la feuille de style CSS";
+$lang['uploadcssfilefailed'] = "Votre feuille de style CSS n'a pas pu être téléchargée faute de permissions.</p><p>Pour modifier la feuille de style CSS de la page de démarrage, assurez-vous que les dossiers suivants existes et qu'ils sont inscriptibles: </p><p><b>%s</b></p>";
 $lang['invalidfiletypeerror'] = "Type de fichier invalide, vous pouvez seulement téléchargez des fichiers de feuilles de style CSS";
 $lang['failedtoopenmasterstylesheet'] = "Votre style de forum n'a pas pu être enregistré parce que la feuille de style maîtresse n'a pas pu être chargée. Pour enregistrer votre style, la feuille de style maîtresse (make_style.css) doit être située dans le répertoire styles de votre installation Beehive Forum.";
 $lang['makestyleerror'] = "Votre style de forum n'a pas pu être sauvegardé locallement sur le serveur faute de permissions.</p><p>Pour sauvegarder votre style de forum, veuillez cliquer le bouton de téléchargement ci-dessous et sauvegarder le fichier à votre disque dur. Vous pouvez par la suite téléverser ce fichier à votre serveur au dossier suivant, créant la structure du dossier en même temps si nécessaire.</p><p><b>%s</b></p><p>Veuillez noter que certains navigateurs internet modifieront le nom du fichier lors du téléchargement. Lorsque vous téléversez le fichier, veuillez faire certain qu'il est nommé style.css sinon le style de forum sera non-disponible.";
@@ -466,6 +467,7 @@ $lang['addnewfolder'] = "Ajouter nouveau dossier";
 $lang['mustenterfoldername'] = "Vous devez inscrire un nom de dossier";
 $lang['nofolderidspecified'] = "Aucune identification de dossier définie";
 $lang['invalidfolderid'] = "Identification de dossier invalide. Vérifier qu'un dossier avec cette identification existe!";
+$lang['folderdisplayorderthreadsbyfolderview'] = "L'ordre des dossiers s'applique seulement lorsque l'utilisateur a activé 'Assortir liste des fils de discussion par dossiers' dans les Options du Forum.";
 $lang['successfullyaddednewfolder'] = "L'ajout d'un nouveau fichier a réussi";
 $lang['successfullyremovedselectedfolders'] = "La suppression des fichiers sélectionnés a réussi";
 $lang['successfullyeditedfolder'] = "Modification du fichier réussi";
@@ -887,6 +889,7 @@ $lang['ninetynumberdays'] = "90 jours";
 $lang['hundredeightynumberdays'] = "180 jours";
 $lang['onenumberyear'] = "1 années";
 $lang['unreadcutoffchangewarning'] = "Dépendant de la performance de votre serveur et du nombre de fils de discussion que contiennent vos forums, la modification du point de troncage pour messages non-lus pourra prendre plusieurs minutes à compléter. Pour cette raison, it est fortement recommendé de ne pas effectuer ce changement lorsque vos forums sont très actifs.";
+$lang['unreadcutoffincreasewarning'] = "Augmentant la date de coupure des messages non-lus fera que les fils de discussion modifiés depuis et les fils de discussion plus vieux que la date de coupure précédente apparaîtront comme non-lus pour tous les utilisateurs.";
 $lang['confirmunreadcutoff'] = "Êtes-vous certain de vouloir changer le point de troncage pour messages non-lus?";
 $lang['otherchangeswillstillbeapplied'] = "Cliquant le 'Non' annulera seulement les changements au modifications au troncage de messages non-lus. Toutes autre modifications que vous avez effectuées seront sauvegardées.";
 $lang['searchoptions'] = "Options de recherche";
@@ -1488,6 +1491,7 @@ $lang['notifyofnewpm'] = "M'aviser par fenêtre contextuelle de nouveaux message
 $lang['notifyofnewpmemail'] = "M'aviser par courriel de nouveaux messages MP";
 $lang['daylightsaving'] = "Ajuster pour l'heure avancée";
 $lang['autohighinterest'] = "Marquer automatiquement les fils de discussion dans lesquels je poste comme étant d'intérêt élevé";
+$lang['sortthreadlistbyfolders'] = "Assortir la liste des fils de discussion par dossiers";
 $lang['convertimagestolinks'] = "Convertir automatiquement en hyperliens les images incorporées dans les messages";
 $lang['thumbnailsforimageattachments'] = "vignettes pour images jointes";
 $lang['smallsized'] = "de petite taille";
@@ -1845,7 +1849,6 @@ $lang['nextxthreads'] = "Prochains %s fils de discussion";
 $lang['threadstartedbytooltip'] = "Fil de discussion #%s commencé par %s. Visualisé %s";
 $lang['threadviewedonetime'] = "1 fois";
 $lang['threadviewedtimes'] = "%d fois";
-$lang['unreadthread'] = "Fil de discussion non-lu";
 $lang['readthread'] = "Lire fil de discussion";
 $lang['unreadmessages'] = "Messages non-lus";
 $lang['subscribed'] = "Abonné";
@@ -2170,6 +2173,7 @@ $lang['couldnotretrievepostdatamerge'] = "Impossible de récupérer les données
 $lang['couldnotretrievepostdatasplit'] = "Impossible de récupérer les données des messages du fils de discussion source";
 $lang['failedtocreatenewthreadformerge'] = "Création d'un nouveau fils de discussion pour fusionnement a échoué";
 $lang['failedtocreatenewthreadforsplit'] = "Création d'un nouveau fils de discussion pour dispersion a échoué";
+$lang['nopermissiontomergethreads'] = "Vous n'êtes pas permis de fusionner les fils de discussion sélectionnés";
 
 // Thread subscriptions
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.568 2008-08-05 17:38:49 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.569 2008-08-06 23:09:30 decoyduck Exp $ */
 
 // British English language file
 
@@ -889,7 +889,7 @@ $lang['ninetynumberdays'] = "90 Days";
 $lang['hundredeightynumberdays'] = "180 Days";
 $lang['onenumberyear'] = "1 year";
 $lang['unreadcutoffchangewarning'] = "Depending on server performance and the number of threads your forums contain, changing the unread cut-off may take several minutes to complete. For this reason it is recommended that you avoid changing this setting while your forums are busy.";
-$lang['unreadcutoffincreasewarning'] = "By increasing the unread cut-off any threads modified since the new cut-off, including those older than the previously applied cut-off, will appear as unread to all users!";
+$lang['unreadcutoffincreasewarning'] = "Increasing the unread cut-off will make threads marked as modified since and threads older than the previous cut-off appear as unread to all users";
 $lang['confirmunreadcutoff'] = "Are you sure you want to change the unread cut-off?";
 $lang['otherchangeswillstillbeapplied'] = "Clicking 'No' will only cancel the unread cut-off changes. Other changes you've made will still be saved.";
 $lang['searchoptions'] = "Search Options";
@@ -1849,7 +1849,6 @@ $lang['nextxthreads'] = "Next %s threads";
 $lang['threadstartedbytooltip'] = "Thread #%s Started by %s. Viewed %s";
 $lang['threadviewedonetime'] = "1 time";
 $lang['threadviewedtimes'] = "%d times";
-$lang['unreadthread'] = "Unread Thread";
 $lang['readthread'] = "Read Thread";
 $lang['unreadmessages'] = "Unread Messages";
 $lang['subscribed'] = "Subscribed";

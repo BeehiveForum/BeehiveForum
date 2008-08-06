@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.91 2008-08-05 17:38:49 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.92 2008-08-06 23:09:30 decoyduck Exp $ */
 
 // German language file
 
@@ -1845,7 +1845,6 @@ $lang['nextxthreads'] = "Naechste %s Eintraege";
 $lang['threadstartedbytooltip'] = "Eintrag #%s gestart durch %s. Angesehen %s";
 $lang['threadviewedonetime'] = "Angezeigehaeufigkeit: 1 mal";
 $lang['threadviewedtimes'] = "Angezeigehaeufigkeit: %d mal";
-$lang['unreadthread'] = "Ungelesener Eintrag";
 $lang['readthread'] = "Gelesener Eintrag";
 $lang['unreadmessages'] = "Ungelesene Nachrichten";
 $lang['subscribed'] = "Angenommen";

@@ -417,23 +417,23 @@ also have the .e_NAME span { ... } class.
 ===========
 
 Beehive Forum uses several 'custom' HTML tags, including the <code> tag. This tag now 
-accepts a 'language' attribute (<code language="...">) which will highlight your 
-code, thanks to the open-source software 'GeSHi' (http://qbnz.com/highlighter/). 
+accepts a 'language' attribute which will highlight your code, thanks to the open-source
+software GeSHi 1.0.6 or later from http://qbnz.com/highlighter/.
+
 To include GeSHi syntax highlighting with your Beehive Forum install simply download 
-the latest version of GeSHi (tested with v1.0.6) and upload it to a subdirectory 
-'geshi' in your main forum folder (if your forum was at www.site.com/forum/, 
-upload to www.site.com/forum/geshi/).
+the latest version of GeSHi and upload it to a subdirectory 'geshi' in your main forum
+folder. For example if your forum was at www.site.com/forum/ you would upload GeSHi to
+www.site.com/forum/geshi/.
 
 To change any GeSHi settings edit the file include/geshi.inc.php.
 
 Note: GeSHi is not created by the Beehive Forum developers.
 
-
 1.3.6 TinyMCE
 =============
 
 Beehive Forum has a simple HTML toolbar built in, but also allows the use of the 
-open-source WYSIWYG TinyMCE version 2.03 or later by Moxiecode Systems. You can
+open-source WYSIWYG TinyMCE version 3.1.0 or later by Moxiecode Systems. You can
 downloaded TinyMCE from http://tinymce.moxiecode.com/
 
 To install TinyMCE in to your Beehive Forum simply copy everything from the 

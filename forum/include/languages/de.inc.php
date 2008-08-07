@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.92 2008-08-06 23:09:30 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.93 2008-08-07 09:21:20 decoyduck Exp $ */
 
 // German language file
 
@@ -296,6 +296,7 @@ $lang['settingsaffectallforumswarning'] = "<b>Note:</b> Diese Einstellungen bezi
 $lang['startpage'] = "Startseite";
 $lang['startpageerror'] = "Ihre Startseite konnte nicht lokal auf dem Server gespeichert werden aufgrund fehlender Rechte.</p><p>Um die Startseite zu aendern bitte die untere Download-Schaltflaeche klicken zum speichern auf Ihrer Festplatte. Sie können dann diese Datei in folgenden Ordner auf Ihrem Server hochladen, falls notwendig erstellen Sie die Ordnerstruktur waehrend dieses Vorgangs.</p><p><b>%s</b></p><p>Bitte beachten Sie dass einige Browser des Namen der Datei beim Herunterladen aendern koennten. Beim Hochladen bitte beachten dass die Datei start_main.php heisst, ansonsten wird Ihre Startseite ungeaendert erscheinen.";
 $lang['uploadcssfile'] = " CSS Style Sheet hochladen";
+$lang['uploadcssfilefailed'] = "Ihr CSS-Stylesheet konnte nicht auf den Server geladen werden, Zugriff wurde verweigert.</p><p>Um das Startseiten-CSS-Stylesheet zu aendern stellen Sie sicher dass die Ordner existieren und Schreibrechte vorhanden sind: </p><p><b>%s</b></p>";
 $lang['invalidfiletypeerror'] = "Unerlaubter Dateityp, nur CSS Style Sheet Dateien sind hochladbar";
 $lang['failedtoopenmasterstylesheet'] = "Dein Forenstil konnte nicht gespeichert werden da der Masterstil nicht geladen werden konnte. Um den Stil als Master-Stil zu speichern muss (make_style.css) im Styles-Verzeichnis Ihrer BeehiveForeninstallation gefunden werden.";
 $lang['makestyleerror'] = "Ihr Foren-Stil konnte nicht auf dem Server gespeichert werden da der Zugriff verweigert wurde.</p><p>Um den Foren-Stil zu speichern bitte auf den unten stehenden Download-Button klicken um die Datei auf Ihrer Festplatte zu speichern. Sie koennen dann diese Datei hochladen auf Ihren Server in den folgenden Ordner. Falls notwendig erstellen Sie die Ordnerstruktur in diesem Vorgang.</p><p><b>%s</b></p><p>Bitte beachten Sie dass einige Browser beim herunterladen den Dateinamen aendern. Beim Hochladen bitte sicherstellen dass die Datei style.css heisst, ansonsten wird der Forenstil nicht auswaehlbar sein.";
@@ -466,6 +467,7 @@ $lang['addnewfolder'] = "Neuen Ordner hinzufuegen";
 $lang['mustenterfoldername'] = "Du musst einen Ordnernamen eingeben";
 $lang['nofolderidspecified'] = "Keine Ordner-ID vorhanden";
 $lang['invalidfolderid'] = "Unbekannte Ordner-ID. Stelle sicher dass ein Ordner mit dieser ID existiert!";
+$lang['folderdisplayorderthreadsbyfolderview'] = "Ordnerbefehl greift nur wenn der Benutzer 'Sortiere Eintragsliste nach Ordnern' in den Forumsoptionen eingestellt hat.";
 $lang['successfullyaddednewfolder'] = "Neuer Ordner erfolgreich hinzugefuegt";
 $lang['successfullyremovedselectedfolders'] = "Ausgewaehlte Ordner erfolgreich geloescht";
 $lang['successfullyeditedfolder'] = "Ordner erfolgreich bearbeitet";
@@ -887,6 +889,7 @@ $lang['ninetynumberdays'] = "90 Tagen";
 $lang['hundredeightynumberdays'] = "180 Tagen";
 $lang['onenumberyear'] = "1 Jahr";
 $lang['unreadcutoffchangewarning'] = "Abhaengig von der Serverleistung und der Anzahl der Eintraege Ihres Forums kann das Aendern der ungelesenen Abschnitte mehrere Minuten dauern. Daher ist es empfehlenswert Aenderungen dieser Einstellungen zu vermeiden waehrend Ihr Forum laeuft.";
+$lang['unreadcutoffincreasewarning'] = "Erweitern des Ungelesenen-Abschnitts markiert Eintraege solange als 'In Bearbeitung' und Eintraege die aelter sind als die vorhergehenden Abschnitte werden allen Benutzern als 'ungelesen' erscheinen";
 $lang['confirmunreadcutoff'] = "Sind Sie sicher dass die ungelesenen Abschnitte geaendert werden sollen?";
 $lang['otherchangeswillstillbeapplied'] = " 'Nein' anklicken bricht die Aenderung der ungelesenen Abschnitte ab. Andere Aenderungen von Ihnen werden aber dennoch gespeichert.";
 $lang['searchoptions'] = "Optionen suchen";
@@ -1488,6 +1491,7 @@ $lang['notifyofnewpm'] = "Benachrichtigung via Popup bei neuen PM (Persoenliche 
 $lang['notifyofnewpmemail'] = "Benachrichtigung via eMail bei neuen PM (Persoenliche Nachrichten) fuer mich";
 $lang['daylightsaving'] = "Einstellungen fuer Tageslicht-Schutz";
 $lang['autohighinterest'] = "Automatisch Eintraege markieren die ich als Wichtig definiert habe";
+$lang['sortthreadlistbyfolders'] = "Sortiere Eintragsliste nach Ordnern";
 $lang['convertimagestolinks'] = "Automatisch eingebettete Bilder in Eintraegen zu Links umstellen";
 $lang['thumbnailsforimageattachments'] = "Voransichtsbilder fuer Bildanhaenge";
 $lang['smallsized'] = "kleine Groesse";
@@ -2169,6 +2173,7 @@ $lang['couldnotretrievepostdatamerge'] = "Kann Eintragsdaten aus einem oder mehr
 $lang['couldnotretrievepostdatasplit'] = "Kann Eintragsdaten nicht aus dem Quell-Eintrag holen";
 $lang['failedtocreatenewthreadformerge'] = "Kann neuen Eintrag nicht anlegen fuer Zusammenlegung";
 $lang['failedtocreatenewthreadforsplit'] = "Kann neuen Eintrag nicht anlegen zur Aufteilung";
+$lang['nopermissiontomergethreads'] = "Sie sind nicht berechtigt die ausgewaehlten Eintraege zusammenzufuegen";
 
 // Thread subscriptions
 

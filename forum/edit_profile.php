@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_profile.php,v 1.97 2008-08-07 11:23:20 decoyduck Exp $ */
+/* $Id: edit_profile.php,v 1.98 2008-08-07 15:18:06 decoyduck Exp $ */
 
 /**
 * Displays the edit profile page, and processes sumbissions
@@ -332,12 +332,7 @@ if (($profile_items_array = profile_get_user_values($uid))) {
 
             $profile_item_options_array = _htmlentities(explode("\n", $profile_item['OPTIONS']));
 
-            $profile_item_options_array_keys = array_keys($profile_item_options_array);
-
-            array_unshift($profile_item_options_array_keys, '-1');
-            array_unshift($profile_item_options_array, "<i>[{$lang['clear']}]</i>");
-
-            $profile_item_options_array = array_combine($profile_item_options_array_keys, $profile_item_options_array);
+            profile_item_add_clear_entry($profile_item_options_array, $profile_item['TYPE']);
 
             if ($profile_item['TYPE'] == PROFILE_ITEM_RADIO) {
                 echo "                        <td align=\"left\" valign=\"top\">", form_radio_array("t_entry[{$profile_item['PIID']}]", $profile_item_options_array, (isset($t_entry_array[$profile_item['PIID']]) ? _htmlentities($t_entry_array[$profile_item['PIID']]) : _htmlentities($profile_item['ENTRY']))), "</td>\n";

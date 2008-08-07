@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.177 2008-08-05 17:38:50 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.178 2008-08-07 09:24:57 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'new-install.php') {
 
@@ -501,7 +501,6 @@ $sql.= "  PIC_AID VARCHAR(32) NOT NULL DEFAULT '', ";
 $sql.= "  AVATAR_URL VARCHAR(255) NOT NULL DEFAULT '', ";
 $sql.= "  AVATAR_AID VARCHAR(32) NOT NULL DEFAULT '', ";
 $sql.= "  EMAIL_NOTIFY CHAR(1) NOT NULL DEFAULT 'Y', ";
-$sql.= "  THREADS_BY_FOLDER CHAR(1) NOT NULL DEFAULT 'N', ";
 $sql.= "  MARK_AS_OF_INT CHAR(1) NOT NULL DEFAULT 'Y', ";
 $sql.= "  POSTS_PER_PAGE CHAR(3) NOT NULL DEFAULT '20', ";
 $sql.= "  FONT_SIZE CHAR(2) NOT NULL DEFAULT '10', ";
@@ -524,6 +523,7 @@ $sql.= "  USE_MOVER_SPOILER CHAR(1) NOT NULL DEFAULT 'N', ";
 $sql.= "  USE_LIGHT_MODE_SPOILER CHAR(1) NOT NULL DEFAULT 'N', ";
 $sql.= "  USE_OVERFLOW_RESIZE CHAR(1) NOT NULL DEFAULT 'Y', ";
 $sql.= "  REPLY_QUICK CHAR(1) NOT NULL DEFAULT 'N', ";
+$sql.= "  THREADS_BY_FOLDER CHAR(1) NOT NULL DEFAULT 'N', ";
 $sql.= "  PRIMARY KEY (UID)";
 $sql.= ") TYPE=MYISAM";
 

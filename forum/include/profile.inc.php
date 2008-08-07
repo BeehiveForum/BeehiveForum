@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.96 2008-07-30 16:04:35 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.97 2008-08-07 15:18:06 decoyduck Exp $ */
 
 /**
 * Functions relating to profiles
@@ -691,7 +691,7 @@ function profile_sections_positions_update()
             if (!db_query($sql, $db_profile_sections_positions_update)) return false;
         }
     }
-    
+
     return true;
 }
 
@@ -727,7 +727,7 @@ function profile_items_positions_update()
             if (!db_query($sql, $db_profile_items_positions_update)) return false;
         }
     }
-    
+
     return true;
 }
 
@@ -773,6 +773,33 @@ function profile_get_item($piid)
     }
 
     return false;
+}
+
+function profile_item_add_clear_entry(&$profile_item_options_array, $type)
+{
+    $lang = load_language_file();
+
+    $valid_item_types_aray = array(PROFILE_ITEM_RADIO, PROFILE_ITEM_DROPDOWN);
+
+    if (!is_array($profile_item_options_array)) return false;
+    if (!in_array($type, $valid_item_types_aray)) return false;
+
+    $profile_item_options_array_keys = array_keys($profile_item_options_array);
+
+    array_unshift($profile_item_options_array_keys, '-1');
+
+    if ($type == PROFILE_ITEM_RADIO) {
+
+        array_unshift($profile_item_options_array, "<i>[{$lang['clear']}]</i>");
+        $profile_item_options_array = array_combine($profile_item_options_array_keys, $profile_item_options_array);
+
+    }else {
+
+        array_unshift($profile_item_options_array, "");
+        $profile_item_options_array = array_combine($profile_item_options_array_keys, $profile_item_options_array);
+    }
+
+    return true;
 }
 
 ?>

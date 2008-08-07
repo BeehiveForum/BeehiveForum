@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-08x-to-084.php,v 1.6 2008-08-02 19:42:38 decoyduck Exp $ */
+/* $Id: upgrade-08x-to-084.php,v 1.7 2008-08-07 15:18:06 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'upgrade-08x-to-083.php') {
 
@@ -171,6 +171,17 @@ foreach ($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql.= "THREAD.STICKY_UNTIL, THREAD.ADMIN_LOCK FROM {$forum_webtag}_THREAD THREAD ";
     $sql.= "LEFT JOIN {$forum_webtag}_POST POST ON (POST.TID = THREAD.TID) GROUP BY THREAD.TID ";
     $sql.= "ON DUPLICATE KEY UPDATE MODIFIED = VALUES(MODIFIED)";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "UPDATE {$forum_webtag}_POST POST, {$forum_webtag}_POST_CONTENT POST_CONTENT ";
+    $sql.= "SET POST.APPROVED = NOW(), POST.APPROVED_BY = POST.FROM_UID ";
+    $sql.= "WHERE POST.TID = POST_CONTENT.TID AND POST.PID = POST_CONTENT.PID ";
+    $sql.= "AND POST_CONTENT.CONTENT IS NULL ";
 
     if (!$result = @db_query($sql, $db_install)) {
 

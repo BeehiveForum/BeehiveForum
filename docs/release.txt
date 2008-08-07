@@ -1,12 +1,16 @@
 Beehive Forum Release Notes
 
-What's new in 0.8.4 (Released 25th July 2008)
+What's new in 0.8.4 (Released 07th August 2008)
 ===================
 
 - Beehive Forum 0.8.4 is primarily intended to fix bugs
-  found since the release of Beehive Forum 0.8.3. New
-  features for this release include Admin Forum Stats,
-  Start Page CSS style sheet uploader and Folder Subscriptions.
+  found since the release of Beehive Forum 0.8.3.
+  
+  New features for this release include Admin Forum Stats
+  Display, Improved Admin User Alias pages, Start Page CSS
+  style sheet uploader, Folder Subscriptions, Thread List
+  Sorting Options,  TinyMCE 3.1.0 support and Post Approval
+  Queue Improvements.
 
 - For comprehensive list of changes please see the change log.
 

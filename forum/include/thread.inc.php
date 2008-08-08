@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.147 2008-08-06 23:09:29 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.148 2008-08-08 11:16:41 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -693,7 +693,7 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
                     }
                 }
 
-                $new_tid = post_create_thread($new_thread['FID'], $new_thread['BY_UID'], _htmlentities_decode($new_thread['TITLE']), 'N', 'N', true);
+                $new_tid = post_create_thread($new_thread['FID'], $new_thread['BY_UID'], $new_thread['TITLE'], 'N', 'N', true);
 
                 if (($new_tid > -1) && ($thread_new = thread_get($new_tid, true))) {
 
@@ -1031,7 +1031,7 @@ function thread_split($tid, $spid, $split_type, &$error_str)
                 }
             }
 
-            $new_tid = post_create_thread($thread_data['FID'], $post_data_array[1]['FROM_UID'], _htmlentities_decode($thread_data['TITLE']), 'N', 'N', true);
+            $new_tid = post_create_thread($thread_data['FID'], $post_data_array[1]['FROM_UID'], $thread_data['TITLE'], 'N', 'N', true);
 
             if (($new_tid > -1) && ($thread_new = thread_get($new_tid, true))) {
 

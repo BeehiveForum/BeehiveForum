@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.167 2008-07-30 22:39:22 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.168 2008-08-08 11:16:41 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -305,37 +305,20 @@ function format_time_display($seconds, $abbrv_units = true)
 }
 
 /**
-* Convert MySQL timestamp into Unix timestamp.
-*
-* Connverts MySQL timestamp (YYYYMMDDHHIISS) into a Unix timestamp
-*
-* @return integer
-* @param integer $timestamp - MySQL timestamp
-*/
-
-function timestamp_to_date($timestamp)
-{
-    $year=substr($timestamp,0,4);
-    $month=substr($timestamp,4,2);
-    $day=substr($timestamp,6,2);
-    $hour=substr($timestamp,8,2);
-    $minute=substr($timestamp,10,2);
-    $second=substr($timestamp,12,2);
-    $newdate=mktime($hour,$minute,$second,$month,$day,$year);
-    return ($newdate);
-}
-
-/**
 * UTF-8 and ENT_COMPAT enforced htmlentities
 *
 * Ensures use of UTF-8 and ENT_COMPAT settings for htmlentities.
+* Passes variable through ms_word_to_html to remove irregularities caused
+* by copying and pasting content from MS Word.
 *
-* @return string
-* @param string $text - String to encode.
+* @return mixed
+* @param mixed $var - variable to encode - supports array of strings.
 */
 
 function _htmlentities($var)
 {
+    $var = ms_word_to_html($var);
+
     if (is_array($var)) {
         return array_map('_htmlentities', $var);
     }
@@ -348,8 +331,8 @@ function _htmlentities($var)
 *
 * Ensures use of UTF-8 and ENT_COMPAT settings for html_entity_decode.
 *
-* @return string
-* @param string $text - String to encode.
+* @return mixed
+* @param mixed $var - variable to encode - supports array of strings.
 */
 
 function _htmlentities_decode($var)
@@ -362,26 +345,35 @@ function _htmlentities_decode($var)
 }
 
 /**
-* XML literal to numeric
+* Convert MS Word text to HTML
 *
-* Converts XML literal entities into numerical entities (&nbsp; to &#160;, etc.).
-* Accepts only one entity not an entire string. To convert an entire string use
-* html_entity_to_decimal() function.
+* Convert MS Word Smart Quotes and other characters into HTML equivilant entities.
 *
-* @return string
-* @param string $literal - Literal to convert (&nbsp;, &gt;)
+* @return mixed
+* @param mixed $var - variable to encode - supports array of strings.
 */
 
-function xml_literal_to_numeric($literal)
+function ms_word_to_html($var)
 {
-    if (preg_match("/^&#[0-9]+;?$/", $literal) > 0) return $literal;
+    $ms_word_to_html_array = array(chr(128) => '&euro;',   chr(130) => '&sbquo;',
+                                   chr(131) => '&fnof;',   chr(132) => '&bdquo;',
+                                   chr(133) => '&hellip;', chr(134) => '&dagger;',
+                                   chr(135) => '&Dagger;', chr(136) => '&circ;',
+                                   chr(137) => '&permil;', chr(138) => '&Scaron;',
+                                   chr(139) => '&lsaquo;', chr(140) => '&OElig;',
+                                   chr(145) => '&lsquo;',  chr(146) => '&rsquo;',
+                                   chr(147) => '&ldquo;',  chr(148) => '&rdquo;',
+                                   chr(149) => '&bull;',   chr(150) => '&ndash;',
+                                   chr(151) => '&mdash;',  chr(152) => '&tilde;',
+                                   chr(153) => '&trade;',  chr(154) => '&scaron;',
+                                   chr(155) => '&rsaquo;', chr(156) => '&oelig;',
+                                   chr(159) => '&Yuml;');
 
-    $html_entity  = _htmlentities_decode($literal);
-    if ($literal == $html_entity) return $html_entity;
+    if (is_array($var)) {
+        return array_map('ms_word_to_html', $var);
+    }
 
-    $numeric = ord($html_entity);
-
-    return "&#$numeric;";
+    return strtr($var, $ms_word_to_html_array);
 }
 
 /**
@@ -403,7 +395,6 @@ function xml_strip_invalid_chars($string)
 * HTML literal to XML numeric
 *
 * Converts HTML literal entities into XML numerical entities.
-* Same as above function, but converts all matches in a string.
 *
 * @return string
 * @param string $string - String to convert.
@@ -538,7 +529,7 @@ function html_entity_to_decimal($string)
                                '&permil;'   => '&#8240;', '&lsaquo;'  => '&#8249;',
                                '&rsaquo;'   => '&#8250;', '&euro;'    => '&#8364;');
 
-    return preg_replace("/&[A-Za-z]+;/", " ", strtr($string,$entity_to_decimal));
+    return preg_replace("/(&[a-z0-9]+;?)/i", " ", strtr($string, $entity_to_decimal));
 }
 
 /**
@@ -553,20 +544,6 @@ function html_entity_to_decimal($string)
 function strip_paragraphs($string)
 {
     return preg_replace(array('/<p[^>]*>/iU', '/<\/p[^>]*>\n/iU', '/<\/p[^>]*>/iU', '/<br\s*?\/?>/i'), array('', chr(10)), $string);
-}
-
-/**
-* Replace accented characters
-*
-* Replaces accented characters with their non accented equivalents.
-*
-* @return string
-* @param string $string - string to convert.
-*/
-
-function strip_accents($string)
-{
-    return _htmlentities_decode(preg_replace('/&([a-zA-Z])(uml|acute|grave|circ|tilde|cedil|ring);/', '$1', _htmlentities($string)));
 }
 
 /**
@@ -719,8 +696,8 @@ function get_local_time()
 function format_age($dob)
 {
     $matches_array = array();
-	
-	if (preg_match('/([0-9]{4})-([0-9]{2})-([0-9]{2})/', $dob, $matches_array)) {
+
+    if (preg_match('/([0-9]{4})-([0-9]{2})-([0-9]{2})/', $dob, $matches_array)) {
 
         list(, $birth_year, $birth_month, $birth_day) = $matches_array;
 
@@ -750,7 +727,7 @@ function format_birthday($date) // $date is a MySQL-type DATE field (YYYY-MM-DD)
     $lang = load_language_file();
 
     $matches_array = array();
-    
+
     if (preg_match('/[0-9]{4}-([0-9]{2})-([0-9]{2})/', $date, $matches_array)) {
 
         list(, $month, $day) = $matches_array;

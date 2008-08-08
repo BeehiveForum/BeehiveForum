@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.251 2008-07-30 22:39:24 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.252 2008-08-08 11:16:41 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -93,7 +93,7 @@ function pm_mark_as_read($mid)
     $sql.= "WHERE MID = '$mid' AND TO_UID = '$uid'";
 
     if (!db_query($sql, $db_pm_mark_as_read)) return false;
-    
+
     return true;
 }
 
@@ -988,15 +988,14 @@ function pm_get_subject($mid, $to_uid)
     if (!is_numeric($mid)) return false;
     if (!is_numeric($to_uid)) return false;
 
-    $sql = "SELECT PM.SUBJECT FROM PM PM ";
-    $sql.= "WHERE MID = '$mid' AND TO_UID = '$to_uid'";
+    $sql = "SELECT SUBJECT FROM PM WHERE MID = '$mid' AND TO_UID = '$to_uid'";
 
     if (!$result = db_query($sql, $db_pm_get_subject)) return false;
 
     if (db_num_rows($result) > 0) {
 
-        $pm_data = db_fetch_array($result);
-        return $pm_data['SUBJECT'];
+        list($pm_subject) = db_fetch_array($result);
+        return $pm_subject;
     }
 
     return false;
@@ -1229,7 +1228,7 @@ function pm_display($pm_message_array, $folder, $preview = false, $export_html =
 
         $attachments_array = array();
         $image_attachments_array = array();
-        
+
         if (get_attachments($pm_message_array['FROM_UID'], $aid, $attachments_array, $image_attachments_array)) {
 
             // Draw the attachment header at the bottom of the post
@@ -2151,7 +2150,7 @@ function pms_have_attachments(&$pm_array, $mid_array)
     while (($pm_attachment_data = db_fetch_array($result))) {
         $pm_array[$pm_attachment_data['MID']]['AID'] = $pm_attachment_data['AID'];
     }
-    
+
     return true;
 }
 
@@ -2598,8 +2597,8 @@ function pm_export_attachments($aid, $from_uid, &$zip_file)
 
         $attachments_array = array();
         $image_attachments_array = array();
-    	
-    	if (get_attachments($from_uid, $aid, $attachments_array, $image_attachments_array)) {
+
+        if (get_attachments($from_uid, $aid, $attachments_array, $image_attachments_array)) {
 
             if (is_array($attachments_array) && sizeof($attachments_array) > 0) {
 

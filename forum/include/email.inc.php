@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.143 2008-07-30 17:41:40 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.144 2008-08-08 11:16:40 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -383,7 +383,7 @@ function email_send_pm_notification($tuid, $mid, $fuid)
                 $subject         = word_filter_apply(sprintf($lang['pmnotification_subject'], $forum_name), $tuid);
                 $recipient       = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid);
                 $message_author  = word_filter_apply(format_user_name($from_user['LOGON'], $from_user['NICKNAME']), $tuid);
-                $message_subject = word_filter_apply(_htmlentities_decode($pm_subject), $tuid);
+                $message_subject = word_filter_apply($pm_subject, $tuid);
 
                 // Generate link to the forum itself
 
@@ -951,10 +951,10 @@ function email_send_message_to_user($tuid, $fuid, $subject, $message)
 function email_get_language($to_uid)
 {
     // Array to hold our language strings
-    
-	$lang = array();
-	
-	// Start out by including the English language file. This will allow
+
+    $lang = array();
+
+    // Start out by including the English language file. This will allow
     // us to still use Beehive even if our language file isn't up to date
     // correctly.
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.289 2008-08-03 11:23:08 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.290 2008-08-09 18:00:34 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -57,7 +57,7 @@ function html_guest_error()
 
     $final_uri = basename(get_request_uri());
 
-    $popup_files_pregs = implode("|^", array_map('preg_quote_callback', get_available_js_popup_files()));
+    $popup_files_pregs = get_available_js_popup_files_preg();
 
     if (preg_match("/^$popup_files_pregs/", $final_uri) > 0) {
 

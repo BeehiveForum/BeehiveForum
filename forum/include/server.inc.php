@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: server.inc.php,v 1.35 2008-08-03 11:23:09 decoyduck Exp $ */
+/* $Id: server.inc.php,v 1.36 2008-08-09 18:00:34 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -300,12 +300,14 @@ function get_available_user_control_files()
 * @param void
 */
 
-function get_available_js_popup_files()
+function get_available_js_popup_files_preg()
 {
-    return array('attachments.php', 'dictionary.php', 'display_emoticons.php',
-                 'edit_attachments.php', 'email.php', 'folder_options.php',
-                 'mods_list.php', 'poll_results.php', 'search_popup.php',
-                 'search.php', 'user_profile.php');
+    $popup_files_preg_array = array('^attachments\.php', '^dictionary\.php', '^display_emoticons\.php',
+                                    '^edit_attachments\.php', '^email\.php', '^folder_options\.php',
+                                    '^mods_list\.php', '^poll_results\.php', '^search_popup\.php',
+                                    '^search\.php.+show_stop_words=true', '^user_profile\.php');
+
+    return implode("|^", $popup_files_preg_array);
 }
 
 /**

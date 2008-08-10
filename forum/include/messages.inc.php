@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.547 2008-08-06 23:09:29 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.548 2008-08-10 11:54:21 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1672,6 +1672,9 @@ function messages_get_most_recent($uid, $fid = false)
 
     $unread_cutoff_timestamp = threads_get_unread_cutoff();
 
+    $user_ignored_completely = USER_IGNORED_COMPLETELY;
+    $user_ignored = USER_IGNORED;
+
     $sql = "SELECT THREAD.TID, UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, ";
     $sql.= "THREAD.LENGTH, USER_THREAD.LAST_READ, USER_PEER.RELATIONSHIP ";
     $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
@@ -1682,9 +1685,9 @@ function messages_get_most_recent($uid, $fid = false)
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_FOLDER USER_FOLDER ";
     $sql.= "ON (USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
     $sql.= "WHERE THREAD.FID in ($fidlist) AND THREAD.DELETED = 'N' ";
-    $sql.= "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED_COMPLETELY. ") = 0 ";
-    $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
-    $sql.= "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED. ") = 0 ";
+    $sql.= "AND THREAD.LENGTH > 0 AND (USER_PEER.RELATIONSHIP IS NULL ";
+    $sql.= "OR (USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0) ";
+    $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 ";
     $sql.= "OR USER_PEER.RELATIONSHIP IS NULL OR THREAD.LENGTH > 1) ";
     $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
@@ -1737,9 +1740,12 @@ function messages_get_most_recent_unread($uid, $fid = false)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $unread_cutoff_stamp = forum_get_unread_cutoff();
+    if (($unread_cutoff_stamp = forum_get_unread_cutoff()) === false) return false;
 
     $unread_cutoff_timestamp = threads_get_unread_cutoff();
+
+    $user_ignored_completely = USER_IGNORED_COMPLETELY;
+    $user_ignored = USER_IGNORED;
 
     $sql = "SELECT THREAD.TID, UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, ";
     $sql.= "THREAD.LENGTH, USER_THREAD.LAST_READ, USER_PEER.RELATIONSHIP ";
@@ -1751,9 +1757,9 @@ function messages_get_most_recent_unread($uid, $fid = false)
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_FOLDER USER_FOLDER ";
     $sql.= "ON (USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
     $sql.= "WHERE THREAD.FID in ($fidlist) AND THREAD.DELETED = 'N' ";
-    $sql.= "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED_COMPLETELY. ") = 0 ";
-    $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
-    $sql.= "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED. ") = 0 ";
+    $sql.= "AND THREAD.LENGTH > 0 AND (USER_PEER.RELATIONSHIP IS NULL ";
+    $sql.= "OR (USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0) ";
+    $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 ";
     $sql.= "OR USER_PEER.RELATIONSHIP IS NULL OR THREAD.LENGTH > 1) ";
     $sql.= "AND USER_THREAD.LAST_READ < THREAD.LENGTH OR USER_THREAD.LAST_READ IS NULL ";
     $sql.= "AND THREAD.MODIFIED > FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp) ";

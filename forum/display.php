@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display.php,v 1.100 2008-07-30 22:39:22 decoyduck Exp $ */
+/* $Id: display.php,v 1.101 2008-08-10 12:36:28 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -109,17 +109,19 @@ if (!forum_check_access_level()) {
 }
 
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
-    list($tid, $pid) = explode('.', $_GET['msg']);
-}elseif (isset($_GET['print_msg']) && validate_msg($_GET['print_msg'])) {
-    list($tid, $pid) = explode('.', $_GET['print_msg']);
-}else {
-    $tid = 1; $pid = 1;
-}
 
-if (!$message = messages_get($tid, $pid, 1)) {
+    $msg = $_GET['msg'];
+    list($tid, $pid) = explode('.', $msg);
 
-    html_draw_top();
-    html_error_msg($lang['postdoesnotexist']);
+}else if (isset($_GET['print_msg']) && validate_msg($_GET['print_msg'])) {
+
+    $msg = $_GET['print_msg'];
+    list($tid, $pid) = explode('.', $msg);
+
+}else if (!$msg = messages_get_most_recent($uid)) {
+
+    html_draw_top("robots=noindex,nofollow");
+    html_display_error_msg($lang['nomessages']);
     html_draw_bottom();
     exit;
 }
@@ -136,6 +138,14 @@ if (!$folder_data = folder_get($thread_data['FID'])) {
 
     html_draw_top();
     html_error_msg($lang['foldercouldnotbefound']);
+    html_draw_bottom();
+    exit;
+}
+
+if (!$message = messages_get($tid, $pid, 1)) {
+
+    html_draw_top();
+    html_error_msg($lang['postdoesnotexist']);
     html_draw_bottom();
     exit;
 }

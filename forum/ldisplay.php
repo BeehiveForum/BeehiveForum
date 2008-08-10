@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ldisplay.php,v 1.36 2008-07-30 16:04:34 decoyduck Exp $ */
+/* $Id: ldisplay.php,v 1.37 2008-08-10 12:36:28 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -129,6 +129,7 @@ $uid = bh_session_get_value('UID');
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     $msg = $_GET['msg'];
+    list($tid, $pid) = explode('.', $msg);
 
 }else if (!$msg = messages_get_most_recent($uid)) {
 
@@ -138,25 +139,27 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     exit;
 }
 
-// Seperate the msg var into TID and PID
+if (!$thread_data = thread_get($tid, bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
-list($tid, $pid) = explode('.', $msg);
+    html_draw_top();
+    html_error_msg($lang['threadcouldnotbefound']);
+    html_draw_bottom();
+    exit;
+}
 
-// Try and fetch the messages
+if (!$folder_data = folder_get($thread_data['FID'])) {
+
+    html_draw_top();
+    html_error_msg($lang['foldercouldnotbefound']);
+    html_draw_bottom();
+    exit;
+}
 
 if (!$message = messages_get($tid, $pid, 1)) {
 
-   light_html_draw_top("robots=noindex,nofollow");
-   light_html_display_error_msg($lang['postdoesnotexist']);
-   light_html_draw_bottom();
-   exit;
-}
-
-if (!$thread_data = thread_get($tid)) {
-
-    light_html_draw_top("robots=noindex,nofollow");
-    light_html_display_error_msg($lang['threadcouldnotbefound']);
-    light_html_draw_bottom();
+    html_draw_top();
+    html_error_msg($lang['postdoesnotexist']);
+    html_draw_bottom();
     exit;
 }
 
@@ -177,7 +180,7 @@ if ($thread_data['POLL_FLAG'] == 'Y') {
 
     if ($message['PID'] == 1) {
 
-        light_poll_display($tid, $thread_data['LENGTH'], $thread_data['FID'], true, $thread_data['CLOSED'], false, false);      
+        light_poll_display($tid, $thread_data['LENGTH'], $thread_data['FID'], true, $thread_data['CLOSED'], false, false);
         $last_pid = $message['PID'];
 
     }else {

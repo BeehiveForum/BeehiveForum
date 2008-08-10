@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.569 2008-08-06 23:09:30 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.570 2008-08-10 12:36:28 decoyduck Exp $ */
 
 // British English language file
 
@@ -351,7 +351,6 @@ $lang['userdetails'] = "User Details";
 $lang['edituserdetails'] = "Edit User Details";
 $lang['warning_caps'] = "WARNING";
 $lang['userdeleteallpostswarning'] = "Are you sure you want to delete all of the selected user's posts? Once the posts are deleted they cannot be retrieved and will be lost forever.";
-$lang['postssuccessfullydeleted'] = "Posts were successfully deleted.";
 $lang['folderaccess'] = "Folder Access";
 $lang['possiblealiases'] = "Possible Aliases";
 $lang['ipaddressmatches'] = "IP Address Matches";
@@ -2034,6 +2033,8 @@ $lang['markasunread'] = "Mark as unread";
 $lang['makethreadsticky'] = "Make Thread Sticky";
 $lang['threareadstatusupdated'] = "Thread Read Status Updated Successfully";
 $lang['interestupdated'] = "Thread Interest Status Updated Successfully";
+$lang['threadwassuccessfullydeleted'] = "Thread was successfully deleted";
+$lang['threadwassuccessfullyundeleted'] = "Thread was successfully undeleted";
 $lang['failedtoupdatethreadreadstatus'] = "Failed to update thread read status";
 $lang['failedtoupdatethreadinterest'] = "Failed to update thread interest";
 $lang['failedtorenamethread'] = "Failed to rename thread";

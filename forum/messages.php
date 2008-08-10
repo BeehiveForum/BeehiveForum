@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.275 2008-08-03 13:18:53 decoyduck Exp $ */
+/* $Id: messages.php,v 1.276 2008-08-10 12:36:28 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -127,6 +127,7 @@ $uid = bh_session_get_value('UID');
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     $msg = $_GET['msg'];
+    list($tid, $pid) = explode('.', $msg);
 
 }else if (!$msg = messages_get_most_recent($uid)) {
 
@@ -135,10 +136,6 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     html_draw_bottom();
     exit;
 }
-
-// Seperate the msg var into TID and PID
-
-list($tid, $pid) = explode('.', $msg);
 
 // Poll stuff
 
@@ -212,15 +209,7 @@ if (($posts_per_page = bh_session_get_value('POSTS_PER_PAGE'))) {
     $posts_per_page = 20;
 }
 
-// Get the messages we are viewing
-
-if (!$messages = messages_get($tid, $pid, $posts_per_page)) {
-
-    html_draw_top();
-    html_error_msg($lang['postdoesnotexist']);
-    html_draw_bottom();
-    exit;
-}
+// Check the thread exists.
 
 if (!$thread_data = thread_get($tid, bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
@@ -230,10 +219,22 @@ if (!$thread_data = thread_get($tid, bh_session_check_perm(USER_PERM_ADMIN_TOOLS
     exit;
 }
 
+// Check it's in a folder we can view.
+
 if (!$folder_data = folder_get($thread_data['FID'])) {
 
     html_draw_top();
     html_error_msg($lang['foldercouldnotbefound']);
+    html_draw_bottom();
+    exit;
+}
+
+// Get the messages.
+
+if (!$messages = messages_get($tid, $pid, $posts_per_page)) {
+
+    html_draw_top();
+    html_error_msg($lang['postdoesnotexist']);
     html_draw_bottom();
     exit;
 }

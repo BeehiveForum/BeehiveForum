@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.149 2008-08-08 11:26:26 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.150 2008-08-10 12:36:28 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -96,7 +96,7 @@ function thread_get($tid, $inc_deleted = false)
     $sql.= "LEFT JOIN USER USER ON (USER.UID = THREAD.BY_UID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}FOLDER FOLDER ";
     $sql.= "ON (FOLDER.FID = THREAD.FID) ";
-    $sql.= "WHERE THREAD.TID = '$tid' ";
+    $sql.= "WHERE THREAD.TID = '$tid' AND THREAD.LENGTH > 0 ";
     $sql.= "AND THREAD.FID IN ($fidlist) ";
 
     if ($inc_deleted === false) $sql.= "AND THREAD.DELETED = 'N' ";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.114 2008-08-04 22:26:00 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.115 2008-08-10 12:36:28 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -506,17 +506,22 @@ if (isset($_POST['save'])) {
             }
         }
 
-        if (isset($_POST['delthread']) && in_array($_POST['delthread'], $thread_delete_valid_types)) {
+        if (isset($_POST['delete_thread']) && in_array($_POST['delete_thread'], $thread_delete_valid_types)) {
 
-            if (isset($_POST['delthread_con']) && $_POST['delthread_con'] == "Y") {
+            if (isset($_POST['delete_thread_confirm']) && $_POST['delete_thread_confirm'] == "Y") {
 
-                $delete_thread = $_POST['delthread'];
+                $delete_thread = $_POST['delete_thread'];
 
                 if (thread_delete($tid, $delete_thread)) {
 
                     post_add_edit_text($tid, 1);
 
                     admin_add_log_entry(DELETE_THREAD, array($tid, $thread_data['TITLE']));
+
+                    html_draw_top();
+                    html_display_msg($lang['deletethread'], $lang['threadwassuccessfullydeleted'], 'discussion.php', 'get', array('continue' => $lang['continue']), false, html_get_frame_name('main'), 'center');
+                    html_draw_bottom();
+                    exit;
 
                 }else {
 
@@ -526,15 +531,20 @@ if (isset($_POST['save'])) {
             }
         }
 
-        if (isset($_POST['undelthread']) && $_POST['undelthread'] == "Y") {
+        if (isset($_POST['undelete_thread']) && $_POST['undelete_thread'] == "Y") {
 
-            if (isset($_POST['undelthread_con']) && $_POST['undelthread_con'] == "Y") {
+            if (isset($_POST['undelete_thread_confirm']) && $_POST['undelete_thread_confirm'] == "Y") {
 
                 if (thread_undelete($tid)) {
 
                     post_add_edit_text($tid, 1);
 
                     admin_add_log_entry(UNDELETE_THREAD, array($tid, $thread_data['TITLE']));
+
+                    html_draw_top();
+                    html_display_msg($lang['undeletethread'], $lang['threadwassuccessfullyundeleted'], 'thread_options.php', 'get', array('back' => $lang['back']), array('msg' => $msg), '_self', 'center');
+                    html_draw_bottom();
+                    exit;
 
                 }else {
 
@@ -991,19 +1001,19 @@ if ($thread_data['DELETED'] == 'N') {
             echo "                    <table class=\"posthead\" width=\"95%\">\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\" class=\"posthead\">{$lang['deletethread']}:</td>\n";
-            echo "                        <td align=\"left\" class=\"posthead\">", form_radio("delthread", -1, $lang['no'], true), "</td>\n";
+            echo "                        <td align=\"left\" class=\"posthead\">", form_radio("delete_thread", -1, $lang['no'], true), "</td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\">&nbsp;</td>\n";
-            echo "                        <td align=\"left\" class=\"posthead\">", form_radio("delthread", 0, $lang['permenantlydelete'], false), "</td>\n";
+            echo "                        <td align=\"left\" class=\"posthead\">", form_radio("delete_thread", 0, $lang['permenantlydelete'], false), "</td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\">&nbsp;</td>\n";
-            echo "                        <td align=\"left\" class=\"posthead\">", form_radio("delthread", 1, $lang['movetodeleteditems'], false), "</td>\n";
+            echo "                        <td align=\"left\" class=\"posthead\">", form_radio("delete_thread", 1, $lang['movetodeleteditems'], false), "</td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\">&nbsp;</td>\n";
-            echo "                        <td align=\"left\" class=\"posthead\">", form_checkbox("delthread_con", "Y", $lang['confirm'], false), "</td>\n";
+            echo "                        <td align=\"left\" class=\"posthead\">", form_checkbox("delete_thread_confirm", "Y", $lang['confirm'], false), "</td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -1069,11 +1079,11 @@ if ($thread_data['DELETED'] == 'N') {
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">{$lang['undeletethread']}</td>\n";
-    echo "                        <td align=\"left\">", form_radio("undelthread", "Y", $lang['yes']), "&nbsp;", form_radio("undelthread", "N", $lang['no'], true), "</td>\n";
+    echo "                        <td align=\"left\">", form_radio("undelete_thread", "Y", $lang['yes']), "&nbsp;", form_radio("undelete_thread", "N", $lang['no'], true), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";
-    echo "                        <td align=\"left\" class=\"posthead\">", form_checkbox("undelthread_con", "Y", $lang['confirm'], false), " \n";
+    echo "                        <td align=\"left\" class=\"posthead\">", form_checkbox("undelete_thread_confirm", "Y", $lang['confirm'], false), " \n";
     echo "                        </td>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";

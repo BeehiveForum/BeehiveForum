@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.137 2008-08-04 12:40:59 decoyduck Exp $ */
+/* $Id: fixhtml.inc.php,v 1.138 2008-08-10 18:10:00 decoyduck Exp $ */
 
 /** A range of functions for filtering/cleaning posted HTML
 *
@@ -1558,8 +1558,6 @@ function add_paragraphs($html, $br_only = true)
 */
 function make_html ($html, $br_only = false, $emoticons = true, $links = true)
 {
-    $html = _htmlentities($html);
-
     if ($links == true) {
         $html = make_links($html);
     }

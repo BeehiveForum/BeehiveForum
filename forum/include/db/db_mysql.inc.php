@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db_mysql.inc.php,v 1.53 2008-07-30 23:12:23 decoyduck Exp $ */
+/* $Id: db_mysql.inc.php,v 1.54 2008-08-10 18:10:00 decoyduck Exp $ */
 
 function db_get_connection_vars(&$db_server, &$db_username, &$db_password, &$db_database)
 {
@@ -43,7 +43,10 @@ function db_connect($trigger_error = true)
 
             if (@mysql_select_db($db_database, $connection_id)) {
 
+                db_set_utf8_charset($connection_id);
+
                 db_enable_compat_mode($connection_id);
+
                 return $connection_id;
             }
         }
@@ -56,12 +59,18 @@ function db_connect($trigger_error = true)
     return $connection_id;
 }
 
+function db_set_utf8_charset($connection_id)
+{
+    $sql = "SET NAMES 'utf8'";
+    if (!db_query($sql, $connection_id)) return false;
+}
+
 function db_enable_compat_mode($connection_id)
 {
     $mysql_big_selects = isset($GLOBALS['mysql_big_selects']) ? $GLOBALS['mysql_big_selects'] : false;
 
     $mysql_version = 0;
-    
+
     if (db_fetch_mysql_version($mysql_version)) {
 
         if ($mysql_version >= 40100) {
@@ -90,7 +99,7 @@ function db_query($sql, $connection_id, $trigger_error = true)
     }
 
     if ($trigger_error === true) db_trigger_error($sql, $connection_id);
-    
+
     return false;
 }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.186 2008-08-03 21:36:46 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.187 2008-08-10 18:10:00 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -723,7 +723,7 @@ class MessageTextParse {
             }
         }
 
-        $signature = implode('', $signature_parts);
+        $signature = preg_replace("/^<div class=\"sig\">(.*)<\/div>$/s", '$1', implode('', $signature_parts));
 
         $message = implode('', $message_parts);
 

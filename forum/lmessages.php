@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lmessages.php,v 1.104 2008-07-30 16:04:34 decoyduck Exp $ */
+/* $Id: lmessages.php,v 1.105 2008-08-10 12:36:28 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -173,14 +173,6 @@ if (($posts_per_page = bh_session_get_value('POSTS_PER_PAGE'))) {
     $posts_per_page = 20;
 }
 
-if (!$messages = messages_get($tid, $pid, $posts_per_page)) {
-
-    light_html_draw_top("robots=noindex,nofollow");
-    light_html_display_error_msg($lang['postdoesnotexist']);
-    light_html_draw_bottom();
-    exit;
-}
-
 if (!$thread_data = thread_get($tid, bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
     light_html_draw_top("robots=noindex,nofollow");
@@ -194,6 +186,14 @@ if (!$folder_data = folder_get($thread_data['FID'])) {
     html_draw_top();
     html_error_msg($lang['foldercouldnotbefound']);
     html_draw_bottom();
+    exit;
+}
+
+if (!$messages = messages_get($tid, $pid, $posts_per_page)) {
+
+    light_html_draw_top("robots=noindex,nofollow");
+    light_html_display_error_msg($lang['postdoesnotexist']);
+    light_html_draw_bottom();
     exit;
 }
 
@@ -300,7 +300,7 @@ if ($msg_count > 0) {
 
             if ($message['PID'] == 1) {
 
-                light_poll_display($tid, $thread_data['LENGTH'], $thread_data['FID'], true, $thread_data['CLOSED'], true, false);               
+                light_poll_display($tid, $thread_data['LENGTH'], $thread_data['FID'], true, $thread_data['CLOSED'], true, false);
                 $last_pid = $message['PID'];
 
             }else {

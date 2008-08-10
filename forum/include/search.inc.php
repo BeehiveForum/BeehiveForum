@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.210 2008-07-31 16:48:18 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.211 2008-08-10 12:36:28 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -105,9 +105,9 @@ function search_execute($search_arguments, &$error)
         $where_sql = "WHERE THREAD.FID IN ($folders) ";
     }
 
-    // Can't search for deleted threads.
+    // Can't search for deleted threads nor threads with no posts
 
-    $where_sql.= "AND THREAD.DELETED = 'N' ";
+    $where_sql.= "AND THREAD.DELETED = 'N' AND THREAD.LENGTH > 0 ";
 
     // Where query needs to limit the search results to the user specified date range.
 

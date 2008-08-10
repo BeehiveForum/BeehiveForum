@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.168 2008-08-08 11:16:41 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.169 2008-08-10 18:10:00 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -317,7 +317,7 @@ function format_time_display($seconds, $abbrv_units = true)
 
 function _htmlentities($var)
 {
-    $var = ms_word_to_html($var);
+    $var = smart_quotes_clean_up($var);
 
     if (is_array($var)) {
         return array_map('_htmlentities', $var);
@@ -345,35 +345,49 @@ function _htmlentities_decode($var)
 }
 
 /**
-* Convert MS Word text to HTML
+* Clean up smart quotes
 *
-* Convert MS Word Smart Quotes and other characters into HTML equivilant entities.
+* Cleans smart quotes inserted by MS Word and other word processors.
 *
 * @return mixed
 * @param mixed $var - variable to encode - supports array of strings.
 */
 
-function ms_word_to_html($var)
+function smart_quotes_clean_up($var)
 {
-    $ms_word_to_html_array = array(chr(128) => '&euro;',   chr(130) => '&sbquo;',
-                                   chr(131) => '&fnof;',   chr(132) => '&bdquo;',
-                                   chr(133) => '&hellip;', chr(134) => '&dagger;',
-                                   chr(135) => '&Dagger;', chr(136) => '&circ;',
-                                   chr(137) => '&permil;', chr(138) => '&Scaron;',
-                                   chr(139) => '&lsaquo;', chr(140) => '&OElig;',
-                                   chr(145) => '&lsquo;',  chr(146) => '&rsquo;',
-                                   chr(147) => '&ldquo;',  chr(148) => '&rdquo;',
-                                   chr(149) => '&bull;',   chr(150) => '&ndash;',
-                                   chr(151) => '&mdash;',  chr(152) => '&tilde;',
-                                   chr(153) => '&trade;',  chr(154) => '&scaron;',
-                                   chr(155) => '&rsaquo;', chr(156) => '&oelig;',
-                                   chr(159) => '&Yuml;');
+   $smart_quotes_array = array("\xc2\x80" => "\xe2\x82\xac",  /* EURO SIGN */
+                               "\xc2\x82" => "\xe2\x80\x9a",  /* SINGLE LOW-9 QUOTATION MARK */
+                               "\xc2\x83" => "\xc6\x92",      /* LATIN SMALL LETTER F WITH HOOK */
+                               "\xc2\x84" => "\xe2\x80\x9e",  /* DOUBLE LOW-9 QUOTATION MARK */
+                               "\xc2\x85" => "\xe2\x80\xa6",  /* HORIZONTAL ELLIPSIS */
+                               "\xc2\x86" => "\xe2\x80\xa0",  /* DAGGER */
+                               "\xc2\x87" => "\xe2\x80\xa1",  /* DOUBLE DAGGER */
+                               "\xc2\x88" => "\xcb\x86",      /* MODIFIER LETTER CIRCUMFLEX ACCENT */
+                               "\xc2\x89" => "\xe2\x80\xb0",  /* PER MILLE SIGN */
+                               "\xc2\x8a" => "\xc5\xa0",      /* LATIN CAPITAL LETTER S WITH CARON */
+                               "\xc2\x8b" => "\xe2\x80\xb9",  /* SINGLE LEFT-POINTING ANGLE QUOTATION */
+                               "\xc2\x8c" => "\xc5\x92",      /* LATIN CAPITAL LIGATURE OE */
+                               "\xc2\x8e" => "\xc5\xbd",      /* LATIN CAPITAL LETTER Z WITH CARON */
+                               "\xc2\x91" => "\xe2\x80\x98",  /* LEFT SINGLE QUOTATION MARK */
+                               "\xc2\x92" => "\xe2\x80\x99",  /* RIGHT SINGLE QUOTATION MARK */
+                               "\xc2\x93" => "\xe2\x80\x9c",  /* LEFT DOUBLE QUOTATION MARK */
+                               "\xc2\x94" => "\xe2\x80\x9d",  /* RIGHT DOUBLE QUOTATION MARK */
+                               "\xc2\x95" => "\xe2\x80\xa2",  /* BULLET */
+                               "\xc2\x96" => "\xe2\x80\x93",  /* EN DASH */
+                               "\xc2\x97" => "\xe2\x80\x94",  /* EM DASH */
+                               "\xc2\x98" => "\xcb\x9c",      /* SMALL TILDE */
+                               "\xc2\x99" => "\xe2\x84\xa2",  /* TRADE MARK SIGN */
+                               "\xc2\x9a" => "\xc5\xa1",      /* LATIN SMALL LETTER S WITH CARON */
+                               "\xc2\x9b" => "\xe2\x80\xba",  /* SINGLE RIGHT-POINTING ANGLE QUOTATION*/
+                               "\xc2\x9c" => "\xc5\x93",      /* LATIN SMALL LIGATURE OE */
+                               "\xc2\x9e" => "\xc5\xbe",      /* LATIN SMALL LETTER Z WITH CARON */
+                               "\xc2\x9f" => "\xc5\xb8");     /* LATIN CAPITAL LETTER Y WITH DIAERESIS*/
 
     if (is_array($var)) {
-        return array_map('ms_word_to_html', $var);
+        return array_map('smart_quotes_clean_up', $var);
     }
 
-    return strtr($var, $ms_word_to_html_array);
+    return strtr($var, $smart_quotes_array);
 }
 
 /**

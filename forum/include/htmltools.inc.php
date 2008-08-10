@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: htmltools.inc.php,v 1.80 2008-08-06 23:09:29 decoyduck Exp $ */
+/* $Id: htmltools.inc.php,v 1.81 2008-08-10 13:55:53 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -101,7 +101,9 @@ function TinyMCE($tinymce_auto_focus)
         $str.= "    }\n\n";
         $str.= "    function add_text(text)\n";
         $str.= "    {\n";
-        $str.= "        tinyMCE.execCommand('mceFocus', false, 'mce_editor_0');\n";
+        $str.= "        if (tinyMCE.activeEditor.getContent().length < 1) {\n\n";
+        $str.= "            tinyMCE.activeEditor.setContent('');\n";
+        $str.= "        }\n\n";
         $str.= "        tinyMCE.execCommand('mceInsertContent', false, text);\n";
         $str.= "    }\n";
         $str.= "//-->\n";

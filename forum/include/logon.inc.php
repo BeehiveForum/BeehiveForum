@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.86 2008-08-04 20:20:35 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.87 2008-08-12 19:17:02 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -86,11 +86,11 @@ function logon_update_logon_cookie($old_logon, $new_logon)
 
         // Remove old format cookies
 
-        for ($i = 0; $i < sizeof($username_array); $i++) {
+        while (list($key) = each($username_array)) {
 
-            bh_setcookie("bh_remember_username[$i]", '', time() - YEAR_IN_SECONDS);
-            bh_setcookie("bh_remember_password[$i]", '', time() - YEAR_IN_SECONDS);
-            bh_setcookie("bh_remember_passhash[$i]", '', time() - YEAR_IN_SECONDS);
+            bh_setcookie("bh_remember_username[$key]", '', time() - YEAR_IN_SECONDS);
+            bh_setcookie("bh_remember_password[$key]", '', time() - YEAR_IN_SECONDS);
+            bh_setcookie("bh_remember_passhash[$key]", '', time() - YEAR_IN_SECONDS);
         }
 
         // New format cookies for 0.8 for better compatibility with more browsers.
@@ -118,11 +118,11 @@ function logon_update_password_cookie($logon, $password)
 
         // Remove old format cookies
 
-        for ($i = 0; $i < sizeof($username_array); $i++) {
+        while (list($key) = each($username_array)) {
 
-            bh_setcookie("bh_remember_username[$i]", '', time() - YEAR_IN_SECONDS);
-            bh_setcookie("bh_remember_password[$i]", '', time() - YEAR_IN_SECONDS);
-            bh_setcookie("bh_remember_passhash[$i]", '', time() - YEAR_IN_SECONDS);
+            bh_setcookie("bh_remember_username[$key]", '', time() - YEAR_IN_SECONDS);
+            bh_setcookie("bh_remember_password[$key]", '', time() - YEAR_IN_SECONDS);
+            bh_setcookie("bh_remember_passhash[$key]", '', time() - YEAR_IN_SECONDS);
         }
 
         // New format cookies for 0.8 for better compatibility with more browsers.
@@ -196,11 +196,11 @@ function logon_update_cookies($logon, $password, $passhash, $save_password)
 
         // Remove old format cookies
 
-        for ($i = 0; $i < sizeof($username_array); $i++) {
+        while (list($key) = each($username_array)) {
 
-            bh_setcookie("bh_remember_username[$i]", '', time() - YEAR_IN_SECONDS);
-            bh_setcookie("bh_remember_password[$i]", '', time() - YEAR_IN_SECONDS);
-            bh_setcookie("bh_remember_passhash[$i]", '', time() - YEAR_IN_SECONDS);
+            bh_setcookie("bh_remember_username[$key]", '', time() - YEAR_IN_SECONDS);
+            bh_setcookie("bh_remember_password[$key]", '', time() - YEAR_IN_SECONDS);
+            bh_setcookie("bh_remember_passhash[$key]", '', time() - YEAR_IN_SECONDS);
         }
 
         // New format cookies for 0.8 for better compatibility with more browsers.

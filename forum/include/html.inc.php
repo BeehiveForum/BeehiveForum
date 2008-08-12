@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.291 2008-08-12 17:09:17 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.292 2008-08-12 19:17:02 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1133,11 +1133,11 @@ function bh_remove_all_cookies()
 
     // Remove the old saved logon cookies
 
-    for ($i = 0; $i < sizeof($username_array); $i++) {
+    while (list($key) = each($username_array)) {
 
-        bh_setcookie("bh_remember_username[$i]", "", time() - YEAR_IN_SECONDS);
-        bh_setcookie("bh_remember_password[$i]", "", time() - YEAR_IN_SECONDS);
-        bh_setcookie("bh_remember_passhash[$i]", "", time() - YEAR_IN_SECONDS);
+        bh_setcookie("bh_remember_username[$key]", '', time() - YEAR_IN_SECONDS);
+        bh_setcookie("bh_remember_password[$key]", '', time() - YEAR_IN_SECONDS);
+        bh_setcookie("bh_remember_passhash[$key]", '', time() - YEAR_IN_SECONDS);
     }
 
     // The newer cookie format.

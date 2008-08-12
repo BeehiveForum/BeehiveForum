@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display.php,v 1.101 2008-08-10 12:36:28 decoyduck Exp $ */
+/* $Id: display.php,v 1.102 2008-08-12 17:22:02 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -107,6 +107,13 @@ if (!forum_check_access_level()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
+
+// User UID for fetching recent message
+
+$uid = bh_session_get_value('UID');
+
+// Check that required variables are set
+// default to display most recent discussion for user
 
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 

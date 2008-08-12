@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_messages.php,v 1.48 2008-07-30 17:41:39 decoyduck Exp $ */
+/* $Id: pm_messages.php,v 1.49 2008-08-12 17:13:45 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -328,10 +328,10 @@ if (isset($_POST['search'])) {
     }else {
         $search_string = '';
     }
-    
+
     $min_length = 4;
     $max_length = 84;
-    
+
     $error = SEARCH_NO_ERROR;
 
     if (!pm_search_execute($search_string, $error)) {
@@ -619,7 +619,7 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
 
             if (isset($message['RECIPIENTS']) && strlen(trim($message['RECIPIENTS'])) > 0) {
 
-                $recipient_array = preg_split("/[;|,]/", trim($message['RECIPIENTS']));
+                $recipient_array = preg_split("/[;|,]/u", trim($message['RECIPIENTS']));
 
                 if ($message['TO_UID'] > 0) {
                     $recipient_array = array_unique(array_merge($recipient_array, array($message['TLOGON'])));
@@ -657,7 +657,7 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
 
                 if (isset($message['RECIPIENTS']) && strlen(trim($message['RECIPIENTS'])) > 0) {
 
-                    $recipient_array = preg_split("/[;|,]/", trim($message['RECIPIENTS']));
+                    $recipient_array = preg_split("/[;|,]/u", trim($message['RECIPIENTS']));
 
                     if ($message['TO_UID'] > 0) {
                         $recipient_array = array_unique(array_merge($recipient_array, array($message['TLOGON'])));

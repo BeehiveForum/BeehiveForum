@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_password.php,v 1.24 2008-07-27 18:26:09 decoyduck Exp $ */
+/* $Id: forum_password.php,v 1.25 2008-08-12 17:13:45 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -146,7 +146,7 @@ if (isset($redirect_uri) && strlen(trim($redirect_uri)) > 0) {
     $available_files = get_available_files();
     $available_files_preg = implode("|^", array_map('preg_quote_callback', $available_files));
 
-    if (preg_match("/^$available_files_preg/", basename($redirect_uri)) < 1) {
+    if (preg_match("/^$available_files_preg/u", basename($redirect_uri)) < 1) {
         $redirect_uri = "index.php?webtag=$webtag";
     }
 }

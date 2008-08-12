@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.183 2008-07-28 21:05:49 decoyduck Exp $ */
+/* $Id: register.php,v 1.184 2008-08-12 17:13:44 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -88,7 +88,7 @@ if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri'])))
     $available_files = get_available_files();
     $available_files_preg = implode("|^", array_map('preg_quote_callback', $available_files));
 
-    if (preg_match("/^$available_files_preg/", basename($final_uri)) < 1) unset($final_uri);
+    if (preg_match("/^$available_files_preg/u", basename($final_uri)) < 1) unset($final_uri);
 }
 
 // Load the user session
@@ -209,7 +209,7 @@ if (isset($_POST['register'])) {
 
         $logon = strtoupper(trim(_stripslashes($_POST['logon'])));
 
-        if (!preg_match("/^[a-z0-9_-]+$/i", $logon)) {
+        if (!preg_match("/^[a-z0-9_-]+$/iu", $logon)) {
 
             $error_msg_array[] = $lang['usernameinvalidchars'];
             $valid = false;
@@ -243,7 +243,7 @@ if (isset($_POST['register'])) {
 
         $password = trim(_stripslashes($_POST['pw']));
 
-        if (!preg_match("/^[a-z0-9_-]+$/i", $password)) {
+        if (!preg_match("/^[a-z0-9_-]+$/iu", $password)) {
 
             $error_msg_array[] = $lang['passwordinvalidchars'];
             $valid = false;

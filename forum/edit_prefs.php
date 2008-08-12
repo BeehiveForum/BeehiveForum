@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_prefs.php,v 1.100 2008-07-30 17:41:38 decoyduck Exp $ */
+/* $Id: edit_prefs.php,v 1.101 2008-08-12 17:13:45 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -209,7 +209,7 @@ if (isset($_POST['save'])) {
 
             $user_info_new['LOGON'] = trim(_stripslashes($_POST['logon']));
 
-            if (!preg_match("/^[a-z0-9_-]+$/i", $user_info_new['LOGON'])) {
+            if (!preg_match("/^[a-z0-9_-]+$/iu", $user_info_new['LOGON'])) {
 
                 $error_msg_array[] = $lang['usernameinvalidchars'];
                 $valid = false;
@@ -338,7 +338,7 @@ if (isset($_POST['save'])) {
 
         if (strlen(trim($user_prefs['HOMEPAGE_URL'])) > 0) {
 
-            if (preg_match('/^http:\/\//', $user_prefs['HOMEPAGE_URL']) < 1) {
+            if (preg_match('/^http:\/\//u', $user_prefs['HOMEPAGE_URL']) < 1) {
 
                 $error_msg_array[] = $lang['homepageurlmustincludeschema'];
                 $valid = false;
@@ -358,7 +358,7 @@ if (isset($_POST['save'])) {
 
         if (strlen(trim($user_prefs['PIC_URL'])) > 0) {
 
-            if (preg_match('/^http:\/\//', $user_prefs['PIC_URL']) < 1) {
+            if (preg_match('/^http:\/\//u', $user_prefs['PIC_URL']) < 1) {
 
                 $error_msg_array[] = $lang['pictureurlmustincludeschema'];
                 $valid = false;
@@ -437,7 +437,7 @@ if (isset($_POST['save'])) {
 
         if (strlen(trim($user_prefs['AVATAR_URL'])) > 0) {
 
-            if (preg_match('/^http:\/\//', $user_prefs['AVATAR_URL']) < 1) {
+            if (preg_match('/^http:\/\//u', $user_prefs['AVATAR_URL']) < 1) {
 
                 $error_msg_array[] = $lang['avatarurlmustincludeschema'];
                 $valid = false;
@@ -588,7 +588,7 @@ if (isset($_POST['save'])) {
 
 // Split the DOB into usable variables.
 
-if (isset($user_prefs['DOB']) && preg_match('/\d{4,}-\d{2,}-\d{2,}/', $user_prefs['DOB'])) {
+if (isset($user_prefs['DOB']) && preg_match('/\d{4,}-\d{2,}-\d{2,}/u', $user_prefs['DOB'])) {
 
     if (!isset($dob['YEAR']) || !isset($dob['MONTH']) || !isset($dob['DAY'])) {
 

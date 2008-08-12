@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.155 2008-08-03 11:23:08 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.156 2008-08-12 17:09:18 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -136,7 +136,7 @@ function get_attachments($uid, $aid, &$user_attachments, &$user_image_attachment
 
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
 
-    $hash_array = preg_grep("/^[A-Fa-f0-9]{32}$/", $hash_array);
+    $hash_array = preg_grep("/^[A-Fa-f0-9]{32}$/u", $hash_array);
 
     if (is_array($hash_array) && sizeof($hash_array) > 0) {
 
@@ -284,7 +284,7 @@ function get_users_attachments($uid, &$user_attachments, &$user_image_attachment
 
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
 
-    $hash_array = preg_grep("/^[A-Fa-f0-9]{32}$/", $hash_array);
+    $hash_array = preg_grep("/^[A-Fa-f0-9]{32}$/u", $hash_array);
 
     if (is_array($hash_array) && sizeof($hash_array) > 0) {
 
@@ -836,9 +836,9 @@ function attachment_embed_check($content)
 {
     if (forum_get_setting('attachments_allow_embed', 'Y')) return false;
 
-    $content_check = preg_replace('/\&amp;\#([0-9]+)\;/me', "chr('\\1')", rawurldecode($content));
+    $content_check = preg_replace('/\&amp;\#([0-9]+)\;/ume', "chr('\\1')", rawurldecode($content));
 
-    return preg_match("/<.+(src|background|codebase|background-image)(=|s?:s?).+get_attachment.php.+>/ ", $content_check);
+    return preg_match("/<.+(src|background|codebase|background-image)(=|s?:s?).+get_attachment.php.+>/iu", $content_check);
 }
 
 /**

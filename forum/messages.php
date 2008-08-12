@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.276 2008-08-10 12:36:28 decoyduck Exp $ */
+/* $Id: messages.php,v 1.277 2008-08-12 17:13:44 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -335,11 +335,11 @@ if (sizeof($highlight_array) > 0) {
 
         $highlight_word = preg_quote($word, "/");
 
-        $highlight_pattern[$key] = "/($highlight_word)/i";
+        $highlight_pattern[$key] = "/($highlight_word)/iu";
         $highlight_replace[$key] = "<span class=\"highlight\">\\1</span>";
     }
 
-    $thread_parts = preg_split('/([<|>])/', $thread_title, -1, PREG_SPLIT_DELIM_CAPTURE);
+    $thread_parts = preg_split('/([<|>])/u', $thread_title, -1, PREG_SPLIT_DELIM_CAPTURE);
 
     for ($i = 0; $i < sizeof($thread_parts); $i++) {
 

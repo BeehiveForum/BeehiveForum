@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_cvs_log_parse.php,v 1.19 2008-07-30 22:39:22 decoyduck Exp $ */
+/* $Id: bh_cvs_log_parse.php,v 1.20 2008-08-12 17:13:46 decoyduck Exp $ */
 
 /**
 * bh_cvs_log_parse.php
@@ -128,15 +128,15 @@ function cvs_mysql_parse($cvs_log_contents)
 {
     if (!$db_cvs_log_parse = db_connect()) return false;
 
-    $cvs_log_array = preg_split("/\n={77}|\n-{22}/", $cvs_log_contents, -1, PREG_SPLIT_DELIM_CAPTURE);
+    $cvs_log_array = preg_split("/\n={77}|\n-{22}/u", $cvs_log_contents, -1, PREG_SPLIT_DELIM_CAPTURE);
 
     foreach ($cvs_log_array as $cvs_log_entry) {
 
         $cvs_log_match_array = array();
-    	
-    	$description_match = '/date: ([0-9]{4})\/([0-9]{2})\/([0-9]{2}) ([0-9]{2}):([0-9]{2}):([0-9]{2});  ';
+
+        $description_match = '/date: ([0-9]{4})\/([0-9]{2})\/([0-9]{2}) ([0-9]{2}):([0-9]{2}):([0-9]{2});  ';
         $description_match.= 'author: ([^;]+);  state: [^;]+;  lines: \+[0-9]+ \-[0-9]+\n';
-        $description_match.= '(.+)/s';
+        $description_match.= '(.+)/su';
 
         if (preg_match_all($description_match, trim($cvs_log_entry), $cvs_log_match_array, PREG_SET_ORDER) > 0) {
 
@@ -220,7 +220,7 @@ function cvs_mysql_output_log($log_filename)
 // that it is in the valid format YYYY-MM-DD. If we don't
 // we use Beehive's birthday.
 
-if (isset($_SERVER['argv'][1]) && preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $_SERVER['argv'][1]) > 0) {
+if (isset($_SERVER['argv'][1]) && preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/u', $_SERVER['argv'][1]) > 0) {
 
     $modified_date = $_SERVER['argv'][1];
 

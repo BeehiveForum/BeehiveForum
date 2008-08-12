@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ip.inc.php,v 1.37 2008-07-30 22:39:24 decoyduck Exp $ */
+/* $Id: ip.inc.php,v 1.38 2008-08-12 17:09:17 decoyduck Exp $ */
 
 /**
 * ip.inc.php - IP Address related functions
@@ -126,7 +126,7 @@ function check_ip_address($ip)
     $ip_check_preg = '/^([0-9]{1,2}|[01][0-9]{2}|2[0-4][0-9]|25[0-5])\.';
     $ip_check_preg.= '([0-9]{1,2}|[01][0-9]{2}|2[0-4][0-9]|25[0-5])\.';
     $ip_check_preg.= '([0-9]{1,2}|[01][0-9]{2}|2[0-4][0-9]|25[0-5])\.';
-    $ip_check_preg.= '([0-9]{1,2}|[01][0-9]{2}|2[0-4][0-9]|25[0-5])$/';
+    $ip_check_preg.= '([0-9]{1,2}|[01][0-9]{2}|2[0-4][0-9]|25[0-5])$/u';
 
     return (preg_match($ip_check_preg, $ip) > 0);
 }

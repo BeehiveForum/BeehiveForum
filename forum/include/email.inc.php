@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.144 2008-08-08 11:16:40 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.145 2008-08-12 17:09:18 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -156,7 +156,7 @@ function email_send_thread_subscription($tuid, $fuid, $tid, $pid, $modified, &$e
 
     $webtag = get_webtag();
 
-    $exclude_user_list = implode(",", preg_grep("/^[0-9]+$/", $exclude_user_array));
+    $exclude_user_list = implode(",", preg_grep("/^[0-9]+$/u", $exclude_user_array));
 
     $sql = "SELECT USER_THREAD.UID, USER.LOGON, USER.NICKNAME, USER.EMAIL ";
     $sql.= "FROM {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
@@ -260,7 +260,7 @@ function email_send_folder_subscription($tuid, $fuid, $fid, $tid, $pid, $modifie
 
     $webtag = get_webtag();
 
-    $exclude_user_list = implode(",", preg_grep("/^[0-9]+$/", $exclude_user_array));
+    $exclude_user_list = implode(",", preg_grep("/^[0-9]+$/u", $exclude_user_array));
 
     $sql = "SELECT USER_FOLDER.UID, USER.LOGON, USER.NICKNAME, USER.EMAIL ";
     $sql.= "FROM {$table_data['PREFIX']}USER_FOLDER USER_FOLDER ";

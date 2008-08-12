@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.76 2008-08-04 20:20:35 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.77 2008-08-12 17:09:17 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -453,7 +453,7 @@ function install_get_table_conflicts($webtag = false, $forum_tables = false, $gl
                                'USER_TRACK',   'VISITOR_LOG');
     }
 
-    if (($webtag !== false) && preg_match("/^[A-Z0-9_]+$/", $webtag) > 0) {
+    if (($webtag !== false) && preg_match("/^[A-Z0-9_]+$/u", $webtag) > 0) {
 
         if (is_array($forum_tables) && sizeof($forum_tables) > 0) {
 
@@ -499,7 +499,7 @@ function install_remove_table_keys($table_name)
 
     while (($table_index_data = db_fetch_array($result))) {
 
-        if (preg_match("/^PRIMARY$/", strtoupper($table_index_data['Key_name'])) < 1) {
+        if (preg_match("/^PRIMARY$/u", strtoupper($table_index_data['Key_name'])) < 1) {
 
             $table_index[] = $table_index_data['Key_name'];
         }

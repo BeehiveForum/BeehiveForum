@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.252 2008-08-08 11:16:41 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.253 2008-08-12 17:13:46 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1141,7 +1141,7 @@ function pm_display($pm_message_array, $folder, $preview = false, $export_html =
 
         if (isset($pm_message_array['RECIPIENTS']) && strlen(trim($pm_message_array['RECIPIENTS'])) > 0) {
 
-            $recipient_array = preg_split("/[;|,]/", trim($pm_message_array['RECIPIENTS']));
+            $recipient_array = preg_split("/[;|,]/u", trim($pm_message_array['RECIPIENTS']));
 
             if ($pm_message_array['TO_UID'] > 0) {
                 $recipient_array = array_unique(array_merge($recipient_array, array($pm_message_array['TLOGON'])));
@@ -1875,7 +1875,7 @@ function pm_get_message_count(&$pm_new_count, &$pm_outbox_count, &$pm_unread_cou
 
         // Convert the array keys into a comma separated list.
 
-        $mid_list = implode(',', preg_grep('/^[0-9]+$/', array_keys($pm_messages_array)));
+        $mid_list = implode(',', preg_grep('/^[0-9]+$/u', array_keys($pm_messages_array)));
 
         // Mark the selected messages as unread / received and make the
         // sent items visible to the sender.
@@ -2137,7 +2137,7 @@ function pms_have_attachments(&$pm_array, $mid_array)
     if (!is_array($mid_array)) return false;
     if (sizeof($mid_array) < 1) return false;
 
-    $mid_list = implode(",", preg_grep("/^[0-9]+$/", $mid_array));
+    $mid_list = implode(",", preg_grep("/^[0-9]+$/u", $mid_array));
 
     if (!$db_thread_has_attachments = db_connect()) return false;
 

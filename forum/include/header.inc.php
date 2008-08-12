@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: header.inc.php,v 1.40 2008-07-30 22:39:24 decoyduck Exp $ */
+/* $Id: header.inc.php,v 1.41 2008-08-12 17:09:18 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -121,7 +121,7 @@ function header_redirect($uri, $reason = false)
 
 function header_server_error()
 {
-    if (preg_match('/cgi/', php_sapi_name())) {
+    if (preg_match('/cgi/u', php_sapi_name())) {
 
         header('Status: 500 Internal Server Error');
         exit;
@@ -145,7 +145,7 @@ function header_server_error()
 
 function header_check_cache($seconds = 300)
 {
-    if (preg_match('/cgi/', php_sapi_name()) > 0) return false;
+    if (preg_match('/cgi/u', php_sapi_name()) > 0) return false;
 
     if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') return false;
 
@@ -186,7 +186,7 @@ function header_check_cache($seconds = 300)
 
 function header_check_etag($local_etag)
 {
-    if (preg_match('/cgi/', php_sapi_name()) > 0) return false;
+    if (preg_match('/cgi/u', php_sapi_name()) > 0) return false;
 
     if (isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
         $remote_etag = substr(_stripslashes($_SERVER['HTTP_IF_NONE_MATCH']), 1, -1);

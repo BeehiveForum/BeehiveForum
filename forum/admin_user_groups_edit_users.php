@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit_users.php,v 1.62 2008-07-28 21:05:48 decoyduck Exp $ */
+/* $Id: admin_user_groups_edit_users.php,v 1.63 2008-08-12 17:13:45 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -127,7 +127,7 @@ if (isset($ret) && strlen(trim($ret)) > 0) {
     $available_pages = array('admin_user_groups_edit.php', 'admin_users_groups.php', 'admin_user.php');
     $available_pages_preg = implode("|^", array_map('preg_quote_callback', $available_pages));
 
-    if (preg_match("/^$available_pages_preg/", basename($ret)) < 1) {
+    if (preg_match("/^$available_pages_preg/u", basename($ret)) < 1) {
         $ret = "admin_user_groups.php?webtag=$webtag";
     }
 }

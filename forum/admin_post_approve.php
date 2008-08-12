@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_post_approve.php,v 1.67 2008-07-30 22:39:22 decoyduck Exp $ */
+/* $Id: admin_post_approve.php,v 1.68 2008-08-12 17:13:45 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -132,7 +132,7 @@ if (isset($ret) && strlen(trim($ret)) > 0) {
     $available_files = array('admin_post_approve.php', 'messages.php');
     $available_files_preg = implode("|^", array_map('preg_quote_callback', $available_files));
 
-    if (preg_match("/^$available_files_preg/", basename($ret)) < 1) {
+    if (preg_match("/^$available_files_preg/u", basename($ret)) < 1) {
         $ret = "admin_post_approve.php?webtag=$webtag";
     }
 }
@@ -228,7 +228,7 @@ if (isset($msg) && validate_msg($msg)) {
 
                 admin_add_log_entry(APPROVED_POST, array($t_fid, $tid, $pid));
 
-                if (preg_match("/^messages.php/", basename($ret)) > 0) {
+                if (preg_match("/^messages.php/u", basename($ret)) > 0) {
 
                     header_redirect("messages.php?webtag=$webtag&msg=$msg&post_approve_success=$msg");
                     exit;
@@ -260,7 +260,7 @@ if (isset($msg) && validate_msg($msg)) {
                     $msg = messages_get_most_recent(bh_session_get_value('UID'));
                 }
 
-                if (preg_match("/^messages.php/", basename($ret)) > 0) {
+                if (preg_match("/^messages.php/u", basename($ret)) > 0) {
 
                     header_redirect("messages.php?webtag=$webtag&msg=$msg&delete_success=$tid.$pid");
                     exit;

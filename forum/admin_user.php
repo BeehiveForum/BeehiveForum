@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.247 2008-07-28 21:05:47 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.248 2008-08-12 17:13:45 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -146,7 +146,7 @@ if (isset($ret) && strlen(trim($ret)) > 0) {
     $available_files = get_available_files();
     $available_files_preg = implode("|^", array_map('preg_quote_callback', $available_files));
 
-    if (preg_match("/^$available_files_preg/", basename($ret)) < 1) {
+    if (preg_match("/^$available_files_preg/u", basename($ret)) < 1) {
         $ret = "admin_users.php?webtag=$webtag";
     }
 }

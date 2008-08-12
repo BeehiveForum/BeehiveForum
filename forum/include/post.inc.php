@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.187 2008-08-10 18:10:00 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.188 2008-08-12 17:13:46 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -658,7 +658,7 @@ class MessageText {
 
                 $tidy_text = tidy_html($text, ($this->html == POST_HTML_AUTO) ? true : false);
 
-                if (trim(preg_replace('/<code[^>]*>.*<\/code>/s', '', $this->original_text)) != trim(preg_replace('/<code[^>]*>.*<\/code>/s', '', $tidy_text))) {
+                if (trim(preg_replace('/<code[^>]*>.*<\/code>/su', '', $this->original_text)) != trim(preg_replace('/<code[^>]*>.*<\/code>/su', '', $tidy_text))) {
                     $this->diff = true;
                 }
             }
@@ -710,7 +710,7 @@ class MessageTextParse {
     {
         $this->original = $message;
 
-        $message_parts = preg_split('/(<[^<>]+>)/', $message, -1, PREG_SPLIT_DELIM_CAPTURE);
+        $message_parts = preg_split('/(<[^<>]+>)/u', $message, -1, PREG_SPLIT_DELIM_CAPTURE);
 
         $signature_parts = array();
 
@@ -723,19 +723,19 @@ class MessageTextParse {
             }
         }
 
-        $signature = preg_replace("/^<div class=\"sig\">(.*)<\/div>$/s", '$1', implode('', $signature_parts));
+        $signature = preg_replace('/^<div class="sig">(.*)<\/div>$/su', '$1', implode('', $signature_parts));
 
         $message = implode('', $message_parts);
 
         $emoticons = $emots_default;
 
-        if (preg_match('/^<noemots>.*<\/noemots>$/s', $message) > 0) {
+        if (preg_match('/^<noemots>.*<\/noemots>$/su', $message) > 0) {
             $emoticons = false;
         }
 
         $html = POST_HTML_DISABLED;
 
-        $message_temp = preg_replace('/<a href="(http:\/\/)?([^"]*)">((http:\/\/)?\\2)<\/a>/', '\3', $message);
+        $message_temp = preg_replace('/<a href="(http:\/\/)?([^"]*)">((http:\/\/)?\\2)<\/a>/u', '\3', $message);
 
         if ($message_temp != $message) {
             $links = true;

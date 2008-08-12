@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_check_dependencies.php,v 1.26 2008-07-30 23:57:32 decoyduck Exp $ */
+/* $Id: bh_check_dependencies.php,v 1.27 2008-08-12 17:13:46 decoyduck Exp $ */
 
 // Callback function to escape array of strings.
 
@@ -68,13 +68,13 @@ foreach ($source_files_dir_array as $include_file_dir) {
 
                 $function_matches = array();
 
-                if (preg_match_all('/function\s([a-z1-9-_]+)[\s]?\(/i', $source_file_contents, $function_matches)) {
+                if (preg_match_all('/function\s([a-z1-9-_]+)[\s]?\(/iu', $source_file_contents, $function_matches)) {
 
                     if (!isset($include_files_functions_array[$file])) {
 
                         if (sizeof($ignore_functions_array) > 0) {
 
-                            $function_matches = preg_grep("/$ignore_functions/", $function_matches[1], PREG_GREP_INVERT);
+                            $function_matches = preg_grep("/$ignore_functions/u", $function_matches[1], PREG_GREP_INVERT);
                             $include_files_functions_array[$file] = $function_matches;
 
                         }else {
@@ -87,7 +87,7 @@ foreach ($source_files_dir_array as $include_file_dir) {
                         if (sizeof($ignore_functions_array) > 0) {
 
                             $include_files_functions_array[$file] = array_merge($include_files_functions_array[$file], $function_matches[1]);
-                            $include_files_functions_array = preg_grep("/$ignore_functions/", $include_files_functions_array[$file], PREG_GREP_INVERT);
+                            $include_files_functions_array = preg_grep("/$ignore_functions/u", $include_files_functions_array[$file], PREG_GREP_INVERT);
 
                         }else {
 
@@ -98,13 +98,13 @@ foreach ($source_files_dir_array as $include_file_dir) {
 
                 $constant_matches = array();
 
-                if (preg_match_all('/define[\s]?\(["|\']?([a-z1-9-_]+)/i', $source_file_contents, $constant_matches)) {
+                if (preg_match_all('/define[\s]?\(["|\']?([a-z1-9-_]+)/iu', $source_file_contents, $constant_matches)) {
 
                     if (!isset($include_files_constants_array[$file])) {
 
                         if (sizeof($ignore_constants_array) > 0) {
 
-                            $constant_matches = preg_grep("/$ignore_constants/", $constant_matches[1], PREG_GREP_INVERT);
+                            $constant_matches = preg_grep("/$ignore_constants/u", $constant_matches[1], PREG_GREP_INVERT);
 
                             if (sizeof($constant_matches) > 0) {
 
@@ -121,7 +121,7 @@ foreach ($source_files_dir_array as $include_file_dir) {
                         if (sizeof($ignore_constants_array) > 0) {
 
                             $include_files_constants_array[$file] = array_merge($include_files_constants_array[$file], $constant_matches[1]);
-                            $include_files_constants_array = preg_grep("/$ignore_constants/", $include_files_constants_array[$file], PREG_GREP_INVERT);
+                            $include_files_constants_array = preg_grep("/$ignore_constants/u", $include_files_constants_array[$file], PREG_GREP_INVERT);
 
                         }else {
 
@@ -151,10 +151,10 @@ foreach ($source_files_array as $source_file) {
             $include_file_line = "include_once(BH_INCLUDE_PATH. \"$include_file\")";
             $include_file_line_preg = preg_quote($include_file_line, "/");
 
-            if (preg_match("/$include_file_line_preg/", $source_file_contents) < 1) {
+            if (preg_match("/$include_file_line_preg/u", $source_file_contents) < 1) {
 
                 $function_names_preg = implode('\s?\(|[\s|\.|,]+', array_map('preg_quote_callback', $function_names_array));
-                $function_names_preg = sprintf('/[\s|\.|,]%s\s?\(/', $function_names_preg);
+                $function_names_preg = sprintf('/[\s|\.|,]%s\s?\(/u', $function_names_preg);
 
                 if (preg_match($function_names_preg, $source_file_contents) > 0) {
 
@@ -174,11 +174,11 @@ foreach ($source_files_array as $source_file) {
             $include_file_line = "include_once(BH_INCLUDE_PATH. \"$include_file\")";
             $include_file_line_preg = preg_quote($include_file_line, "/");
 
-            if (preg_match("/$include_file_line_preg/", $source_file_contents) < 1) {
+            if (preg_match("/$include_file_line_preg/u", $source_file_contents) < 1) {
 
                 $constant_names_preg = implode("|", array_map('preg_quote_callback', $constant_names_array));
 
-                if (preg_match("/{$constant_names_preg}/", $source_file_contents) > 0) {
+                if (preg_match("/{$constant_names_preg}/u", $source_file_contents) > 0) {
 
                     if (!in_array($include_file, $include_files_required_array)) {
 

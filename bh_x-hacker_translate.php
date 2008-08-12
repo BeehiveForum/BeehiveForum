@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_x-hacker_translate.php,v 1.21 2008-07-30 22:39:22 decoyduck Exp $ */
+/* $Id: bh_x-hacker_translate.php,v 1.22 2008-08-12 17:13:46 decoyduck Exp $ */
 
 // Creates an X-Hacker (L33t SpEak) language file from the en.inc.php
 // Derived from the L33t-5p34K G3n3r@t0r v3r510N 0.6 found at :
@@ -34,7 +34,7 @@ function htmlentities_decode($text)
     $trans_tbl = get_html_translation_table (HTML_ENTITIES);
     $trans_tbl = array_flip ($trans_tbl);
     $ret = strtr ($text, $trans_tbl);
-    return preg_replace('/&amp;#(\d+);/me', 'chr(\1)', $ret);
+    return preg_replace('/&amp;#(\d+);/meu', 'chr(\1)', $ret);
 }
 
 function rn($r)
@@ -49,7 +49,7 @@ function translate($matches)
 
     $sprintf_chars = array('b', 'c', 'd', 'e', 'u', 'f', 'F', 'o', 's', 'x', 'X');
 
-    $string_parts = preg_split('/([<|>])/', $string_translate, -1, PREG_SPLIT_DELIM_CAPTURE);
+    $string_parts = preg_split('/([<|>])/u', $string_translate, -1, PREG_SPLIT_DELIM_CAPTURE);
 
     // Initialize the variables we need.
 
@@ -92,7 +92,7 @@ function translate($matches)
         }
     }
 
-    $string_parts = preg_split('/([<|>])/', $str_translated, -1, PREG_SPLIT_DELIM_CAPTURE);
+    $string_parts = preg_split('/([<|>])/u', $str_translated, -1, PREG_SPLIT_DELIM_CAPTURE);
 
     //Process Individual Chars
 
@@ -148,7 +148,7 @@ function translate($matches)
 
     // Randomize case
 
-    $string_parts = preg_split('/([<|>])/', $str_new, -1, PREG_SPLIT_DELIM_CAPTURE);
+    $string_parts = preg_split('/([<|>])/u', $str_new, -1, PREG_SPLIT_DELIM_CAPTURE);
 
     for ($i = 0; $i < sizeof($string_parts); $i++) {
 
@@ -188,9 +188,9 @@ if (($langfile = file('./forum/include/languages/en.inc.php'))) {
 
         foreach ($langfile as $line) {
 
-            if (!preg_match('/^\$lang\[\'_/', $line)) {
+            if (!preg_match('/^\$lang\[\'_/u', $line)) {
 
-                $translated_line = preg_replace_callback('/"([^"]+)";/', 'translate', $line);
+                $translated_line = preg_replace_callback('/"([^"]+)";/u', 'translate', $line);
                 fwrite($fp, $translated_line);
 
             }else {

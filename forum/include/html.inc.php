@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.290 2008-08-09 18:00:34 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.291 2008-08-12 17:09:17 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -59,7 +59,7 @@ function html_guest_error()
 
     $popup_files_pregs = get_available_js_popup_files_preg();
 
-    if (preg_match("/^$popup_files_pregs/", $final_uri) > 0) {
+    if (preg_match("/^$popup_files_pregs/u", $final_uri) > 0) {
 
         if (isset($_POST['close_popup'])) {
 
@@ -181,7 +181,7 @@ function html_display_error_array($error_list_array, $width = '600', $align = 'c
 {
     $lang = load_language_file();
 
-    if (!preg_match('/[0-9]+%?/', $width)) $width = '600';
+    if (!preg_match('/[0-9]+%?/u', $width)) $width = '600';
 
     $error_list_array = array_filter($error_list_array, 'is_string');
 
@@ -211,7 +211,7 @@ function html_display_success_msg($string_msg, $width = '600', $align = 'center'
 {
     $lang = load_language_file();
 
-    if (!preg_match('/[0-9]+%?/', $width)) $width = '600';
+    if (!preg_match('/[0-9]+%?/u', $width)) $width = '600';
 
     if (!is_string($string_msg)) return;
 
@@ -232,7 +232,7 @@ function html_display_error_msg($string_msg, $width = '600', $align = 'center')
 {
     $lang = load_language_file();
 
-    if (!preg_match('/[0-9]+%?/', $width)) $width = '600';
+    if (!preg_match('/[0-9]+%?/u', $width)) $width = '600';
 
     if (!is_string($string_msg)) return;
 
@@ -253,7 +253,7 @@ function html_display_warning_msg($string_msg, $width = '600', $align = 'center'
 {
     $lang = load_language_file();
 
-    if (!preg_match('/[0-9]+%?/', $width)) $width = '600';
+    if (!preg_match('/[0-9]+%?/u', $width)) $width = '600';
 
     if (!is_string($string_msg)) return;
 
@@ -484,13 +484,13 @@ function html_get_frame_name($basename)
     if (($webtag = get_webtag())) {
 
         $frame_md5_hash = md5(sprintf('%s-%s-%s', $forum_uri, $webtag, $basename));
-        return sprintf('bh_frame_%s', preg_replace('/[^a-z]+/i', '', $frame_md5_hash));
+        return sprintf('bh_frame_%s', preg_replace('/[^a-z]+/iu', '', $frame_md5_hash));
     }
 
     // No webtag just use forum URL and frame basename.
 
     $frame_md5_hash = md5(sprintf('%s-%s', $forum_uri, $basename));
-    return sprintf('bh_frame_%s', preg_replace('/[^a-z]+/i', '', $frame_md5_hash));
+    return sprintf('bh_frame_%s', preg_replace('/[^a-z]+/iu', '', $frame_md5_hash));
 }
 
 function html_get_top_frame_name()
@@ -598,48 +598,48 @@ function html_draw_top()
 
     foreach ($arg_array as $key => $func_args) {
 
-        if (preg_match('/^title=([^$]+)$/i', $func_args, $func_matches) > 0) {
+        if (preg_match('/^title=([^$]+)$/iu', $func_args, $func_matches) > 0) {
             if (strlen(trim($title)) < 1) $title = $func_matches[1];
             unset($arg_array[$key]);
         }
 
-        if (preg_match('/^class=([^$]+)$/i', $func_args, $func_matches) > 0) {
+        if (preg_match('/^class=([^$]+)$/iu', $func_args, $func_matches) > 0) {
             if (strlen(trim($body_class)) < 1) $body_class = $func_matches[1];
             unset($arg_array[$key]);
         }
 
-        if (preg_match('/^basetarget=([^$]+)$/i', $func_args, $func_matches) > 0) {
+        if (preg_match('/^basetarget=([^$]+)$/iu', $func_args, $func_matches) > 0) {
             if (strlen(trim($base_target)) < 1) $base_target = $func_matches[1];
             unset($arg_array[$key]);
         }
 
-        if (preg_match('/^onload=([^$]+)$/i', $func_args, $func_matches) > 0) {
+        if (preg_match('/^onload=([^$]+)$/iu', $func_args, $func_matches) > 0) {
             $onload_array[] = $func_matches[1];
             unset($arg_array[$key]);
         }
 
-        if (preg_match('/^onunload=([^$]+)$/i', $func_args, $func_matches) > 0) {
+        if (preg_match('/^onunload=([^$]+)$/iu', $func_args, $func_matches) > 0) {
             $onunload_array[] = $func_matches[1];
             unset($arg_array[$key]);
         }
 
-        if (preg_match('/^tinymce_auto_focus=([^$]+)$/i', $func_args, $func_matches) > 0) {
+        if (preg_match('/^tinymce_auto_focus=([^$]+)$/iu', $func_args, $func_matches) > 0) {
             if (strlen(trim($tinymce_auto_focus)) < 1) $tinymce_auto_focus = $func_matches[1];
             unset($arg_array[$key]);
         }
 
-        if (preg_match('/^stylesheet=([^:]+):([^$]+)$/i', $func_args, $func_matches) > 0) {
+        if (preg_match('/^stylesheet=([^:]+):([^$]+)$/iu', $func_args, $func_matches) > 0) {
 
             $stylesheet_array[] = array('filename' => $func_matches[1], 'media' => $func_matches[2]);
             unset($arg_array[$key]);
 
-        }elseif (preg_match('/^stylesheet=([^$]+)$/i', $func_args, $func_matches) > 0) {
+        }elseif (preg_match('/^stylesheet=([^$]+)$/iu', $func_args, $func_matches) > 0) {
 
             $stylesheet_array[] = array('filename' => $func_matches[1], 'media' => 'screen');
             unset($arg_array[$key]);
         }
 
-        if (preg_match('/^refresh=([^:]+):([^$]+)$/i', $func_args, $func_matches) > 0) {
+        if (preg_match('/^refresh=([^:]+):([^$]+)$/iu', $func_args, $func_matches) > 0) {
 
             if (isset($func_matches[1]) && is_numeric($func_matches[1])) {
 
@@ -653,27 +653,27 @@ function html_draw_top()
             unset($arg_array[$key]);
         }
 
-        if (preg_match('/^robots=([^$]+)$/i', $func_args, $func_matches) > 0) {
+        if (preg_match('/^robots=([^$]+)$/iu', $func_args, $func_matches) > 0) {
             $robots = $func_matches[1];
             unset($arg_array[$key]);
         }
 
-        if (preg_match('/^body_tag=([^$]+)$/i', $func_args, $func_matches) > 0) {
+        if (preg_match('/^body_tag=([^$]+)$/iu', $func_args, $func_matches) > 0) {
             $include_body_tag = $func_matches[1];
             unset($arg_array[$key]);
         }
 
-        if (preg_match('/^frames=([^$]+)$/i', $func_args, $func_matches) > 0) {
+        if (preg_match('/^frames=([^$]+)$/iu', $func_args, $func_matches) > 0) {
             $frameset_dtd = $func_matches[1];
             unset($arg_array[$key]);
         }
 
-        if (preg_match('/^resize_width=([^$]+)$/i', $func_args, $func_matches) > 0) {
+        if (preg_match('/^resize_width=([^$]+)$/iu', $func_args, $func_matches) > 0) {
             $resize_width = $func_matches[1];
             unset($arg_array[$key]);
         }
 
-        if (preg_match('/^pm_popup_disabled$/i', $func_args, $func_matches) > 0) {
+        if (preg_match('/^pm_popup_disabled$/iu', $func_args, $func_matches) > 0) {
             $pm_popup_disabled = true;
             unset($arg_array[$key]);
         }

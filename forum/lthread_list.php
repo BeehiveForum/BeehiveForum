@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lthread_list.php,v 1.100 2008-08-04 20:27:54 decoyduck Exp $ */
+/* $Id: lthread_list.php,v 1.101 2008-08-12 17:13:45 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -206,7 +206,7 @@ if (user_is_guest()) {
 
                     $mark_read_threads = trim(_stripslashes($_POST['mark_read_threads']));
 
-                    $mark_read_threads_array = preg_grep("/^[0-9]+$/", explode(',', $mark_read_threads));
+                    $mark_read_threads_array = preg_grep("/^[0-9]+$/u", explode(',', $mark_read_threads));
 
                     threads_get_unread_data($thread_data, $mark_read_threads_array);
 

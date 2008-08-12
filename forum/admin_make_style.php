@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.123 2008-07-30 17:41:38 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.124 2008-08-12 17:13:45 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -113,7 +113,7 @@ if (isset($_POST['save'])) {
 
         $stylename = trim(_stripslashes($_POST['stylename']));
 
-        if (preg_match("/^[a-z0-9_]+$/", $stylename) < 1) {
+        if (preg_match("/^[a-z0-9_]+$/u", $stylename) < 1) {
 
             $error_msg_array[] = $lang['stylefilenamemayonlycontain'];
             $valid = false;
@@ -169,8 +169,8 @@ if (isset($_POST['save'])) {
     if ($valid) {
 
         $error_code = STYLE_NO_ERROR;
-    	
-    	if (!forum_save_style($stylename, $styledesc, $stylesheet, $error_code)) {
+
+        if (!forum_save_style($stylename, $styledesc, $stylesheet, $error_code)) {
 
             if ($error_code == STYLE_ALREADY_EXISTS) {
 
@@ -276,7 +276,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 if (isset($_GET['seed'])) {
 
-    $seed = substr(preg_replace("/[^0-9|A-F]/i", "", $_GET['seed']), 0, 6);
+    $seed = substr(preg_replace("/[^0-9|A-F]/iu", "", $_GET['seed']), 0, 6);
     list ($red, $green, $blue) = hexToDec($seed);
 
 }else {

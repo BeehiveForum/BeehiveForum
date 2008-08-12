@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.inc.php,v 1.36 2008-07-30 22:39:24 decoyduck Exp $ */
+/* $Id: visitor_log.inc.php,v 1.37 2008-08-12 17:13:46 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -293,7 +293,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
     // Iterate through them.
 
     $profile_items_array_keys = array_keys($profile_items_array);
-    	
+
     foreach ($profile_items_array_keys as $column) {
 
         if (is_numeric($column)) {
@@ -360,7 +360,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
     // Joins on the selected numeric (PIID) profile items.
 
     $profile_items_array_keys = array_keys($profile_items_array);
-    	
+
     foreach ($profile_items_array_keys as $column) {
 
         if (is_numeric($column)) {
@@ -419,8 +419,8 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
     if ($hide_empty === true) {
 
         $profile_items_array_keys = array_keys($profile_items_array);
-    	
-    	foreach ($profile_items_array_keys as $column) {
+
+        foreach ($profile_items_array_keys as $column) {
 
             if (is_numeric($column)) {
 
@@ -489,7 +489,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
         $query_array_merge = array_merge(array($select_sql), $profile_entry_array, $profile_item_type_array);
         $query_array_merge = array_merge($query_array_merge, $profile_item_options_array, array($search_bot_sql, $last_visit_sql));
 
-        $profile_entry_array = preg_grep("/[0-9]+/", $profile_entry_array);
+        $profile_entry_array = preg_grep("/[0-9]+/u", $profile_entry_array);
 
         if (sizeof($profile_entry_array) > 0) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.211 2008-08-10 12:36:28 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.212 2008-08-12 17:13:46 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -323,8 +323,8 @@ function search_strip_keywords($search_string, $strip_valid = false)
 
     $keyword_match = '([\+|-]?[\w\']+)|([\+|-]?["][^"]+["])';
 
-    $keywords_array = preg_split("/$keyword_match/", $search_string, -1, PREG_SPLIT_DELIM_CAPTURE);
-    $keywords_array = preg_grep("/^ {0,}$/", $keywords_array, PREG_GREP_INVERT);
+    $keywords_array = preg_split("/$keyword_match/u", $search_string, -1, PREG_SPLIT_DELIM_CAPTURE);
+    $keywords_array = preg_grep("/^ {0,}$/u", $keywords_array, PREG_GREP_INVERT);
 
     // Get the min and max word lengths that MySQL supports
 
@@ -349,15 +349,15 @@ function search_strip_keywords($search_string, $strip_valid = false)
 
     if ($strip_valid === true) {
 
-        $keywords_array_length = preg_grep(sprintf('/^[\+|-]?["]?[\w\s\']{%d,%d}["]?$/i', $min_length, $max_length), $keywords_array, PREG_GREP_INVERT);
-        $keywords_array_swords = preg_grep(sprintf('/^[\+|-]?["]?%s["]?$/i', $mysql_fulltext_stopwords), $keywords_array);
+        $keywords_array_length = preg_grep(sprintf('/^[\+|-]?["]?[\w\s\']{%d,%d}["]?$/iu', $min_length, $max_length), $keywords_array, PREG_GREP_INVERT);
+        $keywords_array_swords = preg_grep(sprintf('/^[\+|-]?["]?%s["]?$/iu', $mysql_fulltext_stopwords), $keywords_array);
 
         $keywords_array = array_merge($keywords_array_length, $keywords_array_swords);
 
     }else {
 
-        $keywords_array = preg_grep(sprintf('/^[\+|-]?["]?[\w\s\']{%d,%d}["]?$/i', $min_length, $max_length), $keywords_array);
-        $keywords_array = preg_grep(sprintf('/^[\+|-]?["]?%s["]?$/i', $mysql_fulltext_stopwords), $keywords_array, PREG_GREP_INVERT);
+        $keywords_array = preg_grep(sprintf('/^[\+|-]?["]?[\w\s\']{%d,%d}["]?$/iu', $min_length, $max_length), $keywords_array);
+        $keywords_array = preg_grep(sprintf('/^[\+|-]?["]?%s["]?$/iu', $mysql_fulltext_stopwords), $keywords_array, PREG_GREP_INVERT);
     }
 
     // Remove any duplicate words, reindex the array and finally
@@ -391,14 +391,14 @@ function search_strip_special_chars($keywords_array, $remove_non_matches = true)
 
     if ($remove_non_matches === true) {
 
-        $boolean_non_match = sprintf('/^-["]?([\w\s\']){%d,%d}["]?$/', $min_length, $max_length);
+        $boolean_non_match = sprintf('/^-["]?([\w\s\']){%d,%d}["]?$/u', $min_length, $max_length);
 
         $keywords_array = preg_grep($boolean_non_match, $keywords_array, PREG_GREP_INVERT);
-        $keywords_array = preg_replace('/["|\+|\x00]+/', '', $keywords_array);
+        $keywords_array = preg_replace('/["|\+|\x00]+/u', '', $keywords_array);
 
     }else {
 
-        $keywords_array = preg_replace('/["|\+|\-|\x00]+/', '', $keywords_array);
+        $keywords_array = preg_replace('/["|\+|\-|\x00]+/u', '', $keywords_array);
     }
 
     // return array

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_banned.php,v 1.76 2008-08-03 15:45:58 decoyduck Exp $ */
+/* $Id: admin_banned.php,v 1.77 2008-08-12 17:13:45 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -191,7 +191,7 @@ if (isset($ret) && strlen(trim($ret)) > 0) {
     $available_pages = array('admin_user.php', 'admin_users.php', 'admin_visitor_log.php', 'messages.php');
     $available_pages_preg = implode("|^", array_map('preg_quote_callback', $available_pages));
 
-    if (preg_match("/^$available_pages_preg/", basename($ret)) < 1) {
+    if (preg_match("/^$available_pages_preg/u", basename($ret)) < 1) {
         $ret = "admin_banned.php?webtag=$webtag";
     }
 }
@@ -302,7 +302,7 @@ if (isset($_POST['add']) || isset($_POST['check'])) {
 
         $new_ban_data = trim(_stripslashes($_POST['newbandata']));
 
-        if (preg_match("/^%+$/", $new_ban_data) > 0) {
+        if (preg_match("/^%+$/u", $new_ban_data) > 0) {
 
             $error_msg_array[] = $lang['cannotusewildcardonown'];
             $valid = false;
@@ -371,7 +371,7 @@ if (isset($_POST['add']) || isset($_POST['check'])) {
 
             $ban_data = trim(_stripslashes($_POST['bandata']));
 
-            if (preg_match("/^%+$/", $ban_data) > 0) {
+            if (preg_match("/^%+$/u", $ban_data) > 0) {
 
                 $error_msg_array[] = $lang['cannotusewildcardonown'];
                 $valid = false;

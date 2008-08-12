@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.138 2008-08-10 18:10:00 decoyduck Exp $ */
+/* $Id: fixhtml.inc.php,v 1.139 2008-08-12 17:13:46 decoyduck Exp $ */
 
 /** A range of functions for filtering/cleaning posted HTML
 *
@@ -96,7 +96,7 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
             $html = '<noemots>'.$html.'</noemots>';
         }
 
-        $html_parts = preg_split('/<([^<>]+)>/', $html, -1, PREG_SPLIT_DELIM_CAPTURE);
+        $html_parts = preg_split('/<([^<>]+)>/u', $html, -1, PREG_SPLIT_DELIM_CAPTURE);
 
         $htmltags = array("a", "abbr", "acronym", "address", "applet", "area", "b", "base", "basefont", "bdo", "big", "blockquote", "body", "br", "button", "caption", "center", "cite", "code", "col", "colgroup", "dd", "del", "dfn", "dir", "div", "dl", "dt", "em", "embed", "fieldset", "font", "form", "frame", "frameset", "h1", "h2", "h3", "h4", "h5", "h6", "head", "hr", "html", "i", "iframe", "img", "input", "ins", "isindex", "kbd", "label", "legend", "li", "link", "map", "marquee", "menu", "meta", "noemots", "noframes", "noscript", "object", "ol", "optgroup", "option", "p", "param", "pre", "q", "quote", "s", "samp", "script", "select", "small", "span", "spoiler", "strike", "strong", "style", "sub", "sup", "table", "tbody", "td", "textarea", "tfoot", "th", "thead", "title", "tr", "tt", "u", "ul", "var");
 
@@ -109,7 +109,7 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
 
                 // remove trailing / in single tags: <  />
 
-                $html_parts[$i] = preg_replace('/\s*\/?$/', '', $html_parts[$i]);
+                $html_parts[$i] = preg_replace('/\s*\/?$/u', '', $html_parts[$i]);
 
                 // BH tag <code> replace
                 // <code><b>Text</b></code>
@@ -141,7 +141,7 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
 
                         $lang_tmp = array();
 
-                        preg_match('/ language=["\']?([^"\']+)/i', $html_parts[$i], $lang_tmp);
+                        preg_match('/ language=["\']?([^"\']+)/iu', $html_parts[$i], $lang_tmp);
 
                         $lang = isset($lang_tmp[1]) ? $lang_tmp[1] : "";
 
@@ -174,7 +174,7 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
                                         set_error_handler("geshi_error_handler");
 
                                         $tmpcode = $code_highlighter->parse_code();
-                                        $tmpcode = preg_replace('/<\/?pre( [^>]*)?>/', '', $tmpcode);
+                                        $tmpcode = preg_replace('/<\/?pre( [^>]*)?>/u', '', $tmpcode);
 
                                         restore_error_handler();
 
@@ -427,9 +427,9 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
 
                             $white_space_matches_array = array();
 
-                            if (preg_match('/( )?\s+$/', $html_parts[$i-1], $white_space_matches_array) > 0) {
+                            if (preg_match('/( )?\s+$/u', $html_parts[$i-1], $white_space_matches_array) > 0) {
 
-                                $html_parts[$i-1] = preg_replace('/( )?\s+$/', '$1', $html_parts[$i-1]);
+                                $html_parts[$i-1] = preg_replace('/( )?\s+$/u', '$1', $html_parts[$i-1]);
                                 $ta[1] = $white_space_matches_array[0];
                             }
 
@@ -578,9 +578,9 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
 
                                         $white_space_matches_array = array();
 
-                                        if (preg_match('/( )?\s+$/', $html_parts[$i-1], $white_space_matches_array) > 0) {
+                                        if (preg_match('/( )?\s+$/u', $html_parts[$i-1], $white_space_matches_array) > 0) {
 
-                                            $html_parts[$i-1] = preg_replace('/( )?\s+$/', '$1', $html_parts[$i-1]);
+                                            $html_parts[$i-1] = preg_replace('/( )?\s+$/u', '$1', $html_parts[$i-1]);
                                             $html_parts[$i+1] = $white_space_matches_array[0]. $html_parts[$i+1];
                                         }
 
@@ -594,9 +594,9 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
 
                                 $white_space_matches_array = array();
 
-                                if (preg_match('/( )?\s+$/', $html_parts[$i-1], $white_space_matches_array) > 0) {
+                                if (preg_match('/( )?\s+$/u', $html_parts[$i-1], $white_space_matches_array) > 0) {
 
-                                    $html_parts[$i-1] = preg_replace('/( )?\s+$/', '$1', $html_parts[$i-1]);
+                                    $html_parts[$i-1] = preg_replace('/( )?\s+$/u', '$1', $html_parts[$i-1]);
                                     $html_parts[$i+1] = $white_space_matches_array[0]. $html_parts[$i+1];
                                 }
 
@@ -761,7 +761,7 @@ function clean_attributes ($tag)
 
     $urls = array("href", "background", "src", "pluginspage", "pluginurl");
 
-    $split_tag = preg_split('/\s+/', $tag);
+    $split_tag = preg_split('/\s+/u', $tag);
 
     for ($i = 1; $i < count($split_tag); $i++) {
 
@@ -833,7 +833,7 @@ function clean_attributes ($tag)
 
                 if (in_array(substr($tmp_attrib,0,-1), $urls)) {
 
-                    $attrib_value = preg_replace("/javascript:/ix", "", $attrib_value);
+                    $attrib_value = preg_replace("/javascript:/ixu", "", $attrib_value);
                 }
 
                 $tmp_attrib.= "\"".$attrib_value."\"";
@@ -915,7 +915,7 @@ function tidy_html ($html, $linebreaks = true, $links = true, $tidymce = false)
         $html = str_replace("<noemots>", "<span class=\"noemots\">", $html);
         $html = str_replace("</noemots>", "</span>", $html);
 
-        $html = preg_replace_callback('/<pre class="code">(.*?)<\/pre>/is', 'tidy_html_callback_2', $html);
+        $html = preg_replace_callback('/<pre class="code">(.*?)<\/pre>/isu', 'tidy_html_callback_2', $html);
 
         return $html;
     }
@@ -925,22 +925,22 @@ function tidy_html ($html, $linebreaks = true, $links = true, $tidymce = false)
 
     if ($linebreaks == true) {
 
-        $html = preg_replace("/<br( [^>]*)?>(\n)?/i", "\n", $html);
-        $html = preg_replace("/<p( [^>]*)?>/i", "\n\n", $html);
-        $html = preg_replace('/<\/p( [^>]*)?>/i', "\n\n", $html);
+        $html = preg_replace("/<br( [^>]*)?>(\n)?/iu", "\n", $html);
+        $html = preg_replace("/<p( [^>]*)?>/iu", "\n\n", $html);
+        $html = preg_replace('/<\/p( [^>]*)?>/iu', "\n\n", $html);
     }
 
     // turn autoconverted links back into text
 
     if ($links == true) {
 
-        $html = preg_replace('/<a href="(http:\/\/)?([^"]*)">((http:\/\/)?\\2)<\/a>/', '$3', $html);
-        $html = preg_replace('/<a href="(mailto:)?([^"]*)">((mailto:)?\\2)<\/a>/', '$3', $html);
+        $html = preg_replace('/<a href="(http:\/\/)?([^"]*)">((http:\/\/)?\\2)<\/a>/u', '$3', $html);
+        $html = preg_replace('/<a href="(mailto:)?([^"]*)">((mailto:)?\\2)<\/a>/u', '$3', $html);
     }
 
     // make <code>..</code> tag, and html_entity_decode
 
-    $html = preg_replace_callback('/<div class="quotetext" id="code-([^"]*)">.*?<\/div>.*?<pre class="code">(.*?)<\/pre>/is', 'tidy_html_callback', $html);
+    $html = preg_replace_callback('/<div class="quotetext" id="code-([^"]*)">.*?<\/div>.*?<pre class="code">(.*?)<\/pre>/isu', 'tidy_html_callback', $html);
 
     // make <quote source=".." url="..">..</quote> tag
 
@@ -953,7 +953,7 @@ function tidy_html ($html, $linebreaks = true, $links = true, $tidymce = false)
 
         $matches = array();
 
-        if (preg_match('/^<div class="quotetext" id="quote">.+?(<a href="([^"]*)">)?([^<>]*)(<\/a>)?<\/div>\s*<div class="quote">.*<\/div>/is', substr($html_right, $pos), $matches) > 0) {
+        if (preg_match('/^<div class="quotetext" id="quote">.+?(<a href="([^"]*)">)?([^<>]*)(<\/a>)?<\/div>\s*<div class="quote">.*<\/div>/isu', substr($html_right, $pos), $matches) > 0) {
 
             $html_left.= "<quote source=\"{$matches[3]}\" url=\"{$matches[2]}\">";
 
@@ -1013,7 +1013,7 @@ function tidy_html ($html, $linebreaks = true, $links = true, $tidymce = false)
 
         $html_left.= substr($html_right, 0, $pos);
 
-        if (preg_match('/^<div class="quotetext" id="spoiler">.+?<\/div>.*?<div class="spoiler">.*<\/div>/is', substr($html_right, $pos))) {
+        if (preg_match('/^<div class="quotetext" id="spoiler">.+?<\/div>.*?<div class="spoiler">.*<\/div>/isu', substr($html_right, $pos))) {
 
             $html_left.= "<spoiler>";
 
@@ -1103,11 +1103,11 @@ function clean_styles ($style)
 {
     // Prevent inline comments
 
-    $style = preg_replace('/\*+\/+|\/+\*+/x', '', $style);
+    $style = preg_replace('/\*+\/+|\/+\*+/xu', '', $style);
 
     // Prevent XSS javascript hacks
 
-    $style = preg_replace('/url\(|expression\(/ix', '', $style);
+    $style = preg_replace('/url\(|expression\(/ixu', '', $style);
 
     // Array of premitted CSS attributes
 
@@ -1133,7 +1133,7 @@ function clean_styles ($style)
 
     $matches_array = array();
 
-    if (preg_match_all('/(([^:]+):([^;]+));?/m', trim($style), $matches_array) > 0) {
+    if (preg_match_all('/(([^:]+):([^;]+));?/mu', trim($style), $matches_array) > 0) {
 
         // Clean up the attribute names and values (trim)
 
@@ -1142,7 +1142,7 @@ function clean_styles ($style)
 
         // Filter the attribute names by the valid list above.
 
-        $attribute_names_array = preg_grep("/$valid_attributes_preg/", $attribute_names_array);
+        $attribute_names_array = preg_grep("/$valid_attributes_preg/u", $attribute_names_array);
 
         // Initialise our new array to store the permitted attributes and values.
 
@@ -1183,7 +1183,7 @@ function clean_styles_restrict($value)
 {
     $matches = array();
 
-    if (preg_match("/^([0-9]+)(.+)$/", trim($value), $matches) > 0) {
+    if (preg_match("/^([0-9]+)(.+)$/u", trim($value), $matches) > 0) {
 
         if (isset($matches[2])) {
 
@@ -1341,7 +1341,7 @@ function add_paragraphs($html, $br_only = true)
 
             $tag = array();
 
-            preg_match('/^<(\w+)(\b[^<>]*)>/i', $html_a[$i], $tag);
+            preg_match('/^<(\w+)(\b[^<>]*)>/iu', $html_a[$i], $tag);
 
             if (isset($tag[1]) && isset($tags_nest[$tag[1]])) {
 
@@ -1437,9 +1437,9 @@ function add_paragraphs($html, $br_only = true)
 
         }else if ($br_only == false) {
 
-            $html_a[$i] = preg_replace('/(<br( [^>]*)?>)([^\n\r])/i', "$1\n$3", $html_a[$i]);
-            $html_a[$i] = preg_replace('/([^\n\r])(<p( [^>]*)?>)/i', "$1\n\n$2", $html_a[$i]);
-            $html_a[$i] = preg_replace('/(<\/p( [^>]*)?>)([^\n\r])/i', "</p>\n\n$3", $html_a[$i]);
+            $html_a[$i] = preg_replace('/(<br( [^>]*)?>)([^\n\r])/iu', "$1\n$3", $html_a[$i]);
+            $html_a[$i] = preg_replace('/([^\n\r])(<p( [^>]*)?>)/iu', "$1\n\n$2", $html_a[$i]);
+            $html_a[$i] = preg_replace('/(<\/p( [^>]*)?>)([^\n\r])/iu', "</p>\n\n$3", $html_a[$i]);
 
             $tmp = split("\n", $html_a[$i]);
 
@@ -1447,7 +1447,7 @@ function add_paragraphs($html, $br_only = true)
 
                 $p_open = true;
 
-                if (!preg_match('/(\s*<[^<>]*>\s*)*<p[ >]/', $tmp[0])) {
+                if (!preg_match('/(\s*<[^<>]*>\s*)*<p[ >]/u', $tmp[0])) {
 
                     $tmp[0] = "<p>".$tmp[0];
                 }
@@ -1455,19 +1455,19 @@ function add_paragraphs($html, $br_only = true)
 
             for ($j = 0; $j < count($tmp) - 1; $j++) {
 
-                if (preg_match('/<\/p>$/i', $tmp[$j]) > 0) {
+                if (preg_match('/<\/p>$/iu', $tmp[$j]) > 0) {
 
                     $p_open = false;
 
-                    $tmp[$j+1] = preg_replace('/^<p( [^>]*)?>/i', '', $tmp[$j+1]);
-                    $tmp[$j+1] = preg_replace('/<br( [^>]*)?>$/i', '', $tmp[$j+1]);
-                    $tmp[$j+1] = preg_replace('/<\/p>$/i', '', $tmp[$j+1]);
+                    $tmp[$j+1] = preg_replace('/^<p( [^>]*)?>/iu', '', $tmp[$j+1]);
+                    $tmp[$j+1] = preg_replace('/<br( [^>]*)?>$/iu', '', $tmp[$j+1]);
+                    $tmp[$j+1] = preg_replace('/<\/p>$/iu', '', $tmp[$j+1]);
 
                     if (!isset($tmp[$j+2])) break;
 
                     $p_open = true;
 
-                    if (!preg_match('/(\s*<[^<>]*>\s*)*<p[ >]/', $tmp[$j+2])) {
+                    if (!preg_match('/(\s*<[^<>]*>\s*)*<p[ >]/u', $tmp[$j+2])) {
 
                         $tmp[$j+2] = "<p>".$tmp[$j+2];
                     }
@@ -1476,11 +1476,11 @@ function add_paragraphs($html, $br_only = true)
 
                 }else if (!preg_match('/<br( [^>]*)?>$/i', $tmp[$j])) {
 
-                    $tmp[$j+1] = preg_replace('/^<p( [^>]*)?>/i', '', $tmp[$j+1]);
-                    $tmp[$j+1] = preg_replace('/<br( [^>]*)?>$/i', '', $tmp[$j+1]);
-                    $tmp[$j+1] = preg_replace('/<\/p>$/i', '', $tmp[$j+1]);
+                    $tmp[$j+1] = preg_replace('/^<p( [^>]*)?>/iu', '', $tmp[$j+1]);
+                    $tmp[$j+1] = preg_replace('/<br( [^>]*)?>$/iu', '', $tmp[$j+1]);
+                    $tmp[$j+1] = preg_replace('/<\/p>$/iu', '', $tmp[$j+1]);
 
-                    if (preg_match('/^\s*$/', $tmp[$j+1]) > 0 && $p_open == true) {
+                    if (preg_match('/^\s*$/u', $tmp[$j+1]) > 0 && $p_open == true) {
 
                         $p_open = false;
 
@@ -1490,7 +1490,7 @@ function add_paragraphs($html, $br_only = true)
 
                         $p_open = true;
 
-                        if (!preg_match('/(\s*<[^<>]*>\s*)*<p[ >]/', $tmp[$j+2])) {
+                        if (!preg_match('/(\s*<[^<>]*>\s*)*<p[ >]/u', $tmp[$j+2])) {
 
                             $tmp[$j+2] = "<p>".$tmp[$j+2];
                         }
@@ -1503,25 +1503,25 @@ function add_paragraphs($html, $br_only = true)
 
                 } else {
 
-                    $tmp[$j+1] = preg_replace('/^<p( [^>]*)?>/i', '', $tmp[$j+1]);
-                    $tmp[$j+1] = preg_replace('/<br( [^>]*)?>$/i', '', $tmp[$j+1]);
-                    $tmp[$j+1] = preg_replace('/<\/p>$/i', '', $tmp[$j+1]);
+                    $tmp[$j+1] = preg_replace('/^<p( [^>]*)?>/iu', '', $tmp[$j+1]);
+                    $tmp[$j+1] = preg_replace('/<br( [^>]*)?>$/iu', '', $tmp[$j+1]);
+                    $tmp[$j+1] = preg_replace('/<\/p>$/iu', '', $tmp[$j+1]);
                 }
             }
 
-            if ($p_open == true && !preg_match('/<\/p>$/i', $tmp[$j]) && strlen(trim($tmp[$j])) > 0) {
+            if ($p_open == true && !preg_match('/<\/p>$/iu', $tmp[$j]) && strlen(trim($tmp[$j])) > 0) {
 
                 $tmp[$j].= "</p>";
             }
 
             $html_a[$i] = implode("\n", $tmp);
-            $html_a[$i] = preg_replace('/(<p( [^>]*)?>)\s*<\/p>/i', '$1&nbsp;</p>', $html_a[$i]);
+            $html_a[$i] = preg_replace('/(<p( [^>]*)?>)\s*<\/p>/iu', '$1&nbsp;</p>', $html_a[$i]);
 
             $tag = array();
 
             if (isset($html_a[$i+1])) {
 
-                preg_match('/^<(\w+)(\b[^<>]*)>/i', $html_a[$i+1], $tag);
+                preg_match('/^<(\w+)(\b[^<>]*)>/iu', $html_a[$i+1], $tag);
 
                 if ($tags_nest[$tag[1]][1] != true && strlen(trim($html_a[$i])) > 0) {
 
@@ -1533,10 +1533,10 @@ function add_paragraphs($html, $br_only = true)
 
         } else {
 
-            $html_a[$i] = preg_replace('/(<br( [^>]*)?>)([^\n\r])/i', "$1\n$3", $html_a[$i]);
-            $html_a[$i] = preg_replace('/([^\n\r])(<p( [^>]*)?>)/i', "$1\n\n$2", $html_a[$i]);
-            $html_a[$i] = preg_replace('/(<\/p( [^>]*)?>)([^\n\r])/i', "</p>\n\n$3", $html_a[$i]);
-            $html_a[$i] = preg_replace('/(<br( [^>]*)?>)|(<p( [^>]*)?>)|(<\/p( [^>]*)?>)/i', '', $html_a[$i]);
+            $html_a[$i] = preg_replace('/(<br( [^>]*)?>)([^\n\r])/iu', "$1\n$3", $html_a[$i]);
+            $html_a[$i] = preg_replace('/([^\n\r])(<p( [^>]*)?>)/iu', "$1\n\n$2", $html_a[$i]);
+            $html_a[$i] = preg_replace('/(<\/p( [^>]*)?>)([^\n\r])/iu', "</p>\n\n$3", $html_a[$i]);
+            $html_a[$i] = preg_replace('/(<br( [^>]*)?>)|(<p( [^>]*)?>)|(<\/p( [^>]*)?>)/iu', '', $html_a[$i]);
 
             $html_a[$i] = nl2br($html_a[$i]);
 
@@ -1582,11 +1582,11 @@ function make_links ($html)
     $html = " ".$html;
 
     // URL:
-    $html = preg_replace('/(\s|\()(\w+:\/\/([^:\s]+:?[^@\s]+@)?[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)/i', '$1<a href="$2">$2</a>', $html);
-    $html = preg_replace('/(\s|\()(www\.[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)/i', '$1<a href="http://$2">$2</a>', $html);
+    $html = preg_replace('/(\s|\()(\w+:\/\/([^:\s]+:?[^@\s]+@)?[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)/iu', '$1<a href="$2">$2</a>', $html);
+    $html = preg_replace('/(\s|\()(www\.[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)/iu', '$1<a href="http://$2">$2</a>', $html);
 
     // MAIL:
-    $html = preg_replace('/(\s|\()(mailto:)?([0-9a-z][_\.0-9a-z-]*@[0-9a-z][_\.0-9a-z-]*\.[a-z]{2,})/i', '$1<a href="mailto:$3">$2$3</a>', $html);
+    $html = preg_replace('/(\s|\()(mailto:)?([0-9a-z][_\.0-9a-z-]*@[0-9a-z][_\.0-9a-z-]*\.[a-z]{2,})/iu', '$1<a href="mailto:$3">$2$3</a>', $html);
 
     // This one breaks PHP - causes a 30 second page timeout.
 

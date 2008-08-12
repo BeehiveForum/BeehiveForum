@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: word_filter.inc.php,v 1.54 2008-07-30 22:39:24 decoyduck Exp $ */
+/* $Id: word_filter.inc.php,v 1.55 2008-08-12 17:13:46 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -176,19 +176,19 @@ function word_filter_prepare($word_filter_array)
 
         if ($filter['FILTER_TYPE'] == WORD_FILTER_TYPE_WHOLE_WORD) {
 
-            $pattern_array[] = sprintf('/\b%s\b/i', preg_quote($filter['MATCH_TEXT'], "/"));
+            $pattern_array[] = sprintf('/\b%s\b/iu', preg_quote($filter['MATCH_TEXT'], "/"));
 
         }elseif ($filter['FILTER_TYPE'] == WORD_FILTER_TYPE_PREG) {
 
-            if (!preg_match('/^\/(.*)[^\]\/[imsxeADSUXu]*$/i', $filter['MATCH_TEXT'])) {
-                $filter['MATCH_TEXT'] = "/{$filter['MATCH_TEXT']}/i";
+            if (!preg_match('/^\/(.*)[^\]\/[imsxeADSUXu]*$/iu', $filter['MATCH_TEXT'])) {
+                $filter['MATCH_TEXT'] = "/{$filter['MATCH_TEXT']}/iu";
             }
 
             $pattern_array[] = $filter['MATCH_TEXT'];
 
         }else {
 
-            $pattern_array[] = "/". preg_quote($filter['MATCH_TEXT'], "/"). "/i";
+            $pattern_array[] = sprintf("/%s/iu", preg_quote($filter['MATCH_TEXT'], "/"));
         }
 
         if (strlen(trim($filter['REPLACE_TEXT'])) > 0) {
@@ -230,7 +230,7 @@ function word_filter_add_ob_tags($content)
         return $content;
     }
 
-    $rand_hash = preg_replace("/[^a-z]/i", "", $rand_hash);
+    $rand_hash = preg_replace("/[^a-z]/iu", "", $rand_hash);
 
     return "<$rand_hash>$content</$rand_hash>";
 }
@@ -250,9 +250,9 @@ function word_filter_rem_ob_tags($content)
         return $content;
     }
 
-    $rand_hash = preg_replace("/[^a-z]/i", "", $rand_hash);
+    $rand_hash = preg_replace("/[^a-z]/iu", "", $rand_hash);
 
-    return preg_replace(sprintf('/<\/?%s>/', $rand_hash), "", $content);
+    return preg_replace(sprintf('/<\/?%s>/u', $rand_hash), "", $content);
 }
 
 /**
@@ -272,14 +272,14 @@ function word_filter_obstart($content)
         return $content;
     }
 
-    $rand_hash = preg_replace("/[^a-z]/i", "", $rand_hash);
+    $rand_hash = preg_replace("/[^a-z]/iu", "", $rand_hash);
 
     if (($user_wordfilter = word_filter_get_by_sess_uid())) {
 
         $pattern_array = $user_wordfilter['pattern_array'];
         $replace_array = $user_wordfilter['replace_array'];
 
-        $content_array = preg_split(sprintf('/<\/?%s>/', $rand_hash), $content);
+        $content_array = preg_split(sprintf('/<\/?%s>/u', $rand_hash), $content);
 
         for ($i = 0; $i < sizeof($content_array); $i++) {
 
@@ -337,7 +337,7 @@ function word_filter_apply($content, $uid)
 
 function word_filter_apply_limit_preg($matches)
 {
-    return preg_replace("/e/i", "", $matches[0]);
+    return preg_replace("/e/iu", "", $matches[0]);
 }
 
 ?>

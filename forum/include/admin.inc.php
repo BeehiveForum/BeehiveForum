@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.161 2008-07-30 17:41:40 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.162 2008-08-12 17:09:18 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -72,7 +72,7 @@ function admin_add_log_entry($action, $data = "")
 
     if (!is_numeric($action)) return false;
 
-    if (is_array($data)) $data = implode("\x00", preg_replace('/[\x00]+/', '', $data));
+    if (is_array($data)) $data = implode("\x00", preg_replace('/[\x00]+/u', '', $data));
 
     $data = db_escape_string($data);
 
@@ -677,7 +677,7 @@ function admin_get_users_attachments($uid, &$user_attachments, &$user_image_atta
 
     if (is_array($hash_array)) {
 
-        $hash_list = implode("', '", preg_grep("/^[A-Fa-f0-9]{32}$/", $hash_array));
+        $hash_list = implode("', '", preg_grep("/^[A-Fa-f0-9]{32}$/u", $hash_array));
 
         $sql = "SELECT PAF.AID, PAF.HASH, PAF.FILENAME, PAF.MIMETYPE, PAF.DOWNLOADS, ";
         $sql.= "FORUMS.WEBTAG, FORUMS.FID FROM POST_ATTACHMENT_FILES PAF ";
@@ -1066,7 +1066,7 @@ function admin_get_visitor_log($offset)
 
                 $forum_uri_preg = preg_quote(html_get_forum_uri(), '/');
 
-                if (preg_match("/^$forum_uri_preg/i", trim($visitor_array['REFERER'])) > 0) {
+                if (preg_match("/^$forum_uri_preg/iu", trim($visitor_array['REFERER'])) > 0) {
                     $visitor_array['REFERER'] = "";
                 }
 

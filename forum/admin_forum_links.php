@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_links.php,v 1.61 2008-07-30 17:41:38 decoyduck Exp $ */
+/* $Id: admin_forum_links.php,v 1.62 2008-08-12 17:13:45 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -207,7 +207,7 @@ if (isset($_POST['delete'])) {
 
         $t_uri = trim(_stripslashes($_POST['t_uri']));
 
-        if (preg_match('/^[a-z0-9]+:\/\//i', $t_uri) < 1) {
+        if (preg_match('/^[a-z0-9]+:\/\//iu', $t_uri) < 1) {
 
             $error_msg_array[] = $lang['alllinkurismuststartwithaschema'];
             $valid = false;
@@ -251,7 +251,7 @@ if (isset($_POST['delete'])) {
 
             $t_uri = trim(_stripslashes($_POST['t_uri']));
 
-            if (preg_match('/^[a-z0-9]+:\/\//i', $t_uri) < 1) {
+            if (preg_match('/^[a-z0-9]+:\/\//iu', $t_uri) < 1) {
 
                 $error_msg_array[] = $lang['alllinkurismuststartwithaschema'];
                 $valid = false;

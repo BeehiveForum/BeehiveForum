@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db_mysql.inc.php,v 1.54 2008-08-10 18:10:00 decoyduck Exp $ */
+/* $Id: db_mysql.inc.php,v 1.55 2008-08-12 17:22:02 decoyduck Exp $ */
 
 function db_get_connection_vars(&$db_server, &$db_username, &$db_password, &$db_database)
 {
@@ -62,7 +62,7 @@ function db_connect($trigger_error = true)
 function db_set_utf8_charset($connection_id)
 {
     $sql = "SET NAMES 'utf8'";
-    if (!db_query($sql, $connection_id)) return false;
+    return db_query($sql, $connection_id);
 }
 
 function db_enable_compat_mode($connection_id)

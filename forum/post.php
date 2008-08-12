@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.359 2008-08-03 21:36:46 decoyduck Exp $ */
+/* $Id: post.php,v 1.360 2008-08-12 17:13:45 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -484,7 +484,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     if (isset($_GET['quote_list']) && strlen(trim($_GET['quote_list'])) > 0) {
 
-        $quote_list = preg_grep('/[0-9]+/', explode(',', $_GET['quote_list']));
+        $quote_list = preg_grep('/[0-9]+/u', explode(',', $_GET['quote_list']));
 
         sort($quote_list);
 

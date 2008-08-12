@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: rss_feed.inc.php,v 1.60 2008-08-08 11:16:41 decoyduck Exp $ */
+/* $Id: rss_feed.inc.php,v 1.61 2008-08-12 17:13:46 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -118,7 +118,7 @@ function rss_read_stream($filename)
 
         // Split the header from the data (seperated by \r\n\r\n)
 
-        if (($data_array = preg_split("/\r\n\r\n/", $reply_data, 2))) {
+        if (($data_array = preg_split("/\r\n\r\n/u", $reply_data, 2))) {
 
             return $data_array[1];
         }

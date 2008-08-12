@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.355 2008-07-30 16:04:35 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.356 2008-08-12 17:13:46 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -527,7 +527,7 @@ function bh_remove_stale_sessions()
             return true;
         }
     }
-    
+
     return true;
 }
 
@@ -931,17 +931,17 @@ function bh_session_end($remove_cookies = true)
         if ($uid > 0) bh_update_user_time($uid);
 
         // Delete the user's cookie
-        
+
         if ($remove_cookies === true) bh_session_remove_cookies();
-        
+
         // Remove the user session.
 
         $sql = "DELETE QUICK FROM SESSIONS WHERE HASH = '$user_hash'";
 
         if (!db_query($sql, $db_bh_session_end)) return false;
     }
-    
-    return true;    
+
+    return true;
 }
 
 /**
@@ -1231,7 +1231,7 @@ function parse_array($array, $sep, &$result_var)
         }
     }
 
-    $result_var = preg_replace("/$preg_sep$/", "", $result_var);
+    $result_var = preg_replace("/$preg_sep$/u", "", $result_var);
 
     return true;
 }
@@ -1280,7 +1280,7 @@ function get_request_uri($include_webtag = true, $encoded_uri_query = true)
     }
 
     // Remove trailing question mark / & / &amp;
-    
+
     $request_uri = rtrim($request_uri, '?');
     $request_uri = rtrim($request_uri, '&');
     $request_uri = rtrim($request_uri, '&amp;');
@@ -1289,7 +1289,7 @@ function get_request_uri($include_webtag = true, $encoded_uri_query = true)
     // Rather dirty hack this, but it's the only idea I've got.
     // Any suggestions are welcome on how to handle this better.
 
-    return preg_replace('/\/\/+/', '/', $request_uri);
+    return preg_replace('/\/\/+/u', '/', $request_uri);
 }
 
 /**
@@ -1344,7 +1344,7 @@ function bh_session_get_referer()
             $http_referer = trim($_SERVER['HTTP_REFERER']);
             $forum_uri_preg = preg_quote(html_get_forum_uri(), '/');
 
-            if (preg_match("/^$forum_uri_preg/i", $http_referer) > 0) $http_referer = "";
+            if (preg_match("/^$forum_uri_preg/iu", $http_referer) > 0) $http_referer = "";
 
         }else {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.123 2008-08-03 11:23:08 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.124 2008-08-12 17:09:17 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -357,7 +357,7 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
 
         // Check for file include errors
 
-        if ((preg_match('/include|include_once/', $errstr) > 0)) {
+        if ((preg_match('/include|include_once/u', $errstr) > 0)) {
 
             if (!defined('BEEHIVE_INSTALL_NOWARN') && function_exists('install_missing_files')) {
 

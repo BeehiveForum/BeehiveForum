@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads_rss.php,v 1.64 2008-07-30 17:41:40 decoyduck Exp $ */
+/* $Id: threads_rss.php,v 1.65 2008-08-12 17:13:45 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -110,9 +110,9 @@ if (isset($_GET['fid']) && strlen(trim(stripslashes($_GET['fid']))) > 0) {
 
     $fid = trim(stripslashes($_GET['fid']));
 
-    if (preg_match("/(([0-9]+),)+,?/", $fid)) {
+    if (preg_match("/(([0-9]+),)+,?/u", $fid)) {
 
-        $folder_list_array = preg_grep("/^[0-9]+$/", explode(",", $fid));
+        $folder_list_array = preg_grep("/^[0-9]+$/u", explode(",", $fid));
 
     }elseif (is_numeric($_GET['fid'])) {
 
@@ -252,8 +252,8 @@ if (($threads_array = threads_get_most_recent($limit, $folder_list_array, ($sort
 
         // Check for double-encoded HTML chars (&amp;amp;, etc.)
 
-        $t_content = preg_replace("/&amp;(#[0-9]+|[a-z]+);/i", "&\\1;", $t_content);
-        $t_title   = preg_replace("/&amp;(#[0-9]+|[a-z]+);/i", "&\\1;", $t_title);
+        $t_content = preg_replace("/&amp;(#[0-9]+|[a-z]+);/iu", "&\\1;", $t_content);
+        $t_title   = preg_replace("/&amp;(#[0-9]+|[a-z]+);/iu", "&\\1;", $t_title);
 
         // Convert HTML entities to XML literals.
 

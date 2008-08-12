@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.113 2008-07-30 17:41:40 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.114 2008-08-12 17:13:45 decoyduck Exp $ */
 
 /**
 * Displays and handles the User Relationship page
@@ -146,7 +146,7 @@ if (isset($ret) && strlen(trim($ret)) > 0) {
     $available_pages = array('edit_relations.php', 'messages.php', 'user_profile.php');
     $available_pages_preg = implode("|^", array_map('preg_quote_callback', $available_pages));
 
-    if (preg_match("/^$available_pages_preg/", basename($ret)) < 1) {
+    if (preg_match("/^$available_pages_preg/u", basename($ret)) < 1) {
         $ret = "messages.php?webtag=$webtag";
     }
 }
@@ -255,8 +255,8 @@ if (isset($_POST['preview_signature'])) {
 
     $t_sig_content = '';
     $t_sig_html = 'N';
-    
-	if (user_get_sig($peer_uid, $t_sig_content, $t_sig_html)) {
+
+    if (user_get_sig($peer_uid, $t_sig_content, $t_sig_html)) {
 
         $preview_message['TLOGON'] = $lang['allcaps'];
         $preview_message['TNICK'] = $lang['allcaps'];

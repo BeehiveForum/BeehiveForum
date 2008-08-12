@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.322 2008-08-10 12:36:28 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.323 2008-08-12 17:13:46 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1142,7 +1142,7 @@ function threads_get_most_recent($limit = 10, $folder_list_array = array(), $cre
     if (is_array($folder_list_array) && sizeof($folder_list_array) > 0) {
 
         $available_folders_preg = implode("$|^", array_map('preg_quote_callback', $available_folders_array));
-        $folder_list_array = preg_grep("/^$available_folders_preg$/", $folder_list_array);
+        $folder_list_array = preg_grep("/^$available_folders_preg$/u", $folder_list_array);
     }
 
     // Convert the array into a comma-separated list.
@@ -1540,7 +1540,7 @@ function threads_get_unread_data(&$threads_array, $tid_array)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $tid_list = implode(",", preg_grep("/^[0-9]+$/", $tid_array));
+    $tid_list = implode(",", preg_grep("/^[0-9]+$/u", $tid_array));
 
     if (!$db_threads_get_modified = db_connect()) return false;
 
@@ -1681,7 +1681,7 @@ function threads_have_attachments(&$threads_array, $tid_array)
 
     $forum_fid = $table_data['FID'];
 
-    $tid_list = implode(",", preg_grep("/^[0-9]+$/", $tid_array));
+    $tid_list = implode(",", preg_grep("/^[0-9]+$/u", $tid_array));
 
     if (!$db_thread_has_attachments = db_connect()) return false;
 

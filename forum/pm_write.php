@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.210 2008-08-03 21:36:46 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.211 2008-08-12 17:13:45 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -420,7 +420,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
     if (isset($_POST['t_recipient_list']) && strlen(trim(_stripslashes($_POST['t_recipient_list']))) > 0) {
 
-        $t_recipient_array = preg_split("/[;|,]/", trim(_stripslashes($_POST['t_recipient_list'])));
+        $t_recipient_array = preg_split("/[;|,]/u", trim(_stripslashes($_POST['t_recipient_list'])));
 
         $t_new_recipient_array['TO_UID'] = array();
         $t_new_recipient_array['LOGON']  = array();
@@ -536,7 +536,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
     if (isset($_POST['t_recipient_list']) && strlen(trim(_stripslashes($_POST['t_recipient_list']))) > 0) {
 
-        $t_recipient_array = preg_split("/[;|,]/", trim(_stripslashes($_POST['t_recipient_list'])));
+        $t_recipient_array = preg_split("/[;|,]/u", trim(_stripslashes($_POST['t_recipient_list'])));
 
         if (sizeof($t_recipient_array) > 10) {
 
@@ -559,7 +559,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
         $pm_data['CONTENT'] = pm_get_content($t_reply_mid);
 
-        $t_subject = preg_replace('/^(RE:)?/i', 'RE:', $pm_data['SUBJECT']);
+        $t_subject = preg_replace('/^(RE:)?/iu', 'RE:', $pm_data['SUBJECT']);
 
         $message_author = _htmlentities(format_user_name($pm_data['FLOGON'], $pm_data['FNICK']));
 
@@ -605,7 +605,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
         $pm_data['CONTENT'] = pm_get_content($t_forward_mid);
 
-        $t_subject = preg_replace('/^(FWD:)?/i', 'FWD:', $pm_data['SUBJECT']);
+        $t_subject = preg_replace('/^(FWD:)?/iu', 'FWD:', $pm_data['SUBJECT']);
 
         $message_author = _htmlentities(format_user_name($pm_data['FLOGON'], $pm_data['FNICK']));
 

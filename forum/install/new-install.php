@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.179 2008-08-12 16:20:29 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.180 2008-08-12 17:13:47 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'new-install.php') {
 
@@ -35,7 +35,7 @@ if (!isset($_SERVER['SCRIPT_FILENAME'])) {
     $_SERVER['SCRIPT_FILENAME'] = $_SERVER['SCRIPT_NAME'];
 }
 
-$dictionary_file = preg_replace('/\\\/', '/', dirname($_SERVER['SCRIPT_FILENAME']));
+$dictionary_file = preg_replace('/\\\/u', '/', dirname($_SERVER['SCRIPT_FILENAME']));
 $dictionary_file.= "/install/english.dic";
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
@@ -1382,7 +1382,7 @@ if (!isset($skip_dictionary) || $skip_dictionary === false) {
 
                     $dictionary_word_array = array();
 
-                    if (preg_match('/^([^\s]+)[^\S]+([^$]+)$/i', trim($dictionary_line), $dictionary_word_array) > 0) {
+                    if (preg_match('/^([^\s]+)[^\S]+([^$]+)$/iu', trim($dictionary_line), $dictionary_word_array) > 0) {
 
                         array_shift($dictionary_word_array);
 

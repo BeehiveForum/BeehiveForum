@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.169 2008-08-10 18:10:00 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.170 2008-08-12 17:09:17 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -402,7 +402,7 @@ function smart_quotes_clean_up($var)
 
 function xml_strip_invalid_chars($string)
 {
-    return preg_replace('/([^\x9\xA\xD\x20-\xD7FF\xE000-\xFFFD])+/m', '', $string);
+    return preg_replace('/([^\x9\xA\xD\x20-\xD7FF\xE000-\xFFFD])+/mu', '', $string);
 }
 
 /**
@@ -543,7 +543,7 @@ function html_entity_to_decimal($string)
                                '&permil;'   => '&#8240;', '&lsaquo;'  => '&#8249;',
                                '&rsaquo;'   => '&#8250;', '&euro;'    => '&#8364;');
 
-    return preg_replace("/(&[a-z0-9]+;?)/i", " ", strtr($string, $entity_to_decimal));
+    return preg_replace("/(&[a-z0-9]+;?)/iu", " ", strtr($string, $entity_to_decimal));
 }
 
 /**
@@ -557,7 +557,7 @@ function html_entity_to_decimal($string)
 
 function strip_paragraphs($string)
 {
-    return preg_replace(array('/<p[^>]*>/iU', '/<\/p[^>]*>\n/iU', '/<\/p[^>]*>/iU', '/<br\s*?\/?>/i'), array('', chr(10)), $string);
+    return preg_replace(array('/<p[^>]*>/iUu', '/<\/p[^>]*>\n/iUu', '/<\/p[^>]*>/iUu', '/<br\s*?\/?>/iu'), array('', chr(10)), $string);
 }
 
 /**
@@ -654,7 +654,7 @@ function _array_search($needle, $haystack)
 
 function is_md5($hash)
 {
-    if (preg_match("/^[A-Fa-f0-9]{32}$/", $hash) > 0) {
+    if (preg_match("/^[A-Fa-f0-9]{32}$/u", $hash) > 0) {
         return true;
     }
 
@@ -711,7 +711,7 @@ function format_age($dob)
 {
     $matches_array = array();
 
-    if (preg_match('/([0-9]{4})-([0-9]{2})-([0-9]{2})/', $dob, $matches_array)) {
+    if (preg_match('/([0-9]{4})-([0-9]{2})-([0-9]{2})/u', $dob, $matches_array)) {
 
         list(, $birth_year, $birth_month, $birth_day) = $matches_array;
 
@@ -742,7 +742,7 @@ function format_birthday($date) // $date is a MySQL-type DATE field (YYYY-MM-DD)
 
     $matches_array = array();
 
-    if (preg_match('/[0-9]{4}-([0-9]{2})-([0-9]{2})/', $date, $matches_array)) {
+    if (preg_match('/[0-9]{4}-([0-9]{2})-([0-9]{2})/u', $date, $matches_array)) {
 
         list(, $month, $day) = $matches_array;
 

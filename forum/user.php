@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.php,v 1.68 2008-07-27 18:26:11 decoyduck Exp $ */
+/* $Id: user.php,v 1.69 2008-08-12 17:13:44 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -119,7 +119,7 @@ if (isset($_GET['page']) && strlen(trim(_stripslashes($_GET['page']))) > 0) {
     $available_pages = get_available_user_control_files();
     $available_pages_preg = implode("|^", array_map('preg_quote_callback', $available_pages));
 
-    if (preg_match("/^$available_pages_preg/", basename($requested_page)) > 0) {
+    if (preg_match("/^$available_pages_preg/u", basename($requested_page)) > 0) {
 
         html_draw_top('body_tag=false', 'frames=true');
 

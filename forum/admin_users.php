@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.173 2008-07-28 21:05:48 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.174 2008-08-12 17:13:46 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -212,7 +212,7 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
         if (isset($_POST['user_update']) && is_array($_POST['user_update'])) {
 
-            $kick_users = preg_grep("/^[0-9]+$/", array_keys($_POST['user_update']));
+            $kick_users = preg_grep("/^[0-9]+$/u", array_keys($_POST['user_update']));
 
             $kick_user_success_array = array();
 
@@ -247,7 +247,7 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
             if (isset($_POST['user_update']) && is_array($_POST['user_update'])) {
 
-                $approve_users = preg_grep("/^[0-9]+$/", array_keys($_POST['user_update']));
+                $approve_users = preg_grep("/^[0-9]+$/u", array_keys($_POST['user_update']));
 
                 $approved_user_success_array = array();
 

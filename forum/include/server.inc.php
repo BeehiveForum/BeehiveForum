@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: server.inc.php,v 1.36 2008-08-09 18:00:34 decoyduck Exp $ */
+/* $Id: server.inc.php,v 1.37 2008-08-12 17:13:46 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -373,7 +373,7 @@ function rmdir_recursive($path)
 
 function prepare_path_for_url($pathname)
 {
-    $pathname = preg_replace('/\\\/', '/', $pathname);
+    $pathname = preg_replace('/\\\/u', '/', $pathname);
     return rtrim($pathname, '/');
 }
 

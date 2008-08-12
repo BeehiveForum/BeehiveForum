@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.328 2008-08-12 16:20:29 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.329 2008-08-12 17:09:17 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -70,7 +70,7 @@ function get_forum_data()
 
         if (isset($webtag)) {
 
-            if (preg_match("/^[A-Z0-9_]+$/", $webtag) > 0) {
+            if (preg_match("/^[A-Z0-9_]+$/u", $webtag) > 0) {
 
                 // Check #1: See if the webtag specified in GET/POST
                 // actually exists.
@@ -964,8 +964,8 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
 
     // Ensure the variables we've been given are valid
 
-    if (!preg_match("/^[A-Z]{1}[A-Z0-9_]+$/", $webtag)) return false;
-    if (!preg_match("/^[A-Z]{1}[A-Z0-9_]+$/i", $database_name)) return false;
+    if (!preg_match("/^[A-Z]{1}[A-Z0-9_]+$/u", $webtag)) return false;
+    if (!preg_match("/^[A-Z]{1}[A-Z0-9_]+$/iu", $database_name)) return false;
 
     if (!is_numeric($owner_uid) || $owner_uid < 1) $owner_uid = $uid;
     if (!is_numeric($access)) $access = 0;
@@ -2118,8 +2118,8 @@ function forum_delete_tables($webtag, $database_name)
 {
     // Ensure the variables we've been given are valid
 
-    if (!preg_match("/^[A-Z0-9_]+$/", $webtag)) return false;
-    if (!preg_match("/^[A-Z0-9_]+$/i", $database_name)) return false;
+    if (!preg_match("/^[A-Z0-9_]+$/u", $webtag)) return false;
+    if (!preg_match("/^[A-Z0-9_]+$/iu", $database_name)) return false;
 
     // Only users with acces to the forum tools can create / delete forums.
 
@@ -2336,7 +2336,7 @@ function forum_get_post_count($webtag)
 {
     if (!$db_forum_get_post_count = db_connect()) return false;
 
-    if (preg_match("/^[a-z0-9_]+$/i", $webtag) < 1) return 0;
+    if (preg_match("/^[a-z0-9_]+$/iu", $webtag) < 1) return 0;
 
     $sql = "SELECT COUNT(PID) AS POST_COUNT FROM {$webtag}_POST POST ";
 
@@ -2682,7 +2682,7 @@ function forum_get_maintenance_schedule(&$maintenance_hour, &$maintenance_minute
 
     $matches_array = array();
 
-    if (preg_match('/^([0-9]{2}):([0-9]{2})$/', $forum_maintenance_schedule, $matches_array) > 0) {
+    if (preg_match('/^([0-9]{2}):([0-9]{2})$/u', $forum_maintenance_schedule, $matches_array) > 0) {
 
         list(,$maintenance_hour, $maintenance_minute) = $matches_array;
 

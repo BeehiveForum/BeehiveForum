@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: emoticons.inc.php,v 1.80 2008-08-03 11:23:08 decoyduck Exp $ */
+/* $Id: emoticons.inc.php,v 1.81 2008-08-12 17:09:18 decoyduck Exp $ */
 
 /**
 * emoticons.inc.php - emoticon functions
@@ -180,11 +180,11 @@ function emoticons_get_browser_fix()
 
     if (isset($_SERVER['HTTP_USER_AGENT'])) {
 
-        if (preg_match("/konqueror|safari|msie 7/i", $_SERVER['HTTP_USER_AGENT']) > 0) {
+        if (preg_match("/konqueror|safari|msie 7/iu", $_SERVER['HTTP_USER_AGENT']) > 0) {
 
             $emoticons_browser_fix = "&nbsp;</span>";
 
-        }else if (preg_match("/gecko/i", $_SERVER['HTTP_USER_AGENT']) > 0) {
+        }else if (preg_match("/gecko/iu", $_SERVER['HTTP_USER_AGENT']) > 0) {
 
             $emoticons_browser_fix = "</span>&nbsp;";
         }
@@ -247,7 +247,7 @@ function emoticons_apply($content)
 
     $pattern_match = implode("|", $pattern_array);
 
-    if (($content_array = preg_split("/($pattern_match)/", $content, 100, PREG_SPLIT_DELIM_CAPTURE))) {
+    if (($content_array = preg_split("/($pattern_match)/u", $content, 100, PREG_SPLIT_DELIM_CAPTURE))) {
 
         foreach ($content_array as $key => $value) {
 
@@ -287,7 +287,7 @@ function emoticons_get_available($include_text_none = true)
 
             if (($file != '.' && $file != '..' && @is_dir("emoticons/$file"))) {
 
-                 if (preg_match("/^none$|^text$/i", $file) > 0) {
+                 if (preg_match("/^none$|^text$/iu", $file) > 0) {
 
                      if ($include_text_none === true) {
 
@@ -415,7 +415,7 @@ function emoticons_preview($emoticon_set, $width = 190, $height = 100, $num = 35
 
             $style_matches = array();
 
-            preg_match_all('/\.e_([\w_]+) \{[^\}]*background-image\s*:\s*url\s*\(["\']\.?\/?([^"\']*)["\']\)[^\}]*\}/i', $style_contents, $style_matches);
+            preg_match_all('/\.e_([\w_]+) \{[^\}]*background-image\s*:\s*url\s*\(["\']\.?\/?([^"\']*)["\']\)[^\}]*\}/iu', $style_contents, $style_matches);
 
             for ($i = 0; $i < count($style_matches[1]); $i++) {
 

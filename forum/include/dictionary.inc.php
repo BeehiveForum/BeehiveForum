@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.inc.php,v 1.54 2008-07-30 17:41:40 decoyduck Exp $ */
+/* $Id: dictionary.inc.php,v 1.55 2008-08-12 17:09:18 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -83,7 +83,7 @@ class dictionary {
         $word_match.= '(www\.[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)|';
         $word_match.= '([0-9a-z][_\.0-9a-z-]*@[0-9a-z][_\.0-9a-z-]*\.[a-z]{2,})';
 
-        $this->content_array = preg_split("/$word_match/i", $content, -1, PREG_SPLIT_DELIM_CAPTURE);
+        $this->content_array = preg_split("/$word_match/iu", $content, -1, PREG_SPLIT_DELIM_CAPTURE);
     }
 
     function is_installed()
@@ -235,7 +235,7 @@ class dictionary {
         $word_match.= '(www\.[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)|';
         $word_match.= '([0-9a-z][_\.0-9a-z-]*@[0-9a-z][_\.0-9a-z-]*\.[a-z]{2,})';
 
-        if (preg_match("/$word_match/i", $current_word) < 1) {
+        if (preg_match("/$word_match/iu", $current_word) < 1) {
 
             if (strlen($current_word) > 1 && strtoupper($current_word) != $current_word) return true;
         }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.196 2008-08-05 17:38:49 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.197 2008-08-12 17:09:17 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -70,17 +70,17 @@ function light_html_draw_top()
 
     foreach ($arg_array as $key => $func_args) {
 
-        if (preg_match('/^title=([^$]+)$/i', $func_args, $func_matches) > 0) {
+        if (preg_match('/^title=([^$]+)$/iu', $func_args, $func_matches) > 0) {
             if (strlen($title) < 1) $title = $func_matches[1];
             unset($arg_array[$key]);
         }
 
-        if (preg_match('/^robots=([^$]+)$/i', $func_args, $func_matches) > 0) {
+        if (preg_match('/^robots=([^$]+)$/iu', $func_args, $func_matches) > 0) {
             if (strlen($robots) < 1) $robots = $func_matches[1];
             unset($arg_array[$key]);
         }
 
-        if (preg_match('/^link=([^:]+):([^$]+)$/i', $func_args, $func_matches) > 0) {
+        if (preg_match('/^link=([^:]+):([^$]+)$/iu', $func_args, $func_matches) > 0) {
             $link_array[] = array('rel' => $func_matches[1], 'href' => $func_matches[2]);
             unset($arg_array[$key]);
         }
@@ -560,7 +560,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
             $labels[] = $lang['visiblediscussions'];
             $selected_option = THREAD_MARK_READ_VISIBLE;
 
-            $visible_threads = implode(',', preg_grep("/^[0-9]+$/", $visible_threads_array));
+            $visible_threads = implode(',', preg_grep("/^[0-9]+$/u", $visible_threads_array));
             echo "        ", form_input_hidden("mark_read_threads", _htmlentities($visible_threads)), "\n";
         }
 
@@ -985,15 +985,15 @@ function light_message_display($tid, $message, $msg_count, $folder_fid, $in_list
 
     if (bh_session_get_value('IMAGES_TO_LINKS') == 'Y') {
 
-        $message['CONTENT'] = preg_replace('/<a([^>]*)href="([^"]*)"([^\>]*)><img[^>]*src="([^"]*)"[^>]*><\/a>/i', '[img: <a\1href="\2"\3>\4</a>]', $message['CONTENT']);
-        $message['CONTENT'] = preg_replace('/<img[^>]*src="([^"]*)"[^>]*>/i', '[img: <a href="\1">\1</a>]', $message['CONTENT']);
-        $message['CONTENT'] = preg_replace('/<embed[^>]*src="([^"]*)"[^>]*>/i', '[object: <a href="\1">\1</a>]', $message['CONTENT']);
+        $message['CONTENT'] = preg_replace('/<a([^>]*)href="([^"]*)"([^\>]*)><img[^>]*src="([^"]*)"[^>]*><\/a>/iu', '[img: <a\1href="\2"\3>\4</a>]', $message['CONTENT']);
+        $message['CONTENT'] = preg_replace('/<img[^>]*src="([^"]*)"[^>]*>/iu', '[img: <a href="\1">\1</a>]', $message['CONTENT']);
+        $message['CONTENT'] = preg_replace('/<embed[^>]*src="([^"]*)"[^>]*>/iu', '[object: <a href="\1">\1</a>]', $message['CONTENT']);
     }
 
     if ((strlen(strip_tags($message['CONTENT'])) > intval(forum_get_setting('maximum_post_length', false, 6226))) && $limit_text) {
 
         $cut_msg = substr($message['CONTENT'], 0, intval(forum_get_setting('maximum_post_length', false, 6226)));
-        $cut_msg = preg_replace("/(<[^>]+)?$/", "", $cut_msg);
+        $cut_msg = preg_replace("/(<[^>]+)?$/u", "", $cut_msg);
 
         $message['CONTENT'] = fix_html($cut_msg, false);
         $message['CONTENT'].= "&hellip;[{$lang['msgtruncated']}]\n<p align=\"center\"><a href=\"ldisplay.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_self\">{$lang['viewfullmsg']}.</a>";

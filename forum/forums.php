@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forums.php,v 1.95 2008-07-27 18:26:10 decoyduck Exp $ */
+/* $Id: forums.php,v 1.96 2008-08-12 17:13:45 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -230,7 +230,7 @@ if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri'])))
     $available_files = get_available_files();
     $available_files_preg = implode("|^", array_map('preg_quote_callback', $available_files));
 
-    if (preg_match("/^$available_files_preg/", basename(trim(_stripslashes($_GET['final_uri'])))) > 0) {
+    if (preg_match("/^$available_files_preg/u", basename(trim(_stripslashes($_GET['final_uri'])))) > 0) {
 
         $final_uri = basename(trim(_stripslashes($_GET['final_uri'])));
         $final_uri = href_cleanup_query_keys($final_uri, 'webtag');

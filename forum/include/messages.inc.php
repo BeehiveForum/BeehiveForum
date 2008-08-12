@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.548 2008-08-10 11:54:21 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.549 2008-08-12 17:09:17 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -231,7 +231,7 @@ function message_apply_formatting($message, $emoticons = true, $ignore_sig = fal
 {
     $webtag = get_webtag();
 
-    $message_parts = preg_split('/(<[^<>]+>)/', $message, -1, PREG_SPLIT_DELIM_CAPTURE);
+    $message_parts = preg_split('/(<[^<>]+>)/u', $message, -1, PREG_SPLIT_DELIM_CAPTURE);
 
     $signature_parts = array();
 
@@ -248,7 +248,7 @@ function message_apply_formatting($message, $emoticons = true, $ignore_sig = fal
 
     $message = implode('', $message_parts);
 
-    $message_parts = preg_split('/<([^<>]+)>/', $message, -1, PREG_SPLIT_DELIM_CAPTURE);
+    $message_parts = preg_split('/<([^<>]+)>/u', $message, -1, PREG_SPLIT_DELIM_CAPTURE);
 
     for ($j = 0; $j < 1; $j++) {
 
@@ -427,7 +427,7 @@ function message_apply_formatting($message, $emoticons = true, $ignore_sig = fal
 
             if ($ignore_sig == false) {
 
-                $message_parts = preg_split('/<([^<>]+)>/', $signature, -1, PREG_SPLIT_DELIM_CAPTURE);
+                $message_parts = preg_split('/<([^<>]+)>/u', $signature, -1, PREG_SPLIT_DELIM_CAPTURE);
 
             }else {
 
@@ -464,13 +464,13 @@ function message_apply_formatting($message, $emoticons = true, $ignore_sig = fal
             if (strlen($wiki_location) > 0) $wiki_location = str_replace("[WikiWord]", "\\1", $wiki_location);
         }
 
-        $message_parts = preg_split('/<\/?nowiki>/', $message);
+        $message_parts = preg_split('/<\/?nowiki>/u', $message);
 
         for ($i = 0; $i < sizeof($message_parts); $i++) {
 
             if (!($i % 2)) {
 
-                $html_parts = preg_split('/([<|>])/', $message_parts[$i], -1, PREG_SPLIT_DELIM_CAPTURE);
+                $html_parts = preg_split('/([<|>])/u', $message_parts[$i], -1, PREG_SPLIT_DELIM_CAPTURE);
 
                 for ($j = 0; $j < sizeof($html_parts); $j++) {
 
@@ -478,19 +478,19 @@ function message_apply_formatting($message, $emoticons = true, $ignore_sig = fal
 
                         if ($enable_wiki_words) {
 
-                            $html_parts[$j] = preg_replace('/\b(([A-Z][a-z]+){2,})\b/', "<a href=\"$wiki_location\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
+                            $html_parts[$j] = preg_replace('/\b(([A-Z][a-z]+){2,})\b/u', "<a href=\"$wiki_location\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
                         }
 
                         if ($enable_wiki_links) {
 
                             if (defined('BEEHIVEMODE_LIGHT')) {
 
-                                $html_parts[$j] = preg_replace('/\b(msg:([0-9]{1,}\.[0-9]{1,}))\b/i', "<a href=\"lmessages.php?webtag=$webtag&amp;msg=\\2\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
+                                $html_parts[$j] = preg_replace('/\b(msg:([0-9]{1,}\.[0-9]{1,}))\b/iu', "<a href=\"lmessages.php?webtag=$webtag&amp;msg=\\2\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
 
                             }else {
 
-                                $html_parts[$j] = preg_replace('/\b(msg:([0-9]{1,}\.[0-9]{1,}))\b/i', "<a href=\"index.php?webtag=$webtag&amp;msg=\\2\" target=\"_blank\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
-                                $html_parts[$j] = preg_replace('/\b(user:([a-z0-9_-]{2,15}))\b/i', "<a href=\"user_profile.php?webtag=$webtag&amp;logon=\\2\" target=\"_blank\" onclick=\"return openProfileByLogon('\\2', '$webtag')\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
+                                $html_parts[$j] = preg_replace('/\b(msg:([0-9]{1,}\.[0-9]{1,}))\b/iu', "<a href=\"index.php?webtag=$webtag&amp;msg=\\2\" target=\"_blank\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
+                                $html_parts[$j] = preg_replace('/\b(user:([a-z0-9_-]{2,15}))\b/iu', "<a href=\"user_profile.php?webtag=$webtag&amp;logon=\\2\" target=\"_blank\" onclick=\"return openProfileByLogon('\\2', '$webtag')\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
                             }
                         }
                     }
@@ -505,8 +505,8 @@ function message_apply_formatting($message, $emoticons = true, $ignore_sig = fal
 
     if ($emoticons == true) {
 
-        $message_parts = preg_split('/<\/?noemots>/', $message);
-        $signature_parts = preg_split('/<\/?noemots>/', $signature);
+        $message_parts = preg_split('/<\/?noemots>/u', $message);
+        $signature_parts = preg_split('/<\/?noemots>/u', $signature);
 
         $message_parts = array_merge($message_parts, $signature_parts);
 
@@ -521,7 +521,7 @@ function message_apply_formatting($message, $emoticons = true, $ignore_sig = fal
         $message = implode("", $message_parts);
     }
 
-    return preg_replace('/<\/?noemots>|<\/?nowiki>/', '', $message);
+    return preg_replace('/<\/?noemots>|<\/?nowiki>/u', '', $message);
 }
 
 function messages_top($tid, $pid, $folder_fid, $folder_title, $thread_title, $thread_interest_level = THREAD_NOINTEREST, $folder_interest_level = FOLDER_NOINTEREST, $sticky = "N", $closed = false, $locked = false, $deleted = false, $frame_links = true)
@@ -624,9 +624,9 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
     if (bh_session_get_value('IMAGES_TO_LINKS') == 'Y') {
 
-        $message['CONTENT'] = preg_replace('/<a([^>]*)href="([^"]*)"([^\>]*)><img[^>]*src="([^"]*)"[^>]*><\/a>/i', '[img: <a\1href="\2"\3>\4</a>]', $message['CONTENT']);
-        $message['CONTENT'] = preg_replace('/<img[^>]*src="([^"]*)"[^>]*>/i', '[img: <a href="\1">\1</a>]', $message['CONTENT']);
-        $message['CONTENT'] = preg_replace('/<embed[^>]*src="([^"]*)"[^>]*>/i', '[object: <a href="\1">\1</a>]', $message['CONTENT']);
+        $message['CONTENT'] = preg_replace('/<a([^>]*)href="([^"]*)"([^\>]*)><img[^>]*src="([^"]*)"[^>]*><\/a>/iu', '[img: <a\1href="\2"\3>\4</a>]', $message['CONTENT']);
+        $message['CONTENT'] = preg_replace('/<img[^>]*src="([^"]*)"[^>]*>/iu', '[img: <a href="\1">\1</a>]', $message['CONTENT']);
+        $message['CONTENT'] = preg_replace('/<embed[^>]*src="([^"]*)"[^>]*>/iu', '[object: <a href="\1">\1</a>]', $message['CONTENT']);
     }
 
     $message['CONTENT'] = "<div class=\"pear_cache_lite\">{$message['CONTENT']}</div>";
@@ -640,7 +640,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     if ((strlen(strip_tags($message['CONTENT'])) > intval(forum_get_setting('maximum_post_length', false, 6226))) && $limit_text) {
 
         $cut_msg = substr($message['CONTENT'], 0, intval(forum_get_setting('maximum_post_length', false, 6226)));
-        $cut_msg = preg_replace("/(<[^>]+)?$/", "", $cut_msg);
+        $cut_msg = preg_replace("/(<[^>]+)?$/u", "", $cut_msg);
 
         $message['CONTENT'] = fix_html($cut_msg, false);
         $message['CONTENT'].= "&hellip;[{$lang['msgtruncated']}]\n<p align=\"center\"><a href=\"display.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_self\">{$lang['viewfullmsg']}.</a>";
@@ -667,11 +667,11 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
             $highlight_word = preg_quote($word, "/");
 
-            $highlight_pattern[$key] = "/($highlight_word)/i";
+            $highlight_pattern[$key] = "/($highlight_word)/iu";
             $highlight_replace[$key] = "<span class=\"highlight\">\\1</span>";
         }
 
-        $message_parts = preg_split('/([<|>])/', $message['CONTENT'], -1, PREG_SPLIT_DELIM_CAPTURE);
+        $message_parts = preg_split('/([<|>])/u', $message['CONTENT'], -1, PREG_SPLIT_DELIM_CAPTURE);
 
         for ($i = 0; $i < sizeof($message_parts); $i++) {
 
@@ -1853,7 +1853,7 @@ function messages_fontsize_form($tid, $pid)
 
 function validate_msg($msg)
 {
-    return preg_match('/^\d{1,}\.\d{1,}$/', rawurldecode($msg));
+    return preg_match('/^\d{1,}\.\d{1,}$/u', rawurldecode($msg));
 }
 
 function messages_forum_stats($tid, $pid)

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_update_language.php,v 1.17 2008-08-06 23:09:29 decoyduck Exp $ */
+/* $Id: bh_update_language.php,v 1.18 2008-08-12 17:13:46 decoyduck Exp $ */
 
 // Constant to define where the include files are
 
@@ -75,7 +75,7 @@ if (@file_exists(BH_INCLUDE_PATH. "languages/en.inc.php")) {
 
         $lang_matches = array();
 
-        if (preg_match('/^\$lang((\[[^\]]+\])+)/i', $lang_en_line, $lang_matches)) {
+        if (preg_match('/^\$lang((\[[^\]]+\])+)/iu', $lang_en_line, $lang_matches)) {
 
             foreach ($lang_add as $lang_add_line) {
 
@@ -85,7 +85,7 @@ if (@file_exists(BH_INCLUDE_PATH. "languages/en.inc.php")) {
 
                 $lang_add_matches = array();
 
-                if (preg_match("/^{$preg_lang_add_match}[^\"]+\"(.+)\";?/i", $lang_add_line, $lang_add_matches)) {
+                if (preg_match("/^{$preg_lang_add_match}[^\"]+\"(.+)\";?/iu", $lang_add_line, $lang_add_matches)) {
 
                     if (isset($lang_add_matches[1]) && strlen(trim($lang_add_matches[1])) > 0) {
 
@@ -106,7 +106,7 @@ if (@file_exists(BH_INCLUDE_PATH. "languages/en.inc.php")) {
 
                     $lang_fix_matches = array();
 
-                    if (preg_match("/^{$preg_lang_fix_match}[^\"]+\"(.+)\";?/i", $lang_fix_line, $lang_fix_matches)) {
+                    if (preg_match("/^{$preg_lang_fix_match}[^\"]+\"(.+)\";?/iu", $lang_fix_line, $lang_fix_matches)) {
 
                         if (isset($lang_fix_matches[1]) && strlen(trim($lang_fix_matches[1])) > 0) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.170 2008-07-30 17:41:38 decoyduck Exp $ */
+/* $Id: index.php,v 1.171 2008-08-12 17:13:45 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -120,28 +120,28 @@ if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri'])))
 
     $available_files = get_available_files();
     $available_files_preg = implode("|^", array_map('preg_quote_callback', $available_files));
-    
+
     $available_admin_files = get_available_admin_files();
     $available_admin_files_preg = implode("|^", array_map('preg_quote_callback', $available_admin_files));
 
     $my_controls_files = get_available_user_control_files();
     $my_controls_preg = implode("|^", array_map('preg_quote_callback', $my_controls_files));
 
-    if (preg_match("/^$available_files_preg/", $final_uri_check) > 0) {
+    if (preg_match("/^$available_files_preg/u", $final_uri_check) > 0) {
 
         $final_uri = basename(trim(_stripslashes($_GET['final_uri'])));
 
-        if (preg_match("/^change_pw.php|^register.php|^confirm_email.php|^forgot_pw.php/", $final_uri) > 0) {
+        if (preg_match("/^change_pw.php|^register.php|^confirm_email.php|^forgot_pw.php/u", $final_uri) > 0) {
 
             $final_uri = href_cleanup_query_keys($final_uri);
             $skip_logon_page = true;
 
-        }else if (preg_match("/^$available_admin_files/", $final_uri) > 0) {
+        }else if (preg_match("/^$available_admin_files/u", $final_uri) > 0) {
 
             $final_uri = rawurlencode(href_cleanup_query_keys($final_uri, false, '&'));
             $final_uri = "admin.php?webtag=$webtag&amp;page=$final_uri";
 
-        }else if (preg_match("/^$my_controls_preg/", $final_uri) > 0) {
+        }else if (preg_match("/^$my_controls_preg/u", $final_uri) > 0) {
 
             $final_uri = rawurlencode(href_cleanup_query_keys($final_uri, false, '&'));
             $final_uri = "user.php?webtag=$webtag&amp;page=$final_uri";

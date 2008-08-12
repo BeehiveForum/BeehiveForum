@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.178 2008-08-07 09:24:57 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.179 2008-08-12 16:20:29 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'new-install.php') {
 
@@ -125,7 +125,7 @@ $sql.= "  CREATED DATETIME DEFAULT NULL, ";
 $sql.= "  ACTION MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  ENTRY TEXT, ";
 $sql.= "  PRIMARY KEY (ID)";
-$sql.= ") TYPE=MYISAM";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -140,7 +140,7 @@ $sql.= "  BANDATA VARCHAR(255) NOT NULL DEFAULT '', ";
 $sql.= "  COMMENT VARCHAR(255) NOT NULL DEFAULT '', ";
 $sql.= "  PRIMARY KEY (ID), ";
 $sql.= "  KEY BANTYPE (BANTYPE, BANDATA)";
-$sql.= ") TYPE=MYISAM";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -156,7 +156,7 @@ $sql.= "  PREFIX VARCHAR(16) DEFAULT NULL, ";
 $sql.= "  ALLOWED_TYPES TINYINT(3) DEFAULT NULL, ";
 $sql.= "  POSITION MEDIUMINT(8) UNSIGNED DEFAULT '0', ";
 $sql.= "  PRIMARY KEY (FID)";
-$sql.= ") TYPE=MYISAM";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -170,7 +170,7 @@ $sql.= "  POS MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  URI VARCHAR(255) DEFAULT NULL, ";
 $sql.= "  TITLE VARCHAR(64) DEFAULT NULL, ";
 $sql.= "  PRIMARY KEY (LID)";
-$sql.= ") TYPE=MYISAM";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -190,7 +190,7 @@ $sql.= "  VISIBLE CHAR(1) NOT NULL DEFAULT 'N', ";
 $sql.= "  CLICKS MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  PRIMARY KEY (LID), ";
 $sql.= "  KEY FID (FID)";
-$sql.= ") TYPE=MYISAM";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -205,7 +205,7 @@ $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00', ";
 $sql.= "  COMMENT TEXT NOT NULL, ";
 $sql.= "  PRIMARY KEY (CID)";
-$sql.= ") TYPE=MYISAM";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -220,7 +220,7 @@ $sql.= "  NAME VARCHAR(32) NOT NULL DEFAULT '', ";
 $sql.= "  VISIBLE CHAR(1) NOT NULL DEFAULT '', ";
 $sql.= "  PRIMARY KEY (FID), ";
 $sql.= "  KEY PARENT_FID (PARENT_FID)";
-$sql.= ") TYPE=MYISAM";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -234,7 +234,7 @@ $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  RATING SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  TSTAMP DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00', ";
 $sql.= "  PRIMARY KEY (LID, UID)";
-$sql.= ") TYPE=MYISAM";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -253,7 +253,7 @@ $sql.= "  VOTETYPE TINYINT(1) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  OPTIONTYPE TINYINT(1) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  ALLOWGUESTS TINYINT(1) NOT NULL DEFAULT '0', ";
 $sql.= "  PRIMARY KEY (TID)";
-$sql.= ") TYPE=MYISAM";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -267,7 +267,7 @@ $sql.= "  OPTION_ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, ";
 $sql.= "  OPTION_NAME CHAR(255) NOT NULL DEFAULT '', ";
 $sql.= "  GROUP_ID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  PRIMARY KEY (TID, OPTION_ID)";
-$sql.= ") TYPE=MYISAM";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -297,7 +297,7 @@ $sql.= "  KEY FROM_UID (FROM_UID), ";
 $sql.= "  KEY IPADDRESS (IPADDRESS, FROM_UID), ";
 $sql.= "  KEY APPROVED (APPROVED), ";
 $sql.= "  KEY CREATED (CREATED)";
-$sql.= ") TYPE=MYISAM";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -311,7 +311,7 @@ $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  CONTENT TEXT, ";
 $sql.= "  PRIMARY KEY (TID, PID), ";
 $sql.= "  FULLTEXT KEY CONTENT (CONTENT)";
-$sql.= ") TYPE=MYISAM";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -328,7 +328,7 @@ $sql.= "  OPTIONS TEXT NOT NULL, ";
 $sql.= "  POSITION MEDIUMINT(3) UNSIGNED DEFAULT '0', ";
 $sql.= "  PRIMARY KEY (PIID), ";
 $sql.= "  KEY PSID (PSID)";
-$sql.= ") TYPE=MYISAM";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -341,7 +341,7 @@ $sql.= "  PSID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, ";
 $sql.= "  NAME VARCHAR(64) DEFAULT NULL, ";
 $sql.= "  POSITION MEDIUMINT(3) UNSIGNED DEFAULT '0', ";
 $sql.= "  PRIMARY KEY (PSID)";
-$sql.= ") TYPE=MYISAM";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -359,7 +359,7 @@ $sql.= "  PREFIX VARCHAR(16) DEFAULT NULL, ";
 $sql.= "  FREQUENCY MEDIUMINT(8) UNSIGNED DEFAULT NULL, ";
 $sql.= "  LAST_RUN DATETIME DEFAULT NULL, ";
 $sql.= "  PRIMARY KEY (RSSID)";
-$sql.= ") TYPE=MYISAM";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -371,7 +371,7 @@ $sql = "CREATE TABLE {$forum_webtag}_RSS_HISTORY (";
 $sql.= "  RSSID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  LINK VARCHAR(255) DEFAULT NULL, ";
 $sql.= "  KEY RSSID (RSSID)";
-$sql.= ") TYPE=MYISAM";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -386,7 +386,7 @@ $sql.= "  MOST_USERS_COUNT MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  MOST_POSTS_DATE DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00', ";
 $sql.= "  MOST_POSTS_COUNT MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  PRIMARY KEY (ID)";
-$sql.= ") TYPE=MYISAM";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -415,7 +415,7 @@ $sql.= "  KEY LENGTH (LENGTH), ";
 $sql.= "  KEY MODIFIED (MODIFIED), ";
 $sql.= "  KEY TITLE (TITLE), ";
 $sql.= "  KEY FID (FID)";
-$sql.= ") TYPE=MYISAM";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -427,7 +427,7 @@ $sql = "CREATE TABLE {$forum_webtag}_THREAD_STATS (";
 $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  VIEWCOUNT MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  PRIMARY KEY (TID) ";
-$sql.= ") TYPE=MYISAM";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -442,7 +442,7 @@ $sql.= "  CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00', ";
 $sql.= "  TRACK_TYPE TINYINT(4) NOT NULL DEFAULT '0', ";
 $sql.= "  PRIMARY KEY (TID, NEW_TID), ";
 $sql.= "  KEY NEW_TID (NEW_TID)";
-$sql.= ") TYPE=MYISAM";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -455,7 +455,7 @@ $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  INTEREST TINYINT(4) DEFAULT '0', ";
 $sql.= "  PRIMARY KEY (UID, FID)";
-$sql.= ") TYPE=MYISAM";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -469,7 +469,7 @@ $sql.= "  PEER_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  RELATIONSHIP TINYINT(4) DEFAULT NULL, ";
 $sql.= "  PEER_NICKNAME VARCHAR(32) DEFAULT NULL, ";
 $sql.= "  PRIMARY KEY (UID, PEER_UID)";
-$sql.= ") TYPE=MYISAM";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -485,7 +485,7 @@ $sql.= "  OPTION_ID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  TSTAMP DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00', ";
 $sql.= "  PRIMARY KEY (TID, VOTE_ID), ";
 $sql.= "  KEY UID (UID)";
-$sql.= ") TYPE=MYISAM";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -525,7 +525,7 @@ $sql.= "  USE_OVERFLOW_RESIZE CHAR(1) NOT NULL DEFAULT 'Y', ";
 $sql.= "  REPLY_QUICK CHAR(1) NOT NULL DEFAULT 'N', ";
 $sql.= "  THREADS_BY_FOLDER CHAR(1) NOT NULL DEFAULT 'N', ";
 $sql.= "  PRIMARY KEY (UID)";
-$sql.= ") TYPE=MYISAM";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -539,7 +539,7 @@ $sql.= "  PIID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  ENTRY VARCHAR(255) DEFAULT NULL, ";
 $sql.= "  PRIVACY TINYINT(3) NOT NULL DEFAULT '0', ";
 $sql.= "  PRIMARY KEY (UID, PIID)";
-$sql.= ") TYPE=MYISAM";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -552,7 +552,7 @@ $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  CONTENT TEXT, ";
 $sql.= "  HTML CHAR(1) DEFAULT NULL, ";
 $sql.= "  PRIMARY KEY (UID)";
-$sql.= ") TYPE=MYISAM";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -569,7 +569,7 @@ $sql.= "  INTEREST TINYINT(4) DEFAULT NULL, ";
 $sql.= "  PRIMARY KEY (UID, TID), ";
 $sql.= "  KEY TID (TID), ";
 $sql.= "  KEY LAST_READ (LAST_READ)";
-$sql.= ") TYPE=MYISAM";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -588,7 +588,7 @@ $sql.= "  USER_TIME_BEST DATETIME DEFAULT NULL, ";
 $sql.= "  USER_TIME_TOTAL DATETIME DEFAULT NULL, ";
 $sql.= "  USER_TIME_UPDATED DATETIME DEFAULT NULL, ";
 $sql.= "  PRIMARY KEY (UID)";
-$sql.= ") TYPE=MYISAM";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -605,7 +605,7 @@ $sql.= "  REPLACE_TEXT TEXT NOT NULL, ";
 $sql.= "  FILTER_TYPE TINYINT(3) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  FILTER_ENABLED TINYINT(3) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  PRIMARY KEY (UID, FID)";
-$sql.= ") TYPE=MYISAM";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -619,7 +619,7 @@ $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  SOUND VARCHAR(64) NOT NULL DEFAULT '', ";
 $sql.= "  PRIMARY KEY (WORD, UID), ";
 $sql.= "  KEY SOUND (SOUND)";
-$sql.= ") TYPE=MYISAM";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -638,7 +638,7 @@ $sql.= "  FORUM_PASSWD VARCHAR(32) NOT NULL DEFAULT '', ";
 $sql.= "  PRIMARY KEY (FID), ";
 $sql.= "  KEY WEBTAG (WEBTAG), ";
 $sql.= "  KEY DEFAULT_FORUM (DEFAULT_FORUM)";
-$sql.= ") TYPE=MYISAM";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -651,7 +651,7 @@ $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  SNAME VARCHAR(255) NOT NULL DEFAULT '', ";
 $sql.= "  SVALUE TEXT NOT NULL, ";
 $sql.= "  PRIMARY KEY (FID, SNAME) ";
-$sql.= ") TYPE=MYISAM";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -668,7 +668,7 @@ $sql.= "  AUTO_GROUP TINYINT(1) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  PRIMARY KEY (GID), ";
 $sql.= "  KEY AUTO_GROUP (AUTO_GROUP), ";
 $sql.= "  KEY FORUM (FORUM)";
-$sql.= ") TYPE=MYISAM";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -682,7 +682,7 @@ $sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  PERM INT(32) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  PRIMARY KEY (GID, FORUM, FID)";
-$sql.= ") TYPE=MYISAM";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -695,7 +695,7 @@ $sql.= "  GID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  UID MEDIUMINT(8) NOT NULL DEFAULT '0', ";
 $sql.= "  PRIMARY KEY (GID, UID), ";
 $sql.= "  KEY UID (UID)";
-$sql.= ") TYPE=MYISAM";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -719,7 +719,7 @@ $sql.= "  KEY FROM_UID (FROM_UID), ";
 $sql.= "  KEY SMID (SMID), ";
 $sql.= "  KEY TO_UID (TO_UID), ";
 $sql.= "  FULLTEXT KEY SUBJECT (SUBJECT)";
-$sql.= ") TYPE=MYISAM";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -732,7 +732,7 @@ $sql.= "  MID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  AID CHAR(32) NOT NULL DEFAULT '', ";
 $sql.= "  PRIMARY KEY (MID), ";
 $sql.= "  KEY AID (AID)";
-$sql.= ") TYPE=MYISAM";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -745,7 +745,7 @@ $sql.= "  MID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  CONTENT TEXT, ";
 $sql.= "  PRIMARY KEY (MID), ";
 $sql.= "  FULLTEXT KEY CONTENT (CONTENT)";
-$sql.= ") TYPE=MYISAM";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -763,7 +763,7 @@ $sql.= "  SUBJECT VARCHAR(64) NOT NULL DEFAULT '', ";
 $sql.= "  RECIPIENTS VARCHAR(255) NOT NULL DEFAULT '', ";
 $sql.= "  CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00', ";
 $sql.= "  PRIMARY KEY (UID, MID)";
-$sql.= ") TYPE=MYISAM";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -782,7 +782,7 @@ $sql.= "  DOWNLOADS MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  PRIMARY KEY (AID, ID), ";
 $sql.= "  KEY UID (UID), ";
 $sql.= "  KEY HASH (HASH)";
-$sql.= ") TYPE=MYISAM";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -798,7 +798,7 @@ $sql.= "  AID CHAR(32) NOT NULL DEFAULT '', ";
 $sql.= "  PRIMARY KEY (FID, TID, PID), ";
 $sql.= "  KEY AID (AID), ";
 $sql.= "  KEY TID (TID)";
-$sql.= ") TYPE=MYISAM";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -814,7 +814,7 @@ $sql.= "  AGENT_MATCH VARCHAR(32) DEFAULT NULL, ";
 $sql.= "  PRIMARY KEY (SID), ";
 $sql.= "  KEY NAME (NAME), ";
 $sql.= "  KEY AGENT_MATCH (AGENT_MATCH)";
-$sql.= ") TYPE=MYISAM";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -835,7 +835,7 @@ $sql.= "  CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00', ";
 $sql.= "  LENGTH MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  RELEVANCE FLOAT UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  PRIMARY KEY (UID, FORUM, TID, PID)";
-$sql.= ") TYPE=MYISAM";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -853,7 +853,7 @@ $sql.= "  REFERER VARCHAR(255) DEFAULT NULL, ";
 $sql.= "  PRIMARY KEY (HASH), ";
 $sql.= "  KEY REFERER (REFERER), ";
 $sql.= "  KEY UID (UID)";
-$sql.= ") TYPE=MYISAM";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -866,7 +866,7 @@ $sql.= "  TZID INT(11) NOT NULL DEFAULT '0', ";
 $sql.= "  GMT_OFFSET DOUBLE DEFAULT '0', ";
 $sql.= "  DST_OFFSET DOUBLE DEFAULT NULL, ";
 $sql.= "  PRIMARY KEY (TZID)";
-$sql.= ") TYPE=MYISAM";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -887,7 +887,7 @@ $sql.= "  APPROVED DATETIME DEFAULT NULL, ";
 $sql.= "  PRIMARY KEY (UID), ";
 $sql.= "  KEY LOGON (LOGON), ";
 $sql.= "  KEY NICKNAME (NICKNAME)";
-$sql.= ") TYPE=MYISAM";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -902,7 +902,7 @@ $sql.= "  INTEREST TINYINT(4) DEFAULT '0', ";
 $sql.= "  ALLOWED TINYINT(4) DEFAULT '0', ";
 $sql.= "  LAST_VISIT DATETIME DEFAULT NULL, ";
 $sql.= "  PRIMARY KEY (UID, FID)";
-$sql.= ") TYPE=MYISAM";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -918,7 +918,7 @@ $sql.= "  NICKNAME VARCHAR(32) NOT NULL DEFAULT '', ";
 $sql.= "  EMAIL VARCHAR(80) NOT NULL DEFAULT '', ";
 $sql.= "  MODIFIED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00', ";
 $sql.= "  PRIMARY KEY (HID)";
-$sql.= ") TYPE=MYISAM";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -976,7 +976,7 @@ $sql.= "  THREADS_BY_FOLDER CHAR(1) NOT NULL DEFAULT 'N', ";
 $sql.= "  PRIMARY KEY (UID), ";
 $sql.= "  KEY DOB (DOB), ";
 $sql.= "  KEY DOB_DISPLAY (DOB_DISPLAY)";
-$sql.= ") TYPE=MYISAM";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -996,7 +996,7 @@ $sql.= "  PRIMARY KEY (UID, VID), ";
 $sql.= "  KEY FORUM (FORUM), ";
 $sql.= "  KEY SID (SID), ";
 $sql.= "  KEY LAST_LOGON (LAST_LOGON)";
-$sql.= ") TYPE=MYISAM";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!$result = @db_query($sql, $db_install)) {
 

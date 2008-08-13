@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: constants.inc.php,v 1.146 2008-07-31 14:52:56 decoyduck Exp $ */
+/* $Id: constants.inc.php,v 1.147 2008-08-13 21:28:31 decoyduck Exp $ */
 
 /**
 * Constants used throughout Beehive.
@@ -555,6 +555,11 @@ define('ADMIN_USER_FILTER_ONLINE', 1);
 define('ADMIN_USER_FILTER_OFFLINE', 2);
 define('ADMIN_USER_FILTER_BANNED', 3);
 define('ADMIN_USER_FILTER_APPROVAL', 4);
+
+// Admin User Options
+
+define('ADMIN_USER_OPTION_END_SESSION', 0);
+define('ADMIN_USER_OPTION_APPROVE', 1);
 
 // Admin RSS Feed Settings Frequencies
 

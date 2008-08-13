@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en-us.inc.php,v 1.75 2008-08-06 23:09:30 decoyduck Exp $ */
+/* $Id: en-us.inc.php,v 1.76 2008-08-13 21:28:31 decoyduck Exp $ */
 
 // American English language file
 
@@ -613,7 +613,7 @@ $lang['postapprovalqueue'] = "Post Approval Queue";
 $lang['nopostsawaitingapproval'] = "No posts are awaiting approval";
 $lang['approveselected'] = "Approve selected";
 $lang['failedtoapproveuser'] = "Failed to approve user %s";
-$lang['kickselected'] = "Kick selected";
+$lang['endsession'] = "End Session (Kick)";
 $lang['visitorlog'] = "Visitor Log";
 $lang['novisitorslogged'] = "No Visitors Logged";
 $lang['addselectedusers'] = "Add Selected Users";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.570 2008-08-10 12:36:28 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.571 2008-08-13 21:28:31 decoyduck Exp $ */
 
 // British English language file
 
@@ -384,6 +384,7 @@ $lang['failedtoupdateglobaluserpermissions'] = "Failed to update global user per
 $lang['failedtoupdatefolderaccesssettings'] = "Failed to update folder access settings";
 $lang['manageusersexp'] = "This list shows a selection of users who have logged on to your forum, sorted by %s. To alter a user's permissions click their name.";
 $lang['userfilter'] = "User filter";
+$lang['withselected'] = "With selected";
 $lang['onlineusers'] = "Online users";
 $lang['offlineusers'] = "Offline users";
 $lang['usersawaitingapproval'] = "Users awaiting approval";
@@ -612,7 +613,7 @@ $lang['postapprovalqueue'] = "Post Approval Queue";
 $lang['nopostsawaitingapproval'] = "No posts are awaiting approval";
 $lang['approveselected'] = "Approve selected";
 $lang['failedtoapproveuser'] = "Failed to approve user %s";
-$lang['kickselected'] = "Kick selected";
+$lang['endsession'] = "End Session (Kick)";
 $lang['visitorlog'] = "Visitor Log";
 $lang['novisitorslogged'] = "No Visitors Logged";
 $lang['addselectedusers'] = "Add Selected Users";

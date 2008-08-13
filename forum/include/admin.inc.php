@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.162 2008-08-12 17:09:18 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.163 2008-08-13 21:28:31 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -533,7 +533,7 @@ function admin_user_get_all($sort_by = 'LAST_VISIT', $sort_dir = 'ASC', $filter 
     $sort_by_array  = array('LOGON'      => 'USER.LOGON',
                             'LAST_VISIT' => 'USER_FORUM.LAST_VISIT',
                             'REGISTERED' => 'USER.REGISTERED',
-                            'REFERER'    => 'SESSIONS.REFERER');
+                            'ACTIVE'     => 'SESSIONS.HASH');
 
     if (!in_array($sort_dir, array('ASC', 'DESC'))) $sort_dir = 'ASC';
 
@@ -547,7 +547,7 @@ function admin_user_get_all($sort_by = 'LAST_VISIT', $sort_dir = 'ASC', $filter 
     }
 
     if (in_array($sort_by, array_keys($sort_by_array))) {
-        $sort_by_array[$sort_by];
+        $sort_by = $sort_by_array[$sort_by];
     }else {
         $sort_by = 'USER_FORUM.LAST_VISIT';
     }
@@ -588,8 +588,8 @@ function admin_user_get_all($sort_by = 'LAST_VISIT', $sort_dir = 'ASC', $filter 
             break;
     }
 
-    $sql = "SELECT SQL_CALC_FOUND_ROWS USER.UID, USER.LOGON, USER.NICKNAME, SESSIONS.HASH, ";
-    $sql.= "SESSIONS.REFERER, UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, ";
+    $sql = "SELECT SQL_CALC_FOUND_ROWS USER.UID, USER.LOGON, USER.NICKNAME, ";
+    $sql.= "SESSIONS.HASH, UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, ";
     $sql.= "UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT) AS LAST_VISIT FROM USER ";
     $sql.= "LEFT JOIN SESSIONS ON (SESSIONS.UID = USER.UID) ";
     $sql.= "LEFT JOIN GROUP_USERS ON (GROUP_USERS.UID = USER.UID) ";
@@ -624,6 +624,37 @@ function admin_user_get_all($sort_by = 'LAST_VISIT', $sort_dir = 'ASC', $filter 
 
     return array('user_count' => $user_get_all_count,
                  'user_array' => $user_get_all_array);
+}
+
+function admin_user_get($uid)
+{
+    if (!$db_admin_user_get = db_connect()) return false;
+
+    if (!is_numeric($uid)) return false;
+
+    if (($table_data = get_table_prefix())) {
+        $forum_fid = $table_data['FID'];
+    }else {
+        $forum_fid = 0;
+    }
+
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER.EMAIL, ";
+    $sql.= "USER.IPADDRESS, SESSIONS.HASH, SESSIONS.REFERER AS SESSION_REFERER, ";
+    $sql.= "UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, ";
+    $sql.= "UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT) AS LAST_VISIT FROM USER ";
+    $sql.= "LEFT JOIN SESSIONS ON (SESSIONS.UID = USER.UID) ";
+    $sql.= "LEFT JOIN USER_FORUM  ON (USER.UID = USER_FORUM.UID ";
+    $sql.= "AND USER_FORUM.FID = '$forum_fid') WHERE USER.UID = '$uid'";
+
+    if (!$result = db_query($sql, $db_admin_user_get)) return false;
+
+    if (db_num_rows($result) > 0) {
+
+        $admin_user_get = db_fetch_array($result);
+        return $admin_user_get;
+    }
+
+    return false;
 }
 
 /**

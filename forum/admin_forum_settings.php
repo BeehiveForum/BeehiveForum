@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.141 2008-08-02 13:58:05 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.142 2008-08-13 21:28:30 decoyduck Exp $ */
 
 /**
 * Displays and handles the Forum Settings page
@@ -622,7 +622,7 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\">", $password_protected_message->textarea("password_protected_message", (isset($forum_settings['password_protected_message']) ? _htmlentities($forum_settings['password_protected_message']) : ''), 7, 80, "", "admin_startpage_textarea"), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", $password_protected_message->js(false), "</td>\n";
+echo "                        <td align=\"left\">", $closed_message->js(false), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">\n";

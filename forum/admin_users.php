@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.174 2008-08-12 17:13:46 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.175 2008-08-13 21:28:31 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -109,7 +109,7 @@ if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 $sort_by_array = array('LOGON'      => $lang['logon'],
                        'LAST_VISIT' => $lang['lastlogon'],
                        'REGISTERED' => $lang['registered'],
-                       'REFERER'    => $lang['referer']);
+                       'ACTIVE'     => $lang['active']);
 
 // Column sorting stuff
 
@@ -121,8 +121,8 @@ if (isset($_GET['sort_by'])) {
         $sort_by = "LAST_VISIT";
     } elseif ($_GET['sort_by'] == "REGISTERED") {
         $sort_by = "REGISTERED";
-    } elseif ($_GET['sort_by'] == "REFERER") {
-        $sort_by = "REFERER";
+    } elseif ($_GET['sort_by'] == "ACTIVE") {
+        $sort_by = "ACTIVE";
     } else {
         $sort_by = "LAST_VISIT";
     }
@@ -135,8 +135,8 @@ if (isset($_GET['sort_by'])) {
         $sort_by = "LAST_VISIT";
     } elseif ($_POST['sort_by'] == "REGISTERED") {
         $sort_by = "REGISTERED";
-    } elseif ($_POST['sort_by'] == "REFERER") {
-        $sort_by = "REFERER";
+    } elseif ($_POST['sort_by'] == "ACTIVE") {
+        $sort_by = "ACTIVE";
     } else {
         $sort_by = "LAST_VISIT";
     }
@@ -204,77 +204,83 @@ if (($table_data = get_table_prefix())) {
     echo "<h1>{$lang['admin']} &raquo; {$lang['manageusers']}</h1>\n";
 }
 
-if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
+if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
 
-    if (isset($_POST['kick_submit'])) {
+    if (isset($_POST['select_action'])) {
 
-        $valid = true;
+        if (isset($_POST['action']) && is_numeric($_POST['action'])) {
 
-        if (isset($_POST['user_update']) && is_array($_POST['user_update'])) {
+            if ($_POST['action'] == ADMIN_USER_OPTION_END_SESSION) {
 
-            $kick_users = preg_grep("/^[0-9]+$/u", array_keys($_POST['user_update']));
+                $valid = true;
 
-            $kick_user_success_array = array();
+                if (isset($_POST['user_update']) && is_array($_POST['user_update'])) {
 
-            foreach ($kick_users as $user_uid) {
+                    $kick_users = preg_grep("/^[0-9]+$/u", array_keys($_POST['user_update']));
 
-                if (($valid && $user_logon = user_get_logon($user_uid))) {
+                    $kick_user_success_array = array();
 
-                    if (!admin_session_end($user_uid)) {
+                    foreach ($kick_users as $user_uid) {
 
-                        $error_msg_array[] = sprintf($lang['failedtoendsessionforuser'], $user_logon);
-                        $valid = false;
-                    }
-                }
-            }
+                        if (($valid && $user_logon = user_get_logon($user_uid))) {
 
-            if ($valid) {
+                            if (!admin_session_end($user_uid)) {
 
-                $redirect_uri = "admin_users.php?webtag=$webtag&page=$page";
-                $redirect_uri.= "&sort_by=$sort_by&sort_dir=$sort_dir&filter=$filter";
-                $redirect_uri.= "&user_search=%s&kicked=true";
-
-                header_redirect(sprintf($redirect_uri, _htmlentities($user_search)));
-                exit;
-            }
-        }
-
-    }elseif (isset($_POST['approve_submit'])) {
-
-        if (forum_get_setting('require_user_approval', 'Y')) {
-
-            $valid = true;
-
-            if (isset($_POST['user_update']) && is_array($_POST['user_update'])) {
-
-                $approve_users = preg_grep("/^[0-9]+$/u", array_keys($_POST['user_update']));
-
-                $approved_user_success_array = array();
-
-                foreach ($approve_users as $user_uid) {
-
-                    if (($valid && $user_logon = user_get_logon($user_uid))) {
-
-                        if (admin_approve_user($user_uid)) {
-
-                            email_send_user_approved_notification($user_uid);
-
-                        }else {
-
-                            $error_msg_array[] = sprintf($lang['failedtoapproveuser'], $user_logon);
-                            $valid = false;
+                                $error_msg_array[] = sprintf($lang['failedtoendsessionforuser'], $user_logon);
+                                $valid = false;
+                            }
                         }
                     }
+
+                    if ($valid) {
+
+                        $redirect_uri = "admin_users.php?webtag=$webtag&page=$page";
+                        $redirect_uri.= "&sort_by=$sort_by&sort_dir=$sort_dir&filter=$filter";
+                        $redirect_uri.= "&user_search=%s&kicked=true";
+
+                        header_redirect(sprintf($redirect_uri, _htmlentities($user_search)));
+                        exit;
+                    }
                 }
+            }
 
-                if ($valid) {
+        }else if ($_POST['action'] == ADMIN_USER_OPTION_APPROVE) {
 
-                    $redirect_uri = "admin_users.php?webtag=$webtag&page=$page";
-                    $redirect_uri.= "&sort_by=$sort_by&sort_dir=$sort_dir&filter=$filter";
-                    $redirect_uri.= "&user_search=%s&approved=true";
+            if (forum_get_setting('require_user_approval', 'Y')) {
 
-                    header_redirect(sprintf($redirect_uri, _htmlentities($user_search)));
-                    exit;
+                $valid = true;
+
+                if (isset($_POST['user_update']) && is_array($_POST['user_update'])) {
+
+                    $approve_users = preg_grep("/^[0-9]+$/u", array_keys($_POST['user_update']));
+
+                    $approved_user_success_array = array();
+
+                    foreach ($approve_users as $user_uid) {
+
+                        if (($valid && $user_logon = user_get_logon($user_uid))) {
+
+                            if (admin_approve_user($user_uid)) {
+
+                                email_send_user_approved_notification($user_uid);
+
+                            }else {
+
+                                $error_msg_array[] = sprintf($lang['failedtoapproveuser'], $user_logon);
+                                $valid = false;
+                            }
+                        }
+                    }
+
+                    if ($valid) {
+
+                        $redirect_uri = "admin_users.php?webtag=$webtag&page=$page";
+                        $redirect_uri.= "&sort_by=$sort_by&sort_dir=$sort_dir&filter=$filter";
+                        $redirect_uri.= "&user_search=%s&approved=true";
+
+                        header_redirect(sprintf($redirect_uri, _htmlentities($user_search)));
+                        exit;
+                    }
                 }
             }
         }
@@ -324,6 +330,21 @@ echo "  ", form_input_hidden("sort_by", _htmlentities($sort_by)), "\n";
 echo "  ", form_input_hidden("sort_dir", _htmlentities($sort_dir)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"86%\">\n";
 echo "    <tr>\n";
+
+if (forum_get_setting('require_user_approval', 'Y') && (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0))) {
+
+    echo "      <td align=\"right\">{$lang['userfilter']}: ", form_dropdown_array("filter", array(ADMIN_USER_FILTER_NONE => $lang['all'], ADMIN_USER_FILTER_ONLINE => $lang['onlineusers'], ADMIN_USER_FILTER_OFFLINE => $lang['offlineusers'], ADMIN_USER_FILTER_BANNED => $lang['bannedusers'], ADMIN_USER_FILTER_APPROVAL => $lang['usersawaitingapproval']), $filter), "&nbsp;", form_submit("change_filter", $lang['go']), "</td>\n";
+
+}else {
+
+    echo "      <td align=\"right\">{$lang['userfilter']}: ", form_dropdown_array("filter", array(ADMIN_USER_FILTER_NONE => $lang['all'], ADMIN_USER_FILTER_ONLINE => $lang['onlineusers'], ADMIN_USER_FILTER_OFFLINE => $lang['offlineusers'], ADMIN_USER_FILTER_BANNED => $lang['bannedusers']), $filter), "&nbsp;", form_submit("change_filter", $lang['go']), "</td>\n";
+}
+
+echo "    </tr>\n";
+echo "      <td align=\"left\">&nbsp;</td>\n";
+echo "    <tr>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
 echo "      <td align=\"left\" colspan=\"3\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
@@ -333,13 +354,13 @@ echo "                 <tr>\n";
 echo "                   <td class=\"subhead\" width=\"20\">&nbsp;</td>\n";
 
 if ($sort_by == 'LOGON' && $sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead_sort_asc\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=DESC&amp;user_search=", _htmlentities($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['user']}</a></td>\n";
+    echo "                   <td class=\"subhead_sort_asc\" align=\"left\" nowrap=\"nowrap\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=DESC&amp;user_search=", _htmlentities($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['user']}</a></td>\n";
 }elseif ($sort_by == 'LOGON' && $sort_dir == 'DESC') {
-    echo "                   <td class=\"subhead_sort_desc\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=ASC&amp;user_search=", _htmlentities($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['user']}</a></td>\n";
+    echo "                   <td class=\"subhead_sort_desc\" align=\"left\" nowrap=\"nowrap\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=ASC&amp;user_search=", _htmlentities($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['user']}</a></td>\n";
 }elseif ($sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=ASC&amp;user_search=", _htmlentities($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['user']}</a></td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=ASC&amp;user_search=", _htmlentities($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['user']}</a></td>\n";
 }else {
-    echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=DESC&amp;user_search=", _htmlentities($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['user']}</a></td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=DESC&amp;user_search=", _htmlentities($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['user']}</a></td>\n";
 }
 
 if ($sort_by == 'LAST_VISIT' && $sort_dir == 'ASC') {
@@ -362,17 +383,16 @@ if ($sort_by == 'REGISTERED' && $sort_dir == 'ASC') {
     echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=REGISTERED&amp;sort_dir=DESC&amp;user_search=", _htmlentities($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['registered']}</a></td>\n";
 }
 
-if ($sort_by == 'REFERER' && $sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead_sort_asc\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=REFERER&amp;sort_dir=DESC&amp;user_search=", _htmlentities($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['sessionreferer']}</a></td>\n";
-}elseif ($sort_by == 'REFERER' && $sort_dir == 'DESC') {
-    echo "                   <td class=\"subhead_sort_desc\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=REFERER&amp;sort_dir=ASC&amp;user_search=", _htmlentities($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['sessionreferer']}</a></td>\n";
+if ($sort_by == 'ACTIVE' && $sort_dir == 'ASC') {
+    echo "                   <td class=\"subhead_sort_asc\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=ACTIVE&amp;sort_dir=DESC&amp;user_search=", _htmlentities($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['active']}</a></td>\n";
+}elseif ($sort_by == 'ACTIVE' && $sort_dir == 'DESC') {
+    echo "                   <td class=\"subhead_sort_desc\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=ACTIVE&amp;sort_dir=ASC&amp;user_search=", _htmlentities($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['active']}</a></td>\n";
 }elseif ($sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=REFERER&amp;sort_dir=ASC&amp;user_search=", _htmlentities($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['sessionreferer']}</a></td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=ACTIVE&amp;sort_dir=ASC&amp;user_search=", _htmlentities($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['active']}</a></td>\n";
 }else {
-    echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=REFERER&amp;sort_dir=DESC&amp;user_search=", _htmlentities($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['sessionreferer']}</a></td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=ACTIVE&amp;sort_dir=DESC&amp;user_search=", _htmlentities($user_search), "&amp;page=$page&amp;filter=$filter\">{$lang['active']}</a></td>\n";
 }
 
-echo "                   <td class=\"subhead\" align=\"left\">{$lang['active']}</td>\n";
 echo "                 </tr>\n";
 
 if (sizeof($admin_user_array['user_array']) > 0) {
@@ -381,7 +401,7 @@ if (sizeof($admin_user_array['user_array']) > 0) {
 
         echo "                 <tr>\n";
         echo "                   <td align=\"center\">", form_checkbox("user_update[{$user['UID']}]", "Y", ""), "</td>\n";
-        echo "                   <td class=\"posthead\" align=\"left\" width=\"35%\">&nbsp;<a href=\"admin_user.php?webtag=$webtag&amp;uid=", $user['UID'], "\">", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</a></td>\n";
+        echo "                   <td class=\"posthead\" align=\"left\" width=\"35%\" nowrap=\"nowrap\">&nbsp;<a href=\"admin_user.php?webtag=$webtag&amp;uid=", $user['UID'], "\">", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</a></td>\n";
 
         if (isset($user['LAST_VISIT']) && $user['LAST_VISIT'] > 0) {
             echo "                   <td class=\"posthead\" align=\"left\">&nbsp;", format_time($user['LAST_VISIT'], 1), "</td>\n";
@@ -392,28 +412,6 @@ if (sizeof($admin_user_array['user_array']) > 0) {
         if (isset($user['REGISTERED']) && $user['REGISTERED'] > 0) {
             echo "                   <td class=\"posthead\" align=\"left\">&nbsp;", format_time($user['REGISTERED'], 1), "</td>\n";
         }else {
-            echo "                   <td class=\"posthead\" align=\"left\">&nbsp;{$lang['unknown']}</td>\n";
-        }
-
-        if (isset($user['REFERER']) && strlen(trim($user['REFERER'])) > 0) {
-
-            $user['REFERER_FULL'] = $user['REFERER'];
-
-            if (!$user['REFERER'] = split_url($user['REFERER'])) {
-                if (strlen($user['REFERER_FULL']) > 25) {
-                    $user['REFERER'] = substr($user['REFERER_FULL'], 0, 25);
-                    $user['REFERER'].= "&hellip;";
-                }
-            }
-
-            if (referer_is_banned($user['REFERER'])) {
-                echo "                   <td class=\"posthead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;unban_referer=", rawurlencode($user['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['REFERER_FULL']}\">{$user['REFERER']}</a>&nbsp;<a href=\"{$user['REFERER_FULL']}\"><img src=\"", style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"{$lang['externallink']}\" title=\"{$lang['externallink']}\" /></a> ({$lang['banned']})</td>\n";
-            }else {
-                echo "                   <td class=\"posthead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;ban_referer=", rawurlencode($user['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['REFERER_FULL']}\">{$user['REFERER']}</a>&nbsp;<a href=\"{$user['REFERER_FULL']}\"><img src=\"", style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"{$lang['externallink']}\" title=\"{$lang['externallink']}\" /></a></td>\n";
-            }
-
-        }else {
-
             echo "                   <td class=\"posthead\" align=\"left\">&nbsp;{$lang['unknown']}</td>\n";
         }
 
@@ -438,40 +436,59 @@ echo "      </td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
-echo "      <td align=\"left\">&nbsp;</td>\n";
-echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-
-if (sizeof($admin_user_array['user_array']) > 0) {
-
-    echo "      <td align=\"left\" width=\"40%\">", bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) ? form_submit("kick_submit", $lang['kickselected']). "&nbsp;" : "", forum_get_setting('require_user_approval', 'Y') && bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0) ? form_submit("approve_submit", $lang['approveselected']) : "", "</td>\n";
-
-}else {
-
-    echo "      <td align=\"left\" width=\"40%\">&nbsp;</td>\n";
-}
-
 echo "      <td class=\"postbody\" align=\"center\">", page_links("admin_users.php?webtag=$webtag&sort_by=$sort_by&sort_dir=$sort_dir&user_search=$user_search&filter=$filter", $start, $admin_user_array['user_count'], 10), "</td>\n";
-
-if (forum_get_setting('require_user_approval', 'Y') && (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0))) {
-
-    echo "      <td align=\"right\" width=\"40%\" class=\"postbody\">{$lang['userfilter']}: ", form_dropdown_array("filter", array($lang['all'], $lang['onlineusers'], $lang['offlineusers'], $lang['bannedusers'], $lang['usersawaitingapproval']), $filter), "&nbsp;", form_submit("go", $lang['go']), "</td>\n";
-
-}else {
-
-    echo "      <td align=\"right\" width=\"40%\" class=\"postbody\">{$lang['userfilter']}: ", form_dropdown_array("filter", array($lang['all'], $lang['onlineusers'], $lang['offlineusers'], $lang['bannedusers']), $filter), "&nbsp;", form_submit("go", $lang['go']), "</td>\n";
-}
-
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"left\">&nbsp;</td>\n";
-echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
-echo "</form>\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"86%\">\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
+echo "              <table width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td class=\"subhead\" align=\"left\">{$lang['options']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"center\">\n";
+echo "                    <table class=\"posthead\" width=\"95%\">\n";
+echo "                      <tr>\n";
 
+if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0) && sizeof($admin_user_array['user_array']) > 0) {
+
+    if (forum_get_setting('require_user_approval', 'Y') && bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
+
+        echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['withselected']}:&nbsp;</td>\n";
+        echo "                        <td align=\"left\" width=\"100%\">", form_dropdown_array("action", array(-1 => '&nbsp;', ADMIN_USER_OPTION_END_SESSION => $lang['endsession'], ADMIN_USER_OPTION_APPROVE => $lang['approve'])), "&nbsp;", form_submit("select_action", $lang['go']), "</td>\n";
+
+    }else {
+
+        echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['withselected']}:&nbsp;</td>\n";
+        echo "                        <td align=\"left\" width=\"100%\">", form_dropdown_array("action", array(-1 => '&nbsp;', ADMIN_USER_OPTION_END_SESSION => $lang['endsession'])), "&nbsp;", form_submit("select_action", $lang['go']), "</td>\n";
+    }
+}
+
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\" colspan=\"6\">&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "  <br />\n";
+echo "</form>\n";
 echo "<form action=\"admin_users.php\" method=\"get\">\n";
 echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden("sort_by", _htmlentities($sort_by)), "\n";

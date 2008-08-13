@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.294 2008-08-06 23:09:30 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.295 2008-08-13 21:28:31 decoyduck Exp $ */
 
 // British English language file
 
@@ -613,7 +613,6 @@ $lang['postapprovalqueue'] = "p0st 4PProV4l qUEue";
 $lang['nopostsawaitingapproval'] = "nO PO\$Ts @r3 4W@1T1N9 4PpRoV@l";
 $lang['approveselected'] = "aPPR0VE \$ELec+ED";
 $lang['failedtoapproveuser'] = "f4iL3D t0 4PPr0V3 US3R %s";
-$lang['kickselected'] = "k1ck \$3L3cT3D";
 $lang['visitorlog'] = "v151tOr L09";
 $lang['novisitorslogged'] = "no V1s1TOrs L099Ed";
 $lang['addselectedusers'] = "aDd sElEC+eD u5ER\$";

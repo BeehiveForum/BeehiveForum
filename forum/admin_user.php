@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.248 2008-08-12 17:13:45 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.249 2008-08-13 21:28:30 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -172,7 +172,7 @@ $error_msg_array = array();
 
 // Get the user details.
 
-if (!$user = user_get($uid)) {
+if (!$user = admin_user_get($uid)) {
 
     html_draw_top();
     html_error_msg($lang['unknownuseraccount'], 'admin_users.php', 'get', array('back' => $lang['back']));
@@ -836,7 +836,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
         }
 
         if (is_array($user_alias_array) && sizeof($user_alias_array) < 1) {
-            html_display_warning_msg($lang['searchreturnednoresults'], '600', 'center');
+            html_display_warning_msg($lang['searchreturnednoresults'], '700', 'center');
         }
 
         echo "<br />\n";
@@ -846,7 +846,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
         echo "  ", form_input_hidden("uid", _htmlentities($uid)), "\n";
         echo "  ", form_input_hidden("action", _htmlentities($action)), "\n";
         echo "  ", form_input_hidden("ret", _htmlentities("admin_user.php?webtag=$webtag&uid=$uid")), "\n";
-        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\">\n";
         echo "        <table class=\"box\" width=\"100%\">\n";
@@ -966,7 +966,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
         echo "    </tr>\n";
         echo "  </table>\n";
         echo "  <br />\n";
-        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\">\n";
         echo "        <table class=\"box\" width=\"100%\">\n";
@@ -1199,7 +1199,7 @@ if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
 
     if (email_address_valid($user['EMAIL'])) {
 
-        if (email_is_banned($user['REFERER'])) {
+        if (email_is_banned($user['EMAIL'])) {
 
             echo "                      <tr>\n";
             echo "                        <td align=\"left\" width=\"150\">{$lang['emailaddress']}:</td>\n";
@@ -1254,6 +1254,40 @@ if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
 
             echo "                      <tr>\n";
             echo "                        <td align=\"left\" width=\"150\">{$lang['signupreferer']}</td>\n";
+            echo "                        <td align=\"left\">{$lang['unknown']}</td>\n";
+            echo "                      </tr>\n";
+        }
+
+        if (isset($user['SESSION_REFERER']) && strlen(trim($user['SESSION_REFERER'])) > 0) {
+
+            $user['SESSION_REFERER_FULL'] = $user['SESSION_REFERER'];
+
+            if (!$user['SESSION_REFERER'] = split_url($user['SESSION_REFERER'])) {
+                if (strlen($user['SESSION_REFERER_FULL']) > 25) {
+                    $user['SESSION_REFERER'] = substr($user['SESSION_REFERER_FULL'], 0, 25);
+                    $user['SESSION_REFERER'].= "&hellip;";
+                }
+            }
+
+            if (referer_is_banned($user['SESSION_REFERER'])) {
+
+                echo "                      <tr>\n";
+                echo "                        <td align=\"left\" width=\"150\">{$lang['sessionreferer']}</td>\n";
+                echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_referer=", rawurlencode($user['SESSION_REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['SESSION_REFERER_FULL']}\">{$user['SESSION_REFERER']}</a>&nbsp;<a href=\"{$user['SESSION_REFERER_FULL']}\" target=\"_blank\"><img src=\"", style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"{$lang['externallink']}\" title=\"{$lang['externallink']}\" /></a> ({$lang['banned']})</td>\n";
+                echo "                      </tr>\n";
+
+            }else {
+
+                echo "                      <tr>\n";
+                echo "                        <td align=\"left\" width=\"150\">{$lang['sessionreferer']}</td>\n";
+                echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_referer=", rawurlencode($user['SESSION_REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['SESSION_REFERER_FULL']}\">{$user['SESSION_REFERER']}</a>&nbsp;<a href=\"{$user['SESSION_REFERER_FULL']}\" target=\"_blank\"><img src=\"", style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"{$lang['externallink']}\" title=\"{$lang['externallink']}\" /></a></td>\n";
+                echo "                      </tr>\n";
+            }
+
+        }else {
+
+            echo "                      <tr>\n";
+            echo "                        <td align=\"left\" width=\"150\">{$lang['sessionreferer']}</td>\n";
             echo "                        <td align=\"left\">{$lang['unknown']}</td>\n";
             echo "                      </tr>\n";
         }

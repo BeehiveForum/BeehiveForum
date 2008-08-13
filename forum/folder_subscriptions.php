@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder_subscriptions.php,v 1.5 2008-07-27 18:26:09 decoyduck Exp $ */
+/* $Id: folder_subscriptions.php,v 1.6 2008-08-13 21:28:31 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -220,7 +220,7 @@ if (isset($folder_search) && strlen(trim($folder_search)) > 0) {
 
 // Start output here
 
-html_draw_top('folder_subscriptions.js');
+html_draw_top('edit_subscriptions.js');
 
 echo "<h1>{$lang['foldersubscriptions']} &raquo; {$header_text_array[$view_filter]}</h1>\n";
 

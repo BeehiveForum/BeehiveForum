@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_visitor_log.php,v 1.33 2008-07-27 18:26:09 decoyduck Exp $ */
+/* $Id: admin_visitor_log.php,v 1.34 2008-08-13 21:28:31 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -154,20 +154,20 @@ echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A 
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-    html_display_error_array($error_msg_array, '75%', 'center');
+    html_display_error_array($error_msg_array, '90%', 'center');
 
 }else if (isset($_GET['pruned'])) {
 
-    html_display_success_msg($lang['successfullyprunedvisitorlog'], '75%', 'center');
+    html_display_success_msg($lang['successfullyprunedvisitorlog'], '90%', 'center');
 
 }else if (sizeof($admin_visitor_log_array['user_array']) < 1) {
 
-    html_display_warning_msg($lang['novisitorslogged'], '75%', 'center');
+    html_display_warning_msg($lang['novisitorslogged'], '90%', 'center');
 }
 
 echo "<br />\n";
 echo "<div align=\"center\">\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"75%\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"90%\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
@@ -175,10 +175,10 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "               <table width=\"100%\">\n";
 echo "                 <tr>\n";
-echo "                   <td class=\"subhead\" align=\"left\">{$lang['member']}</td>\n";
-echo "                   <td class=\"subhead\" align=\"left\" width=\"100\">{$lang['lastvisit']}</td>\n";
-echo "                   <td class=\"subhead\" align=\"left\" width=\"150\">{$lang['lastipaddress']}</td>\n";
-echo "                   <td class=\"subhead\" align=\"left\" width=\"400\">{$lang['referer']}</td>\n";
+echo "                   <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">{$lang['member']}</td>\n";
+echo "                   <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">{$lang['lastvisit']}</td>\n";
+echo "                   <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">{$lang['lastipaddress']}</td>\n";
+echo "                   <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">{$lang['referer']}</td>\n";
 echo "                 </tr>\n";
 
 if (sizeof($admin_visitor_log_array['user_array']) > 0) {
@@ -189,15 +189,15 @@ if (sizeof($admin_visitor_log_array['user_array']) > 0) {
 
         if (isset($visitor['SID']) && !is_null($visitor['SID'])) {
 
-            echo "                   <td class=\"postbody\" align=\"left\"><a href=\"{$visitor['URL']}\" target=\"_blank\">", word_filter_add_ob_tags(_htmlentities($visitor['NAME'])), "</a></td>\n";
+            echo "                   <td class=\"postbody\" align=\"left\" nowrap=\"nowrap\"><a href=\"{$visitor['URL']}\" target=\"_blank\">", word_filter_add_ob_tags(_htmlentities($visitor['NAME'])), "</a></td>\n";
 
         }elseif ($visitor['UID'] > 0) {
 
-            echo "                   <td class=\"postbody\" align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$visitor['UID']}\" target=\"_blank\" onclick=\"return openProfile({$visitor['UID']}, '$webtag')\">", word_filter_add_ob_tags(_htmlentities(format_user_name($visitor['LOGON'], $visitor['NICKNAME']))), "</a></td>\n";
+            echo "                   <td class=\"postbody\" align=\"left\" nowrap=\"nowrap\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$visitor['UID']}\" target=\"_blank\" onclick=\"return openProfile({$visitor['UID']}, '$webtag')\">", word_filter_add_ob_tags(_htmlentities(format_user_name($visitor['LOGON'], $visitor['NICKNAME']))), "</a></td>\n";
 
         }else {
 
-            echo "                   <td class=\"postbody\" align=\"left\">", word_filter_add_ob_tags(_htmlentities(format_user_name($visitor['LOGON'], $visitor['NICKNAME']))), "</td>\n";
+            echo "                   <td class=\"postbody\" align=\"left\" nowrap=\"nowrap\">", word_filter_add_ob_tags(_htmlentities(format_user_name($visitor['LOGON'], $visitor['NICKNAME']))), "</td>\n";
         }
 
         if (isset($visitor['LAST_LOGON']) && $visitor['LAST_LOGON'] > 0) {
@@ -234,14 +234,14 @@ if (sizeof($admin_visitor_log_array['user_array']) > 0) {
             }
 
             if (referer_is_banned($visitor['REFERER'])) {
-                echo "                   <td class=\"posthead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;unban_referer=", rawurlencode($visitor['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$visitor['REFERER_FULL']}\">{$visitor['REFERER']}</a> ({$lang['banned']})</td>\n";
+                echo "                   <td class=\"posthead\" align=\"left\" nowrap=\"nowrap\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;unban_referer=", rawurlencode($visitor['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$visitor['REFERER_FULL']}\">{$visitor['REFERER']}</a> ({$lang['banned']})</td>\n";
             }else {
-                echo "                   <td class=\"posthead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;ban_referer=", rawurlencode($visitor['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$visitor['REFERER_FULL']}\">{$visitor['REFERER']}</a></td>\n";
+                echo "                   <td class=\"posthead\" align=\"left\" nowrap=\"nowrap\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;ban_referer=", rawurlencode($visitor['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$visitor['REFERER_FULL']}\">{$visitor['REFERER']}</a></td>\n";
             }
 
         }else {
 
-            echo "                   <td class=\"posthead\" align=\"left\">&nbsp;{$lang['unknown']}</td>\n";
+            echo "                   <td class=\"posthead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['unknown']}</td>\n";
         }
 
         echo "                 </tr>\n";
@@ -269,7 +269,7 @@ echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <form action=\"admin_visitor_log.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"75%\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"90%\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";

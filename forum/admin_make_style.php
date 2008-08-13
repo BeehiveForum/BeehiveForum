@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.124 2008-08-12 17:13:45 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.125 2008-08-13 21:28:30 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -260,30 +260,32 @@ echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A 
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-    html_display_error_array($error_msg_array, '70%', 'center');
+    html_display_error_array($error_msg_array, '85%', 'center');
 
 }else if (isset($_GET['saved'])) {
 
-    html_display_success_msg($lang['newstylesuccessfullycreated'], '70%', 'center');
+    html_display_success_msg($lang['newstylesuccessfullycreated'], '85%', 'center');
 
 }else {
 
-    html_display_warning_msg($lang['styleexp'], '70%', 'center');
+    html_display_warning_msg($lang['stylecolourexp'], '85%', 'center');
 }
 
-// Check to see if any of the required variables were passed via the URL Query or POST_VARS
-// Otherwise create some random numbers to work with.
+// Generate some random colours
 
-if (isset($_GET['seed'])) {
+$red = mt_rand(0, 255);
+$green = mt_rand(0, 255);
+$blue = mt_rand(0, 255);
 
-    $seed = substr(preg_replace("/[^0-9|A-F]/iu", "", $_GET['seed']), 0, 6);
-    list ($red, $green, $blue) = hexToDec($seed);
+// Check to see if user specified a seed to use.
 
-}else {
+if (isset($_POST['go'])) {
 
-    $red = mt_rand(0, 255);
-    $green = mt_rand(0, 255);
-    $blue = mt_rand(0, 255);
+    if (isset($_POST['seed']) && (preg_match('/[0-9A-F]{3,6}/u', trim(_stripslashes($_POST['seed']))) > 0)) {
+
+        $seed = trim(_stripslashes($_POST['seed']));
+        list ($red, $green, $blue) = hexToDec($seed);
+    }
 }
 
 if (isset($_GET['mode']) && $_GET['mode'] == 'rand') {
@@ -313,7 +315,9 @@ $steps = sizeof($elements);
 
 echo "<br />\n";
 echo "<div align=\"center\">\n";
-echo "  <table width=\"70%\" class=\"box\">\n";
+echo "<form action=\"admin_make_style.php\" method=\"post\">\n";
+echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
+echo "  <table width=\"85%\" class=\"box\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\" class=\"posthead\">\n";
 echo "        <table width=\"100%\">\n";
@@ -353,22 +357,6 @@ if (isset($_POST['save'])) {
     reset($elements);
 }
 
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td colspan=\"", sizeof($elements), "\" class=\"posthead\" align=\"left\">\n";
-echo "                    {$lang['stylecolourexp']}\n";
-echo "                  </td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "            </td>\n";
-echo "          </tr>\n";
-echo "        </table>\n";
-echo "        <table width=\"100%\">\n";
-echo "          <tr>\n";
-echo "            <td align=\"left\" class=\"posthead\" width=\"250\">\n";
-echo "              <table width=\"100%\" cellspacing=\"5\">\n";
-echo "                <tr>\n";
-
 list ($boxr, $boxg, $boxb) = hexToDec($elements['box']);
 
 if (($boxr < 150 && $boxg < 150 && $boxb < 150) || (($boxr + $boxg + $boxb) / 3) < 85) {
@@ -379,18 +367,15 @@ if (($boxr < 150 && $boxg < 150 && $boxb < 150) || (($boxr + $boxg + $boxb) / 3)
 
 $r = mt_rand(0, 1000);
 
-echo "                  <td class=\"subhead\" align=\"left\">{$lang['new']}</td>\n";
 echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td class=\"posthead\" align=\"left\">\n";
-echo "                    <a href=\"admin_make_style.php?webtag=$webtag&amp;r=$r\">{$lang['standardstyle']}</a><br />\n";
-echo "                    <a href=\"admin_make_style.php?webtag=$webtag&amp;mode=med&amp;r=$r\">{$lang['rotelementstyle']}</a><br />\n";
-echo "                    <a href=\"admin_make_style.php?webtag=$webtag&amp;mode=rand&amp;r=$r\">{$lang['randstyle']}</a>\n";
-echo "                  </td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"posthead\">&nbsp;</td>\n";
-echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "        <table width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td align=\"left\" valign=\"top\" class=\"posthead\" width=\"50%\">\n";
+echo "              <table width=\"100%\" cellspacing=\"5\">\n";
 echo "                <tr>\n";
 echo "                  <td class=\"subhead\" align=\"left\">{$lang['thiscolour']}</td>\n";
 echo "                </tr>\n";
@@ -408,40 +393,24 @@ echo "                <tr>\n";
 echo "                  <td class=\"posthead\" align=\"left\">{$lang['enterhexcolour']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td class=\"posthead\" align=\"left\">\n";
-echo "                    <form action=\"admin_make_style.php\" method=\"get\">\n";
-echo "                      ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
-echo "                      ", form_input_text("seed", _htmlentities(strtoupper($seed)), 15, 6), "&nbsp;", form_submit('go', $lang['go']), "\n";
-echo "                    </form>\n";
-echo "                  </td>\n";
+echo "                  <td class=\"posthead\" align=\"left\">", form_input_text('seed', _htmlentities(strtoupper($seed)), 15, 6), "&nbsp;", form_submit('go', $lang['go']), "</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";
-echo "            <td valign=\"top\" class=\"posthead\" align=\"left\">\n";
+echo "            <td align=\"left\" valign=\"top\" class=\"posthead\" width=\"50%\">\n";
 echo "              <table width=\"100%\" cellspacing=\"5\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\">{$lang['savestyle']}</td>\n";
+echo "                  <td class=\"subhead\" align=\"left\">{$lang['new']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"posthead\">\n";
-echo "                    <form action=\"admin_make_style.php\" method=\"post\">\n";
-echo "                      ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-echo "                      ", form_input_hidden_array(array('elements' => $elements)), "\n";
-echo "                      <table width=\"100%\" cellspacing=\"5\">\n";
-echo "                        <tr>\n";
-echo "                          <td align=\"left\" class=\"posthead\">{$lang['filename']}:</td>\n";
-echo "                          <td align=\"left\">", form_input_text("stylename", isset($_POST['stylename']) ? _htmlentities(_stripslashes($_POST['stylename'])) : '', 35, 10), "</td>\n";
-echo "                        </tr>\n";
-echo "                        <tr>\n";
-echo "                          <td align=\"left\" class=\"posthead\">{$lang['styledesc']}:</td>\n";
-echo "                          <td align=\"left\">", form_input_text("styledesc", isset($_POST['styledesc']) ? _htmlentities(_stripslashes($_POST['styledesc'])) : '', 35, 20), "&nbsp;", form_submit('save', $lang['save']), "</td>\n";
-echo "                        </tr>\n";
-echo "                      </table>\n";
-echo "                    </form>\n";
+echo "                  <td class=\"posthead\" align=\"left\">\n";
+echo "                    <a href=\"admin_make_style.php?webtag=$webtag&amp;r=$r\">{$lang['standardstyle']}</a><br />\n";
+echo "                    <a href=\"admin_make_style.php?webtag=$webtag&amp;mode=med&amp;r=$r\">{$lang['rotelementstyle']}</a><br />\n";
+echo "                    <a href=\"admin_make_style.php?webtag=$webtag&amp;mode=rand&amp;r=$r\">{$lang['randstyle']}</a>\n";
 echo "                  </td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"posthead\">\n"; html_display_warning_msg($lang['stylefilenamemayonlycontain'], '500', 'left'); echo "                  </td>\n";
+echo "                  <td align=\"left\" class=\"posthead\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";
@@ -450,12 +419,54 @@ echo "        </table>\n";
 echo "      </td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
+echo "  <br />\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"85%\">\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">\n";
+echo "        <table width=\"100%\" class=\"box\">\n";
+echo "          <tr>\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
+echo "              <table width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td class=\"subhead\" align=\"left\">{$lang['savestyle']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td valign=\"top\" class=\"posthead\" align=\"left\">\n";
+echo "                    <table width=\"100%\" cellspacing=\"5\">\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" class=\"posthead\">{$lang['filename']}:</td>\n";
+echo "                        <td align=\"left\">", form_input_text("stylename", isset($_POST['stylename']) ? _htmlentities(_stripslashes($_POST['stylename'])) : '', 35, 10), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" class=\"posthead\">{$lang['styledesc']}:</td>\n";
+echo "                        <td align=\"left\">", form_input_text("styledesc", isset($_POST['styledesc']) ? _htmlentities(_stripslashes($_POST['styledesc'])) : '', 35, 20), "</td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td>&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td>&nbsp;</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td align=\"center\">", form_submit('save', $lang['save']), "</td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "  </form>\n";
 echo "</div>\n";
 echo "<br />\n";
 echo "<h1>{$lang['stylepreview']}</h1>\n";
 echo "<br />\n";
 echo "<div align=\"center\">\n";
-echo "<table width=\"70%\" cellpadding=\"0\" cellspacing=\"0\" class=\"box\">\n";
+echo "<table width=\"85%\" cellpadding=\"0\" cellspacing=\"0\" class=\"box\">\n";
 echo "  <tr>\n";
 echo "    <td align=\"center\">\n";
 echo "      <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"background-color: #{$elements['body']}; color: #", contrastFont($elements['body']), "\">\n";

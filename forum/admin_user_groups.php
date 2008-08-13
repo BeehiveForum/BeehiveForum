@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups.php,v 1.53 2008-07-28 21:05:48 decoyduck Exp $ */
+/* $Id: admin_user_groups.php,v 1.54 2008-08-13 21:28:31 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -101,12 +101,6 @@ $lang = load_language_file();
 
 if (isset($_POST['addnew'])) {
     header_redirect("admin_user_groups_add.php?webtag=$webtag");
-}
-
-if (isset($_POST['edit_users']) && is_array($_POST['edit_users'])) {
-
-    list($gid) = array_keys($_POST['edit_users']);
-    header_redirect("admin_user_groups_edit_users.php?webtag=$webtag&gid=$gid");
 }
 
 if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
@@ -240,16 +234,15 @@ if ($sort_by == 'GROUPS.GROUP_DESC' && $sort_dir == 'ASC') {
 }
 
 if ($sort_by == 'USER_COUNT' && $sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead_sort_asc\" align=\"left\" class=\"header_sort_asc\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=USER_COUNT&amp;sort_dir=DESC&amp;page=$page\">{$lang['users']}</a></td>\n";
+    echo "                   <td class=\"subhead_sort_asc\" align=\"center\" class=\"header_sort_asc\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=USER_COUNT&amp;sort_dir=DESC&amp;page=$page\">{$lang['users']}</a></td>\n";
 }elseif ($sort_by == 'USER_COUNT' && $sort_dir == 'DESC') {
-    echo "                   <td class=\"subhead_sort_desc\" align=\"left\" class=\"header_sort_desc\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=USER_COUNT&amp;sort_dir=ASC&amp;page=$page\">{$lang['users']}</a></td>\n";
+    echo "                   <td class=\"subhead_sort_desc\" align=\"center\" class=\"header_sort_desc\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=USER_COUNT&amp;sort_dir=ASC&amp;page=$page\">{$lang['users']}</a></td>\n";
 }elseif ($sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=USER_COUNT&amp;sort_dir=ASC&amp;page=$page\">{$lang['users']}</a></td>\n";
+    echo "                   <td class=\"subhead\" align=\"center\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=USER_COUNT&amp;sort_dir=ASC&amp;page=$page\">{$lang['users']}</a></td>\n";
 }else {
-    echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=USER_COUNT&amp;sort_dir=DESC&amp;page=$page\">{$lang['users']}</a></td>\n";
+    echo "                   <td class=\"subhead\" align=\"center\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=USER_COUNT&amp;sort_dir=DESC&amp;page=$page\">{$lang['users']}</a></td>\n";
 }
 
-echo "                  <td align=\"left\" class=\"subhead\">&nbsp;</td>\n";
 echo "                </tr>\n";
 
 if (sizeof($user_groups_array['user_groups_array']) > 0) {
@@ -260,8 +253,7 @@ if (sizeof($user_groups_array['user_groups_array']) > 0) {
         echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("delete_group[]", $user_group['GID'], "", false), "</td>\n";
         echo "                  <td align=\"left\"><a href=\"admin_user_groups_edit.php?webtag=$webtag&amp;gid={$user_group['GID']}\" target=\"_self\">{$user_group['GROUP_NAME']}</a></td>\n";
         echo "                  <td align=\"left\" nowrap=\"nowrap\">{$user_group['GROUP_DESC']}</td>\n";
-        echo "                  <td align=\"left\" width=\"100\">{$user_group['USER_COUNT']}</td>\n";
-        echo "                  <td width=\"180\" align=\"center\">", form_submit("edit_users[{$user_group['GID']}]", $lang['addremoveusers']), "&nbsp;</td>\n";
+        echo "                  <td align=\"center\" width=\"100\"><a href=\"admin_user_groups_edit_users.php?webtag=$webtag&amp;gid={$user_group['GID']}\">{$user_group['USER_COUNT']}</a></td>\n";
         echo "                </tr>\n";
     }
 }

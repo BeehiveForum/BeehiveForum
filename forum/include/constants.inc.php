@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: constants.inc.php,v 1.147 2008-08-13 21:28:31 decoyduck Exp $ */
+/* $Id: constants.inc.php,v 1.148 2008-08-15 20:12:07 decoyduck Exp $ */
 
 /**
 * Constants used throughout Beehive.
@@ -311,6 +311,13 @@ define('PM_SENT_ITEMS',   PM_SENT); // Sent Items
 define('PM_OUTBOX_ITEMS', PM_OUTBOX); // Outbox
 define('PM_SAVED_ITEMS',  PM_SAVED_IN | PM_SAVED_OUT); // Saved Items
 define('PM_DRAFT_ITEMS',  PM_SAVED_DRAFT); // Drafts.
+
+// PM Options drop down
+
+define('PM_OPTION_NONE', 0);
+define('PM_OPTION_DELETE', 1);
+define('PM_OPTION_EXPORT', 2);
+define('PM_OPTION_ARCHIVE', 3);
 
 // Allowed thread types in folders
 

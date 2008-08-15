@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.571 2008-08-13 21:28:31 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.572 2008-08-15 20:12:07 decoyduck Exp $ */
 
 // British English language file
 
@@ -1381,7 +1381,7 @@ $lang['maximumtenrecipientspermessage'] = "There is a limit of 10 recipients per
 $lang['mustspecifyrecipient'] = "You must specify at least one recipient.";
 $lang['usernotfound'] = "User %s not found";
 $lang['sendnewpm'] = "Send New PM";
-$lang['savemessage'] = "Save Message";
+$lang['savemessages'] = "Save Messages";
 $lang['nosubject'] = "No Subject";
 $lang['norecipients'] = "No Recipients";
 $lang['timesent'] = "Time Sent";
@@ -2133,6 +2133,7 @@ $lang['invalidfeedidorfeednotfound'] = "Invalid feed id or feed not found";
 
 // PM Export Options
 
+$lang['exportfolder'] = "Export Folder";
 $lang['pmexportastype'] = "Export as type";
 $lang['pmexporthtml'] = "HTML";
 $lang['pmexportxml'] = "XML";
@@ -2143,6 +2144,7 @@ $lang['pmexportonefilepermessage'] = "One file per message";
 $lang['pmexportattachments'] = "Export attachments";
 $lang['pmexportincludestyle'] = "Include forum style sheet";
 $lang['pmexportwordfilter'] = "Apply word filter to messages";
+$lang['failedtoexportfolder'] = "Failed to export folder";
 
 // Thread merge / split options
 

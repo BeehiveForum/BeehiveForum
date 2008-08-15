@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.253 2008-08-12 17:13:46 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.254 2008-08-15 20:12:07 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1101,8 +1101,10 @@ function pm_get_content($mid)
 *
 * Displays or returns the PM HTML formatted for display in the browser
 *
-* @return mixed - string or bool depending on $pm_export_html setting.
-* @param bool $pm_export_html - Optional settings allows return of HTML as string instead of sending to STDOUT.
+* @return mixed - string or void depending on $pm_export_html setting.
+* @param integer $folder - Current folder view selected by user
+* @param boolean $preview - Preview mode hides the Reply and Forward links.
+* @param boolean $pm_export_html - Optional settings allows return of HTML as string instead of sending to STDOUT.
 */
 
 function pm_display($pm_message_array, $folder, $preview = false, $export_html = false)
@@ -1750,6 +1752,30 @@ function pm_delete_message($mid)
 }
 
 /**
+* Delete messages
+*
+* Deletes the specified array of messages
+*
+* @return bool - True on success, False on failure.
+* @param array $mid_array - Array of message IDs to delete
+*/
+
+function pm_delete_messages($mid_array)
+{
+    if (!is_array($mid_array)) return false;
+
+    $mid_array = preg_grep("/[0-9]+/u", $mid_array);
+
+    if (sizeof($mid_array) < 1) return false;
+
+    foreach ($mid_array as $mid) {
+        if (!pm_delete_message($mid)) return false;
+    }
+
+    return true;
+}
+
+/**
 * Archive a messages
 *
 * Archives the specified message to the user's Saved Items folder
@@ -1787,6 +1813,29 @@ function pm_archive_message($mid)
     $sql.= "AND SMID = 0 AND FROM_UID = '$uid'";
 
     if (!db_query($sql, $db_pm_archive_message)) return false;
+
+    return true;
+}
+
+/* Archive messages
+*
+* Archive the specified array of messages
+*
+* @return bool - True on success, False on failure.
+* @param array $mid_array - Array of message IDs to delete
+*/
+
+function pm_archive_messages($mid_array)
+{
+    if (!is_array($mid_array)) return false;
+
+    $mid_array = preg_grep("/[0-9]+/u", $mid_array);
+
+    if (sizeof($mid_array) < 1) return false;
+
+    foreach ($mid_array as $mid) {
+        if (!pm_archive_message($mid)) return false;
+    }
 
     return true;
 }
@@ -2324,17 +2373,17 @@ function pm_export($folder)
                 }
             }
 
-            pm_export_html($folder, $zip_file);
+            if (!pm_export_html($folder, $zip_file)) return false;
             break;
 
         case PM_EXPORT_XML:
 
-            pm_export_xml($folder, $zip_file);
+            if (!pm_export_xml($folder, $zip_file)) return false;
             break;
 
         case PM_EXPORT_PLAINTEXT:
 
-            pm_export_plaintext($folder, $zip_file);
+            if (!pm_export_plaintext($folder, $zip_file)) return false;
             break;
     }
 

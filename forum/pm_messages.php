@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_messages.php,v 1.49 2008-08-12 17:13:45 decoyduck Exp $ */
+/* $Id: pm_messages.php,v 1.50 2008-08-15 20:12:08 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -263,60 +263,57 @@ if (isset($mid) && is_numeric($mid) && $mid > 0) {
 
 // Delete Messages
 
-if (isset($_POST['deletemessages'])) {
+if (isset($_POST['pm_option_submit'])) {
 
     $valid = true;
 
     if (isset($_POST['process']) && is_array($_POST['process'])) {
+        $process_messages = preg_grep("/[0-9]+/u", $_POST['process']);
+    }else {
+        $process_messages = array();
+    }
 
-        foreach ($_POST['process'] as $delete_mid) {
+    if (isset($_POST['pm_option']) && is_numeric($_POST['pm_option'])) {
 
-            if (!pm_delete_message($delete_mid)) {
+        $pm_option = $_POST['pm_option'];
+
+        if ($pm_option == PM_OPTION_DELETE) {
+
+            if (!pm_delete_messages($process_messages)) {
 
                 $error_msg_array[] = $lang['failedtodeleteselectedmessages'];
                 $valid = false;
             }
-        }
 
-        if ($valid) {
+            if ($valid) {
 
-            header_redirect("pm_messages.php?webtag=$webtag&folder=$current_folder&page=$page&deleted=true");
-            exit;
-        }
-    }
-}
+                header_redirect("pm_messages.php?webtag=$webtag&folder=$current_folder&page=$page&deleted=true");
+                exit;
+            }
 
-// Archive Messages
+        }else if ($pm_option == PM_OPTION_EXPORT) {
 
-if (isset($_POST['savemessages'])) {
+            if (!pm_export($current_folder)) {
 
-    $valid = true;
+                $error_msg_array[] = $lang['failedtoexportfolder'];
+                $valid = false;
+            }
 
-    if (isset($_POST['process']) && is_array($_POST['process'])) {
+        }else if ($pm_option == PM_OPTION_ARCHIVE) {
 
-        foreach ($_POST['process'] as $archive_mid) {
-
-            if (!pm_archive_message($archive_mid)) {
+            if (!pm_archive_messages($process_messages)) {
 
                 $error_msg_array[] = $lang['failedtoarchiveselectedmessages'];
                 $valid = false;
             }
-        }
 
-        if ($valid) {
+            if ($valid) {
 
-            header_redirect("pm_messages.php?webtag=$webtag&folder=$current_folder&page=$page&archived=true");
-            exit;
+                header_redirect("pm_messages.php?webtag=$webtag&folder=$current_folder&page=$page&archived=true");
+                exit;
+            }
         }
     }
-}
-
-// Export Messages
-
-if (isset($_POST['exportfolder'])) {
-
-    pm_export($current_folder);
-    exit;
 }
 
 // Search string.
@@ -489,13 +486,13 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
 }
 
 if ($sort_by == 'PM.SUBJECT' && $sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead_sort_asc\" align=\"left\" width=\"30%\" nowrap=\"nowrap\"><a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=SUBJECT&amp;sort_dir=DESC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">{$lang['subject']}</a></td>\n";
+    echo "                   <td class=\"subhead_sort_asc\" align=\"left\" width=\"50%\" nowrap=\"nowrap\"><a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=SUBJECT&amp;sort_dir=DESC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">{$lang['subject']}</a></td>\n";
 }elseif ($sort_by == 'PM.SUBJECT' && $sort_dir == 'DESC') {
-    echo "                   <td class=\"subhead_sort_desc\" align=\"left\" width=\"30%\" nowrap=\"nowrap\"><a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=SUBJECT&amp;sort_dir=ASC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">{$lang['subject']}</a></td>\n";
+    echo "                   <td class=\"subhead_sort_desc\" align=\"left\" width=\"50%\" nowrap=\"nowrap\"><a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=SUBJECT&amp;sort_dir=ASC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">{$lang['subject']}</a></td>\n";
 }elseif ($sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead\" align=\"left\" width=\"30%\" nowrap=\"nowrap\"><a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=SUBJECT&amp;sort_dir=ASC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">{$lang['subject']}</a></td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\" width=\"50%\" nowrap=\"nowrap\"><a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=SUBJECT&amp;sort_dir=ASC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">{$lang['subject']}</a></td>\n";
 }else {
-    echo "                   <td class=\"subhead\" align=\"left\" width=\"30%\" nowrap=\"nowrap\"><a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=SUBJECT&amp;sort_dir=DESC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">{$lang['subject']}</a></td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\" width=\"50%\" nowrap=\"nowrap\"><a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=SUBJECT&amp;sort_dir=DESC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">{$lang['subject']}</a></td>\n";
 }
 
 if ($current_folder == PM_SEARCH_RESULTS) {
@@ -559,7 +556,7 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
 
         echo "                <tr>\n";
         echo "                  <td class=\"postbody\" align=\"center\" width=\"1%\">", form_checkbox('process[]', $message['MID'], ''), "</td>\n";
-        echo "                  <td align=\"left\" class=\"postbody\">";
+        echo "                  <td align=\"left\" class=\"postbody\" width=\"50%\">";
 
         if ($mid == $message['MID']) {
 
@@ -720,8 +717,23 @@ echo "            <td width=\"25%\">&nbsp;</td>\n";
 echo "            <td class=\"postbody\" align=\"center\">", page_links("pm_messages.php?webtag=$webtag&mid=$mid&folder=$current_folder", $start, $pm_messages_array['message_count'], 10), "</td>\n";
 
 if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['message_array']) > 0) {
-    echo "            <td align=\"right\" width=\"25%\" nowrap=\"nowrap\">", ($current_folder <> PM_SEARCH_RESULTS) ? form_submit("exportfolder", "Export Folder") : "", "&nbsp;", (($current_folder <> PM_FOLDER_SAVED) && ($current_folder <> PM_FOLDER_OUTBOX)) ? form_submit("savemessages", $lang['savemessage']) : "", "&nbsp;", form_submit("deletemessages", $lang['delete']), "</td>\n";
+
+    $pm_messages_options_array = array(PM_OPTION_NONE => '&nbsp;');
+
+    if (($current_folder <> PM_FOLDER_SAVED) && ($current_folder <> PM_FOLDER_OUTBOX)) {
+        $pm_messages_options_array[PM_OPTION_ARCHIVE] = $lang['savemessages'];
+    }
+
+    $pm_messages_options_array[PM_OPTION_DELETE] = $lang['deleteselected'];
+
+    if ($current_folder != PM_SEARCH_RESULTS) {
+        $pm_messages_options_array[PM_OPTION_EXPORT] = $lang['exportfolder'];
+    }
+
+    echo "            <td align=\"right\" width=\"25%\" nowrap=\"nowrap\">{$lang['options']}:&nbsp;", form_dropdown_array('pm_option', $pm_messages_options_array), "&nbsp;", form_submit('pm_option_submit', $lang['go']), "</td>\n";
+
 }else {
+
     echo "            <td width=\"25%\">&nbsp;</td>\n";
 }
 

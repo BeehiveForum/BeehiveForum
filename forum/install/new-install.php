@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.180 2008-08-12 17:13:47 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.181 2008-08-16 20:01:07 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'new-install.php') {
 
@@ -400,6 +400,7 @@ $sql.= "  FID MEDIUMINT(8) UNSIGNED DEFAULT NULL, ";
 $sql.= "  BY_UID MEDIUMINT(8) UNSIGNED DEFAULT NULL, ";
 $sql.= "  TITLE VARCHAR(64) DEFAULT NULL, ";
 $sql.= "  LENGTH MEDIUMINT(8) UNSIGNED DEFAULT NULL, ";
+$sql.= "  UNREAD_PID MEDIUMINT(8) UNSIGNED DEFAULT NULL, ";
 $sql.= "  POLL_FLAG CHAR(1) DEFAULT NULL, ";
 $sql.= "  CREATED DATETIME DEFAULT NULL, ";
 $sql.= "  MODIFIED DATETIME DEFAULT NULL, ";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display_emoticons.php,v 1.64 2008-08-12 17:13:45 decoyduck Exp $ */
+/* $Id: display_emoticons.php,v 1.65 2008-08-16 10:15:05 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -141,7 +141,7 @@ echo "                <td align=\"center\">\n";
 echo "                  <table class=\"posthead\" width=\"95%\">\n";
 echo "                    <tr>\n";
 
-if (isset($user_emoticon_pack)) {
+if (isset($user_emoticon_pack) && $user_emoticon_pack != 'user') {
 
     echo "                      <td align=\"left\" valign=\"top\" width=\"200\">\n";
 
@@ -224,8 +224,8 @@ if (($style_content = @file_get_contents("emoticons/$emoticon_path/style.css")))
 
     foreach ($emots_array as $emot) {
 
-        echo "                          <tr onclick=\"insertEmoticon(' ", html_js_safe_str($emot['matches'][0]), " ');\">\n";
-        echo "                            <td align=\"left\" width=\"100\"><img src=\"emoticons/$emoticon_path/{$emot['img']}\" alt=\"{$emot['text']}\" title=\"{$emot['text']}\" /></td>\n";
+        echo "                          <tr>\n";
+        echo "                            <td align=\"left\" width=\"100\" class=\"emoticon_preview_popup\"><img src=\"emoticons/$emoticon_path/{$emot['img']}\" alt=\"{$emot['text']}\" title=\"{$emot['text']}\" onclick=\"insertEmoticon(' ", html_js_safe_str($emot['matches'][0]), " ');\" /></td>\n";
         echo "                            <td align=\"left\">";
 
         foreach ($emot['matches'] as $emot_match) {

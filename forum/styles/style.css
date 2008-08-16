@@ -740,6 +740,14 @@ a {
     cursor: pointer;
 }
 
+.emoticon_preview_popup {
+    padding: 2px;
+}
+
+.emoticon_preview_popup img {
+    cursor: pointer;
+}
+
 .pmnewcount {
     font-size: 8pt;
 }

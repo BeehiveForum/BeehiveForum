@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.150 2008-08-10 12:36:28 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.151 2008-08-16 18:55:53 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -79,13 +79,14 @@ function thread_get($tid, $inc_deleted = false)
 
     $unread_cutoff_timestamp = threads_get_unread_cutoff();
 
-    $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.BY_UID, THREAD.TITLE, THREAD.DELETED, ";
-    $sql.= "THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.STICKY, THREAD_STATS.VIEWCOUNT, ";
-    $sql.= "UNIX_TIMESTAMP(THREAD.STICKY_UNTIL) AS STICKY_UNTIL, FOLDER.PREFIX, ";
-    $sql.= "UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, THREAD.CLOSED, ";
+    $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.DELETED, ";
+    $sql.= "THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.STICKY, THREAD.UNREAD_PID, ";
+    $sql.= "THREAD_STATS.VIEWCOUNT, USER_THREAD.LAST_READ, USER_THREAD.INTEREST, ";
+    $sql.= "THREAD.BY_UID, THREAD.CLOSED, THREAD.ADMIN_LOCK, FOLDER.PREFIX, ";
     $sql.= "UNIX_TIMESTAMP(THREAD.CREATED) AS CREATED, THREAD.ADMIN_LOCK, ";
-    $sql.= "USER_THREAD.INTEREST, USER_THREAD.LAST_READ, USER.UID AS FROM_UID, ";
-    $sql.= "USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, USER_PEER.RELATIONSHIP, ";
+    $sql.= "UNIX_TIMESTAMP(THREAD.STICKY_UNTIL) AS STICKY_UNTIL, ";
+    $sql.= "UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, USER.UID, USER.LOGON, ";
+    $sql.= "USER.NICKNAME, USER_PEER.PEER_NICKNAME, USER_PEER.RELATIONSHIP, ";
     $sql.= "FOLDER.TITLE AS FOLDER_TITLE FROM {$table_data['PREFIX']}THREAD THREAD ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD_STATS THREAD_STATS ";
     $sql.= "ON (THREAD_STATS.TID = THREAD.TID) ";
@@ -119,6 +120,8 @@ function thread_get($tid, $inc_deleted = false)
 
             if (isset($thread_data['MODIFIED']) && $unread_cutoff_timestamp !== false && $thread_data['MODIFIED'] < $unread_cutoff_timestamp) {
                 $thread_data['LAST_READ'] = $thread_data['LENGTH'];
+            }else if (isset($thread_data['UNREAD_PID']) && is_numeric($thread_data['UNREAD_PID'])) {
+                $thread_data['LAST_READ'] = $thread_data['UNREAD_PID'];
             }
         }
 

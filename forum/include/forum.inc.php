@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.329 2008-08-12 17:09:17 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.330 2008-08-16 18:55:53 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -2435,13 +2435,10 @@ function forum_search($forum_search, $offset)
 
                 if (is_numeric($unread_cutoff_stamp) && $unread_cutoff_stamp !== false) {
 
-                    $sql = "SELECT SUM(THREAD.LENGTH) - SUM(COALESCE(USER_THREAD.LAST_READ, 0)) ";
-                    $sql.= "AS UNREAD_MESSAGES FROM {$forum_data['PREFIX']}THREAD THREAD ";
-                    $sql.= "LEFT JOIN {$forum_data['PREFIX']}USER_THREAD USER_THREAD ";
-                    $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
-                    $sql.= "WHERE THREAD.FID IN ($folders) ";
-                    $sql.= "AND (THREAD.MODIFIED > FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - ";
-                    $sql.= "$unread_cutoff_stamp) OR $unread_cutoff_stamp = 0) ";
+                    $sql = "SELECT SUM(THREAD.LENGTH) - SUM(COALESCE(USER_THREAD.LAST_READ, THREAD.UNREAD_PID)) AS UNREAD_MESSAGES ";
+                    $sql.= "FROM {$forum_data['PREFIX']}THREAD THREAD LEFT JOIN {$forum_data['PREFIX']}USER_THREAD USER_THREAD ";
+                    $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') WHERE THREAD.FID IN ($folders) ";
+                    $sql.= "AND (THREAD.MODIFIED > FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp) OR $unread_cutoff_stamp = 0) ";
 
                     if (!$result_unread_count = db_query($sql, $db_forum_search)) return false;
 
@@ -2456,8 +2453,7 @@ function forum_search($forum_search, $offset)
 
                 // Total number of messages
 
-                $sql = "SELECT SUM(THREAD.LENGTH) AS NUM_MESSAGES ";
-                $sql.= "FROM {$forum_data['PREFIX']}THREAD THREAD ";
+                $sql = "SELECT SUM(THREAD.LENGTH) AS NUM_MESSAGES FROM {$forum_data['PREFIX']}THREAD THREAD ";
                 $sql.= "WHERE THREAD.FID IN ($folders) ";
 
                 if (!$result_messages_count = db_query($sql, $db_forum_search)) return false;

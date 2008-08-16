@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.188 2008-08-12 17:13:46 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.189 2008-08-16 18:55:53 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -217,6 +217,18 @@ function post_update_thread_length($tid, $length)
     $sql.= "SET LENGTH = '$length', MODIFIED = NOW() WHERE TID = '$tid'";
 
     if (!db_query($sql, $db_post_update_thread_length)) return false;
+
+    if (($unread_cutoff_stamp = forum_get_unread_cutoff()) !== false) {
+
+        $sql = "INSERT INTO {$table_data['PREFIX']}THREAD (TID, UNREAD_PID) ";
+        $sql.= "SELECT THREAD.TID, MAX(POST.PID) AS UNREAD_PID FROM {$table_data['PREFIX']}THREAD THREAD ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}POST POST ON (POST.TID = THREAD.TID) ";
+        $sql.= "WHERE POST.CREATED < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp) ";
+        $sql.= "AND THREAD.TID = '$tid' GROUP BY THREAD.TID ";
+        $sql.= "ON DUPLICATE KEY UPDATE UNREAD_PID = VALUES(UNREAD_PID)";
+
+        if (!db_query($sql, $db_post_update_thread_length)) return false;
+    }
 
     return true;
 }

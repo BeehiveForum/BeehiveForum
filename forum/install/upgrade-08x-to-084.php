@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-08x-to-084.php,v 1.7 2008-08-07 15:18:06 decoyduck Exp $ */
+/* $Id: upgrade-08x-to-084.php,v 1.8 2008-08-16 18:55:53 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'upgrade-08x-to-083.php') {
 
@@ -93,6 +93,37 @@ foreach ($forum_webtag_array as $forum_fid => $forum_webtag) {
         // Better support for deleted threads.
 
         $sql = "ALTER TABLE {$forum_webtag}_THREAD ADD DELETED CHAR(1) NOT NULL DEFAULT 'N'";
+
+        if (!$result = @db_query($sql, $db_install)) {
+
+            $valid = false;
+            return;
+        }
+    }
+
+    if (!install_column_exists("{$forum_webtag}_THREAD", "UNREAD_PID")) {
+
+        // Better support for unread cut-off.
+
+        $sql = "ALTER TABLE {$forum_webtag}_THREAD ADD UNREAD_PID MEDIUMINT(8) NULL AFTER LENGTH";
+
+        if (!$result = @db_query($sql, $db_install)) {
+
+            $valid = false;
+            return;
+        }
+    }
+
+    if (($unread_cutoff_stamp = forum_get_unread_cutoff()) !== false) {
+
+        // Moved the UNREAD_PID column into the THREAD table.
+        // Make sure the data is up to date.
+
+        $sql.= "INSERT INTO {$forum_webtag}_THREAD (TID, UNREAD_PID) ";
+        $sql = "SELECT THREAD.TID, MAX(POST.PID) FROM {$forum_webtag}_THREAD THREAD ";
+        $sql.= "LEFT JOIN {$forum_webtag}_POST POST ON (POST.TID = THREAD.TID) ";
+        $sql.= "WHERE POST.CREATED < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff) ";
+        $sql.= "GROUP BY THREAD.TID ON DUPLICATE KEY UPDATE UNREAD_PID = VALUES(UNREAD_PID)";
 
         if (!$result = @db_query($sql, $db_install)) {
 

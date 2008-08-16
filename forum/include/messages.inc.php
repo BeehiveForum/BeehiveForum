@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.549 2008-08-12 17:09:17 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.550 2008-08-16 18:55:53 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1676,8 +1676,8 @@ function messages_get_most_recent($uid, $fid = false)
     $user_ignored = USER_IGNORED;
 
     $sql = "SELECT THREAD.TID, UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, ";
-    $sql.= "THREAD.LENGTH, USER_THREAD.LAST_READ, USER_PEER.RELATIONSHIP ";
-    $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
+    $sql.= "THREAD.LENGTH, USER_THREAD.LAST_READ, USER_PEER.RELATIONSHIP, ";
+    $sql.= "THREAD.UNREAD_PID FROM {$table_data['PREFIX']}THREAD THREAD ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ON ";
     $sql.= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
@@ -1709,6 +1709,8 @@ function messages_get_most_recent($uid, $fid = false)
 
             if (isset($message_data['MODIFIED']) && $unread_cutoff_timestamp !== false && $message_data['MODIFIED'] < $unread_cutoff_timestamp) {
                 $message_data['LAST_READ'] = $message_data['LENGTH'];
+            }else if (isset($message_data['UNREAD_PID']) && is_numeric($message_data['UNREAD_PID'])) {
+                $message_data['LAST_READ'] = $message_data['UNREAD_PID'];
             }
 
             return "{$message_data['TID']}.{$message_data['LAST_READ']}";
@@ -1748,8 +1750,8 @@ function messages_get_most_recent_unread($uid, $fid = false)
     $user_ignored = USER_IGNORED;
 
     $sql = "SELECT THREAD.TID, UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, ";
-    $sql.= "THREAD.LENGTH, USER_THREAD.LAST_READ, USER_PEER.RELATIONSHIP ";
-    $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
+    $sql.= "THREAD.LENGTH, USER_THREAD.LAST_READ, USER_PEER.RELATIONSHIP, ";
+    $sql.= "THREAD.UNREAD_PID FROM {$table_data['PREFIX']}THREAD THREAD ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ON ";
     $sql.= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
@@ -1783,6 +1785,8 @@ function messages_get_most_recent_unread($uid, $fid = false)
 
             if (isset($message_data['MODIFIED']) && $unread_cutoff_timestamp !== false && $message_data['MODIFIED'] < $unread_cutoff_timestamp) {
                 $message_data['LAST_READ'] = $message_data['LENGTH'];
+            }else if (isset($message_data['UNREAD_PID']) && is_numeric($message_data['UNREAD_PID'])) {
+                $message_data['LAST_READ'] = $message_data['UNREAD_PID'];
             }
 
             return "{$message_data['TID']}.{$message_data['LAST_READ']}";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-08x-to-084.php,v 1.8 2008-08-16 18:55:53 decoyduck Exp $ */
+/* $Id: upgrade-08x-to-084.php,v 1.9 2008-08-16 19:58:44 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'upgrade-08x-to-083.php') {
 
@@ -119,10 +119,10 @@ foreach ($forum_webtag_array as $forum_fid => $forum_webtag) {
         // Moved the UNREAD_PID column into the THREAD table.
         // Make sure the data is up to date.
 
-        $sql.= "INSERT INTO {$forum_webtag}_THREAD (TID, UNREAD_PID) ";
-        $sql = "SELECT THREAD.TID, MAX(POST.PID) FROM {$forum_webtag}_THREAD THREAD ";
+        $sql = "INSERT INTO {$forum_webtag}_THREAD (TID, UNREAD_PID) ";
+        $sql.= "SELECT THREAD.TID, MAX(POST.PID) FROM {$forum_webtag}_THREAD THREAD ";
         $sql.= "LEFT JOIN {$forum_webtag}_POST POST ON (POST.TID = THREAD.TID) ";
-        $sql.= "WHERE POST.CREATED < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff) ";
+        $sql.= "WHERE POST.CREATED < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp) ";
         $sql.= "GROUP BY THREAD.TID ON DUPLICATE KEY UPDATE UNREAD_PID = VALUES(UNREAD_PID)";
 
         if (!$result = @db_query($sql, $db_install)) {

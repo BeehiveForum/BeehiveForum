@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.124 2008-08-12 17:09:17 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.125 2008-08-16 15:38:37 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -394,7 +394,7 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
         echo "<title>Beehive Forum - Error Handler</title>\n";
         echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
         echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\" />\n";
-        echo "<link rel=\"stylesheet\" href=\"styles/default/style.css\" type=\"text/css\" />\n";
+        echo "<link rel=\"stylesheet\" href=\"styles/default/style.css?", md5(uniqid(rand())), "\" type=\"text/css\" />\n";
         echo "</head>\n";
         echo "<body>\n";
         echo "<h1>Error</h1>\n";

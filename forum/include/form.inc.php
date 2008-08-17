@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.127 2008-08-12 17:09:17 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.128 2008-08-17 17:29:33 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -45,21 +45,21 @@ function form_field($name, $value = false, $width = false, $maxchars = false, $t
 
     $id = form_unique_id($name);
 
-    $html = "<input type=\"$type\" name=\"$name\" id=\"$id\" class=\"$class\" value=\"$value\" ";
+    $html = "<input type=\"$type\" name=\"$name\" id=\"$id\" class=\"$class\" value=\"$value\"";
 
     if (strlen(trim($custom_html)) > 0) {
-        $html.= sprintf("%s ", trim($custom_html));
+        $html.= sprintf(" %s", trim($custom_html));
     }
 
     if (is_numeric($width)) {
-        $html.= "size=\"$width\" ";
+        $html.= " size=\"$width\"";
     }
 
     if (is_numeric($maxchars) && $maxchars > 0) {
-        $html.= "maxlength=\"$maxchars\" ";
+        $html.= " maxlength=\"$maxchars\"";
     }
 
-    $html.= "dir=\"{$lang['_textdir']}\" />";
+    $html.= " dir=\"{$lang['_textdir']}\" />";
     return $html;
 }
 
@@ -122,21 +122,21 @@ function form_textarea($name, $value, $rows, $cols, $custom_html = false, $class
 
     $id = form_unique_id($name);
 
-    $html = "<textarea name=\"$name\" id=\"$id\" class=\"$class\" ";
+    $html = "<textarea name=\"$name\" id=\"$id\" class=\"$class\"";
 
     if (strlen(trim($custom_html)) > 0) {
-        $html.= sprintf("%s ", trim($custom_html));
+        $html.= sprintf(" %s", trim($custom_html));
     }
 
     if (is_numeric($rows)) {
-        $html.= "rows=\"$rows\" ";
+        $html.= " rows=\"$rows\"";
     }
 
     if (is_numeric($cols)) {
-        $html.= "cols=\"$cols\" ";
+        $html.= " cols=\"$cols\"";
     }
 
-    $html.= "dir=\"{$lang['_textdir']}\">$value</textarea>";
+    $html.= " dir=\"{$lang['_textdir']}\">$value</textarea>";
     return $html;
 }
 
@@ -146,10 +146,10 @@ function form_dropdown_array($name, $options_array, $default = false, $custom_ht
 {
     $id = form_unique_id($name);
 
-    $html = "<select name=\"$name\" id=\"$id\" class=\"$class\" ";
+    $html = "<select name=\"$name\" id=\"$id\" class=\"$class\"";
 
     if (strlen(trim($custom_html)) > 0) {
-        $html.= sprintf("%s ", trim($custom_html));
+        $html.= sprintf(" %s", trim($custom_html));
     }
 
     $html.= ">";
@@ -257,10 +257,10 @@ function form_checkbox($name, $value, $text, $checked = false, $custom_html = fa
     }
 
     if (strlen(trim($custom_html)) > 0) {
-        $html.= sprintf("%s ", trim($custom_html));
+        $html.= sprintf(" %s", trim($custom_html));
     }
 
-    $html.= "/>";
+    $html.= " />";
 
     if (is_array($text) && sizeof($text) > 0) {
 
@@ -304,10 +304,10 @@ function form_radio($name, $value, $text, $checked = false, $custom_html = false
     }
 
     if (strlen(trim($custom_html)) > 0) {
-        $html.= sprintf("%s ", trim($custom_html));
+        $html.= sprintf(" %s", trim($custom_html));
     }
 
-    $html.= "/>";
+    $html.= " />";
 
     if (is_array($text) && sizeof($text) > 0) {
 
@@ -360,13 +360,13 @@ function form_submit($name = "submit", $value = "Submit", $custom_html = false, 
 {
     $id = form_unique_id($name);
 
-    $html = "<input type=\"submit\" name=\"$name\" id=\"$id\" value=\"$value\" class=\"$class\" ";
+    $html = "<input type=\"submit\" name=\"$name\" id=\"$id\" value=\"$value\" class=\"$class\"";
 
     if (strlen(trim($custom_html)) > 0) {
-        $html.= sprintf("%s ", trim($custom_html));
+        $html.= sprintf(" %s", trim($custom_html));
     }
 
-    $html.= "/>";
+    $html.= " />";
     return $html;
 }
 
@@ -377,17 +377,17 @@ function form_submit_image($image, $name = "submit", $value = "Submit", $custom_
     $id = form_unique_id($name);
 
     $html = "<input name=\"$name\" value=\"$value\" id=\"$id\" ";
-    $html.= "type=\"image\" src=\"". style_image($image). "\" ";
+    $html.= "type=\"image\" src=\"". style_image($image). "\"";
 
     if (strlen(trim($class)) > 0) {
-        $html.= sprintf("class=\"%s\" ", trim($class));
+        $html.= sprintf(" class=\"%s\"", trim($class));
     }
 
     if (strlen(trim($custom_html)) > 0) {
-        $html.= sprintf("%s ", trim($custom_html));
+        $html.= sprintf(" %s", trim($custom_html));
     }
 
-    $html.= "/>";
+    $html.= " />";
     return $html;
 }
 
@@ -397,13 +397,13 @@ function form_reset($name = "reset", $value = "Reset", $custom_html = false, $cl
 {
     $id = form_unique_id($name);
 
-    $html = "<input type=\"reset\" name=\"$name\" id=\"$id\" value=\"$value\" class=\"$class\" ";
+    $html = "<input type=\"reset\" name=\"$name\" id=\"$id\" value=\"$value\" class=\"$class\"";
 
     if (strlen(trim($custom_html)) > 0) {
-        $html.= sprintf("%s ", trim($custom_html));
+        $html.= sprintf(" %s", trim($custom_html));
     }
 
-    $html.= "/>";
+    $html.= " />";
     return $html;
 }
 
@@ -413,13 +413,13 @@ function form_button($name, $value, $custom_html, $class="button")
 {
     $id = form_unique_id($name);
 
-    $html = "<input type=\"button\" name=\"$name\" id=\"$id\" value=\"$value\" class=\"$class\" ";
+    $html = "<input type=\"button\" name=\"$name\" id=\"$id\" value=\"$value\" class=\"$class\"";
 
     if (strlen(trim($custom_html)) > 0) {
-        $html.= sprintf("%s ", trim($custom_html));
+        $html.= sprintf(" %s", trim($custom_html));
     }
 
-    $html.= "/>";
+    $html.= " />";
     return $html;
 }
 

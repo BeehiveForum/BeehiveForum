@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.292 2008-08-12 19:17:02 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.293 2008-08-17 17:29:34 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -359,24 +359,12 @@ function html_get_style_sheet()
     $script_filename = basename($_SERVER['PHP_SELF'], '.php');
 
     if (($user_style = bh_session_get_value('STYLE')) === false) {
-        $user_style = forum_get_setting('default_style');
+        $user_style = bh_getcookie("bh_{$webtag}_style", false, forum_get_setting('default_style'));
     }
 
     if ($user_style !== false) {
 
-        if (@is_dir("$forum_path/styles/$user_style") && @file_exists("$forum_path/styles/$user_style/$script_filename.css")) {
-
-            if (($modified_time = @filemtime("$forum_path/styles/$user_style/$script_filename.css"))) {
-                return sprintf("$forum_path/styles/$user_style/$script_filename.css?%s", date('YmdHis', $modified_time));
-            }
-        }
-
-        if (@is_dir("$forum_path/styles/$user_style") && @file_exists("$forum_path/styles/$user_style/style.css")) {
-
-            if (($modified_time = @filemtime("$forum_path/styles/$user_style/style.css"))) {
-                return sprintf("$forum_path/styles/$user_style/style.css?%s", date('YmdHis', $modified_time));
-            }
-        }
+        $user_style = basename($user_style);
 
         if (@is_dir("$forum_path/forums/$webtag/styles/$user_style") && @file_exists("$forum_path/forums/$webtag/styles/$user_style/$script_filename.css")) {
 
@@ -391,15 +379,43 @@ function html_get_style_sheet()
                 return sprintf("$forum_path/forums/$webtag/styles/$user_style/style.css?%s", date('YmdHis', $modified_time));
             }
         }
+
+        if (@is_dir("$forum_path/styles/$user_style") && @file_exists("$forum_path/styles/$user_style/$script_filename.css")) {
+
+            if (($modified_time = @filemtime("$forum_path/styles/$user_style/$script_filename.css"))) {
+                return sprintf("$forum_path/styles/$user_style/$script_filename.css?%s", date('YmdHis', $modified_time));
+            }
+        }
+
+        if (@is_dir("$forum_path/styles/$user_style") && @file_exists("$forum_path/styles/$user_style/style.css")) {
+
+            if (($modified_time = @filemtime("$forum_path/styles/$user_style/style.css"))) {
+                return sprintf("$forum_path/styles/$user_style/style.css?%s", date('YmdHis', $modified_time));
+            }
+        }
     }
 
     if ($webtag !== false) {
+
+        if (@is_dir("$forum_path/forums/$webtag") && @file_exists("$forum_path/forums/$webtag/$script_filename.css")) {
+
+            if (($modified_time = @filemtime("$forum_path/forums/$webtag/$script_filename.css"))) {
+                return sprintf("$forum_path/forums/$webtag/$script_filename.css?%s", date('YmdHis', $modified_time));
+            }
+        }
 
         if (@is_dir("$forum_path/forums/$webtag") && @file_exists("$forum_path/forums/$webtag/style.css")) {
 
             if (($modified_time = @filemtime("$forum_path/forums/$webtag/style.css"))) {
                 return sprintf("$forum_path/forums/$webtag/style.css?%s", date('YmdHis', $modified_time));
             }
+        }
+    }
+
+    if (@is_dir("$forum_path/styles") && @file_exists("$forum_path/styles/$script_filename.css")) {
+
+        if (($modified_time = @filemtime("$forum_path/styles/$script_filename.css"))) {
+            return sprintf("$forum_path/styles/$script_filename.css?%s", date('YmdHis', $modified_time));
         }
     }
 
@@ -1111,6 +1127,27 @@ function bh_setcookie($name, $value, $expires = 0)
     }
 
     return setcookie($name, $value, $expires);
+}
+
+function bh_getcookie($cookie_name, $callback = false, $default = false)
+{
+    if (isset($_COOKIE[$cookie_name])) {
+
+        if ($callback !== false) {
+
+            if (function_exists($callback)) {
+                return ($callback($_COOKIE[$cookie_name])) ? $_COOKIE[$cookie_name] : $default;
+            }
+
+            return strtoupper($_COOKIE[$cookie_name]) == strtoupper($value);
+
+        }else {
+
+            return $_COOKIE[$cookie_name];
+        }
+    }
+
+    return $default;
 }
 
 function bh_remove_all_cookies()

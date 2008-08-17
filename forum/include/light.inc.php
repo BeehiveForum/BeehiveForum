@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.197 2008-08-12 17:09:17 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.198 2008-08-17 17:29:34 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -166,34 +166,17 @@ function light_draw_logon_form()
 
     bh_setcookie("bh_logon", "1", time() - YEAR_IN_SECONDS);
 
+    $user_logon = bh_getcookie('bh_light_remember_username', 'strlen', '');
+
+    $user_password = bh_getcookie('bh_light_remember_password', 'strlen', '');
+
+    $user_passhash = bh_getcookie('bh_light_remember_passhash', 'strlen', '');
+
     echo "<form name=\"logonform\" action=\"llogon.php\" method=\"post\">\n";
     echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
-    echo "  <p>{$lang['username']}: ";
-    echo light_form_input_text("user_logon", (isset($_COOKIE['bh_light_remember_username']) ? _htmlentities(_stripslashes($_COOKIE['bh_light_remember_username'])) : ""), 20, 15). "</p>\n";
-
-    if (isset($_COOKIE['bh_light_remember_password']) && strlen($_COOKIE['bh_light_remember_password']) > 0) {
-
-        if (isset($_COOKIE['bh_light_remember_passhash']) && is_md5($_COOKIE['bh_light_remember_passhash'])) {
-
-            echo "  <p>{$lang['passwd']}: ";
-            echo light_form_input_password("user_password", _htmlentities(_stripslashes($_COOKIE['bh_light_remember_password'])), 20, 32), "\n";
-            echo "  ", form_input_hidden("user_passhash", _htmlentities(_stripslashes($_COOKIE['bh_light_remember_passhash']))), "</p>\n";
-
-        }else {
-
-            echo "  <p>{$lang['passwd']}: ";
-            echo light_form_input_password("user_password", '', 20, 32), "\n";
-            echo "  ", form_input_hidden("user_passhash", ''), "</p>\n";
-        }
-
-    }else {
-
-        echo "  <p>{$lang['passwd']}: ";
-        echo light_form_input_password("user_password", '', 20, 32), "\n";
-        echo "  ", form_input_hidden("user_passhash", ''), "</p>\n";
-    }
-
-    echo "  <p>", light_form_checkbox("remember_user", "Y", $lang['rememberpassword'], (isset($_COOKIE['bh_light_remember_username']) && isset($_COOKIE['bh_light_remember_password']) ? true : false)), "</p>\n";
+    echo "  <p>{$lang['username']}: ", light_form_input_text("user_logon", _htmlentities(_stripslashes($user_logon)), 20, 15, "autocomplete=\"off\""). "</p>\n";
+    echo "  <p>{$lang['passwd']}: ", light_form_input_password("user_password", _htmlentities(_stripslashes($user_password)), 20, 32, "autocomplete=\"off\""), form_input_hidden("user_passhash", _htmlentities(_stripslashes($user_passhash))), "</p>\n";
+    echo "  <p>", light_form_checkbox("remember_user", "Y", $lang['rememberpassword'], (strlen($user_password) > 0 && strlen($user_passhash) > 0) && bh_getcookie('bh_light_remember_password'), "autocomplete=\"off\""), "</p>\n";
     echo "  <p>", light_form_submit('logon', $lang['logon']), "</p>\n";
     echo "</form>\n";
 }
@@ -665,28 +648,39 @@ function light_draw_my_forums()
     }
 }
 
-function light_form_dropdown_array($name, $options_array, $default = "")
+function light_form_dropdown_array($name, $options_array, $default = "", $custom_html = false)
 {
-    if (is_array($options_array) && sizeof($options_array) > 0) {
+    $html = "<select name=\"$name\"";
 
-        $html = "<select name=\"$name\">";
+    if (strlen(trim($custom_html)) > 0) {
+        $html.= sprintf(" %s", trim($custom_html));
+    }
+
+    $html.= ">";
+
+    if (is_array($options_array) && sizeof($options_array) > 0) {
 
         foreach ($options_array as $option_key => $option_text) {
 
             $selected = (strtolower($option_key) == strtolower($default)) ? " selected=\"selected\"" : "";
             $html.= "<option value=\"{$option_key}\"$selected>$option_text</option>";
         }
-
-        return $html."</select>";
     }
 
-    return "";
+    $html.= "</select>";
+    return $html;
 }
 
 function light_form_submit($name = "submit", $value = "Submit", $custom_html = "")
 {
-    $custom_html = trim($custom_html);
-    return "<input type=\"submit\" name=\"$name\" value=\"$value\" $custom_html />";
+    $html = "<input type=\"submit\" name=\"$name\" value=\"$value\" ";
+
+    if (strlen(trim($custom_html)) > 0) {
+        $html.= sprintf("%s ", trim($custom_html));
+    }
+
+    $html.= "/>";
+    return $html;
 }
 
 function light_messages_top($msg, $thread_title, $interest_level = THREAD_NOINTEREST, $sticky = "N", $closed = false, $locked = false)
@@ -706,11 +700,21 @@ function light_messages_top($msg, $thread_title, $interest_level = THREAD_NOINTE
     echo "</h1>";
 }
 
-function light_form_radio($name, $value, $text, $checked = false)
+function light_form_radio($name, $value, $text, $checked = false, $custom_html = false)
 {
     $html = "<input type=\"radio\" name=\"$name\" value=\"$value\"";
-    if ($checked) $html .= " checked=\"checked\"";
-    return $html . " />$text";
+
+    if ($checked) {
+        $html.= " checked=\"checked\"";
+    }
+
+    if (strlen(trim($custom_html)) > 0) {
+        $html.= sprintf(" %s", trim($custom_html));
+    }
+
+    $html.= " />$text";
+
+    return $html;
 }
 
 function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $closed = false, $limit_text = true, $is_preview = false)
@@ -1330,44 +1334,72 @@ function light_folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="
     return false;
 }
 
-function light_form_textarea($name, $value = "", $rows = 0, $cols = 0)
+function light_form_textarea($name, $value = "", $rows = 0, $cols = 0, $custom_html = false)
 {
-    $html = "<textarea name=\"$name\" ";
+    $html = "<textarea name=\"$name\"";
 
-    if ($rows) $html.= " rows=\"$rows\"";
-    if ($cols) $html.= " cols=\"$cols\"";
+    if (strlen(trim($custom_html)) > 0) {
+        $html.= sprintf(" %s", trim($custom_html));
+    }
 
-    $html .= ">$value</textarea>";
+    if (is_numeric($rows)) {
+        $html.= " rows=\"$rows\"";
+    }
+
+    if (is_numeric($cols)) {
+        $html.= " cols=\"$cols\"";
+    }
+
+    $html.= ">$value</textarea>";
 
     return $html;
 }
 
-function light_form_checkbox($name, $value, $text, $checked = false)
+function light_form_checkbox($name, $value, $text, $checked = false, $custom_html = false)
 {
     $html = "<input type=\"checkbox\" name=\"$name\" value=\"$value\"";
-    if ($checked) $html .= " checked=\"checked\"";
-    return $html . " />$text";
+
+    if ($checked) {
+        $html.= " checked=\"checked\"";
+    }
+
+    if (strlen(trim($custom_html)) > 0) {
+        $html.= sprintf(" %s", trim($custom_html));
+    }
+
+    $html.= " />$text";
+
+    return $html;
 }
 
-function light_form_field($name, $value = "", $width = 0, $maxlength = 0, $type = "text")
+function light_form_field($name, $value = "", $width = false, $maxchars = false, $type = "text", $custom_html = false)
 {
-    $html = "<input type=\"$type\" name=\"$name\"";
-    $html.= " value=\"$value\"";
+    $html = "<input type=\"$type\" name=\"$name\" value=\"$value\"";
 
-    if ($width) $html.= " size=\"$width\"";
-    if ($maxlength) $html.= " maxlength=\"$maxlength\"";
+    if (strlen(trim($custom_html)) > 0) {
+        $html.= sprintf(" %s", trim($custom_html));
+    }
 
-    return $html." />";
+    if (is_numeric($width)) {
+        $html.= " size=\"$width\"";
+    }
+
+    if (is_numeric($maxchars) && $maxchars > 0) {
+        $html.= " maxlength=\"$maxchars\"";
+    }
+
+    $html.= " />";
+    return $html;
 }
 
-function light_form_input_text($name, $value = "", $width = 0, $maxlength = 0)
+function light_form_input_text($name, $value = "", $width = 0, $maxlength = 0, $custom_html = false)
 {
-    return light_form_field($name, $value, $width, $maxlength, "text");
+    return light_form_field($name, $value, $width, $maxlength, "text", $custom_html);
 }
 
-function light_form_input_password($name, $value = "", $width = 0, $maxlength = 0)
+function light_form_input_password($name, $value = "", $width = 0, $maxlength = 0, $custom_html = false)
 {
-    return light_form_field($name, $value, $width, $maxlength, "password");
+    return light_form_field($name, $value, $width, $maxlength, "password", $custom_html);
 }
 
 function light_html_message_type_error()
@@ -1473,7 +1505,7 @@ function light_mode_check_noframes()
 
     if (isset($_GET['noframes'])) {
 
-        if (bh_session_active() && !isset($_COOKIE['bh_logon_failed'])) {
+        if (bh_session_active() && !bh_getcookie('bh_logon_failed')) {
 
             if ($webtag !== false) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.331 2008-08-16 20:01:06 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.332 2008-08-17 17:29:33 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -275,23 +275,9 @@ function forum_get_saved_password(&$password, &$passhash, &$sesshash)
 {
     $webtag = get_webtag();
 
-    if (isset($_COOKIE["bh_{$webtag}_password"]) && strlen(_stripslashes($_COOKIE["bh_{$webtag}_password"])) > 0) {
-        $password = _stripslashes($_COOKIE["bh_{$webtag}_password"]);
-    }else {
-        $password = "";
-    }
-
-    if (isset($_COOKIE["bh_{$webtag}_passhash"]) && is_md5($_COOKIE["bh_{$webtag}_passhash"])) {
-        $passhash = trim(_stripslashes($_COOKIE["bh_{$webtag}_passhash"]));
-    }else {
-        $passhash = "";
-    }
-
-    if (isset($_COOKIE["bh_{$webtag}_sesshash"]) && is_md5($_COOKIE["bh_{$webtag}_sesshash"])) {
-        $sesshash = trim(_stripslashes($_COOKIE["bh_{$webtag}_sesshash"]));
-    }else {
-        $sesshash = "";
-    }
+    $password = bh_getcookie("bh_{$webtag}_password", 'strlen', '');
+    $passhash = bh_getcookie("bh_{$webtag}_passhash", 'strlen', '');
+    $sesshash = bh_getcookie("bh_{$webtag}_sesshash", 'strlen', '');
 
     return true;
 }
@@ -317,7 +303,7 @@ function forum_check_password($forum_fid)
 
         echo "<h1>{$lang['passwdprotectedforum']}</h1>\n";
 
-        if (isset($_COOKIE["bh_{$webtag}_sesshash"]) && strlen(trim(_stripslashes($_COOKIE["bh_{$webtag}_sesshash"]))) > 0) {
+        if (bh_getcookie("bh_{$webtag}_sesshash", 'strlen')) {
 
             bh_setcookie("bh_{$webtag}_sesshash", "", time() - YEAR_IN_SECONDS);
             html_display_error_msg($lang['usernameorpasswdnotvalid'], '550', 'center');

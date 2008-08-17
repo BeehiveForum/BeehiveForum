@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.352 2008-08-12 17:13:45 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.353 2008-08-17 17:29:33 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -178,7 +178,7 @@ if (user_is_guest()) {
 
     if (isset($mode) && is_numeric($mode)) {
 
-        bh_setcookie("bh_{$webtag}_light_thread_mode", $mode);
+        bh_setcookie("bh_{$webtag}_thread_mode", $mode);
 
         if ($mode == SEARCH_RESULTS) {
 
@@ -188,17 +188,10 @@ if (user_is_guest()) {
 
     }else {
 
-        if (isset($_COOKIE["bh_{$webtag}_light_thread_mode"]) && is_numeric($_COOKIE["bh_{$webtag}_light_thread_mode"])) {
+        $mode = bh_getcookie("bh_{$webtag}_thread_mode", false, UNREAD_DISCUSSIONS);
 
-            $mode = $_COOKIE["bh_{$webtag}_light_thread_mode"];
-
-            if ($mode == UNREAD_DISCUSSIONS && !$threads_any_unread) {
-                $mode = ALL_DISCUSSIONS;
-            }
-
-        }else {
-
-           $mode = ($threads_any_unread) ? UNREAD_DISCUSSIONS : ALL_DISCUSSIONS;
+        if ($mode == UNREAD_DISCUSSIONS && !$threads_any_unread) {
+            $mode = ALL_DISCUSSIONS;
         }
     }
 

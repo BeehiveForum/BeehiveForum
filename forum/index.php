@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.172 2008-08-15 17:40:23 decoyduck Exp $ */
+/* $Id: index.php,v 1.173 2008-08-17 17:29:33 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -86,7 +86,7 @@ $webtag = get_webtag();
 // Check to see if we have an active session
 
 $session_active = bh_session_active();
-$logon_failed = isset($_COOKIE['bh_logon_failed']);
+$logon_failed = bh_getcookie('bh_logon_failed');
 
 // Check to see if the user is trying to change their password.
 

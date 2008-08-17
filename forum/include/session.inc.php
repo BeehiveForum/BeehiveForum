@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.356 2008-08-12 17:13:46 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.357 2008-08-17 17:29:34 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -83,15 +83,17 @@ function bh_session_check($show_session_fail = true)
 
     if (!$ipaddress = get_ip_address()) return false;
 
+    // Forum webtag
+
+    $webtag = get_webtag();
+
     // Session cut off timestamp
 
     $active_sess_cutoff = intval(forum_get_setting('active_sess_cutoff', false, 900));
 
     // Check to see if we have a session cookie.
 
-    if (isset($_COOKIE['bh_sess_hash']) && is_md5($_COOKIE['bh_sess_hash'])) {
-        $user_hash = $_COOKIE['bh_sess_hash'];
-    }
+    $user_hash = bh_getcookie('bh_sess_hash', 'is_md5');
 
     // Check for a webtag and get the forum FID.
 
@@ -152,6 +154,12 @@ function bh_session_check($show_session_fail = true)
             // Check the forum FID the user is currently visiting
 
             if (!is_numeric($user_sess['FID'])) $user_sess['FID'] = 0;
+
+            // Save a cookie for the forum style
+
+            if ($forum_webtag = forum_get_webtag($user_sess['FID']) && isset($user_prefs['STYLE'])) {
+                bh_setcookie("bh_{$webtag}_style", $user_prefs['STYLE'], time() + YEAR_IN_SECONDS);
+            }
 
             // Check the session time. If it is higher than 'active_sess_cutoff'
             // or the user has changed forums we should update the user's session data.
@@ -306,11 +314,7 @@ function bh_guest_session_init($update_visitor_log = true)
 
     // Check to see if we have a session cookie.
 
-    if (isset($_COOKIE['bh_sess_hash']) && is_md5($_COOKIE['bh_sess_hash'])) {
-        $user_hash = $_COOKIE['bh_sess_hash'];
-    }else {
-        $user_hash = md5($ipaddress);
-    }
+    $user_hash = bh_getcookie('bh_sess_hash', 'is_md5', md5($ipaddress));
 
     if (user_guest_enabled()) {
 
@@ -449,7 +453,7 @@ function bh_guest_session_init($update_visitor_log = true)
 
 function bh_session_active()
 {
-    if (isset($_COOKIE['bh_logon'])) return false;
+    if (bh_getcookie('bh_logon')) return false;
     if (user_cookies_set() && user_is_guest()) return false;
     if ((user_guest_enabled() && user_is_guest()) || !user_is_guest()) return true;
 
@@ -917,11 +921,7 @@ function bh_session_end($remove_cookies = true)
 
     // Session cookie
 
-    if (isset($_COOKIE['bh_sess_hash']) && is_md5($_COOKIE['bh_sess_hash'])) {
-        $user_hash = $_COOKIE['bh_sess_hash'];
-    }else {
-        $user_hash = md5($ipaddress);
-    }
+    $user_hash = bh_getcookie('bh_sess_hash', 'is_md5', md5($ipaddress));
 
     if (isset($user_hash) && is_md5($user_hash)) {
 

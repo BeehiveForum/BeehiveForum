@@ -1,6 +1,136 @@
-Project Beehive Forum Change Log (Generated: Thu, 07 Aug 2008 11:53:34)
+Project Beehive Forum Change Log (Generated: Sun, 17 Aug 2008 17:30:48)
 
 Author: decoyduck
+Date: Sun, 17 Aug 2008 16:29:33
+-----------------------
+Added: New function named bh_getcookie which works allows you to test for
+a named cookie and check it's value using a callback / comparison value.
+Changed: User Forum style now persists when they log out by use of a
+cookie named bh_webtag_style.
+Changed: User logon dropdown and password field are now the same length.
+Changed: Form fields should no longer have any stray spaces in their
+tags.
+
+Date: Sat, 16 Aug 2008 19:01:06
+-----------------------
+Changed: Updated installer and forum_create() functions to add new
+UNREAD_PID column to THREAD table.
+
+Date: Sat, 16 Aug 2008 18:58:44
+-----------------------
+Fixed: Error during upgrade to new UNREAD_PID column in THREAD table.
+
+Date: Sat, 16 Aug 2008 17:55:53
+-----------------------
+Fixed: Threads outside of unread thread cut-off where appearing as totally
+unread, rather than the post outside the cut-off being unread.
+
+Date: Sat, 16 Aug 2008 14:38:36
+-----------------------
+Fixed: Error details box too wide on Error Handler output.
+Fixed: Error handler caching the style sheet.
+
+Date: Sat, 16 Aug 2008 09:15:05
+-----------------------
+Fixed: Emoticon popup wasn't working correctly with the pack=user argument
+Fixed: Emoticons in the popup didn't have style pointer: cursor on them.
+
+Date: Fri, 15 Aug 2008 19:12:08
+-----------------------
+Commit: Changed layout of pm_messages.php to fit better at 1024x768.
+
+Date: Fri, 15 Aug 2008 16:40:23
+-----------------------
+Fixed: final_uri GET var for index.php wasn't correctly matching
+admin*.php to be able to include the Admin menu in the frame set.
+
+Date: Wed, 13 Aug 2008 20:28:30
+-----------------------
+Fixed: Javascript error in folder_subscriptions.php when ticking the
+select all tickbox
+Changed: Layouts changed on Admin tools to make them easier to use at
+lower resolutions (minimum supported: 800x600)
+Changed: Removed alt text from avatar images to prevent broken images (404
+errors) from breaking the page layout.
+
+Date: Tue, 12 Aug 2008 18:17:02
+-----------------------
+Fixed: Potential for undefined indexes when clearing old format cookies
+
+Date: Tue, 12 Aug 2008 16:22:02
+-----------------------
+Fixed: Undefined variable $uid in display.php
+Fixed: Return value on db_set_utf8_charset() functions.
+
+Date: Tue, 12 Aug 2008 16:13:46
+-----------------------
+Changed: preg_ functions now use /u modifier to force UTF-8 detection.
+
+Date: Tue, 12 Aug 2008 15:20:29
+-----------------------
+Changed: Forced UTF-8 charset when creating tables required by Beehive.
+
+Date: Sun, 10 Aug 2008 17:10:00
+-----------------------
+Fixed: Splitting signature from post content in MessageTextParse kept the
+div tags.
+Fixed: Double encoded HTML when passing content through make_html()
+function.
+Added: UTF-8 support improved. Should be fully compatible with other PHP
+applications now.
+Changed: Replaced ms_word_to_html function with smart_quotes_clean_up
+which is now UTF-8 aware.
+
+Date: Sun, 10 Aug 2008 12:55:53
+-----------------------
+Fixed: Emoticon box wasn't work with TinyMCE.
+Fixed: Weird bug where inserting an emoticon in TinyMCE when the
+activeEditor is empty made the emoticon un-removable.
+
+Date: Sun, 10 Aug 2008 11:36:28
+-----------------------
+Changed: Some continuuity between Light and Full mode trying to read
+threads that are inaccessible.
+Changed: Made the Thread List functions only fetch threads with
+THREAD.LENGTH > 0 to skip limbo threads and threads being created.
+Fixed: Error message when you permenantly delete a thread due to the
+thread now being inaccessible.
+Fixed: You could search Limbo'd threads but not be able to read them.
+
+Date: Sun, 10 Aug 2008 10:54:21
+-----------------------
+Fixed: Function messages_get_most_recent_unread() now returns false if
+unread messages are disabled.
+Fixed: Functions messages_get_most_recent_unread() and
+messages_get_most_recent() now check THREAD.LENGTH > 0
+
+Date: Sat, 09 Aug 2008 17:00:34
+-----------------------
+Fixed: Accessing search as a Guest showed Close button below error message
+rather than Login button.
+Added: Large copy of Teh Forum logo added to CVS for safe keeping.
+
+Date: Fri, 08 Aug 2008 10:16:40
+-----------------------
+Changed: Removed call to _html_entities_decode in pm_send_notification,
+thread_split and thread_merge functions as it's not required any more.
+Changed: Re-implemented ms_word_to_html function from ye olde Beehive
+Forum and applied it through _htmlentities function.
+Changed: Replaced xml_literal_to_numeric with html_entity_to_decimal in
+rss_feed.inc.php to save some processing time.
+Changed: Function pm_get_subject() tidied up a little bit.
+
+Date: Thu, 07 Aug 2008 14:18:06
+-----------------------
+Changed: Moved creation of [Clear] entry into a function in
+profile.inc.php.
+Changed: Add a query to make the installer remove deleted posts from the
+approval queue.
+
+Date: Thu, 07 Aug 2008 11:16:35
+-----------------------
+Changed: Update readme.txt and changelog.txt
+
 Date: Thu, 07 Aug 2008 10:23:20
 -----------------------
 Changed: [None] change to [Clear] in edit_profile.php
@@ -17,707 +147,5 @@ table.
 
 Date: Thu, 07 Aug 2008 08:21:20
 -----------------------
-Changed: Updated German Language Pack.
-
-Date: Wed, 06 Aug 2008 22:43:20
------------------------
-Changed: Updated readme.txt. Changed minimum TinyMCE version requirements
-to 3.1.0.
-
-Date: Wed, 06 Aug 2008 22:09:29
------------------------
-Fixed: Bug in GeSHi regarding semi-colons and pipe chars fixed.
-Fixed: Dependencies on files updated.
-Changed: bh_update_language.php changed to optionally expect semi-colon
-line endings due to bug in GeSHi.
-Changed: Update some missing GeSHi files.
-Changed: Removed some unused TinyMCE plugins to make it load even quicker
-Changed: Updated language packs.
-
-Date: Tue, 05 Aug 2008 16:57:02
------------------------
-Fixed: Removed debugging data from thread_list.php
-
-Date: Tue, 05 Aug 2008 16:38:49
------------------------
-Fixed: Clicking Messages always showed most recent post even if already
-read and user was viewing Unread Discussions.
-Fixed: Mark as read was broken in previous changes to thread list.
-Fixed: Some threads would always show as unread in the thread list even if
-they were older than the unread cut-off.
-Fixed: Redirection to Search Results was broken by recent changes to
-thread list.
-Changed: Behaviour of unread cut-off changed so it no longer uses the
-UNREAD_PID column in THREAD_STATS.
-Changed: Wording on unread cut-off warning changed to make it more clear
-what is going to happen.
-
-Date: Mon, 04 Aug 2008 21:26:00
------------------------
-Fixed: You could merge threads that you don't have permission to moderate.
-Fixed: Search Popup was broken when searching for a thread TID.
-
-Date: Mon, 04 Aug 2008 20:54:21
------------------------
-Fixed: Guests were seeing folders in a mixed up order due bug in ?msg
-handling of thread list.
-
-Date: Mon, 04 Aug 2008 19:27:54
------------------------
-Fixed: Thread list cookie not working correctly with unread discussions.
-
-Date: Mon, 04 Aug 2008 19:20:35
------------------------
-Changed: Mark as read is now done via POST instead of GET to reduce size
-of request which may be restricted in some servers.
-Changed: Light mode thread list and thread list now use separate cookies
-for remembering discussion view.
-Changed: Some minor code clean-up in install.inc.php. Removing unused
-variables.
-
-Date: Mon, 04 Aug 2008 14:13:50
------------------------
-Fixed: TinyMCE plugin buttons being disabled incorrectly.
-
-Date: Mon, 04 Aug 2008 13:40:25
------------------------
-Fixed: Incorrect description on TinyMCE plugin spell check button.
-Changed: TinyMCE plugin buttons now disable themselves if there is no
-selection.
-
-Date: Mon, 04 Aug 2008 12:55:38
------------------------
-Added: Prevented client from caching main tiny_mce.js file if it changes.
-
-Date: Mon, 04 Aug 2008 12:51:13
------------------------
-Changed: Implemented toggle buttons for Beehive TinyMCE functionality that
-allows you to de-quote, de-code, etc.
-
-Date: Mon, 04 Aug 2008 11:40:59
------------------------
-Fixed: TinyMCE loosing new lines in code tags.
-
-Date: Sun, 03 Aug 2008 22:49:09
------------------------
-Changed: Re-worded Thread by Folders option to make more sense.
-
-Date: Sun, 03 Aug 2008 20:36:46
------------------------
-Fixed: Changed in_array to isset in form_unique_id() because the former
-seems to trip up.
-Fixed: Encoded vs. un-encoded HTML in getTidyContent() and
-getOriginalContent().
-Fixed: Beehive TinyMCE Plugin causing multiple undo steps for one process.
-Fixed: TinyMCE was always triggering fix_html code comparison feature.
-
-Date: Sun, 03 Aug 2008 14:45:58
------------------------
-Changed: Replaced abundant calls to html_display_warning_msg() in
-admin_default_forum_settings.php with normal paragraphs.
-Changed: Location of % wildcard character moved above the ban list to
-match the add new ban page.
-Added: Note about Folder Order added to top of admin_folders.php
-
-Date: Sun, 03 Aug 2008 12:18:53
------------------------
-Fixed: Expanded allowed chars for form_unique_id() to allow TinyMCE to
-function properly again.
-Fixed: Width on Quick Reply box wasn't fixed and could appear very small
-on some browsers.
-Fixed: Calling TextAreaHTML->toolbar_reduced didn't check for TinyMCE and
-continued to output HTML and JS.
-
-Date: Sun, 03 Aug 2008 10:23:08
------------------------
-Fixed: Some errors caused by open_basedir restrictions silenced so that
-Beehive will continue to function without error.
-
-Date: Sat, 02 Aug 2008 22:36:46
------------------------
-Fixed: Invalid characters in form id attribute
-Fixed: Word Filter tags being encoded in form dropdown elements used in
-polls.
-
-Date: Sat, 02 Aug 2008 18:44:42
------------------------
-Changed: New installs and new forums place THREADS_BY_FOLDER column at end
-of table.
-
-Date: Sat, 02 Aug 2008 18:42:38
------------------------
-Changed: Removed upgrade paths from 0.6 and 0.7 and replaced separate
-install paths for 0.8.x and 0.8.3 with one single upgrade script.
-
-Date: Sat, 02 Aug 2008 14:06:46
------------------------
-Fixed: Missing argument 1 for form_unique_id() in form.inc.php on line 231
-Fixed: Broken logic on new thread_by_folders in forum_options.php
-
-Date: Sat, 02 Aug 2008 13:23:59
------------------------
-Fixed: Incorrect id in label tags for form_radio and form_checkbox
-
-Date: Sat, 02 Aug 2008 13:12:48
------------------------
-Fixed: Added missing comment tags around TinyMCE Javascript outputted by
-htmltools.inc.php function TinyMCE()
-Changed: Form field id attributes are now have a unique number appended to
-them if the id is already in use.
-
-Date: Sat, 02 Aug 2008 12:58:05
------------------------
-Fixed: Auto Focus on TinyMCE enabled textareas
-Changed: Form id attributes are now the same as their name attributes to
-save guessing them in Javascript.
-
-Date: Fri, 01 Aug 2008 20:18:08
------------------------
-Changed: Updated fr-ca language pack.
-
-Date: Fri, 01 Aug 2008 20:08:53
------------------------
-Added: Upgrade path from 0.8.3 to 0.8.4 is now different than that from
-0.8, 0.8.1 and 0.8.2
-
-Date: Fri, 01 Aug 2008 20:06:31
------------------------
-Added: Option to allow user to maintain thread list folder order rather
-than order by thread modified date.
-Fixed: Missing REPLY_QUICK column in global USER_PREFS table after
-upgrading from 0.6 or 0.7 to 0.8.
-Changed: Disabled TinyMCE support permanently in Light mode.
-
-Date: Thu, 31 Jul 2008 23:31:17
------------------------
-Fixed: Error in compressed version of Beehive TinyMCE Plugin caused by
-missing semi-colon.
-
-Date: Thu, 31 Jul 2008 22:51:38
------------------------
-Changed: New versions of Geshi and TinyMCE added to CVS.
-
-Date: Thu, 31 Jul 2008 22:35:28
------------------------
-Changed: Upgraded TinyMCE to latest stable 3.x version and updated
-Beehive's plugin.
-
-Date: Thu, 31 Jul 2008 18:28:19
------------------------
-Changed: Updated Geshi to latest stable release version.
-
-Date: Thu, 31 Jul 2008 17:46:16
------------------------
-Changed: Rolled back to previous TID.1 behaviour for thread list and
-recent discussions.
-Fixed: Undefined function numeric in poll.inc.php
-Fixed: Unexpected T_IF parse error in light.inc.php
-
-Date: Thu, 31 Jul 2008 16:17:14
------------------------
-Fixed: Light mode empty <title> tag fixed.
-
-Date: Thu, 31 Jul 2008 15:48:18
------------------------
-Fixed: Second argument to preg_grep() should be an array on line 360 of
-search.inc.php
-
-Date: Thu, 31 Jul 2008 15:44:47
------------------------
-Fixed: Undefined variable $folder_order in light.inc.php
-Fixed: SQL Errors when disabling Unread Messages due to use of
-$unread_cutoff in SQL queries.
-Fixed: Undefined index UNREAD_CUTOFF in messages.inc.php, thread.inc.php
-and threads.inc.php.
-Fixed: Recent threads in start_left.php and select thread (after clicking
-'Messages') in thread_list.php always pointed at TID.1
-
-Date: Thu, 31 Jul 2008 14:05:40
------------------------
-Fixed: Error when selecting a discussion view that has been disabled.
-Changed: Renamed some constants related to thread list because they were
-too ambiguous.
-Changed: Function declaration of light_form_dropdown_array() has changed
-to match the full form_dropdown_array()
-
-Date: Thu, 31 Jul 2008 13:52:56
------------------------
-Fixed: Deleted Threads item in discussion type drop down showing to all
-users.
-Fixed: Light mode wasn't obeying the unread thread option and was still
-showing Unread To Me etc.
-Changed: Renamed some constants related to thread list because they were
-too ambiguous.
-
-Date: Thu, 31 Jul 2008 11:45:05
------------------------
-Fixed: Unused value warning in mkdir_recursive.
-Fixed: Return  forum_create wasn't always returning the db_error result if
-an error occurred.
-
-Date: Wed, 30 Jul 2008 22:57:32
------------------------
-Changed: Even more code clean-up.
-
-Date: Wed, 30 Jul 2008 21:39:22
------------------------
-Changed: Lots and lots more code clean-up.
-
-Date: Wed, 30 Jul 2008 16:41:37
------------------------
-Changed: Mode code clean-up!
-Fixed: Invalid HTML in post.php and create_poll.php
-
-Date: Wed, 30 Jul 2008 15:04:34
------------------------
-Fixed: Broken HTML in faq.html and nav.html
-Fixed: You could use Light mode to delete or edit a post awaiting
-approval.
-Fixed: Allow PM and Allow Email preference settings were using current
-user and not the recipient user's preferences.
-Fixed: You could pass an object to html_display_error_msg and related
-functions which would cause an error to appear.
-Fixed: Edit link would disappear on threads containing a poll in Light
-mode.
-Changed: Removed unneeded arguments from light_message_display and
-light_poll_display functions.
-Changed: Removed wrap attribute from <textarea> tags (not valid XHTML)
-Changed: Code cleaned up some more.
-
-Date: Mon, 28 Jul 2008 20:05:47
------------------------
-Fixed: Incorrect function name call for deleting a user's posts.
-Fixed: Thread delete posts by user was broken. Only deleted the user's
-first post in the selected thread.
-Changed: Some code clean-up implemented for a second time.
-Changed: Replaced functions to delete users posts with much faster INSERT
-INTO SELECT queries.
-
-Date: Sun, 27 Jul 2008 17:09:36
------------------------
-Changed: Verbose mode flag in install.php changed so that the code in
-config.inc.php parses
-
-Date: Sun, 27 Jul 2008 17:05:20
------------------------
-Fixed: Variable assignment vs. comparison in links_add.php
-Fixed: Unknown error [8] Undefined offset:  0 when viewing a Poll with
-pure HTML as the vote options.
-Fixed: Word Filter was always being applied to exported PMs even if option
-was disabled.
-Fixed: Attachments were always being included in PM export even if option
-was disabled.
-Changed: Function get_webtag() no longer returns WEBTAG_SEARCH for
-redirecting to forums.php.
-Changed: Removed openprofile.js from PM export as it's not actually
-needed.
-
-Date: Sun, 27 Jul 2008 16:36:10
------------------------
-Fixed: It wasn't possible to approve deleted posts.
-Fixed: Posts deleted were not being removed from the approval queue.
-Changed: Posts awaiting approval cannot be edited or deleted unless the
-user is a moderator.
-Added: Option to delete post directly from the post approval queue.
-
-Date: Sun, 27 Jul 2008 14:23:24
------------------------
-Fixed: Can't approve deleted posts. Clicking back button took you back to
-the discussions frame embedded into the admin right frame.
-Fixed: Post.php was using echo message_display instead of a straight call
-to message_display.
-Changed: Loads more code clean up.
-
-Date: Sun, 27 Jul 2008 09:53:25
------------------------
-Changed: Function get_webtag() no longer returns WEBTAG_SEARCH for
-redirecting to forums.php.
-
-Date: Sun, 27 Jul 2008 08:33:38
------------------------
-Fixed: Unknown error [8] Undefined offset:  0 when viewing a Poll with
-pure HTML as the vote options.
-
-Date: Sat, 26 Jul 2008 20:12:44
------------------------
-Fixed: bh_x-hacker_translate.php generated parse errors when converting s
-to $
-Changed: Yet more code clean-up!
-
-Date: Sat, 26 Jul 2008 19:59:22
------------------------
-Changed: Even more code clean-up via Zend Studio
-
-Date: Fri, 25 Jul 2008 19:35:16
------------------------
-Changed: Removed openprofile.js from PM export as it's not actually
-needed.
-
-Date: Fri, 25 Jul 2008 19:30:29
------------------------
-Fixed: Word Filter was always being applied to exported PMs even if option
-was disabled.
-Fixed: Attachments were always being included in PM export even if option
-was disabled.
-
-Date: Fri, 25 Jul 2008 19:14:41
------------------------
-Fixed: Invalid HTML in docs/faq.html
-Fixed: Invalid HTML in docs/ui/nav.html
-Fixed: Variable assignment vs comparison in display.php
-Changed: Some regular expressions now use single-quotes instead of
-double-quotes
-Changed: Changes to Geshi documentation to get the errors out of the way.
-
-Date: Fri, 25 Jul 2008 17:12:55
------------------------
-Fixed: Variable assignment vs. comparison in links_add.php
-Changed: More code clean-up via Zend Studio
-
-Date: Fri, 25 Jul 2008 16:35:44
------------------------
-Changed: Added Zend Studio Project Files to .cvsignore
-
-Date: Fri, 25 Jul 2008 15:47:28
------------------------
-Changed: Code clean-up to get rid of some warnings generated by syntax
-check in Zend Studio
-
-Date: Fri, 25 Jul 2008 13:52:54
------------------------
-Fixed: Forum webtags in lowercase are now correctly redirected to
-forums.php rather than go to the default forum.
-Fixed: Navigation frame visible when forum not found.
-Fixed: Changing interest level on a forum lost the final_uri URL query.
-Fixed: HTML syntax errors in start_main_sf.php.
-Changed: Code clean-up to get rid of some warnings generated by syntax
-check in Zend Studio
-Changed: Removed search_index.php as it's no longer required.
-
-Date: Thu, 24 Jul 2008 20:16:11
------------------------
-Fixed: Blank IP Address showing in User Alias when match is against last
-recorded IP Address of user
-Fixed: IP Address matches was only including RSS_FEED.UID matches not
-excluding them.
-
-Date: Thu, 24 Jul 2008 18:01:43
------------------------
-Changed: Updated fr-ca language file
-
-Date: Thu, 24 Jul 2008 11:58:33
------------------------
-Changed: Added missing tags to cvstags.txt
-
-Date: Thu, 24 Jul 2008 11:57:07
------------------------
-Changed: Updated version to 0.8.4 and updated changelog.txt, cvstags.txt,
-readme.txt and release.txt.
-Changed: Installer changed to use 0.8.4 upgrade scripts.
-
-Date: Thu, 24 Jul 2008 11:48:58
------------------------
-Changed: Replaced 0.8.3 upgrade scripts with those required for 0.8.4
-
-Date: Thu, 24 Jul 2008 11:43:24
------------------------
-Changed: Updated language files for preparation of new release version.
-
-Date: Wed, 23 Jul 2008 20:43:08
------------------------
-Fixed: Undefined index uploadfailed in admin_startpage.php when CSS style
-sheet failed to upload.
-Changed: Error messages when unable to save start page / upload CSS
-changed to full page html_display_error
-
-Date: Wed, 23 Jul 2008 18:57:12
------------------------
-Fixed: uid=Array() in PM preview with multiple recipients.
-Fixed: Search Popup allowed multiple matches for thread search
-Fixed: Search Popup only allowed separation with semi-colon, while
-pm_write.php allowed semi-colon or comma.
-
-Date: Wed, 23 Jul 2008 18:11:47
------------------------
-Added: HTTP Referer and Password match checking to User Alias page.
-Added: External links added to more Admin User parts.
-Fixed: Missing dependencies on admin_forum_stats.php, lpost.php, post.php,
-html.inc.php and install.inc.php
-Changed: user_get_password() function changed to user_get_by_password()
-
-Date: Tue, 22 Jul 2008 16:40:30
------------------------
-Fixed: Undefined index subnotification_subject in email.inc.php
-
-Date: Mon, 21 Jul 2008 19:59:41
------------------------
-Added: User Email Address Aliases to View User Aliases display.
-
-Date: Mon, 21 Jul 2008 14:11:39
------------------------
-Fixed: Broken layout of Light mode thread list when folders had an
-interest.
-Changed: Code from Thread List mirrored into Light mode thread list to get
-same performance and functionality.
-
-Date: Sat, 19 Jul 2008 19:27:11
------------------------
-Changed: Redirecting popups that require login function was broken.
-Changed it to add a close button to close the popup.
-Fixed: Files missing from get_available_files() and
-get_available_admin_files()
-
-Date: Sat, 19 Jul 2008 13:46:16
------------------------
-Changed: Removed 'All' from Thread Subscriptions and Folder Subscriptions.
-Changed: Wording for "You have no thread subscriptions" and "You have no
-folder subscriptions" changes based on view.
-
-Date: Fri, 18 Jul 2008 21:28:06
------------------------
-Changed: Folder Subscription email only sends one email per visit same as
-the thread subscription does.
-
-Date: Fri, 18 Jul 2008 21:05:33
------------------------
-Changed: Reworded some of the error reporter instructions.
-Fixed: New User Registrations with admin email notification enabled
-generated an error.
-Added: Ability to upload start_main.css (style sheet) using
-admin_startpage.php.
-
-Date: Tue, 15 Jul 2008 16:33:17
------------------------
-Fixed: Undefined variable in attachments.php
-Fixed: It was possible to upload attachments even when you had used all
-your quota.
-
-Date: Mon, 14 Jul 2008 21:03:09
------------------------
-Fixed: To user drop down always defaulting to 'All' even with replyto URL
-query.
-
-Date: Mon, 14 Jul 2008 17:14:10
------------------------
-Fixed: Lots of missing webtags in files made it impossible to do some
-features on certain forums when there is a default forum set.
-
-Date: Mon, 14 Jul 2008 17:05:18
------------------------
-Added: Folder Subscriptions area to My Controls which functions the same
-as Thread Subscriptions
-Fixed: Constants not being used in edit_subscriptions.php
-Fixed: Missing webtag in edit_subscriptions.php for thread links.
-
-Date: Mon, 14 Jul 2008 15:26:59
------------------------
-Fixed: Incorrect number of arguments for email_send_thread_subscription()
-function call in post.php
-
-Date: Mon, 14 Jul 2008 12:07:15
------------------------
-Fixed: Removing all columns from Visitor Log and adding a new column
-always added Last Visit as well.
-
-Date: Mon, 14 Jul 2008 11:53:11
------------------------
-Fixed: Recent Birthdays and Visitor Log weren't listing users who set BH
-to show their DOB and AGE, only DOB.
-
-Date: Mon, 14 Jul 2008 11:46:04
------------------------
-Fixed: Radio buttons for DOB display were broken again and user profile
-was displaying wrong data (Possible Regression?)
-
-Date: Mon, 14 Jul 2008 11:30:21
------------------------
-Changed: Error handler changed to allow email reports for errors such as
-missing files or incomplete installation.
-
-Date: Sun, 13 Jul 2008 09:01:41
------------------------
-Fixed: Missing JS include file in scripts that call messages_top().
-Added: Include file for folder options popup (folder_options.js)
-
-Date: Sun, 13 Jul 2008 08:58:19
------------------------
-Changed: Folder Options changed to a popup window so as to not break the
-thread / messages navigation.
-
-Date: Fri, 11 Jul 2008 20:31:02
------------------------
-Added: SEF links added to header of Light mode. Includes contents, next,
-prev, up, first and last links.
-
-Date: Wed, 09 Jul 2008 18:35:27
------------------------
-Changed: Moved rmdir_recursive function from install.inc.php to
-server.inc.php
-
-Date: Wed, 09 Jul 2008 18:32:51
------------------------
-Changed: Styles must now have a unique filename globally and in the
-per-forum styles folder
-Changed: Forum drop down box now prefers per-forum styles over global
-styles.
-Added: New subscribed folder icons for Teh Forum and Default themes.
-
-Date: Wed, 09 Jul 2008 17:01:35
------------------------
-Changed: Folder warning message in links.php now uses
-html_display_warning_msg() function.
-Fixed: Drop Down List appearing as a multi-line text field in Profile.
-
-Date: Tue, 08 Jul 2008 18:33:19
------------------------
-Changed: Folders now appear in order of the user's interest when no
-threads are visible.
-Changed: Folder drop downs now list folders in the same order they appear
-in the thread list when no threads visible / admin folders list.
-Changed: Made the error message about no available folders in Light mode
-more friendly (no longer causes HTML error)
-
-Date: Tue, 08 Jul 2008 17:09:02
------------------------
-Changed: Reduced the size of index.php by removing duplicate lines for
-navigation bar display.
-
-Date: Sun, 06 Jul 2008 19:32:28
------------------------
-Fixed: Folder icon display was incorrectly using thread interest level
-instead of folder interest.
-Fixed: Incorrect tooltips for ignored folders / normal interest folders.
-
-Date: Sun, 06 Jul 2008 17:27:01
------------------------
-Added: Folder subscription functionality
-Added: Copied tehforum style into the default webtag folder for the demo
-set up.
-
-Date: Thu, 03 Jul 2008 13:28:49
------------------------
-Changed: Queries to gather forum style, emoticon packs and timezones
-changed to be more accurate.
-Changed: Moved some of the processing for the timezone stats into
-admin_forum_stats.php
-
-Date: Thu, 03 Jul 2008 09:32:12
------------------------
-Fixed: Forum style not selectable if there are global and per-forum styles
-in use.
-Changed: Removed duplicate call to styles_get_available() and
-emoticons_get_available() in forum_options.php
-
-Date: Tue, 01 Jul 2008 19:22:00
------------------------
-Fixed: Most Posts Stats display was showing recent posts.
-
-Date: Tue, 01 Jul 2008 17:36:01
------------------------
-Changed: Message cache is now 1 hour maximum. Auto-pruning enabled.
-
-Date: Tue, 01 Jul 2008 17:34:29
------------------------
-Added: Hidden (expert) setting to enable / disable Cache_Lite
-functionality. Changed default configuration to disabled.
-
-Date: Mon, 30 Jun 2008 18:50:20
------------------------
-Added: Allow unlimited attachment space by setting max space to 0.
-
-Date: Mon, 30 Jun 2008 18:46:06
------------------------
-Fixed: HTML errors in image attachment thumbnails: invalid height
-attribute and <div> element not allowed.
-Fixed: Layout issues with image attachments in post and preview displays.
-Fixed: Visitor counts for periods not showing correctly even if different
-to previous period.
-
-Date: Sat, 28 Jun 2008 17:53:42
------------------------
-Changed: Removed debugging code form db_query function.
-
-Date: Sat, 28 Jun 2008 17:52:52
------------------------
-Changed: Few tweaks to Forum Stats layout.
-Changed: Made the filesize index in attachment_make_link function
-optional.
-Changed: Removed trailing <br /> from attachment_make_link output and made
-scripts display it instead.
-
-Date: Fri, 27 Jun 2008 19:06:11
------------------------
-Changed: Finished Forum Stats
-Added: Link to Forum Stats from admin_menu.php
-
-Date: Fri, 27 Jun 2008 18:53:31
------------------------
-Changed: Completed Forum Stats page. Not yet linked to.
-
-Date: Thu, 26 Jun 2008 20:36:52
------------------------
-Fixed: User Session times were never updated if you only ever had one
-forum set up or the user only visited one forum.
-Changed: More added to Forum Stats functionality. Language file updates
-still required and links to relevant extended lists.
-
-Date: Thu, 26 Jun 2008 20:36:51
------------------------
-Fixed: User Session times were never updated if you only ever had one
-forum set up or the user only visited one forum.
-Changed: More added to Forum Stats functionality. Language file updates
-still required and links to relevant extended lists.
-
-Date: Wed, 25 Jun 2008 18:48:39
------------------------
-Added: Forum Stats page unfinished work in progress.
-
-Date: Sun, 22 Jun 2008 21:11:16
------------------------
-Fixed: Wrong function being called by forum_get_permissions() when trying
-to automatically move back a page.
-Added: A few functions for the upcoming new forum stats pages.
-
-Date: Fri, 20 Jun 2008 13:33:06
------------------------
-Changed: Changed the error reporter option in the installer so it will
-only work for new installs
-Changed: Added documentation on how to enable the error reporter after
-upgrading.
-
-Date: Fri, 20 Jun 2008 12:45:45
------------------------
-Changed: Now on 0.8.3-CVS.
-Changed: install_prevent_client_timeout() now only clears every 1000th
-call outputs fewer HTML comment lines.
-Fixed: Error occurs during install if you enable the error reporting via
-email option when upgrading.
-
-Date: Thu, 19 Jun 2008 14:56:52
------------------------
-Fixed: Unknown error [2] stristr() [function.stristr]: Empty delimiter in
-poll_results.php
-Fixed: Layout issues on poll_results.php when poll question was empty.
-
-Date: Wed, 18 Jun 2008 20:08:32
------------------------
-Changed: Capitalisation on 'Color' in en-us language pack
-
-Date: Wed, 18 Jun 2008 19:27:03
------------------------
-Changed: Amercan English Language pack updated with correct spellings for
-Colour and Favourite.
-Changed: Spelling mistakes in English GB language pack.
-
-Date: Tue, 17 Jun 2008 20:26:14
------------------------
-Changed: Re-implemented HTTP caching for stats.
-Changed: Installer scripts changed to remove data we no longer log.
-Fixed: Undefined variable in search.php when trying to view stop word list
-without highlighted words
-
-Date: Tue, 17 Jun 2008 15:08:01
------------------------
-Fixed: Post and user session stats weren't updating correctly.
-Changed: Removed automatic update admin log entries.
+Changd: Updated German Language Pack.
 

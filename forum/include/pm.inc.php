@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.254 2008-08-15 20:12:07 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.255 2008-08-18 20:32:27 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -2233,38 +2233,40 @@ function pm_has_attachments($mid)
 }
 
 /**
-* Export messages
+* Export folder
 *
-* Fetches the correct folder for export.
+* Fetches the messages in the specified folder for export.
 *
-* @return mixed - False on error, array of messages on success.
+* @return bool
 * @param integer $folder - Folder to export.
 */
 
-function pm_export_get_messages($folder)
+function pm_export_folder($folder)
 {
     if ($folder == PM_FOLDER_INBOX) {
 
-        return pm_get_inbox();
+        $mid_array = pm_get_inbox();
 
     }elseif ($folder == PM_FOLDER_SENT) {
 
-        return pm_get_sent();
+        $mid_array = pm_get_sent();
 
     }elseif ($folder == PM_FOLDER_OUTBOX) {
 
-        return pm_get_outbox();
+        $mid_array = pm_get_outbox();
 
     }elseif ($folder == PM_FOLDER_SAVED) {
 
-        return pm_get_saved_items();
+        $mid_array = pm_get_saved_items();
 
     }elseif ($folder == PM_FOLDER_DRAFTS) {
 
-        return pm_get_drafts();
+        $mid_array = pm_get_drafts();
     }
 
-    return false;
+    if (!pm_export_messages($mid_array, $folder)) return false;
+
+    return true;
 }
 
 /**
@@ -2318,7 +2320,7 @@ function pm_export_html_bottom()
     return $html;
 }
 
-function pm_export($folder)
+function pm_export_messages($mid_array, $folder = PM_FOLDER_NONE)
 {
     $logon = strtolower(bh_session_get_value('LOGON'));
 
@@ -2360,30 +2362,30 @@ function pm_export($folder)
 
     $zip_file = new zip_file();
 
+    if ($pm_export_style == "Y") {
+
+        if (@file_exists("styles/style.css")) {
+
+            $stylesheet_content = implode("", file("styles/style.css"));
+            $zip_file->add_file($stylesheet_content, "styles/style.css");
+        }
+    }
+
     switch ($pm_export_type) {
 
         case PM_EXPORT_HTML:
 
-            if ($pm_export_style == "Y") {
-
-                if (@file_exists("styles/style.css")) {
-
-                    $stylesheet_content = implode("", file("styles/style.css"));
-                    $zip_file->add_file($stylesheet_content, "styles/style.css");
-                }
-            }
-
-            if (!pm_export_html($folder, $zip_file)) return false;
+            if (!pm_export_html($mid_array, $zip_file)) return false;
             break;
 
         case PM_EXPORT_XML:
 
-            if (!pm_export_xml($folder, $zip_file)) return false;
+            if (!pm_export_xml($mid_array, $zip_file)) return false;
             break;
 
         case PM_EXPORT_PLAINTEXT:
 
-            if (!pm_export_plaintext($folder, $zip_file)) return false;
+            if (!pm_export_plaintext($mid_array, $zip_file)) return false;
             break;
     }
 
@@ -2405,45 +2407,49 @@ function pm_export($folder)
 * @param object $zip_file - By Reference zip file object from zip.inc.php class.
 */
 
-function pm_export_html($folder, &$zip_file)
+function pm_export_html($mid_array, &$zip_file)
 {
-    if (!is_numeric($folder)) return false;
+    if (!is_array($mid_array)) return false;
     if (!is_object($zip_file)) return false;
 
     $pm_export_file = bh_session_get_value('PM_EXPORT_FILE');
     $pm_export_attachments = bh_session_get_value('PM_EXPORT_ATTACHMENTS');
     $pm_export_wordfilter = bh_session_get_value('PM_EXPORT_WORDFILTER');
 
-    if (($pm_messages_array = pm_export_get_messages($folder))) {
+    $pm_display = pm_export_html_top(false);
 
-        $pm_display = pm_export_html_top(false);
+    if (is_array($mid_array) && sizeof($mid_array) > 0) {
 
-        foreach ($pm_messages_array['message_array'] as $pm_message) {
+        foreach ($mid_array as $mid) {
 
-            $pm_message['FOLDER'] = $folder;
-            $pm_message['CONTENT'] = pm_get_content($pm_message['MID']);
+            if ($pm_message_array = pm_message_get($mid)) {
 
-            if ($pm_export_wordfilter == 'Y') {
-                $pm_message = array_map('pm_export_word_filter_apply', $pm_message);
-            }
+                $pm_message_array['FOLDER'] = pm_message_get_folder($mid);
+                $pm_message_array['CONTENT'] = pm_get_content($mid);
 
-            $pm_display.= pm_display_html_export($pm_message, $folder);
+                if ($pm_export_wordfilter == 'Y') {
+                    $pm_message_array = array_map('pm_export_word_filter_apply', $pm_message_array);
+                }
 
-            if ($pm_export_file == PM_EXPORT_SINGLE) {
-                $pm_display.= "<br />\n";
-            }
+                $pm_display.= pm_display_html_export($pm_message_array, $pm_message_array['FOLDER']);
 
-            if ($pm_export_file == PM_EXPORT_MANY) {
+                if ($pm_export_file == PM_EXPORT_SINGLE) {
+                    $pm_display.= "<br />\n";
+                }
 
-                $pm_display.= pm_export_html_bottom();
+                if ($pm_export_file == PM_EXPORT_MANY) {
 
-                $filename = "message_{$pm_message['MID']}.html";
-                $zip_file->add_file($pm_display, $filename);
-                $pm_display = pm_export_html_top(false);
-            }
+                    $pm_display.= pm_export_html_bottom();
 
-            if (isset($pm_message['AID']) && $pm_export_attachments == 'Y') {
-                pm_export_attachments($pm_message['AID'], $pm_message['FROM_UID'], $zip_file);
+                    $filename = sprintf("message_%s.html", $mid);
+
+                    $zip_file->add_file($pm_display, $filename);
+                    $pm_display = pm_export_html_top(false);
+                }
+
+                if (isset($pm_message_array['AID']) && $pm_export_attachments == 'Y') {
+                    pm_export_attachments($pm_message_array['AID'], $pm_message_array['FROM_UID'], $zip_file);
+                }
             }
         }
 
@@ -2471,67 +2477,73 @@ function pm_export_html($folder, &$zip_file)
 * @param object $zip_file - By Reference zip file object from zip.inc.php class.
 */
 
-function pm_export_xml($folder, &$zip_file)
+function pm_export_xml($mid_array, &$zip_file)
 {
-    if (!is_numeric($folder)) return false;
+    if (!is_array($mid_array)) return false;
     if (!is_object($zip_file)) return false;
 
     $pm_export_file = bh_session_get_value('PM_EXPORT_FILE');
     $pm_export_attachments = bh_session_get_value('PM_EXPORT_ATTACHMENTS');
     $pm_export_wordfilter = bh_session_get_value('PM_EXPORT_WORDFILTER');
 
-    if (($pm_messages_array = pm_export_get_messages($folder))) {
+    $beehive_version = BEEHIVE_VERSION;
 
-        $beehive_version = BEEHIVE_VERSION;
+    $pm_display = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n";
+    $pm_display.= "  <beehiveforum>\n";
+    $pm_display.= "    <version>$beehive_version</version>\n";
+    $pm_display.= "    <messages>\n";
 
-        $pm_display = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n";
-        $pm_display.= "  <Beehive Forum>\n";
-        $pm_display.= "    <version>$beehive_version</version>\n";
-        $pm_display.= "    <messages>\n";
+    if (is_array($mid_array) && sizeof($mid_array) > 0) {
 
-        foreach ($pm_messages_array['message_array'] as $pm_message) {
+        foreach ($mid_array as $mid) {
 
-            $pm_message['FOLDER'] = $folder;
-            $pm_message['CONTENT'] = pm_get_content($pm_message['MID']);
+            if ($pm_message_array = pm_message_get($mid)) {
 
-            if ($pm_export_wordfilter == 'Y') {
-                $pm_message = array_map('pm_export_word_filter_apply', $pm_message);
-            }
+                $pm_message_array['FOLDER'] = pm_message_get_folder($mid);
+                $pm_message_array['CONTENT'] = pm_get_content($mid);
 
-            $pm_display.= "      <message>\n";
+                if ($pm_export_wordfilter == 'Y') {
+                    $pm_message_array = array_map('pm_export_word_filter_apply', $pm_message_array);
+                }
 
-            foreach ($pm_message as $key => $value) {
+                $pm_display.= "      <message>\n";
 
-                $key = strtolower($key);
-                $pm_display.= "        <$key>$value</$key>\n";
-            }
+                foreach ($pm_message_array as $key => $value) {
 
-            $pm_display.= "        <content><![CDATA[{$pm_message['CONTENT']}]]></content>\n";
-            $pm_display.= "      </message>\n";
+                    if (!in_array($key, array('CONTENT', 'AID'))) {
 
-            if ($pm_export_file == PM_EXPORT_MANY) {
+                        $key = strtolower($key);
+                        $pm_display.= "        <$key>$value</$key>\n";
+                    }
+                }
 
-                $pm_display.= "    </messages>\n";
-                $pm_display.= "  </Beehive Forum>\n";
+                $pm_display.= "        <content><![CDATA[{$pm_message_array['CONTENT']}]]></content>\n";
+                $pm_display.= "      </message>\n";
 
-                $filename = "message_{$pm_message['MID']}.xml";
+                if ($pm_export_file == PM_EXPORT_MANY) {
 
-                $zip_file->add_file($pm_display, $filename);
+                    $pm_display.= "    </messages>\n";
+                    $pm_display.= "  </beehiveforum>\n";
 
-                $pm_display = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n";
-                $pm_display.= "  <Beehive Forum>\n";
-                $pm_display.= "    <messages>\n";
-            }
+                    $filename = sprintf("message_%s.xml", $mid);
 
-            if (isset($pm_message['AID']) && $pm_export_attachments == 'Y') {
-                pm_export_attachments($pm_message['AID'], $pm_message['FROM_UID'], $zip_file);
+                    $zip_file->add_file($pm_display, $filename);
+
+                    $pm_display = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n";
+                    $pm_display.= "  <beehiveforum>\n";
+                    $pm_display.= "    <messages>\n";
+                }
+
+                if (isset($pm_message_array['AID']) && $pm_export_attachments == 'Y') {
+                    pm_export_attachments($pm_message_array['AID'], $pm_message_array['FROM_UID'], $zip_file);
+                }
             }
         }
 
         if ($pm_export_file == PM_EXPORT_SINGLE) {
 
             $pm_display.= "    </messages>\n";
-            $pm_display.= "  </Beehive Forum>\n";
+            $pm_display.= "  </beehiveforum>\n";
 
             $filename = "messages.xml";
             $zip_file->add_file($pm_display, $filename);
@@ -2553,45 +2565,53 @@ function pm_export_xml($folder, &$zip_file)
 * @param object $zip_file - By Reference zip file object from zip.inc.php class.
 */
 
-function pm_export_plaintext($folder, &$zip_file)
+function pm_export_plaintext($mid_array, &$zip_file)
 {
-    if (!is_numeric($folder)) return false;
+    if (!is_array($mid_array)) return false;
     if (!is_object($zip_file)) return false;
 
     $pm_export_file = bh_session_get_value('PM_EXPORT_FILE');
     $pm_export_attachments = bh_session_get_value('PM_EXPORT_ATTACHMENTS');
     $pm_export_wordfilter = bh_session_get_value('PM_EXPORT_WORDFILTER');
 
-    if (($pm_messages_array = pm_export_get_messages($folder))) {
+    $pm_display = "";
 
-        $pm_display = "";
+    if (is_array($mid_array) && sizeof($mid_array) > 0) {
 
-        foreach ($pm_messages_array['message_array'] as $pm_message) {
+        foreach ($mid_array as $mid) {
 
-            $pm_message['FOLDER'] = $folder;
-            $pm_message['CONTENT'] = pm_get_content($pm_message['MID']);
+            if ($pm_message_array = pm_message_get($mid)) {
 
-            if ($pm_export_wordfilter == 'Y') {
-                $pm_message = array_map('pm_export_word_filter_apply', $pm_message);
-            }
+                $pm_message_array['FOLDER'] = pm_message_get_folder($mid);
+                $pm_message_array['CONTENT'] = pm_get_content($mid);
 
-            foreach ($pm_message as $key => $value) {
+                if ($pm_export_wordfilter == 'Y') {
+                    $pm_message_array = array_map('pm_export_word_filter_apply', $pm_message_array);
+                }
 
-                $key = strtolower($key);
-                $pm_display.= "$key: $value\r\n";
-            }
+                foreach ($pm_message_array as $key => $value) {
 
-            $pm_display.= "content:\r\n\r\n{$pm_message['CONTENT']}\r\n\r\n\r\n\r\n";
+                    if (!in_array($key, array('CONTENT', 'AID'))) {
 
-            if ($pm_export_file == PM_EXPORT_MANY) {
+                        $key = strtolower($key);
+                        $pm_display.= "$key:$value\n";
+                    }
+                }
 
-                $filename = "message_{$pm_message['MID']}.txt";
-                $zip_file->add_file($pm_display, $filename);
-                $pm_display = "";
-            }
+                $pm_display.= "content:\r\n\r\n{$pm_message_array['CONTENT']}\r\n\r\n\r\n\r\n";
 
-            if (isset($pm_message['AID']) && $pm_export_attachments == 'Y') {
-                pm_export_attachments($pm_message['AID'], $pm_message['FROM_UID'], $zip_file);
+                if ($pm_export_file == PM_EXPORT_MANY) {
+
+                    $filename = sprintf("message_%s.txt", $mid);
+
+                    $zip_file->add_file($pm_display, $filename);
+
+                    $pm_display = "";
+                }
+
+                if (isset($pm_message_array['AID']) && $pm_export_attachments == 'Y') {
+                    pm_export_attachments($pm_message_array['AID'], $pm_message_array['FROM_UID'], $zip_file);
+                }
             }
         }
 

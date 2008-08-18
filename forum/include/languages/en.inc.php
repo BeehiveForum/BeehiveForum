@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.572 2008-08-15 20:12:07 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.573 2008-08-18 20:32:27 decoyduck Exp $ */
 
 // British English language file
 
@@ -619,7 +619,7 @@ $lang['novisitorslogged'] = "No Visitors Logged";
 $lang['addselectedusers'] = "Add Selected Users";
 $lang['removeselectedusers'] = "Remove Selected Users";
 $lang['addnew'] = "Add New";
-$lang['deleteselected'] = "Delete Selected";
+$lang['deletemessages'] = "Delete Messages";
 $lang['forumrulesmessage'] = "<p><b>Forum Rules</b></p><p>\nRegistration to %1\$s is free! We do insist that you abide by the rules and policies detailed below. If you agree to the terms, please check the 'I agree' checkbox and press the 'Register' button below. If you would like to cancel the registration, click %2\$s to return to the forums index.</p><p>\nAlthough the administrators and moderators of %1\$s will attempt to keep all objectionable messages off this forum, it is impossible for us to review all messages. All messages express the views of the author, and neither the owners of %1\$s, nor Project Beehive Forum and it's affiliates will be held responsible for the content of any message.</p><p>\nBy agreeing to these rules, you warrant that you will not post any messages that are obscene, vulgar, sexually-orientated, hateful, threatening, or otherwise violative of any laws.</p><p>The owners of %1\$s reserve the right to remove, edit, move or close any thread for any reason.</p>";
 $lang['cancellinktext'] = "here";
 $lang['failedtoupdateforumsettings'] = "Failed to update forum settings. Please try again later.";
@@ -1425,6 +1425,7 @@ $lang['successfullydeletedselectedmessages'] = "Successfully deleted selected me
 $lang['successfullyarchivedselectedmessages'] = "Successfully archived selected messages";
 $lang['failedtodeleteselectedmessages'] = "Failed to delete selected messages";
 $lang['failedtoarchiveselectedmessages'] = "Failed to archive selected messages";
+$lang['gobacktopmfolder'] = "Go Back to %s";
 
 // Preferences / Profile (user_*.php) ---------------------------------------------
 
@@ -2133,7 +2134,7 @@ $lang['invalidfeedidorfeednotfound'] = "Invalid feed id or feed not found";
 
 // PM Export Options
 
-$lang['exportfolder'] = "Export Folder";
+$lang['exportmessages'] = "Export Messages";
 $lang['pmexportastype'] = "Export as type";
 $lang['pmexporthtml'] = "HTML";
 $lang['pmexportxml'] = "XML";
@@ -2144,7 +2145,7 @@ $lang['pmexportonefilepermessage'] = "One file per message";
 $lang['pmexportattachments'] = "Export attachments";
 $lang['pmexportincludestyle'] = "Include forum style sheet";
 $lang['pmexportwordfilter'] = "Apply word filter to messages";
-$lang['failedtoexportfolder'] = "Failed to export folder";
+$lang['failedtoexportmessages'] = "Failed to export messages";
 
 // Thread merge / split options
 

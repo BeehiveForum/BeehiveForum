@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_messages.php,v 1.50 2008-08-15 20:12:08 decoyduck Exp $ */
+/* $Id: pm_messages.php,v 1.51 2008-08-18 20:32:27 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -179,6 +179,8 @@ if (isset($_GET['sort_dir'])) {
 
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
     $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
+}elseif (isset($_POST['page']) && is_numeric($_POST['page'])) {
+    $page = ($_POST['page'] > 0) ? $_POST['page'] : 1;
 }else {
     $page = 1;
 }
@@ -259,6 +261,44 @@ if (isset($mid) && is_numeric($mid) && $mid > 0) {
         html_draw_bottom();
         exit;
     }
+
+    $pm_message_array['CONTENT'] = pm_get_content($mid);
+
+    pm_user_prune_folders();
+
+    html_draw_top("basetarget=_blank", "openprofile.js", "search.js", "pm.js", 'pm_popup_disabled');
+
+    echo "<h1>{$pm_header_array[$current_folder]} &raquo; ", word_filter_add_ob_tags(_htmlentities($pm_message_array['SUBJECT'])), "</h1>\n";
+    echo "<br />\n";
+    echo "<div align=\"center\">\n";
+    echo "<form name=\"pm\" action=\"pm_messages.php\" method=\"post\" target=\"_self\">\n";
+    echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
+    echo "  ", form_input_hidden('folder', _htmlentities($current_folder)), "\n";
+    echo "  ", form_input_hidden('page', _htmlentities($page)), "\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"96%\">\n";
+    echo "    <tr>\n";
+    echo "      <td>\n";
+    echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td align=\"left\">", pm_display($pm_message_array, $message_folder), "</td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">&nbsp;</td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td class=\"postbody\" align=\"center\">", form_submit('back', sprintf($lang['gobacktopmfolder'], $pm_header_array[$current_folder])), "</td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">&nbsp;</td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "</div>\n";
+
+    html_draw_bottom();
+    exit;
 }
 
 // Delete Messages
@@ -293,7 +333,7 @@ if (isset($_POST['pm_option_submit'])) {
 
         }else if ($pm_option == PM_OPTION_EXPORT) {
 
-            if (!pm_export($current_folder)) {
+            if (!pm_export_messages($process_messages)) {
 
                 $error_msg_array[] = $lang['failedtoexportfolder'];
                 $valid = false;
@@ -306,12 +346,12 @@ if (isset($_POST['pm_option_submit'])) {
                 $error_msg_array[] = $lang['failedtoarchiveselectedmessages'];
                 $valid = false;
             }
+        }
 
-            if ($valid) {
+        if ($valid) {
 
-                header_redirect("pm_messages.php?webtag=$webtag&folder=$current_folder&page=$page&archived=true");
-                exit;
-            }
+            header_redirect("pm_messages.php?webtag=$webtag&folder=$current_folder&page=$page&archived=true");
+            exit;
         }
     }
 }
@@ -710,11 +750,15 @@ echo "        </table>\n";
 echo "      </td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"left\" valign=\"top\" width=\"100%\">\n";
-echo "        <table width=\"100%\">\n";
-echo "          <tr>\n";
-echo "            <td width=\"25%\">&nbsp;</td>\n";
-echo "            <td class=\"postbody\" align=\"center\">", page_links("pm_messages.php?webtag=$webtag&mid=$mid&folder=$current_folder", $start, $pm_messages_array['message_count'], 10), "</td>\n";
+echo "      <td align=\"left\">&nbsp;</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td class=\"postbody\" align=\"center\">", page_links("pm_messages.php?webtag=$webtag&mid=$mid&folder=$current_folder", $start, $pm_messages_array['message_count'], 10), "</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">&nbsp;</td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
 
 if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['message_array']) > 0) {
 
@@ -724,43 +768,43 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
         $pm_messages_options_array[PM_OPTION_ARCHIVE] = $lang['savemessages'];
     }
 
-    $pm_messages_options_array[PM_OPTION_DELETE] = $lang['deleteselected'];
+    $pm_messages_options_array[PM_OPTION_DELETE] = $lang['deletemessages'];
 
     if ($current_folder != PM_SEARCH_RESULTS) {
-        $pm_messages_options_array[PM_OPTION_EXPORT] = $lang['exportfolder'];
+        $pm_messages_options_array[PM_OPTION_EXPORT] = $lang['exportmessages'];
     }
 
-    echo "            <td align=\"right\" width=\"25%\" nowrap=\"nowrap\">{$lang['options']}:&nbsp;", form_dropdown_array('pm_option', $pm_messages_options_array), "&nbsp;", form_submit('pm_option_submit', $lang['go']), "</td>\n";
-
-}else {
-
-    echo "            <td width=\"25%\">&nbsp;</td>\n";
-}
-
-echo "          </tr>\n";
-echo "        </table>\n";
-echo "      </td>\n";
-echo "    </tr>\n";
-echo "  </table>\n";
-
-// View a message
-
-if (isset($pm_message_array) && is_array($pm_message_array)) {
-
-    $pm_message_array['CONTENT'] = pm_get_content($mid);
-
-    echo "  <br />\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"96%\">\n";
     echo "    <tr>\n";
-    echo "      <td>\n";
-    echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
+    echo "      <td align=\"left\">\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
     echo "          <tr>\n";
-    echo "            <td align=\"left\">", pm_display($pm_message_array, $message_folder), "</td>\n";
+    echo "            <td align=\"left\" class=\"posthead\">\n";
+    echo "              <table width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td class=\"subhead\" align=\"left\">{$lang['options']}</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"center\">\n";
+    echo "                    <table class=\"posthead\" width=\"95%\">\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['withselected']}:&nbsp;</td>\n";
+    echo "                        <td align=\"left\" width=\"100%\">", form_dropdown_array('pm_option', $pm_messages_options_array), "&nbsp;", form_submit("pm_option_submit", $lang['go']), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                    </table>\n";
+    echo "                  </td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" colspan=\"6\">&nbsp;</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
     echo "          </tr>\n";
     echo "        </table>\n";
     echo "      </td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
+    echo "  <br />\n";
 }
 
 echo "</form>\n";

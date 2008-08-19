@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.573 2008-08-18 20:32:27 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.574 2008-08-19 19:24:26 decoyduck Exp $ */
 
 // British English language file
 
@@ -1426,6 +1426,8 @@ $lang['successfullyarchivedselectedmessages'] = "Successfully archived selected 
 $lang['failedtodeleteselectedmessages'] = "Failed to delete selected messages";
 $lang['failedtoarchiveselectedmessages'] = "Failed to archive selected messages";
 $lang['gobacktopmfolder'] = "Go Back to %s";
+$lang['deletemessagesconfirmation'] = "Are you sure you want to delete all of the selected messages?";
+$lang['youmustselectsomemessages'] = "You must select some messages to process";
 
 // Preferences / Profile (user_*.php) ---------------------------------------------
 

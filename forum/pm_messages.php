@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_messages.php,v 1.51 2008-08-18 20:32:27 decoyduck Exp $ */
+/* $Id: pm_messages.php,v 1.52 2008-08-19 19:24:26 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -315,37 +315,55 @@ if (isset($_POST['pm_option_submit'])) {
 
     if (isset($_POST['pm_option']) && is_numeric($_POST['pm_option'])) {
 
-        $pm_option = $_POST['pm_option'];
+        if (sizeof($process_messages) > 0) {
 
-        if ($pm_option == PM_OPTION_DELETE) {
+            $pm_option = $_POST['pm_option'];
 
-            if (!pm_delete_messages($process_messages)) {
+            if ($pm_option == PM_OPTION_DELETE) {
 
-                $error_msg_array[] = $lang['failedtodeleteselectedmessages'];
-                $valid = false;
+                if (isset($_POST['pm_delete_confirm']) && $_POST['pm_delete_confirm'] == 'Y') {
+
+                    if (!pm_delete_messages($process_messages)) {
+
+                        $error_msg_array[] = $lang['failedtodeleteselectedmessages'];
+                        $valid = false;
+                    }
+
+                    if ($valid) {
+
+                        header_redirect("pm_messages.php?webtag=$webtag&folder=$current_folder&page=$page&deleted=true");
+                        exit;
+                    }
+
+                }else {
+
+                    html_draw_top();
+                    html_display_msg($lang['approvepost'], $lang['deletemessagesconfirmation'], "pm_messages.php", 'post', array('pm_option_submit' => $lang['yes'], 'back' => $lang['no']), array('folder' => $current_folder, 'page' => $page, 'process' => $process_messages, 'pm_option' => $pm_option, 'pm_delete_confirm' => 'Y'), '_self', 'center');
+                    html_draw_bottom();
+                    exit;
+                }
+
+            }else if ($pm_option == PM_OPTION_EXPORT) {
+
+                if (!pm_export_messages($process_messages)) {
+
+                    $error_msg_array[] = $lang['failedtoexportfolder'];
+                    $valid = false;
+                }
+
+            }else if ($pm_option == PM_OPTION_ARCHIVE) {
+
+                if (!pm_archive_messages($process_messages)) {
+
+                    $error_msg_array[] = $lang['failedtoarchiveselectedmessages'];
+                    $valid = false;
+                }
             }
 
-            if ($valid) {
+        }else {
 
-                header_redirect("pm_messages.php?webtag=$webtag&folder=$current_folder&page=$page&deleted=true");
-                exit;
-            }
-
-        }else if ($pm_option == PM_OPTION_EXPORT) {
-
-            if (!pm_export_messages($process_messages)) {
-
-                $error_msg_array[] = $lang['failedtoexportfolder'];
-                $valid = false;
-            }
-
-        }else if ($pm_option == PM_OPTION_ARCHIVE) {
-
-            if (!pm_archive_messages($process_messages)) {
-
-                $error_msg_array[] = $lang['failedtoarchiveselectedmessages'];
-                $valid = false;
-            }
+            $error_msg_array[] = $lang['youmustselectsomemessages'];
+            $valid = false;
         }
 
         if ($valid) {
@@ -469,9 +487,23 @@ echo "        top.frames['", html_get_frame_name('main'), "'].frames['", html_ge
 echo "    }else if (top.document.body.cols) {\n";
 echo "        top.frames['", html_get_frame_name('pm_folders'), "'].location.reload();\n";
 echo "    }\n\n";
-echo "}\n";
-echo "-->\n";
-echo "</script>\n\n";
+echo "}\n\n";
+echo "function confirmDeleteSelected()\n";
+echo "{\n";
+echo "    var pm_option = getObjsByName('pm_option')[0];\n";
+echo "    var pm_delete_confirm = getObjsByName('pm_delete_confirm')[0];\n\n";
+echo "    if ((typeof pm_option == 'object') && (typeof pm_delete_confirm == 'object')) {\n\n";
+echo "        if (pm_option.selectedIndex == ", PM_OPTION_EXPORT, ") {\n\n";
+echo "            if (window.confirm('", html_js_safe_str($lang['deletemessagesconfirmation']), "')) {\n\n";
+echo "                pm_delete_confirm.value = 'Y';\n";
+echo "                return true;\n";
+echo "            }\n\n";
+echo "            return false;\n";
+echo "        }\n";
+echo "    }\n\n";
+echo "}\n\n";
+echo "//-->\n";
+echo "</script>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -510,6 +542,7 @@ echo "<form name=\"pm\" action=\"pm_messages.php\" method=\"post\" target=\"_sel
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden('folder', _htmlentities($current_folder)), "\n";
 echo "  ", form_input_hidden('page', _htmlentities($page)), "\n";
+echo "  ", form_input_hidden('pm_delete_confirm', 'N'), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"96%\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\" valign=\"top\" width=\"100%\">\n";
@@ -789,7 +822,7 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['withselected']}:&nbsp;</td>\n";
-    echo "                        <td align=\"left\" width=\"100%\">", form_dropdown_array('pm_option', $pm_messages_options_array), "&nbsp;", form_submit("pm_option_submit", $lang['go']), "</td>\n";
+    echo "                        <td align=\"left\" width=\"100%\">", form_dropdown_array('pm_option', $pm_messages_options_array), "&nbsp;", form_submit("pm_option_submit", $lang['go'], "onclick=\"return confirmDeleteSelected()\""), "</td>\n";
     echo "                      </tr>\n";
     echo "                    </table>\n";
     echo "                  </td>\n";

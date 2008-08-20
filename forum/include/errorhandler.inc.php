@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.125 2008-08-16 15:38:37 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.126 2008-08-20 19:02:59 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -400,7 +400,7 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
         echo "<h1>Error</h1>\n";
         echo "<br />\n";
         echo "<div align=\"center\">\n";
-        echo "<form name=\"f_error\" method=\"post\" action=\"\" target=\"_self\">\n";
+        echo "<form accept-charset=\"utf-8\" name=\"f_error\" method=\"post\" action=\"\" target=\"_self\">\n";
         echo "  ", form_input_hidden_array(_stripslashes($_POST)), "\n";
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
         echo "    <tr>\n";

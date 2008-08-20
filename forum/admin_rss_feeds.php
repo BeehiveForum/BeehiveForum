@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_rss_feeds.php,v 1.58 2008-07-28 21:05:47 decoyduck Exp $ */
+/* $Id: admin_rss_feeds.php,v 1.59 2008-08-20 19:02:56 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -451,7 +451,7 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
 
     echo "<br />\n";
     echo "<div align=\"center\">\n";
-    echo "  <form name=\"thread_options\" action=\"admin_rss_feeds.php\" method=\"post\" target=\"_self\">\n";
+    echo "  <form accept-charset=\"utf-8\" name=\"thread_options\" action=\"admin_rss_feeds.php\" method=\"post\" target=\"_self\">\n";
     echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "  ", form_input_hidden('addfeed', 'true'), "\n";
     echo "  ", form_input_hidden('page', _htmlentities($page)), "\n";
@@ -580,7 +580,7 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
 
     echo "<br />\n";
     echo "<div align=\"center\">\n";
-    echo "  <form name=\"thread_options\" action=\"admin_rss_feeds.php\" method=\"post\" target=\"_self\">\n";
+    echo "  <form accept-charset=\"utf-8\" name=\"thread_options\" action=\"admin_rss_feeds.php\" method=\"post\" target=\"_self\">\n";
     echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "  ", form_input_hidden('feed_id', _htmlentities($feed_id)), "\n";
     echo "  ", form_input_hidden("t_delete[$feed_id]", "Y"), "\n";
@@ -700,7 +700,7 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
 
     echo "<br />\n";
     echo "<div align=\"center\">\n";
-    echo "<form name=\"rss\" action=\"admin_rss_feeds.php\" method=\"post\">\n";
+    echo "<form accept-charset=\"utf-8\" name=\"rss\" action=\"admin_rss_feeds.php\" method=\"post\">\n";
     echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "  ", form_input_hidden('page', _htmlentities($page)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";

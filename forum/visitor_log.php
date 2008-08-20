@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.php,v 1.129 2008-08-12 17:13:45 decoyduck Exp $ */
+/* $Id: visitor_log.php,v 1.130 2008-08-20 19:02:59 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -330,7 +330,7 @@ if (sizeof($user_profile_array['user_array']) < 1) {
 
 echo "<br />\n";
 echo "<div align=\"center\">\n";
-echo "<form name=\"f_visitor_log\" action=\"visitor_log.php\" method=\"post\">\n";
+echo "<form accept-charset=\"utf-8\" name=\"f_visitor_log\" action=\"visitor_log.php\" method=\"post\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden('page', _htmlentities($page)), "\n";
 echo "  ", form_input_hidden('sort_by', _htmlentities($sort_by)), "\n";
@@ -486,7 +486,7 @@ echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";
-echo "<form name=\"f_options\" action=\"visitor_log.php\" method=\"post\">\n";
+echo "<form accept-charset=\"utf-8\" name=\"f_options\" action=\"visitor_log.php\" method=\"post\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden('page', _htmlentities($page)), "\n";
 echo "  ", form_input_hidden('sort_by', _htmlentities($sort_by)), "\n";
@@ -540,7 +540,7 @@ echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";
-echo "<form name=\"f_user_search\" action=\"visitor_log.php\" method=\"post\">\n";
+echo "<form accept-charset=\"utf-8\" name=\"f_user_search\" action=\"visitor_log.php\" method=\"post\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden('page', _htmlentities($page)), "\n";
 echo "  ", form_input_hidden('sort_by', _htmlentities($sort_by)), "\n";

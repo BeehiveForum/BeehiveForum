@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.163 2008-08-13 21:28:31 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.164 2008-08-20 19:02:59 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -477,7 +477,7 @@ if (is_array($folder_info) && sizeof($folder_info) > 0) {
     echo "                          <table class=\"posthead\" border=\"0\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\n";
     echo "                            <tr>\n";
     echo "                              <td align=\"left\">\n";
-    echo "                                <form name=\"f_nav\" method=\"get\" action=\"discussion.php\" target=\"", html_get_frame_name('main'), "\">\n";
+    echo "                                <form accept-charset=\"utf-8\" name=\"f_nav\" method=\"get\" action=\"discussion.php\" target=\"", html_get_frame_name('main'), "\">\n";
     echo "                                  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
     echo "                                  ", form_input_text('msg', '1.1', 10), "\n";
     echo "                                  ", form_submit("go",$lang['goexcmark']), "\n";

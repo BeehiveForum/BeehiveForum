@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.184 2008-08-12 17:13:44 decoyduck Exp $ */
+/* $Id: register.php,v 1.185 2008-08-20 19:02:58 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -568,7 +568,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
     html_display_warning_msg($lang['moreoptionsavailable'], '600', 'center');
 
     echo "<div align=\"center\">\n";
-    echo "<form name=\"register\" action=\"", get_request_uri(), "\" method=\"post\">\n";
+    echo "<form accept-charset=\"utf-8\" name=\"register\" action=\"", get_request_uri(), "\" method=\"post\">\n";
     echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "  ", form_input_hidden('user_agree_rules', _htmlentities($user_agree_rules)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
@@ -870,7 +870,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
 
     echo "<br />\n";
     echo "<div align=\"center\">\n";
-    echo "<form name=\"register\" action=\"", get_request_uri(), "\" method=\"post\">\n";
+    echo "<form accept-charset=\"utf-8\" name=\"register\" action=\"", get_request_uri(), "\" method=\"post\">\n";
     echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ldelete.php,v 1.22 2008-07-30 16:04:34 decoyduck Exp $ */
+/* $Id: ldelete.php,v 1.23 2008-08-20 19:02:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -223,13 +223,13 @@ if (($preview_message = messages_get($tid, $pid, 1))) {
         light_html_draw_bottom();
         exit;
     }
-    
+
     if (forum_get_setting('require_post_approval', 'Y') && isset($preview_message['APPROVED']) && $preview_message['APPROVED'] == 0 && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
-        
-    	light_html_draw_top("robots=noindex,nofollow");
+
+        light_html_draw_top("robots=noindex,nofollow");
         light_edit_refuse();
         light_html_draw_bottom();
-        exit;       	
+        exit;
     }
 
 }else {
@@ -293,7 +293,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     light_html_display_error_array($error_msg_array);
 }
 
-echo "<form name=\"f_delete\" action=\"ldelete.php\" method=\"post\" target=\"_self\">\n";
+echo "<form accept-charset=\"utf-8\" name=\"f_delete\" action=\"ldelete.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden('msg', _htmlentities($msg)), "\n";
 

@@ -70,14 +70,14 @@ in release.txt.
 
 You need web hosting which provides:
 
-  - PHP 4.3.2 or above
+  - PHP 5.0.0 or above
   - MySQL 4.1.16 or above
 
 1.1.1 Requirements Notes
 ========================
 
-- Beehive Forum requires PHP 4.3.2 as a minimum, but we recommend installing
-  the latest PHP5 release where ever possible.
+- Beehive Forum requires PHP 5.0 as a minimum, but we recommend installing
+  the latest PHP 5.2.x release where possible.
 
 - MySQL 4.1.16 or newer is required by Beehive Forum. As with PHP we recommend
   installing the latest release of MySQL 5 if possible.

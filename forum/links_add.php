@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_add.php,v 1.100 2008-08-12 17:13:45 decoyduck Exp $ */
+/* $Id: links_add.php,v 1.101 2008-08-20 19:02:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -311,7 +311,7 @@ if ($mode == LINKS_ADD_LINK) {
         html_display_error_array($error_msg_array, '500', 'left');
     }
 
-    echo "<form name=\"linkadd\" action=\"links_add.php\" method=\"post\" target=\"_self\">\n";
+    echo "<form accept-charset=\"utf-8\" name=\"linkadd\" action=\"links_add.php\" method=\"post\" target=\"_self\">\n";
     echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "  ", form_input_hidden("fid", _htmlentities($fid)) . "\n";
     echo "  ", form_input_hidden("mode", LINKS_ADD_LINK) . "\n";
@@ -374,7 +374,7 @@ if ($mode == LINKS_ADD_LINK) {
         html_display_error_array($error_msg_array, '500', 'left');
     }
 
-    echo "<form name=\"folderadd\" action=\"links_add.php\" method=\"post\" target=\"_self\">\n";
+    echo "<form accept-charset=\"utf-8\" name=\"folderadd\" action=\"links_add.php\" method=\"post\" target=\"_self\">\n";
     echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "  ", form_input_hidden("fid", _htmlentities($fid)) . "\n";
     echo "  ", form_input_hidden("mode", LINKS_ADD_FOLDER) . "\n";

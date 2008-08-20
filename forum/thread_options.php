@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.115 2008-08-10 12:36:28 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.116 2008-08-20 19:02:59 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -579,7 +579,7 @@ if ($thread_data['DELETED'] == 'N') {
 
     echo "<br />\n";
     echo "<div align=\"center\">\n";
-    echo "  <form name=\"thread_options\" action=\"thread_options.php\" method=\"post\" target=\"_self\">\n";
+    echo "  <form accept-charset=\"utf-8\" name=\"thread_options\" action=\"thread_options.php\" method=\"post\" target=\"_self\">\n";
     echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
     echo "  ", form_input_hidden("msg", _htmlentities($msg)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
@@ -1061,7 +1061,7 @@ if ($thread_data['DELETED'] == 'N') {
 
     echo "<br />\n";
     echo "<div align=\"center\">\n";
-    echo "  <form name=\"thread_options\" action=\"thread_options.php\" method=\"post\" target=\"_self\">\n";
+    echo "  <form accept-charset=\"utf-8\" name=\"thread_options\" action=\"thread_options.php\" method=\"post\" target=\"_self\">\n";
     echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
     echo "  ", form_input_hidden("msg", _htmlentities($msg)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";

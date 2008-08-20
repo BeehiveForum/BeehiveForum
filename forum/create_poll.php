@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.232 2008-08-03 21:36:46 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.233 2008-08-20 19:02:58 decoyduck Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -763,7 +763,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 }
 
 echo "<br />\n";
-echo "<form name=\"f_poll\" action=\"create_poll.php\" method=\"post\" target=\"_self\">\n";
+echo "<form accept-charset=\"utf-8\" name=\"f_poll\" action=\"create_poll.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden('t_dedupe', _htmlentities($t_dedupe)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"785\">\n";

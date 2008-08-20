@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.134 2008-08-03 21:36:46 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.135 2008-08-20 19:02:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -607,7 +607,7 @@ if (!$new_thread) {
     }
 }
 
-echo "<form name=\"f_post\" action=\"" . get_request_uri() . "\" method=\"post\">\n";
+echo "<form accept-charset=\"utf-8\" name=\"f_post\" action=\"" . get_request_uri() . "\" method=\"post\">\n";
 echo form_input_hidden('t_dedupe', _htmlentities($t_dedupe));
 
 if (!isset($t_threadtitle)) {

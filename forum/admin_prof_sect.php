@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_sect.php,v 1.114 2008-07-28 21:05:47 decoyduck Exp $ */
+/* $Id: admin_prof_sect.php,v 1.115 2008-08-20 19:02:56 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -244,7 +244,7 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
 
     echo "<br />\n";
     echo "<div align=\"center\">\n";
-    echo "  <form name=\"thread_options\" action=\"admin_prof_sect.php\" method=\"post\" target=\"_self\">\n";
+    echo "  <form accept-charset=\"utf-8\" name=\"thread_options\" action=\"admin_prof_sect.php\" method=\"post\" target=\"_self\">\n";
     echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "  ", form_input_hidden('addsection', 'true'), "\n";
     echo "  ", form_input_hidden('page', _htmlentities($page)), "\n";
@@ -326,7 +326,7 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
 
     echo "<br />\n";
     echo "<div align=\"center\">\n";
-    echo "  <form name=\"thread_options\" action=\"admin_prof_sect.php\" method=\"post\" target=\"_self\">\n";
+    echo "  <form accept-charset=\"utf-8\" name=\"thread_options\" action=\"admin_prof_sect.php\" method=\"post\" target=\"_self\">\n";
     echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "  ", form_input_hidden('psid', _htmlentities($psid)), "\n";
     echo "  ", form_input_hidden('page', _htmlentities($page)), "\n";
@@ -403,7 +403,7 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
 
     echo "<br />\n";
     echo "<div align=\"center\">\n";
-    echo "<form name=\"f_sections\" action=\"admin_prof_sect.php\" method=\"post\">\n";
+    echo "<form accept-charset=\"utf-8\" name=\"f_sections\" action=\"admin_prof_sect.php\" method=\"post\">\n";
     echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "  ", form_input_hidden('page', _htmlentities($page)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";

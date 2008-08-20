@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.161 2008-07-30 17:41:38 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.162 2008-08-20 19:02:57 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -271,14 +271,14 @@ if (isset($_POST['upload'])) {
 
         $attachments_array = array();
         $image_attachments_array = array();
-    	
-    	if (get_attachments($uid, $aid, $attachments_array, $image_attachments_array, $hash_array)) {
+
+        if (get_attachments($uid, $aid, $attachments_array, $image_attachments_array, $hash_array)) {
 
             html_draw_top('pm_popup_disabled');
 
             echo "<h1>{$lang['deleteattachments']}</h1>\n";
             echo "<br />\n";
-            echo "<form name=\"attachments\" enctype=\"multipart/form-data\" method=\"post\" action=\"attachments.php\">\n";
+            echo "<form accept-charset=\"utf-8\" name=\"attachments\" enctype=\"multipart/form-data\" method=\"post\" action=\"attachments.php\">\n";
             echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
             echo "  ". form_input_hidden('aid', _htmlentities($aid)), "\n";
             echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
@@ -418,7 +418,7 @@ if (isset($upload_failure) && is_array($upload_failure) && sizeof($upload_failur
 }
 
 echo "<br />\n";
-echo "<form name=\"attachments\" enctype=\"multipart/form-data\" method=\"post\" action=\"attachments.php\">\n";
+echo "<form accept-charset=\"utf-8\" name=\"attachments\" enctype=\"multipart/form-data\" method=\"post\" action=\"attachments.php\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ". form_input_hidden('aid', _htmlentities($aid)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";

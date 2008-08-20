@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_add.php,v 1.57 2008-07-28 21:05:48 decoyduck Exp $ */
+/* $Id: admin_user_groups_add.php,v 1.58 2008-08-20 19:02:57 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -211,7 +211,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 echo "<br />\n";
 echo "<div align=\"center\">\n";
-echo "<form name=\"admin_user_form\" action=\"admin_user_groups_add.php\" method=\"post\">\n";
+echo "<form accept-charset=\"utf-8\" name=\"admin_user_form\" action=\"admin_user_groups_add.php\" method=\"post\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
 echo "    <tr>\n";

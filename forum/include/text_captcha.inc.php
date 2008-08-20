@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: text_captcha.inc.php,v 1.32 2008-08-03 11:23:09 decoyduck Exp $ */
+/* $Id: text_captcha.inc.php,v 1.33 2008-08-20 19:03:00 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -40,37 +40,37 @@ include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 class captcha {
 
-    var $image_x;
-    var $image_y;
+    private $image_x;
+    private $image_y;
 
-    var $key;
-    var $public_key;
-    var $private_key;
+    private $key;
+    private $public_key;
+    private $private_key;
 
-    var $pub_key_done = false;
-    var $prv_key_done = false;
+    private $pub_key_done = false;
+    private $prv_key_done = false;
 
-    var $num_chars;
-    var $image_filename;
+    private $num_chars;
+    private $image_filename;
 
-    var $max_char_size;
-    var $min_char_size;
+    private $max_char_size;
+    private $min_char_size;
 
-    var $max_rotation;
+    private $max_rotation;
 
-    var $color_red;
-    var $color_green;
-    var $color_blue;
+    private $color_red;
+    private $color_green;
+    private $color_blue;
 
-    var $noise_level;
-    var $noise_factor;
+    private $noise_level;
+    private $noise_factor;
 
-    var $fonts_loaded = false;
-    var $available_fonts = array();
-    var $current_font;
+    private $fonts_loaded = false;
+    private $available_fonts = array();
+    private $current_font;
 
-    var $error = false;
-    var $text_captcha_dir = "";
+    private $error = false;
+    private $text_captcha_dir = "";
 
     // PUBLIC //
 

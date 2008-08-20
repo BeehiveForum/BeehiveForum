@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.224 2008-08-17 17:29:33 decoyduck Exp $ */
+/* $Id: search.php,v 1.225 2008-08-20 19:02:59 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -229,7 +229,7 @@ if (isset($_GET['show_stop_words'])) {
     echo "<h1>{$lang['mysqlstopwordlist']}</h1>\n";
     echo "<br />\n";
     echo "<div align=\"center\">\n";
-    echo "<form id=\"search_stop_words\" method=\"get\" action=\"search.php\" target=\"_self\">\n";
+    echo "<form accept-charset=\"utf-8\" id=\"search_stop_words\" method=\"get\" action=\"search.php\" target=\"_self\">\n";
     echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
     echo "  ", form_input_hidden("show_stop_words", "yes"), "\n";
     echo "  <table cellpadding=\"5\" cellspacing=\"0\" width=\"540\">\n";
@@ -506,7 +506,7 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
             echo "<img src=\"", style_image('current_thread.png'), "\" alt=\"{$lang['findmore']}\" title=\"{$lang['findmore']}\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;offset=", $offset + 20, "&amp;sort_by=$sort_by\">{$lang['findmore']}</a><br />\n";
         }
 
-        echo "<form name=\"f_nav\" method=\"get\" action=\"search.php\" target=\"_self\">\n";
+        echo "<form accept-charset=\"utf-8\" name=\"f_nav\" method=\"get\" action=\"search.php\" target=\"_self\">\n";
         echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
         echo "  ", form_input_hidden("offset", isset($offset) ? _htmlentities($offset) : 0), "\n";
         echo "  <table cellpadding=\"2\" cellspacing=\"0\">\n";
@@ -544,7 +544,7 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
     echo "  <tr>\n";
     echo "    <td align=\"left\">&nbsp;</td>\n";
     echo "    <td align=\"left\" class=\"smalltext\">\n";
-    echo "      <form name=\"f_nav\" method=\"get\" action=\"messages.php\" target=\"", html_get_frame_name('right'), "\">\n";
+    echo "      <form accept-charset=\"utf-8\" name=\"f_nav\" method=\"get\" action=\"messages.php\" target=\"", html_get_frame_name('right'), "\">\n";
     echo "        ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
     echo "        ", form_input_text('msg', '1.1', 10). "\n";
     echo "        ", form_submit("go",$lang['goexcmark']). "\n";
@@ -560,7 +560,7 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
     echo "  <tr>\n";
     echo "    <td align=\"left\">&nbsp;</td>\n";
     echo "    <td align=\"left\" class=\"smalltext\">\n";
-    echo "      <form method=\"post\" action=\"search.php\" target=\"", html_get_frame_name('right'), "\">\n";
+    echo "      <form accept-charset=\"utf-8\" method=\"post\" action=\"search.php\" target=\"", html_get_frame_name('right'), "\">\n";
     echo "        ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "        ", form_input_text("search_string", "", 20). "\n";
     echo "        ", form_submit("search", $lang['find']). "\n";
@@ -640,7 +640,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 echo "<br />\n";
 echo "<div align=\"center\">\n";
-echo "<form id=\"search_form\" method=\"post\" action=\"search.php\" target=\"_self\">\n";
+echo "<form accept-charset=\"utf-8\" id=\"search_form\" method=\"post\" action=\"search.php\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";

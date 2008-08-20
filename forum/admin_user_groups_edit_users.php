@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit_users.php,v 1.63 2008-08-12 17:13:45 decoyduck Exp $ */
+/* $Id: admin_user_groups_edit_users.php,v 1.64 2008-08-20 19:02:57 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -247,7 +247,7 @@ if (isset($_GET['added'])) {
 
 echo "<br />\n";
 echo "<div align=\"center\">\n";
-echo "<form name=\"f_folders\" action=\"admin_user_groups_edit_users.php\" method=\"post\">\n";
+echo "<form accept-charset=\"utf-8\" name=\"f_folders\" action=\"admin_user_groups_edit_users.php\" method=\"post\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden('gid', _htmlentities($gid)), "\n";
 echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
@@ -328,7 +328,7 @@ if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
         html_display_warning_msg($lang['searchreturnednoresults'], '650', 'center');
     }
 
-    echo "<form method=\"post\" action=\"admin_user_groups_edit_users.php\" target=\"_self\">\n";
+    echo "<form accept-charset=\"utf-8\" method=\"post\" action=\"admin_user_groups_edit_users.php\" target=\"_self\">\n";
     echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "  ", form_input_hidden('gid', _htmlentities($gid)), "\n";
     echo "  ", form_input_hidden("usersearch", _htmlentities($usersearch)), "\n";
@@ -394,7 +394,7 @@ if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
     echo "<br />\n";
 }
 
-echo "<form method=\"post\" action=\"admin_user_groups_edit_users.php\" target=\"_self\">\n";
+echo "<form accept-charset=\"utf-8\" method=\"post\" action=\"admin_user_groups_edit_users.php\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden('gid', _htmlentities($gid)), "\n";
 echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.198 2008-08-17 17:29:34 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.199 2008-08-20 19:03:00 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -172,7 +172,7 @@ function light_draw_logon_form()
 
     $user_passhash = bh_getcookie('bh_light_remember_passhash', 'strlen', '');
 
-    echo "<form name=\"logonform\" action=\"llogon.php\" method=\"post\">\n";
+    echo "<form accept-charset=\"utf-8\" name=\"logonform\" action=\"llogon.php\" method=\"post\">\n";
     echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
     echo "  <p>{$lang['username']}: ", light_form_input_text("user_logon", _htmlentities(_stripslashes($user_logon)), 20, 15, "autocomplete=\"off\""). "</p>\n";
     echo "  <p>{$lang['passwd']}: ", light_form_input_password("user_password", _htmlentities(_stripslashes($user_password)), 20, 32, "autocomplete=\"off\""), form_input_hidden("user_passhash", _htmlentities(_stripslashes($user_passhash))), "</p>\n";
@@ -193,7 +193,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
 
     if (($uid = bh_session_get_value('UID')) === false) return;
 
-    echo "<form name=\"f_mode\" method=\"get\" action=\"lthread_list.php\">\n";
+    echo "<form accept-charset=\"utf-8\" name=\"f_mode\" method=\"get\" action=\"lthread_list.php\">\n";
     echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
     echo "  ", light_threads_draw_discussions_dropdown($mode), "\n";
     echo "  ", light_form_submit("go", $lang['goexcmark']), "\n";
@@ -529,7 +529,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $start
     if (!user_is_guest()) {
 
         echo "  <h5>{$lang['markasread']}</h5>\n";
-        echo "    <form name=\"f_mark\" method=\"post\" action=\"lthread_list.php\">\n";
+        echo "    <form accept-charset=\"utf-8\" name=\"f_mark\" method=\"post\" action=\"lthread_list.php\">\n";
         echo "      ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
         echo "      ", form_input_hidden("mode", _htmlentities($mode)), "\n";
         echo "      ", form_input_hidden("start_from", _htmlentities($start_from)), "\n";
@@ -738,7 +738,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
 
     if ($in_list) {
 
-        $poll_data['CONTENT'].= "<form method=\"post\" action=\"{$_SERVER['PHP_SELF']}\" target=\"_self\">\n";
+        $poll_data['CONTENT'].= "<form accept-charset=\"utf-8\" method=\"post\" action=\"{$_SERVER['PHP_SELF']}\" target=\"_self\">\n";
         $poll_data['CONTENT'].= form_input_hidden('webtag', _htmlentities($webtag)). "\n";
         $poll_data['CONTENT'].= form_input_hidden('tid', _htmlentities($tid)). "\n";
 
@@ -1548,7 +1548,7 @@ function light_html_display_msg($header_text, $string_msg, $href = false, $metho
 
     if (is_string($href) && strlen(trim($href)) > 0) {
 
-        echo "<form action=\"$href\" method=\"$method\" target=\"$target\">\n";
+        echo "<form accept-charset=\"utf-8\" action=\"$href\" method=\"$method\" target=\"$target\">\n";
         echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 
         if (is_array($var_array)) {

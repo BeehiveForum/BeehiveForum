@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_wordfilter.php,v 1.91 2008-08-12 17:13:45 decoyduck Exp $ */
+/* $Id: edit_wordfilter.php,v 1.92 2008-08-20 19:02:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -331,7 +331,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     }
 
     echo "<br />\n";
-    echo "<form name=\"startpage\" method=\"post\" action=\"edit_wordfilter.php\">\n";
+    echo "<form accept-charset=\"utf-8\" name=\"startpage\" method=\"post\" action=\"edit_wordfilter.php\">\n";
     echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "  ", form_input_hidden('addfilter', 'true'), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
@@ -428,7 +428,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     }
 
     echo "<br />\n";
-    echo "<form name=\"startpage\" method=\"post\" action=\"edit_wordfilter.php\">\n";
+    echo "<form accept-charset=\"utf-8\" name=\"startpage\" method=\"post\" action=\"edit_wordfilter.php\">\n";
     echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "  ", form_input_hidden('filter_id', _htmlentities($filter_id)), "\n";
     echo "  ", form_input_hidden("delete_filters[$filter_id]", 'Y'), "\n";
@@ -513,7 +513,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     }
 
     echo "<br />\n";
-    echo "<form method=\"post\" action=\"edit_wordfilter.php\">\n";
+    echo "<form accept-charset=\"utf-8\" method=\"post\" action=\"edit_wordfilter.php\">\n";
     echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";

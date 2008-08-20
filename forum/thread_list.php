@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.353 2008-08-17 17:29:33 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.354 2008-08-20 19:02:59 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -868,7 +868,7 @@ if (!user_is_guest()) {
     echo "  <tr>\n";
     echo "    <td align=\"left\">&nbsp;</td>\n";
     echo "    <td align=\"left\" class=\"smalltext\">\n";
-    echo "      <form name=\"f_mark\" method=\"post\" action=\"thread_list.php\">\n";
+    echo "      <form accept-charset=\"utf-8\" name=\"f_mark\" method=\"post\" action=\"thread_list.php\">\n";
     echo "        ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "        ", form_input_hidden("mode", _htmlentities($mode)), "\n";
     echo "        ", form_input_hidden("start_from", _htmlentities($start_from)), "\n";
@@ -909,7 +909,7 @@ echo "  </tr>\n";
 echo "  <tr>\n";
 echo "    <td align=\"left\">&nbsp;</td>\n";
 echo "    <td align=\"left\" class=\"smalltext\">\n";
-echo "      <form name=\"f_nav\" method=\"get\" action=\"messages.php\" target=\"", html_get_frame_name('right'), "\">\n";
+echo "      <form accept-charset=\"utf-8\" name=\"f_nav\" method=\"get\" action=\"messages.php\" target=\"", html_get_frame_name('right'), "\">\n";
 echo "        ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 
 if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
@@ -929,7 +929,7 @@ echo "  </tr>\n";
 echo "  <tr>\n";
 echo "    <td align=\"left\">&nbsp;</td>\n";
 echo "    <td align=\"left\" class=\"smalltext\">\n";
-echo "      <form method=\"post\" action=\"search.php\" target=\"", html_get_frame_name('right'), "\">\n";
+echo "      <form accept-charset=\"utf-8\" method=\"post\" action=\"search.php\" target=\"", html_get_frame_name('right'), "\">\n";
 echo "        ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 
 if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {

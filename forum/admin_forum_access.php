@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_access.php,v 1.68 2008-08-12 17:13:45 decoyduck Exp $ */
+/* $Id: admin_forum_access.php,v 1.69 2008-08-20 19:02:56 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -269,7 +269,7 @@ if (isset($_GET['added'])) {
 
 echo "<br />\n";
 echo "<div align=\"center\">\n";
-echo "<form name=\"f_user\" action=\"admin_forum_access.php\" method=\"post\">\n";
+echo "<form accept-charset=\"utf-8\" name=\"f_user\" action=\"admin_forum_access.php\" method=\"post\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden('ret', _htmlentities($ret)), "\n";
 echo "  ", form_input_hidden("user_search", _htmlentities($user_search)), "\n";
@@ -348,7 +348,7 @@ if (isset($user_search) && strlen(trim($user_search)) > 0) {
         html_display_warning_msg($lang['searchreturnednoresults'], '500', 'center');
     }
 
-    echo "<form method=\"post\" action=\"admin_forum_access.php\" target=\"_self\">\n";
+    echo "<form accept-charset=\"utf-8\" method=\"post\" action=\"admin_forum_access.php\" target=\"_self\">\n";
     echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "  ", form_input_hidden('ret', _htmlentities($ret)), "\n";
     echo "  ", form_input_hidden("user_search", _htmlentities($user_search)), "\n";
@@ -411,7 +411,7 @@ if (isset($user_search) && strlen(trim($user_search)) > 0) {
     echo "<br />\n";
 }
 
-echo "<form method=\"post\" action=\"admin_forum_access.php\" target=\"_self\">\n";
+echo "<form accept-charset=\"utf-8\" method=\"post\" action=\"admin_forum_access.php\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden('ret', _htmlentities($ret)), "\n";
 echo "  ", form_input_hidden("user_search", _htmlentities($user_search)), "\n";

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: search_popup.php,v 1.34 2008-08-04 22:26:00 decoyduck Exp $ */
+/* $Id: search_popup.php,v 1.35 2008-08-20 19:02:59 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -333,7 +333,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 }
 
 echo "<div align=\"center\">\n";
-echo "<form action=\"search_popup.php\" method=\"post\">\n";
+echo "<form accept-charset=\"utf-8\" action=\"search_popup.php\" method=\"post\">\n";
 echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden("type", _htmlentities($type)), "\n";
 echo "  ", form_input_hidden("obj_name", _htmlentities($obj_name)), "\n";

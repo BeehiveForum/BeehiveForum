@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.211 2008-08-12 17:13:45 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.212 2008-08-20 19:02:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -801,7 +801,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 }
 
 echo "<br />\n";
-echo "<form name=\"f_post\" action=\"pm_write.php\" method=\"post\" target=\"_self\">\n";
+echo "<form accept-charset=\"utf-8\" name=\"f_post\" action=\"pm_write.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden('folder', _htmlentities($folder)), "\n";
 echo "  ", form_input_hidden("t_dedupe", _htmlentities($t_dedupe));

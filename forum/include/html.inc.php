@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.294 2008-08-19 18:56:48 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.295 2008-08-20 19:03:00 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -108,7 +108,7 @@ function html_display_msg($header_text, $string_msg, $href = false, $method = 'g
 
     if (is_string($href) && strlen(trim($href)) > 0) {
 
-        echo "<form action=\"$href\" method=\"$method\" target=\"$target\">\n";
+        echo "<form accept-charset=\"utf-8\" action=\"$href\" method=\"$method\" target=\"$target\">\n";
         echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 
         if (is_array($var_array)) {
@@ -479,6 +479,24 @@ function html_get_forum_description()
     return "";
 }
 
+function html_get_forum_content_rating()
+{
+    $content_ratings_array = array(FORUM_RATING_GENERAL    => 'General',
+                                   FORUM_RATING_FOURTEEN   => '14 Years',
+                                   FORUM_RATING_MATURE     => 'Mature',
+                                   FORUM_RATING_RESTRICTED => 'Restricted');
+
+    if (($forum_content_rating = forum_get_setting('forum_content_rating'))) {
+
+        if (isset($content_ratings_array[$forum_content_rating])) {
+
+            return $content_ratings_array[$forum_content_rating];
+        }
+    }
+
+    return $content_ratings_array[FORUM_RATING_GENERAL];
+}
+
 function html_get_forum_email()
 {
     if (($forum_email = forum_get_setting('forum_email'))) {
@@ -703,6 +721,7 @@ function html_draw_top()
 
     $forum_keywords = html_get_forum_keywords();
     $forum_description = html_get_forum_description();
+    $forum_content_rating = html_get_forum_content_rating();
 
     echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 
@@ -719,6 +738,7 @@ function html_draw_top()
     echo "<meta name=\"generator\" content=\"Beehive Forum ", BEEHIVE_VERSION, "\" />\n";
     echo "<meta name=\"keywords\" content=\"$forum_keywords\" />\n";
     echo "<meta name=\"description\" content=\"$forum_description\" />\n";
+    echo "<meta name=\"rating\" content=\"$forum_content_rating\" />\n";
 
     if (forum_get_setting('allow_search_spidering', 'N')) {
 
@@ -1136,15 +1156,16 @@ function bh_getcookie($cookie_name, $callback = false, $default = false)
         if ($callback !== false) {
 
             if (function_exists($callback)) {
+
                 return ($callback($_COOKIE[$cookie_name])) ? $_COOKIE[$cookie_name] : $default;
+
+            }else if (is_string($callback)) {
+
+                return strtoupper($_COOKIE[$cookie_name]) == strtoupper($callback);
             }
-
-            return strtoupper($_COOKIE[$cookie_name]) == strtoupper($value);
-
-        }else {
-
-            return $_COOKIE[$cookie_name];
         }
+
+        return $_COOKIE[$cookie_name];
     }
 
     return $default;

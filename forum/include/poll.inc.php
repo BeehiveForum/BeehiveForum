@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.239 2008-08-02 23:36:46 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.240 2008-08-20 19:03:00 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -488,7 +488,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
     $poll_data['CONTENT'].= "                <table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" width=\"580\">\n";
     $poll_data['CONTENT'].= "                  <tr>\n";
     $poll_data['CONTENT'].= "                    <td align=\"left\">\n";
-    $poll_data['CONTENT'].= "                      <form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
+    $poll_data['CONTENT'].= "                      <form accept-charset=\"utf-8\" method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
     $poll_data['CONTENT'].= "                        ". form_input_hidden("webtag", _htmlentities($webtag)). "\n";
     $poll_data['CONTENT'].= "                        ". form_input_hidden('tid', _htmlentities($tid)). "\n";
     $poll_data['CONTENT'].= "                        <table width=\"560\">\n";
@@ -2085,7 +2085,7 @@ function poll_confirm_close($tid)
 
     poll_display($tid, $threaddata['LENGTH'], 1, $threaddata['FID'], false, false, false, true, $show_sigs, true);
 
-    echo "<form name=\"f_delete\" action=\"", get_request_uri(), "\" method=\"post\" target=\"_self\">";
+    echo "<form accept-charset=\"utf-8\" name=\"f_delete\" action=\"", get_request_uri(), "\" method=\"post\" target=\"_self\">";
     echo form_input_hidden("webtag", _htmlentities($webtag));
     echo form_input_hidden("tid", _htmlentities($tid));
     echo form_input_hidden("confirm_pollclose", "Y");

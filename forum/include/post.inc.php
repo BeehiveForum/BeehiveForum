@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.189 2008-08-16 18:55:53 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.190 2008-08-20 19:03:00 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -580,13 +580,13 @@ class MessageText {
     // stick with PHP/4.x's old var modifiers, because for now
     // it is going to be more compatible with our 'audience'
 
-    var $html = "";
-    var $text = "";
-    var $original_text = "";
-    var $diff = false;
-    var $emoticons = true;
-    var $links = true;
-    var $tinymce = false;
+    private $html = "";
+    private $text = "";
+    private $original_text = "";
+    private $diff = false;
+    private $emoticons = true;
+    private $links = true;
+    private $tinymce = false;
 
     function MessageText ($html = 0, $content = "", $emoticons = true, $links = true)
     {
@@ -712,11 +712,11 @@ class MessageText {
 
 class MessageTextParse {
 
-    var $html = "";
-    var $links = "";
-    var $message = "";
-    var $sig = "";
-    var $original = "";
+    private $html = "";
+    private $links = "";
+    private $message = "";
+    private $sig = "";
+    private $original = "";
 
     function MessageTextParse ($message, $emots_default = true, $links_enabled = true)
     {

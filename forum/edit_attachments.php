@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.131 2008-07-30 17:41:38 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.132 2008-08-20 19:02:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -255,7 +255,7 @@ if (isset($_POST['delete_confirm'])) {
             }
 
             echo "<br />\n";
-            echo "<form id=\"attachments\" enctype=\"multipart/form-data\" method=\"post\" action=\"edit_attachments.php\">\n";
+            echo "<form accept-charset=\"utf-8\" id=\"attachments\" enctype=\"multipart/form-data\" method=\"post\" action=\"edit_attachments.php\">\n";
             echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
             echo "  ", form_input_hidden('popup', _htmlentities($popup)), "\n";
             echo "  ". form_input_hidden('aid', _htmlentities($aid)), "\n";
@@ -375,7 +375,7 @@ html_draw_top('attachments.js', 'post.js', 'pm_popup_disabled');
 
 echo "<h1>{$lang['attachments']}</h1>\n";
 echo "<br />\n";
-echo "<form name=\"attachments\" method=\"post\" action=\"edit_attachments.php\">\n";
+echo "<form accept-charset=\"utf-8\" name=\"attachments\" method=\"post\" action=\"edit_attachments.php\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden('popup', _htmlentities($popup)), "\n";
 echo "  ". form_input_hidden('aid', _htmlentities($aid)), "\n";

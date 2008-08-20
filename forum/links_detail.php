@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_detail.php,v 1.108 2008-08-12 17:13:45 decoyduck Exp $ */
+/* $Id: links_detail.php,v 1.109 2008-08-20 19:02:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -376,7 +376,7 @@ if (!user_is_guest()) {
     $vote = links_get_vote($lid, $uid);
     $vote = $vote ? $vote : -1;
 
-    echo "<form name=\"link_vote\" action=\"links_detail.php\" method=\"post\">\n";
+    echo "<form accept-charset=\"utf-8\" name=\"link_vote\" action=\"links_detail.php\" method=\"post\">\n";
     echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "  ", form_input_hidden("type", "vote"), "\n";
     echo "  ", form_input_hidden("lid", _htmlentities($lid)), "\n";
@@ -476,7 +476,7 @@ if (($comments_array = links_get_comments($lid))) {
 
 if (!user_is_guest()) {
 
-    echo "<form name=\"link_comment\" action=\"links_detail.php\" method=\"post\">\n";
+    echo "<form accept-charset=\"utf-8\" name=\"link_comment\" action=\"links_detail.php\" method=\"post\">\n";
     echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "  ", form_input_hidden("type", "comment"), "\n";
     echo "  ", form_input_hidden("lid", _htmlentities($lid)), "\n";
@@ -522,7 +522,7 @@ if (!user_is_guest()) {
 
 if (bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0) || $link['UID'] == $uid) {
 
-    echo "<form name=\"link_moderation\" action=\"links_detail.php\" method=\"post\">\n";
+    echo "<form accept-charset=\"utf-8\" name=\"link_moderation\" action=\"links_detail.php\" method=\"post\">\n";
     echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "  ", form_input_hidden("type", "moderation") . "\n";
     echo "  ", form_input_hidden("lid", _htmlentities($lid)) . "\n";

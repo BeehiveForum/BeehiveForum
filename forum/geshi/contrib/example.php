@@ -6,7 +6,7 @@
  * and the language files in subdirectory "../geshi/")
  *
  * @author  Nigel McNie
- * @version $Id: example.php,v 1.8 2008-08-06 23:09:29 decoyduck Exp $
+ * @version $Id: example.php,v 1.9 2008-08-20 19:02:59 decoyduck Exp $
  */
 
 // Rudimentary checking of where GeSHi is. In a default install it will be in ../, but
@@ -162,7 +162,7 @@ if (isset($_POST['submit'])) {
     echo '<hr />';
 }
 ?>
-<form action="example.php" method="post">
+<form accept-charset=\"utf-8\" action="example.php" method="post">
 <h3>Source to highlight</h3>
 <textarea rows="10" cols="60" name="source" id="source"><?php echo $fill_source ? htmlspecialchars($_POST['source']) : '' ?></textarea>
 <h3>Choose a language</h3>

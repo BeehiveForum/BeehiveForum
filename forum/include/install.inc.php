@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.77 2008-08-12 17:09:17 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.78 2008-08-20 19:03:00 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -108,7 +108,7 @@ function check_install()
             echo "      </td>\n";
             echo "    </tr>\n";
             echo "  </table>\n";
-            echo "  <form method=\"get\" action=\"index.php\">\n";
+            echo "  <form accept-charset=\"utf-8\" method=\"get\" action=\"index.php\">\n";
             echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
             echo "      <tr>\n";
             echo "        <td align=\"left\" width=\"500\">&nbsp;</td>\n";
@@ -184,7 +184,7 @@ function install_incomplete()
     echo "      </td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
-    echo "  <form method=\"get\" action=\"install.php\" target=\"", html_get_top_frame_name(), "\">\n";
+    echo "  <form accept-charset=\"utf-8\" method=\"get\" action=\"install.php\" target=\"", html_get_top_frame_name(), "\">\n";
     echo "    <input type=\"hidden\" name=\"force_install\" value=\"yes\" />\n";
     echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "      <tr>\n";
@@ -309,7 +309,7 @@ function install_check_mysql_version()
 
 function install_check_php_version()
 {
-    if (version_compare(phpversion(), "4.3.2", "<")) {
+    if (version_compare(phpversion(), "5.0.0", "<")) {
 
         echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
         echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
@@ -337,7 +337,7 @@ function install_check_php_version()
         echo "                  <td align=\"center\">\n";
         echo "                    <table class=\"posthead\" width=\"95%\">\n";
         echo "                      <tr>\n";
-        echo "                        <td align=\"left\">PHP Version 4.3.2 or newer is required to run Beehive Forum. Please upgrade.</td>\n";
+        echo "                        <td align=\"left\">PHP Version 5.0 or newer is required to run Beehive Forum. Please upgrade.</td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
         echo "                        <td align=\"left\">&nbsp;</td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gd_lib.inc.php,v 1.8 2008-08-12 17:09:18 decoyduck Exp $ */
+/* $Id: gd_lib.inc.php,v 1.9 2008-08-20 19:02:59 decoyduck Exp $ */
 
 /**
 * gd_lib.inc.php - GD image library functions
@@ -65,7 +65,7 @@ function get_gd_info()
     $php_info = ob_get_contents();
     ob_end_clean();
 
-    foreach (explode('\n', $php_info) as $line) {
+    foreach (explode("\n", $php_info) as $line) {
 
         if (strpos($line, 'GD Version') !== false) {
             $get_gd_info['GD Version'] = preg_replace('/[^0-9|\.]/u', '', trim(str_replace('GD Version', '', strip_tags($line))));

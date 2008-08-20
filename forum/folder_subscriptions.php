@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder_subscriptions.php,v 1.6 2008-08-13 21:28:31 decoyduck Exp $ */
+/* $Id: folder_subscriptions.php,v 1.7 2008-08-20 19:02:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -249,7 +249,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 }
 
 echo "<br />\n";
-echo "<form name=\"subscriptions\" action=\"folder_subscriptions.php\" method=\"post\" target=\"_self\">\n";
+echo "<form accept-charset=\"utf-8\" name=\"subscriptions\" action=\"folder_subscriptions.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
 echo "  ", form_input_hidden("search_page", _htmlentities($search_page)), "\n";
@@ -325,7 +325,7 @@ if (sizeof($folder_subscriptions['folder_array']) > 0) {
 echo "  </table>\n";
 echo "</form>\n";
 echo "<br />\n";
-echo "<form method=\"post\" action=\"folder_subscriptions.php\" target=\"_self\">\n";
+echo "<form accept-charset=\"utf-8\" method=\"post\" action=\"folder_subscriptions.php\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden("main_page", _htmlentities($main_page)), "\n";
 echo "  ", form_input_hidden("search_page", _htmlentities($search_page)), "\n";

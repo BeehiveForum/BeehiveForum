@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.256 2008-08-03 21:36:46 decoyduck Exp $ */
+/* $Id: edit.php,v 1.257 2008-08-20 19:02:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -663,7 +663,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 }
 
 echo "<br />\n";
-echo "<form name=\"f_edit\" action=\"edit.php\" method=\"post\" target=\"_self\">\n";
+echo "<form accept-charset=\"utf-8\" name=\"f_edit\" action=\"edit.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden("msg", _htmlentities($edit_msg));
 echo "  ", form_input_hidden("t_to_uid", _htmlentities($to_uid));

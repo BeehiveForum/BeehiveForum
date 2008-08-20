@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.357 2008-08-17 17:29:34 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.358 2008-08-20 19:03:00 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -82,10 +82,6 @@ function bh_session_check($show_session_fail = true)
     // Fetch the user's IP Address
 
     if (!$ipaddress = get_ip_address()) return false;
-
-    // Forum webtag
-
-    $webtag = get_webtag();
 
     // Session cut off timestamp
 
@@ -157,8 +153,8 @@ function bh_session_check($show_session_fail = true)
 
             // Save a cookie for the forum style
 
-            if ($forum_webtag = forum_get_webtag($user_sess['FID']) && isset($user_prefs['STYLE'])) {
-                bh_setcookie("bh_{$webtag}_style", $user_prefs['STYLE'], time() + YEAR_IN_SECONDS);
+            if (($forum_webtag = forum_get_webtag($user_sess['FID'])) && isset($user_prefs['STYLE'])) {
+                bh_setcookie("bh_{$forum_webtag}_style", $user_prefs['STYLE'], time() + YEAR_IN_SECONDS);
             }
 
             // Check the session time. If it is higher than 'active_sess_cutoff'
@@ -254,11 +250,11 @@ function bh_session_expired()
 
                 if (stristr($request_uri, 'logon.php')) {
 
-                    echo "<form method=\"post\" action=\"$request_uri\" target=\"", html_get_top_frame_name(), "\">\n";
+                    echo "<form accept-charset=\"utf-8\" method=\"post\" action=\"$request_uri\" target=\"", html_get_top_frame_name(), "\">\n";
 
                 }else {
 
-                    echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
+                    echo "<form accept-charset=\"utf-8\" method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
                 }
 
                 echo form_input_hidden('webtag', _htmlentities($webtag));

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.100 2008-08-12 17:13:45 decoyduck Exp $ */
+/* $Id: install.php,v 1.101 2008-08-20 19:02:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -279,7 +279,7 @@ if (isset($_POST['install_method'])) {
 
                     if ($config_saved) {
 
-                        echo "<form method=\"post\" action=\"index.php\">\n";
+                        echo "<form accept-charset=\"utf-8\" method=\"post\" action=\"index.php\">\n";
                         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
                         echo "    <tr>\n";
                         echo "      <td align=\"left\" width=\"500\">\n";
@@ -322,7 +322,7 @@ if (isset($_POST['install_method'])) {
 
                     }else {
 
-                        echo "<form method=\"post\" action=\"install.php\">\n";
+                        echo "<form accept-charset=\"utf-8\" method=\"post\" action=\"install.php\">\n";
                         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
                         echo "    <tr>\n";
                         echo "      <td align=\"left\" width=\"500\">\n";
@@ -533,7 +533,7 @@ if (isset($_POST['install_method'])) {
             echo "      </td>\n";
             echo "    </tr>\n";
             echo "  </table>\n";
-            echo "  <form method=\"post\" action=\"install.php\">\n";
+            echo "  <form accept-charset=\"utf-8\" method=\"post\" action=\"install.php\">\n";
             echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
             echo "      <tr>\n";
             echo "        <td align=\"left\" width=\"500\">&nbsp;</td>\n";
@@ -568,7 +568,7 @@ echo "<script language=\"javascript\" type=\"text/javascript\" src=\"js/general.
 echo "<script language=\"javascript\" type=\"text/javascript\" src=\"js/install.js\"></script>\n";
 echo "</head>\n";
 echo "<body>\n";
-echo "<form id=\"install_form\" method=\"post\" action=\"install.php\">\n";
+echo "<form accept-charset=\"utf-8\" id=\"install_form\" method=\"post\" action=\"install.php\">\n";
 echo "<h1>Beehive Forum ", BEEHIVE_VERSION, " Installation</h1>\n";
 echo "<div align=\"center\">\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";

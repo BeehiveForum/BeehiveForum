@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.88 2008-08-17 17:29:34 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.89 2008-08-20 19:03:00 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -327,11 +327,11 @@ function logon_draw_form($logon_options)
 
     if (stristr($request_uri, 'logon.php')) {
 
-        echo "  <form name=\"logonform\" method=\"post\" action=\"$request_uri\" target=\"", html_get_top_frame_name(), "\">\n";
+        echo "  <form accept-charset=\"utf-8\" name=\"logonform\" method=\"post\" action=\"$request_uri\" target=\"", html_get_top_frame_name(), "\">\n";
 
     }else {
 
-        echo "  <form name=\"logonform\" method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
+        echo "  <form accept-charset=\"utf-8\" name=\"logonform\" method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
     }
 
     // Check for any post data that we need to include in the form.
@@ -481,7 +481,7 @@ function logon_draw_form($logon_options)
 
         if (user_guest_enabled()) {
 
-            echo "<form name=\"guest\" action=\"logon.php?webtag=$webtag\" method=\"post\" target=\"", html_get_top_frame_name(), "\">\n";
+            echo "<form accept-charset=\"utf-8\" name=\"guest\" action=\"logon.php?webtag=$webtag\" method=\"post\" target=\"", html_get_top_frame_name(), "\">\n";
             echo "  <p class=\"smalltext\">", sprintf($lang['enterasa'], form_submit('guest_logon', $lang['guest'])), "</p>\n";
             echo "</form>\n";
         }

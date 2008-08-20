@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.php,v 1.50 2008-07-28 21:05:48 decoyduck Exp $ */
+/* $Id: dictionary.php,v 1.51 2008-08-20 19:02:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -145,7 +145,7 @@ if (isset($_POST['content']) && strlen(trim(_stripslashes($_POST['content']))) >
     echo "<h1>{$lang['dictionary']}</h1>\n";
     echo "<h2>{$lang['initialisingdotdotdot']}</h2>\n";
 
-    echo "<form name=\"dictionary\" action=\"dictionary.php\" method=\"post\" target=\"_self\">\n";
+    echo "<form accept-charset=\"utf-8\" name=\"dictionary\" action=\"dictionary.php\" method=\"post\" target=\"_self\">\n";
     echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "  ", form_input_hidden('obj_id', _htmlentities($obj_id)), "\n";
     echo "  ", form_input_hidden('content', ""), "\n";
@@ -304,7 +304,7 @@ if (($dictionary->is_check_complete())) {
 }
 
 echo "<br />\n";
-echo "<form name=\"dictionary\" action=\"dictionary.php\" method=\"post\" target=\"_self\">\n";
+echo "<form accept-charset=\"utf-8\" name=\"dictionary\" action=\"dictionary.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden('obj_id', _htmlentities($dictionary->get_obj_id())), "\n";
 echo "  ", form_input_hidden('ignored_words', _htmlentities($dictionary->get_ignored_words())), "\n";

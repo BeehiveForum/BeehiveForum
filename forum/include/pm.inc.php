@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.255 2008-08-18 20:32:27 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.256 2008-08-20 19:03:00 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -2422,7 +2422,7 @@ function pm_export_html($mid_array, &$zip_file)
 
         foreach ($mid_array as $mid) {
 
-            if ($pm_message_array = pm_message_get($mid)) {
+            if (($pm_message_array = pm_message_get($mid))) {
 
                 $pm_message_array['FOLDER'] = pm_message_get_folder($mid);
                 $pm_message_array['CONTENT'] = pm_get_content($mid);
@@ -2497,7 +2497,7 @@ function pm_export_xml($mid_array, &$zip_file)
 
         foreach ($mid_array as $mid) {
 
-            if ($pm_message_array = pm_message_get($mid)) {
+            if (($pm_message_array = pm_message_get($mid))) {
 
                 $pm_message_array['FOLDER'] = pm_message_get_folder($mid);
                 $pm_message_array['CONTENT'] = pm_get_content($mid);
@@ -2580,7 +2580,7 @@ function pm_export_plaintext($mid_array, &$zip_file)
 
         foreach ($mid_array as $mid) {
 
-            if ($pm_message_array = pm_message_get($mid)) {
+            if (($pm_message_array = pm_message_get($mid))) {
 
                 $pm_message_array['FOLDER'] = pm_message_get_folder($mid);
                 $pm_message_array['CONTENT'] = pm_get_content($mid);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.142 2008-08-13 21:28:30 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.143 2008-08-20 19:02:56 decoyduck Exp $ */
 
 /**
 * Displays and handles the Forum Settings page
@@ -116,6 +116,13 @@ if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
     exit;
 }
 
+// Content Ratings
+
+$content_ratings_array = array(FORUM_RATING_GENERAL    => 'General',
+                               FORUM_RATING_FOURTEEN   => '14 Years',
+                               FORUM_RATING_MATURE     => 'Mature',
+                               FORUM_RATING_RESTRICTED => 'Restricted');
+
 // Array to hold error messages.
 
 $error_msg_array = array();
@@ -172,6 +179,12 @@ if (isset($_POST['changepermissions'])) {
         $new_forum_settings['forum_desc'] = trim(_stripslashes($_POST['forum_desc']));
     }else {
         $new_forum_settings['forum_desc'] = "";
+    }
+
+    if (isset($_POST['forum_content_rating']) && is_numeric($_POST['forum_content_rating'])) {
+        $new_forum_settings['forum_content_rating'] = $_POST['forum_content_rating'];
+    }else {
+        $new_forum_settings['forum_content_rating'] = FORUM_RATING_GENERAL;
     }
 
     if (isset($_POST['forum_keywords']) && strlen(trim(_stripslashes($_POST['forum_keywords']))) > 0) {
@@ -377,7 +390,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 echo "<br />\n";
 echo "<div align=\"center\">\n";
-echo "<form name=\"prefsform\" action=\"admin_forum_settings.php\" method=\"post\" target=\"_self\">\n";
+echo "<form accept-charset=\"utf-8\" name=\"prefsform\" action=\"admin_forum_settings.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";
@@ -407,6 +420,10 @@ echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['forumkeywords']}:</td>\n";
 echo "                        <td align=\"left\">", form_input_text("forum_keywords", (isset($forum_settings['forum_keywords']) ? _htmlentities($forum_settings['forum_keywords']) : ''), 42, 80), "&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"220\">{$lang['forumcontentrating']}:</td>\n";
+echo "                        <td align=\"left\">", form_dropdown_array("forum_content_rating", _htmlentities($content_ratings_array), (isset($forum_settings['forum_content_rating']) ? _htmlentities($forum_settings['forum_content_rating']) : 0)), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";

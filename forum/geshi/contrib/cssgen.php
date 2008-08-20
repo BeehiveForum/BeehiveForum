@@ -223,7 +223,7 @@ if ( !$step || $step == 1 )
         // We're gonna have to ask for the paths...
         echo 'Unfortunately CSSGen could not detect the following paths. Please input them and press &quot;submit&quot; to try again.';
         echo "
-<form action=\"cssgen.php\" method=\"post\">";
+<form accept-charset=\"utf-8\" action=\"cssgen.php\" method=\"post\">";
         if ( $no_geshi_dot_php_error )
         {
             echo "
@@ -250,7 +250,7 @@ if ( !$step || $step == 1 )
     {
         // no errors - echo continue form
         echo 'Everything seems to be detected successfully. Use the button to continue.
-<br /><br /><form action="cssgen.php?step=2" method="post">
+<br /><br /><form accept-charset=\"utf-8\" action="cssgen.php?step=2" method="post">
 <input type="hidden" name="geshi-path" value="' . realpath($geshi_path) . '" /><input type="hidden" name="geshi-lang-path" value="' . realpath($geshi_lang_path) . '" />
 <input type="submit" value="Step 2" />';
     }
@@ -283,7 +283,7 @@ elseif ( $step == 2 )
 
     // Now installed languages are in $lang_files
 
-    echo '<form action="cssgen.php?step=3" method="post" id="step2">
+    echo '<form accept-charset=\"utf-8\" action="cssgen.php?step=3" method="post" id="step2">
 What languages are you wanting to make this stylesheet for?<br /><br />
 Detected languages:<br />';
 

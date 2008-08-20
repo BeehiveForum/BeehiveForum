@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.175 2008-08-13 21:28:31 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.176 2008-08-20 19:02:57 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -323,7 +323,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 echo "<br />\n";
 echo "<div align=\"center\">\n";
-echo "<form action=\"admin_users.php\" method=\"post\">\n";
+echo "<form accept-charset=\"utf-8\" action=\"admin_users.php\" method=\"post\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden('user_search', _htmlentities($user_search)), "\n";
 echo "  ", form_input_hidden("sort_by", _htmlentities($sort_by)), "\n";
@@ -489,7 +489,7 @@ echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <br />\n";
 echo "</form>\n";
-echo "<form action=\"admin_users.php\" method=\"get\">\n";
+echo "<form accept-charset=\"utf-8\" action=\"admin_users.php\" method=\"get\">\n";
 echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden("sort_by", _htmlentities($sort_by)), "\n";
 echo "  ", form_input_hidden("sort_dir", _htmlentities($sort_dir)), "\n";

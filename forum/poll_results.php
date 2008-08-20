@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll_results.php,v 1.39 2008-07-27 18:26:11 decoyduck Exp $ */
+/* $Id: poll_results.php,v 1.40 2008-08-20 19:02:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -284,7 +284,7 @@ if ($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC && $poll_data['POLLTYPE'] <> POLL
     echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"475\">\n";
     echo "  <tr>\n";
     echo "    <td align=\"center\" class=\"postbody\">\n";
-    echo "      <form name=\"f_mode\" method=\"get\" action=\"poll_results.php\">\n";
+    echo "      <form accept-charset=\"utf-8\" name=\"f_mode\" method=\"get\" action=\"poll_results.php\">\n";
     echo "        ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
     echo "        ", form_input_hidden("tid", _htmlentities($tid)), "\n";
     echo "        View Style: ", form_dropdown_array("view_style", array($lang['viewbypolloption'], $lang['viewbyuser']), $view_style, "onchange=\"submit()\""), "&nbsp;", form_submit('go', $lang['goexcmark']), "\n";
@@ -295,7 +295,7 @@ if ($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC && $poll_data['POLLTYPE'] <> POLL
 }
 
 echo "<br />\n";
-echo "<form method=\"post\" action=\"poll_results.php\" target=\"_self\">\n";
+echo "<form accept-charset=\"utf-8\" method=\"post\" action=\"poll_results.php\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ". form_submit('close', $lang['close']). "\n";
 echo "</form>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_folder_edit.php,v 1.9 2008-07-27 18:26:10 decoyduck Exp $ */
+/* $Id: links_folder_edit.php,v 1.10 2008-08-20 19:02:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -192,7 +192,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     html_display_error_array($error_msg_array, '500', 'left');
 }
 
-echo "<form name=\"folderadd\" action=\"links_folder_edit.php\" method=\"post\" target=\"_self\">\n";
+echo "<form accept-charset=\"utf-8\" name=\"folderadd\" action=\"links_folder_edit.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden("fid", _htmlentities($fid)) . "\n";
 echo "  ", form_input_hidden("mode", LINKS_ADD_FOLDER) . "\n";

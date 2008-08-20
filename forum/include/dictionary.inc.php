@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.inc.php,v 1.55 2008-08-12 17:09:18 decoyduck Exp $ */
+/* $Id: dictionary.inc.php,v 1.56 2008-08-20 19:02:59 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -41,19 +41,19 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 
 class dictionary {
 
-    var $ignored_words_array;
-    var $suggestions_array;
+    private $ignored_words_array;
+    private $suggestions_array;
 
-    var $content_array;
+    private $content_array;
 
-    var $current_word;
-    var $obj_id;
+    private $current_word;
+    private $obj_id;
 
-    var $check_complete;
+    private $check_complete;
 
-    var $offset_match;
-    var $word_suggestion_count;
-    var $word_suggestion_result;
+    private $offset_match;
+    private $word_suggestion_count;
+    private $word_suggestion_result;
 
     function dictionary($content, $ignored_words, $current_word, $obj_id, $offset_match)
     {

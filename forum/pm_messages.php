@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_messages.php,v 1.53 2008-08-19 19:49:09 decoyduck Exp $ */
+/* $Id: pm_messages.php,v 1.54 2008-08-20 19:02:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -271,7 +271,7 @@ if (isset($mid) && is_numeric($mid) && $mid > 0) {
     echo "<h1>{$pm_header_array[$current_folder]} &raquo; ", word_filter_add_ob_tags(_htmlentities($pm_message_array['SUBJECT'])), "</h1>\n";
     echo "<br />\n";
     echo "<div align=\"center\">\n";
-    echo "<form name=\"pm\" action=\"pm_messages.php\" method=\"post\" target=\"_self\">\n";
+    echo "<form accept-charset=\"utf-8\" name=\"pm\" action=\"pm_messages.php\" method=\"post\" target=\"_self\">\n";
     echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "  ", form_input_hidden('folder', _htmlentities($current_folder)), "\n";
     echo "  ", form_input_hidden('page', _htmlentities($page)), "\n";
@@ -538,7 +538,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 echo "<br />\n";
 echo "<div align=\"center\">\n";
-echo "<form name=\"pm\" action=\"pm_messages.php\" method=\"post\" target=\"_self\">\n";
+echo "<form accept-charset=\"utf-8\" name=\"pm\" action=\"pm_messages.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden('folder', _htmlentities($current_folder)), "\n";
 echo "  ", form_input_hidden('page', _htmlentities($page)), "\n";

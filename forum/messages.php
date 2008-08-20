@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.277 2008-08-12 17:13:44 decoyduck Exp $ */
+/* $Id: messages.php,v 1.278 2008-08-20 19:02:58 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -493,7 +493,7 @@ if (($tracking_data_array = thread_get_tracking_data($tid))) {
 }
 
 echo "</div>\n";
-echo "<form name=\"f_quote\" action=\"post.php\" method=\"get\" target=\"_parent\">\n";
+echo "<form accept-charset=\"utf-8\" name=\"f_quote\" action=\"post.php\" method=\"get\" target=\"_parent\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden('quote_list', ''), "\n";
 echo "  ", form_input_hidden('replyto', ''), "\n";
@@ -501,7 +501,7 @@ echo "</form>\n";
 
 echo "<div id=\"quick_reply_container\" class=\"quick_reply_container_closed\">\n";
 echo "<br />\n";
-echo "<form name=\"quick_reply_form\" action=\"post.php\" method=\"post\" target=\"_parent\">\n";
+echo "<form accept-charset=\"utf-8\" name=\"quick_reply_form\" action=\"post.php\" method=\"post\" target=\"_parent\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden('t_tid', _htmlentities($tid)), "\n";
 echo "  ", form_input_hidden('t_rpid', '0'), "\n";

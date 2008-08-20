@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.332 2008-08-17 17:29:33 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.333 2008-08-20 19:02:59 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -311,7 +311,7 @@ function forum_check_password($forum_fid)
 
         echo "<br />\n";
         echo "<div align=\"center\">\n";
-        echo "  <form method=\"post\" action=\"forum_password.php\" target=\"", html_get_top_frame_name(), "\">\n";
+        echo "  <form accept-charset=\"utf-8\" method=\"post\" action=\"forum_password.php\" target=\"", html_get_top_frame_name(), "\">\n";
         echo "    ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
         echo "    ", form_input_hidden('final_uri', _htmlentities(get_request_uri())), "\n";
         echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
@@ -666,12 +666,13 @@ function forum_check_setting_name($setting_name)
     $valid_forum_settings = array('allow_polls', 'allow_post_editing', 'allow_search_spidering',
                                   'closed_message', 'default_emoticons', 'default_language',
                                   'default_style', 'enable_wiki_integration', 'enable_wiki_quick_links',
-                                  'force_word_filter', 'forum_desc', 'forum_dl_saving', 'forum_email',
-                                  'forum_keywords', 'forum_name', 'forum_timezone', 'forum_links_top_link',
-                                  'guest_account_enabled', 'guest_show_recent', 'maximum_post_length',
-                                  'minimum_post_frequency', 'password_protected_message', 'poll_allow_guests',
-                                  'post_edit_grace_period', 'post_edit_time', 'require_post_approval',
-                                  'restricted_message', 'show_links', 'show_stats', 'wiki_integration_uri');
+                                  'force_word_filter', 'forum_desc', 'forum_content_rating', 'forum_dl_saving',
+                                  'forum_email', 'forum_keywords', 'forum_name', 'forum_timezone',
+                                  'forum_links_top_link', 'guest_account_enabled', 'guest_show_recent',
+                                  'maximum_post_length', 'minimum_post_frequency', 'password_protected_message',
+                                  'poll_allow_guests', 'post_edit_grace_period', 'post_edit_time',
+                                  'require_post_approval', 'restricted_message', 'show_links',
+                                  'show_stats', 'wiki_integration_uri');
 
     return in_array($setting_name, $valid_forum_settings);
 }
@@ -681,10 +682,9 @@ function forum_check_global_setting_name($setting_name)
     $valid_global_forum_settings = array('active_sess_cutoff', 'allow_new_registrations', 'allow_search_spidering',
                                          'allow_username_changes', 'attachments_allow_embed', 'attachments_enabled',
                                          'attachments_max_user_space', 'attachment_allow_guests', 'attachment_dir',
-                                         'attachment_use_old_method', 'forum_desc', 'forum_email',
-                                         'forum_keywords', 'forum_name', 'forum_noreply_email',
-                                         'forum_rules_enabled', 'forum_rules_message', 'forum_maintenance_function',
-                                         'forum_maintenance_schedule', 'pm_system_prune_folders_last_run',
+                                         'attachment_use_old_method', 'forum_desc', 'forum_email', 'forum_keywords',
+                                         'forum_name', 'forum_noreply_email', 'forum_rules_enabled', 'forum_rules_message',
+                                         'forum_maintenance_function', 'forum_maintenance_schedule', 'pm_system_prune_folders_last_run',
                                          'bh_remove_stale_sessions_last_run', 'thread_auto_prune_unread_data_last_run',
                                          'captcha_clean_up_last_run', 'sitemap_create_file_last_run', 'guest_account_enabled',
                                          'guest_show_recent', 'message_cache_enabled', 'messages_unread_cutoff',

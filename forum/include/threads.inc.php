@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.324 2008-08-16 18:55:53 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.325 2008-08-20 19:03:00 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1674,7 +1674,7 @@ function thread_list_draw_top($mode)
         }
     }
 
-    echo "<form name=\"f_mode\" method=\"get\" action=\"thread_list.php\">\n";
+    echo "<form accept-charset=\"utf-8\" name=\"f_mode\" method=\"get\" action=\"thread_list.php\">\n";
     echo "  ", form_input_hidden("webtag", _htmlentities($webtag)), "\n";
     echo "  <table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
     echo "    <tr>\n";

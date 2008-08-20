@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: htmltools.inc.php,v 1.81 2008-08-10 13:55:53 decoyduck Exp $ */
+/* $Id: htmltools.inc.php,v 1.82 2008-08-20 19:03:00 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -124,7 +124,7 @@ html_draw_top("onunload=clearFocus()", "htmltools.js");
 
 $tools = new TextAreaHTML("myFormName");
 
-echo '<form name="myFormName">';
+echo '<form accept-charset=\"utf-8\" name="myFormName">';
 echo $tools->toolbar();
 echo $tools->textarea("textarea_name", "content for textarea", 20, 0);
 echo $tools->textarea("textarea_2_name", "content for textarea 2", 20, 0);
@@ -140,11 +140,11 @@ class TextAreaHTML {
     // stick with PHP/4.x's old var modifiers, because for now
     // it is going to be more compatible with our 'audience'
 
-    var $form;                      // name of the form the textareas will belong to
-    var $tas = array();             // array of all the html-enabled textarea's names
-    var $tbs = 0;                   // count of all the generated toolbars
-    var $tinymce = false;           // marker if the TinyMCE editor is being used
-    var $allowed_toolbars = 1;      // number of allowed TinyMCE toolbars, default 1
+    private $form;                      // name of the form the textareas will belong to
+    private $tas = array();             // array of all the html-enabled textarea's names
+    private $tbs = 0;                   // count of all the generated toolbars
+    private $tinymce = false;           // marker if the TinyMCE editor is being used
+    private $allowed_toolbars = 1;      // number of allowed TinyMCE toolbars, default 1
 
     function TextAreaHTML ($form)
     {

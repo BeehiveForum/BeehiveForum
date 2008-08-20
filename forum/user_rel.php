@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.114 2008-08-12 17:13:45 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.115 2008-08-20 19:02:59 decoyduck Exp $ */
 
 /**
 * Displays and handles the User Relationship page
@@ -323,7 +323,7 @@ if (isset($_POST['preview_signature'])) {
     }
 }
 
-echo "<form name=\"relationship\" action=\"user_rel.php\" method=\"post\" target=\"_self\">\n";
+echo "<form accept-charset=\"utf-8\" name=\"relationship\" action=\"user_rel.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
 echo "  ", form_input_hidden("uid", _htmlentities($peer_uid)), "\n";
 echo "  ", form_input_hidden("ret", _htmlentities($ret)), "\n";

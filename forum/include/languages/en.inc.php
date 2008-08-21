@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.575 2008-08-20 19:03:00 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.576 2008-08-21 20:46:17 decoyduck Exp $ */
 
 // British English language file
 
@@ -240,6 +240,7 @@ $lang['move'] = "Move";
 $lang['closed'] = "Closed";
 $lang['open'] = "Open";
 $lang['restricted'] = "Restricted";
+$lang['hidden'] = "Hidden";
 $lang['forumiscurrentlyclosed'] = "%s is currently closed";
 $lang['youdonothaveaccesstoforum'] = "You do not have access to %s";
 $lang['toapplyforaccessplease'] = "To apply for access please contact the %s.";
@@ -619,6 +620,7 @@ $lang['novisitorslogged'] = "No Visitors Logged";
 $lang['addselectedusers'] = "Add Selected Users";
 $lang['removeselectedusers'] = "Remove Selected Users";
 $lang['addnew'] = "Add New";
+$lang['deleteselected'] = "Delete Selected";
 $lang['deletemessages'] = "Delete Messages";
 $lang['forumrulesmessage'] = "<p><b>Forum Rules</b></p><p>\nRegistration to %1\$s is free! We do insist that you abide by the rules and policies detailed below. If you agree to the terms, please check the 'I agree' checkbox and press the 'Register' button below. If you would like to cancel the registration, click %2\$s to return to the forums index.</p><p>\nAlthough the administrators and moderators of %1\$s will attempt to keep all objectionable messages off this forum, it is impossible for us to review all messages. All messages express the views of the author, and neither the owners of %1\$s, nor Project Beehive Forum and it's affiliates will be held responsible for the content of any message.</p><p>\nBy agreeing to these rules, you warrant that you will not post any messages that are obscene, vulgar, sexually-orientated, hateful, threatening, or otherwise violative of any laws.</p><p>The owners of %1\$s reserve the right to remove, edit, move or close any thread for any reason.</p>";
 $lang['cancellinktext'] = "here";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.212 2008-08-20 19:02:58 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.213 2008-08-21 20:46:15 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -71,11 +71,14 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "messages.inc.php");
 include_once(BH_INCLUDE_PATH. "thread.inc.php");
 
+// Get Webtag
+
+$webtag = get_webtag();
+
 // Check we're logged in correctly
 
 if (!$user_sess = bh_session_check()) {
     $request_uri = rawurlencode(get_request_uri());
-    $webtag = get_webtag();
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
@@ -919,7 +922,7 @@ if (($friends_array = pm_user_get_friends())) {
     echo "                      </tr>\n";
 }
 
-if (!is_array($friends_array)) {
+if (!is_array($friends_array) && forum_check_webtag_available()) {
 
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";

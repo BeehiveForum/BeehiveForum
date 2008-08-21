@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.173 2008-08-17 17:29:33 decoyduck Exp $ */
+/* $Id: index.php,v 1.174 2008-08-21 20:46:15 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -79,7 +79,7 @@ if (bh_session_user_banned()) {
     exit;
 }
 
-// Check we have a webtag
+// Get webtag
 
 $webtag = get_webtag();
 
@@ -169,7 +169,7 @@ if ($skip_logon_page === true) {
 
     html_draw_top('body_tag=false', 'frames=true', 'robots=index,follow');
 
-    if ($webtag) {
+    if (forum_check_webtag_available()) {
 
         echo "<frameset rows=\"60,$navsize,*\" framespacing=\"0\" border=\"0\">\n";
         echo "<frame src=\"$top_html\" name=\"", html_get_frame_name('ftop'), "\" frameborder=\"0\" scrolling=\"no\" noresize=\"noresize\" />\n";
@@ -215,8 +215,9 @@ if ($skip_logon_page === true) {
 
     }else {
 
-        echo "<frameset rows=\"60,*\" framespacing=\"0\" border=\"0\">\n";
+        echo "<frameset rows=\"60,$navsize,*\" framespacing=\"0\" border=\"0\">\n";
         echo "<frame src=\"$top_html\" name=\"", html_get_frame_name('ftop'), "\" frameborder=\"0\" scrolling=\"no\" noresize=\"noresize\" />\n";
+        echo "<frame src=\"nav.php?webtag=$webtag\" name=\"", html_get_frame_name('fnav'), "\" frameborder=\"0\" scrolling=\"no\" noresize=\"noresize\" />\n";
 
         if (isset($final_uri) && strlen($final_uri) > 0) {
 
@@ -280,7 +281,7 @@ echo "<body>\n";
 
 if ($session_active && !$logon_failed) {
 
-    if ($webtag !== false) {
+    if (forum_check_webtag_available()) {
 
         light_draw_thread_list();
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ldisplay.php,v 1.37 2008-08-10 12:36:28 decoyduck Exp $ */
+/* $Id: ldisplay.php,v 1.38 2008-08-21 20:46:15 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -105,7 +105,7 @@ if (!bh_session_user_approved()) {
 
 // Check we have a webtag
 
-if (!$webtag = get_webtag()) {
+if (!forum_check_webtag_available()) {
     header_redirect("lforums.php");
 }
 

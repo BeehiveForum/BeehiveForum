@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: search_popup.php,v 1.35 2008-08-20 19:02:59 decoyduck Exp $ */
+/* $Id: search_popup.php,v 1.36 2008-08-21 20:46:15 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -66,11 +66,14 @@ include_once(BH_INCLUDE_PATH. "thread.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
+// Get Webtag
+
+$webtag = get_webtag();
+
 // Check we're logged in correctly
 
 if (!$user_sess = bh_session_check()) {
     $request_uri = rawurlencode(get_request_uri());
-    $webtag = get_webtag();
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
@@ -92,7 +95,7 @@ if (!bh_session_user_approved()) {
 
 // Check we have a webtag
 
-if (!$webtag = get_webtag()) {
+if (!forum_check_webtag_available()) {
     $request_uri = rawurlencode(get_request_uri(false));
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }

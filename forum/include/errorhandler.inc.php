@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.126 2008-08-20 19:02:59 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.127 2008-08-21 20:46:17 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -133,6 +133,12 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
     // Now we can carry on with any other errors.
 
     if (error_reporting()) {
+
+        // Flush the output buffer
+
+        while (@ob_end_clean());
+        ob_start("bh_gzhandler");
+        ob_implicit_flush(0);
 
         // Array to hold the error message strings.
 
@@ -378,12 +384,6 @@ function bh_error_handler($errno, $errstr, $errfile = '', $errline = 0)
 
             exit;
         }
-
-        // Flush the output buffer
-
-        while (@ob_end_clean());
-        ob_start("bh_gzhandler");
-        ob_implicit_flush(0);
 
         // Full mode error message display with Retry button.
 

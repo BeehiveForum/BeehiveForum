@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.333 2008-08-20 19:02:59 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.334 2008-08-21 20:46:17 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -118,21 +118,30 @@ function get_forum_data()
 
 function get_webtag()
 {
-    $forum_data = get_forum_data();
-
-    if (is_array($forum_data) && isset($forum_data['WEBTAG'])) {
-        return $forum_data['WEBTAG'];
+    if (isset($_GET['webtag']) && strlen(trim(_stripslashes($_GET['webtag']))) > 0) {
+        return trim(_stripslashes($_GET['webtag']));
+    }elseif (isset($_POST['webtag']) && strlen(trim(_stripslashes($_POST['webtag']))) > 0) {
+        return trim(_stripslashes($_POST['webtag']));
     }
-
-    return false;
 }
 
 function get_table_prefix()
 {
     $forum_data = get_forum_data();
 
-    if (is_array($forum_data) && isset($forum_data['WEBTAG'])) {
+    if (is_array($forum_data) && isset($forum_data['PREFIX'])) {
         return $forum_data;
+    }
+
+    return false;
+}
+
+function forum_check_webtag_available()
+{
+    $forum_data = get_forum_data();
+
+    if (is_array($forum_data) && isset($forum_data['ACCESS_LEVEL'])) {
+        return ($forum_data['ACCESS_LEVEL'] < FORUM_HIDDEN);
     }
 
     return false;
@@ -154,7 +163,8 @@ function forum_check_access_level()
 
         $sql = "SELECT FORUMS.FID, FORUMS.ACCESS_LEVEL, USER_FORUM.ALLOWED FROM FORUMS ";
         $sql.= "LEFT JOIN USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
-        $sql.= "AND USER_FORUM.UID = '$uid') WHERE FORUMS.FID = '$forum_fid'";
+        $sql.= "AND USER_FORUM.UID = '$uid') WHERE FORUMS.FID = '$forum_fid' ";
+        $sql.= "AND FORUMS.ACCESS_LEVEL < 3";
 
         if (!$result = db_query($sql, $db_forum_check_access_level)) return false;
 
@@ -724,7 +734,7 @@ function forum_get_webtag($fid)
 
     if (!is_numeric($fid)) return false;
 
-    $sql = "SELECT WEBTAG FROM FORUMS WHERE FID = '$fid'";
+    $sql = "SELECT WEBTAG FROM FORUMS WHERE FID = '$fid' AND ACCESS_LEVEL < 3";
 
     if (!$result = db_query($sql, $db_forum_get_webtag)) return false;
 
@@ -739,14 +749,14 @@ function forum_get_webtag($fid)
 
 function forum_get_table_prefix($fid)
 {
-    if (!$db_forum_get_webtag = db_connect()) return false;
+    if (!$db_forum_get_table_prefix = db_connect()) return false;
 
     if (!is_numeric($fid)) return false;
 
     $sql = "SELECT CONCAT(FORUMS.DATABASE_NAME, '.', FORUMS.WEBTAG, '_') AS PREFIX, ";
     $sql.= "FID, WEBTAG FROM FORUMS WHERE FID = '$fid'";
 
-    if (!$result = db_query($sql, $db_forum_get_webtag)) return false;
+    if (!$result = db_query($sql, $db_forum_get_table_prefix)) return false;
 
     if (db_num_rows($result) > 0) {
 

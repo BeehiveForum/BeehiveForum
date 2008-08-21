@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.250 2008-08-20 19:02:56 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.251 2008-08-21 20:46:13 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -83,11 +83,14 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "user_profile.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
+// Get Webtag
+
+$webtag = get_webtag();
+
 // Check we're logged in correctly
 
 if (!$user_sess = bh_session_check()) {
     $request_uri = rawurlencode(get_request_uri());
-    $webtag = get_webtag();
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
@@ -368,7 +371,7 @@ if (isset($_POST['action_submit'])) {
 
     $valid = true;
 
-    if (($table_data = get_table_prefix())) {
+    if (forum_check_webtag_available()) {
 
         // Check post count is being changed or reset.
 
@@ -494,7 +497,7 @@ if (isset($_POST['action_submit'])) {
 
     // Local folder permissions
 
-    if (($table_data = get_table_prefix())) {
+    if (forum_check_webtag_available()) {
 
         if (isset($_POST['t_update_perms_array']) && is_array($_POST['t_update_perms_array'])) {
 
@@ -573,7 +576,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
         html_draw_top('admin.js');
 
-        if (($table_data = get_table_prefix())) {
+        if (forum_check_webtag_available()) {
             echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
         }else {
             echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
@@ -643,7 +646,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
         $user_history_array = admin_get_user_history($user['UID']);
 
-        if (($table_data = get_table_prefix())) {
+        if (forum_check_webtag_available()) {
             echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
         }else {
             echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
@@ -829,7 +832,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
             $user_alias_array = admin_get_user_referer_matches($user['UID']);
         }
 
-        if (($table_data = get_table_prefix())) {
+        if (forum_check_webtag_available()) {
             echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
         }else {
             echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
@@ -1020,7 +1023,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
         html_draw_top('admin.js');
 
-        if (($table_data = get_table_prefix())) {
+        if (forum_check_webtag_available()) {
             echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
         }else {
             echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
@@ -1081,7 +1084,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
         html_draw_top('admin.js');
 
-        if (($table_data = get_table_prefix())) {
+        if (forum_check_webtag_available()) {
             echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
         }else {
             echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
@@ -1139,7 +1142,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
 html_draw_top('admin.js', 'openprofile.js');
 
-if (($table_data = get_table_prefix())) {
+if (forum_check_webtag_available()) {
     echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
 }else {
     echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
@@ -1222,7 +1225,7 @@ if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
         echo "                      </tr>\n";
     }
 
-    if (($table_data = get_table_prefix())) {
+    if (forum_check_webtag_available()) {
 
         if (isset($user['REFERER']) && strlen(trim($user['REFERER'])) > 0) {
 
@@ -1335,10 +1338,9 @@ if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
     echo "  </table>\n";
     echo "  <br />\n";
 
-    if (forum_get_setting('require_user_approval', 'Y') && !admin_user_approved($uid)) {
+    if (forum_check_webtag_available()) {
 
-        $admin_options_dropdown = array('approve_user'   => $lang['approveuser'],
-                                        'edit_details'   => $lang['edituserdetails'],
+        $admin_options_dropdown = array('edit_details'   => $lang['edituserdetails'],
                                         'edit_signature' => $lang['editsignature'],
                                         'edit_profile'   => $lang['editprofile'],
                                         'reset_passwd'   => $lang['resetpassword'],
@@ -1349,14 +1351,14 @@ if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
 
     }else {
 
-        $admin_options_dropdown = array('edit_details'   => $lang['edituserdetails'],
-                                        'edit_signature' => $lang['editsignature'],
-                                        'edit_profile'   => $lang['editprofile'],
-                                        'reset_passwd'   => $lang['resetpassword'],
+        $admin_options_dropdown = array('reset_passwd'   => $lang['resetpassword'],
                                         'view_history'   => $lang['viewuserhistory'],
                                         'user_aliases'   => $lang['viewuseraliases'],
-                                        'delete_user'    => $lang['deleteuser'],
-                                        'delete_posts'   => $lang['deleteposts']);
+                                        'delete_user'    => $lang['deleteuser']);
+    }
+
+    if (forum_get_setting('require_user_approval', 'Y') && !admin_user_approved($uid)) {
+        $admin_options_dropdown = array_merge(array('approve_user' => $lang['approveuser']), $admin_options_dropdown);
     }
 
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
@@ -1391,7 +1393,7 @@ if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
     echo "  <br />\n";
 }
 
-if (($table_data = get_table_prefix())) {
+if (forum_check_webtag_available()) {
 
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";
@@ -1571,93 +1573,93 @@ if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
     }
 }
 
-if (($folder_array = perm_user_get_folders($uid))) {
+if (forum_check_webtag_available()) {
 
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\">\n";
-    echo "        <table class=\"box\" width=\"100%\">\n";
-    echo "          <tr>\n";
-    echo "            <td align=\"left\" class=\"posthead\">\n";
-    echo "              <table class=\"posthead\" width=\"100%\">\n";
-    echo "                <tr>\n";
-    echo "                  <td class=\"subhead\" align=\"left\">{$lang['folderaccess']}</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\">&nbsp;</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"center\">\n";
-    echo "                    <table class=\"box\" width=\"95%\">\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\" class=\"posthead\">\n";
-    echo "                          <table class=\"posthead\" width=\"100%\">\n";
-    echo "                            <tr>\n";
-    echo "                              <td align=\"left\" class=\"subhead\" width=\"100\">{$lang['folders']}</td>\n";
-    echo "                              <td align=\"left\" class=\"subhead\">{$lang['permissions']}</td>\n";
-    echo "                            </tr>\n";
-    echo "                            <tr>\n";
-    echo "                              <td align=\"left\" colspan=\"2\">\n";
-    echo "                                <div class=\"admin_folder_perms\">\n";
+    if (($folder_array = perm_user_get_folders($uid))) {
 
-    foreach ($folder_array as $fid => $folder) {
+        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+        echo "    <tr>\n";
+        echo "      <td align=\"left\">\n";
+        echo "        <table class=\"box\" width=\"100%\">\n";
+        echo "          <tr>\n";
+        echo "            <td align=\"left\" class=\"posthead\">\n";
+        echo "              <table class=\"posthead\" width=\"100%\">\n";
+        echo "                <tr>\n";
+        echo "                  <td class=\"subhead\" align=\"left\">{$lang['folderaccess']}</td>\n";
+        echo "                </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\">&nbsp;</td>\n";
+        echo "                </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"center\">\n";
+        echo "                    <table class=\"box\" width=\"95%\">\n";
+        echo "                      <tr>\n";
+        echo "                        <td align=\"left\" class=\"posthead\">\n";
+        echo "                          <table class=\"posthead\" width=\"100%\">\n";
+        echo "                            <tr>\n";
+        echo "                              <td align=\"left\" class=\"subhead\" width=\"100\">{$lang['folders']}</td>\n";
+        echo "                              <td align=\"left\" class=\"subhead\">{$lang['permissions']}</td>\n";
+        echo "                            </tr>\n";
+        echo "                            <tr>\n";
+        echo "                              <td align=\"left\" colspan=\"2\">\n";
+        echo "                                <div class=\"admin_folder_perms\">\n";
 
-        echo "                                  ", form_input_hidden("t_update_perms_array[]", _htmlentities($folder['FID'])), "\n";
-        echo "                                  <table class=\"posthead\" width=\"100%\">\n";
-        echo "                                    <tr>\n";
-        echo "                                      <td align=\"left\" rowspan=\"5\" width=\"100\" valign=\"top\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;fid={$folder['FID']}\" target=\"_self\">", word_filter_add_ob_tags(_htmlentities($folder['TITLE'])), "</a></td>\n";
-        echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_read[{$folder['FID']}]", USER_PERM_POST_READ, $lang['readposts'], $folder['STATUS'] & USER_PERM_POST_READ), "</td>\n";
-        echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_create[{$folder['FID']}]", USER_PERM_POST_CREATE, $lang['replytothreads'], $folder['STATUS'] & USER_PERM_POST_CREATE), "</td>\n";
-        echo "                                    </tr>\n";
-        echo "                                    <tr>\n";
-        echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_thread_create[{$folder['FID']}]", USER_PERM_THREAD_CREATE, $lang['createnewthreads'], $folder['STATUS'] & USER_PERM_THREAD_CREATE), "</td>\n";
-        echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_edit[{$folder['FID']}]", USER_PERM_POST_EDIT, $lang['editposts'], $folder['STATUS'] & USER_PERM_POST_EDIT), "</td>\n";
-        echo "                                    </tr>\n";
-        echo "                                    <tr>\n";
-        echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_delete[{$folder['FID']}]", USER_PERM_POST_DELETE, $lang['deleteposts'], $folder['STATUS'] & USER_PERM_POST_DELETE), "</td>\n";
-        echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_attach[{$folder['FID']}]", USER_PERM_POST_ATTACHMENTS, $lang['uploadattachments'], $folder['STATUS'] & USER_PERM_POST_ATTACHMENTS), "</td>\n";
-        echo "                                    </tr>\n";
-        echo "                                    <tr>\n";
-        echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_html[{$folder['FID']}]", USER_PERM_HTML_POSTING, $lang['postinhtml'], $folder['STATUS'] & USER_PERM_HTML_POSTING), "</td>\n";
-        echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_sig[{$folder['FID']}]", USER_PERM_SIGNATURE, $lang['postasignature'], $folder['STATUS'] & USER_PERM_SIGNATURE), "</td>\n";
-        echo "                                    </tr>\n";
-        echo "                                    <tr>\n";
-        echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_moderator[{$folder['FID']}]", USER_PERM_FOLDER_MODERATE, $lang['moderatefolder'], $folder['STATUS'] & USER_PERM_FOLDER_MODERATE), "</td>\n";
-        echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_approval[{$folder['FID']}]", USER_PERM_POST_APPROVAL, $lang['requirepostapproval'], $folder['STATUS'] & USER_PERM_POST_APPROVAL), "</td>\n";
-        echo "                                    </tr>\n";
-        echo "                                    <tr>\n";
-        echo "                                      <td align=\"left\" colspan=\"4\">&nbsp;</td>\n";
-        echo "                                    </tr>\n";
-        echo "                                  </table>\n";
+        foreach ($folder_array as $fid => $folder) {
+
+            echo "                                  ", form_input_hidden("t_update_perms_array[]", _htmlentities($folder['FID'])), "\n";
+            echo "                                  <table class=\"posthead\" width=\"100%\">\n";
+            echo "                                    <tr>\n";
+            echo "                                      <td align=\"left\" rowspan=\"5\" width=\"100\" valign=\"top\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;fid={$folder['FID']}\" target=\"_self\">", word_filter_add_ob_tags(_htmlentities($folder['TITLE'])), "</a></td>\n";
+            echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_read[{$folder['FID']}]", USER_PERM_POST_READ, $lang['readposts'], $folder['STATUS'] & USER_PERM_POST_READ), "</td>\n";
+            echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_create[{$folder['FID']}]", USER_PERM_POST_CREATE, $lang['replytothreads'], $folder['STATUS'] & USER_PERM_POST_CREATE), "</td>\n";
+            echo "                                    </tr>\n";
+            echo "                                    <tr>\n";
+            echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_thread_create[{$folder['FID']}]", USER_PERM_THREAD_CREATE, $lang['createnewthreads'], $folder['STATUS'] & USER_PERM_THREAD_CREATE), "</td>\n";
+            echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_edit[{$folder['FID']}]", USER_PERM_POST_EDIT, $lang['editposts'], $folder['STATUS'] & USER_PERM_POST_EDIT), "</td>\n";
+            echo "                                    </tr>\n";
+            echo "                                    <tr>\n";
+            echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_delete[{$folder['FID']}]", USER_PERM_POST_DELETE, $lang['deleteposts'], $folder['STATUS'] & USER_PERM_POST_DELETE), "</td>\n";
+            echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_attach[{$folder['FID']}]", USER_PERM_POST_ATTACHMENTS, $lang['uploadattachments'], $folder['STATUS'] & USER_PERM_POST_ATTACHMENTS), "</td>\n";
+            echo "                                    </tr>\n";
+            echo "                                    <tr>\n";
+            echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_html[{$folder['FID']}]", USER_PERM_HTML_POSTING, $lang['postinhtml'], $folder['STATUS'] & USER_PERM_HTML_POSTING), "</td>\n";
+            echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_sig[{$folder['FID']}]", USER_PERM_SIGNATURE, $lang['postasignature'], $folder['STATUS'] & USER_PERM_SIGNATURE), "</td>\n";
+            echo "                                    </tr>\n";
+            echo "                                    <tr>\n";
+            echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_moderator[{$folder['FID']}]", USER_PERM_FOLDER_MODERATE, $lang['moderatefolder'], $folder['STATUS'] & USER_PERM_FOLDER_MODERATE), "</td>\n";
+            echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_approval[{$folder['FID']}]", USER_PERM_POST_APPROVAL, $lang['requirepostapproval'], $folder['STATUS'] & USER_PERM_POST_APPROVAL), "</td>\n";
+            echo "                                    </tr>\n";
+            echo "                                    <tr>\n";
+            echo "                                      <td align=\"left\" colspan=\"4\">&nbsp;</td>\n";
+            echo "                                    </tr>\n";
+            echo "                                  </table>\n";
+        }
+
+        echo "                                </div>\n";
+        echo "                              </td>\n";
+        echo "                            </tr>\n";
+        echo "                          </table>\n";
+        echo "                        </td>\n";
+        echo "                      </tr>\n";
+        echo "                    </table>\n";
+        echo "                  </td>\n";
+        echo "                </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td>\n";
+
+        html_display_warning_msg($lang['usergroupwarning'], '95%', 'center');
+
+        echo "                  </td>\n";
+        echo "                </tr>\n";
+        echo "              </table>\n";
+        echo "            </td>\n";
+        echo "          </tr>\n";
+        echo "        </table>\n";
+        echo "      </td>\n";
+        echo "    </tr>\n";
+        echo "  </table>\n";
+        echo "  <br />\n";
     }
-
-    echo "                                </div>\n";
-    echo "                              </td>\n";
-    echo "                            </tr>\n";
-    echo "                          </table>\n";
-    echo "                        </td>\n";
-    echo "                      </tr>\n";
-    echo "                    </table>\n";
-    echo "                  </td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td>\n";
-
-    html_display_warning_msg($lang['usergroupwarning'], '95%', 'center');
-
-    echo "                  </td>\n";
-    echo "                </tr>\n";
-    echo "              </table>\n";
-    echo "            </td>\n";
-    echo "          </tr>\n";
-    echo "        </table>\n";
-    echo "      </td>\n";
-    echo "    </tr>\n";
-    echo "  </table>\n";
-    echo "  <br />\n";
-}
-
-if (($table_data = get_table_prefix())) {
 
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";

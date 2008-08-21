@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.163 2008-08-13 21:28:31 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.164 2008-08-21 20:46:17 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -783,7 +783,7 @@ function admin_get_forum_list($offset)
     $forums_array = array();
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS FORUMS.FID, FORUMS.WEBTAG, FORUMS.DEFAULT_FORUM, ";
-    $sql.= "FORUM_SETTINGS.SVALUE AS FORUM_NAME FROM FORUMS ";
+    $sql.= "FORUMS.ACCESS_LEVEL, FORUM_SETTINGS.SVALUE AS FORUM_NAME FROM FORUMS ";
     $sql.= "LEFT JOIN FORUM_SETTINGS ON (FORUM_SETTINGS.FID = FORUMS.FID ";
     $sql.= "AND FORUM_SETTINGS.SNAME = 'forum_name') ";
     $sql.= "LIMIT $offset, 10 ";
@@ -801,6 +801,8 @@ function admin_get_forum_list($offset)
     if (db_num_rows($result) > 0) {
 
         while (($forum_data = db_fetch_array($result))) {
+
+            if (!isset($forum_data['ACCESS_LEVEL'])) $forum_data['ACCESS_LEVEL'] = 0;
 
             if (($post_count = admin_forum_get_post_count($forum_data['FID']))) {
                 $forum_data['MESSAGES'] = $post_count;

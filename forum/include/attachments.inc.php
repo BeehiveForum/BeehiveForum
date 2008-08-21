@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.156 2008-08-12 17:09:18 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.157 2008-08-21 20:46:17 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -425,24 +425,35 @@ function delete_attachment($hash)
     if (!$db_delete_attachment = db_connect()) return false;
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
-    if (!$table_data = get_table_prefix()) return false;
 
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
 
     // Fetch the attachment to make sure the user
     // is able to delete it, i.e. it belongs to them.
 
-    $sql = "SELECT PAF.AID, PAF.UID, PAF.FILENAME, PAI.TID, ";
-    $sql.= "PAI.PID, THREAD.FID FROM POST_ATTACHMENT_FILES PAF ";
-    $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ON (THREAD.TID = PAI.TID) ";
-    $sql.= "WHERE PAF.HASH = '$hash'";
+    if (($table_data = get_table_prefix())) {
+
+        $sql = "SELECT PAF.AID, PAF.UID, PAF.FILENAME, PAI.TID, ";
+        $sql.= "PAI.PID, THREAD.FID FROM POST_ATTACHMENT_FILES PAF ";
+        $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ON (THREAD.TID = PAI.TID) ";
+        $sql.= "WHERE PAF.HASH = '$hash'";
+
+    }else {
+
+        $sql = "SELECT PAF.AID, PAF.UID, PAF.FILENAME, PAI.TID, ";
+        $sql.= "PAI.PID FROM POST_ATTACHMENT_FILES PAF ";
+        $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
+        $sql.= "WHERE PAF.HASH = '$hash'";
+    }
 
     if (!$result = db_query($sql, $db_delete_attachment)) return false;
 
     if (db_num_rows($result) > 0) {
 
         $attachment_data = db_fetch_array($result);
+
+        if (!isset($attachment_data['FID'])) $attachment_data['FID'] = 0;
 
         if (($attachment_data['UID'] == $uid) || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $attachment_data['FID'])) {
 
@@ -508,17 +519,29 @@ function delete_attachment_thumbnail($hash)
     // Fetch the attachment to make sure the user
     // is able to delete it, i.e. it belongs to them.
 
-    $sql = "SELECT PAF.AID, PAF.UID, PAF.FILENAME, PAI.TID, ";
-    $sql.= "PAI.PID, THREAD.FID FROM POST_ATTACHMENT_FILES PAF ";
-    $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ON (THREAD.TID = PAI.TID) ";
-    $sql.= "WHERE PAF.HASH = '$hash'";
+    if (($table_data = get_table_prefix())) {
+
+        $sql = "SELECT PAF.AID, PAF.UID, PAF.FILENAME, PAI.TID, ";
+        $sql.= "PAI.PID, THREAD.FID FROM POST_ATTACHMENT_FILES PAF ";
+        $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ON (THREAD.TID = PAI.TID) ";
+        $sql.= "WHERE PAF.HASH = '$hash'";
+
+    }else {
+
+        $sql = "SELECT PAF.AID, PAF.UID, PAF.FILENAME, PAI.TID, ";
+        $sql.= "PAI.PID FROM POST_ATTACHMENT_FILES PAF ";
+        $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
+        $sql.= "WHERE PAF.HASH = '$hash'";
+    }
 
     if (!$result = db_query($sql, $db_delete_attachment_thumbnail)) return false;
 
     if (db_num_rows($result) > 0) {
 
         $attachment_data = db_fetch_array($result);
+
+        if (!isset($attachment_data['FID'])) $attachment_data['FID'] = 0;
 
         if (($attachment_data['UID'] == $uid) || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $attachment_data['FID'])) {
 

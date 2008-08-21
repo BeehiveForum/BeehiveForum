@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.85 2008-08-16 18:55:53 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.86 2008-08-21 20:46:17 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -56,7 +56,7 @@ function get_forum_list($offset)
     $sql.= "CONCAT(FORUMS.DATABASE_NAME, '.', FORUMS.WEBTAG, '_') AS PREFIX FROM FORUMS ";
     $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
     $sql.= "AND USER_FORUM.UID = '$uid') WHERE FORUMS.ACCESS_LEVEL > -1 ";
-    $sql.= "ORDER BY FORUMS.FID LIMIT $offset, 10";
+    $sql.= "AND FORUMS.ACCESS_LEVEL < 3 ORDER BY FORUMS.FID LIMIT $offset, 10";
 
     if (!$result_forums = db_query($sql, $db_get_forum_list)) return false;
 
@@ -144,8 +144,8 @@ function get_my_forums($view_type, $offset)
         $sql.= "CONCAT(FORUMS.DATABASE_NAME, '.', FORUMS.WEBTAG, '_') AS PREFIX FROM FORUMS ";
         $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
         $sql.= "AND USER_FORUM.UID = '$uid') WHERE FORUMS.ACCESS_LEVEL > -1 ";
-        $sql.= "AND (USER_FORUM.INTEREST > -1 OR USER_FORUM.INTEREST IS NULL) ";
-        $sql.= "ORDER BY FORUMS.FID LIMIT $offset, 10";
+        $sql.= "AND FORUMS.ACCESS_LEVEL < 3 AND (USER_FORUM.INTEREST > -1 ";
+        $sql.= "OR USER_FORUM.INTEREST IS NULL) ORDER BY FORUMS.FID LIMIT $offset, 10";
 
     }elseif ($view_type == FORUMS_SHOW_FAVS) {
 
@@ -153,7 +153,7 @@ function get_my_forums($view_type, $offset)
         $sql.= "CONCAT(FORUMS.DATABASE_NAME, '.', FORUMS.WEBTAG, '_') AS PREFIX FROM FORUMS ";
         $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
         $sql.= "AND USER_FORUM.UID = '$uid') WHERE FORUMS.ACCESS_LEVEL > -1 ";
-        $sql.= "AND USER_FORUM.INTEREST = 1 ";
+        $sql.= "AND FORUMS.ACCESS_LEVEL < 3 AND USER_FORUM.INTEREST = 1 ";
         $sql.= "ORDER BY FORUMS.FID LIMIT $offset, 10";
 
     }elseif ($view_type == FORUMS_SHOW_IGNORED) {
@@ -162,7 +162,7 @@ function get_my_forums($view_type, $offset)
         $sql.= "CONCAT(FORUMS.DATABASE_NAME, '.', FORUMS.WEBTAG, '_') AS PREFIX FROM FORUMS ";
         $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
         $sql.= "AND USER_FORUM.UID = '$uid') WHERE FORUMS.ACCESS_LEVEL > -1 ";
-        $sql.= "AND USER_FORUM.INTEREST = -1 ";
+        $sql.= "AND FORUMS.ACCESS_LEVEL < 3 AND USER_FORUM.INTEREST = -1 ";
         $sql.= "ORDER BY FORUMS.FID LIMIT $offset, 10";
     }
 

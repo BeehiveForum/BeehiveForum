@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_menu.php,v 1.100 2008-07-28 21:05:47 decoyduck Exp $ */
+/* $Id: admin_menu.php,v 1.101 2008-08-21 20:46:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -60,11 +60,14 @@ include_once(BH_INCLUDE_PATH. "logon.inc.php");
 include_once(BH_INCLUDE_PATH. "perm.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 
+// Get Webtag
+
+$webtag = get_webtag();
+
 // Check we're logged in correctly
 
 if (!$user_sess = bh_session_check()) {
     $request_uri = rawurlencode(get_request_uri());
-    $webtag = get_webtag();
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
@@ -94,7 +97,7 @@ if ((!bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) && !bh_session_check_perm(
 
 html_draw_top();
 
-if (($table_data = get_table_prefix())) {
+if (forum_check_webtag_available()) {
 
     if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
@@ -183,14 +186,9 @@ if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
     echo "  <tr>\n";
     echo "    <td align=\"left\" class=\"subhead\">{$lang['forummanagement']}</td>\n";
     echo "  </tr>\n";
-
-    if (!$table_data = get_table_prefix()) {
-
-        echo "  <tr>\n";
-        echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_users.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">{$lang['users']}</a></td>\n";
-        echo "  </tr>\n";
-    }
-
+    echo "  <tr>\n";
+    echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_users.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">{$lang['users']}</a></td>\n";
+    echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_forums.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">{$lang['manageforums']}</a></td>\n";
     echo "  </tr>\n";

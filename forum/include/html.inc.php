@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.296 2008-08-21 18:00:47 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.297 2008-08-21 20:46:17 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -329,18 +329,20 @@ function html_get_top_page()
         $user_style = forum_get_setting('default_style');
     }
 
-    if ($user_style !== false) {
+    if (forum_check_webtag_available()) {
 
-        if (@is_dir("$forum_path/styles/$user_style") && @file_exists("$forum_path/styles/$user_style/top.html")) {
-            return "$forum_path/styles/$user_style/top.html";
+        if ($user_style !== false) {
+
+            if (@is_dir("$forum_path/styles/$user_style") && @file_exists("$forum_path/styles/$user_style/top.html")) {
+                return "$forum_path/styles/$user_style/top.html";
+            }
+
+            if (@is_dir("$forum_path/forums/$webtag/styles/$user_style") && @file_exists("$forum_path/forums/$webtag/styles/$user_style/top.html")) {
+                return "$forum_path/forums/$webtag/styles/$user_style/top.html";
+            }
         }
 
-        if (@is_dir("$forum_path/forums/$webtag/styles/$user_style") && @file_exists("$forum_path/forums/$webtag/styles/$user_style/top.html")) {
-            return "$forum_path/forums/$webtag/styles/$user_style/top.html";
-        }
-    }
-
-    if ($webtag !== false) {
+    }else {
 
         if (@is_dir("$forum_path/forums/$webtag") && @file_exists("$forum_path/forums/$webtag/top.html")) {
             return "$forum_path/forums/$webtag/top.html";
@@ -362,40 +364,40 @@ function html_get_style_sheet()
         $user_style = bh_getcookie("bh_{$webtag}_style", false, forum_get_setting('default_style'));
     }
 
-    if ($user_style !== false) {
+    if (forum_check_webtag_available()) {
 
-        $user_style = basename($user_style);
+        if ($user_style !== false) {
 
-        if (@is_dir("$forum_path/forums/$webtag/styles/$user_style") && @file_exists("$forum_path/forums/$webtag/styles/$user_style/$script_filename.css")) {
+            $user_style = basename($user_style);
 
-            if (($modified_time = @filemtime("$forum_path/forums/$webtag/styles/$user_style/$script_filename.css"))) {
-                return sprintf("$forum_path/forums/$webtag/styles/$user_style/$script_filename.css?%s", date('YmdHis', $modified_time));
+            if (@is_dir("$forum_path/forums/$webtag/styles/$user_style") && @file_exists("$forum_path/forums/$webtag/styles/$user_style/$script_filename.css")) {
+
+                if (($modified_time = @filemtime("$forum_path/forums/$webtag/styles/$user_style/$script_filename.css"))) {
+                    return sprintf("$forum_path/forums/$webtag/styles/$user_style/$script_filename.css?%s", date('YmdHis', $modified_time));
+                }
+            }
+
+            if (@is_dir("$forum_path/forums/$webtag/styles/$user_style") && @file_exists("$forum_path/forums/$webtag/styles/$user_style/style.css")) {
+
+                if (($modified_time = @filemtime("$forum_path/forums/$webtag/styles/$user_style/style.css"))) {
+                    return sprintf("$forum_path/forums/$webtag/styles/$user_style/style.css?%s", date('YmdHis', $modified_time));
+                }
+            }
+
+            if (@is_dir("$forum_path/styles/$user_style") && @file_exists("$forum_path/styles/$user_style/$script_filename.css")) {
+
+                if (($modified_time = @filemtime("$forum_path/styles/$user_style/$script_filename.css"))) {
+                    return sprintf("$forum_path/styles/$user_style/$script_filename.css?%s", date('YmdHis', $modified_time));
+                }
+            }
+
+            if (@is_dir("$forum_path/styles/$user_style") && @file_exists("$forum_path/styles/$user_style/style.css")) {
+
+                if (($modified_time = @filemtime("$forum_path/styles/$user_style/style.css"))) {
+                    return sprintf("$forum_path/styles/$user_style/style.css?%s", date('YmdHis', $modified_time));
+                }
             }
         }
-
-        if (@is_dir("$forum_path/forums/$webtag/styles/$user_style") && @file_exists("$forum_path/forums/$webtag/styles/$user_style/style.css")) {
-
-            if (($modified_time = @filemtime("$forum_path/forums/$webtag/styles/$user_style/style.css"))) {
-                return sprintf("$forum_path/forums/$webtag/styles/$user_style/style.css?%s", date('YmdHis', $modified_time));
-            }
-        }
-
-        if (@is_dir("$forum_path/styles/$user_style") && @file_exists("$forum_path/styles/$user_style/$script_filename.css")) {
-
-            if (($modified_time = @filemtime("$forum_path/styles/$user_style/$script_filename.css"))) {
-                return sprintf("$forum_path/styles/$user_style/$script_filename.css?%s", date('YmdHis', $modified_time));
-            }
-        }
-
-        if (@is_dir("$forum_path/styles/$user_style") && @file_exists("$forum_path/styles/$user_style/style.css")) {
-
-            if (($modified_time = @filemtime("$forum_path/styles/$user_style/style.css"))) {
-                return sprintf("$forum_path/styles/$user_style/style.css?%s", date('YmdHis', $modified_time));
-            }
-        }
-    }
-
-    if ($webtag !== false) {
 
         if (@is_dir("$forum_path/forums/$webtag") && @file_exists("$forum_path/forums/$webtag/$script_filename.css")) {
 
@@ -439,7 +441,7 @@ function html_get_emoticon_style_sheet()
         $user_emots = forum_get_setting('default_emoticons');
     }
 
-    if ($user_emots !== false) {
+    if (forum_check_webtag_available() && ($user_emots !== false)) {
 
         if (@is_dir("$forum_path/emoticons/$user_emots") && file_exists("$forum_path/emoticons/$user_emots/style.css")) {
 
@@ -513,9 +515,13 @@ function html_get_frame_name($basename)
 
     $forum_uri = html_get_forum_uri();
 
+    // Get the webtag
+
+    $webtag = get_webtag();
+
     // If webtag available add that to the hash.
 
-    if (($webtag = get_webtag())) {
+    if (forum_check_webtag_available()) {
 
         $frame_md5_hash = md5(sprintf('%s-%s-%s', $forum_uri, $webtag, $basename));
         return sprintf('bh_frame_%s', preg_replace('/[^a-z]+/iu', '', $frame_md5_hash));

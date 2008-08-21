@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.186 2008-08-21 17:58:47 decoyduck Exp $ */
+/* $Id: register.php,v 1.187 2008-08-21 20:46:15 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -570,7 +570,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
     html_display_warning_msg($lang['moreoptionsavailable'], '600', 'center');
 
     echo "<div align=\"center\">\n";
-    echo "<form accept-charset=\"utf-8\" name=\"register\" action=\"", get_request_uri(), "\" method=\"post\">\n";
+    echo "<form accept-charset=\"utf-8\" name=\"form_register\" action=\"", get_request_uri(), "\" method=\"post\">\n";
     echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "  ", form_input_hidden('user_agree_rules', _htmlentities($user_agree_rules)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
@@ -826,7 +826,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
             echo "                      <tr>\n";
             echo "                        <td align=\"left\" valign=\"top\">{$lang['textcaptchaexplain']}</td>\n";
             echo "                        <td align=\"left\" valign=\"top\"><img src=\"", $text_captcha->get_image_filename(), "\" alt=\"{$lang['textcaptchaimgtip']}\" title=\"{$lang['textcaptchaimgtip']}\" id=\"captcha_img\" /></td>\n";
-            echo "                        <td align=\"left\" valign=\"top\"><a href=\"Javascript:void(0)\" onclick=\"return captcha_reload()\" /><img src=\"", style_image('reload.png'), "\" border=\"0\" /></a></td>\n";
+            echo "                        <td align=\"left\" valign=\"top\"><a href=\"Javascript:void(0)\" onclick=\"return captcha_reload()\"><img src=\"", style_image('reload.png'), "\" border=\"0\" alt=\"\" /></a></td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -872,7 +872,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
 
     echo "<br />\n";
     echo "<div align=\"center\">\n";
-    echo "<form accept-charset=\"utf-8\" name=\"register\" action=\"", get_request_uri(), "\" method=\"post\">\n";
+    echo "<form accept-charset=\"utf-8\" name=\"form_register\" action=\"", get_request_uri(), "\" method=\"post\">\n";
     echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";

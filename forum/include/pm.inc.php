@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.256 2008-08-20 19:03:00 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.257 2008-08-21 20:46:17 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -152,8 +152,6 @@ function pm_get_inbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
 
-    if (!$table_data = get_table_prefix()) return false;
-
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $pm_get_inbox_array = array();
@@ -163,12 +161,7 @@ function pm_get_inbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS PM.MID, PM.TYPE, PM.FROM_UID, PM.TO_UID, PM.SUBJECT, ";
     $sql.= "PM.RECIPIENTS, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, FUSER.LOGON AS FLOGON, ";
-    $sql.= "TUSER.LOGON AS TLOGON, FUSER.NICKNAME AS FNICK, TUSER.NICKNAME AS TNICK, ";
-    $sql.= "USER_PEER_TO.PEER_NICKNAME AS PTNICK, USER_PEER_FROM.PEER_NICKNAME AS PFNICK FROM PM PM ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER_TO ";
-    $sql.= "ON (USER_PEER_TO.PEER_UID = PM.TO_UID AND USER_PEER_TO.UID = '$uid') ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER_FROM ";
-    $sql.= "ON (USER_PEER_FROM.PEER_UID = PM.FROM_UID AND USER_PEER_FROM.UID = '$uid') ";
+    $sql.= "TUSER.LOGON AS TLOGON, FUSER.NICKNAME AS FNICK, TUSER.NICKNAME AS TNICK FROM PM PM ";
     $sql.= "LEFT JOIN USER FUSER ON (PM.FROM_UID = FUSER.UID) ";
     $sql.= "LEFT JOIN USER TUSER ON (PM.TO_UID = TUSER.UID) ";
     $sql.= "WHERE (PM.TYPE & $pm_inbox_items > 0) AND PM.TO_UID = '$uid' ";
@@ -247,8 +240,6 @@ function pm_get_outbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
 
-    if (!$table_data = get_table_prefix()) return false;
-
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $pm_get_outbox_array = array();
@@ -258,12 +249,7 @@ function pm_get_outbox($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS PM.MID, PM.TYPE, PM.FROM_UID, PM.TO_UID, PM.SUBJECT, ";
     $sql.= "PM.RECIPIENTS, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, FUSER.LOGON AS FLOGON, ";
-    $sql.= "TUSER.LOGON AS TLOGON, FUSER.NICKNAME AS FNICK, TUSER.NICKNAME AS TNICK, ";
-    $sql.= "USER_PEER_TO.PEER_NICKNAME AS PTNICK, USER_PEER_FROM.PEER_NICKNAME AS PFNICK FROM PM PM ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER_TO ";
-    $sql.= "ON (USER_PEER_TO.PEER_UID = PM.TO_UID AND USER_PEER_TO.UID = '$uid') ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER_FROM ";
-    $sql.= "ON (USER_PEER_FROM.PEER_UID = PM.FROM_UID AND USER_PEER_FROM.UID = '$uid') ";
+    $sql.= "TUSER.LOGON AS TLOGON, FUSER.NICKNAME AS FNICK, TUSER.NICKNAME AS TNICK FROM PM PM ";
     $sql.= "LEFT JOIN USER FUSER ON (PM.FROM_UID = FUSER.UID) ";
     $sql.= "LEFT JOIN USER TUSER ON (PM.TO_UID = TUSER.UID) ";
     $sql.= "WHERE (PM.TYPE & $pm_outbox_items > 0) AND PM.FROM_UID = '$uid' ";
@@ -342,8 +328,6 @@ function pm_get_sent($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
 
-    if (!$table_data = get_table_prefix()) return false;
-
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $pm_get_sent_array = array();
@@ -353,12 +337,7 @@ function pm_get_sent($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false)
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS PM.MID, PM.TYPE, PM.FROM_UID, PM.TO_UID, PM.SUBJECT, ";
     $sql.= "PM.RECIPIENTS, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, FUSER.LOGON AS FLOGON, ";
-    $sql.= "TUSER.LOGON AS TLOGON, FUSER.NICKNAME AS FNICK, TUSER.NICKNAME AS TNICK, ";
-    $sql.= "USER_PEER_TO.PEER_NICKNAME AS PTNICK, USER_PEER_FROM.PEER_NICKNAME AS PFNICK FROM PM PM ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER_TO ";
-    $sql.= "ON (USER_PEER_TO.PEER_UID = PM.TO_UID AND USER_PEER_TO.UID = '$uid') ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER_FROM ";
-    $sql.= "ON (USER_PEER_FROM.PEER_UID = PM.FROM_UID AND USER_PEER_FROM.UID = '$uid') ";
+    $sql.= "TUSER.LOGON AS TLOGON, FUSER.NICKNAME AS FNICK, TUSER.NICKNAME AS TNICK FROM PM PM ";
     $sql.= "LEFT JOIN USER FUSER ON (PM.FROM_UID = FUSER.UID) ";
     $sql.= "LEFT JOIN USER TUSER ON (PM.TO_UID = TUSER.UID) ";
     $sql.= "WHERE (PM.TYPE & $pm_sent_items > 0) AND PM.FROM_UID = '$uid' ";
@@ -437,8 +416,6 @@ function pm_get_saved_items($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = 
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
 
-    if (!$table_data = get_table_prefix()) return false;
-
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $pm_get_saved_items_array = array();
@@ -449,12 +426,7 @@ function pm_get_saved_items($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = 
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS PM.MID, PM.TYPE, PM.FROM_UID, PM.TO_UID, PM.SUBJECT, ";
     $sql.= "PM.RECIPIENTS, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, FUSER.LOGON AS FLOGON, ";
-    $sql.= "TUSER.LOGON AS TLOGON, FUSER.NICKNAME AS FNICK, TUSER.NICKNAME AS TNICK, ";
-    $sql.= "USER_PEER_TO.PEER_NICKNAME AS PTNICK, USER_PEER_FROM.PEER_NICKNAME AS PFNICK FROM PM PM ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER_TO ";
-    $sql.= "ON (USER_PEER_TO.PEER_UID = PM.TO_UID AND USER_PEER_TO.UID = '$uid') ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER_FROM ";
-    $sql.= "ON (USER_PEER_FROM.PEER_UID = PM.FROM_UID AND USER_PEER_FROM.UID = '$uid') ";
+    $sql.= "TUSER.LOGON AS TLOGON, FUSER.NICKNAME AS FNICK, TUSER.NICKNAME AS TNICK FROM PM PM ";
     $sql.= "LEFT JOIN USER FUSER ON (PM.FROM_UID = FUSER.UID) ";
     $sql.= "LEFT JOIN USER TUSER ON (PM.TO_UID = TUSER.UID) ";
     $sql.= "WHERE ((PM.TYPE & $pm_saved_out > 0) AND PM.FROM_UID = '$uid') OR ";
@@ -534,8 +506,6 @@ function pm_get_drafts($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
 
-    if (!$table_data = get_table_prefix()) return false;
-
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $pm_get_drafts_array = array();
@@ -545,12 +515,7 @@ function pm_get_drafts($sort_by = 'CREATED', $sort_dir = 'DESC', $offset = false
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS PM.MID, PM.TYPE, PM.FROM_UID, PM.TO_UID, PM.SUBJECT, ";
     $sql.= "PM.RECIPIENTS, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, FUSER.LOGON AS FLOGON, ";
-    $sql.= "TUSER.LOGON AS TLOGON, FUSER.NICKNAME AS FNICK, TUSER.NICKNAME AS TNICK, ";
-    $sql.= "USER_PEER_TO.PEER_NICKNAME AS PTNICK, USER_PEER_FROM.PEER_NICKNAME AS PFNICK FROM PM PM ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER_TO ";
-    $sql.= "ON (USER_PEER_TO.PEER_UID = PM.TO_UID AND USER_PEER_TO.UID = '$uid') ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER_FROM ";
-    $sql.= "ON (USER_PEER_FROM.PEER_UID = PM.FROM_UID AND USER_PEER_FROM.UID = '$uid') ";
+    $sql.= "TUSER.LOGON AS TLOGON, FUSER.NICKNAME AS FNICK, TUSER.NICKNAME AS TNICK FROM PM PM ";
     $sql.= "LEFT JOIN USER FUSER ON (PM.FROM_UID = FUSER.UID) ";
     $sql.= "LEFT JOIN USER TUSER ON (PM.TO_UID = TUSER.UID) ";
     $sql.= "WHERE (PM.TYPE & $pm_draft_items > 0) AND PM.FROM_UID = '$uid' ";
@@ -691,24 +656,15 @@ function pm_fetch_search_results ($sort_by = 'CREATED', $sort_dir = 'DESC', $off
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
 
-    if (!$table_data = get_table_prefix()) return false;
-
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $pm_search_results_array = array();
     $mid_array = array();
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS PM_SEARCH_RESULTS.MID, PM_SEARCH_RESULTS.TYPE, ";
-    $sql.= "PM_SEARCH_RESULTS.FROM_UID, PM_SEARCH_RESULTS.TO_UID, ";
-    $sql.= "PM_SEARCH_RESULTS.RECIPIENTS, PM_SEARCH_RESULTS.SUBJECT, ";
-    $sql.= "UNIX_TIMESTAMP(PM_SEARCH_RESULTS.CREATED) AS CREATED, ";
-    $sql.= "FUSER.LOGON AS FLOGON, TUSER.LOGON AS TLOGON, FUSER.NICKNAME AS FNICK, ";
-    $sql.= "TUSER.NICKNAME AS TNICK, USER_PEER_TO.PEER_NICKNAME AS PTNICK, ";
-    $sql.= "USER_PEER_FROM.PEER_NICKNAME AS PFNICK FROM PM_SEARCH_RESULTS ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER_TO ";
-    $sql.= "ON (USER_PEER_TO.PEER_UID = PM_SEARCH_RESULTS.TO_UID AND USER_PEER_TO.UID = '$uid') ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER_FROM ";
-    $sql.= "ON (USER_PEER_FROM.PEER_UID = PM_SEARCH_RESULTS.FROM_UID AND USER_PEER_FROM.UID = '$uid') ";
+    $sql.= "PM_SEARCH_RESULTS.FROM_UID, PM_SEARCH_RESULTS.TO_UID, PM_SEARCH_RESULTS.RECIPIENTS, ";
+    $sql.= "PM_SEARCH_RESULTS.SUBJECT, UNIX_TIMESTAMP(PM_SEARCH_RESULTS.CREATED) AS CREATED, ";
+    $sql.= "FUSER.LOGON AS FLOGON, TUSER.LOGON AS TLOGON, FUSER.NICKNAME AS FNICK FROM PM_SEARCH_RESULTS ";
     $sql.= "LEFT JOIN PM ON (PM.MID = PM_SEARCH_RESULTS.MID) ";
     $sql.= "LEFT JOIN USER FUSER ON (PM_SEARCH_RESULTS.FROM_UID = FUSER.UID) ";
     $sql.= "LEFT JOIN USER TUSER ON (PM_SEARCH_RESULTS.TO_UID = TUSER.UID) ";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: cache.inc.php,v 1.11 2008-08-03 11:23:08 decoyduck Exp $ */
+/* $Id: cache.inc.php,v 1.12 2008-08-21 20:46:17 decoyduck Exp $ */
 
 /**
 * cache.inc.php - cache functions
@@ -83,7 +83,9 @@ function cache_enabled()
 
 function cache_check($cache_id)
 {
-    if (!$webtag = get_webtag()) return false;
+    $webtag = get_webtag();
+
+    if (!forum_check_webtag_available()) return false;
 
     if (cache_enabled()) {
 
@@ -125,7 +127,9 @@ function cache_check($cache_id)
 
 function cache_save($cache_id, $content)
 {
-    if (!$webtag = get_webtag()) return false;
+    $webtag = get_webtag();
+
+    if (!forum_check_webtag_available()) return false;
 
     if (cache_enabled()) {
 
@@ -164,7 +168,9 @@ function cache_save($cache_id, $content)
 
 function cache_remove($cache_id)
 {
-    if (!$webtag = get_webtag()) return false;
+    $webtag = get_webtag();
+
+    if (!forum_check_webtag_available()) return false;
 
     if (cache_enabled()) {
 

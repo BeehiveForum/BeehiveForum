@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.334 2008-08-21 20:46:17 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.335 2008-08-21 22:28:53 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -123,6 +123,8 @@ function get_webtag()
     }elseif (isset($_POST['webtag']) && strlen(trim(_stripslashes($_POST['webtag']))) > 0) {
         return trim(_stripslashes($_POST['webtag']));
     }
+
+    return false;
 }
 
 function get_table_prefix()

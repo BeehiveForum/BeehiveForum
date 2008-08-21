@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.174 2008-08-21 20:46:15 decoyduck Exp $ */
+/* $Id: index.php,v 1.175 2008-08-21 22:28:53 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -131,7 +131,7 @@ if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri'])))
 
         $final_uri = basename(trim(_stripslashes($_GET['final_uri'])));
 
-        if (preg_match("/^change_pw.php|^register.php|^confirm_email.php|^forgot_pw.php/u", $final_uri) > 0) {
+        if (preg_match("/^change_pw.php|^register.php|^confirm_email.php|^forgot_pw.php|^logout.php/u", $final_uri) > 0) {
 
             $final_uri = href_cleanup_query_keys($final_uri);
             $skip_logon_page = true;
@@ -219,25 +219,32 @@ if ($skip_logon_page === true) {
         echo "<frame src=\"$top_html\" name=\"", html_get_frame_name('ftop'), "\" frameborder=\"0\" scrolling=\"no\" noresize=\"noresize\" />\n";
         echo "<frame src=\"nav.php?webtag=$webtag\" name=\"", html_get_frame_name('fnav'), "\" frameborder=\"0\" scrolling=\"no\" noresize=\"noresize\" />\n";
 
-        if (isset($final_uri) && strlen($final_uri) > 0) {
+        if (get_webtag()) {
 
-            echo "<frame src=\"forums.php?webtag_error&amp;final_uri=", rawurlencode($final_uri), "\" name=\"", html_get_frame_name('main'), "\" frameborder=\"0\" />\n";
+            if (isset($final_uri) && strlen($final_uri) > 0) {
 
-        }else if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+                echo "<frame src=\"forums.php?webtag_error&amp;final_uri=", rawurlencode($final_uri), "\" name=\"", html_get_frame_name('main'), "\" frameborder=\"0\" />\n";
 
-            echo "<frame src=\"forums.php?webtag_error&amp;final_uri=discussion.php%3Fmsg%3D{$_GET['msg']}\" name=\"", html_get_frame_name('main'), "\" frameborder=\"0\" />\n";
+            }else if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
-        }else if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
+                echo "<frame src=\"forums.php?webtag_error&amp;final_uri=discussion.php%3Fmsg%3D{$_GET['msg']}\" name=\"", html_get_frame_name('main'), "\" frameborder=\"0\" />\n";
 
-            echo "<frame src=\"forums.php?webtag_error&amp;final_uri=discussion.php%3Ffolder%3D{$_GET['folder']}\" name=\"", html_get_frame_name('main'), "\" frameborder=\"0\" />\n";
+            }else if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
 
-        }else if (isset($_GET['pmid']) && is_numeric($_GET['pmid'])) {
+                echo "<frame src=\"forums.php?webtag_error&amp;final_uri=discussion.php%3Ffolder%3D{$_GET['folder']}\" name=\"", html_get_frame_name('main'), "\" frameborder=\"0\" />\n";
 
-            echo "<frame src=\"forums.php?webtag_error&amp;final_uri=pm.php%3Fmid%3D{$_GET['pmid']}\" name=\"", html_get_frame_name('main'), "\" frameborder=\"0\" />\n";
+            }else if (isset($_GET['pmid']) && is_numeric($_GET['pmid'])) {
+
+                echo "<frame src=\"forums.php?webtag_error&amp;final_uri=pm.php%3Fmid%3D{$_GET['pmid']}\" name=\"", html_get_frame_name('main'), "\" frameborder=\"0\" />\n";
+
+            }else {
+
+                echo "<frame src=\"forums.php?webtag_error\" name=\"", html_get_frame_name('main'), "\" frameborder=\"0\" framespacing=\"0\" />\n";
+            }
 
         }else {
 
-            echo "<frame src=\"forums.php?webtag_error\" name=\"", html_get_frame_name('main'), "\" frameborder=\"0\" framespacing=\"0\" />\n";
+            echo "<frame src=\"forums.php\" name=\"", html_get_frame_name('main'), "\" frameborder=\"0\" framespacing=\"0\" />\n";
         }
     }
 

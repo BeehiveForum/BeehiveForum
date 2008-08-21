@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ledit.php,v 1.40 2008-08-21 20:46:15 decoyduck Exp $ */
+/* $Id: ledit.php,v 1.41 2008-08-21 21:39:05 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -76,13 +76,15 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "thread.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
+// Get Webtag
+
+$webtag = get_webtag();
+
 // Check we're logged in correctly
 
 if (!$user_sess = bh_session_check()) {
-
-    $request_uri = rawurlencode(get_request_uri());
     $webtag = get_webtag();
-    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
+    header_redirect("llogon.php?webtag=$webtag");
 }
 
 // Check to see if the user is banned.
@@ -104,9 +106,8 @@ if (!bh_session_user_approved()) {
 // Check we have a webtag
 
 if (!forum_check_webtag_available()) {
-
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
+    $request_uri = rawurlencode(get_request_uri(false));
+    header_redirect("lforums.php?webtag_error&final_uri=$request_uri");
 }
 
 // Load language file

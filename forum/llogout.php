@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogout.php,v 1.58 2008-08-20 19:02:58 decoyduck Exp $ */
+/* $Id: llogout.php,v 1.59 2008-08-21 21:39:05 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -65,6 +65,10 @@ include_once(BH_INCLUDE_PATH. "light.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
+
+// Get webtag
+
+$webtag = get_webtag();
 
 // Load the user session
 

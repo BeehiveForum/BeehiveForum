@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.199 2008-08-20 19:03:00 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.200 2008-08-21 21:39:05 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -580,9 +580,6 @@ function light_draw_my_forums()
         $forums_array = get_my_forums(FORUMS_SHOW_ALL, $start);
 
         if (isset($forums_array['forums_array']) && sizeof($forums_array['forums_array']) > 0) {
-
-            echo "<h1>{$lang['myforums']}</h1>\n";
-            echo "<br />\n";
 
             foreach ($forums_array['forums_array'] as $forum) {
 

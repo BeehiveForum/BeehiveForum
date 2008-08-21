@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lforums.php,v 1.34 2008-07-27 18:26:10 decoyduck Exp $ */
+/* $Id: lforums.php,v 1.35 2008-08-21 21:39:05 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -94,6 +94,13 @@ $webtag = get_webtag();
 $lang = load_language_file();
 
 light_html_draw_top();
+
+echo "<h1>{$lang['myforums']}</h1>\n";
+echo "<br />\n";
+
+if (isset($_GET['webtag_error'])) {
+    light_html_display_error_msg($lang['invalidforumidorforumnotfound']);
+}
 
 light_draw_my_forums();
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ldisplay.php,v 1.38 2008-08-21 20:46:15 decoyduck Exp $ */
+/* $Id: ldisplay.php,v 1.39 2008-08-21 21:39:05 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -71,6 +71,10 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "thread.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
+// Get Webtag
+
+$webtag = get_webtag();
+
 // Check we're logged in correctly
 
 if (!$user_sess = bh_session_check()) {
@@ -85,6 +89,13 @@ if (!bh_session_active()) {
 
     $webtag = get_webtag();
     header_redirect("llogon.php?webtag=$webtag");
+}
+
+// Check we have a webtag
+
+if (!forum_check_webtag_available()) {
+    $request_uri = rawurlencode(get_request_uri(false));
+    header_redirect("lforums.php?webtag_error&final_uri=$request_uri");
 }
 
 // Check to see if the user is banned.

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ldelete.php,v 1.24 2008-08-21 20:46:15 decoyduck Exp $ */
+/* $Id: ldelete.php,v 1.25 2008-08-21 21:39:05 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -82,8 +82,8 @@ $webtag = get_webtag();
 // Check we're logged in correctly
 
 if (!$user_sess = bh_session_check()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
+    $webtag = get_webtag();
+    header_redirect("llogon.php?webtag=$webtag");
 }
 
 // Check to see if the user is banned.
@@ -106,7 +106,7 @@ if (!bh_session_user_approved()) {
 
 if (!forum_check_webtag_available()) {
     $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
+    header_redirect("lforums.php?webtag_error&final_uri=$request_uri");
 }
 
 // Load language file

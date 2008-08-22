@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.297 2008-08-21 20:46:17 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.298 2008-08-22 19:07:24 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -329,7 +329,7 @@ function html_get_top_page()
         $user_style = forum_get_setting('default_style');
     }
 
-    if (forum_check_webtag_available()) {
+    if (forum_check_webtag_available($webtag)) {
 
         if ($user_style !== false) {
 
@@ -364,7 +364,7 @@ function html_get_style_sheet()
         $user_style = bh_getcookie("bh_{$webtag}_style", false, forum_get_setting('default_style'));
     }
 
-    if (forum_check_webtag_available()) {
+    if (forum_check_webtag_available($webtag)) {
 
         if ($user_style !== false) {
 
@@ -441,7 +441,7 @@ function html_get_emoticon_style_sheet()
         $user_emots = forum_get_setting('default_emoticons');
     }
 
-    if (forum_check_webtag_available() && ($user_emots !== false)) {
+    if (forum_check_webtag_available($webtag) && ($user_emots !== false)) {
 
         if (@is_dir("$forum_path/emoticons/$user_emots") && file_exists("$forum_path/emoticons/$user_emots/style.css")) {
 
@@ -521,7 +521,7 @@ function html_get_frame_name($basename)
 
     // If webtag available add that to the hash.
 
-    if (forum_check_webtag_available()) {
+    if (forum_check_webtag_available($webtag)) {
 
         $frame_md5_hash = md5(sprintf('%s-%s-%s', $forum_uri, $webtag, $basename));
         return sprintf('bh_frame_%s', preg_replace('/[^a-z]+/iu', '', $frame_md5_hash));

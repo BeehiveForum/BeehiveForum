@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.251 2008-08-21 20:46:13 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.252 2008-08-22 19:07:20 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -371,7 +371,7 @@ if (isset($_POST['action_submit'])) {
 
     $valid = true;
 
-    if (forum_check_webtag_available()) {
+    if (forum_check_webtag_available($webtag)) {
 
         // Check post count is being changed or reset.
 
@@ -497,7 +497,7 @@ if (isset($_POST['action_submit'])) {
 
     // Local folder permissions
 
-    if (forum_check_webtag_available()) {
+    if (forum_check_webtag_available($webtag)) {
 
         if (isset($_POST['t_update_perms_array']) && is_array($_POST['t_update_perms_array'])) {
 
@@ -576,7 +576,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
         html_draw_top('admin.js');
 
-        if (forum_check_webtag_available()) {
+        if (forum_check_webtag_available($webtag)) {
             echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
         }else {
             echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
@@ -646,7 +646,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
         $user_history_array = admin_get_user_history($user['UID']);
 
-        if (forum_check_webtag_available()) {
+        if (forum_check_webtag_available($webtag)) {
             echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
         }else {
             echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
@@ -832,7 +832,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
             $user_alias_array = admin_get_user_referer_matches($user['UID']);
         }
 
-        if (forum_check_webtag_available()) {
+        if (forum_check_webtag_available($webtag)) {
             echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
         }else {
             echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
@@ -1023,7 +1023,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
         html_draw_top('admin.js');
 
-        if (forum_check_webtag_available()) {
+        if (forum_check_webtag_available($webtag)) {
             echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
         }else {
             echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
@@ -1084,7 +1084,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
         html_draw_top('admin.js');
 
-        if (forum_check_webtag_available()) {
+        if (forum_check_webtag_available($webtag)) {
             echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
         }else {
             echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
@@ -1142,7 +1142,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
 html_draw_top('admin.js', 'openprofile.js');
 
-if (forum_check_webtag_available()) {
+if (forum_check_webtag_available($webtag)) {
     echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
 }else {
     echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", word_filter_add_ob_tags(_htmlentities(format_user_name($user['LOGON'], $user['NICKNAME']))), "</h1>\n";
@@ -1225,7 +1225,7 @@ if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
         echo "                      </tr>\n";
     }
 
-    if (forum_check_webtag_available()) {
+    if (forum_check_webtag_available($webtag)) {
 
         if (isset($user['REFERER']) && strlen(trim($user['REFERER'])) > 0) {
 
@@ -1338,7 +1338,7 @@ if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
     echo "  </table>\n";
     echo "  <br />\n";
 
-    if (forum_check_webtag_available()) {
+    if (forum_check_webtag_available($webtag)) {
 
         $admin_options_dropdown = array('edit_details'   => $lang['edituserdetails'],
                                         'edit_signature' => $lang['editsignature'],
@@ -1393,7 +1393,7 @@ if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
     echo "  <br />\n";
 }
 
-if (forum_check_webtag_available()) {
+if (forum_check_webtag_available($webtag)) {
 
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";
@@ -1573,7 +1573,7 @@ if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
     }
 }
 
-if (forum_check_webtag_available()) {
+if (forum_check_webtag_available($webtag)) {
 
     if (($folder_array = perm_user_get_folders($uid))) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.175 2008-08-21 22:28:53 decoyduck Exp $ */
+/* $Id: index.php,v 1.176 2008-08-22 19:07:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -82,6 +82,10 @@ if (bh_session_user_banned()) {
 // Get webtag
 
 $webtag = get_webtag();
+
+// Check the webtag is valid. Don't redirect.
+
+forum_check_webtag_available($webtag);
 
 // Check to see if we have an active session
 
@@ -169,7 +173,7 @@ if ($skip_logon_page === true) {
 
     html_draw_top('body_tag=false', 'frames=true', 'robots=index,follow');
 
-    if (forum_check_webtag_available()) {
+    if (forum_check_webtag_available($webtag)) {
 
         echo "<frameset rows=\"60,$navsize,*\" framespacing=\"0\" border=\"0\">\n";
         echo "<frame src=\"$top_html\" name=\"", html_get_frame_name('ftop'), "\" frameborder=\"0\" scrolling=\"no\" noresize=\"noresize\" />\n";
@@ -223,28 +227,28 @@ if ($skip_logon_page === true) {
 
             if (isset($final_uri) && strlen($final_uri) > 0) {
 
-                echo "<frame src=\"forums.php?webtag_error&amp;final_uri=", rawurlencode($final_uri), "\" name=\"", html_get_frame_name('main'), "\" frameborder=\"0\" />\n";
+                echo "<frame src=\"forums.php?webtag=$webtag&amp;webtag_error=true&amp;final_uri=", rawurlencode($final_uri), "\" name=\"", html_get_frame_name('main'), "\" frameborder=\"0\" />\n";
 
             }else if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
-                echo "<frame src=\"forums.php?webtag_error&amp;final_uri=discussion.php%3Fmsg%3D{$_GET['msg']}\" name=\"", html_get_frame_name('main'), "\" frameborder=\"0\" />\n";
+                echo "<frame src=\"forums.php?webtag=$webtag&amp;webtag_error=true&amp;final_uri=discussion.php%3Fmsg%3D{$_GET['msg']}\" name=\"", html_get_frame_name('main'), "\" frameborder=\"0\" />\n";
 
             }else if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
 
-                echo "<frame src=\"forums.php?webtag_error&amp;final_uri=discussion.php%3Ffolder%3D{$_GET['folder']}\" name=\"", html_get_frame_name('main'), "\" frameborder=\"0\" />\n";
+                echo "<frame src=\"forums.php?webtag=$webtag&amp;webtag_error=true&amp;final_uri=discussion.php%3Ffolder%3D{$_GET['folder']}\" name=\"", html_get_frame_name('main'), "\" frameborder=\"0\" />\n";
 
             }else if (isset($_GET['pmid']) && is_numeric($_GET['pmid'])) {
 
-                echo "<frame src=\"forums.php?webtag_error&amp;final_uri=pm.php%3Fmid%3D{$_GET['pmid']}\" name=\"", html_get_frame_name('main'), "\" frameborder=\"0\" />\n";
+                echo "<frame src=\"forums.php?webtag=$webtag&amp;webtag_error=true&amp;final_uri=pm.php%3Fmid%3D{$_GET['pmid']}\" name=\"", html_get_frame_name('main'), "\" frameborder=\"0\" />\n";
 
             }else {
 
-                echo "<frame src=\"forums.php?webtag_error\" name=\"", html_get_frame_name('main'), "\" frameborder=\"0\" framespacing=\"0\" />\n";
+                echo "<frame src=\"forums.php?webtag=$webtag&amp;webtag_error=true\" name=\"", html_get_frame_name('main'), "\" frameborder=\"0\" framespacing=\"0\" />\n";
             }
 
         }else {
 
-            echo "<frame src=\"forums.php\" name=\"", html_get_frame_name('main'), "\" frameborder=\"0\" framespacing=\"0\" />\n";
+            echo "<frame src=\"forums.php?webtag=$webtag&amp;\" name=\"", html_get_frame_name('main'), "\" frameborder=\"0\" framespacing=\"0\" />\n";
         }
     }
 
@@ -288,7 +292,7 @@ echo "<body>\n";
 
 if ($session_active && !$logon_failed) {
 
-    if (forum_check_webtag_available()) {
+    if (forum_check_webtag_available($webtag)) {
 
         light_draw_thread_list();
 

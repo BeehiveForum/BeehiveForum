@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_main.php,v 1.73 2008-08-21 20:46:12 decoyduck Exp $ */
+/* $Id: admin_main.php,v 1.74 2008-08-22 19:07:19 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -99,12 +99,16 @@ html_draw_top();
 
 echo "<h1>{$lang['forumadmin']}</h1>\n";
 
+if (!forum_check_webtag_available()) {
+    html_display_warning_msg("To see additional Admin options click 'My Forums', select a forum and then click the Admin link to return here", '600px', 'left');
+}
+
 if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
     echo "<p>{$lang['adminexp_1']}</p>\n";
     echo "<p>{$lang['adminexp_2']}</p>\n";
 
-    if ($webtag !== false) {
+    if (forum_check_webtag_available()) {
 
         echo "<p>{$lang['adminexp_3']}</p>\n";
         echo "<p>{$lang['adminexp_4']}</p>\n";
@@ -120,7 +124,6 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
         echo "<p>{$lang['adminexp_14']}</p>\n";
 
         if (bh_session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE)) {
-
             echo "<p>{$lang['adminexp_17']}</p>\n";
         }
 

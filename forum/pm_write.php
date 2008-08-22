@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.213 2008-08-21 20:46:15 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.214 2008-08-22 19:07:23 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -922,7 +922,7 @@ if (($friends_array = pm_user_get_friends())) {
     echo "                      </tr>\n";
 }
 
-if (!is_array($friends_array) && forum_check_webtag_available()) {
+if (!is_array($friends_array) && forum_check_webtag_available($webtag)) {
 
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.php,v 1.70 2008-08-21 20:46:16 decoyduck Exp $ */
+/* $Id: user.php,v 1.71 2008-08-22 19:07:23 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -93,7 +93,7 @@ if (!bh_session_user_approved()) {
 
 // Check we have a webtag
 
-if (!forum_check_webtag_available()) {
+if (!forum_check_webtag_available($webtag)) {
     $request_uri = rawurlencode(get_request_uri(false));
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
@@ -142,7 +142,7 @@ html_draw_top('body_tag=false', 'frames=true');
 
 echo "<frameset cols=\"250,*\" framespacing=\"4\" border=\"4\">\n";
 echo "  <frame src=\"user_menu.php?webtag=$webtag\" name=\"", html_get_frame_name('left'), "\" frameborder=\"0\" />\n";
-echo "  <frame src=\"user_main.php?webtag=$webtag\" name=\"", html_get_frame_name('right'), "\" frameborder=\"0\" />\n";
+echo "  <frame src=\"edit_prefs.php?webtag=$webtag\" name=\"", html_get_frame_name('right'), "\" frameborder=\"0\" />\n";
 echo "</frameset>\n";
 
 html_draw_bottom(false);

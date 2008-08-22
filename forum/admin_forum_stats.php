@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: admin_forum_stats.php,v 1.15 2008-08-21 20:46:12 decoyduck Exp $ */
+/* $Id: admin_forum_stats.php,v 1.16 2008-08-22 19:07:19 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -92,7 +92,7 @@ if (bh_session_user_banned()) {
 
 // Check we have a webtag
 
-if (!forum_check_webtag_available()) {
+if (!forum_check_webtag_available($webtag)) {
     $request_uri = rawurlencode(get_request_uri(false));
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }

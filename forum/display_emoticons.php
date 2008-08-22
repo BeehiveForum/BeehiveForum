@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display_emoticons.php,v 1.66 2008-08-21 20:46:13 decoyduck Exp $ */
+/* $Id: display_emoticons.php,v 1.67 2008-08-22 19:07:21 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -91,7 +91,7 @@ if (!bh_session_user_approved()) {
 
 // Check we have a webtag
 
-if (!forum_check_webtag_available()) {
+if (!forum_check_webtag_available($webtag)) {
     $request_uri = rawurlencode(get_request_uri(false));
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }

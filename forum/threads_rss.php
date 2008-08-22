@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads_rss.php,v 1.67 2008-08-21 22:28:53 decoyduck Exp $ */
+/* $Id: threads_rss.php,v 1.68 2008-08-22 19:07:23 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -146,7 +146,7 @@ if (isset($_GET['sort_created']) && $_GET['sort_created'] == 'Y') {
 
 // Check we have a webtag
 
-if (!forum_check_webtag_available()) {
+if (!forum_check_webtag_available($webtag)) {
     header_server_error();
 }
 

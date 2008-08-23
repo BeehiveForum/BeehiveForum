@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.118 2008-08-22 19:07:23 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.119 2008-08-23 10:54:34 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -256,7 +256,7 @@ if (isset($_POST['save'])) {
 
     // Admin Options
 
-    if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid) || (($thread_data['FROM_UID'] == $uid) && ($thread_data['ADMIN_LOCK'] != THREAD_ADMIN_LOCK_ENABLED) && forum_get_setting('allow_post_editing', 'Y') && ((intval(forum_get_setting('post_edit_time', false, 0)) == 0) || ((time() - $thread_data['CREATED']) < (intval(forum_get_setting('post_edit_time', false, 0) * MINUTE_IN_SECONDS)))))) {
+    if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid) || (($thread_data['BY_UID'] == $uid) && ($thread_data['ADMIN_LOCK'] != THREAD_ADMIN_LOCK_ENABLED) && forum_get_setting('allow_post_editing', 'Y') && ((intval(forum_get_setting('post_edit_time', false, 0)) == 0) || ((time() - $thread_data['CREATED']) < (intval(forum_get_setting('post_edit_time', false, 0) * MINUTE_IN_SECONDS)))))) {
 
         if (isset($_POST['rename']) && strlen(trim(_stripslashes($_POST['rename']))) > 0) {
 
@@ -285,7 +285,7 @@ if (isset($_POST['save'])) {
 
             $t_move = $_POST['move'];
 
-            if (folder_is_valid($t_move) && $t_move !== $thread_data['FID'] && (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_move) || (bh_session_check_perm(USER_PERM_THREAD_CREATE, $t_move) && ($thread_data['FROM_UID'] == $uid) && ($thread_data['ADMIN_LOCK'] != THREAD_ADMIN_LOCK_ENABLED) && forum_get_setting('allow_post_editing', 'Y') && ((intval(forum_get_setting('post_edit_time', false, 0)) == 0) || ((time() - $thread_data['CREATED']) < (intval(forum_get_setting('post_edit_time', false, 0) * MINUTE_IN_SECONDS))))))) {
+            if (folder_is_valid($t_move) && $t_move !== $thread_data['FID'] && (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_move) || (bh_session_check_perm(USER_PERM_THREAD_CREATE, $t_move) && ($thread_data['BY_UID'] == $uid) && ($thread_data['ADMIN_LOCK'] != THREAD_ADMIN_LOCK_ENABLED) && forum_get_setting('allow_post_editing', 'Y') && ((intval(forum_get_setting('post_edit_time', false, 0)) == 0) || ((time() - $thread_data['CREATED']) < (intval(forum_get_setting('post_edit_time', false, 0) * MINUTE_IN_SECONDS))))))) {
 
                 if (thread_change_folder($tid, $t_move)) {
 
@@ -630,7 +630,7 @@ if ($thread_data['DELETED'] == 'N') {
     echo "          </tr>\n";
     echo "        </table>\n";
 
-    if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid) || (($thread_data['FROM_UID'] == $uid) && ($thread_data['ADMIN_LOCK'] != THREAD_ADMIN_LOCK_ENABLED) && forum_get_setting('allow_post_editing', 'Y') && ((intval(forum_get_setting('post_edit_time', false, 0)) == 0) || ((time() - $thread_data['CREATED']) < (intval(forum_get_setting('post_edit_time', false, 0) * MINUTE_IN_SECONDS)))))) {
+    if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid) || (($thread_data['BY_UID'] == $uid) && ($thread_data['ADMIN_LOCK'] != THREAD_ADMIN_LOCK_ENABLED) && forum_get_setting('allow_post_editing', 'Y') && ((intval(forum_get_setting('post_edit_time', false, 0)) == 0) || ((time() - $thread_data['CREATED']) < (intval(forum_get_setting('post_edit_time', false, 0) * MINUTE_IN_SECONDS)))))) {
 
         if (!thread_is_poll($tid)) {
 

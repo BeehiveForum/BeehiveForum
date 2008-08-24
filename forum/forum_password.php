@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_password.php,v 1.25 2008-08-12 17:13:45 decoyduck Exp $ */
+/* $Id: forum_password.php,v 1.26 2008-08-24 15:53:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -48,6 +48,10 @@ include_once(BH_INCLUDE_PATH. "header.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
+
+// Get the webtag
+
+$webtag = get_webtag();
 
 // Check we're logged in correctly
 
@@ -77,18 +81,6 @@ if (!bh_session_user_approved()) {
 // Load language file
 
 $lang = load_language_file();
-
-// Check we have a webtag. We do this differently
-// to all the other pages otherwise we'd just trigger
-// the display of the password dialog again.
-
-if (isset($_GET['webtag'])) {
-    $webtag = trim(_stripslashes($_GET['webtag']));
-}else if (isset($_POST['webtag'])) {
-    $webtag = trim(_stripslashes($_POST['webtag']));
-}else {
-    $webtag = false;
-}
 
 // User clicked Cancel so we send them to the My Forums page.
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.187 2008-08-21 20:46:15 decoyduck Exp $ */
+/* $Id: register.php,v 1.188 2008-08-24 11:06:19 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -120,7 +120,6 @@ if (forum_get_setting('allow_new_registrations', 'N')) {
     html_draw_bottom();
     exit;
 }
-
 
 // Get an array of available emoticon sets
 

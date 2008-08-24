@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.179 2008-08-24 15:53:43 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.180 2008-08-24 16:02:20 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -434,11 +434,11 @@ echo "      <td class=\"postbody\" align=\"center\" width=\"50%\">", page_links(
 
 if (forum_get_setting('require_user_approval', 'Y') && (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0))) {
 
-    echo "      <td class=\"postbody\" align=\"right\" width=\"25%\" nowrap=\"nowrap\">{$lang['userfilter']}:&nbsp;", form_dropdown_array("filter", array(ADMIN_USER_FILTER_NONE => $lang['all'], ADMIN_USER_FILTER_ONLINE => $lang['onlineusers'], ADMIN_USER_FILTER_OFFLINE => $lang['offlineusers'], ADMIN_USER_FILTER_BANNED => $lang['bannedusers'], ADMIN_USER_FILTER_APPROVAL => $lang['usersawaitingapproval']), $filter, false, 'admin_user_filter_dropdown'), "&nbsp;", form_submit("change_filter", $lang['go']), "</td>\n";
+    echo "      <td class=\"postbody\" align=\"right\" width=\"25%\" nowrap=\"nowrap\">{$lang['userfilter']}:&nbsp;", form_dropdown_array("filter", array(ADMIN_USER_FILTER_NONE => $lang['all'], ADMIN_USER_FILTER_ONLINE => $lang['onlineusers'], ADMIN_USER_FILTER_OFFLINE => $lang['offlineusers'], ADMIN_USER_FILTER_BANNED => $lang['bannedusers'], ADMIN_USER_FILTER_APPROVAL => $lang['usersawaitingapproval']), $filter), "&nbsp;", form_submit("change_filter", $lang['go']), "</td>\n";
 
 }else {
 
-    echo "      <td class=\"postbody\" align=\"right\" width=\"25%\" nowrap=\"nowrap\">{$lang['userfilter']}:&nbsp;", form_dropdown_array("filter", array(ADMIN_USER_FILTER_NONE => $lang['all'], ADMIN_USER_FILTER_ONLINE => $lang['onlineusers'], ADMIN_USER_FILTER_OFFLINE => $lang['offlineusers'], ADMIN_USER_FILTER_BANNED => $lang['bannedusers']), $filter, false, 'admin_user_filter_dropdown'), "&nbsp;", form_submit("change_filter", $lang['go']), "</td>\n";
+    echo "      <td class=\"postbody\" align=\"right\" width=\"25%\" nowrap=\"nowrap\">{$lang['userfilter']}:&nbsp;", form_dropdown_array("filter", array(ADMIN_USER_FILTER_NONE => $lang['all'], ADMIN_USER_FILTER_ONLINE => $lang['onlineusers'], ADMIN_USER_FILTER_OFFLINE => $lang['offlineusers'], ADMIN_USER_FILTER_BANNED => $lang['bannedusers']), $filter), "&nbsp;", form_submit("change_filter", $lang['go']), "</td>\n";
 }
 
 echo "    </tr>\n";

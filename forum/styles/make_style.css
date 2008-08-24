@@ -656,8 +656,9 @@ a {
 .dictionary_change_to, .post_folder_dropdown, .thread_title, 
 .post_content, .signature_content, .edit_signature_content, 
 .to_uid_dropdown, .recipient_dropdown, .recent_user_dropdown, 
-.admin_options_dropdown, .user_in_thread_dropdown, .user_pref_field, 
-.bhinputprofileitem, .user_pref_dob_dropdown, .user_pref_dropdown {
+.admin_options_dropdown, .user_in_thread_dropdown, 
+.user_pref_field, .bhinputprofileitem,
+.user_pref_dob_dropdown, .user_pref_dropdown {
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 9pt;
     color: #000000;

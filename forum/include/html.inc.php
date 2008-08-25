@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.300 2008-08-25 11:17:26 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.301 2008-08-25 11:54:13 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -630,8 +630,7 @@ function html_draw_top()
 
     $forum_path = defined('BH_FORUM_PATH') ? BH_FORUM_PATH : '.';
 
-    $include_body_tag = true;
-    $frameset_dtd = false;
+    $frame_set_html = false;
     $pm_popup_disabled = false;
 
     $func_matches = array();
@@ -698,13 +697,8 @@ function html_draw_top()
             unset($arg_array[$key]);
         }
 
-        if (preg_match('/^body_tag=([^$]+)$/iu', $func_args, $func_matches) > 0) {
-            $include_body_tag = $func_matches[1];
-            unset($arg_array[$key]);
-        }
-
-        if (preg_match('/^frames=([^$]+)$/iu', $func_args, $func_matches) > 0) {
-            $frameset_dtd = $func_matches[1];
+        if (preg_match('/^frame_set_html$/iu', $func_args, $func_matches) > 0) {
+            $frame_set_html = true;
             unset($arg_array[$key]);
         }
 
@@ -731,7 +725,7 @@ function html_draw_top()
 
     echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 
-    if ($frameset_dtd === false) {
+    if ($frame_set_html === false) {
         echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
     }else {
         echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Frameset//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd\">\n";
@@ -841,7 +835,7 @@ function html_draw_top()
         }
     }
 
-    if ($include_body_tag === true) {
+    if ($frame_set_html === false) {
 
         // Check for any new PMs.
 
@@ -1075,7 +1069,7 @@ function html_draw_top()
 
     $onunload = trim(implode(";", $onunload_array));
 
-    if ($google_analytics_code = html_get_google_analytics_code()) {
+    if (($frame_set_html === true) && $google_analytics_code = html_get_google_analytics_code()) {
 
         echo "<script type=\"text/javascript\">\n";
         echo "var gaJsHost = ((\"https:\" == document.location.protocol) ? \"https://ssl.\" : \"http://www.\");\n";
@@ -1091,7 +1085,7 @@ function html_draw_top()
 
     echo "</head>\n\n";
 
-    if ($include_body_tag === true) {
+    if ($frame_set_html === false) {
 
         echo "<body", ($body_class) ? " class=\"$body_class\"" : "";
         echo (strlen($onload) > 0) ? " onload=\"$onload\"" : "";
@@ -1100,9 +1094,11 @@ function html_draw_top()
     }
 }
 
-function html_draw_bottom($include_body_tag = true)
+function html_draw_bottom($frame_set_html = false)
 {
-    if ($include_body_tag === true) {
+    if (!is_bool($frame_set_html)) $frame_set_html = false;
+
+    if ($frame_set_html === false) {
 
         if ($google_analytics_code = html_get_google_analytics_code()) {
 

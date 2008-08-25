@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.php,v 1.71 2008-08-22 19:07:23 decoyduck Exp $ */
+/* $Id: user.php,v 1.72 2008-08-25 11:54:13 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -124,7 +124,7 @@ if (isset($_GET['page']) && strlen(trim(_stripslashes($_GET['page']))) > 0) {
 
     if (preg_match("/^$available_pages_preg/u", basename($requested_page)) > 0) {
 
-        html_draw_top('body_tag=false', 'frames=true');
+        html_draw_top('frame_set_html', 'pm_popup_disabled');
 
         $requested_page = href_cleanup_query_keys($requested_page);
 
@@ -133,18 +133,18 @@ if (isset($_GET['page']) && strlen(trim(_stripslashes($_GET['page']))) > 0) {
         echo "  <frame src=\"$requested_page\" name=\"", html_get_frame_name('right'), "\" frameborder=\"0\" />\n";
         echo "</frameset>\n";
 
-        html_draw_bottom(false);
+        html_draw_bottom(true);
         exit;
     }
 }
 
-html_draw_top('body_tag=false', 'frames=true');
+html_draw_top('frame_set_html', 'pm_popup_disabled');
 
 echo "<frameset cols=\"250,*\" framespacing=\"4\" border=\"4\">\n";
 echo "  <frame src=\"user_menu.php?webtag=$webtag\" name=\"", html_get_frame_name('left'), "\" frameborder=\"0\" />\n";
 echo "  <frame src=\"edit_prefs.php?webtag=$webtag\" name=\"", html_get_frame_name('right'), "\" frameborder=\"0\" />\n";
 echo "</frameset>\n";
 
-html_draw_bottom(false);
+html_draw_bottom(true);
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.299 2008-08-25 10:09:10 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.300 2008-08-25 11:17:26 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1077,14 +1077,16 @@ function html_draw_top()
 
     if ($google_analytics_code = html_get_google_analytics_code()) {
 
-        echo "  <script type=\"text/javascript\">\n";
-        echo "    var gaJsHost = ((\"https:\" == document.location.protocol) ? \"https://ssl.\" : \"http://www.\");\n";
-        echo "    document.write(unescape(\"%3Cscript src='\" + gaJsHost + \"google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E\"));\n";
-        echo "  </script>\n";
-        echo "  <script type=\"text/javascript\">\n";
-        echo "    var pageTracker = _gat._getTracker(\"$google_analytics_code\");\n";
-        echo "    pageTracker._trackPageview();\n";
-        echo "  </script>\n";
+        echo "<script type=\"text/javascript\">\n";
+        echo "var gaJsHost = ((\"https:\" == document.location.protocol) ? \"https://ssl.\" : \"http://www.\");\n";
+        echo "document.write(unescape(\"%3Cscript src='\" + gaJsHost + \"google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E\"));\n";
+        echo "</script>\n";
+        echo "<script type=\"text/javascript\">\n";
+        echo "if (typeof(_gat) == 'object') {\n";
+        echo "var pageTracker = _gat._getTracker(\"$google_analytics_code\");\n";
+        echo "pageTracker._trackPageview();\n";
+        echo "}\n";
+        echo "</script>\n";
     }
 
     echo "</head>\n\n";
@@ -1109,8 +1111,10 @@ function html_draw_bottom($include_body_tag = true)
             echo "document.write(unescape(\"%3Cscript src='\" + gaJsHost + \"google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E\"));\n";
             echo "</script>\n";
             echo "<script type=\"text/javascript\">\n";
+            echo "if (typeof(_gat) == 'object') {\n";
             echo "var pageTracker = _gat._getTracker(\"$google_analytics_code\");\n";
             echo "pageTracker._trackPageview();\n";
+            echo "}\n";
             echo "</script>\n";
         }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.163 2008-08-21 20:46:13 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.164 2008-08-25 19:20:25 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -169,10 +169,14 @@ if (substr($attachment_dir, -1) == '/') {
     $attachment_dir = substr($attachment_dir, 0, -1);
 }
 
-// Arrays to hold the success and error messages
+// Arrays to hold successfully / failed uploaded filenames.
 
 $upload_success = array();
 $upload_failure = array();
+
+// Array to hold error messages
+
+$error_msg_array = array();
 
 // Start Stuff
 
@@ -240,14 +244,26 @@ if (isset($_POST['upload'])) {
 
 }elseif (isset($_POST['delete_confirm'])) {
 
+    $valid = true;
+
     if (isset($_POST['delete_attachment_confirm']) && is_array($_POST['delete_attachment_confirm'])) {
 
         foreach ($_POST['delete_attachment_confirm'] as $hash => $del_attachment) {
 
-            if ($del_attachment == "Y") {
+            if ($del_attachment == "Y" && get_attachment_by_hash($hash)) {
 
-                delete_attachment($hash);
+                if (!delete_attachment($hash)) {
+
+                    $valid = false;
+                    $error_msg_array[] = $lang['failedtodeleteallselectedattachments'];
+                }
             }
+        }
+
+        if ($valid) {
+
+            header_redirect("attachments.php?webtag=$webtag&aid=$aid");
+            exit;
         }
     }
 
@@ -405,12 +421,19 @@ echo "</script>\n";
 
 echo "<h1>{$lang['attachments']}</h1>\n";
 
-if (isset($upload_success) && is_array($upload_success) && sizeof($upload_success) > 0) {
-    html_display_success_msg(sprintf($lang['successfullyuploaded'], _htmlentities(implode(", ", $upload_success))), '600', 'left');
-}
+if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-if (isset($upload_failure) && is_array($upload_failure) && sizeof($upload_failure) > 0) {
-    html_display_error_msg(sprintf($lang['failedtoupload'], _htmlentities(implode(", ", $upload_failure))), '600', 'left');
+    html_display_error_array($error_msg_array, '600', 'center');
+
+}else {
+
+    if (isset($upload_success) && is_array($upload_success) && sizeof($upload_success) > 0) {
+        html_display_success_msg(sprintf($lang['successfullyuploaded'], _htmlentities(implode(", ", $upload_success))), '600', 'left');
+    }
+
+    if (isset($upload_failure) && is_array($upload_failure) && sizeof($upload_failure) > 0) {
+        html_display_error_msg(sprintf($lang['failedtoupload'], _htmlentities(implode(", ", $upload_failure))), '600', 'left');
+    }
 }
 
 echo "<br />\n";

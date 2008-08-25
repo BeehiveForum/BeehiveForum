@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.298 2008-08-22 19:07:24 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.299 2008-08-25 10:09:10 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1075,6 +1075,18 @@ function html_draw_top()
 
     $onunload = trim(implode(";", $onunload_array));
 
+    if ($google_analytics_code = html_get_google_analytics_code()) {
+
+        echo "  <script type=\"text/javascript\">\n";
+        echo "    var gaJsHost = ((\"https:\" == document.location.protocol) ? \"https://ssl.\" : \"http://www.\");\n";
+        echo "    document.write(unescape(\"%3Cscript src='\" + gaJsHost + \"google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E\"));\n";
+        echo "  </script>\n";
+        echo "  <script type=\"text/javascript\">\n";
+        echo "    var pageTracker = _gat._getTracker(\"$google_analytics_code\");\n";
+        echo "    pageTracker._trackPageview();\n";
+        echo "  </script>\n";
+    }
+
     echo "</head>\n\n";
 
     if ($include_body_tag === true) {
@@ -1089,10 +1101,35 @@ function html_draw_top()
 function html_draw_bottom($include_body_tag = true)
 {
     if ($include_body_tag === true) {
+
+        if ($google_analytics_code = html_get_google_analytics_code()) {
+
+            echo "<script type=\"text/javascript\">\n";
+            echo "var gaJsHost = ((\"https:\" == document.location.protocol) ? \"https://ssl.\" : \"http://www.\");\n";
+            echo "document.write(unescape(\"%3Cscript src='\" + gaJsHost + \"google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E\"));\n";
+            echo "</script>\n";
+            echo "<script type=\"text/javascript\">\n";
+            echo "var pageTracker = _gat._getTracker(\"$google_analytics_code\");\n";
+            echo "pageTracker._trackPageview();\n";
+            echo "</script>\n";
+        }
+
         echo "</body>\n";
     }
 
     echo "</html>\n";
+}
+
+function html_get_google_analytics_code()
+{
+    if (forum_get_setting('enable_google_analytics', 'Y')) {
+
+        if ($google_analytics_code = forum_get_setting('forum_google_analytics_code')) {
+            return (strlen(trim($google_analytics_code)) > 0) ? $google_analytics_code : false;
+        }
+    }
+
+    return false;
 }
 
 function html_js_safe_str($str)

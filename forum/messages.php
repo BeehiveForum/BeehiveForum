@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.280 2008-08-22 19:07:23 decoyduck Exp $ */
+/* $Id: messages.php,v 1.281 2008-08-25 10:09:10 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -626,44 +626,44 @@ if ($msg_count > 0 && !user_is_guest() && !isset($_GET['markasread'])) {
 echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" border=\"0\">\n";
 echo "  <tr>\n";
-echo "    <td align=\"left\" colspan=\"3\">&nbsp;</td>\n";
+echo "    <td align=\"left\" colspan=\"3\" class=\"postbody\">&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
 
 if (($thread_data['CLOSED'] == 0 && bh_session_check_perm(USER_PERM_POST_CREATE, $thread_data['FID'])) || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $thread_data['FID'])) {
 
-    echo "    <td width=\"33%\" align=\"left\" nowrap=\"nowrap\"><img src=\"". style_image('reply_all.png') ."\" alt=\"{$lang['replyall']}\" title=\"{$lang['replyall']}\" border=\"0\" /> <a href=\"post.php?webtag=$webtag&amp;replyto=$tid.0\" target=\"_parent\" onclick=\"return checkPostQuoting('$tid.0')\"><b>{$lang['replyall']}</b></a></td>\n";
+    echo "    <td width=\"33%\" align=\"left\" nowrap=\"nowrap\" class=\"postbody\"><img src=\"". style_image('reply_all.png') ."\" alt=\"{$lang['replyall']}\" title=\"{$lang['replyall']}\" border=\"0\" /> <a href=\"post.php?webtag=$webtag&amp;replyto=$tid.0\" target=\"_parent\" onclick=\"return checkPostQuoting('$tid.0')\"><b>{$lang['replyall']}</b></a></td>\n";
 
 }else {
 
-    echo "    <td width=\"33%\" align=\"left\">&nbsp;</td>\n";
+    echo "    <td width=\"33%\" align=\"left\" class=\"postbody\">&nbsp;</td>\n";
 }
 
 if (!user_is_guest()) {
 
     if ($thread_data['LENGTH'] > 0) {
 
-        echo "    <td width=\"33%\" align=\"center\" nowrap=\"nowrap\"><img src=\"". style_image('thread_options.png') ."\" alt=\"{$lang['editthreadoptions']}\" title=\"{$lang['editthreadoptions']}\" border=\"0\" /> <a href=\"thread_options.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\"><b>{$lang['editthreadoptions']}</b></a></td>\n";
+        echo "    <td width=\"33%\" align=\"center\" nowrap=\"nowrap\" class=\"postbody\"><img src=\"". style_image('thread_options.png') ."\" alt=\"{$lang['editthreadoptions']}\" title=\"{$lang['editthreadoptions']}\" border=\"0\" /> <a href=\"thread_options.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\"><b>{$lang['editthreadoptions']}</b></a></td>\n";
 
     }else {
 
-        echo "    <td width=\"33%\" align=\"center\" nowrap=\"nowrap\"><img src=\"". style_image('thread_options.png') ."\" alt=\"{$lang['undeletethread']}\" title=\"{$lang['undeletethread']}\" border=\"0\" /> <a href=\"thread_options.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\"><b>{$lang['undeletethread']}</b></a></td>\n";
+        echo "    <td width=\"33%\" align=\"center\" nowrap=\"nowrap\" class=\"postbody\"><img src=\"". style_image('thread_options.png') ."\" alt=\"{$lang['undeletethread']}\" title=\"{$lang['undeletethread']}\" border=\"0\" /> <a href=\"thread_options.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\"><b>{$lang['undeletethread']}</b></a></td>\n";
     }
 
 }else {
 
-    echo "    <td width=\"33%\" align=\"center\">&nbsp;</td>\n";
+    echo "    <td width=\"33%\" align=\"center\" class=\"postbody\">&nbsp;</td>\n";
 }
 
 if ($last_pid < $thread_data['LENGTH']) {
 
     $next_pid = $last_pid + 1;
 
-    echo "    <td width=\"33%\" align=\"right\" nowrap=\"nowrap\">", form_quick_button("messages.php", "{$lang['keepreading']}  &raquo;", array('msg' => "$tid.$next_pid")), "</td>\n";
+    echo "    <td width=\"33%\" align=\"right\" nowrap=\"nowrap\" class=\"postbody\">", form_quick_button("messages.php", "{$lang['keepreading']}  &raquo;", array('msg' => "$tid.$next_pid")), "</td>\n";
 
 }else {
 
-    echo "    <td width=\"33%\" align=\"center\">&nbsp;</td>\n";
+    echo "    <td width=\"33%\" align=\"center\" class=\"postbody\">&nbsp;</td>\n";
 }
 
 echo "  </tr>\n";
@@ -671,7 +671,7 @@ echo "  </tr>\n";
 if (!user_is_guest()) {
 
     echo "  <tr>\n";
-    echo "    <td colspan=\"3\" align=\"center\"><img src=\"". style_image('star.png') ."\" alt=\"{$lang['quickreplyall']}\" title=\"{$lang['quickreplyall']}\" border=\"0\" /> <a href=\"javascript:void(0)\" target=\"_self\" onclick=\"toggleQuickReply($tid, 0)\"><b>{$lang['quickreplyall']}</b></a></td>\n";
+    echo "    <td colspan=\"3\" align=\"center\" class=\"postbody\"><img src=\"". style_image('star.png') ."\" alt=\"{$lang['quickreplyall']}\" title=\"{$lang['quickreplyall']}\" border=\"0\" /> <a href=\"javascript:void(0)\" target=\"_self\" onclick=\"toggleQuickReply($tid, 0)\"><b>{$lang['quickreplyall']}</b></a></td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td colspan=\"3\">\n";

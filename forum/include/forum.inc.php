@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.336 2008-08-22 19:07:24 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.337 2008-08-25 10:09:10 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -563,41 +563,6 @@ function forum_get_settings_by_fid($fid)
     return $forum_settings_array;
 }
 
-function forum_save_setting($forum_fid, $sname, $svalue)
-{
-    if (!is_numeric($forum_fid)) return false;
-
-    if (!$db_forum_save_setting = db_connect()) return false;
-
-    $sname = db_escape_string($sname);
-    $svalue = db_escape_string($svalue);
-
-    if (forum_check_setting_name($sname) || forum_check_global_setting_name($sname)) {
-
-        $sql = "SELECT SVALUE FROM FORUM_SETTINGS WHERE FID = '$forum_fid' ";
-        $sql.= "AND SNAME = '$sname'";
-
-        if (!$result = db_query($sql, $db_forum_save_setting)) return false;
-
-        if (db_num_rows($result) > 0) {
-
-            $sql = "UPDATE LOW_PRIORITY FORUM_SETTINGS SET SVALUE = '$svalue' WHERE FID = '$forum_fid' ";
-            $sql.= "AND SNAME = '$sname'";
-
-            if (!$result = db_query($sql, $db_forum_save_setting)) return false;
-
-        }else {
-
-            $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
-            $sql.= "VALUES ($forum_fid, '$sname', '$svalue')";
-
-            if (!$result = db_query($sql, $db_forum_save_setting)) return false;
-        }
-    }
-
-    return true;
-}
-
 function forum_save_settings($forum_settings_array)
 {
     if (!is_array($forum_settings_array)) return false;
@@ -683,8 +648,9 @@ function forum_check_setting_name($setting_name)
     $valid_forum_settings = array('allow_polls', 'allow_post_editing', 'allow_search_spidering',
                                   'closed_message', 'default_emoticons', 'default_language',
                                   'default_style', 'enable_wiki_integration', 'enable_wiki_quick_links',
-                                  'force_word_filter', 'forum_desc', 'forum_content_rating', 'forum_dl_saving',
-                                  'forum_email', 'forum_keywords', 'forum_name', 'forum_timezone',
+                                  'enable_google_analytics', 'force_word_filter', 'forum_desc',
+                                  'forum_content_rating', 'forum_dl_saving', 'forum_email', 'forum_keywords',
+                                  'forum_google_analytics_code', 'forum_name', 'forum_timezone',
                                   'forum_links_top_link', 'guest_account_enabled', 'guest_show_recent',
                                   'maximum_post_length', 'minimum_post_frequency', 'password_protected_message',
                                   'poll_allow_guests', 'post_edit_grace_period', 'post_edit_time',

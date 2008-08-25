@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.576 2008-08-21 20:46:17 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.577 2008-08-25 10:09:10 decoyduck Exp $ */
 
 // British English language file
 
@@ -929,6 +929,9 @@ $lang['forumstatusmessages'] = "Forum Status Messages";
 $lang['forumclosedmessage'] = "Forum Closed Message";
 $lang['forumrestrictedmessage'] = "Forum Restricted Message";
 $lang['forumpasswordprotectedmessage'] = "Forum Password Protected Message";
+$lang['googleanalytics'] = "Google Analytics";
+$lang['enablegoogleanalytics'] = "Enable Google Analytics";
+$lang['googleanalyticsaccountid'] = "Google Analytics Account ID";
 
 // Admin Forum Settings Help Text (admin_forum_settings.php) ------------------------------
 
@@ -981,6 +984,8 @@ $lang['forum_settings_help_58'] = "In addition to simple spidering, Beehive can 
 $lang['forum_settings_help_59'] = "Sitemaps are automatically saved to the sitemaps sub-directory of your Beehive Forum installation. If this directory doesn't exist you must create it and ensure that it is writable by the server / PHP process. To allow search engines to find your sitemap you must add the URL to your robots.txt.";
 $lang['forum_settings_help_60'] = "Depending on server performance and the number of forums and threads your Beehive installation contains, generating a sitemap may take several minutes to complete. If performance of your server is adversely affected it is recommend you disable generation of the sitemap.";
 $lang['forum_settings_help_61'] = "<b>Send email notification to global admin</b> when enabled will send an email to the global forum owners when a new user account is created.";
+$lang['forum_settings_help_61'] = "Enter your <b>Google Analytics Account ID</b> here to enable Google Analytic tracking of your forum. Google Analytics will track visitors to your site and record how long they stay and which pages they visit. By visiting the Google Analytics site your can see an overview of how your forum is used.";
+$lang['forum_settings_help_62'] = "If you do not have a Google Analytics Account you will need to sign up for one by clicking <a href=\"https://www.google.com/analytics/\" target=\"_blank\">here</a>.";
 
 // Attachments (attachments.php, get_attachment.php) ---------------------------------------
 

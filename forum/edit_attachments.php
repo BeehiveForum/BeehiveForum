@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.134 2008-08-22 19:07:21 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.135 2008-08-25 19:20:25 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -100,6 +100,10 @@ if (!forum_check_webtag_available($webtag)) {
 // Load language file
 
 $lang = load_language_file();
+
+// Array to hold error messages
+
+$error_msg_array = array();
 
 // Arrays to hold our attachments
 
@@ -209,27 +213,51 @@ $total_attachment_size = 0;
 
 if (isset($_POST['delete_confirm'])) {
 
+    $valid = true;
+
     if (isset($_POST['delete_attachment_confirm']) && is_array($_POST['delete_attachment_confirm'])) {
 
         foreach ($_POST['delete_attachment_confirm'] as $hash => $del_attachment) {
 
             if ($del_attachment == "Y" && get_attachment_by_hash($hash)) {
 
-                delete_attachment($hash);
+                if (!delete_attachment($hash)) {
+
+                    $valid = false;
+                    $error_msg_array[] = $lang['failedtodeleteallselectedattachments'];
+                }
             }
+        }
+
+        if ($valid) {
+
+            header_redirect("attachments.php?webtag=$webtag&aid=$aid");
+            exit;
         }
     }
 
 }elseif (isset($_POST['delete_thumbs_confirm'])) {
 
+    $valid = true;
+
     if (isset($_POST['delete_attachment_confirm']) && is_array($_POST['delete_attachment_confirm'])) {
 
         foreach ($_POST['delete_attachment_confirm'] as $hash => $del_attachment) {
 
             if ($del_attachment == "Y" && get_attachment_by_hash($hash)) {
 
-                delete_attachment_thumbnail($hash);
+                if (!delete_attachment_thumbnail($hash)) {
+
+                    $valid = false;
+                    $error_msg_array[] = $lang['failedtodeleteallselectedattachmentthumbnails'];
+                }
             }
+        }
+
+        if ($valid) {
+
+            header_redirect("attachments.php?webtag=$webtag&aid=$aid");
+            exit;
         }
     }
 
@@ -377,6 +405,11 @@ if (isset($_POST['delete_confirm'])) {
 html_draw_top('attachments.js', 'post.js', 'pm_popup_disabled');
 
 echo "<h1>{$lang['attachments']}</h1>\n";
+
+if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+    html_display_error_array($error_msg_array, '600', 'center');
+}
+
 echo "<br />\n";
 echo "<form accept-charset=\"utf-8\" name=\"attachments\" method=\"post\" action=\"edit_attachments.php\">\n";
 echo "  ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";

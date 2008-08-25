@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.577 2008-08-25 10:09:10 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.578 2008-08-25 19:20:25 decoyduck Exp $ */
 
 // British English language file
 
@@ -1008,6 +1008,8 @@ $lang['canonlyuploadmaximum'] = "You can only upload a maximum of 10 files at a 
 $lang['deleteattachments'] = "Delete attachments";
 $lang['deleteattachmentsconfirm'] = "Are you sure you want to delete the selected attachments?";
 $lang['deletethumbnailsconfirm'] = "Are you sure you want to delete the selected attachments thumbnails?";
+$lang['failedtodeleteallselectedattachments'] = "Failed to delete all of the selected attachments";
+$lang['failedtodeleteallselectedattachmentthumbnails'] = "Failed to delete all of the selected attachment thumbnails";
 
 // Changing passwords (change_pw.php) ----------------------------------
 

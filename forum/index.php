@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.176 2008-08-22 19:07:22 decoyduck Exp $ */
+/* $Id: index.php,v 1.177 2008-08-25 11:54:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -162,7 +162,7 @@ $navsize = max((is_numeric($navsize) ? $navsize * 2 : 22), 22);
 
 if ($skip_logon_page === true) {
 
-    html_draw_top('body_tag=false', 'frames=true', 'robots=index,follow');
+    html_draw_top('frame_set_html', 'pm_popup_disabled', 'robots=index,follow');
 
     echo "<frameset rows=\"60,$navsize,*\" framespacing=\"0\" border=\"0\">\n";
     echo "<frame src=\"$top_html\" name=\"", html_get_frame_name('ftop'), "\" frameborder=\"0\" scrolling=\"no\" noresize=\"noresize\" />\n";
@@ -171,7 +171,7 @@ if ($skip_logon_page === true) {
 
 }else if ($session_active && !$logon_failed) {
 
-    html_draw_top('body_tag=false', 'frames=true', 'robots=index,follow');
+    html_draw_top('frame_set_html', 'pm_popup_disabled', 'robots=index,follow');
 
     if (forum_check_webtag_available($webtag)) {
 
@@ -254,7 +254,7 @@ if ($skip_logon_page === true) {
 
 }else {
 
-    html_draw_top('body_tag=false', 'frames=true', 'robots=index,follow');
+    html_draw_top('frame_set_html', 'pm_popup_disabled', 'robots=index,follow');
 
     echo "<frameset rows=\"60,*\" framespacing=\"0\" border=\"0\">\n";
     echo "<frame src=\"$top_html\" name=\"", html_get_frame_name('ftop'), "\" frameborder=\"0\" scrolling=\"no\" noresize=\"noresize\" />\n";
@@ -319,6 +319,6 @@ echo "</body>\n";
 echo "</noframes>\n";
 echo "</frameset>\n";
 
-html_draw_bottom(false);
+html_draw_bottom(true);
 
 ?>

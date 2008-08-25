@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: discussion.php,v 1.119 2008-08-22 19:07:21 decoyduck Exp $ */
+/* $Id: discussion.php,v 1.120 2008-08-25 11:54:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -127,18 +127,18 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
     $fid = $_GET['folder'];
     $msg = messages_get_most_recent($uid, $fid);
 
-    html_draw_top('body_tag=false', 'frames=true');
+    html_draw_top('frame_set_html', 'pm_popup_disabled');
 
     echo "<frameset cols=\"280,*\" framespacing=\"4\" border=\"4\">\n";
     echo "  <frame src=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$fid\" name=\"", html_get_frame_name('left'), "\" frameborder=\"0\" />\n";
     echo "  <frame src=\"messages.php?webtag=$webtag&amp;msg=$msg\" name=\"", html_get_frame_name('right'), "\" frameborder=\"0\" />\n";
     echo "</frameset>\n";
 
-    html_draw_bottom(false);
+    html_draw_bottom(true);
 
 }elseif (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
-    html_draw_top('body_tag=false', 'frames=true');
+    html_draw_top('frame_set_html', 'pm_popup_disabled');
 
     if (isset($_GET['edit_success']) && validate_msg($_GET['edit_success'])) {
 
@@ -162,7 +162,7 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
         echo "</frameset>\n";
     }
 
-    html_draw_bottom(false);
+    html_draw_bottom(true);
 
 }else if (isset($_GET['right']) && $_GET['right'] == 'search') {
 
@@ -174,7 +174,7 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
         exit;
     }
 
-    html_draw_top('body_tag=false', 'frames=true');
+    html_draw_top('frame_set_html', 'pm_popup_disabled');
 
     if (isset($_GET['search_error']) && is_numeric($_GET['search_error'])) {
 
@@ -191,7 +191,7 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
         echo "</frameset>\n";
     }
 
-    html_draw_bottom(false);
+    html_draw_bottom(true);
 
 }else if (isset($_GET['left']) && $_GET['left'] == 'search_results') {
 
@@ -203,7 +203,7 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
         exit;
     }
 
-    html_draw_top('body_tag=false', 'frames=true');
+    html_draw_top('frame_set_html', 'pm_popup_disabled');
 
     if (($search_msg = search_get_first_result_msg())) {
 
@@ -220,20 +220,20 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
         echo "</frameset>\n";
     }
 
-    html_draw_bottom(false);
+    html_draw_bottom(true);
 
 }else {
 
     $msg = messages_get_most_recent($uid);
 
-    html_draw_top('body_tag=false', 'frames=true');
+    html_draw_top('frame_set_html', 'pm_popup_disabled');
 
     echo "<frameset cols=\"280,*\" framespacing=\"4\" border=\"4\">\n";
     echo "  <frame src=\"thread_list.php?webtag=$webtag&amp;msg=$msg\" name=\"", html_get_frame_name('left'), "\" frameborder=\"0\" />\n";
     echo "  <frame src=\"messages.php?webtag=$webtag&amp;msg=$msg\" name=\"", html_get_frame_name('right'), "\" frameborder=\"0\" />\n";
     echo "</frameset>\n";
 
-    html_draw_bottom(false);
+    html_draw_bottom(true);
 }
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start.php,v 1.84 2008-08-22 19:07:23 decoyduck Exp $ */
+/* $Id: start.php,v 1.85 2008-08-25 11:54:13 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -107,7 +107,7 @@ if (!forum_check_access_level()) {
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
-html_draw_top('body_tag=false', 'frames=true');
+html_draw_top('frame_set_html', 'pm_popup_disabled');
 
 echo "<frameset cols=\"280,*\" framespacing=\"4\" border=\"4\">\n";
 
@@ -131,6 +131,6 @@ if (isset($_GET['show']) && $_GET['show'] == "visitors") {
 
 echo "</frameset>\n";
 
-html_draw_bottom(false);
+html_draw_bottom(true);
 
 ?>

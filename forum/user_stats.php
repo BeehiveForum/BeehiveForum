@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_stats.php,v 1.63 2008-08-22 19:07:24 decoyduck Exp $ */
+/* $Id: user_stats.php,v 1.64 2008-08-28 21:28:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -120,24 +120,26 @@ if (isset($_GET['get_stats'])) {
 
 }else {
 
+    if (user_is_guest()) {
+
+        html_guest_error();
+        exit;
+    }
+
     if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+
         $msg = $_GET['msg'];
-    }else {
-        $msg = messages_get_most_recent($uid);
-    }
 
-    if (isset($_GET['show_stats']) && $_GET['show_stats'] == "Y") {
+        if (isset($_GET['show_stats']) && $_GET['show_stats'] == "Y") {
 
-        $user_prefs['SHOW_STATS'] = "Y";
-        $user_prefs_global['SHOW_STATS'] = false;
+            $user_prefs['SHOW_STATS'] = "Y";
+            $user_prefs_global['SHOW_STATS'] = false;
 
-    }else {
+        }else {
 
-        $user_prefs['SHOW_STATS'] = "N";
-        $user_prefs_global['SHOW_STATS'] = false;
-    }
-
-    if (!user_is_guest()) {
+            $user_prefs['SHOW_STATS'] = "N";
+            $user_prefs_global['SHOW_STATS'] = false;
+        }
 
         if (user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
 
@@ -153,8 +155,9 @@ if (isset($_GET['get_stats'])) {
 
     }else {
 
-        header_redirect("messages.php?webtag=$webtag&msg=$msg");
-        exit;
+        html_draw_top();
+        html_error_msg($lang['invalidmsgid']);
+        html_draw_bottom();
     }
 }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lmessages.php,v 1.108 2008-08-22 19:07:22 decoyduck Exp $ */
+/* $Id: lmessages.php,v 1.109 2008-08-28 21:28:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -136,7 +136,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     $msg = $_GET['msg'];
     list($tid, $pid) = explode('.', $msg);
 
-}else if ($msg = messages_get_most_recent($uid)) {
+}else if (($msg = messages_get_most_recent($uid))) {
 
     list($tid, $pid) = explode('.', $msg);
 

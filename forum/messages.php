@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.282 2008-08-25 11:54:13 decoyduck Exp $ */
+/* $Id: messages.php,v 1.283 2008-08-28 21:28:32 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -132,7 +132,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     $msg = $_GET['msg'];
     list($tid, $pid) = explode('.', $msg);
 
-}else if ($msg = messages_get_most_recent($uid)) {
+}else if (($msg = messages_get_most_recent($uid))) {
 
     list($tid, $pid) = explode('.', $msg);
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: server.inc.php,v 1.38 2008-08-15 17:40:23 decoyduck Exp $ */
+/* $Id: server.inc.php,v 1.39 2008-08-28 21:28:33 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -307,7 +307,22 @@ function get_available_js_popup_files_preg()
                                     '^mods_list\.php', '^poll_results\.php', '^search_popup\.php',
                                     '^search\.php.+show_stop_words=true', '^user_profile\.php');
 
-    return implode("|^", $popup_files_preg_array);
+    return implode("|", $popup_files_preg_array);
+}
+
+/**
+* Fetch a list of files that handle fonts and stats support.
+*
+* Returns an array of Beehive Forum PHP files that are used to
+* change font size, toggle stats display, etc.
+*
+* @return string
+* @param void
+*/
+
+function get_available_support_files()
+{
+    return array('font_size.php', 'user_font.php', 'user_stats.php');
 }
 
 /**

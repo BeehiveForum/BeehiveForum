@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: discussion.php,v 1.120 2008-08-25 11:54:12 decoyduck Exp $ */
+/* $Id: discussion.php,v 1.121 2008-08-28 21:28:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -125,16 +125,25 @@ if (!$folder_info = threads_get_folders()) {
 if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessible($_GET['folder'])) {
 
     $fid = $_GET['folder'];
-    $msg = messages_get_most_recent($uid, $fid);
 
-    html_draw_top('frame_set_html', 'pm_popup_disabled');
+    if (($msg = messages_get_most_recent($uid, $fid))) {
 
-    echo "<frameset cols=\"280,*\" framespacing=\"4\" border=\"4\">\n";
-    echo "  <frame src=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$fid\" name=\"", html_get_frame_name('left'), "\" frameborder=\"0\" />\n";
-    echo "  <frame src=\"messages.php?webtag=$webtag&amp;msg=$msg\" name=\"", html_get_frame_name('right'), "\" frameborder=\"0\" />\n";
-    echo "</frameset>\n";
+        html_draw_top('frame_set_html', 'pm_popup_disabled');
 
-    html_draw_bottom(true);
+        echo "<frameset cols=\"280,*\" framespacing=\"4\" border=\"4\">\n";
+        echo "  <frame src=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$fid\" name=\"", html_get_frame_name('left'), "\" frameborder=\"0\" />\n";
+        echo "  <frame src=\"messages.php?webtag=$webtag&amp;msg=$msg\" name=\"", html_get_frame_name('right'), "\" frameborder=\"0\" />\n";
+        echo "</frameset>\n";
+
+        html_draw_bottom(true);
+
+    }else {
+
+        html_draw_top();
+        html_error_msg($lang['nomessages']);
+        html_draw_bottom();
+        exit;
+    }
 
 }elseif (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
@@ -224,16 +233,24 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
 
 }else {
 
-    $msg = messages_get_most_recent($uid);
+    if (($msg = messages_get_most_recent($uid))) {
 
-    html_draw_top('frame_set_html', 'pm_popup_disabled');
+        html_draw_top('frame_set_html', 'pm_popup_disabled');
 
-    echo "<frameset cols=\"280,*\" framespacing=\"4\" border=\"4\">\n";
-    echo "  <frame src=\"thread_list.php?webtag=$webtag&amp;msg=$msg\" name=\"", html_get_frame_name('left'), "\" frameborder=\"0\" />\n";
-    echo "  <frame src=\"messages.php?webtag=$webtag&amp;msg=$msg\" name=\"", html_get_frame_name('right'), "\" frameborder=\"0\" />\n";
-    echo "</frameset>\n";
+        echo "<frameset cols=\"280,*\" framespacing=\"4\" border=\"4\">\n";
+        echo "  <frame src=\"thread_list.php?webtag=$webtag&amp;msg=$msg\" name=\"", html_get_frame_name('left'), "\" frameborder=\"0\" />\n";
+        echo "  <frame src=\"messages.php?webtag=$webtag&amp;msg=$msg\" name=\"", html_get_frame_name('right'), "\" frameborder=\"0\" />\n";
+        echo "</frameset>\n";
 
-    html_draw_bottom(true);
+        html_draw_bottom(true);
+
+    }else {
+
+        html_draw_top();
+        html_error_msg($lang['nomessages']);
+        html_draw_bottom();
+        exit;
+    }
 }
 
 ?>

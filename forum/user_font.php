@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_font.php,v 1.68 2008-08-22 19:07:23 decoyduck Exp $ */
+/* $Id: user_font.php,v 1.69 2008-08-28 21:28:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -99,11 +99,9 @@ if (!forum_check_webtag_available($webtag)) {
 
 $lang = load_language_file();
 
-if (user_is_guest()) {
+// User's UID
 
-    html_guest_error();
-    exit;
-}
+$uid = bh_session_get_value('UID');
 
 // Check that we have access to this forum
 
@@ -112,34 +110,47 @@ if (!forum_check_access_level()) {
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
 
-$uid = bh_session_get_value('UID');
+// Guests can't change their font size.
 
-if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
-    $msg = $_GET['msg'];
-}else {
-    $msg = messages_get_most_recent($uid);
+if (user_is_guest()) {
+
+    html_guest_error();
+    exit;
 }
 
-if (isset($_GET['fontsize']) && is_numeric($_GET['fontsize']) && $_GET['fontsize'] > 4 && $_GET['fontsize'] < 16 && !user_is_guest()) {
+// Check we have a msg ID
 
-    $user_prefs['FONT_SIZE'] = $_GET['fontsize'];
-    $user_prefs_global['FONT_SIZE'] = false;
+if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
-    if (user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
+    $msg = $_GET['msg'];
 
-        header_redirect("messages.php?webtag=$webtag&msg=$msg&font_resize=1");
+    if (isset($_GET['fontsize']) && is_numeric($_GET['fontsize']) && $_GET['fontsize'] > 4 && $_GET['fontsize'] < 16 && !user_is_guest()) {
+
+        $user_prefs['FONT_SIZE'] = $_GET['fontsize'];
+        $user_prefs_global['FONT_SIZE'] = false;
+
+        if (user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
+
+            header_redirect("messages.php?webtag=$webtag&msg=$msg&font_resize=1");
+
+        }else {
+
+            html_draw_top();
+            html_error_msg($lang['failedtoupdateuserdetails'], 'messages.php', 'get', array('back' => $lang['back']), array('msg' => $msg));
+            html_draw_bottom();
+        }
 
     }else {
 
-        html_draw_top();
-        html_error_msg($lang['failedtoupdateuserdetails'], 'messages.php', 'get', array('back' => $lang['back']), array('msg' => $msg));
-        html_draw_bottom();
+       header_redirect("messages.php?webtag=$webtag&msg=$msg");
+
     }
 
 }else {
 
-   header_redirect("messages.php?webtag=$webtag&msg=$msg");
-
+    html_draw_top();
+    html_error_msg($lang['invalidmsgid']);
+    html_draw_bottom();
 }
 
 ?>

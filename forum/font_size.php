@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: font_size.php,v 1.28 2008-08-22 19:07:22 decoyduck Exp $ */
+/* $Id: font_size.php,v 1.29 2008-08-28 21:28:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -101,6 +101,12 @@ $lang = load_language_file();
 if (!forum_check_access_level()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
+}
+
+// Guests can't do different font sizes.
+
+if (user_is_guest()) {
+    exit;
 }
 
 // User's UID

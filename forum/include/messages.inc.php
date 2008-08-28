@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.552 2008-08-21 21:09:23 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.553 2008-08-28 21:28:32 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1705,11 +1705,11 @@ function messages_get_most_recent($uid, $fid = false)
 
         }else if (!isset($message_data['LAST_READ']) || !is_numeric($message_data['LAST_READ'])) {
 
-            $message_data['LAST_READ'] = 0;
+            $message_data['LAST_READ'] = 1;
 
             if (isset($message_data['MODIFIED']) && $unread_cutoff_timestamp !== false && $message_data['MODIFIED'] < $unread_cutoff_timestamp) {
                 $message_data['LAST_READ'] = $message_data['LENGTH'];
-            }else if (isset($message_data['UNREAD_PID']) && is_numeric($message_data['UNREAD_PID'])) {
+            }else if (isset($message_data['UNREAD_PID']) && is_numeric($message_data['UNREAD_PID']) && $message_data['UNREAD_PID'] > 0) {
                 $message_data['LAST_READ'] = $message_data['UNREAD_PID'];
             }
 
@@ -1781,7 +1781,7 @@ function messages_get_most_recent_unread($uid, $fid = false)
 
         }else if (!isset($message_data['LAST_READ']) || !is_numeric($message_data['LAST_READ'])) {
 
-            $message_data['LAST_READ'] = 0;
+            $message_data['LAST_READ'] = 1;
 
             if (isset($message_data['MODIFIED']) && $unread_cutoff_timestamp !== false && $message_data['MODIFIED'] < $unread_cutoff_timestamp) {
                 $message_data['LAST_READ'] = $message_data['LENGTH'];

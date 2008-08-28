@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.301 2008-08-25 11:54:13 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.302 2008-08-28 21:28:32 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -57,9 +57,14 @@ function html_guest_error()
 
     $final_uri = basename(get_request_uri());
 
-    $popup_files_pregs = get_available_js_popup_files_preg();
+    $popup_files_preg = get_available_js_popup_files_preg();
 
-    if (preg_match("/^$popup_files_pregs/u", $final_uri) > 0) {
+    $available_support_pages = get_available_support_files();
+    $available_support_pages_preg = implode("|^", array_map('preg_quote_callback', $available_support_pages));
+
+    $support_files_preg = get_available_support_files();
+
+    if (preg_match("/^$popup_files_preg/", $final_uri) > 0) {
 
         if (isset($_POST['close_popup'])) {
 
@@ -74,6 +79,12 @@ function html_guest_error()
 
         html_draw_top('pm_popup_disabled', 'robots=noindex,nofollow');
         html_error_msg($lang['guesterror'], $final_uri, 'post', array('close_popup' => $lang['close']));
+        html_draw_bottom();
+
+    }else if (preg_match("/^$available_support_pages_preg/", $final_uri) > 0) {
+
+        html_draw_top('pm_popup_disabled', 'robots=noindex,nofollow');
+        html_error_msg($lang['guesterror']);
         html_draw_bottom();
 
     }else {

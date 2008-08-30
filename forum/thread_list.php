@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.356 2008-08-22 19:07:23 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.357 2008-08-30 23:26:34 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -387,14 +387,16 @@ if (!$folder_info = threads_get_folders()) {
 $folder_msgs = threads_get_folder_msgs();
 
 // Check that the folder order is a valid array.
-// While we're here we can also check to see how the user
-// has decided to display the thread list.
 
-if (!is_array($folder_order) || (bh_session_get_value('THREADS_BY_FOLDER') == 'Y')) {
+if (!is_array($folder_order)) $folder_order = array();
+
+// Check the folder display order.
+
+if (bh_session_get_value('THREADS_BY_FOLDER') == 'Y') {
     $folder_order = array_keys($folder_info);
 }
 
-// Sort the folders and threads correctly as per the URL query for the TID
+// Check for a message to display and re-order the thread list.
 
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
@@ -404,16 +406,28 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
         if (!isset($thread['RELATIONSHIP'])) $thread['RELATIONSHIP'] = 0;
 
+        // Check the folder display order / user is a guest.
+
         if ((bh_session_get_value('THREADS_BY_FOLDER') == 'N') || user_is_guest()) {
+
+            // Remove the folder from the list of folders.
 
             if (in_array($thread['FID'], $folder_order)) {
                 array_splice($folder_order, array_search($thread['FID'], $folder_order), 1);
             }
 
+            // Re-add it at the top of the list.
+
             array_unshift($folder_order, $thread['FID']);
         }
 
+        // Check $thread_info is an array.
+
         if (!is_array($thread_info)) $thread_info = array();
+
+        // Check to see if the thread is already in the list.
+        // If it is remove it, otherwise take the last thread
+        // off the list so we always only have 50 threads on display.
 
         if (isset($thread_info[$selected_tid])) {
             unset($thread_info[$selected_tid]);
@@ -421,14 +435,17 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
             array_pop($thread_info);
         }
 
+        // Add the requested thread to the top of the list of threads.
+
         array_unshift($thread_info, $thread);
     }
 }
 
-// Work out if any folders have no messages and add them.
-// Seperate them by INTEREST level
-
 if (bh_session_get_value('UID') > 0) {
+
+    // Check to see if we have a folder selected and
+    // ensure that is added to the list of folders
+    // and NOT to the ignored folders.
 
     if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
@@ -447,13 +464,24 @@ if (bh_session_get_value('UID') > 0) {
         $selected_folder = 0;
     }
 
+    // Array to hold our ignored folders in.
+
     $ignored_folders = array();
 
+    // Loop through the list of folders and check their status.
+    // If they're ignored and not already set to be on display
+    // they need to be added to $ignored_folders so that they
+    // appear at the bottom of the thread list.
+
     while (list($fid, $folder_data) = each($folder_info)) {
-        if ($folder_data['INTEREST'] == FOLDER_NOINTEREST || (isset($selected_folder) && $selected_folder == $fid)) {
-            if ((!in_array($fid, $folder_order)) && (!in_array($fid, $ignored_folders))) $folder_order[] = $fid;
-        }else {
-            if ((!in_array($fid, $folder_order)) && (!in_array($fid, $ignored_folders))) $ignored_folders[] = $fid;
+
+        if (!in_array($fid, $folder_order) && !in_array($fid, $ignored_folders)) {
+
+            if ($folder_data['INTEREST'] == FOLDER_NOINTEREST || (isset($selected_folder) && $selected_folder == $fid)) {
+                array_push($folder_order, $fid);
+            }else {
+                array_push($ignored_folders, $fid);
+            }
         }
     }
 

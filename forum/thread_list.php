@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.357 2008-08-30 23:26:34 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.358 2008-08-31 16:17:57 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -953,27 +953,6 @@ echo "      </form>\n";
 echo "    </td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
-echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\">\n";
-echo "  <tr>\n";
-echo "    <td align=\"left\" class=\"smalltext\" colspan=\"2\">{$lang['search']} (<a href=\"search.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">{$lang['advanced']}</a>):</td>\n";
-echo "  </tr>\n";
-echo "  <tr>\n";
-echo "    <td align=\"left\">&nbsp;</td>\n";
-echo "    <td align=\"left\" class=\"smalltext\">\n";
-echo "      <form accept-charset=\"utf-8\" method=\"post\" action=\"search.php\" target=\"", html_get_frame_name('right'), "\">\n";
-echo "        ", form_input_hidden('webtag', _htmlentities($webtag)), "\n";
-
-if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
-    echo "        ", form_input_hidden('folder', _htmlentities($folder)), "\n";
-}
-
-echo "        ", form_input_text("search_string", "", 20). "\n";
-echo "        ", form_submit("search", $lang['find']). "\n";
-echo "      </form>\n";
-echo "    </td>\n";
-echo "  </tr>\n";
-echo "</table>\n";
-
 echo "<script language=\"JavaScript\" type=\"text/javascript\">\n";
 echo "<!--\n";
 

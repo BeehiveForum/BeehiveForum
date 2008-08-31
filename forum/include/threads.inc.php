@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.325 2008-08-20 19:03:00 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.326 2008-08-31 16:17:57 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1608,6 +1608,9 @@ function thread_list_draw_top($mode)
         echo "  </tr>\n";
     }
 
+    echo "  <tr>\n";
+    echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('search.png'), "\" alt=\"{$lang['search']}\" title=\"{$lang['search']}\" />&nbsp;<a href=\"search.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">{$lang['search']}</a></td>\n";
+    echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('pmunread.png'), "\" alt=\"{$lang['pminbox']}\" title=\"{$lang['pminbox']}\" />&nbsp;<a href=\"pm.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">{$lang['pminbox']}</a> <span class=\"pmnewcount\" id=\"pm_message_count\"></span></td>\n";
     echo "  </tr>\n";

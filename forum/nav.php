@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: nav.php,v 1.112 2008-08-22 19:07:23 decoyduck Exp $ */
+/* $Id: nav.php,v 1.113 2008-08-31 16:17:57 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -94,7 +94,6 @@ if (forum_check_webtag_available($webtag)) {
 
     echo "<a href=\"start.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">{$lang['start']}</a>&nbsp;|&nbsp;\n";
     echo "<a href=\"discussion.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">{$lang['messages']}</a>&nbsp;|&nbsp;\n";
-    echo "<a href=\"discussion.php?webtag=$webtag&amp;right=search\" target=\"", html_get_frame_name('main'), "\">{$lang['search']}</a>&nbsp;|&nbsp;\n";
 
     if (forum_get_setting('show_links', 'Y')) {
         echo "<a href=\"links.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">{$lang['links']}</a>&nbsp;|&nbsp;\n";
@@ -131,7 +130,7 @@ if (user_is_guest()) {
 echo "</div>\n";
 echo "<div class=\"navright\">\n";
 
-echo forum_links_draw_dropdown();
+echo forum_links_draw_dropdown('openForumLink');
 
 echo "</div>\n";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.338 2008-08-31 16:54:59 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.339 2008-08-31 20:40:59 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -2326,11 +2326,17 @@ function forum_search_array_clean($forum_search)
     return db_escape_string(trim(str_replace("%", "", $forum_search)));
 }
 
-function forum_search($forum_search, $offset)
+function forum_search($forum_search, $offset, $sort_by, $sort_dir)
 {
     if (!$db_forum_search = db_connect()) return false;
 
     if (!is_numeric($offset)) return false;
+
+    $sort_by_array  = array('FORUM_NAME', 'FORUM_DESC', 'LAST_VISIT');
+    $sort_dir_array = array('ASC', 'DESC');
+
+    if (!in_array($sort_by, $sort_by_array)) $sort_by = 'LAST_VISIT';
+    if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
@@ -2347,13 +2353,16 @@ function forum_search($forum_search, $offset)
         $forum_search_svalue = implode("%' OR FORUM_SETTINGS.SVALUE LIKE '%", $forum_search_array);
 
         $sql = "SELECT SQL_CALC_FOUND_ROWS CONCAT(FORUMS.DATABASE_NAME, '.', FORUMS.WEBTAG, '_') AS PREFIX, ";
-        $sql.= "FORUMS.FID, FORUMS.ACCESS_LEVEL, USER_FORUM.INTEREST FROM FORUM_SETTINGS ";
-        $sql.= "LEFT JOIN USER_FORUM ON (USER_FORUM.FID = FORUM_SETTINGS.FID ";
-        $sql.= "AND USER_FORUM.UID = '$uid') LEFT JOIN FORUMS ON (FORUMS.FID = FORUM_SETTINGS.FID) ";
+        $sql.= "FORUM_SETTINGS_NAME.SVALUE AS FORUM_NAME, FORUM_SETTINGS_DESC.SVALUE AS FORUM_DESC, ";
+        $sql.= "FORUMS.FID, FORUMS.WEBTAG, FORUMS.ACCESS_LEVEL, USER_FORUM.INTEREST FROM FORUMS ";
+        $sql.= "LEFT JOIN FORUM_SETTINGS FORUM_SETTINGS ON (FORUM_SETTINGS.FID = FORUMS.FID) ";
+        $sql.= "LEFT JOIN FORUM_SETTINGS FORUM_SETTINGS_NAME ON (FORUM_SETTINGS_NAME.FID = FORUMS.FID AND FORUM_SETTINGS_NAME.SNAME = 'forum_name') ";
+        $sql.= "LEFT JOIN FORUM_SETTINGS FORUM_SETTINGS_DESC ON (FORUM_SETTINGS_DESC.FID = FORUMS.FID AND FORUM_SETTINGS_DESC.SNAME = 'forum_desc') ";
+        $sql.= "LEFT JOIN USER_FORUM ON (USER_FORUM.FID = FORUMS.FID AND USER_FORUM.UID = '$uid') ";
         $sql.= "WHERE FORUMS.ACCESS_LEVEL > -1 AND (FORUMS.WEBTAG LIKE ";
         $sql.= "'%$forum_search_webtag%' OR FORUM_SETTINGS.SVALUE LIKE ";
         $sql.= "'%$forum_search_svalue%') GROUP BY FORUMS.FID ";
-        $sql.= "LIMIT $offset, 10";
+        $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, 10";
 
         if (!$result_forums = db_query($sql, $db_forum_search)) return false;
 
@@ -2371,31 +2380,27 @@ function forum_search($forum_search, $offset)
 
                 $forum_fid = $forum_data['FID'];
 
-                $forum_settings = forum_get_settings_by_fid($forum_fid);
-
-                foreach ($forum_settings as $key => $value) {
-
-                    if (!isset($forum_data[strtoupper($key)])) {
-
-                        $forum_data[strtoupper($key)] = $value;
-                    }
-                }
-
                 // Check the forum name is set. If it isn't set it to 'A Beehive Forum'
 
                 if (!isset($forum_data['FORUM_NAME']) || strlen(trim($forum_data['FORUM_NAME'])) < 1) {
                     $forum_data['FORUM_NAME'] = "A Beehive Forum";
                 }
 
-                // Check the forum description variable is set.
+                // Check the forum description is set.
 
-                if (!isset($forum_data['FORUM_DESC'])) {
+                if (!isset($forum_data['FORUM_DESC']) || strlen(trim($forum_data['FORUM_DESC'])) < 1) {
                     $forum_data['FORUM_DESC'] = "";
+                }
+
+                // Check the LAST_VISIT column to make sure it's OK.
+
+                if (!isset($forum_data['LAST_VISIT']) || is_null($forum_data['LAST_VISIT'])) {
+                    $forum_data['LAST_VISIT'] = 0;
                 }
 
                 // Unread cut-off stamp.
 
-                $unread_cutoff_stamp = forum_process_unread_cutoff($forum_settings);
+                $unread_cutoff_stamp = forum_get_unread_cutoff();
 
                 // Get available folders for queries below
 
@@ -2462,22 +2467,6 @@ function forum_search($forum_search, $offset)
                 if ($forum_data['NUM_MESSAGES'] < 0) $forum_data['NUM_MESSAGES'] = 0;
                 if ($forum_data['UNREAD_MESSAGES'] < 0) $forum_data['UNREAD_MESSAGES'] = 0;
                 if ($forum_data['UNREAD_TO_ME'] < 0) $forum_data['UNREAD_TO_ME'] = 0;
-
-                // Get Last Visited
-
-                $sql = "SELECT UNIX_TIMESTAMP(LAST_VISIT) AS LAST_VISIT FROM USER_FORUM ";
-                $sql.= "WHERE UID = '$uid' AND FID = '$forum_fid' ";
-                $sql.= "AND LAST_VISIT IS NOT NULL AND LAST_VISIT > 0";
-
-                if (!$result_last_visit = db_query($sql, $db_forum_search)) return false;
-
-                $user_last_visit_data = db_fetch_array($result_last_visit);
-
-                if (!isset($user_last_visit_data['LAST_VISIT']) || is_null($user_last_visit_data['LAST_VISIT'])) {
-                    $forum_data['LAST_VISIT'] = 0;
-                }else {
-                    $forum_data['LAST_VISIT'] = $user_last_visit_data['LAST_VISIT'];
-                }
 
                 $forums_array[] = $forum_data;
             }

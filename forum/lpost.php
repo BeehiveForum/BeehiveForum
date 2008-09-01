@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.138 2008-08-22 19:07:22 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.139 2008-09-01 21:08:07 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "include/");
@@ -487,7 +487,7 @@ if ($valid && isset($_POST['post'])) {
             if ($t_tid > 0) {
 
                 if ($allow_sig == true && strlen(trim($t_sig)) > 0) {
-                    $t_content.= "\n<div class=\"sig\">$t_sig</div>";
+                    $t_content.= "<div class=\"sig\">$t_sig</div>";
                 }
 
                 $new_pid = post_create($t_fid, $t_tid, $t_rpid, $uid, $t_to_uid, $t_content);

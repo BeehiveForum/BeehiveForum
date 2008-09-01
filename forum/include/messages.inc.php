@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.553 2008-08-28 21:28:32 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.554 2008-09-01 18:03:09 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1763,7 +1763,7 @@ function messages_get_most_recent_unread($uid, $fid = false)
     $sql.= "OR (USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0) ";
     $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 ";
     $sql.= "OR USER_PEER.RELATIONSHIP IS NULL OR THREAD.LENGTH > 1) ";
-    $sql.= "AND USER_THREAD.LAST_READ < THREAD.LENGTH OR USER_THREAD.LAST_READ IS NULL ";
+    $sql.= "AND (USER_THREAD.LAST_READ < THREAD.LENGTH OR USER_THREAD.LAST_READ IS NULL) ";
     $sql.= "AND THREAD.MODIFIED > FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $unread_cutoff_stamp) ";
     $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";

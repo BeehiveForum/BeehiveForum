@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.192 2008-09-01 19:53:39 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.193 2008-09-01 21:08:07 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -667,6 +667,8 @@ class MessageText {
                     $this->diff = true;
                 }
 
+                $text = preg_replace("/(\s)?<br( [^>]*)?>(\s)?(\n)?/i", "<br />\n", $text);
+
             }else {
 
                 $tidy_text = tidy_html($text, ($this->html == POST_HTML_AUTO) ? true : false);
@@ -739,6 +741,8 @@ class MessageTextParse {
         $signature = preg_replace('/^<div class="sig">(.*)<\/div>$/su', '$1', implode('', $signature_parts));
 
         $message = implode('', $message_parts);
+
+        $message = trim($message);
 
         $emoticons = $emots_default;
 
